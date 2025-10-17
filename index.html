@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidef Arapça - Eğitici Oyunlar ve İçerikler</title>
+    
+    <!-- =================================================================
+    == FONT (YAZI TİPİ) KÜTÜPHANELERİ
+    == Sitede kullanılacak özel yazı tipleri Google Fonts üzerinden buraya eklenir.
+    ================================================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==================================================================================
+   == STİL (CSS) BÖLÜMÜ BAŞLANGICI
+   == Sitenin tüm görsel tasarımı (renkler, yazı tipleri, yerleşim vb.) burada kontrol edilir.
+   == Her bölüm, ilgili modülün adıyla açıkça etiketlenmiştir.
+   ================================================================================== */
+
+/* --- Evrensel Kutu Boyutlandırma ve Taşma Engelleme --- */
+/* Bu kural, tüm elemanların padding ve border'larının kendi genişliklerine dahil edilmesini sağlar.
+   Bu, beklenmedik taşmaları ve genişlik problemlerini %99 oranında çözen modern bir standarttır. */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* --- 1. GENEL TASARIM MODÜLÜ (Tüm Sayfayı Etkiler) --- */
+body {
+    font-family: 'Nunito', sans-serif; /* Sitenin genel metinleri için kullanılan yazı tipi. Yumuşak ve okunaklıdır. */
+    margin: 0;                         /* Tarayıcının varsayılan kenar boşluklarını sıfırlar. */
+    /* YENİ DOKU VE RENK: Arka plana zımpara benzeri mat bir doku ve kum beji rengi eklendi. */
+    background-color: #fdf0e0;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%23c4b8a7" fill-opacity="0.1"%3E%3Cpath opacity=".5" d="M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z"/%3E%3Cpath d="M6 5V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6V5z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+    color: #4f4a41;                    /* Genel metin rengi (Koyu kahverengi/gri). */
+    line-height: 1.6;                  /* Satırlar arasındaki boşluk, metnin daha rahat okunmasını sağlar. */
+    overflow-x: hidden;                /* YATAY KAYDIRMA ÇUBUĞUNU ENGELLEME: Bu kural, ne olursa olsun sayfanın yana taşmasını engeller. */
+}
+
+/* --- 2. ANA KAPSAYICI MODÜLÜ (İçeriği Ortalar) --- */
+.container {
+    max-width: 1280px; /* GENİŞLETİLDİ: İçeriğin alabileceği en fazla genişlik artırıldı. */
+    margin: 0 auto;    /* Kapsayıcıyı yatayda ortalamak için kullanılır. */
+    padding: 20px;     /* Kenarlardan iç boşluk bırakarak içeriğin ekran kenarlarına yapışmasını engeller. */
+}
+
+/* --- 3. HEADER MODÜLÜ (En Üstteki Başlık Alanı) --- */
+.site-header {
+    background: #ddbea9; /* YENİ RENK: Açık Terracotta */
+    color: #4f4a41;
+    padding: 8px 0;                                          /* Dikey olarak daraltmak için iç boşluk azaltıldı. */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);                   /* Başlık altına yumuşak bir gölge efekti verir. */
+    border-bottom: 2px solid #b77960; /* YENİ RENK: Koyu Terracotta */
+}
+
+.site-header .container {
+    display: flex;                 /* İçindeki elemanları (site adı ve arapça yazı) yan yana dizer. */
+    justify-content: space-between;/* Elemanlar arasına boşluk koyarak iki yana yaslar. */
+    align-items: center;           /* Elemanları dikeyde ortalar. */
+    flex-wrap: wrap;               /* Küçük ekranlarda elemanlar sığmazsa alt satıra indirir. */
+}
+
+.site-header h1 {
+    font-family: 'Marhey', sans-serif; /* Site adının özel yazı tipi. */
+    font-size: 2.5em;                  /* Boyut taşmayı engellemek için hafifçe küçültüldü. */
+    margin: 0;
+    font-weight: 700;
+}
+        
+.arabic-welcome {
+    font-family: 'Harmattan', sans-serif; /* Arapça yazının özel yazı tipi. */
+    font-size: 2em;                       /* Boyut taşmayı engellemek için hafifçe küçültüldü. */
+    font-weight: 700;
+    margin: 0;
+    color: #b77960; /* YENİ RENK: Koyu Terracotta */
+}
+
+/* --- 4. NAVİGASYON MENÜSÜ MODÜLÜ --- */
+.main-nav {
+    background-color: #ffe8d6; /* YENİ RENK: En açık kum beji */
+    padding: 12px 0;
+    text-align: center;
+    border-bottom: 1px solid #e6ccb2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.main-nav a {
+    /* Bu bölüm menüdeki her bir düğmenin stilini belirler */
+    color: #b77960;                /* YENİ RENK: Koyu Terracotta */
+    text-decoration: none;         /* Linklerin altındaki çizgiyi kaldırır. */
+    padding: 10px 18px;            /* Düğmenin iç boşlukları. */
+    margin: 4px 8px;                 /* Düğmeler arasındaki dış boşluk. */
+    border-radius: 25px;           /* Kenarları yuvarlatarak hap şeklinde bir görünüm verir. */
+    font-weight: 700;              /* Yazıyı kalınlaştırır. */
+    background-color: #fff;        /* Düğmenin arka plan rengi. */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;     /* Renk ve pozisyon değişimlerinin yumuşak (animasyonlu) olmasını sağlar. */
+    display: inline-block;         /* Butonların doğru sarmalanması için eklendi. */
+    border: 1px solid #ddbea9;
+}
+
+.main-nav a:hover {
+    /* Fare düğmenin üzerine geldiğinde uygulanacak stiller */
+    background-color: #b77960; /* YENİ RENK: Koyu Terracotta */
+    color: white;              /* Yazı rengini değiştirir. */
+    transform: translateY(-2px); /* Düğmeyi hafifçe yukarı kaydırır. */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Gölgeyi belirginleştirir. */
+}
+
+/* --- 5. İÇERİK BÖLÜMLERİ MODÜLÜ --- */
+.content-section {
+    background-color: #fff;
+    padding: 35px;
+    margin-top: 25px; 
+    border-radius: 15px;       /* Kenar yuvarlaklığı. */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e6ccb2; /* YENİ RENK: Açık kum beji */
+}
+
+.content-section h2 {
+    font-family: 'Marhey', sans-serif; /* Bölüm başlıklarının özel yazı tipi. */
+    color: #b77960;                  /* YENİ RENK: Koyu Terracotta */
+    border-bottom: 2px solid #ddbea9;/* YENİ RENK: Açık Terracotta */
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 2em;
+}
+
+/* --- 6. OYUN KARTLARI MODÜLÜ (Akıllı Tahta ve YouTube) --- */
+.game-grid {
+    display: grid; /* Kartları esnek bir ızgara yapısında dizer. */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ekran genişliğine göre kartları otomatik sıralar. */
+    gap: 25px;     /* Kartlar arasındaki boşluk. */
+    margin-top: 20px;
+}
+
+.game-card, .youtube-card {
+    background-color: #fff;
+    border: 1px solid #ddbea9; /* YENİ RENK: Açık Terracotta */
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    text-decoration: none;
+    color: #4f4a41;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover efekti için animasyon. */
+}
+
+.game-card:hover, .youtube-card:hover {
+    transform: translateY(-8px) scale(1.02); /* Fare üzerine gelince kartı büyütür ve yukarı kaldırır. */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15); /* Gölgeyi artırır. */
+}
+
+.game-card h3 {
+    font-family: 'Marhey', sans-serif;
+    color: #a46243; /* YENİ RENK: Pas Rengi */
+    font-size: 1.5em;
+    margin-top: 0;
+}
+
+/* "Çok Yakında" olarak işaretlenmiş kartlar için özel stil */
+.game-card.coming-soon {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    cursor: not-allowed; /* Tıklanamaz olduğunu belirten fare imleci. */
+    opacity: 0.7;        /* Kartı soluklaştırır. */
+    box-shadow: none;
+}
+
+.game-card.coming-soon:hover {
+    transform: none; /* Hover efektini iptal eder. */
+    box-shadow: none;
+}
+
+/* Kartların altındaki "Hemen Oyna" / "Çok Yakında" etiketleri */
+.status-badge {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.95em;
+    margin-top: 20px;
+    align-self: center;
+    text-transform: uppercase;
+}
+
+.status-badge.available {
+    background-color: #a3b18a; /* YENİ RENK: Adaçayı Yeşili */
+    color: white;
+}
+
+.status-badge.soon {
+    background-color: #f2d6ae; /* YENİ RENK: Muted Yellow */
+    color: #4f4a41;
+}
+
+/* YouTube kartları için özel bölüm */
+.youtube-channels {
+    display: flex;
+    justify-content: space-around;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.youtube-card a {
+    text-decoration: none;
+    color: #c4302b; 
+    font-size: 1.3em;
+    font-weight: 700;
+}
+.youtube-card svg {
+    width: 55px;
+    height: 55px;
+    margin-bottom: 18px;
+    fill: #c4302b;
+}
+
+/* --- Başlık ve Menüyü Yukarıda Sabit Tutan Sarmalayıcı --- */
+.sticky-header-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* --- 7. FOOTER MODÜLÜ (En Alttaki Bilgi Alanı) --- */
+.site-footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px 0;
+    background-color: #6b705c; /* YENİ RENK: Koyu Zeytin / Hâkî */
+    color: #fdf0e0;            /* YENİ RENK: Kum beji */
+}
+.site-footer p {
+    margin: 0;
+    font-size: 1em;
+}
+
+/* ==================================================================================
+   == 8. RESPONSIVE (EKRANLARA UYUMLULUK) TASARIM MODÜLÜ
+   == Bu bölüm, sitenin farklı ekran boyutlarında (tablet, telefon vb.) düzgün görünmesini sağlar.
+   == "@media" kuralları, belirtilen ekran genişliğine ulaşıldığında CSS kurallarını değiştirir.
+   ================================================================================== */
+
+/* --- Tabletler ve daha küçük cihazlar için (Genişliği 992px ve altı) --- */
+@media (max-width: 992px) {
+    /* Header'daki başlıkların boyutunu küçült */
+    .site-header h1 {
+        font-size: 2.2em;
+    }
+    .arabic-welcome {
+        font-size: 1.8em;
+    }
+}
+
+
+/* --- Tabletler ve daha küçük cihazlar için (Genişliği 768px ve altı) --- */
+@media (max-width: 768px) {
+    /* İçerik bölümlerinin başlık boyutunu küçült */
+    .content-section h2 {
+        font-size: 1.8em;
+    }
+
+    /* Navigasyon menüsündeki butonların boşluklarını azalt */
+    .main-nav a {
+        padding: 8px 12px;
+        margin: 5px;
+    }
+}
+
+/* --- Mobil telefonlar için (Genişliği 576px ve altı) --- */
+@media (max-width: 576px) {
+    /* Header'daki site adı ve arapça yazıyı alt alta getir ve ortala */
+    .site-header .container {
+        flex-direction: column; /* Dikey sıralama */
+        gap: 10px; /* Aralarındaki boşluk */
+    }
+
+     .site-header h1 {
+        font-size: 2em;
+    }
+    .arabic-welcome {
+        font-size: 1.6em;
+    }
+
+    /* Ana kapsayıcının kenar boşluklarını azalt */
+    .container {
+        padding: 15px;
+    }
+
+    /* İçerik bölümlerinin iç boşluğunu azalt */
+    .content-section {
+        padding: 20px;
+    }
+
+    /* Navigasyon menüsündeki linkleri alt alta sırala */
+    .main-nav a {
+        display: block; /* Tam genişlik kaplamalarını sağlar */
+        margin: 8px auto; /* Dikeyde boşluk bırakır ve yatayda ortalar */
+    }
+    
+    /* YouTube kartlarının yan yana durmasını engelle, tam genişlikte olsunlar */
+    .youtube-channels {
+        flex-direction: column;
+        align-items: center;
+    }
+    .youtube-card {
+        width: 100%; /* Kartın genişliğini tam yapar */
+        min-width: unset; /* Minimum genişlik kısıtlamasını kaldırır */
+    }
+}
+
+
+/* ==================================================================================
+   == 9. ÖRNEK/ŞABLON STİLLERİ MODÜLÜ
+   == Buradaki stiller, HTML içindeki şablonlar için kullanılır.
+   == Varsayılan olarak yorum içindedirler. Kullanmak için yorum işaretlerini kaldırın.
+   ================================================================================== */
+/*
+.ornek-buton {
+    display: inline-block;
+    background-color: #a3b18a;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+.ornek-buton:hover {
+    background-color: #6b705c;
+}
+*/
+</style>
+</head>
+<body>
+
+<!-- ============================ HEADER VE NAVİGASYON SABİTLEME ALANI ============================ -->
+<!-- Header ve Navigasyon menüsünü yukarıda sabit tutmak için sarmalayıcı -->
+<div class="sticky-header-container">
+
+    <!-- ============================ HEADER BAŞLANGIÇ ============================ -->
+    <header class="site-header">
+        <div class="container">
+            <h1>kidefarapca.com</h1>
+            <p class="arabic-welcome">أهلاً وسهلاً</p>
+        </div>
+    </header>
+    <!-- ============================ HEADER BİTİŞ ============================ -->
+
+    <!-- ============================ NAVİGASYON MENÜSÜ BAŞLANGIÇ ============================ -->
+    <nav class="main-nav">
+        <a href="#akilli-tahta-oyunlari">Akıllı Tahta için Oyunlar</a>
+        <a href="#mobil-oyunlar">Mobil Oyunlar</a>
+        <a href="#arapca-ogren">Arapça Öğren</a>
+        <a href="#geylani-demirbag">Geylani Demirbağ Kimdir?</a>
+        <a href="#youtube-kanallari">YouTube Kanalları</a>
+        <a href="mailto:gdmrbg7541@gmail.com">İletişim</a>
+
+        <!-- ================================================================================ -->
+        <!-- YÖNERGE: YENİ BİR MENÜ LİNKİ EKLEMEK İÇİN                                       -->
+        <!-- 1. Aşağıdaki satırı aktif etmek için başındaki ve sonundaki yorum etiketlerini silin. -->
+        <!-- 2. 'href' içindeki "#blog" kısmını, sayfanın gitmesini istediğiniz bölümün id'si ile değiştirin. -->
+        <!-- 3. "Blog" yazısını, menüde görünmesini istediğiniz metin ile değiştirin.       -->
+        <!-- ================================================================================ -->
+        <!-- <a href="#blog">Blog</a> -->
+
+    </nav>
+    <!-- ============================ NAVİGASYON MENÜSÜ BİTİŞ ============================ -->
+
+</div> <!-- sticky-header-container Bitişi -->
+
+
+<div class="container">
+    <main>
+        <!-- ============================ AKILLI TAHTA OYUNLARI BÖLÜMÜ BAŞLANGIÇ ============================ -->
+        <section id="akilli-tahta-oyunlari" class="content-section">
+            <h2>Akıllı Tahta için Oyunlar</h2>
+
+            <div class="game-grid">
+                <!-- OYNANABİLİR OYUN KARTI -->
+                <a href="https://gdmrbg7541.github.io/Kelime-Oyunlar-/" target="_blank" rel="noopener noreferrer" class="game-card">
+                    <h3>Kelime Oyunları</h3>
+                    <p>Arapça kelime bilginizi test edin ve geliştirin. Eğlenceli ve öğretici bir deneyim!</p>
+                    <span class="status-badge available">Hemen Oyna</span>
+                </a>
+
+                <!-- "ÇOK YAKINDA" OYUN KARTI -->
+                <div class="game-card coming-soon">
+                    <h3>Fiiller Diyarı</h3>
+                    <p>Arapça fiilleri interaktif bir şekilde keşfedin ve öğrenin.</p>
+                    <span class="status-badge soon">Çok Yakında</span>
+                </div>
+
+                <div class="game-card coming-soon">
+                    <h3>Cümle Kurma Macerası</h3>
+                    <p>Doğru cümleleri kurarak Arapça dil becerilerinizi geliştirin.</p>
+                    <span class="status-badge soon">Çok Yakında</span>
+                </div>
+                <div class="game-card coming-soon">
+                    <h3>Hikaye Tamamlama</h3>
+                    <p>Boşlukları doldurarak Arapça hikayeleri tamamlayın ve kelime dağarcığınızı artırın.</p>
+                    <span class="status-badge soon">Çok Yakında</span>
+                </div>
+
+                <!-- ================================================================================ -->
+                <!-- YÖNERGE: YENİ BİR OYUN KARTI EKLEMEK İÇİN                                        -->
+                <!-- 1. Aşağıdaki "ÇOK YAKINDA" KARTI ŞABLONU'nu kopyalayıp buraya yapıştırın.      -->
+                <!-- 2. İçindeki başlığı ve açıklamayı istediğiniz gibi değiştirin.                 -->
+                <!-- 3. Eğer oyun hazırsa ve link eklemek istiyorsanız adımları takip edin.         -->
+                <!-- ================================================================================ -->
+                <!--
+                <div class="game-card coming-soon">
+                    <h3>Yeni Oyun Adı</h3>
+                    <p>Yeni oyunun kısa açıklaması buraya gelecek.</p>
+                    <span class="status-badge soon">Çok Yakında</span>
+                </div>
+                -->
+
+            </div>
+        </section>
+        <!-- ============================ AKILLI TAHTA OYUNLARI BÖLÜMÜ BİTİŞ ============================ -->
+
+
+        <!-- ============================ DİĞER BÖLÜMLER ============================ -->
+        <section id="mobil-oyunlar" class="content-section">
+            <h2>Mobil Oyunlar</h2>
+            <p>Arapça öğrenimini mobil cihazlarınıza taşıyın. Android ve iOS için geliştirilmiş oyunlarımız ve uygulamalarımız ile istediğiniz her yerde pratik yapabilirsiniz. Yolda, evde, dilediğiniz her an öğrenme keyfini yaşayın.</p>
+
+            <!-- ================================================================================ -->
+            <!-- YÖNERGE: BUTON GİBİ EKSTRA BİR ELEMENT EKLEMEK İÇİN                             -->
+            <!-- 1. CSS bölümündeki "9. ÖRNEK/ŞABLON STİLLERİ" alanındaki yorumları kaldırın.    -->
+            <!-- 2. Aşağıdaki satırı yorumdan çıkarıp 'href' ve metnini değiştirin.             -->
+            <!-- ================================================================================ -->
+            <!-- <a href="#" class="ornek-buton">App Store'da Gör</a> -->
+
+        </section>
+
+        <section id="arapca-ogren" class="content-section">
+            <h2>Arapça Öğren</h2>
+            <p>Sıfırdan başlayanlar ve kendini geliştirmek isteyenler için hazırlanmış ders materyalleri, videolar, kelime kartları ve daha fazlası bu bölümde yer alacaktır. Kapsamlı içeriklerle Arapça'yı kolayca öğrenin.</p>
+        </section>
+
+        <section id="geylani-demirbag" class="content-section">
+            <h2>Geylani Demirbağ Kimdir?</h2>
+            <p>1996 Ağustos ayında Van'ın Erciş ilçesinde doğdu. 2017 yılında Selçuk Üniversitesi Edebiyat Fakültesi Arap Dili ve Edebiyatı bölümünden mezun oldu. Öğretmenlik kariyerine 2018'de Şırnak'ta başlayan Geylani Demirbağ, şu an görevine İstanbul'da devam etmektedir.</p>
+            <p>Öğrencilerin "ilim-amel" dengesini bir mizan ölçüsünde kurmalarına yardımcı olmak amacıyla <strong>Kidef Misyonu</strong>'nu geliştirmiştir. Bu misyonun temel ilkeleri şunlardır:</p>
+            <p>Bilgi ile uygulamanın, ilim ile amelin kaynağı tek bir yerde birleşmelidir. Bu amaçla geliştirilen materyaller, öğrencilerin fıtratını bozmadan ve kabiliyetlerini köreltmeden öğrenmelerini hedefler. Aynı zamanda bu materyaller, diğer öğretmenlere yöntem ve strateji açısından destek olmayı ve Arapça öğrenimine karşı öğrencilerin merak ve heyecan duygularını yeşertecek bir tohum ekmeyi amaçlamaktadır.</p>
+        </section>
+
+        <section id="youtube-kanallari" class="content-section">
+            <h2>YouTube Kanallarımız</h2>
+            <p>Arapça öğrenimini destekleyen ve projelerimizi tanıtan YouTube kanallarımızı takip edin. Videolarımızla Arapça bilginizi pekiştirin ve yeni içeriklerden haberdar olun.</p>
+            <div class="youtube-channels">
+                <div class="youtube-card">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.582,6.186 C21.32,5.592 20.844,5.118 20.248,4.858 C18.6,4.2 12,4.2 12,4.2 C12,4.2 5.4,4.2 3.752,4.858 C3.156,5.118 2.68,5.592 2.418,6.186 C1.8,7.83 1.8,12 1.8,12 C1.8,12 1.8,16.17 2.418,17.814 C2.68,18.408 3.156,18.882 3.752,19.142 C5.4,19.8 12,19.8 12,19.8 C12,19.8 18.6,19.8 20.248,19.142 C20.844,18.882 21.32,18.408 21.582,17.814 C22.2,16.17 22.2,12 22.2,12 C22.2,12 22.2,7.83 21.582,6.186 Z M9.96,15.24 V8.76 L15.84,12 L9.96,15.24 Z" fill="#c4302b"></path></svg>
+                    <a href="https://www.youtube.com/@kidefarapca" target="_blank" rel="noopener noreferrer">Kidef Arapça Kanalı</a>
+                </div>
+                <div class="youtube-card">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.582,6.186 C21.32,5.592 20.844,5.118 20.248,4.858 C18.6,4.2 12,4.2 12,4.2 C12,4.2 5.4,4.2 3.752,4.858 C3.156,5.118 2.68,5.592 2.418,6.186 C1.8,7.83 1.8,12 1.8,12 C1.8,12 1.8,16.17 2.418,17.814 C2.68,18.408 3.156,18.882 3.752,19.142 C5.4,19.8 12,19.8 12,19.8 C12,19.8 18.6,19.8 20.248,19.142 C20.844,18.882 21.32,18.408 21.582,17.814 C22.2,16.17 22.2,12 22.2,12 C22.2,12 22.2,7.83 21.582,6.186 Z M9.96,15.24 V8.76 L15.84,12 L9.96,15.24 Z" fill="#c4302b"></path></svg>
+                    <a href="https://www.youtube.com/@geylanidemirbag" target="_blank" rel="noopener noreferrer">Geylani Demirbağ Kanalı</a>
+                </div>
+            </div>
+        </section>
+        <!-- ============================ BÖLÜMLER BİTİŞ ============================ -->
+
+        <!-- ================================================================================ -->
+        <!-- YÖNERGE: YENİ BİR İÇERİK BÖLÜMÜ EKLEMEK İÇİN                                      -->
+        <!-- 1. Aşağıdaki 'section' bloğunu kopyalayıp bir üst satıra yapıştırın.           -->
+        <!-- 2. Başındaki ve sonundaki yorum etiketlerini kaldırarak bu bölümü aktif edin.    -->
+        <!-- 3. 'id' kısmını, menüde oluşturduğunuz linkteki 'href' ile aynı yapın.         -->
+        <!-- 4. İçindeki başlığı ve paragrafı istediğiniz gibi düzenleyin.                  -->
+        <!-- ================================================================================ -->
+        <!--
+        <section id="blog" class="content-section">
+            <h2>Blog Yazıları</h2>
+            <p>Bu bölüme yeni blog yazılarınız ve içerikleriniz gelecek.</p>
+        </section>
+        -->
+
+    </main>
+</div>
+
+<!-- ============================ FOOTER BAŞLANGIÇ ============================ -->
+<footer class="site-footer">
+    <p>&copy; 2025 kidefarapca.com - Tüm Hakları Saklıdır.</p>
+</footer>
+<!-- ============================ FOOTER BİTİŞ ============================ -->
+
+</body>
+</html>
+
