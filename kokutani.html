@@ -133,7 +133,7 @@
             margin-bottom: 5px;
             flex-shrink: 0;
             line-height: 1.2;
-            padding-top: 30px; 
+            /* padding-top: 30px; SİLİNDİ - Geri tuşu dışarı taşındı */
             box-sizing: border-box;
         }
 
@@ -333,7 +333,7 @@
         .question-area-vs {
             flex-shrink: 0;
             margin-bottom: 15px;
-            padding-top: 30px;
+            /* padding-top: 30px; SİLİNDİ - Geri tuşu dışarı taşındı */
             margin-right: 70px; 
             text-align: center;
         }
@@ -691,8 +691,11 @@
                 width: 75%; /* 80%'den düşürüldü */
             }
             
-            /* Versus Mobil */
-            .question-area-vs { padding-top: 35px; margin-right: 50px;}
+            /* Versus Mobil - GÜNCELLENDİ */
+            .question-area-vs { 
+                /* padding-top: 35px; SİLİNDİ */
+                margin-right: 50px;
+            }
         }
         /* *
          * --- MOBİL İYİLEŞTİRME BİTİŞ ---
@@ -798,7 +801,7 @@
                 border-right: 2px dashed var(--light-text-color);
             }
             .question-area-vs {
-                 padding-top: 30px;
+                 /* padding-top: 30px; SİLİNDİ */
                  margin-right: 50px;
             }
         }
@@ -904,8 +907,10 @@ body.lang-ar .option-button-vs.is-arabic {
 <body class="lang-tr">
     <div id="game-container">
         
+        <div class="back-button hidden" id="back-button-donut">◀</div>
+        <div class="back-button hidden" id="back-button-versus">◀</div>
+        
         <main id="level1-donut-container" class="main-game-panel hidden">
-            <div class="back-button" id="back-button-donut">◀</div>
             <div id="l1-main-instruction">Hangi kelimeler bu kökten geliyor?</div>
             <div id="l1-root-display-mobile">H-K-M</div>
             <div id="l1-choices-grid"></div>
@@ -916,7 +921,6 @@ body.lang-ar .option-button-vs.is-arabic {
         </main>
 
         <main id="level1-versus-container" class="main-game-panel hidden">
-            <div class="back-button" id="back-button-versus">◀</div>
             <div id="versus-progress-bar-container"></div>
             <div id="versus-player-wrapper">
                 <div id="player1-screen" class="player-screen">
@@ -1048,13 +1052,13 @@ body.lang-ar .option-button-vs.is-arabic {
             "ح-ف-ظ": { "root": ["ح", "ف", "ظ"], "words": [ { "text": "حَافِظ" }, { "text": "مُحَافَظَة" }, { "text": "مُحَافِظ" } ] },
             "ك-ت-ب": { "root": ["ك", "ت", "ب"], "words": [ { "text": "كِتَاب" }, { "text": "مَكْتُوب" }, { "text": "كَاتِب" }, { "text": "كِتَابَة" }, { "text": "مَكْتَب" } ] },
             "ن-ظ-ر": { "root": ["ن", "ظ", "ر"], "words": [ { "text": "نَظَر" }, { "text": "مُنَاظَرَة" }, { "text": "اِنْتِظَار" }, { "text": "مَنْظَر"}, { "text": "نَاظِر"} ] },
-            "م-ك-n": { "root": ["م", "ك", "ن"], "words": [ { "text": "إِمْكَان" }, { "text": "مُمْكِن" }, { "text": "تَمْكِين" } ] },
-            "ح-س-n": { "root": ["ح", "س", "ن"], "words": [ { "text": "حَسَن" }, { "text": "حُسَيْن" }, { "text": "أَحْسَن" }, { "text": "إِحْسَان" }, { "text": "تَحْسِين" } ] },
+            "م-ك-ن": { "root": ["م", "ك", "ن"], "words": [ { "text": "إِمْكَان" }, { "text": "مُمْكِن" }, { "text": "تَمْكِين" } ] },
+            "ح-س-ن": { "root": ["ح", "س", "ن"], "words": [ { "text": "حَسَن" }, { "text": "حُسَيْن" }, { "text": "أَحْسَن" }, { "text": "إِحْسَان" }, { "text": "تَحْسِين" } ] },
             "ج-ه-ل": { "root": ["ج", "ه", "ل"], "words": [ { "text": "جَاهِل" }, { "text": "جَاهِلِيَّة" }, { "text": "مَجْهُول" }, { "text": "جُهَلَاء" } ] },
-            "و-ج-د": { "root": ["و", "ج", "د"], "words": [ { "text": "وُجُود" }, { "text": "وِجْدَان" }, { "text": "مَوْجُود" }, { "text": "إِيجَAD" }, { "text": "مُوجِد" } ] },
-            "s-ك-n": { "root": ["س", "ك", "ن"], "words": [ { "text": "sَاكِن" }, { "text": "مَسْكُون" }, { "text": "مَسْكَن" }, { "text": "إِسْكَان" }, { "text": "تَسْكِين" } ] },
+            "و-ج-د": { "root": ["و", "ج", "د"], "words": [ { "text": "وُجُود" }, { "text": "وِجْدَان" }, { "text": "مَوْجُود" }, { "text": "إِيجَاد" }, { "text": "مُوجِد" } ] },
+            "س-ك-ن": { "root": ["س", "ك", "ن"], "words": [ { "text": "سَاكِن" }, { "text": "مَسْكُون" }, { "text": "مَسْكَن" }, { "text": "إِسْكَان" }, { "text": "تَسْكِين" } ] },
             "ج-ه-د": { "root": ["ج", "ه", "د"], "words": [ { "text": "جَاهِد" }, { "text": "جِهَاد" }, { "text": "مُجَاهِد" }, { "text": "اِجْتِهَاد" }, { "text": "مُجْتَهِد" } ] },
-            "s-ل-م": { "root": ["س", "ل", "م"], "words": [ { "text": "sَلَام" }, { "text": "sَلَامَة" }, { "text": "sَالِم" }, { "text": "إِسْلَام" }, { "text": "تَسْلِيم" } ] },
+            "س-ل-م": { "root": ["س", "ل", "م"], "words": [ { "text": "سَلَام" }, { "text": "سَلَامَة" }, { "text": "سَالِم" }, { "text": "إِسْلَام" }, { "text": "تَسْلِيم" } ] },
             "ق-ر-ب": { "root": ["ق", "ر", "ب"], "words": [ { "text": "قُرْبَان" }, { "text": "أَقْرَب" }, { "text": "تَقْرِيبًا" } ] },
             "ن-ظ-م": { "root": ["ن", "ظ", "م"], "words": [ { "text": "نَظْم" }, { "text": "نِظَام" }, { "text": "نَاظِم" }, { "text": "تَنْظِيم" }, { "text": "اِنْتِظَام" } ] },
             "د-خ-ل": { "root": ["د", "خ", "ل"], "words": [ { "text": "دَاخِل" }, { "text": "دَاخِلِيَّة" }, { "text": "إِدْخَال" }, { "text": "مُدَاخَلَة" } ] },
@@ -1063,7 +1067,7 @@ body.lang-ar .option-button-vs.is-arabic {
             "ش-ك-ل": { "root": ["ش", "ك", "ل"], "words": [ { "text": "شَكْل" }, { "text": "أَشْكَال" }, { "text": "مُشْكِل" }, { "text": "تَشْكِيل" } ] },
             "ن-س-ب": { "root": ["ن", "س", "ب"], "words": [ { "text": "نَسَب" }, { "text": "نِسْبَة" }, { "text": "مَنْسُوب" }, { "text": "مُنَاسَبَة" }, { "text": "اِنْتِسَاب" } ] },
             "ش-ه-د": { "root": ["ش", "ه", "د"], "words": [ { "text": "شَهَادَة" }, { "text": "شَاهِد" }, { "text": "شَهِيد" }, { "text": "شُهَدَاء" }, { "text": "مُشَاهَدَة" } ] },
-            "ب-ر-ك": { "root": ["ب", "ر", "ك"], "words": [ { "text": "بَرَكَة" }, { "text": "تَبْرِيك" }, { "text": "مُبَارَk" }, { "text": "تَبَرُّك" } ] },
+            "ب-ر-ك": { "root": ["ب", "ر", "ك"], "words": [ { "text": "بَرَكَة" }, { "text": "تَبْرِيك" }, { "text": "مُبَارَك" }, { "text": "تَبَرُّك" } ] },
             "ق-د-ر": { "root": ["ق", "د", "ر"], "words": [ { "text": "مِقْدَار" }, { "text": "قَدَر" }, { "text": "تَقْدِير" }, { "text": "قُدْرَة" }, { "text": "اِقْتِدَار" }, { "text": "قَدَر" } ] },
             "م-ل-ك": { "root": ["م", "ل", "ك"], "words": [ { "text": "مَلَك" }, { "text": "مُلْك" }, { "text": "مَالِك" }, { "text": "مَمْلَكَة" } ] },
             "ر-س-ل": { "root": ["ر", "س", "ل"], "words": [ { "text": "رِسَالَة" }, { "text": "رَسُول" }, { "text": "إِرْسَالِيَّة" }, { "text": "مُرْسَل" } ] },
@@ -1083,7 +1087,7 @@ body.lang-ar .option-button-vs.is-arabic {
             "ك-ب-ر": { "root": ["ك", "ب", "ر"], "words": [ { "text": "كِبْر" }, { "text": "أَكْبَر" }, { "text": "كُبْرَى" }, { "text": "تَكْبِير" } ] },
             "ع-ج-ز": { "root": ["ع", "ج", "ز"], "words": [ { "text": "عَاجِز" }, { "text": "عَجَزَة" }, { "text": "مُعْجِزَة" }, { "text": "تَعْجِيز" } ] },
             "ح-ر-م": { "root": ["ح", "ر", "م"], "words": [ { "text": "إِحْرَام" }, { "text": "حَرَم" }, { "text": "مُحَرَّم" }, { "text": "اِحْتِرَام" } ] },
-            "s-أ-ل": { "root": ["س", "أ", "ل"], "words": [ { "text": "sُؤَال" }, { "text": "مَسْؤُول" }, { "text": "مَسْأَلَة" } ] }
+            "س-أ-ل": { "root": ["س", "أ", "ل"], "words": [ { "text": "سُؤَال" }, { "text": "مَسْؤُول" }, { "text": "مَسْأَلَة" } ] }
           }
         };
         
@@ -1144,7 +1148,6 @@ body.lang-ar .option-button-vs.is-arabic {
         const backButtonDonut = document.getElementById('back-button-donut');
         const backButtonVersus = document.getElementById('back-button-versus');
         
-        // YENİ DOM ELEMENTİ EKLENDİ
         const backButtonStart = document.getElementById('back-button-start');
 
         const level1DonutContainer = document.getElementById('level1-donut-container');
@@ -1975,16 +1978,22 @@ body.lang-ar .option-button-vs.is-arabic {
                 <h3 class="results-player-score">${t.resultsP1Score.replace('{score}', gameState.player1.score)}</h3>
                 <p class="results-player-stats">${t.resultsP1Stats.replace('{correct}', gameState.player1.correct).replace('{mistakes}', gameState.player1.mistakes)}</p>
                 <h3 class="results-player-score">${t.resultsP2Score.replace('{score}', gameState.player2.score)}</h3>
-                <p class="results-player-stats">${t.resultsP2Stats.replace('{correct}', gameState.player2.correct).replace('{mistakes}', gameState.pl2.mistakes)}</p>
+                <p class="results-player-stats">${t.resultsP2Stats.replace('{correct}', gameState.player2.correct).replace('{mistakes}', gameState.p2.mistakes)}</p>
             `;
             showScreen('results');
         }
 
+        // === JAVASCRIPT GÜNCELLEMESİ ===
         function showScreen(screenName) {
             startScreen.classList.add('hidden'); 
             resultsScreen.classList.add('hidden'); 
             level1DonutContainer.classList.add('hidden');
             level1VersusContainer.classList.add('hidden');
+            
+            // Geri tuşlarını da varsayılan olarak gizle
+            backButtonDonut.classList.add('hidden');
+            backButtonVersus.classList.add('hidden');
+            // (start-screen'deki tuş kendi overlay'i ile yönetiliyor)
             
             if (screenName === 'start') {
                 startScreen.classList.remove('hidden'); 
@@ -1992,8 +2001,10 @@ body.lang-ar .option-button-vs.is-arabic {
                 resultsScreen.classList.remove('hidden'); 
             } else if (screenName === 'level1-donut') {
                 level1DonutContainer.classList.remove('hidden'); 
+                backButtonDonut.classList.remove('hidden'); // Donut tuşunu göster
             } else if (screenName === 'level1-versus') {
                 level1VersusContainer.classList.remove('hidden'); 
+                backButtonVersus.classList.remove('hidden'); // Versus tuşunu göster
             }
         }
         
