@@ -91,10 +91,10 @@
         }
 
         .back-button {
-            position: absolute;
+            position: fixed; /* 'absolute' değerini 'fixed' olarak değiştirdik */
             top: 20px;
             left: 20px; 
-            z-index: 200;
+            z-index: 1001; /* Diğer her şeyin (overlay'ler dahil) üzerinde olmasını sağlar */
             padding: 8px 16px; 
             font-size: var(--font-size-md);
             font-weight: 700;
@@ -1037,7 +1037,7 @@ body.lang-ar .option-button-vs.is-arabic {
             "h-m-d": { "root": ["h", "m", "d"], "words": [ { "text": "Hamd 🙏" }, { "text": "Ahmet 🌟" }, { "text": "Hamît 😊" }, { "text": "Mahmut ✨" }, { "text": "Muhammet 💖" } ] },
             "ş-h-r": { "root": ["ş", "h", "r"], "words": [ { "text": "Şehir 📅" }, { "text": "Şöhret 🌟" }, { "text": "Meşhur 🤩" }, { "text": "Teşhir 🎨" } ] },
             "ş-k-r": { "root": ["ş", "k", "r"], "words": [ { "text": "Şükür 🙏" }, { "text": "Şükran 💖" }, { "text": "Şakir 😊" }, { "text": "Teşekkür 🙌" } ] },
-            "f-k-r": { "root": ["f", "k", "r"], "words": [ { "text": "Fikir 🧠" }, { "text": "Fıkra 😂" }, { "text": "Tefekkür 🤔" }, { "text": "Mütefekkir 🧘" } ] },
+            "f-k-r": { "root": ["f", "k", "r"], "words": [ { "text": "Fikir 🧠" }, { "text": "Tefekkür 🤔" }, { "text": "Mütefekkir 🧘" } ] },
             "v-k-l": { "root": ["v", "k", "l"], "words": [ { "text": "Vekalet 📜" }, { "text": "Vekil 🧑‍💼" }, { "text": "Müvekkil 👤" }, { "text": "Tevekkül 🤲" } ] },
             "k-b-r": { "root": ["k", "b", "r"], "words": [ { "text": "Kibir 😤" }, { "text": "Ekber ⬆️" }, { "text": "Kübra 🌟" }, { "text": "Tekbir ☝️" } ] },
             "a-c-z": { "root": ["a", "c", "z"], "words": [ { "text": "Âciz 😩" }, { "text": "Aceze 👥" }, { "text": "Mucize ✨" }, { "text": "Taciz 🚫" } ] },
