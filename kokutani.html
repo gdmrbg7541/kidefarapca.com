@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Kelimenin Serüveni - Seviye 1 (Tüm Modlar)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+        :root {
+            --font-tr: 'Marhey', sans-serif;
+            --font-ar: 'Harmattan', serif;
+            
+            --primary-color: #0073e6; 
+            --success-color: #28a745; 
+            --error-color: #dc3545;
+            --bonus-color: #ffc107; 
+            
+            --player1-bg-color: rgba(0, 123, 255, 0.15);
+            --player1-border-color: rgba(0, 123, 255, 0.3);
+            --player2-bg-color: rgba(220, 53, 69, 0.15);
+            --player2-border-color: rgba(220, 53, 69, 0.3);
+
+            --background-color: #f8f9fa; 
+            --panel-background: #f8f9fa; 
+            --text-color: #343a40; 
+            --light-text-color: #adb5bd;
+            
+            --shadow-light: -8px -8px 16px rgba(255, 255, 255, 1);
+            --shadow-dark: 8px 8px 16px rgba(0, 0, 0, 0.15);
+            --shadow-inset: inset -6px -6px 12px rgba(255, 255, 255, 1), inset 6px 6px 12px rgba(0, 0, 0, 0.12);
+
+            --container-width: 90%; 
+            
+            --font-size-sm: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
+            --font-size-md: clamp(1.1rem, 2vw + 0.5rem, 1.5rem);
+            --font-size-lg: clamp(1.4rem, 2.5vw + 0.5rem, 2.0rem);
+            --font-size-xl: clamp(1.6rem, 4vw + 0.5rem, 2.8rem);
+            --font-size-xxl: clamp(2.0rem, 5vw + 1rem, 3.5rem);
+        }
+
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            overscroll-behavior: none;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        body {
+            font-family: var(--font-tr);
+            background-color: var(--background-color); 
+            color: var(--text-color);
+            background-image: linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.02) 75%),
+                              linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.02) 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh;
+            padding: 5px; box-sizing: border-box;
+            direction: ltr; 
+            font-size: 16px;
+        }
+        
+        #game-container {
+             width: var(--container-width); 
+             position: relative;
+             margin: auto; 
+             /* YENİ: Geri tuşu için üst boşluk */
+             padding-top: 50px;
+             box-sizing: border-box;
+        }
+
+        .main-game-panel {
+            width: 100%; 
+            margin: 0 auto;
+            padding: 25px; 
+            background-color: var(--panel-background);
+            border-radius: 20px;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            text-align: center;
+            max-height: calc(98vh - 50px); /* Geri tuşu yüksekliğini hesaba kat */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto; 
+            box-sizing: border-box;
+            position: relative;
+            direction: ltr; 
+        }
+
+        /* GÜNCELLENDİ: Geri tuşu artık panelin değil, konteynerin içinde */
+        .back-button {
+            position: absolute;
+            top: 5px; /* Konteynerin en üstü */
+            left: 5px; /* Konteynerin en solu */
+            z-index: 200;
+            padding: 8px 16px; 
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            line-height: 1;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            direction: ltr !important; 
+        }
+        .back-button:hover {
+            box-shadow: var(--shadow-inset);
+        }
+        
+        .is-arabic {
+            font-family: var(--font-ar) !important;
+            direction: rtl;
+            letter-spacing: normal !important;
+        }
+        .is-turkish-root {
+             font-family: var(--font-tr) !important;
+             direction: ltr;
+             letter-spacing: clamp(1px, 0.5vw, 3px) !important;
+        }
+
+        /* --- Donut Modu (1 Kişilik) Stilleri --- */
+        
+        #l1-main-instruction {
+            display: block; 
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            flex-shrink: 0;
+            line-height: 1.2;
+            padding-top: 30px; 
+            box-sizing: border-box;
+        }
+
+        #l1-root-display-mobile {
+            font-size: var(--font-size-xl);
+            font-weight: bold; line-height: 1; 
+            background-color: var(--background-color); 
+            color: var(--primary-color);
+            border-radius: 15px; 
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            user-select: none; 
+            flex-shrink: 0;
+            display: none;
+            align-items: center; gap: 15px; 
+            padding: 12px 24px; 
+            margin: 5px auto 5px auto;
+        }
+        
+        .l1-static-root-card-pc {
+            display: none; 
+            align-items: center; 
+            justify-content: center;
+            font-weight: bold; 
+            line-height: 1; 
+            background-color: var(--background-color); 
+            color: var(--primary-color);
+            border-radius: 15px; 
+            /* GÜNCELLENDİ: Farklı görünmesi için içeri gömük gölge */
+            box-shadow: var(--shadow-inset);
+            user-select: none; 
+            flex-shrink: 0;
+            font-family: var(--font-tr) !important;
+            direction: ltr;
+            
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        
+        .l1-static-root-card-pc .instruction-text {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.2;
+            text-align: center;
+        }
+        .l1-static-root-card-pc .root-text {
+            font-size: var(--font-size-xl);
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        .l1-static-root-card-pc .root-text.is-turkish-root {
+             letter-spacing: clamp(1px, 0.5vw, 3px) !important;
+        }
+
+
+        #l1-choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 20px;
+            width: 90%; 
+            margin-left: auto; 
+            margin-right: auto; 
+            flex-grow: 1;
+            align-content: center;
+        }
+        
+        .l1-choice-box {
+            background-color: var(--background-color);
+            border: none; 
+            border-radius: 15px;
+            padding: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: calc(var(--font-size-lg) * 2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.3;
+            text-align: center;
+        }
+        .l1-choice-box.is-arabic {
+            font-size: calc(var(--font-size-lg) * 1.25);
+        }
+
+        .l1-choice-box:not(.selected):hover { box-shadow: var(--shadow-inset); }
+        .l1-choice-box.selected { cursor: default; box-shadow: var(--shadow-inset); }
+        .l1-choice-box.correct { background-color: var(--success-color); color: white; box-shadow: none; animation: pulse-correct 0.4s ease; }
+        .l1-choice-box.incorrect { background-color: var(--error-color); color: white; box-shadow: none; animation: shake 0.5s; }
+        
+        #l1-feedback-area { 
+            margin-top: 5px;
+            font-size: var(--font-size-md);
+            font-weight: 500; 
+            min-height: 1.5em;
+            flex-shrink: 0;
+        }
+         #l1-bottom-area {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-top: 5px; 
+            padding-top: 0px;
+            flex-shrink: 0;
+            justify-content: flex-end; 
+        }
+
+        #next-button {
+            display: block;
+            margin: 0;
+            padding: 12px 28px;
+            font-size: var(--font-size-md);
+            font-weight: bold;
+            color: white;
+            background-color: var(--success-color); 
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+        }
+        #next-button.pulse-on-appear { animation: pulse-appear 0.6s ease-out; }
+        #next-button:hover { background-color: #218838; transform: translateY(-2px); box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1); }
+        #next-button:active { box-shadow: var(--shadow-inset); transform: translateY(1px); }
+        .hidden { display: none !important; }
+
+        /* --- Versus Modu (2 Kişilik) Stilleri --- */
+        #level1-versus-container {
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+            justify-content: flex-start; 
+        }
+        #versus-player-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .player-screen {
+            width: 100%;
+            min-height: calc(50vh - 60px); 
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            box-shadow: var(--shadow-inset); 
+            position: relative; 
+            overflow: hidden; 
+            transition: background-color 0.3s ease;
+        }
+        
+        #player1-screen {
+            border-bottom: 2px dashed var(--light-text-color);
+            background-color: var(--player1-bg-color);
+            border: 2px solid var(--player1-border-color);
+        }
+        #player2-screen {
+            background-color: var(--player2-bg-color);
+            border: 2px solid var(--player2-border-color);
+        }
+        
+        .player-score {
+            position: absolute;
+            top: 10px;
+            right: 15px; 
+            direction: ltr;
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            color: var(--primary-color);
+            background-color: rgba(255,255,255,0.5);
+            padding: 5px 10px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-inset);
+            z-index: 10;
+        }
+
+        .player-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: -5px;
+        }
+        .p1-icon { fill: var(--primary-color); }
+        .p2-icon { fill: var(--error-color); }
+
+
+        .question-area-vs {
+            flex-shrink: 0;
+            margin-bottom: 15px;
+            padding-top: 30px;
+            margin-right: 70px; 
+            text-align: center;
+        }
+
+        .question-area-vs h3 {
+            margin: 0 0 5px 0;
+            font-size: var(--font-size-md);
+            color: var(--primary-color);
+            text-align: center;
+            height: 40px;
+        }
+        
+        .question-area-vs .root-display-vs {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .question-area-vs .question-text-vs {
+            font-size: var(--font-size-lg);
+            color: var(--text-color);
+            min-height: 2.5em;
+            text-align: center;
+        }
+        .question-area-vs .question-text-vs span {
+             font-family: Marhey, !important; 
+             font-weight: 900;
+             margin-right: 10px;
+        }
+
+        .options-area-vs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        
+        .option-button-vs {
+            background-color: var(--background-color);
+            border: none; 
+            border-radius: 10px;
+            padding: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+        
+        .start-options-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            direction: ltr; 
+            transition: opacity 0.3s ease;
+        }
+
+        .selection-group-disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
+        .option-button-vs:hover:not(.disabled) { box-shadow: var(--shadow-inset); }
+        
+        .option-button-vs.selected {
+             box-shadow: var(--shadow-inset) !important; 
+             background-color: var(--panel-background);
+        }
+        .option-button-vs.correct { background-color: var(--success-color) !important; color: white !important; box-shadow: none !important; }
+        .option-button-vs.incorrect { background-color: var(--error-color) !important; color: white !important; box-shadow: none !important; }
+        .option-button-vs.disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+        .option-button-vs.disabled.correct,
+        .option-button-vs.disabled.incorrect {
+            opacity: 1;
+        }
+        .option-button-vs.disabled.selected.incorrect {
+             opacity: 0.5;
+        }
+        
+        #vs-feedback-area {
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            margin: 15px 0;
+            min-height: 1.5em;
+            flex-shrink: 0;
+            display: none; 
+        }
+        
+        .score-animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .score-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            box-shadow: var(--shadow-dark);
+            animation: fly-up-and-fade 1.5s ease-out forwards;
+        }
+        .score-popup.base-score {
+            background-color: var(--success-color);
+            color: white;
+        }
+        .score-popup.bonus-score {
+            background-color: var(--bonus-color);
+            color: var(--text-color);
+            font-size: var(--font-size-md);
+        }
+        
+        @keyframes fly-up-and-fade {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+            100% { transform: translate(-50%, -250%) scale(1.2); opacity: 0; }
+        }
+
+        /* --- Overlay (Başlangıç/Bitiş) Stilleri --- */
+        .overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(248, 249, 250, 0.97); 
+            display: flex; justify-content: center; align-items: center; text-align: center; 
+            z-index: 1000;
+            transition: opacity 0.3s, visibility 0.3s; 
+            padding: 15px; box-sizing: border-box; 
+            direction: ltr;
+        }
+
+        .overlay.hidden { opacity: 0; visibility: hidden; }
+        .overlay-content { 
+            background: var(--panel-background); 
+            padding: 15px 15px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-light), var(--shadow-dark); 
+            max-width: 90%; margin: auto; text-align: center; 
+        }
+        .overlay h1, .overlay h2, .overlay p { 
+            color: var(--text-color); margin-top: 0;
+        }
+        .overlay h1 { font-size: var(--font-size-xxl); }
+        .overlay h2 { font-size: var(--font-size-xl); }
+        .overlay p { font-size: var(--font-size-lg); }
+        
+        .start-options-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            direction: ltr;
+        }
+        .selection-button {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: none;
+            padding: 12px 20px;
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            width: 40%;
+            min-width: 140px;
+        }
+        .selection-button:hover {
+             box-shadow: -5px -5px 10px rgba(255, 255, 255, 1), 5px 5px 10px rgba(0, 0, 0, 0.1);
+             transform: translateY(-1px);
+        }
+        .selection-button:active {
+            transform: translateY(1px);
+        }
+        .selection-button.selected {
+            background-color: var(--primary-color);
+            color: white;
+            transform: none;
+        }
+
+        #start-game-button {
+            background-color: var(--success-color);
+            color: white;
+            font-size: var(--font-size-xl);
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            margin-top: 25px;
+            width: 60%;
+            max-width: 450px;
+            
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        #start-game-button:hover:not(:disabled) {
+            box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        #start-button-text {
+            position: relative;
+            z-index: 2;
+            display: block;
+            padding: 15px 30px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+        #start-button-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--success-color);
+            transform: translateX(-100%);
+            transition: transform 0.2s ease;
+            z-index: 1;
+        }
+        #start-game-button:disabled {
+            background-color: var(--light-text-color);
+            color: #f8f9fa;
+            opacity: 0.7;
+            cursor: not-allowed;
+            box-shadow: var(--shadow-inset);
+            transform: none;
+        }
+        #start-game-button:disabled #start-button-text {
+            color: #f8f9fa;
+        }
+        #start-game-button:not(:disabled) #start-button-fill {
+             transform: translateX(0%);
+        }
+        #start-game-button:not(:disabled) #start-button-text {
+             color: white;
+        }
+
+
+        #results-details { margin: 20px 0; text-align: center; min-width: auto; }
+        #results-details p { font-size: var(--font-size-md); }
+        #results-details div { font-size: var(--font-size-lg) !important; color: var(--primary-color); line-height: 1.8; }
+        .results-player-score {
+            font-size: var(--font-size-lg) !important;
+            color: var(--text-color) !important;
+        }
+        .results-player-stats {
+            font-size: var(--font-size-sm) !important;
+            color: var(--text-color) !important;
+            margin-top: -10px;
+        }
+
+        #play-again-button { 
+            background-color: var(--primary-color); 
+            color: white; border: none; padding: 12px 25px; 
+            font-size: var(--font-size-xl); font-weight: bold; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; 
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            margin-top: 15px;
+        }
+        #play-again-button:hover {
+            background-color: #0056b3; transform: translateY(-2px); 
+            box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        #orientation-warning {
+            /* Bu orijinal uyarı SİLİNDİ (artık yatay moda izin veriyoruz) */
+            display: none; 
+        }
+
+        /* Animasyonlar */
+        @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+        @keyframes pulse-appear { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-correct { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Mobil Uyum */
+        @media (max-width: 768px) {
+            :root { 
+                --shadow-light: -5px -5px 10px rgba(255, 255, 255, 1);
+                --shadow-dark: 5px 5px 10px rgba(0, 0, 0, 0.1);
+                --shadow-inset: inset -3px -3px 6px rgba(255, 255, 255, 1), inset 3px 3px 6px rgba(0, 0, 0, 0.1);
+            }
+            #game-container { width: 95%; padding-top: 50px;} 
+            .overlay-content { padding: 20px 15px; }
+            .back-button { top: 5px; padding: 8px 12px; left: 5px;}
+            
+            /* Donut Mobil */
+            #l1-choices-grid { 
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+                gap: 30px;
+                width: 100%;
+                padding-top: 0;
+                border-top: none;
+            }
+            #l1-root-display-mobile { 
+                display: inline-flex; 
+            }
+            
+            #level1-donut-container { padding: 15px 10px; } 
+            #l1-bottom-area { justify-content: center; padding-top: 5px; }
+            #next-button { padding: 10px 20px; width: 80%; }
+            
+            /* Versus Mobil */
+            .question-area-vs { padding-top: 35px; margin-right: 50px;}
+        }
+        
+        /* PC Uyum */
+        @media (min-width: 769px) {
+            .start-options-group {
+                flex-direction: row;
+            }
+            .selection-button {
+                width: 250px;
+            }
+            
+            /* GÜNCELLENDİ: "Ferah" Donut Modu */
+            #level1-donut-container {
+                min-height: 85vh; /* Panele dikey alan ver */
+            }
+            #l1-choices-grid {
+                grid-template-rows: repeat(4, 1fr); /* 4 satır eşit dolsun */
+                gap: 35px; /* Boşluğu artır */
+                align-content: stretch; /* 'center' yerine 'stretch' */
+            }
+            /* --- Bitiş --- */
+
+            #l1-main-instruction {
+                display: none; 
+            }
+            .l1-static-root-card-pc {
+                display: inline-flex; 
+                grid-row: 2 / 4;
+                grid-column: 2 / 3;
+                align-self: center;
+                justify-self: center;
+            }
+            
+            /* Versus PC */
+            #level1-versus-container {
+                height: 90vh;
+                padding: 20px;
+                gap: 10px;
+                justify-content: flex-start; 
+            }
+            #versus-player-wrapper {
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+                width: 100%;
+                height: 98%; 
+            }
+            .player-screen {
+                width: 50%;
+                height: 100%;
+                padding: 20px;
+                min-height: 500px;
+            }
+            #player1-screen {
+                border-bottom: none;
+                border-right: 2px dashed var(--light-text-color);
+            }
+            
+            .options-area-vs {
+                grid-template-columns: 1fr;
+            }
+            
+            .option-button-vs {
+                min-height: 70px;
+            }
+        }
+
+        /* Yatay mod uyarısı SİLİNDİ */
+        
+        /* GÜNCELLENDİ: Mobil Yatay Mod (Sığdırma ve Versus) */
+        @media (max-width: 768px) and (orientation: landscape) {
+            
+            #level1-versus-container {
+                padding: 10px;
+                height: 95vh;
+            }
+            #versus-player-wrapper {
+                flex-direction: row;
+                gap: 10px; /* Azaltıldı */
+                height: 98%;
+            }
+            .player-screen {
+                width: 50%;
+                height: 100%;
+                min-height: initial;
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+            }
+            #player1-screen {
+                border-bottom: none;
+                border-right: 2px dashed var(--light-text-color);
+            }
+            .question-area-vs {
+                 padding-top: 25px; /* Azaltıldı */
+                 margin-right: 40px; /* Azaltıldı */
+                 margin-bottom: 10px; /* Azaltıldı */
+                 flex-shrink: 0;
+            }
+            .question-area-vs h3 {
+                 height: 30px; /* Azaltıldı */
+            }
+            .player-icon {
+                width: 30px; /* Azaltıldı */
+                height: 30px; /* Azaltıldı */
+            }
+            .player-score {
+                top: 5px; right: 5px; padding: 3px 8px; /* Azaltıldı */
+            }
+            
+            /* Fontları dikey yüksekliğe (vh) göre ayarla */
+            .question-area-vs .question-text-vs {
+                font-size: clamp(0.8rem, 2.5vh, 1.1rem); /* vh kullan */
+                min-height: 2.5em;
+            }
+            .option-button-vs {
+                font-size: clamp(0.8rem, 3vh, 1.2rem); /* vh kullan */
+                min-height: 40px; /* Azaltıldı */
+                padding: 5px; /* Azaltıldı */
+            }
+            body.lang-ar .option-button-vs.is-arabic {
+                font-size: clamp(1rem, 3.5vh, 1.4rem); /* vh kullan */
+            }
+            
+            .options-area-vs {
+                gap: 5px; /* Düğme aralığını azalt */
+                flex-grow: 1;
+            }
+        }
+        
+        /* YENİ: Sadece Versus modu için yatay mod zorlaması */
+        @media (max-width: 768px) and (orientation: portrait) {
+            /* Cihaz dikeyken... */
+            body.versus-mode-active #level1-versus-container {
+                display: none; /* Oyunu gizle */
+            }
+            body.versus-mode-active #versus-orientation-warning {
+                display: flex !important; /* Uyarıyı göster */
+            }
+        }
+        
+        @media (max-width: 768px) and (orientation: landscape) {
+             /* Cihaz yatayken uyarıyı gizle */
+            body.versus-mode-active #versus-orientation-warning {
+                display: none !important;
+            }
+        }
+        
+/* --- BAŞLANGIÇ EKRANI ÖZELLEŞTİRMESİ --- */
+#start-screen .overlay-content { 
+    background: none; 
+    padding: 10px;
+    border-radius: 0; 
+    box-shadow: none; 
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#start-screen h1 {
+    font-size: var(--font-size-xl);
+}
+#start-screen h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: 15px;
+}
+#start-screen p {
+    font-size: var(--font-size-md);
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+#start-screen .selection-button {
+    font-size: var(--font-size-md);
+}
+#start-game-button {
+    font-size: var(--font-size-lg);
+}
+/* --- TÜM BUTONLARIN FONTUNU MARHEY'E ZORLA --- */
+.selection-button,
+#start-game-button,
+#play-again-button,
+#next-button,
+.back-button,
+.option-button-vs:not(.is-arabic) {
+    font-family: var(--font-tr);
+}
+/* --- Versus Modu İlerleme Çubuğu --- */
+#versus-progress-bar-container {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    margin: 5px auto 15px auto;
+    gap: 4px;
+    height: 10px;
+    box-sizing: border-box;
+}
+.progress-segment {
+    flex: 1;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: var(--shadow-inset);
+    transition: background-color 0.4s ease;
+}
+.progress-segment.completed {
+    background-color: var(--success-color);
+    box-shadow: none;
+}
+.progress-segment.current {
+    background-color: var(--bonus-color);
+    box-shadow: var(--shadow-light);
+}
+/* --- İKİ KİŞİLİK MOD FONT BÜYÜTME --- */
+.question-area-vs .root-display-vs {
+    font-size: calc(var(--font-size-xl) * 1.15);
+}
+.question-area-vs .question-text-vs {
+    font-size: calc(var(--font-size-lg) * 1.2);
+}
+.option-button-vs {
+    font-size: calc(var(--font-size-lg) * 1.2);
+}
+body.lang-ar .option-button-vs.is-arabic {
+    font-size: calc(var(--font-size-lg) * 1.45); 
+    font-family: var(--font-ar) !important;
+}
+/* --- İki Kişilik Mod: Gereksiz Kök Gösterimini Gizle --- */
+.question-area-vs .root-display-vs {
+    display: none;
+}
+.question-area-vs .question-text-vs {
+    font-weight: 700;
+}
+.arabic-root-highlight {
+    color: var(--error-color);
+    font-weight: 700;
+}
+.question-text-vs.is-arabic {
+    font-size: calc(var(--font-size-lg) * 1.4);
+}
+</style>
+</head>
+<body class="lang-tr">
+    <div id="game-container">
+        
+        <div class="back-button hidden" id="game-back-button">◀</div>
+        
+        <main id="level1-donut-container" class="main-game-panel hidden">
+            <div id="l1-main-instruction">Hangi kelimeler bu kökten geliyor?</div>
+            <div id="l1-root-display-mobile">H-K-M</div>
+            <div id="l1-choices-grid"></div>
+            <div id="l1-feedback-area">&nbsp;</div>
+            <div id="l1-bottom-area">
+                <button id="next-button" class="hidden">İlerle ▶</button>
+            </div>
+        </main>
+
+        <main id="level1-versus-container" class="main-game-panel hidden">
+            <div id="versus-progress-bar-container"></div>
+            <div id="versus-player-wrapper">
+                <div id="player1-screen" class="player-screen">
+                    <div class="score-animation-container" id="p1-score-animation-container"></div>
+                    <div class="player-score" id="p1-score-display">⭐ 0</div>
+                    <div class="question-area-vs">
+                        <h3><svg viewBox="0 0 24 24" class="player-icon p1-icon"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path></svg></h3>
+                        <div class="root-display-vs" id="p1-root"></div>
+                        <div class="question-text-vs" id="p1-question"></div>
+                    </div>
+                    <div class="options-area-vs" id="p1-options"></div>
+                </div>
+                <div id="player2-screen" class="player-screen">
+                    <div class="score-animation-container" id="p2-score-animation-container"></div>
+                    <div class="player-score" id="p2-score-display">⭐ 0</div>
+                     <div class="question-area-vs">
+                        <h3><svg viewBox="0 0 24 24" class="player-icon p2-icon"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path></svg></h3>
+                        <div class="root-display-vs" id="p2-root"></div>
+                        <div class="question-text-vs" id="p2-question"></div>
+                    </div>
+                    <div class="options-area-vs" id="p2-options"></div>
+                </div>
+            </div>
+            <div id="vs-feedback-area">Oyuncular bekleniyor...</div>
+        </main>
+
+        <div id="start-screen" class="overlay"> 
+            <div class="overlay-content"> 
+                <h1 id="start-title">Kelimenin Serüveni</h1> 
+                <h2 id="start-subtitle">Seviye 1: Kökü Tanı</h2> 
+                
+                <p style="margin-top: 20px; font-size: 2.0em;" id="start-p-lang">
+                    Oyun dilini seçin:
+                </p>
+                <div class="start-options-group" id="lang-select-group"> 
+                    <button class="selection-button" data-lang="tr" id="lang-button-tr">Türkçe Kelimeler</button> 
+                    <button class="selection-button" data-lang="ar" id="lang-button-ar">Arapça Kelimeler</button> 
+                </div> 
+
+                <p style="margin-top: 25px; font-size: 2.0em;" id="start-p-mode">
+                    Oyun modunu seçin:
+                </p>
+                <div class="start-options-group" id="mode-select-group"> 
+                    <button class="selection-button" data-mode="donut" id="mode-button-1p">Tek Kişilik</button> 
+                    <button class="selection-button" data-mode="versus" id="mode-button-2p">İki Kişilik</button> 
+                </div> 
+
+                <button id="start-game-button" disabled>
+                    <span id="start-button-fill"></span>
+                    <span id="start-button-text">Başla</span>
+                </button>
+            </div> 
+        </div>
+        
+        <div id="results-screen" class="overlay hidden"> 
+            <div class="overlay-content"> 
+                <h2 id="results-title">Oyun Bitti!</h2> 
+                <div id="results-details"></div> 
+                <button id="play-again-button">Ana Menüye Dön</button> 
+            </div> 
+        </div>
+    
+        <div id="versus-orientation-warning" class="overlay hidden">
+            <div class="overlay-content">
+                <h2 id="versus-orientation-title">Lütfen Cihazı Yatay Çevirin</h2>
+                <p id="versus-orientation-p">İki kişilik mod en iyi yatay ekranda çalışır.</p>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- VERİ SETLERİ (Düzeltilmiş) ---
+        const embeddedGameData = {
+          "tr": {
+            "h-k-m": { "root": ["h", "k", "m"], "words": [ { "text": "Hâkim 🧑‍⚖️" }, { "text": "Hekîm 👨‍⚕️" }, { "text": "Mahkum ⛓️" }, { "text": "Hakem ⚽" }, { "text": "Hüküm 📜" } ] },
+            "a-r-f": { "root": ["a", "r", "f"], "words": [ { "text": "İrfan 💡" }, { "text": "Arif 🧠" }, { "text": "Tarif 📝" } ] },
+            "i-l-m": { "root": ["i", "l", "m"], "words": [ { "text": "Âlim 🎓" }, { "text": "Talim 🧑‍🏫" }, { "text": "Muallim 👨‍🏫" }, { "text": "İlim 🧠"}, { "text": "Malum 📌"} ] },
+            "r-h-m": { "root": ["r", "h", "m"], "words": [ { "text": "Rahîm 💖" }, { "text": "Merhum 🪦" }, { "text": "İstirham 🙏" } ] },
+            "h-f-z": { "root": ["h", "f", "z"], "words": [ { "text": "Hâfız 📖" }, { "text": "Muhafaza 🛡️" }, { "text": "Muhafız 💂" } ] },
+            "k-t-b": { "root": ["k", "t", "b"], "words": [ { "text": "Kitap 📚" }, { "text": "Mektup ✉️" }, { "text": "Kâtip ✍️" }, { "text": "Kitabe 📜" }, { "text": "Mektep 🏫 / 🖥️" } ] },
+            "n-z-r": { "root": ["n", "z", "r"], "words": [ { "text": "Nazar 👀" }, { "text": "Münazara 🗣️" }, { "text": "İntizar ⏳" }, { "text": "Manzara 🏞️"}, { "text": "Nâzır 🧐"} ] },
+            "m-k-n": { "root": ["m", "k", "n"], "words": [ { "text": "İmkân ✨" }, { "text": "Mümkün ✅" }, { "text": "Temkin 🧐" } ] },
+            "h-s-n": { "root": ["h", "s", "n"], "words": [ { "text": "Hasan 😊" }, { "text": "Hüseyin 🧒" }, { "text": "Ahsen 🌟" }, { "text": "İhsan ❤️" }, { "text": "Tahsin 👍" } ] },
+            "c-h-l": { "root": ["c", "h", "l"], "words": [ { "text": "Câhil 🤷" }, { "text": "Câhiliye 🏺" }, { "text": "Meçhul ❓" }, { "text": "Cühela 👥" } ] },
+            "v-c-d": { "root": ["v", "c", "d"], "words": [ { "text": "Vücud 🧘" }, { "text": "Vicdan 💖" }, { "text": "Mevcud 📍" }, { "text": "İcad 💡" }, { "text": "Mucid 👨‍🔬" } ] },
+            "s-k-n": { "root": ["s", "k", "n"], "words": [ { "text": "Sakin 🏠" }, { "text": "Meskûn 🏘️" }, { "text": "Mesken 🏡" }, { "text": "İskân 🏗️" }, { "text": "Teskin 😌" } ] },
+            "c-h-d": { "root": ["c", "h", "d"], "words": [ { "text": "Câhit 💪" }, { "text": "Cihât ⚔️" }, { "text": "Mücâhit 🛡️" }, { "text": "İçtihât ⚖️" }, { "text": "Müçtehid 👨‍⚖️" } ] },
+            "s-l-m": { "root": ["s", "l", "m"], "words": [ { "text": "Selam 🕊️" }, { "text": "Selamet 🛡️" }, { "text": "Salim ✅" }, { "text": "İslam ☪️" }, { "text": "Teslim 🤝" } ] },
+            "k-r-b": { "root": ["k", "r", "b"], "words": [ { "text": "Kurban 🐑" }, { "text": "Akreb ➡️" }, { "text": "Takriben 📐" } ] },
+            "n-z-m": { "root": ["n", "z", "m"], "words": [ { "text": "Nazım 📜" }, { "text": "Nizam ⚖️" }, { "text": "Nâzım ✍️" }, { "text": "Tanzim 🗂️" }, { "text": "İntizam 📏" } ] },
+            "d-h-l": { "root": ["d", "h", "l"], "words": [ { "text": "Dâhil ➡️" }, { "text": "Dâhiliye 🏥" }, { "text": "İthal 📥" }, { "text": "Müdahale ✋" } ] },
+            "ş-r-b": { "root": ["ş", "r", "b"], "words": [ { "text": "Şerbet 🍹" }, { "text": "Şarâp 🍷" }, { "text": "Meşrubat 🥤" }, { "text": "Meşreb 🌿" } ] },
+            "r-c-a": { "root": ["r", "c", "a"], "words": [ { "text": "Merci ↩️" }, { "text": "Müracaat 📝" }, { "text": "İrtica 🔙" } ] },
+            "ş-k-l": { "root": ["ş", "k", "l"], "words": [ { "text": "Şekl 🧩" }, { "text": "Eşkal 🔶" }, { "text": "Müşkil 🤔" }, { "text": "Teşkil 🧬" } ] },
+            "n-s-b": { "root": ["n", "s", "b"], "words": [ { "text": "Neseb 👨‍👩‍👧‍👦" }, { "text": "Nisbet 📊" }, { "text": "Mensub 🔗" }, { "text": "Münasebet 🎉" }, { "text": "İntisab 🖇️" } ] },
+            "ş-h-d": { "root": ["ş", "h", "d"], "words": [ { "text": "Şehadet 📜" }, { "text": "Şâhit 👀" }, { "text": "Şehît 🌺" }, { "text": "Şüheda 🌷" }, { "text": "Müşahede 🔬" } ] },
+            "b-r-k": { "root": ["b", "r", "k"], "words": [ { "text": "Bereket 🌾" }, { "text": "Tebrik 🎉" }, { "text": "Mübarek ✨" }, { "text": "Teberrük 🙏" } ] },
+            "k-d-r": { "root": ["k", "d", "r"], "words": [ { "text": "Miktâr 📏" }, { "text": "Kader 🌌" }, { "text": "Takdir 👍" }, { "text": "Kudret 💪" }, { "text": "İktidar 🏛️" }, { "text": "Kâdir ⚡" } ] },
+            "m-l-k": { "root": ["m", "l", "k"], "words": [ { "text": "Melek 😇" }, { "text": "Mülk 👑" }, { "text": "Malik 🔑" }, { "text": "Memleket 🇹🇷" } ] },
+            "r-s-l": { "root": ["r", "s", "l"], "words": [ { "text": "Risale 📜" }, { "text": "Resul 🗣️" }, { "text": "İrsaliye 🧾" }, { "text": "Mürsel 📨" } ] },
+            "n-s-r": { "root": ["n", "s", "r"], "words": [ { "text": "Nasr 🏆" }, { "text": "Nusret ✌️" }, { "text": "Nasır 🛡️" }, { "text": "Mansur 🥇" } ] },
+            "h-m-l": { "root": ["h", "m", "l"], "words": [ { "text": "Hamle ♟️" }, { "text": "Hamile 🤰" }, { "text": "Hammal 🎒" }, { "text": "İhtimal 🎲" }, { "text": "Tahammül 🏋️" } ] },
+            "h-k-k": { "root": ["h", "k", "k"], "words": [ { "text": "Hak ⚖️" }, { "text": "Hukuk 🏛️" }, { "text": "Hakikat 💎" }, { "text": "Tahkik 🕵️" } ] },
+            "h-l-s": { "root": ["h", "l", "s"], "words": [ { "text": "Halis 💧" }, { "text": "İhlas 💖" }, { "text": "Muhlis 😊" } ] },
+            "k-m-l": { "root": ["k", "m", "l"], "words": [ { "text": "Kemâl ✨" }, { "text": "Kâmil 🌟" }, { "text": "İkmal 🏁" }, { "text": "Mükemmel 💯" } ] },
+            "r-ş-d": { "root": ["r", "ş", "d"], "words": [ { "text": "Reşîd 🧠" }, { "text": "İrşad 🧭" }, { "text": "Mürşid 🧑‍🏫" }, { "text": "Râşid 🚶" } ] },
+            "e-m-n": { "root": ["e", "m", "n"], "words": [ { "text": "Eman 🛡️" }, { "text": "Emin 🔒" }, { "text": "İman 💖" }, { "text": "Mümin 🙏" }, { "text": "Temin 🤝" } ] },
+            "c-m-a": { "root": ["c", "m", "a"], "words": [ { "text": "Cem 👥" }, { "text": "Cemiyet 🏛️" }, { "text": "Cemaat 👨‍👩‍👧‍👦" }, { "text": "Cami 🕌" }, { "text": "İçtima 🤝" } ] },
+            "h-m-d": { "root": ["h", "m", "d"], "words": [ { "text": "Hamd 🙏" }, { "text": "Ahmet 🌟" }, { "text": "Hamît 😊" }, { "text": "Mahmut ✨" }, { "text": "Muhammet 💖" } ] },
+            "ş-h-r": { "root": ["ş", "h", "r"], "words": [ { "text": "Şehir 📅" }, { "text": "Şöhret 🌟" }, { "text": "Meşhur 🤩" }, { "text": "Teşhir 🎨" } ] },
+            "ş-k-r": { "root": ["ş", "k", "r"], "words": [ { "text": "Şükür 🙏" }, { "text": "Şükran 💖" }, { "text": "Şakir 😊" }, { "text": "Teşekkür 🙌" } ] },
+            "f-k-r": { "root": ["f", "k", "r"], "words": [ { "text": "Fikir 🧠" }, { "text": "Fıkra 😂" }, { "text": "Tefekkür 🤔" }, { "text": "Mütefekkir 🧘" } ] },
+            "v-k-l": { "root": ["v", "k", "l"], "words": [ { "text": "Vekalet 📜" }, { "text": "Vekil 🧑‍💼" }, { "text": "Müvekkil 👤" }, { "text": "Tevekkül 🤲" } ] },
+            "k-b-r": { "root": ["k", "b", "r"], "words": [ { "text": "Kibir 😤" }, { "text": "Ekber ⬆️" }, { "text": "Kübra 🌟" }, { "text": "Tekbir ☝️" } ] },
+            "a-c-z": { "root": ["a", "c", "z"], "words": [ { "text": "Âciz 😩" }, { "text": "Aceze 👥" }, { "text": "Mucize ✨" }, { "text": "Taciz 🚫" } ] },
+            "h-r-m": { "root": ["h", "r", "m"], "words": [ { "text": "İhram 🕋" }, { "text": "Harem 🕌" }, { "text": "Muharrem 🌙" }, { "text": "İhtiram 🫡" } ] },
+            "s-a-l": { "root": ["s", "a", "l"], "words": [ { "text": "Sual ❓" }, { "text": "Mesul 👮" }, { "text": "Mesele ❔" } ] }
+          },
+          "ar": {
+            "ح-ك-م": { "root": ["ح", "ك", "م"], "words": [ { "text": "حَاكِم" }, { "text": "حَكِيم" }, { "text": "مَحْكُوم" }, { "text": "حَكَم" }, { "text": "حُكْم" } ] },
+            "ع-ر-ف": { "root": ["ع", "ر", "ف"], "words": [ { "text": "عِرْفَان" }, { "text": "عَارِف" }, { "text": "تَعْرِيف" } ] },
+            "ع-ل-م": { "root": ["ع", "ل", "م"], "words": [ { "text": "عَالِم" }, { "text": "تَعْلِيم" }, { "text": "مُعَلِّم" }, { "text": "عِلْم"}, { "text": "مَعْلُوم"} ] },
+            "ر-ح-م": { "root": ["ر", "ح", "م"], "words": [ { "text": "رَحِيم" }, { "text": "مَرْحُوم" }, { "text": "اِسْتِرْحَام" } ] },
+            "ح-ف-ظ": { "root": ["ح", "ف", "ظ"], "words": [ { "text": "حَافِظ" }, { "text": "مُحَافَظَة" }, { "text": "مُحَافِظ" } ] },
+            "ك-ت-ب": { "root": ["ك", "ت", "ب"], "words": [ { "text": "كِتَاب" }, { "text": "مَكْتُوب" }, { "text": "كَاتِب" }, { "text": "كِتَابَة" }, { "text": "مَكْتَب" } ] },
+            "ن-ظ-ر": { "root": ["ن", "ظ", "ر"], "words": [ { "text": "نَظَر" }, { "text": "مُنَاظَرَة" }, { "text": "اِنْتِظَار" }, { "text": "مَنْظَر"}, { "text": "نَاظِر"} ] },
+            "م-ك-ن": { "root": ["م", "ك", "ن"], "words": [ { "text": "إِمْكَان" }, { "text": "مُمْكِن" }, { "text": "تَمْكِين" } ] },
+            "ح-س-ن": { "root": ["ح", "س", "ن"], "words": [ { "text": "حَسَن" }, { "text": "حُسَيْن" }, { "text": "أَحْسَن" }, { "text": "إِحْسَان" }, { "text": "تَحْسِين" } ] },
+            "ج-ه-ل": { "root": ["ج", "ه", "ل"], "words": [ { "text": "جَاهِل" }, { "text": "جَاهِلِيَّة" }, { "text": "مَجْهُول" }, { "text": "جُهَلَاء" } ] },
+            "و-ج-د": { "root": ["و", "ج", "د"], "words": [ { "text": "وُجُود" }, { "text": "وِجْدَان" }, { "text": "مَوْجُود" }, { "text": "إِيجَاد" }, { "text": "مُوجِد" } ] },
+            "س-ك-ن": { "root": ["س", "ك", "ن"], "words": [ { "text": "سَاكِن" }, { "text": "مَسْكُون" }, { "text": "مَسْكَن" }, { "text": "إِسْكَان" }, { "text": "تَسْكِين" } ] },
+            "ج-ه-د": { "root": ["ج", "ه", "د"], "words": [ { "text": "جَاهِد" }, { "text": "جِهَاد" }, { "text": "مُجَاهِد" }, { "text": "اِجْتِهَاد" }, { "text": "مُجْتَهِد" } ] },
+            "س-ل-م": { "root": ["س", "ل", "م"], "words": [ { "text": "سَلَام" }, { "text": "سَلَامَة" }, { "text": "سَالِم" }, { "text": "إِسْلَام" }, { "text": "تَسْلِيم" } ] },
+            "ق-ر-ب": { "root": ["ق", "ر", "ب"], "words": [ { "text": "قُرْبَان" }, { "text": "أَقْرَب" }, { "text": "تَقْرِيبًا" } ] },
+            "ن-ظ-م": { "root": ["ن", "ظ", "م"], "words": [ { "text": "نَظْم" }, { "text": "نِظَام" }, { "text": "نَاظِم" }, { "text": "تَنْظِيم" }, { "text": "اِنْتِظَام" } ] },
+            "د-خ-ل": { "root": ["د", "خ", "ل"], "words": [ { "text": "دَاخِل" }, { "text": "دَاخِلِيَّة" }, { "text": "إِدْخَال" }, { "text": "مُدَاخَلَة" } ] },
+            "ش-ر-ب": { "root": ["ش", "ر", "ب"], "words": [ { "text": "شَرْبَة" }, { "text": "شَرَاب" }, { "text": "مَشْرُوبَات" }, { "text": "مَشْرَب" } ] },
+            "ر-ج-ع": { "root": ["ر", "ج", "ع"], "words": [ { "text": "مَرْجِع" }, { "text": "مُرَاجَعَة" }, { "text": "اِرْتِجَاع" } ] },
+            "ش-ك-ل": { "root": ["ش", "ك", "ل"], "words": [ { "text": "شَكْل" }, { "text": "أَشْكَال" }, { "text": "مُشْكِل" }, { "text": "تَشْكِيل" } ] },
+            "ن-س-ب": { "root": ["ن", "س", "ب"], "words": [ { "text": "نَسَب" }, { "text": "نِسْبَة" }, { "text": "مَنْسُوب" }, { "text": "مُنَاسَبَة" }, { "text": "اِنْتِسَاب" } ] },
+            "ش-ه-د": { "root": ["ش", "ه", "د"], "words": [ { "text": "شَهَادَة" }, { "text": "شَاهِد" }, { "text": "شَهِيد" }, { "text": "شُهَدَاء" }, { "text": "مُشَاهَدَة" } ] },
+            "ب-ر-ك": { "root": ["ب", "ر", "ك"], "words": [ { "text": "بَرَكَة" }, { "text": "تَبْرِيك" }, { "text": "مُبَارَك" }, { "text": "تَبَرُّك" } ] },
+            "ق-د-ر": { "root": ["ق", "د", "ر"], "words": [ { "text": "مِقْدَار" }, { "text": "قَدَر" }, { "text": "تَقْدِير" }, { "text": "قُدْرَة" }, { "text": "اِقْتِدَار" }, { "text": "قَدَر" } ] },
+            "م-ل-ك": { "root": ["م", "ل", "ك"], "words": [ { "text": "مَلَك" }, { "text": "مُلْك" }, { "text": "مَالِك" }, { "text": "مَمْلَكَة" } ] },
+            "ر-س-ل": { "root": ["ر", "s", "ل"], "words": [ { "text": "رِسَالَة" }, { "text": "رَسُول" }, { "text": "إِرْسَالِيَّة" }, { "text": "مُرْسَل" } ] },
+            "ن-ص-ر": { "root": ["ن", "ص", "ر"], "words": [ { "text": "نَصْر" }, { "text": "نُصْرَة" }, { "text": "نَاصِر" }, { "text": "مَنْصُور" } ] },
+            "ح-م-ل": { "root": ["ح", "م", "ل"], "words": [ { "text": "حَمْلَة" }, { "text": "حَامِلَة" }, { "text": "حَمَّال" }, { "text": "اِحْتِمَال" }, { "text": "تَحَمُّل" } ] },
+            "ح-ق-ق": { "root": ["ح", "ق", "ق"], "words": [ { "text": "حَقّ" }, { "text": "حُقُوق" }, { "text": "حَقِيقة" }, { "text": "تَحْقِيق" } ] },
+            "خ-ل-ص": { "root": ["خ", "ل", "ص"], "words": [ { "text": "خَالِص" }, { "text": "إِخْلَاص" }, { "text": "مُخْلِص" } ] },
+            "ك-م-ل": { "root": ["ك", "م", "ل"], "words": [ { "text": "كَمَال" }, { "text": "كَامِل" }, { "text": "إِكْمَال" }, { "text": "مُكَمَّل" } ] },
+            "ر-ش-د": { "root": ["ر", "ش", "د"], "words": [ { "text": "رَشِيد" }, { "text": "إِرْشَاد" }, { "text": "مُرْشِد" }, { "text": "رَاشِد" } ] },
+            "أ-م-ن": { "root": ["أ", "م", "ن"], "words": [ { "text": "أَمَان" }, { "text": "أَمِين" }, { "text": "إِيمَان" }, { "text": "مُؤْمِن" }, { "text": "تَأْمِين" } ] },
+            "ج-م-ع": { "root": ["ج", "م", "ع"], "words": [ { "text": "جَمْع" }, { "text": "جَمْعِيَّة" }, { "text": "جَمَاعة" }, { "text": "جَامِعَة" }, { "text": "اِجْتِمَاع" } ] },
+            "ح-م-د": { "root": ["ح", "م", "د"], "words": [ { "text": "حَمْد" }, { "text": "أَحْمَد" }, { "text": "حَمِيد" }, { "text": "مَحْمُود" }, { "text": "مُحَمَّد" } ] },
+            "ش-ه-ر": { "root": ["ش", "ه", "ر"], "words": [ { "text": "شَهْر" }, { "text": "شُهْرَة" }, { "text": "مَشْهُور" }, { "text": "تَشْهِير" } ] },
+            "ش-ك-ر": { "root": ["ش", "ك", "ر"], "words": [ { "text": "شُكْر" }, { "text": "شُكْرَان" }, { "text": "شَاكِر" }, { "text": "تَشَكُّر" } ] },
+            "ف-ك-ר": { "root": ["ف", "ك", "ر"], "words": [ { "text": "فِكْر" }, { "text": "فِكْرَة" }, { "text": "تَفَكُّر" }, { "text": "مُتَفَكِّر" } ] },
+            "و-ك-ل": { "root": ["و", "ك", "ل"], "words": [ { "text": "وَكَالَة" }, { "text": "وَكِيل" }, { "text": "مُوَكِّل" }, { "text": "تَوَكُّل" } ] },
+            "ك-ب-ر": { "root": ["ك", "ب", "ر"], "words": [ { "text": "كِبْر" }, { "text": "أَكْبَر" }, { "text": "كُبْرَى" }, { "text": "تَكْبِير" } ] },
+            "ع-ج-ز": { "root": ["ع", "ج", "ز"], "words": [ { "text": "عَاجِز" }, { "text": "عَجَزَة" }, { "text": "مُعْجِزَة" }, { "text": "تَعْجِيز" } ] },
+            "ح-ر-م": { "root": ["ح", "ر", "م"], "words": [ { "text": "إِحْرَام" }, { "text": "حَرَم" }, { "text": "مُحَرَّم" }, { "text": "اِحْتِرَام" } ] },
+            "س-أ-ل": { "root": ["س", "أ", "ل"], "words": [ { "text": "سُؤَال" }, { "text": "مَسْؤُول" }, { "text": "مَسْأَلَة" } ] }
+          }
+        };
+        
+        const uiText = {
+            startTitle: "Kelimenin Serüveni",
+            startSubtitle: "Seviye 1: Kökü Tanı",
+            startLangP: "Oyun dilini seçin:",
+            startModeP: "Oyun modunu seçin:",
+            langBtnTR: "Türkçe",
+            langBtnAR: "Arapça",
+            modeBtn1P: "Tek Kişilik",
+            modeBtn2P: "İki Kişilik",
+            startButton: "Başla",
+
+            donutInstruction: "Hangi kelimeler bu kökten geliyor?",
+            donutFeedbackCorrect: "Doğru!",
+            donutFeedbackIncorrect: "Bu kelime farklı bir kökten.",
+            donutWinRound: "Tebrikler, hepsini buldun!",
+            nextButton: "İlerle ▶",
+            versusQuestionMatch: `<span style="color: var(--success-color);">✓</span> Hangisi {root} kökünden türemiştir?`,
+            versusQuestionOddOne: `<span style="color: var(--error-color);">X</span> Hangisi {root} kökünden türememiştir?`,
+            versusWaiting: "Oyuncular bekleniyor...",
+            versusRoundEnd: "Tur Bitti!",
+            versusScorePrefix: "⭐ ",
+            resultsTitleDonut: "Kök Tanıma Bitti!",
+            resultsTitleVersus: "Yarışma Bitti!",
+            resultsWinText: "<p>Harika iş çıkardın!</p>",
+            resultsTotalScore: "Toplam Puan: {score}",
+            resultsTotalMistakes: "Toplam Hata: {mistakes}",
+            resultsP1Won: "<p>🏆 Oyuncu 1 Kazandı! 🏆</p>",
+            resultsP2Won: "<p>🏆 Oyuncu 2 Kazandı! 🏆</p>",
+            resultsDraw: "<p>🤝 Berabere! 🤝</p>",
+            resultsP1Score: "Oyuncu 1: {score} Puan",
+            resultsP2Score: "Oyuncu 2: {score} Puan",
+            resultsP1Stats: "(Doğru: {correct}, Hata: {mistakes})",
+            resultsP2Stats: "(Doğru: {correct}, Hata: {mistakes})",
+            playAgainButton: "Ana Menüye Dön",
+            orientationTitle: "Lütfen Cihazı Dik Tutun",
+            orientationP: "Bu oyun en iyi dikey modda çalışır.",
+            
+            // YENİ: Versus modu için yatay uyarı metinleri
+            versusOrientationTitle: "Lütfen Cihazı Yatay Çevirin",
+            versusOrientationP: "İki kişilik mod en iyi yatay ekranda çalışır."
+        };
+
+        // --- DOM Elementleri ---
+        const body = document.body;
+        const startScreen = document.getElementById('start-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const resultsTitle = document.getElementById('results-title');
+        const resultsDetails = document.getElementById('results-details');
+        const playAgainButton = document.getElementById('play-again-button');
+        
+        const langSelectGroup = document.getElementById('lang-select-group');
+        const modeSelectGroup = document.getElementById('mode-select-group');
+        const langSelectButtons = langSelectGroup.querySelectorAll('.selection-button');
+        const modeSelectButtons = modeSelectGroup.querySelectorAll('.selection-button');
+        const startGameButton = document.getElementById('start-game-button');
+        const startGameButtonFill = document.getElementById('start-button-fill');
+        const startGameButtonText = document.getElementById('start-button-text');
+        
+        // YENİ: Panel dışı tek geri tuşu
+        const gameBackButton = document.getElementById('game-back-button');
+        // Eski 'backButtonDonut' ve 'backButtonVersus' SİLİNDİ
+
+        const level1DonutContainer = document.getElementById('level1-donut-container');
+        const l1MainInstruction = document.getElementById('l1-main-instruction');
+        const l1RootDisplayMobile = document.getElementById('l1-root-display-mobile');
+        const l1ChoicesGrid = document.getElementById('l1-choices-grid');
+        const l1FeedbackArea = document.getElementById('l1-feedback-area');
+        const nextButton = document.getElementById('next-button'); 
+
+        const level1VersusContainer = document.getElementById('level1-versus-container');
+        const vsFeedbackArea = document.getElementById('vs-feedback-area');
+        const versusProgressBarContainer = document.getElementById('versus-progress-bar-container');
+        const playerElements = {
+            p1: {
+                root: document.getElementById('p1-root'),
+                question: document.getElementById('p1-question'),
+                options: document.getElementById('p1-options'),
+                scoreDisplay: document.getElementById('p1-score-display'),
+                animationContainer: document.getElementById('p1-score-animation-container')
+            },
+            p2: {
+                root: document.getElementById('p2-root'),
+                question: document.getElementById('p2-question'),
+                options: document.getElementById('p2-options'),
+                scoreDisplay: document.getElementById('p2-score-display'),
+                animationContainer: document.getElementById('p2-score-animation-container')
+            }
+        };
+
+        // --- Fonksiyonlar ---
+
+        let allWordsFlat = [];
+        let allRootKeys = [];
+        let allRootKeysWithMin4 = [];
+        
+        function processEmbeddedData(lang) {
+            allWordsFlat = [];
+            
+            const dataToProcess = embeddedGameData[lang];
+            if (!dataToProcess) {
+                console.error("Geçersiz dil verisi:", lang);
+                return;
+            }
+            
+            allRootKeys = Object.keys(dataToProcess);
+            allRootKeysWithMin4 = []; 
+            
+            allRootKeys.forEach(rootKey => {
+                const rootData = dataToProcess[rootKey];
+                if (rootData.words && rootData.words.length > 0) {
+                    rootData.words.forEach(word => {
+                        allWordsFlat.push({
+                            root: rootKey,
+                            text: word.text 
+                        });
+                    });
+                    if (rootData.words.length >= 4) {
+                        allRootKeysWithMin4.push(rootKey);
+                    }
+                }
+            });
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        let level1GameData_generated = [];
+        
+        // GÜNCELLENDİ: "Bazen açılmıyor" hatasını düzelten kod
+        function generateDonutGameData(numRounds) {
+            const rounds = [];
+            const availableRoots = shuffle([...allRootKeys]);
+            
+            for (let i = 0; i < numRounds && i < availableRoots.length; i++) {
+                const rootKey = availableRoots[i];
+                const rootData = embeddedGameData[gameState.currentLang][rootKey];
+                
+                if (!rootData.words || rootData.words.length === 0) continue;
+
+                const rootWords = rootData.words.map(w => ({ text: w.text, isCorrect: true }));
+                
+                const correctWords = shuffle(rootWords).slice(0, 5);
+                const incorrectNeeded = 10 - correctWords.length;
+                
+                const incorrectWords = [];
+                const otherWords = shuffle([...allWordsFlat]);
+                
+                while (incorrectWords.length < incorrectNeeded && otherWords.length > 0) {
+                    const randomWord = otherWords.pop();
+                    if (randomWord.root !== rootKey) {
+                        incorrectWords.push({ text: randomWord.text, isCorrect: false });
+                    }
+                }
+
+                let displayRootValue = rootKey;
+                if (gameState.currentLang === 'ar') {
+                    displayRootValue = rootKey.replace(/-/g, 'ـ'); 
+                }
+                
+                rounds.push({
+                    root: rootKey,
+                    displayRoot: displayRootValue,
+                    words: shuffle([...correctWords, ...incorrectWords])
+                });
+            }
+            return rounds;
+        }
+        
+        let level1VersusData_generated = [];
+       function generateVersusGameData(numTotalRounds) {
+            const questions = [];
+            const numRoundsPerType = numTotalRounds;
+            
+            const findMatchRoots = shuffle([...allRootKeys]);
+            const oddOneOutRoots = shuffle([...allRootKeysWithMin4]);
+
+            for (let i = 0; i < numRoundsPerType && i < findMatchRoots.length; i++) {
+                const rootKey = findMatchRoots[i];
+                if (!rootKey) continue; 
+                const rootData = embeddedGameData[gameState.currentLang][rootKey];
+                if (!rootData || !rootData.words || rootData.words.length === 0) continue;
+                
+                const correctWord = shuffle(rootData.words)[0];
+                const options = [{ text: correctWord.text, isCorrect: true }];
+                
+                const otherWords = shuffle([...allWordsFlat]);
+                while (options.length < 5 && otherWords.length > 0) {
+                    const randomWord = otherWords.pop();
+                    if (randomWord.root !== rootKey) {
+                        options.push({ text: randomWord.text, isCorrect: false });
+                    }
+                }
+                
+                let displayRootValue = rootKey;
+                if (gameState.currentLang === 'ar') {
+                    displayRootValue = rootKey.replace(/-/g, 'ـ');
+                }
+
+                let questionText = "";
+                if (gameState.currentLang === 'ar') {
+                    questionText = `<span style="color: var(--success-color);">✓</span> أي واحدة من <span class="arabic-root-highlight">{root}</span>؟`.replace('{root}', displayRootValue);
+                } else {
+                    questionText = uiText.versusQuestionMatch.replace('{root}', displayRootValue);
+                }
+                
+                questions.push({
+                    root: rootKey,
+                    displayRoot: displayRootValue,
+                    type: "find_match",
+                    question: questionText,
+                    options: shuffle(options)
+                });
+            }
+            
+            for (let i = 0; i < numRoundsPerType && i < oddOneOutRoots.length; i++) {
+                const rootKey = oddOneOutRoots[i];
+                if (!rootKey) continue;
+                const rootData = embeddedGameData[gameState.currentLang][rootKey];
+                if (!rootData) continue;
+                
+                const correctOptions = shuffle(rootData.words).slice(0, 4).map(w => ({ text: w.text, isCorrect: false }));
+                
+                let incorrectWord = null;
+                const otherWords = shuffle([...allWordsFlat]);
+                while (incorrectWord === null && otherWords.length > 0) {
+                    const randomWord = otherWords.pop();
+                    if (randomWord.root !== rootKey) {
+                        incorrectWord = { text: randomWord.text, isCorrect: true };
+                    }
+                }
+                if (incorrectWord === null) {
+                    console.warn("Odd one out için yanlış kelime bulunamadı.");
+                    continue; 
+                };
+                
+                const options = [...correctOptions, incorrectWord];
+                
+                let displayRootValue = rootKey;
+                if (gameState.currentLang === 'ar') {
+                    displayRootValue = rootKey.replace(/-/g, 'ـ');
+                }
+
+                let questionTextOddOne = "";
+                if (gameState.currentLang === 'ar') {
+                    questionTextOddOne = `<span style="color: var(--error-color);">X</span> أي واحدة ليست من <span class="arabic-root-highlight">{root}</span>؟`.replace('{root}', displayRootValue);
+                } else {
+                    questionTextOddOne = uiText.versusQuestionOddOne.replace('{root}', displayRootValue);
+                }
+                
+                questions.push({
+                    root: rootKey,
+                    displayRoot: displayRootValue,
+                    type: "odd_one_out",
+                    question: questionTextOddOne,
+                    options: shuffle(options)
+                });
+            }
+            
+            return shuffle(questions);
+        }
+
+        // --- Ana Kod Başlangıcı ---
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        async function playGenericSound(type) {
+            if (!audioContext) { console.warn("AudioContext desteklenmiyor."); return; }
+            if (audioContext.state === 'suspended') {
+                try { await audioContext.resume(); } 
+                catch (e) { console.error("AudioContext resume failed:", e); return; }
+            }
+            if (audioContext.state === 'running') {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode); gainNode.connect(audioContext.destination);
+                let freq, vol, duration, waveType; waveType = 'sine';
+                switch(type) {
+                    case 'correct': freq = 523.25; vol = 0.7; duration = 0.15; waveType = 'triangle'; break;
+                    case 'incorrect': freq = 164.81; vol = 0.6; duration = 0.3; waveType = 'square'; break;
+                    case 'touch': freq = 220.00; vol = 0.5; duration = 0.05; waveType = 'sine'; break;
+                    case 'win': freq = 659.25; vol = 0.8; duration = 0.4; waveType = 'triangle'; break;
+                    case 'bonus': freq = 880.00; vol = 0.6; duration = 0.2; waveType = 'sine'; break;
+                    default: return;
+                }
+                oscillator.type = waveType;
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(vol, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+                oscillator.start(); oscillator.stop(audioContext.currentTime + duration);
+            }
+        }
+
+        let gameState = {};
+
+        function initializeGame() {
+            
+            gameState = {
+                currentLang: 'tr', 
+                selectedLang: null, 
+                selectedMode: null, 
+                currentGameMode: null,
+                donutRoundIndex: 0,
+                donutTotalRounds: 10, 
+                donutCorrectNeeded: 5,
+                donutCorrectFound: 0,
+                donutTotalMistakes: 0,
+                donutTotalScore: 0,
+                
+                versusRoundIndex: 0,
+                versusTotalRounds: 10,
+                versusQuestions: [],
+                roundStartTime: 0,
+                player1: { score: 0, correct: 0, mistakes: 0, hasAnswered: false, answerTime: 0, wasCorrect: false, clickedButton: null },
+                player2: { score: 0, correct: 0, mistakes: 0, hasAnswered: false, answerTime: 0, wasCorrect: false, clickedButton: null }
+            };
+            
+            body.className = 'lang-tr';
+            // YENİ: Versus yatay mod zorlamasını kaldır
+            body.classList.remove('versus-mode-active'); 
+            
+            localizeUI();
+            
+            langSelectButtons.forEach(btn => btn.classList.remove('selected'));
+            modeSelectButtons.forEach(btn => btn.classList.remove('selected'));
+            startGameButton.disabled = true;
+            modeSelectGroup.classList.add('selection-group-disabled');
+            
+            startGameButton.classList.remove('is-loading');
+            
+            startGameButtonFill.style.transition = 'transform 0s'; 
+            startGameButtonFill.style.transform = 'translateX(-100%)';
+
+            showScreen('start');
+        }
+        
+        function localizeUI() {
+            document.getElementById('start-title').textContent = uiText.startTitle;
+            document.getElementById('start-subtitle').textContent = uiText.startSubtitle;
+            document.getElementById('start-p-lang').textContent = uiText.startLangP;
+            document.getElementById('start-p-mode').textContent = uiText.startModeP;
+            
+            document.getElementById('lang-button-tr').textContent = uiText.langBtnTR;
+            document.getElementById('lang-button-ar').textContent = uiText.langBtnAR;
+            document.getElementById('mode-button-1p').textContent = uiText.modeBtn1P;
+            document.getElementById('mode-button-2p').textContent = uiText.modeBtn2P;
+            document.getElementById('start-button-text').textContent = uiText.startButton;
+
+            gameBackButton.textContent = '◀'; // YENİ: Tek geri tuşunun metni
+            
+            nextButton.textContent = uiText.nextButton;
+            playAgainButton.textContent = uiText.playAgainButton;
+            
+            // YENİ: Versus yatay uyarı metinleri
+            document.getElementById('versus-orientation-title').textContent = uiText.versusOrientationTitle;
+            document.getElementById('versus-orientation-p').textContent = uiText.versusOrientationP;
+        }
+
+        // --- Oyun Akışı ---
+        
+        function checkStartButton() {
+            if (gameState.selectedLang && gameState.selectedMode) {
+                startGameButton.disabled = false;
+                startGameButtonFill.style.transition = 'transform 0.2s ease'; 
+                startGameButtonFill.style.transform = 'translateX(0%)';
+            } else {
+                startGameButton.disabled = true;
+                startGameButtonFill.style.transition = 'transform 0s';
+                startGameButtonFill.style.transform = 'translateX(-100%)';
+            }
+        }
+
+        langSelectButtons.forEach(button => {
+            button.addEventListener('click', () => { 
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                
+                const lang = button.dataset.lang;
+
+                if (gameState.selectedLang === lang) {
+                     playGenericSound('touch');
+                     modeSelectGroup.classList.remove('selection-group-disabled');
+                     return; 
+                }
+                
+                gameState.selectedLang = lang;
+                
+                langSelectButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                playGenericSound('touch'); 
+                langSelectGroup.classList.add('selection-group-disabled');
+                modeSelectGroup.classList.add('selection-group-disabled');
+                checkStartButton();
+                
+                setTimeout(() => {
+                    processEmbeddedData(lang); 
+                    langSelectGroup.classList.remove('selection-group-disabled');
+                    modeSelectGroup.classList.remove('selection-group-disabled');
+                }, 50);
+            });
+        });
+        
+        modeSelectButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
+                const mode = button.dataset.mode;
+                gameState.selectedMode = mode;
+                
+                modeSelectButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                
+                playGenericSound('touch'); 
+                checkStartButton();
+            });
+        });
+
+        startGameButton.addEventListener('click', () => {
+            if (startGameButton.disabled) return;
+            
+            gameState.currentLang = gameState.selectedLang;
+            body.className = 'lang-' + gameState.currentLang; 
+            
+            playGenericSound('win');
+            startGameMode(gameState.selectedMode); 
+        });
+        
+        // YENİ: Tek geri tuşu olayı
+        gameBackButton.addEventListener('click', () => {
+             playGenericSound('touch');
+             initializeGame();
+        });
+        // Eski geri tuşu olayları SİLİNDİ
+
+        function startGameMode(mode) {
+            gameState.currentGameMode = mode;
+            body.classList.remove('versus-mode-active'); // Önce sıfırla
+
+            if (mode === 'donut') {
+                level1GameData_generated = generateDonutGameData(10);
+                gameState.donutTotalRounds = level1GameData_generated.length;
+                
+                if (gameState.donutTotalRounds === 0) {
+                    console.error("Donut modu için hiç veri üretilemedi.");
+                    initializeGame();
+                    return;
+                }
+                
+                setupDonutRound(0);
+
+            } else if (mode === 'versus') {
+                // YENİ: Yatay mod zorlamasını etkinleştir
+                body.classList.add('versus-mode-active');
+
+                level1GameData_generated = generateVersusGameData(10);
+                gameState.versusQuestions = level1GameData_generated;
+                gameState.versusTotalRounds = 10;
+                 
+                 let requiredQuestions = gameState.versusTotalRounds * 2;
+                 if (level1GameData_generated.length < requiredQuestions) {
+                    console.warn("Versus modu için yetersiz veri üretildi. Gerekli: " + requiredQuestions + ", Bulunan: " + level1GameData_generated.length);
+                    gameState.versusTotalRounds = Math.floor(level1GameData_generated.length / 2);
+                 }
+
+                 if (gameState.versusTotalRounds === 0) {
+                    console.error("Versus modu için hiç veri üretilemedi.");
+                    initializeGame();
+                    return;
+                 }
+                
+                const scoreText = uiText.versusScorePrefix + "0";
+                playerElements.p1.scoreDisplay.textContent = scoreText;
+                playerElements.p2.scoreDisplay.textContent = scoreText;
+
+                versusProgressBarContainer.innerHTML = '';
+                for (let i = 0; i < gameState.versusTotalRounds; i++) {
+                    const segment = document.createElement('div');
+                    segment.className = 'progress-segment';
+                    segment.id = `progress-segment-${i}`;
+                    versusProgressBarContainer.appendChild(segment);
+                }
+
+                setupVersusRound(0);
+            }
+        }
+        
+        // --- MOD 1: Kök Tanıma (Donut) Fonksiyonları ---
+
+        // GÜNCELLENDİ: "Ada" tasarımı için
+        function setupDonutRound(roundIndex) {
+             if (roundIndex >= gameState.donutTotalRounds) {
+                endDonutGame(true);
+                return;
+             }
+             gameState.donutRoundIndex = roundIndex;
+             
+             const roundData = level1GameData_generated[roundIndex];
+             if (!roundData) {
+                 console.error("Donut modu için tur verisi bulunamadı:", roundIndex);
+                 endDonutGame(false);
+                 return;
+             }
+             
+             gameState.donutCorrectNeeded = roundData.words.filter(w => w.isCorrect).length;
+             gameState.donutCorrectFound = 0;
+             const isArabic = gameState.currentLang === 'ar';
+
+             l1MainInstruction.textContent = uiText.donutInstruction;
+             l1FeedbackArea.innerHTML = "&nbsp;"; 
+             l1FeedbackArea.style.color = "var(--text-color)";
+             nextButton.classList.add('hidden');
+             nextButton.classList.remove('pulse-on-appear');
+             
+             l1ChoicesGrid.innerHTML = '';
+             
+             const shuffledWords = [...roundData.words];
+             
+             const isMobile = window.innerWidth <= 768;
+             const rootDisplayClass = isArabic ? 'is-arabic' : 'is-turkish-root';
+
+             if (isMobile) {
+                // --- MOBİL GÖRÜNÜM (Orijinal) ---
+                l1RootDisplayMobile.textContent = roundData.displayRoot;
+                l1RootDisplayMobile.className = 'l1-root-display-mobile ' + rootDisplayClass;
+                
+                shuffledWords.forEach(word => {
+                    l1ChoicesGrid.appendChild(createDonutChoiceBox(word, isArabic));
+                });
+             } else {
+                // --- YENİ MASAÜSTÜ "ADA" GÖRÜNÜMÜ ---
+                
+                // HATA DÜZELTMESİ: 10 kelimenin hepsini (veya varsa daha azını) ekle
+                const wordsToAdd = shuffledWords.length >= 10 ? shuffledWords : [...shuffledWords, ...Array(10 - shuffledWords.length).fill(null)];
+
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[0], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[1], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[2], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[3], isArabic));
+                
+                const rootCardPC = document.createElement('div');
+                rootCardPC.className = 'l1-static-root-card-pc';
+                
+                const instructionText = document.createElement('div');
+                instructionText.className = 'instruction-text';
+                if (isArabic) {
+                    instructionText.classList.add('is-arabic');
+                    instructionText.textContent = "أي الكلمات من هذا الجذر؟"; // Basit Arapça çeviri
+                } else {
+                    instructionText.textContent = l1MainInstruction.textContent;
+                }
+                
+                const rootText = document.createElement('div');
+                rootText.className = 'root-text ' + rootDisplayClass;
+                rootText.textContent = roundData.displayRoot;
+                
+                rootCardPC.appendChild(instructionText);
+                rootCardPC.appendChild(rootText);
+
+                l1ChoicesGrid.appendChild(rootCardPC);
+                
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[4], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[5], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[6], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[7], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[8], isArabic));
+                l1ChoicesGrid.appendChild(createDonutChoiceBox(wordsToAdd[9], isArabic));
+             }
+             
+             showScreen('level1-donut');
+             gameState.isGameActive = true;
+        }
+
+        function createDonutChoiceBox(wordData, isArabic) {
+            if (!wordData) {
+                const emptyBox = document.createElement('div');
+                emptyBox.style.visibility = 'hidden';
+                return emptyBox;
+            }
+            
+            const choiceBox = document.createElement('div');
+            choiceBox.className = 'l1-choice-box';
+            if (isArabic) {
+                choiceBox.classList.add('is-arabic');
+            }
+            choiceBox.innerHTML = wordData.text; 
+            choiceBox.dataset.isCorrect = wordData.isCorrect;
+            choiceBox.addEventListener('click', handleDonutChoiceClick, { once: true }); 
+            return choiceBox;
+        }
+
+        function handleDonutChoiceClick(e) {
+            if (!gameState.isGameActive) return;
+            const clickedBox = e.target.closest('.l1-choice-box');
+            if (!clickedBox || clickedBox.classList.contains('selected')) return;
+            
+            const isCorrect = clickedBox.dataset.isCorrect === 'true';
+            clickedBox.classList.add('selected'); 
+
+            if (isCorrect) {
+                playGenericSound('correct');
+                clickedBox.classList.add('correct');
+                gameState.donutCorrectFound++;
+                gameState.donutTotalScore++;
+                l1FeedbackArea.textContent = uiText.donutFeedbackCorrect;
+                l1FeedbackArea.style.color = "var(--success-color)";
+                if (gameState.donutCorrectFound === gameState.donutCorrectNeeded) {
+                    winDonutRound();
+                }
+            } else {
+                playGenericSound('incorrect');
+                clickedBox.classList.add('incorrect');
+                gameState.donutTotalMistakes++;
+                l1FeedbackArea.textContent = uiText.donutFeedbackIncorrect;
+                l1FeedbackArea.style.color = "var(--error-color)";
+            }
+        }
+        
+        function winDonutRound() {
+            gameState.isGameActive = false;
+            playGenericSound('win');
+            
+            l1FeedbackArea.textContent = uiText.donutWinRound;
+            l1FeedbackArea.style.color = "var(--success-color)";
+            l1ChoicesGrid.querySelectorAll('.l1-choice-box:not(.selected)').forEach(box => {
+                box.style.opacity = '0.3';
+                box.style.cursor = 'default';
+            });
+            nextButton.classList.remove('hidden');
+            nextButton.classList.add('pulse-on-appear');
+            setTimeout(() => nextButton.classList.remove('pulse-on-appear'), 600); 
+        }
+
+        function endDonutGame(isWin) {
+             gameState.isGameActive = false;
+             
+             if (isWin) {
+                 resultsTitle.textContent = uiText.resultsTitleDonut;
+                 resultsDetails.innerHTML = `
+                    ${uiText.resultsWinText}
+                    <div>${uiText.resultsTotalScore.replace('{score}', gameState.donutTotalScore)}</div>
+                    <p style="font-size: 2em; color: var(--error-color); margin-top: 10px;">
+                        ${uiText.resultsTotalMistakes.replace('{mistakes}', gameState.donutTotalMistakes)}
+                    </p>
+                 `;
+             } else { 
+                resultsTitle.textContent = "Hata Oluştu";
+                resultsDetails.innerHTML = "<p>Oyun verisi yüklenirken bir hata oluştu.</p>";
+             }
+             showScreen('results');
+        }
+        
+        nextButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            setupDonutRound(gameState.donutRoundIndex + 1);
+        });
+
+        // --- MOD 2: 1v1 Yarışma Fonksiyonları ---
+
+        function setupVersusRound(roundIndex) {
+
+            for (let i = 0; i < gameState.versusTotalRounds; i++) {
+                const segment = document.getElementById(`progress-segment-${i}`);
+                if (!segment) continue;
+                segment.classList.remove('current', 'completed'); 
+                if (i < roundIndex) {
+                    segment.classList.add('completed');
+                } else if (i === roundIndex) {
+                    segment.classList.add('current');
+                }
+            }
+
+            if (roundIndex >= gameState.versusTotalRounds || (roundIndex * 2 + 1) >= gameState.versusQuestions.length) {
+                setTimeout(endVersusGame, 500);
+                return;
+            }
+            gameState.versusRoundIndex = roundIndex;
+            
+            gameState.player1.hasAnswered = false;
+            gameState.player1.wasCorrect = false;
+            gameState.player1.clickedButton = null;
+            gameState.player2.hasAnswered = false;
+            gameState.player2.wasCorrect = false;
+            gameState.player2.clickedButton = null;
+            
+            vsFeedbackArea.textContent = `Tur ${roundIndex + 1} / ${gameState.versusTotalRounds}`;
+            
+            const q1 = gameState.versusQuestions[roundIndex * 2];
+            const q2 = gameState.versusQuestions[roundIndex * 2 + 1];
+            
+            if (!q1 || !q2) {
+                console.error("Versus soruları yüklenemedi, tur:", roundIndex);
+                endVersusGame();
+                return;
+            }
+            
+            populatePlayerScreen('p1', q1);
+            populatePlayerScreen('p2', q2);
+            
+            showScreen('level1-versus');
+            gameState.roundStartTime = Date.now();
+        }
+
+        function populatePlayerScreen(playerId, questionData) {
+            const elements = playerElements[playerId];
+            const isArabic = gameState.currentLang === 'ar';
+            
+            elements.root.textContent = questionData.displayRoot; 
+            elements.root.className = 'root-display-vs'; 
+            elements.root.classList.add(isArabic ? 'is-arabic' : 'is-turkish-root');
+            
+            elements.question.innerHTML = questionData.question; 
+            elements.question.className = 'question-text-vs';
+            if (isArabic) {
+                elements.question.classList.add('is-arabic');
+            }
+            elements.options.innerHTML = '';
+            
+            const shuffledOptions = [...questionData.options];
+            
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-button-vs';
+                if (isArabic) {
+                    button.classList.add('is-arabic');
+                }
+                button.innerHTML = option.text; 
+                button.dataset.isCorrect = option.isCorrect;
+                button.addEventListener('click', (e) => handleVersusAnswer(e, playerId, option.isCorrect), { once: true });
+                elements.options.appendChild(button);
+            });
+        }
+        
+        function handleVersusAnswer(e, playerId, isCorrect) {
+            const clickedButton = e.target.closest('.option-button-vs');
+            const playerState = (playerId === 'p1') ? gameState.player1 : gameState.player2;
+            const optionsContainer = playerElements[playerId].options;
+            
+            playerState.hasAnswered = true;
+            playerState.wasCorrect = isCorrect;
+            playerState.answerTime = Date.now() - gameState.roundStartTime;
+            playerState.clickedButton = clickedButton;
+
+            clickedButton.classList.add('selected');
+            playGenericSound('touch');
+
+            optionsContainer.querySelectorAll('.option-button-vs').forEach(btn => {
+                btn.classList.add('disabled');
+            });
+            
+            checkVersusRoundEnd();
+        }
+        
+        function checkVersusRoundEnd() {
+            if (gameState.player1.hasAnswered && gameState.player2.hasAnswered) {
+                let p1_bonus = false;
+                let p2_bonus = false;
+
+                if (gameState.player1.wasCorrect) {
+                    gameState.player1.clickedButton.classList.add('correct');
+                    gameState.player1.correct++;
+                } else {
+                    gameState.player1.clickedButton.classList.add('incorrect');
+                    gameState.player1.mistakes++;
+                }
+                if (gameState.player2.wasCorrect) {
+                    gameState.player2.clickedButton.classList.add('correct');
+                    gameState.player2.correct++;
+                } else {
+                    gameState.player2.clickedButton.classList.add('incorrect');
+                    gameState.player2.mistakes++;
+                }
+
+                playerElements.p1.options.querySelectorAll('.option-button-vs').forEach(btn => {
+                    if (btn.dataset.isCorrect === 'true') btn.classList.add('correct');
+                });
+                playerElements.p2.options.querySelectorAll('.option-button-vs').forEach(btn => {
+                    if (btn.dataset.isCorrect === 'true') btn.classList.add('correct');
+                });
+
+                if (gameState.player1.wasCorrect || gameState.player2.wasCorrect) {
+                    playGenericSound('correct');
+                } else {
+                    playGenericSound('incorrect');
+                }
+
+                if (gameState.player1.wasCorrect) {
+                    gameState.player1.score += 5;
+                    showScoreAnimation('p1', 'base', 5);
+                }
+                if (gameState.player2.wasCorrect) {
+                    gameState.player2.score += 5;
+                    showScoreAnimation('p2', 'base', 5);
+                }
+
+                if (gameState.player1.wasCorrect && gameState.player2.wasCorrect) {
+                    if (gameState.player1.answerTime < gameState.player2.answerTime) {
+                        p1_bonus = true;
+                    } else if (gameState.player2.answerTime < gameState.player1.answerTime) {
+                        p2_bonus = true;
+                    }
+                } else if (gameState.player1.wasCorrect) {
+                    p1_bonus = true;
+                } else if (gameState.player2.wasCorrect) {
+                    p2_bonus = true;
+                }
+                
+                setTimeout(() => {
+                    if (p1_bonus) {
+                        gameState.player1.score += 5;
+                        showScoreAnimation('p1', 'bonus', 5);
+                        playGenericSound('bonus');
+                    }
+                    if (p2_bonus) {
+                        gameState.player2.score += 5;
+                        showScoreAnimation('p2', 'bonus', 5);
+                        playGenericSound('bonus');
+                    }
+                    
+                    updateVersusScoreboard();
+                    
+                    vsFeedbackArea.textContent = uiText.versusRoundEnd;
+                    setTimeout(() => {
+                        setupVersusRound(gameState.versusRoundIndex + 1);
+                    }, 2000);
+
+                }, 750);
+            }
+        }
+        
+        function updateVersusScoreboard() {
+            const scorePrefix = uiText.versusScorePrefix;
+            playerElements.p1.scoreDisplay.textContent = `${scorePrefix}${gameState.player1.score}`;
+            playerElements.p2.scoreDisplay.textContent = `${scorePrefix}${gameState.p2.score}`;
+        }
+        
+        function showScoreAnimation(playerId, scoreType, points) {
+            const container = playerElements[playerId].animationContainer;
+            const popup = document.createElement('div');
+            popup.className = `score-popup ${scoreType}-score`;
+            
+            if (scoreType === 'base') {
+                popup.innerHTML = `+${points}`;
+            } else {
+                popup.innerHTML = `⚡ +${points}`;
+            }
+            container.appendChild(popup);
+            setTimeout(() => { popup.remove(); }, 1400);
+        }
+        
+        function endVersusGame() {
+            const t = uiText;
+            resultsTitle.textContent = t.resultsTitleVersus;
+            let winnerText = "";
+            if (gameState.player1.score > gameState.player2.score) {
+                winnerText = t.resultsP1Won;
+            } else if (gameState.player2.score > gameState.player1.score) {
+                winnerText = t.resultsP2Won;
+            } else {
+                winnerText = t.resultsDraw;
+            }
+            resultsDetails.innerHTML = `
+                ${winnerText}
+                <h3 class="results-player-score">${t.resultsP1Score.replace('{score}', gameState.player1.score)}</h3>
+                <p class="results-player-stats">${t.resultsP1Stats.replace('{correct}', gameState.player1.correct).replace('{mistakes}', gameState.player1.mistakes)}</p>
+                <h3 class="results-player-score">${t.resultsP2Score.replace('{score}', gameState.player2.score)}</h3>
+                <p class="results-player-stats">${t.resultsP2Stats.replace('{correct}', gameState.player2.correct).replace('{mistakes}', gameState.player2.mistakes)}</p>
+            `;
+            showScreen('results');
+        }
+
+        // GÜNCELLENDİ: Geri tuşunu yönet
+        function showScreen(screenName) {
+            startScreen.classList.add('hidden'); 
+            resultsScreen.classList.add('hidden'); 
+            level1DonutContainer.classList.add('hidden');
+            level1VersusContainer.classList.add('hidden');
+            gameBackButton.classList.add('hidden'); // Varsayılan olarak gizle
+
+            if (screenName === 'start') {
+                startScreen.classList.remove('hidden'); 
+            } else if (screenName === 'results') {
+                resultsScreen.classList.remove('hidden'); 
+            } else if (screenName === 'level1-donut') {
+                level1DonutContainer.classList.remove('hidden'); 
+                gameBackButton.classList.remove('hidden'); // Oyunda göster
+            } else if (screenName === 'level1-versus') {
+                level1VersusContainer.classList.remove('hidden'); 
+                gameBackButton.classList.remove('hidden'); // Oyunda göster
+            }
+        }
+        
+        playAgainButton.addEventListener('click', () => { 
+            playGenericSound('touch'); 
+            initializeGame(); 
+        });
+
+        // Oyunu ilk yüklemede başlat
+        initializeGame();
+    });
+</script>
+<!-- Geri düğmesi -->
+<button id="backBtn" aria-label="Geri dön">
+  ← Geri
+</button>
+
+<style>
+  #backBtn{
+    position: fixed;
+    left: 16px;
+    top: 16px;
+    z-index: 9999;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid #e3e8ef;
+    background: #ffffffc9;
+    backdrop-filter: blur(6px);
+    font: 700 14px/1.1 system-ui, -apple-system, Segoe UI, Roboto, "Nunito", sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  #backBtn:hover{ transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+  @media (max-width: 640px){ #backBtn{ left: 10px; top: 10px; padding: 9px 12px; } }
+</style>
+
+<script>
+  (function () {
+    const btn = document.getElementById('backBtn');
+    const HOME = 'index.html'; // ana sayfanın yolu (gerekirse düzelt)
+
+    function goBack() {
+      // Eğer geçmişte bir sayfa varsa geri dön; yoksa ana sayfaya git
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = HOME;
+      }
+    }
+
+    btn.addEventListener('click', goBack);
+
+    // Kısayol: ESC veya Alt+←
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || (e.altKey && e.key === 'ArrowLeft')) {
+        goBack();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

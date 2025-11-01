@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arapça Kelime Analizi (Çoklu Mod)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --soft-blue: #e3f2fd;
+            --soft-green: #e8f5e9;
+            --soft-red: #ffebee;
+            --soft-yellow: #fffde7;
+            --text-dark: #37474f;
+            --text-light: #546e7a;
+            --border-color: #eceff1;
+            --accent-blue: #0d6efd; /* Seçim mavisi */
+            --accent-green: #198754; /* Başla butonu yeşili */
+            --correct-bg: #d1e7dd;
+            --incorrect-bg: #f8d7da;
+            --correct-border: #a3cfbb;
+            --incorrect-border: #f1aeae;
+        }
+
+        html { height: 100%; }
+        body {
+            /* GÜNCELLENDİ: !important eklendi */
+            font-family: "Marhey", sans-serif !important;
+            direction: ltr !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f7f9fc;
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 0;
+            text-align: center;
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Türkçe Font ve Yön Kuralları (Daha Kapsamlı) */
+        h1, h3, h4, #timer-display, #back-button, #start-game-button, #selection-screen h3, .turkish-meaning, .question-title,
+        #difficulty-buttons button, #player-mode-buttons button, .options-container button, #next-word-button { /* YENİ: #next-word-button eklendi */
+             font-family: "Marhey", sans-serif !important;
+             direction: ltr !important;
+        }
+        /* Arapça Font ve Yön Kuralları */
+        .arabic-word, .options-container .ar, .options-container button span.ar {
+             font-family: "Harmattan", serif !important;
+             direction: rtl !important;
+        }
+
+
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 600;}
+        h3 { color: var(--text-light); font-size: 1.1rem; }
+        h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem;}
+
+        /* Başlangıç Ekranları */
+        #selection-screen {
+             max-width: 400px;
+             margin-left: auto;
+             margin-right: auto;
+             padding: 1rem;
+        }
+        #difficulty-selection, #player-mode-selection {
+            margin-top: 1rem;
+        }
+        #difficulty-selection h3, #player-mode-selection h3 {
+             margin-bottom: 0.6rem;
+        }
+        #difficulty-buttons, #player-mode-buttons {
+            display: flex; flex-direction: column; gap: 8px;
+            margin-top: 0.6rem;
+        }
+        #difficulty-buttons button, #player-mode-buttons button {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 10px 18px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        #difficulty-buttons button:hover, #player-mode-buttons button:hover {
+            background-color: #f8f9fa;
+            border-color: #cfd8dc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        #difficulty-buttons button[data-time="60"] { color: var(--accent-green); }
+        #difficulty-buttons button[data-time="40"] { color: #f57c00; }
+        #difficulty-buttons button[data-time="20"] { color: #d32f2f; }
+
+        .button-selected {
+            background-color: var(--accent-blue) !important;
+            border-color: var(--accent-blue) !important;
+            color: white !important;
+            transform: none !important;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3) !important;
+        }
+        .button-selected:hover {
+             background-color: var(--accent-blue) !important;
+             border-color: var(--accent-blue) !important;
+        }
+
+        #start-game-button {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1.5rem;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(25, 135, 84, 0.3);
+        }
+        #start-game-button:hover {
+            background-color: #157347;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(25, 135, 84, 0.4);
+        }
+        #start-game-button:disabled {
+            background-color: #a3cfbb;
+            color: #f8f9fa;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        /* --- Yeni Soru Butonu Stili --- */
+        #next-word-button {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem; 
+            box-shadow: 0 4px 10px rgba(25, 135, 84, 0.3);
+        }
+        #next-word-button:hover {
+            background-color: #157347;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(25, 135, 84, 0.4);
+        }
+        
+        /* --- DÜZELTME 2 (KONUM): Yeni Soru Konteyner Stili --- */
+        #next-word-container {
+            position: absolute; /* Sayfa akışından çıkarıldı */
+            bottom: 2rem; /* Ekranın altından 2rem yukarıda */
+            left: 50%;
+            transform: translateX(-50%); /* Yatayda ortalamak için */
+            z-index: 20; /* Soluklaşan oyun alanının üstünde görünmesi için */
+            width: 100%;
+            max-width: 400px; /* Butonun çok geniş olmasını engeller */
+            padding: 0 1rem; /* Kenar boşlukları için */
+            box-sizing: border-box; /* Padding'i hesaba katmak için */
+        }
+        #next-word-container button {
+             width: 100%; /* Konteynerin genişliğini doldur */
+        }
+        /* --- Düzeltme Bitişi --- */
+
+
+        /* --- Oyun Alanı Genel --- */
+        #game-area {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+            /* YENİ: position: relative eklendi, böylece #next-word-container buna göre konumlanabilir */
+            position: relative; 
+        }
+        #players-container {
+            display: flex;
+            gap: 1rem;
+            flex-grow: 1;
+            position: relative; /* Çizgi için */
+        }
+        body.mode-2p #players-container::after {
+            content: '';
+            position: absolute;
+            top: 1rem;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            background-color: var(--border-color);
+        }
+
+        .player-area {
+            padding: 0.5rem;
+            margin-bottom: 0;
+            flex: 1;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+         .player-area#player2-area.hidden { display: none; }
+         body.mode-2p #player1-area { padding-right: 1.5rem; }
+         body.mode-2p #player2-area { padding-left: 1.5rem; }
+
+
+        /* Oyun İçi Elementler */
+        .word-display {
+            margin: 0.5rem 0 1rem 0;
+            padding: 0;
+            width: 100%;
+        }
+        .arabic-word {
+            font-size: clamp(3rem, 10vw, 5.5rem);
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.1;
+            margin-bottom: 0.1rem;
+        }
+        .turkish-meaning {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-top: 0.2rem;
+            background-color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: inline-block;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        #timer-display {
+            font-size: 1.4rem; font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            flex-shrink: 0;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(255,255,255,0.7);
+            padding: 3px 10px;
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .question-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+        .options-container {
+            display: grid; gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            width: 100%;
+            max-width: 500px;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+         .options-container.q4-grid {
+             grid-template-columns: repeat(3, 1fr);
+             max-width: 600px;
+         }
+
+        .options-container button {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            line-height: 1.3;
+            min-height: 60px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+            word-break: break-word;
+            position: relative;
+            overflow: hidden;
+        }
+        .options-container button:hover {
+            background-color: #f8f9fa;
+            border-color: #cfd8dc;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+        }
+        .options-container button:active {
+            transform: translateY(0px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+        }
+        .options-container button span.ar {
+             display: block;
+        }
+
+        /* İpuçları */
+        .hint-icon {
+            font-size: 0.75em;
+            color: #78909c;
+            font-weight: normal;
+            margin-top: 2px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .hint-icon .al-hint {
+             font-weight: 600; color: #546e7a; font-size: 1.1em; margin-right: 2px;
+        }
+        .hint-icon .num-hint {
+             font-size: 1.2em; font-weight: 600; color: #607d8b; line-height: 1;
+        }
+        .options-container button.hint-pink { border-color: #f48fb1; color: #c2185b; }
+        .options-container button.hint-blue { border-color: var(--accent-blue); color: #0a58ca; }
+
+        /* --- 4. SORU STİLLERİ --- */
+        .options-container button.q4-option {
+            font-size: 0.9rem; font-weight: 600;
+            padding: 8px 5px; min-height: 75px;
+        }
+        .options-container .ar {
+            font-size: 1.8rem;
+            font-weight: 700; line-height: 1;
+            margin-top: 5px;
+        }
+        .options-container button.hint-q4-green { border-color: var(--accent-green); color: #146c43; }
+        .options-container button.hint-q4-blue { border-color: var(--accent-blue); color: #0a58ca; }
+        .options-container button.hint-q4-pink { border-color: #f48fb1; color: #c2185b; }
+        /* --- 4. SORU STİLLERİ BİTİŞİ --- */
+
+        /* Vurgu ve Titreşim Stilleri */
+        .button-correct { background-color: var(--correct-bg) !important; border-color: var(--correct-border) !important; color: #0f5132 !important; transition-duration: 0.5s !important; }
+        .button-incorrect { background-color: var(--incorrect-bg) !important; border-color: var(--incorrect-border) !important; color: #842029 !important; animation: shake 0.6s; transition-duration: 0.5s !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
+
+        /* Geri Butonu */
+        #back-button {
+            position: absolute; top: 1rem; left: 1rem;
+            background-color: rgba(255,255,255,0.7);
+            color: var(--text-dark); border: 1px solid var(--border-color); padding: 5px 10px;
+            font-size: 0.9rem; border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s; z-index: 10;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #back-button:hover { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+
+        .hidden { display: none; }
+
+        /* Mobil Düzen */
+        @media (max-width: 768px) {
+            body { padding: 0.3rem; }
+            #game-container { padding: 0; }
+            #selection-screen { padding: 0.5rem; }
+            #game-area { padding: 0.3rem; }
+            #players-container { flex-direction: column; gap: 0.5rem; }
+            body.mode-2p #players-container::after { display: none; }
+            .player-area { padding: 0.3rem; }
+            body.mode-2p #player1-area, body.mode-2p #player2-area { padding-right: 0.3rem; padding-left: 0.3rem; }
+             h1 { font-size: 1.5rem; }
+             h3 { font-size: 1rem; }
+             .arabic-word { font-size: clamp(2.5rem, 12vw, 4rem); margin-bottom: 0; }
+             .turkish-meaning { font-size: 0.9rem; padding: 3px 10px;}
+             .question-title { font-size: 1rem; margin-bottom: 0.5rem; }
+             #timer-display { font-size: 1rem; padding: 2px 8px; top: 0.6rem; right: 0.6rem; }
+             .options-container { gap: 0.5rem; max-width: 95%; }
+             .options-container button { font-size: 0.9rem; padding: 8px; min-height: 50px; border-radius: 0.8rem;}
+             .options-container button.q4-option { min-height: 60px; font-size: 0.75rem;}
+             .options-container .ar { font-size: 1.5rem; margin-top: 3px; }
+             #back-button { padding: 3px 8px; font-size: 0.8rem; top: 0.6rem; left: 0.6rem;}
+             #start-game-button { font-size: 1.2rem; padding: 10px 22px; }
+             
+             /* DÜZELTME 2 (KONUM): Mobil stil eklendi */
+             #next-word-button { font-size: 1.2rem; padding: 10px 22px; }
+             #next-word-container {
+                 bottom: 1rem; /* Mobilde boşluğu azalt */
+                 max-width: 100%;
+                 padding: 0 0.5rem;
+             }
+        }
+         /* Mobil Yatay Mod */
+        @media (max-width: 900px) and (orientation: landscape) {
+             body { padding: 0.2rem; }
+             #players-container { flex-direction: row; gap: 0.5rem; }
+             body.mode-2p #players-container::after { display: block; top: 0.5rem; bottom: 0.5rem; }
+             .player-area { padding: 0.2rem; }
+             body.mode-2p #player1-area { padding-right: 1rem; }
+             body.mode-2p #player2-area { padding-left: 1rem; }
+             .arabic-word { font-size: clamp(2rem, 8vh, 3rem); }
+             .turkish-meaning { font-size: 0.8rem; padding: 2px 8px;}
+             .question-title { font-size: 0.9rem; margin-bottom: 0.3rem; }
+             #timer-display { font-size: 0.9rem; padding: 1px 6px; top: 0.4rem; right: 0.4rem; }
+             .options-container { gap: 0.4rem; }
+             .options-container button { font-size: 0.8rem; padding: 6px; min-height: 45px; border-radius: 0.7rem;}
+             .options-container button.q4-option { min-height: 55px; font-size: 0.7rem;}
+             .options-container .ar { font-size: 1.3rem; }
+             #back-button { padding: 2px 6px; font-size: 0.7rem; top: 0.4rem; left: 0.4rem;}
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+
+        <div id="selection-screen">
+            <div id="difficulty-selection">
+                <h1>Arapça Kelime Analizi</h1>
+                <h3>Önce Zorluk Seviyesini Seçin:</h3>
+                <div id="difficulty-buttons">
+                    <button data-time="60">Kolay</button>
+                    <button data-time="40">Orta</button>
+                    <button data-time="20">Zor</button>
+                </div>
+            </div>
+
+            <div id="player-mode-selection">
+                 <h3>Şimdi Oyuncu Modunu Seçin:</h3>
+                 <div id="player-mode-buttons">
+                     <button data-mode="1">1 Kişilik</button>
+                     <button data-mode="2">2 Kişilik</button>
+                 </div>
+             </div>
+
+             <button id="start-game-button" disabled>BAŞLA</button>
+        </div>
+
+
+        <div id="game-area" class="hidden">
+
+             <button id="back-button" class="hidden">&lt; Geri</button>
+             
+             <div id="timer-display">Süre: --s</div>
+
+             <div id="main-game-content" style="flex-grow: 1; display: flex; flex-direction: column; transition: opacity 0.3s ease;">
+                  <div id="players-container">
+                      <div id="player1-area" class="player-area">
+                          <h4 style="color:#007bff;">Oyuncu 1</h4>
+                          <div id="word-display-p1" class="word-display">
+                              <div id="arabic-word-p1" class="arabic-word"></div>
+                              <div id="turkish-meaning-p1" class="turkish-meaning"></div>
+                          </div>
+                          <h3 id="question-title-p1" class="question-title"></h3>
+                          <div id="options-container-p1" class="options-container"></div>
+                      </div>
+
+                      <div id="player2-area" class="player-area hidden">
+                           <h4 style="color:#dc3545;">Oyuncu 2</h4>
+                          <div id="word-display-p2" class="word-display">
+                              <div id="arabic-word-p2" class="arabic-word"></div>
+                              <div id="turkish-meaning-p2" class="turkish-meaning"></div>
+                          </div>
+                          <h3 id="question-title-p2" class="question-title"></h3>
+                          <div id="options-container-p2" class="options-container"></div>
+                      </div>
+                 </div>
+            </div>
+
+            <div id="next-word-container" class="hidden">
+                 <button id="next-word-button">Yeni Soru</button>
+             </div>
+
+            </div>
+    </div>
+
+
+    <script>
+        /* --- WEB AUDIO API SES SİSTEMİ --- */
+        let audioCtx;
+        function initAudio() { if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; } try { if (window.__audioCtx) { audioCtx = window.__audioCtx; if (audioCtx.state === 'suspended') audioCtx.resume(); } else { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); window.__audioCtx = audioCtx; } console.log("AudioContext başlatıldı/devam ettirildi. Durum:", audioCtx.state); } catch(e) { console.error("Web Audio API desteklenmiyor", e); } }
+        function playCorrectSound() { if (!audioCtx) return; try { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(600, audioCtx.currentTime); g.gain.setValueAtTime(0.4, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3); o.stop(audioCtx.currentTime + 0.3); } catch(e) { console.error("playCorrectSound hatası", e); } }
+        function playIncorrectSound() { if (!audioCtx) return; try { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.4, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5); o.stop(audioCtx.currentTime + 0.5); } catch(e) { console.error("playIncorrectSound hatası", e); } }
+        function playClickSound() { if (!audioCtx) return; try { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.3, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1); o.stop(audioCtx.currentTime + 0.1); } catch(e) { console.error("playClickSound hatası", e); } }
+        function playTimerTickSound() { if (!audioCtx) return; try { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(1200, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.05); o.stop(audioCtx.currentTime + 0.05); } catch(e) { console.error("playTimerTickSound hatası", e); } }
+        /* --- SES SİSTEMİ BİTİŞİ --- */
+
+        // --- Diğer JavaScript kodları ---
+        const Q4_ANSWERS = { Q4_1: `Merfu <span class="ar">ـُ ـٌ</span>`, Q4_2: `Mansub <span class="ar">ـَ ـً</span>`, Q4_3: `Mecrur <span class="ar">ـِ ـٍ</span>`, Q4_4: `Merfu <span class="ar">ـانِ</span>`, Q4_5: `Mansub-Mecrur <span class="ar">ـيْنِ</span>`, Q4_6: `Merfu <span class="ar">ـونَ</span>`, Q4_7: `Mansub-Mecrur <span class="ar">ـينَ</span>`, Q4_8: `Merfu <span class="ar">ـاتُ ـاتٌ</span>`, Q4_9: `Mansub-Mecrur <span class="ar">ـاتِ ـاتٍ</span>` };
+        const finalList = [ { html: 'مُزَارِعَاتٌ', turkish: 'Çiftçiler', answers: ['Nekra', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_8] }, { html: 'سَيَّارَتَيْنِ', turkish: 'İki Araba', answers: ['Nekra', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, { html: 'مُدِيرَاتٍ', turkish: 'Müdürler', answers: ['Nekra', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_9] }, { html: 'اَلْمُدِيرَتَانِ', turkish: 'İki Müdür', answers: ['Marife', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_4] }, { html: 'حَلَّاقُونَ', turkish: 'Berberler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_6] }, { html: 'اَلصَّدِيقُ', turkish: 'Arkadaş', answers: ['Marife', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_1] }, { html: 'اَلْخَالَةِ', turkish: 'Teyze', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] }, { html: 'اَلْفَلَّحَان', turkish: 'İki Çiftçi', answers: ['Marife', 'Müzekker', 'Tesniye', Q4_ANSWERS.Q4_4] }, { html: 'اَلسَّبُّورَةِ', turkish: 'Sınıf Tahtası', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] }, { html: 'جُهَلَـاءَ', turkish: 'Cahiller', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_2] }, { html: 'عَمٍّ', turkish: 'Amca', answers: ['Nekra', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_3] }, { html: 'مُعَلِّمٌ', turkish: 'Öğretmen', answers: ['Nekra', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_1] }, { html: 'اَلْمُزَارِعَتَيْنِ', turkish: 'İki çiftçi', answers: ['Marife', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, { html: 'اَلطَّالِبَاتُ', turkish: 'Öğrenciler', answers: ['Marife', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_8] }, { html: 'اَلْمُعَلِّمُونَ', turkish: 'Öğretmenler', answers: ['Marife', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_6] }, { html: 'طَالِبَةٌ', turkish: 'Öğrenci', answers: ['Nekra', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_1] }, { html: 'اَلْمُهَنْدِسِينَ', turkish: 'Mühendisler', answers: ['Marife', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_7] }, { html: 'طُلَّـابًا', turkish: 'Öğrenciler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_2] }, { html: 'جُنْدِيَّتَيْنِ', turkish: 'İki asker', answers: ['Nekra', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, { html: 'اَلْكِتَابَ', turkish: 'Kitap', answers: ['Marife', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_2] }, { html: 'مُدَرِّسِينَ', turkish: 'Öğretmenler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_7] }, { html: 'اَلنَّافِذَةِ', turkish: 'Pencere', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] } ];
+        const questionTitles = [ "1. Tür?", "2. Cinsiyet?", "3. Sayı?", "4. İ'rab?" ];
+        const questionOptions = [ ['Marife', 'Nekra'], ['Müzekker', 'Müennes'], ['Müfret', 'Tesniye', 'Cem\''], [ Q4_ANSWERS.Q4_1, Q4_ANSWERS.Q4_2, Q4_ANSWERS.Q4_3, Q4_ANSWERS.Q4_4, Q4_ANSWERS.Q4_5, Q4_ANSWERS.Q4_6, Q4_ANSWERS.Q4_7, Q4_ANSWERS.Q4_8, Q4_ANSWERS.Q4_9 ] ];
+        
+        // --- Element Tanımlamaları ---
+        const selectionScreenEl = document.getElementById('selection-screen'); const difficultyButtons = document.querySelectorAll('#difficulty-buttons button'); const playerModeButtons = document.querySelectorAll('#player-mode-buttons button'); const startGameButton = document.getElementById('start-game-button'); const gameArea = document.getElementById('game-area'); const mainGameContentEl = document.getElementById('main-game-content'); const timerDisplayEl = document.getElementById('timer-display'); const player1AreaEl = document.getElementById('player1-area'); const arabicWordElP1 = document.getElementById('arabic-word-p1'); const turkishMeaningElP1 = document.getElementById('turkish-meaning-p1'); const questionTitleElP1 = document.getElementById('question-title-p1'); const optionsContainerP1 = document.getElementById('options-container-p1'); const player2AreaEl = document.getElementById('player2-area'); const arabicWordElP2 = document.getElementById('arabic-word-p2'); const turkishMeaningElP2 = document.getElementById('turkish-meaning-p2'); const questionTitleElP2 = document.getElementById('question-title-p2'); const optionsContainerP2 = document.getElementById('options-container-p2'); const backButton = document.getElementById('back-button');
+        
+        // YENİ EKLENDİ
+        const nextWordContainerEl = document.getElementById('next-word-container');
+        const nextWordButtonEl = document.getElementById('next-word-button');
+        
+        // --- Değişkenler ---
+        let currentWordP1, currentWordP2; let currentQuestionIndex; let shuffledWords = []; let gameMode = 0; let timeLimit = 0; let timeLeft = 0; let timerInterval = null; let mistakesP1 = [], mistakesP2 = []; let player1Answered = false, player2Answered = false; let selectedDifficultyButton = null; let selectedPlayerModeButton = null; let feedbackDataP1 = null; feedbackDataP2 = null;
+        
+        // --- Olay Dinleyicileri ---
+        difficultyButtons.forEach(button => button.addEventListener('click', selectDifficulty)); playerModeButtons.forEach(button => button.addEventListener('click', selectPlayerMode)); startGameButton.addEventListener('click', startGame); backButton.addEventListener('click', goToDifficultySelection);
+        
+        // YENİ EKLENDİ
+        nextWordButtonEl.addEventListener('click', () => {
+            playClickSound();
+            nextWordContainerEl.classList.add('hidden'); // Butonu gizle
+            loadNextWord(); // Yeni kelimeyi yükle
+        });
+
+        // --- Fonksiyonlar ---
+        function checkSelections() { startGameButton.disabled = !(timeLimit > 0 && gameMode > 0); }
+        function selectDifficulty(event) { initAudio(); playClickSound(); timeLimit = parseInt(event.target.dataset.time); if (selectedDifficultyButton) { selectedDifficultyButton.classList.remove('button-selected'); } selectedDifficultyButton = event.target; selectedDifficultyButton.classList.add('button-selected'); checkSelections(); }
+        function selectPlayerMode(event) { initAudio(); playClickSound(); gameMode = parseInt(event.target.dataset.mode); if (selectedPlayerModeButton) { selectedPlayerModeButton.classList.remove('button-selected'); } selectedPlayerModeButton = event.target; selectedPlayerModeButton.classList.add('button-selected'); checkSelections(); }
+        function startGame() { initAudio(); playClickSound(); selectionScreenEl.classList.add('hidden'); gameArea.classList.remove('hidden'); backButton.classList.remove('hidden'); if (gameMode === 1) { document.body.classList.remove('mode-2p'); document.body.classList.add('mode-1p'); player2AreaEl.classList.add('hidden'); } else { document.body.classList.remove('mode-1p'); document.body.classList.add('mode-2p'); player2AreaEl.classList.remove('hidden'); } loadNextWord(); }
+        
+        // GÜNCELLENDİ: Yeni soru butonunu gizlemesi eklendi
+        function goToDifficultySelection() { 
+            playClickSound(); 
+            gameArea.classList.add('hidden'); 
+            selectionScreenEl.classList.remove('hidden'); 
+            backButton.classList.add('hidden'); 
+            nextWordContainerEl.classList.add('hidden'); // YENİ EKLENDİ
+            if (selectedDifficultyButton) { selectedDifficultyButton.classList.remove('button-selected'); selectedDifficultyButton = null; } 
+            if (selectedPlayerModeButton) { selectedPlayerModeButton.classList.remove('button-selected'); selectedPlayerModeButton = null; } 
+            timeLimit = 0; gameMode = 0; 
+            checkSelections(); 
+            clearInterval(timerInterval); 
+            timerInterval = null; 
+            document.body.classList.remove('mode-1p', 'mode-2p'); 
+        }
+        
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array;}
+        
+        // GÜNCELLENDİ: Yeni soru butonunu gizlemesi eklendi
+        function loadNextWord() { 
+            playClickSound(); 
+            nextWordContainerEl.classList.add('hidden'); // YENİ EKLENDİ
+            if (shuffledWords.length < gameMode) { shuffledWords = [...finalList]; shuffleArray(shuffledWords); if (shuffledWords.length < gameMode && gameMode > 1) { alert("2 farklı kelime için yeterli kelime listesi yok!"); goToDifficultySelection(); return; } } 
+            currentQuestionIndex = 0; mistakesP1 = []; mistakesP2 = []; player1Answered = false; player2Answered = false; feedbackDataP1 = null; feedbackDataP2 = null; 
+            mainGameContentEl.style.opacity = 1; 
+            mainGameContentEl.style.pointerEvents = 'auto'; 
+            backButton.classList.remove('hidden'); 
+            currentWordP1 = shuffledWords.pop(); 
+            arabicWordElP1.innerHTML = currentWordP1.html; 
+            turkishMeaningElP1.textContent = currentWordP1.turkish; 
+            if (gameMode === 2) { currentWordP2 = shuffledWords.pop(); while(currentWordP1.html === currentWordP2.html && shuffledWords.length > 0) { shuffledWords.unshift(currentWordP2); currentWordP2 = shuffledWords.pop(); } if (currentWordP1.html === currentWordP2.html) { alert("Listede kalan son iki kelime aynı."); goToDifficultySelection(); return; } arabicWordElP2.innerHTML = currentWordP2.html; turkishMeaningElP2.textContent = currentWordP2.turkish; player2AreaEl.classList.remove('hidden'); } else { player2AreaEl.classList.add('hidden'); } 
+            optionsContainerP1.innerHTML = ''; 
+            if (optionsContainerP2) optionsContainerP2.innerHTML = ''; 
+            optionsContainerP1.style.pointerEvents = 'auto'; 
+            if(optionsContainerP2) optionsContainerP2.style.pointerEvents = 'auto'; 
+            timeLeft = timeLimit; 
+            updateTimerDisplay(); // <-- SÜRE DÜZELTMESİ BURADA DEVREYE GİRİYOR
+            clearInterval(timerInterval); 
+            timerInterval = setInterval(updateTimer, 1000); 
+            displayQuestion(); 
+        }
+        
+        function updateTimer() { timeLeft--; updateTimerDisplay(); if (timeLeft <= 5 && timeLeft > 0) { playTimerTickSound(); } if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeUp('timeup'); } }
+        function updateTimerDisplay() { timerDisplayEl.textContent = `Süre: ${timeLeft}s`; timerDisplayEl.style.color = timeLeft <= 5 ? '#dc3545' : 'var(--text-light)'; }
+        
+        // Bu fonksiyon SÜRE BİTTİĞİNDE çalışır ve ana menüye döner
+        function handleTimeUp(reason = 'timeup') { 
+            playIncorrectSound(); 
+            mainGameContentEl.style.opacity = 0.5; 
+            mainGameContentEl.style.pointerEvents = 'none'; 
+            backButton.classList.remove('hidden'); 
+            prepareAndRedirectToResults(reason); 
+        }
+        
+        function displayQuestion() { const questionText = questionTitles[currentQuestionIndex]; questionTitleElP1.textContent = questionText; optionsContainerP1.innerHTML = ''; optionsContainerP1.className = 'options-container'; if (currentQuestionIndex === 3) optionsContainerP1.classList.add('q4-grid'); if (gameMode === 2) { questionTitleElP2.textContent = questionText; optionsContainerP2.innerHTML = ''; optionsContainerP2.className = 'options-container'; if (currentQuestionIndex === 3) optionsContainerP2.classList.add('q4-grid'); } const options = questionOptions[currentQuestionIndex]; options.forEach(option => { const buttonP1 = createOptionButton(option, 1); optionsContainerP1.appendChild(buttonP1); if (gameMode === 2 && optionsContainerP2) { const buttonP2 = createOptionButton(option, 2); optionsContainerP2.appendChild(buttonP2); } }); player1Answered = false; player2Answered = false; feedbackDataP1 = null; feedbackDataP2 = null; optionsContainerP1.style.pointerEvents = 'auto'; if(gameMode === 2 && optionsContainerP2) optionsContainerP2.style.pointerEvents = 'auto'; }
+        function createOptionButton(option, player) { const button = document.createElement('button'); button.innerHTML = option; if (currentQuestionIndex === 3) { button.classList.add('q4-option'); if (option.includes('ـونَ') || option.includes('ـينَ')) button.classList.add('hint-q4-blue'); else if (option.includes('ـاتُ') || option.includes('ـاتِ')) button.classList.add('hint-q4-pink'); else button.classList.add('hint-q4-green'); } else { let hintHTML = ''; switch (option) { case 'Marife': hintHTML = ' <span class="hint-icon"><span class="al-hint">ال</span> ✓</span>'; button.innerHTML = option + hintHTML; break; case 'Nekra': hintHTML = ' <span class="hint-icon"><span class="al-hint">ال</span> ✗</span>'; button.innerHTML = option + hintHTML; break; case 'Müennes': button.classList.add('hint-pink'); break; case 'Müzekker': button.classList.add('hint-blue'); break; case 'Müfret': hintHTML = ' <span class="hint-icon"><span class="num-hint">1</span></span>'; button.innerHTML = option + hintHTML; break; case 'Tesniye': hintHTML = ' <span class="hint-icon"><span class="num-hint">2</span></span>'; button.innerHTML = option + hintHTML; break; case 'Cem\'': hintHTML = ' <span class="hint-icon"><span class="num-hint">3+</span></span>'; button.innerHTML = option + hintHTML; break; } } button.addEventListener('click', (event) => { playClickSound(); checkAnswer(option, button, player); }); return button; }
+        function checkAnswer(selectedOption, clickedButton, player) { const currentWord = (player === 1) ? currentWordP1 : currentWordP2; const correctAnswer = currentWord.answers[currentQuestionIndex]; const optionsContainer = (player === 1) ? optionsContainerP1 : optionsContainerP2; const mistakes = (player === 1) ? mistakesP1 : mistakesP2; let isCorrect = (selectedOption === correctAnswer); if(player === 1) feedbackDataP1 = { button: clickedButton, correct: isCorrect }; else feedbackDataP2 = { button: clickedButton, correct: isCorrect }; if (!isCorrect) { mistakes.push({ question: questionTitles[currentQuestionIndex], expected: correctAnswer, given: selectedOption }); } optionsContainer.style.pointerEvents = 'none'; clickedButton.style.opacity = '1'; Array.from(optionsContainer.children).forEach(btn => { if(btn !== clickedButton) btn.style.opacity = '0.6'; }); if (player === 1) player1Answered = true; if (player === 2) player2Answered = true; if (gameMode === 1 || (player1Answered && player2Answered)) { optionsContainerP1.style.pointerEvents = 'none'; if(optionsContainerP2) optionsContainerP2.style.pointerEvents = 'none'; showFeedback(); proceedToNextQuestion(); } }
+        function showFeedback() { if (feedbackDataP1) { if (feedbackDataP1.correct) { playCorrectSound(); feedbackDataP1.button.classList.add('button-correct'); } else { playIncorrectSound(); feedbackDataP1.button.classList.add('button-incorrect'); if (navigator.vibrate) { navigator.vibrate(150); } } feedbackDataP1.button.style.opacity = '1'; Array.from(optionsContainerP1.children).forEach(btn => { btn.style.opacity = '1'; }); } if (gameMode === 2 && feedbackDataP2) { if (feedbackDataP2.correct) { if (!feedbackDataP1 || !feedbackDataP1.correct) playCorrectSound(); feedbackDataP2.button.classList.add('button-correct'); } else { if (!feedbackDataP1 || feedbackDataP1.correct) playIncorrectSound(); feedbackDataP2.button.classList.add('button-incorrect'); if (navigator.vibrate && feedbackDataP1?.correct) { navigator.vibrate(150); } } feedbackDataP2.button.style.opacity = '1'; if (optionsContainerP2) Array.from(optionsContainerP2.children).forEach(btn => { btn.style.opacity = '1'; }); } }
+        
+        // GÜNCELLENDİ: 4. sorudan sonra 'Yeni Soru' butonunu göstermek için
+        function proceedToNextQuestion() { 
+            currentQuestionIndex++; 
+            setTimeout(() => { 
+                if (currentQuestionIndex < 4) { 
+                    displayQuestion(); 
+                } else { 
+                    // 4 soru bitti, ana menü yerine 'Yeni Soru' butonunu göster
+                    showNextWordScreen(); 
+                } 
+            }, 1500); 
+        }
+
+        // DEĞİŞTİRİLDİ: Bu fonksiyon artık sadece SÜRE BİTİNCE çağrılacak.
+        function endGame(reason = 'completed') { 
+            clearInterval(timerInterval); 
+            mainGameContentEl.style.opacity = 0.5; 
+            mainGameContentEl.style.pointerEvents = 'none'; 
+            backButton.classList.remove('hidden'); 
+            prepareAndRedirectToResults(reason); 
+        }
+
+        // YENİ FONKSİYON: 4 soru bittiğinde 'Yeni Soru' butonunu gösterir
+        function showNextWordScreen() {
+            clearInterval(timerInterval); // Süreyi durdur
+            mainGameContentEl.style.opacity = 0.5; // Oyunu soluklaştır
+            mainGameContentEl.style.pointerEvents = 'none'; // Oyuna tıklamayı engelle
+            backButton.classList.remove('hidden'); // Geri butonunu göster
+            nextWordContainerEl.classList.remove('hidden'); // YENİ SORU BUTONUNU GÖSTER
+        }
+        
+        // Bu fonksiyon (prepareAndRedirectToResults) artık sadece ana menüye dönmek için kullanılıyor
+        function prepareAndRedirectToResults(reason) {
+            console.log("Oyun bitti, sebep:", reason);
+            // Sonuç sayfasına yönlendirme kaldırıldı.
+            // Oyun bittiğinde seçim ekranına dönmek için bu fonksiyonu çağırıyoruz:
+            goToDifficultySelection();
+        }
+
+        (function() {
+            function primeAudioOnce(){
+                console.log("İlk etkileşim algılandı. initAudio() çağrılıyor.");
+                if(typeof initAudio === 'function') {
+                    initAudio();
+                }
+                window.removeEventListener('touchstart', primeAudioOnce, {passive:true});
+                window.removeEventListener('click', primeAudioOnce, {passive:true});
+            }
+            window.addEventListener('touchstart', primeAudioOnce, {passive:true, once:true});
+            window.addEventListener('click', primeAudioOnce, {passive:true, once:true});
+        })();
+
+    </script>
+<!-- Geri düğmesi -->
+<button id="backBtn" aria-label="Geri dön">
+  ← Geri
+</button>
+
+<style>
+  #backBtn{
+    position: fixed;
+    left: 16px;
+    top: 16px;
+    z-index: 9999;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid #e3e8ef;
+    background: #ffffffc9;
+    backdrop-filter: blur(6px);
+    font: 700 14px/1.1 system-ui, -apple-system, Segoe UI, Roboto, "Nunito", sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  #backBtn:hover{ transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+  @media (max-width: 640px){ #backBtn{ left: 10px; top: 10px; padding: 9px 12px; } }
+</style>
+
+<script>
+  (function () {
+    const btn = document.getElementById('backBtn');
+    const HOME = 'index.html'; // ana sayfanın yolu (gerekirse düzelt)
+
+    function goBack() {
+      // Eğer geçmişte bir sayfa varsa geri dön; yoksa ana sayfaya git
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = HOME;
+      }
+    }
+
+    btn.addEventListener('click', goBack);
+
+    // Kısayol: ESC veya Alt+←
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || (e.altKey && e.key === 'ArrowLeft')) {
+        goBack();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
