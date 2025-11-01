@@ -707,7 +707,21 @@
         @media (min-width: 769px) {
             .start-options-group {
                 flex-direction: row;
+
             }
+
+           /* === YENİ: Masaüstü Tek Kişilik Arapça Font Büyütme === */
+            .l1-choice-box.is-arabic {
+                /* Mevcut 1.25'lik oranı 1.6'ya çıkar */
+                font-size: calc(var(--font-size-lg) * 1.6);
+            } 
+
+             /* === YENİ: Masaüstü L1 Merkezi Arapça Soru Büyütme === */
+            .l1-static-root-card-pc .instruction-text.is-arabic {
+                font-size: calc(var(--font-size-lg) * 1.6); /* Fontu büyüt */
+                line-height: 1.3; /* Satır yüksekliğini ayarla */
+            }
+
             .selection-button {
                 width: 250px;
             }
@@ -1042,7 +1056,7 @@ body.lang-ar .option-button-vs.is-arabic {
             "k-b-r": { "root": ["k", "b", "r"], "words": [ { "text": "Kibir 😤" }, { "text": "Ekber ⬆️" }, { "text": "Kübra 🌟" }, { "text": "Tekbir ☝️" } ] },
             "a-c-z": { "root": ["a", "c", "z"], "words": [ { "text": "Âciz 😩" }, { "text": "Aceze 👥" }, { "text": "Mucize ✨" }, { "text": "Taciz 🚫" } ] },
             "h-r-m": { "root": ["h", "r", "m"], "words": [ { "text": "İhram 🕋" }, { "text": "Harem 🕌" }, { "text": "Muharrem 🌙" }, { "text": "İhtiram 🫡" } ] },
-            "s-a-l": { "root": ["s", "a", "l"], "words": [ { "text": "Sual ❓" }, { "text": "Mesul 👮" }, { "text": "Mesele ❔" } ] }
+            "S-e-l": { "root": ["s", "e", "l"], "words": [ { "text": "Suâl ❓" }, { "text": "Mes'ul 👮" }, { "text": "Mes'ele ❔" } ] }
           },
           "ar": {
             "ح-ك-م": { "root": ["ح", "ك", "م"], "words": [ { "text": "حَاكِم" }, { "text": "حَكِيم" }, { "text": "مَحْكُوم" }, { "text": "حَكَم" }, { "text": "حُكْم" } ] },
@@ -1845,6 +1859,11 @@ body.lang-ar .option-button-vs.is-arabic {
         function handleVersusAnswer(e, playerId, isCorrect) {
             const clickedButton = e.target.closest('.option-button-vs');
             const playerState = (playerId === 'p1') ? gameState.player1 : gameState.player2;
+
+            // === DÜZELTME 1: Birden fazla tıklamayı engelle ===
+            if (playerState.hasAnswered) return; 
+            // === BİTİŞ ===
+
             const optionsContainer = playerElements[playerId].options;
             
             playerState.hasAnswered = true;
@@ -1942,7 +1961,9 @@ body.lang-ar .option-button-vs.is-arabic {
         function updateVersusScoreboard() {
             const scorePrefix = uiText.versusScorePrefix;
             playerElements.p1.scoreDisplay.textContent = `${scorePrefix}${gameState.player1.score}`;
-            playerElements.p2.scoreDisplay.textContent = `${scorePrefix}${gameState.p2.score}`;
+            
+            // === DÜZELTME 2: 'p2' -> 'player2' olarak düzeltildi ===
+            playerElements.p2.scoreDisplay.textContent = `${scorePrefix}${gameState.player2.score}`;
         }
         
         function showScoreAnimation(playerId, scoreType, points) {
@@ -1975,7 +1996,8 @@ body.lang-ar .option-button-vs.is-arabic {
                 <h3 class="results-player-score">${t.resultsP1Score.replace('{score}', gameState.player1.score)}</h3>
                 <p class="results-player-stats">${t.resultsP1Stats.replace('{correct}', gameState.player1.correct).replace('{mistakes}', gameState.player1.mistakes)}</p>
                 <h3 class="results-player-score">${t.resultsP2Score.replace('{score}', gameState.player2.score)}</h3>
-                <p class="results-player-stats">${t.resultsP2Stats.replace('{correct}', gameState.player2.correct).replace('{mistakes}', gameState.p2.mistakes)}</p>
+                
+                <p class="results-player-stats">${t.resultsP2Stats.replace('{correct}', gameState.player2.correct).replace('{mistakes}', gameState.player2.mistakes)}</p>
             `;
             showScreen('results');
         }
