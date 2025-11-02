@@ -1526,12 +1526,13 @@
             showScreen('start'); 
         });
         
-        // YENİ: Başlangıç Ekranı Geri Butonu (İsteğe bağlı, bir yere gitmez)
+        // YENİ: Başlangıç Ekranı Geri Butonu (Belirtilen sayfaya döner)
         startBackButton.addEventListener('click', () => {
             playGenericSound('touch');
-            // İsteğe bağlı: alert("Ana menüye dönülüyor...");
-            // Veya sadece hiçbir şey yapma
-            showScreen('start');
+            
+            // LÜTFEN "index.html" kısmını,
+            // dönmek istediğiniz sayfanın adıyla (örn: "menu.html") değiştirin.
+            window.location.href = "index.html"; 
         });
 
         // Oyunu başlat
