@@ -302,10 +302,9 @@
 
         /* Hayalet Kart */
         .drag-ghost { 
-            position: fixed; top: 0; left: 0;
-            width: auto; 
+            position: fixed; top: 0; left: 0; 
             display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
-            padding: 12px 24px; 
+            padding: 10px;
             font-family: var(--font-family-arabic) !important;
             font-size: clamp(1.6em, 3.5vh, 2.4em);
             font-weight: bold; line-height: 1; 
@@ -1337,6 +1336,10 @@
             // Hayalet elementi klonla ve ayarla
             ghostElement = draggedRootElement.cloneNode(true);
             ghostElement.classList.add('drag-ghost');
+            // YENİ: Orijinalin boyutlarını kopyala
+            const rect = draggedRootElement.getBoundingClientRect();
+            ghostElement.style.width = `${rect.width}px`;
+            ghostElement.style.height = `${rect.height}px`;
             document.body.appendChild(ghostElement); 
             draggedRootElement.style.opacity = '0'; // Orijinali gizle
 
