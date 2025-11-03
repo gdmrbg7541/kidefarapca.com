@@ -852,7 +852,9 @@
         let draggedRootElement = null;
         let ghostElement = null; 
         let allWordsPool = []; 
+        let lastTouchTarget = null; // YENİ: Dokunmatik sürüklemede son hedefi izlemek için
         
+     
         
         // Oyunu Başlatma (Sadece 1 kez çalışır)
         function initializeGame() {
@@ -1084,7 +1086,8 @@
                 rootElement.appendChild(span);
                 
                 rootElement.addEventListener('dragstart', handleDragStart); 
-                rootElement.addEventListener('dragend', handleDragEnd);     
+                rootElement.addEventListener('dragend', handleDragEnd);
+                rootElement.addEventListener('touchstart', handleTouchStart, { passive: false });     
                 
                 l2RootsSidebar.appendChild(rootElement);
             });
@@ -1303,6 +1306,115 @@
              const patternGroup = e.target.closest('.l2-pattern-group');
              processDrop(patternGroup);
         }
+        
+        // --- YENİ: DOKUNMATİK SÜRÜKLEME MANTIĞI ---
+
+        // Hayalet elementin pozisyonunu günceller
+        function updateGhostPosition(x, y) {
+            if (!ghostElement) return;
+            // Hayaletin ortasını parmağın altına almak için
+            const offsetX = ghostElement.offsetWidth / 2;
+            const offsetY = ghostElement.offsetHeight / 2;
+            ghostElement.style.left = `${x - offsetX}px`;
+            ghostElement.style.top = `${y - offsetY}px`;
+        }
+
+        // Dokunma başladığında (dragstart yerine)
+        function handleTouchStart(e) {
+            if (!gameState.isGameActive) return;
+            
+            // Sayfanın kaymasını engelle (ÇOK ÖNEMLİ)
+            // e.preventDefault() diyebilmek için listener'a { passive: false } eklenmeli
+            e.preventDefault(); 
+            
+            draggedRootElement = e.target.closest('.l2-draggable-root');
+            if (!draggedRootElement) return;
+
+            playGenericSound('touch');
+            draggedRootElement.classList.add('dragging');
+            
+            // Hayalet elementi klonla ve ayarla
+            ghostElement = draggedRootElement.cloneNode(true);
+            ghostElement.classList.add('drag-ghost');
+            document.body.appendChild(ghostElement); 
+            draggedRootElement.style.opacity = '0'; // Orijinali gizle
+
+            // Hayaleti hemen parmağın altına yerleştir
+            const touch = e.touches[0];
+            updateGhostPosition(touch.pageX, touch.pageY);
+
+            // Taşıma ve bırakma olaylarını tüm belgeye ekle
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+        }
+
+        // Parmağı hareket ettirince (dragover ve dragleave yerine)
+        function handleTouchMove(e) {
+            if (!draggedRootElement || !ghostElement) return;
+            
+            // Kaydırmayı engelle
+            e.preventDefault(); 
+
+            const touch = e.touches[0];
+            updateGhostPosition(touch.pageX, touch.pageY);
+
+            // Parmağın altındaki elementi bul
+            // Önce hayaleti gizlemeliyiz ki altındaki elementi bulabilelim
+            ghostElement.style.display = 'none'; 
+            const elementUnderFinger = document.elementFromPoint(touch.clientX, touch.clientY);
+            ghostElement.style.display = ''; // Hayaleti geri göster
+
+            const patternGroup = elementUnderFinger ? elementUnderFinger.closest('.l2-pattern-group') : null;
+
+            // Eğer hedef değişmediyse bir şey yapma
+            if (patternGroup === lastTouchTarget) return;
+
+            // Eski hedeften ayrılma (dragleave)
+            if (lastTouchTarget) {
+                lastTouchTarget.classList.remove('dragover');
+            }
+
+            // Yeni hedefe girme (dragover) - (ve dolu değilse)
+            if (patternGroup && !patternGroup.querySelector('.l2-derived-word')) {
+                patternGroup.classList.add('dragover');
+                lastTouchTarget = patternGroup;
+            } else {
+                lastTouchTarget = null; // Geçerli bir hedef değil
+            }
+        }
+
+        // Parmağı kaldırınca (dragend ve drop yerine)
+        function handleTouchEnd(e) {
+            if (!draggedRootElement) return;
+
+            // 1. Bırakma (Drop) İşlemi
+            if (lastTouchTarget) {
+                // 'handleDrop' yerine doğrudan 'processDrop'u çağırıyoruz
+                // çünkü hedefi (lastTouchTarget) zaten biliyoruz.
+                processDrop(lastTouchTarget); 
+                lastTouchTarget.classList.remove('dragover');
+            }
+
+            // 2. Bitirme (DragEnd) İşlemi
+            // handleDragEnd'deki temizleme mantığını burada da uygula
+            if (ghostElement) ghostElement.remove();
+            if (draggedRootElement) {
+                draggedRootElement.classList.remove('dragging');
+                draggedRootElement.style.opacity = '1';
+            }
+            draggedRootElement = null;
+            ghostElement = null;
+            lastTouchTarget = null;
+            
+            // Tüm belgeye eklenen listener'ları temizle
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        }
+
+        // --- DOKUNMATİK SÜRÜKLEME MANTIĞI BİTİŞİ ---
+        
+        
+       
         
         // Bırakma Mantığı (YENİ TEK ATIŞ HAKKI)
         function processDrop(patternGroup) {
