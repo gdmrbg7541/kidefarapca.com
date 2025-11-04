@@ -241,7 +241,7 @@
   <p>&copy; 2025 kidefarapca.com - Tüm Hakları Saklıdır.</p>
 </footer>
 
-<a href="araclar.html" class="floating-tool-button">Araçlar 🎲</a>
+<a href="araclar.html" class="floating-tool-button" target="_blank" rel="noopener noreferrer">Araçlar 🎲</a>
 
 <script>
 /* .html olanlar aynı sekmede; diğerleri yeni sekmede */
@@ -250,10 +250,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const href = a.getAttribute("href");
     if (!href) return;
 
-    if (href.endsWith(".html")) {
+    // YENİ KURAL: Link .html ile bitiyorsa VE bu link araclar.html DEĞİLSE
+    if (href.endsWith(".html") && href !== "araclar.html") { 
       a.setAttribute("target", "_self");
       a.removeAttribute("rel");
-    } else {
+    } 
+    // Diğer tüm linkler (araclar.html dahil)
+    else { 
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
     }
