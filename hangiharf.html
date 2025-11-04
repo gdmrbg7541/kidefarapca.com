@@ -182,11 +182,13 @@
              #modal.mode-2p .results-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* GENEL MOBİL (ÖNCELİKLE PORTRAIT İÇİN) - Max Genişlik 900px */
-        /* Bu blok artık hem dikey hem yatay için temel mobil ayarları içerir */
+        /* ============================================================
+        GÜNCELLEME 4: MOBİL (PORTRAIT) - DAHA BÜYÜK FONT VE PADDING
+        ============================================================
+        */
         @media (max-width: 900px) {
              body { 
-                padding: 0.5rem; 
+                padding: 0.25rem; /* <<< Kenar boşluğu azaltıldı (daha fazla alan için) */
                 justify-content: flex-start; /* 'center' yerine 'flex-start' */
              }
              #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; } #back-btn svg { width: 20px; height: 20px; }
@@ -197,7 +199,7 @@
                 gap: 0.5rem; 
              }
              .player-screen{ 
-                padding: 0.5rem 0.75rem; 
+                padding: 0.5rem; /* <<< Padding düzenlendi */
                 width: 100% !important; 
                 max-width: 100% !important; 
                 flex-grow: 1; 
@@ -205,10 +207,26 @@
              }
              body.mode-2p .player-screen { flex-basis: 0; }
              .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 2em; }
-             .question-container { gap: 0.3rem; padding-bottom: 0.3rem; }
-             .word { font-size: clamp(1.8rem, 8vw, 3.5rem); }
-             .options { gap: 0.5rem; } .option { padding: 0.4rem; font-size: clamp(1.4rem, 7vw, 2.2rem); min-height: 44px;}
-             .status-bar { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
+             .question-container { gap: 0.5rem; padding-bottom: 0.5rem; } /* <<< Gap artırıldı */
+             
+             /* <<< ANA GÜNCELLEME (KELİME FONTU) */
+             .word { font-size: clamp(2.5rem, 10vw, 4.5rem); } 
+             
+             .options { gap: 0.5rem; } 
+             
+             /* <<< ANA GÜNCELLEME (SEÇENEK FONTU) */
+             .option { 
+                padding: 0.5rem; /* <<< Padding artırıldı */
+                font-size: clamp(1.8rem, 8vw, 2.8rem); /* <<< Font büyütüldü */
+                min-height: 44px;
+             }
+             
+             /* <<< ANA GÜNCELLEME (SKOR/ZAMAN FONTU) */
+             .status-bar { 
+                padding: 0.5rem 0.75rem; /* <<< Padding artırıldı */
+                font-size: 1.1rem; /* <<< Font büyütüldü */
+             }
+             
              body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.3rem auto 0.5rem auto; }
              body.mode-2p .progress-word { height: 4px; border-radius: 2px; }
              #top-progress-bar { margin-bottom: 0.4rem; padding: 0 0.25rem; gap: 2px; } .progress-word { height: 5px; border-radius: 2.5px; }
@@ -222,12 +240,12 @@
              h1 { font-size: 2rem !important; } h2 { font-size: 1.5rem !important; } h3:not([lang="ar"]) { font-size: 1.2rem !important; } p { font-size: 1rem !important; }
         }
 
-        /* MOBİL YATAY MOD ÖZELLEŞTİRMELERİ */
-        /* Bu blok, dikey mod ayarlarını yatay mod için ezer (override) */
+        /* ============================================================
+        GÜNCELLEME 4: MOBİL (LANDSCAPE) - DAHA BÜYÜK FONT
+        ============================================================
+        */
         @media (max-width: 900px) and (orientation: landscape) {
-             /* body padding'i zaten (max-width: 900px) kuralından alıyor */
              #back-btn { top: 0.5rem; left: 0.5rem; width: 36px; height: 36px; } #back-btn svg { width: 18px; height: 18px; }
-            /* Yatay (Landscape) modda oyun ekranları yan yana gelir */
             #game-wrapper { 
                 flex-direction: row; 
                 gap: 0.5rem; 
@@ -240,11 +258,26 @@
              body.mode-1p #player-1 { max-width: 600px; }
             .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 1.5em; }
             .question-container { gap: 0.2rem; padding-bottom: 0.2rem; }
-            .word { font-size: clamp(1.4rem, 6vh, 2.2rem); }
+            
+            /* <<< ANA GÜNCELLEME (KELİME FONTU) */
+            .word { font-size: clamp(1.8rem, 8vh, 2.8rem); }
+            
             .options { gap: 0.3rem; max-width: 300px; }
-            /* GÜNCELLENDİ: Font boyutu büyütüldü */
-            .option { padding: 0.3rem; font-size: clamp(1.4rem, 6vh, 2rem); min-height: 32px; border-radius: 0.75rem; } 
-            .status-bar { padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 0.75rem; }
+
+            /* <<< ANA GÜNCELLEME (SEÇENEK FONTU) */
+            .option { 
+                padding: 0.4rem; /* <<< Padding artırıldı */
+                font-size: clamp(1.6rem, 7vh, 2.2rem); /* <<< Font büyütüldü */
+                min-height: 32px; 
+                border-radius: 0.75rem; 
+            } 
+            
+            /* <<< ANA GÜNCELLEME (SKOR/ZAMAN FONTU) */
+            .status-bar { 
+                padding: 0.4rem 0.6rem; /* <<< Padding artırıldı */
+                font-size: 0.9rem; /* <<< Font büyütüldü */
+                border-radius: 0.75rem; 
+            }
              .status-bar span:first-child { font-size: 1.2em; }
             body.mode-2p #progress-1, body.mode-2p #progress-2 { max-width: 100px; margin: 0.2rem auto 0.4rem auto; gap: 1px; }
              body.mode-2p .progress-word { height: 3px; border-radius: 1.5px; }
@@ -285,18 +318,20 @@
             'ح': ['مرحبا', 'حقيبة', 'مفتاح', 'تمساح', 'ملح', 'لوح', 'حمام', 'مرحاض', 'سطح', 'يحمل', 'صحة', 'جرح', 'يستحم', 'صحي', 'النصيحة', 'حاضر', 'حكمة', 'الحسنة', 'حالك', 'فطور', 'الحب', 'فرح'],
             'خ': ['أنا', 'بخير', 'خبز', 'خروف', 'نخلة', 'مطبخ', 'خوخ', 'بطيخ', 'خلف', 'خارج', 'يخرج', 'يدخل', 'أخ', 'خال', 'خالة', 'إخلاص', 'آخرين', 'أخي', 'الخبز', 'الخضراوات', 'متأخرا', 'يخطط', 'تخطيط'], 
             'د': ['ديك', 'مدرسة', 'يد', 'جديد', 'أسد', 'أعد', 'أعيدي', 'مدرس', 'صديق', 'والدان', 'جد', 'جدة', 'مجتهد', 'هادئ', 'مهندس', 'عدد', 'دائما', 'جدول', 'يدرس', 'نادرا', 'إبداع', 'جد', 'يدان', 'دواء', 'بأدب', 'دولاب', 'دروس'], 
-            'ذ': ['ذرة', 'أذن', 'تلميذ', 'لذيذ', 'ذهب', 'اذهب', 'أخذ', 'اعتذار', 'يؤذي', 'الغذاء', 'يأخذ'], 
+            'ذ': ['ذرة', 'أذن', 'تلميذ', 'لذيذ', 'ذهب', 'اذهب', 'أخذ', 'اعتذar', 'يؤذي', 'الغذاء', 'يأخذ'], 
             'ر': ['اقرأ', 'اقرئي', 'مرحبا', 'شكرا', 'كرسي', 'أرنب', 'جزر', 'فرس', 'صورة', 'مريض', 'أرض', 'غرفة', 'سرير', 'مروحة', 'يقرأ', 'فرن', 'يرتب', 'مرآة', 'مرتب', 'يرجع', 'يستريح', 'مبكرا', 'احترام', 'رحمة', 'صبر', 'آخرين', 'الكبار', 'الصغار', 'مر', 'أقارب', 'أسرة', 'تراحم', 'عمر', 'قراءة', 'رسم', 'رياضة', 'سفر', 'يقرأ', 'يرسم', 'يسافر', 'يصور', 'الفراغ', 'استراحة', 'يدرس', 'يستريح', 'نادر', 'شرب', 'يرتب', 'سريري', 'مرض', 'رياضة', 'العصير', 'السريع', 'غازية', 'رأس', 'قمر', 'نهر', 'مدرس'], 
-            'ز': ['زرافة', 'ميزان', 'خبز', 'موز', 'جزر', 'تلفاز', 'اعتذار', 'يعتذر', 'يزور', 'عزف', 'متوازن', 'غازية', 'فطور'], 
+            'ز': ['زرافة', 'ميزAN', 'خبز', 'موز', 'جزر', 'تلفاز', 'اعتذار', 'يعتذر', 'يزور', 'عزف', 'متوازن', 'غازية', 'فطور'], 
             'س': ['اسمي', 'اسكت', 'مدرس', 'مدرسة', 'كرسي', 'مكتب', 'مسطرة', 'يجلس', 'يغسل', 'مغسلة', 'نفسي', 'كسول', 'مبتسم', 'مستقبل', 'مهندس', 'فنان', 'رسم', 'موسيقى', 'يسافر', 'فسحة', 'يدرس', 'يستريح', 'المساء', 'أسبوع', 'مسابقة', 'ماضي', 'الجسم', 'أسنان', 'يغسل', 'يستحم', 'يمارس', 'السمك', 'العصير', 'الدسم', 'السريع', 'السمنة', 'المسجد', 'لسان', 'سمكة', 'شمس'], 
             'ش': ['شباك', 'شجرة', 'شمس', 'عش', 'فراشة', 'مشمش', 'شكر', 'يشكر', 'شخصية', 'نشيط', 'مشاهدة', 'يشاهد', 'غازية', 'العشاء', 'تشرفت'], 
             'ص': ['صديق', 'صورة', 'قميص', 'بصل', 'مقصف', 'صقر', 'يصلي', 'أصلي', 'صبر', 'يصبر', 'الصغار', 'شخصية', 'صبور', 'تصوير', 'يصور', 'الصباح', 'صحة', 'صحي', 'الصحة', 'الصلاة'], 
             'ض': ['مريض', 'أبيض', 'بيضة', 'أرض', 'غضوب', 'أفضل', 'رياضة', 'مرض', 'أيضا', 'بعض', 'ضابط'], 
-            'ا': ['بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائما', 'نادرا', 'ماذا', 'الله', 'اللقاء'], // Hatalı/gereksiz kelimeler kaldırıldı
+            'ا': ['بابا', 'حالك', 'طاولة', 'هاتف', 'ثلاجة', 'دائima', 'نادرا', 'ماذا', 'الله', 'اللقاء'], // Hatalı/gereksiz kelimeler kaldırıldı
             'و': ['هو', 'فوق', 'دولاب', 'وقت', 'يوم', 'اسبوع', 'طاولة', 'ضوء', 'وردة', 'ولد', 'واجب', 'واحد', 'وجه', 'وسخ', 'الوقت', 'نوم', 'صورة', 'خوخ', 'موز', 'عفوا', 'الواجب'], 
-            'أ': ['أنا', 'بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أين', 'أيضا', 'أمام', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أساعد', 'أذهب', 'أرتب', 'أنظف', 'أراجع', 'أنام', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهدافي', 'أفلام', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل', 'أسد', 'أذن', 'أرض', 'أبيض', 'أخي'] 
+            'أ': ['أنا', 'بخير', 'أمان', 'اقرأ', 'اقرئي', 'أعد', 'أعيدي', 'أنت', 'أين', 'أيضا', 'أمام', 'أحيانا', 'أستيقظ', 'أتغدى', 'أقرأ', 'أكتب', 'ألعب', 'أساعد', 'أذهب', 'أرتب', 'أنظف', 'أراجع', 'أنام', 'أمانة', 'أحد', 'أب', 'أم', 'أخ', 'أخت', 'أقارب', 'أبناء', 'أهل', 'أكتشف', 'أحب', 'أكره', 'أفضل', 'أحلامي', 'أهداfi', 'أفلام', 'أسبوع', 'أعمال', 'أجل', 'أسنان', 'أكل', 'أسد', 'أذن', 'أرض', 'أبيض', 'أخي'] 
         };
         const letterForms = { 'ب': ['بـ', 'ـبـ', 'ـب', 'ب'], 'ت': ['تـ', 'ـتـ', 'ـت', 'ت'], 'ث': ['ثـ', 'ـثـ', 'ـث', 'ث'], 'ج': ['جـ', 'ـجـ', 'ـج', 'ج'], 'ح': ['حـ', 'ـحـ', 'ـح', 'ح'], 'خ': ['خـ', 'ـخـ', 'ـخ', 'خ'], 'د': ['د', 'ـد'], 'ذ': ['ذ', 'ـذ'], 'ر': ['ر', 'ـر'], 'ز': ['ز', 'ـز'], 'س': ['سـ', 'ـسـ', 'ـس', 'س'], 'ش': ['شـ', 'ـشـ', 'ـش', 'ش'], 'ص': ['صـ', 'ـصـ', 'ـص', 'ص'], 'ض': ['ضـ', 'ـضـ', 'ـض', 'ض'], 'ا': ['ا', 'ـا'], 'أ': ['أ', 'ـأ'], 'و': ['و', 'ـو'] };
+        // <<< GÜNCELLEME 2 (Global nonConnectingChars)
+        const nonConnectingChars = ['ا', 'أ', 'د', 'ذ', 'ر', 'ز', 'و'];
         const players = { '1': { el: document.getElementById('player-1'), wordEl: document.getElementById('word-1'), optionsEl: document.getElementById('options-1'), scoreEl: document.getElementById('score-1'), progressEl: document.getElementById('progress-1'), resultsEl: document.getElementById('player-1-results') }, '2': { el: document.getElementById('player-2'), wordEl: document.getElementById('word-2'), optionsEl: document.getElementById('options-2'), scoreEl: document.getElementById('score-2'), progressEl: document.getElementById('progress-2'), resultsEl: document.getElementById('player-2-results') } };
         const modal = document.getElementById('modal'); const winnerText = document.getElementById('winner-text'); const gameWrapper = document.getElementById('game-wrapper'); const rulesScreen = document.getElementById('rules-screen'); const start1PBtn = document.getElementById('start-1p-btn'); const start2PBtn = document.getElementById('start-2p-btn'); const countdownOverlay = document.getElementById('countdown-overlay'); const countdownNumber = document.getElementById('countdown-number'); const resultsWrapper = document.getElementById('results-wrapper'); const backBtn = document.getElementById('back-btn'); const difficultyScreen = document.getElementById('difficulty-screen'); const easyBtn = document.getElementById('easy-btn'); const mediumBtn = document.getElementById('medium-btn'); const hardBtn = document.getElementById('hard-btn'); const topProgressBar = document.getElementById('top-progress-bar'); const p1TimerEl = document.getElementById('p1-timer'); const p1TimerValueEl = document.getElementById('p1-timer-value');
         
@@ -378,8 +413,36 @@
 
         function showScorePopup(player, points) { if (points <= 0) return; const playerScreen = players[player].el; if (!playerScreen) return; const popup = document.createElement('div'); popup.className = 'score-popup'; popup.textContent = `+${points}`; playerScreen.appendChild(popup); setTimeout(() => { if (popup.parentNode === playerScreen) { playerScreen.removeChild(popup); } }, 1150); } function triggerConfetti(winnerPlayer) { /* ... */ }
         function animateLetterFly(player, optionEl) { if (!optionEl || !optionEl.firstElementChild) return; const playerScreen = players[player].el; if (!playerScreen) return; const letterSpan = optionEl.firstElementChild; const letter = letterSpan.textContent; const rect = optionEl.getBoundingClientRect(); const playerRect = playerScreen.getBoundingClientRect(); const flyingChar = document.createElement('span'); flyingChar.className = 'flying-char'; flyingChar.textContent = letter; flyingChar.lang = 'ar'; const startX = rect.left + rect.width / 2 - playerRect.left; const startY = rect.top + rect.height / 2 - playerRect.top; flyingChar.style.left = `${startX}px`; flyingChar.style.top = `${startY}px`; playerScreen.appendChild(flyingChar); requestAnimationFrame(() => { flyingChar.style.transform = `translate(-50%, -150px) scale(0.8)`; flyingChar.style.opacity = '0'; }); setTimeout(() => { if (flyingChar.parentNode === playerScreen) { playerScreen.removeChild(flyingChar); } }, 600); }
-        function generateMasterQuestionSet(targetNumQuestions) { console.log(`Generating questions for target: ${targetNumQuestions}`); const allLetters = Object.keys(wordsByLetterWithHarakat).filter(l => wordsByLetterWithHarakat[l] && wordsByLetterWithHarakat[l].length > 0 && letterForms[l]); let allWordsList = []; allLetters.forEach(l => { if(wordsByLetterWithHarakat[l]){ wordsByLetterWithHarakat[l].forEach(ow => { const cleanOriginal = removeHarakat(ow); if (cleanOriginal.includes(l)) allWordsList.push({ letter: l, originalWord: ow }); }); } }); allWordsList = shuffle(allWordsList); let actualWordCount = allWordsList.length; let numQuestionsToGenerate = Math.min(targetNumQuestions, actualWordCount); console.log(`Available unique words for generation: ${actualWordCount}, generating: ${numQuestionsToGenerate}`); if (numQuestionsToGenerate < gameSettings.words) { console.warn(`Insufficient words (${actualWordCount}) for target ${gameSettings.words}. Setting game words to ${numQuestionsToGenerate}.`); gameSettings.words = numQuestionsToGenerate; } const selectedWords = allWordsList.slice(0, numQuestionsToGenerate); const questions = selectedWords.map(item => { const { letter, originalWord } = item; const cleanWord = removeHarakat(originalWord); const cleanLetterIndex = cleanWord.indexOf(letter); if (cleanLetterIndex === -1) { console.error(`Letter find ERROR: "${cleanWord}", "${letter}", OW:"${originalWord}"`); return null; } const questionWord = cleanWord.substring(0, cleanLetterIndex) + 'ـ ـ ـ' + cleanWord.substring(cleanLetterIndex + 1); const correctForm = getCorrectForm(cleanWord, letter, cleanLetterIndex); const availableForms = letterForms[letter]; if (!availableForms) { console.error(`Form list ERROR: "${letter}"`); return null; } if (!correctForm) { console.error(`Correct form ERROR: "${cleanWord}", "${letter}", index ${cleanLetterIndex}`); return null; } let options = [correctForm]; const incorrectForms = availableForms.filter(f => f !== correctForm); const shuffledIncorrect = shuffle(incorrectForms); for (let i = 0; i < shuffledIncorrect.length && options.length < 4; i++) if (!options.includes(shuffledIncorrect[i])) options.push(shuffledIncorrect[i]); let attempts = 0; while(options.length < 2 && availableForms.length > 0 && attempts < 10) { let potentialOption = availableForms[Math.floor(Math.random() * availableForms.length)]; if (!options.includes(potentialOption)) options.push(potentialOption); attempts++; } if (options.length < 2) { console.warn(`Could not generate >= 2 options for "${cleanWord}", letter "${letter}". Skipping.`); return null; } return { letter, originalWord, word: cleanWord, questionWord, correctForm, options: shuffle(options) }; }).filter(q => q !== null); if (questions.length < gameSettings.words) { console.warn(`Post-filtering count (${questions.length}) < current game words (${gameSettings.words}). Updating AGAIN.`); gameSettings.words = questions.length; } console.log(`Final generated questions: ${questions.length}`); return questions; }
-        function getCorrectForm(cleanWord, cleanLetter, cleanIndex) { const forms = letterForms[cleanLetter]; if (!forms || forms.length === 0) { console.error("getCorrectForm: No forms for letter!", cleanLetter); return cleanLetter; } if (forms.length === 1) return forms[0]; const nonConnectingChars = ['ا', 'أ', 'د', 'ذ', 'ر', 'ز', 'و']; const connectsToRight = cleanIndex > 0 && !nonConnectingChars.includes(cleanWord[cleanIndex - 1]); const connectsToLeft = cleanIndex < cleanWord.length - 1 && !nonConnectingChars.includes(cleanLetter); let targetForm = null; if (nonConnectingChars.includes(cleanLetter)) targetForm = connectsToRight ? (forms.find(f => f.startsWith('ـ')) || forms[1]) : (forms.find(f => !f.startsWith('ـ')) || forms[0]); else { if (connectsToRight && connectsToLeft) targetForm = forms.find(f => f.startsWith('ـ') && f.endsWith('ـ')) || forms[1]; else if (connectsToRight) targetForm = forms.find(f => f.startsWith('ـ') && !f.endsWith('ـ')) || (forms.length > 2 ? forms[2] : forms[0]); else if (connectsToLeft) targetForm = forms.find(f => !f.startsWith('ـ') && f.endsWith('ـ')) || forms[0]; else targetForm = forms.find(f => !f.startsWith('ـ') && !f.endsWith('ـ')) || (forms.length > 3 ? forms[3] : forms[0]); } if (!targetForm) { console.warn(`getCorrectForm: Logic failed! "${cleanWord}", "${cleanLetter}", idx ${cleanIndex}. Fallback.`); targetForm = forms[0] || cleanLetter; } return targetForm; }
+        function generateMasterQuestionSet(targetNumQuestions) { console.log(`Generating questions for target: ${targetNumQuestions}`); const allLetters = Object.keys(wordsByLetterWithHarakat).filter(l => wordsByLetterWithHarakat[l] && wordsByLetterWithHarakat[l].length > 0 && letterForms[l]); let allWordsList = []; allLetters.forEach(l => { if(wordsByLetterWithHarakat[l]){ wordsByLetterWithHarakat[l].forEach(ow => { const cleanOriginal = removeHarakat(ow); if (cleanOriginal.includes(l)) allWordsList.push({ letter: l, originalWord: ow }); }); } }); allWordsList = shuffle(allWordsList); let actualWordCount = allWordsList.length; let numQuestionsToGenerate = Math.min(targetNumQuestions, actualWordCount); console.log(`Available unique words for generation: ${actualWordCount}, generating: ${numQuestionsToGenerate}`); if (numQuestionsToGenerate < gameSettings.words) { console.warn(`Insufficient words (${actualWordCount}) for target ${gameSettings.words}. Setting game words to ${numQuestionsToGenerate}.`); gameSettings.words = numQuestionsToGenerate; } const selectedWords = allWordsList.slice(0, numQuestionsToGenerate); const questions = selectedWords.map(item => { const { letter, originalWord } = item; const cleanWord = removeHarakat(originalWord); const cleanLetterIndex = cleanWord.indexOf(letter); if (cleanLetterIndex === -1) { console.error(`Letter find ERROR: "${cleanWord}", "${letter}", OW:"${originalWord}"`); return null; }
+            
+            // <<< GÜNCELLEME 3: YENİ GELİŞMİŞ SORU OLUŞTURMA MANTIĞI
+            // Harfin kendisi, sağına (önceki harf) bağlanır mı?
+            const connectsToRight = cleanLetterIndex > 0 && !nonConnectingChars.includes(cleanWord[cleanLetterIndex - 1]);
+            
+            // Harfin kendisi, soluna (sonraki harf) bağlanır mı?
+            const connectsToLeft = cleanLetterIndex < (cleanWord.length - 1) && !nonConnectingChars.includes(letter);
+
+            let before = cleanWord.substring(0, cleanLetterIndex);
+            let after = cleanWord.substring(cleanLetterIndex + 1);
+
+            let placeholder = "..."; // 1. Varsayılan: Hiçbir yere bağlanmaz (örn: 'ا' kelime başında -> ...كل)
+
+            if (connectsToRight && connectsToLeft) {
+                placeholder = "ـ ـ ـ"; // 2. Sağa ve sola bağlanır (örn: 'ت' -> كـ ـ ـاب)
+            } else if (connectsToRight && !connectsToLeft) {
+                placeholder = "ـ..."; // 3. Sadece sağa bağlanır (örn: 'ر' -> يـ...سم)
+            } else if (!connectsToRight && connectsToLeft) {
+                placeholder = "...ـ"; // 4. Sadece sola bağlanır (örn: 'ب' -> ...ـاب)
+            }
+            // 5. (!connectsToRight && !connectsToLeft) -> '...' kalır (örn: 'ا' -> ...كل)
+
+            const questionWord = before + placeholder + after;
+            // >>> GÜNCELLEME 3: BİTİŞ
+
+            const correctForm = getCorrectForm(cleanWord, letter, cleanLetterIndex); const availableForms = letterForms[letter]; if (!availableForms) { console.error(`Form list ERROR: "${letter}"`); return null; } if (!correctForm) { console.error(`Correct form ERROR: "${cleanWord}", "${letter}", index ${cleanLetterIndex}`); return null; } let options = [correctForm]; const incorrectForms = availableForms.filter(f => f !== correctForm); const shuffledIncorrect = shuffle(incorrectForms); for (let i = 0; i < shuffledIncorrect.length && options.length < 4; i++) if (!options.includes(shuffledIncorrect[i])) options.push(shuffledIncorrect[i]); let attempts = 0; while(options.length < 2 && availableForms.length > 0 && attempts < 10) { let potentialOption = availableForms[Math.floor(Math.random() * availableForms.length)]; if (!options.includes(potentialOption)) options.push(potentialOption); attempts++; } if (options.length < 2) { console.warn(`Could not generate >= 2 options for "${cleanWord}", letter "${letter}". Skipping.`); return null; } return { letter, originalWord, word: cleanWord, questionWord, correctForm, options: shuffle(options) }; }).filter(q => q !== null); if (questions.length < gameSettings.words) { console.warn(`Post-filtering count (${questions.length}) < current game words (${gameSettings.words}). Updating AGAIN.`); gameSettings.words = questions.length; } console.log(`Final generated questions: ${questions.length}`); return questions; }
+        function getCorrectForm(cleanWord, cleanLetter, cleanIndex) { const forms = letterForms[cleanLetter]; if (!forms || forms.length === 0) { console.error("getCorrectForm: No forms for letter!", cleanLetter); return cleanLetter; } if (forms.length === 1) return forms[0]; 
+            // <<< GÜNCELLEME 2: Yerel nonConnectingChars tanımı SİLİNDİ
+            const connectsToRight = cleanIndex > 0 && !nonConnectingChars.includes(cleanWord[cleanIndex - 1]); const connectsToLeft = cleanIndex < cleanWord.length - 1 && !nonConnectingChars.includes(cleanLetter); let targetForm = null; if (nonConnectingChars.includes(cleanLetter)) targetForm = connectsToRight ? (forms.find(f => f.startsWith('ـ')) || forms[1]) : (forms.find(f => !f.startsWith('ـ')) || forms[0]); else { if (connectsToRight && connectsToLeft) targetForm = forms.find(f => f.startsWith('ـ') && f.endsWith('ـ')) || forms[1]; else if (connectsToRight) targetForm = forms.find(f => f.startsWith('ـ') && !f.endsWith('ـ')) || (forms.length > 2 ? forms[2] : forms[0]); else if (connectsToLeft) targetForm = forms.find(f => !f.startsWith('ـ') && f.endsWith('ـ')) || forms[0]; else targetForm = forms.find(f => !f.startsWith('ـ') && !f.endsWith('ـ')) || (forms.length > 3 ? forms[3] : forms[0]); } if (!targetForm) { console.warn(`getCorrectForm: Logic failed! "${cleanWord}", "${cleanLetter}", idx ${cleanIndex}. Fallback.`); targetForm = forms[0] || cleanLetter; } return targetForm; }
         function shuffle(array) { let ci = array.length, ri; while (ci != 0) { ri = Math.floor(Math.random() * ci); ci--; [array[ci], array[ri]] = [array[ri], array[ci]]; } return array; } function removeHarakat(text) { return text.replace(/[\u0617-\u061A\u064B-\u0652]/g, ""); }
         function formatTime(s) { const m = Math.floor(s / 60); const rs = Math.round(s % 60); return `${String(m).padStart(2, '0')}:${String(rs).padStart(2, '0')}`; }
         function stopGameTimer() { if (gameTimerInterval) { clearInterval(gameTimerInterval); gameTimerInterval = null; } }
@@ -401,19 +464,54 @@
             console.log("DOM Loaded"); 
             if(!backBtn || !start1PBtn || !start2PBtn || !easyBtn || !mediumBtn || !hardBtn) console.error("One or more essential buttons are missing!"); 
             
+            // <<< GÜNCELLEME 1: YENİ GERİ TUŞU MANTIĞI
             if(backBtn) backBtn.onclick = () => { 
                 initAudio(); 
                 playClickSound(); 
+
+                // Mevcut ekranın hangisi olduğunu kontrol et
                 let onRules = !rulesScreen.classList.contains('hidden'); 
                 let onDifficulty = !difficultyScreen.classList.contains('hidden'); 
                 let onGame = !gameWrapper.classList.contains('hidden'); 
                 let onModal = modal.style.display === 'flex'; 
+
                 console.log(`Back btn: rules=${onRules}, diff=${onDifficulty}, game=${onGame}, modal=${onModal}, mode=${gameMode}`); 
-                if (onDifficulty) returnToMenu(); 
-                else if (onGame) { if (gameMode === '1p') returnToDifficultyScreen(); else returnToMenu(); } 
-                else if (onModal) { if (gameMode === '1p') returnToDifficultyScreen(); else returnToMenu(); } 
-                else if (!onRules) returnToMenu(); 
+
+                if (onRules) {
+                    // 1. İSTEK: Ana ekrandaysa (rulesScreen), kidefarapca.com'a git
+                    console.log("Ana menüde, kidefarapca.com'a yönlendiriliyor...");
+                    window.location.href = 'https://kidefarapca.com';
+                
+                } else if (onDifficulty) {
+                    // 2. İSTEK: Zorluk seçim ekranındaysa, ana menüye git
+                    returnToMenu(); 
+                
+                } else if (onGame) {
+                    // 2. İSTEK: Oyun ekranındaysa...
+                    if (gameMode === '1p') {
+                        // 1 Kişilik oyunsa, zorluk seçime dön
+                        returnToDifficultyScreen(); 
+                    } else {
+                        // 2 Kişilik oyunsa, ana menüye dön
+                        returnToMenu(); 
+                    }
+                
+                } else if (onModal) {
+                    // 2. İSTEK: Sonuç ekranındaysa (modal)...
+                    if (gameMode === '1p') {
+                        // 1 Kişilik sonuçsa, zorluk seçime dön
+                        returnToDifficultyScreen(); 
+                    } else {
+                        // 2 Kişilik sonuçsa, ana menüye dön
+                        returnToMenu(); 
+                    }
+                
+                } else {
+                    // Herhangi bir beklenmedik durumda ana menüye dön
+                    returnToMenu();
+                }
             }; 
+            // >>> GÜNCELLEME 1 BİTİŞİ
             
             if (start1PBtn) start1PBtn.onclick = () => { 
                 initAudio(); 
@@ -506,55 +604,5 @@
         }); 
     })(); 
     </script>
-<!-- Geri düğmesi -->
-<button id="backBtn" aria-label="Geri dön">
-  ← Geri
-</button>
-
-<style>
-  #backBtn{
-    position: fixed;
-    left: 16px;
-    top: 16px;
-    z-index: 9999;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1px solid #e3e8ef;
-    background: #ffffffc9;
-    backdrop-filter: blur(6px);
-    font: 700 14px/1.1 system-ui, -apple-system, Segoe UI, Roboto, "Nunito", sans-serif;
-    box-shadow: 0 4px 12px rgba(0,0,0,.12);
-    cursor: pointer;
-    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-  }
-  #backBtn:hover{ transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
-  @media (max-width: 640px){ #backBtn{ left: 10px; top: 10px; padding: 9px 12px; } }
-</style>
-
-<script>
-  (function () {
-    const btn = document.getElementById('backBtn');
-    const HOME = 'index.html'; // ana sayfanın yolu (gerekirse düzelt)
-
-    function goBack() {
-      // Eğer geçmişte bir sayfa varsa geri dön; yoksa ana sayfaya git
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = HOME;
-      }
-    }
-
-    btn.addEventListener('click', goBack);
-
-    // Kısayol: ESC veya Alt+←
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' || (e.altKey && e.key === 'ArrowLeft')) {
-        goBack();
-      }
-    });
-  })();
-</script>
-
 </body>
 </html>
