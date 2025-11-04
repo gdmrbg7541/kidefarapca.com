@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sınıf Yönetim Paneli</title>
+    <style>
+        :root {
+            /* Default Theme (Light Blue) - Daha Canlı Kart Rengi */
+            --theme-name: 'light-blue';
+            --body-bg-color: #e0e5ec;
+            --card-bg: #f0f4f8; /* DEĞİŞTİ: Arka plandan daha parlak */
+            --main-color: #0056b3;
+            --text-color: #34495e;
+            --text-color-light: #566f88;
+            --input-bg: #dde4ea;
+            --history-bg: #dbe2e8;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --overlay-bg: rgba(224, 229, 236, 0.75);
+            --overlay-text-bg: #f0f4f8;
+            --flash-color: rgba(255, 0, 0, 0.5);
+        }
+
+        /* --- Theme Definitions (Daha Canlı Kart Renkleri) --- */
+        body.theme-light-green {
+            --theme-name: 'light-green';
+            --body-bg-color: #e4f0e8; --card-bg: #f2f8f4; /* DEĞİŞTİ */ --main-color: #28a745; --text-color: #2e5c3b; --text-color-light: #4a7d5a; --input-bg: #dbebe0; --history-bg: #e1ede4;
+            --shadow-light: #ffffff; --shadow-dark: #b8dbbf;
+            --overlay-bg: rgba(228, 240, 232, 0.75); --overlay-text-bg: #f2f8f4; --flash-color: rgba(0, 128, 0, 0.5);
+        }
+        body.theme-light-purple {
+            --theme-name: 'light-purple';
+             --body-bg-color: #e9e4f3; --card-bg: #f5f3f9; /* DEĞİŞTİ */ --main-color: #6f42c1; --text-color: #4a346f; --text-color-light: #6a538d; --input-bg: #e1dbed; --history-bg: #e6e2f0;
+            --shadow-light: #ffffff; --shadow-dark: #c0b1d7;
+            --overlay-bg: rgba(233, 228, 243, 0.75); --overlay-text-bg: #f5f3f9; --flash-color: rgba(100, 0, 130, 0.5);
+        }
+        body.theme-light-orange {
+            --theme-name: 'light-orange';
+             --body-bg-color: #fbeee4; --card-bg: #fdf6ef; /* DEĞİŞTİ */ --main-color: #fd7e14; --text-color: #7f4b1d; --text-color-light: #a06734; --input-bg: #f8e5d6; --history-bg: #f9ebe0;
+            --shadow-light: #ffffff; --shadow-dark: #e6c8ae;
+            --overlay-bg: rgba(251, 238, 228, 0.75); --overlay-text-bg: #fdf6ef; --flash-color: rgba(200, 100, 0, 0.5);
+        }
+        body.theme-light-teal {
+             --theme-name: 'light-teal';
+             --body-bg-color: #e1f7f0; --card-bg: #f0faf7; /* DEĞİŞTİ */ --main-color: #20c997; --text-color: #1a6b52; --text-color-light: #348d6f; --input-bg: #d6f1e8; --history-bg: #dcf3ec;
+            --shadow-light: #ffffff; --shadow-dark: #aee0d2;
+             --overlay-bg: rgba(225, 247, 240, 0.75); --overlay-text-bg: #f0faf7; --flash-color: rgba(0, 128, 128, 0.5);
+        }
+         body.theme-dark-blue {
+            --theme-name: 'dark-blue';
+             --body-bg-color: #2c3038; --card-bg: #353941; --main-color: #8ab4f8; --text-color: #e0e5ec; --text-color-light: #bdc6d1; --input-bg: #2c3038; --history-bg: #2c3038;
+            --shadow-light: #444a54; --shadow-dark: #1c1f25;
+            --overlay-bg: rgba(44, 48, 56, 0.8); --overlay-text-bg: var(--card-bg); --flash-color: rgba(0, 70, 130, 0.6);
+        }
+         body.theme-dark-green {
+             --theme-name: 'dark-green';
+             --body-bg-color: #2f3b33; --card-bg: #39463c; --main-color: #81c784; --text-color: #e4f0e8; --text-color-light: #c8e6c9; --input-bg: #2f3b33; --history-bg: #2f3b33;
+            --shadow-light: #4b5a50; --shadow-dark: #1e2621;
+             --overlay-bg: rgba(47, 59, 51, 0.8); --overlay-text-bg: var(--card-bg); --flash-color: rgba(0, 100, 0, 0.6);
+        }
+         body.theme-dark-purple {
+              --theme-name: 'dark-purple';
+             --body-bg-color: #373041; --card-bg: #41394a; --main-color: #ce93d8; --text-color: #e9e4f3; --text-color-light: #d1c4e9; --input-bg: #373041; --history-bg: #373041;
+            --shadow-light: #534c5e; --shadow-dark: #221d2a;
+             --overlay-bg: rgba(55, 48, 65, 0.8); --overlay-text-bg: var(--card-bg); --flash-color: rgba(75, 0, 130, 0.6);
+        }
+         body.theme-dark-orange {
+             --theme-name: 'dark-orange';
+             --body-bg-color: #413a34; --card-bg: #4a423b; --main-color: #ffcc80; --text-color: #fbeee4; --text-color-light: #ffe0b2; --input-bg: #413a34; --history-bg: #413a34;
+            --shadow-light: #5e544e; --shadow-dark: #2a2520;
+             --overlay-bg: rgba(65, 58, 52, 0.8); --overlay-text-bg: var(--card-bg); --flash-color: rgba(139, 69, 19, 0.6);
+        }
+         body.theme-dark-teal {
+              --theme-name: 'dark-teal';
+             --body-bg-color: #2f3f3b; --card-bg: #374a44; --main-color: #80cbc4; --text-color: #e1f7f0; --text-color-light: #b2dfdb; --input-bg: #2f3f3b; --history-bg: #2f3f3b;
+            --shadow-light: #4c665e; --shadow-dark: #1e2a26;
+             --overlay-bg: rgba(47, 63, 59, 0.8); --overlay-text-bg: var(--card-bg); --flash-color: rgba(0, 128, 128, 0.6);
+        }
+
+        /* Common Neumorphism Shadows (Kartlar vb. için korundu) */
+        .neumorphism-shadow { box-shadow: 7px 7px 15px var(--shadow-dark), -7px -7px 15px var(--shadow-light); }
+        .neumorphism-shadow-inset { box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); }
+        .neumorphism-shadow-inset-active { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); }
+        .neumorphism-shadow-chip { box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light); }
+
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--body-bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            padding-bottom: 280px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap-reverse;
+            gap: 20px;
+        }
+
+        #theme-selector {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .theme-dot {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+            transition: box-shadow 0.1s ease, transform 0.1s ease;
+            position: relative;
+        }
+         .theme-dot:active {
+             transform: scale(0.9);
+             box-shadow: var(--shadow-inset-active);
+         }
+         .theme-dot.active::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 2px solid var(--main-color);
+            border-radius: 50%;
+         }
+
+        #live-clock-container {
+            min-width: 280px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            direction: ltr;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 7px 7px 15px var(--shadow-dark), -7px -7px 15px var(--shadow-light);
+        }
+        #live-time {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--main-color);
+            line-height: 1.1;
+            transition: color 0.3s ease;
+        }
+        #live-date {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-top: 5px;
+            opacity: 0.8;
+            transition: color 0.3s ease;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            align-items: flex-start;
+            justify-items: center;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: none;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, padding-top 0.4s ease-in-out;
+            box-shadow: 7px 7px 15px var(--shadow-dark), -7px -7px 15px var(--shadow-light);
+        }
+
+        .tool-card h2 {
+            margin-top: 0;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--main-color);
+            padding-bottom: 5px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collapse-icon {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--main-color);
+            transition: transform 0.4s ease-in-out;
+            transform: rotate(0deg);
+            padding-left: 10px;
+        }
+        .tool-card:not(.collapsed) .collapse-icon {
+            transform: rotate(90deg);
+        }
+
+
+        .display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            background: var(--input-bg);
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            box-shadow: none;
+            border: 1px solid var(--shadow-dark);
+        }
+        body[class*="dark-"] .display {
+            border: 1px solid var(--shadow-light);
+        }
+
+        #stopwatch-display {
+            font-size: 3.0rem;
+        }
+        .student-display {
+            font-size: 4.5rem;
+            color: #ff9800;
+            min-height: 80px;
+            line-height: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .temp-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0.5;
+            font-size: 3.5rem;
+            color: var(--text-color);
+             transition: color 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .controls.vertical {
+            flex-direction: column;
+        }
+
+        input[type="number"] {
+            flex: 2;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: var(--input-bg);
+            outline: none;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            box-shadow: none;
+            border: 1px solid var(--shadow-dark);
+        }
+         body[class*="dark-"] input[type="number"] {
+            border: 1px solid var(--shadow-light);
+        }
+
+        input[readonly] {
+            cursor: pointer;
+            color: var(--main-color);
+            font-weight: 500;
+             transition: color 0.3s ease;
+        }
+        input[readonly].disabled {
+            cursor: not-allowed;
+            color: #999;
+            opacity: 0.7;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            background-color: var(--main-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
+        }
+
+        body[class*="dark-"] button {
+             color: #222;
+             border: none;
+             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        button:hover {
+            filter: brightness(1.1);
+        }
+        button:active {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transform: translateY(2px);
+        }
+
+        button.danger {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        button.danger:hover {
+            filter: brightness(1.1);
+        }
+        button.secondary {
+            background-color: #aaaaaa;
+            color: #ffffff;
+            opacity: 1;
+        }
+        body[class*="dark-"] button.secondary {
+            background-color: #666;
+            color: #ddd;
+        }
+        button.secondary:hover {
+            filter: brightness(1.1);
+            opacity: 1;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            color: #888888 !important;
+            opacity: 0.7;
+            box-shadow: none;
+            cursor: not-allowed;
+            border-color: transparent !important;
+            transform: none;
+        }
+         body[class*="dark-"] button:disabled {
+             background-color: #4a4a4a;
+             color: #777 !important;
+         }
+        button.hidden {
+            display: none;
+        }
+
+
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--text-color);
+            opacity: 0.7;
+            height: 20px;
+             transition: color 0.3s ease;
+        }
+
+        .reset-icon-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--card-bg);
+            border: none;
+            font-size: 1.3rem;
+            color: var(--text-color-light);
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            flex: none;
+            border-radius: 50%;
+            z-index: 15;
+             transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+        }
+        .reset-icon-btn:hover { color: var(--text-color); }
+        .reset-icon-btn:active { box-shadow: var(--shadow-inset-active); }
+
+        .history-title {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            font-weight: 500;
+            border-top: 1px solid var(--shadow-dark);
+            padding-top: 15px;
+            width: 100%;
+            text-align: center;
+            transition: color 0.3s ease, border-color 0.3s ease, margin 0.4s ease-in-out, padding 0.4s ease-in-out;
+        }
+
+        .history-box {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+            min-height: 90px;
+            background: var(--history-bg);
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+             transition: background-color 0.3s ease, box-shadow 0.3s ease;
+             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        .drawn-number-chip {
+            background: var(--card-bg);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-weight: 600;
+            color: var(--main-color);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            flex-grow: 0;
+             transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+             box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+        }
+
+        #lap-history .drawn-number-chip {
+            width: auto;
+            height: auto;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+        }
+
+        .overlay-box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background-color: var(--overlay-bg);
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.3s ease;
+            -webkit-backdrop-filter: blur(3px);
+            backdrop-filter: blur(3px);
+            animation: none;
+        }
+
+        .overlay-box.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .overlay-box.alert-flash.visible {
+             animation: flash 0.5s ease-out;
+        }
+         @keyframes flash {
+            0% { background-color: var(--flash-color); }
+            100% { background-color: var(--overlay-bg); }
+        }
+
+        .overlay-box p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 0;
+            text-align: center;
+            background: var(--overlay-text-bg);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 7px 7px 15px var(--shadow-dark), -7px -7px 15px var(--shadow-light);
+        }
+        .overlay-box .controls {
+            width: 90%;
+            justify-content: center;
+        }
+
+        .card-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            overflow: hidden;
+            max-height: 2000px;
+            opacity: 1;
+            padding-top: 15px;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out 0.1s, padding-top 0.4s ease-in-out;
+        }
+
+        .card-main-content.blurred {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        #numpad-container {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+             transition: background-color 0.3s ease, box-shadow 0.3s ease;
+             box-shadow: 7px 7px 15px var(--shadow-dark), -7px -7px 15px var(--shadow-light);
+        }
+        #numpad-container.visible {
+            display: flex;
+        }
+        #numpad-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        #numpad-grid button,
+        #numpad-ok {
+            padding: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        #numpad-ok {
+            width: 100%;
+        }
+
+        /* --- TAKIM OLUŞTURMA STİLLERİ --- */
+        #team-history {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 15px;
+            gap: 8px;
+        }
+        .team-chip {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+        }
+        .team-chip-label {
+            font-weight: 700;
+            color: var(--main-color);
+            margin-right: 5px;
+            flex-shrink: 0;
+        }
+        .team-chip .drawn-number-chip {
+            box-shadow: none;
+            background: var(--input-bg);
+            width: 28px;
+            height: 28px;
+            font-size: 0.85rem;
+        }
+        /* --- STİLLER SONU --- */
+
+
+        /* --- Genişlet/Daralt Stilleri --- */
+        .tool-card:not(.collapsed) {
+            padding-top: 50px;
+        }
+        .tool-card.collapsed {
+            cursor: pointer;
+        }
+        .tool-card.collapsed .reset-icon-btn {
+            display: none;
+        }
+        .tool-card.collapsed .card-main-content {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            pointer-events: none;
+            margin: 0;
+            border: none;
+        }
+         .tool-card.collapsed .history-title {
+             margin-top: 0;
+             margin-bottom: 0;
+             padding-top: 0;
+             padding-bottom: 0;
+             border-top: none;
+         }
+        /* --- Genişlet/Daralt Stilleri Sonu --- */
+
+        /* Mobil Cihazlar için Grid Düzeni */
+        @media (max-width: 800px) {
+            .main-container {
+                grid-template-columns: 1fr; /* 1 sütun */
+                max-width: 450px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="top-bar">
+         <div id="theme-selector">
+             <div class="theme-dot" data-theme="light-blue" style="background-color: #e0e5ec;" title="Açık Mavi"></div>
+             <div class="theme-dot" data-theme="light-green" style="background-color: #e4f0e8;" title="Açık Yeşil"></div>
+             <div class="theme-dot" data-theme="light-purple" style="background-color: #e9e4f3;" title="Açık Mor"></div>
+             <div class="theme-dot" data-theme="light-orange" style="background-color: #fbeee4;" title="Açık Turuncu"></div>
+             <div class="theme-dot" data-theme="light-teal" style="background-color: #e1f7f0;" title="Açık Turkuaz"></div>
+             <div class="theme-dot" data-theme="dark-blue" style="background-color: #353941;" title="Koyu Mavi"></div>
+             <div class="theme-dot" data-theme="dark-green" style="background-color: #39463c;" title="Koyu Yeşil"></div>
+             <div class="theme-dot" data-theme="dark-purple" style="background-color: #41394a;" title="Koyu Mor"></div>
+             <div class="theme-dot" data-theme="dark-orange" style="background-color: #4a423b;" title="Koyu Turuncu"></div>
+             <div class="theme-dot" data-theme="dark-teal" style="background-color: #374a44;" title="Koyu Turkuaz"></div>
+         </div>
+        <div id="live-clock-container">
+            <div id="live-time">00:00</div>
+            <div id="live-date">00/00/0000</div>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <div class="tool-card" id="lottery-card">
+            <button id="lottery-reset-btn" class="reset-icon-btn" title="Kura listesini sıfırla">&#x1F504;</button>
+            <h2>Rastgele Öğrenci Seçimi <span class="collapse-icon">❯</span></h2>
+            <div id="lottery-main-content" class="card-main-content">
+                <div class="display student-display" id="student-display">?</div>
+                <div class="controls" id="class-size-controls">
+                    <input type="number" id="class-size" placeholder="Sınıf Mevcudu Yazın" min="1" value="0" readonly>
+                    <button id="set-class-size">Ayarla</button>
+                </div>
+                <div class="controls vertical">
+                    <button id="draw-student" disabled>Kura Çek</button>
+                </div>
+                <h3 class="history-title">Çıkan Numaralar:</h3>
+                <div id="drawn-history" class="history-box"></div>
+                <div id="student-status" class="status"></div>
+            </div>
+            <div id="lottery-confirm-box" class="overlay-box">
+                <p>Sıfırlamak istediğinizden emin misiniz?</p>
+                <div class="controls">
+                    <button id="lottery-confirm-yes">Evet</button>
+                    <button id="lottery-confirm-no" class="secondary">Hayır</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-card" id="countdown-card">
+            <button id="countdown-reset-btn" class="reset-icon-btn" title="Geri Sayımı Sıfırla">&#x1F504;</button>
+            <h2>Geri Sayım <span class="collapse-icon">❯</span></h2>
+            <div id="countdown-main-content" class="card-main-content">
+                <div class="display" id="countdown-display">00:00</div>
+                <div class="controls">
+                    <input type="number" id="countdown-minutes" placeholder="Dakika (1-40)" min="1" max="40" value="0" readonly>
+                </div>
+                <div class="controls">
+                    <button id="countdown-start" disabled>Başlat</button>
+                    <button id="countdown-stop" class="danger hidden">Durdur</button>
+                </div>
+            </div>
+            <div id="countdown-confirm-box" class="overlay-box">
+                <p>Sıfırlamak istediğinizden emin misiniz?</p>
+                <div class="controls">
+                    <button id="countdown-confirm-yes">Evet</button>
+                    <button id="countdown-confirm-no" class="secondary">Hayır</button>
+                </div>
+            </div>
+            <div id="countdown-alert-box" class="overlay-box alert-flash">
+                <p id="countdown-alert-message">Süre Doldu!</p>
+                 <div class="controls">
+                    <button id="countdown-alert-ok">Tamam</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-card" id="stopwatch-card">
+            <button id="stopwatch-reset-btn" class="reset-icon-btn" title="Kronometreyi Sıfırla">&#x1F504;</button>
+            <h2>Kronometre <span class="collapse-icon">❯</span></h2>
+            <div id="stopwatch-main-content" class="card-main-content">
+                <div class="display" id="stopwatch-display">00:00:00</div>
+                <div class="controls">
+                    <input type="number" id="stopwatch-minutes" placeholder="Dakika (1-40)" min="1" max="40" value="0" readonly>
+                </div>
+                <div class="controls">
+                    <button id="stopwatch-start" disabled>Başlat</button>
+                    <button id="stopwatch-stop" class="danger hidden">Durdur</button>
+                </div>
+                <div class="controls vertical" style="margin-top: 10px;">
+                    <button id="stopwatch-lap" class="danger">Tur Kaydet (0)</button>
+                </div>
+                <h3 class="history-title">Tur Zamanları:</h3>
+                <div id="lap-history" class="history-box"></div>
+                <div id="stopwatch-status" class="status"></div>
+            </div>
+            <div id="stopwatch-confirm-box" class="overlay-box">
+                <p>Sıfırlamak istediğinizden emin misiniz?</p>
+                <div class="controls">
+                    <button id="stopwatch-confirm-yes">Evet</button>
+                    <button id="stopwatch-confirm-no" class="secondary">Hayır</button>
+                </div>
+            </div>
+            <div id="stopwatch-alert-box" class="overlay-box alert-flash">
+                <p id="stopwatch-alert-message">Süre Limiti Doldu!</p>
+                 <div class="controls">
+                    <button id="stopwatch-alert-ok">Tamam</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-card" id="team-builder-card">
+            <button id="team-builder-reset-btn" class="reset-icon-btn" title="Takımları Sıfırla">&#x1F504;</button>
+            <h2>Takım Oluştur <span class="collapse-icon">❯</span></h2>
+            <div id="team-builder-main-content" class="card-main-content">
+                <div class="controls" id="team-size-controls">
+                    <input type="number" id="team-class-size" placeholder="Sınıf Mevcudu Yazın" min="1" value="0" readonly>
+                    <button id="set-team-class-size">Ayarla</button>
+                </div>
+                <div id="team-options-wrapper" style="width: 100%; margin-top: 10px; display: none;">
+                    <div class="controls">
+                        <button id="team-size-2" data-size="2" disabled>2'li Takım</button>
+                        <button id="team-size-3" data-size="3" disabled>3'lü Takım</button>
+                        <button id="team-size-4" data-size="4" disabled>4'lü Takım</button>
+                    </div>
+                    <div class="controls">
+                        <button id="team-size-5" data-size="5" disabled>5'li Takım</button>
+                        <button id="team-size-6" data-size="6" disabled>6'lı Takım</button>
+                        <button id="team-size-7" data-size="7" disabled>7'li Takım</button>
+                    </div>
+                     <div class="controls">
+                        <button id="team-size-8" data-size="8" disabled>8'li Takım</button>
+                        <button id="team-size-9" data-size="9" disabled>9'lu Takım</button>
+                        <button id="team-size-10" data-size="10" disabled>10'lu Takım</button>
+                    </div>
+                </div>
+                <h3 class="history-title">Oluşan Takımlar:</h3>
+                <div id="team-history" class="history-box"></div>
+                <div id="team-status" class="status"></div>
+            </div>
+            <div id="team-builder-confirm-box" class="overlay-box">
+                <p>Takımları sıfırlamak istediğinizden emin misiniz?</p>
+                <div class="controls">
+                    <button id="team-builder-confirm-yes">Evet</button>
+                    <button id="team-builder-confirm-no" class="secondary">Hayır</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    <div id="numpad-container">
+        <div id="numpad-grid">
+            <button data-key="7">7</button>
+            <button data-key="8">8</button>
+            <button data-key="9">9</button>
+            <button data-key="4">4</button>
+            <button data-key="5">5</button>
+            <button data-key="6">6</button>
+            <button data-key="1">1</button>
+            <button data-key="2">2</button>
+            <button data-key="3">3</button>
+            <button data-key="C" class="secondary">C</button>
+            <button data-key="0">0</button>
+            <button data-key="Del" class="secondary">Sil</button>
+        </div>
+        <button id="numpad-ok" class="danger">Tamam</button>
+    </div>
+
+
+    <script>
+        // --- Değişkenler ---
+        let countdownInterval;
+        let countdownSecondsRemaining;
+        let isCountdownPaused = false;
+
+        let stopwatchInterval;
+        let stopwatchStartTime = 0;
+        let stopwatchElapsedTime = 0;
+        let stopwatchLimitMs = 0;
+        let lapCount = 0;
+        let stopwatchBeepPlayedSeconds = new Set();
+
+        let classSize = 0;
+        let studentPool = []; // Available students
+        let drawAnimationInterval;
+
+        let teamClassSize = 0;
+        let teamStudentPool = [];
+
+        let activeInput = null;
+        let audioCtx = null;
+
+        // --- DOM Elementleri ---
+        const liveTime = document.getElementById('live-time');
+        const liveDate = document.getElementById('live-date');
+        const themeSelector = document.getElementById('theme-selector');
+        const themeDots = document.querySelectorAll('.theme-dot');
+
+        // Geri Sayım
+        const countdownMain = document.getElementById('countdown-main-content');
+        const countdownConfirm = document.getElementById('countdown-confirm-box');
+        const countdownConfirmYes = document.getElementById('countdown-confirm-yes');
+        const countdownConfirmNo = document.getElementById('countdown-confirm-no');
+        const countdownDisplay = document.getElementById('countdown-display');
+        const countdownMinutesInput = document.getElementById('countdown-minutes');
+        const countdownStartBtn = document.getElementById('countdown-start');
+        const countdownStopBtn = document.getElementById('countdown-stop');
+        const countdownResetBtn = document.getElementById('countdown-reset-btn');
+        const countdownAlert = document.getElementById('countdown-alert-box');
+        const countdownAlertOk = document.getElementById('countdown-alert-ok');
+
+        // Kronometre
+        const stopwatchMain = document.getElementById('stopwatch-main-content');
+        const stopwatchConfirm = document.getElementById('stopwatch-confirm-box');
+        const stopwatchConfirmYes = document.getElementById('stopwatch-confirm-yes');
+        const stopwatchConfirmNo = document.getElementById('stopwatch-confirm-no');
+        const stopwatchDisplay = document.getElementById('stopwatch-display');
+        const stopwatchMinutesInput = document.getElementById('stopwatch-minutes');
+        const stopwatchStartBtn = document.getElementById('stopwatch-start');
+        const stopwatchStopBtn = document.getElementById('stopwatch-stop');
+        const stopwatchResetBtn = document.getElementById('stopwatch-reset-btn');
+        const stopwatchLapBtn = document.getElementById('stopwatch-lap');
+        const lapHistoryContainer = document.getElementById('lap-history');
+        const stopwatchStatus = document.getElementById('stopwatch-status');
+        const stopwatchAlert = document.getElementById('stopwatch-alert-box');
+        const stopwatchAlertOk = document.getElementById('stopwatch-alert-ok');
+
+        // Kura
+        const lotteryMain = document.getElementById('lottery-main-content');
+        const lotteryConfirm = document.getElementById('lottery-confirm-box');
+        const lotteryConfirmYes = document.getElementById('lottery-confirm-yes');
+        const lotteryConfirmNo = document.getElementById('lottery-confirm-no');
+        const studentDisplay = document.getElementById('student-display');
+        const classSizeControls = document.getElementById('class-size-controls');
+        const classSizeInput = document.getElementById('class-size');
+        const setClassSizeBtn = document.getElementById('set-class-size');
+        const drawStudentBtn = document.getElementById('draw-student');
+        const resetLotteryBtn = document.getElementById('lottery-reset-btn');
+        const studentStatus = document.getElementById('student-status');
+        const drawnHistoryContainer = document.getElementById('drawn-history');
+
+        // Takım Oluşturma
+        const teamBuilderMain = document.getElementById('team-builder-main-content');
+        const teamBuilderConfirm = document.getElementById('team-builder-confirm-box');
+        const teamBuilderConfirmYes = document.getElementById('team-builder-confirm-yes');
+        const teamBuilderConfirmNo = document.getElementById('team-builder-confirm-no');
+        const teamClassSizeInput = document.getElementById('team-class-size');
+        const setTeamClassSizeBtn = document.getElementById('set-team-class-size');
+        const teamSizeControls = document.getElementById('team-size-controls');
+        const teamOptionsWrapper = document.getElementById('team-options-wrapper');
+        const teamOptionButtons = document.querySelectorAll('#team-options-wrapper button');
+        const teamHistoryContainer = document.getElementById('team-history');
+        const teamStatus = document.getElementById('team-status');
+        const teamBuilderResetBtn = document.getElementById('team-builder-reset-btn');
+
+        // Klavye
+        const numpadContainer = document.getElementById('numpad-container');
+        const numpadGrid = document.getElementById('numpad-grid');
+        const numpadOkBtn = document.getElementById('numpad-ok');
+
+        // --- Tema ve Kaydet/Yükle Mantığı ---
+        function applyTheme(themeName) {
+            document.body.className = '';
+            if (themeName && themeName !== 'light-blue') {
+                document.body.classList.add(`theme-${themeName}`);
+            }
+            themeDots.forEach(dot => {
+                dot.classList.toggle('active', dot.dataset.theme === themeName);
+            });
+            const isDark = themeName && themeName.startsWith('dark');
+             document.documentElement.style.setProperty('--flash-color', isDark ? 'rgba(100, 0, 0, 0.6)' : 'rgba(255, 0, 0, 0.5)');
+        }
+
+        themeSelector.addEventListener('click', (e) => {
+             if (e.target.classList.contains('theme-dot')) {
+                 const newTheme = e.target.dataset.theme;
+                 applyTheme(newTheme);
+                 localStorage.setItem('theme', newTheme);
+             }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+             const savedTheme = localStorage.getItem('theme') || 'light-blue';
+             applyTheme(savedTheme);
+
+             const savedClassSize = localStorage.getItem('classSize');
+             const savedCountdownMinutes = localStorage.getItem('countdownMinutes');
+             const savedStopwatchMinutes = localStorage.getItem('stopwatchMinutes');
+             const savedTeamClassSize = localStorage.getItem('teamClassSize');
+
+             if(savedClassSize) classSizeInput.value = savedClassSize;
+             if(savedCountdownMinutes) countdownMinutesInput.value = savedCountdownMinutes;
+             if(savedStopwatchMinutes) stopwatchMinutesInput.value = savedStopwatchMinutes;
+             if(savedTeamClassSize) teamClassSizeInput.value = savedTeamClassSize;
+
+             setClassSizeDirectly(parseInt(savedClassSize || '0'));
+             setTeamClassSizeDirectly(parseInt(savedTeamClassSize || '0'));
+             resetCountdown();
+             resetStopwatch();
+
+
+            // --- Kart Genişletme/Daraltma Mantığı ---
+            const allToolCards = document.querySelectorAll('.tool-card');
+
+            allToolCards.forEach(card => {
+                card.classList.add('collapsed');
+            });
+
+            allToolCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+
+                    const isInteractiveClick = e.target.closest('.reset-icon-btn, .overlay-box, .card-main-content button, .card-main-content input');
+
+                    if (isInteractiveClick) {
+                        return;
+                    }
+
+                    if (e.target.tagName === 'INPUT' && e.target.readOnly) {
+                        return;
+                    }
+
+                    const isCollapsed = this.classList.contains('collapsed');
+
+                    // Sadece tıklanan kartı aç/kapat
+                    if (isCollapsed) {
+                        this.classList.remove('collapsed');
+                    } else {
+                        this.classList.add('collapsed');
+                    }
+                });
+            });
+            // --- Kart Mantığı Sonu ---
+
+        }); // <-- DOMContentLoaded SONU
+
+        // --- Sabit Saat ve Tarih Mantığı ---
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const mo = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear();
+            liveTime.textContent = `${h}:${m}`;
+            liveDate.textContent = `${d}/${mo}/${y}`;
+         }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Ses Çalma Fonksiyonu ---
+        function playBeep(frequency = 523.25, duration = 100) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                 if (audioCtx && audioCtx.state === 'running') {
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (duration / 1000));
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + (duration / 1000));
+                }
+            } catch (e) {
+                console.error("Ses çalınamadı:", e);
+                if (!audioCtx) playBeep = () => {};
+            }
+         }
+         function initAudioContext() {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioCtx && audioCtx.state === 'suspended') {
+                         audioCtx.resume().catch(e => console.error("Audio context resume failed:", e));
+                     }
+                 } catch(e) {
+                     console.error("Audio Context not supported:", e);
+                     playBeep = () => {};
+                 }
+             } else if (audioCtx.state === 'suspended') {
+                 audioCtx.resume().catch(e => console.error("Audio context resume failed:", e));
+             }
+         }
+
+        // --- Diğer Yardımcı Fonksiyonlar ---
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+         }
+        function formatStopwatchTime(totalMilliseconds) {
+            let totalCentiseconds = Math.floor(totalMilliseconds / 10);
+            let centiseconds = totalCentiseconds % 100;
+            let totalSeconds = Math.floor(totalCentiseconds / 100);
+            let seconds = totalSeconds % 60;
+            let minutes = Math.floor(totalSeconds / 60);
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(centiseconds).padStart(2, '0')}`;
+         }
+        function toggleOverlay(mainEl, overlayEl, show) {
+            mainEl.classList.toggle('blurred', show);
+            overlayEl.classList.toggle('visible', show);
+         }
+
+        // --- Rakam Klavyesi Mantığı ---
+        function showNumpad(show) {
+             numpadContainer.classList.toggle('visible', show);
+             if (!show) {
+                 activeInput = null;
+             }
+         }
+
+        [classSizeInput, countdownMinutesInput, stopwatchMinutesInput, teamClassSizeInput].forEach(input => {
+            input.addEventListener('click', function(e) {
+                if(this.classList.contains('disabled')) return;
+                e.stopPropagation();
+                activeInput = this;
+                showNumpad(true);
+             });
+        });
+
+        numpadGrid.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (e.target.tagName !== 'BUTTON' || !activeInput) return;
+
+            const key = e.target.dataset.key;
+            let currentValue = activeInput.value;
+
+            if (key === 'C') {
+                activeInput.value = '';
+            } else if (key === 'Del') {
+                activeInput.value = currentValue.slice(0, -1);
+            } else if (key >= '0' && key <= '9') {
+                if (currentValue === '0') {
+                     activeInput.value = key;
+                } else {
+                     if ((activeInput === countdownMinutesInput || activeInput === stopwatchMinutesInput) && activeInput.value.length >= 2) {
+                         return;
+                     }
+                    activeInput.value += key;
+                }
+            }
+             checkTimerInput(activeInput);
+        });
+
+        numpadOkBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+             handleNumpadConfirm();
+            showNumpad(false);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (numpadContainer.classList.contains('visible') && !numpadContainer.contains(e.target) && e.target !== activeInput) {
+                 handleNumpadConfirm();
+                 showNumpad(false);
+            }
+        });
+
+        function checkTimerInput(inputElement) {
+             if (inputElement === countdownMinutesInput) {
+                 let minutes = parseInt(inputElement.value) || 0;
+                 countdownStartBtn.disabled = minutes <= 0 || minutes > 40;
+             } else if (inputElement === stopwatchMinutesInput) {
+                 let minutes = parseInt(inputElement.value) || 0;
+                 stopwatchStartBtn.disabled = minutes <= 0 || minutes > 40;
+             }
+        }
+
+         function handleNumpadConfirm() {
+             if (!activeInput) return;
+
+             let value = parseInt(activeInput.value === '' ? '0' : activeInput.value) || 0;
+
+             if (activeInput === countdownMinutesInput) {
+                 if (value > 40) value = 40;
+                 if (value < 0) value = 0;
+                 activeInput.value = value;
+                 resetCountdown();
+                 localStorage.setItem('countdownMinutes', value);
+             } else if (activeInput === stopwatchMinutesInput) {
+                 if (value > 40) value = 40;
+                 if (value < 0) value = 0;
+                 activeInput.value = value;
+                 resetStopwatch();
+                 localStorage.setItem('stopwatchMinutes', value);
+             } else if (activeInput === classSizeInput) {
+                 setClassSizeDirectly(value);
+             } else if (activeInput === teamClassSizeInput) {
+                 setTeamClassSizeDirectly(value);
+             }
+         }
+
+        // --- Geri Sayım Mantığı ---
+        function startCountdown() {
+            initAudioContext();
+            if (countdownInterval || countdownSecondsRemaining <= 0) return;
+
+            isCountdownPaused = false;
+            countdownStartBtn.classList.add('hidden');
+            countdownStopBtn.classList.remove('hidden');
+            countdownMinutesInput.classList.add('disabled');
+            countdownDisplay.textContent = formatTime(countdownSecondsRemaining);
+
+            countdownInterval = setInterval(() => {
+                countdownSecondsRemaining--;
+                countdownDisplay.textContent = formatTime(countdownSecondsRemaining);
+
+                if (countdownSecondsRemaining <= 10 && countdownSecondsRemaining > 0) {
+                    playBeep(880, 150);
+                }
+
+                if (countdownSecondsRemaining <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    isCountdownPaused = false;
+
+                    playBeep(1046.50, 300);
+                    setTimeout(() => playBeep(1046.50, 300), 400);
+
+                    toggleOverlay(countdownMain, countdownAlert, true);
+                }
+            }, 1000);
+         }
+        function stopCountdown() {
+            if (!countdownInterval) return;
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            isCountdownPaused = true;
+            countdownStartBtn.textContent = 'Devam Et';
+            countdownStartBtn.classList.remove('hidden');
+            countdownStopBtn.classList.add('hidden');
+         }
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            isCountdownPaused = false;
+            countdownStartBtn.textContent = 'Başlat';
+            countdownStartBtn.classList.remove('hidden');
+            countdownStopBtn.classList.add('hidden');
+            countdownMinutesInput.classList.remove('disabled');
+
+            let minutes = parseInt(countdownMinutesInput.value) || 0;
+            if (minutes > 40) minutes = 40;
+            if (minutes <= 0) {
+                minutes = 0;
+                countdownStartBtn.disabled = true;
+            } else {
+                 countdownStartBtn.disabled = false;
+            }
+            countdownMinutesInput.value = minutes;
+            countdownSecondsRemaining = minutes * 60;
+            countdownDisplay.textContent = formatTime(countdownSecondsRemaining);
+         }
+
+        countdownStartBtn.addEventListener('click', startCountdown);
+        countdownStopBtn.addEventListener('click', stopCountdown);
+        countdownResetBtn.addEventListener('click', () => toggleOverlay(countdownMain, countdownConfirm, true));
+        countdownConfirmYes.addEventListener('click', () => {
+            countdownMinutesInput.value = '0';
+            resetCountdown();
+            localStorage.removeItem('countdownMinutes');
+            toggleOverlay(countdownMain, countdownConfirm, false);
+        });
+        countdownConfirmNo.addEventListener('click', () => toggleOverlay(countdownMain, countdownConfirm, false));
+        countdownAlertOk.addEventListener('click', () => {
+             toggleOverlay(countdownMain, countdownAlert, false);
+             resetCountdown();
+        });
+
+        // --- Kronometre Mantığı ---
+        function startStopwatch() {
+            initAudioContext();
+            if (stopwatchInterval || stopwatchLimitMs <= 0) return;
+
+            stopwatchStartTime = Date.now() - stopwatchElapsedTime;
+            stopwatchBeepPlayedSeconds.clear();
+
+            stopwatchInterval = setInterval(() => {
+                const now = Date.now();
+                const elapsed = now - stopwatchStartTime;
+                const remainingMs = stopwatchLimitMs - elapsed;
+
+                if (remainingMs <= 10999 && remainingMs > -10) {
+                    const currentSecond = Math.ceil(remainingMs / 1000);
+                    if (currentSecond > 0 && !stopwatchBeepPlayedSeconds.has(currentSecond)) {
+                         playBeep(880, 150);
+                         stopwatchBeepPlayedSeconds.add(currentSecond);
+                    }
+                }
+
+                if (elapsed >= stopwatchLimitMs) {
+                     clearInterval(stopwatchInterval);
+                     stopwatchInterval = null;
+                     stopwatchElapsedTime = stopwatchLimitMs;
+                     stopwatchDisplay.textContent = formatStopwatchTime(stopwatchLimitMs);
+
+                     playBeep(1046.50, 300);
+                     setTimeout(() => playBeep(1046.50, 300), 400);
+
+                     toggleOverlay(stopwatchMain, stopwatchAlert, true);
+
+                     stopwatchStartBtn.textContent = 'Başlat';
+                     stopwatchStartBtn.classList.remove('hidden');
+                     stopwatchStopBtn.classList.add('hidden');
+                     stopwatchStartBtn.disabled = true;
+                     stopwatchMinutesInput.classList.remove('disabled');
+
+                     return;
+                }
+
+                stopwatchDisplay.textContent = formatStopwatchTime(elapsed);
+            }, 10);
+
+            stopwatchStartBtn.classList.add('hidden');
+            stopwatchStopBtn.classList.remove('hidden');
+            stopwatchMinutesInput.classList.add('disabled');
+            stopwatchStartBtn.disabled = false;
+            stopwatchStatus.textContent = "";
+         }
+        function stopStopwatch() {
+            if (!stopwatchInterval) return;
+            clearInterval(stopwatchInterval);
+            stopwatchInterval = null;
+            stopwatchElapsedTime = Date.now() - stopwatchStartTime;
+
+            if (stopwatchElapsedTime < stopwatchLimitMs) {
+                stopwatchStartBtn.textContent = 'Devam Et';
+                stopwatchStartBtn.classList.remove('hidden');
+                stopwatchStopBtn.classList.add('hidden');
+            } else {
+                 stopwatchStartBtn.textContent = 'Başlat';
+                 stopwatchStartBtn.classList.remove('hidden');
+                 stopwatchStopBtn.classList.add('hidden');
+                 stopwatchStartBtn.disabled = true;
+                 stopwatchMinutesInput.classList.remove('disabled');
+            }
+         }
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchInterval = null;
+
+            stopwatchElapsedTime = 0;
+            stopwatchStartTime = 0;
+            stopwatchDisplay.textContent = "00:00:00";
+            stopwatchStartBtn.textContent = 'Başlat';
+            stopwatchStartBtn.classList.remove('hidden');
+            stopwatchStopBtn.classList.add('hidden');
+            stopwatchMinutesInput.classList.remove('disabled');
+
+            let minutes = parseInt(stopwatchMinutesInput.value) || 0;
+            if(minutes > 40) minutes = 40;
+            if(minutes <= 0) {
+                minutes = 0;
+                stopwatchStartBtn.disabled = true;
+                stopwatchLimitMs = 0;
+            } else {
+                 stopwatchStartBtn.disabled = false;
+                 stopwatchLimitMs = minutes * 60 * 1000;
+            }
+             stopwatchMinutesInput.value = minutes;
+
+            lapHistoryContainer.innerHTML = '';
+            lapCount = 0;
+            stopwatchLapBtn.textContent = `Tur Kaydet (0)`;
+            stopwatchStatus.textContent = '';
+            stopwatchBeepPlayedSeconds.clear();
+         }
+
+        stopwatchStartBtn.addEventListener('click', startStopwatch);
+        stopwatchStopBtn.addEventListener('click', stopStopwatch);
+        stopwatchResetBtn.addEventListener('click', () => toggleOverlay(stopwatchMain, stopwatchConfirm, true));
+        stopwatchConfirmYes.addEventListener('click', () => {
+             stopwatchMinutesInput.value = '0';
+            resetStopwatch();
+            localStorage.removeItem('stopwatchMinutes');
+            toggleOverlay(stopwatchMain, stopwatchConfirm, false);
+        });
+        stopwatchConfirmNo.addEventListener('click', () => toggleOverlay(stopwatchMain, stopwatchConfirm, false));
+        stopwatchAlertOk.addEventListener('click', () => {
+            toggleOverlay(stopwatchMain, stopwatchAlert, false);
+             resetStopwatch();
+        });
+        stopwatchLapBtn.addEventListener('click', () => {
+             if (!stopwatchInterval && stopwatchElapsedTime === 0) {
+                stopwatchStatus.textContent = "Kronometre çalışmıyor.";
+                return;
+            }
+
+            lapCount++;
+            const lapTimeMs = stopwatchInterval ? (Date.now() - stopwatchStartTime) : stopwatchElapsedTime;
+            const finalLapTimeMs = Math.min(lapTimeMs, stopwatchLimitMs || Infinity);
+            const lapTime = formatStopwatchTime(finalLapTimeMs);
+
+            const lapChip = document.createElement('span');
+            lapChip.className = 'drawn-number-chip';
+            lapChip.textContent = `Tur ${lapCount}: ${lapTime}`;
+
+            lapHistoryContainer.prepend(lapChip);
+
+            stopwatchLapBtn.textContent = `Tur Kaydet (${lapCount})`;
+            stopwatchStatus.textContent = `Tur ${lapCount} kaydedildi.`;
+         });
+
+        // --- Öğrenci Seçme Mantığı ---
+         function setClassSizeDirectly(newSize) {
+             classSize = newSize >= 0 ? newSize : 0;
+             classSizeInput.value = classSize;
+             classSizeControls.style.display = classSize > 0 ? 'none' : 'flex';
+
+             if (classSize <= 0) {
+                 studentStatus.textContent = "Önce sınıf mevcudunu ayarlayın.";
+                 drawStudentBtn.disabled = true;
+                 localStorage.removeItem('classSize');
+             } else {
+                studentStatus.textContent = `Sınıf mevcudu ${classSize} olarak ayarlandı.`;
+                localStorage.setItem('classSize', classSize);
+             }
+             resetLottery();
+         }
+        function setClassSize() {
+             let value = parseInt(classSizeInput.value) || 0;
+             if (value <= 0 ) {
+                 studentStatus.textContent = "Lütfen geçerli bir sınıf mevcudu girin.";
+                 classSizeInput.value = '';
+                 if (classSize === 0) return;
+                 setClassSizeDirectly(0);
+                 return;
+             }
+            setClassSizeDirectly(value);
+        }
+
+        function resetLottery() {
+            studentPool = [];
+            drawnHistoryContainer.innerHTML = '';
+
+             classSizeControls.style.display = classSize <= 0 ? 'flex' : 'none';
+             if (classSize <= 0) {
+                  classSizeInput.value = '0';
+             }
+
+            if (classSize > 0) {
+                 for (let i = 1; i <= classSize; i++) {
+                     studentPool.push(i);
+                 }
+                 studentStatus.textContent = `Kura sıfırlandı. ${studentPool.length} öğrenci hazır.`;
+                 drawStudentBtn.disabled = false;
+            } else {
+                studentStatus.textContent = "Önce sınıf mevcudunu ayarlayın.";
+                drawStudentBtn.disabled = true;
+            }
+            studentDisplay.textContent = "?";
+         }
+
+        resetLotteryBtn.addEventListener('click', () => toggleOverlay(lotteryMain, lotteryConfirm, true));
+        lotteryConfirmYes.addEventListener('click', () => {
+            setClassSizeDirectly(0);
+            toggleOverlay(lotteryMain, lotteryConfirm, false);
+        });
+        lotteryConfirmNo.addEventListener('click', () => toggleOverlay(lotteryMain, lotteryConfirm, false));
+
+        function animateDraw() {
+             let count = 0;
+            clearInterval(drawAnimationInterval);
+
+            drawAnimationInterval = setInterval(() => {
+                if (classSize <= 0) {
+                    clearInterval(drawAnimationInterval);
+                    studentDisplay.textContent = "?";
+                    return;
+                }
+                const randomNum = Math.floor(Math.random() * classSize) + 1;
+                studentDisplay.textContent = randomNum;
+                count++;
+                if (count > 15) {
+                    clearInterval(drawAnimationInterval);
+                    drawStudentActual();
+                }
+            }, 50);
+         }
+        function drawStudentActual() {
+            if (studentPool.length === 0) {
+                 studentStatus.textContent = "Tüm öğrenciler seçildi!";
+                 drawStudentBtn.disabled = true;
+                return;
+             }
+
+            const randomIndex = Math.floor(Math.random() * studentPool.length);
+            const selectedStudent = studentPool[randomIndex];
+
+            studentPool.splice(randomIndex, 1);
+
+            studentDisplay.textContent = selectedStudent;
+
+            const numberChip = document.createElement('span');
+            numberChip.className = 'drawn-number-chip';
+            numberChip.textContent = selectedStudent;
+            drawnHistoryContainer.appendChild(numberChip);
+
+            drawnHistoryContainer.scrollLeft = drawnHistoryContainer.scrollWidth;
+
+            studentStatus.textContent = `Kalan öğrenci sayısı: ${studentPool.length}`;
+
+            if (studentPool.length === 0) {
+                studentStatus.textContent = "Tüm öğrenciler seçildi!";
+                drawStudentBtn.disabled = true;
+            }
+         }
+        function drawStudent() {
+            if (studentPool.length === 0 || drawStudentBtn.disabled) { return; }
+            initAudioContext();
+            animateDraw();
+        }
+
+        setClassSizeBtn.addEventListener('click', setClassSize);
+        drawStudentBtn.addEventListener('click', drawStudent);
+
+        // --- Takım Oluşturma Mantığı ---
+
+        function setTeamClassSizeDirectly(newSize) {
+            teamClassSize = newSize >= 0 ? newSize : 0;
+            teamClassSizeInput.value = teamClassSize;
+
+            teamSizeControls.style.display = teamClassSize > 0 ? 'none' : 'flex';
+            teamOptionsWrapper.style.display = teamClassSize > 0 ? 'block' : 'none';
+
+            if (teamClassSize <= 0) {
+                localStorage.removeItem('teamClassSize');
+            } else {
+                localStorage.setItem('teamClassSize', teamClassSize);
+            }
+            resetTeamBuilder();
+        }
+
+        function setTeamClassSize() {
+            let value = parseInt(teamClassSizeInput.value) || 0;
+            if (value <= 0) {
+                teamStatus.textContent = "Lütfen geçerli bir sınıf mevcudu girin.";
+                teamClassSizeInput.value = '';
+                if (teamClassSize === 0) return;
+                setTeamClassSizeDirectly(0);
+                return;
+            }
+            setTeamClassSizeDirectly(value);
+        }
+
+        function resetTeamBuilder() {
+            teamStudentPool = [];
+            teamHistoryContainer.innerHTML = '';
+
+            teamSizeControls.style.display = teamClassSize <= 0 ? 'flex' : 'none';
+            teamOptionsWrapper.style.display = teamClassSize > 0 ? 'block' : 'none';
+
+            if (teamClassSize <= 0) {
+                 teamClassSizeInput.value = '0';
+            }
+
+            if (teamClassSize > 0) {
+                 for (let i = 1; i <= teamClassSize; i++) {
+                     teamStudentPool.push(i);
+                 }
+            }
+            updateTeamButtonStates();
+        }
+
+        function updateTeamButtonStates() {
+             if (teamClassSize <= 0) {
+                 teamStatus.textContent = "Önce sınıf mevcudunu ayarlayın.";
+             } else {
+                 teamStatus.textContent = `Sınıf mevcudu ${teamClassSize}. Takım için hazır.`;
+             }
+
+             teamOptionButtons.forEach(btn => {
+                 const size = parseInt(btn.dataset.size);
+                 if (teamClassSize < size) {
+                     btn.disabled = true;
+                 } else {
+                     btn.disabled = false;
+                 }
+             });
+        }
+
+        function createTeams(teamSize) {
+            if (teamClassSize < teamSize) return;
+
+            initAudioContext();
+            playBeep(440, 100);
+
+            let shuffledPool = [...teamStudentPool].sort(() => 0.5 - Math.random());
+
+            let teams = [];
+            let numTeams = Math.floor(teamClassSize / teamSize);
+
+            let poolIndex = 0;
+
+            for (let i = 0; i < numTeams; i++) {
+                let newTeam = [];
+                for (let j = 0; j < teamSize; j++) {
+                    newTeam.push(shuffledPool[poolIndex++]);
+                }
+                teams.push(newTeam);
+            }
+
+            let teamToAddTo = 0;
+            while (poolIndex < shuffledPool.length) {
+                if (teams[teamToAddTo]) {
+                    teams[teamToAddTo].push(shuffledPool[poolIndex++]);
+                    teamToAddTo = (teamToAddTo + 1) % numTeams;
+                } else {
+                    break;
+                }
+            }
+
+            teamHistoryContainer.innerHTML = '';
+            teams.forEach((team, index) => {
+                const teamChip = document.createElement('div');
+                teamChip.className = 'team-chip';
+
+                const label = document.createElement('span');
+                label.className = 'team-chip-label';
+                label.textContent = `Takım ${index + 1}:`;
+                teamChip.appendChild(label);
+
+                team.forEach(num => {
+                    const numChip = document.createElement('span');
+                    numChip.className = 'drawn-number-chip';
+                    numChip.textContent = num;
+                    teamChip.appendChild(numChip);
+                });
+
+                teamHistoryContainer.appendChild(teamChip);
+            });
+
+            teamStatus.textContent = `${teams.length} takım oluşturuldu.`;
+        }
+
+        setTeamClassSizeBtn.addEventListener('click', setTeamClassSize);
+
+        teamBuilderResetBtn.addEventListener('click', () => toggleOverlay(teamBuilderMain, teamBuilderConfirm, true));
+
+        teamBuilderConfirmYes.addEventListener('click', () => {
+            setTeamClassSizeDirectly(0);
+            localStorage.removeItem('teamClassSize');
+            toggleOverlay(teamBuilderMain, teamBuilderConfirm, false);
+        });
+
+        teamBuilderConfirmNo.addEventListener('click', () => toggleOverlay(teamBuilderMain, teamBuilderConfirm, false));
+
+        teamOptionsWrapper.addEventListener('click', (e) => {
+            const targetButton = e.target.closest('button[data-size]');
+            if (targetButton) {
+                const size = parseInt(targetButton.dataset.size);
+                if (size) {
+                    createTeams(size);
+                }
+            }
+        });
+
+    </script>
+
+</body>
+</html>
