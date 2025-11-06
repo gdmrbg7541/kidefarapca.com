@@ -718,11 +718,70 @@
                 display: flex !important; /* hidden'ı ezmek için */
             }
         }
+      /* YENİ: Geri Tuşu Stili */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5em; 
+            color: #000000; 
+            background-color: var(--background-color); /* Panel rengiyle aynı */
+            border-radius: 50%; 
+            width: 44px;  
+            height: 44px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-light), var(--shadow-dark); /* 3D Efekti */
+            cursor: pointer;
+            z-index: 10;
+            font-family: var(--font-family);
+            transition: all 0.2s ease;
+            line-height: 1; 
+        }
+        .back-button:hover {
+            box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
+        .back-button:active {
+            box-shadow: var(--shadow-inset); /* Bastırma efekti */
+            transform: translateY(1px);
+        }
+        
+        /* Geri tuşları için konteynerleri ayarla */
+        #level2-container,
+        .overlay-content {
+            position: relative;
+        }
+
+        /* Geri tuşuyla içerik çakışmasın diye boşluk ekle */
+        #l2-root-area,
+        #start-screen h1,
+        #results-screen h2 {
+            margin-top: 30px; 
+        }
+
+        /* Mobil cihazlar için geri tuşu ayarı */
+        @media (max-width: 600px) {
+            .back-button {
+                top: 10px;
+                left: 10px;
+                width: 38px;
+                height: 38px;
+                font-size: 1.3em;
+            }
+            #l2-root-area,
+            #start-screen h1,
+            #results-screen h2 {
+                margin-top: 25px; /* Mobilde boşluk azaltıldı */
+            }
+        }
     </style>
     </head>
 <body>
     <div id="game-container">
         <main id="level2-container">
+            <div class="back-button" id="game-back-button">&#8617;</div>
             <div id="l2-turkish-words-progress"></div>
             
             <div id="l2-root-area"> 
@@ -744,6 +803,7 @@
 
         <div id="start-screen" class="overlay"> 
             <div class="overlay-content"> 
+            <div class="back-button" id="start-back-button">&#8617;</div>
                 <h1>Kelimenin Serüveni</h1> 
                 <h2>Seviye 2: Kökü Kalıba Yerleştir</h2> 
                 <div class="image-previews"> 
@@ -755,7 +815,12 @@
                 </div> 
             </div> 
         </div>
-        <div id="results-screen" class="overlay hidden"> <div class="overlay-content"> <h2 id="results-title">Oyun Bitti!</h2> <div id="results-details"></div> <button id="play-again-button">Ana Menüye Dön</button> </div> </div>
+        <div id="results-screen" class="overlay hidden"> 
+<div class="overlay-content"> 
+<div class="back-button" id="results-back-button">&#8617;</div> 
+<h2 id="results-title">Oyun Bitti!</h2> 
+<div id="results-details"></div> 
+<button id="play-again-button">Ana Menüye Dön</button> </div> </div>
     
         <div id="orientation-warning" class="overlay">
             <div class="overlay-content">
@@ -913,7 +978,7 @@
         "ك-م-ل": { "root": ["ك", "م", "ل"], "words": [ { "arapca": "كَمَال", "turkce": "Kemâl ✨", "kalipNo": "22" }, { "arapca": "كَامِل", "turkce": "Kâmil 🌟", "kalipNo": "33" }, { "arapca": "إِكْمَال", "turkce": "İkmâl 🏁", "kalipNo": "55" }, { "arapca": "تَكْمِيل", "turkce": "Tekmil ✅", "kalipNo": "61" }, { "arapca": "مُكَمَّل", "turkce": "Mükemmel 💯", "kalipNo": "63" } ] },
         "ر-ش-د": { "root": ["ر", "ش", "د"], "words": [ { "arapca": "رَشِيد", "turkce": "Reşît 🧠", "kalipNo": "35" }, { "arapca": "رُشْد", "turkce": "Rüşt 🧑", "kalipNo": "21" }, { "arapca": "إِرْشَاد", "turkce": "İrşât 🧭", "kalipNo": "55" }, { "arapca": "رَشَاد", "turkce": "Reşât ✨", "kalipNo": "22" }, { "arapca": "مُرْشِد", "turkce": "Mürşid 🧑‍🏫", "kalipNo": "56" }, { "arapca": "رَاشِد", "turkce": "Râşid 🚶", "kalipNo": "33" } ] },
         "أ-م-ن": { "root": ["أ", "م", "ن"], "words": [ { "arapca": "أَمَان", "turkce": "Emân 🛡️", "kalipNo": "22" }, { "arapca": "أَمِين", "turkce": "Emîn 🔒", "kalipNo": "35" }, { "arapca": "إِيمَان", "turkce": "İman 💖", "kalipNo": "55" }, { "arapca": "مُؤْمِن", "turkce": "Mümin 🙏", "kalipNo": "56" }, { "arapca": "تَأْمِين", "turkce": "Temin 🤝", "kalipNo": "61" } ] },
-        "ج-م-ع": { "root": ["ج", "م", "ع"], "words": [ { "arapca": "جَمْع", "turkce": "Cem 👥", "kalipNo": "19" }, { "arapca": "جَمْعِيَّة", "turkce": "Cemiyet 🏛️", "kalipNo": "19" }, { "arapca": "جَمَاعة", "turkce": "Cemâat 👨‍👩‍👧‍👦", "kalipNo": "22" }, { "arapca": "جَامِع", "turkce": "Cami 🕌", "kalipNo": "33" }, { "arapca": "مَجْمُوعَة", "turkce": "Mecmua 📚", "kalipNo": "36" }, { "arapca": "اِجْتِمَاع", "turkce": "İçtima 🤝", "kalipNo": "80" } ] },
+        "ج-م-ع": { "root": ["ج", "م", "ع"], "words": [ { "arapca": "جَمْع", "turkce": "Cem 👥", "kalipNo": "19" }, { "arapca": "جَمْعِيَّة", "turkce": "Cemiyet 🏛️", "kalipNo": "19" }, { "arapca": "جَمَاعة", "turkce": "Cemâat 👨‍👩‍👧‍👦", "kalipNo": "22" }, { "arapca": "جَامِع", "turkce": "Câmi 🕌", "kalipNo": "33" }, { "arapca": "مَجْمُوعَة", "turkce": "Mecmua 📚", "kalipNo": "36" }, { "arapca": "اِجْتِمَاع", "turkce": "İçtima 🤝", "kalipNo": "80" } ] },
         "ح-م-د": { "root": ["ح", "م", "د"], "words": [ { "arapca": "حَمْد", "turkce": "Hamd 🙏", "kalipNo": "19" }, { "arapca": "أَحْمَد", "turkce": "Ahmet 🌟", "kalipNo": "30" }, { "arapca": "حَمِيد", "turkce": "Hamît 😊", "kalipNo": "35" }, { "arapca": "مَحْمُود", "turkce": "Mahmut ✨", "kalipNo": "36" }, { "arapca": "مُحَمَّد", "turkce": "Muhammet 💖", "kalipNo": "63" } ] },
         "ش-ه-ر": { "root": ["ش", "ه", "ر"], "words": [ { "arapca": "شَهْر", "turkce": "Şehir ‪(‬Ay‪)‬ 📅", "kalipNo": "19" }, { "arapca": "شُهْرَة", "turkce": "Şöhret 🌟", "kalipNo": "21" }, { "arapca": "مَشْهُور", "turkce": "Meşhur 🤩", "kalipNo": "36" }, { "arapca": "تَشْهِير", "turkce": "Teşhir 🎨", "kalipNo": "61" } ] },
         "ش-ك-ر": { "root": ["ش", "ك", "ر"], "words": [ { "arapca": "شُكْر", "turkce": "Şükür 🙏", "kalipNo": "21" }, { "arapca": "شُكْرَان", "turkce": "Şükrân 💖", "kalipNo": "27" }, { "arapca": "شَاكِر", "turkce": "Şâkir 😊", "kalipNo": "33" }, { "arapca": "تَشَكُّر", "turkce": "Teşekkür 🙌", "kalipNo": "91" }, { "arapca": "مُتَشَكِّر", "turkce": "Müteşekkir 🥰", "kalipNo": "92" } ] },
@@ -960,6 +1025,11 @@
         const passiveSuffixesEl = document.querySelector('.l2-passive-suffixes'); 
         const l2RootArea = document.getElementById('l2-root-area');
         const l2BottomArea = document.getElementById('l2-bottom-area'); 
+
+        // Geri Tuşları (Buraya eklendi)
+        const gameBackButton = document.getElementById('game-back-button');
+        const startBackButton = document.getElementById('start-back-button');
+        const resultsBackButton = document.getElementById('results-back-button');
 
         // Ses Mantiği
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1592,7 +1662,50 @@
 
 
         setupDOMStructure(); // HTML'i ilk yüklemede ayarla
+// YENİ EKLENDİ: Geri Tuşu Dinleyicileri
+
+        // Başlangıç ekranı geri tuşu -> kidefarapca.com'a git
+        startBackButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            window.location.href = "https://kidefarapca.com";
+        });
+
+        // Oyun içi geri tuşu -> Ana menüye dön
+        gameBackButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            gameState.isGameActive = false; // Oyunu durdur
+            showScreen('start');
+        });
+
+        // Sonuç ekranı geri tuşu -> Ana menüye dön
+        resultsBackButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            showScreen('start'); // Sadece menüye dön (initializeGame değil)
+        });
+
+
+        setupDOMStructure(); // HTML'i ilk yüklemede ayarla
         initializeGame();
+    // YENİ EKLENDİ: Geri Tuşu Dinleyicileri
+
+        // Başlangıç ekranı geri tuşu -> kidefarapca.com'a git
+        startBackButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            window.location.href = "https://kidefarapca.com";
+        });
+
+        // Oyun içi geri tuşu -> Ana menüye dön
+        gameBackButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            gameState.isGameActive = false; // Oyunu durdur
+            showScreen('start');
+        });
+
+        // Sonuç ekranı geri tuşu -> Ana menüye dön
+        resultsBackButton.addEventListener('click', () => {
+            playGenericSound('touch');
+            showScreen('start'); // Sadece menüye dön (initializeGame değil)
+        });
     });
     </script>
     </body>
