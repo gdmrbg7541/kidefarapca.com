@@ -6,7 +6,7 @@
   <title>Kidef Arapça - Eğitici Oyunlar ve İçerikler</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -112,8 +112,7 @@
     }
 
     .game-card img {
-      /* === DEĞİŞTİRİLDİ === */
-      max-width: 60%; /* Kart genişliğini aşmasın ama %80'i kadar olsun */
+      max-width: 60%; 
       height: auto;    
       border-radius: 8px; 
       margin-bottom: 10px; 
@@ -127,7 +126,7 @@
 <header class="site-header">
   <div class="container">
     <h1>kidefarapca.com</h1>
-    <p class="arabic-welcome">أهلاً وسahلاً</p>
+    <p class="arabic-welcome">أهلاً وسلاً</p>
   </div>
 </header>
 
@@ -137,14 +136,21 @@
     <section id="etkilesimli-kitaplar" class="content-section">
       <h2>Etkileşimli Kitaplar</h2>
       <div class="game-grid">
+        
         <a href="flipbookkidef.html" class="game-card">
-          
           <img src="kidef.jpg" alt="Kidef Arapça Etkileşimli Kitap Kapak" />
-          
           <h3>Kidef Arapça 📒 (Beta)</h3>
           <span class="status-badge available">İncele</span>
         </a>
-      </div>
+
+        <a href="flipbooks/pratiksayfalar/flipbookpratiksayfalar.html" class="game-card">
+          
+          <img src="flipbooks/pratiksayfalar/pratiksayfalar.png" alt="Pratik Sayfalar Kitap Kapak" />
+          
+          <h3>Pratik Sayfalar 📖</h3>
+          <span class="status-badge available">İncele</span>
+        </a>
+        </div>
     </section>
     <section id="oyunlar" class="content-section">
       <h2>Oyunlar</h2>
@@ -271,18 +277,21 @@
 <a href="araclar.html" class="floating-tool-button" target="_blank" rel="noopener noreferrer">Araçlar 🎲</a>
 
 <script>
-/* .html olanlar aynı sekmede; diğerleri yeni sekmede */
+/* === SCRIPT GÜNCELLENDİ === */
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("a[href]").forEach(a => {
     const href = a.getAttribute("href");
     if (!href) return;
 
-    // KURAL: .html ile bitiyorsa VE araclar.html VEYA flipbookkidef.html DEĞİLSE
-    if (href.endsWith(".html") && href !== "araclar.html" && href !== "flipbookkidef.html") { 
+    // Yeni flipbook'un yolu
+    const newFlipbookPath = "flipbooks/pratiksayfalar/flipbookpratiksayfalar.html";
+
+    // KURAL: .html ile bitiyorsa VE istisna listesinde (araclar, flipbookkidef, newFlipbookPath) DEĞİLSE
+    if (href.endsWith(".html") && href !== "araclar.html" && href !== "flipbookkidef.html" && href !== newFlipbookPath) { 
       a.setAttribute("target", "_self");
       a.removeAttribute("rel");
     } 
-    // Diğer tüm linkler (araclar.html VE flipbookkidef.html dahil)
+    // Diğer tüm linkler (istisnalar dahil)
     else { 
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
