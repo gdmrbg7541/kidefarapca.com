@@ -26,7 +26,7 @@
             overflow: hidden; /* Kaydırmayı engelle */
         }
 
-        /* GÜNCELLENDİ: 16:9 Oran Konteyneri (Köşelere boşluk eklendi) */
+        /* GÜNCELLENDİ: 16:9 Oran Konteyneri (Varsayılan YATAY) */
         .aspect-ratio-wrapper {
             position: relative;
             width: 96vw; /* 100vw'den düşürüldü (sağ/sol boşluk) */
@@ -36,6 +36,17 @@
             margin: auto;
             background: #ffffff;
         }
+
+        /* YENİ: 9:16 Oran Konteyneri (DİKEY MOD) */
+        @media (orientation: portrait) {
+            .aspect-ratio-wrapper {
+                width: 54vh; /* 9:16 oran (yüksekliğe göre) */
+                height: 96vh;
+                max-width: 96vw;
+                max-height: 170.67vw; /* 9:16 oran (genişliğe göre) */
+            }
+        }
+
 
         /* GÜNCELLENDİ: Oyun Alanı Konteyneri (justify-content kaldırıldı) */
         .game-container {
@@ -195,13 +206,6 @@
             width: 100%;
             min-height: 0; /* Flexbox taşma sorununu önler */
         }
-        
-        /* GÜNCELLENDİ: Başlangıç ekranı ortalama kuralı kaldırıldı
-        .main-content-area.start-mode {
-            justify-content: center;
-        }
-        */
-
 
         /* Cümle Alanı */
         .sentence-display-area {
@@ -213,10 +217,9 @@
             border-radius: 0.8vmin;
             margin-bottom: 1.5vmin; /* GÜNCELLENDİ: 3 -> 1.5 */
             margin-top: 1.5vmin; 
-            /* height: 15vmin; */ /* GÜNCELLENDİ: Sabit yükseklik kaldırıldı */
             min-height: 15vmin; /* GÜNCELLENDİ: Minimum yükseklik eklendi */
             flex-shrink: 1; /* GÜNCELLENDİ: Daralmaya izin ver */
-            flex-grow: 0; /* GÜNCELLENDİ: İçerik dışında büyümesin */
+            flex-grow: 0; 
             overflow-y: auto; 
             width: 100%; 
         }
@@ -270,7 +273,6 @@
             height: auto; 
             opacity: 1;
             visibility: visible;
-            /* direction: ltr; */ /* GÜNCELLENDİ: Kaldırıldı. Cümle akışı RTL'ye döndü. */
         }
         
         /* Türkçe Kelime (Parça) */
@@ -286,7 +288,7 @@
             margin-bottom: 0.8vmin;
             padding: 0 0.5vmin; 
             height: 1.2em; 
-            direction: ltr; /* GÜNCELLENDİ: RTL düzenini kaldır */
+            direction: ltr; 
         }
         .turkish-translation.visible {
             visibility: visible;
@@ -308,7 +310,6 @@
 
         /* Tam Türkçe Cümle Alanı */
         .full-turkish-sentence-container {
-            /* display: block; */ /* GÜNCELLENDİ: 'flex' olarak ayarlandı */
             visibility: hidden; 
             opacity: 0; 
             height: 0; 
@@ -319,14 +320,13 @@
             color: #0056b3;
             transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
             direction: ltr;
-            background-color: transparent; /* GÜNCELLENDİ: Arka plan parent'tan gelir */
-            display: flex; /* GÜNCELLENDİ: Ortalamak için */
+            background-color: transparent; 
+            display: flex; 
             justify-content: center;
             align-items: center;
             padding: 0;
         }
         
-        /* Cümle bittiğinde tam Türkçeyi göster */
         .full-turkish-sentence-container.visible {
              visibility: visible;
              opacity: 1;
@@ -340,12 +340,12 @@
             text-align: center; 
             transition: opacity 0.3s, visibility 0.3s, height 0.3s;
             flex-shrink: 1; /* GÜNCELLENDİ: 0 -> 1 (Taşmayı önlemek için) */
-            flex-grow: 1; /* GÜNCELLENDİ: Dikey alanı doldurur */
+            flex-grow: 1; 
             width: 100%;
             display: flex; 
             flex-direction: column; 
             min-height: 0; 
-            gap: 1.5vmin; /* GÜNCELLENDİ: Yazı kutusu ile klavye arasını ayarlar */
+            gap: 1.5vmin; 
         }
 
         /* Input Wrapper */
@@ -354,17 +354,17 @@
             direction: rtl; 
             align-items: center;
             justify-content: center;
-            margin-bottom: 0; /* GÜNCELLENDİ: 1.5vmin -> 0 */
+            margin-bottom: 0; 
             transition: display 0.3s;
             flex-shrink: 0;
-            height: 15vmin; /* GÜNCELLENDİ: Sabit dikey yükseklik eklendi (yakl. 90px) */
+            height: 15vmin; 
         }
 
         #user-input {
-            width: 25vmin; /* GÜNCELLENDİ: 30vmin'den 25vmin'e düşürüldü */
+            width: 25vmin; 
             padding: 1.2vmin; 
             font-size: 4.5vmin; 
-            text-align: center; direction: rtl; /* GÜNCELLENDİ: right -> center */
+            text-align: center; direction: rtl; 
             border-radius: 0.8vmin; 
             margin-bottom: 0; 
             background-color: #fff;
@@ -375,13 +375,12 @@
         }
         #user-input:focus { outline: none; border-color: #007bff; }
         
-        /* GÜNCELLENDİ: Yeni Onay Butonu (Varsayılan KIRMIZI) */
         #submit-btn {
             font-family: 'Harmattan', sans-serif;
             font-size: 3.5vmin;
             font-weight: 700;
             color: white;
-            background-color: #E53935; /* GÜNCELLENDİ: Kırmızı */
+            background-color: #E53935; 
             border: none;
             border-radius: 0.8vmin; 
             width: 6vmin;
@@ -394,17 +393,16 @@
             transition: all 0.1s ease;
             margin-left: 1vmin; 
             flex-shrink: 0; 
-            box-shadow: 0 0.4vmin #C62828; /* GÜNCELLENDİ: Koyu Kırmızı */
+            box-shadow: 0 0.4vmin #C62828; 
         }
         #submit-btn:hover {
-            background-color: #C62828; /* GÜNCELLENDİ: Koyu Kırmızı */
+            background-color: #C62828; 
         }
         #submit-btn:active {
             transform: translateY(0.2vmin);
-            box-shadow: 0 0.2vmin #C62828; /* GÜNCELLENDİ: Koyu Kırmızı */
+            box-shadow: 0 0.2vmin #C62828; 
         }
 
-        /* YENİ: Onay tuşu hazır (doğru) olduğunda vurgulama (YEŞİL) */
         #submit-btn.ready {
             background-color: #4CAF50;
             color: white;
@@ -420,7 +418,7 @@
         .keyboard {
             display: flex; flex-direction: column;
             gap: 1.5vmin; 
-            margin-top: 0; /* GÜNCELLENDİ: 0.5vmin -> 0 */
+            margin-top: 0; 
             justify-content: center; 
             min-height: 0; 
         }
@@ -433,7 +431,6 @@
         }
         .special-keys-row { direction: ltr; }
         
-        /* GÜNCELLENDİ: Klavye Tuşu Stili (Yuvarlak) */
         .keyboard button {
             font-family: 'Harmattan', sans-serif; 
             padding: 0; 
@@ -453,7 +450,6 @@
             transform: translateY(0.2vmin);
         }
         
-        /* YENİ: Devre dışı bırakılmış tuş stili */
         .keyboard button:disabled {
             background-color: #e0e0e0 !important;
             box-shadow: 0 0.4vmin #ccc !important;
@@ -462,7 +458,6 @@
             transform: none !important;
         }
 
-        /* GÜNCELLENDİ: "İlerle" tuşu (ayrıldı) */
         .keyboard .key-next {
             font-weight: 700; 
             font-size: 5.5vmin; 
@@ -470,7 +465,6 @@
             padding: 0; 
         }
         
-        /* GÜNCELLENDİ: "Silme" tuşu (ayrıldı ve küçültüldü) */
         .keyboard .key-backspace {
             font-weight: 700; 
             font-size: 3.0vmin; 
@@ -492,14 +486,12 @@
             box-shadow: 0 0.2vmin #C62828 !important; 
         }
         
-        /* GÜNCELLENDİ: Vurgu Animasyonu (Yeşil) */
         .keyboard .key-next.highlight-pulse {
             background-color: #4CAF50;
             color: white;
             box-shadow: 0 0.4vmin #28b05d;
             animation: pulse-green 1.5s infinite;
         }
-        /* Aktif (disabled olmayan) tuşun :active durumunu ez */
         .keyboard .key-next.highlight-pulse:not(:disabled):active {
             box-shadow: 0 0.2vmin #28b05d;
         }
@@ -518,39 +510,35 @@
             }
         }
         
-        /* YENİ: Başlangıç Butonu Alanı */
         #start-prompt {
             display: none;
             flex-direction: column;
-            justify-content: flex-start; /* GÜNCELLENDİ: center -> flex-start */
+            justify-content: flex-start; 
             align-items: center;
             width: 100%;
-            flex-grow: 1; /* GÜNCELLENDİ: Dikey alanı doldurur */
-            padding-bottom: 2vmin; /* GÜNCELLENDİ: Butonun altına boşluk ekler */
+            flex-grow: 1; 
+            padding-bottom: 2vmin; 
             box-sizing: border-box; 
-            min-height: 0; /* GÜNCELLENDİ: Esnek yapının taşmasını engeller */
+            min-height: 0; 
         }
         
-        /* YENİ: Başlangıç Kuralları Konteyneri */
         #start-rules-container {
-            direction: rtl; /* İpuçları RTL */
-            width: 100%; /* GÜNCELLENDİ: 90vmin -> 100% (parent'a uyar) */
-            /* height: 55vh; */ /* GÜNCELLENDİ: Sabit yükseklik kaldırıldı */
-            flex-grow: 1; /* GÜNCELLENDİ: Dikeyde esner */
-            min-height: 0; /* GÜNCELLENDİ: Flexbox taşma önlemi */
+            direction: rtl; 
+            width: 100%; 
+            flex-grow: 1; 
+            min-height: 0; 
             background-color: #fafafa;
             border: 0.1vmin solid #e0e0e0;
             border-radius: 0.8vmin;
             padding: 2vmin;
-            overflow-y: auto; /* Uzunsa kaydır */
-            overflow-x: hidden; /* GÜNCELLENDİ: Yatay kaydırmayı engeller */
-            /* margin-bottom: 2vmin; */ /* GÜNCELLENDİ: Kaldırıldı */
+            overflow-y: auto; 
+            overflow-x: hidden; 
             box-sizing: border-box;
         }
         #start-rules-container h3 {
             font-family: 'Marhey', sans-serif;
-            text-align: left; /* GÜNCELLENDİ: right -> left */
-            font-size: 4vmin; /* Modal'dan biraz küçük */
+            text-align: left; 
+            font-size: 4vmin; 
             color: #0056b3;
             border-bottom: 0.2vmin solid #eee;
             padding-bottom: 1vmin;
@@ -558,12 +546,12 @@
         }
         #start-rules-container ul {
              padding-right: 2vmin;
-             padding-left: 4vmin; /* GÜNCELLENDİ: Sol boşluk eklendi */
+             padding-left: 4vmin; 
              text-align: right;
         }
         #start-rules-container li {
             font-family: 'Marhey', sans-serif; 
-            font-size: 2.8vmin; /* Modal'dan biraz küçük */
+            font-size: 2.8vmin; 
             line-height: 1.7;
             list-style-type: '✓ '; 
             margin-bottom: 1vmin;
@@ -574,7 +562,7 @@
             display: inline-block; 
             direction: rtl; 
             font-family: 'Harmattan', sans-serif; 
-            font-size: 3.0vmin; /* Modal'dan biraz küçük */
+            font-size: 3.0vmin; 
             background-color: transparent; 
             color: #d9534f;
             padding: 0.2vmin 0.6vmin;
@@ -584,27 +572,26 @@
         
         #start-btn {
             font-family: 'Marhey', sans-serif;
-            font-size: 4vmin; /* GÜNCELLENDİ: 5 -> 4 */
+            font-size: 4vmin; 
             font-weight: 700;
             color: white;
             background-color: #007bff;
             border: none;
             border-radius: 1vmin;
-            padding: 1.5vmin 3vmin; /* GÜNCELLENDİ: 2v 4v -> 1.5v 3v */
+            padding: 1.5vmin 3vmin; 
             cursor: pointer;
             box-shadow: 0 0.5vmin #0056b3;
             animation: pulse-blue 1.5s infinite;
-            margin-top: 2vmin; /* GÜNCELLENDİ: '0' -> '2vmin' (Boşluk) */
-            flex-shrink: 0; /* GÜNCELLENDİ: Butonun kaybolmasını engeller */
+            margin-top: 2vmin; 
+            flex-shrink: 0; 
         }
         #start-btn:active {
             transform: translateY(0.2vmin);
             box-shadow: 0 0.3vmin #0056b3;
         }
 
-        /* GÜNCELLENDİ: Tahmin/Cümle Konteyneri (Beyaz Arka Plan) */
         .prompt-container {
-            display: none; /* Varsayılan olarak gizli */
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -614,11 +601,10 @@
             width: 100%;
         }
 
-        /* Tahmin Etme Butonu Alanı Stili */
         #guess-prompt {
             display: none; 
             text-align: center;
-            margin-bottom: 0; /* GÜNCELLENDİ: 1.5vmin -> 0 */
+            margin-bottom: 0; 
             flex-shrink: 0;
             flex-direction: column;
             justify-content: center;
@@ -649,7 +635,6 @@
             transform: scale(1.1);
         }
 
-        /* İpuçları Butonu Vurgusu */
         #hint-btn {
             padding: 1vmin 2vmin; 
             font-size: 1.8vmin; 
@@ -676,18 +661,16 @@
             overflow: auto; background-color: rgba(0, 0, 0, 0.5);
             animation: fadeIn 0.3s;
         }
-        /* GÜNCELLENDİ: İpucu kutusu büyütüldü ve boşluk artırıldı */
         .modal-content {
             background-color: #fefefe; margin: 15% auto; 
-            padding: 4vmin; /* GÜNCELLENDİ: 2.5 -> 4 */
+            padding: 4vmin; 
             border: 0.1vmin solid #888; 
             width: 90%; 
-            max-width: 90vmin; /* GÜNCELLENDİ: 70 -> 90 */
+            max-width: 90vmin; 
             border-radius: 1vmin; 
             position: relative; animation: slideIn 0.3s;
         }
         
-        /* İpucu Modalı (RTL) */
         #hint-modal .modal-content {
             direction: rtl;
         }
@@ -701,38 +684,35 @@
         #hint-modal .close-btn:hover,
         #hint-modal .close-btn:focus { color: #000; text-decoration: none; }
         
-        /* GÜNCELLENDİ: İpucu başlık fontu büyütüldü */
         .modal-body h3 {
             font-family: 'Marhey', sans-serif;
-            text-align: left; /* GÜNCELLENDİ: right -> left */
-            font-size: 4.5vmin; /* GÜNCELLENDİ: 3 -> 4.5 */
+            text-align: left; 
+            font-size: 4.5vmin; 
             color: #0056b3; border-bottom: 0.2vmin solid #eee; padding-bottom: 1vmin;
-            direction: ltr; /* GÜNCELLENDİ: LTR eklendi */
+            direction: ltr; 
         }
         .modal-body ul {
              padding-right: 2vmin;
-             padding-left: 4vmin; /* GÜNCELLENDİ: Sol boşluk eklendi */
+             padding-left: 4vmin; 
              text-align: right;
         }
         
-        /* GÜNCELLENDİ: İpucu metin fontu büyütüldü */
         .modal-body li {
             font-family: 'Marhey', sans-serif; 
-            font-size: 3.2vmin; /* GÜNCELLENDİ: 2.2 -> 3.2 */
-            line-height: 1.8; /* GÜNCELLENDİ: 1.6 -> 1.8 */
+            font-size: 3.2vmin; 
+            line-height: 1.8; 
             list-style-type: '✓ '; 
             margin-bottom: 1vmin;
             direction: ltr; 
             text-align: left; 
         }
-        /* GÜNCELLENDİ: İpucu kod fontu büyütüldü */
         .modal-body li code {
             display: inline-block; 
             direction: rtl; 
             font-family: 'Harmattan', sans-serif; 
-            font-size: 3.4vmin; /* GÜNCELLENDİ: 2.4 -> 3.4 */
-            background-color: transparent; /* Fosfor kaldırıldı */
-            color: #d9534f; /* Kırmızımsı */
+            font-size: 3.4vmin; 
+            background-color: transparent; 
+            color: #d9534f; 
             padding: 0.2vmin 0.6vmin;
             border-radius: 0.4vmin; 
             font-weight: bold; 
@@ -742,7 +722,7 @@
         #error-modal .modal-content {
             direction: ltr;
             text-align: center;
-            border-top: 0.5vmin solid #D32F2F; /* Kırmızı uyarı */
+            border-top: 0.5vmin solid #D32F2F; 
         }
         #error-modal-body {
             font-family: 'Marhey', sans-serif;
@@ -771,6 +751,91 @@
             from {transform: translateY(-5vmin); opacity: 0;}
             to {transform: translateY(0); opacity: 1;}
         }
+
+        /*
+         * YENİ: YATAY MOD KÜÇÜLTME (SADECE TELEFONLAR)
+         * Cihaz yatay çevrildiğinde VE yüksekliği 600px'den az ise
+         * (yani bilgisayar değil, telefon ise) dikey sığmayı sağlar.
+        */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .game-container {
+                padding: 1.5vmin; /* 2.5'tan küçültüldü */
+                border-radius: 1vmin;
+            }
+            .header {
+                padding-bottom: 1vmin;
+                margin-bottom: 1vmin;
+            }
+            .header h1 {
+                font-size: 2.5vmin; /* 3'ten */
+            }
+            #back-btn {
+                width: 4vmin; /* 4.5'ten */
+                height: 4vmin;
+                line-height: 4vmin;
+                font-size: 2.5vmin; /* 3'ten */
+            }
+            #joker-btn, #hint-btn {
+                padding: 0.8vmin 1.5vmin;
+                font-size: 1.6vmin; /* 1.8'den */
+            }
+            .level-selector button {
+                padding: 0.8vmin 1.2vmin;
+                font-size: 1.6vmin; /* 1.8'den */
+            }
+            
+            .sentence-display-area {
+                padding: 1.5vmin; /* 2'den */
+                min-height: 12vmin; /* 15'ten */
+                margin-top: 1vmin;
+                margin-bottom: 1vmin;
+            }
+            .arabic-word {
+                font-size: 5vmin; /* 6'dan */
+            }
+            .turkish-translation {
+                font-size: 2.5vmin; /* 3'ten */
+            }
+
+            .input-area {
+                gap: 1vmin; /* 1.5'ten */
+            }
+            .input-wrapper {
+                height: 12vmin; /* 15'ten */
+            }
+            #user-input {
+                padding: 1vmin;
+                font-size: 4vmin; /* 4.5'ten */
+            }
+            #submit-btn {
+                width: 5vmin; /* 6'dan */
+                height: 5vmin;
+                line-height: 5vmin;
+                font-size: 3vmin; /* 3.5'ten */
+            }
+
+            .keyboard {
+                gap: 1vmin; /* 1.5'ten */
+            }
+            .keyboard-row {
+                gap: 1.5vmin; /* 2'den */
+            }
+            .keyboard button {
+                font-size: 4vmin; /* 5'ten */
+                width: 6vmin; /* 7'den */
+                height: 6vmin; /* 7'den */
+                line-height: 6vmin; /* 7'den */
+            }
+            .keyboard .key-backspace {
+                font-size: 2.5vmin; /* 3.0'dan */
+                line-height: 6vmin;
+            }
+            .keyboard .key-next {
+                font-size: 4.5vmin; /* 5.5'ten */
+                line-height: 6vmin;
+            }
+        }
+
     </style>
 </head>
 <body>
