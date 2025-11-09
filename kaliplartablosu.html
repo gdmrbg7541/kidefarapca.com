@@ -214,7 +214,7 @@
         /* GÜNCELLENDİ: Türkçe kelime (3D Kabartma) */
         .l2-turkish-word {
             font-family: var(--font-family) !important; 
-            font-size: 1.6em; 
+            font-size: 1.3em; 
             font-weight: bold;
             color: var(--text-color); 
             padding: 10px 18px;
@@ -416,7 +416,7 @@
          }
 
         #l2-global-result { 
-            margin-top: 15px; 
+            margin-top: 5px; 
             font-size: 1.1em; 
             color: var(--primary-color); 
             font-weight: 500; 
@@ -430,7 +430,7 @@
             display: flex;
             justify-content: space-between; 
             align-items: center;
-            margin-top: auto; 
+            margin-top: 10px; 
             padding-top: 5px; 
             flex-shrink: 0;
             direction: ltr; 
@@ -776,6 +776,58 @@
                 margin-top: 25px; /* Mobilde boşluk azaltıldı */
             }
         }
+/* YENİ EKLENDİ: Masaüstü 16:9 Oran Kuralı */
+@media (min-width: 601px) and (orientation: landscape) {
+    
+    /* 1. İçeriği yeni 16:9 kutuya sığdırmak için temel yazı tipi boyutunu
+         ekran yüksekliğine (viewport-height) göre ayarla.
+         (5vh = ekran yüksekliğinin %5'i)
+         Bu, içerdeki tüm 'em' birimlerinin orantılı olarak ölçeklenmesini sağlar.
+    */
+    :root {
+        --base-font-size: 5vh;
+    }
+
+    /* 2. Ana oyun konteynerini 16:9 oranına zorla */
+    #game-container {
+        /* Mevcut 90% genişlik ayarını geçersiz kıl */
+        width: auto; 
+        
+        /* En-boy oranını 16:9 olarak ayarla */
+        aspect-ratio: 16 / 9;
+        
+        /* Konteynerin yüksekliğini ekran yüksekliğinin %95'i yap.
+           'aspect-ratio' sayesinde genişlik otomatik olarak (95vh * 16 / 9) 
+           hesaplanacaktır.
+        */
+        height: 95vh;
+        
+        /* Ekranın 16:9'dan daha dar (örn: 4:3) olması durumunda
+           konteynerin ekran dışına taşmasını engelle.
+           Bu, konteyner genişliğini ekran genişliğinin %95'i ile sınırlar.
+           Tarayıcı, bu iki kuraldan (height ve max-width) hangisi daha
+           kısıtlayıcı ise onu uygular ve 16:9 oranını korur.
+        */
+        max-width: 95vw;
+        
+        /* Konteyneri dikey ve yatayda ortala */
+        margin: auto;
+    }
+    
+    /* 3. İçerideki oyun panelinin yeni 16:9 kutuyu doldurmasını sağla */
+    #level2-container {
+        /* Ana konteynerin %100'ü kadar yüksek ol */
+        height: 100%;
+        
+        /* Oyun öğelerinin (kartlar, kelimeler) 16:9 geniş ekranda
+           çok fazla yayılmasını engellemek için maksimum genişlik ekleyelim.
+           Bu, oyunun daha derli toplu görünmesini sağlar.
+        */
+        max-width: 1400px; /* 16:9 ekranlar için makul bir sınır */
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
     </style>
     </head>
 <body>
