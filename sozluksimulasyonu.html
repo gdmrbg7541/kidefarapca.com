@@ -10,42 +10,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;500;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
 
     <style>
-        /* GÜNCELLENDİ: 16:9 Ölçekleme için Temel Ayarlar */
-        html, body {
+        /* GÜNCELLENDİ: Dinamik Viewport (dvh) için Temel Ayarlar */
+        html {
+            height: 100%;
+        }
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f4f7f6;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            height: 100%; /* Tam yüksekli */
-            /* direction: rtl; GÜNCELLENDİ: Buradan kaldırıldı */
+            height: 100vh; /* Fallback (dvh desteklemeyenler için) */
+            height: 100dvh; /* GÜNCELLENDİ: Mobil adres çubuğunu hesaba katar */
             margin: 0;
-            padding: 0; /* Body padding'i kaldır */
+            padding: 0; 
             box-sizing: border-box;
-            overflow: hidden; /* Kaydırmayı engelle */
+            overflow: hidden; 
         }
 
         /* GÜNCELLENDİ: 16:9 Oran Konteyneri (Varsayılan YATAY) */
         .aspect-ratio-wrapper {
             position: relative;
-            width: 96vw; /* 100vw'den düşürüldü (sağ/sol boşluk) */
-            height: 54vw; /* 96 * (9 / 16) = 54 */
-            max-height: 96vh; /* 100vh'den düşürüldü (üst/alt boşluk) */
-            max-width: 170.67vh; /* 96 * (16 / 9) */
+            width: 96vw; 
+            height: 54vw; 
+            max-height: 96vh; /* Fallback */
+            max-height: 96dvh; /* GÜNCELLENDİ: dvh kullanımı */
+            max-width: 170.67vh; /* Fallback */
+            max-width: 170.67dvh; /* GÜNCELLENDİ: dvh kullanımı */
             margin: auto;
             background: #ffffff;
         }
 
-        /* YENİ: 9:16 Oran Konteyneri (DİKEY MOD) */
+        /* GÜNCELLENDİ: Dikey mod (9:16) desteği kaldırıldı. */
+        /*
         @media (orientation: portrait) {
             .aspect-ratio-wrapper {
-                width: 54vh; /* 9:16 oran (yüksekliğe göre) */
-                height: 96vh;
+                width: 54vh; 
+                width: 54dvh; 
+                height: 96vh; 
+                height: 96dvh; 
                 max-width: 96vw;
-                max-height: 170.67vw; /* 9:16 oran (genişliğe göre) */
+                max-height: 170.67vw; 
             }
         }
+        */
 
 
         /* GÜNCELLENDİ: Oyun Alanı Konteyneri (justify-content kaldırıldı) */
@@ -752,6 +760,37 @@
             to {transform: translateY(0); opacity: 1;}
         }
 
+        /* YENİ: Yönlendirme Uyarısı Stilleri */
+        #orientation-warning {
+            display: none; /* Varsayılan olarak gizli */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100dvh; /* Tam ekran yükseklik */
+            background-color: #ffffff;
+            z-index: 2000; /* Her şeyin üstünde */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: 'Marhey', sans-serif;
+            font-size: 3vmin;
+            color: #333;
+            line-height: 1.6;
+            padding: 2vmin;
+            box-sizing: border-box;
+        }
+
+        /* YENİ: Dikey Mod (Portrait) Uyarısı */
+        @media (orientation: portrait) {
+            .aspect-ratio-wrapper {
+                display: none; /* Oyunu gizle */
+            }
+            #orientation-warning {
+                display: flex; /* Uyarıyı göster */
+            }
+        }
+
         /*
          * YENİ: YATAY MOD KÜÇÜLTME (SADECE TELEFONLAR)
          * Cihaz yatay çevrildiğinde VE yüksekliği 600px'den az ise
@@ -840,6 +879,10 @@
 </head>
 <body>
     
+    <div id="orientation-warning">
+         <p>Bu uygulama dikey modu desteklememektedir.<br>Lütfen cihazınızı yatay konuma çeviriniz.</p>
+    </div>
+
     <div class="aspect-ratio-wrapper">
         <div class="game-container">
             
@@ -960,7 +1003,7 @@
         // --- GÜNCELLENDİ: OYUN VERİLERİ (DETAYLANDIRILDI VE DÜZELTİLDİ) ---
         
        // --- GÜNCELLENDİ: OYUN VERİLERİ (DETAYLANDIRILDI VE DÜZELTİLDİ) ---
-        const gameData = [
+       const gameData = [
             // --- SEVİYE 1 ---
             {
                 level: 1,
