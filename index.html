@@ -25,6 +25,7 @@
     .container{
       max-width:1280px;
       padding:15px;
+      /* Header ile içerik arasına boşluk eklendi */
       margin: 25px auto 0; 
     }
     
@@ -37,6 +38,7 @@
     }
     .site-header .container{
       display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
+      /* Header'ın içindeki container'ın üst boşluğunu sıfırla */
       margin-top: 0;
     }
     .site-header h1{font-family:'Marhey',sans-serif;font-size:2.5em;margin:0;font-weight:700}
@@ -136,7 +138,6 @@
       z-index: 1; 
     }
 
-    /* Varsayılan kart başlık rengi */
     .game-card h3{font-family:'Marhey',sans-serif;color:#27AE60;font-size:1.3em;margin:0 0 5px}
     .game-card .level-info{font-size:.9em;color:#555;margin:0 0 10px}
 
@@ -186,39 +187,38 @@
       
       /* --- FONT KÜÇÜLTME DEĞİŞİKLİĞİ (YENİ) --- */
       .default-game-emoji, .kss-level-emoji { 
-          font-size: 1.3em; /* 1.4em idi */
-          min-height: 30px; /* 35px idi */
+          font-size: 1.0em; /* 1.5em idi */
+          min-height: 35px; /* 40px idi */
       }
       .default-game-content h3, .kss-level-name { 
-          font-size: 0.75em; /* 0.85em idi */
-          min-height: 2.8em; 
+          font-size: 0.85em; /* 0.9em idi */
+          min-height: 2.8em; /* 3 satıra yakın */
       }
       .kss-level-number { 
-          font-size: 1.0em; /* 1.1em idi */
-          min-height: 18px; /* 20px idi */
+          font-size: 1.1em; /* 1.2em idi */
+          min-height: 20px; /* 25px idi */
       }
       .game-card-description { 
-          font-size: 0.6em; /* 0.65em idi */
+          font-size: 0.65em; /* 0.7em idi */
           min-height: 2.5em; 
-          color: #777; /* Varsayılan açıklama rengi */
       }
       .status-badge {
-          font-size: 0.7em; /* 0.75em idi */
-          padding: 3px 6px; /* 4px 8px idi */
-          margin-top: 5px; /* 6px idi */
+          font-size: 0.75em; /* 0.8em idi */
+          padding: 4px 8px; /* 4px 10px idi */
+          margin-top: 6px; /* 8px idi */
       }
       .book-cover-img {
-          max-width: 50px; /* 55px idi */
-          min-height: 30px; /* 35px idi */
+          max-width: 55px; /* 60px idi */
+          min-height: 35px; /* 40px idi */
       }
       
       /* "Kelimenin Serüveni" ara başlığını küçült */
       .subsection-title {
-          font-size: 1.1em; /* 1.2em idi */
+          font-size: 1.2em; /* 1.5em (base) idi */
           margin: 15px 0 5px;
       }
       .subhead {
-          font-size: 0.75em; /* 0.8em idi */
+          font-size: 0.8em; /* .95em (base) idi */
           margin-top: 0;
       }
       /* --- FONT KÜÇÜLTME SONU --- */
@@ -230,14 +230,12 @@
           overflow-x: auto;
           padding: 10px 0 10px 0;
           -webkit-overflow-scrolling: touch;
-          
-          /* --- SNAP VE BÜYÜTME İPTALİ --- */
-          scroll-snap-type: none; /* 'x mandatory' idi */
-          
+          scroll-snap-type: x mandatory;
           margin-top: 15px;
           flex-wrap: nowrap; 
           
-          gap: 5px; /* 6px idi */
+          /* --- KART BOŞLUK DEĞİŞİKLİĞİ --- */
+          gap: 6px; /* 8px idi */
           
           padding-left: 20px; 
           padding-right: 20px; 
@@ -246,33 +244,33 @@
       .mobile-scroll-grid-single .game-card {
           flex-shrink: 0;
           
-          /* --- 3.5+ KART GÖRÜNÜMÜ --- */
-          width: 30%; /* 50% idi */
-          max-width: 110px; /* 140px idi */
+          /* Kartı biraz daha daralt */
+          width: 50%; /* 55% idi */
+          max-width: 140px; /* 150px idi */
 
-          /* --- SNAP VE BÜYÜTME İPTALİ --- */
-          scroll-snap-align: none; /* 'center' idi */
-          transform: scale(1) !important; /* JS'yi ez */
-
-          padding: 6px; /* 8px idi */
+          scroll-snap-align: center;
+          
+          /* Kartın iç boşluğunu azalt (yeni) */
+          padding: 8px; /* 10px idi */
+          /* Kartın min yüksekliğini sıfırla (yeni) */
           min-height: auto; 
 
-          /* transition: transform 0.25s ease-out; -> Artık gerek yok */
+          transform: scale(0.77); 
+          transition: transform 0.25s ease-out; 
           z-index: 1;
       }
       
-      /* --- SNAP VE BÜYÜTME İPTALİ --- */
       .mobile-scroll-grid-single .game-card.is-centered {
-          transform: scale(1) !important; /* JS'yi ez */
-          z-index: 1;
+          transform: scale(0.9); 
+          z-index: 2;
       }
       
       .mobile-scroll-grid-single .game-card:hover,
       .mobile-scroll-grid-single .game-card:active {
-          transform: none !important; 
+          transform: none; 
       }
       .mobile-scroll-grid-single .game-card.is-centered:hover {
-          transform: scale(1) !important; 
+          transform: scale(0.9); 
       }
       
       @media (hover: none) {
@@ -281,10 +279,10 @@
             box-shadow: 0 4px 8px rgba(0,0,0,.08);
           }
           .mobile-scroll-grid-single .game-card:hover {
-            transform: scale(1) !important; 
+            transform: scale(0.77); 
           }
           .mobile-scroll-grid-single .game-card.is-centered:hover {
-            transform: scale(1) !important; 
+            transform: scale(0.9); 
           }
           #one-cikan-card:hover {
             transform: scale(1.02); 
@@ -310,10 +308,9 @@
       .kss-card { min-height: 190px; }
       .game-card-soon { min-height: 190px; }
       
-      /* --- 3.5+ KART GÖRÜNÜMÜ (KÜÇÜK MOBİL) --- */
+      /* Mobil kart genişliği ayarı */
       .mobile-scroll-grid-single .game-card {
-        width: 28%; /* 48% idi */
-        max-width: 100px;
+        width: 48%; /* 50% idi */
       }
     }
 
@@ -370,7 +367,6 @@
       min-height: 30px; 
     }
     
-    /* KART BAŞLIK (MASAÜSTÜ) */
     .kss-level-name,
     .default-game-content h3 {
        font-size: 1.3em;
@@ -381,7 +377,6 @@
        align-items: center;
        justify-content: center;
        width: 100%;
-       /* Renk buradan yönetilecek */
     }
     
     .kss-level-name {
@@ -402,11 +397,10 @@
       margin-top: 8px; 
     }
 
-    /* KART AÇIKLAMA (MASAÜSTÜ) */
     .game-card-description {
       font-size: 0.85em;
       font-style: italic;
-      color: #666; /* Varsayılan renk */
+      color: #666;
       margin-top: 4px;
       padding: 0 5px;
       flex-grow: 1; 
@@ -554,48 +548,6 @@
       }
     }
     /* --- YouTube Düzenlemesi Son --- */
-
-
-    /* --- YENİ: KATEGORİ RENKLENDİRME --- */
-    
-    /* 1. Etkileşimli Kitaplar (Mavi) */
-    #etkilesimli-kitaplar h2 { color: #2980B9; }
-    #etkilesimli-kitaplar .game-card h3 { color: #2980B9; }
-    #etkilesimli-kitaplar .game-card .game-card-description { color: #5DADE2; }
-
-    /* 2. Oyunlar (Yeşil) - Zaten yeşildi, kalsın */
-    /* #oyunlar h2 { color: #16A085; } */ /* Ana başlık rengi */
-    /* #oyunlar .game-card h3 { color: #27AE60; } */ /* Varsayılan kart başlığı */
-
-    /* 3. Temel Beceriler (Turuncu) */
-    #temel-beceriler h2 { color: #E67E22; }
-    #temel-beceriler .game-card h3 { color: #E67E22; }
-    #temel-beceriler .game-card .game-card-description { color: #F39C12; }
-
-    /* 4. Sınıfiçi Materyaller (Mor) */
-    #sinifici-materyaller h2 { color: #8E44AD; }
-    #sinifici-materyaller .game-card h3 { color: #8E44AD; }
-    #sinifici-materyaller .game-card .game-card-description { color: #A569BD; }
-
-    /* 5. YouTube (Kırmızı) */
-    #youtube-kanallari h2 { color: #C0392B; }
-    #youtube-kanallari .game-card h3 { color: #C0392B; }
-    #youtube-kanallari .game-card .game-card-description { color: #E74C3C; }
-    /* --- KATEGORİ RENKLENDİRME SONU --- */
-
-
-    /* --- YENİ: KELİMENİN SERÜVENİ GRADYAN BAŞLIK --- */
-    /* Sadece Kelimenin Serüveni kart başlıklarına gradyan uygula */
-    [aria-label="Kelimenin Serüveni seviyeleri"] .kss-level-name {
-        background: linear-gradient(90deg, #E91E63, #F39C12, #4CAF50, #2196F3);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-        /* Mobil için küçültülmüş fontta gradyanın daha iyi görünmesi için */
-        font-weight: 700; 
-    }
-    /* --- GRADYAN SONU --- */
     
   </style>
 </head>
@@ -991,9 +943,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (card.getAttribute('target') === '_blank') {
         e.preventDefault(); // Navigasyonu engelle
         
-        // 3.5+ kart görünümü için 'scrollIntoView' GEREKMEZ
-        // if (isTouchDevice) { ... } -> Bu kısım kaldırıldı.
-        
+        // Diğer kartlar gibi dokununca merkeze kaydır
+        if (isTouchDevice) {
+          card.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'center'
+          });
+        }
         return; // İşlemi bitir
       }
       // --- GÜNCELLEME SONU ---
@@ -1017,9 +974,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Diğer tüm normal kart gövdeleri için (dokunmatik cihazda)
       e.preventDefault(); // Navigasyonu HER ZAMAN engelle
       
-      // 3.5+ kart görünümüne geçtiğimiz için
-      // 'scrollIntoView' mantığı artık istenmiyor.
-      /*
       if (isTouchDevice) {
         card.scrollIntoView({
             behavior: 'smooth',
@@ -1027,7 +981,6 @@ document.addEventListener("DOMContentLoaded", () => {
             inline: 'center'
         });
       }
-      */
       
     });
   });
@@ -1045,11 +998,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 8. GÜNCELLEME: Merkezde Büyüme ve Detent Titreşim Mantığı
   
-  // 3.5+ KART GÖRÜNÜMÜNE GEÇTİĞİMİZ İÇİN TÜM BU BÖLÜM
-  // (MERKEZE KİLİTLEME, BÜYÜTME VE 'detent' TİTREŞİMİ)
-  // ARTIK İSTENMİYOR. BU NEDENLE DEVRE DIŞI BIRAKILDI.
-  
-  /*
   // Grid'in merkezine en yakın kartı bulan yardımcı fonksiyon
   function findClosestCardToCenter(grid) {
       const gridCenter = grid.scrollLeft + grid.clientWidth / 2;
@@ -1101,6 +1049,7 @@ document.addEventListener("DOMContentLoaded", () => {
       grid.addEventListener('scroll', updateScaling);
       
       // Yüklenir yüklenmez ilk kartı merkezileştir
+      // (Kısa bir gecikmeyle, render sonrası)
       setTimeout(() => {
         const closestCard = findClosestCardToCenter(grid);
         if (closestCard) {
@@ -1109,12 +1058,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }, 300);
   });
-  */
-  // --- GÜNCELLEME SONU (Bölüm 8 devre dışı) ---
-
 
   // 9. GÜNCELLEME: Ses/Titreşim Düğmesi Mantığı KALDIRILDI
   
+  // --- GÜNCELLEME SONU ---
 
 });
 </script>
