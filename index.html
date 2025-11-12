@@ -187,29 +187,39 @@
       
       /* --- FONT KÜÇÜLTME DEĞİŞİKLİĞİ (YENİ) --- */
       .default-game-emoji, .kss-level-emoji { 
-          font-size: 1.5em; /* 1.6em idi */
-          min-height: 40px; /* 50px (base) idi */
+          font-size: 1.4em; /* 1.5em idi */
+          min-height: 35px; /* 40px idi */
       }
       .default-game-content h3, .kss-level-name { 
-          font-size: 0.9em; /* 1.0em idi */
-          min-height: 2.8em; /* 2.5em idi (3 satır için) */
+          font-size: 0.85em; /* 0.9em idi */
+          min-height: 2.8em; /* 3 satıra yakın */
       }
       .kss-level-number { 
-          font-size: 1.2em; /* 1.3em idi */
-          min-height: 25px; /* 30px (base) idi */
+          font-size: 1.1em; /* 1.2em idi */
+          min-height: 20px; /* 25px idi */
       }
       .game-card-description { 
-          font-size: 0.7em; /* 0.75em idi */
-          min-height: 2.5em; /* 3em (base) idi */
+          font-size: 0.65em; /* 0.7em idi */
+          min-height: 2.5em; 
       }
       .status-badge {
-          font-size: 0.8em; /* 0.85em (base) idi */
-          padding: 4px 10px; /* 6px 12px (base) idi */
-          margin-top: 8px; /* 10px (base) idi */
+          font-size: 0.75em; /* 0.8em idi */
+          padding: 4px 8px; /* 4px 10px idi */
+          margin-top: 6px; /* 8px idi */
       }
       .book-cover-img {
-          max-width: 60px; /* 80px (base) idi */
-          min-height: 40px; /* 50px (base) idi */
+          max-width: 55px; /* 60px idi */
+          min-height: 35px; /* 40px idi */
+      }
+      
+      /* "Kelimenin Serüveni" ara başlığını küçült */
+      .subsection-title {
+          font-size: 1.2em; /* 1.5em (base) idi */
+          margin: 15px 0 5px;
+      }
+      .subhead {
+          font-size: 0.8em; /* .95em (base) idi */
+          margin-top: 0;
       }
       /* --- FONT KÜÇÜLTME SONU --- */
       
@@ -225,7 +235,7 @@
           flex-wrap: nowrap; 
           
           /* --- KART BOŞLUK DEĞİŞİKLİĞİ --- */
-          gap: 8px; /* 10px idi */
+          gap: 6px; /* 8px idi */
           
           padding-left: 20px; 
           padding-right: 20px; 
@@ -234,13 +244,14 @@
       .mobile-scroll-grid-single .game-card {
           flex-shrink: 0;
           
-          width: 55%; 
-          max-width: 150px; 
+          /* Kartı biraz daha daralt */
+          width: 50%; /* 55% idi */
+          max-width: 140px; /* 150px idi */
 
           scroll-snap-align: center;
           
           /* Kartın iç boşluğunu azalt (yeni) */
-          padding: 10px; /* 15px (base) idi */
+          padding: 8px; /* 10px idi */
           /* Kartın min yüksekliğini sıfırla (yeni) */
           min-height: auto; 
 
@@ -299,7 +310,7 @@
       
       /* Mobil kart genişliği ayarı */
       .mobile-scroll-grid-single .game-card {
-        width: 50%; 
+        width: 48%; /* 50% idi */
       }
     }
 
@@ -654,6 +665,8 @@
         </div>
 
         <h3 class="subsection-title">Kelimenin Serüveni | 5 Seviye • Kökten kalıba adım adım 👣</h3>
+        <p class="subhead desktop-only" style="text-align: center; margin-top: -5px; font-size: 1.1em;">(Yeni oyunlar eklendi!)</p>
+
 
         <div class="game-grid mobile-scroll-grid-single" aria-label="Kelimenin Serüveni seviyeleri">
           
