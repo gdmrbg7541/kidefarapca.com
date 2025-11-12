@@ -1476,8 +1476,9 @@
              // GÜNCELLENDİ: Max puanı mobil/masaüstü için dinamik al
              let maxScore;
              if (IS_MOBILE_DEVICE) {
-                 maxScore = gameState.totalWords * 100; // ör: 3 * 100 = 300
-             } else {
+                 // (3 * (25 + 8)) + 1 = 99 + 1 = 100 Puan
+                 maxScore = (gameState.totalWords * (gameState.pointsPerWord + gameState.bonusPoints)) + gameState.finalWordBonus;
+             } else{
                  maxScore = gameState.totalWords * gameState.pointsPerWord; // ör: 10 * 10 = 100
              }
 
@@ -1737,16 +1738,23 @@
                  let totalWordScore = 0;
 
                  if (IS_MOBILE_DEVICE) {
-                     wordScore = 60; // Mobil temel puan
+                     wordScore = gameState.pointsPerWord; // ör: 25
+                     bonusScore = 0; // Sıfırla
+                     let finalBonus = 0; // YENİ: Sıfırla
+
                      const wordTimeTaken = (Date.now() - gameState.wordStartTime) / 1000;
                      if (wordTimeTaken <= gameState.bonusTimeLimit) {
-                         bonusScore = 40; // Mobil bonus puan
+                         bonusScore = gameState.bonusPoints; // ör: 8
                      }
-                     totalWordScore = wordScore + bonusScore;
-                 } else {
-                     wordScore = gameState.pointsPerWord; // Masaüstü puanı
-                     totalWordScore = wordScore; // Masaüstü bonus yok
-                 }
+                     
+                     // YENİ: Son kelime mi diye kontrol et (index 2 = total 3 - 1)
+                     if (currentWordIndex === (gameState.totalWords - 1)) {
+                         finalBonus = gameState.finalWordBonus; // ör: 1
+                     }
+
+                     totalWordScore = wordScore + bonusScore + finalBonus;
+                 } else
+               
                  
                  score += totalWordScore; 
                  l2ScoreValue.textContent = score; 
@@ -1877,16 +1885,24 @@
                     // --- MOBİL AYARLARI (Yeni Puanlama) ---
                     gameState.totalWords = 3; 
                     
+                    // YENİ: Puanları gameState'e ata (Maks 100 Puan için)
+                    gameState.pointsPerWord = 25; // Temel puan
+                    gameState.bonusPoints = 8;     // Bonus puan
+                    gameState.finalWordBonus = 1;  // YENİ: Son kelimeye +1 puan
+                    // Toplam: (25+8)*2 + (25+8+1) = 33 + 33 + 34 = 100 Puan
+                    
                     if (difficulty === 'easy') {
-                        gameState.timeLimit = 60; // 1 dakika
-                        gameState.bonusTimeLimit = 10; // 10sn bonus/kelime
-                    } else if (difficulty === 'medium') {
-                        gameState.timeLimit = 40; // 40 saniye
-                        gameState.bonusTimeLimit = 7; // 7sn bonus/kelime
-                    } else if (difficulty === 'hard') {
-                        gameState.timeLimit = 20; // 20 saniye
-                        gameState.bonusTimeLimit = 5; // 5sn bonus/kelime
-                    }
+                    // ...
+                } else {
+                    // --- MASAÜSTÜ AYARLARI (Eski Puanlama) ---
+                    // ...
+                    // Puanı kelime sayısına göre ayarla (Maks 100)
+                    gameState.pointsPerWord = Math.round(100 / gameState.totalWords);
+                    gameState.bonusPoints = 0; // Masaüstünde bonus puan yok
+                    gameState.finalWordBonus = 0; // YENİ: Masaüstü için sıfırla
+                    gameState.bonusTimeLimit = 0; // Masaüstünde bonus sistemi yok
+                }
+               
                     
                 } else {
                     // --- MASAÜSTÜ AYARLARI (Eski Puanlama) ---
