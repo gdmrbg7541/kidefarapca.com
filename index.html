@@ -44,17 +44,16 @@
     .site-header h1{font-family:'Marhey',sans-serif;font-size:2.5em;margin:0;font-weight:700}
     .arabic-welcome{font-family:'Harmattan',sans-serif;font-size:2em;font-weight:700;margin:0}
 
-    /* "Yeni Oyun" kartının stilleri (Aşağıda GÜNCELLEME 3'te detaylıca ezilecek) */
     #one-cikan-card {
       display: block;
       text-decoration: none;
-      background-color: #E6FAF5 !important; /* Nane Yeşili */
+      background-color: #E6FAF5 !important; 
       padding: 25px;
       margin-top: 15px;
       border-radius: 15px;
       box-shadow: 0 6px 12px rgba(0,0,0,.08);
       scroll-margin-top: calc(var(--header-height) + 20px);
-      text-align: center; /* İçeriği ortala */
+      text-align: center; 
     }
     #one-cikan-card .featured-badge {
       background: #FFC107;
@@ -90,16 +89,13 @@
 
     .content-section{
       background:#fff;padding:20px;margin-top:15px;border-radius:15px;border:1px solid #E9EEF5;box-shadow:0 6px 12px rgba(0,0,0,.08);
-      scroll-margin-top: calc(var(--header-height) + 20px); /* JS'den gelen yüksekliğin 20px altı */
+      scroll-margin-top: calc(var(--header-height) + 20px); 
     }
     .content-section h2{
       font-family:'Marhey',sans-serif;color:#16A085;margin:0 0 15px;padding:8px 10px;font-size:1.8em;
       backdrop-filter:blur(6px);background:rgba(255,255,255,0.75);
       border-radius:8px;border:1px solid #E0E6ED;position:sticky;
-      
-      /* GÜNCELLEME: Dokunmatik sorununu çözmek için 10px boşluk eklendi */
-      top: calc(var(--header-height) + 10px); /* JS'den gelen yüksekliğe yapış + 10px boşluk */
-      
+      top: calc(var(--header-height) + 10px); 
       z-index:20;
       box-shadow:0 2px 6px rgba(0,0,0,0.08);
       animation:headingFade .35s ease-out;transform-origin:center;
@@ -109,21 +105,12 @@
       100%{opacity:1;transform:scale(1) translateY(0)}
     }
 
-    /* GÜNCELLEME: Masaüstü kart boyutu %10 küçültüldü (170px -> 150px) */
     .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px;margin-top:15px}
     
-    /* GÜNCELLEME: Masaüstünde hover/scale efektinin kaydırma çubuğu
-       çıkarmasını engellemek ve alanı dikeyde büyütmek için 
-       padding 10px'ten 15px'e çıkarıldı. */
     @media (min-width: 769px) {
       .game-grid { 
         padding: 15px;
       }
-      
-      /* GÜNCELLEME: Masaüstü grid kartlarını sabitledi (height: 210px) 
-         kuralı (min-height: 220px) olarak değiştirildi.
-         Artık en uzun kartlar sığacak ve taşmayacak.
-      */
       .game-grid .kss-card,
       .game-grid .game-card-soon {
         min-height: 220px;
@@ -135,16 +122,12 @@
       box-shadow:0 4px 8px rgba(0,0,0,.08);transition:transform .3s, box-shadow .3s;display:flex;flex-direction:column;
       min-height:120px;
       justify-content:flex-start; 
-      
-      /* GÜNCELLEME: Masaüstü hover'da z-index için eklendi */
       position: relative;
       z-index: 1;
     }
     .youtube-card { background: #fff; } 
     
     .game-card:hover,.youtube-card:hover{
-      /* GÜNCELLEME: "Zıplama" efekti (translateY) kaldırıldı, sadece scale kaldı */
-      /* GÜNCELLEME: z-index eklendi (taşma sorunu için) */
       transform: scale(1.02);
       box-shadow:0 8px 16px rgba(0,0,0,.12);
       z-index: 10;
@@ -152,27 +135,22 @@
     .game-card-soon:hover {
       transform: none;
       box-shadow: 0 4px 8px rgba(0,0,0,.08);
-      z-index: 1; /* Hover'ı iptal et */
+      z-index: 1; 
     }
 
     .game-card h3{font-family:'Marhey',sans-serif;color:#27AE60;font-size:1.3em;margin:0 0 5px}
     .game-card .level-info{font-size:.9em;color:#555;margin:0 0 10px}
 
-    /* Dikey hizalama için 'status-badge'e margin-top eklendi */
     .status-badge{
       padding:6px 12px;border-radius:20px;font-weight:700;font-size:.85em;
       text-transform:uppercase;
-      margin-top: 10px; /* İçerik ile buton arasına boşluk koyar */
-      
-      /* GÜNCELLEME: Butonun tıklama olayını yakalamak için eklendi */
+      margin-top: 10px; 
       position: relative;
-      z-index: 5; /* Kartın tıklama olayından önde olsun */
+      z-index: 5; 
     }
     .status-badge.available{background:#20C997;color:#fff}
     .status-badge.soon{background:#FFC107;color:#333}
 
-    /* GÜNCELLEME: "Oyunlar" başlığı ile kartlar arasındaki
-       ekstra boşluğu azaltmak için padding-top: 0 eklendi. */
     .soft-green-block{
       padding: 0 15px 15px 15px; 
       border-radius:10px
@@ -183,18 +161,15 @@
     }
     .subhead{margin-top:4px;font-size:.95em;color:#555}
 
-    /* Eski YouTube stilleri kaldırıldı */
     .youtube-card{cursor:pointer}
     .youtube-card span{pointer-events:none}
     .youtube-channels{display:flex;justify-content:space-around;gap:20px;flex-wrap:wrap;margin-top:15px}
-    /* .youtube-card svg... stilleri kaldırıldı */
 
     .site-footer{text-align:center;margin-top:40px;padding:25px 0;background:#EF5350;color:#fff}
     .site-footer p{margin:0;font-size:.95em}
 
     @media (max-width:992px){
       .site-header h1{font-size:2.2em}.arabic-welcome{font-size:1.8em}
-      /* Masaüstü grid ayarı (170px -> 150px) */
       .game-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
     }
     
@@ -210,13 +185,32 @@
       #one-cikan-card .default-game-content h3 { font-size: 1.8em; }
       #one-cikan-card .game-card-description { font-size: 1em; }
       
-      /* --- FONT KÜÇÜLTME DEĞİŞİKLİĞİ --- */
-      .default-game-emoji, .kss-level-emoji { font-size: 1.6em; } /* 1.8em idi */
-      .default-game-content h3, .kss-level-name { font-size: 1.0em; } /* 1.15em idi */
-      .kss-level-number { font-size: 1.3em; } /* 1.5em idi */
-      .game-card-description { font-size: 0.75em; } /* 0.8em idi */
-      
-      .default-game-content h3, .kss-level-name { min-height: 2.5em; } /* 2.3em idi */
+      /* --- FONT KÜÇÜLTME DEĞİŞİKLİĞİ (YENİ) --- */
+      .default-game-emoji, .kss-level-emoji { 
+          font-size: 1.5em; /* 1.6em idi */
+          min-height: 40px; /* 50px (base) idi */
+      }
+      .default-game-content h3, .kss-level-name { 
+          font-size: 0.9em; /* 1.0em idi */
+          min-height: 2.8em; /* 2.5em idi (3 satır için) */
+      }
+      .kss-level-number { 
+          font-size: 1.2em; /* 1.3em idi */
+          min-height: 25px; /* 30px (base) idi */
+      }
+      .game-card-description { 
+          font-size: 0.7em; /* 0.75em idi */
+          min-height: 2.5em; /* 3em (base) idi */
+      }
+      .status-badge {
+          font-size: 0.8em; /* 0.85em (base) idi */
+          padding: 4px 10px; /* 6px 12px (base) idi */
+          margin-top: 8px; /* 10px (base) idi */
+      }
+      .book-cover-img {
+          max-width: 60px; /* 80px (base) idi */
+          min-height: 40px; /* 50px (base) idi */
+      }
       /* --- FONT KÜÇÜLTME SONU --- */
       
       
@@ -224,29 +218,32 @@
       .mobile-scroll-grid-single {
           display: flex;
           overflow-x: auto;
-          
           padding: 10px 0 10px 0;
-          
           -webkit-overflow-scrolling: touch;
           scroll-snap-type: x mandatory;
           margin-top: 15px;
           flex-wrap: nowrap; 
-          gap: 10px; /* Kartlar arası boşluk */
-          padding-left: 20px; /* Peeking için soldan boşluk */
-          padding-right: 20px; /* Peeking için sağdan boşluk */
           
+          /* --- KART BOŞLUK DEĞİŞİKLİĞİ --- */
+          gap: 8px; /* 10px idi */
+          
+          padding-left: 20px; 
+          padding-right: 20px; 
           clip-path: inset(0 0 0 0);
       }
       .mobile-scroll-grid-single .game-card {
           flex-shrink: 0;
           
-          /* --- KART KÜÇÜLTME DEĞİŞİKLİĞİ --- */
-          width: 55%; /* 70%'den düşürüldü */
-          max-width: 150px; /* 180px'den düşürüldü */
-          /* --- KART KÜÇÜLTME SONU --- */
+          width: 55%; 
+          max-width: 150px; 
 
           scroll-snap-align: center;
           
+          /* Kartın iç boşluğunu azalt (yeni) */
+          padding: 10px; /* 15px (base) idi */
+          /* Kartın min yüksekliğini sıfırla (yeni) */
+          min-height: auto; 
+
           transform: scale(0.77); 
           transition: transform 0.25s ease-out; 
           z-index: 1;
@@ -302,7 +299,7 @@
       
       /* Mobil kart genişliği ayarı */
       .mobile-scroll-grid-single .game-card {
-        width: 50%; /* 65%'ten düşürüldü (daha da küçük) */
+        width: 50%; 
       }
     }
 
@@ -541,8 +538,6 @@
     }
     /* --- YouTube Düzenlemesi Son --- */
     
-    /* 2'Lİ GRID KODU BURADAN SİLİNDİ, ORİJİNAL KAYDIRMA VE KÜÇÜK FONT AYARLARI YUKARIDA (max-width: 768px) İÇİNDE GÜNCELLENDİ */
-
   </style>
 </head>
 <body>
@@ -922,18 +917,30 @@ document.addEventListener("DOMContentLoaded", () => {
       
       initAudio(); // Herhangi bir tıklama sesi başlatabilir
       
-      // Tıklanan yer DÜĞME (Hemen Oyna vb.) ise,
+      // Tıklanan yer DÜĞME (Hemen Oyna / Ziyaret Et vb.) ise,
       // varsayılan 'a' davranışına (navigasyon) izin ver.
       if (e.target.classList.contains('status-badge')) {
         playHaptics('button-press'); // Düğme basma haptiği
         return true; 
       }
 
-      // Tıklanan yer DIŞ LİNK (youtube) ise,
-      // varsayılan 'a' davranışına izin ver.
+      // --- YOUTUBE LİNK GÜNCELLEMESİ ---
+      // Tıklanan yer DIŞ LİNK (youtube) kartının GÖVDESİ ise,
+      // navigasyonu engelle ve diğer kartlar gibi kaydırmasını sağla.
       if (card.getAttribute('target') === '_blank') {
-        return true;
+        e.preventDefault(); // Navigasyonu engelle
+        
+        // Diğer kartlar gibi dokununca merkeze kaydır
+        if (isTouchDevice) {
+          card.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'center'
+          });
+        }
+        return; // İşlemi bitir
       }
+      // --- GÜNCELLEME SONU ---
       
       // Tıklanan yer ÖNE ÇIKAN KART (#one-cikan-card) ise
       // ve dokunmatik cihazdaysa, seç/bırak
@@ -951,10 +958,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // İşlemi bitir
       }
 
-      // --- JAVASCRIPT GÜNCELLEMESİ (GERİ ALINDI) ---
-      // Kaydırma düzenine geri döndüğümüz için
-      // mobil cihazda kart gövdesine tıklamayı engelleyen
-      // ve kaydırma yapan kodları geri ekliyoruz.
+      // Diğer tüm normal kart gövdeleri için (dokunmatik cihazda)
       e.preventDefault(); // Navigasyonu HER ZAMAN engelle
       
       if (isTouchDevice) {
@@ -964,7 +968,6 @@ document.addEventListener("DOMContentLoaded", () => {
             inline: 'center'
         });
       }
-      // --- GÜNCELLEME SONU ---
       
     });
   });
@@ -1004,11 +1007,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Her bir yatay kaydırma grid'i için bu mantığı kur
   document.querySelectorAll('.mobile-scroll-grid-single').forEach(grid => {
-      
-      // --- JAVASCRIPT GÜNCELLEMESİ (GERİ ALINDI) ---
-      // 2'li grid kontrolü (if (style.display === 'grid') ...)
-      // buradan kaldırıldı. Artık kaydırma mantığı
-      // tüm '.mobile-scroll-grid-single' elementleri için çalışacak.
       
       let isThrottled = false;
       let lastCenteredCard = null;
