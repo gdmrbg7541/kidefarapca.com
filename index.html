@@ -574,26 +574,38 @@
     
     /* GÜNCELLEME: Ses/Titreşim Düğmesi Stilleri KALDIRILDI */
 
-/* --- ALTERNATİF: YATAY KAYDIRMAYI SIKIŞTIRMA --- */
+    
+    /* --- YENİ EKLENEN KOD: YouTube Kanalları Masaüstü Düzenlemesi --- */
+    @media (min-width: 769px) {
+      
+      /* 1. Grid yapısını bozup Flex'e geçiriyoruz */
+      .youtube-grid-desktop {
+        display: flex; /* 'grid' idi, 'flex' oldu */
+        justify-content: center; /* Kartları yatayda ortala */
+        gap: 25px; /* Kartlar arası boşluk */
+        
+        /* İsteğe bağlı: Üst/alt boşluğu azalt */
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
 
-@media (max-width: 768px) {
-  .mobile-scroll-grid-single .game-card {
-      width: 50%; /* 70% idi, daha dar kartlar */
-      max-width: 150px; /* 180px idi, maksimumu da küçült */
-      transform: scale(0.85); /* 0.77 idi, biraz daha büyük başla */
-  }
-  
-  .mobile-scroll-grid-single .game-card.is-centered {
-      transform: scale(0.95); /* 0.9 idi, merkezde çok büyümesin */
-  }
-}
-
-@media (max-width: 576px) {
-  .mobile-scroll-grid-single .game-card {
-      width: 45%; /* 65% idi */
-  }
-}
-/* --- ALTERNATİF SON --- */
+      /* 2. Kartlara sabit bir genişlik veriyoruz */
+      .youtube-grid-desktop .game-card {
+        /* Flex-item ayarları */
+        flex-basis: 380px; /* Her kart için tercih edilen genişlik */
+        flex-grow: 0; /* Ekstra alanı doldurmak için büyümesin */
+        flex-shrink: 0; /* Ekran küçülürse (ama 769px üstü) küçülmesin */
+        
+        /* Mobil kaydırma ayarlarını ez */
+        transform: scale(1) !important;
+      }
+      
+      /* 3. Hover efektini koru */
+      .youtube-grid-desktop .game-card:hover {
+          transform: scale(1.02) !important; /* Normal hover efektimiz */
+      }
+    }
+    /* --- YouTube Düzenlemesi Son --- */
 
   </style>
 </head>
@@ -785,20 +797,8 @@
           </div>
         </a>
 
-        <div class="game-card game-card-soon">
-          <div class="soon-icon">🔁</div>
-          <h3>Çok Yakında</h3>
-          <span class="status-badge soon">Tercüme</span>
         </div>
-        
-        <div class="game-card game-card-soon">
-          <div class="soon-icon">💬</div>
-          <h3>Çok Yakında</h3>
-          <span class="status-badge soon">Konuşma</span>
-        </div>
-      </div>
     </section>
-
     <section id="sinifici-materyaller" class="content-section">
       <h2>🛠️ Sınıfiçi Materyaller</h2>
       <div class="game-grid mobile-scroll-grid-single">
@@ -815,7 +815,7 @@
 
     <section id="youtube-kanallari" class="content-section">
       <h2>📺 YouTube Kanallarımız</h2>
-      <div class="game-grid mobile-scroll-grid-single">
+      <div class="game-grid mobile-scroll-grid-single youtube-grid-desktop">
         
         <a href="https://www.youtube.com/@kidefarapca" class="game-card kss-card">
           <div class="default-game-content">
@@ -837,8 +837,7 @@
 
       </div>
     </section>
-
-  </main>
+    </main>
 </div>
 
 <footer class="site-footer">
