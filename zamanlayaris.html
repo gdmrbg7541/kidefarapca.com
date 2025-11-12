@@ -495,7 +495,7 @@
         .start-button-option:hover { 
             background-color: #0056b3; 
             transform: translateY(-2px); 
-            box-shadow: var(--shadow-dark);
+            box-shadow: var(--shadow-dark); 
         }
         .start-button-option:active {
             box-shadow: var(--shadow-inset);
@@ -927,7 +927,7 @@
         "ن-ق-ل": { "root": ["ن", "ق", "ل"], "words": [ { "arapca": "نَقْلِيَّة", "turkce": "Nakliye 🚚", "kalipNo": "19" }, { "arapca": "نَقِيل", "turkce": "Nakîl 🔄", "kalipNo": "35" }, { "arapca": "مَنْقُول", "turkce": "Menkul 🚗", "kalipNo": "36" }, { "arapca": "اِنْتِقَال", "turkce": "İntikal ↪️", "kalipNo": "80" } ] },
         "ش-ر-ب": { "root": ["ش", "ر", "ب"], "words": [ { "arapca": "شَرْبَة", "turkce": "Şerbet 🍹", "kalipNo": "19" }, { "arapca": "شَرَاب", "turkce": "Şarâp 🍷", "kalipNo": "22" }, { "arapca": "شُرُوب", "turkce": "Şurub 🍾", "kalipNo": "25" }, { "arapca": "مَشْرُوبَات", "turkce": "Meşrubat 🥤", "kalipNo": "36" }, { "arapca": "مَشْرَب", "turkce": "Meşreb 🌿", "kalipNo": "38" } ] },
         "ر-ج-ع": { "root": ["ر", "ج", "ع"], "words": [ { "arapca": "مَرْجِع", "turkce": "Merci ↩️", "kalipNo": "37" }, { "arapca": "مُرَاجَعَة", "turkce": "Müracaat 📝", "kalipNo": "67" }, { "arapca": "اِرْتِجَاع", "turkce": "İrtica 🔙", "kalipNo": "80" } ] },
-        "ش-ك-ل": { "root": ["ش", "ك", "ل"], "words": [ { "arapca": "شَكْل", "turkce": "Şekil 🧩", "kalipNo": "19" }, { "arapca": "أَشْكَال", "turkce": "Eşkâl 🔶", "kalipNo": "41" }, { "arapca": "مُشْكِل", "turkce": "Müşkil 🤔", "kalipNo": "56" }, { "arapca": "تَشْكِيلَات", "turkce": "Teşkilat 👥", "kalipNo": "61" } ] },
+        "ش-ك-ل": { "root": ["ش", "ك", "ل"], "words": [ { "arapca": "شَكْل", "turkce": "Şekil 🧩", "kalipNo": "19" }, { "arapca": "أَشْكَال", "turkce": "Eşkâl 🔶", "kalipNo": "41" }, { "arapca": "مُشْكِل", "turkce": "Müşkil 🤔", "kalipNo": "56" }, { "arapca": "تَشْكِילَات", "turkce": "Teşkilat 👥", "kalipNo": "61" } ] },
         "ن-س-ب": { "root": ["ن", "س", "ب"], "words": [ { "arapca": "نَسَب", "turkce": "Neseb 👨‍👩‍👧‍👦", "kalipNo": "17" }, { "arapca": "نِسْبَة", "turkce": "Nisbet 📊", "kalipNo": "20" }, { "arapca": "مَنْسُوب", "turkce": "Mensub 🔗", "kalipNo": "36" }, { "arapca": "مُنَاسَبَة", "turkce": "Münasebet 🎉", "kalipNo": "67" }, { "arapca": "اِنْتِسَاب", "turkce": "İntisab 🖇️", "kalipNo": "80" } ] },
       "ش-ه-د": { "root": ["ش", "ه", "د"], "words": [ { "arapca": "شَهَادَة", "turkce": "Şehâdet 📜", "kalipNo": "22" }, { "arapca": "شَاهِد", "turkce": "Şâhit 👀", "kalipNo": "33" }, { "arapca": "شَهِيد", "turkce": "Şehît 🌺", "kalipNo": "35" }, { "arapca": "شُهَدَاء", "turkce": "Şühedâ 🌷", "kalipNo": "46" }, { "arapca": "مُشَاهَدَة", "turkce": "Müşahede 🔬", "kalipNo": "67" } ] },
         "ب-ر-ك": { "root": ["ب", "ر", "ك"], "words": [ { "arapca": "بَرَكَة", "turkce": "Bereket 🌾", "kalipNo": "17" }, { "arapca": "تَبْرِيك", "turkce": "Tebrik 🎉", "kalipNo": "61" }, { "arapca": "مُبَارَك", "turkce": "Mübarek ✨", "kalipNo": "70" }, { "arapca": "تَبَرُّك", "turkce": "Teberrük 🙏", "kalipNo": "91" } ] },
@@ -978,24 +978,30 @@
     document.addEventListener('DOMContentLoaded', () => {
 
         // *** YENİ: Cihaz tespiti ve sabitlerin ayarlanması ***
-        const isMobile = () => window.innerWidth <= 768;
+        
+        // HATA DÜZELTMESİ (SAMSUNG TARAYICI): Sadece genişliğe değil, tarayıcı kimliğine de bak.
+        const isMobile = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        
         IS_MOBILE_DEVICE = isMobile(); // Global değişkene ata
 
+        
+        // HATA DÜZELTMESİ (SYNTAXERROR ve MOBİL GRİD):
+        // if/else bloğu eksikti ve mobil için 2 sütunlu grid ayarlanmıyordu.
         if (IS_MOBILE_DEVICE) {
-            // MOBİL AYARLARI (6 Kalıp, 2 Sütun)
-            ALLOWED_KALIPS = ['17', '22', '33', '35', '36', '50']; // İlk 6 kalıp
+            // --- MOBİL AYARLARI (6 Kalıp, 2 Sütun) ---
+            ALLOWED_KALIPS = ['33', '35', '36', '55', '61', '67']; // 6 kalıp
             STATIC_PATTERNS_SORTED = [...ALLOWED_KALIPS].sort((a, b) => parseInt(a) - parseInt(b));
             
             PATTERN_COLUMNS = {
-                col1: STATIC_PATTERNS_SORTED.slice(0, 3), // 3 kalıp
-                col2: STATIC_PATTERNS_SORTED.slice(3, 6)  // 3 kalıp
+                col1: STATIC_PATTERNS_SORTED.slice(0, 3), // İlk 3
+                col2: STATIC_PATTERNS_SORTED.slice(3, 6)  // Son 3
             };
             
             // CSS'e sütun sayısını bildir (2)
             document.documentElement.style.setProperty('--pattern-cols', '2');
             
         } else {
-            // MASAÜSTÜ AYARLARI (Orijinal: 12 Kalıp, 3 Sütun)
+            // --- MASAÜSTÜ AYARLARI (12 Kalıp, 3 Sütun) ---
             ALLOWED_KALIPS = ['17', '22', '33', '35', '36', '50', '55', '56', '61', '67', '80', '103'];
             STATIC_PATTERNS_SORTED = [...ALLOWED_KALIPS].sort((a, b) => parseInt(a) - parseInt(b));
             
@@ -1007,8 +1013,8 @@
             
             // CSS'e sütun sayısını bildir (3)
             document.documentElement.style.setProperty('--pattern-cols', '3');
-        }
-        // *** BİTİŞ: Cihaz tespiti ***
+           }
+        
 
 
         // DOM Elementleri
@@ -1434,87 +1440,7 @@
             });
         }
 
-        // Güncellenmiş Oyun Bitiş Fonksiyonu
-        function endGame(isTimeout) {
-             // Zaten bittiyse tekrar bitirme (hızlı tıklamaları önle)
-             if (!gameState.isGameActive && !isTimeout) {
-                // Eğer oyun zaten bittiyse ve bu bir zaman aşımı değilse (yani manuel bitiş)
-                // ve sonuç ekranı zaten açıksa, hiçbir şey yapma.
-                if (!resultsScreen.classList.contains('hidden')) {
-                    return; 
-                }
-             }
-
-             gameState.isGameActive = false;
-             stopTimer(); 
-             
-             // YENİ: Başlığı burada ayarla (veya HTML'e sabit ekle)
-             const resultsTitle = document.createElement('h2');
-             if (isTimeout) { 
-                 resultsTitle.textContent = "Süre Doldu!";
-             } else {
-                 resultsTitle.textContent = "Tebrikler, Tur Bitti!";
-             }
-             
-             const foundWords = [];
-             let failedWords = 0;
-             currentWordQueue.forEach(word => {
-                 if (word.found) {
-                     foundWords.push(word);
-                 } else if (word.failed) {
-                     failedWords++;
-                 }
-                 // Durumları temizle
-                 delete word.found;
-                 delete word.failed;
-             });
-             
-             // GÜNCELLENDİ: Yıldız sayısı = bulunan kelime sayısı
-             const starCount = foundWords.length;
-             const stars = (starCount > 0) ? '⭐'.repeat(starCount) : '❌';
-             
-             // GÜNCELLENDİ: Max puanı mobil/masaüstü için dinamik al
-             let maxScore;
-             if (IS_MOBILE_DEVICE) {
-                 // (3 * (25 + 8)) + 1 = 99 + 1 = 100 Puan
-                 maxScore = (gameState.totalWords * (gameState.pointsPerWord + gameState.bonusPoints)) + gameState.finalWordBonus;
-             } else{
-                 maxScore = gameState.totalWords * gameState.pointsPerWord; // ör: 10 * 10 = 100
-             }
-
-             // HTML'i Puan Animasyonu için hazırla
-             // Önce içeriği temizle
-             resultsDetails.innerHTML = '';
-             // Başlığı ekle
-             resultsDetails.appendChild(resultsTitle);
-             
-             if(foundWords.length > 0) {
-                 resultsDetails.innerHTML += `
-                    <p class="final-score">Puan: <b>${score}</b> / ${maxScore}</p>
-                    <p>Doğru: <b>${foundWords.length} / ${gameState.totalWords}</b> | Yanlış: <b>${failedWords}</b></p>
-                    <div class="result-stars">${stars}</div>
-                    <div style="font-size: 0.8em !important; max-height: 150px; overflow-y: auto;"> 
-                        ${foundWords.map(data => `<span>${data.arapca}</span> (${data.turkce})`).join('<br>')}
-                    </div>`;
-             } else {
-                 resultsDetails.innerHTML += `
-                    <p class="final-score">Puan: <b>${score}</b> / ${maxScore}</p>
-                    <p>Hiç kelime bulamadınız.</p>
-                    <div class="result-stars">❌</div>`;
-             }
-             
-             // YENİ: Animasyon tetikleyicisi
-             // Ekranı göstermeden önce animasyonu hazırla
-             const finalScoreEl = resultsDetails.querySelector('.final-score');
-             if (finalScoreEl) {
-                 finalScoreEl.style.animation = 'none';
-                 finalScoreEl.offsetHeight; // Tarayıcıyı yeniden çizmeye zorla
-                 finalScoreEl.style.animation = 'final-score-pop 1s ease-out';
-             }
-             
-             showScreen('results');
-        }
-        
+      
         
         // --- SÜRÜKLEME MANTIĞI ---
 
@@ -1753,8 +1679,10 @@
                      }
 
                      totalWordScore = wordScore + bonusScore + finalBonus;
-                 } else
-               
+                 } else {
+                     wordScore = gameState.pointsPerWord; // Masaüstü puanı
+                     totalWordScore = wordScore; // Masaüstü bonus yok
+                 }
                  
                  score += totalWordScore; 
                  l2ScoreValue.textContent = score; 
@@ -1852,7 +1780,74 @@
              }
         }
         
-        
+            function endGame(isTimeOut) 
+             {
+            // 1. Oyunu ve zamanlayıcıyı durdur
+            gameState.isGameActive = false;
+            stopTimer();
+
+            // 2. İstatistikleri hesapla
+            const totalWords = gameState.totalWords;
+            const correctCount = currentWordQueue.filter(w => w.found).length;
+            const failedCount = currentWordQueue.filter(w => w.failed).length;
+            const finalScore = score; // Global 'score' değişkenini al
+
+            // 3. Sonuç HTML'ini oluştur
+            let resultsHTML = '';
+            
+            if (isTimeOut) {
+                resultsHTML += `<h2>Süre Doldu! ⌛</h2>`;
+            } else {
+                resultsHTML += `<h2>Tur Tamamlandı! 🎉</h2>`;
+            }
+
+            // Puan
+            resultsHTML += `<p class="final-score">Puan: <span id="final-score-value">${finalScore}</span></p>`;
+
+            // Doğru/Yanlış Sayısı
+            resultsHTML += `<p style="color: var(--success-color); font-weight: bold;">Doğru: ${correctCount}</p>`;
+            resultsHTML += `<p style="color: var(--error-color); font-weight: bold;">Hata: ${failedCount}</p>`;
+
+            // Yıldız Mantığı (Puan yüzdesine göre)
+            let starHTML = '⭐'; // Varsayılan 1 yıldız
+            const percentage = totalWords > 0 ? (correctCount / totalWords) * 100 : 0;
+
+            if (percentage >= 99) { // Neredeyse mükemmel veya mükemmel
+                starHTML = '⭐⭐⭐';
+            } else if (percentage >= 60) { // Çoğunluk doğru
+                starHTML = '⭐⭐';
+            }
+            
+            if (isTimeOut && correctCount === 0) {
+                starHTML = '😔'; // Süre doldu ve hiç bilemedi
+            } else if (correctCount === 0 && !isTimeOut) {
+                starHTML = '🤔'; // Turu bitirdi ama hiç bilemedi
+            }
+
+            resultsHTML += `<p class="result-stars">${starHTML}</p>`;
+            
+            // 4. HTML'i ekrana bas
+            resultsDetails.innerHTML = resultsHTML;
+
+            // 5. Sonuç ekranını göster
+            showScreen('results'); // <- İşte endGame fonksiyonu burada 'showScreen'i çağırıyor
+
+            // 6. Puan animasyonunu tetikle
+            const scoreValueEl = document.getElementById('final-score-value');
+            if (scoreValueEl) {
+                scoreValueEl.style.animation = 'final-score-pop 0.5s ease-out';
+                scoreValueEl.addEventListener('animationend', () => {
+                    scoreValueEl.style.animation = '';
+                }, { once: true });
+            }
+            
+            // 7. (İsteğe bağlı) Oyun sonu sesi
+            playGenericSound('set_complete');
+        }
+        // --- FONKSİYON BİTİŞİ ---
+        // [YAPIŞTIRILACAK YER BİTİŞİ]
+
+
         // --- Ekran ve Buton Yöneticileri ---
         function showScreen(screenName) {
             startScreen.classList.add('hidden'); 
@@ -1881,6 +1876,8 @@
                 const difficulty = button.dataset.difficulty;
                 gameState.difficulty = difficulty;
                 
+                IS_MOBILE_DEVICE = isMobile(); // YENİ: Tespiti buraya taşıdık (Test için önemli)
+
                 if (IS_MOBILE_DEVICE) {
                     // --- MOBİL AYARLARI (Yeni Puanlama) ---
                     gameState.totalWords = 3; 
@@ -1892,24 +1889,22 @@
                     // Toplam: (25+8)*2 + (25+8+1) = 33 + 33 + 34 = 100 Puan
                     
                     if (difficulty === 'easy') {
-                    // ...
-                } else {
-                    // --- MASAÜSTÜ AYARLARI (Eski Puanlama) ---
-                    // ...
-                    // Puanı kelime sayısına göre ayarla (Maks 100)
-                    gameState.pointsPerWord = Math.round(100 / gameState.totalWords);
-                    gameState.bonusPoints = 0; // Masaüstünde bonus puan yok
-                    gameState.finalWordBonus = 0; // YENİ: Masaüstü için sıfırla
-                    gameState.bonusTimeLimit = 0; // Masaüstünde bonus sistemi yok
-                }
-               
+                        gameState.timeLimit = 60; // 1 dakika
+                        gameState.bonusTimeLimit = 10; // 10sn bonus/kelime
+} else if (difficulty === 'medium') {
+                        gameState.timeLimit = 40; // 40 saniye
+                        gameState.bonusTimeLimit = 7; // 7sn bonus/kelime
+                    } else if (difficulty === 'hard') {
+                        gameState.timeLimit = 20; // 20 saniye
+                        gameState.bonusTimeLimit = 5; // 5sn bonus/kelime
+                    }
                     
                 } else {
                     // --- MASAÜSTÜ AYARLARI (Eski Puanlama) ---
                     if (difficulty === 'easy') {
                         gameState.totalWords = 5;
                         gameState.timeLimit = 120; // 2 dakika (İSTEĞİNİZ)
-                    } else if (difficulty === 'medium') {
+                        } else if (difficulty === 'medium') {
                         gameState.totalWords = 10;
                         gameState.timeLimit = 120; // 2 dakika (Orijinal)
                     } else if (difficulty === 'hard') {
@@ -1919,6 +1914,8 @@
                     
                     // Puanı kelime sayısına göre ayarla (Maks 100)
                     gameState.pointsPerWord = Math.round(100 / gameState.totalWords);
+                    gameState.bonusPoints = 0; // Masaüstünde bonus puan yok
+                    gameState.finalWordBonus = 0; // YENİ: Masaüstü için sıfırla
                     gameState.bonusTimeLimit = 0; // Masaüstünde bonus sistemi yok
                 }
                 
