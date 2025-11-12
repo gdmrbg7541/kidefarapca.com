@@ -224,11 +224,12 @@
             min-height: 70vh; 
         }
 
-        /* Kalıplar (Sağdaki 3 Sütun) */
+        /* Kalıplar (Sağdaki Sütunlar) */
         #l2-patterns-wrapper {
             flex-basis: 70%; 
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            /* GÜNCELLENDİ: Sütun sayısı artık JS tarafından --pattern-cols ile ayarlanıyor */
+            grid-template-columns: repeat(var(--pattern-cols, 3), 1fr);
             grid-template-rows: repeat(4, auto); 
             gap: 15px; 
             row-gap: 20px;
@@ -253,6 +254,7 @@
         #l2-roots-sidebar {
             flex-basis: 30%; 
             display: grid; 
+            /* GÜNCELLENDİ: Sütun/Sıra sayısı artık JS tarafından ayarlanıyor */
             grid-template-columns: 1fr 1fr; 
             grid-template-rows: repeat(5, auto); 
             gap: 15px; 
@@ -646,6 +648,157 @@
             50% { transform: scale(1.2); color: var(--success-color); }
             100% { transform: scale(1); }
         }
+
+        /* ------------------------------------------- */
+        /* --- YENİ: MOBİL UYUMLULUK CSS --- */
+        /* ------------------------------------------- */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                display: block; /* Dikey kaydırmaya izin ver */
+                overflow-y: auto; /* Dikey kaydırmaya izin ver */
+                min-height: 100%;
+            }
+            #game-container {
+                width: 100%;
+                min-height: 100vh;
+                padding: 5px;
+                box-sizing: border-box;
+            }
+            #level2-container {
+                padding: 10px;
+                max-height: none;
+                overflow-y: visible;
+                min-height: 98vh;
+            }
+            
+            /* Üst Barı Yeniden Düzenle */
+            #l2-top-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                padding-top: 45px; /* Geri tuşu için boşluk */
+            }
+
+            /* --- YENİ SIRALAMA BAŞLANGIÇ --- */
+            
+            /* 1. SIRA: Zaman ve Puan */
+            #l2-timer, #l2-score-display {
+                font-size: 1.4em;
+                padding: 8px 15px;
+                flex-grow: 1;
+                order: 1; /* Zaman ve Puanı en üste al */
+            }
+
+            /* 2. SIRA: Türkçe Kelimeler */
+            #l2-turkish-word-area {
+                order: 2; /* Kelimeleri 2. sıraya al (Zaman/Puandan sonra) */
+                flex-basis: 100%;
+                min-height: 40px;
+                gap: 5px;
+            }
+            
+            /* Ana Oyun Alanını Dikey Yap */
+            #l2-main-game-area {
+                flex-direction: column;
+                min-height: 0; /* Min-height'i sıfırla */
+                flex-grow: 1; /* Esnesin */
+                gap: 15px;
+            }
+
+            /* 3. SIRA: Kökler */
+            #l2-roots-sidebar {
+                order: 1; /* Kökler üste gelsin (main-game-area içinde) */
+                flex-basis: auto;
+                gap: 10px;
+                min-height: 15vh;
+            }
+            
+            /* 4. SIRA: Kalıplar */
+            #l2-patterns-wrapper {
+                order: 2; /* Kalıplar alta gelsin (main-game-area içinde) */
+                flex-basis: auto;
+                gap: 10px;
+                row-gap: 10px;
+                grid-template-rows: repeat(3, auto); /* 3 sıra */
+                min-height: 50vh; /* Alanı doldursun */
+            }
+
+            /* --- YENİ SIRALAMA BİTİŞ --- */
+
+
+            .l2-target-word {
+                font-size: 1.1em;
+                padding: 4px 8px;
+            }
+
+            /* Geri Tuşu */
+            .back-button {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+            }
+            #start-screen .back-button {
+                 top: 10px; 
+                 left: 10px;
+            }
+
+             /* Mobilde (2 sütun) dikey çizgiyi ayarla */
+            #l2-patterns-wrapper::before {
+                right: 50%; 
+                width: 2px;
+            }
+            #l2-patterns-wrapper::after {
+                display: none; /* 3. çizgiyi gizle */
+            }
+            
+            /* Mobil için kart boyutları */
+            .l2-draggable-root {
+                min-height: 10vh;
+                font-size: clamp(1.4em, 4vh, 2em);
+            }
+            .l2-pattern-group {
+                min-height: 12vh;
+            }
+            .l2-pattern-number {
+                font-size: clamp(1.8em, 4.5vh, 2.5em);
+            }
+
+            /* Sonuç Ekranı */
+            #results-screen .overlay-content {
+                flex-direction: column;
+                min-width: 90vw;
+                gap: 20px;
+                padding: 30px 20px;
+            }
+            #results-details .final-score {
+                font-size: 1.8em;
+            }
+            #results-details p {
+                font-size: 1.1em;
+            }
+            #results-button-wrapper {
+                flex-direction: row; /* Butonlar yan yana sığar */
+                flex-wrap: wrap;
+                width: 100%;
+            }
+            #next-round-button,
+            #play-again-button {
+                font-size: 1em;
+                min-width: 130px;
+                flex-grow: 1;
+            }
+
+            /* Başlangıç Ekranı */
+            .overlay-content {
+                padding: 20px;
+            }
+            .overlay h1 { font-size: 1.8em; }
+            .overlay h2 { font-size: 1.3em; }
+
+        }
+
     </style>
     </head>
 <body>
@@ -717,7 +870,7 @@
         "50": { "kalipNo": "50", "arapca": "أَفْعَل", "tur": "İsm-i Tafdîl/Sıfat", "bab": "Sülâsî İsim", "displayComponents": ["أَ", "ْ", "َ"], "steps": [] },
         "55": { "kalipNo": "55", "arapca": "إِفْعَال", "tur": "Masdar", "bab": "İf'âl", "displayComponents": ["إِ", "ْ", "َ", "ا"], "steps": [] },
         "56": { "kalipNo": "56", "arapca": "مُفْعِل", "tur": "İsm-i Fâil", "bab": "İf'âl", "displayComponents": ["مُـ", "ْ", "ِ"], "steps": [] },
-        "61": { "kalipNo": "61", "arapca": "تَفْعِيل", "tur": "Masdar", "bab": "Tef'îl", "displayComponents": ["تَـ", "ْ", "ِ", "ـيـ"], "steps": [] },
+        "61": { "kalipNo": "61", "arapca": "تَفْعِİL", "tur": "Masdar", "bab": "Tef'îl", "displayComponents": ["تَـ", "ْ", "ِ", "ـيـ"], "steps": [] },
         "67": { "kalipNo": "67", "arapca": "مُفَاعَلَة", "tur": "Masdar", "bab": "Mufâ'ale", "displayComponents": ["مُـ", "َ", "ا", "َ", "َة"], "steps": [] },
         "80": { "kalipNo": "80", "arapca": "اِفْتِعَال", "tur": "Masdar", "bab": "İfti'âl", "displayComponents": ["اِ", "ْ", "تِ", "َ", "ا"], "steps": [] },
         "103": { "kalipNo": "103", "arapca": "اِسْتِفْعَال", "tur": "Masdar", "bab": "İstif'âl", "displayComponents": ["اِسْتِـ", "ْ", "َ", "ا"], "steps": [] }
@@ -750,7 +903,7 @@
         "ن-س-ب": { "root": ["ن", "س", "ب"], "words": [ { "arapca": "نَسَب", "turkce": "Neseb 👨‍👩‍👧‍👦", "kalipNo": "17" }, { "arapca": "نِسْبَة", "turkce": "Nisbet 📊", "kalipNo": "20" }, { "arapca": "مَنْسُوب", "turkce": "Mensub 🔗", "kalipNo": "36" }, { "arapca": "مُنَاسَبَة", "turkce": "Münasebet 🎉", "kalipNo": "67" }, { "arapca": "اِنْتِسَاب", "turkce": "İntisab 🖇️", "kalipNo": "80" } ] },
       "ش-ه-د": { "root": ["ش", "ه", "د"], "words": [ { "arapca": "شَهَادَة", "turkce": "Şehâdet 📜", "kalipNo": "22" }, { "arapca": "شَاهِد", "turkce": "Şâhit 👀", "kalipNo": "33" }, { "arapca": "شَهِيد", "turkce": "Şehît 🌺", "kalipNo": "35" }, { "arapca": "شُهَدَاء", "turkce": "Şühedâ 🌷", "kalipNo": "46" }, { "arapca": "مُشَاهَدَة", "turkce": "Müşahede 🔬", "kalipNo": "67" } ] },
         "ب-ر-ك": { "root": ["ب", "ر", "ك"], "words": [ { "arapca": "بَرَكَة", "turkce": "Bereket 🌾", "kalipNo": "17" }, { "arapca": "تَبْرِيك", "turkce": "Tebrik 🎉", "kalipNo": "61" }, { "arapca": "مُبَارَك", "turkce": "Mübarek ✨", "kalipNo": "70" }, { "arapca": "تَبَرُّك", "turkce": "Teberrük 🙏", "kalipNo": "91" } ] },
-        "ق-د-ر": { "root": ["ق", "د", "ر"], "words": [ { "arapca": "مِقْدَار", "turkce": "Miktâr 📏", "kalipNo": "40" }, { "arapca": "قَدَر", "turkce": "Kader 🌌", "kalipNo": "17" }, { "arapca": "تَقْدِير", "turkce": "Takdir 👍", "kalipNo": "61" }, { "arapca": "مُقَدَّرَات", "turkce": "Mukadderat 🌠", "kalipNo": "63" }, { "arapca": "قُدْرَة", "turkce": "Kudret 💪", "kalipNo": "21" }, { "arapca": "اِقْتِدَار", "turkce": "İktidar 🏛️", "kalipNo": "80" }, { "arapca": "قَادِر", "turkce": "Kâdir ⚡", "kalipNo": "33" }, { "arapca": "مُقْتَدِر", "turkce": "Muktedir 🌟", "kalipNo": "81" }, { "arapca": "قَدِير", "turkce": "Kadîr ✨", "kalipNo": "35" } ] },
+        "ق-د-ر": { "root": ["ق", "د", "ر"], "words": [ { "arapca": "مِقْدَAR", "turkce": "Miktâr 📏", "kalipNo": "40" }, { "arapca": "قَدَر", "turkce": "Kader 🌌", "kalipNo": "17" }, { "arapca": "تَقْدِير", "turkce": "Takdir 👍", "kalipNo": "61" }, { "arapca": "مُقَدَّرَات", "turkce": "Mukadderat 🌠", "kalipNo": "63" }, { "arapca": "قُدْرَة", "turkce": "Kudret 💪", "kalipNo": "21" }, { "arapca": "اِقْتِدَAR", "turkce": "İktidar 🏛️", "kalipNo": "80" }, { "arapca": "قَادِر", "turkce": "Kâdir ⚡", "kalipNo": "33" }, { "arapca": "مُقْتَدِر", "turkce": "Muktedir 🌟", "kalipNo": "81" }, { "arapca": "قَدِير", "turkce": "Kadîr ✨", "kalipNo": "35" } ] },
         "م-ل-ك": { "root": ["م", "ل", "ك"], "words": [ { "arapca": "مَلَك", "turkce": "Melek 😇", "kalipNo": "17" }, { "arapca": "مُلْك", "turkce": "Mülk 👑", "kalipNo": "21" }, { "arapca": "مَالِك", "turkce": "Mâlik 🔑", "kalipNo": "33" }, { "arapca": "مَلِيك", "turkce": "Melîk 🤴", "kalipNo": "35" }, { "arapca": "مَمْلُوك", "turkce": "Memlük 💂", "kalipNo": "36" }, { "arapca": "مَمْلَكَة", "turkce": "Memleket 🇹🇷", "kalipNo": "38" }, { "arapca": "أَمْلَاك", "turkce": "Emlâk 🏘️", "kalipNo": "41" } ] },
         "ر-س-ل": { "root": ["ر", "س", "ل"], "words": [ { "arapca": "رِسَالَة", "turkce": "Risâle 📜", "kalipNo": "23" }, { "arapca": "رَسُول", "turkce": "Resul 🗣️", "kalipNo": "26" }, { "arapca": "أَرْسَل", "turkce": "Ersel 🕊️", "kalipNo": "30" }, { "arapca": "إِرْسَالِيَّة", "turkce": "İrsaliye 🧾", "kalipNo": "55" }, { "arapca": "مُرْسَل", "turkce": "Mürsel 📨", "kalipNo": "57" } ] },
         "ن-ص-ر": { "root": ["ن", "ص", "ر"], "words": [ { "arapca": "نُصْرَة", "turkce": "Nusret ✌️", "kalipNo": "21" }, { "arapca": "نَاصِر", "turkce": "Nâsır 🛡️", "kalipNo": "33" }, { "arapca": "مَنْصُور", "turkce": "Mansur 🥇", "kalipNo": "36" } ] },
@@ -758,7 +911,7 @@
         "ح-ق-ق": { "root": ["ح", "ق", "ق"], "words": [ { "arapca": "حَقّ", "turkce": "Hak ⚖️", "kalipNo": "19" }, { "arapca": "حُقُوق", "turkce": "Hukuk 🏛️", "kalipNo": "43" }, { "arapca": "حَقِيقة", "turkce": "Hakîkat 💎", "kalipNo": "35" }, { "arapca": "تَحْقِيق", "turkce": "Tahkik 🕵️", "kalipNo": "61" }, { "arapca": "مُحَقَّق", "turkce": "Muhakkak ✅", "kalipNo": "63" }, { "arapca": "اِسْتِحْقَاق", "turkce": "İstihkak 🏅", "kalipNo": "103" }, { "arapca": "مُسْتَحَقّ", "turkce": "Müstehak 👍", "kalipNo": "105" } ] },
         "خ-ل-ص": { "root": ["خ", "ل", "ص"], "words": [ { "arapca": "خَالِص", "turkce": "Hâlis 💧", "kalipNo": "33" }, { "arapca": "إِخْلَاص", "turkce": "İhlâs 💖", "kalipNo": "55" }, { "arapca": "مُخْلِص", "turkce": "Muhlis 😊", "kalipNo": "56" } ] },
         "ك-م-ل": { "root": ["ك", "م", "ل"], "words": [ { "arapca": "كَمَال", "turkce": "Kemâl ✨", "kalipNo": "22" }, { "arapca": "كَامِل", "turkce": "Kâmil 🌟", "kalipNo": "33" }, { "arapca": "إِكْمَال", "turkce": "İkmâl 🏁", "kalipNo": "55" }, { "arapca": "تَكْمِيل", "turkce": "Tekmil ✅", "kalipNo": "61" }, { "arapca": "مُكَمَّل", "turkce": "Mükemmel 💯", "kalipNo": "63" } ] },
-        "ر-ش-د": { "root": ["ر", "ش", "د"], "words": [ { "arapca": "رَشِيد", "turkce": "Reşît 🧠", "kalipNo": "35" }, { "arapca": "رُشْد", "turkce": "Rüşt 🧑", "kalipNo": "21" }, { "arapca": "إِرْشَاد", "turkce": "İrşât 🧭", "kalipNo": "55" }, { "arapca": "رَشَاد", "turkce": "Reşât ✨", "kalipNo": "22" }, { "arapca": "مُرْشِد", "turkce": "Mürşid 🧑‍🏫", "kalipNo": "56" }, { "arapca": "رَاشِد", "turkce": "Râşid 🚶", "kalipNo": "33" } ] },
+        "ر-ش-د": { "root": ["ر", "ش", "د"], "words": [ { "arapca": "رَشِيد", "turkce": "Reşît 🧠", "kalipNo": "35" }, { "arapca": "رُشْد", "turkce": "Rüşt 🧑", "kalipNo": "21" }, { "arapca": "إِرْشَاد", "turkce": "İrşât 🧭", "kalipNo": "55" }, { "arapca": "رَشَAD", "turkce": "Reşât ✨", "kalipNo": "22" }, { "arapca": "مُرْشِد", "turkce": "Mürşid 🧑‍🏫", "kalipNo": "56" }, { "arapca": "رَاشِد", "turkce": "Râşid 🚶", "kalipNo": "33" } ] },
         "أ-م-ن": { "root": ["أ", "م", "ن"], "words": [ { "arapca": "أَمَان", "turkce": "Emân 🛡️", "kalipNo": "22" }, { "arapca": "أَمِين", "turkce": "Emîn 🔒", "kalipNo": "35" }, { "arapca": "إِيمَان", "turkce": "İman 💖", "kalipNo": "55" }, { "arapca": "مُؤْمِن", "turkce": "Mümin 🙏", "kalipNo": "56" }, { "arapca": "تَأْمِين", "turkce": "Temin 🤝", "kalipNo": "61" } ] },
         "ج-م-ع": { "root": ["ج", "م", "ع"], "words": [ { "arapca": "جَمْع", "turkce": "Cem 👥", "kalipNo": "19" }, { "arapca": "جَمْعِيَّة", "turkce": "Cemiyet 🏛️", "kalipNo": "19" }, { "arapca": "جَمَاعة", "turkce": "Cemâat 👨‍👩‍👧‍👦", "kalipNo": "22" }, { "arapca": "جَامِع", "turkce": "Câmi 🕌", "kalipNo": "33" }, { "arapca": "مَجْمُوعَة", "turkce": "Mecmua 📚", "kalipNo": "36" }, { "arapca": "اِجْتِمَاع", "turkce": "İçtima 🤝", "kalipNo": "80" } ] },
         "ح-م-د": { "root": ["ح", "م", "د"], "words": [ { "arapca": "حَمْد", "turkce": "Hamd 🙏", "kalipNo": "19" }, { "arapca": "أَحْمَد", "turkce": "Ahmet 🌟", "kalipNo": "30" }, { "arapca": "حَمِيد", "turkce": "Hamît 😊", "kalipNo": "35" }, { "arapca": "مَحْمُود", "turkce": "Mahmut ✨", "kalipNo": "36" }, { "arapca": "مُحَمَّد", "turkce": "Muhammet 💖", "kalipNo": "63" } ] },
@@ -766,17 +919,17 @@
         "ش-ك-ر": { "root": ["ش", "ك", "ر"], "words": [ { "arapca": "شُكْر", "turkce": "Şükür 🙏", "kalipNo": "21" }, { "arapca": "شُكْرَان", "turkce": "Şükrân 💖", "kalipNo": "27" }, { "arapca": "شَاكِر", "turkce": "Şâkir 😊", "kalipNo": "33" }, { "arapca": "تَشَكُّر", "turkce": "Teşekkür 🙌", "kalipNo": "91" }, { "arapca": "مُتَشَكِّر", "turkce": "Müteşekkir 🥰", "kalipNo": "92" } ] },
         "ف-ك-ر": { "root": ["ف", "ك", "ر"], "words": [ { "arapca": "فِكْر", "turkce": "Fikir 🧠", "kalipNo": "20" }, { "arapca": "تَفَكُّر", "turkce": "Tefekkür 🤔", "kalipNo": "91" }, { "arapca": "مُتَفَكِّر", "turkce": "Mütefekkir 🧘", "kalipNo": "92" } ] },
         "و-ك-ل": { "root": ["و", "ك", "ل"], "words": [ { "arapca": "وَكَالَة", "turkce": "Vekâlet 📜", "kalipNo": "22" }, { "arapca": "وَكِيل", "turkce": "Vekîl 🧑‍💼", "kalipNo": "35" }, { "arapca": "مُوَكِّل", "turkce": "Müvekkil 👤", "kalipNo": "62" }, { "arapca": "تَوَكُّل", "turkce": "Tevekkül 🤲", "kalipNo": "91" } ] },
-        "ك-ب-ر": { "root": ["ك", "ب", "ر"], "words": [ { "arapca": "كِبْر", "turkce": "Kibir 😤", "kalipNo": "20" }, { "arapca": "كِبَار", "turkce": "Kibâr 😊", "kalipNo": "44" }, { "arapca": "أَكْبَر", "turkce": "Ekber ⬆️", "kalipNo": "50" }, { "arapca": "كُبْرَى", "turkce": "Kübra 🌟", "kalipNo": "51" }, { "arapca": "تَكْبِير", "turkce": "Tekbir ☝️", "kalipNo": "61" } ] },
+        "ك-ب-ر": { "root": ["ك", "ب", "ر"], "words": [ { "arapca": "كِبْر", "turkce": "Kibir 😤", "kalipNo": "20" }, { "arapca": "كِبَAR", "turkce": "Kibâr 😊", "kalipNo": "44" }, { "arapca": "أَكْبَر", "turkce": "Ekber ⬆️", "kalipNo": "50" }, { "arapca": "كُبْرَى", "turkce": "Kübra 🌟", "kalipNo": "51" }, { "arapca": "تَكْبِير", "turkce": "Tekbir ☝️", "kalipNo": "61" } ] },
         "ع-ج-ز": { "root": ["ع", "ج", "ز"], "words": [ { "arapca": "عَاجِز", "turkce": "Âciz 😩", "kalipNo": "33" }, { "arapca": "عَجَزَة", "turkce": "Aceze 👥", "kalipNo": "47" }, { "arapca": "مُعْجِزَة", "turkce": "Mucize ✨", "kalipNo": "56" }, { "arapca": "تَعْجِيز", "turkce": "Taciz 🚫", "kalipNo": "61" } ] },
         "ح-ر-م": { "root": ["ح", "ر", "م"], "words": [ { "arapca": "إِحْرَام", "turkce": "İhrâm 🕋", "kalipNo": "55" }, { "arapca": "حَرَم", "turkce": "Harem 🕌", "kalipNo": "17" }, { "arapca": "مُحَرَّم", "turkce": "Muharrem 🌙", "kalipNo": "63" }, { "arapca": "حَرَام", "turkce": "Harâm 🚫", "kalipNo": "22" }, { "arapca": "اِحْتِرَام", "turkce": "İhtiram 🫡", "kalipNo": "80" }, { "arapca": "مَحْرُوم", "turkce": "Mahrum 😔", "kalipNo": "36" }, { "arapca": "مُحْتَرَم", "turkce": "Muhterem 🧐", "kalipNo": "82" }, { "arapca": "مَحْرَم", "turkce": "Mahrem 🤫", "kalipNo": "38" } ] },
         "س-أ-ل": { "root": ["س", "أ", "ل"], "words": [ { "arapca": "سُؤَال", "turkce": "Suâl ❓", "kalipNo": "24" }, { "arapca": "مَسْؤُول", "turkce": "Mesul 👮", "kalipNo": "36" }, { "arapca": "مَسْأَلَة", "turkce": "Mesele ❔", "kalipNo": "38" } ] },
         "خ-ل-ف": { "root": ["خ", "ل", "ف"], "words": [{ "arapca": "خِلَافَة", "turkce": "Hilâfet ☪️", "kalipNo": "23" },{ "arapca": "خَلِيفَة", "turkce": "Halife 👑", "kalipNo": "35" },{ "arapca": "مُخَالَفَة", "turkce": "Muhalefet ❌", "kalipNo": "67" },
-{ "arapca": "مُخَالِف", "turkce": "Muhalif 🙅‍♂️", "kalipNo": "69" },{ "arapca": "اِخْتِلَاف", "turkce": "İhtilaf 🔀", "kalipNo": "80" },{ "arapca": "مُخْتَلِف", "turkce": "Muhtelif 🎨", "kalipNo": "81" }] },
+{ "arapca": "مُخَالِف", "turkce": "Muhalif 🙅‍♂️", "kalipNo": "69" },{ "arapca": "اِخْتِلَاف", "turkce": "İhtilaf 🔀", "kalipNo": "80" },{ "arapca": "مُخْتَلِf", "turkce": "Muhtelif 🎨", "kalipNo": "81" }] },
         "ع-م-ل": { "root": ["ع", "م", "ل"], "words": [ { "arapca": "عَمَل", "turkce": "Amel 👷", "kalipNo": "17" }, { "arapca": "عَامِل", "turkce": "Âmil 🧑‍🏭", "kalipNo": "33" }, { "arapca": "مَعْمُول", "turkce": "Mamûl 📦", "kalipNo": "36" }, { "arapca": "مُعَامَلَة", "turkce": "Muamele 🤝", "kalipNo": "67" }, { "arapca": "اِسْتِعْمَال", "turkce": "İstimâl 🔄", "kalipNo": "103" } ] },
         "خ-ر-ج": { "root": ["خ", "ر", "ج"], "words": [ { "arapca": "خَارِج", "turkce": "Hâriç 🌏", "kalipNo": "33" }, { "arapca": "مَخْرَج", "turkce": "Mahreç 🔊", "kalipNo": "38" }, { "arapca": "إِخْرَاج", "turkce": "İhrâç 📤", "kalipNo": "55" }] }, 
         "د-ر-س": { "root": ["د", "ر","س"], "words": [ { "arapca": "دَرْس", "turkce": "Ders 📖", "kalipNo": "19" }, { "arapca": "مَدْرَسَة", "turkce": "Medrese 🏫", "kalipNo": "38" }, { "arapca": "تَدْرِيسَات", "turkce": "Tedrisat 🧑‍🏫", "kalipNo": "61" }, { "arapca": "مُدَرِّس", "turkce": "Müderris 👨‍🏫", "kalipNo": "62" } ] },
         "ف-ت-ح": { "root": ["ف", "ت", "ح"], "words": [ { "arapca": "فَتْح", "turkce": "Fetih", "kalipNo": "19" }, { "arapca": "فَاتِح", "turkce": "Fâtih", "kalipNo": "33" }, { "arapca": "اِفْتِتَاح", "turkce": "İftitah 🎊", "kalipNo": "80" } ] },
-        "ن-ز-ل": { "root": ["ن", "ز", "ل"], "words": [ { "arapca": "نُزُول", "turkce": "Nüzûl ⬇️", "kalipNo": "25" }, { "arapca": "نَزْلَة", "turkce": "Nezle 🤧", "kalipNo": "19" }, { "arapca": "مَنْزِل", "turkce": "Menzil 📍", "kalipNo": "37" }, { "arapca": "تَنَزُّل", "turkce": "Tenezzül 🙇", "kalipNo": "91" } ] },
+        "ن-ز-ل": { "root": ["ن", "ز", "ل"], "words": [ { "arapca": "نُزُول", "turkce": "Nüzûl ⬇️", "kalipNo": "25" }, { "arapca": "نَزْلَة", "turkce": "Nezle 🤧", "kalipNo": "19" }, { "arapca": "مَنْزِل", "turkce": "Menzil 📍", "kalipNo": "37" }, { "arapca": "تَنَزُّل", "turkce": "Tenezzül 🙇", "kalipNo": "91" } ] },
         "ق-ت-ل": { "root": ["ق", "ت", "ل"], "words": [ { "arapca": "قَتْل", "turkce": "Katl ☠️", "kalipNo": "19" }, { "arapca": "قَاتِل", "turkce": "Kâtil 👤", "kalipNo": "33" }, { "arapca": "مَقْتُول", "turkce": "Maktül 🪦", "kalipNo": "36" }, { "arapca": "قِتَال", "turkce": "Kıtâl ⚔️", "kalipNo": "68" } ] },
         "ذ-ك-ر": { "root": ["ذ", "ك", "ر"], "words": [ { "arapca": "ذِكْر", "turkce": "Zikir 📿", "kalipNo": "20" }, { "arapca": "ذَاكِر", "turkce": "Zâkir 🗣️", "kalipNo": "33" }, { "arapca": "مَذْكُور", "turkce": "Mezkûr 📝", "kalipNo": "36" } ] }
       }
@@ -784,19 +937,51 @@
    
     // Sabitler
     const rootColors = ["#007bff", "#dc3545", "#ffc107", "#198754", "#6f42c1", "#fd7e14", "#20c997", "#6610f2", "#d63384", "#17a2b8"]; // 10 renk
-    const ALLOWED_KALIPS = ['17', '22', '33', '35', '36', '50', '55', '56', '61', '67', '80', '103'];
-    const STATIC_PATTERNS_SORTED = [...ALLOWED_KALIPS].sort((a, b) => parseInt(a) - parseInt(b));
+    
+    // *** YENİ: DİNAMİK SABİTLER ***
+    // Bu değişkenler artık 'let' ile tanımlanıyor ve DOM yüklendiğinde ayarlanacak
+    let ALLOWED_KALIPS;
+    let STATIC_PATTERNS_SORTED;
+    let PATTERN_COLUMNS;
+    // *** BİTİŞ: DİNAMİK SABİTLER ***
 
-    const PATTERN_COLUMNS = {
-        col1: STATIC_PATTERNS_SORTED.slice(0, 4), 
-        col2: STATIC_PATTERNS_SORTED.slice(4, 8), 
-        col3: STATIC_PATTERNS_SORTED.slice(8, 12)  
-    };
-
-    // --- (RASTGELELİK İÇİN SABİT SETLER KALDIRILDI) ---
 
     // OYUN MANTIĞI
     document.addEventListener('DOMContentLoaded', () => {
+
+        // *** YENİ: Cihaz tespiti ve sabitlerin ayarlanması ***
+        const isMobile = () => window.innerWidth <= 768;
+
+        if (isMobile()) {
+            // MOBİL AYARLARI (6 Kalıp, 2 Sütun)
+            ALLOWED_KALIPS = ['17', '22', '33', '35', '36', '50']; // İlk 6 kalıp
+            STATIC_PATTERNS_SORTED = [...ALLOWED_KALIPS].sort((a, b) => parseInt(a) - parseInt(b));
+            
+            PATTERN_COLUMNS = {
+                col1: STATIC_PATTERNS_SORTED.slice(0, 3), // 3 kalıp
+                col2: STATIC_PATTERNS_SORTED.slice(3, 6)  // 3 kalıp
+            };
+            
+            // CSS'e sütun sayısını bildir (2)
+            document.documentElement.style.setProperty('--pattern-cols', '2');
+            
+        } else {
+            // MASAÜSTÜ AYARLARI (Orijinal: 12 Kalıp, 3 Sütun)
+            ALLOWED_KALIPS = ['17', '22', '33', '35', '36', '50', '55', '56', '61', '67', '80', '103'];
+            STATIC_PATTERNS_SORTED = [...ALLOWED_KALIPS].sort((a, b) => parseInt(a) - parseInt(b));
+            
+            PATTERN_COLUMNS = {
+                col1: STATIC_PATTERNS_SORTED.slice(0, 4), 
+                col2: STATIC_PATTERNS_SORTED.slice(4, 8), 
+                col3: STATIC_PATTERNS_SORTED.slice(8, 12)  
+            };
+            
+            // CSS'e sütun sayısını bildir (3)
+            document.documentElement.style.setProperty('--pattern-cols', '3');
+        }
+        // *** BİTİŞ: Cihaz tespiti ***
+
+
         // DOM Elementleri
         const startScreen = document.getElementById('start-screen');
         const resultsScreen = document.getElementById('results-screen');
@@ -889,8 +1074,8 @@
                             rootDisplay: rootData.root.join('')
                         }));
 
-                        // *** YENİ DÜZELTME: ***
-                        // Kelimeleri, sadece kalıp numarası ALLOWED_KALIPS listesindeyse filtrele
+                        // *** DÜZELTME (Dinamik): ***
+                        // Kelimeleri, sadece kalıp numarası (artık dinamik olan) ALLOWED_KALIPS listesindeyse filtrele
                         const filteredWords = allProcessedWords.filter(word => 
                             ALLOWED_KALIPS.includes(word.kalipNo)
                         );
@@ -992,7 +1177,7 @@
             timerInterval = null;
         }
 
-        // --- YENİ: RASTGELE SET OLUŞTURMA MANTIĞI ---
+        // --- RASTGELE SET OLUŞTURMA MANTIĞI ---
         function setupNewSet() {
             
             // 1. Tüm kelime havuzunu karıştır
@@ -1015,7 +1200,7 @@
                 }
             }
             
-            // 3. (Eğer 5/10 kelime bulamazsak) Sadece benzersiz kök araması yaparak doldur
+            // 3. (Eğer 3/5/10 kelime bulamazsak) Sadece benzersiz kök araması yaparak doldur
             if (currentWordQueue.length < gameState.totalWords) {
                 for (const word of allWordsPool) {
                     if (currentWordQueue.length >= gameState.totalWords) break;
@@ -1029,8 +1214,23 @@
                     }
                 }
             }
+            
+            // 4. (EĞER HALA TAMAMLANMADIYSA) - Havuzdan rastgele doldur (çok nadir bir durum)
+            if (currentWordQueue.length < gameState.totalWords) {
+                 for (const word of allWordsPool) {
+                     if (currentWordQueue.length >= gameState.totalWords) break;
+                     // Bu kelime zaten eklenmediyse
+                     if (!currentWordQueue.some(w => w.arapca === word.arapca)) {
+                         currentWordQueue.push(word);
+                         if (!usedRoots.has(word.rootKey)) {
+                             newRootKeys.push(word.rootKey);
+                             usedRoots.add(word.rootKey);
+                         }
+                     }
+                 }
+            }
 
-            // 4. Seti karıştır ve çiz
+            // 5. Seti karıştır ve çiz
             currentWordQueue.sort(() => 0.5 - Math.random()); 
             currentWordIndex = 0;
             
@@ -1043,7 +1243,7 @@
             highlightCurrentWord();
         }
 
-        // Kelime Kuyruğunu Çiz (5 veya 10)
+        // Kelime Kuyruğunu Çiz (3, 5 veya 10)
         function drawWordQueue() {
             l2TurkishWordArea.innerHTML = '';
             currentWordQueue.forEach((word, index) => {
@@ -1080,13 +1280,20 @@
             }
         }
 
-        // Kökleri Çiz (5 veya 10)
+        // Kökleri Çiz (3, 5 veya 10)
+        // *** GÜNCELLENDİ: Mobil/Masaüstü için farklı grid ayarı ***
         function drawRootOptions(rootKeys) {
             l2RootsSidebar.innerHTML = '';
             
-            // DÜZELTME: Kolay modda 1 sütun değil, her zaman 2 sütun kullan
-            l2RootsSidebar.style.gridTemplateColumns = '1fr 1fr';
-            l2RootsSidebar.style.gridTemplateRows = 'repeat(5, auto)'; // 10 köke kadar izin ver
+            if (isMobile()) {
+                // MOBİL: 3 kök için 3 sütun, 1 sıra
+                l2RootsSidebar.style.gridTemplateColumns = '1fr 1fr 1fr';
+                l2RootsSidebar.style.gridTemplateRows = 'auto'; 
+            } else {
+                // MASAÜSTÜ: 10 köke kadar 2 sütun, 5 sıra
+                l2RootsSidebar.style.gridTemplateColumns = '1fr 1fr';
+                l2RootsSidebar.style.gridTemplateRows = 'repeat(5, auto)';
+            }
 
             rootKeys.forEach((rootKey, index) => { 
                 const rootElement = document.createElement('div');
@@ -1115,7 +1322,7 @@
             });
         }
 
-        // Kalıp Grubu oluşturucu (Yardımcı)
+        // Kalıp Grubu oluşturucu (Yardımcı - Değişmedi)
         function createPatternGroup(patternId) {
              const groupElement = document.createElement('div');
              groupElement.className = 'l2-pattern-group'; 
@@ -1156,26 +1363,24 @@
              return groupElement;
         }
 
-        // Sağdaki 12 Kalıbı İstenen Sırada Çiz
+        // *** GÜNCELLENDİ: 6, 9 veya 12 Kalıbı Dinamik Olarak Çiz ***
         function drawPatternGrid() {
             l2PatternsWrapper.innerHTML = '';
-            PATTERN_COLUMNS.col1.forEach((kalipId, i) => {
-                const groupElement = createPatternGroup(kalipId);
-                groupElement.style.gridColumn = '1';
-                groupElement.style.gridRow = `${i + 1}`;
-                l2PatternsWrapper.appendChild(groupElement);
-            });
-            PATTERN_COLUMNS.col2.forEach((kalipId, i) => {
-                const groupElement = createPatternGroup(kalipId);
-                groupElement.style.gridColumn = '2';
-                groupElement.style.gridRow = `${i + 1}`;
-                l2PatternsWrapper.appendChild(groupElement);
-            });
-            PATTERN_COLUMNS.col3.forEach((kalipId, i) => {
-                const groupElement = createPatternGroup(kalipId);
-                groupElement.style.gridColumn = '3';
-                groupElement.style.gridRow = `${i + 1}`;
-                l2PatternsWrapper.appendChild(groupElement);
+            
+            // PATTERN_COLUMNS objesindeki (col1, col2, [col3]) key'leri al
+            const columnKeys = Object.keys(PATTERN_COLUMNS); 
+            
+            columnKeys.forEach((key, colIndex) => {
+                // O sütundaki kalıpları (array) al
+                const patternsInColumn = PATTERN_COLUMNS[key];
+                
+                // Her kalıp için element oluştur
+                patternsInColumn.forEach((kalipId, rowIndex) => {
+                    const groupElement = createPatternGroup(kalipId);
+                    groupElement.style.gridColumn = `${colIndex + 1}`; // Sütun (1, 2, veya 3)
+                    groupElement.style.gridRow = `${rowIndex + 1}`;    // Sıra (1, 2, 3, veya 4)
+                    l2PatternsWrapper.appendChild(groupElement);
+                });
             });
         }
         
@@ -1233,6 +1438,8 @@
              
              const starCount = Math.floor(score / gameState.pointsPerWord);
              const stars = (starCount > 0) ? '⭐'.repeat(starCount) : '❌';
+             
+             // *** GÜNCELLENDİ: Max puanı dinamik al ***
              const maxScore = gameState.totalWords * gameState.pointsPerWord;
 
              // HTML'i Puan Animasyonu için hazırla
@@ -1602,27 +1809,43 @@
             }
         }
         
-        // Seviye Seçim Butonları
+        // *** GÜNCELLENDİ: Seviye Seçim Butonları (Mobil/Masaüstü) ***
         startButtons.forEach(button => {
             button.addEventListener('click', () => { 
                 const difficulty = button.dataset.difficulty;
+                gameState.difficulty = difficulty;
                 
-                if (difficulty === 'easy') {
-                    gameState.difficulty = 'easy';
-                    gameState.totalWords = 5;
-                    gameState.timeLimit = 60; // 1 dakika
-                    gameState.pointsPerWord = 20; // 5 * 20 = 100
-                } else if (difficulty === 'medium') {
-                    gameState.difficulty = 'medium';
-                    gameState.totalWords = 10;
-                    gameState.timeLimit = 120; // 2 dakika
-                    gameState.pointsPerWord = 10; // 10 * 10 = 100
-                } else if (difficulty === 'hard') {
-                    gameState.difficulty = 'hard';
-                    gameState.totalWords = 10;
-                    gameState.timeLimit = 60; // 1 dakika
-                    gameState.pointsPerWord = 10; // 10 * 10 = 100
+                const maxScore = 100;
+
+                if (isMobile()) {
+                    // --- MOBİL AYARLARI ---
+                    gameState.totalWords = 3; 
+                    
+                    if (difficulty === 'easy') {
+                        gameState.timeLimit = 60; // 1 dakika
+                    } else if (difficulty === 'medium') {
+                        gameState.timeLimit = 40; // 40 saniye
+                    } else if (difficulty === 'hard') {
+                        gameState.timeLimit = 20; // 20 saniye
+                    }
+                    
+                } else {
+                    // --- MASAÜSTÜ AYARLARI ---
+                    if (difficulty === 'easy') {
+                        gameState.totalWords = 5;
+                        gameState.timeLimit = 120; // 2 dakika (İSTEĞİNİZ)
+                    } else if (difficulty === 'medium') {
+                        gameState.totalWords = 10;
+                        gameState.timeLimit = 120; // 2 dakika (Orijinal)
+                    } else if (difficulty === 'hard') {
+                        gameState.totalWords = 10;
+                        gameState.timeLimit = 60; // 1 dakika (Orijinal)
+                    }
                 }
+                
+                // Puanı kelime sayısına göre ayarla (örn: 100 / 3 kelime = 33 puan)
+                gameState.pointsPerWord = Math.round(maxScore / gameState.totalWords);
+
                 
                 if (audioContext.state === 'suspended') {
                     audioContext.resume().then(() => {
