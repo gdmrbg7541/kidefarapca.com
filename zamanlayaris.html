@@ -680,21 +680,21 @@
             
             /* Üst Barı Yeniden Düzenle */
             #l2-top-bar {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px;
-                padding-top: 45px; /* Geri tuşu için boşluk */
-            }
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        /* padding-top: 45px; */ /* KALDIRILDI: Artık gerek yok */
+        padding-top: 10px; /* YENİ: Normal üst boşluk */
+        align-items: center; /* YENİ: Geri tuşunu dikey ortalamak için */
+    }
 
-            /* --- YENİ SIRALAMA BAŞLANGIÇ --- */
-            
-            /* 1. SIRA: Zaman ve Puan */
-            #l2-timer, #l2-score-display {
-                font-size: 1.4em;
-                padding: 8px 15px;
-                flex-grow: 1;
-                order: 1; /* Zaman ve Puanı en üste al */
-            }
+    /* 1. SIRA: Zaman ve Puan */
+    #l2-timer, #l2-score-display {
+        font-size: 1.4em;
+        padding: 8px 15px;
+        flex-grow: 1;
+        order: 1; /* Zaman ve Puanı en üste al */
+    }
 
             /* 2. SIRA: Türkçe Kelimeler */
             #l2-turkish-word-area {
@@ -718,7 +718,7 @@
                 order: 1; /* Kökler üste gelsin (main-game-area içinde) */
                 flex-basis: auto;
                 gap: 10px;
-                min-height: 15vh;
+                min-height: 12vh;
             }
             
             /* 4. SIRA: Kalıplar */
@@ -738,13 +738,15 @@
                 padding: 4px 8px;
             }
 
-            /* Geri Tuşu */
             .back-button {
-                top: 10px;
-                left: 10px;
-                width: 40px;
-                height: 40px;
-            }
+        position: relative; /* YENİ: Absolute konumlandırmayı kaldır */
+        top: auto; /* YENİ: Sıfırla */
+        left: auto; /* YENİ: Sıfırla */
+        width: 40px;
+        height: 40px;
+        order: 1; /* YENİ: Zaman ve Puan ile aynı sıraya al */
+        flex-shrink: 0; /* YENİ: Büzülmesini engelle */
+    }
             #start-screen .back-button {
                  top: 10px; 
                  left: 10px;
@@ -830,10 +832,10 @@
 <body>
     <div id="game-container">
         
-        <main id="level2-container" class="hidden">
-            <div class="back-button" id="game-back-button">&#8617;</div> 
+       <main id="level2-container" class="hidden">
             
             <div id="l2-top-bar">
+                <div class="back-button" id="game-back-button">&#8617;</div>
                 <div id="l2-timer">01:00</div>
                 <div id="l2-score-display">Puan: <span id="l2-score-value">0</span></div>
                 <div id="l2-turkish-word-area"></div>
