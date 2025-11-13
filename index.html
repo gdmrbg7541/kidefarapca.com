@@ -127,10 +127,13 @@
     }
     .youtube-card { background: #fff; } 
     
-    .game-card:hover,.youtube-card:hover{
-      transform: scale(1.02);
-      box-shadow:0 8px 16px rgba(0,0,0,.12);
-      z-index: 10;
+    /* SADECE fare ile üzerine gelinebilen geniş ekranlarda büyüt */
+    @media (min-width: 769px) and (hover: hover) {
+      .game-card:hover,.youtube-card:hover{
+        transform: scale(1.02);
+        box-shadow:0 8px 16px rgba(0,0,0,.12);
+        z-index: 10;
+      }
     }
     .game-card-soon:hover {
       transform: none;
@@ -191,7 +194,7 @@
           min-height: 25px; /* 40px idi */
       }
       .default-game-content h3, .kss-level-name { 
-          font-size: 0.60em; /* 0.9em idi */
+          font-size: 0.45em; /* 0.9em idi */
           min-height: 1.2em; /* 3 satıra yakın */
       }
       .kss-level-number { 
@@ -242,6 +245,7 @@
           clip-path: inset(0 0 0 0);
       }
       .mobile-scroll-grid-single .game-card {
+       -webkit-tap-highlight-color: transparent;
           flex-shrink: 0;
           
           /* Kartı biraz daha daralt */
@@ -255,13 +259,13 @@
           /* Kartın min yüksekliğini sıfırla (yeni) */
           min-height: auto; 
 
-          transform: scale(0.77); 
+          transform: scale(0.80); 
           transition: transform 0.25s ease-out; 
           z-index: 1;
       }
       
       .mobile-scroll-grid-single .game-card.is-centered {
-          transform: scale(0.9); 
+          transform: scale(0.80); 
           z-index: 2;
       }
       
