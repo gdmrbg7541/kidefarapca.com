@@ -37,7 +37,7 @@
             overflow: hidden; 
         }
 
-        /* --- Ana Kapsayıcı (16:9) --- */
+        /* --- Ana Kapsayıcı (Varsayılan 16:9) --- */
         .activity-container {
             width: 95vw; 
             height: calc(95vw * 9 / 16);
@@ -84,7 +84,7 @@
             border: 1px solid var(--border-color); width: 100%;
         }
 
-        /* --- 4'lü Navigasyon Sekmeleri (YENİ) --- */
+        /* --- 4'lü Navigasyon Sekmeleri --- */
         .aktivite-nav {
             display: flex; background-color: #f1f1f1;
             border-bottom: 1px solid var(--border-color);
@@ -95,7 +95,7 @@
             flex-grow: 1; padding: 12px 10px;
             cursor: pointer; border: none;
             background-color: transparent; 
-            font-size: 1.2em; /* 4 sekmeye yer açmak için küçültüldü */
+            font-size: 1.2em;
             font-weight: 700;
             color: #555; transition: all 0.3s;
             border-bottom: 3px solid transparent;
@@ -275,16 +275,11 @@
             max-height: 100vh; max-width: calc(100vh * 16 / 9);
             margin: 0; border-radius: 0; box-shadow: none;
         }
-        @media (orientation: portrait) {
-            body.fullscreen .activity-container {
-                width: 100vw; height: calc(100vw * 16 / 9);
-                max-height: 100vh; max-width: calc(100vh * 9 / 16);
-            }
-        }
-/* --- Geri Tuşu (Header İçin) --- */
+        
+        /* --- Geri Tuşu (Header İçin) --- */
         .back-button-container {
             display: flex;
-            order: 2; /* Sıralamada 2. olsun */
+            order: 2;
         }
         .back-button {
             background: #f0f0f0;
@@ -307,6 +302,96 @@
             width: clamp(24px, 5vmin, 30px);
             height: clamp(24px, 5vmin, 30px);
             fill: currentColor;
+        }
+        
+        /* ========================================================
+           YENİ: MOBİL PORTRE MODU (9:16) ve FONT KÜÇÜLTME
+        ======================================================== */
+        @media (orientation: portrait) {
+            
+            /* Fullscreen (100% ekran) için 9:16 ayarı */
+            body.fullscreen .activity-container {
+                width: 100vw; 
+                height: calc(100vw * 16 / 9);
+                max-height: 100vh; 
+                max-width: calc(100vh * 9 / 16);
+            }
+
+            /* Normal (fullscreen olmayan) durum için 9:16 ayarı */
+            body:not(.fullscreen) .activity-container {
+                width: 95vw; 
+                height: calc(95vw * 16 / 9); /* 9:16 en-boy oranı */
+                max-height: 95vh;
+                max-width: calc(95vh * 9 / 16);
+            }
+
+            /* Portre modundaki TÜM fontları küçült */
+            .header h1 { 
+                font-size: 1.5em; /* 2em'den küçültüldü */
+            }
+            #sure-secici { 
+                font-size: 1.1em; /* 1.4em'den küçültüldü */
+            }
+            .nav-btn { 
+                font-size: 0.9em; /* 1.2em'den küçültüldü */
+                padding: 10px 5px; /* Sığdırmak için */
+            }
+            .sirala-aciklama { 
+                font-size: 1.1em; /* 1.5em'den küçültüldü */
+                margin-bottom: 10px;
+            }
+            .kontrol-butonu { 
+                font-size: 1.2em; /* 1.5em'den küçültüldü */
+                padding: 8px;
+                width: 60%;
+            }
+            .kart-nav-btn, .kart-sayac { 
+                font-size: 1.1em; /* 1.4em'den küçültüldü */
+            }
+            .aktivite-penceresi { 
+                padding: 10px; /* İç boşluğu azalt */
+            }
+    
+            /* --- MOD 1: Kelime Anlamı --- */
+            #mod1-ayet-soru { 
+                font-size: 1.8em; /* 2.8em'den küçültüldü */
+                min-height: 60px;
+            }
+            #anlam-kutusu { 
+                font-size: 1.4em; /* 2em'den küçültüldü */
+                padding: 8px;
+            }
+    
+            /* --- MOD 2: Meal Testi --- */
+            #mod2-ayet-soru { 
+                font-size: 2em; /* 3em'den küçültüldü */
+                margin-bottom: 10px;
+            }
+            .test-secenek { 
+                font-size: 1.1em; /* 1.5em'den küçültüldü */
+                padding: 8px;
+            }
+    
+            /* --- MOD 3: Bilgi Kartları --- */
+            #mod3-kart-grid {
+                /* 3x4 (12 kart) sığdırmak için ayar */
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+                gap: 8px;
+                height: 320px; /* Yüksekliği ayarla */
+            }
+            .kart-on { /* Arapça */
+                font-size: 1.5em; /* 2.2em'den küçültüldü */
+            }
+            .kart-arka { /* Türkçe */
+                font-size: 1.2em; /* 1.7em'den küçültüldü */
+            }
+            
+            /* --- MOD 4: Ezber Modu --- */
+            #mod4-ayet-soru { 
+                font-size: 2.5em; /* 5em'den küçültüldü */
+                min-height: 80px;
+            }
         }
     </style>
     </head>
@@ -502,7 +587,7 @@
             ayetler: [
               { ayetArapca: "الْقَارِعَةُ", tamMeal: "Kâria (korkunç ses)!", kelimeler: [{ arapca: "الْقَارِعَةُ", turkce: "Kâria" }] },
               { ayetArapca: "مَا الْقَارِعَةُ", tamMeal: "Nedir Kâria?", kelimeler: [{ arapca: "مَا", turkce: "Nedir" }, { arapca: "الْقَارِعَةُ", turkce: "Kâria" }] },
-              { ayetArapca: "وَمَا أَدْرَاكَ مَا الْقَارِعَةُ", tamMeal: "Kâria'nın ne olduğunu sen ne bileceksin!", kelimeler: [{ arapca: "وَمَا", turkce: "Ve ne" }, { arapca: "أَدْرَاكَ", turkce: "sana bildirdi" }, { arapca: "مَا", turkce: "ne" }, { arapca: "الْقَارِعَةُ", turkce: "Kâria" }] },
+              { ayetArapca: "وَمَا أَدْرَاكَ مَا الْقَارِعَةُ", tamMeal: "Kâria'nın ne olduğunu sen ne bileceksin!", kelimeler: [{ arapca: "وَمَا", turkce: "Ve ne" }, { arapca: "أَدْرَاكَ", turkce: "sana bildirdi" }, { arapca: "مَا", turkce: "ne" }, { arapca: "الْقَARİCETE", turkce: "Kâria" }] },
               { ayetArapca: "يَوْمَ يَكُونُ النَّاسُ كَالْفَرَاشِ الْمَبْثُوثِ", tamMeal: "O gün insanlar, dağılmış pervaneler gibi olurlar.", kelimeler: [{ arapca: "يَوْمَ", turkce: "O gün" }, { arapca: "يَكُونُ", turkce: "olur" }, { arapca: "النَّاسُ", turkce: "insanlar" }, { arapca: "كَالْفَرَاشِ", turkce: "gibi" }, { arapca: "الْمَبْثُوثِ", turkce: "dağılmış pervaneler" }] },
               { ayetArapca: "وَتَكُونُ الْجِبَالُ كَالْعِهْنِ الْمَنْفُوشِ", tamMeal: "Dağlar, atılmış renkli yün gibi olurlar.", kelimeler: [{ arapca: "وَتَكُونُ", turkce: "Ve olur" }, { arapca: "الْجِبَالُ", turkce: "dağlar" }, { arapca: "كَالْعِهْنِ", turkce: "gibi" }, { arapca: "الْمَنْفُوشِ", turkce: "atılmış yün" }] },
               { ayetArapca: "فَأَمَّا مَنْ ثَقُلَتْ مَوَازِينُهُ", tamMeal: "Kimin tartıları ağır gelirse.", kelimeler: [{ arapca: "فَأَمَّا", turkce: "Kim" }, { arapca: "مَنْ", turkce: "kimse" }, { arapca: "ثَقُلَتْ", turkce: "ağır gelirse" }, { arapca: "مَوَازِينُهُ", turkce: "tartıları" }] },
@@ -523,7 +608,7 @@
               { ayetArapca: "كَلَّا لَوْ تَعْلَمُونَ عِلْمَ الْيَقِينِ", tamMeal: "Hayır! Eğer kesin bir bilgiyle bilseydiniz.", kelimeler: [{ arapca: "كَلَّا", turkce: "Hayır" }, { arapca: "لَوْ", turkce: "eğer" }, { arapca: "تَعْلَمُونَ", turkce: "bilseydiniz" }, { arapca: "عِلْمَ", turkce: "bilgiyle" }, { arapca: "الْيَقِينِ", turkce: "kesin" }] },
               { ayetArapca: "لَتَرَوُنَّ الْجَحِيمَ", tamMeal: "Elbette cehennemi göreceksiniz.", kelimeler: [{ arapca: "لَتَرَوُنَّ", turkce: "Elbette göreceksiniz" }, { arapca: "الْجَحِيمَ", turkce: "cehennemi" }] },
               { ayetArapca: "ثُمَّ لَتَرَوُنَّهَا عَيْنَ الْيَقِينِ", tamMeal: "Sonra onu gözünüzle kesin olarak göreceksiniz.", kelimeler: [{ arapca: "ثُمَّ", turkce: "Sonra" }, { arapca: "لَتَرَوُنَّهَا", turkce: "onu göreceksiniz" }, { arapca: "عَيْنَ", turkce: "gözüyle" }, { arapca: "الْيَقِينِ", turkce: "kesin" }] },
-              { ayetArapca: "ثُمَّ لَتُسْأَلُنَّ يَوْمَئِذٍ عَنِ النَّعِيمِ", tamMeal: "Sonra o gün, nimetlerden mutlaka sorguya çekileceksiniz.", kelimeler: [{ arapca: "ثُمَّ", turkce: "Sonra" }, { arapca: "لَتُسْأَلُنَّ", turkce: "mutlaka sorguya çekileceksiniz" }, { arapca: "يَوْمَئِذٍ", turkce: "o gün" }, { arapca: "عَنِ", turkce: "-den" }, { arapca: "النَّعِيمِ", turkce: "nimetler" }] }
+              { ayetArapca: "ثُمَّ لَتُسْأَلُنَّ يَوْمَئِذٍ عَنِ النَّعِيمِ", tamMeal: "Sonra o gün, nimetlerden mutlaka sorguya çekileceksiniz.", kelimeler: [{ arapca: "ثُمَّ", turkce: "Sonra" }, { arapca: "لَتُسْأَلُنَّ", turkce: "mutlaka sorguya çekileceksiniz" }, { arapca: "يَوْمَئِZİn", turkce: "o gün" }, { arapca: "عَنِ", turkce: "-den" }, { arapca: "النَّعِيمِ", turkce: "nimetler" }] }
             ]
           },
           {
@@ -537,14 +622,14 @@
           {
             sureAdi: "Hümeze Suresi",
             ayetler: [
-              { ayetArapca: "وَيْلٌ لِكُلِّ هُمَزَةٍ لُمَزَةٍ", tamMeal: "Vay haline her 'humeze' ve 'lumeze'nin (arkadan çekiştiren, kaş göz işaretiyle alay eden).", kelimeler: [{ arapca: "وَيْلٌ", turkce: "Vay haline" }, { arapca: "لِكُلِّ", turkce: "her" }, { arapca: "هُمَزَةٍ", turkce: "humeze" }, { arapca: "لُمَزَةٍ", turkce: "lumeze" }] },
+              { ayetArapca: "وَيْلٌ لِكُلِّ هُمَزَةٍ لُمَزَةٍ", tamMeal: "Vay haline her 'humeze' ve 'lumeze'nin (arkadan çekiştiren, kaş göz işaretiyle alay eden).", kelimeler: [{ arapca: "وَيْلٌ", turkce: "Vay haline" }, { arapca: "لِكُلِّ", turkce: "her" }, { arapca: "هُمَزَةٍ", turkce: "humeze" }, { arapca: "لُمَZETİN", turkce: "lumeze" }] },
               { ayetArapca: "الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ", tamMeal: "O ki, mal toplamış ve onu sayıp durmuştur.", kelimeler: [{ arapca: "الَّذِي", turkce: "O ki" }, { arapca: "جَمَعَ", turkce: "toplamış" }, { arapca: "مَالًا", turkce: "mal" }, { arapca: "وَعَدَّدَهُ", turkce: "ve onu sayıp durmuştur" }] },
               { ayetArapca: "يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ", tamMeal: "Malının kendisini ebedi kılacağını sanır.", kelimeler: [{ arapca: "يَحْسَبُ", turkce: "Sanır" }, { arapca: "أَنَّ", turkce: "ki" }, { arapca: "مَالَهُ", turkce: "malı" }, { arapca: "أَخْلَدَهُ", turkce: "onu ebedi kıldı" }] },
               { ayetArapca: "كَلَّا ۖ لَيُنْبَذَنَّ فِي الْحُطَمَةِ", tamMeal: "Hayır! Andolsun ki o, Hutame'ye atılacaktır.", kelimeler: [{ arapca: "كَلَّا", turkce: "Hayır" }, { arapca: "لَيُنْبَذَنَّ", turkce: "Andolsun atılacaktır" }, { arapca: "فِي", turkce: "içine" }, { arapca: "الْحُطَمَةِ", turkce: "Hutame" }] },
               { ayetArapca: "وَمَا أَدْرَاكَ مَا الْحُطَمَةُ", tamMeal: "Hutame'nin ne olduğunu sen ne bileceksin!", kelimeler: [{ arapca: "وَمَا", turkce: "Ve ne" }, { arapca: "أَدْرَاكَ", turkce: "sana bildirdi" }, { arapca: "مَا", turkce: "ne" }, { arapca: "الْحُطَمَةُ", turkce: "Hutame" }] },
               { ayetArapca: "نَارُ اللَّهِ الْمُوقَدَةُ", tamMeal: "Allah'ın tutuşturulmuş ateşidir.", kelimeler: [{ arapca: "نَارُ", turkce: "Ateşi" }, { arapca: "اللَّهِ", turkce: "Allah'ın" }, { arapca: "الْمُوقَدَةُ", turkce: "tutuşturulmuş" }] },
               { ayetArapca: "الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ", tamMeal: "O (ateş) ki, kalplerin ta üstüne çıkar.", kelimeler: [{ arapca: "الَّتِي", turkce: "O ki" }, { arapca: "تَطَّلِعُ", turkce: "çıkar" }, { arapca: "عَلَى", turkce: "üstüne" }, { arapca: "الْأَفْئِدَةِ", turkce: "kalplerin" }] },
-              { ayetArapca: "إِنَّهَا عَلَيْهِمْ مُؤْصَدَةٌ", tamMeal: "Şüphesiz o (ateş), onların üzerine kapatılacaktır.", kelimeler: [{ arapca: "إِنَّهَا", turkce: "Şüphesiz o" }, { arapca: "عَلَيْهِمْ", turkce: "onların üzerine" }, { arapca: "مُؤْصَدَةٌ", turkce: "kapatılacaktır" }] },
+              { ayetArapca: "إِنَّهَا عَلَيْهِمْ مُؤْصَدَةٌ", tamMeal: "Şüphesiz o (ateş), onların üzerine kapatılacaktır.", kelimeler: [{ arapca: "إِنَّهَا", turkce: "Şüphesiz o" }, { arapca: "عَلَيْهİM", turkce: "onların üzerine" }, { arapca: "مُؤْصَدَةٌ", turkce: "kapatılacaktır" }] },
               { ayetArapca: "فِي عَمَدٍ مُمَدَّدَةٍ", tamMeal: "Uzatılmış sütunlar içinde.", kelimeler: [{ arapca: "فِي", turkce: "içinde" }, { arapca: "عَمَدٍ", turkce: "sütunlar" }, { arapca: "مُمَدَّدَةٍ", turkce: "uzatılmış" }] }
             ]
           },
@@ -583,7 +668,7 @@
             sureAdi: "Kevser Suresi",
             ayetler: [
               { ayetArapca: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ", tamMeal: "Şüphesiz biz sana Kevser'i verdik.", kelimeler: [{ arapca: "إِنَّا", turkce: "Şüphesiz biz" }, { arapca: "أَعْطَيْنَاكَ", turkce: "sana verdik" }, { arapca: "الْكَوْثَرَ", turkce: "Kevser'i" }] },
-              { ayetArapca: "فَصَلِّ لِرَبِّكَ وَانْحَرْ", tamMeal: "Öyleyse Rabbin için namaz kıl ve kurban kes.", kelimeler: [{ arapca: "فَصَلِّ", turkce: "Öyleyse namaz kıl" }, { arapca: "لِرَبِّكَ", turkce: "Rabbin için" }, { arapca: "وَانْحَرْ", turkce: "ve kurban kes" }] },
+              { ayetArapca: "فَصَلِّ لِرَبِّكَ وَانْحَرْ", tamMeal: "Öyleyse Rabbin için namaz kıl ve kurban kes.", kelimeler: [{ arapca: "فَصَلِّ", turkce: "Öyleyse namaz kıl" }, { arapca: "لِرَبِّكَ", turkce: "Rabbin için" }, { arapca: "وَANHAR", turkce: "ve kurban kes" }] },
               { ayetArapca: "إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ", tamMeal: "Şüphesiz, soyu kesik olan asıl sana kin besleyendir.", kelimeler: [{ arapca: "إِنَّ", turkce: "Şüphesiz" }, { arapca: "شَانِئَكَ", turkce: "sana kin besleyen" }, { arapca: "هُوَ", turkce: "odur" }, { arapca: "الْأَبْتَرُ", turkce: "soyu kesik" }] }
             ]
           },
@@ -591,10 +676,10 @@
             sureAdi: "Kafirun Suresi",
             ayetler: [
               { ayetArapca: "قُلْ يَا أَيُّهَا الْكَافِرُونَ", tamMeal: "De ki: Ey kâfirler!", kelimeler: [{ arapca: "قُلْ", turkce: "De ki" }, { arapca: "يَا أَيُّهَا", turkce: "Ey" }, { arapca: "الْكَافِرُونَ", turkce: "kâfirler" }] },
-              { ayetArapca: "لَا أَعْبُدُ مَا تَعْبُدُونَ", tamMeal: "Ben sizin taptıklarınıza tapmam.", kelimeler: [{ arapca: "لَا", turkce: "Hayır" }, { arapca: "أَعْبُدُ", turkce: "tapmam" }, { arapca: "مَا", turkce: "şeylere" }, { arapca: "تَعْبُدُونَ", turkce: "taptığınız" }] },
-              { ayetArapca: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tamMeal: "Siz de benim taptığıma tapmazsınız.", kelimeler: [{ arapca: "وَلَا", turkce: "Ve" }, { arapca: "أَنْتُمْ", turkce: "siz" }, { arapca: "عَابِدُونَ", turkce: "tapanlar değilsiniz" }, { arapca: "مَا", turkce: "şeye" }, { arapca: "أَعْبُدُ", turkce: "taptığım" }] },
+              { ayetArapca: "لَا أَعْبُدُ مَا تَعْبُDÛNE", tamMeal: "Ben sizin taptıklarınıza tapmam.", kelimeler: [{ arapca: "لَا", turkce: "Hayır" }, { arapca: "أَعْبُدُ", turkce: "tapmam" }, { arapca: "مَا", turkce: "şeylere" }, { arapca: "تَعْبُDÛNE", turkce: "taptığınız" }] },
+              { ayetArapca: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tamMeal: "Siz de benim taptığıma tapmazsınız.", kelimeler: [{ arapca: "وَلَا", turkce: "Ve" }, { arapca: "أَنْتُمْ", turkce: "siz" }, { arapca: "عَابِدُونَ", turkce: "tapanlar değilsiniz" }, { arapca: "مَا", turkce: "şeye" }, { arapca: "أَعْبُDÜ", turkce: "taptığım" }] },
               { ayetArapca: "وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ", tamMeal: "Ben sizin taptıklarınıza (asla) tapacak değilim.", kelimeler: [{ arapca: "وَلَا", turkce: "Ve" }, { arapca: "أَنَا", turkce: "ben" }, { arapca: "عَابِدٌ", turkce: "tapacak değilim" }, { arapca: "مَا", turkce: "şeye" }, { arapca: "عَبَدْتُمْ", turkce: "taptığınız" }] },
-              { ayetArapca: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tamMeal: "Siz de benim taptığıma tapacak değilsiniz.", kelimeler: [{ arapca: "وَلَا", turkce: "Ve" }, { arapca: "أَنْتُمْ", turkce: "siz" }, { arapca: "عَابِدُونَ", turkce: "tapanlar değilsiniz" }, { arapca: "مَا", turkce: "şeye" }, { arapca: "أَعْبُدُ", turkce: "taptığım" }] },
+              { ayetArapca: "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ", tamMeal: "Siz de benim taptığıma tapacak değilsiniz.", kelimeler: [{ arapca: "وَلَا", turkce: "Ve" }, { arapca: "أَنْتُمْ", turkce: "siz" }, { arapca: "عَابِدُونَ", turkce: "tapanlar değilsiniz" }, { arapca: "مَا", turkce: "şeye" }, { arapca: "أَعْبُDÜ", turkce: "taptığım" }] },
               { ayetArapca: "لَكُمْ دِينُكُمْ وَلِيَ دِينِ", tamMeal: "Sizin dininiz size, benim dinim banadır.", kelimeler: [{ arapca: "لَكُمْ", turkce: "Sizin" }, { arapca: "دِينُكُمْ", turkce: "dininiz" }, { arapca: "وَلِيَ", turkce: "ve benim" }, { arapca: "دِينِ", turkce: "dinim" }] }
             ]
           },
@@ -641,9 +726,9 @@
               { ayetArapca: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ", tamMeal: "De ki: İnsanların Rabbine sığınırım.", kelimeler: [{ arapca: "قُلْ", turkce: "De ki" }, { arapca: "أَعُوذُ", turkce: "Sığınırım" }, { arapca: "بِرَبِّ", turkce: "Rabbine" }, { arapca: "النَّاسِ", turkce: "İnsanların" }] },
               { ayetArapca: "مَلِكِ النَّاسِ", tamMeal: "İnsanların Melikine (kralına).", kelimeler: [{ arapca: "مَلِكِ", turkce: "Melikine" }, { arapca: "النَّاسِ", turkce: "İnsanların" }] },
               { ayetArapca: "إِلَٰهِ النَّاسِ", tamMeal: "İnsanların İlahına.", kelimeler: [{ arapca: "إِلَٰهِ", turkce: "İlahına" }, { arapca: "النَّاسِ", turkce: "İnsanların" }] },
-              { ayetArapca: "مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ", tamMeal: "Sinsi vesvesecinin şerrinden.", kelimeler: [{ arapca: "مِنْ", turkce: "den" }, { arapca: "شَرِّ", turkce: "Şerrinden" }, { arapca: "الْوَسْوَاسِ", turkce: "Vesvesecinin" }, { arapca: "الْخَنَّاسِ", turkce: "Sinsi" }] },
+              { ayetArapca: "مِنْ شَرِّ الْوَسْوَASİ الْخَنَّاسِ", tamMeal: "Sinsi vesvesecinin şerrinden.", kelimeler: [{ arapca: "مِنْ", turkce: "den" }, { arapca: "شَرِّ", turkce: "Şerrinden" }, { arapca: "الْوَسْوَASİ", turkce: "Vesvesecinin" }, { arapca: "الْخَنَّASİ", turkce: "Sinsi" }] },
               { ayetArapca: "الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ", tamMeal: "O ki, insanların göğüslerine vesvese verir.", kelimeler: [{ arapca: "الَّذِي", turkce: "O ki" }, { arapca: "يُوَسْوِسُ", turkce: "Vesvese verir" }, { arapca: "فِي", turkce: "İçine" }, { arapca: "صُدُورِ", turkce: "Göğüslerine" }, { arapca: "النَّاسِ", turkce: "İnsanların" }] },
-              { ayetArapca: "مِنَ الْجِنَّةِ وَالنَّاسِ", tamMeal: "Gerek cinlerden, gerek insanlardan.", kelimeler: [{ arapca: "مِنَ", turkce: "den" }, { arapca: "الْجِنَّةِ", turkce: "Cin" }, { arapca: "وَالنَّاسِ", turkce: "Ve insanlardan" }] }
+              { ayetArapca: "مِنَ الْجِنَّةِ وَالنَّاسِ", tamMeal: "Gerek cinlerden, gerek insanlardan.", kelimeler: [{ arapca: "مِنَ", turkce: "den" }, { arapca: "الْجِنَّةِ", turkce: "Cin" }, { arapca: "وَالنَّASİ", turkce: "Ve insanlardan" }] }
             ]
           }
         ];
