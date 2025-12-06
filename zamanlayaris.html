@@ -827,6 +827,73 @@
 
         }
 
+/* --- HATA LİSTESİ STİLLERİ --- */
+.mistakes-wrapper {
+    margin-top: 20px;
+    width: 100%;
+    max-height: 200px; /* Çok uzarsa kaydırma çubuğu çıksın */
+    overflow-y: auto;
+    border-top: 2px dashed #eee;
+    padding-top: 10px;
+    text-align: left; /* Listeyi sola yasla */
+}
+
+.mistakes-title {
+    font-size: 1.1em;
+    color: var(--error-color);
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.mistake-item {
+    background-color: #fff0f0; /* Hafif kırmızı arka plan */
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--error-color);
+}
+
+.mistake-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.m-turkce {
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 0.95em;
+}
+
+.m-details {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.m-arapca {
+    font-family: var(--font-family-arabic) !important;
+    font-size: 1.6em;
+    color: var(--primary-color);
+    font-weight: bold;
+    direction: rtl;
+}
+
+/* Mobilde detaylar biraz daha küçük olsun */
+@media (max-width: 768px) {
+    .mistake-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .m-arapca {
+        align-self: flex-end; /* Arapçayı sağa yasla */
+    }
+}
     </style>
     </head>
 <body>
@@ -898,7 +965,7 @@
         "50": { "kalipNo": "50", "arapca": "أَفْعَل", "tur": "İsm-i Tafdîl/Sıfat", "bab": "Sülâsî İsim", "displayComponents": ["أَ", "ْ", "َ"], "steps": [] },
         "55": { "kalipNo": "55", "arapca": "إِفْعَال", "tur": "Masdar", "bab": "İf'âl", "displayComponents": ["إِ", "ْ", "َ", "ا"], "steps": [] },
         "56": { "kalipNo": "56", "arapca": "مُفْعِل", "tur": "İsm-i Fâil", "bab": "İf'âl", "displayComponents": ["مُـ", "ْ", "ِ"], "steps": [] },
-        "61": { "kalipNo": "61", "arapca": "تَفْعِİL", "tur": "Masdar", "bab": "Tef'îl", "displayComponents": ["تَـ", "ْ", "ِ", "ـيـ"], "steps": [] },
+        "61": { "kalipNo": "61", "arapca": "تَفْعِيل", "tur": "Masdar", "bab": "Tef'îl", "displayComponents": ["تَـ", "ْ", "ِ", "ـيـ"], "steps": [] },
         "67": { "kalipNo": "67", "arapca": "مُفَاعَلَة", "tur": "Masdar", "bab": "Mufâ'ale", "displayComponents": ["مُـ", "َ", "ا", "َ", "َة"], "steps": [] },
         "80": { "kalipNo": "80", "arapca": "اِفْتِعَال", "tur": "Masdar", "bab": "İfti'âl", "displayComponents": ["اِ", "ْ", "تِ", "َ", "ا"], "steps": [] },
         "103": { "kalipNo": "103", "arapca": "اِسْتِفْعَال", "tur": "Masdar", "bab": "İstif'âl", "displayComponents": ["اِسْتِـ", "ْ", "َ", "ا"], "steps": [] }
@@ -1217,6 +1284,15 @@
 
         // --- RASTGELE SET OLUŞTURMA MANTIĞI ---
         function setupNewSet() {
+       // *** DÜZELTME BAŞLANGICI: Önceki turdan kalan işaretleri temizle ***
+            allWordsPool.forEach(word => {
+                word.found = false;
+                word.failed = false;
+            });
+            // *** DÜZELTME BİTİŞİ ***
+
+            // 1. Tüm kelime havuzunu karıştır
+            allWordsPool.sort(() => 0.5 - Math.random());
             
             // 1. Tüm kelime havuzunu karıştır
             allWordsPool.sort(() => 0.5 - Math.random());
@@ -1780,8 +1856,7 @@
              }
         }
         
-            function endGame(isTimeOut) 
-             {
+            function endGame(isTimeOut) {
             // 1. Oyunu ve zamanlayıcıyı durdur
             gameState.isGameActive = false;
             stopTimer();
@@ -1789,8 +1864,12 @@
             // 2. İstatistikleri hesapla
             const totalWords = gameState.totalWords;
             const correctCount = currentWordQueue.filter(w => w.found).length;
-            const failedCount = currentWordQueue.filter(w => w.failed).length;
-            const finalScore = score; // Global 'score' değişkenini al
+            
+            // Hatalı kelimeleri bul (failed olarak işaretlenmişler)
+            const failedWords = currentWordQueue.filter(w => w.failed);
+            const failedCount = failedWords.length;
+            
+            const finalScore = score;
 
             // 3. Sonuç HTML'ini oluştur
             let resultsHTML = '';
@@ -1801,38 +1880,55 @@
                 resultsHTML += `<h2>Tur Tamamlandı! 🎉</h2>`;
             }
 
-            // Puan
+            // Puan ve Özet
             resultsHTML += `<p class="final-score">Puan: <span id="final-score-value">${finalScore}</span></p>`;
+            resultsHTML += `<div style="display:flex; justify-content:center; gap:20px;">
+                                <p style="color: var(--success-color); font-weight: bold;">Doğru: ${correctCount}</p>
+                                <p style="color: var(--error-color); font-weight: bold;">Hata: ${failedCount}</p>
+                            </div>`;
 
-            // Doğru/Yanlış Sayısı
-            resultsHTML += `<p style="color: var(--success-color); font-weight: bold;">Doğru: ${correctCount}</p>`;
-            resultsHTML += `<p style="color: var(--error-color); font-weight: bold;">Hata: ${failedCount}</p>`;
-
-            // Yıldız Mantığı (Puan yüzdesine göre)
-            let starHTML = '⭐'; // Varsayılan 1 yıldız
+            // Yıldız Mantığı
+            let starHTML = '⭐'; 
             const percentage = totalWords > 0 ? (correctCount / totalWords) * 100 : 0;
 
-            if (percentage >= 99) { // Neredeyse mükemmel veya mükemmel
-                starHTML = '⭐⭐⭐';
-            } else if (percentage >= 60) { // Çoğunluk doğru
-                starHTML = '⭐⭐';
-            }
+            if (percentage >= 99) starHTML = '⭐⭐⭐';
+            else if (percentage >= 60) starHTML = '⭐⭐';
             
-            if (isTimeOut && correctCount === 0) {
-                starHTML = '😔'; // Süre doldu ve hiç bilemedi
-            } else if (correctCount === 0 && !isTimeOut) {
-                starHTML = '🤔'; // Turu bitirdi ama hiç bilemedi
-            }
-
+            if (correctCount === 0) starHTML = isTimeOut ? '😔' : '🤔';
+            
             resultsHTML += `<p class="result-stars">${starHTML}</p>`;
-            
+
+            // --- YENİ EKLENEN KISIM: Hatalı Kelimeler Listesi ---
+            if (failedWords.length > 0) {
+                resultsHTML += `<div class="mistakes-wrapper">
+                                    <div class="mistakes-title">⚠️ Cevap Anahtarı</div>`;
+                
+                failedWords.forEach(word => {
+                    // Kökü düzgün göster (dizi ise birleştir, değilse direkt yaz)
+                    const rootDisplay = Array.isArray(word.rootDisplay) ? word.rootDisplay.join('') : (word.rootDisplay || word.rootKey);
+                    
+                    resultsHTML += `
+                        <div class="mistake-item">
+                            <div class="mistake-info">
+                                <span class="m-turkce">${word.turkce}</span>
+                                <span class="m-details">Doğru Kök: <b>${rootDisplay}</b></span>
+                                <span class="m-details">Doğru Kalıp: <b>${word.kalipNo}</b></span>
+                            </div>
+                            <span class="m-arapca">${word.arapca}</span>
+                        </div>`;
+                });
+                
+                resultsHTML += `</div>`;
+            }
+            // --- YENİ KISIM BİTİŞİ ---
+
             // 4. HTML'i ekrana bas
             resultsDetails.innerHTML = resultsHTML;
 
             // 5. Sonuç ekranını göster
-            showScreen('results'); // <- İşte endGame fonksiyonu burada 'showScreen'i çağırıyor
+            showScreen('results');
 
-            // 6. Puan animasyonunu tetikle
+            // 6. Animasyon
             const scoreValueEl = document.getElementById('final-score-value');
             if (scoreValueEl) {
                 scoreValueEl.style.animation = 'final-score-pop 0.5s ease-out';
@@ -1841,12 +1937,8 @@
                 }, { once: true });
             }
             
-            // 7. (İsteğe bağlı) Oyun sonu sesi
             playGenericSound('set_complete');
         }
-        // --- FONKSİYON BİTİŞİ ---
-        // [YAPIŞTIRILACAK YER BİTİŞİ]
-
 
         // --- Ekran ve Buton Yöneticileri ---
         function showScreen(screenName) {
