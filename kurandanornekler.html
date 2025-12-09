@@ -297,46 +297,105 @@
         .feedback-icon.show { transform: translateY(-50%) scale(1); opacity: 1; }
         .icon-success { color: var(--success); }
         .icon-error { color: var(--error); }
+/* ============================================================ */
+/* 1. MOBİL DİKEY (PORTRAIT) - ŞIKLAR 2 SÜTUN OLSUN */
+/* ============================================================ */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .options-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Kartlar arası boşluk */
+        justify-content: center;
+    }
 
-        /* ========================================= */
-        /* === MOBİL VE TABLET UYUMLULUĞU (CSS) === */
-        /* ========================================= */
+    .option-card {
+        /* Yan yana 2 tane sığması için (Boşluk payı düşüldü) */
+        width: 48% !important; 
+        margin-bottom: 0; /* Ekstra marjini sıfırla */
+        min-height: 80px; /* Yükseklik standardı */
+    }
+    
+    .opt-desc {
+        font-size: 0.8rem; /* Açıklama yazısını mobilde biraz küçülttük */
+    }
+}
 
-        @media screen and (max-width: 768px) {
-            
-            /* Kapsayıcıyı ekrana tam oturt ama scroll'a izin ver */
-            .container {
-                width: 100%;
-                height: 100dvh; /* Dinamik viewport yüksekliği */
-                border-radius: 0;
-                padding: 10px;
-            }
+/* ============================================================ */
+/* 2. MOBİL YATAY (LANDSCAPE) - YAZILAR KÜÇÜK, EKRANA SIĞSIN */
+/* ============================================================ */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    /* Ana kutuyu tam ekran yap ve boşlukları al */
+    .container {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        padding: 5px 15px; /* Kenar boşluklarını azalttık */
+        margin: 0;
+        justify-content: flex-start; /* İçeriği yukarı yasla */
+    }
 
-            /* Yazı Boyutlarını Küçült */
-            .quran-text { font-size: 2.2rem; margin-bottom: 10px; }
-            .translation { font-size: 1rem; margin-top: 10px; }
-            
-            /* Şıkları 2'li düzen yap */
-            .option-card {
-                width: 46%; /* Yan yana 2 tane sığsın */
-                min-width: unset;
-                padding: 10px 5px;
-            }
-            .opt-title { font-size: 1.4rem; }
-            .opt-desc { font-size: 0.85rem; }
+    /* Header ve Progress barı sıkıştır */
+    .header-bar { margin-bottom: 2px; }
+    .progress-wrapper { height: 4px; margin-bottom: 5px; }
 
-            /* Sonuç Ekranı Düzenlemeleri */
-            .answer-title { font-size: 1.8rem; }
-            .answer-desc { font-size: 1.2rem; }
+    /* Soru Alanını Küçült */
+    .question-area {
+        min-height: auto;
+        padding: 0;
+        margin: 0;
+        flex-grow: 0; /* Gereksiz büyümesin */
+    }
 
-            /* TABLO MOBİL DÖNÜŞÜMÜ (GRID SİSTEMİ) */
-            /* Tabloyu standart halden çıkarıp 2x2 kutucuğa çeviriyoruz */
-            .sarf-table, .sarf-table tbody, .sarf-table tr {
-                display: block;
-                width: 100%;
-                border: none;
-            }
-            
+    /* Ayet ve Meal Yazı Boyutları */
+    .quran-text {
+        font-size: 1.4rem !important; /* Ciddi oranda küçültüldü */
+        line-height: 1.3;
+        margin-bottom: 2px;
+    }
+
+    .translation {
+        font-size: 0.8rem !important;
+        margin-top: 2px;
+        margin-bottom: 5px;
+    }
+
+    /* Şıklar Yan Yana Dizilsin (5 Sütun veya sığdığı kadar) */
+    .options-grid {
+        gap: 5px;
+        margin-top: 5px;
+    }
+
+    .option-card {
+        width: 18% !important; /* 5 tane yan yana sığar */
+        padding: 5px 2px;
+        min-height: 60px;
+        min-width: auto; /* Genişlik kısıtlamasını kaldır */
+    }
+
+    .opt-title {
+        font-size: 0.9rem !important;
+    }
+
+    .opt-desc {
+        font-size: 0.6rem !important; /* Açıklamayı çok küçült */
+        line-height: 1;
+        margin-top: 2px;
+    }
+
+    /* Alt Kontrol Barı */
+    .control-bar {
+        padding-top: 2px;
+        margin-top: 5px;
+    }
+    .nav-btn {
+        padding: 5px 15px;
+        font-size: 0.9rem;
+        min-width: auto;
+    }
+    
+    /* Gereksiz ikonları gizle veya küçült */
+    .icon-svg { width: 20px; height: 20px; }
+}
             .sarf-table thead { display: none; } /* Başlıkları gizle */
             
             .sarf-table tr {
