@@ -29,17 +29,15 @@
         }
 
         /* GÜNCELLENDİ: 16:9 Oran Konteyneri (Varsayılan YATAY) */
-        .aspect-ratio-wrapper {
-            position: relative;
-            width: 96vw; 
-            height: 54vw; 
-            max-height: 96vh; /* Fallback */
-            max-height: 96dvh; /* GÜNCELLENDİ: dvh kullanımı */
-            max-width: 170.67vh; /* Fallback */
-            max-width: 170.67dvh; /* GÜNCELLENDİ: dvh kullanımı */
-            margin: auto;
-            background: #ffffff;
-        }
+       /* GÜNCELLENDİ: Sabit oran kaldırıldı, tam ekrana yayıldı */
+.aspect-ratio-wrapper {
+    position: relative;
+    width: 98vw;   /* Ekran genişliğinin %98'i */
+    height: 98dvh; /* Ekran yüksekliğinin %98'i */
+    margin: auto;  /* Ortala */
+    background: #ffffff;
+    /* Eski max-width/height ve aspect ratio (54vw) kısıtlamaları kaldırıldı */
+}
 
         /* GÜNCELLENDİ: Dikey mod (9:16) desteği kaldırıldı. */
         /*
@@ -65,7 +63,7 @@
             background-color: #ffffff;
             border-radius: 1.5vmin; /* 12px -> 1.5vmin */
             box-shadow: 0 0.5vmin 1.5vmin rgba(0, 0, 0, 0.08);
-            padding: 2.5vmin; /* 25px -> 2.5vmin */
+            padding: 1.5vmin; /* 25px -> 2.5vmin */
             border: 0.1vmin solid #e0e0e0;
             display: flex; /* Dikey flex */
             flex-direction: column; /* İçeriği dikey sırala */
@@ -203,34 +201,38 @@
             margin-bottom: 0;
         }
 
-        /* YENİ: Kalan alanı dikeyde ortalamak için sarmalayıcı */
-        .main-content-area {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* GÜNCELLENDİ: space-between -> flex-start (klavyeyi yukarı alır) */
-            align-items: center;
-            flex-grow: 1; /* Kalan tüm dikey boşluğu al */
-            overflow: hidden;
-            width: 100%;
-            min-height: 0; /* Flexbox taşma sorununu önler */
-        }
+       /* 240. satır civarı - Ana kutuyu üstten hizala */
+/* 240. satır civarı */
+.main-content-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 'center' yerine 'flex-start' yazın */
+    align-items: center;
+    flex-grow: 1; 
+    overflow: hidden;
+    width: 100%;
+    min-height: 0;
+    padding-top: 1vmin; /* Çizgiye çok yapışmasın diye minik bir boşluk */
+}
 
-        /* Cümle Alanı */
-        .sentence-display-area {
-            display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            padding: 2vmin;
-            background-color: #fafafa;
-            border-radius: 0.8vmin;
-            margin-bottom: 1.5vmin; /* GÜNCELLENDİ: 3 -> 1.5 */
-            margin-top: 1.5vmin; 
-            min-height: 15vmin; /* GÜNCELLENDİ: Minimum yükseklik eklendi */
-            flex-shrink: 1; /* GÜNCELLENDİ: Daralmaya izin ver */
-            flex-grow: 0; 
-            overflow-y: auto; 
-            width: 100%; 
-        }
+/* 255. satır civarı - Cümle kutusuna üstten sabit itme payı verin */
+.sentence-display-area {
+    margin-top: 0vmin; /* YENİ: Bu satırı ekleyin/değiştirin. Sabit durmasını sağlar. */
+    
+    /* Mevcut diğer kodlar aynen kalsın... */
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    padding: 2vmin;
+    background-color: #fafafa;
+    border-radius: 0.8vmin;
+    margin-bottom: 1.5vmin; 
+    min-height: 15vmin; 
+    flex-shrink: 1; 
+    flex-grow: 0; 
+    overflow-y: auto; 
+    width: 100%; 
+}
         
         /* Arapça kelimeleri tutan konteyner */
         .arabic-sentence-container {
@@ -324,7 +326,7 @@
             width: 100%;
             text-align: center;
             font-family: 'Marhey', sans-serif;
-            font-size: 3.5vmin; 
+            font-size: 6vmin; 
             color: #0056b3;
             transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
             direction: ltr;
@@ -333,6 +335,11 @@
             justify-content: center;
             align-items: center;
             padding: 0;
+           font-weight: 700; /* Daha kalın olması için */
+           line-height: 1.4; /* Satırlar birbirine girmesin */
+.full-turkish-sentence-container {
+        font-size: 9vmin; /* Masaüstünde devasa boyutta görünür */
+    }
         }
         
         .full-turkish-sentence-container.visible {
@@ -340,21 +347,23 @@
              opacity: 1;
              height: auto; 
              padding-top: 1.5vmin; 
+
         }
 
 
-        /* Cevap Giriş Alanı */
-        .input-area { 
-            text-align: center; 
-            transition: opacity 0.3s, visibility 0.3s, height 0.3s;
-            flex-shrink: 1; /* GÜNCELLENDİ: 0 -> 1 (Taşmayı önlemek için) */
-            flex-grow: 1; 
-            width: 100%;
-            display: flex; 
-            flex-direction: column; 
-            min-height: 0; 
-            gap: 1.5vmin; 
-        }
+        /* YENİ HALİ */
+     .input-area { 
+    text-align: center; 
+    transition: opacity 0.3s, visibility 0.3s, height 0.3s;
+    flex-shrink: 1; 
+    flex-grow: 0; /* Artık boşluk doldurmaya çalışmayacak */
+    width: 100%;
+    display: flex; 
+    flex-direction: column; 
+    min-height: 0; 
+    gap: 1.5vmin; 
+    justify-content: center; /* İçeriğini de ortalar */
+      }
 
         /* Input Wrapper */
         .input-wrapper {
@@ -425,14 +434,15 @@
         /* Klavye Stilleri */
         .keyboard {
             display: flex; flex-direction: column;
-            gap: 1.5vmin; 
+            gap: 1.0vmin; 
             margin-top: 0; 
             justify-content: center; 
             min-height: 0; 
         }
         .keyboard-row {
             display: flex; justify-content: center; 
-            gap: 2vmin; 
+            justify-content: center;
+            gap: 1vmin; 
         }
         .keyboard-row.letter-row {
             transition: display 0.3s;
@@ -826,7 +836,7 @@
             .sentence-display-area {
                 padding: 1.5vmin; /* 2'den */
                 min-height: 12vmin; /* 15'ten */
-                margin-top: 1vmin;
+                margin-top: 2vmin;
                 margin-bottom: 1vmin;
             }
             .arabic-word {
@@ -837,7 +847,7 @@
             }
 
             .input-area {
-                gap: 1vmin; /* 1.5'ten */
+                gap: 0.5vmin; /* 1.5'ten */
             }
             .input-wrapper {
                 height: 12vmin; /* 15'ten */
@@ -874,7 +884,50 @@
                 line-height: 6vmin;
             }
         }
+/* --- MASAÜSTÜ ÖZEL AYARLARI --- */
+@media screen and (min-width: 1024px) {
+    
+    /* 1. Cümle Alanını Genişlet ve Ferahlat */
+    .sentence-display-area {
+        min-height: 25vmin; /* Kutunun yüksekliğini arttırır */
+        padding: 4vmin;     /* Kenar boşluklarını arttırır */
+        gap: 2vmin;         /* Satırlar arası boşluğu açar */
+    }
 
+    /* 2. Arapça Kelime Boyutunu Arttır */
+    .arabic-word {
+        font-size: 10vmin; /* 6vmin'den 10vmin'e çıkarıldı (Çok daha büyük) */
+        padding: 0 1vmin;  /* Kelime etrafındaki boşluk */
+    }
+
+    /* 3. Türkçe Çeviri Boyutunu Arttır */
+    .turkish-translation {
+        font-size: 4.5vmin; /* 3vmin'den 4.5vmin'e çıkarıldı */
+        margin-bottom: 1.5vmin; /* Arapça kelime ile arasındaki mesafe */
+    }
+    
+    /* 4. Kelime Çiftleri Arasındaki Boşluk */
+    .word-pair {
+        margin: 0 1.5vmin; /* Yan yana kelimeleri birbirinden biraz daha ayırır */
+    }
+}
+#next-sentence-btn {
+    font-family: 'Marhey', sans-serif;
+    font-size: 3vmin;
+    background-color: #28a745; /* Yeşil */
+    color: white;
+    border: none;
+    border-radius: 1vmin;
+    padding: 1.5vmin 4vmin;
+    margin-top: 2vmin;
+    cursor: pointer;
+    box-shadow: 0 0.5vmin #1e7e34;
+    animation: pulse-green 1.5s infinite;
+}
+#next-sentence-btn:active {
+    transform: translateY(0.2vmin);
+    box-shadow: 0 0.2vmin #1e7e34;
+}
     </style>
 </head>
 <body>
@@ -913,14 +966,16 @@
                             <button id="start-btn" type="button">Başla</button>
                         </div>
 
-                        <div class="prompt-container" id="prompt-container">
-                            <div id="guess-prompt">
-                                <p>Türkçe Cümleyi Tahmin Et</p>
-                                <button id="guess-prompt-btn" type="button">✓</button>
-                            </div>
-                            <div class="full-turkish-sentence-container" id="full-turkish-container-static">
-                                </div>
-                        </div>
+                       <div class="prompt-container" id="prompt-container">
+    <div id="guess-prompt">
+        <p>Türkçe Cümleyi Tahmin Et</p>
+        <button id="guess-prompt-btn" type="button">✓</button>
+    </div>
+    
+    <div class="full-turkish-sentence-container" id="full-turkish-container-static"></div>
+
+    <button id="next-sentence-btn" type="button" style="display: none;"> << Devam Et  </button>
+</div>
 
                         <div class="input-wrapper" id="input-wrapper">
                             <button id="submit-btn" type="button">✓</button>
@@ -1003,7 +1058,8 @@
         // --- GÜNCELLENDİ: OYUN VERİLERİ (DETAYLANDIRILDI VE DÜZELTİLDİ) ---
         
        // --- GÜNCELLENDİ: OYUN VERİLERİ (DETAYLANDIRILDI VE DÜZELTİLDİ) ---
-       const gameData = [
+const nextSentenceBtn = document.getElementById('next-sentence-btn');       
+const gameData = [
             // --- SEVİYE 1 ---
             {
                 level: 1,
@@ -1502,7 +1558,7 @@ olduğu gibi yazılır.</li>
                 ["ط","ك","م","ن","ت","ا","ل","ب","ي","س","ش","ذ"],
                 ["Backspace", "ظ","ز","و","ة","ى","ر","ؤ","ء","ئ"] 
             ];
-            const specialKeys = ["»"]; 
+            const specialKeys = []; 
             
             letterRows = []; 
             keyRows.forEach(row => {
@@ -1806,6 +1862,7 @@ olduğu gibi yazılır.</li>
 
         // --- CÜMLE YÜKLEME ---
         function loadSentence(sentenceIndex) {
+            nextSentenceBtn.style.display = 'none';
             sentenceDisplayArea.classList.remove('review-mode');
             setKeyboardState('typing'); // GÜNCELLENDİ: Bu, 'nextButton'u otomatik olarak devre dışı bırakır
 
@@ -1927,7 +1984,7 @@ olduğu gibi yazılır.</li>
                    category.includes('mehmuz') ||
                    category.includes('mudaaf') )
                    && normalizedUser === normalizedBareWord) {
-                showError("Fiilin Mazisini (geçmiş zamanını) yazınız! (Örn: 'يَكْتُb' için 'كَتَبَ' veya 'يَقُومُ' için 'قَامَ' aranır)"); // GÜNCELLENDİ: Typo
+                showError("Fiilin Mazisini (geçmiş zamanını) yazınız! (Örn: 'يَكْتُبُ' için 'كَتَبَ' veya 'يَقُومُ' için 'قَامَ' aranır.)"); // GÜNCELLENDİ: Typo
                 return;
             }
             if (userAnswer.startsWith("ال")) {
@@ -1982,6 +2039,7 @@ olduğu gibi yazılır.</li>
             // GÜNCELLENDİ: sentenceDisplayArea sınıfı yerine container'a sınıf eklendi
             fullTurkishContainerStatic.classList.add('visible');
             setKeyboardState('reviewing');
+            nextSentenceBtn.style.display = 'block';
             if (nextButton) nextButton.disabled = false; // GÜNCELLENDİ: İlerle tuşunu etkinleştir
             
             const allTurkishWords = sentenceDisplayArea.querySelectorAll('.turkish-translation');
@@ -2072,6 +2130,10 @@ olduğu gibi yazılır.</li>
         }
 
         document.addEventListener('DOMContentLoaded', initGame);
+nextSentenceBtn.addEventListener('click', () => {
+    playTouchSound();
+    forceNextSentence();
+});
 
     </script>
 </body>
