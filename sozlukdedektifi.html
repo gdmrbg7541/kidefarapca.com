@@ -133,7 +133,6 @@
         #right-panel { justify-content: flex-start; gap: 5px; }
         #section-question { flex: 0 0 auto; margin-bottom: 5px; padding: 10px; }
         
-        /* Mobil Dikey Font */
         .question-highlight { 
             font-size: 2rem !important; 
             padding: 5px 20px; 
@@ -148,60 +147,75 @@
     }
 
     /* ========================================= */
-    /* MOBİL YATAY (LANDSCAPE) - GÜNCEL */
+    /* MOBİL YATAY (LANDSCAPE) - FİNAL DÜZELTME */
     /* ========================================= */
     @media screen and (max-height: 500px) and (orientation: landscape) {
         #game-stage {
-            height: 95vh; padding: 5px;
+            height: 100dvh; /* Ekranı tam kapla */
+            padding: 5px;
             grid-template-columns: 1fr; 
         }
 
         #left-panel, .mobile-hint { display: none !important; }
-        .mobile-home-btn { display: block; }
+        .mobile-home-btn { display: block; top: 5px; left: 5px; } /* İkonu biraz köşeye çek */
 
         #right-panel {
-            flex-direction: column; /* ÜST-ALT Yerleşim */
-            gap: 5px; align-items: stretch;
+            flex-direction: column;
+            justify-content: center; /* Ortala */
+            gap: 5px;
             height: 100%;
+            padding: 0 5px; /* Yanlardan biraz boşluk */
         }
 
-        /* --- Üst Kısım: Soru --- */
+        /* --- Üst Kısım: Soru Kutusu --- */
         #section-question {
-            flex: 0.45; /* Alanı biraz arttırdık */
-            margin: 0; padding: 2px; /* Padding'i kıstık */
-            width: 100%; 
-            box-sizing: border-box;
+            flex: 0 0 auto; /* İçerik kadar yer kapla, esneme */
+            width: 100%;
+            margin: 0; 
+            padding: 5px; /* İç boşluğu azalttık */
+            min-height: auto;
+            background: #ecf0f1; /* Arkaplan rengi */
         }
 
-        /* İstenilen Font Ayarı: 2.5rem */
+        /* Soru Kelimesi (Kutuya Sığdırma Ayarları) */
         .question-highlight { 
-            font-size: 2.5rem !important; 
-            margin: 0; padding: 0 10px;
-            line-height: 1.2;
+            font-size: 2.5rem !important; /* İstenen Boyut */
+            line-height: 1.1; /* Satır aralığını sıkılaştır */
+            margin: 2px 0 !important; 
+            padding: 0 15px !important;
+            box-shadow: none; /* Gölge yer kaplamasın */
+            border: 1px solid #dfe6e9; /* Hafif sınır */
         }
         
+        /* Diğer küçük yazılar */
+        #section-question > div:nth-child(2) { display: none; } /* "Aranan Kelime" yazısını kaldır (yer açmak için) */
+        
         #section-question > div:nth-child(4) { 
-            font-size: 0.8rem !important; line-height: 1; display: inline-block; margin-top: 2px !important;
+            font-size: 0.8rem !important; 
+            margin-top: 2px !important;
+            line-height: 1;
         }
 
         /* --- Alt Kısım: Şıklar (1 Satır 5 Sütun) --- */
         .options-container {
-            flex: 0.5; 
-            grid-template-columns: repeat(5, 1fr) !important; 
-            grid-template-rows: 1fr !important;
-            gap: 4px; /* Boşluk azaldı */
-            width: 95%;
+            flex: 0 0 auto; /* Esnemesin, buton boyu kadar olsun */
+            display: grid;
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 5px;
+            width: 100%;
+            margin-top: 5px;
         }
         
         .det-opt-btn:last-child { grid-column: auto; width: 100%; }
         
-        /* Şık Fontu: 2rem ve Kutu Küçültme */
+        /* Buton Stili */
         .det-opt-btn { 
-            font-size: 2rem; /* Büyük Font */
-            padding: 0 !important; /* Kutu içindeki gereksiz boşluk gitti */
+            font-size: 2rem; 
+            height: 60px; /* SABİT YÜKSEKLİK - Artık uzamayacak */
             border-radius: 8px; 
-            border-width: 2px;
-            line-height: 1; /* Satır aralığını sıkılaştırdık */
+            padding: 0;
+            line-height: 1;
+            display: flex; align-items: center; justify-content: center;
         }
     }
 </style>
