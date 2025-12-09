@@ -281,96 +281,120 @@
             background: var(--primary); color: white; border: none; 
             border-radius: 8px; cursor: pointer; font-size: 1.2rem;
         }
-@media (max-width: 768px) {
+
+  /* ================================================================
+           MOBİL DİKEY (PORTRAIT): Daha Kompakt Şema + 2 Sütun Avcı
+           ================================================================
+        */
+        @media (max-width: 768px) {
             body { overflow-x: hidden; }
             .top-nav { padding: 5px; gap: 5px; }
-            .menu-btn { padding: 5px 12px; font-size: 0.9rem; }
+            .menu-btn { padding: 5px 10px; font-size: 0.85rem; }
             .main-content { padding: 10px; }
 
-            /* ŞEMA: Dikeyde alt alta olsun */
-            .branches-wrapper { flex-direction: column; gap: 15px; }
-            .branch-column { width: 100%; padding: 10px; box-sizing: border-box; }
+            /* --- ŞEMA KÜÇÜLTME AYARLARI --- */
+            .tree-container { margin-top: 0; }
+            .branches-wrapper { flex-direction: column; gap: 10px; }
+            .branch-column { width: 100%; padding: 8px; box-sizing: border-box; }
             
-            /* KARTLAR */
-            .verb-card { padding: 8px; min-height: auto; border-left-width: 4px; }
-            .card-title { font-size: 1rem; }
-            .card-example { font-size: 1.8rem; }
+            /* Başlıkları ve kutuları biraz kibarlaştırıyoruz */
+            .main-root { font-size: 1.3rem; padding: 8px 20px; margin-bottom: 10px; }
+            .branch-title { font-size: 1.1rem; padding: 6px; width: 90%; margin-bottom: 10px; }
+            
+            .verb-card { padding: 6px; min-height: auto; border-left-width: 4px; gap: 2px; }
+            .card-title { font-size: 0.9rem; margin-bottom: 2px; }
+            .card-desc { font-size: 0.75rem; line-height: 1.1; margin-bottom: 2px; }
+            .card-example { font-size: 1.6rem; padding: 2px; } /* Örnekleri az küçülttük */
+            .ask-btn { font-size: 1rem; padding: 8px 25px; margin-top: 15px; }
 
-            /* KAVRAM AVCISI GRID AYARI */
+            /* --- KAVRAM AVCISI (2 SÜTUN) --- */
             .hunter-grid {
-                display: flex;       /* Esnek kutu */
-                flex-wrap: wrap;     /* Sığmayan alta geçsin */
-                justify-content: center; /* İçerik ortalansın */
-                gap: 15px;           /* Kartlar arası boşluk */
-                margin-top: 20px;
+                display: flex; flex-wrap: wrap; justify-content: center;
+                gap: 12px; margin-top: 15px;
             }
-
             .hunter-card {
-                /* (100% - boşluk) / 2 mantığıyla tam oturtuyoruz */
-                width: calc(50% - 10px); 
-                padding: 15px 5px;
-                min-height: 80px;
-                border-radius: 20px;
-                box-sizing: border-box; /* Padding dahil hesapla */
+                width: calc(50% - 10px); /* 2 Sütun */
+                padding: 10px 5px;
+                min-height: 75px;
+                border-radius: 15px;
+                box-sizing: border-box;
             }
-
-            .hunter-label { width: 25px; height: 25px; font-size: 0.9rem; margin-bottom: 10px; }
-            .hunter-word { font-size: 1.8rem; }
-            .hunter-header h2 { font-size: 1.3rem; text-align: center; }
+            .hunter-label { width: 22px; height: 22px; font-size: 0.8rem; margin-bottom: 5px; }
+            .hunter-word { font-size: 1.7rem; }
+            .hunter-header h2 { font-size: 1.2rem; text-align: center; }
             .hunter-header p { display: none; }
         }
 
         /* ================================================================
-           MOBİL YATAY (LANDSCAPE): Ekran Küçültme & Sığdırma Modu
+           MOBİL YATAY (LANDSCAPE): Şema Açıklamalı & Avcı 2 Satır
            ================================================================
-           Telefon yan çevrildiğinde (Yükseklik az, genişlik çok ise)
         */
         @media (max-height: 500px) and (orientation: landscape) {
             
-            /* Genel Yazı Boyutlarını Küçült */
-            html { font-size: 12px; } 
-            
+            html { font-size: 13px; } /* Yazıları çok küçültmüyoruz, okunur kalsın */
             .top-nav { flex-direction: row; padding: 2px 10px; gap: 10px; }
-            .menu-btn { padding: 4px 10px; font-size: 0.9rem; }
+            .menu-btn { padding: 4px 12px; font-size: 0.9rem; }
             .main-content { padding: 5px 20px; }
 
-            /* ŞEMA: Yan yana (row) olsun ki aşağı uzamasın */
+            /* --- ŞEMA (Yan Yana & Açıklamalar Açık) --- */
             .branches-wrapper { flex-direction: row; align-items: stretch; gap: 10px; }
             .branch-column { flex: 1; padding: 5px; }
-            .main-root { font-size: 1.2rem; padding: 5px; margin-bottom: 10px; }
-            .branch-title { font-size: 1rem; padding: 2px; margin-bottom: 5px; }
+            .main-root { font-size: 1.2rem; padding: 5px; margin-bottom: 5px; display:inline-block; width:auto; }
+            .tree-container { display:block; text-align:center; } /* Root ortada dursun */
+            
+            .branch-title { font-size: 1rem; padding: 4px; margin-bottom: 8px; }
+            .cards-grid { gap: 8px; }
+            .verb-card { 
+                min-height: 85px; /* Açıklama sığsın diye yükseklik veriyoruz */
+                padding: 5px; 
+                justify-content: center;
+            }
+            
+            /* Açıklamaları GÖSTER ve Ayarla */
+            .card-desc { 
+                display: block !important; 
+                font-size: 0.75rem; 
+                line-height: 1; 
+                margin: 2px 0; 
+                color: #666;
+            }
+            .card-title { font-size: 0.95rem; margin: 0; }
+            .card-example { font-size: 1.5rem; padding: 0; background: transparent; }
+            .ask-btn { padding: 5px 20px; font-size: 0.9rem; margin-top: 5px; }
 
-            /* Fiil Kartlarını Sıkıştır */
-            .cards-grid { gap: 5px; }
-            .verb-card { min-height: 70px; padding: 2px; }
-            .card-desc { display: none; } /* Yer kazanmak için açıklamayı gizleyebiliriz veya küçültebiliriz */
-            .card-title { font-size: 0.9rem; margin: 0; }
-            .card-example { font-size: 1.4rem; padding: 0; }
-            .ask-btn { padding: 5px 20px; font-size: 1rem; margin-top: 5px; }
-
-            /* KAVRAM AVCISI YATAY MOD */
+            /* --- KAVRAM AVCISI (BÜYÜK KARTLAR & 2 SATIR) --- */
             .hunter-grid {
-                gap: 8px;
-                margin-top: 5px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px; /* Kartlar arası boşluk geniş */
+                margin-top: 10px;
             }
 
             .hunter-card {
-                /* Yatayda 3'lü veya 4'lü sığsın ki ekranı kaplamasın */
-                /* Veya yine 2'li olsun ama çok daha kısa olsun */
-                width: calc(33% - 10px); /* 3 sütun yapalım daha rahat sığar */
-                min-height: 50px;
-                padding: 5px;
-                border-radius: 10px;
-                flex-direction: row; /* Yan yana al (A - Kelime) */
-                gap: 10px;
-                justify-content: center;
+                /* 5 kartı 2 satıra yaymak için:
+                   Genişliği %30 yaparsak -> 1. satıra 3 tane sığar.
+                   2. satıra kalan 2 tane geçer ve ortalanır.
+                */
+                width: 30%; 
+                min-height: 90px; /* Daha büyük kart */
+                padding: 10px;
+                border-radius: 12px;
+                flex-direction: column; /* İçerik alt alta (Büyük görünüm) */
+                gap: 5px;
             }
 
-            .hunter-label { margin-bottom: 0; width: 20px; height: 20px; font-size: 0.8rem; }
-            .hunter-word { font-size: 1.4rem; }
-            .hunter-header h2 { font-size: 1.1rem; margin: 0; display: inline-block; margin-right: 10px;}
-            .game-info { padding: 2px 10px; margin-bottom: 5px; font-size: 0.9rem; }
-            .next-btn { padding: 5px 20px; margin-top: 5px; }
+            .hunter-label { 
+                margin-bottom: 0; 
+                width: 25px; height: 25px; 
+                font-size: 0.9rem; /* Harf büyük */
+            }
+            .hunter-word { 
+                font-size: 2rem; /* Kelime BÜYÜK */
+            }
+            
+            .hunter-header h2 { font-size: 1.2rem; margin: 0; display: inline-block; margin-right: 15px;}
+            .game-info { padding: 5px 15px; margin-bottom: 5px; font-size: 1rem; }
         }
     </style>
 </head>
