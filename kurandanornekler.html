@@ -26,13 +26,13 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg);
             margin: 0;
-            height: 100vh; /* Fallback */
-            height: 100dvh; /* Dynamic Viewport Height */
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #333;
-            overflow: hidden; /* Sayfa kaymasın, sadece kutu kaysın */
+            overflow: hidden;
         }
 
         /* --- ANA KONTEYNER --- */
@@ -40,13 +40,13 @@
             background-color: var(--card);
             width: 100%;
             height: 100%;
-            max-width: 1000px; /* Masaüstünde çok genişlemeyi engelle */
-            max-height: 95vh; /* Masaüstünde biraz boşluk bırak */
+            max-width: 1000px;
+            max-height: 95vh;
             border-radius: 15px;
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* İçerik taşarsa kendi içinde scroll olsun */
+            overflow: hidden;
             position: relative;
         }
 
@@ -102,7 +102,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Scrollbar yumuşatma */
             scrollbar-width: thin;
             scrollbar-color: var(--primary) #eee;
         }
@@ -122,7 +121,6 @@
 
         .quran-text {
             font-family: 'Amiri', serif;
-            /* Mobilde 2rem, Masaüstünde 4rem arası otomatik ayarla */
             font-size: clamp(2.2rem, 5vw, 4rem); 
             color: var(--primary);
             line-height: 1.6;
@@ -133,7 +131,7 @@
         .highlight-word {
             color: var(--accent);
             border-bottom: 2px solid var(--accent);
-            display: inline-block; /* Satır bölünmelerini düzeltir */
+            display: inline-block;
         }
 
         .translation {
@@ -151,10 +149,11 @@
 
         .options-grid {
             display: grid;
-            /* Mobilde 2 sütun, masaüstünde 3 sütun */
+            /* Varsayılan (Masaüstü): Otomatik sığdır */
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
             gap: 15px;
             width: 100%;
+            justify-content: center;
         }
 
         .option-card {
@@ -202,7 +201,7 @@
 
         .answer-row {
             display: flex;
-            flex-direction: column; /* Mobilde alt alta, masaüstü medya sorgusuyla yan yana */
+            flex-direction: column;
             align-items: center;
             gap: 5px;
             margin-bottom: 20px;
@@ -231,7 +230,6 @@
             direction: rtl;
         }
 
-        /* Masaüstü Tablo Görünümü */
         .sarf-table th {
             background: var(--primary);
             color: white;
@@ -289,7 +287,7 @@
         .feedback-icon {
             position: absolute;
             top: 50%;
-            transform: translate(0, -50%) scale(0); /* Merkezleme düzeltmesi */
+            transform: translate(0, -50%) scale(0);
             font-size: 4rem;
             font-weight: bold;
             opacity: 0;
@@ -318,7 +316,6 @@
         /* ========================================= */
 
         @media screen and (max-width: 768px) {
-            /* 1. Kutu tam ekran olsun */
             body { background-color: var(--card); }
             .container {
                 max-width: 100%;
@@ -327,32 +324,22 @@
                 box-shadow: none;
             }
 
-            /* 2. Soru alanı sıkışmasın */
             .question-area { min-height: 150px; }
-            
-            /* 3. Sonuç Başlığı */
-            .answer-row {
-                flex-direction: row; /* Mobilde de yan yana sığabilirse sığdır */
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+            .answer-row { flex-direction: row; flex-wrap: wrap; justify-content: center; }
 
-            /* 4. Tabloyu Karta Dönüştür (Grid Layout) */
+            /* MOBİL DİKEY TABLO */
             .sarf-table, .sarf-table tbody, .sarf-table tr, .sarf-table td {
                 display: block;
                 width: 100%;
                 border: none;
             }
-            
-            .sarf-table thead { display: none; } /* Başlıkları gizle */
-            
+            .sarf-table thead { display: none; }
             .sarf-table tbody tr {
                 display: grid;
-                grid-template-columns: 1fr 1fr; /* 2 Sütun */
+                grid-template-columns: 1fr 1fr;
                 gap: 10px;
                 margin-top: 10px;
             }
-
             .sarf-table td {
                 border: 1px solid #eee;
                 border-radius: 8px;
@@ -363,13 +350,10 @@
                 flex-direction: column;
                 align-items: center;
             }
-
-            /* Hücrelerin içine yapay başlık ekle */
             .sarf-table td:nth-of-type(1)::before { content: "Mazi"; }
             .sarf-table td:nth-of-type(2)::before { content: "Muzari"; }
             .sarf-table td:nth-of-type(3)::before { content: "Emir"; }
             .sarf-table td:nth-of-type(4)::before { content: "Mastar"; }
-
             .sarf-table td::before {
                 font-family: 'Poppins', sans-serif;
                 font-size: 0.75rem;
@@ -380,20 +364,57 @@
                 font-weight: 600;
             }
 
-            /* İkonları kenarlara yasla */
             .icon-left { left: 0; }
             .icon-right { right: 0; }
+
+            /* --- MOBİL DİKEYDE SON ŞIK ORTALANSIN --- */
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 Sütun */
+            }
+            /* Tek kalan son elemanı (5. eleman) ortalamak için grid-column span yapıyoruz */
+            .options-grid > :last-child {
+                grid-column: span 2; /* Tüm satırı kapla */
+                width: 50%; /* Genişliği yarısı kadar olsun */
+                margin: 0 auto; /* Ortala */
+            }
         }
 
-        /* Yatay Mobil (Landscape) Düzeltmeleri */
+        /* --- MOBİL YATAY (LANDSCAPE) ÖZEL AYARLAR --- */
         @media screen and (max-height: 500px) and (orientation: landscape) {
-            .header-bar { padding: 5px 20px; }
-            .question-area { min-height: 100px; margin-bottom: 10px; }
-            .quran-text { font-size: 2rem; margin-bottom: 0; }
-            .options-grid { grid-template-columns: repeat(4, 1fr); } /* Yan yana 4 tane */
-            .option-card { min-height: 60px; padding: 5px; }
-            .opt-title { font-size: 1rem; }
-            .opt-desc { display: none; } /* Yer kazanmak için açıklamayı gizle */
+            .header-bar { padding: 5px 20px; display: none; } /* Header'ı gizle yer kazandır */
+            .question-area { min-height: 80px; margin-bottom: 5px; margin-top: 10px;}
+            .quran-text { font-size: 1.8rem; margin-bottom: 0; line-height: 1.2;}
+            .translation { font-size: 0.9rem; margin-top: 5px;}
+            
+            /* Şıklar: 2 Satır olacak şekilde 3 sütun */
+            .options-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 8px;
+            }
+            
+            /* Dikeydeki span kuralını yatayda ezmek (override) zorundayız */
+            .options-grid > :last-child {
+                grid-column: auto; /* Span'i iptal et */
+                width: 100%; /* Genişliği normale döndür */
+                margin: 0; 
+                /* 3 sütunlu yapıda 5 eleman olunca son eleman 2. satırda ortada kalsın istiyorsak: */
+                grid-column: 2; 
+            }
+
+            .option-card { min-height: 50px; padding: 5px; }
+            .opt-title { font-size: 0.9rem; margin:0;}
+            .opt-desc { display: none; } 
+
+            /* Butonları Küçült */
+            .control-bar { padding: 5px 20px; min-height: 40px;}
+            .nav-btn {
+                padding: 5px 15px;
+                font-size: 0.8rem; /* Yazıyı küçült */
+                min-width: auto; /* Genişlik zorlamasını kaldır */
+                height: 30px;
+            }
+            /* İkonları küçült */
+            .icon-svg { width: 18px; height: 18px; }
         }
 
     </style>
