@@ -133,7 +133,7 @@
         #right-panel { justify-content: flex-start; gap: 5px; }
         #section-question { flex: 0 0 auto; margin-bottom: 5px; padding: 10px; }
         
-        /* İstenilen Font Ayarı: 2rem */
+        /* Mobil Dikey Font */
         .question-highlight { 
             font-size: 2rem !important; 
             padding: 5px 20px; 
@@ -148,12 +148,12 @@
     }
 
     /* ========================================= */
-    /* MOBİL YATAY (LANDSCAPE) */
+    /* MOBİL YATAY (LANDSCAPE) - GÜNCEL */
     /* ========================================= */
     @media screen and (max-height: 500px) and (orientation: landscape) {
         #game-stage {
             height: 95vh; padding: 5px;
-            grid-template-columns: 1fr; /* Tek sütun yapıyoruz ki sağ panel tüm ekranı kaplasın */
+            grid-template-columns: 1fr; 
         }
 
         #left-panel, .mobile-hint { display: none !important; }
@@ -165,36 +165,44 @@
             height: 100%;
         }
 
-        /* Üst Kısım: Soru */
+        /* --- Üst Kısım: Soru --- */
         #section-question {
-            flex: 0.4; /* Yüksekliğin %40'ı */
-            margin: 0; padding: 5px;
-            width: 100%; /* Tam genişlik */
+            flex: 0.45; /* Alanı biraz arttırdık */
+            margin: 0; padding: 2px; /* Padding'i kıstık */
+            width: 100%; 
             box-sizing: border-box;
         }
 
-        /* İstenilen Font Ayarı: 2rem */
+        /* İstenilen Font Ayarı: 2.5rem */
         .question-highlight { 
-            font-size: 2rem !important; 
-            margin: 0; padding: 0 20px;
+            font-size: 2.5rem !important; 
+            margin: 0; padding: 0 10px;
+            line-height: 1.2;
         }
         
-        /* "Sözlükte nasıl aranmalı" yazısını biraz daha küçültelim ki sığsın */
         #section-question > div:nth-child(4) { 
-            font-size: 0.9rem !important; line-height: 1.2; display: inline-block;
+            font-size: 0.8rem !important; line-height: 1; display: inline-block; margin-top: 2px !important;
         }
 
-        /* Alt Kısım: Şıklar (1 Satır 5 Sütun) */
+        /* --- Alt Kısım: Şıklar (1 Satır 5 Sütun) --- */
         .options-container {
-            flex: 0.6; /* Yüksekliğin %60'ı */
-            grid-template-columns: repeat(5, 1fr) !important; /* 5 Eşit Sütun */
-            grid-template-rows: 1fr !important; /* Tek satır */
-            gap: 5px;
+            flex: 0.55; 
+            grid-template-columns: repeat(5, 1fr) !important; 
+            grid-template-rows: 1fr !important;
+            gap: 4px; /* Boşluk azaldı */
             width: 100%;
         }
         
         .det-opt-btn:last-child { grid-column: auto; width: 100%; }
-        .det-opt-btn { font-size: 1.4rem; border-radius: 8px; }
+        
+        /* Şık Fontu: 2rem ve Kutu Küçültme */
+        .det-opt-btn { 
+            font-size: 2rem; /* Büyük Font */
+            padding: 0 !important; /* Kutu içindeki gereksiz boşluk gitti */
+            border-radius: 8px; 
+            border-width: 2px;
+            line-height: 1; /* Satır aralığını sıkılaştırdık */
+        }
     }
 </style>
 </head>
