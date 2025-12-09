@@ -24,23 +24,24 @@
             background-color: var(--bg-color);
             margin: 0;
             padding: 0;
-            height: 100vh;
+            min-height: 100vh; /* height yerine min-height yapıldı */
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden; /* Yatay taşmayı engelle */
+            overflow-y: auto;   /* Dikey kaydırmaya izin ver */
         }
 
         /* Başlık Alanı */
         header {
             background: white;
-            padding: 15px 70px; /* Buton için soldan ve simetri için sağdan boşluk */
+            padding: 15px 70px;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             z-index: 10;
             flex-shrink: 0;
             position: relative;
             display: flex;
-            justify-content: center; /* Başlığı ortala */
+            justify-content: center;
             align-items: center;
             min-height: 70px;
         }
@@ -48,13 +49,13 @@
         /* Ana Sayfa İkon Butonu */
         .home-btn {
             position: absolute;
-            left: 20px; /* Sol köşeye sabitle */
+            left: 20px;
             top: 50%;
-            transform: translateY(-50%); /* Dikey ortala */
+            transform: translateY(-50%);
             
             width: 45px;
             height: 45px;
-            border-radius: 50%; /* Tam daire */
+            border-radius: 50%;
             background-color: #fff;
             color: var(--primary-color);
             border: 2px solid #e9ecef;
@@ -67,23 +68,20 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Ev İkonu (SVG) */
         .home-btn svg {
             width: 24px;
             height: 24px;
-            fill: currentColor; /* Yazı rengini al */
+            fill: currentColor;
         }
 
-        /* Hover Durumu */
         .home-btn:hover {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
-            transform: translateY(-50%) scale(1.1); /* Hafif büyüme efekti */
+            transform: translateY(-50%) scale(1.1);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
-        /* Başlık Metinleri */
         .header-text h1 {
             color: var(--primary-color);
             margin: 0;
@@ -105,6 +103,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 100%;
         }
 
         /* Izgara Sistemi */
@@ -115,7 +114,7 @@
             gap: 20px;
             width: 100%;
             max-width: 1000px; 
-            height: 75vh;
+            min-height: 60vh; /* height yerine min-height */
         }
 
         .menu-card {
@@ -133,6 +132,7 @@
             border: 1px solid rgba(0,0,0,0.05);
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             cursor: pointer;
+            padding: 20px; /* İç boşluk eklendi */
         }
 
         .menu-card:hover {
@@ -162,7 +162,7 @@
             font-size: 0.95rem;
             color: #666;
             text-align: center;
-            padding: 0 15px;
+            padding: 0 5px;
             opacity: 0.85;
             line-height: 1.4;
         }
@@ -184,39 +184,52 @@
         .card-kuran .icon { color: var(--accent-green); }
         .card-kuran:hover { background: linear-gradient(to bottom right, #fff, #e8f8f0); }
 
-        /* Mobil Görünüm */
+        /* Mobil ve Yatay Görünüm Düzenlemeleri */
         @media (max-width: 768px) {
-            body {
-                height: auto;
-                overflow-y: auto;
-            }
-
             header {
                 padding: 10px 15px;
-                /* Mobilde butonun başlığın üstüne binmesini engellemek için */
                 padding-left: 60px; 
             }
 
             .home-btn {
-                left: 15px; /* Mobilde biraz daha sola yanaşsın */
+                left: 15px;
                 width: 40px;
                 height: 40px;
             }
             
             .menu-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Mobilde tek sütun */
                 grid-template-rows: auto;
-                height: auto;
-                max-width: 100%;
+                height: auto; /* Sabit yükseklik kaldırıldı */
+                gap: 15px;
             }
 
             .menu-card {
-                padding: 30px 20px;
-                min-height: 200px;
+                padding: 25px 20px;
+                min-height: auto; /* Kart yüksekliği içeriğe göre esnesin */
             }
 
             .icon { font-size: 3rem; }
             .card-title { font-size: 1.4rem; }
+        }
+
+        /* Özel Yatay (Landscape) Mobil Düzeltmesi */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .menu-grid {
+                grid-template-columns: 1fr 1fr; /* Yatayda yan yana 2 kutu olsun */
+                height: auto;
+                padding-bottom: 20px;
+            }
+            
+            .menu-card {
+                min-height: 140px; /* Yatayda kartları biraz küçültelim */
+                padding: 15px;
+            }
+            
+            .icon {
+                font-size: 2.5rem; /* İkonu biraz küçült */
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
