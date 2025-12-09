@@ -495,16 +495,24 @@
     </div>
 
 <script>
-    function switchTab(tabName) {
+   function switchTab(tabName) {
+        // 1. Tüm sekmeleri gizle, isteneni aç
         document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
         document.getElementById('tab-' + tabName).classList.add('active');
 
+        // 2. Tüm butonların aktifliğini kaldır
         const buttons = document.querySelectorAll('.menu-btn');
         buttons.forEach(btn => btn.classList.remove('active'));
         
-        if(tabName === 'schema') buttons[0].classList.add('active');
+        // 3. Doğru butona aktiflik ver (İndeksleri düzelttik)
+        // buttons[0] -> Ev butonu olduğu için 1 ve 2'yi kullanıyoruz.
+        
+        if(tabName === 'schema') {
+            buttons[1].classList.add('active'); // Fiil Şeması
+        }
+        
         if(tabName === 'hunter') {
-            buttons[1].classList.add('active');
+            buttons[2].classList.add('active'); // Kavram Avcısı
             loadHunterLevel(); 
         }
     }
