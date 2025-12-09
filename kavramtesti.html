@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arapça Atölyesi - Dengeli Oyun</title>
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Amiri:wght@400;700&family=Nunito:wght@400;700&display=swap');
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60;
+            --accent: #e67e22;
+            --bg: #f4f6f7;
+            --text: #34495e;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER & MENÜ --- */
+        .top-nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .menu-buttons { display: flex; gap: 15px; }
+
+        .menu-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-btn.active { background: var(--primary); color: white; }
+
+        /* --- ANA İÇERİK --- */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .tab-section { display: none; animation: fadeIn 0.4s; }
+        .tab-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- ŞEMA (TREE) STİLLERİ --- */
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .main-root {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .branches-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .branch-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .branch-title {
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 80%;
+            cursor: pointer;
+        }
+        .sahih-bg { background-color: #27ae60; }
+        .mutel-bg { background-color: #d35400; }
+
+        /* --- KART IZGARASI --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .verb-card {
+            background: #fdfdfd;
+            border-left: 5px solid #ccc;
+            border-radius: 10px;
+            padding: 15px 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
+        }
+        .verb-card:hover { transform: translateY(-3px); border-left-width: 8px; }
+        .verb-card.sahih-card { border-color: #27ae60; }
+        .verb-card.mutel-card { border-color: #d35400; }
+
+        .center-card {
+            grid-column: 1 / -1;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .hideable {
+            cursor: pointer;
+            border-radius: 5px;
+            padding: 4px;
+            display: block;
+            transition: background 0.2s;
+        }
+        .hideable:hover { background-color: rgba(0,0,0,0.05); }
+        
+        .card-title { font-weight: 800; font-size: 1.4rem; color: #2c3e50; margin-bottom: 5px; }
+        .card-desc { font-size: 1.1rem; color: #7f8c8d; margin-bottom: 10px; line-height: 1.3; }
+        .card-example { 
+            font-family: 'Amiri', serif; 
+            font-size: 2.2rem; 
+            color: #2c3e50; 
+            background: #ecf0f1; 
+            border-radius: 6px;
+            padding: 5px;
+        }
+
+        .hidden-content {
+            background-color: #34495e !important;
+            color: transparent !important;
+            position: relative;
+            user-select: none;
+        }
+        
+        .hidden-content::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #f1c40f;
+            font-weight: bold;
+            font-size: 1.2rem;
+            font-family: 'Nunito', sans-serif;
+            text-align: center;
+            width: 100%;
+            line-height: 1.2;
+        }
+
+        .ask-btn {
+            background: #e74c3c;
+            color: white;
+            font-size: 1.3rem;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+        .ask-btn:active { transform: scale(0.95); }
+
+        /* --- KAVRAM AVCISI STİLLERİ --- */
+        .hunter-header h2 { font-size: 2rem; margin-bottom: 10px; }
+        .hunter-header p { font-size: 1.1rem; }
+
+        .hunter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .hunter-card {
+            background: white;
+            border: 3px solid #ecf0f1;
+            border-radius: 15px;
+            padding: 20px 10px; 
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hunter-label {
+            background: #dfe6e9;
+            color: #2c3e50;
+            font-weight: 800;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px; 
+            font-size: 1.2rem;
+        }
+
+        .hunter-word {
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+            color: #2c3e50;
+            font-weight: bold;
+            pointer-events: none;
+            line-height: 1.2;
+        }
+
+        .hunter-card.correct { background-color: #d4edda; border-color: #28a745; }
+        .hunter-card.wrong { background-color: #f8d7da; border-color: #dc3545; opacity: 0.6; }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .next-btn {
+            margin-top: 20px; padding: 15px 35px; 
+            background: var(--primary); color: white; border: none; 
+            border-radius: 8px; cursor: pointer; font-size: 1.2rem;
+        }
+
+        /* ================================================================
+           MOBİL DÜZENLEME: 2-2-1 Oyun Izgarası + Dengeli Boşluklar
+           ================================================================
+        */
+        @media (max-width: 768px) {
+            
+            body { overflow-x: hidden; }
+            .top-nav { padding: 5px; gap: 5px; }
+            .menu-btn { padding: 5px 12px; font-size: 0.9rem; }
+            .main-content { padding: 5px; }
+
+            /* --- ŞEMA (Alt Alta Ama Kompakt) --- */
+            .branches-wrapper { 
+                flex-direction: column;
+                gap: 10px;
+            }
+            .branch-column { width: 100%; padding: 5px; box-sizing: border-box; }
+            .main-root { font-size: 1.3rem; padding: 10px; margin-bottom: 5px; }
+            .branch-title { font-size: 1rem; padding: 5px; width: 90%; margin-bottom: 5px; }
+            .cards-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+            .center-card { width: 100%; grid-column: auto; }
+            
+            .verb-card {
+                padding: 6px 4px;
+                min-height: auto; 
+                border-left-width: 3px;
+                gap: 3px;
+            }
+            
+            .card-title { font-size: 0.9rem; margin-bottom: 2px; }
+            .card-desc { display: block; font-size: 0.75rem; line-height: 1.1; margin-bottom: 3px; color: #666; }
+            .card-example { font-size: 1.5rem; line-height: 1.1; }
+            .ask-btn { font-size: 1rem; padding: 8px 30px; margin-top: 10px; }
+
+            /* --- KAVRAM AVCISI (OYUN) ÖZEL AYARLAR --- */
+            .hunter-header h2 { font-size: 1.1rem; margin: 0; text-align: center; }
+            .hunter-header p { display: none; }
+            .game-info { padding: 5px 10px; font-size: 0.85rem; margin: 8px 0; }
+
+            /* Grid yerine FLEXBOX kullanımı: 5. şıkkı ortalamak için */
+            .hunter-grid {
+                display: flex; /* Esnek kutu */
+                flex-wrap: wrap; /* Sığmayınca alta geç */
+                justify-content: center; /* İçeriği ortala */
+                gap: 20px; /* Kartlar arası dengeli boşluk */
+                margin-top: 30px;
+            }
+
+            .hunter-card {
+                /* Genişlik ayarı: Yan yana 2 tane sığsın (%48 + boşluk = %100) */
+                width: 48%; 
+                flex: 0 0 48%; /* Büyüme/küçülme yapma, sabit kal */
+                padding: 20px 10px;
+                min-height: 70px; /* Biraz daha rahat yükseklik */
+                box-sizing: border-box;
+                border-radius: 30px;
+            }
+            /* Flex yapısı sayesinde, 5. kart tek kaldığında otomatik ortalanır */
+
+            .hunter-label { 
+                width: 22px; height: 22px; 
+                font-size: 0.8rem; 
+                margin-bottom: 25px; 
+            }
+            .hunter-word { 
+                font-size: 1.6rem; /* Okunabilir güzel boyut */
+            }
+
+            #hunter-feedback { font-size: 1rem; margin-top: 15px; min-height: 20px;}
+            .next-btn { margin-top: 15px; padding: 15px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+       
+      <div class="menu-buttons">
+            <button class="menu-btn" onclick="window.location.href='aksamiseba.html'" style="padding: 10px 15px;">🏠</button>
+            
+            <button class="menu-btn active" onclick="switchTab('schema')">Fiil Şeması</button>
+            <button class="menu-btn" onclick="switchTab('hunter')">Kavram Avcısı</button>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        
+        <div id="tab-schema" class="tab-section active">
+            <div class="tree-container">
+                <div class="main-root hideable" data-type="root" onclick="toggleElement(this)">AKSAM-I SEB'A</div>
+                
+                <div class="branches-wrapper">
+                    
+                    <div class="branch-column">
+                        <div class="branch-title sahih-bg hideable" data-type="group" onclick="toggleElement(this)">SAHİH</div>
+                        <div class="cards-grid">
+                            <div class="verb-card sahih-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">SALİM</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">İllet, hemze yok.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">كَتَبَ</span>
+                            </div>
+                            <div class="verb-card sahih-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">MEHMUZ</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">Hemze (ء) var.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">أَكَلَ</span>
+                            </div>
+                            <div class="verb-card sahih-card center-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">MUDAAF</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">Şeddeli fiil.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">مَدَّ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="branch-column">
+                        <div class="branch-title mutel-bg hideable" data-type="group" onclick="toggleElement(this)">MU'TEL</div>
+                        <div class="cards-grid">
+                            <div class="verb-card mutel-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">MİSAL</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">İLK harf illetli.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">وَجَدَ</span>
+                            </div>
+                            <div class="verb-card mutel-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">ECVEF</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">ORTA harf illetli.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">قَالَ</span>
+                            </div>
+                            <div class="verb-card mutel-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">NAKIS</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">SON harf illetli.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">رَمَى</span>
+                            </div>
+                            <div class="verb-card mutel-card">
+                                <span class="hideable card-title" data-type="title" onclick="toggleElement(this)">LEFİF</span>
+                                <span class="hideable card-desc" data-type="desc" onclick="toggleElement(this)">İKİ illetli.</span>
+                                <span class="hideable card-example" data-type="example" onclick="toggleElement(this)">طَوَى</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="ask-btn" onclick="askSchemaQuestion()"> SOR</button>
+                <div style="margin-top:5px; color:#7f8c8d; font-size:0.7rem;">Cevap için tıkla</div>
+            </div>
+        </div>
+
+        <div id="tab-hunter" class="tab-section">
+            <div class="hunter-header">
+                <h2 style="color:var(--primary); margin:0;">Farklı olanı bul?</h2>
+                <p style="color:#7f8c8d;">Gruptaki diğer kelimelerden farklı türde olanı bul.</p>
+            </div>
+
+            <div class="game-info">
+                <span>Soru: <span id="level-indicator">1 / 20</span></span>
+                <span>Puan: <span id="score-board" style="color:var(--secondary)">0</span></span>
+            </div>
+
+            <div class="hunter-grid" id="hunter-area">
+                </div>
+            
+            <div id="hunter-feedback" style="text-align:center; margin-top:10px; font-weight:bold; font-size:1.1rem; min-height:20px;"></div>
+            
+            <div style="text-align:center;">
+                <button id="next-level-btn" class="next-btn" style="display:none;" onclick="nextHunterLevel()">➡️</button>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById('tab-' + tabName).classList.add('active');
+
+        const buttons = document.querySelectorAll('.menu-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        if(tabName === 'schema') buttons[0].classList.add('active');
+        if(tabName === 'hunter') {
+            buttons[1].classList.add('active');
+            loadHunterLevel(); 
+        }
+    }
+
+    function toggleElement(el) {
+        if (el.classList.contains('hidden-content')) {
+            el.classList.remove('hidden-content');
+        }
+    }
+
+    function askSchemaQuestion() {
+        document.querySelectorAll('.hidden-content').forEach(el => {
+            el.classList.remove('hidden-content');
+        });
+
+        const candidates = document.querySelectorAll('.hideable');
+        const randomIndex = Math.floor(Math.random() * candidates.length);
+        const selectedElement = candidates[randomIndex];
+        
+        let questionText = "?";
+        const type = selectedElement.getAttribute('data-type');
+
+        switch(type) {
+            case 'root': questionText = "Konu?"; break;
+            case 'group': questionText = "Grup?"; break;
+            case 'title': questionText = "Fiil?"; break;
+            case 'desc': questionText = "Tanım?"; break;
+            case 'example': questionText = "Örnek?"; break;
+        }
+
+        selectedElement.setAttribute('data-text', questionText);
+        selectedElement.classList.add('hidden-content');
+    }
+
+    // --- 20 SORULUK GENİŞ HAVUZ ---
+    const hunterLevels = [
+        {
+            words: [{ t: "كَتَبَ", y: "c" }, { t: "جَلَسَ", y: "c" }, { t: "خَرَجَ", y: "c" }, { t: "ذَهَبَ", y: "c" }, { t: "وَعَدَ", y: "t" }],
+            reason: "Diğerleri <b>Salim</b> iken, 'Veade' <b>Misal</b> fiildir."
+        },
+        {
+            words: [{ t: "قَالَ", y: "c" }, { t: "بَاعَ", y: "c" }, { t: "نَامَ", y: "c" }, { t: "صَامَ", y: "c" }, { t: "أَكَلَ", y: "t" }],
+            reason: "Diğerleri <b>Ecvef</b> iken, 'Ekele' <b>Mehmuz</b> fiildir."
+        },
+        {
+            words: [{ t: "مَدَّ", y: "c" }, { t: "فَرَّ", y: "c" }, { t: "ظَنَّ", y: "c" }, { t: "مَرَّ", y: "c" }, { t: "سَأَلَ", y: "t" }],
+            reason: "Diğerleri <b>Mudaaf</b> iken, 'Seele' <b>Mehmuz</b> fiildir."
+        },
+        {
+            words: [{ t: "رَمَى", y: "c" }, { t: "دَعَا", y: "c" }, { t: "مَشَى", y: "c" }, { t: "جَرَى", y: "c" }, { t: "وَجَدَ", y: "t" }],
+            reason: "Diğerleri <b>Nakıs</b> iken, 'Vecede' <b>Misal</b> fiildir."
+        },
+        {
+            words: [{ t: "وَقَفَ", y: "c" }, { t: "وَصَلَ", y: "c" }, { t: "وَضَعَ", y: "c" }, { t: "وَهَبَ", y: "c" }, { t: "قَرَأَ", y: "t" }],
+            reason: "Diğerleri <b>Misal</b> iken, 'Karae' <b>Mehmuz</b> fiildir."
+        },
+        {
+            words: [{ t: "وَعَدَ", y: "c" }, { t: "وَجَدَ", y: "c" }, { t: "وَقَفَ", y: "c" }, { t: "وَرِثَ", y: "c" }, { t: "قَالَ", y: "t" }],
+            reason: "Diğerleri <b>Misal</b> iken, 'Kale' <b>Ecvef</b> fiildir."
+        },
+        {
+            words: [{ t: "طَوَى", y: "c" }, { t: "شَوَى", y: "c" }, { t: "نَوَى", y: "c" }, { t: "هَوَى", y: "c" }, { t: "كَتَبَ", y: "t" }],
+            reason: "Diğerleri <b>Lefif</b> iken, 'Ketebe' <b>Salim</b> fiildir."
+        },
+        {
+            words: [{ t: "أَخَذَ", y: "c" }, { t: "أَكَلَ", y: "c" }, { t: "أَمَرَ", y: "c" }, { t: "سَأَلَ", y: "c" }, { t: "مَدَّ", y: "t" }],
+            reason: "Diğerleri <b>Mehmuz</b> iken, 'Medde' <b>Mudaaf</b> fiildir."
+        },
+        {
+            words: [{ t: "عَلِمَ", y: "c" }, { t: "شَرِبَ", y: "c" }, { t: "فَهِمَ", y: "c" }, { t: "سَمِعَ", y: "c" }, { t: "قَالَ", y: "t" }],
+            reason: "Diğerleri <b>Salim</b> iken, 'Kale' <b>Ecvef</b> fiildir."
+        },
+        {
+            words: [{ t: "صَامَ", y: "c" }, { t: "عَاشَ", y: "c" }, { t: "كَانَ", y: "c" }, { t: "مَاتَ", y: "c" }, { t: "رَمَى", y: "t" }],
+            reason: "Diğerleri <b>Ecvef</b> iken, 'Rema' <b>Nakıs</b> fiildir."
+        },
+        {
+            words: [{ t: "رَجَا", y: "c" }, { t: "بَكَى", y: "c" }, { t: "شَكَا", y: "c" }, { t: "نَسِيَ", y: "c" }, { t: "وَصَلَ", y: "t" }],
+            reason: "Diğerleri <b>Nakıs</b> iken, 'Vasale' <b>Misal</b> fiildir."
+        },
+        {
+            words: [{ t: "شَدَّ", y: "c" }, { t: "عَدَّ", y: "c" }, { t: "رَدَّ", y: "c" }, { t: "سَدَّ", y: "c" }, { t: "خَرَجَ", y: "t" }],
+            reason: "Diğerleri <b>Mudaaf</b> iken, 'Harace' <b>Salim</b> fiildir."
+        },
+        {
+            words: [{ t: "وَقَعَ", y: "c" }, { t: "وَلَدَ", y: "c" }, { t: "وَعَظَ", y: "c" }, { t: "وَثِقَ", y: "c" }, { t: "طَوَى", y: "t" }],
+            reason: "Diğerleri <b>Misal</b> iken, 'Tava' <b>Lefif</b> fiildir."
+        },
+        {
+            words: [{ t: "قَرَأَ", y: "c" }, { t: "بَدَأَ", y: "c" }, { t: "نَشَأَ", y: "c" }, { t: "لَجَأَ", y: "c" }, { t: "صَامَ", y: "t" }],
+            reason: "Diğerleri <b>Mehmuz</b> iken, 'Same' <b>Ecvef</b> fiildir."
+        },
+        {
+            words: [{ t: "رَكِبَ", y: "c" }, { t: "لَعِبَ", y: "c" }, { t: "ضَحِكَ", y: "c" }, { t: "طَبَخَ", y: "c" }, { t: "مَدَّ", y: "t" }],
+            reason: "Diğerleri <b>Salim</b> iken, 'Medde' <b>Mudaaf</b> fiildir."
+        },
+        {
+            words: [{ t: "زَارَ", y: "c" }, { t: "سَارَ", y: "c" }, { t: "تَابَ", y: "c" }, { t: "فَازَ", y: "c" }, { t: "دَعَا", y: "t" }],
+            reason: "Diğerleri <b>Ecvef</b> iken, 'Dea' <b>Nakıs</b> fiildir."
+        },
+        {
+            words: [{ t: "عَفَا", y: "c" }, { t: "غَزَا", y: "c" }, { t: "هَدَى", y: "c" }, { t: "تَلَا", y: "c" }, { t: "أَكَلَ", y: "t" }],
+            reason: "Diğerleri <b>Nakıs</b> iken, 'Ekele' <b>Mehmuz</b> fiildir."
+        },
+        {
+            words: [{ t: "حَلَّ", y: "c" }, { t: "دَقَّ", y: "c" }, { t: "شَقَّ", y: "c" }, { t: "مَسَّ", y: "c" }, { t: "بَاعَ", y: "t" }],
+            reason: "Diğerleri <b>Mudaaf</b> iken, 'Baa' <b>Ecvef</b> fiildir."
+        },
+        {
+            words: [{ t: "رَوَى", y: "c" }, { t: "لَوَى", y: "c" }, { t: "كَوَى", y: "c" }, { t: "عَوَى", y: "c" }, { t: "وَقَفَ", y: "t" }],
+            reason: "Diğerleri <b>Lefif</b> iken, 'Vekafe' <b>Misal</b> fiildir."
+        },
+        {
+            words: [{ t: "دَرَسَ", y: "c" }, { t: "حَمَلَ", y: "c" }, { t: "رَسَمَ", y: "c" }, { t: "قَطَعَ", y: "c" }, { t: "شَكَا", y: "t" }],
+            reason: "Diğerleri <b>Salim</b> iken, 'Şeka' <b>Nakıs</b> fiildir."
+        }
+    ];
+
+    let hunterIdx = 0;
+    let hunterScore = 0;
+
+    function loadHunterLevel() {
+        if (hunterIdx >= hunterLevels.length) {
+            document.getElementById('hunter-area').innerHTML = `
+                <div style="width:100%; text-align:center;">
+                    <h2 style="font-size:2rem; margin:0;">🏆</h2>
+                    <h3>Bitti!</h3>
+                    <p>Puan: <span style="color:#27ae60">${hunterScore}</span></p>
+                    <button class="next-btn" onclick="location.reload()">Tekrar</button>
+                </div>
+            `;
+            document.getElementById('hunter-feedback').innerText = "";
+            document.getElementById('next-level-btn').style.display = "none";
+            return;
+        }
+
+        const data = hunterLevels[hunterIdx];
+        
+        document.getElementById('level-indicator').innerText = (hunterIdx + 1) + " / " + hunterLevels.length;
+        document.getElementById('score-board').innerText = hunterScore;
+        document.getElementById('hunter-feedback').innerHTML = "";
+        document.getElementById('next-level-btn').style.display = "none";
+
+        const grid = document.getElementById('hunter-area');
+        grid.innerHTML = "";
+
+        const shuffledWords = [...data.words].sort(() => Math.random() - 0.5);
+        const options = ["A", "B", "C", "D", "E"]; // Şık Etiketleri
+
+        shuffledWords.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'hunter-card';
+            // İKİ SATIRLI YAPI: Üstte Harf, Altta Fiil
+            card.innerHTML = `
+                <div class="hunter-label">${options[index]}</div>
+                <div class="hunter-word">${item.t}</div>
+            `;
+            
+            card.onclick = function() {
+                if (document.getElementById('next-level-btn').style.display !== 'none') return;
+                const allCards = document.querySelectorAll('.hunter-card');
+                const feedback = document.getElementById('hunter-feedback');
+                
+                if (item.y === 't') {
+                    card.classList.add('correct');
+                    hunterScore += 5;
+                    document.getElementById('score-board').innerText = hunterScore;
+                    feedback.innerHTML = `<span style="color:green; font-size:0.9rem;">✅ ${data.reason}</span>`;
+                } else {
+                    card.classList.add('wrong');
+                    allCards.forEach(c => {
+                        const targetWord = data.words.find(w => w.y === 't').t;
+                        if(c.innerHTML.includes(targetWord)) c.classList.add('correct');
+                    });
+                    feedback.innerHTML = `<span style="color:#c0392b; font-size:0.9rem;">⚠️ ${data.reason}</span>`;
+                }
+                document.getElementById('next-level-btn').style.display = 'inline-block';
+            };
+            grid.appendChild(card);
+        });
+    }
+
+    function nextHunterLevel() {
+        hunterIdx++;
+        loadHunterLevel();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aksam-ı Seba: Master Sürüm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #d35400;
+            --success: #27ae60;
+            --error: #c0392b;
+            --bg: #eef2f3;
+            --card: #ffffff;
+            --btn-disabled: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* --- ANA KUTU (Tam Ekrana Yakın) --- */
+.container {
+    background-color: var(--card);
+    border-radius: 15px; /* Köşeleri biraz daha keskinleştirdik */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px; /* İç boşluğu biraz azalttık ki yer kazanalım */
+    box-sizing: border-box;
+    
+    /* GÜNCELLENEN KISIMLAR */
+    width: 98vw;       /* Ekran genişliğinin %98'i */
+    height: 96vh;      /* Ekran yüksekliğinin %96'sı */
+    max-width: none;   /* Genişlik sınırını kaldırdık */
+    max-height: none;  /* Yükseklik sınırını kaldırdık */
+    margin: auto;      /* Ortalamak için */
+    aspect-ratio: auto; /* Oran zorlamasını kaldırdık */
+}
+
+        @media (orientation: portrait) {
+            .container {
+                width: 95vw;
+                max-width: 500px;
+                aspect-ratio: 9 / 16;
+                padding: 20px;
+            }
+        }
+
+        /* --- HEADER (Ana Sayfa & Tam Ekran) --- */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary);
+            transition: transform 0.2s;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-btn:hover { transform: scale(1.1); color: var(--accent); }
+        
+        .icon-svg { width: 32px; height: 32px; fill: currentColor; }
+
+        /* --- İLERLEME ÇUBUĞU --- */
+        .progress-wrapper {
+            background-color: #eee;
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background-color: var(--accent);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* --- İÇERİK DÜZENİ --- */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* İçeriği yay */
+        }
+
+        /* SORU ALANI */
+        .question-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 150px;
+        }
+
+        .quran-text {
+            font-family: 'Amiri', serif;
+            font-size: 5rem;
+            color: var(--primary);
+            line-height: 1.5;
+            direction: rtl;
+        }
+
+        .highlight-word {
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .translation {
+            font-size: 2rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 40px;
+        }
+
+        /* --- SAHNE (Şıklar ve Sonuç) --- */
+        .interaction-stage {
+            margin-bottom: 20px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ŞIKLAR (Büyük Yazı) */
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Şık Kutusu Düzeni */
+.option-card {
+    /* Eski ayarların üzerine flex-direction ekliyoruz */
+    background-color: #fff;
+    border: 3px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 15px 10px;
+    cursor: pointer;
+    width: 30%;
+    min-width: 200px;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column; /* Yazıları alt alta dizer */
+    align-items: center;
+    justify-content: center;
+    gap: 5px; /* Başlık ve açıklama arası boşluk */
+}
+
+/* Şık İçindeki Başlık */
+.opt-title { 
+    font-weight: 700; 
+    font-size: 2.5rem; 
+    color: var(--primary); 
+    line-height: 1.2;
+}
+
+/* YENİ: Şık İçindeki Açıklama */
+.opt-desc {
+    font-size: 1.3rem; /* Açıklama boyutu */
+    color: #666;
+    font-weight: 400;
+    text-align: center;
+}
+
+/* Sonuç Ekranındaki Açıklama (Boyutu eşitlendi) */
+.answer-desc {
+    font-size: 1.3rem; /* Şık açıklamasıyla birebir aynı yapıldı */
+    color: #7f8c8d;
+    margin: 0;
+    font-style: italic;
+}
+
+        .option-card:hover {
+            border-color: var(--primary);
+            background-color: #fcfcfc;
+            transform: translateY(-3px);
+        }
+
+        /* İSTEK: 2.5rem Yazı Boyutu */
+        .opt-title { 
+            font-weight: 700; 
+            font-size: 2.0rem; /* İstenilen boyut */
+            color: var(--primary); 
+        }
+
+        /* SONUÇ EKRANI */
+        .result-view {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+/* YENİ: Başlık ve Açıklamayı Yan Yana Tutan Kapsayıcı */
+.answer-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline; /* Yazıları taban çizgisinden hizalar */
+    justify-content: center;
+    gap: 15px; /* Başlık ile açıklama arasındaki boşluk */
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Mobilde sığmazsa alt satıra geçsin */
+}
+
+/* GÜNCELLEME: Mevcut sınıfların kenar boşluklarını sıfırlıyoruz */
+.answer-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0; /* Boşluk kaldırıldı */
+    text-transform: uppercase;
+}
+
+.answer-desc {
+    font-size: 2.5rem; /* Açıklamayı biraz büyüttük daha okunaklı olsun */
+    color: #7f8c8d;
+    margin: 0; /* Boşluk kaldırıldı */
+    font-style: italic;
+}
+
+        .answer-title {
+            font-size: 2.5rem; /* İstenilen boyut */
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            text-transform: uppercase;
+        }
+        
+        .answer-desc {
+            font-size: 2.5rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .feedback-banner {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .success-text { color: var(--success); }
+        .error-text { color: var(--error); }
+
+        /* TABLO (Büyük Yazı) */
+        .sarf-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #eee;
+            direction: rtl;
+            margin-bottom: 10px;
+        }
+
+        .sarf-table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            font-size: 1.8rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sarf-table td {
+            background: #fff;
+            padding: 10px;
+            font-family: 'Amiri', serif;
+            font-size: 4.5rem; /* İstenilen boyut */
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            border-left: 1px solid #eee;
+        }
+        .sarf-table td:last-child { border-left: none; }
+
+
+        /* --- FOOTER KONTROL PANELI --- */
+        .control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: auto; /* En alta it */
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .nav-btn:hover { background-color: #34495e; }
+
+        /* Pasif Buton (Next Disabled) */
+        .nav-btn:disabled {
+            background-color: var(--btn-disabled);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Aktif İleri Butonu Animasyonu */
+        .nav-btn.pulse-active {
+            background-color: var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(211, 84, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(211, 84, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(211, 84, 0, 0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobil Ayarları */
+        @media (max-width: 700px) {
+            .quran-text { font-size: 2rem; }
+            .opt-title { font-size: 2rem; } /* Mobilde biraz küçültelim taşmasın */
+            .sarf-table td { font-size: 1.8rem; }
+            .option-card { width: 45%; }
+            .nav-btn { min-width: 100px; padding: 12px 20px; font-size: 1rem; }
+        }
+/* --- Geri Bildirim İkonları (Tik / Çarpı) --- */
+.feedback-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) scale(0); /* Başlangıçta gizli ve küçük */
+    font-size: 8rem; /* Oldukça büyük */
+    font-weight: bold;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Yaylanma efekti */
+    z-index: 10;
+}
+
+.icon-left {
+    left: 20px;
+}
+
+.icon-right {
+    right: 20px;
+}
+
+/* Görünür Olduğunda */
+.feedback-icon.show {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+}
+
+/* Renkler */
+.icon-success { color: var(--success); } /* Yeşil Tik */
+.icon-error { color: var(--error); }     /* Kırmızı Çarpı */
+
+/* Mevcut Banner'ı Gizleme (Yazı olarak çıkmasın demiştiniz) */
+.feedback-banner {
+    display: none !important;
+}
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <div class="header-bar">
+        <a href="aksamiseba.html" class="icon-btn" title="Ana Sayfa">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+        
+        <div style="font-weight:600; color:#7f8c8d;">Kelime Tahlili</div>
+
+        <button class="icon-btn" onclick="toggleFullScreen()" title="Tam Ekran">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="progress-wrapper">
+        <div class="progress-fill" id="progress-bar"></div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="question-area">
+    <div id="feedback-left" class="feedback-icon icon-left"></div>
+    
+    <div class="quran-text" id="verse-text">...</div>
+    <div class="translation" id="verse-translation">...</div>
+    
+    <div id="feedback-right" class="feedback-icon icon-right"></div>
+</div>
+
+        <div class="interaction-stage">
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="result-view" id="result-container">
+                <div id="feedback-banner" class="feedback-banner"></div>
+                <div class="answer-row">
+    <div id="correct-answer-title" class="answer-title"></div>
+    <div style="font-size: 2.5rem; color: var(--primary);">:</div> <div id="correct-answer-desc" class="answer-desc"></div>
+</div>
+                
+                <table class="sarf-table">
+                    <thead>
+                        <tr>
+                            <th>Mazi</th>
+                            <th>Muzari</th>
+                            <th>Emir</th>
+                            <th>Mastar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="res-mazi"></td>
+                            <td id="res-muzari"></td>
+                            <td id="res-emir"></td>
+                            <td id="res-mastar"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="control-bar">
+            <button class="nav-btn" onclick="prevQuestion()">
+                <span>&#8592;</span> Geri
+            </button>
+            
+            <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>
+                İleri <span>&#8594;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const definitions = {
+        "Salim": "İlletli veya şeddeli değil",
+        "Mehmuz": "Asli harflerinde hemze var",
+        "Mudaaf": "Aynı cinsten harf şeddeli",
+        "Misal": "İlk harfi illetli",
+        "Ecvef": "Ortadaki harfi illetli",
+        "Nakıs": "Son harfi illetli",
+        "Lefif": "İki harfi birden illetli"
+    };
+
+   const questions = [
+        // --- FATİHA SURESİ ---
+        {
+            verse: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+            target: "نَعْبُدُ",
+            tr_target: "kulluk ederiz",
+            translation: "Yalnız sana kulluk ederiz.",
+            correct: "Salim",
+            conjugation: { mazi: "عَبَدَ", muzari: "يَعْبُدُ", emir: "اُعْبُدْ", mastar: "عِبَادَةً" }
+        },
+        {
+            verse: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+            target: "اهْدِنَا",
+            tr_target: "Bizi ilet",
+            translation: "Bizi dosdoğru yola ilet.",
+            correct: "Nakıs",
+            conjugation: { mazi: "هَدَى", muzari: "يَهْدِي", emir: "اِهْدِ", mastar: "هِدَايَةً" }
+        },
+        
+        {
+            verse: "لَا تَأْخُذُهُ سِنَةٌ",
+            target: "تَأْخُذُهُ",
+            tr_target: "tutmaz",
+            translation: "O'nu bir uyuklama tutmaz.",
+            correct: "Mehmuz",
+            conjugation: { mazi: "أَخَذَ", muzari: "يَأْخُذُ", emir: "خُذْ", mastar: "أَخْذًا" }
+        },
+        {
+            verse: "مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ",
+            target: "يَشْفَعُ",
+            tr_target: "şefaat edebilir",
+            translation: "O'nun katında kim şefaat edebilir?",
+            correct: "Salim",
+            conjugation: { mazi: "شَفَعَ", muzari: "يَشْفَعُ", emir: "اِشْفَعْ", mastar: "شَفَاعَةً" }
+        },
+
+        {
+            verse: "أَلَمْ يَجْعَلْ كَيْدَهُمْ",
+            target: "يَجْعَلْ",
+            tr_target: "kılmadı mı",
+            translation: "Onların tuzaklarını boşa çıkarmadı (kılmadı) mı?",
+            correct: "Salim",
+            conjugation: { mazi: "جَعَلَ", muzari: "يَجْعَلُ", emir: "اِجْعَلْ", mastar: "جَعْلًا" }
+        },
+        
+        {
+            verse: "تَرْمِيهِمْ بِحِجَارَةٍ",
+            target: "تَرْمِيهِمْ",
+            tr_target: "atıyorlardı",
+            translation: "Onlara taşlar atıyorlardı.",
+            correct: "Nakıs", // Rama
+            conjugation: { mazi: "رَمَى", muzari: "يَرْمِي", emir: "اِرْمِ", mastar: "رَمْيًا" }
+        },
+
+        // --- KUREYŞ SURESİ ---
+        {
+            verse: "فَلْيَعْبُدُوا رَبَّ هَذَا الْبَيْتِ",
+            target: "فَلْيَعْبُدُوا",
+            tr_target: "kulluk etsinler",
+            translation: "Şu Ev'in (Kabe'nin) Rabbine kulluk etsinler.",
+            correct: "Salim",
+            conjugation: { mazi: "عَبَدَ", muzari: "يَعْبُدُ", emir: "اُعْبُدْ", mastar: "عِبَادَةً" }
+        },
+        
+        {
+            verse: "فَذَلِكَ الَّذِي يَدُعُّ الْيَتِيمَ",
+            target: "يَدُعُّ",
+            tr_target: "itip kakan",
+            translation: "İşte o, yetimi itip kakan kimsedir.",
+            correct: "Mudaaf",
+            conjugation: { mazi: "دَعَّ", muzari: "يَدُعُّ", emir: "دُعَّ", mastar: "دَعًّا" }
+        },
+
+        {
+            verse: "فَصَلِّ لِرَبِّكَ وَانْحَرْ",
+            target: "فَصَلِّ",
+            tr_target: "namaz kıl",
+            translation: "O halde Rabbin için namaz kıl.",
+            correct: "Nakıs", // Salla (Lefif de denir ama genelde Nakıs grubunda işlenir - Son harf illetli)
+            conjugation: { mazi: "صَلَّى", muzari: "يُصَلِّي", emir: "صَلِّ", mastar: "صَلَاةً" }
+        },
+
+        // --- KAFİRUN SURESİ ---
+        {
+            verse: "قُلْ يَا أَيُّهَا الْكَافِرُونَ",
+            target: "قُلْ",
+            tr_target: "De ki",
+            translation: "De ki: Ey kafirler!",
+            correct: "Ecvef",
+            conjugation: { mazi: "قَالَ", muzari: "يَقُولُ", emir: "قُلْ", mastar: "قَوْلًا" }
+        },
+        {
+            verse: "لَا أَعْبُدُ مَا تَعْبُدُونَ",
+            target: "أَعْبُدُ",
+            tr_target: "kulluk etmem",
+            translation: "Ben sizin taptıklarınıza kulluk etmem.",
+            correct: "Salim",
+            conjugation: { mazi: "عَبَدَ", muzari: "يَعْبُدُ", emir: "اُعْبُدْ", mastar: "عِبَادَةً" }
+        },
+
+        {
+            verse: "وَرَأَيْتَ النَّاسَ يَدْخُلُونَ",
+            target: "يَدْخُلُونَ",
+            tr_target: "girdiğini",
+            translation: "İnsanların Allah'ın dinine girdiğini gördüğünde...",
+            correct: "Salim",
+            conjugation: { mazi: "دَخَلَ", muzari: "يَدْخُلُ", emir: "اُدْخُلْ", mastar: "دُخُولًا" }
+        },
+        
+        {
+            verse: "تَبَّتْ يَدَا أَبِي لَهَبٍ",
+            target: "تَبَّتْ",
+            tr_target: "kurusun",
+            translation: "Ebu Leheb'in elleri kurusun!",
+            correct: "Mudaaf",
+            conjugation: { mazi: "تَبَّ", muzari: "يَتِبُّ", emir: "تِبَّ", mastar: "تَبًّا" }
+        },
+        
+        {
+            verse: "سَيَصْلَى نَارًا ذَاتَ لَهَبٍ",
+            target: "سَيَصْلَى",
+            tr_target: "girecektir",
+            translation: "Alevli bir ateşe girecektir.",
+            correct: "Nakıs", // Sala
+            conjugation: { mazi: "صَلِيَ", muzari: "يَصْلَى", emir: "اِصْلَ", mastar: "صَلْيًا" }
+        },
+
+        // --- İHLAS SURESİ ---
+        {
+            verse: "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+            target: "يَلِدْ",
+            tr_target: "doğurmamıştır",
+            translation: "O doğurmamıştır.",
+            correct: "Misal", // Welede
+            conjugation: { mazi: "وَلَدَ", muzari: "يَلِدُ", emir: "لِدْ", mastar: "وِلَادَةً" }
+        },
+        {
+            verse: "وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ",
+            target: "يَكُنْ",
+            tr_target: "olmamıştır",
+            translation: "O'nun hiçbir dengi olmamıştır.",
+            correct: "Ecvef", // Kane
+            conjugation: { mazi: "كَانَ", muzari: "يَكُونُ", emir: "كُنْ", mastar: "كَوْنًا" }
+        },
+
+        {
+            verse: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+            target: "أَعُوذُ",
+            tr_target: "sığınırım",
+            translation: "De ki: Sabahın Rabbine sığınırım.",
+            correct: "Ecvef", // Aze
+            conjugation: { mazi: "عَاذَ", muzari: "يَعُوذُ", emir: "عُذْ", mastar: "عِيَاذًا" }
+        },
+        {
+            verse: "مِنْ شَرِّ مَا خَلَقَ",
+            target: "خَلَقَ",
+            tr_target: "yarattığı",
+            translation: "Yarattığı şeylerin şerrinden...",
+            correct: "Salim",
+            conjugation: { mazi: "خَلَقَ", muzari: "يَخْلُقُ", emir: "اُخْلُقْ", mastar: "خَلْقًا" }
+        },
+        {
+            verse: "وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+            target: "وَقَبَ",
+            tr_target: "çöktüğü",
+            translation: "Karanlığı çöktüğü zaman gecenin şerrinden...",
+            correct: "Misal",
+            conjugation: { mazi: "وَقَبَ", muzari: "يَقِبُ", emir: "قِبْ", mastar: "وُقُوبًا" }
+        },
+        {
+            verse: "وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+            target: "حَسَدَ",
+            tr_target: "haset ettiği",
+            translation: "Ve haset ettiği zaman hasetçinin şerrinden.",
+            correct: "Salim",
+            conjugation: { mazi: "حَسَدَ", muzari: "يَحْسِدُ", emir: "اِحْسِدْ", mastar: "حَسَدًا" }
+        },
+
+        {
+            verse: "اقْرَأْ بِاسْمِ رَبِّكَ",
+            target: "اقْرَأْ",
+            tr_target: "Oku",
+            translation: "Yaratan Rabbinin adıyla oku!",
+            correct: "Mehmuz",
+            conjugation: { mazi: "قَرَأَ", muzari: "يَقْرَأُ", emir: "اقْرَأْ", mastar: "قِرَاءَةً" }
+        },
+       
+        {
+            verse: "وَقِهِ السَّيِّئَاتِ",
+            target: "وَقِهِ",
+            tr_target: "koru",
+            translation: "Ve onu kötülüklerden koru.",
+            correct: "Lefif", // Veka
+            conjugation: { mazi: "وَقَى", muzari: "يَقِي", emir: "قِ", mastar: "وِقَايَةً" }
+        },
+        
+        {
+            verse: "وَاللَّهُ يَقْبِضُ وَيَبْسُطُ",
+            target: "يَبْسُطُ",
+            tr_target: "açar",
+            translation: "Allah (rızkı) daraltır ve açar.",
+            correct: "Salim",
+            conjugation: { mazi: "بَسَطَ", muzari: "يَبْسُطُ", emir: "اُبْسُطْ", mastar: "بَسْطًا" }
+        },
+        {
+            verse: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ",
+            target: "ذَائِقَةُ", // Bu İsm-i Fail ama çok meşhur diye bıraktım, isterseniz silin.
+            tr_target: "tadacaktır",
+            translation: "Her nefis ölümü tadacaktır.",
+            correct: "Ecvef", // Zaka
+            conjugation: { mazi: "ذَاقَ", muzari: "يَذُوقُ", emir: "ذُقْ", mastar: "ذَوْقًا" }
+        },
+        {
+            verse: "وَوَهَبْنَا لَهُ إِسْحَاقَ",
+            target: "وَوَهَبْنَا",
+            tr_target: "bağışladık",
+            translation: "Ve ona İshak'ı bağışladık.",
+            correct: "Misal",
+            conjugation: { mazi: "وَهَبَ", muzari: "يَهَبُ", emir: "هَبْ", mastar: "وَهْبًا" }
+        },
+        {
+            verse: "وَيَمُدُّهُمْ فِي طُغْيَانِهِمْ",
+            target: "وَيَمُدُّهُمْ",
+            tr_target: "süre verir",
+            translation: "Azgınlıkları içinde onlara süre verir.",
+            correct: "Mudaaf",
+            conjugation: { mazi: "مَدَّ", muzari: "يَمُدُّ", emir: "مُدَّ", mastar: "مَدًّا" }
+        }
+    ];
+    let currentIdx = 0;
+
+    function loadQuestion() {
+        const data = questions[currentIdx];
+        const nextBtn = document.getElementById('next-btn');
+        
+        // --- İkonları ve Arayüzü Sıfırla ---
+        document.getElementById('feedback-left').className = 'feedback-icon icon-left';
+        document.getElementById('feedback-right').className = 'feedback-icon icon-right';
+        document.getElementById('feedback-left').innerHTML = '';
+        document.getElementById('feedback-right').innerHTML = '';
+
+        document.getElementById('progress-bar').style.width = ((currentIdx) / questions.length * 100) + "%";
+        document.getElementById('options-container').style.display = 'flex';
+        document.getElementById('result-container').style.display = 'none';
+        
+        nextBtn.disabled = true;
+        nextBtn.classList.remove('pulse-active');
+
+        // --- ARAPÇA METİN (Renklendirme) ---
+        document.getElementById('verse-text').innerHTML = data.verse.replace(
+            data.target, 
+            `<span class="highlight-word">${data.target}</span>`
+        );
+
+        // --- TÜRKÇE MEAL (Renklendirme - YENİ KISIM) ---
+        // Türkçe hedef kelimeyi bulup aynı stil ile sarmalıyoruz
+        let trHtml = data.translation;
+        if (data.tr_target) {
+            trHtml = trHtml.replace(
+                data.tr_target, 
+                `<span class="highlight-word">${data.tr_target}</span>`
+            );
+        }
+        // ÖNEMLİ: innerText yerine innerHTML kullanıyoruz ki renk kodları çalışsın
+        document.getElementById('verse-translation').innerHTML = trHtml;
+
+        // --- Şıkları Hazırla ---
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        let opts = [data.correct];
+        const allTypes = Object.keys(definitions);
+        const distractors = allTypes.filter(t => t !== data.correct).sort(() => 0.5 - Math.random()).slice(0, 4); // 4 yanlış + 1 doğru
+        opts = opts.concat(distractors).sort(() => 0.5 - Math.random());
+
+        opts.forEach(type => {
+            const btn = document.createElement('div');
+            btn.className = 'option-card';
+            // Hem Başlık Hem Açıklama
+            btn.innerHTML = `
+                <div class="opt-title">${type}</div>
+                <div class="opt-desc">${definitions[type]}</div>
+            `;
+            btn.onclick = () => handleAnswer(type);
+            container.appendChild(btn);
+        });
+    }
+
+    function handleAnswer(selected) {
+    const data = questions[currentIdx];
+    const isCorrect = selected === data.correct;
+    
+    // Şıkları Gizle
+    document.getElementById('options-container').style.display = 'none';
+
+    // --- YENİ İKON MANTIĞI ---
+    const leftIcon = document.getElementById('feedback-left');
+    const rightIcon = document.getElementById('feedback-right');
+    
+    if (isCorrect) {
+        // Doğru ise Yeşil TİK (✓)
+        const content = '✓';
+        leftIcon.innerHTML = content;
+        rightIcon.innerHTML = content;
+        leftIcon.classList.add('show', 'icon-success');
+        rightIcon.classList.add('show', 'icon-success');
+    } else {
+        // Yanlış ise Kırmızı ÇARPI (✗)
+        const content = '✗';
+        leftIcon.innerHTML = content;
+        rightIcon.innerHTML = content;
+        leftIcon.classList.add('show', 'icon-error');
+        rightIcon.classList.add('show', 'icon-error');
+    }
+    // --------------------------
+
+    // Sonuç Ekranını Doldur
+    document.getElementById('correct-answer-title').innerText = data.correct;
+    document.getElementById('correct-answer-desc').innerText = definitions[data.correct];
+    
+    document.getElementById('res-mazi').innerText = data.conjugation.mazi;
+    document.getElementById('res-muzari').innerText = data.conjugation.muzari;
+    document.getElementById('res-emir').innerText = data.conjugation.emir;
+    document.getElementById('res-mastar').innerText = data.conjugation.mastar;
+
+    // Banner kodunu kaldırdık çünkü artık ikon kullanıyoruz.
+    
+    document.getElementById('result-container').style.display = 'flex';
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.disabled = false;
+    nextBtn.classList.add('pulse-active');
+}
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            loadQuestion();
+        } else {
+            // Bitiş
+            document.querySelector('.content-wrapper').innerHTML = `
+                <div style="text-align:center; padding:50px;">
+                    <h1 style="color:var(--success)">Tebrikler!</h1>
+                    <p style="font-size:1.5rem;">Çalışma tamamlandı.</p>
+                    <button class="nav-btn" onclick="location.reload()" style="margin:20px auto;">Başa Dön</button>
+                </div>
+            `;
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            loadQuestion();
+        }
+    }
+
+    function toggleFullScreen() {
+    // Konteynır elemanını seçiyoruz
+    var container = document.getElementById("main-container");
+
+    if (!document.fullscreenElement) {
+        // Tüm sayfa yerine sadece konteynırı tam ekran yapıyoruz
+        if (container.requestFullscreen) {
+            container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) { /* Safari */
+            container.webkitRequestFullscreen();
+        } else if (container.msRequestFullscreen) { /* IE11 */
+            container.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+    window.onload = loadQuestion;
+</script>
+
+</body>
+</html>

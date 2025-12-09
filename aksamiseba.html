@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aksâm-ı Seb'a (Yedi Kısım)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-blue: #3498db;   /* Konu */
+            --accent-orange: #e67e22; /* Test */
+            --accent-purple: #9b59b6; /* Sözlük */
+            --accent-green: #27ae60;  /* Kuran */
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Başlık Alanı */
+        header {
+            background: white;
+            padding: 15px 70px; /* Buton için soldan ve simetri için sağdan boşluk */
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            justify-content: center; /* Başlığı ortala */
+            align-items: center;
+            min-height: 70px;
+        }
+
+        /* Ana Sayfa İkon Butonu */
+        .home-btn {
+            position: absolute;
+            left: 20px; /* Sol köşeye sabitle */
+            top: 50%;
+            transform: translateY(-50%); /* Dikey ortala */
+            
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Tam daire */
+            background-color: #fff;
+            color: var(--primary-color);
+            border: 2px solid #e9ecef;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Ev İkonu (SVG) */
+        .home-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor; /* Yazı rengini al */
+        }
+
+        /* Hover Durumu */
+        .home-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-50%) scale(1.1); /* Hafif büyüme efekti */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Başlık Metinleri */
+        .header-text h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        .header-text p.subtitle {
+            color: #7f8c8d;
+            margin: 2px 0 0 0;
+            font-size: 0.95rem;
+        }
+
+        /* Ana Kapsayıcı */
+        .main-container {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Izgara Sistemi */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px; 
+            height: 75vh;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+
+        .menu-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-card:hover .icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #666;
+            text-align: center;
+            padding: 0 15px;
+            opacity: 0.85;
+            line-height: 1.4;
+        }
+
+        /* Renk Temaları */
+        .card-konu { border-top: 6px solid var(--accent-blue); }
+        .card-konu .icon { color: var(--accent-blue); }
+        .card-konu:hover { background: linear-gradient(to bottom right, #fff, #f0f8ff); }
+
+        .card-test { border-top: 6px solid var(--accent-orange); }
+        .card-test .icon { color: var(--accent-orange); }
+        .card-test:hover { background: linear-gradient(to bottom right, #fff, #fff5e6); }
+
+        .card-sozluk { border-top: 6px solid var(--accent-purple); }
+        .card-sozluk .icon { color: var(--accent-purple); }
+        .card-sozluk:hover { background: linear-gradient(to bottom right, #fff, #f8f0fc); }
+
+        .card-kuran { border-top: 6px solid var(--accent-green); }
+        .card-kuran .icon { color: var(--accent-green); }
+        .card-kuran:hover { background: linear-gradient(to bottom right, #fff, #e8f8f0); }
+
+        /* Mobil Görünüm */
+        @media (max-width: 768px) {
+            body {
+                height: auto;
+                overflow-y: auto;
+            }
+
+            header {
+                padding: 10px 15px;
+                /* Mobilde butonun başlığın üstüne binmesini engellemek için */
+                padding-left: 60px; 
+            }
+
+            .home-btn {
+                left: 15px; /* Mobilde biraz daha sola yanaşsın */
+                width: 40px;
+                height: 40px;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                height: auto;
+                max-width: 100%;
+            }
+
+            .menu-card {
+                padding: 30px 20px;
+                min-height: 200px;
+            }
+
+            .icon { font-size: 3rem; }
+            .card-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="https://kidefarapca.com" class="home-btn" title="Ana Sayfaya Dön">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+        
+        <div class="header-text">
+            <h1>Aksâm-ı Seb'a</h1>
+            <p class="subtitle">Arapça Fiil Çeşitleri Eğitim Modülü</p>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="menu-grid">
+            <a href="konuanlatimi.html" class="menu-card card-konu">
+                <div class="icon">📖</div>
+                <div class="card-title">Konu Anlatımı</div>
+                <div class="card-desc">Yedi Kısım Nedir? Örneklerle İncele</div>
+            </a>
+
+            <a href="kavramtesti.html" class="menu-card card-test">
+                <div class="icon">📝</div>
+                <div class="card-title">Kavram Testi</div>
+                <div class="card-desc">Bilgilerini Ölç ve Pekiştir</div>
+            </a>
+
+            <a href="sozlukdedektifi.html" class="menu-card card-sozluk">
+                <div class="icon">🔍</div>
+                <div class="card-title">Sözlük Dedektifi</div>
+                <div class="card-desc">Kelimelerin Köklerini Bul</div>
+            </a>
+
+            <a href="kurandanornekler.html" class="menu-card card-kuran">
+                <div class="icon">🕌</div>
+                <div class="card-title">Kur'ân'dan Örnekler</div>
+                <div class="card-desc">Ayetler Üzerinden Tahlil Yap</div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
