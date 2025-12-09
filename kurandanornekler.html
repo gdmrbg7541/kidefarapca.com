@@ -150,28 +150,24 @@
             line-height: 1.5;
         }
 
-        /* --- ŞIKLAR (FLEXBOX YAPISI İLE ORTALAMA) --- */
+        /* --- ŞIKLAR (FLEXBOX) --- */
         .interaction-stage {
             width: 100%;
             max-width: 1300px;
         }
 
         .options-grid {
-            display: flex; /* Grid yerine Flex kullanıyoruz */
-            flex-wrap: wrap; /* Sığmayan aşağı kaysın */
-            justify-content: center; /* Her şeyi ortala */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 25px;
             width: 100%;
         }
 
         .option-card {
-            /* MASAÜSTÜ AYARI: 
-               Bir satıra 3 tane sığsın (yaklaşık %30).
-               Geriye kalan 2 tanesi alt satıra geçip ortalanacak.
-            */
             flex: 0 1 calc(30% - 25px); 
-            min-width: 250px; /* Çok küçülmesin */
-            max-width: 350px; /* Çok büyümesin */
+            min-width: 250px;
+            max-width: 350px;
             
             background-color: #fff;
             border: 2px solid #e0e0e0;
@@ -411,12 +407,10 @@
 
             /* --- MOBİL İÇİN DÜZENLEME --- */
             .options-grid {
-                /* Flexbox mobilde de iyi çalışır, sadece genişlikleri değiştirelim */
                 gap: 15px;
             }
             .option-card { 
                 min-height: 90px;
-                /* Mobilde yan yana 2 tane sığsın (yaklaşık %45) */
                 flex: 0 1 calc(50% - 15px);
                 min-width: auto;
             }
@@ -426,23 +420,45 @@
 
         /* --- MOBİL YATAY (LANDSCAPE) ÖZEL AYARLAR --- */
         @media screen and (max-height: 500px) and (orientation: landscape) {
-            .header-bar { display: flex; } 
-            .question-area { min-height: 80px; margin-bottom: 10px; margin-top: 5px;}
-            .quran-text { font-size: 1.8rem; margin-bottom: 0; line-height: 1.2;}
-            .translation { font-size: 0.9rem; margin-top: 5px;}
+            
+            /* Header ARTIK GÖRÜNÜYOR ama ince */
+            .header-bar { 
+                display: flex; 
+                padding: 5px 15px; /* Boşluk azaltıldı */
+                height: 45px; /* Sabit ince yükseklik */
+                min-height: auto;
+            }
+            .header-title { font-size: 1rem; } /* Başlık küçüldü */
+            .icon-btn { padding: 5px; width: 35px; height: 35px; } /* Butonlar küçüldü */
+            .icon-svg { width: 20px; height: 20px; }
+
+            .question-area { 
+                min-height: 70px; 
+                margin-bottom: 5px; 
+                margin-top: 5px;
+            }
+            .quran-text { 
+                font-size: 1.6rem; 
+                margin-bottom: 0; 
+                line-height: 1.2;
+            }
+            .translation { 
+                font-size: 0.85rem; 
+                margin-top: 3px; 
+                line-height: 1.1;
+            }
             
             .options-grid { gap: 10px; }
             .option-card { 
-                /* Yatayda 3 tane sığsın */
                 flex: 0 1 calc(33% - 10px);
-                min-height: 50px; padding: 5px; 
+                min-height: 45px; 
+                padding: 5px; 
             }
             .opt-title { font-size: 0.9rem; margin:0;}
             .opt-desc { display: none; } 
 
             .control-bar { padding: 5px 20px; min-height: 40px;}
             .nav-btn { padding: 5px 15px; font-size: 0.8rem; min-width: auto; height: 30px; }
-            .icon-svg { width: 18px; height: 18px; }
         }
 
     </style>
