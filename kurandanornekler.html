@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aksam-ı Seba: Master Sürüm</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -14,45 +14,58 @@
             --bg: #eef2f3;
             --card: #ffffff;
             --btn-disabled: #bdc3c7;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg);
             margin: 0;
+            height: 100vh; /* Fallback */
+            height: 100dvh; /* Dynamic Viewport Height */
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             color: #333;
+            overflow: hidden; /* Sayfa kaymasın, sadece kutu kaysın */
         }
 
-        /* --- ANA KUTU --- */
+        /* --- ANA KONTEYNER --- */
         .container {
             background-color: var(--card);
+            width: 100%;
+            height: 100%;
+            max-width: 1000px; /* Masaüstünde çok genişlemeyi engelle */
+            max-height: 95vh; /* Masaüstünde biraz boşluk bırak */
             border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-            text-align: center;
-            position: relative;
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            
-            /* Masaüstü Varsayılan */
-            width: 95vw;
-            height: 95vh;
-            margin: auto;
-            overflow-y: auto; /* İçerik taşarsa scroll olsun */
+            overflow: hidden; /* İçerik taşarsa kendi içinde scroll olsun */
+            position: relative;
         }
 
         /* --- HEADER --- */
         .header-bar {
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            flex-shrink: 0; /* Header küçülmesin */
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .header-title {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 1.1rem;
         }
 
         .icon-btn {
@@ -65,15 +78,13 @@
             align-items: center;
             justify-content: center;
         }
-        .icon-svg { width: 28px; height: 28px; fill: currentColor; }
+        .icon-svg { width: 24px; height: 24px; fill: currentColor; }
 
-        /* --- İLERLEME ÇUBUĞU --- */
+        /* --- PROGRESS --- */
         .progress-wrapper {
             background-color: #eee;
-            border-radius: 10px;
             height: 6px;
             width: 100%;
-            margin-bottom: 15px;
             flex-shrink: 0;
         }
         .progress-fill {
@@ -83,61 +94,65 @@
             transition: width 0.5s ease;
         }
 
-        /* --- İÇERİK DÜZENİ --- */
-        .content-wrapper {
+        /* --- SCROLL EDİLEBİLİR İÇERİK ALANI --- */
+        .content-scroll-area {
             flex: 1;
+            overflow-y: auto;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            overflow-y: auto; /* İçerik kaydırma */
-            padding-bottom: 10px;
+            align-items: center;
+            /* Scrollbar yumuşatma */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) #eee;
         }
 
-        /* SORU ALANI */
+        /* --- SORU ALANI --- */
         .question-area {
-            flex-grow: 1;
+            width: 100%;
+            min-height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 150px;
+            align-items: center;
             position: relative;
-            padding: 10px 0;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .quran-text {
             font-family: 'Amiri', serif;
-            font-size: 4rem; /* Masaüstü boyutu */
+            /* Mobilde 2rem, Masaüstünde 4rem arası otomatik ayarla */
+            font-size: clamp(2.2rem, 5vw, 4rem); 
             color: var(--primary);
             line-height: 1.6;
             direction: rtl;
+            margin-bottom: 10px;
         }
 
         .highlight-word {
             color: var(--accent);
-            border-bottom: 3px solid var(--accent);
+            border-bottom: 2px solid var(--accent);
+            display: inline-block; /* Satır bölünmelerini düzeltir */
         }
 
         .translation {
-            font-size: 1.5rem;
+            font-size: clamp(0.9rem, 2vw, 1.3rem);
             color: #666;
             font-style: italic;
-            margin-top: 20px;
+            max-width: 90%;
         }
 
-        /* --- SAHNE --- */
+        /* --- ŞIKLAR (GRID YAPISI) --- */
         .interaction-stage {
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex-shrink: 0;
+            width: 100%;
+            max-width: 800px;
         }
 
-        /* ŞIKLAR */
         .options-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            /* Mobilde 2 sütun, masaüstünde 3 sütun */
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
             gap: 15px;
             width: 100%;
         }
@@ -148,35 +163,35 @@
             border-radius: 12px;
             padding: 15px 10px;
             cursor: pointer;
-            width: 30%; /* Masaüstü: 3 tane sığar */
-            min-width: 180px;
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-height: 90px;
+            text-align: center;
         }
 
         .opt-title { 
             font-weight: 700; 
-            font-size: 1.8rem; 
+            font-size: 1.2rem; 
             color: var(--primary); 
-            line-height: 1.2;
+            margin-bottom: 4px;
         }
 
         .opt-desc {
-            font-size: 1rem; 
-            color: #666;
-            margin-top: 5px;
+            font-size: 0.85rem; 
+            color: #7f8c8d;
+            line-height: 1.2;
         }
 
-        .option-card:hover {
+        .option-card:hover, .option-card:active {
             border-color: var(--primary);
-            background-color: #fcfcfc;
+            background-color: #f8f9fa;
             transform: translateY(-2px);
         }
 
-        /* SONUÇ EKRANI */
+        /* --- SONUÇ ALANI --- */
         .result-view {
             display: none;
             flex-direction: column;
@@ -187,27 +202,25 @@
 
         .answer-row {
             display: flex;
-            flex-direction: row;
+            flex-direction: column; /* Mobilde alt alta, masaüstü medya sorgusuyla yan yana */
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .answer-title {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--primary);
         }
         
         .answer-desc {
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             color: #7f8c8d;
-            font-style: italic;
         }
 
-        /* TABLO (Masaüstü Standart) */
+        /* SONUÇ TABLOSU */
         .sarf-table {
             width: 100%;
             border-collapse: separate;
@@ -216,37 +229,38 @@
             overflow: hidden;
             border: 2px solid #eee;
             direction: rtl;
-            margin-bottom: 10px;
         }
 
+        /* Masaüstü Tablo Görünümü */
         .sarf-table th {
             background: var(--primary);
             color: white;
             padding: 10px;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         .sarf-table td {
             background: #fff;
             padding: 10px;
             font-family: 'Amiri', serif;
-            font-size: 3rem;
+            font-size: 2rem;
             color: #2c3e50;
+            text-align: center;
             border-bottom: 1px solid #eee;
             border-left: 1px solid #eee;
         }
         .sarf-table td:last-child { border-left: none; }
 
-        /* --- FOOTER --- */
+        /* --- FOOTER (NAVİGASYON) --- */
         .control-bar {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
-            margin-top: auto;
+            background: #fff;
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .nav-btn {
@@ -255,13 +269,14 @@
             border: none;
             border-radius: 50px;
             padding: 12px 25px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
-            min-width: 120px;
+            min-width: 100px;
             justify-content: center;
+            transition: background 0.3s;
         }
         .nav-btn:disabled { background-color: var(--btn-disabled); cursor: not-allowed; }
         
@@ -269,6 +284,24 @@
             background-color: var(--accent);
             animation: pulse 1.5s infinite;
         }
+
+        /* --- FEEDBACK İKONLARI --- */
+        .feedback-icon {
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%) scale(0); /* Merkezleme düzeltmesi */
+            font-size: 4rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
+            pointer-events: none;
+        }
+        .icon-left { left: 10px; }
+        .icon-right { right: 10px; }
+        .feedback-icon.show { transform: translate(0, -50%) scale(1); opacity: 1; }
+        .icon-success { color: var(--success); }
+        .icon-error { color: var(--error); }
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(211, 84, 0, 0.7); }
@@ -280,167 +313,87 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* GERİ BİLDİRİM İKONLARI */
-        .feedback-icon {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%) scale(0);
-            font-size: 5rem;
-            font-weight: bold;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10;
-            pointer-events: none; /* Tıklamayı engellemesin */
-        }
-        .icon-left { left: 10px; }
-        .icon-right { right: 10px; }
-        .feedback-icon.show { transform: translateY(-50%) scale(1); opacity: 1; }
-        .icon-success { color: var(--success); }
-        .icon-error { color: var(--error); }
-/* ============================================================ */
-/* 1. MOBİL DİKEY (PORTRAIT) - ŞIKLAR 2 SÜTUN OLSUN */
-/* ============================================================ */
-@media screen and (max-width: 768px) and (orientation: portrait) {
-    .options-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Kartlar arası boşluk */
-        justify-content: center;
-    }
+        /* ========================================= */
+        /* MOBİL UYUMLULUK (RESPONSIVE RULES)        */
+        /* ========================================= */
 
-    .option-card {
-        /* Yan yana 2 tane sığması için (Boşluk payı düşüldü) */
-        width: 30% !important;
-        margin-bottom: 0; /* Ekstra marjini sıfırla */
-        min-height: 60px; /* Yükseklik standardı */
-    }
-    
-    .opt-desc {
-        font-size: 0.8rem; /* Açıklama yazısını mobilde biraz küçülttük */
-    }
-}
+        @media screen and (max-width: 768px) {
+            /* 1. Kutu tam ekran olsun */
+            body { background-color: var(--card); }
+            .container {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
 
-/* ============================================================ */
-/* 2. MOBİL YATAY (LANDSCAPE) - YAZILAR KÜÇÜK, EKRANA SIĞSIN */
-/* ============================================================ */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-    /* Ana kutuyu tam ekran yap ve boşlukları al */
-    .container {
-        width: 100vw;
-        height: 100vh;
-        border-radius: 10;
-        padding: 5px 15px; /* Kenar boşluklarını azalttık */
-        margin: 10;
-        justify-content: flex-start; /* İçeriği yukarı yasla */
-    }
+            /* 2. Soru alanı sıkışmasın */
+            .question-area { min-height: 150px; }
+            
+            /* 3. Sonuç Başlığı */
+            .answer-row {
+                flex-direction: row; /* Mobilde de yan yana sığabilirse sığdır */
+                flex-wrap: wrap;
+                justify-content: center;
+            }
 
-    /* Header ve Progress barı sıkıştır */
-    .header-bar { margin-bottom: 10px; }
-    .progress-wrapper { height: 15px; margin-bottom: 10px; }
-
-    /* Soru Alanını Küçült */
-    .question-area {
-        min-height: auto;
-        padding: 0;
-        margin: 0;
-        flex-grow: 0.2; /* Gereksiz büyümesin */
-    }
-
-    /* Ayet ve Meal Yazı Boyutları */
-    .quran-text {
-        font-size: 3rem !important; /* Ciddi oranda küçültüldü */
-        line-height: 1;
-        margin-bottom: 10px;
-    }
-
-    .translation {
-        font-size: 1rem !important;
-        margin-top: 2px;
-        margin-bottom: 5px;
-    }
-
-    /* Şıklar Yan Yana Dizilsin (5 Sütun veya sığdığı kadar) */
-    .options-grid {
-        gap: 5px;
-        margin-top: 5px;
-    }
-
-    .option-card {
-        width: 18% !important; /* 5 tane yan yana sığar */
-        padding: 5px 2px;
-        min-height: 60px;
-        min-width: auto; /* Genişlik kısıtlamasını kaldır */
-    }
-
-    .opt-title {
-        font-size: 0.9rem !important;
-    }
-
-    .opt-desc {
-        font-size: 0.8rem !important; /* Açıklamayı çok küçült */
-        line-height: 1;
-        margin-top: 2px;
-    }
-
-    /* Alt Kontrol Barı */
-    .control-bar {
-        padding-top: 2px;
-        margin-top: 5px;
-    }
-    .nav-btn {
-        padding: 5px 15px;
-        font-size: 0.9rem;
-        min-width: auto;
-    }
-    
-    /* Gereksiz ikonları gizle veya küçült */
-    .icon-svg { width: 20px; height: 20px; }
-}
+            /* 4. Tabloyu Karta Dönüştür (Grid Layout) */
+            .sarf-table, .sarf-table tbody, .sarf-table tr, .sarf-table td {
+                display: block;
+                width: 100%;
+                border: none;
+            }
+            
             .sarf-table thead { display: none; } /* Başlıkları gizle */
             
-            .sarf-table tr {
+            .sarf-table tbody tr {
                 display: grid;
                 grid-template-columns: 1fr 1fr; /* 2 Sütun */
-                gap: 8px;
+                gap: 10px;
+                margin-top: 10px;
             }
 
             .sarf-table td {
+                border: 1px solid #eee;
+                border-radius: 8px;
+                padding: 15px 5px;
+                position: relative;
+                text-align: center;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                border: 1px solid #eee;
-                border-radius: 8px;
-                font-size: 2.2rem; /* Mobilde daha makul boyut */
-                padding: 15px 5px;
-                position: relative;
             }
 
             /* Hücrelerin içine yapay başlık ekle */
+            .sarf-table td:nth-of-type(1)::before { content: "Mazi"; }
+            .sarf-table td:nth-of-type(2)::before { content: "Muzari"; }
+            .sarf-table td:nth-of-type(3)::before { content: "Emir"; }
+            .sarf-table td:nth-of-type(4)::before { content: "Mastar"; }
+
             .sarf-table td::before {
-                content: attr(data-label);
                 font-family: 'Poppins', sans-serif;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
                 color: #95a5a6;
                 text-transform: uppercase;
                 margin-bottom: 5px;
                 letter-spacing: 1px;
+                font-weight: 600;
             }
 
-            /* İkonları mobilde biraz küçült */
-            .feedback-icon { font-size: 4rem; }
+            /* İkonları kenarlara yasla */
+            .icon-left { left: 0; }
+            .icon-right { right: 0; }
         }
 
-        /* Çok küçük ekranlar için ekstra önlem (iPhone SE vb.) */
-        @media screen and (max-width: 380px) {
-            .quran-text { font-size: 1.8rem; }
-            .opt-title { font-size: 1.2rem; }
-            .nav-btn { min-width: auto; padding: 10px 15px; font-size: 0.9rem; }
-        }
-        
-        /* Yatay ekran (Landscape) için düzenleme */
-        @media screen and (max-height: 500px) {
-            .container { height: auto; min-height: 100vh; }
-            .question-area { min-height: 100px; }
+        /* Yatay Mobil (Landscape) Düzeltmeleri */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .header-bar { padding: 5px 20px; }
+            .question-area { min-height: 100px; margin-bottom: 10px; }
+            .quran-text { font-size: 2rem; margin-bottom: 0; }
+            .options-grid { grid-template-columns: repeat(4, 1fr); } /* Yan yana 4 tane */
+            .option-card { min-height: 60px; padding: 5px; }
+            .opt-title { font-size: 1rem; }
+            .opt-desc { display: none; } /* Yer kazanmak için açıklamayı gizle */
         }
 
     </style>
@@ -455,7 +408,7 @@
             </svg>
         </a>
         
-        <div style="font-weight:600; color:#7f8c8d;">Kelime Tahlili</div>
+        <div class="header-title">Kelime Tahlili</div>
 
         <button class="icon-btn" onclick="toggleFullScreen()" title="Tam Ekran">
             <svg class="icon-svg" viewBox="0 0 24 24">
@@ -468,26 +421,26 @@
         <div class="progress-fill" id="progress-bar"></div>
     </div>
 
-    <div class="content-wrapper">
+    <div class="content-scroll-area">
         <div class="question-area">
-    <div id="feedback-left" class="feedback-icon icon-left"></div>
-    
-    <div class="quran-text" id="verse-text">...</div>
-    <div class="translation" id="verse-translation">...</div>
-    
-    <div id="feedback-right" class="feedback-icon icon-right"></div>
-</div>
+            <div id="feedback-left" class="feedback-icon icon-left"></div>
+            
+            <div class="quran-text" id="verse-text">...</div>
+            <div class="translation" id="verse-translation">...</div>
+            
+            <div id="feedback-right" class="feedback-icon icon-right"></div>
+        </div>
 
         <div class="interaction-stage">
             
             <div class="options-grid" id="options-container"></div>
 
             <div class="result-view" id="result-container">
-                <div id="feedback-banner" class="feedback-banner"></div>
                 <div class="answer-row">
-    <div id="correct-answer-title" class="answer-title"></div>
-    <div style="font-size: 2.5rem; color: var(--primary);">:</div> <div id="correct-answer-desc" class="answer-desc"></div>
-</div>
+                    <div id="correct-answer-title" class="answer-title"></div>
+                    <div style="font-size: 1.5rem; color: var(--primary);">:</div> 
+                    <div id="correct-answer-desc" class="answer-desc"></div>
+                </div>
                 
                 <table class="sarf-table">
                     <thead>
@@ -509,16 +462,16 @@
                 </table>
             </div>
         </div>
+    </div>
 
-        <div class="control-bar">
-            <button class="nav-btn" onclick="prevQuestion()">
-                <span>&#8592;</span> Geri
-            </button>
-            
-            <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>
-                İleri <span>&#8594;</span>
-            </button>
-        </div>
+    <div class="control-bar">
+        <button class="nav-btn" onclick="prevQuestion()">
+            <span>&#8592;</span> Geri
+        </button>
+        
+        <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>
+            İleri <span>&#8594;</span>
+        </button>
     </div>
 </div>
 
@@ -583,7 +536,7 @@
             target: "تَرْمِيهِمْ",
             tr_target: "atıyorlardı",
             translation: "Onlara taşlar atıyorlardı.",
-            correct: "Nakıs", // Rama
+            correct: "Nakıs", 
             conjugation: { mazi: "رَمَى", muzari: "يَرْمِي", emir: "اِرْمِ", mastar: "رَمْيًا" }
         },
 
@@ -611,7 +564,7 @@
             target: "فَصَلِّ",
             tr_target: "namaz kıl",
             translation: "O halde Rabbin için namaz kıl.",
-            correct: "Nakıs", // Salla (Lefif de denir ama genelde Nakıs grubunda işlenir - Son harf illetli)
+            correct: "Nakıs", 
             conjugation: { mazi: "صَلَّى", muzari: "يُصَلِّي", emir: "صَلِّ", mastar: "صَلَاةً" }
         },
 
@@ -656,7 +609,7 @@
             target: "سَيَصْلَى",
             tr_target: "girecektir",
             translation: "Alevli bir ateşe girecektir.",
-            correct: "Nakıs", // Sala
+            correct: "Nakıs", 
             conjugation: { mazi: "صَلِيَ", muzari: "يَصْلَى", emir: "اِصْلَ", mastar: "صَلْيًا" }
         },
 
@@ -666,7 +619,7 @@
             target: "يَلِدْ",
             tr_target: "doğurmamıştır",
             translation: "O doğurmamıştır.",
-            correct: "Misal", // Welede
+            correct: "Misal", 
             conjugation: { mazi: "وَلَدَ", muzari: "يَلِدُ", emir: "لِدْ", mastar: "وِلَادَةً" }
         },
         {
@@ -674,7 +627,7 @@
             target: "يَكُنْ",
             tr_target: "olmamıştır",
             translation: "O'nun hiçbir dengi olmamıştır.",
-            correct: "Ecvef", // Kane
+            correct: "Ecvef",
             conjugation: { mazi: "كَانَ", muzari: "يَكُونُ", emir: "كُنْ", mastar: "كَوْنًا" }
         },
 
@@ -683,7 +636,7 @@
             target: "أَعُوذُ",
             tr_target: "sığınırım",
             translation: "De ki: Sabahın Rabbine sığınırım.",
-            correct: "Ecvef", // Aze
+            correct: "Ecvef", 
             conjugation: { mazi: "عَاذَ", muzari: "يَعُوذُ", emir: "عُذْ", mastar: "عِيَاذًا" }
         },
         {
@@ -725,7 +678,7 @@
             target: "وَقِهِ",
             tr_target: "koru",
             translation: "Ve onu kötülüklerden koru.",
-            correct: "Lefif", // Veka
+            correct: "Lefif", 
             conjugation: { mazi: "وَقَى", muzari: "يَقِي", emir: "قِ", mastar: "وِقَايَةً" }
         },
         
@@ -739,10 +692,10 @@
         },
         {
             verse: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ",
-            target: "ذَائِقَةُ", // Bu İsm-i Fail ama çok meşhur diye bıraktım, isterseniz silin.
+            target: "ذَائِقَةُ", 
             tr_target: "tadacaktır",
             translation: "Her nefis ölümü tadacaktır.",
-            correct: "Ecvef", // Zaka
+            correct: "Ecvef", 
             conjugation: { mazi: "ذَاقَ", muzari: "يَذُوقُ", emir: "ذُقْ", mastar: "ذَوْقًا" }
         },
         {
@@ -775,7 +728,7 @@
         document.getElementById('feedback-right').innerHTML = '';
 
         document.getElementById('progress-bar').style.width = ((currentIdx) / questions.length * 100) + "%";
-        document.getElementById('options-container').style.display = 'flex';
+        document.getElementById('options-container').style.display = 'grid'; // Grid yapısını koru
         document.getElementById('result-container').style.display = 'none';
         
         nextBtn.disabled = true;
@@ -787,8 +740,7 @@
             `<span class="highlight-word">${data.target}</span>`
         );
 
-        // --- TÜRKÇE MEAL (Renklendirme - YENİ KISIM) ---
-        // Türkçe hedef kelimeyi bulup aynı stil ile sarmalıyoruz
+        // --- TÜRKÇE MEAL ---
         let trHtml = data.translation;
         if (data.tr_target) {
             trHtml = trHtml.replace(
@@ -796,7 +748,6 @@
                 `<span class="highlight-word">${data.tr_target}</span>`
             );
         }
-        // ÖNEMLİ: innerText yerine innerHTML kullanıyoruz ki renk kodları çalışsın
         document.getElementById('verse-translation').innerHTML = trHtml;
 
         // --- Şıkları Hazırla ---
@@ -805,13 +756,12 @@
 
         let opts = [data.correct];
         const allTypes = Object.keys(definitions);
-        const distractors = allTypes.filter(t => t !== data.correct).sort(() => 0.5 - Math.random()).slice(0, 4); // 4 yanlış + 1 doğru
+        const distractors = allTypes.filter(t => t !== data.correct).sort(() => 0.5 - Math.random()).slice(0, 4); 
         opts = opts.concat(distractors).sort(() => 0.5 - Math.random());
 
         opts.forEach(type => {
             const btn = document.createElement('div');
             btn.className = 'option-card';
-            // Hem Başlık Hem Açıklama
             btn.innerHTML = `
                 <div class="opt-title">${type}</div>
                 <div class="opt-desc">${definitions[type]}</div>
@@ -822,57 +772,51 @@
     }
 
     function handleAnswer(selected) {
-    const data = questions[currentIdx];
-    const isCorrect = selected === data.correct;
-    
-    // Şıkları Gizle
-    document.getElementById('options-container').style.display = 'none';
+        const data = questions[currentIdx];
+        const isCorrect = selected === data.correct;
+        
+        // Şıkları Gizle
+        document.getElementById('options-container').style.display = 'none';
 
-    // --- YENİ İKON MANTIĞI ---
-    const leftIcon = document.getElementById('feedback-left');
-    const rightIcon = document.getElementById('feedback-right');
-    
-    if (isCorrect) {
-        // Doğru ise Yeşil TİK (✓)
-        const content = '✓';
-        leftIcon.innerHTML = content;
-        rightIcon.innerHTML = content;
-        leftIcon.classList.add('show', 'icon-success');
-        rightIcon.classList.add('show', 'icon-success');
-    } else {
-        // Yanlış ise Kırmızı ÇARPI (✗)
-        const content = '✗';
-        leftIcon.innerHTML = content;
-        rightIcon.innerHTML = content;
-        leftIcon.classList.add('show', 'icon-error');
-        rightIcon.classList.add('show', 'icon-error');
+        // İkonlar
+        const leftIcon = document.getElementById('feedback-left');
+        const rightIcon = document.getElementById('feedback-right');
+        
+        if (isCorrect) {
+            const content = '✓';
+            leftIcon.innerHTML = content;
+            rightIcon.innerHTML = content;
+            leftIcon.classList.add('show', 'icon-success');
+            rightIcon.classList.add('show', 'icon-success');
+        } else {
+            const content = '✗';
+            leftIcon.innerHTML = content;
+            rightIcon.innerHTML = content;
+            leftIcon.classList.add('show', 'icon-error');
+            rightIcon.classList.add('show', 'icon-error');
+        }
+
+        // Sonuç Ekranı
+        document.getElementById('correct-answer-title').innerText = data.correct;
+        document.getElementById('correct-answer-desc').innerText = definitions[data.correct];
+        
+        document.getElementById('res-mazi').innerText = data.conjugation.mazi;
+        document.getElementById('res-muzari').innerText = data.conjugation.muzari;
+        document.getElementById('res-emir').innerText = data.conjugation.emir;
+        document.getElementById('res-mastar').innerText = data.conjugation.mastar;
+
+        document.getElementById('result-container').style.display = 'flex';
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.disabled = false;
+        nextBtn.classList.add('pulse-active');
     }
-    // --------------------------
-
-    // Sonuç Ekranını Doldur
-    document.getElementById('correct-answer-title').innerText = data.correct;
-    document.getElementById('correct-answer-desc').innerText = definitions[data.correct];
-    
-    document.getElementById('res-mazi').innerText = data.conjugation.mazi;
-    document.getElementById('res-muzari').innerText = data.conjugation.muzari;
-    document.getElementById('res-emir').innerText = data.conjugation.emir;
-    document.getElementById('res-mastar').innerText = data.conjugation.mastar;
-
-    // Banner kodunu kaldırdık çünkü artık ikon kullanıyoruz.
-    
-    document.getElementById('result-container').style.display = 'flex';
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.disabled = false;
-    nextBtn.classList.add('pulse-active');
-}
 
     function nextQuestion() {
         currentIdx++;
         if (currentIdx < questions.length) {
             loadQuestion();
         } else {
-            // Bitiş
-            document.querySelector('.content-wrapper').innerHTML = `
+            document.querySelector('.content-scroll-area').innerHTML = `
                 <div style="text-align:center; padding:50px;">
                     <h1 style="color:var(--success)">Tebrikler!</h1>
                     <p style="font-size:1.5rem;">Çalışma tamamlandı.</p>
@@ -890,24 +834,21 @@
     }
 
     function toggleFullScreen() {
-    // Konteynır elemanını seçiyoruz
-    var container = document.getElementById("main-container");
-
-    if (!document.fullscreenElement) {
-        // Tüm sayfa yerine sadece konteynırı tam ekran yapıyoruz
-        if (container.requestFullscreen) {
-            container.requestFullscreen();
-        } else if (container.webkitRequestFullscreen) { /* Safari */
-            container.webkitRequestFullscreen();
-        } else if (container.msRequestFullscreen) { /* IE11 */
-            container.msRequestFullscreen();
-        }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
+        var container = document.getElementById("main-container");
+        if (!document.fullscreenElement) {
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            } else if (container.msRequestFullscreen) {
+                container.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
         }
     }
-}
 
     window.onload = loadQuestion;
 </script>
