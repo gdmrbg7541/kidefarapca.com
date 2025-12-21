@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YDT Arapça Çalışma Platformu</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        p {
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        /* Ana kapsayıcı: 3 üstte 2 altta yapısını sağlayan Flexbox */
+       .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px; /* Mobilde boşluğu biraz daralttık */
+    max-width: 1200px;
+    padding: 15px;
+}
+
+        .card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 300px; /* Masaüstü genişliği aynı kalıyor */
+    height: 180px; /* Yüksekliği mobilde taşmaması için biraz azalttık */
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-bottom: 5px solid var(--accent-color);
+    text-align: center;
+}
+
+        .card:hover {
+            transform: translateY(-10px); /* Üzerine gelince yukarı kalkma efekti */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background-color: #f8f9fa;
+        }
+
+       .card-icon {
+        font-size: 2.5rem;
+    }
+       .card-title {
+        font-size: 1.1rem; /* Yazı boyutunu mobilde biraz küçülttük */
+        padding: 0 5px;
+    }
+}
+
+        /* Küçük ekranlar için düzenleme */
+        @media (max-width: 768px) {
+           .card {
+        /* Ekran genişliğinin yarısından (50%) boşlukları düşüyoruz */
+        width: calc(50% - 20px); 
+        height: 160px; /* Mobilde daha kompakt görünüm */
+    }
+        }
+      /* 2. YENİ EKLENECEK STİL */
+/* Sol üst köşe ikonu için stil */
+.home-link {
+    position: absolute;
+    left: 20px;       /* Soldan mesafe */
+    top: 50%;         /* Dikey ortalama */
+    transform: translateY(-50%);
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem; /* İkon boyutu */
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.home-link:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1); /* Hafif büyüme efekti */
+}
+
+/* Mobilde ikonun çok kenara yapışmaması için ayar */
+@media (max-width: 768px) {
+    .home-link {
+        left: 15px;
+        font-size: 1.2rem;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="https://kidefarapca.com" class="home-link" title="Anasayfaya Dön">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </a>
+        <h1>YDT Arapça</h1>
+        <p>İnteraktif Çalışma Platformu</p>
+    </header>
+
+    <div class="container">
+        <a href="baglamdedektifi.html" class="card">
+            <div class="card-icon">🔍</div>
+            <div class="card-title">Bağlam Dedektifi</div>
+        </a>
+
+        <a href="harficerler.html" class="card">
+            <div class="card-icon">🔗</div>
+            <div class="card-title">Harfi Cerler</div>
+        </a>
+
+        <a href="hizlioku.html" class="card">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">Hızlı Oku</div>
+        </a>
+
+        <a href="kelimeavi.html" class="card">
+            <div class="card-icon">🎯</div>
+            <div class="card-title">Kelime Avı</div>
+        </a>
+
+        <a href="cikmissorular.html" class="card">
+            <div class="card-icon">📝</div>
+            <div class="card-title">Çıkmış Sorular</div>
+        </a>
+
+        <a href="kokenkardesligi.html" class="card">
+            <div class="card-icon">🤝</div>
+            <div class="card-title">Köken Kardeşliği</div>
+        </a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YDT Arapça - Türkçe Köken Kardeşliği Sözlüğü</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e67e22;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--primary); border-bottom: 3px solid var(--secondary); display: inline-block; padding-bottom: 10px; }
+        
+        .filter-section { text-align: center; margin-bottom: 20px; background: var(--white); padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        select { padding: 10px 20px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; outline: none; }
+        
+        table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        th { background-color: var(--primary); color: var(--white); padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f9f9f9; }
+
+        .arabic { font-size: 1.3em; color: #2980b9; font-weight: bold; text-align: right; direction: rtl; }
+        .turkish { font-weight: 600; color: var(--primary); }
+        .tag { font-size: 0.8em; background: #e1f5fe; color: #0288d1; padding: 3px 8px; border-radius: 10px; margin-left: 10px; }
+        
+        .empty-msg { text-align: center; padding: 40px; color: #7f8c8d; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Köken Kardeşliği Sözlüğü</h1>
+        <p>YDT Arapça sınavlarında geçen ortak kelimeler ve Türkçe türevleri</p>
+    </header>
+
+    <div class="filter-section">
+        <label for="yearSelect">Sınav Yılını Seçin: </label>
+        <select id="yearSelect" onchange="filterWords()">
+            <option value="2025">2025 YKS-YDT</option>
+            <option value="2024">2024 YKS-YDT (Örnek)</option>
+            <option value="2023">2023 YKS-YDT (Örnek)</option>
+            <option value="2022">2022 YKS-YDT (Örnek)</option>
+            <option value="2021">2021 YKS-YDT (Örnek)</option>
+            <option value="2020">2020 YKS-YDT (Örnek)</option>
+        </select>
+    </div>
+
+    <table id="wordTable">
+        <thead>
+            <tr>
+                <th width="30%">Arapça (Metindeki)</th>
+                <th width="30%">Türkçe Karşılık / Köken</th>
+                <th width="40%">Anlam/Kullanım</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+    <div id="emptyMsg" class="empty-msg">Seçilen yıl için henüz veri girişi yapılmadı.</div>
+</div>
+
+<script>
+    // Kitapçıktan ve genel YDT müfredatından derlenen veriler
+    const wordData = [
+        { year: "2025", ar: "دولة", tr: "Devlet", desc: "Sınavda 'en büyük bağışçı devlet' olarak geçer[cite: 45, 46]." },
+        { year: "2025", ar: "المسؤوليات", tr: "Mesuliyet", desc: "Sorumluluklar anlamında kullanılır[cite: 175]." },
+        { year: "2025", ar: "الوطن", tr: "Vatan", desc: "İnsanların aidiyet hissettiği yer[cite: 137]." },
+        { year: "2025", ar: "الأساسي", tr: "Esas / Esasi", desc: "Temel, ana unsur anlamında[cite: 164, 204]." },
+        { year: "2025", ar: "الجمهوري", tr: "Cumhuriyet / Cumhur", desc: "Yönetim biçimi olarak geçer[cite: 335]." },
+        { year: "2025", ar: "تكنولوجيا", tr: "Teknoloji", desc: "Bilimsel ilerleme bağlamında[cite: 103]." },
+        { year: "2025", ar: "الظاهرة", tr: "Zahir / Tezahür", desc: "Doğa olayı, fenomen (Kuş göçü)[cite: 127]." },
+        { year: "2025", ar: "الإنسانية", tr: "İnsani / İnsaniyet", desc: "Yardım ve medeniyet bağlamında[cite: 45, 198]." },
+        
+        // Örnek veriler (Diğer yıllar için veri setinizi buraya ekleyebilirsiniz)
+        { year: "2024", ar: "الثقافة", tr: "Sekafe (Kültür)", desc: "Türkçede 'teşrifat' veya 'kültür' ile ilişkili eski metinlerde görülür." },
+        { year: "2020", ar: "كتاب", tr: "Kitap / Katip", desc: "Yazılı eser; kökeni 'k-t-b' (yazmak)." }
+    ];
+
+    function filterWords() {
+        const selectedYear = document.getElementById('yearSelect').value;
+        const tableBody = document.getElementById('tableBody');
+        const emptyMsg = document.getElementById('emptyMsg');
+        
+        // Tabloyu temizle
+        tableBody.innerHTML = '';
+        
+        const filtered = wordData.filter(item => item.year === selectedYear);
+        
+        if (filtered.length === 0) {
+            emptyMsg.style.display = 'block';
+            document.getElementById('wordTable').style.display = 'none';
+        } else {
+            emptyMsg.style.display = 'none';
+            document.getElementById('wordTable').style.display = 'table';
+            
+            filtered.forEach(item => {
+                const row = `<tr>
+                    <td class="arabic">${item.ar}</td>
+                    <td class="turkish">${item.tr}</td>
+                    <td>${item.desc}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+    }
+
+    // Sayfa açıldığında 2025'i göster
+    window.onload = filterWords;
+</script>
+
+</body>
+</html>

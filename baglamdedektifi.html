@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YDT Analiz: Bağlam Dedektifi</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #2c3e50;
+            --card-bg: #ffffff;
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --info-bg: #34495e; 
+            --info-strip-bg: #ecf0f1; /* İpucu şeridi rengi */
+            --text-gray: #7f8c8d;
+        }
+
+        /* 1. ANA YAPI */
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            overflow: hidden;
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 2. OYUN KUTUSU */
+        .container {
+            background: var(--card-bg);
+            border-radius: 2vh;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (orientation: landscape) {
+            .container {
+                width: min(100vw, 177.78vh);
+                height: min(100vh, 56.25vw);
+                aspect-ratio: 16 / 9;
+            }
+        }
+
+        @media (orientation: portrait) {
+            .container {
+                width: min(100vw, 56.25vh);
+                height: min(100vh, 177.78vw);
+                aspect-ratio: 9 / 16;
+            }
+        }
+
+        /* --- BÖLÜMLER --- */
+        
+        .header {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            font-size: 3vh;
+            font-weight: 800;
+            flex: 0 0 8%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .sentence-area {
+            flex: 3.5; 
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start; 
+            align-content: flex-start;
+            padding-top: 6vh; 
+            flex-wrap: wrap;
+            direction: rtl;
+            width: 100%;
+            padding-left: 2vh;
+            padding-right: 2vh;
+            padding-bottom: 2vh; 
+        }
+
+        /* Mevcut kodda satır ~103 civarı */
+.word-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 1.2vh; 
+    justify-content: flex-end; 
+    margin-top: 15vh; /* 5vh olan değeri 10vh yaparak aşağı kaydırdık */
+}
+
+        .arabic-word {
+            font-family: 'Scheherazade New', serif;
+            font-size: 8vh;
+            color: var(--primary);
+            font-weight: 700;
+            line-height: 1.2;
+            z-index: 2; 
+        }
+
+       .tr-meaning {
+    position: absolute;
+    left: 50%;
+    top: -5vh;
+    transform: translate(-50%, -50%); /* Döndürmeyi (rotate) kaldırdık, daha okunaklı olması için */
+    white-space: nowrap;
+    text-align: center; /* Merkeze hizala */
+    font-size: 3vh; 
+    color: #7f8c8d;
+    font-weight: 700;
+    pointer-events: none; 
+    z-index: 1;
+    opacity: 0; 
+    transition: all 0.3s ease;
+}
+/* Hareke için ek stil */
+.hk-info {
+    display: block;
+    font-size: 1.8vh;
+    color: var(--accent); /* Hareke bilgisini farklı renk yapalım */
+    font-style: italic;
+}
+
+/* Dokunulduğunda/Tıklandığında görünür yapacak sınıf */
+.word-group.show-tr .tr-meaning {
+    opacity: 1;
+    top: -7vh; /* Hafif yukarı zıplama efekti */
+}
+
+/* Arapça kelimenin üzerine gelindiğinde imleci değiştir */
+.word-group {
+    cursor: pointer;
+}
+
+        .target-group .arabic-word {
+            color: var(--accent);
+            cursor: pointer;
+        }
+        .target-group .tr-meaning {
+            color: var(--accent);
+            font-size: 3.2vh; 
+            font-weight: 900;
+        }
+
+        .full-sentence-box {
+            flex: 0 0 auto;
+            min-height: 15%; 
+            width: 100%;
+            background-color: #f1f2f6;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 4.2vh; 
+            font-weight: 800;
+            padding: 2vh;
+            border-top: 2px solid #e0e0e0;
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            text-decoration: none; 
+            font-weight: 900;
+        }
+
+        /* Seçenekler Alanı */
+        .options-area {
+            flex: 3;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vh;
+            padding: 2vh 2vh 12vh 2vh; 
+            width: 100%;
+            background: #fff;
+            align-content: center; 
+        }
+
+        /* --- ŞIK KARTI (Dış Çerçeve) --- */
+        .option-card {
+            background: #f8f9fa;
+            border: 0.4vh solid #e0e0e0;
+            border-radius: 1.5vh;
+            display: flex; /* Flex yapısı ile yatay bölme */
+            flex-direction: row; 
+            height: 22vh; 
+            position: relative; 
+            overflow: hidden; 
+            transition: transform 0.1s;
+        }
+
+        /* --- SOL TARAF: CEVAP ALANI (%80) --- */
+        .answer-zone {
+            flex: 4; /* Geniş alan */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: transparent;
+        }
+
+        .answer-zone:active {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* --- SAĞ TARAF: İPUCU ŞERİDİ (%20) --- */
+        .info-zone {
+            flex: 1.2; /* Dar alan */
+            background-color: var(--info-strip-bg);
+            border-left: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .info-zone:active {
+            background-color: #d5dbdb;
+        }
+
+        .opt-arabic {
+            font-family: 'Scheherazade New', serif;
+            font-size: 8vh; 
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        /* --- DEVASA AMPUL --- */
+        .info-icon {
+            font-size: 5vh; /* Ampul büyüdü */
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+            transition: transform 0.2s;
+        }
+        
+        .info-zone:active .info-icon {
+            transform: scale(0.85);
+        }
+
+        /* --- BİLGİ KUTUSU (OVERLAY) --- */
+        .info-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--info-bg);
+            color: white;
+            padding: 2vh;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start; 
+            text-align: left;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 50; /* Yazıların üstüne çıksın */
+        }
+
+        .show-info {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .info-overlay ul {
+            margin: 0;
+            padding-left: 3vh;
+            list-style-type: disc;
+        }
+
+        .info-overlay li {
+            font-size: 2vh;
+            margin-bottom: 1vh;
+            line-height: 1.4;
+        }
+
+        .info-title {
+            align-self: center;
+            font-weight: 800;
+            color: #f1c40f;
+            margin-bottom: 1.5vh;
+            font-size: 2.2vh;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            width: 100%;
+            text-align: center;
+            padding-bottom: 0.5vh;
+        }
+
+        .close-info {
+            position: absolute;
+            top: 1vh;
+            right: 1.5vh;
+            font-size: 3.5vh;
+            color: #e74c3c;
+            cursor: pointer;
+        }
+
+        /* Geri Bildirim Butonu */
+         .feedback-box {
+    position: absolute; /* Absolute yerine Fixed yaparak ekrana sabitledik */
+    bottom: 4vh; 
+    left: 0;
+    width: 100%; 
+    text-align: center; 
+    display: none;
+    z-index: 9999; /* En yüksek değerde olduğundan emin olalım */
+}
+/* PDF açıldığında butonu gizlemek için yeni kural */
+body.pdf-open .feedback-box {
+    display: none !important;
+}
+/* PDF kapsayıcısının butonun üstüne çıkması için */
+#pdf-viewer-container {
+    z-index: 200; /* Butondan (150) daha yüksek olmalı */
+}
+
+
+        .next-btn {
+    background-color: #27ae60; /* Yeşil renk daha dikkat çekici */
+    color: white;
+    border: none;
+    padding: 2vh 10vh; 
+    border-radius: 5vh;
+    font-size: 3.5vh;
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Butonun öne çıkması için gölge */
+}
+
+        .correct { background-color: #d4efdf !important; border-color: var(--success) !important; }
+        .wrong { background-color: #fadbd8 !important; border-color: #c0392b !important; }
+        
+        /* Cevap verildikten sonra cevap alanını pasif yap ama ipucu kalsın */
+        .disabled-answer {
+            pointer-events: none;
+        }
+
+/* --- Geri Tuşu (Header ile Uyumlu Tasarım) --- */
+.back-button-container {
+    position: absolute;
+    left: 1.5vh; 
+    display: flex;
+    align-items: center;
+}
+
+.back-button {
+    /* Header renginin biraz daha açığı veya şeffaf beyaz */
+    background: rgba(255, 255, 255, 0.15); 
+    color: white; /* İkon rengi beyaz */
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2vh;
+    cursor: pointer;
+    width: 5.5vh; 
+    height: 5.5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateX(-2px); /* Hafif sola kayma efekti */
+}
+
+.back-button svg {
+    width: 3.5vh;
+    height: 3.5vh;
+    fill: currentColor; /* Yazı rengiyle (beyaz) aynı yapar */
+}
+
+/* PDF Simgeleri Konteynırı */
+.pdf-tools {
+    position: absolute;
+    top: 1.5vh;
+    right: 1.5vh;
+    display: flex;
+    gap: 1.5vh;
+    z-index: 100;
+}
+
+.pdf-btn {
+    background: #e74c3c;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2vh;
+    width: 10vh;
+    height: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: white;
+}
+
+.pdf-btn:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+}
+
+.pdf-btn svg {
+    width: 2.5vh;
+    height: 2.5vh;
+    fill: white;
+}
+
+.pdf-label {
+    font-size: 0.8vh;
+    font-weight: 800;
+    margin-top: 0.2vh;
+    text-transform: uppercase;
+}
+
+#pdf-viewer-container {
+    display: none; 
+    position: absolute; 
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 5px solid var(--primary);
+    z-index: 10000; 
+    box-shadow: 0 -10px 20px rgba(0,0,0,0.4);
+    /* Yükseklik ve Top değerlerini JS atayacak */
+}
+
+/* Kapatma Butonu */
+.close-pdf {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 160;
+    font-weight: bold;
+}
+
+/* PDF iframe ayarları */
+#pdf-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* PDF Butonlarını güncelleme (JavaScript ile çalışması için a yerine div) */
+.pdf-btn {
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+<div class="pdf-tools">
+    <div onclick="openPdf('tablo1.pdf')" class="pdf-btn">
+        <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+        <span class="pdf-label">SÜLASİ</span>
+    </div>
+
+    <div onclick="openPdf('tablo2.pdf')" class="pdf-btn">
+        <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+        <span class="pdf-label">MEZİD</span>
+    </div>
+</div>
+
+<div id="pdf-viewer-container">
+    <button class="close-pdf" onclick="closePdf()">X</button>
+    <iframe id="pdf-frame" src=""></iframe>
+</div>
+    <div class="back-button-container">
+        <a href="ydtarapca.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </a>
+    </div>
+    Bağlam Dedektifi 🕵️‍♂️
+</div>
+
+        <div id="sentence-container" class="sentence-area"></div>
+
+        <div id="full-sentence-display" class="full-sentence-box"></div>
+
+        <div id="options-container" class="options-area"></div>
+
+        <div id="feedback-overlay" class="feedback-box">
+            <button id="next-btn" class="next-btn" onclick="nextQuestion()">Sıradaki </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+    {
+        fullTr: "Arapça dil dersi az önce bitti.",
+        words: [
+            { ar: "انتهى", tr: "Bitti", hk: "اِنْتَهَى" },
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "اللغة", tr: "Dili", hk: "اَللُّغَةِ" },
+            { ar: "العربية", tr: "Arap", hk: "اَلْعَرَبِيَّةِ" },
+            { ar: "قبل", tr: "Önce", hk: "قَبْلَ" },
+            { ar: "قليل", tr: "Az", hk: "قَلِيلٍ" }
+        ],
+        targetIndex: 1,
+        options: [
+            { 
+                ar: "دَرَسَ", 
+                correct: false,
+                features: ["Zaman kavramı barındırır", "İçinde gizli bir özne vardır", "Cümlenin yüklemi olur", "Fiil formundadır"],
+                type: "Fiil (Mazi)"
+            },
+            { 
+                ar: "دَرْسُ", 
+                correct: true,
+                features: ["Zaman kavramından soyuttur", "Cümlenin öznesidir (Fail)", "İsim tamlamasının ilk öğesidir", "Eylemin adıdır"],
+                type: "İsim (Mastar)"
+            }
+        ]
+    },
+    {
+        fullTr: "Öğrenci ödevi evde yazdı.",
+        words: [
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "الطالب", tr: "Öğrenci", hk: "اَلطَّالِبُ" },
+            { ar: "الواجب", tr: "Ödevi", hk: "اَلْوَاجِبَ" },
+            { ar: "في", tr: "-", hk: "فِي" },
+            { ar: "البيت", tr: "Evde", hk: "اَلْبَيْتِ" }
+        ],
+        targetIndex: 0,
+        options: [
+            { 
+                ar: "كَتَبَ", 
+                correct: true,
+                features: ["Etken çatılıdır", "Fail (Öğrenci) bellidir", "Geçmiş zaman bildirir", "Malum fiildir"],
+                type: "Malum Fiil"
+            },
+            { 
+                ar: "كُتِبَ", 
+                correct: false,
+                features: ["Edilgen çatılıdır", "Yazıldı anlamına gelir", "Cümlede fail varken kullanılamaz", "Meçhul fiildir"],
+                type: "Meçhul Fiil"
+            }
+        ]
+    },
+    {
+        fullTr: "Okulun kapısı açıldı.",
+        words: [
+            { ar: "باب", tr: "Kapısı", hk: "بَابُ" },
+            { ar: "المدرسة", tr: "Okulun", hk: "اَلْمَدْرَسَةِ" },
+            { ar: "_______", tr: "???", hk: "_______" }
+        ],
+        targetIndex: 2,
+        options: [
+            { 
+                ar: "فَتَحَ", 
+                correct: false,
+                features: ["Açtı anlamına gelir", "Bir açan (özne) gerektirir", "Etken yapılıdır", "Bağlama uymaz"],
+                type: "Malum Fiil"
+            },
+            { 
+                ar: "فُتِحَ", 
+                correct: true,
+                features: ["Açıldı anlamına gelir", "Kapı (sözde özne) etkilenen ögedir", "Edilgen yapılıdır", "Damme ile başlar"],
+                type: "Meçhul Fiil"
+            }
+        ]
+    },
+    {
+        fullTr: "Babam bir saat önce vardı.",
+        words: [
+            { ar: "وصل", tr: "Vardı", hk: "وَصَلَ" },
+            { ar: "أبي", tr: "Babam", hk: "أَبِي" },
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "ساعة", tr: "Saat", hk: "سَاعَةٍ" }
+        ],
+        targetIndex: 2,
+        options: [
+            { 
+                ar: "قَبِلَ", 
+                correct: false,
+                features: ["Kabul etti anlamına gelen bir fiildir", "Zaman bildirmez", "Şahsa göre çekimlenir"],
+                type: "Fiil"
+            },
+            { 
+                ar: "قَبْلَ", 
+                correct: true,
+                features: ["Önce anlamına gelen bir zarftır", "Mekan veya zaman bildirir", "Harekelerle fiilden ayrılır"],
+                type: "Zaman Zarfı"
+            }
+        ]
+    },
+    {
+        fullTr: "Hava kirliliği hastalıklara neden olur.",
+        words: [
+            { ar: "تلوث", tr: "Kirliliği", hk: "تَلَوُّثُ" },
+            { ar: "الهواء", tr: "Hava", hk: "اَلْهَوَاءِ" },
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "الأمراض", tr: "Hastalıklara", hk: "اَلْأَمْرَاضِ" }
+        ],
+        targetIndex: 2,
+        options: [
+            { 
+                ar: "تُسَبِّبُ", 
+                correct: false,
+                features: ["Müennes (dişil) çekimdir", "Fail müzekker olduğu için uyumsuzdur", "Neden olur/olunur"],
+                type: "Hatalı Çekim"
+            },
+            { 
+                ar: "يُسَبِّبُ", 
+                correct: true,
+                features: ["Müzekker (eril) çekimdir", "Hava kirliliği (Televvüs) ile uyumludur", "Etken muzari fiildir"],
+                type: "Malum Fiil"
+            }
+        ]
+    },
+    {
+        fullTr: "Vatan, insanların ait olduğu yerdir.",
+        words: [
+            { ar: "الوطن", tr: "Vatan", hk: "اَلْوَطَنُ" },
+            { ar: "هو", tr: "-", hk: "هُوَ" },
+            { ar: "المكان", tr: "Yerdir", hk: "اَلْمَكَانُ" },
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "ينتمي", tr: "Ait olduğu", hk: "يَنْتَمِي" },
+            { ar: "إليه", tr: "Kendisine", hk: "إِلَيْهِ" }
+        ],
+        targetIndex: 3,
+        options: [
+            { 
+                ar: "الذي", 
+                correct: true,
+                features: ["Müzekker ve tekil yapılar içindir", "Mekan kelimesini niteler", "Sıfat cümlesi kurar"],
+                type: "İsm-i Mevsul"
+            },
+            { 
+                ar: "التي", 
+                correct: false,
+                features: ["Müennes (dişil) yapılar içindir", "Bağlamdaki kelimeyle cinsiyet yönünden uyumsuzdur"],
+                type: "İsm-i Mevsul"
+            }
+        ]
+    },
+    {
+        fullTr: "Uzmanlar vücudu dinlendirmenin iyileşmeye katkı sağladığına inanıyor.",
+        words: [
+            { ar: "يعتقد", tr: "İnanıyor", hk: "يَعْتَقِدُ" },
+            { ar: "الخبراء", tr: "Uzmanlar", hk: "اَلْخُبَرَاءُ" },
+            { ar: "أن", tr: "-diği", hk: "أَنَّ" },
+            { ar: "إراحة", tr: "Dinlendirme", hk: "إِرَاحَةَ" },
+            { ar: "الجسد", tr: "Vücudu", hk: "اَلْجَسَدِ" },
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "في", tr: "...", hk: "فِي" },
+            { ar: "الاستشفاء", tr: "İyileşme", hk: "اَلِاسْتِشْفَاءِ" }
+        ],
+        targetIndex: 5,
+        options: [
+            { 
+                ar: "تُساهِمُ", 
+                correct: true,
+                features: ["Müennes çekimdir", "İraha (Dinlendirme) kelimesi müennes olduğu için seçilmiştir", "Fiil-Fail uyumu vardır"],
+                type: "Muzari Fiil"
+            },
+            { 
+                ar: "يُساهِمُ", 
+                correct: false,
+                features: ["Müzekker çekimdir", "Fail (İraha) müennes olduğu için yanlıştır"],
+                type: "Muzari Fiil"
+            }
+        ]
+    },
+    {
+        fullTr: "Öğretmen, yeni dersin kurallarını öğrencilere öğretti.",
+        words: [
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "المعلم", tr: "Öğretmen", hk: "اَلْمُعَلِّمُ" },
+            { ar: "قواعد", tr: "Kurallarını", hk: "قَوَاعِدَ" },
+            { ar: "الدرس", tr: "Dersin", hk: "اَلدَّرْسِ" },
+            { ar: "الجدidi", tr: "Yeni", hk: "اَلْجَدِيدِ" }
+        ],
+        targetIndex: 0,
+        options: [
+            { 
+                ar: "عَلَّمَ", 
+                correct: true,
+                features: ["Tef'il babından mezid fiildir", "Öğretti anlamına gelir", "Etken çatılıdır"],
+                type: "Mezid Fiil"
+            },
+            { 
+                ar: "عُلِمَ", 
+                correct: false,
+                features: ["Bilindi anlamına gelir", "Meçhul fiildir", "Cümledeki öğretmen öznesiyle uymaz"],
+                type: "Meçhul Fiil"
+            }
+        ]
+    },
+    {
+        fullTr: "Şirket, çalışanlarının verimliliğini artırmaya odaklanıyor.",
+        words: [
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "الشركة", tr: "Şirket", hk: "اَلشَّرِكَةُ" },
+            { ar: "على", tr: "-e", hk: "عَلَى" },
+            { ar: "زيادة", tr: "Artırmaya", hk: "زِيَادَةِ" },
+            { ar: "إنتاجية", tr: "Verimliliğini", hk: "إِنْتَاجِيَّةِ" }
+        ],
+        targetIndex: 0,
+        options: [
+            { 
+                ar: "تُرَكِّزُ", 
+                correct: true,
+                features: ["Muzari fiildir", "Şirket kelimesiyle müenneslik uyumu sağlar", "Odaklanıyor anlamındadır"],
+                type: "Muzari Mezid"
+            },
+            { 
+                ar: "تَرَكَّزَ", 
+                correct: false,
+                features: ["Mazi fiildir", "Odaklandı anlamına gelir", "Bağlamdaki şimdiki zaman akışına uymaz"],
+                type: "Mazi Mezid"
+            }
+        ]
+    },
+    {
+        fullTr: "Hükümet, ekonomik krizi çözmek için yeni kararlar ilan etti.",
+        words: [
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "الحكومة", tr: "Hükümet", hk: "اَلْحُكُومَةُ" },
+            { ar: "قرارات", tr: "Kararlar", hk: "قَرَارَاتٍ" },
+            { ar: "جديدة", tr: "Yeni", hk: "جَدِيدَةٍ" }
+        ],
+        targetIndex: 0,
+        options: [
+            { 
+                ar: "أَعْلَنَتْ", 
+                correct: true,
+                features: ["İf'al babı mazi fiildir", "Hükümet (müennes) ile uyumlu sonunda cezimli 'te' vardır"],
+                type: "Mezid Mazi"
+            },
+            { 
+                ar: "أُعْلِنَتْ", 
+                correct: false,
+                features: ["İlan edildi anlamına gelen meçhul halidir", "Fail (Hükümet) varken kullanılamaz"],
+                type: "Meçhul Mezid"
+            }
+        ]
+    },
+    {
+        fullTr: "Öğrenciler kütüphanede kitap okumaktan keyif alıyorlar.",
+        words: [
+            { ar: "_______", tr: "???", hk: "_______" },
+            { ar: "الطلاب", tr: "Öğrenciler", hk: "اَلطُّلَّابُ" },
+            { ar: "بقراءة", tr: "Okumaktan", hk: "بِقِرَاءَةِ" },
+            { ar: "الكتب", tr: "Kitapları", hk: "اَلْكُتُبِ" }
+        ],
+        targetIndex: 0,
+        options: [
+            { 
+                ar: "يَسْتَمْتِعُ", 
+                correct: true,
+                features: ["İstif'al babı muzari fiildir", "Öğrenciler (müzekker) ile uyumludur", "Fiil başta tekil gelir"],
+                type: "İstif'al Babı"
+            },
+            { 
+                ar: "تَسْتَمْتِعُ", 
+                correct: false,
+                features: ["Müennes çekimdir", "Özne müzekker olduğu için hatalıdır"],
+                type: "Hatalı Cinsiyet"
+            }
+        ]
+    }
+];
+
+        let currentQIndex = 0;
+        let isAnswered = false; // O anki sorunun cevaplanıp cevaplanmadığını tutar
+
+        function loadQuestion() {
+            const q = questions[currentQIndex];
+            const container = document.getElementById('sentence-container');
+            const optionsBox = document.getElementById('options-container');
+            const fullSentBox = document.getElementById('full-sentence-display');
+            const feedbackOverlay = document.getElementById('feedback-overlay');
+            
+            isAnswered = false; // Yeni soruda bayrağı sıfırla
+
+            container.innerHTML = '';
+            optionsBox.innerHTML = '';
+            feedbackOverlay.style.display = 'none'; 
+            
+            fullSentBox.innerHTML = `"${q.fullTr}"`;
+
+        q.words.forEach((item, index) => {
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'word-group';
+    
+    groupDiv.innerHTML = `
+        <span class="tr-meaning">${item.tr}</span>
+        <span class="arabic-word">${item.ar}</span>
+    `;
+
+    groupDiv.onclick = () => {
+        const isShowing = groupDiv.classList.toggle('show-tr');
+        const arabicSpan = groupDiv.querySelector('.arabic-word');
+        
+        // EĞER "show-tr" sınıfı eklendiyse (yani tıklandıysa)
+        // Arapça kelimeyi "hk" (harekeli) yap, kapandıysa orijinal "ar" yap.
+        if (isShowing) {
+            arabicSpan.innerText = item.hk;
+            arabicSpan.style.color = "#000000"; // Harekeli olduğunu belli etmek için renk değişebilir
+        } else {
+            arabicSpan.innerText = item.ar;
+            arabicSpan.style.color = "inherit";
+        }
+    };
+
+    container.appendChild(groupDiv);
+});
+
+            q.options.forEach((opt, idx) => {
+                const card = document.createElement('div');
+                card.className = 'option-card';
+                card.id = `opt-card-${idx}`;
+
+                let featuresHtml = "";
+                opt.features.forEach(f => {
+                    featuresHtml += `<li>${f}</li>`;
+                });
+
+                // Kartı iki ana bölgeye ayırıyoruz: 
+                // 1. answer-zone (Cevaplama)
+                // 2. info-zone (İpucu)
+                card.innerHTML = `
+                    <div class="answer-zone" id="ans-${idx}">
+                        <span class="opt-arabic">${opt.ar}</span>
+                    </div>
+                    
+                    <div class="info-zone" onclick="toggleInfo(event, 'opt-card-${idx}')">
+                        <div class="info-icon">💡</div>
+                    </div>
+
+                    <div class="info-overlay">
+                        <div class="close-info" onclick="toggleInfo(event, 'opt-card-${idx}')">✖</div>
+                        <div class="info-title">${opt.type}</div>
+                        <ul>${featuresHtml}</ul>
+                    </div>
+                `;
+                
+                optionsBox.appendChild(card);
+
+                // Cevaplama işlevini sadece SOL tarafa (answer-zone) veriyoruz
+                const ansZone = document.getElementById(`ans-${idx}`);
+                ansZone.onclick = () => checkAnswer(opt, card, ansZone);
+            });
+        }
+
+        function toggleInfo(event, cardId) {
+            event.stopPropagation(); // Kartın diğer tıklama olaylarını durdur
+            const card = document.getElementById(cardId);
+            const overlay = card.querySelector('.info-overlay');
+            
+            if (overlay.classList.contains('show-info')) {
+                overlay.classList.remove('show-info');
+            } else {
+                // Diğer açık olanları kapat
+                document.querySelectorAll('.show-info').forEach(el => el.classList.remove('show-info'));
+                overlay.classList.add('show-info');
+            }
+        }
+
+        function checkAnswer(selectedOpt, cardElement, ansZoneElement) {
+    if(isAnswered) return;
+    
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    isAnswered = true;
+
+    // Tüm cevap alanlarını pasif yap
+    document.querySelectorAll('.answer-zone').forEach(zone => {
+        zone.classList.add('disabled-answer');
+    });
+
+    if (selectedOpt.correct) {
+        cardElement.classList.add('correct');
+        // Kelimeyi siyah yapma özelliği
+        const targetWord = document.querySelector('.target-group .arabic-word');
+        if(targetWord) {
+            targetWord.innerHTML = selectedOpt.ar;
+            targetWord.style.color = "#000000"; 
+        }
+    } else {
+        cardElement.classList.add('wrong');
+    }
+
+    // Butonu görünür yap
+    feedbackOverlay.style.display = 'block'; 
+}
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                document.querySelector('.container').innerHTML = `
+                    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+                        <h1 style="color:var(--primary); font-size:5vh;">Tebrikler! 🎉</h1>
+                        <p style="font-size:3vh;">Tüm alıştırmalar bitti.</p>
+                        <button class="next-btn" onclick="location.reload()">Tekrar Oyna</button>
+                    </div>
+                `;
+            }
+        }
+
+        loadQuestion();
+
+function openPdf(fileName) {
+    const container = document.getElementById('pdf-viewer-container');
+    const frame = document.getElementById('pdf-frame');
+    const fullSentence = document.getElementById('full-sentence-display');
+    const optionsArea = document.getElementById('options-area'); // options-container yerine id kontrolü yapın
+
+    // 1. AÇIK OLAN TÜM İPUCU (OVERLAY) PENCERELERİNİ KAPAT
+    document.querySelectorAll('.show-info').forEach(el => {
+        el.classList.remove('show-info');
+    });
+
+    // 2. PDF kutusunu görünür yap ve sınıf ekle
+    container.style.display = 'block';
+    document.body.classList.add('pdf-open');
+
+    // 3. Konumlandırma: Türkçe cümlenin başladığı noktadan itibaren göster
+    const sentenceTop = document.getElementById('full-sentence-display').offsetTop;
+    container.style.top = sentenceTop + "px";
+    container.style.height = (window.innerHeight - sentenceTop) + "px";
+
+    // 4. PDF dosyasını yükle
+    frame.src = fileName + "#toolbar=0&navpanes=0&scrollbar=1";
+
+    // 5. Arkadaki öğeleri gizle
+    if(fullSentence) fullSentence.style.visibility = 'hidden';
+    if(optionsArea) optionsArea.style.visibility = 'hidden';
+}
+
+function closePdf() {
+    const container = document.getElementById('pdf-viewer-container');
+    const fullSentence = document.getElementById('full-sentence-display');
+    const optionsArea = document.getElementById('options-container');
+    
+    // Kapatma işlemleri
+    container.style.display = 'none';
+    document.getElementById('pdf-frame').src = ""; 
+    document.body.classList.remove('pdf-open');
+
+    // Gizlenen öğeleri geri getir
+    if(fullSentence) fullSentence.style.visibility = 'visible';
+    if(optionsArea) optionsArea.style.visibility = 'visible';
+}
+
+    </script>
+</body>
+</html>

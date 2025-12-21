@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YDT Harf-i Cer: Final Tasarım</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2980b9;
+            --active-btn: #3498db;
+            --inactive-btn: #ecf0f1;
+            --success: #27ae60;
+            --error: #c0392b;
+            --text: #2c3e50;
+            --bg: #fdfdfd;
+            --gap-bg: #f1f2f6;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+       /* Header ana taşıyıcı */
+.header {
+    background: #fff;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Tüm satırı dikeyde ortalar */
+    justify-content: space-between;
+    height: 70px; /* Header yüksekliğini sabitledik */
+    box-sizing: border-box;
+}
+
+
+/* Geri tuşu ve seviye butonları için ortak dikey hizalama */
+.back-button-container, .level-nav {
+    display: flex;
+    align-items: center; /* İçindeki her şeyi dikey ortalar */
+    height: 100%;
+}
+
+.back-button {
+    background: #f1f2f6;
+    color: #555;
+    border: none;
+    border-radius: 12px;
+    width: 45px;
+    height: 45px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;    /* İkonu dikey ortalar */
+    justify-content: center; /* İkonu yatay ortalar */
+}
+.back-button:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+}
+/* Sağ tarafta denge sağlamak için görünmez boşluk */
+.header-spacer {
+    width: 45px;
+}
+
+.back-button svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+/* Seviye butonlarının ortalanmış kalması için ek ayar */
+.level-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center; /* Dikeyde tam orta */
+    gap: 8px;
+    flex-grow: 1;
+    height: 100%;
+    margin: 0; /* Mevcut margin-bottom: 15px silindi */
+    padding: 0 10px;
+}
+
+/* Progress bar'ı tüm genişliğe yaymak için */
+.header-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+        
+
+      .nav-btn {
+    flex: 1;
+    max-width: 110px;
+    height: 45px; /* Geri tuşuyla aynı yükseklik */
+    border: none;
+    border-radius: 20px;
+    background-color: var(--inactive-btn);
+    color: #7f8c8d;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    /* YAZIYI TAM DİKEY ORTALAYAN KISIM */
+    display: flex;
+    align-items: center;    /* Dikey ortalama */
+    justify-content: center; /* Yatay ortalama */
+    line-height: normal;     /* Satır yüksekliği kaymasını önler */
+    padding: 0; 
+}
+
+        /* Aktif Seviye Butonu */
+        .nav-btn.active {
+            background-color: var(--active-btn);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: #eee;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--success);
+            transition: width 0.3s ease;
+        }
+
+        /* --- SORU ALANI --- */
+        .question-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .arabic-sentence {
+            font-family: 'Scheherazade New', serif;
+            font-size: clamp(4vh, 6vw, 6vh);
+            color: var(--text);
+            direction: rtl;
+            line-height: 2.2;
+            margin-bottom: 4vh;
+        }
+
+        .gap-box {
+            display: inline-block;
+            min-width: 60px;
+            background-color: var(--gap-bg);
+            color: #95a5a6;
+            border-radius: 8px;
+            text-align: center;
+            padding: 0 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: default;
+            border: 2px solid transparent; 
+        }
+
+        .gap-box.filled {
+            background-color: #e8f8f5;
+            color: var(--success);
+            border: 2px solid var(--success);
+            transform: scale(1.1);
+        }
+
+        .gap-box.wrong {
+            background-color: #fdeaea;
+            color: var(--error);
+            border: 2px solid var(--error);
+            animation: shake 0.4s;
+        }
+
+        .turkish-meaning {
+            font-size: 3.5vh;
+            font-weight: 800;
+            color: #34495e;
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #eee;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        /* --- SEÇENEKLER --- */
+        .options-wrapper {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 3vh 2vh;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 4vh; /* Buton için alt boşluk */
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .opt-btn {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 10px;
+            font-family: 'Scheherazade New', serif;
+            font-size: 4.5vh;
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 0 #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .opt-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* --- SIRADAKİ BUTONU (SAĞ ALT) --- */
+        .next-btn {
+            position: fixed;
+            bottom: 30px; /* Alttan mesafe */
+            right: 30px;  /* Sağdan mesafe */
+            transform: scale(0); /* Başlangıçta gizli */
+            background: #2c3e50;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .next-btn.show { 
+            transform: scale(1); /* Görünür olunca büyür */
+        }
+
+        /* Bitiş Ekranı */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 62, 80, 0.98);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 200;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        
+        .modal-content {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: var(--success);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+    <div class="back-button-container">
+        <a href="ydtarapca.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="level-nav">
+        <button id="btn-lvl-0" class="nav-btn" onclick="startLevel(0)">Seviye 1</button>
+        <button id="btn-lvl-1" class="nav-btn" onclick="startLevel(1)">Seviye 2</button>
+        <button id="btn-lvl-2" class="nav-btn" onclick="startLevel(2)">Seviye 3</button>
+    </div>
+
+    <div style="width: 45px;"></div> </div>
+
+    <div class="header-spacer"></div>
+</div>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+</div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+</div>
+
+    <div class="question-area">
+        <div class="arabic-sentence" id="sentence-display"></div>
+        <div class="turkish-meaning" id="tr-meaning"></div>
+    </div>
+
+    <div id="next-btn" class="next-btn" onclick="nextQuestion()">
+        <span>Sıradaki</span> ➔
+    </div>
+
+    <div class="options-wrapper">
+        <div class="options-grid" id="options-grid"></div>
+    </div>
+
+    <div class="modal-overlay" id="end-modal">
+        <div class="modal-content">
+            <h2 id="modal-title" style="font-size:3rem; margin-bottom: 20px;">Tebrikler!</h2>
+            <p id="modal-desc" style="font-size:1.3rem; margin-bottom: 30px;"></p>
+            <button id="modal-action-btn" class="modal-btn"></button>
+        </div>
+    </div>
+
+    <script>
+        // --- VERİLER ---
+        const level1 = [
+            { pre: "يَسْتَخْدِمُ النَّاسُ الْإِنْتَرْنِت", post: "الْعَالَمِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "İnsanlar dünyada interneti kullanıyor." },
+            { pre: "يُحِبُّ النَّاسُ تَرْبِيَةَ الْحَيَوَانَاتِ", post: "الْمَنَازِلِ.", answer: "فِي", distractors: ["مِنْ", "عَنْ", "عَلَى"], tr: "İnsanlar evlerde hayvan beslemeyi sever." },
+            { pre: "تَسْتَمِرُّ تُرْكِيَا دَوْلَةً مَانِحَةً", post: "الْعَالَمِ.", answer: "فِي", distractors: ["إِلَى", "عَنْ", "مِنْ"], tr: "Türkiye dünyada bağışçı bir ülke olmaya devam ediyor." },
+            { pre: "إِرَاحَةُ الْجَسَدِ", post: "تَنَاوُلِ الطَّعَامِ.", answer: "مِنْ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Bedeni yemek yemekten dinlendirmek." },
+            { pre: "هِجْرَةُ الطُّيُورِ مَعْرُوفَةٌ", post: "آلَافِ السِّنِينَ.", answer: "مُنْذُ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Kuş göçü binlerce yıldan beri bilinmektedir." },
+            { pre: "لَا تَسْتَطِيعُ السُّلْحَفَاةُ الْخُرُوجَ", post: "قَوْقَعَتِهَا.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "إِلَى"], tr: "Kaplumbağa kabuğundan çıkamaz." },
+            { pre: "الْمَقْدِرَةُ", post: "تَحَمُّلِ الْمَسْؤُولِيَّاتِ.", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "Sorumlulukları taşıma(ya) gücü." },
+            { pre: "بِدُونِ إِذْنٍ مَكْتُوبٍ", post: "الْمَرْكَزِ.", answer: "مِنَ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Merkezden yazılı izin olmaksızın." },
+            { pre: "التِّكْنُولُوجْيَا تُسَاعِدُ الْإِنْسَانَ", post: "مَجَالِ الْمَعْلُومَاتِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "عَنْ"], tr: "Teknoloji insana bilgi alanında yardım eder." },
+            { pre: "التَّرْكِيزُ", post: "مَا يُمْكِنُهُ التَّحَكُّمُ فِيهِ.", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "Kontrol edebileceği şeye odaklanmak." }
+        ];
+
+        const level2 = [
+            { pre: "يَخْتَلِفُ الْأَفْرَادُ", post: "بَعْضِهِمُ الْبَعْضِ.", answer: "عَنْ", distractors: ["مِنْ", "عَلَى", "فِي"], tr: "Bireyler birbirlerinden farklılık gösterir." },
+            { pre: "الْوَطَنُ هُوَ الْمَكَانُ الَّذِي يَنْتَمِي", post: "النَّاسُ.", answer: "إِلَيْهِ", distractors: ["عَلَيْهِ", "مِنْهُ", "فِيهِ"], tr: "Vatan, insanların kendisine ait olduğu yerdir." },
+            { pre: "تَنْتَمِي مَالْطَة", post: "بَعْضِ الْمُؤَسَّسَاتِ الدَّوْلِيَّةِ.", answer: "إِلَى", distractors: ["عَلَى", "فِي", "عَنْ"], tr: "Malta bazı uluslararası kuruluşlara üyedir." },
+            { pre: "تَرْجِعُ بِدَايَةُ الذَّكَاءِ الاصْطِنَاعِيِّ", post: "خَمْسِينِيَّاتِ الْقَرْنِ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Yapay zekanın başlangıcı 50'li yıllara dayanır." },
+            { pre: "الطَّاقَةُ الشَّمْسِيَّةُ صَدِيقَةٌ", post: "الْبِيئَةِ.", answer: "لِـ", distractors: ["بِـ", "عَلَى", "مِنْ"], tr: "Güneş enerjisi çevre dostudur." },
+            { pre: "تَحْوِيلُ ضَوْءِ الشَّمْسِ", post: "طَاقَةٍ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Güneş ışığını enerjiye dönüştürmek." },
+            { pre: "تَتَأَلَّفُ التَّبُولَةُ", post: "مَجْمُوعَةٍ مِنَ الْخُضْرَوَاتِ.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "بِـ"], tr: "Tabbule, bir grup sebzeden oluşur." },
+            { pre: "الْعِلْمُ قَدَّمَ عَوْنًا كَبِيرًا", post: "الْإِنْسَانِ.", answer: "لِـ", distractors: ["بِـ", "عَلَى", "مِنْ"], tr: "Bilim insana büyük bir yardım sundu." },
+            { pre: "قَدَّمَ الطَّبِيبُ الدَّوَاءَ", post: "الْمَرِيضِ.", answer: "لِـ", distractors: ["عَلَى", "مِنْ", "بِـ"], tr: "Doktor hastaya ilacı verdi." },
+            { pre: "تَوَصَّلَ الْعُلَمَاءُ", post: "حَلِّ الْمُشْكِلَةِ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Bilim adamları problemin çözümüne ulaştı." }
+        ];
+
+        const level3 = [
+            { pre: "لَمْ يَقْتَصِرِ الْإِصْلَاحُ", post: "النَّشَاطَاتِ الثَّقَافِيَّةِ.", answer: "عَلَى", distractors: ["فِي", "إِلَى", "مِنْ"], tr: "Reform kültürel aktivitelerle sınırlı kalmadı." },
+            { pre: "يَعْتَمِدُ عِلْمُ مَا قَبْلَ التَّارِيخِ", post: "عِلْمِ الْأَنْثُرُوبُولُوجِيَا.", answer: "عَلَى", distractors: ["فِي", "إِلَى", "بِـ"], tr: "Tarih öncesi bilimi antropoloji bilimine dayanır." },
+            { pre: "تَمَيَّزَ الْإِنْسَانُ الْقَدِيمُ", post: "قُدْرَةٍ فَائِقَةٍ.", answer: "بِـ", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "Eski insan üstün bir yetenekle temayüz etti." },
+            { pre: "الطِّفْلَةُ تَحْتَاجُ", post: "الدَّوَاءِ.", answer: "إِلَى", distractors: ["عَلَى", "فِي", "عَنْ"], tr: "Kız çocuğu ilaca ihtiyaç duyuyor." },
+            { pre: "أَنَا أُوَافِقُكَ", post: "الرَّأْيِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "Görüşte sana katılıyorum." },
+            { pre: "انْفَصَلَ الْأَمُورِيُّونَ", post: "الْكَنْعَانِيِّينَ.", answer: "عَنْ", distractors: ["مِنْ", "إِلَى", "عَلَى"], tr: "Amurriler Kenanlılardan ayrıldı." },
+            { pre: "الْبَحْثُ", post: "كَلِمَةٍ مُنَاسِبَةٍ.", answer: "عَنْ", distractors: ["مِنْ", "فِي", "عَلَى"], tr: "Uygun bir kelimeyi aramak." },
+            { pre: "حَلَّتِ الدُّمَى", post: "التِّلْفَازِ.", answer: "مَحَلَّ", distractors: ["عِنْدَ", "فَوْقَ", "تَحْتَ"], tr: "Kuklalar televizyonun yerine geçti." },
+            { pre: "الْحَلِيبُ الْحَيَوَانِيُّ أَغْنَى", post: "الْحَلِيبِ النَّبَاتِيِّ.", answer: "مِنَ", distractors: ["عَلَى", "فِي", "إِلَى"], tr: "Hayvansal süt bitkisel sütten daha zengindir." },
+            { pre: "عَلَيْنَا التَّعَرُّفُ", post: "كُلِّ الْمَعَانِي.", answer: "عَلَى", distractors: ["إِلَى", "فِي", "مِنْ"], tr: "Tüm anlamları tanımamız gerekir." }
+        ];
+
+        const allLevels = [level1, level2, level3];
+        let currentLevelIndex = 0;
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let isAnswered = false;
+
+        function initGame() {
+            startLevel(0);
+        }
+
+        function startLevel(levelIdx) {
+            currentLevelIndex = levelIdx;
+            currentQuestions = [...allLevels[levelIdx]];
+            // Karıştır
+            currentQuestions.sort(() => Math.random() - 0.5);
+            
+            currentIndex = 0;
+            
+            // Header Güncelle
+            updateLevelNav(levelIdx);
+            document.getElementById('end-modal').classList.remove('active');
+            
+            updateProgress();
+            loadQuestion();
+        }
+
+        function updateLevelNav(activeIdx) {
+            for(let i=0; i<3; i++) {
+                const btn = document.getElementById(`btn-lvl-${i}`);
+                if (i === activeIdx) btn.classList.add('active');
+                else btn.classList.remove('active');
+            }
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            document.getElementById('next-btn').classList.remove('show');
+            
+            const q = currentQuestions[currentIndex];
+            const sentenceEl = document.getElementById('sentence-display');
+            
+            sentenceEl.innerHTML = `
+                ${q.pre} 
+                <span class="gap-box" id="gap">...</span> 
+                ${q.post}
+            `;
+
+            document.getElementById('tr-meaning').innerText = q.tr;
+            updateProgress();
+
+            const options = [q.answer, ...q.distractors];
+            options.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'opt-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, btn, q.answer);
+                grid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, btn, correct) {
+            if (isAnswered) return;
+
+            const gap = document.getElementById('gap');
+
+            if (selected === correct) {
+                isAnswered = true;
+                
+                gap.innerText = selected;
+                gap.classList.remove('wrong');
+                gap.classList.add('filled');
+                
+                btn.style.background = '#27ae60';
+                btn.style.borderColor = '#27ae60';
+                btn.style.color = '#fff';
+
+                setTimeout(() => {
+                    document.getElementById('next-btn').classList.add('show');
+                }, 400);
+
+            } else {
+                gap.classList.add('wrong');
+                btn.style.background = '#e74c3c';
+                btn.style.borderColor = '#e74c3c';
+                btn.style.color = '#fff';
+                
+                setTimeout(() => {
+                    gap.classList.remove('wrong');
+                    btn.style.background = '#fff';
+                    btn.style.borderColor = '#e0e0e0';
+                    btn.style.color = '#2c3e50';
+                }, 800);
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                finishLevel();
+            }
+        }
+
+        function updateProgress() {
+            const bar = document.getElementById('progress-bar');
+            const percent = (currentIndex / currentQuestions.length) * 100;
+            bar.style.width = `${percent}%`;
+        }
+
+        function finishLevel() {
+            const modal = document.getElementById('end-modal');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            const btn = document.getElementById('modal-action-btn');
+            
+            modal.classList.add('active');
+
+            if (currentLevelIndex < allLevels.length - 1) {
+                title.innerText = "Tebrikler!";
+                desc.innerText = `${currentLevelIndex + 1}. Seviyeyi başarıyla tamamladın.`;
+                btn.innerText = "Sonraki Seviyeye Geç";
+                btn.onclick = () => startLevel(currentLevelIndex + 1);
+            } else {
+                title.innerText = "Şampiyon!";
+                desc.innerText = "Tüm seviyeleri bitirdin. YDT sınavına hazırsın!";
+                btn.innerText = "Başa Dön";
+                btn.onclick = () => startLevel(0);
+            }
+        }
+
+        initGame();
+
+    </script>
+</body>
+</html>
