@@ -76,6 +76,8 @@
     justify-content: center;
     position: relative; /* Geri tuşu buna göre hizalanacak */
     padding: 0 1vh;
+    padding-top: env(safe-area-inset-top);
+    height: calc(8% + env(safe-area-inset-top));
 }
 
         .sentence-area {
@@ -102,7 +104,7 @@
     align-items: center;
     margin: 0 1.2vh; 
     justify-content: flex-end; 
-    margin-top: 15vh; /* 5vh olan değeri 10vh yaparak aşağı kaydırdık */
+    margin-top: 8vh;
 }
 
         .arabic-word {
@@ -183,15 +185,15 @@
             font-weight: 900;
         }
 
-        /* Seçenekler Alanı */
         .options-area {
     flex: 3;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5vh;
-    padding: 1vh 2vh 15vh 2vh; /* Alt boşluğu 15vh yaparak butona yer açtık */
+    /* Alt boşluğu sistem barına göre ayarla, 15vh'lik mevcut payı koruyarak ekle */
+    padding: 1vh 2vh calc(15vh + env(safe-area-inset-bottom)) 2vh; 
     width: 100%;
-    overflow-y: auto; /* Şıklar sığmazsa kendi içinde kaydırılabilir */
+    overflow-y: auto;
 }
 
         /* --- ŞIK KARTI (Dış Çerçeve) --- */
@@ -314,16 +316,15 @@
             cursor: pointer;
         }
 
-        /* Geri Bildirim Butonu */
-         .feedback-box {
+        .feedback-box {
     position: absolute; 
-    bottom: 2vh; /* Ekranın en altından 2 birim yukarda */
+    bottom: calc(2vh + env(safe-area-inset-bottom)); /* Sistem barının üstüne taşır */
     left: 0;
     width: 100%; 
     text-align: center; 
     display: none;
     z-index: 999;
-    padding-bottom: env(safe-area-inset-bottom); /* Modern telefonlardaki çentik payı */
+}padding-bottom: env(safe-area-inset-bottom); /* Modern telefonlardaki çentik payı */
 }
 /* PDF açıldığında butonu gizlemek için yeni kural */
 body.pdf-open .feedback-box {
