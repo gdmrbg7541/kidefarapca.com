@@ -44,6 +44,9 @@
 
         /* 2. OYUN KUTUSU */
         .container {
+            width: 95vw;
+            max-width: 1800px;
+            aspect-ratio: 16 / 9;
             background: var(--card-bg);
             border-radius: 2vh;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
@@ -88,16 +91,28 @@ justify-content: flex-start;
 }
 
         .sentence-area {
-    flex: 3.5; 
+    flex: 3.0; 
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center; /* Merkeze hizala */
+    align-items: flex-end;
     padding: 1vh 2vh;
     flex-wrap: nowrap; /* Yeni: Kelimelerin alt satıra geçmesini engeller */
     overflow-x: auto;  /* Yeni: Eğer sığmazsa yatayda kaydırılabilir yapar */
     direction: rtl;
     width: 100%;
+}
+#pdf-iframe {
+    width: 100%;
+    flex: 1; 100%;
+    border: none;
+}
+
+/* Eğer PDF bir modal içindeyse modalı da genişletin */
+.modal-content {
+    width: 95vw; /* Kenarlarda çok az boşluk bırakır */
+    height: 90vh;
+    max-width: none;
 }
 
         /* Mevcut kodda satır ~103 civarı */
@@ -126,7 +141,7 @@ justify-content: flex-start;
     transform: translate(-50%, -50%); /* Döndürmeyi (rotate) kaldırdık, daha okunaklı olması için */
     white-space: nowrap;
     text-align: center; /* Merkeze hizala */
-    font-size: 3vh; 
+    font-size: 2.2vh; 
     color: #7f8c8d;
     font-weight: 700;
     pointer-events: none; 
@@ -443,15 +458,14 @@ body.pdf-open .feedback-box {
 }
 
 #pdf-viewer-container {
-    display: none; 
-    position: absolute; 
-    left: 0;
-    width: 100%;
-    background: #ffffff;
-    border-top: 5px solid var(--primary);
-    z-index: 10000; 
-    box-shadow: 0 -10px 20px rgba(0,0,0,0.4);
-    /* Yükseklik ve Top değerlerini JS atayacak */
+    position: absolute;
+    left: 0; /* Ekranın en soluna yasla */
+    width: 100% !important; /* 4K ekranda yatayda her yeri kapla */
+    background: white;
+    z-index: 1000; /* Her şeyin üstünde olsun */
+    display: none;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
 }
 
 /* Kapatma Butonu */
@@ -475,8 +489,13 @@ body.pdf-open .feedback-box {
     width: 100%;
     height: 100%;
     border: none;
+    display: block;
 }
 
+/* PDF açıkken ana konteynerın taşmasını engelle */
+body.pdf-open .container {
+    overflow: hidden;
+}
 /* PDF Butonlarını güncelleme (JavaScript ile çalışması için a yerine div) */
 .pdf-btn {
     cursor: pointer;
@@ -569,7 +588,8 @@ body.fullscreen-mode #fullscreen-btn .icon-close { display: block; }
 
 /* Konteynırın tam ekranda köşelerini düzeltme */
 body.fullscreen-mode .container { border-radius: 0; }
-    </style>
+    
+</style>
 </head>
 <body>
 <div id="start-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 20000;">
@@ -2992,10 +3012,11 @@ function openPdf(fileName) {
     if (window.innerWidth <= 1024) {
         return; 
     }
+    
     const container = document.getElementById('pdf-viewer-container');
     const frame = document.getElementById('pdf-frame');
     const fullSentence = document.getElementById('full-sentence-display');
-    const optionsArea = document.getElementById('options-area'); // options-container yerine id kontrolü yapın
+    const optionsArea = document.getElementById('options-area');
 
     // 1. AÇIK OLAN TÜM İPUCU (OVERLAY) PENCERELERİNİ KAPAT
     document.querySelectorAll('.show-info').forEach(el => {
@@ -3006,19 +3027,20 @@ function openPdf(fileName) {
     container.style.display = 'block';
     document.body.classList.add('pdf-open');
 
-    // 3. Konumlandırma: Türkçe cümlenin başladığı noktadan itibaren göster
+    // 3. Konumlandırma
     const sentenceTop = document.getElementById('full-sentence-display').offsetTop;
     container.style.top = sentenceTop + "px";
     container.style.height = (window.innerHeight - sentenceTop) + "px";
 
-    // 4. PDF dosyasını yükle
-    frame.src = fileName + "#toolbar=0&navpanes=0&scrollbar=1";
+    // 4. PDF dosyasını yükle (GÜNCELLENEN KISIM)
+    // #view=FitH: PDF'i yatay genişliğe tam sığdırır.
+    // toolbar=0: Gereksiz araç çubuklarını gizleyerek alandan tasarruf sağlar.
+    frame.src = fileName + "#view=FitH&toolbar=0&navpanes=0&scrollbar=1";
 
     // 5. Arkadaki öğeleri gizle
     if(fullSentence) fullSentence.style.visibility = 'hidden';
     if(optionsArea) optionsArea.style.visibility = 'hidden';
 }
-
 function closePdf() {
     const container = document.getElementById('pdf-viewer-container');
     const fullSentence = document.getElementById('full-sentence-display');
