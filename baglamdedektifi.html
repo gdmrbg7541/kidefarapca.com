@@ -44,7 +44,6 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
-justify-content: center;
         }
 
         @media (orientation: landscape) {
@@ -80,7 +79,7 @@ justify-content: center;
 }
 
         .sentence-area {
-            flex: 0 0 auto; 
+            flex: 3.5; 
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -186,7 +185,7 @@ justify-content: center;
 
         /* Seçenekler Alanı */
         .options-area {
-    flex: 0 0 auto;
+    flex: 3;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5vh;
@@ -512,10 +511,7 @@ body.pdf-open .feedback-box {
         display: flex;
     }
     .container {
-        width: min(100vw, 177.78vh); 
-        height: min(56.25vw, 100vh);
-        aspect-ratio: 16 / 9;
-        border-radius: 0; /* Mobilde tam ekran hissi için köşeleri düzleştirebilirsiniz */
+        display: none !important;
     }
 }
 
@@ -525,52 +521,97 @@ body.pdf-open .feedback-box {
         display: none !important;
     }
 }
+
+/* --- Başlangıç Ekranı --- */
+#start-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+/* --- Tam Ekran Düğmesi Tasarımı --- */
+#fullscreen-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2vh;
+    cursor: pointer;
+    width: 5vh;
+    height: 5vh;
+    min-width: 35px;
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1vh;
+    transition: all 0.2s;
+}
+
+#fullscreen-btn:hover { background: rgba(255, 255, 255, 0.3); }
+#fullscreen-btn svg { width: 3.5vh; height: 3.5vh; fill: currentColor; }
+
+/* Simge Değişimi */
+#fullscreen-btn .icon-close { display: none; }
+body.fullscreen-mode #fullscreen-btn .icon-open { display: none; }
+body.fullscreen-mode #fullscreen-btn .icon-close { display: block; }
+
+/* Konteynırın tam ekranda köşelerini düzeltme */
+body.fullscreen-mode .container { border-radius: 0; }
     </style>
 </head>
 <body>
-<div id="rotate-device-overlay">
-    <div class="rotate-icon">🔄</div>
-    <p>Lütfen daha iyi bir deneyim için cihazınızı yan çevirin.</p>
-</div>
-    <div class="container">
-        <div class="header">
-<div class="pdf-tools">
-    <div onclick="openPdf('tablo1.pdf')" class="pdf-btn">
-        <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
-        <span class="pdf-label">SÜLASİ</span>
-    </div>
-
-    <div onclick="openPdf('tablo2.pdf')" class="pdf-btn">
-        <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
-        <span class="pdf-label">MEZİD</span>
-    </div>
+<div id="start-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 20000;">
+    <button class="next-btn" onclick="startActivity()">Etkileşime Başla</button>
 </div>
 
-<div id="pdf-viewer-container">
-    <button class="close-pdf" onclick="closePdf()">X</button>
-    <iframe id="pdf-frame" src=""></iframe>
-</div>
-    <div class="back-button-container">
-        <a href="ydtarapca.html" class="back-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-            </svg>
-        </a>
-    </div>
-    Bağlam Dedektifi 🕵️‍♂️
-</div>
+<div class="container">
+    <div class="header" style="display: flex; justify-content: space-between; align-items: center; padding: 0 2vh; height: 8vh; background-color: var(--primary); color: white; position: relative;">
+        
+        <div class="header-left" style="display: flex; align-items: center; gap: 1.5vh; flex: 1;">
+            <a href="ydtarapca.html" class="back-button" style="display: flex; align-items: center; text-decoration: none; color: white;">
+                <svg viewBox="0 0 24 24" style="width: 3.5vh; height: 3.5vh; fill: currentColor;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </a>
+            
+            <button id="fullscreen-btn" onclick="toggleFullscreen()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 1vh; cursor: pointer; color: white; width: 5vh; height: 5vh; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <svg id="fs-icon-open" viewBox="0 0 24 24" style="width: 3vh; height: 3vh; fill: currentColor;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                <svg id="fs-icon-close" viewBox="0 0 24 24" style="width: 3vh; height: 3vh; fill: currentColor; display: none;"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+            </button>
+        </div>
 
-        <div id="sentence-container" class="sentence-area"></div>
+        <div class="header-center" style="flex: 2; text-align: center; font-size: 3vh; font-weight: 800; white-space: nowrap;">
+            Bağlam Dedektifi 🕵️‍♂️
+        </div>
 
-        <div id="full-sentence-display" class="full-sentence-box"></div>
-
-        <div id="options-container" class="options-area"></div>
-
-        <div id="feedback-overlay" class="feedback-box">
-            <button id="next-btn" class="next-btn" onclick="nextQuestion()">Sıradaki </button>
+        <div class="header-right" style="display: flex; align-items: center; gap: 1.5vh; flex: 1; justify-content: flex-end;">
+            <div onclick="openPdf('tablo1.pdf')" class="pdf-btn" style="cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+                <svg viewBox="0 0 24 24" style="width: 3vh; height: 3vh; fill: currentColor;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                <span style="font-size: 1.2vh; font-weight: bold;">SÜLASİ</span>
+            </div>
+            <div onclick="openPdf('tablo2.pdf')" class="pdf-btn" style="cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+                <svg viewBox="0 0 24 24" style="width: 3vh; height: 3vh; fill: currentColor;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                <span style="font-size: 1.2vh; font-weight: bold;">MEZİD</span>
+            </div>
         </div>
     </div>
+    
+    <div id="pdf-viewer-container" style="display: none; position: absolute; z-index: 1000; width: 100%; height: 92vh; background: white;">
+        <button class="close-pdf" onclick="closePdf()" style="position: absolute; right: 10px; top: 10px; z-index: 1001; padding: 10px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer;">X</button>
+        <iframe id="pdf-frame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
 
+    <div id="sentence-container" class="sentence-area" style="padding-bottom: 50px;"></div>
+    <div id="full-sentence-display" class="full-sentence-box"></div>
+    <div id="options-container" class="options-area"></div>
+
+    <div id="feedback-overlay" class="feedback-box">
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">Sıradaki </button>
+    </div>
+</div>
     <script>
         const questions = [
     {
@@ -1036,6 +1077,43 @@ function closePdf() {
     if(optionsArea) optionsArea.style.visibility = 'visible';
 }
 
+
+function startActivity() {
+    // Başlangıç ekranını kaldır
+    document.getElementById('start-overlay').style.display = 'none';
+    // Tam ekrana geçiş yap
+    enterFullscreen();
+}
+
+function enterFullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+    }
+}
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        enterFullscreen();
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+// Tam ekran değişimini dinleyip ikonları/sınıfları güncelle
+document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+        document.body.classList.add('fullscreen-mode');
+    } else {
+        document.body.classList.remove('fullscreen-mode');
+    }
+});
     </script>
 </body>
 </html>
