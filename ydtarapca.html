@@ -55,12 +55,12 @@
     padding: 15px;
 }
 
-        .card {
+.card {
     background-color: var(--card-bg);
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 300px; /* Masaüstü genişliği aynı kalıyor */
-    height: 180px; /* Yüksekliği mobilde taşmaması için biraz azalttık */
+    width: 390px; /* 300px'den artırıldı */
+    height: 250px; /* 180px'den artırıldı */
     text-decoration: none;
     color: var(--text-color);
     display: flex;
@@ -71,20 +71,21 @@
     border-bottom: 5px solid var(--accent-color);
     text-align: center;
 }
-
         .card:hover {
             transform: translateY(-10px); /* Üzerine gelince yukarı kalkma efekti */
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             background-color: #f8f9fa;
         }
 
-       .card-icon {
-        font-size: 2.5rem;
-    }
-       .card-title {
-        font-size: 1.1rem; /* Yazı boyutunu mobilde biraz küçülttük */
-        padding: 0 5px;
-    }
+     .card-icon {
+    font-size: 3.5rem; /* 2.5rem'den artırıldı */
+    margin-bottom: 10px;
+}
+     .card-title {
+       font-size: 1.4rem; /* 1.1rem'den artırıldı */
+    font-weight: bold;
+    padding: 0 10px;
+}
 }
 
         /* Küçük ekranlar için düzenleme */
