@@ -44,6 +44,7 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         @media (orientation: landscape) {
@@ -562,9 +563,62 @@ body.fullscreen-mode #fullscreen-btn .icon-close { display: block; }
 
 /* Konteynırın tam ekranda köşelerini düzeltme */
 body.fullscreen-mode .container { border-radius: 0; }
-    </style>
+/* --- Mobil Yönlendirme Ekranı --- */
+#orientation-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #2c3e50;
+    z-index: 30000;
+    display: none; /* JS ile kontrol edilecek */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+/* Telefon Çevirme Animasyonu */
+.phone-icon {
+    width: 80px;
+    height: 120px;
+    border: 4px solid white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    animation: rotatePhone 2s ease-in-out infinite;
+}
+.phone-icon::after {
+    content: '';
+    position: absolute;
+    bottom: 5px; left: 50%;
+    transform: translateX(-50%);
+    width: 10px; height: 10px;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* --- Başlat Butonu Alanı --- */
+#start-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #2c3e50;
+    z-index: 20000;
+    display: none; /* Sadece yatayda görünecek */
+    justify-content: center;
+    align-items: center;
+}    
+</style>
 </head>
 <body>
+
 <div id="start-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 20000;">
     <button class="next-btn" onclick="startActivity()">Etkileşime Başla</button>
 </div>
