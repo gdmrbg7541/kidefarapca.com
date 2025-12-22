@@ -102,7 +102,7 @@
     align-items: center;
     margin: 0 1.2vh; 
     justify-content: flex-end; 
-    margin-top: 5vh;
+    margin-top: 15vh; /* 5vh olan değeri 10vh yaparak aşağı kaydırdık */
 }
 
         .arabic-word {
@@ -189,7 +189,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5vh;
-    padding: 1vh 2vh 3vh 2vh; /* Alt boşluğu 15vh yaparak butona yer açtık */
+    padding: 1vh 2vh 15vh 2vh; /* Alt boşluğu 15vh yaparak butona yer açtık */
     width: 100%;
     overflow-y: auto; /* Şıklar sığmazsa kendi içinde kaydırılabilir */
 }
@@ -388,7 +388,7 @@ body.pdf-open .feedback-box {
 .back-button svg {
     width: 3.5vh;
     height: 3.5vh;
-    fill: #ffffff; /* Yazı rengiyle (beyaz) aynı yapar */
+    fill: currentColor; /* Yazı rengiyle (beyaz) aynı yapar */
 }
 
 /* PDF Simgeleri Konteynırı */
@@ -511,7 +511,10 @@ body.pdf-open .feedback-box {
         display: flex;
     }
     .container {
-        display: none !important;
+        width: min(100vw, 177.78vh); 
+        height: min(56.25vw, 100vh);
+        aspect-ratio: 16 / 9;
+        border-radius: 0; /* Mobilde tam ekran hissi için köşeleri düzleştirebilirsiniz */
     }
 }
 
