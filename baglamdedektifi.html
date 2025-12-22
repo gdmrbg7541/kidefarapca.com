@@ -506,12 +506,12 @@ body.pdf-open .feedback-box {
 }
 
 /* Sadece telefonlarda (max-width: 1024px) ve dikey modda çalışır */
-@media screen and (max-width: 1024px) and (orientation: landscape) {
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+    #rotate-device-overlay {
+        display: flex;
+    }
     .container {
-        width: 100vw;
-        height: 100vh;
-        border-radius: 0;
-        aspect-ratio: 21 / 9;
+        display: none !important;
     }
 }
 
