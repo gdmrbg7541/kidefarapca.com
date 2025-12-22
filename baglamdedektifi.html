@@ -475,10 +475,59 @@ body.pdf-open .feedback-box {
     cursor: pointer;
 }
 
+/* --- Dikey Mod Uyarı Ekranı --- */
+#rotate-device-overlay {
+    display: none; /* Varsayılan kapalı */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #2c3e50;
+    color: white;
+    z-index: 99999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.rotate-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: rotate-anim 2s infinite ease-in-out;
+}
+
+@keyframes rotate-anim {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Sadece telefonlarda (max-width: 1024px) ve dikey modda çalışır */
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+    #rotate-device-overlay {
+        display: flex;
+    }
+    .container {
+        display: none !important;
+    }
+}
+
+/* Mobilde PDF Butonlarını Gizle */
+@media screen and (max-width: 1024px) {
+    .pdf-tools {
+        display: none !important;
+    }
+}
     </style>
 </head>
 <body>
-
+<div id="rotate-device-overlay">
+    <div class="rotate-icon">🔄</div>
+    <p>Lütfen daha iyi bir deneyim için cihazınızı yan çevirin.</p>
+</div>
     <div class="container">
         <div class="header">
 <div class="pdf-tools">
@@ -937,6 +986,10 @@ body.pdf-open .feedback-box {
         loadQuestion();
 
 function openPdf(fileName) {
+    // Mobil kontrolü (Genişlik 1024px'den küçükse açma)
+    if (window.innerWidth <= 1024) {
+        return; 
+    }
     const container = document.getElementById('pdf-viewer-container');
     const frame = document.getElementById('pdf-frame');
     const fullSentence = document.getElementById('full-sentence-display');
