@@ -53,30 +53,29 @@
                 aspect-ratio: 16 / 9;
             }
         }
-
-        @media (orientation: portrait) {
-            .container {
-                width: min(100vw, 56.25vh);
-                height: min(100vh, 177.78vw);
-                aspect-ratio: 9 / 16;
-            }
-        }
+@media (orientation: portrait) {
+    .container {
+        width: 100vw;
+        height: 100vh; /* Mobil cihazın tam ekranını kapla */
+        border-radius: 0; /* Mobilde tam ekran daha iyi görünür */
+    }
+}
 
         /* --- BÖLÜMLER --- */
         
         .header {
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-            font-size: 3vh;
-            font-weight: 800;
-            flex: 0 0 8%; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 10;
-        }
+    background-color: var(--primary);
+    color: white;
+    text-align: center;
+    font-size: 3vh;
+    font-weight: 800;
+    flex: 0 0 8%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Geri tuşu buna göre hizalanacak */
+    padding: 0 1vh;
+}
 
         .sentence-area {
             flex: 3.5; 
@@ -185,15 +184,14 @@
 
         /* Seçenekler Alanı */
         .options-area {
-            flex: 3;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2vh;
-            padding: 2vh 2vh 12vh 2vh; 
-            width: 100%;
-            background: #fff;
-            align-content: center; 
-        }
+    flex: 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5vh;
+    padding: 1vh 2vh 15vh 2vh; /* Alt boşluğu 15vh yaparak butona yer açtık */
+    width: 100%;
+    overflow-y: auto; /* Şıklar sığmazsa kendi içinde kaydırılabilir */
+}
 
         /* --- ŞIK KARTI (Dış Çerçeve) --- */
         .option-card {
@@ -317,13 +315,14 @@
 
         /* Geri Bildirim Butonu */
          .feedback-box {
-    position: absolute; /* Absolute yerine Fixed yaparak ekrana sabitledik */
-    bottom: 4vh; 
+    position: absolute; 
+    bottom: 2vh; /* Ekranın en altından 2 birim yukarda */
     left: 0;
     width: 100%; 
     text-align: center; 
     display: none;
-    z-index: 9999; /* En yüksek değerde olduğundan emin olalım */
+    z-index: 999;
+    padding-bottom: env(safe-area-inset-bottom); /* Modern telefonlardaki çentik payı */
 }
 /* PDF açıldığında butonu gizlemek için yeni kural */
 body.pdf-open .feedback-box {
@@ -335,16 +334,12 @@ body.pdf-open .feedback-box {
 }
 
 
-        .next-btn {
-    background-color: #27ae60; /* Yeşil renk daha dikkat çekici */
-    color: white;
-    border: none;
-    padding: 2vh 10vh; 
-    border-radius: 5vh;
-    font-size: 3.5vh;
-    cursor: pointer;
-    font-weight: 800;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Butonun öne çıkması için gölge */
+       .next-btn {
+    padding: 1.5vh 8vh; 
+    font-size: 2.5vh; /* Yazı boyutunu biraz küçülterek taşmayı önledik */
+    width: auto;
+    max-width: 80%; /* Ekran dışına taşmasını engeller */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
         .correct { background-color: #d4efdf !important; border-color: var(--success) !important; }
@@ -359,24 +354,27 @@ body.pdf-open .feedback-box {
 .back-button-container {
     position: absolute;
     left: 1.5vh; 
+    top: 50%;
+    transform: translateY(-50%); /* Dikeyde tam ortalamayı korur */
     display: flex;
     align-items: center;
+    z-index: 101;
 }
-
 .back-button {
-    /* Header renginin biraz daha açığı veya şeffaf beyaz */
-    background: rgba(255, 255, 255, 0.15); 
-    color: white; /* İkon rengi beyaz */
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
-    border-radius: 1.2vh;
-    cursor: pointer;
-    width: 5.5vh; 
-    height: 5.5vh;
+    width: 5vh; 
+    height: 5vh;
+    min-width: 35px; 
+    min-height: 35px;
+    
+    /* --- GÖRSEL GÜNCELLEMELER --- */
+    background: rgba(255, 255, 255, 0.15); /* Hafif beyaz şeffaf zemin */
+    border: 2px solid #ffffff;           /* Net beyaz kenarlık */
+    border-radius: 10px;                 /* Yumuşatılmış köşeler */
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease-in-out;
 }
 
 .back-button:hover {
@@ -388,7 +386,7 @@ body.pdf-open .feedback-box {
 .back-button svg {
     width: 3.5vh;
     height: 3.5vh;
-    fill: currentColor; /* Yazı rengiyle (beyaz) aynı yapar */
+    fill: #ffffff;
 }
 
 /* PDF Simgeleri Konteynırı */
