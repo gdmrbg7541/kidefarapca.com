@@ -26,7 +26,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
        /* Header ana taşıyıcı */
@@ -99,14 +99,15 @@
 
       .nav-btn {
     flex: 1;
-    max-width: 110px;
+    max-width: 170px;
+    min-width: 140px;
     height: 45px; /* Geri tuşuyla aynı yükseklik */
     border: none;
     border-radius: 20px;
     background-color: var(--inactive-btn);
     color: #7f8c8d;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
 
@@ -115,8 +116,9 @@
     align-items: center;    /* Dikey ortalama */
     justify-content: center; /* Yatay ortalama */
     line-height: normal;     /* Satır yüksekliği kaymasını önler */
-    padding: 0; 
+    padding: 15px 25px; 
 }
+
 
         /* Aktif Seviye Butonu */
         .nav-btn.active {
@@ -153,7 +155,7 @@
 
         .arabic-sentence {
             font-family: 'Scheherazade New', serif;
-            font-size: clamp(4vh, 6vw, 6vh);
+            font-size: clamp(4vh, 6vw, 8vh);
             color: var(--text);
             direction: rtl;
             line-height: 2.2;
@@ -189,7 +191,7 @@
         }
 
         .turkish-meaning {
-            font-size: 3.5vh;
+            font-size: 4.5vh;
             font-weight: 800;
             color: #34495e;
             background: #fff;
@@ -197,7 +199,7 @@
             border-radius: 15px;
             border: 2px solid #eee;
             width: 90%;
-            max-width: 700px;
+            max-width: 1000px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
 
@@ -213,7 +215,7 @@
 
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             width: 100%;
             max-width: 500px;
@@ -321,10 +323,13 @@
     </div>
 
     <div class="level-nav">
-        <button id="btn-lvl-0" class="nav-btn" onclick="startLevel(0)">Seviye 1</button>
-        <button id="btn-lvl-1" class="nav-btn" onclick="startLevel(1)">Seviye 2</button>
-        <button id="btn-lvl-2" class="nav-btn" onclick="startLevel(2)">Seviye 3</button>
-    </div>
+    <button id="btn-lvl-0" class="nav-btn" onclick="startLevel(0)">Seviye 1</button>
+    <button id="btn-lvl-1" class="nav-btn" onclick="startLevel(1)">Seviye 2</button>
+    <button id="btn-lvl-2" class="nav-btn" onclick="startLevel(2)">Seviye 3</button>
+    <button id="btn-lvl-3" class="nav-btn" onclick="startLevel(3)">Seviye 4</button> 
+    <button id="btn-lvl-4" class="nav-btn" onclick="startLevel(4)">Seviye 5</button> 
+   <button id="btn-lvl-5" class="nav-btn" onclick="startLevel(5)" style="background-color: #e67e22; color: white;">Kalıp Testi</button>
+  </div>
 
     <div style="width: 45px;"></div> </div>
 
@@ -364,45 +369,107 @@
     <script>
         // --- VERİLER ---
         const level1 = [
-            { pre: "يَسْتَخْدِمُ النَّاسُ الْإِنْتَرْنِت", post: "الْعَالَمِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "İnsanlar dünyada interneti kullanıyor." },
-            { pre: "يُحِبُّ النَّاسُ تَرْبِيَةَ الْحَيَوَانَاتِ", post: "الْمَنَازِلِ.", answer: "فِي", distractors: ["مِنْ", "عَنْ", "عَلَى"], tr: "İnsanlar evlerde hayvan beslemeyi sever." },
-            { pre: "تَسْتَمِرُّ تُرْكِيَا دَوْلَةً مَانِحَةً", post: "الْعَالَمِ.", answer: "فِي", distractors: ["إِلَى", "عَنْ", "مِنْ"], tr: "Türkiye dünyada bağışçı bir ülke olmaya devam ediyor." },
-            { pre: "إِرَاحَةُ الْجَسَدِ", post: "تَنَاوُلِ الطَّعَامِ.", answer: "مِنْ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Bedeni yemek yemekten dinlendirmek." },
-            { pre: "هِجْرَةُ الطُّيُورِ مَعْرُوفَةٌ", post: "آلَافِ السِّنِينَ.", answer: "مُنْذُ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Kuş göçü binlerce yıldan beri bilinmektedir." },
-            { pre: "لَا تَسْتَطِيعُ السُّلْحَفَاةُ الْخُرُوجَ", post: "قَوْقَعَتِهَا.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "إِلَى"], tr: "Kaplumbağa kabuğundan çıkamaz." },
-            { pre: "الْمَقْدِرَةُ", post: "تَحَمُّلِ الْمَسْؤُولِيَّاتِ.", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "Sorumlulukları taşıma(ya) gücü." },
-            { pre: "بِدُونِ إِذْنٍ مَكْتُوبٍ", post: "الْمَرْكَزِ.", answer: "مِنَ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Merkezden yazılı izin olmaksızın." },
-            { pre: "التِّكْنُولُوجْيَا تُسَاعِدُ الْإِنْسَانَ", post: "مَجَالِ الْمَعْلُومَاتِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "عَنْ"], tr: "Teknoloji insana bilgi alanında yardım eder." },
-            { pre: "التَّرْكِيزُ", post: "مَا يُمْكِنُهُ التَّحَكُّمُ فِيهِ.", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "Kontrol edebileceği şeye odaklanmak." }
-        ];
+    { pre: "يَسْتَخْدِمُ النَّاسُ الْإِنْتَرْنِت", post: "الْعَالَمِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "İnsanlar dünyada interneti kullanıyor." },
+    { pre: "يُحِبُّ النَّاسُ تَرْبِيَةَ الْحَيَوَانَاتِ", post: "الْمَنَازِلِ.", answer: "فِي", distractors: ["مِنْ", "عَنْ", "عَلَى"], tr: "İnsanlar evlerde hayvan beslemeyi sever." },
+    { pre: "تَسْتَمِرُّ تُرْكِيَا دَوْلَةً مَانِحَةً", post: "الْعَالَمِ.", answer: "فِي", distractors: ["إِلَى", "عَنْ", "مِنْ"], tr: "Türkiye dünyada bağışçı bir ülke olmaya devam ediyor." },
+    { pre: "إِرَاحَةُ الْجَسَدِ", post: "تَنَاوُلِ الطَّعَامِ.", answer: "مِنْ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Bedeni yemek yemekten dinlendirmek." },
+    { pre: "هِجْرَةُ الطُّيُورِ مَعْرُوفَةٌ", post: "آلَافِ السِّنِينَ.", answer: "مُنْذُ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Kuş göçü binlerce yıldan beri bilinmektedir." },
+    { pre: "لَا تَسْتَطِيعُ السُّلْحَفَاةُ الْخُرُوجَ", post: "قَوْقَعَتِهَا.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "إِلَى"], tr: "Kaplumbağa kabuğundan çıkamaz." },
+    { pre: "الْمَقْدِرَةُ", post: "تَحَمُّلِ الْمَسْؤُولِيَّاتِ.", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "Sorumlulukları taşıma(ya) gücü." },
+    { pre: "بِدُونِ إِذْنٍ مَكْتُوبٍ", post: "الْمَرْكَزِ.", answer: "مِنَ", distractors: ["فِي", "عَلَى", "إِلَى"], tr: "Merkezden yazılı izin olmaksızın." },
+    { pre: "التِّكْنُولُوجْيَا تُسَاعِدُ الْإِنْسَانَ", post: "مَجَالِ الْمَعْلُومَاتِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "عَنْ"], tr: "Teknoloji insana bilgi alanında yardım eder." },
+    { pre: "التَّرْكِيزُ", post: "مَا يُمْكِنُهُ التَّحَكُّمُ فِيهِ.", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "Kontrol edebileceği şeye odaklanmak." }
+];
 
-        const level2 = [
-            { pre: "يَخْتَلِفُ الْأَفْرَادُ", post: "بَعْضِهِمُ الْبَعْضِ.", answer: "عَنْ", distractors: ["مِنْ", "عَلَى", "فِي"], tr: "Bireyler birbirlerinden farklılık gösterir." },
-            { pre: "الْوَطَنُ هُوَ الْمَكَانُ الَّذِي يَنْتَمِي", post: "النَّاسُ.", answer: "إِلَيْهِ", distractors: ["عَلَيْهِ", "مِنْهُ", "فِيهِ"], tr: "Vatan, insanların kendisine ait olduğu yerdir." },
-            { pre: "تَنْتَمِي مَالْطَة", post: "بَعْضِ الْمُؤَسَّسَاتِ الدَّوْلِيَّةِ.", answer: "إِلَى", distractors: ["عَلَى", "فِي", "عَنْ"], tr: "Malta bazı uluslararası kuruluşlara üyedir." },
-            { pre: "تَرْجِعُ بِدَايَةُ الذَّكَاءِ الاصْطِنَاعِيِّ", post: "خَمْسِينِيَّاتِ الْقَرْنِ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Yapay zekanın başlangıcı 50'li yıllara dayanır." },
-            { pre: "الطَّاقَةُ الشَّمْسِيَّةُ صَدِيقَةٌ", post: "الْبِيئَةِ.", answer: "لِـ", distractors: ["بِـ", "عَلَى", "مِنْ"], tr: "Güneş enerjisi çevre dostudur." },
-            { pre: "تَحْوِيلُ ضَوْءِ الشَّمْسِ", post: "طَاقَةٍ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Güneş ışığını enerjiye dönüştürmek." },
-            { pre: "تَتَأَلَّفُ التَّبُولَةُ", post: "مَجْمُوعَةٍ مِنَ الْخُضْرَوَاتِ.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "بِـ"], tr: "Tabbule, bir grup sebzeden oluşur." },
-            { pre: "الْعِلْمُ قَدَّمَ عَوْنًا كَبِيرًا", post: "الْإِنْسَانِ.", answer: "لِـ", distractors: ["بِـ", "عَلَى", "مِنْ"], tr: "Bilim insana büyük bir yardım sundu." },
-            { pre: "قَدَّمَ الطَّبِيبُ الدَّوَاءَ", post: "الْمَرِيضِ.", answer: "لِـ", distractors: ["عَلَى", "مِنْ", "بِـ"], tr: "Doktor hastaya ilacı verdi." },
-            { pre: "تَوَصَّلَ الْعُلَمَاءُ", post: "حَلِّ الْمُشْكِلَةِ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Bilim adamları problemin çözümüne ulaştı." }
-        ];
+const level2 = [
+    { pre: "يَخْتَلِفُ الْأَفْرَادُ", post: "بَعْضِهِمُ الْبَعْضِ.", answer: "عَنْ", distractors: ["مِنْ", "عَلَى", "فِي"], tr: "Bireyler birbirlerinden farklılık gösterir." },
+    { pre: "الْوَطَنُ هُوَ الْمَكَانُ الَّذِي يَنْتَمِي", post: "النَّاسُ.", answer: "إِلَيْهِ", distractors: ["عَلَيْهِ", "مِنْهُ", "فِيهِ"], tr: "Vatan, insanların kendisine ait olduğu yerdir." },
+    { pre: "تَنْتَمِي مَالْطَة", post: "بَعْضِ الْمُؤَسَّسَاتِ الدَّوْلِيَّةِ.", answer: "إِلَى", distractors: ["عَلَى", "فِي", "عَنْ"], tr: "Malta bazı uluslararası kuruluşlara üyedir." },
+    { pre: "تَرْجِعُ بِدَايَةُ الذَّكَاءِ الاصْطِنَاعِيِّ", post: "خَمْسِينِيَّاتِ الْقَرْنِ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Yapay zekanın başlangıcı 50'li yıllara dayanır." },
+    { pre: "الطَّاقَةُ الشَّمْسِيَّةُ صَدِيقَةٌ", post: "الْبِيئَةِ.", answer: "لِـ", distractors: ["بِـ", "عَلَى", "مِنْ"], tr: "Güneş enerjisi çevre dostudur." },
+    { pre: "تَحْوِيلُ ضَوْءِ الشَّمْسِ", post: "طَاقَةٍ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Güneş ışığını enerjiye dönüştürmek." },
+    { pre: "تَتَأَلَّفُ التَّبُولَةُ", post: "مَجْمُوعَةٍ مِنَ الْخُضْرَوَاتِ.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "بِـ"], tr: "Tabbule, bir grup sebzeden oluşur." },
+    { pre: "الْعِلْمُ قَدَّمَ عَوْنًا كَبِيرًا", post: "الْإِنْسَانِ.", answer: "لِـ", distractors: ["بِـ", "عَلَى", "مِنْ"], tr: "Bilim insana büyük bir yardım sundu." },
+    { pre: "قَدَّمَ الطَّبِيبُ الدَّوَاءَ", post: "الْمَرِيضِ.", answer: "لِـ", distractors: ["عَلَى", "مِنْ", "بِـ"], tr: "Doktor hastaya ilacı verdi." },
+    { pre: "تَوَصَّلَ الْعُلَمَاءُ", post: "حَلِّ الْمُشْكِلَةِ.", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "Bilim adamları problemin çözümüne ulaştı." }
+];
 
-        const level3 = [
-            { pre: "لَمْ يَقْتَصِرِ الْإِصْلَاحُ", post: "النَّشَاطَاتِ الثَّقَافِيَّةِ.", answer: "عَلَى", distractors: ["فِي", "إِلَى", "مِنْ"], tr: "Reform kültürel aktivitelerle sınırlı kalmadı." },
-            { pre: "يَعْتَمِدُ عِلْمُ مَا قَبْلَ التَّارِيخِ", post: "عِلْمِ الْأَنْثُرُوبُولُوجِيَا.", answer: "عَلَى", distractors: ["فِي", "إِلَى", "بِـ"], tr: "Tarih öncesi bilimi antropoloji bilimine dayanır." },
-            { pre: "تَمَيَّزَ الْإِنْسَانُ الْقَدِيمُ", post: "قُدْرَةٍ فَائِقَةٍ.", answer: "بِـ", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "Eski insan üstün bir yetenekle temayüz etti." },
-            { pre: "الطِّفْلَةُ تَحْتَاجُ", post: "الدَّوَاءِ.", answer: "إِلَى", distractors: ["عَلَى", "فِي", "عَنْ"], tr: "Kız çocuğu ilaca ihtiyaç duyuyor." },
-            { pre: "أَنَا أُوَافِقُكَ", post: "الرَّأْيِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "Görüşte sana katılıyorum." },
-            { pre: "انْفَصَلَ الْأَمُورِيُّونَ", post: "الْكَنْعَانِيِّينَ.", answer: "عَنْ", distractors: ["مِنْ", "إِلَى", "عَلَى"], tr: "Amurriler Kenanlılardan ayrıldı." },
-            { pre: "الْبَحْثُ", post: "كَلِمَةٍ مُنَاسِبَةٍ.", answer: "عَنْ", distractors: ["مِنْ", "فِي", "عَلَى"], tr: "Uygun bir kelimeyi aramak." },
-            { pre: "حَلَّتِ الدُّمَى", post: "التِّلْفَازِ.", answer: "مَحَلَّ", distractors: ["عِنْدَ", "فَوْقَ", "تَحْتَ"], tr: "Kuklalar televizyonun yerine geçti." },
-            { pre: "الْحَلِيبُ الْحَيَوَانِيُّ أَغْنَى", post: "الْحَلِيبِ النَّبَاتِيِّ.", answer: "مِنَ", distractors: ["عَلَى", "فِي", "إِلَى"], tr: "Hayvansal süt bitkisel sütten daha zengindir." },
-            { pre: "عَلَيْنَا التَّعَرُّفُ", post: "كُلِّ الْمَعَانِي.", answer: "عَلَى", distractors: ["إِلَى", "فِي", "مِنْ"], tr: "Tüm anlamları tanımamız gerekir." }
-        ];
+const level3 = [
+    { pre: "لَمْ يَقْتَصِرِ الْإِصْلَاحُ", post: "النَّشَاطَاتِ الثَّقَافِيَّةِ.", answer: "عَلَى", distractors: ["فِي", "إِلَى", "مِنْ"], tr: "Reform kültürel aktivitelerle sınırlı kalmadı." },
+    { pre: "يَعْتَمِدُ عِلْمُ مَا قَبْلَ التَّارِيخِ", post: "عِلْمِ الْأَنْثُرُوبُولُوجِيَا.", answer: "عَلَى", distractors: ["فِي", "إِلَى", "بِـ"], tr: "Tarih öncesi bilimi antropoloji bilimine dayanır." },
+    { pre: "تَمَيَّزَ الْإِنْسَانُ الْقَدِيمُ", post: "قُدْرَةٍ فَائِقَةٍ.", answer: "بِـ", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "Eski insan üstün bir yetenekle temayüz etti." },
+    { pre: "الطِّفْلَةُ تَحْتَاجُ", post: "الدَّوَاءِ.", answer: "إِلَى", distractors: ["عَلَى", "فِي", "عَنْ"], tr: "Kız çocuğu ilaca ihtiyaç duyuyor." },
+    { pre: "أَنَا أُوَافِقُكَ", post: "الرَّأْيِ.", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "Görüşte sana katılıyorum." },
+    { pre: "انْفَصَلَ الْأَمُورِيُّونَ", post: "الْكَنْعَانِيِّينَ.", answer: "عَنْ", distractors: ["مِنْ", "إِلَى", "عَلَى"], tr: "Amurriler Kenanlılardan ayrıldı." },
+    { pre: "الْبَحْثُ", post: "كَلِمَةٍ مُنَاسِبَةٍ.", answer: "عَنْ", distractors: ["مِنْ", "فِي", "عَلَى"], tr: "Uygun bir kelimeyi aramak." },
+    { pre: "حَلَّتِ الدُّمَى", post: "التِّلْفَازِ.", answer: "مَحَلَّ", distractors: ["عِنْدَ", "فَوْقَ", "تَحْتَ"], tr: "Kuklalar televizyonun yerine geçti." },
+    { pre: "الْحَلِيبُ الْحَيَوَانِيُّ أَغْنَى", post: "الْحَلِيبِ النَّبَاتِيِّ.", answer: "مِنَ", distractors: ["عَلَى", "فِي", "إِلَى"], tr: "Hayvansal süt bitkisel sütten daha zengindir." },
+    { pre: "عَلَيْنَا التَّعَرُّفُ", post: "كُلِّ الْمَعَانِي.", answer: "عَلَى", distractors: ["إِلَى", "فِي", "مِنْ"], tr: "Tüm anlamları tanımamız gerekir." }
+];
 
-        const allLevels = [level1, level2, level3];
+const level4 = [
+    { pre: "لَا تَسْتَطِيعُ السُّلْحَفَاةُ الْخُرُوجَ؛ لِأَنَّ أَجْسَامَهَا", post: "بِهَا.", answer: "مُلْتَصِقَةٌ", distractors: ["قَرِيبَةٌ", "بَعِيدَةٌ", "مُخْتَلِفَةٌ"], tr: "Kaplumbağa dışarı çıkamaz çünkü vücutları ona yapışıktır." },
+    { pre: "الْمُدِيرُ النَّاجِحُ هُوَ الَّذِي", post: "تَرْتِيبِ أَوْلَوِيَّاتِهِ.", answer: "يَهْتَمُّ بِـ", distractors: ["يَبْتَعِدُ عَنْ", "يَنْظُرُ إِلَى", "يَخْرُجُ مِنْ"], tr: "Başarılı müdür, önceliklerini sıralamaya önem verendir." },
+    { pre: "هَذِهِ مِهْنَةٌ", post: "أَزْيَائِهَا التَّقْلِيدِيَّةِ.", answer: "تَتَمَيَّزُ بِـ", distractors: ["تَعُودُ إِلَى", "تَحْتَاجُ إِلَى", "تَتَأَلَّفُ مِنْ"], tr: "Bu, kıyafetleriyle öne çıkan bir meslektir." },
+    { pre: "كَانَتِ الْمَلَابِسُ قَدِيمًا", post: "لِطَبَقَةٍ أَوْ حَالَةٍ اجْتِمَاعِيَّةٍ.", answer: "تَرْمُزُ", distractors: ["تَعْمَلُ", "تَذْهَبُ", "تَسْكُنُ"], tr: "Eskiden elbiseler bir sınıfa veya sosyal duruma işaret ederdi." },
+    { pre: "تَهْدِفُ الدَّوْلَةُ إِلَى", post: "الشَّبَابِ بَدَنِيًّا وَعَقْلِيًّا.", answer: "تَرْبِيَةِ", distractors: ["بَيْعِ", "نِسْيَانِ", "تَرْكِ"], tr: "Gençlerin bedenen ve zihnen eğitilmesi." },
+    { pre: "يُعَانِي الْمَرِيضُ", post: "أَلَمٍ شَدِيدٍ.", answer: "مِنْ", distractors: ["عَلَى", "فِي", "بِـ"], tr: "Hasta şiddetli bir ağrı çekiyor." },
+    { pre: "الْمَالْطِيَّةُ لُغَةٌ وَطَنِيَّةٌ", post: "اللُّغَةِ الْعَرَبِيَّةِ.", answer: "مُشْتَقَّةٌ مِنَ", distractors: ["مَبْنِيَّةٌ عَلَى", "بَعِيدَةٌ عَنِ", "دَاخِلَةٌ فِي"], tr: "Arapçadan türetilmiş ulusal bir dil." },
+    { pre: "مُفْرَدَاتُ هَذِهِ اللُّغَةِ", post: "عِدَّةِ لُغَاتٍ.", answer: "مَأْخُوذَةٌ مِنْ", distractors: ["مَمْنُوعَةٌ عَنْ", "مَوْجُودَةٌ فِي", "مَكْتُوبَةٌ بِـ"], tr: "Bu dilin kelimeleri birçok dilden alınmıştır." },
+    { pre: "يَجِبُ أَنْ نَبْتَعِدَ", post: "الْعَادَاتِ السَّيِّئَةِ.", answer: "عَنِ", distractors: ["فِي", "إِلَى", "عَلَى"], tr: "Kötü alışkanlıklardan uzak durmalıyız." },
+    { pre: "تُعْتَبَرُ تُرْكِيَا جِسْرًا", post: "أُورُوبَّا وَآسْيَا.", answer: "بَيْنَ", distractors: ["مِنْ", "عَلَى", "إِلَى"], tr: "Türkiye, Avrupa ile Asya arasında bir köprü sayılır." }
+];
+
+const level5 = [
+    { pre: "تَتَأَلَّفُ السَّلَطَةُ", post: "مَجْمُوعَةٍ مِنَ الْخُضْرَوَاتِ.", answer: "مِنْ", distractors: ["بِـ", "عَلَى", "إِلَى"], tr: "O bir grup sebzeden oluşur." },
+    { pre: "تَنْتَمِي مَالْطَةُ", post: "بَعْضِ الْمُؤَسَّسَاتِ الدَّوْلِيَّةِ.", answer: "لِـ", distractors: ["عَنْ", "فِي", "مِنْ"], tr: "Malta bazı uluslararası kuruluşlara üyedir." },
+    { pre: "تَوَصَّلَ الْبَاحِثُونَ", post: "نَتَائِجَ مُهِمَّةٍ.", answer: "إِلَى", distractors: ["عَنْ", "مِنْ", "عَلَى"], tr: "Önemli sonuçlara ulaştılar." },
+    { pre: "يَعُودُ أَصْلُ الْبُوسْنِيِّينَ", post: "الثَّقَافَاتِ الْآسْيَوِيَّةِ.", answer: "إِلَى", distractors: ["مِنْ", "عَنْ", "بِـ"], tr: "Kökeni Asya kültürlerine dayanır." },
+    { pre: "ارْتَفَعَتِ الْأَسْعَارُ", post: "لِبَيَانَاتِ مُنَظَّمَةِ الصِّحَّةِ.", answer: "وَفْقًا", distractors: ["بَعِيدًا", "قَرِيبًا", "بَدَلًا"], tr: "Dünya Sağlık Örgütü verilerine göre." },
+    { pre: "الرِّيَاضَةُ", post: "الِاسْتِشْفَاءِ.", answer: "تُسَاهِمُ فِي", distractors: ["تَبْتَعِدُ عَنْ", "تَنْتَهِي مِنْ", "تَتَأَخَّرُ عَنْ"], tr: "İyileşmeye katkı sağlar." },
+    { pre: "يَخْتَلِفُ الْأَفْرَادُ", post: "بَعْضِهِمُ الْبَعْضِ.", answer: "عَنْ", distractors: ["فِي", "إِلَى", "بِـ"], tr: "Bireyler birbirlerinden farklılık gösterir." },
+    { pre: "تُؤَدِّي الرِّيَاضَةُ", post: "تَحْسِينِ الصِّحَّةِ.", answer: "إِلَى", distractors: ["مِنْ", "عَلَى", "عَنْ"], tr: "Spor sağlığın gelişmesine yol açar." },
+    { pre: "يَتَمَيَّزُ الطَّقْسُ هُنَا", post: "الِاعْتِدَالِ صَيْفًا.", answer: "بِـ", distractors: ["عَنْ", "فِي", "إِلَى"], tr: "Hava burada yazın ılıman olmasıyla öne çıkar." },
+    { pre: "الْعَمَلُ الْجَمَاعِيُّ يُسَاعِدُ", post: "إِنْجَازِ الْمَهَامِّ.", answer: "عَلَى", distractors: ["مِنْ", "إِلَى", "عَنْ"], tr: "Grup çalışması görevlerin tamamlanmasına yardımcı olur." }
+];
+
+const level6 = [
+    // --- Bâ (بـ) Grubu ---
+    { pre: "يَهْتَمُّ", post: "", answer: "بِـ", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "... ile ilgilenmek / önem vermek" },
+    { pre: "يَتَمَيَّزُ", post: "", answer: "بِـ", distractors: ["عَنْ", "إِلَى", "مِنْ"], tr: "... ile öne çıkmak / ayırt edilmek" },
+    { pre: "مُلْتَصِقَةٌ", post: "", answer: "بِـ", distractors: ["فِي", "لِـ", "مِنْ"], tr: "...-e yapışık / bitişik olmak" },
+    { pre: "يَرْمزُ", post: "", answer: "بِـ / لِـ", distractors: ["عَنْ", "عَلَى", "فِي"], tr: "...-i simgelemek / işaret etmek" },
+    
+    // --- Min (مِنْ) Grubu ---
+    { pre: "يُعَانِي", post: "", answer: "مِنْ", distractors: ["بِـ", "عَلَى", "فِي"], tr: "...-den muzdarip olmak / sıkıntı çekmek" },
+    { pre: "مُشْتَقَّةٌ", post: "", answer: "مِنْ", distractors: ["إِلَى", "عَنْ", "فِي"], tr: "...-den türetilmiş olmak" },
+    { pre: "مَأْخُوذَةٌ", post: "", answer: "مِنْ", distractors: ["عَلَى", "بِـ", "إِلَى"], tr: "...-den alınmış olmak" },
+    { pre: "تَتَأَلَّفُ", post: "", answer: "مِنْ", distractors: ["بِـ", "عَلَى", "فِي"], tr: "...-den oluşmak / meydana gelmek" },
+    { pre: "الِاسْتِشْفَاءُ", post: "", answer: "مِنْ", distractors: ["إِلَى", "بِـ", "فِي"], tr: "...-den iyileşmek / şifa bulmak" },
+    
+    // --- İlâ (إِلَى) Grubu ---
+    { pre: "يَنْتَمِي", post: "", answer: "إِلَى", distractors: ["عَنْ", "فِي", "مِنْ"], tr: "...-e ait olmak / üye olmak" },
+    { pre: "تَوَصَّلَ", post: "", answer: "إِلَى", distractors: ["عَنْ", "مِنْ", "عَلَى"], tr: "...-e ulaşmak / varmak" },
+    { pre: "يَعُودُ", post: "", answer: "إِلَى", distractors: ["مِنْ", "عَنْ", "بِـ"], tr: "...-e (kökene) dayanmak" },
+    { pre: "يُؤَدِّي", post: "", answer: "إِلَى", distractors: ["فِي", "عَلَى", "مِنْ"], tr: "...-e yol açmak / sebep olmak" },
+    { pre: "تَحْتَاجُ", post: "", answer: "إِلَى", distractors: ["بِـ", "عَنْ", "عَلَى"], tr: "...-e ihtiyaç duymak" },
+    
+    // --- Alâ (عَلَى) Grubu ---
+    { pre: "مَقْدِرَةٌ", post: "", answer: "عَلَى", distractors: ["فِي", "مِنْ", "إِلَى"], tr: "...-e güç yetirmek / kapasite" },
+    { pre: "التَّرْكِيزُ", post: "", answer: "عَلَى", distractors: ["فِي", "بِـ", "عَنْ"], tr: "...-e odaklanmak" },
+    { pre: "يَعْتَمِدُ", post: "", answer: "عَلَى", distractors: ["بِـ", "فِي", "إِلَى"], tr: "...-e dayanmak / güvenmek" },
+    { pre: "يَحْتَوِي", post: "", answer: "عَلَى", distractors: ["فِي", "مِنْ", "بِـ"], tr: "...-i içermek / kapsamak" },
+    { pre: "الْحِفَاظُ", post: "", answer: "عَلَى", distractors: ["إِلَى", "مِنْ", "عَنْ"], tr: "...-i korumak" },
+    
+    // --- Diğerleri ---
+    { pre: "تُسَاهِمُ", post: "", answer: "فِي", distractors: ["عَلَى", "مِنْ", "إِلَى"], tr: "...-e katkıda bulunmak" },
+    { pre: "يَخْتَلِفُ", post: "", answer: "عَنْ", distractors: ["بِـ", "إِلَى", "فِي"], tr: "...-den farklı olmak" },
+    { pre: "يَبْحَثُ", post: "", answer: "عَنْ", distractors: ["فِي", "إِلَى", "مِنْ"], tr: "...-i aramak" },
+    { pre: "يَنْفَصِلُ", post: "", answer: "عَنْ", distractors: ["إِلَى", "عَلَى", "بِـ"], tr: "...-den ayrılmak" }
+];
+
+        // Verilerinizin (level4, level5) yukarıda tanımlı olduğunu varsayarsak:
+const allLevels = [level1, level2, level3, level4, level5, level6];
         let currentLevelIndex = 0;
         let currentQuestions = [];
         let currentIndex = 0;
@@ -428,13 +495,16 @@
             loadQuestion();
         }
 
-        function updateLevelNav(activeIdx) {
-            for(let i=0; i<3; i++) {
-                const btn = document.getElementById(`btn-lvl-${i}`);
-                if (i === activeIdx) btn.classList.add('active');
-                else btn.classList.remove('active');
-            }
+     function updateLevelNav(activeIdx) {
+    // i < 3 olan yeri i < 5 olarak güncelledik
+    for (let i = 0; i < 6; i++) {
+        const btn = document.getElementById(`btn-lvl-${i}`);
+        if (btn) {
+            if (i === activeIdx) btn.classList.add('active');
+            else btn.classList.remove('active');
         }
+    }
+}
 
         function loadQuestion() {
             isAnswered = false;
