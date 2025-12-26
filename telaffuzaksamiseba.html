@@ -111,12 +111,9 @@
     #cat-list, #fiil-list {
         grid-template-columns: 1fr; /* Bunlar alt alta kalsın ki isimler okunabilsin */
         gap: 5px;
-        padding: 2px;
+        padding: 10px;
     }
-    .cat-btn, .fiil-btn.cat-btn, .fiil-btn {
-        min-height: 35px !important; /* 45-50px'den 35px'e düşürerek daraltıyoruz */
-        padding: 0px 5px !important; /* Dikey iç boşluğu tamamen sıfırlıyoruz */
-        font-size: 1.5rem;
+    .cat-btn, .fiil-btn { min-height: 45px; font-size: 1.1rem; }
 
     /* Izgara: 3 Sütun 5 Satır */
     .verb-table {
@@ -127,15 +124,10 @@
         padding: 5px 35px; /* Oklar için güvenli alan */
         flex: 1;
         justify-content: center;
-align-content: center;    /* Izgaranın satırlarını dikeyde merkeze çeker */
-        margin: 0 auto;           /* Dış boşlukla sağ-sol dengelemesi yapar */
-        
-        width: 100%;              /* Ekranın tamamını kullanması için */
-        max-width: 100%;          /* Taşmayı engellemek için */
     }
 
     .cell {
-        font-size: 2rem; /* 3 sütunda taşmaması için dengeli boyut */
+        font-size: 1.4rem; /* 3 sütunda taşmaması için dengeli boyut */
         height: 100%;
         width: 100%;
         border-radius: 6px;
@@ -171,8 +163,8 @@ align-content: center;    /* Izgaranın satırlarını dikeyde merkeze çeker */
     }
 
     .cell {
-        font-size: 2rem;
-        min-height: 15px;
+        font-size: 1.3rem;
+        min-height: 30px;
         padding: 0 !important; /* İç boşluk tamamen sıfır */
         line-height: 1;
     }
@@ -188,7 +180,6 @@ align-content: center;    /* Izgaranın satırlarını dikeyde merkeze çeker */
         padding: 2px !important;
         font-size: 1rem;
         min-height: 35px;
-        gap: 3px; 
     }
 }
  </style>
