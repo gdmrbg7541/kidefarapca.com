@@ -446,21 +446,28 @@ i', sans-serif;
         padding: 0 5px;
     }
 
-    /* Vezin Butonları - Kompakt Sıralama */
+    /* Vezin Seçici Butonlar - Dikey ve Yatay Sığdırma Ayarı */
     .vezin-selector {
         display: flex;
+        flex-wrap: wrap; /* İsimler yan yana sığmazsa alt satıra geçer */
         justify-content: center;
-        flex-wrap: nowrap; /* Tek satıra zorla */
-        gap: 2px;
-        margin: 0 !important;
-        height: 25px;
+        align-items: center;
+        gap: 3px; /* Butonlar arası boşluk */
+        margin: 2px 0 !important;
+        height: auto; /* Sabit yükseklik kaldırıldı, içeriğe göre uzar */
+        width: 100%;
     }
 
     .vezin-btn {
-        padding: 0 4px;
-        font-size: 0.7rem !important;
-        height: 22px;
-        min-width: fit-content;
+        padding: 3px 6px !important; /* İç boşlukları dengeledik */
+        font-size: 0.72rem !important; /* Okunabilir en küçük seviye */
+        min-height: 24px; /* Buton yüksekliğini dikeyde sabitledik */
+        line-height: 1;
+        white-space: nowrap; /* Kelimenin kendi içinde bölünmesini önler */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 1 auto; /* Gerektiğinde küçülmesine izin verir */
     }
 
     /* Tablo Konteyner */
