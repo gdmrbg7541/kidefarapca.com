@@ -422,96 +422,116 @@ i', sans-serif;
     }
 
     body {
-        padding: 2px;
+        padding: 0px 5px; /* Üst ve alt boşluğu sıfırladık */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* İçeriği dikeyde merkeze toplar */
+        height: 100vh;
         overflow-y: auto;
     }
 
-    /* Üst Başlık Alanı - Tek Satır ve Geri Tuşu Hizalaması */
+    /* Üst Başlık Alanı - Dikeyde Ortalandı */
     .top-header {
         display: grid;
-        grid-template-columns: 60px 1fr 60px; /* Kenar butonları için yer açtık */
+        grid-template-columns: 50px 1fr 50px;
         align-items: center;
-        padding: 2px 5px;
-        height: 35px; /* Dikeyde daralttık */
+        padding: 0px 5px;
+        height: 32px; /* Daha da daraltıldı */
         margin-bottom: 2px;
     }
 
     .header-title-main {
-        font-size: 0.85rem !important; /* Başlık küçüldü */
-        white-space: nowrap; /* Tek satıra zorlar */
+        font-size: 0.8rem !important;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        line-height: 35px; /* Geri tuşuyla dikey hizalama */
+        line-height: 32px;
+        text-align: center;
         margin: 0;
     }
 
     .back-btn {
-        height: 28px;
-        line-height: 28px;
-        font-size: 1rem;
-        padding: 0 8px;
+        height: 26px;
+        line-height: 26px;
+        font-size: 0.9rem;
+        padding: 0 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* Vezin Butonları (İf'al, Tef'il...) */
+    /* Vezin Seçici Butonlar - Merkeze Toplandı */
     .vezin-selector {
-        gap: 2px;
-        margin-bottom: 4px !important;
+        display: flex;
+        justify-content: center;
+        gap: 3px;
+        margin-bottom: 3px !important;
     }
 
     .vezin-btn {
-        padding: 2px 4px;
-        font-size: 0.75rem !important; /* Vezin isimleri küçüldü */
+        padding: 1px 6px;
+        font-size: 0.75rem !important;
+        min-height: 22px;
     }
 
     /* Tablo Düzeni */
     .grid-container {
         gap: 2px;
-        grid-template-columns: 70px repeat(6, 1fr);
+        grid-template-columns: 65px repeat(6, 1fr);
+        margin: 0 auto;
+        width: 100%;
     }
 
-    /* Hücreler - Dikeyde Türkçeler için büyütüldü */
+    /* Hücreler - İçerik Dikeyde Tam Ortalandı */
     .cell {
-        padding: 1px !important;
-        min-height: 70px !important; /* Dikey boyutu artırdık */
+        padding: 0px !important;
+        min-height: 65px !important; /* Bir miktar daraltıldı */
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: center; /* Fiil ve Türkçeyi merkeze toplar */
+        align-items: center;
     }
 
     /* Mazi, Muzari Başlıkları */
     .header-sub {
-        font-size: 0.7rem !important; /* Başlıklar küçüldü */
-        min-height: 32px !important;
-        line-height: 1.1;
+        font-size: 0.7rem !important;
+        min-height: 30px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        line-height: 1;
     }
 
-    /* Başlık altındaki Arapça kalıplar (Ef'ale...) */
     .pattern-label {
-        font-size: 0.85rem !important;
-        margin-top: 0px;
+        font-size: 0.8rem !important;
+        margin-top: 1px;
     }
 
     /* Kök Harfler (İlk Sütun) */
     .root-word {
         font-size: 1rem !important;
-        min-height: 70px !important;
+        min-height: 65px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Çıkan Arapça Örnek Fiil */
     .final-word {
-        font-size: 1.1rem !important; /* Okunabilir ama aşırı büyük değil */
-        margin-bottom: 1px;
+        font-size: 1.1rem !important;
+        line-height: 1;
+        margin-bottom: 2px;
     }
 
     /* Türkçe Anlam (Popup) */
     .meaning-popup {
-        font-size: 0.65rem !important; /* Küçük ve zarif */
+        font-size: 0.65rem !important;
         padding: 1px 2px;
-        width: 90%;
+        width: 95%;
         margin: 0 auto;
+        line-height: 1;
     }
 
-    /* Animasyon Harfleri */
     .flying-text {
         font-size: 1rem !important;
     }
