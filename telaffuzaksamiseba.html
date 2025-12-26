@@ -113,13 +113,16 @@
         gap: 5px;
         padding: 2px;
     }
-    .cat-btn, .fiil-btn { min-height: 15px; font-size: 1.1rem; }
+    .cat-btn, .fiil-btn.cat-btn, .fiil-btn {
+        min-height: 35px !important; /* 45-50px'den 35px'e düşürerek daraltıyoruz */
+        padding: 0px 5px !important; /* Dikey iç boşluğu tamamen sıfırlıyoruz */
+        font-size: 1.5rem;
 
     /* Izgara: 3 Sütun 5 Satır */
     .verb-table {
         display: grid;
         grid-template-columns: repeat(3, 1fr); 
-        grid-template-rows: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 30px);
         gap: 4px; /* Dikey/Yatay boşluk 4px */
         padding: 5px 35px; /* Oklar için güvenli alan */
         flex: 1;
@@ -185,6 +188,7 @@ align-content: center;    /* Izgaranın satırlarını dikeyde merkeze çeker */
         padding: 2px !important;
         font-size: 1rem;
         min-height: 35px;
+        gap: 3px; 
     }
 }
  </style>
