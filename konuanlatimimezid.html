@@ -369,7 +369,7 @@ i', sans-serif;
 
 /* --- MOBİL YATAY VE DİKEY DÜZENLEME --- */
 
-/* 1. Telefonu Yan Çevir Uyarısı (Sadece Dikey Modda Görünür) */
+/* 1. Telefonu Yan Çevir Uyarısı */
 #orientation-warning {
     display: none;
     position: fixed;
@@ -385,24 +385,13 @@ i', sans-serif;
     padding: 20px;
 }
 
-/* Telefon döndürme animasyonu */
 .phone-icon {
-    width: 50px;
-    height: 80px;
+    width: 40px; height: 70px;
     border: 3px solid white;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
     animation: rotatePhone 2s infinite ease-in-out;
     position: relative;
-}
-.phone-icon::after {
-    content: "";
-    position: absolute;
-    bottom: 5px; left: 50%;
-    transform: translateX(-50%);
-    width: 5px; height: 5px;
-    background: white;
-    border-radius: 50%;
 }
 
 @keyframes rotatePhone {
@@ -411,85 +400,111 @@ i', sans-serif;
     100% { transform: rotate(0deg); }
 }
 
-/* Sadece dikey konumda uyarısı göster, içeriği gizle */
 @media screen and (orientation: portrait) and (max-width: 950px) {
     #orientation-warning { display: flex; }
     body { overflow: hidden; }
 }
 
-/* 2. Yatay Modda (Landscape) Alan Optimizasyonu */
+/* 2. Yatay Modda (Landscape) Ultra Optimizasyon */
 @media screen and (orientation: landscape) and (max-height: 600px) {
-    :root {
-        --font-size-base: 1rem;
-    }
-
     body {
-        padding: 5px;
-        overflow-y: auto; /* Gerektiğinde kaydırılabilsin */
+        padding: 3px;
+        overflow-y: auto;
     }
 
+    /* Üst Başlık - Tek Satır ve Küçük */
     .top-header {
-        padding: 4px 10px;
-        margin-bottom: 5px;
+        padding: 2px 10px;
+        margin-bottom: 3px;
+        grid-template-columns: 50px 1fr 50px; /* Kenarları daralttık */
     }
 
     .header-title-main {
-        font-size: 1rem;
+        font-size: 0.85rem !important; /* Yazıyı iyice küçülttük */
+        white-space: nowrap; /* Tek satıra zorlar */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Sığmazsa üç nokta koyar */
     }
 
+    .back-btn {
+        font-size: 1.1rem;
+        padding: 0 10px;
+        min-height: 25px;
+    }
+
+    /* Vezin Seçici Butonlar */
     .vezin-selector {
-        gap: 3px;
-        margin-bottom: 10px !important;
+        gap: 2px;
+        margin-bottom: 5px !important;
     }
 
     .vezin-btn {
-        padding: 5px 2px;
-        font-size: 0.9rem;
+        padding: 3px 1px;
+        font-size: 0.75rem !important; /* Buton yazılarını küçülttük */
+        border-radius: 5px;
+        border-width: 1px;
     }
 
+    .vezin-btn.active .info-icon {
+        font-size: 0.8rem;
+    }
+
+    /* Grid Yapısı */
     .grid-container {
-        height: auto; /* Mobilde sıkışmaması için yüksekliği serbest bırakıyoruz */
-        gap: 4px;
-        grid-template-columns: 80px repeat(6, 1fr); /* Kök hücresini biraz daraltıyoruz */
+        height: auto;
+        gap: 2px;
+        grid-template-columns: 60px repeat(6, 1fr); /* Kök sütununu daralttık */
     }
 
+    /* Hücreler ve Fiil Örnekleri */
     .cell {
-        font-size: 1.1rem !important;
-        padding: 2px !important;
-        min-height: 60px;
+        font-size: 0.95rem !important; /* Arapça örnekleri küçülttük */
+        padding: 1px !important;
+        min-height: 45px;
+        border-width: 1.5px;
+        border-radius: 8px;
     }
 
+    /* Tablo Başlıkları (Mazi, Muzari vb.) */
     .header-sub {
-        font-size: 0.9rem;
-        min-height: 30px !important;
+        font-size: 0.75rem !important;
+        min-height: 25px !important;
+        border-bottom-width: 2px !important;
     }
 
     .pattern-label {
-        font-size: 1rem;
-        margin-top: 2px;
+        font-size: 0.8rem !important; /* Kırmızı vezin kalıplarını küçülttük */
+        margin-top: 1px;
     }
 
+    /* Kök ve Türemiş Kelimeler */
     .root-word {
-        font-size: 1.2rem !important;
+        font-size: 1rem !important;
     }
 
     .final-word {
-        font-size: 1.2rem !important;
+        font-size: 1rem !important; /* Tamamlanan kelime boyutu */
     }
 
+    /* Türkçe Anlamlar */
     .meaning-popup {
-        font-size: 0.8rem;
-        padding: 2px;
+        font-size: 0.65rem !important; /* Türkçe anlamları küçülttük */
+        padding: 1px 3px;
+        bottom: 2px;
     }
 
-    /* Uçan metin mobilde daha küçük olmalı */
+    /* Animasyon Efektleri */
     .flying-text {
-        font-size: 1.2rem !important;
+        font-size: 1rem !important;
     }
 }
  </style>
 </head>
 <body>
+<div id="orientation-warning">
+    <div class="phone-icon"></div>
+    <p>Lütfen daha iyi bir deneyim için telefonunuzu <b>yan çevirin</b>.</p>
+</div>
 <div id="usageOverlay" class="info-overlay"></div>
 <div class="top-header">
     <a href="mezidfiiller.html" class="header-btn back-btn">←</a>
