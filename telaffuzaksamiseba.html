@@ -86,85 +86,78 @@
 
 /* --- MOBİL DİKEY (PORTRAIT) OPTİMİZASYONU --- */
 @media screen and (max-width: 480px) and (orientation: portrait) {
-    /* Header'ı 2 satır yaparak küçültme */
+    /* Header'ı çok daha dar ve kompakt yapalım */
     #top-bar-panel {
-        height: auto;
-        min-height: 60px;
-        padding: 5px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 sütunlu yapı */
-        gap: 2px;
+        min-height: 50px;
+        padding: 2px;
+        gap: 0;
+    }
+    .header-item { transform: scale(0.8); margin: 0; }
+
+    /* Fiil Seçimi (Salim, Mehmuz vb.): Her satırda TEK fiil türü */
+    #cat-list, #fiil-list {
+        grid-template-columns: 1fr; /* Tek sütun */
+        gap: 4px; /* Dikey boşluk max 4-5px */
+        padding: 5px 15px;
+        overflow-y: auto;
     }
 
-    .header-item { transform: scale(0.85); } /* Elementleri genel olarak küçült */
-    
-    .back-nav { padding: 4px 8px; font-size: 0.8rem; }
-    .timer-val, .score-val { font-size: 1.4rem; line-height: 1; }
-    .stage-badge { font-size: 0.9rem; padding: 3px 6px; }
-    .pause-circle { width: 35px; height: 35px; font-size: 1rem; }
+    .cat-btn, .fiil-btn {
+        padding: 8px; /* İç boşluğu azalttık */
+        font-size: 1.4rem;
+        width: 100%;
+    }
 
-    /* Fiil çekim tablosunu dikeyde genişletme */
+    /* Fiil Çekim Tablosu: Her kelime TEK satır */
     .verb-table {
-        padding: 5px 40px; /* Yan oklara yer bırak, tabloyu genişlet */
-        gap: 4px; /* Dikey boşluğu azalt */
-        grid-template-rows: repeat(5, 1fr); /* 5 satırı ekrana yay */
-        flex: 1;
+        grid-template-columns: 1fr; /* Tek sütun: Her kelime bir satır */
+        padding: 5px 40px; /* Oklar için boşluk */
+        gap: 3px; /* Kelimeler arası dikey boşluk min seviyede */
+        justify-items: center; /* Izgarayı ortala */
+        overflow-y: auto;
+        display: grid;
     }
 
     .cell {
-        font-size: 1.6rem; /* Kelime boyutunu büyüt */
-        min-height: auto;
-        height: 100%; /* Satır yüksekliğini kullan */
-        padding: 0;
-        border-radius: 8px;
+        width: 100%; /* Satırı tam kapla */
+        max-width: 250px; /* Çok yayılmaması için sınırla */
+        font-size: 2rem; /* Kelimeleri iyice büyüt */
+        min-height: 45px; /* Yüksekliği daralt */
+        padding: 0; /* İç boşluk sıfır */
+        margin: 0 auto; /* Ortala */
+        line-height: 45px; /* Metni dikeyde ortala */
     }
 
-    /* Navigasyon oklarını daralt */
+    /* Navigasyon oklarını dikeyde uzatalım ki rahat basılsın */
     .nav-arrow {
-        width: 30px;
-        height: 80px;
-        font-size: 1.2rem;
+        width: 35px;
+        height: 120px;
+        background: rgba(108, 92, 231, 0.15);
     }
 }
 
 /* --- MOBİL YATAY (LANDSCAPE) OPTİMİZASYONU --- */
 @media screen and (max-height: 450px) and (orientation: landscape) {
-    /* Header tek satır ve çok küçük */
     #top-bar-panel {
-        height: 45px;
-        display: flex;
-        justify-content: space-around;
-        padding: 0 50px;
+        height: 40px;
     }
-
-    .header-item { flex-direction: row; gap: 10px; transform: scale(0.8); }
     
-    /* Izgaradaki dikey boşlukları minimuma indir */
-    .verb-table {
-        padding: 2px 60px;
-        gap: 3px;
-    }
-
+    /* Kutuların iç boşluklarını (padding) sıfırlıyoruz */
     .cell {
-        font-size: 1.4rem;
+        padding: 0 !important;
+        font-size: 1.5rem;
         min-height: 35px;
-        padding: 2px;
+        line-height: 35px;
     }
 
-    #fiil-list, #cat-list {
-        padding: 5px;
-        gap: 5px;
+    .verb-table {
+        gap: 2px; /* Dikey boşluk minimum */
+        padding: 2px 60px;
     }
 
     .fiil-btn, .cat-btn {
-        padding: 5px;
-        font-size: 1.1rem;
-    }
-
-    .nav-arrow {
-        height: 100%; /* Yatayda tam boy oklar */
-        width: 50px;
-        background: rgba(108, 92, 231, 0.05);
+        padding: 2px !important;
+        font-size: 1.2rem;
     }
 }
  </style>
