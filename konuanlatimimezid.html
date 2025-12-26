@@ -366,6 +366,127 @@ i', sans-serif;
         border-width: 5px; /* Çerçeveleri kalınlaştırır */
     }
 }
+
+/* --- MOBİL YATAY VE DİKEY DÜZENLEME --- */
+
+/* 1. Telefonu Yan Çevir Uyarısı (Sadece Dikey Modda Görünür) */
+#orientation-warning {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--primary);
+    color: white;
+    z-index: 99999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Telefon döndürme animasyonu */
+.phone-icon {
+    width: 50px;
+    height: 80px;
+    border: 3px solid white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    animation: rotatePhone 2s infinite ease-in-out;
+    position: relative;
+}
+.phone-icon::after {
+    content: "";
+    position: absolute;
+    bottom: 5px; left: 50%;
+    transform: translateX(-50%);
+    width: 5px; height: 5px;
+    background: white;
+    border-radius: 50%;
+}
+
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Sadece dikey konumda uyarısı göster, içeriği gizle */
+@media screen and (orientation: portrait) and (max-width: 950px) {
+    #orientation-warning { display: flex; }
+    body { overflow: hidden; }
+}
+
+/* 2. Yatay Modda (Landscape) Alan Optimizasyonu */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    :root {
+        --font-size-base: 1rem;
+    }
+
+    body {
+        padding: 5px;
+        overflow-y: auto; /* Gerektiğinde kaydırılabilsin */
+    }
+
+    .top-header {
+        padding: 4px 10px;
+        margin-bottom: 5px;
+    }
+
+    .header-title-main {
+        font-size: 1rem;
+    }
+
+    .vezin-selector {
+        gap: 3px;
+        margin-bottom: 10px !important;
+    }
+
+    .vezin-btn {
+        padding: 5px 2px;
+        font-size: 0.9rem;
+    }
+
+    .grid-container {
+        height: auto; /* Mobilde sıkışmaması için yüksekliği serbest bırakıyoruz */
+        gap: 4px;
+        grid-template-columns: 80px repeat(6, 1fr); /* Kök hücresini biraz daraltıyoruz */
+    }
+
+    .cell {
+        font-size: 1.1rem !important;
+        padding: 2px !important;
+        min-height: 60px;
+    }
+
+    .header-sub {
+        font-size: 0.9rem;
+        min-height: 30px !important;
+    }
+
+    .pattern-label {
+        font-size: 1rem;
+        margin-top: 2px;
+    }
+
+    .root-word {
+        font-size: 1.2rem !important;
+    }
+
+    .final-word {
+        font-size: 1.2rem !important;
+    }
+
+    .meaning-popup {
+        font-size: 0.8rem;
+        padding: 2px;
+    }
+
+    /* Uçan metin mobilde daha küçük olmalı */
+    .flying-text {
+        font-size: 1.2rem !important;
+    }
+}
  </style>
 </head>
 <body>
