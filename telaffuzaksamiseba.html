@@ -82,7 +82,67 @@
         /* SONUÇ */
         #error-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px; direction: rtl; }
         .error-item { font-family: var(--arabic-font); font-size: 1.8rem; background: #fee2e2; padding: 8px 20px; border-radius: 12px; color: var(--danger); border: 2px solid var(--danger); }
-    </style>
+   
+
+/* --- SADECE MOBİL DİKEY (PORTRAIT) AYARLARI --- */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    
+    /* Üst paneli daha kompakt hale getir */
+    #top-bar-panel {
+        height: auto;
+        padding: 5px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 sütunlu kompakt düzen */
+        gap: 5px;
+    }
+
+    /* Fiil Seçim Listesi (7 Satır Yaklaşımı) */
+    #fiil-list {
+        grid-template-columns: repeat(2, 1fr); /* Yan yana 2 fiil */
+        gap: 8px;
+        padding: 10px;
+    }
+    
+    .fiil-btn {
+        font-size: 1.4rem; /* Mobilde daha okunabilir boyut */
+        padding: 12px 5px;
+    }
+
+    /* Oyun Tablosu (5 Satır Yaklaşımı) */
+    .verb-table {
+        grid-template-columns: repeat(3, 1fr); /* 3 sütun sabit kalmalı (Arapça kalıplar için) */
+        padding: 10px 45px; /* Yan oklara yer bırak */
+        gap: 6px;
+    }
+
+    .cell {
+        font-size: 1.2rem; /* Kelimeler taşmasın diye küçültüldü */
+        min-height: 50px;
+        border-radius: 10px;
+    }
+
+    /* Navigasyon oklarını dikeyde biraz daha daralt */
+    .nav-arrow {
+        width: 35px;
+        font-size: 1.2rem;
+    }
+}
+
+/* --- MOBİL YATAY (LANDSCAPE) İÇİN HAFİF KÜÇÜLTME --- */
+@media screen and (max-height: 450px) and (orientation: landscape) {
+    #top-bar-panel {
+        height: 60px; /* Yatayda alanı korumak için header'ı daralt */
+    }
+    .cell {
+        font-size: 1.1rem;
+        padding: 2px;
+    }
+    .fiil-btn {
+        padding: 5px;
+        font-size: 1.2rem;
+    }
+}
+ </style>
 </head>
 <body>
 
