@@ -115,8 +115,31 @@
         
     }
 
-    #cat-list, #fiil-list { grid-template-columns: 1fr !important; }
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; width: 100%; }
+    #cat-list, #fiil-list { 
+        grid-template-columns: 1fr !important; 
+        justify-content: center !important;
+        padding: 10px 45px !important;
+    }
+    .verb-table {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        justify-content: center !important; /* Tabloyu ortalar */
+        padding: 10px 45px !important;    /* Yan oklar için boşluk */
+        gap: 10px !important;               /* Hücreler arası boşluk */
+        direction: rtl; 
+        margin: 0 auto !important;
+        width: 100%;
+    }
+
+.verb-table .cell {
+        min-height: 52px !important;    /* Hücre yüksekliği */
+        font-size: 1.4rem !important;   /* Arapça yazı boyutu */
+        padding: 0px !important;        /* İç boşluk (genelde 0 iyidir) */
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
 
     /* ORTAK KUTU TASARIMI */
     .cell, .cat-btn, .fiil-btn {
@@ -147,18 +170,32 @@
     }
     .header-item { transform: scale(0.7); flex-direction: row; gap: 6px; }
 
-    /* Listeler ve Izgara */
-    #cat-list, #fiil-list, .verb-table {
-        padding: 4px 60px !important;
-        gap: 4px !important; /* Dikey boşluk minimum */
-        display: grid !important;
+    /* 2. FİİL SEÇİM BUTONLARI (Salim, Mehmuz vb.) */
+    #cat-list .cat-btn, #fiil-list .fiil-btn {
+        min-height: 38px !important;    /* Yatayda daha ince butonlar */
+        font-size: 1.2rem !important;   /* Yazı biraz küçüldü */
+        padding: 2px !important;
+        border-radius: 10px !important;
     }
 
     /* Seçim ekranları: Yatayda 2 sütun yaparak yer kazan */
-    #cat-list, #fiil-list { grid-template-columns: repeat(2, 1fr) !important; }
+    #cat-list, #fiil-list { 
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 sütun yaparak sığdırdık */
+        padding: 5px 70px !important;
+        gap: 6px !important;
+    }
 
     /* Oyun ızgarası: 3 Sütun */
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; }
+    .verb-table {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        justify-content: center !important;
+        align-content: center !important; /* Dikeyde ortalar */
+        padding: 2px 70px !important;
+        gap: 5px !important;              /* Yatayda boşluk azaldı */
+        direction: rtl;
+        margin: 0 auto !important;
+    }
 
     /* KUTU TASARIMLARI (Yatay Mod İçin İnce Yapı) */
     .cell, .cat-btn, .fiil-btn {
