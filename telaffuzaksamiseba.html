@@ -84,62 +84,87 @@
         .error-item { font-family: var(--arabic-font); font-size: 1.8rem; background: #fee2e2; padding: 8px 20px; border-radius: 12px; color: var(--danger); border: 2px solid var(--danger); }
    
 
-/* --- SADECE MOBİL DİKEY (PORTRAIT) AYARLARI --- */
+/* --- MOBİL DİKEY (PORTRAIT) OPTİMİZASYONU --- */
 @media screen and (max-width: 480px) and (orientation: portrait) {
-    
-    /* Üst paneli daha kompakt hale getir */
+    /* Header'ı 2 satır yaparak küçültme */
     #top-bar-panel {
         height: auto;
+        min-height: 60px;
         padding: 5px;
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 sütunlu kompakt düzen */
-        gap: 5px;
+        grid-template-columns: repeat(3, 1fr); /* 3 sütunlu yapı */
+        gap: 2px;
     }
 
-    /* Fiil Seçim Listesi (7 Satır Yaklaşımı) */
-    #fiil-list {
-        grid-template-columns: repeat(2, 1fr); /* Yan yana 2 fiil */
-        gap: 8px;
-        padding: 10px;
-    }
+    .header-item { transform: scale(0.85); } /* Elementleri genel olarak küçült */
     
-    .fiil-btn {
-        font-size: 1.4rem; /* Mobilde daha okunabilir boyut */
-        padding: 12px 5px;
-    }
+    .back-nav { padding: 4px 8px; font-size: 0.8rem; }
+    .timer-val, .score-val { font-size: 1.4rem; line-height: 1; }
+    .stage-badge { font-size: 0.9rem; padding: 3px 6px; }
+    .pause-circle { width: 35px; height: 35px; font-size: 1rem; }
 
-    /* Oyun Tablosu (5 Satır Yaklaşımı) */
+    /* Fiil çekim tablosunu dikeyde genişletme */
     .verb-table {
-        grid-template-columns: repeat(3, 1fr); /* 3 sütun sabit kalmalı (Arapça kalıplar için) */
-        padding: 10px 45px; /* Yan oklara yer bırak */
-        gap: 6px;
+        padding: 5px 40px; /* Yan oklara yer bırak, tabloyu genişlet */
+        gap: 4px; /* Dikey boşluğu azalt */
+        grid-template-rows: repeat(5, 1fr); /* 5 satırı ekrana yay */
+        flex: 1;
     }
 
     .cell {
-        font-size: 1.2rem; /* Kelimeler taşmasın diye küçültüldü */
-        min-height: 50px;
-        border-radius: 10px;
+        font-size: 1.6rem; /* Kelime boyutunu büyüt */
+        min-height: auto;
+        height: 100%; /* Satır yüksekliğini kullan */
+        padding: 0;
+        border-radius: 8px;
     }
 
-    /* Navigasyon oklarını dikeyde biraz daha daralt */
+    /* Navigasyon oklarını daralt */
     .nav-arrow {
-        width: 35px;
+        width: 30px;
+        height: 80px;
         font-size: 1.2rem;
     }
 }
 
-/* --- MOBİL YATAY (LANDSCAPE) İÇİN HAFİF KÜÇÜLTME --- */
+/* --- MOBİL YATAY (LANDSCAPE) OPTİMİZASYONU --- */
 @media screen and (max-height: 450px) and (orientation: landscape) {
+    /* Header tek satır ve çok küçük */
     #top-bar-panel {
-        height: 60px; /* Yatayda alanı korumak için header'ı daralt */
+        height: 45px;
+        display: flex;
+        justify-content: space-around;
+        padding: 0 50px;
     }
+
+    .header-item { flex-direction: row; gap: 10px; transform: scale(0.8); }
+    
+    /* Izgaradaki dikey boşlukları minimuma indir */
+    .verb-table {
+        padding: 2px 60px;
+        gap: 3px;
+    }
+
     .cell {
-        font-size: 1.1rem;
+        font-size: 1.4rem;
+        min-height: 35px;
         padding: 2px;
     }
-    .fiil-btn {
+
+    #fiil-list, #cat-list {
         padding: 5px;
-        font-size: 1.2rem;
+        gap: 5px;
+    }
+
+    .fiil-btn, .cat-btn {
+        padding: 5px;
+        font-size: 1.1rem;
+    }
+
+    .nav-arrow {
+        height: 100%; /* Yatayda tam boy oklar */
+        width: 50px;
+        background: rgba(108, 92, 231, 0.05);
     }
 }
  </style>
