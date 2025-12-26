@@ -369,7 +369,7 @@ i', sans-serif;
 
 /* --- MOBİL YATAY VE DİKEY DÜZENLEME --- */
 
-/* 1. Telefonu Yan Çevir Uyarısı */
+/* 1. Telefonu Yan Çevir Uyarısı (Sadece Dikey Modda Görünür) */
 #orientation-warning {
     display: none;
     position: fixed;
@@ -382,123 +382,109 @@ i', sans-serif;
     align-items: center;
     justify-content: center;
     text-align: center;
+    padding: 20px;
 }
 
+/* Telefon döndürme animasyonu */
+.phone-icon {
+    width: 50px;
+    height: 80px;
+    border: 3px solid white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    animation: rotatePhone 2s infinite ease-in-out;
+    position: relative;
+}
+.phone-icon::after {
+    content: "";
+    position: absolute;
+    bottom: 5px; left: 50%;
+    transform: translateX(-50%);
+    width: 5px; height: 5px;
+    background: white;
+    border-radius: 50%;
+}
+
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Sadece dikey konumda uyarısı göster, içeriği gizle */
+@media screen and (orientation: portrait) and (max-width: 950px) {
+    #orientation-warning { display: flex; }
+    body { overflow: hidden; }
+}
+
+/* 2. Yatay Modda (Landscape) Alan Optimizasyonu */
 @media screen and (orientation: landscape) and (max-height: 600px) {
-    /* Tüm varsayılan boşlukları global olarak sıfırlıyoruz */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    :root {
+        --font-size-base: 1rem;
     }
 
     body {
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden; /* Kaydırma çubuklarını ve taşmaları engeller */
-        background-color: #fff;
+        padding: 4px;
+        overflow-y: auto; /* Gerektiğinde kaydırılabilsin */
     }
 
-    /* %8 - Üst Başlık Alanı */
     .top-header {
-        height: 8vh;
-        background: var(--primary);
-        display: grid;
-        grid-template-columns: 50px 1fr 50px;
-        align-items: center;
+        padding: 5px 5px;
+        margin-bottom: 2px;
     }
 
     .header-title-main {
-        font-size: 0.8rem !important;
-        color: white;
-        text-align: center;
-        white-space: nowrap;
+        font-size: 0.5rem;
     }
 
-    .back-btn {
-        height: 6vh; /* Header'dan biraz küçük, dikey ortalanmış */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9rem;
-    }
-
-    /* %8 - Vezin Seçici */
     .vezin-selector {
-        height: 8vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 2px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #ddd;
+        gap: 3px;
+        margin-bottom: 4px !important;
     }
 
     .vezin-btn {
-        height: 6vh;
-        padding: 0 8px !important;
-        font-size: 0.7rem !important;
-        display: flex;
-        align-items: center;
+        padding: 2px 2px;
+        font-size: 0.5rem;
     }
 
-    /* %18 - Fiil Başlıkları (Mazi, Muzari...) */
-    .header-sub {
-        height: 18vh !important;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: #eee !important;
-        border-bottom: 1px solid #ccc;
-    }
-
-    .pattern-label {
-        font-size: 0.85rem !important;
-        line-height: 1;
-    }
-
-    /* %66 - Tablo ve Kökler (Geri kalan tüm alan) */
-    /* Not: %55 demiştiniz ama boşlukları yok ettiğimiz için 
-       kalan alanı (%100 - 8 - 8 - 18 = 66) buraya vererek tam dolduruyoruz */
     .grid-container {
-        height: 66vh;
-        display: grid;
-        grid-template-columns: 70px repeat(6, 1fr);
-        gap: 1px; /* Sadece hücreleri ayırmak için ince bir çizgi */
-        padding: 0;
+        height: auto; /* Mobilde sıkışmaması için yüksekliği serbest bırakıyoruz */
+        gap: 4px;
+        grid-template-columns: 80px repeat(6, 1fr); /* Kök hücresini biraz daraltıyoruz */
     }
 
     .cell {
-        height: 100% !important;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        border-bottom: 1px solid #eee;
-        border-right: 1px solid #eee;
+        font-size: 1.1rem !important;
+        padding: 2px !important;
+        min-height: 60px;
+    }
+
+    .header-sub {
+        font-size: 0.5rem;
+        min-height: 25px !important;
+    }
+
+    .pattern-label {
+        font-size: 0.8rem;
+        margin-top: 2px;
     }
 
     .root-word {
-        font-size: 1rem !important;
-        background: #fdfdfd;
+        font-size: 1.2rem !important;
     }
 
-    /* Arapça Örnek ve Türkçe Anlam */
     .final-word {
-        font-size: 1.1rem !important;
-        line-height: 1.1;
+        font-size: 0.8rem !important;
     }
 
     .meaning-popup {
-        font-size: 0.65rem !important;
-        padding: 1px 2px;
-        margin-top: 1px;
-        background: rgba(231, 76, 60, 0.1); /* Hafif belirginlik */
-        border-radius: 2px;
-        color: #e74c3c;
+        font-size: 0.5rem;
+        padding: 2px;
+    }
+
+    /* Uçan metin mobilde daha küçük olmalı */
+    .flying-text {
+        font-size: 1.2rem !important;
     }
 }
  </style>
