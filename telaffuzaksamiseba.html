@@ -96,76 +96,58 @@
 
 /* --- SADECE MOBİL DİKEY (PORTRAIT) --- */
 @media screen and (max-width: 480px) and (orientation: portrait) {
-    body { overflow-y: auto !important; height: auto !important; }
-    #game-wrapper { overflow: visible !important; height: auto !important; min-height: 100dvh; margin: 5px; }
-
-    #top-bar-panel {
-        position: sticky; top: 0; z-index: 1000;
-        height: auto; padding: 5px;
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
-        background: #f8f9fa;
-    }
-
-    #cat-list, #fiil-list, .verb-table {
-        padding: 10px 40px !important;
-        gap: 8px !important;
+    /* Izgarayı kapsayan ana alan */
+    .verb-table, #cat-list, #fiil-list {
         display: grid !important;
-        justify-content: center !important; /* Izgarayı ve listeyi yatayda ortalar */
-        justify-items: center; /* Elemanları kendi içinde ortalar */
+        /* KRİTİK: Izgarayı yatayda tam ortaya çeker */
+        justify-content: center !important; 
+        /* KRİTİK: Eğer içerik sığmazsa elemanları merkezde tutar */
+        justify-items: center !important; 
+        
+        /* Sağ ve sol boşluğu EŞİTLEYEREK okların altında kalmasını önler */
+        padding: 10px 45px !important; 
+        gap: 8px !important;
+        width: 100% !important;
     }
 
-    #cat-list, #fiil-list { grid-template-columns: 1fr !important; }
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; width: 100%; }
-
-    /* ORTAK KUTU TASARIMI */
+    /* Kutu tasarımlarını eşitle ve auto yap */
     .cell, .cat-btn, .fiil-btn {
-        height: auto !important; /* Sabit yükseklik kaldırıldı */
-        min-height: 50px !important; /* Parmakla basım için alt sınır */
-        font-size: 1.4rem !important;
-        padding: 5px !important; /* İçerik taşmasın diye az miktar esneklik */
-        margin: 0 auto;
-        width: 100%;
-        max-width: 280px;
+        height: auto !important;
+        min-height: 52px !important;
+        width: 100% !important;
+        max-width: 280px; /* Çok yayılmasın */
         display: flex !important;
-        align-items: center; justify-content: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem !important;
+        padding: 5px !important;
         border-radius: 12px !important;
+        margin: 0 auto !important; /* Dış boşluğu otomatik yaparak ortalar */
     }
 }
 
-/* --- SADECE MOBİL YATAY (LANDSCAPE) --- */
 @media screen and (max-height: 450px) and (orientation: landscape) {
-    body, #game-wrapper { overflow: hidden !important; height: 100vh !important; }
+    #top-bar-panel { height: 40px !important; padding: 0 70px !important; }
 
-    #top-bar-panel {
-        height: 38px !important;
-        display: flex !important;
-        justify-content: space-between;
-        padding: 0 60px;
-    }
-    .header-item { transform: scale(0.65); flex-direction: row; gap: 5px; }
-
-    #cat-list, #fiil-list, .verb-table {
-        padding: 2px 65px !important; /* Oklar için boşluk */
-        gap: 4px !important; /* Dikey boşluğu minimuma indirdik */
+    .verb-table, #cat-list, #fiil-list {
         display: grid !important;
+        /* Yatayda ve dikeyde tam ortalama */
         justify-content: center !important;
-        align-content: center !important; /* Dikeyde tam ortalar */
+        align-content: center !important; 
+        
+        padding: 5px 70px !important; 
+        gap: 4px !important; /* Dikey boşluğu azalttık */
     }
 
-    #cat-list, #fiil-list { grid-template-columns: repeat(2, 1fr) !important; }
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; width: 100%; }
-
-    /* ORTAK KUTU TASARIMI (YATAY) */
+    /* Yatayda kutuları incelt ama tasarımı koru */
     .cell, .cat-btn, .fiil-btn {
         height: auto !important;
-        min-height: 36px !important; /* Yatayda sığması için daha ince */
+        min-height: 36px !important; 
         font-size: 1.2rem !important;
         padding: 2px !important;
-        width: 100%;
-        display: flex !important;
-        align-items: center; justify-content: center;
+        margin: 0 auto !important;
         border-radius: 10px !important;
-        line-height: 1;
+        display: flex !important;
     }
 }
  </style>
