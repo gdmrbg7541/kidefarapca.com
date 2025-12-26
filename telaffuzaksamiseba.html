@@ -96,89 +96,77 @@
 
 /* --- SADECE MOBİL DİKEY (PORTRAIT) --- */
 @media screen and (max-width: 480px) and (orientation: portrait) {
-    /* Kaydırma serbestliği */
     body { overflow-y: auto !important; height: auto !important; }
     #game-wrapper { overflow: visible !important; height: auto !important; min-height: 100dvh; margin: 5px; }
 
-    /* Header: 3 sütunlu kompakt yapı */
     #top-bar-panel {
         position: sticky; top: 0; z-index: 1000;
         height: auto; padding: 5px;
-        grid-template-columns: repeat(3, 1fr); gap: 4px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
         background: #f8f9fa;
     }
-    .header-item { transform: scale(0.85); }
 
-    /* Listeler ve Izgara Ortak Ayarları */
     #cat-list, #fiil-list, .verb-table {
-        padding: 10px 40px !important; /* Oklar için yan boşluk */
-        gap: 8px !important; /* Kutular arası dikey boşluk */
+        padding: 10px 40px !important;
+        gap: 8px !important;
         display: grid !important;
-        justify-content: center !important;
+        justify-content: center !important; /* Izgarayı ve listeyi yatayda ortalar */
+        justify-items: center; /* Elemanları kendi içinde ortalar */
     }
 
-    /* Seçim ekranları: Her satıra 1 fiil türü */
     #cat-list, #fiil-list { grid-template-columns: 1fr !important; }
+    .verb-table { grid-template-columns: repeat(3, 1fr) !important; width: 100%; }
 
-    /* Oyun ızgarası: 3 Sütun 5 Satır */
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; }
-
-    /* KUTU TASARIMLARI (Fiiller ve Örnekler Aynı) */
+    /* ORTAK KUTU TASARIMI */
     .cell, .cat-btn, .fiil-btn {
-        min-height: 52px !important; /* Parmakla basım yüksekliği */
-        font-size: 1.5rem !important; /* Okunabilir büyük font */
-        border-radius: 12px !important;
-        padding: 0 !important;
+        height: auto !important; /* Sabit yükseklik kaldırıldı */
+        min-height: 50px !important; /* Parmakla basım için alt sınır */
+        font-size: 1.4rem !important;
+        padding: 5px !important; /* İçerik taşmasın diye az miktar esneklik */
+        margin: 0 auto;
+        width: 100%;
+        max-width: 280px;
         display: flex !important;
         align-items: center; justify-content: center;
-        width: 100%; max-width: 280px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border-radius: 12px !important;
     }
-
-    /* Oklar dikeyde sabit kalsın */
-    .nav-arrow { position: fixed; width: 35px; height: 75px; font-size: 1.6rem; z-index: 1100; }
 }
 
 /* --- SADECE MOBİL YATAY (LANDSCAPE) --- */
 @media screen and (max-height: 450px) and (orientation: landscape) {
-    /* Ekranı sabitle, kaydırmayı kapat (her şey sığmalı) */
     body, #game-wrapper { overflow: hidden !important; height: 100vh !important; }
 
-    /* Header: Çok ince tek satır */
     #top-bar-panel {
-        height: 40px !important;
+        height: 38px !important;
         display: flex !important;
         justify-content: space-between;
-        padding: 0 65px;
+        padding: 0 60px;
     }
-    .header-item { transform: scale(0.7); flex-direction: row; gap: 6px; }
+    .header-item { transform: scale(0.65); flex-direction: row; gap: 5px; }
 
-    /* Listeler ve Izgara */
     #cat-list, #fiil-list, .verb-table {
-        padding: 4px 60px !important;
-        gap: 4px !important; /* Dikey boşluk minimum */
+        padding: 2px 65px !important; /* Oklar için boşluk */
+        gap: 4px !important; /* Dikey boşluğu minimuma indirdik */
         display: grid !important;
+        justify-content: center !important;
+        align-content: center !important; /* Dikeyde tam ortalar */
     }
 
-    /* Seçim ekranları: Yatayda 2 sütun yaparak yer kazan */
     #cat-list, #fiil-list { grid-template-columns: repeat(2, 1fr) !important; }
+    .verb-table { grid-template-columns: repeat(3, 1fr) !important; width: 100%; }
 
-    /* Oyun ızgarası: 3 Sütun */
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; }
-
-    /* KUTU TASARIMLARI (Yatay Mod İçin İnce Yapı) */
+    /* ORTAK KUTU TASARIMI (YATAY) */
     .cell, .cat-btn, .fiil-btn {
-        min-height: 38px !important; /* Yatayda daha dar kutular */
-        font-size: 1.3rem !important; /* Hafif küçültülmüş font */
-        border-radius: 10px !important;
-        padding: 0 !important;
+        height: auto !important;
+        min-height: 36px !important; /* Yatayda sığması için daha ince */
+        font-size: 1.2rem !important;
+        padding: 2px !important;
+        width: 100%;
         display: flex !important;
         align-items: center; justify-content: center;
+        border-radius: 10px !important;
         line-height: 1;
     }
-
-    /* Navigasyon okları yatayda tam boy */
-    .nav-arrow { height: 60px; width: 50px; font-size: 1.4rem; top: 55%; }
 }
  </style>
 </head>
