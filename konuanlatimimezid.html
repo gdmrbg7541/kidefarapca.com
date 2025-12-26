@@ -386,8 +386,7 @@ i', sans-serif;
 }
 
 .phone-icon {
-    width: 50px;
-    height: 80px;
+    width: 50px; height: 80px;
     border: 3px solid white;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -408,122 +407,109 @@ i', sans-serif;
 
 /* 2. Yatay Modda (Landscape) Alan Optimizasyonu */
 @media screen and (orientation: landscape) and (max-height: 600px) {
-    :root {
-        --font-size-base: 0.75rem;
-    }
-
     body {
-        padding: 0 5px;
+        padding: 0px;
+        margin: 0px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* Elemanları en tepeden dizmeye başlar */
         height: 100vh;
-        overflow-y: auto;
-        gap: 2px; /* Elemanlar arası çok dar boşluk */
+        overflow: hidden; /* Taşmayı önlemek için */
+        justify-content: space-between;
     }
 
-    /* Üst Başlık - En İnce Halde */
+    /* %8 - Üst Başlık ve Geri Tuşu */
     .top-header {
+        height: 8vh;
         display: grid;
-        grid-template-columns: 45px 1fr 45px;
+        grid-template-columns: 50px 1fr 50px;
         align-items: center;
-        height: 30px; 
+        padding: 0 10px;
         margin: 0;
-        padding: 0;
     }
 
     .header-title-main {
-        font-size: 0.75rem !important;
+        font-size: 0.8rem !important;
+        line-height: 8vh;
+        margin: 0;
         white-space: nowrap;
-        text-align: center;
-        line-height: 30px;
     }
 
     .back-btn {
-        height: 24px;
-        line-height: 24px;
+        height: 6vh;
+        line-height: 6vh;
         font-size: 0.8rem;
-        padding: 0 5px;
+        padding: 0 10px;
     }
 
-    /* Vezin Seçici Butonlar - Dikey ve Yatay Sığdırma Ayarı */
+    /* %8 - Vezin Seçici Butonlar */
     .vezin-selector {
+        height: 8vh;
         display: flex;
-        flex-wrap: wrap; /* İsimler yan yana sığmazsa alt satıra geçer */
         justify-content: center;
         align-items: center;
-        gap: 3px; /* Butonlar arası boşluk */
-        margin: 2px 0 !important;
-        height: auto; /* Sabit yükseklik kaldırıldı, içeriğe göre uzar */
-        width: 100%;
+        gap: 4px;
+        margin: 0 !important;
     }
 
     .vezin-btn {
-        padding: 3px 6px !important; /* İç boşlukları dengeledik */
-        font-size: 0.72rem !important; /* Okunabilir en küçük seviye */
-        min-height: 24px; /* Buton yüksekliğini dikeyde sabitledik */
-        line-height: 1;
-        white-space: nowrap; /* Kelimenin kendi içinde bölünmesini önler */
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 1 auto; /* Gerektiğinde küçülmesine izin verir */
+        padding: 0px 8px !important;
+        font-size: 0.7rem !important;
+        height: 6vh;
+        line-height: 6vh;
     }
 
-    /* Tablo Konteyner */
-    .grid-container {
-        gap: 1px;
-        grid-template-columns: 60px repeat(6, 1fr);
-        margin: 0;
-        flex-grow: 1; /* Kalan alanı tablo doldurur */
-    }
-
-    /* Başlık Hücreleri (Mazi, Muzari vb.) */
+    /* %18 - Fiil Başlıkları (Mazi, Muzari vb.) */
     .header-sub {
+        height: 18vh !important;
+        min-height: 18vh !important;
         font-size: 0.65rem !important;
-        min-height: 28px !important;
-        gap: 0px !important;
-        padding: 1px 0 !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 !important;
     }
 
     .pattern-label {
-        font-size: 0.75rem !important;
-        margin-top: -2px; /* Türkçe başlığa yaklaştır */
+        font-size: 0.8rem !important;
+        margin-top: 1px;
     }
 
-    /* Veri Hücreleri */
+    /* %55 - Kökler ve Örneklerin Olduğu Satırlar */
+    .grid-container {
+        height: 55vh;
+        display: grid;
+        grid-template-columns: 65px repeat(6, 1fr);
+        gap: 2px;
+        padding: 0 5px;
+    }
+
     .cell {
+        height: 100% !important;
+        min-height: auto !important;
         padding: 0 !important;
-        min-height: 55px !important; /* Dikey alanı korumak için ideal yükseklik */
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
 
-    /* Arapça Kelime */
-    .final-word {
-        font-size: 1rem !important;
-        line-height: 1.1;
-    }
-
-    /* Türkçe Anlam - Kelimenin hemen altı */
-    .meaning-popup {
-        font-size: 0.6rem !important;
-        padding: 0 2px;
-        margin-top: 1px;
-        width: 98%;
-    }
-
-    /* Kök Harfler */
     .root-word {
         font-size: 0.9rem !important;
-        min-height: 55px !important;
     }
 
-    /* Uçan Metin */
-    .flying-text {
-        font-size: 0.9rem !important;
+    /* Arapça Kelime ve Türkçe Anlam */
+    .final-word {
+        font-size: 1rem !important;
+        line-height: 1;
     }
+
+    .meaning-popup {
+        font-size: 0.6rem !important;
+        padding: 1px;
+        margin-top: 1px;
+        width: 95%;
+    }
+
+    /* Kalan %11'lik dilim otomatik olarak aralardaki boşluklara (gap) dağılır */
 }
  </style>
 </head>
