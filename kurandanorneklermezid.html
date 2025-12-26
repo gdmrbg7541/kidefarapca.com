@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kur'an-ı Kerim Mezid Fiil Atölyesi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Work+Sans:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a2a3a;
+            --arabic-gold: #c5a059;
+            --bg-paper: #fdfaf5;
+            --correct: #27ae60;
+            --wrong: #c0392b;
+        }
+
+        body, html {
+            height: 100%; margin: 0; padding: 0;
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--bg-paper);
+            display: flex; flex-direction: column; overflow-x: hidden;
+        }
+
+        .fixed-back-nav {
+            position: absolute; top: 15px; left: 15px;
+            background: var(--primary-dark); color: #fff;
+            padding: 10px 20px; border-radius: 8px;
+            text-decoration: none; font-size: 1rem; z-index: 1000;
+            transition: background 0.3s;
+        }
+        
+        .fixed-back-nav:hover { background: #2c3e50; }
+
+        #quiz-container {
+            display: flex; flex-direction: column; min-height: 100vh;
+            width: 100%; box-sizing: border-box; padding: 20px;
+            justify-content: space-between;
+        }
+
+        .status-bar { text-align: center; font-size: 1.2rem; color: var(--arabic-gold); padding-top: 50px; }
+
+        .verse-container {
+            flex-grow: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 10px;
+        }
+
+        .quran-verse {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 2.5rem; line-height: 1.8; color: var(--primary-dark);
+            direction: rtl; margin-bottom: 15px;
+        }
+
+        .highlight-word {
+            color: var(--arabic-gold);
+            border-bottom: 3px dashed var(--arabic-gold);
+            padding: 0 5px;
+        }
+
+        #meal-display {
+            font-size: 1.2rem; color: #444; font-style: italic;
+            margin: 10px auto; max-width: 800px; line-height: 1.5;
+            min-height: 3em;
+        }
+
+        #hint-box {
+            background: #fff; border: 2px solid var(--arabic-gold);
+            border-radius: 10px; padding: 10px; margin: 5px auto;
+            max-width: 800px; width: 90%; display: none;
+            text-align: center; color: #555; font-size: 0.95rem;
+        }
+
+        .options-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 12px; width: 100%; max-width: 1000px; margin: 0 auto;
+        }
+
+        .option-btn {
+            padding: 15px; font-size: 1.2rem; background: white;
+            border: 3px solid #ddd; border-radius: 12px; cursor: pointer;
+            transition: 0.2s; display: flex; justify-content: center; align-items: center;
+            min-height: 60px;
+        }
+
+        .option-btn:hover:not(:disabled) { border-color: var(--arabic-gold); }
+
+        @media (min-width: 768px) {
+            .options-grid { grid-template-columns: 1fr 1fr; }
+            .option-btn:nth-child(5) { grid-column: 1 / span 2; width: 50%; justify-self: center; }
+            .quran-verse { font-size: 3.5rem; }
+        }
+
+        .correct { background-color: var(--correct) !important; color: white !important; }
+        .wrong { background-color: var(--wrong) !important; color: white !important; animation: shake 0.4s; }
+        
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        .bottom-nav { display: flex; justify-content: space-between; gap: 15px; padding-top: 15px; }
+        .nav-btn { flex: 1; padding: 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+        #next-btn { background: var(--primary-dark); color: white; }
+        #next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<a href="mezidfiiller.html" class="fixed-back-nav">← GERİ DÖN</a>
+
+<div id="quiz-container">
+    <div class="status-bar" id="counter">Soru: 1 / 40</div>
+    
+    <div class="verse-container">
+        <div id="verse" class="quran-verse"></div>
+        <div id="meal-display"></div>
+        <div id="hint-box"></div>
+    </div>
+
+    <div id="options" class="options-grid"></div>
+
+    <div class="bottom-nav">
+        <button id="prev-btn" class="nav-btn">ÖNCEKİ SORU</button>
+        <button id="next-btn" class="nav-btn" disabled>SONRAKİ SORU</button>
+    </div>
+</div>
+
+<script>
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTone(freq, type, duration) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+}
+
+// Diziyi karıştırmak için yardımcı fonksiyon (Fisher-Yates Shuffle)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+const quranQuestions = [
+    // Verileriniz (Değiştirilmedi, sadece çalışma anında karıştırılacak)
+    { verse: "إِنَّا <span class='highlight-word'>أَنْزَلْنَاهُ</span> فِي لَيْلَةِ الْقَدْرِ", correctPattern: "İfal", options: ["İfal", "Tefil", "Müfaale", "İnfial", "İftial"], meal: "Şüphesiz, biz onu (Kur'an'ı) Kadir gecesinde indirdik.", hint: "أَنْزَلَ (Enzele) fiili İfal babından mazi bir fiildir." },
+    { verse: "وَ <span class='highlight-word'>أَرْسَلَ</span> عَلَيْهِمْ طَيْرًا أَبَابِيلَ", correctPattern: "İfal", options: ["İfal", "Tefil", "İstifal", "İnfial", "Tefeul"], meal: "Onların üzerine sürü sürü kuşlar gönderdi.", hint: "أَرْسَلَ (Ersele) fiili İfal babındandır." },
+    { verse: "فَ <span class='highlight-word'>أَطْعَمَهُمْ</span> مِنْ جُوعٍ", correctPattern: "İfal", options: ["İfal", "Tefil", "İftial", "Müfaale", "Tefeul"], meal: "Onları açlıktan kurtarıp doyurdu.", hint: "أَطْعَمَ (At'ame) fiili doyurmak anlamında İfal babındandır." },
+    { verse: "إِنَّا <span class='highlight-word'>أَعْطَيْنَاكَ</span> الْكَوْثَرَ", correctPattern: "İfal", options: ["İfal", "Tefil", "İstifal", "İnfial", "Tefeul"], meal: "Şüphesiz biz sana Kevser'i verdik.", hint: "أَعْطَى (A'tâ) fiili İfal babındandır." },
+    { verse: "وَ <span class='highlight-word'>أَقِيمُوا</span> الصَّلَاةَ", correctPattern: "İfal", options: ["İfal", "Tefil", "İftial", "Müfaale", "Tefeul"], meal: "Namazı kılın.", hint: "أَقَامَ (Ekame) fiili İfal babından emir kipidir." },
+    { verse: "الَّذِي <span class='highlight-word'>عَلَّمَ</span> بِالْقَلَمِ", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "Müfaale", "İnfial"], meal: "O, kalemle yazmayı öğretendir.", hint: "عَلَّمَ (Allema) fiili Tefil babındandır." },
+    { verse: "فَ <span class='highlight-word'>سَبِّحْ</span> بِحَمْدِ رَبِّكَ", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "İstifal", "İftial"], meal: "Rabbini hamd ile tesbih et.", hint: "سَبَّحَ (Sebbeha) fiili Tefil babındandır." },
+    { verse: "وَ <span class='highlight-word'>صَدَّقَ</span> بِالHُسْنَى", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "Müfaale", "İstifal"], meal: "Ve en güzel olanı (tevhidi) tasdik ederse.", hint: "صَدَّقَ (Saddeka) fiili Tefil babındandır." },
+    { verse: "فَ <span class='highlight-word'>ذَكِّرْ</span> إِنَّمَا أَنْتَ مُذَكِّرٌ", correctPattern: "Tefil", options: ["Tefil", "İfal", "Müfaale", "Tefeul", "İnfial"], meal: "Artık sen öğüt ver! Sen ancak bir öğüt vericisin.", hint: "ذَكَّرَ (Zekkera) fiili Tefil babındandır." },
+    { verse: "نَزَّلَ عَلَيْكَ الْكِتَابَ <span class='highlight-word'>نَزَّلَ</span>", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "İnfial", "İftial"], meal: "Sana kitabı indirdi.", hint: "نَزَّلَ (Nezzele) fiili Tefil babındandır." },
+    { verse: "وَلَا <span class='highlight-word'>تُقَاتِلُوهُمْ</span> عِنْدَ الْمَسْجِدِ الْحَرَامِ", correctPattern: "Müfaale", options: ["Müfaale", "Tefil", "Tefaul", "İfal", "İstifal"], meal: "Mescid-i Haram yanında onlarla savaşmayın.", hint: "قَاتَلَ (Kâtele) fiili Müfaale babındandır." },
+    { verse: "فَ <span class='highlight-word'>نَادَى</span> رَبَّهُ أَنِّي مَغْلُوبٌ", correctPattern: "Müfaale", options: ["Müfaale", "İfal", "Tefil", "Tefeul", "İnfial"], meal: "Rabbine: 'Ben yenik düştüm' diye nida etti.", hint: "نَادَى (Nâdâ) fiili Müfaale babındandır." },
+    { verse: "وَمَا <span class='highlight-word'>يُخَادِعُونَ</span> إِلَّا أَنْفُسَهُمْ", correctPattern: "Müfaale", options: ["Müfaale", "Tefeul", "Tefil", "İfal", "İstifal"], meal: "Onlar ancak kendilerini aldatırlar.", hint: "خَادَعَ (Hâdea) fiili Müfaale babındandır." },
+    { verse: "وَ <span class='highlight-word'>جَاهِدُوا</span> فِي اللَّهِ حَقَّ جِهَادِهِ", correctPattern: "Müfaale", options: ["Müfaale", "Tefil", "İfal", "İftial", "Tefeul"], meal: "Allah yolunda hakkıyla cihad edin.", hint: "جَاهَدَ (Câhede) fiili Müfaale babındandır." },
+    { verse: "إِنَّما <span class='highlight-word'>يُبَايِعُونَ</span> اللَّهَ", correctPattern: "Müfaale", options: ["Müfaale", "İfal", "Tefil", "Tefeul", "İftial"], meal: "Onlar ancak Allah'a biat etmektedirler.", hint: "بَايَعَ (Bâyea) fiili Müfaale babındandır." },
+    { verse: "لَعَلَّكُمْ <span class='highlight-word'>تَتَفَكَّرُونَ</span>", correctPattern: "Tefeul", options: ["Tefeul", "Tefaul", "Tefil", "İfal", "Müfaale"], meal: "Umulur ki düşünürsünüz.", hint: "تَفَكَّرَ (Tefekkera) fiili Tefeul babındandır." },
+    { verse: "فَأَمَّا مَنْ <span class='highlight-word'>تَزَكَّى</span>", correctPattern: "Tefeul", options: ["Tefeul", "Tefil", "İfal", "Müfaale", "İnfial"], meal: "Temizlenen (iman eden) kimseye gelince.", hint: "تَزَكَّى (Tezekkâ) fiili Tefeul babındandır." },
+    { verse: "تَنَزَّلُ الْمَلَائِكَةُ <span class='highlight-word'>تَنَزَّلُ</span>", correctPattern: "Tefeul", options: ["Tefeul", "Tefil", "İnfial", "İfal", "İstifal"], meal: "Melekler inerler.", hint: "تَنَزَّلَ (Tenezzele) fiili Tefeul babındandır." },
+    { verse: "فَ <span class='highlight-word'>تَبَسَّمَ</span> ضَاحِكًا", correctPattern: "Tefeul", options: ["Tefeul", "İfal", "Tefil", "İnfial", "İstifal"], meal: "Gülümseyerek tebessüm etti.", hint: "تَبَسَّمَ (Tebesseme) fiili Tefeul babındandır." },
+    { verse: "فَ <span class='highlight-word'>تَقَبَّلَهَا</span> رَبُّهَا", correctPattern: "Tefeul", options: ["Tefeul", "İfal", "Tefil", "Müfaale", "İftial"], meal: "Rabbi onu kabul buyurdu.", hint: "تَقَبَّلَ (Tekabbele) fiili Tefeul babındandır." },
+    { verse: "وَ <span class='highlight-word'>تَعَاوَنُوا</span> عَلَى الْبِرِّ", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Müfaale", "İfal", "Tefil"], meal: "İyilik üzerinde yardımlaşın.", hint: "تَعَاوَنَ (Teâvene) fiili Tefaul babındandır." },
+    { verse: "أَلْهَاكُمُ <span class='highlight-word'>التَّكَاثُرُ</span>", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Tefil", "İfal", "İstifal"], meal: "Çokluk yarışı (övünmesi) sizi oyaladı.", hint: "تَكَاثَرَ (Tekâsera) fiili Tefaul babındandır." },
+    { verse: "وَ <span class='highlight-word'>تَوَاصَوْا</span> بِالصَّبْرِ", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Müfaale", "İfal", "Tefil"], meal: "Sabrı tavsiye ettiler.", hint: "تَوَاصَى (Tevâsâ) fiili Tefaul babındandır." },
+    { verse: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ <span class='highlight-word'>تَبَارَكَ</span>", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "İfal", "Tefil", "İstifal"], meal: "Hükümranlık elinde olan Allah ne yücedir.", hint: "تَبَارَكَ (Tebâreke) fiili Tefaul babındandır." },
+    { verse: "أَمْ <span class='highlight-word'>تَسَاءَلُونَ</span>", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Müfaale", "İfal", "Tefil"], meal: "Yoksa birbirinize mi soruyorsunuz?", hint: "تَسَاءَلَ (Tese'ele) fiili Tefaul babındandır." },
+    { verse: "وَ <span class='highlight-word'>اعْتَصِمُوا</span> بِحَبْلِ اللَّهِ", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "İstifal"], meal: "Allah'ın ipine sımsıkı sarılın.", hint: "اِعْتَصَمَ (İ'tesame) fiili İftial babındandır." },
+    { verse: "قَدِ <span class='highlight-word'>اخْتَلَطَ</span> بِمَائِهَا", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefeul", "İstifal"], meal: "Onun suyuna karışmıştır.", hint: "اِخْتَلَطَ (İhteleta) fiili İftial babındandır." },
+    { verse: "فَ <span class='highlight-word'>انْتَصِرْ</span>", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "İstifal"], meal: "Artık bana yardım et.", hint: "اِنْتَصَرَ (İntasara) fiili İftial babındandır." },
+    { verse: "فَ <span class='highlight-word'>انْتَقَمْنَا</span> مِنْهُمْ", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "Tefeul"], meal: "Biz de onlardan intikam aldık.", hint: "اِنْتَقَمَ (İntekame) fiili İftial babındandır." },
+    { verse: "وَ <span class='highlight-word'>انْتَظِرُوا</span> إِنَّا مُنْتَظِرُونَ", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "İstifal"], meal: "Bekleyin, biz de beklemekteyiz.", hint: "اِنْتَظَرَ (İntezara) fiili İftial babındandır." },
+    { verse: "إِذَا السَّمَاءُ <span class='highlight-word'>انْفَطَرَتْ</span>", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefil", "İfilal"], meal: "Gök yarıldığı zaman.", hint: "اِنْفَطَرَ (İnfatera) fiili İnfial babındandır." },
+    { verse: "إِذَا السَّمَاءُ <span class='highlight-word'>انْشَقَّتْ</span>", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefeul", "İstifal"], meal: "Gök yarıldığı zaman.", hint: "اِنşakka (İnşakka) fiili İnfial babındandır." },
+    { verse: "فَ <span class='highlight-word'>انْفَجَرَتْ</span> مِنْهُ عَيْنًا", correctPattern: "İnfial", options: ["İnfial", "İftial", "İstifal", "İfal", "Tefil"], meal: "Ondan pınarlar fışkırdı.", hint: "اِنْفَجَرَ (İnfecera) fiili İnfial babındandır." },
+    { verse: "إِذَا <span class='highlight-word'>انْفَضُّوا</span> إِلَيْهَا", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefil", "İfilal"], meal: "Oraya dağıldıkları zaman.", hint: "اِنْفَضَّ (İnfadda) fiili İnfial babındandır." },
+    { verse: "فَ <span class='highlight-word'>انْكَبَّتْ</span> وُجُوهُهُمْ", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefil", "Tefeul"], meal: "Yüzüstü kapandılar.", hint: "اِنْكَبَّ (İnkebbe) fiili İnfial babındandır." },
+    { verse: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ <span class='highlight-word'>نَسْتَعِينُ</span>", correctPattern: "İstifal", options: ["İstifal", "İfal", "İftial", "Müfaale", "Tefeul"], meal: "Yalnız Senden yardım dileriz.", hint: "اِسْتَعَانَ (İsteâne) fiili İstifal babındandır." },
+    { verse: "وَ <span class='highlight-word'>اسْتَغْفِرْهُ</span> إِنَّهُ كَانَ تواًبًا", correctPattern: "İstifal", options: ["İstifal", "İfal", "İnfial", "Tefeul", "Tefil"], meal: "Ondan bağışlanma dile.", hint: "اِسْتَغْفَرَ (İstağfera) fiili İstifal babındandır." },
+    { verse: "فَ <span class='highlight-word'>اسْتَجَابَ</span> لَهُمْ رَبُّهُمْ", correctPattern: "İstifal", options: ["İstifal", "İfal", "İnfial", "İftial", "Tefeul"], meal: "Rableri onlara icabet etti.", hint: "اِسْتَجَابَ (İstecâbe) fiili İstifal babındandır." },
+    { verse: "وَ <span class='highlight-word'>اسْتَكْبَرَ</span> هُوَ وَجُنُودُهُ", correctPattern: "İstifal", options: ["İstifal", "İfal", "Tefeul", "Tefil", "İftial"], meal: "O ve orduları büyüklük tasladılar.", hint: "اِسْتَكْبَرَ (İstekbera) fiili İstifal babındandır." },
+    { verse: "لَا <span class='highlight-word'>تَسْتَفْتِحُوا</span> عَلَى اللَّهِ", correctPattern: "İstifal", options: ["İstifal", "İfal", "Tefeul", "İftial", "İnfial"], meal: "Allah'tan fetih (başarı) istemeyin.", hint: "اِسْتَفْتَحَ (İsteftaha) fiili İstifal babındandır." }
+];
+
+// Uygulama başlangıcında soruları karıştır
+shuffleArray(quranQuestions);
+
+let currentIdx = 0;
+let userAnswers = new Array(quranQuestions.length).fill(null);
+
+function updateUI() {
+    const data = quranQuestions[currentIdx];
+    document.getElementById('counter').innerText = `Soru: ${currentIdx + 1} / ${quranQuestions.length}`;
+    document.getElementById('verse').innerHTML = data.verse;
+    document.getElementById('meal-display').innerText = data.meal;
+
+    const hintBox = document.getElementById('hint-box');
+    const optionsEl = document.getElementById('options');
+    optionsEl.innerHTML = '';
+
+    if (userAnswers[currentIdx]) {
+        hintBox.style.display = 'block';
+        hintBox.innerHTML = `<small>${data.hint}</small>`;
+    } else {
+        hintBox.style.display = 'none';
+    }
+
+    // Şıkları da soru her görüntülendiğinde karıştırıyoruz
+    // (Ancak kullanıcının verdiği cevabı korumak için sadece ilk seferde karıştırmak daha iyidir)
+    if (!data.shuffledOptions) {
+        data.shuffledOptions = shuffleArray([...data.options]);
+    }
+
+    data.shuffledOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        
+        if (userAnswers[currentIdx]) {
+            if (opt === data.correctPattern) btn.classList.add('correct');
+            else if (opt === userAnswers[currentIdx]) btn.classList.add('wrong');
+            btn.disabled = true;
+        }
+
+        btn.onclick = () => {
+            userAnswers[currentIdx] = opt;
+            if (opt === data.correctPattern) {
+                playTone(880, 'sine', 0.3);
+            } else {
+                playTone(200, 'triangle', 0.15);
+            }
+            updateUI();
+            document.getElementById('next-btn').disabled = false;
+        };
+        optionsEl.appendChild(btn);
+    });
+    
+    document.getElementById('next-btn').disabled = !userAnswers[currentIdx];
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+}
+
+document.getElementById('next-btn').onclick = () => { 
+    if (currentIdx < quranQuestions.length - 1) {
+        currentIdx++; 
+        updateUI(); 
+    }
+};
+
+document.getElementById('prev-btn').onclick = () => { 
+    if (currentIdx > 0) {
+        currentIdx--; 
+        updateUI(); 
+    }
+};
+
+updateUI();
+</script>
+</body>
+</html>
