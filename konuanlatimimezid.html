@@ -367,9 +367,9 @@ i', sans-serif;
     }
 }
 
-/* --- MOBİL YATAY VE DİKEY DÜZENLEME --- */
+/* --- MOBİL YATAY VE DİKEY DÜZENLEME (REVİZE) --- */
 
-/* 1. Telefonu Yan Çevir Uyarısı - Dikeyde her şeyi gizler */
+/* 1. Telefonu Yan Çevir Uyarısı */
 #orientation-warning {
     display: none;
     position: fixed;
@@ -391,17 +391,6 @@ i', sans-serif;
     border-radius: 10px;
     margin-bottom: 20px;
     animation: rotatePhone 2s infinite ease-in-out;
-    position: relative;
-}
-
-.phone-icon::after {
-    content: "";
-    position: absolute;
-    bottom: 5px; left: 50%;
-    transform: translateX(-50%);
-    width: 6px; height: 6px;
-    background: white;
-    border-radius: 50%;
 }
 
 @keyframes rotatePhone {
@@ -410,90 +399,99 @@ i', sans-serif;
     100% { transform: rotate(0deg); }
 }
 
-/* Dikey Mod: Elementleri Gizle */
+/* Dikey Mod: Her şeyi gizle, sadece uyarıyı göster */
 @media screen and (orientation: portrait) and (max-width: 950px) {
     #orientation-warning { display: flex; }
     .top-header, .vezin-selector, .grid-container { display: none !important; }
     body { overflow: hidden; background: var(--primary); }
 }
 
-/* 2. Yatay Mod (Landscape) - Sıkılaştırılmış Tasarım */
+/* 2. Yatay Mod (Landscape) - Ultra Sıkıştırma ve Font Sabitleme */
 @media screen and (orientation: landscape) and (max-height: 600px) {
     body {
-        padding: 2px;
+        padding: 1px; /* Dış boşluk minimum */
         overflow-y: auto;
     }
 
     /* Üst Header */
     .top-header {
         padding: 1px 8px;
-        margin-bottom: 2px;
+        margin-bottom: 0px !important; /* Altındaki boşluğu sıfırladık */
         grid-template-columns: 40px 1fr 40px;
     }
 
     .header-title-main {
         font-size: 0.8rem !important;
-        white-space: nowrap;
     }
 
-    /* Vezin Seçici - Boşluklar azaltıldı */
+    /* Vezin Seçici ve Başlıklar Arasındaki Boşluğu Yok Etme */
     .vezin-selector {
         gap: 2px;
-        margin-bottom: 2px !important; /* Başlıklarla arayı kapattı */
+        margin-top: 0px !important;
+        margin-bottom: -5px !important; /* Negatif margin ile başlıkları yukarı çektik */
+        padding: 2px 0;
     }
 
     .vezin-btn {
-        padding: 1px 0px !important; /* İç boşluk (padding) sıfıra yakın */
-        font-size: 0.7rem !important;
-        border-radius: 4px;
-        min-height: 22px;
+        padding: 0px !important;
+        font-size: 0.65rem !important; /* Buton fontu biraz daha küçültüldü */
+        min-height: 20px;
+        border-radius: 3px;
     }
 
-    /* Grid ve Başlıklar */
+    /* Grid Yapısı */
     .grid-container {
-        gap: 1px; /* Hücreler arası boşluk minimum */
-        grid-template-columns: 55px repeat(6, 1fr);
+        gap: 1px;
+        grid-template-columns: 50px repeat(6, 1fr); /* Kök sütunu daraltıldı */
+        margin-top: 0px !important;
     }
 
+    /* Hücreler ve Boyut Sabitleme (Tutarlılık İçin) */
     .cell {
-        padding: 0px !important; /* Hücre iç boşluğu kalktı */
-        min-height: 40px;
-        border-width: 1px;
+        padding: 0px !important;
+        min-height: 42px; /* Hücre yüksekliği optimize edildi */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     /* Başlıklar (Mazi, Muzari...) */
     .header-sub {
         font-size: 0.7rem !important;
-        min-height: 20px !important;
-        margin-bottom: 1px !important; /* Başlık ve tablo arasını kapattı */
-        border-bottom-width: 1px !important;
+        min-height: 18px !important;
+        line-height: 1;
+        margin-bottom: -2px !important; /* Tabloyla arayı kapattı */
+        padding-top: 2px !important;
     }
 
     .pattern-label {
-        font-size: 0.75rem !important;
-        margin-top: -2px; /* Yukarıdaki yazıyla arayı kapattı */
-        line-height: 1;
+        font-size: 0.7rem !important;
+        margin-top: -3px; /* Kırmızı başlığı ana başlığa yapıştırdı */
     }
 
-    /* Kelimeler ve Fiiller */
-    .root-word {
-        font-size: 0.9rem !important;
-    }
-
-    .final-word {
-        font-size: 1.15rem !important; /* Fiil biraz daha büyütüldü */
+    /* KELİME BOYUTLARINI SABİTLEME (Tutarsızlığı Gideren Kısım) */
+    /* Kök kelime, klonlanan kelime ve final hali artık aynı boyutta */
+    .root-word, 
+    .final-word, 
+    .flying-text {
+        font-size: 1.15rem !important; /* Hepsi aynı büyük boyutta */
         font-weight: bold;
+        line-height: 1.1;
     }
 
+    /* Kök sütunundaki kelime (en sağdaki) */
+    .root-word {
+        font-size: 1rem !important; /* Sadece en sağdaki kök biraz küçük kalabilir */
+    }
+
+    /* Türkçe Anlamlar */
     .meaning-popup {
         font-size: 0.6rem !important;
         padding: 0px 2px;
-        bottom: 1px;
-        background: rgba(231, 76, 60, 0.8); /* Daha şeffaf ve ince */
-    }
-
-    .flying-text {
-        font-size: 0.9rem !important;
+        bottom: 0px;
+        line-height: 1;
+        background: rgba(44, 62, 80, 0.9); /* Daha okunaklı koyu renk */
     }
 }
  </style>
