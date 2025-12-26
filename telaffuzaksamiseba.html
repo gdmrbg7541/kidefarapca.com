@@ -104,16 +104,16 @@
         gap: 4px;
     }
     .header-item { transform: scale(0.9); }
-    .timer-val, .score-val { font-size: 1.2rem; line-height: 1; }
-    .back-nav { padding: 4px; font-size: 0.75rem; }
+    .timer-val, .score-val { font-size: 1rem; line-height: 1; }
+    .back-nav { padding: 4px; font-size: 1rem; }
 
     /* Seçim Listeleri (Fiil ve Kategori) */
     #cat-list, #fiil-list {
         grid-template-columns: 1fr; /* Bunlar alt alta kalsın ki isimler okunabilsin */
         gap: 5px;
-        padding: 10px;
+        padding: 2px;
     }
-    .cat-btn, .fiil-btn { min-height: 45px; font-size: 1.1rem; }
+    .cat-btn, .fiil-btn { min-height: 15px; font-size: 1.1rem; }
 
     /* Izgara: 3 Sütun 5 Satır */
     .verb-table {
@@ -124,10 +124,15 @@
         padding: 5px 35px; /* Oklar için güvenli alan */
         flex: 1;
         justify-content: center;
+align-content: center;    /* Izgaranın satırlarını dikeyde merkeze çeker */
+        margin: 0 auto;           /* Dış boşlukla sağ-sol dengelemesi yapar */
+        
+        width: 100%;              /* Ekranın tamamını kullanması için */
+        max-width: 100%;          /* Taşmayı engellemek için */
     }
 
     .cell {
-        font-size: 1.4rem; /* 3 sütunda taşmaması için dengeli boyut */
+        font-size: 2rem; /* 3 sütunda taşmaması için dengeli boyut */
         height: 100%;
         width: 100%;
         border-radius: 6px;
@@ -163,8 +168,8 @@
     }
 
     .cell {
-        font-size: 1.3rem;
-        min-height: 30px;
+        font-size: 2rem;
+        min-height: 15px;
         padding: 0 !important; /* İç boşluk tamamen sıfır */
         line-height: 1;
     }
