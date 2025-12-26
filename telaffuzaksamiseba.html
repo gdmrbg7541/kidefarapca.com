@@ -176,13 +176,13 @@
 
     /* Üst Bar: Alan kazanmak için iyice inceltildi */
     #top-bar-panel {
-        height: 32px !important;
+        height: 40px !important;
         display: flex !important;
         justify-content: space-between;
         padding: 0 70px;
         background: rgba(255,255,255,0.9);
     }
-    .header-item { transform: scale(0.6); gap: 4px; }
+    .header-item { transform: scale(1); gap: 4px; }
 
     /* 1. IZGARA VE LİSTE ALANLARI (Kapsayıcılar) */
     #cat-list, #fiil-list, .verb-table {
@@ -204,11 +204,11 @@
     .cell, .cat-btn, .fiil-btn {
         /* Yükseklik: Sabit piksel yerine ekranın %14'ü kadar esneklik */
         height: auto !important;
-        min-height: 14vh !important; 
-        max-height: 48px !important; /* Çok geniş ekranlarda devleşmesin */
+        min-height: 10vh !important; 
+        max-height: 34px !important; /* Çok geniş ekranlarda devleşmesin */
         
         /* Yazı Boyutu: Ekrana göre dinamik büyür (Küçük kalma sorununu çözer) */
-        font-size: clamp(1.2rem, 6vh, 1.8rem) !important; 
+        font-size: clamp(1.2rem, 7vh, 2rem) !important; 
         
         width: 100% !important;
         padding: 0 !important;
