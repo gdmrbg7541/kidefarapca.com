@@ -166,70 +166,66 @@
     #next-arr { right: 4px !important; }
 }
 
-/* --- SADECE MOBİL YATAY (LANDSCAPE) --- */
+/* --- SADECE MOBİL YATAY (LANDSCAPE) GÜNCEL --- */
 @media screen and (max-height: 450px) and (orientation: landscape) {
-    /* Kaydırmayı kapat, her şeyi mevcut ekrana sığdır */
     body, #game-wrapper { 
         overflow: hidden !important; 
         height: 100vh !important; 
     }
 
-    /* Üst Bar: Alan kazanmak için iyice inceltildi */
+    /* 1. HEADER DÜZENLEME (Boşluğu Yok Etmek İçin) */
     #top-bar-panel {
-        height: 60px !important;
+        height: 35px !important;       /* 60px'den 35px'e düşürüldü */
+        margin-bottom: 0px !important;  /* Alttaki boşluk sıfırlandı */
         display: flex !important;
-        margin-bottom: 10px !important;
         justify-content: space-between;
-        padding: 5px 70px;
+        padding: 0 70px;
         background: rgba(255,255,255,0.9);
     }
-    .header-item { transform: scale(0.7); gap: 3px; }
+    .header-item { transform: scale(0.6); }
 
-    /* 1. IZGARA VE LİSTE ALANLARI (Kapsayıcılar) */
+    /* 2. IZGARA KAPSAYICI (Header'a Yaklaştırma) */
     #cat-list, #fiil-list, .verb-table {
         display: grid !important;
         justify-content: center !important;
-        align-content: center !important; /* Tüm tabloyu dikeyde ortalar */
-       padding: 0 70px 10px 70px !important;
-        gap: 4px !important;               /* Kutular arası dar boşluk */
+        align-content: start !important; /* Ortalamak yerine en üste (header dibine) yaslar */
+        padding: 5px 70px 10px 70px !important; /* Üstten çok az 5px pay bıraktık */
+        gap: 4px !important;
         margin: 0 auto !important;
         width: 100% !important;
-        height: calc(100vh - 40px) !important; /* Ekranın kalan tüm yüksekliğini kullan */
+        height: calc(100vh - 35px) !important;
     }
 
-    /* Düzen: Seçim ekranı 2 sütun, Oyun ızgarası 3 sütun */
-    #cat-list, #fiil-list { grid-template-columns: repeat(2, 1fr) !important; }
-    .verb-table { grid-template-columns: repeat(3, 1fr) !important; direction: rtl; }
-
-    /* 2. ORTAK KUTU VE YAZI TASARIMI (Hücreler ve Butonlar Eşitlendi) */
+    /* 3. KUTU VE ARAPÇA HARF DÜZENLEME (Hemzelerin Sığması İçin) */
     .cell, .cat-btn, .fiil-btn {
-        /* Yükseklik: Sabit piksel yerine ekranın %14'ü kadar esneklik */
-        height: auto !important;
-        min-height: 10vh !important; 
-        max-height: 34px !important; /* Çok geniş ekranlarda devleşmesin */
+        height: 38px !important;        /* Sabit yükseklik biraz artırıldı (Hemzeler için) */
+        min-height: 38px !important;
         
-        /* Yazı Boyutu: Ekrana göre dinamik büyür (Küçük kalma sorununu çözer) */
-        font-size: clamp(1.2rem, 7vh, 2rem) !important; 
+        /* Yazı boyutunu hafifçe dengeledik, kutuya sığması kritik */
+        font-size: 1.4rem !important;   
         
         width: 100% !important;
-        padding: 0 !important;
+        padding: 0 2px !important;
         border-radius: 8px !important;
         display: flex !important;
         align-items: center; 
         justify-content: center;
-        text-align: center;
-        line-height: 1;
+        
+        /* ÖNEMLİ: Arapça karakterleri kutu içinde dikeyde biraz aşağı iter */
+        padding-top: 4px !important; 
+        line-height: 1.2 !important; 
         box-sizing: border-box;
     }
 
-    /* 3. NAVİGASYON OKLARI */
+    #cat-list, #fiil-list { grid-template-columns: repeat(2, 1fr) !important; }
+    .verb-table { grid-template-columns: repeat(3, 1fr) !important; direction: rtl; }
+
+    /* 4. NAVİGASYON OKLARI */
     .nav-arrow { 
-        height: 70px !important; 
-        width: 55px !important; 
-        font-size: 1.6rem !important; 
+        height: 60px !important; 
+        width: 50px !important; 
+        font-size: 1.5rem !important; 
         top: 55% !important; 
-        z-index: 100;
-        background: rgba(108, 92, 231, 0.1) !important;
     }
 }
  </style>
