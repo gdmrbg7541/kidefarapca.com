@@ -19,6 +19,16 @@
             --text-gray: #7f8c8d;
         }
 
+@keyframes sequence-glow {
+    0% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.4); color: var(--accent); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+.reveal-pulse {
+    animation: sequence-glow 0.6s ease-out;
+}
+
         /* 1. ANA YAPI */
         * { box-sizing: border-box; }
 
@@ -2915,7 +2925,7 @@ function shuffleQuestions(array) {
 
         container.appendChild(groupDiv);
     });
-
+setTimeout(runWordHintSequence, 350);
     q.options.forEach((opt, idx) => {
         const card = document.createElement('div');
         card.className = 'option-card';
@@ -3099,6 +3109,18 @@ function shuffleQuestions(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+function runWordHintSequence() {
+    const words = document.querySelectorAll('.word-group');
+    words.forEach((word, index) => {
+        setTimeout(() => {
+            word.classList.add('reveal-pulse');
+            // Animasyon bittikten sonra sınıfı kaldır ki tekrar tıklanabilsin
+            setTimeout(() => {
+                word.classList.remove('reveal-pulse');
+            }, 600);
+        }, index * 150); // 150ms arayla kelimeler parlar
+    });
 }
     </script>
 </body>
