@@ -780,90 +780,150 @@ function updateInstruction() {
 }
     const questionsDB = {
         "2025": [
-          {
-            id: 1,
-            type: "kelime",
-            text: "يستخدم معظم الناس في العالم الإنترنت ومواقع التواصل .....",
-            options: { A: "الجامعية", B: "مجتمعي", C: "تكنولوجية", D: "البشرية", E: "الاجتماعي" },
-            correct: "B",
-            explanation: "2025 YDT 1. Soru: 'Sosyal medya' tamlamasını tamamlayan 'مجتمعي' (toplumsal/sosyal) kelimesi bağlama uygundur[cite: 31, 34, 41, 389]."
-        },
         {
-            id: 2,
-            type: "kelime",
-            text: "تستمر تركيا في كونها أكبر دولة مانحة في العالم من حيث ---- الإنسانية الرسمية.",
-            options: { A: "المسابقة", B: "المساعدة", C: "المناقشة", D: "المناسبة", E: "المقاومة" },
-            correct: "B",
-            explanation: "2025 YDT 2. Soru: 'İnsani yardım' anlamına gelen 'المساعدة الإنسانية' ifadesi doğru cevaptır[cite: 45, 46, 389]."
-        },
+    "id": 1,
+    "type": "kelime",
+    "text": "يجب أن يُعطى الطفل بعد الولادة ----- الضرورية المناسبة في المواعيد المحددة.",
+    "options": {
+        "A": "النزاعات",
+        "B": "اللقاحات",
+        "C": "المكتسبات",
+        "D": "الممرضات",
+        "E": "النفايات"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede 'Çocuğa doğumdan sonra belirli zamanlarda gerekli ve uygun ----- verilmelidir' denilmektedir. Boşluğa anlam bakımından en uygun kelime 'aşılar' anlamına gelen 'اللقاحات' kelimesidir."
+},
         {
-            id: 3,
-            type: "kelime",
-            text: "يحب الكثير من الناس تربية الحيوانات ---- في المنازل.",
-            options: { A: "الأليفة", B: "الجاهلة", C: "الحافلة", D: "المسافرة", E: "المفترسة" },
-            correct: "A",
-            explanation: "2025 YDT 3. Soru: Evlerde beslenen 'evcil' hayvanları nitelemek için 'الأليفة' sıfatı kullanılır[cite: 52, 55, 389]."
-        },
+    "id": 2,
+    "type": "kelime",
+    "text": "تستمر تركيا في كونها أكبر دولة مانحة في العالم من حيث ---- الإنسانية الرسمية.",
+    "options": {
+        "A": "المسابقة",
+        "B": "المساعدة",
+        "C": "المناقشة",
+        "D": "المناسبة",
+        "E": "المقاومة"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede Türkiye'nin 'resmi insani yardımlar' bakımından dünyada en çok bağış yapan ülke olduğu belirtilmektedir. 'Yardım' anlamına gelen 'المساعدة' (el-musa'ade) kelimesi bağlama tam uyum sağlar."
+},
         {
-            id: 4,
-            type: "kelime",
-            text: "يجب أن يُعطى الطفل بعد الولادة ---- المناسبة في المواعيد المحددة.",
-            options: { A: "النزاعات", B: "اللقاحات", C: "المكتسبات", D: "الممرضات", E: "النفايات" },
-            correct: "B",
-            explanation: "2025 YDT 4. Soru: Bebeklere belirli zamanlarda verilen 'aşılar' anlamına gelen 'اللقاحات' kelimesi boşluğa gelmelidir[cite: 39, 42, 389]."
-        },
+    "id": 3,
+    "type": "kelime",
+    "text": "يحبّ الكثير من الناس تربية الحيوانات ----- في المنازل والاعتناء بها.",
+    "options": {
+        "A": "الأليفة",
+        "B": "الجاهلة",
+        "C": "الحافلة",
+        "D": "المسافرة",
+        "E": "المفترسة"
+    },
+    "correct": "A",
+    "explanation": "Doğru cevap A şıkkıdır. Cümlede 'Birçok insan evlerde ----- hayvanları beslemeyi ve onlara bakmayı sever' ifadesi yer almaktadır. Boşluğa evcil hayvanlar anlamına gelen 'الحيوانات الأليفة' tamlamasını tamamlayan 'الأليفة' (evcil) kelimesi gelmelidir."
+},
+       {
+    "id": 4,
+    "type": "kelime",
+    "text": "يستخدم معظم الناس في العالم الإنترنت ومواقع التواصل -----.",
+    "options": {
+        "A": "الجامعية",
+        "B": "الاجتماعي",
+        "C": "تكنولوجية",
+        "D": "البشرية",
+        "E": "مجتمعي"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Arapça'da 'Sosyal Medya' kavramı 'مواقع التواصل الاجتماعي' (mavaqi'u-t-tavasuli-l-ictimai) kalıbıyla ifade edilir. 'التواصل' kelimesi marife (belirli) olduğu için, onu niteleyen sıfatın da marife olması gerekir."
+},
         {
-            id: 5,
-            type: "kelime",
-            text: "إن مهارة ---- الصف واحدة من أهم مهارات تنفيذ التدريس وإدارته.",
-            options: { A: "صانعا", B: "خارجا", C: "فاشلا", D: "إدارة", E: "ناجحا" },
-            correct: "D",
-            explanation: "2025 YDT 5. Soru: 'Sınıf yönetimi' (إدارة الصف) kavramı eğitim bilimlerinde temel bir terimdir[cite: 61, 68, 389]."
-        },
+    "id": 5,
+    "type": "kelime",
+    "text": "إن مهارة إدارة الصف واحدة من أهم مهارات تنفيذ التدريس وإدارته، وبدون اكتساب هذه المهارة لا يكون التدريس ---- في أغلب الأحيان.",
+    "options": {
+        "A": "صانعا",
+        "B": "ناجحا",
+        "C": "خارجا",
+        "D": "فاشلا",
+        "E": "راقبا"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede sınıf yönetimi becerisinin öğretimin uygulanmasındaki önemi vurgulanmaktadır. 'Bu beceri kazanılmadan, öğretim çoğu zaman ---- olmaz' ifadesini en uygun şekilde tamamlayan kelime 'başarılı' anlamına gelen 'ناجحا' kelimesidir."
+},
         {
-            id: 6,
-            type: "kelime",
-            text: "يعتقد الخبراء أن إراحة الجسد من تناول الطعام لساعات متواصلة في اليوم ---- في الاستشفاء من مضاعفات الإجهاد النفسي.",
-            options: { A: "تقاوم", B: "تساهم", C: "تقلل", D: "تناسب", E: "تعاني" },
-            correct: "B",
-            explanation: "2025 YDT 6. Soru: Vücudu dinlendirmenin iyileşmeye 'katkı sağlaması' anlamında 'تساهم' fiili kullanılır[cite: 71, 74, 389]."
-        },
-        {
-            id: 7,
-            type: "kelime",
-            text: "دخان المصانع والسيارات والتدخين ---- تلوث الهواء والأمراض.",
-            options: { A: "تعمل", B: "توجد", C: "تسبب", D: "تفتح", E: "تجعل" },
-            correct: "C",
-            explanation: "2025 YDT 7. Soru: Duman ve sigaranın hastalıklara 'sebep olması' anlamında 'تسبب' fiili uygundur[cite: 83, 87, 389]."
-        },
-        {
-            id: 8,
-            type: "harficer",
-            text: "إن العلم والتكنولوجيا ----- الإنسان عونا كبيرا في مجال متابعة تدفق المعلومات.",
-            options: { A: "أطلقا على", B: "تعاونا مع", C: "قدما لـ", D: "توصلا إلى", E: "منعا عن" },
-            correct: "C",
-            explanation: "2025 YDT 8. Soru: Birine yardım 'sunmak/takdim etmek' anlamındaki 'قدّم لـ' fiil-harfi cer kalıbı sorulmuştur[cite: 103, 107, 389]."
-        },
+    "id": 6,
+    "type": "kelime",
+    "text": "يعتقد الخبراء أن إراحة الجسد من تناول الطعام لساعات متواصلة في اليوم، ---- في الاستشفاء من مضاعفات الإجهاد النفسي.",
+    "options": {
+        "A": "تقاوم",
+        "B": "تساهم",
+        "C": "تقلّل",
+        "D": "تناسب",
+        "E": "تعاني"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede uzmanların, vücudu gün içinde uzun süre yemekten uzak tutmanın (aç bırakmanın) psikolojik stresin yan etkilerinden kurtulmaya ---- olduğuna inandıkları ifade edilmektedir. 'Katkı sağlamak / yardımcı olmak' anlamına gelen 'تساهم' fiili, 'في' harf-i ceri ile birlikte bu bağlama en uygun kelimedir."
+},
+       {
+    "id": 7,
+    "type": "kelime",
+    "text": "دخان المصانع والسيارات والتدخين ---- تلوث الهواء والأمراض.",
+    "options": {
+        "A": "تعمل",
+        "B": "تسبب",
+        "C": "توجد",
+        "D": "تفتح",
+        "E": "تجعل"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede 'Fabrika dumanları, arabalar ve sigara içmek, hava kirliliğine ve hastalıklara ----' denilmektedir. Boşluğa 'sebep olur / yol açar' anlamına gelen 'تسبب' (tüsebbibu) fiili anlamca en uygun seçenektir."
+},
+       {
+    "id": 8,
+    "type": "kelime",
+    "text": "إن العلم والتكنولوجيا ---- الإنسان عونا كبيرا في مجال متابعة تدفق المعلومات واسترجاعها بسرعة هائلة عن طريق العقول الحاسوبية الإلكترونية.",
+    "options": {
+        "A": "أطلقا على",
+        "B": "قدّما لـ",
+        "C": "تعاونا مع",
+        "D": "توصّلا إلى",
+        "E": "منعا عن"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede bilim ve teknolojinin, elektronik bilgisayar zihinleri aracılığıyla bilginin akışını takip etme ve hızla geri çağırma alanında insana büyük bir yardım ---- ifade edilmektedir. 'Sunmak / sağlamak' anlamına gelen 'قدّم لـ' (qaddema li) kalıbı, 'yardım sunmak' (قدما عونا) anlamını tamamladığı için bağlama en uygun seçenektir."
+},
 // questionsDB içerisine eklenecek 9-15. sorular:
 
         {
-            id: 9,
-            type: "dilbilgisi",
-            text: "يختلف الأفراد عن بعضهم البعض من بعض النواحي و ---- هذه الاختلافات في عملية تعلمهم.",
-            options: { A: "يؤثر", B: "تؤثر", C: "تؤثرون", D: "يؤثرون", E: "يؤثرن" },
-            correct: "B",
-            explanation: "2025 YDT 9. Soru: Cümlenin öznesi olan 'الاختلافات' (farklılıklar) akılsız çoğul olduğu için fiil müennes tekil (تؤثر) olarak gelmelidir[cite: 481, 482, 779]."
-        },
+    "id": 9,
+    "type": "gramer",
+    "text": "يختلف الأفراد عن بعضهم البعض من بعض النواحي و---- هذه الاختلافات في عملية تعلمهم.",
+    "options": {
+        "A": "يؤثر",
+        "B": "تؤثر",
+        "C": "تؤثرون",
+        "D": "يؤثرون",
+        "E": "يؤثرن"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Boşluktan sonra gelen 'هذه الاختلافات' (bu farklılıklar) ifadesi akılsız çoğul (cem'i gayri akil) olduğu için, fiilin müennes tekil (müfret müennes) formda gelmesi gerekir. 'تؤثر' (etki eder) fiili bu gramer kuralına ve cümle anlamı olan 'bu farklılıklar onların öğrenme süreçlerini etkiler' ifadesine tam uyum sağlar."
+},
         // questionsDB "2025" dizisi (10. soru - Orijinal Metin ve PDF Uyumu):
 
         {
-            id: 10,
-            type: "dilbilgisi",
-            text: "منذ أوائل العصر الإسلامي ---- للعوامل البيئية والمناخية أثر كبير في اختيار مواقع المدن الإسلامية.",
-            options: { A: "كان", B: "كانتا", C: "كانوا", D: "كنت", E: "كن" },
-            correct: "A",
-            explanation: "2025 YDT 10. Soru: Cümledeki 'أثر' (etki) kelimesi müzekker ve tekil bir isim olduğu için 'كان' fiili ona uygun olarak müzekker formda gelir."
-        },
+    "id": 10,
+    "type": "gramer",
+    "text": "منذ أوائل العصر الإسلامي ---- للعوامل البيئية والمناخية أثر كبير في اختيار مواقع المدن الإسلامية.",
+    "options": {
+        "A": "كان",
+        "B": "كانت",
+        "C": "كانوا",
+        "D": "كانا",
+        "E": "كُنَّ"
+    },
+    "correct": "B",
+    "explanation": "Doğru cevap B şıkkıdır. Cümlede 'etki' (أثر) kelimesi cümlenin öznesi gibi görünse de, fiil cümlenin başında yer alan ve müennes (dişil) olan 'العوامل البيئية والمناخية' (çevresel ve iklimsel faktörler) grubuna atıfta bulunmaktadır. Arapça gramer kurallarına göre akılsız çoğullar (عوامل) müfret müennes (tekil dişil) kabul edildiği için 'كانت' fiili kullanılmalıdır."
+},
         {
             id: 11,
             type: "tamamlama",
