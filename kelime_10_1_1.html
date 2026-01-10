@@ -120,20 +120,48 @@
     let matchedPairs = 0;
     let totalPairsInGame = 0;
     let playedMemoryWords = [];
+    // --- YENİ SES AYARLARI ---
     let audioCtx = null;
 
-    function playTone(freq, duration) {
+    function playTone(freq, type, duration) {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
         const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        const gainNode = audioCtx.createGain();
+
+        osc.type = type; // 'sine' en yumuşak tonu verir
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + duration);
+
+        // ENVELOPE (Sesin şekli):
+        // 1. Ses 0 seviyesinde başlar (sessiz)
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        
+        // 2. Çok kısa sürede (0.02sn) %10 ses seviyesine çıkar (Yumuşak giriş - Attack)
+        // Not: 0.1 değeri ses yüksekliğidir. Daha kısık istersen 0.05 yapabilirsin.
+        gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.02);
+
+        // 3. Süre sonunda yavaşça sönümlenir (Yumuşak çıkış - Release)
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
     }
-    const soundClick = () => playTone(600, 0.1);
-    const soundMatch = () => { playTone(800, 0.2); setTimeout(() => playTone(1200, 0.2), 100); };
-    const soundError = () => playTone(200, 0.3);
+
+    // Su damlası gibi yumuşak bir tıklama sesi (Sine dalgası, 440Hz)
+    const soundClick = () => playTone(440, 'sine', 0.15);
+
+    // Başarı sesi: Daha melodik ve yumuşak iki ton
+    const soundMatch = () => { 
+        playTone(523.25, 'sine', 0.3); // Do notası
+        setTimeout(() => playTone(659.25, 'sine', 0.3), 100); // Mi notası
+    };
+
+    // Hata sesi: Rahatsız etmeyen tok bir ses (Triangle dalgası, düşük frekans)
+    const soundError = () => playTone(150, 'triangle', 0.25);
+    // -------------------------
 
     function startMode(m) {
         soundClick();
