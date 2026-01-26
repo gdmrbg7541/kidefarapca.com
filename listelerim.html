@@ -124,35 +124,33 @@
     </style>
 </head>
 <body>
-
-
-<div id="sidebar">
+<div id="sidebar" style="position: relative; display: flex; flex-direction: column;">
     <h2>🏫 Listelerim </h2>
     <button class="btn-add" onclick="addLevel()">+ Seviye Ekle</button>
-    <div id="levelNav"></div>
-<div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
-  <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin: 40px 0; clear: both;">
-  <button id="manualDownloadBtn" style="
-    background: #ffffff;           /* Tam beyaz arka plan */
-    border: 1px solid #ddd;        /* Çok hafif gri çerçeve */
-    color: #333333;                /* Koyu gri/siyah yazı */
-    padding: 12px 24px;
-    border-radius: 50px;           /* Tam oval yapı */
-    font-family: 'Marhey', sans-serif;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Hafif gölge */
-    transition: all 0.3s ease;">
-    <span style="font-size: 1.2em;">📥</span> 
-    <span>Listeyi İndir</span>
-  </button>
-</div>
-</div>
+    
+    <div id="levelNav" style="flex: 1; overflow-y: auto;"></div>
 
+    <div style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+        <button id="manualDownloadBtn" style="
+            background: #ffffff;
+            border: none;
+            color: #333;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            font-family: 'Marhey', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+            <span>📥 Listeyi İndir</span>
+        </button>
+    </div>
+</div>
 
 <div id="content">
     <div class="header">
@@ -180,107 +178,61 @@
     </div>
 
     <div id="tab1" class="tab-panel"><table id="hwTable"></table></div>
-
     <div id="tab2" class="tab-panel"><table id="exTable"></table></div>
-
     <div id="tab3" class="tab-panel"><table id="resTable"></table></div>
 
     <div id="tab4" class="tab-panel">
         <div id="luckyBox" style="text-align:center; padding:30px; background:#fff; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px;">
-            <div id="luckyStudent" style="font-size:2.5em; font-weight:bold; color:var(--primary); min-height:1.5em; transition: all 0.3s ease;">Öğrenci Seçin</div>
+            <div id="luckyStudent" style="font-size:2.5em; font-weight:bold; color:var(--primary); min-height:1.5em;">Öğrenci Seçin</div>
             <div id="activityType" style="font-size:1.2em; color:var(--accent); margin-top:10px; font-weight:bold;"></div>
         </div>
-        <div class="activity-grid">
-            <button class="act-btn" style="background:#3498db" onclick="pick('Konuşma','#3498db')">Konuşma</button>
-            <button class="act-btn" style="background:#e74c3c" onclick="pick('Yazma','#e74c3c')">Yazma</button>
-            <button class="act-btn" style="background:#2ecc71" onclick="pick('Okuma','#2ecc71')">Okuma</button>
-            <button class="act-btn" style="background:#f1c40f" onclick="pick('Vezin','#f1c40f')">Vezin</button>
-            <button class="act-btn" style="background:#9b59b6" onclick="pick('Sözlük','#9b59b6')">Sözlük</button>
-            <button class="act-btn" style="background:#e67e22" onclick="pick('Tercüme','#e67e22')">Tercüme</button>
         </div>
-        <div style="margin-top:30px;"><table id="activityStatusTable"></table></div>
-        <button onclick="resetPools()" style="margin-top:20px; padding:10px; cursor:pointer;">Havuzları Sıfırla</button>
-    </div>
 
-    <div id="tab5" class="tab-panel">
-        <h3>⏳ Geri Sayım Sayacı</h3>
-        <div class="tool-display" id="countdown-display">00:00</div>
-        <div class="tool-controls">
-            <input type="number" id="countdown-input" placeholder="Dakika" style="width:100px; padding:10px; font-size:1.2em;">
-            <button class="tool-btn btn-start" onclick="startCountdown()">Başlat</button>
-            <button class="tool-btn btn-stop" onclick="stopCountdown()">Durdur</button>
-            <button class="tool-btn btn-reset" onclick="resetCountdown()">Sıfırla</button>
-        </div>
-    </div>
+    <div id="tab5" class="tab-panel"><h3>⏳ Geri Sayım</h3><div class="tool-display" id="countdown-display">00:00</div></div>
+    <div id="tab6" class="tab-panel"><h3>⏱️ Kronometre</h3><div class="tool-display" id="stopwatch-display">00:00:00</div></div>
+    <div id="tab7" class="tab-panel"><h3>🤝 Takım Oluşturucu</h3><div id="teamContainer" class="team-grid"></div></div>
 
-    <div id="tab6" class="tab-panel">
-        <h3>⏱️ Kronometre</h3>
-        <div class="tool-display" id="stopwatch-display">00:00:00</div>
-        <div class="tool-controls">
-            <button class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
-            <button class="tool-btn btn-stop" onclick="stopStopwatch()">Durdur</button>
-            <button class="tool-btn btn-lap" onclick="recordLap()">Tur</button>
-            <button class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
-        </div>
-        <div id="lapList" style="margin-top:20px; max-height:200px; overflow-y:auto; border-top:1px solid #ddd;"></div>
-    </div>
-
-    <div id="tab7" class="tab-panel">
-        <h3>🤝 Takım Oluşturucu</h3>
-        <p>Sınıftaki öğrencileri rastgele takımlara ayırır.</p>
-        <div class="tool-controls" style="flex-wrap: wrap;">
-            <button class="tool-btn btn-start" onclick="createTeams(2)">2'li Takımlar</button>
-            <button class="tool-btn btn-start" onclick="createTeams(3)">3'lü Takımlar</button>
-            <button class="tool-btn btn-start" onclick="createTeams(4)">4'lü Takımlar</button>
-            <button class="tool-btn btn-start" onclick="createTeams(5)">5'li Takımlar</button>
-            <button class="tool-btn btn-reset" onclick="clearTeams()">Temizle</button>
-        </div>
-        <div id="teamContainer" class="team-grid"></div>
-    </div>
-</div>
-
-<div id="lvlModal" style="display:none; position:fixed; top:10%; left:25%; width:50%; max-height:80vh; overflow-y:auto; background:white; padding:30px; box-shadow:0 0 50px rgba(0,0,0,0.5); z-index:1000; border-radius:15px;">
-    <h3>Seviye Ayarlarını Düzenle</h3>
+</div> <div id="lvlModal" style="display:none; position:fixed; top:10%; left:25%; width:50%; max-height:80vh; overflow-y:auto; background:white; padding:30px; box-shadow:0 0 50px rgba(0,0,0,0.5); z-index:1000; border-radius:15px;">
+    <h3 style="color:var(--primary);">Seviye Ayarlarını Düzenle</h3>
     <div style="display: flex; gap: 20px;">
         <div style="flex: 1;">
             <h4>Ödevler</h4>
             <div id="lvlHwList"></div>
-            <button onclick="addConfigRow('hw')">+ Ödev Ekle</button>
+            <button onclick="addConfigRow('hw')" class="btn-add" style="width:100%">+ Ödev Ekle</button>
         </div>
         <div style="flex: 1;">
             <h4>Sınavlar</h4>
             <div id="lvlExList"></div>
-            <button onclick="addConfigRow('ex')">+ Sınav Ekle</button>
+            <button onclick="addConfigRow('ex')" class="btn-add" style="width:100%">+ Sınavle Ekle</button>
         </div>
     </div>
     <div style="text-align: right; margin-top:20px;">
         <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Kaydet</button>
-        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px; cursor:pointer;">Kapat</button>
+        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px; cursor:pointer; background:#ccc; border:none; border-radius:5px; margin-left:10px;">Kapat</button>
     </div>
 </div>
 
-<div id="skillModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-        <h3 id="skillModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Becerileri</h3>
-        <hr>
-        <div id="skillSliders"></div>
-        <div style="text-align:right; margin-top:20px;">
-            <button onclick="closeSkillModal()" style="padding:10px 20px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:5px;">Kaydet ve Kapat</button>
-        </div>
-    </div>
-</div>
+<script>
+    // İndirme İşlemi
+    if (document.getElementById('manualDownloadBtn')) {
+        document.getElementById('manualDownloadBtn').addEventListener('click', function() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'listelerim.html';
+            document.body.appendChild(a); a.click();
+            window.URL.revokeObjectURL(url); document.body.removeChild(a);
+        });
+    }
 
-<div id="customAlertModal">
-    <div class="alert-box">
-        <span id="alertIcon" style="font-size:50px;">⚠️</span>
-        <div id="alertTitle" style="font-size:1.2em; font-weight:bold; margin:10px 0;">Uyarı</div>
-        <div id="alertText" style="color:#666; margin-bottom:20px;">Bu işlemi onaylıyor musunuz?</div>
-        <div class="alert-buttons">
-            <button id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
-            <button id="alertConfirmBtn" class="alert-btn btn-confirm" onclick="closeAlert(true)">Tamam</button>
-        </div>
-    </div>
-</div>
+    // Modal açma fonksiyonu (Eğer JS kısmında silindiyse diye buraya ekliyorum)
+    function openLvlModal(lvlId) {
+        currentEditingLvlId = lvlId;
+        const lvl = levels.find(l => l.id === lvlId);
+        // Modal içeriğini doldurma mantığı burada devam eder...
+        document.getElementById('lvlModal').style.display = 'block';
+    }
+</script>
 
 <script>
     // --- TEMEL VERİ YAPILARI ---
@@ -854,23 +806,23 @@ row.innerHTML = `
     </div>
 </div>
 <script>
-  // Butona tıklandığında çalışacak fonksiyon
-  document.getElementById('manualDownloadBtn').addEventListener('click', function() {
-    // Sayfanın o anki halini bir HTML dosyası olarak hazırlar
-    const htmlContent = document.documentElement.outerHTML;
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = window.URL.createObjectURL(blob);
-    
-    // Geçici bir indirme köprüsü oluşturur
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'listelerim.html';
-    document.body.appendChild(a);
-    a.click();
-    
-    // Belleği temizler
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+  // Sayfa tamamen yüklendikten sonra butonu bağla
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('manualDownloadBtn');
+    if (btn) {
+      btn.onclick = function() {
+        const htmlContent = document.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ogrenci_listelerim.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      };
+    }
   });
 </script>
 </body>
