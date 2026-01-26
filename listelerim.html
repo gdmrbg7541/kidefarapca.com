@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gelişmiş Öğrenci Takip Sistemi</title>
+    <style>
+        :root {
+            --primary: #2c3e50; --secondary: #34495e; --accent: #3498db;
+            --success: #27ae60; --light: #ecf0f1; --white: #ffffff; --danger: #e74c3c;
+            --warning: #f1c40f;
+        }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: #f0f2f5; }
+        
+        /* Sidebar */
+        #sidebar { width: 300px; background: var(--primary); color: white; padding: 15px; display: flex; flex-direction: column; }
+        .btn-add { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; }
+        .level-container { margin-bottom: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 5px; }
+        .level-head { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: var(--secondary); border-radius: 6px; }
+        .level-actions button, .class-actions button {
+            background: rgba(255, 255, 255, 0.15); border: none; color: #ffffff; padding: 4px 10px;
+            border-radius: 4px; cursor: pointer; transition: all 0.2s ease; font-size: 14px;
+        }
+        .level-actions button:hover, .class-actions button:hover { transform: scale(1.1); background: var(--accent); }
+        .class-list { margin-left: 10px; margin-top: 5px; display: none; }
+        .class-list.active { display: block; }
+        .class-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-radius: 4px; transition: 0.2s; }
+        .class-item:hover { background: rgba(255,255,255,0.1); }
+        .class-link { cursor: pointer; color: #bdc3c7; text-decoration: none; flex: 1; }
+        .class-link:hover { color: white; }
+
+        /* Main Area */
+        #content { flex: 1; padding: 25px; overflow-y: auto; display: none; }
+        .header { background: var(--white); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        .tab { padding: 12px 20px; cursor: pointer; border: none; background: none; font-weight: bold; color: var(--secondary); white-space: nowrap; }
+        .tab.active { border-bottom: 3px solid var(--accent); color: var(--accent); }
+        .tab-panel { display: none; background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tab-panel.active { display: block; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f8f9fa; }
+        input[type="number"], input[type="text"] { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        /* Activity & Tools Styles */
+        .activity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .act-btn { padding: 25px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 1.1em; transition: 0.2s; }
+        .marker { display: inline-block; width: 18px; height: 18px; margin-left: 4px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); }
+        
+        /* Tool Cards (Timer, Team etc.) */
+        .tool-display {
+            font-size: 4rem; font-weight: bold; text-align: center; margin: 20px 0;
+            background: #2c3e50; color: #ecf0f1; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace;
+        }
+        .tool-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .tool-btn {
+            padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold; color: white;
+            transition: transform 0.1s;
+        }
+        .tool-btn:active { transform: scale(0.95); }
+        .btn-start { background: var(--success); }
+        .btn-stop { background: var(--danger); }
+        .btn-reset { background: var(--secondary); }
+        .btn-lap { background: var(--warning); color: #333; }
+        
+        /* Team Builder Styles */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .team-card { background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .team-title { font-weight: bold; color: var(--accent); margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .team-member { padding: 4px 0; border-bottom: 1px dotted #ccc; font-size: 0.95em; }
+
+        /* Skill Sliders */
+        .skill-slider { -webkit-appearance: none; width: 100%; height: 12px; border-radius: 10px; background: #e0e0e0; outline: none; margin: 10px 0; }
+        .skill-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #ffffff; cursor: pointer; border: 3px solid var(--accent); }
+
+        /* Custom Alert */
+        #customAlertModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .alert-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; animation: popIn 0.3s; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .alert-btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .btn-confirm { background: var(--accent); color: white; }
+        .btn-cancel { background: #eee; color: #666; }
+
+        /* Dragging */
+        .dragging-row { opacity: 0.5; background-color: #f1f1f1; border: 2px dashed var(--accent); }
+/* Not Modal Stili */
+.note-textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: none;
+    box-sizing: border-box;
+}
+/* İşlem butonlarını yan yana ve ortalı yapan stil */
+.action-cell {
+    display: flex;
+    justify-content: center; /* Yatayda ortalar */
+    align-items: center;    /* Dikeyde ortalar */
+    gap: 8px;               /* Butonlar arasındaki boşluk */
+}
+
+.action-cell button {
+    margin: 0;              /* Gereksiz kenar boşluklarını sıfırlar */
+    width: 32px;            /* Butonlara sabit genişlik vererek simetri sağlar */
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.action-cell button:hover {
+    background: var(--light);
+}
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h2>🏫 Listelerim </h2>
+    <button class="btn-add" onclick="addLevel()">+ Seviye Ekle</button>
+    <div id="levelNav"></div>
+</div>
+
+<div id="content">
+    <div class="header">
+        <h2 id="viewTitle">Sınıf Seçiniz</h2>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab(0)">Öğrenciler</button>
+        <button class="tab" onclick="switchTab(1)">Ödevler</button>
+        <button class="tab" onclick="switchTab(2)">Sınavlar</button>
+        <button class="tab" onclick="switchTab(3)">Genel Sonuç</button>
+        <button class="tab" onclick="switchTab(4)">Etkinlik</button>
+        <button class="tab" onclick="switchTab(5)">Geri Sayım</button>
+        <button class="tab" onclick="switchTab(6)">Kronometre</button>
+        <button class="tab" onclick="switchTab(7)">Takım Oluştur</button>
+    </div>
+
+    <div id="tab0" class="tab-panel active">
+        <h3>Öğrenci Yönetimi</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="text" id="singleStuName" placeholder="Öğrenci Adı Soyadı...">
+            <button class="btn-add" onclick="addSingleStudent()" style="margin:0;">+ Ekle</button>
+        </div>
+        <table id="stuTable"></table>
+    </div>
+
+    <div id="tab1" class="tab-panel"><table id="hwTable"></table></div>
+
+    <div id="tab2" class="tab-panel"><table id="exTable"></table></div>
+
+    <div id="tab3" class="tab-panel"><table id="resTable"></table></div>
+
+    <div id="tab4" class="tab-panel">
+        <div id="luckyBox" style="text-align:center; padding:30px; background:#fff; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px;">
+            <div id="luckyStudent" style="font-size:2.5em; font-weight:bold; color:var(--primary); min-height:1.5em; transition: all 0.3s ease;">Öğrenci Seçin</div>
+            <div id="activityType" style="font-size:1.2em; color:var(--accent); margin-top:10px; font-weight:bold;"></div>
+        </div>
+        <div class="activity-grid">
+            <button class="act-btn" style="background:#3498db" onclick="pick('Konuşma','#3498db')">Konuşma</button>
+            <button class="act-btn" style="background:#e74c3c" onclick="pick('Yazma','#e74c3c')">Yazma</button>
+            <button class="act-btn" style="background:#2ecc71" onclick="pick('Okuma','#2ecc71')">Okuma</button>
+            <button class="act-btn" style="background:#f1c40f" onclick="pick('Vezin','#f1c40f')">Vezin</button>
+            <button class="act-btn" style="background:#9b59b6" onclick="pick('Sözlük','#9b59b6')">Sözlük</button>
+            <button class="act-btn" style="background:#e67e22" onclick="pick('Tercüme','#e67e22')">Tercüme</button>
+        </div>
+        <div style="margin-top:30px;"><table id="activityStatusTable"></table></div>
+        <button onclick="resetPools()" style="margin-top:20px; padding:10px; cursor:pointer;">Havuzları Sıfırla</button>
+    </div>
+
+    <div id="tab5" class="tab-panel">
+        <h3>⏳ Geri Sayım Sayacı</h3>
+        <div class="tool-display" id="countdown-display">00:00</div>
+        <div class="tool-controls">
+            <input type="number" id="countdown-input" placeholder="Dakika" style="width:100px; padding:10px; font-size:1.2em;">
+            <button class="tool-btn btn-start" onclick="startCountdown()">Başlat</button>
+            <button class="tool-btn btn-stop" onclick="stopCountdown()">Durdur</button>
+            <button class="tool-btn btn-reset" onclick="resetCountdown()">Sıfırla</button>
+        </div>
+    </div>
+
+    <div id="tab6" class="tab-panel">
+        <h3>⏱️ Kronometre</h3>
+        <div class="tool-display" id="stopwatch-display">00:00:00</div>
+        <div class="tool-controls">
+            <button class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
+            <button class="tool-btn btn-stop" onclick="stopStopwatch()">Durdur</button>
+            <button class="tool-btn btn-lap" onclick="recordLap()">Tur</button>
+            <button class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
+        </div>
+        <div id="lapList" style="margin-top:20px; max-height:200px; overflow-y:auto; border-top:1px solid #ddd;"></div>
+    </div>
+
+    <div id="tab7" class="tab-panel">
+        <h3>🤝 Takım Oluşturucu</h3>
+        <p>Sınıftaki öğrencileri rastgele takımlara ayırır.</p>
+        <div class="tool-controls" style="flex-wrap: wrap;">
+            <button class="tool-btn btn-start" onclick="createTeams(2)">2'li Takımlar</button>
+            <button class="tool-btn btn-start" onclick="createTeams(3)">3'lü Takımlar</button>
+            <button class="tool-btn btn-start" onclick="createTeams(4)">4'lü Takımlar</button>
+            <button class="tool-btn btn-start" onclick="createTeams(5)">5'li Takımlar</button>
+            <button class="tool-btn btn-reset" onclick="clearTeams()">Temizle</button>
+        </div>
+        <div id="teamContainer" class="team-grid"></div>
+    </div>
+</div>
+
+<div id="lvlModal" style="display:none; position:fixed; top:10%; left:25%; width:50%; max-height:80vh; overflow-y:auto; background:white; padding:30px; box-shadow:0 0 50px rgba(0,0,0,0.5); z-index:1000; border-radius:15px;">
+    <h3>Seviye Ayarlarını Düzenle</h3>
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <h4>Ödevler</h4>
+            <div id="lvlHwList"></div>
+            <button onclick="addConfigRow('hw')">+ Ödev Ekle</button>
+        </div>
+        <div style="flex: 1;">
+            <h4>Sınavlar</h4>
+            <div id="lvlExList"></div>
+            <button onclick="addConfigRow('ex')">+ Sınav Ekle</button>
+        </div>
+    </div>
+    <div style="text-align: right; margin-top:20px;">
+        <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Kaydet</button>
+        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px; cursor:pointer;">Kapat</button>
+    </div>
+</div>
+
+<div id="skillModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <h3 id="skillModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Becerileri</h3>
+        <hr>
+        <div id="skillSliders"></div>
+        <div style="text-align:right; margin-top:20px;">
+            <button onclick="closeSkillModal()" style="padding:10px 20px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:5px;">Kaydet ve Kapat</button>
+        </div>
+    </div>
+</div>
+
+<div id="customAlertModal">
+    <div class="alert-box">
+        <span id="alertIcon" style="font-size:50px;">⚠️</span>
+        <div id="alertTitle" style="font-size:1.2em; font-weight:bold; margin:10px 0;">Uyarı</div>
+        <div id="alertText" style="color:#666; margin-bottom:20px;">Bu işlemi onaylıyor musunuz?</div>
+        <div class="alert-buttons">
+            <button id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
+            <button id="alertConfirmBtn" class="alert-btn btn-confirm" onclick="closeAlert(true)">Tamam</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- TEMEL VERİ YAPILARI ---
+    let data = JSON.parse(localStorage.getItem('schoolData')) || { levels: {}, levelOrder: [] };
+    let curLId = null, curCId = null;
+    let pools = {}; // Kura havuzları
+    let alertCallback = null;
+    let audioCtx = null; // Ses için
+
+    // --- SES SİSTEMİ ---
+    function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    function playBeep(freq = 523, dur = 200) {
+        initAudio();
+        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        setTimeout(() => osc.stop(), dur);
+    }
+
+    // --- UYARI SİSTEMİ ---
+    function showConfirm(title, text, icon, callback) {
+        document.getElementById('alertTitle').innerText = title;
+        document.getElementById('alertText').innerText = text;
+        document.getElementById('alertIcon').innerText = icon;
+        document.getElementById('customAlertModal').style.display = 'flex';
+        alertCallback = callback;
+    }
+    function closeAlert(result) {
+        document.getElementById('customAlertModal').style.display = 'none';
+        if(result && alertCallback) alertCallback();
+    }
+
+    // --- VERİ YÖNETİMİ ---
+    function save() { 
+        localStorage.setItem('schoolData', JSON.stringify(data)); 
+        renderSidebar(); 
+    }
+
+    function addLevel() {
+        let name = prompt("Yeni Seviye Adı (Örn: 10. Sınıflar):");
+        if(name) {
+            let id = 'L' + Date.now();
+            data.levels[id] = { name: name, classes: {}, config: { hw: [{n: 'Ödev 1', w: 1}], ex: [{n: 'Sınav 1', w: 100}] } };
+            if(!data.levelOrder) data.levelOrder = [];
+            data.levelOrder.push(id);
+            save();
+        }
+    }
+
+    function addClass(lId) {
+        let name = prompt("Yeni Sınıf Adı (Örn: 10A):");
+        if(name && data.levels[lId]) {
+            let id = 'C' + Date.now();
+            if(!data.levels[lId].classes) data.levels[lId].classes = {};
+            data.levels[lId].classes[id] = { name: name, students: [] };
+            save();
+        }
+    }
+    
+    // Silme ve Düzenleme Fonksiyonları
+    function editLevelName(lId) {
+        let n = prompt("Yeni İsim:", data.levels[lId].name);
+        if(n) { data.levels[lId].name = n; save(); }
+    }
+    function deleteLevel(lId) {
+        if(confirm("Seviyeyi ve tüm sınıfları silmek istiyor musunuz?")) {
+            delete data.levels[lId];
+            data.levelOrder = data.levelOrder.filter(id => id !== lId);
+            if(curLId === lId) document.getElementById('content').style.display='none';
+            save();
+        }
+    }
+    function editClassName(lId, cId) {
+        let n = prompt("Yeni İsim:", data.levels[lId].classes[cId].name);
+        if(n) { data.levels[lId].classes[cId].name = n; save(); }
+    }
+    function deleteClass(lId, cId) {
+        if(confirm("Sınıfı silmek istiyor musunuz?")) {
+            delete data.levels[lId].classes[cId];
+            if(curCId === cId) document.getElementById('content').style.display='none';
+            save();
+        }
+    }
+
+    // --- SIDEBAR (SOL MENÜ) ---
+    function renderSidebar() {
+        const nav = document.getElementById('levelNav');
+        nav.innerHTML = '';
+        let levelIds = data.levelOrder || Object.keys(data.levels);
+        
+        levelIds.forEach(lId => {
+            let lvl = data.levels[lId];
+            if(!lvl) return;
+            let html = `
+            <div class="level-container" draggable="true" data-id="${lId}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="level-head">
+                    <span onclick="toggleClasses('${lId}')" style="cursor:pointer; flex:1; font-weight:bold;">📁 ${lvl.name}</span>
+                    <div class="level-actions">
+                        <button onclick="openLvlConfig('${lId}')">⚙️</button>
+                        <button onclick="editLevelName('${lId}')">✏️</button>
+                        <button onclick="deleteLevel('${lId}')">🗑️</button>
+                        <button onclick="addClass('${lId}')" title="Sınıf Ekle" style="color:#2ecc71;">+</button>
+                    </div>
+                </div>
+                <div class="class-list" id="list-${lId}">`;
+            
+            for(let cId in lvl.classes) {
+                html += `
+                <div class="class-item">
+                    <a class="class-link" onclick="selectClass('${lId}','${cId}')">📂 ${lvl.classes[cId].name}</a>
+                    <div class="class-actions">
+                        <button onclick="editClassName('${lId}','${cId}')">✏️</button>
+                        <button onclick="deleteClass('${lId}','${cId}')">🗑️</button>
+                    </div>
+                </div>`;
+            }
+            html += `</div></div>`;
+            nav.innerHTML += html;
+        });
+    }
+let curNoteStuIdx = null;
+
+function openNoteModal(idx) {
+    curNoteStuIdx = idx;
+    let s = data.levels[curLId].classes[curCId].students[idx];
+    document.getElementById('noteModalTitle').innerText = s.name + " - Özel Notlar";
+    document.getElementById('studentNoteText').value = s.notes || ""; // Varsa notu getir
+    document.getElementById('noteModal').style.display = 'flex';
+}
+
+function closeNoteModal() {
+    let note = document.getElementById('studentNoteText').value;
+    data.levels[curLId].classes[curCId].students[curNoteStuIdx].notes = note;
+    save();
+    document.getElementById('noteModal').style.display = 'none';
+}
+
+    function toggleClasses(lId) {
+    const targetList = document.getElementById(`list-${lId}`);
+    
+    // Tıklanan listenin şu anki durumunu kontrol et (Açık mı kapalı mı?)
+    const isAlreadyOpen = targetList.style.display === "block";
+
+    // 1. Önce sayfadaki TÜM sınıf listelerini kapat
+    document.querySelectorAll('.class-list').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // 2. Eğer tıkladığımız liste önceden kapalıysa, şimdi aç
+    // (Eğer zaten açıksa, yukarıdaki kodla kapandı ve öyle kalacak)
+    if (!isAlreadyOpen) {
+        targetList.style.display = "block";
+    }
+}
+
+    // --- SÜRÜKLE BIRAK (SEVİYE SIRALAMA) ---
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.getAttribute('data-id')); }
+    function drop(ev) {
+        ev.preventDefault();
+        let draggedId = ev.dataTransfer.getData("text");
+        let targetId = ev.target.closest('.level-container').getAttribute('data-id');
+        if(draggedId === targetId) return;
+        
+        let order = data.levelOrder;
+        order.splice(order.indexOf(draggedId), 1);
+        order.splice(order.indexOf(targetId), 0, draggedId);
+        data.levelOrder = order;
+        save();
+    }
+
+    // --- SINIF SEÇİMİ VE TABLO ÇİZİMİ ---
+    function selectClass(lId, cId) {
+        curLId = lId; curCId = cId;
+        pools = {}; // Havuzları sıfırla
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('viewTitle').innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
+        switchTab(0);
+        renderStudents();
+    }
+
+    function switchTab(idx) {
+        document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+        document.querySelectorAll('.tab-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+        if(idx === 1) renderGrades('hw');
+        if(idx === 2) renderGrades('ex');
+        if(idx === 3) renderResults();
+        if(idx === 4) renderActivityStatus();
+    }
+
+    function renderStudents() {
+        if (!curLId || !curCId) return;
+        let students = data.levels[curLId].classes[curCId].students || [];
+        let table = document.getElementById('stuTable');
+        table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
+        
+        students.forEach((s, i) => {
+            let row = table.insertRow();
+            row.setAttribute('draggable', 'true');
+            row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
+            row.ondragover = (e) => e.preventDefault();
+            row.ondrop = (e) => {
+                e.preventDefault();
+                let from = parseInt(e.dataTransfer.getData("text/plain"));
+                let moved = students.splice(from, 1)[0];
+                students.splice(i, 0, moved);
+                save(); renderStudents();
+            };
+
+            // renderStudents fonksiyonu içindeki ilgili satırı şununla değiştir:
+// renderStudents fonksiyonu içindeki ilgili kısmı şu şekilde değiştirin:
+row.innerHTML = `
+    <td>${i + 1}</td>
+    <td><input type="text" value="${s.name}" onchange="updateStudentName(${i}, this.value)" style="border:none; background:transparent; font-size:1.1em; width:100%;"></td>
+    <td>
+        <div class="action-cell">
+            <button onclick="openNoteModal(${i})" title="Öğrenci Notu">📝</button>
+            <button onclick="openSkillModal(${i})" title="Beceriler">📊</button>
+        </div>
+    </td>
+    <td>
+        <div class="action-cell">
+            <button onclick="deleteStu(${i})" title="Sil" style="color:var(--danger); border:none;">🗑️</button>
+        </div>
+    </td>
+`;
+        });
+    }
+
+    function addSingleStudent() {
+        let val = document.getElementById('singleStuName').value.trim();
+        if(val) {
+            data.levels[curLId].classes[curCId].students.push({ name: val, hw:[], ex:[], history:[] });
+            document.getElementById('singleStuName').value = "";
+            save(); renderStudents();
+        }
+    }
+    
+    function updateStudentName(i, val) {
+        if(val.trim()) { data.levels[curLId].classes[curCId].students[i].name = val.trim(); save(); }
+    }
+    
+    function deleteStu(i) {
+        showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", "🗑️", () => {
+            data.levels[curLId].classes[curCId].students.splice(i, 1);
+            save(); renderStudents();
+        });
+    }
+
+    // --- NOTLAR VE SONUÇLAR ---
+    function renderGrades(type) {
+        let config = data.levels[curLId].config[type];
+        let table = document.getElementById(type + 'Table');
+        table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n}</th>`).join('')} <th>ORT</th></tr>`;
+        
+        data.levels[curLId].classes[curCId].students.forEach((s, si) => {
+            let row = table.insertRow();
+            row.insertCell().innerText = s.name;
+            let total = 0;
+            config.forEach((c, ci) => {
+                let val = s[type] ? parseFloat(s[type][ci]) || 0 : 0;
+                total += val;
+                row.insertCell().innerHTML = `<input type="number" value="${val}" onchange="updateGrade('${type}',${si},${ci},this.value)">`;
+            });
+            let avg = config.length ? (total / config.length) : 0;
+            row.insertCell().innerText = avg.toFixed(2);
+        });
+    }
+
+    function updateGrade(t, si, ci, v) {
+        let s = data.levels[curLId].classes[curCId].students[si];
+        if(!s[t]) s[t] = [];
+        s[t][ci] = v; save(); renderGrades(t);
+    }
+
+    function renderResults() {
+        let table = document.getElementById('resTable');
+        let lvl = data.levels[curLId];
+        table.innerHTML = `<tr><th>Öğrenci</th><th>Ödev Ort.</th><th>Sınav Ort.</th></tr>`;
+        lvl.classes[curCId].students.forEach(s => {
+            let hwT = 0, exT = 0;
+            if(lvl.config.hw.length) lvl.config.hw.forEach((c,i) => hwT += parseFloat((s.hw||[])[i]||0));
+            if(lvl.config.ex.length) lvl.config.ex.forEach((c,i) => exT += parseFloat((s.ex||[])[i]||0));
+            let hwAvg = lvl.config.hw.length ? hwT / lvl.config.hw.length : 0;
+            let exAvg = lvl.config.ex.length ? exT / lvl.config.ex.length : 0;
+            
+            table.insertRow().innerHTML = `<td>${s.name}</td><td>${hwAvg.toFixed(2)}</td><td>${exAvg.toFixed(2)}</td>`;
+        });
+    }
+
+    // --- BECERİ (SKILLS) YÖNETİMİ ---
+    const skillTypes = [
+        {n: 'Konuşma', c: '#3498db'}, {n: 'Yazma', c: '#e74c3c'}, 
+        {n: 'Okuma', c: '#2ecc71'}, {n: 'Vezin', c: '#f1c40f'}, 
+        {n: 'Sözlük', c: '#9b59b6'}, {n: 'Tercüme', c: '#e67e22'}
+    ];
+    let curSkillStuIdx = null;
+
+    function openSkillModal(idx) {
+        curSkillStuIdx = idx;
+        let s = data.levels[curLId].classes[curCId].students[idx];
+        if(!s.skills) s.skills = {};
+        document.getElementById('skillModalTitle').innerText = s.name + " - Beceriler";
+        let c = document.getElementById('skillSliders');
+        c.innerHTML = '';
+        skillTypes.forEach(sk => {
+            let val = s.skills[sk.n] || 1;
+            c.innerHTML += `
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>${sk.n}</span><span style="color:${sk.c}; font-weight:bold;">${val}/10</span>
+                    </div>
+                    <input type="range" min="1" max="10" value="${val}" class="skill-slider"
+                    style="background: linear-gradient(to right, ${sk.c} ${(val-1)*11.1}%, #e0e0e0 ${(val-1)*11.1}%);"
+                    oninput="this.previousElementSibling.children[1].innerText=this.value+'/10'; this.style.background='linear-gradient(to right, ${sk.c} '+(this.value-1)*11.1+'%, #e0e0e0 '+(this.value-1)*11.1+'%)'; updateSkillVal('${sk.n}', this.value)">
+                </div>`;
+        });
+        document.getElementById('skillModal').style.display = 'flex';
+    }
+    
+    function updateSkillVal(n, v) {
+        data.levels[curLId].classes[curCId].students[curSkillStuIdx].skills[n] = parseInt(v);
+    }
+    function closeSkillModal() { save(); document.getElementById('skillModal').style.display = 'none'; }
+
+    // --- ETKİNLİK VE KURA ---
+    function pick(type, color) {
+        if(!curCId) return alert("Sınıf seçin!");
+        let cls = data.levels[curLId].classes[curCId];
+        if(!cls.students.length) return alert("Öğrenci yok!");
+
+        if(!pools[type] || !pools[type].length) pools[type] = [...Array(cls.students.length).keys()];
+        
+        let disp = document.getElementById('luckyStudent');
+        let count = 0;
+        let int = setInterval(() => {
+            disp.innerText = cls.students[Math.floor(Math.random()*cls.students.length)].name;
+            if(++count > 20) {
+                clearInterval(int);
+                let pIdx = Math.floor(Math.random()*pools[type].length);
+                let sIdx = pools[type].splice(pIdx, 1)[0];
+                let stu = cls.students[sIdx];
+                disp.innerText = stu.name;
+                document.getElementById('activityType').innerText = "🎯 " + type;
+                if(!stu.history) stu.history = [];
+                stu.history.push(color);
+                playBeep(880, 150);
+                save(); renderActivityStatus();
+            }
+        }, 80);
+    }
+
+    function renderActivityStatus() {
+        if(!curCId) return;
+        let table = document.getElementById('activityStatusTable');
+        table.innerHTML = `<tr><th>Öğrenci</th><th>Geçmiş (Silmek için tıkla)</th><th>Havuz Durumu</th></tr>`;
+        data.levels[curLId].classes[curCId].students.forEach((s, idx) => {
+            let hist = (s.history||[]).map((c, hi) => `<span class="marker" style="background:${c}; cursor:pointer;" onclick="delHist(${idx},${hi})"></span>`).join('');
+            let poolSt = skillTypes.map(st => {
+                let exist = !pools[st.n] || pools[st.n].includes(idx);
+                return `<span style="font-size:0.8em; color:${exist?'#2ecc71':'#e74c3c'}; ${!exist?'text-decoration:line-through':''}">● ${st.n}</span>`;
+            }).join(' ');
+            table.insertRow().innerHTML = `<td>${s.name}</td><td>${hist}</td><td>${poolSt}</td>`;
+        });
+    }
+
+    function delHist(si, hi) {
+        if(confirm("Silinsin mi?")) {
+            data.levels[curLId].classes[curCId].students[si].history.splice(hi, 1);
+            save(); renderActivityStatus();
+        }
+    }
+    function resetPools() {
+        if(confirm("Tüm geçmiş ve havuzlar sıfırlansın mı?")) {
+            pools = {};
+            data.levels[curLId].classes[curCId].students.forEach(s => s.history = []);
+            save(); renderActivityStatus();
+        }
+    }
+
+    // --- SEVİYE AYARLARI ---
+    function openLvlConfig(lId) {
+        curLId = lId;
+        renderConfRows('hw', data.levels[lId].config.hw);
+        renderConfRows('ex', data.levels[lId].config.ex);
+        document.getElementById('lvlModal').style.display = 'block';
+    }
+    function renderConfRows(t, items) {
+        let c = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
+        c.innerHTML = '';
+        items.forEach(item => {
+            c.innerHTML += `<div style="margin-bottom:5px; display:flex; gap:5px;">
+                <input type="text" class="${t}-n" value="${item.n}" style="flex:2">
+                <input type="number" class="${t}-w" value="${item.w}" style="flex:1">
+                <button onclick="this.parentElement.remove()">✖</button>
+            </div>`;
+        });
+    }
+    function addConfigRow(t) {
+        let c = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
+        c.insertAdjacentHTML('beforeend', `<div style="margin-bottom:5px; display:flex; gap:5px;"><input type="text" class="${t}-n" placeholder="Ad" style="flex:2"><input type="number" class="${t}-w" value="0" style="flex:1"><button onclick="this.parentElement.remove()">✖</button></div>`);
+    }
+    function saveLvlConfig() {
+        ['hw', 'ex'].forEach(t => {
+            data.levels[curLId].config[t] = [];
+            let ns = document.querySelectorAll(`.${t}-n`), ws = document.querySelectorAll(`.${t}-w`);
+            ns.forEach((n, i) => data.levels[curLId].config[t].push({ n: n.value, w: parseFloat(ws[i].value)||0 }));
+        });
+        save(); document.getElementById('lvlModal').style.display = 'none'; 
+        if(curCId) renderGrades('hw'); // Tabloyu yenile
+    }
+
+    // ======================================================
+    // === YENİ ÖZELLİKLER (GERİ SAYIM, KRONOMETRE, TAKIM) ===
+    // ======================================================
+
+    // --- GERİ SAYIM ---
+    let tmr_interval = null;
+    let tmr_remain = 0;
+
+    function startCountdown() {
+        let input = document.getElementById('countdown-input');
+        if(!tmr_interval) {
+            if(tmr_remain === 0) {
+                 let min = parseInt(input.value);
+                 if(!min || min <= 0) return alert("Lütfen dakika girin");
+                 tmr_remain = min * 60;
+            }
+            tmr_interval = setInterval(() => {
+                tmr_remain--;
+                updateTimerDisplay('countdown-display', tmr_remain);
+                if(tmr_remain <= 0) {
+                    clearInterval(tmr_interval);
+                    tmr_interval = null;
+                    playBeep(1046, 500); // Bitiş sesi
+                    alert("Süre Doldu!");
+                }
+            }, 1000);
+        }
+    }
+
+    function stopCountdown() {
+        clearInterval(tmr_interval);
+        tmr_interval = null;
+    }
+
+    function resetCountdown() {
+        stopCountdown();
+        tmr_remain = 0;
+        document.getElementById('countdown-display').innerText = "00:00";
+        document.getElementById('countdown-input').value = "";
+    }
+
+    // --- KRONOMETRE ---
+    let sw_interval = null;
+    let sw_start = 0;
+    let sw_elapsed = 0;
+    let lap_counter = 0;
+
+    function startStopwatch() {
+        if(!sw_interval) {
+            sw_start = Date.now() - sw_elapsed;
+            sw_interval = setInterval(() => {
+                sw_elapsed = Date.now() - sw_start;
+                document.getElementById('stopwatch-display').innerText = formatMs(sw_elapsed);
+            }, 10);
+        }
+    }
+
+    function stopStopwatch() {
+        clearInterval(sw_interval);
+        sw_interval = null;
+    }
+
+    function resetStopwatch() {
+        stopStopwatch();
+        sw_elapsed = 0;
+        lap_counter = 0;
+        document.getElementById('stopwatch-display').innerText = "00:00:00";
+        document.getElementById('lapList').innerHTML = "";
+    }
+
+    function recordLap() {
+        if(sw_elapsed > 0) {
+            lap_counter++;
+            let d = document.createElement('div');
+            d.style.padding = "5px";
+            d.style.borderBottom = "1px solid #eee";
+            d.innerText = `Tur ${lap_counter}: ${formatMs(sw_elapsed)}`;
+            document.getElementById('lapList').prepend(d);
+        }
+    }
+
+    // --- TAKIM OLUŞTURMA (GERÇEK İSİMLERLE) ---
+    function createTeams(size) {
+        if(!curLId || !curCId) return alert("Lütfen önce bir sınıf seçin!");
+        let students = data.levels[curLId].classes[curCId].students;
+        if(!students || students.length === 0) return alert("Sınıfta öğrenci yok!");
+
+        // İsimleri al ve karıştır
+        let names = students.map(s => s.name);
+        names.sort(() => Math.random() - 0.5);
+
+        let teams = [];
+        while(names.length) {
+            teams.push(names.splice(0, size));
+        }
+
+        // Kalanları dağıt (Eğer tam bölünmüyorsa)
+        if(teams.length > 1 && teams[teams.length-1].length < size) {
+            let leftovers = teams.pop();
+            let i = 0;
+            while(leftovers.length) {
+                teams[i].push(leftovers.pop());
+                i = (i + 1) % teams.length;
+            }
+        }
+
+        // Çiz
+        let container = document.getElementById('teamContainer');
+        container.innerHTML = '';
+        teams.forEach((team, i) => {
+            let card = document.createElement('div');
+            card.className = 'team-card';
+            card.innerHTML = `<div class="team-title">Takım ${i+1}</div>`;
+            team.forEach(member => {
+                card.innerHTML += `<div class="team-member">${member}</div>`;
+            });
+            container.appendChild(card);
+        });
+        
+        playBeep(600, 100);
+    }
+    
+    function clearTeams() {
+        document.getElementById('teamContainer').innerHTML = '';
+    }
+
+    // --- YARDIMCI FONKSİYONLAR ---
+    function updateTimerDisplay(id, totalSeconds) {
+        let m = Math.floor(totalSeconds / 60);
+        let s = totalSeconds % 60;
+        document.getElementById(id).innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function formatMs(ms) {
+        let date = new Date(ms);
+        let m = String(date.getUTCMinutes()).padStart(2, '0');
+        let s = String(date.getUTCSeconds()).padStart(2, '0');
+        let cs = String(Math.floor(date.getUTCMilliseconds() / 10)).padStart(2, '0');
+        return `${m}:${s}:${cs}`;
+    }
+
+    // Başlangıç
+    renderSidebar();
+
+</script>
+<div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px;">
+        <h3 id="noteModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Notu</h3>
+        <textarea id="studentNoteText" class="note-textarea" placeholder="Öğrenci hakkında notlarınızı buraya yazın..."></textarea>
+        <div style="text-align:right; margin-top:20px;">
+            <button onclick="closeNoteModal()" style="padding:10px 20px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:5px;">Kaydet ve Kapat</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
