@@ -923,8 +923,6 @@
 
 <a href="listelerim.html" class="floating-tool-button" target="_blank" rel="noopener noreferrer">Listelerim 📋</a>
 
-<a href="listelerim.html" id="downloadBtn" class="floating-tool-button" download="listelerim.html">Listelerim 📋</a>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   
@@ -937,20 +935,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    const btn = document.getElementById('downloadBtn');
-    if (btn) {
-      // Tarayıcıyı tetiklemek için sanal bir tıklama oluşturur
-      const clickEvent = new MouseEvent('click', {
-        view: window,
-        bubbles: true,
-        cancelable: true
-      });
-      btn.dispatchEvent(clickEvent);
-    }
-  }, 300); // Kısa bir gecikme tarayıcı güvenliğini aşmaya yardımcı olur
-});
+  window.addEventListener('load', () => {
+    setHeaderHeight();
+    window.addEventListener('resize', setHeaderHeight);
+  });
   setHeaderHeight();
 
   document.querySelectorAll("a[href]").forEach(a => {
@@ -1225,13 +1213,6 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-// Sayfa yüklendiğinde indirmeyi otomatik başlatır
-  window.addEventListener('load', () => {
-    const btn = document.getElementById('downloadBtn');
-    if (btn) {
-      btn.click();
-    }
-  });
 </script>
 
 </body>
