@@ -832,23 +832,25 @@ row.innerHTML = `
 </div>
 <script>
   window.onload = function() {
-    // İndirilecek dosyanın içeriğini oluştur (Mevcut sayfanın HTML'i)
-    const htmlContent = document.documentElement.outerHTML;
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = window.URL.createObjectURL(blob);
-    
-    // Gizli bir indirme bağlantısı oluştur
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'listelerim.html'; // İndirilecek dosyanın adı
-    document.body.appendChild(a);
-    
-    // İndirmeyi tetikle
-    a.click();
-    
-    // Temizlik yap
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+    // Daha önce indirilip indirilmediğini kontrol et
+    if (!sessionStorage.getItem('dosyaIndirildi')) {
+      
+      const htmlContent = document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = window.URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'listelerim.html';
+      document.body.appendChild(a);
+      a.click();
+      
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      // İndirme yapıldığına dair işaret koy
+      sessionStorage.setItem('dosyaIndirildi', 'true');
+    }
   };
 </script>
 </body>
