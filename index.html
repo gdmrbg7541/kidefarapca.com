@@ -937,10 +937,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   
-  window.addEventListener('load', () => {
-    setHeaderHeight();
-    window.addEventListener('resize', setHeaderHeight);
-  });
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const btn = document.getElementById('downloadBtn');
+    if (btn) {
+      // Tarayıcıyı tetiklemek için sanal bir tıklama oluşturur
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      });
+      btn.dispatchEvent(clickEvent);
+    }
+  }, 300); // Kısa bir gecikme tarayıcı güvenliğini aşmaya yardımcı olur
+});
   setHeaderHeight();
 
   document.querySelectorAll("a[href]").forEach(a => {
