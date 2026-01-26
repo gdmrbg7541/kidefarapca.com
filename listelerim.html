@@ -125,11 +125,34 @@
 </head>
 <body>
 
+
 <div id="sidebar">
     <h2>🏫 Listelerim </h2>
     <button class="btn-add" onclick="addLevel()">+ Seviye Ekle</button>
     <div id="levelNav"></div>
+<div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+  <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin: 40px 0; clear: both;">
+  <button id="manualDownloadBtn" style="
+    background: #ffffff;           /* Tam beyaz arka plan */
+    border: 1px solid #ddd;        /* Çok hafif gri çerçeve */
+    color: #333333;                /* Koyu gri/siyah yazı */
+    padding: 12px 24px;
+    border-radius: 50px;           /* Tam oval yapı */
+    font-family: 'Marhey', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Hafif gölge */
+    transition: all 0.3s ease;">
+    <span style="font-size: 1.2em;">📥</span> 
+    <span>Listeyi İndir</span>
+  </button>
 </div>
+</div>
+
 
 <div id="content">
     <div class="header">
@@ -831,27 +854,24 @@ row.innerHTML = `
     </div>
 </div>
 <script>
-  window.onload = function() {
-    // Daha önce indirilip indirilmediğini kontrol et
-    if (!sessionStorage.getItem('dosyaIndirildi')) {
-      
-      const htmlContent = document.documentElement.outerHTML;
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = window.URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'listelerim.html';
-      document.body.appendChild(a);
-      a.click();
-      
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      // İndirme yapıldığına dair işaret koy
-      sessionStorage.setItem('dosyaIndirildi', 'true');
-    }
-  };
+  // Butona tıklandığında çalışacak fonksiyon
+  document.getElementById('manualDownloadBtn').addEventListener('click', function() {
+    // Sayfanın o anki halini bir HTML dosyası olarak hazırlar
+    const htmlContent = document.documentElement.outerHTML;
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // Geçici bir indirme köprüsü oluşturur
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'listelerim.html';
+    document.body.appendChild(a);
+    a.click();
+    
+    // Belleği temizler
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  });
 </script>
 </body>
 </html>
