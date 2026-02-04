@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Arapça Kelime Dünyası</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --pdf-red: #b30b00;
@@ -14,16 +14,30 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
-       body { 
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg-color); 
-    /* Mobil tarayıcı çubukları için dvh kullanımı: */
-    height: 100vh; /* Eski tarayıcılar için yedek */
-    height: 100dvh; /* Modern mobil tarayıcılar için tam uyum */
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden; 
-}
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-gradient); 
+            height: 100vh; 
+            height: 100dvh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        /* --- 1. FONT TANIMI (DOSYALAR YAN YANA İSE) --- */
+        @font-face {
+            font-family: 'ArakomFont';
+            src: url('arakom.ttf'); /* Klasör adı yok, direkt dosya adı */
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* --- 2. ARAPÇA SINIFI --- */
+        .arabic-text {
+            font-family: 'ArakomFont', sans-serif !important; /* !important ile baskın yaptık */
+            direction: rtl;
+        }
 
         .navbar { background: var(--pdf-red); height: 60px; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; z-index: 2100; color: white; }
         .back-btn { background: var(--pdf-dark); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 20px; }
@@ -32,19 +46,17 @@
         #entry-panel { position: fixed; inset: 0; background: white; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
         .menu-btn { width: 85%; max-width: 350px; padding: 25px; border-radius: 20px; border: 3px solid var(--pdf-red); background: white; color: var(--pdf-red); font-size: 1.5rem; font-weight: 800; cursor: pointer; }
 
-.workspace { 
-    flex: 1; /* Kalan tüm boşluğu kapla */
-    width: 100%;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    padding: 10px; 
-    gap: 10px; 
-    /* Sabit yükseklik yerine kaydırma özelliği veriyoruz */
-    overflow-y: auto; 
-    
-}
+        .workspace { 
+            flex: 1; 
+            width: 100%;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            padding: 10px; 
+            gap: 10px; 
+            overflow-y: auto; 
+        }
 
         /* KELİME KARTI */
         #flashcard-mode { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
@@ -52,8 +64,10 @@
         .fc-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s, opacity 0.3s; transform-style: preserve-3d; }
         .fc-inner.is-flipped { transform: rotateY(180deg); }
         .fc-front, .fc-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        /* Font ayarları JS tarafından kontrol edilecek, buradaki statik fontları sildik */
         .fc-front { background: white; color: var(--pdf-red); font-size: 3rem; font-weight: 800; }
-        .fc-back { background: var(--pdf-red); color: white; transform: rotateY(180deg); font-family: 'Amiri', serif; font-size: 3.5rem; }
+        .fc-back { background: var(--pdf-red); color: white; transform: rotateY(180deg); font-size: 3.5rem; }
 
         /* HAFIZA OYUNU */
         #memory-mode { display: none; width: 100%; height: 100%; gap: 8px; padding: 10px; align-content: center; }
@@ -74,7 +88,9 @@
         .mem-front, .mem-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .mem-front { background: var(--card-back); color: white; font-size: 2rem; border: 2px solid #334155; }
         .mem-back { background: white; transform: rotateY(180deg); border: 2px solid var(--pdf-red); color: #1e293b; font-size: 1.1rem; padding: 5px; }
-        .mem-ar { font-family: 'Amiri', serif; font-size: 1.8rem !important; }
+        
+        /* .mem-ar sınıfını sildik, yerine .arabic-text kullanacağız */
+        
         .matched { opacity: 0; visibility: hidden; transition: 0.4s; pointer-events: none; }
 
         /* OYUN SONU PANELİ */
@@ -141,48 +157,26 @@
     let matchedPairs = 0;
     let totalPairsInGame = 0;
     let playedMemoryWords = [];
-    // --- YENİ SES AYARLARI ---
     let audioCtx = null;
 
     function playTone(freq, type, duration) {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
-
-        osc.type = type; // 'sine' en yumuşak tonu verir
+        osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-        // ENVELOPE (Sesin şekli):
-        // 1. Ses 0 seviyesinde başlar (sessiz)
         gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-        
-        // 2. Çok kısa sürede (0.02sn) %10 ses seviyesine çıkar (Yumuşak giriş - Attack)
-        // Not: 0.1 değeri ses yüksekliğidir. Daha kısık istersen 0.05 yapabilirsin.
         gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.02);
-
-        // 3. Süre sonunda yavaşça sönümlenir (Yumuşak çıkış - Release)
         gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-
         osc.connect(gainNode);
         gainNode.connect(audioCtx.destination);
-
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    // Su damlası gibi yumuşak bir tıklama sesi (Sine dalgası, 440Hz)
     const soundClick = () => playTone(440, 'sine', 0.15);
-
-    // Başarı sesi: Daha melodik ve yumuşak iki ton
-    const soundMatch = () => { 
-        playTone(523.25, 'sine', 0.3); // Do notası
-        setTimeout(() => playTone(659.25, 'sine', 0.3), 100); // Mi notası
-    };
-
-    // Hata sesi: Rahatsız etmeyen tok bir ses (Triangle dalgası, düşük frekans)
+    const soundMatch = () => { playTone(523.25, 'sine', 0.3); setTimeout(() => playTone(659.25, 'sine', 0.3), 100); };
     const soundError = () => playTone(150, 'triangle', 0.25);
-    // -------------------------
 
     function startMode(m) {
         soundClick();
@@ -198,26 +192,40 @@
         if (m === 'memory') initMemoryGame();
     }
 
+    // --- GÜNCELLENEN FONKSİYON 1: KELİME KARTLARI ---
     function updateFlashcard() {
         const inner = document.getElementById('fc-inner');
         const front = document.getElementById('fc-front');
         const back = document.getElementById('fc-back');
         const data = vocabulary[currentIdx];
+        
         inner.classList.remove('is-flipped');
         inner.style.opacity = "0";
+        
         setTimeout(() => {
+            // Önceki sınıfları ve stilleri temizle
+            front.className = 'fc-front';
+            back.className = 'fc-back';
+            front.style.fontFamily = ''; 
+            back.style.fontFamily = '';
+
             if (isTrToAr) {
-                front.innerText = data.tr; front.style.fontFamily = 'Inter';
-                back.innerText = data.ar; back.style.fontFamily = 'Amiri';
+                // TR -> AR
+                front.innerText = data.tr; 
+                back.innerText = data.ar; 
+                back.classList.add('arabic-text'); // Fontu uygula
             } else {
-                front.innerText = data.ar; front.style.fontFamily = 'Amiri';
-                back.innerText = data.tr; back.style.fontFamily = 'Inter';
+                // AR -> TR
+                front.innerText = data.ar; 
+                front.classList.add('arabic-text'); // Fontu uygula
+                back.innerText = data.tr; 
             }
             document.getElementById('fc-counter').innerText = `${currentIdx + 1} / ${vocabulary.length}`;
             inner.style.opacity = "1";
         }, 150);
     }
 
+    // --- GÜNCELLENEN FONKSİYON 2: HAFIZA OYUNU ---
     function initMemoryGame() {
         const container = document.getElementById('memory-mode');
         container.innerHTML = '';
@@ -252,9 +260,10 @@
         gameCards.forEach(card => {
             const div = document.createElement('div');
             div.className = 'mem-card';
+            // BURADA .arabic-text SINIFINI EKLİYORUZ
             div.innerHTML = `<div class="mem-inner">
                 <div class="mem-front">?</div>
-                <div class="mem-back ${card.isAr ? 'mem-ar' : ''}">${card.text}</div>
+                <div class="mem-back ${card.isAr ? 'arabic-text' : ''}">${card.text}</div>
             </div>`;
             div.onclick = () => {
                 if (flippedCards.length < 2 && !div.classList.contains('flipped')) {
@@ -293,8 +302,6 @@
         const panel = document.getElementById('game-over');
         const btn = document.getElementById('over-btn');
         const desc = document.getElementById('over-desc');
-        
-        // Kalan kelime var mı kontrol et
         const remaining = vocabulary.filter(v => !playedMemoryWords.includes(v.ar)).length;
         
         if (remaining >= totalPairsInGame) {
@@ -303,7 +310,7 @@
         } else {
             desc.innerText = "Tebrikler! Tüm kelimeleri tamamladın.";
             btn.innerText = "Yeniden Başla";
-            playedMemoryWords = []; // Havuzu sıfırla
+            playedMemoryWords = [];
         }
         
         setTimeout(() => { panel.style.display = 'flex'; }, 800);
@@ -334,7 +341,6 @@
     function toggleLang() { soundClick(); isTrToAr = !isTrToAr; document.getElementById('lang-toggle').innerText = isTrToAr ? "TR ➔ AR" : "AR ➔ TR"; updateFlashcard(); }
     function handleFcClick(el) { soundClick(); el.querySelector('.fc-inner').classList.toggle('is-flipped'); }
 
-    // Başlangıç
     vocabulary.sort(() => Math.random() - 0.5);
 </script>
 </body>
