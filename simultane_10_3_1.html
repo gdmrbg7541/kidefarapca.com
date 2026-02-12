@@ -182,123 +182,122 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
-/* --- NİHAİ MOBİL YAMA: ORTALAMA VE SCROLL DÜZELTMESİ --- */
+/* --- TASARIMI BOZMAYAN SCROLL YAMASI --- */
 @media screen and (max-width: 768px), 
        screen and (orientation: landscape) and (max-height: 600px) {
 
     /* =========================================
-       1. ÇALIŞMA ALANI: TAM ORTALAMA (FIX)
+       1. POPUP: MASAÜSTÜ GÖRÜNÜMÜ + SCROLL
+       ========================================= */
+    
+    /* Popup'ın gövdesi kaydırılabilir bir pencere olsun */
+    .popup-body {
+        display: block !important;
+        overflow: auto !important; /* Hem yatay hem dikey kaydırma AÇIK */
+        -webkit-overflow-scrolling: touch; /* Mobilde akıcı kaydırma */
+        padding: 10px !important;
+    }
+
+    /* KİLİT NOKTA: İçerik kapsayıcılarını MASAÜSTÜ gibi davranmaya zorla */
+    /* Bu kod, "flex-direction: row-reverse" (yan yana) özelliğini korur */
+    .popup-body > div[style*="display: flex"] {
+        display: flex !important;
+        flex-direction: row-reverse !important; /* Masaüstündeki gibi yan yana */
+        flex-wrap: nowrap !important; /* Asla alt alta inme */
+        width: max-content !important; /* Ekrana sığma, İÇERİK KADAR GENİŞ OL */
+        min-width: 100% !important;
+        gap: 20px !important;
+    }
+
+    /* Sütunlar (İsimler / Fiiller) */
+    .nouns-col, .verbs-col {
+        flex: 0 0 auto !important; /* Genişlikten ödün verme */
+        width: auto !important;    /* İçeriği kadar yer kapla */
+        min-width: 300px !important; /* Çok daralmayı önle */
+        border-right: 2px solid #eee !important; /* Masaüstü çizgisi korunsun */
+        border-bottom: none !important; /* Alt çizgi olmasın */
+        padding-right: 15px !important;
+    }
+
+    /* Tablolar ve Yazılar */
+    .popup-body table {
+        width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    .popup-body th, .popup-body td {
+        white-space: nowrap !important; /* Yazılar alt satıra kırılmasın, yan yana kalsın */
+        padding: 8px 12px !important;
+        font-size: 1rem !important; /* Okunabilir boyut */
+    }
+
+    /* Arapça Fontlar */
+    .popup-body .ar-txt, 
+    .popup-body span[style*="font-size"] { 
+        font-size: 1.4rem !important;
+    }
+
+    /* Başlık sabit kalsın */
+    .popup-header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 50 !important;
+        width: 100% !important;
+    }
+
+    /* =========================================
+       2. ÇALIŞMA ALANI (Cümleler Ortada)
        ========================================= */
     
     .workspace {
         display: flex !important;
         flex-direction: column !important;
-        justify-content: center !important; /* Dikeyde ortala */
-        align-items: center !important;     /* Yatayda ortala */
+        justify-content: center !important; /* Dikey ortala */
+        align-items: center !important;     /* Yatay ortala */
         width: 100% !important;
         padding: 5px !important;
     }
 
-    /* Cümle ve Diyalog Modu Kutuları */
     #sentence-mode, #dialog-mode {
         width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important; /* İçeriği yatayda ortala */
+        align-items: center !important;
         justify-content: center !important;
     }
 
-    /* Kelime Grupları (Türkçe) */
+    /* Kelimeler ve Baloncuklar */
     .tr-container {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important; /* Kelimeleri ortada topla */
-        gap: 6px !important;
+        justify-content: center !important;
         width: 100% !important;
-        margin-bottom: 15px !important;
+        gap: 8px !important;
     }
-
-    /* Arapça Çıktı */
-    .ar-output {
-        text-align: center !important; /* Metni ortala */
-        width: 100% !important;
-        display: block !important;
-        margin-top: 10px !important;
-    }
-
-    /* Kelime Baloncukları Boyutları */
-    #sentence-mode .word { font-size: clamp(1.4rem, 5vw, 2rem) !important; margin: 3px !important; }
-    #dialog-mode .word { font-size: clamp(1.1rem, 4vw, 1.5rem) !important; }
-    #sentence-mode .ar-output { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; }
-    #dialog-mode .ar-output { font-size: clamp(1.4rem, 5vw, 2rem) !important; }
-
-    /* =========================================
-       2. POPUP SCROLL SORUNU ÇÖZÜMÜ
-       ========================================= */
-
-    /* Popup Penceresinin Kendisi */
-    .popup {
-        display: flex !important;
-        flex-direction: column !important;
-        /* Yüksekliği sınırla ki scroll devreye girsin */
-        max-height: 85vh !important; 
-        height: auto !important; 
-        width: 95% !important; /* Kenarlardan biraz boşluk */
-        margin: 0 auto !important; /* Ortala */
-        border-radius: 15px !important;
-    }
-
-    /* Popup Gövdesi (Kaydırma Alanı) */
-    .popup-body {
-        flex: 1 !important; /* Kalan alanı kapla */
-        overflow: auto !important; /* Hem yatay hem dikey kaydırmayı aç */
-        -webkit-overflow-scrolling: touch; /* iPhone için pürüzsüz kaydırma */
-        padding: 10px !important;
-        display: block !important;
-        position: relative !important;
-    }
-
-    /* İÇERİĞİ ZORLA GENİŞLET (Pan & Zoom Etkisi) */
-    /* Bu kısım içeriğin sıkışmasını engeller, yana doğru uzamasını sağlar */
-    .popup-body > div, 
-    .popup-body table,
-    div[style*="display: flex"] {
-        width: max-content !important; /* İçeriğin kadar geniş ol */
-        min-width: 100% !important;    /* Ekrandan küçük olma */
-        box-sizing: border-box !important;
-        display: flex !important; /* Flex yapısını koru */
-        flex-wrap: nowrap !important; /* Asla alt satıra inme */
-    }
-
-    /* Tablo Hücreleri */
-    .popup-body th, .popup-body td {
-        white-space: nowrap !important; /* Satır kırılmasını engelle */
-        padding: 10px 15px !important;
-        font-size: 1rem !important;
-    }
-
-    /* Popup Başlığı (Sabit) */
-    .popup-header {
-        flex-shrink: 0 !important; /* Başlık büzülmesin */
-        z-index: 50 !important;
-        border-radius: 15px 15px 0 0 !important;
-    }
-
-    /* =========================================
-       3. DİĞER ARAYÜZ DÜZELTMELERİ
-       ========================================= */
     
-    /* Giriş Ekranı */
-    #entry-panel { padding: 10px; gap: 15px; }
-    #entry-panel h1 { font-size: 1.8rem !important; text-align: center; }
-    .mode-btn { width: 90% !important; padding: 15px; font-size: 1.2rem; }
+    .ar-output { text-align: center !important; margin-top: 15px !important; }
+
+    /* Font Boyutları (Mobil Uyumlu) */
+    #sentence-mode .word { font-size: clamp(1.4rem, 5vw, 2.2rem) !important; margin: 4px !important; }
+    #sentence-mode .ar-output { font-size: clamp(2rem, 6vw, 3rem) !important; }
+    
+    #dialog-mode .word { font-size: clamp(1.1rem, 4vw, 1.6rem) !important; }
+    #dialog-mode .ar-output { font-size: clamp(1.5rem, 5vw, 2.2rem) !important; }
+
+    /* =========================================
+       3. DİĞER ARAYÜZ (Giriş, Navbar, Butonlar)
+       ========================================= */
+
+    /* Giriş Paneli */
+    #entry-panel { padding: 10px; gap: 20px; }
+    #entry-panel h1 { font-size: 2rem !important; text-align: center; }
+    .mode-btn { width: 90% !important; padding: 20px; font-size: 1.4rem; }
 
     /* Navbar */
-    .navbar { min-height: 45px; overflow-x: auto; padding: 5px; }
-    
-    /* Kontroller */
-    .controls { padding: 10px; gap: 15px; flex-wrap: wrap; justify-content: center; }
-    .nav-btn { flex: 1; padding: 10px; font-size: 1rem; max-width: 150px; }
+    .navbar { min-height: 45px; overflow-x: auto; padding: 5px; justify-content: flex-start; }
+    .nav-trigger { white-space: nowrap !important; padding: 8px 12px !important; }
+
+    /* Alt Butonlar */
+    .controls { padding: 10px; gap: 20px; }
+    .nav-btn { flex: 1; padding: 12px; font-size: 1rem; max-width: 45%; }
 }
 /* --- YAMA SONU --- */
  </style>
