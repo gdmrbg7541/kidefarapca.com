@@ -182,6 +182,182 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
+/* --- GENİŞLETİLMİŞ MOBİL YAMA (Giriş, Popup, Tablolar) --- */
+@media screen and (max-width: 768px), 
+       screen and (orientation: landscape) and (max-height: 600px) {
+
+    /* 1. GİRİŞ SAYFASI (Entry Panel) */
+    #entry-panel {
+        padding: 10px !important;
+        gap: 15px !important; /* Öğeler arası boşluğu azalt */
+    }
+    
+    #entry-panel h1 {
+        font-size: 1.8rem !important; /* Başlığı küçült */
+        margin-bottom: 10px !important;
+    }
+
+    .mode-btn {
+        width: 90% !important; /* Ekranı tam kaplamasın */
+        padding: 15px !important; /* Buton şişkinliğini al */
+        font-size: 1.2rem !important; /* Buton yazısını küçült */
+        border-width: 3px !important;
+    }
+    
+    .entry-back-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+
+    /* 2. POPUP PENCERESİ */
+    .popup-header {
+        padding: 8px 15px !important; /* Başlık alanını daralt */
+        min-height: 45px !important;
+    }
+
+    .popup-header h2 {
+        font-size: 1.1rem !important; /* Başlık fontunu küçült */
+    }
+
+    .close-popup {
+        font-size: 1.8rem !important;
+        line-height: 1 !important;
+    }
+
+    /* 3. TABLOLAR VE İÇERİK */
+    /* Tablo hücre boşluklarını sıkıştır */
+    th, td {
+        padding: 4px !important; 
+        font-size: 0.85rem !important; /* Türkçe metinleri küçült */
+    }
+
+    /* HTML içinde 'style="font-size:2.2rem"' gibi verilen inline stilleri EZMEK için: */
+    /* Tablo içindeki Arapça yazılar */
+    .popup-body .ar-txt, 
+    .popup-body span[style*="font-size"] { 
+        font-size: 1.3rem !important; /* Hepsini standart boyuta getir */
+        line-height: 1.3 !important;
+    }
+    
+    /* Tablo altındaki küçük açıklamalar (Hastalar, Doktorlar vb.) */
+    .popup-body small {
+        font-size: 0.65rem !important;
+        color: #555 !important;
+    }
+
+    /* Popup içindeki başlıklar (H3) */
+    .popup-body h3 {
+        font-size: 1.1rem !important;
+        margin: 10px 0 5px 0 !important;
+        padding-bottom: 5px !important;
+    }
+    
+    /* Yan yana duran (flex) kutuları alt alta al veya sıkıştır */
+    .popup-body > div[style*="display: flex"] {
+        flex-direction: column-reverse !important; /* Mobilde alt alta olsun */
+        gap: 15px !important;
+    }
+    
+    /* Sütun çizgilerini düzelt */
+    .verbs-col, .nouns-col {
+        border: none !important; /* Dikey çizgiyi kaldır */
+        border-bottom: 2px solid #eee !important; /* Yatay çizgi ekle */
+        padding: 0 !important;
+    }
+}
+/* --- YAMA SONU --- */
+/* Kelime Paneli Yan Yana Dizilim ve Kaydırma */
+.words-container {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+    gap: 20px !important;
+    width: 100% !important;
+    /* Mobilde dikey kaydırmayı ana kapsayıcıya veriyoruz */
+    height: auto !important; 
+    max-height: 85vh !important;
+    overflow-y: auto !important; 
+    overflow-x: auto !important;
+    padding: 10px !important;
+    -webkit-overflow-scrolling: touch;
+}
+.words-container .verbs-col, 
+.words-container .nouns-col {
+    min-width: 320px !important; /* Mobilde sütun genişliği */
+    flex-shrink: 0 !important;
+    display: block !important; /* Flex dikeyde sorun çıkarabilir, block daha güvenli */
+}
+
+/* Tablo içindeki ekstra kaydırma alanlarını iptal edin (çakışmayı önler) */
+.words-container div[style*="overflow-y: auto"] {
+    overflow-y: visible !important;
+    height: auto !important;
+}
+
+/* Mobil için özel dikey yükseklik ayarı */
+@media screen and (max-width: 768px) {
+    .words-container {
+        max-height: 75vh !important;
+    }
+}
+/* Mobil Cihazlar İçin Yazı Boyutu Düzenlemesi */
+@media screen and (max-width: 768px) {
+    /* Cümle Modu Ayarları */
+    #sentence-mode .word { 
+        font-size: 1.5rem !important; /* Türkçe kelimeleri küçültür */
+    }
+    #sentence-mode .ar-output { 
+        font-size: 2.2rem !important; /* Arapça cümleyi küçültür */
+    }
+
+    /* Diyalog Modu Ayarları */
+    #dialog-mode .word { 
+        font-size: 1.2rem !important; /* Diyalogdaki Türkçe kelimeler */
+    }
+    #dialog-mode .ar-output { 
+        font-size: 1.8rem !important; /* Diyalogdaki Arapça cümleler */
+    }
+    
+    /* Satır aralarını ve kutu boşluklarını daraltma */
+    .dialog-row {
+        padding: 10px !important;
+        gap: 5px !important;
+    }
+    .tr-container {
+        gap: 10px !important;
+        margin-bottom: 15px !important;
+    }
+}
+/* Popup açıkken kontrolleri tamamen yok eden yardımcı sınıf */
+.controls-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+/* Popup açıkken butonları tamamen devre dışı bırakan kilit sınıfı */
+.force-hide {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+/* Mobil Kontrol Butonları Düzenlemesi */
+@media screen and (max-width: 768px) {
+    .controls {
+        gap: 15px !important; /* Butonlar arası boşluğu azaltır */
+        padding: 10px !important; /* Alt panelin yüksekliğini daraltır */
+    }
+
+    .nav-btn {
+        padding: 10px 20px !important; /* Butonun iç boşluğunu küçültür */
+        font-size: 0.9rem !important; /* Yazı boyutunu küçültür */
+        border-width: 2px !important; /* Çerçeveyi inceltir */
+        border-radius: 25px !important; /* Köşeleri daha oval yapar */
+        min-width: 100px; /* Butonlara minimum genişlik verir */
+    }
+}
  </style>
 </head>
 <body>
@@ -243,214 +419,175 @@
 <script>
     // POPUP İÇERİKLERİ
     const popupData = {
-        words: `
-            <div style="display: flex; flex-direction: row-reverse; gap: 10px; width: 100%; padding: 10px; max-height: 80vh;">
-                
-                <div class="nouns-col" style="flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column;">
-                    <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">İsimler</h3>
-                    <div style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Çoğul (ج)</th>
-                                    <th>Tekil</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+words: `
+    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-x: auto; overflow-y: auto; max-height: 80vh; -webkit-overflow-scrolling: touch;">
+        
+        <div class="nouns-col" style="min-width: 280px; flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column; flex-shrink: 0;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">İsimler</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Çoğul (ج)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Tekil</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<table>
+    <tr>
+        <td class="ar-txt">هِوايات<br><small style="font-size:11px; color:#666;">Hobiler</small></td>
+        <td class="ar-txt">هِواية<br><small style="font-size:11px; color:#666;">Hobi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">كُتُب<br><small style="font-size:11px; color:#666;">Kitaplar</small></td>
+        <td class="ar-txt">كِتاب<br><small style="font-size:11px; color:#666;">Kitap</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">أَصْدِقاء<br><small style="font-size:11px; color:#666;">Arkadaşlar (E)</small></td>
+        <td class="ar-txt">صَديق<br><small style="font-size:11px; color:#666;">Arkadaş (E)</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">صَديقات<br><small style="font-size:11px; color:#666;">Arkadaşlar (K)</small></td>
+        <td class="ar-txt">صَديقَة<br><small style="font-size:11px; color:#666;">Arkadaş (K)</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">رِياضات<br><small style="font-size:11px; color:#666;">Sporlar</small></td>
+        <td class="ar-txt">رِياضَة<br><small style="font-size:11px; color:#666;">Spor</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">حَدائِق<br><small style="font-size:11px; color:#666;">Bahçeler</small></td>
+        <td class="ar-txt">حَديقَة<br><small style="font-size:11px; color:#666;">Bahçe</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">غابات<br><small style="font-size:11px; color:#666;">Ormanlar</small></td>
+        <td class="ar-txt">غابَة<br><small style="font-size:11px; color:#666;">Orman</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">مَناظِر<br><small style="font-size:11px; color:#666;">Manzaralar</small></td>
+        <td class="ar-txt">مَنْظَر<br><small style="font-size:11px; color:#666;">Manzara</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">أَوْقات<br><small style="font-size:11px; color:#666;">Vakitler</small></td>
+        <td class="ar-txt">وَقْت<br><small style="font-size:11px; color:#666;">Vakit</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">عُطُلات<br><small style="font-size:11px; color:#666;">Tatiller</small></td>
+        <td class="ar-txt">عُطْلَة<br><small style="font-size:11px; color:#666;">Tatil</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">أُسَر / عائِلات<br><small style="font-size:11px; color:#666;">Aileler</small></td>
+        <td class="ar-txt">أُسْرَة / عائِلَة<br><small style="font-size:11px; color:#666;">Aile</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">أَسابيع<br><small style="font-size:11px; color:#666;">Haftalar</small></td>
+        <td class="ar-txt">أُسْبوع<br><small style="font-size:11px; color:#666;">Hafta</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">سَنَوات<br><small style="font-size:11px; color:#666;">Yıllar</small></td>
+        <td class="ar-txt">سَنَة<br><small style="font-size:11px; color:#666;">Yıl</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">بُيوت<br><small style="font-size:11px; color:#666;">Evler</small></td>
+        <td class="ar-txt">بَيْت<br><small style="font-size:11px; color:#666;">Ev</small></td>
+    </tr>
+</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-
-<tr>
-    <td class="ar-txt">مَرْضَى<br><small style="font-size:11px; color:#666;">Hastalar</small></td>
-    <td class="ar-txt">مَريض<br><small style="font-size:11px; color:#666;">Hasta</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">أَطِبَّاء<br><small style="font-size:11px; color:#666;">Doktorlar</small></td>
-    <td class="ar-txt">طَبِيب<br><small style="font-size:11px; color:#666;">Doktor</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">أَدْوِيَة<br><small style="font-size:11px; color:#666;">İlaçlar</small></td>
-    <td class="ar-txt">دَوَاء<br><small style="font-size:11px; color:#666;">İlaç</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">مُسْتَشْفَيَات<br><small style="font-size:11px; color:#666;">Hastaneler</small></td>
-    <td class="ar-txt">مُسْتَشْفَى<br><small style="font-size:11px; color:#666;">Hastane</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">صَيْدَلِيَّات<br><small style="font-size:11px; color:#666;">Eczaneler</small></td>
-    <td class="ar-txt">صَيْدَلِيَّة<br><small style="font-size:11px; color:#666;">Eczane</small></td>
-</tr>
-<tr>
-    <td class="ar-txt"> آلَام<br><small style="font-size:11px; color:#666;">Ağrılar / Acılar</small></td>
-    <td class="ar-txt">أَلَم<br><small style="font-size:11px; color:#666;">Ağrı / Acı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَعْضَاء<br><small style="font-size:11px; color:#666;">Organlar</small></td>
-    <td class="ar-txt">عُضْو<br><small style="font-size:11px; color:#666;">Organ</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">رُؤُوس<br><small style="font-size:11px; color:#666;">Başlar</small></td>
-    <td class="ar-txt">رَأْس<br><small style="font-size:11px; color:#666;">Baş</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">عُيُون<br><small style="font-size:11px; color:#666;">Gözler</small></td>
-    <td class="ar-txt">عَيْن<br><small style="font-size:11px; color:#666;">Göz</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">آذَان<br><small style="font-size:11px; color:#666;">Kulaklar</small></td>
-    <td class="ar-txt">أُذُن<br><small style="font-size:11px; color:#666;">Kulak</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">أُنُوف<br><small style="font-size:11px; color:#666;">Burunlar</small></td>
-    <td class="ar-txt">أَنْف<br><small style="font-size:11px; color:#666;">Burun</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">أَسْنَان<br><small style="font-size:11px; color:#666;">Dişler</small></td>
-    <td class="ar-txt">سِنّ<br><small style="font-size:11px; color:#666;">Diş</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">أَيْدٍ / أَيَادٍ<br><small style="font-size:11px; color:#666;">Eller</small></td>
-    <td class="ar-txt">يَد<br><small style="font-size:11px; color:#666;">El</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">بُطُون<br><small style="font-size:11px; color:#666;">Karınlar</small></td>
-    <td class="ar-txt">بَطْن<br><small style="font-size:11px; color:#666;">Karın</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">خَضْرَوَات<br><small style="font-size:11px; color:#666;">Sebzeler</small></td>
-    <td class="ar-txt">خَضْرَاء<br><small style="font-size:11px; color:#666;">Sebze</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">فَوَاكِه<br><small style="font-size:11px; color:#666;">Meyveler</small></td>
-    <td class="ar-txt">فَاكِهَة<br><small style="font-size:11px; color:#666;">Meyve</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">وَجَبَات<br><small style="font-size:11px; color:#666;">Öğünler / Yemekler</small></td>
-    <td class="ar-txt">وَجْبَة<br><small style="font-size:11px; color:#666;">Öğün / Yemek</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">مَشْرُوبَات<br><small style="font-size:11px; color:#666;">İçecekler</small></td>
-    <td class="ar-txt">مَشْرُوب<br><small style="font-size:11px; color:#666;">İçecek</small></td>
-</tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="verbs-col" style="flex: 2; display: flex; flex-direction: column;">
-                    <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">Fiiller</h3>
-                    <div style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Mastar</th>
-                                    <th>Emir</th>
-                                    <th>Muzari</th>
-                                    <th>Mazi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-<tr>
-    <td class="ar-txt">شُعُور<br><small style="font-size:11px; color:#666;">Hissetmek</small></td>
-    <td class="ar-txt">اُشْعُرْ<br><small style="font-size:11px; color:#666;">Hisset</small></td>
-    <td class="ar-txt">يَشْعُرُ<br><small style="font-size:11px; color:#666;">Hissediyor</small></td>
-    <td class="ar-txt">شَعَرَ<br><small style="font-size:11px; color:#666;">Hissetti</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">مَرَض<br><small style="font-size:11px; color:#666;">Hastalanmak</small></td>
-    <td class="ar-txt">اِمْرَضْ<br><small style="font-size:11px; color:#666;">Hastalan</small></td>
-    <td class="ar-txt">يَمْرَضُ<br><small style="font-size:11px; color:#666;">Hastalanıyor</small></td>
-    <td class="ar-txt">مَرِضَ<br><small style="font-size:11px; color:#666;">Hastalandı</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">وُجُوب<br><small style="font-size:11px; color:#666;">Gerekmek</small></td>
-    <td class="ar-txt">-<br><small style="font-size:11px; color:#666;">-</small></td>
-    <td class="ar-txt">يَجِبُ<br><small style="font-size:11px; color:#666;">Gerekiyor</small></td>
-    <td class="ar-txt">وَجَبَ<br><small style="font-size:11px; color:#666;">Gerekti</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">ذَهَاب<br><small style="font-size:11px; color:#666;">Gitmek</small></td>
-    <td class="ar-txt">اِذْهَبْ<br><small style="font-size:11px; color:#666;">Git</small></td>
-    <td class="ar-txt">يَذْهَبُ<br><small style="font-size:11px; color:#666;">Gidiyor</small></td>
-    <td class="ar-txt">ذَهَبَ<br><small style="font-size:11px; color:#666;">Gitti</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">فَحْص<br><small style="font-size:11px; color:#666;">Muayene Etmek</small></td>
-    <td class="ar-txt">اِفْحَصْ<br><small style="font-size:11px; color:#666;">Muayene Et</small></td>
-    <td class="ar-txt">يَفْحَصُ<br><small style="font-size:11px; color:#666;">Muayene Ediyor</small></td>
-    <td class="ar-txt">فَحَصَ<br><small style="font-size:11px; color:#666;">Muayene Etti</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">عِلاج / مُعَالَجَة<br><small style="font-size:11px; color:#666;">Tedavi Etmek</small></td>
-    <td class="ar-txt">عَالِجْ<br><small style="font-size:11px; color:#666;">Tedavi Et</small></td>
-    <td class="ar-txt">يُعَالِجُ<br><small style="font-size:11px; color:#666;">Tedavi Ediyor</small></td>
-    <td class="ar-txt">عَالَجَ<br><small style="font-size:11px; color:#666;">Tedavi Etti</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">تَنَاوُل<br><small style="font-size:11px; color:#666;">(İlaç/Yemek) Almak</small></td>
-    <td class="ar-txt">تَنَاوَلْ<br><small style="font-size:11px; color:#666;">Al / Ye</small></td>
-    <td class="ar-txt">يَتَنَاوَلُ<br><small style="font-size:11px; color:#666;">Alıyor / Yiyor</small></td>
-    <td class="ar-txt">تَنَاوَلَ<br><small style="font-size:11px; color:#666;">Aldı / Yedi</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">أَخْذ<br><small style="font-size:11px; color:#666;">Almak</small></td>
-    <td class="ar-txt">خُذْ<br><small style="font-size:11px; color:#666;">Al</small></td>
-    <td class="ar-txt">يَأْخُذُ<br><small style="font-size:11px; color:#666;">Alıyor</small></td>
-    <td class="ar-txt">أَخَذَ<br><small style="font-size:11px; color:#666;">Aldı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَكْل<br><small style="font-size:11px; color:#666;">Yemek Yemek</small></td>
-    <td class="ar-txt">كُلْ<br><small style="font-size:11px; color:#666;">Ye</small></td>
-    <td class="ar-txt">يَأْكُلُ<br><small style="font-size:11px; color:#666;">Yiyor</small></td>
-    <td class="ar-txt">أَكَلَ<br><small style="font-size:11px; color:#666;">Yedi</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">شُرْب<br><small style="font-size:11px; color:#666;">İçmek</small></td>
-    <td class="ar-txt">اِشْرَبْ<br><small style="font-size:11px; color:#666;">İç</small></td>
-    <td class="ar-txt">يَشْرَبُ<br><small style="font-size:11px; color:#666;">İçiyor</small></td>
-    <td class="ar-txt">شَرِبَ<br><small style="font-size:11px; color:#666;">İçti</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">غَسْل<br><small style="font-size:11px; color:#666;">Yıkamak</small></td>
-    <td class="ar-txt">اِغْسِلْ<br><small style="font-size:11px; color:#666;">Yıka</small></td>
-    <td class="ar-txt">يَغْسِلُ<br><small style="font-size:11px; color:#666;">Yıkıyor</small></td>
-    <td class="ar-txt">غَسَلَ<br><small style="font-size:11px; color:#666;">Yıkadı</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">تَنْظِيف<br><small style="font-size:11px; color:#666;">Temizlemek</small></td>
-    <td class="ar-txt">نَظِّفْ<br><small style="font-size:11px; color:#666;">Temizle</small></td>
-    <td class="ar-txt">يُنَظِّفُ<br><small style="font-size:11px; color:#666;">Temizliyor</small></td>
-    <td class="ar-txt">نَظَّفَ<br><small style="font-size:11px; color:#666;">Temizledi</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">رُؤْيَة<br><small style="font-size:11px; color:#666;">Görmek</small></td>
-    <td class="ar-txt">رَ<br><small style="font-size:11px; color:#666;">Gör</small></td>
-    <td class="ar-txt">يَرَى<br><small style="font-size:11px; color:#666;">Görüyor</small></td>
-    <td class="ar-txt">رَأَى<br><small style="font-size:11px; color:#666;">Gördü</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">سَمْع<br><small style="font-size:11px; color:#666;">Duymak</small></td>
-    <td class="ar-txt">اِسْمَعْ<br><small style="font-size:11px; color:#666;">Duy</small></td>
-    <td class="ar-txt">يَسْمَعُ<br><small style="font-size:11px; color:#666;">Duyuyor</small></td>
-    <td class="ar-txt">سَمِعَ<br><small style="font-size:11px; color:#666;">Duydu</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">شَمّ<br><small style="font-size:11px; color:#666;">Koklamak</small></td>
-    <td class="ar-txt">شُمَّ<br><small style="font-size:11px; color:#666;">Kokla</small></td>
-    <td class="ar-txt">يَشُمُّ<br><small style="font-size:11px; color:#666;">Kokluyor</small></td>
-    <td class="ar-txt">شَمَّ<br><small style="font-size:11px; color:#666;">Kokladı</small></td>
-</tr>
-                               
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>`,
+        <div class="verbs-col" style="min-width: 400px; flex: 2; display: flex; flex-direction: column; flex-shrink: 0;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">Fiiller</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mastar</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Emir</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Muzari</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mazi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<table>
+    <tr>
+        <td class="ar-txt">لَعِب / لِعْب<br><small style="font-size:11px; color:#666;">Oynamak</small></td>
+        <td class="ar-txt">اِلْعَبْ<br><small style="font-size:11px; color:#666;">Oyna</small></td>
+        <td class="ar-txt">يَلْعَبُ<br><small style="font-size:11px; color:#666;">Oynuyor</small></td>
+        <td class="ar-txt">لَعِبَ<br><small style="font-size:11px; color:#666;">Oynadı</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">حُبّ<br><small style="font-size:11px; color:#666;">Sevmek</small></td>
+        <td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td>
+        <td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td>
+        <td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">قِراءة<br><small style="font-size:11px; color:#666;">Okumak</small></td>
+        <td class="ar-txt">اِقْرَأْ<br><small style="font-size:11px; color:#666;">Oku</small></td>
+        <td class="ar-txt">يَقْرَأُ<br><small style="font-size:11px; color:#666;">Okuyor</small></td>
+        <td class="ar-txt">قَرَأَ<br><small style="font-size:11px; color:#666;">Okudu</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">اِسْتِماع<br><small style="font-size:11px; color:#666;">Dinlemek</small></td>
+        <td class="ar-txt">اِسْتَمِعْ<br><small style="font-size:11px; color:#666;">Dinle</small></td>
+        <td class="ar-txt">يَسْتَمِعُ<br><small style="font-size:11px; color:#666;">Dinliyor</small></td>
+        <td class="ar-txt">اِسْتَمَعَ<br><small style="font-size:11px; color:#666;">Dinledi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">تَفْضيل<br><small style="font-size:11px; color:#666;">Tercih Etmek</small></td>
+        <td class="ar-txt">فَضِّلْ<br><small style="font-size:11px; color:#666;">Tercih Et</small></td>
+        <td class="ar-txt">يُفَضِّلُ<br><small style="font-size:11px; color:#666;">Tercih Ediyor</small></td>
+        <td class="ar-txt">فَضَّلَ<br><small style="font-size:11px; color:#666;">Tercih Etti</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">مُشاهَدَة<br><small style="font-size:11px; color:#666;">İzlemek</small></td>
+        <td class="ar-txt">شاهِدْ<br><small style="font-size:11px; color:#666;">İzle</small></td>
+        <td class="ar-txt">يُشاهِدُ<br><small style="font-size:11px; color:#666;">İzliyor</small></td>
+        <td class="ar-txt">شاهَدَ<br><small style="font-size:11px; color:#666;">İzledi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">قَضاء<br><small style="font-size:11px; color:#666;">Vakit Geçirmek</small></td>
+        <td class="ar-txt">اِقْضِ<br><small style="font-size:11px; color:#666;">Vakit Geçir</small></td>
+        <td class="ar-txt">يَقْضي<br><small style="font-size:11px; color:#666;">Vakit Geçiriyor</small></td>
+        <td class="ar-txt">قَضى<br><small style="font-size:11px; color:#666;">Vakit Geçirdi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">مُمارَسَة<br><small style="font-size:11px; color:#666;">Yapmak/Uygulamak</small></td>
+        <td class="ar-txt">مارِسْ<br><small style="font-size:11px; color:#666;">Yap</small></td>
+        <td class="ar-txt">يُمارِسُ<br><small style="font-size:11px; color:#666;">Yapıyor</small></td>
+        <td class="ar-txt">مارَسَ<br><small style="font-size:11px; color:#666;">Yaptı</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">إِرادة<br><small style="font-size:11px; color:#666;">İstemek</small></td>
+        <td class="ar-txt">أَرِدْ<br><small style="font-size:11px; color:#666;">İste</small></td>
+        <td class="ar-txt">يُريدُ<br><small style="font-size:11px; color:#666;">İstiyor</small></td>
+        <td class="ar-txt">أَرادَ<br><small style="font-size:11px; color:#666;">İstedi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">اِهْتِمام<br><small style="font-size:11px; color:#666;">İlgilenmek</small></td>
+        <td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilen</small></td>
+        <td class="ar-txt">يَهْتَمُّ<br><small style="font-size:11px; color:#666;">İlgileniyor</small></td>
+        <td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilendi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">اِسْتِطاعَة<br><small style="font-size:11px; color:#666;">Ebilmek</small></td>
+        <td class="ar-txt">اِسْتَطِعْ<br><small style="font-size:11px; color:#666;">Güç Yetir</small></td>
+        <td class="ar-txt">يَسْتَطيعُ<br><small style="font-size:11px; color:#666;">Yapabiliyor</small></td>
+        <td class="ar-txt">اِسْتَطاعَ<br><small style="font-size:11px; color:#666;">Yapabildi</small></td>
+    </tr>
+    <tr>
+        <td class="ar-txt">ذَهاب<br><small style="font-size:11px; color:#666;">Gitmek</small></td>
+        <td class="ar-txt">اِذْهَبْ<br><small style="font-size:11px; color:#666;">Git</small></td>
+        <td class="ar-txt">يَذْهَبُ<br><small style="font-size:11px; color:#666;">Gidiyor</small></td>
+        <td class="ar-txt">ذَهَبَ<br><small style="font-size:11px; color:#666;">Gitti</small></td>
+    </tr>
+</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>`,
        
             prepositions: `
 <div style="width:100%; max-height: 75vh; overflow-y: auto; padding: 10px 20px 40px 10px;">
@@ -817,703 +954,338 @@ let mode = 'sentence';
         activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
     }
 
-// 3. GÜNCELLENMİŞ showPopup FONKSİYONU
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
+// --- BİRLEŞTİRİLMİŞ POPUP YÖNETİMİ ---
 
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            
-            // Seçili görsel efektini uygula
-            setActiveButton(type);
-        }
-    }
+function showPopup(type) {
+    const titles = { 
+        words:'Kelime Listesi', 
+        prepositions:'Harf-i Cerler', 
+        soruedatlari:'Soru Edatları', 
+        pronouns:'Zamir Tablosu', 
+        suffix:'Fiil Kipleri', 
+        tamlamalar:'Tamlamalar', 
+        sulasi:'Sülasi', 
+        mezid:'Mezid' 
+    };
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
+    const content = popupData[type];
+    if (content) {
+        // Mevcut özellikleri koruyarak içeriği yerleştiriyoruz
+        document.getElementById('popup-content').innerHTML = content;
+        document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
         
-        // Kapatıldığında buton vurgularını temizle
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
+        // togglePopup(true) fonksiyonunu çağırarak hem overlay'i açıyoruz 
+        // hem de ileri/geri butonlarını gizliyoruz
+        togglePopup(true);
+        
+        setActiveButton(type);
     }
+}
 
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
+function togglePopup(show) {
+    const overlay = document.getElementById('popup-overlay');
+    const controls = document.querySelector('.controls');
+    
+    // Popup'ı göster/gizle
+    overlay.style.display = show ? 'flex' : 'none';
+    
+    if (controls) {
+        if (show) {
+            // Popup açıldığında ileri/geri panelini tamamen yok et
+            controls.classList.add('controls-hidden');
+            controls.style.display = 'none'; 
+        } else {
+            // Popup kapandığında ileri/geri panelini tekrar göster
+            controls.classList.remove('controls-hidden');
+            controls.style.display = 'flex'; 
         }
     }
+    
+    // Kapatma anında üst menüdeki buton vurgularını temizle
+    if (!show) {
+        document.querySelectorAll('.nav-trigger').forEach(btn => {
+            btn.style.border = "none";
+            btn.style.boxShadow = "none";
+        });
+    }
+}
+
+function closePopup(e) { 
+    // Dış siyah alana (overlay) tıklandığında kapatma işlemini tetikle
+    if (e.target.id === 'popup-overlay') {
+        togglePopup(false); 
+    }
+}
+
+function setActiveButton(type) {
+    // Tüm butonların stilini sıfırla
+    document.querySelectorAll('.nav-trigger').forEach(btn => {
+        btn.style.border = "none";
+        btn.style.boxShadow = "none";
+    });
+    
+    // Eğer tetikleyici bir event varsa ilgili butonu vurgula
+    if (event && event.currentTarget && event.currentTarget.classList.contains('nav-trigger')) {
+        event.currentTarget.style.border = "2px solid white";
+        event.currentTarget.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
+    }
+}
 const data = {
-    sentence: [
-        // 1. Cümle: Ben hastayım.
-        {
-            words: [
-                { tr: "Ben", order: 1, ar: "أَنا" },
-                { tr: "hastayım.", order: 2, ar: "مَريض." }
-            ]
-        },
+sentence: [
+    // 1. Cümle: Ben futbol oynuyorum.
+    {
+        words: [
+            { tr: "Futbol", order: 2, ar: "كُرَة القَدَم‫.‬" },
+            { tr: "oynuyorum.", order: 1, ar: "أَلْعَبُ" }
+        ]
+    },
 
-        // 2. Cümle: Şiddetli baş ağrım var.
-        {
-            words: [
-                { tr: "Bende", order: 1, ar: "عِنْدي" },
-                { tr: "şiddetli", order: 3, ar: "شَديد." },
-                { tr: "baş ağrısı", order: 2, ar: "صُداع" },
-                { tr: "var.", order: 1, ar: "عِنْدي" } 
-            ]
-        },
+    // 2. Cümle: Arkadaşlarımla basketbol oynuyorum.
+    {
+        words: [
+            { tr: "Arkadaşlarımla", order: 4, ar: "أَصْدِقائي‫.‬" },
+            { tr: "ile", order: 3, ar: "مَع" },
+            { tr: "basketbol", order: 2, ar: "كُرَة السَّلَّة" },
+            { tr: "oynuyorum.", order: 1, ar: "أَلْعَبُ" }
+        ]
+    },
 
-        // 3. Cümle: Öksürüğüm var.
-        {
-            words: [
-                { tr: "Öksürüğüm", order: 2, ar: "كُحَّة." },
-                { tr: "var.", order: 1, ar: "عِنْدي" }
-            ]
-        },
+    // 3. Cümle: Kitap okumayı seviyorum.
+    {
+        words: [
+            { tr: "Kitap", order: 3, ar: "الكُتُب‫.‬" },
+            { tr: "okumayı", order: 2, ar: "قِراءَة" },
+            { tr: "seviyorum.", order: 1, ar: "أُحِبُّ" }
+        ]
+    },
 
-        // 4. Cümle: Kulağımda ağrı hissediyorum.
-        {
-            words: [
-                { tr: "Kulağımda", order: 3, ar: "في أُذُني." },
-                { tr: "ağrı", order: 2, ar: "بِأَلَم" },
-                { tr: "hissediyorum.", order: 1, ar: "أَشْعُرُ" }
-            ]
-        },
+    // 4. Cümle: Müzik dinliyorum.
+    {
+        words: [
+            { tr: "Müzik", order: 2, ar: "إِلى الموسيقى‫.‬" },
+            { tr: "dinliyorum.", order: 1, ar: "أَسْتَمِعُ" }
+        ]
+    },
 
-        // 5. Cümle: Boğazımda ağrı hissediyorum.
-        {
-            words: [
-                { tr: "Boğazımda", order: 3, ar: "في حَلْقي." },
-                { tr: "ağrı", order: 2, ar: "بِأَلَم" },
-                { tr: "hissediyorum.", order: 1, ar: "أَشْعُرُ" }
-            ]
-        },
+    // 5. Cümle: Hobiler arasından resmi tercih ederim.
+    {
+        words: [
+            { tr: "Hobilerden", order: 3, ar: "مِن الهِوايات‫.‬" },
+            { tr: "resmi", order: 2, ar: "الرَّسْم" },
+            { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" }
+        ]
+    },
 
-        // 6. Cümle: Yüksek ateşim var.
-        {
-            words: [
-                { tr: "Yüksek", order: 3, ar: "مُرْتَفِعَة." },
-                { tr: "ateşim", order: 2, ar: "حَرارَة" },
-                { tr: "var.", order: 1, ar: "عِنْدي" }
-            ]
-        },
+    // 6. Cümle: Kız arkadaşlarımla tiyatro izliyorum.
+    {
+        words: [
+            { tr: "Kız arkadaşlarım", order: 4, ar: "صَديقاتي‫.‬" },
+            { tr: "ile", order: 3, ar: "مَع" },
+            { tr: "tiyatro", order: 2, ar: "المَسْرَح" },
+            { tr: "izliyorum.", order: 1, ar: "أُشاهِدُ" }
+        ]
+    },
 
-        // 7. Cümle: Karnımda sancı yok.
-        {
-            words: [
-                { tr: "Karnımda", order: 3, ar: "في بَطْني." },
-                { tr: "sancı", order: 2, ar: "مَغْص" },
-                { tr: "yok.", order: 1, ar: "ما عِنْدي" }
-            ]
-        },
+    // 7. Cümle: Aileyle gezintide vakit geçiriyoruz.
+    {
+        words: [
+            { tr: "Aile", order: 5, ar: "العائِلَة‫.‬" },
+            { tr: "ile", order: 4, ar: "مَع" },
+            { tr: "gezintide", order: 3, ar: "في التَّنَزُّه" },
+            { tr: "vakit", order: 2, ar: "الوَقْت" },
+            { tr: "geçiriyoruz.", order: 1, ar: "نَقْضي" }
+        ]
+    },
 
-        // 8. Cümle: İlacı alman gerekir.
-        {
-            words: [
-                { tr: "İlacı", order: 3, ar: "الدَّواء." },
-                { tr: "kullanman/tüketmen", order: 2, ar: "أَنْ تَتَناوَلَ" },
-                { tr: "gerekir.", order: 1, ar: "يَجِبُ عَلَيْكَ" }
-            ]
-        },
+    // 8. Cümle: Yüzme ve okçuluk yapıyoruz.
+    {
+        words: [
+            { tr: "Yüzme", order: 2, ar: "السِّباحَة" },
+            { tr: "ve okçuluk", order: 3, ar: "وَالرِّمايَة‫.‬" },
+            { tr: "yapıyoruz.", order: 1, ar: "نُمارِسُ" }
+        ]
+    },
 
-        // 9. Cümle: Ben hastayım, baş ağrım var.
-        {
-            words: [
-                { tr: "Ben", order: 1, ar: "أَنا" },
-                { tr: "hastayım,", order: 2, ar: "مَريض،" },
-                { tr: "baş ağrım", order: 4, ar: "صُداع." },
-                { tr: "var.", order: 3, ar: "عِنْدي" }
-            ]
-        },
+    // 9. Cümle: Ahmet futbol oynuyor.
+    {
+        words: [
+            { tr: "Ahmet", order: 2, ar: "أَحْمَد" },
+            { tr: "futbol", order: 3, ar: "كُرَة القَدَم‫.‬" },
+            { tr: "oynuyor.", order: 1, ar: "يَلْعَبُ" }
+        ]
+    },
 
-        // 10. Cümle: Ben hastayım (kadın), kulağımda ağrı var.
-        {
-            words: [
-                { tr: "Ben", order: 1, ar: "أَنا" },
-                { tr: "hastayım,", order: 2, ar: "مَريضَة،" },
-                { tr: "kulağımda", order: 5, ar: "في أُذُني." },
-                { tr: "ağrı", order: 4, ar: "أَلَم" },
-                { tr: "var.", order: 3, ar: "عِنْدي" }
-            ]
-        },
+    // 10. Cümle: Zeynep müziği sevmiyor.
+    {
+        words: [
+            { tr: "Zeynep", order: 1, ar: "زَيْنَب" },
+            { tr: "müziği", order: 3, ar: "الموسيقى‫.‬" },
+            { tr: "sevmiyor.", order: 2, ar: "لا تُحِبُّ" }
+        ]
+    },
 
-        // 11. Cümle: Sen hastasın, öksürüğün var.
-        {
-            words: [
-                { tr: "Sen", order: 1, ar: "أَنْتَ" },
-                { tr: "hastasın,", order: 2, ar: "مَريض،" },
-                { tr: "öksürüğün", order: 4, ar: "كُحَّة." },
-                { tr: "var.", order: 3, ar: "عِنْدَكَ" }
-            ]
-        },
+    // 11. Cümle: Anne resmi tercih ediyor.
+    {
+        words: [
+            { tr: "Anne", order: 1, ar: "الأُمّ" },
+            { tr: "resmi", order: 3, ar: "الرَّسْم‫.‬" },
+            { tr: "tercih ediyor.", order: 2, ar: "تُفَضِّلُ" }
+        ]
+    },
 
-        // 12. Cümle: Sen hastasın (kadın), baş ağrın var.
-        {
-            words: [
-                { tr: "Sen", order: 1, ar: "أَنْتِ" },
-                { tr: "hastasın,", order: 2, ar: "مَريضَة،" },
-                { tr: "başında", order: 5, ar: "في رَأْسِكِ." },
-                { tr: "ağrı", order: 4, ar: "أَلَم" },
-                { tr: "var.", order: 3, ar: "عِنْدَكِ" }
-            ]
-        },
+    // 12. Cümle: Baba sinema izlemek istiyor.
+    {
+        words: [
+            { tr: "Baba", order: 1, ar: "الأَب" },
+            { tr: "sinema", order: 4, ar: "السّينَما‫.‬" },
+            { tr: "izlemeyi", order: 3, ar: "مُشاهَدَة" },
+            { tr: "istiyor.", order: 2, ar: "يُريدُ" }
+        ]
+    },
 
-        // 13. Cümle: O hasta, karnında sancı var.
-        {
-            words: [
-                { tr: "O", order: 1, ar: "هُو" },
-                { tr: "hasta,", order: 2, ar: "مَريض،" },
-                { tr: "karnında", order: 5, ar: "في بَطْنِه." },
-                { tr: "sancı", order: 4, ar: "مَغْص" },
-                { tr: "var. (onun)", order: 3, ar: "عِنْدَهُ" }
-            ]
-        },
+    // 13. Cümle: Ben akşamları genellikle kitap okurum.
+    {
+        words: [
+            { tr: "Akşamları", order: 3, ar: "في المَساء" },
+            { tr: "genellikle", order: 4, ar: "غالِبًا‫.‬" },
+            { tr: "kitap", order: 2, ar: "الكُتُب" },
+            { tr: "okurum.", order: 1, ar: "أَقْرَأُ" }
+        ]
+    },
 
-        // 14. Cümle: O hasta (kadın), nezlesi var.
-        {
-            words: [
-                { tr: "O", order: 1, ar: "هِي" },
-                { tr: "hasta,", order: 2, ar: "مَريضَة،" },
-                { tr: "nezlesi", order: 4, ar: "زُكام." },
-                { tr: "var.(onun)", order: 3, ar: "عِنْدَها" }
-            ]
-        },
+    // 14. Cümle: Spor sağlık için faydalıdır.
+    {
+        words: [
+            { tr: "Spor", order: 1, ar: "الرِّياضَة" },
+            { tr: "sağlık için", order: 3, ar: "لِلصِّحَّة‫.‬" },
+            { tr: "faydalıdır.", order: 2, ar: "مُفيدَة" }
+        ]
+    },
 
-        // 15. Cümle: Dedem hasta, tansiyonu yüksek.
-        {
-            words: [
-                { tr: "Dedem", order: 1, ar: "جَدّي" },
-                { tr: "hasta,", order: 2, ar: "مَريض،" },
-                { tr: "onun tansiyonu", order: 3, ar: "ضَغْطُهُ" },
-                { tr: "yüksek.", order: 4, ar: "مُرْتَفِع." }
-            ]
-        },
-
-        // 16. Cümle: Kız kardeşim hasta, ateşi yüksek.
-        {
-            words: [
-                { tr: "Kız kardeşim", order: 1, ar: "أُخْتي" },
-                { tr: "hasta,", order: 2, ar: "مَريضَة،" },
-                { tr: "ateşi", order: 3, ar: "حَرارَتُها" },
-                { tr: "yüksek.", order: 4, ar: "مُرْتَفِعَة." }
-            ]
-        },
-
-        // 17. Cümle: Sağlık her insan için çok önemlidir.
-        {
-            words: [
-                { tr: "Sağlık", order: 1, ar: "الصِّحَّة" },
-                { tr: "her", order: 3, ar: "لِكُلّ" },
-                { tr: "insan", order: 4, ar: "إِنْسان" },
-                { tr: "için", order: 3, ar: "لِكُلّ" },
-                { tr: "çok", order: 5, ar: "جِدًّا." },
-                { tr: "önemlidir.", order: 2, ar: "مُهِمَّة" }
-            ]
-        },
-
-        // 18. Cümle: Vücudun organları vardır, mesela: Baş...
-        {
-            words: [
-                { tr: "Vücudun", order: 2, ar: "لِلْجِسْم" },
-                { tr: "organları", order: 1, ar: "أَعْضاء" },
-                { tr: "vardır,", order: 1, ar: "لِلْجِسْم" },
-                { tr: "mesela:", order: 3, ar: "مِثْل:" },
-                { tr: "Baş,", order: 4, ar: "الرَّأْس،" }
-            ]
-        },
-
-        // 19. Cümle: Göz, kulak, burun, dil, dişler ve el.
-        {
-            words: [
-                { tr: "Göz,", order: 1, ar: "وَالعَيْن،" },
-                { tr: "kulak,", order: 2, ar: "وَالأُذُن،" },
-                { tr: "burun,", order: 3, ar: "وَالأَنْف،" },
-                { tr: "dil,", order: 4, ar: "وَاللِّسان،" },
-                { tr: "dişler,", order: 5, ar: "وَالأَسْنان،" },
-                { tr: "ve el.", order: 6, ar: "وَاليَد." }
-            ]
-        },
-
-        // 20. Cümle: Gözümle görürüm, kulağımla duyarım.
-        {
-            words: [
-                { tr: "Gözümle", order: 2, ar: "بِعَيْني،" },
-                { tr: "görürüm,", order: 1, ar: "أَنا أَرى" },
-                { tr: "kulağımla", order: 4, ar: "بِأُذُني." },
-                { tr: "ve duyarım.", order: 3, ar: "وَأَسْمَعُ" }
-            ]
-        },
-
-        // 21. Cümle: Burnumla koklarım, dilimle tadarım.
-        {
-            words: [
-                { tr: "Burnumla", order: 2, ar: "بِأَنْفي،" },
-                { tr: "koklarım,", order: 1, ar: "وَأَشُمُّ" },
-                { tr: "dilimle", order: 4, ar: "بِلِساني." },
-                { tr: "ve tadarım.", order: 3, ar: "وَأَذوقُ" }
-            ]
-        },
-
-        // 22. Cümle: ve elimle dokunurum.
-        {
-            words: [
-                { tr: "ve", order: 1, ar: "وَأَلْمِسُ" },
-                { tr: "elimle", order: 2, ar: "بِيَدي." },
-                { tr: "dokunurum.", order: 1, ar: "وَأَلْمِسُ" },
-            ]
-        },
-
-        // 23. Cümle: Bazen hastalanırım.
-        {
-            words: [
-                { tr: "Bazen", order: 1, ar: "أَحْيانًا" },
-                { tr: "hastalanırım.", order: 2, ar: "أَمْرَضُ." }
-            ]
-        },
-
-        // 24. Cümle: Ağrı hissettiğim zaman hastaneye doktora giderim.
-        {
-            words: [
-                { tr: "Ağrı", order: 3, ar: "بِالأَلَم،" },
-                { tr: "hissettiğim", order: 2, ar: "أَشْعُرُ" },
-                { tr: "zaman,", order: 1, ar: "عِنْدَما" },
-                { tr: "hastaneye", order: 6, ar: "في المُسْتَشْفى." },
-                { tr: "doktora", order: 5, ar: "إِلى الطَّبيب" },
-                { tr: "giderim.", order: 4, ar: "أَذْهَبُ" },
-            ]
-        },
-
-        // 25. Cümle: Doktor beni muayene eder ve tedavi eder.
-        {
-            words: [
-                { tr: "Doktor", order: 1, ar: "الطَّبيب" },
-                { tr: "beni muayene eder", order: 2, ar: "يَفْحَصُني" },
-                { tr: "ve tedavi eder,", order: 3, ar: "وَيُعالِجُني." }
-            ]
-        },
-
-        // 26. Cümle: Sonra eczaneden ilacı alırım.
-        {
-            words: [
-                { tr: "Sonra", order: 1, ar: "ثُمَّ" },
-                { tr: "eczaneden", order: 4, ar: "مِن الصَّيْدَلِيَّة." },
-                { tr: "ilacı", order: 3, ar: "الدَّواء" },
-                { tr: "alırım.", order: 2, ar: "آخُذُ	" }
-            ]
-        },
-
-        // 27. Cümle: Sağlıklı gıda almam gerekir.
-        {
-            words: [
-                { tr: "Sağlıklı", order: 4, ar: "الصِّحِّيّ،" },
-                { tr: "gıda", order: 3, ar: "الغِذاء" },
-                { tr: "almam", order: 2, ar: "أَنْ أَتَناوَلَ" },
-                { tr: "gerekir...", order: 1, ar: "يَجِبُ عَلَيَّ" }
-            ]
-        },
-
-        // 28. Cümle: Sebze ve meyveler gibi.
-        {
-            words: [
-                { tr: "Sebze", order: 2, ar: "الخَضْرَوات" },
-                { tr: "ve meyveler", order: 3, ar: "وَالفَواكِه." },
-                { tr: "gibi.", order: 1, ar: "مِثْل" }
-            ]
-        },
-
-        // 29. Cümle: Yemekten önce ve sonra ellerimi su ve sabunla yıkamam gerekir.
-        {
-            words: [
-                { tr: "Yemekten", order: 7, ar: "الطَّعام" },
-                { tr: "önce", order: 6, ar: "قَبْلَ" },
-                { tr: "ve sonrasında", order: 8, ar: "وَبَعْدَه." },
-                { tr: "su (ile)", order: 4, ar: "بِالماء" },
-                { tr: "ve sabunla", order: 5, ar: "وَالصّابون" },
-                { tr: "ellerimi", order: 3, ar: "يَدَيّ" },
-                { tr: "yıkamam", order: 2, ar: " أَنْ أَغْسِلَ" },
-                { tr: "gerekir.", order: 1, ar: "عَلَيّ" }
-            ]
-        },
-
-        // 30. Cümle: Her gün dişlerimi diş fırçasıyla temizlemem gerekir.
-        {
-            words: [
-                { tr: "Her", order: 6, ar: "كُلّ" },
-                { tr: "gün", order: 7, ar: "يَوْم." },
-                { tr: "diş", order: 5, ar: "الأَسْنان" },
-                { tr: "fırçasıyla", order: 4, ar: "بِفُرْشاة " },
-                { tr: "dişlerimi", order: 3, ar: "أَسْناني" },
-                { tr: "temizlemem", order: 2, ar: "أَنْ أُنَظِّفَ" },
-                { tr: "gerekir.", order: 1, ar: "عَلَيّ" }
-            ]
-        },
-
-        // 31. Cümle: Doktora giderim.
-        {
-            words: [
-                { tr: "Doktora", order: 2, ar: "إِلى الطَّبيب." },
-                { tr: "giderim.", order: 1, ar: "أَذْهَبُ" }
-            ]
-        },
-
-        // 32. Cümle: Eczaneden ilaç alırım.
-        {
-            words: [
-                { tr: "Eczaneden", order: 3, ar: "مِن الصَّيْدَلِيّة." },
-                { tr: "ilacı", order: 2, ar: "الدَّواء" },
-                { tr: "alırım.", order: 1, ar: "آخُذُ" }
-            ]
-        },
-
-       
-        // 34. Cümle: Günde üç kez ilaç alıyorum.
-        {
-            words: [
-                { tr: "Günde", order: 5, ar: "في اليَوْم." },
-                { tr: "üç", order: 3, ar: "ثَلاث" },
-                { tr: "kez", order: 4, ar: "مَرّات" },
-                { tr: "ilaç", order: 2, ar: "الدَّواء" },
-                { tr: "alıyorum.", order: 1, ar: "أَتَناوَلُ" }
-            ]
-        },
-
-        // 35. Cümle: Ben sebze ve meyve yiyorum.
-        {
-            words: [
-                { tr: "Sebze", order: 2, ar: "الخَضْرَوات" },
-                { tr: "ve meyve", order: 3, ar: "وَالفَواكِه." },
-                { tr: "yiyorum.", order: 1, ar: "آكُلُ" }
-            ]
-        },
-
-        // 37. Cümle: Hastalıkta soğuk su içmem.
-        {
-            words: [
-                { tr: "Ben", order: 1, ar: "أَنا" },
-                { tr: "Hastalıkta", order: 5, ar: "عِنْد المَرَض." },
-                { tr: "soğuk", order: 4, ar: "بارِدًا" },
-                { tr: "su", order: 3, ar: "ماءً" },
-                { tr: "içmem.", order: 2, ar: "أَنا لا أَشْرَبُ" }
-            ]
-        },
-
-        // 38. Cümle: Ağrı varken doktora giderim.
-        {
-            words: [
-                { tr: "Ben", order: 1, ar: "أَنا" },
-                { tr: "ağrı varken (ağrıda)", order: 4, ar: "عِنْد الأَلَم." },
-                { tr: "doktora", order: 3, ar: "إِلى الطَّبيب" },
-                { tr: "giderim.", order: 2, ar: "أَذْهَبُ" }
-            ]
-        },
-
-        // 39. Cümle: Hızlı yemekler yeme.
-        {
-            words: [
-                { tr: "Hızlı", order: 3, ar: "سَريعَة." },
-                { tr: "yemekler", order: 2, ar: "وَجَبات" },
-                { tr: "yeme.", order: 1, ar: "لا تَتَناوَلْ" }
-            ]
-        },
-
-        // 40. Cümle: Zararlı içecekler içme.
-        {
-            words: [
-                { tr: "Zararlı", order: 3, ar: "مُضِرَّة." },
-                { tr: "içecekler", order: 2, ar: "مَشْروبات" },
-                { tr: "içme.", order: 1, ar: "لا تَشْرَبْ" }
-            ]
-        },
-
-        // 41. Cümle: Çok ağrı kesici alma.
-        {
-            words: [
-                { tr: "Çok", order: 3, ar: "كَثيرًا." },
-                { tr: "ağrı kesici", order: 2, ar: "مُسَكِّنًا" },
-                { tr: "alma.", order: 1, ar: "لا تَتَناوَلْ" }
-            ]
-        },
-
-        // 42. Cümle: Çok yeme.
-        {
-            words: [
-                { tr: "Çok", order: 2, ar: "كَثيرًا." },
-                { tr: "yeme.", order: 1, ar: "لا تَأْكُلْ" }
-            ]
-        }
-    ],
+    // 15. Cümle: Manzaraları güzel olduğu için.
+    {
+        words: [
+            { tr: "Çünkü", order: 1, ar: "لِأَنَّ" },
+            { tr: "manzaraları", order: 2, ar: "مَناظِرَها" },
+            { tr: "güzeldir.", order: 3, ar: "جَميلَة‫.‬" }
+        ]
+    }
+],
 dialog: [
-    // --- 1. GÖRSEL: DOKTOR VE AHMED DİYALOĞU ---
+    // --- 1. DİYALOG: LÜTFEN ONUN SEVİYORUM (Selim ve Öğretmen) ---
     {
         p1: [
-            { tr: "Ahmet,", order: 3, ar: "يا أَحْمَد؟" },
-            { tr: "senin", order: 2, ar: "بِكَ" },
-            { tr: "neyin var?", order: 1, ar: "ما" }
+            { tr: "Selim,", order: 5, ar: "يا سَليم‫.‬" },
+            { tr: "yüzmeyi", order: 2, ar: "السِّباحَة" },
+            { tr: "mi", order: 3, ar: "أَمْ" },
+            { tr: "futbolu", order: 4, ar: "كُرَة القَدَم" },
+            { tr: "mu", order: 1, ar: "أَتُفَضِّلُ" },
+            { tr: "tercih edersin?", order: 1, ar: "أَتُفَضِّلُ" }
+        ],
+        p2: [
+            { tr: "Yüzmeyi", order: 2, ar: "السِّباحَة." },
+            { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" }
+        ]
+    },
+    {
+        p1: [
+            { tr: "Neden", order: 1, ar: "لِماذا" },
+            { tr: "yüzmeyi", order: 3, ar: "السِّباحَة" },
+            { tr: "tercih ediyorsun?", order: 2, ar: "تُفَضِّلُها؟" }
+        ],
+        p2: [
+            { tr: "Çünkü (o)", order: 1, ar: "لِأَنَّها" },
+            { tr: "sağlığa", order: 3, ar: "لِلصِّحَّة." },
+            { tr: "faydalıdır.", order: 2, ar: "مُفيدة" }
+        ]
+    },
+
+    // --- 2. DİYALOG: HOBİN NEDİR? (Osman ve Yusuf) ---
+    {
+        p1: [
+            { tr: "Merhaba", order: 1, ar: "مَرْحَبًا" },
+            { tr: "Yusuf,", order: 2, ar: "يوسُف،" },
+            { tr: "hobin", order: 4, ar: "هِوايتُكَ؟" },
+            { tr: "nedir?", order: 3, ar: "ما" }
             
         ],
         p2: [
-            { tr: "Ben hastayım,", order: 1, ar: "أَنا مَريض،" },
-            { tr: "şiddetli", order: 4, ar: "شَديد" },
-            { tr: "baş ağrım", order: 3, ar: "صُداع" }, // Boşluk görseldeki kelime bankasından tamamlandı
-            { tr: "ve öksürüğüm", order: 5, ar: "وَكُحَّة." },
-            { tr: "var.", order: 2, ar: "عِنْدي" }
+            { tr: "Benim hobim", order: 1, ar: "هِوايتي" },
+            { tr: "futboldur.", order: 2, ar: "كُرَة القَدَم." }
         ]
     },
     {
         p1: [
-            { tr: "Ayrıca", order: 3, ar: "أَيْضًا؟" },
-            { tr: "ne", order: 1, ar: "بِماذا" },
-            { tr: "hissediyorsun?", order: 2, ar: "تَشْعُرُ" }
+            { tr: "Boş", order: 4, ar: "فَراغِك‫.‬" },
+            { tr: "vaktinde", order: 3, ar: "في وَقْتِ" },
+            { tr: "ne", order: 1, ar: "ماذا" },
+            { tr: "yaparsın?", order: 2, ar: "تَفْعَلُ" },
+            
         ],
         p2: [
-            { tr: "Kulağımda", order: 3, ar: "في أُذُني" },
-            { tr: "ve boğazımda", order: 4, ar: "وَحَلْقي." },
-            { tr: "ağrı", order: 2, ar: "بِأَلَم" }, // Boşluk tamamlandı
-            { tr: "hissediyorum.", order: 1, ar: "أَشْعُرُ" }
+            { tr: "Ben", order: 1, ar: "أَنا" },
+            { tr: "kitap", order: 4, ar: "الكُتُب" },   
+            { tr: "okumayı", order: 3, ar: "قِراءةَ" },
+            { tr: "ve", order: 5, ar: "وَالاِسْتِماع" },
+            { tr: "müzik", order: 6, ar: "إلى الموسيقى." },
+            { tr: "dinlemeyi", order: 5, ar: "وَالاِسْتِماع" },
+            { tr: "severim.", order: 2, ar: "أُحِبُّ" }
+            
         ]
     },
+
+    // --- 3. DİYALOG: HAJER VE ÖĞRETMEN ---
     {
         p1: [
-            { tr: "Ateşin", order: 3, ar: "حَرارَة؟" }, // Boşluk tamamlandı
-            { tr: "var", order: 2, ar: "عِنْدَكَ" },
-            { tr: "mı?", order: 1, ar: "هَل" }
+            { tr: "Boş", order: 4, ar: "فَراغِكِ؟" },
+            { tr: "vaktinde", order: 3, ar: "في وَقْتِ" },
+            { tr: "ne", order: 1, ar: "ماذا" },
+            { tr: "yaparsın?", order: 2, ar: "تَفْعَلينَ" },
+           
+            
         ],
         p2: [
-            { tr: "Evet,", order: 1, ar: "نَعَم،" },
-            { tr: "yüksek", order: 4, ar: "مُرْتَفِعَة." },
-            { tr: "ateşim", order: 3, ar: "حَرارَة" },
-            { tr: "var.", order: 2, ar: "عِنْدي" }
+            { tr: "Resim", order: 2, ar: "الرَّسْم" },
+            { tr: "yaparım", order: 1, ar: "أُمارِسُ" },
+            { tr: "ve", order: 3, ar: "وَأُحِبُّ" },
+            { tr: "gezintiyi", order: 4, ar: "التَّنَزُّه" },
+            { tr: "de", order: 5, ar: "أَيْضًا." },
+            { tr: "severim.", order: 3, ar: "وَأُحِبُّ" },
         ]
     },
     {
         p1: [
-            { tr: "Tansiyon", order: 1, ar: "الضَّغْط" },
-            { tr: "normal,", order: 2, ar: "طَبيعي،" }, // Kelime bankasından tahmin
-            { tr: "karnında", order: 6, ar: "في بَطْنِك؟" },
-            { tr: "sancı", order: 5, ar: "مَغْص" },
-            { tr: "var", order: 4, ar: "عِنْدَكَ" },
-            { tr: "mı?", order: 3, ar: "هَل" }
+            { tr: "Hangi", order: 2, ar: "أَيَّ" },
+            { tr: "sporu", order: 3, ar: "رِياضة؟" },
+            { tr: "tercih edersin?", order: 1, ar: "تُفَضِّلينَ" }
+        ],
+        p2: [
+            { tr: "Yüzmeyi", order: 2, ar: "السِّباحَة" },
+            { tr: "ve", order: 3, ar: "وَالرِّمايَة." },
+            { tr: "okçuluğu", order: 3, ar: "وَالرِّمايَة." },
+            { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" },
+        ]
+    },
+    {
+        p1: [
+            { tr: "Futbol", order: 3, ar: "كُرَة القَدَم؟" },
+            { tr: "oynayabilir(sin)", order: 2, ar: "تَسْتَطيعينَ أَنْ تَلْعَبي" },
+            { tr: "misin?", order: 1, ar: "هَلْ" },
+            
+            
         ],
         p2: [
             { tr: "Hayır,", order: 1, ar: "لا،" },
-            { tr: "karnımda", order: 4, ar: "في بَطْني." },
-            { tr: "sancı", order: 3, ar: "مَغْص" }, // Boşluk tamamlandı
-            { tr: "yok.", order: 2, ar: "ما عِنْدي" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Bu", order: 1, ar: "هذا" },
-            { tr: "nezle,", order: 2, ar: "زُكام،" }, // Boşluk tamamlandı
-            { tr: "bu ilacı", order: 5, ar: "هذا الدَّواء." },
-            { tr: "alman", order: 4, ar: "أَنْ تَتَناوَلَ" },
-            { tr: "gerekir.", order: 3, ar: "يَجِبُ عَلَيْكَ" }
-        ],
-        p2: [
-            { tr: "Günde", order: 3, ar: "في اليَوْم؟" },
-            { tr: "kaç", order: 1, ar: "كَم" },
-            { tr: "kez?", order: 2, ar: "مَرَّة" } // Boşluk tamamlandı
-        ]
-    },
-    {
-        p1: [
-            { tr: "Yemekten", order: 4, ar: "الطَّعام،" },
-            { tr: "sonra", order: 3, ar: "بَعْد" },
-            { tr: "üç", order: 1, ar: "ثَلاثَة" },
-            { tr: "kez,", order: 2, ar: "مَرّات" },
-            { tr: "soğuk", order: 7, ar: "بارِدًا‫.‬" },
-            { tr: "su", order: 6, ar: "ماءً" },
-            { tr: "içme.", order: 5, ar: "وَلا تَشْرَبْ" },
-            { tr: "Allah şifa versin.", order: 8, ar: "شَفاكَ الله." }
-        ],
-        p2: [ { tr: "Teşekkürler.", order: 1, ar: "شُكْرًا‫.‬" } ]
-    },
-
-    // --- 2. GÖRSEL: DOKTOR VE SALMAN DİYALOĞU ---
-    {
-        p1: [
-            { tr: "Selman,", order: 3, ar: "يا سَلْمان؟" },
-            { tr: "şikayetin", order: 2, ar: "بِكَ" },
-            { tr: "nedir?", order: 1, ar: "ما" }
-        ],
-        p2: [
-            { tr: "Baş ağrım", order: 2, ar: "صُداع" },
-            { tr: "ve öksürüğüm", order: 3, ar: "وَكُحَّة." },
-            { tr: "var.", order: 1, ar: "عِنْدي" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Bu", order: 1, ar: "هذا" },
-            { tr: "nezle,", order: 2, ar: "زُكام،" },
-            { tr: "endişeye gerek yok.", order: 3, ar: "لا داعِي لِلْقَلَق." }
-        ],
-        p2: [
-            { tr: "Ne", order: 1, ar: "ماذا" },
-            { tr: "yapmam", order: 3, ar: "أَنْ أَفْعَل؟" },
-            { tr: "gerekir?", order: 2, ar: "يَجِبُ" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Soğuk", order: 3, ar: "بارِدًا،" },
-            { tr: "su", order: 2, ar: "ماءً" },
-            { tr: "içme,", order: 1, ar: "لا تَشْرَبْ" },
-            { tr: "ayrıca", order: 8, ar: "أَيْضًا." },
-            { tr: "bu", order: 6, ar: "هذا" },
-            { tr: "ilacı", order: 7, ar: "الدَّواء" },
-            { tr: "alman", order: 5, ar: "أَنْ تَتَناوَلَ" },
-            { tr: "gerekir.", order: 4, ar: "وَيَجِبُ عَلَيْكَ" }
-        ],
-        p2: [
-            { tr: "Günde", order: 3, ar: "في اليَوْم؟" },
-            { tr: "kaç", order: 1, ar: "كَم" },
-            { tr: "kez?", order: 2, ar: "مَرَّة" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "İki kez.", order: 1, ar: "مَرَّتَيْن." }
-        ],
-        p2: [
-            { tr: "Teşekkürler.", order: 1, ar: "شُكْرًا." }
-        ]
-    },
-
-    // --- 3. GÖRSEL GRUBU: HASTALIKLAR VE HİSLER (Kısa Diyaloglar) ---
-    {
-        p1: [
-            { tr: "Neyin", order: 1, ar: "ما" },
-            { tr: "var?", order: 2, ar: "بِكِ؟" }
-        ],
-        p2: [
-            { tr: "Ben", order: 1, ar: "أَنا" },
-            { tr: "hastayım,", order: 2, ar: "مَريضَة" },
-            { tr: "boğazımda", order: 5, ar: "في حَلْقي." },
-            { tr: "ağrı", order: 4, ar: "أَلَم" },
-            { tr: "var.", order: 3, ar: "عِنْدي" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Neyin", order: 1, ar: "ما" },
-            { tr: "var?", order: 2, ar: "بِكَ؟" }
-        ],
-        p2: [
-            { tr: "Ben", order: 1, ar: "أَنا" },
-            { tr: "hastayım,", order: 2, ar: "مَريض،" },
-            { tr: "baş ağrım", order: 4, ar: "صُداع." },
-            { tr: "var.", order: 3, ar: "عِنْدي" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Onun", order: 2, ar: "بِهِ؟" },
-            { tr: "neyi var?", order: 1, ar: "ما" }
-        ],
-        p2: [
-            { tr: "O", order: 1, ar: "هُو" },
-            { tr: "hasta,", order: 2, ar: "مَريض،" },
-            { tr: "onun", order: 3, ar: "عِنْدَهُ" },
-            { tr: "tansiyonu", order: 4, ar: "ضَغْط" },
-            { tr: "yüksektir.", order: 5, ar: "مُرْتَفِع." }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Onun", order: 2, ar: "بِها؟" },
-            { tr: "neyi var?", order: 1, ar: "ما" }
-        ],
-        p2: [
-            { tr: "O", order: 1, ar: "هِي" },
-            { tr: "hasta,", order: 2, ar: "مَريضَة،" },
-            { tr: "nezlesi", order: 4, ar: "زُكام." },
-            { tr: "var.", order: 3, ar: "عِنْدَها" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Sen", order: 3, ar: "أَنْتَ؟" },
-            { tr: "ne", order: 1, ar: "بِماذا" },
-            { tr: "hissediyorsun?", order: 2, ar: "تَشْعُرُ " }
-        ],
-        p2: [
-            { tr: "Ben", order: 1, ar: "أَنا" },
-            { tr: "kulağımda", order: 4, ar: "في أُذُني." },
-            { tr: "ağrı", order: 3, ar: "بِأَلَم" },
-            { tr: "hissediyorum.", order: 2, ar: "أَشْعُرُ" }
-        ]
-    },
-
-    // --- 4. GÖRSEL: DOKTOR VE HASTA (Kısa) ---
-    {
-        p1: [
-            { tr: "Neyin", order: 2, ar: "بِكَ؟" },
-            { tr: "var?", order: 1, ar: "ما" }
-        ],
-        p2: [
-            { tr: "Başımda", order: 3, ar: "في رَأْسي." },
-            { tr: "ağrı", order: 2, ar: "بِأَلَم" },
-            { tr: "hissediyorum.", order: 1, ar: "أَشْعُرُ" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Şimdi", order: 3, ar: "الآن." },
-            { tr: "tansiyonunu", order: 2, ar: "ضَغْطَكَ" },
-            { tr: "ölçeceğim.", order: 1, ar: "سَأَفْحَصُ" }
-        ],
-        p2: [
-            { tr: "Tansiyonum", order: 2, ar: "ضَغْطي" },
-            { tr: "yüksek ", order: 3, ar: "مُرْتَفِع؟" },
-            { tr: "mi?", order: 1, ar: "هَل" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Evet,", order: 1, ar: "نَعَم،" },
-            { tr: "biraz", order: 3, ar: "قَليلًا،" },
-            { tr: "yüksek", order: 2, ar: "مُرْتَفِع" },
-            { tr: "fakat", order: 4, ar: "وَلَكِنْ" },
-            { tr: "endişeye gerek yok.", order: 5, ar: "لا داعِي لِلْقَلَق." }
-        ],
-        p2: [
-            { tr: "Ne", order: 1, ar: "ماذا" },
-            { tr: "yapmam", order: 3, ar: "أَنْ أَفْعَل؟" },
-            { tr: "gerekir?", order: 2, ar: "يَجِبُ" }
-        ]
-    },
-    {
-        p1: [
-            { tr: "Bu", order: 3, ar: "هذا" },
-            { tr: "ilacı", order: 4, ar: "الدَّواء." },
-            { tr: "alman (tüketmen)", order: 2, ar: "أَنْ تَتَناوَلَ" },
-            { tr: "gerekir.", order: 1, ar: "يَجِبُ عَلَيْكَ" }
-        ],
-        p2: [
-            { tr: "Geçmiş olsun (Allah şifa versin).", order: 2, ar: "شَفاكَ الله." }, // Doktor söylüyor aslında ama format gereği buraya aldım
-            { tr: "Affedersiniz/Rica ederim.", order: 1, ar: "عَفْوًا،" }
+            { tr: "yapamam.", order: 2, ar: "لا أَسْتَطيعُ." }
         ]
     }
 ]
 };
 
-    function startMode(m) {
+function startMode(m) {
+        // Eğer bir önceki moddan veya işlemden kalan bir popup varsa kapatır
+        togglePopup(false); 
+        
         mode = m;
         document.getElementById('entry-panel').style.display = 'none';
         document.querySelector('.navbar').style.display = 'flex';
@@ -1641,54 +1413,9 @@ function handleMove(order, ar, trId, arId, playerNum) {
         currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
         render();
     }
-    
-    // Popup fonksiyonları (Aynen devam)
-    function setActiveButton(type) {
-        const buttons = document.querySelectorAll('.nav-trigger');
-        buttons.forEach(btn => {
-            btn.style.border = "none";
-            btn.style.boxShadow = "none";
-        });
-        const activeBtn = event.currentTarget;
-        activeBtn.style.border = "2px solid white";
-        activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
-    }
+   
 
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            setActiveButton(type);
-        }
-    }
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
-    }
-
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
-        }
-    }
 </script>
 </body>
 </html>
