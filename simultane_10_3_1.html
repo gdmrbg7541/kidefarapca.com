@@ -182,139 +182,94 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
-/* --- MOBİL VE TABLET İÇİN TAM KAPSAMLI YAMA (Hepsi Bir Arada) --- */
+/* --- MOBİL İÇİN "PAN & ZOOM" GÖRÜNÜMÜ (Gezinilebilir Geniş Alan) --- */
 @media screen and (max-width: 768px), 
        screen and (orientation: landscape) and (max-height: 600px) {
 
-    /* --- 1. GİRİŞ EKRANI (ENTRY PANEL) --- */
-    #entry-panel {
-        padding: 15px !important;
+    /* =========================================
+       1. POPUP: HARİTA GİBİ GEZİNME (ÖNEMLİ)
+       ========================================= */
+    
+    /* Popup gövdesi pencere görevi görsün, taşan kısımları kaydırsın */
+    .popup-body {
+        overflow: auto !important; /* Hem yatay hem dikey kaydırma açık */
+        -webkit-overflow-scrolling: touch; /* Mobilde akıcı kaydırma */
+        padding: 5px !important;
+        /* İçerik ne kadar büyükse o kadar alan aç */
+        display: block !important; 
+    }
+
+    /* Tabloları tutan kapsayıcıyı GENİŞLEMEYE ZORLA */
+    /* Bu kod, içeriğin alt alta inmesini ENGELLER ve yan yana tutar */
+    .popup-body > div[style*="display: flex"] {
+        display: flex !important;
+        flex-direction: row-reverse !important; /* Orijinal yan yana düzeni koru */
+        width: max-content !important; /* İÇERİK KADAR GENİŞ OL (Ekrana sığmaya çalışma) */
+        min-width: 100%;
         gap: 20px !important;
     }
-    #entry-panel h1 {
-        font-size: 2rem !important; /* Başlık küçüldü */
-        margin-bottom: 10px !important;
-    }
-    .mode-btn {
-        width: 100% !important; /* Genişlik ekranı zorlamasın */
-        max-width: 300px !important;
-        padding: 15px !important;
-        font-size: 1.2rem !important;
-        border-width: 3px !important;
-    }
-    .entry-back-btn {
-        width: 35px !important;
-        height: 35px !important;
-        font-size: 1.2rem !important;
-        top: 10px !important;
-        left: 10px !important;
+
+    /* Sütunlar sıkışmasın, orijinal genişliklerini korusunlar */
+    .nouns-col, .verbs-col {
+        flex: 0 0 auto !important; /* Asla büzülme */
+        width: auto !important;
+        min-width: 300px; /* Okunabilir minimum genişlik */
+        display: block !important;
+        border-right: 2px solid #eee !important; /* Ayırıcı çizgi */
+        padding-right: 15px !important;
     }
 
-    /* --- 2. ÜST BAR (NAVBAR) --- */
-    .navbar {
-        min-height: 45px !important;
-        padding: 2px 5px !important;
-    }
-    .back-btn {
-        width: 35px !important;
-        height: 35px !important;
-        font-size: 1.1rem !important;
-        margin-right: 8px !important;
-    }
-    .nav-trigger {
-        padding: 5px 8px !important;
-        font-size: 11px !important;
+    /* Tablo Yazı Boyutları - Gezilebilir olduğu için küçültmeye gerek yok! */
+    /* Okunabilir, büyük boyutta kalsınlar */
+    .popup-body table th, 
+    .popup-body table td {
+        white-space: nowrap !important; /* Kelimeler asla alt satıra geçmesin */
+        font-size: 1rem !important; /* Rahat okuma boyutu */
+        padding: 8px !important;
     }
 
-    /* --- 3. POPUP (PENCERE) VE TABLOLAR --- */
-    .popup-header {
-        padding: 10px !important;
-        min-height: 40px !important;
-    }
-    .popup-header h2 {
-        font-size: 1.1rem !important;
-    }
-    .close-popup {
-        font-size: 1.5rem !important;
-    }
-    
-    /* Tablo Metinlerini Zorla Küçült */
+    /* Arapça Metinler */
     .popup-body .ar-txt, 
     .popup-body span[style*="font-size"] { 
-        font-size: 1.2rem !important; /* Satır içi stilleri ezer */
-        line-height: 1.4 !important;
+        font-size: 1.4rem !important;
     }
-    .popup-body small {
-        font-size: 0.7rem !important;
+
+    /* Popup Başlığı Sabit Kalsın, İçerik Kaysın */
+    .popup-header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+        width: 100% !important;
     }
-    th, td {
-        padding: 5px !important;
-        font-size: 0.8rem !important;
-    }
+
+
+    /* =========================================
+       2. DİĞER ARAYÜZ DÜZELTMELERİ
+       ========================================= */
+
+    /* Giriş Ekranı */
+    #entry-panel { padding: 10px !important; gap: 15px !important; }
+    #entry-panel h1 { font-size: 1.8rem !important; }
+    .mode-btn { width: 90% !important; padding: 15px !important; font-size: 1.2rem !important; border-width: 3px !important; }
+
+    /* Navbar (Üst Menü) */
+    .navbar { min-height: 40px !important; padding: 4px !important; overflow-x: auto; }
+    .nav-trigger { padding: 6px 10px !important; font-size: 0.85rem !important; white-space: nowrap !important; }
+
+    /* Çalışma Alanı (Cümleler) */
+    #sentence-mode .word { font-size: clamp(1.4rem, 5vw, 2rem) !important; margin: 3px !important; border-width: 2px !important; }
+    #sentence-mode .ar-output { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; margin-top: 10px !important; }
+
+    /* Diyaloglar */
+    #dialog-mode .word { font-size: clamp(1rem, 4vw, 1.4rem) !important; }
+    .dialog-row { padding: 10px !important; }
     
-    /* Yan yana duran sütunları alt alta al (İsimler/Fiiller) */
-    .popup-body > div[style*="display: flex"] {
-        flex-direction: column-reverse !important;
-        gap: 20px !important;
-    }
-    .verbs-col {
-        border-right: none !important;
-        border-bottom: 2px solid #eee !important;
-        padding-bottom: 20px !important;
-        margin-bottom: 10px !important;
-        padding-right: 0 !important;
-    }
-
-    /* --- 4. ÇALIŞMA ALANI (CÜMLE & DİYALOG) --- */
-    .workspace {
-        padding: 5px !important;
-    }
-    .tr-container {
-        gap: 6px !important;
-        margin-bottom: 10px !important;
-    }
-
-    /* Cümle Modu */
-    #sentence-mode .word {
-        font-size: clamp(1.2rem, 5vmin, 1.8rem) !important;
-        margin: 2px !important;
-        border-width: 2px !important;
-    }
-    #sentence-mode .ar-output {
-        font-size: clamp(1.5rem, 6vmin, 2.2rem) !important;
-        margin-top: 5px !important;
-        min-height: auto !important;
-    }
-
-    /* Diyalog Modu */
-    #dialog-mode {
-        gap: 8px !important;
-    }
-    .dialog-row {
-        padding: 8px !important;
-        border-radius: 10px !important;
-        border-width: 2px !important;
-    }
-    #dialog-mode .word {
-        font-size: clamp(1rem, 4vmin, 1.4rem) !important;
-    }
-    #dialog-mode .ar-output {
-        font-size: clamp(1.2rem, 5vmin, 1.8rem) !important;
-        margin-top: 5px !important;
-    }
-
-    /* --- 5. ALT KONTROLLER --- */
-    .controls {
-        padding: 8px !important;
-        gap: 15px !important;
-    }
-    .nav-btn {
-        padding: 8px 25px !important;
-        font-size: 0.9rem !important;
-        border-width: 2px !important;
-    }
+    /* Alt Butonlar */
+    .controls { padding: 10px !important; gap: 15px !important; }
+    .nav-btn { padding: 10px 20px !important; font-size: 1rem !important; }
 }
 /* --- YAMA SONU --- */
+
  </style>
 </head>
 <body>
