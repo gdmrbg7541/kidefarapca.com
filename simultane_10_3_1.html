@@ -182,93 +182,123 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
-/* --- MOBİL İÇİN EVRENSEL "HARİTA GİBİ GEZİNME" MODU (TÜM POPUPLAR İÇİN) --- */
+/* --- NİHAİ MOBİL YAMA: ORTALAMA VE SCROLL DÜZELTMESİ --- */
 @media screen and (max-width: 768px), 
        screen and (orientation: landscape) and (max-height: 600px) {
 
     /* =========================================
-       1. POPUP GÖVDESİ (KAYDIRMA ALANI)
-       ========================================= */
-    .popup-body {
-        overflow: auto !important; /* Her yöne kaydırmayı aç */
-        -webkit-overflow-scrolling: touch; /* Mobilde akıcı kayma */
-        padding: 10px !important;
-        display: block !important; 
-    }
-
-    /* =========================================
-       2. İÇERİĞİ ZORLA GENİŞLET (KİLİT NOKTA)
+       1. ÇALIŞMA ALANI: TAM ORTALAMA (FIX)
        ========================================= */
     
-    /* Popup içindeki TÜM ana taşıyıcıları içeriği kadar genişlemeye zorla */
-    /* Bu kod; Harfler, Zamirler, Kelimeler fark etmeksizin hepsini genişletir */
-    .popup-body > div {
-        width: max-content !important; /* Ekran genişliğine sığmaya ÇALIŞMA, yayıl */
-        min-width: 100% !important;    /* En az ekran kadar olsun */
-        display: block !important;     /* Flex sıkışmasını önle */
+    .workspace {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important; /* Dikeyde ortala */
+        align-items: center !important;     /* Yatayda ortala */
+        width: 100% !important;
+        padding: 5px !important;
     }
 
-    /* Tabloları Büzüşmekten Kurtar */
-    /* Fiil Kipleri gibi geniş tablolar artık sıkışmayacak, sağa doğru uzayacak */
-    .popup-body table {
-        width: max-content !important; 
-        min-width: 100% !important;
-        table-layout: auto !important;
+    /* Cümle ve Diyalog Modu Kutuları */
+    #sentence-mode, #dialog-mode {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important; /* İçeriği yatayda ortala */
+        justify-content: center !important;
+    }
+
+    /* Kelime Grupları (Türkçe) */
+    .tr-container {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important; /* Kelimeleri ortada topla */
+        gap: 6px !important;
+        width: 100% !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* Arapça Çıktı */
+    .ar-output {
+        text-align: center !important; /* Metni ortala */
+        width: 100% !important;
+        display: block !important;
+        margin-top: 10px !important;
+    }
+
+    /* Kelime Baloncukları Boyutları */
+    #sentence-mode .word { font-size: clamp(1.4rem, 5vw, 2rem) !important; margin: 3px !important; }
+    #dialog-mode .word { font-size: clamp(1.1rem, 4vw, 1.5rem) !important; }
+    #sentence-mode .ar-output { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; }
+    #dialog-mode .ar-output { font-size: clamp(1.4rem, 5vw, 2rem) !important; }
+
+    /* =========================================
+       2. POPUP SCROLL SORUNU ÇÖZÜMÜ
+       ========================================= */
+
+    /* Popup Penceresinin Kendisi */
+    .popup {
+        display: flex !important;
+        flex-direction: column !important;
+        /* Yüksekliği sınırla ki scroll devreye girsin */
+        max-height: 85vh !important; 
+        height: auto !important; 
+        width: 95% !important; /* Kenarlardan biraz boşluk */
+        margin: 0 auto !important; /* Ortala */
+        border-radius: 15px !important;
+    }
+
+    /* Popup Gövdesi (Kaydırma Alanı) */
+    .popup-body {
+        flex: 1 !important; /* Kalan alanı kapla */
+        overflow: auto !important; /* Hem yatay hem dikey kaydırmayı aç */
+        -webkit-overflow-scrolling: touch; /* iPhone için pürüzsüz kaydırma */
+        padding: 10px !important;
+        display: block !important;
+        position: relative !important;
+    }
+
+    /* İÇERİĞİ ZORLA GENİŞLET (Pan & Zoom Etkisi) */
+    /* Bu kısım içeriğin sıkışmasını engeller, yana doğru uzamasını sağlar */
+    .popup-body > div, 
+    .popup-body table,
+    div[style*="display: flex"] {
+        width: max-content !important; /* İçeriğin kadar geniş ol */
+        min-width: 100% !important;    /* Ekrandan küçük olma */
+        box-sizing: border-box !important;
+        display: flex !important; /* Flex yapısını koru */
+        flex-wrap: nowrap !important; /* Asla alt satıra inme */
     }
 
     /* Tablo Hücreleri */
     .popup-body th, .popup-body td {
-        white-space: nowrap !important; /* Metinleri asla alt satıra kırma */
-        padding: 8px 15px !important;   /* Geniş dokunma alanı */
+        white-space: nowrap !important; /* Satır kırılmasını engelle */
+        padding: 10px 15px !important;
         font-size: 1rem !important;
     }
 
-    /* =========================================
-       3. "HARFLER" ve "KELİMELER" SÜTUNLARI
-       ========================================= */
-    
-    /* Yan yana duran sütunları (flex) koru ve genişlet */
-    div[style*="display: flex"] {
-        display: flex !important;
-        flex-wrap: nowrap !important; /* Asla alt alta inme */
-        width: max-content !important; /* İçeriğin kadar yer kapla */
-        gap: 30px !important;
-    }
-
-    /* Sütunların Kendisi */
-    .nouns-col, .verbs-col, .popup-body > div > div {
-        flex: 0 0 auto !important; /* Büzülme, geniş kal */
-        width: auto !important;
-    }
-
-    /* =========================================
-       4. DİĞER ARAYÜZ AYARLARI
-       ========================================= */
-    
-    /* Popup Başlığı (Sabit Üstte Kalsın) */
+    /* Popup Başlığı (Sabit) */
     .popup-header {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 100 !important;
-        width: 100% !important;
+        flex-shrink: 0 !important; /* Başlık büzülmesin */
+        z-index: 50 !important;
+        border-radius: 15px 15px 0 0 !important;
     }
 
-    /* Yazı Boyutları (Okunabilirlik) */
-    .popup-body .ar-txt, 
-    .popup-body span[style*="font-size"] { 
-        font-size: 1.4rem !important;
-    }
-
-    /* Arayüz (Giriş & Diyalog) */
-    #entry-panel { padding: 10px; gap: 15px; }
-    #entry-panel h1 { font-size: 1.8rem !important; }
-    .mode-btn { width: 90% !important; padding: 15px; font-size: 1.2rem; }
+    /* =========================================
+       3. DİĞER ARAYÜZ DÜZELTMELERİ
+       ========================================= */
     
-    .navbar { min-height: 40px; overflow-x: auto; }
-    #sentence-mode .word { font-size: clamp(1.4rem, 5vw, 2rem) !important; margin: 3px !important; }
-    #sentence-mode .ar-output { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; }
-    #dialog-mode .word { font-size: clamp(1rem, 4vw, 1.4rem) !important; }
-    .controls { padding: 10px; gap: 10px; }
+    /* Giriş Ekranı */
+    #entry-panel { padding: 10px; gap: 15px; }
+    #entry-panel h1 { font-size: 1.8rem !important; text-align: center; }
+    .mode-btn { width: 90% !important; padding: 15px; font-size: 1.2rem; }
+
+    /* Navbar */
+    .navbar { min-height: 45px; overflow-x: auto; padding: 5px; }
+    
+    /* Kontroller */
+    .controls { padding: 10px; gap: 15px; flex-wrap: wrap; justify-content: center; }
+    .nav-btn { flex: 1; padding: 10px; font-size: 1rem; max-width: 150px; }
 }
 /* --- YAMA SONU --- */
  </style>
