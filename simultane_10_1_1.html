@@ -182,6 +182,182 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
+/* --- GENİŞLETİLMİŞ MOBİL YAMA (Giriş, Popup, Tablolar) --- */
+@media screen and (max-width: 768px), 
+       screen and (orientation: landscape) and (max-height: 600px) {
+
+    /* 1. GİRİŞ SAYFASI (Entry Panel) */
+    #entry-panel {
+        padding: 10px !important;
+        gap: 15px !important; /* Öğeler arası boşluğu azalt */
+    }
+    
+    #entry-panel h1 {
+        font-size: 1.8rem !important; /* Başlığı küçült */
+        margin-bottom: 10px !important;
+    }
+
+    .mode-btn {
+        width: 90% !important; /* Ekranı tam kaplamasın */
+        padding: 15px !important; /* Buton şişkinliğini al */
+        font-size: 1.2rem !important; /* Buton yazısını küçült */
+        border-width: 3px !important;
+    }
+    
+    .entry-back-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+
+    /* 2. POPUP PENCERESİ */
+    .popup-header {
+        padding: 8px 15px !important; /* Başlık alanını daralt */
+        min-height: 45px !important;
+    }
+
+    .popup-header h2 {
+        font-size: 1.1rem !important; /* Başlık fontunu küçült */
+    }
+
+    .close-popup {
+        font-size: 1.8rem !important;
+        line-height: 1 !important;
+    }
+
+    /* 3. TABLOLAR VE İÇERİK */
+    /* Tablo hücre boşluklarını sıkıştır */
+    th, td {
+        padding: 4px !important; 
+        font-size: 0.85rem !important; /* Türkçe metinleri küçült */
+    }
+
+    /* HTML içinde 'style="font-size:2.2rem"' gibi verilen inline stilleri EZMEK için: */
+    /* Tablo içindeki Arapça yazılar */
+    .popup-body .ar-txt, 
+    .popup-body span[style*="font-size"] { 
+        font-size: 1.3rem !important; /* Hepsini standart boyuta getir */
+        line-height: 1.3 !important;
+    }
+    
+    /* Tablo altındaki küçük açıklamalar (Hastalar, Doktorlar vb.) */
+    .popup-body small {
+        font-size: 0.65rem !important;
+        color: #555 !important;
+    }
+
+    /* Popup içindeki başlıklar (H3) */
+    .popup-body h3 {
+        font-size: 1.1rem !important;
+        margin: 10px 0 5px 0 !important;
+        padding-bottom: 5px !important;
+    }
+    
+    /* Yan yana duran (flex) kutuları alt alta al veya sıkıştır */
+    .popup-body > div[style*="display: flex"] {
+        flex-direction: column-reverse !important; /* Mobilde alt alta olsun */
+        gap: 15px !important;
+    }
+    
+    /* Sütun çizgilerini düzelt */
+    .verbs-col, .nouns-col {
+        border: none !important; /* Dikey çizgiyi kaldır */
+        border-bottom: 2px solid #eee !important; /* Yatay çizgi ekle */
+        padding: 0 !important;
+    }
+}
+/* --- YAMA SONU --- */
+/* Kelime Paneli Yan Yana Dizilim ve Kaydırma */
+.words-container {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+    gap: 20px !important;
+    width: 100% !important;
+    /* Mobilde dikey kaydırmayı ana kapsayıcıya veriyoruz */
+    height: auto !important; 
+    max-height: 85vh !important;
+    overflow-y: auto !important; 
+    overflow-x: auto !important;
+    padding: 10px !important;
+    -webkit-overflow-scrolling: touch;
+}
+.words-container .verbs-col, 
+.words-container .nouns-col {
+    min-width: 320px !important; /* Mobilde sütun genişliği */
+    flex-shrink: 0 !important;
+    display: block !important; /* Flex dikeyde sorun çıkarabilir, block daha güvenli */
+}
+
+/* Tablo içindeki ekstra kaydırma alanlarını iptal edin (çakışmayı önler) */
+.words-container div[style*="overflow-y: auto"] {
+    overflow-y: visible !important;
+    height: auto !important;
+}
+
+/* Mobil için özel dikey yükseklik ayarı */
+@media screen and (max-width: 768px) {
+    .words-container {
+        max-height: 75vh !important;
+    }
+}
+/* Mobil Cihazlar İçin Yazı Boyutu Düzenlemesi */
+@media screen and (max-width: 768px) {
+    /* Cümle Modu Ayarları */
+    #sentence-mode .word { 
+        font-size: 1.5rem !important; /* Türkçe kelimeleri küçültür */
+    }
+    #sentence-mode .ar-output { 
+        font-size: 2.2rem !important; /* Arapça cümleyi küçültür */
+    }
+
+    /* Diyalog Modu Ayarları */
+    #dialog-mode .word { 
+        font-size: 1.2rem !important; /* Diyalogdaki Türkçe kelimeler */
+    }
+    #dialog-mode .ar-output { 
+        font-size: 1.8rem !important; /* Diyalogdaki Arapça cümleler */
+    }
+    
+    /* Satır aralarını ve kutu boşluklarını daraltma */
+    .dialog-row {
+        padding: 10px !important;
+        gap: 5px !important;
+    }
+    .tr-container {
+        gap: 10px !important;
+        margin-bottom: 15px !important;
+    }
+}
+/* Popup açıkken kontrolleri tamamen yok eden yardımcı sınıf */
+.controls-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+/* Popup açıkken butonları tamamen devre dışı bırakan kilit sınıfı */
+.force-hide {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+/* Mobil Kontrol Butonları Düzenlemesi */
+@media screen and (max-width: 768px) {
+    .controls {
+        gap: 15px !important; /* Butonlar arası boşluğu azaltır */
+        padding: 10px !important; /* Alt panelin yüksekliğini daraltır */
+    }
+
+    .nav-btn {
+        padding: 10px 20px !important; /* Butonun iç boşluğunu küçültür */
+        font-size: 0.9rem !important; /* Yazı boyutunu küçültür */
+        border-width: 2px !important; /* Çerçeveyi inceltir */
+        border-radius: 25px !important; /* Köşeleri daha oval yapar */
+        min-width: 100px; /* Butonlara minimum genişlik verir */
+    }
+}
  </style>
 </head>
 <body>
@@ -209,7 +385,7 @@
     <div class="pdf-links">
         <button class="nav-trigger" onclick="showPopup('words')">Konu Kelimeleri</button> 
         <button class="nav-trigger" onclick="showPopup('prepositions')">Harfler</button>
-        <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar</button>
+        <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar & Zarflar</button>
         <button class="nav-trigger" onclick="showPopup('pronouns')">Zamirler</button>
         <button class="nav-trigger" onclick="showPopup('suffix')">Fiil Kipleri</button>
         <button class="nav-trigger" onclick="showPopup('tamlamalar')">Tamlama ve Cümleler</button>
@@ -243,287 +419,106 @@
 <script>
     // POPUP İÇERİKLERİ
     const popupData = {
-        words: `
-            <div style="display: flex; flex-direction: row-reverse; gap: 10px; width: 100%; padding: 10px; max-height: 80vh;">
-                
-                <div class="nouns-col" style="flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column;">
-                    <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">İsimler</h3>
-                    <div style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Çoğul (ج)</th>
-                                    <th>Tekil</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+words: `
+    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-x: auto; overflow-y: auto; max-height: 80vh; -webkit-overflow-scrolling: touch;">
+        
+        <div class="nouns-col" style="min-width: 280px; flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column; flex-shrink: 0;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">İsimler & Meslekler</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Çoğul (ج)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Tekil</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="ar-txt">أَقَارِب<br><small style="font-size:11px; color:#666;">Akrabalar</small></td><td class="ar-txt">قَرِيب<br><small style="font-size:11px; color:#666;">Akraba</small></td></tr>
+                        <tr><td class="ar-txt">آبَاء<br><small style="font-size:11px; color:#666;">Babalar</small></td><td class="ar-txt">أَب<br><small style="font-size:11px; color:#666;">Baba</small></td></tr>
+                        <tr><td class="ar-txt">أُمَّهَات<br><small style="font-size:11px; color:#666;">Anneler</small></td><td class="ar-txt">أُمّ<br><small style="font-size:11px; color:#666;">Anne</small></td></tr>
+                        <tr><td class="ar-txt">إِخْوَة<br><small style="font-size:11px; color:#666;">Kardeşler (E)</small></td><td class="ar-txt">أَخ<br><small style="font-size:11px; color:#666;">Kardeş (E)</small></td></tr>
+                        <tr><td class="ar-txt">أَخَوَات<br><small style="font-size:11px; color:#666;">Kardeşler (K)</small></td><td class="ar-txt">أُخْت<br><small style="font-size:11px; color:#666;">Kardeş (K)</small></td></tr>
+                        <tr><td class="ar-txt">أَجْدَاد<br><small style="font-size:11px; color:#666;">Dedeler</small></td><td class="ar-txt">جَدّ<br><small style="font-size:11px; color:#666;">Dede</small></td></tr>
+                        <tr><td class="ar-txt">جَدَّات<br><small style="font-size:11px; color:#666;">Nineler</small></td><td class="ar-txt">جَدَّة<br><small style="font-size:11px; color:#666;">Nine</small></td></tr>
+                        <tr><td class="ar-txt">أَعْمَام<br><small style="font-size:11px; color:#666;">Amcalar</small></td><td class="ar-txt">عَمّ<br><small style="font-size:11px; color:#666;">Amca</small></td></tr>
+                        <tr><td class="ar-txt">عَمَّات<br><small style="font-size:11px; color:#666;">Halalar</small></td><td class="ar-txt">عَمَّة<br><small style="font-size:11px; color:#666;">Hala</small></td></tr>
+                        <tr><td class="ar-txt">أَخْوَال<br><small style="font-size:11px; color:#666;">Dayılar</small></td><td class="ar-txt">خَال<br><small style="font-size:11px; color:#666;">Dayı</small></td></tr>
+                        <tr><td class="ar-txt">خَالَات<br><small style="font-size:11px; color:#666;">Teyzeler</small></td><td class="ar-txt">خَالَة<br><small style="font-size:11px; color:#666;">Teyze</small></td></tr>
+                        <tr><td class="ar-txt">عُمَّال<br><small style="font-size:11px; color:#666;">İşçiler</small></td><td class="ar-txt">عَامِل<br><small style="font-size:11px; color:#666;">İşçi</small></td></tr>
+                        <tr><td class="ar-txt">مُهَنْدِسُونَ<br><small style="font-size:11px; color:#666;">Mühendisler</small></td><td class="ar-txt">مُهَنْدِس<br><small style="font-size:11px; color:#666;">Mühendis</small></td></tr>
+                        <tr><td class="ar-txt">أَطِبَّاء<br><small style="font-size:11px; color:#666;">Doktorlar</small></td><td class="ar-txt">طَبِيب / ـة<br><small style="font-size:11px; color:#666;">Doktor</small></td></tr>
+                        <tr><td class="ar-txt">مُمَرِّضَات<br><small style="font-size:11px; color:#666;">Hemşireler</small></td><td class="ar-txt">مُمَرِّضَة<br><small style="font-size:11px; color:#666;">Hemşire</small></td></tr>
+                        <tr><td class="ar-txt">مُدَرِّسُونَ<br><small style="font-size:11px; color:#666;">Öğretmenler</small></td><td class="ar-txt">مُدَرِّس<br><small style="font-size:11px; color:#666;">Öğretmen</small></td></tr>
+                        <tr><td class="ar-txt">مُوَظَّفُونَ<br><small style="font-size:11px; color:#666;">Memurlar</small></td><td class="ar-txt">مُوَظَّف / ـة<br><small style="font-size:11px; color:#666;">Memur</small></td></tr>
+                        <tr><td class="ar-txt">مُتَقَاعِدُونَ<br><small style="font-size:11px; color:#666;">Emekliler</small></td><td class="ar-txt">مُتَقَاعِد<br><small style="font-size:11px; color:#666;">Emekli</small></td></tr>
+                        <tr><td class="ar-txt">مُحَامُونَ<br><small style="font-size:11px; color:#666;">Avukatlar</small></td><td class="ar-txt">مُحَامٍ<br><small style="font-size:11px; color:#666;">Avukat</small></td></tr>
+                        <tr><td class="ar-txt">سَائِقُونَ<br><small style="font-size:11px; color:#666;">Şoförler</small></td><td class="ar-txt">سَائِق<br><small style="font-size:11px; color:#666;">Şoför</small></td></tr>
+                        <tr><td class="ar-txt">طَبَّاخُونَ<br><small style="font-size:11px; color:#666;">Aşçılar</small></td><td class="ar-txt">طَبَّاخ / ـة<br><small style="font-size:11px; color:#666;">Aşçı</small></td></tr>
+                        <tr><td class="ar-txt">مَصَانِع<br><small style="font-size:11px; color:#666;">Fabrikalar</small></td><td class="ar-txt">مَصْنَع<br><small style="font-size:11px; color:#666;">Fabrika</small></td></tr>
+                        <tr><td class="ar-txt">شَرِكَات<br><small style="font-size:11px; color:#666;">Şirketler</small></td><td class="ar-txt">شَرِكَة<br><small style="font-size:11px; color:#666;">Şirket</small></td></tr>
+                        <tr><td class="ar-txt">مُسْتَشْفَيَات<br><small style="font-size:11px; color:#666;">Hastaneler</small></td><td class="ar-txt">مُسْتَشْفَى<br><small style="font-size:11px; color:#666;">Hastane</small></td></tr>
+                        <tr><td class="ar-txt">مَدَارِس<br><small style="font-size:11px; color:#666;">Okullar</small></td><td class="ar-txt">مَدْرَسَة<br><small style="font-size:11px; color:#666;">Okul</small></td></tr>
+                        <tr><td class="ar-txt">مَكَاتِب<br><small style="font-size:11px; color:#666;">Ofisler</small></td><td class="ar-txt">مَكْتَب<br><small style="font-size:11px; color:#666;">Ofis</small></td></tr>
+                        <tr><td class="ar-txt">بُيُوت<br><small style="font-size:11px; color:#666;">Evler</small></td><td class="ar-txt">بَيْت<br><small style="font-size:11px; color:#666;">Ev</small></td></tr>
+                        <tr><td class="ar-txt">مَطَاعِم<br><small style="font-size:11px; color:#666;">Restoranlar</small></td><td class="ar-txt">مَطْعَم<br><small style="font-size:11px; color:#666;">Restoran</small></td></tr>
+                        <tr><td class="ar-txt">سَيَّارَات<br><small style="font-size:11px; color:#666;">Arabalar</small></td><td class="ar-txt">سَيَّارَة<br><small style="font-size:11px; color:#666;">Araba</small></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-
-<tr>
-    <td class="ar-txt">أَقَارِب<br><small style="font-size:11px; color:#666;">Akrabalar</small></td>
-    <td class="ar-txt">قَرِيب<br><small style="font-size:11px; color:#666;">Akraba</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">آبَاء<br><small style="font-size:11px; color:#666;">Babalar</small></td>
-    <td class="ar-txt">أَب<br><small style="font-size:11px; color:#666;">Baba</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أُمَّهَات<br><small style="font-size:11px; color:#666;">Anneler</small></td>
-    <td class="ar-txt">أُمّ<br><small style="font-size:11px; color:#666;">Anne</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">إِخْوَة<br><small style="font-size:11px; color:#666;">Erkek Kardeşler</small></td>
-    <td class="ar-txt">أَخ<br><small style="font-size:11px; color:#666;">Erkek Kardeş</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَخَوَات<br><small style="font-size:11px; color:#666;">Kız Kardeşler</small></td>
-    <td class="ar-txt">أُخْت<br><small style="font-size:11px; color:#666;">Kız Kardeş</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَجْدَاد<br><small style="font-size:11px; color:#666;">Dedeler</small></td>
-    <td class="ar-txt">جَدّ<br><small style="font-size:11px; color:#666;">Dede</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">جَدَّات<br><small style="font-size:11px; color:#666;">Nineler</small></td>
-    <td class="ar-txt">جَدَّة<br><small style="font-size:11px; color:#666;">Nine</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَعْمَام<br><small style="font-size:11px; color:#666;">Amcalar</small></td>
-    <td class="ar-txt">عَمّ<br><small style="font-size:11px; color:#666;">Amca</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">عَمَّات<br><small style="font-size:11px; color:#666;">Halalar</small></td>
-    <td class="ar-txt">عَمَّة<br><small style="font-size:11px; color:#666;">Hala</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَخْوَال<br><small style="font-size:11px; color:#666;">Dayılar</small></td>
-    <td class="ar-txt">خَال<br><small style="font-size:11px; color:#666;">Dayı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">خَالَات<br><small style="font-size:11px; color:#666;">Teyzeler</small></td>
-    <td class="ar-txt">خَالَة<br><small style="font-size:11px; color:#666;">Teyze</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">عُمَّال<br><small style="font-size:11px; color:#666;">İşçiler</small></td>
-    <td class="ar-txt">عَامِل<br><small style="font-size:11px; color:#666;">İşçi</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُهَنْدِسُونَ<br><small style="font-size:11px; color:#666;">Mühendisler</small></td>
-    <td class="ar-txt">مُهَنْدِس<br><small style="font-size:11px; color:#666;">Mühendis</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">أَطِبَّاء<br><small style="font-size:11px; color:#666;">Doktorlar</small></td>
-    <td class="ar-txt">طَبِيب / طَبِيبَة<br><small style="font-size:11px; color:#666;">Doktor</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُمَرِّضَات<br><small style="font-size:11px; color:#666;">Hemşireler</small></td>
-    <td class="ar-txt">مُمَرِّضَة<br><small style="font-size:11px; color:#666;">Hemşire</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُدَرِّسُونَ<br><small style="font-size:11px; color:#666;">Öğretmenler</small></td>
-    <td class="ar-txt">مُدَرِّس<br><small style="font-size:11px; color:#666;">Öğretmen</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُوَظَّفُونَ<br><small style="font-size:11px; color:#666;">Memurlar</small></td>
-    <td class="ar-txt">مُوَظَّف / ـة<br><small style="font-size:11px; color:#666;">Memur</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُتَقَاعِدُونَ<br><small style="font-size:11px; color:#666;">Emekliler</small></td>
-    <td class="ar-txt">مُتَقَاعِد<br><small style="font-size:11px; color:#666;">Emekli</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُحَامُونَ<br><small style="font-size:11px; color:#666;">Avukatlar</small></td>
-    <td class="ar-txt">مُحَامٍ<br><small style="font-size:11px; color:#666;">Avukat</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">سَائِقُونَ<br><small style="font-size:11px; color:#666;">Şoförler</small></td>
-    <td class="ar-txt">سَائِق<br><small style="font-size:11px; color:#666;">Şoför</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">طَبَّاخُونَ<br><small style="font-size:11px; color:#666;">Aşçılar</small></td>
-    <td class="ar-txt">طَبَّاخ / ـة<br><small style="font-size:11px; color:#666;">Aşçı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مَصَانِع<br><small style="font-size:11px; color:#666;">Fabrikalar</small></td>
-    <td class="ar-txt">مَصْنَع<br><small style="font-size:11px; color:#666;">Fabrika</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">شَرِكَات<br><small style="font-size:11px; color:#666;">Şirketler</small></td>
-    <td class="ar-txt">شَرِكَة<br><small style="font-size:11px; color:#666;">Şirket</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُسْتَشْفَيَات<br><small style="font-size:11px; color:#666;">Hastaneler</small></td>
-    <td class="ar-txt">مُسْتَشْفَى<br><small style="font-size:11px; color:#666;">Hastane</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مَدَارِس<br><small style="font-size:11px; color:#666;">Okullar</small></td>
-    <td class="ar-txt">مَدْرَسَة<br><small style="font-size:11px; color:#666;">Okul</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مَكَاتِب<br><small style="font-size:11px; color:#666;">Ofisler</small></td>
-    <td class="ar-txt">مَكْتَب<br><small style="font-size:11px; color:#666;">Ofis</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">بُيُوت<br><small style="font-size:11px; color:#666;">Evler</small></td>
-    <td class="ar-txt">بَيْت<br><small style="font-size:11px; color:#666;">Ev</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مَطَاعِم<br><small style="font-size:11px; color:#666;">Restoranlar</small></td>
-    <td class="ar-txt">مَطْعَم<br><small style="font-size:11px; color:#666;">Restoran</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">سَيَّارَات<br><small style="font-size:11px; color:#666;">Arabalar</small></td>
-    <td class="ar-txt">سَيَّارَة<br><small style="font-size:11px; color:#666;">Araba</small></td>
-</tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="verbs-col" style="flex: 2; display: flex; flex-direction: column;">
-                    <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">Fiiller</h3>
-                    <div style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Mastar</th>
-                                    <th>Emir</th>
-                                    <th>Muzari</th>
-                                    <th>Mazi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-<tr>
-    <td class="ar-txt">زِيَارَة<br><small style="font-size:11px; color:#666;">Ziyaret Etmek</small></td>
-    <td class="ar-txt">زُرْ<br><small style="font-size:11px; color:#666;">Ziyaret Et</small></td>
-    <td class="ar-txt">يَزُورُ<br><small style="font-size:11px; color:#666;">Ziyaret Ediyor</small></td>
-    <td class="ar-txt">زَارَ<br><small style="font-size:11px; color:#666;">Ziyaret Etti</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">حُبّ<br><small style="font-size:11px; color:#666;">Sevmek</small></td>
-    <td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td>
-    <td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td>
-    <td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">عَيْش<br><small style="font-size:11px; color:#666;">Yaşamak</small></td>
-    <td class="ar-txt">عِشْ<br><small style="font-size:11px; color:#666;">Yaşa</small></td>
-    <td class="ar-txt">يَعِيشُ<br><small style="font-size:11px; color:#666;">Yaşıyor</small></td>
-    <td class="ar-txt">عَاشَ<br><small style="font-size:11px; color:#666;">Yaşadı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">اِحْتِرَام<br><small style="font-size:11px; color:#666;">Saygı Duymak</small></td>
-    <td class="ar-txt">اِحْتَرِمْ<br><small style="font-size:11px; color:#666;">Saygı Duy</small></td>
-    <td class="ar-txt">يَحْتَرِمُ<br><small style="font-size:11px; color:#666;">Saygı Duyuyor</small></td>
-    <td class="ar-txt">اِحْتَرَمَ<br><small style="font-size:11px; color:#666;">Saygı Duydu</small></td>
-</tr>
-<tr>
-    <td class="ar-txt">عَمَل<br><small style="font-size:11px; color:#666;">Çalışmak</small></td>
-    <td class="ar-txt">اِعْمَلْ<br><small style="font-size:11px; color:#666;">Çalış</small></td>
-    <td class="ar-txt">يَعْمَلُ<br><small style="font-size:11px; color:#666;">Çalışıyor</small></td>
-    <td class="ar-txt">عَمِلَ<br><small style="font-size:11px; color:#666;">Çalıştı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">رُؤْيَة<br><small style="font-size:11px; color:#666;">Görmek</small></td>
-    <td class="ar-txt">رَ<br><small style="font-size:11px; color:#666;">Gör</small></td>
-    <td class="ar-txt">يَرَى<br><small style="font-size:11px; color:#666;">Görüyor</small></td>
-    <td class="ar-txt">رَأَى<br><small style="font-size:11px; color:#666;">Gördü</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مُدَافَعَة<br><small style="font-size:11px; color:#666;">Savunmak</small></td>
-    <td class="ar-txt">دَافِعْ<br><small style="font-size:11px; color:#666;">Savun</small></td>
-    <td class="ar-txt">يُدَافِعُ<br><small style="font-size:11px; color:#666;">Savunuyor</small></td>
-    <td class="ar-txt">دَافَعَ<br><small style="font-size:11px; color:#666;">Savundu</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">تَدْرِيس<br><small style="font-size:11px; color:#666;">Ders Vermek</small></td>
-    <td class="ar-txt">دَرِّسْ<br><small style="font-size:11px; color:#666;">Ders Ver</small></td>
-    <td class="ar-txt">يُدَرِّسُ<br><small style="font-size:11px; color:#666;">Ders Veriyor</small></td>
-    <td class="ar-txt">دَرَّسَ<br><small style="font-size:11px; color:#666;">Ders Verdi</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">اِهْتِمَام<br><small style="font-size:11px; color:#666;">İlgilenmek</small></td>
-    <td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilen</small></td>
-    <td class="ar-txt">يَهْتَمُّ<br><small style="font-size:11px; color:#666;">İlgileniyor</small></td>
-    <td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilendi</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">قِيَادَة<br><small style="font-size:11px; color:#666;">Sürmek</small></td>
-    <td class="ar-txt">قُدْ<br><small style="font-size:11px; color:#666;">Sür</small></td>
-    <td class="ar-txt">يَقُودُ<br><small style="font-size:11px; color:#666;">Sürüyor</small></td>
-    <td class="ar-txt">قَادَ<br><small style="font-size:11px; color:#666;">Sürdü</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt">مَشِيئَة<br><small style="font-size:11px; color:#666;">Dilemek</small></td>
-    <td class="ar-txt">شَأْ<br><small style="font-size:11px; color:#666;">Dile</small></td>
-    <td class="ar-txt">يَشَاءُ<br><small style="font-size:11px; color:#666;">Diliyor</small></td>
-    <td class="ar-txt">شَاءَ<br><small style="font-size:11px; color:#666;">Diledi</small></td>
-</tr>
-                               
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>`,
+        <div class="verbs-col" style="min-width: 400px; flex: 2; display: flex; flex-direction: column; flex-shrink: 0;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">Fiiller</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mastar</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Emir</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Muzari</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mazi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="ar-txt">زِيَارَة<br><small style="font-size:11px; color:#666;">Ziyaret Etmek</small></td><td class="ar-txt">زُرْ<br><small style="font-size:11px; color:#666;">Ziyaret Et</small></td><td class="ar-txt">يَزُورُ<br><small style="font-size:11px; color:#666;">Ziyaret Ediyor</small></td><td class="ar-txt">زَارَ<br><small style="font-size:11px; color:#666;">Ziyaret Etti</small></td></tr>
+                        <tr><td class="ar-txt">حُبّ<br><small style="font-size:11px; color:#666;">Sevmek</small></td><td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td><td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td><td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td></tr>
+                        <tr><td class="ar-txt">عَيْش<br><small style="font-size:11px; color:#666;">Yaşamak</small></td><td class="ar-txt">عِشْ<br><small style="font-size:11px; color:#666;">Yaşa</small></td><td class="ar-txt">يَعِيشُ<br><small style="font-size:11px; color:#666;">Yaşıyor</small></td><td class="ar-txt">عَاشَ<br><small style="font-size:11px; color:#666;">Yaşadı</small></td></tr>
+                        <tr><td class="ar-txt">اِحْتِرَام<br><small style="font-size:11px; color:#666;">Saygı Duymak</small></td><td class="ar-txt">اِحْتَرِمْ<br><small style="font-size:11px; color:#666;">Saygı Duy</small></td><td class="ar-txt">يَحْتَرِمُ<br><small style="font-size:11px; color:#666;">Saygı Duyuyor</small></td><td class="ar-txt">اِحْتَرَمَ<br><small style="font-size:11px; color:#666;">Saygı Duydu</small></td></tr>
+                        <tr><td class="ar-txt">عَمَل<br><small style="font-size:11px; color:#666;">Çalışmak</small></td><td class="ar-txt">اِعْمَلْ<br><small style="font-size:11px; color:#666;">Çalış</small></td><td class="ar-txt">يَعْمَلُ<br><small style="font-size:11px; color:#666;">Çalışıyor</small></td><td class="ar-txt">عَمِلَ<br><small style="font-size:11px; color:#666;">Çalıştı</small></td></tr>
+                        <tr><td class="ar-txt">رُؤْيَة<br><small style="font-size:11px; color:#666;">Görmek</small></td><td class="ar-txt">رَ<br><small style="font-size:11px; color:#666;">Gör</small></td><td class="ar-txt">يَرَى<br><small style="font-size:11px; color:#666;">Görüyor</small></td><td class="ar-txt">رَأَى<br><small style="font-size:11px; color:#666;">Gördü</small></td></tr>
+                        <tr><td class="ar-txt">مُدَافَعَة<br><small style="font-size:11px; color:#666;">Savunmak</small></td><td class="ar-txt">دَافِعْ<br><small style="font-size:11px; color:#666;">Savun</small></td><td class="ar-txt">يُدَافِعُ<br><small style="font-size:11px; color:#666;">Savunuyor</small></td><td class="ar-txt">دَافَعَ<br><small style="font-size:11px; color:#666;">Savundu</small></td></tr>
+                        <tr><td class="ar-txt">تَدْرِيس<br><small style="font-size:11px; color:#666;">Ders Vermek</small></td><td class="ar-txt">دَرِّسْ<br><small style="font-size:11px; color:#666;">Ders Ver</small></td><td class="ar-txt">يُدَرِّسُ<br><small style="font-size:11px; color:#666;">Ders Veriyor</small></td><td class="ar-txt">دَرَّسَ<br><small style="font-size:11px; color:#666;">Ders Verdi</small></td></tr>
+                        <tr><td class="ar-txt">اِهْتِمَام<br><small style="font-size:11px; color:#666;">İlgilenmek</small></td><td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilen</small></td><td class="ar-txt">يَهْتَمُّ<br><small style="font-size:11px; color:#666;">İlgileniyor</small></td><td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilendi</small></td></tr>
+                        <tr><td class="ar-txt">قِيَادَة<br><small style="font-size:11px; color:#666;">Sürmek</small></td><td class="ar-txt">قُدْ<br><small style="font-size:11px; color:#666;">Sür</small></td><td class="ar-txt">يَقُودُ<br><small style="font-size:11px; color:#666;">Sürüyor</small></td><td class="ar-txt">قَادَ<br><small style="font-size:11px; color:#666;">Sürdü</small></td></tr>
+                        <tr><td class="ar-txt">مَشِيئَة<br><small style="font-size:11px; color:#666;">Dilemek</small></td><td class="ar-txt">شَأْ<br><small style="font-size:11px; color:#666;">Dile</small></td><td class="ar-txt">يَشَاءُ<br><small style="font-size:11px; color:#666;">Diliyor</small></td><td class="ar-txt">شَاءَ<br><small style="font-size:11px; color:#666;">Diledi</small></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>`,
        
             prepositions: `
 <div style="width:100%; max-height: 75vh; overflow-y: auto; padding: 10px 20px 40px 10px;">
-    <h2 style="color:var(--pdf-red); margin-bottom:20px; text-align:center; font-size: 2.5rem; border-bottom: 3px solid var(--pdf-red); padding-bottom: 10px;">HARFLER</h2>
+    <h2 style="color:var(--pdf-red); margin-bottom:20px; text-align:center; font-size: 2.5rem; border-bottom: 3px solid var(--pdf-red); padding-bottom: 10px;">HARFLER VE EKLER</h2>
     
-    <div style="display: flex; gap: 30px; align-items: flex-start; flex-direction: row-reverse;">
+    <div style="display: flex; gap: 30px; align-items: flex-start; flex-direction: row-reverse; margin-bottom: 30px;">
+        
         <div style="flex: 1;">
             <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">1. Harf-i Cerler</h3>
             <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
                 <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
-                    <th style="padding: 15px; text-align: left;">Anlamı</th>
-                    <th style="padding: 15px; text-align: right;">Harf</th>
+                    <th style="padding: 10px; text-align: left;">Anlamı</th>
+                    <th style="padding: 10px; text-align: center;">Harf</th>
                 </tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">...de / içinde</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">فِي</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">üzerinde</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">عَلَى</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">...e / ...a</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">إِلَى</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">...den / ...dan</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">مِنْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">ile / ...e</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">بِـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">için</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">لِـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">hakkında</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">عَنْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">gibi</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">كَـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">...e kadar</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">حَتَّى</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...de / içinde</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">فِي</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">üzerinde</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">عَلَى</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...e / ...a</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">إِلَى</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...den / ...dan</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">مِنْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">ile / ...e</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">بِـ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">için</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">لِـ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">hakkında</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">عَنْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">gibi</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">كَـ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...e kadar</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">حَتَّى</td></tr>
             </table>
         </div>
 
@@ -531,67 +526,133 @@
             <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">2. Diğer Harfler</h3>
             <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
                 <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
-                    <th style="padding: 15px; text-align: left;">Anlamı</th>
-                    <th style="padding: 15px; text-align: right;">Harf</th>
+                    <th style="padding: 10px; text-align: left;">Anlamı</th>
+                    <th style="padding: 10px; text-align: center;">Harf</th>
                 </tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Ve (Bağlaç)</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">وَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Hemen sonra</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">فَـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Ecek / Acak</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">سَـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">...mı? / ...mi?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">أَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Değil (Mazi)</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">مَا</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Değil (Muzari)</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">لَا</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Kesinlikle</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">قَدْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Elbette</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">لَـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">İle / Beraber</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right; color: #333;">مَعَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ve (Bağlaç)</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">وَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hemen sonra</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">فَـ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ecek / Acak</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">سَـ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...mı? / ...mi?</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">أَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Değil (Mazi)</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">مَا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Değil (Muzari)</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">لَا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kesinlikle</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">قَدْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Elbette</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">لَـ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">İle / Beraber</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">مَعَ</td></tr>
             </table>
         </div>
     </div>
-    <div style="height: 60px;"></div>
-</div>`,
-          soruedatlari: `
-<div style="width:100%; max-height: 75vh; overflow-y: auto; padding: 10px 20px 40px 10px;">
-    <h2 style="color:var(--pdf-red); margin-bottom:20px; text-align:center; font-size: 2.5rem; border-bottom: 3px solid var(--pdf-red); padding-bottom: 10px;">EDATLAR</h2>
-    
+
     <div style="display: flex; gap: 30px; align-items: flex-start; flex-direction: row-reverse;">
+        
         <div style="flex: 1;">
-            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">1. Soru Edatları</h3>
+            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">3. Çoğul (Cemi)</h3>
             <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
                 <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
-                    <th style="padding: 15px; text-align: left;">Anlamı</th>
-                    <th style="padding: 15px; text-align: right;">Edat</th>
+                    <th style="padding: 10px; text-align: left;">Durum</th>
+                    <th style="padding: 10px; text-align: center;">Ek</th>
                 </tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Ne?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">مَا / مَاذَا</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Kim?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">مَنْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Nerede?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">أَيْنَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Nasıl?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">كَيْفَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Ne zaman?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">مَتَى</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Niçin?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">لِمَاذَا</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Hangisi?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">أَيّ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Kaç?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">كَمْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Nereden?</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">مِنْ أَيْنَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Erkek (Özne)</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">ـُونَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Erkek (Nesne)</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">ـِينَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kadın</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">ـَات</td></tr>
             </table>
         </div>
 
         <div style="flex: 1;">
-            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">2. Diğer Edatlar</h3>
+            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">4. İkil (Tesniye)</h3>
             <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
                 <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
-                    <th style="padding: 15px; text-align: left;">Anlamı</th>
-                    <th style="padding: 15px; text-align: right;">Edat</th>
+                    <th style="padding: 10px; text-align: left;">Durum</th>
+                    <th style="padding: 10px; text-align: center;">Ek</th>
                 </tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Veya / Yoksa</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">أَوْ / أَمْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Çünkü</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">لِأَنَّ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">O zaman</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">إِذَنْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Şayet / Eğer</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">إِذَا / لَوْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Sadece</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">فَقَطْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Birlikte</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">مَعاً</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Hâlâ / Henüz</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">لَمَّا</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Asla</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">أَبَداً</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 12px; text-align: left;">Ayrıca</td><td class="ar-txt" style="font-size: 2.2rem; text-align: right;">أَيْضاً</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Özne Hali</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">ـَانِ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nesne Hali</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">ـَيْنِ</td></tr>
+                <tr style="border-bottom: 1px solid transparent;"><td style="padding: 8px; color:transparent;">.</td><td class="ar-txt" style="font-size: 2.2rem; text-align: center; color: transparent;">.</td></tr>
             </table>
         </div>
     </div>
-    <div style="height: 60px;"></div>
+    
+    <div style="height: 40px;"></div>
+</div>`,
+          soruedatlari: `
+<div style="width:100%; max-height: 75vh; overflow-y: auto; padding: 10px 20px 40px 10px;">
+    <h2 style="color:var(--pdf-red); margin-bottom:20px; text-align:center; font-size: 2.5rem; border-bottom: 3px solid var(--pdf-red); padding-bottom: 10px;">EDATLAR VE ZARFLAR</h2>
+    
+    <div style="display: flex; gap: 30px; align-items: flex-start; flex-direction: row-reverse; margin-bottom: 40px;">
+        
+        <div style="flex: 1;">
+            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">1. Soru Edatları</h3>
+            <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
+                <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 10px; text-align: left;">Anlamı</th>
+                    <th style="padding: 10px; text-align: center;">Arapça</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ne?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَا / مَاذَا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kim?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَنْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nerede?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيْنَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nasıl?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">كَيْفَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ne zaman?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَتَى</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Niçin?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِمَاذَا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hangi / Kaç?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيّ / كَمْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nereden?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مِنْ أَيْنَ</td></tr>
+            </table>
+        </div>
+
+        <div style="flex: 1;">
+            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">2. Yer Zarfları</h3>
+            <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
+                <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 10px; text-align: left;">Anlamı</th>
+                    <th style="padding: 10px; text-align: center;">Arapça</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Önünde</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَمَامَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Arkasında</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">خَلْفَ / وَرَاءَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Üstünde</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">فَوْقَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Altında</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">تَحْتَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Yanında</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">عِنْدَ / جَانِبَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Arasında</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">بَيْنَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Etrafında</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">حَوْلَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sağında</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">يَمِينَ</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 30px; align-items: flex-start; flex-direction: row-reverse;">
+        
+        <div style="flex: 1;">
+            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">3. Zaman Zarfları</h3>
+            <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
+                <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 10px; text-align: left;">Anlamı</th>
+                    <th style="padding: 10px; text-align: center;">Arapça</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Önce / Sonra</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">قَبْلَ / بَعْدَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Bugün / Yarın</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">اَلْيَوْمَ / غَدًا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Dün</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَمْسِ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sabah / Akşam</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">صَبَاحًا / مَسَاءً</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...dığı zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">حِينَ / أَثْنَاءَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Asla / Ebeden</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَبَداً</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hâlâ / Henüz</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لَمَّا</td></tr>
+            </table>
+        </div>
+
+        <div style="flex: 1;">
+            <h3 style="color:var(--pdf-red); font-size: 1.8rem; margin-bottom: 15px; text-align: center; border-bottom: 3px solid #eee;">4. Bağlaçlar / Diğerleri</h3>
+            <table style="width: 100%; font-size: 1.4rem; border-collapse: collapse;">
+                <tr style="background: #f8fafc; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 10px; text-align: left;">Anlamı</th>
+                    <th style="padding: 10px; text-align: center;">Arapça</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Veya / Yoksa</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَوْ / أَمْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Çünkü</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِأَنَّ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">O zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">إِذَنْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Şayet / Eğer</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">إِذَا / لَوْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sadece</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">فَقَطْ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Birlikte</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَعاً</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ayrıca</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيْضاً</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
 </div>`,
          pronouns: `
 <div style="width:100%; max-height: 75vh; overflow-y: auto; padding: 10px 20px 40px 10px;">
@@ -801,51 +862,86 @@ let mode = 'sentence';
         activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
     }
 
-// 3. GÜNCELLENMİŞ showPopup FONKSİYONU
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
+// --- BİRLEŞTİRİLMİŞ POPUP YÖNETİMİ ---
 
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            
-            // Seçili görsel efektini uygula
-            setActiveButton(type);
-        }
-    }
+function showPopup(type) {
+    const titles = { 
+        words:'Kelime Listesi', 
+        prepositions:'Harf-i Cerler', 
+        soruedatlari:'Soru Edatları', 
+        pronouns:'Zamir Tablosu', 
+        suffix:'Fiil Kipleri', 
+        tamlamalar:'Tamlamalar', 
+        sulasi:'Sülasi', 
+        mezid:'Mezid' 
+    };
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
+    const content = popupData[type];
+    if (content) {
+        // Mevcut özellikleri koruyarak içeriği yerleştiriyoruz
+        document.getElementById('popup-content').innerHTML = content;
+        document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
         
-        // Kapatıldığında buton vurgularını temizle
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
+        // togglePopup(true) fonksiyonunu çağırarak hem overlay'i açıyoruz 
+        // hem de ileri/geri butonlarını gizliyoruz
+        togglePopup(true);
+        
+        setActiveButton(type);
     }
+}
 
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
+function togglePopup(show) {
+    const overlay = document.getElementById('popup-overlay');
+    const controls = document.querySelector('.controls');
+    
+    // Popup'ı göster/gizle
+    overlay.style.display = show ? 'flex' : 'none';
+    
+    if (controls) {
+        if (show) {
+            // Popup açıldığında ileri/geri panelini tamamen yok et
+            controls.classList.add('controls-hidden');
+            controls.style.display = 'none'; 
+        } else {
+            // Popup kapandığında ileri/geri panelini tekrar göster
+            controls.classList.remove('controls-hidden');
+            controls.style.display = 'flex'; 
         }
     }
-    const data = {
-        sentence: [
     
-    {
+    // Kapatma anında üst menüdeki buton vurgularını temizle
+    if (!show) {
+        document.querySelectorAll('.nav-trigger').forEach(btn => {
+            btn.style.border = "none";
+            btn.style.boxShadow = "none";
+        });
+    }
+}
+
+function closePopup(e) { 
+    // Dış siyah alana (overlay) tıklandığında kapatma işlemini tetikle
+    if (e.target.id === 'popup-overlay') {
+        togglePopup(false); 
+    }
+}
+
+function setActiveButton(type) {
+    // Tüm butonların stilini sıfırla
+    document.querySelectorAll('.nav-trigger').forEach(btn => {
+        btn.style.border = "none";
+        btn.style.boxShadow = "none";
+    });
+    
+    // Eğer tetikleyici bir event varsa ilgili butonu vurgula
+    if (event && event.currentTarget && event.currentTarget.classList.contains('nav-trigger')) {
+        event.currentTarget.style.border = "2px solid white";
+        event.currentTarget.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
+    }
+}
+const data = {
+    sentence: [
+        // 1. Cümle: Ben hastayım.
+   {
         words: [
             { tr: "Ben", order: 1, ar: "أَنا" },
             { tr: "işçiyim,", order: 2, ar: "عامِل،" },
@@ -950,7 +1046,6 @@ let mode = 'sentence';
         ]
     }
 ],
-       
  dialog: [
    
     {
@@ -1060,8 +1155,10 @@ let mode = 'sentence';
     ]
 };
 
-
-    function startMode(m) {
+function startMode(m) {
+        // Eğer bir önceki moddan veya işlemden kalan bir popup varsa kapatır
+        togglePopup(false); 
+        
         mode = m;
         document.getElementById('entry-panel').style.display = 'none';
         document.querySelector('.navbar').style.display = 'flex';
@@ -1089,19 +1186,33 @@ let mode = 'sentence';
         }
     }
 
-    function renderContent(words, trId, arId, playerNum = null) {
+function renderContent(words, trId, arId, playerNum = null) {
         const trCont = document.getElementById(trId);
         const arCont = document.getElementById(arId);
         trCont.innerHTML = ''; arCont.innerHTML = '';
         
-        words.forEach(w => {
+        words.forEach((w, index) => { // Index parametresi eklendi
             const span = document.createElement('span');
-            // Sadece 1. Oyuncunun 1. kelimesi aktif başlar
+            
+            // Sadece 1. Oyuncunun 1. sıradaki kelimeleri aktif başlar
+            // Not: w.order === 1 olan TÜM kelimeler (Bende ve var) aktif başlar
             const isActive = (playerNum === null || playerNum === 1) && w.order === 1;
+            
             span.className = `word ${isActive ? 'active' : 'passive'}`;
-            span.id = `${trId}-${w.order}`;
+            
+            // --- DEĞİŞİKLİK BURADA ---
+            // ID artık benzersiz (s-tr-item-0, s-tr-item-1 gibi)
+            span.id = `${trId}-item-${index}`;
+            // Sıra bilgisini data attribute olarak ekliyoruz
+            span.setAttribute('data-order', w.order);
+            // Kapsayıcı ID'sini de saklayalım ki handleMove'da bulabilelim
+            span.setAttribute('data-container', trId);
+            
             span.innerText = w.tr;
+            
+            // Parametreleri güncelledik
             span.onclick = () => handleMove(w.order, w.ar, trId, arId, playerNum);
+            
             trCont.appendChild(span);
         });
     }
@@ -1113,48 +1224,61 @@ let mode = 'sentence';
         '#800000', '#aaffc3', '#808000', '#000075', '#d2691e'
     ];
 
-    // --- KRİTİK DÜZELTME BURADA ---
-    function handleMove(order, ar, trId, arId, playerNum) {
+function handleMove(order, ar, trId, arId, playerNum) {
         // Sıra kontrolü
         if (order !== step) return;
         
-        // 1. RENK SEÇİMİ: Artık 'order' yerine sürekli artan 'colorCounter' kullanıyoruz
+        // --- GRUPLAMA MANTIĞI ---
+        // O anki sıraya (order) sahip olan AYNI konteynerdaki TÜM kelimeleri bul
+        // Örneğin order=1 ise hem "Bende" hem "var" seçilir.
+        const allCurrentWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${order}"]`);
+        
+        // Eğer bu sıraya ait kelime bulunamazsa dur (Hata önlemi)
+        if (allCurrentWords.length === 0) return;
+
+        // 1. RENK SEÇİMİ
         const colorIndex = colorCounter % wordColors.length;
         const activeColor = wordColors[colorIndex];
-        
-        // Türkçe kelimeyi boya
-        const trWordEl = document.getElementById(`${trId}-${order}`);
-        trWordEl.className = 'word completed';
-        trWordEl.style.color = activeColor;
-        trWordEl.style.borderColor = activeColor;
-        trWordEl.style.backgroundColor = 'transparent';
 
-        // Arapça kelimeyi ekrana bas
+        // 2. BULUNAN TÜM KELİMELERİ BOYA (Senkronize Animasyon)
+        allCurrentWords.forEach(wordEl => {
+            wordEl.className = 'word completed';
+            wordEl.style.color = activeColor;
+            wordEl.style.borderColor = activeColor;
+            wordEl.style.backgroundColor = 'transparent';
+            // Tıklama özelliğini kaldır ki tekrar basılmasın
+            wordEl.onclick = null;
+        });
+
+        // 3. ARAPÇA KELİMEYİ EKRANA BAS
+        // Arapça kelime, tıklanan veriden gelir. 
+        // "Bende" ve "var" aynı Arapça kelimeye ("عِنْدي") sahip olduğu için
+        // sadece bir kez ekrana basılır.
         const arCont = document.getElementById(arId);
         arCont.innerHTML += `<span style="color: ${activeColor}; font-family: 'IBM Plex Sans Arabic'; margin-left:8px;">${ar}</span> `;
 
         // Sayaçları ilerlet
         step++;
-        colorCounter++; // Renk sırasını bir kaydır
+        colorCounter++;
         
-        // Sonraki kelimeyi bul
-        const next = document.getElementById(`${trId}-${step}`);
+        // --- SONRAKİ KELİMELERİ AKTİF ET ---
+        // Bir sonraki sıraya (step) sahip tüm kelimeleri bul
+        const nextWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${step}"]`);
 
-        if (next) {
-            // Aynı cümlede sonraki kelime varsa onu aktif et
-            next.className = 'word active';
+        if (nextWords.length > 0) {
+            // Sonraki kelime(ler) varsa hepsini aktif et
+            nextWords.forEach(next => {
+                next.className = 'word active';
+            });
         } 
-        // 2. DİYALOG GEÇİŞİ: Kelime bittiyse ve sıra 1. kişideyse
+        // DİYALOG GEÇİŞİ: Kelime bittiyse ve sıra 1. kişideyse
         else if (mode === 'dialog' && playerNum === 1) {
             pTurn = 2; // Sıra 2. kişiye geçti
-            step = 1;  // Adım sayısını 1'e çek (P2'nin 1. kelimesi için)
+            step = 1;  // Adım sayısını 1'e çek
             
-            // 2. Kişinin 1. kelimesini bul ve aktif et
-            const p2Next = document.getElementById(`p2-tr-1`);
-            if (p2Next) {
-                p2Next.className = 'word active';
-                // Not: P2'ye geçtiğimizde colorCounter sıfırlanmadığı için renkler devam eder
-            }
+            // 2. Kişinin 1. sıradaki kelimelerini bul ve aktif et
+            const p2NextWords = document.querySelectorAll(`[data-container="p2-tr"][data-order="1"]`);
+            p2NextWords.forEach(w => w.className = 'word active');
         }
     }
 
@@ -1162,54 +1286,9 @@ let mode = 'sentence';
         currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
         render();
     }
-    
-    // Popup fonksiyonları (Aynen devam)
-    function setActiveButton(type) {
-        const buttons = document.querySelectorAll('.nav-trigger');
-        buttons.forEach(btn => {
-            btn.style.border = "none";
-            btn.style.boxShadow = "none";
-        });
-        const activeBtn = event.currentTarget;
-        activeBtn.style.border = "2px solid white";
-        activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
-    }
+   
 
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            setActiveButton(type);
-        }
-    }
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
-    }
-
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
-        }
-    }
 </script>
 </body>
 </html>
