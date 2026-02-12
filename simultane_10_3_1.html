@@ -330,6 +330,20 @@
         margin-bottom: 15px !important;
     }
 }
+/* Popup açıkken kontrolleri tamamen yok eden yardımcı sınıf */
+.controls-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+/* Popup açıkken butonları tamamen devre dışı bırakan kilit sınıfı */
+.force-hide {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
  </style>
 </head>
 <body>
@@ -827,47 +841,87 @@ let mode = 'sentence';
         activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
     }
 
-// 3. GÜNCELLENMİŞ showPopup FONKSİYONU
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
+// --- BİRLEŞTİRİLMİŞ POPUP YÖNETİMİ ---
 
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            
-            // Seçili görsel efektini uygula
-            setActiveButton(type);
-        }
-    }
+function showPopup(type) {
+    const titles = { 
+        words:'Kelime Listesi', 
+        prepositions:'Harf-i Cerler', 
+        soruedatlari:'Soru Edatları', 
+        pronouns:'Zamir Tablosu', 
+        suffix:'Fiil Kipleri', 
+        tamlamalar:'Tamlamalar', 
+        sulasi:'Sülasi', 
+        mezid:'Mezid' 
+    };
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
+    const content = popupData[type];
+    if (content) {
+        const popupContent = document.getElementById('popup-content');
+        popupContent.innerHTML = content;
+        document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
+        document.getElementById('popup-overlay').style.display = 'flex';
         
-        // Kapatıldığında buton vurgularını temizle
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
-    }
+        // --- BAŞA DÖNME KOMUTU (EKLENEN KISIM) ---
+        // Popup içeriği yüklendikten hemen sonra en üste kaydırır
+        setTimeout(() => {
+            const container = popupContent.querySelector('.words-container');
+            if (container) {
+                container.scrollTop = 0; // Dikeyde en başa al
+                container.scrollLeft = 0; // Yatayda en başa al
+            }
+            popupContent.scrollTop = 0; // Genel içerik alanını da başa al
+        }, 10);
 
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
+        // --- GERİ/İLERİ BUTONLARINI KESİN GİZLE ---
+        const controls = document.querySelector('.controls');
+        if (controls) {
+            controls.classList.add('controls-hidden');
         }
+        
+        setActiveButton(type);
     }
+}
+
+function togglePopup(show) {
+    const overlay = document.getElementById('popup-overlay');
+    const controls = document.querySelector('.controls');
+    
+    overlay.style.display = show ? 'flex' : 'none';
+    
+    if (!show) {
+        // --- BUTONLARIN KİLİDİNİ AÇ ---
+        if (controls) {
+            controls.classList.remove('force-hide');
+        }
+        
+        document.querySelectorAll('.nav-trigger').forEach(btn => {
+            btn.style.border = "none";
+            btn.style.boxShadow = "none";
+        });
+    }
+}
+
+function closePopup(e) { 
+    // Dış siyah alana tıklandığında kapat
+    if (e.target.id === 'popup-overlay') {
+        togglePopup(false); 
+    }
+}
+
+function setActiveButton(type) {
+    // Tüm butonların stilini sıfırla
+    document.querySelectorAll('.nav-trigger').forEach(btn => {
+        btn.style.border = "none";
+        btn.style.boxShadow = "none";
+    });
+    
+    // Eğer tetikleyici bir event varsa ilgili butonu vurgula
+    if (event && event.currentTarget && event.currentTarget.classList.contains('nav-trigger')) {
+        event.currentTarget.style.border = "2px solid white";
+        event.currentTarget.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
+    }
+}
 const data = {
     sentence: [
         // 1. Cümle: Ben hastayım.
@@ -1651,54 +1705,9 @@ function handleMove(order, ar, trId, arId, playerNum) {
         currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
         render();
     }
-    
-    // Popup fonksiyonları (Aynen devam)
-    function setActiveButton(type) {
-        const buttons = document.querySelectorAll('.nav-trigger');
-        buttons.forEach(btn => {
-            btn.style.border = "none";
-            btn.style.boxShadow = "none";
-        });
-        const activeBtn = event.currentTarget;
-        activeBtn.style.border = "2px solid white";
-        activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
-    }
+   
 
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            setActiveButton(type);
-        }
-    }
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
-    }
-
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
-        }
-    }
 </script>
 </body>
 </html>
