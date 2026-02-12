@@ -1579,7 +1579,10 @@ dialog: [
 ]
 };
 
-    function startMode(m) {
+function startMode(m) {
+        // Eğer bir önceki moddan veya işlemden kalan bir popup varsa kapatır
+        togglePopup(false); 
+        
         mode = m;
         document.getElementById('entry-panel').style.display = 'none';
         document.querySelector('.navbar').style.display = 'flex';
