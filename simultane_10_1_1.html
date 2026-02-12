@@ -420,7 +420,7 @@
     // POPUP İÇERİKLERİ
     const popupData = {
 words: `
-    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-x: auto; overflow-y: auto; max-height: 80vh; -webkit-overflow-scrolling: touch;">
+    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-y: auto; max-height: 80vh; -webkit-overflow-scrolling: touch; align-items: flex-start;">
         
         <div class="nouns-col" style="min-width: 280px; flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column; flex-shrink: 0;">
             <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">İsimler & Meslekler</h3>
@@ -442,7 +442,7 @@ words: `
                         <tr><td class="ar-txt">جَدَّات<br><small style="font-size:11px; color:#666;">Nineler</small></td><td class="ar-txt">جَدَّة<br><small style="font-size:11px; color:#666;">Nine</small></td></tr>
                         <tr><td class="ar-txt">أَعْمَام<br><small style="font-size:11px; color:#666;">Amcalar</small></td><td class="ar-txt">عَمّ<br><small style="font-size:11px; color:#666;">Amca</small></td></tr>
                         <tr><td class="ar-txt">عَمَّات<br><small style="font-size:11px; color:#666;">Halalar</small></td><td class="ar-txt">عَمَّة<br><small style="font-size:11px; color:#666;">Hala</small></td></tr>
-                        <tr><td class="ar-txt">أَخْوَال<br><small style="font-size:11px; color:#666;">Dayılar</small></td><td class="ar-txt">خَال<br><small style="font-size:11px; color:#666;">Dayı</small></td></tr>
+                        <tr><td class="ar-txt">أَخْوَAL<br><small style="font-size:11px; color:#666;">Dayılar</small></td><td class="ar-txt">خَال<br><small style="font-size:11px; color:#666;">Dayı</small></td></tr>
                         <tr><td class="ar-txt">خَالَات<br><small style="font-size:11px; color:#666;">Teyzeler</small></td><td class="ar-txt">خَالَة<br><small style="font-size:11px; color:#666;">Teyze</small></td></tr>
                         <tr><td class="ar-txt">عُمَّال<br><small style="font-size:11px; color:#666;">İşçiler</small></td><td class="ar-txt">عَامِل<br><small style="font-size:11px; color:#666;">İşçi</small></td></tr>
                         <tr><td class="ar-txt">مُهَنْدِسُونَ<br><small style="font-size:11px; color:#666;">Mühendisler</small></td><td class="ar-txt">مُهَنْدِس<br><small style="font-size:11px; color:#666;">Mühendis</small></td></tr>
@@ -484,8 +484,8 @@ words: `
                         <tr><td class="ar-txt">حُبّ<br><small style="font-size:11px; color:#666;">Sevmek</small></td><td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td><td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td><td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td></tr>
                         <tr><td class="ar-txt">عَيْش<br><small style="font-size:11px; color:#666;">Yaşamak</small></td><td class="ar-txt">عِشْ<br><small style="font-size:11px; color:#666;">Yaşa</small></td><td class="ar-txt">يَعِيشُ<br><small style="font-size:11px; color:#666;">Yaşıyor</small></td><td class="ar-txt">عَاشَ<br><small style="font-size:11px; color:#666;">Yaşadı</small></td></tr>
                         <tr><td class="ar-txt">اِحْتِرَام<br><small style="font-size:11px; color:#666;">Saygı Duymak</small></td><td class="ar-txt">اِحْتَرِمْ<br><small style="font-size:11px; color:#666;">Saygı Duy</small></td><td class="ar-txt">يَحْتَرِمُ<br><small style="font-size:11px; color:#666;">Saygı Duyuyor</small></td><td class="ar-txt">اِحْتَرَمَ<br><small style="font-size:11px; color:#666;">Saygı Duydu</small></td></tr>
-                        <tr><td class="ar-txt">عَمَل<br><small style="font-size:11px; color:#666;">Çalışmak</small></td><td class="ar-txt">اِعْمَلْ<br><small style="font-size:11px; color:#666;">Çalış</small></td><td class="ar-txt">يَعْمَلُ<br><small style="font-size:11px; color:#666;">Çalışıyor</small></td><td class="ar-txt">عَمِلَ<br><small style="font-size:11px; color:#666;">Çalıştı</small></td></tr>
-                        <tr><td class="ar-txt">رُؤْيَة<br><small style="font-size:11px; color:#666;">Görmek</small></td><td class="ar-txt">رَ<br><small style="font-size:11px; color:#666;">Gör</small></td><td class="ar-txt">يَرَى<br><small style="font-size:11px; color:#666;">Görüyor</small></td><td class="ar-txt">رَأَى<br><small style="font-size:11px; color:#666;">Gördü</small></td></tr>
+                        <tr><td class="ar-txt">عَمَل<br><small style="font-size:11px; color:#666;">Çalışmak</small></td><td class="ar-txt">اِعْمَلْ<br><small style="font-size:11px; color:#666;">Çalış</small></td><td class="ar-txt">يَعَمَلُ<br><small style="font-size:11px; color:#666;">Çalışıyor</small></td><td class="ar-txt">عَمِلَ<br><small style="font-size:11px; color:#666;">Çalıştı</small></td></tr>
+                        <tr><td class="ar-txt">رُؤْيَة<br><small style="font-size:11px; color:#666;">Gördü</small></td><td class="ar-txt">رَ<br><small style="font-size:11px; color:#666;">Gör</small></td><td class="ar-txt">يَرَى<br><small style="font-size:11px; color:#666;">Görüyor</small></td><td class="ar-txt">رَأَى<br><small style="font-size:11px; color:#666;">Gördü</small></td></tr>
                         <tr><td class="ar-txt">مُدَافَعَة<br><small style="font-size:11px; color:#666;">Savunmak</small></td><td class="ar-txt">دَافِعْ<br><small style="font-size:11px; color:#666;">Savun</small></td><td class="ar-txt">يُدَافِعُ<br><small style="font-size:11px; color:#666;">Savunuyor</small></td><td class="ar-txt">دَافَعَ<br><small style="font-size:11px; color:#666;">Savundu</small></td></tr>
                         <tr><td class="ar-txt">تَدْرِيس<br><small style="font-size:11px; color:#666;">Ders Vermek</small></td><td class="ar-txt">دَرِّسْ<br><small style="font-size:11px; color:#666;">Ders Ver</small></td><td class="ar-txt">يُدَرِّسُ<br><small style="font-size:11px; color:#666;">Ders Veriyor</small></td><td class="ar-txt">دَرَّسَ<br><small style="font-size:11px; color:#666;">Ders Verdi</small></td></tr>
                         <tr><td class="ar-txt">اِهْتِمَام<br><small style="font-size:11px; color:#666;">İlgilenmek</small></td><td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilen</small></td><td class="ar-txt">يَهْتَمُّ<br><small style="font-size:11px; color:#666;">İlgileniyor</small></td><td class="ar-txt">اِهْتَمَّ<br><small style="font-size:11px; color:#666;">İlgilendi</small></td></tr>
@@ -866,26 +866,39 @@ let mode = 'sentence';
 
 function showPopup(type) {
     const titles = { 
-        words:'Kelime Listesi', 
-        prepositions:'Harf-i Cerler', 
-        soruedatlari:'Soru Edatları', 
-        pronouns:'Zamir Tablosu', 
-        suffix:'Fiil Kipleri', 
-        tamlamalar:'Tamlamalar', 
-        sulasi:'Sülasi', 
-        mezid:'Mezid' 
+        words: 'Kelime Listesi', 
+        prepositions: 'Harf-i Cerler', 
+        soruedatlari: 'Soru Edatları', 
+        pronouns: 'Zamir Tablosu', 
+        suffix: 'Fiil Kipleri', 
+        tamlamalar: 'Tamlamalar', 
+        sulasi: 'Sülasi', 
+        mezid: 'Mezid' 
     };
 
     const content = popupData[type];
     if (content) {
-        // Mevcut özellikleri koruyarak içeriği yerleştiriyoruz
-        document.getElementById('popup-content').innerHTML = content;
+        const popupBody = document.getElementById('popup-content');
+        
+        // İçeriği yerleştiriyoruz
+        popupBody.innerHTML = content;
         document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
         
-        // togglePopup(true) fonksiyonunu çağırarak hem overlay'i açıyoruz 
-        // hem de ileri/geri butonlarını gizliyoruz
+        // --- KAYDIRMA SIFIRLAMA (EKLEME) ---
+        // Popup ana gövdesini en yukarı çek
+        popupBody.scrollTop = 0; 
+        
+        // Eğer "Kelime Listesi" açıldıysa, içindeki özel kapsayıcıyı da en yukarı çek
+        const wordsContainer = popupBody.querySelector('.words-container');
+        if (wordsContainer) {
+            wordsContainer.scrollTop = 0;
+        }
+        // ----------------------------------
+
+        // Paneli aç ve butonları gizle
         togglePopup(true);
         
+        // Navigasyon butonunu vurgula
         setActiveButton(type);
     }
 }
