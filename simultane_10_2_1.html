@@ -182,6 +182,182 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
+/* --- GENİŞLETİLMİŞ MOBİL YAMA (Giriş, Popup, Tablolar) --- */
+@media screen and (max-width: 768px), 
+       screen and (orientation: landscape) and (max-height: 600px) {
+
+    /* 1. GİRİŞ SAYFASI (Entry Panel) */
+    #entry-panel {
+        padding: 10px !important;
+        gap: 15px !important; /* Öğeler arası boşluğu azalt */
+    }
+    
+    #entry-panel h1 {
+        font-size: 1.8rem !important; /* Başlığı küçült */
+        margin-bottom: 10px !important;
+    }
+
+    .mode-btn {
+        width: 90% !important; /* Ekranı tam kaplamasın */
+        padding: 15px !important; /* Buton şişkinliğini al */
+        font-size: 1.2rem !important; /* Buton yazısını küçült */
+        border-width: 3px !important;
+    }
+    
+    .entry-back-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+
+    /* 2. POPUP PENCERESİ */
+    .popup-header {
+        padding: 8px 15px !important; /* Başlık alanını daralt */
+        min-height: 45px !important;
+    }
+
+    .popup-header h2 {
+        font-size: 1.1rem !important; /* Başlık fontunu küçült */
+    }
+
+    .close-popup {
+        font-size: 1.8rem !important;
+        line-height: 1 !important;
+    }
+
+    /* 3. TABLOLAR VE İÇERİK */
+    /* Tablo hücre boşluklarını sıkıştır */
+    th, td {
+        padding: 4px !important; 
+        font-size: 0.85rem !important; /* Türkçe metinleri küçült */
+    }
+
+    /* HTML içinde 'style="font-size:2.2rem"' gibi verilen inline stilleri EZMEK için: */
+    /* Tablo içindeki Arapça yazılar */
+    .popup-body .ar-txt, 
+    .popup-body span[style*="font-size"] { 
+        font-size: 1.3rem !important; /* Hepsini standart boyuta getir */
+        line-height: 1.3 !important;
+    }
+    
+    /* Tablo altındaki küçük açıklamalar (Hastalar, Doktorlar vb.) */
+    .popup-body small {
+        font-size: 0.65rem !important;
+        color: #555 !important;
+    }
+
+    /* Popup içindeki başlıklar (H3) */
+    .popup-body h3 {
+        font-size: 1.1rem !important;
+        margin: 10px 0 5px 0 !important;
+        padding-bottom: 5px !important;
+    }
+    
+    /* Yan yana duran (flex) kutuları alt alta al veya sıkıştır */
+    .popup-body > div[style*="display: flex"] {
+        flex-direction: column-reverse !important; /* Mobilde alt alta olsun */
+        gap: 15px !important;
+    }
+    
+    /* Sütun çizgilerini düzelt */
+    .verbs-col, .nouns-col {
+        border: none !important; /* Dikey çizgiyi kaldır */
+        border-bottom: 2px solid #eee !important; /* Yatay çizgi ekle */
+        padding: 0 !important;
+    }
+}
+/* --- YAMA SONU --- */
+/* Kelime Paneli Yan Yana Dizilim ve Kaydırma */
+.words-container {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+    gap: 20px !important;
+    width: 100% !important;
+    /* Mobilde dikey kaydırmayı ana kapsayıcıya veriyoruz */
+    height: auto !important; 
+    max-height: 85vh !important;
+    overflow-y: auto !important; 
+    overflow-x: auto !important;
+    padding: 10px !important;
+    -webkit-overflow-scrolling: touch;
+}
+.words-container .verbs-col, 
+.words-container .nouns-col {
+    min-width: 320px !important; /* Mobilde sütun genişliği */
+    flex-shrink: 0 !important;
+    display: block !important; /* Flex dikeyde sorun çıkarabilir, block daha güvenli */
+}
+
+/* Tablo içindeki ekstra kaydırma alanlarını iptal edin (çakışmayı önler) */
+.words-container div[style*="overflow-y: auto"] {
+    overflow-y: visible !important;
+    height: auto !important;
+}
+
+/* Mobil için özel dikey yükseklik ayarı */
+@media screen and (max-width: 768px) {
+    .words-container {
+        max-height: 75vh !important;
+    }
+}
+/* Mobil Cihazlar İçin Yazı Boyutu Düzenlemesi */
+@media screen and (max-width: 768px) {
+    /* Cümle Modu Ayarları */
+    #sentence-mode .word { 
+        font-size: 1.5rem !important; /* Türkçe kelimeleri küçültür */
+    }
+    #sentence-mode .ar-output { 
+        font-size: 2.2rem !important; /* Arapça cümleyi küçültür */
+    }
+
+    /* Diyalog Modu Ayarları */
+    #dialog-mode .word { 
+        font-size: 1.2rem !important; /* Diyalogdaki Türkçe kelimeler */
+    }
+    #dialog-mode .ar-output { 
+        font-size: 1.8rem !important; /* Diyalogdaki Arapça cümleler */
+    }
+    
+    /* Satır aralarını ve kutu boşluklarını daraltma */
+    .dialog-row {
+        padding: 10px !important;
+        gap: 5px !important;
+    }
+    .tr-container {
+        gap: 10px !important;
+        margin-bottom: 15px !important;
+    }
+}
+/* Popup açıkken kontrolleri tamamen yok eden yardımcı sınıf */
+.controls-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+/* Popup açıkken butonları tamamen devre dışı bırakan kilit sınıfı */
+.force-hide {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+/* Mobil Kontrol Butonları Düzenlemesi */
+@media screen and (max-width: 768px) {
+    .controls {
+        gap: 15px !important; /* Butonlar arası boşluğu azaltır */
+        padding: 10px !important; /* Alt panelin yüksekliğini daraltır */
+    }
+
+    .nav-btn {
+        padding: 10px 20px !important; /* Butonun iç boşluğunu küçültür */
+        font-size: 0.9rem !important; /* Yazı boyutunu küçültür */
+        border-width: 2px !important; /* Çerçeveyi inceltir */
+        border-radius: 25px !important; /* Köşeleri daha oval yapar */
+        min-width: 100px; /* Butonlara minimum genişlik verir */
+    }
+}
  </style>
 </head>
 <body>
@@ -243,22 +419,20 @@
 <script>
     // POPUP İÇERİKLERİ
     const popupData = {
-        words: `
-            <div style="display: flex; flex-direction: row-reverse; gap: 10px; width: 100%; padding: 10px; max-height: 80vh;">
-                
-                <div class="nouns-col" style="flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column;">
-                    <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">İsimler</h3>
-                    <div style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Çoğul (ج)</th>
-                                    <th>Tekil</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-
+words: `
+    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-x: auto; overflow-y: auto; max-height: 80vh; -webkit-overflow-scrolling: touch;">
+        
+        <div class="nouns-col" style="min-width: 280px; flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column; flex-shrink: 0;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">İsimler</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Çoğul (ج)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Tekil</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 <tr>
     <td class="ar-txt">مَرْضَى<br><small style="font-size:11px; color:#666;">Hastalar</small></td>
     <td class="ar-txt">مَريض<br><small style="font-size:11px; color:#666;">Hasta</small></td>
@@ -333,25 +507,24 @@
     <td class="ar-txt">مَشْرُوبَات<br><small style="font-size:11px; color:#666;">İçecekler</small></td>
     <td class="ar-txt">مَشْرُوب<br><small style="font-size:11px; color:#666;">İçecek</small></td>
 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                <div class="verbs-col" style="flex: 2; display: flex; flex-direction: column;">
-                    <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">Fiiller</h3>
-                    <div style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        <table style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>Mastar</th>
-                                    <th>Emir</th>
-                                    <th>Muzari</th>
-                                    <th>Mazi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
+        <div class="verbs-col" style="min-width: 400px; flex: 2; display: flex; flex-direction: column; flex-shrink: 0;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">Fiiller</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mastar</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Emir</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Muzari</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mazi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 <tr>
     <td class="ar-txt">شُعُور<br><small style="font-size:11px; color:#666;">Hissetmek</small></td>
     <td class="ar-txt">اُشْعُرْ<br><small style="font-size:11px; color:#666;">Hisset</small></td>
@@ -445,12 +618,11 @@
     <td class="ar-txt">يَشُمُّ<br><small style="font-size:11px; color:#666;">Kokluyor</small></td>
     <td class="ar-txt">شَمَّ<br><small style="font-size:11px; color:#666;">Kokladı</small></td>
 </tr>
-                               
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>`,
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>`,
        
             prepositions: `
 <div style="width:100%; max-height: 75vh; overflow-y: auto; padding: 10px 20px 40px 10px;">
@@ -817,47 +989,89 @@ let mode = 'sentence';
         activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
     }
 
-// 3. GÜNCELLENMİŞ showPopup FONKSİYONU
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
+// --- BİRLEŞTİRİLMİŞ POPUP YÖNETİMİ ---
 
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            
-            // Seçili görsel efektini uygula
-            setActiveButton(type);
-        }
-    }
+function showPopup(type) {
+    const titles = { 
+        words:'Kelime Listesi', 
+        prepositions:'Harf-i Cerler', 
+        soruedatlari:'Soru Edatları', 
+        pronouns:'Zamir Tablosu', 
+        suffix:'Fiil Kipleri', 
+        tamlamalar:'Tamlamalar', 
+        sulasi:'Sülasi', 
+        mezid:'Mezid' 
+    };
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
+    const content = popupData[type];
+    if (content) {
+        // Mevcut özellikleri koruyarak içeriği yerleştiriyoruz
+        document.getElementById('popup-content').innerHTML = content;
+        document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
         
-        // Kapatıldığında buton vurgularını temizle
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
+        // togglePopup(true) fonksiyonunu çağırarak hem overlay'i açıyoruz 
+        // hem de ileri/geri butonlarını gizliyoruz
+        togglePopup(true);
+        
+        setActiveButton(type);
     }
+}
 
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
+function togglePopup(show) {
+    const overlay = document.getElementById('popup-overlay');
+    const controls = document.querySelector('.controls');
+    
+    // Popup'ı göster/gizle
+    overlay.style.display = show ? 'flex' : 'none';
+    
+    if (controls) {
+        if (show) {
+            // Popup açıldığında ileri/geri panelini tamamen yok et
+            controls.classList.add('controls-hidden');
+            controls.style.display = 'none'; 
+        } else {
+            // Popup kapandığında ileri/geri panelini tekrar göster
+            controls.classList.remove('controls-hidden');
+            controls.style.display = 'flex'; 
         }
     }
+    
+    // Kapatma anında üst menüdeki buton vurgularını temizle
+    if (!show) {
+        document.querySelectorAll('.nav-trigger').forEach(btn => {
+            btn.style.border = "none";
+            btn.style.boxShadow = "none";
+        });
+    }
+}
+
+function closePopup(e) { 
+    // Dış siyah alana (overlay) tıklandığında kapatma işlemini tetikle
+    if (e.target.id === 'popup-overlay') {
+        togglePopup(false); 
+    }
+}
+
+function closePopup(e) { 
+    // Dış siyah alana tıklandığında kapat
+    if (e.target.id === 'popup-overlay') {
+        togglePopup(false); 
+    }
+}
+
+function setActiveButton(type) {
+    // Tüm butonların stilini sıfırla
+    document.querySelectorAll('.nav-trigger').forEach(btn => {
+        btn.style.border = "none";
+        btn.style.boxShadow = "none";
+    });
+    
+    // Eğer tetikleyici bir event varsa ilgili butonu vurgula
+    if (event && event.currentTarget && event.currentTarget.classList.contains('nav-trigger')) {
+        event.currentTarget.style.border = "2px solid white";
+        event.currentTarget.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
+    }
+}
 const data = {
     sentence: [
         // 1. Cümle: Ben hastayım.
@@ -1513,7 +1727,10 @@ dialog: [
 ]
 };
 
-    function startMode(m) {
+function startMode(m) {
+        // Eğer bir önceki moddan veya işlemden kalan bir popup varsa kapatır
+        togglePopup(false); 
+        
         mode = m;
         document.getElementById('entry-panel').style.display = 'none';
         document.querySelector('.navbar').style.display = 'flex';
@@ -1641,54 +1858,9 @@ function handleMove(order, ar, trId, arId, playerNum) {
         currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
         render();
     }
-    
-    // Popup fonksiyonları (Aynen devam)
-    function setActiveButton(type) {
-        const buttons = document.querySelectorAll('.nav-trigger');
-        buttons.forEach(btn => {
-            btn.style.border = "none";
-            btn.style.boxShadow = "none";
-        });
-        const activeBtn = event.currentTarget;
-        activeBtn.style.border = "2px solid white";
-        activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
-    }
+   
 
-    function showPopup(type) {
-        const titles = { 
-            words:'Kelime Listesi', 
-            prepositions:'Harf-i Cerler', 
-            soruedatlari:'Soru Edatları', 
-            pronouns:'Zamir Tablosu', 
-            suffix:'Fiil Kipleri', 
-            tamlamalar:'Tamlamalar', 
-            sulasi:'Sülasi', 
-            mezid:'Mezid' 
-        };
-        const content = popupData[type];
-        if (content) {
-            document.getElementById('popup-content').innerHTML = content;
-            document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
-            document.getElementById('popup-overlay').style.display = 'flex';
-            setActiveButton(type);
-        }
-    }
 
-    function togglePopup(show) {
-        const overlay = document.getElementById('popup-overlay');
-        overlay.style.display = show ? 'flex' : 'none';
-        if (!show) {
-            document.querySelectorAll('.nav-trigger').forEach(btn => {
-                btn.style.border = "none";
-            });
-        }
-    }
-
-    function closePopup(e) { 
-        if (e.target.id === 'popup-overlay') {
-            togglePopup(false); 
-        }
-    }
 </script>
 </body>
 </html>
