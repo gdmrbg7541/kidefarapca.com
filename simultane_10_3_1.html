@@ -269,6 +269,48 @@
     }
 }
 /* --- YAMA SONU --- */
+/* Sadece kelime listesi pop-up'ı için mobil kaydırma */
+@media screen and (max-width: 768px) {
+    .words-container {
+        flex-direction: column !important; /* Mobilde sütunları alt alta getirir */
+        overflow-y: auto !important;       /* Dikey kaydırmayı aktif eder */
+        max-height: 70vh;                  /* Ekranın dışına taşmasını engeller */
+        padding-bottom: 20px;
+    }
+    .words-container .verbs-col, 
+    .words-container .nouns-col {
+        width: 100% !important;
+        border: none !important;
+    }
+}
+/* Mobil Cihazlar İçin Yazı Boyutu Düzenlemesi */
+@media screen and (max-width: 768px) {
+    /* Cümle Modu Ayarları */
+    #sentence-mode .word { 
+        font-size: 1.5rem !important; /* Türkçe kelimeleri küçültür */
+    }
+    #sentence-mode .ar-output { 
+        font-size: 2.2rem !important; /* Arapça cümleyi küçültür */
+    }
+
+    /* Diyalog Modu Ayarları */
+    #dialog-mode .word { 
+        font-size: 1.2rem !important; /* Diyalogdaki Türkçe kelimeler */
+    }
+    #dialog-mode .ar-output { 
+        font-size: 1.8rem !important; /* Diyalogdaki Arapça cümleler */
+    }
+    
+    /* Satır aralarını ve kutu boşluklarını daraltma */
+    .dialog-row {
+        padding: 10px !important;
+        gap: 5px !important;
+    }
+    .tr-container {
+        gap: 10px !important;
+        margin-bottom: 15px !important;
+    }
+}
  </style>
 </head>
 <body>
@@ -331,7 +373,7 @@
     // POPUP İÇERİKLERİ
     const popupData = {
         words: `
-            <div style="display: flex; flex-direction: row-reverse; gap: 10px; width: 100%; padding: 10px; max-height: 80vh;">
+    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 10px; width: 100%; padding: 10px;">
                 
                 <div class="nouns-col" style="flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column;">
                     <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">İsimler</h3>
