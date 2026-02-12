@@ -202,6 +202,93 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
+/* --- GENİŞLETİLMİŞ MOBİL YAMA (Giriş, Popup, Tablolar) --- */
+@media screen and (max-width: 768px), 
+       screen and (orientation: landscape) and (max-height: 600px) {
+
+    /* 1. GİRİŞ SAYFASI (Entry Panel) */
+    #entry-panel {
+        padding: 10px !important;
+        gap: 15px !important; /* Öğeler arası boşluğu azalt */
+    }
+    
+    #entry-panel h1 {
+        font-size: 1.8rem !important; /* Başlığı küçült */
+        margin-bottom: 10px !important;
+    }
+
+    .mode-btn {
+        width: 90% !important; /* Ekranı tam kaplamasın */
+        padding: 15px !important; /* Buton şişkinliğini al */
+        font-size: 1.2rem !important; /* Buton yazısını küçült */
+        border-width: 3px !important;
+    }
+    
+    .entry-back-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+
+    /* 2. POPUP PENCERESİ */
+    .popup-header {
+        padding: 8px 15px !important; /* Başlık alanını daralt */
+        min-height: 45px !important;
+    }
+
+    .popup-header h2 {
+        font-size: 1.1rem !important; /* Başlık fontunu küçült */
+    }
+
+    .close-popup {
+        font-size: 1.8rem !important;
+        line-height: 1 !important;
+    }
+
+    /* 3. TABLOLAR VE İÇERİK */
+    /* Tablo hücre boşluklarını sıkıştır */
+    th, td {
+        padding: 4px !important; 
+        font-size: 0.85rem !important; /* Türkçe metinleri küçült */
+    }
+
+    /* HTML içinde 'style="font-size:2.2rem"' gibi verilen inline stilleri EZMEK için: */
+    /* Tablo içindeki Arapça yazılar */
+    .popup-body .ar-txt, 
+    .popup-body span[style*="font-size"] { 
+        font-size: 1.3rem !important; /* Hepsini standart boyuta getir */
+        line-height: 1.3 !important;
+    }
+    
+    /* Tablo altındaki küçük açıklamalar (Hastalar, Doktorlar vb.) */
+    .popup-body small {
+        font-size: 0.65rem !important;
+        color: #555 !important;
+    }
+
+    /* Popup içindeki başlıklar (H3) */
+    .popup-body h3 {
+        font-size: 1.1rem !important;
+        margin: 10px 0 5px 0 !important;
+        padding-bottom: 5px !important;
+    }
+    
+    /* Yan yana duran (flex) kutuları alt alta al veya sıkıştır */
+    .popup-body > div[style*="display: flex"] {
+        flex-direction: column-reverse !important; /* Mobilde alt alta olsun */
+        gap: 15px !important;
+    }
+    
+    /* Sütun çizgilerini düzelt */
+    .verbs-col, .nouns-col {
+        border: none !important; /* Dikey çizgiyi kaldır */
+        border-bottom: 2px solid #eee !important; /* Yatay çizgi ekle */
+        padding: 0 !important;
+    }
+}
+/* --- YAMA SONU --- */
  </style>
 </head>
 <body>
