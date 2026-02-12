@@ -343,7 +343,6 @@
     visibility: hidden !important;
     pointer-events: none !important;
 }
-
  </style>
 </head>
 <body>
@@ -857,22 +856,10 @@ function showPopup(type) {
 
     const content = popupData[type];
     if (content) {
-        const popupContent = document.getElementById('popup-content');
-        popupContent.innerHTML = content;
+        document.getElementById('popup-content').innerHTML = content;
         document.getElementById('popup-title').innerText = titles[type] || 'Bilgi Paneli';
         document.getElementById('popup-overlay').style.display = 'flex';
         
-        // --- BAŞA DÖNME KOMUTU (EKLENEN KISIM) ---
-        // Popup içeriği yüklendikten hemen sonra en üste kaydırır
-        setTimeout(() => {
-            const container = popupContent.querySelector('.words-container');
-            if (container) {
-                container.scrollTop = 0; // Dikeyde en başa al
-                container.scrollLeft = 0; // Yatayda en başa al
-            }
-            popupContent.scrollTop = 0; // Genel içerik alanını da başa al
-        }, 10);
-
         // --- GERİ/İLERİ BUTONLARINI KESİN GİZLE ---
         const controls = document.querySelector('.controls');
         if (controls) {
@@ -890,9 +877,9 @@ function togglePopup(show) {
     overlay.style.display = show ? 'flex' : 'none';
     
     if (!show) {
-        // --- BUTONLARIN KİLİDİNİ AÇ ---
+        // --- POPUP KAPANINCA BUTONLARI GERİ GETİR ---
         if (controls) {
-            controls.classList.remove('force-hide');
+            controls.classList.remove('controls-hidden');
         }
         
         document.querySelectorAll('.nav-trigger').forEach(btn => {
