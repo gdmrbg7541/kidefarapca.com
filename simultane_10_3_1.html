@@ -182,79 +182,139 @@
     color: #94a3b8 !important;            /* Gri yazı rengi */
     border: none !important;
 }
-/* --- MOBİL (DİKEY + YATAY) KAPSAMLI YAMA --- */
-    /* Hem 768px altı dikey cihazları hem de yüksekliği az olan yatay telefonları kapsar */
-    @media screen and (max-width: 768px), 
-           screen and (orientation: landscape) and (max-height: 600px) {
-        
-        /* 1. Navbar'ı İncelt (Yatayda yer kazanmak için) */
-        .navbar {
-            min-height: 40px !important;
-            padding: 2px 10px !important;
-        }
-        .nav-trigger {
-            padding: 4px 8px !important;
-            font-size: 11px !important;
-        }
-        .back-btn {
-            width: 35px !important;
-            height: 35px !important;
-            font-size: 1.1rem !important;
-        }
+/* --- MOBİL VE TABLET İÇİN TAM KAPSAMLI YAMA (Hepsi Bir Arada) --- */
+@media screen and (max-width: 768px), 
+       screen and (orientation: landscape) and (max-height: 600px) {
 
-        /* 2. Cümle Modu - Daha Kompakt */
-        #sentence-mode .word {
-            /* vmin: Ekranın kısa kenarına göre boyutlanır (Yatayda devleşmeyi önler) */
-            font-size: clamp(1.2rem, 5vmin, 2rem) !important; 
-            margin: 2px !important;
-            border-width: 2px !important; /* Çerçeveyi incelt */
-        }
-
-        #sentence-mode .ar-output {
-            font-size: clamp(1.5rem, 6vmin, 2.5rem) !important;
-            margin-top: 5px !important;
-            min-height: auto !important;
-        }
-
-        /* 3. Diyalog Modu - Daha Sıkışık */
-        #dialog-mode {
-            gap: 5px !important; /* Satırlar arası boşluğu azalt */
-        }
-
-        .dialog-row {
-            padding: 8px !important;
-            border-width: 2px !important;
-        }
-
-        #dialog-mode .word {
-            font-size: clamp(1rem, 4vmin, 1.5rem) !important;
-        }
-
-        #dialog-mode .ar-output {
-            font-size: clamp(1.2rem, 5vmin, 2rem) !important;
-            margin-top: 3px !important;
-        }
-
-        /* 4. Kelime Grupları Arası Boşluklar */
-        .tr-container {
-            gap: 6px !important;
-            margin-bottom: 5px !important;
-        }
-
-        /* 5. Alt Kontrol Butonlarını Küçült (Yatayda çok yer kaplar) */
-        .controls {
-            padding: 5px !important;
-            gap: 15px !important;
-            min-height: auto !important;
-        }
-        
-        .nav-btn {
-            padding: 8px 20px !important;
-            font-size: 1rem !important;
-            border-width: 2px !important;
-        }
+    /* --- 1. GİRİŞ EKRANI (ENTRY PANEL) --- */
+    #entry-panel {
+        padding: 15px !important;
+        gap: 20px !important;
     }
-    /* --- YAMA BİTİŞİ --- */
+    #entry-panel h1 {
+        font-size: 2rem !important; /* Başlık küçüldü */
+        margin-bottom: 10px !important;
+    }
+    .mode-btn {
+        width: 100% !important; /* Genişlik ekranı zorlamasın */
+        max-width: 300px !important;
+        padding: 15px !important;
+        font-size: 1.2rem !important;
+        border-width: 3px !important;
+    }
+    .entry-back-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1.2rem !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+
+    /* --- 2. ÜST BAR (NAVBAR) --- */
+    .navbar {
+        min-height: 45px !important;
+        padding: 2px 5px !important;
+    }
+    .back-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1.1rem !important;
+        margin-right: 8px !important;
+    }
+    .nav-trigger {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+    }
+
+    /* --- 3. POPUP (PENCERE) VE TABLOLAR --- */
+    .popup-header {
+        padding: 10px !important;
+        min-height: 40px !important;
+    }
+    .popup-header h2 {
+        font-size: 1.1rem !important;
+    }
+    .close-popup {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Tablo Metinlerini Zorla Küçült */
+    .popup-body .ar-txt, 
+    .popup-body span[style*="font-size"] { 
+        font-size: 1.2rem !important; /* Satır içi stilleri ezer */
+        line-height: 1.4 !important;
+    }
+    .popup-body small {
+        font-size: 0.7rem !important;
+    }
+    th, td {
+        padding: 5px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Yan yana duran sütunları alt alta al (İsimler/Fiiller) */
+    .popup-body > div[style*="display: flex"] {
+        flex-direction: column-reverse !important;
+        gap: 20px !important;
+    }
+    .verbs-col {
+        border-right: none !important;
+        border-bottom: 2px solid #eee !important;
+        padding-bottom: 20px !important;
+        margin-bottom: 10px !important;
+        padding-right: 0 !important;
+    }
+
+    /* --- 4. ÇALIŞMA ALANI (CÜMLE & DİYALOG) --- */
+    .workspace {
+        padding: 5px !important;
+    }
+    .tr-container {
+        gap: 6px !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* Cümle Modu */
+    #sentence-mode .word {
+        font-size: clamp(1.2rem, 5vmin, 1.8rem) !important;
+        margin: 2px !important;
+        border-width: 2px !important;
+    }
+    #sentence-mode .ar-output {
+        font-size: clamp(1.5rem, 6vmin, 2.2rem) !important;
+        margin-top: 5px !important;
+        min-height: auto !important;
+    }
+
+    /* Diyalog Modu */
+    #dialog-mode {
+        gap: 8px !important;
+    }
+    .dialog-row {
+        padding: 8px !important;
+        border-radius: 10px !important;
+        border-width: 2px !important;
+    }
+    #dialog-mode .word {
+        font-size: clamp(1rem, 4vmin, 1.4rem) !important;
+    }
+    #dialog-mode .ar-output {
+        font-size: clamp(1.2rem, 5vmin, 1.8rem) !important;
+        margin-top: 5px !important;
+    }
+
+    /* --- 5. ALT KONTROLLER --- */
+    .controls {
+        padding: 8px !important;
+        gap: 15px !important;
+    }
+    .nav-btn {
+        padding: 8px 25px !important;
+        font-size: 0.9rem !important;
+        border-width: 2px !important;
+    }
+}
+/* --- YAMA SONU --- */
  </style>
 </head>
 <body>
