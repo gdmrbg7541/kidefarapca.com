@@ -272,25 +272,28 @@
 /* Kelime Paneli Yan Yana Dizilim ve Kaydırma */
 .words-container {
     display: flex !important;
-    flex-direction: row-reverse !important; /* Tablo sıralamasını korur */
+    flex-direction: row-reverse !important;
     gap: 20px !important;
     width: 100% !important;
-    overflow-x: auto !important; /* Yatay kaydırmayı açar */
-    overflow-y: hidden !important; 
-    padding: 15px !important;
-    -webkit-overflow-scrolling: touch; /* Mobilde akıcı kaydırma */
+    /* Mobilde dikey kaydırmayı ana kapsayıcıya veriyoruz */
+    height: auto !important; 
+    max-height: 85vh !important;
+    overflow-y: auto !important; 
+    overflow-x: auto !important;
+    padding: 10px !important;
+    -webkit-overflow-scrolling: touch;
 }
-
-/* Tabloların minimum genişliğini sabitleme */
-.words-container .verbs-col {
-    min-width: 350px !important; /* Fiiller tablosu genişliği */
-    flex-shrink: 0 !important;
-}
-
+.words-container .verbs-col, 
 .words-container .nouns-col {
-    min-width: 250px !important; /* İsimler tablosu genişliği */
+    min-width: 320px !important; /* Mobilde sütun genişliği */
     flex-shrink: 0 !important;
-    border-left: 2px solid #eee !important;
+    display: block !important; /* Flex dikeyde sorun çıkarabilir, block daha güvenli */
+}
+
+/* Tablo içindeki ekstra kaydırma alanlarını iptal edin (çakışmayı önler) */
+.words-container div[style*="overflow-y: auto"] {
+    overflow-y: visible !important;
+    height: auto !important;
 }
 
 /* Mobil için özel dikey yükseklik ayarı */
@@ -389,16 +392,16 @@
     // POPUP İÇERİKLERİ
     const popupData = {
 words: `
-    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+    <div class="words-container" style="display: flex; flex-direction: row-reverse; gap: 20px; width: 100%; padding: 15px; overflow-x: auto; overflow-y: auto; max-height: 80vh; -webkit-overflow-scrolling: touch;">
         
         <div class="nouns-col" style="min-width: 280px; flex: 1; border-left: 2px solid #eee; padding-left: 15px; display: flex; flex-direction: column; flex-shrink: 0;">
-            <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">İsimler</h3>
-            <div style="flex: 1; padding-right: 5px;">
-                <table style="width: 100%;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">İsimler</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr>
-                            <th>Çoğul (ج)</th>
-                            <th>Tekil</th>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Çoğul (ج)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Tekil</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -426,15 +429,15 @@ words: `
         </div>
 
         <div class="verbs-col" style="min-width: 400px; flex: 2; display: flex; flex-direction: column; flex-shrink: 0;">
-            <h3 style="color:var(--pdf-red); margin-top: 10px; margin-bottom: 10px; text-align: center;">Fiiller</h3>
-            <div style="flex: 1; padding-right: 5px;">
-                <table style="width: 100%;">
+            <h3 style="color:var(--pdf-red); margin-bottom: 15px; text-align: center; position: sticky; top: 0; background: white; z-index: 10; padding: 5px 0;">Fiiller</h3>
+            <div style="width: 100%;">
+                <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr>
-                            <th>Mastar</th>
-                            <th>Emir</th>
-                            <th>Muzari</th>
-                            <th>Mazi</th>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mastar</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Emir</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Muzari</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Mazi</th>
                         </tr>
                     </thead>
                     <tbody>
