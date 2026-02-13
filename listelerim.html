@@ -395,7 +395,7 @@
     
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
       
-        <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;">🗓️ Tatiller</button>
+   <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;">🗓️ Tatiller</button>
         <button class="btn-add" onclick="addLevel()" style="margin-bottom:0;">+ Seviye Ekle</button>
 
     </div>
@@ -578,14 +578,6 @@
     </div>
 </div>
 
-<div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px;">
-        <h3 id="noteModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Notu</h3>
-        <textarea id="studentNoteText" style="width:100%; height:150px; padding:10px; margin-top:10px;" placeholder="Notunuzu buraya yazın..."></textarea>
-        <div style="text-align:right; margin-top:20px;">
-            <button onclick="closeNoteModal()" style="padding:10px 20px; background:var(--success); color:white; border:none; border-radius:5px; cursor:pointer;">Kaydet ve Kapat</button>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -829,6 +821,8 @@ function openTatiller() {
     const modal = document.getElementById('tatilModal');
     if (modal) {
         modal.style.display = 'flex';
+    } else {
+        console.error("Tatil modalı HTML içinde bulunamadı!");
     }
 }
 
@@ -1431,24 +1425,46 @@ row.innerHTML = `
     </div>
 </div>
 
-<div id="tatilModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; align-items:center; justify-content:center;">
-    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px;">
-        <h2 style="color:var(--primary);">🗓️ 2025-2026 Tatil Takvimi</h2>
-        <hr>
-        <table style="width:100%; text-align:left;">
-            <tr><th>Dönem / Gün</th><th>Tarih</th></tr>
-            <tr><td>29 Ekim Cumhuriyet Bayramı</td><td>29 Ekim 2025</td></tr>
-            <tr><td>1. Dönem Ara Tatil</td><td>10-14 Kasım 2025</td></tr>
-            <tr><td>Yılbaşı Tatili</td><td>1 Ocak 2026</td></tr>
-            <tr><td>Sömestr Tatili</td><td>19-30 Ocak 2026</td></tr>
-            <tr><td>2. Dönem Ara Tatil</td><td>6-10 Nisan 2026</td></tr>
-            <tr><td>23 Nisan Ulusal Egemenlik</td><td>23 Nisan 2026</td></tr>
-            <tr><td>19 Mayıs Gençlik ve Spor</td><td>19 Mayıs 2026</td></tr>
-            <tr><td>Ramazan Bayramı Arife</td><td>19 Mart 2026</td></tr>
+<div id="tatilModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(6px);">
+    <div style="background:white; width:95%; max-width:600px; max-height: 85vh; padding:25px; border-radius:20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); overflow-y: auto; scrollbar-width: thin;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="color:var(--primary); margin:0;">🗓️ 2025-2026 Akademik Takvim</h2>
+            <button onclick="document.getElementById('tatilModal').style.display='none'" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;">&times;</button>
+        </div>
+        <hr style="opacity: 0.2; margin-bottom: 15px;">
+        
+        <table style="width:100%; text-align:left; border-collapse: collapse; font-size: 0.95rem;">
+            <thead>
+                <tr style="background: #f8f9fa; color: var(--primary); border-bottom: 2px solid #ddd;">
+                    <th style="padding: 10px;">Dönem / Tatil Adı</th>
+                    <th style="padding: 10px;">Tarih Aralığı</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #eee;"><td>🏫 Okulların Açılması</td><td>08 Eylül 2025</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background:#fff9db;"><td>🍂 1. Dönem Ara Tatil</td><td>10 - 14 Kasım 2025</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🇹🇷 Cumhuriyet Bayramı</td><td>29 Ekim 2025</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🎄 Yılbaşı Tatili</td><td>01 Ocak 2026</td></tr>
+                <tr style="border-bottom: 2px solid #dee2e6; background:#e3f2fd; font-weight: bold;"><td>❄️ Sömestr (15 Tatil)</td><td>19 - 30 Ocak 2026</td></tr>
+                
+                <tr style="border-bottom: 1px solid #eee; background:#fff4e6;"><td>🌙 Ramazan Bayramı</td><td>20 - 22 Mart 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background:#fff9db;"><td>🌱 2. Dönem Ara Tatil</td><td>06 - 10 Nisan 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🎈 23 Nisan U.E.G.B.</td><td>23 Nisan 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🏃 19 Mayıs G.S.B.</td><td>19 Mayıs 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background:#f3f0ff;"><td>🐏 Kurban Bayramı</td><td>27 - 30 Mayıs 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🗳️ 15 Temmuz Demokrasi B.</td><td>15 Temmuz 2026</td></tr>
+                <tr style="border-bottom: 2px solid #primary; font-weight: bold; color: var(--danger);"><td>☀️ Okulların Kapanışı</td><td>19 Haziran 2026</td></tr>
+            </tbody>
         </table>
+        
+        <div style="margin-top: 20px; background: #e7f5ff; padding: 10px; border-radius: 8px; font-size: 0.85rem; color: #1971c2;">
+            💡 <b>Not:</b> Ramazan ve Kurban Bayramı tarihleri hicri takvime göre değişebileceği için idari tatil ilanlarına dikkat edilmelidir.
+        </div>
+        
         <br>
-        <button onclick="document.getElementById('tatilModal').style.display='none'" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:8px; cursor:pointer;">Kapat</button>
+        <button onclick="document.getElementById('tatilModal').style.display='none'" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition: 0.3s;">Anladım, Kapat</button>
     </div>
+</div>
 </div>
 </body>
 </html>
