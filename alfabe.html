@@ -161,7 +161,7 @@
 
 <audio id="snd-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
 <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
-<audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/959/959-preview.mp3" preload="auto"></audio>
+<audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/953/953-preview.mp3" preload="auto"></audio>
 
 <div class="main-app">
     <nav class="nav-tabs">
@@ -284,26 +284,62 @@
             });
         },
         select: function(p, btn, val) { if(this[`p${p}S`] !== null) return; playClick(); this[`p${p}S`] = val; this[`t${p}`] = Date.now(); btn.classList.add('selected'); if(this.p1S && this.p2S) this.reveal(); },
-        reveal: function() {
-            let anyCorrect = false; let anyWrong = false;
+reveal: function() {
+            let correct = false; 
+            let wrong = false;
+
             ['1','2'].forEach(p => {
                 const z = document.getElementById(`z${p}`);
+                // Oyuncunun seçimi doğru mu?
                 if(this[`p${p}S`] === this.cur) {
-                    anyCorrect = true; z.classList.add('zone-correct'); 
-                    const popup = document.createElement('div'); popup.className = 'puan-popup'; popup.innerText = "+5"; z.appendChild(popup); setTimeout(() => popup.remove(), 1000);
+                    correct = true; 
+                    z.classList.add('zone-correct'); 
+                    
+                    // Puan efekti oluştur
+                    const popup = document.createElement('div'); 
+                    popup.className = 'puan-popup'; 
+                    popup.innerText = "+5"; 
+                    z.appendChild(popup); 
+                    setTimeout(() => popup.remove(), 1000);
+                    
                     this.score[`p${p}`] += 5;
-                } else { anyWrong = true; z.classList.add('zone-wrong'); }
+                } else { 
+                    // Yanlış cevap
+                    wrong = true; 
+                    z.classList.add('zone-wrong'); 
+                }
             });
-            if(anyCorrect) document.getElementById('snd-correct').play();
-            else if(anyWrong) document.getElementById('snd-wrong').play();
 
-            if(this.p1S === this.cur && this.p2S === this.cur) {
-                if(this.t1 < this.t2) this.score.p1 += 5; else if(this.t2 < this.t1) this.score.p2 += 5;
+            // --- Ses Mantığı ---
+            // En az bir kişi doğru bildiyse 'correct' sesi, hiç doğru yoksa 'wrong' sesi çalar
+            if(correct) {
+                let sndC = document.getElementById('snd-correct');
+                sndC.currentTime = 0; sndC.play().catch(()=>{});
+            } else if(wrong) {
+                let sndW = document.getElementById('snd-wrong');
+                sndW.currentTime = 0; sndW.play().catch(()=>{});
             }
-            document.getElementById('sc1').innerText = this.score.p1; document.getElementById('sc2').innerText = this.score.p2; document.getElementById('nextBtn').style.display = 'block';
-        }
-    };
 
+            // --- Hız Bonusu Mantığı ---
+            // Eğer her iki oyuncu da doğru bildiyse, daha hızlı basana ekstra +5 puan
+            if(this.p1S === this.cur && this.p2S === this.cur) {
+                if(this.t1 < this.t2) {
+                    this.score.p1 += 5;
+                    console.log("Oyuncu 1 daha hızlı!"); // Takip için
+                } else if(this.t2 < this.t1) {
+                    this.score.p2 += 5;
+                    console.log("Oyuncu 2 daha hızlı!");
+                }
+            }
+
+            // Skorları ve arayüzü güncelle
+            document.getElementById('sc1').innerText = this.score.p1; 
+            document.getElementById('sc2').innerText = this.score.p2; 
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+    }; // game objesi sonu
+
+    // Uygulamayı başlat
     ui.init();
 </script>
 </body>
