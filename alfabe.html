@@ -63,7 +63,7 @@
 
 
 @media (max-width: 768px) {
-    /* Header Kaydırma */
+    /* Header: Yatay Kaydırma */
     .nav-tabs {
         justify-content: flex-start !important;
         overflow-x: auto;
@@ -75,17 +75,32 @@
     .nav-tabs::-webkit-scrollbar { display: none; }
     .tab-trigger { padding: 10px 15px; flex-shrink: 0; }
 
-    /* İçerik ve Harf Tanıtımı (p1) */
+    /* İçerik Alanı: Dikey Kaydırma */
     .content-area { overflow-y: auto !important; }
-    #p1 { overflow: auto !important; }
+
+    /* Harf Tanıtımı (p1): Tam Yatay Gezinme */
+    #p1 { 
+        overflow-x: auto !important; 
+        overflow-y: auto !important;
+        display: block !important;
+    }
     .grid-intro {
+        display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
         grid-template-rows: auto !important;
         height: auto !important;
-        min-width: 500px; /* Yatay gezinme için */
+        /* 500px yetmeyebilir, harfler sığmıyorsa 650px en güvenlisidir */
+        min-width: 650px !important; 
+        padding-bottom: 15px;
+    }
+    .arabic-seq {
+        gap: 15px !important; /* Harfler arası boşluk */
+    }
+    .arabic-seq span {
+        font-size: 1.6rem !important; /* Mobilde taşmayı önleyen ideal boyut */
     }
 
-    /* Hafıza Kartı 6x3 */
+    /* Hafıza Kartı: 6 Satır x 3 Sütun */
     .grid-memory {
         grid-template-columns: repeat(3, 1fr) !important;
         grid-template-rows: repeat(6, 1fr) !important;
@@ -203,10 +218,10 @@
         {h: 'خ', tr: 'Hı', b:'خـ', o:'ـخـ', s:'ـخ'}, {h: 'د', tr: 'Dal', b:'د', o:'ـد', s:'ـد', nobind: true},
         {h: 'ذ', tr: 'Zel', b:'ذ', o:'ـذ', s:'ـذ', nobind: true}, {h: 'ر', tr: 'Ra', b:'ر', o:'ـر', s:'ـر', nobind: true},
         {h: 'ز', tr: 'Ze', b:'ز', o:'ـز', s:'ـز', nobind: true}, {h: 'س', tr: 'Sin', b:'سـ', o:'ـسـ', s:'ـس'},
-        {h: 'ش', tr: 'Şın', b:'شـ', o:'ـşـ', s:'ـş'}, {h: 'ص', tr: 'Sad', b:'صـ', o:'ـصـ', s:'ـص'},
+        {h: 'ش', tr: 'Şın', b:'شـ', o:'ـشـ', s:'ـش'}, {h: 'ص', tr: 'Sad', b:'صـ', o:'ـصـ', s:'ـص'},
         {h: 'ض', tr: 'Dad', b:'ضـ', o:'ـضـ', s:'ـض'}, {h: 'ط', tr: 'Tı', b:'طـ', o:'ـطـ', s:'ـط'},
         {h: 'ظ', tr: 'Zı', b:'ظـ', o:'ـظـ', s:'ـظ'}, {h: 'ع', tr: 'Ayın', b:'عـ', o:'ـعـ', s:'ـع'},
-        {h: 'غ', tr: 'Gayın', b:'غـ', o:'ـغـ', s:'ـغ'}, {h: 'ف', tr: 'Fe', b:'فـ', o:'ـfـ', s:'ـf'},
+        {h: 'غ', tr: 'Gayın', b:'غـ', o:'ـغـ', s:'ـغ'}, {h: 'ف', tr: 'Fe', b:'فـ', o:'ـفـ', s:'ـف'},
         {h: 'ق', tr: 'Kaf', b:'قـ', o:'ـقـ', s:'ـق'}, {h: 'ك', tr: 'Kef', b:'كـ', o:'ـكـ', s:'ـك'},
         {h: 'ل', tr: 'Lam', b:'لـ', o:'ـلـ', s:'ـل'}, {h: 'م', tr: 'Mim', b:'مـ', o:'ـمـ', s:'ـم'},
         {h: 'ن', tr: 'Nun', b:'نـ', o:'نـ', s:'ـن'}, {h: 'و', tr: 'Vav', b:'و', o:'ـو', s:'ـو', nobind: true},
