@@ -60,7 +60,54 @@
 
         /* Harf Tanıtımı Renkleri ve Çizgi */
         .grid-intro { display: grid; gap: 6px; height: 100%; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(4, 1fr); direction: rtl; }
-        @media (max-width: 768px) { .grid-intro { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(7, 1fr); } }
+        @media (max-width: 768px) {
+    /* 1. Header: Yatay Kaydırma Özelliği */
+    .nav-tabs {
+        justify-content: flex-start !important; /* Ortalamayı boz, soldan başla */
+        overflow-x: auto; /* Yatay kaydırmaya izin ver */
+        white-space: nowrap; /* Butonların alt alta geçmesini engelle */
+        -webkit-overflow-scrolling: touch; /* iOS için pürüzsüz kaydırma */
+        padding-bottom: 5px;
+        scrollbar-width: none; /* Firefox için scrollbar gizle */
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; } /* Chrome/Safari için scrollbar gizle */
+    
+    .tab-trigger {
+        padding: 10px 15px;
+        flex-shrink: 0; /* Butonların sıkışmasını engelle */
+    }
+
+    /* 2. İçerik Alanı: Dikey Kaydırma İzni */
+    .content-area {
+        overflow-y: auto !important; /* Tüm harflerde gezinebilmek için */
+    }
+
+    /* 3. Harf Tanıtımı: Grid Yüksekliğini Serbest Bırak */
+    .grid-intro {
+        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-rows: auto !important; /* Sabit 7 satır yerine içeriğe göre uzasın */
+        height: auto !important; 
+    }
+
+    /* 4. Hafıza Kartı: 6 Satır x 3 Sütun */
+    .grid-memory {
+        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: repeat(6, 1fr) !important;
+        height: 85% !important;
+    }
+    .mem-item { font-size: 1.5rem !important; }
+
+    /* 5. Yarışma: Arapça Harf Boyutu Küçültme */
+    .q-display {
+        font-size: 5rem !important; /* Mobilde taşmaması için 8rem'den 5rem'e düşürüldü */
+    }
+    .ans-grid {
+        height: 45% !important;
+    }
+    .btn-ans {
+        font-size: 1.4rem !important;
+    }
+}
 
         .char-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5px; }
         .arabic-seq { font-size: 2.2rem; display: flex; gap: 12px; position: relative; z-index: 1; }
