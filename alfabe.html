@@ -60,36 +60,32 @@
 
         /* Harf Tanıtımı Renkleri ve Çizgi */
         .grid-intro { display: grid; gap: 6px; height: 100%; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(4, 1fr); direction: rtl; }
-        @media (max-width: 768px) {
-    /* 1. Header: Yatay Kaydırma Özelliği */
+
+
+@media (max-width: 768px) {
+    /* Header Kaydırma */
     .nav-tabs {
-        justify-content: flex-start !important; /* Ortalamayı boz, soldan başla */
-        overflow-x: auto; /* Yatay kaydırmaya izin ver */
-        white-space: nowrap; /* Butonların alt alta geçmesini engelle */
-        -webkit-overflow-scrolling: touch; /* iOS için pürüzsüz kaydırma */
+        justify-content: flex-start !important;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
         padding-bottom: 5px;
-        scrollbar-width: none; /* Firefox için scrollbar gizle */
+        scrollbar-width: none;
     }
-    .nav-tabs::-webkit-scrollbar { display: none; } /* Chrome/Safari için scrollbar gizle */
-    
-    .tab-trigger {
-        padding: 10px 15px;
-        flex-shrink: 0; /* Butonların sıkışmasını engelle */
-    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .tab-trigger { padding: 10px 15px; flex-shrink: 0; }
 
-    /* 2. İçerik Alanı: Dikey Kaydırma İzni */
-    .content-area {
-        overflow-y: auto !important; /* Tüm harflerde gezinebilmek için */
-    }
-
-    /* 3. Harf Tanıtımı: Grid Yüksekliğini Serbest Bırak */
+    /* İçerik ve Harf Tanıtımı (p1) */
+    .content-area { overflow-y: auto !important; }
+    #p1 { overflow: auto !important; }
     .grid-intro {
         grid-template-columns: repeat(4, 1fr) !important;
-        grid-template-rows: auto !important; /* Sabit 7 satır yerine içeriğe göre uzasın */
-        height: auto !important; 
+        grid-template-rows: auto !important;
+        height: auto !important;
+        min-width: 500px; /* Yatay gezinme için */
     }
 
-    /* 4. Hafıza Kartı: 6 Satır x 3 Sütun */
+    /* Hafıza Kartı 6x3 */
     .grid-memory {
         grid-template-columns: repeat(3, 1fr) !important;
         grid-template-rows: repeat(6, 1fr) !important;
@@ -97,17 +93,15 @@
     }
     .mem-item { font-size: 1.5rem !important; }
 
-    /* 5. Yarışma: Arapça Harf Boyutu Küçültme */
-    .q-display {
-        font-size: 5rem !important; /* Mobilde taşmaması için 8rem'den 5rem'e düşürüldü */
-    }
-    .ans-grid {
-        height: 45% !important;
-    }
-    .btn-ans {
-        font-size: 1.4rem !important;
-    }
+    /* Kartlar & Yarışma Boyutları */
+    .face { font-size: 1.8rem !important; }
+    .q-display { font-size: 4.5rem !important; }
+    .ans-grid { height: 45% !important; }
+    .btn-ans { font-size: 1.4rem !important; }
 }
+
+/* Genel Kart Boyutu Küçültme */
+.face { font-size: 2.2rem; }
 
         .char-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5px; }
         .arabic-seq { font-size: 2.2rem; display: flex; gap: 12px; position: relative; z-index: 1; }
@@ -160,6 +154,7 @@
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100px); opacity: 0; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
         .next-btn { height: 50px; width: 100%; background: var(--primary); color: white; font-family: 'arakom'; font-size: 1.5rem; border: none; border-radius: 10px; cursor: pointer; display: none; }
+
     </style>
 </head>
 <body>
@@ -214,7 +209,7 @@
         {h: 'غ', tr: 'Gayın', b:'غـ', o:'ـغـ', s:'ـغ'}, {h: 'ف', tr: 'Fe', b:'فـ', o:'ـfـ', s:'ـf'},
         {h: 'ق', tr: 'Kaf', b:'قـ', o:'ـقـ', s:'ـق'}, {h: 'ك', tr: 'Kef', b:'كـ', o:'ـكـ', s:'ـك'},
         {h: 'ل', tr: 'Lam', b:'لـ', o:'ـلـ', s:'ـل'}, {h: 'م', tr: 'Mim', b:'مـ', o:'ـمـ', s:'ـم'},
-        {h: 'n', tr: 'Nun', b:'نـ', o:'نـ', s:'ـن'}, {h: 'و', tr: 'Vav', b:'و', o:'ـو', s:'ـو', nobind: true},
+        {h: 'ن', tr: 'Nun', b:'نـ', o:'نـ', s:'ـن'}, {h: 'و', tr: 'Vav', b:'و', o:'ـو', s:'ـو', nobind: true},
         {h: 'ه', tr: 'He', b:'هـ', o:'ـهـ', s:'ـه'}, {h: 'ي', tr: 'Ye', b:'يـ', o:'ـيـ', s:'ـي'}
     ];
 
