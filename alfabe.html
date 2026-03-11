@@ -79,11 +79,15 @@
     .content-area { overflow-y: auto !important; }
 
     /* Harf Tanıtımı (p1): Tam Yatay Gezinme */
-    #p1 { 
-        overflow-x: auto !important; 
-        overflow-y: auto !important;
-        display: block !important;
-    }
+/* DÜZELTİLMİŞ KISIM */
+#p1 { 
+    overflow-x: auto !important; 
+    overflow-y: auto !important;
+}
+/* Sadece aktif olduğunda block olsun, !important'ı buradan kaldırın veya panel.active'e güvenin */
+#p1.active {
+    display: block !important;
+}
     .grid-intro {
         display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
@@ -228,29 +232,60 @@
         {h: 'ه', tr: 'He', b:'هـ', o:'ـهـ', s:'ـه'}, {h: 'ي', tr: 'Ye', b:'يـ', o:'ـيـ', s:'ـي'}
     ];
 
-    const playClick = () => { let s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); };
+// 1. Ses fonksiyonunu en üste ve mobilde hata vermeyecek şekilde ekle
+const playClick = () => { 
+    const s = document.getElementById('snd-click');
+    if(s) { 
+        s.currentTime = 0; 
+        s.play().catch(() => { /* Mobil kısıtlaması için boş bırakıldı */ }); 
+    }
+};
 
-    const ui = {
-        tab: (e, id) => {
-            playClick();
-            document.querySelectorAll('.panel, .tab-trigger').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            e.currentTarget.classList.add('active');
-        },
-        init: () => {
-            const g1 = document.getElementById('g1');
-            harfler.forEach(i => {
-                const nc = i.nobind ? 'nobind' : '';
-                g1.innerHTML += `<div class="char-card ${nc}"><div class="arabic-seq"><span class="b-green">${i.b}</span><span class="o-blue">${i.o}</span><span class="s-purple">${i.s}</span><span class="n-black">${i.h}</span></div><div class="tr-label">${i.tr}</div></div>`;
-            });
-            const g2 = document.getElementById('g2');
-            harfler.forEach(i => {
-                const nc = i.nobind ? 'nobind' : '';
-                g2.innerHTML += `<div class="flip-box ${nc}" onclick="playClick(); this.classList.toggle('is-flipped')"><div class="flip-inner"><div class="face">${i.h}</div><div class="face face-back">${i.tr}</div></div></div>`;
-            });
-            memoryGame.init();
-        }
-    };
+// 2. Sekme geçişlerini mobilde garantileyen ui objesi
+const ui = {
+    tab: (e, id) => {
+        if (e) e.preventDefault(); // Mobil tarayıcı çakışmasını önle
+        playClick(); 
+        
+        // Tüm panelleri gizle
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        // Tüm buton aktifliklerini kaldır
+        document.querySelectorAll('.tab-trigger').forEach(t => t.classList.remove('active'));
+        
+        // Hedef paneli göster
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
+        
+        // Tıklanan butonu aktif yap
+        if(e && e.currentTarget) e.currentTarget.classList.add('active');
+    },
+    init: () => {
+        const g1 = document.getElementById('g1');
+        g1.innerHTML = "";
+        harfler.forEach(i => {
+            const nc = i.nobind ? 'nobind' : '';
+            g1.innerHTML += `
+                <div class="char-card ${nc}">
+                    <div class="arabic-seq" style="display: flex; justify-content: space-around; width: 100%; padding: 0 5px;">
+                        <span class="b-green">${i.b}</span>
+                        <span class="o-blue">${i.o}</span>
+                        <span class="s-purple">${i.s}</span>
+                        <span class="n-black">${i.h}</span>
+                    </div>
+                    <div class="tr-label">${i.tr}</div>
+                </div>`;
+        });
+        
+        const g2 = document.getElementById('g2');
+        g2.innerHTML = "";
+        harfler.forEach(i => {
+            const nc = i.nobind ? 'nobind' : '';
+            g2.innerHTML += `<div class="flip-box ${nc}" onclick="playClick(); this.classList.toggle('is-flipped')"><div class="flip-inner"><div class="face">${i.h}</div><div class="face face-back">${i.tr}</div></div></div>`;
+        });
+        
+        if(typeof memoryGame !== 'undefined') memoryGame.init();
+    }
+};
 
     const memoryGame = {
         mode: 'single', turn: 1, opened: [], matchedCount: 0,
