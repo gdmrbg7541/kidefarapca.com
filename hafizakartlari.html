@@ -121,6 +121,54 @@
   html,body{ font-family:'Marhey',sans-serif !important; }
   .card-back[dir="rtl"]{ font-family:'Harmattan',sans-serif !important; }
   button,h1,h2,h3,.score-display,label,select{ font-family:'Marhey',sans-serif !important; }
+
+  .score-display.active {
+    transform: scale(1.1); /* Biraz daha büyüt */
+    box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.6); /* Beyaz parlama efekti */
+    border: 3px solid var(--accent-color); /* Altın rengi çerçeve */
+    z-index: 10;
+}
+
+.score-display {
+    flex: 0 0 clamp(70px, 10%, 110px);
+    height: 85vh; /* Boyu ekranın çoğunu kaplar ama tam %100 değil */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    color: #fff;
+    border-radius: 50px; /* Daha oval, modern bir görünüm */
+    transition: all 0.4s ease-in-out;
+    opacity: 0.3;
+    filter: grayscale(1);
+    position: relative;
+    border: 4px solid transparent;
+}
+
+/* Aktif panel: Artık devasa büyümek yerine içe doğru parlıyor */
+.score-display.active {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1.03); /* Çok az büyüme, taşmayı önler */
+    box-shadow: 0 0 15px 5px var(--accent-color), inset 0 0 15px rgba(255,255,255,0.5);
+    border: 3px solid #fff;
+}
+
+
+/* Mobil için çubukları daha da kısaltalım */
+@media (max-width:800px) {
+    .score-display {
+        flex-direction: row;
+        height: 50px;
+        width: 45%; /* Yan yana geldiklerinde taşmazlar */
+        font-size: 1.5rem;
+    }
+    .score-display.active::after { top: -35px; bottom: auto; }
+}
+
 </style>
 </head>
 <body>
@@ -838,6 +886,8 @@ const MemoryGame = {
     ]);
     this.populateBoard(Utils.shuffleArray(pairs));
 
+
+    this.updateActivePlayerUI();
     this.dom.score1.textContent='0';
     this.dom.score2.textContent='0';
     this.dom.gameOver.classList.add('hidden');
@@ -913,10 +963,28 @@ const MemoryGame = {
           this.state.f.forEach(c=>c.classList.remove('flipped','p1-turn','p2-turn'));
           this.state.f=[]; this.state.l=false;
           if(this.state.playerMode===2){ this.state.c = (this.state.c===1?2:1); }
+          this.updateActivePlayerUI();
         }, 650);
       }
     }
   },
+
+   updateActivePlayerUI() {
+    if (this.state.playerMode !== 2) return; // Tek kişilikse çalışma
+    
+    const p1 = document.getElementById('player1-display');
+    const p2 = document.getElementById('player2-display');
+    if(!p1 || !p2) return;
+
+    if (this.state.c === 1) {
+      p1.classList.add('active');
+      p2.classList.remove('active');
+    } else {
+      p1.classList.remove('active');
+      p2.classList.add('active');
+    }
+  },
+
 
   showEndUI(){
     const p1 = this.state.s1, p2 = this.state.s2;
