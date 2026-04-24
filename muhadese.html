@@ -193,6 +193,29 @@
             color: white;
             border-color: #16a34a;
         }
+
+/* Eğer ders ismi boşsa satırı daha derli toplu göster */
+.lesson-item:has(.lesson-name:empty) {
+    justify-content: center; /* Butonları ortala */
+    padding: 25px;
+}
+
+/* 7. Sınıfa özel veya genel buton genişletme */
+.lesson-item:has(.lesson-name:empty) .btn-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Yan yana iki dev buton */
+    gap: 15px;
+}
+
+.lesson-item:has(.lesson-name:empty) .action-btn {
+    padding: 15px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
     </style>
 </head>
 <body>
@@ -277,32 +300,20 @@
     ],
     "7": [
         {
-            unitName: "1. Ünite: Günlük Yaşam",
-            lessons: [
-                { name: "1. Ders: Alışveriş", kelimeUrl: "kelime_7_1_1.html", simultaneUrl: "simultane_7_1_1.html" },
-                { name: "2. Ders: Zaman ve Saatler", kelimeUrl: "kelime_7_1_2.html", simultaneUrl: "simultane_7_1_2.html" },
-            ]
+            unitName: "1. Ünite: Günlük Yaşam | اَلْحَيَاةُ الْيَوْمِيَّةُ",
+            lessons: [{ name: "", kelimeUrl: "kelime_7_1.html", simultaneUrl: "simultane_7_1.html", aktif: true }]
         },
         {
-            unitName: "2. Ünite: Hobiler ve Spor",
-            lessons: [
-                { name: "1. Ders: Sevdiğim Aktiviteler", kelimeUrl: "kelime_7_2_1.html", simultaneUrl: "simultane_7_2_1.html" },
-                { name: "2. Ders: Takım Sporları", kelimeUrl: "kelime_7_2_2.html", simultaneUrl: "simultane_7_2_2.html" },
-            ]
+            unitName: "2. Ünite: Alışveriş Zamanı | وَقْتُ التَّسَوُّق",
+            lessons: [{ name: "", kelimeUrl: "kelime_7_2.html", simultaneUrl: "simultane_7_2.html", aktif: true }]
         },
         {
-            unitName: "3. Ünite: Meslekler",
-            lessons: [
-                { name: "1. Ders: Meslek Grupları", kelimeUrl: "kelime_7_3_1.html", simultaneUrl: "simultane_7_3_1.html" },
-                { name: "2. Ders: Hayalimdeki İş", kelimeUrl: "kelime_7_3_2.html", simultaneUrl: "simultane_7_3_2.html" },
-            ]
+            unitName: "3. Ünite: Nereye Yolculuk Yapıyoruz? | إِلى أَيْن نُسافِر؟",
+            lessons: [ { name: "", kelimeUrl: "kelime_7_3.html", simultaneUrl: "simultane_7_3.html",aktif: true } ]
         },
         {
-            unitName: "4. Ünite: Vatan Sevgisi",
-            lessons: [
-                { name: "1. Ders: Şehirlerimiz", kelimeUrl: "kelime_7_4_1.html", simultaneUrl: "simultane_7_4_1.html" },
-                { name: "2. Ders: Tarihi Mekanlar", kelimeUrl: "kelime_7_4_2.html", simultaneUrl: "simultane_7_4_2.html" },
-            ]
+            unitName: "4. Ünite: Şehrim ve Ülkem | مَدينَتى وَبَلَدي",
+            lessons: [{ name: "", kelimeUrl: "kelime_7_4.html", simultaneUrl: "simultane_7_4.html", aktif: true } ]
         }
     ],
     "8": [
@@ -408,7 +419,7 @@
             btn.innerText = classLevel + ". Sınıf";
             
             // 10. Sınıf butonu yeşil
-            if (classLevel === "10") {
+           if (classLevel === "10" || classLevel === "7") {
                 btn.classList.add('hazir-sinif');
             }
 
@@ -438,20 +449,21 @@
             const unitCard = document.createElement('div');
             unitCard.className = 'unit-card';
             
-            let lessonsHTML = unit.lessons.map(lesson => {
-                const statusClass = lesson.aktif ? 'hazir' : '';
-                
-                return `
-                <div class="lesson-item">
-                    <div class="lesson-info">
-                        <span class="lesson-name">${lesson.name}</span>
-                    </div>
-                    <div class="btn-group">
-                        <a href="${lesson.kelimeUrl}" class="action-btn btn-kelime ${statusClass}">Kelimeler</a>
-                        <a href="${lesson.simultaneUrl}" class="action-btn btn-simultane ${statusClass}">Simültane</a>
-                    </div>
-                </div>
-            `}).join('');
+let lessonsHTML = unit.lessons.map(lesson => {
+    const statusClass = lesson.aktif ? 'hazir' : '';
+    const nameSpan = lesson.name ? `<span class="lesson-name">${lesson.name}</span>` : '<span class="lesson-name" style="display:none"></span>';
+    
+    return `
+    <div class="lesson-item">
+        <div class="lesson-info">
+            ${nameSpan}
+        </div>
+        <div class="btn-group">
+            <a href="${lesson.kelimeUrl}" class="action-btn btn-kelime ${statusClass}">📚 KELİMELER</a>
+            <a href="${lesson.simultaneUrl}" class="action-btn btn-simultane ${statusClass}">🎧 SİMÜLTANE</a>
+        </div>
+    </div>
+`}).join('');
 
             unitCard.innerHTML = `
                 <div class="unit-header">${unit.unitName}</div>
