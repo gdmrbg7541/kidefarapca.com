@@ -2,7 +2,15 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Gelişmiş Öğrenci Takip Sistemi</title>
+    <title> Listelerim </title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
     <style>
         :root {
             --primary: #2c3e50; --secondary: #34495e; --accent: #3498db;
@@ -387,9 +395,126 @@
     margin-bottom: 5px;
 }
 
+/* Sidebar Gizleme Stilleri */
+body.sidebar-closed #sidebar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+#sidebar {
+    transition: 0.3s;
+    position: relative;
+}
+
+/* İçerik alanının genişlemesi */
+body.sidebar-closed #content {
+    margin-left: 0;
+}
+
+/* Menü Aç/Kapat Butonu Stili */
+.toggle-btn {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 10000;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+body.sidebar-closed .toggle-btn {
+    left: 10px;
+}
+#levelSettingsPanel {
+    display: block !important; /* Fonksiyon çağrıldığında görünürlüğü garanti et */
+    opacity: 1 !important;
+}
+#lvlModal {
+    display: none; 
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 90%; 
+    max-width: 600px; 
+    background: white; 
+    padding: 30px; 
+    box-shadow: 0 0 100px rgba(0,0,0,0.5); 
+    z-index: 999999; 
+    border-radius: 15px;
+    color: #333;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+/* Kutucukların genel hover efekti */
+.student-box {
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: 50px;
+}
+
+/* Üzerine gelince ismi gizle ve karart */
+.student-box:hover {
+    filter: brightness(0.7);
+    color: transparent !important;
+}
+
+/* Üzerine gelince beyaz çarpı çıkart */
+.student-box:hover::after {
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    pointer-events: none; /* Tıklamaya engel olmaz */
+}
+
+/* Öğrenci kutucuğu için özel sınıf */
+.selected-student-item {
+    position: relative;
+    display: inline-block;
+    margin: 3px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* Üzerine gelince ismi gizle ve karart */
+.selected-student-item:hover {
+    filter: brightness(0.8);
+    color: transparent !important;
+}
+
+/* Üzerine gelince tam ortada beyaz çarpı çıkart */
+.selected-student-item:hover::after {
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    pointer-events: none; /* Tıklamayı engellememesi için */
+}
     </style>
 </head>
 <body>
+
 <div id="sidebar" style="position: relative; display: flex; flex-direction: column;">
     <h2>🏫 Listelerim </h2>
     
@@ -434,7 +559,7 @@
     <button class="tab" onclick="switchTab(1)">Ödevler</button>
     <button class="tab" onclick="switchTab(2)">Sınavlar</button>
     <button class="tab" onclick="switchTab(3)">Genel Sonuç</button>
-    <button class="tab" onclick="switchTab(4)">Etkinlik</button>
+    <button class="tab" onclick="switchTab(4)">Kurayla Seç!</button>
     <button class="tab" onclick="switchTab(5)">Geri Sayım</button>
     <button class="tab" onclick="switchTab(6)">Kronometre</button>
     <button class="tab" onclick="switchTab(7)">Takım Oluştur</button>
@@ -566,15 +691,23 @@
     </div>
 </div>
 
-<div id="lvlModal" style="display:none; position:fixed; top:10%; left:25%; width:50%; background:white; padding:30px; box-shadow:0 0 50px rgba(0,0,0,0.5); z-index:1000; border-radius:15px;">
-    <h3>Seviye Ayarlarını Düzenle</h3>
-    <div style="display: flex; gap: 20px;">
-        <div style="flex: 1;"><h4>Ödevler</h4><div id="lvlHwList"></div><button onclick="addConfigRow('hw')">+ Ekle</button></div>
-        <div style="flex: 1;"><h4>Sınavlar</h4><div id="lvlExList"></div><button onclick="addConfigRow('ex')">+ Ekle</button></div>
+<div id="lvlModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:95%; max-width:600px; background:white; padding:30px; box-shadow:0 0 100px rgba(0,0,0,0.5); z-index:999999; border-radius:15px; color:#333; max-height:85vh; overflow-y:auto;">
+    <h3 style="margin-top:0; color:var(--primary);">⚙️ Seviye Ayarlarını Düzenle</h3>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <h4 style="border-bottom: 2px solid var(--accent); color:var(--secondary);">Ödevler (Ağırlık %)</h4>
+            <div id="lvlHwList"></div>
+            <button class="btn-add" onclick="addConfigRow('hw')" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <h4 style="border-bottom: 2px solid var(--danger); color:var(--secondary);">Sınavlar (Ağırlık %)</h4>
+            <div id="lvlExList"></div>
+            <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
+        </div>
     </div>
-    <div style="text-align: right; margin-top:20px;">
-        <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Kaydet</button>
-        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px; cursor:pointer;">Kapat</button>
+    <div style="text-align: right; margin-top:20px; padding-top:15px; border-top:1px solid #eee;">
+        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:5px; margin-right:10px; font-weight:bold;">İptal</button>
+        <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
     </div>
 </div>
 
@@ -698,7 +831,7 @@ function updateLevelPlanText(weekIndex, value) {
     data.levels[curLId].planText[weekIndex] = value;
     
     // LocalStorage veya Database kaydını burada tetikleyin
-    saveData(); 
+    save(); 
 }
 function togglePlanStatus(week, status) {
     let cls = data.levels[curLId].classes[curCId];
@@ -764,7 +897,55 @@ function updateStayedPoint(val) {
 }
 
 // renderPlan fonksiyonunu da güncellemek gerekebilir (daha önce eklemediysen)
+function updateActivityTable() {
+    const table = document.getElementById('activityStatusTable');
+    if (!table) return;
+    table.innerHTML = '';
 
+    const header = table.insertRow();
+    ['Etkinlik', 'Seçilen Öğrenciler'].forEach(text => {
+        const th = document.createElement('th');
+        th.innerText = text;
+        header.appendChild(th);
+    });
+
+    for (const activity in activityPools) {
+        const row = table.insertRow();
+        row.insertCell(0).innerText = activity;
+        const td = row.insertCell(1);
+
+        activityPools[activity].forEach(name => {
+            const box = document.createElement('div');
+            
+            // CSS'in çalışması için bu sınıfı mutlaka ekliyoruz
+            box.classList.add('student-box');
+            
+            box.style.backgroundColor = getActivityColor(activity);
+            box.style.padding = '5px 12px';
+            box.style.borderRadius = '4px';
+            box.style.color = 'white';
+            box.style.display = 'inline-block';
+            box.style.margin = '3px';
+            box.style.position = 'relative'; 
+            box.style.cursor = 'pointer';
+            box.innerText = name;
+
+            // Silme işlemi
+            box.onclick = function() {
+                if (confirm(name + " kaydını silmek istiyor musunuz?")) {
+                    const index = activityPools[activity].indexOf(name);
+                    if (index > -1) {
+                        activityPools[activity].splice(index, 1);
+                        if (typeof saveData === "function") saveData(); 
+                        updateActivityTable(); 
+                    }
+                }
+            };
+
+            td.appendChild(box);
+        });
+    }
+}
 </script>
 
 <script>
@@ -773,19 +954,28 @@ function updateStayedPoint(val) {
     const localData = localStorage.getItem('schoolData');
 
     // Eğer tarayıcıda kayıtlı veri yoksa örnekleri oluştur
-    if (!localData) {
-        let varsayilanVeri = { levels: {}, levelOrder: [] };
-        for (let i = 1; i <= 3; i++) {
-            let lId = 'L' + i;
-            varsayilanVeri.levelOrder.push(lId);
-            varsayilanVeri.levels[lId] = {
-                name: i + ". Seviye",
-                classes: {},
-                config: { 
-                    hw: [{n: 'Ödev 1', w: 1}, {n: 'Ödev 2', w: 1}], 
-                    ex: [{n: '1. Yazılı', w: 100}, {n: '2. Yazılı', w: 100}] 
-                }
-            };
+if (!localData) {
+    let varsayilanVeri = { levels: {}, levelOrder: [] };
+    for (let i = 1; i <= 3; i++) {
+        let lId = 'L' + i;
+        varsayilanVeri.levelOrder.push(lId);
+        varsayilanVeri.levels[lId] = {
+            name: i + ". Seviye",
+            classes: {},
+            config: { 
+                // İstediğin 4 ödev %25 ağırlık
+                hw: [
+                    {n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, 
+                    {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}
+                ], 
+                // İstediğin Sınav Ağırlıkları
+                ex: [
+                    {n: 'Dinleme', w: 25}, 
+                    {n: 'Konuşma', w: 25}, 
+                    {n: 'Yazılı', w: 50}
+                ] 
+            }
+        };
 
             ['A', 'B', 'C'].forEach(letter => {
                 let cId = 'C' + i + letter;
@@ -813,6 +1003,7 @@ function updateStayedPoint(val) {
 
     // Global Değişkenler
     let curLId = null, curCId = null;
+    if (!data.levels) data.levels = {};
     let pools = {}; 
     let alertCallback = null;
     let audioCtx = null;
@@ -861,16 +1052,33 @@ function openTatiller() {
         renderSidebar(); 
     }
 
-    function addLevel() {
-        let name = prompt("Yeni Seviye Adı (Örn: 10. Sınıflar):");
-        if(name) {
-            let id = 'L' + Date.now();
-            data.levels[id] = { name: name, classes: {}, config: { hw: [{n: 'Ödev 1', w: 1}], ex: [{n: 'Sınav 1', w: 100}] } };
-            if(!data.levelOrder) data.levelOrder = [];
-            data.levelOrder.push(id);
-            save();
-        }
+function addLevel() {
+    let name = prompt("Yeni Seviye Adı (Örn: 10. Sınıflar):");
+    if(name) {
+        let id = 'L' + Date.now();
+        data.levels[id] = { 
+            name: name, 
+            classes: {}, 
+            planText: {},
+            config: { 
+                // Yeni seviyede otomatik 4 ödev %25
+                hw: [
+                    {n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, 
+                    {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}
+                ], 
+                // Yeni seviyede otomatik Sınav Ağırlıkları
+                ex: [
+                    {n: 'Dinleme', w: 25}, 
+                    {n: 'Konuşma', w: 25}, 
+                    {n: 'Yazılı', w: 50}
+                ] 
+            } 
+        };
+        if(!data.levelOrder) data.levelOrder = [];
+        data.levelOrder.push(id);
+        save();
     }
+}
 
     function addClass(lId) {
         let name = prompt("Yeni Sınıf Adı (Örn: 10A):");
@@ -1079,20 +1287,6 @@ row.innerHTML = `
         s[t][ci] = v; save(); renderGrades(t);
     }
 
-    function renderResults() {
-        let table = document.getElementById('resTable');
-        let lvl = data.levels[curLId];
-        table.innerHTML = `<tr><th>Öğrenci</th><th>Ödev Ort.</th><th>Sınav Ort.</th></tr>`;
-        lvl.classes[curCId].students.forEach(s => {
-            let hwT = 0, exT = 0;
-            if(lvl.config.hw.length) lvl.config.hw.forEach((c,i) => hwT += parseFloat((s.hw||[])[i]||0));
-            if(lvl.config.ex.length) lvl.config.ex.forEach((c,i) => exT += parseFloat((s.ex||[])[i]||0));
-            let hwAvg = lvl.config.hw.length ? hwT / lvl.config.hw.length : 0;
-            let exAvg = lvl.config.ex.length ? exT / lvl.config.ex.length : 0;
-            
-            table.insertRow().innerHTML = `<td>${s.name}</td><td>${hwAvg.toFixed(2)}</td><td>${exAvg.toFixed(2)}</td>`;
-        });
-    }
 
     // --- BECERİ (SKILLS) YÖNETİMİ ---
     const skillTypes = [
@@ -1156,6 +1350,29 @@ row.innerHTML = `
         }, 80);
     }
 
+function renderActivityButtons() {
+    const grid = document.getElementById('dynamicActivityGrid');
+    if (!grid || !currentLevelId) return;
+
+    grid.innerHTML = ''; // Mevcut butonları temizle
+    const currentLevel = levels[currentLevelId];
+    
+    // Ayarlardaki sınav/beceri listesini alıyoruz
+    const exams = currentLevel.config.exams; 
+    const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22'];
+
+    exams.forEach((exam, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'act-btn';
+        const color = colors[index % colors.length];
+        btn.style.background = color;
+        btn.innerText = exam.name; // Ayarlarda değiştirdiğiniz isim buraya gelir
+        
+        btn.onclick = () => pick(exam.name, color);
+        grid.appendChild(btn);
+    });
+}
+
     function renderActivityStatus() {
         if(!curCId) return;
         let table = document.getElementById('activityStatusTable');
@@ -1185,36 +1402,121 @@ row.innerHTML = `
     }
 
     // --- SEVİYE AYARLARI ---
-    function openLvlConfig(lId) {
-        curLId = lId;
-        renderConfRows('hw', data.levels[lId].config.hw);
-        renderConfRows('ex', data.levels[lId].config.ex);
-        document.getElementById('lvlModal').style.display = 'block';
+// 1. Ayar Penceresini Açan Ana Fonksiyon
+function openLvlConfig(lId) {
+    // Kritik: Sınıf seçilmese bile hangi seviyede olduğumuzu belirtiyoruz
+    curLId = lId; 
+    
+    const lvl = data.levels[lId];
+    if (!lvl) return;
+
+    // Modalı göster
+    const modal = document.getElementById('lvlModal');
+    if (modal) modal.style.display = 'block';
+
+    // Listeleri temizle
+    const hwList = document.getElementById('lvlHwList');
+    const exList = document.getElementById('lvlExList');
+    if (hwList) hwList.innerHTML = '';
+    if (exList) exList.innerHTML = '';
+
+    // Veri yapısı yoksa varsayılanları oluştur
+    if (!lvl.config) {
+        lvl.config = { 
+            hw: [{n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}], 
+            ex: [{n: 'Dinleme', w: 25}, {n: 'Konuşma', w: 25}, {n: 'Yazılı', w: 50}] 
+        };
     }
-    function renderConfRows(t, items) {
-        let c = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
-        c.innerHTML = '';
-        items.forEach(item => {
-            c.innerHTML += `<div style="margin-bottom:5px; display:flex; gap:5px;">
-                <input type="text" class="${t}-n" value="${item.n}" style="flex:2">
-                <input type="number" class="${t}-w" value="${item.w}" style="flex:1">
-                <button onclick="this.parentElement.remove()">✖</button>
+
+    // Mevcut verileri modalın içine yükle (Yardımcı fonksiyonu kullanarak)
+    lvl.config.hw.forEach(item => addConfigRowWithData('hw', item.n, item.w));
+    lvl.config.ex.forEach(item => addConfigRowWithData('ex', item.n, item.w));
+}
+
+// 2. Yeni Satır Ekleme (Manuel + butonu için)
+function addConfigRow(t) {
+    addConfigRowWithData(t, '', 0);
+}
+
+// 3. Veriyle Satır Oluşturma (Sistemin ihtiyaç duyduğu asıl parça)
+function addConfigRowWithData(t, name, weight) {
+    const container = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
+    if (!container) return;
+    
+    const div = document.createElement('div');
+    div.style = "margin-bottom:8px; display:flex; gap:5px; align-items:center;";
+    div.innerHTML = `
+        <input type="text" class="${t}-n" value="${name}" placeholder="Ad" style="flex:2; padding:5px; border:1px solid #ddd; border-radius:4px;">
+        <input type="number" class="${t}-w" value="${weight}" placeholder="%" style="flex:1; padding:5px; border:1px solid #ddd; border-radius:4px;">
+        <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:4px; padding:5px 8px; cursor:pointer;">✖</button>
+    `;
+    container.appendChild(div);
+}
+
+// 4. Kaydetme Fonksiyonu
+function saveLvlConfig() {
+    if(!curLId || !data.levels[curLId]) return;
+    
+    let newHw = [];
+    document.querySelectorAll('.hw-n').forEach((el, i) => {
+        let wInputs = document.querySelectorAll('.hw-w');
+        let w = wInputs[i] ? wInputs[i].value : 0;
+        newHw.push({ n: el.value, w: parseInt(w) || 0 });
+    });
+
+    let newEx = [];
+    document.querySelectorAll('.ex-n').forEach((el, i) => {
+        let wInputs = document.querySelectorAll('.ex-w');
+        let w = wInputs[i] ? wInputs[i].value : 0;
+        newEx.push({ n: el.value, w: parseInt(w) || 0 });
+    });
+
+    data.levels[curLId].config = { hw: newHw, ex: newEx };
+    save(); // Yerel depolamaya kaydet
+    
+    document.getElementById('lvlModal').style.display = 'none';
+    
+    // Eğer o an bir sınıf seçiliyse tabloları hemen güncelle
+    if (curCId) {
+        renderGrades('hw');
+        renderGrades('ex');
+        renderResults();
+    }
+}
+
+function renderConfRows(t, items) {
+    const id = (t === 'hw' ? 'lvlHwList' : 'lvlExList');
+    const container = document.getElementById(id);
+    
+    if (!container) return; // Eğer modal henüz DOM'da tam oluşmadıysa hata verme.
+    
+    container.innerHTML = '';
+    const list = items || [];
+    
+    list.forEach(item => {
+        container.innerHTML += `
+            <div style="margin-bottom:8px; display:flex; gap:5px; align-items:center;">
+                <input type="text" class="${t}-n" value="${item.n}" style="flex:2; padding:5px; border:1px solid #ddd; border-radius:4px;">
+                <input type="number" class="${t}-w" value="${item.w}" style="flex:1; padding:5px; border:1px solid #ddd; border-radius:4px;">
+                <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:4px; padding:5px 8px; cursor:pointer;">✖</button>
             </div>`;
-        });
-    }
-    function addConfigRow(t) {
-        let c = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
-        c.insertAdjacentHTML('beforeend', `<div style="margin-bottom:5px; display:flex; gap:5px;"><input type="text" class="${t}-n" placeholder="Ad" style="flex:2"><input type="number" class="${t}-w" value="0" style="flex:1"><button onclick="this.parentElement.remove()">✖</button></div>`);
-    }
-    function saveLvlConfig() {
-        ['hw', 'ex'].forEach(t => {
-            data.levels[curLId].config[t] = [];
-            let ns = document.querySelectorAll(`.${t}-n`), ws = document.querySelectorAll(`.${t}-w`);
-            ns.forEach((n, i) => data.levels[curLId].config[t].push({ n: n.value, w: parseFloat(ws[i].value)||0 }));
-        });
-        save(); document.getElementById('lvlModal').style.display = 'none'; 
-        if(curCId) renderGrades('hw'); // Tabloyu yenile
-    }
+    });
+}
+
+
+function addConfigRow(t) {
+    const container = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
+    if (!container) return;
+    
+    const rowHtml = `
+        <div style="margin-bottom:8px; display:flex; gap:5px; align-items:center;">
+            <input type="text" class="${t}-n" placeholder="Yeni Ad..." style="flex:2; padding:5px; border:1px solid #ddd; border-radius:4px;">
+            <input type="number" class="${t}-w" value="0" style="flex:1; padding:5px; border:1px solid #ddd; border-radius:4px;">
+            <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:4px; padding:5px 8px; cursor:pointer;">✖</button>
+        </div>`;
+    
+    container.insertAdjacentHTML('beforeend', rowHtml);
+}
 
 // ======================================================
     // === YENİ ÖZELLİKLER (GERİ SAYIM, KRONOMETRE, TAKIM) ===
@@ -1395,6 +1697,54 @@ row.innerHTML = `
             };
         }
     });
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-closed');
+    window.dispatchEvent(new Event('resize'));
+}
+
+// Sınav/Ödev hesaplamasını ağırlıklara göre yapan fonksiyon
+function renderResults() {
+    let table = document.getElementById('resTable');
+    let lvl = data.levels[curLId];
+    table.innerHTML = `<tr><th>Öğrenci</th><th>Ödev Ort. (%100)</th><th>Sınav Ort. (%100)</th></tr>`;
+    
+    lvl.classes[curCId].students.forEach(s => {
+        let hwScore = 0, exScore = 0;
+        
+        // Ödev Ağırlıklı Hesaplama
+        lvl.config.hw.forEach((c, i) => {
+            let val = parseFloat((s.hw||[])[i]||0);
+            hwScore += (val * (c.w / 100));
+        });
+        
+        // Sınav Ağırlıklı Hesaplama
+        lvl.config.ex.forEach((c, i) => {
+            let val = parseFloat((s.ex||[])[i]||0);
+            exScore += (val * (c.w / 100));
+        });
+        
+        table.insertRow().innerHTML = `
+            <td>${s.name}</td>
+            <td style="font-weight:bold;">${hwScore.toFixed(2)}</td>
+            <td style="font-weight:bold; color:var(--accent);">${exScore.toFixed(2)}</td>
+        `;
+    });
+}
+function addConfigRow(type, name = "", weight = 0) {
+    const container = document.getElementById(type === "hw" ? "lvlHwList" : "lvlExList");
+    if (!container) return;
+
+    const row = document.createElement("div");
+    row.style = "margin-bottom:8px; display:flex; gap:5px; align-items:center;";
+    row.innerHTML = `
+        <input type="text" class="${type}-n" value="${name}" placeholder="Ad" style="flex:2; padding:5px; border:1px solid #ddd; border-radius:4px;">
+        <input type="number" class="${type}-w" value="${weight}" placeholder="%" style="flex:1; padding:5px; border:1px solid #ddd; border-radius:4px;">
+        <button onclick="this.parentElement.remove()" style="background:#e74c3c; color:white; border:none; border-radius:4px; padding:5px 8px; cursor:pointer;">✖</button>
+    `;
+    container.appendChild(row);
+}
+
+
 </script>
 
 <div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
