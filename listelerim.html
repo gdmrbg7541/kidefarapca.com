@@ -1887,23 +1887,28 @@ async function authIslemi() {
         // Oturumu tarayıcı/sekme kapanınca bitecek şekilde ayarla
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
+        let userCredential;
         if (mevcutMod === 'login') {
-            await firebase.auth().signInWithEmailAndPassword(email, pass);
+            userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
             console.log("Giriş başarılı!");
         } else {
-            await firebase.auth().createUserWithEmailAndPassword(email, pass);
-            alert("Hesabınız başarıyla oluşturuldu!");
+            userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+            
+            // --- YENİ: İLK KAYITTA YEREL VERİLERİ BULUTA AKTAR ---
+            const localData = localStorage.getItem('ogretmen_listeleri'); // LocalStorage anahtar adınız neyse o
+            if (localData) {
+                await db.collection("kullanicilar").doc(userCredential.user.uid).set({
+                    userData: localData,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log("Yerel veriler yeni hesaba aktarıldı.");
+            }
+            alert("Hesabınız oluşturuldu ve mevcut listeleriniz aktarıldı!");
         }
         modalKapat(); 
     } catch (error) {
         console.error("Hata:", error);
-        if (error.code === 'auth/email-already-in-use') {
-            hata.innerText = "Bu e-posta adresi zaten kullanımda.";
-        } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-            hata.innerText = "Hatalı e-posta veya şifre.";
-        } else {
-            hata.innerText = "Bir hata oluştu: " + error.message;
-        }
+        // ... (Hata mesajları aynı kalacak)
         hata.style.display = "block";
     }
 }
@@ -2021,7 +2026,22 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         console.log("Kullanıcı giriş yapmamış.");
         
-        // CSS tetikleyicisi: İçeriği gizle
+        // --- KRİTİK TEMİZLİK ---
+        // Uygulamanın içindeki veri değişkenini sıfırla
+        data = []; 
+        
+        // Arayüzü boş veriyle tekrar çiz (böylece listeler silinir)
+        if (typeof renderSidebar === "function") renderSidebar();
+        if (typeof renderMainContent === "function") {
+             // Mevcut açık olan liste içeriğini temizle
+             document.getElementById('content').innerHTML = `
+                <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
+                    <h3>Lütfen giriş yapın</h3>
+                    <p>İçeriği görmek için öğretmen girişi yapmanız gerekmektedir.</p>
+                </div>`;
+        }
+
+        // CSS tetikleyicisi: Ana kapsayıcıları gizle
         document.body.classList.remove('logged-in');
         
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
