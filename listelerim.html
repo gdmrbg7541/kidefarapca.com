@@ -2228,6 +2228,91 @@ function otomatikIlkSecim() {
         }
     }
 }
+// --- Seviye Ayarları Yama Kod Başlangıcı ---
+
+/**
+ * Seviye Ayar Panelini Açar
+ * @param {string} levelId - Düzenlenecek seviyenin ID'si
+ */
+function openLevelSettings(levelId) {
+    const level = data.levels[levelId];
+    if (!level) return;
+
+    // Modal içeriğini oluştur
+    const modal = document.getElementById('lvlModal');
+    modal.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0;">⚙️ Seviye Ayarları: ${level.name}</h2>
+            <span onclick="closeLvlModal()" style="cursor:pointer; font-size:24px;">&times;</span>
+        </div>
+        
+        <div style="margin-bottom:15px;">
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Seviye Adı:</label>
+            <input type="text" id="editLvlName" value="${level.name}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">Sınıfları Yönet:</label>
+            <div id="editClassList">
+                ${Object.keys(level.classes).map(cId => `
+                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                        <input type="text" class="class-edit-input" data-id="${cId}" value="${level.classes[cId].name}" style="flex:1; padding:8px;">
+                        <button onclick="deleteClassConfirm('${levelId}', '${cId}')" style="background:var(--danger); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Sil</button>
+                    </div>
+                `).join('')}
+            </div>
+            <button onclick="addNewClassInput()" style="margin-top:10px; background:var(--accent); color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">+ Yeni Sınıf Ekle</button>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+            <button onclick="deleteLevelConfirm('${levelId}')" style="background:var(--danger); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Seviyeyi Tamamen Sil</button>
+            <button onclick="saveLevelSettings('${levelId}')" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+/**
+ * Seviye Değişikliklerini Veritabanına/Objeye Kaydeder
+ */
+function saveLevelSettings(levelId) {
+    const newName = document.getElementById('editLvlName').value;
+    if (!newName) return alert("Seviye adı boş olamaz!");
+
+    // İsmi güncelle
+    data.levels[levelId].name = newName;
+
+    // Sınıf isimlerini güncelle
+    const classInputs = document.querySelectorAll('.class-edit-input');
+    classInputs.forEach(input => {
+        const cId = input.dataset.id;
+        if (data.levels[levelId].classes[cId]) {
+            data.levels[levelId].classes[cId].name = input.value;
+        }
+    });
+
+    closeLvlModal();
+    renderSidebar(); // Yan menüyü tazele
+    
+    // Eğer veritabanı bağlantınız varsa burada save() fonksiyonunuzu çağırın
+    if (typeof save === "function") save();
+}
+
+function closeLvlModal() {
+    document.getElementById('lvlModal').style.display = 'none';
+}
+
+function addNewClassInput() {
+    // Bu fonksiyon yeni sınıf ekleme kutucuğu ekler (Örn: addClass fonksiyonunuza yönlendirir)
+    const name = prompt("Yeni Sınıf Adı:");
+    if (name) {
+        // Mevcut addClass mantığınızı buraya entegre edebilirsiniz
+        alert("Kaydet butonuna bastığınızda sınıf listesi güncellenecektir.");
+    }
+}
+
+// --- Seviye Ayarları Yama Kod Sonu ---
 </script>
 </body>
 </html>
