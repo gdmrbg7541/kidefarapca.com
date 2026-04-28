@@ -1328,55 +1328,43 @@ function closeNoteModal() {
     }
 
     function renderStudents() {
-    // 1. GÜVENLİK KONTROLÜ: Tablo elemanı sayfada var mı?
-    let table = document.getElementById('stuTable'); // Eğer HTML'de id="studentTable" ise onu yazın
-    
-    if (!table) {
-        console.warn("Tablo elemanı henüz yüklenmedi, render atlanıyor.");
-        return;
+        if (!curLId || !curCId) return;
+        let students = data.levels[curLId].classes[curCId].students || [];
+        let table = document.getElementById('stuTable');
+        table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
+        
+        students.forEach((s, i) => {
+            let row = table.insertRow();
+            row.setAttribute('draggable', 'true');
+            row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
+            row.ondragover = (e) => e.preventDefault();
+            row.ondrop = (e) => {
+                e.preventDefault();
+                let from = parseInt(e.dataTransfer.getData("text/plain"));
+                let moved = students.splice(from, 1)[0];
+                students.splice(i, 0, moved);
+                save(); renderStudents();
+            };
+
+            // renderStudents fonksiyonu içindeki ilgili satırı şununla değiştir:
+// renderStudents fonksiyonu içindeki ilgili kısmı şu şekilde değiştirin:
+row.innerHTML = `
+    <td>${i + 1}</td>
+    <td><input type="text" value="${s.name}" onchange="updateStudentName(${i}, this.value)" style="border:none; background:transparent; font-size:1.1em; width:100%;"></td>
+    <td>
+        <div class="action-cell">
+            <button onclick="openNoteModal(${i})" title="Öğrenci Notu">📝</button>
+            <button onclick="openSkillModal(${i})" title="Beceriler">📊</button>
+        </div>
+    </td>
+    <td>
+        <div class="action-cell">
+            <button onclick="deleteStu(${i})" title="Sil" style="color:var(--danger); border:none;">🗑️</button>
+        </div>
+    </td>
+`;
+        });
     }
-
-    // 2. VERİ KONTROLÜ: Seviye ve sınıf seçili mi?
-    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) {
-        return;
-    }
-
-    let students = data.levels[curLId].classes[curCId].students || [];
-    
-    // Tablo başlığını oluştur
-    table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
-    
-    students.forEach((s, i) => {
-        let row = table.insertRow();
-        row.setAttribute('draggable', 'true');
-        row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
-        row.ondragover = (e) => e.preventDefault();
-        row.ondrop = (e) => {
-            e.preventDefault();
-            let from = parseInt(e.dataTransfer.getData("text/plain"));
-            let moved = students.splice(from, 1)[0];
-            students.splice(i, 0, moved);
-            save(); 
-            renderStudents();
-        };
-
-        row.innerHTML = `
-            <td>${i + 1}</td>
-            <td><input type="text" value="${s.name}" onchange="updateStudentName(${i}, this.value)" style="border:none; background:transparent; font-size:1.1em; width:100%;"></td>
-            <td>
-                <div class="action-cell">
-                    <button onclick="openNoteModal(${i})" title="Öğrenci Notu">📝</button>
-                    <button onclick="openSkillModal(${i})" title="Beceriler">📊</button>
-                </div>
-            </td>
-            <td>
-                <div class="action-cell">
-                    <button onclick="deleteStu(${i})" title="Sil" style="color:var(--danger); border:none;">🗑️</button>
-                </div>
-            </td>
-        `;
-    });
-}
 
     function addSingleStudent() {
         let val = document.getElementById('singleStuName').value.trim();
