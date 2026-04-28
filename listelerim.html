@@ -1328,14 +1328,19 @@ function closeNoteModal() {
     }
 
     function renderStudents() {
-    let table = document.getElementById('stuTable'); // HTML'deki ID ile aynı olmalı
-    if (!table) return; // Eğer tablo yoksa hata verme, çık.
+    // 1. GÜVENLİK KONTROLÜ: Tablo elemanı sayfada var mı?
+    let table = document.getElementById('stuTable'); // Eğer HTML'de id="studentTable" ise onu yazın
+    
+    if (!table) {
+        console.warn("Tablo elemanı henüz yüklenmedi, render atlanıyor.");
+        return;
+    }
 
-    table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
-    
-    // Veri yolu kontrolü
-    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) return;
-    
+    // 2. VERİ KONTROLÜ: Seviye ve sınıf seçili mi?
+    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) {
+        return;
+    }
+
     let students = data.levels[curLId].classes[curCId].students || [];
     
     // Tablo başlığını oluştur
@@ -2140,23 +2145,17 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 function verileriGetir(uid) {
+    // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
     
+    // İçerik alanını bul ve "Yükleniyor" mesajını göster
     const contentArea = document.getElementById('content');
     if (contentArea) {
-        // Sadece yazı değil, gerekli HTML iskeletini de içeri koyuyoruz
+        // Giriş uyarısını temizleyip yükleme animasyonu/yazısı koyuyoruz
         contentArea.innerHTML = `
-            <div id="loading-view" style="text-align:center; margin-top:100px;">
-                <p style="font-size:1.2em; color:var(--primary);">🔄 Verileriniz hazırlanıyor...</p>
-            </div>
-            <div id="main-view-template" style="display:none;">
-                <h2 id="viewTitle" style="margin-bottom:15px; color:var(--primary);"></h2>
-                <div id="stayed-section" style="margin-bottom:15px;">
-                    <label>Kaldığımız Yer: </label>
-                    <input type="text" id="stayedPoint" onchange="updateStayedPoint(this.value)" style="padding:5px; width:200px;">
-                </div>
-                <table id="stuTable" class="student-table"></table>
+            <div style="text-align:center; margin-top:100px; color:var(--primary);">
+                <p style="font-size:1.2em;">🔄 Verileriniz hazırlanıyor...</p>
             </div>`;
     }
 
@@ -2164,38 +2163,48 @@ function verileriGetir(uid) {
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
-                data = JSON.parse(doc.data().userData);
+                const cloudData = JSON.parse(doc.data().userData);
+                // Yeni kullanıcının verilerini belleğe (RAM) al
+                data = cloudData;
+                console.log("Bulut verileri başarıyla yüklendi.");
             } catch (e) {
-                console.error("Veri hatası:", e);
+                console.error("JSON Ayrıştırma Hatası:", e);
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
+            // BULUTTA VERİ YOKSA: Demo veriyi temiz bir kopya olarak yükle
+            console.log("Yeni hesap: Demo veriler yükleniyor.");
             if (typeof demoData !== 'undefined') {
                 data = JSON.parse(JSON.stringify(demoData));
+            } else {
+                data = { levels: {}, levelOrder: [] };
             }
         }
 
+        // 1. Sidebar'ı yeni veriye göre oluştur (DOM'a ekle)
         renderSidebar();
 
-        // 300ms gecikme ile içeriği göster ve seçimi yap
+        // 2. KRİTİK GECİKME: 'stuTable' ve 'viewTitle' elemanlarının 
+        // DOM üzerinde erişilebilir olması için tarayıcıya süre tanı.
         setTimeout(() => {
+            // Sadece kullanıcı hala giriş yapmışsa işlemleri başlat
             if (firebase.auth().currentUser) {
-                // Yükleme yazısını gizle, şablonu göster
-                const loadingView = document.getElementById('loading-view');
-                const mainView = document.getElementById('main-view-template');
-                if (loadingView) loadingView.style.display = 'none';
-                if (mainView) mainView.style.display = 'block';
-
+                // Yeni girişte her zaman en üstteki ilk sınıfı otomatik seç
                 if (!curLId || !curCId) {
-                    otomatikIlkSecim();
+                    if (typeof otomatikIlkSecim === "function") {
+                        otomatikIlkSecim();
+                    }
                 } else {
-                    renderStudents();
+                    // Sayfa yenilendiyse mevcut seçimi koru
+                    if (typeof renderStudents === "function") renderStudents(); 
+                    if (typeof renderPlan === "function") renderPlan();
                 }
             }
-        }, 300);
+        }, 300); // 100ms bazen yetmeyebilir, 300ms daha garantidir.
     })
     .catch((err) => {
         console.error("Bağlantı Hatası:", err);
+        // İnternet olmasa bile en azından menüyü (boş veya demo) göster
         renderSidebar();
     });
 }
@@ -2228,91 +2237,6 @@ function otomatikIlkSecim() {
         }
     }
 }
-// --- Seviye Ayarları Yama Kod Başlangıcı ---
-
-/**
- * Seviye Ayar Panelini Açar
- * @param {string} levelId - Düzenlenecek seviyenin ID'si
- */
-function openLevelSettings(levelId) {
-    const level = data.levels[levelId];
-    if (!level) return;
-
-    // Modal içeriğini oluştur
-    const modal = document.getElementById('lvlModal');
-    modal.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0;">⚙️ Seviye Ayarları: ${level.name}</h2>
-            <span onclick="closeLvlModal()" style="cursor:pointer; font-size:24px;">&times;</span>
-        </div>
-        
-        <div style="margin-bottom:15px;">
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">Seviye Adı:</label>
-            <input type="text" id="editLvlName" value="${level.name}" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
-        </div>
-
-        <div style="margin-bottom:20px;">
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">Sınıfları Yönet:</label>
-            <div id="editClassList">
-                ${Object.keys(level.classes).map(cId => `
-                    <div style="display:flex; gap:5px; margin-bottom:5px;">
-                        <input type="text" class="class-edit-input" data-id="${cId}" value="${level.classes[cId].name}" style="flex:1; padding:8px;">
-                        <button onclick="deleteClassConfirm('${levelId}', '${cId}')" style="background:var(--danger); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Sil</button>
-                    </div>
-                `).join('')}
-            </div>
-            <button onclick="addNewClassInput()" style="margin-top:10px; background:var(--accent); color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">+ Yeni Sınıf Ekle</button>
-        </div>
-
-        <div style="display:flex; gap:10px; justify-content:flex-end;">
-            <button onclick="deleteLevelConfirm('${levelId}')" style="background:var(--danger); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Seviyeyi Tamamen Sil</button>
-            <button onclick="saveLevelSettings('${levelId}')" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
-        </div>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-/**
- * Seviye Değişikliklerini Veritabanına/Objeye Kaydeder
- */
-function saveLevelSettings(levelId) {
-    const newName = document.getElementById('editLvlName').value;
-    if (!newName) return alert("Seviye adı boş olamaz!");
-
-    // İsmi güncelle
-    data.levels[levelId].name = newName;
-
-    // Sınıf isimlerini güncelle
-    const classInputs = document.querySelectorAll('.class-edit-input');
-    classInputs.forEach(input => {
-        const cId = input.dataset.id;
-        if (data.levels[levelId].classes[cId]) {
-            data.levels[levelId].classes[cId].name = input.value;
-        }
-    });
-
-    closeLvlModal();
-    renderSidebar(); // Yan menüyü tazele
-    
-    // Eğer veritabanı bağlantınız varsa burada save() fonksiyonunuzu çağırın
-    if (typeof save === "function") save();
-}
-
-function closeLvlModal() {
-    document.getElementById('lvlModal').style.display = 'none';
-}
-
-function addNewClassInput() {
-    // Bu fonksiyon yeni sınıf ekleme kutucuğu ekler (Örn: addClass fonksiyonunuza yönlendirir)
-    const name = prompt("Yeni Sınıf Adı:");
-    if (name) {
-        // Mevcut addClass mantığınızı buraya entegre edebilirsiniz
-        alert("Kaydet butonuna bastığınızda sınıf listesi güncellenecektir.");
-    }
-}
-
-// --- Seviye Ayarları Yama Kod Sonu ---
 </script>
 </body>
 </html>
