@@ -532,6 +532,18 @@ body.sidebar-closed .toggle-btn {
     font-weight: bold;
     pointer-events: none; /* Tıklamayı engellememesi için */
 }
+/* Başlangıçta sidebar ve içeriği gizle */
+#sidebar, #content { 
+    display: none !important; 
+}
+
+/* Sadece giriş yapıldığında görünür olmaları için yardımcı sınıf */
+body.logged-in #sidebar { 
+    display: flex !important; 
+}
+body.logged-in #content { 
+    display: block !important; 
+}
     </style>
 </head>
 <body>
@@ -1872,19 +1884,19 @@ async function authIslemi() {
     }
 
     try {
+        // Oturumu tarayıcı/sekme kapanınca bitecek şekilde ayarla
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
         if (mevcutMod === 'login') {
-            // Giriş Yap
             await firebase.auth().signInWithEmailAndPassword(email, pass);
             console.log("Giriş başarılı!");
         } else {
-            // Kayıt Ol
             await firebase.auth().createUserWithEmailAndPassword(email, pass);
             alert("Hesabınız başarıyla oluşturuldu!");
         }
-        modalKapat(); // İşlem başarılıysa pencereyi kapat
+        modalKapat(); 
     } catch (error) {
         console.error("Hata:", error);
-        // Türkçe hata mesajları
         if (error.code === 'auth/email-already-in-use') {
             hata.innerText = "Bu e-posta adresi zaten kullanımda.";
         } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
@@ -1991,21 +2003,29 @@ const db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged((user) => {
     const loginBtn = document.getElementById('login-nav-btn');
+    
     if (user) {
         console.log("Giriş yapan kullanıcı:", user.email);
         const uid = user.uid; 
+        
+        // CSS tetikleyicisi: İçeriği göster
+        document.body.classList.add('logged-in');
+        
         modalKapat(); 
         
-        // Buton metnini ve ikonunu güncelle
+        // Buton metnini ve rengini güncelle
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
-        // Butonun rengini isteğe bağlı olarak değiştirebilirsiniz
-        loginBtn.style.background = "#e74c3c"; // Çıkış için kırmızı tonu
+        loginBtn.style.background = "#e74c3c"; 
 
         verileriGetir(uid); 
     } else {
         console.log("Kullanıcı giriş yapmamış.");
+        
+        // CSS tetikleyicisi: İçeriği gizle
+        document.body.classList.remove('logged-in');
+        
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
-        loginBtn.style.background = "#34495e"; // Varsayılan renk
+        loginBtn.style.background = "#34495e"; 
         
         // Sayfa ilk açıldığında giriş yoksa modalı aç
         setTimeout(() => { 
