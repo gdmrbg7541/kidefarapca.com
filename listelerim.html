@@ -906,30 +906,7 @@ function switchTab(idx) {
     if(idx === 4) renderActivityStatus();
     if(idx === 8) renderPlan(); 
 }
-// Sınıf seçildiğinde otomatik olarak Haftalık Plan (tab 8) açılsın
-function selectClass(lId, cId) {
-    curLId = lId; curCId = cId;
-    pools = {}; 
-    document.getElementById('content').style.display = 'block';
-    document.getElementById('viewTitle').innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
-    
-    // Açılışta doğrudan 8. paneli (Haftalık Plan) göster
-    switchTab(8); 
-    
-    let cls = data.levels[curLId].classes[curCId];
-    if(document.getElementById('stayedPoint')) {
-        document.getElementById('stayedPoint').value = cls.stayedPoint || "";
-    }
-    renderPlan();
-}
 
-// Kaldığımız yer bilgisini kaydetme fonksiyonu
-function updateStayedPoint(val) {
-    if(curLId && curCId) {
-        data.levels[curLId].classes[curCId].stayedPoint = val;
-        save();
-    }
-}
 
 // renderPlan fonksiyonunu da güncellemek gerekebilir (daha önce eklemediysen)
 function updateActivityTable() {
@@ -2099,12 +2076,15 @@ function verileriGetir(uid) {
     // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
+    
+    console.log("Veriler getiriliyor, kullanıcı ID:", uid);
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
                 const cloudData = JSON.parse(doc.data().userData);
+                // Yeni kullanıcının verilerini belleğe al
                 data = cloudData;
                 console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
             } catch (e) {
@@ -2112,7 +2092,8 @@ function verileriGetir(uid) {
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
+            // BULUTTA VERİ YOKSA (İLK GİRİŞ): 
+            console.log("Bulutta veri bulunamadı, demo liste yükleniyor.");
             if (typeof demoData !== 'undefined') {
                 data = JSON.parse(JSON.stringify(demoData));
             } else {
@@ -2120,27 +2101,34 @@ function verileriGetir(uid) {
             }
         }
 
-        // 1. Önce CSS engelini kaldır (Arayüzü görünür yap)
+        // 1. ADIM: Arayüz kilidini aç (CSS display:none engelini kaldırır)
         document.body.classList.add('logged-in');
 
-        // 2. Sidebar'ı (Menüyü) çiz
+        // 2. ADIM: Sidebar'ı (Menüyü) çiz
         renderSidebar();
 
-        // 3. ZAMANLAMA ÇÖZÜMÜ: DOM'un yerleşmesi için kısa bir bekleme ekle
+        // 3. ADIM: ZAMANLAMA VE ÇAKIŞMA YÖNETİMİ
+        // setTimeout ile tarayıcının HTML elemanlarını hafızasına almasına izin veriyoruz
         setTimeout(() => {
-            // Eğer sayfa yenilendiyse ve hafızada (localStorage) eski seçimler varsa onları kullanır
-            // Eğer ilk kez giriş yapıldıysa (curLId null ise) otomatikIlkSecim çalışır
-            if (!curLId || !curCId) {
-                console.log("İlk seçim yapılıyor...");
-                otomatikIlkSecim();
-            } else {
-                console.log("Mevcut seçim yükleniyor...");
+            
+            // Eğer sayfa yenilendiyse ve zaten bir seçim varsa (curLId doluysa) sadece listeyi bas
+            if (curLId && curCId) {
+                console.log("Mevcut seçim yükleniyor:", curLId, curCId);
                 renderStudents(); 
+            } 
+            // Eğer ilk kez giriş yapıldıysa veya seçim yoksa
+            else {
+                // Haftalık program veya başka bir otomatik tetikleyici ile çakışmayı önlemek için
+                // Burada sadece 'otomatikIlkSecim' fonksiyonuna yetki veriyoruz
+                console.log("Otomatik ilk seçim başlatılıyor...");
+                otomatikIlkSecim();
             }
-        }, 150); // 150ms tarayıcıya render için yeterli süreyi tanır
+
+        }, 200); // 200ms, tüm çakışmaları ve render gecikmelerini önlemek için ideal süredir
     })
     .catch((err) => {
         console.error("Bağlantı hatası:", err);
+        // Hata durumunda bile arayüzün boş kalmaması için sidebar'ı boş render et
         renderSidebar();
     });
 }
