@@ -1328,19 +1328,14 @@ function closeNoteModal() {
     }
 
     function renderStudents() {
-    // 1. GÜVENLİK KONTROLÜ: Tablo elemanı sayfada var mı?
-    let table = document.getElementById('stuTable'); // Eğer HTML'de id="studentTable" ise onu yazın
+    let table = document.getElementById('stuTable'); // HTML'deki ID ile aynı olmalı
+    if (!table) return; // Eğer tablo yoksa hata verme, çık.
+
+    table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
     
-    if (!table) {
-        console.warn("Tablo elemanı henüz yüklenmedi, render atlanıyor.");
-        return;
-    }
-
-    // 2. VERİ KONTROLÜ: Seviye ve sınıf seçili mi?
-    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) {
-        return;
-    }
-
+    // Veri yolu kontrolü
+    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) return;
+    
     let students = data.levels[curLId].classes[curCId].students || [];
     
     // Tablo başlığını oluştur
@@ -2145,17 +2140,23 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 function verileriGetir(uid) {
-    // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
     
-    // İçerik alanını bul ve "Yükleniyor" mesajını göster
     const contentArea = document.getElementById('content');
     if (contentArea) {
-        // Giriş uyarısını temizleyip yükleme animasyonu/yazısı koyuyoruz
+        // Sadece yazı değil, gerekli HTML iskeletini de içeri koyuyoruz
         contentArea.innerHTML = `
-            <div style="text-align:center; margin-top:100px; color:var(--primary);">
-                <p style="font-size:1.2em;">🔄 Verileriniz hazırlanıyor...</p>
+            <div id="loading-view" style="text-align:center; margin-top:100px;">
+                <p style="font-size:1.2em; color:var(--primary);">🔄 Verileriniz hazırlanıyor...</p>
+            </div>
+            <div id="main-view-template" style="display:none;">
+                <h2 id="viewTitle" style="margin-bottom:15px; color:var(--primary);"></h2>
+                <div id="stayed-section" style="margin-bottom:15px;">
+                    <label>Kaldığımız Yer: </label>
+                    <input type="text" id="stayedPoint" onchange="updateStayedPoint(this.value)" style="padding:5px; width:200px;">
+                </div>
+                <table id="stuTable" class="student-table"></table>
             </div>`;
     }
 
@@ -2163,48 +2164,38 @@ function verileriGetir(uid) {
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
-                const cloudData = JSON.parse(doc.data().userData);
-                // Yeni kullanıcının verilerini belleğe (RAM) al
-                data = cloudData;
-                console.log("Bulut verileri başarıyla yüklendi.");
+                data = JSON.parse(doc.data().userData);
             } catch (e) {
-                console.error("JSON Ayrıştırma Hatası:", e);
+                console.error("Veri hatası:", e);
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // BULUTTA VERİ YOKSA: Demo veriyi temiz bir kopya olarak yükle
-            console.log("Yeni hesap: Demo veriler yükleniyor.");
             if (typeof demoData !== 'undefined') {
                 data = JSON.parse(JSON.stringify(demoData));
-            } else {
-                data = { levels: {}, levelOrder: [] };
             }
         }
 
-        // 1. Sidebar'ı yeni veriye göre oluştur (DOM'a ekle)
         renderSidebar();
 
-        // 2. KRİTİK GECİKME: 'stuTable' ve 'viewTitle' elemanlarının 
-        // DOM üzerinde erişilebilir olması için tarayıcıya süre tanı.
+        // 300ms gecikme ile içeriği göster ve seçimi yap
         setTimeout(() => {
-            // Sadece kullanıcı hala giriş yapmışsa işlemleri başlat
             if (firebase.auth().currentUser) {
-                // Yeni girişte her zaman en üstteki ilk sınıfı otomatik seç
+                // Yükleme yazısını gizle, şablonu göster
+                const loadingView = document.getElementById('loading-view');
+                const mainView = document.getElementById('main-view-template');
+                if (loadingView) loadingView.style.display = 'none';
+                if (mainView) mainView.style.display = 'block';
+
                 if (!curLId || !curCId) {
-                    if (typeof otomatikIlkSecim === "function") {
-                        otomatikIlkSecim();
-                    }
+                    otomatikIlkSecim();
                 } else {
-                    // Sayfa yenilendiyse mevcut seçimi koru
-                    if (typeof renderStudents === "function") renderStudents(); 
-                    if (typeof renderPlan === "function") renderPlan();
+                    renderStudents();
                 }
             }
-        }, 300); // 100ms bazen yetmeyebilir, 300ms daha garantidir.
+        }, 300);
     })
     .catch((err) => {
         console.error("Bağlantı Hatası:", err);
-        // İnternet olmasa bile en azından menüyü (boş veya demo) göster
         renderSidebar();
     });
 }
