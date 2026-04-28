@@ -2099,53 +2099,45 @@ function verileriGetir(uid) {
     // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
-    // Eğer global bir 'data' değişkeniniz varsa, onu geçici olarak boşaltmak sızıntıyı önler
-    // Ancak demo verileri korumak istiyorsak aşağıda düzgünce set edeceğiz.
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
                 const cloudData = JSON.parse(doc.data().userData);
-                // Yeni kullanıcının verilerini belleğe al
                 data = cloudData;
                 console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
             } catch (e) {
                 console.error("Veri işleme hatası:", e);
-                // Veri bozuksa güvenli bir yapıya dön
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // BULUTTA VERİ YOKSA (İLK GİRİŞ): 
-            // 1. Hesaptan çıkıp 2. hesaba girildiğinde 1. hesabın verileri kalmasın diye
-            // Burada mutlaka demoData'yı temiz bir kopya olarak tekrar yüklemeliyiz.
             console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
-            
             if (typeof demoData !== 'undefined') {
-                // demoData'nın referansını değil, kopyasını alıyoruz (sızıntı önleme)
                 data = JSON.parse(JSON.stringify(demoData));
             } else {
                 data = { levels: {}, levelOrder: [] };
             }
         }
 
-      renderSidebar();
-
-        // 1. Önce sayfayı görünür yap (CSS'deki none engelini kaldırır)
+        // 1. Önce CSS engelini kaldır (Arayüzü görünür yap)
         document.body.classList.add('logged-in');
 
-        // 2. Zamanlama sorunu için setTimeout kullanın
-        // Sidebar render edildikten sonra HTML elementlerinin tanınması için 100ms bekleriz
+        // 2. Sidebar'ı (Menüyü) çiz
+        renderSidebar();
+
+        // 3. ZAMANLAMA ÇÖZÜMÜ: DOM'un yerleşmesi için kısa bir bekleme ekle
         setTimeout(() => {
-            // Yeni bir hesaba girildiği için curLId ve curCId yukarıda null yapıldı, 
-            // bu yüzden otomatikIlkSecim() her zaman en üstteki sınıfı açacaktır.
+            // Eğer sayfa yenilendiyse ve hafızada (localStorage) eski seçimler varsa onları kullanır
+            // Eğer ilk kez giriş yapıldıysa (curLId null ise) otomatikIlkSecim çalışır
             if (!curLId || !curCId) {
-                console.log("Otomatik seçim başlatılıyor...");
+                console.log("İlk seçim yapılıyor...");
                 otomatikIlkSecim();
             } else {
+                console.log("Mevcut seçim yükleniyor...");
                 renderStudents(); 
             }
-        }, 100); 
+        }, 150); // 150ms tarayıcıya render için yeterli süreyi tanır
     })
     .catch((err) => {
         console.error("Bağlantı hatası:", err);
