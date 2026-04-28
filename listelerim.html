@@ -1107,18 +1107,21 @@ function openTatiller() {
     }
 
     // --- VERİ YÖNETİMİ ---
+// save() fonksiyonunu şu şekilde güncelleyin
 function save() {
     localStorage.setItem('schoolData', JSON.stringify(data));
     renderSidebar();
 
-    // Giriş yapmış kullanıcı varsa veriyi Firebase'e gönder
+    // Firebase senkronizasyonu
     const user = firebase.auth().currentUser;
     if (user) {
+        // Veriyi string yerine direkt nesne olarak göndermek daha sağlıklıdır
         db.collection("kullanicilar").doc(user.uid).set({
-            userData: JSON.stringify(data)
+            userData: JSON.stringify(data),
+            sonGuncelleme: firebase.firestore.FieldValue.serverTimestamp()
         }).then(() => {
             console.log("Bulut senkronizasyonu başarılı.");
-        });
+        }).catch(err => console.error("Bulut kayıt hatası:", err));
     }
 }
 
@@ -1977,46 +1980,46 @@ const firebaseConfig = {
   measurementId: "G-HYY6T2EDKY"
 };
 
-// 2. Firebase'i Başlat (Daha önce başlatılmadıysa)
+// Firebase Config zaten sizde var...
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
+const db = firebase.firestore();
 
-// 3. Veritabanı ve Analitik Bağlantıları
-const db = firebase.firestore(); // SADECE BİR TANE VE BU ŞEKİLDE OLMALI
-const analytics = firebase.analytics(); // Eğer analitik kullanacaksanız
-
-  // 3. İŞTE SİZİN KODUNUZ BURAYA GELECEK
-  firebase.auth().onAuthStateChanged((user) => {
+firebase.auth().onAuthStateChanged((user) => {
+    const loginBtn = document.getElementById('login-nav-btn');
     if (user) {
-      console.log("Giriş yapan kullanıcı:", user.email);
-      const uid = user.uid; 
-      modalKapat(); // Giriş yapılmışsa modalı kapat
-      document.getElementById('login-nav-btn').innerText = "Çıkış Yap (" + user.email + ")";
-      verileriGetir(uid); 
+        console.log("Giriş yapan kullanıcı:", user.email);
+        const uid = user.uid; 
+        modalKapat(); 
+        
+        // Buton metnini ve ikonunu güncelle
+        loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
+        // Butonun rengini isteğe bağlı olarak değiştirebilirsiniz
+        loginBtn.style.background = "#e74c3c"; // Çıkış için kırmızı tonu
+
+        verileriGetir(uid); 
     } else {
-      console.log("Kullanıcı giriş yapmamış.");
-      document.getElementById('login-nav-btn').innerText = "🔑 Öğretmen Girişi";
-      modalAc(); // <--- Sayfa açıldığında giriş yapılmamışsa modalı otomatik açar
+        console.log("Kullanıcı giriş yapmamış.");
+        loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
+        loginBtn.style.background = "#34495e"; // Varsayılan renk
+        
+        // Sayfa ilk açıldığında giriş yoksa modalı aç
+        setTimeout(() => { 
+            if(!firebase.auth().currentUser) modalAc(); 
+        }, 1000);
     }
 });
 
-  // Veri çekme fonksiyonu
- function verileriGetir(uid) {
+function verileriGetir(uid) {
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists) {
             const cloudData = JSON.parse(doc.data().userData);
-            // Buluttaki veriyi ana veri değişkenine aktar
-            data = cloudData;
-            // Arayüzü güncelle
+            // KRİTİK: Yerel veri ile bulut verisini birleştirme veya değiştirme kararı
+            data = cloudData; 
             renderSidebar();
-            if (curLId && curCId) {
-                renderStudents(); // Veya o anki tabloyu yenile
-            }
-            console.log("Bulut verileri yüklendi.");
-        } else {
-            console.log("Bulutta henüz veri yok, yerel veriler kullanılacak.");
+            console.log("Veriler buluttan güncellendi.");
         }
     })
     .catch((error) => console.error("Veri çekme hatası:", error));
