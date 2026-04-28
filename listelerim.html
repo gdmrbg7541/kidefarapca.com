@@ -1109,19 +1109,19 @@ function openTatiller() {
     // --- VERİ YÖNETİMİ ---
 // save() fonksiyonunu şu şekilde güncelleyin
 function save() {
+    // 1. Önce bilgisayara (Local) kaydet
     localStorage.setItem('schoolData', JSON.stringify(data));
     renderSidebar();
 
-    // Firebase senkronizasyonu
+    // 2. Eğer giriş yapılmışsa buluta (Firebase) gönder
     const user = firebase.auth().currentUser;
     if (user) {
-        // Veriyi string yerine direkt nesne olarak göndermek daha sağlıklıdır
         db.collection("kullanicilar").doc(user.uid).set({
             userData: JSON.stringify(data),
-            sonGuncelleme: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            console.log("Bulut senkronizasyonu başarılı.");
-        }).catch(err => console.error("Bulut kayıt hatası:", err));
+            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => console.log("Bulutla eşleşti ✅"))
+        .catch((error) => console.error("Bulut kayıt hatası:", error));
     }
 }
 
@@ -2019,13 +2019,18 @@ function verileriGetir(uid) {
     .then((doc) => {
         if (doc.exists) {
             const cloudData = JSON.parse(doc.data().userData);
-            // KRİTİK: Yerel veri ile bulut verisini birleştirme veya değiştirme kararı
-            data = cloudData; 
+            
+            // Mevcut veriyi buluttan gelenle değiştir
+            data = cloudData;
+            
+            // Arayüzü tazele
             renderSidebar();
-            console.log("Veriler buluttan güncellendi.");
+            if (curLId && curCId) {
+                renderStudents(); 
+            }
+            console.log("Diğer cihazlardaki verileriniz yüklendi! 🔄");
         }
-    })
-    .catch((error) => console.error("Veri çekme hatası:", error));
+    });
 }
 </script>
 </body>
