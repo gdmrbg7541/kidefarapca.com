@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kelime7.2</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Kelime 7.2</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,144 +12,230 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --pdf-red: #b30b00;
-            --pdf-dark: #8b0000;
-            --bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
-            --card-back: #1e293b;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg-gradient); 
-            height: 100vh; 
-            height: 100dvh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
-
-        /* --- 1. FONT TANIMI (DOSYALAR YAN YANA İSE) --- */
         @font-face {
-            font-family: 'ArakomFont';
-            src: url('arakom.ttf'); /* Klasör adı yok, direkt dosya adı */
-            font-weight: normal;
-            font-style: normal;
+            font-family: 'arakom';
+            src: url('arakom.ttf') format('truetype');
+            font-weight: normal; font-style: normal;
         }
 
-        /* --- 2. ARAPÇA SINIFI --- */
-        .arabic-text {
-            font-family: 'ArakomFont', sans-serif !important; /* !important ile baskın yaptık */
-            direction: rtl;
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%);
+            --primary: #5c7cfa;
+            --accent: #ff922b;
+            --p1: #4dabf7;
+            --p2: #ff8787;
+            --shadow: 0 12px 25px rgba(0,0,0,0.1);
         }
 
-        .navbar { background: var(--pdf-red); height: 60px; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; z-index: 2100; color: white; }
-        .back-btn { background: var(--pdf-dark); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 20px; }
-        .mode-toggle-btn { background: white; color: var(--pdf-red); border: none; padding: 8px 12px; border-radius: 8px; font-weight: 900; cursor: pointer; display: none; }
-
-        #entry-panel { position: fixed; inset: 0; background: white; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-        .menu-btn { width: 85%; max-width: 350px; padding: 25px; border-radius: 20px; border: 3px solid var(--pdf-red); background: white; color: var(--pdf-red); font-size: 1.5rem; font-weight: 800; cursor: pointer; }
-
-        .workspace { 
-            flex: 1; 
-            width: 100%;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            justify-content: center;
-            padding: 10px; 
-            gap: 10px; 
-            overflow-y: auto; 
+        body {
+            font-family: 'arakom', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        /* KELİME KARTI */
-        #flashcard-mode { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-        .fc-container { width: min(85vw, 400px); height: min(85vw, 400px); perspective: 1000px; cursor: pointer; }
-        .fc-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s, opacity 0.3s; transform-style: preserve-3d; }
-        .fc-inner.is-flipped { transform: rotateY(180deg); }
-        .fc-front, .fc-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .header {
+            padding: 10px;
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        h1 { margin: 0 0 5px 0; color: #4b2cc5; font-size: 1.5rem; font-weight: normal; }
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .btn {
+            border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+            font-family: 'arakom'; background: white; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .btn.active { background: var(--primary); color: white; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .game-area { flex-grow: 1; padding: 15px; display: flex; justify-content: center; align-items: stretch; }
+
+        .score-board {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; /* Kutuların boyunu uzatır */
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%; /* 4K'da tam yayılma için */
+    height: 85vh; /* Header dışında kalan alanın çoğu */
+    margin: 0 auto;
+}
+
+.player-box {
+    flex: 0 0 80px; /* Kutuların genişliğini sabitledik */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 5px solid transparent;
+    margin: 10px 0; /* Animasyon ve nefes alma payı */
+}
+
+/* Aktif oyuncu animasyonu */
+.active-p { 
+    background: #fff; 
+    border-color: currentColor; 
+    transform: scale(1.05); /* Hafif büyüme animasyonu */
+    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+}
+
+        .p-label { font-size: 1.1rem; font-weight: bold; opacity: 0.6; }
+        .p-score { font-size: 2.5rem; font-weight: 900; margin-top: 5px; }
+
         
-        /* Font ayarları JS tarafından kontrol edilecek, buradaki statik fontları sildik */
-        .fc-front { background: white; color: var(--pdf-red); font-size: 3rem; font-weight: 800; }
-        .fc-back { background: var(--pdf-red); color: white; transform: rotateY(180deg); font-size: 3.5rem; }
+.grid { 
+    display: grid; 
+    gap: 15px; 
+    flex-grow: 1; /* Sağ ve sol kutu arasındaki tüm boşluğu doldurur */
+    width: 100%;
+    height: 100%;
+} .grid { display: grid; gap: 10px; flex-grow: 1; width: 100%; }
 
-        /* HAFIZA OYUNU */
-        #memory-mode { display: none; width: 100%; height: 100%; gap: 8px; padding: 10px; align-content: center; }
-        .grid-6-pairs { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); }
-        .grid-8-pairs { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); }
-        .grid-10-pairs { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); }
-        .grid-12-pairs { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(6, 1fr); }
+        .grid:not(.memory-mode) {
+    grid-template-columns: repeat(5, 1fr) !important;
+    /* Sabit 180px yerine, ekran yüksekliğinin %80'ini 4 satıra bölüyoruz */
+    grid-auto-rows: 1fr;
+    gap: 15px;
+    width: 100%;
+}
 
-        @media (orientation: landscape) {
-            .grid-6-pairs { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
-            .grid-10-pairs { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); }
-            .grid-12-pairs { grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 1fr); }
+.grid.memory-mode {
+    display: grid;
+    gap: 10px;
+    flex-grow: 1;
+    height: 100%; /* Kutu yüksekliğini sona kadar zorlar */
+    /* Satırları içeriğe göre değil, mevcut boşluğa göre eşit paylaştırır */
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr)); 
+    align-content: stretch;
+}
+        .grid.memory-mode[data-total="12"] { grid-template-columns: repeat(4, 1fr); }
+        .grid.memory-mode[data-total="18"] { grid-template-columns: repeat(6, 1fr); }
+        .grid.memory-mode[data-total="20"] { grid-template-columns: repeat(5, 1fr); }
+        .grid.memory-mode[data-total="24"] { grid-template-columns: repeat(6, 1fr); }
+
+        .card { perspective: 1000px; cursor: pointer; width: 100%; height: 100%; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+        .card-face {
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    backface-visibility: hidden; 
+    border-radius: 15px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    /* clamp ile minimum 1.5rem, ekran genişliğine göre 5vw ve max 4rem arası dinamik boyut */
+    font-size: clamp(1.5rem, 4vw, 3rem); 
+    box-shadow: var(--shadow); 
+    border: 4px solid white; 
+    box-sizing: border-box; 
+    text-align: center; 
+    padding: 10px;
+    word-break: break-word; /* Uzun kelimelerin taşmasını önler */
+}
+        .card-front { color: white; }
+        .card-back { transform: rotateY(180deg); background: #ffffff; color: #333; }
+        .memory-mode .card-front::after { content: "؟"; font-size: 2rem; opacity: 0.3; }
+        .matched { opacity: 0; pointer-events: none; transition: 0.6s; transform: scale(0.8); }
+
+        /* Switch Tasarımı */
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
         }
+        input:checked + .slider { background-color: var(--p2) !important; }
+        input:checked + .slider:before { transform: translateX(22px); }
 
-        .mem-card { width: 100%; height: 100%; position: relative; cursor: pointer; perspective: 1000px; }
-        .mem-inner { width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; border-radius: 12px; }
-        .mem-card.flipped .mem-inner { transform: rotateY(180deg); }
-        .mem-front, .mem-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .mem-front { background: var(--card-back); color: white; font-size: 2rem; border: 2px solid #334155; }
-        .mem-back { background: white; transform: rotateY(180deg); border: 2px solid var(--pdf-red); color: #1e293b; font-size: 1.1rem; padding: 5px; }
-        
-        /* .mem-ar sınıfını sildik, yerine .arabic-text kullanacağız */
-        
-        .matched { opacity: 0; visibility: hidden; transition: 0.4s; pointer-events: none; }
+        @media (max-width: 768px) {
+            .score-board { flex-direction: column; align-items: center; }
+            .player-box { flex-direction: row; flex: none; width: 90%; height: 45px; gap: 15px; margin: 5px 0; }
+            .p-score { font-size: 1.4rem; margin-top: 0; }
+            .p-label { font-size: 0.8rem; }
+            .grid:not(.memory-mode) { grid-template-columns: repeat(3, 1fr) !important; grid-auto-rows: 110px; }
 
-        /* OYUN SONU PANELİ */
-        #game-over { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-
-        .footer-controls { display: none; gap: 20px; padding: 20px; width: 100%; justify-content: center; background: white; }
-        .nav-btn { padding: 15px 40px; border-radius: 50px; border: 2px solid var(--pdf-red); background: white; color: var(--pdf-red); font-weight: 900; cursor: pointer; }
+            @media (orientation: portrait) {
+                #pair-selection-area { display: none !important; }
+                .grid.memory-mode { grid-template-columns: repeat(3, 1fr) !important; grid-auto-rows: minmax(75px, 1fr) !important; gap: 5px !important; }
+                .card-face { font-size: 0.9rem !important; border-width: 2px !important; padding: 4px !important; }
+                .memory-mode .card-front::after { font-size: 1.2rem; }
+            }
+        }
     </style>
 </head>
 <body>
 
-<div id="entry-panel">
-    <h1 style="color:var(--pdf-red); margin-bottom: 20px;">ARAPÇA KELİME</h1>
-    <button class="menu-btn" onclick="startMode('flashcard')">KELİME KARTLARI</button>
-    <button class="menu-btn" onclick="startMode('memory')">HAFIZA OYUNU</button>
-</div>
+<div class="header">
+    <div class="controls" style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; min-height: 50px;">
+        
+        <button class="btn" id="btn-back" onclick="location.href='muhadese.html'" style="position: absolute; left: 10px; background: #f1f3f5; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+            <span>❮</span>
+        </button>
 
-<div id="game-over">
-    <h2 id="over-title" style="color:var(--pdf-red); font-size: 2rem;">Harika!</h2>
-    <p id="over-desc" style="font-weight: bold; color: #475569;">Bu turdaki tüm kelimeleri eşleştirdin.</p>
-    <button id="over-btn" class="menu-btn" onclick="resetAndPlay()">Yeni Kelimelerle Oyna</button>
-</div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="btn active" id="btn-study" onclick="setMode('study')">Kartlar</button>
+            <button class="btn" id="lang-btn-main" onclick="toggleLang()" style="background:var(--accent); color:white;"> T ⇄ ع</button>
+            <button class="btn" id="btn-memory-start" onclick="setMode('mem1')" style="background: #e9ecef;">Hafıza Oyunu</button>
 
-<nav class="navbar">
-    <a href="javascript:void(0)" onclick="goHome()" class="back-btn">❮</a>
-    <span id="nav-title" style="font-weight: 900;">MOD SEÇ</span>
-    <button id="lang-toggle" class="mode-toggle-btn" onclick="toggleLang()">TR ➔ AR</button>
-</nav>
+            <div id="memory-controls" style="display: none; align-items: center; gap: 8px;">
+                <button class="btn" onclick="setMode('study')" style="background:#dee2e6; font-weight: bold;">Kartlar</button>
+                
+                <div class="switch-wrapper" style="display: flex; align-items: center; background: white; padding: 4px 8px; border-radius: 50px; border: 2px solid #eee; gap: 5px;">
+                    <span style="font-size: 1.1rem; cursor: pointer;" onclick="toggleSwitch(false)">👤</span>
+                    <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                        <input type="checkbox" id="mode-toggle" onchange="toggleMemoryMode(this)" style="opacity:0; width:0; height:0;">
+                        <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--p1); transition: .4s; border-radius: 34px;"></span>
+                    </label>
+                    <span style="font-size: 1.1rem; cursor: pointer;" onclick="toggleSwitch(true)">👥</span>
+                </div>
 
-<main class="workspace">
-    <div id="flashcard-mode">
-        <div class="fc-container" onclick="handleFcClick(this)">
-            <div class="fc-inner" id="fc-inner">
-                <div class="fc-front" id="fc-front">...</div>
-                <div class="fc-back" id="fc-back">...</div>
+                <div id="pair-selection-area">
+                    <select id="pairCount" class="btn" onchange="init()" style="border: 2px solid var(--primary); padding: 4px 6px;">
+                        <option value="6">6</option>
+                        <option value="9" selected>9</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
             </div>
         </div>
-        <div id="fc-counter" style="font-weight: 900; color: #475569;">0 / 0</div>
     </div>
-    <div id="memory-mode"></div>
-</main>
-
-<div class="footer-controls" id="footer">
-    <button class="nav-btn" onclick="changeItem(-1)">GERİ</button>
-    <button class="nav-btn" onclick="changeItem(1)">İLERİ</button>
 </div>
 
+<div class="game-area">
+    <div id="score-board-container" class="score-board">
+        <div id="p1-box" class="player-box" style="color: var(--p1)">
+            <span class="p-label">P1</span>
+            <span id="s1" class="p-score">0</span>
+        </div>
+        <div id="grid" class="grid"></div>
+        <div id="p2-box" class="player-box" style="color: var(--p2)">
+            <span class="p-label">P2</span>
+            <span id="s2" class="p-score">0</span>
+        </div>
+    </div>
+</div>
+
+<audio id="snd-flip" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+<audio id="snd-match" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+
 <script>
-const vocabulary = [
-    // Fiiller (Eylemler)
-    { tr: "Uyanıyorum", ar: "أَسْتَيْقِظُ" },
+    const allWords = [
+{ tr: "Uyanıyorum", ar: "أَسْتَيْقِظُ" },
     { tr: "Abdest alıyorum", ar: "أَتَوَضَّأُ" },
     { tr: "Namaz kılıyorum", ar: "أُصَلِّي" },
     { tr: "Yiyorum / Kahvaltı yapıyorum", ar: "أَتَناوَلُ" },
@@ -238,197 +324,198 @@ const vocabulary = [
     { tr: "Pazar", ar: "الأَحَد" }
 ];
 
-    let currentIdx = 0;
-    let isTrToAr = true;
-    let flippedCards = [];
-    let matchedPairs = 0;
-    let totalPairsInGame = 0;
-    let playedMemoryWords = [];
-    let audioCtx = null;
+    const cardColors = ["#364fc7", "#63e6be", "#ff922b", "#f06595", "#845ef7", "#51cf66", "#fcc419", "#339af0"];
+    let mode = 'study', isAr = true, scores = [0, 0], currentPlayer = 1, activeFlipped = [];
 
-    function playTone(freq, type, duration) {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
+    function playSound(id) {
+        const s = document.getElementById(id);
+        s.volume = 0.15; s.currentTime = 0;
+        s.play().catch(() => {});
     }
 
-    const soundClick = () => playTone(440, 'sine', 0.15);
-    const soundMatch = () => { playTone(523.25, 'sine', 0.3); setTimeout(() => playTone(659.25, 'sine', 0.3), 100); };
-    const soundError = () => playTone(150, 'triangle', 0.25);
-
-    function startMode(m) {
-        soundClick();
-        document.getElementById('entry-panel').style.display = 'none';
-        document.getElementById('game-over').style.display = 'none';
-        document.getElementById('flashcard-mode').style.display = (m === 'flashcard' ? 'flex' : 'none');
-        document.getElementById('memory-mode').style.display = (m === 'memory' ? 'grid' : 'none');
-        document.getElementById('footer').style.display = (m === 'flashcard' ? 'flex' : 'none');
-        document.getElementById('lang-toggle').style.display = (m === 'flashcard' ? 'block' : 'none');
-        document.getElementById('nav-title').innerText = m === 'flashcard' ? 'KELİME KARTI' : 'HAFIZA OYUNU';
-        
-        if (m === 'flashcard') updateFlashcard();
-        if (m === 'memory') initMemoryGame();
+    function toggleLang() {
+        isAr = !isAr;
+        init();
     }
 
-    // --- GÜNCELLENEN FONKSİYON 1: KELİME KARTLARI ---
-    function updateFlashcard() {
-        const inner = document.getElementById('fc-inner');
-        const front = document.getElementById('fc-front');
-        const back = document.getElementById('fc-back');
-        const data = vocabulary[currentIdx];
-        
-        inner.classList.remove('is-flipped');
-        inner.style.opacity = "0";
-        
-        setTimeout(() => {
-            // Önceki sınıfları ve stilleri temizle
-            front.className = 'fc-front';
-            back.className = 'fc-back';
-            front.style.fontFamily = ''; 
-            back.style.fontFamily = '';
+function init() {
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const isMobile = window.innerWidth <= 768;
+    
+    // Mobilde dikey modda otomatik 9 çifti ayarla
+    if (isMobile && isPortrait && mode !== 'study') {
+        document.getElementById('pairCount').value = "9";
+    }
 
-            if (isTrToAr) {
-                // TR -> AR
-                front.innerText = data.tr; 
-                back.innerText = data.ar; 
-                back.classList.add('arabic-text'); // Fontu uygula
+    const grid = document.getElementById('grid');
+    const p1Box = document.getElementById('p1-box');
+    const p2Box = document.getElementById('p2-box');
+    const pairCount = parseInt(document.getElementById('pairCount').value);
+    grid.innerHTML = '';
+    
+    const isStudy = mode === 'study';
+    const isMem2 = mode === 'mem2';
+
+    // İki kişilik modda kutuları göster, değilse gizle
+    p1Box.style.display = isMem2 ? 'flex' : 'none';
+    p2Box.style.display = isMem2 ? 'flex' : 'none';
+
+    grid.className = `grid ${isStudy ? '' : 'memory-mode'}`;
+
+    let selectedWords = isStudy ? allWords : allWords.slice(0, pairCount);
+    let displayList = [];
+
+    if (isStudy) {
+        displayList = selectedWords;
+        // ÇALIŞMA MODU: Aşağı doğru doğal uzayan yapı
+        grid.style.height = "auto"; 
+        grid.style.gridTemplateColumns = "repeat(5, 1fr)";
+        grid.style.gridAutoRows = "minmax(180px, auto)"; 
+        grid.style.gridTemplateRows = "none"; 
+    } else {
+        selectedWords.forEach(w => {
+            displayList.push({ text: w.ar, pairId: w.ar, lang: 'ar' });
+            displayList.push({ text: w.tr, pairId: w.ar, lang: 'tr' });
+        });
+        displayList.sort(() => Math.random() - 0.5);
+        
+        // OYUN MODU: Ekranı tam kaplayan yapı
+        let colCount = (displayList.length <= 12) ? 4 : 6;
+        let rowCount = Math.ceil(displayList.length / colCount);
+        
+        grid.style.height = "100%"; 
+        grid.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
+        grid.style.gridTemplateRows = `repeat(${rowCount}, 1fr)`; 
+        grid.style.gridAutoRows = "none";
+    }
+
+    grid.setAttribute('data-total', displayList.length);
+
+    displayList.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.id = isStudy ? item.ar : item.pairId;
+        
+        const frontText = isStudy ? (isAr ? item.ar : item.tr) : "";
+        const backText = isStudy ? (isAr ? item.tr : item.ar) : item.text;
+        
+        // --- YAZI BOYUTU AYARLARI ---
+        // clamp(minimum, ideal, maksimum) -> Önceki değer 1.5rem / 5vw / 4rem idi.
+        // Yeni değerleri daha kibar bir görünüm için küçülttük.
+        const baseFontSize = "clamp(1.2rem, 2.3vw, 2.2rem)";
+        const arabicFontSize = "clamp(1.5rem, 4.5vw, 3.5rem)"; // Arapça %20-25 daha büyük
+        
+        const isFrontAr = isStudy && isAr;
+        const isBackAr = isStudy ? !isAr : (item.lang === 'ar');
+
+        const color = isStudy ? cardColors[index % cardColors.length] : "#5c7cfa";
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-face card-front" style="background-color: ${color}; font-size: ${isFrontAr ? arabicFontSize : baseFontSize}">
+                    <span>${frontText}</span>
+                </div>
+                <div class="card-face card-back" style="font-size: ${isBackAr ? arabicFontSize : baseFontSize}">
+                    <span>${backText}</span>
+                </div>
+            </div>`;
+        
+        card.onclick = () => handleFlip(card);
+        grid.appendChild(card);
+    });
+
+    updateUI();
+}
+
+    function handleFlip(card) {
+        if (card.classList.contains('matched') || (mode !== 'study' && activeFlipped.length >= 2)) return;
+
+        if (mode === 'study') {
+            if (card.classList.contains('flipped')) {
+                clearTimeout(card.studyTimer);
+                card.classList.remove('flipped');
             } else {
-                // AR -> TR
-                front.innerText = data.ar; 
-                front.classList.add('arabic-text'); // Fontu uygula
-                back.innerText = data.tr; 
+                playSound('snd-flip');
+                card.classList.add('flipped');
+                card.studyTimer = setTimeout(() => card.classList.remove('flipped'), 3000);
             }
-            document.getElementById('fc-counter').innerText = `${currentIdx + 1} / ${vocabulary.length}`;
-            inner.style.opacity = "1";
-        }, 150);
-    }
-
-    // --- GÜNCELLENEN FONKSİYON 2: HAFIZA OYUNU ---
-    function initMemoryGame() {
-        const container = document.getElementById('memory-mode');
-        container.innerHTML = '';
-        flippedCards = [];
-        matchedPairs = 0;
-
-        let vCount = vocabulary.length;
-        let pairCount = 6;
-        if (vCount >= 8 && vCount <= 9) pairCount = 8;
-        else if (vCount >= 10 && vCount <= 11) pairCount = 10;
-        else if (vCount >= 12) pairCount = 12;
-        totalPairsInGame = pairCount;
-
-        let available = vocabulary.filter(v => !playedMemoryWords.includes(v.ar));
-        if (available.length < pairCount) {
-            playedMemoryWords = [];
-            available = [...vocabulary];
+            return;
         }
 
-        available.sort(() => Math.random() - 0.5);
-        const selected = available.slice(0, pairCount);
-        selected.forEach(v => playedMemoryWords.push(v.ar));
+        if (card.classList.contains('flipped')) return;
 
-        let gameCards = [];
-        selected.forEach((v, i) => {
-            gameCards.push({ text: v.tr, pair: i, isAr: false });
-            gameCards.push({ text: v.ar, pair: i, isAr: true });
-        });
-        gameCards.sort(() => Math.random() - 0.5);
-
-        container.className = `grid-${pairCount}-pairs`;
-        gameCards.forEach(card => {
-            const div = document.createElement('div');
-            div.className = 'mem-card';
-            // BURADA .arabic-text SINIFINI EKLİYORUZ
-            div.innerHTML = `<div class="mem-inner">
-                <div class="mem-front">?</div>
-                <div class="mem-back ${card.isAr ? 'arabic-text' : ''}">${card.text}</div>
-            </div>`;
-            div.onclick = () => {
-                if (flippedCards.length < 2 && !div.classList.contains('flipped')) {
-                    soundClick();
-                    div.classList.add('flipped');
-                    flippedCards.push({ card, el: div });
-                    if (flippedCards.length === 2) checkMatch();
-                }
-            };
-            container.appendChild(div);
-        });
+        playSound('snd-flip');
+        card.classList.add('flipped');
+        activeFlipped.push(card);
+        
+        if (activeFlipped.length === 2) checkMatch();
     }
 
     function checkMatch() {
-        const [c1, c2] = flippedCards;
-        if (c1.card.pair === c2.card.pair) {
-            soundMatch();
-            matchedPairs++;
-            setTimeout(() => {
-                c1.el.classList.add('matched');
-                c2.el.classList.add('matched');
-                flippedCards = [];
-                if (matchedPairs === totalPairsInGame) showGameOver();
-            }, 600);
-        } else {
-            setTimeout(() => {
-                soundError();
-                c1.el.classList.remove('flipped');
-                c2.el.classList.remove('flipped');
-                flippedCards = [];
-            }, 1000);
-        }
+        const [a, b] = activeFlipped;
+        const isMatch = a.dataset.id === b.dataset.id;
+
+        setTimeout(() => {
+            if (isMatch) {
+                playSound('snd-match');
+                a.classList.add('matched');
+                b.classList.add('matched');
+                if (mode === 'mem2') scores[currentPlayer - 1]++;
+            } else {
+                a.classList.remove('flipped');
+                b.classList.remove('flipped');
+                if (mode === 'mem2') currentPlayer = (currentPlayer === 1) ? 2 : 1;
+            }
+            activeFlipped = [];
+            updateUI();
+        }, 800);
     }
 
-    function showGameOver() {
-        const panel = document.getElementById('game-over');
-        const btn = document.getElementById('over-btn');
-        const desc = document.getElementById('over-desc');
-        const remaining = vocabulary.filter(v => !playedMemoryWords.includes(v.ar)).length;
+    function updateUI() {
+        document.getElementById('s1').innerText = scores[0];
+        document.getElementById('s2').innerText = scores[1];
+        document.getElementById('p1-box').classList.toggle('active-p', currentPlayer === 1);
+        document.getElementById('p2-box').classList.toggle('active-p', currentPlayer === 2);
+    }
+
+    function setMode(m) {
+        mode = m; scores = [0, 0]; currentPlayer = 1; activeFlipped = [];
         
-        if (remaining >= totalPairsInGame) {
-            desc.innerText = "Tur bitti! Sırada yeni kelimeler var.";
-            btn.innerText = "Yeni Kelimelerle Devam Et";
+        const studyBtn = document.getElementById('btn-study');
+        const mainLangBtn = document.getElementById('lang-btn-main');
+        const memStartBtn = document.getElementById('btn-memory-start');
+        const memControls = document.getElementById('memory-controls');
+        const toggle = document.getElementById('mode-toggle');
+
+        if (m === 'study') {
+            studyBtn.style.display = 'inline-block';
+            studyBtn.classList.add('active');
+            mainLangBtn.style.display = 'inline-block';
+            memStartBtn.style.display = 'inline-block';
+            memControls.style.display = 'none';
         } else {
-            desc.innerText = "Tebrikler! Tüm kelimeleri tamamladın.";
-            btn.innerText = "Yeniden Başla";
-            playedMemoryWords = [];
+            studyBtn.style.display = 'none';
+            mainLangBtn.style.display = 'none';
+            memStartBtn.style.display = 'none';
+            memControls.style.display = 'flex';
+            if (toggle) toggle.checked = (m === 'mem2');
         }
-        
-        setTimeout(() => { panel.style.display = 'flex'; }, 800);
+        init();
     }
 
-    function resetAndPlay() {
-        soundClick();
-        document.getElementById('game-over').style.display = 'none';
-        initMemoryGame();
+    function toggleSwitch(isCheck) {
+        const toggle = document.getElementById('mode-toggle');
+        toggle.checked = isCheck;
+        toggleMemoryMode(toggle);
     }
 
-    function goHome() {
-        soundClick();
-        if (document.getElementById('entry-panel').style.display === 'none') {
-            document.getElementById('entry-panel').style.display = 'flex';
-            document.getElementById('flashcard-mode').style.display = 'none';
-            document.getElementById('memory-mode').style.display = 'none';
-            document.getElementById('footer').style.display = 'none';
-            document.getElementById('lang-toggle').style.display = 'none';
-            document.getElementById('game-over').style.display = 'none';
-            document.getElementById('nav-title').innerText = "MOD SEÇ";
-        } else {
-            window.location.href = "muhadese.html";
-        }
+    function toggleMemoryMode(checkbox) {
+        const newMode = checkbox.checked ? 'mem2' : 'mem1';
+        setMode(newMode);
     }
 
-    function changeItem(dir) { soundClick(); currentIdx = (currentIdx + dir + vocabulary.length) % vocabulary.length; updateFlashcard(); }
-    function toggleLang() { soundClick(); isTrToAr = !isTrToAr; document.getElementById('lang-toggle').innerText = isTrToAr ? "TR ➔ AR" : "AR ➔ TR"; updateFlashcard(); }
-    function handleFcClick(el) { soundClick(); el.querySelector('.fc-inner').classList.toggle('is-flipped'); }
-
-    vocabulary.sort(() => Math.random() - 0.5);
+    window.onload = init;
 </script>
+
 </body>
 </html>
