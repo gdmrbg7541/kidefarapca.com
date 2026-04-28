@@ -1896,7 +1896,7 @@ async function authIslemi() {
     }
 
     try {
-        // Oturumu tarayıcı/sekme kapanınca bitecek şekilde ayarla
+        // Oturumu tarayıcı/sekme kapanınca bitecek şekilde ayarla (SESSION)
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
         let userCredential;
@@ -1904,34 +1904,47 @@ async function authIslemi() {
             userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
             console.log("Giriş başarılı!");
         } else {
-            // Kayıt Ol
+            // KAYIT OLMA DURUMU
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
             
-            // Yerel verileri al
-            const localData = localStorage.getItem('ogretmen_listeleri'); 
+            // 1. Önce LocalStorage'ı kontrol et
+            let dataToUpload = localStorage.getItem('ogretmen_listeleri');
             
-            if (localData) {
-                // Veriyi buluta yazma işleminin bitmesini bekle (await)
+            // 2. Eğer yerel hafıza boşsa ama şu an ekranda demo veriler varsa onları al
+            if (!dataToUpload && data && data.levels) {
+                dataToUpload = JSON.stringify(data);
+            }
+            
+            // 3. Veriyi buluta yaz (Demo veriler dahil)
+            if (dataToUpload) {
                 await db.collection("kullanicilar").doc(userCredential.user.uid).set({
-                    userData: localData, // String olarak saklıyoruz
+                    userData: dataToUpload, 
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                console.log("Yerel veriler yeni hesaba aktarıldı.");
+                console.log("Mevcut/Demo veriler yeni hesaba aktarıldı.");
             }
-            alert("Hesabınız başarıyla oluşturuldu!");
+            
+            alert("Hesabınız başarıyla oluşturuldu ve verileriniz buluta aktarıldı!");
         }
         
-        // İşlem bittikten sonra modalı kapat
         modalKapat(); 
         
     } catch (error) {
         console.error("Hata:", error);
-        // Türkçe hata mesajlarını buraya eklemeyi unutmayın (auth/wrong-password vb.)
-        hata.innerText = "Bir hata oluştu: " + error.message;
+        
+        // Türkçe hata mesajları
+        if (error.code === 'auth/email-already-in-use') {
+            hata.innerText = "Bu e-posta adresi zaten kullanımda.";
+        } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+            hata.innerText = "Hatalı e-posta veya şifre.";
+        } else if (error.code === 'auth/weak-password') {
+            hata.innerText = "Şifre çok zayıf (en az 6 karakter).";
+        } else {
+            hata.innerText = "Bir hata oluştu: " + error.message;
+        }
         hata.style.display = "block";
     }
 }
-
 </script>
 
 <div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
@@ -2076,58 +2089,52 @@ firebase.auth().onAuthStateChanged((user) => {
 function verileriGetir(uid) {
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
-        if (doc.exists) {
+        if (doc.exists && doc.data().userData) {
             try {
                 const cloudData = JSON.parse(doc.data().userData);
-                
                 // Mevcut veriyi buluttan gelenle değiştir
                 data = cloudData;
-                
-                // Arayüzü tazele
-                renderSidebar();
-                
-                // --- OTOMATİK SEÇİM MANTIĞI ---
-                // Eğer halihazırda bir seçim yoksa (sayfa yeni açıldıysa) ilkini aç
-                if (!curLId || !curCId) {
-                    otomatikIlkSecim();
-                } else {
-                    // Eğer kullanıcı bir sınıfı zaten seçtiyse onu yenile
-                    renderStudents(); 
-                }
-                
-                console.log("Verileriniz buluttan başarıyla yüklendi! 🔄");
+                console.log("Verileriniz buluttan yüklendi! 🔄");
             } catch (e) {
                 console.error("Veri işleme hatası:", e);
-                // Veri bozuksa çökmemesi için boş bir yapı sun
-                data = { levels: {}, levelOrder: [] };
-                renderSidebar();
+                // Veri bozuksa çökmemesi için mevcut yapıda kal veya boşalt
+                if(!data) data = { levels: {}, levelOrder: [] };
             }
         } else {
-            console.log("Bulutta veri bulunamadı, varsayılan liste kullanılacak.");
-            // Bulutta veri yoksa demo/mevcut veriyi göster ve ilkini seç
-            renderSidebar();
+            // KRİTİK NOKTA: Bulutta veri yoksa (İLK GİRİŞ), 
+            // kodun başındaki varsayılan 'data' (demo) kullanılmaya devam edilir.
+            console.log("Bulutta veri bulunamadı, demo/mevcut liste kullanılacak.");
+        }
+
+        // Her iki durumda da (bulut veya demo) arayüzü çiz
+        renderSidebar();
+
+        // --- OTOMATİK SEÇİM VE GÖRÜNÜRLÜK MANTIĞI ---
+        if (!curLId || !curCId) {
             otomatikIlkSecim();
+        } else {
+            // Eğer bir seçim varsa (sayfa yenilendiyse) mevcut olanı göster
+            renderStudents(); 
         }
     })
     .catch((err) => {
         console.error("Bağlantı hatası:", err);
-        // Hata durumunda (internet yoksa vb.) en azından mevcut veriyle devam et
+        // İnternet hatasında bile demo verilerle çalışmaya devam et
         renderSidebar();
     });
 }
 
 // Otomatik olarak ilk seviyeyi ve ilk sınıfı açan yardımcı fonksiyon
 function otomatikIlkSecim() {
-    // Veri yapısı uygun mu kontrol et
+    // Veri yapısı kontrolü (Beyaz ekran hatasını önlemek için)
     if (!data || !data.levels) return;
 
-    // 1. İlk Seviye ID'sini bul (levelOrder öncelikli)
+    // 1. İlk Seviye ID'sini bul
     const levelIds = data.levelOrder || Object.keys(data.levels);
     if (levelIds.length === 0) return;
     const firstLvlId = levelIds[0];
 
-    // 2. İlk Seviyeyi görsel olarak aç (Klasörün açılması için)
-    // CSS'te list-ID yapılarınız display:none ise bunu block yaparız
+    // 2. İlk Seviyenin Sınıf Listesini Görünür Yap (Klasör açma simülasyonu)
     const listEl = document.getElementById(`list-${firstLvlId}`);
     if (listEl) {
         listEl.style.display = 'block';
@@ -2139,7 +2146,7 @@ function otomatikIlkSecim() {
         const classIds = Object.keys(firstLvl.classes);
         if (classIds.length > 0) {
             const firstClassId = classIds[0];
-            // Mevcut selectClass fonksiyonunu çağırarak verileri yükle
+            // Mevcut selectClass fonksiyonunu çağır (Bu fonksiyon hem curLId'leri atar hem renderStudents yapar)
             if (typeof selectClass === "function") {
                 selectClass(firstLvlId, firstClassId);
             }
