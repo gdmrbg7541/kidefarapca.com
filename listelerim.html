@@ -1328,43 +1328,55 @@ function closeNoteModal() {
     }
 
     function renderStudents() {
-        if (!curLId || !curCId) return;
-        let students = data.levels[curLId].classes[curCId].students || [];
-        let table = document.getElementById('stuTable');
-        table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
-        
-        students.forEach((s, i) => {
-            let row = table.insertRow();
-            row.setAttribute('draggable', 'true');
-            row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
-            row.ondragover = (e) => e.preventDefault();
-            row.ondrop = (e) => {
-                e.preventDefault();
-                let from = parseInt(e.dataTransfer.getData("text/plain"));
-                let moved = students.splice(from, 1)[0];
-                students.splice(i, 0, moved);
-                save(); renderStudents();
-            };
-
-            // renderStudents fonksiyonu içindeki ilgili satırı şununla değiştir:
-// renderStudents fonksiyonu içindeki ilgili kısmı şu şekilde değiştirin:
-row.innerHTML = `
-    <td>${i + 1}</td>
-    <td><input type="text" value="${s.name}" onchange="updateStudentName(${i}, this.value)" style="border:none; background:transparent; font-size:1.1em; width:100%;"></td>
-    <td>
-        <div class="action-cell">
-            <button onclick="openNoteModal(${i})" title="Öğrenci Notu">📝</button>
-            <button onclick="openSkillModal(${i})" title="Beceriler">📊</button>
-        </div>
-    </td>
-    <td>
-        <div class="action-cell">
-            <button onclick="deleteStu(${i})" title="Sil" style="color:var(--danger); border:none;">🗑️</button>
-        </div>
-    </td>
-`;
-        });
+    // 1. GÜVENLİK KONTROLÜ: Tablo elemanı sayfada var mı?
+    let table = document.getElementById('stuTable'); // Eğer HTML'de id="studentTable" ise onu yazın
+    
+    if (!table) {
+        console.warn("Tablo elemanı henüz yüklenmedi, render atlanıyor.");
+        return;
     }
+
+    // 2. VERİ KONTROLÜ: Seviye ve sınıf seçili mi?
+    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) {
+        return;
+    }
+
+    let students = data.levels[curLId].classes[curCId].students || [];
+    
+    // Tablo başlığını oluştur
+    table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
+    
+    students.forEach((s, i) => {
+        let row = table.insertRow();
+        row.setAttribute('draggable', 'true');
+        row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
+        row.ondragover = (e) => e.preventDefault();
+        row.ondrop = (e) => {
+            e.preventDefault();
+            let from = parseInt(e.dataTransfer.getData("text/plain"));
+            let moved = students.splice(from, 1)[0];
+            students.splice(i, 0, moved);
+            save(); 
+            renderStudents();
+        };
+
+        row.innerHTML = `
+            <td>${i + 1}</td>
+            <td><input type="text" value="${s.name}" onchange="updateStudentName(${i}, this.value)" style="border:none; background:transparent; font-size:1.1em; width:100%;"></td>
+            <td>
+                <div class="action-cell">
+                    <button onclick="openNoteModal(${i})" title="Öğrenci Notu">📝</button>
+                    <button onclick="openSkillModal(${i})" title="Beceriler">📊</button>
+                </div>
+            </td>
+            <td>
+                <div class="action-cell">
+                    <button onclick="deleteStu(${i})" title="Sil" style="color:var(--danger); border:none;">🗑️</button>
+                </div>
+            </td>
+        `;
+    });
+}
 
     function addSingleStudent() {
         let val = document.getElementById('singleStuName').value.trim();
@@ -2140,9 +2152,10 @@ function verileriGetir(uid) {
     // İçerik alanını bul ve "Yükleniyor" mesajını göster
     const contentArea = document.getElementById('content');
     if (contentArea) {
+        // Giriş uyarısını temizleyip yükleme animasyonu/yazısı koyuyoruz
         contentArea.innerHTML = `
-            <div style="text-align:center; margin-top:50px; color:var(--primary);">
-                <p>Verileriniz hazırlanıyor, lütfen bekleyin...</p>
+            <div style="text-align:center; margin-top:100px; color:var(--primary);">
+                <p style="font-size:1.2em;">🔄 Verileriniz hazırlanıyor...</p>
             </div>`;
     }
 
@@ -2151,46 +2164,47 @@ function verileriGetir(uid) {
         if (doc.exists && doc.data().userData) {
             try {
                 const cloudData = JSON.parse(doc.data().userData);
-                // Yeni kullanıcının verilerini belleğe al
+                // Yeni kullanıcının verilerini belleğe (RAM) al
                 data = cloudData;
-                console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
+                console.log("Bulut verileri başarıyla yüklendi.");
             } catch (e) {
-                console.error("Veri işleme hatası:", e);
+                console.error("JSON Ayrıştırma Hatası:", e);
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // BULUTTA VERİ YOKSA (İLK GİRİŞ):
-            console.log("Bulutta veri bulunamadı, demo liste yükleniyor.");
-            
+            // BULUTTA VERİ YOKSA: Demo veriyi temiz bir kopya olarak yükle
+            console.log("Yeni hesap: Demo veriler yükleniyor.");
             if (typeof demoData !== 'undefined') {
-                // demoData'nın temiz bir kopyasını al (referans sızıntısını önler)
                 data = JSON.parse(JSON.stringify(demoData));
             } else {
                 data = { levels: {}, levelOrder: [] };
             }
         }
 
-        // 1. Sidebar'ı yeni veriye göre çiz
+        // 1. Sidebar'ı yeni veriye göre oluştur (DOM'a ekle)
         renderSidebar();
 
-        // 2. DOM'un (HTML elemanlarının) render edilmesi için milisaniyelik ara ver
-        // Bu, 'viewTitle' gibi elemanların null dönmesini engeller.
+        // 2. KRİTİK GECİKME: 'stuTable' ve 'viewTitle' elemanlarının 
+        // DOM üzerinde erişilebilir olması için tarayıcıya süre tanı.
         setTimeout(() => {
-            // Eğer yeni bir hesaba girildiyse (curLId/curCId null ise) ilkini seç
-            if (!curLId || !curCId) {
-                if (typeof otomatikIlkSecim === "function") {
-                    otomatikIlkSecim();
-                }
-            } else {
-                if (typeof renderStudents === "function") {
-                    renderStudents(); 
+            // Sadece kullanıcı hala giriş yapmışsa işlemleri başlat
+            if (firebase.auth().currentUser) {
+                // Yeni girişte her zaman en üstteki ilk sınıfı otomatik seç
+                if (!curLId || !curCId) {
+                    if (typeof otomatikIlkSecim === "function") {
+                        otomatikIlkSecim();
+                    }
+                } else {
+                    // Sayfa yenilendiyse mevcut seçimi koru
+                    if (typeof renderStudents === "function") renderStudents(); 
+                    if (typeof renderPlan === "function") renderPlan();
                 }
             }
-        }, 100); 
+        }, 300); // 100ms bazen yetmeyebilir, 300ms daha garantidir.
     })
     .catch((err) => {
-        console.error("Bağlantı veya veri çekme hatası:", err);
-        // Hata durumunda bile sidebar'ı mevcut (boş veya demo) veriyle çiz
+        console.error("Bağlantı Hatası:", err);
+        // İnternet olmasa bile en azından menüyü (boş veya demo) göster
         renderSidebar();
     });
 }
