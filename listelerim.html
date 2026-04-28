@@ -908,54 +908,26 @@ function switchTab(idx) {
 }
 // Sınıf seçildiğinde otomatik olarak Haftalık Plan (tab 8) açılsın
 function selectClass(lId, cId) {
-    // Mevcut seçimleri güncelle
-    curLId = lId; 
-    curCId = cId;
+    curLId = lId; curCId = cId;
     pools = {}; 
-
-    // DOM elemanlarını seç
-    const contentArea = document.getElementById('content');
-    const viewTitle = document.getElementById('viewTitle');
-    const stayedPointInput = document.getElementById('stayedPoint');
-
-    // 1. İçerik alanını görünür yap
-    if (contentArea) {
-        contentArea.style.display = 'block';
-    }
-
-    // 2. Başlığı güncelle (Hata korumalı)
-    if (viewTitle && data.levels[lId] && data.levels[lId].classes[cId]) {
-        viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
-    }
-
-    // 3. Sekmeyi değiştir (Haftalık Plan - Tab 8)
-    if (typeof switchTab === "function") {
-        switchTab(8); 
-    }
-
-    // 4. Kaldığımız yer bilgisini yükle
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('viewTitle').innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
+    
+    // Açılışta doğrudan 8. paneli (Haftalık Plan) göster
+    switchTab(8); 
+    
     let cls = data.levels[curLId].classes[curCId];
-    if (cls && stayedPointInput) {
-        stayedPointInput.value = cls.stayedPoint || "";
+    if(document.getElementById('stayedPoint')) {
+        document.getElementById('stayedPoint').value = cls.stayedPoint || "";
     }
-
-    // 5. Planı ve öğrencileri çiz
-    if (typeof renderPlan === "function") renderPlan();
-    if (typeof renderStudents === "function") renderStudents();
-
-    // 6. Sidebar'daki aktif sınıfı vurgula (Görsel geri bildirim)
-    document.querySelectorAll('.class-link').forEach(el => el.classList.remove('active'));
-    // Bu kısım sizin HTML yapınıza göre aktiflik eklemek içindir
+    renderPlan();
 }
 
 // Kaldığımız yer bilgisini kaydetme fonksiyonu
 function updateStayedPoint(val) {
-    if (curLId && curCId && data.levels[curLId] && data.levels[curLId].classes[curCId]) {
+    if(curLId && curCId) {
         data.levels[curLId].classes[curCId].stayedPoint = val;
-        // save() fonksiyonunuzun tanımlı olduğundan emin olun
-        if (typeof save === "function") {
-            save();
-        }
+        save();
     }
 }
 
