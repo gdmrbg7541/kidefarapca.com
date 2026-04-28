@@ -2056,74 +2056,96 @@ firebase.auth().onAuthStateChanged((user) => {
 
         verileriGetir(uid); 
     } else {
-        console.log("Kullanıcı giriş yapmamış.");
+        console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
         
-        // --- KRİTİK TEMİZLİK ---
-        // Uygulamanın içindeki veri değişkenini sıfırla
-        data = []; 
+        // --- KRİTİK TEMİZLİK: HESAPLAR ARASI VERİ SIZINTISINI ÖNLER ---
         
-        // Arayüzü boş veriyle tekrar çiz (böylece listeler silinir)
-        if (typeof renderSidebar === "function") renderSidebar();
-        if (typeof renderMainContent === "function") {
-             // Mevcut açık olan liste içeriğini temizle
-             document.getElementById('content').innerHTML = `
+        // 1. Bellekteki (RAM) verileri tamamen sıfırla
+        // data = []; yerine projenizdeki yapıya göre boş obje/dizi yapın:
+        data = { levels: {}, levelOrder: [] }; 
+        curLId = null; // Seçili seviye ID'sini sıfırla
+        curCId = null; // Seçili sınıf ID'sini sıfırla
+        
+        // 2. Arayüzü (Sidebar) temizle
+        if (typeof renderSidebar === "function") {
+            // Veri olmadığı için korumalı renderSidebar boş ekran basacaktır
+            renderSidebar(); 
+        }
+
+        // 3. Sağ taraftaki öğrenci listesi alanını temizle
+        const contentArea = document.getElementById('content');
+        if (contentArea) {
+             contentArea.innerHTML = `
                 <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
                     <h3>Lütfen giriş yapın</h3>
                     <p>İçeriği görmek için öğretmen girişi yapmanız gerekmektedir.</p>
                 </div>`;
         }
 
-        // CSS tetikleyicisi: Ana kapsayıcıları gizle
+        // 4. CSS tetikleyicisi: Ana kapsayıcıları gizle
         document.body.classList.remove('logged-in');
         
+        // 5. Butonu varsayılan hale getir
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
         loginBtn.style.background = "#34495e"; 
         
-        // Sayfa ilk açıldığında giriş yoksa modalı aç
+        // Giriş yoksa modalı aç (isteğe bağlı gecikme ile)
         setTimeout(() => { 
             if(!firebase.auth().currentUser) modalAc(); 
         }, 1000);
     }
 });
-
 function verileriGetir(uid) {
+    // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
+    curLId = null; 
+    curCId = null;
+    // Eğer global bir 'data' değişkeniniz varsa, onu geçici olarak boşaltmak sızıntıyı önler
+    // Ancak demo verileri korumak istiyorsak aşağıda düzgünce set edeceğiz.
+
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
                 const cloudData = JSON.parse(doc.data().userData);
-                // Mevcut veriyi buluttan gelenle değiştir
+                // Yeni kullanıcının verilerini belleğe al
                 data = cloudData;
-                console.log("Verileriniz buluttan yüklendi! 🔄");
+                console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
             } catch (e) {
                 console.error("Veri işleme hatası:", e);
-                // Veri bozuksa çökmemesi için mevcut yapıda kal veya boşalt
-                if(!data) data = { levels: {}, levelOrder: [] };
+                // Veri bozuksa güvenli bir yapıya dön
+                data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // KRİTİK NOKTA: Bulutta veri yoksa (İLK GİRİŞ), 
-            // kodun başındaki varsayılan 'data' (demo) kullanılmaya devam edilir.
-            console.log("Bulutta veri bulunamadı, demo/mevcut liste kullanılacak.");
+            // BULUTTA VERİ YOKSA (İLK GİRİŞ): 
+            // 1. Hesaptan çıkıp 2. hesaba girildiğinde 1. hesabın verileri kalmasın diye
+            // Burada mutlaka demoData'yı temiz bir kopya olarak tekrar yüklemeliyiz.
+            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
+            
+            if (typeof demoData !== 'undefined') {
+                // demoData'nın referansını değil, kopyasını alıyoruz (sızıntı önleme)
+                data = JSON.parse(JSON.stringify(demoData));
+            } else {
+                data = { levels: {}, levelOrder: [] };
+            }
         }
 
-        // Her iki durumda da (bulut veya demo) arayüzü çiz
+        // Arayüzü yeni veriye göre sıfırdan çiz
         renderSidebar();
 
-        // --- OTOMATİK SEÇİM VE GÖRÜNÜRLÜK MANTIĞI ---
+        // --- SEÇİM MANTIĞI ---
+        // Yeni bir hesaba girildiği için curLId ve curCId yukarıda null yapıldı, 
+        // bu yüzden otomatikIlkSecim() her zaman en üstteki sınıfı açacaktır.
         if (!curLId || !curCId) {
             otomatikIlkSecim();
         } else {
-            // Eğer bir seçim varsa (sayfa yenilendiyse) mevcut olanı göster
             renderStudents(); 
         }
     })
     .catch((err) => {
         console.error("Bağlantı hatası:", err);
-        // İnternet hatasında bile demo verilerle çalışmaya devam et
         renderSidebar();
     });
 }
-
 // Otomatik olarak ilk seviyeyi ve ilk sınıfı açan yardımcı fonksiyon
 function otomatikIlkSecim() {
     // Veri yapısı kontrolü (Beyaz ekran hatasını önlemek için)
