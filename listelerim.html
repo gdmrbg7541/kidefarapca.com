@@ -2077,19 +2077,74 @@ function verileriGetir(uid) {
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists) {
-            const cloudData = JSON.parse(doc.data().userData);
-            
-            // Mevcut veriyi buluttan gelenle değiştir
-            data = cloudData;
-            
-            // Arayüzü tazele
-            renderSidebar();
-            if (curLId && curCId) {
-                renderStudents(); 
+            try {
+                const cloudData = JSON.parse(doc.data().userData);
+                
+                // Mevcut veriyi buluttan gelenle değiştir
+                data = cloudData;
+                
+                // Arayüzü tazele
+                renderSidebar();
+                
+                // --- OTOMATİK SEÇİM MANTIĞI ---
+                // Eğer halihazırda bir seçim yoksa (sayfa yeni açıldıysa) ilkini aç
+                if (!curLId || !curCId) {
+                    otomatikIlkSecim();
+                } else {
+                    // Eğer kullanıcı bir sınıfı zaten seçtiyse onu yenile
+                    renderStudents(); 
+                }
+                
+                console.log("Verileriniz buluttan başarıyla yüklendi! 🔄");
+            } catch (e) {
+                console.error("Veri işleme hatası:", e);
+                // Veri bozuksa çökmemesi için boş bir yapı sun
+                data = { levels: {}, levelOrder: [] };
+                renderSidebar();
             }
-            console.log("Diğer cihazlardaki verileriniz yüklendi! 🔄");
+        } else {
+            console.log("Bulutta veri bulunamadı, varsayılan liste kullanılacak.");
+            // Bulutta veri yoksa demo/mevcut veriyi göster ve ilkini seç
+            renderSidebar();
+            otomatikIlkSecim();
         }
+    })
+    .catch((err) => {
+        console.error("Bağlantı hatası:", err);
+        // Hata durumunda (internet yoksa vb.) en azından mevcut veriyle devam et
+        renderSidebar();
     });
+}
+
+// Otomatik olarak ilk seviyeyi ve ilk sınıfı açan yardımcı fonksiyon
+function otomatikIlkSecim() {
+    // Veri yapısı uygun mu kontrol et
+    if (!data || !data.levels) return;
+
+    // 1. İlk Seviye ID'sini bul (levelOrder öncelikli)
+    const levelIds = data.levelOrder || Object.keys(data.levels);
+    if (levelIds.length === 0) return;
+    const firstLvlId = levelIds[0];
+
+    // 2. İlk Seviyeyi görsel olarak aç (Klasörün açılması için)
+    // CSS'te list-ID yapılarınız display:none ise bunu block yaparız
+    const listEl = document.getElementById(`list-${firstLvlId}`);
+    if (listEl) {
+        listEl.style.display = 'block';
+    }
+
+    // 3. İlk Sınıf ID'sini bul ve seç
+    const firstLvl = data.levels[firstLvlId];
+    if (firstLvl && firstLvl.classes) {
+        const classIds = Object.keys(firstLvl.classes);
+        if (classIds.length > 0) {
+            const firstClassId = classIds[0];
+            // Mevcut selectClass fonksiyonunu çağırarak verileri yükle
+            if (typeof selectClass === "function") {
+                selectClass(firstLvlId, firstClassId);
+            }
+        }
+    }
 }
 </script>
 </body>
