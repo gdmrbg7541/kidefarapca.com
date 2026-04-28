@@ -2146,33 +2146,32 @@ function verileriGetir(uid) {
         renderSidebar();
     });
 }
-// Otomatik olarak ilk seviyeyi ve ilk sınıfı açan yardımcı fonksiyon
 function otomatikIlkSecim() {
-    // Veri yapısı kontrolü (Beyaz ekran hatasını önlemek için)
     if (!data || !data.levels) return;
 
-    // 1. İlk Seviye ID'sini bul
     const levelIds = data.levelOrder || Object.keys(data.levels);
     if (levelIds.length === 0) return;
+    
     const firstLvlId = levelIds[0];
 
-    // 2. İlk Seviyenin Sınıf Listesini Görünür Yap (Klasör açma simülasyonu)
+    // Listenin DOM'da olup olmadığını kontrol et
     const listEl = document.getElementById(`list-${firstLvlId}`);
+    
     if (listEl) {
-        listEl.style.display = 'block';
-    }
-
-    // 3. İlk Sınıf ID'sini bul ve seç
-    const firstLvl = data.levels[firstLvlId];
-    if (firstLvl && firstLvl.classes) {
-        const classIds = Object.keys(firstLvl.classes);
-        if (classIds.length > 0) {
-            const firstClassId = classIds[0];
-            // Mevcut selectClass fonksiyonunu çağır (Bu fonksiyon hem curLId'leri atar hem renderStudents yapar)
-            if (typeof selectClass === "function") {
+        listEl.style.display = 'block'; // Klasörü aç
+        
+        const firstLvl = data.levels[firstLvlId];
+        if (firstLvl && firstLvl.classes) {
+            const classIds = Object.keys(firstLvl.classes);
+            if (classIds.length > 0) {
+                const firstClassId = classIds[0];
+                // Seçim işlemini tetikle
                 selectClass(firstLvlId, firstClassId);
             }
         }
+    } else {
+        // Eğer hala bulunamadıysa (nadiren), renderSidebar'ın bitmesini bekle
+        console.warn(`Liste elemanı (list-${firstLvlId}) henüz DOM'da değil.`);
     }
 }
 </script>
