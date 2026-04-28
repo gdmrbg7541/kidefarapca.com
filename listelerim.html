@@ -1200,28 +1200,38 @@ function addLevel() {
         }
     }
 
-    // --- SIDEBAR (SOL MENÜ) ---
-    function renderSidebar() {
-        const nav = document.getElementById('levelNav');
-        nav.innerHTML = '';
-        let levelIds = data.levelOrder || Object.keys(data.levels);
+function renderSidebar() {
+    const nav = document.getElementById('levelNav');
+    if (!nav) return; // Nav elementi yoksa çık
+    nav.innerHTML = '';
+
+    // KRİTİK HATA KORUMASI: data veya data.levels tanımsızsa fonksiyonu durdur
+    if (!data || !data.levels) {
+        console.warn("Sidebar render edilemedi: Veri henüz hazır değil.");
+        return; 
+    }
+
+    let levelIds = data.levelOrder || Object.keys(data.levels);
+    
+    levelIds.forEach(lId => {
+        let lvl = data.levels[lId];
+        if(!lvl) return;
         
-        levelIds.forEach(lId => {
-            let lvl = data.levels[lId];
-            if(!lvl) return;
-            let html = `
-            <div class="level-container" draggable="true" data-id="${lId}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
-                <div class="level-head">
-                    <span onclick="toggleClasses('${lId}')" style="cursor:pointer; flex:1; font-weight:bold;">📁 ${lvl.name}</span>
-                    <div class="level-actions">
-                        <button onclick="openLvlConfig('${lId}')">⚙️</button>
-                        <button onclick="editLevelName('${lId}')">✏️</button>
-                        <button onclick="deleteLevel('${lId}')">🗑️</button>
-                        <button onclick="addClass('${lId}')" title="Sınıf Ekle" style="color:#2ecc71;">+</button>
-                    </div>
+        let html = `
+        <div class="level-container" draggable="true" data-id="${lId}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <div class="level-head">
+                <span onclick="toggleClasses('${lId}')" style="cursor:pointer; flex:1; font-weight:bold;">📁 ${lvl.name}</span>
+                <div class="level-actions">
+                    <button onclick="openLvlConfig('${lId}')">⚙️</button>
+                    <button onclick="editLevelName('${lId}')">✏️</button>
+                    <button onclick="deleteLevel('${lId}')">🗑️</button>
+                    <button onclick="addClass('${lId}')" title="Sınıf Ekle" style="color:#2ecc71;">+</button>
                 </div>
-                <div class="class-list" id="list-${lId}">`;
-            
+            </div>
+            <div class="class-list" id="list-${lId}">`;
+        
+        // lvl.classes kontrolü eklendi
+        if (lvl.classes) {
             for(let cId in lvl.classes) {
                 html += `
                 <div class="class-item">
@@ -1232,10 +1242,12 @@ function addLevel() {
                     </div>
                 </div>`;
             }
-            html += `</div></div>`;
-            nav.innerHTML += html;
-        });
-    }
+        }
+        
+        html += `</div></div>`;
+        nav.innerHTML += html;
+    });
+}
 let curNoteStuIdx = null;
 
 function openNoteModal(idx) {
@@ -1892,23 +1904,30 @@ async function authIslemi() {
             userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
             console.log("Giriş başarılı!");
         } else {
+            // Kayıt Ol
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
             
-            // --- YENİ: İLK KAYITTA YEREL VERİLERİ BULUTA AKTAR ---
-            const localData = localStorage.getItem('ogretmen_listeleri'); // LocalStorage anahtar adınız neyse o
+            // Yerel verileri al
+            const localData = localStorage.getItem('ogretmen_listeleri'); 
+            
             if (localData) {
+                // Veriyi buluta yazma işleminin bitmesini bekle (await)
                 await db.collection("kullanicilar").doc(userCredential.user.uid).set({
-                    userData: localData,
+                    userData: localData, // String olarak saklıyoruz
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 console.log("Yerel veriler yeni hesaba aktarıldı.");
             }
-            alert("Hesabınız oluşturuldu ve mevcut listeleriniz aktarıldı!");
+            alert("Hesabınız başarıyla oluşturuldu!");
         }
+        
+        // İşlem bittikten sonra modalı kapat
         modalKapat(); 
+        
     } catch (error) {
         console.error("Hata:", error);
-        // ... (Hata mesajları aynı kalacak)
+        // Türkçe hata mesajlarını buraya eklemeyi unutmayın (auth/wrong-password vb.)
+        hata.innerText = "Bir hata oluştu: " + error.message;
         hata.style.display = "block";
     }
 }
