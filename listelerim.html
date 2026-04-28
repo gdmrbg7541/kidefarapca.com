@@ -908,26 +908,54 @@ function switchTab(idx) {
 }
 // Sınıf seçildiğinde otomatik olarak Haftalık Plan (tab 8) açılsın
 function selectClass(lId, cId) {
-    curLId = lId; curCId = cId;
+    // Mevcut seçimleri güncelle
+    curLId = lId; 
+    curCId = cId;
     pools = {}; 
-    document.getElementById('content').style.display = 'block';
-    document.getElementById('viewTitle').innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
-    
-    // Açılışta doğrudan 8. paneli (Haftalık Plan) göster
-    switchTab(8); 
-    
-    let cls = data.levels[curLId].classes[curCId];
-    if(document.getElementById('stayedPoint')) {
-        document.getElementById('stayedPoint').value = cls.stayedPoint || "";
+
+    // DOM elemanlarını seç
+    const contentArea = document.getElementById('content');
+    const viewTitle = document.getElementById('viewTitle');
+    const stayedPointInput = document.getElementById('stayedPoint');
+
+    // 1. İçerik alanını görünür yap
+    if (contentArea) {
+        contentArea.style.display = 'block';
     }
-    renderPlan();
+
+    // 2. Başlığı güncelle (Hata korumalı)
+    if (viewTitle && data.levels[lId] && data.levels[lId].classes[cId]) {
+        viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
+    }
+
+    // 3. Sekmeyi değiştir (Haftalık Plan - Tab 8)
+    if (typeof switchTab === "function") {
+        switchTab(8); 
+    }
+
+    // 4. Kaldığımız yer bilgisini yükle
+    let cls = data.levels[curLId].classes[curCId];
+    if (cls && stayedPointInput) {
+        stayedPointInput.value = cls.stayedPoint || "";
+    }
+
+    // 5. Planı ve öğrencileri çiz
+    if (typeof renderPlan === "function") renderPlan();
+    if (typeof renderStudents === "function") renderStudents();
+
+    // 6. Sidebar'daki aktif sınıfı vurgula (Görsel geri bildirim)
+    document.querySelectorAll('.class-link').forEach(el => el.classList.remove('active'));
+    // Bu kısım sizin HTML yapınıza göre aktiflik eklemek içindir
 }
 
 // Kaldığımız yer bilgisini kaydetme fonksiyonu
 function updateStayedPoint(val) {
-    if(curLId && curCId) {
+    if (curLId && curCId && data.levels[curLId] && data.levels[curLId].classes[curCId]) {
         data.levels[curLId].classes[curCId].stayedPoint = val;
-        save();
+        // save() fonksiyonunuzun tanımlı olduğundan emin olun
+        if (typeof save === "function") {
+            save();
+        }
     }
 }
 
@@ -2040,40 +2068,48 @@ const db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged((user) => {
     const loginBtn = document.getElementById('login-nav-btn');
+    const contentArea = document.getElementById('content'); // İçerik alanını seçiyoruz
     
     if (user) {
         console.log("Giriş yapan kullanıcı:", user.email);
         const uid = user.uid; 
         
-        // CSS tetikleyicisi: İçeriği göster
+        // 1. CSS Sınıfını ekle (Sidebar ve Content'i görünür yapar)
         document.body.classList.add('logged-in');
+        
+        // 2. KRİTİK DÜZELTME: Giriş uyarısını temizle ve yükleniyor mesajı koy
+        // Bu sayede "Lütfen giriş yapın" yazısı veriler gelince otomatik silinir.
+        if (contentArea) {
+            contentArea.innerHTML = `
+                <div style="text-align:center; margin-top:50px; color:var(--primary);">
+                    <p>Verileriniz yükleniyor, lütfen bekleyin...</p>
+                </div>`;
+        }
         
         modalKapat(); 
         
-        // Buton metnini ve rengini güncelle
+        // 3. Buton güncellemeleri
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
         loginBtn.style.background = "#e74c3c"; 
 
+        // 4. Verileri çek (Bu fonksiyon renderSidebar ve otomatikIlkSecim'i tetikleyecek)
+        // Yeni bir UID geldiği için verileriGetir() eski veriyi temizleyip yenisini yükler.
         verileriGetir(uid); 
-    } else {
-        console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
         
+    } else {
         // --- KRİTİK TEMİZLİK: HESAPLAR ARASI VERİ SIZINTISINI ÖNLER ---
         
         // 1. Bellekteki (RAM) verileri tamamen sıfırla
-        // data = []; yerine projenizdeki yapıya göre boş obje/dizi yapın:
         data = { levels: {}, levelOrder: [] }; 
         curLId = null; // Seçili seviye ID'sini sıfırla
         curCId = null; // Seçili sınıf ID'sini sıfırla
         
         // 2. Arayüzü (Sidebar) temizle
         if (typeof renderSidebar === "function") {
-            // Veri olmadığı için korumalı renderSidebar boş ekran basacaktır
-            renderSidebar(); 
+            renderSidebar(); // Boş veriyle sidebar'ı temizler
         }
 
-        // 3. Sağ taraftaki öğrenci listesi alanını temizle
-        const contentArea = document.getElementById('content');
+        // 3. Sağ taraftaki öğrenci listesi alanına "Giriş Yap" uyarısını koy
         if (contentArea) {
              contentArea.innerHTML = `
                 <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
@@ -2082,25 +2118,33 @@ firebase.auth().onAuthStateChanged((user) => {
                 </div>`;
         }
 
-        // 4. CSS tetikleyicisi: Ana kapsayıcıları gizle
+        // 4. CSS tetikleyicisini kaldır (İçerikleri gizle)
         document.body.classList.remove('logged-in');
         
         // 5. Butonu varsayılan hale getir
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
         loginBtn.style.background = "#34495e"; 
         
-        // Giriş yoksa modalı aç (isteğe bağlı gecikme ile)
+        // 6. Sayfa ilk açıldığında giriş yoksa modalı aç
         setTimeout(() => { 
             if(!firebase.auth().currentUser) modalAc(); 
         }, 1000);
     }
 });
+
 function verileriGetir(uid) {
     // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
-    // Eğer global bir 'data' değişkeniniz varsa, onu geçici olarak boşaltmak sızıntıyı önler
-    // Ancak demo verileri korumak istiyorsak aşağıda düzgünce set edeceğiz.
+    
+    // İçerik alanını bul ve "Yükleniyor" mesajını göster
+    const contentArea = document.getElementById('content');
+    if (contentArea) {
+        contentArea.innerHTML = `
+            <div style="text-align:center; margin-top:50px; color:var(--primary);">
+                <p>Verileriniz hazırlanıyor, lütfen bekleyin...</p>
+            </div>`;
+    }
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
@@ -2112,37 +2156,41 @@ function verileriGetir(uid) {
                 console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
             } catch (e) {
                 console.error("Veri işleme hatası:", e);
-                // Veri bozuksa güvenli bir yapıya dön
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // BULUTTA VERİ YOKSA (İLK GİRİŞ): 
-            // 1. Hesaptan çıkıp 2. hesaba girildiğinde 1. hesabın verileri kalmasın diye
-            // Burada mutlaka demoData'yı temiz bir kopya olarak tekrar yüklemeliyiz.
-            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
+            // BULUTTA VERİ YOKSA (İLK GİRİŞ):
+            console.log("Bulutta veri bulunamadı, demo liste yükleniyor.");
             
             if (typeof demoData !== 'undefined') {
-                // demoData'nın referansını değil, kopyasını alıyoruz (sızıntı önleme)
+                // demoData'nın temiz bir kopyasını al (referans sızıntısını önler)
                 data = JSON.parse(JSON.stringify(demoData));
             } else {
                 data = { levels: {}, levelOrder: [] };
             }
         }
 
-        // Arayüzü yeni veriye göre sıfırdan çiz
+        // 1. Sidebar'ı yeni veriye göre çiz
         renderSidebar();
 
-        // --- SEÇİM MANTIĞI ---
-        // Yeni bir hesaba girildiği için curLId ve curCId yukarıda null yapıldı, 
-        // bu yüzden otomatikIlkSecim() her zaman en üstteki sınıfı açacaktır.
-        if (!curLId || !curCId) {
-            otomatikIlkSecim();
-        } else {
-            renderStudents(); 
-        }
+        // 2. DOM'un (HTML elemanlarının) render edilmesi için milisaniyelik ara ver
+        // Bu, 'viewTitle' gibi elemanların null dönmesini engeller.
+        setTimeout(() => {
+            // Eğer yeni bir hesaba girildiyse (curLId/curCId null ise) ilkini seç
+            if (!curLId || !curCId) {
+                if (typeof otomatikIlkSecim === "function") {
+                    otomatikIlkSecim();
+                }
+            } else {
+                if (typeof renderStudents === "function") {
+                    renderStudents(); 
+                }
+            }
+        }, 100); 
     })
     .catch((err) => {
-        console.error("Bağlantı hatası:", err);
+        console.error("Bağlantı veya veri çekme hatası:", err);
+        // Hata durumunda bile sidebar'ı mevcut (boş veya demo) veriyle çiz
         renderSidebar();
     });
 }
