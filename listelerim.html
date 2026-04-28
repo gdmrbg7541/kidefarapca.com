@@ -2074,11 +2074,10 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log("Giriş yapan kullanıcı:", user.email);
         const uid = user.uid; 
         
-        // 1. CSS Sınıfını ekle (Sidebar ve Content'i görünür yapar)
+        // 1. CSS Sınıfını ekle (Bu çok önemli, sidebar ve content'i görünür yapar)
         document.body.classList.add('logged-in');
         
         // 2. KRİTİK DÜZELTME: Giriş uyarısını temizle ve yükleniyor mesajı koy
-        // Bu sayede "Lütfen giriş yapın" yazısı veriler gelince otomatik silinir.
         if (contentArea) {
             contentArea.innerHTML = `
                 <div style="text-align:center; margin-top:50px; color:var(--primary);">
@@ -2088,28 +2087,22 @@ firebase.auth().onAuthStateChanged((user) => {
         
         modalKapat(); 
         
-        // 3. Buton güncellemeleri
+        // Buton güncellemeleri
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
         loginBtn.style.background = "#e74c3c"; 
 
-        // 4. Verileri çek (Bu fonksiyon renderSidebar ve otomatikIlkSecim'i tetikleyecek)
-        // Yeni bir UID geldiği için verileriGetir() eski veriyi temizleyip yenisini yükler.
+        // Verileri getir (Bu fonksiyon bittiğinde renderSidebar ve otomatikIlkSecim içeriği dolduracak)
         verileriGetir(uid); 
         
     } else {
-        // --- KRİTİK TEMİZLİK: HESAPLAR ARASI VERİ SIZINTISINI ÖNLER ---
-        
-        // 1. Bellekteki (RAM) verileri tamamen sıfırla
+        // ... (else bloğundaki temizlik kodlarınız aynen kalabilir)
+        // Buradaki temizlik adımları hesaplar arası geçişte veri karışmasını önlemek için doğru.
         data = { levels: {}, levelOrder: [] }; 
-        curLId = null; // Seçili seviye ID'sini sıfırla
-        curCId = null; // Seçili sınıf ID'sini sıfırla
+        curLId = null;
+        curCId = null;
         
-        // 2. Arayüzü (Sidebar) temizle
-        if (typeof renderSidebar === "function") {
-            renderSidebar(); // Boş veriyle sidebar'ı temizler
-        }
-
-        // 3. Sağ taraftaki öğrenci listesi alanına "Giriş Yap" uyarısını koy
+        if (typeof renderSidebar === "function") renderSidebar();
+        
         if (contentArea) {
              contentArea.innerHTML = `
                 <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
@@ -2118,33 +2111,21 @@ firebase.auth().onAuthStateChanged((user) => {
                 </div>`;
         }
 
-        // 4. CSS tetikleyicisini kaldır (İçerikleri gizle)
         document.body.classList.remove('logged-in');
-        
-        // 5. Butonu varsayılan hale getir
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
         loginBtn.style.background = "#34495e"; 
         
-        // 6. Sayfa ilk açıldığında giriş yoksa modalı aç
         setTimeout(() => { 
             if(!firebase.auth().currentUser) modalAc(); 
         }, 1000);
     }
 });
-
 function verileriGetir(uid) {
     // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
-    
-    // İçerik alanını bul ve "Yükleniyor" mesajını göster
-    const contentArea = document.getElementById('content');
-    if (contentArea) {
-        contentArea.innerHTML = `
-            <div style="text-align:center; margin-top:50px; color:var(--primary);">
-                <p>Verileriniz hazırlanıyor, lütfen bekleyin...</p>
-            </div>`;
-    }
+    // Eğer global bir 'data' değişkeniniz varsa, onu geçici olarak boşaltmak sızıntıyı önler
+    // Ancak demo verileri korumak istiyorsak aşağıda düzgünce set edeceğiz.
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
@@ -2156,41 +2137,37 @@ function verileriGetir(uid) {
                 console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
             } catch (e) {
                 console.error("Veri işleme hatası:", e);
+                // Veri bozuksa güvenli bir yapıya dön
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // BULUTTA VERİ YOKSA (İLK GİRİŞ):
-            console.log("Bulutta veri bulunamadı, demo liste yükleniyor.");
+            // BULUTTA VERİ YOKSA (İLK GİRİŞ): 
+            // 1. Hesaptan çıkıp 2. hesaba girildiğinde 1. hesabın verileri kalmasın diye
+            // Burada mutlaka demoData'yı temiz bir kopya olarak tekrar yüklemeliyiz.
+            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
             
             if (typeof demoData !== 'undefined') {
-                // demoData'nın temiz bir kopyasını al (referans sızıntısını önler)
+                // demoData'nın referansını değil, kopyasını alıyoruz (sızıntı önleme)
                 data = JSON.parse(JSON.stringify(demoData));
             } else {
                 data = { levels: {}, levelOrder: [] };
             }
         }
 
-        // 1. Sidebar'ı yeni veriye göre çiz
+        // Arayüzü yeni veriye göre sıfırdan çiz
         renderSidebar();
 
-        // 2. DOM'un (HTML elemanlarının) render edilmesi için milisaniyelik ara ver
-        // Bu, 'viewTitle' gibi elemanların null dönmesini engeller.
-        setTimeout(() => {
-            // Eğer yeni bir hesaba girildiyse (curLId/curCId null ise) ilkini seç
-            if (!curLId || !curCId) {
-                if (typeof otomatikIlkSecim === "function") {
-                    otomatikIlkSecim();
-                }
-            } else {
-                if (typeof renderStudents === "function") {
-                    renderStudents(); 
-                }
-            }
-        }, 100); 
+        // --- SEÇİM MANTIĞI ---
+        // Yeni bir hesaba girildiği için curLId ve curCId yukarıda null yapıldı, 
+        // bu yüzden otomatikIlkSecim() her zaman en üstteki sınıfı açacaktır.
+        if (!curLId || !curCId) {
+            otomatikIlkSecim();
+        } else {
+            renderStudents(); 
+        }
     })
     .catch((err) => {
-        console.error("Bağlantı veya veri çekme hatası:", err);
-        // Hata durumunda bile sidebar'ı mevcut (boş veya demo) veriyle çiz
+        console.error("Bağlantı hatası:", err);
         renderSidebar();
     });
 }
