@@ -540,7 +540,9 @@ body.sidebar-closed .toggle-btn {
     <h2>🏫 Listelerim </h2>
     
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-      
+      <button class="btn-add" id="login-nav-btn" onclick="loginButonTikla()" style="background: #34495e; color: white; margin-bottom: 8px;">
+    🔑 Öğretmen Girişi
+</button>
    <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;">🗓️ Tatiller</button>
         <button class="btn-add" onclick="addLevel()" style="margin-bottom:0;">+ Seviye Ekle</button>
 
@@ -1671,13 +1673,12 @@ function addConfigRow(t) {
 function loginButonTikla() {
     const user = firebase.auth().currentUser;
     if (user) {
-        // Eğer kullanıcı zaten varsa Çıkış Yap
-        firebase.auth().signOut().then(() => {
-            alert("Çıkış yapıldı.");
-            location.reload(); // Sayfayı yenileyerek verileri temizle
-        });
+        if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+            firebase.auth().signOut().then(() => {
+                location.reload(); 
+            });
+        }
     } else {
-        // Kullanıcı yoksa Modal'ı aç (sizin modalAc fonksiyonunuz)
         modalAc(); 
     }
 }
@@ -1970,23 +1971,19 @@ async function authIslemi() {
   const db = firebase.firestore();
 
   // 3. İŞTE SİZİN KODUNUZ BURAYA GELECEK
-  // Bu fonksiyon sayfa açılır açılmaz otomatik çalışır
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       console.log("Giriş yapan kullanıcı:", user.email);
       const uid = user.uid; 
-      
-      // Giriş başarılıysa modalı kapat ve butonu güncelle
-      if(typeof modalKapat === "function") modalKapat();
+      modalKapat(); // Giriş yapılmışsa modalı kapat
       document.getElementById('login-nav-btn').innerText = "Çıkış Yap (" + user.email + ")";
-      
-      // Kullanıcıya özel verileri çek
       verileriGetir(uid); 
     } else {
       console.log("Kullanıcı giriş yapmamış.");
       document.getElementById('login-nav-btn').innerText = "🔑 Öğretmen Girişi";
+      modalAc(); // <--- Sayfa açıldığında giriş yapılmamışsa modalı otomatik açar
     }
-  });
+});
 
   // Veri çekme fonksiyonu
   function verileriGetir(uid) {
