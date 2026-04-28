@@ -1107,20 +1107,18 @@ function openTatiller() {
     }
 
     // --- VERİ YÖNETİMİ ---
-   function save() {
-    // 1. Yine de tarayıcıya yedekle (çevrimdışı kullanım için)
+function save() {
     localStorage.setItem('schoolData', JSON.stringify(data));
     renderSidebar();
 
-    // 2. Giriş yapmış kullanıcı varsa BULUTA (Firebase) gönder
+    // Giriş yapmış kullanıcı varsa veriyi Firebase'e gönder
     const user = firebase.auth().currentUser;
     if (user) {
         db.collection("kullanicilar").doc(user.uid).set({
-            userData: JSON.stringify(data),
-            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        .then(() => console.log("Buluta başarıyla kaydedildi."))
-        .catch((error) => console.error("Bulut kaydı hatası:", error));
+            userData: JSON.stringify(data)
+        }).then(() => {
+            console.log("Bulut senkronizasyonu başarılı.");
+        });
     }
 }
 
@@ -1967,15 +1965,8 @@ async function authIslemi() {
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-<script>
-  // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+<script> 
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBGIQPJ_Bjm5I3-QmrrGpLR5MqmG3S5F8w",
   authDomain: "kidefarapca-98f9c.firebaseapp.com",
@@ -1986,9 +1977,14 @@ const firebaseConfig = {
   measurementId: "G-HYY6T2EDKY"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// 2. Firebase'i Başlat (Daha önce başlatılmadıysa)
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// 3. Veritabanı ve Analitik Bağlantıları
+const db = firebase.firestore(); // SADECE BİR TANE VE BU ŞEKİLDE OLMALI
+const analytics = firebase.analytics(); // Eğer analitik kullanacaksanız
 
   // 3. İŞTE SİZİN KODUNUZ BURAYA GELECEK
   firebase.auth().onAuthStateChanged((user) => {
@@ -2006,13 +2002,25 @@ const analytics = getAnalytics(app);
 });
 
   // Veri çekme fonksiyonu
-  function verileriGetir(uid) {
-    db.collection("kullanicilar").doc(uid).collection("listelerim").get()
-      .then((querySnapshot) => {
-          // Burada veritabanından gelen verileri mevcut listenize aktaracaksınız
-          console.log("Veriler başarıyla çekildi.");
-      });
-  }
+ function verileriGetir(uid) {
+    db.collection("kullanicilar").doc(uid).get()
+    .then((doc) => {
+        if (doc.exists) {
+            const cloudData = JSON.parse(doc.data().userData);
+            // Buluttaki veriyi ana veri değişkenine aktar
+            data = cloudData;
+            // Arayüzü güncelle
+            renderSidebar();
+            if (curLId && curCId) {
+                renderStudents(); // Veya o anki tabloyu yenile
+            }
+            console.log("Bulut verileri yüklendi.");
+        } else {
+            console.log("Bulutta henüz veri yok, yerel veriler kullanılacak.");
+        }
+    })
+    .catch((error) => console.error("Veri çekme hatası:", error));
+}
 </script>
 </body>
 </html>
