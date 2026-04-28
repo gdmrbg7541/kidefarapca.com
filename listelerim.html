@@ -2040,41 +2040,40 @@ const db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged((user) => {
     const loginBtn = document.getElementById('login-nav-btn');
-    const contentArea = document.getElementById('content'); // İçerik alanını seçiyoruz
     
     if (user) {
         console.log("Giriş yapan kullanıcı:", user.email);
         const uid = user.uid; 
         
-        // 1. CSS Sınıfını ekle (Bu çok önemli, sidebar ve content'i görünür yapar)
+        // CSS tetikleyicisi: İçeriği göster
         document.body.classList.add('logged-in');
-        
-        // 2. KRİTİK DÜZELTME: Giriş uyarısını temizle ve yükleniyor mesajı koy
-        if (contentArea) {
-            contentArea.innerHTML = `
-                <div style="text-align:center; margin-top:50px; color:var(--primary);">
-                    <p>Verileriniz yükleniyor, lütfen bekleyin...</p>
-                </div>`;
-        }
         
         modalKapat(); 
         
-        // Buton güncellemeleri
+        // Buton metnini ve rengini güncelle
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
         loginBtn.style.background = "#e74c3c"; 
 
-        // Verileri getir (Bu fonksiyon bittiğinde renderSidebar ve otomatikIlkSecim içeriği dolduracak)
         verileriGetir(uid); 
-        
     } else {
-        // ... (else bloğundaki temizlik kodlarınız aynen kalabilir)
-        // Buradaki temizlik adımları hesaplar arası geçişte veri karışmasını önlemek için doğru.
+        console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
+        
+        // --- KRİTİK TEMİZLİK: HESAPLAR ARASI VERİ SIZINTISINI ÖNLER ---
+        
+        // 1. Bellekteki (RAM) verileri tamamen sıfırla
+        // data = []; yerine projenizdeki yapıya göre boş obje/dizi yapın:
         data = { levels: {}, levelOrder: [] }; 
-        curLId = null;
-        curCId = null;
+        curLId = null; // Seçili seviye ID'sini sıfırla
+        curCId = null; // Seçili sınıf ID'sini sıfırla
         
-        if (typeof renderSidebar === "function") renderSidebar();
-        
+        // 2. Arayüzü (Sidebar) temizle
+        if (typeof renderSidebar === "function") {
+            // Veri olmadığı için korumalı renderSidebar boş ekran basacaktır
+            renderSidebar(); 
+        }
+
+        // 3. Sağ taraftaki öğrenci listesi alanını temizle
+        const contentArea = document.getElementById('content');
         if (contentArea) {
              contentArea.innerHTML = `
                 <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
@@ -2083,10 +2082,14 @@ firebase.auth().onAuthStateChanged((user) => {
                 </div>`;
         }
 
+        // 4. CSS tetikleyicisi: Ana kapsayıcıları gizle
         document.body.classList.remove('logged-in');
+        
+        // 5. Butonu varsayılan hale getir
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
         loginBtn.style.background = "#34495e"; 
         
+        // Giriş yoksa modalı aç (isteğe bağlı gecikme ile)
         setTimeout(() => { 
             if(!firebase.auth().currentUser) modalAc(); 
         }, 1000);
