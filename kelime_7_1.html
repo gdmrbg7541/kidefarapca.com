@@ -176,6 +176,51 @@
                 .memory-mode .card-front::after { font-size: 1.2rem; }
             }
         }
+
+ 
+/* --- MOBİL ÖZEL AYARLARI --- */
+@media (max-width: 768px) {
+    
+    /* 1. KART BOYUTLARI (Çalışma Modu) */
+    .grid:not(.memory-mode) {
+        grid-template-columns: repeat(3, 1fr) !important; /* Mobilde 2 sütun yaparak kartları büyütüyoruz */
+        grid-auto-rows: 140px !important; /* Kartların yüksekliği */
+        gap: 12px !important;
+    }
+
+    /* 2. HAFIZA OYUNU KART BOYUTLARI */
+    @media (orientation: portrait) {
+        .grid.memory-mode {
+            grid-template-columns: repeat(3, 1fr) !important; /* 3 sütun idealdir */
+            grid-auto-rows: minmax(100px, 1fr) !important;
+            gap: 8px !important;
+        }
+    }
+
+    /* 3. ARAPÇA KELİME BOYUTLARI (Tüm modlar) */
+    /* JS'de Arapça olan kartlara 'lang-ar' class'ı eklenecek (aşağıdaki JS adımına bakın) */
+    .lang-ar {
+        font-family: 'arakom', sans-serif !important;
+        font-size: 1.6rem !important; /* Arapça yazı büyüklüğü */
+        color: #1a1a1a !important;
+        line-height: 1.2;
+    }
+
+    /* 4. TÜRKÇE KELİME BOYUTLARI (Tüm modlar) */
+    .lang-tr {
+        font-family: 'arakom', sans-serif !important;
+        font-size: 1.1rem !important; /* Türkçe yazı büyüklüğü */
+        font-weight: bold !important;
+        color: #444 !important;
+    }
+
+    /* 5. KART İÇİ DOLGU (Padding) */
+    .card-face {
+        padding: 8px !important;
+    }
+}
+
+
     </style>
 </head>
 <body>
