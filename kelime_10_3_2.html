@@ -431,31 +431,44 @@ function init() {
 
     grid.setAttribute('data-total', displayList.length);
 
-    displayList.forEach((item, index) => {
+ displayList.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'card';
         card.dataset.id = isStudy ? item.ar : item.pairId;
         
+        // Kart metinlerini belirle
         const frontText = isStudy ? (isAr ? item.ar : item.tr) : "";
         const backText = isStudy ? (isAr ? item.tr : item.ar) : item.text;
         
-        // --- YAZI BOYUTU AYARLARI ---
-        // clamp(minimum, ideal, maksimum) -> Önceki değer 1.5rem / 5vw / 4rem idi.
-        // Yeni değerleri daha kibar bir görünüm için küçülttük.
-        const baseFontSize = "clamp(1.2rem, 2.3vw, 2.2rem)";
-        const arabicFontSize = "clamp(1.5rem, 4.5vw, 3.5rem)"; // Arapça %20-25 daha büyük
+        // Dil sınıflarını ve font boyutlarını belirle
+        let frontLangClass = "";
+        let backLangClass = "";
         
         const isFrontAr = isStudy && isAr;
         const isBackAr = isStudy ? !isAr : (item.lang === 'ar');
+
+        if (isStudy) {
+            frontLangClass = isAr ? "lang-ar" : "lang-tr";
+            backLangClass = isAr ? "lang-tr" : "lang-ar";
+        } else {
+            // Hafıza modunda ön yüz boş, arka yüz dile göre sınıf alır
+            backLangClass = item.lang === 'ar' ? "lang-ar" : "lang-tr";
+        }
+
+        // Dinamik font boyutları (JS üzerinden kontrol devam ediyor)
+        const baseFontSize = "clamp(1.2rem, 2.3vw, 2.2rem)";
+        const arabicFontSize = "clamp(1.5rem, 4.5vw, 3.5rem)";
 
         const color = isStudy ? cardColors[index % cardColors.length] : "#5c7cfa";
 
         card.innerHTML = `
             <div class="card-inner">
-                <div class="card-face card-front" style="background-color: ${color}; font-size: ${isFrontAr ? arabicFontSize : baseFontSize}">
+                <div class="card-face card-front ${frontLangClass}" 
+                     style="background-color: ${color}; font-size: ${isFrontAr ? arabicFontSize : baseFontSize}">
                     <span>${frontText}</span>
                 </div>
-                <div class="card-face card-back" style="font-size: ${isBackAr ? arabicFontSize : baseFontSize}">
+                <div class="card-face card-back ${backLangClass}" 
+                     style="font-size: ${isBackAr ? arabicFontSize : baseFontSize}">
                     <span>${backText}</span>
                 </div>
             </div>`;
