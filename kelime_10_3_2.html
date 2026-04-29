@@ -176,6 +176,57 @@
                 .memory-mode .card-front::after { font-size: 1.2rem; }
             }
         }
+      
+      /* --- MOBİL ÖZEL AYARLARI --- */
+@media (max-width: 768px) {
+    
+    /* 1. ÇALIŞMA MODU KART BOYUTLARI */
+    /* Sütun sayısını 3 yerine 2 yaparsan kelimeler çok daha geniş bir alana yayılır ve taşma yapmaz */
+    .grid:not(.memory-mode) {
+        grid-template-columns: repeat(3, 1fr) !important; 
+        grid-auto-rows: 120px !important; /* Yazı büyüyeceği için yüksekliği biraz artırdık */
+        gap: 10px !important;
+    }
+
+    /* 2. HAFIZA OYUNU KART BOYUTLARI */
+    @media (orientation: portrait) {
+        .grid.memory-mode {
+            grid-template-columns: repeat(3, 1fr) !important;
+            grid-auto-rows: minmax(90px, 1fr) !important;
+            gap: 6px !important;
+        }
+    }
+
+    /* 3. ARAPÇA KELİME BOYUTLARI (Tüm Modlar) */
+    .lang-ar {
+        font-family: 'arakom', sans-serif !important;
+        /* Arapça karakterlerin detayları (harekeler) için 2.2rem oldukça büyük ve okunaklıdır */
+        font-size: 1.8rem !important; 
+        color: #000 !important;
+        line-height: 1.1 !important;
+        /* Uzun kelimelerin sığması için harf arası daraltma (isteğe bağlı) */
+        letter-spacing: -0.5px;
+    }
+
+    /* 4. TÜRKÇE KELİME BOYUTLARI (Tüm Modlar) */
+    .lang-tr {
+        font-family: 'arakom', sans-serif !important;
+        font-size: 1.2rem !important; /* Türkçe kelimeler Arapçaya göre daha küçük kalarak hiyerarşi sağlar */
+        font-weight: normal !important;
+        color: #333 !important;
+        line-height: 1.2;
+    }
+
+    /* 5. KART İÇİ DOLGU VE HİZALAMA */
+    .card-face {
+        padding: 5px !important;
+        /* Kelime çok uzunsa kelimeyi bölerek kutudan taşmasını engeller */
+        word-break: break-word !important;
+        overflow: hidden;
+    }
+}
+
+
     </style>
 </head>
 <body>
