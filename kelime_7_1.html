@@ -184,8 +184,8 @@
     /* 1. KART BOYUTLARI (Çalışma Modu) */
     .grid:not(.memory-mode) {
         grid-template-columns: repeat(3, 1fr) !important; /* Mobilde 2 sütun yaparak kartları büyütüyoruz */
-        grid-auto-rows: 140px !important; /* Kartların yüksekliği */
-        gap: 12px !important;
+        grid-auto-rows: 100px !important; /* Kartların yüksekliği */
+        gap: 8px !important;
     }
 
     /* 2. HAFIZA OYUNU KART BOYUTLARI */
@@ -201,7 +201,7 @@
     /* JS'de Arapça olan kartlara 'lang-ar' class'ı eklenecek (aşağıdaki JS adımına bakın) */
     .lang-ar {
         font-family: 'arakom', sans-serif !important;
-        font-size: 1.6rem !important; /* Arapça yazı büyüklüğü */
+        font-size: 2rem !important; /* Arapça yazı büyüklüğü */
         color: #1a1a1a !important;
         line-height: 1.2;
     }
@@ -209,14 +209,14 @@
     /* 4. TÜRKÇE KELİME BOYUTLARI (Tüm modlar) */
     .lang-tr {
         font-family: 'arakom', sans-serif !important;
-        font-size: 1.1rem !important; /* Türkçe yazı büyüklüğü */
-        font-weight: bold !important;
+        font-size: 1.4rem !important; /* Türkçe yazı büyüklüğü */
+        font-weight: normal !important;
         color: #444 !important;
     }
 
     /* 5. KART İÇİ DOLGU (Padding) */
     .card-face {
-        padding: 8px !important;
+        padding: 4px !important;
     }
 }
 
