@@ -260,14 +260,65 @@
     }
 }
 
+/* Anasayfa Buton Stili */
+.home-btn {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #4b2cc5;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(75, 44, 197, 0.2);
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(75, 44, 197, 0.3);
+    background: #5c3ce0;
+}
+
+.home-btn svg {
+    fill: white;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    .home-btn {
+        left: 10px;
+        top: 10px;
+        padding: 8px;
+    }
+    
+    /* Mobilde sadece ikon kalsın, yazı gizlensin */
+    .home-text {
+        display: none;
+    }
+}
+
     </style>
 </head>
 <body>
 
+
 <!-- Giriş Menü Ekranı -->
-<div id="menu-screen" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; text-align: center;">
-    <h1 style="color: #4b2cc5; font-size: 2.2rem; margin-bottom: 30px;">Kelime Dünyası</h1>
-    <div id="topics-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1000px;">
+<div id="menu-screen" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; text-align: center; position: relative;">
+    
+    <!-- Anasayfa İkon Butonu -->
+    <a href="https://kidefarapca.com" class="home-btn" title="Anasayfa">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        
+    </a>
+
+    <h1 style="color: #4b2cc5; font-size: 2.6rem; margin-bottom: 10px;">Konu Seç!</h1>
+    <div id="topics-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 1000px;">
         <!-- Konular JavaScript ile buraya dolacak -->
     </div>
 </div>
