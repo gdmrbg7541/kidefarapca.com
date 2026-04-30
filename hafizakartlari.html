@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="ar">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
-<title>Arapça Hafıza Oyunu - Tüm Seviyeler</title>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Kelime 7.1</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -12,1013 +12,833 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&display=swap" rel="stylesheet"/>
-
-<style>
-  html { font-size: clamp(12px, 1.2vw, 16px); }
-  :root{
-    --bg-start:#f7f9fc; --bg-end:#e8eef5; --primary-color:#5E81AC; --accent-color:#f7b733;
-    --surface-color:#FFFFFF; --text-color:#2e3440; --text-light-color:#FFFFFF;
-    --player1-color:#64a7fa; --player2-color:#f77d7d; --correct-color:#2ddc73; --incorrect-color:#f24c4c;
-    --shadow-light: rgba(46,52,64,.07); --shadow-medium: rgba(46,52,64,.12);
-    --border-radius-sm:8px; --border-radius-md:12px; --border-radius-lg:16px;
-    --button-bg:var(--surface-color); --button-shadow:0 3px #d8dee9; --button-hover-bg:#eceff4;
-    --button-selected-bg:var(--primary-color); --button-selected-color:var(--text-light-color);
-    --button-selected-shadow:0 0 0 3px var(--accent-color);
-  }
-  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body{ width:100%; height:100%; margin:0; padding:0; overflow:hidden; }
-  body{ font-family:'Marhey',sans-serif; background:linear-gradient(180deg,var(--bg-start),var(--bg-end)); color:var(--text-color); text-align:center; }
-  button,input,select{ font-family:inherit; }
-
-  #game-wrapper{ width:100%; height:100%; position:relative; }
-
-  .screen{ display:none; width:100%; height:100%; position:absolute; inset:0; padding:20px;
-           display:none; flex-direction:column; justify-content:center; align-items:center;
-           transition:opacity .5s; overflow-y:auto; }
-  .screen.active{ display:flex; }
-
-  /* Back (global) */
-  .header-navigation{ position:absolute; top:10px; left:10px; z-index:200; }
-  .back-btn{ background:none; border:none; cursor:pointer; padding:5px; }
-  .back-btn svg{ width:35px; height:35px; fill:var(--text-color); transition:.2s; opacity:.85;
-                 filter: drop-shadow(0 1px 2px var(--shadow-light)); }
-  .back-btn:hover svg{ opacity:1; transform:scale(1.1); }
-
-  /* Start */
-  #start-screen{ gap:25px; }
-  .start-title{ font-size:clamp(2.2rem,5vw,3rem); margin:10px 0; }
-  .start-options{ display:flex; flex-direction:column; gap:15px; width:100%; max-width:420px; }
-  .option-group{ display:flex; flex-direction:column; gap:10px; }
-  .option-group label{ font-size:1.1rem; font-weight:700; color:var(--primary-color); text-align:left; }
-  .player-buttons{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-  .player-button, #lesson-select, #start-game-btn{
-    background:var(--button-bg); border:none; border-radius:var(--border-radius-md);
-    padding:12px 15px; font-size:1.1rem; font-weight:500; color:var(--text-color);
-    cursor:pointer; transition:.2s ease; box-shadow:var(--button-shadow); text-align:center;
-  }
-  .player-button:hover, #lesson-select:hover{ background:var(--button-hover-bg); transform:translateY(-1px); box-shadow:0 4px #cdd3db; }
-  #start-game-btn:not(:disabled):hover{ background:var(--correct-color); color:#fff; transform:translateY(-1px); box-shadow:0 4px #cdd3db; }
-  .player-button:active, #start-game-btn:not(:disabled):active{ transform:translateY(1px); box-shadow:0 2px #d8dee9; }
-  .player-button.selected{ background:var(--button-selected-bg); color:var(--button-selected-color); font-weight:700; box-shadow:var(--button-selected-shadow); }
-  #lesson-select{ width:100%; appearance:none; -webkit-appearance:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235E81AC'%3E%3Cpath d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 10px center; background-size:24px; padding-right:40px; text-align-last:center; }
-  #start-game-btn{ margin-top:6px; font-size:1.25rem; font-weight:800; }
-  #start-game-btn:disabled{ background:#bdc3c7; color:#7f8c8d; opacity:.7; box-shadow:none; cursor:not-allowed; }
-  #start-game-btn:not(:disabled){ background:var(--correct-color); color:#fff; }
-
-  /* Game */
-  #game-screen{ flex-direction:row; justify-content:space-between; align-items:stretch; gap:15px; padding:15px; overflow:hidden; }
-  #game-screen.single-player-mode #player2-display{ display:none; }
-  .score-display{
-    flex:0 0 clamp(100px, 15%, 150px); max-width:150px; height:100%;
-    display:flex; flex-direction:column; justify-content:center; align-items:center; gap:clamp(10px,3vh,20px);
-    font-size:clamp(2.2rem,5vw,3.6rem); font-weight:800; color:#fff; border-radius:var(--border-radius-lg);
-  }
-  #player1-display{ background:linear-gradient(180deg,var(--player1-color),#4e8dff); }
-  #player2-display{ background:linear-gradient(180deg,var(--player2-color),#f55a5a); }
-  .score-display svg{ width:clamp(40px,10vw,80px); height:clamp(40px,10vw,80px); fill:rgba(255,255,255,.9); filter:drop-shadow(0 2px 4px rgba(0,0,0,.2)); }
-  .score-display.active{ transform:scale(1.05); }
-
-  #game-board{ flex-grow:1; width:auto; margin:0; padding:0; display:grid; gap:clamp(6px,1vw,12px);
-               perspective:1200px; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(4,1fr); height:100%; }
-  .card{ background:transparent; cursor:pointer; container-type:inline-size; }
-  .card-inner{ position:relative; width:100%; height:100%; transition:transform .6s; transform-style:preserve-3d; }
-  .card.flipped .card-inner{ transform:rotateY(180deg); }
-  .card-face{ position:absolute; inset:0; display:flex; justify-content:center; align-items:center;
-              -webkit-backface-visibility:hidden; backface-visibility:hidden; border-radius:var(--border-radius-md);
-              padding:clamp(4px,1cqw,8px); word-break:break-word; font-size:clamp(1.15rem,15cqw,2.6rem); text-align:center; line-height:1.1; }
-  .card-front{ background:var(--surface-color); box-shadow:0 2px 8px var(--shadow-light); }
-  .card-back{ color:#fff; transform:rotateY(180deg); background:var(--primary-color); }
-  .card.p1-turn .card-back{ background:var(--player1-color); }
-  .card.p2-turn .card-back{ background:var(--player2-color); }
-  .card.p1-match .card-face.card-back{ background:var(--player1-color); }
-  .card.p2-match .card-face.card-back{ background:var(--player2-color); }
-
-  .game-over-overlay{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--surface-color);
-                      padding:30px 50px; border-radius:var(--border-radius-lg); z-index:200; display:flex; flex-direction:column; gap:18px;
-                      box-shadow:0 10px 40px rgba(0,0,0,.2); }
-  .game-over-overlay h2{ margin:0; font-size:clamp(1.6rem,4vw,2.2rem); }
-  .hidden{ display:none !important; }
-  .win-buttons{ display:flex; gap:26px; margin-top:4px; }
-  .win-buttons .icon-btn{ background:transparent; border:none; cursor:pointer; padding:5px; transition:.25s; }
-  .win-buttons .icon-btn:hover{ transform:scale(1.08); }
-  .win-buttons .icon-btn svg{ width:clamp(40px,8vw,56px); height:clamp(40px,8vw,56px); fill:var(--primary-color); }
-  .win-buttons .icon-btn:hover svg{ fill:var(--accent-color); }
-
-  @media (max-width:800px){
-    #start-screen{ justify-content:flex-start; padding-top:32px; }
-    .start-title{ margin-bottom:12px; }
-    .start-options{ gap:18px; }
-    #game-screen{ flex-direction:column; padding:10px; gap:10px; }
-    .score-display{ flex-direction:row; height:auto; width:100%; max-width:none; font-size:2rem; padding:6px 10px; gap:10px; order:-1; }
-    .score-display svg{ width:30px; height:30px; }
-    #game-board{ grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(5,1fr); gap:6px; width:100%; }
-    .card-face{ font-size:clamp(1rem,12cqw,1.8rem); padding:4px; border-radius:var(--border-radius-sm); }
-    .game-over-overlay{ padding:20px 30px; width:90%; }
-    .win-buttons{ gap:22px; }
-  }
-
-  /* Font families */
-  html,body{ font-family:'Marhey',sans-serif !important; }
-  .card-back[dir="rtl"]{ font-family:'Harmattan',sans-serif !important; }
-  button,h1,h2,h3,.score-display,label,select{ font-family:'Marhey',sans-serif !important; }
-
-  .score-display.active {
-    transform: scale(1.1); /* Biraz daha büyüt */
-    box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.6); /* Beyaz parlama efekti */
-    border: 3px solid var(--accent-color); /* Altın rengi çerçeve */
-    z-index: 10;
+    <style>
+        /* Mevcut @font-face kısmını bununla değiştirin */
+@font-face {
+    font-family: 'arakom';
+    /* Dosya yolu hatasını önlemek için göreceli yol kullanın */
+    src: url('./arakom.ttf') format('truetype'); 
+    font-weight: normal; 
+    font-style: normal;
 }
 
-.score-display {
-    flex: 0 0 clamp(70px, 10%, 110px);
-    height: 85vh; /* Boyu ekranın çoğunu kaplar ama tam %100 değil */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%);
+            --primary: #5c7cfa;
+            --accent: #ff922b;
+            --p1: #4dabf7;
+            --p2: #ff8787;
+            --shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'arakom', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .header {
+            padding: 10px;
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        h1 { margin: 0 0 5px 0; color: #4b2cc5; font-size: 1.5rem; font-weight: normal; }
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .btn {
+            border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+            font-family: 'arakom'; background: white; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .btn.active { background: var(--primary); color: white; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .game-area { flex-grow: 1; padding: 15px; display: flex; justify-content: center; align-items: stretch; }
+
+        .score-board {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+    align-items: stretch; /* Kutuların boyunu uzatır */
+    justify-content: space-between;
     gap: 20px;
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 800;
-    color: #fff;
-    border-radius: 50px; /* Daha oval, modern bir görünüm */
-    transition: all 0.4s ease-in-out;
-    opacity: 0.3;
-    filter: grayscale(1);
-    position: relative;
-    border: 4px solid transparent;
+    width: 100%;
+    max-width: 100%; /* 4K'da tam yayılma için */
+    height: 85vh; /* Header dışında kalan alanın çoğu */
+    margin: 0 auto;
 }
 
-/* Aktif panel: Artık devasa büyümek yerine içe doğru parlıyor */
-.score-display.active {
-    opacity: 1;
-    filter: grayscale(0);
-    transform: scale(1.03); /* Çok az büyüme, taşmayı önler */
-    box-shadow: 0 0 15px 5px var(--accent-color), inset 0 0 15px rgba(255,255,255,0.5);
-    border: 3px solid #fff;
+.player-box {
+    flex: 0 0 80px; /* Kutuların genişliğini sabitledik */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 5px solid transparent;
+    margin: 10px 0; /* Animasyon ve nefes alma payı */
 }
 
+/* Aktif oyuncu animasyonu */
+.active-p { 
+    background: #fff; 
+    border-color: currentColor; 
+    transform: scale(1.05); /* Hafif büyüme animasyonu */
+    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+}
 
-/* Mobil için çubukları daha da kısaltalım */
-@media (max-width:800px) {
-    .score-display {
-        flex-direction: row;
-        height: 50px;
-        width: 45%; /* Yan yana geldiklerinde taşmazlar */
-        font-size: 1.5rem;
+        .p-label { font-size: 1.1rem; font-weight: bold; opacity: 0.6; }
+        .p-score { font-size: 2.5rem; font-weight: 900; margin-top: 5px; }
+
+        
+.grid { 
+    display: grid; 
+    gap: 15px; 
+    flex-grow: 1; /* Sağ ve sol kutu arasındaki tüm boşluğu doldurur */
+    width: 100%;
+    height: 100%;
+} .grid { display: grid; gap: 10px; flex-grow: 1; width: 100%; }
+
+        .grid:not(.memory-mode) {
+    grid-template-columns: repeat(5, 1fr) !important;
+    /* Sabit 180px yerine, ekran yüksekliğinin %80'ini 4 satıra bölüyoruz */
+    grid-auto-rows: 1fr;
+    gap: 15px;
+    width: 100%;
+}
+
+.grid.memory-mode {
+    display: grid;
+    gap: 10px;
+    flex-grow: 1;
+    height: 100%; /* Kutu yüksekliğini sona kadar zorlar */
+    /* Satırları içeriğe göre değil, mevcut boşluğa göre eşit paylaştırır */
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr)); 
+    align-content: stretch;
+}
+        .grid.memory-mode[data-total="12"] { grid-template-columns: repeat(4, 1fr); }
+        .grid.memory-mode[data-total="18"] { grid-template-columns: repeat(6, 1fr); }
+        .grid.memory-mode[data-total="20"] { grid-template-columns: repeat(5, 1fr); }
+        .grid.memory-mode[data-total="24"] { grid-template-columns: repeat(6, 1fr); }
+
+        .card { perspective: 1000px; cursor: pointer; width: 100%; height: 100%; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+ .card-face {
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    backface-visibility: hidden; 
+    border-radius: 15px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    
+    box-shadow: var(--shadow); 
+    border: 4px solid white; 
+    box-sizing: border-box; 
+    text-align: center; 
+    padding: 10px;
+    word-break: break-word;
+}
+
+/* ARAPÇA: Büyük ve okunaklı olması için alt sınırı yüksek tuttuk */
+.lang-ar {
+    font-family: 'arakom', sans-serif !important;
+    font-size: clamp(1.4rem, 5vw, 3rem) !important; 
+    line-height: 1.2;
+    direction: rtl;
+}
+
+/* TÜRKÇE: Daha küçük ve kibar olması için alt sınırı düşük tuttuk */
+.lang-tr {
+    font-family: 'arakom', sans-serif !important;
+    font-size: clamp(0.8rem, 3vw, 2.2rem) !important; 
+    font-weight: normal !important;
+    color: #444 !important;
+    line-height: 1.1;
+}
+        .card-front { color: white; }
+        .card-back { transform: rotateY(180deg); background: #ffffff; color: #333; }
+        .memory-mode .card-front::after { content: "؟"; font-size: 2rem; opacity: 0.3; }
+        .matched { opacity: 0; pointer-events: none; transition: 0.6s; transform: scale(0.8); }
+
+        /* Switch Tasarımı */
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--p2) !important; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        @media (max-width: 768px) {
+            .score-board { flex-direction: column; align-items: center; }
+            .player-box { flex-direction: row; flex: none; width: 90%; height: 45px; gap: 5px; margin: 5px 0; }
+            .p-score { font-size: 1.4rem; margin-top: 0; }
+            .p-label { font-size: 0.8rem; }
+            .grid:not(.memory-mode) { grid-template-columns: repeat(3, 1fr) !important; grid-auto-rows: 90px; }
+
+            @media (orientation: portrait) {
+                #pair-selection-area { display: none !important; }
+                .grid.memory-mode { grid-template-columns: repeat(3, 1fr) !important; grid-auto-rows: minmax(75px, 1fr) !important; gap: 5px !important; }
+                .card-face { font-size: 0.9rem !important; border-width: 2px !important; padding: 4px !important; }
+                .memory-mode .card-front::after { font-size: 1.2rem; }
+            }
+        }
+
+ 
+/* --- MOBİL ÖZEL AYARLARI --- */
+@media (max-width: 768px) {
+    
+    /* 1. ÇALIŞMA MODU KART BOYUTLARI */
+    /* Sütun sayısını 3 yerine 2 yaparsan kelimeler çok daha geniş bir alana yayılır ve taşma yapmaz */
+    .grid:not(.memory-mode) {
+        grid-template-columns: repeat(3, 1fr) !important; 
+        grid-auto-rows: 120px !important; /* Yazı büyüyeceği için yüksekliği biraz artırdık */
+        gap: 10px !important;
     }
-    .score-display.active::after { top: -35px; bottom: auto; }
+
+    /* 2. HAFIZA OYUNU KART BOYUTLARI */
+    @media (orientation: portrait) {
+        .grid.memory-mode {
+            grid-template-columns: repeat(3, 1fr) !important;
+            grid-auto-rows: minmax(90px, 1fr) !important;
+            gap: 6px !important;
+        }
+    }
+
+    /* 3. ARAPÇA KELİME BOYUTLARI (Tüm Modlar) */
+    .lang-ar {
+        font-family: 'arakom', sans-serif !important;
+        /* Arapça karakterlerin detayları (harekeler) için 2.2rem oldukça büyük ve okunaklıdır */
+        font-size: 1.8rem !important; 
+        color: #000 !important;
+        line-height: 1.1 !important;
+        /* Uzun kelimelerin sığması için harf arası daraltma (isteğe bağlı) */
+        letter-spacing: -0.5px;
+    }
+
+    /* 4. TÜRKÇE KELİME BOYUTLARI (Tüm Modlar) */
+    .lang-tr {
+        font-family: 'arakom', sans-serif !important;
+        font-size: 1.2rem !important; /* Türkçe kelimeler Arapçaya göre daha küçük kalarak hiyerarşi sağlar */
+        font-weight: normal !important;
+        color: #333 !important;
+        line-height: 1.2;
+    }
+
+    /* 5. KART İÇİ DOLGU VE HİZALAMA */
+    .card-face {
+        padding: 5px !important;
+        /* Kelime çok uzunsa kelimeyi bölerek kutudan taşmasını engeller */
+        word-break: break-word !important;
+        overflow: hidden;
+    }
 }
 
-</style>
+    </style>
 </head>
 <body>
-<div id="game-wrapper">
 
-  <div class="screen active" id="start-screen">
-    <div class="header-navigation">
-      <button class="back-btn" id="back-from-start-btn" title="Geri" aria-label="Geri">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
-        </svg>
-      </button>
+<!-- Giriş Menü Ekranı -->
+<div id="menu-screen" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; text-align: center;">
+    <h1 style="color: #4b2cc5; font-size: 2.2rem; margin-bottom: 30px;">Kelime Dünyası</h1>
+    <div id="topics-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1000px;">
+        <!-- Konular JavaScript ile buraya dolacak -->
     </div>
-
-    <h1 class="start-title">Arapça Hafıza Oyunu</h1>
-
-    <div class="start-options">
-      <div class="option-group">
-        <label for="player-select">Oyuncu Sayısı:</label>
-        <div class="player-buttons" id="player-select">
-          <button class="player-button" data-players="1">Tek Kişilik</button>
-          <button class="player-button" data-players="2">İki Kişilik</button>
-        </div>
-      </div>
-
-      <div class="option-group">
-        <label for="lesson-select">Ders Seçimi:</label>
-        <select id="lesson-select" required>
-          <option value="" disabled selected>Önce Ders Seçin</option>
-        </select>
-      </div>
-
-      <button disabled id="start-game-btn">Başla</button>
-    </div>
-  </div>
-
-  <div class="screen" id="game-screen"></div>
 </div>
 
-<script>
-/* =========================
-   DATA MODULE (TÜM SEVİYELER - GÜNCELLENMİŞ)
-========================= */
-const Data = {
-  grade9: {
-    title: "1. Seviye", 
-    words: {
-      unit1: {
-        title: { tr: "1. Ünite" },
-        description: { tr: "Selamlaşma ve Tanışma" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Selamlaşma" },
-            words: [
-              { id: 1, arabic: 'السَّلام عَلَيْكُمْ', turkish: 'Selam üzerinize olsun!' },
-              { id: 2, arabic: 'وَعَلَيْكُم السَّلام', turkish: 'Selam sizin de üzerinize olsun!' },
-              { id: 3, arabic: 'صَباح الخَيْر', turkish: 'Hayırlı Sabahlar' },
-              { id: 4, arabic: 'صَباح النّور', turkish: 'Günaydın' },
-              { id: 5, arabic: 'مَساء الخَيْر', turkish: 'Hayırlı akşamlar' },
-              { id: 6, arabic: 'مَساء النّور', turkish: 'Nurlu akşamlar' },
-              { id: 7, arabic: 'مَرْحَبًا', turkish: 'Merhaba!' },
-              { id: 8, arabic: 'أَهْلًا وَسَهْلًا', turkish: 'Hoş geldiniz!' },
-              { id: 9, arabic: 'أَهْلًا بِك', turkish: 'Hoş bulduk!' },
-              { id: 10, arabic: 'كَيْفَ حالُك؟', turkish: 'Nasılsın?' },
-              { id: 11, arabic: 'أَنا بِخَيْر', turkish: 'İyiyim!' },
-              { id: 12, arabic: 'إِلى اللِّقاء', turkish: 'Görüşmek üzere!' },
-              { id: 13, arabic: 'مَع السَّلامَة', turkish: 'Hoşça kal' },
-              { id: 14, arabic: 'في أَمان الّٰلهِ', turkish: 'Allah’a emanet ol' },
-              { id: 15, arabic: 'اِقْرَأْ', turkish: 'Oku!' },
-              { id: 16, arabic: 'اُكْتُبْ', turkish: 'Yaz!' },
-              { id: 17, arabic: 'أَعِدْ', turkish: 'Tekrar et!' },
-              { id: 18, arabic: 'اِسْتَمِعْ', turkish: 'Dinle!' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Tanışma" },
-            words: [
-              { id: 19, arabic: 'طالِب', turkish: 'Erkek öğrenci' },
-              { id: 20, arabic: 'مُدَرِّس', turkish: 'Erkek öğretmen' },
-              { id: 21, arabic: 'صَديق', turkish: 'Erkek arkadaş' },
-              { id: 22, arabic: 'هُوَ', turkish: 'O (erkek)' },
-              { id: 23, arabic: 'هِيَ', turkish: 'O (kadın)' },
-              { id: 24, arabic: 'أَنْتَ', turkish: 'Sen (erkek)' },
-              { id: 25, arabic: 'أَنا', turkish: 'Ben' },
-              { id: 26, arabic: 'ما اسْمُك؟', turkish: 'Adın ne?' },
-              { id: 27, arabic: 'اِسْمي', turkish: 'Benim adım' },
-              { id: 28, arabic: 'مِن أَيْن؟', turkish: 'Nereli?' },
-              { id: 29, arabic: 'نَعَم', turkish: 'Evet' },
-              { id: 30, arabic: 'لا', turkish: 'Hayır' },
-              { id: 31, arabic: 'تَكَلَّمْ', turkish: 'Konuş' },
-              { id: 32, arabic: 'اُسْكُتْ', turkish: 'Sus' },
-              { id: 33, arabic: 'تَعالَ', turkish: 'Gel' },
-              { id: 34, arabic: 'اِذْهَبْ', turkish: 'Git' },
-              { id: 35, arabic: 'تَشَرَّفْتُ', turkish: 'Tanıştığıma memnun oldum' },
-              { id: 36, arabic: 'فُرْصَة سَعيدَة', turkish: 'Memnun oldum' },
-              { id: 37, arabic: 'شُكْرًا', turkish: 'Teşekkür ederim' },
-              { id: 38, arabic: 'عَفْوًا', turkish: 'Rica ederim' }
-            ]
-          }
-        }
-      },
-      unit2: {
-        title: { tr: "2. Ünite" },
-        description: { tr: "Okulda" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Sınıf Eşyaları" },
-            words: [
-              { id: 101, arabic: 'مَدْرَسَة', turkish: 'Okul' },
-              { id: 102, arabic: 'صَفّ', turkish: 'Sınıf' },
-              { id: 103, arabic: 'كِتاب', turkish: 'Kitap' },
-              { id: 104, arabic: 'دَفْتَر', turkish: 'Defter' },
-              { id: 105, arabic: 'قَلَم', turkish: 'Kalem' },
-              { id: 106, arabic: 'سَبّورة', turkish: 'Tahta' },
-              { id: 107, arabic: 'كُرْسِيّ', turkish: 'Sandalye' },
-              { id: 108, arabic: 'مَكْتَب', turkish: 'Masa' },
-              { id: 109, arabic: 'مِمْحاة', turkish: 'Silgi' },
-              { id: 110, arabic: 'مِسْطَرَة', turkish: 'Cetvel' },
-              { id: 111, arabic: 'حَقيبَة', turkish: 'Çanta' },
-              { id: 112, arabic: 'باب', turkish: 'Kapı' },
-              { id: 113, arabic: 'نافِذَة', turkish: 'Pencere' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Yönler ve Eylemler" },
-            words: [
-              { id: 114, arabic: 'أَيْن؟', turkish: 'Nerede?' },
-              { id: 115, arabic: 'هُنا', turkish: 'Burada' },
-              { id: 116, arabic: 'هُناك', turkish: 'Orada' },
-              { id: 117, arabic: 'عَلى', turkish: 'Üstünde' },
-              { id: 118, arabic: 'تَحْت', turkish: 'Altında' },
-              { id: 119, arabic: 'أَمام', turkish: 'Önünde' },
-              { id: 120, arabic: 'خَلْفَ', turkish: 'Arkasında' },
-              { id: 121, arabic: 'فَوْقَ', turkish: 'Üzerinde' },
-              { id: 122, arabic: 'جانِبَ', turkish: 'Yanında' },
-              { id: 123, arabic: 'في', turkish: 'İçinde' },
-              { id: 124, arabic: 'خارِجَ', turkish: 'Dışında' },
-              { id: 125, arabic: 'اِفْتَح', turkish: 'Kitabı aç' },
-              { id: 126, arabic: 'اِجْلِسْ', turkish: 'Otur' },
-              { id: 127, arabic: 'اُدْخُلِ الصَّفَّ', turkish: 'Sınıfa gir' }
-            ]
-          }
-        }
-      },
-      unit3: {
-        title: { tr: "3. Ünite" },
-        description: { tr: "Evde" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Evdeyim" },
-            words: [
-              { id: 201, arabic: 'بَيْت', turkish: 'Ev' },
-              { id: 202, arabic: 'غُرْفَة', turkish: 'Oda' },
-              { id: 203, arabic: 'غُرْفَة النَّوْم', turkish: 'Yatak odası' },
-              { id: 204, arabic: 'غُرْفَة جُلوس', turkish: 'Oturma odası' },
-              { id: 205, arabic: 'مَطْبَخ', turkish: 'Mutfak' },
-              { id: 206, arabic: 'حَمّام', turkish: 'Banyo' },
-              { id: 207, arabic: 'سَرير', turkish: 'Yatak' },
-              { id: 208, arabic: 'طاوِلَة', turkish: 'Masa' },
-              { id: 209, arabic: 'كُرْسِيّ', turkish: 'Sandalye' },
-              { id: 210, arabic: 'تِلْفاز', turkish: 'Televizyon' },
-              { id: 211, arabic: 'ثَلّاجة', turkish: 'Buzdolabı' },
-              { id: 212, arabic: 'فُرْن', turkish: 'Fırın' },
-              { id: 213, arabic: 'سَجّادَة', turkish: 'Halı' },
-              { id: 214, arabic: 'هَاتِف', turkish: 'Telefon' },
-              { id: 215, arabic: 'مِصْباح', turkish: 'Lamba' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Odamda" },
-            words: [
-              { id: 216, arabic: 'غُرْفَتي', turkish: 'Odam' },
-              { id: 217, arabic: 'سَرير', turkish: 'Yatak' },
-              { id: 218, arabic: 'مَكْتَب', turkish: 'Çalışma masası' },
-              { id: 219, arabic: 'كُرْسِيّ', turkish: 'Sandalye' },
-              { id: 220, arabic: 'سِتارَة', turkish: 'Perde' },
-              { id: 221, arabic: 'مِصْباح', turkish: 'Lamba' },
-              { id: 222, arabic: 'مِرْآة', turkish: 'Ayna' },
-              { id: 223, arabic: 'سَجّادَة', turkish: 'Halı' },
-              { id: 224, arabic: 'دُولاب', turkish: 'Dolap' },
-              { id: 225, arabic: 'نَظيف', turkish: 'Temiz' },
-              { id: 226, arabic: 'مُرَتَّب', turkish: 'Düzenli' },
-              { id: 227, arabic: 'وَسِخ', turkish: 'Kirli' },
-              { id: 228, arabic: 'يُنَظِّفُ', turkish: 'Temizliyor' },
-              { id: 229, arabic: 'يُرَتِّبُ', turkish: 'Düzenliyor' }
-            ]
-          }
-        }
-      },
-      unit4: {
-        title: { tr: "4. Ünite" },
-        description: { tr: "Bir Günüm" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Bir Günüm" },
-            words: [
-              { id: 301, arabic: 'صَباح', turkish: 'Sabah' },
-              { id: 302, arabic: 'ظُهْر', turkish: 'Öğle' },
-              { id: 303, arabic: 'مَساء', turkish: 'Akşam' },
-              { id: 304, arabic: 'لَيْل', turkish: 'Gece' },
-              { id: 305, arabic: 'يَسْتَيْقِظُ', turkish: 'Uyanıyor' },
-              { id: 306, arabic: 'يَغْسِلُ وَجْهَهُ', turkish: 'Yüzünü yıkıyor' },
-              { id: 307, arabic: 'يُصَلّي', turkish: 'Namaz kılıyor' },
-              { id: 308, arabic: 'يَلْبَسُ مَلابِسَهُ', turkish: 'Giyiniyor' },
-              { id: 309, arabic: 'يَتَناوَلُ الفَطور', turkish: 'Kahvaltı yapıyor' },
-              { id: 310, arabic: 'يَذْهَبُ إِلى المَدْرَسَة', turkish: 'Okula gidiyor' },
-              { id: 311, arabic: 'يَدْرُسُ', turkish: 'Ders çalışıyor' },
-              { id: 312, arabic: 'يَرْجِعُ إِلى البَيْت', turkish: 'Eve dönüyor' },
-              { id: 313, arabic: 'يَتَغَدّى', turkish: 'Öğle yemeği yiyor' },
-              { id: 314, arabic: 'يَسْتَريحُ', turkish: 'Dinleniyor' },
-              { id: 315, arabic: 'يَلْعَبُ', turkish: 'Oynuyor' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Günlük Rutin" },
-            words: [
-              { id: 316, arabic: 'أَسْتَيْقِظُ مُبَكِّرًا', turkish: 'Erken uyanıyorum' },
-              { id: 317, arabic: 'أَذْهَبُ إِلى المَدْرَسَة', turkish: 'Okula gidiyorum' },
-              { id: 318, arabic: 'أُصَلّي صَلاة الظُّهْر', turkish: 'Öğle namazı kılıyorum' },
-              { id: 319, arabic: 'أَتَغَدّى مَع أُسْرَتي', turkish: 'Ailemle öğle yemeği yiyorum' },
-              { id: 320, arabic: 'أَقْرَأُ دُروسي', turkish: 'Derslerimi okuyorum' },
-              { id: 321, arabic: 'أَكْتُبُ واجِباتي', turkish: 'Ödev yazıyorum' },
-              { id: 322, arabic: 'أَلْعَبُ في السّاحَة', turkish: 'Bahçede oynuyorum' },
-              { id: 323, arabic: 'أُساعِدُ أُمّي', turkish: 'Anneme yardım ediyorum' },
-              { id: 324, arabic: 'أَزورُ جَدِي', turkish: 'Dedemi ziyaret ediyorum' },
-              { id: 325, arabic: 'أَذْهَبُ إِلى المَسْجِد', turkish: 'Camiye gidiyorum' },
-              { id: 326, arabic: 'أُرَتِّبُ سَريري', turkish: 'Yatağımı düzeltiyorum' },
-              { id: 327, arabic: 'أُنَظِّفُ غُرْفَتي', turkish: 'Odamı temizliyorum' },
-              { id: 328, arabic: 'أُراجِعُ دُروسي', turkish: 'Derslerimi tekrar ediyorum' },
-              { id: 329, arabic: 'أَنامُ مُتَأَخِّرًا', turkish: 'Geç yatıyorum' }
-            ]
-          }
-        }
-      }
-    }
-  },
-  grade10: {
-    title: "2. Seviye", 
-    words: {
-      unit1: {
-        title: { tr: "1. Ünite" },
-        description: { tr: "Değerlerim ve Ailem" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Güzel Davranışlar" },
-            words: [
-              { id: 401, arabic: 'صِدْق', turkish: 'Doğruluk' },
-              { id: 402, arabic: 'أَمانَة', turkish: 'Güvenilirlik' },
-              { id: 403, arabic: 'إِخْلاص', turkish: 'Samimiyet' },
-              { id: 404, arabic: 'تَعاوُن', turkish: 'Yardımlaşma' },
-              { id: 405, arabic: 'اِحْتِرام', turkish: 'Saygı' },
-              { id: 406, arabic: 'مَحَبَّة', turkish: 'Sevgi' },
-              { id: 407, arabic: 'شُكْر', turkish: 'Teşekkür' },
-              { id: 408, arabic: 'الِاعْتِذار', turkish: 'Özür dileme' },
-              { id: 409, arabic: 'رَحْمَة', turkish: 'Merhamet' },
-              { id: 410, arabic: 'صَبْر', turkish: 'Sabır' },
-              { id: 411, arabic: 'عَدْل', turkish: 'Adalet' },
-              { id: 412, arabic: 'تَواضُع', turkish: 'Alçakgönüllülük' },
-              { id: 413, arabic: 'يُساعِدُ', turkish: 'Yardım ediyor' },
-              { id: 414, arabic: 'يُحِبُّ', turkish: 'Seviyor' },
-              { id: 415, arabic: 'يَبْتَسِمُ', turkish: 'Gülümsüyor' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Mutlu Aile" },
-            words: [
-              { id: 416, arabic: 'أُسْرَة', turkish: 'Aile' },
-              { id: 417, arabic: 'أَب', turkish: 'Baba' },
-              { id: 418, arabic: 'أُمّ', turkish: 'Anne' },
-              { id: 419, arabic: 'أَخ', turkish: 'Erkek kardeş' },
-              { id: 420, arabic: 'أُخْت', turkish: 'Kız kardeş' },
-              { id: 421, arabic: 'جَدّ', turkish: 'Dede' },
-              { id: 422, arabic: 'جَدَّة', turkish: 'Nine' },
-              { id: 423, arabic: 'عَمّ', turkish: 'Amca' },
-              { id: 424, arabic: 'عَمَّة', turkish: 'Hala' },
-              { id: 425, arabic: 'خال', turkish: 'Dayı' },
-              { id: 426, arabic: 'خالَة', turkish: 'Teyze' },
-              { id: 427, arabic: 'أَقارِب', turkish: 'Akrabalar' },
-              { id: 428, arabic: 'يَزورُ الأَقارِب', turkish: 'Akrabaları ziyaret ediyor' },
-              { id: 429, arabic: 'يَحْتَرِمُ الكِبار', turkish: 'Büyüklere saygı gösteriyor' },
-              { id: 430, arabic: 'يَرْحَمُ الصِّغار', turkish: 'Küçüklere merhamet ediyor' }
-            ]
-          }
-        }
-      },
-      unit2: {
-        title: { tr: "2. Ünite" },
-        description: { tr: "Kendimi Keşfediyorum" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Ben Kimim?" },
-            words: [
-              { id: 501, arabic: 'مَن أَنا؟', turkish: 'Ben kimim?' },
-              { id: 502, arabic: 'اِسْم', turkish: 'İsim' },
-              { id: 503, arabic: 'عُمْر', turkish: 'Yaş' },
-              { id: 504, arabic: 'مِهْنَة', turkish: 'Meslek' },
-              { id: 505, arabic: 'هِوايَة', turkish: 'Hobi' },
-              { id: 506, arabic: 'مَوْهِبَة', turkish: 'Yetenek' },
-              { id: 507, arabic: 'طَيِّب', turkish: 'İyi kalpli' },
-              { id: 508, arabic: 'مُجْتَهِد', turkish: 'Çalışkan' },
-              { id: 509, arabic: 'كَسول', turkish: 'Tembel' },
-              { id: 510, arabic: 'هادِئ', turkish: 'Sakin' },
-              { id: 511, arabic: 'نَشيط', turkish: 'Enerjik' },
-              { id: 512, arabic: 'مُبْتَسِم', turkish: 'Güleryüzlü' },
-              { id: 513, arabic: 'صَبور', turkish: 'Sabırlı' },
-              { id: 514, arabic: 'أَحْلامي', turkish: 'Hayallerim' },
-              { id: 515, arabic: 'مُسْتَقْبَل', turkish: 'Gelecek' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Hobilerim" },
-            words: [
-              { id: 516, arabic: 'قِراءَة', turkish: 'Okuma' },
-              { id: 517, arabic: 'كِتابَة', turkish: 'Yazma' },
-              { id: 518, arabic: 'رَسْم', turkish: 'Resim yapma' },
-              { id: 519, arabic: 'طَبْخ', turkish: 'Yemek pişirme' },
-              { id: 520, arabic: 'تَصْوير', turkish: 'Fotoğrafçılık' },
-              { id: 521, arabic: 'رِياضَة', turkish: 'Spor' },
-              { id: 522, arabic: 'كُرَة القَدَم', turkish: 'Futbol' },
-              { id: 523, arabic: 'كُرَة السَّلَّة', turkish: 'Basketbol' },
-              { id: 524, arabic: 'سَفَر', turkish: 'Seyahat' },
-              { id: 525, arabic: 'طَبيعَة', turkish: 'Doğa' },
-              { id: 526, arabic: 'أَفْلام', turkish: 'Filmler' },
-              { id: 527, arabic: 'موسيقى', turkish: 'Müzik' },
-              { id: 528, arabic: 'مَكْتَبَة', turkish: 'Kütüphane' },
-              { id: 529, arabic: 'في الوَقْت الفارِغ', turkish: 'Boş zamanlarda' },
-              { id: 530, arabic: 'مُفيد', turkish: 'Faydalı' },
-              { id: 531, arabic: 'مُمْتِع', turkish: 'Eğlenceli' }
-            ]
-          }
-        }
-      },
-      unit3: {
-        title: { tr: "3. Ünite" },
-        description: { tr: "Zaman ve Hayat" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Zamanım ve Hayatım" },
-            words: [
-              { id: 601, arabic: 'وَقْتي', turkish: 'Zamanım' },
-              { id: 602, arabic: 'حَياتي', turkish: 'Hayatım' },
-              { id: 603, arabic: 'نَوْم', turkish: 'Uyku' },
-              { id: 604, arabic: 'عَمَل', turkish: 'Çalışma' },
-              { id: 605, arabic: 'اِسْتِراحَة', turkish: 'Dinlenme' },
-              { id: 606, arabic: 'نَهار', turkish: 'Gündüz' },
-              { id: 607, arabic: 'يُنَظِّمُ', turkish: 'Düzenliyor' },
-              { id: 608, arabic: 'يُخَطِّطُ', turkish: 'Planlıyor' },
-              { id: 609, arabic: 'يَدْرُسُ', turkish: 'Ders çalışıyor' },
-              { id: 610, arabic: 'يَسْتَريحُ', turkish: 'Dinleniyor' },
-              { id: 611, arabic: 'كُلّ يَوْم', turkish: 'Her gün' },
-              { id: 612, arabic: 'أَحْيانًا', turkish: 'Bazen' },
-              { id: 613, arabic: 'نادِرًا', turkish: 'Nadiren' },
-              { id: 614, arabic: 'دائِمًا', turkish: 'Her zaman' },
-              { id: 615, arabic: 'نَجاح', turkish: 'Başarı' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Zamanımı Değerlendiriyorum" },
-            words: [
-              { id: 616, arabic: 'تَخْطيط', turkish: 'Planlama' },
-              { id: 617, arabic: 'فَشَل', turkish: 'Başarısızlık' },
-              { id: 618, arabic: 'جِدّ', turkish: 'Ciddiyet' },
-              { id: 619, arabic: 'كَسَل', turkish: 'Tembellik' },
-              { id: 620, arabic: 'حِكْمَة', turkish: 'Bilgelik' },
-              { id: 621, arabic: 'إِبْداع', turkish: 'Yaratıcılık' },
-              { id: 622, arabic: 'لا يُؤَجِّلُ', turkish: 'Ertelemiyor' },
-              { id: 623, arabic: 'يَسْتَغِلُّ الوَقْت', turkish: 'Zamanı değerlendiriyor' },
-              { id: 624, arabic: 'يُضَيِّعُ الوَقْت', turkish: 'Zamanı boşa harcıyor' },
-              { id: 625, arabic: 'يَوْم', turkish: 'Gün' },
-              { id: 626, arabic: 'أُسْبوع', turkish: 'Hafta' },
-              { id: 627, arabic: 'مُسْتَقْبَل', turkish: 'Gelecek' },
-              { id: 628, arabic: 'حاضِر', turkish: 'Şimdi' },
-              { id: 629, arabic: 'ماضي', turkish: 'Geçmiş' },
-              { id: 630, arabic: 'تَطْوير النَّفْس', turkish: 'Kendini geliştirme' }
-            ]
-          }
-        }
-      },
-      unit4: {
-        title: { tr: "4. Ünite" },
-        description: { tr: "Sağlık ve Beslenme" },
-        lessons: {
-          lesson1: {
-            description: { tr: "Sağlıklı Yaşam" },
-            words: [
-              { id: 701, arabic: 'جِسْم', turkish: 'Vücut' },
-              { id: 702, arabic: 'عَقْل', turkish: 'Akıl' },
-              { id: 703, arabic: 'نَظّافَة', turkish: 'Temizlik' },
-              { id: 704, arabic: 'غِذاء', turkish: 'Beslenme' },
-              { id: 705, arabic: 'صِحَّة', turkish: 'Sağlık' },
-              { id: 706, arabic: 'مَرَض', turkish: 'Hastalık' },
-              { id: 707, arabic: 'طَبيب', turkish: 'Doktor' },
-              { id: 708, arabic: 'دَواء', turkish: 'İlaç' },
-              { id: 709, arabic: 'أَسْنان', turkish: 'Dişler' },
-              { id: 710, arabic: 'النَّظّافَة مِن الإِيمان', turkish: 'Temizlik imandandır' },
-              { id: 711, arabic: 'يُفَرِّشُ الأَسْنان', turkish: 'Diş fırçalıyor' },
-              { id: 712, arabic: 'يَسْتَحِمُّ', turkish: 'Banyo yapıyor' },
-              { id: 713, arabic: 'يَنامُ مُبَكِّرًا', turkish: 'Erken uyuyor' },
-              { id: 714, arabic: 'صِحِّيّ', turkish: 'Sağlıklı' },
-              { id: 715, arabic: 'يُمارِسُ الرِّياضَة', turkish: 'Spor yapıyor' }
-            ]
-          },
-          lesson2: {
-            description: { tr: "Sağlıklı Beslenme" },
-            words: [
-              { id: 716, arabic: 'فَواكِه', turkish: 'Meyveler' },
-              { id: 717, arabic: 'خُضْراوات', turkish: 'Sebzeler' },
-              { id: 718, arabic: 'لَحْم', turkish: 'Et' },
-              { id: 719, arabic: 'سَمَك', turkish: 'Balık' },
-              { id: 720, arabic: 'لَبَن', turkish: 'Süt' },
-              { id: 721, arabic: 'جُبْن', turkish: 'Peynir' },
-              { id: 722, arabic: 'بَيْض', turkish: 'Yumurta' },
-              { id: 723, arabic: 'خُبْز', turkish: 'Ekmek' },
-              { id: 724, arabic: 'ماء', turkish: 'Su' },
-              { id: 725, arabic: 'عَصير', turkish: 'Meyve suyu' },
-              { id: 726, arabic: 'الطَّعام السَّريع', turkish: 'Fast food' },
-              { id: 727, arabic: 'المَشْروبات الغازِيَة', turkish: 'Gazlı içecekler' },
-              { id: 728, arabic: 'فَطور', turkish: 'Kahvaltı' },
-              { id: 729, arabic: 'غَداء', turkish: 'Öğle yemeği' },
-              { id: 730, arabic: 'عَشاء', turkish: 'Akşam yemeği' }
-            ]
-          }
-        }
-      }
-    }
-  }
-};
+<!-- Mevcut oyun alanınızı bu div içine alın -->
+<div id="game-screen" style="display: none; flex-direction: column;">
 
-const Utils = { shuffleArray: (arr)=>[...arr].sort(()=>Math.random()-.5) };
-
-/* =========================
-   APP (screens + audio + history)
-========================= */
-const App = {
-  state:{
-    selectedPlayers:null,
-    selectedLessonId:null,
-    unlockedLessons:[],
-    isAudioInitialized:false,
-    audioCtx:null,
-    baseHistory: null
-  },
-  dom:{},
-  init(){
-    this.dom.screens = document.querySelectorAll('.screen');
-    this.dom.startScreen = document.getElementById('start-screen');
-    this.dom.gameScreen = document.getElementById('game-screen');
-    this.dom.playerSelect = document.getElementById('player-select');
-    this.dom.lessonSelect = document.getElementById('lesson-select');
-    this.dom.startGameBtn = document.getElementById('start-game-btn');
-
-    this.loadProgress();
-    this.populateLessonSelector();
-    this.initStartScreenListeners();
-
-    // Ses ilk etkileşimde
-    const initAudioOnFirstInteraction = () => {
-      if (this.state.isAudioInitialized) return;
-      this.initAudio();
-      document.removeEventListener('click', initAudioOnFirstInteraction);
-      document.removeEventListener('touchstart', initAudioOnFirstInteraction);
-    };
-    document.addEventListener('click', initAudioOnFirstInteraction);
-    document.addEventListener('touchstart', initAudioOnFirstInteraction);
-
-    // History başlangıcı
-    this.state.baseHistory = history.length;
-    if(!history.state || typeof history.state.depth!=='number'){
-      history.replaceState({screenId:'start-screen', depth:0}, '', '#start-screen');
-    }
-    window.addEventListener('popstate', (ev)=>{
-      const sid = ev.state?.screenId || 'start-screen';
-      this.showScreen(sid, {push:false}); // push yok, sadece göster
-    });
-
-    this.showScreen('start-screen');
-    MemoryGame.init();
-
-    // Start ekranındaki geri (DEĞİŞİKLİK BURADA YAPILDI)
-    const backFromStartBtn = document.getElementById('back-from-start-btn');
-    if(backFromStartBtn){
-      backFromStartBtn.addEventListener('click', (e)=>{
-        e.stopPropagation(); // Global event listener'ı engelle
-        e.preventDefault();
-        this.playSound('menuClick');
-        window.location.href = "https://kidefarapca.com";
-      });
-    }
-  },
-
-  showScreen(screenId, opts={push:true}){
-    this.dom.screens.forEach(s=>s.classList.remove('active'));
-    const t = document.getElementById(screenId);
-    if(t){ t.classList.add('active'); t.scrollTop=0; }
-
-    if(screenId==='start-screen'){
-      this.populateLessonSelector();
-      this.checkStartButtonState();
-    }
-
-    if(opts.push){
-      const depth = ((history.state && history.state.depth) || 0) + 1;
-      try{ history.pushState({screenId, depth}, '', '#'+screenId); }catch(e){}
-    }
-  },
-
-  initAudio(){
-    try{
-      if(!this.state.audioCtx){ this.state.audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
-      if(this.state.audioCtx.state==='suspended'){
-        this.state.audioCtx.resume().then(()=>{ this.state.isAudioInitialized=true; });
-      }else{ this.state.isAudioInitialized=true; }
-    }catch(e){ console.error('Web Audio API yok'); this.state.isAudioInitialized=false; }
-  },
-  playSound(key){
-    if(!this.state.isAudioInitialized || !this.state.audioCtx || this.state.audioCtx.state!=='running') return;
-    const sounds = {
-      flip:{f:200,t:'triangle',d:.1}, match:{f:440,t:'sine',d:.2}, menuClick:{f:600,t:'square',d:.08},
-      correct:{f:523.25,t:'sine',d:.2}, incorrect:{f:164.81,t:'square',d:.2}
-    };
-    const s = sounds[key]; if(!s) return;
-    const g = this.state.audioCtx.createGain(); g.connect(this.state.audioCtx.destination);
-    g.gain.setValueAtTime(0, this.state.audioCtx.currentTime);
-    g.gain.linearRampToValueAtTime(0.1, this.state.audioCtx.currentTime + 0.01);
-    g.gain.linearRampToValueAtTime(0, this.state.audioCtx.currentTime + s.d);
-    const o = this.state.audioCtx.createOscillator(); o.type=s.t; o.frequency.value=s.f; o.connect(g);
-    o.start(0); o.stop(this.state.audioCtx.currentTime + s.d);
-  },
-
-  initStartScreenListeners(){
-    this.dom.playerSelect.addEventListener('click', e=>{
-      const btn = e.target.closest('.player-button'); if(!btn) return;
-      this.playSound('menuClick');
-      this.state.selectedPlayers = parseInt(btn.dataset.players,10);
-      this.updateSelection(this.dom.playerSelect, btn);
-      this.checkStartButtonState();
-    });
-
-    this.dom.lessonSelect.addEventListener('change', e=>{
-      this.playSound('menuClick');
-      this.state.selectedLessonId = e.target.value;
-      this.checkStartButtonState();
-    });
-
-    this.dom.startGameBtn.onclick = ()=>{
-      this.playSound('menuClick');
-      const {selectedPlayers, selectedLessonId} = this.state;
-      if(!selectedPlayers || !selectedLessonId) return;
-      const words = this.getWords(selectedLessonId);
-      if(!words || words.length < 2){ alert('Bu ders için yeterli kelime yok.'); return; }
-      MemoryGame.start(words, selectedPlayers);
-      this.showScreen('game-screen'); // pushState ile kayıt edilecek
-    };
-  },
-
-  updateSelection(container, selectedButton){
-    container?.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));
-    selectedButton?.classList.add('selected');
-  },
-  checkStartButtonState(){ this.dom.startGameBtn.disabled = !(this.state.selectedPlayers && this.state.selectedLessonId); },
-
-  // App nesnesinin içindeki loadProgress kısmını bununla değiştirin:
-  loadProgress(){
-    // Kilit mantığını iptal ediyoruz ve tüm dersleri listeye ekliyoruz:
-    this.state.unlockedLessons = this.getAllLessonIdsOrdered(); 
-  },
-  saveProgress(){
-    try{ localStorage.setItem('unlockedMemoryLessons', JSON.stringify(this.state.unlockedLessons)); }catch{}
-  },
-
-  getAllLessonIdsOrdered(){
-    const ordered=[];
-    ['grade9','grade10'].forEach(g=>{
-      if(Data[g]?.words){
-        Object.keys(Data[g].words).sort().forEach(u=>{
-          if(Data[g].words[u]?.lessons){
-            Object.keys(Data[g].words[u].lessons).sort().forEach(l=>{
-              ordered.push(`${g}-${u}-${l}`);
-            });
-          }
-        });
-      }
-    });
-    return ordered;
-  },
-  unlockNextLesson(id){
-    const all = this.getAllLessonIdsOrdered();
-    const ix = all.indexOf(id);
-    if(ix>-1 && ix<all.length-1){
-      const next = all[ix+1];
-      if(!this.state.unlockedLessons.includes(next)){
-        this.state.unlockedLessons.push(next);
-        this.saveProgress();
-      }
-    }
-  },
-
-  populateLessonSelector(){
-    if(!this.dom.lessonSelect) return;
-    this.dom.lessonSelect.innerHTML = '<option value="" disabled selected>Önce Ders Seçin</option>';
-    const all = this.getAllLessonIdsOrdered();
-    all.forEach(lessonId=>{
-      // Sadece kilidi açılmış dersleri göster
-      if(this.state.unlockedLessons.includes(lessonId)){
-        const [gradeKey, unitKey, lessonKey] = lessonId.split('-');
-        const gradeTitle = Data[gradeKey]?.title || gradeKey;
-        const unitTitle = Data[gradeKey]?.words[unitKey]?.title?.tr || unitKey;
-        const lessonDesc = Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey;
-        const opt = document.createElement('option');
-        opt.value = lessonId; opt.textContent = `${gradeTitle} - ${unitTitle} - ${lessonDesc}`;
-        this.dom.lessonSelect.appendChild(opt);
-      }
-    });
-    // Eğer seçili olan ders listede varsa koru, yoksa resetle
-    if(this.state.selectedLessonId && this.state.unlockedLessons.includes(this.state.selectedLessonId)){
-      this.dom.lessonSelect.value = this.state.selectedLessonId;
-    }else{
-      this.state.selectedLessonId = null;
-    }
-  },
-
-  getWords(lessonId){
-    if(!lessonId) return [];
-    try{
-      const [g,u,l] = lessonId.split('-');
-      return Data[g]?.words[u]?.lessons[l]?.words || [];
-    }catch{ return []; }
-  },
-
-  // Sayfa-içi geri yoksa fallback (referrer veya ?back=)
-  fallbackToParent(){
-    const urlParams = new URLSearchParams(location.search);
-    const forcedBack = urlParams.get('back');
-    if(forcedBack){ location.href = forcedBack; return; }
-    const ref = document.referrer;
-    try{
-      if(ref){
-        const sameOrigin = new URL(ref).origin === location.origin;
-        if(sameOrigin){ location.href = ref; return; }
-        // farklı origin ise yine de dene:
-        location.href = ref; return;
-      }
-    }catch{}
-    // hiçbir şey yoksa son çare:
-    history.back();
-  }
-};
-
-/* =========================
-   MEMORY GAME
-========================= */
-const MemoryGame = {
-  state:{ playerMode:1, f:[], l:false, c:1, s1:0, s2:0, w:[], p:0, flipTimeout:null },
-  dom:{},
-  init(){},
-  start(words, playerMode=1){
-    this.state = { playerMode, f:[], l:false, c:1, s1:0, s2:0, w:[], p:0, flipTimeout:null };
-
-    const gameScreen = document.getElementById('game-screen');
-    gameScreen.innerHTML = `
-      <div class="header-navigation">
-        <button class="back-btn" title="Geri" aria-label="Geri">
-          <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
+<div class="header">
+    <div class="controls" style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; min-height: 50px;">
+        
+        <!-- Sabit ve Tek Geri Tuşu -->
+        <button class="btn" id="btn-back" onclick="showMenu()" style="position: absolute; left: 10px; background: #f1f3f5; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+            <span>❮</span>
         </button>
-      </div>
 
-      <div class="score-display" id="player1-display">
-        <svg viewBox="0 0 24 24"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path></svg>
-        <span id="score1">0</span>
-      </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="btn active" id="btn-study" onclick="setMode('study')">Kartlar</button>
+            <button class="btn" id="lang-btn-main" onclick="toggleLang()" style="background:var(--accent); color:white;"> T ⇄ ع</button>
+            <button class="btn" id="btn-memory-start" onclick="setMode('mem1')" style="background: #e9ecef;">Hafıza Oyunu</button>
 
-      <div id="game-board"></div>
+            <!-- Hafıza Oyunu Özel Kontrolleri -->
+            <div id="memory-controls" style="display: none; align-items: center; gap: 8px;">
+                <div class="switch-wrapper" style="display: flex; align-items: center; background: white; padding: 4px 8px; border-radius: 50px; border: 2px solid #eee; gap: 5px;">
+                    <span style="font-size: 1.1rem; cursor: pointer;" onclick="toggleSwitch(false)">👤</span>
+                    <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                        <input type="checkbox" id="mode-toggle" onchange="toggleMemoryMode(this)" style="opacity:0; width:0; height:0;">
+                        <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--p1); transition: .4s; border-radius: 34px;"></span>
+                    </label>
+                    <span style="font-size: 1.1rem; cursor: pointer;" onclick="toggleSwitch(true)">👥</span>
+                </div>
 
-      <div class="score-display" id="player2-display">
-        <svg viewBox="0 0 24 24"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path></svg>
-        <span id="score2">0</span>
-      </div>
-
-      <div class="game-over-overlay hidden" id="memory-game-over">
-        <div id="winner-icon-container"></div>
-        <h2 id="memory-win-text"></h2>
-        <div class="win-buttons">
-          <button class="icon-btn" id="play-again-memory-btn" title="Tekrar Oyna" aria-label="Tekrar Oyna">
-            <svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>
-          </button>
-          <button class="icon-btn" id="back-to-start-memory-btn" title="Ana Menü" aria-label="Ana Menü">
-            <svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg>
-          </button>
+                <div id="pair-selection-area">
+                    <select id="pairCount" class="btn" onchange="init()" style="border: 2px solid var(--primary); padding: 4px 6px;">
+                        <option value="6">6</option>
+                        <option value="9" selected>9</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
+            </div>
         </div>
-      </div>
-    `;
+    </div>
+</div>
 
-    // DOM refs
-    this.dom.board = document.getElementById('game-board');
-    this.dom.p1Display = document.getElementById('player1-display');
-    this.dom.p2Display = document.getElementById('player2-display');
-    this.dom.score1 = document.getElementById('score1');
-    this.dom.score2 = document.getElementById('score2');
-    this.dom.gameOver = document.getElementById('memory-game-over');
-    this.dom.winText = document.getElementById('memory-win-text');
-    this.dom.winnerIcon = document.getElementById('winner-icon-container');
-
-    // Geri butonlarını history.back ile yöneteceğiz (aşağıda global delegation var)
-
-    // Player mode class
-    gameScreen.classList.toggle('single-player-mode', this.state.playerMode===1);
-
-    const wordPairsNeeded = Math.min(10, Math.floor(words.length));
-    if(wordPairsNeeded < 2){ alert('Bu ders için yeterli kelime çifti yok.'); App.showScreen('start-screen'); return; }
-
-    this.state.w = Utils.shuffleArray(words).slice(0, wordPairsNeeded);
-    const pairs = this.state.w.flatMap(w=>[
-      {content:w.arabic, id:w.id, lang:'ar'},
-      {content:w.turkish, id:w.id, lang:'tr'}
-    ]);
-    this.populateBoard(Utils.shuffleArray(pairs));
-
-
-    this.updateActivePlayerUI();
-    this.dom.score1.textContent='0';
-    this.dom.score2.textContent='0';
-    this.dom.gameOver.classList.add('hidden');
-
-    // Tekrar oyna aynı dersten
-    document.getElementById('play-again-memory-btn').onclick = ()=>{
-      App.playSound('menuClick');
-      this.start(App.getWords(App.state.selectedLessonId), this.state.playerMode);
-      // yeni ekran push (App.showScreen değiliz; elle derinlik arttıralım)
-      const depth = ((history.state && history.state.depth) || 0) + 1;
-      try{ history.pushState({screenId:'game-screen', depth}, '', '#game-screen'); }catch(e){}
-    };
-
-    // “Ana Menü” yerine bir önceki adıma dön (istenirse)
-    document.getElementById('back-to-start-memory-btn').onclick = ()=>{
-      App.playSound('menuClick');
-      history.back();
-    };
-  },
-
-  populateBoard(cards){
-    const n = cards.length;
-    let cols=5, rows=Math.ceil(n/cols);
-    if(n<=16){ cols=4; rows=Math.ceil(n/cols); }
-    if(n<=12){ cols=4; rows=3; }
-    if(n<=8){ cols=4; rows=2; }
-
-    this.dom.board.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-    this.dom.board.style.gridTemplateRows = `repeat(${rows},1fr)`;
-    this.dom.board.innerHTML = '';
-
-    cards.forEach(cd=>{
-      const el = document.createElement('div');
-      el.className = 'card'; el.dataset.id = cd.id;
-      const fontStyle = cd.lang==='ar' ? "font-family:'Harmattan',sans-serif;" : "";
-      el.innerHTML = `
-        <div class="card-inner">
-          <div class="card-face card-front"></div>
-          <div class="card-face card-back" dir="${cd.lang==='tr'?'ltr':'rtl'}" style="${fontStyle}">${cd.content}</div>
+<div class="game-area">
+    <div id="score-board-container" class="score-board">
+        <div id="p1-box" class="player-box" style="color: var(--p1)">
+            <span class="p-label">P1</span>
+            <span id="s1" class="p-score">0</span>
         </div>
-      `;
-      el.onclick = ()=>this.flipCard(el);
-      this.dom.board.appendChild(el);
-    });
-  },
+        <div id="grid" class="grid"></div>
+        <div id="p2-box" class="player-box" style="color: var(--p2)">
+            <span class="p-label">P2</span>
+            <span id="s2" class="p-score">0</span>
+        </div>
+    </div>
+</div>
 
-  flipCard(card){
-    if(this.state.l || card.classList.contains('flipped') || card.classList.contains('matched')) return;
-    App.playSound('flip'); card.classList.add('flipped');
+<!-- Mevcut audio etiketlerini bu linklerle güncelleyin -->
+<audio id="snd-flip" src="https://cdn.pixabay.com/audio/2022/03/15/audio_5073041913.mp3"></audio>
+<audio id="snd-match" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bbfa83e354.mp3"></audio>
+<audio id="snd-click" src="https://cdn.pixabay.com/audio/2022/03/10/audio_c350780443.mp3"></audio>
 
-    // sıra göstergesi
-    if(this.state.playerMode===2){ card.classList.add(this.state.c===1?'p1-turn':'p2-turn'); }
-    else{ card.classList.add('p1-turn'); }
-
-    this.state.f.push(card);
-    if(this.state.f.length===2){
-      this.state.l = true;
-      const [c1,c2] = this.state.f;
-      if(c1.dataset.id === c2.dataset.id){
-        App.playSound('match');
-        let matchClass = (this.state.playerMode===2 ? (this.state.c===1?'p1-match':'p2-match') : 'p1-match');
-        if(this.state.playerMode===1){ this.dom.score1.textContent = ++this.state.s1; }
-        else { if(this.state.c===1) this.dom.score1.textContent = ++this.state.s1; else this.dom.score2.textContent = ++this.state.s2; }
-        this.state.f.forEach(c=>{ c.classList.remove('p1-turn','p2-turn'); c.classList.add('matched', matchClass); });
-        this.state.p++; this.state.f=[]; this.state.l=false;
-
-        if(this.state.p === this.state.w.length){
-          setTimeout(()=>{ this.showEndUI(); App.unlockNextLesson(App.state.selectedLessonId); }, 600);
-        }
-      }else{
-        if(this.state.flipTimeout) clearTimeout(this.state.flipTimeout);
-        this.state.flipTimeout = setTimeout(()=>{
-          this.state.f.forEach(c=>c.classList.remove('flipped','p1-turn','p2-turn'));
-          this.state.f=[]; this.state.l=false;
-          if(this.state.playerMode===2){ this.state.c = (this.state.c===1?2:1); }
-          this.updateActivePlayerUI();
-        }, 650);
-      }
-    }
-  },
-
-   updateActivePlayerUI() {
-    if (this.state.playerMode !== 2) return; // Tek kişilikse çalışma
+<script>
     
-    const p1 = document.getElementById('player1-display');
-    const p2 = document.getElementById('player2-display');
-    if(!p1 || !p2) return;
 
-    if (this.state.c === 1) {
-      p1.classList.add('active');
-      p2.classList.remove('active');
-    } else {
-      p1.classList.remove('active');
-      p2.classList.add('active');
+
+
+// Konu bazlı veri yapısı (Buraya sürekli yeni veri ekleyebilirsiniz)
+const topics = {
+    // --- 9. SINIF KONULARI ---
+    selamlasma: {
+        title: "Selamlaşma",
+        icon: "👋",
+        words: [
+            { tr: "Selam üzerinize olsun!", ar: "السَّلام عَلَيْكُمْ" },
+            { tr: "Selam sizin de üzerinize olsun!", ar: "وَعَلَيْكُم السَّلام" },
+            { tr: "Hayırlı Sabahlar", ar: "صَباح الخَيْر" },
+            { tr: "Günaydın", ar: "صَباح النّور" },
+            { tr: "Hayırlı akşamlar", ar: "مَساء الخَيْر" },
+            { tr: "Nurlu akşamlar", ar: "مَساء النّور" },
+            { tr: "Merhaba!", ar: "مَرْحَبًا" },
+            { tr: "Hoş geldiniz!", ar: "أَهْلًا وَسَهْلًا" },
+            { tr: "Hoş bulduk!", ar: "أَهْلًا بِك" },
+            { tr: "Nasılsın?", ar: "كَيْفَ حالُك؟" },
+            { tr: "İyiyim!", ar: "أَنا بِخَيْر" },
+            { tr: "Görüşmek üzere!", ar: "إِلى اللِّقاء" },
+            { tr: "Hoşça kal", ar: "مَع السَّلامَة" },
+            { tr: "Allah’a emanet ol", ar: "في أَمان الّٰلهِ" },
+            { tr: "Oku!", ar: "اِقْرَأْ" },
+            { tr: "Yaz!", ar: "اُكْتُبْ" },
+            { tr: "Tekrar et!", ar: "أَعِدْ" },
+            { tr: "Dinle!", ar: "اِسْتَمِعْ" }
+        ]
+    },
+    tanisma: {
+        title: "Tanışma",
+        icon: "🤝",
+        words: [
+            { tr: "Erkek öğrenci", ar: "طالِب" },
+            { tr: "Erkek öğretmen", ar: "مُدَرِّس" },
+            { tr: "Erkek arkadaş", ar: "صَديق" },
+            { tr: "O (erkek)", ar: "هُوَ" },
+            { tr: "O (kadın)", ar: "هِيَ" },
+            { tr: "Sen (erkek)", ar: "أَنْتَ" },
+            { tr: "Ben", ar: "أَنا" },
+            { tr: "Adın ne?", ar: "ما اسْمُك؟" },
+            { tr: "Benim adım", ar: "اِسْمي" },
+            { tr: "Nereli?", ar: "مِن أَيْن؟" },
+            { tr: "Evet", ar: "نَعَم" },
+            { tr: "Hayır", ar: "لا" },
+            { tr: "Konuş", ar: "تَكَلَّمْ" },
+            { tr: "Sus", ar: "اُسْكُتْ" },
+            { tr: "Gel", ar: "تَعالَ" },
+            { tr: "Git", ar: "اِذْهَبْ" },
+            { tr: "Tanıştığıma memnun oldum", ar: "تَشَرَّفْتُ" },
+            { tr: "Memnun oldum", ar: "فُرْصَة سَعيدَة" },
+            { tr: "Teşekkür ederim", ar: "شُكْرًا" },
+            { tr: "Rica ederim", ar: "عَفْوًا" }
+        ]
+    },
+    sinif_esyaları: {
+        title: "Sınıf Eşyaları",
+        icon: "🎒",
+        words: [
+            { tr: "Okul", ar: "مَدْرَسَة" },
+            { tr: "Sınıf", ar: "صَفّ" },
+            { tr: "Kitap", ar: "كِتاب" },
+            { tr: "Defter", ar: "دَفْتَر" },
+            { tr: "Kalem", ar: "قَلَم" },
+            { tr: "Tahta", ar: "سَبّورة" },
+            { tr: "Sandalye", ar: "كُرْسِيّ" },
+            { tr: "Masa", ar: "مَكْتَب" },
+            { tr: "Silgi", ar: "مِمْحاة" },
+            { tr: "Cetvel", ar: "مِسْطَرَة" },
+            { tr: "Çanta", ar: "حَقيبَة" },
+            { tr: "Kapı", ar: "باب" },
+            { tr: "Pencere", ar: "نافِذَة" }
+        ]
+    },
+    yonler_eylemler: {
+        title: "Yönler ve Eylemler",
+        icon: "📍",
+        words: [
+            { tr: "Nerede?", ar: "أَيْن؟" },
+            { tr: "Burada", ar: "هُنا" },
+            { tr: "Orada", ar: "هُناك" },
+            { tr: "Üstünde", ar: "عَلى" },
+            { tr: "Altında", ar: "تَحْت" },
+            { tr: "Önünde", ar: "أَمام" },
+            { tr: "Arkasında", ar: "خَلْفَ" },
+            { tr: "Üzerinde", ar: "فَوْقَ" },
+            { tr: "Yanında", ar: "جانِبَ" },
+            { tr: "İçinde", ar: "في" },
+            { tr: "Dışında", ar: "خارِجَ" },
+            { tr: "Kitabı aç", ar: "اِفْتَح" },
+            { tr: "Otur", ar: "اِجْلِسْ" },
+            { tr: "Sınıfa gir", ar: "اُدْخُلِ الصَّفَّ" }
+        ]
+    },
+    evdeyim: {
+        title: "Evdeyim",
+        icon: "🏠",
+        words: [
+            { tr: "Ev", ar: "بَيْت" },
+            { tr: "Oda", ar: "غُرْفَة" },
+            { tr: "Yatak odası", ar: "غُرْفَة النَّوْم" },
+            { tr: "Oturma odası", ar: "غُرْفَة جُلوس" },
+            { tr: "Mutfak", ar: "مَطْبَخ" },
+            { tr: "Banyo", ar: "حَمّام" },
+            { tr: "Yatak", ar: "سَرير" },
+            { tr: "Masa", ar: "طاوِلَة" },
+            { tr: "Sandalye", ar: "كُرْسِيّ" },
+            { tr: "Televizyon", ar: "تِلْفاز" },
+            { tr: "Buzdolabı", ar: "ثَلّاجة" },
+            { tr: "Fırın", ar: "فُرْن" },
+            { tr: "Halı", ar: "سَجّادَة" },
+            { tr: "Telefon", ar: "هَاتِف" },
+            { tr: "Lamba", ar: "مِصْباح" }
+        ]
+    },
+    odamda: {
+        title: "Odamda",
+        icon: "🛏️",
+        words: [
+            { tr: "Odam", ar: "غُرْفَتي" },
+            { tr: "Yatak", ar: "سَرير" },
+            { tr: "Çalışma masası", ar: "مَكْتَب" },
+            { tr: "Sandalye", ar: "كُرْسِيّ" },
+            { tr: "Perde", ar: "سِتارَة" },
+            { tr: "Lamba", ar: "مِصْباح" },
+            { tr: "Ayna", ar: "مِرْآة" },
+            { tr: "Halı", ar: "سَجّادَة" },
+            { tr: "Dolap", ar: "دُولاب" },
+            { tr: "Temiz", ar: "نَظيف" },
+            { tr: "Düzenli", ar: "مُرَتَّب" },
+            { tr: "Kirli", ar: "وَسِخ" },
+            { tr: "Temizliyor", ar: "يُنَظِّفُ" },
+            { tr: "Düzenliyor", ar: "يُرَتِّبُ" }
+        ]
+    },
+    gunluk_rutin: {
+        title: "Günlük Rutin",
+        icon: "📅",
+        words: [
+            { tr: "Erken uyanıyorum", ar: "أَسْتَيْقِظُ مُبَكِّرًا" },
+            { tr: "Okula gidiyorum", ar: "أَذْهَبُ إِلى المَدْرَسَة" },
+            { tr: "Öğle namazı kılıyorum", ar: "أُصَلّي صَلاة الظُّهْر" },
+            { tr: "Ailemle öğle yemeği yiyorum", ar: "أَتَغَدّى مَع أُسْرَتي" },
+            { tr: "Derslerimi okuyorum", ar: "أَقْرَأُ dُروسي" },
+            { tr: "Ödev yazıyorum", ar: "أَكْتُبُ واجِباتي" },
+            { tr: "Bahçede oynuyorum", ar: "أَلْعَبُ في السّاحَة" },
+            { tr: "Anneme yardım ediyorum", ar: "أُساعِدُ أُمّي" },
+            { tr: "Dedemi ziyaret ediyorum", ar: "أَزورُ جَدِي" },
+            { tr: "Camiye gidiyorum", ar: "أَذْهَبُ إِلى المَسْجِد" },
+            { tr: "Yatağımı düzeltiyorum", ar: "أُرَتِّبُ سَريري" },
+            { tr: "Odamı temizliyorum", ar: "أُنَظِّفُ غُرْفَتي" },
+            { tr: "Derslerimi tekrar ediyorum", ar: "أُراجِعُ dُروسي" },
+            { tr: "Geç yatıyorum", ar: "أَنامُ مُتَأَخِّرًا" }
+        ]
+    },
+
+    // --- 10. SINIF KONULARI ---
+    guzel_davranislar: {
+        title: "Güzel Davranışlar",
+        icon: "✨",
+        words: [
+            { tr: "Doğruluk", ar: "صِدْق" },
+            { tr: "Güvenilirlik", ar: "أَمانَة" },
+            { tr: "Samimiyet", ar: "إِخْلاص" },
+            { tr: "Yardımlaşma", ar: "تَعاوُن" },
+            { tr: "Saygı", ar: "اِحْتِرام" },
+            { tr: "Sevgi", ar: "مَحَبَّة" },
+            { tr: "Teşekkür", ar: "شُكْر" },
+            { tr: "Özür dileme", ar: "الِاعْتِذار" },
+            { tr: "Merhamet", ar: "رَحْمَة" },
+            { tr: "Sabır", ar: "صَبْر" },
+            { tr: "Adalet", ar: "عَدْل" },
+            { tr: "Alçakgönüllülük", ar: "تَواضُع" },
+            { tr: "Yardım ediyor", ar: "يُساعِدُ" },
+            { tr: "Seviyor", ar: "يُحِبُّ" },
+            { tr: "Gülümsüyor", ar: "يَبْتَسِمُ" }
+        ]
+    },
+    mutlu_aile: {
+        title: "Mutlu Aile",
+        icon: "👨‍👩‍👧‍👦",
+        words: [
+            { tr: "Aile", ar: "أُسْرَة" },
+            { tr: "Baba", ar: "أَب" },
+            { tr: "Anne", ar: "أُمّ" },
+            { tr: "Erkek kardeş", ar: "أَخ" },
+            { tr: "Kız kardeş", ar: "أُخْت" },
+            { tr: "Dede", ar: "جَدّ" },
+            { tr: "Nine", ar: "جَدَّة" },
+            { tr: "Amca", ar: "عَمّ" },
+            { tr: "Hala", ar: "عَمَّة" },
+            { tr: "Dayı", ar: "خال" },
+            { tr: "Teyze", ar: "خالَة" },
+            { tr: "Akrabalar", ar: "أَقارِب" },
+            { tr: "Akrabaları ziyaret ediyor", ar: "يَزورُ الأَقارِب" },
+            { tr: "Büyüklere saygı gösteriyor", ar: "يَحْتَرِمُ الكِبار" },
+            { tr: "Küçüklere merhamet ediyor", ar: "يَرْحَمُ الصِّغار" }
+        ]
+    },
+    hobilerim: {
+        title: "Hobilerim",
+        icon: "🎨",
+        words: [
+            { tr: "Okuma", ar: "قِراءَة" },
+            { tr: "Yazma", ar: "كِتابَة" },
+            { tr: "Resim yapma", ar: "رَسْم" },
+            { tr: "Yemek pişirme", ar: "طَبْخ" },
+            { tr: "Fotoğrafçılık", ar: "تَصْوير" },
+            { tr: "Spor", ar: "رِياضَة" },
+            { tr: "Futbol", ar: "كُرَة القَدَم" },
+            { tr: "Basketbol", ar: "كُرَة السَّلَّة" },
+            { tr: "Seyahat", ar: "سَفَر" },
+            { tr: "Doğa", ar: "طَبيعَة" },
+            { tr: "Filmler", ar: "أَفْلام" },
+            { tr: "Müzik", ar: "موسيقى" },
+            { tr: "Kütüphane", ar: "مَكْتَبَة" },
+            { tr: "Boş zamanlarda", ar: "في الوَقْت الفارِغ" },
+            { tr: "Faydalı", ar: "مُفيد" },
+            { tr: "Eğlenceli", ar: "مُمْتِع" }
+        ]
+    },
+    saglikli_beslenme: {
+        title: "Sağlıklı Beslenme",
+        icon: "🥦",
+        words: [
+            { tr: "Meyveler", ar: "فَواكِه" },
+            { tr: "Sebzeler", ar: "خُضْراوات" },
+            { tr: "Et", ar: "لَحْم" },
+            { tr: "Balık", ar: "سَمَك" },
+            { tr: "Süt", ar: "لَبَن" },
+            { tr: "Peynir", ar: "جُبْن" },
+            { tr: "Yumurta", ar: "بَيْض" },
+            { tr: "Ekmek", ar: "خُبْز" },
+            { tr: "Su", ar: "ماء" },
+            { tr: "Meyve suyu", ar: "عَصير" },
+            { tr: "Kahvaltı", ar: "فَطور" },
+            { tr: "Öğle yemeği", ar: "غَداء" },
+            { tr: "Akşam yemeği", ar: "عَشاء" }
+        ]
+    },
+       meslekler_10: {
+        title: "Meslekler",
+        icon: "💼",
+        words: [
+            { tr: "Doktor", ar: "طَبيب" },
+            { tr: "Mühendis", ar: "مُهَنْدِس" },
+            { tr: "Öğretmen", ar: "مُعَلِّم" }, 
+            { tr: "Polis", ar: "شُرْطِيّ" },
+            { tr: "Aşçı", ar: "طَبّاخ" },
+            { tr: "Çiftçi", ar: "فَلّاح" },
+            { tr: "Pilot", ar: "طَيّار" },
+            { tr: "Marangoz", ar: "نَجّار" },
+            { tr: "Terzi", ar: "خَيّاط" },
+            { tr: "Kasap", ar: "جَزّار" }
+        ]
+    },
+    hava_durumu_10: {
+        title: "Hava Durumu",
+        icon: "⛅",
+        words: [
+            { tr: "Sıcak", ar: "حارّ" },
+            { tr: "Soğuk", ar: "بارِد" },
+            { tr: "Güneşli", ar: "مُشْمِس" },
+            { tr: "Yağmurlu", ar: "مُمْطِر" },
+            { tr: "Karlı", ar: "مُثْلِج" },
+            { tr: "Bulutlu", ar: "غائِم" },
+            { tr: "Rüzgarlı", ar: "عاصِف" },
+            { tr: "Ilıman", ar: "مُعْتَدِل" }
+        ]
+    },
+    vucudumuz_10: {
+        title: "Vücudumuz",
+        icon: "🧍",
+        words: [
+            { tr: "Baş / Kafa", ar: "رَأْس" },
+            { tr: "Göz", ar: "عَيْن" },
+            { tr: "Burun", ar: "أَنْف" },
+            { tr: "Ağız", ar: "فَم" },
+            { tr: "Kulak", ar: "أُذُن" },
+            { tr: "El", ar: "يَد" },
+            { tr: "Ayak", ar: "رِجْل" },
+            { tr: "Kalp", ar: "قَلْب" },
+            { tr: "Yüz", ar: "وَجْه" },
+            { tr: "Dil", ar: "لِسان" }
+        ]
     }
-  },
-
-
-  showEndUI(){
-    const p1 = this.state.s1, p2 = this.state.s2;
-    const isDraw = p1===p2;
-    const txt = isDraw ? 'التَّعادُل' : (p1>p2 ? 'فازَ المُتَسابِق الأَوَّل' : 'فازَ المُتَسابِق الثّاني');
-    this.dom.winText.textContent = txt;
-    this.dom.gameOver.classList.remove('hidden');
-  }
 };
 
-/* =========================
-   GLOBAL BACK HANDLER (delegation)
-========================= */
-document.addEventListener('click', (ev)=>{
-  const btn = ev.target.closest('.back-btn');
-  if(!btn) return;
-  ev.preventDefault();
-  try{ App.playSound('menuClick'); }catch(e){}
-  const depth = (history.state && history.state.depth) || 0;
-  if(depth>0){ history.back(); }
-  else{ App.fallbackToParent(); }
-});
+// --- DEĞİŞKENLER VE AYARLAR ---
+const cardColors = ["#364fc7", "#63e6be", "#ff922b", "#f06595", "#845ef7", "#51cf66", "#fcc419", "#339af0"];
+let mode = 'study', isAr = true, scores = [0, 0], currentPlayer = 1, activeFlipped = [];
+let currentWords = []; // Seçilen konunun kelimeleri
 
-/* =========================
-   BOOT
-========================= */
-document.addEventListener('DOMContentLoaded', ()=>App.init());
+// --- SİSTEM BAŞLATICI ---
+window.onload = () => {
+    renderMenu(); 
+};
+
+// --- MENÜ YÖNETİMİ ---
+function renderMenu() {
+    const list = document.getElementById('topics-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    Object.keys(topics).forEach(key => {
+        const topic = topics[key];
+        const card = document.createElement('div');
+        card.style = "background:white; padding:25px; border-radius:20px; box-shadow:0 12px 25px rgba(0,0,0,0.1); cursor:pointer; border:3px solid transparent; transition:0.3s;";
+        card.innerHTML = `<div style="font-size:3rem;">${topic.icon}</div><h3>${topic.title}</h3><span>${topic.words.length} Kelime</span>`;
+        
+        card.onclick = () => {
+            currentWords = [...topic.words]; // Referans hatasını önlemek için kopya al
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            setMode('study'); // Varsayılan olarak çalışma moduyla başla
+        };
+        list.appendChild(card);
+    });
+}
+
+function showMenu() {
+    if (typeof playSound === 'function') playSound('snd-click');
+    document.getElementById('menu-screen').style.display = 'flex';
+    document.getElementById('game-screen').style.display = 'none';
+    currentWords = []; // Seçimi temizle[cite: 3]
+}
+
+// --- OYUN MODU YÖNETİMİ ---
+function setMode(m) {
+    if (typeof playSound === 'function') playSound('snd-click');
+    mode = m; 
+    scores = [0, 0]; 
+    currentPlayer = 1; 
+    activeFlipped = [];
+
+    const studyBtn = document.getElementById('btn-study');
+    const mainLangBtn = document.getElementById('lang-btn-main');
+    const memStartBtn = document.getElementById('btn-memory-start');
+    const memControls = document.getElementById('memory-controls');
+    const toggle = document.getElementById('mode-toggle');
+
+    // "Kartlar" butonu hafıza modundayken de görünür kalmalı (talebiniz üzerine)[cite: 3]
+    studyBtn.style.display = 'inline-block';
+
+    if (m === 'study') {
+        studyBtn.classList.add('active');
+        memStartBtn.classList.remove('active');
+        mainLangBtn.style.display = 'inline-block';
+        memStartBtn.style.display = 'inline-block';
+        memControls.style.display = 'none';
+    } else {
+        studyBtn.classList.remove('active');
+        memStartBtn.classList.add('active');
+        mainLangBtn.style.display = 'none';
+        memStartBtn.style.display = 'none'; // Hafıza modunda başlat butonunu gizle
+        memControls.style.display = 'flex';
+        if (toggle) toggle.checked = (m === 'mem2');
+    }
+    init(); // Kartları yeniden oluştur[cite: 3]
+}
+
+// --- GRID VE KART OLUŞTURMA (Hataların Giderildiği Bölüm) ---
+function init() {
+    if (!currentWords || currentWords.length === 0) {
+        console.warn("Lütfen önce bir konu seçin.");
+        return;
+    }
+
+    const grid = document.getElementById('grid');
+    const p1Box = document.getElementById('p1-box');
+    const p2Box = document.getElementById('p2-box');
+    const pairCountInput = document.getElementById('pairCount');
+    const pairCount = pairCountInput ? parseInt(pairCountInput.value) : 9;
+    const isMobile = window.innerWidth <= 768;
+    
+    grid.innerHTML = '';
+    const isStudy = mode === 'study';
+    const isMem2 = mode === 'mem2';
+
+    if (p1Box) p1Box.style.display = isMem2 ? 'flex' : 'none';
+    if (p2Box) p2Box.style.display = isMem2 ? 'flex' : 'none';
+    grid.className = `grid ${isStudy ? '' : 'memory-mode'}`;
+
+    let selectedWords = isStudy ? currentWords : currentWords.slice(0, pairCount);
+    let displayList = [];
+
+    if (isStudy) {
+        displayList = selectedWords;
+        grid.style.height = "auto"; 
+        grid.style.gridTemplateColumns = isMobile ? "repeat(2, 1fr)" : "repeat(5, 1fr)";
+        grid.style.gridAutoRows = isMobile ? "120px" : "minmax(180px, auto)"; 
+    } else {
+        selectedWords.forEach(w => {
+            displayList.push({ text: w.ar, pairId: w.ar, lang: 'ar' });
+            displayList.push({ text: w.tr, pairId: w.ar, lang: 'tr' });
+        });
+        displayList.sort(() => Math.random() - 0.5);
+        
+        let colCount = isMobile ? 3 : (displayList.length <= 12 ? 4 : 6);
+        let rowCount = Math.ceil(displayList.length / colCount);
+        grid.style.height = "100%"; 
+        grid.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
+        grid.style.gridTemplateRows = `repeat(${rowCount}, 1fr)`; 
+        grid.style.gridAutoRows = "none";
+    }
+
+    grid.setAttribute('data-total', displayList.length);
+
+    displayList.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.id = isStudy ? item.ar : item.pairId;
+        
+        const isBackAr = isStudy ? !isAr : (item.lang === 'ar');
+        const color = isStudy ? cardColors[index % cardColors.length] : "#5c7cfa";
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-face card-front" style="background-color: ${color}">
+                    <span class="${isStudy && isAr ? 'lang-ar' : 'lang-tr'}">
+                        ${isStudy ? (isAr ? item.ar : item.tr) : ""}
+                    </span>
+                </div>
+                <div class="card-face card-back ${isBackAr ? 'lang-ar' : 'lang-tr'}">
+                    <span>${isStudy ? (isAr ? item.tr : item.ar) : item.text}</span>
+                </div>
+            </div>`;
+        
+        card.onclick = () => handleFlip(card);
+        grid.appendChild(card);
+    });
+    updateUI();
+}
+
+// --- OYUN MANTIĞI VE YARDIMCI FONKSİYONLAR ---
+function handleFlip(card) {
+    if (card.classList.contains('matched') || (mode !== 'study' && activeFlipped.length >= 2)) return;
+
+    if (mode === 'study') {
+        if (card.classList.contains('flipped')) {
+            playSound('snd-flip');
+            clearTimeout(card.studyTimer);
+            card.classList.remove('flipped');
+        } else {
+            playSound('snd-flip');
+            card.classList.add('flipped');
+            card.studyTimer = setTimeout(() => {
+                if(card.classList.contains('flipped')) {
+                    playSound('snd-flip'); 
+                    card.classList.remove('flipped');
+                }
+            }, 3000);
+        }
+        return;
+    }
+
+    if (card.classList.contains('flipped')) return;
+    playSound('snd-flip');
+    card.classList.add('flipped');
+    activeFlipped.push(card);
+    if (activeFlipped.length === 2) checkMatch();
+}
+
+function checkMatch() {
+    const [a, b] = activeFlipped;
+    const isMatch = a.dataset.id === b.dataset.id;
+
+    setTimeout(() => {
+        if (isMatch) {
+            playSound('snd-match');
+            a.classList.add('matched');
+            b.classList.add('matched');
+            if (mode === 'mem2') scores[currentPlayer - 1]++; else scores[0]++;
+        } else {
+            if (typeof playSound !== 'undefined') playSound('snd-wrong'); 
+            a.classList.remove('flipped');
+            b.classList.remove('flipped');
+            if (mode === 'mem2') currentPlayer = (currentPlayer === 1) ? 2 : 1;
+        }
+        activeFlipped = [];
+        updateUI();
+    }, 800);
+}
+
+function updateUI() {
+    const s1 = document.getElementById('s1');
+    const s2 = document.getElementById('s2');
+    if (s1) s1.innerText = scores[0];
+    if (s2) s2.innerText = scores[1];
+    document.getElementById('p1-box').classList.toggle('active-p', currentPlayer === 1);
+    document.getElementById('p2-box').classList.toggle('active-p', currentPlayer === 2);
+}
+
+function playSound(id) {
+    const s = document.getElementById(id);
+    if (!s) return;
+    s.pause();
+    s.currentTime = 0;
+    s.volume = 0.15;
+    s.play().catch(() => {});
+}
+
+function toggleLang() {
+    playSound('snd-click');
+    isAr = !isAr;
+    init();
+}
+
+function toggleSwitch(isCheck) {
+    const toggle = document.getElementById('mode-toggle');
+    if (toggle) {
+        toggle.checked = isCheck;
+        toggleMemoryMode(toggle);
+    }
+}
+
+function toggleMemoryMode(checkbox) {
+    setMode(checkbox.checked ? 'mem2' : 'mem1');
+}
 </script>
+
 </body>
 </html>
