@@ -134,7 +134,8 @@
         .card { perspective: 1000px; cursor: pointer; width: 100%; height: 100%; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .card.flipped .card-inner { transform: rotateY(180deg); }
- .card-face {
+ /* GENEL KART YÜZÜ */
+.card-face {
     position: absolute; 
     width: 100%; 
     height: 100%; 
@@ -143,7 +144,6 @@
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    
     box-shadow: var(--shadow); 
     border: 4px solid white; 
     box-sizing: border-box; 
@@ -152,21 +152,35 @@
     word-break: break-word;
 }
 
-/* ARAPÇA: Büyük ve okunaklı olması için alt sınırı yüksek tuttuk */
+/* ARAPÇA BOYUT AYARI */
 .lang-ar {
     font-family: 'arakom', sans-serif !important;
-    font-size: clamp(1.4rem, 5vw, 3rem) !important; 
+    font-size: clamp(1.4rem, 5vw, 3rem) !important;
     line-height: 1.2;
-    direction: rtl;
 }
 
-/* TÜRKÇE: Daha küçük ve kibar olması için alt sınırı düşük tuttuk */
+/* TÜRKÇE BOYUT AYARI */
 .lang-tr {
     font-family: 'arakom', sans-serif !important;
-    font-size: clamp(0.8rem, 3vw, 2.2rem) !important; 
+    font-size: clamp(0.85rem, 3vw, 2rem) !important;
     font-weight: normal !important;
-    color: #444 !important;
     line-height: 1.1;
+}
+
+/* KARTLAR (STUDY) MODU ÖZEL RENK AYARLARI */
+/* Ön Yüz (Açık Hali): Yazı her zaman BEYAZ */
+.grid:not(.memory-mode) .card-front span {
+    color: white !important;
+}
+
+/* Arka Yüz (Dönünce): Yazı her zaman SİYAH */
+.grid:not(.memory-mode) .card-back span {
+    color: #000 !important;
+}
+
+/* HAFIZA OYUNU MODU (Mevcut halini korur) */
+.grid.memory-mode .card-back {
+    color: #333 !important;
 }
         .card-front { color: white; }
         .card-back { transform: rotateY(180deg); background: #ffffff; color: #333; }
