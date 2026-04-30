@@ -12,9 +12,11 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;300&family=Amiri:wght@400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+
+      
         :root {
             --pdf-red: #b30b00;
             --pdf-dark: #8b0000;
@@ -44,7 +46,7 @@
     padding: 5px 15px; 
     z-index: 3000; 
 }
-        .back-btn { background: var(--pdf-dark); color: white; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; cursor: pointer; border: none; font-size: 1.5rem; }
+        .back-btn { background: var(--pdf-dark); color: white; text-decoration: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: normal; cursor: pointer; border: none; font-size: 1.5rem; }
         .pdf-links { display: flex; gap: 10px; overflow-x: auto; flex-grow: 1; justify-content: center; }
         .pdf-links::-webkit-scrollbar { display: none; }
         .pdf-link, .nav-trigger { color: white; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 4px; background: rgba(0,0,0,0.2); white-space: nowrap; cursor: pointer; border: none; }
@@ -98,7 +100,7 @@
         /* Tablo Stilleri */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background: #f8fafc; font-weight: bold; }
+        th { background: #f8fafc; font-weight: normal; }
        .ar-txt { 
     font-family: 'IBM Plex Sans Arabic', sans-serif; 
     font-size: 1.3rem; 
@@ -130,6 +132,7 @@
         .tr-container { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; justify-content: center; width: 100%; }
        .ar-output { 
     font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 1.3rem;
     direction: rtl; 
     display: block; /* Flex yerine block kullanarak kelime akışını doğal bırakıyoruz */
     text-align: center;
@@ -142,15 +145,15 @@
     margin-left: 8px; /* Kelimeler arası boşluk */
 }
 
-        #sentence-mode .word { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; cursor: pointer; transition: 0.2s; }
-        #sentence-mode .ar-output { font-size: clamp(3.5rem, 8vw, 6rem); color: #1e293b; margin-top: 10px; }
+        #sentence-mode .word { font-size: clamp(2.5rem, 6vw, 6rem); font-weight: 500; cursor: pointer; transition: 0.2s; }
+        #sentence-mode .ar-output { font-size: clamp(2.5rem, 6vw, 6rem); color: #1e293b; margin-top: 10px; }
 
         #dialog-mode { display: none; flex-direction: column; height: 100%; gap: 15px; }
         .dialog-row { flex: 1; display: flex; flex-direction: column; border-radius: 20px; padding: 20px; justify-content: center; align-items: center; }
         .p1-row { background: #f0f7ff; border: 3px solid var(--p1-color); }
         .p2-row { background: #ecfdf5; border: 3px solid var(--p2-color); }
-        #dialog-mode .word { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; }
-        #dialog-mode .ar-output { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-top: 20px; }
+        #dialog-mode .word { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 400; }
+        #dialog-mode .ar-output { font-size: clamp(2rem, 4vw, 3.2rem); margin-top: 20px; }
 
         .passive { color: #e2e8f0; pointer-events: none; }
         .active { color: #000; transform: scale(1.1); animation: bounce 1.2s infinite; }
@@ -180,7 +183,7 @@
 }
 .word.completed {
     background-color: transparent !important;
-    font-weight: bold;
+    font-weight: normal;
     transform: scale(1);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -366,6 +369,211 @@
         min-width: 100px; /* Butonlara minimum genişlik verir */
     }
 }
+
+/* Sağ taraftaki switch alanı */
+.switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-left: 20px; /* Diğer butonlarla arasına boşluk */
+}
+
+/* Switch (Toggle) Tasarımı */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 28px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--p1-color); /* TR tarafı mavi */
+    transition: .4s;
+    border-radius: 34px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--p2-color); /* AR tarafı yeşil */
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.switch-text {
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+/* Aktif olan dil parlasın */
+.switch-text.active-lang {
+    opacity: 1;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+
+/* Ateş ve Kıvılcım Parlama Animasyonu */
+@keyframes tr-fire-glow {
+    0% { box-shadow: 0 0 8px #ff4500, 0 0 15px #ff8c00; transform: scale(1); }
+    50% { box-shadow: 0 0 20px #ff4500, 0 0 35px #ff0000, 0 0 10px #fff700; transform: scale(1.05); }
+    100% { box-shadow: 0 0 8px #ff4500, 0 0 15px #ff8c00; transform: scale(1); }
+}
+
+/* Sayfa açıldığında ve TR aktifken slider (yuvarlak tuş) */
+.fire-mode .slider:before {
+    content: "🔥" !important; /* İçine emoji ekler */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    animation: tr-fire-glow 0.7s infinite alternate;
+    background-color: #ff4500 !important;
+}
+
+/* TR Yazısı için kıvılcım rengi */
+.fire-mode #lang-tr {
+    color: white !important; /* Artık hep beyaz */
+    text-shadow: 0 0 10px #ff8c00, 2px 2px 5px rgba(0,0,0,0.3);
+    font-weight: bold;
+    position: relative;
+}
+
+/* TR yanına küçük bir emoji eklemek isterseniz */
+.fire-mode #lang-tr::after {
+    content: "✨";
+    font-size: 10px;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+}
+
+/* Navbar Genel Yapısı */
+.navbar {
+    background-color: var(--pdf-red) !important; /* Mevcut kırmızı değişkeniniz */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 12px 20px;
+    border-bottom: 2px solid var(--pdf-dark);
+}
+
+/* Navbar İçindeki Butonlar */
+.nav-trigger {
+    background: rgba(255, 255, 255, 0.1) !important; /* Hafif transparan beyaz */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* Butonun Üzerine Gelince (Hover) */
+.nav-trigger:hover {
+    background-color: white !important; /* Arka plan beyaza döner */
+    color: var(--pdf-red) !important; /* Yazı kırmızıya döner */
+    transform: translateY(-3px); /* Hafif yukarı zıplar */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Gölgesi derinleşir */
+}
+
+/* Geri Butonu (❮) */
+.back-btn {
+    background: white !important;
+    color: var(--pdf-red) !important;
+    border-radius: 50% !important;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.1) translateX(-3px);
+    background-color: #f0f0f0 !important;
+}
+
+/* Kaydırılabilir Link Alanı (Mobilde rahatlık sağlar) */
+.pdf-links {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 5px 0;
+    scrollbar-width: none; /* Scroll barı gizler */
+}
+.pdf-links::-webkit-scrollbar {
+    display: none;
+}
+
+/* İleri-Geri Buton Grubu Konteynırı */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Genel Buton Tasarımı */
+.nav-btn {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    color: #495057;
+    padding: 12px 25px;
+    border-radius: 50px; /* Oval yapı */
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Hover Efekti */
+.nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    background-color: #fff;
+    border-color: var(--pdf-red);
+    color: var(--pdf-red);
+}
+
+/* Cümle Bittiğinde İleri Butonu Vurgusu */
+.highlight-next {
+    background-color: var(--pdf-red) !important;
+    color: white !important;
+    border-color: var(--pdf-dark) !important;
+    animation: pulse-red 1.5s infinite;
+    transform: scale(1.1);
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(179, 11, 0, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(179, 11, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(179, 11, 0, 0); }
+}
+
  </style>
 </head>
 <body>
@@ -390,15 +598,25 @@
 
 <nav class="navbar">
     <button class="back-btn" onclick="goHome()">❮</button>
+
     <div class="pdf-links">
         <button class="nav-trigger" onclick="showPopup('words')">Konu Kelimeleri</button> 
         <button class="nav-trigger" onclick="showPopup('prepositions')">Harfler</button>
         <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar & Zarflar</button>
         <button class="nav-trigger" onclick="showPopup('pronouns')">Zamirler</button>
         <button class="nav-trigger" onclick="showPopup('suffix')">Fiil Kipleri</button>
-        <button class="nav-trigger" onclick="showPopup('tamlamalar')">Tamlama ve Cümleler</button>
+        <button class="nav-trigger" onclick="showPopup('tamlamalar')">Tamlamalar</button>
         <button class="nav-trigger" onclick="showPopup('sulasi')">3</button>
         <button class="nav-trigger" onclick="showPopup('mezid')">+3</button>
+    </div>
+
+    <div class="switch-wrapper">
+        <span class="switch-text active-lang" id="lang-tr">TR</span>
+        <label class="switch">
+            <input type="checkbox" id="direction-toggle" onchange="toggleDirection()">
+            <span class="slider"></span>
+        </label>
+        <span class="switch-text" id="lang-ar">AR</span>
     </div>
 </nav>
 
@@ -420,8 +638,12 @@
 </main>
 
 <div class="controls">
-    <button class="nav-btn" onclick="changeSentence(-1)">❮ GERİ</button>
-    <button class="nav-btn" onclick="changeSentence(1)">İLERİ ❯</button>
+    <button class="nav-btn" onclick="changeSentence(-1)">
+        <span>❮</span> Geri
+    </button>
+    <button id="next-btn" class="nav-btn" onclick="changeSentence(1)">
+        İleri <span>❯</span>
+    </button>
 </div>
 
 <script>
@@ -571,7 +793,6 @@ words: `
             <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">لِيرَات<br><small style="color: #64748b; font-size: 11px;">Liralar</small></td>
             <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">لِيرَة<br><small style="color: #64748b; font-size: 11px;">Lira</small></td>
         </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -594,211 +815,122 @@ words: `
 
 
 <tr>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">رُكُوب<br><small style="color: #64748b; font-size: 12px;">Binmek</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِرْكَبْ<br><small style="color: #64748b; font-size: 12px;">Bin</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَرْكَبُ<br><small style="color: #64748b; font-size: 12px;">Biniyor</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">رَكِبَ<br><small style="color: #64748b; font-size: 12px;">Bindi</small></td>
-        </tr>
-        <tr>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">سَفَر<br><small style="color: #64748b; font-size: 12px;">Yolculuk Etmek</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">سَافِرْ<br><small style="color: #64748b; font-size: 12px;">Yolculuk et</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يُسَافِرُ<br><small style="color: #64748b; font-size: 12px;">Yolculuk ediyor</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">سَافَرَ<br><small style="color: #64748b; font-size: 12px;">Yolculuk etti</small></td>
-        </tr>
-        <tr>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">عُبُور<br><small style="color: #64748b; font-size: 12px;">Geçmek</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اُعْبُرْ<br><small style="color: #64748b; font-size: 12px;">Geç</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَعْبُرُ<br><small style="color: #64748b; font-size: 12px;">Geçiyor</small></td>
-            <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">عَبَرَ<br><small style="color: #64748b; font-size: 12px;">Geçti</small></td>
-        </tr>
-
-
-<tr>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">سُكُون / سَكَن<br><small style="color: #64748b; font-size: 11px;">Oturmak</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">اُسْكُنْ<br><small style="color: #64748b; font-size: 11px;">Otur</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">يَسْكُنُ<br><small style="color: #64748b; font-size: 11px;">Oturuyor</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">سَكَنَ<br><small style="color: #64748b; font-size: 11px;">Oturdu</small></td>
-</tr>
-
-
-
-<tr>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">اِتِّجَاه<br><small style="color: #64748b; font-size: 11px;">Yönelmek</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">اِتَّجِهْ<br><small style="color: #64748b; font-size: 11px;">Yönel</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">يَتَّجِهُ<br><small style="color: #64748b; font-size: 11px;">Yöneliyor</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">اِتَّجَهَ<br><small style="color: #64748b; font-size: 11px;">Yöneldi</small></td>
-</tr>
-
-
-<tr>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">وُصُول<br><small style="color: #64748b; font-size: 11px;">Varmak</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">صِلْ<br><small style="color: #64748b; font-size: 11px;">Var</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">يَصِلُ<br><small style="color: #64748b; font-size: 11px;">Varıyor</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">وَصَلَ<br><small style="color: #64748b; font-size: 11px;">Vardı</small></td>
-</tr>
-
-
-<tr>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">مَشْي<br><small style="color: #64748b; font-size: 11px;">Yürümek</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">اِمْشِ<br><small style="color: #64748b; font-size: 11px;">Yürü</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">يَمْشِي<br><small style="color: #64748b; font-size: 11px;">Yürüyor</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">مَشَى<br><small style="color: #64748b; font-size: 11px;">Yürüdü</small></td>
-</tr>
-
-
-
-<tr>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">وُقُوف<br><small style="color: #64748b; font-size: 11px;">Durmak</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">قِفْ<br><small style="color: #64748b; font-size: 11px;">Dur</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">يَقِفُ<br><small style="color: #64748b; font-size: 11px;">Duruyor</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">وَقَفَ<br><small style="color: #64748b; font-size: 11px;">Durdu</small></td>
+    <td class="ar-txt">اِسْتِيقَاظ<br><small style="font-size:11px; color:#666;">Uyanmak</small></td>
+    <td class="ar-txt">اِسْتَيْقِظْ<br><small style="font-size:11px; color:#666;">Uyan</small></td>
+    <td class="ar-txt">يَسْتَيْقِظُ<br><small style="font-size:11px; color:#666;">Uyanıyor</small></td>
+    <td class="ar-txt">اِسْتَيْقَظَ<br><small style="font-size:11px; color:#666;">Uyandı</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">خُرُوج<br><small style="color: #64748b; font-size: 11px;">Çıkmak</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">اُخْرُجْ<br><small style="color: #64748b; font-size: 11px;">Çık</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">يَخْرُجُ<br><small style="color: #64748b; font-size: 11px;">Çıkıyor</small></td>
-    <td class="ar-txt" style="padding: 12px; border: 1px solid #fee2e2;">خَرَجَ<br><small style="color: #64748b; font-size: 11px;">Çıktı</small></td>
+    <td class="ar-txt">وُضُوء<br><small style="font-size:11px; color:#666;">Abdest Almak</small></td>
+    <td class="ar-txt">تَوَضَّأْ<br><small style="font-size:11px; color:#666;">Abdest Al</small></td>
+    <td class="ar-txt">يَتَوَضَّأُ<br><small style="font-size:11px; color:#666;">Abdest Alıyor</small></td>
+    <td class="ar-txt">تَوَضَّأَ<br><small style="font-size:11px; color:#666;">Abdest Aldı</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِسْتِيقَاظ<br><small style="color: #64748b; font-size: 12px;">Uyanmak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِسْتَيْقِظْ<br><small style="color: #64748b; font-size: 12px;">Uyan</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَسْتَيْقِظُ<br><small style="color: #64748b; font-size: 12px;">Uyanıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِسْتَيْقَظَ<br><small style="color: #64748b; font-size: 12px;">Uyandı</small></td>
+    <td class="ar-txt">صَلَاة<br><small style="font-size:11px; color:#666;">Namaz Kılmak</small></td>
+    <td class="ar-txt">صَلِّ<br><small style="font-size:11px; color:#666;">Namaz Kıl</small></td>
+    <td class="ar-txt">يُصَلِّي<br><small style="font-size:11px; color:#666;">Namaz Kılıyor</small></td>
+    <td class="ar-txt">صَلَّى<br><small style="font-size:11px; color:#666;">Namaz Kıldı</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَوَضُّؤ<br><small style="color: #64748b; font-size: 12px;">Abdest Almak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَوَضَّأْ<br><small style="color: #64748b; font-size: 12px;">Abdest Al</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَتَوَضَّأُ<br><small style="color: #64748b; font-size: 12px;">Abdest Alıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَوَضَّأَ<br><small style="color: #64748b; font-size: 12px;">Abdest Aldı</small></td>
+    <td class="ar-txt">تَنَاوُل<br><small style="font-size:11px; color:#666;">Yemek/Almak</small></td>
+    <td class="ar-txt">تَنَاوَلْ<br><small style="font-size:11px; color:#666;">Ye/Al</small></td>
+    <td class="ar-txt">يَتَنَاوَلُ<br><small style="font-size:11px; color:#666;">Yiyor/Alıyor</small></td>
+    <td class="ar-txt">تَنَاوَلَ<br><small style="font-size:11px; color:#666;">Yedi/Aldı</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">صَلَاة<br><small style="color: #64748b; font-size: 12px;">Namaz Kılmak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">صَلِّ<br><small style="color: #64748b; font-size: 12px;">Namaz Kıl</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يُصَلِّي<br><small style="color: #64748b; font-size: 12px;">Namaz Kılıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">صَلَّى<br><small style="color: #64748b; font-size: 12px;">Namaz Kıldı</small></td>
+    <td class="ar-txt">لُبْس<br><small style="font-size:11px; color:#666;">Giymek</small></td>
+    <td class="ar-txt">اِلْبَسْ<br><small style="font-size:11px; color:#666;">Giy</small></td>
+    <td class="ar-txt">يَلْبَسُ<br><small style="font-size:11px; color:#666;">Giyiyor</small></td>
+    <td class="ar-txt">لَبِسَ<br><small style="font-size:11px; color:#666;">Giydi</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَنَاوُل<br><small style="color: #64748b; font-size: 12px;">Yemek/Almak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَنَاوَلْ<br><small style="color: #64748b; font-size: 12px;">Ye/Al</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَتَنَاوَلُ<br><small style="color: #64748b; font-size: 12px;">Yiyor/Alıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَنَاوَلَ<br><small style="color: #64748b; font-size: 12px;">Yedi/Aldı</small></td>
+    <td class="ar-txt">ذَهَاب<br><small style="font-size:11px; color:#666;">Gitmek</small></td>
+    <td class="ar-txt">اِذْهَبْ<br><small style="font-size:11px; color:#666;">Git</small></td>
+    <td class="ar-txt">يَذْهَبُ<br><small style="font-size:11px; color:#666;">Gidiyor</small></td>
+    <td class="ar-txt">ذَهَبَ<br><small style="font-size:11px; color:#666;">Gitti</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">لُبْس<br><small style="color: #64748b; font-size: 12px;">Giymek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِلْبَسْ<br><small style="color: #64748b; font-size: 12px;">Giy</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَلْبَسُ<br><small style="color: #64748b; font-size: 12px;">Giyiyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">لَبِسَ<br><small style="color: #64748b; font-size: 12px;">Giydi</small></td>
+    <td class="ar-txt">رُجُوع<br><small style="font-size:11px; color:#666;">Dönmek</small></td>
+    <td class="ar-txt">اِرْجِعْ<br><small style="font-size:11px; color:#666;">Dön</small></td>
+    <td class="ar-txt">يَرْجِعُ<br><small style="font-size:11px; color:#666;">Dönüyor</small></td>
+    <td class="ar-txt">رَجَعَ<br><small style="font-size:11px; color:#666;">Döndü</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">ذَهَاب<br><small style="color: #64748b; font-size: 12px;">Gitmek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِذْهَبْ<br><small style="color: #64748b; font-size: 12px;">Git</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَذْهَبُ<br><small style="color: #64748b; font-size: 12px;">Gidiyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">ذَهَبَ<br><small style="color: #64748b; font-size: 12px;">Gitti</small></td>
+    <td class="ar-txt">مُسَاعَدَة<br><small style="font-size:11px; color:#666;">Yardım Etmek</small></td>
+    <td class="ar-txt">سَاعِدْ<br><small style="font-size:11px; color:#666;">Yardım Et</small></td>
+    <td class="ar-txt">يُسَاعِدُ<br><small style="font-size:11px; color:#666;">Yardım Ediyor</small></td>
+    <td class="ar-txt">سَاعَدَ<br><small style="font-size:11px; color:#666;">Yardım Etti</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">رُجُوع<br><small style="color: #64748b; font-size: 12px;">Dönmek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِرْجِعْ<br><small style="color: #64748b; font-size: 12px;">Dön</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَرْجِعُ<br><small style="color: #64748b; font-size: 12px;">Dönüyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">رَجَعَ<br><small style="color: #64748b; font-size: 12px;">Döndü</small></td>
+    <td class="ar-txt">دِرَاسَة<br><small style="font-size:11px; color:#666;">Ders Çalışmak</small></td>
+    <td class="ar-txt">اُدْرُسْ<br><small style="font-size:11px; color:#666;">Çalış</small></td>
+    <td class="ar-txt">يَدْرُسُ<br><small style="font-size:11px; color:#666;">Çalışıyor</small></td>
+    <td class="ar-txt">دَرَسَ<br><small style="font-size:11px; color:#666;">Çalıştı</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">مُسَاعَدَة<br><small style="color: #64748b; font-size: 12px;">Yardım Etmek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">سَاعِدْ<br><small style="color: #64748b; font-size: 12px;">Yardım Et</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يُسَاعِدُ<br><small style="color: #64748b; font-size: 12px;">Yardım Ediyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">سَاعَدَ<br><small style="color: #64748b; font-size: 12px;">Yardım Etti</small></td>
+    <td class="ar-txt">نَوْم<br><small style="font-size:11px; color:#666;">Uyumak</small></td>
+    <td class="ar-txt">نَمْ<br><small style="font-size:11px; color:#666;">Uyu</small></td>
+    <td class="ar-txt">يَنَامُ<br><small style="font-size:11px; color:#666;">Uyuyor</small></td>
+    <td class="ar-txt">نَامَ<br><small style="font-size:11px; color:#666;">Uyudu</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">دِرَاسَة<br><small style="color: #64748b; font-size: 12px;">Çalışmak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اُدْرُسْ<br><small style="color: #64748b; font-size: 12px;">Çalış</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَدْرُسُ<br><small style="color: #64748b; font-size: 12px;">Çalışıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">دَرَسَ<br><small style="color: #64748b; font-size: 12px;">Çalıştı</small></td>
+    <td class="ar-txt">تَنْظِيف<br><small style="font-size:11px; color:#666;">Temizlemek</small></td>
+    <td class="ar-txt">نَظِّفْ<br><small style="font-size:11px; color:#666;">Temizle</small></td>
+    <td class="ar-txt">يُنَظِّفُ<br><small style="font-size:11px; color:#666;">Temizliyor</small></td>
+    <td class="ar-txt">نَظَّفَ<br><small style="font-size:11px; color:#666;">Temizledi</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">نَوْم<br><small style="color: #64748b; font-size: 12px;">Uyumak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">نَمْ<br><small style="color: #64748b; font-size: 12px;">Uyu</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَنَامُ<br><small style="color: #64748b; font-size: 12px;">Uyuyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">نَامَ<br><small style="color: #64748b; font-size: 12px;">Uyudu</small></td>
+    <td class="ar-txt">شُرْب<br><small style="font-size:11px; color:#666;">İçmek</small></td>
+    <td class="ar-txt">اِشْرَبْ<br><small style="font-size:11px; color:#666;">İç</small></td>
+    <td class="ar-txt">يَشْرَبُ<br><small style="font-size:11px; color:#666;">İçiyor</small></td>
+    <td class="ar-txt">شَرِبَ<br><small style="font-size:11px; color:#666;">İçti</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَنْظِيف<br><small style="color: #64748b; font-size: 12px;">Temizlemek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">نَظِّفْ<br><small style="color: #64748b; font-size: 12px;">Temizle</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يُنَظِّفُ<br><small style="color: #64748b; font-size: 12px;">Temizliyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">نَظَّفَ<br><small style="color: #64748b; font-size: 12px;">Temizledi</small></td>
+    <td class="ar-txt">أَكْل<br><small style="font-size:11px; color:#666;">Yemek</small></td>
+    <td class="ar-txt">كُلْ<br><small style="font-size:11px; color:#666;">Ye</small></td>
+    <td class="ar-txt">يَأْكُلُ<br><small style="font-size:11px; color:#666;">Yiyor</small></td>
+    <td class="ar-txt">أَكَلَ<br><small style="font-size:11px; color:#666;">Yedi</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">شُرْب<br><small style="color: #64748b; font-size: 12px;">İçmek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِشْرَبْ<br><small style="color: #64748b; font-size: 12px;">İç</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَشْرَبُ<br><small style="color: #64748b; font-size: 12px;">İçiyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">شَرِبَ<br><small style="color: #64748b; font-size: 12px;">İçti</small></td>
+    <td class="ar-txt">غَسْل<br><small style="font-size:11px; color:#666;">Yıkamak</small></td>
+    <td class="ar-txt">اِغْسِلْ<br><small style="font-size:11px; color:#666;">Yıka</small></td>
+    <td class="ar-txt">يَغْسِلُ<br><small style="font-size:11px; color:#666;">Yıkıyor</small></td>
+    <td class="ar-txt">غَسَلَ<br><small style="font-size:11px; color:#666;">Yıkadı</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">أَكْل<br><small style="color: #64748b; font-size: 12px;">Yemek Yemek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">كُلْ<br><small style="color: #64748b; font-size: 12px;">Ye</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَأْكُلُ<br><small style="color: #64748b; font-size: 12px;">Yiyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">أَكَلَ<br><small style="color: #64748b; font-size: 12px;">Yedi</small></td>
+    <td class="ar-txt">إِرَادَة<br><small style="font-size:11px; color:#666;">İstemek</small></td>
+    <td class="ar-txt">أَرِدْ<br><small style="font-size:11px; color:#666;">İste</small></td>
+    <td class="ar-txt">يُرِيدُ<br><small style="font-size:11px; color:#666;">İstiyor</small></td>
+    <td class="ar-txt">أَرَادَ<br><small style="font-size:11px; color:#666;">İstedi</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">إِتْيَان<br><small style="color: #64748b; font-size: 12px;">Gelmek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِئْتِ<br><small style="color: #64748b; font-size: 12px;">Gel</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَأْتِي<br><small style="color: #64748b; font-size: 12px;">Geliyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">أَتَى<br><small style="color: #64748b; font-size: 12px;">Geldi</small></td>
+    <td class="ar-txt">حُبّ<br><small style="font-size:11px; color:#666;">Sevmek</small></td>
+    <td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td>
+    <td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td>
+    <td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td>
 </tr>
 
 <tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">غَسْل<br><small style="color: #64748b; font-size: 12px;">Yıkamak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِغْسِلْ<br><small style="color: #64748b; font-size: 12px;">Yıka</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَغْسِلُ<br><small style="color: #64748b; font-size: 12px;">Yıkıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">غَسَلَ<br><small style="color: #64748b; font-size: 12px;">Yıkadı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">طَلَب<br><small style="color: #64748b; font-size: 12px;">İstemek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اُطْلُبْ<br><small style="color: #64748b; font-size: 12px;">İste</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَطْلُبُ<br><small style="color: #64748b; font-size: 12px;">İstiyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">طَلَبَ<br><small style="color: #64748b; font-size: 12px;">İstedi</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">شِرَاء<br><small style="color: #64748b; font-size: 12px;">Satın Almak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِشْتَرِ<br><small style="color: #64748b; font-size: 12px;">Satın Al</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَشْتَرِي<br><small style="color: #64748b; font-size: 12px;">Satın Alıyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">اِشْتَرَى<br><small style="color: #64748b; font-size: 12px;">Satın Aldı</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَفَضُّل<br><small style="color: #64748b; font-size: 12px;">Buyur Etmek</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَفَضَّلْ<br><small style="color: #64748b; font-size: 12px;">Buyur</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَتَفَضَّلُ<br><small style="color: #64748b; font-size: 12px;">Buyur Ediyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">تَفَضَّلَ<br><small style="color: #64748b; font-size: 12px;">Buyur Etti</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">وُجُود<br><small style="color: #64748b; font-size: 12px;">Bulunmak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">جِدْ<br><small style="color: #64748b; font-size: 12px;">Bul</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يُوجَدُ<br><small style="color: #64748b; font-size: 12px;">Bulunuyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">وُجِدَ<br><small style="color: #64748b; font-size: 12px;">Bulundu</small></td>
-</tr>
-
-<tr>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">وُجُود<br><small style="color: #64748b; font-size: 12px;">Bulmak / Var olmak</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">جِدْ<br><small style="color: #64748b; font-size: 12px;">Bul</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">يَجِدُ<br><small style="color: #64748b; font-size: 12px;">Buluyor</small></td>
-    <td class="ar-txt" style="padding: 15px; border: 1px solid #e2e8f0;">وَجَدَ<br><small style="color: #64748b; font-size: 12px;">Buldu</small></td>
+    <td class="ar-txt">مَجِيء<br><small style="font-size:11px; color:#666;">Gelmek</small></td>
+    <td class="ar-txt">تَعَالَ<br><small style="font-size:11px; color:#666;">Gel</small></td>
+    <td class="ar-txt">يَأْتِي<br><small style="font-size:11px; color:#666;">Geliyor</small></td>
+    <td class="ar-txt">أَتَى<br><small style="font-size:11px; color:#666;">Geldi</small></td>
 </tr>
 
 
@@ -1153,11 +1285,7 @@ sulasi: `<iframe src="sulasi.pdf#view=Fit&toolbar=1" style="width:100%; height:1
 mezid: `<iframe src="mezid.pdf#view=Fit&toolbar=1" style="width:100%; height:100%; border:none; display:block;"></iframe>`
     };
 
-let mode = 'sentence';
-    let currentIdx = 0;
-    let step = 1;
-    let pTurn = 1;
-    let colorCounter = 0;
+
    
 // 2. SEÇİLİ BUTONU VURGULAMA FONKSİYONU
     function setActiveButton(type) {
@@ -1743,140 +1871,206 @@ dialog: [
     }
 ]
 };
+
+// --- 1. GLOBAL DEĞİŞKENLER ---
+var mode = 'sentence'; 
+var currentIdx = 0;
+var step = 1;
+var pTurn = 1;
+var colorCounter = 0;
+var currentDirection = 'tr-to-ar'; 
+
+const wordColors = [
+    '#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', 
+    '#46f0f0', '#f032e6', '#008080', '#e6beff', '#9a6324', 
+    '#800000', '#aaffc3', '#808000', '#000075', '#d2691e'
+];
+
+// Font Tanımlamaları
+const AR_FONT = "'IBM Plex Sans Arabic', sans-serif";
+const TR_FONT = "'Inter', sans-serif";
+
+// --- 2. MOD VE NAVİGASYON ---
 function startMode(m) {
-        // Eğer bir önceki moddan veya işlemden kalan bir popup varsa kapatır
-        togglePopup(false); 
-        
-        mode = m;
-        document.getElementById('entry-panel').style.display = 'none';
-        document.querySelector('.navbar').style.display = 'flex';
-        document.getElementById('sentence-mode').style.display = (m === 'sentence' ? 'flex' : 'none');
-        document.getElementById('dialog-mode').style.display = (m === 'dialog' ? 'flex' : 'none');
-        render();
+    if (typeof togglePopup === "function") togglePopup(false); 
+    mode = m;
+    document.getElementById('entry-panel').style.display = 'none';
+    document.querySelector('.navbar').style.display = 'flex';
+    document.getElementById('sentence-mode').style.display = (m === 'sentence' ? 'flex' : 'none');
+    document.getElementById('dialog-mode').style.display = (m === 'dialog' ? 'flex' : 'none');
+    render();
+}
+
+function goHome() {
+    document.getElementById('entry-panel').style.display = 'flex';
+    document.querySelector('.navbar').style.display = 'none';
+    currentIdx = 0;
+}
+
+// Sayfa yüklendiğinde TR modu varsayılan olduğu için ateşi yak
+window.onload = function() {
+    // Diğer onload fonksiyonların varsa buraya ekleyebilirsin
+    const wrapper = document.querySelector('.switch-wrapper');
+    const toggle = document.getElementById('direction-toggle');
+    
+    if (!toggle.checked) { // Eğer checkbox seçili değilse (yani TR tarafındaysa)
+        wrapper.classList.add('fire-mode');
+    }
+};
+
+function toggleDirection() {
+    const toggle = document.getElementById('direction-toggle');
+    const wrapper = document.querySelector('.switch-wrapper');
+    const langTr = document.getElementById('lang-tr');
+    const langAr = document.getElementById('lang-ar');
+
+    if (!toggle.checked) {
+        currentDirection = 'tr-to-ar';
+        wrapper.classList.add('fire-mode'); // Ateşi yak
+        langTr.classList.add('active-lang');
+        langAr.classList.remove('active-lang');
+    } else {
+        currentDirection = 'ar-to-tr';
+        wrapper.classList.remove('fire-mode'); // Ateşi söndür
+        langAr.classList.add('active-lang');
+        langTr.classList.remove('active-lang');
     }
 
-    function goHome() {
-        document.getElementById('entry-panel').style.display = 'flex';
-        document.querySelector('.navbar').style.display = 'none';
-        currentIdx = 0;
-    }
+    render();
+}
 
-    function render() {
-        step = 1;
-        pTurn = 1;
-        colorCounter = 0; // Her yeni slaytta renk sayacını sıfırla
+function changeSentence(dir) {
+    if (!data[mode]) return;
+    currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
+    render();
+}
 
-        if (mode === 'sentence') {
-            renderContent(data.sentence[currentIdx].words, 's-tr', 's-ar');
-        } else {
-            renderContent(data.dialog[currentIdx].p1, 'p1-tr', 'p1-ar', 1);
-            renderContent(data.dialog[currentIdx].p2, 'p2-tr', 'p2-ar', 2);
-        }
+// --- 3. ANA ÇİZİM (RENDER) ---
+function render() {
+    step = 1;
+    pTurn = 1;
+    colorCounter = 0;
+
+    // Yeni cümleye geçince vurguyu kaldır
+    const nextBtn = document.getElementById('next-btn');
+    if (nextBtn) nextBtn.classList.remove('highlight-next');
+
+    if (mode === 'sentence') {
+        renderContent(data.sentence[currentIdx].words, 's-tr', 's-ar');
+    } else {
+        renderContent(data.dialog[currentIdx].p1, 'p1-tr', 'p1-ar', 1);
+        renderContent(data.dialog[currentIdx].p2, 'p2-tr', 'p2-ar', 2);
     }
+}
 
 function renderContent(words, trId, arId, playerNum = null) {
-        const trCont = document.getElementById(trId);
-        const arCont = document.getElementById(arId);
-        trCont.innerHTML = ''; arCont.innerHTML = '';
-        
-        words.forEach((w, index) => { // Index parametresi eklendi
-            const span = document.createElement('span');
-            
-            // Sadece 1. Oyuncunun 1. sıradaki kelimeleri aktif başlar
-            // Not: w.order === 1 olan TÜM kelimeler (Bende ve var) aktif başlar
-            const isActive = (playerNum === null || playerNum === 1) && w.order === 1;
-            
-            span.className = `word ${isActive ? 'active' : 'passive'}`;
-            
-            // --- DEĞİŞİKLİK BURADA ---
-            // ID artık benzersiz (s-tr-item-0, s-tr-item-1 gibi)
-            span.id = `${trId}-item-${index}`;
-            // Sıra bilgisini data attribute olarak ekliyoruz
-            span.setAttribute('data-order', w.order);
-            // Kapsayıcı ID'sini de saklayalım ki handleMove'da bulabilelim
-            span.setAttribute('data-container', trId);
-            
-            span.innerText = w.tr;
-            
-            // Parametreleri güncelledik
-            span.onclick = () => handleMove(w.order, w.ar, trId, arId, playerNum);
-            
-            trCont.appendChild(span);
+    const trCont = document.getElementById(trId);
+    const arOutput = document.getElementById(arId);
+    if (!trCont || !arOutput) return;
+
+    trCont.innerHTML = '';
+    arOutput.innerHTML = '';
+    
+    let displayWords = [...words];
+
+    if (currentDirection === 'ar-to-tr') {
+        displayWords.sort((a, b) => a.order - b.order);
+        trCont.style.direction = 'rtl';
+        arOutput.style.direction = 'ltr'; 
+
+        words.forEach((_, i) => {
+            const slot = document.createElement('span');
+            slot.id = `${arId}-slot-${i}`; 
+            slot.style.marginRight = "12px";
+            slot.style.fontFamily = TR_FONT;
+            slot.innerText = ""; 
+            arOutput.appendChild(slot);
         });
+    } else {
+        trCont.style.direction = 'ltr';
+        arOutput.style.direction = 'rtl';
     }
 
-    // Renk Havuzu
-    const wordColors = [
-        '#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', 
-        '#46f0f0', '#f032e6', '#008080', '#e6beff', '#9a6324', 
-        '#800000', '#aaffc3', '#808000', '#000075', '#d2691e'
-    ];
-
-function handleMove(order, ar, trId, arId, playerNum) {
-        // Sıra kontrolü
-        if (order !== step) return;
+    displayWords.forEach((w, index) => {
+        const span = document.createElement('span');
+        const isActive = (playerNum === null || playerNum === 1) && w.order === 1;
         
-        // --- GRUPLAMA MANTIĞI ---
-        // O anki sıraya (order) sahip olan AYNI konteynerdaki TÜM kelimeleri bul
-        // Örneğin order=1 ise hem "Bende" hem "var" seçilir.
-        const allCurrentWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${order}"]`);
+        span.className = `word ${isActive ? 'active' : 'passive'}`;
+        span.id = `${trId}-item-${index}`;
+        span.setAttribute('data-order', w.order);
+        span.setAttribute('data-container', trId);
         
-        // Eğer bu sıraya ait kelime bulunamazsa dur (Hata önlemi)
-        if (allCurrentWords.length === 0) return;
+        const originalIndex = words.indexOf(w);
 
-        // 1. RENK SEÇİMİ
-        const colorIndex = colorCounter % wordColors.length;
-        const activeColor = wordColors[colorIndex];
+        if (currentDirection === 'tr-to-ar') {
+            span.innerText = w.tr;
+            span.style.fontFamily = TR_FONT;
+            span.onclick = () => handleMove(w.order, w.ar, trId, arId, playerNum, -1);
+        } else {
+            span.innerText = w.ar;
+            span.style.fontFamily = AR_FONT;
+            span.onclick = () => handleMove(w.order, w.tr, trId, arId, playerNum, originalIndex);
+        }
+        trCont.appendChild(span);
+    });
+}
 
-        // 2. BULUNAN TÜM KELİMELERİ BOYA (Senkronize Animasyon)
-        allCurrentWords.forEach(wordEl => {
-            wordEl.className = 'word completed';
-            wordEl.style.color = activeColor;
-            wordEl.style.borderColor = activeColor;
-            wordEl.style.backgroundColor = 'transparent';
-            // Tıklama özelliğini kaldır ki tekrar basılmasın
-            wordEl.onclick = null;
-        });
+// --- 4. TIKLAMA VE YERLEŞİM (HANDLEMOVE) ---
+function handleMove(order, outputText, trId, arId, playerNum, originalIndex) {
+    if (order !== step) return;
+    
+    const allWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${order}"]`);
+    if (allWords.length === 0) return;
 
-        // 3. ARAPÇA KELİMEYİ EKRANA BAS
-        // Arapça kelime, tıklanan veriden gelir. 
-        // "Bende" ve "var" aynı Arapça kelimeye ("عِنْدي") sahip olduğu için
-        // sadece bir kez ekrana basılır.
-        const arCont = document.getElementById(arId);
-        arCont.innerHTML += `<span style="color: ${activeColor}; font-family: 'IBM Plex Sans Arabic'; margin-left:8px;">${ar}</span> `;
+    const activeColor = wordColors[colorCounter % wordColors.length];
 
-        // Sayaçları ilerlet
-        step++;
-        colorCounter++;
-        
-        // --- SONRAKİ KELİMELERİ AKTİF ET ---
-        // Bir sonraki sıraya (step) sahip tüm kelimeleri bul
-        const nextWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${step}"]`);
+    allWords.forEach(wordEl => {
+        wordEl.className = 'word completed';
+        wordEl.style.color = activeColor;
+        wordEl.style.borderColor = activeColor;
+        wordEl.onclick = null;
+    });
 
-        if (nextWords.length > 0) {
-            // Sonraki kelime(ler) varsa hepsini aktif et
-            nextWords.forEach(next => {
-                next.className = 'word active';
-            });
-        } 
-        // DİYALOG GEÇİŞİ: Kelime bittiyse ve sıra 1. kişideyse
-        else if (mode === 'dialog' && playerNum === 1) {
-            pTurn = 2; // Sıra 2. kişiye geçti
-            step = 1;  // Adım sayısını 1'e çek
-            
-            // 2. Kişinin 1. sıradaki kelimelerini bul ve aktif et
-            const p2NextWords = document.querySelectorAll(`[data-container="p2-tr"][data-order="1"]`);
-            p2NextWords.forEach(w => w.className = 'word active');
+    if (currentDirection === 'ar-to-tr') {
+        const targetSlot = document.getElementById(`${arId}-slot-${originalIndex}`);
+        if (targetSlot) {
+            targetSlot.innerText = outputText;
+            targetSlot.style.color = activeColor;
+            targetSlot.style.fontFamily = TR_FONT;
+        }
+    } else {
+        const outArea = document.getElementById(arId);
+        if (outArea) {
+            outArea.innerHTML += `<span style="color: ${activeColor}; font-family: ${AR_FONT}; margin-left:8px;">${outputText}</span> `;
         }
     }
 
-    function changeSentence(dir) {
-        currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
-        render();
+    step++;
+    colorCounter++;
+    
+    const nextWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${step}"]`);
+    if (nextWords.length > 0) {
+        nextWords.forEach(next => next.className = 'word active');
+    } else if (mode === 'dialog' && playerNum === 1) {
+        pTurn = 2; 
+        step = 1;
+        document.querySelectorAll(`[data-container="p2-tr"][data-order="1"]`).forEach(w => w.className = 'word active');
     }
-   
+  // Cümle veya Diyalog bitti mi kontrol et
+    let isFinished = false;
+    if (mode === 'sentence') {
+        if (step > data.sentence[currentIdx].words.length) isFinished = true;
+    } else {
+        // Diyalog modu: P2'nin de son kelimesi bitti mi?
+        if (pTurn === 2 && step > data.dialog[currentIdx].p2.length) isFinished = true;
+    }
 
-
+    if (isFinished) {
+        // İleri butonunu bul ve vurgula (HTML'de ID'si 'next-btn' olmalı)
+        const nextBtn = document.getElementById('next-btn');
+        if (nextBtn) nextBtn.classList.add('highlight-next');
+    }
+}
 </script>
 </body>
 </html>
