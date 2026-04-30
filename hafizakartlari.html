@@ -301,24 +301,69 @@
     }
 }
 
+/* Menü ekranının en üst kısmını sabitleyen konteyner */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    background: var(--bg-gradient); /* Sayfa arka planıyla uyumlu olması için */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    /* Hafif bir gölge ile içerikten ayrılması sağlanabilir */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+}
+
+/* Anasayfa butonunun sabit konumunu sticky konteynerine göre ayarla */
+.home-btn {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1002;
+    /* ... diğer mevcut stilleriniz ... */
+}
+
+/* Başlık ayarı */
+.menu-title {
+    margin: 0;
+    color: #4b2cc5;
+    font-size: 3rem;
+}
+
+@media (max-width: 768px) {
+    .home-btn {
+        left: 10px;
+    }
+    .menu-title {
+        font-size: 2rem;
+    }
+}
+
     </style>
 </head>
 <body>
 
 
 <!-- Giriş Menü Ekranı -->
-<div id="menu-screen" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; text-align: center; position: relative;">
+<div id="menu-screen" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
     
-    <!-- Anasayfa İkon Butonu -->
-    <a href="https://kidefarapca.com" class="home-btn" title="Anasayfa">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-        </svg>
-        
-    </a>
+    <!-- Sabitlenen Bölüm -->
+    <div class="sticky-header">
+        <!-- Anasayfa İkon Butonu -->
+        <a href="https://kidefarapca.com" class="home-btn" title="Anasayfa">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+        <h1 class="menu-title">Konu Seç!</h1>
+    </div>
 
-    <h1 style="color: #4b2cc5; font-size: 2.6rem; margin-bottom: 10px;">Konu Seç!</h1>
-    <div id="topics-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 1000px;">
+    <!-- Kaydırılabilir Bölüm -->
+    <div id="topics-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; padding: 20px;">
         <!-- Konular JavaScript ile buraya dolacak -->
     </div>
 </div>
