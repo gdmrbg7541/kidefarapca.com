@@ -6,6 +6,54 @@
     <title>Arapça Simultane & Diyalog 7.1</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
+function speakCurrentSentence() {
+    // Mevcut konuşmayı iptal et
+    window.speechSynthesis.cancel();
+
+    let wordsData = [];
+    let langCode = "";
+
+    if (mode === 'sentence') {
+        wordsData = data.sentence[currentIdx].words;
+        langCode = (currentDirection === 'tr-to-ar') ? 'tr-TR' : 'ar-SA';
+    } else {
+        wordsData = pTurn === 1 ? data.dialog[currentIdx].p1 : data.dialog[currentIdx].p2;
+        langCode = (currentDirection === 'tr-to-ar') ? 'tr-TR' : 'ar-SA';
+    }
+
+    let fullText = "";
+    if (currentDirection === 'ar-to-tr') {
+        // KRİTER: Arapça seslendirmede numaralandırmayı (order) esas al
+        fullText = [...wordsData]
+            .sort((a, b) => a.order - b.order)
+            .map(w => w.ar)
+            .join(" ");
+    } else {
+        fullText = wordsData.map(w => w.tr).join(" ");
+    }
+
+    const utterance = new SpeechSynthesisUtterance(fullText);
+    utterance.lang = langCode;
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+}
+
+// Seslendirme fonksiyonu
+function speakText(text, lang) {
+    // Eğer tarayıcıda devam eden bir konuşma varsa durdur
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    // lang: 'ar-SA' (Arapça) veya 'tr-TR' (Türkçe)
+    utterance.lang = lang;
+    utterance.rate = 0.9; // Okuma hızı (opsiyonel)
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+  // Her cümlenin tamamlanma durumunu tutar
+  var completionStatus = { sentence: {}, dialog: {} };
+  var progressMemory = { sentence: {}, dialog: {} };  
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -1969,12 +2017,15 @@ dialog: [
 };
 
 // --- 1. GLOBAL DEĞİŞKENLER ---
+// --- 1. GLOBAL DEĞİŞKENLER VE HAFIZA ---
 var mode = 'sentence'; 
 var currentIdx = 0;
 var step = 1;
 var pTurn = 1;
 var colorCounter = 0;
 var currentDirection = 'tr-to-ar'; 
+var completionStatus = { sentence: {}, dialog: {} }; 
+var progressMemory = { sentence: {}, dialog: {} }; 
 
 const wordColors = [
     '#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', 
@@ -1982,7 +2033,6 @@ const wordColors = [
     '#800000', '#aaffc3', '#808000', '#000075', '#d2691e'
 ];
 
-// Font Tanımlamaları
 const AR_FONT = "'IBM Plex Sans Arabic', sans-serif";
 const TR_FONT = "'Inter', sans-serif";
 
@@ -2003,13 +2053,10 @@ function goHome() {
     currentIdx = 0;
 }
 
-// Sayfa yüklendiğinde TR modu varsayılan olduğu için ateşi yak
 window.onload = function() {
-    // Diğer onload fonksiyonların varsa buraya ekleyebilirsin
     const wrapper = document.querySelector('.switch-wrapper');
     const toggle = document.getElementById('direction-toggle');
-    
-    if (!toggle.checked) { // Eğer checkbox seçili değilse (yani TR tarafındaysa)
+    if (toggle && !toggle.checked) {
         wrapper.classList.add('fire-mode');
     }
 };
@@ -2022,32 +2069,103 @@ function toggleDirection() {
 
     if (!toggle.checked) {
         currentDirection = 'tr-to-ar';
-        wrapper.classList.add('fire-mode'); // Ateşi yak
+        wrapper.classList.add('fire-mode');
         langTr.classList.add('active-lang');
         langAr.classList.remove('active-lang');
     } else {
         currentDirection = 'ar-to-tr';
-        wrapper.classList.remove('fire-mode'); // Ateşi söndür
+        wrapper.classList.remove('fire-mode');
         langAr.classList.add('active-lang');
         langTr.classList.remove('active-lang');
     }
-
     render();
 }
+
+// --- 2. GÜNCELLEMİŞ NAVİGASYON VE KLAVYE KONTROLLERİ ---
 
 function changeSentence(dir) {
     if (!data[mode]) return;
+
+    // İLERİ BASILDIĞINDA: Önce mevcut cümlede açılacak kelime var mı bak
+    if (dir === 1) {
+        const currentWords = mode === 'sentence' ? 
+            data.sentence[currentIdx].words : 
+            (pTurn === 1 ? data.dialog[currentIdx].p1 : data.dialog[currentIdx].p2);
+        
+        if (step <= currentWords.length) {
+            const w = currentWords.find(item => item.order === step);
+            const trId = mode === 'sentence' ? 's-tr' : (pTurn === 1 ? 'p1-tr' : 'p2-tr');
+            const arId = mode === 'sentence' ? 's-ar' : (pTurn === 1 ? 'p1-ar' : 'p2-ar');
+            const originalIdx = currentWords.indexOf(w);
+            
+            // --- GÜNCELLEME BURASI: İleri tuşuyla 2. cümlenin ilk kelimesi açılıyorsa ses çal ---
+            if (mode === 'dialog' && pTurn === 2 && w.order === 1) {
+                speakCurrentSentence(); 
+            }
+            // -------------------------------------------------------------------------------
+
+            // Sıradaki kelimeyi aç
+            handleMove(w.order, (currentDirection === 'tr-to-ar' ? w.ar : w.tr), trId, arId, pTurn, originalIdx, true);
+            return; // Cümle/Sayfa değiştirmeden çık
+        }
+    }
+
+    // SAYFA DEĞİŞTİRME: Kelimeler bittiyse veya geri basıldıysa
     currentIdx = (currentIdx + dir + data[mode].length) % data[mode].length;
-    render();
+    
+    // Değişkenleri ve ekranı sıfırla
+    step = 1; 
+    pTurn = 1; 
+    colorCounter = 0;
+    render(); 
+
+    // GERİ GELİNDİĞİNDE: Eğer sayfa daha önce bitirilmişse her şeyi aç
+    if (completionStatus[mode][currentIdx]) {
+        forceOpenPage();
+    }
 }
 
-// --- 3. ANA ÇİZİM (RENDER) ---
+function forceOpenPage() {
+    // Mevcut mod verilerini al[cite: 3]
+    if (mode === 'sentence') {
+        const words = data.sentence[currentIdx].words;
+        // Sıralı açılma garantisi için order üzerinden döngü[cite: 3]
+        for (let i = 1; i <= words.length; i++) {
+            const w = words.find(item => item.order === i);
+            if (w) {
+                handleMove(w.order, (currentDirection === 'tr-to-ar' ? w.ar : w.tr), 's-tr', 's-ar', 1, words.indexOf(w), true);
+            }
+        }
+    } else {
+        // Diyalog modu: Önce P1 sonra P2[cite: 3]
+        const p1 = data.dialog[currentIdx].p1;
+        for (let i = 1; i <= p1.length; i++) {
+            const w = p1.find(item => item.order === i);
+            if (w) handleMove(w.order, (currentDirection === 'tr-to-ar' ? w.ar : w.tr), 'p1-tr', 'p1-ar', 1, p1.indexOf(w), true);
+        }
+        
+        const p2 = data.dialog[currentIdx].p2;
+        for (let i = 1; i <= p2.length; i++) {
+            const w = p2.find(item => item.order === i);
+            if (w) handleMove(w.order, (currentDirection === 'tr-to-ar' ? w.ar : w.tr), 'p2-tr', 'p2-ar', 2, p2.indexOf(w), true);
+        }
+    }
+}
+
+// Klavye tuşlarını changeSentence fonksiyonuna bağla[cite: 3]
+document.addEventListener('keydown', (e) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        changeSentence(1);
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        changeSentence(-1);
+    }
+});
+
 function render() {
     step = 1;
     pTurn = 1;
     colorCounter = 0;
 
-    // Yeni cümleye geçince vurguyu kaldır
     const nextBtn = document.getElementById('next-btn');
     if (nextBtn) nextBtn.classList.remove('highlight-next');
 
@@ -2057,6 +2175,9 @@ function render() {
         renderContent(data.dialog[currentIdx].p1, 'p1-tr', 'p1-ar', 1);
         renderContent(data.dialog[currentIdx].p2, 'p2-tr', 'p2-ar', 2);
     }
+
+    // Sayfa açıldığında otomatik olarak bir kez seslendirir
+    speakCurrentSentence();
 }
 
 function renderContent(words, trId, arId, playerNum = null) {
@@ -2111,20 +2232,38 @@ function renderContent(words, trId, arId, playerNum = null) {
     });
 }
 
-// --- 4. TIKLAMA VE YERLEŞİM (HANDLEMOVE) ---
-function handleMove(order, outputText, trId, arId, playerNum, originalIndex) {
+// --- 4. TIKLAMA VE YERLEŞİM ---
+function handleMove(order, outputText, trId, arId, playerNum, originalIndex, isAuto = false) {
+    const clickedWord = event?.currentTarget || document.querySelector(`[data-container="${trId}"][data-order="${order}"]`);
+
+    // Geri alma mantığı
+    if (!isAuto && clickedWord?.classList.contains('completed')) {
+        undoToStep(order, trId, arId, playerNum);
+        completionStatus[mode][currentIdx] = false; 
+        return;
+    }
+
+    // GÜNCELLEME: Ses Kontrolü
+    if (order === 1 && !isAuto) {
+        // Her halükarda mevcut (ilk cümlenin) sesini durdur
+        window.speechSynthesis.cancel(); 
+
+        // Eğer diyalog modundaysak ve kullanıcı İKİNCİ cümleye (P2) başladıysa sesi çal
+        if (mode === 'dialog' && playerNum === 2) {
+            speakCurrentSentence(); 
+        }
+    }
+
+    // Sıra kontrolü
     if (order !== step) return;
     
-    const allWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${order}"]`);
-    if (allWords.length === 0) return;
-
     const activeColor = wordColors[colorCounter % wordColors.length];
 
-    allWords.forEach(wordEl => {
+    const allMatchingWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${order}"]`);
+    allMatchingWords.forEach(wordEl => {
         wordEl.className = 'word completed';
         wordEl.style.color = activeColor;
         wordEl.style.borderColor = activeColor;
-        wordEl.onclick = null;
     });
 
     if (currentDirection === 'ar-to-tr') {
@@ -2132,40 +2271,73 @@ function handleMove(order, outputText, trId, arId, playerNum, originalIndex) {
         if (targetSlot) {
             targetSlot.innerText = outputText;
             targetSlot.style.color = activeColor;
-            targetSlot.style.fontFamily = TR_FONT;
         }
     } else {
         const outArea = document.getElementById(arId);
-        if (outArea) {
-            outArea.innerHTML += `<span style="color: ${activeColor}; font-family: ${AR_FONT}; margin-left:8px;">${outputText}</span> `;
+        if (outArea && !document.getElementById(`out-${trId}-${order}`)) {
+            outArea.innerHTML += `<span id="out-${trId}-${order}" style="color: ${activeColor}; font-family: ${AR_FONT}; margin-left:8px;">${outputText}</span> `;
         }
     }
 
     step++;
     colorCounter++;
     
+    updateFlowLogic(trId, playerNum);
+}
+
+function updateFlowLogic(trId, playerNum) {
+    document.querySelectorAll(`[data-container="${trId}"].word.active`).forEach(w => w.className = 'word passive');
     const nextWords = document.querySelectorAll(`[data-container="${trId}"][data-order="${step}"]`);
+    
     if (nextWords.length > 0) {
         nextWords.forEach(next => next.className = 'word active');
     } else if (mode === 'dialog' && playerNum === 1) {
+        // Birinci konuşmacı (P1) bittiğinde burası çalışır
         pTurn = 2; 
-        step = 1;
+        step = 1; 
+        colorCounter = 0;
+        
+        // İkinci konuşmacının (P2) ilk kelimesini aktif et
         document.querySelectorAll(`[data-container="p2-tr"][data-order="1"]`).forEach(w => w.className = 'word active');
-    }
-  // Cümle veya Diyalog bitti mi kontrol et
-    let isFinished = false;
-    if (mode === 'sentence') {
-        if (step > data.sentence[currentIdx].words.length) isFinished = true;
-    } else {
-        // Diyalog modu: P2'nin de son kelimesi bitti mi?
-        if (pTurn === 2 && step > data.dialog[currentIdx].p2.length) isFinished = true;
+        
+        
     }
 
+    let isFinished = (mode === 'sentence') ? 
+        (step > data.sentence[currentIdx].words.length) : 
+        (pTurn === 2 && step > data.dialog[currentIdx].p2.length);
+
     if (isFinished) {
-        // İleri butonunu bul ve vurgula (HTML'de ID'si 'next-btn' olmalı)
-        const nextBtn = document.getElementById('next-btn');
-        if (nextBtn) nextBtn.classList.add('highlight-next');
+        completionStatus[mode][currentIdx] = true; // Sayfayı Tamamlandı olarak işaretle[cite: 1]
+        document.getElementById('next-btn')?.classList.add('highlight-next');
+    } else {
+        document.getElementById('next-btn')?.classList.remove('highlight-next');
     }
+}
+
+function undoToStep(targetOrder, trId, arId, playerNum) {
+    const containerWords = document.querySelectorAll(`[data-container="${trId}"]`);
+    containerWords.forEach(wordEl => {
+        const wordOrder = parseInt(wordEl.getAttribute('data-order'));
+        if (wordOrder >= targetOrder) {
+            wordEl.className = 'word passive';
+            wordEl.style.color = '';
+            wordEl.style.borderColor = '';
+            
+            if (currentDirection === 'tr-to-ar') {
+                const outEl = document.getElementById(`out-${trId}-${wordOrder}`);
+                if (outEl) outEl.remove();
+            } else {
+                const originalIdx = Array.from(containerWords).indexOf(wordEl);
+                const targetSlot = document.getElementById(`${arId}-slot-${originalIdx}`);
+                if (targetSlot) targetSlot.innerText = "";
+            }
+        }
+    });
+
+    step = targetOrder;
+    colorCounter = targetOrder - 1;
+    updateFlowLogic(trId, playerNum);
 }
 </script>
 </body>
