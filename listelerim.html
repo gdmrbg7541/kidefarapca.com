@@ -2064,34 +2064,35 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log("Giriş yapan kullanıcı:", user.email);
         const uid = user.uid; 
         
-        // CSS tetikleyicisi: İçeriği göster
+        // Giriş yapıldığında arayüzü hazırla
         document.body.classList.add('logged-in');
-        
         modalKapat(); 
         
-        // Buton metnini ve rengini güncelle
+        // Buton görünümünü güncelle
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
         loginBtn.style.background = "#e74c3c"; 
 
+        // VERİLERİ ÇEK VE SIDEBAR'I YENİLE
+        // verileriGetir fonksiyonun içindeki renderSidebar() sayesinde 
+        // soldaki sınıflar otomatik olarak belirecektir.
         verileriGetir(uid); 
+
     } else {
         console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
         
-        // --- KRİTİK TEMİZLİK: HESAPLAR ARASI VERİ SIZINTISINI ÖNLER ---
+        // --- KRİTİK TEMİZLİK: GÜVENLİK VE VERİ SIZINTISI ÖNLEME ---
         
-        // 1. Bellekteki (RAM) verileri tamamen sıfırla
-        // data = []; yerine projenizdeki yapıya göre boş obje/dizi yapın:
+        // 1. RAM üzerindeki verileri sıfırla
         data = { levels: {}, levelOrder: [] }; 
-        curLId = null; // Seçili seviye ID'sini sıfırla
-        curCId = null; // Seçili sınıf ID'sini sıfırla
+        curLId = null; 
+        curCId = null;
         
-        // 2. Arayüzü (Sidebar) temizle
+        // 2. Sidebar'ı boş veriyle temizle
         if (typeof renderSidebar === "function") {
-            // Veri olmadığı için korumalı renderSidebar boş ekran basacaktır
             renderSidebar(); 
         }
 
-        // 3. Sağ taraftaki öğrenci listesi alanını temizle
+        // 3. Sağ taraftaki içerik alanını "Giriş Yapın" uyarısına çevir
         const contentArea = document.getElementById('content');
         if (contentArea) {
              contentArea.innerHTML = `
@@ -2099,22 +2100,22 @@ firebase.auth().onAuthStateChanged((user) => {
                     <h3>Lütfen giriş yapın</h3>
                     <p>İçeriği görmek için öğretmen girişi yapmanız gerekmektedir.</p>
                 </div>`;
+            contentArea.style.display = 'block'; // Uyarıyı görünür yap
         }
 
-        // 4. CSS tetikleyicisi: Ana kapsayıcıları gizle
+        // 4. Arayüz kısıtlamalarını geri getir
         document.body.classList.remove('logged-in');
         
-        // 5. Butonu varsayılan hale getir
+        // 5. Giriş butonunu eski haline getir
         loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
         loginBtn.style.background = "#34495e"; 
         
-        // Giriş yoksa modalı aç (isteğe bağlı gecikme ile)
+        // Kullanıcı giriş yapmamışsa modalı otomatik aç
         setTimeout(() => { 
             if(!firebase.auth().currentUser) modalAc(); 
         }, 1000);
     }
 });
-
 
 function verileriGetir(uid) {
     // Seçili sınıf/seviye takibini sıfırla (görsel temizlik için)
@@ -2125,27 +2126,25 @@ function verileriGetir(uid) {
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
-                // Bulutta veri varsa, mevcut 'data' objesini buluttakiyle güncelle
-                const cloudData = JSON.parse(doc.data().userData);
-                data = cloudData;
+                // Buluttan gelen string veriyi objeye çevir ve global 'data'yı güncelle
+                data = JSON.parse(doc.data().userData); 
                 console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
+                
+                // KRİTİK: Veri güncellendiği anda sidebar'ı hemen çiziyoruz
+                renderSidebar(); 
             } catch (e) {
                 console.error("Bulut verisi okunurken hata oluştu, mevcut veri korunuyor:", e);
-                // Hata durumunda mevcut 'data'yı sıfırlama, olduğu gibi kalsın
             }
         } else {
             console.log("Bulutta henüz kayıtlı veri yok. Mevcut verilerle devam ediliyor.");
-            // Önceki bilgiler (data değişkenindeki demo veriler vb.) silinmez, 
-            // kullanıcı işlem yaptıkça artık bu hesaba kaydedilir.
+            // Yeni kullanıcıysa mevcut demo verilerle sidebar'ı çiz
+            renderSidebar();
         }
 
-        // Arayüzü aktifleştir
+        // Arayüzü aktifleştir (CSS sınıflarını ekle)
         document.body.classList.add('logged-in');
 
-        // Menüyü (Sidebar) güncel veriye göre tekrar çiz
-        renderSidebar();
-
-        // İçerik alanını düzenle
+        // İçerik alanını temizle ve kullanıcıyı yönlendir
         setTimeout(() => {
             const viewTitle = document.getElementById('viewTitle');
             const contentArea = document.getElementById('content');
@@ -2155,16 +2154,15 @@ function verileriGetir(uid) {
             }
             
             if (contentArea) {
-                // Giriş yapıldıktan sonra uyarıyı kaldır ve sınıf seçimini bekle
+                // Girişten sonra önceki verilerin kalıntılarını gizle
                 contentArea.style.display = 'none'; 
             }
-            
-            console.log("Giriş başarılı. Veri ekleme ve düzenleme aktif.");
+            console.log("Giriş başarılı. Veri yönetimi aktif.");
         }, 150);
     })
     .catch((err) => {
         console.error("Veritabanı bağlantı hatası:", err);
-        // Bağlantı hatası olsa bile mevcut verilerle sidebar'ı göster
+        // Hata olsa dahi kullanıcıya mevcut (varsayılan) yapıyı göster
         renderSidebar();
     });
 }
