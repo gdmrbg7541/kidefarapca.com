@@ -2128,6 +2128,54 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 function verileriGetir(uid) {
+    // 1. İşlem başladığında yükleme ekranını göster
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.style.display = 'flex';
+
+    // Seçili sınıf/seviye takibini sıfırla
+    curLId = null; 
+    curCId = null;
+
+    db.collection("kullanicilar").doc(uid).get()
+    .then((doc) => {
+        if (doc.exists && doc.data().userData) {
+            try {
+                // 2. Veriyi buluttan al ve global değişkene yaz
+                data = JSON.parse(doc.data().userData); 
+                console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
+            } catch (e) {
+                console.error("JSON ayrıştırma hatası:", e);
+            }
+        } else {
+            console.log("Bulutta henüz kayıtlı veri yok.");
+        }
+
+        // 3. Arayüzü güncelle ve sidebar'ı çiz
+        renderSidebar(); 
+        document.body.classList.add('logged-in'); 
+
+        // 4. Yükleme ekranını kaldır
+        setTimeout(() => {
+            if (overlay) overlay.style.display = 'none';
+            
+            const viewTitle = document.getElementById('viewTitle');
+            const contentArea = document.getElementById('content');
+            
+            if (viewTitle) {
+                viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
+            }
+            
+            if (contentArea) {
+                contentArea.style.display = 'none';
+            }
+        }, 300);
+    })
+    .catch((err) => {
+        console.error("Veritabanı bağlantı hatası:", err);
+        if (overlay) overlay.style.display = 'none';
+        renderSidebar();
+    });
+}
 </script>
 </body>
 </html>
