@@ -907,17 +907,13 @@ function switchTab(idx) {
     if(idx === 8) renderPlan(); 
 }
 function selectClass(lId, cId) {
-    // Veri yapısını kontrol et
     if (!data || !data.levels[lId]) return;
 
-    // DOM öğelerinin varlığını kontrol et
     const viewTitle = document.getElementById('viewTitle');
     const content = document.getElementById('content');
     const stayedPoint = document.getElementById('stayedPoint');
 
-    // Eğer öğeler henüz oluşmadıysa hata verme, 100ms sonra tekrar dene
     if (!viewTitle || !content) {
-        console.warn("Arayüz öğeleri bekleniyor...");
         setTimeout(() => selectClass(lId, cId), 100);
         return;
     }
@@ -929,14 +925,18 @@ function selectClass(lId, cId) {
     content.style.display = 'block';
     viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
     
-    switchTab(8); // Haftalık Plan tabını aç
+    // --- DÜZELTME BURADA ---
+    // switchTab(8) olan satırı switchTab(0) yaparak 
+    // varsayılan olarak Öğrenci Listesi'nin açılmasını sağlıyoruz.
+    switchTab(0); 
     
     let cls = data.levels[curLId].classes[curCId];
     if (stayedPoint) {
         stayedPoint.value = cls.stayedPoint || "";
     }
     
-    renderPlan();
+    // Öğrenci listesini render et
+    renderStudents();
 }
 // Kaldığımız yer bilgisini kaydetme fonksiyonu
 function updateStayedPoint(val) {
