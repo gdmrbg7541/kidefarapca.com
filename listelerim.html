@@ -1241,12 +1241,25 @@ async function login() {
 </script>
 
 <script>
-    // --- TEMEL VERİ YAPILARI ---
-    let data;
-    const localData = localStorage.getItem('schoolData');
+   // --- TEMEL VERİ YAPILARI ---
+let data;
 
-    // Eğer tarayıcıda kayıtlı veri yoksa örnekleri oluştur
-if (!localData) {
+// Veriyi tazelemek için bu fonksiyonu kullanacağız
+function loadDataFromLocal() {
+    const localData = localStorage.getItem('schoolData');
+    if (localData) {
+        data = JSON.parse(localData);
+        if (!data.levels) data.levels = {};
+        console.log("Veriler hafızadan yüklendi.");
+    }
+    return localData;
+}
+
+// Sayfa ilk açıldığında kontrol et
+const ilkKontrol = loadDataFromLocal();
+
+// Eğer tarayıcıda kayıtlı veri yoksa örnekleri oluştur
+if (!ilkKontrol) {
     let varsayilanVeri = { levels: {}, levelOrder: [] };
     for (let i = 1; i <= 3; i++) {
         let lId = 'L' + i;
@@ -1255,50 +1268,38 @@ if (!localData) {
             name: i + ". Seviye",
             classes: {},
             config: { 
-                // İstediğin 4 ödev %25 ağırlık
-                hw: [
-                    {n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, 
-                    {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}
-                ], 
-                // İstediğin Sınav Ağırlıkları
-                ex: [
-                    {n: 'Dinleme', w: 25}, 
-                    {n: 'Konuşma', w: 25}, 
-                    {n: 'Yazılı', w: 50}
-                ] 
+                hw: [{n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}], 
+                ex: [{n: 'Dinleme', w: 25}, {n: 'Konuşma', w: 25}, {n: 'Yazılı', w: 50}] 
             }
         };
 
-            ['A', 'B', 'C'].forEach(letter => {
-                let cId = 'C' + i + letter;
-                let students = [];
-                for (let s = 1; s <= 10; s++) {
-                    students.push({
-                        name: i + "-" + letter + " Öğrencisi " + s,
-                        hw: [0, 0], ex: [0, 0], history: [],
-                        skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
-                        notes: ""
-                    });
-                }
-                varsayilanVeri.levels[lId].classes[cId] = {
-                    name: i + "-" + letter + " Şubesi",
-                    students: students,
-                    planStatus: {}, planText: {}, stayedPoint: ""
-                };
-            });
-        }
-        localStorage.setItem('schoolData', JSON.stringify(varsayilanVeri));
-        data = varsayilanVeri;
-    } else {
-        data = JSON.parse(localData);
+        ['A', 'B', 'C'].forEach(letter => {
+            let cId = 'C' + i + letter;
+            let students = [];
+            for (let s = 1; s <= 10; s++) {
+                students.push({
+                    name: i + "-" + letter + " Öğrencisi " + s,
+                    hw: [0, 0, 0, 0], ex: [0, 0, 0], history: [],
+                    skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
+                    notes: ""
+                });
+            }
+            varsayilanVeri.levels[lId].classes[cId] = {
+                name: i + "-" + letter + " Şubesi",
+                students: students,
+                planStatus: {}, planText: {}, stayedPoint: ""
+            };
+        });
     }
+    localStorage.setItem('schoolData', JSON.stringify(varsayilanVeri));
+    data = varsayilanVeri;
+}
 
-    // Global Değişkenler
-    let curLId = null, curCId = null;
-    if (!data.levels) data.levels = {};
-    let pools = {}; 
-    let alertCallback = null;
-    let audioCtx = null;
+// Global Değişkenler
+let curLId = null, curCId = null;
+let pools = {}; 
+let alertCallback = null;
+let audioCtx = null;
 
 function openTatiller() {
     const modal = document.getElementById('tatilModal');
@@ -1964,7 +1965,7 @@ function loginButonTikla() {
     const user = firebase.auth().currentUser;
     if (user) {
         // Eğer kullanıcı varsa çıkış onayı iste
-        if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+        if(confirm("Çıkış yapmak istediğinize emin misiniz? (Misafir verileriniz bu tarayıcıda kalacaktır)")) {
             firebase.auth().signOut().then(() => {
                 alert("Başarıyla çıkış yapıldı.");
                 location.reload(); // Sayfayı yenileyerek temiz bir başlangıç yapın
@@ -2408,14 +2409,17 @@ setTimeout(() => {
 }
 
 function misafirGiris() {
-    // 1. Modalı gizle ve kilitleri aç
+    // 1. Önce hafızadaki (varsa misafir modunda girilen) veriyi tazeleyelim
+    loadDataFromLocal();
+    
+    // 2. Modalı gizle ve kilitleri aç
     document.getElementById('login-modal').style.display = 'none';
     document.body.classList.add('logged-in');
     
-    // 2. Misafir modunu hafızaya al (En önemli kısım)
+    // 3. Misafir modunu hafızaya al
     localStorage.setItem('auth_status', 'guest');
     
-    // 3. Verileri yükle ve ilk sınıfı seç
+    // 4. Sidebar'ı çiz ve ilk sınıfı seç
     if (typeof renderSidebar === "function") {
         renderSidebar();
         setTimeout(() => {
