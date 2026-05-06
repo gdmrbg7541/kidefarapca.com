@@ -2117,7 +2117,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
 
 function verileriGetir(uid) {
-    // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
+    // Seçili sınıf/seviye takibini sıfırla (görsel temizlik için)
     curLId = null; 
     curCId = null;
 
@@ -2125,55 +2125,49 @@ function verileriGetir(uid) {
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
+                // Bulutta veri varsa, mevcut 'data' objesini buluttakiyle güncelle
                 const cloudData = JSON.parse(doc.data().userData);
                 data = cloudData;
-                console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
+                console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
             } catch (e) {
-                console.error("Veri işleme hatası:", e);
-                data = { levels: {}, levelOrder: [] };
+                console.error("Bulut verisi okunurken hata oluştu, mevcut veri korunuyor:", e);
+                // Hata durumunda mevcut 'data'yı sıfırlama, olduğu gibi kalsın
             }
         } else {
-            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
-            if (typeof demoData !== 'undefined') {
-                data = JSON.parse(JSON.stringify(demoData));
-            } else {
-                data = { levels: {}, levelOrder: [] };
-            }
+            console.log("Bulutta henüz kayıtlı veri yok. Mevcut verilerle devam ediliyor.");
+            // Önceki bilgiler (data değişkenindeki demo veriler vb.) silinmez, 
+            // kullanıcı işlem yaptıkça artık bu hesaba kaydedilir.
         }
 
-        // 1. Önce CSS engelini kaldır (Arayüzü görünür yap)
+        // Arayüzü aktifleştir
         document.body.classList.add('logged-in');
 
-        // 2. Sidebar'ı (Menüyü) çiz
+        // Menüyü (Sidebar) güncel veriye göre tekrar çiz
         renderSidebar();
 
-        // 3. ZAMANLAMA ÇÖZÜMÜ: Sadece arayüzü hazırla, otomatik seçim yapma
+        // İçerik alanını düzenle
         setTimeout(() => {
-            console.log("Veriler yüklendi. Kullanıcı seçimi bekleniyor...");
-            
-            // Başlık alanını varsayılan duruma getir
             const viewTitle = document.getElementById('viewTitle');
+            const contentArea = document.getElementById('content');
+            
             if (viewTitle) {
                 viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
             }
             
-            // Eğer bir sınıf önceden seçili değilse ekranı temiz tut
-            if (!curLId || !curCId) {
-                const contentArea = document.getElementById('content');
-                if (contentArea) {
-                    contentArea.style.display = 'none'; // Sınıf seçilene kadar içerik alanını gizli tut
-                }
-            } else {
-                renderStudents(); 
+            if (contentArea) {
+                // Giriş yapıldıktan sonra uyarıyı kaldır ve sınıf seçimini bekle
+                contentArea.style.display = 'none'; 
             }
-        }, 150); 
+            
+            console.log("Giriş başarılı. Veri ekleme ve düzenleme aktif.");
+        }, 150);
     })
     .catch((err) => {
-        console.error("Bağlantı hatası:", err);
+        console.error("Veritabanı bağlantı hatası:", err);
+        // Bağlantı hatası olsa bile mevcut verilerle sidebar'ı göster
         renderSidebar();
     });
 }
-
 </script>
 </body>
 </html>
