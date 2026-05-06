@@ -544,6 +544,17 @@ body.logged-in #sidebar {
 body.logged-in #content { 
     display: block !important; 
 }
+/* Aktif sınıfın kırmızı dolgu ve beyaz yazı stili */
+/* Sidebar'da aktif olan sınıfın stili */
+.class-item.active-class {
+    background-color: var(--danger, #e74c3c) !important;
+    border-radius: 8px;
+}
+
+.class-item.active-class .class-link {
+    color: white !important;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -916,38 +927,48 @@ function switchTab(idx) {
     if(idx === 4) renderActivityStatus();
     if(idx === 8) renderPlan(); 
 }
-function selectClass(lId, cId) {
+
+
+function selectClass(lId, cId, element) {
     if (!data || !data.levels[lId]) return;
 
+    // Aktiflik sınıfını temizle ve yeni elemana ekle
+    document.querySelectorAll('.class-item').forEach(item => {
+        item.classList.remove('active-class');
+    });
+
+    // Eğer bir element gönderilmişse (tıklama veya otomatik seçim) onu kırmızı yap
+    if (element) {
+        const parentItem = element.closest('.class-item');
+        if (parentItem) parentItem.classList.add('active-class');
+    }
+
+    // Başlık ve İçerik alanını görünür yap
     const viewTitle = document.getElementById('viewTitle');
     const content = document.getElementById('content');
-    const stayedPoint = document.getElementById('stayedPoint');
-
-    if (!viewTitle || !content) {
-        setTimeout(() => selectClass(lId, cId), 100);
-        return;
-    }
+    
+    if (content) content.style.display = 'block';
 
     curLId = lId; 
     curCId = cId;
-    pools = {}; 
-
-    content.style.display = 'block';
-    viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
     
-    // --- DÜZELTME BURADA ---
-    // switchTab(8) olan satırı switchTab(0) yaparak 
-    // varsayılan olarak Öğrenci Listesi'nin açılmasını sağlıyoruz.
-    switchTab(0); 
-    
-    let cls = data.levels[curLId].classes[curCId];
-    if (stayedPoint) {
-        stayedPoint.value = cls.stayedPoint || "";
+    // Başlığı güncelle
+    if (viewTitle) {
+        viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
     }
-    
-    // Öğrenci listesini render et
+
+    // Tabloyu ve öğrencileri yükle
+    switchTab(0); 
     renderStudents();
+
+    // Kaldığımız yer bilgisini yükle
+    const stayedPoint = document.getElementById('stayedPoint');
+    if (stayedPoint) {
+        stayedPoint.value = data.levels[lId].classes[cId].stayedPoint || "";
+    }
 }
+
+
 // Kaldığımız yer bilgisini kaydetme fonksiyonu
 function updateStayedPoint(val) {
     // Güvenlik: Sadece bir sınıf seçiliyse ve veri yapısı hazırsa kaydet
@@ -1276,6 +1297,39 @@ function renderSidebar() {
         html += `</div></div>`;
         nav.innerHTML += html;
     });
+}
+// Sidebar çizildikten sonra ilk sınıfı otomatik seçen fonksiyon
+function selectFirstClassAutomatically() {
+    // 1. İlk seviye konteynerini bul
+    const firstLevel = document.querySelector('.level-container');
+    if (!firstLevel) return;
+
+    // 2. İlk seviyenin altındaki sınıf listesini (class-list) görünür yap
+    const firstClassList = firstLevel.querySelector('.class-list');
+    if (firstClassList) {
+        firstClassList.classList.add('active');
+    }
+
+    // 3. İlk sınıfın linkini (class-link) bul ve ona tıkla
+    const firstClassLink = firstLevel.querySelector('.class-link');
+    if (firstClassLink) {
+        firstClassLink.click();
+    }
+}
+
+// Mevcut class seçme fonksiyonunuzu (muhtemelen showClass gibi bir isimdedir) 
+// aktiflik sınıfını ekleyecek şekilde güncelleyin:
+function updateActiveClassUI(clickedElement) {
+    // Önce tüm aktif sınıfları temizle
+    document.querySelectorAll('.class-item').forEach(item => {
+        item.classList.remove('active-class');
+    });
+    
+    // Tıklanan elemanın kapsayıcısına (class-item) aktiflik sınıfı ekle
+    const classItem = clickedElement.closest('.class-item');
+    if (classItem) {
+        classItem.classList.add('active-class');
+    }
 }
 let curNoteStuIdx = null;
 
@@ -2119,11 +2173,9 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 function verileriGetir(uid) {
-    // 1. İşlem başladığında yükleme ekranını göster
     const overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
 
-    // Seçili sınıf/seviye takibini sıfırla
     curLId = null; 
     curCId = null;
 
@@ -2131,34 +2183,51 @@ function verileriGetir(uid) {
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
-                // 2. Veriyi buluttan al ve global değişkene yaz
                 data = JSON.parse(doc.data().userData); 
                 console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
             } catch (e) {
                 console.error("JSON ayrıştırma hatası:", e);
             }
-        } else {
-            console.log("Bulutta henüz kayıtlı veri yok.");
         }
 
-        // 3. Arayüzü güncelle ve sidebar'ı çiz
+        // 1. Sidebar'ı oluştur
         renderSidebar(); 
         document.body.classList.add('logged-in'); 
 
-        // 4. Yükleme ekranını kaldır
+        // 2. OTOMATİK İLK SINIF SEÇİMİ VE KIRMIZI DOLGU
+      // ... verileriGetir fonksiyonu içinde ...
+// 2. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
+setTimeout(() => {
+    const firstLevel = document.querySelector('.level-container');
+    if (firstLevel) {
+        // İlk seviyeyi görsel olarak aç (klasörü genişlet)
+        const firstClassList = firstLevel.querySelector('.class-list');
+        if (firstClassList) firstClassList.style.display = "block"; 
+        
+        // İlk sınıf linkini bul
+        const firstClassLink = firstLevel.querySelector('.class-link');
+        
+        if (firstClassLink) {
+            // Sınıf ID'lerini al
+            const lId = firstLevel.getAttribute('data-id'); // data-id veya level ID'niz
+            // lId ve cId'yi dinamik olarak ilk elemanlardan çekiyoruz
+            const levelIds = data.levelOrder || Object.keys(data.levels);
+            const firstLId = levelIds[0];
+            const firstCId = Object.keys(data.levels[firstLId].classes)[0];
+
+            // HEM GÖRSELİ GÜNCELLE HEM VERİYİ YÜKLE
+            // selectClass fonksiyonunu 'this' yerine linkin kendisini göndererek çağırıyoruz
+            selectClass(firstLId, firstCId, firstClassLink);
+        }
+    }
+}, 600); // Sidebar'ın oluşması için kısa bir bekleme
+
+        // 3. Yükleme ekranını kaldır ve görünümü ayarla
         setTimeout(() => {
             if (overlay) overlay.style.display = 'none';
             
-            const viewTitle = document.getElementById('viewTitle');
-            const contentArea = document.getElementById('content');
-            
-            if (viewTitle) {
-                viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
-            }
-            
-            if (contentArea) {
-                contentArea.style.display = 'none';
-            }
+            // Not: İlk sınıf otomatik seçildiği için artık "Lütfen sınıf seçin" 
+            // metnini burada gizlememize gerek kalmadı, showClass zaten orayı dolduracak.
         }, 300);
     })
     .catch((err) => {
