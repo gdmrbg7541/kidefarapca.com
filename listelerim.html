@@ -2200,7 +2200,7 @@ function moduDegistir() {
 async function authIslemi() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
-    const rePass = document.getElementById('re-password').value; // İkinci şifre alanını al
+    const rePass = document.getElementById('re-password').value; 
     const hata = document.getElementById('hata-mesaji');
 
     if (!email || !pass) {
@@ -2209,7 +2209,6 @@ async function authIslemi() {
         return;
     }
 
-    // BURASI YENİ: Kayıt modundaysak şifrelerin eşleştiğinden emin olalım
     if (mevcutMod === 'signup') {
         if (pass !== rePass) {
             hata.innerText = "Şifreler birbiriyle eşleşmiyor!";
@@ -2219,57 +2218,64 @@ async function authIslemi() {
     }
 
     try {
-        hata.style.display = "none"; // Hata varsa temizle
-        // Oturumu tarayıcı/sekme kapanınca bitecek şekilde ayarla (SESSION)
+        hata.style.display = "none";
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
         let userCredential;
         if (mevcutMod === 'login') {
             userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
-            console.log("Giriş başarılı!");
         } else {
-            // KAYIT OLMA DURUMU
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+            let dataToUpload = localStorage.getItem('schoolData');
             
-            // 1. Önce LocalStorage'ı kontrol et
-            let dataToUpload = localStorage.getItem('schoolData'); // schoolData olarak güncelledik
-            
-            // 2. Eğer yerel hafıza boşsa ama şu an ekranda demo veriler varsa onları al
             if (!dataToUpload && data && data.levels) {
                 dataToUpload = JSON.stringify(data);
             }
             
-            // 3. Veriyi buluta yaz (Demo veriler dahil)
             if (dataToUpload) {
                 await db.collection("kullanicilar").doc(userCredential.user.uid).set({
                     userData: dataToUpload, 
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                console.log("Mevcut/Demo veriler yeni hesaba aktarıldı.");
             }
-            
             alert("Hesabınız başarıyla oluşturuldu ve verileriniz buluta aktarıldı!");
         }
-        
         modalKapat(); 
-        
     } catch (error) {
         console.error("Hata:", error);
         
+        // ÖZEL HATA MESAJLARI
         if (error.code === 'auth/email-already-in-use') {
             hata.innerText = "Bu e-posta adresi zaten kullanımda.";
         } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
             hata.innerText = "Hatalı e-posta veya şifre.";
         } else if (error.code === 'auth/weak-password') {
             hata.innerText = "Şifre çok zayıf (en az 6 karakter).";
+        } else if (error.code === 'auth/invalid-email') {
+            // "The email address is badly formatted" yerine bu çalışacak:
+            hata.innerText = "Geçersiz e-posta adresi.";
         } else {
-            hata.innerText = "Bir hata oluştu: " + error.message;
+            // Tanımlanmamış diğer tüm hatalar için sadece bunu diyecek:
+            hata.innerText = "Bir hata oluştu.";
         }
+        
         hata.style.display = "block";
     }
 }
 
-// ŞİFRE GÖSTER/GİZLE FONKSİYONU (Bunu authIslemi dışına ekle)
+// --- ENTER TUŞU ÖZELLİĞİ (TAM BURAYA EKLE) ---
+document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('login-modal');
+    // Eğer modal görünürse ve basılan tuş Enter ise
+    if (modal && modal.style.display !== 'none' && event.key === 'Enter') {
+        // Eğer odaklanılan yer bir textarea değilse (notlar kısmıyla çakışmaması için)
+        if (event.target.tagName !== 'TEXTAREA') {
+            event.preventDefault(); // Sayfa yenilenmesini önle
+            authIslemi(); // Giriş/Kayıt işlemini yap
+        }
+    }
+});
+
 function togglePassword(id) {
     const input = document.getElementById(id);
     if (input.type === "password") {
@@ -2278,6 +2284,7 @@ function togglePassword(id) {
         input.type = "password";
     }
 }
+
 </script>
 
 <div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
