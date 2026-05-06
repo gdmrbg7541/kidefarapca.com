@@ -548,6 +548,16 @@ body.logged-in #content {
 </head>
 <body>
 
+<!-- Yükleniyor Ekranı -->
+<div id="loading-overlay" style="display:none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: white; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="border: 8px solid #f3f3f3; border-top: 8px solid var(--accent); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+    <h2 style="color: var(--primary); font-family: sans-serif;">Veriler Yükleniyor...</h2>
+</div>
+
+<style>
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
 <div id="sidebar" style="position: relative; display: flex; flex-direction: column;">
     <h2>🏫 Listelerim </h2>
     
@@ -2118,54 +2128,6 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 function verileriGetir(uid) {
-    // Seçili sınıf/seviye takibini sıfırla (görsel temizlik için)
-    curLId = null; 
-    curCId = null;
-
-    db.collection("kullanicilar").doc(uid).get()
-    .then((doc) => {
-        if (doc.exists && doc.data().userData) {
-            try {
-                // Buluttan gelen string veriyi objeye çevir ve global 'data'yı güncelle
-                data = JSON.parse(doc.data().userData); 
-                console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
-                
-                // KRİTİK: Veri güncellendiği anda sidebar'ı hemen çiziyoruz
-                renderSidebar(); 
-            } catch (e) {
-                console.error("Bulut verisi okunurken hata oluştu, mevcut veri korunuyor:", e);
-            }
-        } else {
-            console.log("Bulutta henüz kayıtlı veri yok. Mevcut verilerle devam ediliyor.");
-            // Yeni kullanıcıysa mevcut demo verilerle sidebar'ı çiz
-            renderSidebar();
-        }
-
-        // Arayüzü aktifleştir (CSS sınıflarını ekle)
-        document.body.classList.add('logged-in');
-
-        // İçerik alanını temizle ve kullanıcıyı yönlendir
-        setTimeout(() => {
-            const viewTitle = document.getElementById('viewTitle');
-            const contentArea = document.getElementById('content');
-            
-            if (viewTitle) {
-                viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
-            }
-            
-            if (contentArea) {
-                // Girişten sonra önceki verilerin kalıntılarını gizle
-                contentArea.style.display = 'none'; 
-            }
-            console.log("Giriş başarılı. Veri yönetimi aktif.");
-        }, 150);
-    })
-    .catch((err) => {
-        console.error("Veritabanı bağlantı hatası:", err);
-        // Hata olsa dahi kullanıcıya mevcut (varsayılan) yapıyı göster
-        renderSidebar();
-    });
-}
 </script>
 </body>
 </html>
