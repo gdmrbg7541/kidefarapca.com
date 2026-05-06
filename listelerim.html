@@ -2059,54 +2059,118 @@ const db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged((user) => {
     const loginBtn = document.getElementById('login-nav-btn');
-    const contentArea = document.getElementById('content'); // Bu satırı ekleyin
-
+    
     if (user) {
+        console.log("Giriş yapan kullanıcı:", user.email);
+        const uid = user.uid; 
+        
+        // CSS tetikleyicisi: İçeriği göster
         document.body.classList.add('logged-in');
-        loginBtn.innerHTML = ` Çıkış Yap (${user.email})`;
+        
+        modalKapat(); 
+        
+        // Buton metnini ve rengini güncelle
+        loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
         loginBtn.style.background = "#e74c3c"; 
-        
-        // ÖNEMLİ: Giriş yapıldığında içeriği temizleme komutunu burada ÇALIŞTIRMAYIN.
-        verileriGetir(user.uid); 
+
+        verileriGetir(uid); 
     } else {
-        // Sadece çıkış yapıldığında bu uyarıyı gösterin
-        document.body.classList.remove('logged-in');
-        loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
-        loginBtn.style.background = "#34495e"; 
+        console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
         
+        // --- KRİTİK TEMİZLİK: HESAPLAR ARASI VERİ SIZINTISINI ÖNLER ---
+        
+        // 1. Bellekteki (RAM) verileri tamamen sıfırla
+        // data = []; yerine projenizdeki yapıya göre boş obje/dizi yapın:
+        data = { levels: {}, levelOrder: [] }; 
+        curLId = null; // Seçili seviye ID'sini sıfırla
+        curCId = null; // Seçili sınıf ID'sini sıfırla
+        
+        // 2. Arayüzü (Sidebar) temizle
+        if (typeof renderSidebar === "function") {
+            // Veri olmadığı için korumalı renderSidebar boş ekran basacaktır
+            renderSidebar(); 
+        }
+
+        // 3. Sağ taraftaki öğrenci listesi alanını temizle
+        const contentArea = document.getElementById('content');
         if (contentArea) {
              contentArea.innerHTML = `
                 <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
                     <h3>Lütfen giriş yapın</h3>
                     <p>İçeriği görmek için öğretmen girişi yapmanız gerekmektedir.</p>
                 </div>`;
-             contentArea.style.display = 'block'; // Uyarıyı görmek için
         }
+
+        // 4. CSS tetikleyicisi: Ana kapsayıcıları gizle
+        document.body.classList.remove('logged-in');
+        
+        // 5. Butonu varsayılan hale getir
+        loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
+        loginBtn.style.background = "#34495e"; 
+        
+        // Giriş yoksa modalı aç (isteğe bağlı gecikme ile)
+        setTimeout(() => { 
+            if(!firebase.auth().currentUser) modalAc(); 
+        }, 1000);
     }
 });
 
 
 function verileriGetir(uid) {
+    // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
+    curLId = null; 
+    curCId = null;
+
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
-            data = JSON.parse(doc.data().userData);
+            try {
+                const cloudData = JSON.parse(doc.data().userData);
+                data = cloudData;
+                console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
+            } catch (e) {
+                console.error("Veri işleme hatası:", e);
+                data = { levels: {}, levelOrder: [] };
+            }
+        } else {
+            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
+            if (typeof demoData !== 'undefined') {
+                data = JSON.parse(JSON.stringify(demoData));
+            } else {
+                data = { levels: {}, levelOrder: [] };
+            }
         }
-        
+
+        // 1. Önce CSS engelini kaldır (Arayüzü görünür yap)
+        document.body.classList.add('logged-in');
+
+        // 2. Sidebar'ı (Menüyü) çiz
         renderSidebar();
 
-        // Veriler yüklendikten sonra "Lütfen giriş yapın" yazısını silmek için:
-        const contentArea = document.getElementById('content');
-        if (contentArea) {
-            contentArea.innerHTML = '<div class="header"><h2 id="viewTitle">Sınıf Seçiniz</h2></div>' + 
-                                    document.querySelector('.tabs').outerHTML; 
-            // Veya sadece içeriği boşaltıp sınıf seçilmesini bekleyin
-            contentArea.style.display = 'none'; 
-        }
-        
-        const viewTitle = document.getElementById('viewTitle');
-        if (viewTitle) viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
-
+        // 3. ZAMANLAMA ÇÖZÜMÜ: Sadece arayüzü hazırla, otomatik seçim yapma
+        setTimeout(() => {
+            console.log("Veriler yüklendi. Kullanıcı seçimi bekleniyor...");
+            
+            // Başlık alanını varsayılan duruma getir
+            const viewTitle = document.getElementById('viewTitle');
+            if (viewTitle) {
+                viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
+            }
+            
+            // Eğer bir sınıf önceden seçili değilse ekranı temiz tut
+            if (!curLId || !curCId) {
+                const contentArea = document.getElementById('content');
+                if (contentArea) {
+                    contentArea.style.display = 'none'; // Sınıf seçilene kadar içerik alanını gizli tut
+                }
+            } else {
+                renderStudents(); 
+            }
+        }, 150); 
+    })
+    .catch((err) => {
+        console.error("Bağlantı hatası:", err);
+        renderSidebar();
     });
 }
 
