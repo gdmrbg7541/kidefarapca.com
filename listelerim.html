@@ -2408,25 +2408,26 @@ setTimeout(() => {
 }
 
 function misafirGiris() {
-    // 1. Modalı gizle
+    // 1. Modalı gizle ve kilitleri aç
     document.getElementById('login-modal').style.display = 'none';
+    document.body.classList.add('logged-in');
     
-    // 2. LocalStorage'a misafir girişi yapıldığını işaretle (isteğe bağlı)
+    // 2. Misafir modunu hafızaya al (En önemli kısım)
     localStorage.setItem('auth_status', 'guest');
     
-    // 3. Eğer sayfa içeriği bir fonksiyona bağlıysa onu tetikle
-    // Örneğin: verileriYukle() veya sayfaHazirla() gibi bir fonksiyonunuz varsa buraya yazın.
-    
-    console.log("Misafir modunda devam ediliyor...");
-    
-    // Eğer sayfa hala boş görünüyorsa, sayfanın ana konteynırının görünürlüğünü kontrol edin
-    const anaIcerik = document.querySelector('.main-container'); // veya sizin içerik div'iniz
-    if (anaIcerik) anaIcerik.style.opacity = '1';
-}
-
-// Mevcut modalKapat fonksiyonunu da buna yönlendirebilirsiniz
-function modalKapat() {
-    misafirGiris();
+    // 3. Verileri yükle ve ilk sınıfı seç
+    if (typeof renderSidebar === "function") {
+        renderSidebar();
+        setTimeout(() => {
+            const firstLevel = document.querySelector('.level-container');
+            if (firstLevel) {
+                const firstClassList = firstLevel.querySelector('.class-list');
+                if (firstClassList) firstClassList.style.display = "block";
+                const firstClassLink = firstLevel.querySelector('.class-link');
+                if (firstClassLink) firstClassLink.click();
+            }
+        }, 300);
+    }
 }
 </script>
 </body>
