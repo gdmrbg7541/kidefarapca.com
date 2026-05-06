@@ -906,7 +906,49 @@ function switchTab(idx) {
     if(idx === 4) renderActivityStatus();
     if(idx === 8) renderPlan(); 
 }
+function selectClass(lId, cId) {
+    // Veri yapısını kontrol et
+    if (!data || !data.levels[lId]) return;
 
+    // DOM öğelerinin varlığını kontrol et
+    const viewTitle = document.getElementById('viewTitle');
+    const content = document.getElementById('content');
+    const stayedPoint = document.getElementById('stayedPoint');
+
+    // Eğer öğeler henüz oluşmadıysa hata verme, 100ms sonra tekrar dene
+    if (!viewTitle || !content) {
+        console.warn("Arayüz öğeleri bekleniyor...");
+        setTimeout(() => selectClass(lId, cId), 100);
+        return;
+    }
+
+    curLId = lId; 
+    curCId = cId;
+    pools = {}; 
+
+    content.style.display = 'block';
+    viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
+    
+    switchTab(8); // Haftalık Plan tabını aç
+    
+    let cls = data.levels[curLId].classes[curCId];
+    if (stayedPoint) {
+        stayedPoint.value = cls.stayedPoint || "";
+    }
+    
+    renderPlan();
+}
+// Kaldığımız yer bilgisini kaydetme fonksiyonu
+function updateStayedPoint(val) {
+    // Güvenlik: Sadece bir sınıf seçiliyse ve veri yapısı hazırsa kaydet
+    if (curLId && curCId && data.levels[curLId] && data.levels[curLId].classes[curCId]) {
+        data.levels[curLId].classes[curCId].stayedPoint = val;
+        console.log("Kaldığımız yer kaydedildi: " + val);
+        save(); // Veriyi yerel ve bulut hafızaya gönder
+    } else {
+        console.warn("Hata: Veri kaydedilecek sınıf seçili değil!");
+    }
+}
 
 // renderPlan fonksiyonunu da güncellemek gerekebilir (daha önce eklemediysen)
 function updateActivityTable() {
@@ -2072,19 +2114,18 @@ firebase.auth().onAuthStateChanged((user) => {
         }, 1000);
     }
 });
+
+
 function verileriGetir(uid) {
     // --- GÜVENLİK ADIMI: ÖNCEKİ HESAPTAN KALANLARI TEMİZLE ---
     curLId = null; 
     curCId = null;
-    
-    console.log("Veriler getiriliyor, kullanıcı ID:", uid);
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
         if (doc.exists && doc.data().userData) {
             try {
                 const cloudData = JSON.parse(doc.data().userData);
-                // Yeni kullanıcının verilerini belleğe al
                 data = cloudData;
                 console.log("Yeni kullanıcı verileri buluttan yüklendi! 🔄");
             } catch (e) {
@@ -2092,8 +2133,7 @@ function verileriGetir(uid) {
                 data = { levels: {}, levelOrder: [] };
             }
         } else {
-            // BULUTTA VERİ YOKSA (İLK GİRİŞ): 
-            console.log("Bulutta veri bulunamadı, demo liste yükleniyor.");
+            console.log("Bulutta veri bulunamadı, tertemiz demo liste yükleniyor.");
             if (typeof demoData !== 'undefined') {
                 data = JSON.parse(JSON.stringify(demoData));
             } else {
@@ -2101,80 +2141,39 @@ function verileriGetir(uid) {
             }
         }
 
-        // 1. ADIM: Arayüz kilidini aç (CSS display:none engelini kaldırır)
+        // 1. Önce CSS engelini kaldır (Arayüzü görünür yap)
         document.body.classList.add('logged-in');
 
-        // 2. ADIM: Sidebar'ı (Menüyü) çiz
+        // 2. Sidebar'ı (Menüyü) çiz
         renderSidebar();
 
-        // 3. ADIM: ZAMANLAMA VE ÇAKIŞMA YÖNETİMİ
-        // setTimeout ile tarayıcının HTML elemanlarını hafızasına almasına izin veriyoruz
+        // 3. ZAMANLAMA ÇÖZÜMÜ: Sadece arayüzü hazırla, otomatik seçim yapma
         setTimeout(() => {
+            console.log("Veriler yüklendi. Kullanıcı seçimi bekleniyor...");
             
-            // Eğer sayfa yenilendiyse ve zaten bir seçim varsa (curLId doluysa) sadece listeyi bas
-            if (curLId && curCId) {
-                console.log("Mevcut seçim yükleniyor:", curLId, curCId);
-                renderStudents(); 
-            } 
-            // Eğer ilk kez giriş yapıldıysa veya seçim yoksa
-            else {
-                // Haftalık program veya başka bir otomatik tetikleyici ile çakışmayı önlemek için
-                // Burada sadece 'otomatikIlkSecim' fonksiyonuna yetki veriyoruz
-                console.log("Otomatik ilk seçim başlatılıyor...");
-                otomatikIlkSecim();
+            // Başlık alanını varsayılan duruma getir
+            const viewTitle = document.getElementById('viewTitle');
+            if (viewTitle) {
+                viewTitle.innerText = "Lütfen soldan bir sınıf seçiniz";
             }
-
-        }, 200); // 200ms, tüm çakışmaları ve render gecikmelerini önlemek için ideal süredir
+            
+            // Eğer bir sınıf önceden seçili değilse ekranı temiz tut
+            if (!curLId || !curCId) {
+                const contentArea = document.getElementById('content');
+                if (contentArea) {
+                    contentArea.style.display = 'none'; // Sınıf seçilene kadar içerik alanını gizli tut
+                }
+            } else {
+                renderStudents(); 
+            }
+        }, 150); 
     })
     .catch((err) => {
         console.error("Bağlantı hatası:", err);
-        // Hata durumunda bile arayüzün boş kalmaması için sidebar'ı boş render et
         renderSidebar();
     });
 }
-// Otomatik olarak ilk seviyeyi ve ilk sınıfı açan yardımcı fonksiyon
-function otomatikIlkSecim() {
-    // 1. Veri yapısı kontrolü
-    if (!data || !data.levels) {
-        console.warn("Otomatik seçim için veri henüz hazır değil.");
-        return;
-    }
 
-    // 2. İlk Seviye ID'sini bul
-    const levelIds = data.levelOrder || Object.keys(data.levels);
-    if (levelIds.length === 0) return;
-    const firstLvlId = levelIds[0];
-
-    // 3. DOM Kontrolü: Liste elementi oluşturulmuş mu?
-    const listEl = document.getElementById(`list-${firstLvlId}`);
-    
-    if (!listEl) {
-        // Eğer render henüz tamamlanmadıysa 50ms sonra tekrar dene
-        console.log("DOM henüz hazır değil, tekrar deneniyor...");
-        setTimeout(otomatikIlkSecim, 50);
-        return;
-    }
-
-    // 4. Element bulunduysa işlemlere devam et
-    // İlk Seviyenin Sınıf Listesini Görünür Yap (Klasör açma)
-    listEl.style.display = 'block';
-
-    // 5. İlk Sınıf ID'sini bul ve seç
-    const firstLvl = data.levels[firstLvlId];
-    if (firstLvl && firstLvl.classes) {
-        // Eğer classOrder varsa onu kullan, yoksa anahtarları al
-        const classIds = firstLvl.classOrder || Object.keys(firstLvl.classes);
-        
-        if (classIds.length > 0) {
-            const firstClassId = classIds[0];
-            
-            // selectClass fonksiyonu mevcut mu kontrol et ve tetikle
-            if (typeof selectClass === "function") {
-                selectClass(firstLvlId, firstClassId);
-            }
-        }
-    }
-}
 </script>
 </body>
 </html>
