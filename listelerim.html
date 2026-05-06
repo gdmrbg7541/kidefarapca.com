@@ -2158,8 +2158,8 @@ function addConfigRow(type, name = "", weight = 0) {
 let mevcutMod = 'login'; // Varsayılan mod giriş
 
 function moduDegistir() {
-    // 1. Tüm elementleri bir kez ve doğru şekilde tanımlayalım
     const title = document.getElementById('auth-title');
+    const subTitle = document.querySelector('.auth-header-area p'); // Açıklama metnini seçer
     const btn = document.getElementById('auth-action-btn');
     const link = document.getElementById('auth-switch-link');
     const text = document.getElementById('auth-switch-text');
@@ -2167,27 +2167,27 @@ function moduDegistir() {
     const rePassGroup = document.getElementById('re-password-group');
     const hata = document.getElementById('hata-mesaji');
 
-    // Her geçişte eski hata mesajını gizle
     if (hata) hata.style.display = "none";
 
     if (mevcutMod === 'login') {
-        // KAYIT OLMA MODUNA GEÇİŞ
+        // --- KAYIT OLMA MODUNA GEÇİŞ ---
         mevcutMod = 'signup';
         title.innerText = "Yeni Hesap Oluştur";
-        if (passLabel) passLabel.innerText = "Şifre Oluştur";
+        if (subTitle) subTitle.innerText = "Verilerinizi senkronize etmek için kayıt olun."; // İSTEDİĞİN DEĞİŞİKLİK
         
-        // KRİTİK NOKTA: Apple çakışmasını önleyen yan yana düzen için flex kullanıyoruz
+        if (passLabel) passLabel.innerText = "Şifre Oluştur";
         if (rePassGroup) rePassGroup.style.display = "flex"; 
         
         btn.innerText = "Kayıt Ol";
         text.innerText = "Zaten hesabınız var mı?";
         link.innerText = "Giriş Yapın";
     } else {
-        // GİRİŞ YAPMA MODUNA GEÇİŞ
+        // --- GİRİŞ YAPMA MODUNA GEÇİŞ ---
         mevcutMod = 'login';
         title.innerText = "Öğretmen Girişi";
-        if (passLabel) passLabel.innerText = "Şifre";
+        if (subTitle) subTitle.innerText = "Verilerinizi senkronize etmek için giriş yapın.";
         
+        if (passLabel) passLabel.innerText = "Şifre";
         if (rePassGroup) rePassGroup.style.display = "none";
         
         btn.innerText = "Giriş Yap";
