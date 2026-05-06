@@ -2102,16 +2102,7 @@ firebase.auth().onAuthStateChanged((user) => {
             renderSidebar(); 
         }
 
-        // 3. Sağ taraftaki içerik alanını "Giriş Yapın" uyarısına çevir
-        const contentArea = document.getElementById('content');
-        if (contentArea) {
-             contentArea.innerHTML = `
-                <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
-                    <h3>Lütfen giriş yapın</h3>
-                    <p>İçeriği görmek için öğretmen girişi yapmanız gerekmektedir.</p>
-                </div>`;
-            contentArea.style.display = 'block'; // Uyarıyı görünür yap
-        }
+        
 
         // 4. Arayüz kısıtlamalarını geri getir
         document.body.classList.remove('logged-in');
