@@ -13,17 +13,30 @@
             <p class="marhey-text">Verilerinizi senkronize etmek için giriş yapın.</p>
         </div>
 
-        <div class="input-container">
-            <div class="input-group">
-                <input type="email" id="email" placeholder=" " required>
-                <label class="marhey-text">E-posta Adresi</label>
-            </div>
-
-            <div class="input-group">
-                <input type="password" id="password" placeholder=" " required>
-                <label class="marhey-text">Şifre</label>
-            </div>
+       <div class="input-container">
+    <div style="margin-bottom: 15px;">
+        <div class="input-group" style="width: 100%; margin-bottom: 0;">
+            <input type="email" id="email" placeholder=" " required>
+            <label class="marhey-text">E-posta Adresi</label>
         </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+            <input type="password" id="password" placeholder=" " required>
+            <label id="password-label" class="marhey-text">Şifre</label>
+        </div>
+        <span class="toggle-pass-btn" onclick="togglePassword('password')">👁️</span>
+    </div>
+
+    <div id="re-password-group" style="display: none; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+            <input type="password" id="re-password" placeholder=" ">
+            <label class="marhey-text">Şifreyi Onayla</label>
+        </div>
+        <span class="toggle-pass-btn" onclick="togglePassword('re-password')">👁️</span>
+    </div>
+</div>
         
         <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
         
@@ -612,16 +625,33 @@ body.logged-in #content {
     padding: 20px 30px; /* Dikey padding 20px'e indirildi */
     border-radius: 24px;
     box-shadow: 0 15px 35px rgba(22, 160, 133, 0.1);
-    width: 90%;
-    max-width: 400px;
+    width: 95%;
+    max-width: 500px;
     text-align: center;
     border: 2px solid #E9EEF5;
     box-sizing: border-box;
 }
 
+
+
 .auth-header-area {
     margin-bottom: 12px; /* Başlık altı boşluğu daraltıldı */
 }
+#auth-action-btn {
+    margin-bottom: 20px !important; /* Buton ile alt yazı arasındaki boşluk */
+}
+
+/* Şifre göz simgesi için küçük bir düzenleme */
+.toggle-pass {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0.5;
+    z-index: 10;
+}
+
 
 #auth-title {
     color: #16A085;
@@ -636,12 +666,25 @@ body.logged-in #content {
     line-height: 1.2;
 }
 
+.toggle-pass-btn {
+    width: 45px;      /* Sabit Genişlik */
+    height: 45px;     /* Sabit Yükseklik */
+    flex-shrink: 0;   /* Küçülmesini engelle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F0F2F5;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
 /* 5. INPUT VE LABEL AYARLARI (Sağ boşluk sorunu giderildi) */
 .input-group {
     position: relative;
     margin-bottom: 15px; /* Gruplar arası dikey boşluk azaltıldı */
     width: 100%;
     box-sizing: border-box;
+    flex: 1;
 }
 
 .input-group input {
@@ -2115,32 +2158,49 @@ function addConfigRow(type, name = "", weight = 0) {
 let mevcutMod = 'login'; // Varsayılan mod giriş
 
 function moduDegistir() {
+    // 1. Tüm elementleri bir kez ve doğru şekilde tanımlayalım
     const title = document.getElementById('auth-title');
     const btn = document.getElementById('auth-action-btn');
     const link = document.getElementById('auth-switch-link');
     const text = document.getElementById('auth-switch-text');
+    const passLabel = document.getElementById('password-label');
+    const rePassGroup = document.getElementById('re-password-group');
     const hata = document.getElementById('hata-mesaji');
 
-    hata.style.display = "none";
+    // Her geçişte eski hata mesajını gizle
+    if (hata) hata.style.display = "none";
 
     if (mevcutMod === 'login') {
+        // KAYIT OLMA MODUNA GEÇİŞ
         mevcutMod = 'signup';
         title.innerText = "Yeni Hesap Oluştur";
+        if (passLabel) passLabel.innerText = "Şifre Oluştur";
+        
+        // KRİTİK NOKTA: Apple çakışmasını önleyen yan yana düzen için flex kullanıyoruz
+        if (rePassGroup) rePassGroup.style.display = "flex"; 
+        
         btn.innerText = "Kayıt Ol";
         text.innerText = "Zaten hesabınız var mı?";
         link.innerText = "Giriş Yapın";
     } else {
+        // GİRİŞ YAPMA MODUNA GEÇİŞ
         mevcutMod = 'login';
         title.innerText = "Öğretmen Girişi";
+        if (passLabel) passLabel.innerText = "Şifre";
+        
+        if (rePassGroup) rePassGroup.style.display = "none";
+        
         btn.innerText = "Giriş Yap";
         text.innerText = "Hesabınız yok mu?";
         link.innerText = "Kayıt Olun";
     }
 }
 
+
 async function authIslemi() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
+    const rePass = document.getElementById('re-password').value; // İkinci şifre alanını al
     const hata = document.getElementById('hata-mesaji');
 
     if (!email || !pass) {
@@ -2149,7 +2209,17 @@ async function authIslemi() {
         return;
     }
 
+    // BURASI YENİ: Kayıt modundaysak şifrelerin eşleştiğinden emin olalım
+    if (mevcutMod === 'signup') {
+        if (pass !== rePass) {
+            hata.innerText = "Şifreler birbiriyle eşleşmiyor!";
+            hata.style.display = "block";
+            return;
+        }
+    }
+
     try {
+        hata.style.display = "none"; // Hata varsa temizle
         // Oturumu tarayıcı/sekme kapanınca bitecek şekilde ayarla (SESSION)
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
@@ -2162,7 +2232,7 @@ async function authIslemi() {
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
             
             // 1. Önce LocalStorage'ı kontrol et
-            let dataToUpload = localStorage.getItem('ogretmen_listeleri');
+            let dataToUpload = localStorage.getItem('schoolData'); // schoolData olarak güncelledik
             
             // 2. Eğer yerel hafıza boşsa ama şu an ekranda demo veriler varsa onları al
             if (!dataToUpload && data && data.levels) {
@@ -2186,7 +2256,6 @@ async function authIslemi() {
     } catch (error) {
         console.error("Hata:", error);
         
-        // Türkçe hata mesajları
         if (error.code === 'auth/email-already-in-use') {
             hata.innerText = "Bu e-posta adresi zaten kullanımda.";
         } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
@@ -2197,6 +2266,16 @@ async function authIslemi() {
             hata.innerText = "Bir hata oluştu: " + error.message;
         }
         hata.style.display = "block";
+    }
+}
+
+// ŞİFRE GÖSTER/GİZLE FONKSİYONU (Bunu authIslemi dışına ekle)
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
     }
 }
 </script>
