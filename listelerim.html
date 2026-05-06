@@ -3,24 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title> Listelerim </title>
-    <div id="login-modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center;">
-    <div style="background: white; padding: 30px; border-radius: 12px; width: 350px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; text-align: center;">
-        <span onclick="modalKapat()" style="position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 20px;">&times;</span>
+<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+<div id="login-modal" style="display:flex; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: #F7F9FC; align-items: center; justify-content: center; backdrop-filter: blur(12px);">
+    <div class="auth-card">
         
-        <div id="auth-header">
-            <h2 id="auth-title" style="color: var(--primary); margin-bottom: 20px;">Öğretmen Girişi</h2>
+        <div class="auth-header-area">
+            <h2 id="auth-title">Öğretmen Paneli</h2>
+            <p class="marhey-text">Verilerinizi senkronize etmek için giriş yapın.</p>
         </div>
 
-        <input type="email" id="email" placeholder="E-posta" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-        <input type="password" id="password" placeholder="Şifre" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-        
-        <button id="auth-action-btn" onclick="authIslemi()" style="width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">Giriş Yap</button>
-        
-        <p id="hata-mesaji" style="color: var(--danger); font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+        <div class="input-container">
+            <div class="input-group">
+                <input type="email" id="email" placeholder=" " required>
+                <label class="marhey-text">E-posta Adresi</label>
+            </div>
 
-        <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9rem;">
+            <div class="input-group">
+                <input type="password" id="password" placeholder=" " required>
+                <label class="marhey-text">Şifre</label>
+            </div>
+        </div>
+        
+        <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
+        
+        <p id="hata-mesaji" class="marhey-text"></p>
+
+        <div class="auth-footer marhey-text">
             <span id="auth-switch-text">Hesabınız yok mu?</span> 
-            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()" style="color: var(--accent); text-decoration: none; font-weight: bold;">Kayıt Olun</a>
+            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
+        </div>
+
+        <div class="local-storage-warning">
+            <p class="marhey-text" style="font-size: 13px; line-height: 1.4;">Giriş yapmadan devam ederseniz, listeleriniz <strong>sadece bu tarayıcıda</strong> saklanır ve tarayıcı verileri silindiğinde kaybolur.</p>
+            <button class="ghost-btn" onclick="misafirGiris()">Giriş Yapmadan Devam Et</button>
         </div>
     </div>
 </div>
@@ -555,6 +571,160 @@ body.logged-in #content {
     color: white !important;
     font-weight: bold;
 }
+
+/* 1. FONT YÜKLEME */
+@import url('https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&display=swap');
+
+/* 2. TÜM MODAL VE İÇERİĞİ İÇİN KESİN MARHEY ZORLAMASI */
+#login-modal, 
+.auth-card, 
+#auth-title, 
+#auth-subtitle,
+.index-btn-style, 
+.marhey-text, 
+.input-group label, 
+.input-group input, 
+.auth-footer, 
+.local-storage-warning p, 
+.ghost-btn,
+#hata-mesaji {
+    font-family: 'Marhey', sans-serif !important;
+}
+
+/* 3. MODAL ARKA PLAN (Index.html Uyumu) */
+#login-modal {
+    display: flex;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #F7F9FC; 
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+}
+
+/* 4. AUTH KARTI (Dikey Boşluklar Azaltıldı) */
+.auth-card {
+    background: #ffffff;
+    padding: 20px 30px; /* Dikey padding 20px'e indirildi */
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(22, 160, 133, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    border: 2px solid #E9EEF5;
+    box-sizing: border-box;
+}
+
+.auth-header-area {
+    margin-bottom: 12px; /* Başlık altı boşluğu daraltıldı */
+}
+
+#auth-title {
+    color: #16A085;
+    margin: 5px 0 2px 0;
+    font-size: 22px;
+}
+
+#auth-subtitle {
+    font-size: 13px;
+    color: #7F8C8D;
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
+/* 5. INPUT VE LABEL AYARLARI (Sağ boşluk sorunu giderildi) */
+.input-group {
+    position: relative;
+    margin-bottom: 15px; /* Gruplar arası dikey boşluk azaltıldı */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px; /* Kutunun dikey yüksekliği azaltıldı */
+    border: 2px solid #F0F2F5;
+    border-radius: 12px;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+    transition: all 0.3s ease;
+    box-sizing: border-box; 
+    display: block;
+}
+
+.input-group label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95A5A6;
+    pointer-events: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* Floating Label */
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: 0px;
+    left: 12px;
+    font-size: 11px;
+    background: white;
+    padding: 0 5px;
+    color: #16A085;
+}
+
+/* 6. BUTONLAR VE UYARILAR (Dikey alanlar daraltıldı) */
+.index-btn-style {
+    width: 100%;
+    padding: 12px; /* Buton kalınlığı azaltıldı */
+    background: linear-gradient(90deg, #FFC107, #F39C12);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+.local-storage-warning {
+    margin-top: 15px; /* Ayırıcı çizgi boşluğu azaltıldı */
+    padding-top: 12px;
+    border-top: 1px dashed #D5DBDB;
+}
+
+.local-storage-warning p {
+    font-size: 12px;
+    color: #7F8C8D;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.ghost-btn {
+    background: #F0F3F4;
+    border: none;
+    color: #5D6D7E;
+    padding: 8px 20px; /* Buton yüksekliği azaltıldı */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#auth-switch-link {
+    color: #EF5350;
+    text-decoration: none;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -1035,16 +1205,16 @@ function modalAc() {
     document.getElementById('login-modal').style.display = 'flex';
 }
 
-function modalKapat() {
-    document.getElementById('login-modal').style.display = 'none';
+
+// Modalın dışına tıklanarak kapanmasını engelleyen yapı
+window.onclick = function(event) {
+    let modal = document.getElementById("login-modal");
+    // Bu kısmı boş bırakıyoruz veya dış tıklama kontrolünü siliyoruz.
+    // Böylece sadece modalKapat() fonksiyonu tetiklendiğinde kapanacaktır.
 }
 
-// Dışarı tıklandığında kapanması için
-window.onclick = function(event) {
-    let modal = document.getElementById('login-modal');
-    if (event.target == modal) {
-        modalKapat();
-    }
+function modalKapat() {
+    document.getElementById('login-modal').style.display = 'none';
 }
 
 async function login() {
@@ -2235,6 +2405,28 @@ setTimeout(() => {
         if (overlay) overlay.style.display = 'none';
         renderSidebar();
     });
+}
+
+function misafirGiris() {
+    // 1. Modalı gizle
+    document.getElementById('login-modal').style.display = 'none';
+    
+    // 2. LocalStorage'a misafir girişi yapıldığını işaretle (isteğe bağlı)
+    localStorage.setItem('auth_status', 'guest');
+    
+    // 3. Eğer sayfa içeriği bir fonksiyona bağlıysa onu tetikle
+    // Örneğin: verileriYukle() veya sayfaHazirla() gibi bir fonksiyonunuz varsa buraya yazın.
+    
+    console.log("Misafir modunda devam ediliyor...");
+    
+    // Eğer sayfa hala boş görünüyorsa, sayfanın ana konteynırının görünürlüğünü kontrol edin
+    const anaIcerik = document.querySelector('.main-container'); // veya sizin içerik div'iniz
+    if (anaIcerik) anaIcerik.style.opacity = '1';
+}
+
+// Mevcut modalKapat fonksiyonunu da buna yönlendirebilirsiniz
+function modalKapat() {
+    misafirGiris();
 }
 </script>
 </body>
