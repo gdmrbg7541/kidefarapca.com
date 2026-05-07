@@ -496,6 +496,14 @@ const verbData = {
         showScreen('screen-fiil');
     }
 
+    function resetTimerVariables() {
+    clearInterval(timerInterval); // Mevcut sayacı durdur
+    elapsedTime = 0;             // Geçen süreyi sıfırla
+    startTime = 0;               // Başlangıç zamanını temizle
+    isPaused = false;            // Duraklatma modunu kapat
+    document.getElementById('timer-display').textContent = "00:00"; // Ekranı temizle
+}
+
     function preparePlay(fiil) {
     // verbData içinde bu fiil varsa listeyi al, yoksa (hata olmasın diye) aynı kelimeyi 36 kez bas
     if (verbData && verbData[fiil]) {
@@ -628,15 +636,55 @@ const verbData = {
         arrows.forEach(a => a.style.display = (id === 'screen-play' ? 'block' : 'none'));
     }
 
-    function resetToFiilSelection() { showFiils(selectedCat); }
-    function resetRace() { raceMode = false; clearInterval(timerInterval); hideHeaderElements(); loadTable(); }
-    function togglePause() { isPaused = !isPaused; if (!isPaused) startTime = Date.now() - (elapsedTime * 1000); }
+    function resetToFiilSelection() { 
+        // Kronometreyi tamamen sıfırla
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        startTime = 0;function resetToFiilSelection() { 
+        // Kronometreyi tamamen sıfırla
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        startTime = 0;
+        isPaused = false;
+        
+        // Varsa ekrandaki süreyi de temizle
+        const timerDisplay = document.getElementById('timer-display');
+        if(timerDisplay) timerDisplay.textContent = "00:00";
+        
+        showFiils(selectedCat); 
+    }
+
+        isPaused = false;
+        
+        // Varsa ekrandaki süreyi de temizle
+        const timerDisplay = document.getElementById('timer-display');
+        if(timerDisplay) timerDisplay.textContent = "00:00";
+        
+        showFiils(selectedCat); 
+    }
+    function resetRace() { 
+        raceMode = false; 
+        clearInterval(timerInterval); 
+        elapsedTime = 0; // Burada da sıfırlama eklemek güvenli olur
+        hideHeaderElements(); 
+        loadTable(); 
+    }
+    function togglePause() { 
+        isPaused = !isPaused; 
+        if (!isPaused) {
+            startTime = Date.now() - (elapsedTime * 1000);
+        }
+    }
     
     function goBack() {
         const active = document.querySelector('.screen.active').id;
-        if (active === 'screen-play') resetToFiilSelection();
-        else if (active === 'screen-fiil') showScreen('screen-cat');
-        else window.location.href = "aksamiseba.html";
+        if (active === 'screen-play') {
+            resetToFiilSelection();
+        } else if (active === 'screen-fiil') {
+            showScreen('screen-cat');
+        } else {
+            window.location.href = "aksamiseba.html";
+        }
     }
 
     init();
