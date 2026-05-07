@@ -9,50 +9,57 @@
     <div class="auth-card">
         
         <div class="auth-header-area">
-            <h2 id="auth-title">Öğretmen Paneli</h2>
-            <p class="marhey-text">Verilerinizi senkronize etmek için giriş yapın.</p>
+            <h2 id="auth-title">Giriş Paneli</h2>
+            <p class="marhey-text" id="auth-desc" style="font-weight:400;">Lütfen giriş yapmak istediğiniz rolü seçin.</p>
         </div>
 
-       <div class="input-container">
-    <div style="margin-bottom: 15px;">
-        <div class="input-group" style="width: 100%; margin-bottom: 0;">
-            <input type="email" id="email" placeholder=" " required>
-            <label class="marhey-text">E-posta Adresi</label>
+        <div class="role-selector" style="display: flex; gap: 8px; margin-bottom: 20px;">
+            <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn active-role">Öğretmen</button>
+            <button onclick="setRole('parent')" id="btn-parent" class="role-btn">Veli</button>
+            <button onclick="setRole('student')" id="btn-student" class="role-btn">Öğrenci</button>
         </div>
-    </div>
 
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <div class="input-group" style="flex: 1; margin-bottom: 0;">
-            <input type="password" id="password" placeholder=" " required>
-            <label id="password-label" class="marhey-text">Şifre</label>
-        </div>
-        <span class="toggle-pass-btn" onclick="togglePassword('password')">👁️</span>
-    </div>
+        <div class="input-container">
+            <div style="margin-bottom: 15px;">
+                <div class="input-group" style="width: 100%; margin-bottom: 0;">
+                    <input type="email" id="email" placeholder=" " required>
+                    <label id="primary-label" class="marhey-text">E-posta Adresi</label>
+                </div>
+            </div>
 
-    <div id="re-password-group" style="display: none; align-items: center; gap: 10px; margin-bottom: 15px;">
-        <div class="input-group" style="flex: 1; margin-bottom: 0;">
-            <input type="password" id="re-password" placeholder=" ">
-            <label class="marhey-text">Şifreyi Onayla</label>
+            <div id="password-main-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                    <input type="password" id="password" placeholder=" " required>
+                    <label id="password-label" class="marhey-text">Şifre</label>
+                </div>
+                <span class="toggle-pass-btn" onclick="togglePassword('password')">👁️</span>
+            </div>
+
+            <div id="re-password-group" style="display: none; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                    <input type="password" id="re-password" placeholder=" ">
+                    <label class="marhey-text">Şifreyi Onayla</label>
+                </div>
+                <span class="toggle-pass-btn" onclick="togglePassword('re-password')">👁️</span>
+            </div>
         </div>
-        <span class="toggle-pass-btn" onclick="togglePassword('re-password')">👁️</span>
-    </div>
-</div>
         
         <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
         
-        <p id="hata-mesaji" class="marhey-text"></p>
+        <p id="hata-mesaji" class="marhey-text" style="color:red; font-size:12px; height: 15px;"></p>
 
-        <div class="auth-footer marhey-text">
+        <div class="auth-footer marhey-text" id="auth-footer-links">
             <span id="auth-switch-text">Hesabınız yok mu?</span> 
             <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
         </div>
 
-        <div class="local-storage-warning">
-            <p class="marhey-text" style="font-size: 13px; line-height: 1.4;">Giriş yapmadan devam ederseniz, listeleriniz <strong>sadece bu tarayıcıda</strong> saklanır ve tarayıcı verileri silindiğinde kaybolur.</p>
-            <button class="ghost-btn" onclick="misafirGiris()">Giriş Yapmadan Devam Et</button>
+        <div id="guest-access-area" class="local-storage-warning">
+            <p class="marhey-text" style="font-size: 13px; line-height: 1.4; font-weight: 400;">Giriş yapmadan devam ederseniz, listeleriniz <strong>sadece bu tarayıcıda</strong> saklanır.</p>
+            <button class="ghost-btn marhey-text" onclick="misafirGiris()" style="font-weight: 400;">Giriş Yapmadan Devam Et</button>
         </div>
     </div>
 </div>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -868,6 +875,48 @@ body.logged-in #content {
     text-decoration: none;
     font-weight: bold;
 }
+
+.role-btn {
+    flex: 1;
+    padding: 10px 5px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: #f0f2f5;
+    color: #777;
+    cursor: pointer;
+    font-family: 'Nunito', 'Arakom', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.role-btn.active-role {
+    background: #E8F0FE; /* Pastel mavi */
+    color: #1a73e8;
+    border-color: #1a73e8;
+    font-weight: bold;
+}
+
+/* Türkçe metinlerin kalın olmaması ve okunabilirliği için düzenleme */
+.marhey-text {
+    font-weight: 400 !important;
+}
+
+.mission-card {
+    background: #f8f9fa;
+    border: 2px solid #eee;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.mission-card:hover {
+    border-color: var(--accent);
+    background: #fff;
+    transform: translateY(-3px);
+}
+.mission-card h4 { margin: 0 0 10px 0; color: var(--primary); }
+.mission-card .status { font-size: 0.8rem; color: #7f8c8d; }
     </style>
 </head>
 <body>
@@ -925,14 +974,14 @@ body.logged-in #content {
 
 <div class="tabs">
     <button class="tab" onclick="switchTab(0)">Öğrenciler</button>
-    <button class="tab" onclick="switchTab(1)">Ödevler</button>
+    <button class="tab" onclick="switchTab(1)">Performans</button>
     <button class="tab" onclick="switchTab(2)">Sınavlar</button>
     <button class="tab" onclick="switchTab(3)">Genel Sonuç</button>
     <button class="tab" onclick="switchTab(4)">Kurayla Seç!</button>
-    <button class="tab" onclick="switchTab(5)">Geri Sayım</button>
-    <button class="tab" onclick="switchTab(6)">Kronometre</button>
-    <button class="tab" onclick="switchTab(7)">Takım Oluştur</button>
-    <button class="tab" onclick="switchTab(8)">📅 Haftalık Plan</button>
+    <button class="tab" onclick="switchTab(5)">Görev Gönder</button> <button class="tab" onclick="switchTab(6)">Geri Sayım</button>
+    <button class="tab" onclick="switchTab(7)">Kronometre</button>
+    <button class="tab" onclick="switchTab(8)">Takım Oluştur</button>
+    <button class="tab" onclick="switchTab(9)">📅 Haftalık Plan</button>
 </div>
 
     <div id="tab0" class="tab-panel active">
@@ -1036,6 +1085,51 @@ body.logged-in #content {
     <tbody id="planBody"></tbody>
 </table>
 
+</div>
+
+<div id="tab9" class="tab-panel">
+    <div class="header">
+        <h2 class="marhey-text">🚀 Görev Gönderim & Yama Paneli</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div style="background:#fdfdfd; padding:20px; border-radius:15px; border:1px solid #ddd;">
+            <h4 class="marhey-text">⚙️ Gönderim Seçenekleri</h4>
+            
+            <label style="display:block; margin-top:10px;">📅 Son Teslim Tarihi:</label>
+            <input type="date" id="m-deadline" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+
+            <label style="display:block; margin-top:10px;">⌛ Süre (Dakika):</label>
+            <input type="number" id="m-duration" placeholder="Örn: 45" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+
+            <label style="display:block; margin-top:10px;">🎯 Hedef:</label>
+            <select id="m-target-type" onchange="toggleMTarget()" style="width:100%; padding:8px; border-radius:8px;">
+                <option value="class">Bu Sınıfın Tamamı</option>
+                <option value="student">Özel Bir Öğrenci</option>
+                <option value="level">Tüm Seviye (Örn: Tüm 9'lar)</option>
+            </select>
+
+            <div id="m-student-select-wrap" style="display:none; margin-top:10px;">
+                <label>👤 Öğrenci Seçin:</label>
+                <select id="m-student-list" style="width:100%; padding:8px; border-radius:8px;"></select>
+            </div>
+        </div>
+        
+        <div style="background:#e8f0fe; padding:20px; border-radius:15px; display:flex; align-items:center; justify-content:center; text-align:center;">
+            <p class="marhey-text" style="color:#1a73e8;">Soldan ayarları yapın, aşağıdan ödev başlığına tıklayarak gönderimi tamamlayın.</p>
+        </div>
+    </div>
+
+    <div id="mission-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;"></div>
+
+    <div id="patchModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:25px; border-radius:15px; box-shadow:0 0 30px rgba(0,0,0,0.3); z-index:10001; width:90%; max-width:600px;">
+        <h3 id="patchTitle" class="marhey-text">Görev Yama Düzenle</h3>
+        <textarea id="patchCodeInput" class="note-textarea" style="height:150px;" placeholder="Bu göreve özel açıklama veya kod yamasını buraya yazın..."></textarea>
+        <div style="display:flex; gap:10px; justify-content: flex-end; margin-top:15px;">
+            <button onclick="closePatchModal()" class="tool-btn btn-reset">İptal</button>
+            <button onclick="savePatch()" class="tool-btn btn-start">Yamayı Kaydet</button>
+        </div>
+    </div>
 </div>
 
 <div id="customAlertModal">
@@ -1207,6 +1301,9 @@ function updateLevelPlanText(weekIndex, value) {
     // LocalStorage veya Database kaydını burada tetikleyin
     save(); 
 }
+
+
+
 function togglePlanStatus(week, status) {
     let cls = data.levels[curLId].classes[curCId];
     if(!cls.planStatus) cls.planStatus = {};
@@ -1220,30 +1317,181 @@ function updatePlanText(week, text) {
     cls.planText[week] = text;
     save();
 }
+
+function showTab(tabIndex) {
+    // 1. Tüm sekmelerin 'active' sınıfını kaldır
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    // 2. Tüm panellerin 'active' sınıfını kaldır
+    const panels = document.querySelectorAll('.tab-panel');
+    panels.forEach(panel => panel.classList.remove('active'));
+
+    // 3. Tıklanan sekmeyi aktif yap
+    if (tabs[tabIndex - 1]) {
+        tabs[tabIndex - 1].classList.add('active');
+    }
+
+    // 4. İlgili paneli göster
+    const activePanel = document.getElementById('tab' + tabIndex);
+    if (activePanel) {
+        activePanel.classList.add('active');
+        
+        // Eğer Görev Gönder sekmesi (9) açıldıysa listeyi yükle
+        if (tabIndex === 9) {
+            renderMissions();
+        }
+    }
+}
+
+// 10 Adet Arapça Ödev Başlığı
+const arabicMissions = [
+    "Harflerin Yazılış Pratiği", "Tanışma Diyaloğu Ezberi", "Sayılar (1-20) Çalışması",
+    "Mutfak Gereçleri Eşleştirme", "Saatler ve Zaman Kavramı", "Vücudun Bölümleri Testi",
+    "Günlük Rutin Yazma", "Aile Bireyleri Tanıtımı", "Mevsimler ve Hava Durumu", "Meslekler Görsel Seti"
+];
+
+let activePatchIdx = null;
+
+function renderMissions() {
+    const container = document.getElementById('mission-list');
+    const stuList = document.getElementById('m-student-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Öğrenci listesini güncelle (Tekil öğrenci seçimi için)
+    if (curLId && curCId && data.levels[curLId].classes[curCId]) {
+        stuList.innerHTML = data.levels[curLId].classes[curCId].students.map((s, i) => 
+            `<option value="${i}">${s.name}</option>`
+        ).join('');
+    }
+
+    // 10 Başlığı Döngüyle Oluştur
+    arabicMissions.forEach((title, i) => {
+        const patchKey = `mission_patch_${i}`;
+        const hasPatch = (localStorage.getItem(patchKey) || "").length > 0;
+        
+        const card = document.createElement('div');
+        card.className = 'mission-card'; // CSS'teki mission-card stilini kullanır
+        card.style.padding = '15px';
+        card.style.position = 'relative';
+
+        card.innerHTML = `
+            <h4 class="marhey-text" style="font-size:1rem; margin-bottom:5px;">${title}</h4>
+            <p style="font-size:0.75rem; color:${hasPatch ? '#27ae60' : '#7f8c8d'}; margin-bottom:10px;">
+                ${hasPatch ? '✅ Yama Hazır' : '📝 Yama Bekliyor'}
+            </p>
+            <div style="display:flex; gap:5px;">
+                <button onclick="openPatchModal(${i})" class="tool-btn btn-reset" style="flex:1; padding:5px; font-size:11px;">🛠️ Yama</button>
+                <button onclick="sendMissionFinal(${i}, '${title}')" class="tool-btn btn-start" style="flex:1.5; padding:5px; font-size:11px;">📤 Gönder</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function toggleMTarget() {
+    const type = document.getElementById('m-target-type').value;
+    document.getElementById('m-student-select-wrap').style.display = (type === 'student') ? 'block' : 'none';
+}
+
+// Gönder Butonuna Basıldığında Çalışan Fonksiyon
+function sendMissionFinal(idx, title) {
+    const deadline = document.getElementById('m-deadline').value;
+    const duration = document.getElementById('m-duration').value;
+    const target = document.getElementById('m-target-type').value;
+    const patch = localStorage.getItem(`mission_patch_${idx}`) || "";
+
+    if (!deadline) return alert("Lütfen son teslim tarihini seçin!");
+
+    const newMission = {
+        title: title,
+        deadline: deadline,
+        duration: duration,
+        target: target,
+        patchCode: patch,
+        status: "Aktif",
+        sentDate: new Date().toLocaleDateString('tr-TR')
+    };
+
+    // Veri yapısına (Firebase/Local) Göre Kaydet
+    if (target === 'student') {
+        const sIdx = document.getElementById('m-student-list').value;
+        let stu = data.levels[curLId].classes[curCId].students[sIdx];
+        if (!stu.personalMissions) stu.personalMissions = [];
+        stu.personalMissions.push(newMission);
+    } else if (target === 'class') {
+        let cls = data.levels[curLId].classes[curCId];
+        if (!cls.classMissions) cls.classMissions = [];
+        cls.classMissions.push(newMission);
+    }
+
+    save(); // Mevcut save fonksiyonunuzu tetikler
+    alert(`${title} başarıyla gönderildi!`);
+}
+
+// Yama (Patch) İşlemleri
+function openPatchModal(idx) {
+    activePatchIdx = idx;
+    const savedPatch = localStorage.getItem(`mission_patch_${idx}`) || "";
+    document.getElementById('patchCodeInput').value = savedPatch;
+    document.getElementById('patchTitle').innerText = arabicMissions[idx] + " Yaması";
+    document.getElementById('patchModal').style.display = 'block';
+}
+
+function closePatchModal() {
+    document.getElementById('patchModal').style.display = 'none';
+}
+
+function savePatch() {
+    const code = document.getElementById('patchCodeInput').value;
+    localStorage.setItem(`mission_patch_${activePatchIdx}`, code);
+    closePatchModal();
+    renderMissions(); // Görünümü tazele
+}
+// Eski switchTab ve showTab fonksiyonlarını SİLİP bunu yapıştırın
 function switchTab(idx) {
-    // Tüm butonlardan ve panellerden 'active' sınıfını kaldır
+    // 1. Tüm butonlardan ve panellerden 'active' sınıfını kaldır
     const tabs = document.querySelectorAll('.tab');
     const panels = document.querySelectorAll('.tab-panel');
     
     tabs.forEach(t => t.classList.remove('active'));
     panels.forEach(p => p.classList.remove('active'));
 
-    // Tıklanan butonu aktif yap
-    if (tabs[idx]) tabs[idx].classList.add('active');
-    
-    // ID'si tab+idx olan paneli bul ve aç
-    const targetPanel = document.getElementById('tab' + idx);
+    // 2. Tıklanan butonu aktif yap
+    if (tabs[idx]) {
+        tabs[idx].classList.add('active');
+    }
+
+    // 3. Butonun onclick içindeki ID'yi bul veya index ile eşleştir
+    // HTML'deki sıranıza göre manuel eşleştirme (Kaymayı önleyen kesin çözüm):
+    let panelId = "";
+    switch(idx) {
+        case 0: panelId = "tab0"; break; // Öğrenciler
+        case 1: panelId = "tab1"; break; // Performans
+        case 2: panelId = "tab2"; break; // Sınavlar
+        case 3: panelId = "tab3"; break; // Genel Sonuç
+        case 4: panelId = "tab4"; break; // Kurayla Seç
+        case 5: panelId = "tab9"; break; // Görev Gönder (Sıralamadaki yeri 5)
+        case 6: panelId = "tab5"; break; // Geri Sayım
+        case 7: panelId = "tab6"; break; // Kronometre
+        case 8: panelId = "tab7"; break; // Takım Oluştur
+        case 9: panelId = "tab8"; break; // Haftalık Plan
+    }
+
+    const targetPanel = document.getElementById(panelId);
     if (targetPanel) {
         targetPanel.classList.add('active');
     }
 
-    // Veri render işlemlerini tetikle
-    if(idx === 0) renderStudents();
-    if(idx === 1) renderGrades('hw');
-    if(idx === 2) renderGrades('ex');
-    if(idx === 3) renderResults();
-    if(idx === 4) renderActivityStatus();
-    if(idx === 8) renderPlan(); 
+    // 4. Veri render işlemlerini tetikle
+    if(panelId === 'tab0') renderStudents();
+    if(panelId === 'tab1') renderGrades('hw');
+    if(panelId === 'tab2') renderGrades('ex');
+    if(panelId === 'tab3') renderResults();
+    if(panelId === 'tab4') renderActivityStatus();
+    if(panelId === 'tab8') renderPlan();
+    if(panelId === 'tab9') renderMissions(); // Görevler listesini yükle
 }
 
 
@@ -1659,6 +1907,70 @@ function updateActiveClassUI(clickedElement) {
         classItem.classList.add('active-class');
     }
 }
+
+let currentRole = 'teacher';
+let isLoginMode = true;
+
+function setRole(role) {
+    currentRole = role;
+    isLoginMode = true; // Her rol değişiminde giriş moduna dön
+    
+    // UI Güncelleme: Butonların aktiflik durumunu değiştir
+    document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active-role'));
+    
+    // HTML'deki ID'ye göre doğru butonu seçiyoruz
+    const targetBtnId = (role === 'student') ? 'id-btn-student' : `btn-${role}`;
+    const targetBtn = document.getElementById(targetBtnId);
+    if(targetBtn) targetBtn.classList.add('active-role');
+    
+    const footer = document.getElementById('auth-footer-links');
+    const passGroup = document.getElementById('password-main-group');
+    const rePassGroup = document.getElementById('re-password-group');
+    const primaryLabel = document.getElementById('primary-label');
+    const actionBtn = document.getElementById('auth-action-btn');
+    const authTitle = document.getElementById('auth-title');
+    const guestArea = document.getElementById('guest-access-area'); // Misafir alanı
+
+    // Başlangıç ayarları
+    rePassGroup.style.display = 'none';
+    actionBtn.innerText = "Giriş Yap";
+
+    if (role === 'student') {
+        authTitle.innerText = "Öğrenci Girişi";
+        primaryLabel.innerText = "Öğrenci Giriş Kodu";
+        passGroup.style.display = 'none';
+        footer.style.display = 'none'; // Öğrenci kendi kayıt olamaz
+        if(guestArea) guestArea.style.display = 'none'; // Öğrenci misafir giremez
+    } else {
+        authTitle.innerText = role === 'teacher' ? "Öğretmen Paneli" : "Veli Paneli";
+        primaryLabel.innerText = "E-posta Adresi";
+        passGroup.style.display = 'flex';
+        footer.style.display = 'block'; // Öğretmen ve Veli kayıt olabilir
+        
+        // Sadece öğretmen seçiliyken misafir girişi görünsün
+        if(guestArea) {
+            guestArea.style.display = (role === 'teacher') ? 'block' : 'none';
+        }
+    }
+}
+
+// Birden fazla öğretmen karmaşasını önlemek için veri çekme mantığı (Firebase Örneği)
+function getMyData() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    if (currentRole === 'teacher') {
+        // Sadece bu öğretmene (UID) ait sınıfları getir
+        return db.collection("classes").where("ogretmenId", "==", user.uid);
+    } else if (currentRole === 'parent') {
+        // Velinin eşleştiği öğrenciyi ve o öğrencinin öğretmeninin ödevlerini getir
+        // Veri yapısında: { veliUid: "...", ogrenciId: "...", ogretmenId: "..." }
+        return db.collection("homeworks").where("targetOgrenciId", "==", myChildId);
+    }
+}
+
+// authIslemi() fonksiyonunuzun en başına currentRole kontrolü eklemeyi unutmayın
+// Örn: localStorage.setItem('user_role', currentRole);
 let curNoteStuIdx = null;
 
 function openNoteModal(idx) {
