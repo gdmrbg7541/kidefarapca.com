@@ -1875,26 +1875,30 @@ function addLevel() {
 
 function renderSidebar() {
     const nav = document.getElementById('levelNav');
-    if (!nav) return; // Nav elementi yoksa çık
+    if (!nav) return; 
     nav.innerHTML = '';
 
-    // KRİTİK HATA KORUMASI: data veya data.levels tanımsızsa fonksiyonu durdur
     if (!data || !data.levels) {
         console.warn("Sidebar render edilemedi: Veri henüz hazır değil.");
         return; 
     }
 
-    // --- 1. ÖĞRETMEN KODU GÖSTERİMİ (YENİ) ---
     const staticCode = localStorage.getItem('teacher_static_code');
+    
+    // Debug: Konsolda kodun gelip gelmediğini gör
+    console.log("Sidebar render ediliyor. Sabit Kod:", staticCode);
+
     if (staticCode) {
         let codeHtml = `
         <div class="teacher-code-area" style="
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px dashed rgba(241, 196, 15, 0.5);
-            margin: 0 5px 15px 5px;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px dashed #f1c40f !important;
+            margin: 10px 5px !important;
+            padding: 10px !important;
+            border-radius: 8px !important;
+            text-align: center !important;
+            display: block !important;
+            visibility: visible !important;
         ">
             <div style="font-size: 0.7rem; color: #f1c40f; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Öğretmen Kodu</div>
             <div style="font-size: 1.1rem; color: #fff; font-family: 'Nunito', sans-serif; font-weight: 700; margin-top: 3px;">
@@ -1902,7 +1906,16 @@ function renderSidebar() {
             </div>
         </div>`;
         nav.innerHTML += codeHtml;
+    } else {
+        console.error("Öğretmen kodu localStorage'da bulunamadı!");
     }
+
+    // BURADAN SONRA GELEN DÖNGÜDE += KULLANDIĞINDAN EMİN OL
+    let levelIds = data.levelOrder || Object.keys(data.levels);
+    levelIds.forEach(lId => {
+        // ... (html += `...`)
+    });
+}
 
     // --- 2. SEVİYE VE SINIF LİSTESİ ---
     let levelIds = data.levelOrder || Object.keys(data.levels);
@@ -2911,13 +2924,22 @@ async function authIslemi() {
 
         let userCredential;
         if (mevcutMod === 'login') {
-            userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
-            
-            // Girişten sonra buluttan öğretmenin sabit kodunu çek
-            const doc = await db.collection("kullanicilar").doc(userCredential.user.uid).get();
-            if (doc.exists && doc.data().teacherStaticCode) {
-                localStorage.setItem('teacher_static_code', doc.data().teacherStaticCode);
-            }
+    userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
+    
+    // Girişten sonra buluttan öğretmenin sabit kodunu çek
+    const doc = await db.collection("kullanicilar").doc(userCredential.user.uid).get();
+    
+    if (doc.exists && doc.data().teacherStaticCode) {
+        const sCode = doc.data().teacherStaticCode;
+        localStorage.setItem('teacher_static_code', sCode);
+        console.log("Öğretmen Kodu başarıyla yüklendi:", sCode);
+    } else {
+        console.warn("Dikkat: Veritabanında bu kullanıcıya ait bir öğretmen kodu bulunamadı!");
+    }
+    
+    // Giriş başarılı olduktan sonra Sidebar'ı hemen güncelle
+    renderSidebar(); 
+}
         } else {
             // YENİ KAYIT: Öğretmene ilk kez sabit kod ata
             if (pass !== rePass) { throw new Error("Şifreler eşleşmiyor."); }
