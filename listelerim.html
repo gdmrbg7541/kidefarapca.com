@@ -946,6 +946,18 @@ body.logged-in #content {
 
     <div id="levelNav" style="flex: 1; overflow-y: auto;"></div>
 
+
+    <div class="role-preview-buttons" style="display: flex; gap: 10px; margin-bottom: 15px;">
+    <button onclick="switchView('parent')" class="marhey-text" style="flex: 1; padding: 10px; border-radius: 8px; border: none; background: #e3f2fd; color: #1976d2; cursor: pointer;">
+        Veli Görünümü
+    </button>
+    <button onclick="switchView('student')" class="marhey-text" style="flex: 1; padding: 10px; border-radius: 8px; border: none; background: #f3e5f5; color: #7b1fa2; cursor: pointer;">
+        Öğrenci Görünümü
+    </button>
+</div>
+
+
+
     <div style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
         <button id="manualDownloadBtn" style="
             background: #ffffff;
@@ -1874,24 +1886,17 @@ function addLevel() {
     }
 
 function renderSidebar() {
-    // 1. Değişkeni fonksiyonun en başında tanımlayın (Kapsam sorununu çözer)
     const nav = document.getElementById('levelNav');
-    
-    if (!nav) {
-        console.warn("Sidebar render edilemedi: 'levelNav' elementi bulunamadı.");
-        return; 
-    }
-
-    // 2. İçeriği sıfırla
+    if (!nav) return; // Nav elementi yoksa çık
     nav.innerHTML = '';
 
-    // Veri kontrolü
+    // KRİTİK HATA KORUMASI: data veya data.levels tanımsızsa fonksiyonu durdur
     if (!data || !data.levels) {
         console.warn("Sidebar render edilemedi: Veri henüz hazır değil.");
         return; 
     }
 
-    // --- 3. ÖĞRETMEN KODU GÖSTERİMİ ---
+    // --- 1. ÖĞRETMEN KODU GÖSTERİMİ (YENİ) ---
     const staticCode = localStorage.getItem('teacher_static_code');
     if (staticCode) {
         let codeHtml = `
@@ -1910,46 +1915,6 @@ function renderSidebar() {
         </div>`;
         nav.innerHTML += codeHtml;
     }
-
-    // --- 4. SEVİYE VE SINIF LİSTESİ ---
-    let levelIds = data.levelOrder || Object.keys(data.levels);
-    
-    levelIds.forEach(lId => {
-        let lvl = data.levels[lId];
-        if(!lvl) return;
-        
-        let html = `
-        <div class="level-container" draggable="true" data-id="${lId}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
-            <div class="level-head">
-                <span onclick="toggleClasses('${lId}')" style="cursor:pointer; flex:1; font-weight:bold;">📁 ${lvl.name}</span>
-                <div class="level-actions">
-                    <button onclick="openLvlConfig('${lId}')">⚙️</button>
-                    <button onclick="editLevelName('${lId}')">✏️</button>
-                    <button onclick="deleteLevel('${lId}')">🗑️</button>
-                    <button onclick="addClass('${lId}')" title="Sınıf Ekle" style="color:#2ecc71;">+</button>
-                </div>
-            </div>
-            <div class="class-list" id="list-${lId}">`;
-        
-        if (lvl.classes) {
-            for(let cId in lvl.classes) {
-                html += `
-                <div class="class-item">
-                    <a class="class-link" onclick="selectClass('${lId}','${cId}')">📂 ${lvl.classes[cId].name}</a>
-                    <div class="class-actions">
-                        <button onclick="editClassName('${lId}','${cId}')">✏️</button>
-                        <button onclick="deleteClass('${lId}','${cId}')">🗑️</button>
-                    </div>
-                </div>`;
-            }
-        }
-        
-        html += `</div></div>`;
-        
-        // Hatanın çözüldüğü kritik satır: nav değişkeni burada artık tanımlı.
-        nav.innerHTML += html; 
-    });
-}
 
     // --- 2. SEVİYE VE SINIF LİSTESİ ---
     let levelIds = data.levelOrder || Object.keys(data.levels);
@@ -1987,7 +1952,7 @@ function renderSidebar() {
         html += `</div></div>`;
         nav.innerHTML += html;
     });
-
+}
 // Sidebar çizildikten sonra ilk sınıfı otomatik seçen fonksiyon
 function selectFirstClassAutomatically() {
     // 1. İlk seviye konteynerini bul
@@ -2004,32 +1969,6 @@ function selectFirstClassAutomatically() {
     const firstClassLink = firstLevel.querySelector('.class-link');
     if (firstClassLink) {
         firstClassLink.click();
-    }
-}
-
-function fixStudentCodes() {
-    const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
-    let updatedCount = 0;
-
-    if (!data || !data.levels) return;
-
-    for (let lId in data.levels) {
-        for (let cId in data.levels[lId].classes) {
-            const students = data.levels[lId].classes[cId].students || [];
-            students.forEach((stu, index) => {
-                // Eğer kod yoksa veya sadece üç çizgiyse yeni kod ata
-                if (!stu.loginCode || stu.loginCode === '---') {
-                    stu.loginCode = `${teacherCode}-S${index + 1}`;
-                    updatedCount++;
-                }
-            });
-        }
-    }
-
-    if (updatedCount > 0) {
-        save(); // Değişiklikleri Firebase ve Local'e kaydet
-        renderStudents(); // Tabloyu yenile
-        console.log(`${updatedCount} öğrenciye giriş kodu tanımlandı.`);
     }
 }
 
@@ -2232,27 +2171,24 @@ function closeNoteModal() {
 function addSingleStudent() {
     let val = document.getElementById('singleStuName').value.trim();
     
-    // Sabit öğretmen kodunu al
+    // Tarayıcı hafızasına (authIslemi sırasında) kaydettiğimiz öğretmen kodunu alıyoruz
+    // Eğer kod yoksa varsayılan olarak "TCH" kullanır
     const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
 
-    if (val) {
-        // 1. O sınıftaki mevcut öğrenci listesini al
-        let currentStudents = data.levels[curLId].classes[curCId].students;
+    if(val) {
+        // Mevcut öğrenci sayısına bakarak bir sonraki sıra numarasını belirliyoruz
+        const sCount = data.levels[curLId].classes[curCId].students.length + 1;
         
-        // 2. Yeni öğrenci numarasını belirle (Kaçıncı öğrenci?)
-        const sCount = currentStudents.length + 1;
-        
-        // 3. Giriş kodunu oluştur (Örn: TCH-1234-S1)
+        // Örn: Öğretmen kodu TCH-4582 ise öğrenci kodu TCH-4582-S1 olur
         const sCode = `${teacherCode}-S${sCount}`; 
 
-        // 4. Öğrenci objesini doğru eşleşme ile ekle
-        currentStudents.push({ 
-            name: val,            // İSİM: Kutucuğa yazdığınız metin
-            loginCode: sCode,     // KOD: TCH-S1 formatındaki kod
+        data.levels[curLId].classes[curCId].students.push({ 
+            name: val, 
+            loginCode: sCode, // Artık öğrenci bu sabit kodla giriş yapacak
             hw: [], 
             ex: [], 
             history: [], 
-            personalMissions: [], 
+            personalMissions: [], // Öğretmenin gönderdiği görevler buraya eklenecek
             skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
             notes: ""
         });
@@ -2260,17 +2196,17 @@ function addSingleStudent() {
         // Giriş kutusunu temizle
         document.getElementById('singleStuName').value = "";
         
-        // Kaydet ve ekrana yansıt
+        // Veriyi yerel hafıza ve Firebase'e kaydet
         save(); 
+        
+        // Öğrenci listesini (ve yeni kodu) ekranda göster
         renderStudents();
         
-        console.log(`Yeni öğrenci: ${val} | Kod: ${sCode}`);
+        console.log(`${val} eklendi. Giriş Kodu: ${sCode}`);
     } else {
         alert("Lütfen öğrenci adı giriniz!");
     }
 }
-
-
     function updateStudentName(i, val) {
         if(val.trim()) { data.levels[curLId].classes[curCId].students[i].name = val.trim(); save(); }
     }
@@ -2965,7 +2901,7 @@ async function authIslemi() {
             alert("Hoş geldin, " + foundStudent.name);
             modalKapat();
             document.body.classList.add('logged-in');
-            renderSidebar(); // Burada çağrılıyor
+            if (typeof renderSidebar === "function") renderSidebar(); 
             return;
         } else {
             hata.innerText = "Geçersiz giriş kodu!";
@@ -2981,7 +2917,7 @@ async function authIslemi() {
         return;
     }
 
-    try { // TRY BLOĞU BAŞLANGICI
+    try {
         hata.style.display = "none";
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
@@ -2989,16 +2925,14 @@ async function authIslemi() {
         if (mevcutMod === 'login') {
             userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
             
+            // Girişten sonra buluttan öğretmenin sabit kodunu çek
             const doc = await db.collection("kullanicilar").doc(userCredential.user.uid).get();
             if (doc.exists && doc.data().teacherStaticCode) {
                 localStorage.setItem('teacher_static_code', doc.data().teacherStaticCode);
             }
         } else {
-            if (pass !== rePass) { 
-                hata.innerText = "Şifreler eşleşmiyor.";
-                hata.style.display = "block";
-                return;
-            }
+            // YENİ KAYIT: Öğretmene ilk kez sabit kod ata
+            if (pass !== rePass) { throw new Error("Şifreler eşleşmiyor."); }
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
             
             const staticCode = "TCH-" + Math.floor(1000 + Math.random() * 9000);
@@ -3008,20 +2942,17 @@ async function authIslemi() {
             
             await db.collection("kullanicilar").doc(userCredential.user.uid).set({
                 userData: dataToUpload,
-                teacherStaticCode: staticCode,
+                teacherStaticCode: staticCode, // SABİT KOD KAYDEDİLDİ
                 lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
             });
             alert("Hesap oluşturuldu! Sabit Kodunuz: " + staticCode);
         }
         modalKapat();
         document.body.classList.add('logged-in');
-        renderSidebar(); // Giriş sonrası sidebar'ı çiz
-
-    } catch (error) { // CATCH BLOĞU OLMALI
-        console.error("Hata:", error);
-        hata.innerText = "İşlem başarısız: " + error.message;
+    } catch (error) {
+        hata.innerText = "Hata: " + error.message;
         hata.style.display = "block";
-    } // TRY-CATCH BİTİŞİ
+    }
 }
 
 // --- ENTER TUŞU ÖZELLİĞİ (TAM BURAYA EKLE) ---
@@ -3200,61 +3131,46 @@ function verileriGetir(uid) {
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
-        if (doc.exists) {
-            const docData = doc.data();
-
-            // 1. Önce Sabit Öğretmen Kodunu Çek ve Kaydet
-            if (docData.teacherStaticCode) {
-                localStorage.setItem('teacher_static_code', docData.teacherStaticCode);
-                console.log("Öğretmen Kodu yüklendi:", docData.teacherStaticCode);
-            }
-
-            // 2. Kullanıcı Verilerini (Sınıflar, Öğrenciler vb.) Yükle
-            if (docData.userData) {
-                try {
-                    data = JSON.parse(docData.userData); 
-                    console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
-                    
-                    // --- KRİTİK EKLEME: Eksik öğrenci kodlarını tamir et ---
-                    if (typeof fixStudentCodes === "function") {
-                        fixStudentCodes();
-                    }
-                } catch (e) {
-                    console.error("JSON ayrıştırma hatası:", e);
-                }
+        if (doc.exists && doc.data().userData) {
+            try {
+                data = JSON.parse(doc.data().userData); 
+                console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
+            } catch (e) {
+                console.error("JSON ayrıştırma hatası:", e);
             }
         }
 
-        // 3. Sidebar'ı oluştur (Kod artık renderSidebar içinde görünecek)
+        // 1. Sidebar'ı oluştur
         renderSidebar(); 
         document.body.classList.add('logged-in'); 
 
-        // 4. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
+        // 2. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
         setTimeout(() => {
             const firstLevel = document.querySelector('.level-container');
             if (firstLevel) {
+                // İlk seviyeyi görsel olarak aç
                 const firstClassList = firstLevel.querySelector('.class-list');
                 if (firstClassList) firstClassList.style.display = "block"; 
                 
+                // İlk sınıf linkini bul
                 const firstClassLink = firstLevel.querySelector('.class-link');
                 
                 if (firstClassLink) {
                     const levelIds = data.levelOrder || Object.keys(data.levels);
                     const firstLId = levelIds[0];
-                    if (data.levels[firstLId] && data.levels[firstLId].classes) {
-                        const firstCId = Object.keys(data.levels[firstLId].classes)[0];
-                        
-                        // Hem görseli güncelle hem veriyi yükle
-                        selectClass(firstLId, firstCId, firstClassLink);
+                    const firstCId = Object.keys(data.levels[firstLId].classes)[0];
 
-                        // Başlıkları ve butonları çiz
-                        renderActivityButtons();
-                    }
+                    // Hem görseli güncelle hem veriyi yükle
+                    selectClass(firstLId, firstCId, firstClassLink);
+
+                    // --- KRİTİK EKLEME: Sayfa yenilendiğinde başlıkları çiz ---
+                    // Sınıf seçildikten sonra kura butonlarını ayarlar panelindeki veriye göre oluşturur
+                    renderActivityButtons();
                 }
             }
         }, 600); 
 
-        // 5. Yükleme ekranını kaldır
+        // 3. Yükleme ekranını kaldır
         setTimeout(() => {
             if (overlay) overlay.style.display = 'none';
         }, 300);
@@ -3291,6 +3207,60 @@ function misafirGiris() {
         }, 300);
     }
 }
+  
+
+//VELİ VE ÖĞRENCİ MODÜLÜ
+
+function switchView(role) {
+    // 1. Sidebar'daki yönetim elemanlarını gizle
+    const sidebar = document.querySelector('.sidebar');
+    if(role !== 'teacher') {
+        // Öğretmen dışındakiler sınıf ekleyemez/ayarları göremez
+        document.querySelector('.admin-controls')?.style.setProperty('display', 'none', 'important');
+    }
+
+    // 2. Ana İçerik Alanını Temizle ve Yeni Arayüzü Kur
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = ''; // Eski tabloyu vs. temizle
+
+    if(role === 'parent') {
+        renderParentDashboard(mainContent);
+    } else if(role === 'student') {
+        renderStudentDashboard(mainContent);
+    }
+}
+
+function renderParentDashboard(container) {
+    container.innerHTML = `
+        <div class="parent-card marhey-text" style="padding: 20px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h2 style="color: #1976d2;">Veli Bilgilendirme Paneli</h2>
+            <p style="font-size: 0.9em; color: #666;">Çocuğunuzun performansını ve günlük raporlarını buradan takip edebilirsiniz.</p>
+            <hr style="border: 0.5px solid #eee; margin: 15px 0;">
+            <div id="student-summary">
+                <p><strong>Öğrenci:</strong> [Öğrenci Adı]</p>
+                <p><strong>Toplam Puan:</strong> 85</p>
+                <p><strong>Son Etkinlik:</strong> Kelime Avı (Tamamlandı)</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderStudentDashboard(container) {
+    container.innerHTML = `
+        <div class="student-card marhey-text" style="padding: 20px; background: #fffde7; border-radius: 15px;">
+            <h2 style="color: #fbc02d;">Benim Dünyam</h2>
+            <div class="game-links" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                <div class="game-item" style="background: white; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #fff9c4;">
+                    <span>♟️</span><br>Satranç Dünyam
+                </div>
+                <div class="game-item" style="background: white; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #fff9c4;">
+                    <span>📝</span><br>Ödevlerim
+                </div>
+            </div>
+        </div>
+    `;
+} 
+
 </script>
 </body>
 </html>
