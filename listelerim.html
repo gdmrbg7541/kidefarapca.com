@@ -132,8 +132,13 @@
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background: #f8f9fa; }
+        th { background: #f8f9fa;text-align: center !important; }
         input[type="number"], input[type="text"] { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+/* Açıklama yazıları (placeholder ve input metinleri) için boyut artırımı */
+#stuTable input[type="text"] {
+    font-size: 1.2rem !important;
+    font-weight: 600;
+}
         
         /* Activity & Tools Styles */
         .activity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
@@ -177,28 +182,39 @@
         /* Dragging */
         .dragging-row { opacity: 0.5; background-color: #f1f1f1; border: 2px dashed var(--accent); }
 /* Not Modal Stili */
+/* Not defteri metin alanını büyüten stil */
 .note-textarea {
     width: 100%;
-    height: 150px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-family: inherit;
+    height: 250px;           /* Kutuyu biraz daha uzattık */
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.3rem !important; /* Yazı boyutu büyütüldü */
+    line-height: 1.5;
+    color: #2c3e50;
     resize: none;
     box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.note-textarea:focus {
+    border-color: var(--accent);
+    background-color: #f8f9fa;
 }
 /* İşlem butonlarını yan yana ve ortalı yapan stil */
 .action-cell {
     display: flex;
     justify-content: center; /* Yatayda ortalar */
     align-items: center;    /* Dikeyde ortalar */
-    gap: 8px;               /* Butonlar arasındaki boşluk */
+    gap: 15px;              /* Butonlar arasındaki boşluğu artırdık */
 }
 
 .action-cell button {
     margin: 0;              /* Gereksiz kenar boşluklarını sıfırlar */
-    width: 32px;            /* Butonlara sabit genişlik vererek simetri sağlar */
-    height: 32px;
+    width: 45px;            /* Butonlara sabit genişlik vererek simetri sağlar */
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -207,10 +223,12 @@
     background: #fff;
     cursor: pointer;
     transition: 0.2s;
+    font-size: 22px;
 }
 
 .action-cell button:hover {
     background: var(--light);
+    transform: scale(1.1);
 }
 #tab8 {
     width: 100%; /* Sağ tarafa sıkışmasını engeller */
@@ -549,6 +567,70 @@ body.sidebar-closed .toggle-btn {
     color: transparent !important;
 }
 
+/* Not, Beceri ve Sil butonlarını büyütür */
+.big-action-btn {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 24px !important; /* Simgelerin (emoji) boyutu */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+/* Not, Beceri ve Sil butonlarını büyütür */
+.big-action-btn {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 24px !important; /* Simgelerin (emoji) boyutu */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.big-action-btn:hover {
+    transform: scale(1.1);
+    background: #f0f2f5;
+}
+
+/* Çöp kutusu butonuna özel kırmızı stil */
+.delete-btn {
+    color: #e74c3c !important;
+    border-color: #fab1a0 !important;
+}
+
+/* Öğrenci ismi giriş alanını büyütür */
+.student-name-input {
+    border: none;
+    background: transparent;
+    font-size: 1.25rem !important; /* Yazı boyutu büyütüldü */
+    font-weight: 600;
+    width: 100%;
+    padding: 8px 15px;
+    font-family: inherit;
+}
+
+.student-name-input:focus {
+    background: rgba(52, 152, 219, 0.05);
+    outline: none;
+    border-bottom: 2px solid var(--accent);
+}
+
+/* Tablo başlık yazısı boyutu */
+#stuTable th {
+    font-size: 1.1rem;
+    padding: 12px 5px;
+}
+
 /* Üzerine gelince tam ortada beyaz çarpı çıkart */
 .selected-student-item:hover::after {
     content: "✕";
@@ -561,6 +643,9 @@ body.sidebar-closed .toggle-btn {
     font-weight: bold;
     pointer-events: none; /* Tıklamayı engellememesi için */
 }
+
+
+
 /* Başlangıçta sidebar ve içeriği gizle */
 #sidebar, #content { 
     display: none !important; 
@@ -575,14 +660,29 @@ body.logged-in #content {
 }
 /* Aktif sınıfın kırmızı dolgu ve beyaz yazı stili */
 /* Sidebar'da aktif olan sınıfın stili */
+/* Sidebar'da aktif olan sınıfın kırmızı vurgu stili */
+/* Sidebar'daki aktif sınıf kutusu */
 .class-item.active-class {
-    background-color: var(--danger, #e74c3c) !important;
+    background-color: #e74c3c !important; /* Belirgin Kırmızı */
     border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 .class-item.active-class .class-link {
-    color: white !important;
+    color: white !important; /* Yazı beyaz */
     font-weight: bold;
+}
+
+/* Sağ üstteki başlıkta sınıf isminin görünümü */
+#active-class-title {
+    color: #e74c3c !important; /* Belirgin Kırmızı */
+    font-weight: 900;          /* En kalın font ağırlığı */
+    font-size: 3rem;           /* Yazı boyutunu buradan istediğiniz kadar büyütebilirsiniz */
+    font-family: 'Marhey', sans-serif;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Hafif derinlik kazandırır */
 }
 
 /* 1. FONT YÜKLEME */
@@ -974,12 +1074,17 @@ body.logged-in #content {
             <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
         </div>
     </div>
+    
+    <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+        <h4 style="color:var(--secondary);">🎯 Kura Başlıkları</h4>
+        <div id="lvlKuraList"></div>
+        <button class="btn-add" onclick="addKuraRow()" style="width:100%; margin-top:10px; background:#2ecc71;">+ Kura Başlığı Ekle</button>
+    </div>
+
     <div style="text-align: right; margin-top:20px; padding-top:15px; border-top:1px solid #eee;">
         <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:5px; margin-right:10px; font-weight:bold;">İptal</button>
         <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
     </div>
-</div>
-
 </div>
 
 <script>
@@ -1145,34 +1250,43 @@ function switchTab(idx) {
 function selectClass(lId, cId, element) {
     if (!data || !data.levels[lId]) return;
 
-    // Aktiflik sınıfını temizle ve yeni elemana ekle
+    // 1. Önce sidebar'daki TÜM sınıflardan aktiflik sınıfını temizle
     document.querySelectorAll('.class-item').forEach(item => {
         item.classList.remove('active-class');
     });
 
-    // Eğer bir element gönderilmişse (tıklama veya otomatik seçim) onu kırmızı yap
+    // 2. Eğer bir HTML elementi (tıklanan link) gelmişse, onun kapsayıcısına vurgu ekle
     if (element) {
         const parentItem = element.closest('.class-item');
         if (parentItem) parentItem.classList.add('active-class');
+    } else {
+        // Eğer element gelmemişse (otomatik seçim durumunda), DOM üzerinden bulmaya çalış
+        const allLinks = document.querySelectorAll('.class-link');
+        allLinks.forEach(link => {
+            // Linkin içindeki onclick metni kontrol ederek doğru sınıfı bul
+            if (link.getAttribute('onclick').includes(`'${cId}'`)) {
+                link.closest('.class-item').classList.add('active-class');
+            }
+        });
     }
 
-    // Başlık ve İçerik alanını görünür yap
+    // --- Mevcut seçim mantığınız (başlık güncelleme, tablo çizme vb.) ---
     const viewTitle = document.getElementById('viewTitle');
     const content = document.getElementById('content');
-    
     if (content) content.style.display = 'block';
 
     curLId = lId; 
     curCId = cId;
     
-    // Başlığı güncelle
     if (viewTitle) {
-        viewTitle.innerText = data.levels[lId].name + " / " + data.levels[lId].classes[cId].name;
-    }
+    const className = data.levels[lId].classes[cId].name;
+    // Yazı boyutunu 2.5rem (yaklaşık 40px) yaparak çok daha büyük bir başlık oluşturduk
+    viewTitle.innerHTML = `<span id="active-class-title" style="font-size: 2.5rem; display: block;">${className}</span>`;
+}
 
-    // Tabloyu ve öğrencileri yükle
     switchTab(0); 
     renderStudents();
+    renderActivityButtons();
 
     // Kaldığımız yer bilgisini yükle
     const stayedPoint = document.getElementById('stayedPoint');
@@ -1550,11 +1664,22 @@ let curNoteStuIdx = null;
 function openNoteModal(idx) {
     curNoteStuIdx = idx;
     let s = data.levels[curLId].classes[curCId].students[idx];
-    document.getElementById('noteModalTitle').innerText = s.name + " - Özel Notlar";
-    document.getElementById('studentNoteText').value = s.notes || ""; // Varsa notu getir
+    
+    // Başlık ve içeriği doldur
+    const titleEl = document.getElementById('noteModalTitle');
+    if (titleEl) {
+        titleEl.style.fontSize = "1.5rem"; // Başlığı büyüt
+        titleEl.innerText = "📝 " + s.name;
+    }
+    
+    const textarea = document.getElementById('studentNoteText');
+    if (textarea) {
+        textarea.value = s.notes || "";
+        textarea.placeholder = "Öğrenciye dair özel notlarınızı buraya büyük ve okunaklı şekilde yazabilirsiniz...";
+    }
+    
     document.getElementById('noteModal').style.display = 'flex';
 }
-
 function closeNoteModal() {
     let note = document.getElementById('studentNoteText').value;
     data.levels[curLId].classes[curCId].students[curNoteStuIdx].notes = note;
@@ -1597,43 +1722,53 @@ function closeNoteModal() {
     }
 
     function renderStudents() {
-        if (!curLId || !curCId) return;
-        let students = data.levels[curLId].classes[curCId].students || [];
-        let table = document.getElementById('stuTable');
-        table.innerHTML = `<tr><th width="30">#</th><th>Öğrenci Adı</th><th width="120">İşlemler</th><th width="40"></th></tr>`;
-        
-        students.forEach((s, i) => {
-            let row = table.insertRow();
-            row.setAttribute('draggable', 'true');
-            row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
-            row.ondragover = (e) => e.preventDefault();
-            row.ondrop = (e) => {
-                e.preventDefault();
-                let from = parseInt(e.dataTransfer.getData("text/plain"));
-                let moved = students.splice(from, 1)[0];
-                students.splice(i, 0, moved);
-                save(); renderStudents();
-            };
+    if (!curLId || !curCId) return;
+    let students = data.levels[curLId].classes[curCId].students || [];
+    let table = document.getElementById('stuTable');
+    
+    // Başlıkları ortaladık ve genişlikleri buton boyutuna göre ayarladık
+    table.innerHTML = `
+        <tr>
+            <th width="50">#</th>
+            <th style="text-align:left; padding-left:15px;">Öğrenci Adı</th>
+            <th width="160" style="text-align:center;">İşlemler</th>
+            <th width="80" style="text-align:center;">Sil</th>
+        </tr>`;
+    
+    students.forEach((s, i) => {
+        let row = table.insertRow();
+        row.setAttribute('draggable', 'true');
+        row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
+        row.ondragover = (e) => e.preventDefault();
+        row.ondrop = (e) => {
+            e.preventDefault();
+            let from = parseInt(e.dataTransfer.getData("text/plain"));
+            let moved = students.splice(from, 1)[0];
+            students.splice(i, 0, moved);
+            save(); renderStudents();
+        };
 
-            // renderStudents fonksiyonu içindeki ilgili satırı şununla değiştir:
-// renderStudents fonksiyonu içindeki ilgili kısmı şu şekilde değiştirin:
-row.innerHTML = `
-    <td>${i + 1}</td>
-    <td><input type="text" value="${s.name}" onchange="updateStudentName(${i}, this.value)" style="border:none; background:transparent; font-size:1.1em; width:100%;"></td>
-    <td>
-        <div class="action-cell">
-            <button onclick="openNoteModal(${i})" title="Öğrenci Notu">📝</button>
-            <button onclick="openSkillModal(${i})" title="Beceriler">📊</button>
-        </div>
-    </td>
-    <td>
-        <div class="action-cell">
-            <button onclick="deleteStu(${i})" title="Sil" style="color:var(--danger); border:none;">🗑️</button>
-        </div>
-    </td>
-`;
-        });
-    }
+        row.innerHTML = `
+            <td style="text-align:center; font-weight:bold; font-size:1.2rem;">${i + 1}</td>
+            <td>
+                <input type="text" value="${s.name}" 
+                       onchange="updateStudentName(${i}, this.value)" 
+                       class="student-name-input">
+            </td>
+            <td>
+                <div class="action-cell">
+                    <button class="big-action-btn" onclick="openNoteModal(${i})" title="Özel Notlar">📝</button>
+                    <button class="big-action-btn" onclick="openSkillModal(${i})" title="Beceriler">📊</button>
+                </div>
+            </td>
+            <td>
+                <div class="action-cell">
+                    <button class="big-action-btn delete-btn" onclick="deleteStu(${i})" title="Sil">🗑️</button>
+                </div>
+            </td>
+        `;
+    });
+}
 
     function addSingleStudent() {
         let val = document.getElementById('singleStuName').value.trim();
@@ -1656,24 +1791,32 @@ row.innerHTML = `
     }
 
     // --- NOTLAR VE SONUÇLAR ---
-    function renderGrades(type) {
-        let config = data.levels[curLId].config[type];
-        let table = document.getElementById(type + 'Table');
-        table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n}</th>`).join('')} <th>ORT</th></tr>`;
+ function renderGrades(type) {
+    let config = data.levels[curLId].config[type];
+    let table = document.getElementById(type + 'Table');
+    if (!table) return;
+    
+    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th>Ağ. ORT</th></tr>`;
+    
+    data.levels[curLId].classes[curCId].students.forEach((s, si) => {
+        let row = table.insertRow();
+        row.insertCell().innerText = s.name;
         
-        data.levels[curLId].classes[curCId].students.forEach((s, si) => {
-            let row = table.insertRow();
-            row.insertCell().innerText = s.name;
-            let total = 0;
-            config.forEach((c, ci) => {
-                let val = s[type] ? parseFloat(s[type][ci]) || 0 : 0;
-                total += val;
-                row.insertCell().innerHTML = `<input type="number" value="${val}" onchange="updateGrade('${type}',${si},${ci},this.value)">`;
-            });
-            let avg = config.length ? (total / config.length) : 0;
-            row.insertCell().innerText = avg.toFixed(2);
+        let weightedTotal = 0;
+        
+        config.forEach((c, ci) => {
+            let val = s[type] ? parseFloat(s[type][ci]) || 0 : 0;
+            let weight = parseFloat(c.w || 0) / 100;
+            weightedTotal += (val * weight);
+            
+            row.insertCell().innerHTML = `<input type="number" value="${val}" onchange="updateGrade('${type}',${si},${ci},this.value)">`;
         });
-    }
+        
+        // Sadece toplamak yerine ağırlıklı sonucu yazıyoruz
+        row.insertCell().style.fontWeight = "bold";
+        row.cells[row.cells.length - 1].innerText = weightedTotal.toFixed(2);
+    });
+}
 
     function updateGrade(t, si, ci, v) {
         let s = data.levels[curLId].classes[curCId].students[si];
@@ -1745,26 +1888,46 @@ row.innerHTML = `
     }
 
 function renderActivityButtons() {
-    const grid = document.getElementById('dynamicActivityGrid');
-    if (!grid || !currentLevelId) return;
+    const grid = document.querySelector('.activity-grid'); 
+    if (!grid || !curLId || !data.levels[curLId]) return;
 
-    grid.innerHTML = ''; // Mevcut butonları temizle
-    const currentLevel = levels[currentLevelId];
+    let level = data.levels[curLId];
     
-    // Ayarlardaki sınav/beceri listesini alıyoruz
-    const exams = currentLevel.config.exams; 
+    // Eğer kura listesi boşsa (ilk kez açılıyorsa) varsayılanları kullan
+    let kuraList = level.config.kura || [
+        {n: 'Konuşma'}, {n: 'Yazma'}, {n: 'Okuma'},
+        {n: 'Vezin'}, {n: 'Sözlük'}, {n: 'Tercüme'}
+    ];
+
+    grid.innerHTML = ''; 
     const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22'];
 
-    exams.forEach((exam, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'act-btn';
+    kuraList.forEach((item, index) => {
         const color = colors[index % colors.length];
-        btn.style.background = color;
-        btn.innerText = exam.name; // Ayarlarda değiştirdiğiniz isim buraya gelir
+        const wrapper = document.createElement('div');
+        wrapper.className = 'act-btn-wrapper';
+        wrapper.style.width = "100%";
         
-        btn.onclick = () => pick(exam.name, color);
-        grid.appendChild(btn);
+        wrapper.innerHTML = `
+            <button class="act-btn" style="background:${color}; width:100%; min-height:95px; border-radius:12px; border:none; color:white; font-weight:bold; cursor:pointer; font-family:'Marhey', sans-serif; font-size:1.1rem;" 
+                    onclick="pick('${item.n}', '${color}')">
+                ${item.n}
+            </button>
+        `;
+        grid.appendChild(wrapper);
     });
+}
+
+
+function addKuraRow(name = "") {
+    const container = document.getElementById('lvlKuraList');
+    const div = document.createElement('div');
+    div.style = "margin-bottom:8px; display:flex; gap:5px;";
+    div.innerHTML = `
+        <input type="text" class="kura-n" value="${name}" placeholder="Kura Başlığı" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px;">
+        <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:8px; padding:0 12px; cursor:pointer;">🗑️</button>
+    `;
+    container.appendChild(div);
 }
 
     function renderActivityStatus() {
@@ -1798,33 +1961,84 @@ function renderActivityButtons() {
     // --- SEVİYE AYARLARI ---
 // 1. Ayar Penceresini Açan Ana Fonksiyon
 function openLvlConfig(lId) {
-    // Kritik: Sınıf seçilmese bile hangi seviyede olduğumuzu belirtiyoruz
     curLId = lId; 
-    
     const lvl = data.levels[lId];
     if (!lvl) return;
 
-    // Modalı göster
     const modal = document.getElementById('lvlModal');
-    if (modal) modal.style.display = 'block';
+    if (!modal) return;
 
-    // Listeleri temizle
-    const hwList = document.getElementById('lvlHwList');
-    const exList = document.getElementById('lvlExList');
-    if (hwList) hwList.innerHTML = '';
-    if (exList) exList.innerHTML = '';
+    modal.style.display = 'block';
 
-    // Veri yapısı yoksa varsayılanları oluştur
-    if (!lvl.config) {
-        lvl.config = { 
-            hw: [{n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}], 
-            ex: [{n: 'Dinleme', w: 25}, {n: 'Konuşma', w: 25}, {n: 'Yazılı', w: 50}] 
-        };
-    }
+    // Modal içeriğini her açılışta sıfırdan ve düzenli bir yapıyla kuralım
+    modal.innerHTML = `
+        <h3 style="margin-top:0; color:var(--primary); font-family:'Marhey';">⚙️ Seviye Ayarları</h3>
+        
+        <div style="background: #e3f2fd; color: #1565c0; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.4; border-left: 5px solid #1565c0; font-family: sans-serif;">
+            <div style="font-weight: bold; margin-bottom: 3px;">📢 Kapsam Bilgilendirmesi:</div>
+            Bu seviyede yapacağınız isim ve ağırlık (%) değişiklikleri, bu seviyeye bağlı <strong>tüm sınıflarda</strong> otomatik olarak güncellenir. Değişiklikler Ödev, Sınav ve Kura sekmelerinin tamamını etkiler.
+        </div>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <h4 style="border-bottom: 2px solid var(--accent); color:var(--secondary);">Ödevler (Ağırlık %)</h4>
+                <div id="lvlHwList"></div>
+                <button class="btn-add" onclick="addConfigRow('hw')" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <h4 style="border-bottom: 2px solid var(--danger); color:var(--secondary);">Sınavlar (Ağırlık %)</h4>
+                <div id="lvlExList"></div>
+                <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
+            </div>
+        </div>
 
-    // Mevcut verileri modalın içine yükle (Yardımcı fonksiyonu kullanarak)
+        <div style="margin-top:25px; border-top:2px solid #eee; padding-top:15px;">
+            <h4 style="color:var(--accent); font-family:'Marhey'; margin-bottom:10px;">🎯 Kura Kategorileri</h4>
+            <div id="lvlKuraList"></div>
+            <button class="btn-add" onclick="addKuraRow()" style="width:100%; margin-top:10px; background:#2ecc71;">+ Yeni Kura Kutusu Ekle</button>
+        </div>
+
+        <div style="text-align: right; margin-top:30px; padding-top:15px; border-top:1px solid #eee; display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
+            <span style="font-size: 0.8rem; color: #7f8c8d; font-style: italic;">* Tüm sınıflar ve sekmeler güncellenecektir.</span>
+            <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:8px; font-weight:bold;">İptal</button>
+            <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:8px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
+        </div>
+    `;
+
+    // 1. Veri Yapısı Kontrolü (Eğer yoksa varsayılanları ata)
+    if (!lvl.config) lvl.config = {};
+    if (!lvl.config.hw) lvl.config.hw = [{n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}];
+    if (!lvl.config.ex) lvl.config.ex = [{n: 'Dinleme', w: 25}, {n: 'Konuşma', w: 25}, {n: 'Yazılı', w: 50}];
+    if (!lvl.config.kura) lvl.config.kura = [{n: 'Konuşma'}, {n: 'Yazma'}, {n: 'Okuma'}, {n: 'Vezin'}, {n: 'Sözlük'}, {n: 'Tercüme'}];
+
+    // 2. Ödevleri yükle
     lvl.config.hw.forEach(item => addConfigRowWithData('hw', item.n, item.w));
+    
+    // 3. Sınavları yükle
     lvl.config.ex.forEach(item => addConfigRowWithData('ex', item.n, item.w));
+
+    // 4. Kura başlıklarını yükle (Sınavdan bağımsız kendi dizisinden çeker)
+    lvl.config.kura.forEach(item => {
+        addKuraRowWithData(item.n); 
+    });
+}
+
+// Yardımcı Fonksiyon: Kura satırını veriyle ekler
+function addKuraRowWithData(name) {
+    const kuraList = document.getElementById('lvlKuraList');
+    if (!kuraList) return;
+    const row = document.createElement('div');
+    row.style = "margin-bottom:8px; display:flex; gap:5px;";
+    row.innerHTML = `
+        <input type="text" class="kura-n" value="${name}" placeholder="Kura Adı" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px;">
+        <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:8px; padding:0 12px; cursor:pointer;">🗑️</button>
+    `;
+    kuraList.appendChild(row);
+}
+
+
+function addKuraRow() {
+    addKuraRowWithData(""); // Boş satır ekler
 }
 
 // 2. Yeni Satır Ekleme (Manuel + butonu için)
@@ -1849,33 +2063,56 @@ function addConfigRowWithData(t, name, weight) {
 
 // 4. Kaydetme Fonksiyonu
 function saveLvlConfig() {
-    if(!curLId || !data.levels[curLId]) return;
-    
+    if (!curLId || !data.levels[curLId]) return;
+
+    // 1. Ödevleri topla
     let newHw = [];
     document.querySelectorAll('.hw-n').forEach((el, i) => {
         let wInputs = document.querySelectorAll('.hw-w');
         let w = wInputs[i] ? wInputs[i].value : 0;
-        newHw.push({ n: el.value, w: parseInt(w) || 0 });
+        if (el.value.trim() !== "") {
+            newHw.push({ n: el.value.trim(), w: parseInt(w) || 0 });
+        }
     });
 
+    // 2. Sınavları topla (Sadece .ex-n ve .ex-w sınıfından alır)
     let newEx = [];
     document.querySelectorAll('.ex-n').forEach((el, i) => {
         let wInputs = document.querySelectorAll('.ex-w');
         let w = wInputs[i] ? wInputs[i].value : 0;
-        newEx.push({ n: el.value, w: parseInt(w) || 0 });
+        if (el.value.trim() !== "") {
+            newEx.push({ n: el.value.trim(), w: parseInt(w) || 0 });
+        }
     });
 
-    data.levels[curLId].config = { hw: newHw, ex: newEx };
-    save(); // Yerel depolamaya kaydet
-    
+    // 3. Kura Başlıklarını topla (Sadece .kura-n sınıfından alır)
+    let newKura = [];
+    document.querySelectorAll('.kura-n').forEach((el) => {
+        if (el.value.trim() !== "") {
+            newKura.push({ n: el.value.trim() }); // Kura için ağırlık gerekmez
+        }
+    });
+
+    // Verileri birbirinden bağımsız dizilere mühürle
+    data.levels[curLId].config.hw = newHw;
+    data.levels[curLId].config.ex = newEx;
+    data.levels[curLId].config.kura = newKura; // Yeni bağımsız kura dizisi
+
+    save(); 
+
+    // Arayüzü kapat ve güncelle
     document.getElementById('lvlModal').style.display = 'none';
     
-    // Eğer o an bir sınıf seçiliyse tabloları hemen güncelle
+    // Kura butonlarını sadece 'kura' dizisinden çizecek şekilde tetikle
+    renderActivityButtons();
+
     if (curCId) {
         renderGrades('hw');
         renderGrades('ex');
         renderResults();
     }
+    
+    alert("Tüm ayarlar (Ödev, Sınav ve Kura) bağımsız olarak kaydedildi!");
 }
 
 function renderConfRows(t, items) {
@@ -2116,22 +2353,27 @@ function toggleSidebar() {
 // Sınav/Ödev hesaplamasını ağırlıklara göre yapan fonksiyon
 function renderResults() {
     let table = document.getElementById('resTable');
+    if (!table || !curLId || !curCId) return;
+    
     let lvl = data.levels[curLId];
     table.innerHTML = `<tr><th>Öğrenci</th><th>Ödev Ort. (%100)</th><th>Sınav Ort. (%100)</th></tr>`;
     
     lvl.classes[curCId].students.forEach(s => {
-        let hwScore = 0, exScore = 0;
+        let hwScore = 0;
+        let exScore = 0;
         
         // Ödev Ağırlıklı Hesaplama
         lvl.config.hw.forEach((c, i) => {
-            let val = parseFloat((s.hw||[])[i]||0);
-            hwScore += (val * (c.w / 100));
+            let val = parseFloat((s.hw || [])[i] || 0);
+            let weight = parseFloat(c.w || 0) / 100; // Yüzdelik ağırlık (25/100 = 0.25)
+            hwScore += (val * weight);
         });
         
         // Sınav Ağırlıklı Hesaplama
         lvl.config.ex.forEach((c, i) => {
-            let val = parseFloat((s.ex||[])[i]||0);
-            exScore += (val * (c.w / 100));
+            let val = parseFloat((s.ex || [])[i] || 0);
+            let weight = parseFloat(c.w || 0) / 100; // Yüzdelik ağırlık (50/100 = 0.50)
+            exScore += (val * weight);
         });
         
         table.insertRow().innerHTML = `
@@ -2287,12 +2529,12 @@ function togglePassword(id) {
 
 </script>
 
-<div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px;">
-        <h3 id="noteModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Notu</h3>
-        <textarea id="studentNoteText" class="note-textarea" placeholder="Notları buraya yazın..."></textarea>
+<div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
+    <div style="background:white; width:95%; max-width:600px; padding:30px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <h3 id="noteModalTitle" style="margin-top:0; color:var(--primary); font-family:'Marhey';">Öğrenci Notu</h3>
+        <textarea id="studentNoteText" class="note-textarea"></textarea>
         <div style="text-align:right; margin-top:20px;">
-            <button onclick="closeNoteModal()" style="padding:10px 20px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:5px;">Kaydet ve Kapat</button>
+            <button onclick="closeNoteModal()" style="padding:15px 30px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:10px; font-weight:bold; font-size:1.1rem; width:100%;">Değişiklikleri Kaydet ve Kapat</button>
         </div>
     </div>
 </div>
@@ -2433,6 +2675,7 @@ function verileriGetir(uid) {
     const overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.style.display = 'flex';
 
+    // Sayfa yenilendiğinde eski ID'leri temizle ki taze veri yüklensin
     curLId = null; 
     curCId = null;
 
@@ -2451,40 +2694,35 @@ function verileriGetir(uid) {
         renderSidebar(); 
         document.body.classList.add('logged-in'); 
 
-        // 2. OTOMATİK İLK SINIF SEÇİMİ VE KIRMIZI DOLGU
-      // ... verileriGetir fonksiyonu içinde ...
-// 2. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
-setTimeout(() => {
-    const firstLevel = document.querySelector('.level-container');
-    if (firstLevel) {
-        // İlk seviyeyi görsel olarak aç (klasörü genişlet)
-        const firstClassList = firstLevel.querySelector('.class-list');
-        if (firstClassList) firstClassList.style.display = "block"; 
-        
-        // İlk sınıf linkini bul
-        const firstClassLink = firstLevel.querySelector('.class-link');
-        
-        if (firstClassLink) {
-            // Sınıf ID'lerini al
-            const lId = firstLevel.getAttribute('data-id'); // data-id veya level ID'niz
-            // lId ve cId'yi dinamik olarak ilk elemanlardan çekiyoruz
-            const levelIds = data.levelOrder || Object.keys(data.levels);
-            const firstLId = levelIds[0];
-            const firstCId = Object.keys(data.levels[firstLId].classes)[0];
+        // 2. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
+        setTimeout(() => {
+            const firstLevel = document.querySelector('.level-container');
+            if (firstLevel) {
+                // İlk seviyeyi görsel olarak aç
+                const firstClassList = firstLevel.querySelector('.class-list');
+                if (firstClassList) firstClassList.style.display = "block"; 
+                
+                // İlk sınıf linkini bul
+                const firstClassLink = firstLevel.querySelector('.class-link');
+                
+                if (firstClassLink) {
+                    const levelIds = data.levelOrder || Object.keys(data.levels);
+                    const firstLId = levelIds[0];
+                    const firstCId = Object.keys(data.levels[firstLId].classes)[0];
 
-            // HEM GÖRSELİ GÜNCELLE HEM VERİYİ YÜKLE
-            // selectClass fonksiyonunu 'this' yerine linkin kendisini göndererek çağırıyoruz
-            selectClass(firstLId, firstCId, firstClassLink);
-        }
-    }
-}, 600); // Sidebar'ın oluşması için kısa bir bekleme
+                    // Hem görseli güncelle hem veriyi yükle
+                    selectClass(firstLId, firstCId, firstClassLink);
 
-        // 3. Yükleme ekranını kaldır ve görünümü ayarla
+                    // --- KRİTİK EKLEME: Sayfa yenilendiğinde başlıkları çiz ---
+                    // Sınıf seçildikten sonra kura butonlarını ayarlar panelindeki veriye göre oluşturur
+                    renderActivityButtons();
+                }
+            }
+        }, 600); 
+
+        // 3. Yükleme ekranını kaldır
         setTimeout(() => {
             if (overlay) overlay.style.display = 'none';
-            
-            // Not: İlk sınıf otomatik seçildiği için artık "Lütfen sınıf seçin" 
-            // metnini burada gizlememize gerek kalmadı, showClass zaten orayı dolduracak.
         }, 300);
     })
     .catch((err) => {
