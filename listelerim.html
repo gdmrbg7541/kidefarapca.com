@@ -1874,37 +1874,44 @@ function addLevel() {
     }
 
 function renderSidebar() {
-    // 1. Değişkeni fonksiyonun başında tanımlayın
+    // 1. Değişkeni fonksiyonun en başında tanımlayın (Kapsam sorununu çözer)
     const nav = document.getElementById('levelNav');
     
-    // 2. Güvenlik Kontrolü: Eğer HTML'de levelNav yoksa fonksiyonu durdur
     if (!nav) {
-        console.error("Hata: 'levelNav' id'li element bulunamadı! HTML dosyanızı kontrol edin.");
+        console.warn("Sidebar render edilemedi: 'levelNav' elementi bulunamadı.");
         return; 
     }
 
-    // 3. İçeriği temizle
+    // 2. İçeriği sıfırla
     nav.innerHTML = '';
 
     // Veri kontrolü
     if (!data || !data.levels) {
         console.warn("Sidebar render edilemedi: Veri henüz hazır değil.");
-        return;
+        return; 
     }
 
-    // --- ÖĞRETMEN KODU GÖSTERİMİ ---
+    // --- 3. ÖĞRETMEN KODU GÖSTERİMİ ---
     const staticCode = localStorage.getItem('teacher_static_code');
     if (staticCode) {
         let codeHtml = `
-        <div class="teacher-code-area" style="background: rgba(255, 255, 255, 0.05); border: 1px dashed #f1c40f; margin: 0 5px 15px 5px; padding: 10px; border-radius: 8px; text-align: center;">
-            <div style="font-size: 0.7rem; color: #f1c40f; text-transform: uppercase; font-weight: bold;">Öğretmen Kodu</div>
-            <div style="font-size: 1.1rem; color: #fff; font-weight: 700;">${staticCode}</div>
+        <div class="teacher-code-area" style="
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(241, 196, 15, 0.5);
+            margin: 0 5px 15px 5px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        ">
+            <div style="font-size: 0.7rem; color: #f1c40f; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Öğretmen Kodu</div>
+            <div style="font-size: 1.1rem; color: #fff; font-family: 'Nunito', sans-serif; font-weight: 700; margin-top: 3px;">
+                ${staticCode}
+            </div>
         </div>`;
-        // Burada nav değişkeni yukarıda tanımlandığı için hata vermez
         nav.innerHTML += codeHtml;
     }
 
-    // --- SEVİYE VE SINIF LİSTESİ ---
+    // --- 4. SEVİYE VE SINIF LİSTESİ ---
     let levelIds = data.levelOrder || Object.keys(data.levels);
     
     levelIds.forEach(lId => {
@@ -1939,7 +1946,7 @@ function renderSidebar() {
         
         html += `</div></div>`;
         
-        // HATANIN ÇÖZÜLDÜĞÜ YER: nav değişkeni burada forEach kapsamı içinde kullanılabilir
+        // Hatanın çözüldüğü kritik satır: nav değişkeni burada artık tanımlı.
         nav.innerHTML += html; 
     });
 }
