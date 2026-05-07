@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
+
     <meta charset="UTF-8">
     <title> Listelerim </title>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,7 +17,6 @@
 
         <div class="role-selector" style="display: flex; gap: 8px; margin-bottom: 20px;">
             <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn active-role">Öğretmen</button>
-            <button onclick="setRole('parent')" id="btn-parent" class="role-btn">Veli</button>
             <button onclick="setRole('student')" id="btn-student" class="role-btn">Öğrenci</button>
         </div>
 
@@ -52,10 +53,7 @@
             <span id="auth-switch-text">Hesabınız yok mu?</span> 
             <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
         </div>
-
-        <div id="guest-access-area" class="local-storage-warning">
-            <p class="marhey-text" style="font-size: 13px; line-height: 1.4; font-weight: 400;">Giriş yapmadan devam ederseniz, listeleriniz <strong>sadece bu tarayıcıda</strong> saklanır.</p>
-            <button class="ghost-btn marhey-text" onclick="misafirGiris()" style="font-weight: 400;">Giriş Yapmadan Devam Et</button>
+            
         </div>
     </div>
 </div>
@@ -917,6 +915,21 @@ body.logged-in #content {
 }
 .mission-card h4 { margin: 0 0 10px 0; color: var(--primary); }
 .mission-card .status { font-size: 0.8rem; color: #7f8c8d; }
+
+/* Öğrenci görünümü açıkken sidebar'daki yönetim butonlarını soluklaştır */
+body.role-student .btn-add, 
+body.role-student .level-actions, 
+body.role-student .class-actions {
+    opacity: 0.3;
+    pointer-events: none; /* Tıklanmasını engeller */
+}
+
+/* Sadece Öğrenci Görünümü butonu aktif kalsın */
+body.role-student button[onclick*="switchView"] {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    border: 2px solid #7B1FA2;
+}
     </style>
 </head>
 <body>
@@ -944,19 +957,36 @@ body.logged-in #content {
 
     </div>
 
+
+
     <div id="levelNav" style="flex: 1; overflow-y: auto;"></div>
 
 
     <div class="role-preview-buttons" style="display: flex; gap: 10px; margin-bottom: 15px;">
-    <button onclick="switchView('parent')" class="marhey-text" style="flex: 1; padding: 10px; border-radius: 8px; border: none; background: #e3f2fd; color: #1976d2; cursor: pointer;">
-        Veli Görünümü
-    </button>
+    
     <button onclick="switchView('student')" class="marhey-text" style="flex: 1; padding: 10px; border-radius: 8px; border: none; background: #f3e5f5; color: #7b1fa2; cursor: pointer;">
         Öğrenci Görünümü
     </button>
 </div>
 
+<div id="student-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #F7F9FC; z-index: 99999; overflow-y: auto; padding: 40px 20px;">
+    <div class="student-content-wrapper marhey-text" style="max-width: 1100px; margin: 0 auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div>
+                <h1 style="color: #7B1FA2; margin: 0; font-size: 2rem;">Öğrenci Dünyası 🚀</h1>
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Hoş geldin! Bugün harika işler çıkaracaksın.</p>
+            </div>
+            <button onclick="switchView('teacher')" style="padding: 12px 25px; border-radius: 12px; border: 2px solid #7B1FA2; background: transparent; color: #7B1FA2; cursor: pointer; font-family: 'Marhey'; font-weight: bold; transition: 0.3s;">
+                Çıkış Yap
+            </button>
+        </div>
+        
+        <div id="student-dynamic-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+            </div>
 
+    </div>
+</div>
 
     <div style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
         <button id="manualDownloadBtn" style="
@@ -2112,23 +2142,32 @@ function closeNoteModal() {
         save();
     }
 
-   function renderStudents() {
-    if (!curLId || !curCId) return;
+function renderStudents() {
+    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) return;
+    
     let students = data.levels[curLId].classes[curCId].students || [];
     let table = document.getElementById('stuTable');
+    if (!table) return;
     
-    // Başlık kısmına "Giriş Kodu" sütunu eklendi
+    // Tabloyu sıfırla ve başlıkları ekle
     table.innerHTML = `
-        <tr>
-            <th width="50">#</th>
-            <th style="text-align:left; padding-left:15px;">Öğrenci Adı</th>
-            <th width="100" style="text-align:center;">Giriş Kodu</th>
-            <th width="160" style="text-align:center;">İşlemler</th>
-            <th width="80" style="text-align:center;">Sil</th>
-        </tr>`;
+        <thead>
+            <tr>
+                <th width="50">#</th>
+                <th style="text-align:left; padding-left:15px;">Öğrenci Adı</th>
+                <th width="140" style="text-align:center;">Giriş Kodu</th>
+                <th width="160" style="text-align:center;">İşlemler</th>
+                <th width="80" style="text-align:center;">Sil</th>
+            </tr>
+        </thead>
+        <tbody id="stuTableBody"></tbody>`;
     
+    const tableBody = document.getElementById('stuTableBody');
+
     students.forEach((s, i) => {
-        let row = table.insertRow();
+        let row = tableBody.insertRow();
+        
+        // Sürükle-bırak özelliği
         row.setAttribute('draggable', 'true');
         row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
         row.ondragover = (e) => e.preventDefault();
@@ -2140,16 +2179,17 @@ function closeNoteModal() {
             save(); renderStudents();
         };
 
-        // Satır içeriğine Giriş Kodu hücresi eklendi
+        // SATIR İÇERİĞİ
         row.innerHTML = `
             <td style="text-align:center; font-weight:bold; font-size:1.2rem;">${i + 1}</td>
             <td>
-                <input type="text" value="${s.name}" 
+                <input type="text" value="${s.name || ''}" 
                        onchange="updateStudentName(${i}, this.value)" 
-                       class="student-name-input">
+                       class="student-name-input"
+                       placeholder="Öğrenci Adı">
             </td>
             <td style="text-align:center;">
-                <code style="background:#f0f2f5; padding:4px 8px; border-radius:6px; font-family:monospace; font-weight:bold; color:var(--primary); border:1px solid #ddd;">
+                <code style="background:#E8F0FE; padding:6px 12px; border-radius:8px; font-family:monospace; font-weight:bold; color:#1a73e8; border:1px solid #1a73e8; font-size:1rem;">
                     ${s.loginCode || '---'}
                 </code>
             </td>
@@ -2171,59 +2211,67 @@ function closeNoteModal() {
 function addSingleStudent() {
     let val = document.getElementById('singleStuName').value.trim();
     
-    // Tarayıcı hafızasına (authIslemi sırasında) kaydettiğimiz öğretmen kodunu alıyoruz
-    // Eğer kod yoksa varsayılan olarak "TCH" kullanır
+    // Öğretmenin sabit kodunu alıyoruz (Örn: TCH-4582)
     const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
 
-    if(val) {
-        // Mevcut öğrenci sayısına bakarak bir sonraki sıra numarasını belirliyoruz
-        const sCount = data.levels[curLId].classes[curCId].students.length + 1;
+    if (val) {
+        // Mevcut öğrenci listesine güvenli erişim
+        const currentClass = data.levels[curLId].classes[curCId];
+        const sCount = currentClass.students.length + 1;
         
-        // Örn: Öğretmen kodu TCH-4582 ise öğrenci kodu TCH-4582-S1 olur
+        // ÖĞRENCİ KODU: Tam formatta oluşturulur (Örn: TCH-4582-S1)
+        // Giriş sırasında "TCH-S1" hatası almamak için bu tam kod kaydedilmelidir.
         const sCode = `${teacherCode}-S${sCount}`; 
 
-        data.levels[curLId].classes[curCId].students.push({ 
+        // Yeni öğrenci objesini tüm alt dizileriyle birlikte oluştur
+        const newStudent = { 
             name: val, 
-            loginCode: sCode, // Artık öğrenci bu sabit kodla giriş yapacak
+            loginCode: sCode.toUpperCase(), // Büyük harf garantisi
             hw: [], 
             ex: [], 
             history: [], 
-            personalMissions: [], // Öğretmenin gönderdiği görevler buraya eklenecek
+            personalMissions: [], 
             skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
             notes: ""
-        });
+        };
+
+        currentClass.students.push(newStudent);
 
         // Giriş kutusunu temizle
         document.getElementById('singleStuName').value = "";
         
-        // Veriyi yerel hafıza ve Firebase'e kaydet
+        // Veriyi kaydet ve listeyi yenile
         save(); 
-        
-        // Öğrenci listesini (ve yeni kodu) ekranda göster
         renderStudents();
         
-        console.log(`${val} eklendi. Giriş Kodu: ${sCode}`);
+        console.log(`Başarılı: ${val} eklendi. Giriş Kodu: ${sCode}`);
     } else {
         alert("Lütfen öğrenci adı giriniz!");
     }
 }
-    function updateStudentName(i, val) {
-        if(val.trim()) { data.levels[curLId].classes[curCId].students[i].name = val.trim(); save(); }
-    }
-    
-    function deleteStu(i) {
-        showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", "🗑️", () => {
-            data.levels[curLId].classes[curCId].students.splice(i, 1);
-            save(); renderStudents();
-        });
-    }
 
-    // --- NOTLAR VE SONUÇLAR ---
- function renderGrades(type) {
+function updateStudentName(i, val) {
+    if (val.trim()) { 
+        data.levels[curLId].classes[curCId].students[i].name = val.trim(); 
+        save(); 
+    }
+}
+
+function deleteStu(i) {
+    showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", "🗑️", () => {
+        data.levels[curLId].classes[curCId].students.splice(i, 1);
+        save(); 
+        renderStudents();
+    });
+}
+
+// --- NOTLAR VE SONUÇLAR ---
+function renderGrades(type) {
     let config = data.levels[curLId].config[type];
     let table = document.getElementById(type + 'Table');
     if (!table) return;
     
+    // Tablo başlıklarını oluştur
     table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th>Ağ. ORT</th></tr>`;
     
     data.levels[curLId].classes[curCId].students.forEach((s, si) => {
@@ -2233,16 +2281,23 @@ function addSingleStudent() {
         let weightedTotal = 0;
         
         config.forEach((c, ci) => {
-            let val = s[type] ? parseFloat(s[type][ci]) || 0 : 0;
+            // Veri varsa al, yoksa 0 kabul et
+            let val = (s[type] && s[type][ci]) ? parseFloat(s[type][ci]) : 0;
             let weight = parseFloat(c.w || 0) / 100;
             weightedTotal += (val * weight);
             
-            row.insertCell().innerHTML = `<input type="number" value="${val}" onchange="updateGrade('${type}',${si},${ci},this.value)">`;
+            row.insertCell().innerHTML = `
+                <input type="number" 
+                       value="${val}" 
+                       onchange="updateGrade('${type}',${si},${ci},this.value)" 
+                       style="width:60px; text-align:center; border-radius:4px; border:1px solid #ddd;">`;
         });
         
-        // Sadece toplamak yerine ağırlıklı sonucu yazıyoruz
-        row.insertCell().style.fontWeight = "bold";
-        row.cells[row.cells.length - 1].innerText = weightedTotal.toFixed(2);
+        // Ağırlıklı ortalamayı hücreye yaz
+        let avgCell = row.insertCell();
+        avgCell.style.fontWeight = "bold";
+        avgCell.style.color = "var(--primary)";
+        avgCell.innerText = weightedTotal.toFixed(2);
     });
 }
 
@@ -3211,39 +3266,45 @@ function misafirGiris() {
 
 //VELİ VE ÖĞRENCİ MODÜLÜ
 
+let isStudentViewOpen = false;
+
 function switchView(role) {
-    // 1. Sidebar'daki yönetim elemanlarını gizle
-    const sidebar = document.querySelector('.sidebar');
-    if(role !== 'teacher') {
-        // Öğretmen dışındakiler sınıf ekleyemez/ayarları göremez
-        document.querySelector('.admin-controls')?.style.setProperty('display', 'none', 'important');
-    }
+    const overlay = document.getElementById('student-overlay');
+    const studentContent = document.getElementById('student-dynamic-content');
 
-    // 2. Ana İçerik Alanını Temizle ve Yeni Arayüzü Kur
-    const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = ''; // Eski tabloyu vs. temizle
-
-    if(role === 'parent') {
-        renderParentDashboard(mainContent);
-    } else if(role === 'student') {
-        renderStudentDashboard(mainContent);
-    }
-}
-
-function renderParentDashboard(container) {
-    container.innerHTML = `
-        <div class="parent-card marhey-text" style="padding: 20px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <h2 style="color: #1976d2;">Veli Bilgilendirme Paneli</h2>
-            <p style="font-size: 0.9em; color: #666;">Çocuğunuzun performansını ve günlük raporlarını buradan takip edebilirsiniz.</p>
-            <hr style="border: 0.5px solid #eee; margin: 15px 0;">
-            <div id="student-summary">
-                <p><strong>Öğrenci:</strong> [Öğrenci Adı]</p>
-                <p><strong>Toplam Puan:</strong> 85</p>
-                <p><strong>Son Etkinlik:</strong> Kelime Avı (Tamamlandı)</p>
+    if (role === 'student' && !isStudentViewOpen) {
+        // ÖĞRENCİ PANELİNİ AÇ
+        overlay.style.display = 'block';
+        isStudentViewOpen = true;
+        document.body.classList.add('role-student');
+        
+        // Buraya öğrencinin göreceği kartları ekliyoruz
+        studentContent.innerHTML = `
+            <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 50px;">♟️</div>
+                <h3 style="margin-top:15px;">Satranç Dünyam</h3>
             </div>
-        </div>
-    `;
+            
+            <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 50px;">🏆</div>
+                <h3 style="margin-top:15px;">Puan Durumum</h3>
+                <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">85 / 100</p>
+            </div>
+
+            <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 50px;">📅</div>
+                <h3 style="margin-top:15px;">Haftalık Görevler</h3>
+                <p style="font-size: 14px; color: #666;">Henüz yeni görev yok.</p>
+            </div>
+        `;
+    } else {
+        // ÖĞRETMEN PANELİNE GERİ DÖN
+        overlay.style.display = 'none';
+        isStudentViewOpen = false;
+        document.body.classList.remove('role-student');
+    }
 }
+
 
 function renderStudentDashboard(container) {
     container.innerHTML = `
