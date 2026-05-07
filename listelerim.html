@@ -931,8 +931,9 @@ body.logged-in #content {
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 
-<div id="sidebar" style="position: relative; display: flex; flex-direction: column;">
-    <h2>🏫 Listelerim </h2>
+<div id="sidebar">
+    <h2 style="margin-bottom:0;">🏫 Listelerim</h2>
+    <div id="teacher-code-display" style="font-size: 0.8rem; color: #f1c40f; margin-bottom: 15px; font-weight: bold; opacity: 0.8;"></div>
     
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
       <button class="btn-add" id="login-nav-btn" onclick="loginButonTikla()" style="background: #34495e; color: white; margin-bottom: 8px;">
@@ -1471,6 +1472,11 @@ function sendMissionFinal(idx, title) {
     }
 }
 
+function generateUniqueCode(prefix = "TCH") {
+    const numbers = Math.floor(1000 + Math.random() * 9000); // 4 haneli rastgele sayı
+    return `${prefix}-${numbers}`;
+}
+
 // Yama (Patch) İşlemleri
 function openPatchModal(idx) {
     activePatchIdx = idx;
@@ -1878,6 +1884,27 @@ function renderSidebar() {
         return; 
     }
 
+    // --- 1. ÖĞRETMEN KODU GÖSTERİMİ (YENİ) ---
+    const staticCode = localStorage.getItem('teacher_static_code');
+    if (staticCode) {
+        let codeHtml = `
+        <div class="teacher-code-area" style="
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(241, 196, 15, 0.5);
+            margin: 0 5px 15px 5px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        ">
+            <div style="font-size: 0.7rem; color: #f1c40f; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Öğretmen Kodu</div>
+            <div style="font-size: 1.1rem; color: #fff; font-family: 'Nunito', sans-serif; font-weight: 700; margin-top: 3px;">
+                ${staticCode}
+            </div>
+        </div>`;
+        nav.innerHTML += codeHtml;
+    }
+
+    // --- 2. SEVİYE VE SINIF LİSTESİ ---
     let levelIds = data.levelOrder || Object.keys(data.levels);
     
     levelIds.forEach(lId => {
@@ -1897,7 +1924,6 @@ function renderSidebar() {
             </div>
             <div class="class-list" id="list-${lId}">`;
         
-        // lvl.classes kontrolü eklendi
         if (lvl.classes) {
             for(let cId in lvl.classes) {
                 html += `
@@ -2130,24 +2156,43 @@ function closeNoteModal() {
     });
 }
 
- function addSingleStudent() {
+function addSingleStudent() {
     let val = document.getElementById('singleStuName').value.trim();
+    
+    // Tarayıcı hafızasına (authIslemi sırasında) kaydettiğimiz öğretmen kodunu alıyoruz
+    // Eğer kod yoksa varsayılan olarak "TCH" kullanır
+    const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
+
     if(val) {
-        // 6 haneli rastgele ve benzersiz bir kod üretelim
-        const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        // Mevcut öğrenci sayısına bakarak bir sonraki sıra numarasını belirliyoruz
+        const sCount = data.levels[curLId].classes[curCId].students.length + 1;
         
+        // Örn: Öğretmen kodu TCH-4582 ise öğrenci kodu TCH-4582-S1 olur
+        const sCode = `${teacherCode}-S${sCount}`; 
+
         data.levels[curLId].classes[curCId].students.push({ 
             name: val, 
-            loginCode: randomCode, // Öğrencinin giriş kodu buraya kaydediliyor
-            hw:[], 
-            ex:[], 
-            history:[],
-            personalMissions: [] // Görevlerin birikeceği liste
+            loginCode: sCode, // Artık öğrenci bu sabit kodla giriş yapacak
+            hw: [], 
+            ex: [], 
+            history: [], 
+            personalMissions: [], // Öğretmenin gönderdiği görevler buraya eklenecek
+            skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
+            notes: ""
         });
-        
+
+        // Giriş kutusunu temizle
         document.getElementById('singleStuName').value = "";
+        
+        // Veriyi yerel hafıza ve Firebase'e kaydet
         save(); 
-        renderStudents(); // Tabloyu yenileyerek kodu ekranda göster
+        
+        // Öğrenci listesini (ve yeni kodu) ekranda göster
+        renderStudents();
+        
+        console.log(`${val} eklendi. Giriş Kodu: ${sCode}`);
+    } else {
+        alert("Lütfen öğrenci adı giriniz!");
     }
 }
     function updateStudentName(i, val) {
@@ -2816,7 +2861,7 @@ async function authIslemi() {
     const rePass = document.getElementById('re-password').value; 
     const hata = document.getElementById('hata-mesaji');
 
-    // --- ÖĞRENCİ GİRİŞ KONTROLÜ (YENİ EKİ) ---
+    // --- ÖĞRENCİ GİRİŞ KONTROLÜ ---
     if (currentRole === 'student') {
         if (!email) {
             hata.innerText = "Lütfen giriş kodunuzu yazın.";
@@ -2827,7 +2872,6 @@ async function authIslemi() {
         let foundStudent = null;
         let coords = null;
 
-        // Tüm veriyi tara ve kodu eşleşen öğrenciyi bul
         for (let lId in data.levels) {
             for (let cId in data.levels[lId].classes) {
                 const students = data.levels[lId].classes[cId].students || [];
@@ -2841,40 +2885,24 @@ async function authIslemi() {
         }
 
         if (foundStudent) {
-            // Başarılı giriş: Bilgileri tarayıcıya kaydet
-            localStorage.setItem('logged_student', JSON.stringify({
-                ...coords,
-                name: foundStudent.name,
-                role: 'student'
-            }));
-            
+            localStorage.setItem('logged_student', JSON.stringify({ ...coords, name: foundStudent.name, role: 'student' }));
             alert("Hoş geldin, " + foundStudent.name);
             modalKapat();
             document.body.classList.add('logged-in');
-            // Öğrenci paneline yönlendirme veya sidebar güncelleme eklenebilir
             if (typeof renderSidebar === "function") renderSidebar(); 
-            return; // Firebase kısmına geçmeden bitir
+            return;
         } else {
             hata.innerText = "Geçersiz giriş kodu!";
             hata.style.display = "block";
             return;
         }
     }
-    // --- ÖĞRENCİ GİRİŞ KONTROLÜ SONU ---
 
-    // BURADAN AŞAĞISI ÖĞRETMEN VE VELİ İÇİN (MEVCUT FİREBASE YAPINIZ)
+    // --- ÖĞRETMEN / VELİ (FIREBASE) GİRİŞİ ---
     if (!email || !pass) {
         hata.innerText = "Lütfen e-posta ve şifre giriniz.";
         hata.style.display = "block";
         return;
-    }
-
-    if (mevcutMod === 'signup') {
-        if (pass !== rePass) {
-            hata.innerText = "Şifreler birbiriyle eşleşmiyor!";
-            hata.style.display = "block";
-            return;
-        }
     }
 
     try {
@@ -2884,27 +2912,33 @@ async function authIslemi() {
         let userCredential;
         if (mevcutMod === 'login') {
             userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
+            
+            // Girişten sonra buluttan öğretmenin sabit kodunu çek
+            const doc = await db.collection("kullanicilar").doc(userCredential.user.uid).get();
+            if (doc.exists && doc.data().teacherStaticCode) {
+                localStorage.setItem('teacher_static_code', doc.data().teacherStaticCode);
+            }
         } else {
+            // YENİ KAYIT: Öğretmene ilk kez sabit kod ata
+            if (pass !== rePass) { throw new Error("Şifreler eşleşmiyor."); }
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
-            let dataToUpload = localStorage.getItem('schoolData');
             
-            if (!dataToUpload && data && data.levels) {
-                dataToUpload = JSON.stringify(data);
-            }
+            const staticCode = "TCH-" + Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('teacher_static_code', staticCode);
+
+            let dataToUpload = localStorage.getItem('schoolData') || JSON.stringify({ levels: {}, levelOrder: [] });
             
-            if (dataToUpload) {
-                await db.collection("kullanicilar").doc(userCredential.user.uid).set({
-                    userData: dataToUpload, 
-                    lastUpdated: firebase.auth.FieldValue ? firebase.auth.FieldValue.serverTimestamp() : new Date()
-                });
-            }
-            alert("Hesabınız başarıyla oluşturuldu!");
+            await db.collection("kullanicilar").doc(userCredential.user.uid).set({
+                userData: dataToUpload,
+                teacherStaticCode: staticCode, // SABİT KOD KAYDEDİLDİ
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Hesap oluşturuldu! Sabit Kodunuz: " + staticCode);
         }
-        modalKapat(); 
+        modalKapat();
+        document.body.classList.add('logged-in');
     } catch (error) {
-        console.error("Hata:", error);
-        // Hata mesajlarını Türkçeleştirme kısmı aynı kalabilir...
-        hata.innerText = "Giriş başarısız: " + error.message;
+        hata.innerText = "Hata: " + error.message;
         hata.style.display = "block";
     }
 }
