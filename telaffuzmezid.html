@@ -666,32 +666,49 @@
         hideHeaderElements();
     }
 
-    function resetToFiilSelection() { showFiils(selectedBap); }
+   function resetToFiilSelection() { 
+        // 1. Önce kronometreyi ve zaman değişkenlerini sıfırla
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        startTime = 0;
+        isPaused = false;
+        
+        const timerDisplay = document.getElementById('timer-display');
+        if(timerDisplay) timerDisplay.textContent = "00:00";
 
-    function resetRace() {
-        raceMode = false; clearInterval(timerInterval);
-        document.getElementById('chrono-main').classList.remove('active');
-        document.getElementById('pause-btn').classList.remove('ui-visible');
-        document.getElementById('timer-display').classList.remove('ui-visible');
-        document.getElementById('live-total-score').classList.remove('ui-visible');
-        elapsedTime = 0; errorMemory.clear();
-        document.getElementById('timer-display').innerText = "0.00";
-        document.getElementById('live-total-score').innerText = "100";
-        loadTable();
+        // 2. Fiil seçim ekranını görsel olarak aktif et (Kritik adım)
+        showScreen('screen-fiil'); 
+        
+        // 3. Seçili kategoriye ait fiilleri listele
+        showFiils(selectedCat); 
     }
 
-    function togglePause() {
-        isPaused = !isPaused; sfx(400,'sine',0.1);
-        document.getElementById('pause-btn').innerText = isPaused ? "▶" : "||";
-        if (!isPaused) startTime = Date.now() - (elapsedTime * 1000);
+    function resetRace() { 
+        raceMode = false; 
+        clearInterval(timerInterval); 
+        elapsedTime = 0; // Yarış sıfırlandığında süreyi de sıfırla
+        hideHeaderElements(); 
+        loadTable(); 
     }
 
+    function togglePause() { 
+        isPaused = !isPaused; 
+        if (!isPaused) {
+            // Duraklatmadan çıkınca süreyi kaldığı yerden devam ettir
+            startTime = Date.now() - (elapsedTime * 1000);
+        }
+    }
+    
     function goBack() {
         const active = document.querySelector('.screen.active').id;
-        if (active === 'screen-play') { resetToFiilSelection(); }
-        else if (active === 'screen-fiil') showScreen('screen-bap');
-        else if (active === 'screen-result') resetToFiilSelection();
-        else window.location.href = "mezidfiiller.html";
+        if (active === 'screen-play') {
+            resetToFiilSelection();
+        } else if (active === 'screen-fiil') {
+            showScreen('screen-cat');
+        } else {
+            // Ana sayfaya yönlendir
+            window.location.href = "aksamiseba.html";
+        }
     }
 
     function showScreen(id) {
