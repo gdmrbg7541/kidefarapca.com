@@ -2000,6 +2000,32 @@ function selectFirstClassAutomatically() {
     }
 }
 
+function fixStudentCodes() {
+    const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
+    let updatedCount = 0;
+
+    if (!data || !data.levels) return;
+
+    for (let lId in data.levels) {
+        for (let cId in data.levels[lId].classes) {
+            const students = data.levels[lId].classes[cId].students || [];
+            students.forEach((stu, index) => {
+                // Eğer kod yoksa veya sadece üç çizgiyse yeni kod ata
+                if (!stu.loginCode || stu.loginCode === '---') {
+                    stu.loginCode = `${teacherCode}-S${index + 1}`;
+                    updatedCount++;
+                }
+            });
+        }
+    }
+
+    if (updatedCount > 0) {
+        save(); // Değişiklikleri Firebase ve Local'e kaydet
+        renderStudents(); // Tabloyu yenile
+        console.log(`${updatedCount} öğrenciye giriş kodu tanımlandı.`);
+    }
+}
+
 // Mevcut class seçme fonksiyonunuzu (muhtemelen showClass gibi bir isimdedir) 
 // aktiflik sınıfını ekleyecek şekilde güncelleyin:
 function updateActiveClassUI(clickedElement) {
@@ -2199,24 +2225,27 @@ function closeNoteModal() {
 function addSingleStudent() {
     let val = document.getElementById('singleStuName').value.trim();
     
-    // Tarayıcı hafızasına (authIslemi sırasında) kaydettiğimiz öğretmen kodunu alıyoruz
-    // Eğer kod yoksa varsayılan olarak "TCH" kullanır
+    // Sabit öğretmen kodunu al
     const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
 
-    if(val) {
-        // Mevcut öğrenci sayısına bakarak bir sonraki sıra numarasını belirliyoruz
-        const sCount = data.levels[curLId].classes[curCId].students.length + 1;
+    if (val) {
+        // 1. O sınıftaki mevcut öğrenci listesini al
+        let currentStudents = data.levels[curLId].classes[curCId].students;
         
-        // Örn: Öğretmen kodu TCH-4582 ise öğrenci kodu TCH-4582-S1 olur
+        // 2. Yeni öğrenci numarasını belirle (Kaçıncı öğrenci?)
+        const sCount = currentStudents.length + 1;
+        
+        // 3. Giriş kodunu oluştur (Örn: TCH-1234-S1)
         const sCode = `${teacherCode}-S${sCount}`; 
 
-        data.levels[curLId].classes[curCId].students.push({ 
-            name: val, 
-            loginCode: sCode, // Artık öğrenci bu sabit kodla giriş yapacak
+        // 4. Öğrenci objesini doğru eşleşme ile ekle
+        currentStudents.push({ 
+            name: val,            // İSİM: Kutucuğa yazdığınız metin
+            loginCode: sCode,     // KOD: TCH-S1 formatındaki kod
             hw: [], 
             ex: [], 
             history: [], 
-            personalMissions: [], // Öğretmenin gönderdiği görevler buraya eklenecek
+            personalMissions: [], 
             skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
             notes: ""
         });
@@ -2224,17 +2253,17 @@ function addSingleStudent() {
         // Giriş kutusunu temizle
         document.getElementById('singleStuName').value = "";
         
-        // Veriyi yerel hafıza ve Firebase'e kaydet
+        // Kaydet ve ekrana yansıt
         save(); 
-        
-        // Öğrenci listesini (ve yeni kodu) ekranda göster
         renderStudents();
         
-        console.log(`${val} eklendi. Giriş Kodu: ${sCode}`);
+        console.log(`Yeni öğrenci: ${val} | Kod: ${sCode}`);
     } else {
         alert("Lütfen öğrenci adı giriniz!");
     }
 }
+
+
     function updateStudentName(i, val) {
         if(val.trim()) { data.levels[curLId].classes[curCId].students[i].name = val.trim(); save(); }
     }
@@ -3164,46 +3193,61 @@ function verileriGetir(uid) {
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
-        if (doc.exists && doc.data().userData) {
-            try {
-                data = JSON.parse(doc.data().userData); 
-                console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
-            } catch (e) {
-                console.error("JSON ayrıştırma hatası:", e);
+        if (doc.exists) {
+            const docData = doc.data();
+
+            // 1. Önce Sabit Öğretmen Kodunu Çek ve Kaydet
+            if (docData.teacherStaticCode) {
+                localStorage.setItem('teacher_static_code', docData.teacherStaticCode);
+                console.log("Öğretmen Kodu yüklendi:", docData.teacherStaticCode);
+            }
+
+            // 2. Kullanıcı Verilerini (Sınıflar, Öğrenciler vb.) Yükle
+            if (docData.userData) {
+                try {
+                    data = JSON.parse(docData.userData); 
+                    console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
+                    
+                    // --- KRİTİK EKLEME: Eksik öğrenci kodlarını tamir et ---
+                    if (typeof fixStudentCodes === "function") {
+                        fixStudentCodes();
+                    }
+                } catch (e) {
+                    console.error("JSON ayrıştırma hatası:", e);
+                }
             }
         }
 
-        // 1. Sidebar'ı oluştur
+        // 3. Sidebar'ı oluştur (Kod artık renderSidebar içinde görünecek)
         renderSidebar(); 
         document.body.classList.add('logged-in'); 
 
-        // 2. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
+        // 4. OTOMATİK İLK SINIF SEÇİMİ VE VERİ YÜKLEME
         setTimeout(() => {
             const firstLevel = document.querySelector('.level-container');
             if (firstLevel) {
-                // İlk seviyeyi görsel olarak aç
                 const firstClassList = firstLevel.querySelector('.class-list');
                 if (firstClassList) firstClassList.style.display = "block"; 
                 
-                // İlk sınıf linkini bul
                 const firstClassLink = firstLevel.querySelector('.class-link');
                 
                 if (firstClassLink) {
                     const levelIds = data.levelOrder || Object.keys(data.levels);
                     const firstLId = levelIds[0];
-                    const firstCId = Object.keys(data.levels[firstLId].classes)[0];
+                    if (data.levels[firstLId] && data.levels[firstLId].classes) {
+                        const firstCId = Object.keys(data.levels[firstLId].classes)[0];
+                        
+                        // Hem görseli güncelle hem veriyi yükle
+                        selectClass(firstLId, firstCId, firstClassLink);
 
-                    // Hem görseli güncelle hem veriyi yükle
-                    selectClass(firstLId, firstCId, firstClassLink);
-
-                    // --- KRİTİK EKLEME: Sayfa yenilendiğinde başlıkları çiz ---
-                    // Sınıf seçildikten sonra kura butonlarını ayarlar panelindeki veriye göre oluşturur
-                    renderActivityButtons();
+                        // Başlıkları ve butonları çiz
+                        renderActivityButtons();
+                    }
                 }
             }
         }, 600); 
 
-        // 3. Yükleme ekranını kaldır
+        // 5. Yükleme ekranını kaldır
         setTimeout(() => {
             if (overlay) overlay.style.display = 'none';
         }, 300);
