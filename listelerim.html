@@ -1405,39 +1405,70 @@ function toggleMTarget() {
     document.getElementById('m-student-select-wrap').style.display = (type === 'student') ? 'block' : 'none';
 }
 
-// Gönder Butonuna Basıldığında Çalışan Fonksiyon
 function sendMissionFinal(idx, title) {
+    // 1. Arayüzdeki form verilerini al
     const deadline = document.getElementById('m-deadline').value;
     const duration = document.getElementById('m-duration').value;
     const target = document.getElementById('m-target-type').value;
+    // Yerel hafızadaki yama (kod) bilgisini al
     const patch = localStorage.getItem(`mission_patch_${idx}`) || "";
 
-    if (!deadline) return alert("Lütfen son teslim tarihini seçin!");
+    // 2. Güvenlik kontrolü
+    if (!deadline) {
+        alert("Lütfen son teslim tarihini seçin!");
+        return;
+    }
 
+    // 3. Görev objesini oluştur (Paketle)
     const newMission = {
+        id: Date.now(), // Takip için benzersiz ID
         title: title,
         deadline: deadline,
-        duration: duration,
+        duration: duration || "Belirtilmedi",
         target: target,
         patchCode: patch,
-        status: "Aktif",
+        status: "Bekliyor", // Başlangıç durumu
         sentDate: new Date().toLocaleDateString('tr-TR')
     };
 
-    // Veri yapısına (Firebase/Local) Göre Kaydet
+    // 4. Hedef kitleye göre veriyi dağıt (Adrese teslim)
     if (target === 'student') {
+        // Sadece seçilen tek bir öğrenciye gönder
         const sIdx = document.getElementById('m-student-list').value;
         let stu = data.levels[curLId].classes[curCId].students[sIdx];
+        
         if (!stu.personalMissions) stu.personalMissions = [];
         stu.personalMissions.push(newMission);
+        
     } else if (target === 'class') {
-        let cls = data.levels[curLId].classes[curCId];
-        if (!cls.classMissions) cls.classMissions = [];
-        cls.classMissions.push(newMission);
+        // Mevcut sınıftaki TÜM öğrencilere tek tek ekle
+        let students = data.levels[curLId].classes[curCId].students;
+        students.forEach(stu => {
+            if (!stu.personalMissions) stu.personalMissions = [];
+            stu.personalMissions.push({...newMission}); // Her öğrenciye kopyasını gönder
+        });
+        
+    } else if (target === 'level') {
+        // Bu seviyedeki (Örn: tüm 9'lar) tüm sınıfların tüm öğrencilerine gönder
+        let allOpenClasses = data.levels[curLId].classes;
+        for (let classId in allOpenClasses) {
+            allOpenClasses[classId].students.forEach(stu => {
+                if (!stu.personalMissions) stu.personalMissions = [];
+                stu.personalMissions.push({...newMission});
+            });
+        }
     }
 
-    save(); // Mevcut save fonksiyonunuzu tetikler
-    alert(`${title} başarıyla gönderildi!`);
+    // 5. Değişiklikleri hem Local'e hem Firebase'e kaydet
+    save(); 
+    
+    // 6. Başarı mesajı ve tabloyu güncelleme (varsa)
+    alert(`"${title}" görevi başarıyla kodlandı ve hedeflere gönderildi!`);
+    
+    // Eğer varsa gönderilenler tablosunu tazele
+    if (typeof updateSentMissionsTable === "function") {
+        updateSentMissionsTable();
+    }
 }
 
 // Yama (Patch) İşlemleri
@@ -2099,23 +2130,26 @@ function closeNoteModal() {
     });
 }
 
-    function addSingleStudent() {
+ function addSingleStudent() {
     let val = document.getElementById('singleStuName').value.trim();
     if(val) {
+        // 6 haneli rastgele ve benzersiz bir kod üretelim
+        const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        
         data.levels[curLId].classes[curCId].students.push({ 
             name: val, 
+            loginCode: randomCode, // Öğrencinin giriş kodu buraya kaydediliyor
             hw:[], 
             ex:[], 
             history:[],
-            loginCode: generateStudentCode(), // KOD BURADA OLUŞTURULUYOR
-            personalMissions: [] 
+            personalMissions: [] // Görevlerin birikeceği liste
         });
+        
         document.getElementById('singleStuName').value = "";
         save(); 
-        renderStudents();
+        renderStudents(); // Tabloyu yenileyerek kodu ekranda göster
     }
 }
-    
     function updateStudentName(i, val) {
         if(val.trim()) { data.levels[curLId].classes[curCId].students[i].name = val.trim(); save(); }
     }
