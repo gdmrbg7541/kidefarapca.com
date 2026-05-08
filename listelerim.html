@@ -1226,19 +1226,7 @@ const mufredatVerisi = {
     ],
     // Buraya 5, 6, 7, 8. sınıfları da aynı formatta ekleyebilirsin.
 };
-    // İNDİRME FONKSİYONU
-    document.getElementById('manualDownloadBtn').addEventListener('click', function() {
-        const htmlContent = document.documentElement.outerHTML;
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'listelerim.html';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-    });
+    
 function openDefter() {
     document.getElementById('defterModal').style.display = 'flex';
 }
@@ -2800,22 +2788,7 @@ function loginButonTikla() {
     // SAYFA YÜKLENDİĞİNDE ÇALIŞACAKLAR
     // ==========================================
     document.addEventListener('DOMContentLoaded', function() {
-        // İndirme Butonu
-        const downloadBtn = document.getElementById('manualDownloadBtn');
-        if (downloadBtn) {
-            downloadBtn.onclick = function() {
-                const htmlContent = document.documentElement.outerHTML;
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'ogrenci_listelerim.html';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            };
-        }
+       
     });
 function toggleSidebar() {
     document.body.classList.toggle('sidebar-closed');
