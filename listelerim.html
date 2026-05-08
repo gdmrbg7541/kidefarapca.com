@@ -2717,7 +2717,7 @@ function loginButonTikla() {
     const user = firebase.auth().currentUser;
     if (user) {
         // Eğer kullanıcı varsa çıkış onayı iste
-        if(confirm("Çıkış yapmak istediğinize emin misiniz? (Misafir verileriniz bu tarayıcıda kalacaktır)")) {
+        if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
             firebase.auth().signOut().then(() => {
                 alert("Başarıyla çıkış yapıldı.");
                 location.reload(); // Sayfayı yenileyerek temiz bir başlangıç yapın
