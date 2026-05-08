@@ -3304,14 +3304,14 @@ function misafirGiris() {
 }
   
 
-// --- ÖĞRENCİ MODÜLÜ ---
+// --- ÖĞRENCİ MODÜLÜ (GÜNCEL) ---
 
 let isStudentViewOpen = false;
 
 function switchView(role) {
     const overlay = document.getElementById('student-overlay');
     const studentContent = document.getElementById('student-dynamic-content');
-    const emailInput = document.getElementById('email'); // Giriş kodunun yazıldığı kutu
+    const loginInput = document.getElementById('email'); // Öğrenci kodunun girildiği input
 
     if (role === 'student') {
         // --- ÖĞRENCİ PANELİNİ AÇ ---
@@ -3319,7 +3319,7 @@ function switchView(role) {
         isStudentViewOpen = true;
         document.body.classList.add('role-student');
         
-        // Kartları yerleştirirken hata oluşmaması için kontrol ekliyoruz
+        // Kartları güvenli bir şekilde yerleştir
         if (studentContent) {
             studentContent.innerHTML = `
                 <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
@@ -3341,21 +3341,23 @@ function switchView(role) {
             `;
         }
     } else {
-        // --- ÇIKIŞ YAP VE GİRİŞ EKRANINA DÖN ---
+        // --- ÇIKIŞ YAP VE HER ŞEYİ SIFIRLA ---
         if (overlay) overlay.style.display = 'none';
         isStudentViewOpen = false;
         
-        // CSS Sınıflarını ve Oturumu temizle
+        // 1. Görsel kilitleri ve sınıfları kaldır
         document.body.classList.remove('role-student');
         document.body.classList.remove('logged-in'); 
+        
+        // 2. Oturum verilerini temizle
         localStorage.removeItem('logged_student');
         
-        // Giriş kutusundaki kodu fiziksel olarak temizle
-        if (emailInput) {
-            emailInput.value = "";
+        // 3. Giriş kutusundaki yazıyı (kodu) fiziksel olarak sil
+        if (loginInput) {
+            loginInput.value = "";
         }
         
-        // Giriş ekranını (Login Modal) tetikle
+        // 4. Giriş ekranını (Login Modal) tetikle
         if (typeof modalAc === "function") {
             modalAc(); 
             // Giriş ekranı açıldığında otomatik olarak 'Öğrenci' sekmesini seçtir
@@ -3363,6 +3365,10 @@ function switchView(role) {
                 setRole('student');
             }
         }
+        
+        // Veli referanslarını sildiğimiz için hata mesajlarını da temizleyelim
+        const hata = document.getElementById('hata-mesaji');
+        if (hata) hata.innerText = "";
     }
 }
 
