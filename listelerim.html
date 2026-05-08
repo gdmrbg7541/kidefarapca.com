@@ -1227,7 +1227,7 @@ const mufredatVerisi = {
     // Buraya 5, 6, 7, 8. sınıfları da aynı formatta ekleyebilirsin.
 };
     // İNDİRME FONKSİYONU
-    
+    document.getElementById('manualDownloadBtn').addEventListener('click', function() {
         const htmlContent = document.documentElement.outerHTML;
         const blob = new Blob([htmlContent], { type: 'text/html' });
         const url = window.URL.createObjectURL(blob);
