@@ -930,6 +930,12 @@ body.role-student button[onclick*="switchView"] {
     pointer-events: auto !important;
     border: 2px solid #7B1FA2;
 }
+/* Bu kural sayesinde tıklandığında yazı rengi belirginleşir */
+.secure-code.revealed {
+    color: #1a73e8 !important;
+    background: #E8F0FE !important;
+    user-select: text !important; /* Görünürken kopyalanabilir olur */
+}
     </style>
 </head>
 <body>
@@ -2149,7 +2155,6 @@ function renderStudents() {
     let table = document.getElementById('stuTable');
     if (!table) return;
     
-    // Tabloyu sıfırla ve başlıkları ekle
     table.innerHTML = `
         <thead>
             <tr>
@@ -2167,7 +2172,6 @@ function renderStudents() {
     students.forEach((s, i) => {
         let row = tableBody.insertRow();
         
-        // Sürükle-bırak özelliği
         row.setAttribute('draggable', 'true');
         row.ondragstart = (e) => e.dataTransfer.setData("text/plain", i);
         row.ondragover = (e) => e.preventDefault();
@@ -2179,7 +2183,6 @@ function renderStudents() {
             save(); renderStudents();
         };
 
-        // SATIR İÇERİĞİ
         row.innerHTML = `
             <td style="text-align:center; font-weight:bold; font-size:1.2rem;">${i + 1}</td>
             <td>
@@ -2189,7 +2192,10 @@ function renderStudents() {
                        placeholder="Öğrenci Adı">
             </td>
             <td style="text-align:center;">
-                <code style="background:#E8F0FE; padding:6px 12px; border-radius:8px; font-family:monospace; font-weight:bold; color:#1a73e8; border:1px solid #1a73e8; font-size:1rem;">
+                <code class="secure-code" 
+                      onclick="this.classList.toggle('revealed')" 
+                      title="Görmek için tıklayın"
+                      style="background:#eee; color:#eee; padding:6px 12px; border-radius:8px; cursor:pointer; font-family:monospace; user-select:none; transition:0.3s; display:inline-block; min-width:100px; font-weight:bold;">
                     ${s.loginCode || '---'}
                 </code>
             </td>
@@ -2215,18 +2221,23 @@ function addSingleStudent() {
     const teacherCode = localStorage.getItem('teacher_static_code') || "TCH";
 
     if (val) {
-        // Mevcut öğrenci listesine güvenli erişim
         const currentClass = data.levels[curLId].classes[curCId];
-        const sCount = currentClass.students.length + 1;
         
-        // ÖĞRENCİ KODU: Tam formatta oluşturulur (Örn: TCH-4582-S1)
-        // Giriş sırasında "TCH-S1" hatası almamak için bu tam kod kaydedilmelidir.
-        const sCode = `${teacherCode}-S${sCount}`; 
+        // --- GÜVENLİK GÜNCELLEMESİ: Rastgele Karma Kod Üretimi ---
+        // Okunabilirliği artırmak için benzer karakterleri (0, O, 1, I, L) hariç tuttuk
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
+        let secureHash = '';
+        for (let i = 0; i < 4; i++) {
+            secureHash += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        // Yeni format: ÖğretmenKodu-RastgeleKod (Örn: TCH-4582-X8B2)
+        const sCode = `${teacherCode}-${secureHash}`; 
 
-        // Yeni öğrenci objesini tüm alt dizileriyle birlikte oluştur
+        // Yeni öğrenci objesini oluştur
         const newStudent = { 
             name: val, 
-            loginCode: sCode.toUpperCase(), // Büyük harf garantisi
+            loginCode: sCode.toUpperCase(), 
             hw: [], 
             ex: [], 
             history: [], 
@@ -2244,7 +2255,7 @@ function addSingleStudent() {
         save(); 
         renderStudents();
         
-        console.log(`Başarılı: ${val} eklendi. Giriş Kodu: ${sCode}`);
+        console.log(`Güvenli Kod Oluşturuldu: ${val} -> ${sCode}`);
     } else {
         alert("Lütfen öğrenci adı giriniz!");
     }
@@ -2939,16 +2950,23 @@ async function authIslemi() {
         let foundStudent = null;
         let coords = null;
 
+        // Tüm seviyeleri ve sınıfları tara
         for (let lId in data.levels) {
             for (let cId in data.levels[lId].classes) {
                 const students = data.levels[lId].classes[cId].students || [];
-                const sIdx = students.findIndex(s => s.loginCode === email.toUpperCase());
+                
+                // .trim() ekleyerek boşluk hatalarını engelliyoruz
+                const sIdx = students.findIndex(s => 
+                    s.loginCode.trim().toUpperCase() === email.trim().toUpperCase()
+                );
+
                 if (sIdx !== -1) {
                     foundStudent = students[sIdx];
                     coords = { lId, cId, sIdx };
                     break;
                 }
             }
+            if (foundStudent) break; // Öğrenci bulunduysa üst döngüden de çık
         }
 
         if (foundStudent) {
@@ -2956,7 +2974,9 @@ async function authIslemi() {
             alert("Hoş geldin, " + foundStudent.name);
             modalKapat();
             document.body.classList.add('logged-in');
-            if (typeof renderSidebar === "function") renderSidebar(); 
+            
+            // Öğrenci panelini tetikle
+            if (typeof switchView === "function") switchView('student');
             return;
         } else {
             hata.innerText = "Geçersiz giriş kodu!";
@@ -2986,24 +3006,25 @@ async function authIslemi() {
                 localStorage.setItem('teacher_static_code', doc.data().teacherStaticCode);
             }
         } else {
-            // YENİ KAYIT: Öğretmene ilk kez sabit kod ata
+            // YENİ KAYIT
             if (pass !== rePass) { throw new Error("Şifreler eşleşmiyor."); }
             userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
             
-            const staticCode = "TCH-" + Math.floor(1000 + Math.random() * 9000);
+            const staticCode = "TCH-" + Math.floor(1000 + Math.random() * 9999);
             localStorage.setItem('teacher_static_code', staticCode);
 
             let dataToUpload = localStorage.getItem('schoolData') || JSON.stringify({ levels: {}, levelOrder: [] });
             
             await db.collection("kullanicilar").doc(userCredential.user.uid).set({
                 userData: dataToUpload,
-                teacherStaticCode: staticCode, // SABİT KOD KAYDEDİLDİ
+                teacherStaticCode: staticCode,
                 lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
             });
             alert("Hesap oluşturuldu! Sabit Kodunuz: " + staticCode);
         }
         modalKapat();
         document.body.classList.add('logged-in');
+        if (typeof verileriGetir === "function") verileriGetir(userCredential.user.uid);
     } catch (error) {
         hata.innerText = "Hata: " + error.message;
         hata.style.display = "block";
