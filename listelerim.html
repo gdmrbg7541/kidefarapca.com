@@ -3315,53 +3315,56 @@ function switchView(role) {
 
     if (role === 'student') {
         // --- ÖĞRENCİ PANELİNİ AÇ ---
-        overlay.style.display = 'block';
+        if (overlay) overlay.style.display = 'block';
         isStudentViewOpen = true;
         document.body.classList.add('role-student');
         
-        // Öğrenciye özel kartları yerleştir
-        studentContent.innerHTML = `
-            <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <div style="font-size: 50px;">♟️</div>
-                <h3 style="margin-top:15px;">Satranç Dünyam</h3>
-            </div>
-            
-            <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <div style="font-size: 50px;">🏆</div>
-                <h3 style="margin-top:15px;">Puan Durumum</h3>
-                <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Başarılı ✅</p>
-            </div>
+        // Kartları yerleştirirken hata oluşmaması için kontrol ekliyoruz
+        if (studentContent) {
+            studentContent.innerHTML = `
+                <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="font-size: 50px;">♟️</div>
+                    <h3 style="margin-top:15px;">Satranç Dünyam</h3>
+                </div>
+                
+                <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="font-size: 50px;">🏆</div>
+                    <h3 style="margin-top:15px;">Puan Durumum</h3>
+                    <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Başarılı ✅</p>
+                </div>
 
-            <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <div style="font-size: 50px;">📅</div>
-                <h3 style="margin-top:15px;">Haftalık Görevler</h3>
-                <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
-            </div>
-        `;
+                <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="font-size: 50px;">📅</div>
+                    <h3 style="margin-top:15px;">Haftalık Görevler</h3>
+                    <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
+                </div>
+            `;
+        }
     } else {
         // --- ÇIKIŞ YAP VE GİRİŞ EKRANINA DÖN ---
-        overlay.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
         isStudentViewOpen = false;
         
-        // Sınıf ve oturum izlerini temizle
+        // CSS Sınıflarını ve Oturumu temizle
         document.body.classList.remove('role-student');
         document.body.classList.remove('logged-in'); 
-        localStorage.removeItem('logged_student'); // Hafızayı boşalt
+        localStorage.removeItem('logged_student');
         
-        // Giriş kutusundaki eski kodu temizle
+        // Giriş kutusundaki kodu fiziksel olarak temizle
         if (emailInput) {
             emailInput.value = "";
         }
         
-        // Kullanıcıyı en başa, giriş ekranına at
+        // Giriş ekranını (Login Modal) tetikle
         if (typeof modalAc === "function") {
             modalAc(); 
-            // Giriş ekranı açıldığında otomatik olarak 'Öğrenci' rolünü seçtir
-            if (typeof setRole === "function") setRole('student');
+            // Giriş ekranı açıldığında otomatik olarak 'Öğrenci' sekmesini seçtir
+            if (typeof setRole === "function") {
+                setRole('student');
+            }
         }
     }
 }
-
 
 function renderStudentDashboard(container) {
     container.innerHTML = `
@@ -3379,29 +3382,6 @@ function renderStudentDashboard(container) {
     `;
 } 
 
-function renderStudentDashboardContent() {
-    const studentContent = document.getElementById('student-dynamic-content');
-    if (!studentContent) return;
-
-    studentContent.innerHTML = `
-        <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div style="font-size: 50px;">♟️</div>
-            <h3 style="margin-top:15px;">Satranç Dünyam</h3>
-        </div>
-        
-        <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div style="font-size: 50px;">🏆</div>
-            <h3 style="margin-top:15px;">Puan Durumum</h3>
-            <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Yapıldı ✅</p>
-        </div>
-
-        <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div style="font-size: 50px;">📅</div>
-            <h3 style="margin-top:15px;">Haftalık Görevler</h3>
-            <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
-        </div>
-    `;
-}
 
 </script>
 </body>
