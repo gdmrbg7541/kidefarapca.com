@@ -994,7 +994,26 @@ body.role-student button[onclick*="switchView"] {
     </div>
 </div>
 
-    
+    <div style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+        <button id="manualDownloadBtn" style="
+            background: #ffffff;
+            border: none;
+            color: #333;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            font-family: 'Marhey', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+            <span>📥 Şablonu İndir</span>
+        </button>
+    </div>
 </div>
 
 <div id="content">
@@ -3285,131 +3304,75 @@ function misafirGiris() {
 }
   
 
+// --- ÖĞRENCİ MODÜLÜ ---
+
+let isStudentViewOpen = false;
+
 function switchView(role) {
     const overlay = document.getElementById('student-overlay');
     const studentContent = document.getElementById('student-dynamic-content');
-    const loginInput = document.getElementById('email');
-
-    // --- Sabit Ödev Tasarımı İçin CSS ---
-    if (!document.getElementById('student-portal-styles')) {
-        const style = document.createElement('style');
-        style.id = 'student-portal-styles';
-        style.innerHTML = `
-            @keyframes pulse-red {
-                0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7); }
-                70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); }
-                100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
-            }
-            .badge-new {
-                background: #ff5252; color: white; padding: 4px 12px; border-radius: 20px;
-                font-size: 11px; font-weight: bold; animation: pulse-red 2s infinite;
-                display: inline-block; margin-bottom: 10px;
-            }
-            .btn-exit-red {
-                background: #ff5252 !important; color: white !important; font-weight: 600 !important;
-                border: none !important; padding: 10px 24px !important; border-radius: 12px !important;
-                cursor: pointer !important; transition: 0.3s;
-            }
-            /* Sabit Ödev Kartı Tasarımı */
-            .odev-item-card {
-                background: white; border-radius: 15px; padding: 18px; margin-bottom: 15px;
-                text-align: left; border-left: 5px solid #1a73e8; box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            }
-            .odev-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-            .odev-title { color: #1a73e8; font-weight: 700; font-size: 15px; }
-            .odev-date { font-size: 11px; color: #888; background: #f0f4f8; padding: 2px 8px; border-radius: 10px; }
-            .odev-desc { font-size: 13px; color: #444; line-height: 1.4; margin-bottom: 12px; }
-            .btn-send-task {
-                background: #1a73e8; color: white; border: none; padding: 10px;
-                border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s;
-            }
-            .btn-send-task:hover { background: #1557b0; }
-        `;
-        document.head.appendChild(style);
-    }
+    const emailInput = document.getElementById('email'); 
 
     if (role === 'student') {
-        if (overlay) overlay.style.display = 'block';
+        // --- ÖĞRENCİ PANELİNİ AÇ ---
+        overlay.style.display = 'block';
+        isStudentViewOpen = true; // Global değişkeni güncelle
         document.body.classList.add('role-student');
         
-        if (studentContent) {
-            let odevlerListesiHtml = '<p style="color: #666; font-size: 14px;">Aktif akademik görev bulunmamaktadır.</p>';
-            let hasNewTask = false;
+        // Öğrenciye özel kartları yerleştir
+        studentContent.innerHTML = `
+            <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 50px;">♟️</div>
+                <h3 style="margin-top:15px;">Satranç Dünyam</h3>
+            </div>
             
-            const loggedData = localStorage.getItem('logged_student');
-            if (loggedData) {
-                const s = JSON.parse(loggedData);
-                try {
-                    // Veritabanındaki gerçek ödev dizisini alıyoruz
-                    const allHw = data.levels[s.lId].classes[s.cId].students[s.sIdx].hw || [];
-                    
-                    if (allHw.length > 0) {
-                        hasNewTask = true;
-                        // Ödevleri teker teker, sabit tasarımla listele
-                        odevlerListesiHtml = allHw.slice().reverse().map((o, index) => `
-                            <div class="odev-item-card">
-                                <div class="odev-header">
-                                    <span class="odev-title">📌 ${o.baslik || 'Yeni Görev'}</span>
-                                    <span class="odev-date">📅 ${o.tarih || 'Süresiz'}</span>
-                                </div>
-                                <div class="odev-desc">${o.icerik || 'Görev detayları sistem üzerinden takip edilmelidir.'}</div>
-                                <button class="btn-send-task" onclick="alert('Görev başarıyla gönderildi!')">
-                                    Görevi Tamamla ve Gönder
-                                </button>
-                            </div>
-                        `).join('');
-                    }
-                } catch (e) { console.error("Ödev listeleme hatası:", e); }
-            }
+            <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 50px;">🏆</div>
+                <h3 style="margin-top:15px;">Puan Durumum</h3>
+                <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Başarılı ✅</p>
+            </div>
 
-            studentContent.innerHTML = `
-                <div style="grid-column: 1 / -1; background: white; padding: 25px; border-radius: 20px; margin-bottom: 10px; border-left: 6px solid #1a73e8; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <h2 style="margin:0; color:#1a73e8; font-size: 22px;">Öğrenci Akademik Portalı</h2>
-                    <p style="margin:5px 0 0 0; color:#5f6368; font-size: 14px;">Resmi performans verileri ve ödev takip çizelgesi.</p>
-                </div>
-
-                <div class="student-card" style="background: #FFF9C4; padding: 30px; border-radius: 25px; text-align:center;">
-                    <div style="font-size: 40px;">♟️</div>
-                    <h3 style="margin-top:10px;">Satranç Analizi</h3>
-                </div>
-                
-                <div class="student-card" style="background: #C8E6C9; padding: 30px; border-radius: 25px; text-align:center;">
-                    <div style="font-size: 40px;">🏆</div>
-                    <h3 style="margin-top:10px;">Genel Puan</h3>
-                    <p style="font-size: 28px; font-weight: 800; color: #2E7D32;">AKTİF</p>
-                </div>
-
-                <div class="student-card" style="background: #E3F2FD; padding: 30px; border-radius: 25px; text-align:center; position: relative;">
-                    ${hasNewTask ? '<div class="badge-new">YENİ GÖREVLERİNİZ VAR</div>' : ''}
-                    <div style="font-size: 40px;">📅</div>
-                    <h3 style="margin-top:10px; margin-bottom:15px;">Akademik Görevler</h3>
-                    <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
-                        ${odevlerListesiHtml}
-                    </div>
-                </div>
-            `;
-        }
-
-        const exitBtn = document.querySelector('#student-overlay .exit-btn') || document.querySelector('#student-overlay button[onclick*="switchView"]');
-        if (exitBtn) {
-            exitBtn.className = "btn-exit-red";
-            exitBtn.innerText = "Sistemden Güvenli Çıkış";
-        }
-
+            <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="font-size: 50px;">📅</div>
+                <h3 style="margin-top:15px;">Haftalık Görevler</h3>
+                <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
+            </div>
+        `;
     } else {
-        const isActualStudent = localStorage.getItem('logged_student');
-        if (isActualStudent) {
-            if (overlay) overlay.style.display = 'none';
-            document.body.classList.remove('role-student', 'logged-in');
-            localStorage.removeItem('logged_student');
-            if (loginInput) loginInput.value = "";
-            if (typeof modalAc === "function") { modalAc(); setRole('student'); }
-        } else {
-            if (overlay) overlay.style.display = 'none';
+        // --- ÇIKIŞ MANTIĞI ---
+        
+        // localStorage'da kayıtlı bir öğrenci var mı kontrol et
+        const loggedStudent = localStorage.getItem('logged_student');
+
+        if (loggedStudent) {
+            // DURUM 1: GERÇEK ÖĞRENCİ GİRİŞİ YAPILMIŞSA
+            overlay.style.display = 'none';
+            isStudentViewOpen = false;
+            
+            // Tamamen sistemden çıkar ve giriş ekranına at
             document.body.classList.remove('role-student');
+            document.body.classList.remove('logged-in'); 
+            localStorage.removeItem('logged_student'); 
+            
+            if (emailInput) emailInput.value = "";
+            
+            if (typeof modalAc === "function") {
+                modalAc(); 
+                if (typeof setRole === "function") setRole('student');
+            }
+        } else {
+            // DURUM 2: ÖĞRETMEN SADECE GÖRÜNÜME BAKIP KAPATIYORSA
+            overlay.style.display = 'none';
+            isStudentViewOpen = false;
+            
+            // Sadece öğrenci rolü sınıfını kaldır, logged-in (öğretmen oturumu) kalsın
+            document.body.classList.remove('role-student');
+            
+            // Not: modalAc() çağrılmaz, öğretmen kaldığı yerden devam eder.
         }
     }
 }
+
 
 function renderStudentDashboard(container) {
     container.innerHTML = `
@@ -3427,6 +3390,29 @@ function renderStudentDashboard(container) {
     `;
 } 
 
+function renderStudentDashboardContent() {
+    const studentContent = document.getElementById('student-dynamic-content');
+    if (!studentContent) return;
+
+    studentContent.innerHTML = `
+        <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 50px;">♟️</div>
+            <h3 style="margin-top:15px;">Satranç Dünyam</h3>
+        </div>
+        
+        <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 50px;">🏆</div>
+            <h3 style="margin-top:15px;">Puan Durumum</h3>
+            <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Yapıldı ✅</p>
+        </div>
+
+        <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 50px;">📅</div>
+            <h3 style="margin-top:15px;">Haftalık Görevler</h3>
+            <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
+        </div>
+    `;
+}
 
 </script>
 </body>
