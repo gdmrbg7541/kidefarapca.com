@@ -3304,22 +3304,22 @@ function misafirGiris() {
 }
   
 
-// --- ÖĞRENCİ MODÜLÜ (GÜNCEL) ---
+// --- ÖĞRENCİ MODÜLÜ ---
 
 let isStudentViewOpen = false;
 
 function switchView(role) {
     const overlay = document.getElementById('student-overlay');
     const studentContent = document.getElementById('student-dynamic-content');
-    const loginInput = document.getElementById('email'); // Öğrenci kodunun girildiği input
+    const emailInput = document.getElementById('email');
 
     if (role === 'student') {
-        // --- ÖĞRENCİ PANELİNİ AÇ ---
+        // --- ÖĞRENCİ PANELİNİ VEYA ÖĞRETMEN ÖNİZLEMESİNİ AÇ ---
         if (overlay) overlay.style.display = 'block';
         isStudentViewOpen = true;
         document.body.classList.add('role-student');
         
-        // Kartları güvenli bir şekilde yerleştir
+        // Kartları yükle
         if (studentContent) {
             studentContent.innerHTML = `
                 <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
@@ -3341,34 +3341,34 @@ function switchView(role) {
             `;
         }
     } else {
-        // --- ÇIKIŞ YAP VE HER ŞEYİ SIFIRLA ---
-        if (overlay) overlay.style.display = 'none';
-        isStudentViewOpen = false;
+        // --- ÇIKIŞ MANTIĞI AYRIMI ---
         
-        // 1. Görsel kilitleri ve sınıfları kaldır
-        document.body.classList.remove('role-student');
-        document.body.classList.remove('logged-in'); 
-        
-        // 2. Oturum verilerini temizle
-        localStorage.removeItem('logged_student');
-        
-        // 3. Giriş kutusundaki yazıyı (kodu) fiziksel olarak sil
-        if (loginInput) {
-            loginInput.value = "";
-        }
-        
-        // 4. Giriş ekranını (Login Modal) tetikle
-        if (typeof modalAc === "function") {
-            modalAc(); 
-            // Giriş ekranı açıldığında otomatik olarak 'Öğrenci' sekmesini seçtir
-            if (typeof setRole === "function") {
-                setRole('student');
+        // Hafızada gerçek bir öğrenci oturumu var mı bakıyoruz
+        const isActualStudent = localStorage.getItem('logged_student');
+
+        if (isActualStudent) {
+            // DURUM A: Gerçek Öğrenci Çıkış Yapıyor
+            if (overlay) overlay.style.display = 'none';
+            document.body.classList.remove('role-student');
+            document.body.classList.remove('logged-in'); // Öğretmen panelini de gizle
+            localStorage.removeItem('logged_student'); // Oturumu bitir
+            
+            if (emailInput) emailInput.value = ""; // Giriş kutusunu temizle
+
+            // Giriş ekranına (Modal) geri dön
+            if (typeof modalAc === "function") {
+                modalAc();
+                if (typeof setRole === "function") setRole('student');
             }
+        } else {
+            // DURUM B: Öğretmen Önizlemeden Çıkıyor
+            if (overlay) overlay.style.display = 'none';
+            document.body.classList.remove('role-student');
+            isStudentViewOpen = false;
+            
+            // Burada 'logged-in' sınıfını SİLMİYORUZ, 
+            // böylece sidebar ve öğretmen bilgileri ekranda kalmaya devam ediyor.
         }
-        
-        // Veli referanslarını sildiğimiz için hata mesajlarını da temizleyelim
-        const hata = document.getElementById('hata-mesaji');
-        if (hata) hata.innerText = "";
     }
 }
 
