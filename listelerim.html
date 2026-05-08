@@ -2028,14 +2028,13 @@ let isLoginMode = true;
 
 function setRole(role) {
     currentRole = role;
-    isLoginMode = true; // Her rol değişiminde giriş moduna dön
+    isLoginMode = true; 
     
     // UI Güncelleme: Butonların aktiflik durumunu değiştir
     document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active-role'));
     
-    // HTML'deki ID'ye göre doğru butonu seçiyoruz
-    const targetBtnId = (role === 'student') ? 'id-btn-student' : `btn-${role}`;
-    const targetBtn = document.getElementById(targetBtnId);
+    // HTML'deki buton ID'sine göre seçim
+    const targetBtn = document.getElementById(role === 'student' ? 'btn-student' : 'btn-teacher');
     if(targetBtn) targetBtn.classList.add('active-role');
     
     const footer = document.getElementById('auth-footer-links');
@@ -2044,28 +2043,26 @@ function setRole(role) {
     const primaryLabel = document.getElementById('primary-label');
     const actionBtn = document.getElementById('auth-action-btn');
     const authTitle = document.getElementById('auth-title');
-    const guestArea = document.getElementById('guest-access-area'); // Misafir alanı
+    const guestArea = document.getElementById('guest-access-area');
 
     // Başlangıç ayarları
-    rePassGroup.style.display = 'none';
+    if(rePassGroup) rePassGroup.style.display = 'none';
     actionBtn.innerText = "Giriş Yap";
 
     if (role === 'student') {
-        authTitle.innerText = "Öğrenci Girişi";
-        primaryLabel.innerText = "Öğrenci Giriş Kodu";
-        passGroup.style.display = 'none';
-        footer.style.display = 'none'; // Öğrenci kendi kayıt olamaz
-        if(guestArea) guestArea.style.display = 'none'; // Öğrenci misafir giremez
+        authTitle.innerText = "Öğrenci Dünyası Girişi";
+        primaryLabel.innerText = "Öğrenci Kodun";
+        if(passGroup) passGroup.style.display = 'none';
+        if(footer) footer.style.display = 'none';
+        if(guestArea) guestArea.style.display = 'none';
+        actionBtn.innerText = "Derslere Başla";
     } else {
-        authTitle.innerText = role === 'teacher' ? "Öğretmen Paneli" : "Veli Paneli";
+        authTitle.innerText = "Öğretmen Yönetim Paneli";
         primaryLabel.innerText = "E-posta Adresi";
-        passGroup.style.display = 'flex';
-        footer.style.display = 'block'; // Öğretmen ve Veli kayıt olabilir
-        
-        // Sadece öğretmen seçiliyken misafir girişi görünsün
-        if(guestArea) {
-            guestArea.style.display = (role === 'teacher') ? 'block' : 'none';
-        }
+        if(passGroup) passGroup.style.display = 'flex';
+        if(footer) footer.style.display = 'block';
+        if(guestArea) guestArea.style.display = 'block';
+        actionBtn.innerText = "Sisteme Gir";
     }
 }
 
@@ -2934,30 +2931,44 @@ function moduDegistir() {
 
 
 async function authIslemi() {
-    const email = document.getElementById('email').value.trim();
+    const emailInput = document.getElementById('email').value.trim();
     const pass = document.getElementById('password').value;
-    const rePass = document.getElementById('re-password').value; 
+    const rePass = document.getElementById('re-password') ? document.getElementById('re-password').value : ""; 
     const hata = document.getElementById('hata-mesaji');
+
+    if (hata) hata.style.display = "none";
 
     // --- ÖĞRENCİ GİRİŞ KONTROLÜ ---
     if (currentRole === 'student') {
-        if (!email) {
-            hata.innerText = "Lütfen giriş kodunuzu yazın.";
+        const inputCode = emailInput.toUpperCase();
+        if (!inputCode) {
+            hata.innerText = "Lütfen giriş kodunu yazın.";
             hata.style.display = "block";
             return;
+        }
+
+        // KRİTİK YAMA: Eğer global 'data' boşsa, yerel hafızadan yükle
+        if (!window.data || !window.data.levels) {
+            const localData = localStorage.getItem('schoolData');
+            if (localData) window.data = JSON.parse(localData);
         }
 
         let foundStudent = null;
         let coords = null;
 
-        // Tüm seviyeleri ve sınıfları tara
-        for (let lId in data.levels) {
-            for (let cId in data.levels[lId].classes) {
-                const students = data.levels[lId].classes[cId].students || [];
-                
-                // .trim() ekleyerek boşluk hatalarını engelliyoruz
+        // Veri yapısı hala yoksa hata ver
+        if (!window.data || !window.data.levels) {
+            hata.innerText = "Sistem verileri yüklenemedi. Lütfen sayfayı yenileyin.";
+            hata.style.display = "block";
+            return;
+        }
+
+        // Tüm Seviyeleri ve Sınıfları Tara
+        for (let lId in window.data.levels) {
+            for (let cId in window.data.levels[lId].classes) {
+                const students = window.data.levels[lId].classes[cId].students || [];
                 const sIdx = students.findIndex(s => 
-                    s.loginCode.trim().toUpperCase() === email.trim().toUpperCase()
+                    (s.loginCode || "").toString().trim().toUpperCase() === inputCode
                 );
 
                 if (sIdx !== -1) {
@@ -2966,17 +2977,23 @@ async function authIslemi() {
                     break;
                 }
             }
-            if (foundStudent) break; // Öğrenci bulunduysa üst döngüden de çık
+            if (foundStudent) break;
         }
 
         if (foundStudent) {
+            // Giriş bilgilerini kaydet
             localStorage.setItem('logged_student', JSON.stringify({ ...coords, name: foundStudent.name, role: 'student' }));
+            
             alert("Hoş geldin, " + foundStudent.name);
             modalKapat();
+            
+            // Görünümü güncelle
             document.body.classList.add('logged-in');
             
-            // Öğrenci panelini tetikle
-            if (typeof switchView === "function") switchView('student');
+            // Öğrenci panelini otomatik aç
+            if (typeof switchView === "function") {
+                switchView('student');
+            }
             return;
         } else {
             hata.innerText = "Geçersiz giriş kodu!";
@@ -2985,8 +3002,8 @@ async function authIslemi() {
         }
     }
 
-    // --- ÖĞRETMEN / VELİ (FIREBASE) GİRİŞİ ---
-    if (!email || !pass) {
+    // --- ÖĞRETMEN (FIREBASE) GİRİŞİ ---
+    if (!emailInput || !pass) {
         hata.innerText = "Lütfen e-posta ve şifre giriniz.";
         hata.style.display = "block";
         return;
@@ -2998,17 +3015,16 @@ async function authIslemi() {
 
         let userCredential;
         if (mevcutMod === 'login') {
-            userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
+            userCredential = await firebase.auth().signInWithEmailAndPassword(emailInput, pass);
             
-            // Girişten sonra buluttan öğretmenin sabit kodunu çek
             const doc = await db.collection("kullanicilar").doc(userCredential.user.uid).get();
             if (doc.exists && doc.data().teacherStaticCode) {
                 localStorage.setItem('teacher_static_code', doc.data().teacherStaticCode);
             }
         } else {
-            // YENİ KAYIT
+            // YENİ KAYIT MODU
             if (pass !== rePass) { throw new Error("Şifreler eşleşmiyor."); }
-            userCredential = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+            userCredential = await firebase.auth().createUserWithEmailAndPassword(emailInput, pass);
             
             const staticCode = "TCH-" + Math.floor(1000 + Math.random() * 9999);
             localStorage.setItem('teacher_static_code', staticCode);
@@ -3022,24 +3038,27 @@ async function authIslemi() {
             });
             alert("Hesap oluşturuldu! Sabit Kodunuz: " + staticCode);
         }
+        
         modalKapat();
         document.body.classList.add('logged-in');
-        if (typeof verileriGetir === "function") verileriGetir(userCredential.user.uid);
+        
+        // Öğretmen verilerini çek
+        if (typeof verileriGetir === "function") {
+            verileriGetir(userCredential.user.uid);
+        }
     } catch (error) {
         hata.innerText = "Hata: " + error.message;
         hata.style.display = "block";
     }
 }
 
-// --- ENTER TUŞU ÖZELLİĞİ (TAM BURAYA EKLE) ---
+// --- ENTER TUŞU ÖZELLİĞİ ---
 document.addEventListener('keydown', function(event) {
     const modal = document.getElementById('login-modal');
-    // Eğer modal görünürse ve basılan tuş Enter ise
     if (modal && modal.style.display !== 'none' && event.key === 'Enter') {
-        // Eğer odaklanılan yer bir textarea değilse (notlar kısmıyla çakışmaması için)
         if (event.target.tagName !== 'TEXTAREA') {
-            event.preventDefault(); // Sayfa yenilenmesini önle
-            authIslemi(); // Giriş/Kayıt işlemini yap
+            event.preventDefault();
+            authIslemi();
         }
     }
 });
@@ -3285,21 +3304,22 @@ function misafirGiris() {
 }
   
 
-//VELİ VE ÖĞRENCİ MODÜLÜ
+// --- ÖĞRENCİ MODÜLÜ ---
 
 let isStudentViewOpen = false;
 
 function switchView(role) {
     const overlay = document.getElementById('student-overlay');
     const studentContent = document.getElementById('student-dynamic-content');
+    const emailInput = document.getElementById('email'); // Giriş kodunun yazıldığı kutu
 
-    if (role === 'student' && !isStudentViewOpen) {
-        // ÖĞRENCİ PANELİNİ AÇ
+    if (role === 'student') {
+        // --- ÖĞRENCİ PANELİNİ AÇ ---
         overlay.style.display = 'block';
         isStudentViewOpen = true;
         document.body.classList.add('role-student');
         
-        // Buraya öğrencinin göreceği kartları ekliyoruz
+        // Öğrenciye özel kartları yerleştir
         studentContent.innerHTML = `
             <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                 <div style="font-size: 50px;">♟️</div>
@@ -3309,20 +3329,36 @@ function switchView(role) {
             <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                 <div style="font-size: 50px;">🏆</div>
                 <h3 style="margin-top:15px;">Puan Durumum</h3>
-                <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">85 / 100</p>
+                <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Başarılı ✅</p>
             </div>
 
             <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                 <div style="font-size: 50px;">📅</div>
                 <h3 style="margin-top:15px;">Haftalık Görevler</h3>
-                <p style="font-size: 14px; color: #666;">Henüz yeni görev yok.</p>
+                <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
             </div>
         `;
     } else {
-        // ÖĞRETMEN PANELİNE GERİ DÖN
+        // --- ÇIKIŞ YAP VE GİRİŞ EKRANINA DÖN ---
         overlay.style.display = 'none';
         isStudentViewOpen = false;
+        
+        // Sınıf ve oturum izlerini temizle
         document.body.classList.remove('role-student');
+        document.body.classList.remove('logged-in'); 
+        localStorage.removeItem('logged_student'); // Hafızayı boşalt
+        
+        // Giriş kutusundaki eski kodu temizle
+        if (emailInput) {
+            emailInput.value = "";
+        }
+        
+        // Kullanıcıyı en başa, giriş ekranına at
+        if (typeof modalAc === "function") {
+            modalAc(); 
+            // Giriş ekranı açıldığında otomatik olarak 'Öğrenci' rolünü seçtir
+            if (typeof setRole === "function") setRole('student');
+        }
     }
 }
 
@@ -3342,6 +3378,30 @@ function renderStudentDashboard(container) {
         </div>
     `;
 } 
+
+function renderStudentDashboardContent() {
+    const studentContent = document.getElementById('student-dynamic-content');
+    if (!studentContent) return;
+
+    studentContent.innerHTML = `
+        <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 50px;">♟️</div>
+            <h3 style="margin-top:15px;">Satranç Dünyam</h3>
+        </div>
+        
+        <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 50px;">🏆</div>
+            <h3 style="margin-top:15px;">Puan Durumum</h3>
+            <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Yapıldı ✅</p>
+        </div>
+
+        <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 50px;">📅</div>
+            <h3 style="margin-top:15px;">Haftalık Görevler</h3>
+            <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
+        </div>
+    `;
+}
 
 </script>
 </body>
