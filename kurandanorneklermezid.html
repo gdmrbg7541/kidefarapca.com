@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kur'an-ı Kerim Mezid Fiil Atölyesi</title>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -12,265 +12,1006 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Work+Sans:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #1a2a3a;
-            --arabic-gold: #c5a059;
-            --bg-paper: #fdfaf5;
-            --correct: #27ae60;
-            --wrong: #c0392b;
+            --primary: #2c3e50;
+            --accent: #d35400;
+            --success: #27ae60;
+            --error: #c0392b;
+            --bg: #eef2f3;
+            --card: #ffffff;
+            --btn-disabled: #bdc3c7;
+            --shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
 
-        body, html {
-            height: 100%; margin: 0; padding: 0;
-            font-family: 'Work Sans', sans-serif;
-            background-color: var(--bg-paper);
-            display: flex; flex-direction: column; overflow-x: hidden;
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .fixed-back-nav {
-            position: absolute; top: 15px; left: 15px;
-            background: var(--primary-dark); color: #fff;
-            padding: 10px 20px; border-radius: 8px;
-            text-decoration: none; font-size: 1rem; z-index: 1000;
-            transition: background 0.3s;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            overflow: hidden;
+            padding: 10px;
         }
-        
-        .fixed-back-nav:hover { background: #2c3e50; }
 
-        #quiz-container {
-            display: flex; flex-direction: column; min-height: 100vh;
-            width: 100%; box-sizing: border-box; padding: 20px;
+        /* --- ANA KONTEYNER --- */
+        .container {
+            background-color: var(--card);
+            width: 100%;
+            height: 100%;
+            max-width: 1600px; 
+            max-height: 98vh;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- HEADER --- */
+        .header-bar {
+            padding: 20px 30px;
+            display: flex;
             justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+            z-index: 10;
         }
 
-        .status-bar { text-align: center; font-size: 1.2rem; color: var(--arabic-gold); padding-top: 50px; }
-
-        .verse-container {
-            flex-grow: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            text-align: center; padding: 10px;
+        .header-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.4rem;
+            letter-spacing: 1px;
         }
 
-        .quran-verse {
-            font-family: 'Noto Naskh Arabic', serif;
-            font-size: 2.5rem; line-height: 1.8; color: var(--primary-dark);
-            direction: rtl; margin-bottom: 15px;
+        .icon-btn {
+            background: #f0f2f5;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--primary);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .icon-btn:hover { background: #e2e6ea; transform: scale(1.05); }
+        .icon-svg { width: 28px; height: 28px; fill: currentColor; }
+
+        /* --- PROGRESS --- */
+        .progress-wrapper {
+            background-color: #eee;
+            height: 8px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        .progress-fill {
+            background-color: var(--accent);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* --- SCROLL EDİLEBİLİR İÇERİK ALANI --- */
+        .content-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; 
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) #eee;
+        }
+
+        /* --- SORU ALANI --- */
+        .question-area {
+            width: 100%;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .quran-text {
+            font-family: 'Amiri', serif;
+            font-size: clamp(3rem, 6vw, 5.5rem); 
+            color: var(--primary);
+            line-height: 1.8;
+            direction: rtl;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
 
         .highlight-word {
-            color: var(--arabic-gold);
-            border-bottom: 3px dashed var(--arabic-gold);
-            padding: 0 5px;
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+            padding-bottom: 5px;
         }
 
-        #meal-display {
-            font-size: 1.2rem; color: #444; font-style: italic;
-            margin: 10px auto; max-width: 800px; line-height: 1.5;
-            min-height: 3em;
+        .translation {
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            color: #555;
+            font-style: italic;
+            max-width: 85%;
+            line-height: 1.5;
         }
 
-        #hint-box {
-            background: #fff; border: 2px solid var(--arabic-gold);
-            border-radius: 10px; padding: 10px; margin: 5px auto;
-            max-width: 800px; width: 90%; display: none;
-            text-align: center; color: #555; font-size: 0.95rem;
+        /* --- ŞIKLAR (FLEXBOX) --- */
+        .interaction-stage {
+            width: 100%;
+            max-width: 1300px;
         }
 
         .options-grid {
-            display: grid; grid-template-columns: 1fr;
-            gap: 12px; width: 100%; max-width: 1000px; margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
         }
 
-        .option-btn {
-            padding: 15px; font-size: 1.2rem; background: white;
-            border: 3px solid #ddd; border-radius: 12px; cursor: pointer;
-            transition: 0.2s; display: flex; justify-content: center; align-items: center;
-            min-height: 60px;
+        .option-card {
+            flex: 0 1 calc(30% - 25px); 
+            min-width: 250px;
+            max-width: 350px;
+            
+            background-color: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 140px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
-        .option-btn:hover:not(:disabled) { border-color: var(--arabic-gold); }
-
-        @media (min-width: 768px) {
-            .options-grid { grid-template-columns: 1fr 1fr; }
-            .option-btn:nth-child(5) { grid-column: 1 / span 2; width: 50%; justify-self: center; }
-            .quran-verse { font-size: 3.5rem; }
+        .opt-title { 
+            font-weight: 700; 
+            font-size: 1.5rem;
+            color: var(--primary); 
+            margin-bottom: 8px;
         }
 
-        .correct { background-color: var(--correct) !important; color: white !important; }
-        .wrong { background-color: var(--wrong) !important; color: white !important; animation: shake 0.4s; }
+        .opt-desc {
+            font-size: 1rem;
+            color: #7f8c8d;
+            line-height: 1.3;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary);
+            background-color: #f8f9fa;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
         
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .option-card:active {
+            transform: translateY(-2px);
+        }
 
-        .bottom-nav { display: flex; justify-content: space-between; gap: 15px; padding-top: 15px; }
-        .nav-btn { flex: 1; padding: 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-        #next-btn { background: var(--primary-dark); color: white; }
-        #next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* --- SONUÇ ALANI --- */
+        .result-view {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .answer-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            background: #fff;
+            padding: 15px 40px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .answer-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .answer-desc {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+        }
+
+        /* SONUÇ TABLOSU */
+        .sarf-table {
+            width: 100%;
+            max-width: 900px;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #eee;
+            direction: rtl;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        .sarf-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            font-size: 1.4rem;
+            font-family: 'Amiri', serif;
+        }
+
+        .sarf-table td {
+            background: #fff;
+            padding: 15px;
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            border-left: 1px solid #eee;
+        }
+        .sarf-table td:last-child { border-left: none; }
+
+        /* --- FOOTER (NAVİGASYON) --- */
+        .control-bar {
+            padding: 20px 40px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 140px;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(44, 62, 80, 0.2);
+        }
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(44, 62, 80, 0.3);
+        }
+        .nav-btn:disabled { background-color: var(--btn-disabled); cursor: not-allowed; box-shadow: none; }
+        
+        .nav-btn.pulse-active {
+            background-color: var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- FEEDBACK İKONLARI --- */
+        .feedback-icon {
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%) scale(0);
+            font-size: 5rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
+            pointer-events: none;
+        }
+        .icon-left { left: 40px; }
+        .icon-right { right: 40px; }
+        .feedback-icon.show { transform: translate(0, -50%) scale(1); opacity: 1; }
+        .icon-success { color: var(--success); text-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); }
+        .icon-error { color: var(--error); text-shadow: 0 4px 10px rgba(192, 57, 43, 0.3); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(211, 84, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(211, 84, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(211, 84, 0, 0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========================================= */
+        /* MOBİL UYUMLULUK (RESPONSIVE RULES)        */
+        /* ========================================= */
+
+        @media screen and (max-width: 768px) {
+            body { padding: 0; background-color: var(--card); }
+            .container {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .content-scroll-area { padding: 15px; justify-content: flex-start; }
+            .question-area { min-height: 150px; margin-bottom: 20px; }
+            .quran-text { font-size: 2.5rem; }
+            .translation { font-size: 1rem; }
+            .header-bar { padding: 10px 15px; }
+
+            .answer-row { flex-direction: column; gap: 5px; padding: 0; background: none; border: none; box-shadow: none; }
+            .answer-title { font-size: 1.8rem; }
+            .answer-desc { font-size: 1.1rem; }
+
+            .sarf-table, .sarf-table tbody, .sarf-table tr, .sarf-table td {
+                display: block;
+                width: 100%;
+                border: none;
+            }
+            .sarf-table thead { display: none; }
+            .sarf-table tbody tr {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-top: 10px;
+            }
+            .sarf-table td {
+                border: 1px solid #eee;
+                border-radius: 8px;
+                padding: 15px 5px;
+                position: relative;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 2rem;
+            }
+            .sarf-table td:nth-of-type(1)::before { content: "Mazi"; }
+            .sarf-table td:nth-of-type(2)::before { content: "Muzari"; }
+            .sarf-table td:nth-of-type(3)::before { content: "Emir"; }
+            .sarf-table td:nth-of-type(4)::before { content: "Mastar"; }
+            .sarf-table td::before {
+                font-family: 'Poppins', sans-serif;
+                font-size: 0.75rem;
+                color: #95a5a6;
+                text-transform: uppercase;
+                margin-bottom: 5px;
+                letter-spacing: 1px;
+                font-weight: 600;
+            }
+
+            .icon-left { left: 10px; font-size: 3rem;}
+            .icon-right { right: 10px; font-size: 3rem;}
+
+            /* --- MOBİL İÇİN DÜZENLEME --- */
+            .options-grid {
+                gap: 15px;
+            }
+            .option-card { 
+                min-height: 90px;
+                flex: 0 1 calc(50% - 15px);
+                min-width: auto;
+            }
+            .opt-title { font-size: 1.2rem; }
+            .opt-desc { font-size: 0.85rem; }
+        }
+
+        /* --- MOBİL YATAY (LANDSCAPE) ÖZEL AYARLAR --- */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            
+            /* Header ARTIK GÖRÜNÜYOR ama ince */
+            .header-bar { 
+                display: flex; 
+                padding: 5px 15px; /* Boşluk azaltıldı */
+                height: 45px; /* Sabit ince yükseklik */
+                min-height: auto;
+            }
+            .header-title { font-size: 1rem; } /* Başlık küçüldü */
+            .icon-btn { padding: 5px; width: 35px; height: 35px; } /* Butonlar küçüldü */
+            .icon-svg { width: 20px; height: 20px; }
+
+            .question-area { 
+                min-height: 70px; 
+                margin-bottom: 5px; 
+                margin-top: 5px;
+            }
+            .quran-text { 
+                font-size: 1.6rem; 
+                margin-bottom: 0; 
+                line-height: 1.2;
+            }
+            .translation { 
+                font-size: 0.85rem; 
+                margin-top: 3px; 
+                line-height: 1.1;
+            }
+            
+            .options-grid { gap: 10px; }
+            .option-card { 
+                flex: 0 1 calc(33% - 10px);
+                min-height: 45px; 
+                padding: 5px; 
+            }
+            .opt-title { font-size: 0.9rem; margin:0;}
+            .opt-desc { display: none; } 
+
+            .control-bar { padding: 5px 20px; min-height: 40px;}
+            .nav-btn { padding: 5px 15px; font-size: 0.8rem; min-width: auto; height: 30px; }
+        }
+
     </style>
 </head>
 <body>
 
-<a href="mezidfiiller.html" class="fixed-back-nav">← GERİ DÖN</a>
+<div class="container" id="main-container">
+    <div class="header-bar">
+        <a href="aksamiseba.html" class="icon-btn" title="Ana Sayfa">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+        
+        <div class="header-title">Kelime Tahlili</div>
 
-<div id="quiz-container">
-    <div class="status-bar" id="counter">Soru: 1 / 40</div>
-    
-    <div class="verse-container">
-        <div id="verse" class="quran-verse"></div>
-        <div id="meal-display"></div>
-        <div id="hint-box"></div>
+        <button class="icon-btn" onclick="toggleFullScreen()" title="Tam Ekran">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        </button>
     </div>
 
-    <div id="options" class="options-grid"></div>
+    <div class="progress-wrapper">
+        <div class="progress-fill" id="progress-bar"></div>
+    </div>
 
-    <div class="bottom-nav">
-        <button id="prev-btn" class="nav-btn">ÖNCEKİ SORU</button>
-        <button id="next-btn" class="nav-btn" disabled>SONRAKİ SORU</button>
+    <div class="content-scroll-area">
+        <div class="question-area">
+            <div id="feedback-left" class="feedback-icon icon-left"></div>
+            
+            <div class="quran-text" id="verse-text">...</div>
+            <div class="translation" id="verse-translation">...</div>
+            
+            <div id="feedback-right" class="feedback-icon icon-right"></div>
+        </div>
+
+        <div class="interaction-stage">
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="result-view" id="result-container">
+                <div class="answer-row">
+                    <div id="correct-answer-title" class="answer-title"></div>
+                    <div style="font-size: 1.5rem; color: var(--primary);">:</div> 
+                    <div id="correct-answer-desc" class="answer-desc"></div>
+                </div>
+                
+                <table class="sarf-table">
+                    <thead>
+                        <tr>
+                            <th>Mazi</th>
+                            <th>Muzari</th>
+                            <th>Emir</th>
+                            <th>Mastar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="res-mazi"></td>
+                            <td id="res-muzari"></td>
+                            <td id="res-emir"></td>
+                            <td id="res-mastar"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <button class="nav-btn" onclick="prevQuestion()">
+            <span>&#8592;</span> Geri
+        </button>
+        
+        <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>
+            İleri <span>&#8594;</span>
+        </button>
     </div>
 </div>
 
 <script>
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    /* --- YAMA KODU: Mevcut script bloklarını bunlarla değiştirin --- */
+    let currentIdx = 0;
+const definitions = {
+    "İfal": "Mazisi (أَفْعَلَ) kalıbındadır. Genelde geçişsiz fiili geçişli yapar.",
+    "Tefil": "Mazisi (فَعَّلَ) kalıbındadır. Çokluk veya tedricilik bildirir.",
+    "Müfaale": "Mazisi (فَاعَلَ) kalıbındadır. Genelde işteşlik bildirir.",
+    "Tefeul": "Mazisi (تَفَعَّلَ) kalıbındadır. Dönüşlülük veya tekellüf bildirir.",
+    "Tefaul": "Mazisi (تَفَاعَلَ) kalıbındadır. Genelde ortaklık veya yapmacıklık bildirir.",
+    "İftial": "Mazisi (اِفْتَعَلَ) kalıbındadır. Dönüşlülük ve çaba bildirir.",
+    "İnfial": "Mazisi (اِنْفَعَلَ) kalıbındadır. Mutavaat (edilgenlik/dönüşlülük) bildirir.",
+    "İstifal": "Mazisi (اِسْتَفْعَلَ) kalıbındadır. Genelde isteme veya bir hal üzere bulma bildirir."
+};
 
-function playTone(freq, type, duration) {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
-}
-
-// Diziyi karıştırmak için yardımcı fonksiyon (Fisher-Yates Shuffle)
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-const quranQuestions = [
-    // Verileriniz (Değiştirilmedi, sadece çalışma anında karıştırılacak)
-    { verse: "إِنَّا <span class='highlight-word'>أَنْزَلْنَاهُ</span> فِي لَيْلَةِ الْقَدْرِ", correctPattern: "İfal", options: ["İfal", "Tefil", "Müfaale", "İnfial", "İftial"], meal: "Şüphesiz, biz onu (Kur'an'ı) Kadir gecesinde indirdik.", hint: "أَنْزَلَ (Enzele) fiili İfal babından mazi bir fiildir." },
-    { verse: "وَ <span class='highlight-word'>أَرْسَلَ</span> عَلَيْهِمْ طَيْرًا أَبَابِيلَ", correctPattern: "İfal", options: ["İfal", "Tefil", "İstifal", "İnfial", "Tefeul"], meal: "Onların üzerine sürü sürü kuşlar gönderdi.", hint: "أَرْسَلَ (Ersele) fiili İfal babındandır." },
-    { verse: "فَ <span class='highlight-word'>أَطْعَمَهُمْ</span> مِنْ جُوعٍ", correctPattern: "İfal", options: ["İfal", "Tefil", "İftial", "Müfaale", "Tefeul"], meal: "Onları açlıktan kurtarıp doyurdu.", hint: "أَطْعَمَ (At'ame) fiili doyurmak anlamında İfal babındandır." },
-    { verse: "إِنَّا <span class='highlight-word'>أَعْطَيْنَاكَ</span> الْكَوْثَرَ", correctPattern: "İfal", options: ["İfal", "Tefil", "İstifal", "İnfial", "Tefeul"], meal: "Şüphesiz biz sana Kevser'i verdik.", hint: "أَعْطَى (A'tâ) fiili İfal babındandır." },
-    { verse: "وَ <span class='highlight-word'>أَقِيمُوا</span> الصَّلَاةَ", correctPattern: "İfal", options: ["İfal", "Tefil", "İftial", "Müfaale", "Tefeul"], meal: "Namazı kılın.", hint: "أَقَامَ (Ekame) fiili İfal babından emir kipidir." },
-    { verse: "الَّذِي <span class='highlight-word'>عَلَّمَ</span> بِالْقَلَمِ", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "Müfaale", "İnfial"], meal: "O, kalemle yazmayı öğretendir.", hint: "عَلَّمَ (Allema) fiili Tefil babındandır." },
-    { verse: "فَ <span class='highlight-word'>سَبِّحْ</span> بِحَمْدِ رَبِّكَ", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "İstifal", "İftial"], meal: "Rabbini hamd ile tesbih et.", hint: "سَبَّحَ (Sebbeha) fiili Tefil babındandır." },
-    { verse: "وَ <span class='highlight-word'>صَدَّقَ</span> بِالHُسْنَى", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "Müfaale", "İstifal"], meal: "Ve en güzel olanı (tevhidi) tasdik ederse.", hint: "صَدَّقَ (Saddeka) fiili Tefil babındandır." },
-    { verse: "فَ <span class='highlight-word'>ذَكِّرْ</span> إِنَّمَا أَنْتَ مُذَكِّرٌ", correctPattern: "Tefil", options: ["Tefil", "İfal", "Müfaale", "Tefeul", "İnfial"], meal: "Artık sen öğüt ver! Sen ancak bir öğüt vericisin.", hint: "ذَكَّرَ (Zekkera) fiili Tefil babındandır." },
-    { verse: "نَزَّلَ عَلَيْكَ الْكِتَابَ <span class='highlight-word'>نَزَّلَ</span>", correctPattern: "Tefil", options: ["Tefil", "İfal", "Tefeul", "İnfial", "İftial"], meal: "Sana kitabı indirdi.", hint: "نَزَّلَ (Nezzele) fiili Tefil babındandır." },
-    { verse: "وَلَا <span class='highlight-word'>تُقَاتِلُوهُمْ</span> عِنْدَ الْمَسْجِدِ الْحَرَامِ", correctPattern: "Müfaale", options: ["Müfaale", "Tefil", "Tefaul", "İfal", "İstifal"], meal: "Mescid-i Haram yanında onlarla savaşmayın.", hint: "قَاتَلَ (Kâtele) fiili Müfaale babındandır." },
-    { verse: "فَ <span class='highlight-word'>نَادَى</span> رَبَّهُ أَنِّي مَغْلُوبٌ", correctPattern: "Müfaale", options: ["Müfaale", "İfal", "Tefil", "Tefeul", "İnfial"], meal: "Rabbine: 'Ben yenik düştüm' diye nida etti.", hint: "نَادَى (Nâdâ) fiili Müfaale babındandır." },
-    { verse: "وَمَا <span class='highlight-word'>يُخَادِعُونَ</span> إِلَّا أَنْفُسَهُمْ", correctPattern: "Müfaale", options: ["Müfaale", "Tefeul", "Tefil", "İfal", "İstifal"], meal: "Onlar ancak kendilerini aldatırlar.", hint: "خَادَعَ (Hâdea) fiili Müfaale babındandır." },
-    { verse: "وَ <span class='highlight-word'>جَاهِدُوا</span> فِي اللَّهِ حَقَّ جِهَادِهِ", correctPattern: "Müfaale", options: ["Müfaale", "Tefil", "İfal", "İftial", "Tefeul"], meal: "Allah yolunda hakkıyla cihad edin.", hint: "جَاهَدَ (Câhede) fiili Müfaale babındandır." },
-    { verse: "إِنَّما <span class='highlight-word'>يُبَايِعُونَ</span> اللَّهَ", correctPattern: "Müfaale", options: ["Müfaale", "İfal", "Tefil", "Tefeul", "İftial"], meal: "Onlar ancak Allah'a biat etmektedirler.", hint: "بَايَعَ (Bâyea) fiili Müfaale babındandır." },
-    { verse: "لَعَلَّكُمْ <span class='highlight-word'>تَتَفَكَّرُونَ</span>", correctPattern: "Tefeul", options: ["Tefeul", "Tefaul", "Tefil", "İfal", "Müfaale"], meal: "Umulur ki düşünürsünüz.", hint: "تَفَكَّرَ (Tefekkera) fiili Tefeul babındandır." },
-    { verse: "فَأَمَّا مَنْ <span class='highlight-word'>تَزَكَّى</span>", correctPattern: "Tefeul", options: ["Tefeul", "Tefil", "İfal", "Müfaale", "İnfial"], meal: "Temizlenen (iman eden) kimseye gelince.", hint: "تَزَكَّى (Tezekkâ) fiili Tefeul babındandır." },
-    { verse: "تَنَزَّلُ الْمَلَائِكَةُ <span class='highlight-word'>تَنَزَّلُ</span>", correctPattern: "Tefeul", options: ["Tefeul", "Tefil", "İnfial", "İfal", "İstifal"], meal: "Melekler inerler.", hint: "تَنَزَّلَ (Tenezzele) fiili Tefeul babındandır." },
-    { verse: "فَ <span class='highlight-word'>تَبَسَّمَ</span> ضَاحِكًا", correctPattern: "Tefeul", options: ["Tefeul", "İfal", "Tefil", "İnfial", "İstifal"], meal: "Gülümseyerek tebessüm etti.", hint: "تَبَسَّمَ (Tebesseme) fiili Tefeul babındandır." },
-    { verse: "فَ <span class='highlight-word'>تَقَبَّلَهَا</span> رَبُّهَا", correctPattern: "Tefeul", options: ["Tefeul", "İfal", "Tefil", "Müfaale", "İftial"], meal: "Rabbi onu kabul buyurdu.", hint: "تَقَبَّلَ (Tekabbele) fiili Tefeul babındandır." },
-    { verse: "وَ <span class='highlight-word'>تَعَاوَنُوا</span> عَلَى الْبِرِّ", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Müfaale", "İfal", "Tefil"], meal: "İyilik üzerinde yardımlaşın.", hint: "تَعَاوَنَ (Teâvene) fiili Tefaul babındandır." },
-    { verse: "أَلْهَاكُمُ <span class='highlight-word'>التَّكَاثُرُ</span>", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Tefil", "İfal", "İstifal"], meal: "Çokluk yarışı (övünmesi) sizi oyaladı.", hint: "تَكَاثَرَ (Tekâsera) fiili Tefaul babındandır." },
-    { verse: "وَ <span class='highlight-word'>تَوَاصَوْا</span> بِالصَّبْرِ", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Müfaale", "İfal", "Tefil"], meal: "Sabrı tavsiye ettiler.", hint: "تَوَاصَى (Tevâsâ) fiili Tefaul babındandır." },
-    { verse: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ <span class='highlight-word'>تَبَارَكَ</span>", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "İfal", "Tefil", "İstifal"], meal: "Hükümranlık elinde olan Allah ne yücedir.", hint: "تَبَارَكَ (Tebâreke) fiili Tefaul babındandır." },
-    { verse: "أَمْ <span class='highlight-word'>تَسَاءَلُونَ</span>", correctPattern: "Tefaul", options: ["Tefaul", "Tefeul", "Müfaale", "İfal", "Tefil"], meal: "Yoksa birbirinize mi soruyorsunuz?", hint: "تَسَاءَلَ (Tese'ele) fiili Tefaul babındandır." },
-    { verse: "وَ <span class='highlight-word'>اعْتَصِمُوا</span> بِحَبْلِ اللَّهِ", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "İstifal"], meal: "Allah'ın ipine sımsıkı sarılın.", hint: "اِعْتَصَمَ (İ'tesame) fiili İftial babındandır." },
-    { verse: "قَدِ <span class='highlight-word'>اخْتَلَطَ</span> بِمَائِهَا", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefeul", "İstifal"], meal: "Onun suyuna karışmıştır.", hint: "اِخْتَلَطَ (İhteleta) fiili İftial babındandır." },
-    { verse: "فَ <span class='highlight-word'>انْتَصِرْ</span>", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "İstifal"], meal: "Artık bana yardım et.", hint: "اِنْتَصَرَ (İntasara) fiili İftial babındandır." },
-    { verse: "فَ <span class='highlight-word'>انْتَقَمْنَا</span> مِنْهُمْ", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "Tefeul"], meal: "Biz de onlardan intikam aldık.", hint: "اِنْتَقَمَ (İntekame) fiili İftial babındandır." },
-    { verse: "وَ <span class='highlight-word'>انْتَظِرُوا</span> إِنَّا مُنْتَظِرُونَ", correctPattern: "İftial", options: ["İftial", "İnfial", "İfal", "Tefil", "İstifal"], meal: "Bekleyin, biz de beklemekteyiz.", hint: "اِنْتَظَرَ (İntezara) fiili İftial babındandır." },
-    { verse: "إِذَا السَّمَاءُ <span class='highlight-word'>انْفَطَرَتْ</span>", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefil", "İfilal"], meal: "Gök yarıldığı zaman.", hint: "اِنْفَطَرَ (İnfatera) fiili İnfial babındandır." },
-    { verse: "إِذَا السَّمَاءُ <span class='highlight-word'>انْشَقَّتْ</span>", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefeul", "İstifal"], meal: "Gök yarıldığı zaman.", hint: "اِنşakka (İnşakka) fiili İnfial babındandır." },
-    { verse: "فَ <span class='highlight-word'>انْفَجَرَتْ</span> مِنْهُ عَيْنًا", correctPattern: "İnfial", options: ["İnfial", "İftial", "İstifal", "İfal", "Tefil"], meal: "Ondan pınarlar fışkırdı.", hint: "اِنْفَجَرَ (İnfecera) fiili İnfial babındandır." },
-    { verse: "إِذَا <span class='highlight-word'>انْفَضُّوا</span> إِلَيْهَا", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefil", "İfilal"], meal: "Oraya dağıldıkları zaman.", hint: "اِنْفَضَّ (İnfadda) fiili İnfial babındandır." },
-    { verse: "فَ <span class='highlight-word'>انْكَبَّتْ</span> وُجُوهُهُمْ", correctPattern: "İnfial", options: ["İnfial", "İftial", "İfal", "Tefil", "Tefeul"], meal: "Yüzüstü kapandılar.", hint: "اِنْكَبَّ (İnkebbe) fiili İnfial babındandır." },
-    { verse: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ <span class='highlight-word'>نَسْتَعِينُ</span>", correctPattern: "İstifal", options: ["İstifal", "İfal", "İftial", "Müfaale", "Tefeul"], meal: "Yalnız Senden yardım dileriz.", hint: "اِسْتَعَانَ (İsteâne) fiili İstifal babındandır." },
-    { verse: "وَ <span class='highlight-word'>اسْتَغْفِرْهُ</span> إِنَّهُ كَانَ تواًبًا", correctPattern: "İstifal", options: ["İstifal", "İfal", "İnfial", "Tefeul", "Tefil"], meal: "Ondan bağışlanma dile.", hint: "اِسْتَغْفَرَ (İstağfera) fiili İstifal babındandır." },
-    { verse: "فَ <span class='highlight-word'>اسْتَجَابَ</span> لَهُمْ رَبُّهُمْ", correctPattern: "İstifal", options: ["İstifal", "İfal", "İnfial", "İftial", "Tefeul"], meal: "Rableri onlara icabet etti.", hint: "اِسْتَجَابَ (İstecâbe) fiili İstifal babındandır." },
-    { verse: "وَ <span class='highlight-word'>اسْتَكْبَرَ</span> هُوَ وَجُنُودُهُ", correctPattern: "İstifal", options: ["İstifal", "İfal", "Tefeul", "Tefil", "İftial"], meal: "O ve orduları büyüklük tasladılar.", hint: "اِسْتَكْبَرَ (İstekbera) fiili İstifal babındandır." },
-    { verse: "لَا <span class='highlight-word'>تَسْتَفْتِحُوا</span> عَلَى اللَّهِ", correctPattern: "İstifal", options: ["İstifal", "İfal", "Tefeul", "İftial", "İnfial"], meal: "Allah'tan fetih (başarı) istemeyin.", hint: "اِسْتَفْتَحَ (İsteftaha) fiili İstifal babındandır." }
+const questions = [
+  {
+    verse: "إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ",
+    target: "أَنْزَلْنَاهُ",
+    tr_target: "onu indirdik",
+    translation: "Şüphesiz, biz onu (Kur'an'ı) Kadir gecesinde indirdik.",
+    correct: "İfal",
+    conjugation: { mazi: "أَنْزَلَ", muzari: "يُنْزِلُ", emir: "أَنْزِلْ", mastar: "إِنْزَالٌ" }
+  },
+  {
+    verse: "وَ أَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ",
+    target: "أَرْسَلَ",
+    tr_target: "gönderdi",
+    translation: "Onların üzerine sürü sürü kuşlar gönderdi.",
+    correct: "İfal",
+    conjugation: { mazi: "أَرْسَلَ", muzari: "يُرْسِلُ", emir: "أَرْسِلْ", mastar: "إِرْسَالٌ" }
+  },
+  {
+    verse: "فَ أَطْعَمَهُمْ مِنْ جُوعٍ",
+    target: "أَطْعَمَهُمْ",
+    tr_target: "onları doyurdu",
+    translation: "Onları açlıktan kurtarıp doyurdu.",
+    correct: "İfal",
+    conjugation: { mazi: "أَطْعَمَ", muzari: "يُطْعِمُ", emir: "أَطْعِمْ", mastar: "إِطْعَامٌ" }
+  },
+  {
+    verse: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",
+    target: "أَعْطَيْنَاكَ",
+    tr_target: "sana verdik",
+    translation: "Şüphesiz biz sana Kevser'i verdik.",
+    correct: "İfal",
+    conjugation: { mazi: "أَعْطَى", muzari: "يُعْطِي", emir: "أَعْطِ", mastar: "إِعْطَاءٌ" }
+  },
+  {
+    verse: "وَ أَقِيمُوا الصَّلَاةَ",
+    target: "أَقِيمُوا",
+    tr_target: "namazı kılın",
+    translation: "Namazı kılın.",
+    correct: "İfal",
+    conjugation: { mazi: "أَقَامَ", muzari: "يُقِيمُ", emir: "أَقِمْ", mastar: "إِقَامَةٌ" }
+  },
+  {
+    verse: "الَّذِي عَلَّمَ بِالْقَلَمِ",
+    target: "عَلَّمَ",
+    tr_target: "öğretti",
+    translation: "O, kalemle yazmayı öğretendir.",
+    correct: "Tefil",
+    conjugation: { mazi: "عَلَّمَ", muzari: "يُعَلِّمُ", emir: "عَلِّمْ", mastar: "تَعْلِيمٌ" }
+  },
+  {
+    verse: "فَ سَبِّحْ بِحَمْدِ رَبِّكَ",
+    target: "سَبِّحْ",
+    tr_target: "tesbih et",
+    translation: "Rabbini hamd ile tesbih et.",
+    correct: "Tefil",
+    conjugation: { mazi: "سَبَّحَ", muzari: "يُسَبِّحُ", emir: "سَبِّحْ", mastar: "تَسْبِيحٌ" }
+  },
+  {
+    verse: "وَ صَدَّقَ بِالْحُسْنَى",
+    target: "صَدَّقَ",
+    tr_target: "tasdik etti",
+    translation: "Ve en güzel olanı (tevhidi) tasdik ederse.",
+    correct: "Tefil",
+    conjugation: { mazi: "صَدَّقَ", muzari: "يُصَدِّقُ", emir: "صَدِّقْ", mastar: "تَصْدِيقٌ" }
+  },
+  {
+    verse: "فَ ذَكِّرْ إِنَّمَا أَنْتَ مُذَكِّرٌ",
+    target: "ذَكِّرْ",
+    tr_target: "öğüt ver",
+    translation: "Artık sen öğüt ver! Sen ancak bir öğüt vericisin.",
+    correct: "Tefil",
+    conjugation: { mazi: "ذَكَّرَ", muzari: "يُذَكِّرُ", emir: "ذَكِّرْ", mastar: "تَذْكِيرٌ" }
+  },
+  {
+    verse: "نَزَّلَ عَلَيْكَ الْكِتَابَ",
+    target: "نَزَّلَ",
+    tr_target: "indirdi",
+    translation: "Sana kitabı indirdi.",
+    correct: "Tefil",
+    conjugation: { mazi: "نَزَّلَ", muzari: "يُنَزِّلُ", emir: "نَزِّلْ", mastar: "تَنْزِيلٌ" }
+  },
+  {
+    verse: "وَلَا تُقَاتِلُوهُمْ عِنْدَ الْمَسْجِدِ الْحَرَامِ",
+    target: "تُقَاتِلُوهُمْ",
+    tr_target: "onlarla savaşmayın",
+    translation: "Mescid-i Haram yanında onlarla savaşmayın.",
+    correct: "Müfaale",
+    conjugation: { mazi: "قَاتَلَ", muzari: "يُقَاتِلُ", emir: "قَاتِلْ", mastar: "مُقَاتَلَةٌ / قِتَالٌ" }
+  },
+  {
+    verse: "فَ نَادَى رَبَّهُ أَنِّي مَغْلُوبٌ",
+    target: "نَادَى",
+    tr_target: "nida etti / seslendi",
+    translation: "Rabbine: 'Ben yenik düştüm' diye nida etti.",
+    correct: "Müfaale",
+    conjugation: { mazi: "نَادَى", muzari: "يُنَادِي", emir: "نَادِ", mastar: "مُنَادَاةٌ / نِدَاءٌ" }
+  },
+  {
+    verse: "وَمَا يُخَادِعُونَ إِلَّا أَنْفُسَهُمْ",
+    target: "يُخَادِعُونَ",
+    tr_target: "aldatırlar",
+    translation: "Onlar ancak kendilerini aldatırlar.",
+    correct: "Müfaale",
+    conjugation: { mazi: "خَادَعَ", muzari: "يُخَادِعُ", emir: "خَادِعْ", mastar: "مُخَادَعَةٌ / خِدَاعٌ" }
+  },
+  {
+    verse: "وَ جَاهِدُوا فِي اللَّهِ حَقَّ جِهَادِهِ",
+    target: "جَاهِدُوا",
+    tr_target: "cihad edin",
+    translation: "Allah yolunda hakkıyla cihad edin.",
+    correct: "Müfaale",
+    conjugation: { mazi: "جَاهَدَ", muzari: "يُجَاهِدُ", emir: "جَاهِدْ", mastar: "مُجَاهَدَةٌ / جِهَادٌ" }
+  },
+  {
+    verse: "إِنَّما يُبَايِعُونَ اللَّهَ",
+    target: "يُبَايِعُونَ",
+    tr_target: "biat ediyorlar",
+    translation: "Onlar ancak Allah'a biat etmektedirler.",
+    correct: "Müfaale",
+    conjugation: { mazi: "بَايَعَ", muzari: "يُبَايِعُ", emir: "بَايِعْ", mastar: "مُبَايَعَةٌ" }
+  },
+  {
+    verse: "لَعَلَّكُمْ تَتَفَكَّرُونَ",
+    target: "تَتَفَكَّرُونَ",
+    tr_target: "düşünürsünüz",
+    translation: "Umulur ki düşünürsünüz.",
+    correct: "Tefeul",
+    conjugation: { mazi: "تَفَكَّرَ", muzari: "يَتَفَكَّرُ", emir: "تَفَكَّرْ", mastar: "تَفَكُّرٌ" }
+  },
+  {
+    verse: "فَأَمَّا مَنْ تَزَكَّى",
+    target: "تَزَكَّى",
+    tr_target: "temizlendi",
+    translation: "Temizlenen (iman eden) kimseye gelince.",
+    correct: "Tefeul",
+    conjugation: { mazi: "تَزَكَّى", muzari: "يَتَزَكَّى", emir: "تَزَكَّ", mastar: "تَزَكٍّ" }
+  },
+  {
+    verse: "تَنَزَّلُ الْمَلَائِكَةُ",
+    target: "تَنَزَّلُ",
+    tr_target: "inerler",
+    translation: "Melekler inerler.",
+    correct: "Tefeul",
+    conjugation: { mazi: "تَنَزَّلَ", muzari: "يَتَنَزَّلُ", emir: "تَنَزَّلْ", mastar: "تَنَزُّلٌ" }
+  },
+  {
+    verse: "فَ تَبَسَّمَ ضَاحِكًا",
+    target: "تَبَسَّمَ",
+    tr_target: "gülümsedi",
+    translation: "Gülümseyerek tebessüm etti.",
+    correct: "Tefeul",
+    conjugation: { mazi: "تَبَسَّمَ", muzari: "يَتَبَسَّمُ", emir: "تَبَسَّمْ", mastar: "تَبَسُّمٌ" }
+  },
+  {
+    verse: "فَ تَقَبَّلَهَا رَبُّهَا",
+    target: "تَقَبَّلَهَا",
+    tr_target: "onu kabul etti",
+    translation: "Rabbi onu kabul buyurdu.",
+    correct: "Tefeul",
+    conjugation: { mazi: "تَقَبَّلَ", muzari: "يَتَقَبَّلُ", emir: "تَقَبَّلْ", mastar: "تَقَبُّلٌ" }
+  },
+  {
+    verse: "وَ تَعَاوَنُوا عَلَى الْبِرِّ",
+    target: "تَعَاوَنُوا",
+    tr_target: "yardımlaşın",
+    translation: "İyilik üzerinde yardımlaşın.",
+    correct: "Tefaul",
+    conjugation: { mazi: "تَعَاوَنَ", muzari: "يَتَعَاوَنُ", emir: "تَعَاوَنُ", mastar: "تَعَاوُنٌ" }
+  },
+  {
+    verse: "أَلْهَاكُمُ التَّكَاثُرُ",
+    target: "التَّكَاثُرُ",
+    tr_target: "çokluk yarışı",
+    translation: "Çokluk yarışı (övünmesi) sizi oyaladı.",
+    correct: "Tefaul",
+    conjugation: { mazi: "تَكَاثَرَ", muzari: "يَتَكَاثَرُ", emir: "تَكَاثَرْ", mastar: "تَكَاثُرٌ" }
+  },
+  {
+    verse: "وَ تَوَاصَوْا بِالصَّبْرِ",
+    target: "تَوَاصَوْا",
+    tr_target: "tavsiyeleştiler",
+    translation: "Sabrı tavsiye ettiler.",
+    correct: "Tefaul",
+    conjugation: { mazi: "تَوَاصَى", muzari: "يَتَوَاصَى", emir: "تَوَاصَ", mastar: "تَوَاصٍ" }
+  },
+  {
+    verse: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ",
+    target: "تَبَارَكَ",
+    tr_target: "yücedir",
+    translation: "Hükümranlık elinde olan Allah ne yücedir.",
+    correct: "Tefaul",
+    conjugation: { mazi: "تَبَارَكَ", muzari: "يَتَبَارَكُ", emir: "تَبَارَكْ", mastar: "تَبَارُكٌ" }
+  },
+  {
+    verse: "أَمْ تَسَاءَلُونَ",
+    target: "تَسَاءَلُونَ",
+    tr_target: "soruşuyorsunuz",
+    translation: "Yoksa birbirinize mi soruyorsunuz?",
+    correct: "Tefaul",
+    conjugation: { mazi: "تَسَاءَلَ", muzari: "يَتَسَاءَلُ", emir: "تَسَاءَلْ", mastar: "تَسَاؤُلٌ" }
+  },
+  {
+    verse: "وَ اعْتَصِمُوا بِحَبْلِ اللَّهِ",
+    target: "اعْتَصِمُوا",
+    tr_target: "sımsıkı sarılın",
+    translation: "Allah'ın ipine sımsıkı sarılın.",
+    correct: "İftial",
+    conjugation: { mazi: "اِعْتَصَمَ", muzari: "يَعْتَصِمُ", emir: "اِعْتَصِمْ", mastar: "اِعْتِصَامٌ" }
+  },
+  {
+    verse: "قَدِ اخْتَلَطَ بِمَائِهَا",
+    target: "اخْتَلَطَ",
+    tr_target: "karıştı",
+    translation: "Onun suyuna karışmıştır.",
+    correct: "İftial",
+    conjugation: { mazi: "اِخْتَلَطَ", muzari: "يَخْتَلِطُ", emir: "اِخْتَلِطْ", mastar: "اِخْتِلَاطٌ" }
+  },
+  {
+    verse: "فَ انْتَصِرْ",
+    target: "انْتَصِرْ",
+    tr_target: "yardım et",
+    translation: "Artık bana yardım et.",
+    correct: "İftial",
+    conjugation: { mazi: "اِنْتَصَرَ", muzari: "يَنْتَصِرُ", emir: "اِنْتَصِرْ", mastar: "اِنْتِصَارٌ" }
+  },
+  {
+    verse: "فَ انْتَقَمْنَا مِنْهُمْ",
+    target: "انْتَقَمْنَا",
+    tr_target: "intikam aldık",
+    translation: "Biz de onlardan intikam aldık.",
+    correct: "İftial",
+    conjugation: { mazi: "اِنْتَقَمَ", muzari: "يَنْتَقِمُ", emir: "اِنْتَقَمْ", mastar: "اِنْتِقَامٌ" }
+  },
+  {
+    verse: "وَ انْتَظِرُوا إِنَّا مُنْتَظِرُونَ",
+    target: "انْتَظِرُوا",
+    tr_target: "bekleyin",
+    translation: "Bekleyin, biz de beklemekteyiz.",
+    correct: "İftial",
+    conjugation: { mazi: "اِنْتَظَرَ", muzari: "يَنْتَظِرُ", emir: "اِنْتَظِرْ", mastar: "اِنْتِظَارٌ" }
+  },
+  {
+    verse: "إِذَا السَّمَاءُ انْفَطَرَتْ",
+    target: "انْفَطَرَتْ",
+    tr_target: "yarıldı",
+    translation: "Gök yarıldığı zaman.",
+    correct: "İnfial",
+    conjugation: { mazi: "اِنْفَطَرَ", muzari: "يَنْفَطِرُ", emir: "اِنْفَطِرْ", mastar: "اِنْفِطَارٌ" }
+  },
+  {
+    verse: "إِذَا السَّمَاءُ انْشَقَّتْ",
+    target: "انْشَقَّتْ",
+    tr_target: "yarıldı",
+    translation: "Gök yarıldığı zaman.",
+    correct: "İnfial",
+    conjugation: { mazi: "اِنْشَقَّ", muzari: "يَنْشَقُّ", emir: "اِنْشَقَّ", mastar: "اِنْشِقَاقٌ" }
+  },
+  {
+    verse: "فَ انْفَجَرَتْ مِنْهُ عَيْنًا",
+    target: "انْفَجَرَتْ",
+    tr_target: "fışkırdı",
+    translation: "Ondan pınarlar fışkırdı.",
+    correct: "İnfial",
+    conjugation: { mazi: "اِنْفَجَرَ", muzari: "يَنْفَجِرُ", emir: "اِنْفَجِرْ", mastar: "اِنْفِجَارٌ" }
+  },
+  {
+    verse: "إِذَا انْفَضُّوا إِلَيْهَا",
+    target: "انْفَضُّوا",
+    tr_target: "dağıldılar",
+    translation: "Oraya dağıldıkları zaman.",
+    correct: "İnfial",
+    conjugation: { mazi: "اِنْفَضَّ", muzari: "يَنْفَضُّ", emir: "اِنْفَضَّ", mastar: "اِنْفِضَاضٌ" }
+  },
+  {
+    verse: "فَ انْكَبَّتْ وُجُوهُهُمْ",
+    target: "انْكَبَّتْ",
+    tr_target: "yüzüstü kapandı",
+    translation: "Yüzüstü kapandılar.",
+    correct: "İnfial",
+    conjugation: { mazi: "اِنْكَبَّ", muzari: "يَنْكَبُّ", emir: "اِنْكَبَّ", mastar: "اِنْكِبَابٌ" }
+  },
+  {
+    verse: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+    target: "نَسْتَعِينُ",
+    tr_target: "yardım dileriz",
+    translation: "Yalnız Senden yardım dileriz.",
+    correct: "İstifal",
+    conjugation: { mazi: "اِسْتَعَانَ", muzari: "يَسْتَعِينُ", emir: "اِسْتَعِنْ", mastar: "اِسْتِعَانَةٌ" }
+  },
+  {
+    verse: "وَ اسْتَغْفِرْهُ إِنَّهُ كَانَ تَوَّابًا",
+    target: "اسْتَغْفِرْهُ",
+    tr_target: "bağışlanma dile",
+    translation: "Ondan bağışlanma dile.",
+    correct: "İstifal",
+    conjugation: { mazi: "اِسْتَغْفَرَ", muzari: "يَسْتَغْفِرُ", emir: "اِسْتَغْفِرْ", mastar: "اِسْتِغْفَارٌ" }
+  },
+  {
+    verse: "فَ اسْتَجَابَ لَهُمْ رَبُّهُمْ",
+    target: "اسْتَجَابَ",
+    tr_target: "cevap verdi / icabet etti",
+    translation: "Rableri onlara icabet etti.",
+    correct: "İstifal",
+    conjugation: { mazi: "اِسْتَجَابَ", muzari: "يَسْتَجِيبُ", emir: "اِسْتَجِبْ", mastar: "اِسْتِجَابَةٌ" }
+  },
+  {
+    verse: "وَ اسْتَكْبَرَ هُوَ وَجُنُودُهُ",
+    target: "اسْتَكْبَرَ",
+    tr_target: "büyüklük tasladı",
+    translation: "O ve orduları büyüklük tasladılar.",
+    correct: "İstifal",
+    conjugation: { mazi: "اِسْتَكْبَرَ", muzari: "يَسْتَكْبِرُ", emir: "اِسْتَكْبِرْ", mastar: "اِسْتِكْبَارٌ" }
+  },
+  {
+    verse: "لَا تَسْتَفْتِحُوا عَلَى اللَّهِ",
+    target: "تَسْتَفْتِحُوا",
+    tr_target: "fetih istemeyin",
+    translation: "Allah'tan fetih (başarı) istemeyin.",
+    correct: "İstifal",
+    conjugation: { mazi: "اِسْتَفْتَحَ", muzari: "يَسْتَفْتِحُ", emir: "اِسْتَفْتِحْ", mastar: "اِسْتِفْتَاحٌ" }
+  }
 ];
 
-// Uygulama başlangıcında soruları karıştır
-shuffleArray(quranQuestions);
+// Soruları karıştır
+questions.sort(() => 0.5 - Math.random());
 
-let currentIdx = 0;
-let userAnswers = new Array(quranQuestions.length).fill(null);
-
-function updateUI() {
-    const data = quranQuestions[currentIdx];
-    document.getElementById('counter').innerText = `Soru: ${currentIdx + 1} / ${quranQuestions.length}`;
-    document.getElementById('verse').innerHTML = data.verse;
-    document.getElementById('meal-display').innerText = data.meal;
-
-    const hintBox = document.getElementById('hint-box');
-    const optionsEl = document.getElementById('options');
-    optionsEl.innerHTML = '';
-
-    if (userAnswers[currentIdx]) {
-        hintBox.style.display = 'block';
-        hintBox.innerHTML = `<small>${data.hint}</small>`;
-    } else {
-        hintBox.style.display = 'none';
-    }
-
-    // Şıkları da soru her görüntülendiğinde karıştırıyoruz
-    // (Ancak kullanıcının verdiği cevabı korumak için sadece ilk seferde karıştırmak daha iyidir)
-    if (!data.shuffledOptions) {
-        data.shuffledOptions = shuffleArray([...data.options]);
-    }
-
-    data.shuffledOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerText = opt;
-        
-        if (userAnswers[currentIdx]) {
-            if (opt === data.correctPattern) btn.classList.add('correct');
-            else if (opt === userAnswers[currentIdx]) btn.classList.add('wrong');
-            btn.disabled = true;
-        }
-
-        btn.onclick = () => {
-            userAnswers[currentIdx] = opt;
-            if (opt === data.correctPattern) {
-                playTone(880, 'sine', 0.3);
-            } else {
-                playTone(200, 'triangle', 0.15);
-            }
-            updateUI();
-            document.getElementById('next-btn').disabled = false;
-        };
-        optionsEl.appendChild(btn);
-    });
+function loadQuestion() {
+    const data = questions[currentIdx];
+    const nextBtn = document.getElementById('next-btn');
     
-    document.getElementById('next-btn').disabled = !userAnswers[currentIdx];
-    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    // Feedback ikonlarını sıfırla
+    document.getElementById('feedback-left').className = 'feedback-icon icon-left';
+    document.getElementById('feedback-right').className = 'feedback-icon icon-right';
+    document.getElementById('feedback-left').innerHTML = '';
+    document.getElementById('feedback-right').innerHTML = '';
+
+    document.getElementById('progress-bar').style.width = ((currentIdx) / questions.length * 100) + "%";
+    document.getElementById('options-container').style.display = 'flex';
+    document.getElementById('result-container').style.display = 'none';
+    
+    nextBtn.disabled = true;
+    nextBtn.classList.remove('pulse-active');
+
+    // Arapça Metin (Hedef kelime vurgulu)
+    document.getElementById('verse-text').innerHTML = data.verse.replace(
+        data.target, 
+        `<span class="highlight-word">${data.target}</span>`
+    );
+
+    // Türkçe Meal
+    document.getElementById('verse-translation').innerHTML = data.translation;
+
+    // Şıklar (5 Şıklı hale getirildi)
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+
+    let opts = [data.correct];
+    const allTypes = Object.keys(definitions);
+    // 4 adet çeldirici seçiyoruz (Toplam 5 şık için)
+    const distractors = allTypes.filter(t => t !== data.correct).sort(() => 0.5 - Math.random()).slice(0, 4); 
+    opts = opts.concat(distractors).sort(() => 0.5 - Math.random());
+
+    opts.forEach(type => {
+        const btn = document.createElement('div');
+        btn.className = 'option-card';
+        btn.innerHTML = `
+            <div class="opt-title">${type}</div>
+            <div class="opt-desc">${definitions[type].split('.')[0]}</div>
+        `;
+        btn.onclick = () => handleAnswer(type);
+        container.appendChild(btn);
+    });
 }
 
-document.getElementById('next-btn').onclick = () => { 
-    if (currentIdx < quranQuestions.length - 1) {
-        currentIdx++; 
-        updateUI(); 
-    }
-};
+function handleAnswer(selected) {
+    const data = questions[currentIdx];
+    const isCorrect = selected === data.correct;
+    
+    document.getElementById('options-container').style.display = 'none';
+    const leftIcon = document.getElementById('feedback-left');
+    const rightIcon = document.getElementById('feedback-right');
+    
+    const icon = isCorrect ? '✓' : '✗';
+    const colorClass = isCorrect ? 'icon-success' : 'icon-error';
+    
+    [leftIcon, rightIcon].forEach(el => {
+        el.innerHTML = icon;
+        el.className = `feedback-icon show ${colorClass} ${el.classList.contains('icon-left') ? 'icon-left' : 'icon-right'}`;
+    });
 
-document.getElementById('prev-btn').onclick = () => { 
+    // Başlık ve İpucu
+    document.getElementById('correct-answer-title').innerText = data.correct;
+    document.getElementById('correct-answer-desc').innerText = `(${data.tr_target})`; 
+
+    // Çekim Tablosunu Doldur
+    document.getElementById('res-mazi').innerText = data.conjugation.mazi;
+    document.getElementById('res-muzari').innerText = data.conjugation.muzari;
+    document.getElementById('res-emir').innerText = data.conjugation.emir;
+    document.getElementById('res-mastar').innerText = data.conjugation.mastar;
+    
+    // Tabloyu göster
+    document.querySelector('.sarf-table').style.display = 'table'; 
+    document.getElementById('result-container').style.display = 'flex';
+    
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.disabled = false;
+    nextBtn.classList.add('pulse-active');
+}
+
+function nextQuestion() {
+    currentIdx++;
+    if (currentIdx < questions.length) {
+        loadQuestion();
+    } else {
+        document.querySelector('.content-scroll-area').innerHTML = `
+            <div style="text-align:center; padding:50px;">
+                <h1 style="color:var(--success)">Tebrikler!</h1>
+                <p style="font-size:1.5rem;">Çalışma tamamlandı.</p>
+                <button class="nav-btn" onclick="location.reload()" style="margin:20px auto;">Başa Dön</button>
+            </div>
+        `;
+    }
+}
+
+function prevQuestion() {
     if (currentIdx > 0) {
-        currentIdx--; 
-        updateUI(); 
+        currentIdx--;
+        loadQuestion();
     }
-};
+}
 
-updateUI();
+function toggleFullScreen() {
+    var container = document.getElementById("main-container");
+    if (!document.fullscreenElement) {
+        if (container.requestFullscreen) {
+            container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+        } else if (container.msRequestFullscreen) {
+            container.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+window.onload = loadQuestion;
 </script>
+
 </body>
 </html>
