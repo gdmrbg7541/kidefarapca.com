@@ -699,17 +699,16 @@
         }
     }
     
-    function goBack() {
-        const active = document.querySelector('.screen.active').id;
-        if (active === 'screen-play') {
-            resetToFiilSelection();
-        } else if (active === 'screen-fiil') {
-            showScreen('screen-cat');
-        } else {
-            // Ana sayfaya yönlendir
-            window.location.href = "aksamiseba.html";
-        }
+ function goBack() {
+    const active = document.querySelector('.screen.active').id;
+    if (active === 'screen-play') {
+        resetToFiilSelection();
+    } else if (active === 'screen-fiil') {
+        showScreen('screen-bap'); // Changed from 'screen-cat' to 'screen-bap'
+    } else {
+        window.location.href = "mezidfiiller.html";
     }
+}
 
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
