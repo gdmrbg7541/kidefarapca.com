@@ -265,6 +265,8 @@
 </div>
 
 <script>
+    // Mevcut değişkenlerinizin yanına ekleyin
+let countInterval;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function sfx(f, t, d) {
         const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
@@ -579,18 +581,29 @@
         } else { resetRace(); }
     }
 
-    function startCountdown() {
-        errorMemory.clear(); currentStage = 0; loadTable();
-        document.getElementById('start-btn-ui').style.display = 'none';
-        const cd = document.getElementById('countdown-text');
-        cd.style.display = 'block';
-        let count = 3; cd.innerText = count;
-        const interval = setInterval(() => {
-            count--;
-            if (count > 0) { cd.innerText = count; sfx(400, 'sine', 0.1); }
-            else { clearInterval(interval); document.getElementById('overlay').style.display = 'none'; startTimer(); }
-        }, 1000);
-    }
+function startCountdown() {
+    errorMemory.clear(); 
+    currentStage = 0; 
+    loadTable();
+    document.getElementById('start-btn-ui').style.display = 'none';
+    const cd = document.getElementById('countdown-text');
+    cd.style.display = 'block';
+    let count = 3; 
+    cd.innerText = count;
+
+    // 'const interval' yerine yukarıda tanımladığımız 'countInterval'ı kullanıyoruz
+    countInterval = setInterval(() => {
+        count--;
+        if (count > 0) { 
+            cd.innerText = count; 
+            sfx(400, 'sine', 0.1); 
+        } else { 
+            clearInterval(countInterval); // Sayım bittiğinde temizle
+            document.getElementById('overlay').style.display = 'none'; 
+            startTimer(); 
+        }
+    }, 1000);
+}
 
     function startTimer() {
         document.getElementById('pause-btn').classList.add('ui-visible');
@@ -699,12 +712,31 @@
         }
     }
     
- function goBack() {
+function goBack() {
+    // 1. Devam eden bir geri sayım (3-2-1) varsa iptal et
+    if (countInterval) {
+        clearInterval(countInterval);
+    }
+
+    // 2. Devam eden bir kronometre (0.01...) varsa iptal et
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+
+    // 3. UI Elementlerini gizle
+    const overlay = document.getElementById('overlay');
+    if (overlay) overlay.style.display = 'none';
+    
+    hideHeaderElements();
+    raceMode = false;
+    document.getElementById('chrono-main').classList.remove('active');
+
+    // 4. Ekran yönlendirmesi
     const active = document.querySelector('.screen.active').id;
     if (active === 'screen-play') {
         resetToFiilSelection();
     } else if (active === 'screen-fiil') {
-        showScreen('screen-bap'); // Changed from 'screen-cat' to 'screen-bap'
+        showScreen('screen-bap');
     } else {
         window.location.href = "mezidfiiller.html";
     }
