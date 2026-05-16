@@ -1132,10 +1132,19 @@ function applyToSpecificBox(boxElement) {
 function applyRootToKalip(root, kalip) {
     if (!root || root.length !== 3) return kalip;
     const r = root.split(""); 
+    
+    // Harflerin birbirinin üzerine binmesini engellemek için 
+    // önce geçici sembollere (placeholder) çeviriyoruz.
     let result = kalip;
-    result = result.replace(/ف/g, r[0]);
-    result = result.replace(/ع/g, r[1]);
-    result = result.replace(/ل/g, r[2]);
+    result = result.replace(/ف/g, "===F===");
+    result = result.replace(/ع/g, "===A===");
+    result = result.replace(/ل/g, "===L===");
+    
+    // Şimdi geçici sembollerin yerine gerçek kök harflerini güvenle yazıyoruz.
+    result = result.replace(/===F===/g, r[0]);
+    result = result.replace(/===A===/g, r[1]);
+    result = result.replace(/===L===/g, r[2]);
+    
     return result;
 }
 
