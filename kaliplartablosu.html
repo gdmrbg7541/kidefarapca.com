@@ -12,12 +12,12 @@
     </script>
     <style>
         @font-face {
-    font-family: 'Arakom';
-    src: url('./arakom.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
+            font-family: 'Arakom';
+            src: url('./arakom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
 
         :root {
             --matrix-green: #000000; 
@@ -169,7 +169,7 @@
 
         th {
             background-color: #FF3B30 !important; /* Canlı kırmızı arka plan */
-    color: #FFFFFF !important;
+            color: #FFFFFF !important;
             padding: 10px 5px;
             border: 2px solid #000;
             text-align: center;
@@ -203,33 +203,34 @@
         }
 
         .glass-box {
-            position: relative; 
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            margin: 3px;
-            padding: 4px 2px 2px 2px; 
-            text-align: center;
-            transition: 0.2s;
-            display: inline-block;
-            min-width: 100px;
-            width: 90%;
-            box-sizing: border-box;
-            cursor: pointer;
-        }
+    position: relative; 
+    background-color: #ffffff !important; /* 🌟 Esnemeyen, şeffaflaşmayan katı beyaz dolgu */
+    background: #ffffff !important;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    margin: 3px;
+    padding: 4px 2px 2px 2px; 
+    text-align: center;
+    transition: 0.2s;
+    display: inline-block;
+    min-width: 100px;
+    width: 90%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
         .glass-box:hover { 
             background: #f5f5f7; 
             transform: scale(1.02); 
         }
 
-         .ar, .ar-small, #temp-root-display, #root-text-display, .key {
+        .ar, .ar-small, #temp-root-display, #root-text-display, .key {
             font-family: 'Arakom' !important;
             letter-spacing: 0 !important; 
             text-rendering: optimizeLegibility;
             font-weight: normal !important; 
         }
 
-#root-text-display {
+        #root-text-display {
             font-size: 1.4rem;
             color: #000;
             flex-grow: 1; 
@@ -273,7 +274,7 @@
             margin-right: -12px;
             padding: 8px;
             background-color: #FF3B30 !important;
-    color: #FFFFFF !important;
+            color: #FFFFFF !important;
             border-bottom: 2px solid #000;
             border-top-left-radius: 6px;
             border-top-right-radius: 6px;
@@ -453,112 +454,164 @@
             -webkit-backdrop-filter: blur(15px);
         }
 
-
         #tab2 .ar { font-size: 30px !important; }
         #tab2 .ar-small { font-size: 20px !important; }
         #tab2 .glass-box { width: 92%; padding: 4px 2px; }
 
-/* 6 Bâb İçin Özel Arka Plan ve Beyaz Yazı Renkleri */
-.bab-1-title {
-    background-color: #FF3B30 !important; /* Canlı Kırmızı */
-    color: #FFFFFF !important;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal !important;
-    text-align: center;
-}
-.bab-2-title {
-    background-color: #007AFF !important; /* Canlı Klasik Mavi */
-    color: #FFFFFF !important;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal !important;
-    text-align: center;
-}
-.bab-3-title {
-    background-color: #34C759 !important; /* Canlı Elma Yeşili */
-    color: #FFFFFF !important;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal !important;
-    text-align: center;
-}
-.bab-4-title {
-    background-color: #FF9500 !important; /* Canlı Turuncu */
-    color: #FFFFFF !important;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal !important;
-    text-align: center;
-}
-.bab-5-title {
-    background-color: #AF52DE !important; /* Asil Mor */
-    color: #FFFFFF !important;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal !important;
-    text-align: center;
-}
-.bab-6-title {
-    background-color: #00C7BE !important; /* Şık Turkuaz / Cam Göbeği */
-    color: #FFFFFF !important;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal !important;
-    text-align: center;
-}
+        /* 6 Bâb İçin Özel Arka Plan ve Beyaz Yazı Renkleri */
+        .bab-1-title {
+            background-color: #FF3B30 !important; /* Canlı Kırmızı */
+            color: #FFFFFF !important;
+            font-family: 'Arakom', sans-serif;
+            font-weight: normal !important;
+            text-align: center;
+        }
+        .bab-2-title {
+            background-color: #007AFF !important; /* Canlı Klasik Mavi */
+            color: #FFFFFF !important;
+            font-family: 'Arakom', sans-serif;
+            font-weight: normal !important;
+            text-align: center;
+        }
+        .bab-3-title {
+            background-color: #34C759 !important; /* Canlı Elma Yeşili */
+            color: #FFFFFF !important;
+            font-family: 'Arakom', sans-serif;
+            font-weight: normal !important;
+            text-align: center;
+        }
+        .bab-4-title {
+            background-color: #FF9500 !important; /* Canlı Turuncu */
+            color: #FFFFFF !important;
+            font-family: 'Arakom', sans-serif;
+            font-weight: normal !important;
+            text-align: center;
+        }
+        .bab-5-title {
+            background-color: #AF52DE !important; /* Asil Mor */
+            color: #FFFFFF !important;
+            font-family: 'Arakom', sans-serif;
+            font-weight: normal !important;
+            text-align: center;
+        }
+        .bab-6-title {
+            background-color: #00C7BE !important; /* Şık Turkuaz / Cam Göbeği */
+            color: #FFFFFF !important;
+            font-family: 'Arakom', sans-serif;
+            font-weight: normal !important;
+            text-align: center;
+        }
 
-/* Mobil Uyumluluk ve Görsel Gibi Gezinme Alanı */
-.responsive-table-wrapper {
-    width: 100%;
-    overflow-of-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch; /* iOS cihazlarda akıcı kaydırma */
-    position: relative;
-    cursor: grab; /* Masaüstünde fare ile tutup çekme hissi görseli */
-}
+        /* Mobil Uyumluluk ve Görsel Gibi Gezinme Alanı */
+        .responsive-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch; /* iOS cihazlarda akıcı kaydırma */
+            position: relative;
+            cursor: grab; /* Masaüstünde fare ile tutup çekme hissi görseli */
+        }
 
-.responsive-table-wrapper:active {
-    cursor: grabbing;
-}
+        .responsive-table-wrapper:active {
+            cursor: grabbing;
+        }
 
-/* Mobil Ekranlar İçin Özel Medya Sorguları */
-@media screen and (max-width: 1024px) {
-    body {
-        padding: 10px; /* Kenar boşluklarını daralt */
-    }
+        /* Mobil Ekranlar İçin Özel Medya Sorguları */
+        @media screen and (max-width: 1024px) {
+            body {
+                padding: 10px; /* Kenar boşluklarını daralt */
+            }
 
-    .top-bar {
-        flex-direction: column; /* Üst barı dikey yap */
-        gap: 10px;
-    }
+            .top-bar {
+                flex-direction: column; /* Üst barı dikey yap */
+                gap: 10px;
+            }
 
-    #root-display-box {
-        width: 100% !important; /* Kök giriş kutusunu tam genişlik yap */
-    }
+            #root-display-box {
+                width: 100% !important; /* Kök giriş kutusunu tam genişlik yap */
+            }
 
-    .segmented-switch {
-        width: 100%;
-        height: 50px;
-    }
+            .segmented-switch {
+                width: 100%;
+                height: 50px;
+            }
 
-    .back-btn-area {
-        width: 100%;
-    }
+            .back-btn-area {
+                width: 100%;
+            }
+            
+            .back-link {
+                width: 100% !important;
+                height: 48px !important;
+            }
+
+            /* Tablonun mobil cihazlarda ezilip kırılmasını önleyen kritik ayar */
+            .container table {
+                width: 1100px !important; /* Tablo genişliğini sabitleyerek bir görsel gibi geniş kalmasını sağlar */
+                table-layout: fixed !important;
+            }
+
+            /* Alt grid alanlarının mobilde sığması için ölçeklendirme */
+            .footer-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .cemi-grid {
+                grid-template-columns: repeat(2, 1fr) !important; /* Mobilde 2 sütuna düşür */
+            }
+        }
+
+       
+/* 👑 MERKEZİ ULTRA ZOOM: Yumuşak ve Süzülerek Gelen Sinematik Odaklanma Stili */
+/* 👑 MERKEZİ ULTRA ZOOM: Çözünürlüğü Maksimum Netlikte Tutan Gelişmiş Stil */
+.pulse-highlight {
+    animation: zoomToCenter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    z-index: 99999 !important; 
+    transform-origin: center center;
     
-    .back-link {
-        width: 100% !important;
-        height: 48px !important;
-    }
-
-    /* Tablonun mobil cihazlarda ezilip kırılmasını önleyen kritik ayar */
-    .container table {
-        width: 1100px !important; /* Tablo genişliğini sabitleyerek bir görsel gibi geniş kalmasını sağlar */
-        table-layout: fixed !important;
-    }
-
-    /* Alt grid alanlarının mobilde sığması için ölçeklendirme */
-    .footer-container {
-        flex-direction: column;
-        gap: 12px;
-    }
+    /* 🚀 ÇÖZÜNÜRLÜK SİHİRBAZLARI: */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     
-    .cemi-grid {
-        grid-template-columns: repeat(2, 1fr) !important; /* Mobilde 2 sütuna düşür */
+    /* Tarayıcının harfleri alt piksel seviyesinde keskinleştirmesini zorlar */
+    -webkit-font-smoothing: subpixel-antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    
+    /* Ekran kartına sadece pozisyon değişeceğini, font kalitesinin korunacağını bildirir */
+    will-change: transform; 
+}
+
+@keyframes zoomToCenter {
+    0% {
+        transform: translate(var(--start-x), var(--start-y)) scale(1);
+        background-color: #ffffff !important;
+        box-shadow: none;
+    }
+    /* 🌟 DEĞİŞİKLİK: Tepe noktaya ulaşma süresini %12'den %20'ye çıkardık. 
+       Böylece kart merkeze gelirken acele etmez, çok daha sakin ve yumuşak bir hızla büyür. */
+    20% {
+        transform: translate(var(--move-x), var(--move-y)) scale(3.2); 
+        background: #ffffff !important; 
+        background-color: #ffffff !important;
+        opacity: 1 !important;
+        border: 2px solid #000000 !important;
+        box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45); 
+    }
+    85% {
+        transform: translate(var(--move-x), var(--move-y)) scale(3.2);
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        opacity: 1 !important;
+        border: 2px solid #000000 !important;
+        box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+        background-color: rgba(0, 255, 65, 0.25) !important; 
+        background: rgba(0, 255, 65, 0.25) !important;
+        border: 2px solid #000000 !important;
+        box-shadow: none;
     }
 }
     </style>
@@ -566,7 +619,6 @@
 </head>
 <body>
 
-<!-- Hazır Fiil Seçim Arayüzü (Modal) -->
 <div id="verb-overlay" class="verb-overlay">
     <div class="verb-container">
         <div onclick="closeVerbModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px;">✕</div>
@@ -577,7 +629,6 @@
     </div>
 </div>
 
-<!-- 👑 FİİL ÇEKİM POPUP (MODAL) -->
 <div id="conjugation-overlay" class="conjugation-overlay">
     <div class="conjugation-container" style="min-width: 600px; max-width: 90vw;">
         <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px;">✕</div>
@@ -586,7 +637,6 @@
     </div>
 </div>
 
-<!-- Klavye Arayüzü -->
 <div id="keyboard-overlay" class="keyboard-overlay">
     <div class="keyboard-container" dir="rtl">
          <div onclick="closeKeyboard()" style="position: absolute; top: 10px; right: 15px; color: #fff; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px; background: #444; border-radius: 5px;">✕</div>
@@ -636,46 +686,52 @@
     </div>
 </div>
 
-<!-- Üst Bar ve Bütünleşik Switch Sistemi -->
 <div class="top-bar">
     <div id="root-display-box">
         <div style="flex: 1; display: flex; gap: 15px; justify-content: center; align-items: center; border-left: 1px solid rgba(0,0,0,0.1);">
             <i class="fas fa-sync-alt root-icon" onclick="resetTableOnly()"></i>
+            <i class="fas fa-plus root-icon" onclick="toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
             <i class="fas fa-pen root-icon" onclick="openKeyboard()"></i>
             <i class="fas fa-book root-icon" onclick="openVerbModal()" title="Hazır Fiiller"></i>
         </div>
         <span id="root-text-display">KÖK GİR</span>
     </div>   
 
-   <div id="tabSwitch" class="segmented-switch mucerred-active">
-    <div class="switch-slider"></div>
-    
-    <button class="switch-btn mucerred-btn" onclick="setTab(0)" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none !important;">
-        <span style="text-decoration: none;">SÜLÂSİ MÜCERRED</span>
-        <span style="color: #00E676; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; text-decoration: none !important; display: inline-block;">3</span>
-    </button>
-    
-    <button class="switch-btn mezid-btn" onclick="setTab(1)" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none !important;">
-        <span style="text-decoration: none;">SÜLÂSİ MEZİD</span>
-        <span style="color: #00B0FF; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; text-decoration: none !important; display: inline-block;">+3</span>
-    </button>
+    <div id="tabSwitch" class="segmented-switch mucerred-active">
+        <div class="switch-slider"></div>
+        
+        <button class="switch-btn mucerred-btn" onclick="setTab(0)" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none !important;">
+            <span style="text-decoration: none;">SÜLÂSİ MÜCERRED</span>
+            <span style="color: #00E676; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; text-decoration: none !important; display: inline-block;">3</span>
+        </button>
+        
+        <button class="switch-btn mezid-btn" onclick="setTab(1)" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none !important;">
+            <span style="text-decoration: none;">SÜLÂSİ MEZİD</span>
+            <span style="color: #00B0FF; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; text-decoration: none !important; display: inline-block;">+3</span>
+        </button>
+    </div>
+
+    <div class="back-btn-area">
+        <a href="https://kidefarapca.com" class="back-link" title="kidefarapca.com'a Dön">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+    </div>
 </div>
 
-<div class="back-btn-area">
-    <a href="https://kidefarapca.com" class="back-link" title="kidefarapca.com'a Dön">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-    </a>
-</div>
+<div id="suffix-dropdown" style="display: none; position: absolute; background: #ffffff; border: 2px solid #000000; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2000; padding: 6px; direction: rtl; flex-direction: column; gap: 6px; min-width: 65px; box-sizing: border-box;">
+    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('ة')">ة</button>
+    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('ات')">ات</button>
+    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('يّ')">يّ</button>
+    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('يَّة')">يَّة</button>
+    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('يَّات')">يَّات</button>
 </div>
 
-<!-- Gözüken Pencere Alanı -->
 <div class="window-pencere">
     <div id="mainSliderBandi" class="slider-bandi">
         
-        <!-- SÜLASİ TABLOSU -->
         <div id="tab1" class="tab-content">
             <div class="container">
                 <table>
@@ -726,7 +782,6 @@
                                 </div>
                             </td>
                             <td rowspan="6"><div class="glass-box"><span class="ref">36</span><span class="ar">مَفْعُول</span></div></td>
-                            <!-- 👑 REFIXED ZAMAN MEKAN ROWSPANS -->
                             <td rowspan="3"><div class="glass-box"><span class="ref">37</span><span class="ar">مَفْعِل</span></div></td>
                             <td rowspan="3"><div class="glass-box"><span class="ref">39</span><span class="ar">مِفْعَل</span></div></td>
                         </tr>
@@ -765,7 +820,6 @@
                     </tbody>
                 </table>
 
-                <!-- ALT BÖLÜM -->
                 <div class="footer-container">
                     <div class="footer-block cemi-area">
                         <div class="block-title">CEMİ TEKSİR</div>
@@ -797,7 +851,6 @@
             </div>
         </div>
 
-        <!-- MEZİD TABLOSU -->
         <div id="tab2" class="tab-content">
             <div class="container">
                 <table>
@@ -874,7 +927,7 @@
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُtَفَعِّل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
                             <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
                         </tr>
                         <tr>
@@ -902,9 +955,8 @@
 
     </div>
 </div>
-
 <script>
-const letters = "ا ب ت ث ج ح kh د ذ ر ز س ş ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
+const letters = "ا ب ت ث ج ح kh د ذ ر ز س ş ص ض ط ظ ع غ ف ق ك ل م n ه و ي".split(" ");
 let currentRoot = ""; 
 let isReadyVerbMode = false; 
 
@@ -924,6 +976,10 @@ let currentTabActive = 0;
 
 let lastWheelTime = 0;
 const wheelCooldown = 600; 
+
+// Global takip değişkenleri
+let lastClickedBoxTextSpan = null;
+let lastOriginalWord = "";
 
 const SoundEngine = {
     ctx: null,
@@ -1054,8 +1110,62 @@ function closeVerbModal() {
     document.getElementById('verb-overlay').style.display = 'none';
 }
 
+// 🚀 GÜNCELLENEN DİNAMİK MERKEZLEME VE KARARTMA MOTORU
+function triggerAreaPulse(boxElement) {
+    if (!boxElement) return;
+    
+    // Eski animasyon sınıflarını ve renk zorlamalarını tamamen sıfırla
+    boxElement.classList.remove("pulse-highlight");
+    boxElement.style.backgroundColor = "";
+    boxElement.style.borderColor = "";
+    boxElement.style.background = "";
+
+    // 📐 Matematiksel Merkez Hesaplama Alanı
+    const rect = boxElement.getBoundingClientRect();
+    
+    // Kutunun tam orta noktasının koordinatları
+    const boxCenterX = rect.left + rect.width / 2;
+    const boxCenterY = rect.top + rect.height / 2;
+    
+    // Ekranın (Viewport) tam orta noktasının koordinatları
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportCenterY = window.innerHeight / 2;
+    
+    // Kutunun merkeze ulaşması için gitmesi gereken X ve Y mesafesi
+    const moveX = viewportCenterX - boxCenterX;
+    const moveY = viewportCenterY - boxCenterY;
+
+    // Hesaplanan bu dinamik pikselleri CSS animasyonuna değişken olarak fırlat
+    boxElement.style.setProperty('--start-x', '0px');
+    boxElement.style.setProperty('--start-y', '0px');
+    boxElement.style.setProperty('--move-x', `${moveX}px`);
+    boxElement.style.setProperty('--move-y', `${moveY}px`);
+    
+    // 🚀 ÇÖZÜNÜRLÜK HİLESİ: Tarayıcının anlık fotoğraf çekmesini engelleyip 
+    // canlı font render etmesini zorlamak için donanım katmanını (Z eksenini) tetikliyoruz.
+    boxElement.style.transform = "translateZ(0) rotate(0.001deg)";
+    
+    // Reflow tetikleyici
+    void boxElement.offsetWidth; 
+    
+    // Sinematik animasyonu başlat
+    boxElement.classList.add("pulse-highlight");
+
+    // Animasyon bittiğinde (3 saniye sonra)
+    setTimeout(() => {
+        boxElement.classList.remove("pulse-highlight");
+        
+        // 🚀 ÇÖZÜNÜRLÜK HİLESİNİ TEMİZLE: Küçüldüğünde yazının kaymasını önlemek için stili temizliyoruz
+        boxElement.style.transform = "";
+        
+        // Kutu kendi yerine kusursuz döndüğünde yeşil vurguyu kalıcı yap
+        boxElement.style.setProperty("background-color", "rgba(0, 255, 65, 0.25)", "important");
+        boxElement.style.setProperty("background", "rgba(0, 255, 65, 0.25)", "important");
+        boxElement.style.borderColor = "#000000";
+    }, 3000);
+}
+
 // 🎯 1. HAZIR FİİL SEÇME FONKSİYONU
-// Belirlenen numaralı kalıpları arka plan rengiyle gizler (bulmaca modu). İçerideki yazıları temiz tutar.
 function selectReadyVerb(verb) {
     SoundEngine.playReset();
     resetTableOnly(true); 
@@ -1072,18 +1182,17 @@ function selectReadyVerb(verb) {
         if (refEl) {
             const refId = parseInt(refEl.innerText);
             
-            // Eğer kutu numarası hazır fiil hedef listesindeyse, kutuyu gizle ve sıfırla
             if (readyVerbTargets.includes(refId)) {
                 box.style.backgroundColor = "";
                 box.style.borderColor = "";
                 box.removeAttribute('data-modal-closed');
                 
-                box.classList.add('hidden-mode'); // Renk dolgusuyla gizleme sınıfı
-                targetStates[refId] = 0; // Durum 0: Kapalı / İlk basışa hazır form
+                box.classList.add('hidden-mode'); 
+                targetStates[refId] = 0; 
                 
                 const textEl = box.querySelector('.ar, .ar-small');
                 if (textEl) {
-                    textEl.innerText = textEl.getAttribute('data-original'); // Yazı başlangıçta kalıp olarak kalır
+                    textEl.innerText = textEl.getAttribute('data-original'); 
                 }
             }
         }
@@ -1100,6 +1209,10 @@ function handleBoxClick(boxElement) {
 
     const refId = parseInt(refEl.innerText);
     const kalip = textEl.getAttribute('data-original');
+
+    // Suffix için tıklanan son elemanı güncelle
+    lastClickedBoxTextSpan = textEl;
+    lastOriginalWord = textEl.innerText.trim();
 
     // A - KELİME KAYBOLUR KALIP GÖRÜNÜR
     if (boxElement.getAttribute('data-modal-closed') === 'true') {
@@ -1121,41 +1234,38 @@ function handleBoxClick(boxElement) {
     if (isReadyVerbMode && readyVerbTargets.includes(refId)) {
         let currentState = targetStates[refId];
 
-        // İlk basışta: Gizli kutuyu aç, türetilmiş kelimeyi göster ve yeşil yap
         if (boxElement.classList.contains('hidden-mode') || currentState === 0 || currentState === undefined) {
             SoundEngine.playClick();
             boxElement.classList.remove('hidden-mode');
-            boxElement.style.backgroundColor = "rgba(0, 255, 65, 0.25)";
-            boxElement.style.borderColor = "#000";
             
             textEl.innerText = applyRootToKalip(currentRoot, kalip); 
+            lastOriginalWord = textEl.innerText.trim(); // Güncel kelimeyi suffix hafızasına al
+            triggerAreaPulse(boxElement); 
             targetStates[refId] = 1; 
             return;
         }
 
-        // Tekrar basılırsa (Kutu zaten açık ve kelime türetilmiş durumdayken):
-        // ❌ Sîga tablosu açma özelliği iptal edildi. Doğrudan saf kalıba geri döner.
         if (currentState === 1) {
             SoundEngine.playClose();
             boxElement.style.backgroundColor = "";
             boxElement.style.borderColor = "";
             textEl.innerText = kalip; 
+            lastOriginalWord = kalip;
             targetStates[refId] = 2; 
             return;
         }
 
-        // Durum 2 (Kalıp modundayken) tekrar basılırsa: Kelimeyi yeniden türetir ve yeşil yapar
         if (currentState === 2) {
             SoundEngine.playClick();
-            boxElement.style.backgroundColor = "rgba(0, 255, 65, 0.25)";
-            boxElement.style.borderColor = "#000";
             textEl.innerText = applyRootToKalip(currentRoot, kalip);
+            lastOriginalWord = textEl.innerText.trim();
+            triggerAreaPulse(boxElement); 
             targetStates[refId] = 1; 
             return;
         }
     }
 
-    // C - STANDART KLAVYE MODU VEYA HEDEF DIŞI KALAN NORMAL KUTULARIN ÇALIŞMA MANTIĞI
+    // C - STANDART KLAVYE MODU VEYA NORMAL KUTULARIN ÇALIŞMA MANTIĞI
     applyToSpecificBox(boxElement);
 }
 
@@ -1165,49 +1275,42 @@ function applyToSpecificBox(boxElement) {
     if (!targetEl) return;
     const kalip = targetEl.getAttribute('data-original');
 
-    // Eğer kutuya basılmış ve zaten türetilmiş (yeşil) durumdaysa (İkinci Basış kontrolü):
-    // ❌ Fiil tablosu açma şartı kaldırıldı. Artık fiillerde de sadece vurguyu söndürür ve saf kalıbı gösterir.
     if (boxElement.style.backgroundColor.includes("rgba(0, 255, 65")) {
         SoundEngine.playClose();
         targetEl.innerText = kalip; 
         boxElement.style.backgroundColor = "";
         boxElement.style.borderColor = "";
+        lastOriginalWord = kalip;
         return;
     }
 
-    // İlk basış için klavyeden kök yazılma kontrolü
     if (currentRoot.length !== 3) {
         alert("Lütfen önce 3 harfli bir kök girin!");
         openKeyboard();
         return;
     }
 
-    // İlk tıklama: Kelime kurallı olarak türer ve yeşil vurgu kazanır
     SoundEngine.playClick();
     targetEl.innerText = applyRootToKalip(currentRoot, kalip);
-    boxElement.style.backgroundColor = "rgba(0, 255, 65, 0.25)";
-    boxElement.style.borderColor = "#000";
+    lastOriginalWord = targetEl.innerText.trim();
+    triggerAreaPulse(boxElement); 
 }
 
 function applyRootToKalip(root, kalip) {
     if (!root || root.length !== 3) return kalip;
     const r = root.split(""); 
     
-    // Harflerin birbirinin üzerine binmesini engellemek için 
-    // önce geçici sembollere (placeholder) çeviriyoruz.
     let result = kalip;
     result = result.replace(/ف/g, "===F===");
     result = result.replace(/ع/g, "===A===");
     result = result.replace(/ل/g, "===L===");
     
-    // Şimdi geçici sembollerin yerine gerçek kök harflerini güvenle yazıyoruz.
     result = result.replace(/===F===/g, r[0]);
     result = result.replace(/===A===/g, r[1]);
     result = result.replace(/===L===/g, r[2]);
     
     return result;
 }
-
 
 // 👑 GELİŞMİŞ VE KURALLI FİİL ÇEKİM MOTORU
 function openConjugationModal(type, baseWord) {
@@ -1366,7 +1469,6 @@ function closeConjugationModal() {
     SoundEngine.playClose();
     document.getElementById('conjugation-overlay').style.display = 'none';
     
-    // Sîga tablosu kapatılınca yeşil olan tüm kutuları 'data-modal-closed' olarak işaretle
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box.style.backgroundColor.includes("rgba(0, 255, 65")) {
             box.setAttribute('data-modal-closed', 'true');
@@ -1386,7 +1488,7 @@ function toggleKB(show) {
 
 function openKeyboard() {
     SoundEngine.playClick(); 
-    resetTableOnly(true);    
+    resetTableOnly(true);     
     toggleKB(true);
 }
 
@@ -1469,16 +1571,19 @@ function resetTableOnly(isSilent = false) {
 
     document.querySelectorAll('.glass-box').forEach(box => {
         box.classList.remove('hidden-mode');
+        box.classList.remove("pulse-highlight"); 
         box.removeAttribute('data-modal-closed');
         
+        box.style.backgroundColor = ""; 
+        box.style.borderColor = "";
+        box.style.background = "";
+
         const el = box.querySelector('.ar, .ar-small');
         if (el) {
             el.style.visibility = 'visible';
             const original = el.getAttribute('data-original');
             if (original) el.innerText = original;
         }
-        box.style.backgroundColor = ""; 
-        box.style.borderColor = "";
     });
     
     const rootDisplay = document.getElementById('root-text-display');
@@ -1486,6 +1591,8 @@ function resetTableOnly(isSilent = false) {
         rootDisplay.innerText = "KÖK GİR";
     }
     currentRoot = "";
+    lastClickedBoxTextSpan = null;
+    lastOriginalWord = "";
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1496,41 +1603,34 @@ document.addEventListener('DOMContentLoaded', function() {
         let startX;
         let scrollLeft;
 
-        // Fare veya Dokunma Başlangıcı
         const startDragging = (e) => {
             isDown = true;
             wrapper.classList.add('active');
-            // Mobil dokunmatik veya masaüstü klik ayrımı
             startX = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
             scrollLeft = wrapper.scrollLeft;
         };
 
-        // Hareket Bitişi
         const stopDragging = () => {
             isDown = false;
             wrapper.classList.remove('active');
         };
 
-        // Sürükleme Hareketi (Görsel gibi kaydırma hesabı)
         const move = (e) => {
             if (!isDown) return;
             e.preventDefault(); 
             const x = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
-            const walk = (x - startX) * 1.5; // Sürükleme hız katsayısı (1.5)
+            const walk = (x - startX) * 1.5;
             wrapper.scrollLeft = scrollLeft - walk;
         };
 
-        // Masaüstü Fare Olayları
         wrapper.addEventListener('mousedown', startDragging);
         wrapper.addEventListener('mouseleave', stopDragging);
         wrapper.addEventListener('mouseup', stopDragging);
         wrapper.addEventListener('mousemove', move);
 
-        // Mobil Dokunmatik Ekran Olayları
         wrapper.addEventListener('touchstart', startDragging, { passive: true });
         wrapper.addEventListener('touchend', stopDragging, { passive: true });
         wrapper.addEventListener('touchmove', (e) => {
-            // Sadece yatayda sürükleme aktifken dikey sayfa kaydırmasını engellememek için kontrol
             if (isDown) {
                 const x = e.touches[0].pageX - wrapper.offsetLeft;
                 const walk = (x - startX) * 1.5;
@@ -1539,6 +1639,88 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
     });
 });
+
+// Suffix Menü dışı tıklama olayları
+document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("click", (e) => {
+        const menu = document.getElementById("suffix-dropdown");
+        if (menu && !menu.contains(e.target) && !e.target.classList.contains("fa-plus")) {
+            menu.style.display = "none";
+        }
+    });
+});
+
+function toggleSuffixMenu(e) {
+    e.stopPropagation();
+    const menu = document.getElementById("suffix-dropdown");
+    
+    if (menu.style.display === "flex") {
+        menu.style.display = "none";
+        return;
+    }
+    
+    const rect = e.target.getBoundingClientRect();
+    menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+    menu.style.left = `${rect.left + window.scrollX - 40}px`; 
+    menu.style.display = "flex";
+}
+
+function applySuffix(suffix) {
+    if (!lastClickedBoxTextSpan || !lastOriginalWord) {
+        alert("Lütfen önce tablodan bir kalıba (kelimeye) tıklayın!");
+        return;
+    }
+
+    let baseText = lastOriginalWord.trim();
+
+    if (suffix === 'ة') {
+        let checkText = baseText.replace(/[\u064B-\u0652]$/, '');
+        if (checkText.endsWith('ة')) {
+            document.getElementById("suffix-dropdown").style.display = "none"; 
+            return; 
+        }
+    }
+
+    if (suffix === 'ة') {
+        let cleanText = baseText.replace(/[\u064B-\u0652]$/, '');
+        baseText = cleanText + '\u064E';
+    }
+    else if (suffix === 'ات') {
+        let tempText = baseText.replace(/[\u064B-\u0652]$/, '');
+        if (tempText.endsWith('ة')) {
+            baseText = tempText.slice(0, -1);
+            baseText = baseText.replace(/[\u064B-\u0652]$/, '') + '\u064E';
+        }
+    }
+
+    let updatedWord = baseText + suffix;
+    lastClickedBoxTextSpan.innerText = updatedWord;
+    lastOriginalWord = updatedWord; // Hafızayı yeni ekli kelimeyle güncelle
+
+    const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
+    if (currentBox) {
+        triggerAreaPulse(currentBox);
+    }
+
+    document.getElementById("suffix-dropdown").style.display = "none";
+}
+
+const originalResetTableOnly = window.resetTableOnly;
+window.resetTableOnly = function() {
+    if (typeof originalResetTableOnly === "function") {
+        originalResetTableOnly();
+    }
+    lastClickedBoxTextSpan = null;
+    lastOriginalWord = "";
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
+};
 </script>
+<div id="zoom-focus-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); z-index: 99999; justify-content: center; align-items: center; pointer-events: none;">
+    <div id="zoom-focus-content" style="background: #ffffff; border: 2px solid #000000; border-radius: 6px; text-align: center; padding: 4px 12px; box-shadow: 0 35px 100px rgba(0, 0, 0, 0.6); display: inline-block; transform: scale(1); font-family: 'Arakom' !important; font-weight: normal !important;">
+        <span id="zoom-focus-ref" style="position: absolute; top: 2px; right: 4px; font-size: 10px; color: #86868b !important;"></span>
+        <span id="zoom-focus-text" class="ar" style="font-size: 34px; color: #000000 !important; line-height: 1.2;"></span>
+    </div>
+</div>
 </body>
 </html>
