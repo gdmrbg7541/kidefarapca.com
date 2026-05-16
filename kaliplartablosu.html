@@ -501,6 +501,66 @@
     font-weight: normal !important;
     text-align: center;
 }
+
+/* Mobil Uyumluluk ve Görsel Gibi Gezinme Alanı */
+.responsive-table-wrapper {
+    width: 100%;
+    overflow-of-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* iOS cihazlarda akıcı kaydırma */
+    position: relative;
+    cursor: grab; /* Masaüstünde fare ile tutup çekme hissi görseli */
+}
+
+.responsive-table-wrapper:active {
+    cursor: grabbing;
+}
+
+/* Mobil Ekranlar İçin Özel Medya Sorguları */
+@media screen and (max-width: 1024px) {
+    body {
+        padding: 10px; /* Kenar boşluklarını daralt */
+    }
+
+    .top-bar {
+        flex-direction: column; /* Üst barı dikey yap */
+        gap: 10px;
+    }
+
+    #root-display-box {
+        width: 100% !important; /* Kök giriş kutusunu tam genişlik yap */
+    }
+
+    .segmented-switch {
+        width: 100%;
+        height: 50px;
+    }
+
+    .back-btn-area {
+        width: 100%;
+    }
+    
+    .back-link {
+        width: 100% !important;
+        height: 48px !important;
+    }
+
+    /* Tablonun mobil cihazlarda ezilip kırılmasını önleyen kritik ayar */
+    .container table {
+        width: 1100px !important; /* Tablo genişliğini sabitleyerek bir görsel gibi geniş kalmasını sağlar */
+        table-layout: fixed !important;
+    }
+
+    /* Alt grid alanlarının mobilde sığması için ölçeklendirme */
+    .footer-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .cemi-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* Mobilde 2 sütuna düşür */
+    }
+}
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -1428,7 +1488,57 @@ function resetTableOnly(isSilent = false) {
     currentRoot = "";
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const wrappers = document.querySelectorAll('.responsive-table-wrapper');
 
+    wrappers.forEach(wrapper => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // Fare veya Dokunma Başlangıcı
+        const startDragging = (e) => {
+            isDown = true;
+            wrapper.classList.add('active');
+            // Mobil dokunmatik veya masaüstü klik ayrımı
+            startX = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        };
+
+        // Hareket Bitişi
+        const stopDragging = () => {
+            isDown = false;
+            wrapper.classList.remove('active');
+        };
+
+        // Sürükleme Hareketi (Görsel gibi kaydırma hesabı)
+        const move = (e) => {
+            if (!isDown) return;
+            e.preventDefault(); 
+            const x = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.5; // Sürükleme hız katsayısı (1.5)
+            wrapper.scrollLeft = scrollLeft - walk;
+        };
+
+        // Masaüstü Fare Olayları
+        wrapper.addEventListener('mousedown', startDragging);
+        wrapper.addEventListener('mouseleave', stopDragging);
+        wrapper.addEventListener('mouseup', stopDragging);
+        wrapper.addEventListener('mousemove', move);
+
+        // Mobil Dokunmatik Ekran Olayları
+        wrapper.addEventListener('touchstart', startDragging, { passive: true });
+        wrapper.addEventListener('touchend', stopDragging, { passive: true });
+        wrapper.addEventListener('touchmove', (e) => {
+            // Sadece yatayda sürükleme aktifken dikey sayfa kaydırmasını engellememek için kontrol
+            if (isDown) {
+                const x = e.touches[0].pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                wrapper.scrollLeft = scrollLeft - walk;
+            }
+        }, { passive: true });
+    });
+});
 </script>
 </body>
 </html>
