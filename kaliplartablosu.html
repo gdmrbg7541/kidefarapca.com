@@ -101,7 +101,7 @@ body:has(.glass-box.matrix-opened) .back-link {
             bottom: 3px;
             left: 3px; 
             width: calc(50% - 3px);
-            background: #000000;
+           background: #8e8e93;
             border-radius: 6px;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 1;
@@ -202,16 +202,53 @@ body:has(.glass-box.matrix-opened) .back-link {
             touch-action: pan-y;
         }
 
-        .slider-bandi {
-            display: flex;
-            width: 200%; 
-        }
-
+       .slider-bandi {
+    display: flex;
+    width: 200%; 
+    /* Yana kayma animasyonu eklendi: */
+   transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
         .tab-content { 
             width: 50%; 
             flex-shrink: 0;
             box-sizing: border-box;
         }
+/* Tam Ekran Modu - Merkezleme ve Ölçekleme */
+.full-screen-mode {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999999 !important;
+    
+    /* Merkezleme Büyüsü */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    background: #ffffff !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: auto !important;
+}
+
+/* Tablonun kendisini ve içindeki her şeyi %150 büyütür */
+.full-screen-mode table {
+    width: 85% !important; /* Ekranın %85'ini kullansın */
+    height: auto !important;
+    transform: scale(1.5); /* Tasarımı olduğu gibi 1.5 kat büyütür */
+    transform-origin: center center;
+}
+
+/* Hücre içlerini ve yazıları orantılı tut */
+.full-screen-mode td, .full-screen-mode th {
+    padding: 20px !important;
+}
+
+.full-screen-mode .siga-text {
+    font-size: 30px !important; /* Yazı tipi boyutunu manuel sabitledik */
+}
 
         .container { 
             max-width: 100%; 
@@ -225,14 +262,28 @@ body:has(.glass-box.matrix-opened) .back-link {
         }
 
         th {
-            background-color: #FF3B30 !important; 
-            color: #FFFFFF !important;
-            padding: 10px 5px;
-            border: 2px solid #000;
-            text-align: center;
-            font-weight: normal;
-            font-size: 15px;
-        }
+    color: #FFFFFF !important;
+    padding: 10px 5px;
+    border: 2px solid #000;
+    text-align: center;
+    font-weight: normal;
+    font-size: 15px;
+}
+
+/* FİİL olan başlıkların rengi (Yeşil) */
+th.baslik-fiil {
+    background-color: #34C759 !important; /* Göz yormayan, canlı bir yeşil tonu */
+}
+
+/* İSİM olan başlıkların rengi (Mavi) */
+th.baslik-isim {
+    background-color: #2B88D9; !important; /* Uyumlu, şık bir mavi tonu */
+}
+
+/* "BÂBLAR" ve "3+" gibi nötr başlıklar için renk (Koyu Gri) */
+th.baslik-notr {
+    background-color: #555555 !important; 
+}
 
         table { 
             width: 100%; 
@@ -296,9 +347,9 @@ body:has(.glass-box.matrix-opened) .back-link {
             text-align: center;
         }
 
-        .ar { font-size: 34px; color: #000 !important; line-height: 1.2; }
-        .ar-small { font-size: 24px; color: #000 !important; line-height: 1.2; }
-        .ref { position: absolute; top: 2px; right: 4px; font-size: 10px; color: #86868b !important; }
+        .ar { font-size: 42px; color: #000 !important; line-height: 1.2; }
+        .ar-small { font-size: 30px; color: #000 !important; line-height: 1.2; }
+        .ref { position: absolute; top: 2px; right: 4px; font-size: 14px; color: #86868b !important; }
 
         .mastar-grid { 
             display: grid; 
@@ -347,6 +398,10 @@ body:has(.glass-box.matrix-opened) .back-link {
             gap: 6px; 
             justify-items: center;
         }
+
+.full-screen-mode th, .full-screen-mode td {
+    padding: 20px !important; /* Tam ekranda hücreleri ferahlatır */
+}
         .cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; }
 
         .keyboard-overlay, .verb-overlay, .conjugation-overlay {
@@ -475,6 +530,8 @@ body:has(.glass-box.matrix-opened) .back-link {
             visibility: visible !important; 
         }
 
+
+
 /* 👑 YAMA: FARE HAREKETLERİNDEN ASLA ETKİLENMEYEN ULTRA SABİT MATRİS KONTEYNERİ */
 .conjugation-inline-container {
     display: none;
@@ -485,11 +542,10 @@ body:has(.glass-box.matrix-opened) .back-link {
     padding: 20px;             
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     z-index: 999999 !important; 
-    width: 420px !important; 
-    max-width: 95vw !important;
-    
+   width: 95vw !important;
+    max-width: 99vw !important;
     /* 🚀 EKSTREM MOBİL/KÜÇÜK EKRAN EMNİYETİ: Ekran çok küçükse tablonun kesilmesini engeller, kendi içinde kaydırır */
-    max-height: 85vh !important;
+    max-height: 98vh !important;
     overflow-y: auto !important;
     
     opacity: 0;
@@ -503,6 +559,24 @@ body:has(.glass-box.matrix-opened) .back-link {
     display: block;
     opacity: 1;
     transform: scale(1);
+}
+
+/* "BÂBLAR" ve "3+" başlıkları: Arka plan renksiz, yazı kırmızı */
+th.baslik-notr {
+    background-color: transparent !important; /* Arka plan rengini kaldırır (şeffaf yapar) */
+    color: #FF3B30 !important; /* Yazı rengini kırmızı yapar */
+}
+
+/* Ana tablolardaki Bâb isimlerinin (ilk sütunun) yazısını kırmızı yapar */
+td:first-child {
+    color: #FF3B30 !important;
+    font-weight: bold; /* Daha okunaklı durması için kalınlaştırır (İstemezseniz silebilirsiniz) */
+}
+
+/* Çakışmayı Önleme: İçeride açılan Fiil Çekim tablolarınızın yazılarının siyah kalmasını sağlar */
+.conjugation-table td:first-child {
+    color: #000000 !important;
+    font-weight: normal;
 }
 
 /* DEV BOYUTLU ÇEKİM TABLOSU (Arakom & Regular) */
@@ -562,6 +636,12 @@ body:has(.glass-box.matrix-opened) .back-link {
     transform: scale(1.2);
 }
 
+/* Alt taraftaki Cemi Teksir, İsm-i Tafdil ve İsm-i Tasvir blok başlıkları */
+.block-title, .box-header, [data-tür="isim"] { 
+    background-color: #2B88D9 !important; /* İsimler için kullandığımız mavi */
+    color: #FFFFFF !important; /* Yazı rengi beyaz */
+}
+
 .siga-label {
     font-size: 11px;
     color: #666;
@@ -589,7 +669,7 @@ body:has(.glass-box.matrix-opened) .back-link {
         #tab2 .glass-box { width: 92%; padding: 4px 2px; }
 
         @media screen and (max-width: 1024px) {
-            body { padding: 10px; }
+            body { padding: 5px; }
             .top-bar { flex-direction: column; gap: 10px; }
             #root-display-box { width: 100% !important; }
             .segmented-switch { width: 100%; height: 50px; }
@@ -772,19 +852,21 @@ body:has(.glass-box.matrix-opened) .back-link {
         <div id="tab1" class="tab-content">
             <div class="container">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>BÂBLAR</th>
-                            <th>MAZİ</th>
-                            <th>MUZARI</th>
-                            <th>EMİR</th>
-                            <th>MASTAR</th>
-                            <th>İSMİFÂİL</th>
-                            <th>İSİ MEF'ÛL</th>
-                            <th>ZAMAN MEKÂN</th>
-                            <th>İSMİ ÂLET</th>
-                        </tr>
-                    </thead>
+                   <thead>
+        <tr>
+            <th class="baslik-notr">BÂBLAR</th>
+            
+            <th class="baslik-fiil">MAZİ</th>
+            <th class="baslik-fiil">MUZARI</th>
+            <th class="baslik-fiil">EMİR</th>
+            
+            <th class="baslik-isim">MASTAR</th>
+            <th class="baslik-isim">İSMİFÂİL</th>
+            <th class="baslik-isim">İSİ MEF'ÛL</th>
+            <th class="baslik-isim">ZAMAN MEKÂN</th>
+            <th class="baslik-isim">İSMİ ÂLET</th>
+        </tr>
+    </thead>
                     <tbody>
                         <tr>
                             <td align="center">Birinci Bâb</td>
@@ -865,7 +947,7 @@ body:has(.glass-box.matrix-opened) .back-link {
                             <div class="glass-box"><span class="ref">42</span><span class="ar-small">فُعُل</span></div>
                             <div class="glass-box"><span class="ref">43</span><span class="ar-small">فُعُول</span></div>
                             <div class="glass-box"><span class="ref">44</span><span class="ar-small">فِعَال</span></div>
-                            <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّal</span></div>
+                            <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّال</span></div>
                             <div class="glass-box"><span class="ref">46</span><span class="ar-small">فُعَلَاء</span></div>
                             <div class="glass-box"><span class="ref">47</span><span class="ar-small">فَعَلَة</span></div>
                             <div class="glass-box"><span class="ref">48</span><span class="ar-small">فَعَائِل</span></div>
@@ -892,12 +974,18 @@ body:has(.glass-box.matrix-opened) .back-link {
             <div class="container">
                 <table>
                     <thead>
-                        <tr>
-                            <th width="100px">3+</th>
-                            <th>MAZİ</th><th>MUZARI</th><th>EMİR</th>
-                            <th>MASTAR</th><th>İSMİ FÂİL</th><th>İSMİ MEF'ÛL</th>
-                        </tr>
-                    </thead>
+        <tr>
+            <th width="100px" class="baslik-notr">3+</th>
+            
+            <th class="baslik-fiil">MAZİ</th>
+            <th class="baslik-fiil">MUZARI</th>
+            <th class="baslik-fiil">EMİR</th>
+            
+            <th class="baslik-isim">MASTAR</th>
+            <th class="baslik-isim">İSMİ FÂİL</th>
+            <th class="baslik-isim">İSMİ MEF'ÛL</th>
+        </tr>
+    </thead>
                     <tbody>
                         <tr>
                             <td align="center">İf'al</td>
@@ -964,8 +1052,8 @@ body:has(.glass-box.matrix-opened) .back-link {
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُtَفَعِّl</span></div></td>
-                            <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُtَفَعَّl</span></div></td>
+                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
                         </tr>
                         <tr>
                             <td align="center">Tefâ'ul</td>
@@ -973,17 +1061,17 @@ body:has(.glass-box.matrix-opened) .back-link {
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">95</span><span class="ar">يَتَفَاعَلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">96</span><span class="ar">تَفَاعَلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">97</span><span class="ar">تَفَاعُل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">98</span><span class="ar">مُtَفَاعِl</span></div></td>
-                            <td><div class="glass-box"><span class="ref">99</span><span class="ar">مُtَفَاعَل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">98</span><span class="ar">مُتَفَاعِل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">99</span><span class="ar">مُتَفَاعَل</span></div></td>
                         </tr>
                         <tr>
                             <td align="center">İstif'âl</td>
                             <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">100</span><span class="ar">اِسْتَفْعَلَ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">101</span><span class="ar">يَسْتَفْعِلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">102</span><span class="ar">اسْتَفْعِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">103</span><span class="ar">اسْتِfْعَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">104</span><span class="ar">مُsْتَفْعِl</span></div></td>
-                            <td><div class="glass-box"><span class="ref">105</span><span class="ar">مُsْتَفْعَل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">103</span><span class="ar">اسْتِفْعَال</span></div></td>
+                            <td><div class="glass-box"><span class="ref">104</span><span class="ar">مُسْتَفْعِل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">105</span><span class="ar">مُسْتَفْعَل</span></div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1651,7 +1739,13 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         kelimeListesi.push(cekilmisKelime);
     });
 
-    let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
+    // openConjugationPopup fonksiyonu içindeki html kısmı:
+let html = `
+    <div style="position: absolute; top: 4px; left: 12px; display: flex; gap: 10px;">
+        <span id="fs-btn" onclick="toggleFullScreen(this)" style="cursor: pointer; font-size: 20px; color: #000;">⤢</span>
+    </div>
+    <div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>
+`;
     html += `<table class="conjugation-table">`;
     html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
 
@@ -2048,6 +2142,7 @@ document.querySelectorAll('.matrix-close-btn').forEach(btn => {
         }
     });
 });
+
 
 </script>
 <div id="zoom-focus-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); z-index: 99999; justify-content: center; align-items: center; pointer-events: none;">
