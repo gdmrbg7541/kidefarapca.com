@@ -1682,25 +1682,36 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     list.forEach(siga => {
         let cekilmisKelime = "";
         
-        if (tip === 'muzari') {
-            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-            let aynHareke = "ُ"; 
-            if (anaVezin.includes("يَفْعِلُ")) aynHareke = "ِ";
-            else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ")) aynHareke = "َ";
-            
-            let prefix = siga.prefix;
-            if (babNo === 7) prefix = "يُ";       
-            else if (babNo === 8) prefix = "يُ";  
-            else if (babNo === 9) prefix = "يُ";  
-            else if (babNo === 13) prefix = "يَتَ"; 
-            else if (babNo === 14) prefix = "يَتَ"; 
+       if (tip === 'muzari') {
+    let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+    
+    // 1. Hareke belirleme mantığı
+    let aynHareke = "ُ"; // Varsayılan ötre
+    if (babNo === 7) {
+        aynHareke = "ِ"; // İf'al bâbı muzarisi her zaman esre
+    } else if (anaVezin.includes("يَفْعِلُ")) {
+        aynHareke = "ِ";
+    } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ")) {
+        aynHareke = "َ";
+    }
+    
+    // 2. Prefix (Ön ek) belirleme
+    let prefix = siga.prefix;
+    if (babNo === 7) prefix = "يُ";       
+    else if (babNo === 8) prefix = "يُ";  
+    else if (babNo === 9) prefix = "يُ";  
+    else if (babNo === 13) prefix = "يَتَ"; 
+    else if (babNo === 14) prefix = "يَتَ"; 
 
-            let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
-            if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
-            else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-            else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
-            else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;     
-            else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3; 
+    // 3. CoreWord (Kök kelime yapısı) oluşturma
+    let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
+    
+    if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; // İf'al için özel yapı
+    else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+    else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+    else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+    else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;    
+    else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
             
             let currentPrefix = prefix;
             if (siga.prefix === 'تَ') {
