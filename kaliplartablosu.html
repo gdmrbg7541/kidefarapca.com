@@ -21,7 +21,7 @@
 
         :root {
             --matrix-green: #000000; 
-            --header-bg-gray: #FF3B30; /* Gri yerine kırmızı tanımladık */
+            --header-bg-gray: #FF3B30; 
             --matrix-border: #000000;
             --apple-gray: #f5f5f7;
             --apple-dark: #1d1d1f;
@@ -35,6 +35,14 @@
             overflow-x: hidden; 
             user-select: none;
         }
+
+        /* 🚀 Matris açıkken üst bar penceresindeki geri dön butonunun hover'ını ve tıklanmasını engeller */
+body:has(.glass-box.matrix-opened) .back-link {
+    background: #fff !important;
+    color: #000 !important;
+    cursor: default;
+    pointer-events: none; /* Bu aşamada tıklanmasını da kilitler */
+}
 
         /* Üst Kontrol Barı */
         .top-bar {
@@ -58,7 +66,7 @@
             box-sizing: border-box;
         }
 
-        /* 🔄 OPTİMİZE EDİLMİŞ SEGMENTED CONTROL */
+        /* SEGMENTED CONTROL */
         .segmented-switch {
             flex: 1;
             display: flex;
@@ -97,21 +105,71 @@
             border-radius: 6px;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 1;
-            transform: translateX(100%); /* Başlangıçta Mücerred (sağ buton) aktiftir */
-        }
-
-        .segmented-switch.mucerred-active .switch-slider {
             transform: translateX(100%);
         }
-        .segmented-switch.mezid-active .switch-slider {
-            transform: translateX(0%);
-        }
+
+        .segmented-switch.mucerred-active .switch-slider { transform: translateX(100%); }
+        .segmented-switch.mezid-active .switch-slider { transform: translateX(0%); }
 
         .segmented-switch.mucerred-active .switch-btn.mucerred-btn { color: #ffffff; }
         .segmented-switch.mucerred-active .switch-btn.mezid-btn { color: #000000; }
-        
         .segmented-switch.mezid-active .switch-btn.mucerred-btn { color: #000000; }
         .segmented-switch.mezid-active .switch-btn.mezid-btn { color: #ffffff; }
+
+        /* MANUEL ZOOM CONTROL SWITCH */
+        .zoom-toggle-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f7;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            height: 54px;
+            padding: 0 12px;
+            box-sizing: border-box;
+        }
+        .zoom-toggle-label {
+            font-family: 'Arakom', sans-serif !important;
+            font-weight: normal !important;
+            font-size: 14px;
+            color: #000000;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+            border: 1px solid #000000;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            border: 1px solid #000000;
+        }
+        input:checked + .toggle-slider {
+            background-color: #00E676;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
 
         .back-btn-area {
             display: flex;
@@ -147,7 +205,6 @@
         .slider-bandi {
             display: flex;
             width: 200%; 
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
         }
 
         .tab-content { 
@@ -168,7 +225,7 @@
         }
 
         th {
-            background-color: #FF3B30 !important; /* Canlı kırmızı arka plan */
+            background-color: #FF3B30 !important; 
             color: #FFFFFF !important;
             padding: 10px 5px;
             border: 2px solid #000;
@@ -185,15 +242,15 @@
             margin: 0;
         }
 
-        th:nth-child(1) { width: 10%; } /* Bâblar */
-        th:nth-child(2) { width: 11%; } /* Mazi */
-        th:nth-child(3) { width: 11%; } /* Muzari */
-        th:nth-child(4) { width: 11%; } /* Emir */
-        th:nth-child(5) { width: 22%; } /* Mastar */
-        th:nth-child(6) { width: 11%; } /* İsmi Fail */
-        th:nth-child(7) { width: 11%; } /* İsmi Meful */
-        th:nth-child(8) { width: 11%; } /* Zaman Mekan */
-        th:nth-child(9) { width: 11%; } /* İsmi Alet */
+        th:nth-child(1) { width: 10%; } 
+        th:nth-child(2) { width: 11%; } 
+        th:nth-child(3) { width: 11%; } 
+        th:nth-child(4) { width: 11%; } 
+        th:nth-child(5) { width: 22%; } 
+        th:nth-child(6) { width: 11%; } 
+        th:nth-child(7) { width: 11%; } 
+        th:nth-child(8) { width: 11%; } 
+        th:nth-child(9) { width: 11%; } 
 
         td {
             border: 2px solid #000;
@@ -203,22 +260,24 @@
         }
 
         .glass-box {
-    position: relative; 
-    background-color: #ffffff !important; /* 🌟 Esnemeyen, şeffaflaşmayan katı beyaz dolgu */
-    background: #ffffff !important;
-    border: 2px solid #000000;
-    border-radius: 6px;
-    margin: 3px;
-    padding: 4px 2px 2px 2px; 
-    text-align: center;
-    transition: 0.2s;
-    display: inline-block;
-    min-width: 100px;
-    width: 90%;
-    box-sizing: border-box;
-    cursor: pointer;
-}
-        .glass-box:hover { 
+            position: relative; 
+            background-color: #ffffff !important; 
+            background: #ffffff !important;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            margin: 3px;
+            padding: 4px 2px 2px 2px; 
+            text-align: center;
+            transition: transform 0.2s, background-color 0.2s;
+            display: inline-block;
+            min-width: 100px;
+            width: 90%;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        
+        /* 🚀 HOVER AKSIYONU: Matris açıkken alttaki kutunun büyümesini ve titremesini engelliyoruz */
+        .glass-box:hover:not(.matrix-opened) { 
             background: #f5f5f7; 
             transform: scale(1.02); 
         }
@@ -249,9 +308,7 @@
             padding: 2px;
             justify-items: center;
         }
-        .mastar-grid .glass-box {
-            width: 95%;
-        }
+        .mastar-grid .glass-box { width: 95%; }
 
         .footer-container { 
             display: flex; 
@@ -290,11 +347,8 @@
             gap: 6px; 
             justify-items: center;
         }
-        .cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box {
-            width: 95%;
-        }
+        .cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; }
 
-        /* Ortak Modal/Overlay Tasarımı */
         .keyboard-overlay, .verb-overlay, .conjugation-overlay {
             display: none; 
             position: fixed;
@@ -319,6 +373,19 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .conjugation-container {
+            padding: 15px 20px; 
+            background: #ffffff !important;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            width: auto !important;
+            min-width: 320px !important;
+            max-width: 450px !important;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .keyboard-container {
@@ -405,42 +472,105 @@
         }
         .glass-box.hidden-mode .ar, 
         .glass-box.hidden-mode .ar-small {
-            visibility: hidden !important; 
+            visibility: visible !important; 
         }
 
-        /* 👑 POPUP ÇEKİM TABLOSU STİLLERİ */
-        .conjugation-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            direction: rtl;
-        }
-        .conjugation-table th {
-            background-color: #f5f5f7;
-            border: 1px solid #000;
-            padding: 8px;
-            font-size: 14px;
-        }
-        .conjugation-table td {
-            border: 1px solid #000;
-            padding: 10px;
-            text-align: center;
-            background: #fff;
-        }
-        .siga-text {
-            font-size: 28px;
-            color: #000;
-            display: block;
-        }
-        .siga-label {
-            font-size: 11px;
-            color: #666;
-            display: block;
-            margin-top: 2px;
-            font-family: sans-serif;
-        }
+/* 👑 YAMA: FARE HAREKETLERİNDEN ASLA ETKİLENMEYEN ULTRA SABİT MATRİS KONTEYNERİ */
+.conjugation-inline-container {
+    display: none;
+    position: absolute; /* Kutunun eksenine kilitli kalıyor */
+    background: #ffffff !important;
+    border: 3px solid #000000;
+    border-radius: 16px;       
+    padding: 20px;             
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    z-index: 999999 !important; 
+    width: 420px !important; 
+    max-width: 95vw !important;
+    
+    /* 🚀 EKSTREM MOBİL/KÜÇÜK EKRAN EMNİYETİ: Ekran çok küçükse tablonun kesilmesini engeller, kendi içinde kaydırır */
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    
+    opacity: 0;
+    pointer-events: auto;
+    transform: scale(0.95);
+    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.15s ease;
+}
 
-       .keyboard-overlay {
+/* Kutu aktifleştiğinde görünür hale getirme */
+.glass-box.matrix-opened .conjugation-inline-container {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* DEV BOYUTLU ÇEKİM TABLOSU (Arakom & Regular) */
+.conjugation-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    direction: rtl;
+    table-layout: fixed;
+}
+
+.conjugation-table th {
+    background-color: #FF3B30 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #000000;
+    padding: 8px;
+    font-size: 16px;
+    font-family: 'Arakom' !important;
+    font-weight: normal !important;
+}
+
+.conjugation-table td {
+    border: 2px solid #000000;
+    padding: 14px 6px;
+    text-align: center;
+    background: #ffffff;
+    width: 33.33%;
+}
+
+.siga-text {
+    font-size: 28px;
+    color: #000000;
+    display: block;
+    font-family: 'Arakom' !important;
+    font-weight: normal !important;
+    line-height: 1.2;
+}
+
+/* Kapatma Butonu (✕) */
+.matrix-close-btn {
+    position: absolute;
+    top: 4px;
+    right: 12px;
+    color: #FF3B30;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: normal;
+    z-index: 1000001; /* Tablonun da üstünde kalması için artırıldı */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+.matrix-close-btn:hover {
+    transform: scale(1.2);
+}
+
+.siga-label {
+    font-size: 11px;
+    color: #666;
+    display: block;
+    margin-top: 2px;
+    font-family: sans-serif;
+}
+
+        .keyboard-overlay {
             display: none; 
             position: fixed;
             top: 0; left: 0; 
@@ -458,162 +588,61 @@
         #tab2 .ar-small { font-size: 20px !important; }
         #tab2 .glass-box { width: 92%; padding: 4px 2px; }
 
-        /* 6 Bâb İçin Özel Arka Plan ve Beyaz Yazı Renkleri */
-        .bab-1-title {
-            background-color: #FF3B30 !important; /* Canlı Kırmızı */
-            color: #FFFFFF !important;
-            font-family: 'Arakom', sans-serif;
-            font-weight: normal !important;
-            text-align: center;
-        }
-        .bab-2-title {
-            background-color: #007AFF !important; /* Canlı Klasik Mavi */
-            color: #FFFFFF !important;
-            font-family: 'Arakom', sans-serif;
-            font-weight: normal !important;
-            text-align: center;
-        }
-        .bab-3-title {
-            background-color: #34C759 !important; /* Canlı Elma Yeşili */
-            color: #FFFFFF !important;
-            font-family: 'Arakom', sans-serif;
-            font-weight: normal !important;
-            text-align: center;
-        }
-        .bab-4-title {
-            background-color: #FF9500 !important; /* Canlı Turuncu */
-            color: #FFFFFF !important;
-            font-family: 'Arakom', sans-serif;
-            font-weight: normal !important;
-            text-align: center;
-        }
-        .bab-5-title {
-            background-color: #AF52DE !important; /* Asil Mor */
-            color: #FFFFFF !important;
-            font-family: 'Arakom', sans-serif;
-            font-weight: normal !important;
-            text-align: center;
-        }
-        .bab-6-title {
-            background-color: #00C7BE !important; /* Şık Turkuaz / Cam Göbeği */
-            color: #FFFFFF !important;
-            font-family: 'Arakom', sans-serif;
-            font-weight: normal !important;
-            text-align: center;
-        }
-
-        /* Mobil Uyumluluk ve Görsel Gibi Gezinme Alanı */
-        .responsive-table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch; /* iOS cihazlarda akıcı kaydırma */
-            position: relative;
-            cursor: grab; /* Masaüstünde fare ile tutup çekme hissi görseli */
-        }
-
-        .responsive-table-wrapper:active {
-            cursor: grabbing;
-        }
-
-        /* Mobil Ekranlar İçin Özel Medya Sorguları */
         @media screen and (max-width: 1024px) {
-            body {
-                padding: 10px; /* Kenar boşluklarını daralt */
-            }
-
-            .top-bar {
-                flex-direction: column; /* Üst barı dikey yap */
-                gap: 10px;
-            }
-
-            #root-display-box {
-                width: 100% !important; /* Kök giriş kutusunu tam genişlik yap */
-            }
-
-            .segmented-switch {
-                width: 100%;
-                height: 50px;
-            }
-
-            .back-btn-area {
-                width: 100%;
-            }
-            
-            .back-link {
-                width: 100% !important;
-                height: 48px !important;
-            }
-
-            /* Tablonun mobil cihazlarda ezilip kırılmasını önleyen kritik ayar */
-            .container table {
-                width: 1100px !important; /* Tablo genişliğini sabitleyerek bir görsel gibi geniş kalmasını sağlar */
-                table-layout: fixed !important;
-            }
-
-            /* Alt grid alanlarının mobilde sığması için ölçeklendirme */
-            .footer-container {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .cemi-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* Mobilde 2 sütuna düşür */
-            }
+            body { padding: 10px; }
+            .top-bar { flex-direction: column; gap: 10px; }
+            #root-display-box { width: 100% !important; }
+            .segmented-switch { width: 100%; height: 50px; }
+            .zoom-toggle-area { width: 100%; justify-content: space-between; }
+            .back-btn-area { width: 100%; }
+            .back-link { width: 100% !important; height: 48px !important; }
+            .container table { width: 1100px !important; table-layout: fixed !important; }
+            .footer-container { flex-direction: column; gap: 12px; }
+            .cemi-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
 
-       
-/* 👑 MERKEZİ ULTRA ZOOM: Yumuşak ve Süzülerek Gelen Sinematik Odaklanma Stili */
-/* 👑 MERKEZİ ULTRA ZOOM: Çözünürlüğü Maksimum Netlikte Tutan Gelişmiş Stil */
-.pulse-highlight {
-    animation: zoomToCenter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    z-index: 99999 !important; 
-    transform-origin: center center;
-    
-    /* 🚀 ÇÖZÜNÜRLÜK SİHİRBAZLARI: */
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    
-    /* Tarayıcının harfleri alt piksel seviyesinde keskinleştirmesini zorlar */
-    -webkit-font-smoothing: subpixel-antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    
-    /* Ekran kartına sadece pozisyon değişeceğini, font kalitesinin korunacağını bildirir */
-    will-change: transform; 
-}
+        /* MERKEZİ ULTRA ZOOM */
+        .pulse-highlight {
+            animation: zoomToCenter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            z-index: 99999 !important; 
+            transform-origin: center center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -webkit-font-smoothing: subpixel-antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            will-change: transform; 
+        }
 
-@keyframes zoomToCenter {
-    0% {
-        transform: translate(var(--start-x), var(--start-y)) scale(1);
-        background-color: #ffffff !important;
-        box-shadow: none;
-    }
-    /* 🌟 DEĞİŞİKLİK: Tepe noktaya ulaşma süresini %12'den %20'ye çıkardık. 
-       Böylece kart merkeze gelirken acele etmez, çok daha sakin ve yumuşak bir hızla büyür. */
-    20% {
-        transform: translate(var(--move-x), var(--move-y)) scale(3.2); 
-        background: #ffffff !important; 
-        background-color: #ffffff !important;
-        opacity: 1 !important;
-        border: 2px solid #000000 !important;
-        box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45); 
-    }
-    85% {
-        transform: translate(var(--move-x), var(--move-y)) scale(3.2);
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-        opacity: 1 !important;
-        border: 2px solid #000000 !important;
-        box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45);
-    }
-    100% {
-        transform: translate(0, 0) scale(1);
-        background-color: rgba(0, 255, 65, 0.25) !important; 
-        background: rgba(0, 255, 65, 0.25) !important;
-        border: 2px solid #000000 !important;
-        box-shadow: none;
-    }
-}
+        @keyframes zoomToCenter {
+            0% {
+                transform: translate(var(--start-x), var(--start-y)) scale(1);
+                background-color: #ffffff !important;
+                box-shadow: none;
+            }
+            20% {
+                transform: translate(var(--move-x), var(--move-y)) scale(3.2); 
+                background: #ffffff !important; 
+                background-color: #ffffff !important;
+                opacity: 1 !important;
+                border: 2px solid #000000 !important;
+                box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45); 
+            }
+            85% {
+                transform: translate(var(--move-x), var(--move-y)) scale(3.2);
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+                opacity: 1 !important;
+                border: 2px solid #000000 !important;
+                box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45);
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                background-color: rgba(0, 255, 65, 0.25) !important; 
+                background: rgba(0, 255, 65, 0.25) !important;
+                border: 2px solid #000000 !important;
+                box-shadow: none;
+            }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -630,9 +659,9 @@
 </div>
 
 <div id="conjugation-overlay" class="conjugation-overlay">
-    <div class="conjugation-container" style="min-width: 600px; max-width: 90vw;">
-        <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px;">✕</div>
-        <h3 id="conjugation-title" style="text-align: center; margin-top: 10px; font-family: sans-serif; font-weight: normal;">Fiil Çekim Tablosu</h3>
+    <div class="conjugation-container">
+        <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px; z-index: 10;">✕</div>
+        <h3 id="conjugation-title" style="text-align: center; margin-top: 10px; font-family: 'Arakom' !important; font-weight: normal !important;">Fiil Çekim Tablosu</h3>
         <div id="conjugation-content"></div>
     </div>
 </div>
@@ -702,13 +731,21 @@
         
         <button class="switch-btn mucerred-btn" onclick="setTab(0)" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none !important;">
             <span style="text-decoration: none;">SÜLÂSİ MÜCERRED</span>
-            <span style="color: #00E676; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; text-decoration: none !important; display: inline-block;">3</span>
+            <span style="color: #00E676; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; display: inline-block;">3</span>
         </button>
         
         <button class="switch-btn mezid-btn" onclick="setTab(1)" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none !important;">
             <span style="text-decoration: none;">SÜLÂSİ MEZİD</span>
-            <span style="color: #00B0FF; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; text-decoration: none !important; display: inline-block;">+3</span>
+            <span style="color: #00B0FF; font-weight: 800; font-size: 1.15rem; font-family: 'Arakom', sans-serif; display: inline-block;">+3</span>
         </button>
+    </div>
+
+    <div class="zoom-toggle-area">
+        <span class="zoom-toggle-label">BÜYÜTME</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="zoomToggleCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </label>
     </div>
 
     <div class="back-btn-area">
@@ -774,16 +811,16 @@
                                     <div class="glass-box"><span class="ref">32</span><span class="ar-small">فَعْلَى</span></div>
                                 </div>
                             </td>
-                            <td rowspan="6">
+                            <td rowspan="6" valign="middle">
                                 <div style="display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center;">
                                     <div class="glass-box"><span class="ref">33</span><span class="ar">فَاعِل</span></div>
                                     <div class="glass-box"><span class="ref">34</span><span class="ar">فَعَّال</span></div>
                                     <div class="glass-box"><span class="ref">35</span><span class="ar">فَعِيل</span></div>
                                 </div>
                             </td>
-                            <td rowspan="6"><div class="glass-box"><span class="ref">36</span><span class="ar">مَفْعُول</span></div></td>
-                            <td rowspan="3"><div class="glass-box"><span class="ref">37</span><span class="ar">مَفْعِل</span></div></td>
-                            <td rowspan="3"><div class="glass-box"><span class="ref">39</span><span class="ar">مِفْعَل</span></div></td>
+                            <td rowspan="6" valign="middle"><div class="glass-box"><span class="ref">36</span><span class="ar">مَفْعُول</span></div></td>
+                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">37</span><span class="ar">مَفْعِل</span></div></td>
+                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">39</span><span class="ar">مِفْعَل</span></div></td>
                         </tr>
                         <tr>
                             <td align="center">İkinci Bâb</td>
@@ -802,8 +839,8 @@
                             <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">8</span><span class="ar">فَعِلَ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">9</span><span class="ar">يَفْعَلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">10</span><span class="ar">اِفْعَلْ</span></div></td>
-                            <td rowspan="3"><div class="glass-box"><span class="ref">38</span><span class="ar">مَفْعَل</span></div></td>
-                            <td rowspan="3"><div class="glass-box"><span class="ref">40</span><span class="ar">مِفْعَال</span></div></td>
+                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">38</span><span class="ar">مَفْعَل</span></div></td>
+                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">40</span><span class="ar">مِفْعَال</span></div></td>
                         </tr>
                         <tr>
                             <td align="center">Beşinci Bâb</td>
@@ -828,7 +865,7 @@
                             <div class="glass-box"><span class="ref">42</span><span class="ar-small">فُعُل</span></div>
                             <div class="glass-box"><span class="ref">43</span><span class="ar-small">فُعُول</span></div>
                             <div class="glass-box"><span class="ref">44</span><span class="ar-small">فِعَال</span></div>
-                            <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّال</span></div>
+                            <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّal</span></div>
                             <div class="glass-box"><span class="ref">46</span><span class="ar-small">فُعَلَاء</span></div>
                             <div class="glass-box"><span class="ref">47</span><span class="ar-small">فَعَلَة</span></div>
                             <div class="glass-box"><span class="ref">48</span><span class="ar-small">فَعَائِل</span></div>
@@ -896,7 +933,7 @@
                         </tr>
                         <tr>
                             <td align="center">İnfi'âl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">71</span><span class="ar">انْفَعَلَ</span></div></td>
+                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">71</span><span class="ar">اِنْفَعَلَ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">72</span><span class="ar">يَنْفَعِلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">73</span><span class="ar">انْفَعِلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">74</span><span class="ar">انْفِعَال</span></div></td>
@@ -905,7 +942,7 @@
                         </tr>
                         <tr>
                             <td align="center">İfti'âl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">77</span><span class="ar">افْتَعَلَ</span></div></td>
+                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">77</span><span class="ar">اِفْتَعَلَ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">78</span><span class="ar">يَفْتَعِلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">79</span><span class="ar">افْتَعِلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">80</span><span class="ar">افْتِعَال</span></div></td>
@@ -915,7 +952,7 @@
                         <tr>
                             <td align="center">İf'ilâl</td>
                             <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">83</span><span class="ar">افْعَلَّ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">84</span><span class="ar">يَفْعَلُ..</span></div></td>
+                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">84</span><span class="ar">يَفْعَلُّ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">85</span><span class="ar">افْعَلِلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">86</span><span class="ar">افْعِلَال</span></div></td>
                             <td><div class="glass-box"><span class="ref">87</span><span class="ar">مُفْعَلّ</span></div></td>
@@ -927,8 +964,8 @@
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُtَفَعِّl</span></div></td>
+                            <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُtَفَعَّl</span></div></td>
                         </tr>
                         <tr>
                             <td align="center">Tefâ'ul</td>
@@ -936,17 +973,17 @@
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">95</span><span class="ar">يَتَفَاعَلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">96</span><span class="ar">تَفَاعَلْ</span></div></td>
                             <td><div class="glass-box"><span class="ref">97</span><span class="ar">تَفَاعُل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">98</span><span class="ar">مُتَفَاعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">99</span><span class="ar">مُتَفَاعَل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">98</span><span class="ar">مُtَفَاعِl</span></div></td>
+                            <td><div class="glass-box"><span class="ref">99</span><span class="ar">مُtَفَاعَل</span></div></td>
                         </tr>
                         <tr>
                             <td align="center">İstif'âl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">100</span><span class="ar">اسْتَفْعَلَ</span></div></td>
+                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">100</span><span class="ar">اِسْتَفْعَلَ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">101</span><span class="ar">يَسْتَفْعِلُ</span></div></td>
                             <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">102</span><span class="ar">اسْتَفْعِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">103</span><span class="ar">اسْتِفْعَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">104</span><span class="ar">مُسْتَفْعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">105</span><span class="ar">مُسْتَفْعَل</span></div></td>
+                            <td><div class="glass-box"><span class="ref">103</span><span class="ar">اسْتِfْعَال</span></div></td>
+                            <td><div class="glass-box"><span class="ref">104</span><span class="ar">مُsْتَفْعِl</span></div></td>
+                            <td><div class="glass-box"><span class="ref">105</span><span class="ar">مُsْتَفْعَل</span></div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -962,7 +999,7 @@ let isReadyVerbMode = false;
 
 const arabicKeyMap = {
     '"': 'ذ', 'q':'ض', 'w':'ص', 'e':'ث', 'r':'ق', 't':'ف', 'y':'غ', 'u':'ع', 'ı':'ه', 'o':'خ', 'p':'ح', 'ğ':'ج', 'ü':'د',
-    'a':'ش', 's':'س', 'd':'ي', 'f':'ب', 'g':'ل', 'h':'ا', 'j':'ت', 'k':'ن', 'l':'م', 'ş':'ك', 'i':'ط',
+    'a':'ش', 's':'س', 'd':'ي', 'f':'ب', 'g':'ل', 'h':'ا', 'j':'ت', 'k':'n', 'l':'م', 'ş':'ك', 'i':'ط',
     'z':'ئ', 'x':'ء', 'c':'ؤ', 'v':'ر', 'b':'لا', 'n':'ى', 'm':'ة', 'ö':'ز', 'ç':'ظ'
 };
 
@@ -977,9 +1014,71 @@ let currentTabActive = 0;
 let lastWheelTime = 0;
 const wheelCooldown = 600; 
 
-// Global takip değişkenleri
 let lastClickedBoxTextSpan = null;
 let lastOriginalWord = "";
+
+const babVezinleri = {
+    1: { mazi: "فَعَلَ", muzari: "يَفْعُلُ", emir: "أُفْعُلْ" },
+    2: { mazi: "فَعَلَ", muzari: "يَفْعِلُ", emir: "اِفْعِلْ" },
+    3: { mazi: "فَعَلَ", muzari: "يَفْعَلُ", emir: "اِفْعَلْ" },
+    4: { mazi: "فَعِلَ", muzari: "يَفْعَلُ", emir: "اِفْعَلْ" },
+    5: { mazi: "فَعُلَ", muzari: "يَفْعُلُ", emir: "أُفْعُلْ" },
+    6: { mazi: "فَعِلَ", muzari: "يَفْعِلُ", emir: "اِفْعِلْ" },
+    7: { mazi: "أَفْعَلَ", muzari: "يُفْعِلُ", emir: "أَفْعِلْ" },      
+    8: { mazi: "فَعَّلَ", muzari: "يُفَعِّلُ", emir: "فَعِّلْ" },      
+    9: { mazi: "فَاعَلَ", muzari: "يُفَاعِلُ", emir: "فَاعِلْ" },     
+    10: { mazi: "انْفَعَلَ", muzari: "يَنْفَعِلُ", emir: "انْفَعِلْ" },  
+    11: { mazi: "اِفْتَعَلَ", muzari: "يَفْتَعِلُ", emir: "افْتَعِلْ" },  
+    12: { mazi: "افْعَلَّ", muzari: "يَفْعَلُّ", emir: "افْعَلِلْ" },    
+    13: { mazi: "تَفَعَّلَ", muzari: "يَتَفَعَّلُ", emir: "تَفَعَّلْ" },  
+    14: { mazi: "تَفَاعَلَ", muzari: "يَتَفَاعَلُ", emir: "تَفَاعَلْ" },  
+    15: { mazi: "اِسْتَفْعَلَ", muzari: "يَسْتَفْعِلُ", emir: "اسْتَفْعِلْ" } 
+};
+
+const sigaSablonlari = {
+    mazi: [
+        { ek: "َ", etiket: "Müfred Müzekker Gâib" },
+        { ek: "َا", etiket: "Tesniye Müzekker Gâib" },
+        { ek: "ُوا", etiket: "Cemi Müzekker Gâib" },
+        { ek: "َتْ", etiket: "Müfred Müennes Gâibe" },
+        { ek: "َتَا", etiket: "Tesniye Müennes Gâibe" },
+        { ek: "ْنَ", etiket: "Cemi Müennes Gâibe" },
+        { ek: "ْتَ", etiket: "Müfred Müzekker Muhâtab" },
+        { ek: "ْتُمَا", etiket: "Tesniye Müzekker Muhâtab" },
+        { ek: "ْتُمْ", etiket: "Cemi Müzekker Muhâtab" },
+        { ek: "ْتِ", etiket: "Müfred Müennes Muhâtabe" },
+        { ek: "ْتُمَا", etiket: "Tesniye Müennes Muhâtabe" },
+        { ek: "ْتُنَّ", etiket: "Cemi Müennes Muhâtabe" },
+        { ek: "ْتُ", etiket: "Müfred Mütekellim (Ben)" },
+        { ek: "ْنَا", etiket: "Cemi Mütekellim (Biz)" },
+        { ek: "ْنَا", etiket: "Cemi Mütekellim (Biz - Muazzam)" }
+    ],
+    muzari: [
+        { prefix: "يَ", suffix: "ُ", etiket: "Müfred Müzekker Gâib" },
+        { prefix: "يَ", suffix: "َانِ", etiket: "Tesniye Müzekker Gâib" },
+        { prefix: "يَ", suffix: "ُونَ", etiket: "Cemi Müzekker Gâib" },
+        { prefix: "تَ", suffix: "ُ", etiket: "Müfred Müennes Gâibe" },
+        { prefix: "تَ", suffix: "َانِ", etiket: "Tesniye Müennes Gâibe" },
+        { prefix: "يَ", suffix: "ْنَ", etiket: "Cemi Müennes Gâibe" },
+        { prefix: "تَ", suffix: "ُ", etiket: "Müfred Müzekker Muhâtab" },
+        { prefix: "تَ", suffix: "َانِ", etiket: "Tesniye Müzekker Muhâtab" },
+        { prefix: "تَ", suffix: "ُونَ", etiket: "Cemi Müzekker Muhâtab" },
+        { prefix: "تَ", suffix: "ِينَ", etiket: "Müfred Müennes Muhâtabe" },
+        { prefix: "تَ", suffix: "َانِ", etiket: "Tesniye Müennes Muhâtabe" },
+        { prefix: "تَ", suffix: "ْنَ", etiket: "Cemi Müennes Muhâtabe" },
+        { prefix: "أَ", suffix: "ُ", etiket: "Müfred Mütekellim (Ben)" },
+        { prefix: "نَ", suffix: "ُ", etiket: "Cemi Mütekellim (Biz)" },
+        { prefix: "نَ", suffix: "ُ", etiket: "Cemi Mütekellim (Biz - Muazzam)" }
+    ],
+    emir: [
+        { suffix: "ْ", etiket: "Müfred Müzekker Muhâtab" },
+        { suffix: "َا", etiket: "Tesniye Müzekker Muhâtab" },
+        { suffix: "ُوا", etiket: "Cemi Müzekker Muhâtab" },
+        { suffix: "ِي", etiket: "Müfred Müennes Muhâtabe" },
+        { suffix: "َا", etiket: "Tesniye Müennes Muhâtabe" },
+        { suffix: "ْنَ", etiket: "Cemi Müennes Muhâtabe" }
+    ]
+};
 
 const SoundEngine = {
     ctx: null,
@@ -1035,6 +1134,12 @@ const SoundEngine = {
 };
 
 window.onload = function() {
+    // Büyütme özelliğini her zaman kapalı başlat
+    const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
+    if (zoomCheckbox) {
+        zoomCheckbox.checked = false;
+    }
+
     document.querySelectorAll('.glass-box').forEach((box) => {
         const textEl = box.querySelector('.ar, .ar-small');
         if (textEl) {
@@ -1042,6 +1147,14 @@ window.onload = function() {
                 textEl.setAttribute('data-original', textEl.innerText);
             }
             box.style.cursor = "pointer";
+            
+            const refSpan = box.querySelector('.ref');
+            if (refSpan) {
+                const rId = parseInt(refSpan.textContent.trim());
+                if ((rId >= 1 && rId <= 16) || [52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102].includes(rId)) {
+                    box.setAttribute('data-tiklama-sayisi', '0');
+                }
+            }
             box.onclick = function() { handleBoxClick(this); };
         }
     });
@@ -1075,6 +1188,23 @@ window.onload = function() {
     }
 };
 
+// Hem tıklama hem de dokunma ile kapatma motoru
+document.addEventListener('click', closeIfOutside);
+document.addEventListener('touchstart', closeIfOutside, { passive: false });
+
+function closeIfOutside(e) {
+    // Tıklanan/dokunulan yerin tablo veya kutu içinde olup olmadığına bak
+    const isInside = e.target.closest('.conjugation-inline-container') || e.target.closest('.glass-box');
+    
+    if (!isInside) {
+        // Eğer dışarıya dokunulduysa tüm açık tabloları kapat
+        document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
+            const closeBtn = box.querySelector('.matrix-close-btn');
+            if (closeBtn) closeInlineMatrix(null, closeBtn);
+        });
+    }
+}
+
 function handleSwipeGesture() {
     const distance = touchStartX - touchEndX;
     if (Math.abs(distance) > minSwipeDistance) {
@@ -1100,6 +1230,25 @@ function setTab(tabIndex) {
     }
 }
 
+// 👑 KUTU İÇİ TABLOYU KAPATMA MOTORU
+function closeInlineMatrix(event, btnElement) {
+    if (event) event.stopPropagation(); 
+    SoundEngine.playClose();
+    
+    const boxElement = btnElement.closest('.glass-box');
+    if (boxElement) {
+        boxElement.classList.remove('matrix-opened');
+        boxElement.setAttribute('data-tiklama-sayisi', '0');
+        boxElement.setAttribute('data-modal-closed', 'true');
+        
+        setTimeout(() => {
+            boxElement.style.zIndex = "";
+            const container = boxElement.querySelector('.conjugation-inline-container');
+            if (container) container.innerHTML = '';
+        }, 200);
+    }
+}
+
 function openVerbModal() {
     SoundEngine.playClick();
     document.getElementById('verb-overlay').style.display = 'flex';
@@ -1110,62 +1259,49 @@ function closeVerbModal() {
     document.getElementById('verb-overlay').style.display = 'none';
 }
 
-// 🚀 GÜNCELLENEN DİNAMİK MERKEZLEME VE KARARTMA MOTORU
 function triggerAreaPulse(boxElement) {
     if (!boxElement) return;
     
-    // Eski animasyon sınıflarını ve renk zorlamalarını tamamen sıfırla
     boxElement.classList.remove("pulse-highlight");
     boxElement.style.backgroundColor = "";
     boxElement.style.borderColor = "";
     boxElement.style.background = "";
 
-    // 📐 Matematiksel Merkez Hesaplama Alanı
+    const isZoomEnabled = document.getElementById('zoomToggleCheckbox').checked;
+
+    if (!isZoomEnabled) {
+        boxElement.style.setProperty("background-color", "rgba(0, 255, 65, 0.25)", "important");
+        boxElement.style.setProperty("background", "rgba(0, 255, 65, 0.25)", "important");
+        boxElement.style.borderColor = "#000000";
+        return;
+    }
+
     const rect = boxElement.getBoundingClientRect();
-    
-    // Kutunun tam orta noktasının koordinatları
     const boxCenterX = rect.left + rect.width / 2;
     const boxCenterY = rect.top + rect.height / 2;
-    
-    // Ekranın (Viewport) tam orta noktasının koordinatları
     const viewportCenterX = window.innerWidth / 2;
     const viewportCenterY = window.innerHeight / 2;
-    
-    // Kutunun merkeze ulaşması için gitmesi gereken X ve Y mesafesi
     const moveX = viewportCenterX - boxCenterX;
     const moveY = viewportCenterY - boxCenterY;
 
-    // Hesaplanan bu dinamik pikselleri CSS animasyonuna değişken olarak fırlat
     boxElement.style.setProperty('--start-x', '0px');
     boxElement.style.setProperty('--start-y', '0px');
     boxElement.style.setProperty('--move-x', `${moveX}px`);
     boxElement.style.setProperty('--move-y', `${moveY}px`);
     
-    // 🚀 ÇÖZÜNÜRLÜK HİLESİ: Tarayıcının anlık fotoğraf çekmesini engelleyip 
-    // canlı font render etmesini zorlamak için donanım katmanını (Z eksenini) tetikliyoruz.
     boxElement.style.transform = "translateZ(0) rotate(0.001deg)";
-    
-    // Reflow tetikleyici
     void boxElement.offsetWidth; 
-    
-    // Sinematik animasyonu başlat
     boxElement.classList.add("pulse-highlight");
 
-    // Animasyon bittiğinde (3 saniye sonra)
     setTimeout(() => {
         boxElement.classList.remove("pulse-highlight");
-        
-        // 🚀 ÇÖZÜNÜRLÜK HİLESİNİ TEMİZLE: Küçüldüğünde yazının kaymasını önlemek için stili temizliyoruz
         boxElement.style.transform = "";
-        
-        // Kutu kendi yerine kusursuz döndüğünde yeşil vurguyu kalıcı yap
         boxElement.style.setProperty("background-color", "rgba(0, 255, 65, 0.25)", "important");
         boxElement.style.setProperty("background", "rgba(0, 255, 65, 0.25)", "important");
         boxElement.style.borderColor = "#000000";
     }, 3000);
 }
 
-// 🎯 1. HAZIR FİİL SEÇME FONKSİYONU
 function selectReadyVerb(verb) {
     SoundEngine.playReset();
     resetTableOnly(true); 
@@ -1186,7 +1322,6 @@ function selectReadyVerb(verb) {
                 box.style.backgroundColor = "";
                 box.style.borderColor = "";
                 box.removeAttribute('data-modal-closed');
-                
                 box.classList.add('hidden-mode'); 
                 targetStates[refId] = 0; 
                 
@@ -1197,11 +1332,56 @@ function selectReadyVerb(verb) {
             }
         }
     });
-    
     closeVerbModal();
 }
 
-// 🎯 2. ANA TIKLAMA VE ETKİLEŞİM YÖNETİM MERKEZİ
+function getBabAndType(refId) {
+    let type = "";
+    let babNo = 1;
+
+    if (refId >= 1 && refId <= 16) {
+        if ([1, 8, 11, 14].includes(refId)) {
+            type = "mazi";
+            if (refId === 1) babNo = 1; 
+            else if (refId === 8) babNo = 4;
+            else if (refId === 11) babNo = 5;
+            else if (refId === 14) babNo = 6;
+        } else if ([2, 4, 6, 9, 12, 15].includes(refId)) {
+            type = "muzari";
+            if (refId === 2) babNo = 1;
+            else if (refId === 4) babNo = 2;
+            else if (refId === 6) babNo = 3;
+            else if (refId === 9) babNo = 4;
+            else if (refId === 12) babNo = 5;
+            else if (refId === 15) babNo = 6;
+        } else if ([3, 5, 7, 10, 13, 16].includes(refId)) {
+            type = "emir";
+            if (refId === 3) babNo = 1;
+            else if (refId === 5) babNo = 2;
+            else if (refId === 7) babNo = 3;
+            else if (refId === 10) babNo = 4;
+            else if (refId === 13) babNo = 5;
+            else if (refId === 16) babNo = 6;
+        }
+    } 
+    else if ([52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102].includes(refId)) {
+        if ([52,58,64,71,77,83,88,94,100].includes(refId)) type = "mazi";
+        else if ([53,59,65,72,78,84,89,95,101].includes(refId)) type = "muzari";
+        else if ([54,60,66,73,79,85,90,96,102].includes(refId)) type = "emir";
+
+        if (refId >= 52 && refId <= 54) babNo = 7;
+        else if (refId >= 58 && refId <= 60) babNo = 8;
+        else if (refId >= 64 && refId <= 66) babNo = 9;
+        else if (refId >= 71 && refId <= 73) babNo = 10;
+        else if (refId >= 77 && refId <= 79) babNo = 11;
+        else if (refId >= 83 && refId <= 85) babNo = 12;
+        else if (refId >= 88 && refId <= 90) babNo = 13;
+        else if (refId >= 94 && refId <= 96) babNo = 14;
+        else if (refId >= 100 && refId <= 102) babNo = 15;
+    }
+    return { type, babNo };
+}
+
 function handleBoxClick(boxElement) {
     const textEl = boxElement.querySelector('.ar, .ar-small');
     const refEl = boxElement.querySelector('.ref');
@@ -1210,18 +1390,18 @@ function handleBoxClick(boxElement) {
     const refId = parseInt(refEl.innerText);
     const kalip = textEl.getAttribute('data-original');
 
-    // Suffix için tıklanan son elemanı güncelle
     lastClickedBoxTextSpan = textEl;
     lastOriginalWord = textEl.innerText.trim();
 
-    // A - KELİME KAYBOLUR KALIP GÖRÜNÜR
+    // 1. Durum: Modal Kapatma
     if (boxElement.getAttribute('data-modal-closed') === 'true') {
+        SoundEngine.playClose(); // SES ANINDA ÇALDI
         boxElement.removeAttribute('data-modal-closed'); 
-        SoundEngine.playClose();
         
         textEl.innerText = kalip; 
         boxElement.style.backgroundColor = "";
         boxElement.style.borderColor = "";
+        if (boxElement.hasAttribute('data-tiklama-sayisi')) boxElement.setAttribute('data-tiklama-sayisi', '0');
         
         if (isReadyVerbMode && readyVerbTargets.includes(refId)) {
             boxElement.classList.add('hidden-mode');
@@ -1230,23 +1410,22 @@ function handleBoxClick(boxElement) {
         return;
     }
 
-    // B - HAZIR FİİL BULMACA MODUNDA LİSTEDEKİ NUMARALI KALIPLARIN ÇALIŞMA DÖNGÜSÜ
+    // 2. Durum: Hazır Fiil Modu
     if (isReadyVerbMode && readyVerbTargets.includes(refId)) {
         let currentState = targetStates[refId];
 
         if (boxElement.classList.contains('hidden-mode') || currentState === 0 || currentState === undefined) {
-            SoundEngine.playClick();
+            SoundEngine.playClick(); // SES ANINDA ÇALDI
             boxElement.classList.remove('hidden-mode');
-            
             textEl.innerText = applyRootToKalip(currentRoot, kalip); 
-            lastOriginalWord = textEl.innerText.trim(); // Güncel kelimeyi suffix hafızasına al
-            triggerAreaPulse(boxElement); 
+            lastOriginalWord = textEl.innerText.trim();
+            triggerAreaPulse(boxElement); // Ses bittikten sonra görsel animasyon tetiklenir
             targetStates[refId] = 1; 
             return;
         }
 
         if (currentState === 1) {
-            SoundEngine.playClose();
+            SoundEngine.playClose(); // SES ANINDA ÇALDI
             boxElement.style.backgroundColor = "";
             boxElement.style.borderColor = "";
             textEl.innerText = kalip; 
@@ -1256,7 +1435,7 @@ function handleBoxClick(boxElement) {
         }
 
         if (currentState === 2) {
-            SoundEngine.playClick();
+            SoundEngine.playClick(); // SES ANINDA ÇALDI
             textEl.innerText = applyRootToKalip(currentRoot, kalip);
             lastOriginalWord = textEl.innerText.trim();
             triggerAreaPulse(boxElement); 
@@ -1265,11 +1444,45 @@ function handleBoxClick(boxElement) {
         }
     }
 
-    // C - STANDART KLAVYE MODU VEYA NORMAL KUTULARIN ÇALIŞMA MANTIĞI
+    // 3. Durum: Standart Kutu
+    if (boxElement.hasAttribute('data-tiklama-sayisi')) {
+        if (currentRoot.length !== 3) {
+            alert("Lütfen önce 3 harfli bir kök girin!");
+            openKeyboard();
+            return;
+        }
+
+        let tiklama = parseInt(boxElement.getAttribute('data-tiklama-sayisi') || '0');
+        const mapping = getBabAndType(refId);
+
+        if (tiklama === 0) {
+            SoundEngine.playClick(); // SES ANINDA ÇALDI
+            const vezinObj = babVezinleri[mapping.babNo];
+            let kalipMetni = kalip;
+            if (vezinObj && vezinObj[mapping.type]) {
+                kalipMetni = vezinObj[mapping.type];
+            }
+            textEl.innerText = applyRootToKalip(currentRoot, kalipMetni);
+            lastOriginalWord = textEl.innerText.trim();
+            triggerAreaPulse(boxElement);
+            boxElement.setAttribute('data-tiklama-sayisi', '1');
+        } else {
+            // Popup açılış sesi
+            SoundEngine.playClick(); 
+            const vezinObj = babVezinleri[mapping.babNo];
+            let anaVezin = kalip;
+            if (vezinObj && vezinObj[mapping.type]) {
+                anaVezin = vezinObj[mapping.type];
+            }
+            openConjugationPopup(currentRoot, mapping.babNo, mapping.type, anaVezin);
+            boxElement.setAttribute('data-tiklama-sayisi', '0'); 
+        }
+        return;
+    }
+
     applyToSpecificBox(boxElement);
 }
 
-// 🎯 3. STANDART KUTU ETKİLEŞİM MOTORU
 function applyToSpecificBox(boxElement) {
     const targetEl = boxElement.querySelector('.ar, .ar-small');
     if (!targetEl) return;
@@ -1312,159 +1525,189 @@ function applyRootToKalip(root, kalip) {
     return result;
 }
 
-// 👑 GELİŞMİŞ VE KURALLI FİİL ÇEKİM MOTORU
-function openConjugationModal(type, baseWord) {
+
+
+function openConjugationPopup(kok, babNo, tip, anaVezin) {
     SoundEngine.playClick();
-    const overlay = document.getElementById('conjugation-overlay');
-    const title = document.getElementById('conjugation-title');
-    const content = document.getElementById('conjugation-content');
     
-    let stem = baseWord.replace(/[َُِّْ]$/, ""); 
+    if (!lastClickedBoxTextSpan) return;
+    const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
+    if (!boxElement) return;
 
-    let html = "";
-    if (type === 'mazi') {
-        title.innerText = "Mazi Fiil Çekimi (15 Sîga)";
-        
-        const sigas = [
-            {w: stem + "َ", l: "Müfred Gâib (O)"}, 
-            {w: stem + "َا", l: "Tesniye Gâib (O ikisi)"}, 
-            {w: stem + "ُوا", l: "Cemi Gâib (Onlar)"},
-            
-            {w: stem + "َتْ", l: "Müfred Gâibe (O K.)"}, 
-            {w: stem + "َتَا", l: "Tesniye Gâibe (O ikisi K.)"}, 
-            {w: stem + "ْنَ", l: "Cemi Gâibe (Onlar K. - Nun-u Nisve)"},
-            
-            {w: stem + "ْتَ", l: "Müfred Muhâtab (Sen)"}, 
-            {w: stem + "ْتُمَا", l: "Tesniye Muhâtab (Siz ikiniz)"}, 
-            {w: stem + "ْتُمْ", l: "Cemi Muhâtab (Sizler)"},
-            
-            {w: stem + "ْتِ", l: "Müfred Muhâtabe (Sen K.)"}, 
-            {w: stem + "ْتُمَا", l: "Tesniye Muhâtabe (Siz ikiniz K.)"}, 
-            {w: stem + "ْتُنَّ", l: "Cemi Muhâtabe (Sizler K.)"},
-            
-            {w: stem + "ْتُ", l: "Müfred Mütekellim (Ben)"}, 
-            {w: stem + "ْنَا", l: "Cemi Mütekellim (Biz)"}, 
-            {w: stem + "ْنَا", l: "Cemi Mütekellim (Biz - Muazzam)"}
-        ];
-
-        html += `<table class="conjugation-table">
-            <thead>
-                <tr>
-                    <th>Müfred (Tekil)</th>
-                    <th>Tesniye (İkil)</th>
-                    <th>Cemi (Çoğul)</th>
-                </tr>
-            </thead>
-            <tbody>`;
-        for (let i = 0; i < 15; i += 3) {
-            html += `<tr>
-                <td><span class="siga-text">${sigas[i].w}</span><span class="siga-label">${sigas[i].l}</span></td>
-                <td><span class="siga-text">${sigas[i+1].w}</span><span class="siga-label">${sigas[i+1].l}</span></td>
-                <td><span class="siga-text">${sigas[i+2].w}</span><span class="siga-label">${sigas[i+2].l}</span></td>
-            </tr>`;
+    // Başka açık matris varsa temizle
+    document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
+        if (openBox !== boxElement) {
+            const openCloseBtn = openBox.querySelector('.matrix-close-btn');
+            if (openCloseBtn) closeInlineMatrix(null, openCloseBtn);
         }
-        html += `</tbody></table>`;
+    });
 
-    } else if (type === 'muzari') {
-        title.innerText = "Muzari Fiil Çekimi (15 Sîga)";
-        
-        let maziRoot = baseWord.replace(/^[يَتأنXَُِّْ]/, "").replace(/[َُِّْ]/g, ""); 
-        
-        let prefixY = "يَ";
-        let prefixT = "تَ";
-        let prefixA = "أَ";
-        let prefixN = "نَ";
-        
-        let r1 = maziRoot[0] || "ف";
-        let r2 = maziRoot[1] || "ع";
-        let r3 = maziRoot[2] || "ل";
-        
-        let core = r1 + "ْ" + r2 + "ُ" + r3; 
-
-        const sigas = [
-            {w: prefixY + core + "ُ", l: "Müfred Gâib (O)"}, 
-            {w: prefixY + r1 + "ْ" + r2 + "ُ" + r3 + "َانِ", l: "Tesniye Gâib (O ikisi) [Fetha + İkil]"}, 
-            {w: prefixY + r1 + "ْ" + r2 + "ُ" + r3 + "ُونَ", l: "Cemi Gâib (Onlar)"},
-            
-            {w: prefixT + core + "ُ", l: "Müfred Gâibe (O K.)"}, 
-            {w: prefixT + r1 + "ْ" + r2 + "ُ" + r3 + "َانِ", l: "Tesniye Gâibe (O ikisi K.)"}, 
-            {w: prefixY + r1 + "ْ" + r2 + "ُ" + r3 + "ْنَ", l: "Cemi Gâibe (Onlar K. - Nun-u Nisve) [Cezm]"},
-            
-            {w: prefixT + core + "ُ", l: "Müfred Muhâtab (Sen)"}, 
-            {w: prefixT + r1 + "ْ" + r2 + "ُ" + r3 + "َانِ", l: "Tesniye Muhâtab (Siz ikiniz)"}, 
-            {w: prefixT + r1 + "ْ" + r2 + "ُ" + r3 + "ُونَ", l: "Cemi Muhâtab (Sizler)"},
-            
-            {w: prefixT + r1 + "ْ" + r2 + "ُ" + r3 + "ينَ", l: "Müfred Muhâtabe (Sen K.)"}, 
-            {w: prefixT + r1 + "ْ" + r2 + "ُ" + r3 + "َانِ", l: "Tesniye Muhâtabe (Siz ikiniz K.)"}, 
-            {w: prefixT + r1 + "ْ" + r2 + "ُ" + r3 + "ْنَ", l: "Cemi Muhâtabe (Sizler K. - Nun-u Nisve) [Cezm]"},
-            
-            {w: prefixA + core + "ُ", l: "Müfred Mütekellim (Ben)"}, 
-            {w: prefixN + core + "ُ", l: "Cemi Mütekellim (Biz)"}, 
-            {w: prefixN + core + "ُ", l: "Cemi Mütekellim (Biz - Muazzam)"}
-        ];
-
-        html += `<table class="conjugation-table">
-            <thead>
-                <tr>
-                    <th>Müfred (Tekil)</th>
-                    <th>Tesniye (İkil)</th>
-                    <th>Cemi (Çoğul)</th>
-                </tr>
-            </thead>
-            <tbody>`;
-        for (let i = 0; i < 15; i += 3) {
-            html += `<tr>
-                <td><span class="siga-text">${sigas[i].w}</span><span class="siga-label">${sigas[i].l}</span></td>
-                <td><span class="siga-text">${sigas[i+1].w}</span><span class="siga-label">${sigas[i+1].l}</span></td>
-                <td><span class="siga-text">${sigas[i+2].w}</span><span class="siga-label">${sigas[i+2].l}</span></td>
-            </tr>`;
-        }
-        html += `</tbody></table>`;
-
-    } else if (type === 'emir') {
-        title.innerText = "Emir Fiil Çekimi (6 Sîga)";
-        
-        let maziRoot = baseWord.replace(/^[أاُِّْ]/, "").replace(/[َُِّْ]/g, ""); 
-        let r1 = maziRoot[0] || "ف";
-        let r2 = maziRoot[1] || "ع";
-        let r3 = maziRoot[2] || "ل";
-
-        const sigas = [
-            {w: "أُ" + r1 + "ْ" + r2 + "ُ" + r3 + "ْ", l: "Müfred Muhâtab (Yap)"}, 
-            {w: "أُ" + r1 + "ْ" + r2 + "ُ" + r3 + "َا", l: "Tesniye Muhâtab (Yapın ikiniz) [Fetha]"}, 
-            {w: "أُ" + r1 + "ْ" + r2 + "ُ" + r3 + "ُوا", l: "Cemi Muhâtab (Yapın sizler)"},
-            
-            {w: "أُ" + r1 + "ْ" + r2 + "ُ" + r3 + "ِي", l: "Müfred Muhâtabe (Yap K.)"}, 
-            {w: "أُ" + r1 + "ْ" + r2 + "ُ" + r3 + "َا", l: "Tesniye Muhâtabe (Yapın ikiniz K.)"}, 
-            {w: "أُ" + r1 + "ْ" + r2 + "ُ" + r3 + "ْنَ", l: "Cemi Muhâtabe (Yapın sizler K. - Nun-u Nisve) [Cezm]"}
-        ];
-
-        html += `<table class="conjugation-table">
-            <thead>
-                <tr>
-                    <th>Müfred (Tekil)</th>
-                    <th>Tesniye (İkil)</th>
-                    <th>Cemi (Çoğul)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><span class="siga-text">${sigas[0].w}</span><span class="siga-label">${sigas[0].l}</span></td>
-                    <td><span class="siga-text">${sigas[1].w}</span><span class="siga-label">${sigas[1].l}</span></td>
-                    <td><span class="siga-text">${sigas[2].w}</span><span class="siga-label">${sigas[2].l}</span></td>
-                </tr>
-                <tr>
-                    <td><span class="siga-text">${sigas[3].w}</span><span class="siga-label">${sigas[3].l}</span></td>
-                    <td><span class="siga-text">${sigas[4].w}</span><span class="siga-label">${sigas[4].l}</span></td>
-                    <td><span class="siga-text">${sigas[5].w}</span><span class="siga-label">${sigas[5].l}</span></td>
-                </tr>
-            </tbody></table>`;
+    let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
+    if (!inlineContainer) {
+        inlineContainer = document.createElement('div');
+        inlineContainer.className = 'conjugation-inline-container';
+        boxElement.appendChild(inlineContainer);
     }
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const tableWidth = 420;
+    const estimatedTableHeight = 410; 
     
-    content.innerHTML = html;
-    overlay.style.display = "flex";
+    // Kutunun ekrandaki anlık koordinatlarını alıyoruz
+    let rect = boxElement.getBoundingClientRect();
+    
+    /* 1. EKSEN: 🚀 SABİT YATAY (X) KONUMLANDIRMA (3 KAT ARTTIRILDI: 15px -> 45px) */
+    // Tablonun konumu kalıp kutusunun tam 45 piksel soluna kilitlenir
+    let targetLeft = -tableWidth - 60;
+    
+    // Çok küçük ekranlarda veya sol kenara aşırı yakın kutularda ekran dışına taşma emniyeti
+    let globalLeft = rect.left + targetLeft;
+    if (globalLeft < 10) {
+        targetLeft = 10 - rect.left;
+    }
+    inlineContainer.style.left = `${targetLeft}px`;
+
+    /* 2. EKSEN: 🚀 SABİT DİKEY (Y) KONUMLANDIRMA (EKRANIN TAM ORTASI) */
+    // Kutunun sayfadaki dikey konumundan bağımsız olarak, tablonun dikey merkezi ekranın dikey merkezine eşitlenir
+    let targetTop = (windowHeight / 2) - (estimatedTableHeight / 2) - rect.top;
+
+    // Üst ve alt ekstrem taşma durumları için genel tarayıcı emniyet kontrolü
+    let globalTop = rect.top + targetTop;
+    let globalBottom = globalTop + estimatedTableHeight;
+    if (globalTop < 10) {
+        targetTop = 10 - rect.top;
+    } else if (globalBottom > windowHeight - 10) {
+        targetTop = (windowHeight - estimatedTableHeight - 10) - rect.top;
+    }
+
+    // Hesaplanan sabit dikey koordinatı enjekte ediyoruz
+    inlineContainer.style.top = `${targetTop}px`;
+    
+    // Çekim algoritmaları (Hızlı Döngü Yapısı Aynen Korundu)
+    const tabanKelime = applyRootToKalip(kok, anaVezin);
+    let stem = tabanKelime.replace(/[َُِّْ]$/, "");
+    let kelimeListesi = [];
+
+    const list = sigaSablonlari[tip];
+    list.forEach(siga => {
+        let cekilmisKelime = "";
+        
+        if (tip === 'muzari') {
+            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+            let aynHareke = "ُ"; 
+            if (anaVezin.includes("يَفْعِلُ")) aynHareke = "ِ";
+            else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ")) aynHareke = "َ";
+            
+            let prefix = siga.prefix;
+            if (babNo === 7) prefix = "يُ";       
+            else if (babNo === 8) prefix = "يُ";  
+            else if (babNo === 9) prefix = "يُ";  
+            else if (babNo === 13) prefix = "يَتَ"; 
+            else if (babNo === 14) prefix = "يَتَ"; 
+
+            let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
+            if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+            else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+            else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+            else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;     
+            else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3; 
+            
+            let currentPrefix = prefix;
+            if (siga.prefix === 'تَ') {
+                currentPrefix = (babNo === 13 || babNo === 14) ? "تَتَ" : ((babNo === 7 || babNo === 8 || babNo === 9) ? "تُ" : "تَ");
+            } else if (siga.prefix === 'أَ') {
+                currentPrefix = (babNo === 13 || babNo === 14) ? "أَتَ" : ((babNo === 7 || babNo === 8 || babNo === 9) ? "أُ" : "أَ");
+            } else if (siga.prefix === 'نَ') {
+                currentPrefix = (babNo === 13 || babNo === 14) ? "نَتَ" : ((babNo === 7 || babNo === 8 || babNo === 9) ? "نُ" : "نَ");
+            }
+            cekilmisKelime = currentPrefix + coreWord + siga.suffix;
+        } 
+        else if (tip === 'mazi') {
+            cekilmisKelime = stem + siga.ek;
+        } 
+        else if (tip === 'emir') {
+            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+            let emirPrefix = "اِ";
+            if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
+            else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
+            else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
+
+            let aynHareke = "ِ";
+            if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
+            else if (anaVezin.includes("اِfْعَلْ")) aynHareke = "َ";
+
+            let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
+            if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
+            else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+            else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
+            else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+            else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
+            else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
+            else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+
+            cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+        }
+        kelimeListesi.push(cekilmisKelime);
+    });
+
+    let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
+    html += `<table class="conjugation-table">`;
+    html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
+
+    let totalItems = kelimeListesi.length;
+    for (let i = 0; i < totalItems; i += 3) {
+        html += `<tr>
+                    <td><span class="siga-text">${kelimeListesi[i] || ''}</span></td>
+                    <td><span class="siga-text">${kelimeListesi[i+1] || ''}</span></td>
+                    <td><span class="siga-text">${kelimeListesi[i+2] || ''}</span></td>
+                 </tr>`;
+    }
+    html += `</tbody></table>`;
+    
+    inlineContainer.innerHTML = html;
+    
+    boxElement.style.zIndex = "999999";
+    boxElement.classList.add('matrix-opened');
 }
 
+// KAPATMA FONKSİYONU
+function closeInlineMatrix(e, btnElement) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    SoundEngine.playClose();
+    const boxElement = btnElement.closest('.glass-box');
+    if (boxElement) {
+        boxElement.classList.remove('matrix-opened');
+        boxElement.style.zIndex = "";
+        setTimeout(() => {
+            const container = boxElement.querySelector('.conjugation-inline-container');
+            if (container && !boxElement.classList.contains('matrix-opened')) {
+                container.remove();
+            }
+        }, 150);
+    }
+}
+
+// BOŞ ALANA TIKLANDIĞINDA KAPATMA DESTEĞİ
+document.addEventListener('click', function(e) {
+    const conjugationContainer = e.target.closest('.conjugation-inline-container');
+    const glassBox = e.target.closest('.glass-box');
+
+    if (!conjugationContainer && !glassBox) {
+        const openedBoxes = document.querySelectorAll('.glass-box.matrix-opened');
+        if (openedBoxes.length > 0) {
+            openedBoxes.forEach(box => {
+                const closeBtn = box.querySelector('.matrix-close-btn');
+                if (closeBtn) closeInlineMatrix(e, closeBtn);
+            });
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+}, true);
 function closeConjugationModal() {
     SoundEngine.playClose();
     document.getElementById('conjugation-overlay').style.display = 'none';
@@ -1572,11 +1815,14 @@ function resetTableOnly(isSilent = false) {
     document.querySelectorAll('.glass-box').forEach(box => {
         box.classList.remove('hidden-mode');
         box.classList.remove("pulse-highlight"); 
+        box.classList.remove('matrix-opened');
         box.removeAttribute('data-modal-closed');
         
         box.style.backgroundColor = ""; 
         box.style.borderColor = "";
         box.style.background = "";
+        box.style.zIndex = "";
+        if (box.hasAttribute('data-tiklama-sayisi')) box.setAttribute('data-tiklama-sayisi', '0');
 
         const el = box.querySelector('.ar, .ar-small');
         if (el) {
@@ -1584,6 +1830,8 @@ function resetTableOnly(isSilent = false) {
             const original = el.getAttribute('data-original');
             if (original) el.innerText = original;
         }
+        const container = box.querySelector('.conjugation-inline-container');
+        if (container) container.innerHTML = '';
     });
     
     const rootDisplay = document.getElementById('root-text-display');
@@ -1640,7 +1888,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Suffix Menü dışı tıklama olayları
 document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const menu = document.getElementById("suffix-dropdown");
@@ -1695,7 +1942,7 @@ function applySuffix(suffix) {
 
     let updatedWord = baseText + suffix;
     lastClickedBoxTextSpan.innerText = updatedWord;
-    lastOriginalWord = updatedWord; // Hafızayı yeni ekli kelimeyle güncelle
+    lastOriginalWord = updatedWord; 
 
     const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
     if (currentBox) {
@@ -1715,6 +1962,93 @@ window.resetTableOnly = function() {
     const menu = document.getElementById("suffix-dropdown");
     if (menu) menu.style.display = "none";
 };
+// ==========================================
+// 1. POPUP/TABLO DIŞINA VEYA ÇARPIYA TIKLANDIĞINDA TEMİZLEME
+// ==========================================
+document.addEventListener("click", function(event) {
+    // Şu an açık olan inline fiil tablosu kutusunu bul
+    const openedBox = document.querySelector(".glass-box.matrix-opened");
+    
+    if (openedBox) {
+        // Eğer tıklanan yer açılan tablonun içi değilse kapatma ve sıfırlama sürecini başlat
+        if (!openedBox.contains(event.target)) {
+            event.stopPropagation();
+            event.preventDefault();
+            
+            // Eğer çarpı butonu varsa ona tıkla, yoksa manuel kapat
+            const closeBtn = openedBox.querySelector(".matrix-close-btn");
+            if (closeBtn) {
+                closeBtn.click();
+            } else {
+                // Fiil kutusunu tamamen eski haline döndür
+                resetVerbBoxToOriginal(openedBox);
+            }
+        }
+    }
+}, true); // 'true' (Capture) modu tıklamanın başka kalıpları türetmesini havada engeller
+
+// ==========================================
+// 2. FİİL KUTUSUNU TAMAMEN SIFIRLAYAN YARDIMCI FONKSİYON
+// ==========================================
+function resetVerbBoxToOriginal(box) {
+    if (!box) return;
+    
+    // Tablo sınıfını, yeşil dolguları ve animasyonları kaldır
+    box.classList.remove("matrix-opened", "pulse-highlight", "hidden-mode");
+    
+    // Inline tablo container'ı varsa sıfırla/gizle
+    const inlineContainer = box.querySelector(".conjugation-inline-container");
+    if (inlineContainer) {
+        inlineContainer.style.display = "none";
+        inlineContainer.style.opacity = "0";
+    }
+
+    // Satır içi stilleri (yeşil arka planı) tamamen temizle, CSS'teki orijinal beyaz haline dönsün
+    box.style.backgroundColor = "";
+    box.style.background = "";
+    box.style.boxShadow = "";
+
+    // 🚀 Fiil ilk tıklandığında türeyen kelimeyi ve yeşil dolguyu kaldırıp orijinal kalıbına (örn: فَعَلَ) döndürür
+    const textSpan = box.querySelector(".ar, .ar-small");
+    if (textSpan && box.dataset.originalText) {
+        textSpan.innerText = box.dataset.originalText;
+    }
+}
+
+
+// Hazır Fiil, Klavye ve Diğer Overlay (Popup) pencereleri için dış arka plana tıklama kontrolü
+const modalOverlays = [
+    { id: "verb-overlay", closeFn: window.closeVerbModal },
+    { id: "conjugation-overlay", closeFn: window.closeConjugationModal },
+    { id: "keyboard-overlay", closeFn: window.closeKeyboard }
+];
+
+modalOverlays.forEach(modal => {
+    const overlayEl = document.getElementById(modal.id);
+    if (overlayEl) {
+        overlayEl.addEventListener("click", function(event) {
+            // Eğer tam olarak gri/bulanık arka plana tıklandıysa (içindeki beyaz panele değilse) kapat
+            if (event.target === overlayEl) {
+                if (typeof modal.closeFn === "function") {
+                    modal.closeFn();
+                } else {
+                    overlayEl.style.display = "none";
+                }
+            }
+        });
+    }
+});
+// 1. Çarpı butonuna basıldığında event'in yukarı sıçramasını (kutuyu tekrar tetiklemesini) engelleyin
+document.querySelectorAll('.matrix-close-btn').forEach(btn => {
+    btn.addEventListener('click', function(event) {
+        event.stopPropagation(); // Tıklamanın glass-box'a ulaşmasını engeller
+        const currentBox = this.closest('.glass-box');
+        if (currentBox) {
+            currentBox.classList.remove('matrix-opened');
+        }
+    });
+});
+
 </script>
 <div id="zoom-focus-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); z-index: 99999; justify-content: center; align-items: center; pointer-events: none;">
     <div id="zoom-focus-content" style="background: #ffffff; border: 2px solid #000000; border-radius: 6px; text-align: center; padding: 4px 12px; box-shadow: 0 35px 100px rgba(0, 0, 0, 0.6); display: inline-block; transform: scale(1); font-family: 'Arakom' !important; font-weight: normal !important;">
