@@ -66,41 +66,76 @@
 
     .tab-link.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-    main { width: 98%; flex-grow: 1; display: flex; flex-direction: column; }
+    main { 
+    width: 98%; 
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; /* Sayfanın genelinde kaydırmayı engeller */
+    margin-bottom: 1rem; /* Alttan ekrana yapışmasın */
+}
 
-    .tab-panel { display: none; width: 100%; height: 100%; }
-    .tab-panel.active { display: block; }
+    .tab-panel { 
+    display: none; 
+    width: 100%; 
+    height: 100%; 
+}
+
+.tab-panel.active { 
+    display: flex; 
+    flex-direction: column; 
+}
 
     .table-card {
-        background: white; border-radius: 1rem; overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%;
-    }
+    background: white; 
+    border-radius: 1rem; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+    width: 100%;
+    flex-grow: 1; /* Kartın kalan tüm alanı kaplamasını sağlar */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Ekran çok aşırı küçülürse sadece tablonun içi kayar, sayfa bozulmaz */
+}
 
-    table { width: 100%; border-collapse: collapse; direction: rtl; table-layout: fixed; font-weight: normal; }
+table { 
+    width: 100%; 
+    height: 100%; /* Tabloyu kartın içine tam yayar */
+    border-collapse: collapse; 
+    direction: rtl; 
+    table-layout: fixed; 
+    font-weight: normal; 
+}
 
     /* Cinsiyete Göre Satır Renklendirmeleri */
     .row-muzekker { background-color: var(--muzekker-row); }
     .row-muennes { background-color: var(--muennes-row); }
     .row-ortak { background-color: var(--ortak-row); }
 
-    td { 
-        height: var(--cell-height); text-align: center; border: 1px solid #cbd5e1;
-        cursor: pointer; transition: 0.2s;
-        font-weight: normal;
-    }
+   td { 
+    text-align: center; 
+    vertical-align: middle; /* İçeriği dikeyde tam ortalar */
+    border: 1px solid #cbd5e1;
+    cursor: pointer; 
+    transition: 0.2s;
+    font-weight: normal;
+}
 
-    td:hover { opacity: 0.85; }
+.pattern { 
+    display: block; 
+    font-size: 3.5rem; 
+    color: var(--mazi-color); 
+    letter-spacing: -2px; 
+    margin: 0.5rem 0; /* Sadece küçük bir esneme payı */
+    font-weight: normal;
+}
 
-    .pattern { 
-        display: block; font-size: 3.5rem; color: var(--mazi-color); 
-        letter-spacing: -2px; margin-bottom: 0.2rem;
-        font-weight: normal;
-    }
-    
-    .full { 
-        display: none; font-size: 4rem; color: var(--success); font-weight: normal; 
-    }
-
+.full { 
+    display: none; 
+    font-size: 4rem; 
+    color: var(--success); 
+    margin: 0.5rem 0; 
+    font-weight: normal; 
+}
     .meaning { 
         display: block; font-size: 1.2rem; color: #475569; font-weight: normal;
     }
