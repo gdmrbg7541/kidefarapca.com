@@ -36,15 +36,13 @@
             user-select: none;
         }
 
-        /* 🚀 Matris açıkken üst bar penceresindeki geri dön butonunun hover'ını ve tıklanmasını engeller */
-body:has(.glass-box.matrix-opened) .back-link {
-    background: #fff !important;
-    color: #000 !important;
-    cursor: default;
-    pointer-events: none; /* Bu aşamada tıklanmasını da kilitler */
-}
+        body:has(.glass-box.matrix-opened) .back-link {
+            background: #fff !important;
+            color: #000 !important;
+            cursor: default;
+            pointer-events: none; 
+        }
 
-        /* Üst Kontrol Barı */
         .top-bar {
             display: flex;
             gap: 15px;
@@ -66,7 +64,6 @@ body:has(.glass-box.matrix-opened) .back-link {
             box-sizing: border-box;
         }
 
-        /* SEGMENTED CONTROL */
         .segmented-switch {
             flex: 1;
             display: flex;
@@ -101,7 +98,7 @@ body:has(.glass-box.matrix-opened) .back-link {
             bottom: 3px;
             left: 3px; 
             width: calc(50% - 3px);
-           background: #8e8e93;
+            background: #8e8e93;
             border-radius: 6px;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 1;
@@ -116,7 +113,6 @@ body:has(.glass-box.matrix-opened) .back-link {
         .segmented-switch.mezid-active .switch-btn.mucerred-btn { color: #000000; }
         .segmented-switch.mezid-active .switch-btn.mezid-btn { color: #ffffff; }
 
-        /* MANUEL ZOOM CONTROL SWITCH */
         .zoom-toggle-area {
             display: flex;
             align-items: center;
@@ -202,53 +198,16 @@ body:has(.glass-box.matrix-opened) .back-link {
             touch-action: pan-y;
         }
 
-       .slider-bandi {
-    display: flex;
-    width: 200%; 
-    /* Yana kayma animasyonu eklendi: */
-   transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
-}
+        .slider-bandi {
+            display: flex;
+            width: 200%; 
+            transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
         .tab-content { 
             width: 50%; 
             flex-shrink: 0;
             box-sizing: border-box;
         }
-/* Tam Ekran Modu - Merkezleme ve Ölçekleme */
-.full-screen-mode {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 9999999 !important;
-    
-    /* Merkezleme Büyüsü */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    
-    background: #ffffff !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    overflow: auto !important;
-}
-
-/* Tablonun kendisini ve içindeki her şeyi %150 büyütür */
-.full-screen-mode table {
-    width: 85% !important; /* Ekranın %85'ini kullansın */
-    height: auto !important;
-    transform: scale(1.5); /* Tasarımı olduğu gibi 1.5 kat büyütür */
-    transform-origin: center center;
-}
-
-/* Hücre içlerini ve yazıları orantılı tut */
-.full-screen-mode td, .full-screen-mode th {
-    padding: 20px !important;
-}
-
-.full-screen-mode .siga-text {
-    font-size: 30px !important; /* Yazı tipi boyutunu manuel sabitledik */
-}
 
         .container { 
             max-width: 100%; 
@@ -262,28 +221,17 @@ body:has(.glass-box.matrix-opened) .back-link {
         }
 
         th {
-    color: #FFFFFF !important;
-    padding: 10px 5px;
-    border: 2px solid #000;
-    text-align: center;
-    font-weight: normal;
-    font-size: 15px;
-}
+            color: #FFFFFF !important;
+            padding: 10px 5px;
+            border: 2px solid #000;
+            text-align: center;
+            font-weight: normal;
+            font-size: 15px;
+        }
 
-/* FİİL olan başlıkların rengi (Yeşil) */
-th.baslik-fiil {
-    background-color: #34C759 !important; /* Göz yormayan, canlı bir yeşil tonu */
-}
-
-/* İSİM olan başlıkların rengi (Mavi) */
-th.baslik-isim {
-    background-color: #2B88D9; !important; /* Uyumlu, şık bir mavi tonu */
-}
-
-/* "BÂBLAR" ve "3+" gibi nötr başlıklar için renk (Koyu Gri) */
-th.baslik-notr {
-    background-color: #555555 !important; 
-}
+        th.baslik-fiil { background-color: #34C759 !important; }
+        th.baslik-isim { background-color: #2B88D9 !important; }
+        th.baslik-notr { background-color: transparent !important; color: #FF3B30 !important; }
 
         table { 
             width: 100%; 
@@ -309,6 +257,14 @@ th.baslik-notr {
             vertical-align: middle; 
             padding: 4px;
         }
+        td:first-child {
+            color: #FF3B30 !important;
+            font-weight: bold; 
+        }
+        .conjugation-table td:first-child {
+            color: #000000 !important;
+            font-weight: normal;
+        }
 
         .glass-box {
             position: relative; 
@@ -327,7 +283,6 @@ th.baslik-notr {
             cursor: pointer;
         }
         
-        /* 🚀 HOVER AKSIYONU: Matris açıkken alttaki kutunun büyümesini ve titremesini engelliyoruz */
         .glass-box:hover:not(.matrix-opened) { 
             background: #f5f5f7; 
             transform: scale(1.02); 
@@ -381,12 +336,13 @@ th.baslik-notr {
             margin-left: -12px;
             margin-right: -12px;
             padding: 8px;
-            background-color: #FF3B30 !important;
+            background-color: #2B88D9 !important;
             color: #FFFFFF !important;
             border-bottom: 2px solid #000;
             border-top-left-radius: 6px;
             border-top-right-radius: 6px;
         }
+        .cemi-area .block-title { background-color: #2B88D9 !important; }
         
         .cemi-area { flex: 8; }
         .tafdil-area { flex: 2; }
@@ -399,9 +355,7 @@ th.baslik-notr {
             justify-items: center;
         }
 
-.full-screen-mode th, .full-screen-mode td {
-    padding: 20px !important; /* Tam ekranda hücreleri ferahlatır */
-}
+        .full-screen-mode th, .full-screen-mode td { padding: 20px !important; }
         .cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; }
 
         .keyboard-overlay, .verb-overlay, .conjugation-overlay {
@@ -444,12 +398,10 @@ th.baslik-notr {
         }
 
         .keyboard-container {
-            position: relative;
             padding-top: 50px; 
             background: transparent !important;
-            max-width: 95vw;
-            display: flex;
-            flex-direction: column;
+            border: none;
+            box-shadow: none;
         }
 
         .verb-grid {
@@ -530,139 +482,91 @@ th.baslik-notr {
             visibility: visible !important; 
         }
 
+        /* 👑 YAMA: FARE HAREKETLERİNDEN ASLA ETKİLENMEYEN ULTRA SABİT MATRİS KONTEYNERİ */
+        .conjugation-inline-container {
+            display: none;
+            position: absolute; 
+            background: #ffffff !important;
+            border: 3px solid #000000;
+            border-radius: 16px;       
+            padding: 20px;             
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            z-index: 999999 !important; 
+            width: 420px !important; 
+            max-width: 95vw !important;
+            max-height: 85vh !important;
+            overflow-y: auto !important;
+            opacity: 0;
+            pointer-events: auto;
+            transform: scale(0.95);
+            transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.15s ease;
+        }
+
+        .glass-box.matrix-opened .conjugation-inline-container {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .conjugation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            direction: rtl;
+            table-layout: fixed;
+        }
 
 
-/* 👑 YAMA: FARE HAREKETLERİNDEN ASLA ETKİLENMEYEN ULTRA SABİT MATRİS KONTEYNERİ */
-.conjugation-inline-container {
-    display: none;
-    position: absolute; /* Kutunun eksenine kilitli kalıyor */
-    background: #ffffff !important;
-    border: 3px solid #000000;
-    border-radius: 16px;       
-    padding: 20px;             
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    z-index: 999999 !important; 
-    width: 420px !important; 
-    max-width: 95vw !important;
-    
-    /* 🚀 EKSTREM MOBİL/KÜÇÜK EKRAN EMNİYETİ: Ekran çok küçükse tablonun kesilmesini engeller, kendi içinde kaydırır */
-    max-height: 85vh !important;
-    overflow-y: auto !important;
-    
-    opacity: 0;
-    pointer-events: auto;
-    transform: scale(0.95);
-    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.15s ease;
+        /* Tablo kapatılırken kutu üzerinde hiçbir animasyon oynatma */
+.glass-box.no-transition {
+    transition: none !important;
 }
 
-/* Kutu aktifleştiğinde görünür hale getirme */
-.glass-box.matrix-opened .conjugation-inline-container {
-    display: block;
-    opacity: 1;
-    transform: scale(1);
-}
+        .conjugation-table th {
+            background-color: #FF3B30 !important;
+            color: #FFFFFF !important;
+            border: 2px solid #000000;
+            padding: 8px;
+            font-size: 16px;
+            font-family: 'Arakom' !important;
+            font-weight: normal !important;
+        }
 
-/* "BÂBLAR" ve "3+" başlıkları: Arka plan renksiz, yazı kırmızı */
-th.baslik-notr {
-    background-color: transparent !important; /* Arka plan rengini kaldırır (şeffaf yapar) */
-    color: #FF3B30 !important; /* Yazı rengini kırmızı yapar */
-}
+        .conjugation-table td {
+            border: 2px solid #000000;
+            padding: 14px 6px;
+            text-align: center;
+            background: #ffffff;
+            width: 33.33%;
+        }
 
-/* Ana tablolardaki Bâb isimlerinin (ilk sütunun) yazısını kırmızı yapar */
-td:first-child {
-    color: #FF3B30 !important;
-    font-weight: bold; /* Daha okunaklı durması için kalınlaştırır (İstemezseniz silebilirsiniz) */
-}
+        .siga-text {
+            font-size: 28px;
+            color: #000000;
+            display: block;
+            font-family: 'Arakom' !important;
+            font-weight: normal !important;
+            line-height: 1.2;
+        }
 
-/* Çakışmayı Önleme: İçeride açılan Fiil Çekim tablolarınızın yazılarının siyah kalmasını sağlar */
-.conjugation-table td:first-child {
-    color: #000000 !important;
-    font-weight: normal;
-}
-
-/* DEV BOYUTLU ÇEKİM TABLOSU (Arakom & Regular) */
-.conjugation-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    direction: rtl;
-    table-layout: fixed;
-}
-
-.conjugation-table th {
-    background-color: #FF3B30 !important;
-    color: #FFFFFF !important;
-    border: 2px solid #000000;
-    padding: 8px;
-    font-size: 16px;
-    font-family: 'Arakom' !important;
-    font-weight: normal !important;
-}
-
-.conjugation-table td {
-    border: 2px solid #000000;
-    padding: 14px 6px;
-    text-align: center;
-    background: #ffffff;
-    width: 33.33%;
-}
-
-.siga-text {
-    font-size: 28px;
-    color: #000000;
-    display: block;
-    font-family: 'Arakom' !important;
-    font-weight: normal !important;
-    line-height: 1.2;
-}
-
-/* Kapatma Butonu (✕) */
-.matrix-close-btn {
-    position: absolute;
-    top: 4px;
-    right: 12px;
-    color: #FF3B30;
-    font-size: 24px;
-    cursor: pointer;
-    font-weight: normal;
-    z-index: 1000001; /* Tablonun da üstünde kalması için artırıldı */
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease;
-}
-.matrix-close-btn:hover {
-    transform: scale(1.2);
-}
-
-/* Alt taraftaki Cemi Teksir, İsm-i Tafdil ve İsm-i Tasvir blok başlıkları */
-.block-title, .box-header, [data-tür="isim"] { 
-    background-color: #2B88D9 !important; /* İsimler için kullandığımız mavi */
-    color: #FFFFFF !important; /* Yazı rengi beyaz */
-}
-
-.siga-label {
-    font-size: 11px;
-    color: #666;
-    display: block;
-    margin-top: 2px;
-    font-family: sans-serif;
-}
-
-        .keyboard-overlay {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; 
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.1) !important; 
-            z-index: 3000;
-            flex-direction: column;
-            justify-content: center;
+        .matrix-close-btn {
+            position: absolute;
+            top: 4px;
+            right: 12px;
+            color: #FF3B30;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: normal;
+            z-index: 1000001; 
+            width: 30px;
+            height: 30px;
+            display: flex;
             align-items: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(15px);
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        .matrix-close-btn:hover {
+            transform: scale(1.2);
         }
 
         #tab2 .ar { font-size: 30px !important; }
@@ -682,7 +586,17 @@ td:first-child {
             .cemi-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
 
-        /* MERKEZİ ULTRA ZOOM */
+
+
+ 
+       /* 🚀 ÇÖZÜM: Büyütme oranı 4.5 yapıldı */
+        @keyframes zoomToCenter {
+            0% { transform: translateZ(0) scale(1) rotate(0.001deg); }
+            15% { transform: translate3d(var(--move-x), var(--move-y), 0) scale(4.5) rotate(0.001deg); z-index: 99999; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+            85% { transform: translate3d(var(--move-x), var(--move-y), 0) scale(4.5) rotate(0.001deg); z-index: 99999; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+            100% { transform: translateZ(0) scale(1) rotate(0.001deg); z-index: 1; }
+        }
+
         .pulse-highlight {
             animation: zoomToCenter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
             z-index: 99999 !important; 
@@ -693,37 +607,7 @@ td:first-child {
             -moz-osx-font-smoothing: grayscale !important;
             will-change: transform; 
         }
-
-        @keyframes zoomToCenter {
-            0% {
-                transform: translate(var(--start-x), var(--start-y)) scale(1);
-                background-color: #ffffff !important;
-                box-shadow: none;
-            }
-            20% {
-                transform: translate(var(--move-x), var(--move-y)) scale(3.2); 
-                background: #ffffff !important; 
-                background-color: #ffffff !important;
-                opacity: 1 !important;
-                border: 2px solid #000000 !important;
-                box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45); 
-            }
-            85% {
-                transform: translate(var(--move-x), var(--move-y)) scale(3.2);
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-                opacity: 1 !important;
-                border: 2px solid #000000 !important;
-                box-shadow: 0 35px 100px rgba(0, 0, 0, 0.45), 0 0 0 5000px rgba(0, 0, 0, 0.45);
-            }
-            100% {
-                transform: translate(0, 0) scale(1);
-                background-color: rgba(0, 255, 65, 0.25) !important; 
-                background: rgba(0, 255, 65, 0.25) !important;
-                border: 2px solid #000000 !important;
-                box-shadow: none;
-            }
-        }
+       
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -805,7 +689,7 @@ td:first-child {
             <i class="fas fa-book root-icon" onclick="openVerbModal()" title="Hazır Fiiller"></i>
         </div>
         <span id="root-text-display">KÖK GİR</span>
-    </div>   
+    </div>  
 
     <div id="tabSwitch" class="segmented-switch mucerred-active">
         <div class="switch-slider"></div>
@@ -840,13 +724,14 @@ td:first-child {
 </div>
 
 <div id="suffix-dropdown" style="display: none; position: absolute; background: #ffffff; border: 2px solid #000000; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2000; padding: 6px; direction: rtl; flex-direction: column; gap: 6px; min-width: 65px; box-sizing: border-box;">
-    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('ة')">ة</button>
-    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('ات')">ات</button>
-    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('يّ')">يّ</button>
-    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('يَّة')">يَّة</button>
-    <button class="key" style="width: 100%; height: 38px; font-size: 2rem; font-family: 'Arakom', sans-serif; font-weight: normal; margin: 0; background: #1d1d1f; color: #ffffff; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="applySuffix('يَّات')">يَّات</button>
+    <button class="key" onclick="applySuffix('ة')">ة</button>
+    <button class="key" onclick="applySuffix('ينَ')">ينَ</button>
+    <button class="key" onclick="applySuffix('ونَ')">ونَ</button>
+    <button class="key" onclick="applySuffix('ات')">ات</button>
+    <button class="key" onclick="applySuffix('يّ')">يّ</button>
+    <button class="key" onclick="applySuffix('يَّة')">يَّة</button>
+    <button class="key" onclick="applySuffix('يَّات')">يَّات</button>
 </div>
-
 <div class="window-pencere">
     <div id="mainSliderBandi" class="slider-bandi">
         
@@ -856,11 +741,9 @@ td:first-child {
                    <thead>
         <tr>
             <th class="baslik-notr">BÂBLAR</th>
-            
             <th class="baslik-fiil">MAZİ</th>
             <th class="baslik-fiil">MUZARI</th>
             <th class="baslik-fiil">EMİR</th>
-            
             <th class="baslik-isim">MASTAR</th>
             <th class="baslik-isim">İSMİFÂİL</th>
             <th class="baslik-isim">İSİ MEF'ÛL</th>
@@ -871,104 +754,105 @@ td:first-child {
                     <tbody>
                         <tr>
                             <td align="center">Birinci Bâb</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">1</span><span class="ar">فَعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">2</span><span class="ar">يَفْعُلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">3</span><span class="ar">أُفْعُلْ</span></div></td>
+                           <td><div class="glass-box fiil-box is-verb" data-type="mazi" data-original="فَعَلَ"><span class="ref">1</span><span class="ar">فَعَلَ</span></div></td>
+<td><div class="glass-box fiil-box is-verb" data-type="muzari" data-original="يَفْعُلُ"><span class="ref">2</span><span class="ar">يَفْعُلُ</span></div></td>
+<td><div class="glass-box fiil-box is-verb" data-type="emir" data-original="أُفْعُلْ"><span class="ref">3</span><span class="ar">أُفْعُلْ</span></div></td>
                             <td rowspan="6" valign="top">
-                                <div class="mastar-grid">
-                                    <div class="glass-box"><span class="ref">17</span><span class="ar-small">فَعَل</span></div>
-                                    <div class="glass-box"><span class="ref">18</span><span class="ar-small">فَعِل</span></div>
-                                    <div class="glass-box"><span class="ref">19</span><span class="ar-small">فَعْل</span></div>
-                                    <div class="glass-box"><span class="ref">20</span><span class="ar-small">فِعْل</span></div>
-                                    <div class="glass-box"><span class="ref">21</span><span class="ar-small">فُعْل</span></div>
-                                    <div class="glass-box"><span class="ref">22</span><span class="ar-small">فَعَال</span></div>
-                                    <div class="glass-box"><span class="ref">23</span><span class="ar-small">فِعَال</span></div>
-                                    <div class="glass-box"><span class="ref">24</span><span class="ar-small">فُعَال</span></div>
-                                    <div class="glass-box"><span class="ref">25</span><span class="ar-small">فُعُول</span></div>
-                                    <div class="glass-box"><span class="ref">26</span><span class="ar-small">فَعُول</span></div>
-                                    <div class="glass-box"><span class="ref">27</span><span class="ar-small">فُعْلَان</span></div>
-                                    <div class="glass-box"><span class="ref">28</span><span class="ar-small">فَعْلَان</span></div>
-                                    <div class="glass-box"><span class="ref">29</span><span class="ar-small">فِعْلَان</span></div>
-                                    <div class="glass-box"><span class="ref">30</span><span class="ar-small">أَفْعَل</span></div>
-                                    <div class="glass-box"><span class="ref">31</span><span class="ar-small">فَعْلَاء</span></div>
-                                    <div class="glass-box"><span class="ref">32</span><span class="ar-small">فَعْلَى</span></div>
-                                </div>
-                            </td>
-                            <td rowspan="6" valign="middle">
-                                <div style="display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center;">
-                                    <div class="glass-box"><span class="ref">33</span><span class="ar">فَاعِل</span></div>
-                                    <div class="glass-box"><span class="ref">34</span><span class="ar">فَعَّال</span></div>
-                                    <div class="glass-box"><span class="ref">35</span><span class="ar">فَعِيل</span></div>
-                                </div>
-                            </td>
-                            <td rowspan="6" valign="middle"><div class="glass-box"><span class="ref">36</span><span class="ar">مَفْعُول</span></div></td>
-                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">37</span><span class="ar">مَفْعِل</span></div></td>
-                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">39</span><span class="ar">مِفْعَل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">İkinci Bâb</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">1</span><span class="ar">فَعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">4</span><span class="ar">يَفْعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">5</span><span class="ar">اِفْعِلْ</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Üçüncü Bâb</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">1</span><span class="ar">فَعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">6</span><span class="ar">يَفْعَلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">7</span><span class="ar">اِفْعَلْ</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Dördüncü Bâb</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">8</span><span class="ar">فَعِلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">9</span><span class="ar">يَفْعَلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">10</span><span class="ar">اِفْعَلْ</span></div></td>
-                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">38</span><span class="ar">مَفْعَل</span></div></td>
-                            <td rowspan="3" valign="middle"><div class="glass-box"><span class="ref">40</span><span class="ar">مِفْعَال</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Beşinci Bâb</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">11</span><span class="ar">فَعُلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">12</span><span class="ar">يَفْعُلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">13</span><span class="ar">أُفْعُلْ</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Altıncı Bâb</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">14</span><span class="ar">فَعِلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">15</span><span class="ar">يَفْعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">16</span><span class="ar">اِفْعِلْ</span></div></td>
-                        </tr>
+    <div class="mastar-grid">
+        <div class="glass-box" data-original="فَعَل"><span class="ref">17</span><span class="ar-small">فَعَل</span></div>
+        <div class="glass-box" data-original="فَعِل"><span class="ref">18</span><span class="ar-small">فَعِل</span></div>
+        <div class="glass-box" data-original="فَعْل"><span class="ref">19</span><span class="ar-small">فَعْل</span></div>
+        <div class="glass-box" data-original="فِعْل"><span class="ref">20</span><span class="ar-small">فِعْل</span></div>
+        <div class="glass-box" data-original="فُعْل"><span class="ref">21</span><span class="ar-small">فُعْل</span></div>
+        <div class="glass-box" data-original="فَعَال"><span class="ref">22</span><span class="ar-small">فَعَال</span></div>
+        <div class="glass-box" data-original="فِعَال"><span class="ref">23</span><span class="ar-small">فِعَال</span></div>
+        <div class="glass-box" data-original="فُعَال"><span class="ref">24</span><span class="ar-small">فُعَال</span></div>
+        <div class="glass-box" data-original="فُعُول"><span class="ref">25</span><span class="ar-small">فُعُول</span></div>
+        <div class="glass-box" data-original="فَعُول"><span class="ref">26</span><span class="ar-small">فَعُول</span></div>
+        <div class="glass-box" data-original="فُعْلَان"><span class="ref">27</span><span class="ar-small">فُعْلَان</span></div>
+        <div class="glass-box" data-original="فَعْلَان"><span class="ref">28</span><span class="ar-small">فَعْلَان</span></div>
+        <div class="glass-box" data-original="فِعْلَان"><span class="ref">29</span><span class="ar-small">فِعْلَان</span></div>
+        <div class="glass-box" data-original="أَفْعَل"><span class="ref">30</span><span class="ar-small">أَفْعَل</span></div>
+        <div class="glass-box" data-original="فَعْلَاء"><span class="ref">31</span><span class="ar-small">فَعْلَاء</span></div>
+        <div class="glass-box" data-original="فَعْلَى"><span class="ref">32</span><span class="ar-small">فَعْلَى</span></div>
+    </div>
+</td>
+                           <td rowspan="6" valign="middle">
+    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center;">
+        <div class="glass-box" data-original="فَاعِل"><span class="ref">33</span><span class="ar">فَاعِل</span></div>
+        <div class="glass-box" data-original="فَعَّال"><span class="ref">34</span><span class="ar">فَعَّال</span></div>
+        <div class="glass-box" data-original="فَعِيل"><span class="ref">35</span><span class="ar">فَعِيل</span></div>
+    </div>
+</td>
+<td rowspan="6" valign="middle"><div class="glass-box" data-original="مَفْعُول"><span class="ref">36</span><span class="ar">مَفْعُول</span></div></td>
+<td rowspan="3" valign="middle"><div class="glass-box" data-original="مَفْعِل"><span class="ref">37</span><span class="ar">مَفْعِل</span></div></td>
+<td rowspan="3" valign="middle"><div class="glass-box" data-original="مِفْعَل"><span class="ref">39</span><span class="ar">مِفْعَل</span></div></td>
+</tr>
+<tr>
+    <td align="center">İkinci Bâb</td>
+    <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعَلَ"><span class="ref">1</span><span class="ar">فَعَلَ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعِلُ"><span class="ref">4</span><span class="ar">يَفْعِلُ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعِلْ"><span class="ref">5</span><span class="ar">اِفْعِلْ</span></div></td>
+</tr>
+<tr>
+    <td align="center">Üçüncü Bâb</td>
+    <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعَلَ"><span class="ref">1</span><span class="ar">فَعَلَ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعَلُ"><span class="ref">6</span><span class="ar">يَفْعَلُ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعَلْ"><span class="ref">7</span><span class="ar">اِفْعَلْ</span></div></td>
+</tr>
+<tr>
+    <td align="center">Dördüncü Bâb</td>
+    <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعِلَ"><span class="ref">8</span><span class="ar">فَعِلَ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعَلُ"><span class="ref">9</span><span class="ar">يَفْعَلُ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعَلْ"><span class="ref">10</span><span class="ar">اِفْعَلْ</span></div></td>
+    <td rowspan="3" valign="middle"><div class="glass-box" data-original="مَفْعَل"><span class="ref">38</span><span class="ar">مَفْعَل</span></div></td>
+    <td rowspan="3" valign="middle"><div class="glass-box" data-original="مِفْعَال"><span class="ref">40</span><span class="ar">مِفْعَال</span></div></td>
+</tr>
+<tr>
+    <td align="center">Beşinci Bâb</td>
+    <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعُلَ"><span class="ref">11</span><span class="ar">فَعُلَ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعُلُ"><span class="ref">12</span><span class="ar">يَفْعُلُ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="emir" data-original="أُفْعُلْ"><span class="ref">13</span><span class="ar">أُفْعُلْ</span></div></td>
+</tr>
+<tr>
+    <td align="center">Altıncı Bâb</td>
+    <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعِلَ"><span class="ref">14</span><span class="ar">فَعِلَ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعِلُ"><span class="ref">15</span><span class="ar">يَفْعِلُ</span></div></td>
+    <td><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعِلْ"><span class="ref">16</span><span class="ar">اِفْعِلْ</span></div></td>
+</tr>
                     </tbody>
                 </table>
 
                 <div class="footer-container">
-                    <div class="footer-block cemi-area">
-                        <div class="block-title">CEMİ TEKSİR</div>
-                        <div class="cemi-grid">
-                            <div class="glass-box"><span class="ref">41</span><span class="ar-small">أَفْعَال</span></div>
-                            <div class="glass-box"><span class="ref">42</span><span class="ar-small">فُعُل</span></div>
-                            <div class="glass-box"><span class="ref">43</span><span class="ar-small">فُعُول</span></div>
-                            <div class="glass-box"><span class="ref">44</span><span class="ar-small">فِعَال</span></div>
-                            <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّال</span></div>
-                            <div class="glass-box"><span class="ref">46</span><span class="ar-small">فُعَلَاء</span></div>
-                            <div class="glass-box"><span class="ref">47</span><span class="ar-small">فَعَلَة</span></div>
-                            <div class="glass-box"><span class="ref">48</span><span class="ar-small">فَعَائِل</span></div>
-                        </div>
-                    </div>
-                    <div class="footer-block tafdil-area">
-                        <div class="block-title">İSMİ TAFDİL</div>
-                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                            <div class="glass-box"><span class="ref">50</span><span class="ar-small">أَفْعَل</span></div>
-                            <div class="glass-box"><span class="ref">51</span><span class="ar-small">فُعْلَى</span></div>
-                        </div>
-                    </div>
-                    <div class="footer-block tasgir-area">
-                        <div class="block-title">İSMİ TASĞİR</div>
-                        <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 35px);">
-                            <div class="glass-box"><span class="ref">49</span><span class="ar-small">فُعَيْل</span></div>
-                        </div>
+    <div class="footer-block cemi-area">
+        <div class="block-title">CEMİ TEKSİR</div>
+        <div class="cemi-grid">
+            <div class="glass-box" data-original="أَفْعَال"><span class="ref">41</span><span class="ar-small">أَفْعَال</span></div>
+            <div class="glass-box" data-original="فُعُل"><span class="ref">42</span><span class="ar-small">فُعُل</span></div>
+            <div class="glass-box" data-original="فُعُول"><span class="ref">43</span><span class="ar-small">فُعُول</span></div>
+            <div class="glass-box" data-original="فِعَال"><span class="ref">44</span><span class="ar-small">فِعَال</span></div>
+            <div class="glass-box" data-original="فُعَّال"><span class="ref">45</span><span class="ar-small">فُعَّال</span></div>
+            <div class="glass-box" data-original="فُعَلَاء"><span class="ref">46</span><span class="ar-small">فُعَلَاء</span></div>
+            <div class="glass-box" data-original="فَعَلَة"><span class="ref">47</span><span class="ar-small">فَعَلَة</span></div>
+            <div class="glass-box" data-original="فَعَائِل"><span class="ref">48</span><span class="ar-small">فَعَائِل</span></div>
+        </div>
+    </div>
+                   <div class="footer-block tafdil-area">
+    <div class="block-title">İSMİ TAFDİL</div>
+    <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+        <div class="glass-box" data-original="أَفْعَل"><span class="ref">50</span><span class="ar-small">أَفْعَل</span></div>
+        <div class="glass-box" data-original="فُعْلَى"><span class="ref">51</span><span class="ar-small">فُعْلَى</span></div>
+    </div>
+</div>
+<div class="footer-block tasgir-area">
+    <div class="block-title">İSMİ TASĞİR</div>
+    <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 35px);">
+        <div class="glass-box" data-original="فُعَيْل"><span class="ref">49</span><span class="ar-small">فُعَيْل</span></div>
+    </div>
+</div>
                     </div>
                 </div>
-            </div>
+            
         </div>
 
         <div id="tab2" class="tab-content">
@@ -977,104 +861,102 @@ td:first-child {
                     <thead>
         <tr>
             <th width="100px" class="baslik-notr">3+</th>
-            
             <th class="baslik-fiil">MAZİ</th>
             <th class="baslik-fiil">MUZARI</th>
             <th class="baslik-fiil">EMİR</th>
-            
             <th class="baslik-isim">MASTAR</th>
             <th class="baslik-isim">İSMİ FÂİL</th>
             <th class="baslik-isim">İSMİ MEF'ÛL</th>
         </tr>
     </thead>
-                    <tbody>
-                        <tr>
-                            <td align="center">İf'al</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">52</span><span class="ar">أَفْعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">53</span><span class="ar">يُفْعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">54</span><span class="ar">أَفْعِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">55</span><span class="ar">إِفْعَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">56</span><span class="ar">مُفْعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">57</span><span class="ar">مُفْعَل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Tef'il</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">58</span><span class="ar">فَعَّلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">59</span><span class="ar">يُفَعِّلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">60</span><span class="ar">فَعِّلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">61</span><span class="ar">تَفْعِيل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">62</span><span class="ar">مُفَعِّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">63</span><span class="ar">مُفَعَّل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Müfa'ale</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">64</span><span class="ar">فَاعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">65</span><span class="ar">يُفَاعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">66</span><span class="ar">فَاعِلْ</span></div></td>
-                            <td>
-                                <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center;">
-                                    <div class="glass-box" style="width:45%; min-width:70px;"><span class="ref">67</span><span class="ar">مُفَاعَلَة</span></div>
-                                    <div class="glass-box" style="width:45%; min-width:70px;"><span class="ref">68</span><span class="ar">فِعَال</span></div>
-                                </div>
-                            </td>
-                            <td><div class="glass-box"><span class="ref">69</span><span class="ar">مُفَاعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">70</span><span class="ar">مُفَاعَل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">İnfi'âl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">71</span><span class="ar">اِنْفَعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">72</span><span class="ar">يَنْفَعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">73</span><span class="ar">انْفَعِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">74</span><span class="ar">انْفِعَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">75</span><span class="ar">مُنْفَعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">76</span><span class="ar">مُنْفَعَل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">İfti'âl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">77</span><span class="ar">اِفْتَعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">78</span><span class="ar">يَفْتَعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">79</span><span class="ar">افْتَعِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">80</span><span class="ar">افْتِعَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">81</span><span class="ar">مُفْتَعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">82</span><span class="ar">مُفْتَعَل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">İf'ilâl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">83</span><span class="ar">افْعَلَّ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">84</span><span class="ar">يَفْعَلُّ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">85</span><span class="ar">افْعَلِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">86</span><span class="ar">افْعِلَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">87</span><span class="ar">مُفْعَلّ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">x</span><span class="ar">-</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Tefe''ul</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">88</span><span class="ar">تَفَعَّلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Tefâ'ul</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">94</span><span class="ar">تَفَاعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">95</span><span class="ar">يَتَفَاعَلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">96</span><span class="ar">تَفَاعَلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">97</span><span class="ar">تَفَاعُل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">98</span><span class="ar">مُتَفَاعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">99</span><span class="ar">مُتَفَاعَل</span></div></td>
-                        </tr>
-                        <tr>
-                            <td align="center">İstif'âl</td>
-                            <td><div class="glass-box fiil-box" data-type="mazi"><span class="ref">100</span><span class="ar">اِسْتَفْعَلَ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="muzari"><span class="ref">101</span><span class="ar">يَسْتَفْعِلُ</span></div></td>
-                            <td><div class="glass-box fiil-box" data-type="emir"><span class="ref">102</span><span class="ar">اسْتَفْعِلْ</span></div></td>
-                            <td><div class="glass-box"><span class="ref">103</span><span class="ar">اسْتِفْعَال</span></div></td>
-                            <td><div class="glass-box"><span class="ref">104</span><span class="ar">مُسْتَفْعِل</span></div></td>
-                            <td><div class="glass-box"><span class="ref">105</span><span class="ar">مُسْتَفْعَل</span></div></td>
-                        </tr>
-                    </tbody>
+                   <tbody>
+    <tr>
+        <td align="center">İf'al</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="أَفْعَلَ"><span class="ref">52</span><span class="ar">أَفْعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يُفْعِلُ"><span class="ref">53</span><span class="ar">يُفْعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="أَفْعِلْ"><span class="ref">54</span><span class="ar">أَفْعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="إِفْعَال"><span class="ref">55</span><span class="ar">إِفْعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُفْعِل"><span class="ref">56</span><span class="ar">مُفْعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُفْعَل"><span class="ref">57</span><span class="ar">مُفْعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Tef'il</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعَّلَ"><span class="ref">58</span><span class="ar">فَعَّلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يُفَعِّلُ"><span class="ref">59</span><span class="ar">يُفَعِّلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="فَعِّلْ"><span class="ref">60</span><span class="ar">فَعِّلْ</span></div></td>
+        <td><div class="glass-box" data-original="تَفْعِيل"><span class="ref">61</span><span class="ar">تَفْعِيل</span></div></td>
+        <td><div class="glass-box" data-original="مُفَعِّل"><span class="ref">62</span><span class="ar">مُفَعِّل</span></div></td>
+        <td><div class="glass-box" data-original="مُفَعَّل"><span class="ref">63</span><span class="ar">مُفَعَّل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Müfa'ale</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَاعَلَ"><span class="ref">64</span><span class="ar">فَاعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يُفَاعِلُ"><span class="ref">65</span><span class="ar">يُفَاعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="فَاعِلْ"><span class="ref">66</span><span class="ar">فَاعِلْ</span></div></td>
+        <td>
+            <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center;">
+                <div class="glass-box" style="width:45%; min-width:70px;" data-original="مُفَاعَلَة"><span class="ref">67</span><span class="ar">مُفَاعَلَة</span></div>
+                <div class="glass-box" style="width:45%; min-width:70px;" data-original="فِعَال"><span class="ref">68</span><span class="ar">فِعَال</span></div>
+            </div>
+        </td>
+        <td><div class="glass-box" data-original="مُفَاعِل"><span class="ref">69</span><span class="ar">مُفَاعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُفَاعَل"><span class="ref">70</span><span class="ar">مُفَاعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İnfi'âl</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِنْفَعَلَ"><span class="ref">71</span><span class="ar">اِنْفَعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَنْفَعِلُ"><span class="ref">72</span><span class="ar">يَنْفَعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="انْفَعِلْ"><span class="ref">73</span><span class="ar">انْفَعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="انْفِعَال"><span class="ref">74</span><span class="ar">انْفِعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُنْفَعِل"><span class="ref">75</span><span class="ar">مُنْفَعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُنْفَعَل"><span class="ref">76</span><span class="ar">مُنْفَعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İfti'âl</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِفْتَعَلَ"><span class="ref">77</span><span class="ar">اِفْتَعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْتَعِلُ"><span class="ref">78</span><span class="ar">يَفْتَعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="افْتَعِلْ"><span class="ref">79</span><span class="ar">افْتَعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="افْتِعَال"><span class="ref">80</span><span class="ar">افْتِعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُفْتَعِل"><span class="ref">81</span><span class="ar">مُفْتَعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُفْتَعَل"><span class="ref">82</span><span class="ar">مُفْتَعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İf'ilâl</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="افْعَلَّ"><span class="ref">83</span><span class="ar">افْعَلَّ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعَلُّ"><span class="ref">84</span><span class="ar">يَفْعَلُّ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="افْعَلِلْ"><span class="ref">85</span><span class="ar">افْعَلِلْ</span></div></td>
+        <td><div class="glass-box" data-original="افْعِلَال"><span class="ref">86</span><span class="ar">افْعِلَال</span></div></td>
+        <td><div class="glass-box" data-original="مُفْعَلّ"><span class="ref">87</span><span class="ar">مُفْعَلّ</span></div></td>
+        <td><div class="glass-box" data-original="-"><span class="ref">x</span><span class="ar">-</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Tefe''ul</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="تَفَعَّلَ"><span class="ref">88</span><span class="ar">تَفَعَّلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَتَفَعَّلُ"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="تَفَعَّلْ"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
+        <td><div class="glass-box" data-original="تَفَعُّل"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَعِّل"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَعَّل"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Tefâ'ul</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="تَفَاعَلَ"><span class="ref">94</span><span class="ar">تَفَاعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَتَفَاعَلُ"><span class="ref">95</span><span class="ar">يَتَفَاعَلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="تَفَاعَلْ"><span class="ref">96</span><span class="ar">تَفَاعَلْ</span></div></td>
+        <td><div class="glass-box" data-original="تَفَاعُل"><span class="ref">97</span><span class="ar">تَفَاعُل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَاعِل"><span class="ref">98</span><span class="ar">مُتَفَاعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَاعَل"><span class="ref">99</span><span class="ar">مُتَفَاعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İstif'âl</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِسْتَفْعَلَ"><span class="ref">100</span><span class="ar">اِسْتَفْعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَسْتَفْعِلُ"><span class="ref">101</span><span class="ar">يَسْتَفْعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="اسْتَفْعِلْ"><span class="ref">102</span><span class="ar">اسْتَفْعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="اسْتِفْعَال"><span class="ref">103</span><span class="ar">اسْتِفْعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُسْتَفْعِل"><span class="ref">104</span><span class="ar">مُسْتَفْعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُسْتَفْعَل"><span class="ref">105</span><span class="ar">مُسْتَفْعَل</span></div></td>
+    </tr>
+</tbody>
                 </table>
             </div>
         </div>
@@ -1082,13 +964,15 @@ td:first-child {
     </div>
 </div>
 <script>
-const letters = "ا ب ت ث ج ح kh د ذ ر ز س ş ص ض ط ظ ع غ ف ق ك ل م n ه و ي".split(" ");
+// Harf listesinde kh ve ş yerine doğru Arapça harfler ayarlandı
+const letters = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
 let currentRoot = ""; 
 let isReadyVerbMode = false; 
 
+// k tuşuna basınca nun(ن), o tuşuna basınca hı(خ) çıkması için düzeltildi
 const arabicKeyMap = {
     '"': 'ذ', 'q':'ض', 'w':'ص', 'e':'ث', 'r':'ق', 't':'ف', 'y':'غ', 'u':'ع', 'ı':'ه', 'o':'خ', 'p':'ح', 'ğ':'ج', 'ü':'د',
-    'a':'ش', 's':'س', 'd':'ي', 'f':'ب', 'g':'ل', 'h':'ا', 'j':'ت', 'k':'n', 'l':'م', 'ş':'ك', 'i':'ط',
+    'a':'ش', 's':'س', 'd':'ي', 'f':'ب', 'g':'ل', 'h':'ا', 'j':'ت', 'k':'ن', 'l':'م', 'ş':'ك', 'i':'ط',
     'z':'ئ', 'x':'ء', 'c':'ؤ', 'v':'ر', 'b':'لا', 'n':'ى', 'm':'ة', 'ö':'ز', 'ç':'ظ'
 };
 
@@ -1115,7 +999,7 @@ const babVezinleri = {
     6: { mazi: "فَعِلَ", muzari: "يَفْعِلُ", emir: "اِفْعِلْ" },
     7: { mazi: "أَفْعَلَ", muzari: "يُفْعِلُ", emir: "أَفْعِلْ" },      
     8: { mazi: "فَعَّلَ", muzari: "يُفَعِّلُ", emir: "فَعِّلْ" },      
-    9: { mazi: "فَاعَلَ", muzari: "يُفَاعِلُ", emir: "فَاعِلْ" },     
+    9: { mazi: "فَاعَلَ", muzari: "يُفَاعِلُ", emir: "فَاعِلْ" },    
     10: { mazi: "انْفَعَلَ", muzari: "يَنْفَعِلُ", emir: "انْفَعِلْ" },  
     11: { mazi: "اِفْتَعَلَ", muzari: "يَفْتَعِلُ", emir: "افْتَعِلْ" },  
     12: { mazi: "افْعَلَّ", muzari: "يَفْعَلُّ", emir: "افْعَلِلْ" },    
@@ -1277,16 +1161,12 @@ window.onload = function() {
     }
 };
 
-// Hem tıklama hem de dokunma ile kapatma motoru
 document.addEventListener('click', closeIfOutside);
 document.addEventListener('touchstart', closeIfOutside, { passive: false });
 
 function closeIfOutside(e) {
-    // Tıklanan/dokunulan yerin tablo veya kutu içinde olup olmadığına bak
     const isInside = e.target.closest('.conjugation-inline-container') || e.target.closest('.glass-box');
-    
     if (!isInside) {
-        // Eğer dışarıya dokunulduysa tüm açık tabloları kapat
         document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
             const closeBtn = box.querySelector('.matrix-close-btn');
             if (closeBtn) closeInlineMatrix(null, closeBtn);
@@ -1319,24 +1199,6 @@ function setTab(tabIndex) {
     }
 }
 
-// 👑 KUTU İÇİ TABLOYU KAPATMA MOTORU
-function closeInlineMatrix(event, btnElement) {
-    if (event) event.stopPropagation(); 
-    SoundEngine.playClose();
-    
-    const boxElement = btnElement.closest('.glass-box');
-    if (boxElement) {
-        boxElement.classList.remove('matrix-opened');
-        boxElement.setAttribute('data-tiklama-sayisi', '0');
-        boxElement.setAttribute('data-modal-closed', 'true');
-        
-        setTimeout(() => {
-            boxElement.style.zIndex = "";
-            const container = boxElement.querySelector('.conjugation-inline-container');
-            if (container) container.innerHTML = '';
-        }, 200);
-    }
-}
 
 function openVerbModal() {
     SoundEngine.playClick();
@@ -1350,17 +1212,13 @@ function closeVerbModal() {
 
 function triggerAreaPulse(boxElement) {
     if (!boxElement) return;
-    
     boxElement.classList.remove("pulse-highlight");
-    boxElement.style.backgroundColor = "";
-    boxElement.style.borderColor = "";
-    boxElement.style.background = "";
 
     const isZoomEnabled = document.getElementById('zoomToggleCheckbox').checked;
 
     if (!isZoomEnabled) {
-        boxElement.style.setProperty("background-color", "rgba(0, 255, 65, 0.25)", "important");
-        boxElement.style.setProperty("background", "rgba(0, 255, 65, 0.25)", "important");
+        // 🚀 Şeffaf rgba yerine katı (opak) pastel yeşil: #bfffdf
+        boxElement.style.setProperty("background-color", "#bfffdf", "important");
         boxElement.style.borderColor = "#000000";
         return;
     }
@@ -1380,13 +1238,17 @@ function triggerAreaPulse(boxElement) {
     
     boxElement.style.transform = "translateZ(0) rotate(0.001deg)";
     void boxElement.offsetWidth; 
+    
+    // 🚀 Büyütme animasyonu sırasında arkanın görünmemesi için KATI RENK ataması
+    boxElement.style.setProperty("background-color", "#bfffdf", "important");
+    boxElement.style.borderColor = "#000000";
+
     boxElement.classList.add("pulse-highlight");
 
     setTimeout(() => {
         boxElement.classList.remove("pulse-highlight");
         boxElement.style.transform = "";
-        boxElement.style.setProperty("background-color", "rgba(0, 255, 65, 0.25)", "important");
-        boxElement.style.setProperty("background", "rgba(0, 255, 65, 0.25)", "important");
+        boxElement.style.setProperty("background-color", "#bfffdf", "important");
         boxElement.style.borderColor = "#000000";
     }, 3000);
 }
@@ -1422,6 +1284,22 @@ function selectReadyVerb(verb) {
         }
     });
     closeVerbModal();
+}
+
+// 🚀 YENİ: Başka kutuya tıklandığında önceki açık/büyümüş kutuları anında iptal edip sıfırlayan temizleyici
+function clearOtherActiveBoxes(currentBox) {
+    document.querySelectorAll('.glass-box').forEach(box => {
+        if (box !== currentBox) {
+            if (box.style.backgroundColor || box.classList.contains('pulse-highlight') || box.classList.contains('matrix-opened')) {
+                // Eğer kutu o an büyüyorsa animasyonu anında durdur ve yerine oturt
+                box.classList.remove("pulse-highlight");
+                box.style.transform = "";
+                
+                // Kutuyu tamamen sıfırla (rengini, sayacını, tablosunu temizle)
+                resetBox(box);
+            }
+        }
+    });
 }
 
 function getBabAndType(refId) {
@@ -1471,113 +1349,134 @@ function getBabAndType(refId) {
     return { type, babNo };
 }
 
+
+function resetBox(el) {
+    const textEl = el.querySelector('.ar, .ar-small');
+    if (!textEl) return;
+    
+    // 1. Metni orijinal haline getir
+    const originalText = el.getAttribute('data-original') || textEl.innerText;
+    textEl.innerText = originalText;
+    
+    // 2. Renkleri ve vurguları temizle
+    el.style.backgroundColor = "";
+    el.style.borderColor = "";
+    el.style.boxShadow = ""; 
+    
+    // 🚀 HAYATİ DÜZELTME: Kutu sıfırlanırken eğer tablo arka planda kalmışsa tamamen yok et
+    el.classList.remove('matrix-opened');
+    const container = el.querySelector('.conjugation-inline-container');
+    if (container) {
+        container.remove(); // Tabloyu HTML'den tamamen sil, kalıntı bırakma
+    }
+    
+    // 3. Sayacı 0'a çek
+    if (el.hasAttribute('data-tiklama-sayisi')) {
+        el.setAttribute('data-tiklama-sayisi', '0');
+    }
+}
+
+
 function handleBoxClick(boxElement) {
     const textEl = boxElement.querySelector('.ar, .ar-small');
     const refEl = boxElement.querySelector('.ref');
     if (!textEl || !refEl) return;
 
+    const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
     const refId = parseInt(refEl.innerText);
-    const kalip = textEl.getAttribute('data-original');
+    const kalip = boxElement.getAttribute('data-original');
 
     lastClickedBoxTextSpan = textEl;
     lastOriginalWord = textEl.innerText.trim();
 
-    // 1. Durum: Modal Kapatma
+    // 🚀 DEVREYE GİREN NOKTA: Yeni kutuya tıklandığı an diğer her şeyi anında temizle!
+    clearOtherActiveBoxes(boxElement);
+
     if (boxElement.getAttribute('data-modal-closed') === 'true') {
-        SoundEngine.playClose(); // SES ANINDA ÇALDI
-        boxElement.removeAttribute('data-modal-closed'); 
-        
-        textEl.innerText = kalip; 
-        boxElement.style.backgroundColor = "";
-        boxElement.style.borderColor = "";
-        if (boxElement.hasAttribute('data-tiklama-sayisi')) boxElement.setAttribute('data-tiklama-sayisi', '0');
-        
-        if (isReadyVerbMode && readyVerbTargets.includes(refId)) {
-            boxElement.classList.add('hidden-mode');
-            targetStates[refId] = 0;
-        }
+        boxElement.removeAttribute('data-modal-closed');
+        SoundEngine.playClose();
+        resetBox(boxElement);
         return;
     }
 
-    // 2. Durum: Hazır Fiil Modu
-    if (isReadyVerbMode && readyVerbTargets.includes(refId)) {
-        let currentState = targetStates[refId];
-
-        if (boxElement.classList.contains('hidden-mode') || currentState === 0 || currentState === undefined) {
-            SoundEngine.playClick(); // SES ANINDA ÇALDI
-            boxElement.classList.remove('hidden-mode');
-            textEl.innerText = applyRootToKalip(currentRoot, kalip); 
-            lastOriginalWord = textEl.innerText.trim();
-            triggerAreaPulse(boxElement); // Ses bittikten sonra görsel animasyon tetiklenir
-            targetStates[refId] = 1; 
-            return;
-        }
-
-        if (currentState === 1) {
-            SoundEngine.playClose(); // SES ANINDA ÇALDI
-            boxElement.style.backgroundColor = "";
-            boxElement.style.borderColor = "";
-            textEl.innerText = kalip; 
-            lastOriginalWord = kalip;
-            targetStates[refId] = 2; 
-            return;
-        }
-
-        if (currentState === 2) {
-            SoundEngine.playClick(); // SES ANINDA ÇALDI
-            textEl.innerText = applyRootToKalip(currentRoot, kalip);
-            lastOriginalWord = textEl.innerText.trim();
-            triggerAreaPulse(boxElement); 
-            targetStates[refId] = 1; 
-            return;
-        }
-    }
-
-    // 3. Durum: Standart Kutu
     if (boxElement.hasAttribute('data-tiklama-sayisi')) {
-        if (currentRoot.length !== 3) {
-            alert("Lütfen önce 3 harfli bir kök girin!");
-            openKeyboard();
-            return;
-        }
-
         let tiklama = parseInt(boxElement.getAttribute('data-tiklama-sayisi') || '0');
         const mapping = getBabAndType(refId);
 
         if (tiklama === 0) {
-            SoundEngine.playClick(); // SES ANINDA ÇALDI
+            // AŞAMA 1: Türet ve Büyüt (Kutu Yeşil Olur)
+            SoundEngine.playClick();
             const vezinObj = babVezinleri[mapping.babNo];
-            let kalipMetni = kalip;
-            if (vezinObj && vezinObj[mapping.type]) {
-                kalipMetni = vezinObj[mapping.type];
-            }
-            textEl.innerText = applyRootToKalip(currentRoot, kalipMetni);
+            let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+            textEl.innerText = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalipMetni) : kalipMetni;
             lastOriginalWord = textEl.innerText.trim();
             triggerAreaPulse(boxElement);
             boxElement.setAttribute('data-tiklama-sayisi', '1');
-        } else {
-            // Popup açılış sesi
-            SoundEngine.playClick(); 
+        } 
+        else if (tiklama === 1) {
+            // AŞAMA 2: Kutu Yeşilken Tekrar Tıklanırsa Tabloyu Aç
             const vezinObj = babVezinleri[mapping.babNo];
-            let anaVezin = kalip;
-            if (vezinObj && vezinObj[mapping.type]) {
-                anaVezin = vezinObj[mapping.type];
-            }
-            openConjugationPopup(currentRoot, mapping.babNo, mapping.type, anaVezin);
-            boxElement.setAttribute('data-tiklama-sayisi', '0'); 
+            let anaVezin = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+            openConjugationPopup(currentRootSafe, mapping.babNo, mapping.type, anaVezin);
+            boxElement.setAttribute('data-tiklama-sayisi', '2');
+        } 
+        else {
+            // AŞAMA 3: Tablo veya Kutu aktifken üçüncü kez tıklanırsa TAMAMEN SIFIRLA
+            SoundEngine.playClose();
+            resetBox(boxElement); 
         }
         return;
     }
-
     applyToSpecificBox(boxElement);
 }
+
+function closeInlineMatrix(e, btnElement) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    SoundEngine.playClose();
+    
+    const boxElement = btnElement.closest('.glass-box');
+    if (boxElement) {
+        // 🚀 Animasyonu kilitliyoruz
+        boxElement.classList.add('no-transition');
+        
+        // 1. Matris görünürlüğünü kapat
+        boxElement.classList.remove('matrix-opened');
+        
+        // Z-INDEX TEMİZLİĞİ
+        boxElement.style.zIndex = "";
+        
+        // 2. Tabloyu gizle
+        const container = boxElement.querySelector('.conjugation-inline-container');
+        if (container) {
+            container.style.display = 'none';
+        }
+
+        // 3. SAYAÇ DÜZELTMESİ (1 yerine 2 yapıldı)
+        // Tablo kapandıktan sonraki ilk tıklama doğrudan sıfırlama yapacak
+        if (boxElement.hasAttribute('data-tiklama-sayisi')) {
+            boxElement.setAttribute('data-tiklama-sayisi', '2');
+        }
+
+        // 🚀 Kısa süre sonra kilitli animasyon sınıfını kaldır
+        setTimeout(() => {
+            boxElement.classList.remove('no-transition');
+        }, 50);
+    }
+}
+
 
 function applyToSpecificBox(boxElement) {
     const targetEl = boxElement.querySelector('.ar, .ar-small');
     if (!targetEl) return;
     const kalip = targetEl.getAttribute('data-original');
 
-    if (boxElement.style.backgroundColor.includes("rgba(0, 255, 65")) {
+    // 🚀 DEVREYE GİREN NOKTA: Mastar ve İsimlere tıklandığında da eski büyüyenleri iptal et
+    clearOtherActiveBoxes(boxElement);
+
+    if (boxElement.style.backgroundColor) {
         SoundEngine.playClose();
         targetEl.innerText = kalip; 
         boxElement.style.backgroundColor = "";
@@ -1586,14 +1485,10 @@ function applyToSpecificBox(boxElement) {
         return;
     }
 
-    if (currentRoot.length !== 3) {
-        alert("Lütfen önce 3 harfli bir kök girin!");
-        openKeyboard();
-        return;
-    }
-
     SoundEngine.playClick();
-    targetEl.innerText = applyRootToKalip(currentRoot, kalip);
+    const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
+    targetEl.innerText = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalip) : kalip;
+    
     lastOriginalWord = targetEl.innerText.trim();
     triggerAreaPulse(boxElement); 
 }
@@ -1614,14 +1509,22 @@ function applyRootToKalip(root, kalip) {
     return result;
 }
 
-
-
 function openConjugationPopup(kok, babNo, tip, anaVezin) {
     SoundEngine.playClick();
     
+    // KÖK GİRİLMEMİŞSE (VARSAYILAN "فعل" ŞABLONUYLA ÇEKİM YAP)
+    if (!kok || kok.length !== 3) {
+        kok = "فعل"; 
+    }
+
     if (!lastClickedBoxTextSpan) return;
     const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
     if (!boxElement) return;
+
+    // TÜM KUTULARIN Z-INDEX'İNİ SIFIRLA (Yeni açılan tablo hariç her şey arkaya düşsün)
+    document.querySelectorAll('.glass-box').forEach(box => {
+        box.style.zIndex = "1";
+    });
 
     // Başka açık matris varsa temizle
     document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
@@ -1630,6 +1533,12 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             if (openCloseBtn) closeInlineMatrix(null, openCloseBtn);
         }
     });
+
+    // 🚀 ÇÖZÜM BURADA: Tabloyu açmadan hemen önce büyütme animasyonunu iptal et ve kutuyu grid'deki yerine oturt.
+    // Böylece koordinatlar hatasız hesaplanır ve tablo ekran dışına uçmaz.
+    boxElement.classList.remove("pulse-highlight");
+    boxElement.style.transform = "";
+    void boxElement.offsetWidth; // Tarayıcıya konumu anında güncellemesi için baskı yapar
 
     let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
     if (!inlineContainer) {
@@ -1643,25 +1552,17 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     const tableWidth = 420;
     const estimatedTableHeight = 410; 
     
-    // Kutunun ekrandaki anlık koordinatlarını alıyoruz
+    // Kutunun ekrandaki anlık koordinatlarını alıyoruz (Artık doğru yerde olduğu için hatasız çıkacak)
     let rect = boxElement.getBoundingClientRect();
     
-    /* 1. EKSEN: 🚀 SABİT YATAY (X) KONUMLANDIRMA (3 KAT ARTTIRILDI: 15px -> 45px) */
-    // Tablonun konumu kalıp kutusunun tam 45 piksel soluna kilitlenir
     let targetLeft = -tableWidth - 60;
-    
-    // Çok küçük ekranlarda veya sol kenara aşırı yakın kutularda ekran dışına taşma emniyeti
     let globalLeft = rect.left + targetLeft;
     if (globalLeft < 10) {
         targetLeft = 10 - rect.left;
     }
     inlineContainer.style.left = `${targetLeft}px`;
 
-    /* 2. EKSEN: 🚀 SABİT DİKEY (Y) KONUMLANDIRMA (EKRANIN TAM ORTASI) */
-    // Kutunun sayfadaki dikey konumundan bağımsız olarak, tablonun dikey merkezi ekranın dikey merkezine eşitlenir
     let targetTop = (windowHeight / 2) - (estimatedTableHeight / 2) - rect.top;
-
-    // Üst ve alt ekstrem taşma durumları için genel tarayıcı emniyet kontrolü
     let globalTop = rect.top + targetTop;
     let globalBottom = globalTop + estimatedTableHeight;
     if (globalTop < 10) {
@@ -1670,10 +1571,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         targetTop = (windowHeight - estimatedTableHeight - 10) - rect.top;
     }
 
-    // Hesaplanan sabit dikey koordinatı enjekte ediyoruz
     inlineContainer.style.top = `${targetTop}px`;
     
-    // Çekim algoritmaları (Hızlı Döngü Yapısı Aynen Korundu)
     const tabanKelime = applyRootToKalip(kok, anaVezin);
     let stem = tabanKelime.replace(/[َُِّْ]$/, "");
     let kelimeListesi = [];
@@ -1683,35 +1582,32 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         let cekilmisKelime = "";
         
        if (tip === 'muzari') {
-    let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-    
-    // 1. Hareke belirleme mantığı
-    let aynHareke = "ُ"; // Varsayılan ötre
-    if (babNo === 7) {
-        aynHareke = "ِ"; // İf'al bâbı muzarisi her zaman esre
-    } else if (anaVezin.includes("يَفْعِلُ")) {
-        aynHareke = "ِ";
-    } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ")) {
-        aynHareke = "َ";
-    }
-    
-    // 2. Prefix (Ön ek) belirleme
-    let prefix = siga.prefix;
-    if (babNo === 7) prefix = "يُ";       
-    else if (babNo === 8) prefix = "يُ";  
-    else if (babNo === 9) prefix = "يُ";  
-    else if (babNo === 13) prefix = "يَتَ"; 
-    else if (babNo === 14) prefix = "يَتَ"; 
+            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+            
+            let aynHareke = "ُ"; 
+            if (babNo === 7) {
+                aynHareke = "ِ"; 
+            } else if (anaVezin.includes("يَفْعِلُ")) {
+                aynHareke = "ِ";
+            } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ")) {
+                aynHareke = "َ";
+            }
+            
+            let prefix = siga.prefix;
+            if (babNo === 7) prefix = "يُ";       
+            else if (babNo === 8) prefix = "يُ";  
+            else if (babNo === 9) prefix = "يُ";  
+            else if (babNo === 13) prefix = "يَتَ"; 
+            else if (babNo === 14) prefix = "يَتَ"; 
 
-    // 3. CoreWord (Kök kelime yapısı) oluşturma
-    let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
-    
-    if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; // İf'al için özel yapı
-    else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
-    else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-    else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
-    else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;    
-    else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+            let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
+            
+            if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
+            else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+            else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+            else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+            else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;    
+            else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
             
             let currentPrefix = prefix;
             if (siga.prefix === 'تَ') {
@@ -1735,7 +1631,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
             let aynHareke = "ِ";
             if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
-            else if (anaVezin.includes("اِfْعَلْ")) aynHareke = "َ";
+            else if (anaVezin.includes("اِفْعَلْ")) aynHareke = "َ";
 
             let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
             if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
@@ -1751,13 +1647,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         kelimeListesi.push(cekilmisKelime);
     });
 
-    // openConjugationPopup fonksiyonu içindeki html kısmı:
-let html = `
-    <div style="position: absolute; top: 4px; left: 12px; display: flex; gap: 10px;">
-        <span id="fs-btn" onclick="toggleFullScreen(this)" style="cursor: pointer; font-size: 20px; color: #000;">⤢</span>
-    </div>
-    <div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>
-`;
+    let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
     html += `<table class="conjugation-table">`;
     html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
 
@@ -1773,31 +1663,10 @@ let html = `
     
     inlineContainer.innerHTML = html;
     
-    boxElement.style.zIndex = "999999";
+    boxElement.style.zIndex = "999999"; // Açılan kutuyu en üste taşı
     boxElement.classList.add('matrix-opened');
 }
 
-// KAPATMA FONKSİYONU
-function closeInlineMatrix(e, btnElement) {
-    if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    SoundEngine.playClose();
-    const boxElement = btnElement.closest('.glass-box');
-    if (boxElement) {
-        boxElement.classList.remove('matrix-opened');
-        boxElement.style.zIndex = "";
-        setTimeout(() => {
-            const container = boxElement.querySelector('.conjugation-inline-container');
-            if (container && !boxElement.classList.contains('matrix-opened')) {
-                container.remove();
-            }
-        }, 150);
-    }
-}
-
-// BOŞ ALANA TIKLANDIĞINDA KAPATMA DESTEĞİ
 document.addEventListener('click', function(e) {
     const conjugationContainer = e.target.closest('.conjugation-inline-container');
     const glassBox = e.target.closest('.glass-box');
@@ -1814,12 +1683,14 @@ document.addEventListener('click', function(e) {
         }
     }
 }, true);
+
 function closeConjugationModal() {
     SoundEngine.playClose();
     document.getElementById('conjugation-overlay').style.display = 'none';
     
     document.querySelectorAll('.glass-box').forEach(box => {
-        if (box.style.backgroundColor.includes("rgba(0, 255, 65")) {
+        // 🚀 Eski hatalı rgba kontrolü yerine güvenilir yöntem
+        if (box.style.backgroundColor) { 
             box.setAttribute('data-modal-closed', 'true');
         }
     });
@@ -1997,16 +1868,19 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const menu = document.getElementById("suffix-dropdown");
-        if (menu && !menu.contains(e.target) && !e.target.classList.contains("fa-plus")) {
-            menu.style.display = "none";
+        if (menu && menu.style.display !== "none") {
+            // Eğer menünün kendisine VEYA artı butonuna TIKLANMADIYSA menüyü kapat
+            if (!menu.contains(e.target) && !e.target.closest('.fa-plus')) {
+                menu.style.display = "none";
+            }
         }
     });
 });
-
 function toggleSuffixMenu(e) {
     e.stopPropagation();
     const menu = document.getElementById("suffix-dropdown");
     
+    // Eğer menü zaten açıksa, kapat ve işlemi durdur
     if (menu.style.display === "flex") {
         menu.style.display = "none";
         return;
@@ -2019,43 +1893,92 @@ function toggleSuffixMenu(e) {
 }
 
 function applySuffix(suffix) {
-    if (!lastClickedBoxTextSpan || !lastOriginalWord) {
-        alert("Lütfen önce tablodan bir kalıba (kelimeye) tıklayın!");
-        return;
+    if (!lastClickedBoxTextSpan) {
+        return; // Herhangi bir kutu seçilmediyse işlem yapma
     }
 
-    let baseText = lastOriginalWord.trim();
+    const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
+    if (currentBox && currentBox.classList.contains("is-verb")) {
+        return; // Fiillere ek eklenmesini engelle
+    }
 
-    if (suffix === 'ة') {
-        let checkText = baseText.replace(/[\u064B-\u0652]$/, '');
-        if (checkText.endsWith('ة')) {
-            document.getElementById("suffix-dropdown").style.display = "none"; 
+    let currentWord = lastOriginalWord || lastClickedBoxTextSpan.innerText;
+    
+    const plurals = ['ينَ', 'ونَ', 'ات', 'يَّات'];
+    const basePlurals = ['ينَ', 'ونَ', 'ات']; // Nispet almayacak standart çoğullar
+    const nisbaSuffixes = ['يّ', 'يَّة', 'يَّات']; // Çoğul almayacak nispet ekleri
+
+    // 1. KURAL: Çoğul eklerinden sonra "يّ", "يَّات" veya "يَّة" eklenemez
+    if (nisbaSuffixes.includes(suffix)) {
+        const hasPlural = basePlurals.some(p => currentWord.endsWith(p));
+        if (hasPlural) {
+            SoundEngine.playClose(); // İzin verilmediği için hata sesi çal
             return; 
         }
     }
 
-    if (suffix === 'ة') {
-        let cleanText = baseText.replace(/[\u064B-\u0652]$/, '');
-        baseText = cleanText + '\u064E';
-    }
-    else if (suffix === 'ات') {
-        let tempText = baseText.replace(/[\u064B-\u0652]$/, '');
-        if (tempText.endsWith('ة')) {
-            baseText = tempText.slice(0, -1);
-            baseText = baseText.replace(/[\u064B-\u0652]$/, '') + '\u064E';
+    // 🚀 YENİ KURAL: Nispet ekleri ("يّ", "يَّة", "يَّات") varken çoğul ("ينَ", "ونَ", "ات") eklenirse, nispet eklerini SİL.
+    if (basePlurals.includes(suffix)) {
+        for (let n of nisbaSuffixes) {
+            if (currentWord.endsWith(n)) {
+                // Kelimenin sonundan nispet ekini kesip at
+                currentWord = currentWord.slice(0, -n.length);
+            }
         }
     }
 
-    let updatedWord = baseText + suffix;
-    lastClickedBoxTextSpan.innerText = updatedWord;
-    lastOriginalWord = updatedWord; 
-
-    const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
-    if (currentBox) {
-        triggerAreaPulse(currentBox);
+    // Genel Temizlik: Aynı türden veya gereksiz eklerin üst üste binmesini engeller
+    if (currentWord.endsWith('يَّة')) {
+        currentWord = currentWord.slice(0, -'يَّة'.length);
+    } 
+    else if (currentWord.endsWith('ة')) {
+        currentWord = currentWord.slice(0, -1);
     }
 
-    document.getElementById("suffix-dropdown").style.display = "none";
+    if (plurals.includes(suffix) || suffix === 'ة') {
+        for (let p of plurals) {
+            if (currentWord.endsWith(p)) {
+                currentWord = currentWord.slice(0, -p.length);
+            }
+        }
+    }
+
+    // Akıllı Hareke Değiştirme Sistemi
+    function setLastVowel(word, targetVowel) {
+        // Şedde (\u0651) haricindeki son harekeyi tespit et ve sil
+        const vowelRegex = /[\u064B-\u0650\u0652]$/; 
+        if (vowelRegex.test(word)) {
+            word = word.replace(vowelRegex, ''); 
+        }
+        return word + targetVowel; // İstenen yeni harekeyi harfe yapıştır
+    }
+
+    // Hangi eke göre hangi hareke gelecek?
+    if (suffix === 'ة') {
+        currentWord = setLastVowel(currentWord, 'َ'); // Fetha (Üstün)
+    } 
+    else if (nisbaSuffixes.includes(suffix) || suffix === 'ينَ') {
+        currentWord = setLastVowel(currentWord, 'ِ'); // Kesra (Esre)
+    }
+    else if (suffix === 'ونَ') {
+        currentWord = setLastVowel(currentWord, 'ُ'); // Damme (Ötre)
+    }
+
+    // Yeni eki kelimeye yapıştır
+    let updatedWord = currentWord + suffix;
+    lastClickedBoxTextSpan.innerText = updatedWord;
+    lastOriginalWord = updatedWord;
+
+    // Görsel yeşil vurgu animasyonu
+    if (currentBox) {
+        currentBox.style.setProperty("border-color", "#00FF00", "important");
+        currentBox.style.setProperty("box-shadow", "0 0 10px #00FF00", "important");
+        triggerAreaPulse(currentBox);
+        setTimeout(() => {
+            currentBox.style.borderColor = ""; 
+            currentBox.style.boxShadow = "";
+        }, 1500);
+    }
 }
 
 const originalResetTableOnly = window.resetTableOnly;
@@ -2068,61 +1991,7 @@ window.resetTableOnly = function() {
     const menu = document.getElementById("suffix-dropdown");
     if (menu) menu.style.display = "none";
 };
-// ==========================================
-// 1. POPUP/TABLO DIŞINA VEYA ÇARPIYA TIKLANDIĞINDA TEMİZLEME
-// ==========================================
-document.addEventListener("click", function(event) {
-    // Şu an açık olan inline fiil tablosu kutusunu bul
-    const openedBox = document.querySelector(".glass-box.matrix-opened");
-    
-    if (openedBox) {
-        // Eğer tıklanan yer açılan tablonun içi değilse kapatma ve sıfırlama sürecini başlat
-        if (!openedBox.contains(event.target)) {
-            event.stopPropagation();
-            event.preventDefault();
-            
-            // Eğer çarpı butonu varsa ona tıkla, yoksa manuel kapat
-            const closeBtn = openedBox.querySelector(".matrix-close-btn");
-            if (closeBtn) {
-                closeBtn.click();
-            } else {
-                // Fiil kutusunu tamamen eski haline döndür
-                resetVerbBoxToOriginal(openedBox);
-            }
-        }
-    }
-}, true); // 'true' (Capture) modu tıklamanın başka kalıpları türetmesini havada engeller
 
-// ==========================================
-// 2. FİİL KUTUSUNU TAMAMEN SIFIRLAYAN YARDIMCI FONKSİYON
-// ==========================================
-function resetVerbBoxToOriginal(box) {
-    if (!box) return;
-    
-    // Tablo sınıfını, yeşil dolguları ve animasyonları kaldır
-    box.classList.remove("matrix-opened", "pulse-highlight", "hidden-mode");
-    
-    // Inline tablo container'ı varsa sıfırla/gizle
-    const inlineContainer = box.querySelector(".conjugation-inline-container");
-    if (inlineContainer) {
-        inlineContainer.style.display = "none";
-        inlineContainer.style.opacity = "0";
-    }
-
-    // Satır içi stilleri (yeşil arka planı) tamamen temizle, CSS'teki orijinal beyaz haline dönsün
-    box.style.backgroundColor = "";
-    box.style.background = "";
-    box.style.boxShadow = "";
-
-    // 🚀 Fiil ilk tıklandığında türeyen kelimeyi ve yeşil dolguyu kaldırıp orijinal kalıbına (örn: فَعَلَ) döndürür
-    const textSpan = box.querySelector(".ar, .ar-small");
-    if (textSpan && box.dataset.originalText) {
-        textSpan.innerText = box.dataset.originalText;
-    }
-}
-
-
-// Hazır Fiil, Klavye ve Diğer Overlay (Popup) pencereleri için dış arka plana tıklama kontrolü
 const modalOverlays = [
     { id: "verb-overlay", closeFn: window.closeVerbModal },
     { id: "conjugation-overlay", closeFn: window.closeConjugationModal },
@@ -2133,7 +2002,6 @@ modalOverlays.forEach(modal => {
     const overlayEl = document.getElementById(modal.id);
     if (overlayEl) {
         overlayEl.addEventListener("click", function(event) {
-            // Eğer tam olarak gri/bulanık arka plana tıklandıysa (içindeki beyaz panele değilse) kapat
             if (event.target === overlayEl) {
                 if (typeof modal.closeFn === "function") {
                     modal.closeFn();
@@ -2144,24 +2012,24 @@ modalOverlays.forEach(modal => {
         });
     }
 });
-// 1. Çarpı butonuna basıldığında event'in yukarı sıçramasını (kutuyu tekrar tetiklemesini) engelleyin
+
 document.querySelectorAll('.matrix-close-btn').forEach(btn => {
     btn.addEventListener('click', function(event) {
-        event.stopPropagation(); // Tıklamanın glass-box'a ulaşmasını engeller
+        event.stopPropagation(); 
         const currentBox = this.closest('.glass-box');
         if (currentBox) {
             currentBox.classList.remove('matrix-opened');
         }
     });
 });
-
-
 </script>
-<div id="zoom-focus-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); z-index: 99999; justify-content: center; align-items: center; pointer-events: none;">
-    <div id="zoom-focus-content" style="background: #ffffff; border: 2px solid #000000; border-radius: 6px; text-align: center; padding: 4px 12px; box-shadow: 0 35px 100px rgba(0, 0, 0, 0.6); display: inline-block; transform: scale(1); font-family: 'Arakom' !important; font-weight: normal !important;">
-        <span id="zoom-focus-ref" style="position: absolute; top: 2px; right: 4px; font-size: 10px; color: #86868b !important;"></span>
-        <span id="zoom-focus-text" class="ar" style="font-size: 34px; color: #000000 !important; line-height: 1.2;"></span>
-    </div>
-</div>
+<script>
+document.querySelectorAll('.glass-box').forEach(box => {
+    if (!box.hasAttribute('data-original')) {
+        const text = box.querySelector('.ar, .ar-small').innerText.trim();
+        box.setAttribute('data-original', text);
+    }
+});
+</script>
 </body>
 </html>
