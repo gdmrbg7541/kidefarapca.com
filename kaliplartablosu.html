@@ -473,12 +473,17 @@
             transform: scale(1.1);
         }
 
+        /* 1. Kutu Kapalıyken (Mor Zemin) */
         .glass-box.hidden-mode {
-            background-color: #2e7d32 !important; 
-            border-color: #1b5e20 !important;
+            background-color: #8e44ad !important; /* Mor arka plan */
+            border-color: #5c2c70 !important; /* Koyu mor çerçeve */
         }
+        
+        /* 2. Kutu Kapalıyken (Beyaz Yazı) */
         .glass-box.hidden-mode .ar, 
-        .glass-box.hidden-mode .ar-small {
+        .glass-box.hidden-mode .ar-small,
+        .glass-box.hidden-mode .ref {
+            color: #000000 !important; /* Yazı bembeyaz olur */
             visibility: visible !important; 
         }
 
@@ -1286,18 +1291,23 @@ function selectReadyVerb(verb) {
     closeVerbModal();
 }
 
-// 🚀 YENİ: Başka kutuya tıklandığında önceki açık/büyümüş kutuları anında iptal edip sıfırlayan temizleyici
+
+// 🚀 GÜNCELLENDİ: Başka kutuya tıklandığında vurguyu silmez, sadece açık tablosu varsa onu kapatır
 function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
-            if (box.style.backgroundColor || box.classList.contains('pulse-highlight') || box.classList.contains('matrix-opened')) {
-                // Eğer kutu o an büyüyorsa animasyonu anında durdur ve yerine oturt
-                box.classList.remove("pulse-highlight");
-                box.style.transform = "";
-                
-                // Kutuyu tamamen sıfırla (rengini, sayacını, tablosunu temizle)
-                resetBox(box);
+            // Eğer kutu o an büyüyorsa/uçuyorsa animasyonu anında durdur ve yerine oturt
+            box.classList.remove("pulse-highlight");
+            box.style.transform = "";
+            
+            // Eğer diğer kutunun TABLOSU açıksa onu kapat (ekranda tablolar çakışmasın)
+            if (box.classList.contains('matrix-opened')) {
+                const closeBtn = box.querySelector('.matrix-close-btn');
+                if (closeBtn) closeInlineMatrix(null, closeBtn);
             }
+            
+            // NOT: resetBox(box) komutunu buradan SİLDİK! 
+            // Böylece kutunun yeşil vurgusu ve içindeki türetilmiş kelime kaybolmayacak.
         }
     });
 }
