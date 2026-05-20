@@ -574,8 +574,9 @@
             transform: scale(1.2);
         }
 
-        #tab2 .ar { font-size: 30px !important; }
-        #tab2 .ar-small { font-size: 20px !important; }
+        /* Mezid Tablosu (Tab 2) Dinamik REM Ölçüleri */
+        #tab2 .ar { font-size: 2.2rem !important; } /* 30px'in tam karşılığı */
+        #tab2 .ar-small { font-size: 1.25rem !important; } /* 20px'in tam karşılığı */
         #tab2 .glass-box { width: 92%; padding: 4px 2px; }
 
         @media screen and (max-width: 1024px) {
@@ -1191,16 +1192,27 @@ function setTab(tabIndex) {
     SoundEngine.playClick(); 
     const band = document.getElementById('mainSliderBandi');
     const switcher = document.getElementById('tabSwitch');
+    
+    // Yükseklik hesaplaması için sekmeleri seçiyoruz
+    const tab1 = document.getElementById('tab1');
+    const tab2 = document.getElementById('tab2');
+    
     currentTabActive = tabIndex;
 
     if (tabIndex === 1) {
         switcher.classList.remove("mucerred-active");
         switcher.classList.add("mezid-active");
         band.style.transform = "translateX(50%)"; 
+        
+        // 🚀 Sürükleme anında yüksekliği 2. tablonun (Mezid) boyuna küçült
+        band.style.height = tab2.offsetHeight + "px"; 
     } else {
         switcher.classList.remove("mezid-active");
         switcher.classList.add("mucerred-active");
         band.style.transform = "translateX(0%)";  
+        
+        // 🚀 Sürükleme anında yüksekliği 1. tablonun (Mücerred) boyuna uzat
+        band.style.height = tab1.offsetHeight + "px"; 
     }
 }
 
