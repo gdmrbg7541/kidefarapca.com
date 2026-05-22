@@ -795,3 +795,14 @@ td:first-child {
 .matrix-expand-btn:hover {
     transform: scale(1.2);
 }
+
+@keyframes glowingPlus {
+    0% { transform: scale(1); color: #000; text-shadow: none; }
+    50% { transform: scale(1.6); color: #FF3B30; text-shadow: 0 0 15px rgba(255, 59, 48, 0.8); }
+    100% { transform: scale(1); color: #000; text-shadow: none; }
+}
+
+.plus-highlighted {
+    animation: glowingPlus 1.2s infinite !important;
+    color: #FF3B30 !important;
+}
