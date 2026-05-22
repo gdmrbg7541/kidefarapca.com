@@ -2550,7 +2550,7 @@ function openMatrixFullscreen(e, btnElement) {
         closeBtn.className = 'matrix-fullscreen-close';
         closeBtn.innerText = '✕';
         
-        closeBtn.addEventListener('pointerdown', closeMatrixFullscreen);
+        closeBtn.addEventListener('click', closeMatrixFullscreen);
         
         content.appendChild(closeBtn);
         fullscreenOverlay.appendChild(content);
