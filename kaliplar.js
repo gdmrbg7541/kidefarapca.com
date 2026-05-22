@@ -247,45 +247,59 @@ function closeVerbModal() {
     document.getElementById('verb-overlay').style.display = 'none';
 }
 
+let currentPulseTimeout = null; // Üst üste tıklamaları engellemek için
+
 function triggerAreaPulse(boxElement) {
     if (!boxElement) return;
-    boxElement.classList.remove("pulse-highlight");
+    
+    // Hızlıca başka kutuya tıklanırsa önceki büyütmeyi iptal et
+    if (currentPulseTimeout) clearTimeout(currentPulseTimeout);
 
     const isZoomEnabled = document.getElementById('zoomToggleCheckbox').checked;
-
-    if (!isZoomEnabled) {
-        boxElement.style.setProperty("background-color", "#bfffdf", "important");
-        boxElement.style.borderColor = "#000000";
-        return;
-    }
-
-    const rect = boxElement.getBoundingClientRect();
-    const boxCenterX = rect.left + rect.width / 2;
-    const boxCenterY = rect.top + rect.height / 2;
-    const viewportCenterX = window.innerWidth / 2;
-    const viewportCenterY = window.innerHeight / 2;
-    const moveX = viewportCenterX - boxCenterX;
-    const moveY = viewportCenterY - boxCenterY;
-
-    boxElement.style.setProperty('--start-x', '0px');
-    boxElement.style.setProperty('--start-y', '0px');
-    boxElement.style.setProperty('--move-x', `${moveX}px`);
-    boxElement.style.setProperty('--move-y', `${moveY}px`);
+    const textEl = boxElement.querySelector('.ar, .ar-small');
+    const word = textEl ? textEl.innerText.trim() : "";
+    const hasEgg = wordEasterEggs[word] !== undefined;
     
-    boxElement.style.transform = "translateZ(0) rotate(0.001deg)";
-    void boxElement.offsetWidth; 
-    
-    boxElement.style.setProperty("background-color", "#bfffdf", "important");
-    boxElement.style.borderColor = "#000000";
+    // Eğer büyütme açıksa VE emojisi varsa 1.5 saniye bekle, yoksa hemen büyüt
+    const delay = (isZoomEnabled && hasEgg) ? 1500 : 0;
 
-    boxElement.classList.add("pulse-highlight");
-
-    setTimeout(() => {
+    currentPulseTimeout = setTimeout(() => {
         boxElement.classList.remove("pulse-highlight");
-        boxElement.style.transform = "";
+
+        if (!isZoomEnabled) {
+            boxElement.style.setProperty("background-color", "#bfffdf", "important");
+            boxElement.style.borderColor = "#000000";
+            return;
+        }
+
+        const rect = boxElement.getBoundingClientRect();
+        const boxCenterX = rect.left + rect.width / 2;
+        const boxCenterY = rect.top + rect.height / 2;
+        const viewportCenterX = window.innerWidth / 2;
+        const viewportCenterY = window.innerHeight / 2;
+        const moveX = viewportCenterX - boxCenterX;
+        const moveY = viewportCenterY - boxCenterY;
+
+        boxElement.style.setProperty('--start-x', '0px');
+        boxElement.style.setProperty('--start-y', '0px');
+        boxElement.style.setProperty('--move-x', `${moveX}px`);
+        boxElement.style.setProperty('--move-y', `${moveY}px`);
+        
+        boxElement.style.transform = "translateZ(0) rotate(0.001deg)";
+        void boxElement.offsetWidth; 
+        
         boxElement.style.setProperty("background-color", "#bfffdf", "important");
         boxElement.style.borderColor = "#000000";
-    }, 3000);
+
+        boxElement.classList.add("pulse-highlight");
+
+        setTimeout(() => {
+            boxElement.classList.remove("pulse-highlight");
+            boxElement.style.transform = "";
+            boxElement.style.setProperty("background-color", "#bfffdf", "important");
+            boxElement.style.borderColor = "#000000";
+        }, 3000);
+    }, delay);
 }
 
 function selectReadyVerb(verb) {
@@ -406,6 +420,12 @@ function resetBox(el) {
         container.remove(); 
     }
     
+    // ✨ YENİ: Kutu sıfırlanınca cümle vurgusu butonunu da sil
+    const triggerBtn = el.querySelector('.easter-egg-trigger');
+    if (triggerBtn) {
+        triggerBtn.remove();
+    }
+    
     if (el.hasAttribute('data-tiklama-sayisi')) {
         el.setAttribute('data-tiklama-sayisi', '0');
     }
@@ -499,12 +519,20 @@ function applyToSpecificBox(boxElement) {
 
     clearOtherActiveBoxes(boxElement);
 
+    // Kutu zaten aktifse ve sıfırlanıyorsa
     if (boxElement.style.backgroundColor) {
         SoundEngine.playClose();
         targetEl.innerText = kalip; 
         boxElement.style.backgroundColor = "";
         boxElement.style.borderColor = "";
         lastOriginalWord = kalip;
+        
+        // ✨ YENİ: İkinci tıklamayla sıfırlanınca cümle vurgusu butonunu da sil
+        const triggerBtn = boxElement.querySelector('.easter-egg-trigger');
+        if (triggerBtn) {
+            triggerBtn.remove();
+        }
+        
         return;
     }
 
@@ -2412,18 +2440,15 @@ const wordEasterEggs = {
 };
 
 function checkWordEasterEgg(word, boxElement) {
-    const isZoomEnabled = document.getElementById('zoomToggleCheckbox').checked;
-    if (isZoomEnabled) {
-        return; 
-    }
-
     if (!word || !boxElement) return;
     
+    // Eski ✨ butonlarını temizle
     document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
 
     const data = wordEasterEggs[word];
     if (!data) return;
 
+    // Tıklanır tıklanmaz emojiyi göster
     if (data.emoji) {
         const rect = boxElement.getBoundingClientRect();
         const emojiDiv = document.createElement('div');
@@ -2442,6 +2467,7 @@ function checkWordEasterEgg(word, boxElement) {
         }, 5000);
     }
 
+    // Tıklanır tıklanmaz ✨ (cümle vurgusu) butonunu göster
     if (data.arText || data.trText) {
         const triggerBtn = document.createElement('div');
         triggerBtn.className = 'easter-egg-trigger';
