@@ -3049,20 +3049,7 @@ const wordEasterEggs = {
     // 1. Bab (فَعَلَ - يَفْعُلُ), İf'âl ve Tef'îl Babları
     // ==================================================================
     "كمل": {
-        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
-        1: { 
-            base: { emoji: "🌱", arText: "كَمَلَ", trText: "Tamamlandı / Olgunlaştı." } 
-        },
-        
-        // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
-        2: { 
-            base: { emoji: "🌿", arText: "يَكْمُلُ", trText: "Tamamlanır / Olgunlaşıyor." } 
-        },
-        
-        // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
-        3: { 
-            base: { emoji: "🌟", arText: "اُكْمُلْ", trText: "Olgunlaş / Tamamlan!" } 
-        },
+       
 
         // --- 22 Numaralı Kalıp (فَعَال) ---
         22: { 
