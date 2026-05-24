@@ -98,9 +98,9 @@ body {
 .color-btn span { font-size: clamp(14px, 2.5vh, 22px); cursor: pointer; text-align: center; padding: 0 10px; }
 
 .btn-red { color: #dc2626; }
-.btn-green { color: #16a34a; opacity: 0.4; cursor: not-allowed !important; }
-.btn-purple { color: #9333ea; opacity: 0.4; cursor: not-allowed !important; }
-.btn-blue { color: #2563eb; opacity: 0.4; cursor: not-allowed !important; }
+.btn-green { color: #16a34a; }
+.btn-purple { color: #9333ea; }
+.btn-blue { color: #2563eb; }
 
 /* YARIŞMA ALANI (ARENA) */
 .arena-header {
