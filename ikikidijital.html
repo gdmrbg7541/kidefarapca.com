@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İkiki - İnteraktif Kelime Oyunu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="ikikidijital.css">
+</head>
+<body>
+
+    <a href="https://kidefarapca.com" class="home-link" id="home-btn" title="Anasayfaya Dön">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </a>
+
+    <div class="screen active" id="screen-intro">
+        <div class="intro-top">
+            <h1 class="title-main">İkiki</h1>
+            <p class="subtitle">Kelimenin Serüveni</p>
+        </div>
+
+        <div class="color-menu">
+            <div class="color-btn btn-red" onclick="startGame('Kırmızı Kartlar')">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Kırmızı Kartlar</span>
+            </div>
+            <div class="color-btn btn-green">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Yeşil Kartlar</span>
+            </div>
+            <div class="color-btn btn-purple">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Mor Kartlar</span>
+            </div>
+            <div class="color-btn btn-blue">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Mavi Kartlar</span>
+            </div>
+        </div>
+        <div></div> 
+    </div>
+
+    <div class="screen" id="screen-arena">
+        <div class="timer-track"><div class="timer-fill" id="timer-bar"></div></div>
+        
+        <div class="arena-header">
+            <div class="arena-title" id="active-category">KIRMIZI KARTLAR</div>
+            <div class="subtitle" style="margin: 0; font-size: 22px;">KART <span id="current-index">1</span> / <span id="total-cards">12</span></div>
+        </div>
+
+        <div class="arena-workspace">
+            <div class="student-side">
+                <div class="score-box" id="score-1">0</div>
+                <button class="plus-btn" onclick="addScore(1)">+</button>
+                <p style="color: var(--text-muted); font-size: 18px; margin-top: 10px;">ÖĞRENCİ 1</p>
+            </div>
+
+            <div class="main-display">
+                <div class="question-wrapper" id="question-wrapper">
+                    <div class="pattern-name clickable-item" id="display-pattern-name" onclick="smartToggleBlur('pattern')" title="Gizle/Göster">فَعَلَ</div>
+                    
+                    <div class="root-line">
+                        <div class="root-word" id="display-root">حـ ـكـ ـم</div>
+                        <div class="pattern-num clickable-item" id="display-pattern-num" onclick="smartToggleBlur('num')" title="Gizle/Göster">17</div>
+                    </div>
+
+                    <div class="hint-text clickable-item" id="display-hint" onclick="toggleHintBlur()" title="Gizle/Göster">👉🏼 Maçı yönetir</div>
+                </div>
+
+                <div class="answer-container" id="answer-container">
+                    <div class="answer-ar" id="display-ar-answer">حَكَم</div>
+                    <div class="answer-tr" id="display-tr-answer">Hakem</div>
+                </div>
+            </div>
+
+            <div class="student-side">
+                <div class="score-box" id="score-2">0</div>
+                <button class="plus-btn" onclick="addScore(2)">+</button>
+                <p style="color: var(--text-muted); font-size: 18px; margin-top: 10px;">ÖĞRENCİ 2</p>
+            </div>
+        </div>
+
+        <div class="arena-controls">
+            <button class="btn-ui btn-secondary" onclick="resetScores()">SKORU SIFIRLA</button>
+            <button class="btn-ui btn-primary" id="btn-action-main" onclick="triggerAction()">SORUYU GÖSTER</button>
+            <button class="btn-ui btn-secondary" onclick="exitArena()">ÇIKIŞ</button>
+        </div>
+    </div>
+
+    <script src="ikikidijital.js"></script>
+</body>
+</html>
