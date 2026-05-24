@@ -233,6 +233,7 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
 // ==========================================
 // KART ÜRETİCİ YAMASI (index.html için)
 // ==========================================
@@ -251,26 +252,18 @@ document.addEventListener("DOMContentLoaded", () => {
         "İkiki Mor Kartlar.pdf",
         "İkiki Yeşil Kartlar.pdf",
         "Kalıplardan Cümlelere.pdf"
+        
     ];
 
     pdfListesi.forEach(dosyaAdi => {
         let gorunenIsim = dosyaAdi.replace('.pdf', '').replace(/_/g, ' ');
 
         const card = document.createElement('a');
-        
-        // YENİ EKLENEN ŞART (IF) BLOĞU:
-        if (dosyaAdi === "⚔️ Kim Daha Hızlı?.pdf") {
-            // Bu dosya çok büyük olduğu için doğrudan GitHub Releases linkine yönlendiriyoruz
-            card.href = "https://github.com/gdmrbg7541/kidefarapca.com/releases/download/SURUM-ADINIZ/DOSYA-ADI.pdf"; // BURAYI KENDİ KOPYALADIĞIN LİNK İLE DEĞİŞTİR
-        } else {
-            // Diğer dosyalar eskisi gibi sunum.html içinde açılmaya devam edecek
-            card.href = `sunum.html?dosya=${encodeURIComponent(dosyaAdi)}`; 
-        }
-
+        // Tıklanınca sunum.html dosyasını yeni sekmede ve parametreyle aç
+        card.href = `sunum.html?dosya=${encodeURIComponent(dosyaAdi)}`; 
         card.target = "_blank"; // Yeni sekmede açılma garantisi
         card.className = 'game-card kss-card';
         
-        // Tasarım ayarların (Font, kalınlık, hizalama) aynen korundu
         card.innerHTML = `
             <div class="default-game-content">
                 <div class="default-game-emoji">📊</div>
