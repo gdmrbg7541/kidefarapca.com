@@ -246,12 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "🧐 Harf-i Tarîf.pdf",
         "Arapçada Kelime.pdf",
         "⚔️ Kim Daha Hızlı.pdf",
-        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
-        "İkiki Kırmızı Kartlar.pdf",
-        "İkiki Mavi Kartlar.pdf",
-        "İkiki Mor Kartlar.pdf",
-        "İkiki Yeşil Kartlar.pdf",
-        "Kalıplardan Cümlelere.pdf"
+        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf"
+        
         
     ];
 
