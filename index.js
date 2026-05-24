@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "İkiki Mavi Kartlar.pdf",
         "İkiki Mor Kartlar.pdf",
         "İkiki Yeşil Kartlar.pdf",
-        "Kalıplardan Cümlelere.pdf",
+        "Kalıplardan Cümlelere.pdf"
         
     ];
 
