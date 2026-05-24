@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>İkiki - İnteraktif Kelime Oyunu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="ikikidijital.css">
@@ -45,14 +45,14 @@
         
         <div class="arena-header">
             <div class="arena-title" id="active-category">KIRMIZI KARTLAR</div>
-            <div class="subtitle" style="margin: 0; font-size: 22px;">KART <span id="current-index">1</span> / <span id="total-cards">12</span></div>
+            <div class="subtitle" style="margin: 0;">KART <span id="current-index">1</span> / <span id="total-cards">12</span></div>
         </div>
 
         <div class="arena-workspace">
-            <div class="student-side">
+            <div class="student-side student-1">
                 <div class="score-box" id="score-1">0</div>
                 <button class="plus-btn" onclick="addScore(1)">+</button>
-                <p style="color: var(--text-muted); font-size: 18px; margin-top: 10px;">ÖĞRENCİ 1</p>
+                <p class="student-label">ÖĞRENCİ 1</p>
             </div>
 
             <div class="main-display">
@@ -73,10 +73,10 @@
                 </div>
             </div>
 
-            <div class="student-side">
+            <div class="student-side student-2">
                 <div class="score-box" id="score-2">0</div>
                 <button class="plus-btn" onclick="addScore(2)">+</button>
-                <p style="color: var(--text-muted); font-size: 18px; margin-top: 10px;">ÖĞRENCİ 2</p>
+                <p class="student-label">ÖĞRENCİ 2</p>
             </div>
         </div>
 

@@ -10,7 +10,7 @@
     --gold: #b45309;          
 }
 
-/* KESİN KURAL: Arakom Fontu ve Kalınlık Kesinlikle Normal Olacak */
+/* KESİN KURAL: Arakom Fontu ve Kalınlık Normal */
 * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -25,17 +25,18 @@ body {
     color: var(--text-dark);
     min-height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    overflow: hidden; /* Taşmaları engelle */
     position: relative;
+    touch-action: manipulation; /* Mobilde çift tıklama yakınlaştırmasını önle */
 }
 
-/* GERİ DÖNÜŞ BUTONU (SVG) */
+/* GERİ DÖNÜŞ BUTONU */
 .home-link {
     position: fixed;
-    top: 30px;
-    left: 30px;
-    width: 50px;
-    height: 50px;
+    top: clamp(10px, 3vh, 30px);
+    left: clamp(10px, 3vw, 30px);
+    width: clamp(35px, 5vw, 50px);
+    height: clamp(35px, 5vw, 50px);
     background: var(--bg-panel);
     border-radius: 12px;
     display: flex;
@@ -48,7 +49,7 @@ body {
     cursor: pointer !important;
 }
 .home-link:hover { transform: scale(1.1); background: #f1f5f9; }
-.home-link svg { width: 28px; height: 28px; fill: var(--text-dark); cursor: pointer; }
+.home-link svg { width: 50%; height: 50%; fill: var(--text-dark); cursor: pointer; }
 
 /* EKRAN YÖNETİMİ */
 .screen {
@@ -61,26 +62,26 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 50px;
+    padding: clamp(15px, 4vw, 50px);
     z-index: 2;
 }
 .screen.active { display: flex; }
 
 /* ANA SAYFA TASARIMI */
-.intro-top { text-align: center; margin-top: 20px; }
-.title-main { font-size: 130px; color: var(--accent-red); letter-spacing: -4px; margin-bottom: 5px; }
-.subtitle { font-size: 28px; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; }
+.intro-top { text-align: center; margin-top: clamp(10px, 5vh, 20px); }
+.title-main { font-size: clamp(60px, 12vw, 130px); color: var(--accent-red); letter-spacing: -2px; margin-bottom: 5px; }
+.subtitle { font-size: clamp(16px, 3vw, 28px); color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
 
 .color-menu {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: clamp(10px, 2vw, 25px);
     width: 100%;
     max-width: 1200px;
-    margin-bottom: 50px;
+    margin-bottom: clamp(10px, 5vh, 50px);
 }
 .color-btn {
-    height: 260px;
+    height: clamp(100px, 25vh, 260px);
     border-radius: 24px;
     display: flex;
     flex-direction: column;
@@ -92,9 +93,9 @@ body {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer !important;
 }
-.color-btn:hover { transform: translateY(-12px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-.color-btn i { font-size: 65px; margin-bottom: 20px; }
-.color-btn span { font-size: 22px; cursor: pointer; }
+.color-btn:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+.color-btn i { font-size: clamp(30px, 6vh, 65px); margin-bottom: 10px; }
+.color-btn span { font-size: clamp(14px, 2.5vh, 22px); cursor: pointer; text-align: center; padding: 0 10px; }
 
 .btn-red { color: #dc2626; }
 .btn-green { color: #16a34a; opacity: 0.4; cursor: not-allowed !important; }
@@ -108,9 +109,10 @@ body {
     align-items: center;
     width: 100%;
     border-bottom: 2px solid rgba(0,0,0,0.05);
-    padding-bottom: 15px;
+    padding-bottom: clamp(5px, 2vh, 15px);
 }
-.arena-title { font-size: 32px; color: var(--accent-red); }
+.arena-title { font-size: clamp(18px, 4vw, 32px); color: var(--accent-red); }
+.arena-header .subtitle { font-size: clamp(14px, 3vw, 22px); }
 
 .arena-workspace {
     display: flex;
@@ -118,31 +120,34 @@ body {
     flex: 1;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
+/* ÖĞRENCİ SKOR PANELİ (MOBİL İÇİN DİNAMİK) */
 .student-side {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    min-width: 180px;
+    gap: clamp(10px, 2vh, 20px);
+    z-index: 10;
 }
 .score-box {
-    font-size: 85px;
+    font-size: clamp(40px, 8vmin, 85px);
     background: var(--bg-panel);
-    padding: 15px 45px;
+    padding: clamp(5px, 1vh, 15px) clamp(15px, 3vw, 45px);
     border-radius: 20px;
     border: 1px solid rgba(0,0,0,0.08);
     box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-    min-width: 160px;
+    min-width: clamp(80px, 15vw, 160px);
     text-align: center;
 }
 .plus-btn {
-    width: 85px; height: 85px;
+    width: clamp(50px, 10vmin, 85px); 
+    height: clamp(50px, 10vmin, 85px);
     border-radius: 50%;
     background: var(--accent-green);
     color: white;
-    font-size: 45px;
+    font-size: clamp(25px, 5vmin, 45px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,6 +157,7 @@ body {
     box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
 }
 .plus-btn:active { transform: scale(0.9); }
+.student-label { color: var(--text-muted); font-size: clamp(12px, 2.5vmin, 18px); margin-top: 5px; }
 
 /* MERKEZ ALAN TASARIMI */
 .main-display {
@@ -161,8 +167,8 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 20px;
-    max-width: 800px;
+    padding: 0 10px;
+    max-width: 100%;
 }
 
 /* SORU YAPISI */
@@ -170,12 +176,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: clamp(5px, 1vh, 10px);
     width: 100%;
 }
 
 .pattern-name {
-    font-size: 100px;
+    font-size: clamp(40px, 10vmin, 100px);
     color: var(--gold);
     line-height: 1;
     opacity: 0;
@@ -188,13 +194,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 40px;
-    margin: 10px 0;
+    gap: clamp(15px, 4vw, 40px);
+    margin: clamp(5px, 1vh, 10px) 0;
     width: 100%;
 }
 
 .root-word {
-    font-size: 180px;
+    font-size: clamp(60px, 15vmin, 180px); /* JS ile de yönetiliyor */
     color: var(--text-dark);
     opacity: 0;
     display: none;
@@ -205,7 +211,7 @@ body {
 .root-word.active { opacity: 1; transform: scale(1); }
 
 .pattern-num {
-    font-size: 80px;
+    font-size: clamp(30px, 8vmin, 80px);
     color: var(--gold);
     opacity: 0;
     display: none;
@@ -215,40 +221,84 @@ body {
 .pattern-num.active { opacity: 1; }
 
 .hint-text {
-    font-size: 42px;
+    font-size: clamp(18px, 4.5vmin, 42px);
     color: var(--accent-blue);
     opacity: 0;
     display: none;
-    margin-top: 15px;
+    margin-top: clamp(5px, 2vh, 15px);
     transition: opacity 0.5s;
+    padding: 0 10px;
 }
 .hint-text.active { opacity: 1; }
 
 /* BLUR MANTIĞI VE ETKİLEŞİM */
 .clickable-item { cursor: pointer !important; transition: filter 0.3s, opacity 0.3s; }
-.blurred { filter: blur(20px); opacity: 0.2; }
+.blurred { filter: blur(clamp(8px, 2vw, 20px)); opacity: 0.2; }
 
 /* CEVAPLAR */
 .answer-container { display: none; flex-direction: column; align-items: center; gap: 5px; }
-.answer-ar { font-size: 185px; color: var(--accent-green); opacity: 0; transform: scale(0.9); transition: all 0.5s; }
+.answer-ar { font-size: clamp(60px, 15vmin, 185px); color: var(--accent-green); opacity: 0; transform: scale(0.9); transition: all 0.5s; }
 .answer-ar.active { opacity: 1; transform: scale(1); }
-.answer-tr { font-size: 55px; color: var(--text-dark); opacity: 0; transition: opacity 0.5s; }
+.answer-tr { font-size: clamp(24px, 6vmin, 55px); color: var(--text-dark); opacity: 0; transition: opacity 0.5s; }
 .answer-tr.active { opacity: 1; }
 
 /* ZAMANLAYICI */
-.timer-track { position: absolute; top: 0; left: 0; width: 100%; height: 12px; background: rgba(0,0,0,0.03); }
+.timer-track { position: absolute; top: 0; left: 0; width: 100%; height: clamp(6px, 1.5vh, 12px); background: rgba(0,0,0,0.03); }
 .timer-fill { width: 0%; height: 100%; background: var(--accent-red); transition: width 1s linear; }
 
 /* KONTROLLER */
 .arena-controls {
     display: flex;
-    gap: 25px;
+    gap: clamp(10px, 2vw, 25px);
     width: 100%;
     justify-content: center;
     border-top: 2px solid rgba(0,0,0,0.04);
-    padding-top: 20px;
+    padding-top: clamp(10px, 2vh, 20px);
+    flex-wrap: wrap; /* Mobilde alt alta inmesi için */
 }
-.btn-ui { padding: 15px 50px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); font-size: 24px; cursor: pointer !important; transition: 0.2s; }
-.btn-primary { background: var(--accent-red); color: white; min-width: 320px; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.1); }
+.btn-ui { 
+    padding: clamp(10px, 2vh, 15px) clamp(20px, 4vw, 50px); 
+    border-radius: 16px; 
+    border: 1px solid rgba(0,0,0,0.05); 
+    font-size: clamp(16px, 3.5vmin, 24px); 
+    cursor: pointer !important; 
+    transition: 0.2s; 
+    flex: 1; /* Alanı doldur */
+    max-width: 400px;
+}
+.btn-primary { background: var(--accent-red); color: white; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.1); }
 .btn-secondary { background: var(--bg-panel); color: var(--text-dark); }
 .btn-ui:active { transform: scale(0.97); }
+
+/* --- MOBİL DİKEY (PORTRAIT) ÖZEL DÜZEN --- */
+@media (max-width: 768px) and (orientation: portrait) {
+    .arena-workspace {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 80px; /* Skorlara yer aç */
+    }
+    .student-side {
+        position: absolute;
+        top: 10px;
+        transform: scale(0.85);
+        transform-origin: top;
+    }
+    .student-1 { left: -10px; }
+    .student-2 { right: -10px; }
+    .main-display { padding-top: 20px; }
+    .arena-controls { flex-direction: column; }
+    .btn-ui { width: 100%; max-width: 100%; flex: none; }
+}
+
+/* --- MOBİL YATAY (LANDSCAPE) ÖZEL DÜZEN --- */
+@media (max-height: 500px) and (orientation: landscape) {
+    .screen { padding: 10px 30px; }
+    .title-main { margin-top: 5px; }
+    .arena-header { padding-bottom: 5px; }
+    .arena-workspace { padding: 5px 0; }
+    .student-side { gap: 5px; }
+    .arena-controls { padding-top: 5px; gap: 10px; }
+    .btn-ui { padding: 8px 20px; border-radius: 10px; }
+    .hint-text { margin-top: 5px; }
+    .root-line { margin: 5px 0; }
+}

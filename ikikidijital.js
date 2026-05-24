@@ -67,11 +67,11 @@ function updateDisplay() {
     document.getElementById('display-tr-answer').innerText = card.tr;
     document.getElementById('current-index').innerText = currentCardIndex + 1;
     
-    // Taşma Koruması
+    // Mobil uyumlu taşma koruması (Sabit px yerine esnek clamp kullanılır)
     if (card.root.includes('+') || card.root.length > 13) {
-        rootEl.style.fontSize = "110px";
+        rootEl.style.fontSize = "clamp(40px, 10vmin, 110px)";
     } else {
-        rootEl.style.fontSize = "180px";
+        rootEl.style.fontSize = "clamp(60px, 15vmin, 180px)";
     }
 
     resetArenaVisuals();
@@ -195,7 +195,7 @@ function exitArena() {
     showScreen('screen-intro');
 }
 
-// KLAVYE VE SUNUM KUMANDASI (İleri / Geri fark etmeksizin hep sonraki aşamaya geçer)
+// KLAVYE VE SUNUM KUMANDASI (Sadece ileri yönde ilerler)
 window.addEventListener('keydown', (e) => {
     const triggerKeys = [' ', 'Enter', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'PageDown', 'PageUp'];
     if(triggerKeys.includes(e.key)) {
