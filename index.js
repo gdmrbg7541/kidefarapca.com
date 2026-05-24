@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const pdfListesi = [
         "🧐 Harf-i Tarîf.pdf",
         "Arapçada Kelime.pdf",
-        "⚔️ Kim Daha Hızlı?.pdf",
+        "⚔️ Kim Daha Hızlı.pdf",
         "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
         "İkiki Kırmızı Kartlar.pdf",
         "İkiki Mavi Kartlar.pdf",
