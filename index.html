@@ -1148,32 +1148,11 @@ window.onclick = function(event) {
 }
 
 // ==========================================
-// PDF SUNUM GALERİSİ YAMASI (GÜNCELLENDİ)
+// KART ÜRETİCİ YAMASI (index.html için)
 // ==========================================
-
-// Tüm kodları DOM (sayfa) yüklendikten sonra çalışması için sarmalıyoruz
 document.addEventListener("DOMContentLoaded", () => {
-    
-    // PDF.js Worker Tanımlaması
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    // HTML Elementlerini Seçme
     const slaytContainer = document.getElementById('slayt-galerisi-container');
-    const presentationContainer = document.getElementById('presentation-container');
-    const canvas = document.getElementById('pdf-canvas');
-    const loadingInfo = document.getElementById('loading-info');
-
-    // Eğer gerekli HTML alanları yoksa kodu durdur
-    if (!slaytContainer || !presentationContainer || !canvas) {
-        console.error("PDF Galeri hatası: Gerekli HTML alanları (container veya canvas) bulunamadı. 3. Adımdaki HTML'i eklediğinizden emin olun.");
-        return;
-    }
-
-    const ctx = canvas.getContext('2d');
-    let pdfDoc = null;
-    let pageNum = 1;
-    let pageRendering = false;
-    let pageNumPending = null;
+    if (!slaytContainer) return;
 
     // Gösterilecek PDF dosyalarının listesi
     const pdfListesi = [
@@ -1185,16 +1164,15 @@ document.addEventListener("DOMContentLoaded", () => {
         "06_grup_etkinlikleri.pdf"
     ];
 
-    // Kartları Oluşturma
     pdfListesi.forEach(dosyaAdi => {
         let gorunenIsim = dosyaAdi.replace('.pdf', '').replace(/_/g, ' ');
 
         const card = document.createElement('a');
-        // Var olan kaydırma (smooth scroll) koduyla çakışmayı önleyen düzeltme:
-        card.href = "javascript:void(0)"; 
+        // Tıklanınca sunum.html dosyasını yeni sekmede ve parametreyle aç
+        card.href = `sunum.html?dosya=${encodeURIComponent(dosyaAdi)}`; 
+        card.target = "_blank"; // Yeni sekmede açılma garantisi
         card.className = 'game-card kss-card';
         
-        // Arakom fontu ve kalın olmayan yazım kuralları korundu
         card.innerHTML = `
             <div class="default-game-content">
                 <div class="default-game-emoji">📊</div>
@@ -1206,132 +1184,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
 
-        // Tıklanınca Sunumu Başlat
-        card.addEventListener('click', (e) => {
-            e.preventDefault();
-            baslatSunum(dosyaAdi);
-        });
-
         slaytContainer.appendChild(card);
     });
-
-    // Sunumu Başlatma Fonksiyonu
-    function baslatSunum(pdfUrl) {
-        document.body.style.overflow = 'hidden'; // Arka plan kaymasını kilitle
-        presentationContainer.style.display = 'flex';
-        loadingInfo.style.display = 'block';
-
-        if (presentationContainer.requestFullscreen) {
-            presentationContainer.requestFullscreen().catch(err => {
-                console.log("Tam ekran hatası: " + err.message);
-            });
-        }
-
-        // PDF'i yükle
-        pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
-            pdfDoc = pdfDoc_;
-            pageNum = 1;
-            renderPage(pageNum);
-        }).catch(function(error) {
-            alert("PDF yüklenemedi. Dosya adını veya yolunu kontrol edin: " + error.message);
-            cikisSunum();
-        });
-    }
-
-    // Sayfa Çizimi
-    function renderPage(num) {
-        pageRendering = true;
-        loadingInfo.style.display = 'none';
-
-        pdfDoc.getPage(num).then(function(page) {
-            const viewport = page.getViewport({scale: 1});
-            const scale = Math.min(window.innerWidth / viewport.width, window.innerHeight / viewport.height);
-            const scaledViewport = page.getViewport({scale: scale});
-
-            canvas.height = scaledViewport.height;
-            canvas.width = scaledViewport.width;
-
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: scaledViewport
-            };
-            
-            const renderTask = page.render(renderContext);
-            renderTask.promise.then(function() {
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                    renderPage(pageNumPending);
-                    pageNumPending = null;
-                }
-            });
-        });
-    }
-
-    function queueRenderPage(num) {
-        if (pageRendering) {
-            pageNumPending = num;
-        } else {
-            renderPage(num);
-        }
-    }
-
-    function onNextPage() {
-        if (pdfDoc === null || pageNum >= pdfDoc.numPages) return;
-        pageNum++;
-        queueRenderPage(pageNum);
-    }
-
-    function onPrevPage() {
-        if (pdfDoc === null || pageNum <= 1) return;
-        pageNum--;
-        queueRenderPage(pageNum);
-    }
-
-    // Fare Kontrolleri
-    presentationContainer.addEventListener('mousedown', (e) => {
-        if (e.button === 0) onNextPage();  // Sol tık -> İleri
-        else if (e.button === 2) onPrevPage(); // Sağ tık -> Geri
-    });
-    
-    // Sağ tık menüsünü engelle
-    presentationContainer.addEventListener('contextmenu', (e) => e.preventDefault());
-
-    // Klavye Kontrolleri
-    document.addEventListener('keydown', (e) => {
-        if (presentationContainer.style.display !== 'flex') return;
-
-        if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) {
-            e.preventDefault();
-            onNextPage();
-        } else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
-            e.preventDefault();
-            onPrevPage();
-        }
-    });
-
-    // Tam Ekrandan Çıkış ve Ekran Boyutlandırma
-    document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement) cikisSunum();
-    });
-
-    window.addEventListener('resize', () => {
-        if (presentationContainer.style.display === 'flex' && pdfDoc) {
-            queueRenderPage(pageNum);
-        }
-    });
-
-    // Sunumu Kapatma
-    function cikisSunum() {
-        presentationContainer.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Arka plan kaymasını geri aç
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        pdfDoc = null;
-    }
 });
+
 </script>
-<div id="presentation-container" style="display: none; background-color: #000; width: 100vw; height: 100vh; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; z-index: 10000;">
-        <div id="loading-info" style="color: white; font-size: 20px; position: absolute; font-family: 'Arakom', sans-serif !important; font-weight: normal !important;">Yükleniyor...</div>
-        <canvas id="pdf-canvas" style="max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 20px rgba(255,255,255,0.1);"></canvas>
-    </div>
 </body>
 </html>

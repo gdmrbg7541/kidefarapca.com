@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunum Görüntüleyici</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        /* Arakom Fontu ve Genel Ayarlar */
+        * {
+            box-sizing: border-box;
+            font-family: 'Arakom', sans-serif !important;
+            font-weight: normal !important; 
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Titreşimi Engelleyen Container */
+        #canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pdf-page {
+            position: absolute;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 0 20px rgba(255,255,255,0.05);
+        }
+
+        /* Harekete Duyarlı UI (Arayüz) Alanı */
+        #ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Altındaki canvas'a tıklanabilmesi için */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* Aktif olunca görünür yap */
+        #ui-layer.show {
+            opacity: 1;
+        }
+
+        .nav-btn {
+            pointer-events: auto; /* Butonların tıklanabilmesi için */
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(231, 76, 60, 0.9); /* Kidef kırmızısına atıf */
+            transform: scale(1.1);
+        }
+
+        #loading-info {
+            position: absolute;
+            color: white;
+            font-size: 20px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-info">Sunum Yükleniyor...</div>
+    
+    <div id="canvas-container"></div>
+
+    <div id="ui-layer">
+        <button class="nav-btn" id="prev-btn" title="Önceki Slayt">&#10094;</button>
+        <button class="nav-btn" id="next-btn" title="Sonraki Slayt">&#10095;</button>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // URL'den dosya adını al
+        const urlParams = new URLSearchParams(window.location.search);
+        const pdfYolu = urlParams.get('dosya');
+
+        if (!pdfYolu) {
+            document.getElementById('loading-info').innerText = "Dosya bulunamadı!";
+        } else {
+            baslatSunum(pdfYolu);
+        }
+
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        const container = document.getElementById('canvas-container');
+        const loadingInfo = document.getElementById('loading-info');
+
+        function baslatSunum(url) {
+            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.title = url.replace('.pdf', '').replace(/_/g, ' '); // Sekme adını ayarla
+                loadingInfo.style.display = 'none';
+                renderPage(pageNum);
+            }).catch(function(error) {
+                loadingInfo.innerText = "Yükleme Hatası: " + error.message;
+            });
+        }
+
+        // TİTREŞİMSİZ RENDER MANTIĞI
+        function renderPage(num) {
+            pageRendering = true;
+
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({scale: 1});
+                const scale = Math.min(window.innerWidth / viewport.width, window.innerHeight / viewport.height);
+                const scaledViewport = page.getViewport({scale: scale});
+
+                // Her sayfa için YENİ bir canvas oluşturuyoruz (Eski sayfa ekranda kalmaya devam ediyor)
+                const newCanvas = document.createElement('canvas');
+                newCanvas.className = 'pdf-page';
+                newCanvas.height = scaledViewport.height;
+                newCanvas.width = scaledViewport.width;
+                const ctx = newCanvas.getContext('2d');
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: scaledViewport
+                };
+                
+                // Çizim işlemi
+                page.render(renderContext).promise.then(function() {
+                    pageRendering = false;
+                    
+                    // Yeni sayfa tamamen çizildikten sonra eskisini silip yenisini ekliyoruz
+                    container.innerHTML = ''; 
+                    container.appendChild(newCanvas);
+
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function onNextPage() {
+            if (pdfDoc === null || pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        function onPrevPage() {
+            if (pdfDoc === null || pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        // ==========================================
+        // UI GİZLE/GÖSTER MANTIĞI
+        // ==========================================
+        const uiLayer = document.getElementById('ui-layer');
+        let uiTimeout;
+
+        function uiGoster() {
+            uiLayer.classList.add('show');
+            clearTimeout(uiTimeout);
+            // 2.5 saniye hareketsizlikten sonra gizle
+            uiTimeout = setTimeout(() => {
+                uiLayer.classList.remove('show');
+            }, 2500); 
+        }
+
+        // Fare hareketi, ekrana dokunma veya tıklama olduğunda arayüzü göster
+        document.addEventListener('mousemove', uiGoster);
+        document.addEventListener('touchstart', uiGoster);
+        document.addEventListener('click', uiGoster);
+        
+        // İlk açılışta butonları göster
+        uiGoster();
+
+        // ==========================================
+        // KONTROLLER
+        // ==========================================
+        document.getElementById('next-btn').addEventListener('click', (e) => {
+            e.stopPropagation(); // UI gizleme tıklamasıyla çakışmasın
+            onNextPage();
+        });
+        
+        document.getElementById('prev-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            onPrevPage();
+        });
+
+        // Klavye ile geçiş
+        document.addEventListener('keydown', (e) => {
+            uiGoster(); // Tuşa basılınca da UI görünsün
+            if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) {
+                e.preventDefault();
+                onNextPage();
+            } else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
+                e.preventDefault();
+                onPrevPage();
+            }
+        });
+
+        // Ekran boyutu değişirse slaytı yeniden boyutlandır
+        window.addEventListener('resize', () => {
+            if (pdfDoc) queueRenderPage(pageNum);
+        });
+    </script>
+</body>
+</html>
