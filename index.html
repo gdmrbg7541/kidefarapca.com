@@ -1148,178 +1148,186 @@ window.onclick = function(event) {
 }
 
 // ==========================================
-// PDF SUNUM GALERİSİ YAMASI
+// PDF SUNUM GALERİSİ YAMASI (GÜNCELLENDİ)
 // ==========================================
 
-// PDF.js Worker Tanımlaması
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-// Gösterilecek PDF dosyalarının listesi
-const pdfListesi = [
-    "01_Sunu 🧐 Harf-i Tarîf.pdf",
-    "02_temel_kavramlar.pdf",
-    "03_okuma_parcasi_1.pdf",
-    "04_dilbilgisi_kurallari.pdf",
-    "05_kelime_alistirmalari.pdf",
-    "06_grup_etkinlikleri.pdf"
-];
-
-const slaytContainer = document.getElementById('slayt-galerisi-container');
-
-// Kidef Temasına Uygun Kartları Oluşturma
-pdfListesi.forEach(dosyaAdi => {
-    // Ekranda güzel görünmesi için uzantıyı atıp alt tireleri temizliyoruz
-    let gorunenIsim = dosyaAdi.replace('.pdf', '').replace(/_/g, ' ');
-
-    const card = document.createElement('a');
-    card.href = "#";
-    card.className = 'game-card kss-card';
+// Tüm kodları DOM (sayfa) yüklendikten sonra çalışması için sarmalıyoruz
+document.addEventListener("DOMContentLoaded", () => {
     
-    card.innerHTML = `
-        <div class="default-game-content">
-            <div class="default-game-emoji">📊</div>
-            <h3 style="font-family: 'Arakom', sans-serif !important; font-weight: normal !important; min-height: 2.6em; font-size: 1.1em; display:flex; align-items:center; justify-content:center; text-align:center;">
-                ${gorunenIsim}
-            </h3>
-            <span class="game-card-description">Etkileşimli Slayt</span>
-            <span class="status-badge available">Sunumu Aç</span>
-        </div>
-    `;
+    // PDF.js Worker Tanımlaması
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    // Tıklanınca Sunumu Başlat
-    card.addEventListener('click', (e) => {
-        e.preventDefault();
-        baslatSunum(dosyaAdi);
-    });
+    // HTML Elementlerini Seçme
+    const slaytContainer = document.getElementById('slayt-galerisi-container');
+    const presentationContainer = document.getElementById('presentation-container');
+    const canvas = document.getElementById('pdf-canvas');
+    const loadingInfo = document.getElementById('loading-info');
 
-    slaytContainer.appendChild(card);
-});
-
-// Sunum Değişkenleri
-const presentationContainer = document.getElementById('presentation-container');
-const canvas = document.getElementById('pdf-canvas');
-const ctx = canvas.getContext('2d');
-const loadingInfo = document.getElementById('loading-info');
-
-let pdfDoc = null;
-let pageNum = 1;
-let pageRendering = false;
-let pageNumPending = null;
-
-// Seçilen PDF'i Yükleme
-function baslatSunum(pdfUrl) {
-    document.body.style.overflow = 'hidden'; // Arka planı kilitle
-    presentationContainer.style.display = 'flex';
-    loadingInfo.style.display = 'block';
-
-    if (presentationContainer.requestFullscreen) {
-        presentationContainer.requestFullscreen().catch(err => {
-            console.log("Tam ekran hatası: " + err.message);
-        });
+    // Eğer gerekli HTML alanları yoksa kodu durdur
+    if (!slaytContainer || !presentationContainer || !canvas) {
+        console.error("PDF Galeri hatası: Gerekli HTML alanları (container veya canvas) bulunamadı. 3. Adımdaki HTML'i eklediğinizden emin olun.");
+        return;
     }
 
-    pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
-        pdfDoc = pdfDoc_;
-        pageNum = 1;
-        renderPage(pageNum);
-    }).catch(function(error) {
-        alert("PDF yüklenemedi. Dosya adını veya yolunu kontrol edin: " + error.message);
-        cikisSunum();
-    });
-}
+    const ctx = canvas.getContext('2d');
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
 
-// Sayfa Çizimi
-function renderPage(num) {
-    pageRendering = true;
-    loadingInfo.style.display = 'none';
+    // Gösterilecek PDF dosyalarının listesi
+    const pdfListesi = [
+        "01_Sunu 🧐 Harf-i Tarîf.pdf",
+        "02_temel_kavramlar.pdf",
+        "03_okuma_parcasi_1.pdf",
+        "04_dilbilgisi_kurallari.pdf",
+        "05_kelime_alistirmalari.pdf",
+        "06_grup_etkinlikleri.pdf"
+    ];
 
-    pdfDoc.getPage(num).then(function(page) {
-        const viewport = page.getViewport({scale: 1});
-        const scale = Math.min(window.innerWidth / viewport.width, window.innerHeight / viewport.height);
-        const scaledViewport = page.getViewport({scale: scale});
+    // Kartları Oluşturma
+    pdfListesi.forEach(dosyaAdi => {
+        let gorunenIsim = dosyaAdi.replace('.pdf', '').replace(/_/g, ' ');
 
-        canvas.height = scaledViewport.height;
-        canvas.width = scaledViewport.width;
-
-        const renderContext = {
-            canvasContext: ctx,
-            viewport: scaledViewport
-        };
+        const card = document.createElement('a');
+        // Var olan kaydırma (smooth scroll) koduyla çakışmayı önleyen düzeltme:
+        card.href = "javascript:void(0)"; 
+        card.className = 'game-card kss-card';
         
-        const renderTask = page.render(renderContext);
-        renderTask.promise.then(function() {
-            pageRendering = false;
-            if (pageNumPending !== null) {
-                renderPage(pageNumPending);
-                pageNumPending = null;
-            }
+        // Arakom fontu ve kalın olmayan yazım kuralları korundu
+        card.innerHTML = `
+            <div class="default-game-content">
+                <div class="default-game-emoji">📊</div>
+                <h3 style="font-family: 'Arakom', sans-serif !important; font-weight: normal !important; min-height: 2.6em; font-size: 1.1em; display:flex; align-items:center; justify-content:center; text-align:center;">
+                    ${gorunenIsim}
+                </h3>
+                <span class="game-card-description">Etkileşimli Slayt</span>
+                <span class="status-badge available">Sunumu Aç</span>
+            </div>
+        `;
+
+        // Tıklanınca Sunumu Başlat
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            baslatSunum(dosyaAdi);
         });
+
+        slaytContainer.appendChild(card);
     });
-}
 
-function queueRenderPage(num) {
-    if (pageRendering) {
-        pageNumPending = num;
-    } else {
-        renderPage(num);
+    // Sunumu Başlatma Fonksiyonu
+    function baslatSunum(pdfUrl) {
+        document.body.style.overflow = 'hidden'; // Arka plan kaymasını kilitle
+        presentationContainer.style.display = 'flex';
+        loadingInfo.style.display = 'block';
+
+        if (presentationContainer.requestFullscreen) {
+            presentationContainer.requestFullscreen().catch(err => {
+                console.log("Tam ekran hatası: " + err.message);
+            });
+        }
+
+        // PDF'i yükle
+        pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            pageNum = 1;
+            renderPage(pageNum);
+        }).catch(function(error) {
+            alert("PDF yüklenemedi. Dosya adını veya yolunu kontrol edin: " + error.message);
+            cikisSunum();
+        });
     }
-}
 
-function onNextPage() {
-    if (pdfDoc === null || pageNum >= pdfDoc.numPages) return;
-    pageNum++;
-    queueRenderPage(pageNum);
-}
+    // Sayfa Çizimi
+    function renderPage(num) {
+        pageRendering = true;
+        loadingInfo.style.display = 'none';
 
-function onPrevPage() {
-    if (pdfDoc === null || pageNum <= 1) return;
-    pageNum--;
-    queueRenderPage(pageNum);
-}
+        pdfDoc.getPage(num).then(function(page) {
+            const viewport = page.getViewport({scale: 1});
+            const scale = Math.min(window.innerWidth / viewport.width, window.innerHeight / viewport.height);
+            const scaledViewport = page.getViewport({scale: scale});
 
-// Fare Kontrolleri
-presentationContainer.addEventListener('mousedown', (e) => {
-    if (e.button === 0) { // Sol tık
-        onNextPage();
-    } else if (e.button === 2) { // Sağ tık
-        onPrevPage();
+            canvas.height = scaledViewport.height;
+            canvas.width = scaledViewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: scaledViewport
+            };
+            
+            const renderTask = page.render(renderContext);
+            renderTask.promise.then(function() {
+                pageRendering = false;
+                if (pageNumPending !== null) {
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+            });
+        });
     }
-});
 
-presentationContainer.addEventListener('contextmenu', (e) => e.preventDefault());
-
-// Klavye Kontrolleri
-document.addEventListener('keydown', (e) => {
-    if (presentationContainer.style.display !== 'flex') return;
-
-    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) {
-        e.preventDefault();
-        onNextPage();
-    } else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
-        e.preventDefault();
-        onPrevPage();
+    function queueRenderPage(num) {
+        if (pageRendering) {
+            pageNumPending = num;
+        } else {
+            renderPage(num);
+        }
     }
-});
 
-// Çıkış ve Boyutlandırma Kontrolleri
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-        cikisSunum();
-    }
-});
-
-window.addEventListener('resize', () => {
-    if (presentationContainer.style.display === 'flex' && pdfDoc) {
+    function onNextPage() {
+        if (pdfDoc === null || pageNum >= pdfDoc.numPages) return;
+        pageNum++;
         queueRenderPage(pageNum);
     }
-});
 
-function cikisSunum() {
-    presentationContainer.style.display = 'none';
-    document.body.style.overflow = 'auto'; // Arka planı serbest bırak
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pdfDoc = null;
-}
+    function onPrevPage() {
+        if (pdfDoc === null || pageNum <= 1) return;
+        pageNum--;
+        queueRenderPage(pageNum);
+    }
+
+    // Fare Kontrolleri
+    presentationContainer.addEventListener('mousedown', (e) => {
+        if (e.button === 0) onNextPage();  // Sol tık -> İleri
+        else if (e.button === 2) onPrevPage(); // Sağ tık -> Geri
+    });
+    
+    // Sağ tık menüsünü engelle
+    presentationContainer.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // Klavye Kontrolleri
+    document.addEventListener('keydown', (e) => {
+        if (presentationContainer.style.display !== 'flex') return;
+
+        if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) {
+            e.preventDefault();
+            onNextPage();
+        } else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
+            e.preventDefault();
+            onPrevPage();
+        }
+    });
+
+    // Tam Ekrandan Çıkış ve Ekran Boyutlandırma
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) cikisSunum();
+    });
+
+    window.addEventListener('resize', () => {
+        if (presentationContainer.style.display === 'flex' && pdfDoc) {
+            queueRenderPage(pageNum);
+        }
+    });
+
+    // Sunumu Kapatma
+    function cikisSunum() {
+        presentationContainer.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Arka plan kaymasını geri aç
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pdfDoc = null;
+    }
+});
 </script>
 <div id="presentation-container" style="display: none; background-color: #000; width: 100vw; height: 100vh; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; z-index: 10000;">
         <div id="loading-info" style="color: white; font-size: 20px; position: absolute; font-family: 'Arakom', sans-serif !important; font-weight: normal !important;">Yükleniyor...</div>
