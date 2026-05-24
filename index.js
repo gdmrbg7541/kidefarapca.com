@@ -244,11 +244,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gösterilecek PDF dosyalarının listesi
     const pdfListesi = [
         "🧐 Harf-i Tarîf.pdf",
-        "02_temel_kavramlar.pdf",
-        "03_okuma_parcasi_1.pdf",
-        "04_dilbilgisi_kurallari.pdf",
-        "05_kelime_alistirmalari.pdf",
-        "06_grup_etkinlikleri.pdf"
+        "Arapçada Kelime.pdf"
+        "⚔️ Kim Daha Hızlı?.pdf",
+        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
+        "İkiki Kırmızı Kartlar.pdf",
+        "İkiki Mavi Kartlar.pdf",
+        "İkiki Mor Kartlar.pdf",
+        "İkiki Yeşil Kartlar.pdf",
+        "Kalıplardan Cümlelere.pdf.pdf",
+        
     ];
 
     pdfListesi.forEach(dosyaAdi => {
