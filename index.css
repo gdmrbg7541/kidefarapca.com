@@ -1,0 +1,545 @@
+:root {
+  --header-height: 140px; /* JS tarafından güncellenecek */
+}
+html{box-sizing:border-box;scroll-behavior:smooth}
+*,*:before,*:after{box-sizing:inherit}
+body{
+  font-family:'Marhey',sans-serif;
+  margin:0;color:#333;line-height:1.6;overflow-x:hidden;
+  background:#F7F9FC;
+  background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%234D96FF" fill-opacity="0.05"%3E%3Cpath opacity=".5" d="M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z"/%3E%3Cpath d="M6 5V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6V5z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+}
+.container{
+  max-width:1280px;
+  padding:15px;
+  margin: 25px auto 0; 
+}
+
+.site-header{
+  background:linear-gradient(90deg, #FFC107 0%, #F39C12 50%, #EF5350 100%);
+  color:#fff;padding:8px 0;
+  border-bottom: 2px solid #E53935;
+  box-shadow:0 4px 8px rgba(0,0,0,.1);
+  position: sticky; top: 0; z-index: 100;
+}
+.site-header .container{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
+  margin-top: 0;
+}
+.site-header h1{font-family:'Marhey',sans-serif;font-size:2.5em;margin:0;font-weight:700}
+.arabic-welcome{font-family:'Harmattan',sans-serif;font-size:2em;font-weight:700;margin:0}
+
+#one-cikan-card {
+  display: block;
+  text-decoration: none;
+  background-color: #E6FAF5 !important; 
+  padding: 25px;
+  margin-top: 15px;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0,0,0,.08);
+  scroll-margin-top: calc(var(--header-height) + 20px);
+  text-align: center; 
+}
+#one-cikan-card .featured-badge {
+  background: #FFC107;
+  color: #333;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+#one-cikan-card .default-game-emoji {
+  font-size: 3em;
+}
+#one-cikan-card .default-game-content h3 {
+  font-size: 2.2em;
+  min-height: 0;
+  color: #16A085;
+}
+#one-cikan-card .game-card-description {
+  font-size: 1.0em;
+  min-height: 0;
+  max-width: 600px;
+  margin: 10px auto 20px;
+  color: #555;
+}
+#one-cikan-card .status-badge.available {
+  font-size: 1.1em;
+  padding: 12px 30px;
+  border-radius: 30px;
+}
+
+.content-section{
+  background:#fff;padding:20px;margin-top:15px;border-radius:15px;border:1px solid #E9EEF5;box-shadow:0 6px 12px rgba(0,0,0,.08);
+  scroll-margin-top: calc(var(--header-height) + 20px); 
+}
+.content-section h2{
+  font-family:'Marhey',sans-serif;color:#16A085;margin:0 0 15px;padding:8px 10px;font-size:1.8em;
+  backdrop-filter:blur(6px);background:rgba(255,255,255,0.75);
+  border-radius:8px;border:1px solid #E0E6ED;position:sticky;
+  top: calc(var(--header-height) + 10px); 
+  z-index:20;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  animation:headingFade .35s ease-out;transform-origin:center;
+}
+@keyframes headingFade{
+  0%{opacity:0;transform:scale(.92) translateY(4px)}
+  100%{opacity:1;transform:scale(1) translateY(0)}
+}
+
+.game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px;margin-top:15px}
+ 
+@media (min-width: 769px) {
+  .game-grid { 
+    padding: 15px;
+  }
+  .game-grid .kss-card,
+  .game-grid .game-card-soon {
+    min-height: 220px;
+  }
+}
+ 
+.game-card,.youtube-card{
+  border:1px solid #E9EEF5;border-radius:12px;padding:15px;text-align:center;text-decoration:none;color:#333;
+  box-shadow:0 4px 8px rgba(0,0,0,.08);transition:transform .3s, box-shadow .3s;display:flex;flex-direction:column;
+  min-height:120px;
+  justify-content:flex-start; 
+  position: relative;
+  z-index: 1;
+}
+.youtube-card { background: #fff; } 
+ 
+@media (min-width: 769px) and (hover: hover) {
+  .game-card:hover,.youtube-card:hover{
+    transform: scale(1.02);
+    box-shadow:0 8px 16px rgba(0,0,0,.12);
+    z-index: 10;
+  }
+}
+.game-card-soon:hover {
+  transform: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,.08);
+  z-index: 1; 
+}
+
+.game-card h3{font-family:'Marhey',sans-serif;color:#27AE60;font-size:1.3em;margin:0 0 5px}
+.game-card .level-info{font-size:.9em;color:#555;margin:0 0 10px}
+
+.status-badge{
+  padding:6px 12px;border-radius:20px;font-weight:700;font-size:.85em;
+  text-transform:uppercase;
+  margin-top: 10px; 
+  position: relative;
+  z-index: 5; 
+}
+.status-badge.available{background:#20C997;color:#fff}
+.status-badge.soon{background:#FFC107;color:#333}
+
+.soft-green-block{
+  padding: 0 15px 15px 15px; 
+  border-radius:10px
+}
+
+.subsection-title{
+  font-family:'Marhey',sans-serif;color:#F39C12;font-size:1.5em;margin:22px 0 8px;border-bottom:2px solid #E9EEF5;padding-bottom:5px
+}
+.subhead{margin-top:4px;font-size:.95em;color:#555}
+
+.youtube-card{cursor:pointer}
+.youtube-card span{pointer-events:none}
+.youtube-channels{display:flex;justify-content:space-around;gap:20px;flex-wrap:wrap;margin-top:15px}
+
+.site-footer{text-align:center;margin-top:40px;padding:25px 0;background:#EF5350;color:#fff}
+.site-footer p{margin:0;font-size:.95em}
+
+@media (max-width:992px){
+  .site-header h1{font-size:2.2em}.arabic-welcome{font-size:1.8em}
+  .game-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+ 
+@media (max-width:768px){
+  .content-section h2{font-size:1.2em;}
+  .game-grid{
+    grid-template-columns: none; 
+  }
+  .game-card h3{font-size:0.8em}
+   
+  .desktop-only { display: none !important; }
+   
+  #one-cikan-card .default-game-content h3 { font-size: 1.4em; }
+  #one-cikan-card .game-card-description { font-size: 1em; }
+   
+  .default-game-emoji, .kss-level-emoji { 
+      font-size: 0.8em; 
+      min-height: 25px; 
+  }
+  .default-game-content h3, .kss-level-name { 
+      font-size: 0.40em; 
+      min-height: 1.3em; 
+  }
+  .kss-level-number { 
+      font-size: 0.3em; 
+      min-height: 15px; 
+  }
+  .game-card-description { 
+      font-size: 0.3em; 
+      min-height: 2.0em; 
+  }
+  .status-badge {
+      font-size: 0.8em; 
+      padding: 4px 8px; 
+      margin-top: 4px; 
+  }
+  .book-cover-img {
+      max-width: 55px; 
+      min-height: 35px; 
+  }
+   
+  .subsection-title {
+      font-size: 1.0em; 
+      margin: 15px 0 5px;
+  }
+  .subhead {
+      font-size: 0.8em; 
+      margin-top: 0;
+  }
+}
+ 
+/* --- TASARIM BÜTÜNLÜĞÜ: TÜM BÖLÜMLER İÇİN MASAÜSTÜ DAR YATAY KAYDIRMA YAPISI --- */
+@media (min-width: 769px) {
+  .mobile-scroll-grid-single {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 1.5rem !important;
+    gap: 1.2rem !important;
+    justify-content: flex-start !important;
+  }
+
+  /* Kelimenin serüveni ve Sosyal mecralar da dahil tüm kartlar 165px dar boyutuna çekildi */
+  .mobile-scroll-grid-single .game-card {
+    flex: 0 0 165px !important; 
+    scroll-snap-align: center;
+    padding: 10px !important;
+  }
+
+  /* Daralan tüm kartların iç metin optimizasyonları */
+  .mobile-scroll-grid-single .game-card h3 {
+    font-size: 0.95em !important;
+    min-height: 2.5em !important;
+  }
+  .mobile-scroll-grid-single .game-card-description {
+    font-size: 0.75em !important;
+    min-height: 3.2em !important;
+    line-height: 1.3 !important;
+  }
+  .mobile-scroll-grid-single .kss-level-emoji, 
+  .mobile-scroll-grid-single .default-game-emoji {
+    font-size: 1.7em !important;
+    min-height: 40px !important;
+  }
+  .mobile-scroll-grid-single .kss-level-number {
+    font-size: 1.4em !important;
+    min-height: 24px !important;
+  }
+  .mobile-scroll-grid-single .book-cover-img {
+    max-width: 65px !important;
+    min-height: 45px !important;
+  }
+}
+ 
+@media (max-width:768px){
+  /* Mobil Kaydırma Stilleri */
+  .mobile-scroll-grid-single {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px 0 10px 0;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      margin-top: 15px;
+      flex-wrap: nowrap; 
+      gap: 6px; 
+      padding-left: 2px; 
+      padding-right: 2px; 
+      clip-path: inset(0 0 0 0);
+  }
+  .mobile-scroll-grid-single .game-card {
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+      width: 50%; 
+      max-width: 140px; 
+      scroll-snap-align: center;
+      padding: 8px; 
+      min-height: auto; 
+      transform: scale(0.80); 
+      transition: transform 0.25s ease-out; 
+      z-index: 1;
+  }
+   
+  .mobile-scroll-grid-single .game-card.is-centered {
+      transform: scale(0.80); 
+      z-index: 2;
+  }
+   
+  .mobile-scroll-grid-single .game-card:hover,
+  .mobile-scroll-grid-single .game-card:active {
+      transform: none; 
+  }
+  .mobile-scroll-grid-single .game-card.is-centered:hover {
+      transform: scale(0.9); 
+  }
+   
+  @media (hover: none) {
+      .game-card:hover,.youtube-card:hover{
+        transform: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,.08);
+      }
+      .mobile-scroll-grid-single .game-card:hover {
+        transform: scale(0.77); 
+      }
+      .mobile-scroll-grid-single .game-card.is-centered:hover {
+        transform: scale(0.9); 
+      }
+      #one-cikan-card:hover {
+        transform: scale(1.02); 
+      }
+  }
+}
+ 
+@media (max-width:576px){
+  .site-header .container{flex-direction:column;gap:8px}
+  .site-header h1{font-size:2em}.arabic-welcome{font-size:1.6em}
+   
+  .container{
+    padding:10px;
+    margin-top: 15px; 
+  }
+  .site-header .container {
+    margin-top: 0;
+  }
+  .content-section{padding:15px}
+  .youtube-channels{flex-direction:column;align-items:center}
+  .youtube-card{width:100%}
+   
+  .kss-card { min-height: 190px; }
+  .game-card-soon { min-height: 190px; }
+   
+  .mobile-scroll-grid-single .game-card {
+    width: 48%; 
+  }
+}
+
+.floating-tool-button{
+  position:fixed;bottom:25px;right:25px;z-index:1000;background:#2ECC71;color:#fff;
+  padding:12px 20px;text-decoration:none;font-weight:700;font-size:1em;border-radius:30px;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);transition:.3s
+}
+.floating-tool-button:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 6px 16px rgba(0,0,0,.25);background:#1ABC9C}
+
+#etkilesimli-kitaplar {
+  border-color: #F9E6A0;
+}
+
+.book-cover-img {
+  max-width: 80px; 
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px; 
+}
+
+.kss-card {
+  background: transparent;
+  min-height: 190px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+}
+
+.kss-level-content,
+.default-game-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  padding-top: 10px; 
+  flex-grow: 1;
+}
+
+.kss-level-number {
+  font-family: 'Marhey', sans-serif;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #F39C12;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px; 
+}
+
+.kss-level-name,
+.default-game-content h3 {
+   font-size: 1.3em;
+   margin-top: 4px;
+   margin-bottom: 5px; 
+   min-height: 2.6em; 
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+}
+
+.kss-level-name {
+  margin-top: 4px; 
+}
+
+.kss-level-emoji,
+.default-game-emoji {
+  font-size: 2.2em;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px; 
+}
+
+.kss-level-emoji {
+  margin-top: 8px; 
+}
+
+.game-card-description {
+  font-size: 0.85em;
+  font-style: italic;
+  color: #666;
+  margin-top: 4px;
+  padding: 0 5px;
+  flex-grow: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3em; 
+}
+
+.game-card-soon {
+  background: #F0F4F8;
+  justify-content: center;
+  align-items: center;
+  cursor: not-allowed;
+  min-height: 190px; 
+  padding-top: 20px;
+}
+.game-card-soon .soon-icon {
+  font-size: 2.5em;
+}
+.game-card-soon h3 {
+  font-family: 'Marhey', sans-serif;
+  color: #555;
+  font-size: 1.2em;
+  margin-top: 8px;
+}
+
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+1) { background-color: #EBF5FF; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+2) { background-color: #F4F0FF; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+3) { background-color: #FFF9E6; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+4) { background-color: #FFF4E8; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+5) { background-color: #E6F7FF; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+6) { background-color: #E6FAF5; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+7) { background-color: #FFF0F0; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+8) { background-color: #F0F5E6; } 
+.game-grid > .game-card:not(.game-card-soon):nth-of-type(9n+9) { background-color: #FFEBF9; } 
+
+.mobile-scroll-grid-single {
+    overflow-x: scroll; 
+    scrollbar-width: thin;
+    scrollbar-color: #b0c0d8 #F0F4F8; 
+}
+
+.mobile-scroll-grid-single::-webkit-scrollbar {
+    height: 8px; 
+}
+.mobile-scroll-grid-single::-webkit-scrollbar-track {
+    background: #F0F4F8; 
+    border-radius: 10px;
+}
+.mobile-scroll-grid-single::-webkit-scrollbar-thumb {
+    background-color: #b0c0d8; 
+    border-radius: 10px;
+    border: 2px solid #F0F4F8; 
+}
+.mobile-scroll-grid-single::-webkit-scrollbar-thumb:hover {
+    background-color: #98a9c2;
+}
+
+.one-cikan-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+#one-cikan-card {
+  display: flex; 
+  flex-direction: column;
+  max-width: 320px; 
+  width: 95%; 
+  margin-top: 0; 
+  padding: 15px; 
+  border: 2px solid #FFC107;
+  transform: scale(1.02);
+  justify-content: flex-start;
+  min-height: 190px; 
+}
+
+#one-cikan-card .default-game-content {
+  padding-top: 10px;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
+#one-cikan-card .default-game-content h3 {
+    font-size: 1.3em; 
+    color: #27AE60; 
+    min-height: 2.6em; 
+}
+#one-cikan-card .game-card-description {
+  font-size: 0.85em; 
+  max-width: none; 
+  margin: 4px 0 0 0; 
+  color: #666; 
+  flex-grow: 1; 
+  min-height: 3em; 
+}
+
+#one-cikan-card .featured-badge {
+  margin-bottom: 10px;
+  font-size: 0.85em; 
+  padding: 6px 12px; 
+}
+#one-cikan-card .status-badge.available {
+  font-size: 0.85em; 
+  padding: 6px 12px; 
+  border-radius: 20px;
+  margin-top: 10px; 
+}
+
+@keyframes modalPop {
+  from {transform: scale(0.5); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+.floating-tool-button.kaliplar-tablosu-btn {
+  bottom: 80px; 
+  background: #F39C12; 
+}
+.floating-tool-button.kaliplar-tablosu-btn:hover {
+  background: #E67E22;
+}
