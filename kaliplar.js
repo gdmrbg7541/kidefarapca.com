@@ -502,6 +502,7 @@ function applyRootToKalip(root, kalip) {
     if (!root || root.length !== 3) return kalip;
     const r = root.split(""); 
     
+    // 1. Ham yerleştirme (Arakom fontuna uygun style dahil)
     let result = kalip;
     result = result.replace(/ف/g, "===F===");
     result = result.replace(/ع/g, "===A===");
@@ -510,6 +511,9 @@ function applyRootToKalip(root, kalip) {
     result = result.replace(/===F===/g, r[0]);
     result = result.replace(/===A===/g, r[1]);
     result = result.replace(/===L===/g, r[2]);
+    
+    // 2. Sarf kurallarını uygula (İ'lâl, İdğâm, Hemze)
+    result = SarfEngine.applyRules(result, r);
     
     return result;
 }
@@ -648,6 +652,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
             cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
         }
+        cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
         kelimeListesi.push(cekilmisKelime);
     });
 
@@ -2525,20 +2530,68 @@ const wordEasterEggs = {
         61: { base: { emoji: "📈", arText: "تَحْسِين", trText: "İyileştirmek (Tahsin)." } } 
     },
 
-    // ==================================================================
-    // 31. S-'-D (س ع د) KÖKÜ - Mutluluk / Saadet
-    // 4. Bab (فَعِلَ - يَفْعَلُ)
+   // ==================================================================
+    // 31. S-'-D (س ع د) KÖKÜ - Mutluluk / Saadet / Yardım
+    // 4. Bab (فَعِلَ - يَفْعَلُ) ve Mufâ'ale Babı
     // ==================================================================
     "سعد": {
-        // --- 8, 9, 10 Numaralı Kalıplar (4. Bab) ---
-        8: { base: { emoji: "😊", arText: "سَعِدَ", trText: "Mutlu oldu." } },
-        9: { base: { emoji: "😁", arText: "يَسْعَدُ", trText: "Mutlu olur / Mutlu oluyor." } },
-        10: { base: { emoji: "✨", arText: "اِسْعَدْ", trText: "Mutlu ol!" } },
+        // --- 8, 9, 10 Numaralı Kalıplar (4. Bab - Sülasi Mücerred) ---
+        8: { 
+            base: { emoji: "😊", arText: "سَعِدَ", trText: "Mutlu oldu." } 
+        },
+        9: { 
+            base: { emoji: "😁", arText: "يَسْعَدُ", trText: "Mutlu olur / Mutlu oluyor." } 
+        },
+        10: { 
+            base: { emoji: "✨", arText: "اِسْعَدْ", trText: "Mutlu ol!" } 
+        },
 
-        22: { suggestsPlus: true, "ة": { emoji: "✨", arText: "السَّعَادَةُ فِي الْقَنَاعَةِ", trText: "Mutluluk (saadet) kanaattedir. (Atasözü)" } }, 
-        24: { base: { emoji: "🌸", arText: "سُعَاد", trText: "Suad (Mutluluk)." } }, 
-        35: { base: { emoji: "😊", arText: "فَمِنْهُمْ شَقِيٌّ وَسَعِيدٌ", trText: "Onlardan kimi bedbaht (mutsuz), kimi de bahtiyar (mutlu - said)dır. (Hûd Suresi)" }, suggestsPlus: true, "ة": { emoji: "🥰", arText: "سَعِيدَة", trText: "Mutlu (Kadın)." } }, 
-        36: { base: { emoji: "🍀", arText: "أَيَّامٌ مَسْعُودَةٌ", trText: "Mutlu (Mesut) ve uğurlu günler." }, suggestsPlus: true, "ة": { emoji: "🌻", arText: "مَسْعُودَة", trText: "Mesude." } } 
+        // --- 22, 24, 35, 36 Numaralı İsim ve Sıfat Kalıpları ---
+        22: { 
+            suggestsPlus: true, 
+            "ة": { emoji: "✨", arText: "السَّعَادَةُ فِي الْقَنَاعَةِ", trText: "Mutluluk (saadet) kanaattedir. (Atasözü)" } 
+        }, 
+        24: { 
+            base: { emoji: "🌸", arText: "سُعَاد", trText: "Suad (Mutluluk)." } 
+        }, 
+        35: { 
+            base: { emoji: "😊", arText: "فَمِنْهُمْ شَقِيٌّ وَسَعِيدٌ", trText: "Onlardan kimi bedbaht (mutsuz), kimi de bahtiyar (mutlu - said)dır. (Hûd Suresi)" }, 
+            suggestsPlus: true, 
+            "ة": { emoji: "🥰", arText: "سَعِيدَة", trText: "Mutlu (Kadın)." } 
+        }, 
+        36: { 
+            base: { emoji: "🍀", arText: "أَيَّامٌ مَسْعُودَةٌ", trText: "Mutlu (Mesut) ve uğurlu günler." }, 
+            suggestsPlus: true, 
+            "ة": { emoji: "🌻", arText: "مَسْعُودَة", trText: "Mesude." } 
+        },
+  
+         
+       // --- 65 Numaralı Kalıp (فَاعَلَ - Mazi / Mufâ'ale Babı) ---
+        64: { 
+            base: { emoji: "🤝", arText: "سَاعَدَ", trText: "Yardım etti / Destek oldu." } 
+        },
+
+
+        // --- 65 Numaralı Kalıp (فَاعَلَ - Mazi / Mufâ'ale Babı) ---
+        65: { 
+            base: { emoji: "🤝", arText: "يُسَاعِدُ", trText: "Yardım eder / Yardım ediyor." } 
+        },
+        
+        // --- 66 Numaralı Kalıp (يُفَاعِلُ - Muzari / Mufâ'ale Babı) ---
+        66: { 
+            base: { emoji: "🔄", arText: "سَاعِدْ", trText: "Yardım et / Destek ol!" } 
+        },
+        
+        // --- 67 Numaralı Kalıp (فَاعِلْ - Emir / Mufâ'ale Babı) ---
+        67: { 
+            base: { emoji: "❗", arText: "مُسَاعَدَة", trText: "Yardım / Müsaade (Türkçede: İzin, kolaylık sağlama)." } 
+        },
+       
+        
+        // --- 69 Numaralı Kalıp (مُفَاعِل - Mufâ'ale Babı İsm-i Faili) ---
+        69: { 
+            base: { emoji: "👍", arText: "مُسَاعِد", trText: "Yardımcı / Müsait (Türkçede: Elverişli, durumu uygun kişi/şey)." } 
+        }
     },
 
     // ==================================================================
@@ -3205,6 +3258,97 @@ const wordEasterEggs = {
         61: { suggestsPlus: true, "ات": { emoji: "🔧", arText: "إِجْرَاءُ تَعْدِيلَاتٍ جَدِيدَةٍ فِي الْقَانُونِ", trText: "Kanunda yeni tadilatlar (düzenlemeler/değişiklikler) yapmak." } }, // تَعْدِيل + ات = تَعْدِيلَات
         69: { base: { emoji: "🟰", arText: "هَذَا الدَّوَاءُ مُعَادِلٌ لِلْآخَرِ", trText: "Bu ilaç diğeriyle muadildir (eşdeğerdir)." } }, // مُعَادِل
         80: { base: { emoji: "🍃", arText: "الِاعْتِدَالُ فِي كُلِّ شَيْءٍ خَيْرٌ", trText: "Her şeyde itidal (ölçülülük/dengeli olmak) hayırlıdır." } } // اِعْتِدَال
+    },
+
+// ==================================================================
+    // F-A-L (ف ع ل) KÖKÜ - Yapmak / Eylemek / Etkinleştirmek / Uydurmak
+    // 3. Bab (فَعَلَ - يَفْعَلُ), Tef'îl ve İfti'âl Babları
+    // Not: Tüm kalıpların temel şablonudur ancak kendi başına da aktif kullanılır.
+    // ==================================================================
+    "فعل": {
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 3. Bab) ---
+        1: { 
+            base: { emoji: "🛠️", arText: "فَعَلَ", trText: "Yaptı / Eyledi." } 
+        },
+        
+        // --- 4 Numaralı Kalıp (يَفْعَلُ - Muzari / 3. Bab) ---
+        6: { 
+            base: { emoji: "⚙️", arText: "يَفْعَلُ", trText: "Yapar / Ediyor." } 
+        },
+        
+        // --- 5 Numaralı Kalıp (اِفْعَلْ - Emir / 3. Bab) ---
+        7: { 
+            base: { emoji: "❗", arText: "اِفْعَلْ", trText: "Yap / Eyle!" } 
+        },
+
+        20: { 
+            
+            base: { emoji: "🎬", arText: "رَدُّ فِعْلٍ", trText: "Tepki / Reaksiyon (Geri eylem)." },
+ 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
+        33: { 
+            base: { emoji: "👤", arText: "فَاعِلُ خَيْرٍ", trText: "İyilik yapan (hayırsever) / İşin öznesi." } 
+        },
+        
+        // --- 34 Numaralı Kalıp (فَعَّال - Mübalağalı İsm-i Fail) ---
+        34: { 
+            base: { emoji: "⚡", arText: "دَوْرٌ فَعَّالٌ", trText: "Çok etkili (aktif) rol." } 
+        },
+        
+       
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
+        58: { 
+            base: { emoji: "✅", arText: "فَعَّلَ", trText: "Aktifleştirdi / Etkin hale getirdi." } 
+        },
+        
+        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
+        59: { 
+            base: { emoji: "🔄", arText: "يُفَعِّلُ", trText: "Aktifleştirir / Etkinleştiriyor." } 
+        },
+        
+        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
+        60: { 
+            base: { emoji: "▶️", arText: "فَعِّلْ", trText: "Aktifleştir / Etkinleştir!" } 
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        61: { 
+            base: { emoji: "📲", arText: "تَفْعِيلُ الْحِسَابِ", trText: "Hesabın aktifleştirilmesi (onaylanması)." } 
+        },
+        
+        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
+        63: { 
+            suggestsPlus: true, 
+            "ات": { emoji: "🟢", arText: "حِسَابٌ مُفَعَّلٌ", trText: "Aktifleştirilmiş (onaylı/etkin) hesap." } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
+        77: { 
+            base: { emoji: "🎭", arText: "اِفْتَعَلَ", trText: "Uydurdu / Suni olarak çıkardı (özellikle kriz/sorun)." } 
+        },
+        
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
+        78: { 
+            base: { emoji: "🤥", arText: "يَفْتَعِلُ", trText: "Uydurur / Bahane veya suni kriz üretir." } 
+        },
+        
+        // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
+        79: { 
+            base: { emoji: "❗", arText: "اِفْتَعِلْ", trText: "Uydur / Bahane üret!" } 
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { emoji: "🌪️", arText: "اِفْتِعَالُ الْأَزَمَات", trText: "Krizler uydurma (suni kriz çıkarma işi)." } 
+        },
+        
+        // --- 81 Numaralı Kalıp (مُفْتَعَل - İfti'âl Babı İsm-i Mef'ulü) ---
+        81: { 
+            base: { emoji: "🚧", arText: "مُشْكِلَةٌ مُفْتَعَلَةٌ", trText: "Suni (yapay / kasıtlı çıkarılmış) sorun." } 
+        }
     }
 };
 
@@ -3506,3 +3650,209 @@ function highlightEasterEggBoxes(root) {
         }
     });
 }
+
+const SarfEngine = {
+    // 1. Adım: Kelimenin kök türünü belirleme
+    classifyRoot(root) {
+        const r1 = root[0], r2 = root[1], r3 = root[2];
+        const weak = ['و', 'ي', 'ا'];
+        
+        if (r2 === r3) return "muzaaf"; // Örn: ح ق ق
+        if (weak.includes(r3)) return "nakis"; // Örn: ر م ي, د ع و
+        if (weak.includes(r2)) return "ecvef"; // Örn: ق و ل
+        if (weak.includes(r1)) return "misal"; // Örn: و ج د
+        if (root.includes('ء') || root.includes('أ') || root.includes('إ') || root.includes('ؤ') || root.includes('ئ')) return "mehmuz";
+        
+        return "salim";
+    },
+
+    // 2. Adım: Kuralları Uygulama
+    applyRules(rawWord, rootArray) {
+        let result = rawWord;
+        const rootType = this.classifyRoot(rootArray);
+        const [f, a, l] = rootArray;
+
+        // --- A. MUZAAF (Şedde) KURALLARI ---
+        if (rootType === "muzaaf") {
+            // İstif'al Babı: اِسْتَفْعَلَ -> اِسْتَحْقَقَ -> اِسْتَحَقَّ
+            const istafalMazi = new RegExp(`اِسْتَ${f}ْ${a}َ${l}َ`);
+            if (istafalMazi.test(result)) result = result.replace(istafalMazi, `اِسْتَ${f}َ${a}َّ`);
+            
+            // İstif'al Muzari: يَسْتَفْعِلُ -> يَسْتَحْقِقُ -> يَسْتَحِقُّ
+            const istafalMuzari = new RegExp(`يَسْتَ${f}ْ${a}ِ${l}ُ`);
+            if (istafalMuzari.test(result)) result = result.replace(istafalMuzari, `يَسْتَ${f}ِ${a}ُّ`);
+
+            // İfti'al Masdarı (İhtimam, İhtilal vb.)
+            const iftialMasdar = new RegExp(`اِ${f}ْتِ${a}َا${l}`);
+            if (iftialMasdar.test(result)) result = result.replace(iftialMasdar, `اِ${f}ْتِمَام`); // Örnek manipülasyon
+        }
+
+        // --- B. NAKIS (Son harfi illetli) KURALLARI ---
+        if (rootType === "nakis") {
+            // Mazi 1. Bab (فَعَلَ): دَعَوَ -> دَعَا / رَمَيَ -> رَمَى
+            if (result === `${f}َ${a}َوَ`) result = `${f}َ${a}َا`;
+            if (result === `${f}َ${a}َيَ`) result = `${f}َ${a}َى`;
+
+            // Mazi Çekimler (1. Tekil Şahıs: فَعَلْتُ)
+            // ر م ي -> رَمَيْتُ
+            if (result === `${f}َ${a}َ${l}ْتُ`) {
+                result = `${f}َ${a}َ${l}ْتُ`; // 'y' veya 'w' zaten sakin olarak ekleniyor.
+            }
+
+            // Muzari (يَفْعِلُ / يَفْعُلُ)
+            // يَدْعُوُ -> يَدْعُو
+            const muzariWaw = new RegExp(`يَ${f}ْ${a}ُوَ$`);
+            const muzariWaw2 = new RegExp(`يَ${f}ْ${a}ُوُ$`); // Harekeli üretilmişse
+            if (muzariWaw.test(result) || muzariWaw2.test(result)) result = `يَ${f}ْ${a}ُو`;
+
+            // يَرْمِيُ -> يَرْمِي
+            const muzariYa = new RegExp(`يَ${f}ْ${a}ِيُ$`);
+            if (muzariYa.test(result)) result = `يَ${f}ْ${a}ِي`;
+            
+            // İsm-i Mef'ul: مَدْعُوو -> مَدْعُوّ / مَرْمُوي -> مَرْمِيّ
+            if (result === `مَ${f}ْ${a}ُوو`) result = `مَ${f}ْ${a}ُوّ`;
+            if (result === `مَ${f}ْ${a}ُوي`) result = `مَ${f}ْ${a}ِيّ`;
+        }
+
+        // --- C. HEMZE (İmla) KURALLARI ---
+        // 1. Yan yana gelen elif ve hemze (Madda: آ)
+        // Örn: فَعْلَان (ق ر ء) -> قَرْءَان -> قُرْآن 
+        // Örn: أَأْكُلُ -> آكُلُ
+        result = result.replace(/ءَا/g, "آ");
+        result = result.replace(/أَا/g, "آ");
+        result = result.replace(/أَأْ/g, "آ");
+        
+        // 2. Ortadaki veya sondaki hemzenin makabline (öncesine) göre yazımı
+        // (Burada temel yaygın kurallar işlenmiştir, proje büyüdükçe geliştirilebilir)
+        result = result.replace(/ِء/g, "ِئ"); // Kesradan sonra -> ئ
+        result = result.replace(/ُء/g, "ُؤ"); // Dammeden sonra -> ؤ
+        
+        // Sondaki hemzeler sakinse
+        result = result.replace(/يء$/g, "يء");
+        result = result.replace(/وء$/g, "وء");
+
+        return result;
+    }
+};
+
+// ==================================================================
+// KLAVYE UZUN BASMA (LONG PRESS) ÖZELLİĞİ
+// ==================================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    let keyPressTimer = null;
+    let isLongPress = false;
+    const longPressDelay = 400; // 400ms basılı tutunca açılır
+
+    function initLongPress() {
+        // Klavyedeki tüm tuşları al
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => {
+            const char = key.innerText.trim();
+            // Eğer tuş Elif (ا) ise dinleyicileri ata
+            if (char === 'ا') {
+                const variations = ['أ', 'إ', 'آ'];
+
+                const startPress = (e) => {
+                    // Eğer menü zaten açıksa, kapatmasın diye durdur
+                    if (document.getElementById('key-variations-menu')) return;
+                    
+                    isLongPress = false;
+                    keyPressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        showKeyVariations(key, variations);
+                        if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                    }, longPressDelay);
+                };
+
+                const endPress = () => {
+                    if (keyPressTimer) clearTimeout(keyPressTimer);
+                };
+
+                // Mobil dokunma olayları
+                key.addEventListener('touchstart', startPress, { passive: true });
+                key.addEventListener('touchend', endPress);
+                key.addEventListener('touchcancel', endPress);
+                
+                // Fare olayları
+                key.addEventListener('mousedown', startPress);
+                key.addEventListener('mouseup', endPress);
+                key.addEventListener('mouseleave', endPress);
+                
+                // Standart onclick olayını devralıyoruz (ikili tetiklemeyi önlemek için)
+                key.removeAttribute('onclick'); // HTML'deki onclick'i kaldır
+                key.addEventListener('click', (e) => {
+                    if (isLongPress) {
+                        // Uzun basıldıysa normal harfi ekleme
+                        e.preventDefault();
+                        e.stopPropagation();
+                        isLongPress = false;
+                    } else {
+                        // Kısa basıldıysa normal Elif ekle
+                        addLetter('ا');
+                        if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                    }
+                });
+            }
+        });
+    }
+
+    function showKeyVariations(keyElement, variations) {
+        // Varsa eski menüyü temizle
+        let existingMenu = document.getElementById('key-variations-menu');
+        if (existingMenu) existingMenu.remove();
+
+        const menu = document.createElement('div');
+        menu.id = 'key-variations-menu';
+        menu.className = 'key-variations-menu';
+
+        // Tuşları oluştur
+        variations.forEach(v => {
+            const btn = document.createElement('div');
+            btn.className = 'var-key';
+            btn.innerText = v;
+            
+            // Mouse ile tıklama
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                addLetter(v);
+                menu.remove();
+            });
+            
+            // Mobilde dokunma ile anında tepki
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                addLetter(v);
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                menu.remove();
+            });
+
+            menu.appendChild(btn);
+        });
+
+        document.body.appendChild(menu);
+
+        // Menüyü basılan tuşun tam üstüne ortala
+        const rect = keyElement.getBoundingClientRect();
+        const menuWidth = menu.offsetWidth;
+        const menuHeight = menu.offsetHeight;
+        
+        menu.style.left = (rect.left + window.scrollX - (menuWidth / 2) + (rect.width / 2)) + 'px';
+        menu.style.top = (rect.top + window.scrollY - menuHeight - 10) + 'px';
+    }
+
+    // Başka bir yere tıklanırsa veya dokunulursa varyasyon menüsünü kapat
+    const closeVariationsMenu = (e) => {
+        const menu = document.getElementById('key-variations-menu');
+        if (menu && !menu.contains(e.target) && !e.target.classList.contains('key')) {
+            menu.remove();
+        }
+    };
+
+    document.addEventListener('click', closeVariationsMenu);
+    document.addEventListener('touchstart', closeVariationsMenu, { passive: true });
+
+    // Sistemi başlat
+    initLongPress();
+});
