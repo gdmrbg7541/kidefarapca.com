@@ -639,42 +639,44 @@ td:first-child {
     display: block;
 }
 
-/* MacBook M2 Netlik Çözümlü ve Filtre Korumalı Büyütme Tasarımı */
-/* ========================================================= */
-/* 4K AKILLI TAHTA İÇİN CAM GİBİ NET BÜYÜTME (ZOOM) EFEKTİ   */
-/* ========================================================= */
+
 .pulse-highlight {
-    transform: translate(var(--move-x), var(--move-y)) scale(4) !important;
+    /* Eski, sorunsuz çalışan 3D Vektör Hızlandırıcısı */
+    transform: translate3d(var(--move-x), var(--move-y), 0) scale(4) rotate(0.001deg) !important;
     z-index: 99999 !important; 
     box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
-    /* Büyürken akıcı bir geçiş yapar */
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease !important;
     transform-origin: center center;
     
+    /* Retina/4K Ekran Netlik Sabitleyicileri */
     text-rendering: optimizeLegibility !important;
-    -webkit-font-smoothing: antialiased !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    -webkit-transform-style: preserve-3d !important;
+    transform-style: preserve-3d !important;
+    will-change: transform;
 }
-/* ========================================================= */
-/* 5. 4K EKRANLARDA ZOOM ESNASINDA NETLİK (RE-RENDER) TETİKLEYİCİ */
-/* ========================================================= */
 
-/* Kutu büyütüldüğünde (zoom açıkken) içindeki sürekli animasyonları durdurur. 
-   Böylece tarayıcı "Animasyon bitti" sanarak sündürülmüş resmi atar ve 4K vektörel çizime geçer. */
 .glass-box.pulse-settled {
     transition: none !important; 
     animation: none !important;
-    will-change: auto !important; /* GPU Texture belleğini boşaltır */
+    /* DİKKAT: 3D hilelerini (translate3d ve rotate) iptal edip salt 2D'ye dönüyoruz ki tarayıcı fotoğrafı atıp metni zorla yeniden çizsin */
+    transform: translate(var(--move-x), var(--move-y)) scale(4) !important;
+    will-change: auto !important; 
 }
 
-/* Büyüme anında içteki kırmızı kutunun titreşimini dondurma (Netliği bozmaması için) */
+/* Büyüyen kutunun içindeki tüm sürekli animasyonları (yıldız, parlama vb.) dondurur */
+.glass-box.pulse-highlight * {
+    animation: none !important;
+}
+
+/* Kırmızı numara butonunun tasarımını korur ama animasyonunu durdurur */
 .glass-box.pulse-highlight .ref {
-    animation: none !important; 
+    transform: scale(0.95) !important; /* Rakamın küçültülmüş kare tasarımı korunuyor */
     box-shadow: 0 0 10px rgba(255, 59, 48, 0.9) !important; 
     background-color: #FF3B30 !important; 
     color: #ffffff !important; 
-    transition: none !important;
 }
-
 /* Kutunun olası titreşimlerini durdurur */
 .glass-box.pulse-highlight {
     animation: none !important;
