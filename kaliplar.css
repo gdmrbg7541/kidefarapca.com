@@ -640,14 +640,18 @@ td:first-child {
 }
 
 /* MacBook M2 Netlik Çözümlü ve Filtre Korumalı Büyütme Tasarımı */
+/* ========================================================= */
+/* 4K AKILLI TAHTA İÇİN CAM GİBİ NET BÜYÜTME (ZOOM) EFEKTİ   */
+/* ========================================================= */
 .pulse-highlight {
+    /* 3D GPU Hızlandırıcısı ve Retina Ekran Kandırmacası (rotate 0.001deg) */
     transform: translate3d(var(--move-x), var(--move-y), 0) scale(4) rotate(0.001deg) !important;
     z-index: 99999 !important; 
     box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease !important;
     transform-origin: center center;
     
-    /* Safari & Retina Ekran (M2) Netlik Vektör Sabitleyicileri */
+    /* Safari & 4K Retina Ekran Netlik Vektör Sabitleyicileri */
     -webkit-font-smoothing: subpixel-antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
@@ -656,6 +660,24 @@ td:first-child {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     will-change: transform;
+}
+
+/* ========================================================= */
+/* 5. 4K EKRANLARDA ZOOM ESNASINDA NETLİK (RE-RENDER) TETİKLEYİCİ */
+/* ========================================================= */
+
+/* Kutu büyütüldüğünde (zoom açıkken) içindeki sürekli animasyonları durdurur. 
+   Böylece tarayıcı "Animasyon bitti" sanarak sündürülmüş resmi atar ve 4K vektörel çizime geçer. */
+.glass-box.pulse-highlight .ref {
+    animation: none !important; /* Nabız animasyonunu durdurup netleşmeyi tetikler */
+    box-shadow: 0 0 10px rgba(255, 59, 48, 0.9) !important; /* Animasyon dursa bile parlama kırmızı olarak kalır */
+    background-color: #FF3B30 !important; /* Kırmızı kutu sabit kalır */
+    color: #ffffff !important; /* Yazı beyaz kalır */
+}
+
+/* Kutunun kendi üzerindeki olası titreme/zıplama animasyonlarını da dondurur */
+.glass-box.pulse-highlight {
+    animation: none !important;
 }
 
 .easter-egg-overlay {
@@ -940,146 +962,14 @@ td:first-child {
     100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* --- HAZIR FİİL MODAL TASARIMI --- */
 
-/* Arka plan fluluğu ve karartma */
-.verb-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: none; /* JS ile açılıp kapanır */
-    justify-content: center;
-    align-items: center;
-    z-index: 100000;
-    opacity: 0;
-    animation: fadeIn 0.3s forwards;
-}
 
-/* Modal ana kutusu */
-.verb-container {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 90vw;
-    width: 800px;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-    position: relative;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transform: translateY(20px);
-    animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-/* İçeriğe özel şık kaydırma çubuğu (Scrollbar) */
-.verb-container::-webkit-scrollbar {
-    width: 8px;
-}
-.verb-container::-webkit-scrollbar-track {
-    background: #f5f5f7; 
-    border-radius: 10px;
-    margin: 10px 0;
-}
-.verb-container::-webkit-scrollbar-thumb {
-    background: #d1d1d6; 
-    border-radius: 10px;
-}
-.verb-container::-webkit-scrollbar-thumb:hover {
-    background: #aeaeb2; 
-}
-
-/* Kapatma Butonu */
-.verb-close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 36px;
-    height: 36px;
-    background: #f5f5f7;
-    color: #1d1d1f;
-    font-size: 1.2rem;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.verb-close-btn:hover {
-    background: #e5e5ea;
-    transform: scale(1.1);
-}
-
-/* Başlık */
-.verb-title {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 25px;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal;
-    font-size: 1.8rem;
-    color: #1d1d1f;
-    letter-spacing: 0.5px;
-}
-
-/* Fiil Izgarası */
-.verb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 12px;
-    padding: 5px;
-}
-
-/* Fiil Kartları */
-.verb-card {
-    background: #ffffff;
-    border: 2px solid #e5e5ea;
-    border-radius: 12px;
-    padding: 12px 5px;
-    text-align: center;
-    font-family: 'Arakom', sans-serif;
-    font-weight: normal;
-    font-size: 1.6rem;
-    color: #1d1d1f;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-    user-select: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Tıklama ve Üzerine Gelme Efektleri */
-.verb-card:hover {
-    border-color: #000000;
-    background: #f5f5f7;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
-}
-
-.verb-card:active {
-    transform: translateY(0) scale(0.95);
-    background: #e5e5ea;
-}
-
-/* Modal Açılış Animasyonları */
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-@keyframes slideUp {
-    to { transform: translateY(0); }
-}
 
 
 /* --- 3 BOYUTLU AHŞAP KÖK TAŞI (BÜYÜTÜLMÜŞ VE RENGİ AÇILMIŞ) --- */
 .draggable-root-clone {
     position: absolute;
-    z-index: 1000000;
+    z-index: 2000;
     font-family: 'Arakom', sans-serif;
     font-weight: normal !important; /* Zorunlu kural: İnce yazı */
     font-size: 2.6rem; /* Kutu ve harfler büyütüldü */
@@ -1113,3 +1003,186 @@ td:first-child {
     cursor: grabbing;
     /* Taşı tutarken küçülmez, havada süzülme hissini korur */
 }
+
+/* Sarı Vurgu: Hedef Kalıpları Gösterir */
+.sari-vurgu {
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.8), inset 0 0 10px rgba(255, 204, 0, 0.3) !important;
+    background-color: #fffde7 !important;
+    transition: all 0.3s ease;
+}
+
+
+/* ========================================================= */
+/* 1. KIRMIZI VURGU VE BÜYÜTME (ZOOM) ÇAKIŞMASININ ÇÖZÜMÜ    */
+/* ========================================================= */
+
+.current-active-red {
+    border-color: #FF3B30 !important; 
+    background-color: #fffaf9 !important; 
+    box-shadow: 
+        inset 0 3px 8px rgba(255, 59, 48, 0.15),  
+        0 1px 2px rgba(255, 59, 48, 0.1) !important; 
+    z-index: 100;
+}
+
+/* Kutu BÜYÜTÜLMEDİĞİ SÜRECE aşağı basık durur */
+.glass-box.current-active-red:not(.pulse-highlight) {
+    transform: translateY(2px) !important; 
+}
+
+/* Fareyle üzerine gelindiğinde zıplamasını engeller (Sadece zoom yokken) */
+.glass-box.current-active-red:not(.pulse-highlight):hover {
+    transform: translateY(2px) !important; 
+    background-color: #fff0ed !important; 
+    box-shadow: 
+        inset 0 4px 12px rgba(255, 59, 48, 0.25),  
+        0 1px 2px rgba(255, 59, 48, 0.1) !important; 
+    border-color: #e6352b !important; 
+}
+
+/* ========================================================= */
+/* 2. SADECE FİİLLERDE KALIP NUMARASINI BUTONA ÇEVİRME       */
+/* ========================================================= */
+
+/* .fiil-box sınıfı eklenerek sadece fiiller sınırlandırıldı */
+/* ========================================================= */
+/* 2. SADECE FİİLLERDE KALIP NUMARASINI KIRMIZI BUTON YAPMA  */
+/* ========================================================= */
+
+.glass-box.fiil-box.current-active-red .ref {
+    background-color: #FF3B30 !important;
+    color: #ffffff !important;
+    border-radius: 5px; /* Biraz daha sıkı bir yuvarlaklık */
+    padding: 0px 5px; /* Kutu içindeki boşluk küçültüldü */
+    transform: scale(0.95); /* 1.15'ten 0.95'e çekilerek kutu belirgin şekilde küçültüldü */
+    -webkit-text-stroke: 0 !important; /* Önceki metin kalınlaştırması iptal edildi */
+    box-shadow: 0 0 8px rgba(255, 59, 48, 0.7); /* Gölge biraz daha kibarlaştırıldı */
+    cursor: pointer;
+    z-index: 105; 
+    pointer-events: auto;
+    animation: refPulse 1.5s infinite;
+}
+
+.glass-box.fiil-box.current-active-red .ref:hover {
+    background-color: #d62828 !important;
+    transform: scale(1.1); /* Fareyle gelince aşırı büyümesi engellendi */
+}
+
+@keyframes refPulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+    70% { box-shadow: 0 0 0 4px rgba(255, 59, 48, 0); } /* Nabız dalgası küçültüldü */
+    100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+}
+
+/* ========================================================= */
+/* 3. BÜYÜYEN KUTUDAKİ (ZOOM) GRİ HOVER HATASININ ÇÖZÜMÜ     */
+/* ========================================================= */
+
+.glass-box.current-active-red.pulse-highlight:hover {
+    background-color: #fff0ed !important; /* İç dolguyu hafif tatlı bir kırmızı yapar */
+    border-color: #FF3B30 !important; /* Çerçeveyi canlı kırmızı tutar */
+    box-shadow: 0 15px 40px rgba(255, 59, 48, 0.25) !important; /* Etrafına kırmızımsı 3D parlama verir */
+}
+
+/* ========================================================= */
+/* YENİ HAZIR KÖK MENÜSÜ (%85 Boyut, Buzlu Cam ve Emojili)   */
+/* ========================================================= */
+
+.verb-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.05) !important; /* Çerçeve dışını çok hafif karartır */
+    backdrop-filter: blur(40px) !important; /* Dış taraf çok hafif flu */
+    -webkit-backdrop-filter: blur(3px) !important;
+    z-index: 3000; 
+    display: none; 
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ekranın %85'ini kaplayan BUZLU CAM (Glass) pencere */
+.verb-container {
+    width: 85vw !important; 
+    height: 85vh !important; 
+    max-width: 1400px; 
+    background: rgba(255, 255, 255, 0.65) !important; /* Yarı saydam beyaz arka plan */
+    backdrop-filter: blur(100px) !important; /* Arka plan tablosunu şık bir şekilde flulaştırır */
+    -webkit-backdrop-filter: blur(25px) !important; /* Safari desteği */
+    border: 1px solid rgba(255, 255, 255, 0.7); /* Cama parlaklık veren ince sınır çizgisi */
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.15); /* Cama derinlik katar */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.verb-close-btn {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.verb-close-btn:hover {
+    color: #FF3B30;
+}
+
+.verb-title {
+    text-align: center;
+    font-family: 'Arakom', sans-serif;
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #1a202c;
+}
+
+/* Kartların kendi içinde ferahça listelenmesi */
+.verb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+    overflow-y: auto;
+    padding: 20px 10px 10px 10px; /* Üst boşluk 20px yapılarak kartların kesilmesi engellendi */
+    flex: 1; 
+    align-content: start;
+}
+
+/* Kök Kartlarının Tasarımı (Daha Beyaz, Daha Okunabilir) */
+.verb-card {
+    background: rgba(255, 255, 255, 0.85); /* <-- BURASI GÜNCELLENDİ: Kartların içi daha tok ve beyaz oldu */
+    border: 1px solid rgba(255, 255, 255, 0.9); /* Kenarlıklar daha belirgin yapıldı */
+    border-radius: 22px;
+    padding: 30px 10px;
+    text-align: center;
+    font-size: 2.4rem;
+    font-family: 'Arakom', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; 
+    color: #222;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Okunabilirliği artırmak için kartlara çok hafif dış gölge eklendi */
+}
+
+/* Üzerine gelince havaya kalkma ve belirginleşme efekti */
+.verb-card:hover {
+    transform: translateY(-8px) scale(1.04);
+    border-color: #2B88D9;
+    background: rgba(240, 247, 255, 0.95); /* Hover olunca rengi daha da dolgunlaşır */
+    box-shadow: 0 15px 30px rgba(43, 136, 217, 0.18);
+    color: #2B88D9;
+}
+
+/* Emojilerin boyutu ve font ayarı */
+.verb-card .emoji {
+    font-size: 3.5rem; 
+    font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif; 
+}
+
