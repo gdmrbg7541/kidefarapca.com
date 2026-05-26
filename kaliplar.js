@@ -2425,7 +2425,7 @@ function closeAllZoomedBoxes() {
     });
     
     document.querySelectorAll('.glass-box.pulse-highlight').forEach(box => {
-        box.classList.remove('pulse-highlight');
+        box.classList.remove('pulse-highlight', 'pulse-settled'); // İki sınıfı da temizle
         box.style.transform = "";
         box.style.borderColor = ""; 
         box.style.boxShadow = "";
@@ -2806,7 +2806,6 @@ function handleBoxClick(boxElement) {
         if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
     }
 }
-
 function closeInlineMatrix(e, btnElement) {
     if (e) {
         e.preventDefault();
@@ -3655,6 +3654,13 @@ function triggerAreaPulse(boxElement) {
 
         // Kalıbı büyüt
         boxElement.classList.add("pulse-highlight");
+        
+        // Animasyon bittikten sonra metni netleştiren (2D'ye dönen) sınıfı ekle
+        setTimeout(() => {
+            if (boxElement.classList.contains("pulse-highlight")) {
+                boxElement.classList.add("pulse-settled");
+            }
+        }, 400);
         
         // Arka planı karart (Overlay ekle)
         const parentContainer = boxElement.closest('.container');
@@ -4514,7 +4520,7 @@ function nextEasterEgg() {
 }
 
 // ==================================================================
-// 3. GERİ KUMANDA (Geri Tuşunda Sarı Vurgu Engellendi)
+// 5. GERİ KUMANDA (Geri Dönüşlerde de Sarı Vurgu Beklemesi Eklendi)
 // ==================================================================
 function prevEasterEgg() {
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -4531,7 +4537,7 @@ function prevEasterEgg() {
 
     const refs = getSortedRefsForRoot(currentRoot);
 
-    // BULUNULAN KUTUYU ANINDA TEMİZLE (Sarıya dönmeden)
+    // BULUNULAN KUTUYU ANINDA TEMİZLE
     if (currentEggIndex >= 0 && currentEggIndex < refs.length) {
         const currentRefId = refs[currentEggIndex];
         const currentBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
@@ -4544,7 +4550,8 @@ function prevEasterEgg() {
             currentBox.removeAttribute('data-tiklama-sayisi');
             currentBox.classList.remove('current-active-red'); 
             
-            // DİKKAT: Buradan da sarı hedef rengini geri verme kodu silindi
+            // Kutu boşaldığı için Sarı Vurguyu (hedef rengini) geri ver
+            currentBox.classList.add('sari-vurgu');
             currentBox.style.setProperty("background-color", "", "important");
         }
     }
@@ -4552,12 +4559,13 @@ function prevEasterEgg() {
     // BİR ÖNCEKİ KUTUYA / DURUMA GEÇ
     currentEggIndex--;
 
+    // Eğer ilk kutudan da geriye çıkıyorsak (-1 olduysa) kökün "Sadece Sarı Hedefler" aşamasında bekle
     if (currentEggIndex === -1) {
-        // En başa dönüldüyse (ilk kelimeden de geriye), tüm haritayı sarı gösterir
         highlightEasterEggBoxes(currentRoot);
         return; 
     }
 
+    // Eğer sarı hedeflerden de geriye basılmışsa (< -1), önceki kökün EN SON kelimesine git
     if (currentEggIndex < -1) {
         let rootIndex = roots.indexOf(currentRoot);
         rootIndex--;
@@ -4574,8 +4582,10 @@ function prevEasterEgg() {
         return;
     }
 
+    // Normal önceki kutuya geç
     activateBoxByRef(refs[currentEggIndex]);
 }
+
 // --- KLAVYE VE SUNUM KUMANDASI DİNLEYİCİSİ ---
 document.addEventListener('keydown', function(e) {
     // Ekranda kök girmek için açılan siyah sanal klavye aktifse kumanda tuşlarını yoksay
