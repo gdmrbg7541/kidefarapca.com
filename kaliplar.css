@@ -662,23 +662,6 @@ td:first-child {
     will-change: transform;
 }
 
-/* ========================================================= */
-/* 5. 4K EKRANLARDA ZOOM ESNASINDA NETLİK (RE-RENDER) TETİKLEYİCİ */
-/* ========================================================= */
-
-/* Kutu büyütüldüğünde (zoom açıkken) içindeki sürekli animasyonları durdurur. 
-   Böylece tarayıcı "Animasyon bitti" sanarak sündürülmüş resmi atar ve 4K vektörel çizime geçer. */
-.glass-box.pulse-highlight .ref {
-    animation: none !important; /* Nabız animasyonunu durdurup netleşmeyi tetikler */
-    box-shadow: 0 0 10px rgba(255, 59, 48, 0.9) !important; /* Animasyon dursa bile parlama kırmızı olarak kalır */
-    background-color: #FF3B30 !important; /* Kırmızı kutu sabit kalır */
-    color: #ffffff !important; /* Yazı beyaz kalır */
-}
-
-/* Kutunun kendi üzerindeki olası titreme/zıplama animasyonlarını da dondurur */
-.glass-box.pulse-highlight {
-    animation: none !important;
-}
 
 .easter-egg-overlay {
     display: none;
