@@ -2410,11 +2410,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(overlay);
 
         // Overlay'e (ekrandaki herhangi bir boşluğa/flu alana) tıklanınca kapat
-        overlay.addEventListener('click', (e) => {
+        // Overlay'e (ekrandaki herhangi bir boşluğa/flu alana) tıklanınca kapat
+        const closeOverlay = (e) => {
             e.preventDefault();
             e.stopPropagation();
             closeAllZoomedBoxes();
-        });
+        };
+        overlay.addEventListener('click', closeOverlay);
+        overlay.addEventListener('touchstart', closeOverlay, { passive: false });
     }
 });
 
@@ -2505,11 +2508,10 @@ function closeIfOutside(e) {
             if (closeBtn) closeInlineMatrix(null, closeBtn);
         });
         
-        // Boşluğa tıklanınca Büyümüş Kutu (Zoom) Varsa Kapat
-        document.querySelectorAll('.glass-box.pulse-highlight').forEach(box => {
-            box.classList.remove('pulse-highlight');
-            box.style.transform = ""; // Transformu sıfırla ki eski yerine dönsün
-        });
+        // Boşluğa tıklanınca/dokunulunca Büyümüş Kutu (Zoom) Varsa Kapat
+        if (typeof closeAllZoomedBoxes === 'function') {
+            closeAllZoomedBoxes();
+        }
     }
 }
 
@@ -3669,11 +3671,13 @@ function triggerAreaPulse(boxElement) {
             if (!localOverlay) {
                 localOverlay = document.createElement('div');
                 localOverlay.className = 'zoom-overlay';
-                localOverlay.onclick = function(e) {
+                const closeLocalOverlay = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
                 };
+                localOverlay.onclick = closeLocalOverlay;
+                localOverlay.ontouchstart = closeLocalOverlay;
                 parentContainer.appendChild(localOverlay);
             }
             localOverlay.classList.add('active');
