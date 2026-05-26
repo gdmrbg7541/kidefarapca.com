@@ -2425,10 +2425,18 @@ function closeAllZoomedBoxes() {
     });
     
     document.querySelectorAll('.glass-box.pulse-highlight').forEach(box => {
-        box.classList.remove('pulse-highlight');
+        // "Settled" (Dondurma) durumunu kaldır ama animasyonun pürüzsüz inmesi için JS ile geçiş ekle
+        box.style.transition = "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease";
+        
+        box.classList.remove('pulse-settled', 'pulse-highlight');
         box.style.transform = "";
         box.style.borderColor = ""; 
         box.style.boxShadow = "";
+        
+        // Kutu yerine oturduğunda JS geçişini temizle ki orijinal CSS kuralı geri gelsin
+        setTimeout(() => {
+            box.style.transition = ""; 
+        }, 300);
     });
 }
 
@@ -2597,7 +2605,7 @@ function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
             box.classList.add('no-transition'); 
-            box.classList.remove("pulse-highlight");
+            box.classList.remove("pulse-settled", "pulse-highlight");
             box.style.transform = "";
             void box.offsetWidth;
             
@@ -3506,42 +3514,64 @@ function applySuffix(suffix) {
 }
 
 const originalResetTableOnly = window.resetTableOnly;
-window.resetTableOnly = function() {
-    if (typeof originalResetTableOnly === "function") {
-        originalResetTableOnly();
+window.resetTableOnly = function(isSilent = false) {
+    closeAllZoomedBoxes();
+    if (typeof clearDraggableRoots === 'function') {
+        clearDraggableRoots();
     }
-    lastClickedBoxTextSpan = null;
-    lastOriginalWord = "";
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
 
-    document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
+    if (!isSilent) {
+        if(typeof SoundEngine !== "undefined") SoundEngine.playReset(); 
+    }
+    isReadyVerbMode = false;
+    targetStates = {};
     
-    // YENİ EKLENEN KOD: Sıfırlama yapıldığında tepede biriken tüm emojileri temizler
-    document.querySelectorAll('.easter-egg-emoji').forEach(el => el.remove());
-};
+    document.querySelectorAll('.glass-box').forEach(box => {
+        // pulse-settled de temizleniyor
+        box.classList.remove('hidden-mode', 'pulse-settled', 'pulse-highlight', 'matrix-opened');
+        box.removeAttribute('data-modal-closed');
+        box.style.transform = "";
+        box.style.backgroundColor = ""; 
+        box.style.borderColor = "";
+        box.style.background = "";
+        box.style.zIndex = "";
+        box.style.boxShadow = ""; 
+        if (box.hasAttribute('data-tiklama-sayisi')) box.setAttribute('data-tiklama-sayisi', '0');
 
-const modalOverlays = [
-    { id: "verb-overlay", closeFn: window.closeVerbModal },
-    { id: "conjugation-overlay", closeFn: window.closeConjugationModal },
-    { id: "keyboard-overlay", closeFn: window.closeKeyboard }
-];
-
-modalOverlays.forEach(modal => {
-    const overlayEl = document.getElementById(modal.id);
-    if (overlayEl) {
-        overlayEl.addEventListener("click", function(event) {
-            if (event.target === overlayEl) {
-                if (typeof modal.closeFn === "function") {
-                    modal.closeFn();
+        const el = box.querySelector('.ar, .ar-small');
+        if (el) {
+            el.style.visibility = 'visible';
+            const original = el.getAttribute('data-original');
+            if (original) {
+                if (original !== "-") {
+                    el.innerHTML = ColorEngine.colorize(original, ['ف', 'ع', 'ل']);
                 } else {
-                    overlayEl.style.display = "none";
+                    el.innerText = original;
                 }
             }
-        });
+        }
+        const container = box.querySelector('.conjugation-inline-container');
+        if (container) container.innerHTML = '';
+    });
+    
+    const rootDisplay = document.getElementById('root-text-display');
+    if (rootDisplay) {
+        rootDisplay.innerText = "Kök Yaz";
     }
-});
+    currentRoot = "";
+    lastClickedBoxTextSpan = null;
+    lastOriginalWord = "";
+    
+    const plusBtn = document.querySelector('.fa-plus');
+    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
 
+    highlightEasterEggBoxes(""); 
+
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
+    document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
+    document.querySelectorAll('.easter-egg-emoji').forEach(el => el.remove());
+};
 document.querySelectorAll('.matrix-close-btn').forEach(btn => {
     btn.addEventListener('click', function(event) {
         event.stopPropagation(); 
@@ -3628,18 +3658,15 @@ function triggerAreaPulse(boxElement) {
 
     const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
 
-    // Zoom kapalıysa sadece yeşil arka planı koru ve çık
     if (!isZoomEnabled) {
         boxElement.style.setProperty("background-color", "#bfffdf", "important");
         boxElement.style.borderColor = "#000000";
         return;
     }
 
-    // Büyütme (Zoom) açıksa, 400ms (akıcı ve hızlı) bir gecikmeyle ekranın ortasına fırlat
     currentPulseTimeout = setTimeout(() => {
-        // Önce açıkta kalmış diğer zoom'ları temizle
         document.querySelectorAll('.glass-box.pulse-highlight').forEach(b => {
-            b.classList.remove("pulse-highlight");
+            b.classList.remove("pulse-settled", "pulse-highlight");
             b.style.transform = "";
         });
 
@@ -3653,10 +3680,16 @@ function triggerAreaPulse(boxElement) {
         boxElement.style.setProperty("background-color", "#bfffdf", "important");
         boxElement.style.borderColor = "#000000";
 
-        // Kalıbı büyüt
+        // Büyütmeyi Başlat
         boxElement.classList.add("pulse-highlight");
         
-        // Arka planı karart (Overlay ekle)
+        // YENİ: Büyüme (400ms) bittikten hemen sonra Tarayıcıya 4K Çizim Emri Ver!
+        setTimeout(() => {
+            if (boxElement.classList.contains("pulse-highlight")) {
+                boxElement.classList.add("pulse-settled");
+            }
+        }, 450); 
+
         const parentContainer = boxElement.closest('.container');
         if (parentContainer) {
             let localOverlay = parentContainer.querySelector('.zoom-overlay');
@@ -3672,7 +3705,7 @@ function triggerAreaPulse(boxElement) {
             }
             localOverlay.classList.add('active');
         }
-    }, 400); // 1.5 saniyelik uzun gecikme (takılma hissi veren kısım) 400 milisaniyeye indirildi!
+    }, 400); 
 }
 
 function showEasterEggOverlay(arText, trText) {
