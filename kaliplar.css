@@ -455,25 +455,7 @@ td:first-child {
     box-shadow: none;
 }
 
-.verb-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 15px;
-    direction: rtl;
-}
-.verb-card {
-    padding: 12px 20px;
-    background: #1d1d1f;
-    color: #fff;
-    border-radius: 10px;
-    font-family: 'Arakom' !important;
-    font-size: 26px;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.verb-card:hover { background: #323236; }
+
 
 .kb-row {
     display: flex;
@@ -522,18 +504,6 @@ td:first-child {
 .root-icon:hover {
     color: #FF3B30; /* Üzerine gelince kırmızı parlama */
     transform: scale(1.1);
-}
-
-.glass-box.hidden-mode {
-    background-color: #8e44ad !important;
-    border-color: #5c2c70 !important;
-}
-
-.glass-box.hidden-mode .ar, 
-.glass-box.hidden-mode .ar-small,
-.glass-box.hidden-mode .ref {
-    color: #000000 !important;
-    visibility: visible !important; 
 }
 
 .conjugation-inline-container {
@@ -647,22 +617,45 @@ td:first-child {
     .cemi-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
-@keyframes zoomToCenter {
-    0% { transform: translateZ(0) scale(1) rotate(0.001deg); }
-    15% { transform: translate3d(var(--move-x), var(--move-y), 0) scale(4) rotate(0.001deg); z-index: 99999; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    85% { transform: translate3d(var(--move-x), var(--move-y), 0) scale(4) rotate(0.001deg); z-index: 99999; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    100% { transform: translateZ(0) scale(1) rotate(0.001deg); z-index: 1; }
+
+
+/* Arka planı hafif flu ve tıklanılmaz yapan koruyucu katman */
+.zoom-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4) !important; /* Zarif şeffaf beyazlık */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 9990 !important; /* Diğer kalıpların üstünde, büyüyen kalıbın altında */
+    display: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
+.zoom-overlay.active {
+    display: block;
+}
+
+/* MacBook M2 Netlik Çözümlü ve Filtre Korumalı Büyütme Tasarımı */
 .pulse-highlight {
-    animation: zoomToCenter 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transform: translate3d(var(--move-x), var(--move-y), 0) scale(4) rotate(0.001deg) !important;
     z-index: 99999 !important; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease !important;
     transform-origin: center center;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    
+    /* Safari & Retina Ekran (M2) Netlik Vektör Sabitleyicileri */
     -webkit-font-smoothing: subpixel-antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
-    will-change: transform; 
+    text-rendering: optimizeLegibility !important;
+    -webkit-transform-style: preserve-3d !important;
+    transform-style: preserve-3d !important;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
 }
 
 .easter-egg-overlay {
@@ -945,4 +938,178 @@ td:first-child {
 @keyframes popIn {
     0% { opacity: 0; transform: scale(0.8) translateY(10px); }
     100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- HAZIR FİİL MODAL TASARIMI --- */
+
+/* Arka plan fluluğu ve karartma */
+.verb-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none; /* JS ile açılıp kapanır */
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+/* Modal ana kutusu */
+.verb-container {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 90vw;
+    width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transform: translateY(20px);
+    animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+/* İçeriğe özel şık kaydırma çubuğu (Scrollbar) */
+.verb-container::-webkit-scrollbar {
+    width: 8px;
+}
+.verb-container::-webkit-scrollbar-track {
+    background: #f5f5f7; 
+    border-radius: 10px;
+    margin: 10px 0;
+}
+.verb-container::-webkit-scrollbar-thumb {
+    background: #d1d1d6; 
+    border-radius: 10px;
+}
+.verb-container::-webkit-scrollbar-thumb:hover {
+    background: #aeaeb2; 
+}
+
+/* Kapatma Butonu */
+.verb-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    font-size: 1.2rem;
+    font-family: 'Arakom', sans-serif;
+    font-weight: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.verb-close-btn:hover {
+    background: #e5e5ea;
+    transform: scale(1.1);
+}
+
+/* Başlık */
+.verb-title {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-family: 'Arakom', sans-serif;
+    font-weight: normal;
+    font-size: 1.8rem;
+    color: #1d1d1f;
+    letter-spacing: 0.5px;
+}
+
+/* Fiil Izgarası */
+.verb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 12px;
+    padding: 5px;
+}
+
+/* Fiil Kartları */
+.verb-card {
+    background: #ffffff;
+    border: 2px solid #e5e5ea;
+    border-radius: 12px;
+    padding: 12px 5px;
+    text-align: center;
+    font-family: 'Arakom', sans-serif;
+    font-weight: normal;
+    font-size: 1.6rem;
+    color: #1d1d1f;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Tıklama ve Üzerine Gelme Efektleri */
+.verb-card:hover {
+    border-color: #000000;
+    background: #f5f5f7;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+}
+
+.verb-card:active {
+    transform: translateY(0) scale(0.95);
+    background: #e5e5ea;
+}
+
+/* Modal Açılış Animasyonları */
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+
+/* --- 3 BOYUTLU AHŞAP KÖK TAŞI (BÜYÜTÜLMÜŞ VE RENGİ AÇILMIŞ) --- */
+.draggable-root-clone {
+    position: absolute;
+    z-index: 1000000;
+    font-family: 'Arakom', sans-serif;
+    font-weight: normal !important; /* Zorunlu kural: İnce yazı */
+    font-size: 2.6rem; /* Kutu ve harfler büyütüldü */
+    color: #000000; /* Siyah renk */
+    direction: rtl;
+    pointer-events: auto; 
+    cursor: grab;
+    user-select: none;
+    /* DİKKAT: letter-spacing silindi! Çizgiler artık kesik durmayacak. */
+    white-space: nowrap;
+    
+    /* Ahşap Tahta ve 3 Boyut Efekti */
+    background-color: #e4be97; /* Ana renk çok çok hafif açıldı (Eski: #d4a373) */
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.03) 0px,
+        rgba(0, 0, 0, 0.03) 2px,
+        transparent 2px,
+        transparent 6px
+    ); /* Hafif tahta damarı dokusu */
+    padding: 8px 24px; /* Boyut büyüdüğü için iç boşluklar da genişletildi */
+    border-radius: 10px; /* Köşeler hafifçe yumuşatıldı */
+    border: 2px solid #5c3a21; /* Koyu kahve kenarlık aynı kaldı */
+    
+    /* 3D ahşap blok gölgesi, büyüyen kutuya göre uyarlandı */
+    box-shadow: 5px 5px 0px #5c3a21, 0px 10px 20px rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4); /* Yazıya hafif oyma hissi */
+}
+
+.draggable-root-clone:active {
+    cursor: grabbing;
+    /* Taşı tutarken küçülmez, havada süzülme hissini korur */
 }

@@ -20,10 +20,71 @@
 
 <div id="verb-overlay" class="verb-overlay">
     <div class="verb-container">
-        <div onclick="closeVerbModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px;">✕</div>
-        <h3 style="text-align: center; margin-top: 10px; font-family: sans-serif; font-weight: normal;">Hazır Fiil Seçin</h3>
+        <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
+        <h3 class="verb-title">Hazır Fiil Seçin</h3>
+        
         <div class="verb-grid">
+            <div class="verb-card" onclick="selectReadyVerb('كتب')">كتب</div>
+            <div class="verb-card" onclick="selectReadyVerb('خبر')">خبر</div>
+            <div class="verb-card" onclick="selectReadyVerb('فتح')">فتح</div>
+            <div class="verb-card" onclick="selectReadyVerb('نظم')">نظم</div>
+            <div class="verb-card" onclick="selectReadyVerb('شهد')">شهد</div>
+            <div class="verb-card" onclick="selectReadyVerb('خلق')">خلق</div>
+            <div class="verb-card" onclick="selectReadyVerb('سجد')">سجد</div>
+            <div class="verb-card" onclick="selectReadyVerb('صدق')">صدق</div>
+            <div class="verb-card" onclick="selectReadyVerb('حسد')">حسد</div>
+            <div class="verb-card" onclick="selectReadyVerb('دخل')">دخل</div>
+            <div class="verb-card" onclick="selectReadyVerb('ركب')">ركب</div>
+            <div class="verb-card" onclick="selectReadyVerb('نقل')">نقل</div>
+            <div class="verb-card" onclick="selectReadyVerb('شرب')">شرب</div>
+            <div class="verb-card" onclick="selectReadyVerb('سفر')">سفر</div>
+            <div class="verb-card" onclick="selectReadyVerb('عقل')">عقل</div>
+            <div class="verb-card" onclick="selectReadyVerb('عصم')">عصم</div>
+            <div class="verb-card" onclick="selectReadyVerb('قرب')">قرب</div>
+            <div class="verb-card" onclick="selectReadyVerb('طبق')">طبق</div>
+            <div class="verb-card" onclick="selectReadyVerb('حكم')">حكم</div>
+            <div class="verb-card" onclick="selectReadyVerb('عرف')">عرف</div>
+            <div class="verb-card" onclick="selectReadyVerb('علم')">علم</div>
+            <div class="verb-card" onclick="selectReadyVerb('رحم')">رحم</div>
+            <div class="verb-card" onclick="selectReadyVerb('خلف')">خلف</div>
+            <div class="verb-card" onclick="selectReadyVerb('خرج')">خرج</div>
+            <div class="verb-card" onclick="selectReadyVerb('عمل')">عمل</div>
+            <div class="verb-card" onclick="selectReadyVerb('درس')">درس</div>
+            <div class="verb-card" onclick="selectReadyVerb('حفظ')">حفظ</div>
+            <div class="verb-card" onclick="selectReadyVerb('نظر')">نظر</div>
+            <div class="verb-card" onclick="selectReadyVerb('مكن')">مكن</div>
             <div class="verb-card" onclick="selectReadyVerb('حسن')">حسن</div>
+            <div class="verb-card" onclick="selectReadyVerb('سعد')">سعد</div>
+            <div class="verb-card" onclick="selectReadyVerb('جهل')">جهل</div>
+            <div class="verb-card" onclick="selectReadyVerb('وجد')">وجد</div>
+            <div class="verb-card" onclick="selectReadyVerb('سكن')">سكن</div>
+            <div class="verb-card" onclick="selectReadyVerb('جهد')">جهد</div>
+            <div class="verb-card" onclick="selectReadyVerb('سلم')">سلم</div>
+            <div class="verb-card" onclick="selectReadyVerb('رجع')">رجع</div>
+            <div class="verb-card" onclick="selectReadyVerb('شكل')">شكل</div>
+            <div class="verb-card" onclick="selectReadyVerb('نسب')">نسب</div>
+            <div class="verb-card" onclick="selectReadyVerb('حصل')">حصل</div>
+            <div class="verb-card" onclick="selectReadyVerb('برك')">برك</div>
+            <div class="verb-card" onclick="selectReadyVerb('قدر')">قدر</div>
+            <div class="verb-card" onclick="selectReadyVerb('ملك')">ملك</div>
+            <div class="verb-card" onclick="selectReadyVerb('رسل')">رسل</div>
+            <div class="verb-card" onclick="selectReadyVerb('نصر')">نصر</div>
+            <div class="verb-card" onclick="selectReadyVerb('حمل')">حمل</div>
+            <div class="verb-card" onclick="selectReadyVerb('حقق')">حقق</div>
+            <div class="verb-card" onclick="selectReadyVerb('خلص')">خلص</div>
+            <div class="verb-card" onclick="selectReadyVerb('كمل')">كمل</div>
+            <div class="verb-card" onclick="selectReadyVerb('رشد')">رشد</div>
+            <div class="verb-card" onclick="selectReadyVerb('امن')">امن</div>
+            <div class="verb-card" onclick="selectReadyVerb('جمع')">جمع</div>
+            <div class="verb-card" onclick="selectReadyVerb('حمد')">حمد</div>
+            <div class="verb-card" onclick="selectReadyVerb('شهر')">شهر</div>
+            <div class="verb-card" onclick="selectReadyVerb('شكر')">شكر</div>
+            <div class="verb-card" onclick="selectReadyVerb('فكر')">فكر</div>
+            <div class="verb-card" onclick="selectReadyVerb('وكل')">وكل</div>
+            <div class="verb-card" onclick="selectReadyVerb('قدم')">قدم</div>
+            <div class="verb-card" onclick="selectReadyVerb('كبر')">كبر</div>
+            <div class="verb-card" onclick="selectReadyVerb('عدل')">عدل</div>
+            <div class="verb-card" onclick="selectReadyVerb('فعل')">فعل</div>
         </div>
     </div>
 </div>

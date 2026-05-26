@@ -2401,6 +2401,37 @@ const SoundEngine = {
     }
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Zoom Overlay'i sisteme entegre ediyoruz
+    if (!document.getElementById('zoom-overlay')) {
+        const overlay = document.createElement('div');
+        overlay.id = 'zoom-overlay';
+        overlay.className = 'zoom-overlay';
+        document.body.appendChild(overlay);
+
+        // Overlay'e (ekrandaki herhangi bir boşluğa/flu alana) tıklanınca kapat
+        overlay.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeAllZoomedBoxes();
+        });
+    }
+});
+
+// Temizlik fonksiyonu
+function closeAllZoomedBoxes() {
+    document.querySelectorAll('.zoom-overlay').forEach(overlay => {
+        overlay.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.glass-box.pulse-highlight').forEach(box => {
+        box.classList.remove('pulse-highlight');
+        box.style.transform = "";
+        box.style.borderColor = ""; 
+        box.style.boxShadow = "";
+    });
+}
+
 window.onload = function() {
     const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
     if (zoomCheckbox) {
@@ -2468,9 +2499,16 @@ document.addEventListener('touchstart', closeIfOutside, { passive: false });
 function closeIfOutside(e) {
     const isInside = e.target.closest('.conjugation-inline-container') || e.target.closest('.glass-box');
     if (!isInside) {
+        // Tabloları Kapat
         document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
             const closeBtn = box.querySelector('.matrix-close-btn');
             if (closeBtn) closeInlineMatrix(null, closeBtn);
+        });
+        
+        // Boşluğa tıklanınca Büyümüş Kutu (Zoom) Varsa Kapat
+        document.querySelectorAll('.glass-box.pulse-highlight').forEach(box => {
+            box.classList.remove('pulse-highlight');
+            box.style.transform = ""; // Transformu sıfırla ki eski yerine dönsün
         });
     }
 }
@@ -2517,6 +2555,7 @@ function closeVerbModal() {
 }
 
 function selectReadyVerb(verb) {
+    clearDraggableRoots();
     SoundEngine.playReset();
     resetTableOnly(true); 
     
@@ -2524,32 +2563,26 @@ function selectReadyVerb(verb) {
     if (trimmedRoot.length !== 3) return;
     
     currentRoot = trimmedRoot;
-    isReadyVerbMode = true;
-    document.getElementById('root-text-display').innerText = verb;
     
-    document.querySelectorAll('.glass-box').forEach(box => {
-        const refEl = box.querySelector('.ref');
-        if (refEl) {
-            const refId = parseInt(refEl.innerText);
-            
-            if (readyVerbTargets.includes(refId)) {
-                box.style.backgroundColor = "";
-                box.style.borderColor = "";
-                box.removeAttribute('data-modal-closed');
-                box.classList.add('hidden-mode'); 
-                targetStates[refId] = 0; 
-                
-                const textEl = box.querySelector('.ar, .ar-small');
-                if (textEl) {
-                    // DÜZELTME: HAZIR FİİL SEÇİLİNCE DE RENKLERİ KORU
-                    let orig = textEl.getAttribute('data-original');
-                    textEl.innerHTML = ColorEngine.colorize(orig, ['ف', 'ع', 'ل']); 
-                }
-            }
-        }
-    });
+    // Klavyeden girilmiş gibi ekrana yansıt
+    const rootDisplay = document.getElementById('root-text-display');
+    if (rootDisplay) {
+        rootDisplay.innerText = currentRoot;
+    }
+    
+    // Modalı kapat ve altın sarısı kutuları parlat
     closeVerbModal();
     highlightEasterEggBoxes(currentRoot);
+    
+    // YENİ EKLENEN: Otomatik olarak ahşap tahta bloğunu sahneye fırlat
+    if (typeof autoSpawnRootClone === 'function') {
+        autoSpawnRootClone();
+    }
+    
+    // Eğer şu an Mezid (3+) sekmesindeyse, Mücerred sekmesine geri dön
+    if (currentTabActive === 1) {
+        setTab(0);
+    }
 }
 
 function clearOtherActiveBoxes(currentBox) {
@@ -3148,6 +3181,13 @@ function confirmRoot() {
         }
         toggleKB(false);
         highlightEasterEggBoxes(currentRoot); 
+        
+        // YENİ EKLENEN: Otomatik olarak tahta bloğu sahneye at!
+        autoSpawnRootClone();
+        
+        if (currentTabActive === 1) {
+            setTab(0);
+        }
     }
 }
 
@@ -3168,18 +3208,23 @@ document.addEventListener('keydown', function(e) {
 });
 
 function resetTableOnly(isSilent = false) {
+     closeAllZoomedBoxes(); // Ekran sıfırlanırken tüm zoomları ve overlayi kapatır
+    if (typeof clearDraggableRoots === 'function') {
+        clearDraggableRoots();
+    }
+
     if (!isSilent) {
         SoundEngine.playReset(); 
     }
     isReadyVerbMode = false;
     targetStates = {};
-
+    
     document.querySelectorAll('.glass-box').forEach(box => {
         box.classList.remove('hidden-mode');
         box.classList.remove("pulse-highlight"); 
         box.classList.remove('matrix-opened');
         box.removeAttribute('data-modal-closed');
-        
+        box.style.transform = "";
         box.style.backgroundColor = ""; 
         box.style.borderColor = "";
         box.style.background = "";
@@ -3530,10 +3575,8 @@ function triggerAreaPulse(boxElement, forceDelay = false) {
     if (currentPulseTimeout) clearTimeout(currentPulseTimeout);
 
     const isZoomEnabled = document.getElementById('zoomToggleCheckbox').checked;
-    
     let hasEgg = forceDelay;
     
-    // Eğer doğrudan zorunlu (ek alınca olan) gecikme yoksa Base halini kontrol et
     if (!hasEgg && currentRoot && currentRoot.length === 3) {
         const refEl = boxElement.querySelector('.ref');
         if (refEl) {
@@ -3547,7 +3590,11 @@ function triggerAreaPulse(boxElement, forceDelay = false) {
     const delay = (isZoomEnabled && hasEgg) ? 1500 : 0;
 
     currentPulseTimeout = setTimeout(() => {
-        boxElement.classList.remove("pulse-highlight");
+        // Önce açıkta kalmış diğer zoom'ları temizle
+        document.querySelectorAll('.glass-box.pulse-highlight').forEach(b => {
+            b.classList.remove("pulse-highlight");
+            b.style.transform = "";
+        });
 
         if (!isZoomEnabled) {
             boxElement.style.setProperty("background-color", "#bfffdf", "important");
@@ -3559,25 +3606,32 @@ function triggerAreaPulse(boxElement, forceDelay = false) {
         const moveX = (window.innerWidth / 2) - (rect.left + rect.width / 2);
         const moveY = (window.innerHeight / 2) - (rect.top + rect.height / 2);
 
-        boxElement.style.setProperty('--start-x', '0px');
-        boxElement.style.setProperty('--start-y', '0px');
         boxElement.style.setProperty('--move-x', `${moveX}px`);
         boxElement.style.setProperty('--move-y', `${moveY}px`);
-        
-        boxElement.style.transform = "translateZ(0) rotate(0.001deg)";
-        void boxElement.offsetWidth; 
         
         boxElement.style.setProperty("background-color", "#bfffdf", "important");
         boxElement.style.borderColor = "#000000";
 
+        // Kalıbı büyüt
         boxElement.classList.add("pulse-highlight");
-
-        setTimeout(() => {
-            boxElement.classList.remove("pulse-highlight");
-            boxElement.style.transform = "";
-            boxElement.style.setProperty("background-color", "#bfffdf", "important");
-            boxElement.style.borderColor = "#000000";
-        }, 3000);
+        
+        // Kutu hangi sekmeye aitse, overlay katmanını o .container içine ekle/aktif et
+        const parentContainer = boxElement.closest('.container');
+        if (parentContainer) {
+            let localOverlay = parentContainer.querySelector('.zoom-overlay');
+            if (!localOverlay) {
+                localOverlay = document.createElement('div');
+                localOverlay.className = 'zoom-overlay';
+                localOverlay.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeAllZoomedBoxes();
+                };
+                parentContainer.appendChild(localOverlay);
+            }
+            localOverlay.classList.add('active');
+        }
+        
     }, delay);
 }
 
@@ -4150,3 +4204,182 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sistemi başlat
     initLongPress();
 });
+
+// --- EVRENSEL BÜYÜTME KAPATICI ---
+// Sekmeler, üst bar veya sayfanın herhangi bir dış alanına tıklandığında çalışır
+
+document.addEventListener('click', function(e) {
+    // Eğer tıklanan yer, o an büyümüş olan kutunun (pulse-highlight) kendisi değilse
+    if (!e.target.closest('.glass-box.pulse-highlight')) {
+        if (typeof closeAllZoomedBoxes === 'function') {
+            closeAllZoomedBoxes();
+        }
+    }
+});
+
+document.addEventListener('touchstart', function(e) {
+    // Dokunmatik ekranlar (Mobil/Tablet) için aynı kontrol
+    if (!e.target.closest('.glass-box.pulse-highlight')) {
+        if (typeof closeAllZoomedBoxes === 'function') {
+            closeAllZoomedBoxes();
+        }
+    }
+}, { passive: true });
+
+// --- SÜRÜKLENEBİLİR VE PARÇALI KÖK SİSTEMİ ---
+
+// Kök harflerini kurallara göre ayırır
+function formatArabicRoot(root) {
+    if (!root || root.length !== 3) return root;
+    const nonConnecting = ['ا','د','ذ','ر','ز','و','أ','إ','آ','ؤ','ء'];
+    const l1 = root[0]; 
+    const l2 = root[1]; 
+    const l3 = root[2]; 
+    
+    const res1 = nonConnecting.includes(l1) ? l1 : l1 + 'ـ';
+    const prefix2 = nonConnecting.includes(l1) ? '' : 'ـ';
+    const suffix2 = nonConnecting.includes(l2) ? '' : 'ـ';
+    const res2 = prefix2 + l2 + suffix2;
+    const prefix3 = nonConnecting.includes(l2) ? '' : 'ـ';
+    const res3 = prefix3 + l3;
+    
+    return `${res1}  ${res2}  ${res3}`;
+}
+
+// Yeni kök girilince eski tahtaları temizleyen fonksiyon
+function clearDraggableRoots() {
+    document.querySelectorAll('.draggable-root-clone').forEach(el => el.remove());
+}
+
+// Bırakılmış bir tahtayı yeniden sürüklenebilir yapan fonksiyon
+function makeElementDraggable(el) {
+    let isDragging = false;
+
+    function onMouseDown(e) {
+        e.preventDefault();
+        isDragging = true;
+        el.style.zIndex = 1000000;
+        
+        let startX = e.pageX || (e.touches && e.touches[0].pageX);
+        let startY = e.pageY || (e.touches && e.touches[0].pageY);
+        let rect = el.getBoundingClientRect();
+        let offsetX = startX - rect.left - window.scrollX;
+        let offsetY = startY - rect.top - window.scrollY;
+
+        function onMouseMove(moveEvent) {
+            if (!isDragging) return;
+            let x = moveEvent.pageX || (moveEvent.touches && moveEvent.touches[0].pageX);
+            let y = moveEvent.pageY || (moveEvent.touches && moveEvent.touches[0].pageY);
+            el.style.left = (x - offsetX) + 'px';
+            el.style.top = (y - offsetY) + 'px';
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.removeEventListener('touchmove', onMouseMove);
+            document.removeEventListener('touchend', onMouseUp);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('touchmove', onMouseMove, { passive: false });
+        document.addEventListener('touchend', onMouseUp);
+    }
+
+    el.addEventListener('mousedown', onMouseDown);
+    el.addEventListener('touchstart', onMouseDown, { passive: false });
+}
+
+// Ana kutudan yeni klon çıkartma işlemini başlatan yapı
+document.addEventListener('DOMContentLoaded', () => {
+    // HATA BURADAYDI: Hedefi 'root-display-box' yerine sadece yazının olduğu 'root-text-display' yaptık!
+    const rootTextTarget = document.getElementById('root-text-display');
+    
+    if(rootTextTarget) {
+        rootTextTarget.style.cursor = 'grab';
+        
+        // Animasyonun (👇 Sürükle) doğru yerde çıkması için relative yapıyoruz
+        rootTextTarget.style.position = 'relative';
+        
+        const handleDragStart = (e) => {
+            // Artık hedef sadece yazı olduğu için buton veya SVG kontrolüne gerek kalmadı.
+            if (e.type === 'touchstart') e.preventDefault();
+
+            if (!currentRoot || currentRoot.length !== 3) return;
+            
+            // Ekranda sadece TEK BİR klon olmasını garantilemek için eskileri temizle
+            clearDraggableRoots();
+            
+            // Yeni tahta klonunu oluştur
+            const formattedText = formatArabicRoot(currentRoot);
+            const dragEl = document.createElement('div');
+            dragEl.className = 'draggable-root-clone';
+            dragEl.innerText = formattedText;
+            document.body.appendChild(dragEl);
+
+            // Yeni elemanı sürüklenebilir yap
+            makeElementDraggable(dragEl);
+
+            // Fare/Parmak pozisyonunu al
+            const startX = e.pageX || (e.touches && e.touches[0].pageX);
+            const startY = e.pageY || (e.touches && e.touches[0].pageY);
+            
+            // İlk çıktığında tam farenin ortasına hizala
+            dragEl.style.left = (startX - dragEl.offsetWidth / 2) + 'px';
+            dragEl.style.top = (startY - dragEl.offsetHeight / 2) + 'px';
+
+            // Çıkar çıkmaz sürüklenmeye devam etmesi için mousedown olayını elemana devret
+            const simulateClick = new MouseEvent('mousedown', {
+                bubbles: true, cancelable: true, view: window,
+                clientX: startX, clientY: startY
+            });
+            dragEl.dispatchEvent(simulateClick);
+        };
+
+        // Event dinleyicilerini sadece kök metnine bağlıyoruz
+        rootTextTarget.addEventListener('mousedown', handleDragStart);
+        rootTextTarget.addEventListener('touchstart', handleDragStart, { passive: false });
+    }
+});
+// Kök girildiğinde veya seçildiğinde tahtayı otomatik olarak sahneye çıkartan fonksiyon
+function autoSpawnRootClone() {
+    if (!currentRoot || currentRoot.length !== 3) return;
+    
+    clearDraggableRoots(); // Sahnede başka klon varsa temizle (Tek klon kuralı)
+    
+    const formattedText = formatArabicRoot(currentRoot);
+    const dragEl = document.createElement('div');
+    dragEl.className = 'draggable-root-clone';
+    dragEl.innerText = formattedText;
+    document.body.appendChild(dragEl);
+
+    makeElementDraggable(dragEl);
+
+    // Klonu ana kök kutusunun hemen altında, ortalı bir şekilde göster
+    const rootBox = document.getElementById('root-display-box');
+    if (rootBox) {
+        const rect = rootBox.getBoundingClientRect();
+        const spawnX = rect.left + window.scrollX + (rect.width / 2) - 60; // Ortalama hesabı
+        const spawnY = rect.bottom + window.scrollY + 25; // Kutunun 25px altı
+        
+        dragEl.style.left = spawnX + 'px';
+        dragEl.style.top = spawnY + 'px';
+    } else {
+        dragEl.style.left = '50%';
+        dragEl.style.top = '150px';
+    }
+    
+    // Zıplayarak sahneye çıkış animasyonu (Oyun hissiyatı için)
+    dragEl.style.transform = 'scale(0)';
+    dragEl.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    setTimeout(() => {
+        dragEl.style.transform = 'scale(1)';
+    }, 50);
+    
+    // Sürükleme başladığında takılma olmaması için geçiş efektini kapat
+    setTimeout(() => {
+        dragEl.style.transition = 'none';
+    }, 350);
+}
