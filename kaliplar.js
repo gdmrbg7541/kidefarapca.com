@@ -4437,6 +4437,7 @@ function autoSpawnRootClone() {
 // SUNUM KUMANDASI VE KLAVYE İLE OTOMATİK GEÇİŞ SİSTEMİ
 // ==================================================================
 let currentEggIndex = -1;
+let isPresentationLocked = false; // YENİ: Geçişler sırasında çakışmayı önleyen kilit
 
 function getReadyRoots() {
     return Object.keys(wordEasterEggs); 
@@ -4462,22 +4463,37 @@ function activateBoxByRef(refId) {
     if (targetBox) {
         const isTab1 = targetBox.closest('#tab1');
         const isTab2 = targetBox.closest('#tab2');
-        if (isTab1 && currentTabActive !== 0) setTab(0);
-        if (isTab2 && currentTabActive !== 1) setTab(1);
+        let tabSwitched = false;
 
-        const rect = targetBox.getBoundingClientRect();
-        const absoluteTop = window.scrollY + rect.top;
-        const middle = absoluteTop - (window.innerHeight / 2) + (rect.height / 2);
-        window.scrollTo({ top: middle, behavior: 'smooth' });
+        if (isTab1 && currentTabActive !== 0) { setTab(0); tabSwitched = true; }
+        if (isTab2 && currentTabActive !== 1) { setTab(1); tabSwitched = true; }
 
-        let tiklama = parseInt(targetBox.getAttribute('data-tiklama-sayisi') || '0');
-        if (tiklama === 0) {
-            handleBoxClick(targetBox); // 1. Vuruşu yapar (Kutuyu doldurur)
-        } else {
-            // Kutu zaten doluysa (Geri ile gelmişsek vb.) sadece kırmızı çerçeveyi aktar, İÇERİĞİ SİLME!
-            document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
-            targetBox.classList.add('current-active-red');
+        // YENİ: Tablo değiştiyse (kayıyorsa), animasyonun büyük ölçüde bitmesi için 1 saniye bekle
+        const islemGecikmesi = tabSwitched ? 1000 : 0; 
+        
+        if (tabSwitched) {
+            isPresentationLocked = true; // Tablo kayarken tuş spamlanmasını engelle
         }
+
+        setTimeout(() => {
+            const rect = targetBox.getBoundingClientRect();
+            const absoluteTop = window.scrollY + rect.top;
+            const middle = absoluteTop - (window.innerHeight / 2) + (rect.height / 2);
+            window.scrollTo({ top: middle, behavior: 'smooth' });
+
+            let tiklama = parseInt(targetBox.getAttribute('data-tiklama-sayisi') || '0');
+            if (tiklama === 0) {
+                handleBoxClick(targetBox); // 1. Vuruşu yapar (Kutuyu doldurur ve BÜYÜTÜR)
+            } else {
+                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                targetBox.classList.add('current-active-red');
+            }
+            
+            // İşlem bittikten sonra kilidi aç ki kullanıcı devam edebilsin
+            if (tabSwitched) {
+                isPresentationLocked = false;
+            }
+        }, islemGecikmesi);
     }
 }
 
@@ -4485,6 +4501,7 @@ function activateBoxByRef(refId) {
 // 4. İLERİ KUMANDA (İlk Tık: Sadece Sarı Vurgular | İkinci Tık: İlk Kutu)
 // ==================================================================
 function nextEasterEgg() {
+    if (isPresentationLocked) return; // Kilitliyse tuş basımlarını yok say
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     let waitTime = 0;
@@ -4527,6 +4544,7 @@ function nextEasterEgg() {
 // 5. GERİ KUMANDA (Geri Dönüşlerde de Sarı Vurgu Beklemesi Eklendi)
 // ==================================================================
 function prevEasterEgg() {
+    if (isPresentationLocked) return; // Kilitliyse tuş basımlarını yok say
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     const activeZoom = document.querySelector('.glass-box.pulse-highlight');
