@@ -2642,6 +2642,13 @@ function resetBox(el) {
     if (triggerBtn) {
         triggerBtn.remove();
     }
+
+    // YENİ: Kutu sıfırlandığında, sadece bu kutuya ait emojiyi gökyüzünden temizle
+    const refSpan = el.querySelector('.ref');
+    if (refSpan) {
+        const rId = refSpan.innerText.trim();
+        document.querySelectorAll(`.easter-egg-emoji[data-ref="${rId}"]`).forEach(emoji => emoji.remove());
+    }
     
     const plusBtn = document.querySelector('.fa-plus');
     if (plusBtn) plusBtn.classList.remove('plus-highlighted');
@@ -2702,7 +2709,10 @@ function handleBoxClick(boxElement) {
             let anaVezin = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
             openConjugationPopup(currentRootSafe, mapping.babNo, mapping.type, anaVezin);
             boxElement.setAttribute('data-tiklama-sayisi', '2');
-        } 
+            
+            // YENİ: Fiil tablosu açıldığında tepedeki emojiyi sil
+            document.querySelectorAll(`.easter-egg-emoji[data-ref="${refId}"]`).forEach(emoji => emoji.remove());
+        }
         else {
             SoundEngine.playClose();
             resetBox(boxElement); 
@@ -2761,6 +2771,13 @@ function applyToSpecificBox(boxElement) {
         const triggerBtn = boxElement.querySelector('.easter-egg-trigger');
         if (triggerBtn) {
             triggerBtn.remove();
+        }
+        
+        // YENİ: İsim kutusuna tekrar basılıp iptal edildiğinde tepedeki emojiyi sil
+        const refSpan = boxElement.querySelector('.ref');
+        if (refSpan) {
+            const rId = refSpan.innerText.trim();
+            document.querySelectorAll(`.easter-egg-emoji[data-ref="${rId}"]`).forEach(emoji => emoji.remove());
         }
         
         const plusBtn = document.querySelector('.fa-plus');
@@ -2872,11 +2889,11 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     let stem = tabanKelime.replace(/[َُِّْ]$/, "");
     let kelimeListesi = [];
 
-    const list = sigaSablonlari[tip];
+const list = sigaSablonlari[tip];
     list.forEach((siga, index) => {
         let cekilmisKelime = "";
         
-       if (tip === 'muzari') {
+        if (tip === 'muzari') {
             let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
             
             let aynHareke = "ُ"; 
@@ -2893,7 +2910,14 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
             else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
             else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;
-            else if (babNo === 12) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; // 84 NUMARA İF'İLAL ÇÖZÜMÜ
+            else if (babNo === 12) {
+                // 84 NUMARA İF'İLAL ÇÖZÜMÜ: Hünne (5) ve Entünne (11) sîgalarında şeddeyi (idğamı) açıyoruz
+                if (index === 5 || index === 11) {
+                    coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; // Açık ve esreli form
+                } else {
+                    coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; // Şeddeli form
+                }
+            } 
             else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
             else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
             else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
@@ -2932,27 +2956,41 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             }
         } 
         else if (tip === 'emir') {
-            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-            let emirPrefix = "اِ";
-            if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
-            else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
-            else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
+            // İF'İLAL (12. BAB) EMİR HAZIR ÇEKİMİ İÇİN ÖZEL KORUMA
+            if (babNo === 12) {
+                let r1 = kok[0], r2 = kok[1], r3 = kok[2];
+                if (index === 5) {
+                    // Entünne (Cemi Müennes - 6. Sîga) -> Şedde açılır, ilk lam'a esre verilir.
+                    cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; // Örn: اِحْمَرِرْنَ
+                } else {
+                    // Diğer 5 sîga şeddeli kalır. Standart emir ekleri ile bağlarız.
+                    let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
+                    cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; // Örn: اِحْمَرَّ
+                }
+            } 
+            else {
+                // DİĞER TÜM BABLAR İÇİN SİZİN ORİJİNAL EMİR MANTIĞINIZ ÇALIŞIR
+                let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+                let emirPrefix = "اِ";
+                if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
+                else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
+                else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
 
-            let aynHareke = "ِ";
-            if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
-            else if (anaVezin.includes("اِفْعَلْ") || babNo === 12) aynHareke = "َ";
+                let aynHareke = "ِ";
+                if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
+                else if (anaVezin.includes("اِفْعَلْ")) aynHareke = "َ"; // (12. babı buradan çıkardık, yukarıya aldık)
 
-            let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
-            if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
-            else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-            else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
-            else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
-            else if (babNo === 12) coreEmir = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; // İf'ilal Emir Formatı
-            else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
-            else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-            else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+                let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
+                if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
+                else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+                else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
+                else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
+                else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
+                else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+                else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
 
-            cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+                cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+            }
         }
         
         cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
@@ -3381,6 +3419,9 @@ window.resetTableOnly = function() {
     if (menu) menu.style.display = "none";
 
     document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
+    
+    // YENİ EKLENEN KOD: Sıfırlama yapıldığında tepede biriken tüm emojileri temizler
+    document.querySelectorAll('.easter-egg-emoji').forEach(el => el.remove());
 };
 
 const modalOverlays = [
@@ -3454,18 +3495,17 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
     if (data.emoji) {
         const rect = boxElement.getBoundingClientRect();
         const emojiDiv = document.createElement('div');
-        emojiDiv.className = 'floating-emoji';
+        // Emojiyi sonradan bulup silebilmek için özel sınıf ve KUTU KİMLİĞİ (data-ref) ekliyoruz
+        emojiDiv.className = 'floating-emoji easter-egg-emoji';
+        emojiDiv.setAttribute('data-ref', refId);
         emojiDiv.innerText = data.emoji;
-        
-        const scrollY = window.scrollY || window.pageYOffset;
-        const scrollX = window.scrollX || window.pageXOffset;
-        emojiDiv.style.left = (rect.left + scrollX + rect.width / 2 - 37.5) + 'px'; 
-        emojiDiv.style.top = (rect.top + scrollY - 20) + 'px';
+
+        // Emojilerin tam üst üste binmemesi için yatay sapma
+        let randomOffset = (Math.random() - 0.5) * 60; 
+        emojiDiv.style.left = (rect.left + rect.width / 2 - 30 + randomOffset) + 'px'; 
         
         document.body.appendChild(emojiDiv);
-
-        setTimeout(() => { emojiDiv.remove(); }, 5000);
-    }
+    } // <--- İŞTE EKSİK OLAN PARANTEZ BURASIYDI!
 
     if (data.arText || data.trText) {
         const triggerBtn = document.createElement('div');

@@ -748,19 +748,44 @@ td:first-child {
 }
 
 .floating-emoji {
-    position: absolute;
-    font-size: 100px; 
+    position: fixed !important; 
+    font-size: 150px; 
     pointer-events: none;
-    z-index: 4500;
-    animation: floatEmoji 4s ease-out forwards; 
+    z-index: 99999; 
+    /* Hızı biraz artırdık: 6 saniyeden 4.5 saniyeye çektik */
+    animation: 
+        floatUp 4.5s ease-out forwards, 
+        popFade 4.5s ease-out forwards; 
 }
 
-@keyframes floatEmoji {
-    0% { opacity: 0; transform: translateY(0) scale(0.5); }
-    10% { opacity: 1; transform: translateY(0) scale(1.1); } 
-    20% { transform: translateY(-30px) scale(1); } 
-    80% { opacity: 1; transform: translateY(-130px) scale(1); } 
-    100% { opacity: 0; transform: translateY(-180px) scale(1); } 
+/* Sadece yukarı çıkış hareketi */
+@keyframes floatUp {
+    0% { bottom: -120px; }
+    /* Emojilerin tepede kesilmeden tam görünmesi için yüksekliği biraz aşağı (82vh) çektik */
+    100% { bottom: 82vh; } 
+}
+
+/* Boyut ve saydamlık */
+@keyframes popFade {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.3); 
+    }
+    10% { 
+        opacity: 1; 
+        transform: scale(1.3); /* Ekrana girerken büyük bir şekilde patlar */
+    }
+    20% {
+        transform: scale(1); /* Hızlıca normal boyuta inip yükselmeye devam eder */
+    }
+    80% { 
+        opacity: 1; /* Yolculuğun %80'ine kadar HİÇ SAYDAMLAŞMADAN tam görünür çıkar */
+        transform: scale(1);
+    }
+    100% { 
+        opacity: 0.3; /* YALNIZCA tepeye vardığında saydamlaşır */
+        transform: scale(0.5); /* Tepede çok yer kaplamaması için küçülür */
+    }
 }
 
 .matrix-fullscreen-overlay {
