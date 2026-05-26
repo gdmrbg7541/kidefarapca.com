@@ -644,24 +644,38 @@ td:first-child {
 /* 4K AKILLI TAHTA İÇİN CAM GİBİ NET BÜYÜTME (ZOOM) EFEKTİ   */
 /* ========================================================= */
 .pulse-highlight {
-    /* 3D GPU Hızlandırıcısı ve Retina Ekran Kandırmacası (rotate 0.001deg) */
-    transform: translate3d(var(--move-x), var(--move-y), 0) scale(4) rotate(0.001deg) !important;
+    /* DİKKAT: 3D (translate3d) veya will-change KULLANMIYORUZ! Bunlar yazıyı fotoğraf gibi sündürür. */
+    /* Sadece 2D translate kullanıyoruz ki tarayıcı vektörel çizim kalitesini korusun. */
+    transform: translate(var(--move-x), var(--move-y)) scale(4) !important;
     z-index: 99999 !important; 
     box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease !important;
     transform-origin: center center;
     
-    /* Safari & 4K Retina Ekran Netlik Vektör Sabitleyicileri */
-    -webkit-font-smoothing: subpixel-antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
+    /* Vektörel Font Netleştiricileri */
     text-rendering: optimizeLegibility !important;
-    -webkit-transform-style: preserve-3d !important;
-    transform-style: preserve-3d !important;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
 }
 
+/* ========================================================= */
+/* 5. 4K EKRANLARDA ZOOM ESNASINDA NETLİK (RE-RENDER) TETİKLEYİCİ */
+/* ========================================================= */
+
+/* Kutu büyütüldüğünde (zoom açıkken) içindeki sürekli animasyonları durdurur. 
+   Böylece tarayıcı "Animasyon bitti" sanarak sündürülmüş resmi atar ve 4K vektörel çizime geçer. */
+.glass-box.pulse-highlight .ref {
+    animation: none !important; /* Nabız hareketini durdur */
+    transform: none !important; /* DİKKAT: Bulanıklığı ebediyen çözen asıl hamle! İç küçültmeyi (scale 0.95) iptal eder */
+    box-shadow: 0 0 10px rgba(255, 59, 48, 0.9) !important; 
+    background-color: #FF3B30 !important; 
+    color: #ffffff !important; 
+}
+
+/* Kutunun olası titreşimlerini durdurur */
+.glass-box.pulse-highlight {
+    animation: none !important;
+}
 
 .easter-egg-overlay {
     display: none;
