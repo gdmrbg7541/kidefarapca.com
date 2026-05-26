@@ -599,6 +599,15 @@ td:first-child {
     font-weight: normal !important;
     line-height: 1.2;
 }
+/* Kök harfler (f-a-l) siyah kalacak */
+.kok { 
+    color: #000000 !important; 
+}
+
+/* Eklenen harfler ve harekeler kırmızı olacak */
+.ek { 
+    color: #FF3B30 !important; 
+}
 
 .matrix-close-btn {
     position: absolute;
@@ -634,6 +643,7 @@ td:first-child {
     .back-link { width: 100% !important; height: 48px !important; }
     .container table { width: 1100px !important; table-layout: fixed !important; }
     .footer-container { flex-direction: column; gap: 12px; }
+
     .cemi-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 

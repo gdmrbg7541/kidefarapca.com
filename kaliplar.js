@@ -1,3 +1,5 @@
+
+
 const letters = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
 let currentRoot = ""; 
 let isReadyVerbMode = false; 
@@ -32,12 +34,12 @@ const babVezinleri = {
     7: { mazi: "أَفْعَلَ", muzari: "يُفْعِلُ", emir: "أَفْعِلْ" },      
     8: { mazi: "فَعَّلَ", muzari: "يُفَعِّلُ", emir: "فَعِّلْ" },      
     9: { mazi: "فَاعَلَ", muzari: "يُفَاعِلُ", emir: "فَاعِلْ" },    
-    10: { mazi: "انْفَعَلَ", muzari: "يَنْفَعِلُ", emir: "انْفَعِلْ" },  
-    11: { mazi: "اِفْتَعَلَ", muzari: "يَفْتَعِلُ", emir: "افْتَعِلْ" },  
-    12: { mazi: "افْعَلَّ", muzari: "يَفْعَلُّ", emir: "افْعَلِلْ" },    
+    10: { mazi: "اِنْفَعَلَ", muzari: "يَنْفَعِلُ", emir: "اِنْفَعِلْ" },  
+    11: { mazi: "اِفْتَعَلَ", muzari: "يَفْتَعِلُ", emir: "اِفْتَعِلْ" },  
+    12: { mazi: "اِفْعَلَّ", muzari: "يَفْعَلُّ", emir: "اِفْعَلِلْ" },    
     13: { mazi: "تَفَعَّلَ", muzari: "يَتَفَعَّلُ", emir: "تَفَعَّلْ" },  
     14: { mazi: "تَفَاعَلَ", muzari: "يَتَفَاعَلُ", emir: "تَفَاعَلْ" },  
-    15: { mazi: "اِسْتَفْعَلَ", muzari: "يَسْتَفْعِلُ", emir: "اسْتَفْعِلْ" } 
+    15: { mazi: "اِسْتَفْعَلَ", muzari: "يَسْتَفْعِلُ", emir: "اِسْتَفْعِلْ" } 
 };
 
 const sigaSablonlari = {
@@ -85,1013 +87,7 @@ const sigaSablonlari = {
     ]
 };
 
-const SoundEngine = {
-    ctx: null,
-    init() {
-        if (!this.ctx) {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-    },
-    playClick() {
-        this.init();
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.05);
-    },
-    playClose() {
-        this.init();
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(350, this.ctx.currentTime);
-        osc.frequency.linearRampToValueAtTime(150, this.ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.15);
-    },
-    playReset() {
-        this.init();
-        const now = this.ctx.currentTime;
-        [440, 880].forEach((freq, index) => {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now + (index * 0.04));
-            osc.frequency.linearRampToValueAtTime(freq * 1.5, now + 0.15 + (index * 0.04));
-            gain.gain.setValueAtTime(0.08, now + (index * 0.04));
-            gain.gain.linearRampToValueAtTime(0.001, now + 0.18 + (index * 0.04));
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now + (index * 0.04));
-            osc.stop(now + 0.18 + (index * 0.04));
-        });
-    }
-};
 
-window.onload = function() {
-    const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
-    if (zoomCheckbox) {
-        zoomCheckbox.checked = false;
-    }
-
-    document.querySelectorAll('.glass-box').forEach((box) => {
-        const textEl = box.querySelector('.ar, .ar-small');
-        if (textEl) {
-            if (!textEl.hasAttribute('data-original')) {
-                textEl.setAttribute('data-original', textEl.innerText);
-            }
-            box.style.cursor = "pointer";
-            
-            const refSpan = box.querySelector('.ref');
-            if (refSpan) {
-                const rId = parseInt(refSpan.textContent.trim());
-                if ((rId >= 1 && rId <= 16) || [52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102].includes(rId)) {
-                    box.setAttribute('data-tiklama-sayisi', '0');
-                }
-            }
-            box.onclick = function() { handleBoxClick(this); };
-        }
-    });
-
-    const sliderContainer = document.querySelector('.window-pencere');
-    if (sliderContainer) {
-        sliderContainer.addEventListener('touchstart', (e) => {
-            SoundEngine.init(); 
-            touchStartX = e.touches[0].clientX;
-        }, { passive: true });
-
-        sliderContainer.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].clientX;
-            handleSwipeGesture();
-        }, { passive: true });
-
-        sliderContainer.addEventListener('wheel', (e) => {
-            const now = Date.now();
-            if (now - lastWheelTime < wheelCooldown) return; 
-
-            if (Math.abs(e.deltaX) > 25 && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-                SoundEngine.init();
-                if (e.deltaX > 0) {
-                    if (currentTabActive === 0) { setTab(1); lastWheelTime = now; }
-                } else {
-                    if (currentTabActive === 1) { setTab(0); lastWheelTime = now; }
-                }
-                e.preventDefault();
-            }
-        }, { passive: false });
-    }
-};
-
-document.addEventListener('click', closeIfOutside);
-document.addEventListener('touchstart', closeIfOutside, { passive: false });
-
-function closeIfOutside(e) {
-    const isInside = e.target.closest('.conjugation-inline-container') || e.target.closest('.glass-box');
-    if (!isInside) {
-        document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
-            const closeBtn = box.querySelector('.matrix-close-btn');
-            if (closeBtn) closeInlineMatrix(null, closeBtn);
-        });
-    }
-}
-
-function handleSwipeGesture() {
-    const distance = touchStartX - touchEndX;
-    if (Math.abs(distance) > minSwipeDistance) {
-        if (distance > 0 && currentTabActive === 1) { setTab(0); } 
-        else if (distance < 0 && currentTabActive === 0) { setTab(1); }
-    }
-}
-
-function setTab(tabIndex) {
-    SoundEngine.playClick(); 
-    const band = document.getElementById('mainSliderBandi');
-    const switcher = document.getElementById('tabSwitch');
-    
-    const tab1 = document.getElementById('tab1');
-    const tab2 = document.getElementById('tab2');
-    
-    currentTabActive = tabIndex;
-
-    if (tabIndex === 1) {
-        switcher.classList.remove("mucerred-active");
-        switcher.classList.add("mezid-active");
-        band.style.transform = "translateX(50%)"; 
-        band.style.height = tab2.offsetHeight + "px"; 
-    } else {
-        switcher.classList.remove("mezid-active");
-        switcher.classList.add("mucerred-active");
-        band.style.transform = "translateX(0%)";  
-        band.style.height = tab1.offsetHeight + "px"; 
-    }
-}
-
-function openVerbModal() {
-    SoundEngine.playClick();
-    document.getElementById('verb-overlay').style.display = 'flex';
-}
-
-function closeVerbModal() {
-    SoundEngine.playClose();
-    document.getElementById('verb-overlay').style.display = 'none';
-}
-
-function selectReadyVerb(verb) {
-    SoundEngine.playReset();
-    resetTableOnly(true); 
-    
-    const trimmedRoot = verb.trim();
-    if (trimmedRoot.length !== 3) return;
-    
-    currentRoot = trimmedRoot;
-    isReadyVerbMode = true;
-    document.getElementById('root-text-display').innerText = verb;
-    
-    document.querySelectorAll('.glass-box').forEach(box => {
-        const refEl = box.querySelector('.ref');
-        if (refEl) {
-            const refId = parseInt(refEl.innerText);
-            
-            if (readyVerbTargets.includes(refId)) {
-                box.style.backgroundColor = "";
-                box.style.borderColor = "";
-                box.removeAttribute('data-modal-closed');
-                box.classList.add('hidden-mode'); 
-                targetStates[refId] = 0; 
-                
-                const textEl = box.querySelector('.ar, .ar-small');
-                if (textEl) {
-                    textEl.innerText = textEl.getAttribute('data-original'); 
-                }
-            }
-        }
-    });
-    closeVerbModal();
-    highlightEasterEggBoxes(currentRoot);
-}
-
-function clearOtherActiveBoxes(currentBox) {
-    document.querySelectorAll('.glass-box').forEach(box => {
-        if (box !== currentBox) {
-            box.classList.add('no-transition'); 
-            box.classList.remove("pulse-highlight");
-            box.style.transform = "";
-            void box.offsetWidth;
-            
-            if (box.classList.contains('matrix-opened')) {
-                const closeBtn = box.querySelector('.matrix-close-btn');
-                if (closeBtn) closeInlineMatrix(null, closeBtn);
-            }
-            
-            setTimeout(() => {
-                if (box) box.classList.remove('no-transition');
-            }, 50);
-        }
-    });
-}
-
-function getBabAndType(refId) {
-    let type = "";
-    let babNo = 1;
-
-    if (refId >= 1 && refId <= 16) {
-        if ([1, 8, 11, 14].includes(refId)) {
-            type = "mazi";
-            if (refId === 1) babNo = 1; 
-            else if (refId === 8) babNo = 4;
-            else if (refId === 11) babNo = 5;
-            else if (refId === 14) babNo = 6;
-        } else if ([2, 4, 6, 9, 12, 15].includes(refId)) {
-            type = "muzari";
-            if (refId === 2) babNo = 1;
-            else if (refId === 4) babNo = 2;
-            else if (refId === 6) babNo = 3;
-            else if (refId === 9) babNo = 4;
-            else if (refId === 12) babNo = 5;
-            else if (refId === 15) babNo = 6;
-        } else if ([3, 5, 7, 10, 13, 16].includes(refId)) {
-            type = "emir";
-            if (refId === 3) babNo = 1;
-            else if (refId === 5) babNo = 2;
-            else if (refId === 7) babNo = 3;
-            else if (refId === 10) babNo = 4;
-            else if (refId === 13) babNo = 5;
-            else if (refId === 16) babNo = 6;
-        }
-    } 
-    else if ([52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102].includes(refId)) {
-        if ([52,58,64,71,77,83,88,94,100].includes(refId)) type = "mazi";
-        else if ([53,59,65,72,78,84,89,95,101].includes(refId)) type = "muzari";
-        else if ([54,60,66,73,79,85,90,96,102].includes(refId)) type = "emir";
-
-        if (refId >= 52 && refId <= 54) babNo = 7;
-        else if (refId >= 58 && refId <= 60) babNo = 8;
-        else if (refId >= 64 && refId <= 66) babNo = 9;
-        else if (refId >= 71 && refId <= 73) babNo = 10;
-        else if (refId >= 77 && refId <= 79) babNo = 11;
-        else if (refId >= 83 && refId <= 85) babNo = 12;
-        else if (refId >= 88 && refId <= 90) babNo = 13;
-        else if (refId >= 94 && refId <= 96) babNo = 14;
-        else if (refId >= 100 && refId <= 102) babNo = 15;
-    }
-    return { type, babNo };
-}
-
-function resetBox(el) {
-    const textEl = el.querySelector('.ar, .ar-small');
-    if (!textEl) return;
-    
-    const originalText = el.getAttribute('data-original') || textEl.innerText;
-    textEl.innerText = originalText;
-    
-    el.style.backgroundColor = "";
-    el.style.borderColor = "";
-    el.style.boxShadow = ""; 
-    
-    el.classList.remove('matrix-opened');
-    const container = el.querySelector('.conjugation-inline-container');
-    if (container) {
-        container.remove(); 
-    }
-    
-    const triggerBtn = el.querySelector('.easter-egg-trigger');
-    if (triggerBtn) {
-        triggerBtn.remove();
-    }
-    
-    const plusBtn = document.querySelector('.fa-plus');
-    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
-    
-    if (el.hasAttribute('data-tiklama-sayisi')) {
-        el.setAttribute('data-tiklama-sayisi', '0');
-    }
-
-    if (currentRoot && currentRoot.length === 3) {
-        highlightEasterEggBoxes(currentRoot);
-    }
-}
-
-function handleBoxClick(boxElement) {
-    const textEl = boxElement.querySelector('.ar, .ar-small');
-    const refEl = boxElement.querySelector('.ref');
-    if (!textEl || !refEl) return;
-
-    const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
-    const refId = parseInt(refEl.innerText);
-    const kalip = boxElement.getAttribute('data-original');
-
-    lastClickedBoxTextSpan = textEl;
-    lastOriginalWord = textEl.innerText.trim();
-
-    clearOtherActiveBoxes(boxElement);
-
-    if (boxElement.getAttribute('data-modal-closed') === 'true') {
-        boxElement.removeAttribute('data-modal-closed');
-        SoundEngine.playClose();
-        resetBox(boxElement);
-        return;
-    }
-
-    if (boxElement.hasAttribute('data-tiklama-sayisi')) {
-        let tiklama = parseInt(boxElement.getAttribute('data-tiklama-sayisi') || '0');
-        const mapping = getBabAndType(refId);
-
-        if (tiklama === 0) {
-            SoundEngine.playClick();
-            const vezinObj = babVezinleri[mapping.babNo];
-            let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
-            textEl.innerText = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalipMetni) : kalipMetni;
-            lastOriginalWord = textEl.innerText.trim();
-            
-            triggerAreaPulse(boxElement);
-            boxElement.setAttribute('data-tiklama-sayisi', '1');
-            checkWordEasterEgg(boxElement);
-        } 
-        else if (tiklama === 1) {
-            const vezinObj = babVezinleri[mapping.babNo];
-            let anaVezin = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
-            openConjugationPopup(currentRootSafe, mapping.babNo, mapping.type, anaVezin);
-            boxElement.setAttribute('data-tiklama-sayisi', '2');
-        } 
-        else {
-            SoundEngine.playClose();
-            resetBox(boxElement); 
-        }
-        return;
-    }
-    applyToSpecificBox(boxElement);
-}
-
-function closeInlineMatrix(e, btnElement) {
-    if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    SoundEngine.playClose();
-    
-    const boxElement = btnElement.closest('.glass-box');
-    if (boxElement) {
-        boxElement.classList.add('no-transition');
-        boxElement.classList.remove('matrix-opened');
-        boxElement.style.zIndex = "";
-        
-        const container = boxElement.querySelector('.conjugation-inline-container');
-        if (container) {
-            container.style.display = 'none';
-        }
-
-        if (boxElement.hasAttribute('data-tiklama-sayisi')) {
-            boxElement.setAttribute('data-tiklama-sayisi', '2');
-        }
-
-        setTimeout(() => {
-            boxElement.classList.remove('no-transition');
-        }, 50);
-    }
-}
-
-function applyToSpecificBox(boxElement) {
-    const targetEl = boxElement.querySelector('.ar, .ar-small');
-    if (!targetEl) return;
-    const kalip = targetEl.getAttribute('data-original');
-
-    clearOtherActiveBoxes(boxElement);
-
-    if (boxElement.style.backgroundColor) {
-        SoundEngine.playClose();
-        targetEl.innerText = kalip; 
-        boxElement.style.backgroundColor = "";
-        boxElement.style.borderColor = "";
-        boxElement.style.boxShadow = ""; 
-        lastOriginalWord = kalip;
-        
-        const triggerBtn = boxElement.querySelector('.easter-egg-trigger');
-        if (triggerBtn) {
-            triggerBtn.remove();
-        }
-        
-        const plusBtn = document.querySelector('.fa-plus');
-        if (plusBtn) plusBtn.classList.remove('plus-highlighted');
-        
-        if (currentRoot && currentRoot.length === 3) {
-            highlightEasterEggBoxes(currentRoot);
-        }
-        return;
-    }
-
-    SoundEngine.playClick();
-    const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
-    targetEl.innerText = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalip) : kalip;
-    
-    lastOriginalWord = targetEl.innerText.trim();
-    triggerAreaPulse(boxElement); 
-    checkWordEasterEgg(boxElement);
-}
-
-function applyRootToKalip(root, kalip) {
-    if (!root || root.length !== 3) return kalip;
-    const r = root.split(""); 
-    
-    // 1. Ham yerleştirme (Arakom fontuna uygun style dahil)
-    let result = kalip;
-    result = result.replace(/ف/g, "===F===");
-    result = result.replace(/ع/g, "===A===");
-    result = result.replace(/ل/g, "===L===");
-    
-    result = result.replace(/===F===/g, r[0]);
-    result = result.replace(/===A===/g, r[1]);
-    result = result.replace(/===L===/g, r[2]);
-    
-    // 2. Sarf kurallarını uygula (İ'lâl, İdğâm, Hemze)
-    result = SarfEngine.applyRules(result, r);
-    
-    return result;
-}
-
-function openConjugationPopup(kok, babNo, tip, anaVezin) {
-    SoundEngine.playClick();
-    
-    if (!kok || kok.length !== 3) {
-        kok = "فعل"; 
-    }
-
-    if (!lastClickedBoxTextSpan) return;
-    const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
-    if (!boxElement) return;
-
-   document.querySelectorAll('.glass-box').forEach(box => {
-        box.style.zIndex = "1";
-    });
-
-    document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
-        if (openBox !== boxElement) {
-            const openCloseBtn = openBox.querySelector('.matrix-close-btn');
-            if (openCloseBtn) closeInlineMatrix(null, openCloseBtn);
-        }
-    });
-
-    boxElement.classList.add('no-transition'); 
-    boxElement.classList.remove("pulse-highlight");
-    boxElement.style.transform = "";
-    void boxElement.offsetWidth; 
-
-    setTimeout(() => {
-        if (boxElement) boxElement.classList.remove('no-transition');
-    }, 50);
-
-    let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
-    if (!inlineContainer) {
-        inlineContainer = document.createElement('div');
-        inlineContainer.className = 'conjugation-inline-container';
-        boxElement.appendChild(inlineContainer);
-    }
-
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    const tableWidth = 420;
-    const estimatedTableHeight = 410; 
-    
-    let rect = boxElement.getBoundingClientRect();
-    
-    let targetLeft = -tableWidth - 60;
-    let globalLeft = rect.left + targetLeft;
-    if (globalLeft < 10) {
-        targetLeft = 10 - rect.left;
-    }
-    inlineContainer.style.left = `${targetLeft}px`;
-
-    let targetTop = (windowHeight / 2) - (estimatedTableHeight / 2) - rect.top;
-    let globalTop = rect.top + targetTop;
-    let globalBottom = globalTop + estimatedTableHeight;
-    if (globalTop < 10) {
-        targetTop = 10 - rect.top;
-    } else if (globalBottom > windowHeight - 10) {
-        targetTop = (windowHeight - estimatedTableHeight - 10) - rect.top;
-    }
-
-    inlineContainer.style.top = `${targetTop}px`;
-    
-    const tabanKelime = applyRootToKalip(kok, anaVezin);
-    let stem = tabanKelime.replace(/[َُِّْ]$/, "");
-    let kelimeListesi = [];
-
-    const list = sigaSablonlari[tip];
-    list.forEach(siga => {
-        let cekilmisKelime = "";
-        
-       if (tip === 'muzari') {
-            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-            
-            let aynHareke = "ُ"; 
-            if (babNo === 7) {
-                aynHareke = "ِ"; 
-            } else if (anaVezin.includes("يَفْعِلُ")) {
-                aynHareke = "ِ";
-            } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ")) {
-                aynHareke = "َ";
-            }
-            
-            let prefix = siga.prefix;
-            if (babNo === 7) prefix = "يُ";       
-            else if (babNo === 8) prefix = "يُ";  
-            else if (babNo === 9) prefix = "يُ";  
-            else if (babNo === 13) prefix = "يَتَ"; 
-            else if (babNo === 14) prefix = "يَتَ"; 
-
-            let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
-            
-            if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
-            else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
-            else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-            else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
-            else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;    
-            else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
-            
-            let currentPrefix = prefix;
-            if (siga.prefix === 'تَ') {
-                currentPrefix = (babNo === 13 || babNo === 14) ? "تَتَ" : ((babNo === 7 || babNo === 8 || babNo === 9) ? "تُ" : "تَ");
-            } else if (siga.prefix === 'أَ') {
-                currentPrefix = (babNo === 13 || babNo === 14) ? "أَتَ" : ((babNo === 7 || babNo === 8 || babNo === 9) ? "أُ" : "أَ");
-            } else if (siga.prefix === 'نَ') {
-                currentPrefix = (babNo === 13 || babNo === 14) ? "نَتَ" : ((babNo === 7 || babNo === 8 || babNo === 9) ? "نُ" : "نَ");
-            }
-            cekilmisKelime = currentPrefix + coreWord + siga.suffix;
-        } 
-        else if (tip === 'mazi') {
-            cekilmisKelime = stem + siga.ek;
-        } 
-        else if (tip === 'emir') {
-            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-            let emirPrefix = "اِ";
-            if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
-            else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
-            else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
-
-            let aynHareke = "ِ";
-            if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
-            else if (anaVezin.includes("اِفْعَلْ")) aynHareke = "َ";
-
-            let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
-            if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
-            else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-            else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
-            else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-            else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
-            else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
-            else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
-
-            cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
-        }
-        cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
-        kelimeListesi.push(cekilmisKelime);
-    });
-
-    let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
-    html += `<table class="conjugation-table">`;
-    html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
-
-    let totalItems = kelimeListesi.length;
-    for (let i = 0; i < totalItems; i += 3) {
-        let rowIndex = i / 3;
-        let bgColor = '#ffffff'; 
-        
-        if (rowIndex === 0 || rowIndex === 2) {
-            bgColor = '#e3f2fd'; 
-        } else if (rowIndex === 1 || rowIndex === 3) {
-            bgColor = '#fce4ec'; 
-        }
-
-        html += `<tr>
-                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${kelimeListesi[i] || ''}</span></td>
-                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${kelimeListesi[i+1] || ''}</span></td>
-                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${kelimeListesi[i+2] || ''}</span></td>
-                 </tr>`;
-    }
-    html += `</tbody></table>`;
-    
-    inlineContainer.innerHTML = html;
-const expandBtn = document.createElement('div');
-expandBtn.className = 'matrix-expand-btn';
-expandBtn.title = 'Tam Ekran';
-expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
-
-expandBtn.onclick = function(event) {
-    openMatrixFullscreen(event, this);
-};
-
-inlineContainer.appendChild(expandBtn);
-    
-    boxElement.style.zIndex = "999999"; 
-    boxElement.classList.add('matrix-opened');
-}
-
-document.addEventListener('click', function(e) {
-    const conjugationContainer = e.target.closest('.conjugation-inline-container');
-    const glassBox = e.target.closest('.glass-box');
-    
-    const fullscreenOverlay = e.target.closest('#matrix-fullscreen-overlay');
-
-    if (!conjugationContainer && !glassBox && !fullscreenOverlay) {
-        const openedBoxes = document.querySelectorAll('.glass-box.matrix-opened');
-        if (openedBoxes.length > 0) {
-            openedBoxes.forEach(box => {
-                const closeBtn = box.querySelector('.matrix-close-btn');
-                if (closeBtn) closeInlineMatrix(e, closeBtn);
-            });
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    }
-}, true);
-
-function closeConjugationModal() {
-    SoundEngine.playClose();
-    document.getElementById('conjugation-overlay').style.display = 'none';
-    
-    document.querySelectorAll('.glass-box').forEach(box => {
-        if (box.style.backgroundColor) { 
-            box.setAttribute('data-modal-closed', 'true');
-        }
-    });
-}
-
-function toggleKB(show) {
-    const overlay = document.getElementById('keyboard-overlay');
-    const tempDisplay = document.getElementById('temp-root-display');
-    if (show) {
-        currentRoot = ""; 
-        if (tempDisplay) tempDisplay.innerText = "";
-    }
-    if (overlay) overlay.style.display = show ? 'flex' : 'none';
-}
-
-function openKeyboard() {
-    SoundEngine.playClick(); 
-    resetTableOnly(true);     
-    toggleKB(true);
-}
-
-function closeKeyboard() {
-    SoundEngine.playClose(); 
-    toggleKB(false);
-}
-
-function addLetter(char) {
-    if (currentRoot.length < 3) {
-        SoundEngine.playClick(); 
-        currentRoot += char;
-        updateTempDisplay();
-        highlightKey(char);
-        if (currentRoot.length === 3) {
-            setTimeout(() => { confirmRoot(); }, 300);
-        }
-    }
-}
-
-function handleBackspace() {
-    SoundEngine.playClose(); 
-    if (currentRoot.length > 0) {
-        currentRoot = currentRoot.slice(0, -1);
-        updateTempDisplay();
-    }
-}
-
-function updateTempDisplay() {
-    const display = document.getElementById('temp-root-display');
-    if (display) {
-        display.innerText = currentRoot.trim(); 
-        display.style.direction = "rtl";
-    }
-}
-
-function highlightKey(char) {
-    const keys = document.querySelectorAll('.key');
-    keys.forEach(k => {
-        if (k.innerText.trim() === char) {
-            k.classList.add('active-key');
-            setTimeout(() => k.classList.remove('active-key'), 150);
-        }
-    });
-}
-
-function confirmRoot() {
-    if (currentRoot.length === 3) {
-        SoundEngine.playReset(); 
-        const rootTextSpan = document.getElementById('root-text-display');
-        if (rootTextSpan) {
-            rootTextSpan.innerText = currentRoot;
-        }
-        toggleKB(false);
-        highlightEasterEggBoxes(currentRoot); 
-    }
-}
-
-document.addEventListener('keydown', function(e) {
-    const overlay = document.getElementById('keyboard-overlay');
-    if (!overlay || overlay.style.display === 'none' || overlay.style.display === '') return;
-    const key = e.key.toLocaleLowerCase('tr-TR');
-    if (key === 'backspace') {
-        handleBackspace();
-        e.preventDefault();
-    } else if (key === 'escape') {
-        closeKeyboard();
-    } else if (arabicKeyMap[key]) {
-        SoundEngine.playClick(); 
-        addLetter(arabicKeyMap[key]);
-        e.preventDefault();
-    }
-});
-
-function resetTableOnly(isSilent = false) {
-    if (!isSilent) {
-        SoundEngine.playReset(); 
-    }
-    isReadyVerbMode = false;
-    targetStates = {};
-
-    document.querySelectorAll('.glass-box').forEach(box => {
-        box.classList.remove('hidden-mode');
-        box.classList.remove("pulse-highlight"); 
-        box.classList.remove('matrix-opened');
-        box.removeAttribute('data-modal-closed');
-        
-        box.style.backgroundColor = ""; 
-        box.style.borderColor = "";
-        box.style.background = "";
-        box.style.zIndex = "";
-        box.style.boxShadow = ""; 
-        if (box.hasAttribute('data-tiklama-sayisi')) box.setAttribute('data-tiklama-sayisi', '0');
-
-        const el = box.querySelector('.ar, .ar-small');
-        if (el) {
-            el.style.visibility = 'visible';
-            const original = el.getAttribute('data-original');
-            if (original) el.innerText = original;
-        }
-        const container = box.querySelector('.conjugation-inline-container');
-        if (container) container.innerHTML = '';
-    });
-    
-    const rootDisplay = document.getElementById('root-text-display');
-    if (rootDisplay) {
-        rootDisplay.innerText = "KÖK GİR";
-    }
-    currentRoot = "";
-    lastClickedBoxTextSpan = null;
-    lastOriginalWord = "";
-    
-    const plusBtn = document.querySelector('.fa-plus');
-    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
-
-    highlightEasterEggBoxes(""); 
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const wrappers = document.querySelectorAll('.responsive-table-wrapper');
-
-    wrappers.forEach(wrapper => {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-
-        const startDragging = (e) => {
-            isDown = true;
-            wrapper.classList.add('active');
-            startX = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
-            scrollLeft = wrapper.scrollLeft;
-        };
-
-        const stopDragging = () => {
-            isDown = false;
-            wrapper.classList.remove('active');
-        };
-
-        const move = (e) => {
-            if (!isDown) return;
-            e.preventDefault(); 
-            const x = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            wrapper.scrollLeft = scrollLeft - walk;
-        };
-
-        wrapper.addEventListener('mousedown', startDragging);
-        wrapper.addEventListener('mouseleave', stopDragging);
-        wrapper.addEventListener('mouseup', stopDragging);
-        wrapper.addEventListener('mousemove', move);
-
-        wrapper.addEventListener('touchstart', startDragging, { passive: true });
-        wrapper.addEventListener('touchend', stopDragging, { passive: true });
-        wrapper.addEventListener('touchmove', (e) => {
-            if (isDown) {
-                const x = e.touches[0].pageX - wrapper.offsetLeft;
-                const walk = (x - startX) * 1.5;
-                wrapper.scrollLeft = scrollLeft - walk;
-            }
-        }, { passive: true });
-    });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.addEventListener("click", (e) => {
-        const menu = document.getElementById("suffix-dropdown");
-        if (menu && menu.style.display !== "none") {
-            if (!menu.contains(e.target) && !e.target.closest('.fa-plus')) {
-                menu.style.display = "none";
-            }
-        }
-    });
-});
-
-function toggleSuffixMenu(e) {
-    e.stopPropagation();
-    const menu = document.getElementById("suffix-dropdown");
-    
-    const plusBtn = document.querySelector('.fa-plus');
-    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
-    
-    if (menu.style.display === "flex") {
-        menu.style.display = "none";
-        return;
-    }
-    
-    const rect = e.target.getBoundingClientRect();
-    menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    menu.style.left = `${rect.left + window.scrollX - 40}px`; 
-    menu.style.display = "flex";
-}
-
-function applySuffix(suffix) {
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
-
-    if (!lastClickedBoxTextSpan) {
-        if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        return; 
-    }
-
-    const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
-    
-    if (currentBox && currentBox.classList.contains("is-verb")) {
-        if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        return; 
-    }
-
-    let currentWord = lastOriginalWord || lastClickedBoxTextSpan.innerText;
-    
-    const plurals = ['يَّات', 'ينَ', 'ونَ', 'ات', 'ا'];
-    const basePlurals = ['ينَ', 'ونَ', 'ات', 'ا']; 
-    const nisbaSuffixes = ['يَّات', 'يَّة', 'يّ']; 
-
-    if (nisbaSuffixes.includes(suffix)) {
-        const hasPlural = basePlurals.some(p => currentWord.endsWith(p));
-        if (hasPlural) {
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClose(); 
-            return; 
-        }
-    }
-
-    if (basePlurals.includes(suffix)) {
-        for (let n of nisbaSuffixes) {
-            if (currentWord.endsWith(n)) {
-                currentWord = currentWord.slice(0, -n.length);
-                break; 
-            }
-        }
-    }
-
-    if (currentWord.endsWith('يَّة')) {
-        currentWord = currentWord.slice(0, -'يَّة'.length);
-    } 
-    else if (currentWord.endsWith('ة')) {
-        currentWord = currentWord.slice(0, -1);
-    }
-
-    if (plurals.includes(suffix) || suffix === 'ة') {
-        for (let p of plurals) {
-            if (currentWord.endsWith(p)) {
-                currentWord = currentWord.slice(0, -p.length);
-                break; 
-            }
-        }
-    }
-
-    function setLastVowel(word, targetVowel) {
-        const vowelRegex = /[\u064B-\u0650\u0652]$/; 
-        if (vowelRegex.test(word)) {
-            word = word.replace(vowelRegex, ''); 
-        }
-        return word + targetVowel; 
-    }
-
-    if (suffix === 'ة' || suffix === 'ات') {
-        currentWord = setLastVowel(currentWord, 'َ'); 
-    } 
-    else if (nisbaSuffixes.includes(suffix) || suffix === 'ينَ') {
-        currentWord = setLastVowel(currentWord, 'ِ'); 
-    }
-    else if (suffix === 'ونَ') {
-        currentWord = setLastVowel(currentWord, 'ُ'); 
-    }
-    else if (suffix === 'ا') {
-        currentWord = setLastVowel(currentWord, 'ً'); 
-    }
-
-    let updatedWord = currentWord + suffix;
-    lastClickedBoxTextSpan.innerText = updatedWord;
-    lastOriginalWord = updatedWord;
-    
-    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-
-    // Suffix (ek) kontrolünü yolluyoruz
-    if (typeof checkWordEasterEgg === "function") {
-        checkWordEasterEgg(currentBox, suffix);
-    }
-
-    if (currentBox) {
-        currentBox.style.setProperty("border-color", "#00FF00", "important");
-        currentBox.style.setProperty("box-shadow", "0 0 10px #00FF00", "important");
-        
-        // Eklendikten sonra büyütme efektini çalıştır (eğer ekli kelimenin sürprizi varsa)
-        let forceDelay = false;
-        if (currentRoot && currentRoot.length === 3) {
-            const refEl = currentBox.querySelector('.ref');
-            if (refEl) {
-                const refId = parseInt(refEl.innerText);
-                if (wordEasterEggs[currentRoot] && wordEasterEggs[currentRoot][refId] && wordEasterEggs[currentRoot][refId][suffix]) {
-                    forceDelay = true;
-                }
-            }
-        }
-
-        if (typeof triggerAreaPulse === "function") triggerAreaPulse(currentBox, forceDelay);
-        
-        setTimeout(() => {
-            currentBox.style.borderColor = ""; 
-            currentBox.style.boxShadow = "";
-        }, 1500);
-    }
-}
-
-const originalResetTableOnly = window.resetTableOnly;
-window.resetTableOnly = function() {
-    if (typeof originalResetTableOnly === "function") {
-        originalResetTableOnly();
-    }
-    lastClickedBoxTextSpan = null;
-    lastOriginalWord = "";
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
-
-    document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
-};
-
-const modalOverlays = [
-    { id: "verb-overlay", closeFn: window.closeVerbModal },
-    { id: "conjugation-overlay", closeFn: window.closeConjugationModal },
-    { id: "keyboard-overlay", closeFn: window.closeKeyboard }
-];
-
-modalOverlays.forEach(modal => {
-    const overlayEl = document.getElementById(modal.id);
-    if (overlayEl) {
-        overlayEl.addEventListener("click", function(event) {
-            if (event.target === overlayEl) {
-                if (typeof modal.closeFn === "function") {
-                    modal.closeFn();
-                } else {
-                    overlayEl.style.display = "none";
-                }
-            }
-        });
-    }
-});
-
-document.querySelectorAll('.matrix-close-btn').forEach(btn => {
-    btn.addEventListener('click', function(event) {
-        event.stopPropagation(); 
-        const currentBox = this.closest('.glass-box');
-        if (currentBox) {
-            currentBox.classList.remove('matrix-opened');
-        }
-    });
-});
-
-document.querySelectorAll('.glass-box').forEach(box => {
-    if (!box.hasAttribute('data-original')) {
-        const text = box.querySelector('.ar, .ar-small').innerText.trim();
-        box.setAttribute('data-original', text);
-    }
-});
 
 
 const wordEasterEggs = {
@@ -3352,6 +2348,1079 @@ const wordEasterEggs = {
     }
 };
 
+const SoundEngine = {
+    ctx: null,
+    init() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    },
+    playClick() {
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+    },
+    playClose() {
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(350, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(150, this.ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.15);
+    },
+    playReset() {
+        this.init();
+        const now = this.ctx.currentTime;
+        [440, 880].forEach((freq, index) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + (index * 0.04));
+            osc.frequency.linearRampToValueAtTime(freq * 1.5, now + 0.15 + (index * 0.04));
+            gain.gain.setValueAtTime(0.08, now + (index * 0.04));
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.18 + (index * 0.04));
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + (index * 0.04));
+            osc.stop(now + 0.18 + (index * 0.04));
+        });
+    }
+};
+
+window.onload = function() {
+    const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
+    if (zoomCheckbox) {
+        zoomCheckbox.checked = false;
+    }
+
+    document.querySelectorAll('.glass-box').forEach((box) => {
+        const textEl = box.querySelector('.ar, .ar-small');
+        if (textEl) {
+            // Orijinal düz metni alıyoruz
+            if (!textEl.hasAttribute('data-original')) {
+                textEl.setAttribute('data-original', textEl.innerText.trim());
+            }
+            box.style.cursor = "pointer";
+            
+            // İLK AÇILIŞTA RENKLENDİRME! (Siyah açılma sorununu ebediyen çözer)
+            let originalText = textEl.getAttribute('data-original');
+            if (originalText && originalText !== "-") {
+                textEl.innerHTML = ColorEngine.colorize(originalText, ['ف', 'ع', 'ل']);
+            }
+
+            const refSpan = box.querySelector('.ref');
+            if (refSpan) {
+                const rId = parseInt(refSpan.textContent.trim());
+                if ((rId >= 1 && rId <= 16) || [52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102].includes(rId)) {
+                    box.setAttribute('data-tiklama-sayisi', '0');
+                }
+            }
+            box.onclick = function() { handleBoxClick(this); };
+        }
+    });
+
+    const sliderContainer = document.querySelector('.window-pencere');
+    if (sliderContainer) {
+        sliderContainer.addEventListener('touchstart', (e) => {
+            SoundEngine.init(); 
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        sliderContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].clientX;
+            handleSwipeGesture();
+        }, { passive: true });
+
+        sliderContainer.addEventListener('wheel', (e) => {
+            const now = Date.now();
+            if (now - lastWheelTime < wheelCooldown) return; 
+
+            if (Math.abs(e.deltaX) > 25 && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                SoundEngine.init();
+                if (e.deltaX > 0) {
+                    if (currentTabActive === 0) { setTab(1); lastWheelTime = now; }
+                } else {
+                    if (currentTabActive === 1) { setTab(0); lastWheelTime = now; }
+                }
+                e.preventDefault();
+            }
+        }, { passive: false });
+    }
+};
+
+document.addEventListener('click', closeIfOutside);
+document.addEventListener('touchstart', closeIfOutside, { passive: false });
+
+function closeIfOutside(e) {
+    const isInside = e.target.closest('.conjugation-inline-container') || e.target.closest('.glass-box');
+    if (!isInside) {
+        document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
+            const closeBtn = box.querySelector('.matrix-close-btn');
+            if (closeBtn) closeInlineMatrix(null, closeBtn);
+        });
+    }
+}
+
+function handleSwipeGesture() {
+    const distance = touchStartX - touchEndX;
+    if (Math.abs(distance) > minSwipeDistance) {
+        if (distance > 0 && currentTabActive === 1) { setTab(0); } 
+        else if (distance < 0 && currentTabActive === 0) { setTab(1); }
+    }
+}
+
+function setTab(tabIndex) {
+    SoundEngine.playClick(); 
+    const band = document.getElementById('mainSliderBandi');
+    const switcher = document.getElementById('tabSwitch');
+    
+    const tab1 = document.getElementById('tab1');
+    const tab2 = document.getElementById('tab2');
+    
+    currentTabActive = tabIndex;
+
+    if (tabIndex === 1) {
+        switcher.classList.remove("mucerred-active");
+        switcher.classList.add("mezid-active");
+        band.style.transform = "translateX(50%)"; 
+        band.style.height = tab2.offsetHeight + "px"; 
+    } else {
+        switcher.classList.remove("mezid-active");
+        switcher.classList.add("mucerred-active");
+        band.style.transform = "translateX(0%)";  
+        band.style.height = tab1.offsetHeight + "px"; 
+    }
+}
+
+function openVerbModal() {
+    SoundEngine.playClick();
+    document.getElementById('verb-overlay').style.display = 'flex';
+}
+
+function closeVerbModal() {
+    SoundEngine.playClose();
+    document.getElementById('verb-overlay').style.display = 'none';
+}
+
+function selectReadyVerb(verb) {
+    SoundEngine.playReset();
+    resetTableOnly(true); 
+    
+    const trimmedRoot = verb.trim();
+    if (trimmedRoot.length !== 3) return;
+    
+    currentRoot = trimmedRoot;
+    isReadyVerbMode = true;
+    document.getElementById('root-text-display').innerText = verb;
+    
+    document.querySelectorAll('.glass-box').forEach(box => {
+        const refEl = box.querySelector('.ref');
+        if (refEl) {
+            const refId = parseInt(refEl.innerText);
+            
+            if (readyVerbTargets.includes(refId)) {
+                box.style.backgroundColor = "";
+                box.style.borderColor = "";
+                box.removeAttribute('data-modal-closed');
+                box.classList.add('hidden-mode'); 
+                targetStates[refId] = 0; 
+                
+                const textEl = box.querySelector('.ar, .ar-small');
+                if (textEl) {
+                    // DÜZELTME: HAZIR FİİL SEÇİLİNCE DE RENKLERİ KORU
+                    let orig = textEl.getAttribute('data-original');
+                    textEl.innerHTML = ColorEngine.colorize(orig, ['ف', 'ع', 'ل']); 
+                }
+            }
+        }
+    });
+    closeVerbModal();
+    highlightEasterEggBoxes(currentRoot);
+}
+
+function clearOtherActiveBoxes(currentBox) {
+    document.querySelectorAll('.glass-box').forEach(box => {
+        if (box !== currentBox) {
+            box.classList.add('no-transition'); 
+            box.classList.remove("pulse-highlight");
+            box.style.transform = "";
+            void box.offsetWidth;
+            
+            if (box.classList.contains('matrix-opened')) {
+                const closeBtn = box.querySelector('.matrix-close-btn');
+                if (closeBtn) closeInlineMatrix(null, closeBtn);
+            }
+            
+            setTimeout(() => {
+                if (box) box.classList.remove('no-transition');
+            }, 50);
+        }
+    });
+}
+
+function getBabAndType(refId) {
+    let type = "";
+    let babNo = 1;
+
+    if (refId >= 1 && refId <= 16) {
+        if ([1, 8, 11, 14].includes(refId)) {
+            type = "mazi";
+            if (refId === 1) babNo = 1; 
+            else if (refId === 8) babNo = 4;
+            else if (refId === 11) babNo = 5;
+            else if (refId === 14) babNo = 6;
+        } else if ([2, 4, 6, 9, 12, 15].includes(refId)) {
+            type = "muzari";
+            if (refId === 2) babNo = 1;
+            else if (refId === 4) babNo = 2;
+            else if (refId === 6) babNo = 3;
+            else if (refId === 9) babNo = 4;
+            else if (refId === 12) babNo = 5;
+            else if (refId === 15) babNo = 6;
+        } else if ([3, 5, 7, 10, 13, 16].includes(refId)) {
+            type = "emir";
+            if (refId === 3) babNo = 1;
+            else if (refId === 5) babNo = 2;
+            else if (refId === 7) babNo = 3;
+            else if (refId === 10) babNo = 4;
+            else if (refId === 13) babNo = 5;
+            else if (refId === 16) babNo = 6;
+        }
+    } 
+    else if ([52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102].includes(refId)) {
+        if ([52,58,64,71,77,83,88,94,100].includes(refId)) type = "mazi";
+        else if ([53,59,65,72,78,84,89,95,101].includes(refId)) type = "muzari";
+        else if ([54,60,66,73,79,85,90,96,102].includes(refId)) type = "emir";
+
+        if (refId >= 52 && refId <= 54) babNo = 7;
+        else if (refId >= 58 && refId <= 60) babNo = 8;
+        else if (refId >= 64 && refId <= 66) babNo = 9;
+        else if (refId >= 71 && refId <= 73) babNo = 10;
+        else if (refId >= 77 && refId <= 79) babNo = 11;
+        else if (refId >= 83 && refId <= 85) babNo = 12;
+        else if (refId >= 88 && refId <= 90) babNo = 13;
+        else if (refId >= 94 && refId <= 96) babNo = 14;
+        else if (refId >= 100 && refId <= 102) babNo = 15;
+    }
+    return { type, babNo };
+}
+
+function resetBox(el) {
+    const textEl = el.querySelector('.ar, .ar-small');
+    if (!textEl) return;
+    
+    const originalText = el.getAttribute('data-original') || textEl.innerText;
+    
+    // DÜZELTME: Sıfırlandığında düz metin yapmak yerine (فعل) kökünü baz alarak renkli bırak
+    textEl.innerHTML = ColorEngine.colorize(originalText, ['ف', 'ع', 'ل']);
+    
+    el.style.backgroundColor = "";
+    el.style.borderColor = "";
+    el.style.boxShadow = ""; 
+    
+    el.classList.remove('matrix-opened');
+    const container = el.querySelector('.conjugation-inline-container');
+    if (container) {
+        container.remove(); 
+    }
+    
+    const triggerBtn = el.querySelector('.easter-egg-trigger');
+    if (triggerBtn) {
+        triggerBtn.remove();
+    }
+    
+    const plusBtn = document.querySelector('.fa-plus');
+    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
+    
+    if (el.hasAttribute('data-tiklama-sayisi')) {
+        el.setAttribute('data-tiklama-sayisi', '0');
+    }
+
+    if (currentRoot && currentRoot.length === 3) {
+        highlightEasterEggBoxes(currentRoot);
+    }
+}
+
+function handleBoxClick(boxElement) {
+    const textEl = boxElement.querySelector('.ar, .ar-small');
+    const refEl = boxElement.querySelector('.ref');
+    if (!textEl || !refEl) return;
+
+    const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
+    const refId = parseInt(refEl.innerText);
+    const kalip = boxElement.getAttribute('data-original');
+
+    lastClickedBoxTextSpan = textEl;
+    lastOriginalWord = textEl.innerText.trim();
+
+    clearOtherActiveBoxes(boxElement);
+
+    if (boxElement.getAttribute('data-modal-closed') === 'true') {
+        boxElement.removeAttribute('data-modal-closed');
+        SoundEngine.playClose();
+        resetBox(boxElement);
+        return;
+    }
+
+    if (boxElement.hasAttribute('data-tiklama-sayisi')) {
+        let tiklama = parseInt(boxElement.getAttribute('data-tiklama-sayisi') || '0');
+        const mapping = getBabAndType(refId);
+
+        if (tiklama === 0) {
+            SoundEngine.playClick();
+            const vezinObj = babVezinleri[mapping.babNo];
+            let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+            let plainWord = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalipMetni) : kalipMetni;
+            
+            // HER ZAMAN RENKLENDİR (Buton mantığı kaldırıldı)
+            // Eğer bir kök girilmişse onu, girilmemişse varsayılan ['ف', 'ع', 'ل'] kökünü baz al
+            let activeRootArray = (currentRootSafe.length === 3) ? currentRootSafe.split("") : ['ف', 'ع', 'ل'];
+            textEl.innerHTML = ColorEngine.colorize(plainWord, activeRootArray);
+            
+            lastOriginalWord = plainWord; // Orjinal string'i bozmamak için text olarak tutuyoruz
+            
+            triggerAreaPulse(boxElement);
+            boxElement.setAttribute('data-tiklama-sayisi', '1');
+            checkWordEasterEgg(boxElement);
+        } 
+        else if (tiklama === 1) {
+            const vezinObj = babVezinleri[mapping.babNo];
+            let anaVezin = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+            openConjugationPopup(currentRootSafe, mapping.babNo, mapping.type, anaVezin);
+            boxElement.setAttribute('data-tiklama-sayisi', '2');
+        } 
+        else {
+            SoundEngine.playClose();
+            resetBox(boxElement); 
+        }
+        return;
+    }
+    applyToSpecificBox(boxElement);
+}
+
+function closeInlineMatrix(e, btnElement) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    SoundEngine.playClose();
+    
+    const boxElement = btnElement.closest('.glass-box');
+    if (boxElement) {
+        boxElement.classList.add('no-transition');
+        boxElement.classList.remove('matrix-opened');
+        boxElement.style.zIndex = "";
+        
+        const container = boxElement.querySelector('.conjugation-inline-container');
+        if (container) {
+            container.style.display = 'none';
+        }
+
+        if (boxElement.hasAttribute('data-tiklama-sayisi')) {
+            boxElement.setAttribute('data-tiklama-sayisi', '2');
+        }
+
+        setTimeout(() => {
+            boxElement.classList.remove('no-transition');
+        }, 50);
+    }
+}
+
+function applyToSpecificBox(boxElement) {
+    const targetEl = boxElement.querySelector('.ar, .ar-small');
+    if (!targetEl) return;
+    const kalip = targetEl.getAttribute('data-original');
+
+    clearOtherActiveBoxes(boxElement);
+
+    if (boxElement.style.backgroundColor) {
+        SoundEngine.playClose();
+        
+        // Kutu seçimi iptal edildiğinde de varsayılan kalıbı (فعل) renkli bırak
+        targetEl.innerHTML = ColorEngine.colorize(kalip, ['ف', 'ع', 'ل']); 
+        
+        boxElement.style.backgroundColor = "";
+        boxElement.style.borderColor = "";
+        boxElement.style.boxShadow = ""; 
+        lastOriginalWord = kalip;
+        
+        const triggerBtn = boxElement.querySelector('.easter-egg-trigger');
+        if (triggerBtn) {
+            triggerBtn.remove();
+        }
+        
+        const plusBtn = document.querySelector('.fa-plus');
+        if (plusBtn) plusBtn.classList.remove('plus-highlighted');
+        
+        if (currentRoot && currentRoot.length === 3) {
+            highlightEasterEggBoxes(currentRoot);
+        }
+        return;
+    }
+
+    SoundEngine.playClick();
+    const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
+    let plainWord = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalip) : kalip;
+    
+    // Her zaman renklendir: Kök girilmişse o kökü, girilmemişse 'فعل' harflerini baz al
+    let activeRootArray = (currentRootSafe.length === 3) ? currentRootSafe.split("") : ['ف', 'ع', 'ل'];
+    targetEl.innerHTML = ColorEngine.colorize(plainWord, activeRootArray);
+    
+    lastOriginalWord = plainWord;
+    triggerAreaPulse(boxElement); 
+    checkWordEasterEgg(boxElement);
+}
+
+function applyRootToKalip(root, kalip) {
+    if (!root || root.length !== 3) return kalip;
+    const r = root.split(""); 
+    
+    // 1. Ham yerleştirme (Arakom fontuna uygun style dahil)
+    let result = kalip;
+    result = result.replace(/ف/g, "===F===");
+    result = result.replace(/ع/g, "===A===");
+    result = result.replace(/ل/g, "===L===");
+    
+    result = result.replace(/===F===/g, r[0]);
+    result = result.replace(/===A===/g, r[1]);
+    result = result.replace(/===L===/g, r[2]);
+    
+    // 2. Sarf kurallarını uygula (İ'lâl, İdğâm, Hemze)
+    result = SarfEngine.applyRules(result, r);
+    
+    return result;
+}
+
+function openConjugationPopup(kok, babNo, tip, anaVezin) {
+    SoundEngine.playClick();
+    
+    if (!kok || kok.length !== 3) {
+        kok = "فعل"; 
+    }
+
+    if (!lastClickedBoxTextSpan) return;
+    const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
+    if (!boxElement) return;
+
+   document.querySelectorAll('.glass-box').forEach(box => {
+        box.style.zIndex = "1";
+    });
+
+    document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
+        if (openBox !== boxElement) {
+            const openCloseBtn = openBox.querySelector('.matrix-close-btn');
+            if (openCloseBtn) closeInlineMatrix(null, openCloseBtn);
+        }
+    });
+
+    boxElement.classList.add('no-transition'); 
+    boxElement.classList.remove("pulse-highlight");
+    boxElement.style.transform = "";
+    void boxElement.offsetWidth; 
+
+    setTimeout(() => {
+        if (boxElement) boxElement.classList.remove('no-transition');
+    }, 50);
+
+    let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
+    if (!inlineContainer) {
+        inlineContainer = document.createElement('div');
+        inlineContainer.className = 'conjugation-inline-container';
+        boxElement.appendChild(inlineContainer);
+    }
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const tableWidth = 420;
+    const estimatedTableHeight = 410; 
+    
+    let rect = boxElement.getBoundingClientRect();
+    
+    let targetLeft = -tableWidth - 60;
+    let globalLeft = rect.left + targetLeft;
+    if (globalLeft < 10) {
+        targetLeft = 10 - rect.left;
+    }
+    inlineContainer.style.left = `${targetLeft}px`;
+
+    let targetTop = (windowHeight / 2) - (estimatedTableHeight / 2) - rect.top;
+    let globalTop = rect.top + targetTop;
+    let globalBottom = globalTop + estimatedTableHeight;
+    if (globalTop < 10) {
+        targetTop = 10 - rect.top;
+    } else if (globalBottom > windowHeight - 10) {
+        targetTop = (windowHeight - estimatedTableHeight - 10) - rect.top;
+    }
+
+    inlineContainer.style.top = `${targetTop}px`;
+    
+    const tabanKelime = applyRootToKalip(kok, anaVezin);
+    let stem = tabanKelime.replace(/[َُِّْ]$/, "");
+    let kelimeListesi = [];
+
+    const list = sigaSablonlari[tip];
+    list.forEach((siga, index) => {
+        let cekilmisKelime = "";
+        
+       if (tip === 'muzari') {
+            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+            
+            let aynHareke = "ُ"; 
+            if (babNo === 7 || anaVezin.includes("يَفْعِلُ")) {
+                aynHareke = "ِ";
+            } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ") || babNo === 12) {
+                aynHareke = "َ";
+            }
+            
+            let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
+            
+            if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
+            else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+            else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+            else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+            else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;
+            else if (babNo === 12) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; // 84 NUMARA İF'İLAL ÇÖZÜMÜ
+            else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
+            else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+            else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+            
+            // TEFE'UL FAZLADAN 'T' HATASI ÇÖZÜLDÜ
+            let currentPrefix = siga.prefix; 
+            if (babNo === 7 || babNo === 8 || babNo === 9) {
+                if (currentPrefix === 'يَ') currentPrefix = "يُ";
+                else if (currentPrefix === 'تَ') currentPrefix = "تُ";
+                else if (currentPrefix === 'أَ') currentPrefix = "أُ";
+                else if (currentPrefix === 'نَ') currentPrefix = "نُ";
+            }
+            
+            cekilmisKelime = currentPrefix + coreWord + siga.suffix;
+        } 
+        else if (tip === 'mazi') {
+            // İf'ilâl (12. Bab) için Fekkü'l-İdğam (Şeddenin Açılması) Kuralı
+            if (babNo === 12) {
+                let r1 = kok[0], r2 = kok[1], r3 = kok[2];
+                let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; // Örn: اِكْمَل
+                let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; // Örn: اِكْمَلَل
+                
+                // İlk 5 sîga için şeddeli özel ekler
+                let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
+                
+                if (index < 5) {
+                    // İlk 5 sîgada (Hüve'den Hüma Müennes'e kadar) şedde korunur
+                    cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
+                } else {
+                    // 6. sîgadan (Cemi Müennes/Nun-u Nisve) itibaren şedde açılır
+                    cekilmisKelime = baseAcik + siga.ek; 
+                }
+            } else {
+                // Diğer tüm bablar normal mazi mantığıyla çekilmeye devam eder
+                cekilmisKelime = stem + siga.ek; 
+            }
+        } 
+        else if (tip === 'emir') {
+            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+            let emirPrefix = "اِ";
+            if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
+            else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
+            else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
+
+            let aynHareke = "ِ";
+            if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
+            else if (anaVezin.includes("اِفْعَلْ") || babNo === 12) aynHareke = "َ";
+
+            let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
+            if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
+            else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+            else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
+            else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
+            else if (babNo === 12) coreEmir = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; // İf'ilal Emir Formatı
+            else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
+            else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+            else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+
+            cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+        }
+        
+        cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
+        kelimeListesi.push(cekilmisKelime);
+    });
+
+    let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
+    html += `<table class="conjugation-table">`;
+    html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
+
+    let totalItems = kelimeListesi.length;
+    const isColorActive = kok && kok.length === 3;
+
+    for (let i = 0; i < totalItems; i += 3) {
+        let rowIndex = i / 3;
+        let bgColor = '#ffffff'; 
+        
+        if (rowIndex === 0 || rowIndex === 2) {
+            bgColor = '#e3f2fd'; 
+        } else if (rowIndex === 1 || rowIndex === 3) {
+            bgColor = '#fce4ec'; 
+        }
+
+        let w1 = kelimeListesi[i] || '';
+        let w2 = kelimeListesi[i+1] || '';
+        let w3 = kelimeListesi[i+2] || '';
+
+        // RENKLENDİRME MOTORU ENTEGRASYONU
+      if (isColorActive) {
+            w1 = w1 ? ColorEngine.colorize(w1, kok.split("")) : '';
+            w2 = w2 ? ColorEngine.colorize(w2, kok.split("")) : '';
+            w3 = w3 ? ColorEngine.colorize(w3, kok.split("")) : '';
+        }
+
+        // DÜZELTME: Siga hücrelerindeki hatalı inline-flex'ler kaldırıldı!
+        html += `<tr>
+                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w1}</span></td>
+                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w2}</span></td>
+                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w3}</span></td>
+                 </tr>`;
+    }
+    html += `</tbody></table>`;
+    
+    inlineContainer.innerHTML = html;
+    const expandBtn = document.createElement('div');
+    expandBtn.className = 'matrix-expand-btn';
+    expandBtn.title = 'Tam Ekran';
+    expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
+
+    expandBtn.onclick = function(event) {
+        openMatrixFullscreen(event, this);
+    };
+
+    inlineContainer.appendChild(expandBtn);
+    
+    boxElement.style.zIndex = "999999"; 
+    boxElement.classList.add('matrix-opened');
+}
+
+document.addEventListener('click', function(e) {
+    const conjugationContainer = e.target.closest('.conjugation-inline-container');
+    const glassBox = e.target.closest('.glass-box');
+    
+    const fullscreenOverlay = e.target.closest('#matrix-fullscreen-overlay');
+
+    if (!conjugationContainer && !glassBox && !fullscreenOverlay) {
+        const openedBoxes = document.querySelectorAll('.glass-box.matrix-opened');
+        if (openedBoxes.length > 0) {
+            openedBoxes.forEach(box => {
+                const closeBtn = box.querySelector('.matrix-close-btn');
+                if (closeBtn) closeInlineMatrix(e, closeBtn);
+            });
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+}, true);
+
+function closeConjugationModal() {
+    SoundEngine.playClose();
+    document.getElementById('conjugation-overlay').style.display = 'none';
+    
+    document.querySelectorAll('.glass-box').forEach(box => {
+        if (box.style.backgroundColor) { 
+            box.setAttribute('data-modal-closed', 'true');
+        }
+    });
+}
+
+function toggleKB(show) {
+    const overlay = document.getElementById('keyboard-overlay');
+    const tempDisplay = document.getElementById('temp-root-display');
+    if (show) {
+        currentRoot = ""; 
+        if (tempDisplay) tempDisplay.innerText = "";
+    }
+    if (overlay) overlay.style.display = show ? 'flex' : 'none';
+}
+
+function openKeyboard() {
+    SoundEngine.playClick(); 
+    resetTableOnly(true);     
+    toggleKB(true);
+}
+
+function closeKeyboard() {
+    SoundEngine.playClose(); 
+    toggleKB(false);
+}
+
+function addLetter(char) {
+    if (currentRoot.length < 3) {
+        SoundEngine.playClick(); 
+        currentRoot += char;
+        updateTempDisplay();
+        highlightKey(char);
+        if (currentRoot.length === 3) {
+            setTimeout(() => { confirmRoot(); }, 300);
+        }
+    }
+}
+
+function handleBackspace() {
+    SoundEngine.playClose(); 
+    if (currentRoot.length > 0) {
+        currentRoot = currentRoot.slice(0, -1);
+        updateTempDisplay();
+    }
+}
+
+function updateTempDisplay() {
+    const display = document.getElementById('temp-root-display');
+    if (display) {
+        display.innerText = currentRoot.trim(); 
+        display.style.direction = "rtl";
+    }
+}
+
+function highlightKey(char) {
+    const keys = document.querySelectorAll('.key');
+    keys.forEach(k => {
+        if (k.innerText.trim() === char) {
+            k.classList.add('active-key');
+            setTimeout(() => k.classList.remove('active-key'), 150);
+        }
+    });
+}
+
+function confirmRoot() {
+    if (currentRoot.length === 3) {
+        SoundEngine.playReset(); 
+        const rootTextSpan = document.getElementById('root-text-display');
+        if (rootTextSpan) {
+            rootTextSpan.innerText = currentRoot;
+        }
+        toggleKB(false);
+        highlightEasterEggBoxes(currentRoot); 
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    const overlay = document.getElementById('keyboard-overlay');
+    if (!overlay || overlay.style.display === 'none' || overlay.style.display === '') return;
+    const key = e.key.toLocaleLowerCase('tr-TR');
+    if (key === 'backspace') {
+        handleBackspace();
+        e.preventDefault();
+    } else if (key === 'escape') {
+        closeKeyboard();
+    } else if (arabicKeyMap[key]) {
+        SoundEngine.playClick(); 
+        addLetter(arabicKeyMap[key]);
+        e.preventDefault();
+    }
+});
+
+function resetTableOnly(isSilent = false) {
+    if (!isSilent) {
+        SoundEngine.playReset(); 
+    }
+    isReadyVerbMode = false;
+    targetStates = {};
+
+    document.querySelectorAll('.glass-box').forEach(box => {
+        box.classList.remove('hidden-mode');
+        box.classList.remove("pulse-highlight"); 
+        box.classList.remove('matrix-opened');
+        box.removeAttribute('data-modal-closed');
+        
+        box.style.backgroundColor = ""; 
+        box.style.borderColor = "";
+        box.style.background = "";
+        box.style.zIndex = "";
+        box.style.boxShadow = ""; 
+        if (box.hasAttribute('data-tiklama-sayisi')) box.setAttribute('data-tiklama-sayisi', '0');
+
+        const el = box.querySelector('.ar, .ar-small');
+        if (el) {
+            el.style.visibility = 'visible';
+            const original = el.getAttribute('data-original');
+            if (original) {
+                // --- YENİ: Sıfırlandığında da varsayılan kalıbı (فعل) renkli getir ---
+                if (original !== "-") {
+                    el.innerHTML = ColorEngine.colorize(original, ['ف', 'ع', 'ل']);
+                } else {
+                    el.innerText = original;
+                }
+                // --------------------------------------------------------------------
+            }
+        }
+        const container = box.querySelector('.conjugation-inline-container');
+        if (container) container.innerHTML = '';
+    });
+    
+    const rootDisplay = document.getElementById('root-text-display');
+    if (rootDisplay) {
+        rootDisplay.innerText = "KÖK GİR";
+    }
+    currentRoot = "";
+    lastClickedBoxTextSpan = null;
+    lastOriginalWord = "";
+    
+    const plusBtn = document.querySelector('.fa-plus');
+    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
+
+    highlightEasterEggBoxes(""); 
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const wrappers = document.querySelectorAll('.responsive-table-wrapper');
+
+    wrappers.forEach(wrapper => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        const startDragging = (e) => {
+            isDown = true;
+            wrapper.classList.add('active');
+            startX = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        };
+
+        const stopDragging = () => {
+            isDown = false;
+            wrapper.classList.remove('active');
+        };
+
+        const move = (e) => {
+            if (!isDown) return;
+            e.preventDefault(); 
+            const x = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            wrapper.scrollLeft = scrollLeft - walk;
+        };
+
+        wrapper.addEventListener('mousedown', startDragging);
+        wrapper.addEventListener('mouseleave', stopDragging);
+        wrapper.addEventListener('mouseup', stopDragging);
+        wrapper.addEventListener('mousemove', move);
+
+        wrapper.addEventListener('touchstart', startDragging, { passive: true });
+        wrapper.addEventListener('touchend', stopDragging, { passive: true });
+        wrapper.addEventListener('touchmove', (e) => {
+            if (isDown) {
+                const x = e.touches[0].pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                wrapper.scrollLeft = scrollLeft - walk;
+            }
+        }, { passive: true });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("click", (e) => {
+        const menu = document.getElementById("suffix-dropdown");
+        if (menu && menu.style.display !== "none") {
+            if (!menu.contains(e.target) && !e.target.closest('.fa-plus')) {
+                menu.style.display = "none";
+            }
+        }
+    });
+});
+
+function toggleSuffixMenu(e) {
+    e.stopPropagation();
+    const menu = document.getElementById("suffix-dropdown");
+    
+    const plusBtn = document.querySelector('.fa-plus');
+    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
+    
+    if (menu.style.display === "flex") {
+        menu.style.display = "none";
+        return;
+    }
+    
+    const rect = e.target.getBoundingClientRect();
+    menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+    menu.style.left = `${rect.left + window.scrollX - 40}px`; 
+    menu.style.display = "flex";
+}
+
+function applySuffix(suffix) {
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
+
+    if (!lastClickedBoxTextSpan) {
+        if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        return; 
+    }
+
+    const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
+    
+    if (currentBox && currentBox.classList.contains("is-verb")) {
+        if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        return; 
+    }
+
+    let currentWord = lastOriginalWord || lastClickedBoxTextSpan.innerText;
+    
+    const plurals = ['يَّات', 'ينَ', 'ونَ', 'ات', 'ا'];
+    const basePlurals = ['ينَ', 'ونَ', 'ات', 'ا']; 
+    const nisbaSuffixes = ['يَّات', 'يَّة', 'يّ']; 
+
+    if (nisbaSuffixes.includes(suffix)) {
+        const hasPlural = basePlurals.some(p => currentWord.endsWith(p));
+        if (hasPlural) {
+            if(typeof SoundEngine !== "undefined") SoundEngine.playClose(); 
+            return; 
+        }
+    }
+
+    if (basePlurals.includes(suffix)) {
+        for (let n of nisbaSuffixes) {
+            if (currentWord.endsWith(n)) {
+                currentWord = currentWord.slice(0, -n.length);
+                break; 
+            }
+        }
+    }
+
+    if (currentWord.endsWith('يَّة')) {
+        currentWord = currentWord.slice(0, -'يَّة'.length);
+    } 
+    else if (currentWord.endsWith('ة')) {
+        currentWord = currentWord.slice(0, -1);
+    }
+
+    if (plurals.includes(suffix) || suffix === 'ة') {
+        for (let p of plurals) {
+            if (currentWord.endsWith(p)) {
+                currentWord = currentWord.slice(0, -p.length);
+                break; 
+            }
+        }
+    }
+
+    function setLastVowel(word, targetVowel) {
+        const vowelRegex = /[\u064B-\u0650\u0652]$/; 
+        if (vowelRegex.test(word)) {
+            word = word.replace(vowelRegex, ''); 
+        }
+        return word + targetVowel; 
+    }
+
+    if (suffix === 'ة' || suffix === 'ات') {
+        currentWord = setLastVowel(currentWord, 'َ'); 
+    } 
+    else if (nisbaSuffixes.includes(suffix) || suffix === 'ينَ') {
+        currentWord = setLastVowel(currentWord, 'ِ'); 
+    }
+    else if (suffix === 'ونَ') {
+        currentWord = setLastVowel(currentWord, 'ُ'); 
+    }
+    else if (suffix === 'ا') {
+        currentWord = setLastVowel(currentWord, 'ً'); 
+    }
+
+    let updatedWord = currentWord + suffix;
+    
+    // HER ZAMAN RENKLENDİR (Kök yoksa فعل baz alınır)
+    let activeRootArray = (typeof currentRoot !== 'undefined' && currentRoot.length === 3) ? currentRoot.split("") : ['ف', 'ع', 'ل'];
+    lastClickedBoxTextSpan.innerHTML = ColorEngine.colorize(updatedWord, activeRootArray);
+    lastOriginalWord = updatedWord;
+    
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+
+    // Suffix (ek) kontrolünü yolluyoruz
+    if (typeof checkWordEasterEgg === "function") {
+        checkWordEasterEgg(currentBox, suffix);
+    }
+
+    if (currentBox) {
+        currentBox.style.setProperty("border-color", "#00FF00", "important");
+        currentBox.style.setProperty("box-shadow", "0 0 10px #00FF00", "important");
+        
+        // Eklendikten sonra büyütme efektini çalıştır (eğer ekli kelimenin sürprizi varsa)
+        let forceDelay = false;
+        if (typeof currentRoot !== 'undefined' && currentRoot.length === 3) {
+            const refEl = currentBox.querySelector('.ref');
+            if (refEl) {
+                const refId = parseInt(refEl.innerText);
+                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot] && wordEasterEggs[currentRoot][refId] && wordEasterEggs[currentRoot][refId][suffix]) {
+                    forceDelay = true;
+                }
+            }
+        }
+
+        if (typeof triggerAreaPulse === "function") triggerAreaPulse(currentBox, forceDelay);
+        
+        setTimeout(() => {
+            currentBox.style.borderColor = ""; 
+            currentBox.style.boxShadow = "";
+        }, 1500);
+    }
+}
+
+const originalResetTableOnly = window.resetTableOnly;
+window.resetTableOnly = function() {
+    if (typeof originalResetTableOnly === "function") {
+        originalResetTableOnly();
+    }
+    lastClickedBoxTextSpan = null;
+    lastOriginalWord = "";
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
+
+    document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
+};
+
+const modalOverlays = [
+    { id: "verb-overlay", closeFn: window.closeVerbModal },
+    { id: "conjugation-overlay", closeFn: window.closeConjugationModal },
+    { id: "keyboard-overlay", closeFn: window.closeKeyboard }
+];
+
+modalOverlays.forEach(modal => {
+    const overlayEl = document.getElementById(modal.id);
+    if (overlayEl) {
+        overlayEl.addEventListener("click", function(event) {
+            if (event.target === overlayEl) {
+                if (typeof modal.closeFn === "function") {
+                    modal.closeFn();
+                } else {
+                    overlayEl.style.display = "none";
+                }
+            }
+        });
+    }
+});
+
+document.querySelectorAll('.matrix-close-btn').forEach(btn => {
+    btn.addEventListener('click', function(event) {
+        event.stopPropagation(); 
+        const currentBox = this.closest('.glass-box');
+        if (currentBox) {
+            currentBox.classList.remove('matrix-opened');
+        }
+    });
+});
+
+document.querySelectorAll('.glass-box').forEach(box => {
+    if (!box.hasAttribute('data-original')) {
+        const text = box.querySelector('.ar, .ar-small').innerText.trim();
+        box.setAttribute('data-original', text);
+    }
+});
+
 function checkWordEasterEgg(boxElement, currentSuffix = null) {
     const plusBtn = document.querySelector('.fa-plus');
     if (plusBtn && !currentSuffix) {
@@ -3546,7 +3615,8 @@ function openMatrixFullscreen(e, btnElement) {
     const sigaCells = boxElement.querySelectorAll('.siga-text');
     let wordsList = [];
     sigaCells.forEach(cell => {
-        wordsList.push(cell.innerText.trim());
+        // innerText yerine innerHTML kullanıyoruz ki renk <span> etiketleri silinmesin
+        wordsList.push(cell.innerHTML.trim()); 
     });
     
     if (wordsList.length === 0) return;
@@ -3735,6 +3805,190 @@ const SarfEngine = {
     }
 };
 
+const ColorEngine = {
+    isHaraka: function(char) {
+        return /[\u064B-\u0652\u0670]/.test(char);
+    },
+
+    isWeak: function(char) {
+        return ['و', 'ي', 'ا', 'أ', 'إ', 'آ', 'ء', 'ى'].includes(char);
+    },
+
+    isEquivalent: function(char1, char2) {
+        const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء'];
+        const weaks = ['و', 'ي', 'ا', 'ى']; 
+        
+        if (char1 === char2) return true;
+        if (hamzas.includes(char1) && hamzas.includes(char2)) return true;
+        if (weaks.includes(char1) && weaks.includes(char2)) return true; 
+        return false;
+    },
+
+    colorize: function(finalWord, rootArray = ['ف', 'ع', 'ل']) {
+        // Harfleri temizle
+        finalWord = finalWord.replace(/[\s\u200C\u200D\uFEFFـ]/g, '');
+
+        let pureChars = finalWord.replace(/[\u064B-\u0652\u0670]/g, '');
+        if (pureChars.match(/ف.*ع.*ل/)) {
+            rootArray = ['ف', 'ع', 'ل'];
+        } else if (typeof currentRoot !== 'undefined') {
+            if (!currentRoot || currentRoot.trim() === "") {
+                rootArray = ['ف', 'ع', 'ل'];
+            }
+        } else if (!rootArray || rootArray.length !== 3) {
+            rootArray = ['ف', 'ع', 'ل'];
+        }
+        
+        finalWord = finalWord.replace(/\uFEFB([\u064B-\u0652\u0670]?)/g, 'ل$1ا')
+                             .replace(/\uFEF7([\u064B-\u0652\u0670]?)/g, 'ل$1أ')
+                             .replace(/\uFEF9([\u064B-\u0652\u0670]?)/g, 'ل$1إ')
+                             .replace(/\uFEF5([\u064B-\u0652\u0670]?)/g, 'ل$1آ');
+        
+        let charsOnly = [];
+        for (let i = 0; i < finalWord.length; i++) {
+            if (!this.isHaraka(finalWord[i])) {
+                charsOnly.push({ char: finalWord[i], isRoot: false });
+            }
+        }
+
+        let rIndex = 0;
+        for (let i = 0; i < charsOnly.length; i++) {
+            let c = charsOnly[i].char;
+            
+            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex])) {
+                let isZiyade = false;
+                
+                if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {
+                    let searchPointer = i + 1;
+                    let rootMatchCount = 0;
+                    let requiredMatches = 3 - rIndex; 
+
+                    for (let k = rIndex; k < 3; k++) {
+                        let found = false;
+                        for (let j = searchPointer; j < charsOnly.length; j++) {
+                            if (this.isEquivalent(charsOnly[j].char, rootArray[k])) {
+                                found = true;
+                                searchPointer = j + 1;
+                                break;
+                            }
+                        }
+                        if (found) rootMatchCount++;
+                    }
+
+                    if (rootMatchCount === requiredMatches) {
+                        isZiyade = true; 
+                    }
+                }
+
+                if (!isZiyade) {
+                    charsOnly[i].isRoot = true; 
+                    rIndex++;
+                }
+            } 
+            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1]) && this.isWeak(rootArray[rIndex])) {
+                charsOnly[i].isRoot = true;
+                rIndex += 2;
+            } 
+            else if (rIndex + 2 < 3 && this.isEquivalent(c, rootArray[rIndex + 2]) && this.isWeak(rootArray[rIndex]) && this.isWeak(rootArray[rIndex + 1])) {
+                charsOnly[i].isRoot = true;
+                rIndex += 3;
+            }
+            else if (rIndex > 0 && rIndex <= 3 && this.isEquivalent(rootArray[1], rootArray[2]) && this.isEquivalent(c, rootArray[1])) {
+                charsOnly[i].isRoot = true;
+            }
+        }
+
+        // KELİMEYİ ATOMİK PARÇALARA BÖLME
+        let parsedWord = [];
+        let i = 0;
+        let charIdx = 0;
+        while (i < finalWord.length) {
+            let char = finalWord[i];
+            if (this.isHaraka(char)) { i++; continue; }
+            
+            let isRoot = false;
+            if (charIdx < charsOnly.length && charsOnly[charIdx].char === char) {
+                isRoot = charsOnly[charIdx].isRoot;
+                charIdx++;
+            }
+            
+            let harekeler = "";
+            let j = i + 1;
+            while (j < finalWord.length && this.isHaraka(finalWord[j])) {
+                harekeler += finalWord[j];
+                j++;
+            }
+            parsedWord.push({ base: char, hareke: harekeler, isRoot: isRoot });
+            i = j;
+        }
+
+        // ATOMİK KUTULARI VE BAĞLAYICILARI (ZWJ) İNŞA ETME
+        let resultHtml = "";
+        const nonConnectors = ['ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ؤ', 'ء', 'ى', 'ة'];
+
+        for (let k = 0; k < parsedWord.length; k++) {
+            let current = parsedWord[k];
+            let prev = k > 0 ? parsedWord[k - 1] : null;
+            let next = k < parsedWord.length - 1 ? parsedWord[k + 1] : null;
+            
+            let connectRight = false; // Sağdaki harfe (Öncekine) birleşecek mi?
+            let connectLeft = false;  // Soldaki harfe (Sonrakine) birleşecek mi?
+            
+            if (prev && !nonConnectors.includes(prev.base) && current.base !== 'ء') {
+                connectRight = true;
+            }
+            if (next && !nonConnectors.includes(current.base) && next.base !== 'ء') {
+                connectLeft = true;
+            }
+            
+            let prefix = connectRight ? "&zwj;" : "";
+            let suffix = connectLeft ? "&zwj;" : "";
+            let color = current.isRoot ? "#000000" : "#E53935";
+            
+            // Her harf tek başına bir zırhın içinde!
+            resultHtml += `<span class="srf-char" style="color: ${color} !important;">${prefix}${current.base}${current.hareke}${suffix}</span>`;
+        }
+
+        return `<span class="srf-word" dir="rtl">${resultHtml}</span>`;
+    }
+};
+
+// SİHİRLİ ATOMİK HİZALAMA VE LİGATÜR ENGELLEYİCİ CSS
+if (!document.getElementById('srf-color-fix')) {
+    const style = document.createElement('style');
+    style.id = 'srf-color-fix';
+    style.innerHTML = `
+        .srf-word {
+            display: inline-flex !important; 
+            flex-direction: row !important;
+            justify-content: center !important;
+            align-items: center !important;
+            direction: rtl !important;
+            white-space: nowrap !important;
+        }
+        
+        .srf-char {
+            display: block !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            font-variant-ligatures: none !important;
+            font-family: 'Arakom', sans-serif !important;
+            font-weight: normal !important;
+        }
+
+        .glass-box .ar, .glass-box .ar-small, .siga-text {
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+            direction: rtl !important;
+        }
+        .conjugation-table td, .conjugation-table th {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
 // ==================================================================
 // KLAVYE UZUN BASMA (LONG PRESS) ÖZELLİĞİ
 // ==================================================================
