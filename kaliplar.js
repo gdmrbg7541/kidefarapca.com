@@ -2660,13 +2660,14 @@ function getBabAndType(refId) {
     return { type, babNo };
 }
 
+// ==================================================================
+// 1. KUTU SIFIRLAMA (Sarı Vurgu Tetiklemesi Kaldırıldı)
+// ==================================================================
 function resetBox(el) {
     const textEl = el.querySelector('.ar, .ar-small');
     if (!textEl) return;
     
     const originalText = el.getAttribute('data-original') || textEl.innerText;
-    
-    // DÜZELTME: Sıfırlandığında düz metin yapmak yerine (فعل) kökünü baz alarak renkli bırak
     textEl.innerHTML = ColorEngine.colorize(originalText, ['ف', 'ع', 'ل']);
     
     el.style.backgroundColor = "";
@@ -2684,7 +2685,6 @@ function resetBox(el) {
         triggerBtn.remove();
     }
 
-    // YENİ: Kutu sıfırlandığında, sadece bu kutuya ait emojiyi gökyüzünden temizle
     const refSpan = el.querySelector('.ref');
     if (refSpan) {
         const rId = refSpan.innerText.trim();
@@ -2698,11 +2698,9 @@ function resetBox(el) {
         el.setAttribute('data-tiklama-sayisi', '0');
     }
 
-    if (currentRoot && currentRoot.length === 3) {
-        highlightEasterEggBoxes(currentRoot);
-    }
+    // DİKKAT: Buradaki 'highlightEasterEggBoxes(currentRoot)' kodunu sildik.
+    // Artık herhangi bir kutu sıfırlandığında her yer tekrar sarı olmayacak!
 }
-
 // ==================================================================
 // 1. SADECE FİİLLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
 // ==================================================================
@@ -2743,7 +2741,7 @@ document.addEventListener('click', function(e) {
 
 
 // ==================================================================
-// 2. KUTUYA TIKLAMA (Tablo Kapanışı Sonrası Sıfırlama Hatası Çözüldü)
+// 2. KUTUYA TIKLAMA (2. Tıklamada Sarı Vurgu Engellendi)
 // ==================================================================
 function handleBoxClick(boxElement) {
     const textEl = boxElement.querySelector('.ar, .ar-small');
@@ -2763,8 +2761,6 @@ function handleBoxClick(boxElement) {
         if (idx !== -1) currentEggIndex = idx;
     }
 
-    // HATA BURADAYDI: Tablo kapandığında eski kod çıkış (return) yapıyordu.
-    // Artık o engeli kaldırdık. Etiketi silip sıfırlama bloğuna geçmesine izin veriyoruz.
     if (boxElement.getAttribute('data-modal-closed') === 'true') {
         boxElement.removeAttribute('data-modal-closed');
     }
@@ -2773,7 +2769,7 @@ function handleBoxClick(boxElement) {
     const mapping = getBabAndType(refId);
 
     if (tiklama === 0) {
-        // İLK VURUŞ (İleri Tuşu İşlevi): Kök yerleşir, kelime renklenir, YEŞİL dolgu gelir VE BÜYÜTME TETİKLENİR
+        // İLK VURUŞ: Kök yerleşir, kelime renklenir, YEŞİL dolgu gelir VE BÜYÜTME TETİKLENİR
         document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
         boxElement.classList.add('current-active-red');
 
@@ -2796,15 +2792,15 @@ function handleBoxClick(boxElement) {
         if (typeof triggerAreaPulse === 'function') triggerAreaPulse(boxElement);
     } 
     else {
-        // İKİNCİ VURUŞ (veya tablodan döndükten sonraki tık): KUTUYU TAMAMEN SIFIRLAR
+        // İKİNCİ VURUŞ: Kutuyu Tamamen Sıfırlar
         if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
         
         if (typeof resetBox === 'function') resetBox(boxElement);
         
-        // Tam ve kusursuz sıfırlama: Kırmızı vurgu gider, sarı hedef geri gelir
         boxElement.removeAttribute('data-tiklama-sayisi');
         boxElement.classList.remove('current-active-red'); 
-        boxElement.classList.add('sari-vurgu'); 
+        
+        // DİKKAT: Buradaki sarı renk verme kodunu da sildik
         boxElement.style.setProperty("background-color", "", "important");
         
         if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
@@ -4518,7 +4514,7 @@ function nextEasterEgg() {
 }
 
 // ==================================================================
-// 5. GERİ KUMANDA (Geri Dönüşlerde de Sarı Vurgu Beklemesi Eklendi)
+// 3. GERİ KUMANDA (Geri Tuşunda Sarı Vurgu Engellendi)
 // ==================================================================
 function prevEasterEgg() {
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -4535,7 +4531,7 @@ function prevEasterEgg() {
 
     const refs = getSortedRefsForRoot(currentRoot);
 
-    // BULUNULAN KUTUYU ANINDA TEMİZLE
+    // BULUNULAN KUTUYU ANINDA TEMİZLE (Sarıya dönmeden)
     if (currentEggIndex >= 0 && currentEggIndex < refs.length) {
         const currentRefId = refs[currentEggIndex];
         const currentBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
@@ -4548,8 +4544,7 @@ function prevEasterEgg() {
             currentBox.removeAttribute('data-tiklama-sayisi');
             currentBox.classList.remove('current-active-red'); 
             
-            // Kutu boşaldığı için Sarı Vurguyu (hedef rengini) geri ver
-            currentBox.classList.add('sari-vurgu');
+            // DİKKAT: Buradan da sarı hedef rengini geri verme kodu silindi
             currentBox.style.setProperty("background-color", "", "important");
         }
     }
@@ -4557,13 +4552,12 @@ function prevEasterEgg() {
     // BİR ÖNCEKİ KUTUYA / DURUMA GEÇ
     currentEggIndex--;
 
-    // Eğer ilk kutudan da geriye çıkıyorsak (-1 olduysa) kökün "Sadece Sarı Hedefler" aşamasında bekle
     if (currentEggIndex === -1) {
+        // En başa dönüldüyse (ilk kelimeden de geriye), tüm haritayı sarı gösterir
         highlightEasterEggBoxes(currentRoot);
         return; 
     }
 
-    // Eğer sarı hedeflerden de geriye basılmışsa (< -1), önceki kökün EN SON kelimesine git
     if (currentEggIndex < -1) {
         let rootIndex = roots.indexOf(currentRoot);
         rootIndex--;
@@ -4580,7 +4574,6 @@ function prevEasterEgg() {
         return;
     }
 
-    // Normal önceki kutuya geç
     activateBoxByRef(refs[currentEggIndex]);
 }
 
