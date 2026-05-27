@@ -1188,3 +1188,64 @@ td:first-child {
     font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif; 
 }
 
+/* ========================================================= */
+/* ZOOM BULANIKLIĞINA KESİN ÇÖZÜM: YÜKSEK ÇÖZÜNÜRLÜKLÜ KLON  */
+/* ========================================================= */
+.crisp-zoom-clone {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    /* Kutu ekranın tam merkezine kilitlenir */
+    transform: translate(-50%, -50%) !important;
+    z-index: 999999 !important;
+    
+    /* scale() (sündürme) yerine GERÇEK fiziksel boyutlar veriyoruz! */
+    width: 380px !important;
+    min-height: 120px !important;
+    padding: 25px 15px !important;
+    background-color: #fffaf9 !important; 
+    border: 4px solid #FF3B30 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 25px 60px rgba(255, 59, 48, 0.3) !important;
+    
+    /* Şık ve kesinlikle bulanıklaştırmayan pop-up çıkış animasyonu */
+    animation: crispPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+    will-change: auto !important; /* Tarayıcı belleğini serbest bırakır */
+    cursor: default !important;
+}
+
+/* Klonun içindeki yazıları fiziksel olarak devasa yapıyoruz */
+.crisp-zoom-clone .ar {
+    font-size: 110px !important;
+    line-height: 1.2 !important;
+}
+.crisp-zoom-clone .ar-small {
+    font-size: 80px !important;
+    line-height: 1.2 !important;
+}
+.crisp-zoom-clone .ref {
+    font-size: 26px !important;
+    top: 15px !important;
+    right: 15px !important;
+    padding: 4px 12px !important;
+    border-radius: 8px !important;
+    background-color: #FF3B30 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.6) !important;
+    animation: none !important; /* Klon üzerinde nabız efektini durdur */
+}
+
+/* Easter Egg Yıldızını Büyüt */
+.crisp-zoom-clone .easter-egg-trigger {
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 24px !important;
+    top: -15px !important;
+    left: -15px !important;
+    cursor: pointer !important;
+}
+
+@keyframes crispPopIn {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}

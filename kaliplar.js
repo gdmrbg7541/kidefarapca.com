@@ -2423,12 +2423,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Temizlik fonksiyonu
 function closeAllZoomedBoxes() {
+    // Karartmaları kapat
     document.querySelectorAll('.zoom-overlay').forEach(overlay => {
         overlay.classList.remove('active');
     });
     
+    // Ekranda açık olan KLON kutuyu sil
+    const clone = document.getElementById('crisp-zoom-clone');
+    if (clone) clone.remove();
+    
+    // (Güvenlik) Eski sisteme ait CSS büyümesi kalıntıları varsa temizle
     document.querySelectorAll('.glass-box.pulse-highlight').forEach(box => {
-        box.classList.remove('pulse-highlight', 'pulse-settled'); // İki sınıfı da temizle
+        box.classList.remove('pulse-highlight', 'pulse-settled'); 
         box.style.transform = "";
         box.style.borderColor = ""; 
         box.style.boxShadow = "";
@@ -3624,65 +3630,60 @@ let currentPulseTimeout = null;
 
 function triggerAreaPulse(boxElement) {
     if (!boxElement) return;
-    
     if (currentPulseTimeout) clearTimeout(currentPulseTimeout);
 
     const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
 
-    // Zoom kapalıysa sadece yeşil arka planı koru ve çık
-    if (!isZoomEnabled) {
-        boxElement.style.setProperty("background-color", "#bfffdf", "important");
-        boxElement.style.borderColor = "#000000";
-        return;
-    }
+    // Orijinal kutuyu yeşil yap (tablodaki yerini belli et)
+    boxElement.style.setProperty("background-color", "#bfffdf", "important");
+    boxElement.style.borderColor = "#000000";
 
-    // Büyütme (Zoom) açıksa, 400ms (akıcı ve hızlı) bir gecikmeyle ekranın ortasına fırlat
+    if (!isZoomEnabled) return;
+
+    // KESİN ÇÖZÜM: Tarayıcıyı kitleyen animasyon yerine "Net Klon" Yöntemi
     currentPulseTimeout = setTimeout(() => {
-        // Önce açıkta kalmış diğer zoom'ları temizle
-        document.querySelectorAll('.glass-box.pulse-highlight').forEach(b => {
-            b.classList.remove("pulse-highlight");
-            b.style.transform = "";
-        });
+        if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
 
-        const rect = boxElement.getBoundingClientRect();
-        const moveX = (window.innerWidth / 2) - (rect.left + rect.width / 2);
-        const moveY = (window.innerHeight / 2) - (rect.top + rect.height / 2);
-
-        boxElement.style.setProperty('--move-x', `${moveX}px`);
-        boxElement.style.setProperty('--move-y', `${moveY}px`);
-        
-        boxElement.style.setProperty("background-color", "#bfffdf", "important");
-        boxElement.style.borderColor = "#000000";
-
-        // Kalıbı büyüt
-        boxElement.classList.add("pulse-highlight");
-        
-        // Animasyon bittikten sonra metni netleştiren (2D'ye dönen) sınıfı ekle
-        setTimeout(() => {
-            if (boxElement.classList.contains("pulse-highlight")) {
-                boxElement.classList.add("pulse-settled");
-            }
-        }, 400);
-        
-        // Arka planı karart (Overlay ekle)
-        const parentContainer = boxElement.closest('.container');
-        if (parentContainer) {
-            let localOverlay = parentContainer.querySelector('.zoom-overlay');
-            if (!localOverlay) {
-                localOverlay = document.createElement('div');
-                localOverlay.className = 'zoom-overlay';
-                const closeLocalOverlay = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
-                };
-                localOverlay.onclick = closeLocalOverlay;
-                localOverlay.ontouchstart = closeLocalOverlay;
-                parentContainer.appendChild(localOverlay);
-            }
-            localOverlay.classList.add('active');
+        // 1. Orijinal tabloyu karartan katmanı (overlay) aç
+        const parentContainer = boxElement.closest('.container') || document.body;
+        let localOverlay = parentContainer.querySelector('.zoom-overlay');
+        if (!localOverlay) {
+            localOverlay = document.createElement('div');
+            localOverlay.className = 'zoom-overlay';
+            const closeLocalOverlay = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
+            };
+            localOverlay.onclick = closeLocalOverlay;
+            localOverlay.ontouchstart = closeLocalOverlay;
+            parentContainer.appendChild(localOverlay);
         }
-    }, 400); // 1.5 saniyelik uzun gecikme (takılma hissi veren kısım) 400 milisaniyeye indirildi!
+        localOverlay.classList.add('active');
+
+        // 2. Orijinal kutunun kopyasını alıp özel "netleştirici" sınıfı ekle
+        const cloneBox = boxElement.cloneNode(true);
+        cloneBox.id = 'crisp-zoom-clone';
+        cloneBox.className = 'glass-box crisp-zoom-clone'; 
+        
+        // Klon kendi üzerine tıklanınca kapanmasın (Overlay'e basılınca kapansın)
+        cloneBox.onclick = function(e) { e.stopPropagation(); };
+
+        // Püf Noktası: Klonun üzerindeki yıldıza basılırsa, arka plandaki orijinal yıldızı tetikle
+        const trigger = cloneBox.querySelector('.easter-egg-trigger');
+        if (trigger) {
+            trigger.onclick = function(e) {
+                e.stopPropagation();
+                const origTrigger = boxElement.querySelector('.easter-egg-trigger');
+                if (origTrigger) origTrigger.click();
+                this.remove();
+            };
+        }
+
+        // Klonu doğrudan BODY'e ekle (Sayfa kaysa bile daima ekranın kusursuz ortasında çıkar)
+        document.body.appendChild(cloneBox);
+
+    }, 10); 
 }
 
 function showEasterEggOverlay(arText, trText) {
@@ -4505,7 +4506,7 @@ function nextEasterEgg() {
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     let waitTime = 0;
-    const activeZoom = document.querySelector('.glass-box.pulse-highlight');
+    const activeZoom = document.getElementById('crisp-zoom-clone') || document.querySelector('.glass-box.pulse-highlight');
     const roots = getReadyRoots();
     if (roots.length === 0) return;
 
@@ -4547,7 +4548,7 @@ function prevEasterEgg() {
     if (isPresentationLocked) return; // Kilitliyse tuş basımlarını yok say
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    const activeZoom = document.querySelector('.glass-box.pulse-highlight');
+    const activeZoom = document.getElementById('crisp-zoom-clone') || document.querySelector('.glass-box.pulse-highlight');
     if (activeZoom) {
         if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         activeZoom.setAttribute('data-tiklama-sayisi', '1');
