@@ -2816,7 +2816,7 @@ function handleBoxClick(boxElement) {
         textEl.innerHTML = coloredHTML;
         lastOriginalWord = plainWord; 
 
-        // Ekranda dev klon varsa onu da anında türet ve yeşile boya!
+        // Ekranda dev klon varsa onu da anında türet ve yeşile boya
         const clone = document.getElementById('crisp-zoom-clone');
         if (clone) {
             const cloneTextEl = clone.querySelector('.ar, .ar-small');
@@ -2829,25 +2829,22 @@ function handleBoxClick(boxElement) {
     };
 
     if (isZoomEnabled) {
-        // =========================================================
-        // BÜYÜME AÇIK SİSTEMİ
-        // =========================================================
         if (tiklama === 0) {
             // 1. AŞAMA: Sadece Kırmızı Vurgu
             document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
             boxElement.classList.add('current-active-red');
-            boxElement.classList.remove('sari-vurgu');
+            // DİKKAT: sari-vurgu silme kodu buradan kaldırıldı! Türkçe anlamlar kaybolmayacak.
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.setAttribute('data-tiklama-sayisi', '1');
             
         } else if (tiklama === 1) {
-            // 2. AŞAMA: TÜREMEDEN BÜYÜT VE KÖKÜ GÖSTER
+            // 2. AŞAMA: Türemeden Büyüt
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             if (typeof triggerAreaPulse === 'function') triggerAreaPulse(boxElement);
             boxElement.setAttribute('data-tiklama-sayisi', '2');
             
         } else if (tiklama === 2) {
-            // 3. AŞAMA: BÜYÜK HALDEYKEN TÜRET VE YEŞİL DOLGU VER
+            // 3. AŞAMA: Türet ve Yeşil Yap
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.style.setProperty("background-color", "#bfffdf", "important"); 
             boxElement.style.borderColor = "#000000"; 
@@ -2855,46 +2852,40 @@ function handleBoxClick(boxElement) {
             boxElement.setAttribute('data-tiklama-sayisi', '3');
             
         } else if (tiklama === 3) {
-            // 4. AŞAMA: BÜYÜMEYİ KAPAT AMA KELİMEYİ VE YEŞİL DOLGUYU SİLME (Tabloda kalsın)
+            // 4. AŞAMA: Büyümeyi kapat, Kelimeyi tabloda bırak
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-            boxElement.classList.remove('current-active-red'); // Kırmızı sınırı kaldır
-            boxElement.setAttribute('data-tiklama-sayisi', '4'); // Tamamlanmış olarak işaretle
+            boxElement.classList.remove('current-active-red'); 
+            boxElement.setAttribute('data-tiklama-sayisi', '4'); 
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
 
         } else {
-            // 5. AŞAMA: Tamamlanmış (yeşil) kutuya fareyle manuel bir daha tıklanırsa SIFIRLA
+            // 5. AŞAMA: Manuel Tıklamada Sıfırla
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-            if (typeof resetBox === 'function') resetBox(boxElement); // Kelimeyi sil
+            if (typeof resetBox === 'function') resetBox(boxElement); 
             boxElement.removeAttribute('data-tiklama-sayisi');
             boxElement.classList.remove('current-active-red'); 
             boxElement.style.setProperty("background-color", "", "important");
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         }
     } else {
-        // =========================================================
-        // BÜYÜME KAPALI SİSTEMİ
-        // =========================================================
+        // Zoom Kapalı Sistemi
         if (tiklama === 0) {
-            // 1. AŞAMA: Vurgu
             document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
             boxElement.classList.add('current-active-red');
-            boxElement.classList.remove('sari-vurgu');
+            // DİKKAT: sari-vurgu silme kodu buradan da kaldırıldı!
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.setAttribute('data-tiklama-sayisi', '1');
         } else if (tiklama === 1) {
-            // 2. AŞAMA: Türet ve Yeşil Dolgu
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.style.setProperty("background-color", "#bfffdf", "important"); 
             boxElement.style.borderColor = "#000000"; 
             applyWordTransformation(); 
             boxElement.setAttribute('data-tiklama-sayisi', '2');
         } else if (tiklama === 2) {
-            // 3. AŞAMA: Kırmızı vurguyu kaldır ama kelimeyi/yeşili SİLME
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
             boxElement.classList.remove('current-active-red'); 
-            boxElement.setAttribute('data-tiklama-sayisi', '3'); // Tamamlandı
+            boxElement.setAttribute('data-tiklama-sayisi', '3'); 
         } else {
-            // 4. AŞAMA: Manuel tıklamada sıfırla
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
             if (typeof resetBox === 'function') resetBox(boxElement);
             boxElement.removeAttribute('data-tiklama-sayisi');
@@ -3674,45 +3665,46 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
     const refData = rootData[refId]; 
     if (!refData) return;
 
-    // Eğer bir ek eklendiyse eke ait veriyi al, yoksa 'base' (kök halini) al
     const data = currentSuffix ? refData[currentSuffix] : refData.base;
 
-    // Eğer ek almamış kök haldeysek ve kelime ek öneriyorsa + ikonunu parlat
     if (!currentSuffix && refData.suggestsPlus && plusBtn) {
         plusBtn.classList.add('plus-highlighted');
     }
 
     if (!data) return;
 
-    document.querySelectorAll('.easter-egg-trigger').forEach(btn => btn.remove());
+    // DİKKAT: Eski yıldızları (✨) silen o temizleyici satırı BURADAN TAMAMEN KALDIRDIK!
+    // Artık diğer kelimelere geçseniz de eskilerin üzerindeki yıldızlar kalacak.
 
     if (data.emoji) {
         const rect = boxElement.getBoundingClientRect();
         const emojiDiv = document.createElement('div');
-        // Emojiyi sonradan bulup silebilmek için özel sınıf ve KUTU KİMLİĞİ (data-ref) ekliyoruz
         emojiDiv.className = 'floating-emoji easter-egg-emoji';
         emojiDiv.setAttribute('data-ref', refId);
         emojiDiv.innerText = data.emoji;
 
-        // Emojilerin tam üst üste binmemesi için yatay sapma
         let randomOffset = (Math.random() - 0.5) * 60; 
         emojiDiv.style.left = (rect.left + rect.width / 2 - 30 + randomOffset) + 'px'; 
         
         document.body.appendChild(emojiDiv);
-    } // <--- İŞTE EKSİK OLAN PARANTEZ BURASIYDI!
+    } 
 
     if (data.arText || data.trText) {
-        const triggerBtn = document.createElement('div');
-        triggerBtn.className = 'easter-egg-trigger';
-        triggerBtn.innerHTML = '✨'; 
-        triggerBtn.title = 'Bilgiyi Gör';
+        // Eğer o kutuda zaten bir yıldız butonu varsa 2. kez eklemesin diye kontrol ediyoruz
+        if (!boxElement.querySelector('.easter-egg-trigger')) {
+            const triggerBtn = document.createElement('div');
+            triggerBtn.className = 'easter-egg-trigger';
+            triggerBtn.innerHTML = '✨'; 
+            triggerBtn.title = 'Bilgiyi Gör';
 
-        triggerBtn.onclick = function(e) {
-            e.stopPropagation(); 
-            showEasterEggOverlay(data.arText, data.trText);
-            this.remove(); 
-        };
-        boxElement.appendChild(triggerBtn);
+            triggerBtn.onclick = function(e) {
+                e.stopPropagation(); 
+                showEasterEggOverlay(data.arText, data.trText);
+                // DİKKAT: "this.remove()" satırını buradan da sildik.
+                // Artık yıldıza tıklayıp anlamını okusanız bile yıldız yerinde kalacak!
+            };
+            boxElement.appendChild(triggerBtn);
+        }
     }
 }
 
@@ -3769,7 +3761,7 @@ function triggerAreaPulse(boxElement) {
                 e.stopPropagation();
                 const origTrigger = boxElement.querySelector('.easter-egg-trigger');
                 if (origTrigger) origTrigger.click();
-                this.remove();
+                
             };
         }
 
@@ -4655,28 +4647,31 @@ function nextEasterEgg() {
                 const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
 
                 if (isZoomEnabled) {
-                    // Zoom açıkken 1. (Vurgu) ve 2. (Kök/Klon) aşamalarda kelimede kalmaya devam et
                     if (tiklama === 1 || tiklama === 2) {
                         activateBoxByRef(currentRefId);
                         return; 
                     }
-                    // 3. Aşamadıysa (Yeşil, türemiş ve devasa), tekrar basınca kapat AMA SİLME, sonra sonrakine geç!
                     if (tiklama === 3) {
                         handleBoxClick(currentBox); 
+                        // Zoom açıkken dev kutuyu kapatıp BEKLER
+                        return; 
                     }
                 } else {
-                    // Zoom kapalıysa
                     if (tiklama === 1) {
                         activateBoxByRef(currentRefId);
                         return; 
                     }
                     if (tiklama === 2) {
-                        handleBoxClick(currentBox); // Kırmızı vurguyu kaldır ama yeşili silme
+                        // Zoom kapalıyken kırmızı çizgiyi kaldırır...
+                        handleBoxClick(currentBox); 
+                        // DİKKAT: Buradaki 'return;' komutunu sildik! 
+                        // Artık beklemiyor, kodu okumaya devam edip anında sonraki kelimeye atlıyor.
                     }
                 }
             }
         }
 
+        // Aşağıdaki kodlar sayesinde bir sonraki kutuya atlar
         currentEggIndex++;
 
         if (currentEggIndex >= refs.length) {
@@ -4694,13 +4689,13 @@ function nextEasterEgg() {
 // 5. GERİ KUMANDA (Geri Dönüşlerde de Sarı Vurgu Beklemesi Eklendi)
 // ==================================================================
 function prevEasterEgg() {
-    if (isPresentationLocked) return; // Kilitliyse tuş basımlarını yok say
+    if (isPresentationLocked) return; 
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    const activeZoom = document.getElementById('crisp-zoom-clone') || document.querySelector('.glass-box.pulse-highlight');
+    // Zoom ekranı açıksa sadece zoomu kapat, kelime yeşilse yeşil kalsın diye durumu bozma
+    const activeZoom = document.getElementById('crisp-zoom-clone');
     if (activeZoom) {
         if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
-        activeZoom.setAttribute('data-tiklama-sayisi', '1');
         return; 
     }
 
@@ -4709,7 +4704,7 @@ function prevEasterEgg() {
 
     const refs = getSortedRefsForRoot(currentRoot);
 
-    // BULUNULAN KUTUYU ANINDA TEMİZLE
+    // 1) ŞU AN BULUNULAN KUTUYU ANINDA TEMİZLE
     if (currentEggIndex >= 0 && currentEggIndex < refs.length) {
         const currentRefId = refs[currentEggIndex];
         const currentBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
@@ -4721,23 +4716,19 @@ function prevEasterEgg() {
             if (typeof resetBox === 'function') resetBox(currentBox);
             currentBox.removeAttribute('data-tiklama-sayisi');
             currentBox.classList.remove('current-active-red'); 
-            
-            // Kutu boşaldığı için Sarı Vurguyu (hedef rengini) geri ver
             currentBox.classList.add('sari-vurgu');
             currentBox.style.setProperty("background-color", "", "important");
         }
     }
 
-    // BİR ÖNCEKİ KUTUYA / DURUMA GEÇ
+    // 2) BİR ÖNCEKİ KUTUYA GEÇ
     currentEggIndex--;
 
-    // Eğer ilk kutudan da geriye çıkıyorsak (-1 olduysa) kökün "Sadece Sarı Hedefler" aşamasında bekle
     if (currentEggIndex === -1) {
         highlightEasterEggBoxes(currentRoot);
         return; 
     }
 
-    // Eğer sarı hedeflerden de geriye basılmışsa (< -1), önceki kökün EN SON kelimesine git
     if (currentEggIndex < -1) {
         let rootIndex = roots.indexOf(currentRoot);
         rootIndex--;
@@ -4748,14 +4739,15 @@ function prevEasterEgg() {
             const newRefs = getSortedRefsForRoot(roots[rootIndex]);
             currentEggIndex = newRefs.length - 1;
             if (newRefs.length > 0) {
-                activateBoxByRef(newRefs[currentEggIndex]);
+                // GERİ GİDİŞ KOMUTU: TRUE
+                activateBoxByRef(newRefs[currentEggIndex], true); 
             }
         }, 600);
         return;
     }
 
-    // Normal önceki kutuya geç
-    activateBoxByRef(refs[currentEggIndex]);
+    // Normal önceki kutuya geçerken GERİ GİDİŞ KOMUTU: TRUE
+    activateBoxByRef(refs[currentEggIndex], true); 
 }
 
 // --- KLAVYE VE SUNUM KUMANDASI DİNLEYİCİSİ ---
@@ -4778,4 +4770,59 @@ document.addEventListener('keydown', function(e) {
 
 
 
+// İkinci parametre olarak 'isBackward' eklendi
+function activateBoxByRef(refId, isBackward = false) {
+    const boxes = Array.from(document.querySelectorAll('.glass-box'));
+    const targetBox = boxes.find(b => {
+        const refEl = b.querySelector('.ref');
+        return refEl && parseInt(refEl.innerText.trim()) === refId;
+    });
 
+    if (targetBox) {
+        const isTab1 = targetBox.closest('#tab1');
+        const isTab2 = targetBox.closest('#tab2');
+        let tabSwitched = false;
+
+        if (isTab1 && currentTabActive !== 0) { setTab(0); tabSwitched = true; }
+        if (isTab2 && currentTabActive !== 1) { setTab(1); tabSwitched = true; }
+
+        const islemGecikmesi = tabSwitched ? 1000 : 0; 
+        
+        if (tabSwitched) {
+            isPresentationLocked = true; 
+        }
+
+        setTimeout(() => {
+            const rect = targetBox.getBoundingClientRect();
+            const absoluteTop = window.scrollY + rect.top;
+            const middle = absoluteTop - (window.innerHeight / 2) + (rect.height / 2);
+            window.scrollTo({ top: middle, behavior: 'smooth' });
+
+            if (isBackward) {
+                // ========================================================
+                // GERİ DÖNÜŞ MANTIĞI: Sıfırlama yapma, sadece kırmızıyı ver!
+                // ========================================================
+                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                targetBox.classList.add('current-active-red');
+                targetBox.classList.remove('sari-vurgu');
+
+                // DÜZELTME: Kutuya "İşlemlerin tamamen bitti" aşamasını veriyoruz ki İleri tuşu takılmasın!
+                const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
+                if (isZoomEnabled) {
+                    targetBox.setAttribute('data-tiklama-sayisi', '4'); // Eski 3 yerine 4 (Tamamlanmış aşama) yaptık
+                } else {
+                    targetBox.setAttribute('data-tiklama-sayisi', '3'); // Eski 2 yerine 3 (Tamamlanmış aşama) yaptık
+                }
+            } else {
+                // ========================================================
+                // İLERİ GİDİŞ: Normal motoru çalıştır (Seç, Türet, Büyüt vs.)
+                // ========================================================
+                handleBoxClick(targetBox);
+            }
+            
+            if (tabSwitched) {
+                isPresentationLocked = false;
+            }
+        }, islemGecikmesi);
+    }
+}
