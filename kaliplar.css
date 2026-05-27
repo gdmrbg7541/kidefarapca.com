@@ -1305,3 +1305,17 @@ td:first-child {
     border-color: #000000 !important;
     background-color: #bfffdf !important;
 }
+
+/* Ek (Suffix) Menüsünü Büyüyen Klon Kutunun Üstüne Çıkar */
+#suffix-dropdown {
+    z-index: 9999999 !important; /* 7 tane 9 (Klonlar 6 tane) */
+}
+
+/* ========================================================= */
+/* ZOOM TUŞU AÇIKKEN KÜÇÜK KAHVERENGİ KÖK TAŞINI TAMAMEN GİZLE */
+/* ========================================================= */
+body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease !important;
+}

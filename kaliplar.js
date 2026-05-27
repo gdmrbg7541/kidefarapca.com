@@ -2354,50 +2354,78 @@ const SoundEngine = {
         if (!this.ctx) {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
     },
+    
+    // 1. Tok ve Ciddi Tıklama (Premium dokunmatik / haptic hissiyatı)
     playClick() {
         this.init();
+        const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
+        
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        // Frekans çok daha düşük (pes), bu sayede "bip" değil "tık/tok" sesi çıkarır
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.03);
+        
+        // Çok düşük ses seviyesi ve anında kesilme (0.03 saniye)
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.05, now + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+        
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.04);
     },
+    
+    // 2. Yumuşak ve Derin Kapatma Sesi (Soft Cancel)
     playClose() {
         this.init();
+        const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(350, this.ctx.currentTime);
-        osc.frequency.linearRampToValueAtTime(150, this.ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+        
+        osc.type = 'sine'; 
+        // İptal hissi için çok pes frekanslardan dibe doğru iniş
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.06);
+        
+        // Ses seviyesi (volume) çok kısık, kulak yormaz
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.04, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.15);
+        osc.start(now);
+        osc.stop(now + 0.1);
     },
+    
+    // 3. Sıfırlama / Onaylama (Hareketli zil yerine; sıcak, tekil ve soft bir nefes)
     playReset() {
         this.init();
         const now = this.ctx.currentTime;
-        [440, 880].forEach((freq, index) => {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now + (index * 0.04));
-            osc.frequency.linearRampToValueAtTime(freq * 1.5, now + 0.15 + (index * 0.04));
-            gain.gain.setValueAtTime(0.08, now + (index * 0.04));
-            gain.gain.linearRampToValueAtTime(0.001, now + 0.18 + (index * 0.04));
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now + (index * 0.04));
-            osc.stop(now + 0.18 + (index * 0.04));
-        });
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.type = 'sine';
+        // Sıcak ve güven veren orta-pes bir frekans sabiti (E4 Notası)
+        osc.frequency.setValueAtTime(329.63, now); 
+        
+        // Ses aniden değil, yumuşakça (fade-in) girip çok yumuşakça (fade-out) söner
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.03, now + 0.05); // Zirve sesi çok kısıldı (0.03)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25); 
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        osc.start(now);
+        osc.stop(now + 0.3);
     }
 };
 
@@ -3688,6 +3716,8 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
     }
 }
 
+
+
 let currentPulseTimeout = null;
 
 function triggerAreaPulse(boxElement) {
@@ -3721,43 +3751,69 @@ function triggerAreaPulse(boxElement) {
         cloneBox.id = 'crisp-zoom-clone';
         cloneBox.className = 'glass-box crisp-zoom-clone'; 
         
-        // =======================================================
-        // YENİ: KLONA DOKUNULDUĞUNDA AŞAMALARI İLERLETEN GÜÇ
-        // =======================================================
+        // KLONA DOKUNULDUĞUNDA AŞAMALARI İLERLETEN GÜÇ
         const advanceState = function(e) { 
             e.stopPropagation(); 
-            e.preventDefault(); // Dokunmatik ekranlardaki çift algılamayı önler
+            e.preventDefault(); 
             if (typeof handleBoxClick === 'function') {
-                handleBoxClick(boxElement); // Ana motoru çalıştır (Önce türet, sonra kapat)
+                handleBoxClick(boxElement); 
             }
         };
-        // Hem tıklama hem de dokunma olaylarını bu yeni güce bağlıyoruz:
         cloneBox.onclick = advanceState;
         cloneBox.ontouchstart = advanceState;
 
+        // Yıldız butonu için
+        const trigger = cloneBox.querySelector('.easter-egg-trigger');
+        if (trigger) {
+            trigger.onclick = function(e) {
+                e.stopPropagation();
+                const origTrigger = boxElement.querySelector('.easter-egg-trigger');
+                if (origTrigger) origTrigger.click();
+                this.remove();
+            };
+        }
+
+        // =======================================================
+        // YENİ: + (ARTİ) BUTONUNA BASILINCA İLERLEMEYİ DURDUR
+        // =======================================================
+        const plusBtn = cloneBox.querySelector('.fa-plus');
+        if (plusBtn) {
+            const handlePlus = function(e) {
+                e.stopPropagation(); // Klonun türemesini (ilerlemesini) engeller
+                e.preventDefault();
+                if (typeof toggleSuffixMenu === 'function') {
+                    toggleSuffixMenu(e); // Ek menüsünü dev klonun üzerinde açar!
+                }
+            };
+            plusBtn.onclick = handlePlus;
+            plusBtn.ontouchstart = handlePlus;
+        }
+
         document.body.appendChild(cloneBox);
 
-        // 2. KAHVERENGİ KÖK KUTUSU KLONU
-        const rootClone = document.createElement('div');
-        rootClone.id = 'crisp-root-clone';
-        rootClone.className = 'crisp-root-clone';
-        
+        // =======================================================
+        // 2. KAHVERENGİ KÖK KUTUSU KLONU (Sadece kök varsa açılır)
+        // =======================================================
         const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
-        let displayRoot = currentRootSafe;
         
+        // Eğer seçili olan bir kök varsa (uzunluğu 3 harf ise) kahverengi kutuyu yarat!
         if (currentRootSafe.length === 3) {
+            const rootClone = document.createElement('div');
+            rootClone.id = 'crisp-root-clone';
+            rootClone.className = 'crisp-root-clone';
+            
             const h1 = currentRootSafe[0];
             const h2 = currentRootSafe[1];
             const h3 = currentRootSafe[2];
-            // Harflerin arasına bağlantı çizgisi (Tatweel) ve boşluk ekliyoruz: كـ ـتـ ـب
-            displayRoot = h1 + 'ـ' + ' ' + 'ـ' + h2 + 'ـ' + ' ' + 'ـ' + h3;
+            let displayRoot = h1 + 'ـ' + ' ' + 'ـ' + h2 + 'ـ' + ' ' + 'ـ' + h3;
+            
+            rootClone.innerHTML = `<span class="ar-root">${displayRoot}</span>`;
+            document.body.appendChild(rootClone);
         }
-        
-        rootClone.innerHTML = `<span class="ar-root">${displayRoot}</span>`;
-        document.body.appendChild(rootClone);
 
     }, 10); 
 }
+
 function showEasterEggOverlay(arText, trText) {
     let overlay = document.getElementById('easter-egg-overlay');
     
@@ -4719,3 +4775,7 @@ document.addEventListener('keydown', function(e) {
         prevEasterEgg();
     }
 });
+
+
+
+
