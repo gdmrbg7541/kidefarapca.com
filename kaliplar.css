@@ -1288,3 +1288,20 @@ td:first-child {
     0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
     100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
+
+/* ========================================================= */
+/* KLON KUTULAR İÇİN HOVER (FAREYLE ÜZERİNE GELME) KORUMASI  */
+/* ========================================================= */
+
+/* Büyüyen kutunun üzerine fareyle gelindiğinde orijinal tablodaki hover efektini ezer, hep KIRMIZI kalmasını sağlar */
+.glass-box.crisp-zoom-clone:hover {
+    border-color: #FF3B30 !important;
+    background-color: #fffaf9 !important;
+    transform: translate(-50%, -50%) scale(1) !important; /* Ekstra büyüme veya titremeyi önler */
+}
+
+/* İSTİSNA (Güvenlik): Eğer kelime klon üzerindeyken türetilip YEŞİL olduysa, fareyle gelindiğinde kırmızıya dönmez, yeşil kalmaya devam eder */
+.glass-box.crisp-zoom-clone[style*="#bfffdf"]:hover {
+    border-color: #000000 !important;
+    background-color: #bfffdf !important;
+}
