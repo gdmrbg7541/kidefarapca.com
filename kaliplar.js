@@ -3634,13 +3634,10 @@ function triggerAreaPulse(boxElement) {
 
     const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
 
-    // Orijinal kutuyu yeşil yap (tablodaki yerini belli et)
-    boxElement.style.setProperty("background-color", "#bfffdf", "important");
-    boxElement.style.borderColor = "#000000";
-
+    // Büyütme kapalıysa hiçbir şey yapma (kutu zaten 'current-active-red' ile kırmızı oldu)
     if (!isZoomEnabled) return;
 
-    // KESİN ÇÖZÜM: Tarayıcıyı kitleyen animasyon yerine "Net Klon" Yöntemi
+    // KULLANICI KIRMIZI SEÇİMİ GÖRSÜN DİYE 350 MİLİSANİYE BEKLİYORUZ
     currentPulseTimeout = setTimeout(() => {
         if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
 
@@ -3661,15 +3658,15 @@ function triggerAreaPulse(boxElement) {
         }
         localOverlay.classList.add('active');
 
-        // 2. Orijinal kutunun kopyasını alıp özel "netleştirici" sınıfı ekle
+        // 2. Klonu oluştur ve ekrana fırlat
         const cloneBox = boxElement.cloneNode(true);
         cloneBox.id = 'crisp-zoom-clone';
         cloneBox.className = 'glass-box crisp-zoom-clone'; 
         
-        // Klon kendi üzerine tıklanınca kapanmasın (Overlay'e basılınca kapansın)
+        // Klon kendi üzerine tıklanınca kapanmasın
         cloneBox.onclick = function(e) { e.stopPropagation(); };
 
-        // Püf Noktası: Klonun üzerindeki yıldıza basılırsa, arka plandaki orijinal yıldızı tetikle
+        // Klonun üzerindeki yıldıza basılırsa orijinali tetikle
         const trigger = cloneBox.querySelector('.easter-egg-trigger');
         if (trigger) {
             trigger.onclick = function(e) {
@@ -3680,12 +3677,11 @@ function triggerAreaPulse(boxElement) {
             };
         }
 
-        // Klonu doğrudan BODY'e ekle (Sayfa kaysa bile daima ekranın kusursuz ortasında çıkar)
+        // Klonu doğrudan BODY'e ekle
         document.body.appendChild(cloneBox);
 
-    }, 10); 
+    }, 350); // <-- 350 milisaniyelik zarif bekleme süresi
 }
-
 function showEasterEggOverlay(arText, trText) {
     let overlay = document.getElementById('easter-egg-overlay');
     

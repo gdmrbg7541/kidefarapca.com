@@ -1195,34 +1195,33 @@ td:first-child {
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
-    /* Kutu ekranın tam merkezine kilitlenir */
     transform: translate(-50%, -50%) !important;
     z-index: 999999 !important;
     
-    /* scale() (sündürme) yerine GERÇEK fiziksel boyutlar veriyoruz! */
-    width: 380px !important;
-    min-height: 120px !important;
-    padding: 25px 15px !important;
+    /* Sabit 500px yerine 'auto' yaptık ki uzun kelimelerde kutu genişlesin */
+    width: auto !important; 
+    min-width: 400px !important; /* Kısa kelimeler için minimum genişlik */
+    padding: 35px 55px !important; /* Uzun kelimeler yanlara yapışmasın diye pay verdik */
+    
     background-color: #fffaf9 !important; 
     border: 4px solid #FF3B30 !important;
     border-radius: 20px !important;
     box-shadow: 0 25px 60px rgba(255, 59, 48, 0.3) !important;
     
-    /* Şık ve kesinlikle bulanıklaştırmayan pop-up çıkış animasyonu */
     animation: crispPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
-    will-change: auto !important; /* Tarayıcı belleğini serbest bırakır */
+    will-change: auto !important; 
     cursor: default !important;
 }
 
-/* Klonun içindeki yazıları fiziksel olarak devasa yapıyoruz */
-.crisp-zoom-clone .ar {
-    font-size: 110px !important;
-    line-height: 1.2 !important;
-}
+/* HEM BÜYÜK (.ar) HEM KÜÇÜK (.ar-small) YAZILARI AYNI DEVASA BOYUTA GETİRİYORUZ */
+.crisp-zoom-clone .ar,
 .crisp-zoom-clone .ar-small {
-    font-size: 80px !important;
+    /* 180px, en uzun kelimelerin bile ekrandan taşmadan devasa görünmesi için ideal limittir */
+    font-size: 180px !important; 
     line-height: 1.2 !important;
+    white-space: nowrap !important; /* Kelimenin asla alt satıra kırılmamasını sağlar */
 }
+
 .crisp-zoom-clone .ref {
     font-size: 26px !important;
     top: 15px !important;
@@ -1232,7 +1231,7 @@ td:first-child {
     background-color: #FF3B30 !important;
     color: #ffffff !important;
     box-shadow: 0 0 15px rgba(255, 59, 48, 0.6) !important;
-    animation: none !important; /* Klon üzerinde nabız efektini durdur */
+    animation: none !important; 
 }
 
 /* Easter Egg Yıldızını Büyüt */
