@@ -2603,31 +2603,62 @@ function selectReadyVerb(verb) {
     SoundEngine.playReset();
     resetTableOnly(true); 
     
-    currentEggIndex = -1; // <--- EKLENEN: Yeni kök seçildiğinde sırayı başa sarar
+    currentEggIndex = -1; 
     
     const trimmedRoot = verb.trim();
     if (trimmedRoot.length !== 3) return;
     
     currentRoot = trimmedRoot;
     
-    // Klavyeden girilmiş gibi ekrana yansıt
     const rootDisplay = document.getElementById('root-text-display');
     if (rootDisplay) {
         rootDisplay.innerText = currentRoot;
     }
     
-    // Modalı kapat ve altın sarısı kutuları parlat
     closeVerbModal();
     highlightEasterEggBoxes(currentRoot);
     
-    // YENİ EKLENEN: Otomatik olarak ahşap tahta bloğunu sahneye fırlat
     if (typeof autoSpawnRootClone === 'function') {
         autoSpawnRootClone();
     }
     
-    // Eğer şu an Mezid (3+) sekmesindeyse, Mücerred sekmesine geri dön
     if (currentTabActive === 1) {
         setTab(0);
+    }
+
+    // =======================================================
+    // MOBİL İÇİN YENİ 2 SÜTUNLU YAPI
+    // =======================================================
+    if (window.innerWidth <= 1024) {
+        const mGrid = document.getElementById('mobile-grid');
+        if (mGrid) {
+            mGrid.innerHTML = ''; // Önceki kelimeleri temizle
+            const refs = getSortedRefsForRoot(currentRoot); // Sadece tanımlı kelimeleri al
+            
+            refs.forEach(refId => {
+                // Asıl tablodan o kelimenin kutusunu bul
+                const origBox = Array.from(document.querySelectorAll('.window-pencere .glass-box')).find(b => {
+                    const refEl = b.querySelector('.ref');
+                    return refEl && parseInt(refEl.innerText.trim()) === refId;
+                });
+                
+                if (origBox) {
+                    // Kutuyu klonlayıp mobildeki 2 sütunlu bölüme at
+                    const clone = origBox.cloneNode(true);
+                    clone.className = 'glass-box sari-vurgu fiil-box'; 
+                    if (clone.hasAttribute('data-tiklama-sayisi')) {
+                        clone.setAttribute('data-tiklama-sayisi', '0');
+                    }
+                    
+                    // Tıklanınca türeme motorunu bağla
+                    clone.onclick = function() { handleBoxClick(this); };
+                    mGrid.appendChild(clone);
+                    
+                    // Kutunun üzerindeki emoji ve anlamları mobilde de çalıştır
+                    checkWordEasterEgg(clone);
+                }
+            });
+        }
     }
 }
 
@@ -2777,7 +2808,6 @@ document.addEventListener('click', function(e) {
     }
 }, true);
 
-
 function handleBoxClick(boxElement) {
     const textEl = boxElement.querySelector('.ar, .ar-small');
     const refEl = boxElement.querySelector('.ref');
@@ -2802,7 +2832,12 @@ function handleBoxClick(boxElement) {
 
     let tiklama = parseInt(boxElement.getAttribute('data-tiklama-sayisi') || '0');
     const mapping = getBabAndType(refId);
-    const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
+    
+    // =======================================================
+    // MOBİLDE BÜYÜTMEYİ (ZOOM) ZORLA İPTAL ET
+    // (Çift tanımlama hatası giderildi, tek satırda birleştirildi)
+    // =======================================================
+    const isZoomEnabled = window.innerWidth <= 1024 ? false : (document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false);
 
     // KELİMEYİ TÜRETEN FONKSİYON
     const applyWordTransformation = () => {
@@ -2868,11 +2903,10 @@ function handleBoxClick(boxElement) {
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         }
     } else {
-        // Zoom Kapalı Sistemi
+        // Zoom Kapalı Sistemi (Aynı Zamanda Mobil Mod İçin Çalışır)
         if (tiklama === 0) {
             document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
             boxElement.classList.add('current-active-red');
-            // DİKKAT: sari-vurgu silme kodu buradan da kaldırıldı!
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.setAttribute('data-tiklama-sayisi', '1');
         } else if (tiklama === 1) {
@@ -2894,7 +2928,6 @@ function handleBoxClick(boxElement) {
         }
     }
 }
-
 function closeInlineMatrix(e, btnElement) {
     if (e) {
         e.preventDefault();
@@ -4515,9 +4548,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Kök girildiğinde veya seçildiğinde tahtayı otomatik olarak sahneye çıkartan fonksiyon
 function autoSpawnRootClone() {
+    // MOBİLDE KLON KÖK İPTAL:
+    if (window.innerWidth <= 1024) return; 
+
     if (!currentRoot || currentRoot.length !== 3) return;
     
-    clearDraggableRoots(); // Sahnede başka klon varsa temizle (Tek klon kuralı)
+    clearDraggableRoots(); 
     
     const formattedText = formatArabicRoot(currentRoot);
     const dragEl = document.createElement('div');
@@ -4527,12 +4563,11 @@ function autoSpawnRootClone() {
 
     makeElementDraggable(dragEl);
 
-    // Klonu ana kök kutusunun hemen altında, ortalı bir şekilde göster
     const rootBox = document.getElementById('root-display-box');
     if (rootBox) {
         const rect = rootBox.getBoundingClientRect();
-        const spawnX = rect.left + window.scrollX + (rect.width / 2) - 60; // Ortalama hesabı
-        const spawnY = rect.bottom + window.scrollY + 25; // Kutunun 25px altı
+        const spawnX = rect.left + window.scrollX + (rect.width / 2) - 60; 
+        const spawnY = rect.bottom + window.scrollY + 25; 
         
         dragEl.style.left = spawnX + 'px';
         dragEl.style.top = spawnY + 'px';
@@ -4541,14 +4576,12 @@ function autoSpawnRootClone() {
         dragEl.style.top = '150px';
     }
     
-    // Zıplayarak sahneye çıkış animasyonu (Oyun hissiyatı için)
     dragEl.style.transform = 'scale(0)';
     dragEl.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     setTimeout(() => {
         dragEl.style.transform = 'scale(1)';
     }, 50);
     
-    // Sürükleme başladığında takılma olmaması için geçiş efektini kapat
     setTimeout(() => {
         dragEl.style.transition = 'none';
     }, 350);
@@ -4772,19 +4805,25 @@ document.addEventListener('keydown', function(e) {
 
 // İkinci parametre olarak 'isBackward' eklendi
 function activateBoxByRef(refId, isBackward = false) {
-    const boxes = Array.from(document.querySelectorAll('.glass-box'));
+    // MOBİL İSE SADECE MOBİL GRİDDEN BUL
+    const containerSelector = window.innerWidth <= 1024 ? '#mobile-grid .glass-box' : '.window-pencere .glass-box';
+    const boxes = Array.from(document.querySelectorAll(containerSelector));
     const targetBox = boxes.find(b => {
         const refEl = b.querySelector('.ref');
         return refEl && parseInt(refEl.innerText.trim()) === refId;
     });
 
     if (targetBox) {
-        const isTab1 = targetBox.closest('#tab1');
-        const isTab2 = targetBox.closest('#tab2');
         let tabSwitched = false;
+        
+        // SEKME DEĞİŞTİRME SADECE MASAÜSTÜNDE ÇALIŞIR
+        if (window.innerWidth > 1024) {
+            const isTab1 = targetBox.closest('#tab1');
+            const isTab2 = targetBox.closest('#tab2');
 
-        if (isTab1 && currentTabActive !== 0) { setTab(0); tabSwitched = true; }
-        if (isTab2 && currentTabActive !== 1) { setTab(1); tabSwitched = true; }
+            if (isTab1 && currentTabActive !== 0) { setTab(0); tabSwitched = true; }
+            if (isTab2 && currentTabActive !== 1) { setTab(1); tabSwitched = true; }
+        }
 
         const islemGecikmesi = tabSwitched ? 1000 : 0; 
         
@@ -4799,24 +4838,18 @@ function activateBoxByRef(refId, isBackward = false) {
             window.scrollTo({ top: middle, behavior: 'smooth' });
 
             if (isBackward) {
-                // ========================================================
-                // GERİ DÖNÜŞ MANTIĞI: Sıfırlama yapma, sadece kırmızıyı ver!
-                // ========================================================
-                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                document.querySelectorAll(containerSelector).forEach(b => b.classList.remove('current-active-red'));
                 targetBox.classList.add('current-active-red');
                 targetBox.classList.remove('sari-vurgu');
 
-                // DÜZELTME: Kutuya "İşlemlerin tamamen bitti" aşamasını veriyoruz ki İleri tuşu takılmasın!
-                const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
+                // MOBİLDE ZOOM OLMADIĞI İÇİN 3'TE BEKLER
+                const isZoomEnabled = window.innerWidth <= 1024 ? false : (document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false);
                 if (isZoomEnabled) {
-                    targetBox.setAttribute('data-tiklama-sayisi', '4'); // Eski 3 yerine 4 (Tamamlanmış aşama) yaptık
+                    targetBox.setAttribute('data-tiklama-sayisi', '4'); 
                 } else {
-                    targetBox.setAttribute('data-tiklama-sayisi', '3'); // Eski 2 yerine 3 (Tamamlanmış aşama) yaptık
+                    targetBox.setAttribute('data-tiklama-sayisi', '3'); 
                 }
             } else {
-                // ========================================================
-                // İLERİ GİDİŞ: Normal motoru çalıştır (Seç, Türet, Büyüt vs.)
-                // ========================================================
                 handleBoxClick(targetBox);
             }
             
@@ -4826,3 +4859,33 @@ function activateBoxByRef(refId, isBackward = false) {
         }, islemGecikmesi);
     }
 }
+
+// ==================================================================
+// MOBİL ARAYÜZ ENJEKSİYONU
+// ==================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Mobil Kök Seçme Butonu
+    if (!document.getElementById('mobile-root-btn')) {
+        const btn = document.createElement('div');
+        btn.id = 'mobile-root-btn';
+        btn.innerHTML = 'KÖK SEÇ <i class="fas fa-search"></i>';
+        btn.onclick = () => {
+            if (typeof openVerbModal === 'function') openVerbModal();
+        };
+        document.body.insertBefore(btn, document.body.firstChild);
+    }
+
+    // Mobil 2 Sütunlu Izgara
+    if (!document.getElementById('mobile-grid')) {
+        const grid = document.createElement('div');
+        grid.id = 'mobile-grid';
+        document.body.appendChild(grid);
+    }
+
+    // Mobilde sayfa açılır açılmaz kök menüsünü göster
+    if (window.innerWidth <= 1024) {
+        setTimeout(() => {
+            if (typeof openVerbModal === 'function') openVerbModal();
+        }, 300);
+    }
+});

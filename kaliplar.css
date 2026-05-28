@@ -1319,3 +1319,107 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     pointer-events: none !important;
     transition: opacity 0.2s ease !important;
 }
+
+/* ========================================================= */
+/* MOBİL İÇİN ÖZEL SADELEŞTİRİLMİŞ TASARIM (MAX 1024px)      */
+/* ========================================================= */
+@media screen and (max-width: 1024px) {
+    /* Gereksiz tüm masaüstü öğelerini tamamen gizle */
+    .top-bar, 
+    .window-pencere, 
+    .draggable-root-clone, 
+    #keyboard-overlay, 
+    .zoom-toggle-area,
+    #zoom-overlay,
+    #root-display-box {
+        display: none !important;
+    }
+
+    body {
+        padding: 15px 10px;
+        background-color: #f0f4f8; /* Daha temiz ve ferah mobil zemin */
+    }
+
+    /* Mobil Kök Seçici Butonu */
+    #mobile-root-btn {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        background-color: #2B88D9;
+        color: #ffffff;
+        font-family: 'Arakom', sans-serif;
+        font-size: 28px;
+        padding: 16px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(43, 136, 217, 0.35);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    #mobile-root-btn:active {
+        transform: scale(0.96);
+    }
+    #mobile-root-btn i {
+        margin-left: 12px;
+        font-size: 24px;
+    }
+
+    /* 2 Sütunlu Mobil Grid Sistemi */
+    #mobile-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding-bottom: 40px;
+    }
+
+    /* Mobil Grid İçindeki Kutular */
+    #mobile-grid .glass-box {
+        width: 100% !important;
+        margin: 0 !important;
+        min-height: 140px; /* Dokunmayı kolaylaştırmak için daha uzun */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        border-width: 2px !important;
+        border-bottom-width: 6px !important;
+        border-radius: 14px !important;
+    }
+
+    #mobile-grid .ar {
+        font-size: 55px !important; /* Mobil için kelimeler büyütüldü */
+    }
+
+    #mobile-grid .ar-small {
+        font-size: 40px !important;
+    }
+
+    #mobile-grid .ref {
+        font-size: 20px !important;
+        padding: 6px 12px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Hazır Kök Menüsünü Mobile Uyarlama */
+    .verb-container {
+        width: 95vw !important;
+        height: 90vh !important;
+        padding: 20px 10px !important;
+    }
+
+    .verb-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* Hazır kökleri de 2 sütun yap */
+        gap: 15px;
+    }
+
+    .verb-card {
+        font-size: 2.2rem;
+        padding: 20px 5px;
+    }
+}
+
+/* Masaüstünde mobil elementleri baştan gizle */
+#mobile-root-btn, #mobile-grid {
+    display: none;
+}
