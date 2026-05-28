@@ -1441,13 +1441,15 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     /* MOBİL İÇİN EMOJİ, YILDIZ VE POPUP BÜYÜTME                 */
     /* ========================================================= */
     
-    #mobile-grid .floating-emoji {
+   #mobile-grid .floating-emoji {
         font-size: 55px !important; 
         top: 15px !important;
         left: auto !important;       
         right: 15px !important;  
-        animation: none !important; /* YENİ: Emojilerin yukarı uçmasını engeller, sabitler! */
+        animation: none !important; 
+        transition: none !important; /* Ekstra koruma: Titremeyi ve uçmayı önler */
         transform: none !important;
+        margin: 0 !important;
     }
 
     #mobile-grid .easter-egg-trigger {
@@ -1461,8 +1463,10 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         top: 15px !important; 
         right: auto !important;      
         left: 15px !important;     
-        animation: none !important; /* YENİ: Emojilerin yukarı uçmasını engeller, sabitler! */
+        animation: none !important; 
+        transition: none !important; /* Ekstra koruma: Titremeyi ve uçmayı önler */
         transform: none !important;  
+        margin: 0 !important;
     }
 
     .easter-egg-content {
@@ -1492,3 +1496,13 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         line-height: 1.5 !important;
     }
 }
+
+/* YENİ: ARTI MENÜSÜ EKRANIN TAM ORTASINA SABİTLENDİ (Taşma Kesinlikle Engellendi) */
+    #suffix-dropdown {
+        position: fixed !important;
+        top: 110px !important;       /* Üst barın hemen altından açılır */
+        left: 50% !important;        /* Ekranın tam ortası */
+        transform: translateX(-50%) scale(1.7) !important; /* Hem merkeze kilitler hem %70 büyütür */
+        transform-origin: top center !important;
+        z-index: 9999999 !important;
+    }

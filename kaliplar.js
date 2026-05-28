@@ -3724,6 +3724,8 @@ document.querySelectorAll('.glass-box').forEach(box => {
         box.setAttribute('data-original', text);
     }
 });
+
+
 function checkWordEasterEgg(boxElement, currentSuffix = null) {
     const desktopPlus = document.querySelector('.fa-plus');
     const mobilePlus = document.getElementById('mobile-top-plus');
@@ -3747,7 +3749,6 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
 
     const data = currentSuffix ? refData[currentSuffix] : refData.base;
 
-    // Sadece kutu türediğinde Artı tuşunu parlat
     if (!currentSuffix && refData.suggestsPlus) {
         if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
         if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
@@ -3756,12 +3757,18 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
     if (!data) return;
 
     if (data.emoji) {
-        // YENİ: Emojiler body'e değil direkt kutunun kendisine ekleniyor ki sayfa kaydırılınca uçmasın!
-        const emojiDiv = document.createElement('div');
-        emojiDiv.className = 'floating-emoji easter-egg-emoji';
-        emojiDiv.setAttribute('data-ref', refId);
-        emojiDiv.innerText = data.emoji;
-        boxElement.appendChild(emojiDiv);
+        // YENİ: Emojinin sürekli çoğalıp yukarı uçmasını engellemek için mükemmel kontrol
+        let existingEmoji = boxElement.querySelector('.easter-egg-emoji');
+        if (!existingEmoji) {
+            const emojiDiv = document.createElement('div');
+            emojiDiv.className = 'floating-emoji easter-egg-emoji';
+            emojiDiv.setAttribute('data-ref', refId);
+            emojiDiv.innerText = data.emoji;
+            boxElement.appendChild(emojiDiv);
+        } else {
+            // Eğer kelime "ek" (suffix) aldıysa ve emojisi değişecekse günceller
+            existingEmoji.innerText = data.emoji; 
+        }
     }
 
     if (data.arText || data.trText) {
