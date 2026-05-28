@@ -2627,12 +2627,12 @@ function selectReadyVerb(verb) {
     }
 
     // =======================================================
-    // MOBİL İÇİN YENİ 2 SÜTUNLU YAPI VE "+" MENÜSÜ KORUMASI
+    // MOBİL İÇİN YENİ 2 SÜTUNLU YAPI
     // =======================================================
     if (window.innerWidth <= 1024) {
         const mGrid = document.getElementById('mobile-grid');
         if (mGrid) {
-            mGrid.innerHTML = ''; // Önceki kelimeleri temizle
+            mGrid.innerHTML = ''; 
             const refs = getSortedRefsForRoot(currentRoot); 
             
             refs.forEach(refId => {
@@ -2648,33 +2648,16 @@ function selectReadyVerb(verb) {
                         clone.setAttribute('data-tiklama-sayisi', '0');
                     }
                     
-                    // 1. ANA TÜRETME MOTORU BAĞLANTISI
                     clone.onclick = function() { handleBoxClick(this); };
-
-                    // 2. YENİ: "+" BUTONU İÇİN ÖZEL BAĞLANTI (Mobil Suffix Menüsü)
-                    const plusBtn = clone.querySelector('.fa-plus');
-                    if (plusBtn) {
-                        const handlePlus = function(e) {
-                            e.stopPropagation(); // Kutunun türemesini (ilerlemesini) engeller
-                            e.preventDefault();
-                            if (typeof toggleSuffixMenu === 'function') {
-                                toggleSuffixMenu(e); // Ek menüsünü açar
-                            }
-                        };
-                        plusBtn.onclick = handlePlus;
-                        plusBtn.ontouchstart = handlePlus;
-                    }
-
                     mGrid.appendChild(clone);
                     
-                    // Kutunun üzerindeki emoji ve anlamları mobilde de çalıştır
-                    checkWordEasterEgg(clone);
+                    // DİKKAT: 'checkWordEasterEgg(clone);' KODUNU BURADAN SİLDİK!
+                    // Artık emojiler kelime baştan listelenince değil, sadece tıklanınca çıkacak.
                 }
             });
         }
     }
 }
-
 function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
@@ -3694,6 +3677,7 @@ document.querySelectorAll('.glass-box').forEach(box => {
 });
 
 function checkWordEasterEgg(boxElement, currentSuffix = null) {
+    // Masaüstündeki üst bar butonu (varsa)
     const plusBtn = document.querySelector('.fa-plus');
     if (plusBtn && !currentSuffix) {
         plusBtn.classList.remove('plus-highlighted');
@@ -3713,15 +3697,41 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
 
     const data = currentSuffix ? refData[currentSuffix] : refData.base;
 
+    // Masaüstü üst barı için parlatma (Mobil de etkilenmez)
     if (!currentSuffix && refData.suggestsPlus && plusBtn) {
         plusBtn.classList.add('plus-highlighted');
     }
 
+    // =======================================================
+    // YENİ: MOBİL İÇİN KUTU İÇİNE ÖZEL "+" BUTONU OLUŞTURMA
+    // =======================================================
+    let mobilePlus = boxElement.querySelector('.mobile-plus-btn');
+    if (!currentSuffix && refData.suggestsPlus) {
+        if (!mobilePlus) {
+            mobilePlus = document.createElement('div');
+            mobilePlus.className = 'mobile-plus-btn';
+            mobilePlus.innerHTML = '<i class="fas fa-plus"></i>';
+            
+            const handlePlus = function(e) {
+                e.stopPropagation(); 
+                e.preventDefault();
+                if (typeof toggleSuffixMenu === 'function') {
+                    toggleSuffixMenu(e); // Tıklanınca ek menüsünü aç
+                }
+            };
+            mobilePlus.onclick = handlePlus;
+            mobilePlus.ontouchstart = handlePlus;
+
+            boxElement.appendChild(mobilePlus);
+        }
+    } else {
+        // Ek (suffix) zaten eklendiyse "+" butonunu kaldır
+        if (mobilePlus) mobilePlus.remove(); 
+    }
+
     if (!data) return;
 
-    // DİKKAT: Eski yıldızları (✨) silen o temizleyici satırı BURADAN TAMAMEN KALDIRDIK!
-    // Artık diğer kelimelere geçseniz de eskilerin üzerindeki yıldızlar kalacak.
-
+    // EMOJİLER (Silinmeden Ekranda Kalma Mantığı Korundu)
     if (data.emoji) {
         const rect = boxElement.getBoundingClientRect();
         const emojiDiv = document.createElement('div');
@@ -3733,10 +3743,10 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
         emojiDiv.style.left = (rect.left + rect.width / 2 - 30 + randomOffset) + 'px'; 
         
         document.body.appendChild(emojiDiv);
-    } 
+    }
 
+    // ✨ YILDIZ (Anlam Gör)
     if (data.arText || data.trText) {
-        // Eğer o kutuda zaten bir yıldız butonu varsa 2. kez eklemesin diye kontrol ediyoruz
         if (!boxElement.querySelector('.easter-egg-trigger')) {
             const triggerBtn = document.createElement('div');
             triggerBtn.className = 'easter-egg-trigger';
@@ -3746,14 +3756,11 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
             triggerBtn.onclick = function(e) {
                 e.stopPropagation(); 
                 showEasterEggOverlay(data.arText, data.trText);
-                // DİKKAT: "this.remove()" satırını buradan da sildik.
-                // Artık yıldıza tıklayıp anlamını okusanız bile yıldız yerinde kalacak!
             };
             boxElement.appendChild(triggerBtn);
         }
     }
 }
-
 
 
 let currentPulseTimeout = null;
