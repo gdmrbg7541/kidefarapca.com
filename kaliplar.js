@@ -2627,31 +2627,44 @@ function selectReadyVerb(verb) {
     }
 
     // =======================================================
-    // MOBİL İÇİN YENİ 2 SÜTUNLU YAPI
+    // MOBİL İÇİN YENİ 2 SÜTUNLU YAPI VE "+" MENÜSÜ KORUMASI
     // =======================================================
     if (window.innerWidth <= 1024) {
         const mGrid = document.getElementById('mobile-grid');
         if (mGrid) {
             mGrid.innerHTML = ''; // Önceki kelimeleri temizle
-            const refs = getSortedRefsForRoot(currentRoot); // Sadece tanımlı kelimeleri al
+            const refs = getSortedRefsForRoot(currentRoot); 
             
             refs.forEach(refId => {
-                // Asıl tablodan o kelimenin kutusunu bul
                 const origBox = Array.from(document.querySelectorAll('.window-pencere .glass-box')).find(b => {
                     const refEl = b.querySelector('.ref');
                     return refEl && parseInt(refEl.innerText.trim()) === refId;
                 });
                 
                 if (origBox) {
-                    // Kutuyu klonlayıp mobildeki 2 sütunlu bölüme at
                     const clone = origBox.cloneNode(true);
                     clone.className = 'glass-box sari-vurgu fiil-box'; 
                     if (clone.hasAttribute('data-tiklama-sayisi')) {
                         clone.setAttribute('data-tiklama-sayisi', '0');
                     }
                     
-                    // Tıklanınca türeme motorunu bağla
+                    // 1. ANA TÜRETME MOTORU BAĞLANTISI
                     clone.onclick = function() { handleBoxClick(this); };
+
+                    // 2. YENİ: "+" BUTONU İÇİN ÖZEL BAĞLANTI (Mobil Suffix Menüsü)
+                    const plusBtn = clone.querySelector('.fa-plus');
+                    if (plusBtn) {
+                        const handlePlus = function(e) {
+                            e.stopPropagation(); // Kutunun türemesini (ilerlemesini) engeller
+                            e.preventDefault();
+                            if (typeof toggleSuffixMenu === 'function') {
+                                toggleSuffixMenu(e); // Ek menüsünü açar
+                            }
+                        };
+                        plusBtn.onclick = handlePlus;
+                        plusBtn.ontouchstart = handlePlus;
+                    }
+
                     mGrid.appendChild(clone);
                     
                     // Kutunun üzerindeki emoji ve anlamları mobilde de çalıştır
@@ -4864,25 +4877,14 @@ function activateBoxByRef(refId, isBackward = false) {
 // MOBİL ARAYÜZ ENJEKSİYONU
 // ==================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobil Kök Seçme Butonu
-    if (!document.getElementById('mobile-root-btn')) {
-        const btn = document.createElement('div');
-        btn.id = 'mobile-root-btn';
-        btn.innerHTML = 'KÖK SEÇ <i class="fas fa-search"></i>';
-        btn.onclick = () => {
-            if (typeof openVerbModal === 'function') openVerbModal();
-        };
-        document.body.insertBefore(btn, document.body.firstChild);
-    }
-
-    // Mobil 2 Sütunlu Izgara
+    // Sadece Mobil 2 Sütunlu Izgarayı yarat (Mavi buton kaldırıldı)
     if (!document.getElementById('mobile-grid')) {
         const grid = document.createElement('div');
         grid.id = 'mobile-grid';
         document.body.appendChild(grid);
     }
 
-    // Mobilde sayfa açılır açılmaz kök menüsünü göster
+    // Mobilde sayfa açılır açılmaz kök menüsünü (listeyi) göster
     if (window.innerWidth <= 1024) {
         setTimeout(() => {
             if (typeof openVerbModal === 'function') openVerbModal();

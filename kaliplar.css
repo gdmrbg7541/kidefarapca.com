@@ -1340,35 +1340,12 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         background-color: #f0f4f8; /* Daha temiz ve ferah mobil zemin */
     }
 
-    /* Mobil Kök Seçici Butonu */
-    #mobile-root-btn {
-        display: flex !important;
-        justify-content: center;
-        align-items: center;
-        background-color: #2B88D9;
-        color: #ffffff;
-        font-family: 'Arakom', sans-serif;
-        font-size: 28px;
-        padding: 16px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        box-shadow: 0 8px 25px rgba(43, 136, 217, 0.35);
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-    #mobile-root-btn:active {
-        transform: scale(0.96);
-    }
-    #mobile-root-btn i {
-        margin-left: 12px;
-        font-size: 24px;
-    }
-
     /* 2 Sütunlu Mobil Grid Sistemi */
     #mobile-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
+        padding-top: 15px;
         padding-bottom: 40px;
     }
 
@@ -1376,7 +1353,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     #mobile-grid .glass-box {
         width: 100% !important;
         margin: 0 !important;
-        min-height: 140px; /* Dokunmayı kolaylaştırmak için daha uzun */
+        min-height: 160px; /* Rahat dokunmak için büyütüldü */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -1387,18 +1364,24 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         border-radius: 14px !important;
     }
 
-    #mobile-grid .ar {
-        font-size: 55px !important; /* Mobil için kelimeler büyütüldü */
-    }
-
+    /* YAZI BOYUTLARI AYNI VE DEVASA (Fiiller ve İsimler Eşitlendi) */
+    #mobile-grid .ar,
     #mobile-grid .ar-small {
-        font-size: 40px !important;
+        font-size: 75px !important; /* İkisi de aynı boyuta getirildi ve büyütüldü */
+        line-height: 1.2 !important;
     }
 
     #mobile-grid .ref {
-        font-size: 20px !important;
-        padding: 6px 12px !important;
+        font-size: 22px !important;
+        padding: 6px 14px !important;
         border-radius: 8px !important;
+    }
+
+    /* + (Ek) Menüsü Mobilde Düzgün Açılsın */
+    #suffix-dropdown {
+        z-index: 9999999 !important;
+        transform: scale(1.1); /* Mobilde menüyü biraz büyütür */
+        transform-origin: top right;
     }
 
     /* Hazır Kök Menüsünü Mobile Uyarlama */
@@ -1409,7 +1392,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     }
 
     .verb-grid {
-        grid-template-columns: repeat(2, 1fr) !important; /* Hazır kökleri de 2 sütun yap */
+        grid-template-columns: repeat(2, 1fr) !important; 
         gap: 15px;
     }
 
@@ -1417,9 +1400,4 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         font-size: 2.2rem;
         padding: 20px 5px;
     }
-}
-
-/* Masaüstünde mobil elementleri baştan gizle */
-#mobile-root-btn, #mobile-grid {
-    display: none;
 }
