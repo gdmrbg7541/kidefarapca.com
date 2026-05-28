@@ -1430,12 +1430,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         pointer-events: none !important; 
     }
 
-    /* YENİ: ARTI MENÜSÜ EKLERİ 2 KAT BÜYÜTÜLDÜ */
-    #suffix-dropdown {
-        z-index: 9999999 !important;
-        transform: scale(2.2) !important; /* Ek menüsü devasa oldu */
-        transform-origin: top left !important;
-    }
+   
 
    /* ========================================================= */
     /* MOBİL İÇİN EMOJİ, YILDIZ VE POPUP BÜYÜTME                 */
@@ -1503,7 +1498,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         top: 110px !important;       /* Üst barın hemen altından açılır */
         right: 20px !important;      /* Ekranın sağına 20 piksel boşluk bırakır (yapışmaz) */
         left: auto !important;       /* Ortalamayı iptal eder */
-        transform: scale(1.8) !important; /* Menüyü devasa yapar */
+        transform: scale(2) !important; /* Menüyü devasa yapar */
         transform-origin: top right !important; /* Büyürken ekrandan dışarı değil, içeri doğru büyür! */
         z-index: 9999999 !important;
     }
