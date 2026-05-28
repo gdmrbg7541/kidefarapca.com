@@ -1362,37 +1362,38 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         z-index: 99999;
     }
 
-    /* YENİ: Bembeyaz, Devasa ve Belirgin Üst Butonlar */
+    /* Üst Butonlar (Bembeyaz ve Devasa) */
     .mobile-back-btn, .mobile-top-plus {
-        width: 70px !important;       /* Daha da büyütüldü (70x70) */
+        width: 70px !important;       
         height: 70px !important;      
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #ffffff !important; /* Zemin tamamen bembeyaz oldu */
-        color: #2B88D9 !important;            /* Bembeyaz zeminde ikonlar mavi oldu */
+        background-color: #ffffff !important; 
+        color: #2B88D9 !important;            
         border-radius: 18px !important;
-        font-size: 38px !important;           /* İkon boyutları devasa yapıldı */
+        font-size: 38px !important;           
         cursor: pointer;
         transition: transform 0.2s;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Hafif gölge eklendi */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); 
     }
 
     .mobile-back-btn:active, .mobile-top-plus:active {
         transform: scale(0.9);
     }
 
+    /* YENİ: KÖK YAZISI ÇOK DAHA BÜYÜK OLDU */
     .mobile-root-display {
         font-family: 'Arakom', sans-serif;
-        font-size: 48px !important; /* Ortadaki kök yazısı da büyütüldü */
+        font-size: 65px !important; /* Eski 48px -> Yeni 65px */
         line-height: 1;
         direction: rtl;
     }
 
-    /* Artı Butonu Vurgusu (Parladığında) */
+    /* Artı Butonu Vurgusu */
     .mobile-top-plus.plus-highlighted {
-        background-color: #34C759 !important; /* Yeşil zemin */
-        color: #ffffff !important;            /* Beyaz ikon */
+        background-color: #34C759 !important; 
+        color: #ffffff !important;            
         box-shadow: 0 0 20px rgba(52, 199, 89, 0.9);
         animation: crispPopIn 0.3s ease forwards;
     }
@@ -1419,7 +1420,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     }
 
     #mobile-grid .ar, #mobile-grid .ar-small {
-        font-size: 85px !important; /* Ana kelimelerin boyutu devasa yapıldı */
+        font-size: 85px !important; 
         line-height: 1.2 !important;
     }
 
@@ -1427,12 +1428,13 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         font-size: 22px !important;
         padding: 6px 14px !important;
         border-radius: 8px !important;
-        pointer-events: none !important; /* Tablo (popup) açılmasını %100 engeller */
+        pointer-events: none !important; 
     }
 
+    /* YENİ: ARTI MENÜSÜ EKLERİ ÇOK DAHA BÜYÜTÜLDÜ */
     #suffix-dropdown {
         z-index: 9999999 !important;
-        transform: scale(1.2); /* Ek menüsü büyütüldü */
+        transform: scale(1.6); /* Eski 1.2 -> Yeni 1.6 (Menü %60 büyüdü) */
         transform-origin: top left;
     }
 
@@ -1440,15 +1442,13 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     /* MOBİL İÇİN EMOJİ, YILDIZ VE POPUP BÜYÜTME                 */
     /* ========================================================= */
     
-    /* 1. Kelimenin Kendi Emojisi (Örn: ✍️) Daha Da Büyütüldü */
     #mobile-grid .floating-emoji {
-        font-size: 55px !important; /* 45'ten 55'e çıkarıldı */
+        font-size: 55px !important; 
         top: 15px !important;
         left: auto !important;       
         right: 15px !important;      
     }
 
-    /* 2. Cümle/Anlam Açan Yıldız Emojisi (✨) Daha Da Büyütüldü */
     #mobile-grid .easter-egg-trigger {
         font-size: 45px !important; 
         width: 60px !important;
@@ -1462,31 +1462,32 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         left: 15px !important;       
     }
 
-    /* 3. Popup (Anlam Ekranı) İçeriğini Büyüt */
     .easter-egg-content {
-        width: 92% !important;
-        padding: 50px 25px 35px 25px !important;
+        width: 95% !important;
+        padding: 60px 25px 40px 25px !important;
         border-radius: 20px !important;
     }
 
-    /* 4. Popup İçindeki (X) Kapatma Butonu Büyütüldü */
+    /* YENİ: CÜMLE POPUP ÇARPI (X) İŞARETİ ÇOK DAHA BÜYÜK OLDU */
     .easter-egg-close-btn {
-        font-size: 40px !important; /* Kapatma tuşu daha da büyüdü */
-        width: 55px !important;
-        height: 55px !important;
-        line-height: 55px !important;
+        font-size: 55px !important;  /* Eski 40px -> Yeni 55px */
+        width: 70px !important;      /* Eski 55px -> Yeni 70px */
+        height: 70px !important;
+        line-height: 70px !important;
         top: 10px !important;
         right: 15px !important;
+        background-color: rgba(255, 0, 0, 0.1); /* Tıklama alanı belli olsun diye hafif kırmızı arka plan */
+        border-radius: 50%;
     }
 
-    /* 5. Popup İçindeki Arapça ve Türkçe Yazıları Büyüt */
+    /* YENİ: CÜMLE POPUP İÇİNDEKİ YAZILAR ÇOK DAHA BÜYÜK OLDU */
     .easter-egg-ar {
-        font-size: 60px !important; /* Arapça örnek cümle DEVASA oldu */
+        font-size: 75px !important; /* Eski 60px -> Yeni 75px (Devasa Arapça) */
         line-height: 1.4 !important;
-        margin-bottom: 30px !important;
+        margin-bottom: 35px !important;
     }
     .easter-egg-tr {
-        font-size: 30px !important; /* Türkçe anlam DEVASA oldu */
+        font-size: 38px !important; /* Eski 30px -> Yeni 38px (Devasa Türkçe) */
         line-height: 1.5 !important;
     }
 }
