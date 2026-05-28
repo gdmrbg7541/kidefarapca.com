@@ -2598,38 +2598,68 @@ function closeVerbModal() {
     document.getElementById('verb-overlay').style.display = 'none';
 }
 
+
+
 function selectReadyVerb(verb) {
     clearDraggableRoots();
-    SoundEngine.playReset();
+    if(typeof SoundEngine !== "undefined") SoundEngine.playReset();
     resetTableOnly(true); 
     
     currentEggIndex = -1; 
     
     const trimmedRoot = verb.trim();
     if (trimmedRoot.length !== 3) return;
-    
     currentRoot = trimmedRoot;
     
     const rootDisplay = document.getElementById('root-text-display');
-    if (rootDisplay) {
-        rootDisplay.innerText = currentRoot;
-    }
+    if (rootDisplay) rootDisplay.innerText = currentRoot;
     
-    closeVerbModal();
+    if (typeof closeVerbModal === 'function') closeVerbModal();
     highlightEasterEggBoxes(currentRoot);
     
-    if (typeof autoSpawnRootClone === 'function') {
-        autoSpawnRootClone();
-    }
-    
-    if (currentTabActive === 1) {
-        setTab(0);
-    }
+    if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
+    if (currentTabActive === 1) setTab(0);
 
-    // =======================================================
-    // MOBİL İÇİN YENİ 2 SÜTUNLU YAPI
-    // =======================================================
+    // MOBİL İÇİN SABİT ÜST BAR VE 2 SÜTUN
     if (window.innerWidth <= 1024) {
+        let topBar = document.getElementById('mobile-top-bar');
+        if (!topBar) {
+            topBar = document.createElement('div');
+            topBar.id = 'mobile-top-bar';
+            
+            // 1. Geri Tuşu (Sağda duracak ama SOL OK olacak)
+            const backBtn = document.createElement('div');
+            backBtn.className = 'mobile-back-btn';
+            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>'; // DÜZELTİLDİ: Sol Ok
+            backBtn.onclick = () => { if (typeof openVerbModal === 'function') openVerbModal(); };
+            
+            // 2. Orta: Kök
+            const rootDisp = document.createElement('div');
+            rootDisp.className = 'mobile-root-display';
+            
+            // 3. Artı Tuşu (Solda duracak)
+            const plusBtn = document.createElement('div');
+            plusBtn.className = 'mobile-top-plus';
+            plusBtn.id = 'mobile-top-plus';
+            plusBtn.innerHTML = '<i class="fas fa-plus"></i>';
+            plusBtn.onclick = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (typeof toggleSuffixMenu === 'function') toggleSuffixMenu(e);
+            };
+            
+            // Sıralama: Önce Artı (Sol), sonra Kök (Orta), en son Geri (Sağ)
+            topBar.appendChild(plusBtn); 
+            topBar.appendChild(rootDisp);
+            topBar.appendChild(backBtn); 
+            
+            const mGrid = document.getElementById('mobile-grid');
+            document.body.insertBefore(topBar, mGrid);
+        }
+        
+        topBar.querySelector('.mobile-root-display').innerText = currentRoot;
+        topBar.querySelector('.mobile-top-plus').classList.remove('plus-highlighted');
+
         const mGrid = document.getElementById('mobile-grid');
         if (mGrid) {
             mGrid.innerHTML = ''; 
@@ -2644,20 +2674,15 @@ function selectReadyVerb(verb) {
                 if (origBox) {
                     const clone = origBox.cloneNode(true);
                     clone.className = 'glass-box sari-vurgu fiil-box'; 
-                    if (clone.hasAttribute('data-tiklama-sayisi')) {
-                        clone.setAttribute('data-tiklama-sayisi', '0');
-                    }
-                    
+                    if (clone.hasAttribute('data-tiklama-sayisi')) clone.setAttribute('data-tiklama-sayisi', '0');
                     clone.onclick = function() { handleBoxClick(this); };
                     mGrid.appendChild(clone);
-                    
-                    // DİKKAT: 'checkWordEasterEgg(clone);' KODUNU BURADAN SİLDİK!
-                    // Artık emojiler kelime baştan listelenince değil, sadece tıklanınca çıkacak.
                 }
             });
         }
     }
 }
+
 function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
@@ -2898,32 +2923,56 @@ function handleBoxClick(boxElement) {
             boxElement.style.setProperty("background-color", "", "important");
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         }
-    } else {
-        // Zoom Kapalı Sistemi (Aynı Zamanda Mobil Mod İçin Çalışır)
-        if (tiklama === 0) {
-            document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
-            boxElement.classList.add('current-active-red');
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-            boxElement.setAttribute('data-tiklama-sayisi', '1');
-        } else if (tiklama === 1) {
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-            boxElement.style.setProperty("background-color", "#bfffdf", "important"); 
-            boxElement.style.borderColor = "#000000"; 
-            applyWordTransformation(); 
-            boxElement.setAttribute('data-tiklama-sayisi', '2');
-        } else if (tiklama === 2) {
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-            boxElement.classList.remove('current-active-red'); 
-            boxElement.setAttribute('data-tiklama-sayisi', '3'); 
+} else {
+        // Zoom Kapalı Sistemi 
+        if (window.innerWidth <= 1024) {
+            // MOBİL HIZLI SİSTEM: İLK TIKLAMADA TÜRET, İKİNCİDE SİL
+            if (tiklama === 0) {
+                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                boxElement.classList.add('current-active-red');
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                boxElement.style.setProperty("background-color", "#bfffdf", "important"); 
+                boxElement.style.borderColor = "#000000"; 
+                applyWordTransformation(); 
+                boxElement.setAttribute('data-tiklama-sayisi', '1');
+            } else {
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+                if (typeof resetBox === 'function') resetBox(boxElement);
+                boxElement.removeAttribute('data-tiklama-sayisi');
+                boxElement.classList.remove('current-active-red'); 
+                boxElement.style.setProperty("background-color", "", "important");
+                // Artı işaretinin ışığını da söndür
+                const mobilePlus = document.getElementById('mobile-top-plus');
+                if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
+            }
         } else {
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-            if (typeof resetBox === 'function') resetBox(boxElement);
-            boxElement.removeAttribute('data-tiklama-sayisi');
-            boxElement.classList.remove('current-active-red'); 
-            boxElement.style.setProperty("background-color", "", "important");
+            // MASAÜSTÜ KADEMELİ SİSTEM
+            if (tiklama === 0) {
+                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                boxElement.classList.add('current-active-red');
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                boxElement.setAttribute('data-tiklama-sayisi', '1');
+            } else if (tiklama === 1) {
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                boxElement.style.setProperty("background-color", "#bfffdf", "important"); 
+                boxElement.style.borderColor = "#000000"; 
+                applyWordTransformation(); 
+                boxElement.setAttribute('data-tiklama-sayisi', '2');
+            } else if (tiklama === 2) {
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+                boxElement.classList.remove('current-active-red'); 
+                boxElement.setAttribute('data-tiklama-sayisi', '3'); 
+            } else {
+                if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+                if (typeof resetBox === 'function') resetBox(boxElement);
+                boxElement.removeAttribute('data-tiklama-sayisi');
+                boxElement.classList.remove('current-active-red'); 
+                boxElement.style.setProperty("background-color", "", "important");
+            }
         }
     }
 }
+
 function closeInlineMatrix(e, btnElement) {
     if (e) {
         e.preventDefault();
@@ -3675,12 +3724,13 @@ document.querySelectorAll('.glass-box').forEach(box => {
         box.setAttribute('data-original', text);
     }
 });
-
 function checkWordEasterEgg(boxElement, currentSuffix = null) {
-    // Masaüstündeki üst bar butonu (varsa)
-    const plusBtn = document.querySelector('.fa-plus');
-    if (plusBtn && !currentSuffix) {
-        plusBtn.classList.remove('plus-highlighted');
+    const desktopPlus = document.querySelector('.fa-plus');
+    const mobilePlus = document.getElementById('mobile-top-plus');
+
+    if (!currentSuffix) {
+        if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
+        if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
     }
 
     if (!boxElement || !currentRoot || currentRoot.length !== 3) return;
@@ -3697,62 +3747,29 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
 
     const data = currentSuffix ? refData[currentSuffix] : refData.base;
 
-    // Masaüstü üst barı için parlatma (Mobil de etkilenmez)
-    if (!currentSuffix && refData.suggestsPlus && plusBtn) {
-        plusBtn.classList.add('plus-highlighted');
-    }
-
-    // =======================================================
-    // YENİ: MOBİL İÇİN KUTU İÇİNE ÖZEL "+" BUTONU OLUŞTURMA
-    // =======================================================
-    let mobilePlus = boxElement.querySelector('.mobile-plus-btn');
+    // Sadece kutu türediğinde Artı tuşunu parlat
     if (!currentSuffix && refData.suggestsPlus) {
-        if (!mobilePlus) {
-            mobilePlus = document.createElement('div');
-            mobilePlus.className = 'mobile-plus-btn';
-            mobilePlus.innerHTML = '<i class="fas fa-plus"></i>';
-            
-            const handlePlus = function(e) {
-                e.stopPropagation(); 
-                e.preventDefault();
-                if (typeof toggleSuffixMenu === 'function') {
-                    toggleSuffixMenu(e); // Tıklanınca ek menüsünü aç
-                }
-            };
-            mobilePlus.onclick = handlePlus;
-            mobilePlus.ontouchstart = handlePlus;
-
-            boxElement.appendChild(mobilePlus);
-        }
-    } else {
-        // Ek (suffix) zaten eklendiyse "+" butonunu kaldır
-        if (mobilePlus) mobilePlus.remove(); 
+        if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
+        if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
     }
 
     if (!data) return;
 
-    // EMOJİLER (Silinmeden Ekranda Kalma Mantığı Korundu)
     if (data.emoji) {
-        const rect = boxElement.getBoundingClientRect();
+        // YENİ: Emojiler body'e değil direkt kutunun kendisine ekleniyor ki sayfa kaydırılınca uçmasın!
         const emojiDiv = document.createElement('div');
         emojiDiv.className = 'floating-emoji easter-egg-emoji';
         emojiDiv.setAttribute('data-ref', refId);
         emojiDiv.innerText = data.emoji;
-
-        let randomOffset = (Math.random() - 0.5) * 60; 
-        emojiDiv.style.left = (rect.left + rect.width / 2 - 30 + randomOffset) + 'px'; 
-        
-        document.body.appendChild(emojiDiv);
+        boxElement.appendChild(emojiDiv);
     }
 
-    // ✨ YILDIZ (Anlam Gör)
     if (data.arText || data.trText) {
         if (!boxElement.querySelector('.easter-egg-trigger')) {
             const triggerBtn = document.createElement('div');
             triggerBtn.className = 'easter-egg-trigger';
             triggerBtn.innerHTML = '✨'; 
             triggerBtn.title = 'Bilgiyi Gör';
-
             triggerBtn.onclick = function(e) {
                 e.stopPropagation(); 
                 showEasterEggOverlay(data.arText, data.trText);
@@ -3761,6 +3778,50 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
         }
     }
 }
+
+// ==================================================================
+// SADECE FİİLLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
+// ==================================================================
+document.addEventListener('click', function(e) {
+    const refEl = e.target.closest('.ref');
+    if (refEl) {
+        // YENİ: Mobildeyse tıklamayı yok say, popup çekim tablosunu açma!
+        if (window.innerWidth <= 1024) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
+        const boxElement = refEl.closest('.glass-box');
+        
+        if (boxElement && boxElement.classList.contains('current-active-red') && boxElement.classList.contains('fiil-box')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+            
+            const refId = parseInt(refEl.innerText);
+            const mapping = typeof getBabAndType === 'function' ? getBabAndType(refId) : null;
+            const kalip = boxElement.getAttribute('data-original');
+            const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
+            
+            const textEl = boxElement.querySelector('.ar, .ar-small');
+            lastClickedBoxTextSpan = textEl; 
+            lastOriginalWord = kalip;
+
+            if (mapping && typeof babVezinleri !== 'undefined') {
+                const vezinObj = babVezinleri[mapping.babNo];
+                let anaVezin = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+                
+                if (typeof openConjugationPopup === 'function') {
+                    openConjugationPopup(currentRootSafe, mapping.babNo, mapping.type, anaVezin);
+                }
+                
+                document.querySelectorAll(`.easter-egg-emoji[data-ref="${refId}"]`).forEach(emoji => emoji.remove());
+            }
+        }
+    }
+}, true);
 
 
 let currentPulseTimeout = null;
