@@ -2791,6 +2791,8 @@ function resetBox(el) {
     // DİKKAT: Buradaki 'highlightEasterEggBoxes(currentRoot)' kodunu sildik.
     // Artık herhangi bir kutu sıfırlandığında her yer tekrar sarı olmayacak!
 }
+
+
 // ==================================================================
 // 1. SADECE FİİLLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
 // ==================================================================
@@ -2923,7 +2925,7 @@ function handleBoxClick(boxElement) {
             boxElement.style.setProperty("background-color", "", "important");
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         }
-} else {
+    } else {
         // Zoom Kapalı Sistemi 
         if (window.innerWidth <= 1024) {
             // MOBİL HIZLI SİSTEM: İLK TIKLAMADA TÜRET, İKİNCİDE SİL
@@ -2948,21 +2950,20 @@ function handleBoxClick(boxElement) {
         } else {
             // MASAÜSTÜ KADEMELİ SİSTEM
             if (tiklama === 0) {
+                // 1. Tıklama: Kırmızı Vurgu
                 document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
                 boxElement.classList.add('current-active-red');
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
                 boxElement.setAttribute('data-tiklama-sayisi', '1');
             } else if (tiklama === 1) {
+                // 2. Tıklama: Türet ve Yeşil Yap
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
                 boxElement.style.setProperty("background-color", "#bfffdf", "important"); 
                 boxElement.style.borderColor = "#000000"; 
                 applyWordTransformation(); 
                 boxElement.setAttribute('data-tiklama-sayisi', '2');
-            } else if (tiklama === 2) {
-                if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
-                boxElement.classList.remove('current-active-red'); 
-                boxElement.setAttribute('data-tiklama-sayisi', '3'); 
             } else {
+                // 3. Tıklama ve sonrası: Kökü, dolguyu ve çerçeveyi tamamen sıfırla
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
