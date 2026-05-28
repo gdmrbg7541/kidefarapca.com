@@ -1497,12 +1497,13 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     }
 }
 
-/* YENİ: ARTI MENÜSÜ EKRANIN TAM ORTASINA SABİTLENDİ (Taşma Kesinlikle Engellendi) */
+/* YENİ: ARTI MENÜSÜ SAĞDA (Fakat ekrana yapışık değil) */
     #suffix-dropdown {
         position: fixed !important;
         top: 110px !important;       /* Üst barın hemen altından açılır */
-        left: 50% !important;        /* Ekranın tam ortası */
-        transform: translateX(-50%) scale(1.7) !important; /* Hem merkeze kilitler hem %70 büyütür */
-        transform-origin: top center !important;
+        right: 20px !important;      /* Ekranın sağına 20 piksel boşluk bırakır (yapışmaz) */
+        left: auto !important;       /* Ortalamayı iptal eder */
+        transform: scale(1.8) !important; /* Menüyü devasa yapar */
+        transform-origin: top right !important; /* Büyürken ekrandan dışarı değil, içeri doğru büyür! */
         z-index: 9999999 !important;
     }
