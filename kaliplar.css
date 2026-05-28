@@ -1382,10 +1382,9 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         transform: scale(0.9);
     }
 
-    /* YENİ: KÖK YAZISI ÇOK DAHA BÜYÜK OLDU */
     .mobile-root-display {
         font-family: 'Arakom', sans-serif;
-        font-size: 65px !important; /* Eski 48px -> Yeni 65px */
+        font-size: 65px !important; 
         line-height: 1;
         direction: rtl;
     }
@@ -1431,11 +1430,11 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         pointer-events: none !important; 
     }
 
-    /* YENİ: ARTI MENÜSÜ EKLERİ ÇOK DAHA BÜYÜTÜLDÜ */
+    /* YENİ: ARTI MENÜSÜ EKLERİ 2 KAT BÜYÜTÜLDÜ */
     #suffix-dropdown {
         z-index: 9999999 !important;
-        transform: scale(1.6); /* Eski 1.2 -> Yeni 1.6 (Menü %60 büyüdü) */
-        transform-origin: top left;
+        transform: scale(2.2) !important; /* Ek menüsü devasa oldu */
+        transform-origin: top left !important;
     }
 
    /* ========================================================= */
@@ -1446,7 +1445,9 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         font-size: 55px !important; 
         top: 15px !important;
         left: auto !important;       
-        right: 15px !important;      
+        right: 15px !important;  
+        animation: none !important; /* YENİ: Emojilerin yukarı uçmasını engeller, sabitler! */
+        transform: none !important;
     }
 
     #mobile-grid .easter-egg-trigger {
@@ -1459,7 +1460,9 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         bottom: auto !important;
         top: 15px !important; 
         right: auto !important;      
-        left: 15px !important;       
+        left: 15px !important;     
+        animation: none !important; /* YENİ: Emojilerin yukarı uçmasını engeller, sabitler! */
+        transform: none !important;  
     }
 
     .easter-egg-content {
@@ -1468,26 +1471,24 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         border-radius: 20px !important;
     }
 
-    /* YENİ: CÜMLE POPUP ÇARPI (X) İŞARETİ ÇOK DAHA BÜYÜK OLDU */
     .easter-egg-close-btn {
-        font-size: 55px !important;  /* Eski 40px -> Yeni 55px */
-        width: 70px !important;      /* Eski 55px -> Yeni 70px */
+        font-size: 55px !important;  
+        width: 70px !important;      
         height: 70px !important;
         line-height: 70px !important;
         top: 10px !important;
         right: 15px !important;
-        background-color: rgba(255, 0, 0, 0.1); /* Tıklama alanı belli olsun diye hafif kırmızı arka plan */
+        background-color: rgba(255, 0, 0, 0.1); 
         border-radius: 50%;
     }
 
-    /* YENİ: CÜMLE POPUP İÇİNDEKİ YAZILAR ÇOK DAHA BÜYÜK OLDU */
     .easter-egg-ar {
-        font-size: 75px !important; /* Eski 60px -> Yeni 75px (Devasa Arapça) */
+        font-size: 75px !important; 
         line-height: 1.4 !important;
         margin-bottom: 35px !important;
     }
     .easter-egg-tr {
-        font-size: 38px !important; /* Eski 30px -> Yeni 38px (Devasa Türkçe) */
+        font-size: 38px !important; 
         line-height: 1.5 !important;
     }
 }
