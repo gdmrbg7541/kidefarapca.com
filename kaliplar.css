@@ -973,32 +973,31 @@ td:first-child {
     position: absolute;
     z-index: 2000;
     font-family: 'Arakom', sans-serif;
-    font-weight: normal !important; /* Zorunlu kural: İnce yazı */
-    font-size: 2.6rem; /* Kutu ve harfler büyütüldü */
-    color: #000000; /* Siyah renk */
+    font-weight: normal !important; 
+    font-size: 2.6rem; 
+    color: #000000; 
     direction: rtl;
     pointer-events: auto; 
     cursor: grab;
     user-select: none;
-    /* DİKKAT: letter-spacing silindi! Çizgiler artık kesik durmayacak. */
     white-space: nowrap;
     
-    /* Ahşap Tahta ve 3 Boyut Efekti */
-    background-color: #e4be97; /* Ana renk çok çok hafif açıldı (Eski: #d4a373) */
+    background-color: #e4be97; 
     background-image: repeating-linear-gradient(
         45deg,
         rgba(0, 0, 0, 0.03) 0px,
         rgba(0, 0, 0, 0.03) 2px,
         transparent 2px,
         transparent 6px
-    ); /* Hafif tahta damarı dokusu */
-    padding: 8px 24px; /* Boyut büyüdüğü için iç boşluklar da genişletildi */
-    border-radius: 10px; /* Köşeler hafifçe yumuşatıldı */
-    border: 2px solid #5c3a21; /* Koyu kahve kenarlık aynı kaldı */
+    ); 
+    /* YENİ: Alt boşluğu (padding) artırarak harf kuyruklarına yer açtık */
+    padding: 8px 24px 15px 24px !important; 
+    line-height: 1.2 !important;
     
-    /* 3D ahşap blok gölgesi, büyüyen kutuya göre uyarlandı */
+    border-radius: 10px; 
+    border: 2px solid #5c3a21; 
     box-shadow: 5px 5px 0px #5c3a21, 0px 10px 20px rgba(0,0,0,0.3);
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4); /* Yazıya hafif oyma hissi */
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4); 
 }
 
 .draggable-root-clone:active {
@@ -1065,9 +1064,23 @@ td:first-child {
     animation: refPulse 1.5s infinite;
 }
 
-.glass-box.fiil-box.current-active-red .ref:hover {
+.glass-box.fiil-box.kok-turendi .ref {
+    background-color: #FF3B30 !important;
+    color: #ffffff !important;
+    border-radius: 5px; 
+    padding: 0px 5px; 
+    transform: scale(0.95); 
+    -webkit-text-stroke: 0 !important; 
+    box-shadow: 0 0 8px rgba(255, 59, 48, 0.7); 
+    cursor: pointer;
+    z-index: 105; 
+    pointer-events: auto; /* Sadece kök türeyince tıklanabilir olur! */
+    animation: refPulse 1.5s infinite;
+}
+
+.glass-box.fiil-box.kok-turendi .ref:hover {
     background-color: #d62828 !important;
-    transform: scale(1.1); /* Fareyle gelince aşırı büyümesi engellendi */
+    transform: scale(1.1); 
 }
 
 @keyframes refPulse {
@@ -1195,7 +1208,7 @@ td:first-child {
 /* ========================================================= */
 .crisp-zoom-clone {
     position: fixed !important;
-    top: 38% !important; /* Aradaki boşluğu azaltmak için biraz aşağı alındı */
+    top: 35% !important; /* Fazla yukarıdaydı, ideal göz hizasına (35%) indirildi */
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     z-index: 999999 !important;
@@ -1250,12 +1263,11 @@ td:first-child {
 /* ========================================================= */
 .crisp-root-clone {
     position: fixed !important;
-    top: 68% !important; /* Aradaki boşluğu azaltmak için yukarıya yaklaştırıldı */
+    top: 75% !important; /* Beyaz kutuya yer açmak için 75%'e itildi */
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     z-index: 999999 !important;
     
-    /* Mevcut 3D ahşap taş (draggable-root-clone) ile aynı renk ve doku */
     background-color: #e4be97 !important; 
     background-image: repeating-linear-gradient(
         45deg,
@@ -1264,11 +1276,10 @@ td:first-child {
         transparent 2px,
         transparent 6px
     ) !important;
-    border: 3px solid #5c3a21 !important; /* Koyu kahve kenarlık */
+    border: 3px solid #5c3a21 !important; 
     border-radius: 18px !important;
     padding: 15px 40px !important;
     
-    /* Büyüyen kutuya uyarlanmış 3D Ahşap blok gölgesi */
     box-shadow: 6px 6px 0px #5c3a21, 0 20px 50px rgba(0,0,0,0.4) !important;
     
     animation: crispPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
@@ -1277,11 +1288,15 @@ td:first-child {
 
 .crisp-root-clone .ar-root {
     font-family: 'Arakom', sans-serif !important;
-    font-size: 130px !important; /* Boyut istediğiniz gibi 130px yapıldı */
-    color: #000000 !important; /* Ahşap üzerinde siyah renk daha şık durur */
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4) !important; /* Ana taştaki oyma hissi eklendi */
-    line-height: 1 !important;
+    font-size: 130px !important; 
+    color: #000000 !important; 
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4) !important; 
+    
+    line-height: 1.2 !important;
     white-space: nowrap !important;
+    display: block !important; /* Harflerin üst üste binmesini engeller */
+    direction: rtl !important; /* Arapça yönünü zorunlu kılar */
+    padding-bottom: 25px !important; 
 }
 
 @keyframes crispPopIn {

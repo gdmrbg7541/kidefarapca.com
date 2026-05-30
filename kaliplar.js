@@ -2648,6 +2648,12 @@ const wordEasterEggs = {
 // ==================================================================
 const verbCategories = [
     {
+        id: "genel",
+        title: "Sık Kullanılan Fiiller",
+        // Bu diziyi BOŞ BIRAK, sistem wordEasterEggs içindeki geri kalan TÜM kökleri buraya otomatik dolduracak!
+        verbs: [] 
+    },
+    {
         id: "aksami-seba",
         title: "Aksam-ı Seb'a (Düzensizler)",
         // Aksam-ı Seb'a başlığında görünmesini istediğin kökleri buraya yazıyorsun
@@ -2658,12 +2664,6 @@ const verbCategories = [
         title: "Mezid (Türemiş) Fiiller",
         // Mezid sekmesinde görünmesini istediklerini buraya yazıyorsun
         verbs: ["عدد", "امن", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي"]
-    },
-    {
-        id: "genel",
-        title: "Sık Kullanılan Fiiller",
-        // Bu diziyi BOŞ BIRAK, sistem wordEasterEggs içindeki geri kalan TÜM kökleri buraya otomatik dolduracak!
-        verbs: [] 
     }
 ];
 
@@ -2672,15 +2672,15 @@ function buildVerbMenu() {
     if (!menuContainer) return;
     menuContainer.innerHTML = ''; // İçini temizle
 
-    // Kategorilenmiş kökleri tespit et (Geriye kalanları bulmak için)
-    const categorizedVerbs = new Set([...verbCategories[0].verbs, ...verbCategories[1].verbs]);
+    // Kategorilenmiş kökleri tespit et (1. ve 2. sıradakiler özel başlıklarımız)
+    const categorizedVerbs = new Set([...verbCategories[1].verbs, ...verbCategories[2].verbs]);
     const allVerbs = Object.keys(wordEasterEggs); // wordEasterEggs içindeki TÜM kökler
     
-    // Kategorisi olmayan her kökü otomatik olarak 3. kategoriye (Genel) ekle
-    verbCategories[2].verbs = []; // Önce temizle ki çiftleme yapmasın
+    // Kategorisi olmayan her kökü otomatik olarak EN ÜSTTEKİ (0. kategori) Sık Kullanılanlar'a ekle
+    verbCategories[0].verbs = []; // Önce temizle ki çiftleme yapmasın
     allVerbs.forEach(v => {
         if (!categorizedVerbs.has(v)) {
-            verbCategories[2].verbs.push(v);
+            verbCategories[0].verbs.push(v);
         }
     });
 
@@ -2693,7 +2693,7 @@ function buildVerbMenu() {
         // Metin ve ikonu ekliyoruz
         header.innerHTML = `<span>${category.title}</span><i class="fas fa-chevron-down"></i>`;
         
-        // 2. İçerik Izgarası (Content) - ARTIK HEPSİ KAPALI GELİYOR
+        // 2. İçerik Izgarası (Content) - Tümü Kapalı (Active sınıfı yok)
         const content = document.createElement('div');
         content.className = 'category-content verb-grid'; 
 
@@ -3278,6 +3278,13 @@ function handleBoxClick(boxElement) {
         textEl.innerHTML = coloredHTML;
         lastOriginalWord = plainWord; 
 
+        // === YENİ EKLENEN KISIM: Kutuya "Kök Türetildi" etiketi ver ===
+        const currentBox = textEl.closest('.glass-box');
+        if (currentBox) {
+            currentBox.classList.add('kok-turendi');
+        }
+        // ==============================================================
+
         // Ekranda dev klon varsa onu da anında türet ve yeşile boya
         const clone = document.getElementById('crisp-zoom-clone');
         if (clone) {
@@ -3289,6 +3296,7 @@ function handleBoxClick(boxElement) {
         
         if (typeof checkWordEasterEgg === 'function') checkWordEasterEgg(boxElement); 
     };
+
     if (isZoomEnabled) {
         if (tiklama === 0) {
             // 1. AŞAMA: Sadece Kırmızı Vurgu
@@ -3323,7 +3331,7 @@ function handleBoxClick(boxElement) {
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
             if (typeof resetBox === 'function') resetBox(boxElement); 
             boxElement.removeAttribute('data-tiklama-sayisi');
-            boxElement.classList.remove('current-active-red'); 
+            boxElement.classList.remove('current-active-red', 'kok-turendi'); 
             boxElement.style.setProperty("background-color", "", "important");
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         }
@@ -3343,7 +3351,7 @@ function handleBoxClick(boxElement) {
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
-                boxElement.classList.remove('current-active-red'); 
+                boxElement.classList.remove('current-active-red', 'kok-turendi'); 
                 boxElement.style.setProperty("background-color", "", "important");
                 // Artı işaretinin ışığını da söndür
                 const mobilePlus = document.getElementById('mobile-top-plus');
@@ -3369,7 +3377,7 @@ function handleBoxClick(boxElement) {
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
-                boxElement.classList.remove('current-active-red'); 
+                boxElement.classList.remove('current-active-red', 'kok-turendi'); 
                 boxElement.style.setProperty("background-color", "", "important");
             }
         }
@@ -3477,20 +3485,28 @@ function applyRootToKalip(root, kalip) {
 }
 
 function openConjugationPopup(kok, babNo, tip, anaVezin) {
-    SoundEngine.playClick();
+  if (!lastClickedBoxTextSpan) return;
+    const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
+    if (!boxElement) return;
+
+    // =================================================================
+    // === GÜVENLİK KİLİDİ: Kök türemediyse (kutu yeşil değilse) TABLOYU AÇMA! ===
+    if (!boxElement.classList.contains('kok-turendi')) {
+        return; 
+    }
+    // =================================================================
+
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     if (!kok || kok.length !== 3) {
         kok = "فعل"; 
     }
 
-    if (!lastClickedBoxTextSpan) return;
-    const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
-    if (!boxElement) return;
-
     // refId değerini bul (Özel kelime tablosunu çekmek için lazım olacak)
     const refEl = boxElement.querySelector('.ref');
     const refId = refEl ? parseInt(refEl.innerText) : 0;
 
+    // ... (Kodun geri kalanı aynen devam ediyor) ...
     document.querySelectorAll('.glass-box').forEach(box => {
         box.style.zIndex = "1";
     });
@@ -3843,21 +3859,28 @@ document.addEventListener('keydown', function(e) {
 });
 
 function resetTableOnly(isSilent = false) {
-     closeAllZoomedBoxes(); // Ekran sıfırlanırken tüm zoomları ve overlayi kapatır
+    if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes(); // Ekran sıfırlanırken tüm zoomları ve overlayi kapatır
     if (typeof clearDraggableRoots === 'function') {
         clearDraggableRoots();
     }
 
     if (!isSilent) {
-        SoundEngine.playReset(); 
+        if(typeof SoundEngine !== "undefined") SoundEngine.playReset(); 
     }
     isReadyVerbMode = false;
     targetStates = {};
     
     document.querySelectorAll('.glass-box').forEach(box => {
-        box.classList.remove('hidden-mode');
-        box.classList.remove("pulse-highlight"); 
-        box.classList.remove('matrix-opened');
+        // === İŞTE BURASI: Kutuya ait tüm renk, vurgu ve etiketleri tek kalemde temizler ===
+        box.classList.remove(
+            'hidden-mode', 
+            'pulse-highlight', 
+            'matrix-opened', 
+            'current-active-red', 
+            'sari-vurgu', 
+            'kok-turendi' // Kök türedi etiketini de sıfırlar!
+        );
+        
         box.removeAttribute('data-modal-closed');
         box.style.transform = "";
         box.style.backgroundColor = ""; 
@@ -3874,7 +3897,11 @@ function resetTableOnly(isSilent = false) {
             if (original) {
                 // --- YENİ: Sıfırlandığında da varsayılan kalıbı (فعل) renkli getir ---
                 if (original !== "-") {
-                    el.innerHTML = ColorEngine.colorize(original, ['ف', 'ع', 'ل']);
+                    if (typeof ColorEngine !== 'undefined') {
+                        el.innerHTML = ColorEngine.colorize(original, ['ف', 'ع', 'ل']);
+                    } else {
+                        el.innerText = original;
+                    }
                 } else {
                     el.innerText = original;
                 }
@@ -3896,7 +3923,10 @@ function resetTableOnly(isSilent = false) {
     const plusBtn = document.querySelector('.fa-plus');
     if (plusBtn) plusBtn.classList.remove('plus-highlighted');
 
-    highlightEasterEggBoxes(""); 
+    const mobilePlus = document.getElementById('mobile-top-plus');
+    if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
+
+    if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(""); 
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -4332,10 +4362,8 @@ function triggerAreaPulse(boxElement) {
             rootClone.id = 'crisp-root-clone';
             rootClone.className = 'crisp-root-clone';
             
-            const h1 = currentRootSafe[0];
-            const h2 = currentRootSafe[1];
-            const h3 = currentRootSafe[2];
-            let displayRoot = h1 + 'ـ' + ' ' + 'ـ' + h2 + 'ـ' + ' ' + 'ـ' + h3;
+            // YENİ: Akıllı kök formatlayıcıyı kullanarak "kendinden sonra birleşmeyen harf" sorununu çözer
+            let displayRoot = (typeof formatArabicRoot === 'function') ? formatArabicRoot(currentRootSafe) : currentRootSafe;
             
             rootClone.innerHTML = `<span class="ar-root">${displayRoot}</span>`;
             document.body.appendChild(rootClone);
