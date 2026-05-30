@@ -1235,6 +1235,13 @@ td:first-child {
     animation: none !important; 
 }
 
+/* --- MASAÜSTÜ İÇİN ARTI MENÜSÜ NORMAL BOYUT --- */
+#suffix-dropdown {
+    transform: scale(1.1) !important; /* Masaüstünde sadece %10 büyütür, taşırmaz */
+    transform-origin: top center !important;
+    z-index: 9999999 !important;
+}
+
 /* Easter Egg Yıldızını Büyüt */
 .crisp-zoom-clone .easter-egg-trigger {
     width: 45px !important;
@@ -1306,10 +1313,6 @@ td:first-child {
     background-color: #bfffdf !important;
 }
 
-/* Ek (Suffix) Menüsünü Büyüyen Klon Kutunun Üstüne Çıkar */
-#suffix-dropdown {
-    z-index: 9999999 !important; /* 7 tane 9 (Klonlar 6 tane) */
-}
 
 /* ========================================================= */
 /* ZOOM TUŞU AÇIKKEN KÜÇÜK KAHVERENGİ KÖK TAŞINI TAMAMEN GİZLE */
@@ -1433,6 +1436,116 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
    
 
    /* ========================================================= */
+/* MOBİL İÇİN ÖZEL SADELEŞTİRİLMİŞ TASARIM (MAX 1024px)      */
+/* ========================================================= */
+@media screen and (max-width: 1024px) {
+    /* Gereksiz masaüstü öğelerini gizle */
+    .top-bar, 
+    .window-pencere, 
+    .draggable-root-clone, 
+    #keyboard-overlay, 
+    .zoom-toggle-area,
+    #zoom-overlay,
+    #root-display-box,
+    #mobile-root-btn {
+        display: none !important;
+    }
+
+    #verb-overlay .close-btn, 
+    .verb-close-btn {
+        display: none !important;
+    }
+
+    body {
+        padding: 15px 10px;
+        background-color: #f0f4f8; 
+    }
+
+    /* SABİT ÜST BAR (Geri - Kök - Artı) */
+    #mobile-top-bar {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #2B88D9;
+        color: #ffffff;
+        padding: 12px 18px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 20px rgba(43, 136, 217, 0.35);
+        position: sticky; 
+        top: 10px;
+        z-index: 99999;
+    }
+
+    /* Üst Butonlar (Bembeyaz ve Devasa) */
+    .mobile-back-btn, .mobile-top-plus {
+        width: 70px !important;       
+        height: 70px !important;      
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff !important; 
+        color: #2B88D9 !important;            
+        border-radius: 18px !important;
+        font-size: 38px !important;           
+        cursor: pointer;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); 
+    }
+
+    .mobile-back-btn:active, .mobile-top-plus:active {
+        transform: scale(0.9);
+    }
+
+    .mobile-root-display {
+        font-family: 'Arakom', sans-serif;
+        font-size: 65px !important; 
+        line-height: 1;
+        direction: rtl;
+    }
+
+    /* Artı Butonu Vurgusu */
+    .mobile-top-plus.plus-highlighted {
+        background-color: #34C759 !important; 
+        color: #ffffff !important;            
+        box-shadow: 0 0 20px rgba(52, 199, 89, 0.9);
+        animation: crispPopIn 0.3s ease forwards;
+    }
+
+    #mobile-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding-bottom: 40px;
+    }
+
+    #mobile-grid .glass-box {
+        width: 100% !important;
+        margin: 0 !important;
+        min-height: 160px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        border-width: 2px !important;
+        border-bottom-width: 6px !important;
+        border-radius: 14px !important;
+    }
+
+    #mobile-grid .ar, #mobile-grid .ar-small {
+        font-size: 85px !important; 
+        line-height: 1.2 !important;
+    }
+
+    #mobile-grid .ref {
+        font-size: 22px !important;
+        padding: 6px 14px !important;
+        border-radius: 8px !important;
+        pointer-events: none !important; 
+    }
+
+   /* ========================================================= */
     /* MOBİL İÇİN EMOJİ, YILDIZ VE POPUP BÜYÜTME                 */
     /* ========================================================= */
     
@@ -1442,7 +1555,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         left: auto !important;       
         right: 15px !important;  
         animation: none !important; 
-        transition: none !important; /* Ekstra koruma: Titremeyi ve uçmayı önler */
+        transition: none !important; 
         transform: none !important;
         margin: 0 !important;
     }
@@ -1459,7 +1572,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         right: auto !important;      
         left: 15px !important;     
         animation: none !important; 
-        transition: none !important; /* Ekstra koruma: Titremeyi ve uçmayı önler */
+        transition: none !important; 
         transform: none !important;  
         margin: 0 !important;
     }
@@ -1490,15 +1603,71 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         font-size: 38px !important; 
         line-height: 1.5 !important;
     }
-}
 
-/* YENİ: ARTI MENÜSÜ SAĞDA (Fakat ekrana yapışık değil) */
+    /* YENİ: ARTI MENÜSÜ SAĞDA (Fakat ekrana yapışık değil) SADECE MOBİLDE! */
     #suffix-dropdown {
         position: fixed !important;
-        top: 110px !important;       /* Üst barın hemen altından açılır */
-        right: 20px !important;      /* Ekranın sağına 20 piksel boşluk bırakır (yapışmaz) */
-        left: auto !important;       /* Ortalamayı iptal eder */
-        transform: scale(2) !important; /* Menüyü devasa yapar */
-        transform-origin: top right !important; /* Büyürken ekrandan dışarı değil, içeri doğru büyür! */
-        z-index: 9999999 !important;
+        top: 110px !important;       
+        right: 20px !important;      
+        left: auto !important;       
+        transform: scale(2) !important; /* Sadece mobilde devasa yapar */
+        transform-origin: top right !important; 
     }
+} /* <-- DİKKAT: MOBİL KODLARIN GERÇEK BİTİŞ/KAPANIŞ YERİ BURASI! */
+
+/* --- DİNAMİK AÇILIR MENÜ (AKORDEON) TASARIMI (TÜM EKRANLAR İÇİN) --- */
+.verb-menu-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.category-header {
+    background: #2B88D9;
+    color: #ffffff;
+    padding: 18px 25px;
+    border-radius: 16px;
+    cursor: pointer;
+    display: flex;
+    /* Başlık solda, ok sağda kalacak şekilde yönlendirme (LTR hissi) */
+    flex-direction: row-reverse; 
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Arakom', sans-serif;
+    font-size: 2rem;
+    box-shadow: 0 5px 15px rgba(43, 136, 217, 0.2);
+    transition: background 0.2s, transform 0.1s;
+    user-select: none;
+}
+
+.category-header:active {
+    transform: scale(0.98);
+}
+
+.category-header i {
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    font-size: 1.5rem;
+}
+
+.category-content {
+    display: none;
+    padding: 10px 5px 25px 5px;
+    animation: fadeIn 0.3s ease;
+}
+
+.category-content.active {
+    display: grid;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.category-content.verb-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
