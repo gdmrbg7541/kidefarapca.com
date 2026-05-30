@@ -1142,6 +1142,14 @@ td:first-child {
     color: #555;
     transition: color 0.2s;
 }
+/* ========================================================= */
+/* MASAÜSTÜ İÇİN ARTI (+) MENÜSÜ NORMAL BOYUT                */
+/* ========================================================= */
+#suffix-dropdown {
+    transform: scale(1.1) !important; /* Masaüstünde hafif büyür, ekrandan taşmaz */
+    transform-origin: top center !important;
+    z-index: 9999999 !important;
+}
 
 .verb-close-btn:hover {
     color: #FF3B30;
@@ -1395,7 +1403,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
 
     .mobile-root-display {
         font-family: 'Arakom', sans-serif;
-        font-size: 65px !important; 
+        font-size: 90px !important; 
         line-height: 1;
         direction: rtl;
     }
@@ -1443,36 +1451,14 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
 
    
 
-   /* ========================================================= */
-    /* MOBİL İÇİN EMOJİ, YILDIZ VE POPUP BÜYÜTME                 */
-    /* ========================================================= */
-    
-   #mobile-grid .floating-emoji {
-        font-size: 55px !important; 
-        top: 15px !important;
-        left: auto !important;       
-        right: 15px !important;  
-        animation: none !important; 
-        transition: none !important; /* Ekstra koruma: Titremeyi ve uçmayı önler */
-        transform: none !important;
-        margin: 0 !important;
-    }
+ 
 
-    #mobile-grid .easter-egg-trigger {
-        font-size: 45px !important; 
-        width: 60px !important;
-        height: 60px !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        bottom: auto !important;
-        top: 15px !important; 
-        right: auto !important;      
-        left: 15px !important;     
-        animation: none !important; 
-        transition: none !important; /* Ekstra koruma: Titremeyi ve uçmayı önler */
-        transform: none !important;  
-        margin: 0 !important;
+   /* ========================================================= */
+    /* MOBİL İÇİN EMOJİ VE YILDIZ KORUMASI (GİZLEME)             */
+    /* ========================================================= */
+    .floating-emoji,
+    .easter-egg-trigger {
+        display: none !important; /* Emojiler birikip Artı (+) menüsünü bozmasın diye mobilde gizlendi */
     }
 
     .easter-egg-content {
@@ -1509,7 +1495,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         top: 110px !important;       /* Üst barın hemen altından açılır */
         right: 20px !important;      /* Ekranın sağına 20 piksel boşluk bırakır (yapışmaz) */
         left: auto !important;       /* Ortalamayı iptal eder */
-        transform: scale(1.2) !important; /* Menüyü devasa yapar */
+        transform: scale(2.2) !important; /* Menüyü devasa yapar */
         transform-origin: top right !important; /* Büyürken ekrandan dışarı değil, içeri doğru büyür! */
         z-index: 9999999 !important;
     }
