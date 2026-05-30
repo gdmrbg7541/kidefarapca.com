@@ -3,6 +3,9 @@
 const letters = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
 let currentRoot = ""; 
 let isReadyVerbMode = false; 
+let currentEggIndex = 0; 
+let lastClickedBoxTextSpan = null;
+let lastOriginalWord = "";
 
 const arabicKeyMap = {
     '"': 'ذ', 'q':'ض', 'w':'ص', 'e':'ث', 'r':'ق', 't':'ف', 'y':'غ', 'u':'ع', 'ı':'ه', 'o':'خ', 'p':'ح', 'ğ':'ج', 'ü':'د',
@@ -21,8 +24,6 @@ let currentTabActive = 0;
 let lastWheelTime = 0;
 const wheelCooldown = 600; 
 
-let lastClickedBoxTextSpan = null;
-let lastOriginalWord = "";
 
 const babVezinleri = {
     1: { mazi: "فَعَلَ", muzari: "يَفْعُلُ", emir: "أُفْعُلْ" },
@@ -2345,8 +2346,405 @@ const wordEasterEggs = {
         81: { 
             base: { emoji: "🚧", arText: "مُشْكِلَةٌ مُفْتَعَلَةٌ", trText: "Suni (yapay / kasıtlı çıkarılmış) sorun." } 
         }
+    },
+
+
+      // ==================================================================
+    // DÜZENSİZ FİİLLER (Tek Veri Kaynağı: Emojiler + Çekim Tabloları)
+    // ==================================================================
+    "شدد": {
+        1: { 
+            base: { emoji: "🪢", arText: "شَدَّ", trText: "Sıktı / Bağladı." },
+            cekimi: ["شَدَّ", "شَدَّا", "شَدُّوا", "شَدَّتْ", "شَدَّتَا", "شَدَدْنَ", "شَدَدْتَ", "شَدَدْتُمَا", "شَدَدْتُمْ", "شَدَدْتِ", "شَدَدْتُمَا", "شَدَدْتُنَّ", "شَدَدْتُ", "شَدَدْنَا", "شَدَدْنَا"]
+        },
+        2: { 
+            base: { emoji: "🔗", arText: "يَشُدُّ", trText: "Sıkar / Bağlıyor." },
+            cekimi: ["يَشُدُّ", "يَشُدَّانِ", "يَشُدُّونَ", "تَشُدُّ", "تَشُدَّانِ", "يَشْدُدْنَ", "تَشُدُّ", "تَشُدَّانِ", "تَشُدُّونَ", "تَشُدِّينَ", "تَشُدَّانِ", "تَشْدُدْنَ", "أَشُدُّ", "نَشُدُّ", "نَشُدُّ"]
+        },
+        3: { 
+            base: { emoji: "❗", arText: "شُدَّ", trText: "Sık / Bağla!" },
+            cekimi: ["شُدَّ", "شُدَّا", "شُدُّوا", "شُدِّي", "شُدَّا", "اُشْدُدْنَ"]
+        }
+    },
+    "اكل": {
+        1: { 
+            base: { emoji: "🍽️", arText: "أَكَلَ", trText: "Yedi." },
+            cekimi: ["أَكَلَ", "أَكَلَا", "أَكَلُوا", "أَكَلَتْ", "أَكَلَتَا", "أَكَلْنَ", "أَكَلْتَ", "أَكَلْتُمَا", "أَكَلْتُمْ", "أَكَلْتِ", "أَكَلْتُمَا", "أَكَلْتُنَّ", "أَكَلْتُ", "أَكَلْنَا", "أَكَلْنَا"]
+        },
+        2: { 
+            base: { emoji: "😋", arText: "يَأْكُلُ", trText: "Yer / Yiyor." },
+            cekimi: ["يَأْكُلُ", "يَأْكُلَانِ", "يَأْكُلُونَ", "تَأْكُلُ", "تَأْكُلَانِ", "يَأْكُلْنَ", "تَأْكُلُ", "تَأْكُلَانِ", "تَأْكُلُونَ", "تَأْكُلِينَ", "تَأْكُلَانِ", "تَأْكُلْنَ", "آكُلُ", "نَأْكُلُ", "نَأْكُلُ"]
+        },
+        3: { 
+            base: { emoji: "❗", arText: "كُلْ", trText: "Ye!" },
+            cekimi: ["كُلْ", "كُلَا", "كُلُوا", "كُلِي", "كُلَا", "كُلْنَ"]
+        }
+    },
+    "سال": {
+        1: { 
+            base: { emoji: "❓", arText: "سَأَلَ", trText: "Sordu / İstedi." },
+            cekimi: ["سَأَلَ", "سَأَلَا", "سَأَلُوا", "سَأَلَتْ", "سَأَلَتَا", "سَأَلْنَ", "سَأَلْتَ", "سَأَلْتُمَا", "سَأَلْتُمْ", "سَأَلْتِ", "سَأَلْتُمَا", "سَأَلْتُنَّ", "سَأَلْتُ", "سَأَلْنَا", "سَأَلْنَا"]
+        },
+        6: { 
+            base: { emoji: "🗣️", arText: "يَسْأَلُ", trText: "Sorar / Soruyor." },
+            cekimi: ["يَسْأَلُ", "يَسْأَلَانِ", "يَسْأَلُونَ", "تَسْأَلُ", "تَسْأَلَانِ", "يَسْأَلْنَ", "تَسْأَلُ", "تَسْأَلَانِ", "تَسْأَلُونَ", "تَسْأَلِينَ", "تَسْأَلَانِ", "تَسْأَلْنَ", "أَسْأَلُ", "نَسْأَلُ", "نَسْأَلُ"]
+        },
+        7: { 
+            base: { emoji: "❗", arText: "اِسْأَلْ", trText: "Sor / İste!" },
+            cekimi: ["اِسْأَلْ", "اِسْأَلَا", "اِسْأَلُوا", "اِسْأَلِي", "اِسْأَلَا", "اِسْأَلْنَ"]
+        }
+    },
+    "قول": {
+        1: { 
+            base: { emoji: "🗣️", arText: "قَالَ", trText: "Dedi / Söyledi." },
+            cekimi: ["قَالَ", "قَالَا", "قَالُوا", "قَالَتْ", "قَالَتَا", "قُلْنَ", "قُلْتَ", "قُلْتُمَا", "قُلْتُمْ", "قُلْتِ", "قُلْتُمَا", "قُلْتُنَّ", "قُلْتُ", "قُلْنَا", "قُلْنَا"]
+        },
+        2: { 
+            base: { emoji: "💬", arText: "يَقُولُ", trText: "Der / Söylüyor." },
+            cekimi: ["يَقُولُ", "يَقُولَانِ", "يَقُولُونَ", "تَقُولُ", "تَقُولَانِ", "يَقُلْنَ", "تَقُولُ", "تَقُولَانِ", "تَقُولُونَ", "تَقُولِينَ", "تَقُولَانِ", "تَقُلْنَ", "أَقُولُ", "نَقُولُ", "نَقُولُ"]
+        },
+        3: { 
+            base: { emoji: "❗", arText: "قُلْ", trText: "De / Söyle!" },
+            cekimi: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"]
+        }
+    },
+    "بيع": {
+        1: { 
+            base: { emoji: "🤝", arText: "بَاعَ", trText: "Sattı." },
+            cekimi: ["بَاعَ", "بَاعَا", "بَاعُوا", "بَاعَتْ", "بَاعَتَا", "بِعْنَ", "بِعْتَ", "بِعْتُمَا", "بِعْتُمْ", "بِعْتِ", "بِعْتُمَا", "بِعْتُنَّ", "بِعْتُ", "بِعْنَا", "بِعْنَا"]
+        },
+        4: { 
+            base: { emoji: "💰", arText: "يَبِيعُ", trText: "Satar / Satıyor." },
+            cekimi: ["يَبِيعُ", "يَبِيعَانِ", "يَبِيعُونَ", "تَبِيعُ", "تَبِيعَانِ", "يَبِعْنَ", "تَبِيعُ", "تَبِيعَانِ", "تَبِيعُونَ", "تَبِيعِينَ", "تَبِيعَانِ", "تَبِعْنَ", "أَبِيعُ", "نَبِيعُ", "نَبِيعُ"]
+        },
+        5: { 
+            base: { emoji: "❗", arText: "بِعْ", trText: "Sat!" },
+            cekimi: ["بِعْ", "بِيعَا", "بِيعُوا", "بِيعِي", "بِيعَا", "بِعْنَ"]
+        }
+    },
+    "دعو": {
+        1: { 
+            base: { emoji: "🤲", arText: "دَعَا", trText: "Davet etti / Dua etti." },
+            cekimi: ["دَعَا", "دَعَوَا", "دَعَوْا", "دَعَتْ", "دَعَتَا", "دَعَوْنَ", "دَعَوْتَ", "دَعَوْتُمَا", "دَعَوْتُمْ", "دَعَوْتِ", "دَعَوْتُمَا", "دَعَوْتُنَّ", "دَعَوْتُ", "دَعَوْنَا", "دَعَوْنَا"]
+        },
+        2: { 
+            base: { emoji: "🙏", arText: "يَدْعُو", trText: "Davet eder / Dua ediyor." },
+            cekimi: ["يَدْعُو", "يَدْعُوَانِ", "يَدْعُونَ", "تَدْعُو", "تَدْعُوَانِ", "يَدْعُونَ", "تَدْعُو", "تَدْعُوَانِ", "تَدْعُونَ", "تَدْعِينَ", "تَدْعُوَانِ", "تَدْعُونَ", "أَدْعُو", "نَدْعُو", "نَدْعُو"]
+        },
+        3: { 
+            base: { emoji: "❗", arText: "اُدْعُ", trText: "Davet et / Dua et!" },
+            cekimi: ["اُدْعُ", "اُدْعُوَا", "اُدْعُوا", "اُدْعِي", "اُدْعُوَا", "اُدْعُونَ"]
+        }
+    },
+    "مشي": {
+        1: { 
+            base: { emoji: "🚶", arText: "مَشَى", trText: "Yürüdü." },
+            cekimi: ["مَشَى", "مَشَيَا", "مَشَوْا", "مَشَتْ", "مَشَتَا", "مَشَيْنَ", "مَشَيْتَ", "مَشَيْتُمَا", "مَشَيْتُمْ", "مَشَيْتِ", "مَشَيْتُمَا", "مَشَيْتُنَّ", "مَشَيْتُ", "مَشَيْنَا", "مَشَيْنَا"]
+        },
+        4: { 
+            base: { emoji: "👟", arText: "يَمْشِي", trText: "Yürür / Yürüyor." },
+            cekimi: ["يَمْشِي", "يَمْشِيَانِ", "يَمْشُونَ", "تَمْشِي", "تَمْشِيَانِ", "يَمْشِينَ", "تَمْشِي", "تَمْشِيَانِ", "تَمْشُونَ", "تَمْشِينَ", "تَمْشِيَانِ", "تَمْشِينَ", "أَمْشِي", "نَمْشِي", "نَمْشِي"]
+        },
+        5: { 
+            base: { emoji: "❗", arText: "اِمْشِ", trText: "Yürü!" },
+            cekimi: ["اِمْشِ", "اِمْشِيَا", "اِمْشُوا", "اِمْشِي", "اِمْشِيَا", "اِمْشِينَ"]
+        }
+    },
+    "رضي": {
+        8: { 
+            base: { emoji: "😌", arText: "رَضِيَ", trText: "Razı oldu." },
+            cekimi: ["رَضِيَ", "رَضِيَا", "رَضُوا", "رَضِيَتْ", "رَضِيَتَا", "رَضِينَ", "رَضِيتَ", "رَضِيتُمَا", "رَضِيتُمْ", "رَضِيتِ", "رَضِيتُمَا", "رَضِيتُنَّ", "رَضِيتُ", "رَضِينَا", "رَضِينَا"]
+        },
+        9: { 
+            base: { emoji: "❤️", arText: "يَرْضَى", trText: "Razı olur / Razı oluyor." },
+            cekimi: ["يَرْضَى", "يَرْضَيَانِ", "يَرْضَوْنَ", "تَرْضَى", "تَرْضَيَانِ", "يَرْضَيْنَ", "تَرْضَى", "تَرْضَيَانِ", "تَرْضَوْنَ", "تَرْضَيْنَ", "تَرْضَيَانِ", "تَرْضَيْنَ", "أَرْضَى", "نَرْضَى", "نَرْضَى"]
+        },
+        10: { 
+            base: { emoji: "❗", arText: "اِرْضَ", trText: "Razı ol!" },
+            cekimi: ["اِرْضَ", "اِرْضَيَا", "اِرْضَوْا", "اِرْضَيْ", "اِرْضَيَا", "اِرْضَيْنَ"]
+        }
+    },
+    "وقي": {
+        1: { 
+            base: { emoji: "🛡️", arText: "وَقَى", trText: "Korudu." },
+            cekimi: ["وَقَى", "وَقَيَا", "وَقَوْا", "وَقَتْ", "وَقَتَا", "وَقَيْنَ", "وَقَيْتَ", "وَقَيْتُمَا", "وَقَيْتُمْ", "وَقَيْتِ", "وَقَيْتُمَا", "وَقَيْتُنَّ", "وَقَيْتُ", "وَقَيْنَا", "وَقَيْنَا"]
+        },
+        4: { 
+            base: { emoji: "🏰", arText: "يَقِي", trText: "Korur / Koruyor." },
+            cekimi: ["يَقِي", "يَقِيَانِ", "يَقُونَ", "تَقِي", "تَقِيَانِ", "يَقِينَ", "تَقِي", "تَقِيَانِ", "تَقُونَ", "تَقِينَ", "تَقِيَانِ", "تَقِينَ", "أَقِي", "نَقِي", "نَقِي"]
+        },
+        5: { 
+            base: { emoji: "❗", arText: "قِ", trText: "Koru!" },
+            cekimi: ["قِ", "قِيَا", "قُوا", "قِي", "قِيَا", "قِينَ"]
+        }
+    },
+    "عدد": {
+        52: { 
+            base: { emoji: "⚙️", arText: "أَعَدَّ", trText: "Hazırladı." },
+            cekimi: ["أَعَدَّ", "أَعَدَّا", "أَعَدُّوا", "أَعَدَّتْ", "أَعَدَّتَا", "أَعْدَدْنَ", "أَعْدَدْتَ", "أَعْدَدْتُمَا", "أَعْدَدْتُمْ", "أَعْدَدْتِ", "أَعْدَدْتُمَا", "أَعْدَدْتُنَّ", "أَعْدَدْتُ", "أَعْدَدْنَا", "أَعْدَدْنَا"]
+        },
+        53: { 
+            base: { emoji: "🔄", arText: "يُعِدُّ", trText: "Hazırlar / Hazırlıyor." },
+            cekimi: ["يُعِدُّ", "يُعِدَّانِ", "يُعِدُّونَ", "تُعِدُّ", "تُعِدَّانِ", "يُعْدِدْنَ", "تُعِدُّ", "تُعِدَّانِ", "تُعِدُّونَ", "تُعِدِّينَ", "تُعِدَّانِ", "تُعْدِدْنَ", "أُعِدُّ", "نُعِدُّ", "نُعِدُّ"]
+        },
+        54: { 
+            base: { emoji: "❗", arText: "أَعِدَّ", trText: "Hazırla!" },
+            cekimi: ["أَعِدَّ", "أَعِدَّا", "أَعِدُّوا", "أَعِدِّي", "أَعِدَّا", "أَعْدِدْنَ"]
+        }
+    },
+    "صلي": {
+        58: { 
+            base: { emoji: "🧎", arText: "صَلَّى", trText: "Namaz kıldı / Dua etti." },
+            cekimi: ["صَلَّى", "صَلَّيَا", "صَلَّوْا", "صَلَّتْ", "صَلَّتَا", "صَلَّيْنَ", "صَلَّيْتَ", "صَلَّيْتُمَا", "صَلَّيْتُمْ", "صَلَّيْتِ", "صَلَّيْتُمَا", "صَلَّيْتُنَّ", "صَلَّيْتُ", "صَلَّيْنَا", "صَلَّيْنَا"]
+        },
+        59: { 
+            base: { emoji: "🤲", arText: "يُصَلِّي", trText: "Namaz kılar / Kılıyor." },
+            cekimi: ["يُصَلِّي", "يُصَلِّيَانِ", "يُصَلُّونَ", "تُصَلِّي", "تُصَلِّيَانِ", "يُصَلِّينَ", "تُصَلِّي", "تُصَلِّيَانِ", "تُصَلُّونَ", "تُصَلِّينَ", "تُصَلِّيَانِ", "تُصَلِّينَ", "أُصَلِّي", "نُصَلِّي", "نُصَلِّي"]
+        },
+        60: { 
+            base: { emoji: "❗", arText: "صَلِّ", trText: "Namaz kıl!" },
+            cekimi: ["صَلِّ", "صَلِّيَا", "صَلُّوا", "صَلِّي", "صَلِّيَا", "صَلِّينَ"]
+        }
+    },
+    "سوي": {
+        64: { 
+            base: { emoji: "⚖️", arText: "سَاوَى", trText: "Eşitledi." },
+            cekimi: ["سَاوَى", "سَاوَيَا", "سَاوَوْا", "سَاوَتْ", "سَاوَتَا", "سَاوَيْنَ", "سَاوَيْتَ", "سَاوَيْتُمَا", "سَاوَيْتُمْ", "سَاوَيْتِ", "سَاوَيْتُمَا", "سَاوَيْتُنَّ", "سَاوَيْتُ", "سَاوَيْنَا", "سَاوَيْنَا"]
+        },
+        65: { 
+            base: { emoji: "🟰", arText: "يُسَاوِي", trText: "Eşitler / Eşit oluyor." },
+            cekimi: ["يُسَاوِي", "يُسَاوِيَانِ", "يُسَاوُونَ", "تُسَاوِي", "تُسَاوِيَانِ", "يُسَاوِينَ", "تُسَاوِي", "تُسَاوِيَانِ", "تُسَاوُونَ", "تُسَاوِينَ", "تُسَاوِيَانِ", "تُسَاوِينَ", "أُسَاوِي", "نُسَاوِي", "نُسَاوِي"]
+        },
+        66: { 
+            base: { emoji: "❗", arText: "سَاوِ", trText: "Eşitle!" },
+            cekimi: ["سَاوِ", "سَاوِيَا", "سَاوُوا", "سَاوِي", "سَاوِيَا", "سَاوِينَ"]
+        }
+    },
+    "وصل": {
+        77: { 
+            base: { emoji: "🔗", arText: "اِتَّصَلَ", trText: "Bağlandı / İletişim kurdu." },
+            cekimi: ["اِتَّصَلَ", "اِتَّصَلَا", "اِتَّصَلُوا", "اِتَّصَلَتْ", "اِتَّصَلَتَا", "اِتَّصَلْنَ", "اِتَّصَلْتَ", "اِتَّصَلْتُمَا", "اِتَّصَلْتُمْ", "اِتَّصَلْتِ", "اِتَّصَلْتُمَا", "اِتَّصَلْتُنَّ", "اِتَّصَلْتُ", "اِتَّصَلْنَا", "اِتَّصَلْنَا"]
+        },
+        78: { 
+            base: { emoji: "📞", arText: "يَتَّصِلُ", trText: "Bağlanır / İletişim kuruyor." },
+            cekimi: ["يَتَّصِلُ", "يَتَّصِلَانِ", "يَتَّصِلُونَ", "تَتَّصِلُ", "تَتَّصِلَانِ", "يَتَّصِلْنَ", "تَتَّصِلُ", "تَتَّصِلَانِ", "تَتَّصِلُونَ", "تَتَّصِلِينَ", "تَتَّصِلَانِ", "تَتَّصِلْنَ", "أَتَّصِلُ", "نَتَّصِلُ", "نَتَّصِلُ"]
+        },
+        79: { 
+            base: { emoji: "❗", arText: "اِتَّصِلْ", trText: "Bağlan / İletişim kur!" },
+            cekimi: ["اِتَّصِلْ", "اِتَّصِلَا", "اِتَّصِلُوا", "اِتَّصِلِي", "اِتَّصِلَا", "اِتَّصِلْنَ"]
+        }
+    },
+    "خير": {
+        77: { 
+            base: { emoji: "🎯", arText: "اِخْتَارَ", trText: "Seçti." },
+            cekimi: ["اِخْتَارَ", "اِخْتَارَا", "اِخْتَارُوا", "اِخْتَارَتْ", "اِخْتَارَتَا", "اِخْتَرْنَ", "اِخْتَرْتَ", "اِخْتَرْتُمَا", "اِخْتَرْتُمْ", "اِخْتَرْتِ", "اِخْتَرْتُمَا", "اِخْتَرْتُنَّ", "اِخْتَرْتُ", "اِخْتَرْنَا", "اِخْتَرْنَا"]
+        },
+        78: { 
+            base: { emoji: "✅", arText: "يَخْتَارُ", trText: "Seçer / Seçiyor." },
+            cekimi: ["يَخْتَارُ", "يَخْتَارَانِ", "يَخْتَارُونَ", "تَخْتَارُ", "تَخْتَارَانِ", "يَخْتَرْنَ", "تَخْتَارُ", "تَخْتَارَانِ", "تَخْتَارُونَ", "تَخْتَارِينَ", "تَخْتَارَانِ", "تَخْتَرْنَ", "أَخْتَارُ", "نَخْتَارُ", "نَخْتَارُ"]
+        },
+        79: { 
+            base: { emoji: "❗", arText: "اِخْتَرْ", trText: "Seç!" },
+            cekimi: ["اِخْتَرْ", "اِخْتَارَا", "اِخْتَارُوا", "اِخْتَارِي", "اِخْتَارَا", "اِخْتَرْنَ"]
+        }
+    },
+    "وضأ": {
+        88: { 
+            base: { emoji: "💧", arText: "تَوَضَّأَ", trText: "Abdest aldı." },
+            cekimi: ["تَوَضَّأَ", "تَوَضَّأَا", "تَوَضَّأُوا", "تَوَضَّأَتْ", "تَوَضَّأَتَا", "تَوَضَّأْنَ", "تَوَضَّأْتَ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُمْ", "تَوَضَّأْتِ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُنَّ", "تَوَضَّأْتُ", "تَوَضَّأْنَا", "تَوَضَّأْنَا"]
+        },
+        89: { 
+            base: { emoji: "💦", arText: "يَتَوَضَّأُ", trText: "Abdest alır / Alıyor." },
+            cekimi: ["يَتَوَضَّأُ", "يَتَوَضَّأَانِ", "يَتَوَضَّأُونَ", "تَتَوَضَّأُ", "تَتَوَضَّأَانِ", "يَتَوَضَّأْنَ", "تَتَوَضَّأُ", "تَتَوَضَّأَانِ", "تَتَوَضَّأُونَ", "تَتَوَضَّئِينَ", "تَتَوَضَّأَانِ", "تَتَوَضَّأْنَ", "أَتَوَضَّأُ", "نَتَوَضَّأُ", "نَتَوَضَّأُ"]
+        },
+        90: { 
+            base: { emoji: "❗", arText: "تَوَضَّأْ", trText: "Abdest al!" },
+            cekimi: ["تَوَضَّأْ", "تَوَضَّأَا", "تَوَضَّأُوا", "تَوَضَّئِي", "تَوَضَّأَا", "تَوَضَّأْنَ"]
+        }
+    },
+    "عون": {
+        94: { 
+            base: { emoji: "🤝", arText: "تَعَاوَنَ", trText: "Yardımlaştı." },
+            cekimi: ["تَعَاوَنَ", "تَعَاوَنَا", "تَعَاوَنُوا", "تَعَاوَنَتْ", "تَعَاوَنَتَا", "تَعَاوَنَّ", "تَعَاوَنْتَ", "تَعَاوَنْتُمَا", "تَعَاوَنْتُمْ", "تَعَاوَنْتِ", "تَعَاوَنْتُمَا", "تَعَاوَنْتُنَّ", "تَعَاوَنْتُ", "تَعَاوَنَّا", "تَعَاوَنَّا"]
+        },
+        95: { 
+            base: { emoji: "🫂", arText: "يَتَعَاوَنُ", trText: "Yardımlaşır / Yardımlaşıyor." },
+            cekimi: ["يَتَعَاوَنُ", "يَتَعَاوَنَانِ", "يَتَعَاوَنُونَ", "تَتَعَاوَنُ", "تَتَعَاوَنَانِ", "يَتَعَاوَنَّ", "تَتَعَاوَنُ", "تَتَعَاوَنَانِ", "تَتَعَاوَنُونَ", "تَتَعَاوَنِينَ", "تَتَعَاوَنَانِ", "تَتَعَاوَنَّ", "أَتَعَاوَنُ", "نَتَعَاوَنُ", "نَتَعَاوَنُ"]
+        },
+        96: { 
+            base: { emoji: "❗", arText: "تَعَاوَنْ", trText: "Yardımlaş!" },
+            cekimi: ["تَعَاوَنْ", "تَعَاوَنَا", "تَعَاوَنُوا", "تَعَاوَنِي", "تَعَاوَنَا", "تَعَاوَنَّ"]
+        }
+    },
+    "وفي": {
+        100: { 
+            base: { emoji: "✅", arText: "اِسْتَوْفَى", trText: "Tamamını aldı / Yerine getirdi." },
+            cekimi: ["اِسْتَوْفَى", "اِسْتَوْفَيَا", "اِسْتَوْفَوْا", "اِسْتَوْفَتْ", "اِسْتَوْفَتَا", "اِسْتَوْفَيْنَ", "اِسْتَوْفَيْتَ", "اِسْتَوْفَيْتُمَا", "اِسْتَوْفَيْتُمْ", "اِسْتَوْفَيْتِ", "اِسْتَوْفَيْتُمَا", "اِسْتَوْفَيْتُنَّ", "اِسْتَوْفَيْتُ", "اِسْتَوْفَيْنَا", "اِسْتَوْفَيْنَا"]
+        },
+        101: { 
+            base: { emoji: "📦", arText: "يَسْتَوْفِي", trText: "Tamamını alır / Yerine getiriyor." },
+            cekimi: ["يَسْتَوْفِي", "يَسْتَوْفِيَانِ", "يَسْتَوْفُونَ", "تَسْتَوْفِي", "تَسْتَوْفِيَانِ", "يَسْتَوْفِينَ", "تَسْتَوْفِي", "تَسْتَوْفِيَانِ", "تَسْتَوْفُونَ", "تَسْتَوْفِينَ", "تَسْتَوْفِيَانِ", "تَسْتَوْفِينَ", "أَسْتَوْفِي", "نَسْتَوْفِي", "نَسْتَوْفِي"]
+        },
+        102: { 
+            base: { emoji: "❗", arText: "اِسْتَوْفِ", trText: "Tamamını al!" },
+            cekimi: ["اِسْتَوْفِ", "اِسْتَوْفِيَا", "اِسْتَوْفُوا", "اِسْتَوْفِي", "اِسْتَوْفِيَا", "اِسْتَوْفِينَ"]
+        }
+    },
+    "طوي": {
+        71: { 
+            base: { emoji: "📜", arText: "اِنْطَوَى", trText: "Katlandı / Dürüldü." },
+            cekimi: ["اِنْطَوَى", "اِنْطَوَيَا", "اِنْطَوَوْا", "اِنْطَوَتْ", "اِنْطَوَتَا", "اِنْطَوَيْنَ", "اِنْطَوَيْتَ", "اِنْطَوَيْتُمَا", "اِنْطَوَيْتُمْ", "اِنْطَوَيْتِ", "اِنْطَوَيْتُمَا", "اِنْطَوَيْتُنَّ", "اِنْطَوَيْتُ", "اِنْطَوَيْنَا", "اِنْطَوَيْنَا"]
+        },
+        72: { 
+            base: { emoji: "🗞️", arText: "يَنْطَوِي", trText: "Katlanır / Dürülüyor." },
+            cekimi: ["يَنْطَوِي", "يَنْطَوِيَانِ", "يَنْطَوُونَ", "تَنْطَوِي", "تَنْطَوِيَانِ", "يَنْطَوِينَ", "تَنْطَوِي", "تَنْطَوِيَانِ", "تَنْطَوُونَ", "تَنْطَوِينَ", "تَنْطَوِيَانِ", "تَنْطَوِينَ", "أَنْطَوِي", "نَنْطَوِي", "نَنْطَوِي"]
+        },
+        73: { 
+            base: { emoji: "❗", arText: "اِنْطَوِ", trText: "Katlan!" },
+            cekimi: ["اِنْطَوِ", "اِنْطَوِيَا", "اِنْطَوُوا", "اِنْطَوِي", "اِنْطَوِيَا", "اِنْطَوِينَ"]
+        }
+    },
+    "وجد": {
+        // "وجد" fiilini ekliyorum, çünkü tabloda emoji kısmı var ama çekimleri eklenmemişti. (Bulmak / Var olmak)
+        // 2. Bab (Mazi: 1, Muzari: 4, Emir: 5)
+        1: { 
+            base: { emoji: "🔍", arText: "وَجَدَ", trText: "Buldu." },
+            cekimi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"]
+        },
+        4: { 
+            base: { emoji: "🔎", arText: "يَجِدُ", trText: "Bulur / Buluyor." },
+            cekimi: ["يَجِدُ", "يَجِدَانِ", "يَجِدُونَ", "تَجِدُ", "تَجِدَانِ", "يَجِدْنَ", "تَجِدُ", "تَجِدَانِ", "تَجِدُونَ", "تَجِدِينَ", "تَجِدَانِ", "تَجِدْنَ", "أَجِدُ", "نَجِدُ", "نَجِدُ"]
+        },
+        5: { 
+            base: { emoji: "❗", arText: "جِدْ", trText: "Bul!" },
+            cekimi: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"]
+        }
+    },
+    "امن": {
+        // "امن" fiiline Mazi, Muzari ve Emir (İf'al Babı - 52, 53, 54) çekimlerini ekliyoruz
+        19: { base: { emoji: "👮", arText: "أَمْن", trText: "Güvenlik." } },
+        22: { base: { emoji: "🛡️", arText: "الْأَمَانُ وَالصِّحَّةُ نِعْمَتَانِ", trText: "Aman (güvenlik) ve sağlık iki büyük nimettir." }, suggestsPlus: true, "ة": { emoji: "📦", arText: "الأَمَانَةُ تَجْلِبُ الرِّزْقَ", trText: "Emaneti korumak (güvenilir olmak) rızık getirir." } },
+        35: { base: { emoji: "🤝", arText: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ وَالْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ", trText: "Müslüman, diğer Müslümanların elinden ve dilinden emin olduğu kimsedir." } },
+        55: { base: { emoji: "❤️", arText: "الْإِيمَانُ مَا وَقَرَ فِي الْقَلْبِ", trText: "İman, kalbe yerleşen (inanılan) şeydir." } },
+        56: { base: { emoji: "🕌", arText: "الْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ", trText: "Mümin, müminin aynasıdır. (Hadis-i Şerif)" } },
+        61: { base: { emoji: "📝", arText: "شَرِكَةُ التَّأْمِينِ الصِّحِّيِّ", trText: "Sağlık sigortası (güvencesi/tamini) şirketi." } },
+        52: { 
+            base: { emoji: "🤲", arText: "آمَنَ", trText: "İman etti." },
+            cekimi: ["آمَنَ", "آمَنَا", "آمَنُوا", "آمَنَتْ", "آمَنَتَا", "آمَنَّ", "آمَنْتَ", "آمَنْتُمَا", "آمَنْتُمْ", "آمَنْتِ", "آمَنْتُمَا", "آمَنْتُنَّ", "آمَنْتُ", "آمَنَّا", "آمَنَّا"]
+        },
+        53: { 
+            base: { emoji: "❤️", arText: "يُؤْمِنُ", trText: "İman eder / İnanıyor." },
+            cekimi: ["يُؤْمِنُ", "يُؤْمِنَانِ", "يُؤْمِنُونَ", "تُؤْمِنُ", "تُؤْمِنَانِ", "يُؤْمِنَّ", "تُؤْمِنُ", "تُؤْمِنَانِ", "تُؤْمِنُونَ", "تُؤْمِنِينَ", "تُؤْمِنَانِ", "تُؤْمِنَّ", "أُؤْمِنُ", "نُؤْمِنُ", "نُؤْمِنُ"]
+        },
+        54: { 
+            base: { emoji: "❗", arText: "آمِنْ", trText: "İman et!" },
+            cekimi: ["آمِنْ", "آمِنَا", "آمِنُوا", "آمِنِي", "آمِنَا", "آمِنَّ"]
+        }
     }
 };
+
+// ==================================================================
+// DİNAMİK HAZIR FİİLLER MENÜSÜ OLUŞTURUCU
+// ==================================================================
+const verbCategories = [
+    {
+        id: "aksami-seba",
+        title: "Aksam-ı Seb'a (Düzensizler)",
+        // Aksam-ı Seb'a başlığında görünmesini istediğin kökleri buraya yazıyorsun
+        verbs: ["شدد", "اكل", "سال", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي"]
+    },
+    {
+        id: "mezid",
+        title: "Mezid (Türemiş) Fiiller",
+        // Mezid sekmesinde görünmesini istediklerini buraya yazıyorsun
+        verbs: ["عدد", "امن", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي"]
+    },
+    {
+        id: "genel",
+        title: "Sık Kullanılan Fiiller",
+        // Bu diziyi BOŞ BIRAK, sistem wordEasterEggs içindeki geri kalan TÜM kökleri buraya otomatik dolduracak!
+        verbs: [] 
+    }
+];
+
+function buildVerbMenu() {
+    const menuContainer = document.getElementById('dynamic-verb-menu');
+    if (!menuContainer) return;
+    menuContainer.innerHTML = ''; // İçini temizle
+
+    // Kategorilenmiş kökleri tespit et (Geriye kalanları bulmak için)
+    const categorizedVerbs = new Set([...verbCategories[0].verbs, ...verbCategories[1].verbs]);
+    const allVerbs = Object.keys(wordEasterEggs); // wordEasterEggs içindeki TÜM kökler
+    
+    // Kategorisi olmayan her kökü otomatik olarak 3. kategoriye (Genel) ekle
+    verbCategories[2].verbs = []; // Önce temizle ki çiftleme yapmasın
+    allVerbs.forEach(v => {
+        if (!categorizedVerbs.has(v)) {
+            verbCategories[2].verbs.push(v);
+        }
+    });
+
+    verbCategories.forEach((category, catIndex) => {
+        if (category.verbs.length === 0) return; // İçi boşsa o başlığı hiç çizme
+
+        // 1. Başlık Kutusu (Header)
+        const header = document.createElement('div');
+        header.className = 'category-header';
+        // Metin ve ikonu ekliyoruz
+        header.innerHTML = `<span>${category.title}</span><i class="fas fa-chevron-down"></i>`;
+        
+        // 2. İçerik Izgarası (Content) - ARTIK HEPSİ KAPALI GELİYOR
+        const content = document.createElement('div');
+        content.className = 'category-content verb-grid'; 
+
+        // Başlığa tıklandığında aç/kapat (Akordeon Mantığı)
+        header.onclick = () => {
+            if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+            const isActive = content.classList.contains('active');
+            
+            // ==========================================
+            // BİRİ AÇILINCA DİĞERİNİ KAPATMA KODU
+            // ==========================================
+            document.querySelectorAll('.category-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            document.querySelectorAll('.category-header i').forEach(i => {
+                i.style.transform = 'rotate(0deg)';
+            });
+
+            // Eğer tıklanan zaten aktif değilse, şimdi aktif yap
+            if (!isActive) {
+                content.classList.add('active');
+                header.querySelector('i').style.transform = 'rotate(180deg)';
+            }
+        };
+
+        // 3. İlgili kategoriye ait butonları (Kartları) wordEasterEggs'ten çekip oluştur
+        category.verbs.forEach(verb => {
+            if (!wordEasterEggs[verb]) return; // Hatalı yazım varsa pas geç
+            
+            // O kökün ilk kalıbına gidip menüde göstermek için emojisini otomatik bul
+            let emoji = "✨"; // Varsayılan emoji
+            const verbData = wordEasterEggs[verb];
+            const firstKey = Object.keys(verbData)[0];
+            
+            // Eğer base ve emoji tanımlıysa al, değilse varsayılanı kullan
+            if (verbData[firstKey] && verbData[firstKey].base && verbData[firstKey].base.emoji) {
+                emoji = verbData[firstKey].base.emoji;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'verb-card';
+            card.onclick = () => selectReadyVerb(verb);
+            card.innerHTML = `<span class="emoji">${emoji}</span><span>${verb}</span>`;
+            
+            content.appendChild(card);
+        });
+
+        menuContainer.appendChild(header);
+        menuContainer.appendChild(content);
+    });
+}
 
 const SoundEngine = {
     ctx: null,
@@ -2429,25 +2827,7 @@ const SoundEngine = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Zoom Overlay'i sisteme entegre ediyoruz
-    if (!document.getElementById('zoom-overlay')) {
-        const overlay = document.createElement('div');
-        overlay.id = 'zoom-overlay';
-        overlay.className = 'zoom-overlay';
-        document.body.appendChild(overlay);
-
-        // Overlay'e (ekrandaki herhangi bir boşluğa/flu alana) tıklanınca kapat
-        // Overlay'e (ekrandaki herhangi bir boşluğa/flu alana) tıklanınca kapat
-        const closeOverlay = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closeAllZoomedBoxes();
-        };
-        overlay.addEventListener('click', closeOverlay);
-        overlay.addEventListener('touchstart', closeOverlay, { passive: false });
-    }
-});
+buildVerbMenu();
 
 // Temizlik fonksiyonu
 function closeAllZoomedBoxes() {
@@ -2601,11 +2981,12 @@ function closeVerbModal() {
 
 
 function selectReadyVerb(verb) {
-    clearDraggableRoots();
-    if(typeof SoundEngine !== "undefined") SoundEngine.playReset();
-    resetTableOnly(true); 
+    if (typeof clearDraggableRoots === 'function') clearDraggableRoots();
+    if (typeof SoundEngine !== "undefined") SoundEngine.playReset();
+    if (typeof resetTableOnly === 'function') resetTableOnly(true); 
     
-    currentEggIndex = -1; 
+    // HATA ÇÖZÜMÜ: Başında "let" olmadan global değişkeni güncelliyoruz
+    currentEggIndex = 0; 
     
     const trimmedRoot = verb.trim();
     if (trimmedRoot.length !== 3) return;
@@ -2615,12 +2996,14 @@ function selectReadyVerb(verb) {
     if (rootDisplay) rootDisplay.innerText = currentRoot;
     
     if (typeof closeVerbModal === 'function') closeVerbModal();
-    highlightEasterEggBoxes(currentRoot);
+    if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(currentRoot);
     
     if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
-    if (currentTabActive === 1) setTab(0);
+    if (typeof currentTabActive !== 'undefined' && currentTabActive === 1 && typeof setTab === 'function') setTab(0);
 
-    // MOBİL İÇİN SABİT ÜST BAR VE 2 SÜTUN
+    // ==================================================================
+    // MOBİL İÇİN SABİT ÜST BAR VE 2 SÜTUN MANTIĞI
+    // ==================================================================
     if (window.innerWidth <= 1024) {
         let topBar = document.getElementById('mobile-top-bar');
         if (!topBar) {
@@ -2630,14 +3013,14 @@ function selectReadyVerb(verb) {
             // 1. Geri Tuşu (Sağda duracak ama SOL OK olacak)
             const backBtn = document.createElement('div');
             backBtn.className = 'mobile-back-btn';
-            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>'; // DÜZELTİLDİ: Sol Ok
+            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>'; 
             backBtn.onclick = () => { if (typeof openVerbModal === 'function') openVerbModal(); };
             
-            // 2. Orta: Kök
+            // 2. Orta: Kök Gösterimi
             const rootDisp = document.createElement('div');
             rootDisp.className = 'mobile-root-display';
             
-            // 3. Artı Tuşu (Solda duracak)
+            // 3. Artı Tuşu (Solda duracak, ekler için)
             const plusBtn = document.createElement('div');
             plusBtn.className = 'mobile-top-plus';
             plusBtn.id = 'mobile-top-plus';
@@ -2654,35 +3037,41 @@ function selectReadyVerb(verb) {
             topBar.appendChild(backBtn); 
             
             const mGrid = document.getElementById('mobile-grid');
-            document.body.insertBefore(topBar, mGrid);
+            if (mGrid) document.body.insertBefore(topBar, mGrid);
         }
         
-        topBar.querySelector('.mobile-root-display').innerText = currentRoot;
-        topBar.querySelector('.mobile-top-plus').classList.remove('plus-highlighted');
+        // Üst bardaki metni güncelle ve artı butonunun ışığını söndür
+        const mobileRootDisplay = topBar.querySelector('.mobile-root-display');
+        if (mobileRootDisplay) mobileRootDisplay.innerText = currentRoot;
+        
+        const mobilePlusBtn = topBar.querySelector('.mobile-top-plus');
+        if (mobilePlusBtn) mobilePlusBtn.classList.remove('plus-highlighted');
 
+        // Mobildeki alt grid kısmına sadece o kökün kutularını klonla
         const mGrid = document.getElementById('mobile-grid');
         if (mGrid) {
             mGrid.innerHTML = ''; 
-            const refs = getSortedRefsForRoot(currentRoot); 
-            
-            refs.forEach(refId => {
-                const origBox = Array.from(document.querySelectorAll('.window-pencere .glass-box')).find(b => {
-                    const refEl = b.querySelector('.ref');
-                    return refEl && parseInt(refEl.innerText.trim()) === refId;
-                });
+            if (typeof getSortedRefsForRoot === 'function') {
+                const refs = getSortedRefsForRoot(currentRoot); 
                 
-                if (origBox) {
-                    const clone = origBox.cloneNode(true);
-                    clone.className = 'glass-box sari-vurgu fiil-box'; 
-                    if (clone.hasAttribute('data-tiklama-sayisi')) clone.setAttribute('data-tiklama-sayisi', '0');
-                    clone.onclick = function() { handleBoxClick(this); };
-                    mGrid.appendChild(clone);
-                }
-            });
+                refs.forEach(refId => {
+                    const origBox = Array.from(document.querySelectorAll('.window-pencere .glass-box')).find(b => {
+                        const refEl = b.querySelector('.ref');
+                        return refEl && parseInt(refEl.innerText.trim()) === refId;
+                    });
+                    
+                    if (origBox) {
+                        const clone = origBox.cloneNode(true);
+                        clone.className = 'glass-box sari-vurgu fiil-box'; 
+                        if (clone.hasAttribute('data-tiklama-sayisi')) clone.setAttribute('data-tiklama-sayisi', '0');
+                        clone.onclick = function() { if (typeof handleBoxClick === 'function') handleBoxClick(this); };
+                        mGrid.appendChild(clone);
+                    }
+                });
+            }
         }
     }
 }
-
 function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
@@ -2862,11 +3251,26 @@ function handleBoxClick(boxElement) {
     // =======================================================
     const isZoomEnabled = window.innerWidth <= 1024 ? false : (document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false);
 
-    // KELİMEYİ TÜRETEN FONKSİYON
+  
+    // KELİMEYİ TÜRETEN FONKSİYON (Tek Veri Kaynağı: wordEasterEggs)
     const applyWordTransformation = () => {
         const vezinObj = babVezinleri[mapping.babNo];
         let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
-        let plainWord = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalipMetni) : kalipMetni;
+        
+        let plainWord = kalipMetni;
+        if (currentRootSafe.length === 3) {
+            // ÖZEL ÇEKİM LİSTESİNDE VAR MI KONTROL ET (TEK VERİ KAYNAĞI)
+            if (typeof wordEasterEggs !== 'undefined' && 
+                wordEasterEggs[currentRootSafe] && 
+                wordEasterEggs[currentRootSafe][refId] && 
+                wordEasterEggs[currentRootSafe][refId].cekimi) {
+                // Hazır dizinin 0. elemanını (Hüve/Ente formunu) al
+                plainWord = wordEasterEggs[currentRootSafe][refId].cekimi[0];
+            } else {
+                // Yoksa normal algoritma ile oluştur
+                plainWord = applyRootToKalip(currentRootSafe, kalipMetni);
+            }
+        }
 
         let activeRootArray = (currentRootSafe.length === 3) ? currentRootSafe.split("") : ['ف', 'ع', 'ل'];
         const coloredHTML = ColorEngine.colorize(plainWord, activeRootArray);
@@ -2885,13 +3289,11 @@ function handleBoxClick(boxElement) {
         
         if (typeof checkWordEasterEgg === 'function') checkWordEasterEgg(boxElement); 
     };
-
     if (isZoomEnabled) {
         if (tiklama === 0) {
             // 1. AŞAMA: Sadece Kırmızı Vurgu
             document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
             boxElement.classList.add('current-active-red');
-            // DİKKAT: sari-vurgu silme kodu buradan kaldırıldı! Türkçe anlamlar kaybolmayacak.
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.setAttribute('data-tiklama-sayisi', '1');
             
@@ -3085,7 +3487,11 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
     if (!boxElement) return;
 
-   document.querySelectorAll('.glass-box').forEach(box => {
+    // refId değerini bul (Özel kelime tablosunu çekmek için lazım olacak)
+    const refEl = boxElement.querySelector('.ref');
+    const refId = refEl ? parseInt(refEl.innerText) : 0;
+
+    document.querySelectorAll('.glass-box').forEach(box => {
         box.style.zIndex = "1";
     });
 
@@ -3141,114 +3547,120 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     let stem = tabanKelime.replace(/[َُِّْ]$/, "");
     let kelimeListesi = [];
 
-const list = sigaSablonlari[tip];
-    list.forEach((siga, index) => {
-        let cekilmisKelime = "";
+    // ==========================================
+    // ÖZEL ÇEKİM LİSTESİNDE VAR MI KONTROL ET (TEK VERİ KAYNAĞI)
+    // ==========================================
+    if (typeof wordEasterEggs !== 'undefined' && 
+        wordEasterEggs[kok] && 
+        wordEasterEggs[kok][refId] && 
+        wordEasterEggs[kok][refId].cekimi) {
         
-        if (tip === 'muzari') {
-            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+        // Listede varsa, önceden tanımladığımız kusursuz diziyi direkt al
+        kelimeListesi = [...wordEasterEggs[kok][refId].cekimi];
+        
+    } else {
+        // LİSTEDE YOKSA ESKİ ALGORİTMA İLE OLUŞTUR
+        const list = sigaSablonlari[tip];
+        list.forEach((siga, index) => {
+            let cekilmisKelime = "";
             
-            let aynHareke = "ُ"; 
-            if (babNo === 7 || anaVezin.includes("يَفْعِلُ")) {
-                aynHareke = "ِ";
-            } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ") || babNo === 12) {
-                aynHareke = "َ";
-            }
-            
-            let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
-            
-            if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
-            else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
-            else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-            else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
-            else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;
-            else if (babNo === 12) {
-                // 84 NUMARA İF'İLAL ÇÖZÜMÜ: Hünne (5) ve Entünne (11) sîgalarında şeddeyi (idğamı) açıyoruz
-                if (index === 5 || index === 11) {
-                    coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; // Açık ve esreli form
-                } else {
-                    coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; // Şeddeli form
-                }
-            } 
-            else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
-            else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-            else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
-            
-            // TEFE'UL FAZLADAN 'T' HATASI ÇÖZÜLDÜ
-            let currentPrefix = siga.prefix; 
-            if (babNo === 7 || babNo === 8 || babNo === 9) {
-                if (currentPrefix === 'يَ') currentPrefix = "يُ";
-                else if (currentPrefix === 'تَ') currentPrefix = "تُ";
-                else if (currentPrefix === 'أَ') currentPrefix = "أُ";
-                else if (currentPrefix === 'نَ') currentPrefix = "نُ";
-            }
-            
-            cekilmisKelime = currentPrefix + coreWord + siga.suffix;
-        } 
-        else if (tip === 'mazi') {
-            // İf'ilâl (12. Bab) için Fekkü'l-İdğam (Şeddenin Açılması) Kuralı
-            if (babNo === 12) {
-                let r1 = kok[0], r2 = kok[1], r3 = kok[2];
-                let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; // Örn: اِكْمَل
-                let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; // Örn: اِكْمَلَل
-                
-                // İlk 5 sîga için şeddeli özel ekler
-                let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
-                
-                if (index < 5) {
-                    // İlk 5 sîgada (Hüve'den Hüma Müennes'e kadar) şedde korunur
-                    cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
-                } else {
-                    // 6. sîgadan (Cemi Müennes/Nun-u Nisve) itibaren şedde açılır
-                    cekilmisKelime = baseAcik + siga.ek; 
-                }
-            } else {
-                // Diğer tüm bablar normal mazi mantığıyla çekilmeye devam eder
-                cekilmisKelime = stem + siga.ek; 
-            }
-        } 
-        else if (tip === 'emir') {
-            // İF'İLAL (12. BAB) EMİR HAZIR ÇEKİMİ İÇİN ÖZEL KORUMA
-            if (babNo === 12) {
-                let r1 = kok[0], r2 = kok[1], r3 = kok[2];
-                if (index === 5) {
-                    // Entünne (Cemi Müennes - 6. Sîga) -> Şedde açılır, ilk lam'a esre verilir.
-                    cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; // Örn: اِحْمَرِرْنَ
-                } else {
-                    // Diğer 5 sîga şeddeli kalır. Standart emir ekleri ile bağlarız.
-                    let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
-                    cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; // Örn: اِحْمَرَّ
-                }
-            } 
-            else {
-                // DİĞER TÜM BABLAR İÇİN SİZİN ORİJİNAL EMİR MANTIĞINIZ ÇALIŞIR
+            if (tip === 'muzari') {
                 let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-                let emirPrefix = "اِ";
-                if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
-                else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
-                else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
+                
+                let aynHareke = "ُ"; 
+                if (babNo === 7 || anaVezin.includes("يَفْعِلُ")) {
+                    aynHareke = "ِ";
+                } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ") || babNo === 12) {
+                    aynHareke = "َ";
+                }
+                
+                let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
+                
+                if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
+                else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+                else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+                else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+                else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;
+                else if (babNo === 12) {
+                    if (index === 5 || index === 11) {
+                        coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
+                    } else {
+                        coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
+                    }
+                } 
+                else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
+                else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+                else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+                
+                let currentPrefix = siga.prefix; 
+                if (babNo === 7 || babNo === 8 || babNo === 9) {
+                    if (currentPrefix === 'يَ') currentPrefix = "يُ";
+                    else if (currentPrefix === 'تَ') currentPrefix = "تُ";
+                    else if (currentPrefix === 'أَ') currentPrefix = "أُ";
+                    else if (currentPrefix === 'نَ') currentPrefix = "نُ";
+                }
+                
+                cekilmisKelime = currentPrefix + coreWord + siga.suffix;
+            } 
+            else if (tip === 'mazi') {
+                if (babNo === 12) {
+                    let r1 = kok[0], r2 = kok[1], r3 = kok[2];
+                    let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; 
+                    let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; 
+                    
+                    let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
+                    
+                    if (index < 5) {
+                        cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
+                    } else {
+                        cekilmisKelime = baseAcik + siga.ek; 
+                    }
+                } else {
+                    cekilmisKelime = stem + siga.ek; 
+                }
+            } 
+            else if (tip === 'emir') {
+                if (babNo === 12) {
+                    let r1 = kok[0], r2 = kok[1], r3 = kok[2];
+                    if (index === 5) {
+                        cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; 
+                    } else {
+                        let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
+                        cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; 
+                    }
+                } 
+                else {
+                    let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+                    let emirPrefix = "اِ";
+                    if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
+                    else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
+                    else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
 
-                let aynHareke = "ِ";
-                if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
-                else if (anaVezin.includes("اِفْعَلْ")) aynHareke = "َ"; // (12. babı buradan çıkardık, yukarıya aldık)
+                    let aynHareke = "ِ";
+                    if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
+                    else if (anaVezin.includes("اِفْعَلْ")) aynHareke = "َ"; 
 
-                let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
-                if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
-                else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-                else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
-                else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
-                else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
-                else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-                else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+                    let coreEmir = r1 + "ْ" + r2 + aynHareke + r3;
+                    if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
+                    else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+                    else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
+                    else if (babNo === 11) coreEmir = r1 + "ْتَ" + r2 + "ِ" + r3;
+                    else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
+                    else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+                    else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
 
-                cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+                    cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+                }
             }
-        }
-        
-        cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
-        kelimeListesi.push(cekilmisKelime);
-    });
+            
+            cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
+            kelimeListesi.push(cekilmisKelime);
+        });
+    }
 
+    // ==========================================
+    // TABLOYU HTML OLARAK ÇİZDİRME AŞAMASI
+    // ==========================================
     let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
     html += `<table class="conjugation-table">`;
     html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
@@ -3277,7 +3689,6 @@ const list = sigaSablonlari[tip];
             w3 = w3 ? ColorEngine.colorize(w3, kok.split("")) : '';
         }
 
-        // DÜZELTME: Siga hücrelerindeki hatalı inline-flex'ler kaldırıldı!
         html += `<tr>
                     <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w1}</span></td>
                     <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w2}</span></td>
@@ -3302,6 +3713,7 @@ const list = sigaSablonlari[tip];
     boxElement.classList.add('matrix-opened');
 }
 
+// Global tıklama (kapatma) event listener'ı aynen kalıyor
 document.addEventListener('click', function(e) {
     const conjugationContainer = e.target.closest('.conjugation-inline-container');
     const glassBox = e.target.closest('.glass-box');
@@ -3399,10 +3811,14 @@ function confirmRoot() {
             rootTextSpan.innerText = currentRoot;
         }
         toggleKB(false);
+        
+        // EKLENEN KISIM: Klavyeden giriş yapıldığında da sayacı temizle
+        currentEggIndex = 0; 
+        
         highlightEasterEggBoxes(currentRoot); 
         
-        // YENİ EKLENEN: Otomatik olarak tahta bloğu sahneye at!
-        autoSpawnRootClone();
+        // Otomatik olarak tahta bloğu sahneye at!
+        if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
         
         if (currentTabActive === 1) {
             setTab(0);
@@ -4679,7 +5095,7 @@ function autoSpawnRootClone() {
 // ==================================================================
 // SUNUM KUMANDASI VE KLAVYE İLE OTOMATİK GEÇİŞ SİSTEMİ
 // ==================================================================
-let currentEggIndex = -1;
+currentEggIndex = -1;
 let isPresentationLocked = false; // YENİ: Geçişler sırasında çakışmayı önleyen kilit
 
 function getReadyRoots() {
@@ -4737,12 +5153,12 @@ function activateBoxByRef(refId) {
 // 4. İLERİ KUMANDA (İlk Tık: Sadece Sarı Vurgular | İkinci Tık: İlk Kutu)
 // ==================================================================
 function nextEasterEgg() {
-    if (isPresentationLocked) return; 
+    if (typeof isPresentationLocked !== 'undefined' && isPresentationLocked) return; 
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     let waitTime = 0;
     const activeZoom = document.getElementById('crisp-zoom-clone');
-    const roots = getReadyRoots();
+    const roots = typeof getReadyRoots === 'function' ? getReadyRoots() : [];
     if (roots.length === 0) return;
 
     if (activeZoom) {
@@ -4750,12 +5166,12 @@ function nextEasterEgg() {
     }
 
     setTimeout(() => {
-        if (!currentRoot || currentRoot.length !== 3 || !wordEasterEggs[currentRoot]) {
-            selectReadyVerb(roots[0]);
+        if (!currentRoot || currentRoot.length !== 3 || (typeof wordEasterEggs !== 'undefined' && !wordEasterEggs[currentRoot])) {
+            if (typeof selectReadyVerb === 'function') selectReadyVerb(roots[0]);
             return; 
         }
 
-        const refs = getSortedRefsForRoot(currentRoot);
+        const refs = typeof getSortedRefsForRoot === 'function' ? getSortedRefsForRoot(currentRoot) : [];
 
         if (currentEggIndex >= 0 && currentEggIndex < refs.length) {
             const currentRefId = refs[currentEggIndex];
@@ -4766,45 +5182,58 @@ function nextEasterEgg() {
             
             if (currentBox) {
                 let tiklama = parseInt(currentBox.getAttribute('data-tiklama-sayisi') || '0');
-                const isZoomEnabled = document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false;
+                const isZoomEnabled = window.innerWidth <= 1024 ? false : (document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false);
+
+                if (tiklama === 0) {
+                    if (typeof activateBoxByRef === 'function') activateBoxByRef(currentRefId);
+                    return;
+                }
 
                 if (isZoomEnabled) {
                     if (tiklama === 1 || tiklama === 2) {
-                        activateBoxByRef(currentRefId);
+                        if (typeof activateBoxByRef === 'function') activateBoxByRef(currentRefId);
                         return; 
                     }
                     if (tiklama === 3) {
-                        handleBoxClick(currentBox); 
-                        // Zoom açıkken dev kutuyu kapatıp BEKLER
-                        return; 
+                        // Zoom açıkken 4. adıma geçer (Büyütmeyi kapatır, tabloda yeşil bırakır)
+                        if (typeof handleBoxClick === 'function') handleBoxClick(currentBox); 
                     }
                 } else {
-                    if (tiklama === 1) {
-                        activateBoxByRef(currentRefId);
-                        return; 
-                    }
-                    if (tiklama === 2) {
-                        // Zoom kapalıyken kırmızı çizgiyi kaldırır...
-                        handleBoxClick(currentBox); 
-                        // DİKKAT: Buradaki 'return;' komutunu sildik! 
-                        // Artık beklemiyor, kodu okumaya devam edip anında sonraki kelimeye atlıyor.
+                    if (window.innerWidth <= 1024) {
+                        // Mobil davranış
+                        if (tiklama === 1) {
+                            currentBox.classList.remove('current-active-red');
+                            currentBox.setAttribute('data-tiklama-sayisi', '2'); 
+                        }
+                    } else {
+                        // MASAÜSTÜ ZOOM KAPALI DAVRANIŞI (HATA BURADA ÇÖZÜLDÜ)
+                        if (tiklama === 1) {
+                            if (typeof activateBoxByRef === 'function') activateBoxByRef(currentRefId);
+                            return; 
+                        }
+                        if (tiklama === 2) {
+                            // Eskiden burada kutuyu tamamen sıfırlayan bir komut çalışıyordu.
+                            // Artık sadece kırmızı vurguyu kaldırıp, kelimeyi yeşil haliyle masada bırakıyoruz!
+                            currentBox.classList.remove('current-active-red');
+                            currentBox.setAttribute('data-tiklama-sayisi', '3'); // Bir sonraki tıklamada sıfırlansın diye 3 yaptık
+                        }
                     }
                 }
             }
         }
 
-        // Aşağıdaki kodlar sayesinde bir sonraki kutuya atlar
+        // Bir sonraki kutuya geçiş yap
         currentEggIndex++;
 
         if (currentEggIndex >= refs.length) {
             let rootIndex = roots.indexOf(currentRoot);
             rootIndex++;
             if (rootIndex >= roots.length) rootIndex = 0; 
-            selectReadyVerb(roots[rootIndex]);
+            if (typeof selectReadyVerb === 'function') selectReadyVerb(roots[rootIndex]);
             return; 
         }
 
-        activateBoxByRef(refs[currentEggIndex]);
+        if (typeof activateBoxByRef === 'function') activateBoxByRef(refs[currentEggIndex]);
     }, waitTime);
 }
 // ==================================================================
@@ -4967,3 +5396,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 });
+
