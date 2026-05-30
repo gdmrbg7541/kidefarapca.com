@@ -2421,8 +2421,7 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "بِعْ", trText: "Sat!" },
             cekimi: ["بِعْ", "بِيعَا", "بِيعُوا", "بِيعِي", "بِيعَا", "بِعْنَ"]
         }
-    },
-    "دعو": {
+    },"دعو": {
         1: { 
             base: { emoji: "🤲", arText: "دَعَا", trText: "Davet etti / Dua etti." },
             cekimi: ["دَعَا", "دَعَوَا", "دَعَوْا", "دَعَتْ", "دَعَتَا", "دَعَوْنَ", "دَعَوْتَ", "دَعَوْتُمَا", "دَعَوْتُمْ", "دَعَوْتِ", "دَعَوْتُمَا", "دَعَوْتُنَّ", "دَعَوْتُ", "دَعَوْنَا", "دَعَوْنَا"]
@@ -2435,19 +2434,57 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "اُدْعُ", trText: "Davet et / Dua et!" },
             cekimi: ["اُدْعُ", "اُدْعُوَا", "اُدْعُوا", "اُدْعِي", "اُدْعُوَا", "اُدْعُونَ"]
         },
-  
+         
+        19: { 
+            suggestsPlus: true, // Öğrenciye '+' butonuna basmasını önerir
+            "ة": { 
+                emoji: "💌", 
+                arText: "دَعْوَة", 
+                trText: "Davet / Çağrı." 
+            } 
+        },
         24: { 
             base: { emoji: "❗", arText: "دُعَاء", trText: "Dua etmek." },
             cekimi: ["دُعَاء"]
         },
+        33: { 
+            base: { emoji: "🗣️", arText: "دَاعٍ", trText: "Davet eden." },
+            cekimi: [
+                { ar: "دَاعٍ", tr: "Belirsiz (Nekra) Kullanım" },
+                { ar: "اَلدَّاعِي", tr: "Belirli (Marife) Kullanım" }
+            ]
+        },
 
-       33: { 
-    base: { emoji: "❗", arText: "دَاعٍ", trText: "Davet et / Dua et!" },
-    cekimi: [
-        { ar: "دَاعٍ", tr: "Belirli (Marife) Kullanım" },
-        { ar: "اَلدَّاعِي", tr: "Belirsiz (Nekra) Kullanım" }
-           ]
-         }
+        // ==========================================
+        // İFTİAL BABI EKLENTİSİ (İddia etmek)
+        // Lütfen X1, X2, X3, X4 yazan yerlere kendi sistemindeki kalıp numaralarını yaz.
+        // ==========================================
+        
+        "77": { 
+            base: { emoji: "⚖️", arText: "اِدَّعَى", trText: "İddia etti." },
+            cekimi: ["اِدَّعَى", "اِدَّعَيَا", "اِدَّعَوْا", "اِدَّعَتْ", "اِدَّعَتَا", "اِدَّعَيْنَ", "اِدَّعَيْتَ", "اِدَّعَيْتُمَا", "اِدَّعَيْتُمْ", "اِدَّعَيْتِ", "اِدَّعَيْتُمَا", "اِدَّعَيْتُنَّ", "اِدَّعَيْتُ", "اِدَّعَيْنَا", "اِدَّعَيْنَا"]
+        },
+        "78": { 
+            base: { emoji: "⚖️", arText: "يَدَّعِي", trText: "İddia eder / İddia ediyor." },
+            cekimi: ["يَدَّعِي", "يَدَّعِيَانِ", "يَدَّعُونَ", "تَدَّعِي", "تَدَّعِيَانِ", "يَدَّعِينَ", "تَدَّعِي", "تَدَّعِيَانِ", "تَدَّعُونَ", "تَدَّعِينَ", "تَدَّعِيَانِ", "تَدَّعِينَ", "أَدَّعِي", "نَدَّعِي", "نَدَّعِي"]
+        },
+        "79": { 
+            base: { emoji: "❗", arText: "اِدَّعِ", trText: "İddia et!" },
+            cekimi: ["اِدَّعِ", "اِدَّعِيَا", "اِدَّعُوا", "اِدَّعِي", "اِدَّعِيَا", "اِدَّعِينَ"]
+        },
+
+        80: { 
+            base: { emoji: "📜", arText: "إِدِّعَاء", trText: "İddia / İddia etmek." },
+            cekimi: ["اِدِّعَاء"]
+        },
+
+        "81": { 
+            base: { emoji: "🧑‍⚖️", arText: "مُدَّعٍ", trText: "İddia eden / Müddei." },
+            cekimi: [
+                { ar: "مُدَّعٍ", tr: "Belirsiz (Nekra) Kullanım" },
+                { ar: "اَلْمُدَّعِي", tr: "Belirli (Marife) Kullanım" }
+            ]
+        }
     },
     "مشي": {
         1: { 
@@ -3300,21 +3337,24 @@ function handleBoxClick(boxElement) {
         textEl.innerHTML = coloredHTML;
         lastOriginalWord = plainWord; 
 
-        // === YENİ EKLENEN KISIM: Kutuya "Kök Türetildi" ve "Çoklu Kullanım" etiketi ver ===
+
+       // === YENİ EKLENEN KISIM: Kutuya "Kök Türetildi" ve "Çoklu Kullanım" etiketi ver ===
         const currentBox = textEl.closest('.glass-box');
         if (currentBox) {
             currentBox.classList.add('kok-turendi');
             
-            // Eğer kutu fiil DEĞİLSE ve çoklu kullanım varsa:
-            if (hasMultipleUses && !currentBox.classList.contains('fiil-box')) {
+            if (!currentBox.classList.contains('fiil-box') && hasMultipleUses) {
                 currentBox.classList.add('coklu-kullanim');
                 const refBtn = currentBox.querySelector('.ref');
-                // Tabloyu açması için onclick bağla
-                if (refBtn && !refBtn.hasAttribute('onclick')) {
-                    refBtn.setAttribute('onclick', `event.stopPropagation(); openConjugationPopup('${currentRootSafe}', ${refId}, 'isim', '')`);
+                
+                if (refBtn) {
+                    // ÇÖZÜM: Tıklanan kutuyu (lastClickedBoxTextSpan) sisteme zorla tanıtıyoruz ki hafıza karışmasın!
+                    refBtn.setAttribute('onclick', `event.preventDefault(); event.stopPropagation(); const box = this.closest('.glass-box'); lastClickedBoxTextSpan = box.querySelector('.ar, .ar-small'); lastOriginalWord = box.getAttribute('data-original'); openConjugationPopup('${currentRootSafe}', ${refId}, 'isim', '');`);
                 }
             }
         }
+        // ==============================================================
+        // ==============================================================
         // ==============================================================
 
         // Ekranda dev klon varsa onu da anında türet ve yeşile boya
@@ -3716,16 +3756,17 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     
     // 1. Üst kısma şık bir sürükleme (Drag) çubuğu ekliyoruz
     let html = `
-        <div class="popup-drag-bar" style="position: absolute; top: 0; left: 0; width: 100%; height: 35px; background: #f1f5f9; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 10;">
-            <div style="width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px;"></div>
+        <div class="popup-drag-bar" style="position: absolute; top: 0; left: 0; width: 100%; height: 35px; background: #f1f5f9; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 10; touch-action: none;">
+            <div style="width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px; pointer-events: none;"></div>
         </div>
         <div class="matrix-close-btn" style="z-index: 11; top: 2px;" onclick="closeInlineMatrix(event, this)">✕</div>
     `;
 
+ 
     // 2. Tabloyu kendi içinde scroll (kaydırılabilir) yapacak bir kılıfa sarıyoruz
-    // 2. Tabloyu kendi içinde scroll (kaydırılabilir) yapacak bir kılıfa sarıyoruz
-    html += `<div class="popup-scroll-wrapper" style="max-height: 60vh; overflow-y: auto; overflow-x: hidden; margin-top: 25px; padding-right: 5px; padding-bottom: 10px; width: 100%; box-sizing: border-box;">`;
-    html += `<table class="conjugation-table" style="margin-top: 0;">`;
+    // 2. Hayalet scroll çıkmasını önlemek için gereksiz padding boşlukları sıfırlandı
+    html += `<div class="popup-scroll-wrapper" style="max-height: 60vh; overflow-y: auto; overflow-x: hidden; margin-top: 35px; padding: 0; box-sizing: border-box;">`;
+    html += `<table class="conjugation-table" style="margin: 0; width: 100%; border-collapse: collapse;">`;
 
     let totalItems = kelimeListesi.length;
     const isColorActive = kok && kok.length === 3;
@@ -3798,18 +3839,30 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
     html += `</tbody></table></div>`;
     
-    inlineContainer.innerHTML = html;
+inlineContainer.innerHTML = html;
     inlineContainer.style.overflowY = 'hidden'; 
     inlineContainer.style.paddingTop = '15px'; 
     
-// ========================================================
-    // ÇÖZÜM 2: Kutunun arkadaki tıklamayı tetiklemesini VE SEKMELERİN KAYMASINI önler!
+    // ========================================================
+    // YENİ: AÇILIŞ YÖNÜNÜ BELİRLEME (Fiil -> Sola, İsim -> Sağa)
+    // ========================================================
+    if (isVerb) {
+        inlineContainer.style.left = "auto";
+        inlineContainer.style.right = "calc(100% + 20px)"; // Fiil kutusunun SOLUNDA 20px boşlukla açılır
+    } else {
+        inlineContainer.style.right = "auto";
+        inlineContainer.style.left = "calc(100% + 20px)"; // İsim kutusunun SAĞINDA 20px boşlukla açılır
+    }
+    inlineContainer.style.top = "0px"; // Kutuyla aynı üst hizada başlar
+    
+    // ========================================================
+    // Kutunun arkadaki tıklamayı tetiklemesini VE SEKMELERİN KAYMASINI önler!
     // ========================================================
     inlineContainer.onmousedown = function(e) { e.stopPropagation(); };
     inlineContainer.onclick = function(e) { e.stopPropagation(); };
     inlineContainer.ontouchstart = function(e) { e.stopPropagation(); };
-    inlineContainer.ontouchmove = function(e) { e.stopPropagation(); }; // YENİ: Arka planı kaydırmayı engeller
-    inlineContainer.ontouchend = function(e) { e.stopPropagation(); };  // YENİ: Sekme değişimini (Swipe) engeller
+    inlineContainer.ontouchmove = function(e) { e.stopPropagation(); }; 
+    inlineContainer.ontouchend = function(e) { e.stopPropagation(); };  
     
     const expandBtn = document.createElement('div');
     expandBtn.className = 'matrix-expand-btn';
@@ -3832,14 +3885,19 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     let pStartX, pStartY, pInitialLeft, pInitialTop;
 
     const onPopupDragStart = (e) => {
-        e.stopPropagation(); // YENİ: Sinyali arka plandan keser
+        e.stopPropagation(); 
         isDraggingPopup = true;
         dragBar.style.cursor = 'grabbing';
-        pStartX = e.pageX || (e.touches && e.touches[0].pageX);
-        pStartY = e.pageY || (e.touches && e.touches[0].pageY);
         
-        pInitialLeft = parseFloat(inlineContainer.style.left) || 0;
-        pInitialTop = parseFloat(inlineContainer.style.top) || 0;
+        pStartX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        pStartY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
+        // ÇÖZÜM: 'calc' veya '%' ile verilen konumların sürüklerken zıplamaması için offsetLeft kullanıyoruz!
+        pInitialLeft = inlineContainer.offsetLeft;
+        pInitialTop = inlineContainer.offsetTop;
+
+        // Sürüklemeye başlandığı an sağ/sol kilitlerini kaldırıp serbest bırakıyoruz
+        inlineContainer.style.right = 'auto'; 
 
         document.addEventListener('mousemove', onPopupDragMove);
         document.addEventListener('mouseup', onPopupDragEnd);
@@ -3850,16 +3908,17 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     const onPopupDragMove = (e) => {
         if (!isDraggingPopup) return;
         e.preventDefault(); 
-        e.stopPropagation(); // YENİ: Kaydırırken sekmelerin tetiklenmesini durdurur
-        let x = e.pageX || (e.touches && e.touches[0].pageX);
-        let y = e.pageY || (e.touches && e.touches[0].pageY);
+        e.stopPropagation(); 
+        
+        let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
         
         inlineContainer.style.left = (pInitialLeft + (x - pStartX)) + 'px';
         inlineContainer.style.top = (pInitialTop + (y - pStartY)) + 'px';
     };
 
     const onPopupDragEnd = (e) => {
-        if (e) e.stopPropagation(); // YENİ: Bıraktığında swipe tetiklenmesini durdurur
+        if (e) e.stopPropagation(); 
         isDraggingPopup = false;
         dragBar.style.cursor = 'grab';
         document.removeEventListener('mousemove', onPopupDragMove);
