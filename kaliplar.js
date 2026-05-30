@@ -2441,10 +2441,13 @@ const wordEasterEggs = {
             cekimi: ["دُعَاء"]
         },
 
-        33: { 
-            base: { emoji: "❗", arText: "دَاعٍ ‫/‬ اَلدَّاعِي", trText: "Davet et / Dua et!" },
-            cekimi: ["اَلدَّاعِي","دَاعٍ"]
-        },
+       33: { 
+    base: { emoji: "❗", arText: "دَاعٍ", trText: "Davet et / Dua et!" },
+    cekimi: [
+        { ar: "دَاعٍ", tr: "Belirli (Marife) Kullanım" },
+        { ar: "اَلدَّاعِي", tr: "Belirsiz (Nekra) Kullanım" }
+           ]
+         }
     },
     "مشي": {
         1: { 
@@ -3268,14 +3271,23 @@ function handleBoxClick(boxElement) {
         let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
         
         let plainWord = kalipMetni;
+        let hasMultipleUses = false; // YENİ: Çoklu kullanım kontrolü
+        
         if (currentRootSafe.length === 3) {
             // ÖZEL ÇEKİM LİSTESİNDE VAR MI KONTROL ET (TEK VERİ KAYNAĞI)
             if (typeof wordEasterEggs !== 'undefined' && 
                 wordEasterEggs[currentRootSafe] && 
                 wordEasterEggs[currentRootSafe][refId] && 
                 wordEasterEggs[currentRootSafe][refId].cekimi) {
-                // Hazır dizinin 0. elemanını (Hüve/Ente formunu) al
-                plainWord = wordEasterEggs[currentRootSafe][refId].cekimi[0];
+                
+                // İlk eleman nesne mi (Türkçeli mi) yoksa düz metin mi kontrol et
+                let ilkEleman = wordEasterEggs[currentRootSafe][refId].cekimi[0];
+                plainWord = typeof ilkEleman === 'object' ? ilkEleman.ar : ilkEleman;
+                
+                // Listede birden fazla kelime varsa çoklu kullanımı aktifleştir!
+                if (wordEasterEggs[currentRootSafe][refId].cekimi.length > 1) {
+                    hasMultipleUses = true;
+                }
             } else {
                 // Yoksa normal algoritma ile oluştur
                 plainWord = applyRootToKalip(currentRootSafe, kalipMetni);
@@ -3288,10 +3300,20 @@ function handleBoxClick(boxElement) {
         textEl.innerHTML = coloredHTML;
         lastOriginalWord = plainWord; 
 
-        // === YENİ EKLENEN KISIM: Kutuya "Kök Türetildi" etiketi ver ===
+        // === YENİ EKLENEN KISIM: Kutuya "Kök Türetildi" ve "Çoklu Kullanım" etiketi ver ===
         const currentBox = textEl.closest('.glass-box');
         if (currentBox) {
             currentBox.classList.add('kok-turendi');
+            
+            // Eğer kutu fiil DEĞİLSE ve çoklu kullanım varsa:
+            if (hasMultipleUses && !currentBox.classList.contains('fiil-box')) {
+                currentBox.classList.add('coklu-kullanim');
+                const refBtn = currentBox.querySelector('.ref');
+                // Tabloyu açması için onclick bağla
+                if (refBtn && !refBtn.hasAttribute('onclick')) {
+                    refBtn.setAttribute('onclick', `event.stopPropagation(); openConjugationPopup('${currentRootSafe}', ${refId}, 'isim', '')`);
+                }
+            }
         }
         // ==============================================================
 
@@ -3341,9 +3363,14 @@ function handleBoxClick(boxElement) {
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
             if (typeof resetBox === 'function') resetBox(boxElement); 
             boxElement.removeAttribute('data-tiklama-sayisi');
-            boxElement.classList.remove('current-active-red', 'kok-turendi'); 
+            boxElement.classList.remove('current-active-red', 'kok-turendi', 'coklu-kullanim'); 
             boxElement.style.setProperty("background-color", "", "important");
             if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
+            
+            // Sıfırlamada tıklama olayını temizle ki karışıklık olmasın
+            if (refEl && refEl.hasAttribute('onclick')) {
+                refEl.removeAttribute('onclick');
+            }
         }
     } else {
         // Zoom Kapalı Sistemi 
@@ -3361,8 +3388,10 @@ function handleBoxClick(boxElement) {
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
-                boxElement.classList.remove('current-active-red', 'kok-turendi'); 
+                boxElement.classList.remove('current-active-red', 'kok-turendi', 'coklu-kullanim'); 
                 boxElement.style.setProperty("background-color", "", "important");
+                if (refEl && refEl.hasAttribute('onclick')) refEl.removeAttribute('onclick');
+                
                 // Artı işaretinin ışığını da söndür
                 const mobilePlus = document.getElementById('mobile-top-plus');
                 if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
@@ -3387,13 +3416,13 @@ function handleBoxClick(boxElement) {
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
-                boxElement.classList.remove('current-active-red', 'kok-turendi'); 
+                boxElement.classList.remove('current-active-red', 'kok-turendi', 'coklu-kullanim'); 
                 boxElement.style.setProperty("background-color", "", "important");
+                if (refEl && refEl.hasAttribute('onclick')) refEl.removeAttribute('onclick');
             }
         }
     }
 }
-
 function closeInlineMatrix(e, btnElement) {
     if (e) {
         e.preventDefault();
@@ -3409,11 +3438,8 @@ function closeInlineMatrix(e, btnElement) {
         
         const container = boxElement.querySelector('.conjugation-inline-container');
         if (container) {
-            container.style.display = 'none';
-        }
-
-        if (boxElement.hasAttribute('data-tiklama-sayisi')) {
-            boxElement.setAttribute('data-tiklama-sayisi', '2');
+            // ÇÖZÜM: 'none' yerine boş bırakıyoruz ki CSS dosyasındaki açma/kapama kurallarını ezmesin!
+            container.style.display = ''; 
         }
 
         setTimeout(() => {
@@ -3684,57 +3710,154 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         });
     }
 
+// ==========================================
+    // TABLOYU HTML OLARAK ÇİZDİRME AŞAMASI (SÜRÜKLENEBİLİR YENİ TASARIM)
     // ==========================================
-    // TABLOYU HTML OLARAK ÇİZDİRME AŞAMASI
-    // ==========================================
-    let html = `<div class="matrix-close-btn" onclick="closeInlineMatrix(event, this)">✕</div>`;
-    html += `<table class="conjugation-table">`;
-    html += `<thead><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
+    
+    // 1. Üst kısma şık bir sürükleme (Drag) çubuğu ekliyoruz
+    let html = `
+        <div class="popup-drag-bar" style="position: absolute; top: 0; left: 0; width: 100%; height: 35px; background: #f1f5f9; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 10;">
+            <div style="width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px;"></div>
+        </div>
+        <div class="matrix-close-btn" style="z-index: 11; top: 2px;" onclick="closeInlineMatrix(event, this)">✕</div>
+    `;
+
+    // 2. Tabloyu kendi içinde scroll (kaydırılabilir) yapacak bir kılıfa sarıyoruz
+    // 2. Tabloyu kendi içinde scroll (kaydırılabilir) yapacak bir kılıfa sarıyoruz
+    html += `<div class="popup-scroll-wrapper" style="max-height: 60vh; overflow-y: auto; overflow-x: hidden; margin-top: 25px; padding-right: 5px; padding-bottom: 10px; width: 100%; box-sizing: border-box;">`;
+    html += `<table class="conjugation-table" style="margin-top: 0;">`;
 
     let totalItems = kelimeListesi.length;
     const isColorActive = kok && kok.length === 3;
+    const isVerb = boxElement.classList.contains('fiil-box');
 
-    for (let i = 0; i < totalItems; i += 3) {
-        let rowIndex = i / 3;
-        let bgColor = '#ffffff'; 
+    const pastelColors = [
+        '#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', 
+        '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'
+    ];
+
+    // 1. DURUM: EĞER FİİL İSE (Klasik 3 Sütunlu Fiil Tablosu)
+    if (isVerb) {
+        html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
         
-        if (rowIndex === 0 || rowIndex === 2) {
-            bgColor = '#e3f2fd'; 
-        } else if (rowIndex === 1 || rowIndex === 3) {
-            bgColor = '#fce4ec'; 
+        for (let i = 0; i < totalItems; i += 3) {
+            let rowIndex = i / 3;
+            let bgColor = pastelColors[rowIndex % 10]; 
+
+            let w1 = kelimeListesi[i] || '';
+            let w2 = kelimeListesi[i+1] || '';
+            let w3 = kelimeListesi[i+2] || '';
+
+            if (isColorActive) {
+                w1 = w1 ? ColorEngine.colorize(w1, kok.split("")) : '';
+                w2 = w2 ? ColorEngine.colorize(w2, kok.split("")) : '';
+                w3 = w3 ? ColorEngine.colorize(w3, kok.split("")) : '';
+            }
+
+            html += `<tr>
+                        <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w1}</span></td>
+                        <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w2}</span></td>
+                        <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w3}</span></td>
+                     </tr>`;
         }
+    } 
+    // 2. DURUM: EĞER İSİM İSE (Tek Sütunlu Alt Alta Tablo)
+    else {
+        html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th></tr></thead><tbody>`;
+        
+        for (let i = 0; i < totalItems; i++) {
+            let bgColor = pastelColors[i % 10]; 
+            let item = kelimeListesi[i];
+            
+            let wAr = typeof item === 'object' ? (item.ar || '') : (item || '');
+            let wTr = typeof item === 'object' ? (item.tr || '') : '';
 
-        let w1 = kelimeListesi[i] || '';
-        let w2 = kelimeListesi[i+1] || '';
-        let w3 = kelimeListesi[i+2] || '';
+            if (isColorActive && wAr) {
+                wAr = ColorEngine.colorize(wAr, kok.split(""));
+            }
 
-        // RENKLENDİRME MOTORU ENTEGRASYONU
-      if (isColorActive) {
-            w1 = w1 ? ColorEngine.colorize(w1, kok.split("")) : '';
-            w2 = w2 ? ColorEngine.colorize(w2, kok.split("")) : '';
-            w3 = w3 ? ColorEngine.colorize(w3, kok.split("")) : '';
+            // ÇÖZÜM 1: Arapça ile Türkçe arasındaki boşluğu artırdık!
+            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; line-height: 1.4;">${wTr}</span>` : '';
+
+            html += `<tr>
+                        <td style="background-color: ${bgColor} !important; width: 100%; text-align: center; padding: 25px 15px 20px 15px;">
+                            <span class="siga-text" style="display: block; padding-bottom: 5px;">${wAr}</span>
+                            ${trHtml}
+                        </td>
+                     </tr>`;
         }
-
-        html += `<tr>
-                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w1}</span></td>
-                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w2}</span></td>
-                    <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w3}</span></td>
-                 </tr>`;
     }
-    html += `</tbody></table>`;
+
+    html += `</tbody></table></div>`;
     
     inlineContainer.innerHTML = html;
+    inlineContainer.style.overflowY = 'hidden'; 
+    inlineContainer.style.paddingTop = '15px'; 
+    
+    // ========================================================
+    // ÇÖZÜM 2: Sürüklerken kutunun arkadaki tıklamayı tetikleyip KAPANMASINI önler
+    // ========================================================
+    inlineContainer.onmousedown = function(e) { e.stopPropagation(); };
+    inlineContainer.ontouchstart = function(e) { e.stopPropagation(); };
+    inlineContainer.onclick = function(e) { e.stopPropagation(); };
+    
     const expandBtn = document.createElement('div');
     expandBtn.className = 'matrix-expand-btn';
     expandBtn.title = 'Tam Ekran';
     expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
-
+    expandBtn.style.zIndex = '11';
+    expandBtn.style.top = '2px';
     expandBtn.onclick = function(event) {
+        event.stopPropagation();
         openMatrixFullscreen(event, this);
     };
 
     inlineContainer.appendChild(expandBtn);
     
+    // ========================================================
+    // SÜRÜKLE BIRAK (DRAG & DROP) MANTIĞI
+    // ========================================================
+    const dragBar = inlineContainer.querySelector('.popup-drag-bar');
+    let isDraggingPopup = false;
+    let pStartX, pStartY, pInitialLeft, pInitialTop;
+
+    const onPopupDragStart = (e) => {
+        isDraggingPopup = true;
+        dragBar.style.cursor = 'grabbing';
+        pStartX = e.pageX || (e.touches && e.touches[0].pageX);
+        pStartY = e.pageY || (e.touches && e.touches[0].pageY);
+        
+        pInitialLeft = parseFloat(inlineContainer.style.left) || 0;
+        pInitialTop = parseFloat(inlineContainer.style.top) || 0;
+
+        document.addEventListener('mousemove', onPopupDragMove);
+        document.addEventListener('mouseup', onPopupDragEnd);
+        document.addEventListener('touchmove', onPopupDragMove, { passive: false });
+        document.addEventListener('touchend', onPopupDragEnd);
+    };
+
+    const onPopupDragMove = (e) => {
+        if (!isDraggingPopup) return;
+        e.preventDefault(); 
+        let x = e.pageX || (e.touches && e.touches[0].pageX);
+        let y = e.pageY || (e.touches && e.touches[0].pageY);
+        
+        inlineContainer.style.left = (pInitialLeft + (x - pStartX)) + 'px';
+        inlineContainer.style.top = (pInitialTop + (y - pStartY)) + 'px';
+    };
+
+    const onPopupDragEnd = () => {
+        isDraggingPopup = false;
+        dragBar.style.cursor = 'grab';
+        document.removeEventListener('mousemove', onPopupDragMove);
+        document.removeEventListener('mouseup', onPopupDragEnd);
+        document.removeEventListener('touchmove', onPopupDragMove);
+        document.removeEventListener('touchend', onPopupDragEnd);
+    };
+
+    dragBar.addEventListener('mousedown', onPopupDragStart);
+    dragBar.addEventListener('touchstart', onPopupDragStart, { passive: false });
+
     boxElement.style.zIndex = "999999"; 
     boxElement.classList.add('matrix-opened');
 }
@@ -4448,19 +4571,10 @@ function openMatrixFullscreen(e, btnElement) {
         e.preventDefault();
         e.stopPropagation();
     }
-    SoundEngine.playClick();
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     const boxElement = btnElement.closest('.glass-box');
     if (!boxElement) return;
-    
-    const sigaCells = boxElement.querySelectorAll('.siga-text');
-    let wordsList = [];
-    sigaCells.forEach(cell => {
-        // innerText yerine innerHTML kullanıyoruz ki renk <span> etiketleri silinmesin
-        wordsList.push(cell.innerHTML.trim()); 
-    });
-    
-    if (wordsList.length === 0) return;
     
     let fullscreenOverlay = document.getElementById('matrix-fullscreen-overlay');
     if (!fullscreenOverlay) {
@@ -4484,46 +4598,118 @@ function openMatrixFullscreen(e, btnElement) {
     
     const contentArea = fullscreenOverlay.querySelector('.matrix-fullscreen-content');
     
-    const oldTable = contentArea.querySelector('.matrix-fullscreen-table');
-    if (oldTable) oldTable.remove();
+    // Eski tablo kapsayıcısını temizle
+    const oldWrapper = contentArea.querySelector('.matrix-fullscreen-table-wrapper');
+    if (oldWrapper) oldWrapper.remove();
     
+    // YENİ: Kendi içinde kaydırma (scroll) yapabilmesi için çerçeve oluşturuyoruz
+    const tableWrapper = document.createElement('div');
+    tableWrapper.className = 'matrix-fullscreen-table-wrapper';
+    tableWrapper.style.width = '100%';
+    tableWrapper.style.maxHeight = '85vh'; // Sayfadan taşmayı engeller
+    tableWrapper.style.overflowY = 'auto'; // Kendi içinde aşağı/yukarı scroll bar çıkartır
+    tableWrapper.style.overflowX = 'hidden'; // SADECE AŞAĞI DOĞRU KAYDIRMAYA İZİN VERİR!
+    tableWrapper.style.borderRadius = '12px';
+    tableWrapper.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+    tableWrapper.style.backgroundColor = '#ffffff';
+
     const table = document.createElement('table');
     table.className = 'matrix-fullscreen-table';
+    table.style.margin = '0'; 
+    table.style.height = 'auto'; 
     
     let tbodyHtml = '';
-    for (let i = 0; i < wordsList.length; i += 3) {
-        let rowIndex = i / 3;
-        let bgColor = '#ffffff'; 
+    const isVerb = boxElement.classList.contains('fiil-box');
+
+    // 10 Farklı Açık Pastel Renk Paleti (Küçük tabloyla birebir aynı)
+    const pastelColors = [
+        '#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', 
+        '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'
+    ];
+
+    // 1. DURUM: EĞER FİİL İSE (3 Sütun)
+    if (isVerb) {
+        const sigaCells = boxElement.querySelectorAll('.siga-text');
+        let wordsList = [];
+        sigaCells.forEach(cell => {
+            wordsList.push(cell.innerHTML.trim()); 
+        });
         
-        if (rowIndex === 0 || rowIndex === 2) {
-            bgColor = '#e3f2fd'; 
-        } else if (rowIndex === 1 || rowIndex === 3) {
-            bgColor = '#fce4ec'; 
+        if (wordsList.length === 0) return;
+
+        for (let i = 0; i < wordsList.length; i += 3) {
+            let rowIndex = i / 3;
+            let bgColor = pastelColors[rowIndex % 10]; 
+
+            tbodyHtml += `
+                <tr>
+                    <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i] || ''}</span></td>
+                    <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i+1] || ''}</span></td>
+                    <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i+2] || ''}</span></td>
+                </tr>
+            `;
+        }
+        
+        table.innerHTML = `
+            <thead style="position: sticky; top: 0; z-index: 10;">
+                <tr>
+                    <th>Müfred</th>
+                    <th>Tesniye</th>
+                    <th>Cemi</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tbodyHtml}
+            </tbody>
+        `;
+    } 
+    // 2. DURUM: EĞER İSİM İSE (Tek Sütun ve Türkçe Açıklamalı)
+    else {
+        const rows = boxElement.querySelectorAll('.conjugation-table tbody tr');
+        let items = [];
+        rows.forEach(row => {
+            let arCell = row.querySelector('.siga-text');
+            let trCell = row.querySelector('.siga-tr-text');
+            if (arCell) {
+                items.push({
+                    ar: arCell.innerHTML.trim(),
+                    tr: trCell ? trCell.innerHTML.trim() : ''
+                });
+            }
+        });
+
+        if (items.length === 0) return;
+
+        for (let i = 0; i < items.length; i++) {
+            let bgColor = pastelColors[i % 10]; 
+            
+            // ÇÖZÜM: Tam ekranda Arapça ile Türkçe arasına orantılı (4vh) görünmez bir duvar eklendi
+            let trHtml = items[i].tr ? `<div style="height: 4vh; width: 100%; display: block;"></div><span class="siga-tr-text" style="display:block; font-size:clamp(22px, 4vh, 45px); color:#444; font-weight:bold; font-family:sans-serif !important; line-height: 1.4;">${items[i].tr}</span>` : '';
+
+            tbodyHtml += `
+                <tr>
+                    <td style="background-color: ${bgColor} !important; text-align: center; padding: 5vh 2vw;">
+                        <span class="matrix-fullscreen-text" style="display: block; line-height: 1.2;">${items[i].ar}</span>
+                        ${trHtml}
+                    </td>
+                </tr>
+            `;
         }
 
-        tbodyHtml += `
-            <tr>
-                <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i] || ''}</span></td>
-                <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i+1] || ''}</span></td>
-                <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i+2] || ''}</span></td>
-            </tr>
+        table.innerHTML = `
+            <thead style="position: sticky; top: 0; z-index: 10;">
+                <tr>
+                    <th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tbodyHtml}
+            </tbody>
         `;
     }
     
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Müfred</th>
-                <th>Tesniye</th>
-                <th>Cemi</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${tbodyHtml}
-        </tbody>
-    `;
-    
-    contentArea.appendChild(table);
+    tableWrapper.appendChild(table);
+    contentArea.appendChild(tableWrapper);
     fullscreenOverlay.style.display = 'flex';
 }
 
@@ -4532,7 +4718,7 @@ function closeMatrixFullscreen(e) {
         e.preventDefault();
         e.stopPropagation();
     }
-    SoundEngine.playClose();
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
     const fullscreenOverlay = document.getElementById('matrix-fullscreen-overlay');
     if (fullscreenOverlay) {
         fullscreenOverlay.style.display = 'none';
