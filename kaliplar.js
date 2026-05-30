@@ -2434,7 +2434,17 @@ const wordEasterEggs = {
         3: { 
             base: { emoji: "❗", arText: "اُدْعُ", trText: "Davet et / Dua et!" },
             cekimi: ["اُدْعُ", "اُدْعُوَا", "اُدْعُوا", "اُدْعِي", "اُدْعُوَا", "اُدْعُونَ"]
-        }
+        },
+  
+        24: { 
+            base: { emoji: "❗", arText: "دُعَاء", trText: "Dua etmek." },
+            cekimi: ["دُعَاء"]
+        },
+
+        33: { 
+            base: { emoji: "❗", arText: "دَاعٍ ‫/‬ اَلدَّاعِي", trText: "Davet et / Dua et!" },
+            cekimi: ["اَلدَّاعِي","دَاعٍ"]
+        },
     },
     "مشي": {
         1: { 
