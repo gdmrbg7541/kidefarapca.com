@@ -739,71 +739,47 @@ td:first-child {
     font-family: 'Arakom', sans-serif !important;
 }
 
+/* ========================================================= */
+/* 1. CÜMLE BUTONU (!) - Kırmızı Dolgulu Küçük ve Klas Tasarım */
+/* ========================================================= */
 .easter-egg-trigger {
     position: absolute;
-    top: -12px;
-    left: -12px;
-    width: 28px;
-    height: 28px;
-    background: #FFCC00;
-    border: 2px solid #000;
+    top: -8px;   /* Boyutu küçüldüğü için köşeye tam oturması adına hizalandı */
+    left: -8px; 
+    width: 20px;  /* Tam istediğin gibi daha küçük yapıldı (Eski: 28px) */
+    height: 20px;
+    background: #FF3B30; /* Sistemdeki kırmızı dolgu rengi */
+    color: #ffffff;      /* Beyaz ünlem işareti */
+    border: 1.5px solid #ffffff; /* Çizgilerin netleşmesi için ince beyaz çerçeve */
     border-radius: 50%;
+    
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 100;
-    font-size: 14px;
-    box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
-    animation: pulseTrigger 1.5s infinite;
+    
+    /* Minik ama çok net duran ünlem fontu */
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: bold;
+    
+    /* Abartı olmayan usulca parlayan kırmızı ışıltı */
+    animation: elegantRedGlow 2s infinite alternate;
+    transition: transform 0.2s ease;
 }
 
-@keyframes pulseTrigger {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7); }
-    70% { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(255, 204, 0, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+/* Üzerine gelince çok hafif esner */
+.easter-egg-trigger:hover {
+    transform: scale(1.15);
 }
 
-.floating-emoji {
-    position: fixed !important; 
-    font-size: 150px; 
-    pointer-events: none;
-    z-index: 99999; 
-    /* Hızı biraz artırdık: 6 saniyeden 4.5 saniyeye çektik */
-    animation: 
-        floatUp 4.5s ease-out forwards, 
-        popFade 4.5s ease-out forwards; 
+/* Klas ve göz yormayan yumuşak kırmızı hare */
+@keyframes elegantRedGlow {
+    0% { box-shadow: 0 1px 3px rgba(255, 59, 48, 0.3); }
+    100% { box-shadow: 0 0 8px rgba(255, 59, 48, 0.7); }
 }
 
-/* Sadece yukarı çıkış hareketi */
-@keyframes floatUp {
-    0% { bottom: -120px; }
-    /* Emojilerin tepede kesilmeden tam görünmesi için yüksekliği biraz aşağı (82vh) çektik */
-    100% { bottom: 82vh; } 
-}
-
-/* Boyut ve saydamlık */
-@keyframes popFade {
-    0% { 
-        opacity: 0; 
-        transform: scale(0.3); 
-    }
-    10% { 
-        opacity: 1; 
-        transform: scale(1.3); /* Ekrana girerken büyük bir şekilde patlar */
-    }
-    20% {
-        transform: scale(1); /* Hızlıca normal boyuta inip yükselmeye devam eder */
-    }
-    80% { 
-        opacity: 1; /* Yolculuğun %80'ine kadar HİÇ SAYDAMLAŞMADAN tam görünür çıkar */
-        transform: scale(1);
-    }
-    100% { 
-        opacity: 0.3; /* YALNIZCA tepeye vardığında saydamlaşır */
-        transform: scale(0.5); /* Tepede çok yer kaplamaması için küçülür */
-    }
-}
 
 .matrix-fullscreen-overlay {
     display: none;
@@ -1538,4 +1514,65 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
 .category-content.verb-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 15px;
+}
+
+/* ========================================================= */
+/* İSİMLERDE ÇOKLU KULLANIM VARSA BUTONU KIRMIZI YAP         */
+/* ========================================================= */
+.glass-box.fiil-box.kok-turendi .ref,
+.glass-box.coklu-kullanim.kok-turendi .ref {
+    background-color: #FF3B30 !important;
+    color: #ffffff !important;
+    border-radius: 5px; 
+    padding: 0px 5px; 
+    transform: scale(0.95); 
+    -webkit-text-stroke: 0 !important; 
+    box-shadow: 0 0 8px rgba(255, 59, 48, 0.7); 
+    cursor: pointer;
+    z-index: 105; 
+    pointer-events: auto; 
+    animation: refPulse 1.5s infinite;
+}
+
+.glass-box.fiil-box.kok-turendi .ref:hover,
+.glass-box.coklu-kullanim.kok-turendi .ref:hover {
+    background-color: #d62828 !important;
+    transform: scale(1.1); 
+}
+
+/* Tek Sütunluk Tablodaki Türkçe Açıklama Metni */
+.siga-tr-text {
+    display: block;
+    font-family: sans-serif !important;
+    font-size: 16px;
+    color: #555555;
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+/* ========================================================= */
+/* YENİ: SAĞDAN ÇIKAN, BÜYÜYEN VE UÇUP KAYBOLAN BALON EMOJİ  */
+/* ========================================================= */
+.elegant-emoji {
+    position: absolute;
+    top: -10px; 
+    left: calc(100% + 5px); /* Kalıbın sağından çıkar */
+    font-size: 65px; /* Daha büyük (istediğin gibi devasa ama abartısız) */
+    z-index: 100;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    opacity: 0; /* Başlangıçta görünmez */
+}
+
+/* Sadece kelime ilk türediğinde çalışacak uçan balon sınıfı */
+.elegant-emoji.animate-pop {
+    animation: balloonFloat 1.5s ease-out forwards;
+}
+
+/* Sağdan çıkar, büyür, yukarı süzülür ve beklemeden eriyip kaybolur */
+@keyframes balloonFloat {
+    0% { transform: scale(0) translateY(0); opacity: 0; }
+    20% { transform: scale(1.2) translateY(-10px); opacity: 1; } /* Hızla belirir ve büyür */
+    40% { transform: scale(1) translateY(-20px); opacity: 1; } /* Kısa bir netleşme anı */
+    100% { transform: scale(0.9) translateY(-80px); opacity: 0; } /* Beklemeden yukarı uçup silinir */
 }

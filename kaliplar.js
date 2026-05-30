@@ -3227,8 +3227,11 @@ function resetBox(el) {
         el.setAttribute('data-tiklama-sayisi', '0');
     }
 
-    // DİKKAT: Buradaki 'highlightEasterEggBoxes(currentRoot)' kodunu sildik.
-    // Artık herhangi bir kutu sıfırlandığında her yer tekrar sarı olmayacak!
+    // ==================================================================
+    // KESİN ÇÖZÜM 1: Kutu sıfırlandığında emojiyi tamamen unutur!
+    // ==================================================================
+    el.removeAttribute('data-last-root');
+    el.removeAttribute('data-last-emoji');
 }
 
 
@@ -4337,6 +4340,14 @@ window.resetTableOnly = function() {
     
     // YENİ EKLENEN KOD: Sıfırlama yapıldığında tepede biriken tüm emojileri temizler
     document.querySelectorAll('.easter-egg-emoji').forEach(el => el.remove());
+
+    // ==================================================================
+    // KESİN ÇÖZÜM 2: Tüm tablo temizlendiğinde bütün kutuların hafızası silinir!
+    // ==================================================================
+    document.querySelectorAll('.glass-box').forEach(box => {
+        box.removeAttribute('data-last-root');
+        box.removeAttribute('data-last-emoji');
+    });
 };
 
 const modalOverlays = [
@@ -4389,6 +4400,8 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
 
     if (!boxElement || !currentRoot || currentRoot.length !== 3) return;
 
+    if (!boxElement.classList.contains('kok-turendi')) return;
+
     const refEl = boxElement.querySelector('.ref');
     if (!refEl) return;
     const refId = parseInt(refEl.innerText);
@@ -4408,36 +4421,71 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
 
     if (!data) return;
 
+    boxElement.style.position = 'relative';
+
+// ==========================================
+    // 1. EMOJİ KONTROLÜ (UÇUP KAYBOLAN BALON)
+    // ==========================================
     if (data.emoji) {
-        // YENİ: Emojinin sürekli çoğalıp yukarı uçmasını engellemek için mükemmel kontrol
-        let existingEmoji = boxElement.querySelector('.easter-egg-emoji');
-        if (!existingEmoji) {
+        let existingEmoji = boxElement.querySelector('.elegant-emoji');
+        let rememberedRoot = boxElement.getAttribute('data-last-root');
+        let rememberedEmoji = boxElement.getAttribute('data-last-emoji');
+
+        // Yeni bir kök veya ek geldiğinde balon gibi fırlat
+        if (rememberedRoot !== currentRoot || rememberedEmoji !== data.emoji) {
+            if (existingEmoji) existingEmoji.remove();
+
             const emojiDiv = document.createElement('div');
-            emojiDiv.className = 'floating-emoji easter-egg-emoji';
+            emojiDiv.className = 'elegant-emoji animate-pop'; 
             emojiDiv.setAttribute('data-ref', refId);
             emojiDiv.innerText = data.emoji;
             boxElement.appendChild(emojiDiv);
-        } else {
-            // Eğer kelime "ek" (suffix) aldıysa ve emojisi değişecekse günceller
-            existingEmoji.innerText = data.emoji; 
+
+            // KESİN ÇÖZÜM: Uçuş bitince emojiyi tamamen gizle ki hortlamasın!
+            emojiDiv.addEventListener('animationend', (e) => {
+                e.target.style.display = 'none'; 
+            });
+
+            boxElement.setAttribute('data-last-root', currentRoot);
+            boxElement.setAttribute('data-last-emoji', data.emoji);
+        } 
+        // Sekme değişip geri gelindiyse emoji kapalı (gizli) kalsın
+        else if (!existingEmoji) {
+            const emojiDiv = document.createElement('div');
+            emojiDiv.className = 'elegant-emoji'; 
+            emojiDiv.style.display = 'none'; // Görünmez yapıyoruz
+            emojiDiv.setAttribute('data-ref', refId);
+            emojiDiv.innerText = data.emoji;
+            boxElement.appendChild(emojiDiv);
         }
     }
 
+// ==========================================
+    // 2. BİLGİ BUTONU (!) KONTROLÜ
+    // ==========================================
     if (data.arText || data.trText) {
-        if (!boxElement.querySelector('.easter-egg-trigger')) {
+        let existingTrigger = boxElement.querySelector('.easter-egg-trigger');
+        
+        if (!existingTrigger) {
             const triggerBtn = document.createElement('div');
             triggerBtn.className = 'easter-egg-trigger';
-            triggerBtn.innerHTML = '✨'; 
-            triggerBtn.title = 'Bilgiyi Gör';
+            // KESİN ÇÖZÜM: Yıldızlar silindi, yerine klas bir ünlem eklendi
+            triggerBtn.innerHTML = '!'; 
+            triggerBtn.title = 'Cümleyi Gör';
+
             triggerBtn.onclick = function(e) {
                 e.stopPropagation(); 
                 showEasterEggOverlay(data.arText, data.trText);
             };
             boxElement.appendChild(triggerBtn);
+        } else {
+            existingTrigger.onclick = function(e) {
+                e.stopPropagation(); 
+                showEasterEggOverlay(data.arText, data.trText);
+            };
         }
     }
 }
-
 // ==================================================================
 // SADECE FİİLLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
 // ==================================================================
