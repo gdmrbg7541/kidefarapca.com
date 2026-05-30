@@ -1487,7 +1487,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         font-size: 38px !important; 
         line-height: 1.5 !important;
     }
-}
+
 
 /* YENİ: ARTI MENÜSÜ SAĞDA (Fakat ekrana yapışık değil) */
     #suffix-dropdown {
@@ -1500,7 +1500,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
         z-index: 9999999 !important;
     }
 
-
+}
 /* --- DİNAMİK AÇILIR MENÜ (AKORDEON) TASARIMI --- */
 .verb-menu-container {
     flex: 1;
