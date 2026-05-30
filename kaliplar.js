@@ -3736,13 +3736,21 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'
     ];
 
-    // 1. DURUM: EĞER FİİL İSE (Klasik 3 Sütunlu Fiil Tablosu)
+
+// 1. DURUM: EĞER FİİL İSE (Klasik 3 Sütunlu Fiil Tablosu - Cinsiyete Göre Renk)
     if (isVerb) {
         html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
         
         for (let i = 0; i < totalItems; i += 3) {
             let rowIndex = i / 3;
-            let bgColor = pastelColors[rowIndex % 10]; 
+            let bgColor = '#ffffff'; // Mütekellim (Ben/Biz) satırı için varsayılan Beyaz
+            
+            // Cinsiyete Göre Renklendirme
+            if (rowIndex === 0 || rowIndex === 2) {
+                bgColor = '#e3f2fd'; // Müzekker (Eril) satırları -> Mavi
+            } else if (rowIndex === 1 || rowIndex === 3) {
+                bgColor = '#fce4ec'; // Müennes (Dişil) satırları -> Pembe
+            }
 
             let w1 = kelimeListesi[i] || '';
             let w2 = kelimeListesi[i+1] || '';
@@ -3760,7 +3768,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                         <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w3}</span></td>
                      </tr>`;
         }
-    } 
+    }
     // 2. DURUM: EĞER İSİM İSE (Tek Sütunlu Alt Alta Tablo)
     else {
         html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th></tr></thead><tbody>`;
@@ -3794,12 +3802,14 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     inlineContainer.style.overflowY = 'hidden'; 
     inlineContainer.style.paddingTop = '15px'; 
     
-    // ========================================================
-    // ÇÖZÜM 2: Sürüklerken kutunun arkadaki tıklamayı tetikleyip KAPANMASINI önler
+// ========================================================
+    // ÇÖZÜM 2: Kutunun arkadaki tıklamayı tetiklemesini VE SEKMELERİN KAYMASINI önler!
     // ========================================================
     inlineContainer.onmousedown = function(e) { e.stopPropagation(); };
-    inlineContainer.ontouchstart = function(e) { e.stopPropagation(); };
     inlineContainer.onclick = function(e) { e.stopPropagation(); };
+    inlineContainer.ontouchstart = function(e) { e.stopPropagation(); };
+    inlineContainer.ontouchmove = function(e) { e.stopPropagation(); }; // YENİ: Arka planı kaydırmayı engeller
+    inlineContainer.ontouchend = function(e) { e.stopPropagation(); };  // YENİ: Sekme değişimini (Swipe) engeller
     
     const expandBtn = document.createElement('div');
     expandBtn.className = 'matrix-expand-btn';
@@ -3822,6 +3832,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     let pStartX, pStartY, pInitialLeft, pInitialTop;
 
     const onPopupDragStart = (e) => {
+        e.stopPropagation(); // YENİ: Sinyali arka plandan keser
         isDraggingPopup = true;
         dragBar.style.cursor = 'grabbing';
         pStartX = e.pageX || (e.touches && e.touches[0].pageX);
@@ -3839,6 +3850,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     const onPopupDragMove = (e) => {
         if (!isDraggingPopup) return;
         e.preventDefault(); 
+        e.stopPropagation(); // YENİ: Kaydırırken sekmelerin tetiklenmesini durdurur
         let x = e.pageX || (e.touches && e.touches[0].pageX);
         let y = e.pageY || (e.touches && e.touches[0].pageY);
         
@@ -3846,7 +3858,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         inlineContainer.style.top = (pInitialTop + (y - pStartY)) + 'px';
     };
 
-    const onPopupDragEnd = () => {
+    const onPopupDragEnd = (e) => {
+        if (e) e.stopPropagation(); // YENİ: Bıraktığında swipe tetiklenmesini durdurur
         isDraggingPopup = false;
         dragBar.style.cursor = 'grab';
         document.removeEventListener('mousemove', onPopupDragMove);
@@ -4372,7 +4385,7 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
 document.addEventListener('click', function(e) {
     const refEl = e.target.closest('.ref');
     if (refEl) {
-        // YENİ: Mobildeyse tıklamayı yok say, popup çekim tablosunu açma!
+        // Mobildeyse tıklamayı yok say, popup çekim tablosunu açma!
         if (window.innerWidth <= 1024) {
             e.preventDefault();
             e.stopPropagation();
@@ -4381,7 +4394,8 @@ document.addEventListener('click', function(e) {
 
         const boxElement = refEl.closest('.glass-box');
         
-        if (boxElement && boxElement.classList.contains('current-active-red') && boxElement.classList.contains('fiil-box')) {
+        // ÇÖZÜM: current-active-red yerine kok-turendi şartı arıyoruz. Böylece yeşil kutularda sonsuza kadar açılır!
+        if (boxElement && boxElement.classList.contains('kok-turendi') && boxElement.classList.contains('fiil-box')) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -4627,7 +4641,7 @@ function openMatrixFullscreen(e, btnElement) {
         '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'
     ];
 
-    // 1. DURUM: EĞER FİİL İSE (3 Sütun)
+// 1. DURUM: EĞER FİİL İSE (3 Sütun - Cinsiyete Göre Renk)
     if (isVerb) {
         const sigaCells = boxElement.querySelectorAll('.siga-text');
         let wordsList = [];
@@ -4639,7 +4653,14 @@ function openMatrixFullscreen(e, btnElement) {
 
         for (let i = 0; i < wordsList.length; i += 3) {
             let rowIndex = i / 3;
-            let bgColor = pastelColors[rowIndex % 10]; 
+            let bgColor = '#ffffff'; // Mütekellim (Ben/Biz) satırı için varsayılan Beyaz
+            
+            // Cinsiyete Göre Renklendirme
+            if (rowIndex === 0 || rowIndex === 2) {
+                bgColor = '#e3f2fd'; // Müzekker (Eril) satırları -> Mavi
+            } else if (rowIndex === 1 || rowIndex === 3) {
+                bgColor = '#fce4ec'; // Müennes (Dişil) satırları -> Pembe
+            }
 
             tbodyHtml += `
                 <tr>
@@ -4662,7 +4683,7 @@ function openMatrixFullscreen(e, btnElement) {
                 ${tbodyHtml}
             </tbody>
         `;
-    } 
+    }
     // 2. DURUM: EĞER İSİM İSE (Tek Sütun ve Türkçe Açıklamalı)
     else {
         const rows = boxElement.querySelectorAll('.conjugation-table tbody tr');
