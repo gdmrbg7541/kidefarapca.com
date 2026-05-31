@@ -1606,28 +1606,6 @@ const wordEasterEggs = {
         46: { base: { emoji: "🙉", arText: "وَإِذَا خَاطَبَهُمُ الْجَاهِلُونَ قَالُوا سَلَامًا", trText: "Cahiller onlara laf attığında 'Selam' der (geçerler). (Furkan Suresi)" } } 
     },
 
-    // ==================================================================
-    // 33. W-J-D (و ج د) KÖKÜ - Bulmak / Var Olmak
-    // 2. Bab (وَجَدَ - يَجِدُ) Misal Fiil
-    // ==================================================================
-    "وجد": {
-        // --- 1, 4, 5 Numaralı Kalıplar (2. Bab - Misal fiil olduğu için muzaride vav düşer) ---
-        1: { base: { emoji: "🔍", arText: "وَجَدَ", trText: "Buldu." } },
-        4: { base: { emoji: "🔎", arText: "يَجِدُ", trText: "Bulur / Buluyor." } },
-        5: { base: { emoji: "❗", arText: "جِدْ", trText: "Bul!" } },
-
-        25: { base: { emoji: "🌌", arText: "وُجُود", trText: "Varlık / Vücud." } }, 
-        29: { base: { emoji: "❤️", arText: "صَوْتُ الْوِجْدَانِ", trText: "Vicdanın sesi." } }, 
-        36: { base: { emoji: "✅", arText: "الْبَضَاعَةُ مَوْجُودَةٌ فِي الْمَخْزَنِ", trText: "Mal depoda mevcut (bulunmaktadır)." } }, 
-        
-        // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı - أَوَجَدَ -> أَوْجَدَ) ---
-        52: { base: { emoji: "✨", arText: "أَوْجَدَ", trText: "Var etti / İcat etti." } },
-        53: { base: { emoji: "💡", arText: "يُوجِدُ", trText: "Var eder / İcat ediyor." } },
-        54: { base: { emoji: "❗", arText: "أَوْجِدْ", trText: "Var et / İcat et!" } },
-
-        55: { base: { emoji: "🔍", arText: "إِيجَادُ حَلٍّ لِلْمُشْكِلَةِ", trText: "Probleme bir çözüm bulmak (icad etmek)." } }, 
-        56: { base: { emoji: "💡", arText: "مُوجِد", trText: "İcat eden / Mucit." } } 
-    },
 
     // ==================================================================
     // 34. S-K-N (س ك ن) KÖKÜ - Sakin olmak / İkamet etmek / Huzur
@@ -2392,6 +2370,47 @@ const wordEasterEggs = {
         7: { 
             base: { emoji: "❗", arText: "اِسْأَلْ", trText: "Sor / İste!" },
             cekimi: ["اِسْأَلْ", "اِسْأَلَا", "اِسْأَلُوا", "اِسْأَلِي", "اِسْأَلَا", "اِسْأَلْنَ"]
+        },
+ 
+        // --- 24: Sual (Hemze ötreli harften sonra geldiği için vav üzerine yazılır) ---
+        24: { 
+            base: { emoji: "❓", arText: "سُؤَال", trText: "Soru / Sual." },
+            cekimi: ["سُؤَال"]
+        },
+
+        // --- 33: İsm-i Fail (Hemze esreli olduğu için 'ya' (ئ) üzerine yazılır) ---
+        33: { 
+    base: { emoji: "🙋‍♂️", arText: "سَائِل", trText: "Soran / İsteyen (İsm-i Fail)." },
+    cekimi: [
+        { ar: "سَائِل", tr: "Soran (Soru soran)" },
+        { 
+            ar: "السَّائِل", 
+            tr: "İsteyen (Dilenci)",
+            // Artık buraya sadece ayet değil, her türlü cümle gelebilir
+            ornek: {
+                ar: "وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ",
+                tr: "İsteyeni (dilenciyi) azarlama. (Duhâ Suresi, 10)"
+            }
+        }
+    ]
+},
+
+        // --- 36: Mesul / İsm-i Meful (Hemze ötreli olduğu ve öncesi sakin olduğu için vav üzerine yazılır) ---
+        36: { 
+            base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful)." },
+            cekimi: ["مَسْؤُول"]
+        },
+
+        // --- 38: Mesele (Hemze üstünlü ve öncesi sakin, +ة eklentili yapı) ---
+        38: { 
+           
+           
+            suggestsPlus: true, // Öğrenciye '+' butonuna basmasını önerir
+            "ة": { 
+                emoji: "📄", 
+                arText: "مَسْأَلَة", 
+                trText: "Mesele / Sorun." 
+            }
         }
     },
     "قول": {
@@ -2407,8 +2426,7 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "قُلْ", trText: "De / Söyle!" },
             cekimi: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"]
         }
-    },
-    "بيع": {
+    },"بيع": {
         1: { 
             base: { emoji: "🤝", arText: "بَاعَ", trText: "Sattı." },
             cekimi: ["بَاعَ", "بَاعَا", "بَاعُوا", "بَاعَتْ", "بَاعَتَا", "بِعْنَ", "بِعْتَ", "بِعْتُمَا", "بِعْتُمْ", "بِعْتِ", "بِعْتُمَا", "بِعْتُنَّ", "بِعْتُ", "بِعْنَا", "بِعْنَا"]
@@ -2420,7 +2438,25 @@ const wordEasterEggs = {
         5: { 
             base: { emoji: "❗", arText: "بِعْ", trText: "Sat!" },
             cekimi: ["بِعْ", "بِيعَا", "بِيعُوا", "بِيعِي", "بِيعَا", "بِعْنَ"]
+        },
+
+        // --- 19: Masdar (Tenvinsiz) ---
+        19: { 
+            base: { emoji: "📜", arText: "بَيْع", trText: "Satış / Satmak (Masdar)." },
+        },
+        
+        // --- 33: İsm-i Fail (Tenvinsiz) ---
+        33: { 
+            base: { emoji: "🛒", arText: "بَائِع", trText: "Satan / Satıcı (İsm-i Fail)." },
+            cekimi: ["بَائِع"]
+        },
+
+        // --- 36: İsm-i Meful (Tenvinsiz) ---
+        36: { 
+            base: { emoji: "📦", arText: "مَبِيع", trText: "Satılan (İsm-i Meful)." },
+            cekimi: ["مَبِيع"]
         }
+   
     },"دعو": {
         1: { 
             base: { emoji: "🤲", arText: "دَعَا", trText: "Davet etti / Dua etti." },
@@ -2654,9 +2690,13 @@ const wordEasterEggs = {
             cekimi: ["اِنْطَوِ", "اِنْطَوِيَا", "اِنْطَوُوا", "اِنْطَوِي", "اِنْطَوِيَا", "اِنْطَوِينَ"]
         }
     },
+
+    // ==================================================================
+    // 33. W-J-D (و ج د) KÖKÜ - Bulmak / Var Olmak
+    // 2. Bab (وَجَدَ - يَجِدُ) Misal Fiil
+    // ==================================================================
     "وجد": {
-        // "وجد" fiilini ekliyorum, çünkü tabloda emoji kısmı var ama çekimleri eklenmemişti. (Bulmak / Var olmak)
-        // 2. Bab (Mazi: 1, Muzari: 4, Emir: 5)
+        // --- 1, 4, 5 Numaralı Kalıplar (2. Bab - Misal fiil olduğu için muzaride vav düşer) ---
         1: { 
             base: { emoji: "🔍", arText: "وَجَدَ", trText: "Buldu." },
             cekimi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"]
@@ -2668,6 +2708,42 @@ const wordEasterEggs = {
         5: { 
             base: { emoji: "❗", arText: "جِدْ", trText: "Bul!" },
             cekimi: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"]
+        },
+
+        25: { base: { emoji: "🌌", arText: "وُجُود", trText: "Varlık / Vücud." } }, 
+        29: { base: { emoji: "❤️", arText: "صَوْتُ الْوِجْدَانِ", trText: "Vicdanın sesi." } }, 
+        36: { base: { emoji: "✅", arText: "الْبَضَاعَةُ مَوْجُودَةٌ فِي الْمَخْزَنِ", trText: "Mal depoda mevcut (bulunmaktadır)." } }, 
+        
+        // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı - أَوَجَدَ -> أَوْجَدَ) ---
+        52: { 
+            base: { emoji: "✨", arText: "أَوْجَدَ", trText: "Var etti / İcat etti." },
+            cekimi: ["أَوْجَدَ", "أَوْجَدَا", "أَوْجَدُوا", "أَوْجَدَتْ", "أَوْجَدَتَا", "أَوْجَدْنَ", "أَوْجَدْتَ", "أَوْجَدْتُمَا", "أَوْجَدْتُمْ", "أَوْجَدْتِ", "أَوْجَدْتُمَا", "أَوْجَدْتُنَّ", "أَوْجَدْتُ", "أَوْجَدْنَا", "أَوْجَدْنَا"]
+        },
+        53: { 
+            base: { emoji: "💡", arText: "يُوجِدُ", trText: "Var eder / İcat ediyor." },
+            cekimi: ["يُوجِدُ", "يُوجِدَانِ", "يُوجِدُونَ", "تُوجِدُ", "تُوجِدَانِ", "يُوجِدْنَ", "تُوجِدُ", "تُوجِدَانِ", "تُوجِدُونَ", "تُوجِدِينَ", "تُوجِدَانِ", "تُوجِدْنَ", "أُوجِدُ", "نُوجِدُ", "نُوجِدُ"]
+        },
+        54: { 
+            base: { emoji: "❗", arText: "أَوْجِدْ", trText: "Var et / İcat et!" },
+            cekimi: ["أَوْجِدْ", "أَوْجِدَا", "أَوْجِدُوا", "أَوْجِدِي", "أَوْجِدَا", "أَوْجِدْنَ"]
+        },
+
+        // --- 55: İcat (Masdar) Tenvinsiz ---
+        55: { 
+            base: { emoji: "📜", arText: "إِيجَاد", trText: "İcat / Var etme (Masdar)." },
+            cekimi: ["إِيجَاد"]
+        }, 
+        
+        // --- 56: Mucit (İsm-i Fail) Tenvinsiz ve Örnek Cümlesiyle ---
+        56: { 
+            base: { emoji: "🧠", arText: "مُوجِد", trText: "Mucit / İcat eden (İsm-i Fail)." },
+            cekimi: ["مُوجِد"]
+        },
+        
+        // --- 57: İsm-i Meful (Tenvinsiz Çekimleriyle Birlikte Eklendi) ---
+        57: { 
+            base: { emoji: "📦", arText: "مُوجَد", trText: "Var edilen / İcat edilen (İsm-i Meful)." },
+            cekimi: ["مُوجَد"]
         }
     },
     "امن": {
@@ -3818,27 +3894,35 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th></tr></thead><tbody>`;
         
         for (let i = 0; i < totalItems; i++) {
-            let bgColor = pastelColors[i % 10]; 
-            let item = kelimeListesi[i];
-            
-            let wAr = typeof item === 'object' ? (item.ar || '') : (item || '');
-            let wTr = typeof item === 'object' ? (item.tr || '') : '';
+    let bgColor = pastelColors[i % 10]; 
+    let item = kelimeListesi[i];
+    
+    let wAr = typeof item === 'object' ? (item.ar || '') : (item || '');
+    let wTr = typeof item === 'object' ? (item.tr || '') : '';
+    let ornek = item.ornek; // Yeni genel değişken
 
-            if (isColorActive && wAr) {
-                wAr = ColorEngine.colorize(wAr, kok.split(""));
-            }
-
-            // ÇÖZÜM 1: Arapça ile Türkçe arasındaki boşluğu artırdık!
-            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; line-height: 1.4;">${wTr}</span>` : '';
-
-            html += `<tr>
-                        <td style="background-color: ${bgColor} !important; width: 100%; text-align: center; padding: 25px 15px 20px 15px;">
-                            <span class="siga-text" style="display: block; padding-bottom: 5px;">${wAr}</span>
-                            ${trHtml}
-                        </td>
-                     </tr>`;
-        }
+    if (isColorActive && wAr) {
+        wAr = ColorEngine.colorize(wAr, kok.split(""));
     }
+
+    // Genel örnek kutusu (Ayet veya Cümle fark etmez)
+    let ornekHtml = ornek ? `
+    <div class="ornek-box">
+        <div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div>
+        <div style="font-size:15px; color:#333; margin-top:6px; text-align: center;">${ornek.tr}</div>
+    </div>` : '';
+
+    let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555;">${wTr}</span>` : '';
+
+    html += `<tr>
+                <td style="background-color: ${bgColor} !important; padding: 25px 15px;">
+                    <span class="siga-text">${wAr}</span>
+                    ${trHtml}
+                    ${ornekHtml}
+                </td>
+             </tr>`;
+}
+}
 
     html += `</tbody></table></div>`;
     
@@ -4798,10 +4882,14 @@ function openMatrixFullscreen(e, btnElement) {
         rows.forEach(row => {
             let arCell = row.querySelector('.siga-text');
             let trCell = row.querySelector('.siga-tr-text');
+            // Yeni eklediğimiz örnek cümle/ayet kutusunu da yakalıyoruz
+            let ornekDiv = row.querySelector('div[style*="background:#f0f8ff"]'); 
+            
             if (arCell) {
                 items.push({
                     ar: arCell.innerHTML.trim(),
-                    tr: trCell ? trCell.innerHTML.trim() : ''
+                    tr: trCell ? trCell.innerHTML.trim() : '',
+                    ornekHtml: ornekDiv ? ornekDiv.outerHTML : '' // Örneği HTML olarak alıyoruz
                 });
             }
         });
@@ -4811,14 +4899,20 @@ function openMatrixFullscreen(e, btnElement) {
         for (let i = 0; i < items.length; i++) {
             let bgColor = pastelColors[i % 10]; 
             
-            // ÇÖZÜM: Tam ekranda Arapça ile Türkçe arasına orantılı (4vh) görünmez bir duvar eklendi
-            let trHtml = items[i].tr ? `<div style="height: 4vh; width: 100%; display: block;"></div><span class="siga-tr-text" style="display:block; font-size:clamp(22px, 4vh, 45px); color:#444; font-weight:bold; font-family:sans-serif !important; line-height: 1.4;">${items[i].tr}</span>` : '';
+            // Tam ekranda metinlerin daha belirgin olması için fontları büyütüyoruz
+            // openMatrixFullscreen fonksiyonu içinde (İsimler için olan else bloğu):
+let ornekHtml = items[i].ornekHtml ? `
+    <div style="margin-top:20px; padding: 15px; background: #f0f8ff; border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <div style="font-family:'Arakom', sans-serif; font-size:35px; color:#000; text-align: center;">${items[i].ornekHtmlAr}</div>
+        <div style="font-size:25px; color:#444; margin-top:10px; font-weight:bold; text-align: center;">${items[i].ornekHtmlTr}</div>
+    </div>` : '';
 
             tbodyHtml += `
                 <tr>
-                    <td style="background-color: ${bgColor} !important; text-align: center; padding: 5vh 2vw;">
+                    <td style="background-color: ${bgColor} !important; padding: 5vh 2vw;">
                         <span class="matrix-fullscreen-text" style="display: block; line-height: 1.2;">${items[i].ar}</span>
                         ${trHtml}
+                        ${ornekHtml}
                     </td>
                 </tr>
             `;
