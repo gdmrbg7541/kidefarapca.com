@@ -908,7 +908,7 @@ td:first-child {
     padding: 6px;
     gap: 6px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    z-index: 10005;
+    z-index: 99999999 !important;
     display: flex;
     flex-direction: row-reverse; /* Sağdan sola sıralama için */
     animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1588,4 +1588,55 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     display: flex;
     flex-direction: column;
     align-items: center; /* İçerikleri yatayda ortalar */
+}
+
+/* Tam ekran modunda body'yi sabitle */
+body.matrix-active {
+    overflow: hidden !important;
+}
+
+
+/* ========================================================= */
+/* TAVSİYE EDİLEN EK (SUFFIX) BUTON VURGUSU (YENİ TASARIM)   */
+/* ========================================================= */
+#suffix-dropdown .key.suggested-suffix {
+    background-color: #fbbf24 !important; /* Şık bir Altın Sarısı */
+    color: #1e293b !important; /* Koyu Lacivert/Gri (Okunaklılık için) */
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+    transform: scale(1.08); /* Hafifçe öne çıkar */
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+/* ========================================================= */
+/* KUTU ÜZERİNDEKİ MİNİ ➕ İPUCU ROZETİ (DAHA SAYDAM)          */
+/* ========================================================= */
+.plus-hint-badge {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    /* Arka plan renklerini çok daha saydam yaptık (0.4 ve 0.5) */
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(245, 158, 11, 0.5)); 
+    color: rgba(255, 255, 255, 0.75); /* İçindeki + işaretini de hafifleştirdik */
+    font-size: 14px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    /* Gölgeyi de çok yumuşattık (0.2) */
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.2); 
+    animation: pulseHintBadge 1.5s infinite;
+    z-index: 20;
+    pointer-events: none;
+    /* Altında kalan yazıyı hafifçe buğulandırır (şık cam efekti) */
+    backdrop-filter: blur(2px); 
+}
+
+@keyframes pulseHintBadge {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }

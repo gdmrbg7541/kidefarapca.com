@@ -1502,7 +1502,7 @@ const wordEasterEggs = {
         61: { base: { emoji: "💪", arText: "تَمْكِين", trText: "Güçlendirmek." } } 
     },
 
-    // ==================================================================
+  // ==================================================================
     // 30. H-S-N (ح س ن) KÖKÜ - Güzellik / İyilik / İhsan
     // 5. Bab (فَعُلَ - يَفْعُلُ) ve İf'âl Babı
     // ==================================================================
@@ -1512,18 +1512,74 @@ const wordEasterEggs = {
         12: { base: { emoji: "✨", arText: "يَحْسُنُ", trText: "Güzel olur." } },
         13: { base: { emoji: "💖", arText: "اُحْسُنْ", trText: "Güzel ol!" } },
 
-        17: { base: { emoji: "🌸", arText: "الْحَسَنُ وَالْحُسَيْنُ سَيِّدَا شَبَابِ أَهْلِ الْجَنَّةِ", trText: "Hasan ve Hüseyin, cennet gençlerinin efendileridir. (Hadis-i Şerif)" } }, 
+        // --- 17 Numaralı Kalıp (Sıfat-ı Müşebbehe / İsim) ---
+        17: { 
+            base: { emoji: "🌸", arText: "حَسَن", trText: "Güzel / İyi." },
+            ornek: { 
+                ar: "الْحَسَنُ وَالْحُسَيْنُ سَيِّدَا شَبَابِ أَهْلِ الْجَنَّةِ", 
+                tr: "Hasan ve Hüseyin, cennet gençlerinin efendileridir. (Hadis-i Şerif)" 
+            } 
+        }, 
+        
+        // --- 21 Numaralı Kalıp (فُعْل) ve Hüsniye İsmi ---
+        21: { 
+            base: { emoji: "✨", arText: "حُسْن", trText: "Güzellik / İyilik." },
+            suggestsPlus: true,
+            "يّ": { emoji: "👨", arText: "حُسْنِيّ", trText: "Hüsnü (Erkek ismi)." },
+            "يَّة": { emoji: "🧕", arText: "حُسْنِيَّة", trText: "Hüsniye (Kadın ismi)." }
+        },
+
+        // --- 49 Numaralı Kalıp (İsm-i Tasgir) ---
         49: { base: { emoji: "🌷", arText: "حُسَيْن", trText: "Hüseyin (Küçük güzellik)." } }, 
-        50: { base: { emoji: "🥇", arText: "لَقَدْ خَلَقْنَا الْإِنْسَانَ فِي أَحْسَنِ تَقْوِيمٍ", trText: "Biz insanı en güzel biçimde (ahsen-i takvim) yarattık. (Tîn Suresi)" } }, 
-        51: { base: { emoji: "💎", arText: "وَلِلهِ الْأَسْمَاءُ الْحُسْنَى فَادْعُوهُ بِهَا", trText: "En güzel isimler (Esma-ül Hüsna) Allah'ındır, O'na onlarla dua edin. (A'râf Suresi)" } }, 
+        
+        // --- 50 Numaralı Kalıp (İsm-i Tafdil) ---
+        50: { 
+            base: { emoji: "🥇", arText: "أَحْسَن", trText: "En güzel / Daha güzel." },
+            ornek: { 
+                ar: "لَقَدْ خَلَقْنَا الْإِنْسَانَ فِي أَحْسَنِ تَقْوِيمٍ", 
+                tr: "Biz insanı en güzel biçimde (ahsen-i takvim) yarattık. (Tîn Suresi, 4)" 
+            } 
+        }, 
+        
+        // --- 51 Numaralı Kalıp (İsm-i Tafdil Müennes) ---
+        51: { 
+            base: { emoji: "💎", arText: "حُسْنَى", trText: "En güzel (Müennes)." },
+            ornek: { 
+                ar: "وَلِلهِ الْأَسْمَاءُ الْحُسْنَى فَادْعُوهُ بِهَا", 
+                tr: "En güzel isimler (Esma-ül Hüsna) Allah'ındır, O'na onlarla dua edin. (A'râf Suresi, 180)" 
+            } 
+        }, 
 
         // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı) ---
         52: { base: { emoji: "🎁", arText: "أَحْسَنَ", trText: "İyilik yaptı (İhsan etti)." } },
         53: { base: { emoji: "🤝", arText: "يُحْسِنُ", trText: "İyilik yapar / İhsan ediyor." } },
         54: { base: { emoji: "❤️", arText: "أَحْسِنْ", trText: "İyilik yap / İhsan et!" } },
 
-        55: { base: { emoji: "💖", arText: "هَلْ جَزَاءُ الْإِحْسَانِ إِلَّا الْإِحْسَانُ", trText: "İyiliğin (ihsanın) karşılığı, iyilikten başka bir şey midir? (Rahmân Suresi)" } }, 
-        56: { base: { emoji: "😇", arText: "إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ", trText: "Şüphesiz Allah, iyilik edenleri (muhsinleri) sever. (Bakara Suresi)" } }, 
+        // --- 55 Numaralı Kalıp (İf'âl Masdarı) ---
+        55: { 
+            base: { emoji: "💖", arText: "إِحْسَان", trText: "İyilik etmek / Lütuf." },
+            ornek: { 
+                ar: "هَلْ جَزَاءُ الْإِحْسَانِ إِلَّا الْإِحْسَانُ", 
+                tr: "İyiliğin (ihsanın) karşılığı, iyilikten başka bir şey midir? (Rahmân Suresi, 60)" 
+            } 
+        }, 
+        
+        // --- 56 Numaralı Kalıp (İf'âl İsm-i Faili) ---
+        56: { 
+            base: { emoji: "😇", arText: "مُحْسِن", trText: "İyilik eden (Muhsin)." },
+            suggestsPlus: true,
+            "ينَ": {
+                emoji: "👥",
+                arText: "مُحْسِنِينَ",
+                trText: "İyilik edenler (Çoğul / Mansub-Mecrur).",
+                ornek: { 
+                    ar: "إِنَّ اللهَ يُحِبُّ الْمُحْسِنِينَ", 
+                    tr: "Şüphesiz Allah, iyilik edenleri (muhsinleri) sever. (Bakara Suresi, 195)" 
+                } 
+            }
+        }, 
+        
+        // --- 61 Numaralı Kalıp (Tef'il Masdarı) ---
         61: { base: { emoji: "📈", arText: "تَحْسِين", trText: "İyileştirmek (Tahsin)." } } 
     },
 
@@ -2147,14 +2203,77 @@ const wordEasterEggs = {
         56: { base: { emoji: "🗺️", arText: "الْكِتَابُ خَيْرُ مُرْشِدٍ لِلْإِنْسَانِ", trText: "Kitap, insan için en iyi mürşittir (yol göstericidir/rehberdir)." } } // مُرْشِد
     },
 
-    // 51. A-M-N (ا م ن) KÖKÜ - Güvende Olmak / İnanmak / Güvenilirlik
-    "امن": {
-        19: { base: { emoji: "👮", arText: "أَمْن", trText: "Güvenlik." } }, // أَمْن
-        22: { base: { emoji: "🛡️", arText: "الْأَمَانُ وَالصِّحَّةُ نِعْمَتَانِ", trText: "Aman (güvenlik) ve sağlık iki büyük nimettir." }, suggestsPlus: true, "ة": { emoji: "📦", arText: "الأَمَانَةُ تَجْلِبُ الرِّزْقَ", trText: "Emaneti korumak (güvenilir olmak) rızık getirir." } }, // أَمَان + ة = أَمَانَة
-        35: { base: { emoji: "🤝", arText: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ وَالْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ", trText: "Müslüman, diğer Müslümanların elinden ve dilinden emin olduğu kimsedir." } }, // أَمِين
-        55: { base: { emoji: "❤️", arText: "الْإِيمَانُ مَا وَقَرَ فِي الْقَلْبِ", trText: "İman, kalbe yerleşen (inanılan) şeydir." } }, // إِيمَان
-        56: { base: { emoji: "🕌", arText: "الْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ", trText: "Mümin, müminin aynasıdır. (Hadis-i Şerif)" } }, // مُؤْمِن
-        61: { base: { emoji: "📝", arText: "شَرِكَةُ التَّأْمِينِ الصِّحِّيِّ", trText: "Sağlık sigortası (güvencesi/tamini) şirketi." } } // تَأْمِين
+"أمن": {
+        19: { 
+            base: { emoji: "👮", arText: "أَمْن", trText: "Güvenlik." } 
+        },
+        
+        22: { 
+            base: { emoji: "🛡️", arText: "أَمَان", trText: "Güvenlik / Aman." },
+            ornek: { ar: "الْأَمَانُ وَالصِّحَّةُ نِعْمَتَانِ", tr: "Aman (güvenlik) ve sağlık iki büyük nimettir." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "📦", 
+                arText: "أَمَانَة", 
+                trText: "Emanet.",
+                ornek: { ar: "الأَمَانَةُ تَجْلِبُ الرِّزْقَ", tr: "Emaneti korumak (güvenilir olmak) rızık getirir." } 
+            } 
+        },
+        
+        35: { 
+            base: { emoji: "🤝", arText: "آمِن", trText: "Emin / Güvende olan." },
+            ornek: { ar: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ وَالْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ", tr: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu kimsedir..." } 
+        },
+        
+        // --- 52, 53, 54 Numaralı Kalıplar (İf'al Babı) ---
+        52: { 
+            base: { emoji: "🤲", arText: "آمَنَ", trText: "İman etti." },
+            cekimi: ["آمَنَ", "آمَنَا", "آمَنُوا", "آمَنَتْ", "آمَنَتَا", "آمَنَّ", "آمَنْتَ", "آمَنْتُمَا", "آمَنْتُمْ", "آمَنْتِ", "آمَنْتُمَا", "آمَنْتُنَّ", "آمَنْتُ", "آمَنَّا", "آمَنَّا"]
+        },
+        53: { 
+            base: { emoji: "❤️", arText: "يُؤْمِنُ", trText: "İman eder / İnanıyor." },
+            cekimi: ["يُؤْمِنُ", "يُؤْمِنَانِ", "يُؤْمِنُونَ", "تُؤْمِنُ", "تُؤْمِنَانِ", "يُؤْمِنَّ", "تُؤْمِنُ", "تُؤْمِنَانِ", "تُؤْمِنُونَ", "تُؤْمِنِينَ", "تُؤْمِنَانِ", "تُؤْمِنَّ", "أُؤْمِنُ", "نُؤْمِنُ", "نُؤْمِنُ"]
+        },
+        54: { 
+            base: { emoji: "❗", arText: "آمِنْ", trText: "İman et!" },
+            cekimi: ["آمِنْ", "آمِنَا", "آمِنُوا", "آمِنِي", "آمِنَا", "آمِنَّ"]
+        },
+
+        // --- 55: İman (İf'al Masdarı - Hemze Kuralı) ---
+        55: { 
+            base: { emoji: "❤️", arText: "إِيمَان", trText: "İman / İnanmak." },
+            ornek: { ar: "الْإِيمَانُ مَا وَقَرَ فِي الْقَلْبِ", tr: "İman, kalbe yerleşen (inanılan) şeydir." },
+            cekimi: [
+                {
+                    ar: "<div style='display:flex; justify-content:center; align-items:center; gap:15px; direction:rtl;'><span>إِأْمَان</span> <i class='fas fa-arrow-left' style='color:#e74c3c; font-size:18px;'></i> <span style='color:#27ae60;'>إِيمَان</span></div>", 
+                    tr: "Ses Olayı: Kelimenin aslı (<span dir='rtl'>إِأْمَان</span>) şeklindedir. Kural gereği peş peşe gelen iki hemzeden ilki esreli, ikincisi sakin ise okuyuşu kolaylaştırmak için ikinci hemze 'Ye' (<span dir='rtl'>ي</span>) harfine dönüşür." 
+                }
+            ]
+        },
+        
+        // --- 56: Mümin (İf'al İsm-i Faili - Hemze Kuralı) ---
+        56: { 
+            base: { emoji: "🕌", arText: "مُؤْمِن", trText: "Mümin / İnanan." },
+            ornek: { ar: "الْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ", tr: "Mümin, müminin aynasıdır. (Hadis-i Şerif)" },
+            cekimi: [
+                {
+                    ar: "<div style='display:flex; justify-content:center; align-items:center; gap:15px; direction:rtl;'><span> مُأْمِن </span> <i class='fas fa-arrow-left' style='color:#e74c3c; font-size:18px;'></i> <span style='color:#27ae60;'> مُؤْمِن </span></div>",
+                    tr: "Yazım Kuralı: Hemze sakin (cezimli) ve kendinden önceki harf ötreli olduğu için, kural gereği hemze 'Vav' (<span dir='rtl'>و</span>) harfinin üzerine yazılır." 
+                }
+            ],
+            suggestsPlus: true,
+            "ونَ": {  // <-- DİKKAT: Menüyle eşleşip turuncu yanması için üstün harekeli yapıldı
+                emoji: "👥",
+                arText: "مُؤْمِنُونَ", // <-- Düzgün okunuş için nun harfine üstün eklendi
+                trText: "Müminler (Çoğul).",
+                ornek: { ar: "قَدْ أَفْلَحَ الْمُؤْمِنُونَ", tr: "Müminler gerçekten kurtuluşa ermiştir. (Mü'minûn Suresi, 1)" }
+            }
+        },
+        
+        61: { 
+            base: { emoji: "📝", arText: "تَأْمِين", trText: "Sigorta / Güvence." },
+            ornek: { ar: "شَرِكَةُ التَّأْمِينِ الصِّحِّيِّ", tr: "Sağlık sigortası (güvencesi/tamini) şirketi." }
+        }
     },
 
     // 52. J-M-' (ج م ع) KÖKÜ - Toplamak / Bir Araya Getirmek / Topluluk
@@ -2327,7 +2446,7 @@ const wordEasterEggs = {
     },
 
 
-      // ==================================================================
+// ==================================================================
     // DÜZENSİZ FİİLLER (Tek Veri Kaynağı: Emojiler + Çekim Tabloları)
     // ==================================================================
     "شدد": {
@@ -2342,8 +2461,22 @@ const wordEasterEggs = {
         3: { 
             base: { emoji: "❗", arText: "شُدَّ", trText: "Sık / Bağla!" },
             cekimi: ["شُدَّ", "شُدَّا", "شُدُّوا", "شُدِّي", "شُدَّا", "اُشْدُدْنَ"]
+        },
+        20: { 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "⚡️", 
+                arText: "شِدَّة", 
+                trText: "Şiddet" 
+            },
+            cekimi: ["شِدّ"]
+        },
+        35: { 
+            base: { emoji: "⚠️", arText: "شَدِيد", trText: "Çetin / Şiddetli." },
+            ornek: { ar: "وَاللهُ شَدِيدُ الْعِقَابِ", tr: "Allah, cezası çetin olandır. (Bakara Suresi, 196)" }
         }
     },
+        
     "أكل": {
         1: { 
             base: { emoji: "🍽️", arText: "أَكَلَ", trText: "Yedi." },
@@ -2355,9 +2488,28 @@ const wordEasterEggs = {
         },
         3: { 
             base: { emoji: "❗", arText: "كُلْ", trText: "Ye!" },
+            ornek: {
+                ar: "وَكُلُوا وَاشْرَبُوا وَلَا تُسْرِفُوا",
+                tr: "Yiyin, için fakat israf etmeyin. (A'râf Suresi, 31)"
+            },
             cekimi: ["كُلْ", "كُلَا", "كُلُوا", "كُلِي", "كُلَا", "كُلْنَ"]
+        },
+        19: { 
+            base: { emoji: "🍎", arText: "أَكْل", trText: "Yemek (Masdar)." },
+        },
+        33: { 
+            base: { emoji: "🙋", arText: "آكِل", trText: "Yiyen, Obur (İsm-i Fail)." },
+        },
+        36: { 
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "💬", 
+                arText: "مَأْكُولَات", 
+                trText: "Yiyecekler" 
+            }
         }
     },
+    
     "سأل": {
         1: { 
             base: { emoji: "❓", arText: "سَأَلَ", trText: "Sordu / İstedi." },
@@ -2371,41 +2523,21 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "اِسْأَلْ", trText: "Sor / İste!" },
             cekimi: ["اِسْأَلْ", "اِسْأَلَا", "اِسْأَلُوا", "اِسْأَلِي", "اِسْأَلَا", "اِسْأَلْنَ"]
         },
- 
-        // --- 24: Sual (Hemze ötreli harften sonra geldiği için vav üzerine yazılır) ---
         24: { 
             base: { emoji: "❓", arText: "سُؤَال", trText: "Soru / Sual." },
-            cekimi: ["سُؤَال"]
         },
-
-        // --- 33: İsm-i Fail (Hemze esreli olduğu için 'ya' (ئ) üzerine yazılır) ---
         33: { 
-    base: { emoji: "🙋‍♂️", arText: "سَائِل", trText: "Soran / İsteyen (İsm-i Fail)." },
-    cekimi: [
-        { ar: "سَائِل", tr: "Soran (Soru soran)" },
-        { 
-            ar: "السَّائِل", 
-            tr: "İsteyen (Dilenci)",
-            // Artık buraya sadece ayet değil, her türlü cümle gelebilir
+            base: { emoji: "🙋‍♂️", arText: "سَائِل", trText: "Soran / İsteyen (Dilenci)." },
             ornek: {
                 ar: "وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ",
                 tr: "İsteyeni (dilenciyi) azarlama. (Duhâ Suresi, 10)"
             }
-        }
-    ]
-},
-
-        // --- 36: Mesul / İsm-i Meful (Hemze ötreli olduğu ve öncesi sakin olduğu için vav üzerine yazılır) ---
+        },
         36: { 
             base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful)." },
-            cekimi: ["مَسْؤُول"]
         },
-
-        // --- 38: Mesele (Hemze üstünlü ve öncesi sakin, +ة eklentili yapı) ---
         38: { 
-           
-           
-            suggestsPlus: true, // Öğrenciye '+' butonuna basmasını önerir
+            suggestsPlus: true,
             "ة": { 
                 emoji: "📄", 
                 arText: "مَسْأَلَة", 
@@ -2413,6 +2545,7 @@ const wordEasterEggs = {
             }
         }
     },
+
     "قول": {
         1: { 
             base: { emoji: "🗣️", arText: "قَالَ", trText: "Dedi / Söyledi." },
@@ -2426,7 +2559,9 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "قُلْ", trText: "De / Söyle!" },
             cekimi: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"]
         }
-    },"بيع": {
+    },
+
+    "بيع": {
         1: { 
             base: { emoji: "🤝", arText: "بَاعَ", trText: "Sattı." },
             cekimi: ["بَاعَ", "بَاعَا", "بَاعُوا", "بَاعَتْ", "بَاعَتَا", "بِعْنَ", "بِعْتَ", "بِعْتُمَا", "بِعْتُمْ", "بِعْتِ", "بِعْتُمَا", "بِعْتُنَّ", "بِعْتُ", "بِعْنَا", "بِعْنَا"]
@@ -2439,25 +2574,18 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "بِعْ", trText: "Sat!" },
             cekimi: ["بِعْ", "بِيعَا", "بِيعُوا", "بِيعِي", "بِيعَا", "بِعْنَ"]
         },
-
-        // --- 19: Masdar (Tenvinsiz) ---
         19: { 
             base: { emoji: "📜", arText: "بَيْع", trText: "Satış / Satmak (Masdar)." },
         },
-        
-        // --- 33: İsm-i Fail (Tenvinsiz) ---
         33: { 
             base: { emoji: "🛒", arText: "بَائِع", trText: "Satan / Satıcı (İsm-i Fail)." },
-            cekimi: ["بَائِع"]
         },
-
-        // --- 36: İsm-i Meful (Tenvinsiz) ---
         36: { 
             base: { emoji: "📦", arText: "مَبِيع", trText: "Satılan (İsm-i Meful)." },
-            cekimi: ["مَبِيع"]
         }
-   
-    },"دعو": {
+    },
+
+    "دعو": {
         1: { 
             base: { emoji: "🤲", arText: "دَعَا", trText: "Davet etti / Dua etti." },
             cekimi: ["دَعَا", "دَعَوَا", "دَعَوْا", "دَعَتْ", "دَعَتَا", "دَعَوْنَ", "دَعَوْتَ", "دَعَوْتُمَا", "دَعَوْتُمْ", "دَعَوْتِ", "دَعَوْتُمَا", "دَعَوْتُنَّ", "دَعَوْتُ", "دَعَوْنَا", "دَعَوْنَا"]
@@ -2470,9 +2598,8 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "اُدْعُ", trText: "Davet et / Dua et!" },
             cekimi: ["اُدْعُ", "اُدْعُوَا", "اُدْعُوا", "اُدْعِي", "اُدْعُوَا", "اُدْعُونَ"]
         },
-         
         19: { 
-            suggestsPlus: true, // Öğrenciye '+' butonuna basmasını önerir
+            suggestsPlus: true, 
             "ة": { 
                 emoji: "💌", 
                 arText: "دَعْوَة", 
@@ -2481,7 +2608,6 @@ const wordEasterEggs = {
         },
         24: { 
             base: { emoji: "❗", arText: "دُعَاء", trText: "Dua etmek." },
-            cekimi: ["دُعَاء"]
         },
         33: { 
             base: { emoji: "🗣️", arText: "دَاعٍ", trText: "Davet eden." },
@@ -2490,31 +2616,22 @@ const wordEasterEggs = {
                 { ar: "اَلدَّاعِي", tr: "Belirli (Marife) Kullanım" }
             ]
         },
-
-        // ==========================================
-        // İFTİAL BABI EKLENTİSİ (İddia etmek)
-        // Lütfen X1, X2, X3, X4 yazan yerlere kendi sistemindeki kalıp numaralarını yaz.
-        // ==========================================
-        
-        "77": { 
+        77: { 
             base: { emoji: "⚖️", arText: "اِدَّعَى", trText: "İddia etti." },
             cekimi: ["اِدَّعَى", "اِدَّعَيَا", "اِدَّعَوْا", "اِدَّعَتْ", "اِدَّعَتَا", "اِدَّعَيْنَ", "اِدَّعَيْتَ", "اِدَّعَيْتُمَا", "اِدَّعَيْتُمْ", "اِدَّعَيْتِ", "اِدَّعَيْتُمَا", "اِدَّعَيْتُنَّ", "اِدَّعَيْتُ", "اِدَّعَيْنَا", "اِدَّعَيْنَا"]
         },
-        "78": { 
+        78: { 
             base: { emoji: "⚖️", arText: "يَدَّعِي", trText: "İddia eder / İddia ediyor." },
             cekimi: ["يَدَّعِي", "يَدَّعِيَانِ", "يَدَّعُونَ", "تَدَّعِي", "تَدَّعِيَانِ", "يَدَّعِينَ", "تَدَّعِي", "تَدَّعِيَانِ", "تَدَّعُونَ", "تَدَّعِينَ", "تَدَّعِيَانِ", "تَدَّعِينَ", "أَدَّعِي", "نَدَّعِي", "نَدَّعِي"]
         },
-        "79": { 
+        79: { 
             base: { emoji: "❗", arText: "اِدَّعِ", trText: "İddia et!" },
             cekimi: ["اِدَّعِ", "اِدَّعِيَا", "اِدَّعُوا", "اِدَّعِي", "اِدَّعِيَا", "اِدَّعِينَ"]
         },
-
         80: { 
             base: { emoji: "📜", arText: "إِدِّعَاء", trText: "İddia / İddia etmek." },
-            cekimi: ["اِدِّعَاء"]
         },
-
-        "81": { 
+        81: { 
             base: { emoji: "🧑‍⚖️", arText: "مُدَّعٍ", trText: "İddia eden / Müddei." },
             cekimi: [
                 { ar: "مُدَّعٍ", tr: "Belirsiz (Nekra) Kullanım" },
@@ -2522,6 +2639,7 @@ const wordEasterEggs = {
             ]
         }
     },
+
     "مشي": {
         1: { 
             base: { emoji: "🚶", arText: "مَشَى", trText: "Yürüdü." },
@@ -2532,10 +2650,51 @@ const wordEasterEggs = {
             cekimi: ["يَمْشِي", "يَمْشِيَانِ", "يَمْشُونَ", "تَمْشِي", "تَمْشِيَانِ", "يَمْشِينَ", "تَمْشِي", "تَمْشِيَانِ", "تَمْشُونَ", "تَمْشِينَ", "تَمْشِيَانِ", "تَمْشِينَ", "أَمْشِي", "نَمْشِي", "نَمْشِي"]
         },
         5: { 
-            base: { emoji: "❗", arText: "اِمْشِ", trText: "Yürü!" },
+            base: { 
+                emoji: "🛑", 
+                arText: "اِمْشِ", 
+                trText: "Yürü!" 
+            },
+            ornek: {
+                ar: "وَلَا تَمْشِ فِي الْأَرْضِ مَرَحًا",
+                tr: "Yeryüzünde böbürlenerek (gururla) yürüme! (İsrâ Suresi, 37)"
+            },
             cekimi: ["اِمْشِ", "اِمْشِيَا", "اِمْشُوا", "اِمْشِي", "اِمْشِيَا", "اِمْشِينَ"]
+        },
+        19: {
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "مَشْي", 
+                trText: "Yürüyüş / Gidişat." 
+            },
+            ornek: {
+                ar: "وَاقْصِدْ فِي مَشْيِكَ",
+                tr: "Yürüyüşünde (gidişatında) ölçülü / mütevazı ol. (Lokmân Suresi, 19)"
+            }
+        },
+        33: {
+            base: { 
+                emoji: "🚶‍♀️", 
+                arText: "مَاشٍ", 
+                trText: "Yürüyen / Yaya." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🐑", 
+                arText: "مَاشِيَة", 
+                trText: "Yürüyen (Kadın) / Küçükbaş Hayvan Sürüsü.",
+                ornek: { ar: "ذَهَبْتُ إِلَى الْمَدْرَسَةِ مَاشِيًا", tr: "Okula yürüyerek (yaya olarak) gittim." } 
+            }
+        },
+        38: {
+            base: { 
+                emoji: "🛤️", 
+                arText: "مَمْشًى", 
+                trText: "Yürüyüş yolu / Koridor / Yaya kaldırımı." 
+            }
         }
     },
+
     "رضي": {
         8: { 
             base: { emoji: "😌", arText: "رَضِيَ", trText: "Razı oldu." },
@@ -2550,6 +2709,7 @@ const wordEasterEggs = {
             cekimi: ["اِرْضَ", "اِرْضَيَا", "اِرْضَوْا", "اِرْضَيْ", "اِرْضَيَا", "اِرْضَيْنَ"]
         }
     },
+
     "وقي": {
         1: { 
             base: { emoji: "🛡️", arText: "وَقَى", trText: "Korudu." },
@@ -2562,6 +2722,127 @@ const wordEasterEggs = {
         5: { 
             base: { emoji: "❗", arText: "قِ", trText: "Koru!" },
             cekimi: ["قِ", "قِيَا", "قُوا", "قِي", "قِيَا", "قِينَ"]
+        },
+        23: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "وِقَاي", 
+                trText: "Koruma (Yalın Hâl)" 
+            },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🚧", 
+                arText: "وِقَايَة", 
+                trText: "Koruma / Önlem.",
+                ornek: [
+                    {
+                        ar: "الْوِقَايَةُ خَيْرٌ مِنَ الْعِلَاجِ", 
+                        tr: "Önlem almak, tedavi olmaktan hayırlıdır." 
+                    },
+                    {
+                        ar: "يَجِبُ اتِّخَاذُ وِقَايَاتٍ صِحِّيَّةٍ", 
+                        tr: "Sağlık önlemleri (tedbirleri) almak gerekir." 
+                    }
+                ]
+            }
+        },
+        // --- 32 Numaralı Kalıp: فَعْلَى (Fa'lâ) ---
+        32: { 
+            base: { 
+                emoji: "❤️", 
+                arText: "تَقْوَى", 
+                trText: "Takva / Sakınma." 
+            },
+            // 1. KONU ANLATIMI (Kalıp Numarasını kırmızı yapar ve tablo olarak açar)
+            cekimi: [
+                {
+                    ar: "<div style='display:flex; justify-content:center; align-items:center; gap:15px; direction:rtl;'><span>وَقْيَى</span> <i class='fas fa-arrow-left' style='color:#e74c3c; font-size:18px;'></i> <span>تَقْيَى</span> <i class='fas fa-arrow-left' style='color:#e74c3c; font-size:18px;'></i> <span style='color:#27ae60;'>تَقْوَى</span></div>", 
+                    tr: "Kelimenin aslı 'Wakyâ' (<span dir='rtl'>وَقْيَى</span>) şeklindedir. Kural gereği baştaki Vav (<span dir='rtl'>و</span>) harfi Te'ye (<span dir='rtl'>ت</span>), ortadaki Ye (<span dir='rtl'>ي</span>) harfi Vav'a (<span dir='rtl'>و</span>) dönüşerek 'Takva' olmuştur." 
+                }
+            ],
+            // 2. ÖRNEK AYET (Sadece ünlem ! butonunda, kelime anlamının altında çıkar)
+            ornek: {
+                ar: "وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَى", 
+                tr: "Ahiret için azık toplayın. Kuşkusuz, azığın en hayırlısı takvadır. (Bakara Suresi, 197)" 
+            }
+        },
+
+        35: { 
+            base: { 
+                emoji: "😇", 
+                arText: "تَقِيّ", 
+                trText: "Takva sahibi / Allah'tan sakınan (Yalın)." 
+            },
+            suggestsPlus: true,
+            "اء": { 
+                emoji: "👥", 
+                arText: "أَتْقِيَاء", 
+                trText: "Takva sahipleri (Çoğul).",
+                ornek: [
+                    { ar: "إِن كُنتَ تَقِيًّا", tr: "Eğer Allah'tan sakınan (takva sahibi) biriysen... (Meryem Suresi, 18)" },
+                    { ar: "هُمْ أَوْلِيَاءُ اللَّهِ الْأَتْقِيَاءُ", tr: "Onlar Allah'ın takva sahibi dostlarıdır." }
+                ]
+            }
+        },
+        77: { 
+            base: { emoji: "🤲", arText: "اِتَّقَى", trText: "Sakındı / Korundu (Takva gösterdi)." },
+            cekimi: ["اِتَّقَى", "اِتَّقَيَا", "اِتَّقَوْا", "اِتَّقَتْ", "اِتَّقَتَا", "اِتَّقَيْنَ", "اِتَّقَيْتَ", "اِتَّقَيْتُمَا", "اِتَّقَيْتُمْ", "اِتَّقَيْتِ", "اِتَّقَيْتُمَا", "اِتَّقَيْتُنَّ", "اِتَّقَيْتُ", "اِتَّقَيْنَا", "اِتَّقَيْنَا"]
+        },
+        78: { 
+            base: { emoji: "✨", arText: "يَتَّقِي", trText: "Sakınır / Korunur." },
+            cekimi: ["يَتَّقِي", "يَتَّقِيَانِ", "يَتَّقُونَ", "تَتَّقِي", "تَتَّقِيَانِ", "يَتَّقِينَ", "تَتَّقِي", "تَتَّقِيَانِ", "تَتَّقُونَ", "تَتَّقِينَ", "تَتَّقِيَانِ", "تَتَّقِينَ", "أَتَّقِي", "نَتَّقِي", "نَتَّقِي"]
+        },
+        79: { 
+            base: { emoji: "❗", arText: "اِتَّقِ", trText: "Sakın! (Örn: اِتَّقِ الله - Allah'tan sakın/kork!)" },
+            cekimi: ["اِتَّقِ", "اِتَّقِيَا", "اِتَّقُوا", "اِتَّقِي", "اِتَّقِيَا", "اِتَّقِينَ"]
+        },
+        80: { 
+            base: { emoji: "🛡️", arText: "اِتِّقَاء", trText: "Sakınma / Korunma (Kurallı Masdar)." },
+            ornek: { 
+                ar: "اِتِّقَاءُ الشُّبُهَاتِ خَيْرٌ مِنَ الْوُقُوعِ فِيهَا", 
+                tr: "Şüpheli şeylerden sakınmak, onlara düşmekten hayırlıdır." 
+            }
+        },
+        81: { 
+            base: { emoji: "🕌", arText: "مُتَّقٍ", trText: "Sakınan / Müttaki (Yalın)." },
+            suggestsPlus: true,
+            "ينَ": { 
+                emoji: "📖", 
+                arText: "مُتَّقِينَ", 
+                trText: "Takva sahipleri (Çoğul / Mansub-Mecrur).",
+                ornek: [
+                    { ar: "إِنَّهُ كَانَ عَبْدًا مُتَّقِيًا", tr: "Şüphesiz o, takva sahibi (müttaki) bir kuldu." },
+                    { ar: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ", tr: "Bu, kendisinde şüphe olmayan kitaptır. Allah'a karşı gelmekten sakınanlar (müttakiler) için bir hidayettir. (Bakara Suresi, 2)" }
+                ]
+            }
+        }
+    }, 
+
+    "ضلل": {
+        1: { 
+            base: { emoji: "🌑", arText: "ضَلَّ", trText: "Saptı / Yolunu kaybetti." },
+            cekimi: ["ضَلَّ", "ضَلَّا", "ضَلُّوا", "ضَلَّتْ", "ضَلَّتَا", "ضَلَلْنَ", "ضَلَلْتَ", "ضَلَلْتُمَا", "ضَلَلْتُمْ", "ضَلَلْتِ", "ضَلَلْتُمَا", "ضَلَلْتُنَّ", "ضَلَلْتُ", "ضَلَلْنَا", "ضَلَلْنَا"]
+        },
+        4: { 
+            base: { emoji: "❓", arText: "يَضِلُّ", trText: "Sapıyor / Sapar." },
+            cekimi: ["يَضِلُّ", "يَضِلَّانِ", "يَضِلُّونَ", "تَضِلُّ", "تَضِلَّانِ", "يَضْلِلْنَ", "تَضِلُّ", "تَضِلَّانِ", "تَضِلُّونَ", "تَضِلِّينَ", "تَضِلَّانِ", "تَضْلِلْنَ", "أَضِلُّ", "نَضِلُّ", "نَضِلُّ"]
+        },
+        5: { 
+            base: { emoji: "🚫", arText: "اِضْلِلْ", trText: "Sap!" },
+            cekimi: ["اِضْلِلْ", "اِضْلِلَا", "اِضْلِلُوا", "اِضْلِلِي", "اِضْلِلَا", "اِضْلِلْنَ"]
+        },
+        33: {
+            base: { emoji: "📉", arText: "ضَالّ", trText: "Sapan / Doğru yoldan ayrılan." }
+        },
+        36: {
+            base: { emoji: "🌀", arText: "مَضْلُول", trText: "Saptırılmış." }
+        },
+        50: {
+            base: { emoji: "⚠️", arText: "أَضَلُّ", trText: "Daha sapkın / En sapkın." },
+            ornek: { 
+                ar: "وَمَنْ أَضَلُّ مِمَّنِ اتَّبَعَ هَوَاهُ", 
+                tr: "Kendi heva ve hevesine uyandan daha sapkın kim olabilir? (Kasas Suresi, 50)" 
+            }
         }
     },
     "عدد": {
@@ -2783,13 +3064,13 @@ const verbCategories = [
         id: "aksami-seba",
         title: "Aksam-ı Seb'a (Düzensizler)",
         // Aksam-ı Seb'a başlığında görünmesini istediğin kökleri buraya yazıyorsun
-        verbs: ["شدد", "أكل", "سأل", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي"]
+        verbs: [, "أمن","شدد", "أكل", "سأل", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي","ضلل"]
     },
     {
         id: "mezid",
         title: "Mezid (Türemiş) Fiiller",
         // Mezid sekmesinde görünmesini istediklerini buraya yazıyorsun
-        verbs: ["عدد", "امن", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي"]
+        verbs: ["عدد", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي"]
     }
 ];
 
@@ -3303,13 +3584,17 @@ function resetBox(el) {
         el.setAttribute('data-tiklama-sayisi', '0');
     }
 
-    // ==================================================================
-    // KESİN ÇÖZÜM 1: Kutu sıfırlandığında emojiyi tamamen unutur!
+ // ==================================================================
+    // KESİN ÇÖZÜM 1: Kutu sıfırlandığında emojiyi ve + rozetini tamamen unutur!
     // ==================================================================
     el.removeAttribute('data-last-root');
     el.removeAttribute('data-last-emoji');
+    el.removeAttribute('data-plus-animated'); // Animasyon hafızasını siler
+    
+    // YENİ: Kutunun köşesinde kalan saydam + rozetini (HTML olarak) tamamen siler
+    const hintBadge = el.querySelector('.plus-hint-badge');
+    if (hintBadge) hintBadge.remove();
 }
-
 
 // ==================================================================
 // 1. SADECE FİİLLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
@@ -3389,19 +3674,34 @@ function handleBoxClick(boxElement) {
         let plainWord = kalipMetni;
         let hasMultipleUses = false; // YENİ: Çoklu kullanım kontrolü
         
-        if (currentRootSafe.length === 3) {
+       if (currentRootSafe.length === 3) {
             // ÖZEL ÇEKİM LİSTESİNDE VAR MI KONTROL ET (TEK VERİ KAYNAĞI)
             if (typeof wordEasterEggs !== 'undefined' && 
                 wordEasterEggs[currentRootSafe] && 
-                wordEasterEggs[currentRootSafe][refId] && 
-                wordEasterEggs[currentRootSafe][refId].cekimi) {
+                wordEasterEggs[currentRootSafe][refId]) {
                 
-                // İlk eleman nesne mi (Türkçeli mi) yoksa düz metin mi kontrol et
-                let ilkEleman = wordEasterEggs[currentRootSafe][refId].cekimi[0];
-                plainWord = typeof ilkEleman === 'object' ? ilkEleman.ar : ilkEleman;
+                let eggObj = wordEasterEggs[currentRootSafe][refId];
                 
-                // Listede birden fazla kelime varsa çoklu kullanımı aktifleştir!
-                if (wordEasterEggs[currentRootSafe][refId].cekimi.length > 1) {
+                // 1. Önce tek kelimelik arText var mı diye bak (Cümleyi kutuya sığdırmaya çalışmasını engeller!)
+                if (eggObj.base && eggObj.base.arText && eggObj.base.arText.trim().split(/\s+/).length === 1) {
+                    plainWord = eggObj.base.arText;
+                } 
+                // 2. Yoksa çekim dizisinin ilk elemanını al
+                else if (eggObj.cekimi && eggObj.cekimi.length > 0) {
+                    let ilkEleman = eggObj.cekimi[0];
+                    plainWord = typeof ilkEleman === 'object' ? ilkEleman.ar : ilkEleman;
+                } 
+                else if (eggObj.base && eggObj.base.cekimi && eggObj.base.cekimi.length > 0) {
+                    let ilkEleman = eggObj.base.cekimi[0];
+                    plainWord = typeof ilkEleman === 'object' ? ilkEleman.ar : ilkEleman;
+                }
+                // 3. Eğer CÜMLE girilmişse, standart sarf motoruyla sadece asıl kelimeyi türetip kutuya koy
+                else {
+                    plainWord = applyRootToKalip(currentRootSafe, kalipMetni);
+                }
+                
+                // Çoklu kullanım (Alt Tablo) kontrolü
+                if ((eggObj.cekimi && eggObj.cekimi.length > 1) || (eggObj.base && eggObj.base.cekimi && eggObj.base.cekimi.length > 1)) {
                     hasMultipleUses = true;
                 }
             } else {
@@ -3640,32 +3940,18 @@ function applyRootToKalip(root, kalip) {
 }
 
 function openConjugationPopup(kok, babNo, tip, anaVezin) {
-  if (!lastClickedBoxTextSpan) return;
+    if (!lastClickedBoxTextSpan) return;
     const boxElement = lastClickedBoxTextSpan.closest('.glass-box');
     if (!boxElement) return;
-
-    // =================================================================
-    // === GÜVENLİK KİLİDİ: Kök türemediyse (kutu yeşil değilse) TABLOYU AÇMA! ===
-    if (!boxElement.classList.contains('kok-turendi')) {
-        return; 
-    }
-    // =================================================================
+    if (!boxElement.classList.contains('kok-turendi')) return; 
 
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
-    
-    if (!kok || kok.length !== 3) {
-        kok = "فعل"; 
-    }
+    if (!kok || kok.length !== 3) kok = "فعل"; 
 
-    // refId değerini bul (Özel kelime tablosunu çekmek için lazım olacak)
     const refEl = boxElement.querySelector('.ref');
     const refId = refEl ? parseInt(refEl.innerText) : 0;
 
-    // ... (Kodun geri kalanı aynen devam ediyor) ...
-    document.querySelectorAll('.glass-box').forEach(box => {
-        box.style.zIndex = "1";
-    });
-
+    document.querySelectorAll('.glass-box').forEach(box => { box.style.zIndex = "1"; });
     document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
         if (openBox !== boxElement) {
             const openCloseBtn = openBox.querySelector('.matrix-close-btn');
@@ -3677,10 +3963,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     boxElement.classList.remove("pulse-highlight");
     boxElement.style.transform = "";
     void boxElement.offsetWidth; 
-
-    setTimeout(() => {
-        if (boxElement) boxElement.classList.remove('no-transition');
-    }, 50);
+    setTimeout(() => { if (boxElement) boxElement.classList.remove('no-transition'); }, 50);
 
     let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
     if (!inlineContainer) {
@@ -3689,75 +3972,51 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         boxElement.appendChild(inlineContainer);
     }
 
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    const tableWidth = 420;
-    const estimatedTableHeight = 410; 
+    if (!anaVezin) anaVezin = boxElement.getAttribute('data-original') || '';
     
-    let rect = boxElement.getBoundingClientRect();
-    
-    let targetLeft = -tableWidth - 60;
-    let globalLeft = rect.left + targetLeft;
-    if (globalLeft < 10) {
-        targetLeft = 10 - rect.left;
-    }
-    inlineContainer.style.left = `${targetLeft}px`;
-
-    let targetTop = (windowHeight / 2) - (estimatedTableHeight / 2) - rect.top;
-    let globalTop = rect.top + targetTop;
-    let globalBottom = globalTop + estimatedTableHeight;
-    if (globalTop < 10) {
-        targetTop = 10 - rect.top;
-    } else if (globalBottom > windowHeight - 10) {
-        targetTop = (windowHeight - estimatedTableHeight - 10) - rect.top;
-    }
-
-    inlineContainer.style.top = `${targetTop}px`;
-    
-    const tabanKelime = applyRootToKalip(kok, anaVezin);
-    let stem = tabanKelime.replace(/[َُِّْ]$/, "");
+    const tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin) : "";
+    let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
     let kelimeListesi = [];
+    let ozelCekimBulundu = false;
+    let activeSuffix = boxElement.getAttribute('data-active-suffix'); 
 
-    // ==========================================
-    // ÖZEL ÇEKİM LİSTESİNDE VAR MI KONTROL ET (TEK VERİ KAYNAĞI)
-    // ==========================================
-    if (typeof wordEasterEggs !== 'undefined' && 
-        wordEasterEggs[kok] && 
-        wordEasterEggs[kok][refId] && 
-        wordEasterEggs[kok][refId].cekimi) {
-        
-        // Listede varsa, önceden tanımladığımız kusursuz diziyi direkt al
-        kelimeListesi = [...wordEasterEggs[kok][refId].cekimi];
-        
-    } else {
-        // LİSTEDE YOKSA ESKİ ALGORİTMA İLE OLUŞTUR
+    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok] && wordEasterEggs[kok][refId]) {
+        let eggObj = wordEasterEggs[kok][refId];
+        if (activeSuffix && eggObj[activeSuffix] && eggObj[activeSuffix].cekimi) {
+            kelimeListesi = [...eggObj[activeSuffix].cekimi];
+            ozelCekimBulundu = true;
+        } else if (!activeSuffix) {
+            if (eggObj.base && eggObj.base.cekimi) {
+                kelimeListesi = [...eggObj.base.cekimi];
+                ozelCekimBulundu = true;
+            } else if (eggObj.cekimi) {
+                kelimeListesi = [...eggObj.cekimi];
+                ozelCekimBulundu = true;
+            }
+        }
+    }
+
+    if (!ozelCekimBulundu) {
         const list = sigaSablonlari[tip];
+        if (!list) return;
+        
         list.forEach((siga, index) => {
             let cekilmisKelime = "";
-            
             if (tip === 'muzari') {
                 let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-                
                 let aynHareke = "ُ"; 
-                if (babNo === 7 || anaVezin.includes("يَفْعِلُ")) {
-                    aynHareke = "ِ";
-                } else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ") || babNo === 12) {
-                    aynHareke = "َ";
-                }
+                if (babNo === 7 || anaVezin.includes("يَفْعِلُ")) aynHareke = "ِ";
+                else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ") || babNo === 12) aynHareke = "َ";
                 
                 let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
-                
                 if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
                 else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
                 else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
                 else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
                 else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;
                 else if (babNo === 12) {
-                    if (index === 5 || index === 11) {
-                        coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
-                    } else {
-                        coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
-                    }
+                    if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
+                    else coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
                 } 
                 else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
                 else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
@@ -3770,7 +4029,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     else if (currentPrefix === 'أَ') currentPrefix = "أُ";
                     else if (currentPrefix === 'نَ') currentPrefix = "نُ";
                 }
-                
                 cekilmisKelime = currentPrefix + coreWord + siga.suffix;
             } 
             else if (tip === 'mazi') {
@@ -3778,14 +4036,9 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     let r1 = kok[0], r2 = kok[1], r3 = kok[2];
                     let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; 
                     let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; 
-                    
                     let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
-                    
-                    if (index < 5) {
-                        cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
-                    } else {
-                        cekilmisKelime = baseAcik + siga.ek; 
-                    }
+                    if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
+                    else cekilmisKelime = baseAcik + siga.ek; 
                 } else {
                     cekilmisKelime = stem + siga.ek; 
                 }
@@ -3793,9 +4046,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             else if (tip === 'emir') {
                 if (babNo === 12) {
                     let r1 = kok[0], r2 = kok[1], r3 = kok[2];
-                    if (index === 5) {
-                        cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; 
-                    } else {
+                    if (index === 5) cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; 
+                    else {
                         let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
                         cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; 
                     }
@@ -3806,7 +4058,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
                     else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
                     else if (babNo === 8 || babNo === 9 || babNo === 13 || babNo === 14) emirPrefix = ""; 
-
                     let aynHareke = "ِ";
                     if (anaVezin.includes("أُفْعُلْ")) aynHareke = "ُ";
                     else if (anaVezin.includes("اِفْعَلْ")) aynHareke = "َ"; 
@@ -3823,17 +4074,122 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
                 }
             }
-            
             cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
             kelimeListesi.push(cekilmisKelime);
         });
     }
 
-// ==========================================
-    // TABLOYU HTML OLARAK ÇİZDİRME AŞAMASI (SÜRÜKLENEBİLİR YENİ TASARIM)
-    // ==========================================
-    
-    // 1. Üst kısma şık bir sürükleme (Drag) çubuğu ekliyoruz
+    if (kelimeListesi.length === 0) return;
+    const isColorActive = kok && kok.length === 3;
+    const isVerb = boxElement.classList.contains('fiil-box');
+    const pastelColors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'];
+
+    let muzariListesi = [];
+    if (isVerb && tip === 'mazi') {
+        let foundMuzari = false;
+        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok]) {
+            let possibleRefs = [refId + 3, refId + 1]; 
+            for (let pr of possibleRefs) {
+                if (wordEasterEggs[kok][pr]) {
+                    let egg = wordEasterEggs[kok][pr];
+                    if (egg.cekimi) { muzariListesi = [...egg.cekimi]; foundMuzari = true; break; }
+                    if (egg.base && egg.base.cekimi) { muzariListesi = [...egg.base.cekimi]; foundMuzari = true; break; }
+                }
+            }
+            if (!foundMuzari) {
+                for (let k in wordEasterEggs[kok]) {
+                    let egg = wordEasterEggs[kok][k];
+                    let txt = egg.base ? egg.base.arText : (egg.arText || "");
+                    if (txt && (txt.startsWith('يَ') || txt.startsWith('يُ') || txt.startsWith('يَتَ'))) {
+                        if (egg.cekimi) { muzariListesi = [...egg.cekimi]; foundMuzari = true; break; }
+                        if (egg.base && egg.base.cekimi) { muzariListesi = [...egg.base.cekimi]; foundMuzari = true; break; }
+                    }
+                }
+            }
+        }
+        if (!foundMuzari) {
+            const list = sigaSablonlari['muzari'];
+            if (list) {
+                list.forEach((siga, index) => {
+                    let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
+                    let aynHareke = "ُ"; 
+                    if (babNo === 7 || anaVezin.includes("يَفْعِلُ")) aynHareke = "ِ";
+                    else if (anaVezin.includes("يَفْعَلُ") || anaVezin.includes("يَفْتَعِلُ") || anaVezin.includes("يَنْفَعِلُ") || babNo === 12) aynHareke = "َ";
+                    
+                    let coreWord = r1 + "ْ" + r2 + aynHareke + r3;
+                    if (babNo === 7) coreWord = r1 + "ْ" + r2 + aynHareke + r3; 
+                    else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+                    else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+                    else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+                    else if (babNo === 11) coreWord = r1 + "ْتَ" + r2 + "ِ" + r3;
+                    else if (babNo === 12) {
+                        if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
+                        else coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
+                    } 
+                    else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
+                    else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+                    else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+                    
+                    let currentPrefix = siga.prefix; 
+                    if (babNo === 7 || babNo === 8 || babNo === 9) {
+                        if (currentPrefix === 'يَ') currentPrefix = "يُ";
+                        else if (currentPrefix === 'تَ') currentPrefix = "تُ";
+                        else if (currentPrefix === 'أَ') currentPrefix = "أُ";
+                        else if (currentPrefix === 'نَ') currentPrefix = "نُ";
+                    }
+                    let cekilmisKelime = currentPrefix + coreWord + siga.suffix;
+                    cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
+                    muzariListesi.push(cekilmisKelime);
+                });
+            }
+        }
+        if(muzariListesi.length === 0) muzariListesi = kelimeListesi;
+    }
+
+    function generateCellContent(w, tip, babNo, tableType, isColorActive, kok, wordIndex) {
+        if (!w) return "";
+        let clean = (typeof w === 'object' ? w.ar : w).replace(/[\u200C\u200D\uFEFF]/g, ''); 
+        let prefix = "";
+        let coreWord = clean;
+
+        if (tableType === 'ma') prefix = "مَا";
+        else if (tableType === 'la') prefix = "لَا";
+        else if (tableType === 'lam') {
+            prefix = "لَمْ";
+            const duals = [1, 4, 7, 10];
+            const pluralMasc = [2, 8];
+            const singFem = [9];
+            const pluralFem = [5, 11];
+
+            if (duals.includes(wordIndex)) coreWord = clean.replace(/َانِ$/, 'َا'); 
+            else if (pluralMasc.includes(wordIndex)) coreWord = clean.replace(/ُونَ$/, 'ُوا'); 
+            else if (singFem.includes(wordIndex)) coreWord = clean.replace(/ِينَ$/, 'ِي'); 
+            else if (pluralFem.includes(wordIndex)) coreWord = clean; 
+            else {
+                if (clean.endsWith('ُ')) coreWord = clean.replace(/ُ$/, 'ْ');
+                else if (clean.endsWith('ِي')) coreWord = clean.replace(/ِي$/, 'ِ');
+                else if (clean.endsWith('ُو')) coreWord = clean.replace(/ُو$/, 'ُ');
+                else if (clean.endsWith('َى')) coreWord = clean.replace(/َى$/, 'َ');
+                else if (clean.endsWith('ا')) coreWord = clean.replace(/ا$/, 'َ');
+            }
+        }
+        else if (tableType === 'nehiy') {
+            prefix = "لَا";
+            if (clean.startsWith("اِ") || clean.startsWith("اُ")) coreWord = "تَ" + clean.substring(2);
+            else if (clean.startsWith("أَ")) coreWord = "تُ" + clean.substring(2);
+            else {
+                let taPrefix = (babNo === 7 || babNo === 8 || babNo === 9) ? "تُ" : "تَ";
+                coreWord = taPrefix + clean;
+            }
+        }
+
+        // --- DÜZELTME 2: İçinde HTML (<) varsa ASLA renklendirme motoruna sokma! ---
+        let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
+        
+        if (prefix) return `<span style="color: #64748b; font-weight: bold; margin-left: 6px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+        return `<span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+    }
+
     let html = `
         <div class="popup-drag-bar" style="position: absolute; top: 0; left: 0; width: 100%; height: 35px; background: #f1f5f9; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 10; touch-action: none;">
             <div style="width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px; pointer-events: none;"></div>
@@ -3841,184 +4197,159 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         <div class="matrix-close-btn" style="z-index: 11; top: 2px;" onclick="closeInlineMatrix(event, this)">✕</div>
     `;
 
- 
-    // 2. Tabloyu kendi içinde scroll (kaydırılabilir) yapacak bir kılıfa sarıyoruz
-    // 2. Hayalet scroll çıkmasını önlemek için gereksiz padding boşlukları sıfırlandı
     html += `<div class="popup-scroll-wrapper" style="max-height: 60vh; overflow-y: auto; overflow-x: hidden; margin-top: 35px; padding: 0; box-sizing: border-box;">`;
     html += `<table class="conjugation-table" style="margin: 0; width: 100%; border-collapse: collapse;">`;
 
     let totalItems = kelimeListesi.length;
-    const isColorActive = kok && kok.length === 3;
-    const isVerb = boxElement.classList.contains('fiil-box');
 
-    const pastelColors = [
-        '#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', 
-        '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'
-    ];
-
-
-// 1. DURUM: EĞER FİİL İSE (Klasik 3 Sütunlu Fiil Tablosu - Cinsiyete Göre Renk)
     if (isVerb) {
-        html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th>Müfred</th><th>Tesniye</th><th>Cemi</th></tr></thead><tbody>`;
-        
-        for (let i = 0; i < totalItems; i += 3) {
-            let rowIndex = i / 3;
-            let bgColor = '#ffffff'; // Mütekellim (Ben/Biz) satırı için varsayılan Beyaz
+        if (typeof kelimeListesi[0] === 'object') {
+            html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th></tr></thead><tbody>`;
+            for (let i = 0; i < totalItems; i++) {
+                let bgColor = pastelColors[i % 10]; 
+                let item = kelimeListesi[i];
+                let wAr = item.ar || ''; let wTr = item.tr || ''; let ornek = item.ornek; 
+                // YENİ: İçinde HTML (<) varsa renklendirme motorunu atla ki tasarım bozulmasın
+if (isColorActive && wAr && !wAr.includes('<')) wAr = ColorEngine.colorize(wAr, kok.split(""));
+                let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: ltr;">${ornek.tr}</div></div>` : '';
+                let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: ltr;">${wTr}</span>` : '';
+                html += `<tr><td style="background-color: ${bgColor} !important; padding: 25px 15px;"><span class="siga-text">${wAr}</span>${trHtml}${ornekHtml}</td></tr>`;
+            }
+        } 
+        else {
+            let tablesToRender = [];
             
-            // Cinsiyete Göre Renklendirme
-            if (rowIndex === 0 || rowIndex === 2) {
-                bgColor = '#e3f2fd'; // Müzekker (Eril) satırları -> Mavi
-            } else if (rowIndex === 1 || rowIndex === 3) {
-                bgColor = '#fce4ec'; // Müennes (Dişil) satırları -> Pembe
-            }
+            // ÇÖZÜM 1: MAZİ SIRALAMASI SENİN İSTEDİĞİN GİBİ GÜNCELLENDİ (La en sonda)
+            if (tip === 'mazi') tablesToRender = ['olumlu', 'ma', 'lam', 'la'];
+            else if (tip === 'muzari') tablesToRender = ['olumlu', 'la'];
+            else if (tip === 'emir') tablesToRender = ['olumlu', 'nehiy'];
 
-            let w1 = kelimeListesi[i] || '';
-            let w2 = kelimeListesi[i+1] || '';
-            let w3 = kelimeListesi[i+2] || '';
+            tablesToRender.forEach((tableType, tIndex) => {
+                let theadText = ""; let headBg = ""; let subBg = ""; let subColor = "";
+                
+                if (tableType === 'olumlu') {
+                    theadText = tip === 'mazi' ? "Malum Mazi (Olumlu)" : (tip === 'muzari' ? "Malum Muzari (Olumlu)" : "Emir (Olumlu)");
+                    headBg = "#2B88D9"; subBg = "#f1f5f9"; subColor = "#333";
+                } else if (tableType === 'ma') {
+                    theadText = "Menfi Mazi (مَا)";
+                    headBg = "#e74c3c"; subBg = "#fcf1f1"; subColor = "#a94442";
+                } else if (tableType === 'la') {
+                    theadText = tip === 'mazi' ? "İnkari Mazi / Dua (لَا)" : "Menfi Muzari (Olumsuz)";
+                    headBg = tip === 'mazi' ? "#9b59b6" : "#e74c3c"; 
+                    subBg = tip === 'mazi' ? "#f5eef8" : "#fcf1f1";
+                    subColor = tip === 'mazi' ? "#7d3c98" : "#a94442";
+                } else if (tableType === 'lam') {
+                    theadText = "Cehd-i Mutlak (لَمْ / Geçmiş Anlamı)";
+                    headBg = "#d35400"; 
+                    subBg = "#fdf2e9";
+                    subColor = "#ba4a00";
+                } else if (tableType === 'nehiy') {
+                    theadText = "Nehiy (Olumsuz Emir)";
+                    headBg = "#e74c3c"; subBg = "#fcf1f1"; subColor = "#a94442";
+                }
+                
+                if (tIndex > 0) {
+                    html += `<tbody class="spacer-body"><tr class="spacer-row"><td colspan="3" style="height: 35px; background: transparent !important; border: none !important;"></td></tr></tbody>`;
+                }
 
-            if (isColorActive) {
-                w1 = w1 ? ColorEngine.colorize(w1, kok.split("")) : '';
-                w2 = w2 ? ColorEngine.colorize(w2, kok.split("")) : '';
-                w3 = w3 ? ColorEngine.colorize(w3, kok.split("")) : '';
-            }
-
-            html += `<tr>
-                        <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w1}</span></td>
-                        <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w2}</span></td>
-                        <td style="background-color: ${bgColor} !important;"><span class="siga-text">${w3}</span></td>
-                     </tr>`;
+                // ÇÖZÜM 2: Z-INDEX ALGORİTMASI (10 + tIndex). Alttaki tablo üste çıkınca eskisini ezecek!
+                html += `<thead style="position: sticky; top: -1px; z-index: ${10 + tIndex}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <tr><th colspan="3" style="background-color: ${headBg} !important; color: white; padding: 8px; font-size: 15px; border-top: 2px solid #cbd5e1; border-radius: 8px 8px 0 0;">${theadText}</th></tr>
+                            <tr style="background-color: ${subBg};"><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Müfred</th><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Tesniye</th><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Cemi</th></tr>
+                         </thead><tbody style="border-bottom: 4px solid #cbd5e1;">`;
+                         
+                for (let i = 0; i < totalItems; i += 3) {
+                    let rowIndex = Math.floor(i / 3);
+                    let bgColor = '#ffffff';
+                    
+                    if (tableType === 'olumlu') bgColor = (rowIndex % 2 === 0) ? '#e3f2fd' : '#fce4ec';
+                    else if (tableType === 'ma' || tableType === 'nehiy' || (tableType === 'la' && tip === 'muzari')) bgColor = (rowIndex % 2 === 0) ? '#ffebee' : '#fbe9e7';
+                    else if (tableType === 'la' && tip === 'mazi') bgColor = (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
+                    else if (tableType === 'lam') bgColor = (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
+                    
+                    let currentList = (tableType === 'lam') ? muzariListesi : kelimeListesi;
+                    
+                    let w1 = generateCellContent(currentList[i], tip, babNo, tableType, isColorActive, kok, i);
+                    let w2 = generateCellContent(currentList[i+1], tip, babNo, tableType, isColorActive, kok, i+1);
+                    let w3 = generateCellContent(currentList[i+2], tip, babNo, tableType, isColorActive, kok, i+2);
+                    
+                    html += `<tr>
+                                <td style="background-color: ${bgColor} !important; padding: 10px 5px;"><div class="siga-text" style="display: flex; justify-content: center; align-items: center;">${w1}</div></td>
+                                <td style="background-color: ${bgColor} !important; padding: 10px 5px;"><div class="siga-text" style="display: flex; justify-content: center; align-items: center;">${w2}</div></td>
+                                <td style="background-color: ${bgColor} !important; padding: 10px 5px;"><div class="siga-text" style="display: flex; justify-content: center; align-items: center;">${w3}</div></td>
+                             </tr>`;
+                }
+                html += `</tbody>`;
+            });
+        }
+    } else {
+        html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th></tr></thead><tbody>`;
+        for (let i = 0; i < totalItems; i++) {
+            let bgColor = pastelColors[i % 10]; let item = kelimeListesi[i];
+            let wAr = typeof item === 'object' ? (item.ar || '') : (item || '');
+            let wTr = typeof item === 'object' ? (item.tr || '') : '';
+            let ornek = item.ornek; 
+            // YENİ: İçinde HTML (<) varsa renklendirme motorunu atla ki tasarım bozulmasın
+if (isColorActive && wAr && !wAr.includes('<')) wAr = ColorEngine.colorize(wAr, kok.split(""));
+            let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: ltr;">${ornek.tr}</div></div>` : '';
+            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: ltr;">${wTr}</span>` : '';
+            html += `<tr><td style="background-color: ${bgColor} !important; padding: 25px 15px;"><span class="siga-text">${wAr}</span>${trHtml}${ornekHtml}</td></tr>`;
         }
     }
-    // 2. DURUM: EĞER İSİM İSE (Tek Sütunlu Alt Alta Tablo)
-    else {
-        html += `<thead style="position: sticky; top: -1px; z-index: 5;"><tr><th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th></tr></thead><tbody>`;
-        
-        for (let i = 0; i < totalItems; i++) {
-    let bgColor = pastelColors[i % 10]; 
-    let item = kelimeListesi[i];
-    
-    let wAr = typeof item === 'object' ? (item.ar || '') : (item || '');
-    let wTr = typeof item === 'object' ? (item.tr || '') : '';
-    let ornek = item.ornek; // Yeni genel değişken
-
-    if (isColorActive && wAr) {
-        wAr = ColorEngine.colorize(wAr, kok.split(""));
-    }
-
-    // Genel örnek kutusu (Ayet veya Cümle fark etmez)
-    let ornekHtml = ornek ? `
-    <div class="ornek-box">
-        <div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div>
-        <div style="font-size:15px; color:#333; margin-top:6px; text-align: center;">${ornek.tr}</div>
-    </div>` : '';
-
-    let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555;">${wTr}</span>` : '';
-
-    html += `<tr>
-                <td style="background-color: ${bgColor} !important; padding: 25px 15px;">
-                    <span class="siga-text">${wAr}</span>
-                    ${trHtml}
-                    ${ornekHtml}
-                </td>
-             </tr>`;
-}
-}
 
     html += `</tbody></table></div>`;
-    
-inlineContainer.innerHTML = html;
+    inlineContainer.innerHTML = html;
     inlineContainer.style.overflowY = 'hidden'; 
     inlineContainer.style.paddingTop = '15px'; 
-    
-    // ========================================================
-    // YENİ: AÇILIŞ YÖNÜNÜ BELİRLEME (Fiil -> Sola, İsim -> Sağa)
-    // ========================================================
-    if (isVerb) {
-        inlineContainer.style.left = "auto";
-        inlineContainer.style.right = "calc(100% + 20px)"; // Fiil kutusunun SOLUNDA 20px boşlukla açılır
-    } else {
-        inlineContainer.style.right = "auto";
-        inlineContainer.style.left = "calc(100% + 20px)"; // İsim kutusunun SAĞINDA 20px boşlukla açılır
-    }
-    inlineContainer.style.top = "0px"; // Kutuyla aynı üst hizada başlar
-    
-    // ========================================================
-    // Kutunun arkadaki tıklamayı tetiklemesini VE SEKMELERİN KAYMASINI önler!
-    // ========================================================
-    inlineContainer.onmousedown = function(e) { e.stopPropagation(); };
-    inlineContainer.onclick = function(e) { e.stopPropagation(); };
-    inlineContainer.ontouchstart = function(e) { e.stopPropagation(); };
-    inlineContainer.ontouchmove = function(e) { e.stopPropagation(); }; 
+
+    const popupWidth = 420;  const popupHeight = 410; 
+    const boxWidth = boxElement.offsetWidth; const rect = boxElement.getBoundingClientRect();
+    let targetTop = (window.innerHeight / 2) - (popupHeight / 2) - rect.top;
+    let targetLeft = isVerb ? -popupWidth - 40 : boxWidth + 20;
+
+    let globalLeft = rect.left + targetLeft; let globalRight = globalLeft + popupWidth;
+    let globalTop = rect.top + targetTop; let globalBottom = globalTop + popupHeight;
+
+    if (globalLeft < 10) targetLeft += (10 - globalLeft); 
+    if (globalRight > window.innerWidth - 10) targetLeft -= (globalRight - (window.innerWidth - 10)); 
+    if (globalTop < 10) targetTop += (10 - globalTop); 
+    if (globalBottom > window.innerHeight - 10) targetTop -= (globalBottom - (window.innerHeight - 10)); 
+
+    inlineContainer.style.left = `${targetLeft}px`; inlineContainer.style.top = `${targetTop}px`;
+    inlineContainer.style.right = 'auto'; inlineContainer.style.display = 'block'; 
+    inlineContainer.onmousedown = function(e) { e.stopPropagation(); }; inlineContainer.onclick = function(e) { e.stopPropagation(); };
+    inlineContainer.ontouchstart = function(e) { e.stopPropagation(); }; inlineContainer.ontouchmove = function(e) { e.stopPropagation(); }; 
     inlineContainer.ontouchend = function(e) { e.stopPropagation(); };  
     
-    const expandBtn = document.createElement('div');
-    expandBtn.className = 'matrix-expand-btn';
-    expandBtn.title = 'Tam Ekran';
-    expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
-    expandBtn.style.zIndex = '11';
-    expandBtn.style.top = '2px';
-    expandBtn.onclick = function(event) {
-        event.stopPropagation();
-        openMatrixFullscreen(event, this);
-    };
-
+    const expandBtn = document.createElement('div'); expandBtn.className = 'matrix-expand-btn';
+    expandBtn.title = 'Tam Ekran'; expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
+    expandBtn.style.zIndex = '11'; expandBtn.style.top = '2px';
+    expandBtn.onclick = function(event) { event.stopPropagation(); openMatrixFullscreen(event, this); };
     inlineContainer.appendChild(expandBtn);
     
-    // ========================================================
-    // SÜRÜKLE BIRAK (DRAG & DROP) MANTIĞI
-    // ========================================================
     const dragBar = inlineContainer.querySelector('.popup-drag-bar');
-    let isDraggingPopup = false;
-    let pStartX, pStartY, pInitialLeft, pInitialTop;
-
+    let isDraggingPopup = false; let pStartX, pStartY, pInitialLeft, pInitialTop;
     const onPopupDragStart = (e) => {
-        e.stopPropagation(); 
-        isDraggingPopup = true;
-        dragBar.style.cursor = 'grabbing';
-        
+        e.stopPropagation(); isDraggingPopup = true; dragBar.style.cursor = 'grabbing';
         pStartX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
         pStartY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-        
-        // ÇÖZÜM: 'calc' veya '%' ile verilen konumların sürüklerken zıplamaması için offsetLeft kullanıyoruz!
-        pInitialLeft = inlineContainer.offsetLeft;
-        pInitialTop = inlineContainer.offsetTop;
-
-        // Sürüklemeye başlandığı an sağ/sol kilitlerini kaldırıp serbest bırakıyoruz
+        pInitialLeft = inlineContainer.offsetLeft; pInitialTop = inlineContainer.offsetTop;
         inlineContainer.style.right = 'auto'; 
-
-        document.addEventListener('mousemove', onPopupDragMove);
-        document.addEventListener('mouseup', onPopupDragEnd);
-        document.addEventListener('touchmove', onPopupDragMove, { passive: false });
-        document.addEventListener('touchend', onPopupDragEnd);
+        document.addEventListener('mousemove', onPopupDragMove); document.addEventListener('mouseup', onPopupDragEnd);
+        document.addEventListener('touchmove', onPopupDragMove, { passive: false }); document.addEventListener('touchend', onPopupDragEnd);
     };
-
     const onPopupDragMove = (e) => {
-        if (!isDraggingPopup) return;
-        e.preventDefault(); 
-        e.stopPropagation(); 
-        
-        let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-        
-        inlineContainer.style.left = (pInitialLeft + (x - pStartX)) + 'px';
-        inlineContainer.style.top = (pInitialTop + (y - pStartY)) + 'px';
+        if (!isDraggingPopup) return; e.preventDefault(); e.stopPropagation(); 
+        let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        inlineContainer.style.left = (pInitialLeft + (x - pStartX)) + 'px'; inlineContainer.style.top = (pInitialTop + (y - pStartY)) + 'px';
     };
-
     const onPopupDragEnd = (e) => {
-        if (e) e.stopPropagation(); 
-        isDraggingPopup = false;
-        dragBar.style.cursor = 'grab';
-        document.removeEventListener('mousemove', onPopupDragMove);
-        document.removeEventListener('mouseup', onPopupDragEnd);
-        document.removeEventListener('touchmove', onPopupDragMove);
-        document.removeEventListener('touchend', onPopupDragEnd);
+        if (e) e.stopPropagation(); isDraggingPopup = false; dragBar.style.cursor = 'grab';
+        document.removeEventListener('mousemove', onPopupDragMove); document.removeEventListener('mouseup', onPopupDragEnd);
+        document.removeEventListener('touchmove', onPopupDragMove); document.removeEventListener('touchend', onPopupDragEnd);
     };
-
-    dragBar.addEventListener('mousedown', onPopupDragStart);
-    dragBar.addEventListener('touchstart', onPopupDragStart, { passive: false });
-
-    boxElement.style.zIndex = "999999"; 
-    boxElement.classList.add('matrix-opened');
+    dragBar.addEventListener('mousedown', onPopupDragStart); dragBar.addEventListener('touchstart', onPopupDragStart, { passive: false });
+    boxElement.style.zIndex = "999999"; boxElement.classList.add('matrix-opened');
 }
 
 // Global tıklama (kapatma) event listener'ı aynen kalıyor
@@ -4281,14 +4612,58 @@ function toggleSuffixMenu(e) {
     e.stopPropagation();
     const menu = document.getElementById("suffix-dropdown");
     
-    const plusBtn = document.querySelector('.fa-plus');
-    if (plusBtn) plusBtn.classList.remove('plus-highlighted');
+    // Hem masaüstü hem mobil artı butonlarının ışığını söndür
+    const desktopPlus = document.querySelector('.fa-plus');
+    const mobilePlus = document.getElementById('mobile-top-plus');
+    if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
+    if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
     
     if (menu.style.display === "flex") {
         menu.style.display = "none";
         return;
     }
     
+    // ===============================================================
+    // YENİ: HANGİ EKLERİN VURGULANACAĞINI BULMA SİSTEMİ
+    // ===============================================================
+    const suffixBtns = menu.querySelectorAll('button');
+    
+    // Önce tüm butonların eski vurgusunu temizle
+    suffixBtns.forEach(btn => btn.classList.remove('suggested-suffix'));
+    
+    // Eğer bir kutuya tıklanmışsa ve kök mevcutsa kontrol et
+    if (lastClickedBoxTextSpan && typeof currentRoot !== 'undefined' && currentRoot.length === 3) {
+        const box = lastClickedBoxTextSpan.closest('.glass-box');
+        if (box) {
+            const refEl = box.querySelector('.ref');
+            if (refEl) {
+                const refId = parseInt(refEl.innerText);
+                
+                // DÜZELTME: Kök tanımlı değilse çökmesini engelleyen güvenlik kontrolü!
+                let eggObj = null;
+                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot]) {
+                    eggObj = wordEasterEggs[currentRoot][refId];
+                }
+                
+                if (eggObj) {
+                    // Hangi ekler mevcut? (base, ornek, cekimi ve suggestsPlus dışındaki anahtarları bulur)
+                    const availableSuffixes = Object.keys(eggObj).filter(k => 
+                        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
+                    );
+                    
+                    // Mevcut ekleri butonlarda bul ve altın sarısı vurgu (suggested-suffix) sınıfını ekle
+                    suffixBtns.forEach(btn => {
+                        const btnText = btn.innerText.trim();
+                        if (availableSuffixes.includes(btnText)) {
+                            btn.classList.add('suggested-suffix');
+                        }
+                    });
+                }
+            }
+        }
+    }
+    
+    // Menünün Konumlandırılması
     const rect = e.target.getBoundingClientRect();
     menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
     menu.style.left = `${rect.left + window.scrollX - 40}px`; 
@@ -4340,6 +4715,19 @@ function applySuffix(suffix) {
     else if (currentWord.endsWith('ة')) {
         currentWord = currentWord.slice(0, -1);
     }
+    // YENİ EKLENEN KISIM: Eğer kelimede zaten "يّ" varsa zekice yönet
+    else if (currentWord.endsWith('يّ')) {
+        // Önce eski "يّ" ekini kesip atıyoruz ki üst üste binmesin
+        currentWord = currentWord.slice(0, -'يّ'.length);
+        
+        // Eğer kullanıcı menüden "ة" seçtiyse veya "يَّة" seçtiyse, 
+        // sistem bunun niyetini anlar ve temiz bir şekilde "يَّة" ekler.
+        if (suffix === 'ة') {
+            suffix = 'يَّة';
+        } else if (suffix === 'ات') {
+            suffix = 'يَّات';
+        }
+    }
 
     if (plurals.includes(suffix) || suffix === 'ة') {
         for (let p of plurals) {
@@ -4380,7 +4768,9 @@ function applySuffix(suffix) {
     
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
 
-    // Suffix (ek) kontrolünü yolluyoruz
+    // ==============================================================
+    // Suffix (ek) kontrolünü BEYİN SİSTEMİNE (checkWordEasterEgg) Yolluyoruz
+    // ==============================================================
     if (typeof checkWordEasterEgg === "function") {
         checkWordEasterEgg(currentBox, suffix);
     }
@@ -4409,7 +4799,6 @@ function applySuffix(suffix) {
         }, 1500);
     }
 }
-
 const originalResetTableOnly = window.resetTableOnly;
 window.resetTableOnly = function() {
     if (typeof originalResetTableOnly === "function") {
@@ -4425,12 +4814,17 @@ window.resetTableOnly = function() {
     // YENİ EKLENEN KOD: Sıfırlama yapıldığında tepede biriken tüm emojileri temizler
     document.querySelectorAll('.easter-egg-emoji').forEach(el => el.remove());
 
-    // ==================================================================
-    // KESİN ÇÖZÜM 2: Tüm tablo temizlendiğinde bütün kutuların hafızası silinir!
+// ==================================================================
+    // KESİN ÇÖZÜM 2: Tüm tablo temizlendiğinde bütün kutuların hafızası ve rozetleri silinir!
     // ==================================================================
     document.querySelectorAll('.glass-box').forEach(box => {
         box.removeAttribute('data-last-root');
         box.removeAttribute('data-last-emoji');
+        box.removeAttribute('data-plus-animated'); // Animasyon hafızasını siler
+        
+        // YENİ: Tüm kutulardaki saydam + rozetlerini bulup ekrandan siler
+        const hintBadge = box.querySelector('.plus-hint-badge');
+        if (hintBadge) hintBadge.remove();
     });
 };
 
@@ -4483,39 +4877,124 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
     }
 
     if (!boxElement || !currentRoot || currentRoot.length !== 3) return;
-
     if (!boxElement.classList.contains('kok-turendi')) return;
 
     const refEl = boxElement.querySelector('.ref');
     if (!refEl) return;
     const refId = parseInt(refEl.innerText);
+    const isVerb = boxElement.classList.contains('fiil-box');
 
-    const rootData = wordEasterEggs[currentRoot];
-    if (!rootData) return;
-
-    const refData = rootData[refId]; 
-    if (!refData) return;
-
-    const data = currentSuffix ? refData[currentSuffix] : refData.base;
-
-    if (!currentSuffix && refData.suggestsPlus) {
-        if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
-        if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
+    if (currentSuffix) {
+        boxElement.setAttribute('data-active-suffix', currentSuffix);
+    } else {
+        boxElement.removeAttribute('data-active-suffix');
     }
 
-    if (!data) return;
+    if (typeof wordEasterEggs === 'undefined' || !wordEasterEggs[currentRoot] || !wordEasterEggs[currentRoot][refId]) {
+        if (!isVerb) {
+            boxElement.classList.remove('coklu-kullanim');
+            refEl.removeAttribute('onclick');
+        }
+        return;
+    }
+
+    const eggObj = wordEasterEggs[currentRoot][refId];
+    const textEl = boxElement.querySelector('.ar, .ar-small');
+    
+    // ===============================================================
+    // 4. SES OLAYLARINI EZME SİSTEMİ (SADECE TEK KELİMEYSE ÇALIŞIR)
+    // ===============================================================
+    if (!currentSuffix && eggObj.base && eggObj.base.arText) {
+        let wordCount = eggObj.base.arText.trim().split(/\s+/).length;
+        
+        // YENİ: Sadece tam olarak 1 kelime ise kutunun orijinal metnini ezer (Örn: تَقْوَى)
+        if (wordCount === 1) {
+            textEl.innerHTML = ColorEngine.colorize(eggObj.base.arText, currentRoot.split(""));
+        }
+    }
+
+// ===============================================================
+    // 5. DİNAMİK KIRMIZI BUTON (SADECE KONU ANLATIMI / LİSTE KONTROLÜ)
+    // ===============================================================
+    let hasTableData = false;
+    
+    if (currentSuffix && eggObj[currentSuffix]) {
+        if (eggObj[currentSuffix].cekimi && eggObj[currentSuffix].cekimi.length > 0) {
+            hasTableData = true;
+        }
+    } else if (!currentSuffix) {
+        if ((eggObj.cekimi && eggObj.cekimi.length > 0) || (eggObj.base && eggObj.base.cekimi && eggObj.base.cekimi.length > 0)) {
+            hasTableData = true;
+        }
+    }
+
+    let selectedData = currentSuffix ? eggObj[currentSuffix] : eggObj.base;
+    
+    // ÇÖZÜM BURADA: Eğer selectedData yoksa (sadece suggestsPlus varsa) kodun çökmesini engeller
+    let data = selectedData ? { ...selectedData, ornek: eggObj.ornek || selectedData.ornek } : null;
+
+    // Önceki atamaları temizle
+    boxElement.classList.remove('coklu-kullanim', 'has-ornek');
+    if (!isVerb) refEl.removeAttribute('onclick');
+
+    // YENİ KURAL: Örnek ayetler artık Kalıp Numarasını kırmızı YAPMAZ!
+    // Kalıp numarası SADECE 'cekimi' dizisi varsa (konu anlatımı/çoklu liste) kırmızı olur ve tabloyu açar.
+    if (hasTableData && !isVerb) {
+        boxElement.classList.add('coklu-kullanim');
+        refEl.setAttribute('onclick', `
+            event.preventDefault(); 
+            event.stopPropagation(); 
+            const box = this.closest('.glass-box'); 
+            lastClickedBoxTextSpan = box.querySelector('.ar, .ar-small'); 
+            lastOriginalWord = box.getAttribute('data-original'); 
+            openConjugationPopup('${currentRoot}', ${refId}, 'isim', '');
+        `);
+    }
+
+// ===============================================================
+    // 6. GÖRSEL ANİMASYONLAR (EMOJİ / ARTI BUTONU VE İPUCU ROZETİ)
+    // ===============================================================
+    if (!currentSuffix && eggObj.suggestsPlus) {
+        if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
+        if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
+        
+        // 1. Hedefe Uçan Animasyon
+        if (!boxElement.hasAttribute('data-plus-animated')) {
+            if (typeof flyEmojiToPlus === "function") {
+                flyEmojiToPlus(boxElement);
+            }
+            boxElement.setAttribute('data-plus-animated', 'true');
+        }
+        
+       // 2. YENİ: Kutu köşesine sabitlenen altın sarısı rozet
+        let hintBadge = boxElement.querySelector('.plus-hint-badge');
+        if (!hintBadge) {
+            hintBadge = document.createElement('div');
+            hintBadge.className = 'plus-hint-badge';
+            hintBadge.innerHTML = '+'; // Siyah emoji yerine düz '+' metni (CSS'teki saydam beyaz rengi alması için)
+            hintBadge.style.fontWeight = 'bold'; // Okunaklı olması için kalınlaştırdık
+            hintBadge.style.fontSize = '18px'; // Düz metin olduğu için boyutunu 18px ile dengeledik
+            boxElement.appendChild(hintBadge);
+        }
+        
+    } else {
+        // Eğer bir ek (+) seçildiyse veya özellik yoksa rozeti kaldır ve hafızayı temizle
+        let hintBadge = boxElement.querySelector('.plus-hint-badge');
+        if (hintBadge) hintBadge.remove();
+        
+        boxElement.removeAttribute('data-plus-animated');
+    }
+
+    if (!data) return; // VERİ YOKSA BUNDAN SONRASINI (EMOJİ VE ÜNLEMİ) ÇALIŞTIRMA, GÜVENLİCE DUR!
 
     boxElement.style.position = 'relative';
 
-// ==========================================
-    // 1. EMOJİ KONTROLÜ (UÇUP KAYBOLAN BALON)
-    // ==========================================
+    // Orijinal Kutu İçi Emoji Animasyonu (Senin gönderdiğin kusursuz çalışan kısım)
     if (data.emoji) {
         let existingEmoji = boxElement.querySelector('.elegant-emoji');
         let rememberedRoot = boxElement.getAttribute('data-last-root');
         let rememberedEmoji = boxElement.getAttribute('data-last-emoji');
 
-        // Yeni bir kök veya ek geldiğinde balon gibi fırlat
         if (rememberedRoot !== currentRoot || rememberedEmoji !== data.emoji) {
             if (existingEmoji) existingEmoji.remove();
 
@@ -4525,7 +5004,6 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
             emojiDiv.innerText = data.emoji;
             boxElement.appendChild(emojiDiv);
 
-            // KESİN ÇÖZÜM: Uçuş bitince emojiyi tamamen gizle ki hortlamasın!
             emojiDiv.addEventListener('animationend', (e) => {
                 e.target.style.display = 'none'; 
             });
@@ -4533,50 +5011,85 @@ function checkWordEasterEgg(boxElement, currentSuffix = null) {
             boxElement.setAttribute('data-last-root', currentRoot);
             boxElement.setAttribute('data-last-emoji', data.emoji);
         } 
-        // Sekme değişip geri gelindiyse emoji kapalı (gizli) kalsın
         else if (!existingEmoji) {
             const emojiDiv = document.createElement('div');
             emojiDiv.className = 'elegant-emoji'; 
-            emojiDiv.style.display = 'none'; // Görünmez yapıyoruz
+            emojiDiv.style.display = 'none'; 
             emojiDiv.setAttribute('data-ref', refId);
             emojiDiv.innerText = data.emoji;
             boxElement.appendChild(emojiDiv);
         }
     }
 
-// ==========================================
-    // 2. BİLGİ BUTONU (!) KONTROLÜ
-    // ==========================================
-    if (data.arText || data.trText) {
+
+// ===============================================================
+    // 7. BİLGİ BUTONU (!) KONTROLÜ (YENİ TASARIM: AR -> TR -> ÖRNEKLER)
+    // ===============================================================
+    let wordCount = data.arText ? data.arText.trim().split(/\s+/).length : 0;
+    
+    // Anlam (trText) VEYA Örnek (ornek) varsa ünlem butonunu göster!
+    if (data.arText && (wordCount > 1 || (data.trText && data.trText.length > 0) || data.ornek)) {
         let existingTrigger = boxElement.querySelector('.easter-egg-trigger');
+        
+        // --- MÜKEMMEL HİZALANMIŞ HTML İNŞASI BAŞLIYOR ---
+        
+        // 1. Ana Kelime (Arapça ve hemen altında Türkçe)
+        let combinedHtml = `
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 25px;">
+                <div style="font-family: 'Arakom', sans-serif; font-size: 90px; color: #000; direction: rtl; line-height: 1.2;">${data.arText || ""}</div>
+                <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #FF3B30; direction: ltr; line-height: 1.2;">${data.trText || ""}</div>
+            </div>
+        `;
+        
+        // 2. Örnekler (Birden fazla cümle ihtimaline karşı Akıllı Döngü)
+        if (data.ornek) {
+            // Eğer ornek düz bir obje ise onu diziye çevirir (İleride birden fazla girmene olanak tanır)
+            let ornekler = Array.isArray(data.ornek) ? data.ornek : [data.ornek];
+            
+            combinedHtml += `<div style="width: 100%; border-top: 2px dashed rgba(0,0,0,0.15); padding-top: 25px; display: flex; flex-direction: column; gap: 20px;">`;
+            
+            ornekler.forEach(orn => {
+                combinedHtml += `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; background: #f8f9fa; padding: 25px 20px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                        <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #000; direction: rtl; line-height: 1.4; text-align: center;">${orn.ar}</div>
+                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #475569; direction: ltr; line-height: 1.4; text-align: center;">${orn.tr}</div>
+                    </div>
+                `;
+            });
+            
+            combinedHtml += `</div>`;
+        }
         
         if (!existingTrigger) {
             const triggerBtn = document.createElement('div');
             triggerBtn.className = 'easter-egg-trigger';
-            // KESİN ÇÖZÜM: Yıldızlar silindi, yerine klas bir ünlem eklendi
             triggerBtn.innerHTML = '!'; 
-            triggerBtn.title = 'Cümleyi Gör';
+            triggerBtn.title = 'Bilgiyi Gör';
 
             triggerBtn.onclick = function(e) {
                 e.stopPropagation(); 
-                showEasterEggOverlay(data.arText, data.trText);
+                // İkinci parametreyi boş gönderip tüm bloğu Arapça div'inin içine basıyoruz
+                showEasterEggOverlay(combinedHtml, "");
             };
             boxElement.appendChild(triggerBtn);
         } else {
             existingTrigger.onclick = function(e) {
                 e.stopPropagation(); 
-                showEasterEggOverlay(data.arText, data.trText);
+                showEasterEggOverlay(combinedHtml, "");
             };
         }
+    } else {
+        let existingTrigger = boxElement.querySelector('.easter-egg-trigger');
+        if (existingTrigger) existingTrigger.remove();
     }
 }
+
 // ==================================================================
-// SADECE FİİLLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
+// FİİLLERİN VEYA ÇOKLU KULLANIM İSİMLERİN KALIP NUMARASINA TIKLAYINCA TABLO AÇMA
 // ==================================================================
 document.addEventListener('click', function(e) {
     const refEl = e.target.closest('.ref');
     if (refEl) {
-        // Mobildeyse tıklamayı yok say, popup çekim tablosunu açma!
         if (window.innerWidth <= 1024) {
             e.preventDefault();
             e.stopPropagation();
@@ -4585,8 +5098,8 @@ document.addEventListener('click', function(e) {
 
         const boxElement = refEl.closest('.glass-box');
         
-        // ÇÖZÜM: current-active-red yerine kok-turendi şartı arıyoruz. Böylece yeşil kutularda sonsuza kadar açılır!
-        if (boxElement && boxElement.classList.contains('kok-turendi') && boxElement.classList.contains('fiil-box')) {
+        // ÇÖZÜM: Kutu yeşilse (kok-turendi) VE (fiil kutusuysa YADA coklu-kullanim ise) tablo aç!
+        if (boxElement && boxElement.classList.contains('kok-turendi') && (boxElement.classList.contains('fiil-box') || boxElement.classList.contains('coklu-kullanim'))) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -4601,12 +5114,22 @@ document.addEventListener('click', function(e) {
             lastClickedBoxTextSpan = textEl; 
             lastOriginalWord = kalip;
 
-            if (mapping && typeof babVezinleri !== 'undefined') {
-                const vezinObj = babVezinleri[mapping.babNo];
-                let anaVezin = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+            let tip = 'isim'; 
+            let babNo = 1;
+            
+            if (mapping) {
+                if (boxElement.classList.contains('fiil-box')) {
+                    tip = mapping.type;
+                }
+                babNo = mapping.babNo;
+            }
+
+            if (typeof babVezinleri !== 'undefined') {
+                const vezinObj = babVezinleri[babNo];
+                let anaVezin = (vezinObj && vezinObj[tip]) ? vezinObj[tip] : kalip;
                 
                 if (typeof openConjugationPopup === 'function') {
-                    openConjugationPopup(currentRootSafe, mapping.babNo, mapping.type, anaVezin);
+                    openConjugationPopup(currentRootSafe, babNo, tip, anaVezin);
                 }
                 
                 document.querySelectorAll(`.easter-egg-emoji[data-ref="${refId}"]`).forEach(emoji => emoji.remove());
@@ -4647,7 +5170,7 @@ function triggerAreaPulse(boxElement) {
         // 1. ASIL KALIBIN KLONU (Türememiş halde)
         const cloneBox = boxElement.cloneNode(true);
         cloneBox.id = 'crisp-zoom-clone';
-        cloneBox.className = 'glass-box crisp-zoom-clone'; 
+        cloneBox.classList.add('crisp-zoom-clone'); // YENİ: Var olan .coklu-kullanim gibi sınıfları silmez, üzerine ekler!
         
         // KLONA DOKUNULDUĞUNDA AŞAMALARI İLERLETEN GÜÇ
         const advanceState = function(e) { 
@@ -4750,24 +5273,24 @@ function showEasterEggOverlay(arText, trText) {
         document.body.appendChild(overlay);
     }
     
-    const arDiv = overlay.querySelector('.easter-egg-ar');
+const arDiv = overlay.querySelector('.easter-egg-ar');
     const trDiv = overlay.querySelector('.easter-egg-tr');
     
     if (arText) { 
-        arDiv.innerText = arText; 
+        arDiv.innerHTML = arText; // innerText yerine innerHTML yapıldı
         arDiv.style.display = 'block'; 
     } else { 
         arDiv.style.display = 'none'; 
     }
     
     if (trText) { 
-        trDiv.innerText = trText; 
+        trDiv.innerHTML = trText; // innerText yerine innerHTML yapıldı
         trDiv.style.display = 'block'; 
     } else { 
         trDiv.style.display = 'none'; 
     }
     
-    SoundEngine.playClick();
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     overlay.style.display = 'flex';
 }
 
@@ -4781,6 +5304,8 @@ function openMatrixFullscreen(e, btnElement) {
     const boxElement = btnElement.closest('.glass-box');
     if (!boxElement) return;
     
+    document.body.classList.add('matrix-active');
+    
     let fullscreenOverlay = document.getElementById('matrix-fullscreen-overlay');
     if (!fullscreenOverlay) {
         fullscreenOverlay = document.createElement('div');
@@ -4793,144 +5318,61 @@ function openMatrixFullscreen(e, btnElement) {
         const closeBtn = document.createElement('div');
         closeBtn.className = 'matrix-fullscreen-close';
         closeBtn.innerText = '✕';
-        
         closeBtn.addEventListener('click', closeMatrixFullscreen);
         
         content.appendChild(closeBtn);
         fullscreenOverlay.appendChild(content);
         document.body.appendChild(fullscreenOverlay);
+        
+        // FULLSCREEN ÖZEL ÖLÇEKLENDİRME CSS'İ
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .matrix-fullscreen-table th { font-size: 28px !important; padding: 18px !important; }
+            .matrix-fullscreen-table td { padding: 4vh 1vw !important; }
+            .matrix-fullscreen-table .siga-text { font-size: 60px !important; }
+            .matrix-fullscreen-table .siga-text span { margin-left: 10px; }
+            .matrix-fullscreen-table .ornek-box { margin-top: 40px; padding: 35px; border-radius: 20px; }
+            .matrix-fullscreen-table .ornek-box div:first-child { font-size: 50px !important; line-height: 1.5; }
+            .matrix-fullscreen-table .ornek-box div:last-child { font-size: 35px !important; margin-top: 20px; }
+            .matrix-fullscreen-table .siga-tr-text { font-size: 35px !important; margin-top: 30px !important; }
+            .matrix-fullscreen-table .spacer-row td { height: 60px !important; }
+        `;
+        document.head.appendChild(style);
     }
     
     const contentArea = fullscreenOverlay.querySelector('.matrix-fullscreen-content');
-    
-    // Eski tablo kapsayıcısını temizle
     const oldWrapper = contentArea.querySelector('.matrix-fullscreen-table-wrapper');
     if (oldWrapper) oldWrapper.remove();
     
-    // YENİ: Kendi içinde kaydırma (scroll) yapabilmesi için çerçeve oluşturuyoruz
     const tableWrapper = document.createElement('div');
     tableWrapper.className = 'matrix-fullscreen-table-wrapper';
-    tableWrapper.style.width = '100%';
-    tableWrapper.style.maxHeight = '85vh'; // Sayfadan taşmayı engeller
-    tableWrapper.style.overflowY = 'auto'; // Kendi içinde aşağı/yukarı scroll bar çıkartır
-    tableWrapper.style.overflowX = 'hidden'; // SADECE AŞAĞI DOĞRU KAYDIRMAYA İZİN VERİR!
+    tableWrapper.style.width = '95%'; 
+    tableWrapper.style.margin = '0 auto'; 
+    tableWrapper.style.maxWidth = '1200px';
+    tableWrapper.style.maxHeight = '85vh'; 
+    tableWrapper.style.overflowY = 'auto'; 
+    tableWrapper.style.overflowX = 'hidden'; 
     tableWrapper.style.borderRadius = '12px';
     tableWrapper.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
     tableWrapper.style.backgroundColor = '#ffffff';
 
-    const table = document.createElement('table');
-    table.className = 'matrix-fullscreen-table';
-    table.style.margin = '0'; 
-    table.style.height = 'auto'; 
-    
-    let tbodyHtml = '';
-    const isVerb = boxElement.classList.contains('fiil-box');
-
-    // 10 Farklı Açık Pastel Renk Paleti (Küçük tabloyla birebir aynı)
-    const pastelColors = [
-        '#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', 
-        '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'
-    ];
-
-// 1. DURUM: EĞER FİİL İSE (3 Sütun - Cinsiyete Göre Renk)
-    if (isVerb) {
-        const sigaCells = boxElement.querySelectorAll('.siga-text');
-        let wordsList = [];
-        sigaCells.forEach(cell => {
-            wordsList.push(cell.innerHTML.trim()); 
-        });
+    // ========================================================
+    // ORİJİNAL TABLOYU DİREKT KLONLA VE ÖLÇEKLENDİR!
+    // ========================================================
+    const originalTable = boxElement.querySelector('.conjugation-table');
+    if (originalTable) {
+        const table = document.createElement('table');
+        table.className = 'conjugation-table matrix-fullscreen-table';
+        table.style.margin = '0'; 
+        table.style.height = 'auto'; 
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
         
-        if (wordsList.length === 0) return;
-
-        for (let i = 0; i < wordsList.length; i += 3) {
-            let rowIndex = i / 3;
-            let bgColor = '#ffffff'; // Mütekellim (Ben/Biz) satırı için varsayılan Beyaz
-            
-            // Cinsiyete Göre Renklendirme
-            if (rowIndex === 0 || rowIndex === 2) {
-                bgColor = '#e3f2fd'; // Müzekker (Eril) satırları -> Mavi
-            } else if (rowIndex === 1 || rowIndex === 3) {
-                bgColor = '#fce4ec'; // Müennes (Dişil) satırları -> Pembe
-            }
-
-            tbodyHtml += `
-                <tr>
-                    <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i] || ''}</span></td>
-                    <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i+1] || ''}</span></td>
-                    <td style="background-color: ${bgColor} !important;"><span class="matrix-fullscreen-text">${wordsList[i+2] || ''}</span></td>
-                </tr>
-            `;
-        }
-        
-        table.innerHTML = `
-            <thead style="position: sticky; top: 0; z-index: 10;">
-                <tr>
-                    <th>Müfred</th>
-                    <th>Tesniye</th>
-                    <th>Cemi</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tbodyHtml}
-            </tbody>
-        `;
-    }
-    // 2. DURUM: EĞER İSİM İSE (Tek Sütun ve Türkçe Açıklamalı)
-    else {
-        const rows = boxElement.querySelectorAll('.conjugation-table tbody tr');
-        let items = [];
-        rows.forEach(row => {
-            let arCell = row.querySelector('.siga-text');
-            let trCell = row.querySelector('.siga-tr-text');
-            // Yeni eklediğimiz örnek cümle/ayet kutusunu da yakalıyoruz
-            let ornekDiv = row.querySelector('div[style*="background:#f0f8ff"]'); 
-            
-            if (arCell) {
-                items.push({
-                    ar: arCell.innerHTML.trim(),
-                    tr: trCell ? trCell.innerHTML.trim() : '',
-                    ornekHtml: ornekDiv ? ornekDiv.outerHTML : '' // Örneği HTML olarak alıyoruz
-                });
-            }
-        });
-
-        if (items.length === 0) return;
-
-        for (let i = 0; i < items.length; i++) {
-            let bgColor = pastelColors[i % 10]; 
-            
-            // Tam ekranda metinlerin daha belirgin olması için fontları büyütüyoruz
-            // openMatrixFullscreen fonksiyonu içinde (İsimler için olan else bloğu):
-let ornekHtml = items[i].ornekHtml ? `
-    <div style="margin-top:20px; padding: 15px; background: #f0f8ff; border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div style="font-family:'Arakom', sans-serif; font-size:35px; color:#000; text-align: center;">${items[i].ornekHtmlAr}</div>
-        <div style="font-size:25px; color:#444; margin-top:10px; font-weight:bold; text-align: center;">${items[i].ornekHtmlTr}</div>
-    </div>` : '';
-
-            tbodyHtml += `
-                <tr>
-                    <td style="background-color: ${bgColor} !important; padding: 5vh 2vw;">
-                        <span class="matrix-fullscreen-text" style="display: block; line-height: 1.2;">${items[i].ar}</span>
-                        ${trHtml}
-                        ${ornekHtml}
-                    </td>
-                </tr>
-            `;
-        }
-
-        table.innerHTML = `
-            <thead style="position: sticky; top: 0; z-index: 10;">
-                <tr>
-                    <th style="background-color: #2B88D9 !important; text-align: center;">Kullanım Varyasyonları</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tbodyHtml}
-            </tbody>
-        `;
+        // Küçük tablodaki HTML yapısını birebir içine yapıştırıyoruz.
+        table.innerHTML = originalTable.innerHTML;
+        tableWrapper.appendChild(table);
     }
     
-    tableWrapper.appendChild(table);
     contentArea.appendChild(tableWrapper);
     fullscreenOverlay.style.display = 'flex';
 }
@@ -4941,10 +5383,20 @@ function closeMatrixFullscreen(e) {
         e.stopPropagation();
     }
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    
+    // Kapatırken sayfayı serbest bırak (Scroll sorunu için)
+    document.body.classList.remove('matrix-active'); 
+    
     const fullscreenOverlay = document.getElementById('matrix-fullscreen-overlay');
     if (fullscreenOverlay) {
         fullscreenOverlay.style.display = 'none';
     }
+
+    // YENİ: Tam ekran kapatıldığında arkadaki açık küçük popup'ı (tabloyu) da otomatik kapat
+    document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
+        const closeBtn = box.querySelector('.matrix-close-btn');
+        if (closeBtn) closeInlineMatrix(null, closeBtn);
+    });
 }
 
 // ==================================================================
@@ -5134,15 +5586,19 @@ const ColorEngine = {
                 }
             } 
             else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1]) && this.isWeak(rootArray[rIndex])) {
-                charsOnly[i].isRoot = true;
-                rIndex += 2;
-            } 
-            else if (rIndex + 2 < 3 && this.isEquivalent(c, rootArray[rIndex + 2]) && this.isWeak(rootArray[rIndex]) && this.isWeak(rootArray[rIndex + 1])) {
-                charsOnly[i].isRoot = true;
-                rIndex += 3;
-            }
-            else if (rIndex > 0 && rIndex <= 3 && this.isEquivalent(rootArray[1], rootArray[2]) && this.isEquivalent(c, rootArray[1])) {
-                charsOnly[i].isRoot = true;
+                // --- DÜZELTME 3: Zayıf harfi atlamadan önce gerçekten düşmüş mü diye kontrol et! ---
+                let weakCharExistsLater = false;
+                for (let j = i; j < charsOnly.length; j++) {
+                    if (this.isEquivalent(charsOnly[j].char, rootArray[rIndex])) {
+                        weakCharExistsLater = true;
+                        break;
+                    }
+                }
+                
+                if (!weakCharExistsLater) {
+                    charsOnly[i].isRoot = true;
+                    rIndex += 2;
+                }
             }
         }
 
@@ -5843,3 +6299,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ==================================================================
+// HEDEFE UÇAN ARTI (+) ANİMASYONU (SAYDAM VERSİYON)
+// ==================================================================
+function flyEmojiToPlus(startEl) {
+    // Hedef butonu bul (Masaüstü mü yoksa Mobil mi?)
+    let targetBtn = document.querySelector('.fa-plus');
+    if (window.innerWidth <= 1024) {
+        targetBtn = document.getElementById('mobile-top-plus');
+    }
+    if (!targetBtn) return;
+
+    // Başlangıç ve Bitiş koordinatlarını hesapla
+    const startRect = startEl.getBoundingClientRect();
+    const targetRect = targetBtn.getBoundingClientRect();
+
+    const startX = startRect.left + startRect.width / 2;
+    const startY = startRect.top + startRect.height / 2;
+    const endX = targetRect.left + targetRect.width / 2;
+    const endY = targetRect.top + targetRect.height / 2;
+
+   // Uçacak olan emojiyi yarat
+    const particle = document.createElement('div');
+    particle.innerText = '+'; // DİKKAT: Siyah emoji yerine gerçek '+' metni koyduk
+    particle.style.color = 'rgba(255, 255, 255, 0.8)'; // ÇÖZÜM: Saydam, yumuşak bir beyaz/krem rengi
+    particle.style.fontWeight = 'bold';
+    particle.style.position = 'fixed'; 
+    particle.style.left = startX + 'px';
+    particle.style.top = startY + 'px';
+    particle.style.fontSize = '35px';
+    particle.style.zIndex = '9999999';
+    particle.style.pointerEvents = 'none'; 
+    particle.style.filter = 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.5))';
+    
+    // Uçuş animasyonu ayarları (Hızlı başlar, hedefe doğru yavaşlar)
+    particle.style.transition = 'all 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
+    particle.style.transform = 'translate(-50%, -50%) scale(0.5)';
+    
+    // İŞTE BURASI: 1 yerine 0.6 yaparak şık bir yarı saydamlık verdik!
+    particle.style.opacity = '0.6'; 
+
+    document.body.appendChild(particle);
+
+    // Tarayıcıyı yenilemeye zorla
+    void particle.offsetWidth;
+
+    // Hedefe doğru hareketi başlat ve küçülerek kaybolmasını sağla
+    particle.style.left = endX + 'px';
+    particle.style.top = endY + 'px';
+    particle.style.transform = 'translate(-50%, -50%) scale(1.2)';
+    
+    setTimeout(() => {
+        particle.style.opacity = '0';
+        particle.style.transform = 'translate(-50%, -50%) scale(0.3)';
+    }, 400); 
+
+    // Animasyon bitince elementi DOM'dan temizle
+    particle.addEventListener('transitionend', () => {
+        particle.remove();
+    });
+}
