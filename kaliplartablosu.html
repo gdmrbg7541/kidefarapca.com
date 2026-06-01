@@ -176,15 +176,24 @@
     </div>
 </div>
 
-<div id="suffix-dropdown" style="display: none; position: absolute; background: #ffffff; border: 2px solid #000000; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2000; padding: 6px; direction: rtl; flex-direction: column; gap: 6px; min-width: 65px; box-sizing: border-box;">
-    <button class="key" onclick="applySuffix('ة')">ة</button>
-    <button class="key" onclick="applySuffix('ينَ')">ينَ</button>
-    <button class="key" onclick="applySuffix('ونَ')">ونَ</button>
-    <button class="key" onclick="applySuffix('ات')">ات</button>
-    <button class="key" onclick="applySuffix('ا')">ا</button>
-    <button class="key" onclick="applySuffix('يّ')">يّ</button>
-    <button class="key" onclick="applySuffix('يَّة')">يَّة</button>
-    <button class="key" onclick="applySuffix('يَّات')">يَّات</button>
+<div id="suffix-dropdown" class="suffix-menu-grid" style="display: none; position: absolute; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 2000; padding: 8px; direction: rtl; gap: 6px; box-sizing: border-box;">
+    
+    <button class="suffix-btn" onclick="applySuffix('ا')">ا</button>
+    <button class="suffix-btn" onclick="applySuffix('ة')">ة</button>
+    <button class="suffix-btn" onclick="applySuffix('يّ')">يّ</button>
+    <button class="suffix-btn" onclick="applySuffix('يَّة')">يَّة</button>
+    
+    <div class="menu-divider"></div>
+
+    <button class="suffix-btn" onclick="applySuffix('انِ')">انِ</button>
+    <button class="suffix-btn" onclick="applySuffix('يْنِ')">يْنِ</button>
+    
+    <div class="menu-divider"></div>
+
+    <button class="suffix-btn" onclick="applySuffix('ونَ')">ونَ</button>
+    <button class="suffix-btn" onclick="applySuffix('ينَ')">ينَ</button>
+    <button class="suffix-btn" onclick="applySuffix('ات')">ات</button>
+    <button class="suffix-btn" onclick="applySuffix('يَّات')">يَّات</button>
 </div>
 
 <div class="window-pencere">

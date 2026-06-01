@@ -7534,64 +7534,82 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// SAYFA BOŞLUĞUNA TIKLANINCA MENÜYÜ KAPATAN KISIM (GÜNCELLENDİ)
 document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         const menu = document.getElementById("suffix-dropdown");
         if (menu && menu.style.display !== "none") {
-            if (!menu.contains(e.target) && !e.target.closest('.fa-plus')) {
+            // Mobil butona tıklanma durumu da engellendi
+            if (!menu.contains(e.target) && !e.target.closest('.fa-plus') && !e.target.closest('#mobile-top-plus')) {
                 menu.style.display = "none";
             }
         }
     });
 });
 
+// MENÜYÜ AÇIP KAPATAN FONKSİYON (GÜNCELLENDİ)
 function toggleSuffixMenu(e) {
-    e.stopPropagation();
-    const menu = document.getElementById("suffix-dropdown");
+    if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
     
-    // Hem masaüstü hem mobil artı butonlarının ışığını söndür
+    const menu = document.getElementById("suffix-dropdown");
+    if (!menu) return;
+
+    // ===============================================================
+    // KESİN ÇÖZÜM 1: FİİLLERE EKLENMESİNİ ENGELLEYEN DUVAR
+    // ===============================================================
+    if (lastClickedBoxTextSpan) {
+        const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
+        if (currentBox && (currentBox.classList.contains("fiil-box") || currentBox.classList.contains("is-verb"))) {
+            if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+            
+            currentBox.style.setProperty("border-color", "#FF3B30", "important");
+            currentBox.style.setProperty("box-shadow", "0 0 10px #FF3B30", "important");
+            setTimeout(() => {
+                currentBox.style.borderColor = ""; 
+                currentBox.style.boxShadow = "";
+            }, 400);
+            
+            return; 
+        }
+    }
+
     const desktopPlus = document.querySelector('.fa-plus');
     const mobilePlus = document.getElementById('mobile-top-plus');
     if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
     if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
     
-    if (menu.style.display === "flex") {
+    // GÜNCELLEME: Menü flex veya grid ise kapat (Daha önce sadece flex kontrol ediliyordu)
+    if (menu.style.display === "flex" || menu.style.display === "grid") {
         menu.style.display = "none";
         return;
     }
     
-    // ===============================================================
-    // YENİ: HANGİ EKLERİN VURGULANACAĞINI BULMA SİSTEMİ
-    // ===============================================================
     const suffixBtns = menu.querySelectorAll('button');
-    
-    // Önce tüm butonların eski vurgusunu temizle
     suffixBtns.forEach(btn => btn.classList.remove('suggested-suffix'));
     
-    // Eğer bir kutuya tıklanmışsa ve kök mevcutsa kontrol et
     if (lastClickedBoxTextSpan && typeof currentRoot !== 'undefined' && currentRoot.length === 3) {
         const box = lastClickedBoxTextSpan.closest('.glass-box');
         if (box) {
             const refEl = box.querySelector('.ref');
             if (refEl) {
                 const refId = parseInt(refEl.innerText);
-                
-                // DÜZELTME: Kök tanımlı değilse çökmesini engelleyen güvenlik kontrolü!
                 let eggObj = null;
                 if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot]) {
                     eggObj = wordEasterEggs[currentRoot][refId];
                 }
                 
                 if (eggObj) {
-                    // Hangi ekler mevcut? (base, ornek, cekimi ve suggestsPlus dışındaki anahtarları bulur)
                     const availableSuffixes = Object.keys(eggObj).filter(k => 
                         k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
                     );
                     
-                    // Mevcut ekleri butonlarda bul ve altın sarısı vurgu (suggested-suffix) sınıfını ekle
                     suffixBtns.forEach(btn => {
                         const btnText = btn.innerText.trim();
-                        if (availableSuffixes.includes(btnText)) {
+                        if (availableSuffixes.includes(btnText) || 
+                           (btnText === 'ا' && (availableSuffixes.includes('ًا') || availableSuffixes.includes('اً')))) {
                             btn.classList.add('suggested-suffix');
                         }
                     });
@@ -7600,14 +7618,28 @@ function toggleSuffixMenu(e) {
         }
     }
     
-    // Menünün Konumlandırılması
+    // Eski satırlar:
+    // const rect = e.target.getBoundingClientRect();
+    // menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+    // menu.style.left = `${rect.left + window.scrollX - 40}px`; 
+
+    // YENİ GÜVENLİ VE DAHA SOLA KAYDIRILMIŞ SATIRLAR:
     const rect = e.target.getBoundingClientRect();
     menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    menu.style.left = `${rect.left + window.scrollX - 40}px`; 
-    menu.style.display = "flex";
+    
+    // Butonun sol hizasından 150 piksel daha sola alıyoruz (-150px)
+    let leftPos = rect.left + window.scrollX - 150; 
+    
+    // Eğer ekran çok daralırsa ve sol taraftan da taşarsa minimum 10px boşluk bırakır:
+    if (leftPos < 10) {
+        leftPos = 10;
+    }
+    
+    menu.style.left = `${leftPos}px`;
+    menu.style.display = "grid";
 }
 
-function applySuffix(suffix) {
+function applySuffix(rawSuffix) {
     const menu = document.getElementById("suffix-dropdown");
     if (menu) menu.style.display = "none";
 
@@ -7618,62 +7650,150 @@ function applySuffix(suffix) {
 
     const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
     
-    if (currentBox && currentBox.classList.contains("is-verb")) {
+    // FİİL GÜVENLİK DUVARI
+    if (currentBox && (currentBox.classList.contains("fiil-box") || currentBox.classList.contains("is-verb"))) {
         if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
         return; 
     }
 
+    let suffix = rawSuffix.trim();
+    if (suffix === 'ًا' || suffix === 'اً') {
+        suffix = 'ا';
+    }
+
     let currentWord = lastOriginalWord || lastClickedBoxTextSpan.innerText;
+
+    // Kelimedeki mevcut eki tespit etmek için olası tüm ek formları
+    const possibleSuffixes = [
+        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
+        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 
+        'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
+    ];
+
+    let existingSuffix = "";
+    for (let ps of possibleSuffixes) {
+        if (currentWord.endsWith(ps)) {
+            existingSuffix = ps;
+            // Mevcut eki kelimeden kesip ayırıyoruz
+            currentWord = currentWord.slice(0, -ps.length);
+            break;
+        }
+    }
+
+    // Kök kelimenin sonundaki harekeyi temizle (Yenisi otomatik atanacak)
+    if (existingSuffix) {
+        currentWord = currentWord.replace(/[\u064B-\u0650\u0652]$/, '');
+    }
+
+    // ===============================================================
+    // MANTIKSAL KURALLAR (STATE MACHINE) VE AYNI EK KORUMASI
+    // ===============================================================
+
+    // 1. Kural: Elif (ا)
+    if (existingSuffix === 'ا') {
+        existingSuffix = "";
+    }
     
-    const plurals = ['يَّات', 'ينَ', 'ونَ', 'ات', 'ا'];
-    const basePlurals = ['ينَ', 'ونَ', 'ات', 'ا']; 
-    const nisbaSuffixes = ['يَّات', 'يَّة', 'يّ']; 
-
-    if (nisbaSuffixes.includes(suffix)) {
-        const hasPlural = basePlurals.some(p => currentWord.endsWith(p));
-        if (hasPlural) {
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClose(); 
-            return; 
-        }
-    }
-
-    if (basePlurals.includes(suffix)) {
-        for (let n of nisbaSuffixes) {
-            if (currentWord.endsWith(n)) {
-                currentWord = currentWord.slice(0, -n.length);
-                break; 
-            }
-        }
-    }
-
-    if (currentWord.endsWith('يَّة')) {
-        currentWord = currentWord.slice(0, -'يَّة'.length);
-    } 
-    else if (currentWord.endsWith('ة')) {
-        currentWord = currentWord.slice(0, -1);
-    }
-    // YENİ EKLENEN KISIM: Eğer kelimede zaten "يّ" varsa zekice yönet
-    else if (currentWord.endsWith('يّ')) {
-        // Önce eski "يّ" ekini kesip atıyoruz ki üst üste binmesin
-        currentWord = currentWord.slice(0, -'يّ'.length);
-        
-        // Eğer kullanıcı menüden "ة" seçtiyse veya "يَّة" seçtiyse, 
-        // sistem bunun niyetini anlar ve temiz bir şekilde "يَّة" ekler.
+    // 2. Kural: Kapalı Te (ة)
+    else if (existingSuffix === 'ة') {
         if (suffix === 'ة') {
-            suffix = 'يَّة';
-        } else if (suffix === 'ات') {
-            suffix = 'يَّات';
+            existingSuffix = ""; 
+        } else if (['يّ', 'يَّة', 'ونَ', 'ينَ', 'يَّات', 'ات'].includes(suffix)) {
+            existingSuffix = "";
+        } else if (suffix === 'انِ') {
+            suffix = 'تَانِ'; // substring hatası kaldırıldı, doğrudan formül yazıldı
+            existingSuffix = "";
+        } else if (suffix === 'يْنِ') {
+            suffix = 'تَيْنِ'; // substring hatası kaldırıldı
+            existingSuffix = "";
+        } else {
+            existingSuffix = "";
+        }
+    }
+    
+    // 3. Kural: Nispet (يّ)
+    else if (existingSuffix === 'يّ') {
+        if (suffix === 'يّ') {
+            existingSuffix = ""; 
+        } else if (suffix === 'يَّة') {
+            existingSuffix = ""; 
+        } else {
+            currentWord += 'يّ';
+            existingSuffix = "";
+        }
+    }
+    
+    // 4. Kural: Dişil Nispet (يَّة)
+    else if (existingSuffix === 'يَّة') {
+        if (suffix === 'يَّة') {
+            existingSuffix = ""; 
+        } else if (suffix === 'انِ') {
+            suffix = 'يَّتَانِ'; 
+            existingSuffix = "";
+        } else if (suffix === 'يْنِ') {
+            suffix = 'يَّتَيْنِ';
+            existingSuffix = "";
+        } else {
+            existingSuffix = "";
+        }
+    }
+    
+    // 5. Kural: İKİL EKLERİ (انِ, يْنِ, تَانِ, تَيْنِ, يَّانِ, يَّيْنِ, يَّتَانِ, يَّتَيْنِ)
+    else if (['انِ', 'يْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 'يَّتَانِ', 'يَّتَيْنِ'].includes(existingSuffix)) {
+        if (suffix === 'انِ' || suffix === 'يْنِ') {
+            // İkil ekleri arası geçiş (Örn: مرفوع -> منصوب/مجرور)
+            if (existingSuffix.includes('يَّتَ')) suffix = suffix === 'انِ' ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else if (existingSuffix.includes('يَّ')) suffix = suffix === 'انِ' ? 'يَّانِ' : 'يَّيْنِ';
+            else if (existingSuffix.includes('تَ')) suffix = suffix === 'انِ' ? 'تَانِ' : 'تَيْنِ';
+            existingSuffix = "";
+        } else if (suffix === 'ة') {
+            if (existingSuffix.includes('يَّ')) {
+                suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            } else {
+                suffix = existingSuffix.includes('انِ') ? 'تَانِ' : 'تَيْنِ';
+            }
+            existingSuffix = "";
+        } else if (suffix === 'يّ') { 
+            suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
+            existingSuffix = "";
+        } else if (suffix === 'يَّة') {
+            suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            existingSuffix = "";
+        } else {
+            // Çoğul eklendiğinde İKİL SİLİNİR ("Bir tane çoğul, bir tane ikil olabilir" kuralı)
+            existingSuffix = "";
         }
     }
 
-    if (plurals.includes(suffix) || suffix === 'ة') {
-        for (let p of plurals) {
-            if (currentWord.endsWith(p)) {
-                currentWord = currentWord.slice(0, -p.length);
-                break; 
+    // 6. Kural: Eril Çoğul (ونَ, ينَ, يُّونَ, يِّينَ)
+    else if (['ونَ', 'ينَ', 'يُّونَ', 'يِّينَ'].includes(existingSuffix)) {
+        if (suffix === 'ونَ' || suffix === 'ينَ') {
+            // Eril çoğul ekleri arası geçiş
+            if (existingSuffix.includes('يُّ') || existingSuffix.includes('يِّ')) {
+                suffix = suffix === 'ونَ' ? 'يُّونَ' : 'يِّينَ';
             }
+            existingSuffix = "";
+        } else if (suffix === 'يّ') {
+            suffix = existingSuffix.includes('ونَ') ? 'يُّونَ' : 'يِّينَ';
+            existingSuffix = "";
+        } else {
+            // İkil eklendiğinde ÇOĞUL SİLİNİR
+            existingSuffix = "";
         }
     }
+
+    // 7. Kural: Dişil Çoğullar (يَّات veya ات)
+    else if (existingSuffix === 'يَّات' || existingSuffix === 'ات') {
+        if (suffix === 'ات' || suffix === 'يَّات') {
+            existingSuffix = "";
+        } else {
+            existingSuffix = "";
+        }
+    }
+
+    // ===============================================================
+    // SON HAREKEYİ AYARLAMA (KUSURSUZ ARAPÇA SES UYUMU)
+    // ===============================================================
 
     function setLastVowel(word, targetVowel) {
         const vowelRegex = /[\u064B-\u0650\u0652]$/; 
@@ -7683,46 +7803,57 @@ function applySuffix(suffix) {
         return word + targetVowel; 
     }
 
-    if (suffix === 'ة' || suffix === 'ات') {
-        currentWord = setLastVowel(currentWord, 'َ'); 
+    let vowelToSet = '';
+    if (suffix.startsWith('يْنِ')) {
+        vowelToSet = 'َ'; 
     } 
-    else if (nisbaSuffixes.includes(suffix) || suffix === 'ينَ') {
-        currentWord = setLastVowel(currentWord, 'ِ'); 
-    }
-    else if (suffix === 'ونَ') {
-        currentWord = setLastVowel(currentWord, 'ُ'); 
-    }
+    else if (suffix.startsWith('ي')) { 
+        vowelToSet = 'ِ'; 
+    } 
+    else if (suffix.startsWith('ة') || suffix.startsWith('ات') || suffix.startsWith('انِ') || suffix.startsWith('تَ')) {
+        vowelToSet = 'َ'; 
+    } 
+    else if (suffix.startsWith('ونَ')) {
+        vowelToSet = 'ُ'; 
+    } 
     else if (suffix === 'ا') {
-        currentWord = setLastVowel(currentWord, 'ً'); 
+        vowelToSet = 'ً'; 
+        const pureWord = currentWord.replace(/[\u064B-\u0650\u0652]/g, '');
+        if (pureWord.endsWith('ة') || pureWord.endsWith('اء') || pureWord.endsWith('ى') || pureWord.endsWith('ا')) {
+            suffix = ''; 
+        }
+    }
+
+    if (vowelToSet !== '') {
+        currentWord = setLastVowel(currentWord, vowelToSet);
     }
 
     let updatedWord = currentWord + suffix;
     
-    // HER ZAMAN RENKLENDİR (Kök yoksa فعل baz alınır)
+    // ===============================================================
+    // RENKLENDİRME VE EKRANA YAZDIRMA
+    // ===============================================================
     let activeRootArray = (typeof currentRoot !== 'undefined' && currentRoot.length === 3) ? currentRoot.split("") : ['ف', 'ع', 'ل'];
     lastClickedBoxTextSpan.innerHTML = ColorEngine.colorize(updatedWord, activeRootArray);
     lastOriginalWord = updatedWord;
     
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
 
-    // ==============================================================
-    // Suffix (ek) kontrolünü BEYİN SİSTEMİNE (checkWordEasterEgg) Yolluyoruz
-    // ==============================================================
+    let dictSuffix = (rawSuffix.trim() === 'ًا' || rawSuffix.trim() === 'اً' || rawSuffix.trim() === 'ا') ? 'ا' : suffix;
     if (typeof checkWordEasterEgg === "function") {
-        checkWordEasterEgg(currentBox, suffix);
+        checkWordEasterEgg(currentBox, dictSuffix);
     }
 
     if (currentBox) {
         currentBox.style.setProperty("border-color", "#00FF00", "important");
         currentBox.style.setProperty("box-shadow", "0 0 10px #00FF00", "important");
         
-        // Eklendikten sonra büyütme efektini çalıştır (eğer ekli kelimenin sürprizi varsa)
         let forceDelay = false;
         if (typeof currentRoot !== 'undefined' && currentRoot.length === 3) {
             const refEl = currentBox.querySelector('.ref');
             if (refEl) {
                 const refId = parseInt(refEl.innerText);
-                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot] && wordEasterEggs[currentRoot][refId] && wordEasterEggs[currentRoot][refId][suffix]) {
+                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot] && wordEasterEggs[currentRoot][refId] && wordEasterEggs[currentRoot][refId][dictSuffix]) {
                     forceDelay = true;
                 }
             }
@@ -9353,3 +9484,4 @@ document.addEventListener('click', function(event) {
     const backdrop = document.getElementById('keyboard-backdrop');
     if (backdrop) backdrop.classList.remove('active');
 });
+
