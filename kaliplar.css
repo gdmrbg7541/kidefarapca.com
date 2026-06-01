@@ -316,6 +316,7 @@ td:first-child {
     box-sizing: border-box;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.03); /* Hafif bir zemin gölgesi */
+    
 }
 
 /* Üzerine gelince (Hover) tam beyaz olup hafif parlasın */
@@ -1871,4 +1872,29 @@ body.matrix-active {
 
 .slide-backdrop.active {
     display: block; /* Menü açılınca kalkan da aktif olur */
+}
+
+
+
+/* Örnek Cümle Kutusu - Üst Emoji Alanı */
+/* Örnek Cümle Kutusu - Üst Emoji Alanı */
+/* Örnek Cümle Kutusu - Üst Emoji Alanı */
+/* Örnek Cümle Kutusu - Üst Emoji Alanı */
+.sentence-emoji-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.sentence-emoji-badge {
+    font-size: 40px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
 }
