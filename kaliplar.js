@@ -5851,18 +5851,18 @@ function openSearchKeyboard(e) {
     if (backdrop) backdrop.classList.add('active'); // Kalkanı aç
 }
 
-// --- 3. POPUP KLAVYEYİ ÇARPIYLA KAPATMA ---
+// --- POPUP KLAVYEYİ ÇARPIYLA KAPATMA ---
 function closeSearchKeyboard() {
     const searchInput = document.getElementById('root-search');
     
     if (searchInput && searchInput.value.length > 0) {
         searchInput.value = "";
         if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
-        
-        // DÜZELTME: Doğru filtreleme fonksiyonu eklendi
         if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter();
-        
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        
+        // YENİ: Arama kutusu temizlendiği için mavi ışık animasyonunu geri başlat!
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     } else {
         const popup = document.getElementById('integrated-keyboard-popup');
         const backdrop = document.getElementById('keyboard-backdrop'); 
@@ -6248,6 +6248,7 @@ function openVerbModal() {
 }
 
 // --- 2. HAZIR KÖK MENÜSÜNÜ KAPATMA (Önce Sil, Sonra Kapat) ---
+// --- HAZIR KÖK MENÜSÜNÜ KAPATMA ---
 function closeVerbModal() {
     const searchInput = document.getElementById('root-search');
     
@@ -6255,11 +6256,11 @@ function closeVerbModal() {
     if (searchInput && searchInput.value.length > 0) {
         searchInput.value = "";
         if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
-        
-        // DÜZELTME: Doğru filtreleme fonksiyonu eklendi
         if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter(); 
-        
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        
+        // YENİ: Arama kutusu temizlendiği için mavi ışık animasyonunu geri başlat!
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     } else {
         // Eğer kutu boşsa menüyü tamamen kapat
         document.getElementById('verb-overlay').style.display = 'none';
@@ -6269,24 +6270,24 @@ function closeVerbModal() {
 }
 
 function selectReadyVerb(verb) {
-    toggleRootHint(false);
     if (typeof clearDraggableRoots === 'function') clearDraggableRoots();
     if (typeof SoundEngine !== "undefined") SoundEngine.playReset();
     if (typeof resetTableOnly === 'function') resetTableOnly(true); 
-    
-    // HATA ÇÖZÜMÜ: Başında "let" olmadan global değişkeni güncelliyoruz
-    currentEggIndex = 0; 
-    
+
+    currentEggIndex = 0;
     const trimmedRoot = verb.trim();
     if (trimmedRoot.length !== 3) return;
+    
     currentRoot = trimmedRoot;
     
+    // KESİN ÇÖZÜM: Tablo sıfırlandıktan ve yeni kök hafızaya alındıktan SONRA vurguyu zorla kapat!
+    if (typeof toggleRootHint === 'function') toggleRootHint(false);
+
     const rootDisplay = document.getElementById('root-text-display');
     if (rootDisplay) rootDisplay.innerText = currentRoot;
     
     if (typeof closeVerbModal === 'function') closeVerbModal();
     if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(currentRoot);
-    
     if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
     if (typeof currentTabActive !== 'undefined' && currentTabActive === 1 && typeof setTab === 'function') setTab(0);
 
@@ -6298,18 +6299,17 @@ function selectReadyVerb(verb) {
         if (!topBar) {
             topBar = document.createElement('div');
             topBar.id = 'mobile-top-bar';
-            
-            // 1. Geri Tuşu (Sağda duracak ama SOL OK olacak)
+
             const backBtn = document.createElement('div');
             backBtn.className = 'mobile-back-btn';
-            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>'; 
-            backBtn.onclick = () => { if (typeof openVerbModal === 'function') openVerbModal(); };
-            
-            // 2. Orta: Kök Gösterimi
+            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
+            backBtn.onclick = () => {
+                if (typeof openVerbModal === 'function') openVerbModal();
+            };
+
             const rootDisp = document.createElement('div');
             rootDisp.className = 'mobile-root-display';
-            
-            // 3. Artı Tuşu (Solda duracak, ekler için)
+
             const plusBtn = document.createElement('div');
             plusBtn.className = 'mobile-top-plus';
             plusBtn.id = 'mobile-top-plus';
@@ -6319,41 +6319,37 @@ function selectReadyVerb(verb) {
                 e.preventDefault();
                 if (typeof toggleSuffixMenu === 'function') toggleSuffixMenu(e);
             };
-            
-            // Sıralama: Önce Artı (Sol), sonra Kök (Orta), en son Geri (Sağ)
-            topBar.appendChild(plusBtn); 
+
+            topBar.appendChild(plusBtn);
             topBar.appendChild(rootDisp);
-            topBar.appendChild(backBtn); 
-            
+            topBar.appendChild(backBtn);
+
             const mGrid = document.getElementById('mobile-grid');
             if (mGrid) document.body.insertBefore(topBar, mGrid);
         }
-        
-        // Üst bardaki metni güncelle ve artı butonunun ışığını söndür
+
         const mobileRootDisplay = topBar.querySelector('.mobile-root-display');
         if (mobileRootDisplay) mobileRootDisplay.innerText = currentRoot;
-        
         const mobilePlusBtn = topBar.querySelector('.mobile-top-plus');
         if (mobilePlusBtn) mobilePlusBtn.classList.remove('plus-highlighted');
 
-        // Mobildeki alt grid kısmına sadece o kökün kutularını klonla
         const mGrid = document.getElementById('mobile-grid');
         if (mGrid) {
-            mGrid.innerHTML = ''; 
+            mGrid.innerHTML = '';
             if (typeof getSortedRefsForRoot === 'function') {
-                const refs = getSortedRefsForRoot(currentRoot); 
-                
+                const refs = getSortedRefsForRoot(currentRoot);
                 refs.forEach(refId => {
                     const origBox = Array.from(document.querySelectorAll('.window-pencere .glass-box')).find(b => {
                         const refEl = b.querySelector('.ref');
                         return refEl && parseInt(refEl.innerText.trim()) === refId;
                     });
-                    
                     if (origBox) {
                         const clone = origBox.cloneNode(true);
-                        clone.className = 'glass-box sari-vurgu fiil-box'; 
+                        clone.className = 'glass-box sari-vurgu fiil-box';
                         if (clone.hasAttribute('data-tiklama-sayisi')) clone.setAttribute('data-tiklama-sayisi', '0');
-                        clone.onclick = function() { if (typeof handleBoxClick === 'function') handleBoxClick(this); };
+                        clone.onclick = function() {
+                            if (typeof handleBoxClick === 'function') handleBoxClick(this);
+                        };
                         mGrid.appendChild(clone);
                     }
                 });
@@ -6361,6 +6357,7 @@ function selectReadyVerb(verb) {
         }
     }
 }
+
 function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
@@ -7320,6 +7317,7 @@ function openKeyboard() {
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
 }
 
+// --- ANA KLAVYEYİ KAPATMA VE SİLME ---
 function closeKeyboard() {
     // Eğer ekranda yazılı bir kök (harf) varsa önce onu sil
     if (typeof currentRoot !== 'undefined' && currentRoot.length > 0) {
@@ -7330,11 +7328,12 @@ function closeKeyboard() {
         if (typeof updateTempDisplay === 'function') updateTempDisplay();
         if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(""); 
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        
+        // YENİ: Kök tamamen silindiği için yönlendirme (mavi ışık) animasyonunu geri başlat!
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     } else {
         // Eğer hiçbir şey yazmıyorsa klavyeyi tamamen kapat
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        
-        // Sizin sisteminizdeki orijinal kapatma komutu:
         if (typeof toggleKB === 'function') {
             toggleKB(false);
         } else {
@@ -7385,21 +7384,19 @@ function highlightKey(char) {
 
 function confirmRoot() {
     if (currentRoot.length === 3) {
-        SoundEngine.playReset(); 
+        SoundEngine.playReset();
         const rootTextSpan = document.getElementById('root-text-display');
         if (rootTextSpan) {
             rootTextSpan.innerText = currentRoot;
         }
         toggleKB(false);
+        currentEggIndex = 0;
         
-        // EKLENEN KISIM: Klavyeden giriş yapıldığında da sayacı temizle
-        currentEggIndex = 0; 
-        
-        highlightEasterEggBoxes(currentRoot); 
-        
-        // Otomatik olarak tahta bloğu sahneye at!
+        // KESİN ÇÖZÜM: Klavyeden 3 harfli kök girilip onaylanınca vurguyu zorla kapat!
+        if (typeof toggleRootHint === 'function') toggleRootHint(false);
+
+        highlightEasterEggBoxes(currentRoot);
         if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
-        
         if (currentTabActive === 1) {
             setTab(0);
         }
@@ -9309,29 +9306,31 @@ function flyEmojiToPlus(startEl) {
 
 
 // --- YÖNLENDİRME (HINT) KONTROLCÜSÜ ---
-function toggleRootHint(show) {
-    // Hazır fiilleri açan kitap ikonunu yakalıyoruz (Eğer açık kitap kullanıyorsanız '.fa-book-open' yapın)
+function toggleRootHint(showRequest) {
+    let shouldShow = showRequest;
+
+    // AKILLI GÜVENLİK DUVARI: 
+    // Eğer seçili bir kök (currentRoot) varsa veya arama kutusunda yazı varsa animasyonu ZORLA KAPAT!
+    const searchInput = document.getElementById('root-search');
+    const hasSearchText = searchInput && searchInput.value.length > 0;
+    const hasRootText = typeof currentRoot !== 'undefined' && currentRoot.length > 0;
+
+    if (hasRootText || hasSearchText) {
+        shouldShow = false;
+    }
+
+    // İkonları bul ve uygula
     const bookIcon = document.querySelector('.fa-book'); 
-    
-    // Mobildeki menü açma butonu (Eğer mobilde de kitap ikonu görünüyorsa üstteki kod onu da halleder, 
-    // ancak mobildeki buton farklıysa buraya o butonun class'ını girebilirsiniz)
     const mobileMenuBtn = document.querySelector('.mobile-back-btn'); 
     
     if (bookIcon) {
-        if (show) {
-            bookIcon.classList.add('ready-root-hint');
-        } else {
-            bookIcon.classList.remove('ready-root-hint');
-        }
+        if (shouldShow) bookIcon.classList.add('ready-root-hint');
+        else bookIcon.classList.remove('ready-root-hint');
     }
     
-    // Mobilde de kullanıcının dikkatini menüye çekmek için
     if (mobileMenuBtn) {
-        if (show) {
-            mobileMenuBtn.classList.add('ready-root-hint');
-        } else {
-            mobileMenuBtn.classList.remove('ready-root-hint');
-        }
+        if (shouldShow) mobileMenuBtn.classList.add('ready-root-hint');
+        else mobileMenuBtn.classList.remove('ready-root-hint');
     }
 }
 
