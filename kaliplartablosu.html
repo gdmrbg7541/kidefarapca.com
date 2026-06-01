@@ -18,12 +18,62 @@
 </head>
 <body>
 
+<!-- YENİ KÖK SEÇME EKRANI (TAM EKRAN + AÇILIR KLAVYE) -->
 <div id="verb-overlay" class="verb-overlay">
-    <div class="verb-container">
-        <h3 class="verb-title">Kök Seçin</h3>
-        <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
+    <div class="new-verb-layout">
         
-        <div id="dynamic-verb-menu" class="verb-menu-container"></div>
+        <!-- ÜST KISIM: Arama Çubuğu ve Kapatma -->
+        <div class="root-header">
+            <!-- Tıklanınca klavye popup'ı açılır -->
+            <input type="text" id="root-search" placeholder="Kök Ara..." autocomplete="off" inputmode="none" onclick="openSearchKeyboard(event)">
+            <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
+        </div>
+
+        <!-- TAHMİN / ÖNERİ ÇUBUĞU -->
+        <div id="root-predictions" class="root-predictions" dir="rtl">
+            <!-- Harfe basıldıkça buraya tahminler gelecek -->
+        </div>
+
+        <!-- ORTA KISIM: Önemli Kökler ve 4 Sütun -->
+        <div class="roots-main-content">
+            <div class="important-roots-wrapper">
+                <h4 class="section-title left-aligned">Önemli Kökler</h4>
+                <div id="important-roots-list" class="flat-root-list" dir="rtl">
+                    <!-- JS ile Doldurulacak -->
+                </div>
+            </div>
+
+            <div class="letters-grid-wrapper">
+                <div id="letters-grid-container" class="letters-grid" dir="rtl">
+                    <!-- JS ile Doldurulacak -->
+                </div>
+            </div>
+        </div>
+
+        <!-- KÜÇÜK YÜZEN (POPUP) BUTONLAR -->
+        <div class="floating-mini-btns">
+            <button class="mini-popup-btn btn-aksam" onclick="openSlideMenu('aksam')">أقسام السبعة</button>
+            <button class="mini-popup-btn btn-mezid" onclick="openSlideMenu('mezid')">مزيد</button>
+        </div>
+
+        <div id="slide-menu-backdrop" class="slide-backdrop" onclick="closeSlideMenu()"></div>
+
+        <div id="slide-up-menu" class="slide-up-menu">
+            <div class="slide-header">
+                <h3 id="slide-title">Başlık</h3>
+                <button onclick="closeSlideMenu()" class="slide-close">✕</button>
+            </div>
+            <div id="slide-content" class="flat-root-list slide-content" dir="rtl"></div>
+        </div>
+        <div id="keyboard-backdrop" class="keyboard-backdrop" onclick="closeSearchKeyboard()"></div>
+
+        <div id="integrated-keyboard-popup" class="integrated-keyboard-popup">
+            <div class="keyboard-popup-dragbar" onclick="closeSearchKeyboard()">
+                <div></div> </div>
+            <div id="integrated-keyboard" class="integrated-keyboard-inner" dir="rtl">
+                </div>
+        </div>
+
     </div>
 </div>
 

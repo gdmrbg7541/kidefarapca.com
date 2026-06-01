@@ -170,7 +170,1274 @@ const wordEasterEggs = {
             } 
         }
     },
-  // ==================================================================
+
+// ==================================================================
+    // 21. '-L-M (ع ل م) KÖKÜ - Bilmek / Öğrenmek / Öğretmek
+    // 4. Bab (فَعِلَ - يَفْعَلُ), Tef'îl, Tefe'ul ve İsti'fal Babları
+    // ==================================================================
+    "علم": {
+        // --- 8 Numaralı Kalıp (فَعِلَ - Mazi / 4. Bab) ---
+        8: { 
+            base: { 
+                emoji: "💡", 
+                arText: "عَلِمَ", 
+                trText: "Bildi / Öğrendi.",
+                ornek: {
+                    ar: "قَدْ عَلِمَ كُلُّ أُنَاسٍ مَشْرَبَهُمْ",
+                    tr: "Her topluluk kendi su içeceği yeri (pınarını) bildi. (Bakara Suresi, 60)"
+                }
+            } 
+        },
+        
+        // --- 9 Numaralı Kalıp (يَفْعَلُ - Muzari / 4. Bab) ---
+        9: { 
+            base: { 
+                emoji: "🤔", 
+                arText: "يَعْلَمُ", 
+                trText: "Bilir / Biliyor.",
+                ornek: {
+                    ar: "وَاللهُ يَعْلَمُ وَأَنْتُمْ لَا تَعْلَمُونَ",
+                    tr: "Allah bilir, siz bilmezsiniz. (Bakara Suresi, 216)"
+                }
+            } 
+        },
+        
+        // --- 10 Numaralı Kalıp (اِفْعَلْ - Emir / 4. Bab) ---
+        10: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِعْلَمْ", 
+                trText: "Bil!",
+                ornek: {
+                    ar: "فَاعْلَمْ أَنَّهُ لَا إِلَٰهَ إِلَّا اللَّهُ",
+                    tr: "Bil ki, Allah'tan başka hiçbir ilah yoktur. (Muhammed Suresi, 19)"
+                }
+            } 
+        },
+
+        // --- 20 Numaralı Kalıp (فِعْل - Masdar) ---
+        20: { 
+            base: { 
+                emoji: "📖", 
+                arText: "عِلْم", 
+                trText: "İlim / Bilgi.",
+                ornek: {
+                    ar: "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ",
+                    tr: "İlim öğrenmek her Müslüman'a farzdır. (Hadis-i Şerif)"
+                }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🎓", 
+                arText: "عَالِم", 
+                trText: "Bilen / Alim.",
+                ornek: {
+                    ar: "الْعَالِمُ يَعْرِفُ الْجَاهِلَ لِأَنَّهُ كَانَ جَاهِلًا",
+                    tr: "Âlim cahili tanır, çünkü kendisi de (eskiden) cahildi. (Arap Özdeyişi)"
+                }
+            }, 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🧕", 
+                arText: "عَالِمَة", 
+                trText: "Kadın âlim.",
+                ornek: {
+                    ar: "عَائِشَةُ رَضِيَ اللَّهُ عَنْهَا كَانَتْ عَالِمَةً جَلِيلَةً",
+                    tr: "Hz. Aişe (r.a.) büyük ve yüce bir âlimdi."
+                }
+            }, 
+            "ونَ": { 
+                emoji: "👨‍🎓", 
+                arText: "عَالِمُونَ", 
+                trText: "Âlimler / Bilenler (Düzenli Çoğul).",
+                ornek: {
+                    ar: "وَمَا يَعْقِلُهَا إِلَّا الْعَالِمُونَ",
+                    tr: "Bunu (bu misalleri) ancak âlimler (bilenler) akıl edip anlar. (Ankebût Suresi, 43)"
+                }
+            } 
+        },
+        
+        // --- 34 Numaralı Kalıp (فَعَّالَة - Mübalağa) ---
+        34: { 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🧠", 
+                arText: "عَلَّامَة", 
+                trText: "Çok bilen / Allâme.",
+                ornek: {
+                    ar: "هُوَ عَلَّامَةُ الْعَصْرِ فِي الْفِقْهِ",
+                    tr: "O, fıkıh ilminde asrın allâmesidir (büyük bilginidir)."
+                }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "💡", 
+                arText: "مَعْلُوم", 
+                trText: "Bilinen / Malum.",
+                ornek: {
+                    ar: "كُلُّ شَيْءٍ مَعْلُومٌ عِنْدَ اللهِ",
+                    tr: "Her şey Allah katında malumdur (bilinmektedir)."
+                }
+            }, 
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "ℹ️", 
+                arText: "مَعْلُومَات", 
+                trText: "Bilgiler / Malumat.",
+                ornek: {
+                    ar: "عَصْرُ الْمَعْلُومَاتِ وَالتِّكْنُولُوجْيَا",
+                    tr: "Bilgi (malumat) ve teknoloji çağı."
+                }
+            } 
+        },
+        
+        // --- 43 Numaralı Kalıp (فُعُول - Çoğul Masdar) ---
+        43: { 
+            base: { 
+                emoji: "🔬", 
+                arText: "عُلُوم", 
+                trText: "İlimler / Bilimler.",
+                ornek: {
+                    ar: "الْعُلُومُ النَّافِعَةُ تَبْنِي الْحَضَارَاتِ",
+                    tr: "Faydalı ilimler (bilimler) medeniyetleri inşa eder."
+                }
+            } 
+        },
+        
+        // --- 46 Numaralı Kalıp (فُعَلَاء - Çoğul İsm-i Fail) ---
+        46: { 
+            base: { 
+                emoji: "👥", 
+                arText: "عُلَمَاء", 
+                trText: "Âlimler.",
+                ornek: [
+                    {
+                        ar: "الْعُلَمَاءُ وَرَثَةُ الْأَنْبِيَاءِ",
+                        tr: "Âlimler peygamberlerin varisleridir. (Hadis-i Şerif)"
+                    },
+                    {
+                        ar: "إِنَّمَا يَخْشَى الله مِنْ عِبَادِهِ الْعُلَمَاءُ",
+                        tr: "Kulları içinden ancak âlimler, Allah'tan (hakkıyla) korkar. (Fâtır Suresi, 28)"
+                    }
+                ]
+            }
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
+        58: { 
+            base: { 
+                emoji: "🗣️", 
+                arText: "عَلَّمَ", 
+                trText: "Öğretti.",
+                ornek: {
+                    ar: "الرَّحْمَٰنُ ۝ عَلَّمَ الْقُرْآنَ",
+                    tr: "Rahmân, Kur'an'ı öğretti. (Rahmân Suresi, 1-2)"
+                }
+            } 
+        },
+        
+        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
+        59: { 
+            base: { 
+                emoji: "📢", 
+                arText: "يُعَلِّمُ", 
+                trText: "Öğretir / Öğretiyor.",
+                ornek: {
+                    ar: "وَيُعَلِّمُكُمُ اللَّهُ ۗ وَاللَّهُ بِكُلِّ شَيْءٍ عَلِيمٌ",
+                    tr: "Allah size öğretiyor. Allah her şeyi hakkıyla bilendir. (Bakara Suresi, 282)"
+                }
+            } 
+        },
+        
+        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
+        60: { 
+            base: { 
+                emoji: "📝", 
+                arText: "عَلِّمْ", 
+                trText: "Öğret!",
+                ornek: {
+                    ar: "عَلِّمْ النَّاسَ الْخَيْرَ",
+                    tr: "İnsanlara hayrı (iyiliği) öğret. (Hadis-i Şerif'ten mülhem)"
+                }
+            } 
+        },
+        
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Masdar / Tef'îl Babı) ---
+        61: { 
+            base: { 
+                emoji: "🏫", 
+                arText: "تَعْلِيم", 
+                trText: "Eğitim / Öğretim.",
+                ornek: {
+                    ar: "وِزَارَةُ التَّرْبِيَةِ وَالتَّعْلِيمِ",
+                    tr: "Milli Eğitim (Terbiye ve Talim) Bakanlığı."
+                }
+            },
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "📋", 
+                arText: "تَعْلِيمَات", 
+                trText: "Talimatlar / Yönergeler.",
+                ornek: {
+                    ar: "يَجِبُ اتِّبَاعُ تَعْلِيمَاتِ السَّلَامَةِ",
+                    tr: "Güvenlik talimatlarına (kurallarına) uyulması zorunludur."
+                }
+            } 
+        },
+        
+        // --- 62 Numaralı Kalıp (مُفَعِّل - İsm-i Fail / Tef'îl Babı) ---
+        62: { 
+            base: { 
+                emoji: "👨‍🏫", 
+                arText: "مُعَلِّم", 
+                trText: "Öğretmen.",
+                ornek: [
+                    {
+                        ar: "مَنْ عَلَّمَنِي حَرْفًا صِرْتُ لَهُ عَبْدًا",
+                        tr: "Bana bir harf öğretenin kölesi olurum. (Hz. Ali)"
+                    },
+                    {
+                        ar: "كادَ المُعَلِّمُ أَن يَكونَ رَسولاً",
+                        tr: "Öğretmen neredeyse bir elçi (peygamber) olacaktı. (Ahmed Şevki'nin meşhur şiirinden)"
+                    }
+                ]
+            }, 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "👩‍🏫", 
+                arText: "مُعَلِّمَة", 
+                trText: "Kadın öğretmen.",
+                ornek: {
+                    ar: "هِيَ مُعَلِّمَةٌ مُخْلِصَةٌ فِي عَمَلِهَا",
+                    tr: "O, işinde çok ihlaslı (samimi) bir öğretmendir."
+                }
+            } 
+        },
+
+        // --- 88 Numaralı Kalıp (تَفَعَّلَ - Mazi / Tefe'ul Babı) ---
+        88: { 
+            base: { 
+                emoji: "🕋", 
+                arText: "تَعَلَّمَ", 
+                trText: "Öğrendi.",
+                ornek: {
+                    ar: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+                    tr: "Sizin en hayırlınız Kur'an'ı öğrenen ve öğreteninizdir. (Hadis-i Şerif)"
+                }
+            } 
+        },
+        
+        // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Muzari / Tefe'ul Babı) ---
+        89: { 
+            base: { 
+                emoji: "📚", 
+                arText: "يَتَعَلَّمُ", 
+                trText: "Öğrenir / Öğreniyor.",
+                ornek: {
+                    ar: "وَيَتَعَلَّمُونَ مَا يَضُرُّهُمْ وَلَا يَنْفَعُهُمْ",
+                    tr: "Onlar, kendilerine zarar verip fayda sağlamayan şeyi öğreniyorlar. (Bakara Suresi, 102)"
+                }
+            } 
+        },
+        
+        // --- 90 Numaralı Kalıp (تَفَعَّلْ - Emir / Tefe'ul Babı) ---
+        90: { 
+            base: { 
+                emoji: "✍️", 
+                arText: "تَعَلَّمْ", 
+                trText: "Öğren!",
+                ornek: {
+                    ar: "تَعَلَّمُوا الْعَرَبِيَّةَ فَإِنَّهَا مِنْ دِينِكُمْ",
+                    tr: "Arapçayı öğrenin, çünkü o dininizdendir. (Hz. Ömer r.a.)"
+                }
+            } 
+        },
+        
+        // --- 91 Numaralı Kalıp (تَفَعُّل - Masdar / Tefe'ul Babı) ---
+        91: { 
+            base: { 
+                emoji: "🎓", 
+                arText: "تَعَلُّـم", 
+                trText: "Öğrenim / Öğrenme.",
+                ornek: {
+                    ar: "التَّعَلُّمُ فِي الصِّغَرِ كَالنَّقْشِ عَلَى الْحَجَرِ",
+                    tr: "Çocuklukta öğrenmek, taşa kazımak gibidir. (Arap Atasözü)"
+                }
+            } 
+        }
+    },
+
+// ==================================================================
+    // 42. Q-D-R (ق د ر) KÖKÜ - Ölçmek / Güç Yetirmek / Değer / Kader
+    // 2. Bab (فَعَلَ - يَفْعِلُ), Tef'îl ve İfti'âl Babları
+    // ==================================================================
+    "قدر": {
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 2. Bab) ---
+        1: { 
+            base: { 
+                emoji: "📏", 
+                arText: "قَدَرَ", 
+                trText: "Ölçtü / Güç yetirdi.",
+                ornek: {
+                    ar: "وَمَا قَدَرُوا اللهَ حَقَّ قَدْرِهِ",
+                    tr: "Onlar Allah'ı hakkıyla takdir edemediler (kudretini bilemediler). (Zümer Suresi, 67)"
+                }
+            } 
+        },
+        
+        // --- 4 Numaralı Kalıp (يَفْعِلُ - Muzari / 2. Bab) ---
+        4: { 
+            base: { 
+                emoji: "💪", 
+                arText: "يَقْدِرُ", 
+                trText: "Güç yetirir / Ölçüyor.",
+                ornek: {
+                    ar: "وَاللهُ يَقْدِرُ اللَّيْلَ وَالنَّهَارَ",
+                    tr: "Geceyi ve gündüzü Allah ölçüp belirler (takdir eder). (Müzzemmil Suresi, 20)"
+                }
+            } 
+        },
+        
+        // --- 5 Numaralı Kalıp (اِفْعِلْ - Emir / 2. Bab) ---
+        5: { 
+            base: { emoji: "❗", arText: "اِقْدِرْ", trText: "Güç yetir!" } 
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "✨", 
+                arText: "قَدَر", 
+                trText: "Kader / Ölçü.",
+                ornek: {
+                    ar: "إِنَّا كُلَّ شَيْءٍ خَلَقْنَاهُ بِقَدَرٍ",
+                    tr: "Şüphesiz biz her şeyi bir ölçüye göre (kaderle) yarattık. (Kamer Suresi, 49)"
+                }
+            } 
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: {
+            base: {
+                emoji: "💎",
+                arText: "قَدْر",
+                trText: "Değer / Kadir / Kıymet.",
+                ornek: [
+                    {
+                        ar: "لَا يَعْرِفُ قَدْرَ النِّعْمَةِ إِلَّا فَاقِدُهَا",
+                        tr: "Nimetin kadrini (değerini/kıymetini) ancak onu kaybeden bilir. (Arap Özdeyişi)"
+                    },
+                    {
+                        ar: "لَيْلَةُ الْقَدْرِ خَيْرٌ مِنْ أَلْفِ شَهْرٍ",
+                        tr: "Kadir gecesi bin aydan daha hayırlıdır. (Kadir Suresi, 3)"
+                    }
+                ]
+            }
+        },
+        
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "💪", 
+                arText: "قُدْرَة", 
+                trText: "Kudret / Güç.",
+                ornek: {
+                    ar: "قُدْرَةُ اللهِ لَا حُدُودَ لَهَا",
+                    tr: "Allah'ın kudretinin (gücünün) sınırı yoktur."
+                }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🌟", 
+                arText: "قَادِر", 
+                trText: "Kadir / Gücü yeten.",
+                ornek: {
+                    ar: "وَاللهُ عَلَىٰ كُلِّ شَيْءٍ قَادِرٌ",
+                    tr: "Allah her şeye kadirdir (güç yetirendir). (Bakara Suresi, 284)"
+                }
+            } 
+        },
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "قَدِير", 
+                trText: "Her şeye gücü yeten (Kadir).",
+                ornek: {
+                    ar: "إِنَّ اللهَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+                    tr: "Şüphesiz Allah her şeye kadirdir (sonsuz güç sahibidir). (Bakara Suresi, 20)"
+                }
+            } 
+        },
+        
+        // --- 40 Numaralı Kalıp (مِفْعَال) ---
+        40: { 
+            base: { 
+                emoji: "📊", 
+                arText: "مِقْدَار", 
+                trText: "Miktar / Ölçü.",
+                ornek: {
+                    ar: "وَكُلُّ شَيْءٍ عِندَهُ بِمِقْدَارٍ",
+                    tr: "O'nun katında her şey bir ölçü (miktar) iledir. (Ra'd Suresi, 8)"
+                }
+            } 
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
+        58: { 
+            base: { 
+                emoji: "👏", 
+                arText: "قَدَّرَ", 
+                trText: "Takdir etti / Değer biçti.",
+                ornek: {
+                    ar: "فَخَلَقَ فَسَوَّىٰ ۝ وَالَّذِي قَدَّرَ فَهَدَىٰ",
+                    tr: "O, yaratıp şekil veren, her şeyi ölçüyle yapıp (takdir edip) yol gösterendir. (A'lâ Suresi, 2-3)"
+                }
+            } 
+        },
+        
+        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
+        59: { 
+            base: { emoji: "📝", arText: "يُقَدِّرُ", trText: "Takdir eder / Değer biçiyor." } 
+        },
+        
+        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
+        60: { 
+            base: { emoji: "❗", arText: "قَدِّرْ", trText: "Takdir et / Değer biç!" } 
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "👏", 
+                arText: "تَقْدِير", 
+                trText: "Takdir / Değer biçme.",
+                ornek: {
+                    ar: "حَصَلَ عَلَى شَهَادَةِ تَقْدِيرٍ",
+                    tr: "Bir takdir (teşekkür) belgesi aldı."
+                }
+            } 
+        },
+        
+        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
+        63: { 
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "🔮", 
+                arText: "مُقَدَّرَات", 
+                trText: "Mukadderat / Alın yazısı.",
+                ornek: {
+                    ar: "مُقَدَّرَاتُ الْإِنْسَانِ مَكْتُوبَةٌ",
+                    tr: "İnsanın mukadderatı (alın yazısı) yazılmıştır."
+                }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
+        77: { 
+            base: { emoji: "👑", arText: "اِقْتَدَرَ", trText: "Güç yetirdi / İktidar sahibi oldu." } 
+        },
+        
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
+        78: { 
+            base: { emoji: "💪", arText: "يَقْتَدِرُ", trText: "Güç yetirir / Muktedir oluyor." } 
+        },
+        
+        // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
+        79: { 
+            base: { emoji: "❗", arText: "اِقْتَدِرْ", trText: "Güç yetir!" } 
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "👑", 
+                arText: "اِقْتِدَار", 
+                trText: "İktidar / Güç yetirme.",
+                ornek: {
+                    ar: "حِزْبُ الِاقْتِدَارِ فِي تُرْكِيَا",
+                    tr: "Türkiye'de iktidar (yönetme gücünde olan) partisi."
+                }
+            } 
+        },
+        
+        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Faili) ---
+        81: { 
+            base: { 
+                emoji: "🦁", 
+                arText: "مُقْتَدِر", 
+                trText: "Muktedir / Gücü yeten.",
+                ornek: {
+                    ar: "فِي مَقْعَدِ صِدْقٍ عِندَ مَلِيكٍ مُّقْتَدِرٍ",
+                    tr: "Güçlü bir padişahın (Muktedir olan Allah'ın) katında, doğruluk koltuğundadırlar. (Kamer Suresi, 55)"
+                }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 49. K-M-L (ك م ل) KÖKÜ - Tamamlamak / Olgunluk / Kusursuzluk
+    // 1. Bab (فَعَلَ - يَفْعُلُ), İf'âl ve Tef'îl Babları
+    // ==================================================================
+    "كمل": {
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: { 
+            base: { 
+                emoji: "🌟", 
+                arText: "كَمَال", 
+                trText: "Kemal / Kusursuzluk.",
+                ornek: { ar: "الْكَمَالُ لِلَّهِ وَحْدَهُ", tr: "Kemal (kusursuzluk) sadece Allah'a mahsustur." }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🌕", 
+                arText: "كَامِل", 
+                trText: "Kamil / Tam.",
+                ornek: { ar: "بَدْرٌ كَامِلٌ", tr: "Kamil (tam) dolunay." }
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - Mazi / İf'âl Babı) ---
+        52: { 
+            base: { emoji: "✅", arText: "أَكْمَلَ", trText: "Tamamladı (İkmal etti)." },
+            suggestsPlus: true,
+            "تُ": { 
+                emoji: "🤲", 
+                arText: "أَكْمَلْتُ", 
+                trText: "Ben tamamladım.",
+                ornek: { ar: "الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ", tr: "Bugün sizin için dininizi kemale erdirdim (tamamladım). (Mâide Suresi, 3)" }
+            }
+        },
+        
+        // --- 53 Numaralı Kalıp (يُفْعِلُ - Muzari / İf'âl Babı) ---
+        53: { base: { emoji: "⏳", arText: "يُكْمِلُ", trText: "Tamamlar / Tamamlıyor." } },
+        
+        // --- 54 Numaralı Kalıp (أَفْعِلْ - Emir / İf'âl Babı) ---
+        54: { base: { emoji: "❗", arText: "أَكْمِلْ", trText: "Tamamla!" } },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🧩", 
+                arText: "إِكْمَال", 
+                trText: "İkmal / Tamamlama.",
+                ornek: { ar: "إِكْمَالُ النَّقْصِ", tr: "Eksiği tamamlama (ikmal)." }
+            } 
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
+        58: { base: { emoji: "🎨", arText: "كَمَّلَ", trText: "Eksiksiz yaptı / Mükemmelleştirdi." } },
+        
+        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
+        59: { base: { emoji: "🖌️", arText: "يُكَمِّلُ", trText: "Eksiksiz yapar / Mükemmelleştiriyor." } },
+        
+        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
+        60: { base: { emoji: "💯", arText: "كَمِّلْ", trText: "Eksiksiz yap!" } },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        61: { base: { emoji: "✅", arText: "تَكْمِيل", trText: "Tamamlama." } },
+        
+        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
+        63: { 
+            base: { 
+                emoji: "💯", 
+                arText: "مُكَمَّل", 
+                trText: "Mükemmel / Eksiksiz.",
+                ornek: { ar: "عَمَلٌ مُكَمَّلٌ وَرَائِعٌ", tr: "Mükemmel (eksiksiz) ve harika bir iş." }
+            } 
+        }
+    },
+
+     // ==================================================================
+    // 43. M-L-K (م ل ك) KÖKÜ - Sahip Olmak / Yönetmek / Melek
+    // ==================================================================
+    "ملك": {
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "👼", 
+                arText: "مَلَك", 
+                trText: "Melek.",
+                ornek: {
+                    ar: "الْمَلَائِكَةُ عِبَادٌ مُكْرَمُونَ",
+                    tr: "Melekler (Allah'ın) ikram olunmuş kullarıdır. (Enbiyâ Suresi, 26'dan mülhem)"
+                }
+            } 
+        },
+        
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            base: { 
+                emoji: "👑", 
+                arText: "مُلْك", 
+                trText: "Mülk / Hükümranlık.",
+                ornek: {
+                    ar: "لِلهِ مُلْكُ السَّمَاوَاتِ وَالْأَرْضِ",
+                    tr: "Göklerin ve yerin mülkü (hükümranlığı) Allah'ındır. (Şûrâ Suresi, 49)"
+                }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🔑", 
+                arText: "مَالِك", 
+                trText: "Sahip / Malik.",
+                ornek: {
+                    ar: "مَالِكِ يَوْمِ الدِّينِ",
+                    tr: "Din gününün maliki (sahibi)dir. (Fâtiha Suresi, 4)"
+                }
+            } 
+        },
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🤴", 
+                arText: "مَلِيك", 
+                trText: "Kral / Güçlü Hükümdar.",
+                ornek: {
+                    ar: "فِي مَقْعَدِ صِدْقٍ عِندَ مَلِيكٍ مُّقْتَدِرٍ",
+                    tr: "Güçlü bir padişahın (Melik'in) katında, doğruluk koltuğundadırlar. (Kamer Suresi, 55)"
+                }
+            }, 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "👸", 
+                arText: "مَلِيكَة", 
+                trText: "Kraliçe.",
+                ornek: {
+                    ar: "مَلِيكَةُ النَّحْلِ",
+                    tr: "Kraliçe arı."
+                }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "مَمْلُوك", 
+                trText: "Köle / Sahip olunan / Memlük.",
+                ornek: {
+                    ar: "الدَّوْلَةُ الْمَمْلُوكِيَّةُ فِي التَّارِيخِ",
+                    tr: "Tarihteki Memlük (köleleştirilmiş asker/hükümdar) Devleti."
+                }
+            } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: {
+                emoji: "📍",
+                arText: "مَمْلَك",
+                trText: "Hüküm sürülen yer."
+            },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🏰", 
+                arText: "مَمْلَكَة", 
+                trText: "Krallık / Memleket.",
+                ornek: {
+                    ar: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ",
+                    tr: "Suudi Arabistan Krallığı (Arapçada krallık, Türkçede yurt/memleket)."
+                }
+            } 
+        },
+        
+        // --- 41 Numaralı Kalıp (أَفْعَال) ---
+        41: { 
+            base: { 
+                emoji: "🏢", 
+                arText: "أَمْلَاك", 
+                trText: "Mülkler / Emlak.",
+                ornek: {
+                    ar: "مَكْتَبُ الْأَمْلَاكِ وَالْعَقَارَاتِ",
+                    tr: "Emlak (mülkler) ve gayrimenkul ofisi."
+                }
+            } 
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Masdarı) ---
+        103: {
+            base: {
+                emoji: "📝",
+                arText: "اِسْتِمْلَاك",
+                trText: "Kamulaştırma / Mülk edinme (İstimlak).",
+                ornek: {
+                    ar: "قَرَّرَتِ الْبَلَدِيَّةُ اسْتِمْلَاكَ هَذِهِ الْأَرَاضِي",
+                    tr: "Belediye bu arazileri istimlak etme (kamulaştırma) kararı aldı."
+                }
+            }
+        }
+    },
+
+     // ==================================================================
+    // 19. H-K-M (ح ك م) KÖKÜ - Hükmetmek / Yargılamak / Bilgelik
+    // 1. Bab (فَعَلَ - يَفْعُلُ), Müfâ'ale ve Tefe'ul Babları
+    // ==================================================================
+    "حكم": {
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
+        1: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "حَكَمَ", 
+                trText: "Hükmetti / Karar verdi.",
+                ornek: { ar: "وَحَكَمَ بَيْنَهُمْ بِالْعَدْلِ", tr: "Ve aralarında adaletle hükmetti." }
+            } 
+        },
+        
+        // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
+        2: { 
+            base: { 
+                emoji: "🧑‍⚖️", 
+                arText: "يَحْكُمُ", 
+                trText: "Hükmeder / Karar veriyor.",
+                ornek: { ar: "وَاللَّهُ يَحْكُمُ لَا مُعَقِّبَ لِحُكْمِهِ", tr: "Allah hükmeder, O'nun hükmünü bozacak kimse yoktur. (Ra'd Suresi, 41)" }
+            } 
+        },
+        
+        // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
+        3: { 
+            base: { 
+                emoji: "🔨", 
+                arText: "اُحْكُمْ", 
+                trText: "Hükmet / Karar ver!",
+                ornek: { ar: "فَاحْكُم بَيْنَنَا بِالْحَقِّ", tr: "Aramızda hak ile hükmet. (Sâd Suresi, 22)" }
+            } 
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "🏁", 
+                arText: "حَكَم", 
+                trText: "Hakem / Karar verici.",
+                ornek: { ar: "فَابْعَثُوا حَكَمًا مِّنْ أَهْلِهِ وَحَكَمًا مِّنْ أَهْلِهَا", tr: "Erkeğin ailesinden bir hakem ve kadının ailesinden bir hakem gönderin. (Nisâ Suresi, 35)" }
+            } 
+        },
+
+        // --- 20 Numaralı Kalıp (فِعْل) ---
+        20: { 
+            base: { emoji: "📖", arText: "حِكْم", trText: "Hikmet (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🦉", 
+                arText: "حِكْمَة", 
+                trText: "Hikmet / Bilgelik.",
+                ornek: { ar: "يُؤْتِي الْحِكْمَةَ مَن يَشَاءُ", tr: "Allah hikmeti (bilgeliği) dilediğine verir. (Bakara Suresi, 269)" } 
+            } 
+        },
+        
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            base: { 
+                emoji: "📜", 
+                arText: "حُكْم", 
+                trText: "Hüküm / Karar.",
+                ornek: { ar: "إِنِ الْحُكْمُ إِلَّا لِلَّهِ", tr: "Hüküm ancak Allah'ındır. (Yusuf Suresi, 40)" }
+            } 
+        },
+        
+        // --- 25 Numaralı Kalıp (فُعُول) ---
+        25: { 
+            base: { emoji: "🏛️", arText: "حُكُوم", trText: "Hükümet (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🏛️", 
+                arText: "حُكُومَة", 
+                trText: "Hükümet.",
+                ornek: { ar: "رَئِيسُ الْحُكُومَةِ", tr: "Hükümet başkanı." } 
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🧑‍⚖️", 
+                arText: "حَاكِم", 
+                trText: "Hakim / Yönetici.",
+                ornek: { ar: "هُوَ حَاكِمٌ عَادِلٌ", tr: "O, adil bir yöneticidir (hakimdir)." }
+            } 
+        },
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "💎", 
+                arText: "حَكِيم", 
+                trText: "Hakîm / Bilge / Hüküm sahibi.",
+                ornek: { ar: "وَهُوَ الْعَزِيزُ الْحَكِيمُ", tr: "O, mutlak güç sahibidir, hüküm ve hikmet sahibidir. (İbrahim Suresi, 4)" }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "⛓️", 
+                arText: "مَحْكُوم", 
+                trText: "Mahkum / Hüküm giymiş.",
+                ornek: { ar: "مَحْكُومٌ عَلَيْهِ بِالسِّجْنِ", tr: "Hapse mahkum edilmiştir." }
+            } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { emoji: "⚖️", arText: "مَحْكَم", trText: "Mahkeme (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "⚖️", 
+                arText: "مَحْكَمَة", 
+                trText: "Mahkeme.",
+                ornek: { ar: "قَرَارُ الْمَحْكَمَةِ الْعُلْيَا", tr: "Yüksek mahkemenin kararı." } 
+            } 
+        },
+
+        // --- 64 Numaralı Kalıp (فَاعَلَ - Mazi / Müfâ'ale Babı) ---
+        64: { 
+            base: { 
+                emoji: "👨‍⚖️", 
+                arText: "حَاكَمَ", 
+                trText: "Yargıladı / Muhakeme etti.",
+                ornek: { ar: "حَاكَمَ الْقَاضِي الْمُتَّهَمَ", tr: "Hakim sanığı yargıladı." }
+            } 
+        },
+        
+        // --- 65 Numaralı Kalıp (يُفَاعِلُ - Muzari / Müfâ'ale Babı) ---
+        65: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "يُحَاكِمُ", 
+                trText: "Yargılar / Yargılıyor.",
+                ornek: { ar: "الْمَحْكَمَةُ تُحَاكِمُ الْمُجْرِمِينَ", tr: "Mahkeme suçluları yargılar." }
+            } 
+        },
+        
+        // --- 66 Numaralı Kalıp (فَاعِلْ - Emir / Müfâ'ale Babı) ---
+        66: { 
+            base: { emoji: "❗", arText: "حَاكِمْ", trText: "Yargıla / Muhakeme et!" } 
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "📝", 
+                arText: "مُحَاكَمَة", 
+                trText: "Yargılama / Muhakeme.",
+                ornek: { ar: "مُحَاكَمَةٌ عَادِلَةٌ", tr: "Adil bir yargılama (muhakeme)." }
+            } 
+        },
+
+        // --- 88 Numaralı Kalıp (تَفَعَّلَ - Mazi / Tefe'ul Babı) ---
+        88: { 
+            base: { 
+                emoji: "🎮", 
+                arText: "تَحَكَّمَ", 
+                trText: "Kontrol etti / Hakim oldu.",
+                ornek: { ar: "تَحَكَّمَ فِي مَشَاعِرِهِ", tr: "Duygularını kontrol etti (duygularına hakim oldu)." }
+            } 
+        },
+        
+        // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Muzari / Tefe'ul Babı) ---
+        89: { 
+            base: { emoji: "🕹️", arText: "يَتَحَكَّمُ", trText: "Kontrol eder / Yönetiyor." } 
+        },
+        
+        // --- 90 Numaralı Kalıp (تَفَعَّلْ - Emir / Tefe'ul Babı) ---
+        90: { 
+            base: { emoji: "🛑", arText: "تَحَكَّمْ", trText: "Kontrol et / Hakim ol!" } 
+        },
+
+        // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Masdarı) ---
+        91: { 
+            base: { emoji: "🎛️", arText: "تَحَكُّم", trText: "Kontrol / Hakimiyet." },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "⚙️", 
+                arText: "تَحَكُّمَات", 
+                trText: "Kontroller / Yönlendirmeler.",
+                ornek: { ar: "لَوْحَةُ التَّحَكُّمِ", tr: "Kontrol paneli." } 
+            } 
+        }
+    },
+
+
+    // ==================================================================
+    // 20. '-R-F (ع ر ف) KÖKÜ - Bilmek / Tanımak / İtiraf Etmek
+    // 2. Bab (فَعَلَ - يَفْعِلُ), Tef'îl, İfti'âl ve Tefâ'ul Babları
+    // ==================================================================
+    "عرف": {
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 2. Bab) ---
+        1: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "عَرَفَ", 
+                trText: "Bildi / Tanıdı.",
+                ornek: { ar: "عَرَفَ الْحَقَّ فَاتَّبَعَهُ", tr: "Hakkı (gerçeği) bildi ve ona uydu." }
+            } 
+        },
+        
+        // --- 4 Numaralı Kalıp (يَفْعِلُ - Muzari / 2. Bab) ---
+        4: { 
+            base: { 
+                emoji: "🤔", 
+                arText: "يَعْرِفُ", 
+                trText: "Bilir / Tanıyor.",
+                ornek: { ar: "يَعْرِفُونَ نِعْمَتَ اللَّهِ ثُمَّ يُنكِرُونَهَا", tr: "Allah'ın nimetini bilirler (tanırlar), sonra da onu inkar ederler. (Nahl Suresi, 83)" }
+            } 
+        },
+        
+        // --- 5 Numaralı Kalıp (اِفْعِلْ - Emir / 2. Bab) ---
+        5: { 
+            base: { 
+                emoji: "💡", 
+                arText: "اِعْرِفْ", 
+                trText: "Bil / Tanı!",
+                ornek: { ar: "اِعْرِفْ قَدْرَكَ", tr: "Haddini (değerini) bil!" }
+            } 
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { emoji: "⛰️", arText: "عَرَف", trText: "Arafat (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "⛰️", 
+                arText: "عَرَفَة", 
+                trText: "Arafat tepesi.",
+                ornek: { ar: "الْحَجُّ عَرَفَةُ", tr: "Hac Arafat'tır (Arafat'ta vakfe yapmaktır). (Hadis-i Şerif)" } 
+            } 
+        },
+        
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "عُرْف", 
+                trText: "Gelenek / Örf.",
+                ornek: { ar: "الْعَادَاتُ وَالْعُرْفُ فِي الْمُجْتَمَعِ", tr: "Toplumdaki adetler ve örf." }
+            } 
+        },
+        
+        // --- 29 Numaralı Kalıp (فِعْلَان) ---
+        29: { 
+            base: { 
+                emoji: "🌟", 
+                arText: "عِرْفَان", 
+                trText: "İrfan / Bilgi / Minnet.",
+                ornek: { ar: "بِكُلِّ شُكْرٍ وَعِرْفَانٍ", tr: "Sonsuz teşekkür ve irfanla (minnetle)." }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "عَارِف", 
+                trText: "Bilen / Arif.",
+                ornek: { ar: "الْعَارِفُ تَكْفِيهِ الْإِشَارَةُ", tr: "Ârife tarif gerekmez (işaret yeter). (Arap Atasözü)" }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "👍", 
+                arText: "مَعْرُوف", 
+                trText: "Bilinen / İyilik / Maruf.",
+                ornek: { ar: "وَأْمُرْ بِالْمَعْرُوفِ وَانْهَ عَنِ الْمُنكَرِ", tr: "İyiliği (marufu) emret, kötülükten (münkerden) sakındır. (Lokman Suresi, 17)" }
+            } 
+        },
+        
+        // --- 37 Numaralı Kalıp (مَفْعِل) ---
+        37: { 
+            base: { emoji: "💡", arText: "مَعْرِف", trText: "Bilgi kaynağı (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "💡", 
+                arText: "مَعْرِفَة", 
+                trText: "Bilgi / Marifet.",
+                ornek: { ar: "الْمَعْرِفَةُ قُوَّةٌ", tr: "Bilgi (marifet) güçtür." } 
+            } 
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
+        58: { 
+            base: { emoji: "🗣️", arText: "عَرَّفَ", trText: "Tanıttı / Tarif etti." } 
+        },
+        
+        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
+        59: { 
+            base: { emoji: "📢", arText: "يُعَرِّفُ", trText: "Tanıtır / Tarif ediyor." } 
+        },
+        
+        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
+        60: { 
+            base: { emoji: "📝", arText: "عَرِّفْ", trText: "Tanıt / Tarif et!" } 
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Masdar / Tef'îl Babı) ---
+        61: { 
+            base: { 
+                emoji: "📋", 
+                arText: "تَعْرِيف", 
+                trText: "Tanımlama / Tarif.",
+                ornek: { ar: "تَعْرِيفُ الْمُصْطَلَحِ", tr: "Terimin tanımı (tarifi)." }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
+        77: { 
+            base: { emoji: "🙌", arText: "اِعْتَرَفَ", trText: "İtiraf etti / Kabul etti." } 
+        },
+        
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
+        78: { 
+            base: { emoji: "🗣️", arText: "يَعْتَرِفُ", trText: "İtiraf eder / Kabul ediyor." } 
+        },
+        
+        // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
+        79: { 
+            base: { emoji: "❗", arText: "اِعْتَرِفْ", trText: "İtiraf et / Kabul et!" } 
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - Masdar / İfti'âl Babı) ---
+        80: { 
+            base: { 
+                emoji: "📜", 
+                arText: "اِعْتِرَاف", 
+                trText: "İtiraf / Tanıma.",
+                ornek: { ar: "الِاعْتِرَافُ بِالْخَطَإِ فَضِيلَةٌ", tr: "Hatayı itiraf etmek erdemdir." }
+            } 
+        },
+
+        // --- 94 Numaralı Kalıp (تَفَاعَلَ - Mazi / Tefâ'ul Babı) ---
+        94: { 
+            base: { emoji: "🤝", arText: "تَعَارَفَ", trText: "Tanıştı." } 
+        },
+        
+        // --- 95 Numaralı Kalıp (يَتَفَاعَلُ - Muzari / Tefâ'ul Babı) ---
+        95: { 
+            base: { emoji: "👥", arText: "يَتَعَارَفُ", trText: "Tanışır / Tanışıyor." },
+            suggestsPlus: true,
+            "ونَ": { 
+                emoji: "🌍", 
+                arText: "يَتَعَارَفُونَ", 
+                trText: "Tanışırlar (Muzari Çoğul).",
+                ornek: { ar: "وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا", tr: "Sizi tanışmanız için milletlere ve kabilelere ayırdık. (Hucurât Suresi, 13)" } 
+            }
+        },
+        
+        // --- 96 Numaralı Kalıp (تَفَاعَلْ - Emir / Tefâ'ul Babı) ---
+        96: { 
+            base: { emoji: "👋", arText: "تَعَارَفْ", trText: "Tanış!" } 
+        },
+
+        // --- 97 Numaralı Kalıp (تَفَاعُل - Masdar / Tefâ'ul Babı) ---
+        97: { 
+            base: { emoji: "🫂", arText: "تَعَارُف", trText: "Tanışma / Birbirini tanıma." },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "🤝", 
+                arText: "تَعَارُفَات", 
+                trText: "Tanışmalar.",
+                ornek: { ar: "لِقَاءَاتٌ وَتَعَارُفَاتٌ جَدِيدَةٌ", tr: "Yeni buluşmalar ve tanışmalar." }
+            }
+        }
+    },
+
+
+   // ==================================================================
+    // 22. R-H-M (ر ح م) KÖKÜ - Merhamet Etmek / Acımak
+    // 4. Bab (فَعِلَ - يَفْعَلُ) ve İsti'fal Babı
+    // ==================================================================
+    "رحم": {
+        // --- 8 Numaralı Kalıp (فَعِلَ - Mazi / 4. Bab) ---
+        8: { 
+            base: { 
+                emoji: "❤️", 
+                arText: "رَحِمَ", 
+                trText: "Merhamet etti / Acıdı.",
+                ornek: { ar: "فَقَدْ رَحِمَهُ اللَّهُ", tr: "Allah ona kesinlikle merhamet etmiştir." }
+            } 
+        },
+        
+        // --- 9 Numaralı Kalıp (يَفْعَلُ - Muzari / 4. Bab) ---
+        9: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "يَرْحَمُ", 
+                trText: "Merhamet eder / Acıyor.",
+                ornek: { ar: "مَنْ لَا يَرْحَمْ لَا يُرْحَمْ", tr: "Merhamet etmeyene merhamet edilmez. (Hadis-i Şerif)" }
+            } 
+        },
+        
+        // --- 10 Numaralı Kalıp (اِفْعَلْ - Emir / 4. Bab) ---
+        10: { 
+            base: { 
+                emoji: "🙏", 
+                arText: "اِرْحَمْ", 
+                trText: "Merhamet et / Acı!",
+                ornek: { ar: "اِرْحَمْ مَنْ فِي الْأَرْضِ يَرْحَمْكَ مَنْ فِي السَّمَاءِ", tr: "Yerdekilere merhamet et ki, gökteki (Allah) da sana merhamet etsin. (Hadis-i Şerif)" }
+            } 
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: { 
+            base: { emoji: "🌧️", arText: "رَحْم", trText: "Rahmet (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🌧️", 
+                arText: "رَحْمَة", 
+                trText: "Rahmet / Merhamet.",
+                ornek: { ar: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ", tr: "Biz seni ancak âlemlere rahmet olarak gönderdik. (Enbiyâ Suresi, 107)" } 
+            } 
+        },
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🤍", 
+                arText: "رَحِيم", 
+                trText: "Çok merhamet eden (Rahim).",
+                ornek: { ar: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", tr: "Rahman ve Rahim olan Allah'ın adıyla." }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "مَرْحُوم", 
+                trText: "Kendisine merhamet edilen (Merhum / Vefat etmiş kişi).",
+                ornek: { ar: "رَحِمَهُ اللَّهُ رَحْمَةً وَاسِعَةً", tr: "Allah ona geniş bir rahmetle merhamet etsin (Merhum / Vefat etmiş kişi)." }
+            } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { emoji: "🤝", arText: "مَرْحَم", trText: "Merhamet yeri (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🤝", 
+                arText: "مَرْحَمَة", 
+                trText: "Merhamet.",
+                ornek: { ar: "وَتَوَاصَوْا بِالصَّبْرِ وَتَوَاصَوْا بِالْمَرْحَمَةِ", tr: "Birbirlerine sabrı ve merhameti tavsiye edenler... (Beled Suresi, 17)" } 
+            } 
+        },
+
+        // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - Mazi / İsti'fal Babı) ---
+        100: { 
+            base: { emoji: "😔", arText: "اِسْتَرْحَمَ", trText: "Merhamet diledi / İstirham etti." } 
+        },
+        
+        // --- 101 Numaralı Kalıp (يَسْتَفْعِلُ - Muzari / İsti'fal Babı) ---
+        101: { 
+            base: { emoji: "🥺", arText: "يَسْتَرْحِمُ", trText: "Merhamet diler / İstirham ediyor." } 
+        },
+        
+        // --- 102 Numaralı Kalıp (اِسْتَفْعِلْ - Emir / İsti'fal Babı) ---
+        102: { 
+            base: { emoji: "🙏", arText: "اِسْتَرْحِمْ", trText: "Merhamet dile / İstirham et!" } 
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - Masdar / İsti'fal Babı) ---
+        103: { 
+            base: { 
+                emoji: "📜", 
+                arText: "اِسْتِرْحَام", 
+                trText: "Merhamet dileme / İstirham.",
+                ornek: { ar: "أَقَدِّمُ إِلَيْكُمْ رِسَالَةَ اسْتِرْحَامٍ", tr: "Size bir istirham (merhamet/rica) dilekçesi sunuyorum." }
+            } 
+        }
+    },
+
+// ==================================================================
+    // 36. S-L-M (س ل م) KÖKÜ - Barış / Kurtuluş / Teslim Olmak
+    // 4. Bab (فَعِلَ - يَفْعَلُ)
+    // ==================================================================
+    "سلم": {
+        // --- 8, 9, 10 Numaralı Kalıplar (4. Bab) ---
+        8: { base: { emoji: "🕊️", arText: "سَلِمَ", trText: "Kurtuldu / Güvende oldu." } },
+        9: { base: { emoji: "😌", arText: "يَسْلَمُ", trText: "Kurtulur / Güvende olur." } },
+        10: { base: { emoji: "🛡️", arText: "اِسْلَمْ", trText: "Kurtul / Güvende ol!" } },
+
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: { 
+            base: { 
+                emoji: "🕊️", 
+                arText: "سَلَام", 
+                trText: "Barış / Selam.",
+                ornek: { ar: "أَفْشُوا السَّلَامَ بَيْنَكُمْ", tr: "Aranızda selamı yayınız. (Hadis-i Şerif)" }
+            }, 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🛡️", 
+                arText: "سَلَامَة", 
+                trText: "Selamet / Güvenlik.",
+                ornek: { ar: "فِي التَّأَنِّي السَّلَامَةُ", tr: "Acele etmemekte (teennide) selamet vardır. (Atasözü)" }
+            } 
+        }, 
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { base: { emoji: "😌", arText: "سَالِم", trText: "Sağ salim / Güvende." } }, 
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🫀", 
+                arText: "سَلِيم", 
+                trText: "Kusursuz / Sağlam (Selim).",
+                ornek: { ar: "إِلَّا مَنْ أَتَى الله بِقَلْبٍ سَلِيمٍ", tr: "Ancak Allah'a temiz (selim) bir kalple gelenler müstesna. (Şuarâ Suresi, 89)" }
+            } 
+        }, 
+
+        // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı) ---
+        52: { base: { emoji: "🤲", arText: "أَسْلَمَ", trText: "Teslim oldu / Müslüman oldu." } },
+        53: { base: { emoji: "☪️", arText: "يُسْلِمُ", trText: "Teslim olur / Müslüman oluyor." } },
+        54: { base: { emoji: "❗", arText: "أَسْلِمْ", trText: "Teslim ol / Müslüman ol!" } },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
+        55: { 
+            base: { 
+                emoji: "🌙", 
+                arText: "إِسْلَام", 
+                trText: "İslam / Teslimiyet.",
+                ornek: { ar: "إِنَّ الدِّينَ عِنْدَ اللَّهِ الْإِسْلَامُ", tr: "Şüphesiz Allah katında din İslam'dır. (Âl-i İmrân Suresi, 19)" }
+            } 
+        }, 
+        
+        // --- 56 Numaralı Kalıp (مُفْعِل) ---
+        56: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "مُسْلِم", 
+                trText: "Müslüman.",
+                ornek: { ar: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِن لِّسَانِهِ وَيَدِهِ", tr: "Müslüman, diğer Müslümanların onun dilinden ve elinden güvende (salim) olduğu kimsedir. (Hadis-i Şerif)" }
+            } 
+        }, 
+        
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
+        61: { base: { emoji: "📦", arText: "تَسْلِيم", trText: "Teslim." } } 
+    },
+
+
+ // ==================================================================
     // 2. Kh-B-R (خ ب ر) KÖKÜ - Haber Vermek / Bildirmek
     // İf'al Babı (أَفْعَلَ - يُفْعِلُ)
     // ==================================================================
@@ -192,12 +1459,22 @@ const wordEasterEggs = {
 
         // --- 17 Numaralı Kalıp (فَعَل) ---
         17: { 
-            base: { emoji: "📰", arText: "خَبَر", trText: "Haber." } 
+            base: { 
+                emoji: "📰", 
+                arText: "خَبَر", 
+                trText: "Haber.",
+                ornek: { ar: "هَذَا خَبَرٌ عَاجِلٌ", tr: "Bu acil (son dakika) bir haberdir." }
+            } 
         },
         
         // --- 41 Numaralı Kalıp (أَفْعَال) ---
         41: { 
-            base: { emoji: "📺", arText: "أَخْبَار", trText: "Haberler." } 
+            base: { 
+                emoji: "📺", 
+                arText: "أَخْبَار", 
+                trText: "Haberler.",
+                ornek: { ar: "نَشْرَةُ الْأَخْبَارِ الْمَسَائِيَّةِ", tr: "Akşam haberleri bülteni." }
+            } 
         },
         
         // --- 55 Numaralı Kalıp (إِفْعَال) ---
@@ -214,7 +1491,11 @@ const wordEasterEggs = {
         67: { 
             base: { emoji: "📞", arText: "مُخَابَرَة", trText: "Haberleşme / İletişim." }, 
             suggestsPlus: true, 
-            "ات": { emoji: "📡", arText: "مُخَابَرَات", trText: "Muhaberat / Haberleşme ve iletişim ağları." } 
+            "ات": { 
+                emoji: "📡", 
+                arText: "مُخَابَرَات", 
+                trText: "Muhaberat / Haberleşme ve iletişim ağları." 
+            } 
         },
         
         // --- 69 Numaralı Kalıp (مُفَاعِل) ---
@@ -224,8 +1505,14 @@ const wordEasterEggs = {
         
         // --- 103 Numaralı Kalıp (اِسْتِفْعَال) ---
         103: { 
+            base: { emoji: "🕵️", arText: "اِسْتِخْبَار", trText: "İstihbarat / Bilgi toplama." },
             suggestsPlus: true,
-            "ات": { emoji: "🕵️", arText: "اِسْتِخْبَارَاتُ الدَّوْلَةِ قَوِيَّةٌ", trText: "Devletin istihbaratı (haber alma teşkilatı) güçlüdür." } 
+            "ات": { 
+                emoji: "🕵️", 
+                arText: "اِسْتِخْبَارَات", 
+                trText: "İstihbarat teşkilatı / Haber alma.",
+                ornek: { ar: "اِسْتِخْبَارَاتُ الدَّوْلَةِ قَوِيَّةٌ", tr: "Devletin istihbaratı (haber alma teşkilatı) güçlüdür." }
+            } 
         }
     },
 
@@ -251,7 +1538,12 @@ const wordEasterEggs = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "🗝️", arText: "إِذَا جَاءَ نَصْرُ اللهِ وَالْفَتْحُ", trText: "Allah'ın yardımı ve fetih (zafer) geldiğinde... (Nasr Suresi)" } 
+            base: { 
+                emoji: "🗝️", 
+                arText: "فَتْح", 
+                trText: "Açma / Fetih / Zafer.",
+                ornek: { ar: "إِذَا جَاءَ نَصْرُ اللهِ وَالْفَتْحُ", tr: "Allah'ın yardımı ve fetih (zafer) geldiğinde... (Nasr Suresi, 1)" }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -261,7 +1553,12 @@ const wordEasterEggs = {
         
         // --- 34 Numaralı Kalıp (فَعَّال) ---
         34: { 
-            base: { emoji: "🔑", arText: "فَتَّاح", trText: "Fettah (Her türlü zorluğu açan/çözen)." } 
+            base: { 
+                emoji: "🔑", 
+                arText: "فَتَّاح", 
+                trText: "Çokça açan / Fettah.",
+                ornek: { ar: "يَا فَتَّاحُ افْتَحْ لَنَا أَبْوَابَ الْخَيْرِ", tr: "Ey (her türlü zorluğu açan) Fettah! Bize hayır kapılarını aç." }
+            } 
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
@@ -273,12 +1570,17 @@ const wordEasterEggs = {
         40: { 
             base: { emoji: "🔑", arText: "مِفْتَاح", trText: "Anahtar." } 
         },
-        // --- 80 Numaralı Kalıp (مِفْعَال) ---
+        
+        // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
         80: { 
-            base: { emoji: "🧎🏻‍♂️", arText: "اِفْتِتَاح", trText: "Namazdaki ilk tekbiri getirme, açılış tekbiri." } 
+            base: { 
+                emoji: "🧎🏻‍♂️", 
+                arText: "اِفْتِتَاح", 
+                trText: "Açılış / Başlangıç.",
+                ornek: { ar: "تَكْبِيرَةُ الافْتِتَاحِ فِي الصَّلَاةِ", tr: "Namazdaki ilk (açılış) tekbiri." }
+            } 
         }
     },
-
 
     // ==================================================================
     // 5. N-Z-M (ن ظ م) KÖKÜ - Düzenlemek / Sıraya Koymak / Şiir Yazmak
@@ -302,12 +1604,22 @@ const wordEasterEggs = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "🖋️", arText: "النَّظْمُ وَالنَّثْرُ فِي الْأَدَبِ", trText: "Edebiyatta nazım (şiir) ve nesir (düzyazı)." } 
+            base: { 
+                emoji: "🖋️", 
+                arText: "نَظْم", 
+                trText: "Nazım / Düzen / Şiir.",
+                ornek: { ar: "النَّظْمُ وَالنَّثْرُ فِي الْأَدَبِ", tr: "Edebiyatta nazım (şiir) ve nesir (düzyazı)." }
+            } 
         },
         
         // --- 23 Numaralı Kalıp (فِعَال) ---
         23: { 
-            base: { emoji: "⚙️", arText: "النِّظَامُ أَسَاسُ النَّجَاحِ", trText: "Nizam (düzen), başarının temelidir." } 
+            base: { 
+                emoji: "⚙️", 
+                arText: "نِظَام", 
+                trText: "Nizam / Düzen / Sistem.",
+                ornek: { ar: "النِّظَامُ أَسَاسُ النَّجَاحِ", tr: "Nizam (düzen), başarının temelidir." }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -319,14 +1631,29 @@ const wordEasterEggs = {
         36: { 
             base: { emoji: "🎼", arText: "مَنْظُوم", trText: "Dizilmiş / Manzum." }, 
             suggestsPlus: true, 
-            "ة": { emoji: "📜", arText: "مَنْظُومَةٌ شِعْرِيَّةٌ", trText: "Şiir dizeleri / Manzume." } 
+            "ة": { 
+                emoji: "📜", 
+                arText: "مَنْظُومَة", 
+                trText: "Manzume / Şiir dizeleri.",
+                ornek: { ar: "مَنْظُومَةٌ شِعْرِيَّةٌ رَائِعَةٌ", tr: "Harika bir şiir manzumesi." }
+            } 
         },
         
         // --- 61 Numaralı Kalıp (تَفْعِيل) ---
         61: { 
-            base: { emoji: "📋", arText: "تَنْظِيمُ الْوَقْتِ مُهِمٌّ", trText: "Zamanın tanzimi (düzenlenmesi) önemlidir." }, 
+            base: { 
+                emoji: "📋", 
+                arText: "تَنْظِيم", 
+                trText: "Düzenleme / Tanzim.",
+                ornek: { ar: "تَنْظِيمُ الْوَقْتِ مُهِمٌّ", tr: "Zamanın tanzimi (düzenlenmesi) önemlidir." }
+            }, 
             suggestsPlus: true, 
-            "ات": { emoji: "📜", arText: "فَتْرَةُ التَّنْظِيمَاتِ فِي الدَّوْلَةِ الْعُثْمَانِيَّةِ", trText: "Osmanlı Devleti'nde Tanzimat Dönemi (Düzenlemeler)." } 
+            "ات": { 
+                emoji: "📜", 
+                arText: "تَنْظِيمَات", 
+                trText: "Düzenlemeler (Tanzimat).",
+                ornek: { ar: "فَتْرَةُ التَّنْظِيمَاتِ فِي الدَّوْلَةِ الْعُثْمَانِيَّةِ", tr: "Osmanlı Devleti'nde Tanzimat (Düzenlemeler) Dönemi." }
+            } 
         },
         
         // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
@@ -336,12 +1663,18 @@ const wordEasterEggs = {
         
         // --- 82 Numaralı Kalıp (مُفْتَعَل) ---
         82: { 
+            base: { emoji: "⚙️", arText: "مُنْتَظَم", trText: "Düzenli / Muntazam." },
             suggestsPlus: true,
-            "ا": { emoji: "🔄", arText: "يَعْمَلُ بِشَكْلٍ مُنْتَظَمٍ", trText: "Muntazaman (düzenli bir şekilde) çalışıyor." } 
+            "ا": { 
+                emoji: "🔄", 
+                arText: "مُنْتَظَمًا", 
+                trText: "Düzenli bir şekilde / Muntazaman.",
+                ornek: { ar: "يَعْمَلُ الْمُحَرِّكُ بِشَكْلٍ مُنْتَظَمٍ", tr: "Motor muntazaman (düzenli bir şekilde) çalışıyor." }
+            } 
         }
     },
 
-  // ==================================================================
+    // ==================================================================
     // 6. Sh-H-D (ش ه د) KÖKÜ - Şahit Olmak / Görmek / Şehadet
     // 4. Bab (فَعِلَ - يَفْعَلُ) ve İlgili Mezid Bablar
     // ==================================================================
@@ -408,32 +1741,58 @@ const wordEasterEggs = {
 
         // --- 22 Numaralı Kalıp (فَعَال) ---
         22: { 
+            base: { emoji: "📜", arText: "شَهَاد", trText: "Şahitlik." },
             suggestsPlus: true,
-            "ة": { emoji: "📜", arText: "أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ", trText: "Kelime-i Şehadet, İslam'ın ilk şartıdır." } 
+            "ة": { 
+                emoji: "📜", 
+                arText: "شَهَادَة", 
+                trText: "Şehadet / Şahitlik.",
+                ornek: { ar: "أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللهِ", tr: "Kelime-i Şehadet, İslam'ın ilk şartıdır." }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { 
-            base: { emoji: "👁️", arText: "الْقَاضِي يَسْتَمِعُ إِلَى الشَّاهِدِ فِي الْمَحْكَمَةِ", trText: "Hâkim, mahkemede şahidi dinler." } 
+            base: { 
+                emoji: "👁️", 
+                arText: "شَاهِد", 
+                trText: "Şahit / Gören.",
+                ornek: { ar: "الْقَاضِي يَسْتَمِعُ إِلَى الشَّاهِدِ فِي الْمَحْكَمَةِ", tr: "Hâkim, mahkemede şahidi dinler." }
+            } 
         },
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
-            base: { emoji: "🌹", arText: "وَلَا تَحْسَبَنَّ الَّذِينَ قُتِلُوا فِي سَبِيلِ اللهِ أَمْوَاتًا", trText: "Allah yolunda öldürülenleri sakın ölüler sanma. (Âl-i İmrân Suresi)" } 
+            base: { 
+                emoji: "🌹", 
+                arText: "شَهِيد", 
+                trText: "Şehit.",
+                ornek: { ar: "وَلَا تَحْسَبَنَّ الَّذِينَ قُتِلُوا فِي سَبِيلِ اللهِ أَمْوَاتًا", tr: "Allah yolunda öldürülenleri sakın ölüler sanma. (Âl-i İmrân Suresi, 169)" }
+            } 
         },
         
         // --- 46 Numaralı Kalıp (فُعَلَاء) ---
         46: { 
-            base: { emoji: "🇹🇷", arText: "شُهَدَاءُ الْوَطَنِ لَا يَمُوتُونَ أَبَدًا", trText: "Vatan şehitleri (şüheda) asla ölmez." } 
+            base: { 
+                emoji: "🇹🇷", 
+                arText: "شُهَدَاء", 
+                trText: "Şehitler (Şüheda).",
+                ornek: { ar: "شُهَدَاءُ الْوَطَنِ لَا يَمُوتُونَ أَبَدًا", tr: "Vatan şehitleri (şüheda) asla ölmez." }
+            } 
         },
         
         // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
         67: { 
-            base: { emoji: "📺", arText: "مُشَاهَدَةُ الْفِيدْيُوهَاتِ التَّعْلِيمِيَّةِ مُفِيدَةٌ", trText: "Eğitici videoların izlenmesi (müşahede edilmesi) faydalıdır." } 
+            base: { 
+                emoji: "📺", 
+                arText: "مُشَاهَدَة", 
+                trText: "İzleme / Müşahede.",
+                ornek: { ar: "مُشَاهَدَةُ الْفِيدْيُوهَاتِ التَّعْلِيمِيَّةِ مُفِيدَةٌ", tr: "Eğitici videoların izlenmesi (müşahede edilmesi) faydalıdır." }
+            } 
         }
     },
 
-   // ==================================================================
+    // ==================================================================
     // 7. Kh-L-Q (خ ل ق) KÖKÜ - Yaratmak / Ahlak
     // 1. Bab (فَعَلَ - يَفْعُلُ) ve İlgili Mezid Bablar
     // ==================================================================
@@ -455,12 +1814,22 @@ const wordEasterEggs = {
 
         // --- 19 Numaralı Kalıp (فَعْل - Masdar) ---
         19: { 
-            base: { emoji: "🌍", arText: "هَذَا خَلْقُ اللهِ", trText: "Bu, Allah'ın yaratmasıdır (yarattığıdır). (Lokman Suresi)" } 
+            base: { 
+                emoji: "🌍", 
+                arText: "خَلْق", 
+                trText: "Yaratılış / Halk etme.",
+                ornek: { ar: "هَذَا خَلْقُ اللهِ", tr: "Bu, Allah'ın yaratmasıdır (yarattığıdır). (Lokman Suresi, 11)" }
+            } 
         },
 
         // --- 21 Numaralı Kalıp (فُعُل) ---
         21: { 
-            base: { emoji: "💎", arText: "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ", trText: "Şüphesiz sen yüce bir ahlak üzeresin. (Kalem Suresi)" } 
+            base: { 
+                emoji: "💎", 
+                arText: "خُلُق", 
+                trText: "Ahlak / Huy.",
+                ornek: { ar: "وَإِنَّكَ لَعَلَىٰ خُلُقٍ عَظِيمٍ", tr: "Şüphesiz sen yüce bir ahlak üzeresin. (Kalem Suresi, 4)" }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -477,12 +1846,22 @@ const wordEasterEggs = {
         36: { 
             base: { emoji: "🧬", arText: "مَخْلُوق", trText: "Yaratılmış / Mahluk." },
             suggestsPlus: true,
-            "ات": { emoji: "🐾", arText: "كُلُّ الْمَخْلُوقَاتِ تُسَبِّحُ لِلهِ", trText: "Bütün mahlukat (yaratılmışlar) Allah'ı tesbih eder." }
+            "ات": { 
+                emoji: "🐾", 
+                arText: "مَخْلُوقَات", 
+                trText: "Mahlukat / Yaratılmışlar.",
+                ornek: { ar: "كُلُّ الْمَخْلُوقَاتِ تُسَبِّحُ لِلهِ", tr: "Bütün mahlukat (yaratılmışlar) Allah'ı tesbih eder." }
+            }
         },
         
         // --- 41 Numaralı Kalıp (أَفْعَال - Çoğul) ---
         41: { 
-            base: { emoji: "🤝", arText: "إِنَّمَا بُعِثْتُ لِأُتَمِّمَ مَكَارِمَ الْأَخْلَاقِ", trText: "Ben ancak güzel ahlakı tamamlamak için gönderildim. (Hadis-i Şerif)" } 
+            base: { 
+                emoji: "🤝", 
+                arText: "أَخْلَاق", 
+                trText: "Ahlak / Huylar.",
+                ornek: { ar: "إِنَّمَا بُعِثْتُ لِأُتَمِّمَ مَكَارِمَ الْأَخْلَاقِ", tr: "Ben ancak güzel ahlakı tamamlamak için gönderildim. (Hadis-i Şerif)" }
+            } 
         },
 
         // --- 88 Numaralı Kalıp (تَفَعَّلَ - Mazi / Tefe'ul Babı) ---
@@ -497,9 +1876,14 @@ const wordEasterEggs = {
         
         // --- 90 Numaralı Kalıp (تَفَعَّلْ - Emir / Tefe'ul Babı) ---
         90: { 
-            base: { emoji: "🌸", arText: "تَخَلَّقْ", trText: "Ahlaklan!" },
+            base: { emoji: "🌸", arText: "تَخَلَّقْ", trText: "Ahlaklan / Huy edin!" },
             suggestsPlus: true,
-            "وا": { emoji: "🌷", arText: "تَخَلَّقُوا بِأَخْلَاقِ اللهِ", trText: "Allah'ın ahlakıyla ahlaklanın." }
+            "وا": { 
+                emoji: "🌷", 
+                arText: "تَخَلَّقُوا", 
+                trText: "Ahlaklanın (Siz çoğul).",
+                ornek: { ar: "تَخَلَّقُوا بِأَخْلَاقِ اللهِ", tr: "Allah'ın ahlakıyla ahlaklanın." }
+            }
         }
     },
 
@@ -510,38 +1894,74 @@ const wordEasterEggs = {
     "سجد": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi) ---
         1: { 
-            base: { emoji: "🧎", arText: "سَجَدَ", trText: "Secde etti." } 
+            base: { 
+                emoji: "🧎", 
+                arText: "سَجَدَ", 
+                trText: "Secde etti.",
+                ornek: { ar: "سَجَدَ لِلهِ شُكْرًا", tr: "Şükür için Allah'a secde etti." }
+            } 
         },
         
         // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari) ---
         2: { 
-            base: { emoji: "🤲", arText: "يَسْجُدُ", trText: "Secde eder / Ediyor." } 
+            base: { 
+                emoji: "🤲", 
+                arText: "يَسْجُدُ", 
+                trText: "Secde eder / Ediyor.",
+                ornek: { ar: "وَلِلَّهِ يَسْجُدُ مَنْ فِي السَّمَاوَاتِ وَالْأَرْضِ", tr: "Göklerde ve yerde olan herkes Allah'a secde eder. (Ra'd Suresi, 15)" }
+            } 
         },
         
         // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir) ---
         3: { 
-            base: { emoji: "⬇️", arText: "اُسْجُدْ", trText: "Secde et!" } 
+            base: { 
+                emoji: "⬇️", 
+                arText: "اُسْجُدْ", 
+                trText: "Secde et!",
+                ornek: { ar: "يَا مَرْيَمُ اقْنُتِي لِرَبِّكِ وَاسْجُدِي", tr: "Ey Meryem! Rabbine gönülden itaat et ve secdeye kapan. (Âl-i İmrân Suresi, 43)" }
+            } 
         },
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
+            base: { emoji: "🙇", arText: "سَجْد", trText: "Secde (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "🧎", arText: "سَجْدَةُ الشُّكْرِ تَدُلُّ عَلَى الِامْتِنَانِ", trText: "Şükür secdesi, minnettarlığı (şükranı) gösterir." } 
+            "ة": { 
+                emoji: "🧎", 
+                arText: "سَجْدَة", 
+                trText: "Bir defa secde etme.",
+                ornek: { ar: "سَجْدَةُ الشُّكْرِ تَدُلُّ عَلَى الِامْتِنَانِ", tr: "Şükür secdesi, minnettarlığı (şükranı) gösterir." } 
+            } 
         },
         
         // --- 25 Numaralı Kalıp (فُعُول) ---
         25: { 
-            base: { emoji: "🤲", arText: "أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ", trText: "Kulun Rabbine en yakın olduğu an secde (sücud) anıdır; orada duayı çok yapın. (Hadis-i Şerif)" } 
+            base: { 
+                emoji: "🤲", 
+                arText: "سُجُود", 
+                trText: "Secde etmek / Sücud.",
+                ornek: { ar: "أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ", tr: "Kulun Rabbine en yakın olduğu an secde (sücud) anıdır; orada duayı çok yapın. (Hadis-i Şerif)" }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { 
-            base: { emoji: "🙇", arText: "سَاجِد", trText: "Secde eden." } 
+            base: { 
+                emoji: "🙇", 
+                arText: "سَاجِد", 
+                trText: "Secde eden.",
+                ornek: { ar: "تَرَاهُمْ رُكَّعًا سُجَّدًا يَبْتَغُونَ فَضْلًا مِّنَ اللَّهِ", tr: "Onları, Allah'tan bir lütuf isteyerek rükû ve secde eder (sâcid/sücced) hâlde görürsün. (Fetih Suresi, 29)" }
+            } 
         },
         
         // --- 37 Numaralı Kalıp (مَفْعِل) ---
         37: { 
-            base: { emoji: "🕌", arText: "أَحَبُّ الْبِلَادِ إِلَى اللهِ مَسَاجِدُهَا", trText: "Allah'a beldelerin en sevimlisi mescitleridir (camileridir). (Hadis-i Şerif)" } 
+            base: { 
+                emoji: "🕌", 
+                arText: "مَسْجِد", 
+                trText: "Mescit / Cami.",
+                ornek: { ar: "أَحَبُّ الْبِلَادِ إِلَى اللهِ مَسَاجِدُهَا", tr: "Allah'a beldelerin en sevimlisi mescitleridir (camileridir). (Hadis-i Şerif)" }
+            } 
         }
     },
 
@@ -552,7 +1972,12 @@ const wordEasterEggs = {
     "صدق": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi) ---
         1: { 
-            base: { emoji: "🗣️", arText: "صَدَقَ الله العَظِيم", trText: "Yüce Allah C.C. doğru söyledi." } 
+            base: { 
+                emoji: "🗣️", 
+                arText: "صَدَقَ", 
+                trText: "Doğru söyledi.",
+                ornek: { ar: "صَدَقَ اللهُ الْعَظِيمُ", tr: "Yüce Allah doğru söyledi." }
+            } 
         },
         
         // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari) ---
@@ -562,42 +1987,89 @@ const wordEasterEggs = {
         
         // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir) ---
         3: { 
-            base: { emoji: "✔️", arText: "اُصْدُقْ", trText: "Doğru söyle!" } 
+            base: { 
+                emoji: "✔️", 
+                arText: "اُصْدُقْ", 
+                trText: "Doğru söyle!",
+                ornek: { ar: "اُصْدُقْ فِي قَوْلِكَ دَائِمًا", tr: "Sözünde daima doğru söyle!" }
+            } 
         },
 
         // --- 17 Numaralı Kalıp (فَعَل) ---
         17: { 
+            base: { emoji: "🪙", arText: "صَدَق", trText: "Sadaka (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "🪙", arText: "صَدَقَة", trText: "Sadaka." } 
+            "ة": { 
+                emoji: "🪙", 
+                arText: "صَدَقَة", 
+                trText: "Sadaka / Hayır.",
+                ornek: { ar: "الصَّدَقَةُ تَدْفَعُ الْبَلَاءَ", tr: "Sadaka belayı defeder. (Hadis-i Şerif)" } 
+            } 
         },
 
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
-            base: { emoji: "🕊️", arText: "الصِّدْقُ صِفَةُ الْأَنْبِيَاءِ", trText: "Doğruluk (sıdk), peygamberlerin ve Ebu Bekir es-Sıddîk'ın sıfatıdır." } 
+            base: { 
+                emoji: "🕊️", 
+                arText: "صِدْق", 
+                trText: "Doğruluk / Sıdk.",
+                ornek: { ar: "الصِّدْقُ صِفَةُ الْأَنْبِيَاءِ", tr: "Doğruluk (sıdk), peygamberlerin ve Ebu Bekir es-Sıddîk'ın sıfatıdır." }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { 
-            base: { emoji: "👯", arText: "صَادِق", trText: "Doğru söyleyen / Sadık." } 
+            base: { 
+                emoji: "👯", 
+                arText: "صَادِق", 
+                trText: "Doğru söyleyen / Sadık.",
+                ornek: { ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا الله وَكُونُوا مَعَ الصَّادِقِينَ", tr: "Ey iman edenler! Allah'tan sakının ve doğrularla (sadıklarla) beraber olun. (Tevbe Suresi, 119)" }
+            } 
         },
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
-            base: { emoji: "🤝", arText: "الصَّدِيقُ وَقْتَ الضِّيقِ", trText: "Gerçek dost (sadık arkadaş), sıkıntı vaktinde belli olur. (Atasözü)" } 
+            base: { 
+                emoji: "🤝", 
+                arText: "صَدِيق", 
+                trText: "Gerçek dost.",
+                ornek: { ar: "الصَّدِيقُ وَقْتَ الضِّيقِ", tr: "Gerçek dost (sadık arkadaş), sıkıntı vaktinde belli olur. (Arap Atasözü)" }
+            } 
         },
         
         // --- 61 Numaralı Kalıp (تَفْعِيل) ---
         61: { 
-            base: { emoji: "✔️", arText: "تَصْدِيق", trText: "Onaylamak / Tasdik etmek." } 
+            base: { 
+                emoji: "✔️", 
+                arText: "تَصْدِيق", 
+                trText: "Onaylamak / Tasdik etmek.",
+                ornek: { ar: "تَصْدِيقُ الشَّهَادَةِ مِنَ الْجَامِعَةِ", tr: "Diplomanın üniversiteden tasdik edilmesi." }
+            } 
         }
     },
 
-
-
+    // ==================================================================
     // 10. H-S-D (ح س د) KÖKÜ - Kıskanmak
+    // ==================================================================
     "حسد": {
-        1: { base: { emoji: "🧿", arText: "وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ", trText: "Haset ettiği zaman hasetçinin şerrinden (Allah'a sığınırım). (Felak Suresi)" } }, // حَسَدَ
-        33: { base: { emoji: "😒", arText: "حَاسِد", trText: "Kıskanan / Hasetçi." } } // حَاسِد
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🧿", 
+                arText: "حَسَدَ", 
+                trText: "Kıskandı / Haset etti.",
+                ornek: { ar: "وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ", tr: "Haset ettiği zaman hasetçinin şerrinden (Allah'a sığınırım). (Felak Suresi, 5)" }
+            } 
+        }, 
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "😒", 
+                arText: "حَاسِد", 
+                trText: "Kıskanan / Hasetçi.",
+                ornek: { ar: "الْحَاسِدُ لَا يَنَالُ رَاحَةً", tr: "Haset eden kişi asla rahata eremez." }
+            } 
+        } 
     },
 
     // ==================================================================
@@ -607,7 +2079,12 @@ const wordEasterEggs = {
     "دخل": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
         1: { 
-            base: { emoji: "🚶", arText: "دَخَلَ", trText: "Girdi." } 
+            base: { 
+                emoji: "🚶", 
+                arText: "دَخَلَ", 
+                trText: "Girdi.",
+                ornek: { ar: "دَخَلَ الْجَنَّةَ بِمَغْفِرَةِ اللهِ", tr: "Allah'ın mağfiretiyle cennete girdi." }
+            } 
         },
         
         // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
@@ -617,31 +2094,56 @@ const wordEasterEggs = {
         
         // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
         3: { 
-            base: { emoji: "🚪", arText: "اُدْخُلْ", trText: "Gir!" } 
+            base: { 
+                emoji: "🚪", 
+                arText: "اُدْخُلْ", 
+                trText: "Gir!",
+                ornek: { ar: "اُدْخُلُوهَا بِسَلَامٍ آمِنِينَ", tr: "Oraya (Cennete) esenlikle ve güven içinde girin! (Hicr Suresi, 46)" }
+            } 
         },
 
         // --- 25 Numaralı Kalıp (فُعُول) ---
         25: { 
-            base: { emoji: "🚪", arText: "مَمْنُوعُ الدُّخُولِ", trText: "Giriş yasaktır." } 
+            base: { 
+                emoji: "🚪", 
+                arText: "دُخُول", 
+                trText: "Giriş / Girmek.",
+                ornek: { ar: "مَمْنُوعُ الدُّخُولِ", tr: "Giriş yasaktır." }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { 
             base: { emoji: "📦", arText: "دَاخِل", trText: "İç / Dahil." }, 
             suggestsPlus: true, 
-            "يَّة": { emoji: "🏛️", arText: "وِزَارَةُ الدَّاخِلِيَّةِ", trText: "İçişleri Bakanlığı." } 
+            "يَّة": { 
+                emoji: "🏛️", 
+                arText: "دَاخِلِيَّة", 
+                trText: "İç / İçişleri.",
+                ornek: { ar: "وِزَارَةُ الدَّاخِلِيَّةِ", tr: "İçişleri Bakanlığı." } 
+            } 
         },
         
         // --- 38 Numaralı Kalıp (مَفْعَل) ---
         38: { 
-            base: { emoji: "🏢", arText: "مَدْخَل", trText: "Giriş yeri." } 
+            base: { 
+                emoji: "🏢", 
+                arText: "مَدْخَل", 
+                trText: "Giriş yeri.",
+                ornek: { ar: "مَدْخَلُ الْمَبْنَى وَاسِعٌ جِدًّا", tr: "Binanın girişi oldukça geniştir." }
+            } 
         },
         
         // --- 55 Numaralı Kalıp (إِفْعَال) ---
         55: { 
             base: { emoji: "📥", arText: "إِدْخَال", trText: "Girdi / İçeri sokmak." }, 
             suggestsPlus: true, 
-            "ات": { emoji: "📊", arText: "إِدْخَالَات", trText: "Girdiler." } 
+            "ات": { 
+                emoji: "📊", 
+                arText: "إِدْخَالَات", 
+                trText: "Girdiler.",
+                ornek: { ar: "إِدْخَالَاتُ الْبَيَانَاتِ فِي الْحَاسُوبِ", tr: "Bilgisayara veri girdileri (girişleri)." } 
+            } 
         },
 
         // --- 64 Numaralı Kalıp (فَاعَلَ - Mazi / Müfâ'ale Babı) ---
@@ -661,7 +2163,12 @@ const wordEasterEggs = {
 
         // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
         67: { 
-            base: { emoji: "🛑", arText: "الْمُدَاخَلَةُ السَّرِيعَةُ تَمْنَعُ الْمُشْكِلَةَ", trText: "Hızlı müdahale (müdahale) sorunun büyümesini engeller." } 
+            base: { 
+                emoji: "🛑", 
+                arText: "مُدَاخَلَة", 
+                trText: "Müdahale.",
+                ornek: { ar: "الْمُدَاخَلَةُ السَّرِيعَةُ تَمْنَعُ الْمُشْكِلَةَ", tr: "Hızlı müdahale (araya girme) sorunun büyümesini engeller." }
+            } 
         },
         
         // --- 69 Numaralı Kalıp (مُفَاعِل) ---
@@ -669,7 +2176,6 @@ const wordEasterEggs = {
             base: { emoji: "🧑‍⚖️", arText: "مُدَاخِل", trText: "Müdahil olan / Araya giren." } 
         }
     },
-
 
     // ==================================================================
     // 12. R-K-B (ر ك ب) KÖKÜ - Binmek / Birleştirmek (Terkip etmek)
@@ -693,7 +2199,12 @@ const wordEasterEggs = {
 
         // --- 25 Numaralı Kalıp (فُعُول - Masdar) ---
         25: { 
-            base: { emoji: "🏇", arText: "رُكُوب", trText: "Binmek." } 
+            base: { 
+                emoji: "🏇", 
+                arText: "رُكُوب", 
+                trText: "Binmek.",
+                ornek: { ar: "رُكُوبُ الْخَيْلِ رِيَاضَةٌ مُمْتَازَةٌ", tr: "Ata binmek mükemmel bir spordur." }
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
@@ -705,7 +2216,12 @@ const wordEasterEggs = {
         38: { 
             base: { emoji: "⛴️", arText: "مَرْكَب", trText: "Gemi / Binek." },
             suggestsPlus: true, 
-            "ة": { emoji: "🛸", arText: "مَرْكَبَةٌ فَضَائِيَّةٌ", trText: "Uzay aracı (Binek)." }
+            "ة": { 
+                emoji: "🛸", 
+                arText: "مَرْكَبَة", 
+                trText: "Araç / Binek.",
+                ornek: { ar: "مَرْكَبَةٌ فَضَائِيَّةٌ", tr: "Uzay aracı (Binek)." } 
+            }
         },
 
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
@@ -727,18 +2243,26 @@ const wordEasterEggs = {
         61: { 
             base: { emoji: "🧪", arText: "تَرْكِيب", trText: "Bileşim / Terkip." },
             suggestsPlus: true,
-            "ات": { emoji: "🧬", arText: "تَرْكِيبَاتٌ كِيمْيَائِيَّةٌ", trText: "Kimyasal terkipler (bileşimler)." }
+            "ات": { 
+                emoji: "🧬", 
+                arText: "تَرْكِيبَات", 
+                trText: "Bileşimler (Terkibler).",
+                ornek: { ar: "تَرْكِيبَاتٌ كِيمْيَائِيَّةٌ دَقِيقَةٌ", tr: "Hassas kimyasal terkipler (bileşimler)." }
+            }
         },
         
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
         63: { 
-            base: { emoji: "✒️", arText: "مُرَكَّب", trText: "Birleşik (Mürekkep) / Mürekkep." } 
+            base: { 
+                emoji: "✒️", 
+                arText: "مُرَكَّب", 
+                trText: "Birleşik / Mürekkep.",
+                ornek: { ar: "جُمْلَةٌ مُرَكَّبَةٌ", tr: "Birleşik (mürekkep) cümle." }
+            } 
         }
     },
 
-
-
-   // ==================================================================
+    // ==================================================================
     // 13. N-Q-L (ن ق ل) KÖKÜ - Taşımak / Nakletmek / Aktarmak
     // 1. Bab (فَعَلَ - يَفْعُلُ) ve İfti'âl Babı
     // ==================================================================
@@ -762,9 +2286,23 @@ const wordEasterEggs = {
         19: { 
             base: { emoji: "🚚", arText: "نَقْل", trText: "Taşıma / Nakil." }, 
             suggestsPlus: true, 
-            "ا": { emoji: "📺", arText: "بُثَّتِ الْمُبَارَاةُ نَقْلًا مُبَاشِرًا", trText: "Maç canlı olarak (naklen) yayınlandı." }, 
-            "يَّة": { emoji: "📦", arText: "نَقْلِيَّة", trText: "Nakliye." }, 
-            "يَّات": { emoji: "🚛", arText: "شَرِكَةُ النَّقْلِيَّاتِ تَشْحَنُ الْبَضَائِعَ", trText: "Nakliyat şirketi malları taşır." } 
+            "ا": { 
+                emoji: "📺", 
+                arText: "نَقْلًا", 
+                trText: "Naklen / Canlı.",
+                ornek: { ar: "بُثَّتِ الْمُبَارَاةُ نَقْلًا مُبَاشِرًا", tr: "Maç canlı olarak (naklen) yayınlandı." } 
+            }, 
+            "يَّة": { 
+                emoji: "📦", 
+                arText: "نَقْلِيَّة", 
+                trText: "Nakliye." 
+            }, 
+            "يَّات": { 
+                emoji: "🚛", 
+                arText: "نَقْلِيَّات", 
+                trText: "Nakliyat.",
+                ornek: { ar: "شَرِكَةُ النَّقْلِيَّاتِ تَشْحَنُ الْبَضَائِعَ", tr: "Nakliyat şirketi malları taşır." } 
+            } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
@@ -779,7 +2317,12 @@ const wordEasterEggs = {
         
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ul) ---
         36: { 
-            base: { emoji: "🚗", arText: "الأَمْوَالُ غَيْرُ الْمَنْقُولَةِ هِيَ الْعَقَارَاتُ", trText: "Gayrimenkul (taşınmaz) mallar ev ve arsalardır." } 
+            base: { 
+                emoji: "🚗", 
+                arText: "مَنْقُول", 
+                trText: "Taşınabilir / Menkul.",
+                ornek: { ar: "الْأَمْوَالُ غَيْرُ الْمَنْقُولَةِ هِيَ الْعَقَارَاتُ", tr: "Gayrimenkul (taşınmaz) mallar ev ve arsalardır." }
+            } 
         },
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
@@ -803,6 +2346,7 @@ const wordEasterEggs = {
         }
     },
 
+
    // ==================================================================
     // 14. Sh-R-B (ش ر ب) KÖKÜ - İçmek
     // 4. Bab (فَعِلَ - يَفْعَلُ)
@@ -810,28 +2354,54 @@ const wordEasterEggs = {
     "شرب": {
         // --- 8 Numaralı Kalıp (فَعِلَ - Mazi / 4. Bab) ---
         8: { 
-            base: { emoji: "🥛", arText: "شَرِبَ", trText: "İçti." } 
+            base: { 
+                emoji: "🥛", 
+                arText: "شَرِبَ", 
+                trText: "İçti.",
+                ornek: { ar: "شَرِبَ الْمَرِيضُ الدَّوَاءَ", tr: "Hasta ilacı içti." }
+            } 
         },
         
         // --- 9 Numaralı Kalıp (يَفْعَلُ - Muzari / 4. Bab) ---
         9: { 
-            base: { emoji: "🥤", arText: "يَشْرَبُ", trText: "İçer / İçiyor." } 
+            base: { 
+                emoji: "🥤", 
+                arText: "يَشْرَبُ", 
+                trText: "İçer / İçiyor.",
+                ornek: { ar: "يَشْرَبُ الطِّفْلُ الْحَلِيبَ", tr: "Çocuk süt içiyor." }
+            } 
         },
         
         // --- 10 Numaralı Kalıp (اِفْعَلْ - Emir / 4. Bab) ---
         10: { 
-            base: { emoji: "💧", arText: "اِشْرَبْ", trText: "İç!" } 
+            base: { 
+                emoji: "💧", 
+                arText: "اِشْرَبْ", 
+                trText: "İç!",
+                ornek: { ar: "كُلُوا وَاشْرَبُوا وَلَا تُسْرِفُوا", tr: "Yiyin, için fakat israf etmeyin. (A'râf Suresi, 31)" }
+            } 
         },
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
+            base: { emoji: "💧", arText: "شَرْب", trText: "İçme (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "🍵", arText: "شَرْبَة", trText: "Bir içimlik / Şerbet." } 
+            "ة": { 
+                emoji: "🍵", 
+                arText: "شَرْبَة", 
+                trText: "Bir içimlik / Şerbet.",
+                ornek: { ar: "أَعْطِنِي شَرْبَةَ مَاءٍ مِنْ فَضْلِكَ", tr: "Lütfen bana bir içimlik su ver." }
+            } 
         },
         
         // --- 22 Numaralı Kalıp (فَعَال) ---
         22: { 
-            base: { emoji: "🍹", arText: "يَخْرُجُ مِنْ بُطُونِهَا شَرَابٌ مُخْتَلِفٌ أَلْوَانُهُ", trText: "Onların karınlarından renkleri çeşitli bir içecek (şerbet) çıkar. (Nahl Suresi)" } 
+            base: { 
+                emoji: "🍹", 
+                arText: "شَرَاب", 
+                trText: "İçecek / Şerbet.",
+                ornek: { ar: "يَخْرُجُ مِنْ بُطُونِهَا شَرَابٌ مُخْتَلِفٌ أَلْوَانُهُ", tr: "Onların karınlarından renkleri çeşitli bir içecek çıkar. (Nahl Suresi, 69)" }
+            } 
         },
         
         // --- 25 Numaralı Kalıp (فُعُول) ---
@@ -841,51 +2411,177 @@ const wordEasterEggs = {
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
         36: { 
+            base: { emoji: "🥤", arText: "مَشْرُوب", trText: "İçilen / Meşrubat." },
             suggestsPlus: true, 
-            "ات": { emoji: "🥤", arText: "الْمَشْرُوبَاتُ الْبَارِدَةُ لَذِيذَةٌ فِي الصَّيْفِ", trText: "Soğuk meşrubatlar (içecekler) yazın lezzetlidir." } 
+            "ات": { 
+                emoji: "🥤", 
+                arText: "مَشْرُوبَات", 
+                trText: "İçecekler / Meşrubatlar.",
+                ornek: { ar: "الْمَشْرُوبَاتُ الْبَارِدَةُ لَذِيذَةٌ فِي الصَّيْفِ", tr: "Soğuk meşrubatlar (içecekler) yazın lezzetlidir." }
+            } 
         },
         
         // --- 38 Numaralı Kalıp (مَفْعَل) ---
         38: { 
-            base: { emoji: "⛲", arText: "قَدْ عَلِمَ كُلُّ أُنَاسٍ مَّشْرَبَهُمْ", trText: "Her topluluk kendi içeceği yeri (meşrebini) bildi. (Bakara Suresi)" } 
+            base: { 
+                emoji: "⛲", 
+                arText: "مَشْرَب", 
+                trText: "İçilecek yer / Pınar.",
+                ornek: { ar: "قَدْ عَلِمَ كُلُّ أُنَاسٍ مَّشْرَبَهُمْ", tr: "Her topluluk kendi içeceği yeri (pınarını) bildi. (Bakara Suresi, 60)" }
+            } 
         }
     },
 
-     // --- S-F-R (س ف ر) KÖKÜ - Yolculuk / Açığa Çıkarmak ---
+    // ==================================================================
+    // 15. S-F-R (س ف ر) KÖKÜ - Yolculuk / Açığa Çıkarmak
+    // ==================================================================
     "سفر": { 
-        17: { base: { emoji: "🛤️", arText: "سَفَر", trText: "Yolculuk / Sefer." } },
-        35: { base: { emoji: "👔", arText: "سَفِير", trText: "Büyükelçi (Sefir)." }, suggestsPlus: true, "ة": { emoji: "🏢", arText: "سَفَارَة", trText: "Büyükelçilik (Sefaret)." } },
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "🛤️", 
+                arText: "سَفَر", 
+                trText: "Yolculuk / Sefer.",
+                ornek: { ar: "السَّفَرُ قِطْعَةٌ مِنَ الْعَذَابِ", tr: "Yolculuk azaptan bir parçadır. (Hadis-i Şerif)" }
+            } 
+        },
         
-        // Müfâ'ale Babı (سَافَرَ - يُسَافِرُ)
-        64: { base: { emoji: "✈️", arText: "سَافَرَ", trText: "Yolculuk yaptı / Sefere çıktı." } },
-        65: { base: { emoji: "🌍", arText: "يُسَافِرُ", trText: "Yolculuk yapıyor." } },
-        66: { base: { emoji: "🎒", arText: "سَافِرْ", trText: "Yolculuk yap!" } },
-        69: { base: { emoji: "🧳", arText: "الضَّيْفُ (المُسَافِرُ) يَأْتِي بِرِزْقِهِ", trText: "Misafir (yolcu) rızkıyla gelir. (Atasözü)" } }
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { emoji: "👔", arText: "سَفِير", trText: "Büyükelçi (Sefir)." }, 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🏢", 
+                arText: "سَفَارَة", 
+                trText: "Büyükelçilik (Sefaret).",
+                ornek: { ar: "السَّفَارَةُ تُمَثِّلُ الدَّوْلَةَ فِي الْخَارِجِ", tr: "Büyükelçilik devleti yurtdışında temsil eder." }
+            } 
+        },
+        
+        // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı) ---
+        64: { 
+            base: { emoji: "✈️", arText: "سَافَرَ", trText: "Yolculuk yaptı / Sefere çıktı." } 
+        },
+        65: { 
+            base: { emoji: "🌍", arText: "يُسَافِرُ", trText: "Yolculuk yapıyor." } 
+        },
+        66: { 
+            base: { emoji: "🎒", arText: "سَافِرْ", trText: "Yolculuk yap!" } 
+        },
+        
+        // --- 69 Numaralı Kalıp (مُفَاعِل) ---
+        69: { 
+            base: { 
+                emoji: "🧳", 
+                arText: "مُسَافِر", 
+                trText: "Yolcu / Misafir.",
+                ornek: { ar: "الضَّيْفُ (المُسَافِرُ) يَأْتِي بِرِزْقِهِ", tr: "Misafir (yolcu) rızkıyla gelir. (Atasözü)" }
+            } 
+        }
     }, 
 
-      // --- '-Q-L (ع ق ل) KÖKÜ - Akıl / Anlamak / Bağlamak ---
+    // ==================================================================
+    // 16. '-Q-L (ع ق ل) KÖKÜ - Akıl / Anlamak / Bağlamak
+    // 2. Bab (فَعَلَ - يَفْعِلُ)
+    // ==================================================================
     "عقل": { 
-        // 2. Bab (فَعَلَ - يَفْعِلُ)
-        1: { base: { emoji: "🧠", arText: "عَقَلَ", trText: "Akıl etti / Anladı." } },
-        4: { base: { emoji: "🤔", arText: "يَعْقِلُ", trText: "Akıl eder / Düşünüyor." } },
-        5: { base: { emoji: "💡", arText: "اِعْقِلْ", trText: "Akıl et / Düşün!" } },
+        // --- 1, 4, 5 Numaralı Kalıplar (2. Bab) ---
+        1: { 
+            base: { emoji: "🧠", arText: "عَقَلَ", trText: "Akıl etti / Anladı." } 
+        },
+        4: { 
+            base: { 
+                emoji: "🤔", 
+                arText: "يَعْقِلُ", 
+                trText: "Akıl eder / Düşünüyor.",
+                ornek: { ar: "أَفَلَا تَعْقِلُونَ", tr: "Hâlâ aklınızı kullanmıyor musunuz? (Bakara Suresi, 44)" }
+            } 
+        },
+        5: { 
+            base: { 
+                emoji: "💡", 
+                arText: "اِعْقِلْ", 
+                trText: "Akıl et / Bağla!",
+                ornek: { ar: "اِعْقِلْهَا وَتَوَكَّلْ", tr: "Onu (deveni) bağla ve tevekkül et. (Hadis-i Şerif)" }
+            } 
+        },
         
-        19: { base: { emoji: "🧠", arText: "العَقْلُ السَّلِيمُ فِي الجِسْمِ السَّلِيمِ", trText: "Sağlam akıl (kafa), sağlam vücutta bulunur. (Atasözü)" } },
-        33: { base: { emoji: "🤓", arText: "عَاقِل", trText: "Akıllı / Mantıklı." } },
-        36: { base: { emoji: "✅", arText: "سِعْرٌ مَعْقُولٌ", trText: "Makul (akla yatkın / mantıklı) bir fiyat." }, suggestsPlus: true, "ات": { emoji: "💬", arText: "مَعْقُولَات", trText: "Akla yatkın şeyler / Mantıklı konular." } }
-    },
-
-   
-
-    // 16. 'A-S-M (ع ص م) KÖKÜ - Korumak / Günahsızlık
-    "عصم": {
-        20: { suggestsPlus: true, "ة": { emoji: "🕊️", arText: "عِصْمَةُ الْأَنْبِيَاءِ", trText: "Peygamberlerin günahsızlığı (İsmet sıfatı)." } }, // عِصْم + ة = عِصْمَة
-        33: { base: { emoji: "🛡️", arText: "لَا عَاصِمَ الْيَوْمَ مِنْ أَمْرِ اللهِ", trText: "Bugün Allah'ın emrinden koruyacak hiçbir güç yoktur. (Hud Suresi)" } }, // عَاصِم
-        36: { base: { emoji: "👼", arText: "الأَطْفَالُ مَعْصُومُونَ", trText: "Çocuklar masumdur (günahsızdır)." } } // مَعْصُوم
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "عَقْل", 
+                trText: "Akıl.",
+                ornek: { ar: "الْعَقْلُ السَّلِيمُ فِي الْجِسْمِ السَّلِيمِ", tr: "Sağlam akıl (kafa), sağlam vücutta bulunur. (Atasözü)" }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🤓", 
+                arText: "عَاقِل", 
+                trText: "Akıllı / Mantıklı.",
+                ornek: { ar: "الْعَاقِلُ مَنْ دَانَ نَفْسَهُ", tr: "Akıllı kimse nefsini hesaba çekendir. (Hadis-i Şerif)" }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "✅", 
+                arText: "مَعْقُول", 
+                trText: "Makul / Akla yatkın.",
+                ornek: { ar: "سِعْرٌ مَعْقُولٌ", tr: "Makul (akla yatkın / mantıklı) bir fiyat." }
+            }, 
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "💬", 
+                arText: "مَعْقُولَات", 
+                trText: "Akla yatkın şeyler / Felsefi-Mantıki konular." 
+            } 
+        }
     },
 
     // ==================================================================
-    // 17. Q-R-B (ق ر ب) KÖKÜ - Yakın Olmak (Akraba / Kurban)
+    // 17. 'A-S-M (ع ص م) KÖKÜ - Korumak / Günahsızlık
+    // ==================================================================
+    "عصم": {
+        // --- 20 Numaralı Kalıp (فِعْل) ---
+        20: { 
+            base: { emoji: "🛡️", arText: "عِصْم", trText: "Koruma (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🕊️", 
+                arText: "عِصْمَة", 
+                trText: "İsmet / Günahsızlık.",
+                ornek: { ar: "عِصْمَةُ الْأَنْبِيَاءِ", tr: "Peygamberlerin günahsızlığı (İsmet sıfatı)." }
+            } 
+        }, 
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "عَاصِم", 
+                trText: "Koruyan.",
+                ornek: { ar: "لَا عَاصِمَ الْيَوْمَ مِنْ أَمْرِ اللَّهِ", tr: "Bugün Allah'ın emrinden koruyacak hiçbir güç yoktur. (Hûd Suresi, 43)" }
+            } 
+        }, 
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "👼", 
+                arText: "مَعْصُوم", 
+                trText: "Masum / Korunmuş.",
+                ornek: { ar: "الْأَطْفَالُ مَعْصُومُونَ", tr: "Çocuklar masumdur (günahsızdır)." }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 18. Q-R-B (ق ر ب) KÖKÜ - Yakın Olmak (Akraba / Kurban)
     // 5. Bab (فَعُلَ - يَفْعُلُ) ve İfti'âl Babı
     // ==================================================================
     "قرب": {
@@ -906,17 +2602,32 @@ const wordEasterEggs = {
 
         // --- 27 Numaralı Kalıp (فُعْلَان) ---
         27: { 
-            base: { emoji: "🐑", arText: "إِنَّمَا يَتَقَبَّلُ اللهُ مِنَ الْمُتَّقِينَ", trText: "Allah ancak takva sahiplerinden (kurbanı) kabul eder. (Maide Suresi)" } 
+            base: { 
+                emoji: "🐑", 
+                arText: "قُرْبَان", 
+                trText: "Kurban.",
+                ornek: { ar: "إِذْ قَرَّبَا قُرْبَانًا فَتُقُبِّلَ مِنْ أَحَدِهِمَا", tr: "Hani ikisi (Habil ve Kabil) birer kurban sunmuşlardı da birinden kabul edilmişti. (Mâide Suresi, 27)" }
+            } 
         },
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
-            base: { emoji: "🫂", arText: "قَرِيب", trText: "Yakın." } 
+            base: { 
+                emoji: "🫂", 
+                arText: "قَرِيب", 
+                trText: "Yakın.",
+                ornek: { ar: "إِنَّ رَحْمَتَ اللَّهِ قَرِيبٌ مِّنَ الْمُحْسِنِينَ", tr: "Şüphesiz Allah'ın rahmeti iyilik edenlere çok yakındır. (A'râf Suresi, 56)" }
+            } 
         },
         
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
-            base: { emoji: "🌙", arText: "اِقْتَرَبَتْ السَّاعَةُ وَانشَقَّ الْقَمَرُ", trText: "Kıyamet vakti (saat) yaklaştı ve ay yarıldı. (Kamer Suresi)" } 
+            base: { 
+                emoji: "🌙", 
+                arText: "اِقْتَرَبَ", 
+                trText: "Yaklaştı.",
+                ornek: { ar: "اقْتَرَبَتِ السَّاعَةُ وَانشَقَّ الْقَمَرُ", tr: "Kıyamet vakti (saat) yaklaştı ve ay yarıldı. (Kamer Suresi, 1)" }
+            } 
         },
         
         // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
@@ -926,411 +2637,83 @@ const wordEasterEggs = {
         
         // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
         79: { 
-            base: { emoji: "🏃", arText: "اِقْتَرِبْ", trText: "Yaklaş!" } 
+            base: { 
+                emoji: "🏃", 
+                arText: "اِقْتَرِبْ", 
+                trText: "Yaklaş!",
+                ornek: { ar: "وَاسْجُدْ وَاقْتَرِبْ", tr: "Secde et ve (Rabbine) yaklaş! (Alak Suresi, 19)" }
+            } 
         },
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
         80: { 
-            base: { emoji: "🚶‍♂️" } 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "اِقْتِرَاب", 
+                trText: "Yaklaşma.",
+                ornek: { ar: "مَعَ اقْتِرَابِ مَوْعِدِ الِامْتِحَانِ", tr: "Sınav vaktinin yaklaşmasıyla birlikte." }
+            } 
         }
     },
 
-    // 18. T-B-Q (ط ب ق) KÖKÜ - Uymak / Katman / Tatbik Etmek
+    // ==================================================================
+    // 19. T-B-Q (ط ب ق) KÖKÜ - Uymak / Katman / Tatbik Etmek
+    // ==================================================================
     "طبق": {
-        17: { base: { emoji: "🍽️", arText: "طَبَق", trText: "Tabak." }, suggestsPlus: true, "ة": { emoji: "🥞", arText: "طَبَقَةُ الأُوزُون", trText: "Ozon tabakası." } }, // طَبَق + ة = طَبَقَة
-        61: { base: { emoji: "📱", arText: "تَطْبِيقُ الْقَوَاعِدِ مُهِمٌّ", trText: "Kuralların uygulanması (tatbik edilmesi) önemlidir." }, suggestsPlus: true, "ات": { emoji: "📲", arText: "تَطْبِيقَاتُ الْهَاتِفِ", trText: "Telefon uygulamaları (tatbikatları)." } }, // تَطْبِيق + ات = تَطْبِيقَات
-        67: { suggestsPlus: true, "ات": { emoji: "✅", arText: "مُطَابَقَةُ الْحِسَابَاتِ", trText: "Hesap mutabakatı (uyuşması)." } }, // مُطَابَقَة -> مُطَابَقَات
-        69: { base: { emoji: "🤝", arText: "نَحْنُ مُتَطَابِقُونَ فِي الرَّأْيِ", trText: "Biz bu görüşte mutabıkız (aynı fikirdeyiz)." } } // مُطَابِق
-    },
-
-   // ==================================================================
-    // 19. H-K-M (ح ك م) KÖKÜ - Hükmetmek / Yargılamak / Bilgelik
-    // 1. Bab (فَعَلَ - يَفْعُلُ), Müfâ'ale ve Tefe'ul Babları
-    // ==================================================================
-    "حكم": {
-        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
-        1: { 
-            base: { emoji: "⚖️", arText: "حَكَمَ", trText: "Hükmetti / Karar verdi." } 
-        },
-        
-        // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
-        2: { 
-            base: { emoji: "🧑‍⚖️", arText: "يَحْكُمُ", trText: "Hükmeder / Karar veriyor." } 
-        },
-        
-        // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
-        3: { 
-            base: { emoji: "🔨", arText: "اُحْكُمْ", trText: "Hükmet / Karar ver!" } 
-        },
-
         // --- 17 Numaralı Kalıp (فَعَل) ---
         17: { 
-            base: { emoji: "🏁", arText: "فَابْعَثُوا حَكَمًا مِّنْ أَهْلِهِ وَحَكَمًا مِّنْ أَهْلِهَا", trText: "Erkeğin ailesinden bir hakem ve kadının ailesinden bir hakem gönderin. (Nisa Suresi)" } 
-        },
-        
-        // --- 21 Numaralı Kalıp (فُعْل) ---
-        21: { 
-            base: { emoji: "📜", arText: "إِنِ الْحُكْمُ إِلَّا لِلهِ", trText: "Hüküm ancak Allah'ındır. (Yusuf Suresi)" } 
-        },
-        
-        // --- 25 Numaralı Kalıp (فُعُول) ---
-        25: { 
+            base: { emoji: "🍽️", arText: "طَبَق", trText: "Tabak / Katman." }, 
             suggestsPlus: true, 
-            "ة": { emoji: "🏛️", arText: "حُكُومَة", trText: "Hükümet." } 
+            "ة": { 
+                emoji: "🥞", 
+                arText: "طَبَقَة", 
+                trText: "Tabaka / Katman.",
+                ornek: { ar: "طَبَقَةُ الْأُوزُونِ تَحْمِي الْأَرْضَ", tr: "Ozon tabakası dünyayı korur." } 
+            } 
         },
         
-        // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            base: { emoji: "🧑‍⚖️", arText: "حَاكِم", trText: "Hakim / Yönetici." } 
-        },
-        
-        // --- 35 Numaralı Kalıp (فَعِيل) ---
-        35: { 
-            base: { emoji: "🦉", arText: "يُؤْتِي الْحِكْمَةَ مَن يَشَاءُ", trText: "Allah hikmeti dilediğine verir. (Bakara Suresi)" } 
-        },
-        
-        // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            base: { emoji: "⛓️", arText: "مَحْكُوم", trText: "Mahkum." } 
-        },
-        
-        // --- 38 Numaralı Kalıp (مَفْعَل) ---
-        38: { 
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
+        61: { 
+            base: { 
+                emoji: "📱", 
+                arText: "تَطْبِيق", 
+                trText: "Uygulama / Tatbik.",
+                ornek: { ar: "تَطْبِيقُ الْقَوَاعِدِ مُهِمٌّ", tr: "Kuralların uygulanması (tatbik edilmesi) önemlidir." }
+            }, 
             suggestsPlus: true, 
-            "ة": { emoji: "⚖️", arText: "مَحْكَمَة", trText: "Mahkeme." } 
-        },
-
-        // --- 64 Numaralı Kalıp (فَاعَلَ - Mazi / Müfâ'ale Babı) ---
-        64: { 
-            base: { emoji: "👨‍⚖️", arText: "حَاكَمَ", trText: "Yargıladı / Muhakeme etti." } 
-        },
-        
-        // --- 65 Numaralı Kalıp (يُفَاعِلُ - Muzari / Müfâ'ale Babı) ---
-        65: { 
-            base: { emoji: "⚖️", arText: "يُحَاكِمُ", trText: "Yargılar / Yargılıyor." } 
+            "ات": { 
+                emoji: "📲", 
+                arText: "تَطْبِيقَات", 
+                trText: "Uygulamalar.",
+                ornek: { ar: "تَطْبِيقَاتُ الْهَوَاتِفِ الذَّكِيَّةِ", tr: "Akıllı telefon uygulamaları." } 
+            } 
         },
         
-        // --- 66 Numaralı Kalıp (فَاعِلْ - Emir / Müfâ'ale Babı) ---
-        66: { 
-            base: { emoji: "❗", arText: "حَاكِمْ", trText: "Yargıla / Muhakeme et!" } 
-        },
-
-        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Masdarı) ---
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
         67: { 
-            base: { emoji: "📝", arText: "مُحَاكَمَة", trText: "Yargılama / Muhakeme." } 
-        },
-
-        // --- 88 Numaralı Kalıp (تَفَعَّلَ - Mazi / Tefe'ul Babı) ---
-        88: { 
-            base: { emoji: "🎮", arText: "تَحَكَّمَ", trText: "Kontrol etti / Hakim oldu (Tahakküm etti)." } 
-        },
-        
-        // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Muzari / Tefe'ul Babı) ---
-        89: { 
-            base: { emoji: "🕹️", arText: "يَتَحَكَّمُ", trText: "Kontrol eder / Yönetiyor." } 
+            base: { emoji: "✅", arText: "مُطَابَقَة", trText: "Uyma / Mutabakat." },
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "✅", 
+                arText: "مُطَابَقَات", 
+                trText: "Mutabakatlar.",
+                ornek: { ar: "مُطَابَقَةُ الْحِسَابَاتِ", tr: "Hesap mutabakatı (uyuşması)." } 
+            } 
         },
         
-        // --- 90 Numaralı Kalıp (تَفَعَّلْ - Emir / Tefe'ul Babı) ---
-        90: { 
-            base: { emoji: "🛑", arText: "تَحَكَّمْ", trText: "Kontrol et / Hakim ol!" } 
-        },
-
-        // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Masdarı) ---
-        91: { 
-            base: { emoji: "🎛️", arText: "تَحَكُّم", trText: "Kontrol / Hakimiyet." },
-            suggestsPlus: true,
-            "ات": { emoji: "⚙️", arText: "لَوْحَةُ التَّحَكُّمِ", trText: "Kontrol paneli." } 
+        // --- 69 Numaralı Kalıp (مُفَاعِل) ---
+        69: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُطَابِق", 
+                trText: "Mutabık / Uygun.",
+                ornek: { ar: "هَذَا مُطَابِقٌ لِلْمُوَاصَفَاتِ", tr: "Bu (ürün) standartlara mutabıktır (uygundur)." }
+            } 
         }
     },
 
 
-    // ==================================================================
-    // 20. '-R-F (ع ر ف) KÖKÜ - Bilmek / Tanımak / İtiraf Etmek
-    // 2. Bab (فَعَلَ - يَفْعِلُ), Tef'îl, İfti'âl ve Tefâ'ul Babları
-    // ==================================================================
-    "عرف": {
-        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 2. Bab) ---
-        1: { 
-            base: { emoji: "🧠", arText: "عَرَفَ", trText: "Bildi / Tanıdı." } 
-        },
-        
-        // --- 4 Numaralı Kalıp (يَفْعِلُ - Muzari / 2. Bab) ---
-        4: { 
-            base: { emoji: "🤔", arText: "يَعْرِفُ", trText: "Bilir / Tanıyor." } 
-        },
-        
-        // --- 5 Numaralı Kalıp (اِفْعِلْ - Emir / 2. Bab) ---
-        5: { 
-            base: { emoji: "💡", arText: "اِعْرِفْ", trText: "Bil / Tanı!" } 
-        },
 
-        // --- 17 Numaralı Kalıp (فَعَل) ---
-        17: { 
-            suggestsPlus: true, 
-            "ة": { emoji: "⛰️", arText: "عَرَفَة", trText: "Arafat tepesi." } 
-        },
-        
-        // --- 21 Numaralı Kalıp (فُعْل) ---
-        21: { 
-            base: { emoji: "🤝", arText: "عُرْف", trText: "Gelenek / Örf." } 
-        },
-        
-        // --- 29 Numaralı Kalıp (فِعْلَان) ---
-        29: { 
-            base: { emoji: "🌟", arText: "عِرْفَان", trText: "İrfan / Bilgi." } 
-        },
-        
-        // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            base: { emoji: "🧠", arText: "العَارِفُ تَكْفِيهِ الإِشَارَةُ", trText: "Ârife tarif gerekmez." } 
-        },
-        
-        // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            base: { emoji: "👍", arText: "وَأْمُرْ بِالْمَعْرُوفِ وَانْهَ عَنِ الْمُنْكَرِ", trText: "İyiliği emret, kötülükten sakındır. (Lokman Suresi)" } 
-        },
-        
-        // --- 37 Numaralı Kalıp (مَفْعِل) ---
-        37: { 
-            suggestsPlus: true, 
-            "ة": { emoji: "💡", arText: "مَعْرِفَة", trText: "Bilgi / Marifet." } 
-        },
-
-        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
-        58: { 
-            base: { emoji: "🗣️", arText: "عَرَّفَ", trText: "Tanıttı / Tarif etti." } 
-        },
-        
-        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
-        59: { 
-            base: { emoji: "📢", arText: "يُعَرِّفُ", trText: "Tanıtır / Tarif ediyor." } 
-        },
-        
-        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
-        60: { 
-            base: { emoji: "📝", arText: "عَرِّفْ", trText: "Tanıt / Tarif et!" } 
-        },
-
-        // --- 61 Numaralı Kalıp (تَفْعِيل - Masdar / Tef'îl Babı) ---
-        61: { 
-            base: { emoji: "📋", arText: "تَعْرِيف", trText: "Tanımlama / Tarif." } 
-        },
-
-        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
-        77: { 
-            base: { emoji: "🙌", arText: "اِعْتَرَفَ", trText: "İtiraf etti / Kabul etti." } 
-        },
-        
-        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
-        78: { 
-            base: { emoji: "🗣️", arText: "يَعْتَرِفُ", trText: "İtiraf eder / Kabul ediyor." } 
-        },
-        
-        // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
-        79: { 
-            base: { emoji: "❗", arText: "اِعْتَرِفْ", trText: "İtiraf et / Kabul et!" } 
-        },
-
-        // --- 80 Numaralı Kalıp (اِفْتِعَال - Masdar / İfti'âl Babı) ---
-        80: { 
-            base: { emoji: "📜", arText: "اِعْتِرَاف", trText: "İtiraf / Tanıma." } 
-        },
-
-        // --- 94 Numaralı Kalıp (تَفَاعَلَ - Mazi / Tefâ'ul Babı) ---
-        94: { 
-            base: { emoji: "🤝", arText: "تَعَارَفَ", trText: "Tanıştı." } 
-        },
-        
-        // --- 95 Numaralı Kalıp (يَتَفَاعَلُ - Muzari / Tefâ'ul Babı) ---
-        95: { 
-            base: { emoji: "👥", arText: "يَتَعَارَفُ", trText: "Tanışır / Tanışıyor." },
-            suggestsPlus: true,
-            "ونَ": { emoji: "🌍", arText: "وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا", trText: "Sizi tanışmanız için milletlere ve kabilelere ayırdık. (Hucurât Suresi)" }
-        },
-        
-        // --- 96 Numaralı Kalıp (تَفَاعَلْ - Emir / Tefâ'ul Babı) ---
-        96: { 
-            base: { emoji: "👋", arText: "تَعَارَفْ", trText: "Tanış!" } 
-        },
-
-        // --- 97 Numaralı Kalıp (تَفَاعُل - Masdar / Tefâ'ul Babı) ---
-        97: { 
-            base: { emoji: "🫂", arText: "تَعَارُف", trText: "Tanışma / Birbirini tanıma." },
-            suggestsPlus: true,
-            "ات": { emoji: "🤝", arText: "تَعَارُفَات", trText: "Tanışmalar." }
-        }
-    },
-
-
-   // ==================================================================
-    // 21. '-L-M (ع ل م) KÖKÜ - Bilmek / Öğrenmek / Öğretmek
-    // 4. Bab (فَعِلَ - يَفْعَلُ), Tef'îl, Tefe'ul ve İsti'fal Babları
-    // ==================================================================
-    "علم": {
-        // --- 8 Numaralı Kalıp (فَعِلَ - Mazi / 4. Bab) ---
-        8: { 
-            base: { emoji: "💡", arText: "عَلِمَ", trText: "Bildi / Öğrendi." } 
-        },
-        
-        // --- 9 Numaralı Kalıp (يَفْعَلُ - Muzari / 4. Bab) ---
-        9: { 
-            base: { emoji: "🤔", arText: "يَعْلَمُ", trText: "Bilir / Biliyor." } 
-        },
-        
-        // --- 10 Numaralı Kalıp (اِفْعَلْ - Emir / 4. Bab) ---
-        10: { 
-            base: { emoji: "❗", arText: "اِعْلَمْ", trText: "Bil!" } 
-        },
-
-        // --- 20 Numaralı Kalıp (فِعْل - Masdar) ---
-        20: { 
-            base: { emoji: "📖", arText: "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ", trText: "İlim öğrenmek her Müslüman'a farzdır. (Hadis-i Şerif)" } 
-        },
-        
-        // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            base: { emoji: "🎓", arText: "عَالِم", trText: "Bilen / Alim." }, 
-            suggestsPlus: true, 
-            "ة": { emoji: "🧕", arText: "عَالِمَةٌ جَلِيلَةٌ", trText: "Büyük bir kadın âlim." }, 
-            "ونَ": { emoji: "👨‍🎓", arText: "عَالِمُونَ", trText: "Âlimler (Düzenli Çoğul)." } 
-        },
-        
-        // --- 34 Numaralı Kalıp (فَعَّالَة - Mübalağa) ---
-        34: { 
-            suggestsPlus: true, 
-            "ة": { emoji: "🧠", arText: "عَلَّامَةُ الْعَصْرِ", trText: "Asrın büyük âlimi (Allâme)." } 
-        },
-        
-        // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            base: { emoji: "💡", arText: "كُلُّ شَيْءٍ مَعْلُومٌ عِنْدَ اللهِ", trText: "Her şey Allah katında malumdur (bilinmektedir)." }, 
-            suggestsPlus: true, 
-            "ات": { emoji: "ℹ️", arText: "مَعْلُومَاتٌ مُهِمَّةٌ", trText: "Önemli bilgiler (Malumat)." } 
-        },
-        
-        // --- 43 Numaralı Kalıp (فُعُول - Çoğul Masdar) ---
-        43: { 
-            base: { emoji: "🔬", arText: "الْعُلُومُ النَّافِعَةُ تَبْنِي الْحَضَارَاتِ", trText: "Faydalı ilimler (bilimler) medeniyetleri inşa eder." } 
-        },
-        
-        // --- 46 Numaralı Kalıp (فُعَلَاء - Çoğul İsm-i Fail) ---
-        46: { 
-            base: { emoji: "👥", arText: "الْعُلَمَاءُ وَرَثَةُ الْأَنْبِيَاءِ", trText: "Âlimler peygamberlerin varisleridir. (Hadis-i Şerif)" },
-            suggestsPlus: true,
-            "ا": { emoji: "🤲", arText: "إِنَّمَا يَخْشَى اللَّهَ مِنْ عِبَادِهِ الْعُلَمَاءُ", trText: "Kulları içinden ancak âlimler, Allah'tan korkar. (Fâtır Suresi)" }
-        },
-
-        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
-        58: { 
-            base: { emoji: "🗣️", arText: "عَلَّمَ", trText: "Öğretti." } 
-        },
-        
-        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
-        59: { 
-            base: { emoji: "📢", arText: "يُعَلِّمُ", trText: "Öğretir / Öğretiyor." } 
-        },
-        
-        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
-        60: { 
-            base: { emoji: "📝", arText: "عَلِّمْ", trText: "Öğret!" } 
-        },
-        
-        // --- 61 Numaralı Kalıp (تَفْعِيل - Masdar / Tef'îl Babı) ---
-        61: { 
-            base: { emoji: "🏫", arText: "تَعْلِيمُ اللُّغَةِ الْعَرَبِيَّةِ", trText: "Arapça eğitimi (öğretimi)." } 
-        },
-        
-        // --- 62 Numaralı Kalıp (مُفَعِّل - İsm-i Fail / Tef'îl Babı) ---
-        62: { 
-            base: { emoji: "👨‍🏫", arText: "كادَ المُعَلِّمُ أَن يَكونَ رَسولاً", trText: "Öğretmen neredeyse bir elçi olacaktı." }, 
-            suggestsPlus: true, 
-            "ة": { emoji: "👩‍🏫", arText: "مُعَلِّمَةٌ مُخْلِصَةٌ", trText: "İhlaslı bir kadın öğretmen." } 
-        },
-
-        // --- 88 Numaralı Kalıp (تَفَعَّلَ - Mazi / Tefe'ul Babı) ---
-        88: { 
-            base: { emoji: "🕋", arText: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", trText: "Sizin en hayırlınız Kur'an'ı öğrenen ve öğreteninizdir. (Hadis-i Şerif)" } 
-        },
-        
-        // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Muzari / Tefe'ul Babı) ---
-        89: { 
-            base: { emoji: "📚", arText: "يَتَعَلَّمُ", trText: "Öğrenir / Öğreniyor." } 
-        },
-        
-        // --- 90 Numaralı Kalıp (تَفَعَّلْ - Emir / Tefe'ul Babı) ---
-        90: { 
-            base: { emoji: "✍️", arText: "تَعَلَّمُوا الْعَرَبِيَّةَ فَإِنَّهَا مِنْ دِينِكُمْ", trText: "Arapçayı öğrenin, çünkü o dininizdendir. (Hz. Ömer)" } 
-        },
-        
-        // --- 91 Numaralı Kalıp (تَفَعُّل - Masdar / Tefe'ul Babı) ---
-        91: { 
-            base: { emoji: "🎓", arText: "تَعَلُّـم", trText: "Öğrenim / Öğrenme." } 
-        }
-    },
-
-
-   // ==================================================================
-    // 22. R-H-M (ر ح م) KÖKÜ - Merhamet Etmek / Acımak
-    // 4. Bab (فَعِلَ - يَفْعَلُ) ve İsti'fal Babı
-    // ==================================================================
-    "رحم": {
-        // --- 8 Numaralı Kalıp (فَعِلَ - Mazi / 4. Bab) ---
-        8: { 
-            base: { emoji: "❤️", arText: "رَحِمَ", trText: "Merhamet etti / Acıdı." } 
-        },
-        
-        // --- 9 Numaralı Kalıp (يَفْعَلُ - Muzari / 4. Bab) ---
-        9: { 
-            base: { emoji: "🤲", arText: "يَرْحَمُ", trText: "Merhamet eder / Acıyor." } 
-        },
-        
-        // --- 10 Numaralı Kalıp (اِفْعَلْ - Emir / 4. Bab) ---
-        10: { 
-            base: { emoji: "🙏", arText: "اِرْحَمْ", trText: "Merhamet et / Acı!" } 
-        },
-
-        // --- 19 Numaralı Kalıp (فَعْل) ---
-        19: { 
-            suggestsPlus: true, 
-            "ة": { emoji: "🌧️", arText: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِلْعَالَمِينَ", trText: "Biz seni ancak âlemlere rahmet olarak gönderdik. (Enbiya Suresi)" } 
-        },
-        
-        // --- 35 Numaralı Kalıp (فَعِيل) ---
-        35: { 
-            base: { emoji: "🤍", arText: "بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ", trText: "Rahman ve Rahim olan Allah'ın adıyla." } 
-        },
-        
-        // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            base: { emoji: "🤲", arText: "رَحِمَهُ اللهُ رَحْمَةً وَاسِعَةً", trText: "Allah ona geniş bir rahmetle merhamet etsin (Merhum / Vefat etmiş kişi)." } 
-        },
-        
-        // --- 38 Numaralı Kalıp (مَفْعَل) ---
-        38: { 
-            suggestsPlus: true, 
-            "ة": { emoji: "🤝", arText: "وَتَوَاصَوْا بِالصَّبْرِ وَتَوَاصَوْا بِالْمَرْحَمَةِ", trText: "Birbirlerine sabrı ve merhameti tavsiye edenler... (Beled Suresi)" } 
-        },
-
-        // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - Mazi / İsti'fal Babı) ---
-        100: { 
-            base: { emoji: "😔", arText: "اِسْتَرْحَمَ", trText: "Merhamet diledi / İstirham etti." } 
-        },
-        
-        // --- 101 Numaralı Kalıp (يَسْتَفْعِلُ - Muzari / İsti'fal Babı) ---
-        101: { 
-            base: { emoji: "🥺", arText: "يَسْتَرْحِمُ", trText: "Merhamet diler / İstirham ediyor." } 
-        },
-        
-        // --- 102 Numaralı Kalıp (اِسْتَفْعِلْ - Emir / İsti'fal Babı) ---
-        102: { 
-            base: { emoji: "🙏", arText: "اِسْتَرْحِمْ", trText: "Merhamet dile / İstirham et!" } 
-        },
-
-        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - Masdar / İsti'fal Babı) ---
-        103: { 
-            base: { emoji: "📜", arText: "أَقَدِّمُ إِلَيْكُمْ رِسَالَةَ اسْتِرْحَامٍ", trText: "Size bir istirham (merhamet/rica) dilekçesi sunuyorum." } 
-        }
-    },
 
 
    // ==================================================================
@@ -1339,56 +2722,203 @@ const wordEasterEggs = {
     // ==================================================================
     "خلف": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
-        1: { base: { emoji: "🔙", arText: "خَلَفَ", trText: "Arkada kaldı / Halef oldu." } },
+        1: { 
+            base: { emoji: "🔙", arText: "خَلَفَ", trText: "Arkada kaldı / Halef oldu." } 
+        },
+        
         // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
-        2: { base: { emoji: "🚶", arText: "يَخْلُفُ", trText: "Arkada kalır / Halef oluyor." } },
+        2: { 
+            base: { emoji: "🚶", arText: "يَخْلُفُ", trText: "Arkada kalır / Halef oluyor." } 
+        },
+        
         // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
-        3: { base: { emoji: "❗", arText: "اُخْلُفْ", trText: "Arkada kal / Halef ol!" } },
+        3: { 
+            base: { emoji: "❗", arText: "اُخْلُفْ", trText: "Arkada kal / Halef ol!" } 
+        },
 
-        17: { base: { emoji: "👣", arText: "خَلَف", trText: "Gelen / Halef." } }, 
-        23: { suggestsPlus: true, "ة": { emoji: "🕌", arText: "خِلَافَة", trText: "Hilafet." } }, 
-        35: { suggestsPlus: true, "ة": { emoji: "👑", arText: "إِنِّي جَاعِلٌ فِي الْأَرْضِ خَلِيفَةً", trText: "Muhakkak ben yeryüzünde bir halife var edeceğim. (Bakara Suresi)" } }, 
-        46: { base: { emoji: "👥", arText: "الْخُلَفَاءُ الرَّاشِدُونَ", trText: "Hulefa-i Raşidin (Dört Halife)." } }, 
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "👣", 
+                arText: "خَلَف", 
+                trText: "Gelen / Halef.",
+                ornek: { ar: "خَيْرُ خَلَفٍ لِخَيْرِ سَلَفٍ", tr: "Hayırlı selefin (geçmişin) hayırlı halefi (geleceği)." }
+            } 
+        }, 
         
-        // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı) ---
-        64: { base: { emoji: "🙅", arText: "خَالَفَ", trText: "Muhalefet etti / Karşı çıktı." } },
-        65: { base: { emoji: "🗣️", arText: "يُخَالِفُ", trText: "Muhalefet eder / Karşı çıkıyor." } },
-        66: { base: { emoji: "✋", arText: "خَالِفْ", trText: "Muhalefet et / Karşı çık!" } },
-
-        67: { base: { emoji: "🚫", arText: "يَجِبُ تَجَنُّبُ الْمُخَالَفَةِ", trText: "Muhalefetten (kurallara aykırı davranmaktan) kaçınmak gerekir." } }, 
-        69: { base: { emoji: "🙅‍♂️", arText: "مُخَالِف", trText: "Muhalif / Karşı çıkan." } }, 
+        // --- 23 Numaralı Kalıp (فِعَال) ---
+        23: { 
+            base: { emoji: "🕌", arText: "خِلَاف", trText: "Anlaşmazlık / Hilaf (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🕌", 
+                arText: "خِلَافَة", 
+                trText: "Hilafet.",
+                ornek: { ar: "الْخِلَافَةُ الْعُثْمَانِيَّةُ فِي التَّارِيخِ", tr: "Tarihteki Osmanlı Hilafeti." } 
+            } 
+        }, 
         
-        // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı) ---
-        77: { base: { emoji: "↔️", arText: "اِخْتَلَفَ", trText: "İhtilafa düştü / Ayrılığa düştü." } },
-        78: { base: { emoji: "🤷", arText: "يَخْتَلِفُ", trText: "İhtilafa düşer / Farklılık gösteriyor." } },
-        79: { base: { emoji: "❗", arText: "اِخْتَلِفْ", trText: "Ayrılığa düş!" } },
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { emoji: "👑", arText: "خَلِيف", trText: "Halife (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "👑", 
+                arText: "خَلِيفَة", 
+                trText: "Halife / Temsilci.",
+                ornek: { ar: "إِنِّي جَاعِلٌ فِي الْأَرْضِ خَلِيفَةً", tr: "Muhakkak ben yeryüzünde bir halife var edeceğim. (Bakara Suresi, 30)" } 
+            } 
+        }, 
+        
+        // --- 46 Numaralı Kalıp (فُعَلَاء) ---
+        46: { 
+            base: { 
+                emoji: "👥", 
+                arText: "خُلَفَاء", 
+                trText: "Halifeler.",
+                ornek: { ar: "الْخُلَفَاءُ الرَّاشِدُونَ", tr: "Hulefa-yi Raşidin (Dört Halife)." }
+            } 
+        }, 
+        
+        // --- 64 Numaralı Kalıp (فَاعَلَ - Mazi / Müfâ'ale Babı) ---
+        64: { 
+            base: { emoji: "🙅", arText: "خَالَفَ", trText: "Muhalefet etti / Karşı çıktı." } 
+        },
+        
+        // --- 65 Numaralı Kalıp (يُفَاعِلُ - Muzari / Müfâ'ale Babı) ---
+        65: { 
+            base: { emoji: "🗣️", arText: "يُخَالِفُ", trText: "Muhalefet eder / Karşı çıkıyor." } 
+        },
+        
+        // --- 66 Numaralı Kalıp (فَاعِلْ - Emir / Müfâ'ale Babı) ---
+        66: { 
+            base: { emoji: "✋", arText: "خَالِفْ", trText: "Muhalefet et / Karşı çık!" } 
+        },
 
-        80: { base: { emoji: "↔️", arText: "اِخْتِلَافُ الرَّأْيِ لَا يُفْسِدُ لِلْوُدِّ قَضِيَّةً", trText: "Görüş ayrılığı (ihtilaf), dostluğu bozmaz. (Arap Atasözü)" } }, 
-        81: { base: { emoji: "🌈", arText: "مُخْتَلِف", trText: "Farklı / Muhtelif." } } 
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "مُخَالَفَة", 
+                trText: "Muhalefet / İhlal.",
+                ornek: { ar: "مُخَالَفَةُ الْمُرُورِ مَمْنُوعَةٌ", tr: "Trafik kuralı ihlali (muhalefeti) yasaktır." }
+            } 
+        }, 
+        
+        // --- 69 Numaralı Kalıp (مُفَاعِل - Müfâ'ale İsm-i Fail) ---
+        69: { 
+            base: { 
+                emoji: "🙅‍♂️", 
+                arText: "مُخَالِف", 
+                trText: "Muhalif / Karşı çıkan.",
+                ornek: { ar: "رَأْيٌ مُخَالِفٌ", tr: "Muhalif (zıt) görüş." }
+            } 
+        }, 
+        
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
+        77: { 
+            base: { emoji: "↔️", arText: "اِخْتَلَفَ", trText: "İhtilafa düştü / Ayrılığa düştü." } 
+        },
+        
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
+        78: { 
+            base: { emoji: "🤷", arText: "يَخْتَلِفُ", trText: "İhtilafa düşer / Farklılık gösteriyor." } 
+        },
+        
+        // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
+        79: { 
+            base: { emoji: "❗", arText: "اِخْتَلِفْ", trText: "Ayrılığa düş!" } 
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "↔️", 
+                arText: "اِخْتِلَاف", 
+                trText: "İhtilaf / Görüş ayrılığı.",
+                ornek: { ar: "اِخْتِلَافُ الرَّأْيِ لَا يُفْسِدُ لِلْوُدِّ قَضِيَّةً", tr: "Görüş ayrılığı (ihtilaf), dostluğu bozmaz. (Arap Atasözü)" }
+            } 
+        }, 
+        
+        // --- 81 Numaralı Kalıp (مُفْتَعِل / مُفْتَعَل) ---
+        81: { 
+            base: { 
+                emoji: "🌈", 
+                arText: "مُخْتَلِف", 
+                trText: "Farklı / Muhtelif.",
+                ornek: { ar: "أَلْوَانٌ مُخْتَلِفَةٌ", tr: "Muhtelif (çeşitli) renkler." }
+            } 
+        } 
     },
 
-    // ==================================================================
+
+ // ==================================================================
     // 24. Kh-R-J (خ ر ج) KÖKÜ - Çıkmak / Çıkarmak
     // 1. Bab (فَعَلَ - يَفْعُلُ) ve İf'âl Babı
     // ==================================================================
     "خرج": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
-        1: { base: { emoji: "🚶", arText: "خَرَجَ", trText: "Çıktı." } },
+        1: { 
+            base: { emoji: "🚶", arText: "خَرَجَ", trText: "Çıktı." } 
+        },
+        
         // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
-        2: { base: { emoji: "🚪", arText: "يَخْرُجُ", trText: "Çıkar / Çıkıyor." } },
+        2: { 
+            base: { emoji: "🚪", arText: "يَخْرُجُ", trText: "Çıkar / Çıkıyor." } 
+        },
+        
         // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
-        3: { base: { emoji: "🏃", arText: "اُخْرُجْ", trText: "Çık!" } },
+        3: { 
+            base: { emoji: "🏃", arText: "اُخْرُجْ", trText: "Çık!" } 
+        },
 
-        22: { base: { emoji: "💰", arText: "خَرَاج", trText: "Vergi / Haraç." } }, 
-        33: { base: { emoji: "🏞️", arText: "خَارِج", trText: "Dış / Hariç." } }, 
-        38: { base: { emoji: "🚪", arText: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", trText: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu (mahreç) açar. (Talak Suresi)" } }, 
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: { 
+            base: { emoji: "💰", arText: "خَرَاج", trText: "Vergi / Haraç." } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { emoji: "🏞️", arText: "خَارِج", trText: "Dış / Hariç." } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { 
+                emoji: "🚪", 
+                arText: "مَخْرَج", 
+                trText: "Çıkış yolu / Mahreç.",
+                ornek: { ar: "وَمَن يَتَّقِ الله يَجْعَل لَّهُ مَخْرَجًا", tr: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu (mahreç) açar. (Talak Suresi, 2)" }
+            } 
+        },
         
         // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı) ---
-        52: { base: { emoji: "📤", arText: "أَخْرَجَ", trText: "Çıkardı." } },
-        53: { base: { emoji: "📦", arText: "يُخْرِجُ", trText: "Çıkarır / Çıkarıyor." } },
-        54: { base: { emoji: "❗", arText: "أَخْرِجْ", trText: "Çıkar!" } },
+        52: { 
+            base: { emoji: "📤", arText: "أَخْرَجَ", trText: "Çıkardı." } 
+        },
+        53: { 
+            base: { emoji: "📦", arText: "يُخْرِجُ", trText: "Çıkarır / Çıkarıyor." } 
+        },
+        54: { 
+            base: { emoji: "❗", arText: "أَخْرِجْ", trText: "Çıkar!" } 
+        },
 
-        55: { base: { emoji: "📤", arText: "إِخْرَاجُ الزَّكَاةِ", trText: "Zekatın çıkarılması (verilmesi)." }, suggestsPlus: true, "ات": { emoji: "🚢", arText: "زَادَتْ إِخْرَاجَاتُ الدَّوْلَةِ", trText: "Devletin ihracatı (dışa satımı) arttı." } } 
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
+        55: { 
+            base: { 
+                emoji: "📤", 
+                arText: "إِخْرَاج", 
+                trText: "Çıkarmak / İhraç etmek.",
+                ornek: { ar: "إِخْرَاجُ الزَّكَاةِ وَاجِبٌ", tr: "Zekatın çıkarılması (verilmesi) vaciptir." }
+            }, 
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "🚢", 
+                arText: "إِخْرَاجَات", 
+                trText: "İhracat / Dışa satım.",
+                ornek: { ar: "زَادَتْ إِخْرَاجَاتُ الدَّوْلَةِ", tr: "Devletin ihracatı (dışa satımı) arttı." } 
+            } 
+        }
     },
 
     // ==================================================================
@@ -1397,18 +2927,77 @@ const wordEasterEggs = {
     // ==================================================================
     "عمل": {
         // --- 8 Numaralı Kalıp (فَعِلَ - Mazi / 4. Bab) ---
-        8: { base: { emoji: "🛠️", arText: "عَمِلَ", trText: "Çalıştı / Yaptı." } },
+        8: { 
+            base: { emoji: "🛠️", arText: "عَمِلَ", trText: "Çalıştı / Yaptı." } 
+        },
+        
         // --- 9 Numaralı Kalıp (يَفْعَلُ - Muzari / 4. Bab) ---
-        9: { base: { emoji: "⚙️", arText: "يَعْمَلُ", trText: "Çalışır / Yapıyor." } },
+        9: { 
+            base: { emoji: "⚙️", arText: "يَعْمَلُ", trText: "Çalışır / Yapıyor." } 
+        },
+        
         // --- 10 Numaralı Kalıp (اِفْعَلْ - Emir / 4. Bab) ---
-        10: { base: { emoji: "💪", arText: "اِعْمَلْ", trText: "Çalış / Yap!" } },
+        10: { 
+            base: { emoji: "💪", arText: "اِعْمَلْ", trText: "Çalış / Yap!" } 
+        },
 
-        17: { base: { emoji: "💼", arText: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ", trText: "Ameller (işler) niyetlere göredir. (Hadis-i Şerif)" }, suggestsPlus: true, "يَّات": { emoji: "🏥", arText: "غُرْفَةُ الْعَمَلِيَّاتِ فِي الْمُسْتَشْفَى", trText: "Hastanede ameliyathane (operasyon odası)." } }, 
-        36: { base: { emoji: "📦", arText: "مَعْمُول", trText: "Yapılmış / Mamul." } }, 
-        47: { base: { emoji: "👷", arText: "عَمَلَة", trText: "İşçiler (Cemi Teksir)." } }, 
-        55: { base: { emoji: "🏭", arText: "إِعْمَال", trText: "İşletme." } }, 
-        67: { base: { emoji: "🤝", arText: "الدِّينُ الْمُعَامَلَةُ", trText: "Din, güzel muameledir (insan ilişkileridir). (Hadis-i Şerif)" }, suggestsPlus: true, "ات": { emoji: "🗂️", arText: "مُعَامَلَات", trText: "İşlemler / Muameleler." } }, 
-        103: { base: { emoji: "🔄", arText: "دَلِيلُ الِاسْتِعْمَالِ", trText: "Kullanım kılavuzu (İstimal rehberi)." } } 
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "💼", 
+                arText: "عَمَل", 
+                trText: "İş / Amel.",
+                ornek: { ar: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ", tr: "Ameller (işler) niyetlere göredir. (Hadis-i Şerif)" }
+            }, 
+            suggestsPlus: true, 
+            "يَّات": { 
+                emoji: "🏥", 
+                arText: "عَمَلِيَّات", 
+                trText: "Operasyonlar / Ameliyatlar.",
+                ornek: { ar: "غُرْفَةُ الْعَمَلِيَّاتِ فِي الْمُسْتَشْفَى", tr: "Hastanede ameliyathane (operasyon odası)." } 
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { emoji: "📦", arText: "مَعْمُول", trText: "Yapılmış / Mamul." } 
+        },
+        
+        // --- 47 Numaralı Kalıp (فَعَلَة) ---
+        47: { 
+            base: { emoji: "👷", arText: "عَمَلَة", trText: "İşçiler (Cemi Teksir)." } 
+        },
+        
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
+        55: { 
+            base: { emoji: "🏭", arText: "إِعْمَال", trText: "İşletme / Yürütme." } 
+        },
+        
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
+        67: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُعَامَلَة", 
+                trText: "Muamele / Davranış.",
+                ornek: { ar: "الدِّينُ الْمُعَامَلَةُ", tr: "Din, güzel muameledir (insan ilişkileridir). (Hadis-i Şerif)" }
+            }, 
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "🗂️", 
+                arText: "مُعَامَلَات", 
+                trText: "İşlemler / Muameleler." 
+            } 
+        },
+        
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال) ---
+        103: { 
+            base: { 
+                emoji: "🔄", 
+                arText: "اِسْتِعْمَال", 
+                trText: "Kullanım / İstimal.",
+                ornek: { ar: "دَلِيلُ الِاسْتِعْمَالِ", tr: "Kullanım kılavuzu (İstimal rehberi)." }
+            } 
+        }
     },
 
     // ==================================================================
@@ -1421,17 +3010,49 @@ const wordEasterEggs = {
         2: { base: { emoji: "✍️", arText: "يَدْرُسُ", trText: "Ders çalışır / Okuyor." } },
         3: { base: { emoji: "📚", arText: "اُدْرُسْ", trText: "Ders çalış / Oku!" } },
 
-        19: { base: { emoji: "📓", arText: "دَرْس", trText: "Ders." } }, 
-        23: { suggestsPlus: true, "ة": { emoji: "📚", arText: "دِرَاسَة", trText: "Öğrenim." } }, 
-        38: { suggestsPlus: true, "ة": { emoji: "🏫", arText: "الْمَدْرَسَةُ بَيْتُنَا الثَّانِي", trText: "Okul bizim (öğrencilerin) ikinci evidir." } }, 
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: { 
+            base: { emoji: "📓", arText: "دَرْس", trText: "Ders." } 
+        },
+        
+        // --- 23 Numaralı Kalıp (فِعَال) ---
+        23: { 
+            base: { emoji: "📚", arText: "دِرَاس", trText: "Öğrenim (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { emoji: "📚", arText: "دِرَاسَة", trText: "Öğrenim / Eğitim." } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { emoji: "🏫", arText: "مَدْرَس", trText: "Eğitim yeri (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🏫", 
+                arText: "مَدْرَسَة", 
+                trText: "Okul / Medrese.",
+                ornek: { ar: "الْمَدْرَسَةُ بَيْتُنَا الثَّانِي", tr: "Okul bizim (öğrencilerin) ikinci evidir." }
+            } 
+        },
 
         // --- 58, 59, 60 Numaralı Kalıplar (Tef'îl Babı) ---
         58: { base: { emoji: "👨‍🏫", arText: "دَرَّسَ", trText: "Ders verdi / Öğretti." } },
         59: { base: { emoji: "🗣️", arText: "يُدَرِّسُ", trText: "Ders verir / Öğretiyor." } },
         60: { base: { emoji: "❗", arText: "دَرِّسْ", trText: "Ders ver / Öğret!" } },
 
-        61: { base: { emoji: "✍️", arText: "تَدْرِيس", trText: "Öğretmek / Tedrisat." } }, 
-        62: { base: { emoji: "👨‍🏫", arText: "مَنْ عَلَّمَنِي حَرْفاً صِرْتُ لَهُ عَبْداً", trText: "Bana bir harf öğretenin kölesi olurum. (Hz. Ali)" } } 
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
+        61: { 
+            base: { emoji: "✍️", arText: "تَدْرِيس", trText: "Öğretmek / Tedrisat." } 
+        },
+        
+        // --- 62 Numaralı Kalıp (مُفَعِّل) ---
+        62: { 
+            base: { 
+                emoji: "👨‍🏫", 
+                arText: "مُدَرِّس", 
+                trText: "Öğretmen / Müderris.",
+                ornek: { ar: "هُوَ مُدَرِّسٌ نَاجِحٌ فِي الْمَدْرَسَةِ", tr: "O, okulda başarılı bir öğretmendir (müderristir)." }
+            } 
+        }
     },
 
     // ==================================================================
@@ -1444,17 +3065,57 @@ const wordEasterEggs = {
         9: { base: { emoji: "🧠", arText: "يَحْفَظُ", trText: "Korur / Ezberliyor." } },
         10: { base: { emoji: "📖", arText: "اِحْفَظْ", trText: "Koru / Ezberle!" } },
 
-        20: { base: { emoji: "💾", arText: "حِفْظ", trText: "Koruma / Hıfz." } }, 
-        33: { base: { emoji: "📖", arText: "فَاللهُ خَيْرٌ حَافِظًا", trText: "Allah en hayırlı koruyucudur. (Yusuf Suresi)" }, suggestsPlus: true, "ة": { emoji: "🧠", arText: "حَافِظَةٌ قَوِيَّةٌ", trText: "Güçlü bir hafıza." } }, 
-        36: { base: { emoji: "🛡️", arText: "فِي لَوْحٍ مَحْفُوظٍ", trText: "Korunmuş bir levhadadır (Levh-i Mahfuz). (Büruc Suresi)" } }, 
+        // --- 20 Numaralı Kalıp (فِعْل) ---
+        20: { 
+            base: { emoji: "💾", arText: "حِفْظ", trText: "Koruma / Hıfz." } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "📖", 
+                arText: "حَافِظ", 
+                trText: "Koruyan / Ezberleyen.",
+                ornek: { ar: "فَاللهُ خَيْرٌ حَافِظًا", tr: "Allah en hayırlı koruyucudur. (Yusuf Suresi, 64)" }
+            }, 
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🧠", 
+                arText: "حَافِظَة", 
+                trText: "Hafıza / Bellek.",
+                ornek: { ar: "لَدَيْهِ حَافِظَةٌ قَوِيَّةٌ", tr: "Onun güçlü bir hafızası var." }
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "مَحْفُوظ", 
+                trText: "Korunmuş / Mahfuz.",
+                ornek: { ar: "فِي لَوْحٍ مَحْفُوظٍ", tr: "Korunmuş bir levhadadır (Levh-i Mahfuz). (Büruc Suresi, 22)" }
+            } 
+        },
 
         // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı) ---
         64: { base: { emoji: "🏰", arText: "حَافَظَ", trText: "Özen gösterdi / Muhafaza etti." } },
         65: { base: { emoji: "🤲", arText: "يُحَافِظُ", trText: "Özen gösterir / Muhafaza ediyor." } },
         66: { base: { emoji: "❗", arText: "حَافِظْ", trText: "Özen göster / Muhafaza et!" } },
 
-        67: { base: { emoji: "🏰", arText: "حَافِظُوا عَلَى الصَّلَوَاتِ", trText: "Namazları koruyun (özen gösterin). (Bakara Suresi)" } }, 
-        69: { base: { emoji: "👔", arText: "مُحَافِظ", trText: "Koruyan / Vali (Muhafız)." } } 
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
+        67: { 
+            base: { 
+                emoji: "🏰", 
+                arText: "مُحَافَظَة", 
+                trText: "Koruma / Muhafaza.",
+                ornek: { ar: "حَافِظُوا عَلَى الصَّلَوَاتِ", tr: "Namazları koruyun (özen gösterin). (Bakara Suresi, 238)" }
+            } 
+        },
+        
+        // --- 69 Numaralı Kalıp (مُفَاعِل) ---
+        69: { 
+            base: { emoji: "👔", arText: "مُحَافِظ", trText: "Koruyan / Vali (Muhafız)." } 
+        }
     },
 
     // ==================================================================
@@ -1467,17 +3128,52 @@ const wordEasterEggs = {
         2: { base: { emoji: "👀", arText: "يَنْظُرُ", trText: "Bakar / Bakıyor." } },
         3: { base: { emoji: "🔭", arText: "اُنْظُرْ", trText: "Bak!" } },
 
-        17: { base: { emoji: "👁️", arText: "الْعَيْنُ حَقٌّ", trText: "Nazar (göz değmesi) haktır (gerçektir). (Hadis-i Şerif)" } }, 
-        33: { base: { emoji: "👀", arText: "نَاظِر", trText: "Bakan / Nazır." } }, 
-        38: { suggestsPlus: true, "ة": { emoji: "🌄", arText: "يَا لَهُ مِنْ مَنْظَرٍ جَمِيلٍ!", trText: "Ne kadar güzel bir manzara!" } }, 
-        67: { base: { emoji: "🗣️", arText: "مُنَاظَرَة", trText: "Münazara (Karşılıklı bakışma/tartışma)." } }, 
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "👁️", 
+                arText: "نَظَر", 
+                trText: "Bakış / Nazar.",
+                ornek: { ar: "الْعَيْنُ حَقٌّ", tr: "Nazar (göz değmesi) haktır (gerçektir). (Hadis-i Şerif)" }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { emoji: "👀", arText: "نَاظِر", trText: "Bakan / Nazır." } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { emoji: "🌄", arText: "مَنْظَر", trText: "Manzara / Görünüm." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🌄", 
+                arText: "مَنْظَرَة", 
+                trText: "Manzara yeri.",
+                ornek: { ar: "يَا لَهُ مِنْ مَنْظَرٍ جَمِيلٍ!", tr: "Ne kadar güzel bir manzara!" }
+            } 
+        },
+        
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
+        67: { 
+            base: { emoji: "🗣️", arText: "مُنَاظَرَة", trText: "Münazara (Karşılıklı tartışma)." } 
+        },
 
         // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı) ---
         77: { base: { emoji: "⏳", arText: "اِنْتَظَرَ", trText: "Bekledi (İntizar etti)." } },
         78: { base: { emoji: "⌚", arText: "يَنْتَظِرُ", trText: "Bekler / Bekliyor." } },
         79: { base: { emoji: "✋", arText: "اِنْتَظِرْ", trText: "Bekle!" } },
 
-        80: { base: { emoji: "⏳", arText: "اِنْتِظَارُ الْفَرَجِ عِبَادَةٌ", trText: "Sıkıntıdan kurtulmayı beklemek (intizar) ibadettir. (Hadis-i Şerif)" } } 
+        // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
+        80: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "اِنْتِظَار", 
+                trText: "Beklemek / İntizar.",
+                ornek: { ar: "اِنْتِظَارُ الْفَرَجِ عِبَادَةٌ", tr: "Sıkıntıdan kurtulmayı beklemek (intizar) ibadettir. (Hadis-i Şerif)" }
+            } 
+        }
     },
 
     // ==================================================================
@@ -1490,16 +3186,45 @@ const wordEasterEggs = {
         12: { base: { emoji: "🛡️", arText: "يَمْكُنُ", trText: "Güçlü / Sağlam olur." } },
         13: { base: { emoji: "❗", arText: "اُمْكُنْ", trText: "Güçlü ol!" } },
 
-        22: { base: { emoji: "📍", arText: "شَرَفُ الْمَكَانِ بِالْمَكِينِ", trText: "Bir mekânın şerefi (değeri), orada bulunanlardan gelir. (Atasözü)" } }, 
-        55: { base: { emoji: "✨", arText: "فِي حُدُودِ الْإِمْكَانِ", trText: "İmkânlar dâhilinde." } }, 
-        56: { base: { emoji: "✔️", arText: "كُلُّ شَيْءٍ مُمْكِنٌ بِإِذْنِ اللهِ", trText: "Allah'ın izniyle her şey mümkündür." } }, 
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: { 
+            base: { 
+                emoji: "📍", 
+                arText: "مَكَان", 
+                trText: "Yer / Mekan.",
+                ornek: { ar: "شَرَفُ الْمَكَانِ بِالْمَكِينِ", tr: "Bir mekânın şerefi (değeri), orada bulunanlardan gelir. (Atasözü)" }
+            } 
+        },
+        
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
+        55: { 
+            base: { 
+                emoji: "✨", 
+                arText: "إِمْكَان", 
+                trText: "İmkan / Olasılık.",
+                ornek: { ar: "فِي حُدُودِ الْإِمْكَانِ", tr: "İmkânlar dâhilinde." }
+            } 
+        },
+        
+        // --- 56 Numaralı Kalıp (مُفْعِل) ---
+        56: { 
+            base: { 
+                emoji: "✔️", 
+                arText: "مُمْكِن", 
+                trText: "Mümkün / Olası.",
+                ornek: { ar: "كُلُّ شَيْءٍ مُمْكِنٌ بِإِذْنِ اللهِ", tr: "Allah'ın izniyle her şey mümkündür." }
+            } 
+        },
 
         // --- 58, 59, 60 Numaralı Kalıplar (Tef'îl Babı) ---
         58: { base: { emoji: "🏗️", arText: "مَكَّنَ", trText: "Güçlendirdi / İmkan verdi." } },
         59: { base: { emoji: "⚙️", arText: "يُمَكِّنُ", trText: "Güçlendirir / İmkan verir." } },
         60: { base: { emoji: "✅", arText: "مَكِّنْ", trText: "Güçlendir / İmkan ver!" } },
 
-        61: { base: { emoji: "💪", arText: "تَمْكِين", trText: "Güçlendirmek." } } 
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
+        61: { 
+            base: { emoji: "💪", arText: "تَمْكِين", trText: "Güçlendirmek." } 
+        }
     },
 
   // ==================================================================
@@ -1514,10 +3239,14 @@ const wordEasterEggs = {
 
         // --- 17 Numaralı Kalıp (Sıfat-ı Müşebbehe / İsim) ---
         17: { 
-            base: { emoji: "🌸", arText: "حَسَن", trText: "Güzel / İyi." },
-            ornek: { 
-                ar: "الْحَسَنُ وَالْحُسَيْنُ سَيِّدَا شَبَابِ أَهْلِ الْجَنَّةِ", 
-                tr: "Hasan ve Hüseyin, cennet gençlerinin efendileridir. (Hadis-i Şerif)" 
+            base: { 
+                emoji: "🌸", 
+                arText: "حَسَن", 
+                trText: "Güzel / İyi.",
+                ornek: { 
+                    ar: "الْحَسَنُ وَالْحُسَيْنُ سَيِّدَا شَبَابِ أَهْلِ الْجَنَّةِ", 
+                    tr: "Hasan ve Hüseyin, cennet gençlerinin efendileridir. (Hadis-i Şerif)" 
+                }
             } 
         }, 
         
@@ -1534,19 +3263,27 @@ const wordEasterEggs = {
         
         // --- 50 Numaralı Kalıp (İsm-i Tafdil) ---
         50: { 
-            base: { emoji: "🥇", arText: "أَحْسَن", trText: "En güzel / Daha güzel." },
-            ornek: { 
-                ar: "لَقَدْ خَلَقْنَا الْإِنْسَانَ فِي أَحْسَنِ تَقْوِيمٍ", 
-                tr: "Biz insanı en güzel biçimde (ahsen-i takvim) yarattık. (Tîn Suresi, 4)" 
+            base: { 
+                emoji: "🥇", 
+                arText: "أَحْسَن", 
+                trText: "En güzel / Daha güzel.",
+                ornek: { 
+                    ar: "لَقَدْ خَلَقْنَا الْإِنْسَانَ فِي أَحْسَنِ تَقْوِيمٍ", 
+                    tr: "Biz insanı en güzel biçimde (ahsen-i takvim) yarattık. (Tîn Suresi, 4)" 
+                }
             } 
         }, 
         
         // --- 51 Numaralı Kalıp (İsm-i Tafdil Müennes) ---
         51: { 
-            base: { emoji: "💎", arText: "حُسْنَى", trText: "En güzel (Müennes)." },
-            ornek: { 
-                ar: "وَلِلهِ الْأَسْمَاءُ الْحُسْنَى فَادْعُوهُ بِهَا", 
-                tr: "En güzel isimler (Esma-ül Hüsna) Allah'ındır, O'na onlarla dua edin. (A'râf Suresi, 180)" 
+            base: { 
+                emoji: "💎", 
+                arText: "حُسْنَى", 
+                trText: "En güzel (Müennes).",
+                ornek: { 
+                    ar: "وَلِلهِ الْأَسْمَاءُ الْحُسْنَى فَادْعُوهُ بِهَا", 
+                    tr: "En güzel isimler (Esma-ül Hüsna) Allah'ındır, O'na onlarla dua edin. (A'râf Suresi, 180)" 
+                }
             } 
         }, 
 
@@ -1557,10 +3294,14 @@ const wordEasterEggs = {
 
         // --- 55 Numaralı Kalıp (İf'âl Masdarı) ---
         55: { 
-            base: { emoji: "💖", arText: "إِحْسَان", trText: "İyilik etmek / Lütuf." },
-            ornek: { 
-                ar: "هَلْ جَزَاءُ الْإِحْسَانِ إِلَّا الْإِحْسَانُ", 
-                tr: "İyiliğin (ihsanın) karşılığı, iyilikten başka bir şey midir? (Rahmân Suresi, 60)" 
+            base: { 
+                emoji: "💖", 
+                arText: "إِحْسَان", 
+                trText: "İyilik etmek / Lütuf.",
+                ornek: { 
+                    ar: "هَلْ جَزَاءُ الْإِحْسَانِ إِلَّا الْإِحْسَانُ", 
+                    tr: "İyiliğin (ihsanın) karşılığı, iyilikten başka bir şey midir? (Rahmân Suresi, 60)" 
+                }
             } 
         }, 
         
@@ -1583,7 +3324,7 @@ const wordEasterEggs = {
         61: { base: { emoji: "📈", arText: "تَحْسِين", trText: "İyileştirmek (Tahsin)." } } 
     },
 
-   // ==================================================================
+// ==================================================================
     // 31. S-'-D (س ع د) KÖKÜ - Mutluluk / Saadet / Yardım
     // 4. Bab (فَعِلَ - يَفْعَلُ) ve Mufâ'ale Babı
     // ==================================================================
@@ -1599,51 +3340,85 @@ const wordEasterEggs = {
             base: { emoji: "✨", arText: "اِسْعَدْ", trText: "Mutlu ol!" } 
         },
 
-        // --- 22, 24, 35, 36 Numaralı İsim ve Sıfat Kalıpları ---
+        // --- 22 Numaralı Kalıp (فَعَال) ---
         22: { 
+            base: { emoji: "✨", arText: "سَعَاد", trText: "Mutluluk (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "✨", arText: "السَّعَادَةُ فِي الْقَنَاعَةِ", trText: "Mutluluk (saadet) kanaattedir. (Atasözü)" } 
+            "ة": { 
+                emoji: "✨", 
+                arText: "سَعَادَة", 
+                trText: "Saadet / Mutluluk.",
+                ornek: { ar: "السَّعَادَةُ فِي الْقَنَاعَةِ", tr: "Mutluluk (saadet) kanaattedir. (Atasözü)" } 
+            } 
         }, 
+        
+        // --- 24 Numaralı Kalıp (فُعَال) ---
         24: { 
-            base: { emoji: "🌸", arText: "سُعَاد", trText: "Suad (Mutluluk)." } 
+            base: { emoji: "🌸", arText: "سُعَاد", trText: "Suad (Mutluluk/Kadın ismi)." } 
         }, 
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
-            base: { emoji: "😊", arText: "فَمِنْهُمْ شَقِيٌّ وَسَعِيدٌ", trText: "Onlardan kimi bedbaht (mutsuz), kimi de bahtiyar (mutlu - said)dır. (Hûd Suresi)" }, 
+            base: { 
+                emoji: "😊", 
+                arText: "سَعِيد", 
+                trText: "Mutlu / Mesut.",
+                ornek: { ar: "فَمِنْهُمْ شَقِيٌّ وَسَعِيدٌ", tr: "Onlardan kimi bedbaht (mutsuz), kimi de bahtiyar (mutlu - said)dır. (Hûd Suresi, 105)" }
+            }, 
             suggestsPlus: true, 
-            "ة": { emoji: "🥰", arText: "سَعِيدَة", trText: "Mutlu (Kadın)." } 
+            "ة": { 
+                emoji: "🥰", 
+                arText: "سَعِيدَة", 
+                trText: "Mutlu (Kadın).",
+                ornek: { ar: "أُسْرَةٌ سَعِيدَةٌ", tr: "Mutlu bir aile." }
+            } 
         }, 
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
         36: { 
-            base: { emoji: "🍀", arText: "أَيَّامٌ مَسْعُودَةٌ", trText: "Mutlu (Mesut) ve uğurlu günler." }, 
+            base: { 
+                emoji: "🍀", 
+                arText: "مَسْعُود", 
+                trText: "Mutlu edilmiş / Mesut.",
+                ornek: { ar: "أَيَّامٌ مَسْعُودَةٌ", tr: "Mutlu (Mesut) ve uğurlu günler." }
+            }, 
             suggestsPlus: true, 
-            "ة": { emoji: "🌻", arText: "مَسْعُودَة", trText: "Mesude." } 
+            "ة": { emoji: "🌻", arText: "مَسْعُودَة", trText: "Mesude (Mutlu kadın)." } 
         },
   
-         
-       // --- 65 Numaralı Kalıp (فَاعَلَ - Mazi / Mufâ'ale Babı) ---
+        // --- 64 Numaralı Kalıp (فَاعَلَ - Mazi / Mufâ'ale Babı) ---
         64: { 
             base: { emoji: "🤝", arText: "سَاعَدَ", trText: "Yardım etti / Destek oldu." } 
         },
 
-
-        // --- 65 Numaralı Kalıp (فَاعَلَ - Mazi / Mufâ'ale Babı) ---
+        // --- 65 Numaralı Kalıp (يُفَاعِلُ - Muzari / Mufâ'ale Babı) ---
         65: { 
             base: { emoji: "🤝", arText: "يُسَاعِدُ", trText: "Yardım eder / Yardım ediyor." } 
         },
         
-        // --- 66 Numaralı Kalıp (يُفَاعِلُ - Muzari / Mufâ'ale Babı) ---
+        // --- 66 Numaralı Kalıp (فَاعِلْ - Emir / Mufâ'ale Babı) ---
         66: { 
             base: { emoji: "🔄", arText: "سَاعِدْ", trText: "Yardım et / Destek ol!" } 
         },
         
-        // --- 67 Numaralı Kalıp (فَاعِلْ - Emir / Mufâ'ale Babı) ---
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Masdarı) ---
         67: { 
-            base: { emoji: "❗", arText: "مُسَاعَدَة", trText: "Yardım / Müsaade (Türkçede: İzin, kolaylık sağlama)." } 
+            base: { 
+                emoji: "❗", 
+                arText: "مُسَاعَدَة", 
+                trText: "Yardım / Müsaade.",
+                ornek: { ar: "طَلَبَ الْمُسَاعَدَةَ مِنِّي", tr: "Benden yardım (müsaade) istedi." }
+            } 
         },
-       
         
         // --- 69 Numaralı Kalıp (مُفَاعِل - Mufâ'ale Babı İsm-i Faili) ---
         69: { 
-            base: { emoji: "👍", arText: "مُسَاعِد", trText: "Yardımcı / Müsait (Türkçede: Elverişli, durumu uygun kişi/şey)." } 
+            base: { 
+                emoji: "👍", 
+                arText: "مُسَاعِد", 
+                trText: "Yardımcı / Müsait.",
+                ornek: { ar: "هَذَا الْوَقْتُ مُسَاعِدٌ جِدًّا", tr: "Bu vakit çok müsaittir (yardımcı/elverişlidir)." }
+            } 
         }
     },
 
@@ -1657,11 +3432,43 @@ const wordEasterEggs = {
         9: { base: { emoji: "❓", arText: "يَجْهَلُ", trText: "Bilmez / Bilmiyor." } },
         10: { base: { emoji: "❗", arText: "اِجْهَلْ", trText: "Bilme!" } },
 
-        33: { base: { emoji: "🙈", arText: "النَّاسُ أَعْدَاءُ مَا جَهِلُوا", trText: "İnsanlar bilmedikleri şeyin düşmanıdır. (Hz. Ali)" }, suggestsPlus: true, "يَّة": { emoji: "🌑", arText: "جَاهِلِيَّة", trText: "Cahiliye dönemi." } }, 
-        36: { base: { emoji: "❓", arText: "فَاعِلٌ مَجْهُولٌ", trText: "Faili meçhul (yapanı bilinmeyen)." } }, 
-        46: { base: { emoji: "🙉", arText: "وَإِذَا خَاطَبَهُمُ الْجَاهِلُونَ قَالُوا سَلَامًا", trText: "Cahiller onlara laf attığında 'Selam' der (geçerler). (Furkan Suresi)" } } 
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "🙈", 
+                arText: "جَاهِل", 
+                trText: "Bilmeyen / Cahil.",
+                ornek: { ar: "النَّاسُ أَعْدَاءُ مَا جَهِلُوا", tr: "İnsanlar bilmedikleri şeyin düşmanıdır. (Hz. Ali)" }
+            }, 
+            suggestsPlus: true, 
+            "يَّة": { 
+                emoji: "🌑", 
+                arText: "جَاهِلِيَّة", 
+                trText: "Cahiliye (dönemi).",
+                ornek: { ar: "عَادَاتُ الْجَاهِلِيَّةِ الْقَدِيمَةِ", tr: "Eski cahiliye dönemi adetleri." }
+            } 
+        }, 
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "❓", 
+                arText: "مَجْهُول", 
+                trText: "Bilinmeyen / Meçhul.",
+                ornek: { ar: "فَاعِلٌ مَجْهُولٌ", tr: "Faili meçhul (yapanı bilinmeyen)." }
+            } 
+        }, 
+        
+        // --- 46 Numaralı Kalıp (فُعَلَاء) ---
+        46: { 
+            base: { 
+                emoji: "🙉", 
+                arText: "جُهَلَاء", 
+                trText: "Cahiller (Cühelâ).",
+                ornek: { ar: "وَإِذَا خَاطَبَهُمُ الْجَاهِلُونَ قَالُوا سَلَامًا", tr: "Cahiller onlara laf attığında 'Selam' der (geçerler). (Furkan Suresi, 63)" }
+            } 
+        } 
     },
-
 
     // ==================================================================
     // 34. S-K-N (س ك ن) KÖKÜ - Sakin olmak / İkamet etmek / Huzur
@@ -1673,12 +3480,53 @@ const wordEasterEggs = {
         2: { base: { emoji: "🏡", arText: "يَسْكُنُ", trText: "Sakinleşir / İkamet ediyor." } },
         3: { base: { emoji: "🛑", arText: "اُسْكُنْ", trText: "Sakinleş / İkamet et!" } },
 
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { base: { emoji: "😌", arText: "سَاكِن", trText: "Sakin / Oturan." } }, 
-        35: { suggestsPlus: true, "ة": { emoji: "✨", arText: "فَأَنْزَلَ اللهُ سَكِينَتَهُ عَلَيْهِ", trText: "Allah onun üzerine sekinetini (huzur ve güvenini) indirdi. (Tevbe Suresi)" } }, 
-        36: { base: { emoji: "🏘️", arText: "مِنْطَقَةٌ مَسْكُونَةٌ", trText: "Meskun mahal (yerleşim yeri)." } }, 
-        38: { base: { emoji: "🏡", arText: "وَالله جَعَلَ لَكُمْ مِنْ بُيُوتِكُمْ سَكَنًا", trText: "Allah, evlerinizi sizin için bir huzur ve dinlenme yeri (mesken) kıldı. (Nahl Suresi)" } }, 
-        55: { base: { emoji: "🏢", arText: "إِسْكَان", trText: "İskan." } }, 
-        61: { base: { emoji: "🕊️", arText: "تَسْكِينُ الْأَلَمِ", trText: "Ağrıyı dindirmek (Teskin etmek)." } } 
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { emoji: "🕊️", arText: "سَكِين", trText: "Huzur (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "✨", 
+                arText: "سَكِينَة", 
+                trText: "Sekinet / Huzur ve güven.",
+                ornek: { ar: "فَأَنْزَلَ اللَّهُ سَكِينَتَهُ عَلَيْهِ", tr: "Allah onun üzerine sekinetini (huzur ve güvenini) indirdi. (Tevbe Suresi, 40)" }
+            } 
+        }, 
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "🏘️", 
+                arText: "مَسْكُون", 
+                trText: "İkamet edilen / Meskun.",
+                ornek: { ar: "مِنْطَقَةٌ مَسْكُونَةٌ", tr: "Meskun mahal (yerleşim yeri)." }
+            } 
+        }, 
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { 
+                emoji: "🏡", 
+                arText: "مَسْكَن", 
+                trText: "İkamet yeri / Mesken.",
+                ornek: { ar: "وَاللَّهُ جَعَلَ لَكُمْ مِنْ بُيُوتِكُمْ سَكَنًا", tr: "Allah, evlerinizi sizin için bir huzur ve dinlenme yeri (mesken/sakan) kıldı. (Nahl Suresi, 80)" }
+            } 
+        }, 
+        
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
+        55: { base: { emoji: "🏢", arText: "إِسْكَان", trText: "İskan / Yerleştirme." } }, 
+        
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
+        61: { 
+            base: { 
+                emoji: "🕊️", 
+                arText: "تَسْكِين", 
+                trText: "Teskin / Yatıştırma.",
+                ornek: { ar: "تَسْكِينُ الْأَلَمِ", tr: "Ağrıyı dindirmek (Teskin etmek)." }
+            } 
+        } 
     },
 
     // ==================================================================
@@ -1696,43 +3544,53 @@ const wordEasterEggs = {
         65: { base: { emoji: "🛡️", arText: "يُجَاهِدُ", trText: "Mücadele eder / Cihad ediyor." } },
         66: { base: { emoji: "❗", arText: "جَاهِدْ", trText: "Mücadele et / Cihad et!" } },
 
-        23: { base: { emoji: "🛡️", arText: "وَجَاهِدُوا فِي اللهِ حَقَّ جِهَادِهِ", trText: "Allah uğrunda hakkıyla cihad edin (gayret gösterin). (Hac Suresi)" } }, 
+        // --- 23 Numaralı Kalıp (فِعَال) ---
+        23: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "جِهَاد", 
+                trText: "Mücadele / Cihad.",
+                ornek: { ar: "وَجَاهِدُوا فِي اللَّهِ حَقَّ جِهَادِهِ", tr: "Allah uğrunda hakkıyla cihad edin (gayret gösterin). (Hac Suresi, 78)" }
+            } 
+        }, 
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { base: { emoji: "💪", arText: "جَاهِد", trText: "Çaba gösteren." } }, 
-        69: { base: { emoji: "🏇", arText: "مُجَاهِد", trText: "Mücahit." }, suggestsPlus: true, "ة": { emoji: "🧕", arText: "مُجَاهِدَة", trText: "Kadın mücahit." } }, 
+        
+        // --- 69 Numaralı Kalıp (مُفَاعِل) ---
+        69: { 
+            base: { emoji: "🏇", arText: "مُجَاهِد", trText: "Mücahit / Mücadele eden." }, 
+            suggestsPlus: true, 
+            "ة": { emoji: "🧕", arText: "مُجَاهِدَة", trText: "Kadın mücahit." } 
+        }, 
 
         // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı) ---
         77: { base: { emoji: "📚", arText: "اِجْتَهَدَ", trText: "Çabaladı / İçtihat etti." } },
         78: { base: { emoji: "✍️", arText: "يَجْتَهِدُ", trText: "Çabalar / İçtihat ediyor." } },
         79: { base: { emoji: "❗", arText: "اِجْتَهِدْ", trText: "Çabala / İçtihat et!" } },
 
-        80: { base: { emoji: "📚", arText: "الِاجْتِهَادُ مِفْتَاحُ النَّجَاحِ", trText: "Çalışmak (içtihat/gayret), başarının anahtarıdır." } }, 
-        81: { base: { emoji: "🤓", arText: "لِكُلِّ مُجْتَهِدٍ نَصِيبٌ", trText: "Her çalışanın (gayret edenin) bir nasibi (payı) vardır. (Atasözü)" } } 
+        // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
+        80: { 
+            base: { 
+                emoji: "📚", 
+                arText: "اِجْتِهَاد", 
+                trText: "İçtihat / Gayret.",
+                ornek: { ar: "الِاجْتِهَادُ مِفْتَاحُ النَّجَاحِ", tr: "Çalışmak (içtihat/gayret), başarının anahtarıdır." }
+            } 
+        }, 
+        
+        // --- 81 Numaralı Kalıp (مُفْتَعِل) ---
+        81: { 
+            base: { 
+                emoji: "🤓", 
+                arText: "مُجْتَهِد", 
+                trText: "Çalışkan / Müçtehit.",
+                ornek: { ar: "لِكُلِّ مُجْتَهِدٍ نَصِيبٌ", tr: "Her çalışanın (gayret edenin) bir nasibi (payı) vardır. (Atasözü)" }
+            } 
+        } 
     },
 
-    // ==================================================================
-    // 36. S-L-M (س ل م) KÖKÜ - Barış / Kurtuluş / Teslim Olmak
-    // 4. Bab (فَعِلَ - يَفْعَلُ)
-    // ==================================================================
-    "سلم": {
-        // --- 8, 9, 10 Numaralı Kalıplar (4. Bab) ---
-        8: { base: { emoji: "🕊️", arText: "سَلِمَ", trText: "Kurtuldu / Güvende oldu." } },
-        9: { base: { emoji: "😌", arText: "يَسْلَمُ", trText: "Kurtulur / Güvende olur." } },
-        10: { base: { emoji: "🛡️", arText: "اِسْلَمْ", trText: "Kurtul / Güvende ol!" } },
-
-        22: { base: { emoji: "🕊️", arText: "أَفْشُوا السَّلَامَ بَيْنَكُمْ", trText: "Aranızda selamı yayınız. (Hadis-i Şerif)" }, suggestsPlus: true, "ة": { emoji: "🛡️", arText: "فِي التَّأَنِّي السَّلَامَةُ", trText: "Acele etmemekte (teennide) selamet vardır. (Atasözü)" } }, 
-        33: { base: { emoji: "😌", arText: "سَالِم", trText: "Sağ salim / Güvende." } }, 
-        35: { base: { emoji: "🫀", arText: "إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ", trText: "Ancak Allah'a temiz (selim) bir kalple gelenler müstesna. (Şuarâ Suresi)" } }, 
-
-        // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı) ---
-        52: { base: { emoji: "🤲", arText: "أَسْلَمَ", trText: "Teslim oldu / Müslüman oldu." } },
-        53: { base: { emoji: "☪️", arText: "يُسْلِمُ", trText: "Teslim olur / Müslüman oluyor." } },
-        54: { base: { emoji: "❗", arText: "أَسْلِمْ", trText: "Teslim ol / Müslüman ol!" } },
-
-        55: { base: { emoji: "🌙", arText: "إِنَّ الدِّينَ عِنْدَ اللهِ الْإِسْلَامُ", trText: "Şüphesiz Allah katında din İslam'dır. (Âl-i İmrân Suresi)" } }, 
-        56: { base: { emoji: "🤲", arText: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِن لِّسَانِهِ وَيَدِهِ", trText: "Müslüman, diğer Müslümanların onun dilinden ve elinden güvende (salim) olduğu kimsedir. (Hadis-i Şerif)" } }, 
-        61: { base: { emoji: "📦", arText: "تَسْلِيم", trText: "Teslim." } } 
-    },
-
+    
     // ==================================================================
     // 37. R-J-' (ر ج ع) KÖKÜ - Dönmek / Başvurmak / Gözden Geçirmek
     // 2. Bab (فَعَلَ - يَفْعِلُ)
@@ -1743,21 +3601,45 @@ const wordEasterEggs = {
         4: { base: { emoji: "🔙", arText: "يَرْجِعُ", trText: "Döner / Dönüyor." } },
         5: { base: { emoji: "❗", arText: "اِرْجِعْ", trText: "Dön!" } },
 
-        37: { base: { emoji: "📚", arText: "إِلَى اللهِ مَرْجِعُكُمْ جَمِيعًا", trText: "Hepinizin dönüşü (mercii/kaynağı) Allah'adır. (Mâide Suresi)" } }, 
+        // --- 37 Numaralı Kalıp (مَفْعِل) ---
+        37: { 
+            base: { 
+                emoji: "📚", 
+                arText: "مَرْجِع", 
+                trText: "Dönüş yeri / Kaynak (Merci).",
+                ornek: { ar: "إِلَى اللَّهِ مَرْجِعُكُمْ جَمِيعًا", tr: "Hepinizin dönüşü (mercii/kaynağı) Allah'adır. (Mâide Suresi, 48)" }
+            } 
+        }, 
 
         // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı) ---
         64: { base: { emoji: "📝", arText: "رَاجَعَ", trText: "Gözden geçirdi / Müracaat etti." } },
         65: { base: { emoji: "📖", arText: "يُرَاجِعُ", trText: "Gözden geçirir / Müracaat ediyor." } },
         66: { base: { emoji: "❗", arText: "رَاجِعْ", trText: "Gözden geçir / Müracaat et!" } },
 
-        67: { base: { emoji: "📝", arText: "مُرَاجَعَةُ الدُّرُوسِ قَبْلَ الِامْتِحَانِ مُفِيدَةٌ", trText: "Sınavdan önce derslerin tekrar edilmesi (gözden geçirilmesi) faydalıdır." } }, 
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
+        67: { 
+            base: { 
+                emoji: "📝", 
+                arText: "مُرَاجَعَة", 
+                trText: "Gözden geçirme / Müracaat.",
+                ornek: { ar: "مُرَاجَعَةُ الدُّرُوسِ قَبْلَ الِامْتِحَانِ مُفِيدَةٌ", tr: "Sınavdan önce derslerin tekrar edilmesi (gözden geçirilmesi) faydalıdır." }
+            } 
+        }, 
         
         // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı) ---
         77: { base: { emoji: "🔄", arText: "اِرْتَجَعَ", trText: "Geri döndü / İade etti." } },
         78: { base: { emoji: "🔁", arText: "يَرْتَجِعُ", trText: "Geri döner / İade ediyor." } },
         79: { base: { emoji: "❗", arText: "اِرْتَجِعْ", trText: "Geri dön / İade et!" } },
 
-        80: { base: { emoji: "↩️", arText: "اِرْتِجَاعُ الْبَضَاعَةِ حَقٌّ لِلْمُشْتَرِي", trText: "Malın iadesi (geri verilmesi/artırım) alıcının hakkıdır." } } 
+        // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
+        80: { 
+            base: { 
+                emoji: "↩️", 
+                arText: "اِرْتِجَاع", 
+                trText: "İade / Geri verme.",
+                ornek: { ar: "اِرْتِجَاعُ الْبَضَاعَةِ حَقٌّ لِلْمُشْتَرِي", tr: "Malın iadesi (geri verilmesi) alıcının hakkıdır." }
+            } 
+        } 
     },
 
     // ==================================================================
@@ -1770,16 +3652,40 @@ const wordEasterEggs = {
         4: { base: { emoji: "📐", arText: "يَشْكِلُ", trText: "Şekillendirir." } },
         5: { base: { emoji: "❗", arText: "اِشْكِلْ", trText: "Şekillendir!" } },
 
+        // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { base: { emoji: "📐", arText: "شَكْل", trText: "Şekil / Biçim." } }, 
+        
+        // --- 41 Numaralı Kalıp (أَفْعَال) ---
         41: { base: { emoji: "🎨", arText: "أَشْكَال", trText: "Şekiller." } }, 
-        56: { base: { emoji: "⚠️", arText: "لِكُلِّ مُشْكِلٍ حَلٌّ فِي النِّهَايَةِ", trText: "Her müşkülün (sorunun) sonunda bir çözümü vardır." } }, 
+        
+        // --- 56 Numaralı Kalıp (مُفْعِل) ---
+        56: { 
+            base: { emoji: "⚠️", arText: "مُشْكِل", trText: "Sorun (Yalın)." },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "⚠️",
+                arText: "مُشْكِلَة",
+                trText: "Sorun / Problem / Müşkül.",
+                ornek: { ar: "لِكُلِّ مُشْكِلَةٍ حَلٌّ فِي النِّهَايَةِ", tr: "Her müşkülün (sorunun) sonunda bir çözümü vardır." }
+            }
+        }, 
         
         // --- 58, 59, 60 Numaralı Kalıplar (Tef'îl Babı) ---
         58: { base: { emoji: "🏺", arText: "شَكَّلَ", trText: "Oluşturdu / Teşkil etti." } },
         59: { base: { emoji: "🛠️", arText: "يُشَكِّلُ", trText: "Oluşturur / Teşkil ediyor." } },
         60: { base: { emoji: "❗", arText: "شَكِّلْ", trText: "Oluştur / Teşkil et!" } },
 
-        61: { base: { emoji: "🔠", arText: "تَشْكِيل", trText: "Şekillendirme." }, suggestsPlus: true, "ات": { emoji: "🏢", arText: "تَشْكِيلَاتُ الدَّوْلَةِ التَّنْظِيمِيَّةِ", trText: "Devletin kurumsal teşkilatları (yapılanmaları)." } } 
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
+        61: { 
+            base: { emoji: "🔠", arText: "تَشْكِيل", trText: "Şekillendirme." }, 
+            suggestsPlus: true, 
+            "ات": { 
+                emoji: "🏢", 
+                arText: "تَشْكِيلَات", 
+                trText: "Teşkilatlar / Kurumlar.",
+                ornek: { ar: "تَشْكِيلَاتُ الدَّوْلَةِ التَّنْظِيمِيَّةِ", tr: "Devletin kurumsal teşkilatları (yapılanmaları)." }
+            } 
+        } 
     },
 
     // ==================================================================
@@ -1787,11 +3693,29 @@ const wordEasterEggs = {
     // 2. Bab (فَعَلَ - يَفْعِلُ)
     // ==================================================================
     "نسب": {
-        // --- 1, 4, 5 Numaralı Kalıplar (2. Bab) ---
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "🌳", 
+                arText: "نَسَب", 
+                trText: "Soy / Nesep.",
+                ornek: { ar: "الْمَرْءُ بِأَدَبِهِ لَا بِأَصْلِهِ وَنَسَبِهِ", tr: "Kişinin değeri aslı ve nesebiyle (soyuyla) değil, edebiyle ölçülür. (Atasözü)" }
+            } 
+        }, 
         
-
-        17: { base: { emoji: "🌳", arText: "الْمَرْءُ بِأَدَبِهِ لَا بِأَصْلِهِ وَنَسَبِهِ", trText: "Kişinin değeri aslı ve nesebiyle (soyuyla) değil, edebiyle ölçülür. (Atasözü)" } }, 
-        20: { suggestsPlus: true, "ة": { emoji: "📊", arText: "نِسْبَةُ النَّجَاحِ عَالِيَةٌ فِي الِامْتِحَانِ", trText: "Sınavdaki başarı nispeti (oranı) oldukça yüksektir." } }, 
+        // --- 20 Numaralı Kalıp (فِعْل) ---
+        20: { 
+            base: { emoji: "📊", arText: "نِسْب", trText: "Oran (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "📊", 
+                arText: "نِسْبَة", 
+                trText: "Nispet / Oran.",
+                ornek: { ar: "نِسْبَةُ النَّجَاحِ عَالِيَةٌ فِي الِامْتِحَانِ", tr: "Sınavdaki başarı nispeti (oranı) oldukça yüksektir." }
+            } 
+        }, 
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
         36: { base: { emoji: "👤", arText: "مَنْسُوب", trText: "Mensup / İlişkili." } }, 
         
         // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı) ---
@@ -1799,193 +3723,155 @@ const wordEasterEggs = {
         65: { base: { emoji: "✅", arText: "يُنَاسِبُ", trText: "Uygun olur / Yakışıyor." } },
         66: { base: { emoji: "❗", arText: "نَاسِبْ", trText: "Uygun ol!" } },
 
-        67: { base: { emoji: "🎉", arText: "نَحْتَفِلُ بِهَذِهِ الْمُنَاسَبَة السَّعِيدَةِ", trText: "Bu mutlu münasebet (vesile/özel gün) sebebiyle kutlama yapıyoruz." } }, 
-        69: { base: { emoji: "👍🏼", arText: "مُنَاسِب", trText: "Uygun!" } },
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة) ---
+        67: { 
+            base: { 
+                emoji: "🎉", 
+                arText: "مُنَاسَبَة", 
+                trText: "Münasebet / Vesile / İlişki.",
+                ornek: { ar: "نَحْتَفِلُ بِهَذِهِ الْمُنَاسَبَة السَّعِيدَةِ", tr: "Bu mutlu münasebet (vesile/özel gün) sebebiyle kutlama yapıyoruz." }
+            } 
+        }, 
+        
+        // --- 69 Numaralı Kalıp (مُفَاعِل) ---
+        69: { base: { emoji: "👍🏼", arText: "مُنَاسِب", trText: "Uygun / Münasip." } },
         
         // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı) ---
         77: { base: { emoji: "📝", arText: "اِنْتَسَبَ", trText: "Kayıt oldu / İntisap etti." } },
         78: { base: { emoji: "✍️", arText: "يَنْتَسِبُ", trText: "Kayıt olur / İntisap ediyor." } },
         79: { base: { emoji: "❗", arText: "اِنْتَسِبْ", trText: "Kayıt ol / İntisap et!" } },
 
+        // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
         80: { base: { emoji: "📝", arText: "اِنْتِسَاب", trText: "Kayıt olma / İntisap." } } 
     },
-   // ==================================================================
+
+    // ==================================================================
     // 40. H-S-L (ح ص ل) KÖKÜ - Elde Etmek / Ürün / Sonuç
     // 1. Bab (فَعَلَ - يَفْعُلُ) ve Tef'îl Babı
     // ==================================================================
     "حصل": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
-        1: { 
-            base: { emoji: "🎯", arText: "حَصَلَ", trText: "Meydana geldi / Elde etti." } 
-        },
+        1: { base: { emoji: "🎯", arText: "حَصَلَ", trText: "Meydana geldi / Elde etti." } },
         
         // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari / 1. Bab) ---
-        2: { 
-            base: { emoji: "🔄", arText: "يَحْصُلُ", trText: "Meydana gelir / Elde ediyor." } 
-        },
+        2: { base: { emoji: "🔄", arText: "يَحْصُلُ", trText: "Meydana gelir / Elde ediyor." } },
         
         // --- 3 Numaralı Kalıp (اُفْعُلْ - Emir / 1. Bab) ---
-        3: { 
-            base: { emoji: "❗", arText: "اُحْصُلْ", trText: "Elde et!" } 
-        },
+        3: { base: { emoji: "❗", arText: "اُحْصُلْ", trText: "Elde et!" } },
 
         // --- 25 Numaralı Kalıp (فُعُول - Masdar) ---
         25: { 
             base: { emoji: "✨", arText: "حُصُول", trText: "Meydana gelme / Elde etme." }, 
-           
-            "ا": { emoji: "🤲", arText: "حُصُولًا عَلَى رِضَا اللهِ", trText: "Allah'ın rızasını elde etmek için." } 
+            suggestsPlus: true,
+            "ا": { 
+                emoji: "🤲", 
+                arText: "حُصُولًا", 
+                trText: "Elde ederek.",
+                ornek: { ar: "حُصُولًا عَلَى رِضَا اللهِ", tr: "Allah'ın rızasını elde etmek için." }
+            } 
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { 
-            base: { emoji: "🎯", arText: "وَالْحَاصِلُ أَنَّ الصِّحَّةَ تَاجٌ", trText: "Velhasıl (sözün özü/kısacası), sağlık bir taçtır." }, 
+            base: { 
+                emoji: "🎯", 
+                arText: "حَاصِل", 
+                trText: "Elde edilen / Hasıla.",
+                ornek: { ar: "وَالْحَاصِلُ أَنَّ الصِّحَّةَ تَاجٌ", tr: "Velhasıl (sözün özü/kısacası), sağlık bir taçtır." }
+            }, 
             suggestsPlus: true, 
-            "ات": { emoji: "📈", arText: "زَادَتْ حَاصِلَاتُ الشَّرِكَةِ هَذَا الْعَامِ", trText: "Şirketin hasılatı (gelirleri) bu yıl arttı." } 
+            "ات": { 
+                emoji: "📈", 
+                arText: "حَاصِلَات", 
+                trText: "Hasılat / Gelirler.",
+                ornek: { ar: "زَادَتْ حَاصِلَاتُ الشَّرِكَةِ هَذَا الْعَامِ", tr: "Şirketin hasılatı (gelirleri) bu yıl arttı." }
+            } 
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
         36: { 
-            base: { emoji: "🌾", arText: "مَحْصُولُ هَذَا الْعَامِ وَفِيرٌ", trText: "Bu yılın mahsulü (ürünü) bereketlidir." } 
+            base: { 
+                emoji: "🌾", 
+                arText: "مَحْصُول", 
+                trText: "Mahsul / Ürün.",
+                ornek: { ar: "مَحْصُولُ هَذَا الْعَامِ وَفِيرٌ", tr: "Bu yılın mahsulü (ürünü) bereketlidir." }
+            } 
         },
 
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
-        58: { 
-            base: { emoji: "💰", arText: "حَصَّلَ", trText: "Tahsil etti / Topladı / Kazandı." } 
-        },
+        58: { base: { emoji: "💰", arText: "حَصَّلَ", trText: "Tahsil etti / Topladı / Kazandı." } },
         
         // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
-        59: { 
-            base: { emoji: "🧾", arText: "يُحَصِّلُ", trText: "Tahsil eder / Topluyor." } 
-        },
+        59: { base: { emoji: "🧾", arText: "يُحَصِّلُ", trText: "Tahsil eder / Topluyor." } },
         
         // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
-        60: { 
-            base: { emoji: "❗", arText: "حَصِّلْ", trText: "Tahsil et / Topla!" } 
-        },
+        60: { base: { emoji: "❗", arText: "حَصِّلْ", trText: "Tahsil et / Topla!" } },
 
         // --- 61 Numaralı Kalıp (تَفْعِيل - Masdar / Tef'îl Babı) ---
         61: { 
-            base: { emoji: "🎓", arText: "تَحْصِيلُ الْعِلْمِ نُورٌ لِلْعَقْلِ", trText: "İlim tahsil etmek (eğitim görmek/elde etmek) akıl için nurdur." }, 
+            base: { 
+                emoji: "🎓", 
+                arText: "تَحْصِيل", 
+                trText: "Tahsil / Elde etme.",
+                ornek: { ar: "تَحْصِيلُ الْعِلْمِ نُورٌ لِلْعَقْلِ", tr: "İlim tahsil etmek (eğitim görmek/elde etmek) akıl için nurdur." }
+            }, 
             suggestsPlus: true, 
-            "ات": { emoji: "🧾", arText: "قِسْمُ التَّحْصِيلَاتِ فِي الْبَنْكِ", trText: "Bankadaki tahsilat (alacakların toplanması) bölümü." } 
+            "ات": { 
+                emoji: "🧾", 
+                arText: "تَحْصِيلَات", 
+                trText: "Tahsilatlar / Toplananlar.",
+                ornek: { ar: "قِسْمُ التَّحْصِيلَاتِ فِي الْبَنْكِ", tr: "Bankadaki tahsilat (alacakların toplanması) bölümü." }
+            } 
         }
     },
 
+    // ==================================================================
     // 41. B-R-K (ب ر ك) KÖKÜ - Bereket / Kutlamak / Çoğalmak
+    // ==================================================================
     "برك": {
-        17: { suggestsPlus: true, "ة": { emoji: "🌾", arText: "الْبَرَكَةُ فِي الْبُكُورِ", trText: "Bereket, sabahın erken vakitlerindedir. (Hadis-i Şerif)" } }, // بَرَك + ة = بَرَكَة
-        61: { base: { emoji: "🥳", arText: "تَبْرِيكَاتِي الْحَارَّةُ بِمُنَاسَبَةِ النَّجَاحِ", trText: "Başarı vesilesiyle en samimi tebriklerim." } }, // تَبْرِيك
-        70: { base: { emoji: "🌙", arText: "شَهْرٌ مُبَارَكٌ وَعِيدٌ سَعِيدٌ", trText: "Mübarek bir ay ve mutlu bir bayram." } }, // مُبَارَك
-        91: { base: { emoji: "🤲", arText: "التَّبَرُّكُ بِدُعَاءِ الْوَالِدَيْنِ", trText: "Anne babanın duasıyla bereketlenmek (teberrük etmek)." } } // تَبَرُّك
-    },
-
-    // ==================================================================
-    // 42. Q-D-R (ق د ر) KÖKÜ - Ölçmek / Güç Yetirmek / Değer / Kader
-    // 2. Bab (فَعَلَ - يَفْعِلُ), Tef'îl ve İfti'âl Babları
-    // ==================================================================
-    "قدر": {
-        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 2. Bab) ---
-        1: { 
-            base: { emoji: "📏", arText: "قَدَرَ", trText: "Ölçtü / Güç yetirdi." } 
-        },
-        
-        // --- 4 Numaralı Kalıp (يَفْعِلُ - Muzari / 2. Bab) ---
-        4: { 
-            base: { emoji: "💪", arText: "يَقْدِرُ", trText: "Güç yetirir / Ölçüyor." } 
-        },
-        
-        // --- 5 Numaralı Kalıp (اِفْعِلْ - Emir / 2. Bab) ---
-        5: { 
-            base: { emoji: "❗", arText: "اِقْدِرْ", trText: "Güç yetir!" } 
-        },
-
         // --- 17 Numaralı Kalıp (فَعَل) ---
         17: { 
-            base: { emoji: "✨", arText: "إِنَّا كُلَّ شَيْءٍ خَلَقْنَاهُ بِقَدَرٍ", trText: "Şüphesiz biz her şeyi bir ölçüye göre (kaderle) yarattık. (Kamer Suresi)" } 
-        },
-        
-        // --- 21 Numaralı Kalıp (فُعْل) ---
-        21: { 
+            base: { emoji: "🌾", arText: "بَرَك", trText: "Bereket (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "💪", arText: "قُدْرَةُ اللهِ لَا حُدُودَ لَهَا", trText: "Allah'ın kudretinin (gücünün) sınırı yoktur." } 
-        },
+            "ة": { 
+                emoji: "🌾", 
+                arText: "بَرَكَة", 
+                trText: "Bereket.",
+                ornek: { ar: "الْبَرَكَةُ فِي الْبُكُورِ", tr: "Bereket, sabahın erken vakitlerindedir. (Hadis-i Şerif)" }
+            } 
+        }, 
         
-        // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            base: { emoji: "🌟", arText: "هُوَ قَادِرٌ عَلَى كُلِّ شَيْءٍ", trText: "O, her şeye kadirdir (güç yetirendir)." } 
-        },
-        
-        // --- 35 Numaralı Kalıp (فَعِيل) ---
-        35: { 
-            base: { emoji: "💎", arText: "إِنَّ اللهَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", trText: "Şüphesiz Allah her şeye kadirdir (sonsuz güç sahibidir). (Bakara Suresi)" } 
-        },
-        
-        // --- 40 Numaralı Kalıp (مِفْعَال) ---
-        40: { 
-            base: { emoji: "📊", arText: "بِمِقْدَارٍ مُعَيَّنٍ", trText: "Belirli bir miktarda." } 
-        },
-
-        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
-        58: { 
-            base: { emoji: "👏", arText: "قَدَّرَ", trText: "Takdir etti / Değer biçti / Kaderini belirledi." } 
-        },
-        
-        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
-        59: { 
-            base: { emoji: "📝", arText: "يُقَدِّرُ", trText: "Takdir eder / Değer biçiyor." } 
-        },
-        
-        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
-        60: { 
-            base: { emoji: "❗", arText: "قَدِّرْ", trText: "Takdir et / Değer biç!" } 
-        },
-
-        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        // --- 61 Numaralı Kalıp (تَفْعِيل) ---
         61: { 
-            base: { emoji: "👏", arText: "شَهَادَةُ تَقْدِيرٍ", trText: "Takdir (teşekkür) belgesi." } 
-        },
+            base: { emoji: "🥳", arText: "تَبْرِيك", trText: "Tebrik / Kutlama." },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "🥳", 
+                arText: "تَبْرِيكَات", 
+                trText: "Tebrikler.",
+                ornek: { ar: "تَبْرِيكَاتِي الْحَارَّةُ بِمُنَاسَبَةِ النَّجَاحِ", tr: "Başarı vesilesiyle en samimi tebriklerim." }
+            }
+        }, 
         
-        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
-        63: { 
-            suggestsPlus: true, 
-            "ات": { emoji: "🔮", arText: "مُقَدَّرَاتُ الْإِنْسَانِ مَكْتُوبَةٌ", trText: "İnsanın mukadderatı (alın yazısı) yazılmıştır." } 
-        },
-
-        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
-        77: { 
-            base: { emoji: "👑", arText: "اِقْتَدَرَ", trText: "Güç yetirdi / İktidar sahibi oldu." } 
-        },
+        // --- 70 Numaralı Kalıp (مُفَاعَل) ---
+        70: { 
+            base: { 
+                emoji: "🌙", 
+                arText: "مُبَارَك", 
+                trText: "Mübarek / Bereketli.",
+                ornek: { ar: "شَهْرٌ مُبَارَكٌ وَعِيدٌ سَعِيدٌ", tr: "Mübarek bir ay ve mutlu bir bayram." }
+            } 
+        }, 
         
-        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - Muzari / İfti'âl Babı) ---
-        78: { 
-            base: { emoji: "💪", arText: "يَقْتَدِرُ", trText: "Güç yetirir / Muktedir oluyor." } 
-        },
-        
-        // --- 79 Numaralı Kalıp (اِفْتَعِلْ - Emir / İfti'âl Babı) ---
-        79: { 
-            base: { emoji: "❗", arText: "اِقْتَدِرْ", trText: "Güç yetir!" } 
-        },
-
-        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
-        80: { 
-            base: { emoji: "👑", arText: "حِزْبُ الِاقْتِدَارِ", trText: "İktidar partisi (yönetme gücü)." } 
-        },
-        
-        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Faili) ---
-        81: { 
-            base: { emoji: "🦁", arText: "فِي مَقْعَدِ صِدْقٍ عِنْدَ مَلِكٍ مُّقْتَدِرٍ", trText: "Güçlü bir padişahın (Muktedir olan Allah'ın) katında, doğruluk koltuğundadırlar. (Kamer Suresi)" } 
-        }
-    },
-
-    // 43. M-L-K (م ل ك) KÖKÜ - Sahip Olmak / Yönetmek / Melek
-    "ملك": {
-        17: { base: { emoji: "👼", arText: "الْمَلَائِكَةُ عِبَادٌ مُكْرَمُونَ", trText: "Melekler (Allah'ın) ikram olunmuş kullarıdır." } }, // مَلَك
-        21: { base: { emoji: "👑", arText: "لِلهِ مُلْكُ السَّمَاوَاتِ وَالْأَرْضِ", trText: "Göklerin ve yerin mülkü (hükümranlığı) Allah'ındır. (Şûrâ Suresi)" } }, // مُلْك
-        33: { base: { emoji: "🔑", arText: "مَالِكِ يَوْمِ الدِّينِ", trText: "Din gününün maliki (sahibi)dir. (Fâtiha Suresi)" } }, // مَالِك
-        35: { base: { emoji: "🤴", arText: "فِي مَقْعَدِ صِدْقٍ عِنْدَ مَلِيكٍ مُّقْتَدِرٍ", trText: "Güçlü bir padişahın (Melik'in) katında, doğruluk koltuğundadırlar. (Kamer Suresi)" }, suggestsPlus: true, "ة": { emoji: "👸", arText: "مَلِيكَة", trText: "Kraliçe." } }, // مَلِيك + ة = مَلِيكَة
-        36: { base: { emoji: "🛡️", arText: "الدَّوْلَةُ الْمَمْلُوكِيَّةُ فِي التَّارِيخِ", trText: "Tarihteki Memlük (köleleştirilmiş asker/hükümdar) Devleti." } }, // مَمْلُوك
-        38: { suggestsPlus: true, "ة": { emoji: "🏰", arText: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ", trText: "Suudi Arabistan Krallığı (Arapçada krallık, Türkçede yurt/memleket)." } }, // مَمْلَك + ة = مَمْلَكَة
-        41: { base: { emoji: "🏢", arText: "مَكْتَبُ الْأَمْلَاكِ وَالْعَقَارَاتِ", trText: "Emlak (mülkler) ve gayrimenkul ofisi." } } // أَمْلَاك
+        // --- 91 Numaralı Kalıp (تَفَعُّل) ---
+        91: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "تَبَرُّك", 
+                trText: "Bereketlenme / Teberrük.",
+                ornek: { ar: "التَّبَرُّكُ بِدُعَاءِ الْوَالِدَيْنِ", tr: "Anne babanın duasıyla bereketlenmek (teberrük etmek)." }
+            } 
+        } 
     },
 
     // ==================================================================
@@ -1995,66 +3881,170 @@ const wordEasterEggs = {
     "رسل": {
         // --- 23 Numaralı Kalıp (فِعَال) ---
         23: { 
+            base: { emoji: "✉️", arText: "رِسَال", trText: "Mesaj (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "✉️", arText: "أَرْسَلْتُ رِسَالَةً نَصِّيَّةً", trText: "Bir kısa mesaj (risale/mektup) gönderdim." } 
+            "ة": { 
+                emoji: "✉️", 
+                arText: "رِسَالَة", 
+                trText: "Mesaj / Risale / Mektup.",
+                ornek: { ar: "أَرْسَلْتُ رِسَالَةً نَصِّيَّةً", tr: "Bir kısa mesaj (risale/mektup) gönderdim." }
+            } 
         },
         
         // --- 26 Numaralı Kalıp (فَعُول) ---
         26: { 
-            base: { emoji: "🌙", arText: "مُحَمَّدٌ رَسُولُ اللهِ", trText: "Muhammed Allah'ın resulüdür (elçisidir). (Fetih Suresi)" } 
+            base: { 
+                emoji: "🌙", 
+                arText: "رَسُول", 
+                trText: "Elçi / Resul.",
+                ornek: { ar: "مُحَمَّدٌ رَسُولُ اللَّهِ", tr: "Muhammed Allah'ın resulüdür (elçisidir). (Fetih Suresi, 29)" }
+            } 
         },
 
         // --- 52 Numaralı Kalıp (أَفْعَلَ - Mazi / İf'âl Babı) ---
-        52: { 
-            base: { emoji: "📤", arText: "أَرْسَلَ", trText: "Gönderdi." } 
-        },
+        52: { base: { emoji: "📤", arText: "أَرْسَلَ", trText: "Gönderdi." } },
         
         // --- 53 Numaralı Kalıp (يُفْعِلُ - Muzari / İf'âl Babı) ---
-        53: { 
-            base: { emoji: "📡", arText: "يُرْسِلُ", trText: "Gönderir / Gönderiyor." } 
-        },
+        53: { base: { emoji: "📡", arText: "يُرْسِلُ", trText: "Gönderir / Gönderiyor." } },
         
         // --- 54 Numaralı Kalıp (أَفْعِلْ - Emir / İf'âl Babı) ---
-        54: { 
-            base: { emoji: "❗", arText: "أَرْسِلْ", trText: "Gönder!" } 
-        },
+        54: { base: { emoji: "❗", arText: "أَرْسِلْ", trText: "Gönder!" } },
 
         // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
         55: { 
             base: { emoji: "📦", arText: "إِرْسَال", trText: "Gönderme / İrsal." },
             suggestsPlus: true, 
-            "يَّة": { emoji: "🧾", arText: "إِرْسَالِيَّةُ الْبَضَائِعِ جَاهِزَةٌ", trText: "Malların sevk irsaliyesi (teslimat belgesi) hazırdır." } 
+            "يَّة": { 
+                emoji: "🧾", 
+                arText: "إِرْسَالِيَّة", 
+                trText: "İrsaliye / Gönderi.",
+                ornek: { ar: "إِرْسَالِيَّةُ الْبَضَائِعِ جَاهِزَةٌ", tr: "Malların sevk irsaliyesi (teslimat belgesi) hazırdır." }
+            } 
         },
 
         // --- 56 Numaralı Kalıp (مُفْعِل - İf'âl Babı İsm-i Faili) ---
-        56: { 
-            base: { emoji: "📨", arText: "مُرْسِل", trText: "Gönderen (Mürsil)." } 
-        },
+        56: { base: { emoji: "📨", arText: "مُرْسِل", trText: "Gönderen (Mürsil)." } },
 
         // --- 57 Numaralı Kalıp (مُفْعَل - İf'âl Babı İsm-i Mef'ulü) ---
         57: { 
             base: { emoji: "👤", arText: "مُرْسَل", trText: "Gönderilen (Mürsel)." },
             suggestsPlus: true,
-            "ينَ": { emoji: "🕊️", arText: "وَسَلَامٌ عَلَى الْمُرْسَلِينَ", trText: "Gönderilen elçilere (peygamberlere) selam olsun. (Sâffât Suresi)" }
+            "ينَ": { 
+                emoji: "🕊️", 
+                arText: "مُرْسَلِينَ", 
+                trText: "Elçiler / Gönderilenler.",
+                ornek: { ar: "وَسَلَامٌ عَلَى الْمُرْسَلِينَ", tr: "Gönderilen elçilere (peygamberlere) selam olsun. (Sâffât Suresi, 181)" }
+            }
         }
     },
 
+    // ==================================================================
     // 45. N-S-R (ن ص ر) KÖKÜ - Yardım Etmek / Zafer
+    // ==================================================================
     "نصر": {
-        19: { base: { emoji: "✌️", arText: "إِذَا جَاءَ نَصْرُ اللهِ وَالْفَتْحُ", trText: "Allah'ın yardımı (nasrı) ve fetih geldiğinde. (Nasr Suresi)" } }, // نَصْر
-        21: { suggestsPlus: true, "ة": { emoji: "🤝", arText: "نُصْرَةُ الْمَظْلُومِ وَاجِبَةٌ", trText: "Mazluma yardım etmek (nusret/destek) vaciptir." } }, // نُصْر + ة = نُصْرَة
-        33: { base: { emoji: "🛡️", arText: "نَاصِر", trText: "Yardım eden / Nasır" } }, // نَاصِر
-        36: { base: { emoji: "🏆", arText: "عَادَ الْجَيْشُ مَنْصُورًا", trText: "Ordu muzaffer (mansur/yardım görmüş) olarak döndü." } } // مَنْصُور
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: { 
+            base: { 
+                emoji: "✌️", 
+                arText: "نَصْر", 
+                trText: "Yardım / Zafer.",
+                ornek: { ar: "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ", tr: "Allah'ın yardımı (nasrı) ve fetih geldiğinde. (Nasr Suresi, 1)" }
+            } 
+        }, 
+        
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            base: { emoji: "🤝", arText: "نُصْر", trText: "Yardım (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🤝", 
+                arText: "نُصْرَة", 
+                trText: "Yardım etme / Nusret.",
+                ornek: { ar: "نُصْرَةُ الْمَظْلُومِ وَاجِبَةٌ", tr: "Mazluma yardım etmek (nusret/destek) vaciptir." }
+            } 
+        }, 
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { base: { emoji: "🛡️", arText: "نَاصِر", trText: "Yardım eden / Nasır." } }, 
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "🏆", 
+                arText: "مَنْصُور", 
+                trText: "Muzaffer / Yardım edilmiş.",
+                ornek: { ar: "عَادَ الْجَيْشُ مَنْصُورًا", tr: "Ordu muzaffer (mansur/yardım görmüş) olarak döndü." }
+            } 
+        } 
     },
 
+    // ==================================================================
     // 46. H-M-L (ح م ل) KÖKÜ - Taşımak / Yüklenmek / Dayanmak
+    // ==================================================================
     "حمل": {
-        19: { suggestsPlus: true, "ة": { emoji: "📣", arText: "حَمْلَةٌ تَعْلِيمِيَّةٌ جَدِيدَةٌ", trText: "Yeni bir eğitim kampanyası (hamlesi)." } }, // حَمْل + ة = حَمْلَة
-        33: { suggestsPlus: true, "ة": { emoji: "🤰", arText: "الْمَرْأَةُ الْحَامِلَةُ", trText: "Hamile (gebe) kadın." } }, // حَامِل + ة = حَامِلَة
-        34: { base: { emoji: "📦", arText: "حَمَّالُ الْمَحَطَّةِ يُسَاعِدُ الْمُسَافِرِينَ", trText: "İstasyon hamalı yolculara yardım ediyor." } }, // حَمَّال
-        80: { base: { emoji: "🎲", arText: "بِكُلِّ اِحْتَمَالٍ", trText: "Her ihtimale karşı." } }, // اِحْتَمَال
-        82: { base: { emoji: "🔮", arText: "أَمْرٌ مُحْتَمَلٌ جِدًّا", trText: "Çok muhtemel (olası) bir durum." } }, // مُحْتَمَل
-        91: { base: { emoji: "⏳", arText: "الصَّبْرُ هُوَ تَحَمُّلُ الصِّعَابِ", trText: "Sabır, zorluklara tahammül etmektir (dayanmaktır)." } } // تَحَمُّل
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: { 
+            base: { emoji: "📣", arText: "حَمْل", trText: "Yük / Taşıma (Yalın)." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "📣", 
+                arText: "حَمْلَة", 
+                trText: "Kampanya / Hamle.",
+                ornek: { ar: "حَمْلَةٌ تَعْلِيمِيَّةٌ جَدِيدَةٌ", tr: "Yeni bir eğitim kampanyası (hamlesi)." }
+            } 
+        }, 
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { emoji: "🤰", arText: "حَامِل", trText: "Taşıyan / Hamile." },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🤰", 
+                arText: "حَامِلَة", 
+                trText: "Hamile kadın.",
+                ornek: { ar: "الْمَرْأَةُ الْحَامِلَةُ", tr: "Hamile (gebe) kadın." }
+            } 
+        }, 
+        
+        // --- 34 Numaralı Kalıp (فَعَّال) ---
+        34: { 
+            base: { 
+                emoji: "📦", 
+                arText: "حَمَّال", 
+                trText: "Hamal / Çokça taşıyan.",
+                ornek: { ar: "حَمَّالُ الْمَحَطَّةِ يُسَاعِدُ الْمُسَافِرِينَ", tr: "İstasyon hamalı yolculara yardım ediyor." }
+            } 
+        }, 
+        
+        // --- 80 Numaralı Kalıp (اِفْتِعَال) ---
+        80: { 
+            base: { 
+                emoji: "🎲", 
+                arText: "اِحْتِمَال", 
+                trText: "İhtimal / Olasılık.",
+                ornek: { ar: "بِكُلِّ اِحْتِمَالٍ", tr: "Her ihtimale karşı." }
+            } 
+        }, 
+        
+        // --- 82 Numaralı Kalıp (مُفْتَعَل) ---
+        82: { 
+            base: { 
+                emoji: "🔮", 
+                arText: "مُحْتَمَل", 
+                trText: "Muhtemel / Olası.",
+                ornek: { ar: "أَمْرٌ مُحْتَمَلٌ جِدًّا", tr: "Çok muhtemel (olası) bir durum." }
+            } 
+        }, 
+        
+        // --- 91 Numaralı Kalıp (تَفَعُّل) ---
+        91: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "تَحَمُّل", 
+                trText: "Tahammül / Dayanma.",
+                ornek: { ar: "الصَّبْرُ هُوَ تَحَمُّلُ الصِّعَابِ", tr: "Sabır, zorluklara tahammül etmektir (dayanmaktır)." }
+            } 
+        } 
     },
 
     // ==================================================================
@@ -2064,50 +4054,95 @@ const wordEasterEggs = {
     "حقق": {
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "⚖️", arText: "الْحَقُw يَعْلُو وَلَا يُعْلَى عَلَيْهِ", trText: "Hak yücedir ve ondan üstünü yoktur. (Atasözü)" } 
+            base: { 
+                emoji: "⚖️", 
+                arText: "حَقّ", 
+                trText: "Hak / Gerçek.",
+                ornek: { ar: "الْحَقُّ يَعْلُو وَلَا يُعْلَى عَلَيْهِ", tr: "Hak yücedir ve ondan üstünü yoktur. (Atasözü)" }
+            } 
         }, 
         
         // --- 25 Numaralı Kalıp (فُعُول) ---
         25: { 
-            base: { emoji: "📚", arText: "كُلِّيَّةُ الْحُقُوقِ", trText: "Hukuk fakültesi." } 
+            base: { 
+                emoji: "📚", 
+                arText: "حُقُوق", 
+                trText: "Haklar / Hukuk.",
+                ornek: { ar: "كُلِّيَّةُ الْحُقُوقِ", tr: "Hukuk fakültesi." }
+            } 
         }, 
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
+            base: { emoji: "💎", arText: "حَقِيق", trText: "Gerçek (Yalın)." },
             suggestsPlus: true, 
-            "ة": { emoji: "💎", arText: "هَذِهِ هِيَ الْحَقِيقَةُ", trText: "İşte bu hakikattir (gerçektir)." } 
+            "ة": { 
+                emoji: "💎", 
+                arText: "حَقِيقَة", 
+                trText: "Hakikat / Gerçek.",
+                ornek: { ar: "هَذِهِ هِيَ الْحَقِيقَةُ", tr: "İşte bu hakikattir (gerçektir)." }
+            } 
         }, 
 
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
         58: { 
-            base: { emoji: "🎯", arText: "حَقَّقَ أَهْدَافَهُ", trText: "Hedeflerini gerçekleştirdi." } 
+            base: { 
+                emoji: "🎯", 
+                arText: "حَقَّقَ", 
+                trText: "Gerçekleştirdi.",
+                ornek: { ar: "حَقَّقَ أَهْدَافَهُ", tr: "Hedeflerini gerçekleştirdi." }
+            } 
         },
         
         // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
         59: { 
-            base: { emoji: "📈", arText: "يُحَقِّقُ النَّجَاحَ", trText: "Başarıyı gerçekleştiriyor / Elde ediyor." } 
+            base: { 
+                emoji: "📈", 
+                arText: "يُحَقِّقُ", 
+                trText: "Gerçekleştirir / Gerçekleştiriyor.",
+                ornek: { ar: "يُحَقِّقُ النَّجَاحَ", tr: "Başarıyı gerçekleştiriyor / Elde ediyor." }
+            } 
         },
         
         // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
         60: { 
-            base: { emoji: "🚀", arText: "حَقِّقْ أَحْلَامَكَ", trText: "Hayallerini gerçekleştir!" } 
+            base: { 
+                emoji: "🚀", 
+                arText: "حَقِّقْ", 
+                trText: "Gerçekleştir!",
+                ornek: { ar: "حَقِّقْ أَحْلَامَكَ", tr: "Hayallerini gerçekleştir!" }
+            } 
         },
 
-       // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
         61: { 
-            base: { emoji: "🔍", arText: "جَارٍ التَّحْقِيقُ فِي الْأَمْرِ", trText: "Olayla ilgili inceleme / soruşturma devam ediyor." }, 
+            base: { 
+                emoji: "🔍", 
+                arText: "تَحْقِيق", 
+                trText: "Soruşturma / Tahkikat.",
+                ornek: { ar: "جَارٍ التَّحْقِيقُ فِي الْأَمْرِ", tr: "Olayla ilgili inceleme / soruşturma devam ediyor." }
+            }, 
             suggestsPlus: true,
-            "ات": { emoji: "📂", arText: "تَحْقِيقَات", trText: "Tahkikat (soruşturmalar / derinlemesine incelemeler)." }
+            "ات": { 
+                emoji: "📂", 
+                arText: "تَحْقِيقَات", 
+                trText: "Tahkikat / Derinlemesine incelemeler." 
+            }
         },
         
         // --- 62 Numaralı Kalıp (مُفَعِّل - Tef'îl Babı İsm-i Faili) ---
         62: { 
-            base: { emoji: "🕵️‍♂️", arText: "مُحَقِّق", trText: "Soruşturmacı / Dedektif / Muhakkik." } 
+            base: { emoji: "🕵️‍♂️", arText: "مُحَقِّق", trText: "Soruşturmacı / Muhakkik." } 
         },
         
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
         63: { 
-            base: { emoji: "💯", arText: "أَمْرٌ مُحَقَّقٌ بِإِذْنِ اللَّهِ", trText: "Allah'ın izniyle muhakkak (kesinleşmiş/gerçekleşmiş) bir durum." } 
+            base: { 
+                emoji: "💯", 
+                arText: "مُحَقَّق", 
+                trText: "Muhakkak / Kesinleşmiş.",
+                ornek: { ar: "أَمْرٌ مُحَقَّقٌ بِإِذْنِ اللَّهِ", tr: "Allah'ın izniyle muhakkak (kesinleşmiş/gerçekleşmiş) bir durum." }
+            } 
         },
         
         // --- 103 Numaralı Kalıp (اِسْتِفْعَال) ---
@@ -2117,95 +4152,176 @@ const wordEasterEggs = {
         
         // --- 105 Numaralı Kalıp (مُسْتَفْعَل) ---
         105: { 
-            base: { emoji: "🎖️", arText: "الْجَائِزَةُ مُسْتَحَقَّةٌ لَهُ", trText: "Ödül ona müstehaktır (hak edilmiştir)." } 
+            base: { 
+                emoji: "🎖️", 
+                arText: "مُسْتَحَقّ", 
+                trText: "Müstehak / Hak edilmiş.",
+                ornek: { ar: "الْجَائِزَةُ مُسْتَحَقَّةٌ لَهُ", tr: "Ödül ona müstehaktır (hak edilmiştir)." }
+            } 
         } 
     },
 
+    // ==================================================================
     // 48. Kh-L-S (خ ل ص) KÖKÜ - Saflık / Samimiyet / İhlas
+    // ==================================================================
     "خلص": {
-        33: { base: { emoji: "💎", arText: "عَسَلٌ خَالِصٌ وَذَهَبٌ خَالِصٌ", trText: "Halis (saf/katkısız) bal ve halis altın." } }, // خَالِص
-        55: { base: { emoji: "❤️", arText: "الْإِخْلَاصُ فِي الْعَمَلِ أَسَاسُ الْقَبُولِ", trText: "İşte ihlas (samimiyet/içtenlik), kabulün temelidir." } }, // إِخْلَاص
-        56: { base: { emoji: "😇", arText: "هُوَ صَدِيقٌ مُخْلِصٌ لَا يَتَغَيَّرُ", trText: "O, asla değişmeyen muhlis (samimi/sadık) bir dosttur." } } // مُخْلِص
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "💎", 
+                arText: "خَالِص", 
+                trText: "Halis / Saf / Katkısız.",
+                ornek: { ar: "عَسَلٌ خَالِصٌ وَذَهَبٌ خَالِصٌ", tr: "Halis (saf/katkısız) bal ve halis altın." }
+            } 
+        }, 
+        
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
+        55: { 
+            base: { 
+                emoji: "❤️", 
+                arText: "إِخْلَاص", 
+                trText: "İhlas / Samimiyet.",
+                ornek: { ar: "الْإِخْلَاصُ فِي الْعَمَلِ أَسَاسُ الْقَبُولِ", tr: "İşte ihlas (samimiyet/içtenlik), kabulün temelidir." }
+            } 
+        }, 
+        
+        // --- 56 Numaralı Kalıp (مُفْعِل) ---
+        56: { 
+            base: { 
+                emoji: "😇", 
+                arText: "مُخْلِص", 
+                trText: "Muhlis / Samimi.",
+                ornek: { ar: "هُوَ صَدِيقٌ مُخْلِصٌ لَا يَتَغَيَّرُ", tr: "O, asla değişmeyen muhlis (samimi/sadık) bir dosttur." }
+            } 
+        } 
     },
 
-    // ==================================================================
-    // 49. K-M-L (ك م ل) KÖKÜ - Tamamlamak / Olgunluk / Kusursuzluk
-    // 1. Bab (فَعَلَ - يَفْعُلُ), İf'âl ve Tef'îl Babları
-    // ==================================================================
-    "كمل": {
-       
 
+
+    // ==================================================================
+    // 50. R-Sh-D (ر ش د) KÖKÜ - Doğru Yolda Olmak / Olgunluk / Rehberlik
+    // ==================================================================
+    "رشد": {
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            base: { 
+                emoji: "🌱", 
+                arText: "رُشْد", 
+                trText: "Rüşt / Doğru yol.",
+                ornek: { ar: "قَد تَّبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ", tr: "Doğru yol (rüşt), eğri yoldan kesinlikle ayrılmıştır. (Bakara Suresi, 256)" }
+            } 
+        }, 
+        
         // --- 22 Numaralı Kalıp (فَعَال) ---
         22: { 
-            base: { emoji: "🌟", arText: "الْكَمَالُ لِلهِ وَحْدَهُ", trText: "Kemal (kusursuzluk) sadece Allah'a mahsustur." } 
-        },
+            base: { 
+                emoji: "💎", 
+                arText: "رَشَاد", 
+                trText: "Reşat / Doğru yol.",
+                ornek: { ar: "أَهْدِكُمْ سَبِيلَ الرَّشَادِ", tr: "Sizi doğru yola (reşat yoluna) ulaştırayım. (Mü'min Suresi, 29)" }
+            } 
+        }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: { 
-            base: { emoji: "🌕", arText: "بَدْرٌ كَامِلٌ", trText: "Kamil (tam) dolunay." } 
-        },
-
-        // --- 52 Numaralı Kalıp (أَفْعَلَ - Mazi / İf'âl Babı) ---
-        52: { 
-            base: { emoji: "✅", arText: "أَكْمَلَ", trText: "Tamamladı (İkmal etti)." },
+            base: { emoji: "🕌", arText: "رَاشِد", trText: "Raşit / Doğru yolda olan." },
             suggestsPlus: true,
-            "تُ": { emoji: "🤲", arText: "الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ", trText: "Bugün sizin için dininizi kemale erdirdim (tamamladım). (Mâide Suresi)" }
-        },
+            "ونَ": { 
+                emoji: "👥", 
+                arText: "رَاشِدُونَ", 
+                trText: "Raşitler / Doğru yolda olanlar.",
+                ornek: { ar: "الْخُلَفَاءُ الرَّاشِدُونَ", tr: "Hulefâ-yi Râşidîn (Doğru yolda olan râşit halifeler)." }
+            }
+        }, 
         
-        // --- 53 Numaralı Kalıp (يُفْعِلُ - Muzari / İf'âl Babı) ---
-        53: { 
-            base: { emoji: "⏳", arText: "يُكْمِلُ", trText: "Tamamlar / Tamamlıyor." } 
-        },
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "رَشِيد", 
+                trText: "Reşit / Aklı başında.",
+                ornek: { ar: "أَلَيْسَ مِنكُمْ رَجُلٌ رَّشِيدٌ", tr: "İçinizde aklı başında (reşit/doğru dürüst) bir adam yok mu? (Hûd Suresi, 78)" }
+            } 
+        }, 
         
-        // --- 54 Numaralı Kalıp (أَفْعِلْ - Emir / İf'âl Babı) ---
-        54: { 
-            base: { emoji: "❗", arText: "أَكْمِلْ", trText: "Tamamla!" } 
-        },
-
-        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        // --- 55 Numaralı Kalıp (إِفْعَال) ---
         55: { 
-            base: { emoji: "🧩", arText: "إِكْمَالُ النَّقْصِ", trText: "Eksiği tamamlama (ikmal)." } 
-        },
-
-        // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
-        58: { 
-            base: { emoji: "🎨", arText: "كَمَّلَ", trText: "Eksiksiz yaptı / Mükemmelleştirdi." } 
-        },
+            base: { 
+                emoji: "ℹ️", 
+                arText: "إِرْشَاد", 
+                trText: "İrşat / Yönlendirme.",
+                ornek: { ar: "إِرْشَادُ النَّاسِ إِلَى الْخَيْرِ", tr: "İnsanları hayra yönlendirmek (irşat etmek)." }
+            } 
+        }, 
         
-        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Muzari / Tef'îl Babı) ---
-        59: { 
-            base: { emoji: "🖌️", arText: "يُكَمِّلُ", trText: "Eksiksiz yapar / Mükemmelleştiriyor." } 
-        },
-        
-        // --- 60 Numaralı Kalıp (فَعِّلْ - Emir / Tef'îl Babı) ---
-        60: { 
-            base: { emoji: "💯", arText: "كَمِّلْ", trText: "Eksiksiz yap!" } 
-        },
-
-        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
-        61: { 
-            base: { emoji: "✅", arText: "تَكْمِيل", trText: "Tamamlama." } 
-        },
-        
-        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
-        63: { 
-            base: { emoji: "💯", arText: "عَمَلٌ مُكَمَّلٌ وَرَائِعٌ", trText: "Mükemmel (eksiksiz) ve harika bir iş." } 
-        }
+        // --- 56 Numaralı Kalıp (مُفْعِل) ---
+        56: { 
+            base: { 
+                emoji: "🗺️", 
+                arText: "مُرْشِد", 
+                trText: "Mürşit / Yol gösterici.",
+                ornek: { ar: "الْكِتَابُ خَيْرُ مُرْشِدٍ لِلْإِنْسَانِ", tr: "Kitap, insan için en iyi mürşittir (yol göstericidir/rehberdir)." }
+            } 
+        } 
     },
 
-    // 50. R-Sh-D (ر ش د) KÖKÜ - Doğru Yolda Olmak / Olgunluk / Rehberlik
-    "رشد": {
-        21: { base: { emoji: "🌱", arText: "قَد تَّبَيَّنَ الرُّشْدُ مِنَ الْغَيِّ", trText: "Doğru yol (rüşt), eğri yoldan kesinlikle ayrılmıştır. (Bakara Suresi)" } }, // رُشْد
-        22: { base: { emoji: "💎", arText: "أَهْدِكُمْ سَبِيلَ الرَّشَادِ", trText: "Sizi doğru yola (reşat yoluna) ulaştırayım. (Mü'min Suresi)" } }, // رَشَاد
-        33: { base: { emoji: "🕌", arText: "الْخُلَفَاءُ الرَّاشِدُونَ", trText: "Hulefâ-yi Râşidîn (Doğru yolda olan râşit halifeler)." } }, // رَاشِد
-        35: { base: { emoji: "🧠", arText: "أَلَيْسَ مِنْكُمْ رَجُلٌ رَشِيدٌ", trText: "İçinizde aklı başında (reşit/doğru dürüst) bir adam yok mu? (Hûd Suresi)" } }, // رَشِيد
-        55: { base: { emoji: "ℹ️", arText: "إِرْشَادُ النَّاسِ إِلَى الْخَيْرِ", trText: "İnsanları hayra yönlendirmek (irşat etmek)." } }, // إِرْشَاد
-        56: { base: { emoji: "🗺️", arText: "الْكِتَابُ خَيْرُ مُرْشِدٍ لِلْإِنْسَانِ", trText: "Kitap, insan için en iyi mürşittir (yol göstericidir/rehberdir)." } } // مُرْشِد
-    },
 
 "أمن": {
+        // --- 8, 9, 10 Numaralı Kalıplar (4. Bab - Sülasi Mücerred) ---
+        8: { 
+            base: { 
+                emoji: "😌", 
+                arText: "أَمِنَ", 
+                trText: "Güvende oldu / Emin oldu.",
+                ornek: { 
+                    ar: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ، وَالْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ عَلَى دِمَائِهِمْ وَأَمْوَالِهِمْ", 
+                    tr: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu kimsedir. Mümin ise insanların canları ve malları hususunda kendisine güvendiği (emin olduğu) kimsedir. (Hadis-i Şerif)" 
+                }
+            },
+            cekimi: ["أَمِنَ", "أَمِنَا", "أَمِنُوا", "أَمِنَتْ", "أَمِنَتَا", "أَمِنَّ", "أَمِنْتَ", "أَمِنْتُمَا", "أَمِنْتُمْ", "أَمِنْتِ", "أَمِنْتُمَا", "أَمِنْتُنَّ", "أَمِنْتُ", "أَمِنَّا", "أَمِنَّا"]
+        },
+        9: { 
+            base: { emoji: "🛡️", arText: "يَأْمَنُ", trText: "Güvende olur / Emin oluyor." },
+            cekimi: ["يَأْمَنُ", "يَأْمَنَانِ", "يَأْمَنُونَ", "تَأْمَنُ", "تَأْمَنَانِ", "يَأْمَنَّ", "تَأْمَنُ", "تَأْمَنَانِ", "تَأْمَنُونَ", "تَأْمَنِينَ", "تَأْمَنَانِ", "تَأْمَنَّ", "آمَنُ", "نَأْمَنُ", "نَأْمَنُ"]
+        },
+        10: { 
+            base: { emoji: "❗", arText: "إِيمَنْ", trText: "Güvende ol / Emin ol!" },
+            cekimi: [
+                {
+                    ar: "<div style='display:flex; justify-content:center; align-items:center; gap:15px; direction:rtl;'><span>اِأْمَنْ</span> <i class='fas fa-arrow-left' style='color:#e74c3c; font-size:18px;'></i> <span style='color:#27ae60;'>إِيمَنْ</span></div>",
+                    tr: "Ses Olayı: Aslı (اِأْمَنْ) şeklindedir. İki hemze yan yana gelince, ikinci hemze birincinin harekesine (esreye) uyumlu olarak 'Ye' harfine dönüşür." 
+                },
+                "إِيمَنْ", "إِيمَنَا", "إِيمَنُوا", "إِيمَنِي", "إِيمَنَا", "إِيمَنَّ"
+            ]
+        },
+
+        // --- İsimler ve Mastarlar ---
         19: { 
-            base: { emoji: "👮", arText: "أَمْن", trText: "Güvenlik." } 
+            base: { 
+                emoji: "👮", 
+                arText: "أَمْن", 
+                trText: "Güvenlik.",
+                ornek: [
+                    {
+                        ar: "الَّذِينَ آمَنُوا وَلَمْ يَلْبِسُوا إِيمَانَهُم بِظُلْمٍ أُولَٰئِكَ لَهُمُ الْأَمْنُ",
+                        tr: "İman edip imanlarına zulmü bulaştırmayanlar; işte emniyet onlarındır. (En'âm Suresi, 82)"
+                    },
+                    {
+                        ar: "يَعِيشُ النَّاسُ فِي بَلَدِنَا فِي أَمْنٍ وَسَلَامٍ",
+                        tr: "İnsanlar ülkemizde güvenlik ve barış içinde yaşar."
+                    }
+                ]
+            },
+            suggestsPlus: true, 
+            "يَّة": { 
+                emoji: "📦", 
+                arText: "أَمْنِيَّة", 
+                trText: "Emniyet / Güvenlik (ile ilgili).",
+                ornek: {
+                    ar: "الْقُوَّاتُ الْأَمْنِيَّةُ تَسْهَرُ عَلَى رَاحَةِ الْمُوَاطِنِينَ",
+                    tr: "Emniyet (güvenlik) güçleri vatandaşların rahatı için nöbet tutar."
+                }
+            } 
         },
         
         22: { 
@@ -2221,8 +4337,8 @@ const wordEasterEggs = {
         },
         
         35: { 
-            base: { emoji: "🤝", arText: "آمِن", trText: "Emin / Güvende olan." },
-            ornek: { ar: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ وَالْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ", tr: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu kimsedir..." } 
+            base: { emoji: "🤝", arText: "أَمِين", trText: "Emin / Güvenilir." },
+            ornek: { ar: "إِنِّي لَكُمْ رَسُولٌ أَمِينٌ", tr: "Şüphesiz ben size gönderilmiş güvenilir (emin) bir elçiyim. (Şuarâ Suresi, 107)" } 
         },
         
         // --- 52, 53, 54 Numaralı Kalıplar (İf'al Babı) ---
@@ -2262,9 +4378,9 @@ const wordEasterEggs = {
                 }
             ],
             suggestsPlus: true,
-            "ونَ": {  // <-- DİKKAT: Menüyle eşleşip turuncu yanması için üstün harekeli yapıldı
+            "ونَ": {  
                 emoji: "👥",
-                arText: "مُؤْمِنُونَ", // <-- Düzgün okunuş için nun harfine üstün eklendi
+                arText: "مُؤْمِنُونَ", 
                 trText: "Müminler (Çoğul).",
                 ornek: { ar: "قَدْ أَفْلَحَ الْمُؤْمِنُونَ", tr: "Müminler gerçekten kurtuluşa ermiştir. (Mü'minûn Suresi, 1)" }
             }
@@ -2290,7 +4406,7 @@ const wordEasterEggs = {
     "حمد": {
         19: { base: { emoji: "🤲", arText: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", trText: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" }, suggestsPlus: true, "يَّة": { emoji: "🌸", arText: "حَمْدِيَّة", trText: "Hamdiye (İsim)." } }, // حَمْد + يَّة = حَمْدِيَّة
         30: { base: { emoji: "🌟", arText: "وَمُبَشِّرًا بِرَسُولٍ يَأْتِي مِن بَعْدِي اسْمُهُ أَحْمَدُ", trText: "Benden sonra gelecek 'Ahmet' (çok övülen) adındaki bir peygamberi müjdeleyici olarak... (Saf Suresi)" } }, // أَحْمَد
-        35: { base: { emoji: "💎", arText: "إِنَّ اللَّهَ هُوَ الْغَنِيُّ الْحَمِيدُ", trText: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } }, // حَمِيد
+        35: { base: { emoji: "💎", arText: "إِنَّ الله هُوَ الْغَنِيُّ الْحَمِيدُ", trText: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } }, // حَمِيد
         36: { base: { emoji: "🏅", arText: "عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا", trText: "Umulur ki Rabbin seni Makam-ı Mahmud'a (övülmüş bir makama) ulaştırır. (İsrâ Suresi)" } }, // مَحْمُود
         63: { base: { emoji: "🌹", arText: "مُحَمَّدٌ رَّسُولُ اللهِ", trText: "Muhammed (s.a.v), Allah'ın elçisidir. (Fetih Suresi)" } } // مُحَمَّد
     },
@@ -2305,7 +4421,7 @@ const wordEasterEggs = {
 
     // 55. Sh-K-R (ش ك ر) KÖKÜ - Teşekkür Etmek / Şükretmek
     "شكر": {
-        21: { base: { emoji: "🙏", arText: "مَنْ لَا يَشْكُرُ النَّاسَ لَا يَشْكُرُ اللَّهَ", trText: "İnsanlara teşekkür etmeyen, Allah'a da şükretmez. (Hadis-i Şerif)" }, suggestsPlus: true, "يّ": { emoji: "👨", arText: "شُكْرِيّ", trText: "Şükrü." }, "يَّة": { emoji: "👩", arText: "شُكْرِيَّة", trText: "Şükriye." } }, // شُكْر + ekler
+        21: { base: { emoji: "🙏", arText: "مَنْ لَا يَشْكُرُ النَّاسَ لَا يَشْكُرُ الله", trText: "İnsanlara teşekkür etmeyen, Allah'a da şükretmez. (Hadis-i Şerif)" }, suggestsPlus: true, "يّ": { emoji: "👨", arText: "شُكْرِيّ", trText: "Şükrü." }, "يَّة": { emoji: "👩", arText: "شُكْرِيَّة", trText: "Şükriye." } }, // شُكْر + ekler
         27: { base: { emoji: "🌹", arText: "شُكْرَانًا جَزِيلًا عَلَى حُسْنِ صَنِيعِكُمْ", trText: "Güzel davranışınız için çok şükran (teşekkür) ederim." } }, // شُكْرَان
         33: { base: { emoji: "😇", arText: "أَنَا شَاكِرٌ لَكَ عَلَى مَعْرُوفِكَ", trText: "İyiliğin için sana şâkirim (teşekkür ederim/minnettarım)." } }, // شَاكِر
         91: { base: { emoji: "🤝", arText: "تَشَكُّرَاتِي الْقَلْبِيَّةُ لَكُمْ جَمِيعًا", trText: "Hepinize kalbi teşekkürlerimi (teşekkürlerimi) sunarım." } }, // تَشَكُّر
@@ -2773,16 +4889,7 @@ const wordEasterEggs = {
                 arText: "تَقِيّ", 
                 trText: "Takva sahibi / Allah'tan sakınan (Yalın)." 
             },
-            suggestsPlus: true,
-            "اء": { 
-                emoji: "👥", 
-                arText: "أَتْقِيَاء", 
-                trText: "Takva sahipleri (Çoğul).",
-                ornek: [
-                    { ar: "إِن كُنتَ تَقِيًّا", tr: "Eğer Allah'tan sakınan (takva sahibi) biriysen... (Meryem Suresi, 18)" },
-                    { ar: "هُمْ أَوْلِيَاءُ اللَّهِ الْأَتْقِيَاءُ", tr: "Onlar Allah'ın takva sahibi dostlarıdır." }
-                ]
-            }
+            
         },
         77: { 
             base: { emoji: "🤲", arText: "اِتَّقَى", trText: "Sakındı / Korundu (Takva gösterdi)." },
@@ -2957,20 +5064,6 @@ const wordEasterEggs = {
             cekimi: ["اِسْتَوْفِ", "اِسْتَوْفِيَا", "اِسْتَوْفُوا", "اِسْتَوْفِي", "اِسْتَوْفِيَا", "اِسْتَوْفِينَ"]
         }
     },
-    "طوي": {
-        71: { 
-            base: { emoji: "📜", arText: "اِنْطَوَى", trText: "Katlandı / Dürüldü." },
-            cekimi: ["اِنْطَوَى", "اِنْطَوَيَا", "اِنْطَوَوْا", "اِنْطَوَتْ", "اِنْطَوَتَا", "اِنْطَوَيْنَ", "اِنْطَوَيْتَ", "اِنْطَوَيْتُمَا", "اِنْطَوَيْتُمْ", "اِنْطَوَيْتِ", "اِنْطَوَيْتُمَا", "اِنْطَوَيْتُنَّ", "اِنْطَوَيْتُ", "اِنْطَوَيْنَا", "اِنْطَوَيْنَا"]
-        },
-        72: { 
-            base: { emoji: "🗞️", arText: "يَنْطَوِي", trText: "Katlanır / Dürülüyor." },
-            cekimi: ["يَنْطَوِي", "يَنْطَوِيَانِ", "يَنْطَوُونَ", "تَنْطَوِي", "تَنْطَوِيَانِ", "يَنْطَوِينَ", "تَنْطَوِي", "تَنْطَوِيَانِ", "تَنْطَوُونَ", "تَنْطَوِينَ", "تَنْطَوِيَانِ", "تَنْطَوِينَ", "أَنْطَوِي", "نَنْطَوِي", "نَنْطَوِي"]
-        },
-        73: { 
-            base: { emoji: "❗", arText: "اِنْطَوِ", trText: "Katlan!" },
-            cekimi: ["اِنْطَوِ", "اِنْطَوِيَا", "اِنْطَوُوا", "اِنْطَوِي", "اِنْطَوِيَا", "اِنْطَوِينَ"]
-        }
-    },
 
     // ==================================================================
     // 33. W-J-D (و ج د) KÖKÜ - Bulmak / Var Olmak
@@ -3051,107 +5144,232 @@ const wordEasterEggs = {
 };
 
 // ==================================================================
-// DİNAMİK HAZIR FİİLLER MENÜSÜ OLUŞTURUCU
+// YENİ KÖK SEÇİM SİSTEMİ (POPUP KLAVYE + TAHMİN)
 // ==================================================================
-const verbCategories = [
-    {
-        id: "genel",
-        title: "Sık Kullanılan Fiiller",
-        // Bu diziyi BOŞ BIRAK, sistem wordEasterEggs içindeki geri kalan TÜM kökleri buraya otomatik dolduracak!
-        verbs: [] 
-    },
-    {
-        id: "aksami-seba",
-        title: "Aksam-ı Seb'a (Düzensizler)",
-        // Aksam-ı Seb'a başlığında görünmesini istediğin kökleri buraya yazıyorsun
-        verbs: [, "أمن","شدد", "أكل", "سأل", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي","ضلل"]
-    },
-    {
-        id: "mezid",
-        title: "Mezid (Türemiş) Fiiller",
-        // Mezid sekmesinde görünmesini istediklerini buraya yazıyorsun
-        verbs: ["عدد", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي"]
+const onemliKokler = ["كتب", "علم", "قدر", "كمل", "ملك", "سلم", "حكم", "عرف", "رحم"];
+const aksamSebaKokleri = ["نصر", "ضرب", "فتح", "علم", "حسب", "كرم", "أمن", "شدد", "أكل", "سأل", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي", "ضلل"];
+const mezidFiilKokleri = ["عدد", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي", "خبر", "نظم", "حقق", "كمل", "شكل"];
+
+const arapcaHarfler = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
+let currentSearchQuery = ""; 
+
+function getRootEmoji(root) {
+    if(wordEasterEggs[root]) {
+        const keys = Object.keys(wordEasterEggs[root]);
+        if (keys.length > 0 && wordEasterEggs[root][keys[0]].base && wordEasterEggs[root][keys[0]].base.emoji) {
+            return wordEasterEggs[root][keys[0]].base.emoji;
+        }
     }
-];
+    return "🔹";
+}
 
-function buildVerbMenu() {
-    const menuContainer = document.getElementById('dynamic-verb-menu');
-    if (!menuContainer) return;
-    menuContainer.innerHTML = ''; // İçini temizle
-
-    // Kategorilenmiş kökleri tespit et (1. ve 2. sıradakiler özel başlıklarımız)
-    const categorizedVerbs = new Set([...verbCategories[1].verbs, ...verbCategories[2].verbs]);
-    const allVerbs = Object.keys(wordEasterEggs); // wordEasterEggs içindeki TÜM kökler
+function renderVerbMenu() {
+    const importantContainer = document.getElementById("important-roots-list");
+    const gridContainer = document.getElementById("letters-grid-container");
     
-    // Kategorisi olmayan her kökü otomatik olarak EN ÜSTTEKİ (0. kategori) Sık Kullanılanlar'a ekle
-    verbCategories[0].verbs = []; // Önce temizle ki çiftleme yapmasın
-    allVerbs.forEach(v => {
-        if (!categorizedVerbs.has(v)) {
-            verbCategories[0].verbs.push(v);
+    if(!importantContainer || !gridContainer) return;
+
+    importantContainer.innerHTML = "";
+    gridContainer.innerHTML = "";
+
+    // 1. Önemli Kökler
+    onemliKokler.forEach(root => {
+        if(wordEasterEggs[root]) importantContainer.innerHTML += createFlatRootItem(root);
+    });
+
+    // 2. 4 Sütunlu Bağımsız Scroll Sistemi
+    const ranges = [
+        { title: "ا - خ", start: 0, end: 6 },
+        { title: "د - ص", start: 7, end: 13 },
+        { title: "ض - ق", start: 14, end: 20 },
+        { title: "ك - ي", start: 21, end: 27 }
+    ];
+
+    const allRoots = Object.keys(wordEasterEggs);
+    const rootsByLetter = {};
+    arapcaHarfler.forEach(h => rootsByLetter[h] = []);
+    allRoots.forEach(root => {
+        const firstLetter = root.charAt(0);
+        if(rootsByLetter[firstLetter]) rootsByLetter[firstLetter].push(root);
+    });
+
+    ranges.forEach(range => {
+        let colHTML = `<div class="letter-column"><div class="col-range-header">${range.title}</div>`;
+        for(let i = range.start; i <= range.end; i++) {
+            let letter = arapcaHarfler[i];
+            if (rootsByLetter[letter] && rootsByLetter[letter].length > 0) {
+                colHTML += `<div class="letter-group-title">${letter}</div>`;
+                colHTML += `<div class="flat-root-list" style="padding: 0 10px; justify-content: center;">`;
+                rootsByLetter[letter].forEach(r => { colHTML += createFlatRootItem(r); });
+                colHTML += `</div>`;
+            }
+        }
+        colHTML += `</div>`;
+        gridContainer.innerHTML += colHTML;
+    });
+
+    // 3. Popup Klavyeyi Oluştur
+    renderSearchKeyboard();
+}
+
+function createFlatRootItem(root) {
+    return `<div class="flat-root-item root-item" data-root="${root}" onclick="selectRootFromMenu('${root}')">
+        <span>${root}</span>
+        <span style="margin-right:8px;">${getRootEmoji(root)}</span>
+    </div>`;
+}
+
+function selectRootFromMenu(root) {
+    closeSlideMenu();
+    closeSearchKeyboard();
+    // Arama Verilerini Sıfırla
+    currentSearchQuery = "";
+    const searchInput = document.getElementById("root-search");
+    if(searchInput) searchInput.value = "";
+    document.getElementById("root-predictions").innerHTML = "";
+    
+    // Uygulamanın Orijinal Kök Seçme Komutunu Başlat
+    if (typeof selectReadyVerb === 'function') {
+        selectReadyVerb(root);
+    }
+}
+
+// --- POPUP ARAMA KLAVYESİ ---
+function openSearchKeyboard(e) {
+    if (e) e.stopPropagation();
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    const popup = document.getElementById('integrated-keyboard-popup');
+    const backdrop = document.getElementById('keyboard-backdrop'); // KALKANI BUL
+    
+    if (popup) popup.classList.add('active');
+    if (backdrop) backdrop.classList.add('active'); // KALKANI AÇ
+}
+
+function closeSearchKeyboard() {
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    
+    const popup = document.getElementById('integrated-keyboard-popup');
+    const backdrop = document.getElementById('keyboard-backdrop'); // KALKANI BUL
+    
+    if (popup) popup.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active'); // KALKANI KAPAT
+}
+
+function renderSearchKeyboard() {
+    const kbContainer = document.getElementById("integrated-keyboard");
+    if(!kbContainer) return;
+
+    // Sizin Orijinal Klavyenizle Birebir Aynı Dizilim (LTR Yönünde)
+    const kbRows = [
+        ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د'],
+        ['ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط'],
+        ['ئ', 'ء', 'ؤ', 'ر', 'ى', 'ة', 'و', 'ز', 'ظ', 'BACKSPACE']
+    ];
+
+    let kbHTML = "";
+    kbRows.forEach(row => {
+        kbHTML += `<div class="search-kb-row">`;
+        row.forEach(char => {
+            if (char === 'BACKSPACE') {
+                kbHTML += `<div class="search-key backspace" onclick="handleSearchKey('BACKSPACE')">⌫</div>`;
+            } else {
+                kbHTML += `<div class="search-key" onclick="handleSearchKey('${char}')">${char}</div>`;
+            }
+        });
+        kbHTML += `</div>`;
+    });
+
+    kbContainer.innerHTML = kbHTML;
+}
+
+function handleSearchKey(char) {
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    if (char === 'BACKSPACE') {
+        currentSearchQuery = currentSearchQuery.slice(0, -1);
+    } else {
+        if (currentSearchQuery.length < 3) { // Kökler max 3 harf olur
+            currentSearchQuery += char;
+        }
+    }
+
+    const searchInput = document.getElementById("root-search");
+    if(searchInput) searchInput.value = currentSearchQuery;
+
+    updatePredictionsAndFilter();
+}
+
+function updatePredictionsAndFilter() {
+    let filter = currentSearchQuery.trim();
+    
+    // 1. Ekrandaki Kartları Filtrele
+    const allItems = document.querySelectorAll('.root-item');
+    allItems.forEach(item => {
+        if(item.dataset.root.includes(filter)) {
+            item.style.display = "flex";
+        } else {
+            item.style.display = "none";
         }
     });
 
-    verbCategories.forEach((category, catIndex) => {
-        if (category.verbs.length === 0) return; // İçi boşsa o başlığı hiç çizme
-
-        // 1. Başlık Kutusu (Header)
-        const header = document.createElement('div');
-        header.className = 'category-header';
-        // Metin ve ikonu ekliyoruz
-        header.innerHTML = `<span>${category.title}</span><i class="fas fa-chevron-down"></i>`;
+    // 2. Tahmin (Autocomplete) Çubuğunu Güncelle
+    const predictionsContainer = document.getElementById("root-predictions");
+    predictionsContainer.innerHTML = "";
+    
+    if (filter.length > 0) {
+        const allRoots = Object.keys(wordEasterEggs);
+        // Yazılan harflerle BAŞLAYAN kökleri öncelikli getir
+        const matches = allRoots.filter(r => r.startsWith(filter)).slice(0, 15);
         
-        // 2. İçerik Izgarası (Content) - Tümü Kapalı (Active sınıfı yok)
-        const content = document.createElement('div');
-        content.className = 'category-content verb-grid'; 
-
-        // Başlığa tıklandığında aç/kapat (Akordeon Mantığı)
-        header.onclick = () => {
-            if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-            const isActive = content.classList.contains('active');
-            
-            // ==========================================
-            // BİRİ AÇILINCA DİĞERİNİ KAPATMA KODU
-            // ==========================================
-            document.querySelectorAll('.category-content').forEach(c => {
-                c.classList.remove('active');
-            });
-            document.querySelectorAll('.category-header i').forEach(i => {
-                i.style.transform = 'rotate(0deg)';
-            });
-
-            // Eğer tıklanan zaten aktif değilse, şimdi aktif yap
-            if (!isActive) {
-                content.classList.add('active');
-                header.querySelector('i').style.transform = 'rotate(180deg)';
-            }
-        };
-
-        // 3. İlgili kategoriye ait butonları (Kartları) wordEasterEggs'ten çekip oluştur
-        category.verbs.forEach(verb => {
-            if (!wordEasterEggs[verb]) return; // Hatalı yazım varsa pas geç
-            
-            // O kökün ilk kalıbına gidip menüde göstermek için emojisini otomatik bul
-            let emoji = "✨"; // Varsayılan emoji
-            const verbData = wordEasterEggs[verb];
-            const firstKey = Object.keys(verbData)[0];
-            
-            // Eğer base ve emoji tanımlıysa al, değilse varsayılanı kullan
-            if (verbData[firstKey] && verbData[firstKey].base && verbData[firstKey].base.emoji) {
-                emoji = verbData[firstKey].base.emoji;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'verb-card';
-            card.onclick = () => selectReadyVerb(verb);
-            card.innerHTML = `<span class="emoji">${emoji}</span><span>${verb}</span>`;
-            
-            content.appendChild(card);
+        matches.forEach(r => {
+            predictionsContainer.innerHTML += `
+                <div class="prediction-chip" onclick="selectRootFromMenu('${r}')">
+                    ${r} ${getRootEmoji(r)}
+                </div>`;
         });
-
-        menuContainer.appendChild(header);
-        menuContainer.appendChild(content);
-    });
+    }
 }
+
+
+// --- AŞAĞIDAN ÇIKAN SLIDE MENÜ KONTROLLERİ ---
+function openSlideMenu(type) {
+    closeSearchKeyboard(); // Klavye açıksa menü çakışmasın diye kapat
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    const slideMenu = document.getElementById('slide-up-menu');
+    const slideTitle = document.getElementById('slide-title');
+    const slideContent = document.getElementById('slide-content');
+    const slideBackdrop = document.getElementById('slide-menu-backdrop'); // KALKANI BUL
+    
+    slideContent.innerHTML = "";
+    if (type === 'aksam') {
+        slideTitle.innerText = "أقسام السبعة";
+        aksamSebaKokleri.forEach(r => { if(wordEasterEggs[r]) slideContent.innerHTML += createFlatRootItem(r); });
+    } else {
+        slideTitle.innerText = "مزيد";
+        mezidFiilKokleri.forEach(r => { if(wordEasterEggs[r]) slideContent.innerHTML += createFlatRootItem(r); });
+    }
+    
+    if (slideMenu) slideMenu.classList.add('active');
+    if (slideBackdrop) slideBackdrop.classList.add('active'); // KALKANI AÇ
+}
+
+function closeSlideMenu() {
+    if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    
+    const slideMenu = document.getElementById('slide-up-menu');
+    const slideBackdrop = document.getElementById('slide-menu-backdrop'); // KALKANI BUL
+    
+    if (slideMenu) slideMenu.classList.remove('active');
+    if (slideBackdrop) slideBackdrop.classList.remove('active'); // KALKANI KAPAT
+}
+
+// Sayfa Yüklendiğinde Sistemi Başlat
+document.addEventListener("DOMContentLoaded", () => {
+    renderVerbMenu();
+});
+
 
 const SoundEngine = {
     ctx: null,
@@ -3234,7 +5452,6 @@ const SoundEngine = {
     }
 };
 
-buildVerbMenu();
 
 // Temizlik fonksiyonu
 function closeAllZoomedBoxes() {
@@ -4799,6 +7016,7 @@ function applySuffix(suffix) {
         }, 1500);
     }
 }
+
 const originalResetTableOnly = window.resetTableOnly;
 window.resetTableOnly = function() {
     if (typeof originalResetTableOnly === "function") {
@@ -5901,6 +8119,19 @@ function makeElementDraggable(el) {
     el.addEventListener('mousedown', onMouseDown);
     el.addEventListener('touchstart', onMouseDown, { passive: false });
 }
+
+// --- KLAVYE DIŞINA TIKLAYINCA KAPATMA SİSTEMİ ---
+document.addEventListener("click", function(event) {
+    const popup = document.getElementById('integrated-keyboard-popup');
+    const searchInput = document.getElementById('root-search');
+    
+    // Eğer popup açıksa, tıklanan yer popup'ın içi değilse ve arama çubuğu da değilse klavyeyi kapat
+    if (popup && popup.classList.contains('active')) {
+        if (!popup.contains(event.target) && event.target !== searchInput) {
+            closeSearchKeyboard();
+        }
+    }
+});
 
 // Ana kutudan yeni klon çıkartma işlemini başlatan yapı
 document.addEventListener('DOMContentLoaded', () => {
