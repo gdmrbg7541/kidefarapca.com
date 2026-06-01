@@ -5120,27 +5120,9 @@ const wordEasterEggs = {
             cekimi: ["مُوجَد"]
         }
     },
-    "امن": {
-        // "امن" fiiline Mazi, Muzari ve Emir (İf'al Babı - 52, 53, 54) çekimlerini ekliyoruz
-        19: { base: { emoji: "👮", arText: "أَمْن", trText: "Güvenlik." } },
-        22: { base: { emoji: "🛡️", arText: "الْأَمَانُ وَالصِّحَّةُ نِعْمَتَانِ", trText: "Aman (güvenlik) ve sağlık iki büyük nimettir." }, suggestsPlus: true, "ة": { emoji: "📦", arText: "الأَمَانَةُ تَجْلِبُ الرِّزْقَ", trText: "Emaneti korumak (güvenilir olmak) rızık getirir." } },
-        35: { base: { emoji: "🤝", arText: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ وَالْمُؤْمِنُ مَنْ أَمِنَهُ النَّاسُ", trText: "Müslüman, diğer Müslümanların elinden ve dilinden emin olduğu kimsedir." } },
-        55: { base: { emoji: "❤️", arText: "الْإِيمَانُ مَا وَقَرَ فِي الْقَلْبِ", trText: "İman, kalbe yerleşen (inanılan) şeydir." } },
-        56: { base: { emoji: "🕌", arText: "الْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ", trText: "Mümin, müminin aynasıdır. (Hadis-i Şerif)" } },
-        61: { base: { emoji: "📝", arText: "شَرِكَةُ التَّأْمِينِ الصِّحِّيِّ", trText: "Sağlık sigortası (güvencesi/tamini) şirketi." } },
-        52: { 
-            base: { emoji: "🤲", arText: "آمَنَ", trText: "İman etti." },
-            cekimi: ["آمَنَ", "آمَنَا", "آمَنُوا", "آمَنَتْ", "آمَنَتَا", "آمَنَّ", "آمَنْتَ", "آمَنْتُمَا", "آمَنْتُمْ", "آمَنْتِ", "آمَنْتُمَا", "آمَنْتُنَّ", "آمَنْتُ", "آمَنَّا", "آمَنَّا"]
-        },
-        53: { 
-            base: { emoji: "❤️", arText: "يُؤْمِنُ", trText: "İman eder / İnanıyor." },
-            cekimi: ["يُؤْمِنُ", "يُؤْمِنَانِ", "يُؤْمِنُونَ", "تُؤْمِنُ", "تُؤْمِنَانِ", "يُؤْمِنَّ", "تُؤْمِنُ", "تُؤْمِنَانِ", "تُؤْمِنُونَ", "تُؤْمِنِينَ", "تُؤْمِنَانِ", "تُؤْمِنَّ", "أُؤْمِنُ", "نُؤْمِنُ", "نُؤْمِنُ"]
-        },
-        54: { 
-            base: { emoji: "❗", arText: "آمِنْ", trText: "İman et!" },
-            cekimi: ["آمِنْ", "آمِنَا", "آمِنُوا", "آمِنِي", "آمِنَا", "آمِنَّ"]
-        }
-    }
+ 
+      
+        
 };
 
 // ==================================================================
@@ -5150,7 +5132,7 @@ const onemliKokler = ["كتب", "علم", "قدر", "كمل", "ملك", "سلم"
 const aksamSebaKokleri = ["نصر", "ضرب", "فتح", "علم", "حسب", "كرم", "أمن", "شدد", "أكل", "سأل", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي", "ضلل"];
 const mezidFiilKokleri = ["عدد", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي", "خبر", "نظم", "حقق", "كمل", "شكل"];
 
-const arapcaHarfler = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
+const arapcaHarfler = "أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
 let currentSearchQuery = ""; 
 
 function getRootEmoji(root) {
@@ -5179,7 +5161,7 @@ function renderVerbMenu() {
 
     // 2. 4 Sütunlu Bağımsız Scroll Sistemi
     const ranges = [
-        { title: "ا - خ", start: 0, end: 6 },
+        { title: "أ - خ", start: 0, end: 6 },
         { title: "د - ص", start: 7, end: 13 },
         { title: "ض - ق", start: 14, end: 20 },
         { title: "ك - ي", start: 21, end: 27 }
