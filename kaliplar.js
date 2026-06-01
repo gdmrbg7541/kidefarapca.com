@@ -5889,6 +5889,7 @@ function renderSearchKeyboard() {
 }
 
 function handleSearchKey(char) {
+    toggleRootHint(false);
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     if (char === 'BACKSPACE') {
@@ -6081,6 +6082,9 @@ function closeAllZoomedBoxes() {
 }
 
 window.onload = function() {
+    // YENİ: Sayfa açıldığında hazır kök butonunun vurgusunu başlat
+    toggleRootHint(true);
+
     const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
     if (zoomCheckbox) {
         zoomCheckbox.checked = false;
@@ -6210,6 +6214,7 @@ function closeVerbModal() {
 
 
 function selectReadyVerb(verb) {
+    toggleRootHint(false);
     if (typeof clearDraggableRoots === 'function') clearDraggableRoots();
     if (typeof SoundEngine !== "undefined") SoundEngine.playReset();
     if (typeof resetTableOnly === 'function') resetTableOnly(true); 
@@ -7253,6 +7258,7 @@ function closeKeyboard() {
 
 function addLetter(char) {
     if (currentRoot.length < 3) {
+        toggleRootHint(false);
         SoundEngine.playClick(); 
         currentRoot += char;
         updateTempDisplay();
@@ -7653,6 +7659,7 @@ window.resetTableOnly = function() {
     if (typeof originalResetTableOnly === "function") {
         originalResetTableOnly();
     }
+    toggleRootHint(true);
     lastClickedBoxTextSpan = null;
     lastOriginalWord = "";
     const menu = document.getElementById("suffix-dropdown");
@@ -9210,4 +9217,32 @@ function flyEmojiToPlus(startEl) {
     particle.addEventListener('transitionend', () => {
         particle.remove();
     });
+}
+
+
+// --- YÖNLENDİRME (HINT) KONTROLCÜSÜ ---
+function toggleRootHint(show) {
+    // Hazır fiilleri açan kitap ikonunu yakalıyoruz (Eğer açık kitap kullanıyorsanız '.fa-book-open' yapın)
+    const bookIcon = document.querySelector('.fa-book'); 
+    
+    // Mobildeki menü açma butonu (Eğer mobilde de kitap ikonu görünüyorsa üstteki kod onu da halleder, 
+    // ancak mobildeki buton farklıysa buraya o butonun class'ını girebilirsiniz)
+    const mobileMenuBtn = document.querySelector('.mobile-back-btn'); 
+    
+    if (bookIcon) {
+        if (show) {
+            bookIcon.classList.add('ready-root-hint');
+        } else {
+            bookIcon.classList.remove('ready-root-hint');
+        }
+    }
+    
+    // Mobilde de kullanıcının dikkatini menüye çekmek için
+    if (mobileMenuBtn) {
+        if (show) {
+            mobileMenuBtn.classList.add('ready-root-hint');
+        } else {
+            mobileMenuBtn.classList.remove('ready-root-hint');
+        }
+    }
 }
