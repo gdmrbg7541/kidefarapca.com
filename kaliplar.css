@@ -1109,7 +1109,10 @@ td:first-child {
 }
 
 .verb-close-btn:hover {
-    color: #FF3B30;
+    background: #fee2e2;
+    color: #ef4444;
+    border-color: #fca5a5;
+    transform: scale(1.05);
 }
 
 .verb-title {
@@ -1666,17 +1669,23 @@ body.matrix-active {
     overflow: hidden;
 }
 
-/* Üst Arama Çubuğu */
+/* Header düzeni: Flexbox ile Çarpı + Arama kutusunu ORTALAR */
 .root-header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 10px;
+    gap: 15px; 
+    margin-bottom: 15px;
+    width: 90%;          /* Kutunun toplam genişliği */
+    margin-left: auto;   /* Sol boşluğu otomatik yap */
+    margin-right: auto;  /* Sağ boşluğu otomatik yap (Bu iki satır ortalar) */
     flex-shrink: 0;
+    justify-content: center; /* Elemanları içeride ortalar */
+    direction: ltr;
 }
 
+/* Arama Çubuğu (Çarpıdan kalan boşlukla daha derli toplu) */
 #root-search {
-    flex: 1;
+    flex: 1; /* Çarpıdan arta kalan tüm alanı kaplar */
     height: 55px;
     font-size: 24px;
     font-family: 'Arakom', sans-serif;
@@ -1687,7 +1696,7 @@ body.matrix-active {
     border-radius: 15px;
     outline: none;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-    text-align: left !important; /* Placeholder ve metin sola yaslı */
+    text-align: left !important;
     direction: ltr !important; 
     cursor: text;
 }
@@ -1696,6 +1705,7 @@ body.matrix-active {
     text-align: left !important;
 }
 
+/* Çarpı (Kapatma) Butonu (En Solda) */
 .verb-close-btn {
     background: #ffffff;
     border: 2px solid #cbd5e1;
@@ -1709,6 +1719,8 @@ body.matrix-active {
     color: #64748b;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: 0.2s;
+    flex-shrink: 0; /* Butonun küçülmesini engeller */
 }
 
 /* Tahmin (Autocomplete) Çubuğu */

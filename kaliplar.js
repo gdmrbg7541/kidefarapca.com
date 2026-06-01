@@ -5240,20 +5240,20 @@ function openSearchKeyboard(e) {
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     const popup = document.getElementById('integrated-keyboard-popup');
-    const backdrop = document.getElementById('keyboard-backdrop'); // KALKANI BUL
+    const backdrop = document.getElementById('keyboard-backdrop'); 
     
     if (popup) popup.classList.add('active');
-    if (backdrop) backdrop.classList.add('active'); // KALKANI AÇ
+    if (backdrop) backdrop.classList.add('active'); // Kalkanı aç
 }
 
 function closeSearchKeyboard() {
     if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
     
     const popup = document.getElementById('integrated-keyboard-popup');
-    const backdrop = document.getElementById('keyboard-backdrop'); // KALKANI BUL
+    const backdrop = document.getElementById('keyboard-backdrop'); 
     
     if (popup) popup.classList.remove('active');
-    if (backdrop) backdrop.classList.remove('active'); // KALKANI KAPAT
+    if (backdrop) backdrop.classList.remove('active'); // Kalkanı kapat
 }
 
 function renderSearchKeyboard() {
