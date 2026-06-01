@@ -5851,7 +5851,7 @@ function openSearchKeyboard(e) {
     if (backdrop) backdrop.classList.add('active'); // Kalkanı aç
 }
 
-// --- POPUP KLAVYEYİ ÇARPIYLA KAPATMA ---
+// --- 3. POPUP KLAVYEYİ ÇARPIYLA KAPATMA ---
 function closeSearchKeyboard() {
     const searchInput = document.getElementById('root-search');
     
@@ -5860,8 +5860,6 @@ function closeSearchKeyboard() {
         if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
         if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter();
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        
-        // YENİ: Arama kutusu temizlendiği için mavi ışık animasyonunu geri başlat!
         if (typeof toggleRootHint === 'function') toggleRootHint(true);
     } else {
         const popup = document.getElementById('integrated-keyboard-popup');
@@ -5869,8 +5867,10 @@ function closeSearchKeyboard() {
         
         if (popup) popup.classList.remove('active');
         if (backdrop) backdrop.classList.remove('active'); 
-        
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        
+        // EKSİKTİ: Klavyeyi boşken kapattığında da ışığı kontrol et!
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     }
 }
 
@@ -6248,24 +6248,23 @@ function openVerbModal() {
 }
 
 // --- 2. HAZIR KÖK MENÜSÜNÜ KAPATMA (Önce Sil, Sonra Kapat) ---
-// --- HAZIR KÖK MENÜSÜNÜ KAPATMA ---
 function closeVerbModal() {
     const searchInput = document.getElementById('root-search');
     
-    // Eğer arama kutusunda yazı varsa önce onu sil
     if (searchInput && searchInput.value.length > 0) {
         searchInput.value = "";
         if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
         if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter(); 
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        
-        // YENİ: Arama kutusu temizlendiği için mavi ışık animasyonunu geri başlat!
         if (typeof toggleRootHint === 'function') toggleRootHint(true);
     } else {
-        // Eğer kutu boşsa menüyü tamamen kapat
+        // Eğer kutu zaten boşsa menüyü tamamen kapat
         document.getElementById('verb-overlay').style.display = 'none';
         if (typeof closeSearchKeyboard === 'function') closeSearchKeyboard();
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+        
+        // EKSİKTİ: Menüyü boşken kapattığında da ana ekranda kelime yoksa ışığı geri yak!
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     }
 }
 
@@ -7319,7 +7318,6 @@ function openKeyboard() {
 
 // --- ANA KLAVYEYİ KAPATMA VE SİLME ---
 function closeKeyboard() {
-    // Eğer ekranda yazılı bir kök (harf) varsa önce onu sil
     if (typeof currentRoot !== 'undefined' && currentRoot.length > 0) {
         currentRoot = "";
         const tempDisp = document.getElementById('temp-root-display');
@@ -7328,11 +7326,8 @@ function closeKeyboard() {
         if (typeof updateTempDisplay === 'function') updateTempDisplay();
         if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(""); 
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        
-        // YENİ: Kök tamamen silindiği için yönlendirme (mavi ışık) animasyonunu geri başlat!
         if (typeof toggleRootHint === 'function') toggleRootHint(true);
     } else {
-        // Eğer hiçbir şey yazmıyorsa klavyeyi tamamen kapat
         if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
         if (typeof toggleKB === 'function') {
             toggleKB(false);
@@ -7340,6 +7335,9 @@ function closeKeyboard() {
             const overlay = document.getElementById('keyboard-overlay');
             if (overlay) overlay.style.display = 'none';
         }
+        
+        // EKSİKTİ: Ana klavyeyi hiçbir şey yazmadan kapatırsa da ışığı geri yak!
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     }
 }
 
