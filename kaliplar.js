@@ -209,7 +209,7 @@ const wordEasterEggs = {
                 arText: "اِعْلَمْ", 
                 trText: "Bil!",
                 ornek: {
-                    ar: "فَاعْلَمْ أَنَّهُ لَا إِلَٰهَ إِلَّا اللَّهُ",
+                    ar: "فَاعْلَمْ أَنَّهُ لَا إِلَٰهَ إِلَّا اللهُ",
                     tr: "Bil ki, Allah'tan başka hiçbir ilah yoktur. (Muhammed Suresi, 19)"
                 }
             } 
@@ -245,7 +245,7 @@ const wordEasterEggs = {
                 arText: "عَالِمَة", 
                 trText: "Kadın âlim.",
                 ornek: {
-                    ar: "عَائِشَةُ رَضِيَ اللَّهُ عَنْهَا كَانَتْ عَالِمَةً جَلِيلَةً",
+                    ar: "عَائِشَةُ رَضِيَ اللهُ عَنْهَا كَانَتْ عَالِمَةً جَلِيلَةً",
                     tr: "Hz. Aişe (r.a.) büyük ve yüce bir âlimdi."
                 }
             }, 
@@ -349,7 +349,7 @@ const wordEasterEggs = {
                 arText: "يُعَلِّمُ", 
                 trText: "Öğretir / Öğretiyor.",
                 ornek: {
-                    ar: "وَيُعَلِّمُكُمُ اللَّهُ ۗ وَاللَّهُ بِكُلِّ شَيْءٍ عَلِيمٌ",
+                    ar: "وَيُعَلِّمُكُمُ اللهُ ۗ وَاللهُ بِكُلِّ شَيْءٍ عَلِيمٌ",
                     tr: "Allah size öğretiyor. Allah her şeyi hakkıyla bilendir. (Bakara Suresi, 282)"
                 }
             } 
@@ -908,7 +908,7 @@ const wordEasterEggs = {
                 emoji: "🧑‍⚖️", 
                 arText: "يَحْكُمُ", 
                 trText: "Hükmeder / Karar veriyor.",
-                ornek: { ar: "وَاللَّهُ يَحْكُمُ لَا مُعَقِّبَ لِحُكْمِهِ", tr: "Allah hükmeder, O'nun hükmünü bozacak kimse yoktur. (Ra'd Suresi, 41)" }
+                ornek: { ar: "وَاللهُ يَحْكُمُ لَا مُعَقِّبَ لِحُكْمِهِ", tr: "Allah hükmeder, O'nun hükmünü bozacak kimse yoktur. (Ra'd Suresi, 41)" }
             } 
         },
         
@@ -1273,7 +1273,7 @@ const wordEasterEggs = {
                 emoji: "❤️", 
                 arText: "رَحِمَ", 
                 trText: "Merhamet etti / Acıdı.",
-                ornek: { ar: "فَقَدْ رَحِمَهُ اللَّهُ", tr: "Allah ona kesinlikle merhamet etmiştir." }
+                ornek: { ar: "فَقَدْ رَحِمَهُ اللهُ", tr: "Allah ona kesinlikle merhamet etmiştir." }
             } 
         },
         
@@ -1325,7 +1325,7 @@ const wordEasterEggs = {
                 emoji: "🤲", 
                 arText: "مَرْحُوم", 
                 trText: "Kendisine merhamet edilen (Merhum / Vefat etmiş kişi).",
-                ornek: { ar: "رَحِمَهُ اللَّهُ رَحْمَةً وَاسِعَةً", tr: "Allah ona geniş bir rahmetle merhamet etsin (Merhum / Vefat etmiş kişi)." }
+                ornek: { ar: "رَحِمَهُ اللهُ رَحْمَةً وَاسِعَةً", tr: "Allah ona geniş bir rahmetle merhamet etsin (Merhum / Vefat etmiş kişi)." }
             } 
         },
         
@@ -3491,7 +3491,7 @@ const wordEasterEggs = {
                 emoji: "✨", 
                 arText: "سَكِينَة", 
                 trText: "Sekinet / Huzur ve güven.",
-                ornek: { ar: "فَأَنْزَلَ اللَّهُ سَكِينَتَهُ عَلَيْهِ", tr: "Allah onun üzerine sekinetini (huzur ve güvenini) indirdi. (Tevbe Suresi, 40)" }
+                ornek: { ar: "فَأَنْزَلَ اللهُ سَكِينَتَهُ عَلَيْهِ", tr: "Allah onun üzerine sekinetini (huzur ve güvenini) indirdi. (Tevbe Suresi, 40)" }
             } 
         }, 
         
@@ -3511,7 +3511,7 @@ const wordEasterEggs = {
                 emoji: "🏡", 
                 arText: "مَسْكَن", 
                 trText: "İkamet yeri / Mesken.",
-                ornek: { ar: "وَاللَّهُ جَعَلَ لَكُمْ مِنْ بُيُوتِكُمْ سَكَنًا", tr: "Allah, evlerinizi sizin için bir huzur ve dinlenme yeri (mesken/sakan) kıldı. (Nahl Suresi, 80)" }
+                ornek: { ar: "وَاللهُ جَعَلَ لَكُمْ مِنْ بُيُوتِكُمْ سَكَنًا", tr: "Allah, evlerinizi sizin için bir huzur ve dinlenme yeri (mesken/sakan) kıldı. (Nahl Suresi, 80)" }
             } 
         }, 
         
