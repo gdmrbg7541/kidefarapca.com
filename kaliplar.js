@@ -697,7 +697,7 @@ const wordEasterEggs = {
                 emoji: "🌟", 
                 arText: "كَمَال", 
                 trText: "Kemal / Kusursuzluk.",
-                ornek: { ar: "الْكَمَالُ لِلَّهِ وَحْدَهُ", tr: "Kemal (kusursuzluk) sadece Allah'a mahsustur." }
+                ornek: { ar: "الْكَمَالُ لِلهِ وَحْدَهُ", tr: "Kemal (kusursuzluk) sadece Allah'a mahsustur." }
             } 
         },
         
@@ -950,7 +950,7 @@ const wordEasterEggs = {
                 emoji: "📜", 
                 arText: "حُكْم", 
                 trText: "Hüküm / Karar.",
-                ornek: { ar: "إِنِ الْحُكْمُ إِلَّا لِلَّهِ", tr: "Hüküm ancak Allah'ındır. (Yusuf Suresi, 40)" }
+                ornek: { ar: "إِنِ الْحُكْمُ إِلَّا لِلهِ", tr: "Hüküm ancak Allah'ındır. (Yusuf Suresi, 40)" }
             } 
         },
         
@@ -1306,6 +1306,25 @@ const wordEasterEggs = {
                 arText: "رَحْمَة", 
                 trText: "Rahmet / Merhamet.",
                 ornek: { ar: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ", tr: "Biz seni ancak âlemlere rahmet olarak gönderdik. (Enbiyâ Suresi, 107)" } 
+            } 
+        },
+
+         // --- 28 Numaralı Kalıp (فَعْلَان) ---
+        28: { 
+            base: { 
+                emoji: "💖", 
+                arText: "رَحْمَان", 
+                trText: "Rahman / Sonsuz merhamet sahibi.",
+                ornek: [
+                    { 
+                        ar: "الرَّحْمَٰنُ ۝ عَلَّمَ الْقُرْآنَ", 
+                        tr: "Rahmân, Kur'an'ı öğretti. (Rahmân Suresi, 1-2)" 
+                    },
+                    {
+                        ar: "💡 قَاعِدَة إِمْلَائِيَّة",
+                        tr: "İmla Kuralı: Bu kelime genellikle uzun okutulan Elif harfi yazılmadan, harfin üzerinde küçük bir asar (dik üstün) işaretiyle 'الرَّحْمَٰن' şeklinde özel olarak yazılır."
+                    }
+                ]
             } 
         },
         
@@ -1908,7 +1927,7 @@ const wordEasterEggs = {
                 emoji: "🤲", 
                 arText: "يَسْجُدُ", 
                 trText: "Secde eder / Ediyor.",
-                ornek: { ar: "وَلِلَّهِ يَسْجُدُ مَنْ فِي السَّمَاوَاتِ وَالْأَرْضِ", tr: "Göklerde ve yerde olan herkes Allah'a secde eder. (Ra'd Suresi, 15)" }
+                ornek: { ar: "وَلِلهِ يَسْجُدُ مَنْ فِي السَّمَاوَاتِ وَالْأَرْضِ", tr: "Göklerde ve yerde olan herkes Allah'a secde eder. (Ra'd Suresi, 15)" }
             } 
         },
         
@@ -1950,7 +1969,7 @@ const wordEasterEggs = {
                 emoji: "🙇", 
                 arText: "سَاجِد", 
                 trText: "Secde eden.",
-                ornek: { ar: "تَرَاهُمْ رُكَّعًا سُجَّدًا يَبْتَغُونَ فَضْلًا مِنَ اللَّهِ", tr: "Onları, Allah'tan bir lütuf isteyerek rükû ve secde eder (sâcid/sücced) hâlde görürsün. (Fetih Suresi, 29)" }
+                ornek: { ar: "تَرَاهُمْ رُكَّعًا سُجَّدًا يَبْتَغُونَ فَضْلًا مِنَ اللهِ", tr: "Onları, Allah'tan bir lütuf isteyerek rükû ve secde eder (sâcid/sücced) hâlde görürsün. (Fetih Suresi, 29)" }
             } 
         },
         
@@ -2565,7 +2584,7 @@ const wordEasterEggs = {
                 emoji: "🛡️", 
                 arText: "عَاصِم", 
                 trText: "Koruyan.",
-                ornek: { ar: "لَا عَاصِمَ الْيَوْمَ مِنْ أَمْرِ اللَّهِ", tr: "Bugün Allah'ın emrinden koruyacak hiçbir güç yoktur. (Hûd Suresi, 43)" }
+                ornek: { ar: "لَا عَاصِمَ الْيَوْمَ مِنْ أَمْرِ اللهِ", tr: "Bugün Allah'ın emrinden koruyacak hiçbir güç yoktur. (Hûd Suresi, 43)" }
             } 
         }, 
         
@@ -3897,7 +3916,7 @@ const wordEasterEggs = {
                 emoji: "🌙", 
                 arText: "رَسُول", 
                 trText: "Elçi / Resul.",
-                ornek: { ar: "مُحَمَّدٌ رَسُولُ اللَّهِ", tr: "Muhammed Allah'ın resulüdür (elçisidir). (Fetih Suresi, 29)" }
+                ornek: { ar: "مُحَمَّدٌ رَسُولُ اللهِ", tr: "Muhammed Allah'ın resulüdür (elçisidir). (Fetih Suresi, 29)" }
             } 
         },
 
@@ -3982,6 +4001,36 @@ const wordEasterEggs = {
     // 46. H-M-L (ح م ل) KÖKÜ - Taşımak / Yüklenmek / Dayanmak
     // ==================================================================
     "حمل": {
+        
+         // --- 1, 4, 5 Numaralı Kalıplar (2. Bab) ---
+        1: { 
+            base: { 
+                emoji: "🎒", 
+                arText: "حَمَلَ", 
+                trText: "Taşıdı / Yüklendi.",
+                ornek: { ar: "حَمَلَ الرَّجُلُ الْأَمَانَةَ", tr: "Adam emaneti yüklendi (taşıdı)." }
+            },
+            cekimi: ["حَمَلَ", "حَمَلَا", "حَمَلُوا", "حَمَلَتْ", "حَمَلَتَا", "حَمَلْنَ", "حَمَلْتَ", "حَمَلْتُمَا", "حَمَلْتُمْ", "حَمَلْتِ", "حَمَلْتُمَا", "حَمَلْتُنَّ", "حَمَلْتُ", "حَمَلْنَا", "حَمَلْنَا"]
+        },
+        4: { 
+            base: { 
+                emoji: "🏋️", 
+                arText: "يَحْمِلُ", 
+                trText: "Taşır / Taşıyor.",
+                ornek: { ar: "يَحْمِلُ الْحَقِيبَةَ الثَّقِيلَةَ", tr: "Ağır çantayı taşıyor." }
+            },
+            cekimi: ["يَحْمِلُ", "يَحْمِلَانِ", "يَحْمِلُونَ", "تَحْمِلُ", "تَحْمِلَانِ", "يَحْمِلْنَ", "تَحْمِلُ", "تَحْمِلَانِ", "تَحْمِلُونَ", "تَحْمِلِينَ", "تَحْمِلَانِ", "تَحْمِلْنَ", "أَحْمِلُ", "نَحْمِلُ", "نَحْمِلُ"]
+        },
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِحْمِلْ", 
+                trText: "Taşı / Yüklen!",
+                ornek: { ar: "اِحْمِلْ هَذَا الصُّنْدُوقَ مِنْ فَضْلِكَ", tr: "Lütfen bu kutuyu taşı." }
+            },
+            cekimi: ["اِحْمِلْ", "اِحْمِلَا", "اِحْمِلُوا", "اِحْمِلِي", "اِحْمِلَا", "اِحْمِلْنَ"]
+        },
+
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
             base: { emoji: "📣", arText: "حَمْل", trText: "Yük / Taşıma (Yalın)." },
@@ -4141,7 +4190,7 @@ const wordEasterEggs = {
                 emoji: "💯", 
                 arText: "مُحَقَّق", 
                 trText: "Muhakkak / Kesinleşmiş.",
-                ornek: { ar: "أَمْرٌ مُحَقَّقٌ بِإِذْنِ اللَّهِ", tr: "Allah'ın izniyle muhakkak (kesinleşmiş/gerçekleşmiş) bir durum." }
+                ornek: { ar: "أَمْرٌ مُحَقَّقٌ بِإِذْنِ اللهِ", tr: "Allah'ın izniyle muhakkak (kesinleşmiş/gerçekleşmiş) bir durum." }
             } 
         },
         
@@ -5695,63 +5744,1216 @@ const wordEasterEggs = {
     "وجد": {
         // --- 1, 4, 5 Numaralı Kalıplar (2. Bab - Misal fiil olduğu için muzaride vav düşer) ---
         1: { 
-            base: { emoji: "🔍", arText: "وَجَدَ", trText: "Buldu." },
+            base: { 
+                emoji: "🔍", 
+                arText: "وَجَدَ", 
+                trText: "Buldu.",
+                ornek: { ar: "مَنْ جَدَّ وَجَدَ", tr: "Çalışan (çabalayan) bulur. (Arap Atasözü)" }
+            },
             cekimi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"]
         },
         4: { 
-            base: { emoji: "🔎", arText: "يَجِدُ", trText: "Bulur / Buluyor." },
+            base: { 
+                emoji: "🔎", 
+                arText: "يَجِدُ", 
+                trText: "Bulur / Buluyor.",
+                ornek: [
+                    { 
+                        ar: "يَجِدُ الطَّالِبُ الْكِتَابَ عَلَى الطَّاوِلَةِ", 
+                        tr: "Öğrenci kitabı masada buluyor." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı: Kökün başındaki 'Vav' (و) harfi, 'Misal Fiil' kuralı gereği muzaride düşer (يَوْجِدُ değil, يَجِدُ olur)." 
+                    }
+                ]
+            },
             cekimi: ["يَجِدُ", "يَجِدَانِ", "يَجِدُونَ", "تَجِدُ", "تَجِدَانِ", "يَجِدْنَ", "تَجِدُ", "تَجِدَانِ", "تَجِدُونَ", "تَجِدِينَ", "تَجِدَانِ", "تَجِدْنَ", "أَجِدُ", "نَجِدُ", "نَجِدُ"]
         },
         5: { 
-            base: { emoji: "❗", arText: "جِدْ", trText: "Bul!" },
+            base: { 
+                emoji: "❗", 
+                arText: "جِدْ", 
+                trText: "Bul!",
+                ornek: [
+                    { 
+                        ar: "جِدْ حَلًّا لِهَذِهِ الْمُشْكِلَةِ", 
+                        tr: "Bu soruna bir çözüm bul!" 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı: Muzaride düşen 'Vav' harfi, emir kipinde de geri gelmez." 
+                    }
+                ]
+            },
             cekimi: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"]
         },
 
-        25: { base: { emoji: "🌌", arText: "وُجُود", trText: "Varlık / Vücud." } }, 
-        29: { base: { emoji: "❤️", arText: "صَوْتُ الْوِجْدَانِ", trText: "Vicdanın sesi." } }, 
-        36: { base: { emoji: "✅", arText: "الْبَضَاعَةُ مَوْجُودَةٌ فِي الْمَخْزَنِ", trText: "Mal depoda mevcut (bulunmaktadır)." } }, 
+        // --- İsim ve Masdar Kalıpları ---
+        25: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "وُجُود", 
+                trText: "Varlık / Vücud.",
+                ornek: { ar: "نُؤْمِنُ بِوُجُودِ اللَّهِ", tr: "Allah'ın varlığına (vücuduna) inanıyoruz." }
+            } 
+        }, 
+        29: { 
+            base: { 
+                emoji: "❤️", 
+                arText: "وِجْدَان", 
+                trText: "Vicdan.",
+                ornek: { ar: "اسْتَمِعْ إِلَى صَوْتِ الْوِجْدَانِ", tr: "Vicdanın sesini dinle." }
+            } 
+        }, 
+        36: { 
+            base: { 
+                emoji: "✅", 
+                arText: "مَوْجُود", 
+                trText: "Mevcut / Bulunan.",
+                ornek: { ar: "الْبَضَاعَةُ مَوْجُودَةٌ فِي الْمَخْزَنِ", tr: "Mal depoda mevcut (bulunmaktadır)." }
+            } 
+        }, 
         
         // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı - أَوَجَدَ -> أَوْجَدَ) ---
         52: { 
-            base: { emoji: "✨", arText: "أَوْجَدَ", trText: "Var etti / İcat etti." },
+            base: { 
+                emoji: "✨", 
+                arText: "أَوْجَدَ", 
+                trText: "Var etti / İcat etti.",
+                ornek: { ar: "أَوْجَدَ الْعَالِمُ عِلَاجًا جَدِيدًا", tr: "Bilim insanı yeni bir tedavi var etti (icat etti)." }
+            },
             cekimi: ["أَوْجَدَ", "أَوْجَدَا", "أَوْجَدُوا", "أَوْجَدَتْ", "أَوْجَدَتَا", "أَوْجَدْنَ", "أَوْجَدْتَ", "أَوْجَدْتُمَا", "أَوْجَدْتُمْ", "أَوْجَدْتِ", "أَوْجَدْتُمَا", "أَوْجَدْتُنَّ", "أَوْجَدْتُ", "أَوْجَدْنَا", "أَوْجَدْنَا"]
         },
         53: { 
-            base: { emoji: "💡", arText: "يُوجِدُ", trText: "Var eder / İcat ediyor." },
+            base: { 
+                emoji: "💡", 
+                arText: "يُوجِدُ", 
+                trText: "Var eder / İcat ediyor.",
+                ornek: { ar: "اللهُ يُوجِدُ الْأَشْيَاءَ مِنَ الْعَدَمِ", tr: "Allah eşyaları yoktan var eder." }
+            },
             cekimi: ["يُوجِدُ", "يُوجِدَانِ", "يُوجِدُونَ", "تُوجِدُ", "تُوجِدَانِ", "يُوجِدْنَ", "تُوجِدُ", "تُوجِدَانِ", "تُوجِدُونَ", "تُوجِدِينَ", "تُوجِدَانِ", "تُوجِدْنَ", "أُوجِدُ", "نُوجِدُ", "نُوجِدُ"]
         },
         54: { 
-            base: { emoji: "❗", arText: "أَوْجِدْ", trText: "Var et / İcat et!" },
+            base: { 
+                emoji: "❗", 
+                arText: "أَوْجِدْ", 
+                trText: "Var et / İcat et!",
+                ornek: { ar: "أَوْجِدْ طَرِيقَةً أَسْهَلَ", tr: "Daha kolay bir yöntem icat et (bul/var et)!" }
+            },
             cekimi: ["أَوْجِدْ", "أَوْجِدَا", "أَوْجِدُوا", "أَوْجِدِي", "أَوْجِدَا", "أَوْجِدْنَ"]
         },
 
         // --- 55: İcat (Masdar) Tenvinsiz ---
         55: { 
-            base: { emoji: "📜", arText: "إِيجَاد", trText: "İcat / Var etme (Masdar)." },
-            cekimi: ["إِيجَاد"]
+            base: { 
+                emoji: "📜", 
+                arText: "إِيجَاد", 
+                trText: "İcat / Var etme (Masdar).",
+                ornek: [
+                    { 
+                        ar: "تَمَّ إِيجَادُ الْحَلِّ", 
+                        tr: "Çözüm bulundu (çözümün var edilmesi tamamlandı)." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة إِمْلَائِيَّة", 
+                        tr: "İ'lâl Kuralı: Aslı (إِوْجَاد) şeklindedir. Kökün ilk harfi olan 'Vav' (و), kesradan (esre) sonra sakin geldiği için okuyuş kolaylığı sağlamak adına 'Ye' (ي) harfine dönüşmüştür." 
+                    }
+                ]
+            },
         }, 
         
         // --- 56: Mucit (İsm-i Fail) Tenvinsiz ve Örnek Cümlesiyle ---
         56: { 
-            base: { emoji: "🧠", arText: "مُوجِد", trText: "Mucit / İcat eden (İsm-i Fail)." },
-            cekimi: ["مُوجِد"]
-        },
-        
-        // --- 57: İsm-i Meful (Tenvinsiz Çekimleriyle Birlikte Eklendi) ---
-        57: { 
-            base: { emoji: "📦", arText: "مُوجَد", trText: "Var edilen / İcat edilen (İsm-i Meful)." },
-            cekimi: ["مُوجَد"]
+            base: { 
+                emoji: "🧠", 
+                arText: "مُوجِد", 
+                trText: "Mucit / İcat eden (İsm-i Fail).",
+                ornek: { ar: "مُوجِدُ هَذَا الْجِهَازِ مَعْرُوفٌ", tr: "Bu cihazın mucidi (var edeni) bilinmektedir." }
+            },
         }
     },
- 
+
+ // ==================================================================
+    // Q-R-A (ق ر أ) KÖKÜ - Okumak / Toplamak
+    // 3. Bab (قَرَأَ - يَقْرَأُ) Mehmuz-ul Lâm (Sonu hemzeli fiil)
+    // ==================================================================
+    "قرأ": {
+        // --- 1, 4, 5 Numaralı Kalıplar (3. Bab - Mazi: Fetha, Muzari: Fetha) ---
+        1: { 
+            base: { 
+                emoji: "📖", 
+                arText: "قَرَأَ", 
+                trText: "Okudu.",
+                ornek: { ar: "قَرَأَ الطَّالِبُ الدَّرْسَ", tr: "Öğrenci dersi okudu." }
+            },
+            cekimi: ["قَرَأَ", "قَرَأَا", "قَرَأُوا", "قَرَأَتْ", "قَرَأَتَا", "قَرَأْنَ", "قَرَأْتَ", "قَرَأْتُمَا", "قَرَأْتُمْ", "قَرَأْتِ", "قَرَأْتُمَا", "قَرَأْتُنَّ", "قَرَأْتُ", "قَرَأْنَا", "قَرَأْنَا"]
+        },
+        6: { 
+            base: { 
+                emoji: "🗣️", 
+                arText: "يَقْرَأُ", 
+                trText: "Okur / Okuyor.",
+                ornek: [
+                    { 
+                        ar: "هُوَ يَقْرَأُ الْقُرْآنَ كُلَّ يَوْمٍ", 
+                        tr: "O her gün Kur'an okur." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة إِمْلَائِيَّة", 
+                        tr: "İmla Kuralı: Hemze, kendinden önceki harfin harekesi fetha (üstün) olduğu için 'Elif' (أ) kürsüsü üzerine yazılır." 
+                    }
+                ]
+            },
+            cekimi: ["يَقْرَأُ", "يَقْرَءَانِ", "يَقْرَءُونَ", "تَقْرَأُ", "تَقْرَءَانِ", "يَقْرَأْنَ", "تَقْرَأُ", "تَقْرَءَانِ", "تَقْرَءُونَ", "تَقْرَئِينَ", "تَقْرَءَانِ", "تَقْرَأْنَ", "أَقْرَأُ", "نَقْرَأُ", "نَقْرَأُ"]
+        },
+        7: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِقْرَأْ", 
+                trText: "Oku!",
+                ornek: { ar: "اِقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ", tr: "Yaratan Rabbinin adıyla oku! (Alak Suresi, 1)" }
+            },
+            cekimi: ["اِقْرَأْ", "اِقْرَءَا", "اِقْرَءُوا", "اِقْرَئِي", "اِقْرَءَا", "اِقْرَأْنَ"]
+        },
+
+       
+        // --- 23 Numaralı Kalıp (فِعَال) ---
+        23: { 
+            base: { 
+                emoji: "📖", 
+                arText: "قِرَاء", 
+                trText: "Okuma (Yalın)." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "📜", 
+                arText: "قِرَاءَة", 
+                trText: "Okumak / Kıraat (Masdar).",
+                ornek: { ar: "قِرَاءَةُ الْكُتُبِ مُفِيدَةٌ", tr: "Kitap okumak faydalıdır." }
+            } 
+        },
+        27: { 
+            base: { 
+                emoji: "🕋", 
+                arText: "قُرْآن", 
+                trText: "Çok okunan / Kur'an (Mübalağalı İsim/Masdar).",
+                ornek: { ar: "شَهْرُ رَمَضَانَ الَّذِي أُنْزِلَ فِيهِ الْقُرْآنُ", tr: "Ramazan ayı ki Kur'an onda indirilmiştir. (Bakara Suresi, 185)" }
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "👤", 
+                arText: "قَارِئ", 
+                trText: "Okuyan / Kâri (İsm-i Fail).",
+                ornek: [
+                    { 
+                        ar: "صَوْتُ الْقَارِئِ جَمِيلٌ جِدًّا", 
+                        tr: "Okuyucunun (kârinin) sesi çok güzel." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة إِمْلَائِيَّة", 
+                        tr: "İmla Kuralı: Hemzeden önceki harfin harekesi kesra (esre) olduğu için, hemze 'Ye' (ئ) kürsüsü üzerine yazılmıştır." 
+                    }
+                ]
+            }
+        },
+        36: { 
+            base: { 
+                emoji: "✅", 
+                arText: "مَقْرُوء", 
+                trText: "Okunan / Makrû (İsm-i Meful).",
+                ornek: { ar: "هَذَا النَّصُّ مَقْرُوءٌ", tr: "Bu metin okunan (okunabilen/okunmuş) bir metindir." }
+            }
+        }
+    },
+
+     // ==================================================================
+    // 61. H-R-M (ح ر م) KÖKÜ - Yasak / Kutsal / Saygı
+    // ==================================================================
+    "حرم": {
+        // --- 11, 12, 13 Numaralı Kalıplar (5. Bab - حَرُمَ / Haram oldu - Kutsal oldu) ---
+        11: { 
+            base: { emoji: "🚫", arText: "حَرُمَ", trText: "Haram oldu / Yasaklandı." },
+            cekimi: ["حَرُمَ", "حَرُمَا", "حَرُمُوا", "حَرُمَتْ", "حَرُمَتَا", "حَرُمْنَ", "حَرُمْتَ", "حَرُمْتُمَا", "حَرُمْتُمْ", "حَرُمْتِ", "حَرُمْتُمَا", "حَرُمْتُنَّ", "حَرُمْتُ", "حَرُمْنَا", "حَرُمْنَا"]
+        },
+        12: { 
+            base: { emoji: "🛑", arText: "يَحْرُمُ", trText: "Haram olur / Yasaktır." },
+            cekimi: ["يَحْرُمُ", "يَحْرُمَانِ", "يَحْرُمُونَ", "تَحْرُمُ", "تَحْرُمَانِ", "يَحْرُمْنَ", "تَحْرُمُ", "تَحْرُمَانِ", "تَحْرُمُونَ", "تَحْرُمِينَ", "تَحْرُمَانِ", "تَحْرُمْنَ", "أَحْرُمُ", "نَحْرُمُ", "نَحْرُمُ"]
+        },
+        13: { 
+            base: { emoji: "❗", arText: "اُحْرُمْ", trText: "Haram ol!" },
+            cekimi: ["اُحْرُمْ", "اُحْرُمَا", "اُحْرُمُوا", "اُحْرُمِي", "اُحْرُمَا", "اُحْرُمْنَ"]
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "🕋", 
+                arText: "حَرَم", 
+                trText: "Harem / Kutsal ve yasak bölge.",
+                ornek: { ar: "الْحَرَمَانِ الشَّرِيفَانِ", tr: "İki şerefli Harem (Mekke ve Medine)." }
+            } 
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل) ---
+        21: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "حُرْم", 
+                trText: "Kutsallık / Yasaklık (Yalın)." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🙌", 
+                arText: "حُرْمَة", 
+                trText: "Hürmet / Saygı / Dokunulmazlık.",
+                ornek: { ar: "لَهُ حُرْمَةٌ كَبِيرَةٌ فِي الْمُجْتَمَعِ", tr: "Toplumda onun büyük bir hürmeti (saygınlığı) vardır." }
+            } 
+        },
+
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "حَرَام", 
+                trText: "Haram / Yasaklanmış.",
+                ornek: { ar: "الْحَلَالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ", tr: "Helal bellidir, haram da bellidir. (Hadis-i Şerif)" }
+            } 
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🏡", 
+                arText: "حَرِيم", 
+                trText: "Harim / Girilmesi yasak olan özel alan / Aile.",
+                ornek: { ar: "حَرِيمُ الدَّارِ", tr: "Evin özel (mahrem) alanı." }
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول) ---
+        36: { 
+            base: { 
+                emoji: "😔", 
+                arText: "مَحْرُوم", 
+                trText: "Mahrum / Yoksun bırakılmış.",
+                ornek: { ar: "وَفِي أَمْوَالِهِمْ حَقٌّ لِلسَّائِلِ وَالْمَحْرُومِ", tr: "Mallarında isteyenin ve mahrumun (yoksulun) bir hakkı vardır. (Zâriyât Suresi, 19)" }
+            } 
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل) ---
+        38: { 
+            base: { 
+                emoji: "🔒", 
+                arText: "مَحْرَم", 
+                trText: "Mahrem / Evlenilmesi haram olan / Sırdaş.",
+                ornek: { ar: "هَذَا سِرٌّ مَحْرَمٌ", tr: "Bu gizli (mahrem) bir sırdır." }
+            } 
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🕋", 
+                arText: "إِحْرَام", 
+                trText: "İhram / Hac veya umreye niyetlenme.",
+                ornek: { ar: "لَبِسَ الْحَاجُّ مَلَابِسَ الْإِحْرَامِ", tr: "Hacı ihram kıyafetlerini giydi." }
+            },
+            cekimi: ["إِحْرَام"]
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "🛑", 
+                arText: "تَحْرِيم", 
+                trText: "Tahrim / Haram kılma (Tahrim Suresi).",
+                ornek: { ar: "سُورَةُ التَّحْرِيمِ فِي الْقُرْآنِ", tr: "Kur'an'da Tahrim (Haram kılma) Suresi." }
+            } 
+        },
+
+        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl İsm-i Mef'ulü) ---
+        63: { 
+            base: { 
+                emoji: "🌙", 
+                arText: "مُحَرَّم", 
+                trText: "Muharrem (Haram kılınmış ay).",
+                ornek: { ar: "شَهْرُ الْمُحَرَّمِ هُوَ الشَّهْرُ الْأَوَّلُ فِي التَّقْوِيمِ الْهِجْرِيِّ", tr: "Muharrem ayı, Hicri takvimin ilk ayıdır." }
+            } 
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "اِحْتِرَام", 
+                trText: "İhtiram / Saygı göstermek.",
+                ornek: { ar: "يَجِبُ احْتِرَامُ الْقَوَانِينِ", tr: "Kanunlara saygı göstermek (ihtiram) gerekir." }
+            } 
+        },
+
+        // --- 82 Numaralı Kalıp (مُفْتَعَل - İfti'âl İsm-i Mef'ulü) ---
+        82: { 
+            base: { 
+                emoji: "🎩", 
+                arText: "مُحْتَرَم", 
+                trText: "Muhterem / Saygıdeğer.",
+                ornek: { ar: "ضَيْفٌ مُحْتَرَمٌ", tr: "Saygıdeğer (muhterem) bir misafir." }
+            } 
+        }
+    },
       
+    // ==================================================================
+    // 62. '-R-D (ع ر ض) KÖKÜ - Sunmak / Göstermek / Genişlik / Karşı Çıkmak
+    // 2. Bab (فَعَلَ - يَفْعِلُ) ve Zengin Mezid Bablar
+    // ==================================================================
+    "عرض": {
+        // --- 1, 4, 5 Numaralı Kalıplar (2. Bab) ---
+        1: { 
+            base: { 
+                emoji: "📺", 
+                arText: "عَرَضَ", 
+                trText: "Sunduk / Gösterdi (Arz etti).",
+                ornek: { ar: "عَرَضَ الْبَائِعُ بَضَائِعَهُ", tr: "Satıcı mallarını sundu (sergiledi/arz etti)." }
+            },
+            cekimi: ["عَرَضَ", "عَرَضَا", "عَرَضُوا", "عَرَضَتْ", "عَرَضَتَا", "عَرَضْنَ", "عَرَضْتَ", "عَرَضْتُمَا", "عَرَضْتُمْ", "عَرَضْتِ", "عَرَضْتُمَا", "عَرَضْتُنَّ", "عَرَضْتُ", "عَرَضْنَا", "عَرَضْنَا"]
+        },
+        4: { 
+            base: { 
+                emoji: "🎞️", 
+                arText: "يَعْرِضُ", 
+                trText: "Sunar / Gösteriyor.",
+                ornek: { ar: "الشَّاشَةُ تَعْرِضُ فِيلْمًا جَدِيدًا", tr: "Ekran yeni bir film gösteriyor (sunuyor/arz ediyor)." }
+            },
+            cekimi: ["يَعْرِضُ", "يَعْرِضَانِ", "يَعْرِضُونَ", "تَعْرِضُ", "تَعْرِضَانِ", "يَعْرِضْنَ", "تَعْرِضُ", "تَعْرِضَانِ", "تَعْرِضُونَ", "تَعْرِضِينَ", "تَعْرِضَانِ", "تَعْرِضْنَ", "أَعْرِضُ", "نَعْرِضُ", "نَعْرِضُ"]
+        },
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِعْرِضْ", 
+                trText: "Sun / Göster / Arz et!"
+            },
+            cekimi: ["اِعْرِضْ", "اِعْرِضَا", "اِعْرِضُوا", "اِعْرِضِي", "اِعْرِضَا", "اِعْرِضْنَ"]
+        },
+
+        // --- İsim ve Masdar Kalıpları ---
+        17: { 
+            base: { 
+                emoji: "🍂", 
+                arText: "عَرَض", 
+                trText: "Geçici durum / Belirti (Araz).",
+                ornek: { ar: "مَتَاعُ الدُّنْيَا عَرَضٌ زَائِلٌ", tr: "Dünya malı geçici bir arazdır (tükenen bir belirtidir)." }
+            } 
+        }, 
+        19: { 
+            base: { 
+                emoji: "📏", 
+                arText: "عَرْض", 
+                trText: "Genişlik (En) / Teklif (Arz).",
+                ornek: [
+                    { ar: "طُولٌ وَعَرْضٌ", tr: "Boy ve en (genişlik)." },
+                    { ar: "عَرْضٌ خَاصٌّ لِلزَّبَائِنِ", tr: "Müşteriler için özel teklif (arz)." }
+                ]
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "🌩️", 
+                arText: "عَارِض", 
+                trText: "Engel / Arız olan şey.",
+                ornek: { ar: "حَدَثَ لَهُ عَارِضٌ صِحِّيٌّ", tr: "Başına bir sağlık engeli geldi." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "⚠️", 
+                arText: "عَارِضَة", 
+                trText: "Arıza / Beklenmedik engel." 
+            },
+            "يّ": {
+                emoji: "🍂",
+                arText: "عَارِضِيّ",
+                trText: "Arızi / Geçici / Tesadüfi."
+            }
+        },
+        35: { 
+            base: { 
+                emoji: "🛣️", 
+                arText: "عَرِيض", 
+                trText: "Geniş / Yayvan.",
+                ornek: { ar: "شَارِعٌ طَوِيلٌ وَعَرِيضٌ", tr: "Uzun ve geniş bir cadde." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "📝", 
+                arText: "عَرِيضَة", 
+                trText: "Dilekçe (Geniş çaplı arz/sunum)."
+            }
+        }, 
+        36: {
+            base: {
+                emoji: "🎯",
+                arText: "مَعْرُوض",
+                trText: "Sunulan / Arz edilen / Mâruz.",
+                ornek: { ar: "الْمُشْكِلَةُ مَعْرُوضَةٌ عَلَى الْمُدِيرِ", tr: "Sorun müdüre sunulmuştur (maruzdur/arz edilmiştir)." }
+            }
+        },
+        37: { 
+            base: { 
+                emoji: "🖼️", 
+                arText: "مَعْرِض", 
+                trText: "Sergi / Fuar.",
+                ornek: { ar: "مَعْرِضُ الْكِتَابِ الدَّوْلِيِّ", tr: "Uluslararası kitap fuarı (sergisi)." }
+            }
+        }, 
         
+        // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı - Yüz çevirmek) ---
+        52: { 
+            base: { 
+                emoji: "撇", 
+                arText: "أَعْرَضَ", 
+                trText: "Yüz çevirdi / İlgilenmedi.",
+                ornek: { ar: "أَعْرَضَ عَنِ الْجَاهِلِينَ", tr: "Cahillerden yüz çevirdi." }
+            },
+            cekimi: ["أَعْرَضَ", "أَعْرَضَا", "أَعْرَضُوا", "أَعْرَضَتْ", "أَعْرَضَتَا", "أَعْرَضْنَ", "أَعْرَضْتَ", "أَعْرَضْتُمَا", "أَعْرَضْتُمْ", "أَعْرَضْتِ", "أَعْرَضْتُمَا", "أَعْرَضْتُنَّ", "أَعْرَضْتُ", "أَعْرَضْنَا", "أَعْرَضْنَا"]
+        },
+        53: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "يُعْرِضُ", 
+                trText: "Yüz çevirir / İlgilenmiyor."
+            },
+            cekimi: ["يُعْرِضُ", "يُعْرِضَانِ", "يُعْرِضُونَ", "تُعْرِضُ", "تُعْرِضَانِ", "يُعْرِضْنَ", "تُعْرِضُ", "تُعْرِضَانِ", "تُعْرِضُونَ", "تُعْرِضِينَ", "تُعْرِضَانِ", "تُعْرِضْنَ", "أُعْرِضُ", "نُعْرِضُ", "نُعْرِضُ"]
+        },
+        54: { 
+            base: { 
+                emoji: "❗", 
+                arText: "أَعْرِضْ", 
+                trText: "Yüz çevir!"
+            },
+            cekimi: ["أَعْرِضْ", "أَعْرِضَا", "أَعْرِضُوا", "أَعْرِضِي", "أَعْرِضَا", "أَعْرِضْنَ"]
+        },
+        55: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "إِعْرَاض", 
+                trText: "Yüz çevirme / Sırt dönme.",
+                ornek: { ar: "الْإِعْرَاضُ عَنِ اللَّغْوِ صِفَةُ الْمُؤْمِنِ", tr: "Boş sözden yüz çevirmek (i'raz etmek) müminin sıfatıdır." }
+            }
+        },
+
+        // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı - Muhalefet etmek) ---
+        64: {
+            base: { emoji: "🙅", arText: "عَارَضَ", trText: "Karşı çıktı / Muhalefet etti." },
+            cekimi: ["عَارَضَ", "عَارَضَا", "عَارَضُوا", "عَارَضَتْ", "عَارَضَتَا", "عَارَضْنَ", "عَارَضْتَ", "عَارَضْتُمَا", "عَارَضْتُمْ", "عَارَضْتِ", "عَارَضْتُمَا", "عَارَضْتُنَّ", "عَارَضْتُ", "عَارَضْنَا", "عَارَضْنَا"]
+        },
+        65: {
+            base: { emoji: "🗣️", arText: "يُعَارِضُ", trText: "Karşı çıkar / Muhalefet ediyor." },
+            cekimi: ["يُعَارِضُ", "يُعَارِضَانِ", "يُعَارِضُونَ", "تُعَارِضُ", "تُعَارِضَانِ", "يُعَارِضْنَ", "تُعَارِضُ", "تُعَارِضَانِ", "تُعَارِضُونَ", "تُعَارِضِينَ", "تُعَارِضَانِ", "تُعَارِضْنَ", "أُعَارِضُ", "نُعَارِضُ", "نُعَارِضُ"]
+        },
+        66: {
+            base: { emoji: "❗", arText: "عَارِضْ", trText: "Karşı çık / Muhalefet et!" },
+            cekimi: ["عَارِضْ", "عَارِضَا", "عَارِضُوا", "عَارِضِي", "عَارِضَا", "عَارِضْنَ"]
+        },
+        67: {
+            base: {
+                emoji: "⚔️",
+                arText: "مُعَارَضَة",
+                trText: "Muhalefet / Karşı çıkma.",
+                ornek: { ar: "حِزْبُ الْمُعَارَضَةِ يَنْتَقِدُ الْقَرَارَ", tr: "Muhalefet partisi kararı eleştiriyor." }
+            }
+        },
+        69: {
+            base: { emoji: "👤", arText: "مُعَارِض", trText: "Muhalif / Karşı çıkan." }
+        },
+
+        // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı - İtiraz etmek / Engel olmak) ---
+        77: {
+            base: {
+                emoji: "✋",
+                arText: "اِعْتَرَضَ",
+                trText: "İtiraz etti / Karşı durdu.",
+                ornek: { ar: "اِعْتَرَضَ عَلَى الْحُكْمِ", tr: "Hükme (karara) itiraz etti." }
+            },
+            cekimi: ["اِعْتَرَضَ", "اِعْتَرَضَا", "اِعْتَرَضُوا", "اِعْتَرَضَتْ", "اِعْتَرَضَتَا", "اِعْتَرَضْنَ", "اِعْتَرَضْتَ", "اِعْتَرَضْتُمَا", "اِعْتَرَضْتُمْ", "اِعْتَرَضْتِ", "اِعْتَرَضْتُمَا", "اِعْتَرَضْتُنَّ", "اِعْتَرَضْتُ", "اِعْتَرَضْنَا", "اِعْتَرَضْنَا"]
+        },
+        78: {
+            base: { emoji: "🛑", arText: "يَعْتَرِضُ", trText: "İtiraz eder / Engel olur." },
+            cekimi: ["يَعْتَرِضُ", "يَعْتَرِضَانِ", "يَعْتَرِضُونَ", "تَعْتَرِضُ", "تَعْتَرِضَانِ", "يَعْتَرِضْنَ", "تَعْتَرِضُ", "تَعْتَرِضَانِ", "تَعْتَرِضُونَ", "تَعْتَرِضِينَ", "تَعْتَرِضَانِ", "تَعْتَرِضْنَ", "أَعْتَرِضُ", "نَعْتَرِضُ", "نَعْتَرِضُ"]
+        },
+        79: {
+            base: { emoji: "❗", arText: "اِعْتَرِضْ", trText: "İtiraz et!" },
+            cekimi: ["اِعْتَرِضْ", "اِعْتَرِضَا", "اِعْتَرِضُوا", "اِعْتَرِضِي", "اِعْتَرِضَا", "اِعْتَرِضْنَ"]
+        },
+        80: {
+            base: {
+                emoji: "📜",
+                arText: "اِعْتِرَاض",
+                trText: "İtiraz / Karşı gelme.",
+                ornek: { ar: "قَدَّمَ الْمُحَامِي لَائِحَةَ اعْتِرَاضٍ", tr: "Avukat bir itiraz dilekçesi sundu." }
+            }
+        },
+
+        // --- 88, 89, 90, 91 Numaralı Kalıplar (Tefe'ul Babı - Maruz kalmak / Taarruz etmek) ---
+        88: {
+            base: { 
+                emoji: "⚔️", 
+                arText: "تَعَرَّضَ", 
+                trText: "Maruz kaldı / Taarruz etti.",
+                ornek: { ar: "تَعَرَّضَ لِحَادِثِ سَيْرٍ", tr: "Trafik kazasına maruz kaldı." }
+            },
+            cekimi: ["تَعَرَّضَ", "تَعَرَّضَا", "تَعَرَّضُوا", "تَعَرَّضَتْ", "تَعَرَّضَتَا", "تَعَرَّضْنَ", "تَعَرَّضْتَ", "تَعَرَّضْتُمَا", "تَعَرَّضْتُمْ", "تَعَرَّضْتِ", "تَعَرَّضْتُمَا", "تَعَرَّضْتُنَّ", "تَعَرَّضْتُ", "تَعَرَّضْنَا", "تَعَرَّضْنَا"]
+        },
+        89: {
+            base: { emoji: "🛡️", arText: "يَتَعَرَّضُ", trText: "Maruz kalır / Taarruz ediyor." },
+            cekimi: ["يَتَعَرَّضُ", "يَتَعَرَّضَانِ", "يَتَعَرَّضُونَ", "تَتَعَرَّضُ", "تَتَعَرَّضَانِ", "يَتَعَرَّضْنَ", "تَتَعَرَّضُ", "تَتَعَرَّضَانِ", "تَتَعَرَّضُونَ", "تَتَعَرَّضِينَ", "تَتَعَرَّضَانِ", "تَتَعَرَّضْنَ", "أَتَعَرَّضُ", "نَتَعَرَّضُ", "نَتَعَرَّضُ"]
+        },
+        90: {
+            base: { emoji: "❗", arText: "تَعَرَّضْ", trText: "Maruz kal / Taarruz et!" },
+            cekimi: ["تَعَرَّضْ", "تَعَرَّضَا", "تَعَرَّضُوا", "تَعَرَّضِي", "تَعَرَّضَا", "تَعَرَّضْنَ"]
+        },
+        91: {
+            base: {
+                emoji: "🎯",
+                arText: "تَعَرُّض",
+                trText: "Taarruz / Maruz kalma.",
+                ornek: { ar: "التَّعَرُّضُ لِأَشِعَّةِ الشَّمْسِ مُفِيدٌ", tr: "Güneş ışınlarına maruz kalmak faydalıdır." }
+            }
+        },
+
+        // --- 100, 101 Numaralı Kalıplar (İstif'âl Babı - Gözden geçirmek / Geçit töreni yapmak) ---
+        100: {
+            base: { emoji: "👁️", arText: "اِسْتَعْرَضَ", trText: "Gözden geçirdi / Teftiş etti." },
+            cekimi: ["اِسْتَعْرَضَ", "اِسْتَعْرَضَا", "اِسْتَعْرَضُوا", "اِسْتَعْرَضَتْ", "اِسْتَعْرَضَتَا", "اِسْتَعْرَضْنَ", "اِسْتَعْرَضْتَ", "اِسْتَعْرَضْتُمَا", "اِسْتَعْرَضْتُمْ", "اِسْتَعْرَضْتِ", "اِسْتَعْرَضْتُمَا", "اِسْتَعْرَضْتُنَّ", "اِسْتَعْرَضْتُ", "اِسْتَعْرَضْنَا", "اِسْتَعْرَضْنَا"]
+        },
+        101: {
+            base: { emoji: "📋", arText: "يَسْتَعْرِضُ", trText: "Gözden geçirir." },
+            cekimi: ["يَسْتَعْرِضُ", "يَسْتَعْرِضَانِ", "يَسْتَعْرِضُونَ", "تَسْتَعْرِضُ", "تَسْتَعْرِضَانِ", "يَسْتَعْرِضْنَ", "تَسْتَعْرِضُ", "تَسْتَعْرِضَانِ", "تَسْتَعْرِضُونَ", "تَسْتَعْرِضِينَ", "تَسْتَعْرِضَانِ", "تَسْتَعْرِضْنَ", "أَسْتَعْرِضُ", "نَسْتَعْرِضُ", "نَسْتَعْرِضُ"]
+        },
+        103: {
+            base: {
+                emoji: "🎖️",
+                arText: "اِسْتِعْرَاض",
+                trText: "Geçit töreni / Gözden geçirme.",
+                ornek: { ar: "اِسْتِعْرَاضٌ عَسْكَرِيٌّ", tr: "Askeri geçit töreni." }
+            }
+        }
+    },
+
+     // ==================================================================
+    // 63. Q-B-L (ق ب ل) KÖKÜ - Kabul Etmek / Yönelmek / Karşılamak / Gelecek
+    // (Sadece en çok kullanılan türemeler eklenmiştir)
+    // ==================================================================
+    "قبل": {
+        // --- 8, 9, 10 Numaralı Kalıplar (4. Bab - Sülasi Mücerred) ---
+        8: { 
+            base: { emoji: "✅", arText: "قَبِلَ", trText: "Kabul etti." },
+            cekimi: ["قَبِلَ", "قَبِلَا", "قَبِلُوا", "قَبِلَتْ", "قَبِلَتَا", "قَبِلْنَ", "قَبِلْتَ", "قَبِلْتُمَا", "قَبِلْتُمْ", "قَبِلْتِ", "قَبِلْتُمَا", "قَبِلْتُنَّ", "قَبِلْتُ", "قَبِلْنَا", "قَبِلْنَا"]
+        },
+        9: { 
+            base: { emoji: "🤝", arText: "يَقْبَلُ", trText: "Kabul eder / Kabul ediyor." },
+            cekimi: ["يَقْبَلُ", "يَقْبَلَانِ", "يَقْبَلُونَ", "تَقْبَلُ", "تَقْبَلَانِ", "يَقْبَلْنَ", "تَقْبَلُ", "تَقْبَلَانِ", "تَقْبَلُونَ", "تَقْبَلِينَ", "تَقْبَلَانِ", "تَقْبَلْنَ", "أَقْبَلُ", "نَقْبَلُ", "نَقْبَلُ"]
+        },
+        10: { 
+            base: { emoji: "❗", arText: "اِقْبَلْ", trText: "Kabul et!" },
+            cekimi: ["اِقْبَلْ", "اِقْبَلَا", "اِقْبَلُوا", "اِقْبَلِي", "اِقْبَلَا", "اِقْبَلْنَ"]
+        },
+
+        // --- 26 Numaralı Kalıp (فَعُول) ---
+        26: { 
+            base: { 
+                emoji: "✔️", 
+                arText: "قَبُول", 
+                trText: "Kabul / Onay.",
+                ornek: { ar: "تَمَّ قَبُولُ الطَّلَبِ", tr: "Başvuru kabul edildi." }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: { 
+            base: { 
+                emoji: "👍", 
+                arText: "قَابِل", 
+                trText: "Kabul eden / Mümkün (Kabil)." 
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "🧠", 
+                arText: "قَابِلِيَّة", 
+                trText: "Kabiliyet / Yetenek.",
+                ornek: { ar: "لَدَيْهِ قَابِلِيَّةٌ لِتَعَلُّـمِ اللُّغَاتِ", tr: "Diller öğrenmeye kabiliyeti var." }
+            }
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "👥", 
+                arText: "قَبِيل", 
+                trText: "Kategori / Tür / Taraf." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "⛺", 
+                arText: "قَبِيلَة", 
+                trText: "Kabile / Boy.",
+                ornek: { 
+                    ar: "وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا", 
+                    tr: "Sizi tanışmanız için milletlere ve kabilelere ayırdık. (Hucurât Suresi, 13)" 
+                }
+            }
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🌟", 
+                arText: "إِقْبَال", 
+                trText: "İkbal / Yönelme / İlgi.",
+                ornek: { ar: "هُنَاكَ إِقْبَالٌ كَبِيرٌ عَلَى الْمَعْرِضِ", tr: "Fuara büyük bir ilgi (ikbal / yönelme) var." }
+            } 
+        },
+
+          // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "📖", 
+                arText: "مُقَابَلَة", 
+                trText: "Karşılık verme / Röportaj / Mukabele.",
+                ornek: [
+                    { 
+                        ar: "نَقْرَأُ الْقُرْآنَ بِطَرِيقَةِ الْمُقَابَلَةِ فِي شَهْرِ رَمَضَانَ", 
+                        tr: "Ramazan ayında Kur'an'ı mukabele (karşılıklı okuma) usulüyle okuruz." 
+                    },
+                    { 
+                        ar: "أَجْرَى مُقَابَلَةً صَحَفِيَّةً", 
+                        tr: "Bir gazete röportajı (mukabelesi) yaptı." 
+                    }
+                ]
+            } 
+        },
+
+        // --- 69 Numaralı Kalıp (مُفَاعِل - Müfâ'ale İsm-i Faili) ---
+        69: { 
+            base: { 
+                emoji: "🔄", 
+                arText: "مُقَابِل", 
+                trText: "Karşılık / Mukabil.",
+                ornek: { ar: "عَمِلَ ذَٰلِكَ بِمُقَابِلٍ مَادِّيٍّ", tr: "Bunu maddi bir karşılıkla (mukabille) yaptı." }
+            } 
+        },
+
+        // --- 88, 89, 90 Numaralı Kalıplar (Tefe'ul Babı - Lütfedip kabul etmek / Tekabbel) ---
+        88: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "تَقَبَّلَ", 
+                trText: "Kabul etti (Lütfedip kabul buyurdu).",
+                ornek: { 
+                    ar: "تَقَبَّلَ اللهُ مِنَّا وَمِنْكُمْ", 
+                    tr: "Allah bizden ve sizden kabul etsin (Tekabbelallah)." 
+                }
+            },
+            cekimi: ["تَقَبَّلَ", "تَقَبَّلَا", "تَقَبَّلُوا", "تَقَبَّلَتْ", "تَقَبَّلَتَا", "تَقَبَّلْنَ", "تَقَبَّلْتَ", "تَقَبَّلْتُمَا", "تَقَبَّلْتُمْ", "تَقَبَّلْتِ", "تَقَبَّلْتُمَا", "تَقَبَّلْتُنَّ", "تَقَبَّلْتُ", "تَقَبَّلْنَا", "تَقَبَّلْنَا"]
+        },
+        89: { 
+            base: { 
+                emoji: "✨", 
+                arText: "يَتَقَبَّلُ", 
+                trText: "Kabul eder / Kabul buyurur.",
+                ornek: { 
+                    ar: "إِنَّمَا يَتَقَبَّلُ اللهُ مِنَ الْمُتَّقِينَ", 
+                    tr: "Allah ancak takva sahiplerinden (müttakilerden) kabul eder. (Mâide Suresi, 27)" 
+                }
+            },
+            cekimi: ["يَتَقَبَّلُ", "يَتَقَبَّلَانِ", "يَتَقَبَّلُونَ", "تَتَقَبَّلُ", "تَتَقَبَّلَانِ", "يَتَقَبَّلْنَ", "تَتَقَبَّلُ", "تَتَقَبَّلَانِ", "تَتَقَبَّلُونَ", "تَتَقَبَّلِينَ", "تَتَقَبَّلَانِ", "تَتَقَبَّلْنَ", "أَتَقَبَّلُ", "نَتَقَبَّلُ", "نَتَقَبَّلُ"]
+        },
+        90: { 
+            base: { 
+                emoji: "❗", 
+                arText: "تَقَبَّلْ", 
+                trText: "Kabul et / Kabul buyur!",
+                ornek: { 
+                    ar: "رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ", 
+                    tr: "Rabbimiz! Bizden kabul buyur. Şüphesiz sen hakkıyla işitensin, hakkıyla bilensin. (Bakara Suresi, 127)" 
+                }
+            },
+            cekimi: ["تَقَبَّلْ", "تَقَبَّلَا", "تَقَبَّلُوا", "تَقَبَّلِي", "تَقَبَّلَا", "تَقَبَّلْنَ"]
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Masdarı) ---
+        103: { 
+            base: { 
+                emoji: "🚀", 
+                arText: "اِسْتِقْبَال", 
+                trText: "Karşılama / Gelecek (İstikbal).",
+                ornek: { ar: "اِسْتِقْبَالُ الضُّيُوفِ بِحَفَاوَةٍ", tr: "Misafirleri sıcak bir şekilde karşılama (istikbal etme)." }
+            } 
+        },
+
+        // --- 105 Numaralı Kalıp (مُسْتَفْعَل - İstif'âl İsm-i Mef'ûlü) ---
+        105: { 
+            base: { 
+                emoji: "🔮", 
+                arText: "مُسْتَقْبَل", 
+                trText: "Müstakbel / Gelecek zaman.",
+                ornek: { ar: "نَتَمَنَّى لَكُمْ مُسْتَقْبَلًا بَاهِرًا", tr: "Size parlak bir gelecek (müstakbel) dileriz." }
+            } 
+        }
+    },
+        // ==================================================================
+    // 64. K-R-M (ك ر م) KÖKÜ - Cömert Olmak / Onur / İkram
+    // 5. Bab (فَعُلَ - يَفْعُلُ) ve İlgili Mezid Bablar
+    // ==================================================================
+    "كرم": {
+        // --- 11, 12, 13 Numaralı Kalıplar (5. Bab - حَرُمَ gibi) ---
+        11: { 
+            base: { emoji: "🤲", arText: "كَرُمَ", trText: "Cömert oldu / Değerli oldu." },
+            cekimi: ["كَرُمَ", "كَرُمَا", "كَرُمُوا", "كَرُمَتْ", "كَرُمَتَا", "كَرُمْنَ", "كَرُمْتَ", "كَرُمْتُمَا", "كَرُمْتُمْ", "كَرُمْتِ", "كَرُمْتُمَا", "كَرُمْتُنَّ", "كَرُمْتُ", "كَرُمْنَا", "كَرُمْنَا"]
+        },
+        12: { 
+            base: { emoji: "✨", arText: "يَكْرُمُ", trText: "Cömert olur / Değerlidir." },
+            cekimi: ["يَكْرُمُ", "يَكْرُمَانِ", "يَكْرُمُونَ", "تَكْرُمُ", "تَكْرُمَانِ", "يَكْرُمْنَ", "تَكْرُمُ", "تَكْرُمَانِ", "تَكْرُمُونَ", "تَكْرُمِينَ", "تَكْرُمَانِ", "تَكْرُمْنَ", "أَكْرُمُ", "نَكْرُمُ", "نَكْرُمُ"]
+        },
+        13: { 
+            base: { emoji: "❗", arText: "اُكْرُمْ", trText: "Cömert ol / Değerli ol!" },
+            cekimi: ["اُكْرُمْ", "اُكْرُمَا", "اُكْرُمُوا", "اُكْرُمِي", "اُكْرُمَا", "اُكْرُمْنَ"]
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل) ---
+        17: { 
+            base: { 
+                emoji: "💎", 
+                arText: "كَرَم", 
+                trText: "Kerem / Cömertlik / Lütuf.",
+                ornek: { ar: "هَذَا مِنْ كَرَمِ أَخْلَاقِكَ", tr: "Bu senin ahlakının cömertliğindendir (keremindendir)." }
+            } 
+        },
+
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: { 
+            base: { 
+                emoji: "👑", 
+                arText: "كَرَام", 
+                trText: "Değer / Yücelik (Yalın)." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🌟", 
+                arText: "كَرَامَة", 
+                trText: "Keramet / Onur / Saygınlık.",
+                ornek: { ar: "كَرَامَةُ الْإِنْسَانِ فَوْقَ كُلِّ شَيْءٍ", tr: "İnsan onuru (kerameti) her şeyin üstündedir." }
+            } 
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "🤍", 
+                arText: "كَرِيم", 
+                trText: "Kerim / Cömert / Değerli.",
+                ornek: [
+                    
+                    { ar: "إِنَّهُ قُرْآنٌ كَرِيمٌ", tr: "Şüphesiz o, değerli (kerim) bir Kur'an'dır. (Vâkıa Suresi, 77)" }
+                ]
+            },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🧕",
+                arText: "كَرِيمَة",
+                trText: "Kerime / Değerli (Kadın) / Kız evlat.",
+                ornek: { ar: "هِيَ ابْنَتِي الْكَرِيمَةُ", tr: "O benim değerli kızımdır (kerimemdir)." }
+            }
+        },
+
+        // --- 50 Numaralı Kalıp (أَفْعَل - İsm-i Tafdil) ---
+        50: { 
+            base: { 
+                emoji: "🥇", 
+                arText: "أَكْرَم", 
+                trText: "Ekrem / En cömert / En şerefli.",
+                ornek: { ar: "اِقْرَأْ وَرَبُّكَ الْأَكْرَمُ", tr: "Oku! Senin Rabbin en cömert olandır (Ekrem'dir). (Alak Suresi, 3)" }
+            } 
+        },
+
+        // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı - İkram Etmek) ---
+        52: { 
+            base: { emoji: "🎁", arText: "أَكْرَمَ", trText: "İkram etti / Ağırladı." },
+            cekimi: ["أَكْرَمَ", "أَكْرَمَا", "أَكْرَمُوا", "أَكْرَمَتْ", "أَكْرَمَتَا", "أَكْرَمْنَ", "أَكْرَمْتَ", "أَكْرَمْتُمَا", "أَكْرَمْتُمْ", "أَكْرَمْتِ", "أَكْرَمْتُمَا", "أَكْرَمْتُنَّ", "أَكْرَمْتُ", "أَكْرَمْنَا", "أَكْرَمْنَا"]
+        },
+        53: { 
+            base: { emoji: "☕", arText: "يُكْرِمُ", trText: "İkram eder / Ağırlıyor." },
+            cekimi: ["يُكْرِمُ", "يُكْرِمَانِ", "يُكْرِمُونَ", "تُكْرِمُ", "تُكْرِمَانِ", "يُكْرِمْنَ", "تُكْرِمُ", "تُكْرِمَانِ", "تُكْرِمُونَ", "تُكْرِمِينَ", "تُكْرِمَانِ", "تُكْرِمْنَ", "أُكْرِمُ", "نُكْرِمُ", "نُكْرِمُ"]
+        },
+        54: { 
+            base: { emoji: "❗", arText: "أَكْرِمْ", trText: "İkram et / Değer ver!" },
+            cekimi: ["أَكْرِمْ", "أَكْرِمَا", "أَكْرِمُوا", "أَكْرِمِي", "أَكْرِمَا", "أَكْرِمْنَ"]
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🍰", 
+                arText: "إِكْرَام", 
+                trText: "İkram / Ağırlama / Saygı gösterme.",
+                ornek: { ar: "إِكْرَامُ الضَّيْفِ وَاجِبٌ", tr: "Misafire ikram etmek görevdir." }
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "💰", 
+                arText: "إِكْرَامِيَّة", 
+                trText: "Bahşiş / İkramiye." 
+            }
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "🎖️", 
+                arText: "تَكْرِيم", 
+                trText: "Tekrim / Onurlandırma / Saygı.",
+                ornek: { ar: "حَفْلُ تَكْرِيمٍ لِلنَّاجِحِينَ", tr: "Başarılı olanlar için onurlandırma (ödül/tekrim) töreni." }
+            } 
+        },
+
+        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl İsm-i Mef'ulü) ---
+        63: { 
+            base: { 
+                emoji: "🏆", 
+                arText: "مُكَرَّم", 
+                trText: "Mükerrem / Saygıdeğer / Onurlandırılmış.",
+                ornek: { ar: "ضَيْفٌ مُكَرَّمٌ", tr: "Saygıdeğer (mükerrem) misafir." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🕋", 
+                arText: "مُكَرَّمَة", 
+                trText: "Saygıdeğer / Mükerreme (Dişil).",
+                ornek: { ar: "الْكَعْبَةُ الْمُكَرَّمَةُ", tr: "Kâbe-i Mükerreme (Saygıdeğer Kâbe)." }
+            }
+        }
+    },
+
+
+      // ==================================================================
+    // 65. '-B-R (ع ب ر) KÖKÜ - Geçmek / İfade Etmek / İbret Almak
+    // 1. Bab (فَعَلَ - يَفْعُلُ), Tef'îl ve İfti'âl Babları
+    // ==================================================================
+    "عبر": {
+        // --- 1, 2, 3 Numaralı Kalıplar (1. Bab - Karşıya Geçmek) ---
+        1: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "عَبَرَ", 
+                trText: "Geçti / Karşıya geçti.",
+                ornek: { ar: "عَبَرَ النَّهْرَ", tr: "Nehri (karşıya) geçti." }
+            },
+            cekimi: ["عَبَرَ", "عَبَرَا", "عَبَرُوا", "عَبَرَتْ", "عَبَرَتَا", "عَبَرْنَ", "عَبَرْتَ", "عَبَرْتُمَا", "عَبَرْتُمْ", "عَبَرْتِ", "عَبَرْتُمَا", "عَبَرْتُنَّ", "عَبَرْتُ", "عَبَرْنَا", "عَبَرْنَا"]
+        },
+        2: { 
+            base: { 
+                emoji: "🌉", 
+                arText: "يَعْبُرُ", 
+                trText: "Geçer / Karşıya geçiyor.",
+                ornek: { ar: "يَعْبُرُ الطَّرِيقَ بِحَذَرٍ", tr: "Yolu dikkatlice geçiyor." }
+            },
+            cekimi: ["يَعْبُرُ", "يَعْبُرَانِ", "يَعْبُرُونَ", "تَعْبُرُ", "تَعْبُرَانِ", "يَعْبُرْنَ", "تَعْبُرُ", "تَعْبُرَانِ", "تَعْبُرُونَ", "تَعْبُرِينَ", "تَعْبُرَانِ", "تَعْبُرْنَ", "أَعْبُرُ", "نَعْبُرُ", "نَعْبُرُ"]
+        },
+        3: { 
+            base: { emoji: "❗", arText: "اُعْبُرْ", trText: "Geç!" },
+            cekimi: ["اُعْبُرْ", "اُعْبُرَا", "اُعْبُرُوا", "اُعْبُرِي", "اُعْبُرَا", "اُعْبُرْنَ"]
+        },
+
+        // --- İsim ve Masdar Kalıpları ---
+        20: { 
+            base: { 
+                emoji: "💡", 
+                arText: "عِبْر", 
+                trText: "İbret (Yalın)." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "📖", 
+                arText: "عِبْرَة", 
+                trText: "İbret / Ders.",
+                ornek: { ar: "إِنَّ فِي ذَٰلِكَ لَعِبْرَةً لِمَن يَخْشَىٰ", tr: "Şüphesiz bunda korkan kimse için bir ibret vardır. (Nâziât Suresi, 26)" }
+            } 
+        },
+        23: { 
+            base: { 
+                emoji: "💬", 
+                arText: "عِبَار", 
+                trText: "İfade (Yalın)." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "📝", 
+                arText: "عِبَارَة", 
+                trText: "İbare / Cümle / Söz.",
+                ornek: { ar: "هَذِهِ عِبَارَةٌ جَمِيلَةٌ", tr: "Bu güzel bir ibaredir (cümledir)." }
+            } 
+        },
+        25: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "عُبُور", 
+                trText: "Geçiş / Geçmek.",
+                ornek: { ar: "مَمْنُوعُ الْعُبُورِ", tr: "Geçiş yasaktır." }
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "🌬️", 
+                arText: "عَابِر", 
+                trText: "Geçen / Geçici.",
+                ornek: { ar: "نَحْنُ فِي الدُّنْيَا عَابِرُو سَبِيلٍ", tr: "Biz dünyada yolcuyuz (yoldan geçenleriz)." }
+            } 
+        },
+        38: { 
+            base: { 
+                emoji: "🌉", 
+                arText: "مَعْبَر", 
+                trText: "Geçit / Sınır kapısı.",
+                ornek: { ar: "مَعْبَرٌ حُدُودِيٌّ", tr: "Sınır kapısı (geçidi)." }
+            } 
+        },
+
+        // --- 58, 59, 60 Numaralı Kalıplar (Tef'îl Babı - İfade etmek / Tabir etmek) ---
+        58: { 
+            base: { 
+                emoji: "🗣️", 
+                arText: "عَبَّرَ", 
+                trText: "İfade etti / Tabir etti.",
+                ornek: { ar: "عَبَّرَ عَنْ مَشَاعِرِهِ", tr: "Duygularını ifade etti." }
+            },
+            cekimi: ["عَبَّرَ", "عَبَّرَا", "عَبَّرُوا", "عَبَّرَتْ", "عَبَّرَتَا", "عَبَّرْنَ", "عَبَّرْتَ", "عَبَّرْتُمَا", "عَبَّرْتُمْ", "عَبَّرْتِ", "عَبَّرْتُمَا", "عَبَّرْتُنَّ", "عَبَّرْتُ", "عَبَّرْنَا", "عَبَّرْنَا"]
+        },
+        59: { 
+            base: { emoji: "💬", arText: "يُعَبِّرُ", trText: "İfade eder / Tabir ediyor." },
+            cekimi: ["يُعَبِّرُ", "يُعَبِّرَانِ", "يُعَبِّرُونَ", "تُعَبِّرُ", "تُعَبِّرَانِ", "يُعَبِّرْنَ", "تُعَبِّرُ", "تُعَبِّرَانِ", "تُعَبِّرُونَ", "تُعَبِّرِينَ", "تُعَبِّرَانِ", "تُعَبِّرْنَ", "أُعَبِّرُ", "نُعَبِّرُ", "نُعَبِّرُ"]
+        },
+        60: { 
+            base: { emoji: "❗", arText: "عَبِّرْ", trText: "İfade et / Tabir et!" },
+            cekimi: ["عَبِّرْ", "عَبِّرَا", "عَبِّرُوا", "عَبِّرِي", "عَبِّرَا", "عَبِّرْنَ"]
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "💭", 
+                arText: "تَعْبِير", 
+                trText: "Tabir / İfade.",
+                ornek: { ar: "حُرِّيَّةُ التَّعْبِيرِ", tr: "İfade (kendini tabir etme) özgürlüğü." }
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "💬", 
+                arText: "تَعْبِيرَات", 
+                trText: "İfadeler / Tabirler." 
+            }
+        },
+
+        // --- 77, 78, 79 Numaralı Kalıplar (İfti'âl Babı - İtibar Etmek / Dikkate Almak) ---
+        77: { 
+            base: { 
+                emoji: "🤔", 
+                arText: "اِعْتَبَرَ", 
+                trText: "Dikkate aldı / İtibar etti / İbret aldı." 
+            },
+            cekimi: ["اِعْتَبَرَ", "اِعْتَبَرَا", "اِعْتَبَرُوا", "اِعْتَبَرَتْ", "اِعْتَبَرَتَا", "اِعْتَبَرْنَ", "اِعْتَبَرْتَ", "اِعْتَبَرْتُمَا", "اِعْتَبَرْتُمْ", "اِعْتَبَرْتِ", "اِعْتَبَرْتُمَا", "اِعْتَبَرْتُنَّ", "اِعْتَبَرْتُ", "اِعْتَبَرْنَا", "اِعْتَبَرْنَا"]
+        },
+        78: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "يَعْتَبِرُ", 
+                trText: "Dikkate alır / İtibar ediyor.",
+                ornek: { ar: "يَعْتَبِرُ النَّاسُ هَذَا الْقَرَارَ مُهِمًّا", tr: "İnsanlar bu kararı önemli sayıyor (itibar ediyor / dikkate alıyor)." }
+            },
+            cekimi: ["يَعْتَبِرُ", "يَعْتَبِرَانِ", "يَعْتَبِرُونَ", "تَعْتَبِرُ", "تَعْتَبِرَانِ", "يَعْتَبِرْنَ", "تَعْتَبِرُ", "تَعْتَبِرَانِ", "تَعْتَبِرُونَ", "تَعْتَبِرِينَ", "تَعْتَبِرَانِ", "تَعْتَبِرْنَ", "أَعْتَبِرُ", "نَعْتَبِرُ", "نَعْتَبِرُ"]
+        },
+        79: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِعْتَبِرْ", 
+                trText: "İbret al / Dikkate al!",
+                ornek: { ar: "فَاعْتَبِرُوا يَا أُولِي الْأَبْصَارِ", tr: "Ey akıl (basiret) sahipleri, ibret alın! (Haşr Suresi, 2)" }
+            },
+            cekimi: ["اِعْتَبِرْ", "اِعْتَبِرَا", "اِعْتَبِرُوا", "اِعْتَبِرِي", "اِعْتَبِرَا", "اِعْتَبِرْنَ"]
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "اِعْتِبَار", 
+                trText: "İtibar / Saygı / Dikkate alma.",
+                ornek: { ar: "هَذَا الْأَمْرُ قَيْدُ الِاعْتِبَارِ", tr: "Bu konu dikkate alınmaktadır (itibar edilmektedir)." }
+            },
+            suggestsPlus: true,
+            "ا": { 
+                emoji: "📅", 
+                arText: "اعْتِبَارًا", 
+                trText: "İtibaren.",
+                ornek: { ar: "اعْتِبَارًا مِنْ يَوْمِ غَدٍ", tr: "Yarından itibaren." }
+            }
+        },
+
+        // --- 82 Numaralı Kalıp (مُفْتَعَل - İfti'âl İsm-i Mef'ulü) ---
+        82: { 
+            base: { 
+                emoji: "🎩", 
+                arText: "مُعْتَبَر", 
+                trText: "Muteber / Saygın / Geçerli.",
+                ornek: { ar: "شَخْصٌ مُعْتَبَرٌ فِي الْمُجْتَمَعِ", tr: "Toplumda muteber (saygın/itibarlı) bir kişi." }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 66. '-M-R (ع م ر) KÖKÜ - Yaşamak / İnşa Etmek / Şenlendirmek
+    // 1. Bab (فَعَلَ - يَفْعُلُ), Tef'îl ve İstif'âl Babları
+    // ==================================================================
+    "عمر": {
+        // --- 1, 2, 3 Numaralı Kalıplar (1. Bab - İmar Etmek / Şenlendirmek) ---
+        1: { 
+            base: { 
+                emoji: "🏗️", 
+                arText: "عَمَرَ", 
+                trText: "İmar etti / Şenlendirdi.",
+                ornek: { ar: "عَمَرَ النَّاسُ الْأَرْضَ", tr: "İnsanlar yeryüzünü imar etti (şenlendirdi)." }
+            },
+            cekimi: ["عَمَرَ", "عَمَرَا", "عَمَرُوا", "عَمَرَتْ", "عَمَرَتَا", "عَمَرْنَ", "عَمَرْتَ", "عَمَرْتُمَا", "عَمَرْتُمْ", "عَمَرْتِ", "عَمَرْتُمَا", "عَمَرْتُنَّ", "عَمَرْتُ", "عَمَرْنَا", "عَمَرْنَا"]
+        },
+        2: { 
+            base: { emoji: "🔨", arText: "يَعْمُرُ", trText: "İmar eder / Şenlendiriyor." },
+            cekimi: ["يَعْمُرُ", "يَعْمُرَانِ", "يَعْمُرُونَ", "تَعْمُرُ", "تَعْمُرَانِ", "يَعْمُرْنَ", "تَعْمُرُ", "تَعْمُرَانِ", "تَعْمُرُونَ", "تَعْمُرِينَ", "تَعْمُرَانِ", "تَعْمُرْنَ", "أَعْمُرُ", "نَعْمُرُ", "نَعْمُرُ"]
+        },
+        3: { 
+            base: { emoji: "❗", arText: "اُعْمُرْ", trText: "İmar et / Şenlendir!" },
+            cekimi: ["اُعْمُرْ", "اُعْمُرَا", "اُعْمُرُوا", "اُعْمُرِي", "اُعْمُرَا", "اُعْمُرْنَ"]
+        },
+
+        // --- İsim ve Masdar Kalıpları ---
+        21: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "عُمْر", 
+                trText: "Ömür / Yaşam.",
+                ornek: { ar: "أَطَالَ اللَّهُ عُمْرَكَ", tr: "Allah ömrünü uzatsın." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🕋", 
+                arText: "عُمْرَة", 
+                trText: "Umre / Ziyaret (Kutsal mekanı şenlendirme).",
+                ornek: { ar: "الْحَجُّ وَالْعُمْرَةُ لِلهِ", tr: "Hac ve Umre Allah içindir." }
+            } 
+        },
+
+        23: { 
+            base: { 
+                emoji: "🏛️", 
+                arText: "عِمَار", 
+                trText: "İmar etme (Yalın)." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🏢", 
+                arText: "عِمَارَة", 
+                trText: "Bina / Apartman / Mimari.",
+                ornek: { ar: "فَنُّ الْعِمَارَةِ الْإِسْلَامِيَّةِ", tr: "İslam mimarisi sanatı." }
+            } 
+        },
+
+        36: { 
+            base: { 
+                emoji: "🌆", 
+                arText: "مَعْمُور", 
+                trText: "Mamur / İmar edilmiş / Bayındır.",
+                ornek: { ar: "بَلَدٌ مَعْمُورٌ بِالْخَيْرَاتِ", tr: "İyiliklerle mamur (şenlenmiş/bayındır) bir belde." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🌍", 
+                arText: "مَعْمُورَة", 
+                trText: "Mamure / Yeryüzü."
+            }
+        },
+
+        40: { 
+            base: { 
+                emoji: "📐", 
+                arText: "مِعْمَار", 
+                trText: "Mimar / Mimari.",
+                ornek: { ar: "الْمِعْمَارُ سِنَان", tr: "Mimar Sinan." }
+            },
+            suggestsPlus: true,
+            "يّ": { 
+                emoji: "👷‍♂️", 
+                arText: "مِعْمَارِيّ", 
+                trText: "Mimar (Meslek) / Mimariyle ilgili."
+            }
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🏗️", 
+                arText: "إِعْمَار", 
+                trText: "İmar / Kalkındırma / Bayındır hale getirme.",
+                ornek: { ar: "إِعْمَارُ الْمَدِينَةِ بَعْدَ الزِّلْزَالِ", tr: "Depremden sonra şehrin imar edilmesi." }
+            } 
+        },
+
+        // --- 58, 59, 60 Numaralı Kalıplar (Tef'îl Babı - Tamir Etmek / Uzun yaşatmak) ---
+        58: { 
+            base: { emoji: "🔧", arText: "عَمَّرَ", trText: "Tamir etti / Ömür verdi." },
+            cekimi: ["عَمَّرَ", "عَمَّرَا", "عَمَّرُوا", "عَمَّرَتْ", "عَمَّرَتَا", "عَمَّرْنَ", "عَمَّرْتَ", "عَمَّرْتُمَا", "عَمَّرْتُمْ", "عَمَّرْتِ", "عَمَّرْتُمَا", "عَمَّرْتُنَّ", "عَمَّرْتُ", "عَمَّرْنَا", "عَمَّرْنَا"]
+        },
+        59: { 
+            base: { emoji: "⚙️", arText: "يُعَمِّرُ", trText: "Tamir eder / Ömür verir." },
+            cekimi: ["يُعَمِّرُ", "يُعَمِّرَانِ", "يُعَمِّرُونَ", "تُعَمِّرُ", "تُعَمِّرَانِ", "يُعَمِّرْنَ", "تُعَمِّرُ", "تُعَمِّرَانِ", "تُعَمِّرُونَ", "تُعَمِّرِينَ", "تُعَمِّرَانِ", "تُعَمِّرْنَ", "أُعَمِّرُ", "نُعَمِّرُ", "نُعَمِّرُ"]
+        },
+        60: { 
+            base: { emoji: "❗", arText: "عَمِّرْ", trText: "Tamir et!" },
+            cekimi: ["عَمِّرْ", "عَمِّرَا", "عَمِّرُوا", "عَمِّرِي", "عَمِّرَا", "عَمِّرْنَ"]
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "🛠️", 
+                arText: "تَعْمِير", 
+                trText: "Tamir / Onarım.",
+                ornek: { ar: "تَعْمِيرُ السَّيَّارَةِ فِي الْوَرْشَةِ", tr: "Arabanın atölyede tamir edilmesi." }
+            } 
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Masdarı) ---
+        103: { 
+            base: { 
+                emoji: "🌍", 
+                arText: "اِسْتِعْمَار", 
+                trText: "Sömürgecilik.",
+                ornek: [
+                    { 
+                        ar: "اِنْتَهَى عَصْرُ الِاسْتِعْمَارِ", 
+                        tr: "Sömürgecilik (istismar/istimar) çağı sona erdi." 
+                    },
+                    { 
+                        ar: "💡 مَعْلُومَة لُغَوِيَّة", 
+                        tr: "Kelime Bilgisi: İstif'al babı 'istek' bildirir. 'İsti'mar' kelimesi aslen 'bir yeri imar etmeyi (bayındırlaştırmayı) istemek' demektir. Ancak zamanla Batılı devletlerin bu bahaneyle ülkeleri işgal etmesi sebebiyle 'Sömürgecilik' anlamında kalıplaşmıştır." 
+                    }
+                ]
+            } 
+        }
+    },
 };
 
 // ==================================================================
 // YENİ KÖK SEÇİM SİSTEMİ (POPUP KLAVYE + TAHMİN)
 // ==================================================================
-const onemliKokler = ["كتب", "علم", "قدر", "كمل", "ملك", "سلم", "حكم", "عرف", "رحم"];
+const onemliKokler = ["كتب", "علم", "قدر", "كمل", "ملك","حرم", "سلم", "حكم", "عرف", "رحم"];
 const aksamSebaKokleri = ["أمن", "شدد", "أكل", "سأل", "وجد", "قول", "بيع", "دعو", "مشي", "رضي", "وقي", "ضلل"];
 const mezidFiilKokleri = ["عدد", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي", "خبر", "نظم", "حقق", "كمل", "شكل"];
 
@@ -6162,7 +7364,11 @@ document.addEventListener('click', closeIfOutside);
 document.addEventListener('touchstart', closeIfOutside, { passive: false });
 
 function closeIfOutside(e) {
-    const isInside = e.target.closest('.conjugation-inline-container') || e.target.closest('.glass-box');
+    // BURASI ÖNEMLİ: '#suffix-dropdown' menüsünü de kutu içi (güvenli) sayıyoruz!
+    const isInside = e.target.closest('.conjugation-inline-container') || 
+                     e.target.closest('.glass-box') || 
+                     e.target.closest('#suffix-dropdown');
+                     
     if (!isInside) {
         // Tabloları Kapat
         document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
@@ -7640,9 +8846,7 @@ function toggleSuffixMenu(e) {
 }
 
 function applySuffix(rawSuffix) {
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
-
+    // DİKKAT: Burada menüyü kapatan kod silindi. Menü artık açık kalacak!
     if (!lastClickedBoxTextSpan) {
         if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
         return; 
@@ -7650,7 +8854,7 @@ function applySuffix(rawSuffix) {
 
     const currentBox = lastClickedBoxTextSpan.closest(".glass-box");
     
-    // FİİL GÜVENLİK DUVARI
+    // FİİL GÜVENLİK DUVARI (Sadece fiilleri engeller, isimleri ASLA engellemez)
     if (currentBox && (currentBox.classList.contains("fiil-box") || currentBox.classList.contains("is-verb"))) {
         if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
         return; 
@@ -7663,7 +8867,7 @@ function applySuffix(rawSuffix) {
 
     let currentWord = lastOriginalWord || lastClickedBoxTextSpan.innerText;
 
-    // Kelimedeki mevcut eki tespit etmek için olası tüm ek formları
+    // Kelimedeki mevcut eki tespit etmek
     const possibleSuffixes = [
         'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
         'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 
@@ -7674,60 +8878,60 @@ function applySuffix(rawSuffix) {
     for (let ps of possibleSuffixes) {
         if (currentWord.endsWith(ps)) {
             existingSuffix = ps;
-            // Mevcut eki kelimeden kesip ayırıyoruz
             currentWord = currentWord.slice(0, -ps.length);
             break;
         }
     }
 
-    // Kök kelimenin sonundaki harekeyi temizle (Yenisi otomatik atanacak)
     if (existingSuffix) {
         currentWord = currentWord.replace(/[\u064B-\u0650\u0652]$/, '');
     }
 
     // ===============================================================
-    // MANTIKSAL KURALLAR (STATE MACHINE) VE AYNI EK KORUMASI
+    // MANTIKSAL KURALLAR (HİÇBİR EK ENGELLENMEZ)
     // ===============================================================
 
-    // 1. Kural: Elif (ا)
     if (existingSuffix === 'ا') {
         existingSuffix = "";
     }
-    
-    // 2. Kural: Kapalı Te (ة)
     else if (existingSuffix === 'ة') {
-        if (suffix === 'ة') {
+        if (['ة', 'ات', 'ونَ', 'ينَ', 'يّ'].includes(suffix)) {
             existingSuffix = ""; 
-        } else if (['يّ', 'يَّة', 'ونَ', 'ينَ', 'يَّات', 'ات'].includes(suffix)) {
-            existingSuffix = "";
         } else if (suffix === 'انِ') {
-            suffix = 'تَانِ'; // substring hatası kaldırıldı, doğrudan formül yazıldı
+            suffix = 'تَانِ'; 
             existingSuffix = "";
         } else if (suffix === 'يْنِ') {
-            suffix = 'تَيْنِ'; // substring hatası kaldırıldı
+            suffix = 'تَيْنِ';
             existingSuffix = "";
         } else {
             existingSuffix = "";
         }
     }
-    
-    // 3. Kural: Nispet (يّ)
     else if (existingSuffix === 'يّ') {
         if (suffix === 'يّ') {
             existingSuffix = ""; 
-        } else if (suffix === 'يَّة') {
-            existingSuffix = ""; 
-        } else {
-            currentWord += 'يّ';
+        } else if (suffix === 'ة') {
+            suffix = 'يَّة';
+            existingSuffix = "";
+        } else if (suffix === 'ات') {
+            suffix = 'يَّات';
+            existingSuffix = "";
+        } else if (suffix === 'انِ') {
+            suffix = 'يَّانِ';
+            existingSuffix = "";
+        } else if (suffix === 'يْنِ') {
+            suffix = 'يَّيْنِ';
+            existingSuffix = "";
+        } else if (suffix === 'ونَ') {
+            suffix = 'يُّونَ';
+            existingSuffix = "";
+        } else if (suffix === 'ينَ') {
+            suffix = 'يِّينَ';
             existingSuffix = "";
         }
     }
-    
-    // 4. Kural: Dişil Nispet (يَّة)
     else if (existingSuffix === 'يَّة') {
-        if (suffix === 'يَّة') {
-            existingSuffix = ""; 
-        } else if (suffix === 'انِ') {
+        if (suffix === 'انِ') {
             suffix = 'يَّتَانِ'; 
             existingSuffix = "";
         } else if (suffix === 'يْنِ') {
@@ -7737,38 +8941,26 @@ function applySuffix(rawSuffix) {
             existingSuffix = "";
         }
     }
-    
-    // 5. Kural: İKİL EKLERİ (انِ, يْنِ, تَانِ, تَيْنِ, يَّانِ, يَّيْنِ, يَّتَانِ, يَّتَيْنِ)
     else if (['انِ', 'يْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 'يَّتَانِ', 'يَّتَيْنِ'].includes(existingSuffix)) {
         if (suffix === 'انِ' || suffix === 'يْنِ') {
-            // İkil ekleri arası geçiş (Örn: مرفوع -> منصوب/مجرور)
             if (existingSuffix.includes('يَّتَ')) suffix = suffix === 'انِ' ? 'يَّتَانِ' : 'يَّتَيْنِ';
             else if (existingSuffix.includes('يَّ')) suffix = suffix === 'انِ' ? 'يَّانِ' : 'يَّيْنِ';
             else if (existingSuffix.includes('تَ')) suffix = suffix === 'انِ' ? 'تَانِ' : 'تَيْنِ';
             existingSuffix = "";
         } else if (suffix === 'ة') {
-            if (existingSuffix.includes('يَّ')) {
-                suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
-            } else {
-                suffix = existingSuffix.includes('انِ') ? 'تَانِ' : 'تَيْنِ';
-            }
+            if (existingSuffix.includes('يَّ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else suffix = existingSuffix.includes('انِ') ? 'تَانِ' : 'تَيْنِ';
             existingSuffix = "";
         } else if (suffix === 'يّ') { 
-            suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
-            existingSuffix = "";
-        } else if (suffix === 'يَّة') {
-            suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            if (existingSuffix.includes('تَ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
             existingSuffix = "";
         } else {
-            // Çoğul eklendiğinde İKİL SİLİNİR ("Bir tane çoğul, bir tane ikil olabilir" kuralı)
             existingSuffix = "";
         }
     }
-
-    // 6. Kural: Eril Çoğul (ونَ, ينَ, يُّونَ, يِّينَ)
     else if (['ونَ', 'ينَ', 'يُّونَ', 'يِّينَ'].includes(existingSuffix)) {
         if (suffix === 'ونَ' || suffix === 'ينَ') {
-            // Eril çoğul ekleri arası geçiş
             if (existingSuffix.includes('يُّ') || existingSuffix.includes('يِّ')) {
                 suffix = suffix === 'ونَ' ? 'يُّونَ' : 'يِّينَ';
             }
@@ -7777,69 +8969,61 @@ function applySuffix(rawSuffix) {
             suffix = existingSuffix.includes('ونَ') ? 'يُّونَ' : 'يِّينَ';
             existingSuffix = "";
         } else {
-            // İkil eklendiğinde ÇOĞUL SİLİNİR
             existingSuffix = "";
         }
     }
-
-    // 7. Kural: Dişil Çoğullar (يَّات veya ات)
     else if (existingSuffix === 'يَّات' || existingSuffix === 'ات') {
-        if (suffix === 'ات' || suffix === 'يَّات') {
-            existingSuffix = "";
-        } else {
-            existingSuffix = "";
-        }
+        if (suffix === 'ات' || suffix === 'يَّات') existingSuffix = "";
+        else existingSuffix = "";
     }
 
     // ===============================================================
-    // SON HAREKEYİ AYARLAMA (KUSURSUZ ARAPÇA SES UYUMU)
+    // SON HAREKEYİ AYARLAMA
     // ===============================================================
-
     function setLastVowel(word, targetVowel) {
         const vowelRegex = /[\u064B-\u0650\u0652]$/; 
-        if (vowelRegex.test(word)) {
-            word = word.replace(vowelRegex, ''); 
-        }
+        if (vowelRegex.test(word)) word = word.replace(vowelRegex, ''); 
         return word + targetVowel; 
     }
 
     let vowelToSet = '';
-    if (suffix.startsWith('يْنِ')) {
-        vowelToSet = 'َ'; 
-    } 
-    else if (suffix.startsWith('ي')) { 
-        vowelToSet = 'ِ'; 
-    } 
-    else if (suffix.startsWith('ة') || suffix.startsWith('ات') || suffix.startsWith('انِ') || suffix.startsWith('تَ')) {
-        vowelToSet = 'َ'; 
-    } 
-    else if (suffix.startsWith('ونَ')) {
-        vowelToSet = 'ُ'; 
-    } 
+    if (suffix.startsWith('يْنِ')) vowelToSet = 'َ'; 
+    else if (suffix.startsWith('ي')) vowelToSet = 'ِ'; 
+    else if (suffix.startsWith('ة') || suffix.startsWith('ات') || suffix.startsWith('انِ') || suffix.startsWith('تَ')) vowelToSet = 'َ'; 
+    else if (suffix.startsWith('ونَ')) vowelToSet = 'ُ'; 
     else if (suffix === 'ا') {
         vowelToSet = 'ً'; 
         const pureWord = currentWord.replace(/[\u064B-\u0650\u0652]/g, '');
-        if (pureWord.endsWith('ة') || pureWord.endsWith('اء') || pureWord.endsWith('ى') || pureWord.endsWith('ا')) {
-            suffix = ''; 
-        }
+        if (pureWord.endsWith('ة') || pureWord.endsWith('اء') || pureWord.endsWith('ى') || pureWord.endsWith('ا')) suffix = ''; 
     }
 
-    if (vowelToSet !== '') {
-        currentWord = setLastVowel(currentWord, vowelToSet);
-    }
-
+    if (vowelToSet !== '') currentWord = setLastVowel(currentWord, vowelToSet);
     let updatedWord = currentWord + suffix;
     
     // ===============================================================
-    // RENKLENDİRME VE EKRANA YAZDIRMA
+    // RENKLENDİRME VE KLON GÜNCELLEME SİSTEMİ
     // ===============================================================
     let activeRootArray = (typeof currentRoot !== 'undefined' && currentRoot.length === 3) ? currentRoot.split("") : ['ف', 'ع', 'ل'];
-    lastClickedBoxTextSpan.innerHTML = ColorEngine.colorize(updatedWord, activeRootArray);
+    let coloredResult = ColorEngine.colorize(updatedWord, activeRootArray);
+    
+    // Orijinal kutuyu güncelle
+    lastClickedBoxTextSpan.innerHTML = coloredResult;
     lastOriginalWord = updatedWord;
+
+    // DEV KLON (ZOOM) AÇIKSA ONU DA ANINDA GÜNCELLE (KÜÇÜLMEDEN!)
+    const clone = document.getElementById('crisp-zoom-clone');
+    if (clone) {
+        const cloneTextEl = clone.querySelector('.ar, .ar-small');
+        if (cloneTextEl) {
+            cloneTextEl.innerHTML = coloredResult;
+        }
+    }
     
     if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
 
     let dictSuffix = (rawSuffix.trim() === 'ًا' || rawSuffix.trim() === 'اً' || rawSuffix.trim() === 'ا') ? 'ا' : suffix;
+    
+    // JSON'da bilgi var mı diye kontrol et, varsa ekrana fırlat
     if (typeof checkWordEasterEgg === "function") {
         checkWordEasterEgg(currentBox, dictSuffix);
     }
@@ -7859,7 +9043,10 @@ function applySuffix(rawSuffix) {
             }
         }
 
-        if (typeof triggerAreaPulse === "function") triggerAreaPulse(currentBox, forceDelay);
+        // Eğer Zoom kapalıysa pulse efektini tetikle
+        if (!clone) {
+             if (typeof triggerAreaPulse === "function") triggerAreaPulse(currentBox, forceDelay);
+        }
         
         setTimeout(() => {
             currentBox.style.borderColor = ""; 
@@ -7867,7 +9054,6 @@ function applySuffix(rawSuffix) {
         }, 1500);
     }
 }
-
 const originalResetTableOnly = window.resetTableOnly;
 window.resetTableOnly = function() {
     if (typeof originalResetTableOnly === "function") {
@@ -8876,11 +10062,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // --- EVRENSEL BÜYÜTME KAPATICI ---
-// Sekmeler, üst bar veya sayfanın herhangi bir dış alanına tıklandığında çalışır
-
 document.addEventListener('click', function(e) {
-    // Eğer tıklanan yer, o an büyümüş olan kutunun (pulse-highlight) kendisi değilse
-    if (!e.target.closest('.glass-box.pulse-highlight')) {
+    // Eğer tıklanan yer büyüyen kutu, dev klon veya EK MENÜSÜ değilse kapat
+    if (!e.target.closest('.glass-box.pulse-highlight') && 
+        !e.target.closest('.crisp-zoom-clone') && 
+        !e.target.closest('#suffix-dropdown')) { 
         if (typeof closeAllZoomedBoxes === 'function') {
             closeAllZoomedBoxes();
         }
@@ -8888,8 +10074,9 @@ document.addEventListener('click', function(e) {
 });
 
 document.addEventListener('touchstart', function(e) {
-    // Dokunmatik ekranlar (Mobil/Tablet) için aynı kontrol
-    if (!e.target.closest('.glass-box.pulse-highlight')) {
+    if (!e.target.closest('.glass-box.pulse-highlight') && 
+        !e.target.closest('.crisp-zoom-clone') && 
+        !e.target.closest('#suffix-dropdown')) {
         if (typeof closeAllZoomedBoxes === 'function') {
             closeAllZoomedBoxes();
         }
