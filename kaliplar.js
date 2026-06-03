@@ -9238,6 +9238,297 @@ const wordEasterEggs = {
             } 
         }
     },
+
+    // ==================================================================
+    // 96. T-L-A' (ط ل ع) KÖKÜ - Doğmak / Ortaya Çıkmak / Haberdar Olmak
+    // 1. Bab (فَعَلَ - يَفْعُلُ) ve İfti'âl Babı
+    // ==================================================================
+    "طلع": {
+       // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🌅", 
+                arText: "طَلَعَ", 
+                trText: "Doğdu / Ortaya çıktı.",
+                ornek: [
+                    { 
+                        ar: "طَلَعَ الْبَدْرُ عَلَيْنَا<br>مِنْ ثَنِيَّاتِ الْوَدَاعْ<br>وَجَبَ الشُّكْرُ عَلَيْنَا<br>مَا دَعَا لِلهِ دَاعْ",
+                        tr: "Dolunay doğdu üzerimize,<br>Veda tepelerinden.<br>Şükür gerekti bizlere,<br>Allah'a davet eden oldukça."
+                    },
+                    { 
+                        ar: "أَيُّهَا الْمَبْعُوثُ فِينَا<br>جِئْتَ بِالْأَمْرِ الْمُطَاعْ<br>جِئْتَ شَرَّفْتَ الْمَدِينَةْ<br>مَرْحَبًا يَا خَيْرَ دَاعْ",
+                        tr: "Ey içimizden gönderilen elçi!<br>Sen itaat edilecek bir emirle geldin.<br>Geldin, Medine'yi şereflendirdin,<br>Merhaba ey en hayırlı davetçi!"
+                    }
+                ]
+            }
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: { 
+            base: { 
+                emoji: "☀️", 
+                arText: "يَطْلُعُ", 
+                trText: "Doğar / Ortaya çıkar.",
+                ornek: { ar: "تَطْلُعُ الشَّمْسُ", tr: "Güneş doğuyor." }
+            },
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
+        25: { 
+            base: { 
+                emoji: "🌄", 
+                arText: "طُلُوع", 
+                trText: "Tulu / Doğuş.",
+                ornek: { ar: "مِنْ طُلُوعِ الشَّمْسِ إِلَى غُرُوبِهَا", tr: "Güneşin tuluundan (doğuşundan) batışına kadar." }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "⭐", 
+                arText: "طَالِع", 
+                trText: "Talih / Doğan, yükselen şans, burç.",
+                ornek: { ar: "حُسْنُ الطَّالِعِ", tr: "İyi talih (şans)." }
+            } 
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Babı Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "📖", 
+                arText: "مُطَالَعَة", 
+                trText: "Mütalaa / Okuma, inceleme, görüş bildirme.",
+                ornek: [
+                    { 
+                        ar: "غُرْفَةُ الْمُطَالَعَةِ", 
+                        tr: "Mütalaa (okuma) odası." 
+                    },
+                    { 
+                        ar: "💬 مَوْضُوعٌ لِلْمُطَالَعَةِ: هَلْ تُفَضِّلُ مُطَالَعَةَ الْكُتُبِ الْوَرَقِيَّةِ أَمِ الْإِلِكْتُرُونِيَّةِ؟ وَلِمَاذَا؟", 
+                        tr: "Mütalaa (Tartışma) Konusu: Basılı (kağıt) kitapları mı yoksa elektronik kitapları mı mütalaa etmeyi (okumayı) tercih edersin? Neden?" 
+                    },
+                    { 
+                        ar: "💬 مَوْضُوعٌ لِلْمُطَالَعَةِ: مَا هِيَ أَهَمِّيَّةُ مُطَالَعَةِ الْقِصَصِ فِي تَعَلُّمِ اللُّغَةِ الْعَرَبِيَّةِ؟", 
+                        tr: "Mütalaa (Tartışma) Konusu: Arapça öğreniminde hikayeler mütalaa etmenin (okuyup incelemenin) önemi nedir?" 
+                    }
+                ]
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
+        77: { 
+            base: { emoji: "👀", arText: "اِطَّلَعَ", trText: "Muttali oldu / Haberdar oldu / Bilgi edindi." },
+            cekimi: ["اِطَّلَعَ", "اِطَّلَعَا", "اِطَّلَعُوا", "اِطَّلَعَتْ", "اِطَّلَعَتَا", "اِطَّلَعْنَ", "اِطَّلَعْتَ", "اِطَّلَعْتُمَا", "اِطَّلَعْتُمْ", "اِطَّلَعْتِ", "اِطَّلَعْتُمَا", "اِطَّلَعْتُنَّ", "اِطَّلَعْتُ", "اِطَّلَعْنَا", "اِطَّلَعْنَا"]
+        },
+
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
+        78: { 
+            base: { emoji: "🔍", arText: "يَطَّلِعُ", trText: "Muttali olur / Haberdar olur." },
+            cekimi: ["يَطَّلِعُ", "يَطَّلِعَانِ", "يَطَّلِعُونَ", "تَطَّلِعُ", "تَطَّلِعَانِ", "يَطَّلِعْنَ", "تَطَّلِعُ", "تَطَّلِعَانِ", "تَطَّلِعُونَ", "تَطَّلِعِينَ", "تَطَّلِعَانِ", "تَطَّلِعْنَ", "أَطَّلِعُ", "نَطَّلِعُ", "نَطَّلِعُ"]
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "📰", 
+                arText: "اِطِّلَاع", 
+                trText: "İttila / Bilgi edinme, haberdar olma, vakıf olma.",
+                ornek: [
+                    { 
+                        ar: "لِلْاِطِّلَاعِ فَقَطْ", 
+                        tr: "Sadece bilgi edinmek (ittila) içindir." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı (Ses Olayı): Kökün ilk harfi 'ط' (Ta) olduğu için, İfti'âl babının ince 'ت' (Te) harfi önce kalınlaşarak 'ط' harfine dönüşür (İbdâl). Sonra yan yana gelen iki 'ط' harfi kaynaşarak şeddelenir (İdğâm). Aslı 'اِطْتَلَعَ' iken 'اِطَّلَعَ' olmuştur." 
+                    }
+                ]
+            } 
+        },
+
+        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Fâili) ---
+        81: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "مُطَّلِع", 
+                trText: "Muttali / Haberdar olan, durumu bilen.",
+                ornek: { ar: "أَنَا مُطَّلِعٌ عَلَى الْمَوْضُوعِ", tr: "Ben konuya vakıfım (konudan muttaliyim)." }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 97. T-R-D (ط ر د) KÖKÜ - Kovmak / Peş Peşe ve Düzenli Olmak
+    // 1. Bab (فَعَلَ - يَفْعُلُ) ve İfti'âl Babı
+    // ==================================================================
+    "طرد": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi) ---
+        1: { 
+            base: { emoji: "🚪", arText: "طَرَدَ", trText: "Kovdu / Uzaklaştırdı." },
+            cekimi: ["طَرَدَ", "طَرَدَا", "طَرَدُوا", "طَرَدَتْ", "طَرَدَتَا", "طَرَدْنَ", "طَرَدْتَ", "طَرَدْتُمَا", "طَرَدْتُمْ", "طَرَدْتِ", "طَرَدْتُمَا", "طَرَدْتُنَّ", "طَرَدْتُ", "طَرَدْنَا", "طَرَدْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: { 
+            base: { emoji: "👉", arText: "يَطْرُدُ", trText: "Kovar / Uzaklaştırır." },
+            cekimi: ["يَطْرُدُ", "يَطْرُدَانِ", "يَطْرُدُونَ", "تَطْرُدُ", "تَطْرُدَانِ", "يَطْرُدْنَ", "تَطْرُدُ", "تَطْرُدَانِ", "تَطْرُدُونَ", "تَطْرُدِينَ", "تَطْرُدَانِ", "تَطْرُدْنَ", "أَطْرُدُ", "نَطْرُدُ", "نَطْرُدُ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar / İsim) ---
+        19: { 
+            base: { 
+                emoji: "📦", 
+                arText: "طَرْد", 
+                trText: "Tard / Kovma. (Modern Arapçada: Kargo paketi, koli).",
+                ornek: { ar: "طَرْدٌ بَرِيدِيٌّ", tr: "Posta kolisi." }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
+        77: { 
+            base: { emoji: "🔄", arText: "اِطَّرَدَ", trText: "Peş peşe geldi / Düzenli oldu." },
+            cekimi: ["اِطَّرَدَ", "اِطَّرَدَا", "اِطَّرَدُوا", "اِطَّرَدَتْ", "اِطَّرَدَتَا", "اِطَّرَدْنَ", "اِطَّرَدْتَ", "اِطَّرَدْتُمَا", "اِطَّرَدْتُمْ", "اِطَّرَدْتِ", "اِطَّرَدْتُمَا", "اِطَّرَدْتُنَّ", "اِطَّرَدْتُ", "اِطَّرَدْنَا", "اِطَّرَدْنَا"]
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "📏", 
+                arText: "اِطِّرَاد", 
+                trText: "İttırat / Düzenlilik, kurala uygunluk, istikrar.",
+                ornek: [
+                    { 
+                        ar: "اِطِّرَادُ الْقَاعِدَةِ", 
+                        tr: "Kuralın düzenliliği (şaşmaması)." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı (Ses Olayı): Kök 'ط' ile başladığı için, İfti'âl babının 'ت' harfi 'ط' harfine dönüşür (İbdâl) ve iki aynı harf kaynaşarak şeddelenir (İdğâm). Kelimenin aslı 'اِطْتِرَاد' iken 'اِطِّرَاد' olmuştur." 
+                    }
+                ]
+            } 
+        },
+
+        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Fâili) ---
+        81: { 
+            base: { 
+                emoji: "⚙️", 
+                arText: "مُطَّرِد", 
+                trText: "Muttarit / Düzenli, sürekli, ahenkli.",
+                ornek: { ar: "تَقَدُّمٌ مُطَّرِدٌ", tr: "Sürekli (muttarit) bir ilerleme." }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 98. T-L-B (ط ل ب) KÖKÜ - İstemek / Talep Etmek
+    // 1. Bab (فَعَلَ - يَفْعُلُ) ve İfti'âl Babı
+    // ==================================================================
+    "طلب": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi) ---
+        1: { 
+            base: { emoji: "🙋", arText: "طَلَبَ", trText: "İstedi / Talep etti." },
+            cekimi: ["طَلَبَ", "طَلَبَا", "طَلَبُوا", "طَلَبَتْ", "طَلَبَتَا", "طَلَبْنَ", "طَلَبْتَ", "طَلَبْتُمَا", "طَلَبْتُمْ", "طَلَبْتِ", "طَلَبْتُمَا", "طَلَبْتُنَّ", "طَلَبْتُ", "طَلَبْنَا", "طَلَبْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: { 
+            base: { emoji: "🗣️", arText: "يَطْلُبُ", trText: "İster / Talep eder." },
+            cekimi: ["يَطْلُبُ", "يَطْلُبَانِ", "يَطْلُبُونَ", "تَطْلُبُ", "تَطْلُبَانِ", "يَطْلُبْنَ", "تَطْلُبُ", "تَطْلُبَانِ", "تَطْلُبُونَ", "تَطْلُبِينَ", "تَطْلُبَانِ", "تَطْلُبْنَ", "أَطْلُبُ", "نَطْلُبُ", "نَطْلُبُ"]
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل - Mücerret Masdar) ---
+        17: { 
+            base: { 
+                emoji: "📝", 
+                arText: "طَلَب", 
+                trText: "Talep / İstek.",
+                ornek: { ar: "طَلَبُ الْعِلْمِ فَرِيضَةٌ", tr: "İlim talebi (istemek) farzdır." }
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "📂", 
+                arText: "طَلَبَات", 
+                trText: "Talepler / İstekler / Siparişler." 
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "👨‍🎓", 
+                arText: "طَالِب", 
+                trText: "Talip / İsteyen. (Aynı zamanda 'Erkek Öğrenci' demektir).",
+                ornek: { ar: "طَالِبُ جَامِعَةٍ", tr: "Üniversite öğrencisi (ilme talip olan)." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "👩‍🎓", 
+                arText: "طَالِبَة", 
+                trText: "Kız Öğrenci / İsteyen (Dişil).",
+                ornek: { ar: "هِيَ طَالِبَةٌ مُجْتَهِدَةٌ", tr: "O, çalışkan bir kız öğrencidir." }
+            }
+        },
+
+        // --- 45 Numaralı Kalıp (فُعَّال - İsm-i Fâil Çoğulu 1) ---
+        45: { 
+            base: { 
+                emoji: "🎓", 
+                arText: "طُلَّاب", 
+                trText: "Tullâb / Öğrenciler (Erkek/Karma), isteyenler.",
+                ornek: { ar: "طُلَّابُ الْمَدْرَسَةِ", tr: "Okulun öğrencileri." }
+            } 
+        },
+
+        // --- 47 Numaralı Kalıp (فَعَلَة - İsm-i Fâil Çoğulu 2) ---
+        47: { 
+            base: { 
+                emoji: "📚", 
+                arText: "طَلَبَة", 
+                trText: "Talebe / Öğrenciler, ilim arayanlar.",
+                ornek: [
+                    { 
+                        ar: "طَلَبَةُ الْعِلْمِ", 
+                        tr: "İlim talebeleri (öğrencileri)." 
+                    },
+                    { 
+                        ar: "💡 مَعْلُومَة لُغَوِيَّة", 
+                        tr: "Kelime Bilgisi: Türkçede tekil zannedip 'Talebeler' şeklinde tekrar çoğul yaptığımız 'Talebe' kelimesi, aslında Arapçada 'Tâlib' (Öğrenci) kelimesinin çoğuludur." 
+                    }
+                ]
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "مَطْلُوب", 
+                trText: "Matlup / İstenen, aranan şey.",
+                ornek: { ar: "هَذَا هُوَ الْمَطْلُوبُ", tr: "İstenen (matlup) olan da budur." }
+            } 
+        },
+
+        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Fâili) ---
+        81: { 
+            base: { 
+                emoji: "🔎", 
+                arText: "مُطَّلِب", 
+                trText: "Muttalip / İsteyen, şiddetle arayan.",
+                ornek: [
+                    { 
+                        ar: "عَبْدُ الْمُطَّلِبِ", 
+                        tr: "Abdülmuttalip (Muttalip'in kölesi - Peygamber Efendimizin dedesinin ismidir)." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı: İfti'âl babının 'ت' harfi kökteki 'ط' harfiyle birleşerek şeddelenmiştir. Aslı 'مُطْتَلِب' iken 'مُطَّلِب' (Muttalip) olmuştur." 
+                    }
+                ]
+            } 
+        }
+    }
 };
 
 // ==================================================================
