@@ -8458,7 +8458,7 @@ const wordEasterEggs = {
             base: { 
                 emoji: "🚧", 
                 arText: "اِزْدَحَمَ", 
-                trText: "İzdiham oldu / Aşırı sıkıştı. (💡 Ses Olayı: İfti'âl babının kuralı gereği kökün ilk harfi 'ز' olduğunda, babın 'ت' harfi 'د' harfine dönüşür. Aslı 'اِزْتَحَمَ' iken telaffuz kolaylığı için 'اِزْدَحَمَ' olmuştur)." 
+                trText: "İzdiham oldu / Aşırı sıkıştı." 
             },
             cekimi: ["اِزْدَحَمَ", "اِزْدَحَمَا", "اِزْدَحَمُوا", "اِزْدَحَمَتْ", "اِزْدَحَمَتَا", "اِزْدَحَمْنَ", "اِزْدَحَمْتَ", "اِزْدَحَمْتُمَا", "اِزْدَحَمْتُمْ", "اِزْدَحَمْتِ", "اِزْدَحَمْتُمَا", "اِزْدَحَمْتُنَّ", "اِزْدَحَمْتُ", "اِزْدَحَمْنَا", "اِزْدَحَمْنَا"]
         },
@@ -8480,8 +8480,17 @@ const wordEasterEggs = {
             base: { 
                 emoji: "👥", 
                 arText: "اِزْدِحَام", 
-                trText: "İzdiham / Aşırı kalabalık, yığılma. (💡 Ses Olayı: İfti'âl babının kuralı gereği, kökün ilk harfi 'ز' (Ze) olduğunda, telaffuzu kolaylaştırmak için babın 'ت' (Te) harfi 'د' (Dal) harfine dönüşür. Yani kelimenin aslı 'İztiham' iken dile daha yumuşak gelmesi için 'İzdiham' olmuştur).",
-                ornek: { ar: "اِزْدِحَامٌ شَدِيدٌ", tr: "Şiddetli izdiham (kalabalık)." }
+                trText: "İzdiham / Aşırı kalabalık, yığılma.",
+                ornek: [
+                    { 
+                        ar: "اِزْدِحَامٌ شَدِيدٌ", 
+                        tr: "Şiddetli izdiham (kalabalık)." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı (Ses Olayı): İfti'âl babının kuralı gereği, kökün ilk harfi 'ز' (Ze) olduğunda, telaffuzu kolaylaştırmak için babın 'ت' (Te) harfi 'د' (Dal) harfine dönüşür. Aslı 'اِزْتِحَام' (İztiham) iken dile daha yumuşak gelmesi için 'اِزْدِحَام' (İzdiham) olmuştur." 
+                    }
+                ]
             } 
         },
 
