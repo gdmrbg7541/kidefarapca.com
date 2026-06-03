@@ -9528,6 +9528,292 @@ const wordEasterEggs = {
                 ]
             } 
         }
+    },
+
+    // ==================================================================
+    // الغين (Ghayn) Harfi
+    // 104. Gh-R-B (غ ر ب) KÖKÜ - Batmak / Uzaklaşmak
+    // (ط ل ع kökünün tam zıddıdır)
+    // ==================================================================
+    "غرب": {
+        // --- 1 Numaralı Kalıp (Mücerret Mazi) ---
+        1: { 
+            base: { emoji: "🌇", arText: "غَرَبَ", trText: "Battı (Güneş vb.) / Uzaklaştı." },
+            cekimi: ["غَرَبَ", "غَرَبَا", "غَرَبُوا", "غَرَبَتْ", "غَرَبَتَا", "غَرَبْنَ", "غَرَبْتَ", "غَرَبْتُمَا", "غَرَبْتُمْ", "غَرَبْتِ", "غَرَبْتُمَا", "غَرَبْتُنَّ", "غَرَبْتُ", "غَرَبْنَا", "غَرَبْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret Muzari) ---
+        2: { 
+            base: { 
+                emoji: "🌆", 
+                arText: "يَغْرُبُ", 
+                trText: "Batar / Uzaklaşır.",
+                ornek: { ar: "تَغْرُبُ الشَّمْسُ", tr: "Güneş batıyor." }
+            },
+            cekimi: ["يَغْرُبُ", "يَغْرُبَانِ", "يَغْرُبُونَ", "تَغْرُبُ", "تَغْرُبَانِ", "يَغْرُبْنَ", "تَغْرُبُ", "تَغْرُبَانِ", "تَغْرُبُونَ", "تَغْرُبِينَ", "تَغْرُبَانِ", "تَغْرُبْنَ", "أَغْرُبُ", "نَغْرُبُ", "نَغْرُبُ"]
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
+        25: { 
+            base: { 
+                emoji: "🌃", 
+                arText: "غُرُوب", 
+                trText: "Gurub / Batış, kayboluş. (Tulu' kelimesinin zıddı).",
+                ornek: { ar: "مِنْ طُلُوعِ الشَّمْسِ إِلَى غُرُوبِهَا", tr: "Güneşin doğuşundan (tulu) batışına (gurub) kadar." }
+            } 
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🧭", 
+                arText: "غَرْب", 
+                trText: "Garb / Batı yönü. (Aynı zamanda Batı dünyasını ve Avrupa'yı temsil eder).",
+                ornek: { 
+                    ar: "💡 مِنْ نَشِيدِ الِاسْتِقْلَالِ", 
+                    tr: "İstiklal Marşı'mızdan: \"Garb'ın âfâkını sarmışsa çelik zırhlı duvar...\" <br><br> (Açıklama: Mehmet Akif bu mısrada 'Garb' kelimesiyle Batı medeniyetini ve dönemin işgalci güçlerini kasteder. 'Çelik zırhlı duvar' ifadesiyle de Batı'nın sahip olduğu üstün silah, donanım ve maddeci gücü tasvir edilmiştir)." 
+                }
+            } 
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعِل - İsm-i Mekân / İsm-i Zaman) ---
+        38: { 
+            base: { 
+                emoji: "🇲🇦", 
+                arText: "مَغْرِب", 
+                trText: "Mağrip / Batı, güneşin battığı yer ve zaman. (Fas ülkesi için de kullanılır).",
+                ornek: [
+                    { 
+                        ar: "صَلَاةُ الْمَغْرِبِ", 
+                        tr: "Akşam (güneşin battığı vakit) namazı." 
+                    },
+                    { 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة (اِسْتِثْنَاء)", 
+                        tr: "İstisna Kuralı: Muzarisi ötreli (يَغْرُبُ) olan fiillerin İsm-i Mekân kalıbı normalde üstünlü (مَفْعَل) gelir. Yani kurala göre kelimenin 'Mağrab' olması gerekirdi. Ancak 'Mağrib' (مَغْرِب) kelimesi (tıpkı Mescid ve Maşrık gibi) Arapların kural dışı (şâz / kıyasa muhalif) olarak esreli kullandığı çok meşhur istisnai kelimelerden biridir." 
+                    }
+                ]
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 105. Gh-L-B (غ ل ب) KÖKÜ - Yenmek / Üstün Gelmek
+    // 2. Bab (فَعَلَ - يَفْعِلُ)
+    // ==================================================================
+    "غلب": {
+        // --- 1 Numaralı Kalıp (Mücerret Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🏆", 
+                arText: "غَلَبَ", 
+                trText: "Yendi / Üstün geldi.",
+                ornek: { 
+                    ar: "كَمْ مِنْ فِئَةٍ قَلِيلَةٍ غَلَبَتْ فِئَةً كَثِيرَةً بِإِذْنِ اللهِ", 
+                    tr: "Nice az bir topluluk, Allah'ın izniyle çok (kalabalık) bir topluluğa galip gelmiştir (onları yenmiştir). (Bakara Suresi, 249)" 
+                }
+            },
+        },
+
+       // --- 4 Numaralı Kalıp (Mücerret Muzari) ---
+        4: { 
+            base: { 
+                emoji: "🥇", 
+                arText: "يَغْلِبُ", 
+                trText: "Yener / Üstün gelir.",
+                ornek: [
+                    {
+                        ar: "وَهُمْ مِنْ بَعْدِ غَلَبِهِمْ سَيَغْلِبُونَ",
+                        tr: "Onlar (Romalılar) bu yenilgilerinden sonra mutlaka galip geleceklerdir. (Rûm Suresi, 3)"
+                    },
+                    {
+                        ar: "إِنْ يَكُنْ مِنْكُمْ عِشْرُونَ صَابِرُونَ يَغْلِبُوا مِائَتَيْنِ",
+                        tr: "İçinizden sabreden yirmi kişi bulunursa, iki yüz kişiye galip gelirler (yenerler). (Enfâl Suresi, 65)"
+                    }
+                ]
+            },
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
+        17: { 
+            base: { 
+                emoji: "⚔️", 
+                arText: "غَلَب",
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🏅", 
+                arText: "غَلَبَة", 
+                trText: "Galebe / Üstünlük, galibiyet.",
+                ornek: { ar: "كَانَتِ الْغَلَبَةُ لَنَا", tr: "Üstünlük (galibiyet) bizimdi." }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "😎", 
+                arText: "غَالِب", 
+                trText: "Galip / Yenen, üstün gelen.",
+                ornek: { ar: "الْفَرِيقُ الْغَالِبُ", tr: "Galip (yenen) takım." }
+            },
+        },
+
+        // --- 30 Numaralı Kalıp (أَفْعَل - Kalıplaşmış İsim / Masdar-ı Sınâî) ---
+        30: { 
+            base: { 
+                emoji: "📊", 
+                arText: "أَغْلَب", 
+                trText: "Ağlab / Büyük kısım, geneli.",
+                ornek: { ar: "فِي أَغْلَبِ الْأَحْيَانِ", tr: "Çoğu zaman (genellikle)." }
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "👥", 
+                arText: "أَغْلَبِيَّة", 
+                trText: "Ağlebiyye / Çoğunluk.",
+                ornek: [
+                    { 
+                        ar: "الْأَغْلَبِيَّةُ الصَّامِتَةُ", 
+                        tr: "Sessiz çoğunluk." 
+                    },
+                    {
+                        ar: "صَوَّتَتِ الْأَغْلَبِيَّةُ لِصَالِحِ الْقَرَارِ",
+                        tr: "Çoğunluk, kararın lehine oy kullandı."
+                    }
+                ]
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "😔", 
+                arText: "مَغْلُوب", 
+                trText: "Mağlup / Yenilen.",
+                ornek: [{ 
+                        ar: "فَدَعَا رَبَّهُ أَنِّي مَغْلُوبٌ فَانْتَصِرْ", 
+                        tr: "Bunun üzerine (Nuh) Rabbine: 'Şüphesiz ben mağlup oldum (yenik düştüm), artık bana yardım et!' diye dua etti. (Kamer Suresi, 10)" 
+                    },
+                ]
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 106. Gh-F-R (غ ف ر) KÖKÜ - Örtmek / Korumak / Bağışlamak
+    // 2. Bab (فَعَلَ - يَفْعِلُ) ve İstif'âl Babı
+    // ==================================================================
+    "غفر": {
+        // --- 1 Numaralı Kalıp (Mücerret Mazi / 2. Bab) ---
+        1: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "غَفَرَ", 
+                trText: "Bağışladı / Örttü (günahları).",
+                ornek: { 
+                    ar: "فَغَفَرَ لَهُ ۚ إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ", 
+                    tr: "Bunun üzerine (Allah) onu bağışladı. Şüphesiz O, çok bağışlayandır, çok merhamet edendir. (Kasas Suresi, 16)" 
+                }
+            },
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret Muzari / 2. Bab) ---
+        4: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "يَغْفِرُ", 
+                trText: "Bağışlar / Örter." 
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret Emir / 2. Bab) ---
+        5: { 
+            base: { 
+                emoji: "🙏", 
+                arText: "اِغْفِرْ", 
+                trText: "Bağışla / Ört!",
+                ornek: { 
+                    ar: "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ", 
+                    tr: "Rabbimiz! Hesap kurulacağı gün beni, anne-babamı ve müminleri bağışla. (İbrahim Suresi, 41)" 
+                }
+            },
+        },
+
+        // --- 37 Numaralı Kalıp (مَفْعِل) ---
+        37: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "مَغْفِر", 
+                trText: "Bağışlanma / Örtme (Yalın Hâl)." 
+            },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "✨", 
+                arText: "مَغْفِرَة", 
+                trText: "Mağfiret / Bağışlama, günahları örtme.",
+                ornek: [
+                    { 
+                        ar: "نَرْجُو مَغْفِرَةَ اللهِ", 
+                        tr: "Allah'ın mağfiretini (bağışlamasını) umarız." 
+                    },
+                    { 
+                        ar: "💬 مَوْضُوعٌ لِلْمُطَالَعَةِ: الْغُفْرَانُ فِي اللُّغَةِ يَعْنِي التَّغْطِيَةَ. مَا هُوَ الْفَرْقُ بَيْنَ مَحْوِ الذَّنْبِ وَتَغْطِيَتِهِ (مَغْفِرَتِهِ)؟", 
+                        tr: "Mütalaa Konusu: 'Gufran/Mağfiret' kelimesinin sözlük anlamı 'örtmek'tir. Bir günahın tamamen silinmesi (mahvedilmesi) ile örtülmesi (mağfiret edilmesi) arasındaki manevi ve psikolojik fark nedir?" 
+                    }
+                ]
+            }
+        },
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🕊️", 
+                arText: "غَافِر", 
+                trText: "Gafir / Bağışlayan, örten.",
+                ornek: { ar: "غَافِرُ الذَّنْبِ", tr: "Günahı bağışlayan (Allah)." }
+            } 
+        },
+
+        // --- 34 Numaralı Kalıp (فَعَّال - Mübalağalı İsm-i Fâil) ---
+        34: { 
+            base: { 
+                emoji: "🌊", 
+                arText: "غَفَّار", 
+                trText: "Gaffâr / Çokça bağışlayan, hataları sürekli örten.",
+                ornek: { ar: "هُوَ الْغَفَّارُ الْكَرِيمُ", tr: "O, çokça bağışlayan ve cömert olandır." }
+            } 
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı) ---
+        103: { 
+            base: { 
+                emoji: "📿", 
+                arText: "اِسْتِغْفَار", 
+                trText: "İstiğfar / Bağışlanma dileme.",
+                ornek: [
+                    { 
+                        ar: "كَثْرَةُ الِاسْتِغْفَارِ", 
+                        tr: "İstiğfarın (tövbenin) çokluğu." 
+                    },
+                    { 
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة", 
+                        tr: "Sarf Kuralı: İstif'âl babı (اِسْتِفْعَال) fiile 'talep etme, isteme' anlamı katar. Kök anlamı 'örtmek/bağışlamak' olan 'غفر' (Ğa-fe-ra) bu baba girdiğinde 'Bağışlanma TALEP ETMEK' (İstiğfar) anlamına dönüşür." 
+                    }
+                ]
+            } 
+        },
+
+        // --- 39 Numaralı Kalıp (مِفْعَل - İsm-i Âlet) ---
+        39: {
+            base: {
+                emoji: "🪖",
+                arText: "مِغْفَر",
+                trText: "Miğfer / Başı koruyan zırhlı başlık.",
+                ornek: {
+                    ar: "💡 رَبْطُ الْكَلِمَاتِ",
+                    tr: "Kelime Bağlantısı: Askerlerin başını tehlikelerden korumak için 'örten' başlığa Miğfer denmesi ile, günahları 'örten' Mağfiret kelimesi aynı kökten (غفر) türemiştir."
+                }
+            }
+        }
     }
 };
 
