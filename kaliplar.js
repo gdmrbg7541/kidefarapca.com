@@ -1299,7 +1299,7 @@ const wordEasterEggs = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "🌧️", arText: "رَحْم", trText: "Rahmet (Yalın)." },
+            base: {},
             suggestsPlus: true, 
             "ة": { 
                 emoji: "🌧️", 
@@ -4506,7 +4506,7 @@ const wordEasterEggs = {
         23: { base: { emoji: "🧓", arText: "اِحْتِرَامُ كِبَارِ السِّنِّ وَاجِبٌ", trText: "Yaşça büyük olanlara (büyüklere) saygı göstermek vaciptir." } }, // كِبَار
         50: { base: { emoji: "🌌", arText: "اللهُ أَكْبَرُ مِنْ كُلِّ شَيْءٍ", trText: "Allah her şeyden en büyüktür (ekberdir)." } }, // أَكْبَر
         51: { base: { emoji: "🌟", arText: "الْقِيَامَةُ هِيَ الدَّاهِيَةُ الْكُبْرَى", trText: "Kıyamet en büyük (kübra) hadisedir." } }, // كُبْرَى
-        61: { base: { emoji: "🕌", arText: "نُرَدِّدُ التَّكْبِيرَ فِي أَيَّامِ الْعِيدِ", trText: "Bayram günlerinde tekbir getiririz." } } // تَكْبِير
+        61: { base: { emoji: "☝️", arText: "نُرَدِّدُ التَّكْبِيرَ فِي أَيَّامِ الْعِيدِ", trText: "Bayram günlerinde tekbir getiririz." } } // تَكْبِير
     },
 
     // 60. '-D-L (ع د ل) KÖKÜ - Adalet / Eşitlik / Düzenleme
@@ -9744,7 +9744,7 @@ const wordEasterEggs = {
             base: { 
                 emoji: "🛡️", 
                 arText: "مَغْفِر", 
-                trText: "Bağışlanma / Örtme (Yalın Hâl)." 
+                trText: "" 
             },
             suggestsPlus: true,
             "ة": {
@@ -12675,54 +12675,58 @@ const SarfEngine = {
         // 2. MUZAAF (ŞEDDELİ) İDĞAM KURALLARI (Örn: مَلَلَ -> مَلَّ, يَضْرُرُ -> يَضُرُّ)
         if (r[1] === r[2]) {
             let X = r[1];
-            // Sükunlu Transfer: lَمْ يَضْرُرْ -> لَمْ يَضُرَّ
+            // Sükunlu Transfer
             let regexSukun = new RegExp(`ْ${X}([َُِ])${X}([ًٌٍَُِْ])`, 'g');
             res = res.replace(regexSukun, `$1${X}ّ$2`);
-            // Normal Şeddeleme: مَلَلَ -> مَلَّ
+            // Normal Şeddeleme
             let regexNormal = new RegExp(`${X}[َُِ]${X}([ًٌٍَُِْ])`, 'g');
             res = res.replace(regexNormal, `${X}ّ$1`);
         }
 
-        // 3. MİSÂL FİİLLER (İLK HARF İLLETİ - VAV DÜŞMESİ)
+        // 3. MİSÂL FİİLLER (İLK HARF İLLETİ - KORUMALI VAV DÜŞMESİ)
         if (r[0] === 'و') {
+            let r2 = r[1];
+            let r3 = r[2];
+            
             // Muzari (يَوْسِعُ -> يَسِعُ, تَوْصِلُ -> تَصِلُ)
-            res = res.replace(/([يتاأن])َوْ([\u0621-\u064A][َِ][\u0621-\u064A].*)/g, "$1َ$2");
+            // KURAL: 2. ve 3. kök harfi yan yanaysa (araya İftial, Tef'il harfi girmemişse) Vav düşer. 
+            // Bu sayede تَوْصِيف (Tevsîf) gibi araya 'Ya' giren kelimeler KORUNUR!
+            let muzariRegex = new RegExp(`([يتاأن])َوْ(${r2}[َِ]${r3}.*)`, 'g');
+            res = res.replace(muzariRegex, "$1َ$2");
+            
             // Emir (اِوْسِعْ -> سِعْ, اِوْصِلْ -> صِلْ)
-            res = res.replace(/اِوْ([\u0621-\u064A][َِ][\u0621-\u064A].*)/g, "$1");
+            let emirRegex = new RegExp(`اِوْ(${r2}[َِ]${r3}.*)`, 'g');
+            res = res.replace(emirRegex, "$1");
         }
 
         // 4. ECVEF FİİLLER (ORTA HARF İLLETİ)
         if (r[1] === 'و' || r[1] === 'ي') {
             let ayn = r[1];
-            // Mazi Normal (قَوَلَ -> قَالَ, بَيَعَ -> بَاعَ)
+            // Mazi Normal
             res = res.replace(new RegExp(`([\u0621-\u064A])َ${ayn}َ([\u0621-\u064A]َ.*)`, 'g'), `$1َا$2`);
-            // Mazi Çoğul Kadın/Muhatab (قَوَلْتُ -> قُلْتُ , بَيَعْتُ -> بِعْتُ)
+            // Mazi Çoğul Kadın/Muhatab
             if (ayn === 'و') res = res.replace(new RegExp(`([\u0621-\u064A])َوَ([\u0621-\u064A]ْ.*)`, 'g'), `$1ُ$2`);
             else res = res.replace(new RegExp(`([\u0621-\u064A])َيَ([\u0621-\u064A]ْ.*)`, 'g'), `$1ِ$2`);
 
-            // Muzari Ötre (يَقْوُلُ -> يَقُولُ)
+            // Muzari Dönüşümleri
             res = res.replace(new RegExp(`([يتاأن]َ[\u0621-\u064A])ْ${ayn}ُ([\u0621-\u064A].*)`, 'g'), `$1ُو$2`);
-            // Muzari Esre (يَبْيِعُ -> يَبِيعُ)
             res = res.replace(new RegExp(`([يتاأن]َ[\u0621-\u064A])ْ${ayn}ِ([\u0621-\u064A].*)`, 'g'), `$1ِي$2`);
-            // Muzari Üstün (يَخْوَفُ -> يَخَافُ)
             res = res.replace(new RegExp(`([يتاأن]َ[\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)`, 'g'), `$1َا$2`);
 
-            // Emir Ötre (اُقْوُلْ -> قُلْ)
+            // Emir Dönüşümleri
             res = res.replace(new RegExp(`اُ([\u0621-\u064A])ْوُ([\u0621-\u064A]ْ.*)`, 'g'), `$1ُ$2`);
-            // Emir Esre (اِبْيِعْ -> بِعْ)
             res = res.replace(new RegExp(`اِ([\u0621-\u064A])ْيِ([\u0621-\u064A]ْ.*)`, 'g'), `$1ِ$2`);
-            // Emir Üstün (اِخْوَفْ -> خَفْ)
             res = res.replace(new RegExp(`اِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A]ْ.*)`, 'g'), `$1َ$2`);
         }
 
         // 5. NÂKIS FİİLLER (SON HARF İLLETİ)
         if (r[2] === 'و' || r[2] === 'ي') {
             let lam = r[2];
-            // Mazi (دَعَوَ -> دَعَا, رَمَيَ -> رَمَى)
+            // Mazi
             if (lam === 'و') res = res.replace(new RegExp(`([\u0621-\u064A]َ[\u0621-\u064A])َوَ$`, 'g'), `$1َا`);
             else res = res.replace(new RegExp(`([\u0621-\u064A]َ[\u0621-\u064A])َيَ$`, 'g'), `$1َى`);
             
-            // Muzari (يَدْعُوُ -> يَدْعُو, يَرْمِيُ -> يَرْمِي, يَرْضَيُ -> يَرْضَى)
+            // Muzari
             res = res.replace(new RegExp(`([\u0621-\u064A]ُ)[وي]ُ$`, 'g'), `$1و`);
             res = res.replace(new RegExp(`([\u0621-\u064A]ِ)[وي]ُ$`, 'g'), `$1ي`);
             res = res.replace(new RegExp(`([\u0621-\u064A]َ)[وي]ُ$`, 'g'), `$1ى`);
