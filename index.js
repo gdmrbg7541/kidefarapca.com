@@ -244,6 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gösterilecek PDF dosyalarının listesi
     const pdfListesi = [
         "🧐 Harf-i Tarîf.pdf",
+        "Kalıpları Pekiştir.pdf"
         "Arapçada Kelime.pdf",
         "⚔️ Kim Daha Hızlı.pdf",
         "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf"
