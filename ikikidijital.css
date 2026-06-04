@@ -182,7 +182,7 @@ body {
 
 .pattern-name {
     font-size: clamp(40px, 10vmin, 100px);
-    color: var(--gold);
+    color: var(--accent-red); /* Altın rengi yerine kırmızı yapıldı */
     line-height: 1;
     opacity: 0;
     display: none;
@@ -212,7 +212,7 @@ body {
 
 .pattern-num {
     font-size: clamp(30px, 8vmin, 80px);
-    color: var(--gold);
+    color: var(--accent-red); /* Altın rengi yerine kırmızı yapıldı */
     opacity: 0;
     display: none;
     transition: all 0.4s;

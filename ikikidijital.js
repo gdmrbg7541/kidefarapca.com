@@ -218,7 +218,15 @@ function updateDisplay() {
     
     rootEl.innerText = card.root;
     document.getElementById('display-pattern-num').innerText = card.num;
-    document.getElementById('display-pattern-name').innerText = card.pattern;
+    
+    // --- YENİ EKLENEN KISIM: Zeki Renklendirme ---
+    // Regex: ف, ع veya ل harfini ve peşinden gelen tüm Arapça harekeleri yakalar
+    const formattedPattern = card.pattern.replace(/([فعل][\u064B-\u065F]*)/g, '<span style="color: var(--text-dark);">$1</span>');
+    
+    // innerText yerine innerHTML kullanıyoruz ki span HTML etiketleri çalışsın
+    document.getElementById('display-pattern-name').innerHTML = formattedPattern;
+    // ----------------------------------------------
+
     document.getElementById('display-hint').innerText = card.hint;
     document.getElementById('display-ar-answer').innerText = card.ar;
     document.getElementById('display-tr-answer').innerText = card.tr;
