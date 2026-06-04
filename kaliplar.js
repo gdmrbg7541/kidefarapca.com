@@ -12917,7 +12917,7 @@ const SarfEngine = {
     applyRules: function(word, r) {
         if (!r || r.length !== 3) return word;
         let res = word;
-        let [r1, r2, r3] = r; // Kök harflerini ayır
+        let [r1, r2, r3] = r; 
 
         // 1. İFTİAL BABI (11. BAB) İBDAL KURALLARI
         if (r1 === 'و' || r1 === 'ي' || r1 === 'ث') {
@@ -12933,25 +12933,18 @@ const SarfEngine = {
         // 2. MUZAAF (ŞEDDELİ) FİİLLER (örn: مدد, ضرر)
         if (r2 === r3) {
             let X = r2;
-            // Sükunlu Transfer
             let regexSukun = new RegExp(`ْ${X}([َُِ])${X}([ًٌٍَُِْ])`, 'g');
             res = res.replace(regexSukun, `$1${X}ّ$2`);
-            // Normal Şeddeleme
             let regexNormal = new RegExp(`${X}[َُِ]${X}([ًٌٍَُِْ])`, 'g');
             res = res.replace(regexNormal, `${X}ّ$1`);
-            
-            // YENİ: İsm-i Fâil (ضَارِر -> ضَارّ)
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َا${X}ِ${X}`, 'g'), `$1َا${X}ّ`);
-            // YENİ: İsm-i Mekân/Zaman (مَمْرَر -> مَمَرّ)
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ${X}[َِ]${X}`, 'g'), `مَ$1َ${X}ّ`);
         }
 
-        // 3. MİSÂL FİİLLER (İLK HARF İLLETİ - KORUMALI VAV DÜŞMESİ)
+        // 3. MİSÂL FİİLLER (İLK HARF İLLETİ)
         if (r1 === 'و') {
-            // Muzari
             let muzariRegex = new RegExp(`([يتاأن])َوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(muzariRegex, "$1َ$2");
-            // Emir
             let emirRegex = new RegExp(`اِوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(emirRegex, "$1");
         }
@@ -12959,23 +12952,15 @@ const SarfEngine = {
         // 4. ECVEF FİİLLER (SADECE NAKIS OLMAYANLAR - LEFİF KORUMASI)
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
-            // Mazi Normal
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َ${ayn}َ([\\u0621-\\u064A]َ.*)`, 'g'), `$1َا$2`);
-            // Mazi Çoğul Kadın/Muhatab
             if (ayn === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A])َوَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
             else res = res.replace(new RegExp(`([\\u0621-\\u064A])َيَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
-
-            // Muzari Dönüşümleri
             res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ُ([\\u0621-\\u064A].*)`, 'g'), `$1ُو$2`);
             res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ِ([\\u0621-\\u064A].*)`, 'g'), `$1ِي$2`);
             res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A].*)`, 'g'), `$1َا$2`);
-
-            // Emir Dönüşümleri
             res = res.replace(new RegExp(`اُ([\\u0621-\\u064A])ْوُ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
             res = res.replace(new RegExp(`اِ([\\u0621-\\u064A])ْيِ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
             res = res.replace(new RegExp(`اِ([\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1َ$2`);
-
-            // İsim Türetmeleri (İsm-i Fâil, Mef'ûl, Mekân, İf'âl, İstif'âl)
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َا[وي]ِ([\\u0621-\\u064A])`, 'g'), `$1َائِ$2`);
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْوُو([\\u0621-\\u064A])`, 'g'), `مَ$1ُو$2`);
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْيُو([\\u0621-\\u064A])`, 'g'), `مَ$1ِي$2`);
@@ -12985,46 +12970,52 @@ const SarfEngine = {
             res = res.replace(new RegExp(`اِسْتِ([\\u0621-\\u064A])ْ[وي]َا([\\u0621-\\u064A])(?!َة)`, 'g'), `اِسْتِ$1َا$2َة`);
         }
 
-        // 5. NÂKIS (SON HARF İLLETİ) ve LEFİF FİİLLER
-        if (r3 === 'و' || r3 === 'ي') {
-            let lam = r3;
+        // 5. NÂKIS (SON HARF İLLETİ) ve LEFİF FİİLLER (örn: نوى)
+        if (r[2] === 'و' || r[2] === 'ي') {
+            let lam = r[2];
             
-            // Mazi (دَعَوَ -> دَعَا, رَمَيَ -> رَمَى)
+            // --- 1. MATRİS EKLERİ (Soneki) DÜZELTMELERİ ---
+            res = res.replace(/َ[وي][َُ]?وا$/g, "َوْا"); 
+            res = res.replace(/ِ[وي][َُ]?وا$/g, "ُوا");  
+            
+            res = res.replace(/َ[وي]َتْ$/g, "َتْ");   
+            res = res.replace(/َ[وي]َتَا$/g, "َتَا"); 
+
+            res = res.replace(/ِيُ?ونَ$/g, "ُونَ"); 
+            res = res.replace(/ِيُ?وا$/g, "ُوا");
+            res = res.replace(/ُوُ?ونَ$/g, "ُونَ"); 
+            res = res.replace(/ُوُ?وا$/g, "ُوا");    
+            res = res.replace(/َيُ?ونَ$/g, "َوْنَ"); 
+            res = res.replace(/َيُ?وا$/g, "َوْا");    
+
+            res = res.replace(/ِيِ?ينَ$/g, "ِينَ"); 
+            res = res.replace(/ِيِ?ي$/g, "ِي");      
+            res = res.replace(/ُوِ?ينَ$/g, "ِينَ"); 
+            res = res.replace(/ُوِ?ي$/g, "ِي");      
+            res = res.replace(/َيِ?ينَ$/g, "َيْنَ"); 
+            res = res.replace(/َيِ?ي$/g, "َيْ"); 
+
+            // --- 2. YALIN KELİME DÖNÜŞÜMLERİ ---
+            // Mazi
             if (lam === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A]َ[\\u0621-\\u064A])َوَ$`, 'g'), `$1َا`);
             else res = res.replace(new RegExp(`([\\u0621-\\u064A]َ[\\u0621-\\u064A])َيَ$`, 'g'), `$1َى`);
             
-            // Muzari (يَدْعُوُ -> يَدْعُو, يَرْمِيُ -> يَرْمِي)
+            // Muzari
             res = res.replace(new RegExp(`([\\u0621-\\u064A]ُ)[وي]ُ$`, 'g'), `$1و`);
             res = res.replace(new RegExp(`([\\u0621-\\u064A]ِ)[وي]ُ$`, 'g'), `$1ي`);
             res = res.replace(new RegExp(`([\\u0621-\\u064A]َ)[وي]ُ$`, 'g'), `$1ى`);
 
-            // YENİ: Emir Kipinde İllet Düşmesi (اُدْعُوْ -> اُدْعُ , اِرْمِيْ -> اِرْمِ)
-            res = res.replace(new RegExp(`^[اأ]([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ُ[وي]ْ?$`, 'g'), `اُ$1ْ$2ُ`); 
-            res = res.replace(new RegExp(`^[اأإ]([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ِ[وي]ْ?$`, 'g'), `اِ$1ْ$2ِ`); 
-            res = res.replace(new RegExp(`^[اأإ]([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]ْ?$`, 'g'), `اِ$1ْ$2َ`); 
-            
-            // YENİ: Lefif-i Mefruk Emir Koruması (وقي -> قِيْ -> قِ)
-            res = res.replace(new RegExp(`^([\\u0621-\\u064A])ِ[وي]ْ?$`, 'g'), `$1ِ`);
+            // YENİ: Emir Kipinde Evrensel İllet Düşmesi Kuralı (اِرْمِيْ -> اِرْمِ , اُدْعُوْ -> اُدْعُ , قِيْ -> قِ)
+            res = res.replace(/([َُِ])[وي]ْ$/g, "$1");
 
-            // YENİ: İsm-i Fâil (دَاعِو -> دَاعِي)
+            // İsim Türetmeleri
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َا([\\u0621-\\u064A])ِ[وي]$`, 'g'), `$1َا$2ِي`);
-            
-            // YENİ: İsm-i Mef'ûl (مَدْعُوو -> مَدْعُوّ , مَرْمُوي -> مَرْمِيّ)
             if (lam === 'و') {
                 res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ُو[وي]$`, 'g'), `مَ$1ْ$2ُوّ`);
             } else {
                 res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ُو[وي]$`, 'g'), `مَ$1ْ$2ِيّ`);
             }
-
-            // YENİ: İsm-i Mekân (مَرْمَي -> مَرْمَى)
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]$`, 'g'), `مَ$1ْ$2َى`);
-        }
-
-        // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI)
-        if (r.includes('أ') || r.includes('ء') || r.includes('إ')) {
-            res = res.replace(/أَأْ/g, "آ"); // أَأْكَلَ -> آكَلَ
-            res = res.replace(/اُأْ/g, "أُو"); // اُأْكُلْ -> أُوكُلْ
-            res = res.replace(/اِأْ/g, "إِي"); // اِأْذَنْ -> إِيذَنْ
         }
 
         return res;
