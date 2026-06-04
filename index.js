@@ -247,6 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "🛠️ Kalıpları Pekiştir.pdf",
         "🤔 Arapçada Kelime.pdf",
         "🤔 İsmin 4 Özelliği.pdf",
+        "🧐 Müfred, Tesniye, Cem İsimler.pdf",
         "⚔️ Kim Daha Hızlı.pdf",
         "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf"
         
