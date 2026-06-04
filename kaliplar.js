@@ -9814,7 +9814,264 @@ const wordEasterEggs = {
                 }
             }
         }
-    }
+    },
+
+     // ==================================================================
+    // Sh-Gh-L (ش غ ل) KÖKÜ - İş / Uğraş / Meşguliyet
+    // (Türkçedeki Meşgul, İşgal ve Meşgale kelimelerinin atası)
+    // ==================================================================
+    "شغل": {
+        // --- 21 Numaralı Kalıp (فُعْل - Masdar/İsim) ---
+        21: { 
+            base: { 
+                emoji: "💼", 
+                arText: "شُغْل", 
+                trText: "Şuğul / İş, uğraş." 
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "مَشْغُول", 
+                trText: "Meşgul / İşi olan, vakti dolu olan." 
+            } 
+        },
+        
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân) ---
+        38: { 
+            base: { 
+                emoji: "🏭"},
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "🧵", 
+                arText: "مَشْغَلَة", 
+                trText: "Meşgale / Uğraşılan, vakit harcanan iş." 
+            } 
+        },
+        
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🛑", 
+                arText: "إِشْغَال", 
+                trText: "İşgal / Meşgul etme, bir yeri veya vakti kaplama." 
+            } 
+        }
+    },
+
+    // ==================================================================
+    // H-S-B (ح س ب) KÖKÜ - Saymak / Hesap Etmek
+    // (Türkçedeki Hesap, Muhasebe ve Muhasebeci kelimelerinin atası)
+    // ==================================================================
+    "حسب": {
+        // --- 23 Numaralı Kalıp (فِعَال - Masdar/İsim) ---
+        23: { 
+            base: { 
+                emoji: "🧮", 
+                arText: "حِسَاب", 
+                trText: "Hesap / Sayma, matematiksel işlem.",
+                ornek: { ar: "يَوْمُ الْحِسَابِ", tr: "Hesap günü." }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "⏱️", },
+            suggestsPlus: true, 
+            "ة": { 
+                emoji: "💻", 
+                arText: "حَاسِبَة", 
+                trText: "Hesap makinesi / Bilgisayar (Hâsûb da kullanılır)." 
+            }
+        },
+        
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "📊", 
+                arText: "مُحَاسَبَة", 
+                trText: "Muhasebe / Karşılıklı hesaplaşma, hesap tutma." 
+            } 
+        },
+
+        // --- 69 Numaralı Kalıp (مُفَاعِل - Müfâ'ale İsm-i Fâili) ---
+        69: { 
+            base: { 
+                emoji: "👨‍💼", 
+                arText: "مُحَاسِب", 
+                trText: "Muhasebeci / Hesapları tutan kişi." 
+            } 
+        }
+    },
+
+    // ==================================================================
+    // Z-L-M (ظ ل م) KÖKÜ - Karanlık / Haksızlık Etmek
+    // (Türkçedeki Zulüm, Zalim ve Mazlum kelimelerinin atası)
+    // ==================================================================
+    "ظلم": {
+        // --- 21 Numaralı Kalıp (فُعْل - Masdar) ---
+        21: { 
+            base: { 
+                emoji: "🌑", 
+                arText: "ظُلْم", 
+                trText: "Zulüm / Haksızlık, adaletsizlik.",
+                ornek: { ar: "الظُّلْمُ ظُلُمَاتٌ يَوْمَ الْقِيَامَةِ", tr: "Zulüm, kıyamet gününde zifiri karanlıklardır. (Hadis-i Şerif)" }
+            } 
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "😠", 
+                arText: "ظَالِم", 
+                trText: "Zalim / Haksızlık eden, eziyet eden." 
+            } 
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🥺", 
+                arText: "مَظْلُوم", 
+                trText: "Mazlum / Kendisine haksızlık edilen, zulme uğrayan.",
+                ornek: { ar: "دَعْوَةُ الْمَظْلُومِ", tr: "Mazlumun bedduası (duası)." }
+            } 
+        }
+    },
+
+     // ==================================================================
+    // N-T-J (ن ت ج) KÖKÜ - Sonuç Vermek / Üretmek
+    // (Türkçedeki Netice kelimesinin atası)
+    // ==================================================================
+    "نتج": {
+        // --- 35 Numaralı Kalıp (فَعِيل ve + ة ile Netice) ---
+        35: { 
+            base: { arText: "نَتِيج" }, // Yalın hali sessiz (Ekrana boş açılır)
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🎯", 
+                arText: "نَتِيجَة", 
+                trText: "Netice / Sonuç.",
+                ornek: { ar: "نَتِيجَةُ الِامْتِحَانِ جَيِّدَةٌ", tr: "Sınavın neticesi (sonucu) iyidir." }
+            } 
+        },
+
+        // --- 52, 53 Numaralı Kalıplar (İf'âl Babı - Üretmek) ---
+        52: { base: { emoji: "🏭", arText: "أَنْتَجَ", trText: "Üretti." } },
+        53: { base: { emoji: "⚙️", arText: "يُنْتِجُ", trText: "Üretir / Üretiyor." } },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "📦", 
+                arText: "إِنْتَاج", 
+                trText: "İntac / Üretim.",
+                ornek: { ar: "إِنْتَاجٌ مَحَلِّيٌّ", tr: "Yerli üretim." }
+            } 
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Masdarı) ---
+        103: { 
+            base: { 
+                emoji: "🤔", 
+                arText: "اِسْتِنْتَاج", 
+                trText: "İstintac / Sonuç çıkarma, tümdengelim." 
+            } 
+        }
+    },
+
+    // ==================================================================
+    // W-TH-Q (و ث ق) KÖKÜ - Güvenmek / Sağlamlaştırmak
+    // (Türkçedeki Vesika kelimesinin atası)
+    // ==================================================================
+    "وثق": {
+        // --- 14 Numaralı Kalıp (Mücerret 4. veya 6. Bab Mazi) ---
+        14: { 
+            base: { emoji: "🤝", arText: "وَثِقَ", trText: "Güvendi / İtimat etti." } 
+        },
+
+        // --- 15 Numaralı Kalıp (Mücerret Muzari - Misal Fiil, Vav düşer) ---
+        15: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "يَثِقُ", 
+                trText: "Güvenir / İtimat ediyor." 
+            } 
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل ve + ة ile Vesika) ---
+        35: { 
+            base: { arText: "وَثِيق" }, // Yalın hali sessiz
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "📜", 
+                arText: "وَثِيقَة", 
+                trText: "Vesika / Belge, sağlam kanıt.",
+                ornek: { ar: "وَثِيقَةٌ رَسْمِيَّةٌ", tr: "Resmi vesika (belge)." }
+            } 
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "📂", 
+                arText: "تَوْثِيق", 
+                trText: "Tevsik / Belgelendirme, sağlama alma." 
+            } 
+        }
+    },
+
+    // ==================================================================
+    // N-S-H (ن ص ح) KÖKÜ - Öğüt Vermek / Samimi Olmak
+    // (Türkçedeki Nasihat kelimesinin atası)
+    // ==================================================================
+    "نصح": {
+        // --- 1, 6 Numaralı Kalıplar (Mücerret 3. Bab) ---
+        1: { base: { emoji: "🗣️", arText: "نَصَحَ", trText: "Öğüt verdi / Nasihat etti." } },
+        6: { base: { emoji: "💬", arText: "يَنْصَحُ", trText: "Öğüt verir." } },
+
+        // --- 35 Numaralı Kalıp (فَعِيل ve + ة ile Nasihat) ---
+        35: { 
+            base: { arText: "نَصِيح" }, // Yalın hali sessiz
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "💡", 
+                arText: "نَصِيحَة", 
+                trText: "Nasihat / Öğüt.",
+                ornek: { ar: "الدِّينُ النَّصِيحَةُ", tr: "Din, nasihattir (samimiyettir). (Hadis-i Şerif)" }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // TH-Q-F (ث ق ف) KÖKÜ - Anlayışlı Olmak / Eğitmek
+    // (Arapçadaki Kültür kelimesinin kökeni)
+    // ==================================================================
+    "ثقف": {
+        // --- 22 Numaralı Kalıp (فَعَال ve + ة ile Kültür) ---
+        22: { 
+            base: { arText: "ثَقَاف" }, // Yalın hali sessiz
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🏛️", 
+                arText: "ثَقَافَة", 
+                trText: "Sakafa / Kültür, eğitim, birikim.",
+                ornek: { ar: "ثَقَافَةٌ عَامَّةٌ", tr: "Genel kültür." }
+            } 
+        },
+
+        // --- 62 Numaralı Kalıp (مُفَعِّل - Tef'îl İsm-i Fâili) ---
+        62: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "مُثَقَّف", 
+                trText: "Müsakkaf / Kültürlü, aydın (entelektüel) kişi." 
+            } 
+        }
+    },
 };
 
 // ==================================================================
@@ -12660,76 +12917,107 @@ const SarfEngine = {
     applyRules: function(word, r) {
         if (!r || r.length !== 3) return word;
         let res = word;
+        let [r1, r2, r3] = r; // Kök harflerini ayır
 
         // 1. İFTİAL BABI (11. BAB) İBDAL KURALLARI
-        if (r[0] === 'و' || r[0] === 'ي' || r[0] === 'ث') {
-            res = res.replace(new RegExp(r[0] + "ْت", "g"), "تّ");
-        } else if (['ص', 'ض', 'ط', 'ظ'].includes(r[0])) {
-            res = res.replace(new RegExp(r[0] + "ْت", "g"), r[0] + "ْط");
+        if (r1 === 'و' || r1 === 'ي' || r1 === 'ث') {
+            res = res.replace(new RegExp(r1 + "ْت", "g"), "تّ");
+        } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
+            res = res.replace(new RegExp(r1 + "ْت", "g"), r1 + "ْط");
             res = res.replace(/طْط/g, "طّ");
-        } else if (['د', 'ذ', 'ز'].includes(r[0])) {
-            res = res.replace(new RegExp(r[0] + "ْت", "g"), r[0] + "ْد");
+        } else if (['د', 'ذ', 'ز'].includes(r1)) {
+            res = res.replace(new RegExp(r1 + "ْت", "g"), r1 + "ْد");
             res = res.replace(/دْد/g, "دّ");
         }
 
-        // 2. MUZAAF (ŞEDDELİ) İDĞAM KURALLARI (Örn: مَلَلَ -> مَلَّ, يَضْرُرُ -> يَضُرُّ)
-        if (r[1] === r[2]) {
-            let X = r[1];
+        // 2. MUZAAF (ŞEDDELİ) FİİLLER (örn: مدد, ضرر)
+        if (r2 === r3) {
+            let X = r2;
             // Sükunlu Transfer
-            let regexSukun = new RegExp(`ْ${X}([َُِ])${X}([ًٌٍَُِْ])`, 'g');
+            let regexSukun = new RegExp(`ْ${X}([َُِ])${X}([ًٌٍَُِْ])`, 'g');
             res = res.replace(regexSukun, `$1${X}ّ$2`);
             // Normal Şeddeleme
-            let regexNormal = new RegExp(`${X}[َُِ]${X}([ًٌٍَُِْ])`, 'g');
+            let regexNormal = new RegExp(`${X}[َُِ]${X}([ًٌٍَُِْ])`, 'g');
             res = res.replace(regexNormal, `${X}ّ$1`);
+            
+            // YENİ: İsm-i Fâil (ضَارِر -> ضَارّ)
+            res = res.replace(new RegExp(`([\\u0621-\\u064A])َا${X}ِ${X}`, 'g'), `$1َا${X}ّ`);
+            // YENİ: İsm-i Mekân/Zaman (مَمْرَر -> مَمَرّ)
+            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ${X}[َِ]${X}`, 'g'), `مَ$1َ${X}ّ`);
         }
 
         // 3. MİSÂL FİİLLER (İLK HARF İLLETİ - KORUMALI VAV DÜŞMESİ)
-        if (r[0] === 'و') {
-            let r2 = r[1];
-            let r3 = r[2];
-            
-            // Muzari (يَوْسِعُ -> يَسِعُ, تَوْصِلُ -> تَصِلُ)
-            // KURAL: 2. ve 3. kök harfi yan yanaysa (araya İftial, Tef'il harfi girmemişse) Vav düşer. 
-            // Bu sayede تَوْصِيف (Tevsîf) gibi araya 'Ya' giren kelimeler KORUNUR!
-            let muzariRegex = new RegExp(`([يتاأن])َوْ(${r2}[َِ]${r3}.*)`, 'g');
+        if (r1 === 'و') {
+            // Muzari
+            let muzariRegex = new RegExp(`([يتاأن])َوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(muzariRegex, "$1َ$2");
-            
-            // Emir (اِوْسِعْ -> سِعْ, اِوْصِلْ -> صِلْ)
-            let emirRegex = new RegExp(`اِوْ(${r2}[َِ]${r3}.*)`, 'g');
+            // Emir
+            let emirRegex = new RegExp(`اِوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(emirRegex, "$1");
         }
 
-        // 4. ECVEF FİİLLER (ORTA HARF İLLETİ)
-        if (r[1] === 'و' || r[1] === 'ي') {
-            let ayn = r[1];
+        // 4. ECVEF FİİLLER (SADECE NAKIS OLMAYANLAR - LEFİF KORUMASI)
+        if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
+            let ayn = r2;
             // Mazi Normal
-            res = res.replace(new RegExp(`([\u0621-\u064A])َ${ayn}َ([\u0621-\u064A]َ.*)`, 'g'), `$1َا$2`);
+            res = res.replace(new RegExp(`([\\u0621-\\u064A])َ${ayn}َ([\\u0621-\\u064A]َ.*)`, 'g'), `$1َا$2`);
             // Mazi Çoğul Kadın/Muhatab
-            if (ayn === 'و') res = res.replace(new RegExp(`([\u0621-\u064A])َوَ([\u0621-\u064A]ْ.*)`, 'g'), `$1ُ$2`);
-            else res = res.replace(new RegExp(`([\u0621-\u064A])َيَ([\u0621-\u064A]ْ.*)`, 'g'), `$1ِ$2`);
+            if (ayn === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A])َوَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
+            else res = res.replace(new RegExp(`([\\u0621-\\u064A])َيَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
 
             // Muzari Dönüşümleri
-            res = res.replace(new RegExp(`([يتاأن]َ[\u0621-\u064A])ْ${ayn}ُ([\u0621-\u064A].*)`, 'g'), `$1ُو$2`);
-            res = res.replace(new RegExp(`([يتاأن]َ[\u0621-\u064A])ْ${ayn}ِ([\u0621-\u064A].*)`, 'g'), `$1ِي$2`);
-            res = res.replace(new RegExp(`([يتاأن]َ[\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)`, 'g'), `$1َا$2`);
+            res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ُ([\\u0621-\\u064A].*)`, 'g'), `$1ُو$2`);
+            res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ِ([\\u0621-\\u064A].*)`, 'g'), `$1ِي$2`);
+            res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A].*)`, 'g'), `$1َا$2`);
 
             // Emir Dönüşümleri
-            res = res.replace(new RegExp(`اُ([\u0621-\u064A])ْوُ([\u0621-\u064A]ْ.*)`, 'g'), `$1ُ$2`);
-            res = res.replace(new RegExp(`اِ([\u0621-\u064A])ْيِ([\u0621-\u064A]ْ.*)`, 'g'), `$1ِ$2`);
-            res = res.replace(new RegExp(`اِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A]ْ.*)`, 'g'), `$1َ$2`);
+            res = res.replace(new RegExp(`اُ([\\u0621-\\u064A])ْوُ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
+            res = res.replace(new RegExp(`اِ([\\u0621-\\u064A])ْيِ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
+            res = res.replace(new RegExp(`اِ([\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1َ$2`);
+
+            // İsim Türetmeleri (İsm-i Fâil, Mef'ûl, Mekân, İf'âl, İstif'âl)
+            res = res.replace(new RegExp(`([\\u0621-\\u064A])َا[وي]ِ([\\u0621-\\u064A])`, 'g'), `$1َائِ$2`);
+            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْوُو([\\u0621-\\u064A])`, 'g'), `مَ$1ُو$2`);
+            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْيُو([\\u0621-\\u064A])`, 'g'), `مَ$1ِي$2`);
+            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A])`, 'g'), `مَ$1َا$2`);
+            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ[وي]ِ([\\u0621-\\u064A])`, 'g'), `مَ$1ِي$2`);
+            res = res.replace(new RegExp(`إِ([\\u0621-\\u064A])ْ[وي]َا([\\u0621-\\u064A])(?!َة)`, 'g'), `إِ$1َا$2َة`);
+            res = res.replace(new RegExp(`اِسْتِ([\\u0621-\\u064A])ْ[وي]َا([\\u0621-\\u064A])(?!َة)`, 'g'), `اِسْتِ$1َا$2َة`);
         }
 
-        // 5. NÂKIS FİİLLER (SON HARF İLLETİ)
-        if (r[2] === 'و' || r[2] === 'ي') {
-            let lam = r[2];
-            // Mazi
-            if (lam === 'و') res = res.replace(new RegExp(`([\u0621-\u064A]َ[\u0621-\u064A])َوَ$`, 'g'), `$1َا`);
-            else res = res.replace(new RegExp(`([\u0621-\u064A]َ[\u0621-\u064A])َيَ$`, 'g'), `$1َى`);
+        // 5. NÂKIS (SON HARF İLLETİ) ve LEFİF FİİLLER
+        if (r3 === 'و' || r3 === 'ي') {
+            let lam = r3;
             
-            // Muzari
-            res = res.replace(new RegExp(`([\u0621-\u064A]ُ)[وي]ُ$`, 'g'), `$1و`);
-            res = res.replace(new RegExp(`([\u0621-\u064A]ِ)[وي]ُ$`, 'g'), `$1ي`);
-            res = res.replace(new RegExp(`([\u0621-\u064A]َ)[وي]ُ$`, 'g'), `$1ى`);
+            // Mazi (دَعَوَ -> دَعَا, رَمَيَ -> رَمَى)
+            if (lam === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A]َ[\\u0621-\\u064A])َوَ$`, 'g'), `$1َا`);
+            else res = res.replace(new RegExp(`([\\u0621-\\u064A]َ[\\u0621-\\u064A])َيَ$`, 'g'), `$1َى`);
+            
+            // Muzari (يَدْعُوُ -> يَدْعُو, يَرْمِيُ -> يَرْمِي)
+            res = res.replace(new RegExp(`([\\u0621-\\u064A]ُ)[وي]ُ$`, 'g'), `$1و`);
+            res = res.replace(new RegExp(`([\\u0621-\\u064A]ِ)[وي]ُ$`, 'g'), `$1ي`);
+            res = res.replace(new RegExp(`([\\u0621-\\u064A]َ)[وي]ُ$`, 'g'), `$1ى`);
+
+            // YENİ: Emir Kipinde İllet Düşmesi (اُدْعُوْ -> اُدْعُ , اِرْمِيْ -> اِرْمِ)
+            res = res.replace(new RegExp(`^[اأ]([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ُ[وي]ْ?$`, 'g'), `اُ$1ْ$2ُ`); 
+            res = res.replace(new RegExp(`^[اأإ]([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ِ[وي]ْ?$`, 'g'), `اِ$1ْ$2ِ`); 
+            res = res.replace(new RegExp(`^[اأإ]([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]ْ?$`, 'g'), `اِ$1ْ$2َ`); 
+            
+            // YENİ: Lefif-i Mefruk Emir Koruması (وقي -> قِيْ -> قِ)
+            res = res.replace(new RegExp(`^([\\u0621-\\u064A])ِ[وي]ْ?$`, 'g'), `$1ِ`);
+
+            // YENİ: İsm-i Fâil (دَاعِو -> دَاعِي)
+            res = res.replace(new RegExp(`([\\u0621-\\u064A])َا([\\u0621-\\u064A])ِ[وي]$`, 'g'), `$1َا$2ِي`);
+            
+            // YENİ: İsm-i Mef'ûl (مَدْعُوو -> مَدْعُوّ , مَرْمُوي -> مَرْمِيّ)
+            if (lam === 'و') {
+                res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ُو[وي]$`, 'g'), `مَ$1ْ$2ُوّ`);
+            } else {
+                res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])ُو[وي]$`, 'g'), `مَ$1ْ$2ِيّ`);
+            }
+
+            // YENİ: İsm-i Mekân (مَرْمَي -> مَرْمَى)
+            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]$`, 'g'), `مَ$1ْ$2َى`);
         }
 
         // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI)
