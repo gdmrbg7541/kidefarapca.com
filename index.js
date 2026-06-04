@@ -248,10 +248,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "🤔 Arapçada Kelime.pdf",
         "🤔 İsmin 4 Özelliği.pdf",
         "🧐 Müfred, Tesniye, Cem İsimler.pdf",
+        "🧐 Mazi Fiil.pdf",
         "⚔️ Kim Daha Hızlı.pdf",
-        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf"
-        
-        
+        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
+        "🧐 Muzari Fiil.pdf",
+        "🧐 Emir Fiil.pdf",
+        "🧐 Aksam-ı Seb'a.pdf"
     ];
 
     pdfListesi.forEach(dosyaAdi => {
