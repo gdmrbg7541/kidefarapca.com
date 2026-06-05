@@ -4272,16 +4272,19 @@ const wordEasterEggs = {
     // ==================================================================
     "برك": {
         // --- 17 Numaralı Kalıp (فَعَل) ---
-        17: { 
-            base: { emoji: "🌾", arText: "بَرَك", trText: "Bereket (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
-                emoji: "🌾", 
+       17: { 
+            base: { 
+                emoji: "🌱", 
                 arText: "بَرَكَة", 
-                trText: "Bereket.",
-                ornek: { ar: "الْبَرَكَةُ فِي الْبُكُورِ", tr: "Bereket, sabahın erken vakitlerindedir. (Hadis-i Şerif)" }
-            } 
-        }, 
+                trText: "Bereket / İlahi lütuf, çoğalma, kalıcı hayır." 
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "✨", 
+                arText: "بَرَكَات", 
+                trText: "Bereketler." 
+            }
+        },
         
         // --- 61 Numaralı Kalıp (تَفْعِيل) ---
         61: { 
@@ -4315,6 +4318,204 @@ const wordEasterEggs = {
             } 
         } 
     },
+
+    // ==================================================================
+    // 2. B-Q-Y (ب ق ي) KÖKÜ - Kalmak / Devam Etmek / Geriye Kalmak
+    // Nakıs Fiil (Son harfi illetli).
+    // ==================================================================
+    "بقي": {
+        // --- 1 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
+       8: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "بَقِيَ", 
+                trText: "Kaldı / Devam etti / Sona ermedi." 
+            } 
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
+        9: { 
+            base: { 
+                emoji: "🔄", 
+                arText: "يَبْقَى", 
+                trText: "Kalır / Devam eder." 
+            } 
+        },
+
+        // --- 21 Numaralı Kalıp (فَعَال - Masdar) ---
+        22: { 
+            base: { 
+                emoji: "♾️", 
+                arText: "بَقَاء", 
+                trText: "Beka / Kalıcılık, varlığını sürdürme, son bulmama.",
+                ornek: [
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                        tr: "Kültürel Not: Gündelik hayatta veya siyasette duyduğumuz 'Beka sorunu', aslında bir devletin, milletin veya kurumun 'varlığını sürdürebilme, ayakta kalabilme' meselesidir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🏛️", 
+                arText: "بَاقٍ", 
+                trText: "Bâki / Kalıcı olan, ölümsüz, sona ermeyen.",
+                ornek: { ar: "وَاللَّهُ خَيْرٌ وَأَبْقَى", tr: "Allah (mükafatı) daha hayırlı ve daha kalıcıdır (bâkidir). (Tâhâ Suresi, 73)" }
+            },
+            suggestsPlus: true, // Öğrenci + butonuna basınca "Bakiye" çıkacak
+            "ة": { 
+                emoji: "💰", 
+                arText: "بَاقِيَة", 
+                trText: "Bakiye / Geriye kalan şey, kalıntı, (hesapta) kalan miktar.",
+                ornek: { 
+                    ar: "رَصِيدُ الْبَاقِيَةِ", 
+                    tr: "Kalan bakiye (Hesap bakiyesi). Türkçedeki 'Bakiye' kelimesi tam olarak bir işlemden 'geriye kalan miktar' anlamına geldiği için bu kökten türemiştir." 
+                }
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi) ---
+        52: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "أَبْقَى", 
+                trText: "Bıraktı / Kalıcı kıldı / Muhafaza etti.",
+                ornek: { ar: "أَبْقَاهُ حَيًّا", tr: "Onu hayatta bıraktı (yaşattı)." }
+            } 
+        },
+
+        // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - İstif'âl Babı Mazi) ---
+        100: {
+            base: {
+                emoji: "✋",
+                arText: "اِسْتَبْقَى",
+                trText: "Alıkoydu / Kalmasını istedi.",
+                ornek: { ar: "اِسْتَبْقَى الضَّيْفَ", tr: "Misafiri (biraz daha kalması için) alıkoydu." }
+            }
+        }
+    },
+
+    // ==================================================================
+    // 3. B-S-R (ب ص ر) KÖKÜ - Görmek / İçyüzünü Kavramak
+    // ==================================================================
+    "بصر": {
+        
+        // --- 1 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
+        8: { 
+            base: { 
+                emoji: "👁️", 
+                arText: "بَصِرَ", 
+                trText: "Gördü / İdrak etti / Farkına vardı.",
+                ornek: { 
+                    ar: "بَصِرَ بِالْحَقِيقَةِ بَعْدَ حِينٍ", 
+                    tr: "Bir süre sonra gerçeği idrak etti (farkına vardı)." 
+                }
+            },
+            cekimi: ["بَصِرَ", "بَصِرَا", "بَصِرُوا", "بَصِرَتْ", "بَصِرَتَا", "بَصِرْنَ", "بَصِرْتَ", "بَصِرْتُمَا", "بَصِرْتُمْ", "بَصِرْتِ", "بَصِرْتُمَا", "بَصِرْتُنَّ", "بَصِرْتُ", "بَصِرْنَا", "بَصِرْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
+       9: { 
+            base: { 
+                emoji: "🔍", 
+                arText: "يَبْصَرُ", 
+                trText: "Görür / İdrak eder.",
+                ornek: {
+                    ar: "مَنْ يَبْصَرُ عَيْبَهُ يَعْمَ عَنْ عَيْبِ غَيْرِهِ",
+                    tr: "Kendi kusurunu (içyüzünü) gören kişi, başkasının kusuruna kör olur. (Arap Özdeyişi)"
+                }
+            },
+            cekimi: ["يَبْصَرُ", "يَبْصَرَانِ", "يَبْصَرُونَ", "تَبْصَرُ", "تَبْصَرَانِ", "يَبْصَرْنَ", "تَبْصَرُ", "تَبْصَرَانِ", "تَبْصَرُونَ", "تَبْصَرِينَ", "تَبْصَرَانِ", "تَبْصَرْنَ", "أَبْصَرُ", "نَبْصَرُ", "نَبْصَرُ"]
+        },
+
+        // --- 3 Numaralı Kalıp (Mücerret 4. Bab Emir) ---
+       10: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِبْصَرْ", 
+                trText: "Gör / Fark et!",
+                ornek: {
+                    ar: "اِبْصَرْ مَوْضِعَ قَدَمِكَ",
+                    tr: "Adımını attığın yeri gör (fark et/dikkatli ol)."
+                }
+            },
+            cekimi: ["اِبْصَرْ", "اِبْصَرَا", "اِبْصَرُوا", "اِبْصَرِي", "اِبْصَرَا", "اِبْصَرْنَ"]
+        },
+ 
+          // --- 21 Numaralı Kalıp (فَعَل - İsim/Masdar) ---
+       // --- 17 Numaralı Kalıp (فَعَل - İsim/Masdar) ---
+        17: { 
+            base: { 
+                emoji: "👁️", 
+                arText: "بَصَر", 
+                trText: "Basar / Görme duyusu, göz.",
+                ornek: {
+                    ar: "وَمَا أَمْرُ السَّاعَةِ إِلَّا كَلَمْحِ الْبَصَرِ",
+                    tr: "Kıyamet işi, ancak bir göz açıp kapama süresi kadardır. (Nahl Suresi, 77)"
+                }
+            }
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / İsim) ---
+        35: { 
+            base: { 
+                emoji: "🔍", 
+                arText: "بَصِير", 
+                trText: "Basîr / Her şeyi hakkıyla gören, içyüzünü kavrayan (Allah'ın isimlerindendir).",
+                ornek: {
+                    ar: "إِنَّ اللهَ بَصِيرٌ بِالْعِبَادِ",
+                    tr: "Şüphesiz Allah, kullarını hakkıyla görendir. (Mü'min Suresi, 44)"
+                }
+            },
+            suggestsPlus: true, // + ة ile Basîret
+            "ة": { 
+                emoji: "💡", 
+                arText: "بَصِيرَة", 
+                trText: "Basîret / Kalp gözü, derin kavrayış, sezgi.",
+                ornek: [
+                    { 
+                        ar: "قُلْ هَذِهِ سَبِيلِي أَدْعُو إِلَى اللهِ عَلَى بَصِيرَةٍ", 
+                        tr: "De ki: İşte bu benim yolumdur. Ben (insanları) Allah'a bir basîret (kesin bir bilgi ve kavrayış) üzere çağırıyorum. (Yûsuf Suresi, 108)" 
+                    },
+                    { 
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة", 
+                        tr: "Kültürel Not: 'Basar' başımızdaki gözle maddi olanı görmek iken; 'Basiret', kalp gözüyle işin içyüzünü ve hakikatini kavramaktır." 
+                    }
+                ]
+            }
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🌅", 
+                arText: "إِبْصَار", 
+                trText: "İbsar / Görme, farkına varma.",
+                ornek: {
+                    ar: "نِعْمَةُ الْإِبْصَارِ",
+                    tr: "Görme nimeti (Göz nuru)."
+                }
+            } 
+        }
+    },
+
+    // --- 41 Numaralı Kalıp (أَفْعَال - Cemi Mükesser / Kırık Çoğul) ---
+        41: { 
+            base: { 
+                emoji: "👀", 
+                arText: "أَبْصَار", 
+                trText: "Ebsâr / Gözler, bakışlar.",
+                ornek: {
+                    ar: "قُلْ لِلْمُؤْمِنِينَ يَغُضُّوا مِنْ أَبْصَارِهِمْ",
+                    tr: "Mümin erkeklere söyle, gözlerini (haramdan) sakınsınlar. (Nûr Suresi, 30)"
+                }
+            }
+        },
+
+     
 
     // ==================================================================
     // 44. R-S-L (ر س ل) KÖKÜ - Göndermek / Elçi / Mesaj
