@@ -5065,14 +5065,194 @@ const wordEasterEggs = {
         }
     },
 
+// ==================================================================
     // 52. J-M-' (ج م ع) KÖKÜ - Toplamak / Bir Araya Getirmek / Topluluk
+    // 3. Bab (فَعَلَ - يَفْعَلُ) ve İfti'âl Babı
+    // ==================================================================
     "جمع": {
-        19: { base: { emoji: "🔢", arText: "جَمْع", trText: "Toplama." }, suggestsPlus: true, "يَّة": { emoji: "🏢", arText: "جَمْعِيَّةٌ خَيْرِيَّةٌ لِمُسَاعَدَةِ الْمُحْتَاجِينَ", trText: "İhtiyaç sahiplerine yardım için bir hayır cemiyeti (derneği)." } }, // جَمْع + يَّة = جَمْعِيَّة
-        22: { suggestsPlus: true, "ة": { emoji: "👥", arText: "صَلَاةُ الْجَمَاعَةِ أَفْضَلُ مِنْ صَلَاةِ الْفَذِّ", trText: "Cemaatle kılınan namaz, tek başına kılınan namazdan daha faziletlidir. (Hadis-i Şerif)" } }, // جَمَاع + ة = جَمَاعَة
-        33: { base: { emoji: "🕌", arText: "أَحَبُّ الْبِلَادِ إِلَى اللهِ مَسَاجِدُهَا", trText: "Allah'a beldelerin en sevimlisi mescitlerdir (camilerdir). (Hadis-i Şerif)" }, suggestsPlus: true, "ة": { emoji: "🎓", arText: "الْحَيَاةُ الْجَامِعِيَّةُ مَلِيئَةٌ بِالتَّجَارِبِ", trText: "Üniversite hayatı tecrübelerle doludur." } }, // جَامِع + ة = جَامِعَة
-        36: { suggestsPlus: true, "ة": { emoji: "📂", arText: "مَجْمُوعَةٌ جَدِيدَةٌ مِنَ الطُّلَّابِ", trText: "Yeni bir öğrenci grubu (kümesi)." } }, // مَجْمُوع + ة = مَجْمُوعَة
-        42: { suggestsPlus: true, "ة": { emoji: "🕋", arText: "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِنْ يَوْمِ الْجُمُعَةِ...", trText: "Ey iman edenler! Cuma günü namaz için çağrı yapıldığında... (Cuma Suresi)" } }, // جُمُع + ة = جُمُعَة
-        80: { base: { emoji: "💼", arText: "لَدَيْنَا اِجْتِمَاعٌ مُهِمٌّ الْيَوْمَ", trText: "Bugün önemli bir toplantımız (içtimamız) var." } } // اِجْتِمَاع
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "جَمَعَ", 
+                trText: "Topladı / Bir araya getirdi.",
+                ornek: { 
+                    ar: "جَمَعَ مَالًا وَعَدَّدَهُ", 
+                    tr: "Mal toplayıp onu tekrar tekrar sayan... (Hümeze Suresi, 2)" 
+                }
+            },
+            cekimi: ["جَمَعَ", "جَمَعَا", "جَمَعُوا", "جَمَعَتْ", "جَمَعَتَا", "جَمَعْنَ", "جَمَعْتَ", "جَمَعْتُمَا", "جَمَعْتُمْ", "جَمَعْتِ", "جَمَعْتُمَا", "جَمَعْتُنَّ", "جَمَعْتُ", "جَمَعْنَا", "جَمَعْنَا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: { 
+            base: { 
+                emoji: "🧲", 
+                arText: "يَجْمَعُ", 
+                trText: "Toplar / Bir araya getirir.",
+                ornek: { 
+                    ar: "يَوْمَ يَجْمَعُكُمْ لِيَوْمِ الْجَمْعِ", 
+                    tr: "Sizi toplanma gününde (kıyamette) bir araya getireceği gün... (Tegâbün Suresi, 9)" 
+                }
+            },
+            cekimi: ["يَجْمَعُ", "يَجْمَعَانِ", "يَجْمَعُونَ", "تَجْمَعُ", "تَجْمَعَانِ", "يَجْمَعْنَ", "تَجْمَعُ", "تَجْمَعَانِ", "تَجْمَعُونَ", "تَجْمَعِينَ", "تَجْمَعَانِ", "تَجْمَعْنَ", "أَجْمَعُ", "نَجْمَعُ", "نَجْمَعُ"]
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
+        7: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِجْمَعْ", 
+                trText: "Topla / Bir araya getir!" 
+            },
+            cekimi: ["اِجْمَعْ", "اِجْمَعَا", "اِجْمَعُوا", "اِجْمَعِي", "اِجْمَعَا", "اِجْمَعْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🔢", 
+                arText: "جَمْع", 
+                trText: "Toplama / Çoğul (Gramer).",
+                ornek: {
+                    ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                    tr: "Kültürel Not: 'Cem' (جَمْع) kelimesi doğrudan bir araya gelme ve toplanma anlamındadır. Alevi-Bektaşi inancında insanların ibadet ve sohbet için bir araya geldikleri mekâna 'Cemevi' (Toplanma Evi) denmesi tam olarak bu kökten gelir."
+                }
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "🏢", 
+                arText: "جَمْعِيَّة", 
+                trText: "Cemiyet / Dernek.",
+                ornek: { 
+                    ar: "جَمْعِيَّةٌ خَيْرِيَّةٌ لِمُسَاعَدَةِ الْمُحْتَاجِينَ", 
+                    tr: "İhtiyaç sahiplerine yardım için bir hayır cemiyeti (derneği)." 
+                }
+            } 
+        },
+
+        // --- 22 Numaralı Kalıp (فَعَال / +ة ile İsim) ---
+        22: { 
+            base: { arText: "جَمَاع", trText: "Topluluk (kök form)." },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "👥", 
+                arText: "جَمَاعَة", 
+                trText: "Cemaat / Topluluk, grup.",
+                ornek: [
+                    { 
+                        ar: "صَلَاةُ الْجَمَاعَةِ أَفْضَلُ مِنْ صَلَاةِ الْفَذِّ", 
+                        tr: "Cemaatle kılınan namaz, tek başına kılınan namazdan daha faziletlidir. (Hadis-i Şerif)" 
+                    },
+                    {
+                        ar: "يَدُ اللَّهِ مَعَ الْجَمَاعَةِ",
+                        tr: "Allah'ın eli (yardımı ve rahmeti) cemaatle (toplulukla) beraberdir. (Hadis-i Şerif)"
+                    }
+                ]
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🕌", 
+                arText: "جَامِع", 
+                trText: "Cami / Toplayan, bir araya getiren.",
+                ornek: { 
+                    ar: "أَحَبُّ الْبِلَادِ إِلَى اللَّهِ مَسَاجِدُهَا", 
+                    tr: "Allah'a beldelerin en sevimlisi mescitlerdir (camilerdir). (Hadis-i Şerif)" 
+                }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🎓", 
+                arText: "جَامِعَة", 
+                trText: "Üniversite.",
+                ornek: { 
+                    ar: "الْحَيَاةُ الْجَامِعِيَّةُ مَلِيئَةٌ بِالتَّجَارِبِ", 
+                    tr: "Üniversite hayatı tecrübelerle doludur." 
+                }
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "📦", 
+                arText: "مَجْمُوع", 
+                trText: "Mecmu / Toplanmış olan, toplam." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "📰", 
+                arText: "مَجْمُوعَة", 
+                trText: "Mecmua / Grup, küme, koleksiyon, dergi.",
+                ornek: [
+                    { 
+                        ar: "مَجْمُوعَةٌ جَدِيدَةٌ مِنَ الطُّلَّابِ", 
+                        tr: "Yeni bir öğrenci grubu (kümesi)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة وَلُغَوِيَّة",
+                        tr: "Kültürel Not: Türkçede eskiden 'Dergi' anlamında kullanılan 'Mecmua' kelimesi tam olarak budur. Çeşitli makale ve yazıların 'toplandığı, derlendiği' basılı eser (koleksiyon) olduğu için bu kökten türemiştir. (Modern Arapçada dergi için genellikle 'مَجَلَّة' [Mecelle] kullanılır)."
+                    }
+                ]
+            } 
+        },
+
+        // --- 42 Numaralı Kalıp (فُعُل + ة) ---
+        42: { 
+            base: { arText: "جُمُع" },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🕋", 
+                arText: "جُمُعَة", 
+                trText: "Cuma / Toplanma günü.",
+                ornek: { 
+                    ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِنْ يَوْمِ الْجُمُعَةِ...", 
+                    tr: "Ey iman edenler! Cuma günü namaz için çağrı yapıldığında... (Cuma Suresi, 9)" 
+                }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
+        77: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "اِجْتَمَعَ", 
+                trText: "Toplandı / Bir araya geldi." 
+            },
+            cekimi: ["اِجْتَمَعَ", "اِجْتَمَعَا", "اِجْتَمَعُوا", "اِجْتَمَعَتْ", "اِجْتَمَعَتَا", "اِجْتَمَعْنَ", "اِجْتَمَعْتَ", "اِجْتَمَعْتُمَا", "اِجْتَمَعْتُمْ", "اِجْتَمَعْتِ", "اِجْتَمَعْتُمَا", "اِجْتَمَعْتُنَّ", "اِجْتَمَعْتُ", "اِجْتَمَعْنَا", "اِجْتَمَعْنَا"]
+        },
+
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
+        78: { 
+            base: { 
+                emoji: "🔄", 
+                arText: "يَجْتَمِعُ", 
+                trText: "Toplanır / Bir araya gelir." 
+            },
+            cekimi: ["يَجْتَمِعُ", "يَجْتَمِعَانِ", "يَجْتَمِعُونَ", "تَجْتَمِعُ", "تَجْتَمِعَانِ", "يَجْتَمِعْنَ", "تَجْتَمِعُ", "تَجْتَمِعَانِ", "تَجْتَمِعُونَ", "تَجْتَمِعِينَ", "تَجْتَمِعَانِ", "تَجْتَمِعْنَ", "أَجْتَمِعُ", "نَجْتَمِعُ", "نَجْتَمِعُ"]
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "💼", 
+                arText: "اِجْتِمَاع", 
+                trText: "İçtima / Toplantı, bir araya gelme.",
+                ornek: [
+                    { 
+                        ar: "لَدَيْنَا اِجْتِمَاعٌ مُهِمٌّ الْيَوْمَ", 
+                        tr: "Bugün önemli bir toplantımız (içtimamız) var." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة (فِي الْعَسْكَرِيَّةِ)",
+                        tr: "Kültürel Not: Türkçede 'İçtima' kelimesi özellikle askerlik jargonunda çok yaygındır. Askerlerin sayım, yoklama ve görev dağılımı için sabah ve akşam saatlerinde tören alanında bir araya toplanmasına 'İçtima' (Toplanma) denir."
+                    }
+                ]
+            } 
+        }
     },
 
     // 53. H-M-D (ح م د) KÖKÜ - Övmek / Şükretmek
@@ -9665,37 +9845,69 @@ const wordEasterEggs = {
             }
         }
     }, // <-- تم إضافة قوس الإغلاق هنا
-     // ==================================================================
+// ==================================================================
     // 93. D-R-B (ض ر ب) KÖKÜ - Vurmak / Örnek Vermek / Çalkalanmak
     // 2. Bab (فَعَلَ - يَفْعِلُ) ve İfti'âl Babı
     // ==================================================================
     "ضرب": {
         // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
         1: { 
-            base: { emoji: "💥", arText: "ضَرَبَ", trText: "Vurdu / Örnek verdi." },
+            base: { 
+                emoji: "💥", 
+                arText: "ضَرَبَ", 
+                trText: "Vurdu / Örnek verdi / Çarptı.",
+                ornek: [
+                    { 
+                        ar: "ضَرَبَ زَيْدٌ عَمْرًا", 
+                        tr: "Zeyd Amr'a vurdu. (Klasik Nahiv örneği ve meşhur bir kalıp)." 
+                    },
+                    {
+                        ar: "أَلَمْ تَرَ كَيْفَ ضَرَبَ اللهُ مَثَلًا كَلِمَةً طَيِّبَةً",
+                        tr: "Görmedin mi Allah nasıl bir misal (örnek) getirdi: Güzel bir söz... (İbrâhîm Suresi, 24)"
+                    }
+                ]
+            },
+            cekimi: ["ضَرَبَ", "ضَرَبَا", "ضَرَبُوا", "ضَرَبَتْ", "ضَرَبَتَا", "ضَرَبْنَ", "ضَرَبْتَ", "ضَرَبْتُمَا", "ضَرَبْتُمْ", "ضَرَبْتِ", "ضَرَبْتُمَا", "ضَرَبْتُنَّ", "ضَرَبْتُ", "ضَرَبْنَا", "ضَرَبْنَا"]
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
         4: { 
             base: { 
-                emoji: "🥊", 
+                emoji: "🎯", 
                 arText: "يَضْرِبُ", 
-                trText: "Vurur / Örnek veriyor.",
-                ornek: { ar: "يَضْرِبُ اللهُ الْأَمْثَالَ", tr: "Allah (insanlar için) misaller (örnekler) verir." }
+                trText: "Vurur / Örnek veriyor / Dolaşır.",
+                ornek: { 
+                    ar: "وَيَضْرِبُ اللهُ الْأَمْثَالَ لِلنَّاسِ لَعَلَّهُمْ يَتَذَكَّرُونَ", 
+                    tr: "Allah insanlara misaller (örnekler) verir, umulur ki düşünüp öğüt alırlar. (İbrâhîm Suresi, 25)" 
+                }
             },
+            cekimi: ["يَضْرِبُ", "يَضْرِبَانِ", "يَضْرِبُونَ", "تَضْرِبُ", "تَضْرِبَانِ", "يَضْرِبْنَ", "تَضْرِبُ", "تَضْرِبَانِ", "تَضْرِبُونَ", "تَضْرِبِينَ", "تَضْرِبَانِ", "تَضْرِبْنَ", "أَضْرِبُ", "نَضْرِبُ", "نَضْرِبُ"]
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
         5: { 
-            base: { emoji: "❗", arText: "اِضْرِبْ", trText: "Vur / Örnek ver!" },
+            base: { 
+                emoji: "❗", 
+                arText: "اِضْرِبْ", 
+                trText: "Vur / Örnek ver!",
+                ornek: {
+                    ar: "فَقُلْنَا اضْرِبُوهُ بِبَعْضِهَا",
+                    tr: "Bunun üzerine, 'Kesilen ineğin bir parçasıyla o maktule vurun' dedik. (Bakara Suresi, 73)"
+                }
+            },
+            cekimi: ["اِضْرِبْ", "اِضْرِبَا", "اِضْرِبُوا", "اِضْرِبِي", "اِضْرِبَا", "اِضْرِبْنَ"]
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
             base: { 
-                emoji: "💥", 
+                emoji: "🥊", 
                 arText: "ضَرْب", 
-                trText: "Darp / Vurma (Yalın Hâl)." 
+                trText: "Darp / Vurma",
+                ornek: { 
+                    ar: "تَعَرَّضَ لِلضَّرْبِ", 
+                    tr: "Darba (saldırıya) maruz kaldı." 
+                }
             },
             suggestsPlus: true,
             "ة": { 
@@ -9706,7 +9918,33 @@ const wordEasterEggs = {
             } 
         },
 
-        // --- 40 Numaralı Kalıp (مِفْعَل - İsm-i Alet) ---
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🤺", 
+                arText: "ضَارِب", 
+                trText: "Dârib / Vuran, çarpan, seyahat eden.",
+                ornek: { 
+                    ar: "هُوَ ضَارِبٌ فِي الْأَرْضِ", 
+                    tr: "O, yeryüzünde seyahat eden (adım atan/rızık arayan) biridir." 
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🤕", 
+                arText: "مَضْرُوب", 
+                trText: "Madrûb / Vurulmuş olan, çarpılan.",
+                ornek: { 
+                    ar: "الرَّقَمُ الْمَضْرُوبُ فِي خَمْسَةٍ", 
+                    tr: "Beş ile çarpılan sayı. (Matematiksel kullanım)." 
+                }
+            }
+        },
+
+        // --- 39 Numaralı Kalıp (مِفْعَل - İsm-i Alet) ---
         39: { 
             base: { 
                 emoji: "🎸", 
@@ -9718,17 +9956,36 @@ const wordEasterEggs = {
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
         77: { 
-            base: { emoji: "🌊", arText: "اِضْطَرَبَ", trText: "Çalkalandı / Sarsıldı / Izdırap çekti." },
+            base: { 
+                emoji: "🌊", 
+                arText: "اِضْطَرَبَ", 
+                trText: "Çalkalandı / Sarsıldı / Izdırap çekti." 
+            },
+            cekimi: ["اِضْطَرَبَ", "اِضْطَرَبَا", "اِضْطَرَبُوا", "اِضْطَرَبَتْ", "اِضْطَرَبَتَا", "اِضْطَرَبْنَ", "اِضْطَرَبْتَ", "اِضْطَرَبْتُمَا", "اِضْطَرَبْتُمْ", "اِضْطَرَبْتِ", "اِضْطَرَبْتُمَا", "اِضْطَرَبْتُنَّ", "اِضْطَرَبْتُ", "اِضْطَرَبْنَا", "اِضْطَرَبْنَا"]
         },
 
         // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
         78: { 
-            base: { emoji: "🌪️", arText: "يَضْطَرِبُ", trText: "Çalkalanır / Sarsılıyor." },
+            base: { 
+                emoji: "🌪️", 
+                arText: "يَضْطَرِبُ", 
+                trText: "Çalkalanır / Sarsılıyor.",
+                ornek: { 
+                    ar: "يَضْطَرِبُ الْبَحْرُ فِي الشِّتَاءِ", 
+                    tr: "Kışın deniz çalkalanır (dalgalanır)." 
+                }
+            },
+            cekimi: ["يَضْطَرِبُ", "يَضْطَرِبَانِ", "يَضْطَرِبُونَ", "تَضْطَرِبُ", "تَضْطَرِبَانِ", "يَضْطَرِبْنَ", "تَضْطَرِبُ", "تَضْطَرِبَانِ", "تَضْطَرِبُونَ", "تَضْطَرِبِينَ", "تَضْطَرِبَانِ", "تَضْطَرِبْنَ", "أَضْطَرِبُ", "نَضْطَرِبُ", "نَضْطَرِبُ"]
         },
 
         // --- 79 Numaralı Kalıp (اِفْتَعِلْ - İfti'âl Babı Emir) ---
         79: { 
-            base: { emoji: "❗", arText: "اِضْطَرِبْ", trText: "Çalkalan / Sarsıl!" },
+            base: { 
+                emoji: "❗", 
+                arText: "اِضْطَرِبْ", 
+                trText: "Çalkalan / Sarsıl!" 
+            },
+            cekimi: ["اِضْطَرِبْ", "اِضْطَرِبَا", "اِضْطَرِبُوا", "اِضْطَرِبِي", "اِضْطَرِبَا", "اِضْطَرِبْنَ"]
         },
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
@@ -9743,7 +10000,7 @@ const wordEasterEggs = {
                         tr: "Psikolojik rahatsızlıklar (çalkantılar)." 
                     },
                     { 
-                        ar: "💡 قَاعِدَة صَرْفِيَّة", 
+                        ar: "💡 قَاعِدَة صَرْفِيَّة (إِبْدَال)", 
                         tr: "Sarf Kuralı (Ses Olayı): İfti'âl babının kuralı gereği, kökün ilk harfi kalın olan 'ض' olduğunda, telaffuz zorluğunu aşmak için babın ince 'ت' (Te) harfi kalınlaşarak 'ط' (Ta) harfine dönüşür. Aslı 'اِضْتِرَاب' (İztirap) iken 'اِضْطِرَاب' (Izdırap/Istırap) olmuştur." 
                     }
                 ]
