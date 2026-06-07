@@ -875,7 +875,7 @@ td:first-child {
     background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 2px, transparent 2px, transparent 6px); 
     
     /* İŞTE BURASI: Sağ ve sol boşluklar (45px) artırılarak kutu yatayda uzatıldı */
-    padding: 8px 5px 15px 5px !important; 
+    padding: 8px 15px 15px 0px !important; 
     min-width: 180px; /* Kutuya standart bir yatay uzunluk verir */
     text-align: center; /* Kutu uzasa da Arapça kök tam ortada kalır */
     
