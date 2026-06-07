@@ -5145,7 +5145,7 @@ const wordEasterEggs = {
                         tr: "Cemaatle kılınan namaz, tek başına kılınan namazdan daha faziletlidir. (Hadis-i Şerif)" 
                     },
                     {
-                        ar: "يَدُ اللَّهِ مَعَ الْجَمَاعَةِ",
+                        ar: "يَدُ اللهِ مَعَ الْجَمَاعَةِ",
                         tr: "Allah'ın eli (yardımı ve rahmeti) cemaatle (toplulukla) beraberdir. (Hadis-i Şerif)"
                     }
                 ]
@@ -5159,7 +5159,7 @@ const wordEasterEggs = {
                 arText: "جَامِع", 
                 trText: "Cami / Toplayan, bir araya getiren.",
                 ornek: { 
-                    ar: "أَحَبُّ الْبِلَادِ إِلَى اللَّهِ مَسَاجِدُهَا", 
+                    ar: "أَحَبُّ الْبِلَادِ إِلَى اللهِ مَسَاجِدُهَا", 
                     tr: "Allah'a beldelerin en sevimlisi mescitlerdir (camilerdir). (Hadis-i Şerif)" 
                 }
             },
@@ -13328,4 +13328,355 @@ const wordEasterEggs = {
             } 
         }
     },
+
+     // ==================================================================
+    // X. N-T-Q (ن ط ق) KÖKÜ - Konuşmak / İfade Etmek / Mantık
+    // Zihinsel süreçlerin dışa vurumunu ve doğru düşünmeyi temsil eder. (2. Bab)
+    // ==================================================================
+    "نطق": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🗣️", 
+                arText: "نَطَقَ", 
+                trText: "Konuştu / Telaffuz etti / Dile getirdi.",
+                ornek: { 
+                    ar: "نَطَقَ بِالْحَقِّ", 
+                    tr: "Hakkı (doğruyu) konuştu." 
+                }
+            },
+            cekimi: ["نَطَقَ", "نَطَقَا", "نَطَقُوا", "نَطَقَتْ", "نَطَقَتَا", "نَطَقْنَ", "نَطَقْتَ", "نَطَقْتُمَا", "نَطَقْتُمْ", "نَطَقْتِ", "نَطَقْتُمَا", "نَطَقْتُنَّ", "نَطَقْتُ", "نَطَقْنَا", "نَطَقْنَا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "🎙️", 
+                arText: "يَنْطِقُ", 
+                trText: "Konuşur / Söyler.",
+                ornek: { 
+                    ar: "وَمَا يَنْطِقُ عَنِ الْهَوَىٰ", 
+                    tr: "O (Peygamber), kendi heva ve hevesinden konuşmaz. (Necm Suresi, 3)" 
+                }
+            },
+            cekimi: ["يَنْطِقُ", "يَنْطِقَانِ", "يَنْطِقُونَ", "تَنْطِقُ", "تَنْطِقَانِ", "يَنْطِقْنَ", "تَنْطِقُ", "تَنْطِقَانِ", "تَنْطِقُونَ", "تَنْطِقِينَ", "تَنْطِقَانِ", "تَنْطِقْنَ", "أَنْطِقُ", "نَنْطِقُ", "نَنْطِقُ"]
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِنْطِقْ", 
+                trText: "Konuş / Söyle!" 
+            },
+            cekimi: ["اِنْطِقْ", "اِنْطِقَا", "اِنْطِقُوا", "اِنْطِقِي", "اِنْطِقَا", "اِنْطِقْنَ"]
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل - Mücerret Masdar) ---
+        21: { 
+            base: { 
+                emoji: "📜", 
+                arText: "نُطْق", 
+                trText: "Nutuk / Konuşma, telaffuz etme eylemi.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                    tr: "Kültürel Not: Atatürk'ün meşhur eseri 'Nutuk' ve Türkçedeki 'Nutku tutuldu' veya 'Nutuk atmak' deyimleri doğrudan bu masdardan gelir."
+                }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "👤", 
+                arText: "نَاطِق", 
+                trText: "Natık / Konuşan, bildiren, söz söyleyen.",
+                ornek: { 
+                    ar: "الْإِنْسَانُ حَيَوَانٌ نَاطِقٌ", 
+                    tr: "İnsan konuşan/düşünen bir canlıdır. (Felsefe ve Mantık ilminde insanın klasik tanımı)." 
+                }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🎤", 
+                arText: "نَاطِقَة", 
+                trText: "Sözcü / Konuşmacı.",
+                ornek: { 
+                    ar: "النَّاطِقَةُ بِاسْمِ الْوِزَارَةِ", 
+                    tr: "Bakanlık sözcüsü." 
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "📑", 
+                arText: "مَنْطُوق", 
+                trText: "Mantuk / Söylenmiş olan, sözün lafzı, ifade edilen şey.",
+                ornek: { 
+                    ar: "مَنْطُوقُ الْقَرَارِ", 
+                    tr: "Kararın metni (söylenen kısmı)." 
+                }
+            }
+        },
+
+        // --- 37 Numaralı Kalıp (مَفْعِل - Masdar-ı Mîmî / İsim) ---
+        37: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "مَنْطِق", 
+                trText: "Mantık / Doğru düşünme kuralı, akıl yürütme.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة لُغَوِيَّة",
+                    tr: "Gramer ve Felsefe Notu: 'Mantık' kelimesi 'Konuşmak' (N-T-Q) kökünden türemiştir. Eski Yunan'daki 'Logos' (hem söz hem akıl anlamına gelir) kavramının tam Arapça karşılığıdır. Çünkü doğru düşünce, ancak doğru sözle (nutuk) inşa edilebilir."
+                }
+            } 
+        },
+
+        // --- 39 Numaralı Kalıp (مِفْعَل - İsm-i Âlet ve +ة ile Mekân) ---
+        39: { 
+            base: { 
+                emoji: "🥋", 
+                arText: "مِنْطَق", 
+                trText: "Mıntak / Kemer, bele bağlanan kuşak." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🗺️", 
+                arText: "مِنْطَقَة", 
+                trText: "Mıntıka / Bölge, kuşak, alan.",
+                ornek: [
+                    { 
+                        ar: "مِنْطَقَةٌ عَسْكَرِيَّةٌ", 
+                        tr: "Askeri mıntıka (bölge)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَارِيخِيَّة",
+                        tr: "Etimolojik Not: Aslında 'bele bağlanan kuşak/kemer' demektir (Mıntak). Belirli bir alanı kuşak gibi çevreleyip sınırlandırdığı için zamanla yeryüzündeki belirli bölgelere 'Mıntıka' denilmiştir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Ettirgenlik) ---
+        52: { 
+            base: { 
+                emoji: "✨", 
+                arText: "أَنْطَقَ", 
+                trText: "Konuşturdu / Söyletti.",
+                ornek: { 
+                    ar: "أَنْطَقَنَا اللهُ الَّذِي أَنْطَقَ كُلَّ شَيْءٍ", 
+                    tr: "Her şeyi konuşturduğu gibi bizi de Allah konuşturdu. (Fussilet Suresi, 21)" 
+                }
+            },
+        },
+
+        // --- 53 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
+        53: { 
+            base: { 
+                emoji: "🪄", 
+                arText: "يُنْطِقُ", 
+                trText: "Konuşturur / Söyletir.",
+                ornek: { 
+                    ar: "اللهُ يُنْطِقُ مَنْ يَشَاءُ", 
+                    tr: "Allah dilediğini konuşturur." 
+                }
+            },
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🎭", 
+                arText: "إِنْطَاق", 
+                trText: "İntak / Konuşturma, dile getirtme.",
+                ornek: [
+                    { 
+                        ar: "فَنُّ الْإِنْطَاقِ فِي الْأَدَبِ", 
+                        tr: "Edebiyatta konuşturma (intak) sanatı." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة أَدَبِيَّة",
+                        tr: "Edebiyat Notu: Türk edebiyatında insan dışındaki varlıkları (hayvanları, bitkileri veya cansız nesneleri) 'konuşturma' sanatına doğrudan bu kelimeyle 'İntak Sanatı' denir. Genellikle 'Teşhis' (kişileştirme) sanatı ile ayrılmaz bir ikilidir; çünkü konuşan her varlık önce kişileştirilmiş olur."
+                    }
+                ]
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 12. B-D-A (ب د أ) KÖKÜ - Başlamak / İlk Olmak / Ortaya Çıkarmak
+    // Temel hareketlerin başlangıcını temsil eder. (Sonu hemzeli - Mehmuz Fiil / 3. Bab)
+    // ==================================================================
+    "بدأ": {
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🎬", 
+                arText: "بَدَأَ", 
+                trText: "Başladı.",
+                ornek: { 
+                    ar: "بَدَأَ الدَّرْسُ فِي الْوَقْتِ الْمُحَدَّدِ", 
+                    tr: "Ders belirlenen vakitte başladı." 
+                }
+            },
+            cekimi: ["بَدَأَ", "بَدَأَا", "بَدَأُوا", "بَدَأَتْ", "بَدَأَتَا", "بَدَأْنَ", "بَدَأْتَ", "بَدَأْتُمَا", "بَدَأْتُمْ", "بَدَأْتِ", "بَدَأْتُمَا", "بَدَأْتُنَّ", "بَدَأْتُ", "بَدَأْنَا", "بَدَأْنَا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: { 
+            base: { 
+                emoji: "▶️", 
+                arText: "يَبْدَأُ", 
+                trText: "Başlar / Başlıyor.",
+                ornek: { 
+                    ar: "اللهُ يَبْدَأُ الْخَلْقَ ثُمَّ يُعِيدُهُ", 
+                    tr: "Allah yaratmaya (önce) başlar, sonra onu tekrarlar. (Rûm Suresi, 11)" 
+                }
+            },
+            cekimi: ["يَبْدَأُ", "يَبْدَآنِ", "يَبْدَءُونَ", "تَبْدَأُ", "تَبْدَآنِ", "يَبْدَأْنَ", "تَبْدَأُ", "تَبْدَآنِ", "تَبْدَءُونَ", "تَبْدَئِينَ", "تَبْدَآنِ", "تَبْدَأْنَ", "أَبْدَأُ", "نَبْدَأُ", "نَبْدَأُ"]
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
+        7: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِبْدَأْ", 
+                trText: "Başla!",
+                ornek: {
+                    ar: "اِبْدَأْ بِاسْمِ اللهِ",
+                    tr: "Allah'ın adıyla başla."
+                }
+            },
+            cekimi: ["اِبْدَأْ", "اِبْدَءَا", "اِبْدَءُوا", "اِبْدَئِي", "اِبْدَءَا", "اِبْدَأْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🏁", 
+                arText: "بَدْء", 
+                trText: "Bed' / Başlama, başlangıç, ilk.",
+                ornek: {
+                    ar: "بَادِئَ ذِي بَدْءٍ",
+                    tr: "Her şeyden önce / İlk iş olarak. (Arapçada çok meşhur bir kalıp ifadedir)."
+                }
+            }
+        },
+
+        // --- 23 Numaralı Kalıp (فِعَالَة - Masdar / İsim) ---
+        23: { 
+            base: { 
+                emoji: "🌅", 
+                arText: "بِدَايَة", 
+                trText: "Bidayet / Başlangıç, ilk an.",
+                ornek: [
+                    { 
+                        ar: "فِي الْبِدَايَةِ", 
+                        tr: "Başlangıçta." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة أَدَبِيَّة",
+                        tr: "Edebiyat Notu: Osmanlıca metinlerde 'nihayet' (son) kelimesinin zıttı olarak çokça kullanılan 'bidayet', tam olarak bir şeyin ortaya çıkıp başladığı an demektir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân / Zaman ve İsim) ---
+        38: { 
+            base: { 
+                emoji: "🌱", 
+                arText: "مَبْدَأ", 
+                trText: "Mebde / Başlangıç noktası, ilke, prensip.",
+                ornek: { 
+                    ar: "رَجُلٌ ذُو مَبَادِئَ", 
+                    tr: "Prensipleri (mebdeleri / ilkeleri) olan adam." 
+                }
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi) ---
+        52: { 
+            base: { 
+                emoji: "✨", 
+                arText: "أَبْدَأَ", 
+                trText: "İlk kez başlattı / İlk defa yarattı." 
+            },
+            cekimi: ["أَبْدَأَ", "أَبْدَأَا", "أَبْدَءُوا", "أَبْدَأَتْ", "أَبْدَأَتَا", "أَبْدَأْنَ", "أَبْدَأْتَ", "أَبْدَأْتُمَا", "أَبْدَأْتُمْ", "أَبْدَأْتِ", "أَبْدَأْتُمَا", "أَبْدَأْتُنَّ", "أَبْدَأْتُ", "أَبْدَأْنَا", "أَبْدَأْنَا"]
+        },
+
+        // --- 53 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
+        53: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "يُبْدِئُ", 
+                trText: "İlk kez başlatır / Yaratmaya başlar.",
+                ornek: { 
+                    ar: "إِنَّهُ هُوَ يُبْدِئُ وَيُعِيدُ", 
+                    tr: "Şüphesiz ki O, (yaratmaya) ilk baştan başlar ve (ölümden sonra) tekrar diriltir. (Burûc Suresi, 13)" 
+                }
+            },
+            cekimi: ["يُبْدِئُ", "يُبْدِئَانِ", "يُبْدِئُونَ", "تُبْدِئُ", "تُبْدِئَانِ", "يُبْدِئْنَ", "تُبْدِئُ", "تُبْدِئَانِ", "تُبْدِئُونَ", "تُبْدِئِينَ", "تُبْدِئَانِ", "تُبْدِئْنَ", "أُبْدِئُ", "نُبْدِئُ", "نُبْدِئُ"]
+        },
+
+        // --- 54 Numaralı Kalıp (أَفْعِلْ - İf'âl Babı Emir) ---
+        54: { 
+            base: { 
+                emoji: "❗", 
+                arText: "أَبْدِئْ", 
+                trText: "Başlat / İlk kez yarat!" 
+            },
+            cekimi: ["أَبْدِئْ", "أَبْدِئَا", "أَبْدِئُوا", "أَبْدِئِي", "أَبْدِئَا", "أَبْدِئْنَ"]
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🕋", 
+                arText: "إِبْدَاء", 
+                trText: "İbdâ / İlk kez yaratma, bir şeyi ilk defa başlatma.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة عَقَائِدِيَّة",
+                    tr: "Kelam Notu: İslami literatürde 'İbda' kelimesinin Türkçede birbirine karışan üç ayrı kökü vardır: 1. (ب د أ): İlk yaratış. 2. (ب د ع): Yoktan ve benzersiz yaratış (İbdâ'). 3. (ب د و): Gizli olanı açığa çıkarma. Kur'an'da Allah'ın ilk yaratışı ifade edilirken 'İbdâ' (ب د أ) kökü kullanılır."
+                }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
+        77: { 
+            base: { 
+                emoji: "🚀", 
+                arText: "اِبْتَدَأَ", 
+                trText: "Başladı / İlkokula başladı." 
+            },
+            cekimi: ["اِبْتَدَأَ", "اِبْتَدَأَا", "اِبْتَدَأُوا", "اِبْتَدَأَتْ", "اِبْتَدَأَتَا", "اِبْتَدَأْنَ", "اِبْتَدَأْتَ", "اِبْتَدَأْتُمَا", "اِبْتَدَأْتُمْ", "اِبْتَدَأْتِ", "اِبْتَدَأْتُمَا", "اِبْتَدَأْتُنَّ", "اِبْتَدَأْتُ", "اِبْتَدَأْنَا", "اِبْتَدَأْنَا"]
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "🏫", 
+                arText: "اِبْتِدَاء", 
+                trText: "İbtida / Başlangıç.",
+                ornek: { 
+                    ar: "اِبْتِدَاءً مِنْ غَدٍ", 
+                    tr: "Yarından itibaren (başlayarak)." 
+                }
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "🎒", 
+                arText: "اِبْتِدَائِيَّة", 
+                trText: "İlköğretim / İbtidaiye.",
+                ornek: { 
+                    ar: "الْمَدْرَسَةُ الِابْتِدَائِيَّةُ", 
+                    tr: "İlkokul (Mekteb-i İbtidaiye)." 
+                }
+            } 
+        }
+    },
+
+    
 };

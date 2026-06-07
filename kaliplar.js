@@ -1113,283 +1113,56 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     }
 
     if (!anaVezin) anaVezin = boxElement.getAttribute('data-original') || '';
+
+
+
+
+
+
+
+
+
+
     
-// 1. AKILLI ORTA HAREKE BULUCU (Ekrana Bakabilen Versiyon)
-    function getDynamicAynHareke(kokArr, bNo, vezin, rId) {
-        let h = "ُ"; 
-        
-        // Sabit vezin kuralları (Mezid bablar)
-        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
-        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
-
-        let foundInJson = false;
-
-        // 1. Aşama: Veritabanını (JSON) Kontrol Et
-        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kokArr.join("")]) {
-            let muzari = "";
-            let data = wordEasterEggs[kokArr.join("")];
-            let possibles = [];
-            
-            if (rId === 1) possibles = [2, 4, 6];
-            else if (rId === 8) possibles = [9];
-            else if (rId === 11) possibles = [12];
-            else if (rId === 14) possibles = [15];
-            else possibles = [rId, rId + 1, rId + 2, rId + 3, 2, 4]; 
-
-            for (let p of possibles) {
-                if (data[p]) {
-                    let txt = data[p].base ? data[p].base.arText : (data[p].arText || "");
-                    if (txt && (txt.startsWith('يَ') || txt.startsWith('يُ') || txt.startsWith('يَتَ'))) { muzari = txt; break; }
-                }
-            }
-            if (muzari) {
-                let regex = new RegExp(kokArr[1] + "(?:[\\u0651])?([\\u064E\\u064F\\u0650])");
-                let match = muzari.match(regex);
-                if (match && match[1]) { h = match[1]; foundInJson = true; }
-            }
-        }
-
-        // 2. Aşama: YENİ - Eğer JSON'da yoksa ve Mazi'ye (1) tıklandıysa EKRANA BAK!
-        if (!foundInJson && rId === 1) {
-            // Ekranda kullanıcının tıkladığı/doldurduğu (kok-turendi) kutuları tara
-            let activeBoxes = document.querySelectorAll('.glass-box.kok-turendi');
-            for (let box of activeBoxes) {
-                let refSpan = box.querySelector('.ref');
-                if (refSpan) {
-                    let id = parseInt(refSpan.innerText);
-                    if (id === 6) return "َ"; // Kullanıcı 6 numaraya tıklamışsa (Üstün - 3. Bab)
-                    if (id === 4) return "ِ"; // Kullanıcı 4 numaraya tıklamışsa (Esre - 2. Bab)
-                    if (id === 2) return "ُ"; // Kullanıcı 2 numaraya tıklamışsa (Ötre - 1. Bab)
-                }
-            }
-        }
-
-        return h;
-    }
-
-    // 2. İFTİAL BABI (11) İBDAL MOTORU
-    function getIftialCore(kokArr, aynHareke) {
-        let r1 = kokArr[0], r2 = kokArr[1], r3 = kokArr[2];
-        let i_r1 = r1 + "ْ";
-        let i_t = "تَ";
-
-        if (r1 === 'و' || r1 === 'ي' || r1 === 'ث') {
-            i_r1 = ""; i_t = "تَّ";
-        } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
-            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
-            else { i_t = "طَ"; }
-        } else if (['د', 'ذ', 'ز'].includes(r1)) {
-            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
-            else { i_t = "دَ"; } 
-        }
-        return i_r1 + i_t + r2 + aynHareke + r3;
-    }
-
-    let tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin) : "";
-    let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
-    let kelimeListesi = [];
-    let ozelCekimBulundu = false;
+// ===============================================================
+    // EVRENSEL MOTORU (VerbGenerator) KULLANARAK ÇEKİMLERİ ÜRET
+    // ===============================================================
     let activeSuffix = boxElement.getAttribute('data-active-suffix'); 
-
-    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok] && wordEasterEggs[kok][refId]) {
-        let eggObj = wordEasterEggs[kok][refId];
-        if (activeSuffix && eggObj[activeSuffix] && eggObj[activeSuffix].cekimi) {
-            kelimeListesi = [...eggObj[activeSuffix].cekimi];
-            ozelCekimBulundu = true;
-        } else if (!activeSuffix) {
-            if (eggObj.base && eggObj.base.cekimi) {
-                kelimeListesi = [...eggObj.base.cekimi];
-                ozelCekimBulundu = true;
-            } else if (eggObj.cekimi) {
-                kelimeListesi = [...eggObj.cekimi];
-                ozelCekimBulundu = true;
-            }
-        }
-    }
-
-    if (!ozelCekimBulundu) {
-        const list = sigaSablonlari[tip];
-        if (!list) return;
-        
-        let dynamicAynHareke = getDynamicAynHareke(kok.split(""), numBab, anaVezin, refId);
-        let isMuzaaf = (kok[1] === kok[2] && numBab <= 6);
-
-        list.forEach((siga, index) => {
-            let cekilmisKelime = "";
-            let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-
-            if (tip === 'muzari') {
-                let coreWord = "";
-                if (numBab === 11) {
-                    coreWord = getIftialCore(kok.split(""), "ِ"); 
-                } else if (isMuzaaf) {
-                    if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
-                    else coreWord = r1 + dynamicAynHareke + r2 + "ّ"; 
-                } else {
-                    coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3;
-                }
-                
-                if (numBab === 7) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
-                else if (numBab === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
-                else if (numBab === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-                else if (numBab === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
-                else if (numBab === 12) {
-                    if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
-                    else coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
-                } 
-                else if (numBab === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
-                else if (numBab === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-                else if (numBab === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
-                
-                let currentPrefix = siga.prefix; 
-                if (numBab === 7 || numBab === 8 || numBab === 9) {
-                    if (currentPrefix === 'يَ') currentPrefix = "يُ";
-                    else if (currentPrefix === 'تَ') currentPrefix = "تُ";
-                    else if (currentPrefix === 'أَ') currentPrefix = "أُ";
-                    else if (currentPrefix === 'نَ') currentPrefix = "نُ";
-                }
-                cekilmisKelime = currentPrefix + coreWord + siga.suffix;
-            } 
-            else if (tip === 'mazi') {
-                if (numBab === 12) {
-                    let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; 
-                    let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; 
-                    let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
-                    if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
-                    else cekilmisKelime = baseAcik + siga.ek; 
-                } else if (numBab === 11) {
-                    cekilmisKelime = "اِ" + getIftialCore(kok.split(""), "َ") + siga.ek;
-                } else if (isMuzaaf) {
-                    if (index < 5) {
-                        let maziEkleri = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
-                        cekilmisKelime = r1 + "َ" + r2 + maziEkleri[index]; 
-                    } else {
-                        let aynMazi = "َ"; 
-                        if (numBab === 4 || numBab === 6) aynMazi = "ِ"; 
-                        else if (numBab === 5) aynMazi = "ُ";
-                        cekilmisKelime = r1 + "َ" + r2 + aynMazi + r3 + siga.ek; 
-                    }
-                } else {
-                    cekilmisKelime = stem + siga.ek; 
-                }
-            } 
-            else if (tip === 'emir') {
-                if (numBab === 12) {
-                    if (index === 5) cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; 
-                    else {
-                        let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
-                        cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; 
-                    }
-                } else if (numBab === 11) {
-                    cekilmisKelime = "اِ" + getIftialCore(kok.split(""), "ِ") + siga.suffix;
-                } else if (isMuzaaf) {
-                    if (index === 5) {
-                        let emirPrefix = (dynamicAynHareke === "ُ") ? "اُ" : "اِ";
-                        cekilmisKelime = emirPrefix + r1 + "ْ" + r2 + dynamicAynHareke + r3 + "ْنَ";
-                    } else {
-                        let coreEmir = r1 + dynamicAynHareke + r2; 
-                        let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
-                        cekilmisKelime = coreEmir + emirEkleri[index];
-                    }
-                } else {
-                    let emirPrefix = "اِ";
-                    if (dynamicAynHareke === "ُ") emirPrefix = "اُ"; 
-                    if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
-                    else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
-                    else if (numBab === 8 || numBab === 9 || numBab === 13 || numBab === 14) emirPrefix = ""; 
-                    
-                    let coreEmir = r1 + "ْ" + r2 + dynamicAynHareke + r3;
-                    if (numBab === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
-                    else if (numBab === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-                    else if (numBab === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
-                    else if (numBab === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
-                    else if (numBab === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-                    else if (numBab === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
-
-                    cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
-                }
-            }
-            cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
-            kelimeListesi.push(cekilmisKelime);
-        });
-    }
-
+    let kelimeListesi = VerbGenerator.generateVerbList(kok, numBab, tip, anaVezin, refId, activeSuffix);
+    
     if (kelimeListesi.length === 0) return;
+    
+    let muzariListesi = [];
     const isColorActive = kok && kok.length === 3;
     const isVerb = boxElement.classList.contains('fiil-box');
     const pastelColors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', '#e0f7fa', '#fbe9e7', '#f1f8e9', '#fffde7', '#eceff1'];
 
-    let muzariListesi = [];
     if (isVerb && tip === 'mazi') {
-        let foundMuzari = false;
-        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok]) {
-            // SADECE MEVCUT VE ORTAK BABA AİT MUZARİYİ ARA!
-            let possibleRefs = [];
-            if (refId === 1) possibleRefs = [2, 4, 6];
-            else if (refId === 8) possibleRefs = [9];
-            else if (refId === 11) possibleRefs = [12];
-            else if (refId === 14) possibleRefs = [15];
-            else possibleRefs = [refId, refId + 1, refId + 2];
-
-            for (let pr of possibleRefs) {
-                if (wordEasterEggs[kok][pr]) {
-                    let egg = wordEasterEggs[kok][pr];
-                    let txt = egg.base ? egg.base.arText : (egg.arText || "");
-                    if (txt && (txt.startsWith('يَ') || txt.startsWith('يُ') || txt.startsWith('يَتَ'))) {
-                        if (egg.cekimi) { muzariListesi = [...egg.cekimi]; foundMuzari = true; break; }
-                        if (egg.base && egg.base.cekimi) { muzariListesi = [...egg.base.cekimi]; foundMuzari = true; break; }
-                    }
+        let muKalip = "يَفْعُلُ"; 
+        if (typeof babVezinleri !== 'undefined' && babVezinleri[numBab]) muKalip = babVezinleri[numBab].muzari || "يَفْعُلُ";
+        
+        let targetMuzariRef = refId + 1;
+        if (refId === 1) {
+            let poss = [2, 4, 6];
+            for (let p of poss) {
+                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok] && wordEasterEggs[kok][p]) { 
+                    targetMuzariRef = p; 
+                    break; 
                 }
             }
-        }
+        } else if (refId === 8) targetMuzariRef = 9;
+        else if (refId === 11) targetMuzariRef = 12;
+        else if (refId === 14) targetMuzariRef = 15;
         
-        // EĞER KENDİ BABINDA MUZARİ TABLOSU YOKSA GÜVENLE YENİSİNİ ÜRETİR!
-        if (!foundMuzari) {
-            const list = sigaSablonlari['muzari'];
-            if (list) {
-                let dynamicAynHareke = getDynamicAynHareke(kok.split(""), numBab, anaVezin, refId);
-                let isMuzaaf = (kok[1] === kok[2] && numBab <= 6);
-                
-                list.forEach((siga, index) => {
-                    let r1 = kok[0]; let r2 = kok[1]; let r3 = kok[2];
-                    
-                    let coreWord = "";
-                    if (numBab === 11) {
-                        coreWord = getIftialCore(kok.split(""), "ِ"); 
-                    } else if (isMuzaaf) {
-                        if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
-                        else coreWord = r1 + dynamicAynHareke + r2 + "ّ"; 
-                    } else {
-                        coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3;
-                    }
-                    
-                    if (numBab === 7) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
-                    else if (numBab === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
-                    else if (numBab === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
-                    else if (numBab === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
-                    else if (numBab === 12) {
-                        if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
-                        else coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
-                    } 
-                    else if (numBab === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
-                    else if (numBab === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
-                    else if (numBab === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
-                    
-                    let currentPrefix = siga.prefix; 
-                    if (numBab === 7 || numBab === 8 || numBab === 9) {
-                        if (currentPrefix === 'يَ') currentPrefix = "يُ";
-                        else if (currentPrefix === 'تَ') currentPrefix = "تُ";
-                        else if (currentPrefix === 'أَ') currentPrefix = "أُ";
-                        else if (currentPrefix === 'نَ') currentPrefix = "نُ";
-                    }
-                    let cekilmisKelime = currentPrefix + coreWord + siga.suffix;
-                    cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kok.split(""));
-                    muzariListesi.push(cekilmisKelime);
-                });
-            }
-        }
-        if(muzariListesi.length === 0) muzariListesi = kelimeListesi;
+        muzariListesi = VerbGenerator.generateVerbList(kok, numBab, 'muzari', muKalip, targetMuzariRef, activeSuffix);
+        if (muzariListesi.length === 0) muzariListesi = kelimeListesi;
     }
+
+
+
+
+
+
 
     function generateCellContent(w, tip, numBab, tableType, isColorActive, kok, wordIndex) {
         if (!w) return "";
@@ -1502,7 +1275,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     html += `<tbody class="spacer-body"><tr class="spacer-row"><td colspan="3" style="height: 35px; background: transparent !important; border: none !important;"></td></tr></tbody>`;
                 }
 
-                html += `<thead style="position: sticky; top: -1px; z-index: ${10 + tIndex}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                html += `<thead style="z-index: ${10 + tIndex}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <tr><th colspan="3" style="background-color: ${headBg} !important; color: white; padding: 8px; font-size: 15px; border-top: 2px solid #cbd5e1; border-radius: 8px 8px 0 0;">${theadText}</th></tr>
                             <tr style="background-color: ${subBg};"><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Müfred</th><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Tesniye</th><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Cemi</th></tr>
                          </thead><tbody style="border-bottom: 4px solid #cbd5e1;">`;
@@ -2869,6 +2642,199 @@ function highlightEasterEggBoxes(root) {
 }
 
 // ==============================================================================
+// EVRENSEL ÇEKİM ÜRETİCİ (DRY PRENSİBİ - TÜM SİSTEMLER BURAYI KULLANIR)
+// ==============================================================================
+const VerbGenerator = {
+    getDynamicAynHareke: function(kokArr, bNo, vezin, rId) {
+        let h = "ُ"; 
+        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
+        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
+
+        let foundInJson = false;
+        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kokArr.join("")]) {
+            let muzari = "";
+            let data = wordEasterEggs[kokArr.join("")];
+            let possibles = (rId === 1) ? [2, 4, 6] : (rId === 8 ? [9] : (rId === 11 ? [12] : (rId === 14 ? [15] : [rId, rId + 1, rId + 2, rId + 3, 2, 4]))); 
+            for (let p of possibles) {
+                if (data[p]) {
+                    let txt = data[p].base ? data[p].base.arText : (data[p].arText || "");
+                    if (txt && (txt.startsWith('يَ') || txt.startsWith('يُ') || txt.startsWith('يَتَ'))) { muzari = txt; break; }
+                }
+            }
+            if (muzari) {
+                let regex = new RegExp(kokArr[1] + "(?:[\\u0651])?([\\u064E\\u064F\\u0650])");
+                let match = muzari.match(regex);
+                if (match && match[1]) { h = match[1]; foundInJson = true; }
+            }
+        }
+        if (!foundInJson && rId === 1) {
+            let activeBoxes = document.querySelectorAll('.glass-box.kok-turendi');
+            for (let box of activeBoxes) {
+                let refSpan = box.querySelector('.ref');
+                if (refSpan) {
+                    let id = parseInt(refSpan.innerText);
+                    if (id === 6) return "َ"; 
+                    if (id === 4) return "ِ"; 
+                    if (id === 2) return "ُ"; 
+                }
+            }
+        }
+        return h;
+    },
+
+    getIftialCore: function(kokArr, aynHareke) {
+        let r1 = kokArr[0], r2 = kokArr[1], r3 = kokArr[2];
+        let i_r1 = r1 + "ْ";
+        let i_t = "تَ";
+
+        if (r1 === 'و' || r1 === 'ي' || r1 === 'ث' || r1 === 'ت') {
+            i_r1 = ""; i_t = "تَّ";
+        } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
+            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
+            else { i_t = "طَ"; }
+        } else if (['د', 'ذ', 'ز'].includes(r1)) {
+            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
+            else { i_t = "دَ"; } 
+        }
+        return i_r1 + i_t + r2 + aynHareke + r3;
+    },
+
+    generateVerbList: function(kok, babNo, tip, anaVezin, refId, activeSuffix = null) {
+        let kelimeListesi = [];
+        let ozelCekimBulundu = false;
+        
+        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok] && wordEasterEggs[kok][refId]) {
+            let eggObj = wordEasterEggs[kok][refId];
+            if (activeSuffix && eggObj[activeSuffix] && eggObj[activeSuffix].cekimi) {
+                kelimeListesi = [...eggObj[activeSuffix].cekimi];
+                ozelCekimBulundu = true;
+            } else if (!activeSuffix) {
+                if (eggObj.base && eggObj.base.cekimi) {
+                    kelimeListesi = [...eggObj.base.cekimi];
+                    ozelCekimBulundu = true;
+                } else if (eggObj.cekimi) {
+                    kelimeListesi = [...eggObj.cekimi];
+                    ozelCekimBulundu = true;
+                }
+            }
+        }
+
+        if (!ozelCekimBulundu && typeof sigaSablonlari !== 'undefined' && sigaSablonlari[tip]) {
+            const list = sigaSablonlari[tip];
+            let kokArr = kok.split("");
+            let r1 = kokArr[0], r2 = kokArr[1], r3 = kokArr[2];
+            let dynamicAynHareke = this.getDynamicAynHareke(kokArr, babNo, anaVezin, refId);
+            let isMuzaaf = (kokArr[1] === kokArr[2] && babNo <= 6);
+
+            list.forEach((siga, index) => {
+                let cekilmisKelime = "";
+                if (tip === 'muzari') {
+                    let coreWord = "";
+                    if (babNo === 11) {
+                        coreWord = this.getIftialCore(kokArr, "ِ"); 
+                    } else if (isMuzaaf) {
+                        if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
+                        else coreWord = r1 + dynamicAynHareke + r2 + "ّ"; 
+                    } else {
+                        coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3;
+                    }
+                    
+                    if (babNo === 7) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
+                    else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+                    else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+                    else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
+                    else if (babNo === 12) {
+                        if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
+                        else coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
+                    } 
+                    else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
+                    else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+                    else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+                    
+                    let currentPrefix = siga.prefix; 
+                    if ([7, 8, 9].includes(babNo)) {
+                        if (currentPrefix === 'يَ') currentPrefix = "يُ";
+                        else if (currentPrefix === 'تَ') currentPrefix = "تُ";
+                        else if (currentPrefix === 'أَ') currentPrefix = "أُ";
+                        else if (currentPrefix === 'نَ') currentPrefix = "نُ";
+                    }
+                    cekilmisKelime = currentPrefix + coreWord + siga.suffix;
+                } 
+                else if (tip === 'mazi') {
+                    if (babNo === 12) {
+                        let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; 
+                        let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; 
+                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
+                        if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
+                        else cekilmisKelime = baseAcik + siga.ek; 
+                    } else if (babNo === 11) {
+                        cekilmisKelime = "اِ" + this.getIftialCore(kokArr, "َ") + siga.ek;
+                    } else if (isMuzaaf) {
+                        if (index < 5) {
+                            let maziEkleri = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
+                            cekilmisKelime = r1 + "َ" + r2 + maziEkleri[index]; 
+                        } else {
+                            let aynMazi = "َ"; 
+                            if (babNo === 4 || babNo === 6) aynMazi = "ِ"; 
+                            else if (babNo === 5) aynMazi = "ُ";
+                            cekilmisKelime = r1 + "َ" + r2 + aynMazi + r3 + siga.ek; 
+                        }
+                    } else {
+                        let tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin) : "";
+                        let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
+                        
+                        // YENİ EKLENEN KORUMA: Nakıs fiillerde aslına döndürür
+                        if (r3 === 'و') stem = stem.replace(/[اى]$/, "و");
+                        if (r3 === 'ي') stem = stem.replace(/[اى]$/, "ي");
+                        
+                        cekilmisKelime = stem + siga.ek; 
+                    }
+                } 
+                else if (tip === 'emir') {
+                    if (babNo === 12) {
+                        if (index === 5) cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; 
+                        else {
+                            let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
+                            cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; 
+                        }
+                    } else if (babNo === 11) {
+                        cekilmisKelime = "اِ" + this.getIftialCore(kokArr, "ِ") + siga.suffix;
+                    } else if (isMuzaaf) {
+                        if (index === 5) {
+                            let emirPrefix = (dynamicAynHareke === "ُ") ? "اُ" : "اِ";
+                            cekilmisKelime = emirPrefix + r1 + "ْ" + r2 + dynamicAynHareke + r3 + "ْنَ";
+                        } else {
+                            let coreEmir = r1 + dynamicAynHareke + r2; 
+                            let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
+                            cekilmisKelime = coreEmir + emirEkleri[index];
+                        }
+                    } else {
+                        let emirPrefix = "اِ";
+                        if (dynamicAynHareke === "ُ") emirPrefix = "اُ"; 
+                        if (anaVezin.startsWith("أُ")) emirPrefix = "أُ";
+                        else if (anaVezin.startsWith("أَ")) emirPrefix = "أَ";
+                        else if ([8, 9, 13, 14].includes(babNo)) emirPrefix = ""; 
+                        
+                        let coreEmir = r1 + "ْ" + r2 + dynamicAynHareke + r3;
+                        if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
+                        else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
+                        else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
+                        else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
+                        else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
+                        else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
+
+                        cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
+                    }
+                }
+                if (typeof SarfEngine !== 'undefined') cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kokArr);
+                kelimeListesi.push(cekilmisKelime);
+            });
+        }
+        return kelimeListesi;
+    }
+};
+
+// ==============================================================================
 // ULTIMATE SARF ENGINE (İdğam, İbdal, İ'lâl, İlletli Harfler ve Hemze Motoru)
 // ==============================================================================
 const SarfEngine = {
@@ -2878,7 +2844,6 @@ const SarfEngine = {
         let [r1, r2, r3] = r; 
 
         // 1. İFTİAL BABI (11. BAB) İBDAL VE İDĞAM KURALLARI
-        // YENİ EKLENDİ: 'ت' harfi eklendi (اِتْتَبَعَ -> اِتَّبَعَ)
         if (r1 === 'و' || r1 === 'ي' || r1 === 'ث' || r1 === 'ت') {
             res = res.replace(new RegExp(r1 + "ْت", "g"), "تّ");
         } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
@@ -2889,22 +2854,24 @@ const SarfEngine = {
             res = res.replace(/دْد/g, "دّ");
         }
 
-        // 1.5. İNFİ'AL BABI İDĞAMI (YENİ)
-        // Eğer kök 'ن' ile başlıyorsa ve İnfi'al babına girerse (اِنْنَزَلَ -> اِنَّزَلَ)
+        // 1.5. İNFİ'AL BABI VE MUTEMASİLEYN (EKLER) ÇARPIŞMASI
         if (r1 === 'ن') {
-            // Cezimli Nun ve Harekeli Nun yan yana gelirse şeddele
             res = res.replace(/نْن/g, "نّ");
         }
+        res = res.replace(/تْت/g, "تّ"); 
+        res = res.replace(/نْن/g, "نّ"); 
 
-        // 2. MUZAAF (ŞEDDELİ) FİİLLER (örn: مدد, ضرر)
+        // 2. MUZAAF (ŞEDDELİ) FİİLLER
         if (r2 === r3) {
             let X = r2;
-            let regexSukun = new RegExp(`ْ${X}([َُِ])${X}([ًٌٍَُِْ])`, 'g');
+            let regexSukun = new RegExp(`ْ${X}([َُِ])${X}([ًٌٍَُِ])`, 'g');
             res = res.replace(regexSukun, `$1${X}ّ$2`);
-            let regexNormal = new RegExp(`${X}[َُِ]${X}([ًٌٍَُِْ])`, 'g');
+            let regexNormal = new RegExp(`${X}[َُِ]${X}([ًٌٍَُِ])`, 'g');
             res = res.replace(regexNormal, `${X}ّ$1`);
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َا${X}ِ${X}`, 'g'), `$1َا${X}ّ`);
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ${X}[َِ]${X}`, 'g'), `مَ$1َ${X}ّ`);
+            res = res.replace(/^أِ/g, "إِ");
+            res = res.replace(/(^|\s)أِ/g, "$1إِ");
         }
 
         // 3. MİSÂL FİİLLER (İLK HARF İLLETİ)
@@ -2915,9 +2882,14 @@ const SarfEngine = {
             res = res.replace(emirRegex, "$1");
         }
 
-        // 4. ECVEF FİİLLER (SADECE NAKIS OLMAYANLAR - LEFİF KORUMASI)
+        // 4. ECVEF FİİLLER
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
+            res = res.replace(/أَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "أَ$1َا$2");
+            res = res.replace(/(يُ|تُ|نُ|أُ|مُ)([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1$2ِي$3");
+            res = res.replace(/اِسْتَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "اِسْتَ$1َا$2");
+            res = res.replace(/(يَ|تَ|نَ|أَ|مُ)سْتَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1سْتَ$2ِي$3");
+
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َ${ayn}َ([\\u0621-\\u064A]َ.*)`, 'g'), `$1َا$2`);
             if (ayn === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A])َوَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
             else res = res.replace(new RegExp(`([\\u0621-\\u064A])َيَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
@@ -2939,10 +2911,20 @@ const SarfEngine = {
         // 5. NÂKIS (SON HARF İLLETİ) ve LEFİF FİİLLER (örn: نوى)
         if (r3 === 'و' || r3 === 'ي') {
             let lam = r3;
+
+            // Mezid Bablarda Telaffuz Ağırlıklarının Atılması
+            res = res.replace(/ِيُ$/g, "ِي"); // يُزَكِّيُ -> يُزَكِّي 
+            res = res.replace(/ُوُ$/g, "ُو"); // يَدْعُوُ -> يَدْعُو 
             
+            // Mazi 3. Tekil Şahıs Dönüşümü (Şedde Korumalı)
+            if (lam === 'و') {
+                res = res.replace(/^([\u0621-\u064A][\u064B-\u0652]+[\u0621-\u064A][\u064B-\u0652]+)وَ$/g, "$1َا");
+            }
+            res = res.replace(/([\u0621-\u064A][\u064B-\u0652]*َ[\u064B-\u0652]*)[وي]َ$/g, "$1ى");
+
+            // Çoğul ve Zamir Düşmeleri
             res = res.replace(/َ[وي][َُ]?وا$/g, "َوْا"); 
             res = res.replace(/ِ[وي][َُ]?وا$/g, "ُوا");  
-            
             res = res.replace(/َ[وي]َتْ$/g, "َتْ");   
             res = res.replace(/َ[وي]َتَا$/g, "َتَا"); 
 
@@ -2959,18 +2941,21 @@ const SarfEngine = {
             res = res.replace(/ُوِ?ي$/g, "ِي");      
             res = res.replace(/َيِ?ينَ$/g, "َيْنَ"); 
             res = res.replace(/َيِ?ي$/g, "َيْ"); 
-
-            // Mazi
-            if (lam === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A]َ[\\u0621-\\u064A])َوَ$`, 'g'), `$1َا`);
-            else res = res.replace(new RegExp(`([\\u0621-\\u064A]َ[\\u0621-\\u064A])َيَ$`, 'g'), `$1َى`);
             
-            // Muzari
-            res = res.replace(new RegExp(`([\\u0621-\\u064A]ُ)[وي]ُ$`, 'g'), `$1و`);
-            res = res.replace(new RegExp(`([\\u0621-\\u064A]ِ)[وي]ُ$`, 'g'), `$1ي`);
-            res = res.replace(new RegExp(`([\\u0621-\\u064A]َ)[وي]ُ$`, 'g'), `$1ى`);
+            // --- MUZARİ STANDART DÖNÜŞÜMLER (MUTLAK UNICODE ŞEDDE ZIRHLI) ---
+            // Şedde ve Hareke hangi sırayla yazılırsa yazılsın fethayı/esreyi/ötreyi affetmez!
+            res = res.replace(/([\u0621-\u064A][\u064B-\u0652]*ُ[\u064B-\u0652]*)[وي]ُ$/g, "$1و");
+            res = res.replace(/([\u0621-\u064A][\u064B-\u0652]*ِ[\u064B-\u0652]*)[وي]ُ$/g, "$1ي");
+            res = res.replace(/([\u0621-\u064A][\u064B-\u0652]*َ[\u064B-\u0652]*)[وي]ُ$/g, "$1ى"); // يَتَزَكَّيُ -> يَتَزَكَّى
 
-            // Emir Kipinde Evrensel İllet Düşmesi Kuralı
-            res = res.replace(/([َُِ])[وي]ْ$/g, "$1");
+            // --- EMİR KİPİ İLLET DÜŞMESİ (MUTLAK UNICODE ŞEDDE ZIRHLI) ---
+            // Sükunlu gelen illetleri koparır.
+            res = res.replace(/([\u0621-\u064A][\u064B-\u0652]*[َُِ][\u064B-\u0652]*)[ويىا]ْ$/g, "$1"); // تَزَكَّيْ -> تَزَكَّ
+
+           // --- MECZUM (لَمْ) KİPİ İLLET DÜŞMESİ VE KADIN ZAMİR KORUMASI ---
+            // (İçindeki harekeler yüzünden kelimeyi bölen eski regex yerine mutlak yakalayıcı eklendi)
+            res = res.replace(/(لَمْ|لَمَّا|لِ)(\s*\S+)[وى]$/g, "$1$2"); // لَمْ أَتَزَكَّى -> لَمْ أَتَزَكَّ
+            res = res.replace(/(لَمْ|لَمَّا|لِ)(\s*[يأن]\S*)ي$/g, "$1$2"); // لَمْ يَرْمِي -> لَمْ يَرْمِ
 
             // İsim Türetmeleri
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َا([\\u0621-\\u064A])ِ[وي]$`, 'g'), `$1َا$2ِي`);
@@ -2981,14 +2966,26 @@ const SarfEngine = {
             }
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]$`, 'g'), `مَ$1ْ$2َى`);
         }
-
-        // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI)
-        if (r.includes('أ') || r.includes('ء') || r.includes('إ')) {
+        // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI VE KÜRSÜ DEĞİŞİMLERİ)
+        if (r.includes('أ') || r.includes('ء') || r.includes('إ') || r.includes('ؤ') || r.includes('ئ')) {
             res = res.replace(/أَأْ/g, "آ"); 
             res = res.replace(/اُأْ/g, "أُو"); 
             res = res.replace(/اِأْ/g, "إِي"); 
+            res = res.replace(/أَا/g, "آ"); 
+            res = res.replace(/ءَا/g, "آ"); 
+            
+            res = res.replace(/ْأِ/g, "ْئِ"); 
+            res = res.replace(/َأِ/g, "َئِ"); 
+            res = res.replace(/ُأِ/g, "ُئِ"); 
+            res = res.replace(/ِأَ/g, "ِئَ"); 
+            res = res.replace(/ِأْ/g, "ِئْ"); 
+            res = res.replace(/ِأُ/g, "ِئُ"); 
+            
+            res = res.replace(/ْأُ/g, "ْؤُ"); 
+            res = res.replace(/َأُ/g, "َؤُ"); 
+            res = res.replace(/ُأَ/g, "ُؤَ"); 
+            res = res.replace(/ُأْ/g, "ُؤْ"); 
         }
-
         return res;
     }
 };
@@ -4336,19 +4333,24 @@ window.openMarathon = function() {
         let wordHtml = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(v.word, currentRoot.split("")) : v.word;
         let btnHtml = `<div style="font-family: 'Arakom', serif; font-size: 4.8rem; font-weight: bold; color: #1e293b; text-align: center;">${wordHtml}</div>`;
         
-        // Profesyonel Örnek Cümle Kutusu (Alıntı Tasarımı)
-        // Profesyonel Örnek Cümle Kutusu (Düzeltilmiş Renkler)
+ 
+       
+        // Profesyonel Örnek Cümle Kutusu (Dizi/Obje Akıllı Seçici)
         if (v.ornek) {
-            let ornekAr = v.ornek.ar || "";
-            let ornekTr = v.ornek.tr || "";
-            btnHtml += `
-                <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
-                    <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
-                    
-                    <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
-                    
-                    <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: bold; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
-                </div>`;
+            // Eğer birden fazla örnek (dizi) girilmişse ilkini seç, tekilse kendisini al
+            let seciliOrnek = Array.isArray(v.ornek) ? v.ornek[0] : v.ornek;
+            
+            let ornekAr = seciliOrnek.ar || "";
+            let ornekTr = seciliOrnek.tr || "";
+            
+            if (ornekAr || ornekTr) {
+                btnHtml += `
+                    <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
+                        <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
+                        <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: bold; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
+                    </div>`;
+            }
         }
         
         btn.innerHTML = btnHtml;
@@ -4562,9 +4564,16 @@ window.toggleMarathonPause = function() {
 };
 
 function buildMarathonDataForBab(maziRef) {
-    let rootSafe = currentRoot;
-    let rArr = rootSafe.split("");
-    let maziList = [], muzariList = [], emirList = [];
+    let rootSafe = currentRoot || "فعل";
+    
+    let mapping = typeof getBabAndType === 'function' ? getBabAndType(maziRef) : { babNo: 1 };
+    let babNo = mapping.babNo;
+    let vObj = typeof babVezinleri !== 'undefined' ? babVezinleri[babNo] : null;
+    
+    let mKalip = vObj ? vObj.mazi : "فَعَلَ";
+    let muKalip = vObj ? vObj.muzari : "يَفْعُلُ";
+    let eKalip = vObj ? vObj.emir : "اُفْعُلْ";
+
     let muzariRef = maziRef + 1;
     let emirRef = maziRef + 2;
 
@@ -4576,53 +4585,10 @@ function buildMarathonDataForBab(maziRef) {
         }
     }
 
-    const extract = (ref) => {
-        if(typeof wordEasterEggs !== 'undefined' && wordEasterEggs[rootSafe] && wordEasterEggs[rootSafe][ref]) {
-            let egg = wordEasterEggs[rootSafe][ref];
-            if (egg.cekimi && egg.cekimi.length >= 14) return [...egg.cekimi];
-            if (egg.base && egg.base.cekimi && egg.base.cekimi.length >= 14) return [...egg.base.cekimi];
-        }
-        return [];
-    };
-
-    maziList = extract(maziRef);
-    muzariList = extract(muzariRef);
-    emirList = extract(emirRef);
-
-    let mapping = typeof getBabAndType === 'function' ? getBabAndType(maziRef) : { babNo: 1 };
-    let babNo = mapping.babNo;
-    let vObj = typeof babVezinleri !== 'undefined' ? babVezinleri[babNo] : null;
-
-    if (maziList.length === 0 && typeof sigaSablonlari !== 'undefined') {
-        let mKalip = vObj ? vObj.mazi : "فَعَلَ";
-        sigaSablonlari['mazi'].forEach(siga => {
-            let stem = applyRootToKalip(rootSafe, mKalip).replace(/[َُِّْ]$/, "");
-            let w = stem + (siga.ek || "");
-            if(typeof SarfEngine !== 'undefined') w = SarfEngine.applyRules(w, rArr);
-            maziList.push(w);
-        });
-    }
-    
-    if (muzariList.length === 0 && typeof sigaSablonlari !== 'undefined') {
-        let muKalip = vObj ? vObj.muzari : "يَفْعُلُ";
-        sigaSablonlari['muzari'].forEach(siga => {
-            let w = applyRootToKalip(rootSafe, muKalip);
-            w = w.replace(/[َُِ]$/, "") + (siga.suffix || "");
-            w = siga.prefix + w.substring(1); 
-            if(typeof SarfEngine !== 'undefined') w = SarfEngine.applyRules(w, rArr);
-            muzariList.push(w);
-        });
-    }
-    
-    if (emirList.length === 0 && typeof sigaSablonlari !== 'undefined') {
-        let eKalip = vObj ? vObj.emir : "اُفْعُلْ";
-        sigaSablonlari['emir'].forEach(siga => {
-            let w = applyRootToKalip(rootSafe, eKalip);
-            w = w.replace(/[َُِْ]$/, "") + (siga.suffix || "ْ");
-            if(typeof SarfEngine !== 'undefined') w = SarfEngine.applyRules(w, rArr);
-            emirList.push(w);
-        });
-    }
+    // MERKEZİ MOTOR KULLANILIYOR
+    let maziList = VerbGenerator.generateVerbList(rootSafe, babNo, 'mazi', mKalip, maziRef);
+    let muzariList = VerbGenerator.generateVerbList(rootSafe, babNo, 'muzari', muKalip, muzariRef);
+    let emirList = VerbGenerator.generateVerbList(rootSafe, babNo, 'emir', eKalip, emirRef);
 
     let mLen = maziList.length, muLen = muzariList.length, eLen = emirList.length;
     window.mRanges = [[0, mLen], [mLen, mLen + muLen], [mLen + muLen, mLen + muLen + eLen]];
@@ -4632,14 +4598,19 @@ function buildMarathonDataForBab(maziRef) {
                         .map(w => w.replace(/[\u200B-\u200D\uFEFF\s]/g, ''));
 }
 
+// ===============================================================
+// MARATON (KRONOMETRE) ARAYÜZ YARDIMCI FONKSİYONLARI
+// ===============================================================
 window.loadMarathonTable = function() {
     const table = document.getElementById('table-view');
+    if (!table) return;
     table.innerHTML = '';
     
     const start = window.mRanges[window.mCurrentStage][0];
     const end = window.mRanges[window.mCurrentStage][1];
     
-    document.getElementById('stage-label').innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
+    const stageLabel = document.getElementById('stage-label');
+    if (stageLabel) stageLabel.innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
 
     window.mActiveSet.slice(start, end).forEach((w, i) => {
         const absoluteIdx = start + i;
@@ -4653,51 +4624,65 @@ window.loadMarathonTable = function() {
             if (window.mErrorMemory.has(absoluteIdx)) {
                 window.mErrorMemory.delete(absoluteIdx);
                 this.classList.remove('error-active');
-                playSfx(400, 'sine', 0.1); 
+                if (typeof playSfx === 'function') playSfx(400, 'sine', 0.1); 
             } else {
                 window.mErrorMemory.add(absoluteIdx);
                 this.classList.add('error-active');
-                playSfx(150, 'sawtooth', 0.2); 
+                if (typeof playSfx === 'function') playSfx(150, 'sawtooth', 0.2); 
             }
         };
         table.appendChild(div);
     });
 
-    document.getElementById('prev-arr').disabled = (window.mCurrentStage === 0);
-    document.getElementById('next-arr').innerText = (window.mCurrentStage === 2) ? "✓" : "❯";
+    const prevArr = document.getElementById('prev-arr');
+    const nextArr = document.getElementById('next-arr');
+    if (prevArr) prevArr.disabled = (window.mCurrentStage === 0);
+    if (nextArr) nextArr.innerText = (window.mCurrentStage === 2) ? "✓" : "❯";
 };
 
 window.changeMarathonStage = function(dir) {
     if (window.mCurrentStage === 2 && dir === 1) { finishMarathon(); return; }
     window.mCurrentStage += dir;
-    loadMarathonTable();
+    window.loadMarathonTable();
 };
 
 function finishMarathon() {
     clearInterval(window.mTimerInterval);
-    document.getElementById('final-score').innerText = document.getElementById('live-total-score').innerText;
+    const finalScore = document.getElementById('final-score');
+    const liveScore = document.getElementById('live-total-score');
+    if (finalScore && liveScore) finalScore.innerText = liveScore.innerText;
+    
     const errList = document.getElementById('error-list');
-    errList.innerHTML = '';
-    window.mErrorMemory.forEach(idx => {
-        const item = document.createElement('div');
-        item.className = 'error-item'; 
-        item.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(window.mActiveSet[idx], currentRoot.split("")) : window.mActiveSet[idx];
-        errList.appendChild(item);
-    });
+    if (errList) {
+        errList.innerHTML = '';
+        window.mErrorMemory.forEach(idx => {
+            const item = document.createElement('div');
+            item.className = 'error-item'; 
+            item.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(window.mActiveSet[idx], currentRoot.split("")) : window.mActiveSet[idx];
+            errList.appendChild(item);
+        });
+    }
     showMarathonScreen('screen-result');
     hideMarathonHeaders();
 }
 
 function hideMarathonHeaders() {
-    document.getElementById('stage-label').classList.remove('ui-visible');
-    document.getElementById('pause-btn').classList.remove('ui-visible');
-    document.getElementById('timer-display').classList.remove('ui-visible');
-    document.getElementById('live-total-score').classList.remove('ui-visible');
+    const el1 = document.getElementById('stage-label');
+    const el2 = document.getElementById('pause-btn');
+    const el3 = document.getElementById('timer-display');
+    const el4 = document.getElementById('live-total-score');
+    
+    if (el1) el1.classList.remove('ui-visible');
+    if (el2) el2.classList.remove('ui-visible');
+    if (el3) el3.classList.remove('ui-visible');
+    if (el4) el4.classList.remove('ui-visible');
 }
 
 function showMarathonScreen(id) {
     document.querySelectorAll('.marathon-screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    
     const arrows = document.querySelectorAll('.nav-arrow');
     arrows.forEach(a => a.style.display = (id === 'screen-play' ? 'block' : 'none'));
 }
