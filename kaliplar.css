@@ -866,14 +866,20 @@ td:first-child {
     100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* 3 BOYUTLU AHŞAP KÖK TAŞI */
+/* 3 BOYUTLU AHŞAP KÖK TAŞI (YATAYDA UZATILMIŞ) */
 .draggable-root-clone {
     position: absolute; z-index: 2000; font-family: 'Arakom', sans-serif;
     font-weight: normal !important; font-size: 2.6rem; color: #000000; direction: rtl;
     pointer-events: auto; cursor: grab; user-select: none; white-space: nowrap;
     background-color: #e4be97; 
     background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 2px, transparent 2px, transparent 6px); 
-    padding: 8px 24px 15px 24px !important; line-height: 1.2 !important;
+    
+    /* İŞTE BURASI: Sağ ve sol boşluklar (45px) artırılarak kutu yatayda uzatıldı */
+    padding: 8px 5px 15px 5px !important; 
+    min-width: 180px; /* Kutuya standart bir yatay uzunluk verir */
+    text-align: center; /* Kutu uzasa da Arapça kök tam ortada kalır */
+    
+    line-height: 1.2 !important;
     border-radius: 10px; border: 2px solid #5c3a21; 
     box-shadow: 5px 5px 0px #5c3a21, 0px 10px 20px rgba(0,0,0,0.3); text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4); 
 }
@@ -1404,3 +1410,300 @@ body.matrix-active { overflow: hidden !important; }
     transform: scale(0.92);         /* Basıldığında gözle görülür tepki */
 }
 
+/* =========================================================
+   BAB BİLGİ (INFO) OVERLAY SİSTEMİ (EXTRA GENİŞ & KIRMIZI BUTON)
+========================================================= */
+.bab-info-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.7); /* Arka planı hafif daha koyulaştırdık ki kutu öne çıksın */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999999; 
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.bab-info-overlay.active {
+    opacity: 1;
+}
+
+/* Kutunun Kendisi - ÇOK DAHA GENİŞ */
+.bab-info-content {
+    background: linear-gradient(145deg, #ffffff, #f8fafc); 
+    padding: 50px 60px; /* İçeriden biraz daha boşluk verdik */
+    border-radius: 32px; 
+    width: 95%;
+    max-width: 1100px; /* 800px'den 1100px'e çıkardık! Artık devasa. */
+    max-height: 90vh; 
+    display: flex;
+    flex-direction: column; 
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5), 0 0 0 1px rgba(226,232,240,0.5); 
+    position: relative;
+    transform: translateY(20px) scale(0.95); 
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+    direction: ltr; 
+}
+
+.bab-info-overlay.active .bab-info-content {
+    transform: translateY(0) scale(1); 
+}
+
+/* Kapatma Butonu (Sağ Köşe, Kırmızı Tasarım) */
+.close-info-btn {
+    position: absolute;
+    top: 25px; right: 25px; /* Tam sağ üst köşeye milimetrik hizalandı */
+    background: #ef4444; /* Dikkat çekici, canlı kırmızı renk */
+    border: none;
+    width: 50px; height: 50px; /* Biraz daha büyüttük */
+    border-radius: 50%;
+    font-size: 24px;
+    color: #ffffff; /* İçi bembeyaz çarpı/ikon */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); /* Etrafına kırmızımsı parlama efekti */
+    z-index: 10;
+}
+
+.close-info-btn:hover {
+    background: #dc2626; /* Üzerine gelince daha koyu, tok bir kırmızı */
+    transform: rotate(90deg) scale(1.15); /* Hem dönüp hem büyüyerek harika bir his verir */
+}
+
+/* Başlık */
+.bab-info-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 46px; /* 40px'den 46px'e çıkarıldı */
+    color: #0f172a; 
+    margin-top: 0; 
+    margin-bottom: 25px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    border-bottom: 3px solid #e2e8f0; 
+    padding-bottom: 20px;
+    flex-shrink: 0; 
+}
+
+/* Bilgi Metni ve SCROLL Özelliği - DAHA BÜYÜK YAZI */
+.bab-info-text {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 34px; /* 30px'den 34px'e çıkarıldı, artık daha da okunaklı */
+    color: #334155; 
+    line-height: 1.75; 
+    font-weight: 500; 
+    text-align: left;
+    
+    /* SCROLL MOTORU */
+    overflow-y: auto; 
+    max-height: 65vh; /* Yazı alanı sınırını biraz daha artırdık */
+    padding-right: 25px; 
+}
+
+/* Şık Kaydırma Çubuğu (Scrollbar) Tasarımı */
+.bab-info-text::-webkit-scrollbar {
+    width: 10px;
+}
+.bab-info-text::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+.bab-info-text::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.bab-info-text::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Tablodaki Bilgi (i) İkonu - SAĞ ÜST KÖŞEYE SABİTLENDİ */
+.info-icon {
+    position: absolute; /* Kutu içinden bağımsız hareket etmesini sağlar */
+    top: 8px; /* Yukarıdan boşluk */
+    right: 8px; /* Sağdan boşluk */
+    color: #94a3b8;
+    font-size: 1.2em; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.info-icon:hover {
+    color: #ef4444; /* Üzerine gelince ikon da çarpı butonu gibi kırmızı olsun */
+    transform: scale(1.3);
+}
+
+/* Arapça Örnek Kelimeler ve Paragraf Stilleri */
+.arabic-sample {
+    font-family: 'Noto Naskh Arabic', serif;
+    color: #3b82f6; 
+    font-weight: bold;
+    font-size: 1.45em; /* Arapça kelimeler 34px'e göre oranlandı */
+    direction: rtl;
+    display: inline-block;
+    padding: 0 6px;
+}
+
+.bab-info-text p {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 2px dashed #e2e8f0; 
+}
+
+.bab-info-text p:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+
+/* =========================================================
+   MARATON TELAFFUZ MODU (ORİJİNAL AYDINLIK TEMA)
+========================================================= */
+.marathon-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #f1f2f6; z-index: 9999999;
+    display: none; flex-direction: column; overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    
+    /* İŞTE KESİN ÇÖZÜM: Tüm sistemi soldan sağa (Türkçe) düzenine zorlar */
+    direction: ltr !important; 
+}
+.marathon-overlay.active { display: flex; }
+
+#game-wrapper {
+    flex: 1; background: white; margin: 10px; border-radius: 20px;
+    display: flex; flex-direction: column; overflow: hidden; position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+#top-bar-panel {
+    background: #f8f9fa; border-bottom: 3px solid #eee;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    align-items: center; justify-items: center;
+    height: 110px; flex-shrink: 0; padding: 0 10px;
+}
+
+.header-item { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.ui-hidden { visibility: hidden; opacity: 0; transition: 0.3s; }
+.ui-visible { visibility: visible !important; opacity: 1 !important; }
+
+.back-nav { 
+    font-size: 1.1rem; border: 2px solid #6c5ce7; 
+    background: white; color: #6c5ce7; padding: 8px 15px;
+    border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s;
+}
+.back-nav:hover { background: #6c5ce7; color: white; }
+
+.chrono-btn { font-size: 2.5rem; background: none; border: none; filter: grayscale(1); transition: 0.3s; }
+.chrono-btn.active { filter: grayscale(0); transform: scale(1.1); }
+.pause-circle { width: 55px; height: 55px; border-radius: 50%; border: none; background: #636e72; color: white; cursor: pointer; font-size: 1.5rem; }
+.stage-badge { background: #6c5ce7; color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.3rem; font-weight: bold; }
+.timer-val { font-size: 2.8rem; font-weight: bold; color: #ff7675; font-family: monospace; }
+.score-val { font-size: 2.8rem; font-weight: bold; color: #6c5ce7; }
+
+.nav-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 75px; height: 110px; background: rgba(108, 92, 231, 0.1);
+    border: none; border-radius: 15px; cursor: pointer;
+    font-size: 3rem; color: #6c5ce7; z-index: 50; display: none;
+    transition: 0.3s;
+}
+.nav-arrow:disabled { opacity: 0.1; cursor: not-allowed; }
+.arrow-right.finish-ready { background: #ff7675; color: white; }
+
+.marathon-screen { display: none; flex: 1; flex-direction: column; padding: 20px; width: 100%; }
+.marathon-screen.active { display: flex; }
+
+.verb-table { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; direction: rtl; margin: 0 110px; }
+.marathon-cell { 
+    display: flex; align-items: center; justify-content: center; border-radius: 18px; 
+    font-family: 'Arakom', serif; font-size: clamp(2rem, 6vh, 4.5rem); 
+    font-weight: bold; border: 2px solid rgba(0,0,0,0.03); cursor: pointer;
+}
+.muez-row { background-color: #e3f2fd; color: #1565c0; }
+.mue-row { background-color: #fce4ec; color: #c2185b; }
+.marathon-cell.error-active { background-color: #ff7675 !important; color: white !important; }
+
+#error-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px; direction: rtl; }
+.error-item { font-family: 'Arakom', serif; font-size: 2.5rem; background: #fee2e2; padding: 8px 20px; border-radius: 12px; color: #ff7675; border: 2px solid #ff7675; }
+
+/* KAHVERENGİ KÖK KUTULARINA EKLENECEK KRONOMETRE BUTONU (LAZER KAZIMA EFEKTİ) */
+.kutu-timer-btn {
+    position: absolute; 
+    top: 2px; /* Daha da köşeye yaslandı */
+    right: 4px; /* Daha da köşeye yaslandı */
+    left: auto;
+    transform: none; 
+    background: transparent; 
+    border: none; 
+    width: 36px; 
+    height: 36px; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-shadow: none; 
+    z-index: 99999; 
+    transition: transform 0.2s ease;
+}
+
+.kutu-timer-btn:hover { 
+    transform: scale(1.1); 
+}
+
+.kutu-timer-btn svg {
+    stroke: rgba(0, 0, 0, 0.85); 
+    transition: all 0.2s ease;
+}
+
+.kutu-timer-btn:hover svg {
+    stroke: #000000; 
+}
+
+/* TAŞINABİLİR (SÜRÜKLENEBİLİR) KUTU İÇİN ÖZEL BOYUT VE KONUM */
+.draggable-root-clone .kutu-timer-btn {
+    width: 30px;
+    height: 30px;
+    top: 2px; /* Daha da köşeye yaslandı */
+    right: 4px; /* Daha da köşeye yaslandı */
+}
+.draggable-root-clone .kutu-timer-btn svg {
+    width: 18px; 
+    height: 18px;
+}
+
+/* MOBİL ÜST BAR İÇİN KONUM DÜZELTMESİ */
+.kutu-timer-btn-mobile {
+    top: 50%;
+    right: 50px; 
+    transform: translateY(-50%);
+}
+.kutu-timer-btn-mobile:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* MOBİL TASARIM (ORİJİNAL DÜZELTMELER) */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    .marathon-overlay { overflow-y: auto !important; height: auto !important; }
+    #game-wrapper { overflow: visible !important; height: auto !important; min-height: 100dvh; margin: 5px; }
+    #top-bar-panel {
+        position: sticky; top: 0; z-index: 1000; height: auto; padding: 5px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; border-bottom: 1px solid #eee;
+    }
+    .verb-table { 
+        display: grid !important; justify-content: center !important;
+        padding: 8px 45px !important; gap: 6px !important; width: 100% !important; margin: 0 auto !important;
+        grid-template-columns: repeat(3, 1fr) !important; 
+    }
+    .marathon-cell {
+        min-height: 42px !important; font-size: 1.6rem !important; padding: 0 !important;
+        width: 100%; border-radius: 8px !important; line-height: 1;
+    }
+    .nav-arrow { width: 38px !important; height: 70px !important; font-size: 1.6rem !important; border-radius: 8px !important; z-index: 1100; }
+    #prev-arr { left: 4px !important; } #next-arr { right: 4px !important; }
+}

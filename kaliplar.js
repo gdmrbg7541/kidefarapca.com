@@ -3914,3 +3914,751 @@ document.addEventListener('click', function(event) {
     if (backdrop) backdrop.classList.remove('active');
 });
 
+// ===============================================================
+// BAB BİLGİ (INFO) EKRANI MOTORU (ZENGİN HTML İÇERİKLİ)
+// ===============================================================
+
+function getBabInfo(rawName) {
+    let cleanName = rawName.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase().replace(/[\n\r\s]+/g, '').trim();
+
+    const babs = [
+        { 
+            keys: ["if'âl", "if'al", "ifal", "ifâl"], 
+            title: "İf'âl", 
+            desc: `
+            <p>• <b>Geçişlilik:</b> Lâzım (geçişsiz) fiilleri Müteaddi (geçişli) yapar. <br>Örn: <span class="arabic-sample">ضَحِكَ</span> (Güldü) → <span class="arabic-sample">أَضْحَكَ</span> (Güldürdü)</p>
+            <p>• <b>Zaman ve Mekan:</b> Eylemin zamanla veya mekanla anlam kurmasını sağlar.<br>Örn: <span class="arabic-sample">أَصْبَحَ</span> (Sabaha girdi), <span class="arabic-sample">أَعْرَقَ</span> (Irak'a vardı)</p>
+            <p>• <b>Durum Bildirme:</b> Bir sıfata veya duruma girmeyi belirtir.<br>Örn: <span class="arabic-sample">أَفْقَرَ</span> (Fakirleşti), <span class="arabic-sample">أَغْنَى</span> (Zenginleşti)</p>
+            <p>• <span style="color:#ef4444; font-weight:bold;">Not:</span> İf'al hemzesi 'kat-i' hemzedir; her zaman yazılır ve okunur.<br>Örn: <span class="arabic-sample">قُلْتُ أَكْرِمْ!</span> (İkram et dedim!)</p>
+            ` 
+        },
+        { 
+            keys: ["tef'îl", "tef'il", "tefil", "tefîl"], 
+            title: "Tef'îl", 
+            desc: `
+            <p>• <b>Geçişlilik:</b> Geçişsiz fiilleri geçişli yapar. <br>Örn: <span class="arabic-sample">عَلِمَ</span> (Bildi) → <span class="arabic-sample">عَلَّمَ</span> (Öğretti)</p>
+            <p>• <b>Yoğunluk:</b> Aşırılık ve kuvvet bildirir. <br>Örn: <span class="arabic-sample">مَزَقَ</span> (Yırttı) → <span class="arabic-sample">مَزَّقَ</span> (Parçaladı)</p>
+            <p>• <b>Türetme:</b> İsimlerden fiil yapar. <br>Örn: <span class="arabic-sample">خَيْمَةٌ</span> (Çadır) → <span class="arabic-sample">خَيَّمَ</span> (Kamp kurdu)</p>
+            ` 
+        },
+        { 
+            keys: ["mufâ'ale", "mufa'ale", "müfâ'ale", "müfa'ale", "mufaale", "müfaale"], 
+            title: "Mufâ'ale", 
+            desc: `
+            <p>• <b>Müşareket:</b> İşteşlik (karşılıklılık) bildirir. <br>Örn: <span class="arabic-sample">كَتَبَ</span> (Yazdı) → <span class="arabic-sample">كَاتَبَ</span> (Yazıştı)</p>
+            <p>• <b>Kararlılık:</b> Israr ve davranış biçimi anlatır. <br>Örn: <span class="arabic-sample">طَلَبَ</span> (İstedi) → <span class="arabic-sample">طَالَبَ</span> (Talep etti)</p>
+            <p>• <b>Mübalağa:</b> Aşırılık belirtir. <br>Örn: <span class="arabic-sample">ضَعُفَ</span> (Zayıfladı) → <span class="arabic-sample">ضَاعَفَ</span> (Katladı)</p>
+            ` 
+        },
+        { 
+            keys: ["infi'âl", "infi'al", "infial", "infiâl"], 
+            title: "İnfi'âl", 
+            desc: `
+            <p>• <b>Edilgenlik:</b> Fiili edilgen (yapıldı) hale getirir. <br>Örn: <span class="arabic-sample">كَسَرَ</span> (Kırdı) → <span class="arabic-sample">اِنْكَسَرَ</span> (Kırıldı)</p>
+            <p>• <b>Dönüşlülük:</b> Eylemin etkisi özneye döner. <br>Örn: <span class="arabic-sample">قَلَبَ</span> (Döndürdü) → <span class="arabic-sample">اِنْقَلَبَ</span> (Ters döndü)</p>
+            ` 
+        },
+        { 
+            keys: ["ifti'âl", "ifti'al", "iftial", "iftiâl"], 
+            title: "İfti'âl", 
+            desc: `
+            <p>• <b>Dönüşlülük:</b> Eylemin sonucunu belirtir. <br>Örn: <span class="arabic-sample">اِجْتَمَعَ</span> (Toplandı), <span class="arabic-sample">اِرْتَفَعَ</span> (Yükseldi)</p>
+            <p>• <b>Gayret:</b> Çaba ve edinme manası katar. <br>Örn: <span class="arabic-sample">اِجْتَهَدَ</span> (Çalıştı), <span class="arabic-sample">اِكْتَسَبَ</span> (Kazandı)</p>
+            <p>• <b>İşteşlik:</b> Ortaklık bildirir. <br>Örn: <span class="arabic-sample">اِخْتَصَمَ</span> (Tartıştı)</p>
+            ` 
+        },
+        { 
+            keys: ["if'ılâl", "if'ılal", "if'ilâl", "if'ilal", "ifılal", "ifilal", "ifılâl"], 
+            title: "İf'ılâl", 
+            desc: `
+            <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
+            <p>• <b>Kusurlar:</b> Sakatlık ve noksanlık belirtir. <br>Örn: <span class="arabic-sample">اِعْرَجَّ</span> (Topalladı)</p>
+            ` 
+        },
+        { 
+            keys: ["tefa'ul", "tefe'ul", "tefeul", "tefaul", "tefa'ül", "tefe'ül", "tefaül", "tefeül"], 
+            title: "Tefa'ul", 
+            desc: `
+            <p>• <b>Çaba:</b> Gayret ve sahiplenme bildirir. <br>Örn: <span class="arabic-sample">تَصَبَّرَ</span> (Sabretti), <span class="arabic-sample">تَوَسَّدَ</span> (Yastık edindi)</p>
+            <p>• <b>Dönüşlülük:</b> Tef'îl vezninin dönüşlü halidir. <br>Örn: <span class="arabic-sample">تَفَرَّقَ</span> (Dağıldı), <span class="arabic-sample">تَكَسَّرَ</span> (Parçalandı)</p>
+            <p>• <b>Kademelilik:</b> İşin aşama aşama yapıldığını belirtir. <br>Örn: <span class="arabic-sample">تَنَزَّلَ</span> (İndi)</p>
+            ` 
+        },
+        { 
+            keys: ["tefâ'ul", "tefâul", "tefâ'ül", "tefâül"], 
+            title: "Tefâ'ul", 
+            desc: `
+            <p>• <b>İşteşlik:</b> Ortaklık belirtir. <br>Örn: <span class="arabic-sample">تَعَاوَنَ</span> (Yardımlaştı), <span class="arabic-sample">تَمَازَحَ</span> (Şakalaştı)</p>
+            <p>• <b>Yapmacıklık:</b> Olmayan bir şeyi olmuş gibi gösterir. <br>Örn: <span class="arabic-sample">تَمَارِضَ</span> (Hasta numarası yaptı)</p>
+            <p>• <b>Peşpeşelik:</b> İşin ardarda gerçekleştiğini bildirir. <br>Örn: <span class="arabic-sample">تَسَاقَطَ</span> (Döküldü)</p>
+            ` 
+        },
+        { 
+            keys: ["istif'âl", "istif'al", "istifal", "istifâl"], 
+            title: "İstif'âl", 
+            desc: `
+            <p>• <b>İstek:</b> Talep ve bulmak manası verir. <br>Örn: <span class="arabic-sample">اِسْتَغْفَرَ</span> (Af diledi), <span class="arabic-sample">اِسْتَسْهَلَ</span> (Kolay buldu)</p>
+            <p>• <b>Değişim:</b> Durum değişikliği veya vakit bildirir. <br>Örn: <span class="arabic-sample">اِسْتَحْجَرَ</span> (Taşlaştı), <span class="arabic-sample">اِسْتَحْصَدَ</span> (Hasat vakti geldi)</p>
+            <p>• <b>Geçişlilik:</b> Lazım fiili müteaddi yapar. <br>Örn: <span class="arabic-sample">اِسْتَخْرَجَ</span> (Çıkardı)</p>
+            ` 
+        }
+    ];
+
+    for (let bab of babs) {
+        if (bab.keys.includes(cleanName)) return { title: bab.title, desc: bab.desc };
+    }
+    return null; 
+}
+
+window.showBabInfo = function(rawName) {
+    const overlay = document.getElementById('bab-info-overlay');
+    const titleEl = document.getElementById('bab-info-title');
+    const textEl = document.getElementById('bab-info-text');
+    
+    let info = getBabInfo(rawName);
+
+    if(overlay && titleEl && textEl && info) {
+        titleEl.innerText = info.title + " Bâbı";
+        // BURASI ÇOK ÖNEMLİ: innerText yerine innerHTML yaptık ki renkler ve örnekler çalışsın!
+        textEl.innerHTML = info.desc; 
+        
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('active'), 10);
+        if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    }
+};
+
+window.closeBabInfo = function(event) {
+    if (event && event.target && event.target.closest('.bab-info-content') && !event.target.classList.contains('close-info-btn')) return;
+    const overlay = document.getElementById('bab-info-overlay');
+    if(overlay) {
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.style.display = 'none', 300);
+        if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    }
+};
+
+window.initBabIcons = function() {
+    const tdElements = document.querySelectorAll('td[align="center"]');
+    
+    tdElements.forEach(td => {
+        if (!td.querySelector('.info-icon')) {
+            let originalText = td.innerText.replace(/ⓘ/g, '').trim(); 
+            let info = getBabInfo(originalText);
+            
+            if (info) {
+                // YENİ EKLENDİ: İkonun hücre dışına taşmaması için hücreyi referans noktası yapıyoruz
+                td.style.position = 'relative'; 
+                
+                td.innerHTML = `${originalText} <span class="info-icon" title="${info.title} Özellikleri"><i class="fas fa-info-circle"></i></span>`;
+                td.querySelector('.info-icon').addEventListener('click', function() {
+                    showBabInfo(originalText);
+                });
+            }
+        }
+    });
+};
+
+document.addEventListener("DOMContentLoaded", initBabIcons);
+if (document.readyState === "complete" || document.readyState === "interactive") {
+    setTimeout(initBabIcons, 200);
+}
+
+// ===============================================================
+// 1. KRONOMETRE BUTONU EKLEYİCİ VE FİİL DEDEKTÖRÜ (SVG VERSİYONU)
+// ===============================================================
+
+// Sadece fiili olanları tespit eden motor (Eksikti, geri eklendi!)
+function hasVerbsToRead(root) {
+    if (!root || root.length !== 3) return false;
+    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[root]) {
+        const verbRefs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, 52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102];
+        const existingRefs = Object.keys(wordEasterEggs[root]).map(Number);
+        return existingRefs.some(r => verbRefs.includes(r));
+    }
+    return true; 
+}
+
+setInterval(() => {
+    try {
+        const currentRootSafe = typeof currentRoot !== 'undefined' ? currentRoot : "";
+        const canShowTimer = hasVerbsToRead(currentRootSafe);
+        const isDraggableOnScreen = document.querySelector('.draggable-root-clone') !== null;
+
+        // Hatasız okunan tek satırlık zarif SVG kodu
+        const mySvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
+
+        // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
+        document.querySelectorAll('.draggable-root-clone').forEach(box => {
+            let btn = box.querySelector('.kutu-timer-btn');
+            if (canShowTimer && !btn) {
+                let newBtn = document.createElement('div');
+                newBtn.className = 'kutu-timer-btn';
+                newBtn.innerHTML = mySvg;
+                newBtn.title = 'Hız ve Telaffuz Testi';
+                
+                newBtn.onmousedown = (e) => { e.stopPropagation(); };
+                newBtn.ontouchstart = (e) => { e.stopPropagation(); };
+                newBtn.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
+                
+                box.appendChild(newBtn);
+            } else if (!canShowTimer && btn) {
+                btn.remove();
+            }
+        });
+
+        // B. ANA SABİT KUTU İÇİN (Yukarıdaki Header)
+        const textEl = document.getElementById('root-text-display');
+        if (textEl) {
+            const desktopBox = textEl.parentElement; 
+            let btnMain = desktopBox.querySelector('.kutu-timer-btn');
+            
+            if (canShowTimer && !btnMain && !isDraggableOnScreen) {
+                desktopBox.style.position = 'relative'; 
+                let newBtnMain = document.createElement('div');
+                newBtnMain.className = 'kutu-timer-btn';
+                newBtnMain.innerHTML = mySvg;
+                newBtnMain.title = 'Hız ve Telaffuz Testi';
+                newBtnMain.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
+                desktopBox.appendChild(newBtnMain);
+            } else if ((!canShowTimer || isDraggableOnScreen) && btnMain) {
+                btnMain.remove();
+            }
+        }
+
+        // C. MOBİL ÜST BAR İÇİN
+        const mobileRootDisplay = document.querySelector('.mobile-root-display');
+        if (mobileRootDisplay) {
+            const mobileBox = mobileRootDisplay.parentElement;
+            let btnM = mobileBox.querySelector('.kutu-timer-btn-mobile');
+
+            if (canShowTimer && !btnM) {
+                mobileBox.style.position = 'relative';
+                let newBtnM = document.createElement('div');
+                newBtnM.className = 'kutu-timer-btn kutu-timer-btn-mobile';
+                newBtnM.innerHTML = mySvg;
+                newBtnM.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
+                mobileBox.appendChild(newBtnM);
+            } else if (!canShowTimer && btnM) {
+                btnM.remove();
+            }
+        }
+    } catch(err) { }
+}, 500);
+
+// ===============================================================
+// 2. OYUN MOTORU (SEÇMELİ, BEKLEMELİ VE DİNAMİK MARATON SİSTEMİ)
+// ===============================================================
+window.mActiveSet = [];
+window.mCurrentStage = 0;
+window.mRanges = [[0,0], [0,0], [0,0]];
+window.mErrorMemory = new Set();
+window.mTimerInterval = null;
+window.mStartTime = 0;
+window.mElapsedTime = 0;
+window.mIsPaused = false;
+window.mRaceMode = false; // Yarışmanın başlayıp başlamadığını takip eder
+window.mAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSfx(f, t, d) {
+    if (window.mAudioCtx.state === 'suspended') window.mAudioCtx.resume();
+    const o = window.mAudioCtx.createOscillator(); const g = window.mAudioCtx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, window.mAudioCtx.currentTime);
+    g.gain.setValueAtTime(0.05, window.mAudioCtx.currentTime);
+    o.connect(g); g.connect(window.mAudioCtx.destination);
+    o.start(); o.stop(window.mAudioCtx.currentTime + d);
+}
+
+
+// O KÖKTEKİ TÜM MAZİ FİİLLERİ VE ÖRNEK CÜMLELERİNİ BULAN FONKSİYON
+function getAvailableMaziVerbs(root) {
+    const maziRefs = [1, 8, 11, 14, 52, 58, 64, 71, 77, 83, 88, 94, 100];
+    let list = [];
+    
+    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[root]) {
+        const rootData = wordEasterEggs[root];
+        maziRefs.forEach(ref => {
+            if (rootData[ref]) {
+                let word = "";
+                
+                // 1. JSON'da tanımlı olan Arapça metni arar
+                if (rootData[ref].base && rootData[ref].base.arText) {
+                    word = rootData[ref].base.arText;
+                } else if (rootData[ref].arText) {
+                    word = rootData[ref].arText;
+                } else if (rootData[ref].cekimi && rootData[ref].cekimi.length > 0) {
+                    let item = rootData[ref].cekimi[0];
+                    word = typeof item === 'object' ? item.ar : item;
+                } else if (rootData[ref].base && rootData[ref].base.cekimi && rootData[ref].base.cekimi.length > 0) {
+                    let item = rootData[ref].base.cekimi[0];
+                    word = typeof item === 'object' ? item.ar : item;
+                }
+
+                // Cümleyse ilk kelimeyi ayıklar
+                let cleanWord = word.replace(/[\u200B-\u200D\uFEFF\s]/g, '').split(" ")[0]; 
+                
+                // Örnek cümleyi de hafızaya alır
+                let ornekData = rootData[ref].ornek || (rootData[ref].base && rootData[ref].base.ornek);
+                
+                // =========================================================
+                // 2. BULAMADIYSA DOĞRU BABA GÖRE (ÖRNEĞİN İFTİAL) KENDİ ÜRETİR!
+                // =========================================================
+                if (!cleanWord) {
+                    // Ref ID'sinden (Örn: 11) Bab numarasını (Örn: 8. Bab - İftial) bulur
+                    let mapping = typeof getBabAndType === 'function' ? getBabAndType(ref) : { babNo: 1 };
+                    let babNo = mapping.babNo;
+                    let vObj = typeof babVezinleri !== 'undefined' ? babVezinleri[babNo] : null;
+                    
+                    // İlgili babın MAZİ kalıbını çeker (İftial için 'اِفْتَعَلَ' gibi)
+                    let mKalip = vObj ? vObj.mazi : "فَعَلَ";
+                    
+                    // Kökü kalıba yerleştirip idğam/ibdal kuralları için SarfEngine'e sokar
+                    let rawWord = typeof applyRootToKalip === 'function' ? applyRootToKalip(root, mKalip) : root[0]+"َ"+root[1]+"َ"+root[2]+"َ";
+                    cleanWord = typeof SarfEngine !== 'undefined' ? SarfEngine.applyRules(rawWord, root.split("")) : rawWord;
+                }
+                
+                // Üretilen kelimeyi listeye ekle
+                if (cleanWord) {
+                    list.push({ refId: ref, word: cleanWord, ornek: ornekData });
+                }
+            }
+        });
+    }
+    
+    // Eğer sözlükte o köke ait hiç fiil açılmamışsa, boş dönmesin diye 1. Babı zorla üretir
+    if (list.length === 0 && root.length === 3) {
+        let defaultWord = root[0] + "َ" + root[1] + "َ" + root[2] + "َ";
+        if(typeof SarfEngine !== 'undefined') defaultWord = SarfEngine.applyRules(defaultWord, root.split(""));
+        list.push({ refId: 1, word: defaultWord, ornek: null });
+    }
+    
+    return list;
+}
+
+// ===============================================================
+// LOBİ, GERİ DÖNÜŞ VE TEMİZLİK MOTORU
+// ===============================================================
+window.mCountdownInterval = null; // Geri sayımı durdurabilmek için hafıza
+window.mSkippedLobby = false;     // Lobinin atlanıp atlanmadığını tutan hafıza
+
+// 1. LOBİYİ AÇAR VE AKILLI KARAR VERİR
+window.openMarathon = function() {
+    if (!currentRoot || currentRoot.length !== 3) return;
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    // Tüm sayaçları ve eski verileri sıfırla
+    clearInterval(window.mTimerInterval);
+    clearInterval(window.mCountdownInterval); 
+    window.mCurrentStage = 0; 
+    window.mErrorMemory.clear(); 
+    window.mElapsedTime = 0; 
+    window.mIsPaused = false;
+    window.mRaceMode = false;
+    window.mSkippedLobby = false; 
+
+    document.getElementById('marathon-overlay').classList.add('active');
+    
+    // Üst barı HEP GÖRÜNÜR tut ki GERİ tuşu kaybolmasın! Sadece içini temizle.
+    document.getElementById('top-bar-panel').style.visibility = 'visible';
+    hideMarathonHeaders(); 
+    document.getElementById('chrono-main').style.display = 'none'; 
+    
+    const verbs = getAvailableMaziVerbs(currentRoot);
+    
+    // 1. DURUM: TEK BİR FİİL VARSA LOBİYİ ATLA VE DİREKT TABLOYU AÇ
+    if (verbs.length === 1) {
+        window.mSkippedLobby = true; // Lobiyi atladığımızı hafızaya yaz
+        buildMarathonDataForBab(verbs[0].refId);
+        
+        document.getElementById('marathon-selection-area').style.display = 'none'; 
+        document.getElementById('marathon-countdown-overlay').style.display = 'none';
+        
+        prepareMarathonPlay(); // Tabloyu ve Gri Kronometreyi hazırlar
+        return;
+    }
+
+    // 2. DURUM: BİRDEN FAZLA FİİL VARSA LOBİYİ GÖSTER
+    document.getElementById('marathon-selection-area').style.display = 'flex';
+    document.getElementById('marathon-countdown-overlay').style.display = 'none';
+    document.getElementById('screen-play').classList.remove('active'); // Arkadaki tabloyu gizle
+    document.getElementById('screen-result').classList.remove('active'); 
+
+    const btnContainer = document.getElementById('marathon-verb-buttons');
+    btnContainer.innerHTML = '';
+
+    // Lobi Butonlarını Zenginleştirerek Üret
+    verbs.forEach(v => {
+        let btn = document.createElement('button');
+        btn.className = 'cat-btn';
+        btn.style.fontFamily = "'Arakom', serif";
+        btn.style.padding = "15px 25px";
+        btn.style.borderRadius = "20px";
+        btn.style.display = "flex";
+        btn.style.flexDirection = "column";
+        btn.style.alignItems = "center";
+        btn.style.gap = "15px";
+        btn.style.width = "100%"; 
+        
+        let wordHtml = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(v.word, currentRoot.split("")) : v.word;
+        let btnHtml = `<div style="font-size: 3.8rem; font-weight: bold;">${wordHtml}</div>`;
+        
+        if (v.ornek) {
+            let ornekAr = v.ornek.ar || "";
+            let ornekTr = v.ornek.tr || "";
+            btnHtml += `
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 20px; border-radius: 12px; width: 100%; box-sizing: border-box;">
+                    <div style="font-family: 'Arakom', serif; font-size: 2.2rem; color: #fff; line-height: 1.4;">${ornekAr}</div>
+                    <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.1rem; color: #f1f2f6; margin-top: 8px;">${ornekTr}</div>
+                </div>`;
+        }
+        
+        btn.innerHTML = btnHtml;
+
+        // FİİL SEÇİLDİĞİNDE SADECE TABLOYU HAZIRLA (Sayacı başlatma!)
+        btn.onclick = () => {
+            if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+            buildMarathonDataForBab(v.refId); 
+            
+            document.getElementById('marathon-selection-area').style.display = 'none';
+            prepareMarathonPlay(); // Tabloyu açıp incelemeye bırakır
+        };
+        btnContainer.appendChild(btn);
+    });
+};
+
+// LOBİDEN ÇIKIŞ VEYA OYUNDAN LOBİYE DÖNÜŞ BUTONU
+window.goBackFromMarathon = function() {
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    const selectionArea = document.getElementById('marathon-selection-area');
+    
+    // Eğer Lobideyse tamamen kapat
+    if (selectionArea.style.display === 'flex') {
+        closeMarathon(); 
+    } else {
+        // Eğer Oyundaysa Lobiye dön
+        clearInterval(window.mTimerInterval);
+        window.openMarathon(); 
+    }
+};
+
+window.closeMarathon = function() {
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    clearInterval(window.mTimerInterval);
+    window.mRaceMode = false;
+    document.getElementById('marathon-overlay').classList.remove('active');
+};
+
+// 2. TABLOYU EKRANA DİZER, HEADER'I AÇAR (YARIŞMA HENÜZ BAŞLAMADI)
+function prepareMarathonPlay() {
+    document.getElementById('marathon-selection-area').style.display = 'none';
+    
+    window.mCurrentStage = 0; 
+    window.mErrorMemory.clear(); 
+    window.mElapsedTime = 0; 
+    window.mRaceMode = false;
+    clearInterval(window.mTimerInterval);
+    clearInterval(window.mCountdownInterval);
+    
+    showMarathonScreen('screen-play');
+    loadMarathonTable();
+    
+    // Header UI Ayarları: Sadece GERİ, MAZİ ve ⏱️ görünür. Diğerleri (puan vb.) gizli.
+    document.getElementById('stage-label').classList.add('ui-visible');
+    
+    const chronoMain = document.getElementById('chrono-main');
+    chronoMain.style.display = 'block'; // Buton görünür
+    chronoMain.classList.remove('active'); // Ama gri renkli bekler
+    
+    document.getElementById('pause-btn').classList.remove('ui-visible');
+    document.getElementById('timer-display').classList.remove('ui-visible');
+    document.getElementById('live-total-score').classList.remove('ui-visible');
+    
+    document.getElementById('timer-display').innerText = "0.00";
+    document.getElementById('live-total-score').innerText = "100";
+}
+
+// 3. LOBİDEN ÇIKIŞ VEYA OYUNDAN LOBİYE DÖNÜŞ BUTONU
+window.goBackFromMarathon = function() {
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    const selectionArea = document.getElementById('marathon-selection-area');
+    
+    // 1. Eğer Lobideysek veya Lobi atlanmış (tek fiilli) bir kökteysek -> Tamamen Kapat
+    if (selectionArea.style.display === 'flex' || window.mSkippedLobby) {
+        closeMarathon(); 
+    } else {
+        // 2. Tablodayız ve birden fazla fiil var -> Lobiye dön
+        window.openMarathon(); 
+    }
+};
+
+// 4. SİSTEMİ TAMAMEN KAPATIR VE TEMİZLER
+window.closeMarathon = function() {
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    clearInterval(window.mTimerInterval);
+    clearInterval(window.mCountdownInterval);
+    window.mRaceMode = false;
+    document.getElementById('marathon-overlay').classList.remove('active');
+    
+    // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
+    hideMarathonHeaders();
+    document.getElementById('chrono-main').style.display = 'none';
+};
+
+// 5. OYUN İÇİNDEKİ ⏱️ BUTONUNA BASILINCA 'BAŞLA' EKRANINI GETİRİR
+window.handleMarathonChronoClick = function() {
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    if (!window.mRaceMode) {
+        window.mRaceMode = true;
+        document.getElementById('chrono-main').classList.add('active'); 
+        
+        const overlay = document.getElementById('marathon-countdown-overlay');
+        overlay.style.display = 'flex';
+        
+        const startBtn = document.getElementById('start-btn-ui');
+        startBtn.style.display = 'block';
+        startBtn.disabled = false; 
+        
+        document.getElementById('countdown-text').style.display = 'none';
+    } else {
+        window.mRaceMode = false;
+        clearInterval(window.mTimerInterval);
+        clearInterval(window.mCountdownInterval);
+        window.mElapsedTime = 0;
+        
+        document.getElementById('chrono-main').classList.remove('active');
+        document.getElementById('pause-btn').classList.remove('ui-visible');
+        document.getElementById('timer-display').classList.remove('ui-visible');
+        document.getElementById('live-total-score').classList.remove('ui-visible');
+        document.getElementById('marathon-countdown-overlay').style.display = 'none';
+        
+        window.mErrorMemory.clear();
+        loadMarathonTable();
+    }
+};
+
+// 6. "BAŞLA" BUTONUNA TIKLANINCA ÇALIŞIR (3-2-1 KUSURSUZ GÜVENLİ SAYIM)
+window.startMarathonCountdown = function() {
+    const startBtn = document.getElementById('start-btn-ui');
+    startBtn.disabled = true; 
+    startBtn.style.display = 'none';
+    
+    const cd = document.getElementById('countdown-text');
+    cd.style.display = 'block';
+    
+    window.mErrorMemory.clear(); 
+    window.mCurrentStage = 0; 
+    loadMarathonTable();
+    
+    let count = 3; 
+    cd.innerText = count;
+    playSfx(400, 'sine', 0.1); 
+    
+    // Geri sayımı değişkene atadık ki GERİ tuşuna basılırsa susturabilelim
+    window.mCountdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) { 
+            cd.innerText = count; 
+            playSfx(400, 'sine', 0.1); 
+        } else { 
+            clearInterval(window.mCountdownInterval); 
+            document.getElementById('marathon-countdown-overlay').style.display = 'none'; 
+            startMarathonTimer(); 
+        }
+    }, 1000);
+};
+// "BAŞLA" BUTONUNA TIKLANINCA ÇALIŞIR (3-2-1 KUSURSUZ GÜVENLİ SAYIM)
+window.startMarathonCountdown = function() {
+    const startBtn = document.getElementById('start-btn-ui');
+    startBtn.disabled = true; // HATA ÇÖZÜMÜ: Çift tıklanıp sayacın bozulmasını tamamen engeller!
+    startBtn.style.display = 'none';
+    
+    const cd = document.getElementById('countdown-text');
+    cd.style.display = 'block';
+    
+    window.mErrorMemory.clear(); 
+    window.mCurrentStage = 0; 
+    loadMarathonTable();
+    
+    let count = 3; 
+    cd.innerText = count;
+    playSfx(400, 'sine', 0.1); // İlk "3" der demez ses çalar
+    
+    const interval = setInterval(() => {
+        count--;
+        if (count > 0) { 
+            cd.innerText = count; 
+            playSfx(400, 'sine', 0.1); 
+        } else { 
+            clearInterval(interval); 
+            document.getElementById('marathon-countdown-overlay').style.display = 'none'; 
+            startMarathonTimer(); 
+        }
+    }, 1000);
+};
+
+// SAYACI VE PUANI BAŞLATIR
+function startMarathonTimer() {
+    document.getElementById('pause-btn').classList.add('ui-visible');
+    document.getElementById('timer-display').classList.add('ui-visible');
+    document.getElementById('live-total-score').classList.add('ui-visible');
+    
+    window.mStartTime = Date.now();
+    window.mTimerInterval = setInterval(() => {
+        if (!window.mIsPaused) {
+            window.mElapsedTime = (Date.now() - window.mStartTime) / 1000;
+            document.getElementById('timer-display').innerText = window.mElapsedTime.toFixed(2);
+            let score = Math.max(0, Math.round(100 - (window.mElapsedTime > 45 ? (window.mElapsedTime-45)*2 : 0) - (window.mErrorMemory.size * 2)));
+            document.getElementById('live-total-score').innerText = score;
+        }
+    }, 50);
+}
+
+window.toggleMarathonPause = function() {
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    window.mIsPaused = !window.mIsPaused;
+    if (!window.mIsPaused) {
+        window.mStartTime = Date.now() - (window.mElapsedTime * 1000);
+    }
+};
+
+function buildMarathonDataForBab(maziRef) {
+    let rootSafe = currentRoot;
+    let rArr = rootSafe.split("");
+    let maziList = [], muzariList = [], emirList = [];
+    let muzariRef = maziRef + 1;
+    let emirRef = maziRef + 2;
+
+    if (maziRef === 1) {
+        muzariRef = 2; emirRef = 3;
+        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[rootSafe]) {
+            if (wordEasterEggs[rootSafe][4]) { muzariRef = 4; emirRef = 5; }
+            else if (wordEasterEggs[rootSafe][6]) { muzariRef = 6; emirRef = 7; }
+        }
+    }
+
+    const extract = (ref) => {
+        if(typeof wordEasterEggs !== 'undefined' && wordEasterEggs[rootSafe] && wordEasterEggs[rootSafe][ref]) {
+            let egg = wordEasterEggs[rootSafe][ref];
+            if (egg.cekimi && egg.cekimi.length >= 14) return [...egg.cekimi];
+            if (egg.base && egg.base.cekimi && egg.base.cekimi.length >= 14) return [...egg.base.cekimi];
+        }
+        return [];
+    };
+
+    maziList = extract(maziRef);
+    muzariList = extract(muzariRef);
+    emirList = extract(emirRef);
+
+    let mapping = typeof getBabAndType === 'function' ? getBabAndType(maziRef) : { babNo: 1 };
+    let babNo = mapping.babNo;
+    let vObj = typeof babVezinleri !== 'undefined' ? babVezinleri[babNo] : null;
+
+    if (maziList.length === 0 && typeof sigaSablonlari !== 'undefined') {
+        let mKalip = vObj ? vObj.mazi : "فَعَلَ";
+        sigaSablonlari['mazi'].forEach(siga => {
+            let stem = applyRootToKalip(rootSafe, mKalip).replace(/[َُِّْ]$/, "");
+            let w = stem + (siga.ek || "");
+            if(typeof SarfEngine !== 'undefined') w = SarfEngine.applyRules(w, rArr);
+            maziList.push(w);
+        });
+    }
+    
+    if (muzariList.length === 0 && typeof sigaSablonlari !== 'undefined') {
+        let muKalip = vObj ? vObj.muzari : "يَفْعُلُ";
+        sigaSablonlari['muzari'].forEach(siga => {
+            let w = applyRootToKalip(rootSafe, muKalip);
+            w = w.replace(/[َُِ]$/, "") + (siga.suffix || "");
+            w = siga.prefix + w.substring(1); 
+            if(typeof SarfEngine !== 'undefined') w = SarfEngine.applyRules(w, rArr);
+            muzariList.push(w);
+        });
+    }
+    
+    if (emirList.length === 0 && typeof sigaSablonlari !== 'undefined') {
+        let eKalip = vObj ? vObj.emir : "اُفْعُلْ";
+        sigaSablonlari['emir'].forEach(siga => {
+            let w = applyRootToKalip(rootSafe, eKalip);
+            w = w.replace(/[َُِْ]$/, "") + (siga.suffix || "ْ");
+            if(typeof SarfEngine !== 'undefined') w = SarfEngine.applyRules(w, rArr);
+            emirList.push(w);
+        });
+    }
+
+    let mLen = maziList.length, muLen = muzariList.length, eLen = emirList.length;
+    window.mRanges = [[0, mLen], [mLen, mLen + muLen], [mLen + muLen, mLen + muLen + eLen]];
+    
+    window.mActiveSet = [...maziList, ...muzariList, ...emirList]
+                        .map(w => typeof w === 'object' ? w.ar : w)
+                        .map(w => w.replace(/[\u200B-\u200D\uFEFF\s]/g, ''));
+}
+
+window.loadMarathonTable = function() {
+    const table = document.getElementById('table-view');
+    table.innerHTML = '';
+    
+    const start = window.mRanges[window.mCurrentStage][0];
+    const end = window.mRanges[window.mCurrentStage][1];
+    
+    document.getElementById('stage-label').innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
+
+    window.mActiveSet.slice(start, end).forEach((w, i) => {
+        const absoluteIdx = start + i;
+        const div = document.createElement('div');
+        div.className = 'marathon-cell ' + (Math.floor(i/3) % 2 === 0 ? 'muez-row' : 'mue-row');
+        if(window.mErrorMemory.has(absoluteIdx)) div.classList.add('error-active');
+        
+        div.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(w, currentRoot.split("")) : w;
+        
+        div.onclick = function() {
+            if (window.mErrorMemory.has(absoluteIdx)) {
+                window.mErrorMemory.delete(absoluteIdx);
+                this.classList.remove('error-active');
+                playSfx(400, 'sine', 0.1); 
+            } else {
+                window.mErrorMemory.add(absoluteIdx);
+                this.classList.add('error-active');
+                playSfx(150, 'sawtooth', 0.2); 
+            }
+        };
+        table.appendChild(div);
+    });
+
+    document.getElementById('prev-arr').disabled = (window.mCurrentStage === 0);
+    document.getElementById('next-arr').innerText = (window.mCurrentStage === 2) ? "✓" : "❯";
+};
+
+window.changeMarathonStage = function(dir) {
+    if (window.mCurrentStage === 2 && dir === 1) { finishMarathon(); return; }
+    window.mCurrentStage += dir;
+    loadMarathonTable();
+};
+
+function finishMarathon() {
+    clearInterval(window.mTimerInterval);
+    document.getElementById('final-score').innerText = document.getElementById('live-total-score').innerText;
+    const errList = document.getElementById('error-list');
+    errList.innerHTML = '';
+    window.mErrorMemory.forEach(idx => {
+        const item = document.createElement('div');
+        item.className = 'error-item'; 
+        item.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(window.mActiveSet[idx], currentRoot.split("")) : window.mActiveSet[idx];
+        errList.appendChild(item);
+    });
+    showMarathonScreen('screen-result');
+    hideMarathonHeaders();
+}
+
+function hideMarathonHeaders() {
+    document.getElementById('stage-label').classList.remove('ui-visible');
+    document.getElementById('pause-btn').classList.remove('ui-visible');
+    document.getElementById('timer-display').classList.remove('ui-visible');
+    document.getElementById('live-total-score').classList.remove('ui-visible');
+}
+
+function showMarathonScreen(id) {
+    document.querySelectorAll('.marathon-screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const arrows = document.querySelectorAll('.nav-arrow');
+    arrows.forEach(a => a.style.display = (id === 'screen-play' ? 'block' : 'none'));
+}
