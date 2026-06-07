@@ -3919,7 +3919,8 @@ document.addEventListener('click', function(event) {
 // ===============================================================
 
 function getBabInfo(rawName) {
-    let cleanName = rawName.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase().replace(/[\n\r\s]+/g, '').trim();
+    // GÜVENLİK: İsimdeki görünmez harfleri (Zero-width) ve gereksiz boşlukları kökünden temizler
+    let cleanName = rawName.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase().replace(/[\n\r\s\u200B-\u200D\uFEFFⓘ]+/g, '').trim();
 
     const babs = [
         { 
@@ -4019,7 +4020,6 @@ window.showBabInfo = function(rawName) {
 
     if(overlay && titleEl && textEl && info) {
         titleEl.innerText = info.title + " Bâbı";
-        // BURASI ÇOK ÖNEMLİ: innerText yerine innerHTML yaptık ki renkler ve örnekler çalışsın!
         textEl.innerHTML = info.desc; 
         
         overlay.style.display = 'flex';
@@ -4039,31 +4039,46 @@ window.closeBabInfo = function(event) {
 };
 
 window.initBabIcons = function() {
+    // 'align="center"' olan td'leri bul (Masdar Tablosundaki Hücreler)
     const tdElements = document.querySelectorAll('td[align="center"]');
     
     tdElements.forEach(td => {
-        if (!td.querySelector('.info-icon')) {
-            let originalText = td.innerText.replace(/ⓘ/g, '').trim(); 
-            let info = getBabInfo(originalText);
-            
-            if (info) {
-                // YENİ EKLENDİ: İkonun hücre dışına taşmaması için hücreyi referans noktası yapıyoruz
+        // Hücre içindeki yazıyı (ikon html'i olmadan) saf metin olarak çekiyoruz
+        let rawText = td.innerText || td.textContent;
+        let originalText = rawText.replace(/ⓘ/g, '').trim(); 
+        
+        // Bu yazı gerçekten bir Bâb adı mı diye soruyoruz
+        let info = getBabInfo(originalText);
+        
+        if (info) {
+            // 1. Eğer hücrede henüz (i) ikonu yoksa, JS ile biz ekleyelim
+            if (!td.querySelector('.info-icon')) {
                 td.style.position = 'relative'; 
-                
                 td.innerHTML = `${originalText} <span class="info-icon" title="${info.title} Özellikleri"><i class="fas fa-info-circle"></i></span>`;
-                td.querySelector('.info-icon').addEventListener('click', function() {
-                    showBabInfo(originalText);
-                });
+            }
+            
+            // 2. İkon ister HTML'de hazır olsun ister biz eklemiş olalım, TIKLAMA GÖREVİNİ ZORLA ATA!
+            let iconBtn = td.querySelector('.info-icon');
+            if (iconBtn) {
+                // Her ihtimale karşı eski tıklama fonksiyonlarını temizle
+                iconBtn.onclick = null; 
+                
+                // Güvenli Tıklama (Çakışmayı Engelleyici)
+                iconBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation(); // ÇÖZÜM BURASI: Tıklamanın arkaya geçip ekranı kapatmasını engeller
+                    showBabInfo(info.title); // Garantili eşleşme için doğrudan veritabanındaki title'ı gönderir
+                };
             }
         }
     });
 };
 
+// Sayfa yüklendiğinde ve dinamik içerik değiştiğinde motoru çalıştır
 document.addEventListener("DOMContentLoaded", initBabIcons);
 if (document.readyState === "complete" || document.readyState === "interactive") {
     setTimeout(initBabIcons, 200);
 }
-
 // ===============================================================
 // 1. KRONOMETRE BUTONU EKLEYİCİ VE FİİL DEDEKTÖRÜ (SVG VERSİYONU)
 // ===============================================================
@@ -4286,29 +4301,53 @@ window.openMarathon = function() {
     const btnContainer = document.getElementById('marathon-verb-buttons');
     btnContainer.innerHTML = '';
 
-    // Lobi Butonlarını Zenginleştirerek Üret
+
+   // Lobi Butonlarını Zenginleştirerek (Eğitim Kartı Olarak) Üret
     verbs.forEach(v => {
-        let btn = document.createElement('button');
-        btn.className = 'cat-btn';
-        btn.style.fontFamily = "'Arakom', serif";
-        btn.style.padding = "15px 25px";
-        btn.style.borderRadius = "20px";
+        let btn = document.createElement('div'); // Button yerine div kullanıyoruz ki iç içe tıklamalar sorun olmasın
+        
+        // Profesyonel Kart Tasarımı (Flashcard Görünümü)
+        btn.style.background = "#ffffff";
+        btn.style.border = "2px solid #e2e8f0";
+        btn.style.boxShadow = "0 10px 25px rgba(0,0,0,0.05)";
+        btn.style.padding = "25px 30px";
+        btn.style.borderRadius = "24px";
         btn.style.display = "flex";
         btn.style.flexDirection = "column";
         btn.style.alignItems = "center";
-        btn.style.gap = "15px";
+        btn.style.gap = "20px";
         btn.style.width = "100%"; 
+        btn.style.cursor = "pointer";
+        btn.style.transition = "all 0.3s cubic-bezier(0.25, 1, 0.5, 1)";
         
+        // Üzerine gelince havaya kalkma ve renklenme efekti
+        btn.onmouseenter = () => { 
+            btn.style.transform = "translateY(-5px)"; 
+            btn.style.boxShadow = "0 20px 40px rgba(108, 92, 231, 0.15)"; 
+            btn.style.borderColor = "#6c5ce7"; 
+        };
+        btn.onmouseleave = () => { 
+            btn.style.transform = "translateY(0)"; 
+            btn.style.boxShadow = "0 10px 25px rgba(0,0,0,0.05)"; 
+            btn.style.borderColor = "#e2e8f0"; 
+        };
+        
+        // Fiil kelimesi (Çok daha büyük ve net)
         let wordHtml = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(v.word, currentRoot.split("")) : v.word;
-        let btnHtml = `<div style="font-size: 3.8rem; font-weight: bold;">${wordHtml}</div>`;
+        let btnHtml = `<div style="font-family: 'Arakom', serif; font-size: 4.8rem; font-weight: bold; color: #1e293b; text-align: center;">${wordHtml}</div>`;
         
+        // Profesyonel Örnek Cümle Kutusu (Alıntı Tasarımı)
+        // Profesyonel Örnek Cümle Kutusu (Düzeltilmiş Renkler)
         if (v.ornek) {
             let ornekAr = v.ornek.ar || "";
             let ornekTr = v.ornek.tr || "";
             btnHtml += `
-                <div style="background: rgba(255,255,255,0.15); padding: 12px 20px; border-radius: 12px; width: 100%; box-sizing: border-box;">
-                    <div style="font-family: 'Arakom', serif; font-size: 2.2rem; color: #fff; line-height: 1.4;">${ornekAr}</div>
-                    <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.1rem; color: #f1f2f6; margin-top: 8px;">${ornekTr}</div>
+                <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
+                    <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
+                    
+                    <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
+                    
+                    <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: bold; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
                 </div>`;
         }
         
