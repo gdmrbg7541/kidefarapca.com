@@ -2016,22 +2016,36 @@ body.matrix-active { overflow: hidden !important; }
         min-width: 900px !important; /* Mobilde tablonun ezilmesini engeller */
     }
 }
-
 /* ==========================================================================
-   TABLODAKİ KELİMELERİN BOYUTUNU (FONT) KÜÇÜLTME
+   MOBİL YATAY (LANDSCAPE): TABLOYU EZİLMEKTEN KURTARMA VE YAZI BOYUTU
    ========================================================================== */
 
-/* Ana kutulardaki büyük Arapça yazılar (Eski değer: 42px) */
-.ar { 
-    font-size: 32px !important; 
-}
+/* Bu kurallar SADECE telefon/tablet yan çevrildiğinde çalışır. Masaüstüne ASLA dokunmaz! */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    
+    /* 1. Sadece mobil yatayda kelimeleri göz yormayacak boyuta indirir */
+    .ar { font-size: 30px !important; }
+    .ar-small { font-size: 22px !important; }
+    .siga-text { font-size: 22px !important; }
 
-/* Ana kutulardaki küçük Arapça yazılar (Eski değer: 30px) */
-.ar-small { 
-    font-size: 24px !important; 
-}
+    /* 2. Taşıyıcıyı özgür bırakır, kaydırma (scroll) çubuğunu aktifleştirir */
+    .tab-content {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important; /* Mobilde yağ gibi akıcı kaydırma */
+        padding-bottom: 30px !important; 
+    }
 
-/* Eğer fiil çekim tablosundaki (tıklayınca açılan) yazılar da biraz küçülsün isterseniz: (Eski değer: 28px) */
-.siga-text {
-    font-size: 24px !important; 
+    /* 3. İŞTE KESİN ÇÖZÜM: Tablonun ekrana sıkışıp kelimeleri taşırmasını kesin olarak YASAKLAR!
+       Tablo en az 950 piksel genişliğinde kalır. Ekran darsa ezilmez, kaydırma çubuğu çıkar. */
+    .tab-content .container {
+        width: 950px !important; 
+        min-width: 950px !important; 
+        margin: 0 auto !important; 
+    }
+    
+    /* Hücrelerin düzenli kalmasını sağlar */
+    table {
+        table-layout: fixed !important;
+        width: 100% !important;
+    }
 }
