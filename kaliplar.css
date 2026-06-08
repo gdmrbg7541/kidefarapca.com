@@ -1707,3 +1707,46 @@ body.matrix-active { overflow: hidden !important; }
     .nav-arrow { width: 38px !important; height: 70px !important; font-size: 1.6rem !important; border-radius: 8px !important; z-index: 1100; }
     #prev-arr { left: 4px !important; } #next-arr { right: 4px !important; }
 }
+
+/* ==========================================================================
+   FİİL ÇEKİMİ VE MARATON CİNSİYET (ERİL/DİŞİL) RENK EŞİTLEMESİ
+   ========================================================================== */
+
+/* 1. MARATON (KRONOMETRE) CİNSİYET RENKLERİ */
+#table-view .marathon-cell.muez-row { 
+    background-color: #e3f2fd !important; 
+    color: #1565c0 !important; 
+    border: 2px solid #bbdefb !important;
+}
+#table-view .marathon-cell.mue-row { 
+    background-color: #fce4ec !important; 
+    color: #c2185b !important; 
+    border: 2px solid #f8bbd0 !important;
+}
+/* Ben/Biz (Mütekellim) Özel Sınıfı - Nötr Gri */
+#table-view .marathon-cell.mutekellim-row {
+    background-color: #f8fafc !important; 
+    color: #334155 !important;
+    border: 2px solid #cbd5e1 !important;
+}
+
+/* 2. POPUP (ÇEKİM TABLOSU) CİNSİYET RENKLERİ EŞİTLEMESİ */
+.conjugation-table tbody tr:nth-child(1) td,
+.conjugation-table tbody tr:nth-child(3) td {
+    background-color: #e3f2fd !important; 
+    color: #1565c0 !important;
+    border: 2px solid #bbdefb !important;
+}
+.conjugation-table tbody tr:nth-child(2) td,
+.conjugation-table tbody tr:nth-child(4) td {
+    background-color: #fce4ec !important; 
+    color: #c2185b !important;
+    border: 2px solid #f8bbd0 !important;
+}
+
+/* ÖNEMLİ KORUMA: Maraton ekranında yanlış kelimeye tıklandığında yanan KIRMIZI hata rengini korur */
+#table-view .marathon-cell.error-active {
+    background-color: #fee2e2 !important; 
+    border-color: #ef4444 !important;
+    color: #991b1b !important;
+}

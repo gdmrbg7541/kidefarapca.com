@@ -1284,10 +1284,18 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     let rowIndex = Math.floor(i / 3);
                     let bgColor = '#ffffff';
                     
-                    if (tableType === 'olumlu') bgColor = (rowIndex % 2 === 0) ? '#e3f2fd' : '#fce4ec';
-                    else if (tableType === 'ma' || tableType === 'nehiy' || (tableType === 'la' && tip === 'muzari')) bgColor = (rowIndex % 2 === 0) ? '#ffebee' : '#fbe9e7';
-                    else if (tableType === 'la' && tip === 'mazi') bgColor = (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
-                    else if (tableType === 'lam') bgColor = (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
+                    // YENİ EKLENEN: 5. Satır (Ben/Biz) her zaman Nötr/Gri olsun!
+                    if (rowIndex === 4) {
+                        bgColor = '#f8fafc';
+                    } else if (tableType === 'olumlu') {
+                        bgColor = (rowIndex % 2 === 0) ? '#e3f2fd' : '#fce4ec';
+                    } else if (tableType === 'ma' || tableType === 'nehiy' || (tableType === 'la' && tip === 'muzari')) {
+                        bgColor = (rowIndex % 2 === 0) ? '#ffebee' : '#fbe9e7';
+                    } else if (tableType === 'la' && tip === 'mazi') {
+                        bgColor = (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
+                    } else if (tableType === 'lam') {
+                        bgColor = (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
+                    }
                     
                     let currentList = (tableType === 'lam') ? muzariListesi : kelimeListesi;
                     
@@ -4615,7 +4623,12 @@ window.loadMarathonTable = function() {
     window.mActiveSet.slice(start, end).forEach((w, i) => {
         const absoluteIdx = start + i;
         const div = document.createElement('div');
-        div.className = 'marathon-cell ' + (Math.floor(i/3) % 2 === 0 ? 'muez-row' : 'mue-row');
+        
+        // YENİ EKLENEN: Maraton için Ben/Biz satırı kontrolü
+        let rowIndex = Math.floor(i / 3);
+        let rowClass = (rowIndex === 4) ? 'mutekellim-row' : ((rowIndex % 2 === 0) ? 'muez-row' : 'mue-row');
+        
+        div.className = 'marathon-cell ' + rowClass;
         if(window.mErrorMemory.has(absoluteIdx)) div.classList.add('error-active');
         
         div.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(w, currentRoot.split("")) : w;
