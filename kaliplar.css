@@ -1778,22 +1778,22 @@ body.matrix-active { overflow: hidden !important; }
    MOBİL MOTORU: DİKEY UYARI, YATAY MİNİ MOD VE YAMALAR (SON TEMİZ VERSİYON)
    ========================================================================== */
 
-/* 1. TELEFON DÖNDÜRME ANİMASYONLARI (Klas ve Pürüzsüz Geçiş) */
+/* 1. TELEFON DÖNDÜRME ANİMASYONU (Klas ve Pürüzsüz Geçiş) */
 @keyframes smoothRotatePhone { 
     0% { transform: rotate(0deg); } 
-    40%, 60% { transform: rotate(-90deg); } /* Yan dönüp biraz bekler, sonra geri döner */
+    40%, 60% { transform: rotate(-90deg); } 
     100% { transform: rotate(0deg); } 
 }
 
 #mobile-portrait-warning { display: none; }
 
-/* 2. MOBİL DİKEY MOD (PORTRAIT) UYARI EKRANI (Premium ve Sade Tasarım) */
+/* 2. MOBİL DİKEY MOD (PORTRAIT) UYARI EKRANI (Aralıklı ve Sade Tasarım) */
 @media screen and (max-width: 1024px) and (orientation: portrait) {
     #mobile-portrait-warning {
         display: flex !important; 
         position: fixed !important; 
         top: 0; left: 0; width: 100vw; height: 100vh;
-        background-color: #fafafc !important; /* Göz yormayan, temiz kırık beyaz arka plan */
+        background-color: #fafafc !important; /* Temiz kırık beyaz */
         z-index: 9999999 !important; 
         justify-content: center !important; 
         align-items: center !important;
@@ -1806,36 +1806,29 @@ body.matrix-active { overflow: hidden !important; }
     body > div:not(#mobile-portrait-warning) { display: none !important; }
     
     .warning-animation-box { 
-        max-width: 320px; 
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 15px; /* İkon ve yazı arası boşluk */
+        justify-content: center;
+        gap: 45px; /* İŞTE BURASI: İkon ile yazı arasındaki boşluğu ferahlattı */
     }
     
     .phone-icon-wrapper { 
         position: relative; 
-        width: 300px; 
-        height: 300px; 
         display: flex;
         justify-content: center;
         align-items: center;
     }
     
-    .portrait-phone { 
-        font-size: 400px; 
-        color: #1d1d1f; /* Zarif bir koyu gri/siyah */
+    .portrait-phone-svg { 
+        /* Çizdiğimiz yeni SVG'nin animasyonu */
         animation: smoothRotatePhone 2.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; 
-    }
-    
-    /* Göz yoran dönen kırmızı oku gizleyerek sadelik sağladık */
-    .arrow-rotate { 
-        display: none !important; 
+        transform-origin: center center;
     }
     
     #mobile-portrait-warning h3 { 
         font-size: 22px; 
-        font-weight: 500; /* Çok kalın olmayan, kibar bir font kalınlığı */
+        font-weight: 500; 
         letter-spacing: 0.3px;
         margin: 0; 
         color: #1d1d1f; 
