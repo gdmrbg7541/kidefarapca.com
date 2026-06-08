@@ -3415,8 +3415,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Kök girildiğinde veya seçildiğinde tahtayı otomatik olarak sahneye çıkartan fonksiyon
 function autoSpawnRootClone() {
-    // MOBİLDE KLON KÖK İPTAL:
-    if (window.innerWidth <= 1024) return; 
 
     if (!currentRoot || currentRoot.length !== 3) return;
     
