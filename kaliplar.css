@@ -2095,3 +2095,88 @@ body.matrix-active { overflow: hidden !important; }
         width: 100% !important;
     }
 }
+
+/* ==========================================================================
+   MOBİL YATAY (LANDSCAPE): HAZIR KÖKLER EKRANI MİKRO MODU
+   ========================================================================== */
+
+/* SADECE telefon yan çevrildiğinde Hazır Kökler ekranını ultra-kompakt hale getirir */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    
+    /* 1. Ekranın kenarlarındaki ve üstündeki devasa boşlukları sıfırlar */
+    .new-verb-layout {
+        padding: 5px !important; 
+    }
+
+    /* 2. Çarpı Butonu (Kapatma) çok daha zarif ve küçük olur */
+    .root-header {
+        top: 5px !important;
+        right: 5px !important;
+        margin-bottom: 5px !important;
+    }
+
+    .verb-close-btn {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
+        border-width: 1px !important;
+    }
+
+    /* 3. Arama Çubuğu (Varsa) yüksekliği yarı yarıya iner */
+    #root-search {
+        height: 35px !important;
+        font-size: 16px !important;
+        padding: 0 10px !important;
+        border-radius: 8px !important;
+    }
+
+    /* 4. Önemli Kökler Bölümü (Yeşil butonlar yer kaplamasın diye ufalır) */
+    .important-roots-wrapper {
+        margin-bottom: 5px !important;
+    }
+
+    #important-roots-list {
+        gap: 6px !important;
+        padding: 5px 0 5px 0 !important;
+    }
+
+    .flat-root-item {
+        padding: 4px 10px !important;
+        font-size: 16px !important;
+        border-bottom-width: 2px !important;
+        border-radius: 6px !important;
+    }
+
+    /* 5. Alfabe Konteynerleri (4'lü Sütunlar) */
+    .letters-grid {
+        gap: 5px !important; /* Sütunlar arası boşluk minimuma iner */
+    }
+
+    .letter-column {
+        border-width: 2px !important;
+        border-radius: 8px !important;
+        gap: 4px !important;
+        padding-bottom: 10px !important;
+        padding-right: 2px !important;
+    }
+
+    /* 6. Sütun Başlıkları (İçinde tüm harflerin yazdığı mavi kısımlar)
+       Yatayda çok harf olduğu için alt satıra geçmemesi adına iyice küçültüldü */
+    .col-range-header {
+        padding: 4px !important;
+        font-size: 11px !important; 
+        margin-top: -2px !important;
+        margin-left: -2px !important;
+        margin-right: -2px !important;
+        border-radius: 6px 6px 0 0 !important;
+        border-bottom-width: 2px !important;
+    }
+
+    /* 7. Sütun içindeki Fiil Kutuları (Glass-box) */
+    .letter-column .glass-box {
+        min-height: 30px !important;
+        margin: 0 auto !important;
+        width: 95% !important;
+        padding: 2px !important;
+    }
+}
