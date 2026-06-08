@@ -1614,16 +1614,6 @@ body.matrix-active { overflow: hidden !important; }
     height: 18px;
 }
 
-/* MOBİL ÜST BAR İÇİN KONUM DÜZELTMESİ */
-.kutu-timer-btn-mobile {
-    top: 50%;
-    right: 50px; 
-    transform: translateY(-50%);
-}
-.kutu-timer-btn-mobile:hover {
-    transform: translateY(-50%) scale(1.1);
-}
-
 
 /* ==========================================================================
    FİİL ÇEKİMİ VE MARATON CİNSİYET (ERİL/DİŞİL) RENK EŞİTLEMESİ
