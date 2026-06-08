@@ -1785,185 +1785,11 @@ body.matrix-active { overflow: hidden !important; }
 }
 
 /* ==========================================================================
-   YENİ MOBİL MOTORU: DİKEYDE KİLİTLEME VE YATAYDA MİNİ-KOMPAKT MOD
+   YENİ MOBİL MOTORU: DİKEYDE UYARI, YATAYDA MİNİ-KOMPAKT MOD (SADELEŞTİRİLMİŞ)
    ========================================================================== */
 
-/* Varsayılan olarak uyarı ekranı gizlidir */
-#mobile-portrait-warning {
-    display: none;
-}
-
 /* --------------------------------------------------------------------------
-   A) MOBİL DİKEY MOD (PORTRAIT) UYARI EKRANI ACTIVASYONU
-   -------------------------------------------------------------------------- */
-@media screen and (max-width: 980px) and (orientation: portrait) {
-    #mobile-portrait-warning {
-        display: flex !important;
-        position: fixed !important;
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        background: linear-gradient(135deg, #1e293b, #0f172a) !important;
-        color: #ffffff !important;
-        z-index: 999999 !important;
-        justify-content: center !important;
-        align-items: center !important;
-        text-align: center !important;
-        padding: 30px !important;
-        box-sizing: border-box !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    /* Uyarı açıkken arkadaki hiçbir ana eleman görünmesin ve tıklanmasın */
-    body > div:not(#mobile-portrait-warning) {
-        display: none !important;
-    }
-
-    .warning-animation-box {
-        max-width: 400px;
-    }
-
-    .phone-icon-wrapper {
-        position: relative;
-        width: 80px;
-        height: 80px;
-        margin: 0 auto 25px auto;
-    }
-
-    .portrait-phone {
-        font-size: 60px;
-        color: #38bdf8;
-        animation: rotatePhone 2s ease-in-out infinite;
-    }
-
-    .arrow-rotate {
-        position: absolute;
-        font-size: 24px;
-        color: #f43f5e;
-        top: 10px;
-        right: -5px;
-        animation: spinArrow 2s linear infinite;
-    }
-
-    #mobile-portrait-warning h3 {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 12px;
-        color: #f1f5f9;
-    }
-
-    #mobile-portrait-warning p {
-        font-size: 14px;
-        color: #94a3b8;
-        line-height: 1.6;
-    }
-}
-
-/* --------------------------------------------------------------------------
-   B) MOBİL YATAY MOD (LANDSCAPE) - MİNİ-KOMPAKT TABLO & HAFİF GEZİNTİ
-   -------------------------------------------------------------------------- */
-@media screen and (max-width: 980px) and (orientation: landscape) {
-    
-    /* Kullanıcının parmakla yakınlaştırıp serbestçe gezebilmesi için zemini hazırla */
-    html, body {
-        overflow: auto !important;
-        -webkit-text-size-adjust: 100% !important;
-        padding: 10px !important;
-        background-color: #ffffff !important;
-    }
-
-    /* Üst menü butonlarını (Kalem, Değiştir, Mercek) küçültüp tek satıra sıkıştırıyoruz */
-    .top-bar {
-        gap: 6px !important;
-        margin-bottom: 8px !important;
-    }
-
-    #root-display-box,
-    .switch-btn,
-    .zoom-toggle-area,
-    .back-link {
-        height: 38px !important;
-        min-height: 38px !important;
-        font-size: 13px !important;
-        padding: 0 10px !important;
-    }
-
-    /* Ana siyah kutu yazım alanını küçült */
-    .temp-root-display {
-        font-size: 2.5rem !important;
-        height: 60px !important;
-    }
-
-    /* FİİL TABLOSU: Mini-Kompakt Boyut. Telefon büyütüldüğünde piksellenmez, kristal nettir */
-    .verb-table {
-        transform-origin: top right;
-        width: 100% !important;
-    }
-
-    .verb-table th, 
-    .verb-table td {
-        padding: 6px 4px !important;
-        font-size: 11px !important; /* Küçük harfler telefon ekranına muazzam sığar */
-    }
-
-    .verb-table td b {
-        font-size: 14px !important; /* Arapça kelimeler net okunsun */
-    }
-
-    /* KLAVYE: Yatayda parmakların rahat basması için basık ve şık dizilim */
-    .keyboard-overlay {
-        padding: 5px !important;
-    }
-
-    .keyboard-inner {
-        gap: 4px !important;
-        max-width: 100% !important;
-    }
-
-    .kb-row {
-        gap: 4px !important;
-        margin-bottom: 4px !important;
-    }
-
-    .key {
-        height: 34px !important; /* Tuş yüksekliği daraltıldı, ekranı kapatmaz */
-        font-size: 1.2rem !important;
-        border-radius: 4px !important;
-    }
-
-    .key-special {
-        min-width: 50px !important;
-    }
-
-    /* Kök yazarken tepede çıkan büyük öneri çipleri yatay ekrana uyarlandı */
-    #main-keyboard-predictions {
-        min-height: 45px !important;
-        margin-bottom: 8px !important;
-        gap: 8px !important;
-    }
-
-    .prediction-chip {
-        font-size: 1.5rem !important;
-        padding: 6px 16px !important;
-        border-radius: 12px !important;
-    }
-
-    /* HAZIR KÖKLER POPUP: Yatay ekranda tam sığması için */
-    .new-verb-layout {
-        padding-top: 35px !important;
-        padding-bottom: 10px !important;
-    }
-    
-    .root-header {
-        top: 8px !important;
-        right: 12px !important;
-    }
-
-    .letter-column {
-        padding-bottom: 25px !important;
-    }
-}
-
-/* --------------------------------------------------------------------------
-   C) TELEFON DÖNDÜRME ANİMASYONLARI
+   1) TELEFON DÖNDÜRME ANİMASYONLARI
    -------------------------------------------------------------------------- */
 @keyframes rotatePhone {
     0%, 100% { transform: rotate(0deg); }
@@ -1976,251 +1802,125 @@ body.matrix-active { overflow: hidden !important; }
     100% { transform: rotate(360deg); opacity: 0.3; }
 }
 
-/* ==========================================================================
-   TABLO DAVRANIŞI: MASAÜSTÜNDE SIĞDIR, MOBİLDE KAYDIR (SIFIR TAŞMA)
-   ========================================================================== */
+#mobile-portrait-warning { display: none; }
 
-/* 1. Geçiş motorunu (slider) koruma altına alıyoruz */
-.window-pencere {
-    overflow: hidden !important; 
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-.tab-content {
-    width: 50% !important; 
-    flex-shrink: 0 !important;
-    overflow-y: visible !important; 
-    overflow-x: hidden !important; /* Masaüstünde yatay scroll çubuğunu KESİNLİKLE yasaklar */
-    padding-bottom: 25px !important; 
-    box-sizing: border-box !important;
-}
-
-/* 2. MASAÜSTÜ: Tablo ekrana tam sığar, padding taşmaları sıfırlanır */
-.tab-content .container {
-    width: 100% !important;
-    min-width: 0 !important; 
-    margin: 0 auto !important; 
-    white-space: normal !important; 
-    box-sizing: border-box !important; /* İç boşlukların kutuyu şişirip scroll çıkarmasını kalıcı olarak engeller */
-}
-
-/* 3. MOBİL VE TABLET: Ekran daraldığında "Kaydırılabilir Harita" moduna geçer */
-@media screen and (max-width: 1024px) {
-    .tab-content {
-        overflow-x: auto !important; /* Sadece mobilde yatay kaydırmayı serbest bırakır */
-        -webkit-overflow-scrolling: touch !important; 
+/* --------------------------------------------------------------------------
+   2) MOBİL DİKEY MOD (PORTRAIT) UYARI EKRANI
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+    #mobile-portrait-warning {
+        display: flex !important; position: fixed !important; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: linear-gradient(135deg, #1e293b, #0f172a) !important; color: #ffffff !important;
+        z-index: 999999 !important; justify-content: center !important; align-items: center !important;
+        text-align: center !important; padding: 30px !important; box-sizing: border-box !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+    body > div:not(#mobile-portrait-warning) { display: none !important; }
     
-    .tab-content .container {
-        min-width: 900px !important; /* Mobilde tablonun ezilmesini engeller */
-    }
+    .warning-animation-box { max-width: 400px; }
+    .phone-icon-wrapper { position: relative; width: 80px; height: 80px; margin: 0 auto 25px auto; }
+    .portrait-phone { font-size: 60px; color: #38bdf8; animation: rotatePhone 2s ease-in-out infinite; }
+    .arrow-rotate { position: absolute; font-size: 24px; color: #f43f5e; top: 10px; right: -5px; animation: spinArrow 2s linear infinite; }
+    #mobile-portrait-warning h3 { font-size: 22px; font-weight: bold; margin-bottom: 12px; color: #f1f5f9; }
+    #mobile-portrait-warning p { font-size: 14px; color: #94a3b8; line-height: 1.6; }
 }
 
-/* ==========================================================================
-   MOBİL YATAY (LANDSCAPE): ELEMENTLERİ KÜÇÜLTME VE TABLO HİZALAMA
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   3) TABLO DAVRANIŞI: MASAÜSTÜNDE SIĞDIR, MOBİLDE KAYDIR (SIFIR TAŞMA)
+   -------------------------------------------------------------------------- */
+.window-pencere { overflow: hidden !important; width: 100% !important; box-sizing: border-box !important; }
+.tab-content { width: 50% !important; flex-shrink: 0 !important; overflow-y: visible !important; overflow-x: hidden !important; padding-bottom: 25px !important; box-sizing: border-box !important; }
+.tab-content .container { width: 100% !important; min-width: 0 !important; margin: 0 auto !important; white-space: normal !important; box-sizing: border-box !important; }
 
-/* Bu ayarlar SADECE telefon yan çevrildiğinde çalışır. Masaüstüne ASLA dokunmaz! */
+@media screen and (max-width: 1024px) {
+    .tab-content { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+    .tab-content .container { min-width: 900px !important; }
+}
+
+/* --------------------------------------------------------------------------
+   4) MOBİL YATAY MOD (LANDSCAPE) - TÜM MİKRO MOD YAMALARININ BİRLEŞİMİ
+   -------------------------------------------------------------------------- */
 @media screen and (max-width: 1024px) and (orientation: landscape) {
     
-    /* 1. Üst Bar ve Butonlar (Ekranda yer kaplamasın diye çok ince) */
-    #root-display-box,
-    .switch-btn,
-    .segmented-switch,
-    .zoom-toggle-area,
-    .back-link {
-        height: 30px !important;
-        min-height: 30px !important;
-        font-size: 12px !important;
-        padding: 0 6px !important;
+    /* Zemin ve Üst Bar */
+    html, body { overflow: auto !important; -webkit-text-size-adjust: 100% !important; padding: 10px !important; background-color: #ffffff !important; }
+    .top-bar { gap: 6px !important; margin-bottom: 8px !important; }
+    
+    #root-display-box, .switch-btn, .segmented-switch, .zoom-toggle-area, .back-link {
+        height: 30px !important; min-height: 30px !important; font-size: 12px !important; padding: 0 6px !important;
     }
+    .temp-root-display { font-size: 2.5rem !important; height: 60px !important; }
 
-    /* 2. Ana Kelimeler (Kutuların içindeki yazılar göz yormayacak kadar küçük) */
-    .ar { font-size: 26px !important; line-height: 1.1 !important; }
-    .ar-small { font-size: 18px !important; line-height: 1.1 !important; }
+    /* Arapça Kelime Boyutları (Mücerret ve Mezid Eşitlenmiş Hali) */
+    .ar, #tab1 .ar, #tab2 .ar { font-size: 28px !important; line-height: 1.1 !important; }
+    .ar-small, #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1.1 !important; }
     .siga-text { font-size: 18px !important; }
-    
-    /* 3. İŞTE KESİN ÇÖZÜM: Kutu Genişlikleri ve Taşma Engeli */
+
+    /* Kutu (Glass-Box) ve Numaralar (Ref) */
     .glass-box {
-        width: auto !important; /* Kutuyu gereksiz uzatmaz, içindeki kelime kadar yer kaplar! */
-        min-width: 50px !important; 
-        max-width: 95% !important; /* Kutu ne olursa olsun hücresinden (tablodan) KESİNLİKLE taşamaz */
-        padding: 4px 8px !important;
-        margin: 2px auto !important;
-        display: inline-block !important;
-        box-sizing: border-box !important;
+        width: auto !important; min-width: 50px !important; max-width: 95% !important; 
+        padding: 4px 8px !important; margin: 2px auto !important; display: inline-block !important; box-sizing: border-box !important;
     }
-    
-    /* Sağ Üstteki Kırmızı Numaralar (Ref) */
-    .ref {
-        font-size: 11px !important;
-        top: 1px !important;
-        right: 2px !important;
-        padding: 1px 4px !important;
-    }
+    .ref { font-size: 11px !important; top: 1px !important; right: 2px !important; padding: 1px 4px !important; }
 
-    /* Tablo Hücreleri */
+    /* Ana Tablo Ayarları ve Genişlikleri */
+    .verb-table { transform-origin: top right; width: 100% !important; }
+    table { table-layout: fixed !important; width: 100% !important; }
     th { font-size: 14px !important; padding: 4px 2px !important; }
-    td { padding: 2px 1px !important; border-width: 2px !important; text-align: center !important; }
+    td { padding: 2px 1px !important; border-width: 2px !important; text-align: center !important; font-size: 11px !important; }
+    .verb-table td b { font-size: 14px !important; }
 
-    /* Sanal Klavye ve Öneri Çipleri */
-    .key, .search-key, .var-key { height: 30px !important; width: 45px !important; font-size: 16px !important; }
-    .prediction-chip { font-size: 1.2rem !important; padding: 6px 12px !important; height: 30px !important; min-height: 30px !important; }
+    .tab-content { padding-bottom: 30px !important; }
+    #tab1 .container { width: 100% !important; min-width: 600px !important; margin: 0 auto !important; }
+    #tab2 .container { width: 100% !important; min-width: 950px !important; margin: 0 auto !important; }
+
+    /* Klavye, Tuşlar ve Çipler */
+    .keyboard-overlay { padding: 5px !important; }
+    .keyboard-inner { gap: 4px !important; max-width: 100% !important; }
+    .kb-row { gap: 4px !important; margin-bottom: 4px !important; }
+    .key, .search-key, .var-key { height: 30px !important; width: 45px !important; font-size: 16px !important; border-radius: 4px !important; }
+    .key-special { min-width: 50px !important; }
+    
+    #main-keyboard-predictions { min-height: 45px !important; margin-bottom: 8px !important; gap: 8px !important; }
+    .prediction-chip { font-size: 1.2rem !important; padding: 6px 12px !important; border-radius: 12px !important; height: 30px !important; min-height: 30px !important; }
     .suffix-btn { height: 35px !important; font-size: 14px !important; }
 
-    /* 4. TABLO TAŞIYICILARI (Mücerret ve Mezid Özel Ayrımı) */
-    .tab-content {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important; /* Mobilde yağ gibi akıcı kaydırma */
-        padding-bottom: 30px !important; 
-    }
+    /* Hazır Kökler (Alfabe) Arayüzü */
+    .new-verb-layout { padding: 5px !important; }
+    .root-header { top: 5px !important; right: 5px !important; margin-bottom: 5px !important; }
+    .verb-close-btn { width: 32px !important; height: 32px !important; font-size: 14px !important; border-width: 1px !important; }
+    #root-search { height: 35px !important; font-size: 16px !important; padding: 0 10px !important; border-radius: 8px !important; }
+    
+    .important-roots-wrapper { margin-bottom: 5px !important; }
+    #important-roots-list { gap: 6px !important; padding: 5px 0 5px 0 !important; }
+    .flat-root-item { padding: 4px 10px !important; font-size: 16px !important; border-bottom-width: 2px !important; border-radius: 6px !important; }
 
-    /* Mücerret Tablosu (Az sütunlu): Sütunlar çok genişleyip kutuları sündürmesin diye 600px ile sınırlandırılır */
-    #tab1 .container {
-        width: 100% !important;
-        min-width: 600px !important; 
-        margin: 0 auto !important; 
+    .letters-grid { gap: 5px !important; }
+    .letter-column { 
+        border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; 
+        padding-right: 2px !important; padding-bottom: 80px !important; /* Alt kısım görünme yaması */
     }
-
-    /* Mezid Tablosu (Çok sütunlu): Sütunlar ezilmesin diye harita gibi 950px genişliğinde açılır */
-    #tab2 .container {
-        width: 100% !important;
-        min-width: 950px !important; 
-        margin: 0 auto !important; 
+    .col-range-header { 
+        padding: 4px !important; font-size: 11px !important; margin-top: -2px !important; 
+        margin-left: -2px !important; margin-right: -2px !important; border-radius: 6px 6px 0 0 !important; border-bottom-width: 2px !important; 
     }
-
-    table {
-        table-layout: fixed !important;
-        width: 100% !important;
-    }
+    .letter-column .glass-box { min-height: 30px !important; margin: 0 auto !important; width: 95% !important; padding: 2px !important; }
 }
-
 /* ==========================================================================
-   MOBİL YATAY (LANDSCAPE): HAZIR KÖKLER EKRANI MİKRO MODU
+   YAMA: MARATON SEÇİM EKRANI FİİL LİSTESİ KAYDIRMA (SCROLL) ÇÖZÜMÜ
    ========================================================================== */
 
-/* SADECE telefon yan çevrildiğinde Hazır Kökler ekranını ultra-kompakt hale getirir */
-@media screen and (max-width: 1024px) and (orientation: landscape) {
-    
-    /* 1. Ekranın kenarlarındaki ve üstündeki devasa boşlukları sıfırlar */
-    .new-verb-layout {
-        padding: 5px !important; 
-    }
-
-    /* 2. Çarpı Butonu (Kapatma) çok daha zarif ve küçük olur */
-    .root-header {
-        top: 5px !important;
-        right: 5px !important;
-        margin-bottom: 5px !important;
-    }
-
-    .verb-close-btn {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 14px !important;
-        border-width: 1px !important;
-    }
-
-    /* 3. Arama Çubuğu (Varsa) yüksekliği yarı yarıya iner */
-    #root-search {
-        height: 35px !important;
-        font-size: 16px !important;
-        padding: 0 10px !important;
-        border-radius: 8px !important;
-    }
-
-    /* 4. Önemli Kökler Bölümü (Yeşil butonlar yer kaplamasın diye ufalır) */
-    .important-roots-wrapper {
-        margin-bottom: 5px !important;
-    }
-
-    #important-roots-list {
-        gap: 6px !important;
-        padding: 5px 0 5px 0 !important;
-    }
-
-    .flat-root-item {
-        padding: 4px 10px !important;
-        font-size: 16px !important;
-        border-bottom-width: 2px !important;
-        border-radius: 6px !important;
-    }
-
-    /* 5. Alfabe Konteynerleri (4'lü Sütunlar) */
-    .letters-grid {
-        gap: 5px !important; /* Sütunlar arası boşluk minimuma iner */
-    }
-
-    .letter-column {
-        border-width: 2px !important;
-        border-radius: 8px !important;
-        gap: 4px !important;
-        padding-bottom: 10px !important;
-        padding-right: 2px !important;
-    }
-
-    /* 6. Sütun Başlıkları (İçinde tüm harflerin yazdığı mavi kısımlar)
-       Yatayda çok harf olduğu için alt satıra geçmemesi adına iyice küçültüldü */
-    .col-range-header {
-        padding: 4px !important;
-        font-size: 11px !important; 
-        margin-top: -2px !important;
-        margin-left: -2px !important;
-        margin-right: -2px !important;
-        border-radius: 6px 6px 0 0 !important;
-        border-bottom-width: 2px !important;
-    }
-
-    /* 7. Sütun içindeki Fiil Kutuları (Glass-box) */
-    .letter-column .glass-box {
-        min-height: 30px !important;
-        margin: 0 auto !important;
-        width: 95% !important;
-        padding: 2px !important;
-    }
+#marathon-selection-area {
+    justify-content: flex-start !important; /* Sistemi ortalamaktan kurtarıp üstten başlatır */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important; /* Mobilde kaydırmanın "yağ gibi" akmasını sağlar */
+    padding-bottom: 80px !important; /* Alt kısımda rahat bir gezinme boşluğu bırakır */
 }
 
-/* ==========================================================================
-   YAMA: MÜCERRET/MEZİD EŞİTLEMESİ VE ALFABE ALT BOŞLUĞU
-   ========================================================================== */
-@media screen and (max-width: 1024px) and (orientation: landscape) {
-    
-    /* 1. Mücerret ve Mezid kelime boyutlarını zorla eşitler */
-    #tab1 .ar, #tab2 .ar { font-size: 28px !important; line-height: 1.1 !important; }
-    #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1.1 !important; }
-
-    /* 2. Hazır Kökler sütunlarının altındaki fiillerin görünmesi için yukarı itme boşluğu */
-    .letter-column { padding-bottom: 80px !important; }
-}
-
-/* ==========================================================================
-   YAMA: KAHVERENGİ KÖK KUTUSUNU (AHŞAP TAŞ) MOBİLDE ZORLA GÖSTERME
-   ========================================================================== */
-@media screen and (max-width: 1024px) and (orientation: landscape) {
-    
-    /* Eski kodların "gizle" komutunu ezer ve kutuyu zorla ekrana getirir */
-    .draggable-root-clone {
-        display: block !important; 
-        visibility: visible !important;
-        opacity: 1 !important;
-        z-index: 999999 !important; /* Her şeyin üstünde durmasını garantiler */
-        
-        /* Mobil ekrana sığması için zarifçe küçültüldü */
-        font-size: 2rem !important; 
-        min-width: 140px !important;
-        padding: 6px 12px 10px 0px !important;
-    }
-    
-    /* İçindeki küçük kronometre (oyun) butonunu da mobilde orantılı küçültür */
-    .draggable-root-clone .kutu-timer-btn {
-        width: 26px !important;
-        height: 26px !important;
-        top: 2px !important;
-        right: 2px !important;
-    }
-    .draggable-root-clone .kutu-timer-btn svg {
-        width: 15px !important;
-        height: 15px !important;
-    }
+#marathon-verb-buttons {
+    justify-content: flex-start !important; /* Kilitlenmeyi çözen ana komut */
+    height: auto !important;
+    min-height: max-content !important; /* İçeriğin sıkışmasını engeller */
+    padding-bottom: 40px !important; 
+    margin-top: 20px !important;
 }
