@@ -1827,7 +1827,7 @@ body.matrix-active { overflow: hidden !important; }
     }
     
     #mobile-portrait-warning h3 { 
-        font-size: 100px; /* Yazı çok daha büyük hale getirildi */
+        font-size: 75px; /* Yazı çok daha büyük hale getirildi */
         font-weight: 500; 
         letter-spacing: 0.5px;
         margin: 0; 
