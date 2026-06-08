@@ -1866,3 +1866,51 @@ body.matrix-active { overflow: hidden !important; }
 #marathon-selection-area { justify-content: flex-start !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; padding-bottom: 80px !important; }
 #marathon-verb-buttons { justify-content: flex-start !important; height: auto !important; min-height: max-content !important; padding-bottom: 40px !important; margin-top: 20px !important; }
 
+/* ========================================================
+   MOBİL LİSTE EKRANI DÜZELTMESİ
+======================================================== */
+#mobile-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #ffffff;
+    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    z-index: 1000000 !important; /* Tabloların çok üstünde olması için */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+}
+
+#mobile-grid {
+    position: fixed;
+    top: 60px; 
+    left: 0; 
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: #f8f9fa;
+    z-index: 999999 !important; /* Ekranda tam kaplaması için */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column; /* Kutuları aşağı doğru dizer */
+    align-items: center;
+    padding: 20px;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+/* Mobildeki sarı vurgulu kutuların boyutları */
+#mobile-grid .glass-box {
+    width: 95% !important;
+    max-width: 400px;
+    min-height: 80px;
+}
+
+/* Kahverengi Kök Kutusunu Görünür Kılma (Kayıp Kutu Çözümü) */
+#crisp-root-clone, .draggable-root-clone {
+    z-index: 1000005 !important; /* Üst barın ve listelerin de üstüne çıkarır */
+}
