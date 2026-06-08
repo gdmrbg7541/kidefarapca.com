@@ -2016,3 +2016,22 @@ body.matrix-active { overflow: hidden !important; }
         min-width: 900px !important; /* Mobilde tablonun ezilmesini engeller */
     }
 }
+
+/* ==========================================================================
+   TABLODAKİ KELİMELERİN BOYUTUNU (FONT) KÜÇÜLTME
+   ========================================================================== */
+
+/* Ana kutulardaki büyük Arapça yazılar (Eski değer: 42px) */
+.ar { 
+    font-size: 32px !important; 
+}
+
+/* Ana kutulardaki küçük Arapça yazılar (Eski değer: 30px) */
+.ar-small { 
+    font-size: 24px !important; 
+}
+
+/* Eğer fiil çekim tablosundaki (tıklayınca açılan) yazılar da biraz küçülsün isterseniz: (Eski değer: 28px) */
+.siga-text {
+    font-size: 24px !important; 
+}
