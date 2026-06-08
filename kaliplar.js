@@ -3414,7 +3414,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 // Kök girildiğinde veya seçildiğinde tahtayı otomatik olarak sahneye çıkartan fonksiyon
+// Kök girildiğinde veya seçildiğinde tahtayı otomatik olarak sahneye çıkartan fonksiyon
 function autoSpawnRootClone() {
+    // MOBİLDE İPTAL EDEN KOD (if window.innerWidth <= 1024) BURADAN SİLİNDİ
 
     if (!currentRoot || currentRoot.length !== 3) return;
     
