@@ -523,6 +523,8 @@ function selectReadyVerb(verb) {
     if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
     if (typeof currentTabActive !== 'undefined' && currentTabActive === 1 && typeof setTab === 'function') setTab(0);
 
+}
+
 function clearOtherActiveBoxes(currentBox) {
     document.querySelectorAll('.glass-box').forEach(box => {
         if (box !== currentBox) {
