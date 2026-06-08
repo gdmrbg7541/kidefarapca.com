@@ -1823,7 +1823,7 @@ body.matrix-active { overflow: hidden !important; }
     }
     
     .portrait-phone { 
-        font-size: 300px; 
+        font-size: 400px; 
         color: #1d1d1f; /* Zarif bir koyu gri/siyah */
         animation: smoothRotatePhone 2.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; 
     }
