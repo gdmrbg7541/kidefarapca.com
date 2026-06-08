@@ -1977,26 +1977,42 @@ body.matrix-active { overflow: hidden !important; }
 }
 
 /* ==========================================================================
-   ANA TABLOLARI EKRANA SIKIŞTIRMAYIP "GEZİLEBİLİR (SCROLL)" HALE GETİRME
+   TABLO DAVRANIŞI: MASAÜSTÜNDE SIĞDIR, MOBİLDE KAYDIR (SIFIR TAŞMA)
    ========================================================================== */
 
-/* İçeriğin ezilmesini engeller, kutuları doğal (geniş) boyutunda bırakır */
-.tab-content {
-    min-width: max-content !important; 
-    padding: 10px 20px 40px 20px !important; /* Rahat gezinme boşlukları */
-}
-
-/* Taşan kısımlar için pencereye yatay ve dikey kaydırma (Scroll) özelliği ekler */
+/* 1. Geçiş motorunu (slider) koruma altına alıyoruz */
 .window-pencere {
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important; /* Mobilde kaydırmanın "yağ gibi" akmasını sağlar */
+    overflow: hidden !important; 
     width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Varsa ızgaraların (grid) zorla daralmasını önleyen kalkan */
-#tab1, #tab2 {
-    display: grid !important;
-    justify-content: start !important; /* Merkeze sıkıştırmak yerine soldan başlatıp sağa doğru dizer */
+.tab-content {
+    width: 50% !important; 
+    flex-shrink: 0 !important;
+    overflow-y: visible !important; 
+    overflow-x: hidden !important; /* Masaüstünde yatay scroll çubuğunu KESİNLİKLE yasaklar */
+    padding-bottom: 25px !important; 
+    box-sizing: border-box !important;
 }
 
+/* 2. MASAÜSTÜ: Tablo ekrana tam sığar, padding taşmaları sıfırlanır */
+.tab-content .container {
+    width: 100% !important;
+    min-width: 0 !important; 
+    margin: 0 auto !important; 
+    white-space: normal !important; 
+    box-sizing: border-box !important; /* İç boşlukların kutuyu şişirip scroll çıkarmasını kalıcı olarak engeller */
+}
+
+/* 3. MOBİL VE TABLET: Ekran daraldığında "Kaydırılabilir Harita" moduna geçer */
+@media screen and (max-width: 1024px) {
+    .tab-content {
+        overflow-x: auto !important; /* Sadece mobilde yatay kaydırmayı serbest bırakır */
+        -webkit-overflow-scrolling: touch !important; 
+    }
+    
+    .tab-content .container {
+        min-width: 900px !important; /* Mobilde tablonun ezilmesini engeller */
+    }
+}
