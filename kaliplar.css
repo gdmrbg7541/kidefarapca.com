@@ -1976,3 +1976,27 @@ body.matrix-active { overflow: hidden !important; }
     100% { transform: rotate(360deg); opacity: 0.3; }
 }
 
+/* ==========================================================================
+   ANA TABLOLARI EKRANA SIKIŞTIRMAYIP "GEZİLEBİLİR (SCROLL)" HALE GETİRME
+   ========================================================================== */
+
+/* İçeriğin ezilmesini engeller, kutuları doğal (geniş) boyutunda bırakır */
+.tab-content {
+    min-width: max-content !important; 
+    padding: 10px 20px 40px 20px !important; /* Rahat gezinme boşlukları */
+}
+
+/* Taşan kısımlar için pencereye yatay ve dikey kaydırma (Scroll) özelliği ekler */
+.window-pencere {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important; /* Mobilde kaydırmanın "yağ gibi" akmasını sağlar */
+    width: 100% !important;
+}
+
+/* Varsa ızgaraların (grid) zorla daralmasını önleyen kalkan */
+#tab1, #tab2 {
+    display: grid !important;
+    justify-content: start !important; /* Merkeze sıkıştırmak yerine soldan başlatıp sağa doğru dizer */
+}
+

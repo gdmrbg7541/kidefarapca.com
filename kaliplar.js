@@ -3815,13 +3815,6 @@ document.addEventListener('DOMContentLoaded', () => {
         grid.id = 'mobile-grid';
         document.body.appendChild(grid);
     }
-
-    // Mobilde sayfa açılır açılmaz kök menüsünü (listeyi) göster
-    if (window.innerWidth <= 1024) {
-        setTimeout(() => {
-            if (typeof openVerbModal === 'function') openVerbModal();
-        }, 300);
-    }
 });
 
 // ==================================================================
