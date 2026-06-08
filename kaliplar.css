@@ -1778,27 +1778,68 @@ body.matrix-active { overflow: hidden !important; }
    MOBİL MOTORU: DİKEY UYARI, YATAY MİNİ MOD VE YAMALAR (SON TEMİZ VERSİYON)
    ========================================================================== */
 
-/* 1. TELEFON DÖNDÜRME ANİMASYONLARI */
-@keyframes rotatePhone { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } }
-@keyframes spinArrow { 0% { transform: rotate(0deg); opacity: 0.3; } 50% { opacity: 1; } 100% { transform: rotate(360deg); opacity: 0.3; } }
+/* 1. TELEFON DÖNDÜRME ANİMASYONLARI (Klas ve Pürüzsüz Geçiş) */
+@keyframes smoothRotatePhone { 
+    0% { transform: rotate(0deg); } 
+    40%, 60% { transform: rotate(-90deg); } /* Yan dönüp biraz bekler, sonra geri döner */
+    100% { transform: rotate(0deg); } 
+}
+
 #mobile-portrait-warning { display: none; }
 
-/* 2. MOBİL DİKEY MOD (PORTRAIT) UYARI EKRANI */
+/* 2. MOBİL DİKEY MOD (PORTRAIT) UYARI EKRANI (Premium ve Sade Tasarım) */
 @media screen and (max-width: 1024px) and (orientation: portrait) {
     #mobile-portrait-warning {
-        display: flex !important; position: fixed !important; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: linear-gradient(135deg, #1e293b, #0f172a) !important; color: #ffffff !important;
-        z-index: 999999 !important; justify-content: center !important; align-items: center !important;
-        text-align: center !important; padding: 30px !important; box-sizing: border-box !important;
+        display: flex !important; 
+        position: fixed !important; 
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background-color: #fafafc !important; /* Göz yormayan, temiz kırık beyaz arka plan */
+        z-index: 9999999 !important; 
+        justify-content: center !important; 
+        align-items: center !important;
+        text-align: center !important; 
+        padding: 40px !important; 
+        box-sizing: border-box !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+    
     body > div:not(#mobile-portrait-warning) { display: none !important; }
-    .warning-animation-box { max-width: 400px; }
-    .phone-icon-wrapper { position: relative; width: 80px; height: 80px; margin: 0 auto 25px auto; }
-    .portrait-phone { font-size: 60px; color: #38bdf8; animation: rotatePhone 2s ease-in-out infinite; }
-    .arrow-rotate { position: absolute; font-size: 24px; color: #f43f5e; top: 10px; right: -5px; animation: spinArrow 2s linear infinite; }
-    #mobile-portrait-warning h3 { font-size: 22px; font-weight: bold; margin-bottom: 12px; color: #f1f5f9; }
-    #mobile-portrait-warning p { font-size: 14px; color: #94a3b8; line-height: 1.6; }
+    
+    .warning-animation-box { 
+        max-width: 320px; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px; /* İkon ve yazı arası boşluk */
+    }
+    
+    .phone-icon-wrapper { 
+        position: relative; 
+        width: 70px; 
+        height: 70px; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .portrait-phone { 
+        font-size: 55px; 
+        color: #1d1d1f; /* Zarif bir koyu gri/siyah */
+        animation: smoothRotatePhone 2.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; 
+    }
+    
+    /* Göz yoran dönen kırmızı oku gizleyerek sadelik sağladık */
+    .arrow-rotate { 
+        display: none !important; 
+    }
+    
+    #mobile-portrait-warning h3 { 
+        font-size: 22px; 
+        font-weight: 500; /* Çok kalın olmayan, kibar bir font kalınlığı */
+        letter-spacing: 0.3px;
+        margin: 0; 
+        color: #1d1d1f; 
+    }
 }
 
 /* 3. TABLO DAVRANIŞI: MASAÜSTÜNDE SIĞDIR, MOBİLDE KAYDIR */
