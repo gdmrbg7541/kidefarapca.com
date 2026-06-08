@@ -973,9 +973,6 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     display: none !important;
 }
 
-.roots-main-content {
-    flex: 1; overflow-y: hidden; display: flex; flex-direction: column;
-}
 
 /* ÖNEMLİ KÖKLER LİSTESİ (Ortalanmış ve Yeşil) */
 #important-roots-list {
@@ -1009,7 +1006,6 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .flat-root-item:hover { background-color: #ffffff !important; border-bottom-color: #64748b !important; }
 .flat-root-item:active { border-bottom-width: 1px !important; transform: translateY(2px); }
 
-.letters-grid-wrapper { flex: 1; overflow: hidden; margin-top: 10px; }
 .letters-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: 100%; }
 .letter-column {
     display: flex; flex-direction: column; gap: 10px; overflow-y: auto;
@@ -1750,3 +1746,120 @@ body.matrix-active { overflow: hidden !important; }
     border-color: #ef4444 !important;
     color: #991b1b !important;
 }
+
+/* ==========================================================================
+   ANA KLAVYE: TAHMİN ÇİPLERİ (YAZILAN KUTUNUN ÜZERİNDE)
+   ========================================================================== */
+
+#main-keyboard-predictions {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 15px !important; /* Yazılan kutu ile arasına tatlı bir boşluk bırakır */
+    min-height: 60px !important; 
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+.prediction-chip {
+    background-color: #ffffff !important; 
+    color: #0f172a !important; 
+    font-size: 2.2rem !important; 
+    font-family: 'Arakom', sans-serif !important; 
+    font-weight: bold !important;
+    padding: 10px 25px !important; 
+    border-radius: 20px !important; 
+    border: 2px solid #cbd5e1 !important; 
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important; 
+    cursor: pointer !important;
+    transition: transform 0.1s ease, background-color 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.prediction-chip:active {
+    transform: scale(0.92) !important; 
+    background-color: #f1f5f9 !important;
+}
+
+/* ==========================================================================
+   HAZIR KÖKLER EKRANI: GEREKSİZ BOŞLUĞU SIFIRLAMA VE ÇARPIYI HİZALAMA
+   ========================================================================== */
+
+/* Kapatma butonunu köklerle aynı hizaya (sol köşeye) alır */
+.root-header {
+    position: absolute !important;
+    top: 20px !important; /* Köklerle aynı üst hiza */
+    right: 15px !important; /* Kökler sağdan dizildiği için çarpıyı sola çektik (çakışmaz) */
+    right: auto !important; 
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 50 !important;
+    display: block !important;
+}
+
+/* Üstteki 50px'lik gereksiz boşluğu tamamen sıfırlar, içeriği en tepeye çeker */
+.new-verb-layout {
+    padding-top: 10px !important; 
+    position: relative !important;
+}
+
+
+/* ==========================================================================
+   HAZIR KÖKLER: SÜTUNLARIN EKRAN DIŞINA TAŞMASINI ENGELLEYEN KESİN ÇÖZÜM
+   ========================================================================== */
+
+/* 1. Ana taşıyıcıyı ekranın kendisine milimetrik olarak kilitler ve altından 25px boşluk bırakır */
+.new-verb-layout {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: auto !important; 
+    max-height: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    padding-bottom: 25px !important; /* Ekranın altından bırakılan nefes boşluğu */
+}
+
+/* 2. Orta bölüm (Önemli kökler + Alfabe) kalan alanı doldurur */
+.roots-main-content {
+    flex: 1 !important; 
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important; /* İtme gücünü sıfırlar */
+    gap: 5px !important; 
+}
+
+/* 3. Alfabe listesi taşıyıcısına "sınırlarını çizme" emri verir */
+.letters-grid-wrapper {
+    flex: 1 !important;
+    min-height: 0 !important;
+    position: relative !important; /* Mutlak ızgara için zemin hazırlar */
+}
+
+/* 4. İŞTE KESİN ÇÖZÜM: Izgarayı (Grid) dış çerçevenin içine hapseder. 1 piksel bile dışarı çıkamaz! */
+.letters-grid {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: auto !important;
+}
+
+/* 5. Gri Sütunların kendisi (Kaydırma motoru içeride kalır) */
+.letter-column {
+    height: 100% !important; 
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding-bottom: 15px !important; /* Sütunun içindeki son kelimenin yapışmasını önler */
+}
+

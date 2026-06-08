@@ -18,38 +18,24 @@
 </head>
 <body>
 
-<!-- YENİ KÖK SEÇME EKRANI (TAM EKRAN + AÇILIR KLAVYE) -->
 <div id="verb-overlay" class="verb-overlay">
     <div class="new-verb-layout">
         
-        <!-- ÜST KISIM: Arama Çubuğu ve Kapatma -->
-        <div class="root-header" dir="ltr">
-    <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
-    <input type="text" id="root-search" placeholder="Kök Ara..." autocomplete="off" inputmode="none" readonly="readonly" onclick="openSearchKeyboard(event)">
-</div>
-
-        <!-- TAHMİN / ÖNERİ ÇUBUĞU -->
-        <div id="root-predictions" class="root-predictions" dir="rtl">
-            <!-- Harfe basıldıkça buraya tahminler gelecek -->
+        <div class="root-header" dir="ltr" style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px;">
+            <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
         </div>
 
-        <!-- ORTA KISIM: Önemli Kökler ve 4 Sütun -->
         <div class="roots-main-content">
             <div class="important-roots-wrapper">
-                <h4 class="section-title left-aligned">Önemli Kökler</h4>
                 <div id="important-roots-list" class="flat-root-list" dir="rtl">
-                    <!-- JS ile Doldurulacak -->
-                </div>
+                    </div>
             </div>
 
             <div class="letters-grid-wrapper">
                 <div id="letters-grid-container" class="letters-grid" dir="rtl">
-                    <!-- JS ile Doldurulacak -->
-                </div>
+                    </div>
             </div>
         </div>
-
-        
 
         <div id="slide-menu-backdrop" class="slide-backdrop" onclick="closeSlideMenu()"></div>
 
@@ -59,14 +45,6 @@
                 <button onclick="closeSlideMenu()" class="slide-close">✕</button>
             </div>
             <div id="slide-content" class="flat-root-list slide-content" dir="rtl"></div>
-        </div>
-        <div id="keyboard-backdrop" class="keyboard-backdrop" onclick="closeSearchKeyboard()"></div>
-
-        <div id="integrated-keyboard-popup" class="integrated-keyboard-popup">
-            <div class="keyboard-popup-dragbar" onclick="closeSearchKeyboard()">
-                <div></div> </div>
-            <div id="integrated-keyboard" class="integrated-keyboard-inner" dir="rtl">
-                </div>
         </div>
 
     </div>
@@ -83,49 +61,17 @@
 <div id="keyboard-overlay" class="keyboard-overlay">
     <div class="keyboard-container" dir="rtl">
          <div onclick="closeKeyboard()" style="position: absolute; top: 10px; right: 15px; color: #fff; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px; background: #444; border-radius: 5px;">✕</div>
+<div id="main-keyboard-predictions" class="root-predictions" dir="rtl" style="margin-bottom: 10px; min-height: 45px; display: flex; justify-content: center; gap: 10px;"></div>
         <div id="temp-root-display"></div>
-        <div class="keyboard-inner">
-            <div class="kb-row">
-                <div class="key" onclick="addLetter('ذ')">ذ</div>
-                <div class="key" onclick="addLetter('ض')">ض</div>
-                <div class="key" onclick="addLetter('ص')">ص</div>
-                <div class="key" onclick="addLetter('ث')">ث</div>
-                <div class="key" onclick="addLetter('ق')">ق</div>
-                <div class="key" onclick="addLetter('ف')">ف</div>
-                <div class="key" onclick="addLetter('غ')">غ</div>
-                <div class="key" onclick="addLetter('ع')">ع</div>
-                <div class="key" onclick="addLetter('ه')">ه</div>
-                <div class="key" onclick="addLetter('خ')">خ</div>
-                <div class="key" onclick="addLetter('ح')">ح</div>
-                <div class="key" onclick="addLetter('ج')">ج</div>
-                <div class="key" onclick="addLetter('د')">د</div>
-            </div>
-            <div class="kb-row">
-                <div class="key" onclick="addLetter('ش')">ش</div>
-                <div class="key" onclick="addLetter('س')">س</div>
-                <div class="key" onclick="addLetter('ي')">ي</div>
-                <div class="key" onclick="addLetter('ب')">ب</div>
-                <div class="key" onclick="addLetter('ل')">ل</div>
-                <div class="key" onclick="addLetter('ا')">ا</div>
-                <div class="key" onclick="addLetter('ت')">ت</div>
-                <div class="key" onclick="addLetter('ن')">ن</div>
-                <div class="key" onclick="addLetter('م')">م</div>
-                <div class="key" onclick="addLetter('ك')">ك</div>
-                <div class="key" onclick="addLetter('ط')">ط</div>
-            </div>
-            <div class="kb-row">
-                <div class="key" onclick="addLetter('ئ')">ئ</div>
-                <div class="key" onclick="addLetter('ء')">ء</div>
-                <div class="key" onclick="addLetter('ؤ')">ؤ</div>
-                <div class="key" onclick="addLetter('ر')">ر</div>
-                <div class="key" onclick="addLetter('ى')">ى</div>
-                <div class="key" onclick="addLetter('ة')">ة</div>
-                <div class="key" onclick="addLetter('و')">و</div>
-                <div class="key" onclick="addLetter('ز')">ز</div>
-                <div class="key" onclick="addLetter('ظ')">ظ</div>
-                <div class="key key-special" onclick="handleBackspace()" style="min-width: 80px; background: #600;">⌫</div>
-            </div>
-        </div>
+
+
+
+       
+        
+        <div id="main-keyboard-inner" class="keyboard-inner"></div>
+
+
+
     </div>
 </div>
 

@@ -33,12 +33,12 @@ function renderVerbMenu() {
         if(wordEasterEggs[root]) importantContainer.innerHTML += createFlatRootItem(root);
     });
 
-    // 2. 4 Sütunlu Bağımsız Scroll Sistemi
+    // 2. 4 Sütunlu Bağımsız Scroll Sistemi (ص harfi 3. sütuna kaydırıldı)
     const ranges = [
-        { title: "أ - خ", start: 0, end: 6 },
-        { title: "د - ص", start: 7, end: 13 },
-        { title: "ض - ق", start: 14, end: 20 },
-        { title: "ك - ي", start: 21, end: 27 }
+        { title: "أ - ب - ت - ث - ج - ح - خ", start: 0, end: 6 },
+        { title: "د - ذ - ر - ز - س - ش", start: 7, end: 12 },
+        { title: "ص - ض - ط - ظ - ع - غ - ف - ق", start: 13, end: 20 },
+        { title: "ك - ل - م - ن - ه - و - ي", start: 21, end: 27 }
     ];
 
     const allRoots = Object.keys(wordEasterEggs);
@@ -64,8 +64,8 @@ function renderVerbMenu() {
         gridContainer.innerHTML += colHTML;
     });
 
-    // 3. Popup Klavyeyi Oluştur
-    renderSearchKeyboard();
+    // 3. İki Klavyeyi de Eş Zamanlı Oluşturur
+    renderUniversalKeyboards();
 }
 
 function createFlatRootItem(root) {
@@ -76,14 +76,17 @@ function createFlatRootItem(root) {
 }
 
 function selectRootFromMenu(root) {
-    closeSlideMenu();
-    closeSearchKeyboard();
-    // Arama Verilerini Sıfırla
-    currentSearchQuery = "";
-    const searchInput = document.getElementById("root-search");
-    if(searchInput) searchInput.value = "";
-    document.getElementById("root-predictions").innerHTML = "";
+    if (typeof closeSlideMenu === 'function') closeSlideMenu();
     
+    // Arama Verilerini Sıfırla (HTML'den sildiğimiz öğelerin JS'yi çökertmesini engeller)
+    currentSearchQuery = "";
+    
+    const searchInput = document.getElementById("root-search");
+    if (searchInput) searchInput.value = "";
+    
+    const predictions = document.getElementById("root-predictions");
+    if (predictions) predictions.innerHTML = "";
+
     // Uygulamanın Orijinal Kök Seçme Komutunu Başlat
     if (typeof selectReadyVerb === 'function') {
         selectReadyVerb(root);
@@ -125,32 +128,7 @@ function closeSearchKeyboard() {
     }
 }
 
-function renderSearchKeyboard() {
-    const kbContainer = document.getElementById("integrated-keyboard");
-    if(!kbContainer) return;
 
-    // Sizin Orijinal Klavyenizle Birebir Aynı Dizilim (LTR Yönünde)
-    const kbRows = [
-        ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د'],
-        ['ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط'],
-        ['ئ', 'ء', 'ؤ', 'ر', 'ى', 'ة', 'و', 'ز', 'ظ', 'BACKSPACE']
-    ];
-
-    let kbHTML = "";
-    kbRows.forEach(row => {
-        kbHTML += `<div class="search-kb-row">`;
-        row.forEach(char => {
-            if (char === 'BACKSPACE') {
-                kbHTML += `<div class="search-key backspace" onclick="handleSearchKey('BACKSPACE')">⌫</div>`;
-            } else {
-                kbHTML += `<div class="search-key" onclick="handleSearchKey('${char}')">${char}</div>`;
-            }
-        });
-        kbHTML += `</div>`;
-    });
-
-    kbContainer.innerHTML = kbHTML;
-}
 
 function handleSearchKey(char) {
     toggleRootHint(false);
@@ -1422,25 +1400,7 @@ function toggleKB(show) {
     if (overlay) overlay.style.display = show ? 'flex' : 'none';
 }
 
-// --- 2. ANA KLAVYEYİ AÇMA (Arka planı sıfırlayarak açma) ---
-function openKeyboard() {
-    // YENİ EKLENEN: Arkadaki eski tabloyu, renkleri ve kahverengi taşı tamamen temizle!
-    currentRoot = "";
-    const tempDisp = document.getElementById('temp-root-display');
-    if (tempDisp) tempDisp.innerText = "";
-    if (typeof updateTempDisplay === 'function') updateTempDisplay();
-    if (typeof resetTableOnly === 'function') resetTableOnly(true);
-    if (typeof clearDraggableRoots === 'function') clearDraggableRoots();
-    if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes("");
 
-    // Klavyeyi aç (Eğer sisteminizde toggleKB(true) kullanılıyorsa onu da yazabilirsiniz)
-    const overlay = document.getElementById('keyboard-overlay');
-    if (overlay) overlay.style.display = 'flex';
-    
-    if (typeof toggleKB === 'function') toggleKB(true);
-
-    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
-}
 
 // --- ANA KLAVYEYİ KAPATMA VE SİLME ---
 function closeKeyboard() {
@@ -1474,6 +1434,9 @@ function addLetter(char) {
         currentRoot += char;
         updateTempDisplay();
         highlightKey(char);
+        
+        updateMainKeyboardPredictions(); // YENİ: Harfe basıldıkça öneri getirir
+        
         if (currentRoot.length === 3) {
             setTimeout(() => { confirmRoot(); }, 300);
         }
@@ -1485,7 +1448,18 @@ function handleBackspace() {
     if (currentRoot.length > 0) {
         currentRoot = currentRoot.slice(0, -1);
         updateTempDisplay();
+        
+        updateMainKeyboardPredictions(); // YENİ: Harf silindikçe önerileri günceller
     }
+}
+
+// Ana klavye her açıldığında önceki tahminleri temizler
+const originalOpenKeyboard = window.openKeyboard;
+window.openKeyboard = function() {
+    if (typeof originalOpenKeyboard === "function") {
+        originalOpenKeyboard();
+    }
+    updateMainKeyboardPredictions();
 }
 
 function updateTempDisplay() {
@@ -2993,6 +2967,17 @@ const SarfEngine = {
             res = res.replace(/َأُ/g, "َؤُ"); 
             res = res.replace(/ُأَ/g, "ُؤَ"); 
             res = res.replace(/ُأْ/g, "ُؤْ"); 
+            // --- BURADAN İTİBAREN YENİ EKLENEN KISIM ---
+            // C. SON HARF HEMZE (Hemze-i Mutatarrife) VE UZATMA KURALLARI
+            // 1. Hemze kelimenin sonundaysa ve öncesinde uzatma (Elif) varsa satıra (ء) oturur.
+            res = res.replace(/ا[أإؤئ]([\u064B-\u0652]*)$/g, "اء$1"); // يَشَاأُ -> يَشَاءُ , جَاأَ -> جَاءَ
+            
+            // 2. Hemze kelimenin sonundaysa ve öncesinde Sakin (Cezimli) Vav/Ye varsa satıra (ء) oturur.
+            res = res.replace(/([وي]ْ)[أإؤئ]([\u064B-\u0652]*)$/g, "$1ء$2"); // يَسُووْأُ -> يَسُوءُ , يَجِييْأُ -> يَجِيءُ
+            
+            // 3. Kelime ortasında olsa bile Elif'ten sonra gelen FETHALI hemze her zaman satıra oturur!
+            res = res.replace(/اأَ/g, "اءَ"); // تَسَاأَلَ -> تَسَاءَلَ , قِرَاأَة -> قِرَاءَة
+            // -------------------------------------------
         }
         return res;
     }
@@ -3186,127 +3171,160 @@ if (!document.getElementById('srf-color-fix')) {
     `;
     document.head.appendChild(style);
 }
+
 // ==================================================================
-// KLAVYE UZUN BASMA (LONG PRESS) ÖZELLİĞİ
+// MERKEZİ KLAVYE VE TAHMİN (ÖNERİ) MOTORU
 // ==================================================================
+const universalKeyboardLayout = [
+    ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د'],
+    ['ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط'],
+    ['ئ', 'ء', 'ؤ', 'ر', 'ى', 'ة', 'و', 'ز', 'ظ', 'BACKSPACE']
+];
 
-document.addEventListener("DOMContentLoaded", () => {
-    let keyPressTimer = null;
-    let isLongPress = false;
-    const longPressDelay = 400; // 400ms basılı tutunca açılır
-
-    function initLongPress() {
-        // Klavyedeki tüm tuşları al
-        const keys = document.querySelectorAll('.key');
-        keys.forEach(key => {
-            const char = key.innerText.trim();
-            // Eğer tuş Elif (ا) ise dinleyicileri ata
-            if (char === 'ا') {
-                const variations = ['أ', 'إ', 'آ'];
-
-                const startPress = (e) => {
-                    // Eğer menü zaten açıksa, kapatmasın diye durdur
-                    if (document.getElementById('key-variations-menu')) return;
-                    
-                    isLongPress = false;
-                    keyPressTimer = setTimeout(() => {
-                        isLongPress = true;
-                        showKeyVariations(key, variations);
-                        if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-                    }, longPressDelay);
-                };
-
-                const endPress = () => {
-                    if (keyPressTimer) clearTimeout(keyPressTimer);
-                };
-
-                // Mobil dokunma olayları
-                key.addEventListener('touchstart', startPress, { passive: true });
-                key.addEventListener('touchend', endPress);
-                key.addEventListener('touchcancel', endPress);
-                
-                // Fare olayları
-                key.addEventListener('mousedown', startPress);
-                key.addEventListener('mouseup', endPress);
-                key.addEventListener('mouseleave', endPress);
-                
-                // Standart onclick olayını devralıyoruz (ikili tetiklemeyi önlemek için)
-                key.removeAttribute('onclick'); // HTML'deki onclick'i kaldır
-                key.addEventListener('click', (e) => {
-                    if (isLongPress) {
-                        // Uzun basıldıysa normal harfi ekleme
-                        e.preventDefault();
-                        e.stopPropagation();
-                        isLongPress = false;
-                    } else {
-                        // Kısa basıldıysa normal Elif ekle
-                        addLetter('ا');
-                        if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-                    }
-                });
-            }
+function renderUniversalKeyboards() {
+    // A. Arama Klavyesi (Açılır Menüdeki)
+    const searchKbContainer = document.getElementById("integrated-keyboard");
+    if (searchKbContainer) {
+        let searchHtml = "";
+        universalKeyboardLayout.forEach(row => {
+            searchHtml += `<div class="search-kb-row">`;
+            row.forEach(char => {
+                if (char === 'BACKSPACE') {
+                    searchHtml += `<div class="search-key uni-key backspace" onclick="handleSearchKey('BACKSPACE')">⌫</div>`;
+                } else {
+                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${char}</div>`;
+                }
+            });
+            searchHtml += `</div>`;
         });
+        searchKbContainer.innerHTML = searchHtml;
     }
 
-    function showKeyVariations(keyElement, variations) {
-        // Varsa eski menüyü temizle
-        let existingMenu = document.getElementById('key-variations-menu');
-        if (existingMenu) existingMenu.remove();
-
-        const menu = document.createElement('div');
-        menu.id = 'key-variations-menu';
-        menu.className = 'key-variations-menu';
-
-        // Tuşları oluştur
-        variations.forEach(v => {
-            const btn = document.createElement('div');
-            btn.className = 'var-key';
-            btn.innerText = v;
-            
-            // Mouse ile tıklama
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                addLetter(v);
-                menu.remove();
+    // B. Ana Klavye (Kök Yazma Ekranı)
+    const mainKbContainer = document.getElementById("main-keyboard-inner");
+    if (mainKbContainer) {
+        let mainHtml = "";
+        universalKeyboardLayout.forEach(row => {
+            mainHtml += `<div class="kb-row">`;
+            row.forEach(char => {
+                if (char === 'BACKSPACE') {
+                    mainHtml += `<div class="key uni-key key-special" onclick="handleBackspace()" style="min-width: 80px; background: #600;">⌫</div>`;
+                } else {
+                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')">${char}</div>`;
+                }
             });
-            
-            // Mobilde dokunma ile anında tepki
-            btn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                addLetter(v);
-                if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
-                menu.remove();
-            });
-
-            menu.appendChild(btn);
+            mainHtml += `</div>`;
         });
-
-        document.body.appendChild(menu);
-
-        // Menüyü basılan tuşun tam üstüne ortala
-        const rect = keyElement.getBoundingClientRect();
-        const menuWidth = menu.offsetWidth;
-        const menuHeight = menu.offsetHeight;
-        
-        menu.style.left = (rect.left + window.scrollX - (menuWidth / 2) + (rect.width / 2)) + 'px';
-        menu.style.top = (rect.top + window.scrollY - menuHeight - 10) + 'px';
+        mainKbContainer.innerHTML = mainHtml;
     }
-
-    // Başka bir yere tıklanırsa veya dokunulursa varyasyon menüsünü kapat
-    const closeVariationsMenu = (e) => {
-        const menu = document.getElementById('key-variations-menu');
-        if (menu && !menu.contains(e.target) && !e.target.classList.contains('key')) {
-            menu.remove();
-        }
-    };
-
-    document.addEventListener('click', closeVariationsMenu);
-    document.addEventListener('touchstart', closeVariationsMenu, { passive: true });
-
-    // Sistemi başlat
+    
+    // Her iki klavye de çizildikten sonra Elif (ا) tuşlarına Uzun Basma zekasını ekle
     initLongPress();
-});
+}
+
+function initLongPress() {
+    const keys = document.querySelectorAll('.uni-key'); 
+    keys.forEach(key => {
+        const char = key.innerText.trim();
+        if (char === 'ا') {
+            const variations = ['أ', 'إ', 'آ'];
+            const isSearchMode = key.classList.contains('search-key');
+
+            const startPress = (e) => {
+                if (document.getElementById('key-variations-menu')) return;
+                window.isLongPress = false;
+                window.keyPressTimer = setTimeout(() => {
+                    window.isLongPress = true;
+                    showKeyVariations(key, variations, isSearchMode);
+                    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                }, 400); 
+            };
+
+            const endPress = () => {
+                if (window.keyPressTimer) clearTimeout(window.keyPressTimer);
+            };
+
+            key.addEventListener('touchstart', startPress, { passive: true });
+            key.addEventListener('touchend', endPress);
+            key.addEventListener('touchcancel', endPress);
+            key.addEventListener('mousedown', startPress);
+            key.addEventListener('mouseup', endPress);
+            key.addEventListener('mouseleave', endPress);
+            
+            key.removeAttribute('onclick'); 
+            key.addEventListener('click', (e) => {
+                if (window.isLongPress) {
+                    e.preventDefault(); e.stopPropagation();
+                    window.isLongPress = false;
+                } else {
+                    if (isSearchMode) handleSearchKey('ا');
+                    else addLetter('ا');
+                    if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                }
+            });
+        }
+    });
+}
+
+function showKeyVariations(keyElement, variations, isSearchMode) {
+    let existingMenu = document.getElementById('key-variations-menu');
+    if (existingMenu) existingMenu.remove();
+
+    const menu = document.createElement('div');
+    menu.id = 'key-variations-menu';
+    menu.className = 'key-variations-menu';
+
+    variations.forEach(v => {
+        const btn = document.createElement('div');
+        btn.className = 'var-key';
+        btn.innerText = v;
+        
+        const handleVarClick = (e) => {
+            e.preventDefault(); e.stopPropagation();
+            if (isSearchMode) handleSearchKey(v);
+            else addLetter(v);
+            if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
+            menu.remove();
+        };
+
+        btn.addEventListener('click', handleVarClick);
+        btn.addEventListener('touchstart', handleVarClick, { passive: false });
+        menu.appendChild(btn);
+    });
+
+    document.body.appendChild(menu);
+    const rect = keyElement.getBoundingClientRect();
+    menu.style.left = (rect.left + window.scrollX - (menu.offsetWidth / 2) + (rect.width / 2)) + 'px';
+    menu.style.top = (rect.top + window.scrollY - menu.offsetHeight - 10) + 'px';
+}
+
+// ANA KLAVYE İÇİN "HAZIR KÖK TAHMİN" SİSTEMİ
+function updateMainKeyboardPredictions() {
+    const predictionsContainer = document.getElementById("main-keyboard-predictions");
+    if (!predictionsContainer) return;
+    
+    predictionsContainer.innerHTML = "";
+    let filter = currentRoot.trim();
+    
+    if (filter.length > 0) {
+        const allRoots = Object.keys(wordEasterEggs);
+        // Yazılan harflerle başlayan hazır köklerden en fazla 4 tanesini öner
+        const matches = allRoots.filter(r => r.startsWith(filter)).slice(0, 4); 
+        
+        matches.forEach(r => {
+            predictionsContainer.innerHTML += `
+                <div class="prediction-chip" onclick="selectRootFromMainKeyboard('${r}')">
+                    ${r} ${getRootEmoji(r)}
+                </div>`;
+        });
+    }
+}
+
+function selectRootFromMainKeyboard(root) {
+    currentRoot = root;
+    updateTempDisplay();
+    confirmRoot(); // Kökü onaylar, tabloları açar ve klavyeyi kapatır
+}
 
 // --- EVRENSEL BÜYÜTME KAPATICI ---
 document.addEventListener('click', function(e) {
@@ -4699,3 +4717,43 @@ function showMarathonScreen(id) {
     const arrows = document.querySelectorAll('.nav-arrow');
     arrows.forEach(a => a.style.display = (id === 'screen-play' ? 'block' : 'none'));
 }
+
+// ==================================================================
+// KLAVYE HATA DÜZELTMELERİ (KALEM BUTONU VE HEMZE KAPANMA ZEKASI)
+// ==================================================================
+
+// 1. Kalem Butonunun Ana Klavyeyi Hatasız Açmasını Sağlayan Kök Fonksiyon
+window.openKeyboard = function() {
+    // Hafızayı ve ekranı temizle
+    currentRoot = "";
+    const tempDisp = document.getElementById('temp-root-display');
+    if (tempDisp) tempDisp.innerText = "";
+    if (typeof updateTempDisplay === 'function') updateTempDisplay();
+    if (typeof resetTableOnly === 'function') resetTableOnly(true);
+    if (typeof clearDraggableRoots === 'function') clearDraggableRoots();
+    if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes("");
+
+    // Klavyeyi ve Siyah Ekranı Aç
+    const overlay = document.getElementById('keyboard-overlay');
+    if (overlay) overlay.style.display = 'flex';
+    
+    if (typeof toggleKB === 'function') toggleKB(true);
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    // Klavyedeki tahminleri de sıfırlayarak hazır hale getir
+    if (typeof updateMainKeyboardPredictions === 'function') updateMainKeyboardPredictions();
+};
+
+// 2. Uzun Basma (Hemze) Menüsünü Boşluğa Tıklayınca Kapatan Küresel Gözlemci
+const closeVariationsMenu = (e) => {
+    const menu = document.getElementById('key-variations-menu');
+    // Eğer ekranda hemze menüsü açıksa ve tıklanan yer menünün/tuşların kendisi değilse menüyü yok et!
+    if (menu && !menu.contains(e.target) && !e.target.classList.contains('uni-key') && !e.target.classList.contains('key') && !e.target.classList.contains('search-key')) {
+        menu.remove();
+        window.isLongPress = false; // Basılı tutma hafızasını da sıfırla
+    }
+};
+
+// Tarayıcıdaki tüm tıklama ve dokunma olaylarına bu gözlemciyi ekliyoruz
+document.addEventListener('click', closeVariationsMenu);
+document.addEventListener('touchstart', closeVariationsMenu, { passive: true });
