@@ -2180,3 +2180,16 @@ body.matrix-active { overflow: hidden !important; }
         padding: 2px !important;
     }
 }
+
+/* ==========================================================================
+   YAMA: MÜCERRET/MEZİD EŞİTLEMESİ VE ALFABE ALT BOŞLUĞU
+   ========================================================================== */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    
+    /* 1. Mücerret ve Mezid kelime boyutlarını zorla eşitler */
+    #tab1 .ar, #tab2 .ar { font-size: 28px !important; line-height: 1.1 !important; }
+    #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1.1 !important; }
+
+    /* 2. Hazır Kökler sütunlarının altındaki fiillerin görünmesi için yukarı itme boşluğu */
+    .letter-column { padding-bottom: 80px !important; }
+}
