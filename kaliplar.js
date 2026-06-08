@@ -523,7 +523,7 @@ function selectReadyVerb(verb) {
     if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
     if (typeof currentTabActive !== 'undefined' && currentTabActive === 1 && typeof setTab === 'function') setTab(0);
 
-    // ==================================================================
+// ==================================================================
     // MOBİL İÇİN SABİT ÜST BAR VE 2 SÜTUN MANTIĞI
     // ==================================================================
     if (window.innerWidth <= 1024) {
@@ -536,6 +536,11 @@ function selectReadyVerb(verb) {
             backBtn.className = 'mobile-back-btn';
             backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
             backBtn.onclick = () => {
+                // GERİ TUŞU ÇÖZÜMÜ: Geriye basıldığında mobil listeyi gizle
+                const mGrid = document.getElementById('mobile-grid');
+                if (mGrid) mGrid.style.display = 'none';
+                topBar.style.display = 'none';
+                
                 if (typeof openVerbModal === 'function') openVerbModal();
             };
 
@@ -560,6 +565,8 @@ function selectReadyVerb(verb) {
             if (mGrid) document.body.insertBefore(topBar, mGrid);
         }
 
+        if (topBar) topBar.style.display = 'flex'; // Geri tuşundan dönüldüğünde tekrar görünür yap
+
         const mobileRootDisplay = topBar.querySelector('.mobile-root-display');
         if (mobileRootDisplay) mobileRootDisplay.innerText = currentRoot;
         const mobilePlusBtn = topBar.querySelector('.mobile-top-plus');
@@ -567,6 +574,7 @@ function selectReadyVerb(verb) {
 
         const mGrid = document.getElementById('mobile-grid');
         if (mGrid) {
+            mGrid.style.display = 'flex'; // Gizlenmişse tekrar görünür yap
             mGrid.innerHTML = '';
             if (typeof getSortedRefsForRoot === 'function') {
                 const refs = getSortedRefsForRoot(currentRoot);
@@ -578,6 +586,10 @@ function selectReadyVerb(verb) {
                     if (origBox) {
                         const clone = origBox.cloneNode(true);
                         clone.className = 'glass-box sari-vurgu fiil-box';
+                        
+                        // ÇİFT KRONOMETRE ÇÖZÜMÜ: Klonlanan kutudaki ekstra SVG ve kronometreleri sil
+                        clone.querySelectorAll('svg, .kutu-timer-btn').forEach(el => el.remove());
+
                         if (clone.hasAttribute('data-tiklama-sayisi')) clone.setAttribute('data-tiklama-sayisi', '0');
                         clone.onclick = function() {
                             if (typeof handleBoxClick === 'function') handleBoxClick(this);
