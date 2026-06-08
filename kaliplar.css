@@ -1855,14 +1855,7 @@ body.matrix-active { overflow: hidden !important; }
     .ar-small, #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1.1 !important; }
     .siga-text { font-size: 18px !important; }
     
-   /* HARF SÜTUNLARINDAKİ KUTULAR (Arama ekranı vs.) */
-    .letter-column .glass-box { 
-        min-height: 40px !important; /* 30'dan 40'a çıkarıldı */
-        margin: 2px auto !important; 
-        width: 95% !important; 
-        /* Burada da üst boşluk (14px) verilerek sayılarla metin ayrıldı: */
-        padding: 14px 4px 4px 4px !important; 
-    }
+    .glass-box { width: auto !important; min-width: 50px !important; max-width: 95% !important; padding: 4px 8px !important; margin: 2px auto !important; display: inline-block !important; box-sizing: border-box !important; }
     /* KALIP NUMARALARI (Kutunun tam köşesine daha nizami oturtuldu) */
     .ref { 
         font-size: 11px !important; 
@@ -1899,7 +1892,7 @@ body.matrix-active { overflow: hidden !important; }
     #important-roots-list { gap: 6px !important; padding: 5px 0 5px 0 !important; }
     .flat-root-item { padding: 4px 10px !important; font-size: 16px !important; border-bottom-width: 2px !important; border-radius: 6px !important; }
     .letters-grid { gap: 5px !important; }
-    
+    .letter-column { border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; }
     .col-range-header { padding: 4px !important; font-size: 11px !important; margin-top: -2px !important; margin-left: -2px !important; margin-right: -2px !important; border-radius: 6px 6px 0 0 !important; border-bottom-width: 2px !important; }
     .letter-column 
 .glass-box { 
