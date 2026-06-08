@@ -2193,3 +2193,34 @@ body.matrix-active { overflow: hidden !important; }
     /* 2. Hazır Kökler sütunlarının altındaki fiillerin görünmesi için yukarı itme boşluğu */
     .letter-column { padding-bottom: 80px !important; }
 }
+
+/* ==========================================================================
+   YAMA: KAHVERENGİ KÖK KUTUSUNU (AHŞAP TAŞ) MOBİLDE ZORLA GÖSTERME
+   ========================================================================== */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    
+    /* Eski kodların "gizle" komutunu ezer ve kutuyu zorla ekrana getirir */
+    .draggable-root-clone {
+        display: block !important; 
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 999999 !important; /* Her şeyin üstünde durmasını garantiler */
+        
+        /* Mobil ekrana sığması için zarifçe küçültüldü */
+        font-size: 2rem !important; 
+        min-width: 140px !important;
+        padding: 6px 12px 10px 0px !important;
+    }
+    
+    /* İçindeki küçük kronometre (oyun) butonunu da mobilde orantılı küçültür */
+    .draggable-root-clone .kutu-timer-btn {
+        width: 26px !important;
+        height: 26px !important;
+        top: 2px !important;
+        right: 2px !important;
+    }
+    .draggable-root-clone .kutu-timer-btn svg {
+        width: 15px !important;
+        height: 15px !important;
+    }
+}
