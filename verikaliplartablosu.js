@@ -168,15 +168,17 @@ const wordEasterEggs = {
                 ornek: { ar: "وَأْمُرْ بِالْمَعْرُوفِ", tr: "İyiliği emret. (Lokmân Suresi, 17) - *Başına vav gelince düşen hemze geri döner.*" }
             } 
         },
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
             base: { 
                 emoji: "📋", 
                 arText: "أَمْر", 
                 trText: "Emir / İş, durum, buyruk.",
-                ornek: { ar: "شَاوِرْهُمْ فِي الْأَمْرِ", tr: "İş (durum) hakkında onlara danış. (Âl-i İmrân Suresi, 159)" }
-            },
-            suggestsPlus: true,
-            "ات": { emoji: "📂", arText: "أُمُور", trText: "Umur / İşler, durumlar." }
+                ornek: { 
+                    ar: "شَاوِرْهُمْ فِي الْأَمْرِ", 
+                    tr: "İş (durum) hakkında onlara danış. (Âl-i İmrân Suresi, 159)" 
+                }
+            }
         },
         33: { 
             base: { 
@@ -220,6 +222,25 @@ const wordEasterEggs = {
                     }
                 ]
             }
+        },
+
+        // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
+        43: { 
+            base: { 
+                emoji: "📂", 
+                arText: "أُمُور", 
+                trText: "Umûr / İşler, durumlar, olaylar.",
+                ornek: [
+                    { 
+                        ar: "وَإِلَى اللَّهِ تُرْجَعُ الْأُمُورُ", 
+                        tr: "Ve bütün işler (durumlar) Allah'a döndürülür. (Bakara Suresi, 210)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة قَاعِدِيَّة",
+                        tr: "Gramer Notu: Arapçada akılsız varlıkların veya soyut kavramların kırık çoğulları (Cem-i Mükesser) müennes (dişil) tekil hükmündedir. Bu yüzden 'işler' anlamına gelen 'Umûr' kelimesine sıfat getirilirken tekil müennes (örn: أُمُورٌ مُهِمَّةٌ - önemli işler) şeklinde getirilir."
+                    }
+                ]
+            } 
         },
         
     },
