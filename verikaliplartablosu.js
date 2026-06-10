@@ -14145,7 +14145,7 @@ const wordEasterEggs = {
         },
 
         // --- 40 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
-        40: { 
+        41: { 
             base: { 
                 emoji: "📜", 
                 arText: "أَوْقَاف", 
