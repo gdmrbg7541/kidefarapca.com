@@ -13771,17 +13771,21 @@ const wordEasterEggs = {
                 emoji: "🕋", 
                 arText: "قِيَام", 
                 trText: "Kıyam / Ayağa kalkma, ayakta durma, diriliş.",
-                ornek: [
-                    { 
-                        ar: "قِيَامُ اللَّيْلِ", 
-                        tr: "Gece kalkışı (Gece namazı)." 
-                    },
-                    {
-                        ar: "يَوْمُ الْقِيَامَةِ",
-                        tr: "Kıyamet Günü (İnsanların dirilip ayağa kalktığı gün)."
-                    }
-                ]
-            } 
+                ornek: { 
+                    ar: "قِيَامُ اللَّيْلِ", 
+                    tr: "Gece kalkışı (Gece namazı)." 
+                }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🌋", 
+                arText: "قِيَامَة", 
+                trText: "Kıyamet / Diriliş, ölülerin topluca ayağa kalkması.",
+                ornek: {
+                    ar: "يَوْمُ الْقِيَامَةِ",
+                    tr: "Kıyamet Günü (İnsanların dirilip ayağa kalktığı gün)."
+                }
+            }
         },
 
         // --- 26 Numaralı Kalıp (فَيْعُول - İstisnai Mübalağa İsm-i Fâili) ---
@@ -13865,12 +13869,16 @@ const wordEasterEggs = {
             cekimi: ["اِسْتَقِمْ", "اِسْتَقِيمَا", "اِسْتَقِيمُوا", "اِسْتَقِيمِي", "اِسْتَقِيمَا", "اِسْتَقِمْنَ"]
         },
 
-        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı) ---
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı / Ecvef Kuralı) ---
         103: { 
             base: { 
                 emoji: "🧭", 
                 arText: "اِسْتِقَامَة", 
-                trText: "İstikamet / Doğruluk, doğru yön, sapmadan ilerleme."
+                trText: "İstikamet / Doğruluk, doğru yön, sapmadan ilerleme.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة صَرْفِيَّة (تَعْوِيض)",
+                    tr: "Sarf Notu: İstif'âl babının masdarı normalde 'اِسْتِفْعَال' veznindedir. Ancak Ecvef (ortası illetli) fiillerde (ق-و-م gibi) ses kuralı gereği ortadaki illet harfi düşer ve buna bedel/tazmin olarak masdarın sonuna mecburi bir 'ة' eklenir. Bu 'ة' kelimenin ayrılmaz bir parçasıdır."
+                }
             } 
         },
 
@@ -13885,7 +13893,440 @@ const wordEasterEggs = {
                     tr: "Bizi dosdoğru yola (istikametli / müstakim yola) ilet. (Fâtiha Suresi, 6)" 
                 }
             } 
-        },
+        }
      },
+
+     // ==================================================================
+    // 14. C-L-S (ج ل س) KÖKÜ - Oturmak / Toplanmak
+    // Temel duruş ve bir araya gelme eylemlerini ifade eder. (2. Bab)
+    // ==================================================================
+    "جلس": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🪑", 
+                arText: "جَلَسَ", 
+                trText: "Oturdu.",
+                ornek: [
+                    { 
+                        ar: "جَلَسَ عَلَى الْكُرْسِيِّ", 
+                        tr: "Sandalyeye oturdu." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة (فُرُوق اللُّغَة)",
+                        tr: "Semantik Notu: Arapçada 'oturmak' anlamına gelen iki meşhur fiil vardır: Cülus (جُلُوس) ve Ku'ud (قُعُود). Dilbilimcilere göre; 'Cülus', yatan/uzanan birinin doğrulup oturmasıdır (Aşağıdan yukarıya). 'Ku'ud' ise ayakta duran birinin oturmasıdır (Yukarıdan aşağıya). Bu yüzden Kur'an'da genellikle 'Ku'ud' (قعد) kökü tercih edilir."
+                    }
+                ]
+            },
+        },
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "🛋️", 
+                arText: "يَجْلِسُ", 
+                trText: "Oturur / Oturuyor."
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِجْلِسْ", 
+                trText: "Otur!" 
+            },
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "☕", 
+                arText: "جَلْس", 
+                trText: "Cels / Oturma eylemi." 
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "⚖️", 
+                arText: "جَلْسَة", 
+                trText: "Celse / Oturum, duruşma, toplantı.",
+                ornek: { 
+                    ar: "جَلْسَةُ الْمَحْكَمَةِ", 
+                    tr: "Mahkeme celsesi (oturumu)." 
+                }
+            } 
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
+        25: { 
+            base: { 
+                emoji: "👑", 
+                arText: "جُلُوس", 
+                trText: "Cülus / Oturma, tahta çıkma.",
+                ornek: [
+                    { 
+                        ar: "مَمْنُوعُ الْجُلُوسِ", 
+                        tr: "Oturmak yasaktır." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَارِيخِيَّة",
+                        tr: "Tarih Notu: Osmanlı'da padişahların tahta çıkma (oturma) törenine 'Cülus', bu törende dağıtılan bahşişe de 'Cülus Bahşişi' denirdi."
+                    }
+                ]
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "👤", 
+                arText: "جَالِس", 
+                trText: "Câlis / Oturan, oturmakta olan.",
+                ornek: { 
+                    ar: "أَنَا جَالِسٌ هُنَا", 
+                    tr: "Ben burada oturuyorum (oturanım)." 
+                }
+            } 
+        },
+
+        // --- 37 Numaralı Kalıp (مَفْعِل - İsm-i Mekân / Zaman) ---
+        37: { 
+          base: { 
+                emoji: "🏛️", 
+                arText: "مَجْلِس", 
+                trText: "Meclis / Oturulan yer, toplantı yeri, parlamento.",
+                ornek: [
+                    { 
+                        ar: "إِذَا قِيلَ لَكُمْ تَفَسَّحُوا فِي الْمَجَالِسِ فَافْسَحُوا", 
+                        tr: "Size 'Meclislerde (oturduğunuz yerlerde) yer açın' denildiğinde yer açın. (Mücadele Suresi, 11)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: Muzarisi 'esreli' (يَجْلِسُ) olan fiillerin İsm-i Mekân kalıbı 'مَفْعِل' (Mef'il) vezninde gelir. Bu yüzden kelime 'Mecles' değil 'Meclis' olmuştur."
+                    }
+                ]
+            } 
+        },
+
+        // --- 64 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı - Karşılıklı Eylem) ---
+        67: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُجَالَسَة", 
+                trText: "Mücalese / Birlikte oturma, sohbet etme.",
+                ornek: { 
+                    ar: "مُجَالَسَةُ الصَّالِحِينَ", 
+                    tr: "Salih (iyi) insanlarla birlikte oturmak." 
+                }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 15. W-Q-F (و ق ف) KÖKÜ - Durmak / Vakfetmek
+    // Sabit kalmayı, durdurmayı ve bir amaca bağlamayı ifade eder. (Misâl Fiil / 2. Bab)
+    // ==================================================================
+    "وقف": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi - Misâl Fiil) ---
+        1: { 
+            base: { 
+                emoji: "🛑", 
+                arText: "وَقَفَ", 
+                trText: "Durdu / Vakfetti.",
+                ornek: { 
+                    ar: "وَقَفَ أَمَامَ الْبَابِ", 
+                    tr: "Kapının önünde durdu." 
+                }
+            },
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "يَقِفُ", 
+                trText: "Durur / Bekler.",
+                ornek: [
+                    { 
+                        ar: "وَقِفُوهُمْ إِنَّهُمْ مَسْئُولُونَ", 
+                        tr: "Onları durdurun (tutuklayın); çünkü onlar sorguya çekilecekler! (Sâffât Suresi, 24)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة (الْمِثَال)",
+                        tr: "Sarf Notu: Başı illetli (Vav) olan bu fiillere 'Misâl Fiil' denir. Muzari (يَقِفُ) ve Emir (قِفْ) kiplerinde, telaffuz zorluğunu aşmak için baştaki 'Vav' harfi tamamen düşer."
+                    }
+                ]
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "✋", 
+                arText: "قِفْ", 
+                trText: "Dur!" 
+            },
+        },
+
+       // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🏛️", 
+                arText: "وَقْف", 
+                trText: "Vakıf / Durdurma, bir malı hayır için bağışlama (vakfetme).",
+                ornek: [
+                    { 
+                        ar: "وَقْفٌ خَيْرِيٌّ", 
+                        tr: "Hayır vakfı." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَجْوِيدِيَّة",
+                        tr: "Tecvid Notu: Kur'an okurken anlamı bozmamak için nefesi ve sesi keserek durmaya 'Vakıf' denir. Kur'an'daki duraklama işaretlerine de 'Vakıf İşaretleri' (Secavend) adı verilir."
+                    }
+                ]
+            }
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
+        25: { 
+            base: { 
+                emoji: "🧍", 
+                arText: "وُقُوف", 
+                trText: "Vukuf / Durma, bekleme, bir konuya vâkıf olma (bilme).",
+                ornek: {
+                    ar: "الْوُقُوفُ بِعَرَفَةَ",
+                    tr: "Arafat'ta vakfeye durmak (Haccın temel rüknü)."
+                }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "👁️", 
+                arText: "وَاقِف", 
+                trText: "Vâkıf / Duran, vakfeden, bir konuyu tam olarak bilen.",
+                ornek: { 
+                    ar: "أَنَا وَاقِفٌ عَلَى التَّفَاصِيلِ", 
+                    tr: "Ben detaylara vâkıfım (hakimim/biliyorum)." 
+                }
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🔒", 
+                arText: "مَوْقُوف", 
+                trText: "Mevkuf / Durdurulmuş, alıkonulmuş, vakfedilmiş mal.",
+                ornek: { 
+                    ar: "هُوَ مَوْقُوفٌ عَنِ الْعَمَلِ", 
+                    tr: "O, işten el çektirilmiş (açığa alınmış / mevkuf) durumdadır." 
+                }
+            } 
+        },
+
+        // --- 37 Numaralı Kalıp (مَفْعِل - İsm-i Mekân / Zaman) ---
+        37: { 
+            base: { 
+                emoji: "🚏", 
+                arText: "مَوْقِف", 
+                trText: "Mevkıf / Durak, duruş biçimi, tutum, otopark.",
+                ornek: [
+                    { 
+                        ar: "مَوْقِفُ الْحَافِلَاتِ", 
+                        tr: "Otobüs durağı." 
+                    },
+                    {
+                        ar: "مَا هُوَ مَوْقِفُكَ مِنْ هَذَا الْأَمْرِ؟",
+                        tr: "Bu iş karşısındaki tutumun (duruşun/mevkıfın) nedir?"
+                    }
+                ]
+            } 
+        },
+
+        // --- 40 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
+        40: { 
+            base: { 
+                emoji: "📜", 
+                arText: "أَوْقَاف", 
+                trText: "Evkaf / Vakıflar, bağışlanan mallar.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة تَارِيخِيَّة",
+                    tr: "Tarih Notu: Osmanlı Devleti'nde tüm vakıf işlerinden sorumlu olan kuruma 'Evkaf Nezareti' (Vakıflar Bakanlığı) denirdi. Günümüzde 'Vakıflar Genel Müdürlüğü' olarak devam etmektedir."
+                }
+            } 
+        },
+
+     // --- 58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi - Ettirgenlik/Geçişlilik) ---
+        58: { 
+            base: { 
+                emoji: "🚧", 
+                arText: "وَقَّفَ", 
+                trText: "Durdurdu / Tutukladı (Tevkif etti).",
+                ornek: { 
+                    ar: "الشُّرْطَةُ وَقَّفَتِ السَّيَّارَةَ", 
+                    tr: "Polis arabayı durdurdu." 
+                }
+            },
+            cekimi: ["وَقَّفَ", "وَقَّفَا", "وَقَّفُوا", "وَقَّفَتْ", "وَقَّفَتَا", "وَقَّفْنَ", "وَقَّفْتَ", "وَقَّفْتُمَا", "وَقَّفْتُمْ", "وَقَّفْتِ", "وَقَّفْتُمَا", "وَقَّفْتُنَّ", "وَقَّفْتُ", "وَقَّفْنَا", "وَقَّفْنَا"]
+        },
+       
+          // --- 43 Numaralı Kalıp (يُفَعِّلُ - Tef'îl Babı Muzari) ---
+        59: { 
+            base: { 
+                emoji: "✋", 
+                arText: "يُوَقِّفُ", 
+                trText: "Durdurur / Tutuklar.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                    tr: "Sarf Notu: Misâl fiillerin (başı 'Vav' olanların) 1. formda (Mücerret) muzari ve emirlerinde 'Vav' harfi düşerken (يَقِفُ / قِفْ), Tef'il Babı gibi türetilmiş bablarda 'Vav' harfi düşmez, aynen korunur (يُوَقِّفُ / وَقِّفْ)."
+                }
+            },
+            cekimi: ["يُوَقِّفُ", "يُوَقِّفَانِ", "يُوَقِّفُونَ", "تُوَقِّفُ", "تُوَقِّفَانِ", "يُوَقِّفْنَ", "تُوَقِّفُ", "تُوَقِّفَانِ", "تُوَقِّفُونَ", "تُوَقِّفِينَ", "تُوَقِّفَانِ", "تُوَقِّفْنَ", "أُوَقِّفُ", "نُوَقِّفُ", "نُوَقِّفُ"]
+        },
+
+        // --- 45 Numaralı Kalıp (فَعِّلْ - Tef'îl Babı Emir) ---
+        60: { 
+            base: { 
+                emoji: "❗", 
+                arText: "وَقِّفْ", 
+                trText: "Durdur / Tutukla!",
+                ornek: { 
+                    ar: "وَقِّفِ السَّيَّارَةَ هُنَا", 
+                    tr: "Arabayı burada durdur." 
+                }
+            },
+            cekimi: ["وَقِّفْ", "وَقِّفَا", "وَقِّفُوا", "وَقِّفِي", "وَقِّفَا", "وَقِّفْنَ"]
+        },
+ 
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı - Ettirgenlik) ---
+        61: { 
+            base: { 
+                emoji: "🚓", 
+                arText: "تَوْقِيف", 
+                trText: "Tevkif / Durdurma, alıkoyma, tutuklama.",
+                ornek: { 
+                    ar: "أَمْرُ تَوْقِيفٍ", 
+                    tr: "Tutuklama emri (Tevkif müzekkeresi)." 
+                }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 16. R-F-' (ر ف ع) KÖKÜ - Kaldırmak / Yüceltmek / Yükseltmek
+    // Fiziki veya manevi olarak yukarı taşımayı ifade eder. (3. Bab)
+    // ==================================================================
+    "رفع": {
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "⬆️", 
+                arText: "رَفَعَ", 
+                trText: "Kaldırdı / Yükseltti / Yüceltti.",
+                ornek: { 
+                    ar: "اللهُ الَّذِي رَفَعَ السَّمَاوَاتِ", 
+                    tr: "Allah, gökleri yükseltendir. (Ra'd Suresi, 2)" 
+                }
+            },
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: { 
+            base: { 
+                emoji: "📈", 
+                arText: "يَرْفَعُ", 
+                trText: "Kaldırır / Yükseltir.",
+                ornek: { 
+                    ar: "يَرْفَعِ اللهُ الَّذِينَ آمَنُوا مِنْكُمْ", 
+                    tr: "Allah, içinizden iman edenleri (derece olarak) yükseltir. (Mücadele Suresi, 11)" 
+                }
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
+        7: { 
+            base: { 
+                emoji: "🙌", 
+                arText: "اِرْفَعْ", 
+                trText: "Kaldır / Yükselt!",
+                ornek: {
+                    ar: "اِرْفَعْ يَدَيْكَ",
+                    tr: "Ellerini kaldır."
+                }
+            },
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🏗️", 
+                arText: "رَفْع", 
+                trText: "Raf' / Kaldırma, yükseltme, ortadan kaldırma.",
+                ornek: {
+                    ar: "رَفْعُ الْحَظْرِ",
+                    tr: "Yasağın kaldırılması."
+                }
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "👑", 
+                arText: "رَافِع", 
+                trText: "Râfi' / Kaldıran, yükselten.",
+                ornek: [
+                    { 
+                        ar: "اَلرَّافِعُ", 
+                        tr: "Er-Râfi': Allah'ın güzel isimlerinden (Esma-ül Hüsna) olup 'dilediğinin makamını ve derecesini yükselten' demektir." 
+                    },
+                    {
+                        ar: "رَافِعَةٌ",
+                        tr: "Râfia: Vinç (Kaldıraç görevindeki aletlere dişil ism-i fail kalıbıyla isim verilmiştir)."
+                    }
+                ]
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🚩", 
+                arText: "مَرْفُوع", 
+                trText: "Merfû' / Kaldırılmış, yükseltilmiş.",
+                ornek: { 
+                    ar: "💡 مَعْلُومَة نَحْوِيَّة", 
+                    tr: "Gramer (Nahiv) Notu: Arapçada cümlenin öznesi (Fâil) ve isim cümlesinin öğeleri (Mübteda-Haber) hareke olarak ötre (damme) alırlar. Ötreli okunan bu kelimelere gramerde 'Merfû' (harekesi yükseltilmiş/ötre yapılmış) kelimeler denir." 
+                }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi - Dönüşlülük/Kendi kendine olma) ---
+        77: { 
+            base: { 
+                emoji: "🚀", 
+                arText: "اِرْتَفَعَ", 
+                trText: "Yükseldi / Arttı.",
+                ornek: { 
+                    ar: "اِرْتَفَعَتِ الْأَسْعَارُ", 
+                    tr: "Fiyatlar yükseldi (arttı)." 
+                }
+            },
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "🏔️", 
+                arText: "اِرْتِفَاع", 
+                trText: "İrtifa / Yükseklik, yükselme, rakım.",
+                ornek: { 
+                    ar: "عَلَى ارْتِفَاعِ أَلْفِ مِتْرٍ", 
+                    tr: "Bin metre irtifada (yükseklikte)." 
+                }
+            } 
+        }
+    },
     
 };
