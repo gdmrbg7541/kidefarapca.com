@@ -1027,15 +1027,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
     if (!anaVezin) anaVezin = boxElement.getAttribute('data-original') || '';
 
-
-
-
-
-
-
-
-
-
     
 // ===============================================================
     // EVRENSEL MOTORU (VerbGenerator) KULLANARAK ÇEKİMLERİ ÜRET
@@ -1114,11 +1105,32 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         }
         else if (tableType === 'nehiy') {
             prefix = "لَا";
-            if (clean.startsWith("اِ") || clean.startsWith("اُ")) coreWord = "تَ" + clean.substring(2);
-            else if (clean.startsWith("أَ")) coreWord = "تُ" + clean.substring(2);
+            
+            // ==================================================================
+            // KESİN ÇÖZÜM: Emir başlangıçlarına "أُ" ve "إِ" (Hemzeli Elifler) eklendi! 
+            // Sistemin bu harfleri tanımaması nedeniyle تَأُذْكُرْ gibi hatalar üretiyordu.
+            // ==================================================================
+            if (clean.startsWith("اِ") || clean.startsWith("اُ") || clean.startsWith("أُ") || clean.startsWith("إِ")) {
+                coreWord = "تَ" + clean.substring(2);
+            }
+            else if (clean.startsWith("أَ")) {
+                coreWord = "تُ" + clean.substring(2);
+            }
             else {
                 let taPrefix = (numBab === 7 || numBab === 8 || numBab === 9) ? "تُ" : "تَ";
                 coreWord = taPrefix + clean;
+                
+                // ==================================================================
+                // İSTİSNA: Emir kipinde düşen hemzeyi, Nehiy (Olumsuz Emir) 
+                // tablosu oluşturulurken geri getiriyoruz!
+                // ==================================================================
+                if (kok === "أخذ" && coreWord.startsWith("تَخُذ")) {
+                    coreWord = coreWord.replace("تَخُذ", "تَأْخُذ");
+                } else if (kok === "أكل" && coreWord.startsWith("تَكُل")) {
+                    coreWord = coreWord.replace("تَكُل", "تَأْكُل");
+                } else if (kok === "أمر" && coreWord.startsWith("تَمُر")) {
+                    coreWord = coreWord.replace("تَمُر", "تَأْمُر");
+                }
             }
         }
 
@@ -2885,6 +2897,18 @@ const SarfEngine = {
         }
         // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI VE KÜRSÜ DEĞİŞİMLERİ)
         if (r.includes('أ') || r.includes('ء') || r.includes('إ') || r.includes('ؤ') || r.includes('ئ')) {
+           // ==================================================================
+            // ÖZEL İSTİSNA: أخذ (Almak), أكل (Yemek) ve أمر (Emretmek)
+            // ==================================================================
+            if (r[0] === 'أ' && ((r[1] === 'خ' && r[2] === 'ذ') || (r[1] === 'ك' && r[2] === 'ل') || (r[1] === 'م' && r[2] === 'ر'))) {
+                // 1. Emir kipinde baştaki hemzeler tamamen düşer: (اُأْخُذ veya أُأْخُذ -> خُذ)
+                // KESİN ÇÖZÜM: Sadece Ötre (ُ) veya Esre (ِ) alan Emir eklerini hedefler. 
+                // Üstün (َ) alan Muzari Ene (أَ) ekine dokunmaz!
+                res = res.replace(/^[اأإ][ُِ]أْ/g, "");
+                
+                // 2. Muzari/Nehiy kiplerindeki hatalı kürsü/hareke dizilimlerini aslına döndür:
+                res = res.replace(/([يتاأن])َ[أإؤُ]+ْ?(خ|ك|م)/g, "$1َأْ$2");
+            }
             res = res.replace(/أَأْ/g, "آ"); 
             res = res.replace(/اُأْ/g, "أُو"); 
             res = res.replace(/اِأْ/g, "إِي"); 

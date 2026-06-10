@@ -13699,5 +13699,193 @@ const wordEasterEggs = {
         }
     },
 
+     // ==================================================================
+    // 13. Q-W-M (ق و م) KÖKÜ - Kalkmak / Durmak / Doğrulmak
+    // Hareketin, duruşun ve istikrarın merkezidir. (Ecvef Fiil / 1. Bab)
+    // ==================================================================
+    "قوم": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi - Ecvef) ---
+        1: { 
+            base: { 
+                emoji: "🧍", 
+                arText: "قَامَ", 
+                trText: "Kalktı / Ayağa kalktı / Durdu.",
+                ornek: { 
+                    ar: "قَامَ مِنْ نَوْمِهِ مُبَكِّرًا", 
+                    tr: "Uykusundan erkenden kalktı." 
+                }
+            },
+            cekimi: ["قَامَ", "قَامَا", "قَامُوا", "قَامَتْ", "قَامَتَا", "قُمْنَ", "قُمْتَ", "قُمْتُمَا", "قُمْتُمْ", "قُمْتِ", "قُمْتُمَا", "قُمْتُنَّ", "قُمْتُ", "قُمْنَا", "قُمْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "يَقُومُ", 
+                trText: "Kalkar / Durur / Yerine getirir.",
+                ornek: { 
+                    ar: "يَقُومُ بِوَاجِبِهِ", 
+                    tr: "Görevini yerine getirir (kalkışır/yapar)." 
+                }
+            },
+            cekimi: ["يَقُومُ", "يَقُومَانِ", "يَقُومُونَ", "تَقُومُ", "تَقُومَانِ", "يَقُمْنَ", "تَقُومُ", "تَقُومَانِ", "تَقُومُونَ", "تَقُومِينَ", "تَقُومَانِ", "تَقُمْنَ", "أَقُومُ", "نَقُومُ", "نَقُومُ"]
+        },
+
+        // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
+        3: { 
+            base: { 
+                emoji: "❗", 
+                arText: "قُمْ", 
+                trText: "Kalk!",
+                ornek: {
+                    ar: "يَا أَيُّهَا الْمُدَّثِّرُ ۝ قُمْ فَأَنْذِرْ",
+                    tr: "Ey örtüsüne bürünen! Kalk ve uyar! (Müddessir Suresi, 1-2)"
+                }
+            },
+            cekimi: ["قُمْ", "قُومَا", "قُومُوا", "قُومِي", "قُومَا", "قُمْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar / İsim) ---
+        19: { 
+            base: { 
+                emoji: "👥", 
+                arText: "قَوْم", 
+                trText: "Kavim / Topluluk, millet.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة لُغَوِيَّة",
+                    tr: "Etimolojik Not: 'Kavim' kelimesi 'kalkmak' kökündendir. Birlikte hareket eden, zorluklara karşı beraber ayağa kalkan, dayanışma içinde duran insan topluluğuna bu isim verilmiştir."
+                }
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "🇹🇷", 
+                arText: "قَوْمِيَّة", 
+                trText: "Kavmiyet / Milliyetçilik, ulusçuluk." 
+            }
+        },
+
+        // --- 23 Numaralı Kalıp (فِعَال - Masdar) ---
+        23: { 
+            base: { 
+                emoji: "🕋", 
+                arText: "قِيَام", 
+                trText: "Kıyam / Ayağa kalkma, ayakta durma, diriliş.",
+                ornek: [
+                    { 
+                        ar: "قِيَامُ اللَّيْلِ", 
+                        tr: "Gece kalkışı (Gece namazı)." 
+                    },
+                    {
+                        ar: "يَوْمُ الْقِيَامَةِ",
+                        tr: "Kıyamet Günü (İnsanların dirilip ayağa kalktığı gün)."
+                    }
+                ]
+            } 
+        },
+
+        // --- 26 Numaralı Kalıp (فَيْعُول - İstisnai Mübalağa İsm-i Fâili) ---
+        26: { 
+            base: { 
+                emoji: "🌍", 
+                arText: "قَيُّوم", 
+                trText: "Kayyum (Kayyûm) / Her şeyi ayakta tutan, kendi zatıyla kaim olan.",
+                ornek: [
+                    { 
+                        ar: "اللهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", 
+                        tr: "Allah, O'ndan başka ilah yoktur; Diridir, Kayyum'dur (her şeyi ayakta tutandır). (Bakara Suresi, 255 - Âyet el-Kürsî)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة (إِعْلَال)",
+                        tr: "Sarf Notu: Sistemdeki 26. kalıp normalde 'فَعُول' (Fa'ûl) veznidir. Ancak bu kelime, sonsuzluk ve kesintisizlik vurgusu yapmak için o veznin çok özel bir türevi olan 'فَيْعُول' (Fey'ûl) vezninden gelmiştir. Aslı 'قَيْوُوم' (Kayvûm) iken, ses kuralı (Yâ ve Vav'ın yan yana gelip ilkinin cezimli olması) gereği 'Vav' harfi 'Yâ'ya dönüşmüş ve şeddelenerek 'قَيُّوم' (Kayyûm) olmuştur."
+                    }
+                ]
+            } 
+        },
+
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🏛️", 
+                arText: "قَائِم", 
+                trText: "Kaim / Ayakta duran, var olan, yerine geçen.",
+                ornek: { 
+                    ar: "الْقَائِمُ بِالْأَعْمَالِ", 
+                    tr: "İşleri yürüten (Maslahatgüzar / birinin yerine kaim olan)." 
+                }
+            } 
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân / Zaman) ---
+        38: { 
+            base: { 
+                emoji: "👑", 
+                arText: "مَقَام", 
+                trText: "Makam / Durulan yer, mevki, rütbe.",
+                ornek: { 
+                    ar: "مَقَامٌ مَحْمُودٌ", 
+                    tr: "Övülmüş makam (yer). (İsrâ Suresi, 79)" 
+                }
+            } 
+        },
+
+        
+        // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - İstif'âl Babı Mazi - Yönelme/Talep) ---
+        100: { 
+            base: { 
+                emoji: "🛤️", 
+                arText: "اِسْتَقَامَ", 
+                trText: "Doğruldu / İstikamet üzere oldu." 
+            },
+            cekimi: ["اِسْتَقَامَ", "اِسْتَقَامَا", "اِسْتَقَامُوا", "اِسْتَقَامَتْ", "اِسْتَقَامَتَا", "اِسْتَقَمْنَ", "اِسْتَقَمْتَ", "اِسْتَقَمْتُمَا", "اِسْتَقَمْتُمْ", "اِسْتَقَمْتِ", "اِسْتَقَمْتُمَا", "اِسْتَقَمْتُنَّ", "اِسْتَقَمْتُ", "اِسْتَقَمْنَا", "اِسْتَقَمْنَا"]
+        },
+
+        // --- 101 Numaralı Kalıp (يَسْتَفْعِلُ - İstif'âl Babı Muzari) ---
+        101: { 
+            base: { 
+                emoji: "🚶", 
+                arText: "يَسْتَقِيمُ", 
+                trText: "Doğrulur / İstikamet üzere olur."
+            },
+            cekimi: ["يَسْتَقِيمُ", "يَسْتَقِيمَانِ", "يَسْتَقِيمُونَ", "تَسْتَقِيمُ", "تَسْتَقِيمَانِ", "يَسْتَقِمْنَ", "تَسْتَقِيمُ", "تَسْتَقِيمَانِ", "تَسْتَقِيمُونَ", "تَسْتَقِيمِينَ", "تَسْتَقِيمَانِ", "تَسْتَقِمْنَ", "أَسْتَقِيمُ", "نَسْتَقِيمُ", "نَسْتَقِيمُ"]
+        },
+
+        // --- 102 Numaralı Kalıp (اِسْتَفْعِلْ - İstif'âl Babı Emir) ---
+        102: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِسْتَقِمْ", 
+                trText: "Doğrul / İstikamet üzere ol!",
+                ornek: {
+                    ar: "فَاسْتَقِمْ كَمَا أُمِرْتَ",
+                    tr: "Emrolunduğun gibi dosdoğru ol (istikamet üzere ol). (Hûd Suresi, 112)"
+                }
+            },
+            cekimi: ["اِسْتَقِمْ", "اِسْتَقِيمَا", "اِسْتَقِيمُوا", "اِسْتَقِيمِي", "اِسْتَقِيمَا", "اِسْتَقِمْنَ"]
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı) ---
+        103: { 
+            base: { 
+                emoji: "🧭", 
+                arText: "اِسْتِقَامَة", 
+                trText: "İstikamet / Doğruluk, doğru yön, sapmadan ilerleme."
+            } 
+        },
+
+        // --- 104 Numaralı Kalıp (مُسْتَفْعِل - İstif'âl Babı İsm-i Fâili) ---
+        104: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "مُسْتَقِيم", 
+                trText: "Müstakim / Dosdoğru, istikamet sahibi, sapmayan.",
+                ornek: { 
+                    ar: "اِهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", 
+                    tr: "Bizi dosdoğru yola (istikametli / müstakim yola) ilet. (Fâtiha Suresi, 6)" 
+                }
+            } 
+        },
+     },
     
 };
