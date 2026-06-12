@@ -14832,5 +14832,680 @@ const wordEasterEggs = {
         }
     },    
 
+    // ==================================================================
+    // 22. Q-T-' (ق ط ع) KÖKÜ - Kesmek / Koparmak / Karar Vermek
+    // Bir bütünü ayırmayı, ilişkiyi kesmeyi veya kesin hüküm vermeyi ifade eder. (3. Bab)
+    // ==================================================================
+    "قطع": {
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "✂️", 
+                arText: "قَطَعَ", 
+                trText: "Kesti / Kopardı / Aştı.",
+                ornek: { 
+                    ar: "قَطَعَ الشَّجَرَةَ", 
+                    tr: "Ağacı kesti." 
+                }
+            },
+            cekimi: ["قَطَعَ", "قَطَعَا", "قَطَعُوا", "قَطَعَتْ", "قَطَعَتَا", "قَطَعْنَ", "قَطَعْتَ", "قَطَعْتُمَا", "قَطَعْتُمْ", "قَطَعْتِ", "قَطَعْتُمَا", "قَطَعْتُنَّ", "قَطَعْتُ", "قَطَعْنَا", "قَطَعْنَا"]
+        },
+
+        // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: { 
+            base: { 
+                emoji: "🔪", 
+                arText: "يَقْطَعُ", 
+                trText: "Keser / Koparır.",
+                ornek: [
+                    { 
+                        ar: "يَقْطَعُ الشَّارِعَ", 
+                        tr: "Cadeyi keser (Karşıdan karşıya geçer)." 
+                    },
+                    {
+                        ar: "وَيَقْطَعُونَ مَا أَمَرَ اللهُ بِهِ أَنْ يُوصَلَ",
+                        tr: "Onlar, Allah'ın birleştirilmesini (sürdürülmesini) emrettiği şeyi keserler. (Bakara Suresi, 27)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَفْسِيرِيَّة",
+                        tr: "Tefsir Notu: Ayetteki 'kat' (kesme) eylemi, 'Kat'-ı Rahim' yani akrabalık ve inananlar arasındaki kardeşlik bağlarını koparmak olarak tefsir edilir. Bu eylem, bağları koruma ve sürdürme anlamına gelen 'Sıla-i Rahim' kavramının tam zıttıdır."
+                    }
+                ]
+            },
+            cekimi: ["يَقْطَعُ", "يَقْطَعَانِ", "يَقْطَعُونَ", "تَقْطَعُ", "تَقْطَعَانِ", "يَقْطَعْنَ", "تَقْطَعُ", "تَقْطَعَانِ", "تَقْطَعُونَ", "تَقْطَعِينَ", "تَقْطَعَانِ", "تَقْطَعْنَ", "أَقْطَعُ", "نَقْطَعُ", "نَقْطَعُ"]
+        },
+
+        // --- 7 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
+        7: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِقْطَعْ", 
+                trText: "Kes / Kopar!",
+            },
+            cekimi: ["اِقْطَعْ", "اِقْطَعَا", "اِقْطَعُوا", "اِقْطَعِي", "اِقْطَعَا", "اِقْطَعْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🛑", 
+                arText: "قَطْع", 
+                trText: "Kat' / Kesme, koparma, kesinlik.",
+                ornek: {
+                    ar: "قَطْعًا",
+                    tr: "Kat'iyen / Kesinlikle."
+                }
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "⚖️", 
+                arText: "قَطْعِيَّة", 
+                trText: "Katiyet / Kesinlik, şüpheye yer bırakmama.",
+            }
+        },
+
+        // --- 20 Numaralı Kalıp (فِعْلَة - İsim Formu) ---
+        20: { 
+            base: { 
+                emoji: "🧩", 
+                arText: "قِطْعَة", 
+                trText: "Kıta / Parça, bölük, kara parçası.",
+                ornek: {
+                    ar: "قِطْعَةُ حَلْوَى",
+                    tr: "Bir parça tatlı."
+                }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "📌", 
+                arText: "قَاطِع", 
+                trText: "Kati (Kâtı') / Kesen, kesin, şüphe götürmez.",
+                ornek: { 
+                    ar: "دَلِيلٌ قَاطِعٌ", 
+                    tr: "Kati (kesin) delil." 
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🔖", 
+                arText: "مَقْطُوع", 
+                trText: "Maktu / Kesilmiş, sabit, belirlenmiş.",
+                ornek: { 
+                    ar: "سِعْرٌ مَقْطُوعٌ", 
+                    tr: "Maktu (sabitlenmiş/kesin) fiyat." 
+                }
+            }
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân / Zaman) ---
+        38: { 
+            base: { 
+                emoji: "🎞️", 
+                arText: "مَقْطَع", 
+                trText: "Makta / Kesit, kesim yeri, video klibi.",
+                ornek: [
+                    { 
+                        ar: "مَقْطَعُ فِيدْيُو", 
+                        tr: "Video kesidi (klibi)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَجْوِيدِيَّة",
+                        tr: "Tecvid Notu: Harflerin çıkış yerlerine (kesişim/duraklama noktalarına) Mahreç dendiği gibi, şiirlerde veya kıraatte durulan yerlere 'Makta' denir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 62 Numaralı Kalıp (فَاعَلَ - Mufâ'ale Babı Mazi - Karşılıklı Eylem / İlişki Kesme) ---
+        64: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "قَاطَعَ", 
+                trText: "Boykot etti / İlişkiyi kesti / Sözünü kesti.",
+                ornek: { 
+                    ar: "قَاطَعَ الْمُنْتَجَاتِ", 
+                    tr: "Ürünleri boykot etti." 
+                }
+            },
+            cekimi: ["قَاطَعَ", "قَاطَعَا", "قَاطَعُوا", "قَاطَعَتْ", "قَاطَعَتَا", "قَاطَعْنَ", "قَاطَعْتَ", "قَاطَعْتُمَا", "قَاطَعْتُمْ", "قَاطَعْتِ", "قَاطَعْتُمَا", "قَاطَعْتُنَّ", "قَاطَعْتُ", "قَاطَعْنَا", "قَاطَعْنَا"]
+        },
+
+        // --- 64 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "🛑", 
+                arText: "مُقَاطَعَة", 
+                trText: "Mukataa / Boykot, söz kesme, ilişki koparma.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة تَارِيخِيَّة",
+                    tr: "Tarih Notu: Osmanlı Devleti'nde devlete ait bir gelirin (verginin) toplanma hakkının belirli bir bedel karşılığında (kesin ve maktu olarak) şahıslara bırakılması sistemine 'Mukataa Sistemi' denirdi."
+                }
+            } 
+        },
+
+        // --- 68 Numaralı Kalıp (اِنْفَعَلَ - İnfi'âl Babı Mazi - Dönüşlülük / Edilgenlik) ---
+        71: { 
+            base: { 
+                emoji: "🔌", 
+                arText: "اِنْقَطَعَ", 
+                trText: "Kesildi / Koptu."
+            },
+        },
+
+        // --- 71 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
+        74: { 
+            base: { 
+                emoji: "⚡", 
+                arText: "اِنْقِطَاع", 
+                trText: "İnkıta / Kesilme, ara verme, kopma.",
+                ornek: { 
+                    ar: "اِنْقِطَاعُ الْكَهْرَبَاءِ", 
+                    tr: "Elektrik kesintisi (İnkıta etmesi)." 
+                }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 23. R-S-M (ر س م) KÖKÜ - Çizmek / Belirlemek / İz Bırakmak
+    // Bir şeyin sınırlarını çizmeyi, kurallarını belirlemeyi veya şekillendirmeyi ifade eder. (1. Bab)
+    // ==================================================================
+    "رسم": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "✏️", 
+                arText: "رَسَمَ", 
+                trText: "Çizdi / Resmetti / Kural koydu.",
+                ornek: { 
+                    ar: "رَسَمَ خُطَّةً جَدِيدَةً", 
+                    tr: "Yeni bir plan çizdi (belirledi)." 
+                }
+            },
+            cekimi: ["رَسَمَ", "رَسَمَا", "رَسَمُوا", "رَسَمَتْ", "رَسَمَتَا", "رَسَمْنَ", "رَسَمْتَ", "رَسَمْتُمَا", "رَسَمْتُمْ", "رَسَمْتِ", "رَسَمْتُمَا", "رَسَمْتُنَّ", "رَسَمْتُ", "رَسَمْنَا", "رَسَمْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: { 
+            base: { 
+                emoji: "🎨", 
+                arText: "يَرْسُمُ", 
+                trText: "Çizer / Resmeder.",
+                ornek: { 
+                    ar: "الطِّفْلُ يَرْسُمُ شَجَرَةً", 
+                    tr: "Çocuk bir ağaç çiziyor." 
+                }
+            },
+            cekimi: ["يَرْسُمُ", "يَرْسُمَانِ", "يَرْسُمُونَ", "تَرْسُمُ", "تَرْسُمَانِ", "يَرْسُمْنَ", "تَرْسُمُ", "تَرْسُمَانِ", "تَرْسُمُونَ", "تَرْسُمِينَ", "تَرْسُمَانِ", "تَرْسُمْنَ", "أَرْسُمُ", "نَرْسُمُ", "نَرْسُمُ"]
+        },
+
+        // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
+        3: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اُرْسُمْ", 
+                trText: "Çiz / Resmet!",
+                ornek: {
+                    ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                    tr: "Sarf Notu: Muzari fiilin orta harfi 'ötre' (يَرْسُمُ) olduğu için, emir kipinin başına gelen yardımcı 'Elif' harfi de ses uyumu gereği kural olarak 'ötre' (اُرْسُمْ) almıştır."
+                }
+            },
+            cekimi: ["اُرْسُمْ", "اُرْسُمَا", "اُرْسُمُوا", "اُرْسُمِي", "اُرْسُمَا", "اُرْسُمْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🖼️", 
+                arText: "رَسْم", 
+                trText: "Resm / Çizim, resim, vergi, resmiyet.",
+                ornek: [
+                    {
+                        ar: "رَسْمِيٌّ",
+                        tr: "Resmî (Devlete ait, kuralları çizilmiş olan)."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: 'Resm' kelimesi sınır çizmektir ve iki kola ayrılır ➔ 1. Sanatsal Kol (Fiziksel Çizim): Sanatçı tuval üzerine figürün sınırlarını çizdiğinde buna 'Resim', yapana 'Ressam' deriz. 2. Hukuki Kol (Mecazi Çizim): Devlet, kuralların çerçevesini ve sınırlarını çizdiğinde buna 'Resmî', bu kurallara harfiyen uyulmasına ise 'Resmiyet' deriz."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "👔", 
+                arText: "رَسْمِيَّة", 
+                trText: "Resmiyet / Kurallara uygunluk, ciddiyet."
+            }
+        },
+
+        // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Çoğul Masdar) ---
+        43: { 
+            base: { 
+                emoji: "📜", 
+                arText: "رُسُوم", 
+                trText: "Rüsûm / Resimler, vergiler, harçlar, çizgi filmler.",
+                ornek: {
+                    ar: "رُسُومٌ مُتَحَرِّكَةٌ",
+                    tr: "Hareketli resimler (Çizgi film)."
+                }
+            } 
+        },
+
+        // --- 34 Numaralı Kalıp (فَعَّال - Mübalağalı İsm-i Fâil - Meslek Bildirir) ---
+        34: { 
+            base: { 
+                emoji: "👨‍🎨", 
+                arText: "رَسَّام", 
+                trText: "Ressam / Çok çizen, mesleği çizim/resim olan kişi."
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "📝", 
+                arText: "مَرْسُوم", 
+                trText: "Mersum / Çizilmiş şey, ferman, kararname.",
+                ornek: {
+                    ar: "مَرْسُومٌ رِئَاسِيٌّ",
+                    tr: "Cumhurbaşkanlığı Kararnamesi (Sınırları kesin olarak çizilmiş yasa)."
+                }
+            } 
+        },
+
+       // --- 38 Numaralı Kalıp (مَفَاعِل - Cem-i Mükesser / Kırık Çoğul) ---
+        38: { 
+            base: { 
+                emoji: "🎪", 
+                arText: "مَرَاسِم", 
+                trText: "Merasim / Törenler, kuralları önceden çizilmiş ritüeller ve protokoller.",
+                ornek: [
+                    {
+                        ar: "مَرَاسِمُ الزَّفَافِ",
+                        tr: "Düğün merasimi (töreni)."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: 'Merasim' kelimesi, 'Mersem' (مَرْسَم - resim çizilen yer, kural, âdet) kelimesinin kırık çoğuludur (Cem-i Mükesser). Türkçede tekil gibi kullanılsa da köken olarak 'kuralları önceden çizilmiş törenler/ritüeller bütünü' anlamına gelir."
+                    }
+                ]
+            } 
+        }
+     },
+
+     // ==================================================================
+    // 24. H-B-B (ح ب ب) KÖKÜ - Sevmek / Hoşlanmak
+    // Sevgi duymayı ve kalben bağlanmayı ifade eder. (Muzaaf Fiil)
+    // ==================================================================
+    "حبب": {
+        
+
+        // --- 21 Numaralı Kalıp (فُعْل - Mücerret Masdar) ---
+        21: { 
+            base: { 
+                emoji: "💞", 
+                arText: "حُبّ", 
+                trText: "Hubb / Sevgi, aşk, hoşlanma.",
+                ornek: { 
+                    ar: "حُبُّ الْوَطَنِ", 
+                    tr: "Vatan sevgisi." 
+                }
+            }
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / Kalıcı Özellik) ---
+        35: { 
+            base: { 
+                emoji: "🌹", 
+                arText: "حَبِيب", 
+                trText: "Habîb / Seven, sevilen, dost, sevgili.",
+                ornek: { 
+                    ar: "حَبِيبُ اللهِ", 
+                    tr: "Allah'ın sevgilisi (Hz. Muhammed için kullanılır)." 
+                }
+            } 
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🥰", 
+                arText: "مَحْبُوب", 
+                trText: "Mahbûb / Sevilen, popüler, gözde.",
+                ornek: { 
+                    ar: "هُوَ شَخْصٌ مَحْبُوبٌ جِدًّا", 
+                    tr: "O, çok sevilen bir kişidir." 
+                }
+            }
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَلَة - Mimli Masdar) ---
+        38: { 
+            base: { 
+                emoji: "☕", 
+                arText: "مَحَبَّة", 
+                trText: "Mahabbet (Muhabbet) / Sevgi, dostça sohbet, bağlılık.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                    tr: "Semantik Not: Kelimenin aslı 'Mahabbet' (مَحَبَّة) şeklinde, مَفْعَلَة vezninde mimli masdardır. Ancak Türkçeye geçerken 'Muhabbet' olarak telaffuz edilmeye başlanmıştır. Sadece 'sevgi' değil, 'sevgiyle yapılan dostane sohbet' anlamına da evrilmiştir."
+                }
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - En Sık Kullanılan Form) ---
+        52: { 
+            base: { 
+                emoji: "💖", 
+                arText: "أَحَبَّ", 
+                trText: "Sevdi (Günlük dilde ve Kur'an'da en çok kullanılan formdur).",
+                ornek: { 
+                    ar: "يُحِبُّهُمْ وَيُحِبُّونَهُ", 
+                    tr: "Allah onları sever, onlar da O'nu severler. (Mâide Suresi, 54)" 
+                }
+            },
+            // İf'al babında şeddenin nasıl kırıldığına (أَحْبَبْتُ) dikkat!
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi - Ettirgenlik) ---
+        58: { 
+            base: { 
+                emoji: "🎁", 
+                arText: "حَبَّبَ", 
+                trText: "Sevdirdi.",
+                ornek: { 
+                    ar: "وَلَكِنَّ اللهَ حَبَّبَ إِلَيْكُمُ الْإِيمَانَ", 
+                    tr: "Fakat Allah, size imanı sevdirdi... (Hucurât Suresi, 7)" 
+                }
+            },
+        }
+    },
+
+// ==================================================================
+    // 25. S-H-B (ص ح ب) KÖKÜ - Arkadaş Olmak / Eşlik Etmek
+    // Birine yoldaşlık yapmayı, beraberinde olmayı ifade eder. (4. Bab)
+    // ==================================================================
+    "صحب": {
+        // --- 8 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
+        8: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "صَحِبَ", 
+                trText: "Arkadaş oldu / Eşlik etti.",
+                ornek: { 
+                    ar: "صَحِبَ أَبَاهُ إِلَى السُّوقِ", 
+                    tr: "Babasına çarşıya kadar eşlik etti." 
+                }
+            },
+        },
+
+        // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
+        9: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "يَصْحَبُ", 
+                trText: "Arkadaş olur / Eşlik eder.",
+            },
+        },
+
+        // --- 10 Numaralı Kalıp (Mücerret 4. Bab Emir) ---
+        10: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِصْحَبْ", 
+                trText: "Arkadaş ol / Eşlik et!",
+                ornek: {
+                    ar: "وَصَاحِبْهُمَا فِي الدُّنْيَا مَعْرُوفًا 💡 (مَعْلُومَة تَفْسِيرِيَّة)",
+                    tr: "Onlara (anne-babana) dünyada iyi davran (güzellikle eşlik/arkadaşlık et). (Lokman Suresi, 15) ➔ Tefsir Notu: Ayette 3. Bab olan Mufa'ale babı (صَاحِبْ) kullanılarak, anne-babaya karşılıklı bir arkadaş ve yoldaş gibi iyi davranılması emredilmiştir."
+                }
+            },
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْلَة - Mücerret Masdar) ---
+        21: { 
+            base: { 
+                emoji: "☕", 
+                arText: "صُحْبَة", 
+                trText: "Suhbet (Sohbet) / Arkadaşlık, yoldaşlık, beraberlik.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                    tr: "Semantik Not: 'Sohbet' kelimesi Arapçada 'arkadaşlık/yoldaşlık etmek' demektir. Türkçeye geçerken 'arkadaşça konuşmak, muhabbet etmek' anlamına evrilmiştir."
+                }
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🧑‍🤝‍🧑", 
+                arText: "صَاحِب", 
+                trText: "Sahip (Sâhib) / Arkadaş, yoldaş, eşlik eden.",
+                ornek: [
+                    { 
+                        ar: "يَا صَاحِبَيِ السِّجْنِ", 
+                        tr: "Ey zindan arkadaşlarım (yoldaşlarım)! (Yusuf Suresi, 39)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: 'Sahip' Arapçada malik/kral değil, 'arkadaş' demektir. Türkçede 'mal sahibi' (mala arkadaş olan, maldan ayrılmayan) şeklinde kullanıla kullanıla mülkiyet bildiren bir kavrama dönüşmüştür."
+                    }
+                ]
+            }
+        },
+
+        // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
+        41: { 
+            base: { 
+                emoji: "🌟", 
+                arText: "أَصْحَاب", 
+                trText: "Ashâb / Arkadaşlar, yoldaşlar (Sahip kelimesinin kırık çoğuludur).",
+                ornek: {
+                    ar: "أَصْحَابُ الْكَهْفِ",
+                    tr: "Mağara arkadaşları (Ashab-ı Kehf)."
+                }
+            }
+        },
+
+        // --- (Numarayı فَعَالَة kalıbına göre ayarla) (فَعَالَة - Masdar / İsm-i Cem' - Topluluk İsmi) ---
+        22: { 
+            base: { 
+                emoji: "✨", 
+                arText: "صَحَابَة", 
+                trText: "Sahâbe / Hz. Peygamber'in arkadaşları (yoldaşlar topluluğu).",
+                ornek: [
+                    { 
+                        ar: "اَلصَّحَابَةُ الْكِرَامُ", 
+                        tr: "Değerli sahabeler." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: 'Sahâbe' (صَحَابَة) kelimesi aslen 'Fa'âle' (فَعَالَة) kalıbında bir masdardır. Ancak Arapçada bir gruba (topluluğa) işaret etmek için 'İsm-i Cem' (Topluluk İsmi) olarak kullanılmıştır."
+                    }
+                ]
+            } 
+        },
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🧳", 
+                arText: "مَصْحُوب", 
+                trText: "Mashûb / Eşliğinde olan, beraberinde olan.",
+                ornek: { 
+                    ar: "مَصْحُوبًا بِالسَّلَامَةِ", 
+                    tr: "Selametle (esenlik eşliğinde) git." 
+                }
+            }
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı - Karşılıklı Eylem) ---
+        67: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُصَاحَبَة", 
+                trText: "Musâhabe / Karşılıklı arkadaşlık etme, yoldaşlık yapma.",
+                ornek: { 
+                    ar: "مُصَاحَبَةُ الْأَخْيَارِ", 
+                    tr: "İyi insanlarla arkadaşlık (musahabe) etmek." 
+                }
+            } 
+        },
+
+        // --- 69 Numaralı Kalıp (مُفَاعِل - Mufâ'ale Babı İsm-i Fâil - Eylemi Yapan) ---
+        69: { 
+            base: { 
+                emoji: "🗣️", 
+                arText: "مُصَاحِب", 
+                trText: "Musahip / Birlikte sohbet edilen arkadaş, yoldaş.",
+                ornek: { 
+                    ar: "هُوَ مُصَاحِبِي فِي السَّفَرِ", 
+                    tr: "O, yolculukta benim yoldaşımdır (musahibimdir)." 
+                }
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 26. H-D-M (خ د م) KÖKÜ - Hizmet Etmek / Çalışmak
+    // Birinin işini görmeyi, ona yardımcı olmayı veya bir işte çalıştırılmayı ifade eder. (2. Bab)
+    // ==================================================================
+    "خدم": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🧹", 
+                arText: "خَدَمَ", 
+                trText: "Hizmet etti / İlgilendi / Çalıştı.",
+                ornek: { 
+                    ar: "خَدَمَ الشَّعْبَ بِمَحَبَّةٍ", 
+                    tr: "Halka sevgiyle hizmet etti." 
+                }
+            },
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "يَخْدِمُ", 
+                trText: "Hizmet eder.",
+                ornek: { 
+                    ar: "كَيْفَ يُمْكِنُنِي أَنْ أَخْدِمَكَ؟", 
+                    tr: "Sana nasıl hizmet edebilirim? (Size nasıl yardımcı olabilirim?)" 
+                }
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِخْدِمْ", 
+                trText: "Hizmet et!",
+            },
+        },
+
+        // --- 20 Numaralı Kalıp (فِعْلَة - İsim/Masdar Formu) ---
+        20: { 
+            base: { 
+                emoji: "🛎️", 
+                arText: "خِدْمَة", 
+                trText: "Hizmet / Görev, servis, yardım.",
+                ornek: {
+                    ar: "خِدْمَةُ الْعُمَلَاءِ",
+                    tr: "Müşteri hizmetleri (Modern Arapçada çok sık kullanılır)."
+                }
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "⚙️", 
+                arText: "خَدَمَات", 
+                trText: "Hizmetler / Servisler."
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🤵", 
+                arText: "خَادِم", 
+                trText: "Hâdim / Hizmet eden, hizmetçi.",
+                ornek: { 
+                    ar: "خَادِمُ الْحَرَمَيْنِ الشَّرِيفَيْنِ", 
+                    tr: "İki şerefli haremin (Mekke ve Medine'nin) hizmetkârı (Tarihi bir unvan)." 
+                }
+            }
+        },
+
+        // --- 47 Numaralı Kalıp (فَعَل - İsm-i Cem' / Topluluk İsmi - Çoğul) ---
+        47: { 
+               base: { 
+                emoji: "👥", 
+                arText: "خَدَمَة", 
+                trText: "Hademe / Hizmet edenler, görevliler (Hâdim kelimesinin kırık çoğuludur).",
+                ornek: {
+                    ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                    tr: "Semantik Not: 'Hademe' Arapçada 'Hâdim' (hizmet eden) kelimesinin çoğuludur (Tıpkı Tâlib -> Talebe gibi). Ancak Türkçeye geçerken anlam kaymasına uğramış ve kurumlarda çalışan görevliler için tekil bir kelimeymiş gibi kullanılmaya başlanmıştır."
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "👑", 
+                arText: "مَخْدُوم", 
+                trText: "Mahdûm / Kendisine hizmet edilen kişi, efendi.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة تَارِيخِيَّة",
+                    tr: "Tarih Notu: Osmanlı'da babalarından dolayı kendilerine saygı duyulan ve hizmet edilen erkek çocuklar (oğullar) için kibar bir ifade olarak 'Mahdum' kelimesi kullanılırdı (Örn: Mahdumunuz nasıl?)."
+                }
+            }
+        },
+
+        // --- 102 Numaralı Kalıp (اِسْتَفْعَلَ - İstif'âl Babı Mazi - İstek / Talep / Dönüşüm) ---
+        100: { 
+            base: { 
+                emoji: "🏢", 
+                arText: "اِسْتَخْدَمَ", 
+                trText: "İstihdam etti / İşe aldı / Kullandı.",
+                ornek: { 
+                    ar: "اِسْتَخْدَمَ الشَّرِكَةُ عُمَّالًا جُدُدًا", 
+                    tr: "Şirket yeni işçiler istihdam etti (işe aldı)." 
+                }
+            },
+        },
+
+        // --- 100 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı) ---
+        103: { 
+            base: { 
+                emoji: "💼", 
+                arText: "اِسْتِخْدَام", 
+                trText: "İstihdam / Birini bir hizmette kullanma, işe alma, kullanım.",
+                ornek: { 
+                    ar: "دَلِيلُ الِاسْتِخْدَامِ", 
+                    tr: "Kullanım kılavuzu." 
+                }
+            } 
+        },
+
+        // --- 103 Numaralı Kalıp (مُسْتَفْعَل - İstif'âl Babı İsm-i Mef'ûl - Etkilenen) ---
+        105: { 
+            base: { 
+                emoji: "👷", 
+                arText: "مُسْتَخْدَم", 
+                trText: "Müstahdem / Hizmette kullanılan, çalıştırılan, çalışan personel.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                    tr: "Semantik Not: 'Müstahdem' kelimesi Arapçada genel anlamda 'çalışan/personel' demektir. Türkçede ise zamanla anlam daralmasına uğrayarak sadece 'odacı, temizlik görevlisi' anlamında kullanılmaya başlanmıştır."
+                }
+            } 
+        }
+    },
 
 };
