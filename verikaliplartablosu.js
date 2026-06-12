@@ -232,7 +232,7 @@ const wordEasterEggs = {
                 trText: "Umûr / İşler, durumlar, olaylar.",
                 ornek: [
                     { 
-                        ar: "وَإِلَى اللَّهِ تُرْجَعُ الْأُمُورُ", 
+                        ar: "وَإِلَى اللهِ تُرْجَعُ الْأُمُورُ", 
                         tr: "Ve bütün işler (durumlar) Allah'a döndürülür. (Bakara Suresi, 210)" 
                     },
                     {
@@ -13197,7 +13197,6 @@ const wordEasterEggs = {
                     }
                 ]
             },
-            cekimi: ["غَفَلَ", "غَفَلَا", "غَفَلُوا", "غَفَلَتْ", "غَفَلَتَا", "غَفَلْنَ", "غَفَلْتَ", "غَفَلْتُمَا", "غَفَلْتُمْ", "غَفَلْتِ", "غَفَلْتُمَا", "غَفَلْتُنَّ", "غَفَلْتُ", "غَفَلْنَا", "غَفَلْنَا"]
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -13211,7 +13210,6 @@ const wordEasterEggs = {
                     tr: "İnsan, kaybedene kadar nimetlerden gafil olur (kıymetini bilmez)." 
                 }
             },
-            cekimi: ["يَغْفُلُ", "يَغْفُلَانِ", "يَغْفُلُونَ", "تَغْفُلُ", "تَغْفُلَانِ", "يَغْفُلْنَ", "تَغْفُلُ", "تَغْفُلَانِ", "تَغْفُلُونَ", "تَغْفُلِينَ", "تَغْفُلَانِ", "تَغْفُلْنَ", "أَغْفُلُ", "نَغْفُلُ", "نَغْفُلُ"]
         },
 
         // --- 19 Numaralı Kalıp (فَعْلَة - Masdar / İsm-i Merra) ---
@@ -14328,5 +14326,511 @@ const wordEasterEggs = {
             } 
         }
     },
+
+  // ==================================================================
+    // 17. N-Z-L (ن ز ل) KÖKÜ - İnmek / Konaklamak
+    // Yukarıdan aşağıya hareketi ve bir yere yerleşmeyi ifade eder. (2. Bab)
+    // ==================================================================
+    "نزل": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "⬇️", 
+                arText: "نَزَلَ", 
+                trText: "İndi / Konakladı.",
+                ornek: { 
+                    ar: "نَزَلَ مِنَ السَّيَّارَةِ", 
+                    tr: "Arabadan indi." 
+                }
+            },
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "📉", 
+                arText: "يَنْزِلُ", 
+                trText: "İner / Konaklar.",
+                ornek: { 
+                    ar: "الْمَطَرُ يَنْزِلُ كَثِيرًا هَذِهِ الْأَيَّامِ", 
+                    tr: "Bugünlerde yağmur çok yağıyor (iniyor)." 
+                }
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِنْزِلْ", 
+                trText: "İn!",
+            },
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
+        25: { 
+            base: { 
+                emoji: "🪂", 
+                arText: "نُزُول", 
+                trText: "Nüzul / İniş, inme.",
+                ornek: {
+                    ar: "أَسْبَابُ النُّزُولِ",
+                    tr: "İniş sebepleri (Kur'an ayetlerinin iniş sebeplerini inceleyen bilim dalı)."
+                }
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🧳", 
+                arText: "نَازِل", 
+                trText: "Nâzil / İnen, konaklayan, misafir.",
+                ornek: { 
+                    ar: "وَهُوَ نَازِلٌ فِي فُنْدُقٍ", 
+                    tr: "O, bir otelde konaklıyor (misafir/inen)." 
+                }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "⚠️", 
+                arText: "نَازِلَة", 
+                trText: "Nâzile / İnen musibet, başa gelen büyük felaket.",
+                ornek: {
+                    ar: "دُعَاءُ النَّوَازِلِ",
+                    tr: "Felaketler (inen musibetler) anında okunan dua."
+                }
+            }
+        },
+
+        // --- 37 Numaralı Kalıp (مَفْعِل - İsm-i Mekân / Zaman) ---
+        37: { 
+            base: { 
+                emoji: "🏕️", 
+                arText: "مَنْزِل", 
+                trText: "Menzil / İnilen yer, konak, durak, ev.",
+                ornek: [
+                    { 
+                        ar: "اَلْمَنْزِلُ جَدِيدٌ", 
+                        tr: "Ev (Menzil) yenidir." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: Muzarisi 'esreli' (يَنْزِلُ) olan fiillerin İsm-i Mekân kalıbı 'مَفْعِل' (Mef'il) vezninde gelir. (Tıpkı Meclis gibi). Menzil kelimesi de 'inilen ve konaklanılan yer' anlamına gelir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi - Aşama Aşama İndirme) ---
+        58: { 
+            base: { 
+                emoji: "📜", 
+                arText: "نَزَّلَ", 
+                trText: "Aşama aşama (parça parça) indirdi.",
+                ornek: {
+                    ar: "نَزَّلَ عَلَيْكَ الْكِتَابَ بِالْحَقِّ",
+                    tr: "O, sana Kitab'ı hak ile parça parça indirdi. (Âl-i İmrân Suresi, 3)"
+                }
+            },
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        61: { 
+            base: { 
+                emoji: "🌧️", 
+                arText: "تَنْزِيل", 
+                trText: "Tenzil / Kısım kısım indirme, indirim yapma.",
+                ornek: [
+                    { 
+                        ar: "تَنْزِيلُ الْكِتَابِ مِنَ اللهِ الْعَزِيزِ الْحَكِيمِ", 
+                        tr: "Bu kitabın indirilmesi (tenzili), Azîz ve Hakîm olan Allah'tandır. (Zümer Suresi, 1)" 
+                    },
+                    { 
+                        ar: "تَنْزِيلَاتٌ خَاصَّةٌ", 
+                        tr: "Özel indirimler (Tenzilat)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: Kur'an'ın 23 yıllık bir sürece yayılarak parça parça indirilmesini ifade etmek için Tef'il babından 'Tenzil' kelimesi kullanılır."
+                    }
+                ]
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Toptan İndirme) ---
+        52: { 
+            base: { 
+                emoji: "⚡", 
+                arText: "أَنْزَلَ", 
+                trText: "Bir kerede (toptan) indirdi.",
+                ornek: {
+                    ar: "إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ",
+                    tr: "Şüphesiz biz onu Kadir gecesinde (bir kerede/toptan) indirdik. (Kadir Suresi, 1)"
+                }
+            },
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "📦", 
+                arText: "إِنْزَال", 
+                trText: "İnzal / Tek seferde (toptan) indirme.",
+                ornek: [
+                    {
+                        ar: "💡 مَعْلُومَة عَقَائِدِيَّة",
+                        tr: "İlahiyat Notu: İf'al babı 'bir kerede olan' eylemleri bildirir. Kur'an'ın Levh-i Mahfuz'dan dünya semasına topluca indirilmesine, yağmurun gökten inmesine veya kendisinden önce indirilen Tevrat ve İncil'in inişine 'İnzal' denir."
+                    }
+                ]
+            } 
+        }
+    },
+
+     
+    // ==================================================================
+    // 20. C-R-Y (ج ر ي) KÖKÜ - Akmak / Koşmak / Gerçekleşmek
+    // Bir şeyin sürekli hareket halinde olmasını ve akışını ifade eder. (Nakıs Fiil / 2. Bab)
+    // ==================================================================
+    "جري": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi - Nakıs Fiil) ---
+        1: { 
+            base: { 
+                emoji: "🌊", 
+                arText: "جَرَى", 
+                trText: "Aktı / Koştu / Meydana geldi.",
+                ornek: { 
+                    ar: "جَرَى الْمَاءُ فِي النَّهْرِ", 
+                    tr: "Su nehirde aktı." 
+                }
+            },
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "🏃", 
+                arText: "يَجْرِي", 
+                trText: "Akar / Koşar / Gerçekleşir.",
+                ornek: { 
+                    ar: "تَجْرِي مِنْ تَحْتِهَا الْأَنْهَارُ", 
+                    tr: "Altından ırmaklar akar. (Kur'an'da cennet tasvirlerinde en sık geçen ifadelerden biri)." 
+                }
+            },
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِجْرِ", 
+                trText: "Ak / Koş!",
+                ornek: {
+                    ar: "💡 مَعْلُومَة صَرْفِيَّة (النَّاقِص)",
+                    tr: "Sarf Notu: Sonu illetli olan Nakıs fiillerin Emir kiplerinde, telaffuz zorluğunu aşmak ve emir formunu belirtmek için sondaki illet harfi (Yâ) tamamen düşer. Bu yüzden 'İcrî' değil 'İcri' şeklinde yazılır ve okunur."
+                }
+            },
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "💧", 
+                arText: "جَرْي", 
+                trText: "Cery / Akma, koşma eylemi." 
+            }
+        },
+
+        // --- 28 Numaralı Kalıp (فَعَلَان - Hareket Bildiren Masdar) ---
+        28: { 
+            base: { 
+                emoji: "⚡", 
+                arText: "جَرَيَان", 
+                trText: "Cereyan / Akıntı, akım, olayların gelişimi.",
+                ornek: [
+                    { 
+                        ar: "جَرَيَانُ الْأَحْدَاثِ", 
+                        tr: "Olayların akışı (cereyan etmesi)." 
+                    },
+                    {
+                        ar: "تَيَّارٌ كَهْرَبَائِيٌّ",
+                        tr: "Elektrik akımı (Günlük dilde 'elektrik cereyanı' buradan gelir)."
+                    }
+                ]
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "جَارٍ", 
+                trText: "Câri (Cârin) / Akan, geçerli olan, yürürlükteki.",
+                ornek: { 
+                    ar: "حِسَابٌ جَارٍ", 
+                    tr: "Cari hesap (Akan, sürekli işlem gören hesap)." 
+                }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "⛵", 
+                arText: "جَارِيَة", 
+                trText: "Câriye / Akan şey, gemi, hizmetçi kız.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                    tr: "Semantik Not: 'Cariye' kelimesi aslen 'akan, hareket eden şey' demektir. Kur'an'da denizde akıp giden gemiler için kullanılır (Hâkka Suresi, 11). Zamanla sosyal hayatta sürekli hareket halinde olan genç kadın hizmetçiler için kullanılmaya başlanmıştır."
+                }
+            }
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân / Zaman) ---
+        38: { 
+            base: { 
+                emoji: "🛤️", 
+                arText: "مَجْرًى", 
+                trText: "Mecra / Akış yeri, yatak, kanal.",
+                ornek: [
+                    { 
+                        ar: "بِسْمِ اللهِ مَجْرَاهَا وَمُرْسَاهَا", 
+                        tr: "Onun yüzüp gitmesi (mecrası/akışı) de durması da Allah'ın adıyladır. (Hûd Suresi, 41)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَجْوِيدِيَّة",
+                        tr: "İmâle Kuralı: Yukarıdaki ayette geçen 'Mecrâhâ' kelimesi, Asım Kıraatinde Kur'an'da 'İmâle' (Elif ile Yâ arası bir sesle 'Mecrêhâ' şeklinde) okunan tek yerdir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Ettirgenlik) ---
+        52: { 
+            base: { 
+                emoji: "⚙️", 
+                arText: "أَجْرَى", 
+                trText: "Akıttı / Yürüttü / Uyguladı (İcra etti).",
+                ornek: { 
+                    ar: "أَجْرَى الْمُدِيرُ تَعْدِيلَاتٍ جَدِيدَةً", 
+                    tr: "Müdür yeni düzenlemeler uyguladı (icra etti)." 
+                }
+            },
+            cekimi: ["أَجْرَى", "أَجْرَيَا", "أَجْرَوْا", "أَجْرَتْ", "أَجْرَتَا", "أَجْرَيْنَ", "أَجْرَيْتَ", "أَجْرَيْتُمَا", "أَجْرَيْتُمْ", "أَجْرَيْتِ", "أَجْرَيْتُمَا", "أَجْرَيْتُنَّ", "أَجْرَيْتُ", "أَجْرَيْنَا", "أَجْرَيْنَا"]
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı / Nakıs Kuralı) ---
+        55: { 
+            base: { 
+                emoji: "📋", 
+                arText: "إِجْرَاء", 
+                trText: "İcra / Yürütme, uygulama, işlem, akıtma.",
+                ornek: [
+                    { 
+                        ar: "السُّلْطَةُ التَّنْفِيذِيَّةُ وَالإِجْرَائِيَّةُ", 
+                        tr: "Yürütme ve icra yetkisi." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: Sonu illetli (Nakıs) olan fiiller, 'İf'al' (إِفْعَال) veya 'İstif'al' (اِسْتِفْعَال) bablarının masdarına aktarıldığında sondaki illet harfi daima 'Hemze'ye (ء) dönüşür. Bu yüzden 'İcray' değil 'İcra' (إِجْرَاء) olmuştur."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "📑", 
+                arText: "إِجْرَاءَات", 
+                trText: "İcraat / İşlemler, uygulamalar, prosedürler.",
+                ornek: {
+                    ar: "إِجْرَاءَاتٌ أَمْنِيَّةٌ",
+                    tr: "Güvenlik önlemleri (işlemleri/icraatları)."
+                }
+            }
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı - Uyum / Birliktelik) ---
+        67: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُجَارَاة", 
+                trText: "Mücârât / Biriyle birlikte koşma, ayak uydurma, rekabet etme.",
+                ornek: { 
+                    ar: "مُجَارَاةُ الْعَصْرِ", 
+                    tr: "Çağa ayak uydurmak." 
+                }
+            } 
+        }
+    },
     
+    // ==================================================================
+    // 21. D-F-' (د ف ع) KÖKÜ - İtmek / Savuşturmak / Ödemek
+    // Bir şeyi kendinden uzaklaştırmayı, itici gücü veya bedel ödemeyi ifade eder. (3. Bab)
+    // ==================================================================
+    "دفع": {
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "✋", 
+                arText: "دَفَعَ", 
+                trText: "İtti / Savuşturdu / Ödedi.",
+                ornek: { 
+                    ar: "دَفَعَ ثَمَنَ الْبِضَاعَةِ", 
+                    tr: "Malın bedelini (ücretini) ödedi." 
+                }
+            },
+        },
+
+        // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "يَدْفَعُ", 
+                trText: "İter / Savuşturur / Öder.",
+                ornek: { 
+                    ar: "إِنَّ اللهَ يُدَافِعُ عَنِ الَّذِينَ آمَنُوا", 
+                    tr: "(Mufâ'ale babından örnek): Şüphesiz Allah, iman edenleri savunur (onlardan kötülüğü def eder). (Hac Suresi, 38)" 
+                }
+            },
+        },
+
+        // --- 7 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
+        7: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِدْفَعْ", 
+                trText: "İt / Savuştur / Öde!",
+                ornek: [
+                    {
+                        ar: "اِدْفَعْ بِالَّتِي هِيَ أَحْسَنُ",
+                        tr: "Kötülüğü en güzel olan şeyle (iyilikle) savuştur (def et). (Fussilet Suresi, 34)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: Muzari fiilin orta harfi 'üstün' (يَدْفَعُ) olduğu için, emir kipinin başına gelen yardımcı 'Elif' harfi kural gereği 'esre' (اِدْفَعْ) almıştır."
+                    }
+                ]
+            },
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🥊", 
+                arText: "دَفْع", 
+                trText: "Def / İtme, uzaklaştırma, ödeme.",
+                ornek: {
+                    ar: "دَفْعُ الْبَلَاءِ",
+                    tr: "Belayı uzaklaştırma (Def-i bela)."
+                }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🔄", 
+                arText: "دَفْعَة", 
+                trText: "Defa / Bir kere itme, kerede ödeme, sefer.",
+                ornek: {
+                    ar: "دَفْعَةً وَاحِدَةً",
+                    tr: "Tek seferde (bir defada)."
+                }
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "🚀", 
+                arText: "دَافِع", 
+                trText: "Dâfi' / İten, ödeyen, savuşturan, motivasyon (itici güç).",
+                ornek: { 
+                    ar: "مَا هُوَ دَافِعُكَ؟", 
+                    tr: "Senin itici gücün (motivasyonun/sebebin) nedir?" 
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "💰", 
+                arText: "مَدْفُوع", 
+                trText: "Medfû' / İtilmiş, savuşturulmuş, ücreti ödenmiş.",
+                ornek: { 
+                    ar: "اَلْحِسَابُ مَدْفُوعٌ", 
+                    tr: "Hesap ödenmiştir." 
+                }
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "💳", 
+                arText: "مَدْفُوعَات", 
+                trText: "Medfûât / Ödemeler, harcamalar.",
+                ornek: {
+                    ar: "مِيزَانُ الْمَدْفُوعَاتِ",
+                    tr: "Ödemeler dengesi (İktisat terimi)."
+                }
+            }
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Alet) ---
+        38: { 
+            base: { 
+                emoji: "💣", 
+                arText: "مَدْفَع", 
+                trText: "Medfa' / Gülle iten silah, Top.",
+                ornek: { 
+                    ar: "مَدْفَعُ الْإِفْطَارِ", 
+                    tr: "Ramazan'da atılan iftar topu." 
+                }
+            } 
+        },
+
+        // --- 64 Numaralı Kalıp (فَاعَلَ - Mufâ'ale Babı Mazi - Karşılıklı Eylem/Mücadele) ---
+        64: { 
+            base: { 
+                emoji: "🤺", 
+                arText: "دَافَعَ", 
+                trText: "Savundu (Müdafaa etti).",
+                ornek: { 
+                    ar: "دَافَعَ عَنْ حُقُوقِهِ", 
+                    tr: "Haklarını savundu." 
+                }
+            },
+            cekimi: ["دَافَعَ", "دَافَعَا", "دَافَعُوا", "دَافَعَتْ", "دَافَعَتَا", "دَافَعْنَ", "دَافَعْتَ", "دَافَعْتُمَا", "دَافَعْتُمْ", "دَافَعْتِ", "دَافَعْتُمَا", "دَافَعْتُنَّ", "دَافَعْتُ", "دَافَعْنَا", "دَافَعْنَا"]
+        },
+
+        // --- 64 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "🛡️", 
+                arText: "مُدَافَعَة", 
+                trText: "Müdafaa / Savunma, koruma, def etme.",
+                ornek: { 
+                    ar: "وِزَارَةُ الدِّفَاعِ", 
+                    tr: "Savunma (Milli Savunma) Bakanlığı." 
+                }
+            } 
+        },
+
+        // --- 68 Numaralı Kalıp (اِنْفَعَلَ - İnfi'âl Babı Mazi - Dönüşlülük / Etkilenme) ---
+        71: { 
+            base: { 
+                emoji: "🌋", 
+                arText: "اِنْدَفَعَ", 
+                trText: "İtildi / Atıldı / İleri fırladı / Patladı."
+            },
+            cekimi: ["اِنْدَفَعَ", "اِنْدَفَعَا", "اِنْدَفَعُوا", "اِنْدَفَعَتْ", "اِنْدَفَعَتَا", "اِنْدَفَعْنَ", "اِنْدَفَعْتَ", "اِنْدَفَعْتُمَا", "اِنْدَفَعْتُمْ", "اِنْدَفَعْتِ", "اِنْدَفَعْتُمَا", "اِنْدَفَعْتُنَّ", "اِنْدَفَعْتُ", "اِنْدَفَعْنَا", "اِنْدَفَعْنَا"]
+        },
+
+        // --- 71 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
+        74: { 
+            base: { 
+                emoji: "💥", 
+                arText: "اِنْدِفَاع", 
+                trText: "İndifa / Fışkırma, atılım, itiliş, volkan patlaması.",
+                ornek: { 
+                    ar: "اِنْدِفَاعُ الْبُرْكَانِ", 
+                    tr: "Yanardağın patlaması (İndifa etmesi)." 
+                }
+            } 
+        }
+    },    
+
+
 };
