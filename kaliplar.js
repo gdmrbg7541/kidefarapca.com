@@ -2873,6 +2873,24 @@ const SarfEngine = {
             res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])ْ(.*)/g, "$1ُ$2ْ$3");
             res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])ْ(.*)/g, "$1ِ$2ْ$3");
             res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])ْ(.*)/g, "$1َ$2ْ$3");
+            // ==========================================
+            // EMİR KİPİ KESİN ÇÖZÜM: HEMZEYİ HER YERDE AT (Sülasi Emirlerde)
+            // ==========================================
+            // [اأإآ] ile başlayan ve hemen ardından 3 harfli (cemi/tesniye) veya 2 harfli (müfred) 
+            // kökü olan tüm yapıları hemzesiz bırakır.
+            
+            // 1. Önce hemzeyi ve üzerindeki harekeyi tamamen söküp at (Tüm emirlerde)
+            res = res.replace(/^[اأإآ][َُِ]([\u0621-\u064A])ْ/g, "$1ْ");
+            
+            // 2. Hemzeden sonra gelen illet düşmüşse kök harfini koru (Sadece sülasi emirler için)
+            // Eğer fiil şu an "عُدْ", "بِعْ" gibi bir formdaysa, başına hemze gelmesini engelle.
+            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])([َُِ]?)([\u0621-\u064A])/g, "$1$2$3");
+            
+            // 3. Çoğul ve Tesniye (Cemi/Tesniye hemzesini de at)
+            // اُعُودُوا -> عُودُوا
+            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])ُو/g, "$1ُو");
+            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])ِي/g, "$1ِي");
+            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])َا/g, "$1َا");
 
 
             // ==========================================

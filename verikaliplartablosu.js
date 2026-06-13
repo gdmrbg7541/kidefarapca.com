@@ -5679,15 +5679,12 @@ const wordEasterEggs = {
     "قول": {
         1: { 
             base: { emoji: "🗣️", arText: "قَالَ", trText: "Dedi / Söyledi." },
-            cekimi: ["قَالَ", "قَالَا", "قَالُوا", "قَالَتْ", "قَالَتَا", "قُلْنَ", "قُلْتَ", "قُلْتُمَا", "قُلْتُمْ", "قُلْتِ", "قُلْتُمَا", "قُلْتُنَّ", "قُلْتُ", "قُلْنَا", "قُلْنَا"]
         },
         2: { 
             base: { emoji: "💬", arText: "يَقُولُ", trText: "Der / Söylüyor." },
-            cekimi: ["يَقُولُ", "يَقُولَانِ", "يَقُولُونَ", "تَقُولُ", "تَقُولَانِ", "يَقُلْنَ", "تَقُولُ", "تَقُولَانِ", "تَقُولُونَ", "تَقُولِينَ", "تَقُولَانِ", "تَقُلْنَ", "أَقُولُ", "نَقُولُ", "نَقُولُ"]
         },
         3: { 
-            base: { emoji: "❗", arText: "قُلْ", trText: "De / Söyle!" },
-            cekimi: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"]
+            base: { emoji: "❗", trText: "De / Söyle!" },
         }
     },
 
@@ -9380,7 +9377,6 @@ const wordEasterEggs = {
                 trText: "Ziyaret etti / Uğradı.",
                 ornek: { ar: "زَارَ الْمَرِيضَ", tr: "Hastayı ziyaret etti." }
             },
-            cekimi: ["زَارَ", "زَارَا", "زَارُوا", "زَارَتْ", "زَارَتَا", "زُرْنَ", "زُرْتَ", "زُرْتُمَا", "زُرْتُمْ", "زُرْتِ", "زُرْتُمَا", "زُرْتُنَّ", "زُرْتُ", "زُرْنَا", "زُرْنَا"]
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -9391,18 +9387,15 @@ const wordEasterEggs = {
                 trText: "Ziyaret eder / Ediyor.",
                 ornek: { ar: "يَزُورُ أَقَارِبَهُ", tr: "Akrabalarını ziyaret ediyor." }
             },
-            cekimi: ["يَزُورُ", "يَزُورَانِ", "يَزُورُونَ", "تَزُورُ", "تَزُورَانِ", "يَزُرْنَ", "تَزُورُ", "تَزُورَانِ", "تَزُورُونَ", "تَزُورِينَ", "تَزُورَانِ", "تَزُرْنَ", "أَزُورُ", "نَزُورُ", "نَزُورُ"]
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
         3: { 
             base: { 
                 emoji: "🚪", 
-                arText: "زُرْ", 
                 trText: "Ziyaret et / Uğra!",
                 ornek: { ar: "زُرْ غِبًّا تَزْدَدْ حُبًّا", tr: "Seyrek ziyaret et ki sevgin (muhabbetin) artsın. (Meşhur Arap atasözü)" }
             },
-            cekimi: ["زُرْ", "زُورَا", "زُورُوا", "زُورِي", "زُورَا", "زُرْنَ"]
         },
 
         // --- 23 Numaralı Kalıp (فِعَالَة - Mücerret Masdar) ---
@@ -15792,10 +15785,11 @@ const wordEasterEggs = {
             },
         },
 
-        // --- 21 Numaralı Kalıp (فَعْلَة / فَوْعَلَة - İsim Formu) ---
-        21: { 
+        // --- 19 Numaralı Kalıp (فَعْلَة / فَوْعَلَة - İsim Formu) ---
+        19: { 
             base: { 
                 emoji: "🚶‍♂️", 
+                arText: "عَوْدَة",
                 trText: "Avdet / Dönüş, geri gelme.",
                 ornek: [
                     { 
@@ -15810,8 +15804,8 @@ const wordEasterEggs = {
             }
         },
 
-        // --- 22 Numaralı Kalıp (فَعَلَة / فَاعَلَة - İsim / Masdar) ---
-        22: { 
+        // --- 17 Numaralı Kalıp (فَعَلَة - İsim Formu) ---
+        17: { 
             base: { 
                 emoji: "🔁", 
                 arText: "عَادَة", 
@@ -15829,8 +15823,8 @@ const wordEasterEggs = {
             }
         },
 
-        // --- 23 Numaralı Kalıp (فُعْل - İsim / İsmi Cins) ---
-        23: { 
+        // --- 21 Numaralı Kalıp (فُعْل - İsim / İsmi Cins) ---
+        21: { 
             base: { 
                 emoji: "🎸", 
                 arText: "عُود", 
@@ -15871,7 +15865,7 @@ const wordEasterEggs = {
                 trText: "Meâd / Dönülecek yer, dönüş zamanı, ahiret.",
                 ornek: [
                     { 
-                        ar: "إِلَى اللَّهِ الْمَعَادُ", 
+                        ar: "إِلَى اللهِ الْمَعَادُ", 
                         tr: "Dönüş (Meâd) ancak Allah'adır." 
                     },
                     {
@@ -15882,8 +15876,8 @@ const wordEasterEggs = {
             }
         },
 
-        // --- 50 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik / Ettirgenlik) ---
-        50: { 
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik / Ettirgenlik) ---
+        52: { 
             base: { 
                 emoji: "📦", 
                 arText: "أَعَادَ", 
