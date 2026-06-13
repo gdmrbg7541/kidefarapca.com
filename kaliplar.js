@@ -2840,35 +2840,67 @@ const SarfEngine = {
 // 4. ECVEF FİİLLER
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
+            let maziHareke = (ayn === 'و') ? 'ُ' : 'ِ';
+            if (typeof numBab !== 'undefined' && numBab === 4) maziHareke = 'ِ'; // Bab 4 istisnası (خاف -> خِفْنَ)
+
+            // İF'AL VE DİĞER MEZİD BABLAR İÇİN STANDART ÇEVİRİLER
             res = res.replace(/أَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "أَ$1َا$2");
             res = res.replace(/(يُ|تُ|نُ|أُ|مُ)([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1$2ِي$3");
             res = res.replace(/اِسْتَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "اِسْتَ$1َا$2");
             res = res.replace(/(يَ|تَ|نَ|أَ|مُ)سْتَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1سْتَ$2ِي$3");
 
-            res = res.replace(new RegExp(`([\\u0621-\\u064A])َ${ayn}َ([\\u0621-\\u064A]َ.*)`, 'g'), `$1َا$2`);
-            if (ayn === 'و') res = res.replace(new RegExp(`([\\u0621-\\u064A])َوَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
-            else res = res.replace(new RegExp(`([\\u0621-\\u064A])َيَ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
-            res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ُ([\\u0621-\\u064A].*)`, 'g'), `$1ُو$2`);
-            res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ِ([\\u0621-\\u064A].*)`, 'g'), `$1ِي$2`);
-            res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A].*)`, 'g'), `$1َا$2`);
-            
-            // Sükunlu son harfler (Müfred Müzekker, Cemi Müennes vb. -> عُدْ, عُدْنَ)
+            // ==========================================
+            // 1. İLTİKA-İ SAKİNEYN (SÜKUN ÇARPIŞMASI KESİN ÇÖZÜMLERİ)
+            // ==========================================
+            // MAZİ Sükunlar (Kadın Çoğul, Sen, Ben vb. -> عُدْنَ, بِعْنَ, خِفْنَ)
+            // Hatalı Uzatmalı Gelişler (عَادْنَ, بَاعْنَ) veya Ham Gelişler (عَوَدْنَ, بَيَعْنَ)
+            res = res.replace(/([\u0621-\u064A])َا([\u0621-\u064A])ْ/g, `$1${maziHareke}$2ْ`);
+            res = res.replace(/([\u0621-\u064A])َوَ([\u0621-\u064A])ْ/g, `$1${maziHareke}$2ْ`);
+            res = res.replace(/([\u0621-\u064A])َيَ([\u0621-\u064A])ْ/g, `$1ِ$2ْ`);
+            res = res.replace(/([\u0621-\u064A])َ[وي]ِ([\u0621-\u064A])ْ/g, `$1ِ$2ْ`);
+
+            // MUZARİ Sükunlar (Kadın Çoğul -> يَعُدْنَ, يَبِعْنَ, يَخَفْنَ)
+            // Hatalı Uzatmalı Gelişler (يَعُودْنَ, يَبِيعْنَ, يَخَافْنَ)
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ُو([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ِي([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])َا([\u0621-\u064A])ْ/g, "$1َ$2ْ");
+            // Ham Gelişler (يَعْوُدْنَ, يَبْيِعْنَ, يَخْوَفْنَ)
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْوُ([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْيِ([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])ْ/g, "$1َ$2ْ");
+
+            // EMİR Sükunlar (Kadın Çoğul, Erkek Tekil -> عُدْ, عُدْنَ)
             res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])ْ(.*)/g, "$1ُ$2ْ$3");
             res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])ْ(.*)/g, "$1ِ$2ْ$3");
             res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])ْ(.*)/g, "$1َ$2ْ$3");
 
-            // Harekeli son harfler (Tesniye, Cemi Müzekker, Müfred Müennes vb. -> عُودُوا, بِيعِي, خَافَا)
+
+            // ==========================================
+            // 2. NORMAL HAREKELİ DURUMLAR (UZATMALAR: عادَ, يَعُودُ, عُودُوا)
+            // ==========================================
+            // Mazi Harekeli: عَوَدَ -> عَادَ
+            res = res.replace(/([\u0621-\u064A])َ[وي][َِ]([\u0621-\u064A])(?![ْ])/g, "$1َا$2");
+            
+            // Muzari Harekeli: يَعْوُدُ -> يَعُودُ / يَبْيِعُ -> يَبِيعُ / يَخْوَفُ -> يَخَافُ
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْوُ([\u0621-\u064A])(?![ْ])/g, "$1ُو$2"); 
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْيِ([\u0621-\u064A])(?![ْ])/g, "$1ِي$2"); 
+            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])(?![ْ])/g, "$1َا$2"); 
+
+            // Emir Harekeli: اُعْوُدُوا -> عُودُوا
             res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])([َُِ].*)/g, "$1ُو$2$3");
             res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])([َُِ].*)/g, "$1ِي$2$3");
-            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])([َُِ].*)/g, "$1َا$2$3");3
-            
-            res = res.replace(new RegExp(`([\\u0621-\\u064A])َا[وي]ِ([\\u0621-\\u064A])`, 'g'), `$1َائِ$2`);
-            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْوُو([\\u0621-\\u064A])`, 'g'), `مَ$1ُو$2`);
-            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْيُو([\\u0621-\\u064A])`, 'g'), `مَ$1ِي$2`);
-            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A])`, 'g'), `مَ$1َا$2`);
-            res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ[وي]ِ([\\u0621-\\u064A])`, 'g'), `مَ$1ِي$2`);
-            res = res.replace(new RegExp(`إِ([\\u0621-\\u064A])ْ[وي]َا([\\u0621-\\u064A])(?!َة)`, 'g'), `إِ$1َا$2َة`);
-            res = res.replace(new RegExp(`اِسْتِ([\\u0621-\\u064A])ْ[وي]َا([\\u0621-\\u064A])(?!َة)`, 'g'), `اِسْتِ$1َا$2َة`);
+            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])([َُِ].*)/g, "$1َا$2$3");
+
+            // ==========================================
+            // 3. İSİM TAMLAMALARI VE MEF'ULLER
+            // ==========================================
+            res = res.replace(/([\u0621-\u064A])َا[وي]ِ([\u0621-\u064A])/g, "$1َائِ$2");
+            res = res.replace(/مَ([\u0621-\u064A])ْوُو([\u0621-\u064A])/g, "مَ$1ُو$2");
+            res = res.replace(/مَ([\u0621-\u064A])ْيُو([\u0621-\u064A])/g, "مَ$1ِي$2");
+            res = res.replace(/مَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])/g, "مَ$1َا$2");
+            res = res.replace(/مَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A])/g, "مَ$1ِي$2");
+            res = res.replace(/إِ([\u0621-\u064A])ْ[وي]َا([\u0621-\u064A])(?!َة)/g, "إِ$1َا$2َة");
+            res = res.replace(/اِسْتِ([\u0621-\u064A])ْ[وي]َا([\u0621-\u064A])(?!َة)/g, "اِسْتِ$1َا$2َة");
         }
 
         // 5. NÂKIS (SON HARF İLLETİ) ve LEFİF FİİLLER (örn: نوى)
@@ -3051,25 +3083,26 @@ const ColorEngine = {
                     }
                 }
 
+                // =========================================================
+                // YENİ KESİN ÇÖZÜM: NAKIS FİİL "تَا" (Gâibe Tesniye) HATASI
+                // =========================================================
+                // Eğer 3. kök harfini arıyorsak, o harf zayıf bir harfse,
+                // ve şu an baktığımız harften bir önceki harf ek olan (kırmızı) 'ت' ise:
+                // Bu harf kök değil, Tesniye ekidir! Kırmızı kalmalıdır!
+                if (rIndex === 2 && this.isWeak(rootArray[2])) {
+                    if (i > 0 && charsOnly[i - 1].char === 'ت' && charsOnly[i - 1].isRoot === false) {
+                        isZiyade = true;
+                    }
+                }
+
                 if (!isZiyade) {
                     charsOnly[i].isRoot = true; 
                     rIndex++;
                 }
             } 
             else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1]) && this.isWeak(rootArray[rIndex])) {
-                // --- DÜZELTME 3: Zayıf harfi atlamadan önce gerçekten düşmüş mü diye kontrol et! ---
-                let weakCharExistsLater = false;
-                for (let j = i; j < charsOnly.length; j++) {
-                    if (this.isEquivalent(charsOnly[j].char, rootArray[rIndex])) {
-                        weakCharExistsLater = true;
-                        break;
-                    }
-                }
-                
-                if (!weakCharExistsLater) {
-                    charsOnly[i].isRoot = true;
-                    rIndex += 2;
-                }
+                charsOnly[i].isRoot = true;
+                rIndex += 2;
             }
         }
 

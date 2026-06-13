@@ -15505,4 +15505,431 @@ const wordEasterEggs = {
         }
     },
 
+    // ==================================================================
+    // 27. C-M-L (ج م ل) KÖKÜ - Güzel Olmak / Bütünleştirmek / Toplamak
+    // Parçaları bir araya getirip bütün oluşturmayı ve estetik güzelliği ifade eder. 
+    // ==================================================================
+    "جمل": {
+        // --- 11 Numaralı Kalıp (Mücerret Mazi - 5. Bab / Güzellik Bildirir) ---
+        11: { 
+            base: { 
+                emoji: "✨", 
+                arText: "جَمُلَ", 
+                trText: "Güzel oldu / Bütünleşti / Toplandı.",
+                ornek: [
+                    { 
+                        ar: "جَمُلَ خُلُقُهُ", 
+                        tr: "Ahlakı güzel oldu." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Doğrudan mazi fiil olarak geçmese de, bu eylemin ruhu 'Cemil' ve 'Cemal' isimleriyle dilimize yerleşmiştir."
+                    }
+                ]
+            }
+        },
+
+        // --- 12 Numaralı Kalıp (Mücerret Muzari) ---
+        12: { 
+            base: { 
+                emoji: "🌟", 
+                arText: "يَجْمُلُ", 
+                trText: "Güzel olur / Yakışır / Bütünleşir.",
+                ornek: {
+                    ar: "يَجْمُلُ بِكَ أَنْ تَصْبِرَ",
+                    tr: "Sabretmek sana yakışır (sende güzel durur)."
+                }
+            }
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل - İsim / İsmi Cins) ---
+        17: { 
+            base: { 
+                emoji: "🐪", 
+                arText: "جَمَل", 
+                trText: "Cemel / Erkek deve.",
+                ornek: [
+                    {
+                        ar: "لَا نَاقَةَ لِي فِيهَا وَلَا جَمَلَ (مَثَلٌ عَرَبِيٌّ)",
+                        tr: "Arap Atasözü: 'Benim bu işte ne dişi devem var ne de erkek devem!' (Türkçedeki 'Bu işte hiçbir çıkarım/ilişkim yok' manasında kullanılır)."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                        tr: "Kültür Notu: Çöl şartlarına kusursuz bir uyumla yaratıldığı ve bedeviler için en 'güzel/bütün' varlık olduğu için deveye 'Cemel' denmiştir. İslam tarihindeki meşhur 'Cemel Vakası' (Deve Olayı) adını Hz. Aişe'nin devesinden alır."
+                    }
+                ]
+            }
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْلَة - İsim Formu) ---
+        21: { 
+            base: { 
+                emoji: "🧩", 
+                arText: "جُمْلَة", 
+                trText: "Cümle / Bütün, toplam, kelime grubu.",
+                ornek: [
+                    { 
+                        ar: "جُمْلَةٌ مُفِيدَةٌ", 
+                        tr: "Anlamlı cümle." 
+                    },
+                    {
+                        ar: "أَخَذْتُ الْبِضَاعَةَ جُمْلَةً",
+                        tr: "Malı toptan (bütün olarak) aldım."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة وَاشْتِقَاقِيَّة",
+                        tr: "Semantik ve Etimolojik Not: C-M-L kökünün temel anlamı 'dağınık parçaları birleştirip eksiksiz bir bütün oluşturmaktır'. Türkçede 'cümle alem' veya 'cümleten' derken, kelimenin 'hepsi/tamamı' olan orijinal Arapça manasını kullanırız."
+                    }
+                ]
+            }
+        },
+
+        // --- 22 Numaralı Kalıp (فَعَال - Masdar / İsim) ---
+        22: { 
+            base: { 
+                emoji: "🪞", 
+                arText: "جَمَال", 
+                trText: "Cemâl / Güzellik (özellikle yüz, ruh ve görünüm güzelliği).",
+                ornek: [
+                    { 
+                        ar: "إِنَّ اللَّهَ جَمِيلٌ يُحِبُّ الْجَمَالَ", 
+                        tr: "Şüphesiz ki Allah güzeldir, güzelliği (cemali) sever. (Hadis-i Şerif)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Özellikle tasavvufta ve divan edebiyatında 'Hüsn ü Cemal' (kusursuz güzellik) şeklinde, ilahi ve fiziksel güzelliği ifade etmek için isim olarak çok sık kullanılır."
+                    }
+                ]
+            } 
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / Kalıcı Özellik) ---
+        35: { 
+            base: { 
+                emoji: "🌹", 
+                arText: "جَمِيل", 
+                trText: "Cemîl / Güzel, estetik, hoşa giden.",
+                ornek: [
+                    { 
+                        ar: "فَصَبْرٌ جَمِيلٌ", 
+                        tr: "Artık (bana düşen) güzel bir sabırdır. (Yusuf Suresi, 18)" 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Erkek ismi olarak (Cemil) ve kadın ismi olarak (Cemile) dilimizde oldukça yaygındır."
+                    }
+                ]
+            } 
+        },
+
+       // --- 50 Numaralı Kalıp (أَفْعَل - İsm-i Tafdîl / En Üstünlük Derecesi) ---
+        50: { 
+            base: { 
+                emoji: "🏆", 
+                arText: "أَجْمَل", 
+                trText: "Ecmel / En güzel, daha güzel.",
+                ornek: [
+                    {
+                        ar: "هُوَ أَجْمَلُ مِنْكَ",
+                        tr: "O, senden daha güzeldir."
+                    },
+                     {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: 'En güzel, kusursuz ve eksiksiz' anlamlarına gelen 'Ecmel', dilimizde zarif ve estetik bir kişi ismi (çoğunlukla kız ismi) olarak kullanılmaktadır."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة",
+                        tr: "Sarf Notu: 'Ecmel-u' (أَجْمَلُ) kelimesi İsm-i Tafdîl'dir (en güzel). İf'âl babının mazi fiili olan 'Ecmel-e' (أَجْمَلَ - özetledi) ile yazılışı aynı, ancak harekesi ve manası tamamen farklıdır."
+                    }
+                    
+                ]
+            }
+        },
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik/Ettirgenlik) ---
+        52: { 
+            base: { 
+                emoji: "📦", 
+                arText: "أَجْمَلَ", 
+                trText: "İcmal etti / Özetledi, toparladı, genel hatlarıyla verdi.",
+                ornek: [
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Özellikle eski bürokraside ve muhasebede hesapları veya konuları toparlayıp özetlemeye 'icmal etmek' denirdi."
+                    }
+                ]
+            },
+            cekimi: ["أَجْمَلَ", "أَجْمَلَا", "أَجْمَلُوا", "أَجْمَلَتْ", "أَجْمَلَتَا", "أَجْمَلْنَ", "أَجْمَلْتَ", "أَجْمَلْتُمَا", "أَجْمَلْتُمْ", "أَجْمَلْتِ", "أَجْمَلْتُمَا", "أَجْمَلْتُنَّ", "أَجْمَلْتُ", "أَجْمَلْنَا", "أَجْمَلْنَا"]
+        },
+
+        // --- 53 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
+        53: { 
+            base: { 
+                emoji: "🔄", 
+                arText: "يُجْمِلُ", 
+                trText: "İcmal eder / Özetler, toparlar."
+            },
+            cekimi: ["يُجْمِلُ", "يُجْمِلَانِ", "يُجْمِلُونَ", "تُجْمِلُ", "تُجْمِلَانِ", "يُجْمِلْنَ", "تُجْمِلُ", "تُجْمِلَانِ", "تُجْمِلُونَ", "تُجْمِلِينَ", "تُجْمِلَانِ", "تُجْمِلْنَ", "أُجْمِلُ", "نُجْمِلُ", "نُجْمِلُ"]
+        },
+
+        // --- 54 Numaralı Kalıp (أَفْعِلْ - İf'âl Babı Emir) ---
+        54: { 
+            base: { 
+                emoji: "❗", 
+                arText: "أَجْمِلْ", 
+                trText: "İcmal et! / Özetle, (davranışta) ölçülü ol!",
+                ornek: [
+                    {
+                        ar: "فَأَجْمِلُوا فِي الطَّلَبِ",
+                        tr: "(Rızkı) ararken güzel/ölçülü davranın (hırsa kapılmayın). (Hadis-i Şerif - İbn Mâce)"
+                    }
+                ]
+            },
+            cekimi: ["أَجْمِلْ", "أَجْمِلَا", "أَجْمِلُوا", "أَجْمِلِي", "أَجْمِلَا", "أَجْمِلْنَ"]
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "📋", 
+                arText: "إِجْمَال", 
+                trText: "İcmâl / Özet, ana hatlarıyla toparlama, toplam.",
+                ornek: [
+                    { 
+                        ar: "إِجْمَالًا لِمَا سَبَقَ", 
+                        tr: "Öncekilerin bir özeti (icmali) olarak." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Muhasebede ana hesapların özetlendiği tablolara 'İcmal tablosu' veya 'İcmal defteri' adı verilir."
+                    }
+                ]
+            } 
+        },
+        // --- 57 Numaralı Kalıp (مُفْعَل - İf'âl Babı İsm-i Mef'ûl - Etkilenen) ---
+        57: { 
+            base: { 
+                emoji: "📝", 
+                arText: "مُجْمَل", 
+                trText: "Mücmel / Özetlenmiş, detaya girilmeden ana hatlarıyla verilmiş bütün.",
+                ornek: [
+                    { 
+                        ar: "مُجْمَلُ الْكَلَامِ", 
+                        tr: "Sözün özü (Mücmeli)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة أُصُولِيَّة",
+                        tr: "Fıkıh Usulü Notu: Kur'an'da manası kapalı olan, ancak başka ayetler veya hadislerle detaylandırılan (Mufassal) kısa ve özet ayetlere 'Mücmel ayetler' denir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı - Karşılıklı Eylem) ---
+        67: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُجَامَلَة", 
+                trText: "Mücâmile (Mücamele) / İltifat, nezaket, birbirine güzel davranma.",
+                ornek: [
+                    { 
+                        ar: "عِبَارَاتُ الْمُجَامَلَةِ", 
+                        tr: "Nezaket ve iltifat ifadeleri." 
+                    },
+                    {
+                        ar: "مُجَامَلَةً لَهُ قَبِلْتُ الدَّعْوَةَ",
+                        tr: "Ona bir nezaket (ayıp olmasın) olsun diye daveti kabul ettim."
+                    }
+                ]
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 28. 'A-W-D (ع و د) KÖKÜ - Dönmek / Tekrarlamak / Alışmak
+    // Bir yere geri dönmeyi, bir işi tekrarlamayı ve tekrarlana tekrarlana alışkanlık haline gelmesini ifade eder. (Ecvef Fiil)
+    // ==================================================================
+    "عود": {
+        // --- 1 Numaralı Kalıp (Mücerret Mazi - 1. Bab - Ecvef) ---
+        1: { 
+            base: { 
+                emoji: "↩️", 
+                arText: "عَادَ", 
+                trText: "Döndü / Geri geldi.",
+                ornek: [
+                    { 
+                        ar: "عَادَ إِلَى بَيْتِهِ", 
+                        tr: "Evine döndü." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَرْفِيَّة (الْأَجْوَف)",
+                        tr: "Sarf Notu: Bu bir 'Ecvef' (ortası illetli) fiildir. Kökündeki 'Vav' (و) harfi mazide 'Elif'e (ا) dönüşür. Çekim tablosunda 'Biz, Siz, Onlar (kadınlar)' derken iki sessiz harf yan yana gelemeyeceği için ortadaki illet harfi tamamen düşer (Örn: عُدْتُ - Ud-tu / Döndüm)."
+                    }
+                ]
+            },
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret Muzari) ---
+        2: { 
+            base: { 
+                emoji: "🔄", 
+                trText: "Döner / Geri gelir.",
+                ornek: {
+                    ar: "يَعُودُ إِلَى وَطَنِهِ",
+                    tr: "Vatanına döner."
+                }
+            },
+        },
+
+        // --- 3 Numaralı Kalıp (Mücerret Emir) ---
+        3: { 
+            base: { 
+                emoji: "❗", 
+                trText: "Dön! / Geri gel!",
+                ornek: {
+                    ar: "عُدْ إِلَى رَبِّكَ",
+                    tr: "Rabbine dön!"
+                }
+            },
+        },
+
+        // --- 21 Numaralı Kalıp (فَعْلَة / فَوْعَلَة - İsim Formu) ---
+        21: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                trText: "Avdet / Dönüş, geri gelme.",
+                ornek: [
+                    { 
+                        ar: "رِحْلَةُ الْعَوْدَةِ", 
+                        tr: "Dönüş yolculuğu." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Özellikle edebi dilde veya askeri terminolojide 'Avdet etmek' (geri dönmek) şeklinde sıklıkla kullanılır."
+                    }
+                ]
+            }
+        },
+
+        // --- 22 Numaralı Kalıp (فَعَلَة / فَاعَلَة - İsim / Masdar) ---
+        22: { 
+            base: { 
+                emoji: "🔁", 
+                arText: "عَادَة", 
+                trText: "Âdet / Alışkanlık, gelenek, görenek.",
+                ornek: [
+                    { 
+                        ar: "عَادَةٌ حَسَنَةٌ", 
+                        tr: "Güzel bir alışkanlık (âdet)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: 'Dönmek' (Avdet) ile 'Âdet' aynı köktendir. Çünkü bir eyleme sürekli geri dönerseniz ve onu tekrarlarsanız, o şey sizin 'alışkanlığınız' (âdetiniz) haline gelir. Türkçedeki 'âdet yerini bulsun' veya 'âdetler' kelimeleri tamamen bu mantıktan doğar."
+                    }
+                ]
+            }
+        },
+
+        // --- 23 Numaralı Kalıp (فُعْل - İsim / İsmi Cins) ---
+        23: { 
+            base: { 
+                emoji: "🎸", 
+                arText: "عُود", 
+                trText: "Ûd / Ağaç dalı, tahta, ud çalgısı.",
+                ornek: [
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                        tr: "Kültür Notu: 'Ud', Arapçada aslında 'tahta parçası, ince ağaç dalı' demektir. Geleneksel telli çalgı ahşaptan (tahtadan) yapıldığı için bu müzik aletine 'Ud' ismi verilmiş, Batı dillerine de 'Lute / Laúd' olarak geçmiştir. Aynı zamanda güzel kokulu 'Öd ağacı' kelimesi de bu kelimenin Türkçeleşmiş halidir."
+                    }
+                ]
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil - Eylemi Yapan) ---
+        33: { 
+            base: { 
+                emoji: "👉", 
+                arText: "عَائِد", 
+                trText: "Âid (Ait) / Dönen, geri gelen, bir şeye mensup olan.",
+                ornek: [
+                    { 
+                        ar: "هَذَا الْمَالُ عَائِدٌ لَهُ", 
+                        tr: "Bu mal ona aittir (ona dönmektedir)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: 'Bu kitap bana ait' derken aslında o nesnenin köken olarak bana döndüğünü, bana rücu ettiğini ifade ederiz."
+                    }
+                ]
+            }
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân / İsm-i Zaman) ---
+        38: { 
+            base: { 
+                emoji: "🌅", 
+                arText: "مَعَاد", 
+                trText: "Meâd / Dönülecek yer, dönüş zamanı, ahiret.",
+                ornek: [
+                    { 
+                        ar: "إِلَى اللَّهِ الْمَعَادُ", 
+                        tr: "Dönüş (Meâd) ancak Allah'adır." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Özellikle tasavvufi metinlerde insanın yaratılmadan önceki haline (Mebde) ve öldükten sonra döneceği yere (Meâd) atfen 'Mebde ve Meâd' kalıbı çok kullanılır."
+                    }
+                ]
+            }
+        },
+
+        // --- 50 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik / Ettirgenlik) ---
+        50: { 
+            base: { 
+                emoji: "📦", 
+                arText: "أَعَادَ", 
+                trText: "İâde etti / Geri verdi, tekrarladı.",
+                ornek: [
+                    {
+                        ar: "أَعَادَ الْكِتَابَ إِلَى الْمَكْتَبَةِ",
+                        tr: "Kitabı kütüphaneye iade etti."
+                    }
+                ]
+            },
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "إِعَادَة", 
+                trText: "İâde / Geri verme, tekrar etme, eski haline getirme.",
+                ornek: [
+                    { 
+                        ar: "إِعَادَةُ التَّدْوِيرِ", 
+                        tr: "Geri dönüşüm (Modern Arapça)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة",
+                        tr: "Türkçedeki Kullanımı: Dilimizde çok yaygındır. 'İade-i ziyaret' (ziyaretin tekrarı/karşılığı), 'İade-i itibar' (saygınlığın geri verilmesi) veya markette 'ürün iadesi' gibi."
+                    }
+                ]
+            } 
+        },
+
+        // --- 85 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı - Edilgenlik/Süreklilik) ---
+        85: { 
+            base: { 
+                emoji: "🕰️", 
+                arText: "اِعْتِيَاد", 
+                trText: "İtiyâd (İtiyat) / Bir şeye alışma, huy edinme.",
+                ornek: [
+                    { 
+                        ar: "💡 مَعْلُومَة", 
+                        tr: "Türkçedeki Kullanımı: 'İtiyat haline getirmek' (alışkanlık haline getirmek) deyimi doğrudan bu masdardan dilimize geçmiştir." 
+                    }
+                ]
+            } 
+        }
+    },
+
 };
