@@ -2031,7 +2031,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
     const isVerb = boxElement.classList.contains('fiil-box');
 
     // ===============================================================
-    // 1. HAFIZA SİSTEMİ (SİLİNME HATASI KÖKÜNDEN ÇÖZÜLDÜ)
+    // 1. HAFIZA SİSTEMİ
     // ===============================================================
     if (incomingSuffix) {
         boxElement.setAttribute('data-active-suffix', incomingSuffix);
@@ -2046,12 +2046,11 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
         return;
     }
 
-    // BURASI ÖNEMLİ: Sistemde eggObj sadece burada 1 kez tanımlanır!
     const eggObj = wordEasterEggs[currentRoot][refId];
     const textEl = boxElement.querySelector('.ar, .ar-small');
 
     // ===============================================================
-    // 4. SES OLAYLARINI EZME SİSTEMİ (JSON'DAN KUSURSUZ OKUMA)
+    // 4. SES OLAYLARINI EZME SİSTEMİ
     // ===============================================================
     let searchKey = activeSuffix;
     if (activeSuffix === "يَّة" && (!eggObj["يَّة"]) && eggObj["ة"]) {
@@ -2141,6 +2140,9 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
 
     boxElement.style.position = 'relative';
 
+    // ==========================================================
+    // KESİN ÇÖZÜM: AKILLI YÖN BULUCU (SMART EMOJI RADAR)
+    // ==========================================================
     if (data.emoji) {
         let existingEmoji = boxElement.querySelector('.elegant-emoji');
         let rememberedRoot = boxElement.getAttribute('data-last-root');
@@ -2149,8 +2151,18 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
         if (rememberedRoot !== currentRoot || rememberedEmoji !== data.emoji) {
             if (existingEmoji) existingEmoji.remove();
 
+            const boxRect = boxElement.getBoundingClientRect();
+            const isTop = boxRect.top < 250; 
+            const isLeft = (boxRect.left + boxRect.width / 2) < (window.innerWidth / 2); 
+
+            let animClass = 'pop-up-right'; 
+            if (isTop && isLeft) animClass = 'pop-down-right';
+            else if (isTop && !isLeft) animClass = 'pop-down-left';
+            else if (!isTop && isLeft) animClass = 'pop-up-right';
+            else if (!isTop && !isLeft) animClass = 'pop-up-left';
+
             const emojiDiv = document.createElement('div');
-            emojiDiv.className = 'elegant-emoji animate-pop'; 
+            emojiDiv.className = `elegant-emoji ${animClass}`; 
             emojiDiv.setAttribute('data-ref', refId);
             emojiDiv.innerText = data.emoji;
             boxElement.appendChild(emojiDiv);
@@ -2161,6 +2173,16 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
 
             boxElement.setAttribute('data-last-root', currentRoot);
             boxElement.setAttribute('data-last-emoji', data.emoji);
+
+            const zoomClone = document.getElementById('crisp-zoom-clone');
+            if (zoomClone) {
+                const cloneEmoji = emojiDiv.cloneNode(true);
+                cloneEmoji.className = 'elegant-emoji pop-up-center'; 
+                zoomClone.appendChild(cloneEmoji);
+                cloneEmoji.addEventListener('animationend', (e) => {
+                    e.target.style.display = 'none'; 
+                });
+            }
         } 
         else if (!existingEmoji) {
             const emojiDiv = document.createElement('div');

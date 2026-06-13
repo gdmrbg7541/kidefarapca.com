@@ -1180,23 +1180,73 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
+/* ==========================================================================
+   GÜNCEL: AKILLI YÜZEREK UÇAN EMOJİ (HASSAS KONUM AYARLI)
+   ========================================================================== */
 .elegant-emoji {
     position: absolute; 
-    top: -60px; /* 150px'lik dev emoji için yukarıya doğru daha fazla pay verdik */
-    left: calc(100% + 30px); /* Yazıyı örtmemesi için sağa doğru iyice esnettik */
-    font-size: 150px; /* Muazzam boyut! */
-    z-index: 100;
+    width: 100%; 
+    left: 0;
+    top: 0; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 110px; 
+    z-index: 9999999; 
     pointer-events: none; 
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.35)); /* Boyuta uygun olarak gölgeyi de derinleştirdik */
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.35)); 
     opacity: 0; 
 }
-.elegant-emoji.animate-pop { animation: balloonFloat 2.5s ease-out forwards; }
 
-@keyframes balloonFloat {
-    0% { transform: scale(0) translateY(0); opacity: 0; }
-    20% { transform: scale(1.2) translateY(-10px); opacity: 1; } 
-    40% { transform: scale(1) translateY(-20px); opacity: 1; } 
-    100% { transform: scale(0.9) translateY(-80px); opacity: 0; } 
+/* 1. Aşağıdaki Kalıplar -> Yukarı Uçar */
+.pop-up-right { animation: floatUpRight 2.5s ease-out forwards; }
+.pop-up-left { animation: floatUpLeft 2.5s ease-out forwards; }
+
+/* 2. Yukarıdaki Kalıplar -> Aşağı Uçar */
+.pop-down-right { animation: floatDownRight 2.5s ease-out forwards; }
+.pop-down-left { animation: floatDownLeft 2.5s ease-out forwards; }
+
+/* 3. Büyütülmüş Dev Klon -> Tam ortada olduğu için direkt yukarı uçar */
+.pop-up-center { animation: floatUpCenter 2.5s ease-out forwards; }
+
+
+/* ORTA VE ALT KALIPLAR (YUKARI UÇARLAR)
+   Başlangıç (-120px): Kelimenin GÖVDESİNİN tam üstünden (kelimeyi zerre örtmeden) başlar */
+@keyframes floatUpRight {
+    0% { transform: translate(0, -120px) scale(0); opacity: 0; }
+    20% { transform: translate(30px, -150px) scale(1.1); opacity: 1; }
+    40% { transform: translate(50px, -170px) scale(1); opacity: 1; }
+    100% { transform: translate(90px, -230px) scale(0.8); opacity: 0; }
+}
+@keyframes floatUpLeft {
+    0% { transform: translate(0, -120px) scale(0); opacity: 0; }
+    20% { transform: translate(-30px, -150px) scale(1.1); opacity: 1; }
+    40% { transform: translate(-50px, -170px) scale(1); opacity: 1; }
+    100% { transform: translate(-90px, -230px) scale(0.8); opacity: 0; }
+}
+
+/* ÜST KALIPLAR (AŞAĞI UÇARLAR)
+   Başlangıç (+30px): Kutunun kopuk bir şekilde çok altından değil, kelimenin hemen bitiş hizasından başlar */
+@keyframes floatDownRight {
+    0% { transform: translate(0, 30px) scale(0); opacity: 0; }
+    20% { transform: translate(30px, 70px) scale(1.1); opacity: 1; }
+    40% { transform: translate(50px, 90px) scale(1); opacity: 1; }
+    100% { transform: translate(90px, 140px) scale(0.8); opacity: 0; }
+}
+@keyframes floatDownLeft {
+    0% { transform: translate(0, 30px) scale(0); opacity: 0; }
+    20% { transform: translate(-30px, 70px) scale(1.1); opacity: 1; }
+    40% { transform: translate(-50px, 90px) scale(1); opacity: 1; }
+    100% { transform: translate(-90px, 140px) scale(0.8); opacity: 0; }
+}
+
+/* BÜYÜME (ZOOM) KLONU
+   Devasa olduğu için kelimeyi örtmemesi adına çok daha yukarıdan (-140px) başlar */
+@keyframes floatUpCenter {
+    0% { transform: translate(0, -140px) scale(0); opacity: 0; }
+    20% { transform: translate(0, -190px) scale(1.1); opacity: 1; }
+    40% { transform: translate(0, -210px) scale(1); opacity: 1; }
+    100% { transform: translate(0, -280px) scale(0.8); opacity: 0; }
 }
 
 .ornek-box {
