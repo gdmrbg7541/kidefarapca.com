@@ -1192,7 +1192,8 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     justify-content: center;
     align-items: center;
     font-size: 110px; 
-    z-index: 9999999; 
+    /* DEV KLONUN DA ÜSTÜNE ÇIKMASI İÇİN Z-INDEX EN ZİRVEYE ALINDI */
+    z-index: 99999999 !important; 
     pointer-events: none; 
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.35)); 
     opacity: 0; 
@@ -1206,12 +1207,11 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .pop-down-right { animation: floatDownRight 2.5s ease-out forwards; }
 .pop-down-left { animation: floatDownLeft 2.5s ease-out forwards; }
 
-/* 3. Büyütülmüş Dev Klon -> Tam ortada olduğu için direkt yukarı uçar */
-.pop-up-center { animation: floatUpCenter 2.5s ease-out forwards; }
+/* 3. BÜYÜTÜLMÜŞ DEV KLON -> Sağdan fırlar! */
+.pop-zoom-right { animation: floatZoomRight 2.5s ease-out forwards; }
 
 
-/* ORTA VE ALT KALIPLAR (YUKARI UÇARLAR)
-   Başlangıç (-120px): Kelimenin GÖVDESİNİN tam üstünden (kelimeyi zerre örtmeden) başlar */
+/* ORTA VE ALT KALIPLAR (YUKARI UÇARLAR) */
 @keyframes floatUpRight {
     0% { transform: translate(0, -120px) scale(0); opacity: 0; }
     20% { transform: translate(30px, -150px) scale(1.1); opacity: 1; }
@@ -1225,8 +1225,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     100% { transform: translate(-90px, -230px) scale(0.8); opacity: 0; }
 }
 
-/* ÜST KALIPLAR (AŞAĞI UÇARLAR)
-   Başlangıç (+30px): Kutunun kopuk bir şekilde çok altından değil, kelimenin hemen bitiş hizasından başlar */
+/* ÜST KALIPLAR (AŞAĞI UÇARLAR) */
 @keyframes floatDownRight {
     0% { transform: translate(0, 30px) scale(0); opacity: 0; }
     20% { transform: translate(30px, 70px) scale(1.1); opacity: 1; }
@@ -1240,13 +1239,15 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     100% { transform: translate(-90px, 140px) scale(0.8); opacity: 0; }
 }
 
-/* BÜYÜME (ZOOM) KLONU
-   Devasa olduğu için kelimeyi örtmemesi adına çok daha yukarıdan (-140px) başlar */
-@keyframes floatUpCenter {
-    0% { transform: translate(0, -140px) scale(0); opacity: 0; }
-    20% { transform: translate(0, -190px) scale(1.1); opacity: 1; }
-    40% { transform: translate(0, -210px) scale(1); opacity: 1; }
-    100% { transform: translate(0, -280px) scale(0.8); opacity: 0; }
+/* BÜYÜME (ZOOM) KLONU ÖZEL: DAHA SAĞDA, DAHA AŞAĞIDA VE ÇOK DAHA BÜYÜK
+   - X Ekseni: +280px ile sağdan başlar
+   - Y Ekseni: +60px yapılarak merkezin daha aşağısından başlatıldı
+   - Boyut: scale() 1.7'ye çıkartılarak devasa boyuta getirildi! */
+@keyframes floatZoomRight {
+    0% { transform: translate(280px, 60px) scale(0); opacity: 0; }
+    20% { transform: translate(320px, 40px) scale(1.7); opacity: 1; }
+    40% { transform: translate(340px, 20px) scale(1.6); opacity: 1; }
+    100% { transform: translate(420px, -20px) scale(1.2); opacity: 0; }
 }
 
 .ornek-box {

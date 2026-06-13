@@ -2141,7 +2141,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
     boxElement.style.position = 'relative';
 
     // ==========================================================
-    // KESİN ÇÖZÜM: AKILLI YÖN BULUCU (SMART EMOJI RADAR)
+    // KESİN ÇÖZÜM: AKILLI YÖN BULUCU VE TEK EMOJİ MOTORU
     // ==========================================================
     if (data.emoji) {
         let existingEmoji = boxElement.querySelector('.elegant-emoji');
@@ -2151,38 +2151,51 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
         if (rememberedRoot !== currentRoot || rememberedEmoji !== data.emoji) {
             if (existingEmoji) existingEmoji.remove();
 
-            const boxRect = boxElement.getBoundingClientRect();
-            const isTop = boxRect.top < 250; 
-            const isLeft = (boxRect.left + boxRect.width / 2) < (window.innerWidth / 2); 
-
-            let animClass = 'pop-up-right'; 
-            if (isTop && isLeft) animClass = 'pop-down-right';
-            else if (isTop && !isLeft) animClass = 'pop-down-left';
-            else if (!isTop && isLeft) animClass = 'pop-up-right';
-            else if (!isTop && !isLeft) animClass = 'pop-up-left';
-
             const emojiDiv = document.createElement('div');
-            emojiDiv.className = `elegant-emoji ${animClass}`; 
             emojiDiv.setAttribute('data-ref', refId);
             emojiDiv.innerText = data.emoji;
-            boxElement.appendChild(emojiDiv);
-
-            emojiDiv.addEventListener('animationend', (e) => {
-                e.target.style.display = 'none'; 
-            });
-
-            boxElement.setAttribute('data-last-root', currentRoot);
-            boxElement.setAttribute('data-last-emoji', data.emoji);
 
             const zoomClone = document.getElementById('crisp-zoom-clone');
+
+            // EĞER BÜYÜTME (ZOOM) AÇIKSA:
             if (zoomClone) {
-                const cloneEmoji = emojiDiv.cloneNode(true);
-                cloneEmoji.className = 'elegant-emoji pop-up-center'; 
+                // 1. Orijinal kutudaki emojiyi görünmez yap (Çift emoji çıkmasını engeller)
+                emojiDiv.className = 'elegant-emoji'; 
+                emojiDiv.style.opacity = '0'; 
+
+                // 2. Sadece Dev Klonun içine yeni bir emoji patlat
+                const cloneEmoji = document.createElement('div');
+                cloneEmoji.className = 'elegant-emoji pop-zoom-right'; 
+                cloneEmoji.innerText = data.emoji;
                 zoomClone.appendChild(cloneEmoji);
+                
                 cloneEmoji.addEventListener('animationend', (e) => {
+                    e.target.style.display = 'none'; 
+                    cloneEmoji.remove(); // Temizlik
+                });
+            } 
+            // EĞER BÜYÜTME KAPALIYSA (NORMAL MOD):
+            else {
+                const boxRect = boxElement.getBoundingClientRect();
+                const isTop = boxRect.top < 250; 
+                const isLeft = (boxRect.left + boxRect.width / 2) < (window.innerWidth / 2); 
+
+                let animClass = 'pop-up-right'; 
+                if (isTop && isLeft) animClass = 'pop-down-right';
+                else if (isTop && !isLeft) animClass = 'pop-down-left';
+                else if (!isTop && isLeft) animClass = 'pop-up-right';
+                else if (!isTop && !isLeft) animClass = 'pop-up-left';
+
+                emojiDiv.className = `elegant-emoji ${animClass}`; 
+                emojiDiv.addEventListener('animationend', (e) => {
                     e.target.style.display = 'none'; 
                 });
             }
+
+            // Orijinal kutunun hafızasını güncelle ve gizli emojiyi ekle (veri için gerekli)
+            boxElement.appendChild(emojiDiv);
+            boxElement.setAttribute('data-last-root', currentRoot);
+            boxElement.setAttribute('data-last-emoji', data.emoji);
         } 
         else if (!existingEmoji) {
             const emojiDiv = document.createElement('div');
