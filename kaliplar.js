@@ -1106,31 +1106,23 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         else if (tableType === 'nehiy') {
             prefix = "لَا";
             
-            // ==================================================================
-            // KESİN ÇÖZÜM: Emir başlangıçlarına "أُ" ve "إِ" (Hemzeli Elifler) eklendi! 
-            // Sistemin bu harfleri tanımaması nedeniyle تَأُذْكُرْ gibi hatalar üretiyordu.
-            // ==================================================================
-            if (clean.startsWith("اِ") || clean.startsWith("اُ") || clean.startsWith("أُ") || clean.startsWith("إِ")) {
-                coreWord = "تَ" + clean.substring(2);
-            }
-            else if (clean.startsWith("أَ")) {
-                coreWord = "تُ" + clean.substring(2);
-            }
-            else {
-                let taPrefix = (numBab === 7 || numBab === 8 || numBab === 9) ? "تُ" : "تَ";
-                coreWord = taPrefix + clean;
-                
-                // ==================================================================
-                // İSTİSNA: Emir kipinde düşen hemzeyi, Nehiy (Olumsuz Emir) 
-                // tablosu oluşturulurken geri getiriyoruz!
-                // ==================================================================
-                if (kok === "أخذ" && coreWord.startsWith("تَخُذ")) {
-                    coreWord = coreWord.replace("تَخُذ", "تَأْخُذ");
-                } else if (kok === "أكل" && coreWord.startsWith("تَكُل")) {
-                    coreWord = coreWord.replace("تَكُل", "تَأْكُل");
-                } else if (kok === "أمر" && coreWord.startsWith("تَمُر")) {
-                    coreWord = coreWord.replace("تَمُر", "تَأْمُر");
-                }
+            // 1. Görünmez karakterleri, boşlukları ve HTML kalıntılarını temizler
+            let cleanWord = clean.replace(/^[\s\u200B-\u200D\uFEFF]+/, ''); 
+            
+            // 2. İŞTE SİHİRLİ SATIR: Emir fiilin başındaki Elif/Hemze harfini ve üzerindeki TÜM harekeleri (Görünmez \u0654 Üst Hemzeler dahil) KESİNLİKLE yok eder!
+            let strippedWord = cleanWord.replace(/^[اأإآء][\u064B-\u065F]*/, '');
+            
+            // 3. İf'al grubu (7,8,9. Bab) için ötreli (تُ), diğerleri için üstünlü (تَ) harfi ekler
+            let taPrefix = (numBab === 7 || numBab === 8 || numBab === 9) ? "تُ" : "تَ";
+            coreWord = taPrefix + strippedWord;
+            
+            // 4. İSTİSNA: Emir kipinde düşen hemzeyi, Nehiy tablosu oluşturulurken geri getiriyoruz
+            if (kok === "أخذ" && coreWord.startsWith("تَخُذ")) {
+                coreWord = coreWord.replace("تَخُذ", "تَأْخُذ");
+            } else if (kok === "أكل" && coreWord.startsWith("تَكُل")) {
+                coreWord = coreWord.replace("تَكُل", "تَأْكُل");
+            } else if (kok === "أمر" && coreWord.startsWith("تَمُر")) {
+                coreWord = coreWord.replace("تَمُر", "تَأْمُر");
             }
         }
 
@@ -2810,8 +2802,7 @@ const SarfEngine = {
             let emirRegex = new RegExp(`اِوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(emirRegex, "$1");
         }
-
-        // 4. ECVEF FİİLLER
+// 4. ECVEF FİİLLER
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
             res = res.replace(/أَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "أَ$1َا$2");
@@ -2825,9 +2816,17 @@ const SarfEngine = {
             res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ُ([\\u0621-\\u064A].*)`, 'g'), `$1ُو$2`);
             res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ${ayn}ِ([\\u0621-\\u064A].*)`, 'g'), `$1ِي$2`);
             res = res.replace(new RegExp(`([يتاأن]َ[\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A].*)`, 'g'), `$1َا$2`);
-            res = res.replace(new RegExp(`اُ([\\u0621-\\u064A])ْوُ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ُ$2`);
-            res = res.replace(new RegExp(`اِ([\\u0621-\\u064A])ْيِ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1ِ$2`);
-            res = res.replace(new RegExp(`اِ([\\u0621-\\u064A])ْ[وي]َ([\\u0621-\\u064A]ْ.*)`, 'g'), `$1َ$2`);
+            
+            // Sükunlu son harfler (Müfred Müzekker, Cemi Müennes vb. -> عُدْ, عُدْنَ)
+            res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])ْ(.*)/g, "$1ُ$2ْ$3");
+            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])ْ(.*)/g, "$1ِ$2ْ$3");
+            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])ْ(.*)/g, "$1َ$2ْ$3");
+
+            // Harekeli son harfler (Tesniye, Cemi Müzekker, Müfred Müennes vb. -> عُودُوا, بِيعِي, خَافَا)
+            res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])([َُِ].*)/g, "$1ُو$2$3");
+            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])([َُِ].*)/g, "$1ِي$2$3");
+            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])([َُِ].*)/g, "$1َا$2$3");3
+            
             res = res.replace(new RegExp(`([\\u0621-\\u064A])َا[وي]ِ([\\u0621-\\u064A])`, 'g'), `$1َائِ$2`);
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْوُو([\\u0621-\\u064A])`, 'g'), `مَ$1ُو$2`);
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْيُو([\\u0621-\\u064A])`, 'g'), `مَ$1ِي$2`);
