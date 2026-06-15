@@ -5880,7 +5880,7 @@ const wordEasterEggs = {
             "ة": {
                 emoji: "😌",
                 arText: "رَاضِيَة",
-                trText: "Razı olan (Dişil).",
+                trText: "Razı olan.",
                 ornek: { 
                     ar: "ارْجِعِي إِلَىٰ رَبِّكِ رَاضِيَةً مَرْضِيَّةً", 
                     tr: "Razı olmuş ve kendisinden razı olunmuş olarak Rabbine dön! (Fecr Suresi, 28)" 
@@ -5899,7 +5899,7 @@ const wordEasterEggs = {
             "ة": {
                 emoji: "💖",
                 arText: "مَرْضِيَّة",
-                trText: "Kendisinden razı olunan (Dişil).",
+                trText: "Kendisinden razı olunan.",
                 ornek: { 
                     ar: "ارْجِعِي إِلَىٰ رَبِّكِ رَاضِيَةً مَرْضِيَّةً", 
                     tr: "Razı olmuş ve kendisinden razı olunmuş olarak Rabbine dön! (Fecr Suresi, 28)" 
@@ -7593,7 +7593,7 @@ const wordEasterEggs = {
             "ة": { 
                 emoji: "🕋", 
                 arText: "مُكَرَّمَة", 
-                trText: "Saygıdeğer / Mükerreme (Dişil).",
+                trText: "Saygıdeğer / Mükerreme.",
                 ornek: { ar: "الْكَعْبَةُ الْمُكَرَّمَةُ", tr: "Kâbe-i Mükerreme (Saygıdeğer Kâbe)." }
             }
         }
@@ -10528,7 +10528,7 @@ const wordEasterEggs = {
             "ة": { 
                 emoji: "👩‍🎓", 
                 arText: "طَالِبَة", 
-                trText: "Kız Öğrenci / İsteyen (Dişil).",
+                trText: "Kız Öğrenci / İsteyen.",
                 ornek: { ar: "هِيَ طَالِبَةٌ مُجْتَهِدَةٌ", tr: "O, çalışkan bir kız öğrencidir." }
             }
         },
@@ -11734,7 +11734,7 @@ const wordEasterEggs = {
             "ة": { 
                 emoji: "✨", 
                 arText: "صَافِيَة", 
-                trText: "Safiye / Saf (Dişil), arınmış kadın." 
+                trText: "Safiye / Saf, arınmış kadın." 
             }
         },
 
@@ -17567,7 +17567,7 @@ const wordEasterEggs = {
         }
     },
 
-    // ==================================================================
+// ==================================================================
     // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
     // R-Z-Q (ر ز ق) KÖKÜ - Rızık Vermek / İhsan Etmek
     // Allah'ın canlılara hayatlarını sürdürmeleri için verdiği maddi ve manevi nimetleri ifade eder. (1. Bab)
@@ -17584,7 +17584,7 @@ const wordEasterEggs = {
                     tr: "Allah onu salih (hayırlı) bir evlatla rızıklandırdı." 
                 }
             },
-            cekimi: ["رَزَقَ", "رَزَقَا", "رَزَقُوا", "رَزَقَتْ", "رَزَقَتَا", "رَزَقْنَ", "رَزَقْتَ", "رَزَقْتُمَا", "رَزَقْتُمْ", "رَزَقْتِ", "رَزَقْتُمَا", "رَزَقْتُنَّ", "رَزَقْتُ", "رَزَقْنَا", "رَزَقْنَا"]
+            cekimi: ["رَزَقَ", "رَزَقَا", "رَزَقُوا", "رَزَقَتْ", "رَزَقَتَا", "رَزَقْنَ", "رَزَقْتَ", "رَزَقْتُمَا", "رَزَقْتُمْ", "رَزَقْتِ", "رَزَقْتُمَا", "رَزَقْتُنَّ", "رَزَقْتُ", "رَزَقْنَا", "رَزَقْنَا"]
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -17594,7 +17594,7 @@ const wordEasterEggs = {
                 arText: "يَرْزُقُ", 
                 trText: "Rızık verir / Nimetlendirir.",
                 ornek: { 
-                    ar: "وَاللَّهُ يَرْزُقُ مَنْ يَشَاءُ بِغَيْرِ حِسَابٍ", 
+                    ar: "وَاللهُ يَرْزُقُ مَنْ يَشَاءُ بِغَيْرِ حِسَابٍ", 
                     tr: "Allah dilediğine hesapsız rızık verir. (Bakara Suresi, 212)" 
                 }
             },
@@ -17611,19 +17611,19 @@ const wordEasterEggs = {
             cekimi: ["اُرْزُقْ", "اُرْزُقَا", "اُرْزُقُوا", "اُرْزُقِي", "اُرْزُقَا", "اُرْزُقْنَ"]
         },
 
-        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
-        19: { 
+        // --- 20 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        20: { 
             base: { 
                 emoji: "🍞", 
                 arText: "رِزْق", 
                 trText: "Rızık / Geçimlik, nimet, nasip.",
                 ornek: [
                     { 
-                        ar: "اَلرِّزْقُ عَلَى اللهِ", 
+                        ar: "اَلرِّزْقُ عَلَى اللهِ", 
                         tr: "Rızık Allah'tandır." 
                     },
                     {
-                        ar: "وَمَا مِنْ دَابَّةٍ فِي الْأَرْضِ إِلَّا عَلَى اللَّهِ رِزْقُهَا",
+                        ar: "وَمَا مِنْ دَابَّةٍ فِي الْأَرْضِ إِلَّا عَلَى اللهِ رِزْقُهَا",
                         tr: "Yeryüzünde hiçbir canlı yoktur ki, rızkı Allah'ın üzerine olmasın. (Hûd Suresi, 6)"
                     }
                 ]
@@ -17637,10 +17637,23 @@ const wordEasterEggs = {
                 arText: "رَازِق", 
                 trText: "Râzık / Rızık veren (Allah'ın isimlerinden).",
                 ornek: { 
-                    ar: "هُوَ الرَّازِقُ الْكَرِيمُ", 
+                    ar: "هُوَ الرَّازِقُ الْكَرِيمُ", 
                     tr: "O, çok kerem sahibi olan Rızık Veren'dir." 
                 }
             }
+        },
+
+         // --- 34 Numaralı Kalıp (فَعَّال - Mübalağalı İsm-i Fâil) ---
+        34: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "رَزَّاق", 
+                trText: "Rezzâk / Çokça, sürekli ve hesapsız rızık veren.",
+                ornek: { 
+                    ar: "إِنَّ اللهَ هُوَ الرَّزَّاقُ ذُو الْقُوَّةِ الْمَتِينُ", 
+                    tr: "Şüphesiz ki rızık veren (Rezzâk), mutlak güç ve kudret sahibi olan ancak Allah'tır. (Zâriyât Suresi, 58)" 
+                }
+            } 
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
@@ -17650,10 +17663,739 @@ const wordEasterEggs = {
                 arText: "مَرْزُوق", 
                 trText: "Merzûk / Rızıklandırılmış olan.",
                 ornek: { 
-                    ar: "كُلُّنَا مَرْزُوقُونَ بِفَضْلِ اللهِ", 
+                    ar: "كُلُّنَا مَرْزُوقُونَ بِفَضْلِ اللهِ", 
                     tr: "Hepimiz Allah'ın lütfuyla rızıklandırılmış kimseleriz." 
                 }
             } 
+        },
+
+        // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
+        41: { 
+            base: { 
+                emoji: "🧺", 
+                arText: "أَرْزَاق", 
+                trText: "Erzak / Rızıklar, azıklar.",
+                ornek: { 
+                    ar: "اللَّهُمَّ اجْعَلْ رِزْقَنَا وَاسِعًا", 
+                    tr: "Allah'ım, erzağımızı (rızkımızı) bol eyle." 
+                }
+            } 
+        },
+      // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi - Kendi yararına iş yapma) ---
+        77: {
+            base: {
+                emoji: "💼",
+                arText: "اِرْتَزَقَ",
+                trText: "Rızkını çıkardı / Kazanç sağladı / Maaşlı çalıştı."
+            },
+            cekimi: ["اِرْتَزَقَ", "اِرْتَزَقَا", "اِرْتَزَقُوا", "اِرْتَزَقَتْ", "اِرْتَزَقَتَا", "اِرْتَزَقْنَ", "اِرْتَزَقْتَ", "اِرْتَزَقْتُمَا", "اِرْتَزَقْتُمْ", "اِرْتَزَقْتِ", "اِرْتَزَقْتُمَا", "اِرْتَزَقْتُنَّ", "اِرْتَزَقْتُ", "اِرْتَزَقْنَا", "اِرْتَزَقْنَا"]
+        },
+
+        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Fâili) ---
+        81: {
+            base: {
+                emoji: "💰",
+                arText: "مُرْتَزِق",
+                trText: "Murtezik / Geçimini sağlayan, ücretli, paralı çalışan."
+            },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🪖",
+                arText: "مُرْتَزِقَة",
+                trText: "Mürtezika / Paralı askerler.",
+                ornek: [
+                    {
+                        ar: "جُنُودٌ مُرْتَزِقَةٌ",
+                        tr: "Paralı askerler."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة وَلُغَوِيَّة",
+                        tr: "Kültür Notu: 'Rızık' kökünden gelen bu kelime modern Arapçada, vatan veya inanç için değil, sadece para (rızık/kazanç) için savaşan 'lejyoner / paralı asker' anlamında çok sık kullanılır. Haber bültenlerinde sıkça duyulan bir kelimedir."
+                    }
+                ]
+            }
+        }
+    },
+
+// ==================================================================
+    // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
+    // Q-L-B (ق ل ب) KÖKÜ - Dönmek / Tersine Çevirmek / Değişmek
+    // Halden hale girmeyi, alt üst olmayı ve insanın duygu merkezi olan kalbi ifade eder. (2. Bab)
+    // ==================================================================
+    "قلب": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🔄", 
+                arText: "قَلَبَ", 
+                trText: "Çevirdi / Alt üst etti.",
+                ornek: { 
+                    ar: "قَلَبَ الصَّفْحَةَ", 
+                    tr: "Sayfayı çevirdi." 
+                }
+            },
+            cekimi: ["قَلَبَ", "قَلَبَا", "قَلَبُوا", "قَلَبَتْ", "قَلَبَتَا", "قَلَبْنَ", "قَلَبْتَ", "قَلَبْتُمَا", "قَلَبْتُمْ", "قَلَبْتِ", "قَلَبْتُمَا", "قَلَبْتُنَّ", "قَلَبْتُ", "قَلَبْنَا", "قَلَبْنَا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "📖", 
+                arText: "يَقْلِبُ", 
+                trText: "Çevirir / Alt üst eder.",
+                ornek: { 
+                    ar: "يَقْلِبُ الصَّفَحَاتِ", 
+                    tr: "Sayfaları çeviriyor." 
+                }
+            },
+            cekimi: ["يَقْلِبُ", "يَقْلِبَانِ", "يَقْلِبُونَ", "تَقْلِبُ", "تَقْلِبَانِ", "يَقْلِبْنَ", "تَقْلِبُ", "تَقْلِبَانِ", "تَقْلِبُونَ", "تَقْلِبِينَ", "تَقْلِبَانِ", "تَقْلِبْنَ", "أَقْلِبُ", "نَقْلِبُ", "نَقْلِبُ"]
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِقْلِبْ", 
+                trText: "Çevir / Döndür!" 
+            },
+            cekimi: ["اِقْلِبْ", "اِقْلِبَا", "اِقْلِبُوا", "اِقْلِبِي", "اِقْلِبَا", "اِقْلِبْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+        19: { 
+            base: { 
+                emoji: "❤️", 
+                arText: "قَلْب", 
+                trText: "Kalp / Yürek, gönül, merkez.",
+                ornek: [
+                    { 
+                        ar: "إِلَّا مَنْ أَتَى اللهَ بِقَلْبٍ سَلِيمٍ", 
+                        tr: "Ancak Allah'a temiz (selim) bir kalp ile gelenler müstesna. (Şuarâ Suresi, 89)" 
+                    },
+                    {
+                        ar: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
+                        tr: "Ey kalpleri evirip çeviren (Allah'ım), kalbimi dinin üzerine sabit kıl. (Hadis-i Şerif)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: 'Kalp', fizyolojik olarak kanı pompalarken (çevirirken) ve manevi olarak duyguları sürekli halden hale girerken 'sabit kalmadığı ve sürekli değiştiği' için bu ismi almıştır."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "يَّة": { 
+                emoji: "🫀", 
+                arText: "قَلْبِيَّة", 
+                trText: "Kalbi / İçten, samimi."
+            }
+        },
+
+        // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
+        43: { 
+            base: { 
+                emoji: "💞", 
+                arText: "قُلُوب", 
+                trText: "Kulûb / Kalpler.",
+                ornek: { 
+                    ar: "أَلَا بِذِكْرِ اللهِ تَطْمَئِنُّ الْقُلُوبُ", 
+                    tr: "Bilesiniz ki kalpler ancak Allah'ı anmakla huzur (mutmainlik) bulur. (Ra'd Suresi, 28)" 
+                }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil / Kalıp) ---
+        33: { 
+            base: { 
+                emoji: "🧊", 
+                arText: "قَالِب", 
+                trText: "Kalıp / Form, şekil (İçine dökülen malzemenin şeklini tamamen 'tersine' çıkarıp kopyaladığı için bu adı almıştır).",
+                ornek: { ar: "قَالِبُ حَلْوَى", tr: "Tatlı kalıbı." }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "🙃", 
+                arText: "مَقْلُوب", 
+                trText: "Maklup / Ters çevrilmiş."
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🍲", 
+                arText: "مَقْلُوبَة", 
+                trText: "Maklube / Ters çevrilmiş (Dişil). Tencerenin tepsi üzerine ters çevrilmesiyle sunulan meşhur bir Arap yemeği.",
+                ornek: { ar: "أَكَلْنَا مَقْلُوبَةً لَذِيذَةً", tr: "Lezzetli bir maklube yedik." }
+            }
+        },
+
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi - Süreklilik ve Çokluk Bildirir) ---
+        58: {
+            base: {
+                emoji: "🌪️",
+                arText: "قَلَّبَ",
+                trText: "Evirip çevirdi / Çokça değiştirdi."
+            },
+            cekimi: ["قَلَّبَ", "قَلَّبَا", "قَلَّبُوا", "قَلَّبَتْ", "قَلَّبَتَا", "قَلَّبْنَ", "قَلَّبْتَ", "قَلَّبْتُمَا", "قَلَّبْتُمْ", "قَلَّبْتِ", "قَلَّبْتُمَا", "قَلَّبْتُنَّ", "قَلَّبْتُ", "قَلَّبْنَا", "قَلَّبْنَا"]
+        },
+
+        // --- 59 Numaralı Kalıp (يُفَعِّلُ - Tef'îl Babı Muzari) ---
+        59: {
+            base: {
+                emoji: "🔄",
+                arText: "يُقَلِّبُ",
+                trText: "Evirip çevirir / Sürekli değiştirir.",
+                ornek: {
+                    ar: "يُقَلِّبُ اللهُ اللَّيْلَ وَالنَّهَارَ",
+                    tr: "Allah geceyi ve gündüzü (birbirinin ardınca) evirip çevirir. (Nûr Suresi, 44)"
+                }
+            },
+            cekimi: ["يُقَلِّبُ", "يُقَلِّبَانِ", "يُقَلِّبُونَ", "تُقَلِّبُ", "تُقَلِّبَانِ", "يُقَلِّبْنَ", "تُقَلِّبُ", "تُقَلِّبَانِ", "تُقَلِّبُونَ", "تُقَلِّبِينَ", "تُقَلِّبَانِ", "تُقَلِّبْنَ", "أُقَلِّبُ", "نُقَلِّبُ", "نُقَلِّبُ"]
+        },
+
+        // --- 60 Numaralı Kalıp (فَعِّلْ - Tef'îl Babı Emir) ---
+        60: {
+            base: {
+                emoji: "❗",
+                arText: "قَلِّبْ",
+                trText: "Evirip çevir!"
+            },
+            cekimi: ["قَلِّبْ", "قَلِّبَا", "قَلِّبُوا", "قَلِّبِي", "قَلِّبَا", "قَلِّبْنَ"]
+        },
+
+        // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
+        61: {
+            base: {
+                emoji: "🔍",
+                arText: "تَقْلِيب",
+                trText: "Teklip / Evirip çevirme, inceleme."
+            }
+        },
+
+        // --- 71 Numaralı Kalıp (اِنْفَعَلَ - İnfi'âl Babı Mazi - Dönüşlülük) ---
+        71: { 
+            base: { 
+                emoji: "🔙", 
+                arText: "اِنْقَلَبَ", 
+                trText: "Tersine döndü / Devrildi / Köklü bir şekilde değişti.",
+                ornek: { 
+                    ar: "اِنْقَلَبَتِ السَّيَّارَةُ", 
+                    tr: "Araba devrildi (ters döndü)." 
+                }
+            },
+            cekimi: ["اِنْقَلَبَ", "اِنْقَلَبَا", "اِنْقَلَبُوا", "اِنْقَلَبَتْ", "اِنْقَلَبَتَا", "اِنْقَلَبْنَ", "اِنْقَلَبْتَ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُمْ", "اِنْقَلَبْتِ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُنَّ", "اِنْقَلَبْتُ", "اِنْقَلَبْنَا", "اِنْقَلَبْنَا"]
+        },
+
+        // --- 72 Numaralı Kalıp (يَنْفَعِلُ - İnfi'âl Babı Muzari) ---
+        72: { 
+            base: { 
+                emoji: "🌀", 
+                arText: "يَنْقَلِبُ", 
+                trText: "Tersine döner / Devrilir / Değişir."
+            },
+            cekimi: ["يَنْقَلِبُ", "يَنْقَلِبَانِ", "يَنْقَلِبُونَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "يَنْقَلِبْنَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "تَنْقَلِبُونَ", "تَنْقَلِبِينَ", "تَنْقَلِبَانِ", "تَنْقَلِبْنَ", "أَنْقَلِبُ", "نَنْقَلِبُ", "نَنْقَلِبُ"]
+        },
+
+        // --- 73 Numaralı Kalıp (اِنْفَعِلْ - İnfi'âl Babı Emir) ---
+        73: {
+            base: {
+                emoji: "❗",
+                arText: "اِنْقَلِبْ",
+                trText: "Geri dön / Devril!"
+            },
+            cekimi: ["اِنْقَلِبْ", "اِنْقَلِبَا", "اِنْقَلِبُوا", "اِنْقَلِبِي", "اِنْقَلِبَا", "اِنْقَلِبْنَ"]
+        },
+
+        // --- 74 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
+        74: { 
+            base: { 
+                emoji: "💥", 
+                arText: "اِنْقِلَاب", 
+                trText: "İnkılap / Devrim, köklü değişim, ters yüz olma.",
+                ornek: [
+                    { 
+                        ar: "اِنْقِلَابٌ عَسْكَرِيٌّ", 
+                        tr: "Askeri darbe (inkılap)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة صَوْتِيَّة وَإِمْلَائِيَّة",
+                        tr: "Telaffuz Notu: Türkçede 'İnkılap' (Devrim/Değişim) kelimesi kalın 'Kaf' (ق) harfiyle yazılır ve okunur. İnce 'Kef' (ك) harfiyle söylenen 'İnkilab' ise 'Köpekleşmek' (ك ل ب kökünden) anlamına gelir. Bu yüzden doğru telaffuz etmek çok önemlidir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 75 Numaralı Kalıp (مُنْفَعِل - İnfi'âl Babı İsm-i Fâili) ---
+        75: {
+            base: {
+                emoji: "🚶‍♂️",
+                arText: "مُنْقَلِب",
+                trText: "Munkalib / Dönen, inkılap eden, geri dönen.",
+                ornek: { ar: "إِنَّا إِلَى رَبِّنَا مُنْقَلِبُونَ", tr: "Şüphesiz biz Rabbimize dönecek olanlarız (munkalibûn). (A'râf Suresi, 125)" }
+            },
+            suggestsPlus: true,
+            "ونَ": { 
+                emoji: "👥", 
+                arText: "مُنْقَلِبُونَ", 
+                trText: "Dönenler (Cem-i Müzekker Sâlim)." 
+            }
+        },
+
+        // --- 76 Numaralı Kalıp (مُنْفَعَل - İnfi'âl Babı İsm-i Mef'ûlü / Mekân / Masdar-ı Mîmî) ---
+        76: {
+            base: {
+                emoji: "📍",
+                arText: "مُنْقَلَب",
+                trText: "Munkaleb / Dönüş yeri, varılacak akıbet, devrilme noktası.",
+                ornek: { 
+                    ar: "وَسَيَعْلَمُ الَّذِينَ ظَلَمُوا أَيَّ مُنْقَلَبٍ يَنْقَلِبُونَ", 
+                    tr: "Zulmedenler, hangi dönüş yerine (nasıl bir akıbete / munkalebe) devrileceklerini yakında bileceklerdir! (Şuarâ Suresi, 227)" 
+                }
+            }
+        },
+
+        // --- 88 Numaralı Kalıp (تَفَعَّلَ - Tefe'ul Babı Mazi - İstikrarsızlık/Halden Hale Girme) ---
+        88: { 
+            base: { 
+                emoji: "😵‍💫", 
+                arText: "تَقَلَّبَ", 
+                trText: "Kıvrandı / Halden hale girdi / Kararsız kaldı.",
+                ornek: { 
+                    ar: "تَقَلَّبَ فِي الْفِرَاشِ مِنَ الْأَلَمِ", 
+                    tr: "Acıdan yatakta kıvrandı (döndü durdu)." 
+                }
+            },
+            cekimi: ["تَقَلَّبَ", "تَقَلَّبَا", "تَقَلَّبُوا", "تَقَلَّبَتْ", "تَقَلَّبَتَا", "تَقَلَّبْنَ", "تَقَلَّبْتَ", "تَقَلَّبْتُمَا", "تَقَلَّبْتُمْ", "تَقَلَّبْتِ", "تَقَلَّبْتُمَا", "تَقَلَّبْتُنَّ", "تَقَلَّبْتُ", "تَقَلَّبْنَا", "تَقَلَّبْنَا"]
+        },
+
+        // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Tefe'ul Babı Muzari) ---
+        89: { 
+            base: { 
+                emoji: "🌪️", 
+                arText: "يَتَقَلَّبُ", 
+                trText: "Kıvranır / Halden hale girer.",
+                ornek: { 
+                    ar: "يَخَافُونَ يَوْمًا تَتَقَلَّبُ فِيهِ الْقُلُوبُ وَالْأَبْصَارُ", 
+                    tr: "Onlar, kalplerin ve gözlerin dehşetle halden hale gireceği (tekellüb edeceği) bir günden korkarlar. (Nûr Suresi, 37)" 
+                }
+            },
+            cekimi: ["يَتَقَلَّبُ", "يَتَقَلَّبَانِ", "يَتَقَلَّبُونَ", "تَتَقَلَّبُ", "تَتَقَلَّبَانِ", "يَتَقَلَّبْنَ", "تَتَقَلَّبُ", "تَتَقَلَّبَانِ", "تَتَقَلَّبُونَ", "تَتَقَلَّبِينَ", "تَتَقَلَّبَانِ", "تَتَقَلَّبْنَ", "أَتَقَلَّبُ", "نَتَقَلَّبُ", "نَتَقَلَّبُ"]
+        },
+
+        // --- 90 Numaralı Kalıp (تَفَعَّلْ - Tefe'ul Babı Emir) ---
+        90: {
+            base: {
+                emoji: "❗",
+                arText: "تَقَلَّبْ",
+                trText: "Halden hale gir / Kıvran!"
+            },
+            cekimi: ["تَقَلَّبْ", "تَقَلَّبَا", "تَقَلَّبُوا", "تَقَلَّبِي", "تَقَلَّبَا", "تَقَلَّبْنَ"]
+        },
+
+        // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Babı Masdarı) ---
+        91: { 
+            base: { 
+                emoji: "🍂", 
+                arText: "تَقَلُّب", 
+                trText: "Tekellüb / Değişkenlik, istikrarsızlık."
+            },
+            suggestsPlus: true,
+            "ات": { 
+                emoji: "🌤️", 
+                arText: "تَقَلُّبَات", 
+                trText: "Dalgalanmalar / Değişimler.",
+                ornek: { ar: "تَقَلُّبَاتُ الطَّقْسِ", tr: "Hava durumu dalgalanmaları (değişkenlikleri)." }
+            }
+        }
+    },
+
+    // ==================================================================
+    // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
+    // N-F-S (ن ف س) KÖKÜ - Nefes Almak / Can / Ruh / Kendi
+    // Canlılığı, varlığı, insanın iç dünyasını ve nefes alıp vermeyi ifade eder.
+    // ==================================================================
+    "نفس": {
+        // --- 17 Numaralı Kalıp (فَعَل - İsim) ---
+        17: {
+            base: {
+                emoji: "🌬️",
+                arText: "نَفَس",
+                trText: "Nefes / Soluk.",
+                ornek: { ar: "أَخَذَ نَفَسًا عَمِيقًا", tr: "Derin bir nefes aldı." }
+            },
+            suggestsPlus: true,
+            "ات": {
+                emoji: "💨",
+                arText: "نَفَسَات",
+                trText: "Nefesler."
+            }
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+       // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+        19: {
+            base: {
+                emoji: "👤",
+                arText: "نَفْس",
+                trText: "Nefs / Varlık, can, kendi, ruh.",
+                ornek: [
+                    {
+                        ar: "يَا أَيَّتُهَا النَّفْسُ الْمُطْمَئِنَّةُ",
+                        tr: "Ey huzura kavuşmuş (mutmain) nefs! (Fecr Suresi, 27)"
+                    },
+                    {
+                        ar: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ",
+                        tr: "Her can (nefs) ölümü tadacaktır. (Âl-i İmrân Suresi, 185)"
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "ِيَّة": {
+                emoji: "😌",
+                arText: "نَفْسِيَّة",
+                trText: "Psikoloji / Ruh hali.",
+                ornek: { ar: "نَفْسِيَّتُهُ مُرْتَاحَةٌ", tr: "Onun ruh hali (psikolojisi) rahattır." }
+            },
+            "ونَ": {
+                emoji: "🫂",
+                arText: "أَنْفُس",
+                trText: "Enfüs / Kendileri, nefisler, iç dünyalar (Azlık çoğulu).",
+                ornek: [
+                    { 
+                        ar: "وَمَا ظَلَمُونَا وَلَكِنْ كَانُوا أَنْفُسَهُمْ يَظْلِمُونَ", 
+                        tr: "Onlar bize zulmetmediler, lakin kendi nefislerine (kendilerine) zulmediyorlardı. (Bakara Suresi, 57)" 
+                    },
+                    {
+                        ar: "سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ وَفِي أَنْفُسِهِمْ",
+                        tr: "Onlara hem ufuklarda (dış dünyada) hem de kendi nefislerinde (öz benliklerinde/iç dünyalarında) ayetlerimizi göstereceğiz. (Fussilet Suresi, 53)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة نَحْوِيَّة وَدَلَالِيَّة",
+                        tr: "Gramer ve Semantik Not: 'Nefs' kelimesinin iki çoğulu vardır. 'Nüfus' (نُفُوس) daha çok fiziksel insan sayısını (kalabalığı) ifade ederken; 'Enfüs' (أَنْفُس) 'Cem-i Kıllet' (azlık çoğulu) veznindedir ve genellikle insanların 'iç dünyaları, öz benlikleri' veya dönüşlülük zamiri olan 'kendileri' anlamında kullanılır."
+                    }
+                ]
+            }
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
+        25: {
+            base: {
+                emoji: "👥",
+                arText: "نُفُوس",
+                trText: "Nüfûs / Nefisler, canlar, kişiler.",
+                ornek: [
+                    {
+                        ar: "دَائِرَةُ النُّفُوسِ",
+                        tr: "Nüfus Dairesi (Kişilerin/canların kayıtlı olduğu yer)."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة لُغَوِيَّة",
+                        tr: "Dil Notu: Türkçede 'Nüfus' kelimesi 'insan sayısı' anlamında kullanılırken, Arapçada aslen 'Nefs' (can/kişi) kelimesinin çoğuludur. Yani Nüfus Cüzdanı aslında 'Kişiler Cüzdanı' demektir."
+                    }
+                ]
+            }
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat) ---
+        35: {
+            base: {
+                emoji: "💎",
+                arText: "نَفِيس",
+                trText: "Nefis / Çok değerli, kıymetli, eşsiz.",
+                ornek: [
+                    { 
+                        ar: "شَيْءٌ نَفِيسٌ جِدًّا", 
+                        tr: "Çok değerli (nefis) bir şey." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                        tr: "Kültür Notu: Türkçede 'Enfes' veya 'Nefis' şeklinde yemeğin lezzetli olduğunu anlatmak için kullandığımız kelimenin asıl manası 'kıymetli, cana/ruha hitap eden, değerli' demektir."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🌸",
+                arText: "نَفِيسَة",
+                trText: "Nefise / Değerli kadın (Kız ismi)."
+            }
+        },
+
+        // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
+        41: {
+            base: {
+                emoji: "💨",
+                arText: "أَنْفَاس",
+                trText: "Enfâs / Nefesler, soluklar.",
+                ornek: { ar: "فِي أَنْفَاسِهِ الْأَخِيرَةِ", tr: "Son nefeslerinde." }
+            }
+        },
+
+        
+
+        // --- 64 Numaralı Kalıp (فَاعَلَ - Müfâ'ale Babı Mazi - Karşılıklı Eylem) ---
+        64: {
+            base: {
+                emoji: "🏃‍♂️",
+                trText: "Yarıştı / Rekabet etti.",
+                ornek: { ar: "نَافَسَ زَمِيلَهُ", tr: "Arkadaşıyla rekabet etti (Nefes nefese yarıştı)." }
+            }
+        },
+
+        // --- 65 Numaralı Kalıp (يُفَاعِلُ - Müfâ'ale Babı Muzari) ---
+        65: {
+            base: {
+                emoji: "🏁",
+                trText: "Yarışır / Rekabet eder."
+            },
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Babı Masdarı) ---
+        67: {
+            base: {
+                emoji: "⚔️",
+                arText: "مُنَافَسَة",
+                trText: "Münâfese / Rekabet, yarış.",
+                ornek: { ar: "مُنَافَسَةٌ شَدِيدَةٌ", tr: "Şiddetli (çetin) rekabet." }
+            }
+        },
+
+        // --- 69 Numaralı Kalıp (مُفَاعِل - Müfâ'ale Babı İsm-i Fâil) ---
+        69: {
+            base: {
+                emoji: "👤",
+                arText: "مُنَافِس",
+                trText: "Münâfis / Rakip, yarışan.",
+                ornek: { ar: "هُوَ مُنَافِسٌ قَوِيٌّ", tr: "O güçlü bir rakiptir." }
+            }
+        },
+
+        // --- 88 Numaralı Kalıp (تَفَعَّلَ - Tefe'ul Babı Mazi - Dönüşlülük/Süreklilik) ---
+        88: {
+            base: {
+                emoji: "😮‍💨",
+                trText: "Nefes aldı.",
+                ornek: { ar: "وَالصُّبْحِ إِذَا تَنَفَّسَ", tr: "Nefes almaya başladığında sabaha andolsun. (Tekvîr Suresi, 18)" }
+            },
+        },
+
+        // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Tefe'ul Babı Muzari) ---
+        89: {
+            base: {
+                emoji: "🌬️",
+                trText: "Nefes alır / Solur."
+            },
+        },
+
+        // --- 90 Numaralı Kalıp (تَفَعَّلْ - Tefe'ul Babı Emir) ---
+        90: {
+            base: {
+                emoji: "❗",
+                trText: "Nefes al!"
+            },
+        },
+
+        // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Babı Masdarı) ---
+        91: {
+            base: {
+                emoji: "😮‍💨",
+                arText: "تَنَفُّس",
+                trText: "Teneffüs / Nefes alma, solunum, dinlenme molası.",
+                ornek: [
+                    { ar: "جِهَازُ التَّنَفُّسِ", tr: "Solunum cihazı." },
+                    { ar: "وَقْتُ التَّنَفُّسِ", tr: "Teneffüs (nefes alma/dinlenme) vakti." }
+                ]
+            }
+        }
+    },
+
+    // ==================================================================
+    // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
+    // R-W-H (ر و ح) KÖKÜ - Ruh / Rahatlık / Esinti / Gitmek
+    // İnsanın özünü, rüzgâr gibi esip geçmeyi ve ferahlamayı ifade eder. (Ecvef Fiil)
+    // ==================================================================
+    "روح": {
+          // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi - Ecvef) ---
+        1: {
+            base: {
+                emoji: "🚶",
+                arText: "رَاحَ",
+                trText: "Gitti (Özellikle akşam vakti esinti çıkınca dönüşe geçmek/gitmek).",
+                ornek: { 
+                    ar: "رَاحَ إِلَى بَيْتِهِ", 
+                    tr: "Evine gitti (döndü)." 
+                }
+            }
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: {
+            base: {
+                emoji: "🚶‍♂️",
+                arText: "يَرُوحُ",
+                trText: "Gider / Akşam vakti döner."
+            }
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل - İsim) ---
+        17: {
+            base: { arText: "رَوَح" }, // Yalın ve asli hali (İ'lâl'den önceki kök formu)
+            suggestsPlus: true,
+            "ة": {
+                emoji: "😌",
+                arText: "رَاحَة",
+                trText: "Râhat / Dinlenme, huzur, avuç içi.",
+                cekimi: [
+                    {
+                        ar: "<div style='display:flex; justify-content:center; align-items:center; gap:15px; direction:rtl;'><span>رَوَحَة</span> <i class='fas fa-arrow-left' style='color:#e74c3c; font-size:18px;'></i> <span style='color:#27ae60;'>رَاحَة</span></div>",
+                        tr: "Ses Olayı (İ'lâl): Aslı 'Ravehat' (رَوَحَة) şeklindedir. Kural gereği; illet harfi olan 'Vav' (و) harekeli, kendinden bir önceki harf olan 'Ra' (ر) üstünlü olduğu için telaffuz kolaylığı amacıyla 'Vav' harfi 'Elif'e (ا) dönüşür ve kelime 'Râhat' olur."
+                    }
+                ],
+                ornek: [
+                    { 
+                        ar: "رَاحَةُ الْبَالِ", 
+                        tr: "Gönül rahatlığı (Zihin huzuru)." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: 'Rahat' kelimesi Arapçada aynı zamanda 'Avuç içi' demektir. Çünkü insan en çok ellerini açıp avuçlarını serbest bıraktığında (rahatlattığında) dinlenir. 'Lokum' anlamına gelen 'Rahatü'l-Hulkum' (Boğazı rahatlatan) tamlaması da buradan gelir."
+                    }
+                ]
+            }
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+        19: {
+            base: {
+                emoji: "🍃",
+                arText: "رَوْح",
+                trText: "Ravh / Ferahlık, esinti, Allah'ın rahmeti.",
+                ornek: { 
+                    ar: "لَا تَيْأَسُوا مِنْ رَوْحِ اللهِ", 
+                    tr: "Allah'ın rahmetinden (ferahlığından) ümit kesmeyin. (Yûsuf Suresi, 87)" 
+                }
+            }
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
+        21: {
+            base: {
+                emoji: "🕊️",
+                arText: "رُوح",
+                trText: "Rûh / Can, ilahi nefes, Cebrail (a.s.).",
+                ornek: { 
+                    ar: "وَنَفَخْتُ فِيهِ مِنْ رُوحِي", 
+                    tr: "Ona kendi ruhumdan üfledim. (Hicr Suresi, 29)" 
+                }
+            },
+            suggestsPlus: true,
+            "يّ": { 
+                emoji: "✨",
+                arText: "رُوحِيّ",
+                trText: "Ruhani / Manevi."
+            }
+        },
+
+    
+
+        // --- 39 Numaralı Kalıp (مِفْعَل + ة -> İsm-i Âlet) ---
+        39: {
+            base: { arText: "مِرْوَح" },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🌀",
+                arText: "مِرْوَحَة",
+                trText: "Mirvaha / Vantilatör, pervane (Rüzgâr ve serinlik üreten alet)."
+            }
+        },
+
+       
+        // --- 58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi) ---
+        58: {
+            base: { 
+                emoji: "🌬️", 
+                arText: "رَوَّحَ", 
+                trText: "Ferahlattı / Dinlendirdi / Nefes aldırdı." 
+            }
+        },
+
+       // --- 61 Numaralı Kalıp (تَفْعِيل / تَفْعِلَة - Tef'îl Babı Masdarı) ---
+        61: {
+            base: {
+                emoji: "🕌",
+                arText: "تَرْوِيح",
+                trText: "Tervih / Dinlendirme, rahatlatma."
+            },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🤲",
+                arText: "تَرْوِيحَة",
+                trText: "Tervîha / Bir kerelik dinlenme molası.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة ثَقَافِيَّة",
+                    tr: "Kültür Notu: Ramazan ayında kıldığımız 'Teravih' (تَرَاوِيح) namazı, 'Tervîha' (Dinlenme/Mola) kelimesinin çoğuludur. Bu namazda her dört rekatta bir oturulup nefeslenildiği, salavatlar getirilerek dinlenildiği (rahatlanıldığı) için namaza 'Dinlenmeler / Molalar' anlamına gelen bu isim verilmiştir."
+                }
+            },
+            "ونَ": {
+                emoji: "👥",
+                arText: "تَرَاوِيح",
+                trText: "Teravih / Dinlenmeler"
+                
+            }
+        },
+
+        // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - İstif'âl Babı Mazi - İstek/Dönüşüm) ---
+        100: {
+            base: {
+                emoji: "🛋️",
+                arText: "اِسْتَرَاحَ",
+                trText: "Dinlendi / İstirahat etti.",
+                ornek: { 
+                    ar: "اِسْتَرَاحَ الْعَامِلُ بَعْدَ الْعَمَلِ", 
+                    tr: "İşçi çalıştıktan sonra dinlendi." 
+                }
+            },
+        },
+
+        // --- 101 Numaralı Kalıp (يَسْتَفْعِلُ - İstif'âl Babı Muzari) ---
+        101: {
+            base: {
+                emoji: "🧘‍♂️",
+                arText: "يَسْتَرِيحُ",
+                trText: "Dinlenir / İstirahat eder."
+            },
+        },
+        
+        // --- 102 Numaralı Kalıp (اِسْتَفْعِلْ - İstif'âl Babı Emir) ---
+        102: {
+            base: {
+                emoji: "❗",
+                arText: "اِسْتَرِحْ",
+                trText: "Dinlen / İstirahat et!",
+                ornek: {
+                    ar: "💡 قَاعِدَة صَرْفِيَّة",
+                    tr: "Sarf Notu: Ecvef (ortası illetli) fiilin emri yapılırken, son harf cezimlenir. Bu durumda iki sakin (harekesiz) harf yan yana gelemeyeceği için ortadaki uzatma harfi (Yâ) düşer ve 'İsterîh' yerine kısaca 'İsterih' olur."
+                }
+            },
+        },
+
+        // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı / Ecvef Kuralı) ---
+        103: {
+            base: {
+                emoji: "☕",
+                arText: "اِسْتِرَاحَة",
+                trText: "İstirahat / Dinlenme, mola.",
+                ornek: [
+                    { 
+                        ar: "وَقْتُ الِاسْتِرَاحَةِ", 
+                        tr: "İstirahat (mola/dinlenme) vakti." 
+                    },
+                    {
+                        ar: "💡 قَاعِدَة صَرْفِيَّة (تَعْوِيض)",
+                        tr: "Sarf Notu: İstikamet ve İhtiyaç kelimelerinde olduğu gibi, İstif'âl babının masdarına dönüşen Ecvef fiillerde ortadaki illet harfi düşer ve sonuna bedel/tazmin olarak mecburi bir 'ة' (Tâ-i Merbûta) eklenir. Aslı 'İstirvâh' iken 'İstirahat' olmuştur."
+                    }
+                ]
+            }
         }
     },
 };

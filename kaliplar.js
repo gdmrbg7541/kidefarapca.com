@@ -2861,6 +2861,28 @@ const SarfEngine = {
             res = res.replace(/اِسْتَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "اِسْتَ$1َا$2");
             res = res.replace(/(يَ|تَ|نَ|أَ|مُ)سْتَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1سْتَ$2ِي$3");
 
+
+            // 4.1. EVRENSEL MEZÎD-ECVEF ZIRHI (İstifal, İf'al, İnfi'al vb.)
+        // Bu blok, ortası 'و' veya 'ي' olan fiillerin Mezîd bablarda 
+        // hatalı üretilen "استرويح" gibi formlarını "استرح" haline getirir.
+        if ((r2 === 'و' || r2 === 'ي')) {
+            // İSTİF'AL BABI ZIRHI (اِسْتَرْوِحْ -> اِسْتَرِحْ)
+            res = res.replace(/اِسْتَرْ[وي]حْ/g, "اِسْتَرِحْ");
+            res = res.replace(/يَسْتَرْ[وي]حُ/g, "يَسْتَرِيحُ");
+            res = res.replace(/مُسْتَرْ[وي]ح/g, "مُسْتَرِيح");
+
+            // İNFİ'ÂL BABI ZIRHI (اِنْفِعَال)
+            // Örn: اِنْقِوَا (Hatalı) -> اِنْقِوَاء (Doğru) -> اِنْقِيَاء
+            res = res.replace(/اِنْقِ[وي]َا/g, "اِنْقِيَاء");
+            
+            // GENEL: Ecvef fiillerde ortadaki illet harfini, 
+            // Mezîd babın Sükunlu formunda tamamen düşür ve önceki harekeyi koru.
+            // Bu, 'اِسْتَ+رْ+و+ح' -> 'اِسْتَرِحْ' mantığını tüm benzer kökler için yürütür.
+            res = res.replace(/([اأإآ]سْتَ[^\u064B-\u0652]*)ْ[وي]([^\u064B-\u0652]*)/g, "$1$2");
+            }
+
+           
+
             // ==========================================
             // 1. İLTİKA-İ SAKİNEYN (SÜKUN ÇARPIŞMASI KESİN ÇÖZÜMLERİ)
             // ==========================================
