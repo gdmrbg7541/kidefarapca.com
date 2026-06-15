@@ -18448,7 +18448,7 @@ const wordEasterEggs = {
                 trText: "Hüzün / Üzüntü, keder.",
                 ornek: [
                     {
-                        ar: "وَابْيَضَّتْ عَيْنَاهُ مِنَ الْحُزْنِ",
+                        ar: "وَابْيَضَّتْ عَيْنَاهُ مِنَ الْحُزْنِ",
                         tr: "Hüzünden (ağlamaktan) iki gözüne ak düştü. (Yûsuf Suresi, 84)"
                     },
                     {
@@ -18456,15 +18456,10 @@ const wordEasterEggs = {
                         tr: "Hüzün Yılı (Peygamberimizin amcası Ebu Talip ve eşi Hz. Hatice'nin peş peşe vefat ettiği, hüzne boğulduğu yıl)."
                     }
                 ]
-            },
-            suggestsPlus: true,
-            "ات": {
-                emoji: "🌊",
-                arText: "أَحْزَان",
-                trText: "Ahzân / Hüzünler, kederler (Kırık Çoğul).",
-                ornek: { ar: "غَرِقَ فِي بَحْرِ الْأَحْزَانِ", tr: "Hüzünler denizinde boğuldu." }
             }
         },
+
+        
 
         // --- 35 Numaralı Kalıp (فَعِيل - Sıfat) ---
         35: {
@@ -18493,8 +18488,21 @@ const wordEasterEggs = {
             }
         },
 
+        // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
+        41: {
+            base: {
+                emoji: "🌊",
+                arText: "أَحْزَان",
+                trText: "Ahzân / Hüzünler, kederler.",
+                ornek: { 
+                    ar: "غَرِقَ فِي بَحْرِ الْأَحْزَانِ", 
+                    tr: "Hüzünler denizinde boğuldu." 
+                }
+            }
+        },
+
         // --- 45 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik / Başkasını Üzmek) ---
-        45: {
+        52: {
             base: {
                 emoji: "🏹",
                 arText: "أَحْزَنَ",
@@ -18507,7 +18515,7 @@ const wordEasterEggs = {
         },
 
         // --- 46 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
-        46: {
+        53: {
             base: {
                 emoji: "😢",
                 arText: "يُحْزِنُ",
