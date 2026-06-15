@@ -18909,21 +18909,27 @@ const wordEasterEggs = {
             },
         },
 
-        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+        // --- 19 Numaralı Kalıp (فَعْل - İsim / Tekil) ---
         19: {
             base: {
                 emoji: "🧠",
                 arText: "ظَنّ",
                 trText: "Zan / Sanı, şüphe, tahmin.",
-                ornek: { ar: "إِنَّ بَعْضَ الظَّنِّ إِثْمٌ", tr: "Şüphesiz zannın bir kısmı günahtır. (Hucurât Suresi, 12)" }
+                ornek: [
+                    { 
+                        ar: "إِنَّ بَعْضَ الظَّنِّ إِثْمٌ", 
+                        tr: "Şüphesiz zannın bir kısmı günahtır. (Hucurât Suresi, 12)" 
+                    },
+                    { 
+                        ar: "سُوءُ الظَّنِّ", 
+                        tr: "Sûizan / Kötü zan, şüphe." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة لُغَوِيَّة",
+                        tr: "Dil Notu: Türkçedeki 'Zanlı' (şüpheli) kelimesi doğrudan bu kökten gelir. Üzerinde 'zan' (şüphe) bulunan, hakkında suç işlediğine dair şüphe duyulan kişi demektir."
+                    }
+                ]
             },
-            suggestsPlus: true,
-            "ون": {
-                emoji: "🌪️",
-                arText: "ظُنُون",
-                trText: "Zünûn / Zanlar, kuruntular (Kırık Çoğul).",
-                ornek: { ar: "سُوءُ الظَّنِّ", tr: "Kötü zan (Sûizan)." }
-            }
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
@@ -18946,6 +18952,21 @@ const wordEasterEggs = {
                 arText: "مَظْنُون",
                 trText: "Maznûn / Zan altında bırakılan, sanık.",
                 ornek: { ar: "هُوَ مَظْنُونٌ فِيهِ", tr: "O, şüphe (zan) altında biridir." }
+            }
+        },
+
+       // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
+        43: {
+            base: {
+                emoji: "🌪️",
+                arText: "ظُنُون",
+                trText: "Zünûn / Zanlar, kuruntular, şüpheler (Kırık Çoğul).",
+                ornek: 
+                    { 
+                        ar: "وَتَظُنُّونَ بِاللهِ الظُّنُونَا", 
+                        tr: "Allah hakkında (türlü türlü) zanlarda bulunuyordunuz. (Ahzâb Suresi, 10)" 
+                    }
+               
             }
         }
     },
