@@ -18730,9 +18730,22 @@ const wordEasterEggs = {
             suggestsPlus: true,
             "ال": {
                 emoji: "🕌",
-                arText: "اَلظُّهْر",
-                trText: "Ez-Zuhr / Öğle (Belirli hali).",
-                ornek: { ar: "صَلَاةُ الظُّهْرِ", tr: "Öğle namazı." }
+                arText: "اَلظُّهْر",
+                trText: "Ez-Zuhr / Öğle vakti.",
+                ornek: [
+                    { 
+                        ar: "صَلَاةُ الظُّهْرِ", 
+                        tr: "Öğle namazı." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة زَمَنِيَّة",
+                        tr: "Zaman Notu: Arapçada zaman bildiren bazı kelimeler 'ال' (El) takısı aldığında, rastgele bir zamanı değil, bilinen 'belirli bir vakti' veya 'içinde bulunulan zamanı' kasteder. 'الظُّهْر' kelimesi de günün tam ortasındaki o bilinen öğle vaktini belirtir."
+                    },
+                    {
+                        ar: "⏱️ أَمْثِلَة مُشَابِهَة",
+                        tr: "Benzer zaman kelimeleri: <br> ➡️ 'يَوْم' (Gün) -------- 'الْيَوْمَ' -------- (Bugün),<br> ➡️ 'آن' (Zaman/An) --- 'الْآنَ' ---- (Şimdi/Şu an),<br> ➡️ 'سَنَة' (Yıl) -------- 'السَّنَةَ' ---------(Bu yıl). <br> Hatta sonları da mansub olarak biter."
+                    }
+                ]
             }
         },
 
