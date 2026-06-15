@@ -28,12 +28,12 @@ function renderVerbMenu() {
     importantContainer.innerHTML = "";
     gridContainer.innerHTML = "";
 
-    // 1. Önemli Kökler
+    // 1. Önemli Kökler (Manuel sıralama korunur)
     onemliKokler.forEach(root => {
         if(wordEasterEggs[root]) importantContainer.innerHTML += createFlatRootItem(root);
     });
 
-    // 2. 4 Sütunlu Bağımsız Scroll Sistemi (ص harfi 3. sütuna kaydırıldı)
+    // 2. 4 Sütunlu Bağımsız Scroll Sistemi
     const ranges = [
         { title: "أ - ب - ت - ث - ج - ح - خ", start: 0, end: 6 },
         { title: "د - ذ - ر - ز - س - ش", start: 7, end: 12 },
@@ -54,6 +54,12 @@ function renderVerbMenu() {
         for(let i = range.start; i <= range.end; i++) {
             let letter = arapcaHarfler[i];
             if (rootsByLetter[letter] && rootsByLetter[letter].length > 0) {
+                
+                // ==============================================================
+                // İŞTE SİHİRLİ SATIR: ARAPÇA SÖZLÜK MANTIĞIYLA TAM ALFABETİK SIRALAMA
+                // ==============================================================
+                rootsByLetter[letter].sort((a, b) => a.localeCompare(b, 'ar'));
+
                 colHTML += `<div class="letter-group-title">${letter}</div>`;
                 colHTML += `<div class="flat-root-list" style="padding: 0 10px; justify-content: center;">`;
                 rootsByLetter[letter].forEach(r => { colHTML += createFlatRootItem(r); });
@@ -1839,7 +1845,7 @@ function updateSuffixHighlights(currentBox) {
 }
 
 // ===============================================================
-// 2. MENÜYÜ AÇAN MOTOR
+// 2. MENÜYÜ AÇAN MOTOR (4K Netlik Yaması ve Sola Yaslama)
 // ===============================================================
 function toggleSuffixMenu(e) {
     if (e) {
@@ -1869,31 +1875,29 @@ function toggleSuffixMenu(e) {
     if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
     if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
     
-    // GÜNCELLEME: Menünün hem flex hem grid durumunda kapanmasını sağlar
     if (menu.style.display === "flex" || menu.style.display === "grid" || menu.style.display === "block") {
         menu.style.display = "none";
         return;
     }
 
     const rect = e.target.getBoundingClientRect();
-    menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
     
-    // Menüyü baştan biraz daha sola kaydırıyoruz (150 yerine 250)
-    let leftPos = rect.left + window.scrollX - 270; 
+    let topPos = Math.round(rect.bottom + window.scrollY + 8);
+    menu.style.top = `${topPos}px`;
     
     // GEÇİCİ GÖRÜNÜM: Menünün genişliğini okuyabilmek için önce görünmez olarak açıyoruz
     menu.style.visibility = "hidden";
     menu.style.display = "block";
     
-    // AKILLI SINIR KONTROLÜ: Sağdan taşıyorsa sola it
-    if (leftPos + menu.offsetWidth > window.innerWidth) {
-        leftPos = window.innerWidth - menu.offsetWidth - 20;
-    }
+    // EKRANIN SAĞINDAN TAŞMAMASI İÇİN MENÜYÜ BUTONUN SOLUNA YASLIYORUZ
+    let leftPos = Math.round(rect.left + window.scrollX - menu.offsetWidth + 80); 
     
-    // Soldan taşıyorsa sağa it
+    // AKILLI SINIR KONTROLÜ
+    if (leftPos + menu.offsetWidth > window.innerWidth) {
+        leftPos = Math.round(window.innerWidth - menu.offsetWidth - 20);
+    }
     if (leftPos < 10) leftPos = 10; 
     
-    // Son pozisyonu ata ve menüyü görünür yap
     menu.style.left = `${leftPos}px`;
     menu.style.visibility = "visible";
 
