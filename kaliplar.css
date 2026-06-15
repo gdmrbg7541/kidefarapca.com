@@ -1158,7 +1158,10 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 
 /* ARTI (+) MENÜSÜ */
 #suffix-dropdown {
-    transform: scale(1.1) !important; transform-origin: top center !important; z-index: 9999999 !important;
+    transform: scale(1.1) !important; 
+    transform-origin: top center !important; 
+    z-index: 9999999 !important;
+    width: max-content !important; /* YENİ EKLENEN: Sütunların sıkışmasını engeller */
 }
 #suffix-dropdown .key.suggested-suffix {
     background-color: #fbbf24 !important; color: #1e293b !important; border-color: #f59e0b !important;
@@ -1299,32 +1302,50 @@ body.matrix-active { overflow: hidden !important; }
     display: block; font-family: sans-serif !important; font-size: 16px; color: #555555; margin-top: 8px; font-weight: bold;
 }
 
-/* --- EKLER MENÜSÜ TUŞ TASARIMI --- */
+/* =============================================================== */
+/* 3D PREMIUM BUTON TASARIMI (Mekanik Tuş Hissi) */
+/* =============================================================== */
 .suffix-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f9fa;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 1.5rem;
-    color: #333;
-    padding: 8px 5px;
+    background: linear-gradient(to bottom, #ffffff 0%, #f2f2f7 100%);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 8px 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
+    font-family: 'Arakom', sans-serif;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    
+    /* 3D KATMANLARI: İç Işık + Alt Kalınlık Zırhı + Yumuşak Zemin Gölgesi */
+    box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 0.9),  /* Tuşun üst kenarındaki ışık yansıması */
+        0 4px 0 #d1d1d6,                         /* 3D tuşun fiziksel alt kalınlığı */
+        0 5px 8px rgba(0, 0, 0, 0.1);            /* Tuşun panele düşen dış gölgesi */
+        
+    transform: translateY(0);
 }
 
 .suffix-btn:hover {
-    background-color: #e5e7eb;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: linear-gradient(to bottom, #ffffff 0%, #e5e5ea 100%);
+    /* Üzerine gelince gölge ve kalınlık çok hafif belirginleşir */
+    box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 1), 
+        0 4px 0 #c7c7cc, 
+        0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 .suffix-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    background: #e5e5ea;
+    /* Tuşa basıldığı an fiziksel kalınlık (4px) yok olur, tuş aşağı çöker */
+    transform: translateY(4px); 
+    box-shadow: 
+        inset 0 3px 6px rgba(0, 0, 0, 0.1),      /* İçeri göçme hissi veren iç gölge */
+        0 0 0 #c7c7cc,                           /* Alt kalınlık sıfırlandı */
+        0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* ========================================================= */
@@ -1372,26 +1393,8 @@ body.matrix-active { overflow: hidden !important; }
     opacity: 0.8;
 }
 
-.suffix-btn {
-    width: 100%;
-    height: 60px;                   /* Butonları parmak dostu boyuta getirdik */
-    padding: 0;
-    cursor: pointer;
-    background: #fff;
-    border: 2px solid #e5e7eb;
-    border-radius: 14px;
-    font-size: 1.4rem;              /* Yazıyı büyüttük */
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-.suffix-btn:hover {
-    background-color: #f9fafb;
-    border-color: #d1d5db;
-    transform: scale(1.05);          /* Hover'da çok hafif büyüme */
-}
+
+
 
 .suffix-btn:active {
     background-color: #f3f4f6;
