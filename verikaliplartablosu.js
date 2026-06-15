@@ -2051,6 +2051,7 @@ const wordEasterEggs = {
     // ==================================================================
     "نظم": {
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'il Babı) ---
+
         58: { 
             base: { emoji: "🗂️", arText: "نَظَّمَ", trText: "Düzenledi / Organize etti." } 
         },
@@ -18654,6 +18655,368 @@ const wordEasterEggs = {
                 emoji: "🤲",
                 arText: "الْمُرْتَجِي",
                 trText: "El-Mürtecî / Umut bağlayan (Belirli/Marife hali)."
+            }
+        }
+    },
+
+// ==================================================================
+    // 5. KATEGORİ: NİTELİK, DURUM VE KARŞITLIKLAR
+    // Z-H-R (ظ ه ر) KÖKÜ - Görünmek / Ortaya Çıkmak / Sırt
+    // Bir şeyin gizliyken açık hale gelmesini, arka çıkmayı ve sırtı ifade eder.
+    // ==================================================================
+    "ظهر": {
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: {
+            base: {
+                emoji: "👁️",
+                arText: "ظَهَرَ",
+                trText: "Göründü / Ortaya çıktı.",
+                ornek: [
+                    { 
+                        ar: "ظَهَرَ الْفَسَادُ فِي الْبَرِّ وَالْبَحْرِ", 
+                        tr: "İnsanların kendi elleriyle işledikleri yüzünden karada ve denizde fesat (bozulma) ortaya çıktı. (Rûm Suresi, 41)" 
+                    },
+                    { 
+                        ar: "ظَهَرَ الْحَقُّ وَزَهَقَ الْبَاطِلُ", 
+                        tr: "Hak ortaya çıktı, batıl zail oldu. (Ayet İktibası / Özlü Söz)" 
+                    }
+                ]
+            }
+        },
+
+        // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: {
+            base: {
+                emoji: "✨",
+                arText: "يَظْهَرُ",
+                trText: "Görünür / Ortaya çıkar.",
+                ornek: {
+                    ar: "مَا يُخْفِيهِ الْقَلْبُ يَظْهَرُ عَلَى الْوَجْهِ",
+                    tr: "Kalbin gizlediği şey yüze yansır (ortaya çıkar). (Arap Atasözü)"
+                }
+            }
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - İsim) ---
+        19: {
+            base: {
+                emoji: "👤",
+                arText: "ظَهْر",
+                trText: "Zahr / Sırt, arka.",
+                ornek: [
+                    { 
+                        ar: "الَّذِي أَنْقَضَ ظَهْرَكَ", 
+                        tr: "O senin belini (sırtını) büken yükü üzerinden almadık mı? (İnşirah Suresi, 3)" 
+                    },
+                    { 
+                        ar: "اَلصَّدِيقُ الْمُخْلِصُ هُوَ مَنْ يَحْمِي ظَهْرَكَ", 
+                        tr: "Samimi dost, senin sırtını (arkanı) koruyandır. (Hikmetli Söz)" 
+                    }
+                ]
+            }
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
+        21: {
+            base: {
+                emoji: "🕛",
+                arText: "ظُهْر",
+                trText: "Zuhr / Öğle vakti (Güneşin en belirgin, açık olduğu an).",
+                ornek: { 
+                    ar: "وَحِينَ تُظْهِرُونَ", 
+                    tr: "...Ve öğle vaktine girdiğinizde (Allah'ı tesbih edin). (Rûm Suresi, 18)" 
+                }
+            },
+            suggestsPlus: true,
+            "ال": {
+                emoji: "🕌",
+                arText: "اَلظُّهْر",
+                trText: "Ez-Zuhr / Öğle (Belirli hali).",
+                ornek: { ar: "صَلَاةُ الظُّهْرِ", tr: "Öğle namazı." }
+            }
+        },
+
+        // --- 25 Numaralı Kalıp (فُعُول - İsim / Masdar) ---
+        25: {
+            base: {
+                emoji: "🌅",
+                arText: "ظُهُور",
+                trText: "Zuhûr / Ortaya çıkma, görünme.",
+                ornek: { 
+                    ar: "يَنْتَظِرُونَ ظُهُورَ الْمَهْدِيِّ", 
+                    tr: "Mehdi'nin zuhurunu (ortaya çıkmasını) bekliyorlar." 
+                }
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: {
+            base: {
+                emoji: "☀️",
+                arText: "ظَاهِر",
+                trText: "Zâhir / Görünen, açık, belli, dış yüz.",
+                ornek: [
+                    { 
+                        ar: "هُوَ الْأَوَّلُ وَالْآخِرُ وَالظَّاهِرُ وَالْبَاطِنُ", 
+                        tr: "O, Evvel'dir, Âhir'dir, Zâhir'dir (Görünen), Bâtın'dır (Gizlidir). (Hadîd Suresi, 3)" 
+                    },
+                    {
+                        ar: "نَحْنُ نَحْكُمُ بِالظَّاهِرِ وَاللهُ يَتَوَلَّى السَّرَائِرَ",
+                        tr: "Biz zahire (görünene) göre hükmederiz, gizli olanı (sırları) ise Allah üstlenir. (Hz. Ömer'den rivayet edilen kural)"
+                    }
+                ]
+            }
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / Mübalağa) ---
+        35: {
+            base: {
+                emoji: "🤝",
+                arText: "ظَهِير",
+                trText: "Zahîr / Arka çıkan, destekleyici, yardımcı (Sırttan/Zahr kelimesinden türer).",
+                ornek: [
+                    {
+                        ar: "وَالْمَلَائِكَةُ بَعْدَ ذَلِكَ ظَهِيرٌ",
+                        tr: "...Bundan sonra melekler de ona zahîrdir (arka çıkandır / destekçidir). (Tahrîm Suresi, 4)"
+                    },
+                    {
+                        ar: "قَالَ رَبِّ بِمَا أَنْعَمْتَ عَلَيَّ فَلَنْ أَكُونَ ظَهِيرًا لِلْمُجْرِمِينَ",
+                        tr: "(Musa) Dedi ki: Rabbim! Bana verdiğin nimetlere andolsun ki, asla suçlulara arka çıkan (destekçi) olmayacağım. (Kasas Suresi, 17)"
+                    }
+                ]
+            }
+        },
+
+        // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân / Zaman) ---
+        38: {
+            base: {
+                emoji: "📍",
+                arText: "مَظْهَر",
+                trText: "Mazhar / Görünüş, bir şeyin ortaya çıktığı (göründüğü) yer veya kimse.",
+                ornek: [
+                    { 
+                        ar: "الْمَظْهَرُ لَيْسَ كُلَّ شَيْءٍ", 
+                        tr: "Görünüş (dış görünüş) her şey demek değildir. (Özlü Söz)" 
+                    },
+                    {
+                        ar: "نَالَهُ مَظْهَرُ التَّجَلِّي",
+                        tr: "Ona tecellinin mazharı (İlahi nurların ortaya çıktığı yer) nasip oldu."
+                    }
+                ]
+            }
+        },
+
+        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik) ---
+        52: {
+            base: {
+                emoji: "📣",
+                arText: "أَظْهَرَ",
+                trText: "Gösterdi / Açığa çıkardı / Galip kıldı.",
+                ornek: { 
+                    ar: "لِيُظْهِرَهُ عَلَى الدِّينِ كُلِّهِ", 
+                    tr: "Onu (İslam'ı) bütün dinlere üstün kılmak (açıkça göstermek) için... (Fetih Suresi, 28)" 
+                }
+            }
+        },
+
+        // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
+        55: {
+            base: {
+                emoji: "📖",
+                arText: "إِظْهَار",
+                trText: "İzhâr / Gösterme, belli etme.",
+                ornek: [
+                    {
+                        ar: "إِظْهَارُ الشُّكْرِ نِصْفُ النِّعْمَةِ",
+                        tr: "Şükrü izhar etmek (göstermek/dile getirmek) nimetin yarısıdır. (Hikmetli Söz)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة تَجْوِيدِيَّة",
+                        tr: "Tecvit Notu: Kur'an okurken 'İzhar' kuralı, harfin (özellikle sakin nun veya tenvinin) hiçbir sese gizlenmeden, çok açık ve net bir şekilde 'gösterilerek' okunması demektir."
+                    }
+                ]
+            }
+        },
+
+          // --- 67 Numaralı Kalıp (تَفَاعُل - Tefâ'ul Babı Masdarı) ---
+        67: {
+            base: {
+                emoji: "🪧",
+                arText: "مُظَاهَرَةٌ",
+                trText: "Tezâhür / Belirti, gösteriş, nümayiş.",
+                ornek: { 
+                    ar: "مُظَاهَرَةٌ شَعْبِيَّةٌ ضِدَّ الظُّلْمِ", 
+                    tr: "Zulme karşı halk gösterisi (Miting / Tezahürat kelimesi buradan türemiştir)." 
+                }
+            }
+        },
+
+        // --- 94 Numaralı Kalıp (تَفَاعَلَ - Tefâ'ul Babı Mazi - Gösteriş/Gibi Yapma) ---
+        94: {
+            base: {
+                emoji: "🎭",
+                arText: "تَظَاهَرَ",
+                trText: "Görünür gibi yaptı / Numara yaptı / Gösteri yaptı.",
+                ornek: { 
+                    ar: "تَظَاهَرَ بِالْجَهْلِ وَهُوَ عَالِمٌ", 
+                    tr: "Alim olduğu halde cahilmiş gibi göründü (bilmezden geldi)." 
+                }
+            }
+        },
+
+        // --- 97 Numaralı Kalıp (تَفَاعُل - Tefâ'ul Babı Masdarı) ---
+        97: {
+            base: {
+                emoji: "🪧",
+                arText: "تَظَاهُر",
+                trText: "Tezâhür / Belirti, dışa vurum, gösteriş.",
+                ornek: { 
+                    ar: "كُلُّ فِعْلٍ هُوَ تَظَاهُرٌ لِمَا فِي الْبَاطِنِ", 
+                    tr: "Her eylem, iç dünyadakinin (bâtındakinin) bir tezâhürüdür (dışa vurumudur)." 
+                }
+            }
+        }
+    },
+
+    // ==================================================================
+    // Z-N-N (ظ ن ن) KÖKÜ - Sanmak / İhtimal Vermek / Düşünmek
+    // İnsanın iç dünyasındaki şüphe, varsayım ve tahminleri ifade eder. (Muzaaf Fiil)
+    // ==================================================================
+    "ظنن": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi - Muzaaf) ---
+        1: {
+            base: {
+                emoji: "🤔",
+                arText: "ظَنَّ",
+                trText: "Zannetti / Sandı.",
+                ornek: [
+                    { ar: "ظَنَّ أَنَّهُ نَائِمٌ", tr: "Onun uyuduğunu zannetti." },
+                    {
+                        ar: "💡 قَاعِدَة صَرْفِيَّة (مُضَعَّف)",
+                        tr: "Sarf Notu: Son iki harfi aynı olan (Muzaaf) fiillerde, çekim esnasında cezimli şahıs zamirleri (Nûn-u Nisve, Tü vb.) geldiğinde şedde çözülür. Örneğin: 'Zanne' (ظَنَّ) iken 'Zanentü' (ظَنَنْتُ) olur."
+                    }
+                ]
+            },
+            cekimi: ["ظَنَّ", "ظَنَّا", "ظَنُّوا", "ظَنَّتْ", "ظَنَّتَا", "ظَنَنَّ", "ظَنَنْتَ", "ظَنَنْتُمَا", "ظَنَنْتُمْ", "ظَنَنْتِ", "ظَنَنْتُمَا", "ظَنَنْتُنَّ", "ظَنَنْتُ", "ظَنَنَّا", "ظَنَنَّا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        4: {
+            base: {
+                emoji: "💭",
+                arText: "يَظُنُّ",
+                trText: "Zanneder / Sanır.",
+                ornek: { ar: "يَظُنُّونَ أَنَّهُمْ مُهْتَدُونَ", tr: "Kendilerinin doğru yolda olduklarını sanıyorlar. (A'râf Suresi, 30)" }
+            },
+            cekimi: ["يَظُنُّ", "يَظُنَّانِ", "يَظُنُّونَ", "تَظُنُّ", "تَظُنَّانِ", "يَظْنُنَّ", "تَظُنُّ", "تَظُنَّانِ", "تَظُنُّونَ", "تَظُنِّينَ", "تَظُنَّانِ", "تَظْنُنَّ", "أَظُنُّ", "نَظُنُّ", "نَظُنُّ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
+        19: {
+            base: {
+                emoji: "🧠",
+                arText: "ظَنّ",
+                trText: "Zan / Sanı, şüphe, tahmin.",
+                ornek: { ar: "إِنَّ بَعْضَ الظَّنِّ إِثْمٌ", tr: "Şüphesiz zannın bir kısmı günahtır. (Hucurât Suresi, 12)" }
+            },
+            suggestsPlus: true,
+            "ون": {
+                emoji: "🌪️",
+                arText: "ظُنُون",
+                trText: "Zünûn / Zanlar, kuruntular (Kırık Çoğul).",
+                ornek: { ar: "سُوءُ الظَّنِّ", tr: "Kötü zan (Sûizan)." }
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: {
+            base: {
+                emoji: "👤",
+                arText: "ظَانّ",
+                trText: "Zânn / Zanneden, sanan.",
+                ornek: {
+                    ar: "💡 مَعْلُومَة نَحْوِيَّة",
+                    tr: "Gramer Notu: Muzaaf fiillerin İsm-i Fâil vezni kurulurken şedde korunur. 'Zânin' (ظَانِن) demek yerine şeddeli olarak 'Zânn' (ظَانّ) denir."
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: {
+            base: {
+                emoji: "⚖️",
+                arText: "مَظْنُون",
+                trText: "Maznûn / Zan altında bırakılan, sanık.",
+                ornek: { ar: "هُوَ مَظْنُونٌ فِيهِ", tr: "O, şüphe (zan) altında biridir." }
+            }
+        }
+    },
+
+    // ==================================================================
+    // Z-F-R (ظ ف ر) KÖKÜ - Başarmak / Elde Etmek / Tırnak
+    // Bir şeyi elde etmeyi, tırnaklarını geçirip koparmayı ve başarıyı ifade eder.
+    // ==================================================================
+    "ظفر": {
+        // --- 1 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
+        1: {
+            base: {
+                emoji: "🏆",
+                arText: "ظَفِرَ",
+                trText: "Başardı / Galip geldi / Elde etti.",
+                ornek: { ar: "ظَفِرَ بِالْجَائِزَةِ", tr: "Ödülü elde etti (kazandı)." }
+            },
+            cekimi: ["ظَفِرَ", "ظَفِرَا", "ظَفِرُوا", "ظَفِرَتْ", "ظَفِرَتَا", "ظَفِرْنَ", "ظَفِرْتَ", "ظَفِرْتُمَا", "ظَفِرْتُمْ", "ظَفِرْتِ", "ظَفِرْتُمَا", "ظَفِرْتُنَّ", "ظَفِرْتُ", "ظَفِرْنَا", "ظَفِرْنَا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
+        4: {
+            base: {
+                emoji: "🥇",
+                arText: "يَظْفَرُ",
+                trText: "Başarır / Galip gelir."
+            },
+            cekimi: ["يَظْفَرُ", "يَظْفَرَانِ", "يَظْفَرُونَ", "تَظْفَرُ", "تَظْفَرَانِ", "يَظْفَرْنَ", "تَظْفَرُ", "تَظْفَرَانِ", "تَظْفَرُونَ", "تَظْفَرِينَ", "تَظْفَرَانِ", "تَظْفَرْنَ", "أَظْفَرُ", "نَظْفَرُ", "نَظْفَرُ"]
+        },
+
+        // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
+        17: {
+            base: {
+                emoji: "✌️",
+                arText: "ظَفَر",
+                trText: "Zafer / Başarı, galibiyet.",
+                ornek: { ar: "يَوْمُ الظَّفَرِ", tr: "Zafer günü." }
+            }
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
+        21: {
+            base: {
+                emoji: "💅",
+                arText: "ظُفْر",
+                trText: "Zufr / Tırnak.",
+                ornek: [
+                    { ar: "قَلَّمَ أَظْفَارَهُ", tr: "Tırnaklarını kesti." },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: 'Tırnak' (Zufr) ile 'Zafer' kelimelerinin aynı kökten gelmesi muazzamdır. İnsanın tırnaklarını bir yere geçirip sıkıca tutunması, mücadele etmesi ve söküp alması mecazen 'başarmak' (zafer kazanmak) anlamına dönüşmüştür."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "ات": {
+                emoji: "🐾",
+                arText: "أَظْفَار",
+                trText: "Azafîr / Tırnaklar (Cem-i Mükesser)."
+            }
+        },
+
+        // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ûlü) ---
+        63: {
+            base: {
+                emoji: "🏅",
+                arText: "مُظَفَّر",
+                trText: "Muzaffer / Zafer kazanmış, galip kılınmış.",
+                ornek: { ar: "جَيْشٌ مُظَفَّرٌ", tr: "Muzaffer (galip) ordu." }
             }
         }
     },
