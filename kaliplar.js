@@ -1587,7 +1587,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ===============================================================
-// 1. CANLI SARI VURGU MOTORU (SON HAREKE SİLİNME HATASI ÇÖZÜLDÜ)
+// 1. CANLI SARI VURGU MOTORU (Ön Ekleri Destekleyen Sürüm)
 // ===============================================================
 function updateSuffixHighlights(currentBox) {
     const menu = document.getElementById("suffix-dropdown");
@@ -1613,8 +1613,8 @@ function updateSuffixHighlights(currentBox) {
         original = original.replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه') return 'يَّة';
-        if (pure === 'يات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
         if (pure === 'يا') return 'يًّا'; 
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
@@ -1647,6 +1647,13 @@ function updateSuffixHighlights(currentBox) {
         }
     }
 
+    // YENİ EKLENEN KISIM: Ön Ekleri (Prefix) Tespit Et
+    let existingPrefix = "";
+    let prefixSpan = currentBox.querySelector('.added-prefix');
+    if (prefixSpan && prefixSpan.dataset.prefix) {
+        existingPrefix = prefixSpan.dataset.prefix;
+    }
+
     const targetMap = {
         'يَّة': ['يّ', 'ة'],
         'يَّات': ['يّ', 'ات'],
@@ -1661,7 +1668,12 @@ function updateSuffixHighlights(currentBox) {
         'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
     };
 
-    let fulfilledSuffixes = [existingSuffix];
+    let fulfilledSuffixes = [];
+    if (existingSuffix) fulfilledSuffixes.push(existingSuffix);
+    
+    // YENİ: Ön Eki Zekaya Dahil Ettik
+    if (existingPrefix) fulfilledSuffixes.push(existingPrefix); 
+    
     if (targetMap[existingSuffix]) {
         fulfilledSuffixes.push(...targetMap[existingSuffix]);
     }
@@ -1671,7 +1683,142 @@ function updateSuffixHighlights(currentBox) {
     const suffixBtns = menu.querySelectorAll('button');
     suffixBtns.forEach(btn => {
         btn.classList.remove('suggested-suffix');
-        let btnText = standardize(btn.textContent); 
+        
+        let exactParam = "";
+        let onclickVal = btn.getAttribute('onclick');
+        if (onclickVal) {
+            let match = onclickVal.match(/'([^']+)'/); 
+            if (match && match[1]) {
+                exactParam = match[1];
+            }
+        }
+
+        let btnText = standardize(exactParam || btn.textContent); 
+        let isMatch = false;
+
+        if (fulfilledSuffixes.includes(btnText)) {
+            isMatch = false; 
+        } else {
+            for (let key of remainingTargets) {
+                let stdKey = standardize(key);
+                if (stdKey === btnText) {
+                    isMatch = true; break;
+                } else if (targetMap[stdKey] && targetMap[stdKey].includes(btnText)) {
+                    isMatch = true; break;
+                }
+            }
+        }
+
+        if (isMatch) btn.classList.add('suggested-suffix');
+    });
+}// ===============================================================
+// 1. CANLI SARI VURGU MOTORU (Ön Ekleri Destekleyen Sürüm)
+// ===============================================================
+function updateSuffixHighlights(currentBox) {
+    const menu = document.getElementById("suffix-dropdown");
+    if (!menu || menu.style.display === "none") return;
+
+    const refEl = currentBox.querySelector('.ref');
+    if (!refEl) return;
+    
+    const refId = parseInt(refEl.innerText);
+    if (typeof currentRoot === 'undefined' || currentRoot.length !== 3) return;
+    if (typeof wordEasterEggs === 'undefined' || !wordEasterEggs[currentRoot]) return;
+    
+    const eggObj = wordEasterEggs[currentRoot][refId];
+    if (!eggObj) return;
+
+    const availableSuffixes = Object.keys(eggObj).filter(k => 
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
+    );
+
+    function standardize(t) {
+        if (!t) return "";
+        let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim(); 
+        original = original.replace(/[یى]/g, 'ي');
+        let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
+        if (pure === 'ا') return 'ا';
+        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+        if (pure === 'ي') return 'يّ';
+        if (pure === 'يا') return 'يًّا'; 
+        return original.replace(/\u064E\u0651/g, '\u0651\u064E');
+    }
+
+    let currentWordText = currentBox.querySelector('.ar, .ar-small').innerText;
+    let currentWord = currentWordText.replace(/[\u200B-\u200D\uFEFF\n\r]/g, '').trim();
+    
+    let baseWordAr = eggObj.base ? eggObj.base.arText : "";
+    let isBase = false;
+    if (baseWordAr) {
+        if (standardize(currentWord) === standardize(baseWordAr)) {
+            isBase = true;
+        }
+    }
+
+    const possibleSuffixes = [
+        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
+        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
+        'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
+    ];
+
+    let existingSuffix = "";
+    if (!isBase) {
+        for (let ps of possibleSuffixes) {
+            if (currentWord.endsWith(ps)) {
+                existingSuffix = ps;
+                break;
+            }
+        }
+    }
+
+    // YENİ EKLENEN KISIM: Ön Ekleri (Prefix) Tespit Et
+    let existingPrefix = "";
+    let prefixSpan = currentBox.querySelector('.added-prefix');
+    if (prefixSpan && prefixSpan.dataset.prefix) {
+        existingPrefix = prefixSpan.dataset.prefix;
+    }
+
+    const targetMap = {
+        'يَّة': ['يّ', 'ة'],
+        'يَّات': ['يّ', 'ات'],
+        'يًّا': ['يّ', 'ا'], 
+        'يَّانِ': ['يّ', 'انِ'],
+        'يَّيْنِ': ['يّ', 'يْنِ'],
+        'يُّونَ': ['يّ', 'ونَ'],
+        'يِّينَ': ['يّ', 'ينَ'],
+        'تَانِ': ['ة', 'انِ'],
+        'تَيْنِ': ['ة', 'يْنِ'],
+        'يَّتَانِ': ['يّ', 'ة', 'انِ'],
+        'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
+    };
+
+    let fulfilledSuffixes = [];
+    if (existingSuffix) fulfilledSuffixes.push(existingSuffix);
+    
+    // YENİ: Ön Eki Zekaya Dahil Ettik
+    if (existingPrefix) fulfilledSuffixes.push(existingPrefix); 
+    
+    if (targetMap[existingSuffix]) {
+        fulfilledSuffixes.push(...targetMap[existingSuffix]);
+    }
+
+    const remainingTargets = availableSuffixes.filter(k => !fulfilledSuffixes.includes(standardize(k)));
+
+    const suffixBtns = menu.querySelectorAll('button');
+    suffixBtns.forEach(btn => {
+        btn.classList.remove('suggested-suffix');
+        
+        let exactParam = "";
+        let onclickVal = btn.getAttribute('onclick');
+        if (onclickVal) {
+            let match = onclickVal.match(/'([^']+)'/); 
+            if (match && match[1]) {
+                exactParam = match[1];
+            }
+        }
+
+        let btnText = standardize(exactParam || btn.textContent); 
         let isMatch = false;
 
         if (fulfilledSuffixes.includes(btnText)) {
@@ -1692,7 +1839,7 @@ function updateSuffixHighlights(currentBox) {
 }
 
 // ===============================================================
-// 2. MENÜYÜ AÇAN MOTOR (YENİDEN EKLENDİ)
+// 2. MENÜYÜ AÇAN MOTOR
 // ===============================================================
 function toggleSuffixMenu(e) {
     if (e) {
@@ -1722,22 +1869,192 @@ function toggleSuffixMenu(e) {
     if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
     if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
     
-    if (menu.style.display === "flex" || menu.style.display === "grid") {
+    // GÜNCELLEME: Menünün hem flex hem grid durumunda kapanmasını sağlar
+    if (menu.style.display === "flex" || menu.style.display === "grid" || menu.style.display === "block") {
         menu.style.display = "none";
         return;
     }
 
     const rect = e.target.getBoundingClientRect();
     menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    let leftPos = rect.left + window.scrollX - 150; 
+    
+    // Menüyü baştan biraz daha sola kaydırıyoruz (150 yerine 250)
+    let leftPos = rect.left + window.scrollX - 270; 
+    
+    // GEÇİCİ GÖRÜNÜM: Menünün genişliğini okuyabilmek için önce görünmez olarak açıyoruz
+    menu.style.visibility = "hidden";
+    menu.style.display = "block";
+    
+    // AKILLI SINIR KONTROLÜ: Sağdan taşıyorsa sola it
+    if (leftPos + menu.offsetWidth > window.innerWidth) {
+        leftPos = window.innerWidth - menu.offsetWidth - 20;
+    }
+    
+    // Soldan taşıyorsa sağa it
     if (leftPos < 10) leftPos = 10; 
+    
+    // Son pozisyonu ata ve menüyü görünür yap
     menu.style.left = `${leftPos}px`;
-    menu.style.display = "grid"; 
+    menu.style.visibility = "visible";
 
     if (lastClickedBoxTextSpan) {
         const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
         if (currentBox) updateSuffixHighlights(currentBox);
     }
+}
+
+// ===============================================================
+// 3. ÖN EK MOTORU (Tetikleyicileri ve Örnek Cümle (!) Butonu Eklenmiş)
+// ===============================================================
+function applyPrefix(prefix) {
+    if (!lastClickedBoxTextSpan) return;
+
+    const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
+
+    if (prefix === 'ال' && currentBox && (currentBox.classList.contains("fiil-box") || currentBox.classList.contains("is-verb"))) {
+        if(typeof SoundEngine !== "undefined" && SoundEngine.playClose) SoundEngine.playClose();
+        currentBox.style.setProperty("border-color", "#FF3B30", "important");
+        currentBox.style.setProperty("box-shadow", "0 0 10px #FF3B30", "important");
+        setTimeout(() => {
+            currentBox.style.borderColor = ""; 
+            currentBox.style.boxShadow = "";
+        }, 400);
+        return;
+    }
+
+    let srfWord = lastClickedBoxTextSpan.querySelector('.srf-word');
+    if (!srfWord) {
+        lastClickedBoxTextSpan.innerHTML = `<span class="srf-word" dir="rtl">${lastClickedBoxTextSpan.innerHTML}</span>`;
+        srfWord = lastClickedBoxTextSpan.querySelector('.srf-word');
+    }
+
+    if (prefix === 'ال') {
+        let existingSuffixSpan = srfWord.querySelector('.added-suffix');
+        if (existingSuffixSpan && existingSuffixSpan.dataset.suffix === 'ا') { 
+            if(typeof SoundEngine !== "undefined" && SoundEngine.playClose) SoundEngine.playClose();
+            if (currentBox) {
+                currentBox.style.setProperty("border-color", "#FF3B30", "important");
+                currentBox.style.setProperty("box-shadow", "0 0 10px #FF3B30", "important");
+                setTimeout(() => {
+                    currentBox.style.borderColor = ""; 
+                    currentBox.style.boxShadow = "";
+                }, 400);
+            }
+            return; 
+        }
+    }
+
+    let rawText = srfWord.textContent.replace(/[\s\u200C\u200D\uFEFF]/g, "");
+    let existingPrefixSpan = srfWord.querySelector('.added-prefix');
+    let displayPrefix = prefix; 
+
+    if (existingPrefixSpan) {
+        let oldPrefix = existingPrefixSpan.dataset.prefix;
+        existingPrefixSpan.remove(); 
+        
+        if ((oldPrefix === 'لِ' || oldPrefix === 'لَ') && rawText.replace(oldPrefix, "").match(/^ل[\u064B-\u0652]*[\u0621-\u064A]/)) {
+            srfWord.insertAdjacentHTML('afterbegin', '<span class="srf-char restored-elif" style="color: #000000 !important;">ا&zwj;</span>');
+        }
+        
+        if (oldPrefix === 'ال') {
+            let firstSpan = srfWord.querySelector('.srf-char');
+            if (firstSpan) {
+                firstSpan.innerHTML = firstSpan.innerHTML.replace(/\u0651/g, ''); 
+            }
+        }
+
+        let cleanupChar = srfWord.querySelector('.srf-char:not(.added-suffix)');
+        if (cleanupChar) {
+            cleanupChar.innerHTML = cleanupChar.innerHTML.replace(/^(&zwj;|‍|ـ)+/, '');
+        }
+
+        if (oldPrefix === prefix) {
+            // AYNI BUTONA TIKLANDIYSA EKLENTİ İPTAL OLDU. SARI VURGUYU GERİ GETİR
+            if (currentBox) updateSuffixHighlights(currentBox);
+            return; 
+        }
+
+        rawText = srfWord.textContent.replace(/[\s\u200C\u200D\uFEFF]/g, "");
+    }
+
+    if (prefix === 'ال' && rawText.startsWith('ال')) return; 
+
+    if ((prefix === 'لِ' || prefix === 'لَ') && rawText.match(/^ا[\u064B-\u0652]*ل/)) {
+        let firstCharSpan = srfWord.querySelector('.srf-char:not(.added-suffix)');
+        if (firstCharSpan && firstCharSpan.textContent.includes('ا')) firstCharSpan.remove();
+        else {
+            let restoredElif = srfWord.querySelector('.restored-elif');
+            if (restoredElif) restoredElif.remove();
+        }
+    }
+
+    if (prefix === 'ال') {
+        let allChars = srfWord.querySelectorAll('.srf-char');
+        if (allChars.length > 0) {
+            let lastCharSpan = allChars[allChars.length - 1]; 
+            let txt = lastCharSpan.innerHTML;
+            txt = txt.replace(/\u064C/g, '\u064F'); 
+            txt = txt.replace(/\u064D/g, '\u0650'); 
+            txt = txt.replace(/\u064Bا?/g, '\u064E'); 
+            lastCharSpan.innerHTML = txt;
+        }
+    }
+
+    if (prefix === 'ال') {
+        let firstLetter = rawText.replace(/[\u064B-\u0652\u0670]/g, '').charAt(0);
+        const semsiHarfler = ['ت', 'ث', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ل', 'ن'];
+        let firstSpan = srfWord.querySelector('.srf-char:not(.added-suffix)');
+
+        if (semsiHarfler.includes(firstLetter)) {
+            displayPrefix = 'اَل'; 
+            if (firstSpan && !firstSpan.innerHTML.includes('\u0651')) {
+                firstSpan.innerHTML = firstSpan.innerHTML.replace(/^([^\u064B-\u0652\u0670]+)/, '$1\u0651');
+            }
+        } else {
+            displayPrefix = 'اَلْ'; 
+        }
+    }
+
+    let connectsLeft = (prefix !== 'وَ'); 
+    let prefixZwj = connectsLeft ? "&zwj;" : "";
+
+    let greenPrefixHTML = `<span class="srf-char added-prefix" data-prefix="${prefix}" style="color: #007AFF !important;">${displayPrefix}${prefixZwj}</span>`;
+    srfWord.insertAdjacentHTML('afterbegin', greenPrefixHTML);
+
+    if (connectsLeft) {
+        let allCharsNow = srfWord.querySelectorAll('.srf-char');
+        if (allCharsNow.length > 1) {
+            let actualFirstChar = allCharsNow[1]; 
+            if (!actualFirstChar.innerHTML.startsWith('&zwj;') && !actualFirstChar.innerHTML.startsWith('‍')) {
+                actualFirstChar.innerHTML = '&zwj;' + actualFirstChar.innerHTML;
+            }
+        }
+    }
+
+    // =============================================================
+    // KUTU EFEKTLERİ, SARI VURGU TEMİZLİĞİ VE BİLGİ BUTONU (!)
+    // =============================================================
+    lastClickedBoxTextSpan.style.whiteSpace = "nowrap";
+    lastClickedBoxTextSpan.style.wordBreak = "keep-all";
+    if (currentBox) {
+        currentBox.style.minWidth = "max-content"; 
+        currentBox.style.transition = "transform 0.1s ease";
+        currentBox.style.transform = "scale(1.05)";
+        setTimeout(() => { currentBox.style.transform = ""; }, 150);
+
+        // İŞTE BURASI: Ek eklendikten sonra sarı vurguyu anında günceller/kapatır
+        if (typeof updateSuffixHighlights === 'function') updateSuffixHighlights(currentBox);
+
+        // Eklenen eke ait bir Örnek Cümle (!) varsa onu da getirir
+        if (typeof checkWordEasterEgg === "function") {
+            let standardize = (t) => {
+                if (!t) return "";
+                return t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي').replace(/[\u0640\u064B-\u0652]/g, '').replace(/\u064E\u0651/g, '\u0651\u064E');
+            };
+            checkWordEasterEgg(currentBox, standardize(prefix));
+        }
+    }
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 }
 
 // ===============================================================
@@ -1948,6 +2265,178 @@ function applySuffix(rawSuffix) {
         }, 1500);
     }
 }
+
+
+// ===============================================================
+// 4. SON EK (SUFFIX) MOTORU (Bağlanmayan Harflerde Doğru Form Zekası)
+// ===============================================================
+function applySuffix(suffix) {
+    if (!lastClickedBoxTextSpan) return;
+    const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
+
+    // FİİL ZIRHI
+    if (currentBox && (currentBox.classList.contains("fiil-box") || currentBox.classList.contains("is-verb"))) {
+        if(typeof SoundEngine !== "undefined" && SoundEngine.playClose) SoundEngine.playClose();
+        return;
+    }
+
+    // RENK MOTORU (COLORENGINE) KILIFINA SIZMA
+    let srfWord = lastClickedBoxTextSpan.querySelector('.srf-word');
+    if (!srfWord) {
+        lastClickedBoxTextSpan.innerHTML = `<span class="srf-word" dir="rtl">${lastClickedBoxTextSpan.innerHTML}</span>`;
+        srfWord = lastClickedBoxTextSpan.querySelector('.srf-word');
+    }
+
+    // GRAMER ZIRHI 2: "ال" TAKISI İLE TENVİN YAN YANA GELEMEZ!
+    let hasAl = false;
+    let existingPrefixSpan = srfWord.querySelector('.added-prefix');
+    
+    if (existingPrefixSpan && existingPrefixSpan.dataset.prefix === 'ال') {
+        hasAl = true;
+    } else {
+        let rawTxt = srfWord.textContent.replace(/[\s\u200C\u200D\uFEFF\u064B-\u0652\u0670]/g, "");
+        if (rawTxt.startsWith('ال')) hasAl = true;
+    }
+
+    if (suffix === 'ا' && hasAl) {
+        if(typeof SoundEngine !== "undefined" && SoundEngine.playClose) SoundEngine.playClose();
+        if (currentBox) {
+            currentBox.style.setProperty("border-color", "#FF3B30", "important");
+            currentBox.style.setProperty("box-shadow", "0 0 10px #FF3B30", "important");
+            setTimeout(() => {
+                currentBox.style.borderColor = ""; 
+                currentBox.style.boxShadow = "";
+            }, 400);
+        }
+        return; 
+    }
+
+    let existingSuffixSpan = srfWord.querySelector('.added-suffix');
+
+    // ZATEN BİR SON EK VARSA: TEMİZLE VE GERİ AL
+    if (existingSuffixSpan) {
+        let oldSuffix = existingSuffixSpan.dataset.suffix;
+        existingSuffixSpan.remove(); 
+        
+        let changedTe = srfWord.querySelector('.changed-te');
+        if (changedTe) {
+            changedTe.innerHTML = changedTe.innerHTML.replace('ت', 'ة');
+            changedTe.classList.remove('changed-te');
+        }
+        
+        let hiddenTe = srfWord.querySelector('.hidden-te');
+        if (hiddenTe) {
+            hiddenTe.style.display = 'inline';
+            hiddenTe.classList.remove('hidden-te');
+        }
+
+        let coreCharsForCleanup = srfWord.querySelectorAll('.srf-char:not(.added-prefix):not(.added-suffix)');
+        if (coreCharsForCleanup.length > 0) {
+            let lastRealChar = coreCharsForCleanup[coreCharsForCleanup.length - 1];
+            lastRealChar.innerHTML = lastRealChar.innerHTML.replace(/(&zwj;|‍|ـ)+(\s*)$/, '$2');
+        }
+
+        if (oldSuffix === suffix) {
+            if (typeof updateSuffixHighlights === 'function') updateSuffixHighlights(currentBox);
+            return; 
+        }
+    }
+
+    // İŞTE SİHİRLİ KISIM: SON HARFİ BUL VE HAREKESİNİ/DURUMUNU DEĞİŞTİR
+    let coreChars = srfWord.querySelectorAll('.srf-char:not(.added-prefix):not(.added-suffix)');
+    let actualLastChar = coreChars.length > 0 ? coreChars[coreChars.length - 1] : null;
+    let displaySuffix = suffix;
+
+    if (actualLastChar) {
+        let baseCharText = actualLastChar.textContent.replace(/[\u064B-\u0652\u0670\u200C\u200D\uFEFF]/g, '').trim();
+        
+        if (baseCharText === 'ة') {
+            if (suffix === 'انِ' || suffix === 'يْنِ') {
+                actualLastChar.innerHTML = actualLastChar.innerHTML.replace('ة', 'ت');
+                actualLastChar.classList.add('changed-te');
+            } else if (suffix === 'ات' || suffix === 'يَّة' || suffix === 'يَّات') {
+                actualLastChar.style.display = 'none';
+                actualLastChar.classList.add('hidden-te');
+                actualLastChar = coreChars.length > 1 ? coreChars[coreChars.length - 2] : actualLastChar;
+            }
+        }
+
+        let vowelToSet = '';
+        if (suffix === 'يْنِ') vowelToSet = 'َ'; 
+        else if (suffix.startsWith('ي')) vowelToSet = 'ِ'; 
+        else if (suffix.startsWith('ة') || suffix.startsWith('ات') || suffix.startsWith('انِ') || suffix.startsWith('تَ')) vowelToSet = 'َ'; 
+        else if (suffix.startsWith('ونَ')) vowelToSet = 'ُ'; 
+        else if (suffix === 'ا') {
+            vowelToSet = 'ً'; 
+            let pureWord = srfWord.textContent.replace(/[\u064B-\u0650\u0652\s\u200C\u200D\uFEFF]/g, '');
+            if (pureWord.endsWith('ة') || pureWord.endsWith('اء') || pureWord.endsWith('ى') || pureWord.endsWith('ا')) {
+                displaySuffix = ''; 
+            }
+        }
+
+        if (vowelToSet !== '') {
+            let html = actualLastChar.innerHTML;
+            html = html.replace(/[\u064B-\u0650\u0652]/g, ''); 
+            html = html.replace(/([^\s>])(\s*(?:<\/span>)?\s*)$/, '$1' + vowelToSet + '$2');
+            actualLastChar.innerHTML = html;
+        }
+    }
+
+    // =============================================================
+    // YENİ: BAĞLANABİLİRLİK KONTROLÜ (Zorunlu köprüyü iptal eder)
+    // =============================================================
+    let connectsRight = true;
+    if (actualLastChar) {
+        let finalCharText = actualLastChar.textContent.replace(/[\u064B-\u0652\u0670\u200C\u200D\uFEFF]/g, '').trim();
+        const nonConnecting = ['د', 'ذ', 'ر', 'ز', 'و', 'ا', 'أ', 'إ', 'آ', 'ؤ', 'ى', 'ء'];
+        if (finalCharText.length > 0 && nonConnecting.includes(finalCharText.slice(-1))) {
+            connectsRight = false; // Son harf bağlanmıyorsa köprüyü iptal et
+        }
+    }
+
+    // MAVİ SON EK OLUŞTUR VE KELİMENİN SONUNA EKLE
+    if (displaySuffix !== '') {
+        // Eğer bağlanıyorsa &zwj; koy, bağlanmıyorsa koyma!
+        let suffixZwj = connectsRight ? "&zwj;" : "";
+        let blueSuffixHTML = `<span class="srf-char added-suffix" data-suffix="${suffix}" style="color: #007AFF !important;">${suffixZwj}${displaySuffix}</span>`;
+        srfWord.insertAdjacentHTML('beforeend', blueSuffixHTML);
+    }
+
+    // BAĞLANAN HARF İSE ZWJ KÖPRÜSÜ ZERK ET
+    if (actualLastChar && displaySuffix !== '' && connectsRight) {
+         if (!actualLastChar.innerHTML.endsWith('&zwj;') && !actualLastChar.innerHTML.endsWith('‍')) {
+             actualLastChar.innerHTML = actualLastChar.innerHTML + '&zwj;';
+         }
+    }
+
+    // =============================================================
+    // KUTU EFEKTLERİ, SARI VURGU TEMİZLİĞİ VE BİLGİ BUTONU (!)
+    // =============================================================
+    lastClickedBoxTextSpan.style.whiteSpace = "nowrap";
+    lastClickedBoxTextSpan.style.wordBreak = "keep-all";
+    
+    if (currentBox) {
+        currentBox.style.minWidth = "max-content"; 
+        currentBox.style.paddingLeft = "8px"; 
+        currentBox.style.paddingRight = "8px";
+        currentBox.style.transition = "transform 0.1s ease";
+        currentBox.style.transform = "scale(1.05)";
+        setTimeout(() => { currentBox.style.transform = ""; }, 150);
+
+        if (typeof updateSuffixHighlights === 'function') updateSuffixHighlights(currentBox);
+
+        if (typeof checkWordEasterEgg === "function") {
+            let standardize = (t) => {
+                if (!t) return "";
+                return t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي').replace(/[\u0640\u064B-\u0652]/g, '').replace(/\u064E\u0651/g, '\u0651\u064E');
+            };
+            checkWordEasterEgg(currentBox, standardize(suffix));
+        }
+    }
+    
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+}
+
 
 const originalResetTableOnly = window.resetTableOnly;
 window.resetTableOnly = function() {
@@ -2790,15 +3279,34 @@ const VerbGenerator = {
 
                         cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
                     }
-                }
+                } // <--- İŞTE BURAYA EKSİK OLAN SÜSLÜ PARANTEZİ EKLEDİK
+
                 if (typeof SarfEngine !== 'undefined') cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kokArr);
                 kelimeListesi.push(cekilmisKelime);
             });
         }
+
+        // ==============================================================================
+        // POPUP EMİR TEKİL MUHATAP KORUMA FİLTRESİ (Ecvef İstif'âl Zırhı)
+        // ==============================================================================
+        // DİKKAT: kokArr yerine doğrudan "kok" stringini kullanıyoruz!
+        if (tip === 'emir' && babNo === 15 && (kok[1] === 'و' || kok[1] === 'ي')) {
+            // Emir tablosunun 0. indeksi Müfred Müzekker Muhatap (Sen - Erkek) kipidir.
+            if (kelimeListesi[0]) {
+                // Kelime içindeki hatalı "اِسْتَرْوِحْ" veya "اِسْتَرْيِحْ" kalıplarını ayıklar
+                // ve iki sakinin çarpışması (İltikâ-i Sâkineyn) kuralına göre doğrudan "اِسْتَرِحْ" yapar.
+                kelimeListesi[0] = kelimeListesi[0].replace(/اِسْتَ([^\u064B-\u0652]*)ْ[وي][َُِ]([^\u064B-\u0652]*)ْ/g, "اِسْتَ$1ِ$2ْ");
+                
+                // Eğer "روح" köküne özel sert bir takılma varsa tam eşleşmeyle garantiye alalım:
+                if (kok === "روح") {
+                    kelimeListesi[0] = "اِسْتَرِحْ";
+                }
+            }
+        }
+
         return kelimeListesi;
     }
 };
-
 
 // ==============================================================================
 // ULTIMATE SARF ENGINE (İdğam, İbdal, İ'lâl, İlletli Harfler ve Hemze Motoru)
@@ -2863,22 +3371,26 @@ const SarfEngine = {
 
 
             // 4.1. EVRENSEL MEZÎD-ECVEF ZIRHI (İstifal, İf'al, İnfi'al vb.)
-        // Bu blok, ortası 'و' veya 'ي' olan fiillerin Mezîd bablarda 
-        // hatalı üretilen "استرويح" gibi formlarını "استرح" haline getirir.
-        if ((r2 === 'و' || r2 === 'ي')) {
-            // İSTİF'AL BABI ZIRHI (اِسْتَرْوِحْ -> اِسْتَرِحْ)
-            res = res.replace(/اِسْتَرْ[وي]حْ/g, "اِسْتَرِحْ");
-            res = res.replace(/يَسْتَرْ[وي]حُ/g, "يَسْتَرِيحُ");
-            res = res.replace(/مُسْتَرْ[وي]ح/g, "مُسْتَرِيح");
+            // Bu blok, ortası 'و' veya 'ي' olan fiillerin Mezîd bablarda 
+            // hatalı üretilen "استرويح" gibi formlarını "استرح" haline getirir.
+            if ((r2 === 'و' || r2 === 'ي')) {
+                // İSTİF'AL BABI ZIRHI (اِسْتَرْوِحْ -> اِسْتَرِحْ)
+                res = res.replace(/اِسْتَرْ[وي]حْ/g, "اِسْتَرِحْ");
+                res = res.replace(/يَسْتَرْ[وي]حُ/g, "يَسْتَرِيحُ");
+                res = res.replace(/مُسْتَرْ[وي]ح/g, "مُسْتَرِيح");
 
-            // İNFİ'ÂL BABI ZIRHI (اِنْفِعَال)
-            // Örn: اِنْقِوَا (Hatalı) -> اِنْقِوَاء (Doğru) -> اِنْقِيَاء
-            res = res.replace(/اِنْقِ[وي]َا/g, "اِنْقِيَاء");
-            
-            // GENEL: Ecvef fiillerde ortadaki illet harfini, 
-            // Mezîd babın Sükunlu formunda tamamen düşür ve önceki harekeyi koru.
-            // Bu, 'اِسْتَ+رْ+و+ح' -> 'اِسْتَرِحْ' mantığını tüm benzer kökler için yürütür.
-            res = res.replace(/([اأإآ]سْتَ[^\u064B-\u0652]*)ْ[وي]([^\u064B-\u0652]*)/g, "$1$2");
+                // ==================================================================
+                // YENİ EK: EVRENSEL İSTİF'AL EMİR MUHATAP ZIRHI (Tüm Ecvef Fiiller İçin)
+                // ==================================================================
+                res = res.replace(/([اأإآ]سْتَ[\u0621-\u064A])ْ[وي][َُِ]([\u0621-\u064A])ْ$/g, "$1ِ$2ْ");
+                res = res.replace(/([يتاأإن]سْتَ[\u0621-\u064A])ْ[وي][َُِ]([\u0621-\u064A])ْ$/g, "$1ِ$2ْ");
+
+                // İNFİ'ÂL BABI ZIRHI (اِنْفِعَال)
+                // Örn: اِنْقِوَا (Hatalı) -> اِنْقِوَاء (Doğru) -> اِنْقِيَاء
+                res = res.replace(/اِنْقِ[وي]َا/g, "اِنْقِيَاء");
+                
+                // GENEL: Ecvef fiillerde ortadaki illet harfini...
+                res = res.replace(/([اأإآ]سْتَ[^\u064B-\u0652]*)ْ[وي]([^\u064B-\u0652]*)/g, "$1$2");
             }
 
            

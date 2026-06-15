@@ -131,24 +131,57 @@
     </div>
 </div>
 
-<div id="suffix-dropdown" class="suffix-menu-grid" style="display: none; position: absolute; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 2000; padding: 8px; direction: rtl; gap: 6px; box-sizing: border-box;">
+<div id="suffix-dropdown" style="display: none; position: absolute; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 2000; padding: 14px; direction: rtl; box-sizing: border-box; width: max-content;">
     
-    <button class="suffix-btn" onclick="applySuffix('ا')">ا</button>
-    <button class="suffix-btn" onclick="applySuffix('ة')">ة</button>
-    <button class="suffix-btn" onclick="applySuffix('يّ')">يّ</button>
-     <button class="suffix-btn" onclick="applySuffix('يّة')">يّة</button>
-    
-    <div class="menu-divider"></div>
+    <div style="display: flex; flex-direction: row; gap: 16px; align-items: stretch;">
+        
+        <div style="display: flex; flex-direction: column; gap: 8px; min-width: 90px;">
+            
+            
+<button class="suffix-btn" onclick="applyPrefix('ال')"><span style="color: #2B88D9;">الـ ـ ـ</span></button>
 
-    <button class="suffix-btn" onclick="applySuffix('انِ')">انِ</button>
-    <button class="suffix-btn" onclick="applySuffix('يْنِ')">يْنِ</button>
-    
-    <div class="menu-divider"></div>
+<button class="suffix-btn" onclick="applyPrefix('وَ')"><span style="color: #34C759;">وَ <span style="color: #2B88D9;">ـ ـ</span></button>
 
-    <button class="suffix-btn" onclick="applySuffix('ونَ')">ونَ</button>
-    <button class="suffix-btn" onclick="applySuffix('ينَ')">ينَ</button>
-    <button class="suffix-btn" onclick="applySuffix('ات')">ات</button>
-    <button class="suffix-btn" onclick="applySuffix('يَّات')"> يَّات </button>
+<button class="suffix-btn" onclick="applyPrefix('لِ')"><span style="color: #34C759;">لِـ <span style="color: #2B88D9;">ـ ـ</span></button>
+            
+
+<button class="suffix-btn" onclick="applyPrefix('فَ')"><span style="color: #34C759;">فَـ <span style="color: #2B88D9;">ـ ـ</span></button>
+
+<button class="suffix-btn" onclick="applyPrefix('كَ')"><span style="color: #34C759;">كَـ <span style="color: #2B88D9;">ـ ـ</span></button>
+
+
+<button class="suffix-btn" onclick="applyPrefix('لَ')"><span style="color: #34C759;">لَـ <span style="color: #2B88D9;">ـ ـ</span></button>
+
+
+        </div>
+
+        <div style="width: 3px; background: #a3a3a3; margin: 4px 0; border-radius: 2px;"></div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-width: 200px;">
+            <button class="suffix-btn" onclick="applySuffix('ا')"><span style="color: #2B88D9;">ـ ـ ـًا</span></button>
+
+
+            <button class="suffix-btn" onclick="applySuffix('ة')"><span style="color: #2B88D9;">ـ ـ ـة/ة</span></button>
+
+            <button class="suffix-btn" onclick="applySuffix('يّ')"><span style="color: #2B88D9;">ـ ـ ـيّ</span></button>
+
+            <button class="suffix-btn" onclick="applySuffix('يّة')"><span style="color: #2B88D9;">ـ ـ ـيّة</span></button>
+
+            
+            <div style="grid-column: span 2; height: 2px; background: #FF3B30; margin: 4px 0; border-radius: 1px;"></div>
+
+            <button class="suffix-btn" onclick="applySuffix('انِ')"><span style="color: #2B88D9;">ـ ـ ـانِ</span></button>
+            <button class="suffix-btn" onclick="applySuffix('يْنِ')"><span style="color: #2B88D9;">ـ ـ ـيْـنِ</span></button>
+            
+            <div style="grid-column: span 2; height: 2px; background: #FF3B30; margin: 4px 0; border-radius: 1px;"></div>
+
+            <button class="suffix-btn" onclick="applySuffix('ونَ')"><span style="color: #2B88D9;">ـ ـ ـونَ</span></button>
+            <button class="suffix-btn" onclick="applySuffix('ينَ')"><span style="color: #2B88D9;">ـ ـ ـيـنَ</span></button>
+            <button class="suffix-btn" onclick="applySuffix('ات')"><span style="color: #2B88D9;">ـ ـ ـات</span></button>
+            <button class="suffix-btn" onclick="applySuffix('يَّات')"><span style="color: #2B88D9;"> ـ ـ ـيَّات </span></button>
+        </div>
+
+    </div>
 </div>
 
 <div class="window-pencere">

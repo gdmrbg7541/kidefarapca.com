@@ -18398,4 +18398,255 @@ const wordEasterEggs = {
             }
         }
     },
+
+    // ==================================================================
+    // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
+    // H-Z-N (ح ز ن) KÖKÜ - Hüzün / Üzülmek / Kederlenmek
+    // İnsanın içsel acısını, kederini ve hüznünü ifade eder. (4. Bab)
+    // ==================================================================
+    "حزن": {
+        // --- 8 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
+        8: {
+            base: {
+                emoji: "😔",
+                arText: "حَزِنَ",
+                trText: "Üzüldü / Kederlendi.",
+                ornek: {
+                    ar: "حَزِنَ عَلَى فِرَاقِ صَدِيقِهِ",
+                    tr: "Arkadaşının ayrılığına üzüldü."
+                }
+            },
+        },
+
+        // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
+        9: {
+            base: {
+                emoji: "💧",
+                arText: "يَحْزَنُ",
+                trText: "Üzülür / Kederlenir.",
+                ornek: {
+                    ar: "لَا تَحْزَنْ إِنَّ اللهَ مَعَنَا",
+                    tr: "Üzülme, şüphesiz Allah bizimledir. (Tevbe Suresi, 40)"
+                }
+            },
+        },
+
+        // --- 10 Numaralı Kalıp (Mücerret 4. Bab Emir) ---
+        10: {
+            base: {
+                emoji: "❗",
+                arText: "اِحْزَنْ",
+                trText: "Üzül / Kederlen!"
+            },
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل - İsim / Masdar) ---
+        21: {
+            base: {
+                emoji: "💔",
+                arText: "حُزْن",
+                trText: "Hüzün / Üzüntü, keder.",
+                ornek: [
+                    {
+                        ar: "وَابْيَضَّتْ عَيْنَاهُ مِنَ الْحُزْنِ",
+                        tr: "Hüzünden (ağlamaktan) iki gözüne ak düştü. (Yûsuf Suresi, 84)"
+                    },
+                    {
+                        ar: "عَامُ الْحُزْنِ",
+                        tr: "Hüzün Yılı (Peygamberimizin amcası Ebu Talip ve eşi Hz. Hatice'nin peş peşe vefat ettiği, hüzne boğulduğu yıl)."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "ات": {
+                emoji: "🌊",
+                arText: "أَحْزَان",
+                trText: "Ahzân / Hüzünler, kederler (Kırık Çoğul).",
+                ornek: { ar: "غَرِقَ فِي بَحْرِ الْأَحْزَانِ", tr: "Hüzünler denizinde boğuldu." }
+            }
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat) ---
+        35: {
+            base: {
+                emoji: "🥺",
+                arText: "حَزِين",
+                trText: "Hazîn / Üzgün, hüzünlü, kederli.",
+                ornek: {
+                    ar: "قِصَّةٌ حَزِينَةٌ",
+                    tr: "Hüzünlü (hazin) bir hikaye."
+                }
+            }
+            
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: {
+            base: {
+                emoji: "😔",
+                arText: "مَحْزُون",
+                trText: "Mahzûn / Üzüntüye uğramış, içi kan ağlayan.",
+                ornek: {
+                    ar: "قَلْبٌ مَحْزُونٌ",
+                    tr: "Mahzun (kederli) bir kalp."
+                }
+            }
+        },
+
+        // --- 45 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Geçişlilik / Başkasını Üzmek) ---
+        45: {
+            base: {
+                emoji: "🏹",
+                arText: "أَحْزَنَ",
+                trText: "Üzdü / Kederlendirdi.",
+                ornek: {
+                    ar: "أَحْزَنَنِي هَذَا الْخَبَرُ",
+                    tr: "Bu haber beni üzdü."
+                }
+            },
+        },
+
+        // --- 46 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
+        46: {
+            base: {
+                emoji: "😢",
+                arText: "يُحْزِنُ",
+                trText: "Üzer / Kederlendirir.",
+                ornek: {
+                    ar: "لَا يُحْزِنُكَ قَوْلُهُمْ",
+                    tr: "Onların sözü seni üzmesin. (Âl-i İmrân Suresi, 176)"
+                }
+            },
+        }
+    },
+
+    // ==================================================================
+    // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
+    // R-C-W (ر ج و) KÖKÜ - Ummak / İstemek / Rica Etmek
+    // Geleceğe dair bir şeyi arzulamayı, umut etmeyi ve yalvarmayı ifade eder. (Nakıs Fiil)
+    // ==================================================================
+    "رجو": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi - Nakıs) ---
+        1: {
+            base: {
+                emoji: "🤲",
+                arText: "رَجَا",
+                trText: "Umdu / Rica etti / Yalvardı.",
+                ornek: {
+                    ar: "رَجَا رَحْمَةَ رَبِّهِ",
+                    tr: "Rabbinin rahmetini umdu."
+                }
+            },
+            cekimi: ["رَجَا", "رَجَوَا", "رَجَوْا", "رَجَتْ", "رَجَتَا", "رَجَوْنَ", "رَجَوْتَ", "رَجَوْتُمَا", "رَجَوْتُمْ", "رَجَوْتِ", "رَجَوْتُمَا", "رَجَوْتُنَّ", "رَجَوْتُ", "رَجَوْنَا", "رَجَوْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: {
+            base: {
+                emoji: "✨",
+                arText: "يَرْجُو",
+                trText: "Umar / İster / Rica eder.",
+                ornek: {
+                    ar: "لِمَنْ كَانَ يَرْجُو اللهَ وَالْيَوْمَ الْآخِرَ",
+                    tr: "Allah'a ve ahiret gününe kavuşmayı umanlar için. (Ahzâb Suresi, 21)"
+                }
+            },
+            cekimi: ["يَرْجُو", "يَرْجُوَانِ", "يَرْجُونَ", "تَرْجُو", "تَرْجُوَانِ", "يَرْجُونَ", "تَرْجُو", "تَرْجُوَانِ", "تَرْجُونَ", "تَرْجِينَ", "تَرْجُوَانِ", "تَرْجُونَ", "أَرْجُو", "نَرْجُو", "نَرْجُو"]
+        },
+
+        // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
+        3: {
+            base: {
+                emoji: "❗",
+                arText: "اُرْجُ",
+                trText: "Um / İste!",
+                ornek: {
+                    ar: "💡 قَاعِدَة صَرْفِيَّة",
+                    tr: "Sarf Notu: Nakıs fiillerin (sonu illetli olanlar) emri yapılırken, sondaki illet harfi (و) cezim alameti olarak tamamen düşer."
+                }
+            },
+            cekimi: ["اُرْجُ", "اُرْجُوَا", "اُرْجُوا", "اُرْجِي", "اُرْجُوَا", "اُرْجُونَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعَال - İsim / Masdar) ---
+        22: {
+            base: {
+                emoji: "🕊️",
+                arText: "رَجَاء",
+                trText: "Recâ / Umut, istek, yalvarış, rica.",
+                ornek: [
+                    {
+                        ar: "خَوْفًا وَطَمَعًا (رَجَاءً)",
+                        tr: "Korku ve umutla."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة لُغَوِيَّة",
+                        tr: "Dil Notu: Türkçede 'Rica ederim' şeklinde kullandığımız nezaket ifadesi, aslında bu kökten gelir ve tam olarak 'Senden bunu umut ediyorum, yalvarıyorum' demektir."
+                    }
+                ]
+            }
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: {
+            base: {
+                emoji: "👤",
+                arText: "رَاجٍ",
+                trText: "Râcin (Er-Râcî) / Uman, ümit eden.",
+                ornek: { ar: "هُوَ رَاجٍ عَفْوَ رَبِّهِ", tr: "O, Rabbinin affını umandır." }
+            },
+            suggestsPlus: true,
+            "ال": {
+                emoji: "🤲",
+                arText: "الرَّاجِي",
+                trText: "Er-Râcî / Uman (Belirli/Marife hali)."
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: {
+            base: {
+                emoji: "🌟",
+                arText: "مَرْجُوّ",
+                trText: "Mercûvv / Umulan, beklenen.",
+                ornek: { ar: "النَّتِيجَةُ الْمَرْجُوَّةُ", tr: "Umulan (beklenen) sonuç." }
+            }
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
+        77: {
+            base: {
+                emoji: "🙏",
+                arText: "اِرْتَجَى",
+                trText: "Umut bağladı / İltica etti (mecazen bekledi).",
+                ornek: { ar: "اِرْتَجَى رَحْمَةَ اللهِ", tr: "Allah'ın rahmetine umut bağladı." }
+            },
+            cekimi: ["اِرْتَجَى", "اِرْتَجَيَا", "اِرْتَجَوْا", "اِرْتَجَتْ", "اِرْتَجَتَا", "اِرْتَجَيْنَ", "اِرْتَجَيْتَ", "اِرْتَجَيْتُمَا", "اِرْتَجَيْتُمْ", "اِرْتَجَيْتِ", "اِرْتَجَيْتُمَا", "اِرْتَجَيْتُنَّ", "اِرْتَجَيْتُ", "اِرْتَجَيْنَا", "اِرْتَجَيْنَا"]
+        },
+
+        // --- 81 Numaralı Kalıp (مُفْتَعِل - İfti'âl Babı İsm-i Fâil) ---
+        81: {
+            base: {
+                emoji: "⏳",
+                arText: "مُرْتَجٍ",
+                trText: "Mürtecin (El-Mürtecî) / Umut bağlayan, bekleyen.",
+                ornek: [
+                    {
+                        ar: "الْمُرْتَجِي شَفَاعَةَ النَّبِيِّ",
+                        tr: "Peygamber'in şefaatini uman/bekleyen kişi."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: Bu listedeki 'Mürteci' (Uman/Bekleyen), 'R-C-W' (Ummak) kökündendir ve İslami metinlerde sıkça geçer. Ancak tarihi/siyasi bir kavram olan ve 'Gerici / Geri dönen' anlamına gelen 'Mürteci' ise 'R-C-' (ر ج ع - Dönmek) kökünden türemiştir. Ciddi bir ses benzeşmesi olmasına rağmen kökleri ve anlamları tamamen farklıdır."
+                    }
+                ]
+            },
+            suggestsPlus: true,
+            "ال": {
+                emoji: "🤲",
+                arText: "الْمُرْتَجِي",
+                trText: "El-Mürtecî / Umut bağlayan (Belirli/Marife hali)."
+            }
+        }
+    },
 };
