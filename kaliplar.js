@@ -2602,6 +2602,16 @@ function highlightEasterEggBoxes(root) {
 // ==============================================================================
 const VerbGenerator = {
     getDynamicAynHareke: function(kokArr, bNo, vezin, rId) {
+        // ==========================================
+        // KESİN ÇÖZÜM: MUZARİ (CEHD-İ MUTLAK) HAREKE ZIRHI
+        // Eğer "lam" (لم) tablosu için 2. Bab (rId=4) gibi spesifik bir Muzari ID'si
+        // gönderilmişse, Bab 1 kutusundan gelinmiş olsa bile diğer tüm kuralları ezip
+        // orta harfin harekesini doğrudan kendi Muzari aslına sabitler! (يَبُعْ hatasını önler)
+        // ==========================================
+        if (rId === 4 || rId === 15) return "ِ"; // 2. ve 6. Bab Muzari -> Kesin Esre (يَبِيعُ, يَحْسِبُ)
+        if (rId === 6 || rId === 9)  return "َ"; // 3. ve 4. Bab Muzari -> Kesin Fetha (يَخَافُ, يَعْلَمُ)
+        if (rId === 2 || rId === 12) return "ُ"; // 1. ve 5. Bab Muzari -> Kesin Ötre (يَقُولُ, يَعْظُمُ)
+
         let h = "ُ"; 
         if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
         else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
@@ -2739,7 +2749,6 @@ const VerbGenerator = {
                         let tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin) : "";
                         let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
                         
-                        // YENİ EKLENEN KORUMA: Nakıs fiillerde aslına döndürür
                         if (r3 === 'و') stem = stem.replace(/[اى]$/, "و");
                         if (r3 === 'ي') stem = stem.replace(/[اى]$/, "ي");
                         
@@ -2790,6 +2799,7 @@ const VerbGenerator = {
     }
 };
 
+
 // ==============================================================================
 // ULTIMATE SARF ENGINE (İdğam, İbdal, İ'lâl, İlletli Harfler ve Hemze Motoru)
 // ==============================================================================
@@ -2837,7 +2847,9 @@ const SarfEngine = {
             let emirRegex = new RegExp(`اِوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(emirRegex, "$1");
         }
-// 4. ECVEF FİİLLER
+
+
+       // 4. ECVEF FİİLLER
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
             let maziHareke = (ayn === 'و') ? 'ُ' : 'ِ';
@@ -2852,62 +2864,58 @@ const SarfEngine = {
             // ==========================================
             // 1. İLTİKA-İ SAKİNEYN (SÜKUN ÇARPIŞMASI KESİN ÇÖZÜMLERİ)
             // ==========================================
+            // (MUZARİ KURALLARI MAZİDEN ÖNCEYE ALINDI!)
+            
+            // MUZARİ Sükunlar (Kadın Çoğul -> يَعُدْنَ, يَبِعْنَ, يَخَفْنَ)
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?ُو([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?ِي([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?َا([\u0621-\u064A])ْ/g, "$1َ$2ْ");
+            
+            // Ham Gelişler (يَعْوُدْنَ -> يَعُدْنَ)
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])ْ/g, "$1َ$2ْ");
+
+            // MAZİ Şeddeli Ekler
+            res = res.replace(/([\u0621-\u064A])َا([\u0621-\u064A])ّ/g, `$1${maziHareke}$2ّ`);
+            res = res.replace(/([\u0621-\u064A])َوَ([\u0621-\u064A])ّ/g, `$1${maziHareke}$2ّ`);
+            res = res.replace(/([\u0621-\u064A])َيَ([\u0621-\u064A])ّ/g, `$1ِّ`);
+            res = res.replace(/([\u0621-\u064A])َ[وي]ِ([\u0621-\u064A])ّ/g, `$1ِّ`);
+
             // MAZİ Sükunlar (Kadın Çoğul, Sen, Ben vb. -> عُدْنَ, بِعْنَ, خِفْنَ)
-            // Hatalı Uzatmalı Gelişler (عَادْنَ, بَاعْنَ) veya Ham Gelişler (عَوَدْنَ, بَيَعْنَ)
             res = res.replace(/([\u0621-\u064A])َا([\u0621-\u064A])ْ/g, `$1${maziHareke}$2ْ`);
             res = res.replace(/([\u0621-\u064A])َوَ([\u0621-\u064A])ْ/g, `$1${maziHareke}$2ْ`);
             res = res.replace(/([\u0621-\u064A])َيَ([\u0621-\u064A])ْ/g, `$1ِ$2ْ`);
             res = res.replace(/([\u0621-\u064A])َ[وي]ِ([\u0621-\u064A])ْ/g, `$1ِ$2ْ`);
 
-            // MUZARİ Sükunlar (Kadın Çoğul -> يَعُدْنَ, يَبِعْنَ, يَخَفْنَ)
-            // Hatalı Uzatmalı Gelişler (يَعُودْنَ, يَبِيعْنَ, يَخَافْنَ)
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ُو([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ِي([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])َا([\u0621-\u064A])ْ/g, "$1َ$2ْ");
-            // Ham Gelişler (يَعْوُدْنَ, يَبْيِعْنَ, يَخْوَفْنَ)
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْوُ([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْيِ([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])ْ/g, "$1َ$2ْ");
-
-            // EMİR Sükunlar (Kadın Çoğul, Erkek Tekil -> عُدْ, عُدْنَ)
-            res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])ْ(.*)/g, "$1ُ$2ْ$3");
-            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])ْ(.*)/g, "$1ِ$2ْ$3");
-            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])ْ(.*)/g, "$1َ$2ْ$3");
             // ==========================================
-            // EMİR KİPİ KESİN ÇÖZÜM: HEMZEYİ HER YERDE AT (Sülasi Emirlerde)
+            // EMİR KİPİ KESİN ÇÖZÜMLERİ
             // ==========================================
-            // [اأإآ] ile başlayan ve hemen ardından 3 harfli (cemi/tesniye) veya 2 harfli (müfred) 
-            // kökü olan tüm yapıları hemzesiz bırakır.
+            // Sükunlu sonlar (Müfred, Kadın Çoğul -> عُدْ, عُدْنَ)
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])ْ(.*)/g, "$1ُ$2ْ$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])ْ(.*)/g, "$1ِ$2ْ$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])ْ(.*)/g, "$1َ$2ْ$3");
             
-            // 1. Önce hemzeyi ve üzerindeki harekeyi tamamen söküp at (Tüm emirlerde)
-            res = res.replace(/^[اأإآ][َُِ]([\u0621-\u064A])ْ/g, "$1ْ");
-            
-            // 2. Hemzeden sonra gelen illet düşmüşse kök harfini koru (Sadece sülasi emirler için)
-            // Eğer fiil şu an "عُدْ", "بِعْ" gibi bir formdaysa, başına hemze gelmesini engelle.
-            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])([َُِ]?)([\u0621-\u064A])/g, "$1$2$3");
-            
-            // 3. Çoğul ve Tesniye (Cemi/Tesniye hemzesini de at)
-            // اُعُودُوا -> عُودُوا
-            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])ُو/g, "$1ُو");
-            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])ِي/g, "$1ِي");
-            res = res.replace(/^[اأإآ][ُِ]([\u0621-\u064A])َا/g, "$1َا");
-
+            // Harekeli sonlar (Tesniye, Cemi -> عُودُوا, بِيعِي)
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])(?![ْ])(.*)/g, "$1ُو$2$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])(?![ْ])(.*)/g, "$1ِي$2$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])(?![ْ])(.*)/g, "$1َا$2$3");
 
             // ==========================================
-            // 2. NORMAL HAREKELİ DURUMLAR (UZATMALAR: عادَ, يَعُودُ, عُودُوا)
+            // 2. NORMAL HAREKELİ DURUMLAR (UZATMALAR)
             // ==========================================
-            // Mazi Harekeli: عَوَدَ -> عَادَ
-            res = res.replace(/([\u0621-\u064A])َ[وي][َِ]([\u0621-\u064A])(?![ْ])/g, "$1َا$2");
             
-            // Muzari Harekeli: يَعْوُدُ -> يَعُودُ / يَبْيِعُ -> يَبِيعُ / يَخْوَفُ -> يَخَافُ
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْوُ([\u0621-\u064A])(?![ْ])/g, "$1ُو$2"); 
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْيِ([\u0621-\u064A])(?![ْ])/g, "$1ِي$2"); 
-            res = res.replace(/([يتاأن][َُِ][\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])(?![ْ])/g, "$1َا$2"); 
+            // MUZARİ HAREKELİ (MAZİDEN ÖNCE ÇALIŞIR, BÖYLECE YANLIŞLIKLA "يَبَاعُ" OLMAZ!)
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
+            
+            // Yanlış Bab eşleşmeleri için tablo görünüm düzeltici
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
+            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
 
-            // Emir Harekeli: اُعْوُدُوا -> عُودُوا
-            res = res.replace(/[اأإآء]ُ([\u0621-\u064A])ْوُ([\u0621-\u064A])([َُِ].*)/g, "$1ُو$2$3");
-            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْيِ([\u0621-\u064A])([َُِ].*)/g, "$1ِي$2$3");
-            res = res.replace(/[اأإآء]ِ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A])([َُِ].*)/g, "$1َا$2$3");
+            // MAZİ HAREKELİ (Artık Muzari formları güvende olduğu için Mazi kuralları rahatça çalışabilir)
+            res = res.replace(/([\u0621-\u064A])َ[وي][َِ]([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // عَوَدَ -> عَادَ
 
             // ==========================================
             // 3. İSİM TAMLAMALARI VE MEF'ULLER
@@ -2979,6 +2987,7 @@ const SarfEngine = {
             }
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]$`, 'g'), `مَ$1ْ$2َى`);
         }
+
         // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI VE KÜRSÜ DEĞİŞİMLERİ)
         if (r.includes('أ') || r.includes('ء') || r.includes('إ') || r.includes('ؤ') || r.includes('ئ')) {
            // ==================================================================
@@ -2996,7 +3005,7 @@ const SarfEngine = {
             res = res.replace(/أَأْ/g, "آ"); 
             res = res.replace(/اُأْ/g, "أُو"); 
             res = res.replace(/اِأْ/g, "إِي"); 
-            res = res.replace(/أَا/g, "آ"); 
+           res = res.replace(/أَا/g, "آ");
             res = res.replace(/ءَا/g, "آ"); 
             
             res = res.replace(/ْأِ/g, "ْئِ"); 
@@ -3020,6 +3029,17 @@ const SarfEngine = {
             
             // 3. Kelime ortasında olsa bile Elif'ten sonra gelen FETHALI hemze her zaman satıra oturur!
             res = res.replace(/اأَ/g, "اءَ"); // تَسَاأَلَ -> تَسَاءَلَ , قِرَاأَة -> قِرَاءَة
+            // 3. Kelime ortasında olsa bile Elif'ten sonra gelen FETHALI hemze her zaman satıra oturur!
+            res = res.replace(/اأَ/g, "اءَ"); // تَسَاأَلَ -> تَسَاءَلَ , قِرَاأَة -> قِرَاءَة
+
+            // ==================================================================
+            // TESNİYE (ELİF) ZIRHI: Hemzeli Nâkıs fiiller için tesniye elifi kontrolü
+            // ==================================================================
+            res = res.replace(/ءَا/g, "اءَا"); // Satırdaki hemze + Tesniye Elifi
+            res = res.replace(/أَا/g, "آ");
+            res = res.replace(/ئَا/g, "ئَا");   // Ye kürsüsündeki hemze + Tesniye Elifi (koru)
+            res = res.replace(/ؤَا/g, "ؤَا");   // Vav kürsüsündeki hemze + Tesniye Elifi (koru)
+            
             // -------------------------------------------
         }
         return res;
@@ -3036,14 +3056,18 @@ const ColorEngine = {
     },
 
     isEquivalent: function(char1, char2) {
-        const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء'];
-        const weaks = ['و', 'ي', 'ا', 'ى']; 
-        
-        if (char1 === char2) return true;
-        if (hamzas.includes(char1) && hamzas.includes(char2)) return true;
-        if (weaks.includes(char1) && weaks.includes(char2)) return true; 
-        return false;
-    },
+    const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء']; // 'آ' burada mevcut
+    const weaks = ['و', 'ي', 'ا', 'ى']; 
+    
+    // YENİ: Eğer karşılaştırılanlardan biri 'آ' ise, bunu 'أ' (kök hemzesi) ile denk kabul et
+    if (char1 === 'آ' && char2 === 'أ') return true;
+    if (char1 === 'أ' && char2 === 'آ') return true;
+
+    if (char1 === char2) return true;
+    if (hamzas.includes(char1) && hamzas.includes(char2)) return true;
+    if (weaks.includes(char1) && weaks.includes(char2)) return true; 
+    return false;
+},
 
     colorize: function(finalWord, rootArray = ['ف', 'ع', 'ل']) {
         // Harfleri temizle

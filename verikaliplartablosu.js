@@ -17566,4 +17566,94 @@ const wordEasterEggs = {
             cekimi: ["اِسْتَمَاتَ", "اِسْتَمَاتَا", "اِسْتَمَاتُوا", "اِسْتَمَاتَتْ", "اِسْتَمَاتَتَا", "اِسْتَمَتْنَ", "اِسْتَمَتَّ", "اِسْتَمَتُّمَا", "اِسْتَمَتُّمْ", "اِسْتَمَتِّ", "اِسْتَمَتُّمَا", "اِسْتَمَتُّنَّ", "اِسْتَمَتُّ", "اِسْتَمَتْنَا", "اِسْتَمَتْنَا"]
         }
     },
+
+    // ==================================================================
+    // 4. KATEGORİ: VAROLUŞ, DUYGU VE MANEVİYAT
+    // R-Z-Q (ر ز ق) KÖKÜ - Rızık Vermek / İhsan Etmek
+    // Allah'ın canlılara hayatlarını sürdürmeleri için verdiği maddi ve manevi nimetleri ifade eder. (1. Bab)
+    // ==================================================================
+    "رزق": {
+        // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "رَزَقَ", 
+                trText: "Rızık verdi / Nimetlendirdi.",
+                ornek: { 
+                    ar: "رَزَقَهُ اللهُ وَلَدًا صَالِحًا", 
+                    tr: "Allah onu salih (hayırlı) bir evlatla rızıklandırdı." 
+                }
+            },
+            cekimi: ["رَزَقَ", "رَزَقَا", "رَزَقُوا", "رَزَقَتْ", "رَزَقَتَا", "رَزَقْنَ", "رَزَقْتَ", "رَزَقْتُمَا", "رَزَقْتُمْ", "رَزَقْتِ", "رَزَقْتُمَا", "رَزَقْتُنَّ", "رَزَقْتُ", "رَزَقْنَا", "رَزَقْنَا"]
+        },
+
+        // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
+        2: { 
+            base: { 
+                emoji: "✨", 
+                arText: "يَرْزُقُ", 
+                trText: "Rızık verir / Nimetlendirir.",
+                ornek: { 
+                    ar: "وَاللَّهُ يَرْزُقُ مَنْ يَشَاءُ بِغَيْرِ حِسَابٍ", 
+                    tr: "Allah dilediğine hesapsız rızık verir. (Bakara Suresi, 212)" 
+                }
+            },
+            cekimi: ["يَرْزُقُ", "يَرْزُقَانِ", "يَرْزُقُونَ", "تَرْزُقُ", "تَرْزُقَانِ", "يَرْزُقْنَ", "تَرْزُقُ", "تَرْزُقَانِ", "تَرْزُقُونَ", "تَرْزُقِينَ", "تَرْزُقَانِ", "تَرْزُقْنَ", "أَرْزُقُ", "نَرْزُقُ", "نَرْزُقُ"]
+        },
+
+        // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
+        3: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اُرْزُقْ", 
+                trText: "Rızık ver / Nimetlendir!" 
+            },
+            cekimi: ["اُرْزُقْ", "اُرْزُقَا", "اُرْزُقُوا", "اُرْزُقِي", "اُرْزُقَا", "اُرْزُقْنَ"]
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "🍞", 
+                arText: "رِزْق", 
+                trText: "Rızık / Geçimlik, nimet, nasip.",
+                ornek: [
+                    { 
+                        ar: "اَلرِّزْقُ عَلَى اللهِ", 
+                        tr: "Rızık Allah'tandır." 
+                    },
+                    {
+                        ar: "وَمَا مِنْ دَابَّةٍ فِي الْأَرْضِ إِلَّا عَلَى اللَّهِ رِزْقُهَا",
+                        tr: "Yeryüzünde hiçbir canlı yoktur ki, rızkı Allah'ın üzerine olmasın. (Hûd Suresi, 6)"
+                    }
+                ]
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "👑", 
+                arText: "رَازِق", 
+                trText: "Râzık / Rızık veren (Allah'ın isimlerinden).",
+                ornek: { 
+                    ar: "هُوَ الرَّازِقُ الْكَرِيمُ", 
+                    tr: "O, çok kerem sahibi olan Rızık Veren'dir." 
+                }
+            }
+        },
+
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
+        36: { 
+            base: { 
+                emoji: "👼", 
+                arText: "مَرْزُوق", 
+                trText: "Merzûk / Rızıklandırılmış olan.",
+                ornek: { 
+                    ar: "كُلُّنَا مَرْزُوقُونَ بِفَضْلِ اللهِ", 
+                    tr: "Hepimiz Allah'ın lütfuyla rızıklandırılmış kimseleriz." 
+                }
+            } 
+        }
+    },
 };
