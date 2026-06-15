@@ -18955,25 +18955,23 @@ const wordEasterEggs = {
     // Bir şeyi elde etmeyi, tırnaklarını geçirip koparmayı ve başarıyı ifade eder.
     // ==================================================================
     "ظفر": {
-        // --- 1 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
-        1: {
+        // --- 8 Numaralı Kalıp (Mücerret 4. Bab Mazi) ---
+        8: {
             base: {
                 emoji: "🏆",
                 arText: "ظَفِرَ",
                 trText: "Başardı / Galip geldi / Elde etti.",
                 ornek: { ar: "ظَفِرَ بِالْجَائِزَةِ", tr: "Ödülü elde etti (kazandı)." }
             },
-            cekimi: ["ظَفِرَ", "ظَفِرَا", "ظَفِرُوا", "ظَفِرَتْ", "ظَفِرَتَا", "ظَفِرْنَ", "ظَفِرْتَ", "ظَفِرْتُمَا", "ظَفِرْتُمْ", "ظَفِرْتِ", "ظَفِرْتُمَا", "ظَفِرْتُنَّ", "ظَفِرْتُ", "ظَفِرْنَا", "ظَفِرْنَا"]
         },
 
-        // --- 4 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
-        4: {
+        // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
+        9: {
             base: {
                 emoji: "🥇",
                 arText: "يَظْفَرُ",
                 trText: "Başarır / Galip gelir."
             },
-            cekimi: ["يَظْفَرُ", "يَظْفَرَانِ", "يَظْفَرُونَ", "تَظْفَرُ", "تَظْفَرَانِ", "يَظْفَرْنَ", "تَظْفَرُ", "تَظْفَرَانِ", "تَظْفَرُونَ", "تَظْفَرِينَ", "تَظْفَرَانِ", "تَظْفَرْنَ", "أَظْفَرُ", "نَظْفَرُ", "نَظْفَرُ"]
         },
 
         // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
@@ -18986,26 +18984,47 @@ const wordEasterEggs = {
             }
         },
 
-        // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
+        // --- 21 Numaralı Kalıp (فُعْل - İsim / Tekil) ---
         21: {
             base: {
                 emoji: "💅",
                 arText: "ظُفْر",
-                trText: "Zufr / Tırnak.",
+                trText: "Zufr / Tırnak, Pençe, Toynak.",
                 ornek: [
-                    { ar: "قَلَّمَ أَظْفَارَهُ", tr: "Tırnaklarını kesti." },
+                    { 
+                        ar: "وَعَلَى الَّذِينَ هَادُوا حَرَّمْنَا كُلَّ ذِي ظُفُرٍ", 
+                        tr: "Yahudilere bütün tırnaklı (tek parça toynaklı) hayvanları haram kıldık. (En'âm Suresi, 146)" 
+                    },
                     {
-                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
                         tr: "Semantik Not: 'Tırnak' (Zufr) ile 'Zafer' kelimelerinin aynı kökten gelmesi muazzamdır. İnsanın tırnaklarını bir yere geçirip sıkıca tutunması, mücadele etmesi ve söküp alması mecazen 'başarmak' (zafer kazanmak) anlamına dönüşmüştür."
                     }
                 ]
             },
-            suggestsPlus: true,
-            "ات": {
+        },
+        
+        // --- 41 Numaralı Kalıp (Cem-i Mükesser / Kırık Çoğul Formları) ---
+        41: {
+            base: {
                 emoji: "🐾",
-                arText: "أَظْفَار",
-                trText: "Azafîr / Tırnaklar (Cem-i Mükesser)."
-            }
+                arText: "أَظْفَار / أَظَافِير",
+                trText: "Azfâr / Ezâfîr - Tırnaklar, Pençeler. Bu ismin çoğulu birden fazladır.",
+                ornek: [
+                    { 
+                        ar: "١. وَزْن أَفْعَال ⬅️ أَظْفَار", 
+                        tr: "1. Kırık Çoğul Kalıbı: 'Ef'âl' vezninde (Azfâr)." 
+                    },
+                    { 
+                        ar: "٢. وَزْن أَفَاعِيل ⬅️ أَظَافِير", 
+                        tr: "2. Kırık Çoğul Kalıbı: 'Efâ'îl' vezninde (Ezâfîr)." 
+                    },
+                    { 
+                        ar: "أَظْفَارُ النَّسْرِ حَادَّةٌ", 
+                        tr: "Kartalın pençeleri keskindir." 
+                    }
+                ]
+            },
+            
         },
 
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ûlü) ---
