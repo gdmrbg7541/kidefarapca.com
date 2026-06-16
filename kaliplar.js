@@ -2432,7 +2432,14 @@ function applySuffix(suffix) {
         if (typeof checkWordEasterEgg === "function") {
             let standardize = (t) => {
                 if (!t) return "";
-                return t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي').replace(/[\u0640\u064B-\u0652]/g, '').replace(/\u064E\u0651/g, '\u0651\u064E');
+                let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي');
+                let pure = original.replace(/[\u0640\u064B-\u0652]/g, '');
+                if (pure === 'ا') return 'ا';
+                if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+                if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+                if (pure === 'ي') return 'يّ';
+                if (pure === 'يا') return 'يًّا';
+                return original.replace(/\u064E\u0651/g, '\u0651\u064E');
             };
             checkWordEasterEgg(currentBox, standardize(suffix));
         }
@@ -5356,3 +5363,29 @@ const closeVariationsMenu = (e) => {
 // Tarayıcıdaki tüm tıklama ve dokunma olaylarına bu gözlemciyi ekliyoruz
 document.addEventListener('click', closeVariationsMenu);
 document.addEventListener('touchstart', closeVariationsMenu, { passive: true });
+
+// Sağ tıklamayı (Context Menu) engelle
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// Klavye kısayollarını engelle
+document.addEventListener('keydown', function(e) {
+    // Kopyalama (Cmd+C / Ctrl+C), Kesme (Cmd+X / Ctrl+X), Kaynağı Görüntüleme (Cmd+U / Ctrl+U)
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+    }
+    
+    // Geliştirici Araçlarını Açmayı Engelleme (F12, Cmd+Option+I, Ctrl+Shift+I)
+    if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c'))) {
+        e.preventDefault();
+    }
+});
+
+// Sürükleyip bırakarak metin/eleman dışa aktarımını engelle (Oyun mekaniğindeki kendi draggable öğelerin haricindeki iskelet için)
+document.getElementById('table-view').addEventListener('dragstart', function(e) {
+    // Sadece oyun içi köklerin sürüklenmesine izin ver, iskeletin sürüklenmesini durdur
+    if (!e.target.classList.contains('draggable-root-clone')) {
+        e.preventDefault();
+    }
+});

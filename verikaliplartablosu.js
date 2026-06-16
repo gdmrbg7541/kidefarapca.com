@@ -20138,4 +20138,356 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             }
         }
     },
+
+   // ==================================================================
+    // 3. KATEGORİ: SOSYAL HAYAT, İLİŞKİLER VE İNANÇ
+    // S-M-H (س م ح) KÖKÜ - Hoşgörülü Olmak / İzin Vermek / Cömertlik
+    // İnsanın affedici, geniş yürekli ve toleranslı olmasını ifade eder. (3. Bab)
+    // ==================================================================
+    "سمح": {
+        // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "✅", 
+                arText: "سَمَحَ", 
+                trText: "İzin verdi / Hoşgördü.",
+                ornek: { 
+                    ar: "سَمَحَ لَهُ بِالدُّخُولِ", 
+                    tr: "Ona girmesi için izin verdi." 
+                }
+            },
+            cekimi: ["سَمَحَ", "سَمَحَا", "سَمَحُوا", "سَمَحَتْ", "سَمَحَتَا", "سَمَحْنَ", "سَمَحْتَ", "سَمَحْتُمَا", "سَمَحْتُمْ", "سَمَحْتِ", "سَمَحْتُمَا", "سَمَحْتُنَّ", "سَمَحْتُ", "سَمَحْنَا", "سَمَحْنَا"]
+        },
+
+        // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
+        6: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "يَسْمَحُ", 
+                trText: "İzin verir / Müsaade eder.",
+                ornek: { 
+                    ar: "الْوَقْتُ لَا يَسْمَحُ", 
+                    tr: "Vakit izin vermiyor (müsait değil)." 
+                }
+            },
+            cekimi: ["يَسْمَحُ", "يَسْمَحَانِ", "يَسْمَحُونَ", "تَسْمَحُ", "تَسْمَحَانِ", "يَسْمَحْنَ", "تَسْمَحُ", "تَسْمَحَانِ", "تَسْمَحُونَ", "تَسْمَحِينَ", "تَسْمَحَانِ", "تَسْمَحْنَ", "أَسْمَحُ", "نَسْمَحُ", "نَسْمَحُ"]
+        },
+
+        // --- 7 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
+        7: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِسْمَحْ", 
+                trText: "İzin ver / Müsaade et!",
+                ornek: { 
+                    ar: "اِسْمَحْ لِي", 
+                    tr: "Bana izin ver." 
+                }
+            },
+            cekimi: ["اِسْمَحْ", "اِسْمَحَا", "اِسْمَحُوا", "اِسْمَحِي", "اِسْمَحَا", "اِسْمَحْنَ"]
+        },
+
+        // --- 22 Numaralı Kalıp (فَعَال - İsim / Masdar) ---
+        22: { 
+            base: { arText: "سَمَاح" },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🕊️", 
+                arText: "سَمَاحَة", 
+                trText: "Semâhat / Cömertlik, açık yüreklilik, bağışlayıcılık.",
+                ornek: { 
+                    ar: "سَمَاحَةُ الشَّيْخِ", 
+                    tr: "Şeyhin/Alimin semahati (Dini liderler için 'Saygıdeğer/Geniş gönüllü' anlamında bir saygı unvanıdır)." 
+                }
+            } 
+        },
+
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
+            base: { 
+                emoji: "😇", 
+                arText: "سَامِح", 
+                trText: "Sâmih / Hoşgörülü, affedici.",
+                ornek: { 
+                    ar: "💡 مَعْلُومَة", 
+                    tr: "Türkçedeki Kullanımı: 'Semih' (Cömert/Hoşgörülü) ismiyle birlikte 'Samih' de dilimizde erkek ismi olarak kullanılmaktadır." 
+                }
+            } 
+        },
+
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / Kalıcı Özellik) ---
+        35: { 
+            base: { 
+                emoji: "💎", 
+                arText: "سَمِيح", 
+                trText: "Semîh / Çok cömert, eli açık, toleranslı.",
+                ornek: { ar: "رَجُلٌ سَمِيحٌ", tr: "Cömert (hoşgörülü) adam." }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🌸", 
+                arText: "سَمِيحَة", 
+                trText: "Semiha / Cömert, hoşgörülü kadın (Kız ismi)." 
+            }
+        },
+
+        // --- 64 Numaralı Kalıp (فَاعَلَ - Mufâ'ale Babı Mazi - Karşılıklılık/İlişki) ---
+        64: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "سَامَحَ", 
+                trText: "Affetti / Hoşgördü.",
+                ornek: { ar: "سَامَحَهُ اللهُ", tr: "Allah onu affetsin." }
+            },
+            cekimi: ["سَامَحَ", "سَامَحَا", "سَامَحُوا", "سَامَحَتْ", "سَامَحَتَا", "سَامَحْنَ", "سَامَحْتَ", "سَامَحْتُمَا", "سَامَحْتُمْ", "سَامَحْتِ", "سَامَحْتُمَا", "سَامَحْتُنَّ", "سَامَحْتُ", "سَامَحْنَا", "سَامَحْنَا"]
+        },
+
+        // --- 65 Numaralı Kalıp (يُفَاعِلُ - Mufâ'ale Babı Muzari) ---
+        65: { 
+            base: { 
+                emoji: "🤍", 
+                arText: "يُسَامِحُ", 
+                trText: "Affeder / Hoşgörür.",
+            },
+            cekimi: ["يُسَامِحُ", "يُسَامِحَانِ", "يُسَامِحُونَ", "تُسَامِحُ", "تُسَامِحَانِ", "يُسَامِحْنَ", "تُسَامِحُ", "تُسَامِحَانِ", "تُسَامِحُونَ", "تُسَامِحِينَ", "تُسَامِحَانِ", "تُسَامِحْنَ", "أُسَامِحُ", "نُسَامِحُ", "نُسَامِحُ"]
+        },
+
+        // --- 66 Numaralı Kalıp (فَاعِلْ - Mufâ'ale Babı Emir) ---
+        66: { 
+            base: { 
+                emoji: "❗", 
+                arText: "سَامِحْ", 
+                trText: "Affet / Müsamaha göster!",
+                ornek: { ar: "سَامِحْنِي", tr: "Beni affet / Kusuruma bakma." }
+            },
+            cekimi: ["سَامِحْ", "سَامِحَا", "سَامِحُوا", "سَامِحِي", "سَامِحَا", "سَامِحْنَ"]
+        },
+
+        // --- 67 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı) ---
+        67: { 
+            base: { 
+                emoji: "🕊️", 
+                arText: "مُسَامَحَة", 
+                trText: "Müsâmaha / Hoşgörü, tolerans, affetme.",
+                ornek: [
+                    { 
+                        ar: "الْمُسَامَحَةُ مِنْ شِيَمِ الْكِرَامِ", 
+                        tr: "Müsamaha (hoşgörü), asil insanların huyundandır." 
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة نَحْوِيَّة",
+                        tr: "Gramer Notu: Müfa'ale babı genellikle 'karşılıklı yapılan işleri' bildirir. Müsamaha da sadece tek taraflı bir af değil, insanlar arasındaki karşılıklı toleransı ve ilişkileri yumuşatmayı ifade eder."
+                    }
+                ]
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 1. '-K-D (ع ق د) KÖKÜ - Bağlamak / Düğümlemek / Sözleşmek
+    // Kalbe atılan kördüğümü (inanç), hukuki bağları (akit) ve çözülemeyen düğümleri ifade eder. (2. Bab)
+    // ==================================================================
+    "عقد": {
+        // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
+        1: { 
+            base: { 
+                emoji: "🪢", 
+                arText: "عَقَدَ", 
+                trText: "Bağladı / Düğümledi / Sözleşme yaptı.",
+                ornek: { 
+                    ar: "عَقَدَ النِّيَّةَ عَلَى الْخَيْرِ", 
+                    tr: "Hayır (iyilik) üzerine niyetini bağladı (kesin karar verdi)." 
+                }
+            },
+            cekimi: ["عَقَدَ", "عَقَدَا", "عَقَدُوا", "عَقَدَتْ", "عَقَدَتَا", "عَقَدْنَ", "عَقَدْتَ", "عَقَدْتُمَا", "عَقَدْتُمْ", "عَقَدْتِ", "عَقَدْتُمَا", "عَقَدْتُنَّ", "عَقَدْتُ", "عَقَدْنَا", "عَقَدْنَا"]
+        },
+
+        // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
+        4: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "يَعْقِدُ", 
+                trText: "Bağlar / Düğümler / Sözleşir (Akdeder).",
+                ornek: { 
+                    ar: "يَعْقِدُ الصُّلْحَ بَيْنَهُمَا", 
+                    tr: "İkisinin arasında barış (anlaşması) yapıyor." 
+                }
+            },
+            cekimi: ["يَعْقِدُ", "يَعْقِدَانِ", "يَعْقِدُونَ", "تَعْقِدُ", "تَعْقِدَانِ", "يَعْقِدْنَ", "تَعْقِدُ", "تَعْقِدَانِ", "تَعْقِدُونَ", "تَعْقِدِينَ", "تَعْقِدَانِ", "تَعْقِدْنَ", "أَعْقِدُ", "نَعْقِدُ", "نَعْقِدُ"]
+        },
+
+        // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
+        5: { 
+            base: { 
+                emoji: "❗", 
+                arText: "اِعْقِدْ", 
+                trText: "Bağla / Düğümle / Akdet!",
+                ornek: {
+                    ar: "اِعْقِدْ بِالتَّوَكُّلِ عَلَى اللهِ",
+                    tr: "Allah'a tevekkül ederek (işini/kalbini) bağla!"
+                }
+            },
+            cekimi: ["اِعْقِدْ", "اِعْقِدَا", "اِعْقِدُوا", "اِعْقِدِي", "اِعْقِدَا", "اِعْقِدْنَ"]
+        },
+        
+        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
+        19: { 
+            base: { 
+                emoji: "📜", 
+                arText: "عَقْد", 
+                trText: "Akit / Sözleşme, düğüm, bağ.",
+                ornek: {
+                    ar: "عَقْدُ النِّكَاحِ",
+                    tr: "Nikah akdi (Evlilik sözleşmesi)."
+                }
+            }
+        },
+
+        // --- 21 Numaralı Kalıp (فُعْل - İsim Formu) ---
+        21: { 
+            base: { arText: "عُقْد" }, // Yalın hali sessiz
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🔗", 
+                arText: "عُقْدَة", 
+                trText: "Ukde (Düğüm) / Çözülemeyen sorun, karmaşa.",
+                ornek: [
+                    {
+                        ar: "وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي ۝ يَفْقَهُوا قَوْلِي",
+                        tr: "Dilimdeki düğümü çöz ki sözümü (iyice) anlasınlar. (Hz. Musa'nın Duası - Tâhâ Suresi, 27-28)"
+                    },
+                    {
+                        ar: "وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ",
+                        tr: "Düğümlere (üfleyerek büyü yapan) üfürükçülerin şerrinden Allah'a sığınırım. (Felak Suresi, 4)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة دَلَالِيَّة",
+                        tr: "Semantik Not: Türkçede 'İçimde ukde kaldı' dediğimiz ifade tam olarak bu kelimedir. Çözülememiş, içeride kördüğüm olup kalmış dert, sızı veya ulaşılamamış heves demektir."
+                    }
+                ]
+            } 
+        },
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat / İsim) ---
+        35: { 
+            base: { arText: "عَقِيد" }, // Yalın hali
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "🕋", 
+                arText: "عَقِيدَة", 
+                trText: "Akide / İnanç, iman esası.",
+                ornek: [
+                    {
+                        ar: "صِحَّةُ الْعَقِيدَةِ أَسَاسُ النَّجَاةِ",
+                        tr: "Akidenin (inancın) sağlamlığı kurtuluşun temelidir."
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة عَقَائِدِيَّة",
+                        tr: "İlahiyat Notu: 'Akide' (inanç) kelimesinin kökeni 'düğümlemek'ten gelir. İnanç, insanın kalbine çözülmeyecek şekilde düğümlediği, şüpheye yer bırakmadan sımsıkı bağlandığı kesin doğrular ve ilkeler bütünüdür."
+                    }
+                ]
+            },
+            "ات": { 
+                emoji: "📚", 
+                arText: "عَقَائِد", 
+                trText: "Akaid / İnanç esasları (Akide kelimesinin çoğulu).",
+                ornek: { ar: "عِلْمُ الْعَقَائِدِ", tr: "Akaid İlmi (İslam inanç esaslarını inceleyen bilim dalı)." }
+            }
+        },
+
+         // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
+        43: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "عُقُود", 
+                trText: "Ukûd / Akitler, sözleşmeler, düğümler.",
+                ornek: [
+                    {
+                        ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا أَوْفُوا بِالْعُقُودِ",
+                        tr: "Ey iman edenler! Akitlerinizi (sözleşmelerinizi) yerine getirin. (Mâide Suresi, 1)"
+                    },
+                    {
+                        ar: "💡 مَعْلُومَة نَحْوِيَّة",
+                        tr: "Gramer Notu: 'Ukûd', tekili 'Akit' (عَقْد) olan kelimenin kırık çoğuludur. Ayette çoğul kullanılarak, insanların birbirleriyle veya Allah ile yaptıkları tüm sözleşmelere ve bağlara sadık kalmaları emredilmiştir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 71 Numaralı Kalıp (اِنْفَعَلَ - İnfi'âl Babı Mazi - Edilgenlik / Oluş) ---
+        71: { 
+            base: { 
+                emoji: "🏛️", 
+                arText: "اِنْعَقَدَ", 
+                trText: "Bağlandı / Kuruldu / Toplandı (İn'ikad etti).",
+                ornek: { 
+                    ar: "اِنْعَقَدَ الْمَجْلِسُ بِحُضُورِ الْأَعْضَاءِ", 
+                    tr: "Meclis, üyelerin katılımıyla toplandı (oturum kurulup bağlandı)." 
+                }
+            },
+        },
+
+        // --- 74 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
+        74: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "اِنْعِقَاد", 
+                trText: "İn'ikad / Toplanma, kurulma, akdedilme.",
+                ornek: { 
+                    ar: "فِي حَالِ انْعِقَادِ الْمُؤْتَمَرِ", 
+                    tr: "Konferansın düzenlenmesi (in'ikadı) durumunda." 
+                }
+            } 
+        },
+
+        // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi - Gönülden Bağlanma) ---
+        77: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "اِعْتَقَدَ", 
+                trText: "İnandı / Gönülden bağlandı / İtikad etti.",
+                ornek: { 
+                    ar: "اِعْتَقَدَ إِيمَانًا رَاسِخًا", 
+                    tr: "Sarsılmaz bir imanla inandı (itikad etti)." 
+                }
+            },
+        },
+        
+        // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
+        78: { 
+            base: { 
+                emoji: "✨", 
+                arText: "يَعْتَقِدُ", 
+                trText: "İnanır / İtikad eder / Düşünür." 
+            },
+        },
+
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
+        80: { 
+            base: { 
+                emoji: "🕊️", 
+                arText: "اِعْتِقَاد", 
+                trText: "İtikad / İnanç, kalpten tasdik etme.",
+                ornek: [
+                    { 
+                        ar: "حُرِّيَّةُ الِاعْتِقَادِ", 
+                        tr: "İnanç (itikad) özgürlüğü." 
+                    },
+                    {
+                        ar: "💡 رَبْطُ الْكَلِمَاتِ",
+                        tr: "Kelime Bağlantısı: Düğümlenen ve bağlanan ipe 'Akid' denirken; bu düğümün manevi olarak kalbe atılıp kişinin şüphesiz olarak bir gerçeğe bağlanmasına da 'İtikad' (inanmak) denilmiştir."
+                    }
+                ]
+            } 
+        },
+
+        // --- 82 Numaralı Kalıp (مُفْتَعَل - İfti'âl Babı İsm-i Mef'ûl) ---
+        82: { 
+            base: { 
+                emoji: "💭", 
+                arText: "مُعْتَقَد", 
+                trText: "Mü'tekad / İnanılan şey, doktrin, inanç sistemi.",
+                ornek: { ar: "اَلْمُعْتَقَدَاتُ الدِّينِيَّةُ", tr: "Dini inançlar (doktrinler)." }
+            } 
+        }
+    },
 };
