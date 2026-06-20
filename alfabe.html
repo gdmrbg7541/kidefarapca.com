@@ -92,6 +92,7 @@
         .nav-tabs { 
             display: flex; background: var(--primary); padding: 8px 12px 0; gap: 8px; 
             direction: rtl; justify-content: center; border-radius: 20px 20px 0 0;
+            position: relative; /* Butonu sabitlemek için eklendi */
         }
         .tab-trigger { 
             padding: 12px 30px; border: none; background: rgba(255,255,255,0.05);
@@ -101,8 +102,27 @@
         .tab-trigger:hover { background: rgba(255,255,255,0.15); color: white; }
         .tab-trigger.active { background: var(--bg-glass); color: var(--primary); font-weight: bold; }
 
-        .home-link { display: flex; align-items: center; padding: 0 15px; text-decoration: none; color: white; font-size: 1.5rem; transition: transform 0.3s; }
-        .home-link:hover { transform: scale(1.2); }
+        /* Yeni Anasayfa Butonu Tasarımı */
+        .home-link { 
+            position: absolute; left: 15px; bottom: 8px; /* En sola sabitlendi */
+            display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; color: rgba(255,255,255,0.7); 
+            background: rgba(255,255,255,0.05); 
+            width: 42px; height: 42px; border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+        .home-link:hover { 
+            transform: translateY(-3px); 
+            background: var(--accent); 
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+        }
+        .home-link svg {
+            width: 22px; height: 22px; 
+            stroke: currentColor; stroke-width: 2; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
 
         .content-area { flex: 1; padding: 15px; overflow: hidden; background: transparent; position: relative; }
         .panel { display: none; height: 100%; width: 100%; animation: fadeIn 0.4s ease; position: relative; }
@@ -198,7 +218,17 @@
 
         /* Mobil Optimizasyon */
         @media (max-width: 768px) {
-            .nav-tabs { justify-content: flex-start !important; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: none; }
+            .nav-tabs { 
+                padding-left: 65px !important; /* Solda buton için boşluk bırakır */
+                justify-content: flex-start !important; 
+                overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: none; 
+            }
+
+             .home-link {
+                position: sticky !important; /* Sağa kaydırsan bile buton solda sabit kalır */
+                left: 10px;
+                bottom: 5px;
+            } 
             .nav-tabs::-webkit-scrollbar { display: none; }
             .tab-trigger { padding: 10px 15px; flex-shrink: 0; }
             .content-area { overflow-y: auto !important; }
@@ -224,7 +254,12 @@
 
 <div class="main-app">
     <nav class="nav-tabs">
-        <a href="https://kidefarapca.com" target="_blank" class="home-link" title="Ana Sayfa">🏠</a>
+        <a href="https://kidefarapca.com" target="_blank" class="home-link" title="Ana Sayfa">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </a>
         <button class="tab-trigger active" onclick="ui.tab(event, 'p1')">Harf Tanıtımı</button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p2')">Kartlar</button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p3')">Hafıza</button>
@@ -320,7 +355,7 @@
         {h: 'ث', tr: 'Peltek S̱e', b:'ثـ', o:'ـثـ', s:'ـث'},
         {h: 'ج', tr: 'Cim', b:'جـ', o:'ـجـ', s:'ـج'}, 
         {h: 'ح', tr: 'Ḥa', b:'حـ', o:'ـحـ', s:'ـح'},
-        {h: 'خ', tr: 'Ḫı', b:'خـ', o:'ـخـ', s:'ـخ'}, 
+        {h: 'خ', tr: 'Ḫa (Hırıltılı)', b:'خـ', o:'ـخـ', s:'ـخ'}, 
         {h: 'د', tr: 'Dal', b:'د', o:'ـد', s:'ـد', nobind: true},
         {h: 'ذ', tr: 'Ẕel (Peltek)', b:'ذ', o:'ـذ', s:'ـذ', nobind: true}, 
         {h: 'ر', tr: 'Ra', b:'ر', o:'ـر', s:'ـر', nobind: true},
@@ -330,11 +365,11 @@
         {h: 'ص', tr: 'Ṣad (Kalın S)', b:'صـ', o:'ـصـ', s:'ـص'},
         {h: 'ض', tr: 'Ḍad', b:'ضـ', o:'ـضـ', s:'ـض'}, 
         {h: 'ط', tr: 'Ṭa', b:'طـ', o:'ـطـ', s:'ـط'},
-        {h: 'ظ', tr: 'Ẓa', b:'ظـ', o:'ـظـ', s:'ـظ'}, 
-        {h: 'ع', tr: 'Ayn (ʿ)', b:'عـ', o:'ـعـ', s:'ـع'},
+        {h: 'ظ', tr: 'Ẓa (Peltek, Kalın)', b:'ظـ', o:'ـظـ', s:'ـظ'}, 
+        {h: 'ع', tr: 'Ayn (Boğazdan) (ʿ)', b:'عـ', o:'ـعـ', s:'ـع'},
         {h: 'غ', tr: 'Ğayn', b:'غـ', o:'ـغـ', s:'ـغ'}, 
         {h: 'ف', tr: 'Fe', b:'فـ', o:'ـفـ', s:'ـف'},
-        {h: 'ق', tr: 'Qaf', b:'قـ', o:'ـقـ', s:'ـق'}, 
+        {h: 'ق', tr: 'Qaf (Boğazdan)', b:'قـ', o:'ـقـ', s:'ـق'}, 
         {h: 'ك', tr: 'Kef', b:'كـ', o:'ـكـ', s:'ـك'},
         {h: 'ل', tr: 'Lam', b:'لـ', o:'ـلـ', s:'ـل'}, 
         {h: 'م', tr: 'Mim', b:'مـ', o:'ـمـ', s:'ـم'},
