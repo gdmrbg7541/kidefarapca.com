@@ -248,6 +248,12 @@
             .q-display { font-size: 5rem !important; }
             .btn-ans { font-size: 1.4rem !important; }
         }
+
+/* Büyük Switch Tasarımı (Yarışma Modu İçin) */
+        .switch-large { width: 80px !important; height: 40px !important; }
+        .switch-large .slider { border-radius: 40px !important; }
+        .switch-large .slider:before { height: 32px !important; width: 32px !important; left: 4px !important; bottom: 4px !important; }
+        .switch-large input:checked + .slider:before { transform: translateX(40px) !important; }
     </style>
 </head>
 <body>
@@ -303,27 +309,32 @@
             <div id="resetArea" class="reset-area"><button class="reset-btn" onclick="memoryGame.init()">🔄 Yeniden Başlat</button></div>
         </section>
 
-   <section id="p4" class="panel">
+  <section id="p4" class="panel">
             <div id="duel-stage-container" style="position: relative;">
-                <div style="width: 100%; display: flex; gap: 15px; margin-bottom: 10px;">
-                    <div style="flex: 1; background: var(--p1-bg); height: 20px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #bae6fd;">
-                        <div id="pb1" style="height: 100%; width: 0%; background: #0284c7; transition: 0.4s ease-out;"></div>
-                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(to right, transparent, transparent calc(10% - 1px), rgba(255,255,255,0.9) calc(10% - 1px), rgba(255,255,255,0.9) 10%); pointer-events: none;"></div>
-                    </div>
-                    <div style="flex: 1; background: var(--p2-bg); height: 20px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #bbf7d0;">
-                        <div id="pb2" style="height: 100%; width: 0%; background: #16a34a; transition: 0.4s ease-out;"></div>
-                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(to right, transparent, transparent calc(10% - 1px), rgba(255,255,255,0.9) calc(10% - 1px), rgba(255,255,255,0.9) 10%); pointer-events: none;"></div>
+                
+                <div style="width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <button onclick="game.showMenu()" style="background: white; border: 2px solid var(--primary); color: var(--primary); border-radius: 10px; padding: 5px 15px; font-family: 'arakom'; font-size: 1.2rem; cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.2s;">❮ GERİ</button>
+                    
+                    <div style="flex: 1; display: flex; gap: 15px;">
+                        <div id="pb1-container" style="flex: 1; background: var(--p1-bg); height: 20px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #bae6fd;">
+                            <div id="pb1" style="height: 100%; width: 0%; background: #0284c7; transition: 0.4s ease-out;"></div>
+                            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(to right, transparent, transparent calc(10% - 1px), rgba(255,255,255,0.9) calc(10% - 1px), rgba(255,255,255,0.9) 10%); pointer-events: none;"></div>
+                        </div>
+                        <div id="pb2-container" style="flex: 1; background: var(--p2-bg); height: 20px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #bbf7d0;">
+                            <div id="pb2" style="height: 100%; width: 0%; background: #16a34a; transition: 0.4s ease-out;"></div>
+                            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(to right, transparent, transparent calc(10% - 1px), rgba(255,255,255,0.9) calc(10% - 1px), rgba(255,255,255,0.9) 10%); pointer-events: none;"></div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="duel-stage">
                     <div id="z1" class="player-zone">
-                        <div style="font-size:1.4rem; margin-bottom:5px; font-weight:bold; color:var(--primary);">SKOR: <b id="sc1">0</b></div>
+                        <div id="z1-title" style="font-size:1.4rem; margin-bottom:5px; font-weight:bold; color:var(--primary);">SKOR: <b id="sc1">0</b></div>
                         <div class="q-display" id="dq1">?</div>
                         <div class="ans-grid" id="ag1"></div>
                     </div>
                     <div id="z2" class="player-zone">
-                        <div style="font-size:1.4rem; margin-bottom:5px; font-weight:bold; color:var(--primary);">SKOR: <b id="sc2">0</b></div>
+                        <div id="z2-title" style="font-size:1.4rem; margin-bottom:5px; font-weight:bold; color:var(--primary);">SKOR: <b id="sc2">0</b></div>
                         <div class="q-display" id="dq2">?</div>
                         <div class="ans-grid" id="ag2"></div>
                     </div>
@@ -340,8 +351,19 @@
                 <button id="nextBtn" class="next-btn" onclick="game.start()">SONRAKİ SORU ➔</button>
             </div>
             
-            <div id="startInfo">
-                <button onclick="game.start()" style="padding:20px 50px; font-family:'arakom'; font-size:2rem; cursor:pointer; background:var(--accent); color:white; border:none; border-radius:15px; box-shadow: var(--shadow-md);">YARIŞMAYI BAŞLAT</button>
+            <div id="startInfo" style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; gap: 30px;">
+                <h2 style="color: var(--primary); font-size: 2.5rem; margin-bottom: -10px;">OYUN MODU</h2>
+                
+                <div class="switch-wrapper" style="padding: 15px 30px; border-radius: 50px; background: white; box-shadow: var(--shadow-md); border: 2px solid #e2e8f0; gap: 20px;">
+                    <span style="font-size:2.5rem; cursor:pointer; user-select: none;" onclick="game.toggleMode('single')">👤</span>
+                    <label class="switch switch-large">
+                        <input type="checkbox" id="yarisma-toggle" onchange="game.toggleMode(this.checked ? 'multi' : 'single')" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="font-size:2.5rem; cursor:pointer; user-select: none;" onclick="game.toggleMode('multi')">👥</span>
+                </div>
+
+                <button onclick="game.start()" style="padding:20px 60px; font-family:'arakom'; font-size:2.2rem; cursor:pointer; background:var(--accent); color:white; border:none; border-radius:20px; box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4); transition: transform 0.2s;">BAŞLA</button>
             </div>
         </section>
     </main>
@@ -365,11 +387,11 @@
         {h: 'ص', tr: 'Ṣad (Kalın S)', b:'صـ', o:'ـصـ', s:'ـص'},
         {h: 'ض', tr: 'Ḍad', b:'ضـ', o:'ـضـ', s:'ـض'}, 
         {h: 'ط', tr: 'Ṭa', b:'طـ', o:'ـطـ', s:'ـط'},
-        {h: 'ظ', tr: 'Ẓa (Peltek, Kalın)', b:'ظـ', o:'ـظـ', s:'ـظ'}, 
-        {h: 'ع', tr: 'Ayn (Boğazdan) (ʿ)', b:'عـ', o:'ـعـ', s:'ـع'},
+        {h: 'ظ', tr: 'Ẓa', b:'ظـ', o:'ـظـ', s:'ـظ'}, 
+        {h: 'ع', tr: 'Ayn (ʿ)', b:'عـ', o:'ـعـ', s:'ـع'},
         {h: 'غ', tr: 'Ğayn', b:'غـ', o:'ـغـ', s:'ـغ'}, 
         {h: 'ف', tr: 'Fe', b:'فـ', o:'ـفـ', s:'ـف'},
-        {h: 'ق', tr: 'Qaf (Boğazdan)', b:'قـ', o:'ـقـ', s:'ـق'}, 
+        {h: 'ق', tr: 'Qaf', b:'قـ', o:'ـقـ', s:'ـق'}, 
         {h: 'ك', tr: 'Kef', b:'كـ', o:'ـكـ', s:'ـك'},
         {h: 'ل', tr: 'Lam', b:'لـ', o:'ـلـ', s:'ـل'}, 
         {h: 'م', tr: 'Mim', b:'مـ', o:'ـمـ', s:'ـم'},
@@ -593,14 +615,53 @@ const memoryGame = {
 };
 
 const game = {
+    mode: 'multi', 
     score: {p1:0, p2:0}, cur: "", p1S: null, p2S: null, t1: 0, t2: 0, questionPool: [],
+    
+    toggleMode: function(m) {
+        playClick();
+        this.mode = m;
+        document.getElementById('yarisma-toggle').checked = (m === 'multi');
+    },
+
+    // Yeni eklendi: Menüye / Mod seçimine geri dönme
+    showMenu: function() {
+        playClick();
+        document.getElementById('duel-stage-container').style.display = 'none';
+        document.getElementById('startInfo').style.display = 'flex';
+        
+        // Arka planda çalışan sayacı durdur (Hata önleyici)
+        if (this.timerTimeout) clearTimeout(this.timerTimeout);
+        if (this.animTimeout) clearTimeout(this.animTimeout);
+        
+        // Puanları ve arayüzü sıfırla
+        this.score = {p1:0, p2:0};
+        document.getElementById('sc1').innerText = "0";
+        document.getElementById('sc2').innerText = "0";
+        document.getElementById('pb1').style.width = '0%';
+        document.getElementById('pb2').style.width = '0%';
+    },
+
     fillPool: function() { this.questionPool = [...harfler].sort(() => Math.random() - 0.5); },
+    
     start: function() {
         playClick(); 
         
         document.getElementById('startInfo').style.display = 'none'; 
         document.getElementById('duel-stage-container').style.display = 'flex';
         
+        // Moda göre arayüzü ayarla
+        if (this.mode === 'single') {
+            document.getElementById('z2').style.display = 'none';
+            document.getElementById('pb2-container').style.display = 'none';
+            document.getElementById('z1-title').innerHTML = 'SKOR: <b id="sc1">' + this.score.p1 + '</b>';
+        } else {
+            document.getElementById('z2').style.display = 'flex';
+            document.getElementById('pb2-container').style.display = 'block';
+            document.getElementById('z1-title').innerHTML = 'OYUNCU 1 SKOR: <b id="sc1">' + this.score.p1 + '</b>';
+            document.getElementById('z2-title').innerHTML = 'OYUNCU 2 SKOR: <b id="sc2">' + this.score.p2 + '</b>';
+        }
+
         document.getElementById('z1').classList.remove('zone-correct', 'zone-wrong');
         document.getElementById('z2').classList.remove('zone-correct', 'zone-wrong');
         
@@ -613,7 +674,9 @@ const game = {
         const target = this.questionPool.pop(); 
         this.cur = target.tr;
         
-        ['1','2'].forEach(p => {
+        let activePlayers = this.mode === 'single' ? ['1'] : ['1', '2'];
+
+        activePlayers.forEach(p => {
             document.getElementById(`dq${p}`).innerText = target.h;
             const grid = document.getElementById(`ag${p}`); 
             grid.innerHTML = "";
@@ -627,67 +690,95 @@ const game = {
             });
         });
     },
+    
     select: function(p, btn, val) { 
         if(this[`p${p}S`] !== null) return; 
         playClick(); 
         this[`p${p}S`] = val; this[`t${p}`] = Date.now(); 
         btn.classList.add('selected'); 
-        if(this.p1S && this.p2S) this.reveal(); 
+        
+        if (this.mode === 'single') {
+            if(this.p1S) this.reveal();
+        } else {
+            if(this.p1S && this.p2S) this.reveal(); 
+        }
     },
+    
     reveal: function() {
         let p1Correct = (this.p1S === this.cur);
-        let p2Correct = (this.p2S === this.cur);
-        
-        ['1','2'].forEach(p => {
-            const z = document.getElementById(`z${p}`);
-            const isCorrect = this[`p${p}S`] === this.cur;
-            
-            if(isCorrect) {
-                z.classList.add('zone-correct'); 
+
+        // --- TEK KİŞİLİK MANTIK ---
+        if (this.mode === 'single') {
+            const z1 = document.getElementById('z1');
+            if(p1Correct) {
+                z1.classList.add('zone-correct'); 
                 const popup = document.createElement('div'); 
-                popup.className = 'puan-popup'; popup.innerText = "+5"; 
-                z.appendChild(popup); setTimeout(() => popup.remove(), 1000);
-                this.score[`p${p}`] += 5;
-            } else { 
-                z.classList.add('zone-wrong'); 
+                popup.className = 'puan-popup'; popup.innerText = "+10"; 
+                z1.appendChild(popup); setTimeout(() => popup.remove(), 1000);
+                this.score.p1 += 10; 
+                playCorrect();
+            } else {
+                z1.classList.add('zone-wrong');
+                playWrong();
             }
-        });
+        } 
+        // --- İKİ KİŞİLİK MANTIK ---
+        else {
+            let p2Correct = (this.p2S === this.cur);
+            
+            ['1','2'].forEach(p => {
+                const z = document.getElementById(`z${p}`);
+                const isCorrect = this[`p${p}S`] === this.cur;
+                
+                if(isCorrect) {
+                    z.classList.add('zone-correct'); 
+                    const popup = document.createElement('div'); 
+                    popup.className = 'puan-popup'; popup.innerText = "+5"; 
+                    z.appendChild(popup); setTimeout(() => popup.remove(), 1000);
+                    this.score[`p${p}`] += 5;
+                } else { 
+                    z.classList.add('zone-wrong'); 
+                }
+            });
 
-        if(p1Correct || p2Correct) playCorrect(); else playWrong();
+            if(p1Correct || p2Correct) playCorrect(); else playWrong();
 
-        // 10 PUANLIK SİSTEM (Rakip Hatası Bonusu veya Hız Bonusu)
-        if(p1Correct && !p2Correct) {
-            this.score.p1 += 5;
-            const p1Bonus = document.createElement('div'); 
-            p1Bonus.className = 'puan-popup'; p1Bonus.innerText = "HATA BONUSU! +5"; p1Bonus.style.color = "#38bdf8"; p1Bonus.style.top = "15%";
-            document.getElementById('z1').appendChild(p1Bonus); setTimeout(() => p1Bonus.remove(), 1000);
-        } else if(p2Correct && !p1Correct) {
-            this.score.p2 += 5;
-            const p2Bonus = document.createElement('div'); 
-            p2Bonus.className = 'puan-popup'; p2Bonus.innerText = "HATA BONUSU! +5"; p2Bonus.style.color = "#4ade80"; p2Bonus.style.top = "15%";
-            document.getElementById('z2').appendChild(p2Bonus); setTimeout(() => p2Bonus.remove(), 1000);
-        } else if(p1Correct && p2Correct) {
-            if(this.t1 < this.t2) {
+            if(p1Correct && !p2Correct) {
                 this.score.p1 += 5;
                 const p1Bonus = document.createElement('div'); 
-                p1Bonus.className = 'puan-popup'; p1Bonus.innerText = "HIZLI! +5"; p1Bonus.style.color = "#38bdf8"; p1Bonus.style.top = "15%";
+                p1Bonus.className = 'puan-popup'; p1Bonus.innerText = "HATA BONUSU! +5"; p1Bonus.style.color = "#38bdf8"; p1Bonus.style.top = "15%";
                 document.getElementById('z1').appendChild(p1Bonus); setTimeout(() => p1Bonus.remove(), 1000);
-            } else if(this.t2 < this.t1) {
+            } else if(p2Correct && !p1Correct) {
                 this.score.p2 += 5;
                 const p2Bonus = document.createElement('div'); 
-                p2Bonus.className = 'puan-popup'; p2Bonus.innerText = "HIZLI! +5"; p2Bonus.style.color = "#4ade80"; p2Bonus.style.top = "15%";
+                p2Bonus.className = 'puan-popup'; p2Bonus.innerText = "HATA BONUSU! +5"; p2Bonus.style.color = "#4ade80"; p2Bonus.style.top = "15%";
                 document.getElementById('z2').appendChild(p2Bonus); setTimeout(() => p2Bonus.remove(), 1000);
+            } else if(p1Correct && p2Correct) {
+                if(this.t1 < this.t2) {
+                    this.score.p1 += 5;
+                    const p1Bonus = document.createElement('div'); 
+                    p1Bonus.className = 'puan-popup'; p1Bonus.innerText = "HIZLI! +5"; p1Bonus.style.color = "#38bdf8"; p1Bonus.style.top = "15%";
+                    document.getElementById('z1').appendChild(p1Bonus); setTimeout(() => p1Bonus.remove(), 1000);
+                } else if(this.t2 < this.t1) {
+                    this.score.p2 += 5;
+                    const p2Bonus = document.createElement('div'); 
+                    p2Bonus.className = 'puan-popup'; p2Bonus.innerText = "HIZLI! +5"; p2Bonus.style.color = "#4ade80"; p2Bonus.style.top = "15%";
+                    document.getElementById('z2').appendChild(p2Bonus); setTimeout(() => p2Bonus.remove(), 1000);
+                }
             }
         }
 
+        // Skor Sınırı ve Bar Güncellemesi
         if(this.score.p1 > 100) this.score.p1 = 100;
         if(this.score.p2 > 100) this.score.p2 = 100;
 
         document.getElementById('sc1').innerText = this.score.p1; 
-        document.getElementById('sc2').innerText = this.score.p2; 
+        if(this.mode !== 'single') document.getElementById('sc2').innerText = this.score.p2; 
+        
         document.getElementById('pb1').style.width = this.score.p1 + '%';
         document.getElementById('pb2').style.width = this.score.p2 + '%';
 
+        // Bitiş Kontrolü
         if(this.score.p1 >= 100 || this.score.p2 >= 100) {
             const nBtn = document.getElementById('nextBtn');
             nBtn.innerText = "🏆 YENİDEN BAŞLAT";
@@ -695,53 +786,46 @@ const game = {
             nBtn.style.display = 'block'; 
             
             setTimeout(() => {
-                if(this.score.p1 === 100 && this.score.p2 === 100) alert("İNANILMAZ! BERABERE BİTTİ! 🤝");
-                else if(this.score.p1 >= 100) alert("OYUNCU 1 KAZANDI! 🎉");
-                else alert("OYUNCU 2 KAZANDI! 🎉");
+                if (this.mode === 'single') {
+                    alert("HARİKA! 100 PUANLA OYUNU TAMAMLADIN! 🎉");
+                } else {
+                    if(this.score.p1 === 100 && this.score.p2 === 100) alert("İNANILMAZ! BERABERE BİTTİ! 🤝");
+                    else if(this.score.p1 >= 100) alert("OYUNCU 1 KAZANDI! 🎉");
+                    else alert("OYUNCU 2 KAZANDI! 🎉");
+                }
             }, 500);
         } else {
-            // Animasyonlu Sayacı Başlat
             this.startCountdown();
         }
     },
+    
     startCountdown: function() {
         const overlay = document.getElementById('countdown-overlay');
         const circle = document.getElementById('countdown-circle');
         
-        // Önceki patlama animasyonunu temizle ve göster
         overlay.classList.remove('pop-out');
         overlay.style.display = 'block';
         
-        // Çizgiyi sıfırla
         circle.style.transition = 'none';
         circle.style.strokeDashoffset = '0';
         
-        // CSS'i yenile (Reflow)
         void circle.offsetWidth;
         
-        // Saat yönünde (264 tam tur uzunluğudur) yavaşça erimesini sağla
         circle.style.transition = 'stroke-dashoffset 2s linear';
         circle.style.strokeDashoffset = '264'; 
         
-        setTimeout(() => {
-            // Süre dolduğunda patlama animasyonunu ekle
+        this.timerTimeout = setTimeout(() => {
             overlay.classList.add('pop-out');
-            
-            // Patlama animasyonu bittikten sonra (0.4s) yeni soruya geç
-            setTimeout(() => {
+            this.animTimeout = setTimeout(() => {
                 overlay.style.display = 'none';
                 this.start();
             }, 400); 
-            
         }, 2000);
     },
+    
     resetGame: function() {
-        this.score = {p1:0, p2:0};
-        document.getElementById('sc1').innerText = "0";
-        document.getElementById('sc2').innerText = "0";
-        document.getElementById('pb1').style.width = '0%';
-        document.getElementById('pb2').style.width = '0%';
-        this.start();
+        // Yeniden Başlatılınca Mod Seçimine Dönsün
+        this.showMenu(); 
     }
 };
 
