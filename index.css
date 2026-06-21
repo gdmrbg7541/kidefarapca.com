@@ -543,3 +543,122 @@ body{
 .floating-tool-button.kaliplar-tablosu-btn:hover {
   background: #E67E22;
 }
+
+/* ==========================================================================
+   PREMIUM KURSLAR (VIP BÖLÜM) ÖZEL STİLLERİ
+   ========================================================================== */
+
+.premium-section {
+  background: linear-gradient(135deg, #FFFAF0 0%, #FFF3E0 100%);
+  border: 2px solid #FFC107;
+  box-shadow: 0 10px 30px rgba(255, 193, 7, 0.2);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.premium-title {
+  background: linear-gradient(90deg, #F39C12, #E67E22) !important;
+  color: white !important;
+  text-align: center;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3) !important;
+  display: inline-block;
+  padding: 10px 25px !important;
+  border-radius: 30px !important;
+}
+
+.premium-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.premium-content {
+  flex: 1;
+  text-align: center;
+  padding: 15px 0;
+}
+
+.premium-desc {
+  font-size: 1.1em;
+  color: #555;
+  margin: 10px 0 20px 0;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+
+/* Reklam Alanları ve Animasyonlar */
+.ad-banner {
+  width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.ad-banner img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  border: 3px solid white;
+}
+
+.floating-ad {
+  animation: floatAd 3s ease-in-out infinite;
+}
+
+.reverse-float {
+  animation: floatAdReverse 3.5s ease-in-out infinite;
+}
+
+@keyframes floatAd {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes floatAdReverse {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(12px); }
+  100% { transform: translateY(0px); }
+}
+
+/* VIP Kart Tasarımları (Geniş ve Boşluklu Yapı) */
+.premium-grid {
+  display: flex !important; /* Eski grid yapısını ezip esnek yapıya geçiyoruz */
+  justify-content: center;
+  align-items: stretch;
+  gap: 50px; /* İki kart arasındaki geniş boşluk */
+  padding: 20px;
+  flex-wrap: wrap; /* Ekran daraldığında alt alta inmeleri için */
+}
+
+.premium-card {
+  flex: 1; /* Kartların yatayda genişleyip alanı eşit paylaşmasını sağlar */
+  min-width: 300px; /* Ekran daraldığında çok küçülmesini engeller */
+  max-width: 480px; /* Çok geniş ekranlarda aşırı uzamasını engeller */
+  border: 3px solid transparent;
+  transform: scale(1.02); /* Hafif vurgulu başlar */
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.premium-card.offline-card {
+  background-color: #E8F8F5;
+  border-color: #2ecc71;
+}
+
+.premium-card.online-card {
+  background-color: #FEF5E7;
+  border-color: #f39c12;
+}
+
+.premium-card:hover {
+  transform: scale(1.05) translateY(-5px) !important;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.12) !important;
+  z-index: 20;
+}
