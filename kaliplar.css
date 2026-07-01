@@ -412,8 +412,8 @@ td:first-child {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .keyboard-container, .conjugation-container {
@@ -440,10 +440,15 @@ td:first-child {
 }
 
 .keyboard-container {
-    padding-top: 50px; 
+    padding: 0px !important;
+    box-sizing: border-box !important;
     background: transparent !important;
     border: none;
     box-shadow: none;
+    height: 100vh !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    justify-content: space-between;
 }
 
 .kb-row {
@@ -460,16 +465,17 @@ td:first-child {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #1d1d1f !important;
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--key-bg, #ffffff) !important;
+    color: #000000;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
     border-radius: 10px; 
     cursor: pointer;
     font-size: 1.6rem;
     user-select: none;
 }
 
-.key:hover { background: #323236 !important; }
+.key:hover { filter: brightness(0.9); }
 
 #temp-root-display {
     font-size: 3rem;
@@ -478,7 +484,8 @@ td:first-child {
     justify-content: center;
     align-items: center;
     height: 80px;
-    margin-bottom: 20px;
+    width: 500px;
+    margin: 0 auto 20px auto;
     background: rgba(0, 0, 0, 0.7); 
     border-radius: 14px;
     direction: rtl;
@@ -800,11 +807,11 @@ td:first-child {
 .matrix-fullscreen-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: #ffffff !important; z-index: 9999999 !important; overflow: hidden; 
-    padding: 2vh 3vw; box-sizing: border-box; direction: rtl; align-items: center; justify-content: center;
+    padding: 0; box-sizing: border-box; direction: rtl; align-items: center; justify-content: center;
 }
 
 .matrix-fullscreen-content {
-    width: 100%; height: 100%; max-width: 1400px;
+    width: 100%; height: 100%; max-width: 100%;
     position: relative; display: flex; flex-direction: column; justify-content: center;
 }
 
@@ -961,7 +968,7 @@ body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
     background: #f0fdf4; color: #166534; padding: 8px 20px; border-radius: 20px;
     font-family: 'Arakom', sans-serif; font-size: 22px; cursor: pointer; white-space: nowrap;
     border: 2px solid #34C759 !important; box-shadow: 0 4px 10px rgba(52, 199, 89, 0.15); 
-    font-weight: bold; transition: 0.2s;
+    font-weight: normal; transition: 0.2s;
 }
 .prediction-chip:hover { transform: scale(1.05); background: #dcfce7; box-shadow: 0 6px 15px rgba(52, 199, 89, 0.3); }
 
@@ -1044,7 +1051,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .keyboard-popup-dragbar { width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .keyboard-popup-dragbar div { width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px; pointer-events: none;}
 
-.integrated-keyboard-inner { display: flex; flex-direction: column; gap: 10px; padding: 0 20px 10px 20px; }
+.integrated-keyboard-inner { display: flex; flex-direction: column; gap: 10px; padding: 0 20px 0px 20px; }
 .search-kb-row { display: flex; justify-content: center; gap: 10px; direction: ltr; }
 .search-key {
     width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;
@@ -1143,7 +1150,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .crisp-root-clone .ar-root {
     font-family: 'Arakom', sans-serif !important; font-size: 130px !important; color: #000000 !important; 
     text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4) !important; line-height: 1.2 !important; white-space: nowrap !important;
-    display: block !important; direction: rtl !important; padding-bottom: 25px !important; 
+    display: block !important; direction: rtl !important; padding-bottom: 0px !important; 
 }
 
 @keyframes crispPopIn {
@@ -1576,7 +1583,7 @@ body.matrix-active { overflow: hidden !important; }
     background: #f8f9fa; border-bottom: 3px solid #eee;
     display: grid; grid-template-columns: repeat(6, 1fr);
     align-items: center; justify-items: center;
-    height: 110px; flex-shrink: 0; padding: 0 10px;
+    height: 70px; flex-shrink: 0; padding: 0 10px;
 }
 
 .header-item { display: flex; flex-direction: column; align-items: center; width: 100%; }
@@ -1586,16 +1593,16 @@ body.matrix-active { overflow: hidden !important; }
 .back-nav { 
     font-size: 1.1rem; border: 2px solid #6c5ce7; 
     background: white; color: #6c5ce7; padding: 8px 15px;
-    border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s;
+    border-radius: 12px; cursor: pointer; font-weight: normal; transition: 0.2s;
 }
 .back-nav:hover { background: #6c5ce7; color: white; }
 
-.chrono-btn { font-size: 2.5rem; background: none; border: none; filter: grayscale(1); transition: 0.3s; }
+.chrono-btn { font-size: 2.2rem; background: none; border: none; filter: grayscale(1); transition: 0.3s; }
 .chrono-btn.active { filter: grayscale(0); transform: scale(1.1); }
-.pause-circle { width: 55px; height: 55px; border-radius: 50%; border: none; background: #636e72; color: white; cursor: pointer; font-size: 1.5rem; }
-.stage-badge { background: #6c5ce7; color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.3rem; font-weight: bold; }
-.timer-val { font-size: 2.8rem; font-weight: bold; color: #ff7675; font-family: monospace; }
-.score-val { font-size: 2.8rem; font-weight: bold; color: #6c5ce7; }
+.pause-circle { width: 45px; height: 45px; border-radius: 50%; border: none; background: #636e72; color: white; cursor: pointer; font-size: 1.2rem; }
+.stage-badge { background: #6c5ce7; color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; }
+.timer-val { font-size: 2.2rem; font-weight: bold; color: #ff7675; font-family: monospace; }
+.score-val { font-size: 2.2rem; font-weight: bold; color: #6c5ce7; }
 
 .nav-arrow {
     position: absolute; top: 50%; transform: translateY(-50%);
@@ -1607,13 +1614,13 @@ body.matrix-active { overflow: hidden !important; }
 .nav-arrow:disabled { opacity: 0.1; cursor: not-allowed; }
 .arrow-right.finish-ready { background: #ff7675; color: white; }
 
-.marathon-screen { display: none; flex: 1; flex-direction: column; padding: 20px; width: 100%; }
+.marathon-screen { display: none; flex: 1; flex-direction: column; padding: 5px 20px; width: 100%; }
 .marathon-screen.active { display: flex; }
 
 .verb-table { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; direction: rtl; margin: 0 110px; }
 .marathon-cell { 
     display: flex; align-items: center; justify-content: center; border-radius: 18px; 
-    font-family: 'Arakom', serif; font-size: clamp(2rem, 6vh, 4.5rem); 
+    font-family: 'Arakom', serif; font-size: clamp(2.8rem, 9.5vh, 7.5rem); 
     font-weight: bold; border: 2px solid rgba(0,0,0,0.03); cursor: pointer;
 }
 .muez-row { background-color: #e3f2fd; color: #1565c0; }
@@ -1732,12 +1739,13 @@ body.matrix-active { overflow: hidden !important; }
     color: #0f172a !important; 
     font-size: 2.2rem !important; 
     font-family: 'Arakom', sans-serif !important; 
-    font-weight: bold !important;
+    font-weight: normal !important;
     padding: 10px 25px !important; 
     border-radius: 20px !important; 
     border: 2px solid #cbd5e1 !important; 
     box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important; 
-    cursor: pointer !important;
+    cursor: pointer !important; 
+    text-align: center !important;
     transition: transform 0.1s ease, background-color 0.2s ease !important;
     display: flex !important;
     align-items: center !important;
@@ -1789,7 +1797,7 @@ body.matrix-active { overflow: hidden !important; }
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
-    padding-bottom: 25px !important; /* Ekranın altından bırakılan nefes boşluğu */
+    padding-bottom: 0px !important; /* Ekranın altından bırakılan nefes boşluğu */
 }
 
 /* 2. Orta bölüm (Önemli kökler + Alfabe) kalan alanı doldurur */
@@ -1891,7 +1899,7 @@ body.matrix-active { overflow: hidden !important; }
 
 /* 3. TABLO DAVRANIŞI: MASAÜSTÜNDE SIĞDIR, MOBİLDE KAYDIR */
 .window-pencere { overflow: hidden !important; width: 100% !important; box-sizing: border-box !important; }
-.tab-content { width: 50% !important; flex-shrink: 0 !important; overflow-y: visible !important; overflow-x: hidden !important; padding-bottom: 25px !important; box-sizing: border-box !important; }
+.tab-content { width: 50% !important; flex-shrink: 0 !important; overflow-y: visible !important; overflow-x: hidden !important; padding-bottom: 0px !important; box-sizing: border-box !important; }
 .tab-content .container { width: 100% !important; min-width: 0 !important; margin: 0 auto !important; white-space: normal !important; box-sizing: border-box !important; }
 @media screen and (max-width: 1024px) {
     .tab-content { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
@@ -1940,7 +1948,7 @@ body.matrix-active { overflow: hidden !important; }
     #important-roots-list { gap: 6px !important; padding: 5px 0 5px 0 !important; }
     .flat-root-item { padding: 4px 10px !important; font-size: 16px !important; border-bottom-width: 2px !important; border-radius: 6px !important; }
     .letters-grid { gap: 5px !important; }
-    .letter-column { border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; }
+    .letter-column { flex: 0 0 100% !important; scroll-snap-align: center !important; overflow-y: auto !important; height: 100% !important; border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; box-sizing: border-box !important; }
     .col-range-header { padding: 4px !important; font-size: 11px !important; margin-top: -2px !important; margin-left: -2px !important; margin-right: -2px !important; border-radius: 6px 6px 0 0 !important; border-bottom-width: 2px !important; }
     .letter-column .glass-box { min-height: 30px !important; margin: 0 auto !important; width: 95% !important; padding: 2px !important; }
     
@@ -1962,3 +1970,210 @@ body.matrix-active { overflow: hidden !important; }
     user-select: none;         
     pointer-events: auto; /* Tıklama ve sürükleme işlevlerinin bozulmaması için */
 }
+
+.keyboard-overlay {
+    justify-content: flex-start !important;
+    padding-bottom: 0px !important; 
+    padding-top: 0px !important; 
+}
+
+/* Dinamik Uretilen Kok (Sihirli Cip) Animasyon ve Stili */
+@keyframes showLoading {
+    0%, 90% { opacity: 1; visibility: visible; }
+    100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes countdownTimer {
+    0% { content: "Kök Oluşturuluyor... 3"; }
+    33% { content: "Kök Oluşturuluyor... 2"; }
+    66% { content: "Kök Oluşturuluyor... 1"; }
+    95% { content: "Kök Hazır!"; color: #00ff00; }
+}
+
+@keyframes fillProgress {
+    0% { width: 0%; }
+    100% { width: 80%; }
+}
+
+@keyframes rightToLeftScan {
+    0% { clip-path: inset(0 0 0 100%); opacity: 0; transform: scale(0.95); }
+    5% { opacity: 1; }
+    100% { clip-path: inset(0 0 0 0); opacity: 1; transform: scale(1); }
+}
+
+@keyframes weldMove {
+    0% { right: 10%; opacity: 1; }
+    95% { right: 90%; opacity: 1; }
+    100% { right: 90%; opacity: 0; visibility: hidden; }
+}
+
+@keyframes weldSparks {
+    0% {
+        box-shadow: 0 0 10px 5px #ffee00, -5px -10px 5px 2px #ffcc00, 10px 5px 8px 1px #ffff00, -15px 15px 5px 2px #ffee00;
+        transform: translate(0, -5px) scale(1);
+    }
+    50% {
+        box-shadow: 0 0 15px 8px #ffffff, 5px -15px 4px 1px #ffee00, -10px 10px 10px 2px #ffcc00, 15px -5px 6px 3px #ffff00;
+        transform: translate(-3px, 8px) scale(1.5);
+    }
+    100% {
+        box-shadow: 0 0 5px 3px #ffff00, 10px 15px 4px 1px #ffdd00, -10px -10px 8px 2px #ffcc00, -5px 10px 5px 2px #ffee00;
+        transform: translate(3px, -3px) scale(0.8);
+    }
+}
+
+@keyframes fuseSettle {
+    0%   { border-color: rgba(255, 238, 0, 1); box-shadow: 0 0 30px rgba(255, 238, 0, 1), inset 0 0 15px rgba(255, 238, 0, 0.8); }
+    40%  { border-color: rgba(255, 238, 0, 0.6); box-shadow: 0 0 15px rgba(255, 238, 0, 0.6), inset 0 0 8px rgba(255, 238, 0, 0.4); }
+    100% { border-color: rgba(255, 238, 0, 0); box-shadow: none; }
+}
+@keyframes textGlowSettle {
+    0%   { text-shadow: 0 0 20px rgba(255, 238, 0, 1), 0 0 30px rgba(255, 238, 0, 1); }
+    100% { text-shadow: 0 0 8px rgba(255, 238, 0, 0.4); }
+}
+
+.dynamic-root-chip {
+    position: relative;
+    margin-top: 25px !important; 
+    border: 2px dashed rgba(255, 238, 0, 0) !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+    animation: fuseSettle 2.5s 3.2s ease-out forwards; /* Vurgu yavasca azalip biter */
+}
+
+.dynamic-root-loading {
+    position: absolute;
+    top: -25px; 
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    color: #8b5a2b;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(139, 90, 43, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    animation: showLoading 1.5s forwards;
+}
+
+.dynamic-root-countdown::after {
+    content: "Kök Oluşturuluyor... 3";
+    animation: countdownTimer 1.5s step-end forwards;
+}
+
+.dynamic-root-progress {
+    position: absolute;
+    top: -10px; /* Cizgi ile kutu arasinda daha cok bosluk */
+    left: 10%;
+    height: 3px;
+    background: #8b5a2b;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #8b5a2b;
+    opacity: 0;
+    visibility: hidden;
+    animation: fillProgress 1.5s linear forwards, showLoading 1.5s forwards;
+}
+
+.dynamic-root-text {
+    color: #ffffff !important;
+    text-shadow: 0 0 20px rgba(255, 238, 0, 1), 0 0 30px rgba(255, 238, 0, 1);
+    opacity: 0;
+    display: inline-block;
+    animation: rightToLeftScan 1.7s 1.5s ease-out forwards, textGlowSettle 2.5s 3.2s ease-out forwards;
+}
+
+.welding-spark-emitter {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 5;
+    pointer-events: none;
+    animation: 
+        weldMove 1.7s 1.5s ease-out forwards, 
+        weldSparks 0.05s 1.5s infinite;
+}
+
+.dynamic-root-chip:hover {
+    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-color: rgba(255, 238, 0, 0.5) !important;
+    box-shadow: 0 0 10px rgba(255, 238, 0, 0.4);
+}
+
+/* Scrollbar Gizleme */
+.hide-scrollbars {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbars::-webkit-scrollbar {
+    display: none;
+}
+
+.keyboard-bottom-area {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    width: calc(100% - 10px);
+    max-width: 1000px;
+    margin: 0 auto 5px auto;
+    padding: 15px 0 5px 0;
+    border: 3px solid #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+
+/* Kokleri maksimum 2 sutun yapma */
+#dynamic-root-display .prediction-chip {
+    flex: 0 0 calc(50% - 5px) !important;
+    max-width: calc(50% - 5px) !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* Tanimli olmayan köklerde numaranın (ref) kırmızı olmasını ve tıklanabilir görünmesini engeller */
+html body .glass-box.tanimsiz-kok.kok-turendi .ref,
+html body .glass-box.tanimsiz-kok .ref {
+    background-color: transparent !important;
+    color: #86868b !important;
+    animation: none !important;
+    box-shadow: none !important;
+    cursor: default !important;
+    transform: none !important;
+    padding: 0 !important;
+    pointer-events: none !important;
+}
+
+/* MEZİD TAB ALT ÇİZGİ DALGASI (BORDER SWEEP) ANİMASYONU */
+@keyframes borderSweep {
+    0% { transform: scaleX(0); transform-origin: left; opacity: 0; }
+    12% { transform: scaleX(1); transform-origin: left; opacity: 1; }
+    13% { transform-origin: right; }
+    25% { transform: scaleX(0); transform-origin: right; opacity: 0; }
+    100% { transform: scaleX(0); transform-origin: right; opacity: 0; }
+}
+
+.mezid-btn.heartbeat-active {
+    position: relative !important;
+    background: #f1f5f9 !important;
+    animation: none !important;
+}
+
+.mezid-btn.heartbeat-active::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #FF3B30;
+    border-radius: 2px;
+    animation: borderSweep 7s infinite ease-in-out;
+}
+
