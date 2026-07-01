@@ -108,7 +108,22 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
 
     if (isFromDictionary) {
         // Yeni Sözlük Verileri Mantığı
-        if (rootData["1"] && rootData["2"] && rootData["3"]) {
+        let hasVerbTriplet = (rootData["1"] && rootData["2"] && rootData["3"] && rootData["3"].isHiddenInList);
+        if (hasVerbTriplet) {
+            let tr1 = rootData["1"].base.trText.toLowerCase();
+            let tr2 = rootData["2"].base.trText.toLowerCase();
+            let isVerbLike = tr2.includes("yor") || tr2.includes("muzari") || 
+                             tr1.endsWith("di") || tr1.endsWith("dı") || 
+                             tr1.endsWith("ti") || tr1.endsWith("tı") ||
+                             tr1.endsWith("du") || tr1.endsWith("dü") ||
+                             tr1.endsWith("tu") || tr1.endsWith("tü");
+            if (!isVerbLike) {
+                hasVerbTriplet = false;
+            }
+        }
+        let isVerb = (kalipKey === "1" || kalipKey === "2" || kalipKey === "3") && hasVerbTriplet;
+        
+        if (isVerb) {
             // Fiil (Mazi, Muzari, Emir)
             htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; text-align:center;">`;
             const cards = [
@@ -125,30 +140,48 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 </div>`;
             });
             htmlContent += `</div>`;
-        } else if (rootData["1"] && rootData["2"]) {
-            // İsim (Tekil, Çoğul)
-            htmlContent += `<div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:20px; text-align:center;">`;
-            const cards = [
-                { data: rootData["1"], label: "Tekil", color: "#f39c12" },
-                { data: rootData["2"], label: "Çoğul", color: "#3498db" }
-            ];
-            cards.forEach(card => {
-                htmlContent += `
-                <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                    <strong style="display:block; font-size:4rem; margin-bottom:15px; color:#fff;">${card.data.base.arText}</strong>
-                    <div style="color:${card.color}; font-size:1.5rem; font-weight:bold;" dir="ltr">${card.label}</div>
-                    <div style="color:#ddd; font-size:1.2rem; margin-top:10px;" dir="ltr">${card.data.base.trText}</div>
-                </div>`;
-            });
-            htmlContent += `</div>`;
         } else {
-            // Tek Kart
-            const item = rootData["1"] || rootData[kalipKey];
-            htmlContent += `
-            <div style="background:rgba(0,0,0,0.4); padding:40px 20px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align:center;">
-                <strong style="display:block; font-size:5rem; margin-bottom:20px; color:#fff;">${item.base.arText}</strong>
-                <div style="color:#f39c12; font-size:1.8rem; font-weight:bold;" dir="ltr">${item.base.trText}</div>
-            </div>`;
+            // İsim mantığı (Tekil, Çoğul) - SADECE TIKLANAN GRUBU GÖSTER
+            let k = parseInt(kalipKey);
+            if (isNaN(k)) k = 1;
+            
+            let tekilId;
+            if (hasVerbTriplet) {
+                // Fiil 1,2,3'ü kapladığı için isimler 4'ten başlar: (4,5), (6,7)...
+                tekilId = (k % 2 === 0) ? k : k - 1;
+            } else {
+                // Normal isim dizilimi: (1,2), (3,4)...
+                tekilId = (k % 2 !== 0) ? k : k - 1;
+            }
+            
+            let cogulId = tekilId + 1;
+            
+            let itemTekil = rootData[tekilId.toString()];
+            let itemCogul = rootData[cogulId.toString()];
+            
+            if (itemTekil && itemCogul) {
+                htmlContent += `<div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:20px; text-align:center;">`;
+                const cards = [
+                    { data: itemTekil, label: "Tekil", color: "#f39c12" },
+                    { data: itemCogul, label: "Çoğul", color: "#3498db" }
+                ];
+                cards.forEach(card => {
+                    htmlContent += `
+                    <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                        <strong style="display:block; font-size:4rem; margin-bottom:15px; color:#fff;">${card.data.base.arText}</strong>
+                        <div style="color:${card.color}; font-size:1.5rem; font-weight:bold;" dir="ltr">${card.label}</div>
+                        <div style="color:#ddd; font-size:1.2rem; margin-top:10px;" dir="ltr">${card.data.base.trText}</div>
+                    </div>`;
+                });
+                htmlContent += `</div>`;
+            } else {
+                let item = itemTekil || rootData[kalipKey] || rootData["1"];
+                htmlContent += `
+                <div style="background:rgba(0,0,0,0.4); padding:40px 20px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align:center;">
+                    <strong style="display:block; font-size:5rem; margin-bottom:20px; color:#fff;">${item.base.arText}</strong>
+                    <div style="color:#f39c12; font-size:1.8rem; font-weight:bold;" dir="ltr">${item.base.trText}</div>
+                </div>`;
+            }
         }
     } else {
         // Eski wordEasterEggs Mantığı
@@ -183,7 +216,7 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
         else if (kalipKey >= 94 && kalipKey <= 97) { maziId = 94; muzariId = 95; emirId = 96; }
         else if (kalipKey >= 100 && kalipKey <= 105) { maziId = 100; muzariId = 101; emirId = 102; }
         
-        let isVerb = (maziId !== -1 && (kalipKey <= 18 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(kalipKey)));
+        let isVerb = (maziId !== -1 && (kalipKey <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(kalipKey)));
         
         if (isVerb) {
             htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; text-align:center;">`;
@@ -4529,7 +4562,7 @@ function updateMainKeyboardPredictions() {
         let matchCount = 0;
         let matchesByLetter = {};
         
-        for (const [rootKey, rootData] of Object.entries(sozlukVerileri)) {
+        for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
             for (const [kalipKey, kalipData] of Object.entries(rootData)) {
                 if (kalipData.base && kalipData.base.arText) {
                     const strippedAr = window.stripHarakat(kalipData.base.arText);
