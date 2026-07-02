@@ -265,7 +265,11 @@ table {
     margin: 0;
 }
 
-th:nth-child(1) { width: 10%; } 
+/* Bağımsız Başlık Genişlikleri */
+#tab1 th:nth-child(1) { width: 10% !important; min-width: 80px !important; }
+#tab2 th:nth-child(1) { width: 280px !important; min-width: 280px !important; max-width: 280px !important; }
+#table-view th:nth-child(1) { width: 280px !important; min-width: 280px !important; max-width: 280px !important; }
+#table-view th:nth-child(1) { width: 22% !important; min-width: 350px; } 
 th:nth-child(2) { width: 11%; } 
 th:nth-child(3) { width: 11%; } 
 th:nth-child(4) { width: 11%; } 
@@ -342,7 +346,7 @@ td:first-child {
 
 .ar { font-size: 42px; color: #000 !important; line-height: 1.2; }
 .ar-small { font-size: 30px; color: #000 !important; line-height: 1.2; }
-.ref { position: absolute; top: 2px; right: 4px; font-size: 14px; color: #86868b !important; }
+.ref { position: absolute; top: 2px; right: 4px; font-size: 14px; color: #FF3B30 !important; }
 
 .mastar-grid { 
     display: grid; 
@@ -361,6 +365,8 @@ td:first-child {
     margin-top: 10px; 
     width: 100%;
 }
+
+.footer-container .ar { font-size: 36px !important; }
 
 .footer-block { 
     background: #e5e5ea !important; 
@@ -395,12 +401,13 @@ td:first-child {
 .cemi-grid { 
     display: grid; 
     grid-template-columns: repeat(4, 1fr); 
-    gap: 6px; 
+    gap: 1px; 
     justify-items: center;
 }
 
 .full-screen-mode th, .full-screen-mode td { padding: 20px !important; }
-.cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; }
+.cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; padding-top: 4px !important; padding-bottom: 4px !important; margin-top: 2px !important; margin-bottom: 2px !important; }
+.cemi-grid .glass-box .ar, .tafdil-area .glass-box .ar, .tasgir-area .glass-box .ar { line-height: 1.1 !important; margin-bottom: -2px !important; }
 
 .keyboard-overlay, .conjugation-overlay {
     display: none; 
@@ -2141,7 +2148,7 @@ body.matrix-active { overflow: hidden !important; }
 html body .glass-box.tanimsiz-kok.kok-turendi .ref,
 html body .glass-box.tanimsiz-kok .ref {
     background-color: transparent !important;
-    color: #86868b !important;
+    color: #FF3B30 !important;
     animation: none !important;
     box-shadow: none !important;
     cursor: default !important;
@@ -2153,9 +2160,9 @@ html body .glass-box.tanimsiz-kok .ref {
 /* MEZİD TAB ALT ÇİZGİ DALGASI (BORDER SWEEP) ANİMASYONU */
 @keyframes borderSweep {
     0% { transform: scaleX(0); transform-origin: left; opacity: 0; }
-    12% { transform: scaleX(1); transform-origin: left; opacity: 1; }
-    13% { transform-origin: right; }
-    25% { transform: scaleX(0); transform-origin: right; opacity: 0; }
+    21% { transform: scaleX(1); transform-origin: left; opacity: 1; }
+    23% { transform-origin: right; }
+    44% { transform: scaleX(0); transform-origin: right; opacity: 0; }
     100% { transform: scaleX(0); transform-origin: right; opacity: 0; }
 }
 
@@ -2174,6 +2181,6 @@ html body .glass-box.tanimsiz-kok .ref {
     height: 3px;
     background-color: #FF3B30;
     border-radius: 2px;
-    animation: borderSweep 7s infinite ease-in-out;
+    animation: borderSweep 4s infinite ease-in-out;
 }
 

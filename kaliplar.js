@@ -140,17 +140,24 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             // Fiil (Mazi, Muzari, Emir)
             htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; text-align:center;">`;
             const cards = [
-                { data: rootData["1"], label: "Mazi", color: "#f39c12" },
-                { data: rootData["2"], label: "Muzari", color: "#3498db" },
-                { data: rootData["3"], label: "Emir", color: "#e74c3c" }
+                { id: 1, data: rootData["1"], label: "Mazi", color: "#f39c12" },
+                { id: 2, data: rootData["2"], label: "Muzari", color: "#3498db" },
+                { id: 3, data: rootData["3"], label: "Emir", color: "#e74c3c" }
             ];
             cards.forEach(card => {
+                let emoji = (card.data && card.data.base && card.data.base.emoji) ? `<div style="font-size:3.5rem; margin-bottom:15px;">${card.data.base.emoji}</div>` : '';
+                let trText = (card.data && card.data.base && card.data.base.trText) ? `<div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${card.data.base.trText}</div>` : '';
+                let arText = (card.data && card.data.base && card.data.base.arText) ? card.data.base.arText : "";
+                if (!arText && typeof generateTuremis === "function") {
+                    arText = generateTuremis(rootKey, card.id);
+                }
+                
                 htmlContent += `
                 <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                     <div style="color:${card.color}; font-size:1.6rem; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
-                    ${card.data.base.emoji ? `<div style="font-size:3.5rem; margin-bottom:15px;">${card.data.base.emoji}</div>` : ''}
-                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${card.data.base.arText}</span>
-                    <div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${card.data.base.trText}</div>
+                    ${emoji}
+                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${arText}</span>
+                    ${trText}
                 </div>`;
             });
             htmlContent += `</div>`;
@@ -255,15 +262,23 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 { id: emirId, label: "Emir", color: "#e74c3c" }
             ];
             verbCards.forEach(card => {
-                if (rootData[card.id]) {
-                    htmlContent += `
-                    <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        <div style="color:${card.color}; font-size:1.6rem; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
-                        ${rootData[card.id].base.emoji ? `<div style="font-size:3.5rem; margin-bottom:15px;">${rootData[card.id].base.emoji}</div>` : ''}
-                        <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${rootData[card.id].base.arText}</span>
-                        ${rootData[card.id].base.trText ? `<div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rootData[card.id].base.trText}</div>` : ''}
-                    </div>`;
+                let rData = rootData[card.id] || { base: {} };
+                
+                let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:3.5rem; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
+                let trText = (rData.base && rData.base.trText) ? `<div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
+                let arText = (rData.base && rData.base.arText) ? rData.base.arText : "";
+                
+                if (!arText && typeof generateTuremis === "function") {
+                    arText = generateTuremis(rootKey, card.id);
                 }
+
+                htmlContent += `
+                <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <div style="color:${card.color}; font-size:1.6rem; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
+                    ${emoji}
+                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${arText}</span>
+                    ${trText}
+                </div>`;
             });
             htmlContent += `</div>`;
         } else {
@@ -4656,6 +4671,22 @@ function updateMainKeyboardPredictions() {
                         continue;
                     }
 
+                    // KULLANICI İSTEĞİ: Sözlükte sadece şu kelimeler çıksın:
+                    // 1. Tanımlı köklere ait mazi, muzari, emir fiiller
+                    // 2. Sadece tekil ve çoğulu verilmiş olan sözlükverileri kelimeleri
+                    let k = parseInt(kalipKey, 10);
+                    let isAllowedVerb = false;
+                    if (!isNaN(k)) {
+                        isAllowedVerb = (k <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(k));
+                    }
+                    let isDictOnlyWord = (rootData.isDictOnly === true);
+                    let isStandaloneNoun = (kalipKey === "tekil"); // just in case
+                    let hasCogul = !!kalipData.cogulId; // Kök içinde özel olarak çoğulu tanımlanmış tekiller (Örn: صور kökündeki Kalıp 21)
+                    
+                    if (!isAllowedVerb && !isDictOnlyWord && !isStandaloneNoun && !hasCogul) {
+                        continue;
+                    }
+
                     // Eğer aranan kelime kökün içinde geçiyorsa veya tam eşleşiyorsa
                     const isArabicSearch = /[\u0600-\u06FF]/.test(filter);
                     let matches = false;
@@ -5355,6 +5386,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["if'âl", "if'al", "ifal", "ifâl"], 
             title: "İf'âl", 
+            harf: "أَ ـ ـ ـ", num: 4,
             desc: `
             <p>• <b>Geçişlilik:</b> Lâzım (geçişsiz) fiilleri Müteaddi (geçişli) yapar. <br>Örn: <span class="arabic-sample">ضَحِكَ</span> (Güldü) → <span class="arabic-sample">أَضْحَكَ</span> (Güldürdü)</p>
             <p>• <b>Zaman ve Mekan:</b> Eylemin zamanla veya mekanla anlam kurmasını sağlar.<br>Örn: <span class="arabic-sample">أَصْبَحَ</span> (Sabaha girdi), <span class="arabic-sample">أَعْرَقَ</span> (Irak'a vardı)</p>
@@ -5365,6 +5397,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["tef'îl", "tef'il", "tefil", "tefîl"], 
             title: "Tef'îl", 
+            harf: "ـ ـّ ـ", num: 4,
             desc: `
             <p>• <b>Geçişlilik:</b> Geçişsiz fiilleri geçişli yapar. <br>Örn: <span class="arabic-sample">عَلِمَ</span> (Bildi) → <span class="arabic-sample">عَلَّمَ</span> (Öğretti)</p>
             <p>• <b>Yoğunluk:</b> Aşırılık ve kuvvet bildirir. <br>Örn: <span class="arabic-sample">مَزَقَ</span> (Yırttı) → <span class="arabic-sample">مَزَّقَ</span> (Parçaladı)</p>
@@ -5374,6 +5407,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["mufâ'ale", "mufa'ale", "müfâ'ale", "müfa'ale", "mufaale", "müfaale"], 
             title: "Mufâ'ale", 
+            harf: "ـ ـا ـ ـ", num: 4,
             desc: `
             <p>• <b>Müşareket:</b> İşteşlik (karşılıklılık) bildirir. <br>Örn: <span class="arabic-sample">كَتَبَ</span> (Yazdı) → <span class="arabic-sample">كَاتَبَ</span> (Yazıştı)</p>
             <p>• <b>Kararlılık:</b> Israr ve davranış biçimi anlatır. <br>Örn: <span class="arabic-sample">طَلَبَ</span> (İstedi) → <span class="arabic-sample">طَالَبَ</span> (Talep etti)</p>
@@ -5383,6 +5417,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["infi'âl", "infi'al", "infial", "infiâl"], 
             title: "İnfi'âl", 
+            harf: "اِنْـ ـ ـ ـ", num: 5,
             desc: `
             <p>• <b>Edilgenlik:</b> Fiili edilgen (yapıldı) hale getirir. <br>Örn: <span class="arabic-sample">كَسَرَ</span> (Kırdı) → <span class="arabic-sample">اِنْكَسَرَ</span> (Kırıldı)</p>
             <p>• <b>Dönüşlülük:</b> Eylemin etkisi özneye döner. <br>Örn: <span class="arabic-sample">قَلَبَ</span> (Döndürdü) → <span class="arabic-sample">اِنْقَلَبَ</span> (Ters döndü)</p>
@@ -5391,6 +5426,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["ifti'âl", "ifti'al", "iftial", "iftiâl"], 
             title: "İfti'âl", 
+            harf: "اِ ـ ـتَـ ـ ـ", num: 5,
             desc: `
             <p>• <b>Dönüşlülük:</b> Eylemin sonucunu belirtir. <br>Örn: <span class="arabic-sample">اِجْتَمَعَ</span> (Toplandı), <span class="arabic-sample">اِرْتَفَعَ</span> (Yükseldi)</p>
             <p>• <b>Gayret:</b> Çaba ve edinme manası katar. <br>Örn: <span class="arabic-sample">اِجْتَهَدَ</span> (Çalıştı), <span class="arabic-sample">اِكْتَسَبَ</span> (Kazandı)</p>
@@ -5400,6 +5436,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["if'ılâl", "if'ılal", "if'ilâl", "if'ilal", "ifılal", "ifilal", "ifılâl"], 
             title: "İf'ılâl", 
+            harf: "اِ ـ ـ ـّ", num: 5,
             desc: `
             <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
             <p>• <b>Kusurlar:</b> Sakatlık ve noksanlık belirtir. <br>Örn: <span class="arabic-sample">اِعْرَجَّ</span> (Topalladı)</p>
@@ -5408,6 +5445,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["tefa'ul", "tefe'ul", "tefeul", "tefaul", "tefa'ül", "tefe'ül", "tefaül", "tefeül"], 
             title: "Tefa'ul", 
+            harf: "تَـ ـ ـّ ـ", num: 5,
             desc: `
             <p>• <b>Çaba:</b> Gayret ve sahiplenme bildirir. <br>Örn: <span class="arabic-sample">تَصَبَّرَ</span> (Sabretti), <span class="arabic-sample">تَوَسَّدَ</span> (Yastık edindi)</p>
             <p>• <b>Dönüşlülük:</b> Tef'îl vezninin dönüşlü halidir. <br>Örn: <span class="arabic-sample">تَفَرَّقَ</span> (Dağıldı), <span class="arabic-sample">تَكَسَّرَ</span> (Parçalandı)</p>
@@ -5417,6 +5455,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["tefâ'ul", "tefâul", "tefâ'ül", "tefâül"], 
             title: "Tefâ'ul", 
+            harf: "تَـ ـ ـا ـ ـ", num: 5,
             desc: `
             <p>• <b>İşteşlik:</b> Ortaklık belirtir. <br>Örn: <span class="arabic-sample">تَعَاوَنَ</span> (Yardımlaştı), <span class="arabic-sample">تَمَازَحَ</span> (Şakalaştı)</p>
             <p>• <b>Yapmacıklık:</b> Olmayan bir şeyi olmuş gibi gösterir. <br>Örn: <span class="arabic-sample">تَمَارِضَ</span> (Hasta numarası yaptı)</p>
@@ -5426,6 +5465,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["istif'âl", "istif'al", "istifal", "istifâl"], 
             title: "İstif'âl", 
+            harf: "اِسْتِـ ـ ـ ـ", num: 6,
             desc: `
             <p>• <b>İstek:</b> Talep ve bulmak manası verir. <br>Örn: <span class="arabic-sample">اِسْتَغْفَرَ</span> (Af diledi), <span class="arabic-sample">اِسْتَسْهَلَ</span> (Kolay buldu)</p>
             <p>• <b>Değişim:</b> Durum değişikliği veya vakit bildirir. <br>Örn: <span class="arabic-sample">اِسْتَحْجَرَ</span> (Taşlaştı), <span class="arabic-sample">اِسْتَحْصَدَ</span> (Hasat vakti geldi)</p>
@@ -5435,7 +5475,7 @@ function getBabInfo(rawName) {
     ];
 
     for (let bab of babs) {
-        if (bab.keys.includes(cleanName)) return { title: bab.title, desc: bab.desc };
+        if (bab.keys.includes(cleanName)) return { title: bab.title, desc: bab.desc, harf: bab.harf, num: bab.num };
     }
     return null; 
 }
@@ -5468,6 +5508,9 @@ window.closeBabInfo = function(event) {
 };
 
 window.initBabIcons = function() {
+    // Renklerin daha koyu, tok ve okunaklı pastel tonları
+    const pastelColors = ['#f87171', '#fb923c', '#eab308', '#4ade80', '#2dd4bf', '#22d3ee', '#38bdf8', '#60a5fa', '#a78bfa', '#c084fc', '#f472b6', '#fb7185'];
+    let colorIndex = 0;
     // 'align="center"' olan td'leri bul (Masdar Tablosundaki Hücreler)
     const tdElements = document.querySelectorAll('td[align="center"]');
     
@@ -5480,10 +5523,26 @@ window.initBabIcons = function() {
         let info = getBabInfo(originalText);
         
         if (info) {
+            let iconColor = pastelColors[colorIndex % pastelColors.length];
+            colorIndex++;
             // 1. Eğer hücrede henüz (i) ikonu yoksa, JS ile biz ekleyelim
             if (!td.querySelector('.info-icon')) {
-                td.style.position = 'relative'; 
-                td.innerHTML = `${originalText} <span class="info-icon" title="${info.title} Özellikleri"><i class="fas fa-info-circle"></i></span>`;
+                let leftBadgeHtml = '';
+                if (info.harf && info.num) {
+                    let harfDisplay = info.harf;
+                    // Şedde hack'leri kaldırıldı çünkü artık tüm şeddeler çizgilere (tatweel) bağlı ve native olarak sorunsuz render ediliyor.
+                    leftBadgeHtml = `<span class="ar" style="line-height: 1; color: #FF3B30 !important; white-space: nowrap;" dir="rtl">${harfDisplay}</span>
+                        <span style="font-family: 'Arakom', sans-serif; font-weight: normal; font-size: 1.25rem; color: #94a3b8;">${info.num}</span>`;
+                }
+                
+                td.style.position = 'relative';
+                td.style.padding = '0';
+                td.innerHTML = `
+                <div style="display: grid; grid-template-columns: 135px 30px 85px 30px; justify-items: center; align-items: center; width: 100%; height: 100%;" dir="ltr">
+                    ${leftBadgeHtml}
+                    <span style="font-family: 'Arakom', sans-serif; font-size: 1.15rem; font-weight: normal; color: #FF3B30; white-space: nowrap;">${originalText}</span>
+                    <span class="info-icon" style="position: relative !important; top: auto !important; transform: none !important; right: auto !important; margin: 0 !important; color: ${iconColor} !important; cursor: pointer;" title="${info.title} Özellikleri"><i class="fas fa-info-circle"></i></span>
+                </div>`;
             }
             
             // 2. İkon ister HTML'de hazır olsun ister biz eklemiş olalım, TIKLAMA GÖREVİNİ ZORLA ATA!

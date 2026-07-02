@@ -98,7 +98,7 @@ const eski_sozlukVerileri = {
                 emoji: "👣", 
                 arText: "أَثَر", 
                 trText: "Eser / İz, kalıntı, bırakılan şey." 
-            },
+            }
         },
        // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi) ---
         52: { 
@@ -830,9 +830,8 @@ const eski_sozlukVerileri = {
         },
         
         // --- 21 Numaralı Kalıp (فُعْل) ---
-        21: { 
-            suggestsPlus: true, 
-            "ة": { 
+        21: {
+            base: {
                 emoji: "💪", 
                 arText: "قُدْرَة", 
                 trText: "Kudret / Güç.",
@@ -840,7 +839,7 @@ const eski_sozlukVerileri = {
                     ar: "قُدْرَةُ اللهِ لَا حُدُودَ لَهَا",
                     tr: "Allah'ın kudretinin (gücünün) sınırı yoktur."
                 }
-            } 
+            }
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -1222,7 +1221,9 @@ const eski_sozlukVerileri = {
 
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
-            base: { emoji: "📖" },
+            base: {
+                arText: "حُكْم",
+                 emoji: "📖" },
             suggestsPlus: true, 
             "ة": { 
                 emoji: "🦉", 
@@ -1286,7 +1287,9 @@ const eski_sozlukVerileri = {
         
         // --- 38 Numaralı Kalıp (مَفْعَل) ---
         38: { 
-            base: { emoji: "⚖️" },
+            base: {
+                arText: "مَحْكَمَة",
+ emoji: "⚖️" },
             suggestsPlus: true, 
             "ة": { 
                 emoji: "⚖️", 
@@ -1571,14 +1574,12 @@ const eski_sozlukVerileri = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: {},
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "🌧️", 
                 arText: "رَحْمَة", 
                 trText: "Rahmet / Merhamet.",
-                ornek: { ar: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ", tr: "Biz seni ancak âlemlere rahmet olarak gönderdik. (Enbiyâ Suresi, 107)" } 
-            } 
+                ornek: { ar: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ", tr: "Biz seni ancak âlemlere rahmet olarak gönderdik. (Enbiyâ Suresi, 107)" }
+            }
         },
 
          // --- 28 Numaralı Kalıp (فَعْلَان) ---
@@ -2217,14 +2218,12 @@ const eski_sozlukVerileri = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "🙇", arText: "سَجْد", trText: "Secde (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "🧎", 
                 arText: "سَجْدَة", 
                 trText: "Bir defa secde etme.",
-                ornek: { ar: "سَجْدَةُ الشُّكْرِ تَدُلُّ عَلَى الِامْتِنَانِ", tr: "Şükür secdesi, minnettarlığı (şükranı) gösterir." } 
-            } 
+                ornek: { ar: "سَجْدَةُ الشُّكْرِ تَدُلُّ عَلَى الِامْتِنَانِ", tr: "Şükür secdesi, minnettarlığı (şükranı) gösterir." }
+            }
         },
         
         // --- 25 Numaralı Kalıp (فُعُول) ---
@@ -2680,14 +2679,12 @@ const eski_sozlukVerileri = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "💧", arText: "شَرْب", trText: "İçme (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "🍵", 
                 arText: "شَرْبَة", 
                 trText: "Bir içimlik / Şerbet.",
                 ornek: { ar: "أَعْطِنِي شَرْبَةَ مَاءٍ مِنْ فَضْلِكَ", tr: "Lütfen bana bir içimlik su ver." }
-            } 
+            }
         },
         
         // --- 22 Numaralı Kalıp (فَعَال) ---
@@ -2845,14 +2842,12 @@ const eski_sozlukVerileri = {
     "عصم": {
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
-            base: { emoji: "🛡️", arText: "عِصْم", trText: "Koruma (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "🕊️", 
                 arText: "عِصْمَة", 
                 trText: "İsmet / Günahsızlık.",
                 ornek: { ar: "عِصْمَةُ الْأَنْبِيَاءِ", tr: "Peygamberlerin günahsızlığı (İsmet sıfatı)." }
-            } 
+            }
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -4014,14 +4009,12 @@ const eski_sozlukVerileri = {
         
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
-            base: { emoji: "📊", arText: "نِسْب", trText: "Oran (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "📊", 
                 arText: "نِسْبَة", 
                 trText: "Nispet / Oran.",
                 ornek: { ar: "نِسْبَةُ النَّجَاحِ عَالِيَةٌ فِي الِامْتِحَانِ", tr: "Sınavdaki başarı nispeti (oranı) oldukça yüksektir." }
-            } 
+            }
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
@@ -4464,14 +4457,12 @@ const eski_sozlukVerileri = {
         
         // --- 21 Numaralı Kalıp (فُعْل) ---
         21: { 
-            base: { emoji: "🤝", arText: "نُصْر", trText: "Yardım (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "🤝", 
                 arText: "نُصْرَة", 
                 trText: "Yardım etme / Nusret.",
                 ornek: { ar: "نُصْرَةُ الْمَظْلُومِ وَاجِبَةٌ", tr: "Mazluma yardım etmek (nusret/destek) vaciptir." }
-            } 
+            }
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -4525,14 +4516,12 @@ const eski_sozlukVerileri = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-            base: { emoji: "📣", arText: "حَمْل", trText: "Yük / Taşıma (Yalın)." },
-            suggestsPlus: true, 
-            "ة": { 
+            base: {
                 emoji: "📣", 
                 arText: "حَمْلَة", 
                 trText: "Kampanya / Hamle.",
                 ornek: { ar: "حَمْلَةٌ تَعْلِيمِيَّةٌ جَدِيدَةٌ", tr: "Yeni bir eğitim kampanyası (hamlesi)." }
-            } 
+            }
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -5151,7 +5140,7 @@ const eski_sozlukVerileri = {
                 emoji: "🗣️", 
                 arText: "شَكَرَ", 
                 trText: "Şükretti / Teşekkür etti." 
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -5165,7 +5154,7 @@ const eski_sozlukVerileri = {
                     ar: "وَمَنْ يَشْكُرْ فَإِنَّمَا يَشْكُرُ لِنَفْسِهِ", 
                     tr: "Kim şükrederse, ancak kendi lehine şükretmiş olur. (Lokman Suresi, 12)" 
                 }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
@@ -5189,9 +5178,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "🙏", 
                 arText: "شُكْر", 
-                trText: "Şükür / Minnet, teşekkür etme.",
-              
-            }, 
+                trText: "Şükür / Minnet, teşekkür etme."
+        }, 
             suggestsPlus: true, 
             "ًا": { 
                 emoji: "✨", 
@@ -5354,8 +5342,7 @@ const eski_sozlukVerileri = {
 
         20: { 
             
-            base: { emoji: "🎬", arText: "رَدُّ فِعْلٍ", trText: "Tepki / Reaksiyon (Geri eylem)." },
- 
+            base: { emoji: "🎬", arText: "رَدُّ فِعْلٍ", trText: "Tepki / Reaksiyon (Geri eylem)." }
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
@@ -5439,13 +5426,13 @@ const eski_sozlukVerileri = {
             base: { emoji: "❗", arText: "شُدَّ", trText: "Sık / Bağla!" },
             cekimi: ["شُدَّ", "شُدَّا", "شُدُّوا", "شُدِّي", "شُدَّا", "اُشْدُدْنَ"]
         },
-        20: { 
-            suggestsPlus: true, 
-            "ة": { 
+        20: {
+            base: {
                 emoji: "⚡️", 
                 arText: "شِدَّة", 
-                trText: "Şiddet" 
-            },
+                trText: "Şiddet"
+            }, 
+
             cekimi: ["شِدّ"]
         },
         35: { 
@@ -5473,10 +5460,10 @@ const eski_sozlukVerileri = {
             cekimi: ["كُلْ", "كُلَا", "كُلُوا", "كُلِي", "كُلَا", "كُلْنَ"]
         },
         19: { 
-            base: { emoji: "🍎", arText: "أَكْل", trText: "Yemek (Masdar)." },
+            base: { emoji: "🍎", arText: "أَكْل", trText: "Yemek (Masdar)." }
         },
         33: { 
-            base: { emoji: "🙋", arText: "آكِل", trText: "Yiyen, Obur (İsm-i Fail)." },
+            base: { emoji: "🙋", arText: "آكِل", trText: "Yiyen, Obur (İsm-i Fail)." }
         },
         36: { 
             suggestsPlus: true,
@@ -5503,7 +5490,7 @@ const eski_sozlukVerileri = {
             cekimi: ["اِسْأَلْ", "اِسْأَلَا", "اِسْأَلُوا", "اِسْأَلِي", "اِسْأَلَا", "اِسْأَلْنَ"]
         },
         24: { 
-            base: { emoji: "❓", arText: "سُؤَال", trText: "Soru / Sual." },
+            base: { emoji: "❓", arText: "سُؤَال", trText: "Soru / Sual." }
         },
         33: { 
             base: { emoji: "🙋‍♂️", arText: "سَائِل", trText: "Soran / İsteyen (Dilenci)." },
@@ -5513,7 +5500,7 @@ const eski_sozlukVerileri = {
             }
         },
         36: { 
-            base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful)." },
+            base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful)." }
         },
         38: { 
             suggestsPlus: true,
@@ -5527,34 +5514,36 @@ const eski_sozlukVerileri = {
 
     "قول": {
         1: { 
-            base: { emoji: "🗣️", arText: "قَالَ", trText: "Dedi / Söyledi." },
+            base: { emoji: "🗣️", arText: "قَالَ", trText: "Dedi / Söyledi." }
         },
         2: { 
-            base: { emoji: "💬", arText: "يَقُولُ", trText: "Der / Söylüyor." },
+            base: { emoji: "💬", arText: "يَقُولُ", trText: "Der / Söylüyor." }
         },
         3: { 
-            base: { emoji: "❗", trText: "De / Söyle!" },
+            base: {
+                arText: "قُلْ",
+                 emoji: "❗", trText: "De / Söyle!" }
         }
     },
 
     "بيع": {
         1: { 
-            base: { emoji: "🤝", arText: "بَاعَ", trText: "Sattı." },
+            base: { emoji: "🤝", arText: "بَاعَ", trText: "Sattı." }
         },
         4: { 
-            base: { emoji: "💰", arText: "يَبِيعُ", trText: "Satar / Satıyor." },
+            base: { emoji: "💰", arText: "يَبِيعُ", trText: "Satar / Satıyor." }
         },
         5: { 
-            base: { emoji: "❗", arText: "بِعْ", trText: "Sat!" },
+            base: { emoji: "❗", arText: "بِعْ", trText: "Sat!" }
         },
         19: { 
-            base: { emoji: "📜", arText: "بَيْع", trText: "Satış / Satmak (Masdar)." },
+            base: { emoji: "📜", arText: "بَيْع", trText: "Satış / Satmak (Masdar)." }
         },
         33: { 
-            base: { emoji: "🛒", arText: "بَائِع", trText: "Satan / Satıcı / Bayi (İsm-i Fail)." },
+            base: { emoji: "🛒", arText: "بَائِع", trText: "Satan / Satıcı / Bayi (İsm-i Fail)." }
         },
         36: { 
-            base: { emoji: "📦", arText: "مَبِيع", trText: "Satılan (İsm-i Meful)." },
+            base: { emoji: "📦", arText: "مَبِيع", trText: "Satılan (İsm-i Meful)." }
         }
     },
 
@@ -5571,16 +5560,15 @@ const eski_sozlukVerileri = {
             base: { emoji: "❗", arText: "اُدْعُ", trText: "Davet et / Dua et!" },
             cekimi: ["اُدْعُ", "اُدْعُوَا", "اُدْعُوا", "اُدْعِي", "اُدْعُوَا", "اُدْعُونَ"]
         },
-        19: { 
-            suggestsPlus: true, 
-            "ة": { 
+        19: {
+            base: {
                 emoji: "💌", 
                 arText: "دَعْوَة", 
-                trText: "Davet / Çağrı." 
-            } 
+                trText: "Davet / Çağrı."
+            }
         },
         24: { 
-            base: { emoji: "❗", arText: "دُعَاء", trText: "Dua etmek." },
+            base: { emoji: "❗", arText: "دُعَاء", trText: "Dua etmek." }
         },
         33: { 
             base: { emoji: "🗣️", arText: "دَاعٍ", trText: "Davet eden." },
@@ -5602,7 +5590,7 @@ const eski_sozlukVerileri = {
             cekimi: ["اِدَّعِ", "اِدَّعِيَا", "اِدَّعُوا", "اِدَّعِي", "اِدَّعِيَا", "اِدَّعِينَ"]
         },
         80: { 
-            base: { emoji: "📜", arText: "إِدِّعَاء", trText: "İddia / İddia etmek." },
+            base: { emoji: "📜", arText: "إِدِّعَاء", trText: "İddia / İddia etmek." }
         },
         81: { 
             base: { emoji: "🧑‍⚖️", arText: "مُدَّعٍ", trText: "İddia eden / Müddei." },
@@ -5843,8 +5831,7 @@ const eski_sozlukVerileri = {
                 emoji: "😇", 
                 arText: "تَقِيّ", 
                 trText: "Takva sahibi / Allah'tan sakınan (Yalın)." 
-            },
-            
+            }
         },
         77: { 
             base: { emoji: "🤲", arText: "اِتَّقَى", trText: "Sakındı / Korundu (Takva gösterdi)." },
@@ -6239,7 +6226,7 @@ const eski_sozlukVerileri = {
         }
     },
 
-   "وصل": {
+    "وصل": {
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
         1: { 
             base: { 
@@ -6272,13 +6259,7 @@ const eski_sozlukVerileri = {
 
         // --- 20 Numaralı Kalıp (فِعْل - İsim / +ة ile Sıla) ---
         20: { 
-            base: { 
-                emoji: "🧩", 
-                arText: "صِل", 
-                trText: "Bağ (Kök form)." 
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🤝", 
                 arText: "صِلَة", 
                 trText: "Bağ / İlişki / Sıla.",
@@ -6289,13 +6270,7 @@ const eski_sozlukVerileri = {
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim / +ة ile Vuslat) ---
         21: { 
-            base: { 
-                emoji: "🧩", 
-                arText: "وُصْل", 
-                trText: "Kavuşma (Kök form)." 
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "❤️", 
                 arText: "وُصْلَة", 
                 trText: "Kavuşma / Bağ / Vuslat.",
@@ -6644,7 +6619,7 @@ const eski_sozlukVerileri = {
                         tr: "İ'lâl Kuralı: Aslı (إِوْجَاد) şeklindedir. Kökün ilk harfi olan 'Vav' (و), kesradan (esre) sonra sakin geldiği için okuyuş kolaylığı sağlamak adına 'Ye' (ي) harfine dönüşmüştür." 
                     }
                 ]
-            },
+            }
         }, 
         
         // --- 56: Mucit (İsm-i Fail) Tenvinsiz ve Örnek Cümlesiyle ---
@@ -6654,7 +6629,7 @@ const eski_sozlukVerileri = {
                 arText: "مُوجِد", 
                 trText: "Mucit / İcat eden (İsm-i Fail).",
                 ornek: { ar: "مُوجِدُ هَذَا الْجِهَازِ مَعْرُوفٌ", tr: "Bu cihazın mucidi (var edeni) bilinmektedir." }
-            },
+            }
         }
     },
 
@@ -6783,18 +6758,12 @@ const eski_sozlukVerileri = {
 
         // --- 21 Numaralı Kalıp (فُعْل) ---
         21: { 
-            base: { 
-                emoji: "🛡️", 
-                arText: "حُرْم", 
-                trText: "Kutsallık / Yasaklık (Yalın)." 
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🙌", 
                 arText: "حُرْمَة", 
                 trText: "Hürmet / Saygı / Dokunulmazlık.",
                 ornek: { ar: "لَهُ حُرْمَةٌ كَبِيرَةٌ فِي الْمُجْتَمَعِ", tr: "Toplumda onun büyük bir hürmeti (saygınlığı) vardır." }
-            } 
+            }
         },
 
         // --- 22 Numaralı Kalıp (فَعَال) ---
@@ -7482,18 +7451,12 @@ const eski_sozlukVerileri = {
 
         // --- İsim ve Masdar Kalıpları ---
         20: { 
-            base: { 
-                emoji: "💡", 
-                arText: "عِبْر", 
-                trText: "İbret (Yalın)." 
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "📖", 
                 arText: "عِبْرَة", 
                 trText: "İbret / Ders.",
                 ornek: { ar: "إِنَّ فِي ذَٰلِكَ لَعِبْرَةً لِمَن يَخْشَىٰ", tr: "Şüphesiz bunda korkan kimse için bir ibret vardır. (Nâziât Suresi, 26)" }
-            } 
+            }
         },
         23: { 
             base: { 
@@ -8050,24 +8013,18 @@ const eski_sozlukVerileri = {
     "هجر": {
         // --- 1, 2, 3 Numaralı Kalıplar (1. Bab) ---
         1: { 
-            base: { emoji: "🚶‍♂️", arText: "هَجَرَ", trText: "Terk etti / Bıraktı." },
+            base: { emoji: "🚶‍♂️", arText: "هَجَرَ", trText: "Terk etti / Bıraktı." }
         },
         2: { 
-            base: { emoji: "🐪", arText: "يَهْجُرُ", trText: "Terk eder / Bırakıyor." },
+            base: { emoji: "🐪", arText: "يَهْجُرُ", trText: "Terk eder / Bırakıyor." }
         },
         3: { 
-            base: { emoji: "❗", arText: "اُهْجُرْ", trText: "Terk et!" },
+            base: { emoji: "❗", arText: "اُهْجُرْ", trText: "Terk et!" }
         },
 
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
-            base: { 
-                emoji: "🏜️", 
-                arText: "هِجْر", 
-                
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🐪", 
                 arText: "هِجْرَة", 
                 trText: "Hicret / Göç.",
@@ -8092,8 +8049,8 @@ const eski_sozlukVerileri = {
                 arText: "مُهَاجَرَة", 
                 trText: "Muhaceret / Karşılıklı göç / Ülke dışına çıkma." 
             } 
+        }
         },
-    },
  
      // ==================================================================
     // 73. H-M-M (ه م م) KÖKÜ - Dert Edinmek / Önemsemek / Gayret
@@ -8126,14 +8083,12 @@ const eski_sozlukVerileri = {
 
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
-            base: { arText: "هِمّ"},
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🦅", 
                 arText: "هِمَّة", 
                 trText: "Himmet / Yüksek gayret / Çaba.",
                 ornek: { ar: "عَالِي الْهِمَّةِ", tr: "Himmeti (gayreti) yüksek olan." }
-            } 
+            }
         },
 
         // --- 50 Numaralı Kalıp (أَفْعَل - İsm-i Tafdil) ---
@@ -8243,8 +8198,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "💯", 
                 arText: "مُوقِن", 
-                trText: "Mûkin / Şüphesiz, kesin inanan.",
-            } 
+                trText: "Mûkin / Şüphesiz, kesin inanan."
+        } 
         }
     },
 
@@ -8461,7 +8416,7 @@ const eski_sozlukVerileri = {
                 arText: "تَرَكَ", 
                 trText: "Terk etti / Bıraktı.",
                 ornek: { ar: "تَرَكَ الْعَادَاتِ السَّيِّئَةَ", tr: "Kötü alışkanlıkları terk etti (bıraktı)." }
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -8471,7 +8426,7 @@ const eski_sozlukVerileri = {
                 arText: "يَتْرُكُ", 
                 trText: "Terk eder / Bırakır.",
                 ornek: { ar: "يَتْرُكُ الْبَابَ مَفْتُوحًا", tr: "Kapıyı açık bırakıyor." }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
@@ -8481,7 +8436,7 @@ const eski_sozlukVerileri = {
                 arText: "اُتْرُكْ", 
                 trText: "Terk et / Bırak!",
                 ornek: { ar: "اُتْرُكْنِي وَشَأْنِي", tr: "Beni kendi halime bırak!" }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -8574,11 +8529,13 @@ const eski_sozlukVerileri = {
           },
 // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
         77: { 
-            base: { 
+            base: {
+                arText: "اِتَّبَعَ",
+ 
                 emoji: "👣", 
-                arText: "", 
+                 
                 trText: "Uydu / Peşinden gitti / Tabi oldu. (💡 Ses Olayı: Kökün ilk harfi 'ت' (Te) olduğu için, İfti'âl babının 'ت' harfiyle birleşerek şeddelenir. Aslı 'اِتْتَبَعَ' iken idğâm ile 'اِتَّبَعَ' olmuştur)." 
-            },
+            }
         },
 
         // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
@@ -8653,9 +8610,9 @@ const eski_sozlukVerileri = {
 
         // --- 23 Numaralı Kalıp (Çoğul İsim ve Masdar) ---
         23: { 
-            base: { 
-                
-            },
+            base: {
+                arText: "تَاجِر"
+        },
             suggestsPlus: true,
             "ة": { 
                 emoji: "💼", 
@@ -8741,7 +8698,7 @@ const eski_sozlukVerileri = {
                 arText: "ثَبَتَ", 
                 trText: "Sabit oldu / Yerinde durdu / Kanıtlandı.",
                 ornek: { ar: "ثَبَتَ الْحَقُّ", tr: "Gerçek sabit oldu (kanıtlandı)." }
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -8751,7 +8708,7 @@ const eski_sozlukVerileri = {
                 arText: "يَثْبُتُ", 
                 trText: "Sabit olur / Kanıtlanır.",
                 ornek: { ar: "لَا يَبْقَى شَيْءٌ عَلَى حَالِهِ بَلْ يَثْبُتُ", tr: "Hiçbir şey aynı kalmaz, ancak sabit olur." }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
@@ -8761,7 +8718,7 @@ const eski_sozlukVerileri = {
                 arText: "اُثْبُتْ", 
                 trText: "Sabit kal / Diren!",
                 ornek: { ar: "اُثْبُتْ مَكَانَكَ", tr: "Yerinde sabit kal!" }
-            },
+            }
         },
 
         // --- 22 Numaralı Kalıp (فَعَال - Masdar) ---
@@ -8822,8 +8779,8 @@ const eski_sozlukVerileri = {
                 trText: "Tespit / Sabitleme / Sağlamlaştırma / Belirleme.",
                 ornek: { ar: "تَثْبِيتُ الْأَسْعَارِ", tr: "Fiyatların tespiti (sabitlenmesi)." }
             } 
+        }
         },
-    },
 
     // ==================================================================
     // 82. TH-M-R (ث م ر) KÖKÜ - Meyve Vermek / Sonuç Vermek
@@ -8876,8 +8833,8 @@ const eski_sozlukVerileri = {
                 trText: "Yatırım / Değerlendirme (Yine diller arası anlam kaymasının (semantik değişimin) bir örneği olarak; Arapçada 'Meyve verdirmek / Yatırım yapmak' gibi olumlu bir anlama gelirken, Türkçede 'İstismar / Kötüye kullanıp sömürmek' şeklinde kullanılır).",
                 ornek: { ar: "اِسْتِثْمَارُ الْأَمْوَالِ", tr: "Sermaye yatırımı / Parayı değerlendirme." }
             } 
+        }
         },
-    },
 
     // ==================================================================
     // 83. TH-Q-L (ث ق ل) KÖKÜ - Ağır Olmak
@@ -9063,7 +9020,7 @@ const eski_sozlukVerileri = {
                 arText: "ذَهَبَ", 
                 trText: "Gitti.",
                 ornek: { ar: "ذَهَبَ إِلَى الْمَدْرَسَةِ", tr: "Okula gitti." }
-            },
+            }
         },
 
         // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
@@ -9073,7 +9030,7 @@ const eski_sozlukVerileri = {
                 arText: "يَذْهَبُ", 
                 trText: "Gider / Gidiyor.",
                 ornek: { ar: "يَذْهَبُ إِلَى الْعَمَلِ كُلَّ يَوْمٍ", tr: "Her gün işe gider." }
-            },
+            }
         },
 
         // --- 7 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
@@ -9083,7 +9040,7 @@ const eski_sozlukVerileri = {
                 arText: "اِذْهَبْ", 
                 trText: "Git!",
                 ornek: { ar: "اِذْهَبْ إِلَى فِرْعَوْنَ", tr: "Firavun'a git!" }
-            },
+            }
         },
 
         17: { 
@@ -9198,7 +9155,9 @@ const eski_sozlukVerileri = {
 
         // --- 23 Numaralı Kalıp (فِعَال ve + ة ile Ziraat) ---
         23: { 
-            base: { },
+            base: {
+                arText: "زَارِع"
+        },
             suggestsPlus: true,
             "ة": { 
                 emoji: "🌾", 
@@ -9210,7 +9169,9 @@ const eski_sozlukVerileri = {
 
         // --- 38 Numaralı Kalıp (مَفْعَل ve + ة ile Mezraa) ---
         38: { 
-            base: {},
+            base: {
+                arText: "مَزْرَعَة"
+        },
             suggestsPlus: true,
             "ة": { 
                 emoji: "🏡", 
@@ -9232,7 +9193,7 @@ const eski_sozlukVerileri = {
                 arText: "زَارَ", 
                 trText: "Ziyaret etti / Uğradı.",
                 ornek: { ar: "زَارَ الْمَرِيضَ", tr: "Hastayı ziyaret etti." }
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -9242,16 +9203,18 @@ const eski_sozlukVerileri = {
                 arText: "يَزُورُ", 
                 trText: "Ziyaret eder / Ediyor.",
                 ornek: { ar: "يَزُورُ أَقَارِبَهُ", tr: "Akrabalarını ziyaret ediyor." }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
         3: { 
-            base: { 
+            base: {
+                arText: "زُرْ",
+                 
                 emoji: "🚪", 
                 trText: "Ziyaret et / Uğra!",
                 ornek: { ar: "زُرْ غِبًّا تَزْدَدْ حُبًّا", tr: "Seyrek ziyaret et ki sevgin (muhabbetin) artsın. (Meşhur Arap atasözü)" }
-            },
+            }
         },
 
         // --- 23 Numaralı Kalıp (فِعَالَة - Mücerret Masdar) ---
@@ -9283,17 +9246,14 @@ const eski_sozlukVerileri = {
 
         // --- 19 Numaralı Kalıp (فَعْل ve + ة ile Zahmet) ---
         19: { 
-            base: {},
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "😓", 
                 arText: "زَحْمَة", 
                 trText: "Zahmet / Sıkışıklık. (💡 Semantik Değişim: Kelime Arapçada aslen 'kalabalık, sıkışıklık' anlamına gelirken, Türkçede bu sıkışıklığın doğurduğu 'yorgunluk, meşakkat, zorluk' şeklinde bir anlam kaymasına uğramıştır).",
                 ornek: { ar: "زَحْمَةُ السَّيْرِ", tr: "Trafik sıkışıklığı (zahmeti)." }
-            } 
+            }
         },
 
-        
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
         77: { 
             base: { 
@@ -9354,12 +9314,12 @@ const eski_sozlukVerileri = {
         
         // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
         1: { 
-            base: { emoji: "⏳", arText: "صَبَرَ", trText: "Sabretti / Dayandı." },
+            base: { emoji: "⏳", arText: "صَبَرَ", trText: "Sabretti / Dayandı." }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
         4: { 
-            base: { emoji: "🧘", arText: "يَصْبِرُ", trText: "Sabreder / Dayanıyor." },
+            base: { emoji: "🧘", arText: "يَصْبِرُ", trText: "Sabreder / Dayanıyor." }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -9369,7 +9329,7 @@ const eski_sozlukVerileri = {
                 arText: "اِصْبِرْ", 
                 trText: "Sabret!",
                 ornek: { ar: "اِصْبِرْ وَمَا صَبْرُكَ إِلَّا بِاللهِ", tr: "Sabret! Senin sabrın da ancak Allah'ın yardımıyladır. (Nahl Suresi, 127)" }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -9421,33 +9381,27 @@ const eski_sozlukVerileri = {
     "صنع": {
         // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
         1: { 
-            base: { emoji: "🛠️", arText: "صَنَعَ", trText: "Yaptı / Üretti." },
+            base: { emoji: "🛠️", arText: "صَنَعَ", trText: "Yaptı / Üretti." }
         },
 
         // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
         6: { 
-            base: { emoji: "⚙️", arText: "يَصْنَعُ", trText: "Yapar / Üretir." },
+            base: { emoji: "⚙️", arText: "يَصْنَعُ", trText: "Yapar / Üretir." }
         },
 
         // --- 7 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
         7: { 
-            base: { emoji: "❗", arText: "اِصْنَعْ", trText: "Yap / Üret!" },
+            base: { emoji: "❗", arText: "اِصْنَعْ", trText: "Yap / Üret!" }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Fa'l Vezni) ---
         19: { 
-            base: { 
-                emoji: "🛠️", 
-                arText: "صَنْع", 
-                trText: "Yapma (Yalın Hâl)." 
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🎭", 
                 arText: "صَنْعَة", 
                 trText: "Sanat / İş, meslek, zanaat.",
                 ornek: { ar: "أَرْبَابُ الصَّنْعَةِ", tr: "Sanat erbabı (Sanatkarlar)." }
-            } 
+            }
         },
 
         // --- 21 Numaralı Kalıp (فُعْل - Fu'l Vezni) ---
@@ -9563,7 +9517,9 @@ const eski_sozlukVerileri = {
 
         // --- 38 Numaralı Kalıp (مَفْعَل ve + ة ile Maslahat) ---
         38: { 
-            base: {  },
+            base: {
+                arText: "مَصْلَحَة"
+        },
             suggestsPlus: true,
             "ة": { 
                 emoji: "⚖️", 
@@ -9690,10 +9646,10 @@ const eski_sozlukVerileri = {
 
     "ضلل": {
         1: { 
-            base: { emoji: "🌑", arText: "ضَلَّ", trText: "Saptı / Yolunu kaybetti." },
+            base: { emoji: "🌑", arText: "ضَلَّ", trText: "Saptı / Yolunu kaybetti." }
         },
         4: { 
-            base: { emoji: "❓", arText: "يَضِلُّ", trText: "Sapıyor / Sapar." },
+            base: { emoji: "❓", arText: "يَضِلُّ", trText: "Sapıyor / Sapar." }
         },
         5: { 
             base: { emoji: "🚫", arText: "ضِلَّ", trText: "Sap! (اِضْلِلْ)" },
@@ -9901,17 +9857,17 @@ const eski_sozlukVerileri = {
     "ضرر": {
         // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi - Muzaaf) ---
         1: { 
-            base: { emoji: "📉", arText: "ضَرَّ", trText: "Zarar verdi." },
+            base: { emoji: "📉", arText: "ضَرَّ", trText: "Zarar verdi." }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
         2: { 
-            base: { emoji: "⚠️", arText: "يَضُرُّ", trText: "Zarar verir / Veriyor." },
+            base: { emoji: "⚠️", arText: "يَضُرُّ", trText: "Zarar verir / Veriyor." }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
         3: { 
-            base: { emoji: "❗", arText: "ضُرَّ", trText: "Zarar ver! (اِضْرُرْ)" },
+            base: { emoji: "❗", arText: "ضُرَّ", trText: "Zarar ver! (اِضْرُرْ)" }
         },
 
         // --- 17 Numaralı Kalıp (فَعَل - Mücerret İsim/Masdar) ---
@@ -10190,7 +10146,7 @@ const eski_sozlukVerileri = {
                 arText: "يَطْلُعُ", 
                 trText: "Doğar / Ortaya çıkar.",
                 ornek: { ar: "تَطْلُعُ الشَّمْسُ", tr: "Güneş doğuyor." }
-            },
+            }
         },
 
         // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
@@ -10532,7 +10488,7 @@ const eski_sozlukVerileri = {
                     ar: "كَمْ مِنْ فِئَةٍ قَلِيلَةٍ غَلَبَتْ فِئَةً كَثِيرَةً بِإِذْنِ اللهِ", 
                     tr: "Nice az bir topluluk, Allah'ın izniyle çok (kalabalık) bir topluluğa galip gelmiştir (onları yenmiştir). (Bakara Suresi, 249)" 
                 }
-            },
+            }
         },
 
        // --- 4 Numaralı Kalıp (Mücerret Muzari) ---
@@ -10551,15 +10507,15 @@ const eski_sozlukVerileri = {
                         tr: "İçinizden sabreden yirmi kişi bulunursa, iki yüz kişiye galip gelirler (yenerler). (Enfâl Suresi, 65)"
                     }
                 ]
-            },
+            }
         },
 
         // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
         17: { 
             base: { 
                 emoji: "⚔️", 
-                arText: "غَلَب",
-            },
+                arText: "غَلَب"
+        },
             suggestsPlus: true,
             "ة": { 
                 emoji: "🏅", 
@@ -10576,7 +10532,7 @@ const eski_sozlukVerileri = {
                 arText: "غَالِب", 
                 trText: "Galip / Yenen, üstün gelen.",
                 ornek: { ar: "الْفَرِيقُ الْغَالِبُ", tr: "Galip (yenen) takım." }
-            },
+            }
         },
 
         // --- 30 Numaralı Kalıp (أَفْعَل - Kalıplaşmış İsim / Masdar-ı Sınâî) ---
@@ -10635,7 +10591,7 @@ const eski_sozlukVerileri = {
                     ar: "فَغَفَرَ لَهُ ۚ إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ", 
                     tr: "Bunun üzerine (Allah) onu bağışladı. Şüphesiz O, çok bağışlayandır, çok merhamet edendir. (Kasas Suresi, 16)" 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret Muzari / 2. Bab) ---
@@ -10644,7 +10600,7 @@ const eski_sozlukVerileri = {
                 emoji: "🤲", 
                 arText: "يَغْفِرُ", 
                 trText: "Bağışlar / Örter." 
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret Emir / 2. Bab) ---
@@ -10657,7 +10613,7 @@ const eski_sozlukVerileri = {
                     ar: "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ", 
                     tr: "Rabbimiz! Hesap kurulacağı gün beni, anne-babamı ve müminleri bağışla. (İbrahim Suresi, 41)" 
                 }
-            },
+            }
         },
 
         // --- 26 Numaralı Kalıp (فَعُول - Mübalağalı İsm-i Fâil / Sıfat-ı Müşebbehe) ---
@@ -10781,7 +10737,9 @@ const eski_sozlukVerileri = {
         
         // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân) ---
         38: { 
-            base: { 
+            base: {
+                arText: "مَشْغَل",
+                 
                 emoji: "🏭"},
             suggestsPlus: true, 
             "ة": { 
@@ -10818,8 +10776,11 @@ const eski_sozlukVerileri = {
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: { 
-            base: { 
-                emoji: "⏱️", },
+            base: {
+                arText: "حَسِيب",
+                 
+                emoji: "⏱️"
+        },
             suggestsPlus: true, 
             "ة": { 
                 emoji: "💻", 
@@ -11210,7 +11171,9 @@ const eski_sozlukVerileri = {
     "حرك": {
         // --- 17 Numaralı Kalıp (فَعَل ve + ة ile Hareket) ---
         17: { 
-            base: { 
+            base: {
+                arText: "حَرَكَة",
+                 
                 emoji: "⚡" 
             },
             suggestsPlus: true,
@@ -11228,7 +11191,7 @@ const eski_sozlukVerileri = {
                 emoji: "👉", 
                 arText: "حَرَّكَ", 
                 trText: "Hareket ettirdi / Kımıldattı." 
-            },
+            }
         },
 
         // --- 59 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Muzari) ---
@@ -11237,7 +11200,7 @@ const eski_sozlukVerileri = {
                 emoji: "🕹️", 
                 arText: "يُحَرِّكُ", 
                 trText: "Hareket ettirir / Kımıldatıyor." 
-            },
+            }
         },
 
         // --- 60 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Emir / Nehiy) ---
@@ -11286,7 +11249,7 @@ const eski_sozlukVerileri = {
                 emoji: "🚶‍♂️", 
                 arText: "تَحَرَّكَ", 
                 trText: "Hareket etti / Eyleme geçti." 
-            },
+            }
         },
 
         // --- 89 Numaralı Kalıp (تَفَعُّل - Tefe'ul Babı Muzari) ---
@@ -11295,7 +11258,7 @@ const eski_sozlukVerileri = {
                 emoji: "🏃‍♂️", 
                 arText: "يَتَحَرَّكُ", 
                 trText: "Hareket ediyor / Eyleme geçiyor." 
-            },
+            }
         },
 
         // --- 90 Numaralı Kalıp (تَفَعُّل - Tefe'ul Babı Emir) ---
@@ -11304,7 +11267,7 @@ const eski_sozlukVerileri = {
                 emoji: "❗", 
                 arText: "تَحَرَّكْ", 
                 trText: "Hareket et / Eyleme geç!" 
-            },
+            }
         },
 
         // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Masdarı) ---
@@ -11889,6 +11852,8 @@ const eski_sozlukVerileri = {
                     },
                     {
                         ar: "إِنَّ الْكَلَامَ لَفِي الْفُؤَادِ وَإِنَّمَا \n جُعِلَ اللِّسَانُ عَلَى الْفُؤَادِ دَلِيلًا",
+
+
                         tr: "Şüphesiz asıl kelam (söz) kalptedir. Dil ise, sadece kalpte olana bir delil (tercüman) kılınmıştır. (Ahtal b. el-Hüseyin - Meşhur Şiir Beyti)"
                     }
                 ]
@@ -12272,16 +12237,15 @@ const eski_sozlukVerileri = {
                         tr: "Allah, kendisine hamd edeni işitir (ve duasını kabul eder). (Namazda rükûdan kalkarken söylenen zikir)"
                     }
                 ]
-            },
+            }
         },
         // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
         9: { 
             base: { 
                 emoji: "🎵", 
                 arText: "يَسْمَعُ", 
-                trText: "İşitir / Duyuyor.",
-                
-            },
+                trText: "İşitir / Duyuyor."
+        }
         },
 
         // --- 10 Numaralı Kalıp (Mücerret 4. Bab Emir) ---
@@ -12316,11 +12280,7 @@ const eski_sozlukVerileri = {
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
         21: { 
-            base: { 
-                emoji: "🗣️"
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🌟", 
                 arText: "سُمْعَة", 
                 trText: "Süm'a / Şöhret, itibar, kulaktan kulağa yayılan nam.",
@@ -12372,12 +12332,12 @@ const eski_sozlukVerileri = {
                         tr: "Gramer Notu: 'Dinlemek, bir şeye kulak vermek' anlamındaki bu fiil, nesnesini (dinlenilen şeyi veya kişiyi) genellikle 'إِلَى' (ilâ) harf-i cerri ile alır."
                     }
                 ]
-            },
+            }
         },
 
         // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
         78: { 
-            base: { emoji: "📻", arText: "يَسْتَمِعُ", trText: "Kulak verir / Dinliyor." },
+            base: { emoji: "📻", arText: "يَسْتَمِعُ", trText: "Kulak verir / Dinliyor." }
         },
 
         // --- 79 Numaralı Kalıp (اِفْتَعِلْ - İfti'âl Babı Emir) ---
@@ -12396,7 +12356,7 @@ const eski_sozlukVerileri = {
                         tr: "Fark Notu: 'Semi'a' (سَمِعَ) istemsizce duymak iken; İfti'âl babındaki 'İstema'a' (اِسْتَمَعَ) iradeyle, odaklanarak ve can kulağıyla dinlemek demektir."
                     }
                 ]
-            },
+            }
         },
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Masdarı) ---
@@ -12535,7 +12495,7 @@ const eski_sozlukVerileri = {
                 arText: "تَفَرَّدَ", 
                 trText: "Eşsiz oldu / Benzersiz oldu / Tek kaldı.",
                 ornek: { ar: "تَفَرَّدَ بِرَأْيِهِ", tr: "Kararında (görüşünde) tek kaldı / Kendi başına hareket etti." }
-            },
+            }
         },
 
         // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Tefe'ul Babı Muzari) ---
@@ -12545,12 +12505,12 @@ const eski_sozlukVerileri = {
                 arText: "يَتَفَرَّدُ", 
                 trText: "Eşsiz olur / Benzersizdir.",
                 ornek: { ar: "اللهُ يَتَفَرَّدُ بِالْكَمَالِ", tr: "Allah kusursuzlukta eşsizdir (teferrüd eder)." }
-            },
+            }
         },
 
         // --- 90 Numaralı Kalıp (تَفَعَّلْ - Tefe'ul Babı Emir) ---
         90: { 
-            base: { emoji: "❗", arText: "تَفَرَّدْ", trText: "Eşsiz ol / Öne çık!" },
+            base: { emoji: "❗", arText: "تَفَرَّدْ", trText: "Eşsiz ol / Öne çık!" }
         },
 
         // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Babı Masdarı) ---
@@ -12938,7 +12898,7 @@ const eski_sozlukVerileri = {
                         tr: "Gramer Notu: 'Bir şeyden gafil olmak, habersiz kalmak' anlamındaki bu fiil ve tüm türevleri (Gafil, Gaflet vb.), nesnesini daima 'عَنْ' (an) harf-i cerri ile alır."
                     }
                 ]
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -12951,7 +12911,7 @@ const eski_sozlukVerileri = {
                     ar: "الْإِنْسَانُ يَغْفُلُ عَنِ النِّعَمِ حَتَّى يَفْقِدَهَا", 
                     tr: "İnsan, kaybedene kadar nimetlerden gafil olur (kıymetini bilmez)." 
                 }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْلَة - Masdar / İsm-i Merra) ---
@@ -13230,7 +13190,7 @@ const eski_sozlukVerileri = {
                     ar: "أَنْطَقَنَا اللهُ الَّذِي أَنْطَقَ كُلَّ شَيْءٍ", 
                     tr: "Her şeyi konuşturduğu gibi bizi de Allah konuşturdu. (Fussilet Suresi, 21)" 
                 }
-            },
+            }
         },
 
         // --- 53 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
@@ -13243,7 +13203,7 @@ const eski_sozlukVerileri = {
                     ar: "اللهُ يُنْطِقُ مَنْ يَشَاءُ", 
                     tr: "Allah dilediğini konuşturur." 
                 }
-            },
+            }
         },
 
         // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
@@ -13658,7 +13618,7 @@ const eski_sozlukVerileri = {
                         tr: "Semantik Notu: Arapçada 'oturmak' anlamına gelen iki meşhur fiil vardır: Cülus (جُلُوس) ve Ku'ud (قُعُود). Dilbilimcilere göre; 'Cülus', yatan/uzanan birinin doğrulup oturmasıdır (Aşağıdan yukarıya). 'Ku'ud' ise ayakta duran birinin oturmasıdır (Yukarıdan aşağıya). Bu yüzden Kur'an'da genellikle 'Ku'ud' (قعد) kökü tercih edilir."
                     }
                 ]
-            },
+            }
         },
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
         4: { 
@@ -13666,7 +13626,7 @@ const eski_sozlukVerileri = {
                 emoji: "🛋️", 
                 arText: "يَجْلِسُ", 
                 trText: "Oturur / Oturuyor."
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -13675,18 +13635,12 @@ const eski_sozlukVerileri = {
                 emoji: "❗", 
                 arText: "اِجْلِسْ", 
                 trText: "Otur!" 
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
-            base: { 
-                emoji: "☕", 
-                arText: "جَلْس", 
-                trText: "Cels / Oturma eylemi." 
-            },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "⚖️", 
                 arText: "جَلْسَة", 
                 trText: "Celse / Oturum, duruşma, toplantı.",
@@ -13694,7 +13648,7 @@ const eski_sozlukVerileri = {
                     ar: "جَلْسَةُ الْمَحْكَمَةِ", 
                     tr: "Mahkeme celsesi (oturumu)." 
                 }
-            } 
+            }
         },
 
         // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
@@ -13777,7 +13731,7 @@ const eski_sozlukVerileri = {
                     ar: "وَقَفَ أَمَامَ الْبَابِ", 
                     tr: "Kapının önünde durdu." 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
@@ -13796,7 +13750,7 @@ const eski_sozlukVerileri = {
                         tr: "Sarf Notu: Başı illetli (Vav) olan bu fiillere 'Misâl Fiil' denir. Muzari (يَقِفُ) ve Emir (قِفْ) kiplerinde, telaffuz zorluğunu aşmak için baştaki 'Vav' harfi tamamen düşer."
                     }
                 ]
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -13805,7 +13759,7 @@ const eski_sozlukVerileri = {
                 emoji: "✋", 
                 arText: "قِفْ", 
                 trText: "Dur!" 
-            },
+            }
         },
 
        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -13969,7 +13923,7 @@ const eski_sozlukVerileri = {
                     ar: "اللهُ الَّذِي رَفَعَ السَّمَاوَاتِ", 
                     tr: "Allah, gökleri yükseltendir. (Ra'd Suresi, 2)" 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
@@ -13982,7 +13936,7 @@ const eski_sozlukVerileri = {
                     ar: "يَرْفَعِ اللهُ الَّذِينَ آمَنُوا مِنْكُمْ", 
                     tr: "Allah, içinizden iman edenleri (derece olarak) yükseltir. (Mücadele Suresi, 11)" 
                 }
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
@@ -13995,7 +13949,7 @@ const eski_sozlukVerileri = {
                     ar: "اِرْفَعْ يَدَيْكَ",
                     tr: "Ellerini kaldır."
                 }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -14053,7 +14007,7 @@ const eski_sozlukVerileri = {
                     ar: "اِرْتَفَعَتِ الْأَسْعَارُ", 
                     tr: "Fiyatlar yükseldi (arttı)." 
                 }
-            },
+            }
         },
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
@@ -14086,7 +14040,7 @@ const eski_sozlukVerileri = {
                     ar: "نَزَلَ مِنَ السَّيَّارَةِ", 
                     tr: "Arabadan indi." 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
@@ -14099,7 +14053,7 @@ const eski_sozlukVerileri = {
                     ar: "الْمَطَرُ يَنْزِلُ كَثِيرًا هَذِهِ الْأَيَّامِ", 
                     tr: "Bugünlerde yağmur çok yağıyor (iniyor)." 
                 }
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -14107,8 +14061,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "❗", 
                 arText: "اِنْزِلْ", 
-                trText: "İn!",
-            },
+                trText: "İn!"
+        }
         },
 
         // --- 25 Numaralı Kalıp (فُعُول - Mücerret Masdar) ---
@@ -14176,7 +14130,7 @@ const eski_sozlukVerileri = {
                     ar: "نَزَّلَ عَلَيْكَ الْكِتَابَ بِالْحَقِّ",
                     tr: "O, sana Kitab'ı hak ile parça parça indirdi. (Âl-i İmrân Suresi, 3)"
                 }
-            },
+            }
         },
 
         // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
@@ -14212,7 +14166,7 @@ const eski_sozlukVerileri = {
                     ar: "إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ",
                     tr: "Şüphesiz biz onu Kadir gecesinde (bir kerede/toptan) indirdik. (Kadir Suresi, 1)"
                 }
-            },
+            }
         },
 
         // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
@@ -14247,7 +14201,7 @@ const eski_sozlukVerileri = {
                     ar: "جَرَى الْمَاءُ فِي النَّهْرِ", 
                     tr: "Su nehirde aktı." 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
@@ -14260,7 +14214,7 @@ const eski_sozlukVerileri = {
                     ar: "تَجْرِي مِنْ تَحْتِهَا الْأَنْهَارُ", 
                     tr: "Altından ırmaklar akar. (Kur'an'da cennet tasvirlerinde en sık geçen ifadelerden biri)." 
                 }
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -14273,7 +14227,7 @@ const eski_sozlukVerileri = {
                     ar: "💡 مَعْلُومَة صَرْفِيَّة (النَّاقِص)",
                     tr: "Sarf Notu: Sonu illetli olan Nakıs fiillerin Emir kiplerinde, telaffuz zorluğunu aşmak ve emir formunu belirtmek için sondaki illet harfi (Yâ) tamamen düşer. Bu yüzden 'İcrî' değil 'İcri' şeklinde yazılır ve okunur."
                 }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -14418,7 +14372,7 @@ const eski_sozlukVerileri = {
                     ar: "دَفَعَ ثَمَنَ الْبِضَاعَةِ", 
                     tr: "Malın bedelini (ücretini) ödedi." 
                 }
-            },
+            }
         },
 
         // --- 6 Numaralı Kalıp (Mücerret 3. Bab Muzari) ---
@@ -14431,7 +14385,7 @@ const eski_sozlukVerileri = {
                     ar: "إِنَّ اللهَ يُدَافِعُ عَنِ الَّذِينَ آمَنُوا", 
                     tr: "(Mufâ'ale babından örnek): Şüphesiz Allah, iman edenleri savunur (onlardan kötülüğü def eder). (Hac Suresi, 38)" 
                 }
-            },
+            }
         },
 
         // --- 7 Numaralı Kalıp (Mücerret 3. Bab Emir) ---
@@ -14450,7 +14404,7 @@ const eski_sozlukVerileri = {
                         tr: "Sarf Notu: Muzari fiilin orta harfi 'üstün' (يَدْفَعُ) olduğu için, emir kipinin başına gelen yardımcı 'Elif' harfi kural gereği 'esre' (اِدْفَعْ) almıştır."
                     }
                 ]
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -14624,8 +14578,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "❗", 
                 arText: "اِقْطَعْ", 
-                trText: "Kes / Kopar!",
-            },
+                trText: "Kes / Kopar!"
+        },
             cekimi: ["اِقْطَعْ", "اِقْطَعَا", "اِقْطَعُوا", "اِقْطَعِي", "اِقْطَعَا", "اِقْطَعْنَ"]
         },
 
@@ -14644,8 +14598,8 @@ const eski_sozlukVerileri = {
             "يَّة": { 
                 emoji: "⚖️", 
                 arText: "قَطْعِيَّة", 
-                trText: "Katiyet / Kesinlik, şüpheye yer bırakmama.",
-            }
+                trText: "Katiyet / Kesinlik, şüpheye yer bırakmama."
+        }
         },
 
         // --- 20 Numaralı Kalıp (فِعْلَة - İsim Formu) ---
@@ -14739,7 +14693,7 @@ const eski_sozlukVerileri = {
                 emoji: "🔌", 
                 arText: "اِنْقَطَعَ", 
                 trText: "Kesildi / Koptu."
-            },
+            }
         },
 
         // --- 71 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
@@ -14986,7 +14940,7 @@ const eski_sozlukVerileri = {
                     ar: "وَلَكِنَّ اللهَ حَبَّبَ إِلَيْكُمُ الْإِيمَانَ", 
                     tr: "Fakat Allah, size imanı sevdirdi... (Hucurât Suresi, 7)" 
                 }
-            },
+            }
         }
     },
 
@@ -15005,7 +14959,7 @@ const eski_sozlukVerileri = {
                     ar: "صَحِبَ أَبَاهُ إِلَى السُّوقِ", 
                     tr: "Babasına çarşıya kadar eşlik etti." 
                 }
-            },
+            }
         },
 
         // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
@@ -15013,8 +14967,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "🤝", 
                 arText: "يَصْحَبُ", 
-                trText: "Arkadaş olur / Eşlik eder.",
-            },
+                trText: "Arkadaş olur / Eşlik eder."
+        }
         },
 
         // --- 10 Numaralı Kalıp (Mücerret 4. Bab Emir) ---
@@ -15027,7 +14981,7 @@ const eski_sozlukVerileri = {
                     ar: "وَصَاحِبْهُمَا فِي الدُّنْيَا مَعْرُوفًا 💡 (مَعْلُومَة تَفْسِيرِيَّة)",
                     tr: "Onlara (anne-babana) dünyada iyi davran (güzellikle eşlik/arkadaşlık et). (Lokman Suresi, 15) ➔ Tefsir Notu: Ayette 3. Bab olan Mufa'ale babı (صَاحِبْ) kullanılarak, anne-babaya karşılıklı bir arkadaş ve yoldaş gibi iyi davranılması emredilmiştir."
                 }
-            },
+            }
         },
 
         // --- 21 Numaralı Kalıp (فُعْلَة - Mücerret Masdar) ---
@@ -15148,7 +15102,7 @@ const eski_sozlukVerileri = {
                     ar: "خَدَمَ الشَّعْبَ بِمَحَبَّةٍ", 
                     tr: "Halka sevgiyle hizmet etti." 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
@@ -15161,7 +15115,7 @@ const eski_sozlukVerileri = {
                     ar: "كَيْفَ يُمْكِنُنِي أَنْ أَخْدِمَكَ؟", 
                     tr: "Sana nasıl hizmet edebilirim? (Size nasıl yardımcı olabilirim?)" 
                 }
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -15169,8 +15123,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "❗", 
                 arText: "اِخْدِمْ", 
-                trText: "Hizmet et!",
-            },
+                trText: "Hizmet et!"
+        }
         },
 
         // --- 20 Numaralı Kalıp (فِعْلَة - İsim/Masdar Formu) ---
@@ -15241,7 +15195,7 @@ const eski_sozlukVerileri = {
                     ar: "اِسْتَخْدَمَ الشَّرِكَةُ عُمَّالًا جُدُدًا", 
                     tr: "Şirket yeni işçiler istihdam etti (işe aldı)." 
                 }
-            },
+            }
         },
 
         // --- 100 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı) ---
@@ -15531,31 +15485,33 @@ const eski_sozlukVerileri = {
                         tr: "Sarf Notu: Bu bir 'Ecvef' (ortası illetli) fiildir. Kökündeki 'Vav' (و) harfi mazide 'Elif'e (ا) dönüşür. Çekim tablosunda 'Biz, Siz, Onlar (kadınlar)' derken iki sessiz harf yan yana gelemeyeceği için ortadaki illet harfi tamamen düşer (Örn: عُدْتُ - Ud-tu / Döndüm)."
                     }
                 ]
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret Muzari) ---
         2: { 
             base: { 
                 emoji: "🔄", 
+                arText: "يَعُودُ",
                 trText: "Döner / Geri gelir.",
                 ornek: {
                     ar: "يَعُودُ إِلَى وَطَنِهِ",
                     tr: "Vatanına döner."
                 }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret Emir) ---
         3: { 
             base: { 
                 emoji: "❗", 
+                arText: "عُدْ",
                 trText: "Dön! / Geri gel!",
                 ornek: {
                     ar: "عُدْ إِلَى رَبِّكَ",
                     tr: "Rabbine dön!"
                 }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْلَة / فَوْعَلَة - İsim Formu) ---
@@ -15661,7 +15617,7 @@ const eski_sozlukVerileri = {
                         tr: "Kitabı kütüphaneye iade etti."
                     }
                 ]
-            },
+            }
         },
 
         // --- 55 Numaralı Kalıp (إِفْعَال - İf'âl Babı Masdarı) ---
@@ -15876,7 +15832,7 @@ const eski_sozlukVerileri = {
                     ar: "قَسَمَ الْمَالَ بَيْنَهُمْ بِالْعَدْلِ", 
                     tr: "Malı aralarında adaletle paylaştırdı (böldü)." 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
@@ -15889,7 +15845,7 @@ const eski_sozlukVerileri = {
                     ar: "نَحْنُ قَسَمْنَا بَيْنَهُمْ مَعِيشَتَهُمْ فِي الْحَيَاةِ الدُّنْيَا", 
                     tr: "Dünya hayatında onların geçimliklerini aralarında biz paylaştırdık (böleriz). (Zuhruf Suresi, 32)" 
                 }
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -15902,7 +15858,7 @@ const eski_sozlukVerileri = {
                     ar: "اِقْسِمْ هَذِهِ الْكَعْكَةَ إِلَى نِصْفَيْنِ",
                     tr: "Bu keki iki yarıya böl!"
                 }
-            },
+            }
         },
 
         // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
@@ -15992,7 +15948,7 @@ const eski_sozlukVerileri = {
                     ar: "قَسَّمَ الْمُعَلِّمُ الطُّلَّابَ إِلَى مَجْمُوعَاتٍ", 
                     tr: "Öğretmen öğrencileri gruplara (kısımlara) ayırdı." 
                 }
-            },
+            }
         },
 
         // --- 59 Numaralı Kalıp (يُفَعِّلُ - Tef'îl Babı Muzari) ---
@@ -16001,7 +15957,7 @@ const eski_sozlukVerileri = {
                 emoji: "✂️", 
                 arText: "يُقَسِّمُ", 
                 trText: "Kısımlara ayırır / Taksim ediyor." 
-            },
+            }
         },
 
         // --- 60 Numaralı Kalıp (فَعِّلْ - Tef'îl Babı Emir) ---
@@ -16010,7 +15966,7 @@ const eski_sozlukVerileri = {
                 emoji: "❗", 
                 arText: "قَسِّمْ", 
                 trText: "Kısımlara ayır / Taksim et!" 
-            },
+            }
         },
 
         // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
@@ -16036,7 +15992,7 @@ const eski_sozlukVerileri = {
                 arText: "اِنْقَسَمَ", 
                 trText: "Bölündü / Parçalara ayrıldı (İnkısam etti).",
                 ornek: { ar: "اِنْقَسَمَ الْمُجْتَمَعُ إِلَى قِسْمَيْنِ", tr: "Toplum iki kısma bölündü." }
-            },
+            }
         },
 
         // --- 72 Numaralı Kalıp (يَنْفَعِلُ - İnfi'âl Babı Muzari) ---
@@ -16045,7 +16001,7 @@ const eski_sozlukVerileri = {
                 emoji: "📉", 
                 arText: "يَنْقَسِمُ", 
                 trText: "Bölünür / Parçalara ayrılıyor." 
-            },
+            }
         },
  
         // --- 73 Numaralı Kalıp (اِنْفَعِلْ - İnfi'âl Babı Emir) ---
@@ -16058,7 +16014,7 @@ const eski_sozlukVerileri = {
                     ar: "اِنْقَسِمُوا إِلَى مَجْمُوعَتَيْنِ",
                     tr: "İki gruba (kısma) ayrılın / bölünün."
                 }
-            },
+            }
         },
 
         // --- 74 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
@@ -16101,7 +16057,7 @@ const eski_sozlukVerileri = {
                     ar: "سَبَقَ السَّيْفُ الْعَذَلَ", 
                     tr: "Kılıç kınamayı geçti (İş işten geçti - Meşhur Arap Atasözü)." 
                 }
-            },
+            }
         },
 
         // --- 4 Numaralı Kalıp (Mücerret 2. Bab Muzari) ---
@@ -16114,7 +16070,7 @@ const eski_sozlukVerileri = {
                     ar: "لَا يَسْبِقُونَهُ بِالْقَوْلِ", 
                     tr: "Onlar sözle O'nun önüne geçmezler. (Enbiyâ Suresi, 27)" 
                 }
-            },
+            }
         },
 
         // --- 5 Numaralı Kalıp (Mücerret 2. Bab Emir) ---
@@ -16123,7 +16079,7 @@ const eski_sozlukVerileri = {
                 emoji: "❗", 
                 arText: "اِسْبِقْ", 
                 trText: "Öne geç!" 
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
@@ -16215,7 +16171,7 @@ const eski_sozlukVerileri = {
                 arText: "سَابَقَ", 
                 trText: "Yarıştı.",
                 ornek: { ar: "سَابَقَ صَدِيقَهُ", tr: "Arkadaşıyla yarıştı." }
-            },
+            }
         },
 
         // --- 65 Numaralı Kalıp (يُفَاعِلُ - Mufâ'ale Babı Muzari) ---
@@ -16223,8 +16179,8 @@ const eski_sozlukVerileri = {
             base: { 
                 emoji: "🏁", 
                 arText: "يُسَابِقُ", 
-                trText: "Yarışır.",
-            },
+                trText: "Yarışır."
+        }
         },
 
         // --- 66 Numaralı Kalıp (فَاعِلْ - Mufâ'ale Babı Emir) ---
@@ -16233,7 +16189,7 @@ const eski_sozlukVerileri = {
                 emoji: "❗", 
                 arText: "سَابِقْ", 
                 trText: "Yarış!" 
-            },
+            }
         },
 
         // --- 67 Numaralı Kalıp (مُفَاعَلَة - Mufâ'ale Babı Masdarı) ---
@@ -16262,7 +16218,7 @@ const eski_sozlukVerileri = {
                 emoji: "🏎️", 
                 arText: "اِسْتَبَقَ", 
                 trText: "Birbirleriyle yarıştılar / Öne geçmeye çalıştılar." 
-            },
+            }
         },
 
         // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
@@ -16271,7 +16227,7 @@ const eski_sozlukVerileri = {
                 emoji: "🏇", 
                 arText: "يَسْتَبِقُ", 
                 trText: "Yarışırlar." 
-            },
+            }
         },
 
         // --- 79 Numaralı Kalıp (اِفْتَعِلْ - İfti'âl Babı Emir) ---
@@ -16284,7 +16240,7 @@ const eski_sozlukVerileri = {
                     ar: "فَاسْتَبِقُوا الْخَيْرَاتِ", 
                     tr: "Hayır işlerinde (iyiliklerde) birbirinizle yarışın. (Bakara Suresi, 148)" 
                 }
-            },
+            }
         },
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
@@ -16471,7 +16427,7 @@ const eski_sozlukVerileri = {
                     ar: "وَمَا خَلَقْتُ الْجِنَّ وَالْإِنْسَ إِلَّا لِيَعْبُدُونِ", 
                     tr: "Ben cinleri ve insanları, ancak bana kulluk etsinler (ibadet etsinler) diye yarattım. (Zâriyât Suresi, 56)" 
                 }
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -16484,7 +16440,7 @@ const eski_sozlukVerileri = {
                     ar: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", 
                     tr: "Yalnız sana kulluk eder (ibadet eder) ve yalnız senden yardım dileriz. (Fâtiha Suresi, 5)" 
                 }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
@@ -16497,7 +16453,7 @@ const eski_sozlukVerileri = {
                     ar: "يَا أَيُّهَا النَّاسُ اعْبُدُوا رَبَّكُمُ",
                     tr: "Ey insanlar! Rabbinize kulluk (ibadet) edin. (Bakara Suresi, 21)"
                 }
-            },
+            }
         },
 
        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
@@ -16521,9 +16477,11 @@ const eski_sozlukVerileri = {
 
         // --- 25 Numaralı Kalıp (فُعُول - Masdar) ---
         25: { 
-            base: { 
-                emoji: "🧎‍♂️", 
-            },
+            base: {
+                arText: "مَعْبُود",
+                 
+                emoji: "🧎‍♂️"
+        },
             suggestsPlus: true,
             "يَّة": { 
                 emoji: "⛓️", 
@@ -16623,7 +16581,7 @@ const eski_sozlukVerileri = {
                     ar: "مَتَى اسْتَعْبَدْتُمُ النَّاسَ وَقَدْ وَلَدَتْهُمْ أُمَّهَاتُهُمْ أَحْرَارًا", 
                     tr: "Anneleri onları hür olarak doğurmuşken, siz insanları ne zamandan beri köleleştirdiniz? (Hz. Ömer'in meşhur ve evrensel insan hakları sözü)." 
                 }
-            },
+            }
         },
 
         // --- 101 Numaralı Kalıp (يَسْتَفْعِلُ - İstif'âl Babı Muzari) ---
@@ -16632,7 +16590,7 @@ const eski_sozlukVerileri = {
                 emoji: "🔗", 
                 arText: "يَسْتَعْبِدُ", 
                 trText: "Köleleştirir / İradesini esir alır." 
-            },
+            }
         },
 
         // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı) ---
@@ -16734,7 +16692,7 @@ const eski_sozlukVerileri = {
                 emoji: "❗", 
                 arText: "قَدِّسْ", 
                 trText: "Kutsa / Yücelt / Noksanlıktan uzak tut!" 
-            },
+            }
         },
 
         // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
@@ -16846,9 +16804,7 @@ const eski_sozlukVerileri = {
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
         21: { 
-            base: { arText: "لُعْب" },
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🧸", 
                 arText: "لُعْبَة", 
                 trText: "Lu'be / Oyuncak, oynanan oyun.",
@@ -17153,7 +17109,7 @@ const eski_sozlukVerileri = {
                         tr: "Sarf Notu: Bu bir 'Ecvef' (ortası illetli) fiildir. Kökündeki 'Vav' (و) harfi mazide 'Elif'e (ا) dönüşür. Çekim tablosunda (Biz, Siz, Onlar-Kadınlar) derken iki sessiz harf yan yana gelemeyeceği için ortadaki illet harfi düşer ve baştaki harf ötre alır (Örn: مُتُّ - Mut-tu / Öldüm)."
                     }
                 ]
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -17166,7 +17122,7 @@ const eski_sozlukVerileri = {
                     ar: "وَلَا تَمُوتُنَّ إِلَّا وَأَنْتُمْ مُسْلِمُونَ", 
                     tr: "Ancak müslümanlar olarak ölün (can verin). (Âl-i İmrân Suresi, 102)" 
                 }
-            },
+            }
         },
 
         // --- 3 Numaralı Kalıp (Mücerret 1. Bab Emir) ---
@@ -17277,7 +17233,7 @@ const eski_sozlukVerileri = {
                     ar: "وَأَنَّهُ هُوَ أَمَاتَ وَأَحْيَا", 
                     tr: "Şüphesiz O'dur öldüren ve dirilten. (Necm Suresi, 44)" 
                 }
-            },
+            }
         },
 
         // --- 53 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
@@ -17290,7 +17246,7 @@ const eski_sozlukVerileri = {
                     ar: "يُحْيِي وَيُمِيتُ", 
                     tr: "Diriltir ve öldürür." 
                 }
-            },
+            }
         },
 
         // --- 54 Numaralı Kalıp (أَفْعِلْ - İf'âl Babı Emir) ---
@@ -17910,6 +17866,8 @@ const eski_sozlukVerileri = {
         // --- 64 Numaralı Kalıp (فَاعَلَ - Müfâ'ale Babı Mazi - Karşılıklı Eylem) ---
         64: {
             base: {
+                arText: "نَافَسَ",
+
                 emoji: "🏃‍♂️",
                 trText: "Yarıştı / Rekabet etti.",
                 ornek: { ar: "نَافَسَ زَمِيلَهُ", tr: "Arkadaşıyla rekabet etti (Nefes nefese yarıştı)." }
@@ -17919,9 +17877,11 @@ const eski_sozlukVerileri = {
         // --- 65 Numaralı Kalıp (يُفَاعِلُ - Müfâ'ale Babı Muzari) ---
         65: {
             base: {
+                arText: "يُنَافِسُ",
+
                 emoji: "🏁",
                 trText: "Yarışır / Rekabet eder."
-            },
+            }
         },
 
         // --- 67 Numaralı Kalıp (مُفَاعَلَة - Müfâ'ale Babı Masdarı) ---
@@ -17947,26 +17907,32 @@ const eski_sozlukVerileri = {
         // --- 88 Numaralı Kalıp (تَفَعَّلَ - Tefe'ul Babı Mazi - Dönüşlülük/Süreklilik) ---
         88: {
             base: {
+                arText: "تَنَفَّسَ",
+
                 emoji: "😮‍💨",
                 trText: "Nefes aldı.",
                 ornek: { ar: "وَالصُّبْحِ إِذَا تَنَفَّسَ", tr: "Nefes almaya başladığında sabaha andolsun. (Tekvîr Suresi, 18)" }
-            },
+            }
         },
 
         // --- 89 Numaralı Kalıp (يَتَفَعَّلُ - Tefe'ul Babı Muzari) ---
         89: {
             base: {
+                arText: "يَتَنَفَّسُ",
+
                 emoji: "🌬️",
                 trText: "Nefes alır / Solur."
-            },
+            }
         },
 
         // --- 90 Numaralı Kalıp (تَفَعَّلْ - Tefe'ul Babı Emir) ---
         90: {
             base: {
+                arText: "تَنَفَّسْ",
+
                 emoji: "❗",
                 trText: "Nefes al!"
-            },
+            }
         },
 
         // --- 91 Numaralı Kalıp (تَفَعُّل - Tefe'ul Babı Masdarı) ---
@@ -18128,7 +18094,7 @@ const eski_sozlukVerileri = {
                     ar: "اِسْتَرَاحَ الْعَامِلُ بَعْدَ الْعَمَلِ", 
                     tr: "İşçi çalıştıktan sonra dinlendi." 
                 }
-            },
+            }
         },
 
         // --- 101 Numaralı Kalıp (يَسْتَفْعِلُ - İstif'âl Babı Muzari) ---
@@ -18137,7 +18103,7 @@ const eski_sozlukVerileri = {
                 emoji: "🧘‍♂️",
                 arText: "يَسْتَرِيحُ",
                 trText: "Dinlenir / İstirahat eder."
-            },
+            }
         },
         
         // --- 102 Numaralı Kalıp (اِسْتَفْعِلْ - İstif'âl Babı Emir) ---
@@ -18150,7 +18116,7 @@ const eski_sozlukVerileri = {
                     ar: "💡 قَاعِدَة صَرْفِيَّة",
                     tr: "Sarf Notu: Ecvef (ortası illetli) fiilin emri yapılırken, son harf cezimlenir. Bu durumda iki sakin (harekesiz) harf yan yana gelemeyeceği için ortadaki uzatma harfi (Yâ) düşer ve 'İsterîh' yerine kısaca 'İsterih' olur."
                 }
-            },
+            }
         },
 
         // --- 103 Numaralı Kalıp (اِسْتِفْعَال - İstif'âl Babı Masdarı / Ecvef Kuralı) ---
@@ -18189,7 +18155,7 @@ const eski_sozlukVerileri = {
                     ar: "حَزِنَ عَلَى فِرَاقِ صَدِيقِهِ",
                     tr: "Arkadaşının ayrılığına üzüldü."
                 }
-            },
+            }
         },
 
         // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
@@ -18202,7 +18168,7 @@ const eski_sozlukVerileri = {
                     ar: "لَا تَحْزَنْ إِنَّ اللهَ مَعَنَا",
                     tr: "Üzülme, şüphesiz Allah bizimledir. (Tevbe Suresi, 40)"
                 }
-            },
+            }
         },
 
         // --- 10 Numaralı Kalıp (Mücerret 4. Bab Emir) ---
@@ -18211,7 +18177,7 @@ const eski_sozlukVerileri = {
                 emoji: "❗",
                 arText: "اِحْزَنْ",
                 trText: "Üzül / Kederlen!"
-            },
+            }
         },
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim / Masdar) ---
@@ -18285,7 +18251,7 @@ const eski_sozlukVerileri = {
                     ar: "أَحْزَنَنِي هَذَا الْخَبَرُ",
                     tr: "Bu haber beni üzdü."
                 }
-            },
+            }
         },
 
         // --- 46 Numaralı Kalıp (يُفْعِلُ - İf'âl Babı Muzari) ---
@@ -18298,7 +18264,7 @@ const eski_sozlukVerileri = {
                     ar: "لَا يُحْزِنُكَ قَوْلُهُمْ",
                     tr: "Onların sözü seni üzmesin. (Âl-i İmrân Suresi, 176)"
                 }
-            },
+            }
         }
     },
 
@@ -18682,7 +18648,7 @@ const eski_sozlukVerileri = {
                         tr: "Sarf Notu: Son iki harfi aynı olan (Muzaaf) fiillerde, çekim esnasında cezimli şahıs zamirleri (Nûn-u Nisve, Tü vb.) geldiğinde şedde çözülür. Örneğin: 'Zanne' (ظَنَّ) iken 'Zanentü' (ظَنَنْتُ) olur."
                     }
                 ]
-            },
+            }
         },
 
         // --- 2 Numaralı Kalıp (Mücerret 1. Bab Muzari) ---
@@ -18692,7 +18658,7 @@ const eski_sozlukVerileri = {
                 arText: "يَظُنُّ",
                 trText: "Zanneder / Sanır.",
                 ornek: { ar: "يَظُنُّونَ أَنَّهُمْ مُهْتَدُونَ", tr: "Kendilerinin doğru yolda olduklarını sanıyorlar. (A'râf Suresi, 30)" }
-            },
+            }
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Tekil) ---
@@ -18715,7 +18681,7 @@ const eski_sozlukVerileri = {
                         tr: "Dil Notu: Türkçedeki 'Zanlı' (şüpheli) kelimesi doğrudan bu kökten gelir. Üzerinde 'zan' (şüphe) bulunan, hakkında suç işlediğine dair şüphe duyulan kişi demektir."
                     }
                 ]
-            },
+            }
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
@@ -18769,7 +18735,7 @@ const eski_sozlukVerileri = {
                 arText: "ظَفِرَ",
                 trText: "Başardı / Galip geldi / Elde etti.",
                 ornek: { ar: "ظَفِرَ بِالْجَائِزَةِ", tr: "Ödülü elde etti (kazandı)." }
-            },
+            }
         },
 
         // --- 9 Numaralı Kalıp (Mücerret 4. Bab Muzari) ---
@@ -18778,7 +18744,7 @@ const eski_sozlukVerileri = {
                 emoji: "🥇",
                 arText: "يَظْفَرُ",
                 trText: "Başarır / Galip gelir."
-            },
+            }
         },
 
         // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
@@ -18807,7 +18773,7 @@ const eski_sozlukVerileri = {
                         tr: "Semantik Not: 'Tırnak' (Zufr) ile 'Zafer' kelimelerinin aynı kökten gelmesi muazzamdır. İnsanın tırnaklarını bir yere geçirip sıkıca tutunması, mücadele etmesi ve söküp alması mecazen 'başarmak' (zafer kazanmak) anlamına dönüşmüştür."
                     }
                 ]
-            },
+            }
         },
         
         // --- 41 Numaralı Kalıp (Cem-i Mükesser / Kırık Çoğul Formları) ---
@@ -18830,8 +18796,7 @@ const eski_sozlukVerileri = {
                         tr: "Kartalın pençeleri keskindir." 
                     }
                 ]
-            },
-            
+            }
         },
 
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ûlü) ---
@@ -20090,8 +20055,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             base: { 
                 emoji: "🤍", 
                 arText: "يُسَامِحُ", 
-                trText: "Affeder / Hoşgörür.",
-            },
+                trText: "Affeder / Hoşgörür."
+        },
             cekimi: ["يُسَامِحُ", "يُسَامِحَانِ", "يُسَامِحُونَ", "تُسَامِحُ", "تُسَامِحَانِ", "يُسَامِحْنَ", "تُسَامِحُ", "تُسَامِحَانِ", "تُسَامِحُونَ", "تُسَامِحِينَ", "تُسَامِحَانِ", "تُسَامِحْنَ", "أُسَامِحُ", "نُسَامِحُ", "نُسَامِحُ"]
         },
 
@@ -20188,9 +20153,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim Formu) ---
         21: { 
-            base: { arText: "عُقْد" }, // Yalın hali sessiz
-            suggestsPlus: true,
-            "ة": { 
+            base: {
                 emoji: "🔗", 
                 arText: "عُقْدَة", 
                 trText: "Ukde (Düğüm) / Çözülemeyen sorun, karmaşa.",
@@ -20208,7 +20171,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                         tr: "Semantik Not: Türkçede 'İçimde ukde kaldı' dediğimiz ifade tam olarak bu kelimedir. Çözülememiş, içeride kördüğüm olup kalmış dert, sızı veya ulaşılamamış heves demektir."
                     }
                 ]
-            } 
+            }, // Yalın hali sessiz
+
         },
         // --- 35 Numaralı Kalıp (فَعِيل - Sıfat / İsim) ---
         35: { 
@@ -20266,7 +20230,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                     ar: "اِنْعَقَدَ الْمَجْلِسُ بِحُضُورِ الْأَعْضَاءِ", 
                     tr: "Meclis, üyelerin katılımıyla toplandı (oturum kurulup bağlandı)." 
                 }
-            },
+            }
         },
 
         // --- 74 Numaralı Kalıp (اِنْفِعَال - İnfi'âl Babı Masdarı) ---
@@ -20292,7 +20256,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                     ar: "اِعْتَقَدَ إِيمَانًا رَاسِخًا", 
                     tr: "Sarsılmaz bir imanla inandı (itikad etti)." 
                 }
-            },
+            }
         },
         
         // --- 78 Numaralı Kalıp (يَفْتَعِلُ - İfti'âl Babı Muzari) ---
@@ -20301,7 +20265,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                 emoji: "✨", 
                 arText: "يَعْتَقِدُ", 
                 trText: "İnanır / İtikad eder / Düşünür." 
-            },
+            }
         },
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
@@ -20466,5 +20430,5 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             }
         }
 
-    },
-};
+    }
+        };
