@@ -1,6 +1,6 @@
 // --- AUTO-FILL MEZID VERBS IF NOUN EXISTS ---
 (function autoFillMezidVerbs() {
-    if (typeof wordEasterEggs === 'undefined') return;
+    if (typeof sozlukVerileri === 'undefined') return;
     const mezidBabRanges = [
         { verbStart: 52, verbEnd: 54, nounStart: 55, nounEnd: 57 }, // Bab 7 İf'al
         { verbStart: 58, verbEnd: 60, nounStart: 61, nounEnd: 63 }, // Bab 8 Tef'il
@@ -12,8 +12,8 @@
         { verbStart: 94, verbEnd: 96, nounStart: 97, nounEnd: 99 }, // Bab 14 Tefâul
         { verbStart: 100, verbEnd: 102, nounStart: 103, nounEnd: 105 } // Bab 15 Istif'al
     ];
-    for (let root in wordEasterEggs) {
-        let entry = wordEasterEggs[root];
+    for (let root in sozlukVerileri) {
+        let entry = sozlukVerileri[root];
         if (!entry) continue;
         mezidBabRanges.forEach(range => {
             let hasNoun = false;
@@ -40,8 +40,8 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
     let rootData = null;
     let isFromDictionary = false;
     
-    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[rootKey]) {
-        rootData = wordEasterEggs[rootKey];
+    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootKey]) {
+        rootData = sozlukVerileri[rootKey];
     } else if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootKey]) {
         rootData = sozlukVerileri[rootKey];
         isFromDictionary = true;
@@ -91,14 +91,27 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
     
     // Header with Title and SVG Button
     const cleanTrText = exactTrText ? exactTrText.replace(/\./g, "").trim() : "";
-    const displayTitle = exactArText ? `<span style="font-size:3rem; color:#fff; margin-right:15px;">${exactArText}</span> <span style="font-size:1.6rem; color:#f1c40f; font-weight:bold;" dir="ltr">${cleanTrText}</span>` : "";
+    // İsimler/Sözlük modunda başlık gizlenecek (zaten kartta var)
+    let isDictOnlyTitle = false;
+    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootKey] && sozlukVerileri[rootKey].isDictOnly) {
+        isDictOnlyTitle = true;
+    }
     
-    htmlContent += `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:15px; margin-bottom:20px;">`;
-    htmlContent += `  <div style="margin:0; text-align:right; flex:1;" dir="rtl">${displayTitle}</div>`;
+    const displayTitle = (exactArText && !isDictOnlyTitle) ? `
+        <div style="display:inline-flex; align-items:center; background: rgba(0,0,0,0.3); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);">
+            <span style="font-size:3.5rem; color:#ffffff; font-family: 'Arakom', sans-serif; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${exactArText}</span>
+        </div>` : "";
+    
+    if (displayTitle) {
+        htmlContent += `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:15px; margin-bottom:20px;">`;
+        htmlContent += `  <div style="margin:0; text-align:right; flex:1;" dir="rtl">${displayTitle}</div>`;
+    } else {
+        htmlContent += `<div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:20px;">`;
+    }
     
     const compactRoot = rootKey.replace(/\s+/g, '');
-    // Sadece tanımlı (wordEasterEggs içinde olan) kökler için Vezin Tablosu butonunu göster
-    if ((compactRoot.length === 3 || compactRoot.length === 4) && typeof wordEasterEggs !== 'undefined' && wordEasterEggs[compactRoot]) {
+    // Sadece tanımlı (sozlukVerileri içinde olan) kökler için Vezin Tablosu butonunu göster
+    if ((compactRoot.length === 3 || compactRoot.length === 4) && typeof sozlukVerileri !== 'undefined' && sozlukVerileri[compactRoot]) {
         htmlContent += `  <div style="cursor:pointer; background:#5cb85c; padding:15px; border-radius:50%; font-size:2.5rem; display:flex; align-items:center; justify-content:center; margin-left:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);" 
                             onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Vezin Tablosu">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
@@ -134,57 +147,73 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             cards.forEach(card => {
                 htmlContent += `
                 <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                    <strong style="display:block; font-size:4rem; margin-bottom:15px; color:#fff;">${card.data.base.arText}</strong>
-                    <div style="color:${card.color}; font-size:1.5rem; font-weight:bold;" dir="ltr">${card.label}</div>
-                    <div style="color:#ddd; font-size:1.2rem; margin-top:10px;" dir="ltr">${card.data.base.trText}</div>
+                    <div style="color:${card.color}; font-size:1.6rem; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
+                    ${card.data.base.emoji ? `<div style="font-size:3.5rem; margin-bottom:15px;">${card.data.base.emoji}</div>` : ''}
+                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${card.data.base.arText}</span>
+                    <div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${card.data.base.trText}</div>
                 </div>`;
             });
             htmlContent += `</div>`;
         } else {
             // İsim mantığı (Tekil, Çoğul) - SADECE TIKLANAN GRUBU GÖSTER
-            let k = parseInt(kalipKey);
-            if (isNaN(k)) k = 1;
-            
-            let tekilId;
-            if (hasVerbTriplet) {
-                // Fiil 1,2,3'ü kapladığı için isimler 4'ten başlar: (4,5), (6,7)...
-                tekilId = (k % 2 === 0) ? k : k - 1;
+            let itemClicked = rootData[kalipKey];
+            let itemTekil, itemCogul;
+
+            if (kalipKey === "tekil" || kalipKey === "cogul") {
+                itemTekil = rootData["tekil"];
+                itemCogul = rootData["cogul"];
+            } else if (itemClicked && itemClicked.cogulId) {
+                // Eğer manuel olarak bir çoğul kalıp atanmışsa
+                itemTekil = itemClicked;
+                itemCogul = rootData[itemClicked.cogulId.toString()];
+            } else if (itemClicked && itemClicked.tekilId) {
+                itemTekil = rootData[itemClicked.tekilId.toString()];
+                itemCogul = itemClicked;
             } else {
-                // Normal isim dizilimi: (1,2), (3,4)...
-                tekilId = (k % 2 !== 0) ? k : k - 1;
+                // Geriye dönük uyumluluk: Matematiksel ardışık arama
+                let k = parseInt(kalipKey);
+                if (!isNaN(k)) {
+                    let tekilId = hasVerbTriplet ? ((k % 2 === 0) ? k : k - 1) : ((k % 2 !== 0) ? k : k - 1);
+                    itemTekil = rootData[tekilId.toString()];
+                    itemCogul = rootData[(tekilId + 1).toString()];
+                }
             }
             
-            let cogulId = tekilId + 1;
-            
-            let itemTekil = rootData[tekilId.toString()];
-            let itemCogul = rootData[cogulId.toString()];
-            
-            if (itemTekil && itemCogul) {
-                htmlContent += `<div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:20px; text-align:center;">`;
-                const cards = [
-                    { data: itemTekil, label: "Tekil", color: "#f39c12" },
-                    { data: itemCogul, label: "Çoğul", color: "#3498db" }
-                ];
-                cards.forEach(card => {
-                    htmlContent += `
-                    <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        <strong style="display:block; font-size:4rem; margin-bottom:15px; color:#fff;">${card.data.base.arText}</strong>
-                        <div style="color:${card.color}; font-size:1.5rem; font-weight:bold;" dir="ltr">${card.label}</div>
-                        <div style="color:#ddd; font-size:1.2rem; margin-top:10px;" dir="ltr">${card.data.base.trText}</div>
-                    </div>`;
-                });
+            if (itemTekil || itemCogul) {
+                htmlContent += `<div style="display:flex; justify-content:center; align-items:center; width:100%; text-align:center;">`;
+                let tekilAr = itemTekil ? itemTekil.base.arText : '';
+                let cogulAr = itemCogul ? itemCogul.base.arText : '';
+                let tekilTr = (itemTekil && itemTekil.base.trText) ? itemTekil.base.trText : '';
+                let cogulTr = (itemCogul && itemCogul.base.trText) ? itemCogul.base.trText : '';
+                let emoji = (itemTekil && itemTekil.base.emoji) ? itemTekil.base.emoji : ((itemCogul && itemCogul.base.emoji) ? itemCogul.base.emoji : '');
+                
+                htmlContent += `
+                <div style="width:100%; text-align:center; background:rgba(255,255,255,0.1); padding:40px 20px; border-radius:15px; border:1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
+                    ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
+                    <div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9;" dir="ltr">${cogulAr ? 'Tekil ve Çoğul' : 'Tekil'}</div>
+                    
+                    <div style="display:flex; justify-content:center; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
+                        ${tekilAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${tekilAr}</span>` : ''}
+                        ${(tekilAr && cogulAr) ? `<span style="font-family:'Arakom', sans-serif; font-size:3.5rem; color:#f1c40f; margin: 0 10px; opacity:0.8;">ج</span>` : ''}
+                        ${cogulAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${cogulAr}</span>` : ''}
+                    </div>
+                    
+                    <div style="color:#e2e8f0; font-size:1.6rem; margin-top:15px; letter-spacing:0.5px;" dir="ltr">
+                        ${tekilTr} ${tekilTr && cogulTr ? '<span style="opacity:0.5; margin:0 10px;">-</span>' : ''} ${cogulTr}
+                    </div>
+                </div>`;
                 htmlContent += `</div>`;
             } else {
                 let item = itemTekil || rootData[kalipKey] || rootData["1"];
                 htmlContent += `
                 <div style="background:rgba(0,0,0,0.4); padding:40px 20px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align:center;">
-                    <strong style="display:block; font-size:5rem; margin-bottom:20px; color:#fff;">${item.base.arText}</strong>
-                    <div style="color:#f39c12; font-size:1.8rem; font-weight:bold;" dir="ltr">${item.base.trText}</div>
+                    <span style="display:block; font-size:5rem; margin-bottom:20px; color:#fff;">${item.base.arText}</span>
+                    <div style="color:#f39c12; font-size:1.8rem; font-weight: normal;" dir="ltr">${item.base.trText}</div>
                 </div>`;
             }
         }
     } else {
-        // Eski wordEasterEggs Mantığı
+        // Eski sozlukVerileri Mantığı
         let maziId = -1, muzariId = -1, emirId = -1, masdarId = -1;
         
         if (kalipKey >= 1 && kalipKey <= 30) {
@@ -229,35 +258,69 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 if (rootData[card.id]) {
                     htmlContent += `
                     <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        <strong style="display:block; font-size:4rem; margin-bottom:15px; color:#fff;">${rootData[card.id].base.arText}</strong>
-                        <div style="color:${card.color}; font-size:1.5rem; font-weight:bold;" dir="ltr">${card.label}</div>
+                        <div style="color:${card.color}; font-size:1.6rem; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
+                        ${rootData[card.id].base.emoji ? `<div style="font-size:3.5rem; margin-bottom:15px;">${rootData[card.id].base.emoji}</div>` : ''}
+                        <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${rootData[card.id].base.arText}</span>
+                        ${rootData[card.id].base.trText ? `<div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rootData[card.id].base.trText}</div>` : ''}
                     </div>`;
                 }
             });
             htmlContent += `</div>`;
         } else {
-            let item = rootData[kalipKey];
-            if (!item) item = { base: { emoji: "", arText: exactArText, trText: exactTrText } };
+            let itemClicked = rootData[kalipKeyStr] || rootData[kalipKey];
+            if (!itemClicked) itemClicked = { base: { emoji: "", arText: exactArText, trText: exactTrText } };
             
-            htmlContent += `<div style="display:flex; justify-content:space-around; gap:30px;">`;
-            htmlContent += `
-            <div style="flex:1; background:rgba(0,0,0,0.4); padding:40px 20px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                <strong style="display:block; font-size:5rem; margin-bottom:20px; color:#fff;">${item.base.arText}</strong>
-                <div style="color:#f39c12; font-size:1.8rem; font-weight:bold;" dir="ltr">Tekil</div>
-            </div>`;
-            
-            if (item.base.cogul) {
-                htmlContent += `
-                <div style="flex:1; background:rgba(0,0,0,0.4); padding:40px 20px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                    <strong style="display:block; font-size:5rem; margin-bottom:20px; color:#fff;">${item.base.cogul}</strong>
-                    <div style="color:#3498db; font-size:1.8rem; font-weight:bold;" dir="ltr">Çoğul</div>
-                </div>`;
+            let itemTekil, itemCogul;
+
+            if (kalipKeyStr === "tekil" || kalipKeyStr === "cogul") {
+                itemTekil = rootData["tekil"];
+                itemCogul = rootData["cogul"];
+            } else if (itemClicked && itemClicked.cogulId) {
+                itemTekil = itemClicked;
+                itemCogul = rootData[itemClicked.cogulId.toString()];
+            } else if (itemClicked && itemClicked.tekilId) {
+                itemTekil = rootData[itemClicked.tekilId.toString()];
+                itemCogul = itemClicked;
             } else {
-                htmlContent += `
-                <div style="flex:1; display:flex; align-items:center; justify-content:center; opacity:0.5; font-size:1.8rem;" dir="ltr">
-                    (Çoğulu tanımlanmamış)
-                </div>`;
+                let k = parseInt(kalipKey);
+                if (!isNaN(k)) {
+                    let tekilId = ((k % 2 !== 0) ? k : k - 1);
+                    itemTekil = rootData[tekilId.toString()];
+                    itemCogul = rootData[(tekilId + 1).toString()];
+                }
             }
+            
+            // If itemTekil is not found due to math, fallback to itemClicked
+            if (!itemTekil && !itemCogul) {
+                itemTekil = itemClicked;
+                // Check if it has an old inline cogul
+                if (itemClicked.base && itemClicked.base.cogul) {
+                    itemCogul = { base: { emoji: "", arText: itemClicked.base.cogul, trText: itemClicked.base.cogulTr || "" } };
+                }
+            }
+            
+            htmlContent += `<div style="display:flex; justify-content:center; align-items:center; width:100%; text-align:center;">`;
+            let tekilAr = itemTekil ? itemTekil.base.arText : '';
+            let cogulAr = itemCogul ? itemCogul.base.arText : '';
+            let tekilTr = (itemTekil && itemTekil.base.trText) ? itemTekil.base.trText : '';
+            let cogulTr = (itemCogul && itemCogul.base.trText) ? itemCogul.base.trText : '';
+            let emoji = (itemTekil && itemTekil.base.emoji) ? itemTekil.base.emoji : ((itemCogul && itemCogul.base.emoji) ? itemCogul.base.emoji : '');
+            
+            htmlContent += `
+            <div style="width:100%; text-align:center; background:rgba(255,255,255,0.1); padding:40px 20px; border-radius:15px; border:1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
+                ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
+                <div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9;" dir="ltr">${cogulAr ? 'Tekil ve Çoğul' : 'Tekil'}</div>
+                
+                <div style="display:flex; justify-content:center; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
+                    ${tekilAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${tekilAr}</span>` : ''}
+                    ${(tekilAr && cogulAr) ? `<span style="font-family:'Arakom', sans-serif; font-size:3.5rem; color:#f1c40f; margin: 0 10px; opacity:0.8;">ج</span>` : ''}
+                    ${cogulAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${cogulAr}</span>` : ''}
+                </div>
+                
+                <div style="color:#e2e8f0; font-size:1.6rem; margin-top:15px; letter-spacing:0.5px;" dir="ltr">
+                    ${tekilTr} ${tekilTr && cogulTr ? '<span style="opacity:0.5; margin:0 10px;">-</span>' : ''} ${cogulTr}
+                </div>
+            </div>`;
             htmlContent += `</div>`;
         }
     }
@@ -289,10 +352,10 @@ const arapcaHarfler = "أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ 
 let currentSearchQuery = ""; 
 
 function getRootEmoji(root) {
-    if(wordEasterEggs[root]) {
-        const keys = Object.keys(wordEasterEggs[root]);
-        if (keys.length > 0 && wordEasterEggs[root][keys[0]].base && wordEasterEggs[root][keys[0]].base.emoji) {
-            return wordEasterEggs[root][keys[0]].base.emoji;
+    if(sozlukVerileri[root]) {
+        const keys = Object.keys(sozlukVerileri[root]);
+        if (keys.length > 0 && sozlukVerileri[root][keys[0]].base && sozlukVerileri[root][keys[0]].base.emoji) {
+            return sozlukVerileri[root][keys[0]].base.emoji;
         }
     }
     return "🔹";
@@ -309,7 +372,7 @@ function renderVerbMenu() {
 
     // 1. Önemli Kökler (Manuel sıralama korunur)
     onemliKokler.forEach(root => {
-        if(wordEasterEggs[root]) importantContainer.innerHTML += createFlatRootItem(root);
+        if(sozlukVerileri[root]) importantContainer.innerHTML += createFlatRootItem(root);
     });
 
     // 2. 4 Sütunlu Bağımsız Scroll Sistemi
@@ -320,7 +383,7 @@ function renderVerbMenu() {
         { title: "ك - ل - م - ن - ه - و - ي", start: 21, end: 27 }
     ];
 
-    const allRoots = Object.keys(wordEasterEggs);
+    const allRoots = Object.keys(sozlukVerileri);
     const rootsByLetter = {};
     arapcaHarfler.forEach(h => rootsByLetter[h] = []);
     allRoots.forEach(root => {
@@ -451,7 +514,7 @@ function updatePredictionsAndFilter() {
     predictionsContainer.innerHTML = "";
     
     if (filter.length > 0) {
-        const allRoots = Object.keys(wordEasterEggs);
+        const allRoots = Object.keys(sozlukVerileri);
         // Yazılan harflerle BAŞLAYAN kökleri öncelikli getir
         const matches = allRoots.filter(r => r.startsWith(filter)).slice(0, 15);
         
@@ -478,10 +541,10 @@ function openSlideMenu(type) {
     slideContent.innerHTML = "";
     if (type === 'aksam') {
         slideTitle.innerText = "أقسام السبعة";
-        aksamSebaKokleri.forEach(r => { if(wordEasterEggs[r]) slideContent.innerHTML += createFlatRootItem(r); });
+        aksamSebaKokleri.forEach(r => { if(sozlukVerileri[r]) slideContent.innerHTML += createFlatRootItem(r); });
     } else {
         slideTitle.innerText = "مزيد";
-        mezidFiilKokleri.forEach(r => { if(wordEasterEggs[r]) slideContent.innerHTML += createFlatRootItem(r); });
+        mezidFiilKokleri.forEach(r => { if(sozlukVerileri[r]) slideContent.innerHTML += createFlatRootItem(r); });
     }
     
     if (slideMenu) slideMenu.classList.add('active');
@@ -815,8 +878,8 @@ function selectReadyVerb(verb) {
     const mezidBtn = document.querySelector('.mezid-btn');
     if (mezidBtn) {
         mezidBtn.classList.remove('heartbeat-active');
-        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot]) {
-            const hasMezid = Object.keys(wordEasterEggs[currentRoot]).some(ref => parseInt(ref) >= 52);
+        if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRoot]) {
+            const hasMezid = Object.keys(sozlukVerileri[currentRoot]).some(ref => parseInt(ref) >= 52);
             if (hasMezid && (typeof currentTabActive === 'undefined' || currentTabActive === 0)) {
                 mezidBtn.classList.add('heartbeat-active');
             }
@@ -955,7 +1018,7 @@ document.addEventListener('click', function(e) {
             const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
             
             // YENİ ŞART: Tanımlı olmayan köklerde fiil tabloları AÇILMASIN
-            if (typeof wordEasterEggs !== 'undefined' && !wordEasterEggs[currentRootSafe]) {
+            if (typeof sozlukVerileri !== 'undefined' && !sozlukVerileri[currentRootSafe]) {
                 return;
             }
 
@@ -993,7 +1056,7 @@ function handleBoxClick(boxElement) {
 
     const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
     
-    if (typeof wordEasterEggs !== 'undefined' && (!currentRootSafe || !wordEasterEggs[currentRootSafe])) {
+    if (typeof sozlukVerileri !== 'undefined' && (!currentRootSafe || !sozlukVerileri[currentRootSafe])) {
         boxElement.classList.add('tanimsiz-kok');
     } else {
         boxElement.classList.remove('tanimsiz-kok');
@@ -1005,7 +1068,7 @@ function handleBoxClick(boxElement) {
     lastClickedBoxTextSpan = textEl;
     lastOriginalWord = kalip;
 
-    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRootSafe]) {
+    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
         const sortedRefs = getSortedRefsForRoot(currentRootSafe);
         const idx = sortedRefs.indexOf(refId);
         if (idx !== -1) currentEggIndex = idx;
@@ -1025,7 +1088,7 @@ function handleBoxClick(boxElement) {
     const isZoomEnabled = window.innerWidth <= 1024 ? false : (document.getElementById('zoomToggleCheckbox') ? document.getElementById('zoomToggleCheckbox').checked : false);
 
   
-    // KELİMEYİ TÜRETEN FONKSİYON (Tek Veri Kaynağı: wordEasterEggs)
+    // KELİMEYİ TÜRETEN FONKSİYON (Tek Veri Kaynağı: sozlukVerileri)
     const applyWordTransformation = () => {
         const vezinObj = babVezinleri[mapping.babNo];
         let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
@@ -1035,11 +1098,11 @@ function handleBoxClick(boxElement) {
         
        if (currentRootSafe.length === 3) {
             // ÖZEL ÇEKİM LİSTESİNDE VAR MI KONTROL ET (TEK VERİ KAYNAĞI)
-            if (typeof wordEasterEggs !== 'undefined' && 
-                wordEasterEggs[currentRootSafe] && 
-                wordEasterEggs[currentRootSafe][refId]) {
+            if (typeof sozlukVerileri !== 'undefined' && 
+                sozlukVerileri[currentRootSafe] && 
+                sozlukVerileri[currentRootSafe][refId]) {
                 
-                let eggObj = wordEasterEggs[currentRootSafe][refId];
+                let eggObj = sozlukVerileri[currentRootSafe][refId];
                 
                 // 1. Önce tek kelimelik arText var mı diye bak (Cümleyi kutuya sığdırmaya çalışmasını engeller!)
                 if (eggObj.base && eggObj.base.arText && eggObj.base.arText.trim().split(/\s+/).length === 1) {
@@ -1111,7 +1174,7 @@ function handleBoxClick(boxElement) {
         if (tiklama === 0) {
             // 1. AŞAMA: Sadece Kırmızı Vurgu
             document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
-            if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRootSafe]) {
+            if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
                 boxElement.classList.add('current-active-red');
             }
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -1158,7 +1221,7 @@ function handleBoxClick(boxElement) {
             // MOBİL HIZLI SİSTEM: İLK TIKLAMADA TÜRET, İKİNCİDE SİL
             if (tiklama === 0) {
                 document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
-                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRootSafe]) {
+                if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
                     boxElement.classList.add('current-active-red');
                 }
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -1183,7 +1246,7 @@ function handleBoxClick(boxElement) {
             if (tiklama === 0) {
                 // 1. Tıklama: Kırmızı Vurgu
                 document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
-                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRootSafe]) {
+                if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
                     boxElement.classList.add('current-active-red');
                 }
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -1310,8 +1373,8 @@ function applyRootToKalip(root, kalip) {
 }
 
 function openConjugationPopup(kok, babNo, tip, anaVezin) {
-    // Kök sözlükte (wordEasterEggs'de) tanımlı değilse tabloyu KESİNLİKLE açma!
-    if (typeof wordEasterEggs !== 'undefined' && (!kok || !wordEasterEggs[kok])) {
+    // Kök sözlükte (sozlukVerileri'de) tanımlı değilse tabloyu KESİNLİKLE açma!
+    if (typeof sozlukVerileri !== 'undefined' && (!kok || !sozlukVerileri[kok])) {
         return;
     }
 
@@ -1372,7 +1435,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         if (refId === 1) {
             let poss = [2, 4, 6];
             for (let p of poss) {
-                if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok] && wordEasterEggs[kok][p]) { 
+                if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kok] && sozlukVerileri[kok][p]) { 
                     targetMuzariRef = p; 
                     break; 
                 }
@@ -1451,7 +1514,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
         let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
         
-        if (prefix) return `<span style="color: #64748b; font-weight: bold; margin-left: 6px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+        if (prefix) return `<span style="color: #64748b; font-weight: normal; margin-left: 6px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
         return `<span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
     }
 
@@ -1475,8 +1538,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     
     if (hasCarousel) {
         // Okların yerini değiştirdik: İçeriye aldık ve ortaladık
-        html += `<button class="carousel-nav-btn right-btn" onclick="scrollConjugationCarousel(1, this)" style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: bold; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: ltr;">❯</button>`;
-        html += `<button class="carousel-nav-btn left-btn" onclick="scrollConjugationCarousel(-1, this)" style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: bold; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: ltr;">❮</button>`;
+        html += `<button class="carousel-nav-btn right-btn" onclick="scrollConjugationCarousel(1, this)" style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: ltr;">❯</button>`;
+        html += `<button class="carousel-nav-btn left-btn" onclick="scrollConjugationCarousel(-1, this)" style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: ltr;">❮</button>`;
     }
 
     html += `<div class="popup-scroll-wrapper conjugation-carousel hide-scrollbars" style="flex: 0 0 calc(100% - 80px); max-height: 60vh; overflow-y: hidden; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; display: flex; flex-direction: row; scrollbar-width: none; padding: 0; box-sizing: border-box; width: calc(100% - 80px);">`;
@@ -1875,19 +1938,32 @@ function confirmRoot() {
 
         highlightEasterEggBoxes(currentRoot);
         if (typeof autoSpawnRootClone === 'function') autoSpawnRootClone();
-        if (currentTabActive === 1) {
-            setTab(0);
+        // Akıllı Sekme Geçişi: Kök sadece Mezid'de varsa Mezid'e geç
+        let shouldGoToMezid = false;
+        let hasMezid = false;
+        
+        if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRoot]) {
+            const rootKeys = Object.keys(sozlukVerileri[currentRoot]).filter(k => !isNaN(parseInt(k)));
+            hasMezid = rootKeys.some(ref => parseInt(ref) >= 52);
+            const hasMucerretData = rootKeys.some(ref => parseInt(ref) >= 1 && parseInt(ref) <= 51);
+            
+            if (hasMezid && !hasMucerretData) {
+                shouldGoToMezid = true;
+            }
+        }
+
+        if (shouldGoToMezid) {
+            if (currentTabActive === 0) setTab(1);
+        } else {
+            if (currentTabActive === 1) setTab(0);
         }
         
         // YENİ: Mezid sekmesinde kelime var mı kontrolü
         const mezidBtn = document.querySelector('.mezid-btn');
         if (mezidBtn) {
             mezidBtn.classList.remove('heartbeat-active');
-            if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot]) {
-                const hasMezid = Object.keys(wordEasterEggs[currentRoot]).some(ref => parseInt(ref) >= 52);
-                if (hasMezid && currentTabActive === 0) {
-                    mezidBtn.classList.add('heartbeat-active');
-                }
+            if (hasMezid && currentTabActive === 0) {
+                mezidBtn.classList.add('heartbeat-active');
             }
         }
     }
@@ -2051,9 +2127,9 @@ function updateSuffixHighlights(currentBox) {
     
     const refId = parseInt(refEl.innerText);
     if (typeof currentRoot === 'undefined' || currentRoot.length !== 3) return;
-    if (typeof wordEasterEggs === 'undefined' || !wordEasterEggs[currentRoot]) return;
+    if (typeof sozlukVerileri === 'undefined' || !sozlukVerileri[currentRoot]) return;
     
-    const eggObj = wordEasterEggs[currentRoot][refId];
+    const eggObj = sozlukVerileri[currentRoot][refId];
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
@@ -2176,9 +2252,9 @@ function updateSuffixHighlights(currentBox) {
     
     const refId = parseInt(refEl.innerText);
     if (typeof currentRoot === 'undefined' || currentRoot.length !== 3) return;
-    if (typeof wordEasterEggs === 'undefined' || !wordEasterEggs[currentRoot]) return;
+    if (typeof sozlukVerileri === 'undefined' || !sozlukVerileri[currentRoot]) return;
     
-    const eggObj = wordEasterEggs[currentRoot][refId];
+    const eggObj = sozlukVerileri[currentRoot][refId];
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
@@ -2545,9 +2621,9 @@ function applySuffix(rawSuffix) {
         const refEl = currentBox.querySelector('.ref');
         if (refEl) {
             const refId = parseInt(refEl.innerText);
-            if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot] && wordEasterEggs[currentRoot][refId]) {
+            if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRoot] && sozlukVerileri[currentRoot][refId]) {
                 // HATA BURADAYDI ÇÖZÜLDÜ: Eğer kelimenin base'i (yalın hali) yoksa çökmesini engelleyen güvenlik kontrolü eklendi.
-                const eggObj = wordEasterEggs[currentRoot][refId];
+                const eggObj = sozlukVerileri[currentRoot][refId];
                 baseWordAr = (eggObj && eggObj.base) ? eggObj.base.arText : "";
             }
         }
@@ -2687,8 +2763,8 @@ function applySuffix(rawSuffix) {
         const refEl = currentBox.querySelector('.ref');
         if (refEl) {
             const refId = parseInt(refEl.innerText);
-            if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[currentRoot] && wordEasterEggs[currentRoot][refId]) {
-                const eggObj = wordEasterEggs[currentRoot][refId];
+            if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRoot] && sozlukVerileri[currentRoot][refId]) {
+                const eggObj = sozlukVerileri[currentRoot][refId];
                 for (let k in eggObj) {
                     if (standardize(k) === dictSuffix) {
                         actualJsonKey = k; 
@@ -2985,7 +3061,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
     }
     let activeSuffix = boxElement.getAttribute('data-active-suffix');
 
-    if (typeof wordEasterEggs === 'undefined' || !wordEasterEggs[currentRoot] || !wordEasterEggs[currentRoot][refId]) {
+    if (typeof sozlukVerileri === 'undefined' || !sozlukVerileri[currentRoot] || !sozlukVerileri[currentRoot][refId]) {
         if (!isVerb) {
             boxElement.classList.remove('coklu-kullanim');
             refEl.removeAttribute('onclick');
@@ -2993,7 +3069,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
         return;
     }
 
-    const eggObj = wordEasterEggs[currentRoot][refId];
+    const eggObj = sozlukVerileri[currentRoot][refId];
     const textEl = boxElement.querySelector('.ar, .ar-small');
 
     // ===============================================================
@@ -3604,7 +3680,7 @@ function highlightEasterEggBoxes(root) {
         b.classList.remove('sari-vurgu', 'current-active-red');
     });
 
-    if (!root || root.length !== 3 || !wordEasterEggs[root]) return;
+    if (!root || root.length !== 3 || !sozlukVerileri[root]) return;
 
     const refs = getSortedRefsForRoot(root);
     refs.forEach(refId => {
@@ -3638,9 +3714,9 @@ const VerbGenerator = {
         else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
 
         let foundInJson = false;
-        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kokArr.join("")]) {
+        if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kokArr.join("")]) {
             let muzari = "";
-            let data = wordEasterEggs[kokArr.join("")];
+            let data = sozlukVerileri[kokArr.join("")];
             let possibles = (rId === 1) ? [2, 4, 6] : (rId === 8 ? [9] : (rId === 11 ? [12] : (rId === 14 ? [15] : [rId, rId + 1, rId + 2, rId + 3, 2, 4]))); 
             for (let p of possibles) {
                 if (data[p]) {
@@ -3690,8 +3766,8 @@ const VerbGenerator = {
         let kelimeListesi = [];
         let ozelCekimBulundu = false;
         
-        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[kok] && wordEasterEggs[kok][refId]) {
-            let eggObj = wordEasterEggs[kok][refId];
+        if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kok] && sozlukVerileri[kok][refId]) {
+            let eggObj = sozlukVerileri[kok][refId];
             if (activeSuffix && eggObj[activeSuffix] && eggObj[activeSuffix].cekimi) {
                 kelimeListesi = [...eggObj[activeSuffix].cekimi];
                 ozelCekimBulundu = true;
@@ -4484,15 +4560,20 @@ function updateMainKeyboardPredictions() {
         let rootMatches = [];
         
         if (!hasSpace) {
-            const allRoots = Object.keys(wordEasterEggs).filter(r => r.length === 3);
-            rootMatches = allRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 8);
+            // Veritabanındaki kelimelerin harekelerini silerek uzunluklarını ölçüyoruz (Örn: يَوْم -> يوم = 3 harf)
+            const allRoots = Object.keys(sozlukVerileri).filter(r => {
+                if (sozlukVerileri[r] && sozlukVerileri[r].isDictOnly) return false; // İsimler (tekil/çoğul) ana klavye aramasında çıkmaz
+                const stripped = window.stripHarakat ? window.stripHarakat(r) : r;
+                return stripped.length === 3 || stripped.length === 4;
+            });
+            rootMatches = allRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
 
             // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
             if (filter.length === 3) {
                 const exactExists = rootMatches.some(r => normalizeArabic(r) === normalizeArabic(filter));
                 if (!exactExists) {
                     rootMatches.unshift(filter);
-                    if (rootMatches.length > 8) rootMatches.pop();
+                    if (rootMatches.length > 50) rootMatches.pop();
                 }
             }
         }
@@ -4520,7 +4601,7 @@ function updateMainKeyboardPredictions() {
         }
 
         rootMatches.forEach(r => {
-            const isDynamic = !wordEasterEggs[r];
+            const isDynamic = !sozlukVerileri[r];
             if (isDynamic) {
                 let spacedRoot = r.split('').join(' ');
                 predictionsContainer.innerHTML += `
@@ -4538,7 +4619,7 @@ function updateMainKeyboardPredictions() {
                         max-width: calc(50% - 5px); 
                         box-sizing: border-box;
                     ">
-                        <div style="font-size: 14px; font-weight: bold; color: #f1c40f; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                        <div style="font-size: 14px; font-weight: normal; color: #f1c40f; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
                             Kök Oluştur
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -4570,8 +4651,8 @@ function updateMainKeyboardPredictions() {
                     // Sadece tek kelimeleri sözlükte göster (örnek cümleleri filtrele)
                     if (strippedAr.trim().includes(" ")) continue;
 
-                    // Çoğullar ve fiil çekimleri liste taramasında (arama boşken) gizlenir. Sadece aranınca çıkar.
-                    if (filter.trim() === "" && kalipData.isHiddenInList) {
+                    // Çoğullar ve fiil çekimleri liste taramasında (arama boşken) gizlenir. Çoğullar her zaman gizlenir, tekilden açılır.
+                    if (kalipData.isHiddenInList) {
                         continue;
                     }
 
@@ -4858,12 +4939,12 @@ currentEggIndex = -1;
 let isPresentationLocked = false; // YENİ: Geçişler sırasında çakışmayı önleyen kilit
 
 function getReadyRoots() {
-    return Object.keys(wordEasterEggs); 
+    return Object.keys(sozlukVerileri); 
 }
 
 function getSortedRefsForRoot(root) {
-    if (!wordEasterEggs[root]) return [];
-    return Object.keys(wordEasterEggs[root])
+    if (!sozlukVerileri[root]) return [];
+    return Object.keys(sozlukVerileri[root])
         .map(Number)
         .sort((a, b) => a - b);
 }
@@ -4925,7 +5006,7 @@ function nextEasterEgg() {
     }
 
     setTimeout(() => {
-        if (!currentRoot || currentRoot.length !== 3 || (typeof wordEasterEggs !== 'undefined' && !wordEasterEggs[currentRoot])) {
+        if (!currentRoot || currentRoot.length !== 3 || (typeof sozlukVerileri !== 'undefined' && !sozlukVerileri[currentRoot])) {
             if (typeof selectReadyVerb === 'function') selectReadyVerb(roots[0]);
             return; 
         }
@@ -5010,7 +5091,7 @@ function prevEasterEgg() {
     }
 
     const roots = getReadyRoots();
-    if (!currentRoot || currentRoot.length !== 3 || !wordEasterEggs[currentRoot] || roots.length === 0) return;
+    if (!currentRoot || currentRoot.length !== 3 || !sozlukVerileri[currentRoot] || roots.length === 0) return;
 
     const refs = getSortedRefsForRoot(currentRoot);
 
@@ -5278,7 +5359,7 @@ function getBabInfo(rawName) {
             <p>• <b>Geçişlilik:</b> Lâzım (geçişsiz) fiilleri Müteaddi (geçişli) yapar. <br>Örn: <span class="arabic-sample">ضَحِكَ</span> (Güldü) → <span class="arabic-sample">أَضْحَكَ</span> (Güldürdü)</p>
             <p>• <b>Zaman ve Mekan:</b> Eylemin zamanla veya mekanla anlam kurmasını sağlar.<br>Örn: <span class="arabic-sample">أَصْبَحَ</span> (Sabaha girdi), <span class="arabic-sample">أَعْرَقَ</span> (Irak'a vardı)</p>
             <p>• <b>Durum Bildirme:</b> Bir sıfata veya duruma girmeyi belirtir.<br>Örn: <span class="arabic-sample">أَفْقَرَ</span> (Fakirleşti), <span class="arabic-sample">أَغْنَى</span> (Zenginleşti)</p>
-            <p>• <span style="color:#ef4444; font-weight:bold;">Not:</span> İf'al hemzesi 'kat-i' hemzedir; her zaman yazılır ve okunur.<br>Örn: <span class="arabic-sample">قُلْتُ أَكْرِمْ!</span> (İkram et dedim!)</p>
+            <p>• <span style="color:#ef4444; font-weight: normal;">Not:</span> İf'al hemzesi 'kat-i' hemzedir; her zaman yazılır ve okunur.<br>Örn: <span class="arabic-sample">قُلْتُ أَكْرِمْ!</span> (İkram et dedim!)</p>
             ` 
         },
         { 
@@ -5434,9 +5515,9 @@ if (document.readyState === "complete" || document.readyState === "interactive")
 // Sadece fiili olanları tespit eden motor (Eksikti, geri eklendi!)
 function hasVerbsToRead(root) {
     if (!root || root.length !== 3) return false;
-    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[root]) {
+    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[root]) {
         const verbRefs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, 52,53,54,58,59,60,64,65,66,71,72,73,77,78,79,83,84,85,88,89,90,94,95,96,100,101,102];
-        const existingRefs = Object.keys(wordEasterEggs[root]).map(Number);
+        const existingRefs = Object.keys(sozlukVerileri[root]).map(Number);
         return existingRefs.some(r => verbRefs.includes(r));
     }
     return false; 
@@ -5538,8 +5619,8 @@ function getAvailableMaziVerbs(root) {
     const maziRefs = [1, 8, 11, 14, 52, 58, 64, 71, 77, 83, 88, 94, 100];
     let list = [];
     
-    if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[root]) {
-        const rootData = wordEasterEggs[root];
+    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[root]) {
+        const rootData = sozlukVerileri[root];
         maziRefs.forEach(ref => {
             if (rootData[ref]) {
                 let word = "";
@@ -5682,7 +5763,7 @@ window.openMarathon = function() {
         
         // Fiil kelimesi (Çok daha büyük ve net)
         let wordHtml = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(v.word, currentRoot.split("")) : v.word;
-        let btnHtml = `<div style="font-family: 'Arakom', serif; font-size: 4.8rem; font-weight: bold; color: #1e293b; text-align: center;">${wordHtml}</div>`;
+        let btnHtml = `<div style="font-family: 'Arakom', serif; font-size: 4.8rem; font-weight: normal; color: #1e293b; text-align: center;">${wordHtml}</div>`;
         
  
        
@@ -5699,7 +5780,7 @@ window.openMarathon = function() {
                     <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
                         <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
                         <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
-                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: bold; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: normal; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
                     </div>`;
             }
         }
@@ -5930,9 +6011,9 @@ function buildMarathonDataForBab(maziRef) {
 
     if (maziRef === 1) {
         muzariRef = 2; emirRef = 3;
-        if (typeof wordEasterEggs !== 'undefined' && wordEasterEggs[rootSafe]) {
-            if (wordEasterEggs[rootSafe][4]) { muzariRef = 4; emirRef = 5; }
-            else if (wordEasterEggs[rootSafe][6]) { muzariRef = 6; emirRef = 7; }
+        if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootSafe]) {
+            if (sozlukVerileri[rootSafe][4]) { muzariRef = 4; emirRef = 5; }
+            else if (sozlukVerileri[rootSafe][6]) { muzariRef = 6; emirRef = 7; }
         }
     }
 
