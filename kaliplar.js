@@ -102,21 +102,28 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             <span style="font-size:3.5rem; color:#ffffff; font-family: 'Arakom', sans-serif; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${exactArText}</span>
         </div>` : "";
     
-    if (displayTitle) {
-        htmlContent += `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:15px; margin-bottom:20px;">`;
-        htmlContent += `  <div style="margin:0; text-align:right; flex:1;" dir="rtl">${displayTitle}</div>`;
-    } else {
-        htmlContent += `<div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:20px;">`;
-    }
+    htmlContent += `<div style="display:flex; justify-content:center; align-items:center; border-bottom:${displayTitle ? '1px solid rgba(255,255,255,0.2)' : 'none'}; padding-bottom:${displayTitle ? '15px' : '0'}; margin-bottom:20px; position:relative; min-height:50px;">`;
     
     const compactRoot = rootKey.replace(/\s+/g, '');
-    // Sadece tanımlı (sozlukVerileri içinde olan) kökler için Vezin Tablosu butonunu göster
+    // LEFT CORNER: Vezin Tablosu Button
     if ((compactRoot.length === 3 || compactRoot.length === 4) && typeof sozlukVerileri !== 'undefined' && sozlukVerileri[compactRoot]) {
-        htmlContent += `  <div style="cursor:pointer; background:#5cb85c; padding:15px; border-radius:50%; font-size:2.5rem; display:flex; align-items:center; justify-content:center; margin-left:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);" 
+        htmlContent += `  <div style="position:absolute; left:0; cursor:pointer; background:#5cb85c; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index:10;" 
                             onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Vezin Tablosu">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
                           </div>`;
     }
+    
+    // CENTER: Title
+    if (displayTitle) {
+        htmlContent += `  <div style="margin:0; text-align:center; z-index:5;" dir="rtl">${displayTitle}</div>`;
+    }
+    
+    // RIGHT CORNER: Close Button
+    htmlContent += `  <div style="position:absolute; right:0; cursor:pointer; background:#e74c3c; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index:10;" 
+                        onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none';" title="Kapat">
+                        <i class="fas fa-times"></i>
+                      </div>`;
+                      
     htmlContent += `</div>`;
 
     if (isFromDictionary) {
@@ -169,6 +176,50 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             if (kalipKey === "tekil" || kalipKey === "cogul") {
                 itemTekil = rootData["tekil"];
                 itemCogul = rootData["cogul"];
+            } else if (itemClicked && itemClicked.kuralliCogul) {
+                itemTekil = itemClicked;
+                let type = itemClicked.kuralliCogul;
+                let pluralAr = itemTekil.base.arText;
+                
+                if (type === "disil") {
+                    if (pluralAr.endsWith('َة')) pluralAr = pluralAr.slice(0, -2) + 'َات';
+                    else if (pluralAr.endsWith('ة')) pluralAr = pluralAr.slice(0, -1) + 'َات';
+                    else pluralAr += 'َات';
+                } else if (type === "eril") {
+                    pluralAr += 'ُونَ';
+                }
+                
+                itemCogul = {
+                    isDynamicPlural: true,
+                    pluralType: type,
+                    base: {
+                        emoji: "👥",
+                        arText: pluralAr,
+                        trText: itemTekil.base.trText + " (Çoğullar)"
+                    }
+                };
+            } else if (itemClicked && itemClicked.kuralliCogul) {
+                itemTekil = itemClicked;
+                let type = itemClicked.kuralliCogul;
+                let pluralAr = itemTekil.base.arText;
+                
+                if (type === "disil") {
+                    if (pluralAr.endsWith('َة')) pluralAr = pluralAr.slice(0, -2) + 'َات';
+                    else if (pluralAr.endsWith('ة')) pluralAr = pluralAr.slice(0, -1) + 'َات';
+                    else pluralAr += 'َات';
+                } else if (type === "eril") {
+                    pluralAr += 'ُونَ';
+                }
+                
+                itemCogul = {
+                    isDynamicPlural: true,
+                    pluralType: type,
+                    base: {
+                        emoji: "👥",
+                        arText: pluralAr,
+                        trText: itemTekil.base.trText + " (Çoğullar)"
+                    }
+                };
             } else if (itemClicked && itemClicked.cogulId) {
                 // Eğer manuel olarak bir çoğul kalıp atanmışsa
                 itemTekil = itemClicked;
@@ -199,14 +250,23 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                     ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
                     <div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9;" dir="ltr">${cogulAr ? 'Tekil ve Çoğul' : 'Tekil'}</div>
                     
-                    <div style="display:flex; justify-content:center; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
-                        ${tekilAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${tekilAr}</span>` : ''}
-                        ${(tekilAr && cogulAr) ? `<span style="font-family:'Arakom', sans-serif; font-size:3.5rem; color:#f1c40f; margin: 0 10px; opacity:0.8;">ج</span>` : ''}
-                        ${cogulAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${cogulAr}</span>` : ''}
-                    </div>
-                    
-                    <div style="color:#e2e8f0; font-size:1.6rem; margin-top:15px; letter-spacing:0.5px;" dir="ltr">
-                        ${tekilTr} ${tekilTr && cogulTr ? '<span style="opacity:0.5; margin:0 10px;">-</span>' : ''} ${cogulTr}
+                    <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
+                        ${tekilAr ? `
+                        <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                            <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${tekilAr}</span>
+                            ${tekilTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${tekilTr}</span>` : ''}
+                        </div>` : ''}
+                        
+                        ${(tekilAr && cogulAr) ? `
+                        <div style="display:flex; align-items:center; justify-content:center; padding-top: 15px;">
+                            <span style="font-family:'Arakom', sans-serif; font-size:5rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">ج</span>
+                        </div>` : ''}
+                        
+                        ${cogulAr ? `
+                        <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                            <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${cogulAr}</span>
+                            ${cogulTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${cogulTr}</span>` : ''}
+                        </div>` : ''}
                     </div>
                 </div>`;
                 htmlContent += `</div>`;
@@ -290,6 +350,50 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             if (kalipKeyStr === "tekil" || kalipKeyStr === "cogul") {
                 itemTekil = rootData["tekil"];
                 itemCogul = rootData["cogul"];
+            } else if (itemClicked && itemClicked.kuralliCogul) {
+                itemTekil = itemClicked;
+                let type = itemClicked.kuralliCogul;
+                let pluralAr = itemTekil.base.arText;
+                
+                if (type === "disil") {
+                    if (pluralAr.endsWith('َة')) pluralAr = pluralAr.slice(0, -2) + 'َات';
+                    else if (pluralAr.endsWith('ة')) pluralAr = pluralAr.slice(0, -1) + 'َات';
+                    else pluralAr += 'َات';
+                } else if (type === "eril") {
+                    pluralAr += 'ُونَ';
+                }
+                
+                itemCogul = {
+                    isDynamicPlural: true,
+                    pluralType: type,
+                    base: {
+                        emoji: "👥",
+                        arText: pluralAr,
+                        trText: itemTekil.base.trText + " (Çoğullar)"
+                    }
+                };
+            } else if (itemClicked && itemClicked.kuralliCogul) {
+                itemTekil = itemClicked;
+                let type = itemClicked.kuralliCogul;
+                let pluralAr = itemTekil.base.arText;
+                
+                if (type === "disil") {
+                    if (pluralAr.endsWith('َة')) pluralAr = pluralAr.slice(0, -2) + 'َات';
+                    else if (pluralAr.endsWith('ة')) pluralAr = pluralAr.slice(0, -1) + 'َات';
+                    else pluralAr += 'َات';
+                } else if (type === "eril") {
+                    pluralAr += 'ُونَ';
+                }
+                
+                itemCogul = {
+                    isDynamicPlural: true,
+                    pluralType: type,
+                    base: {
+                        emoji: "👥",
+                        arText: pluralAr,
+                        trText: itemTekil.base.trText + " (Çoğullar)"
+                    }
+                };
             } else if (itemClicked && itemClicked.cogulId) {
                 itemTekil = itemClicked;
                 itemCogul = rootData[itemClicked.cogulId.toString()];
@@ -326,14 +430,23 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
                 <div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9;" dir="ltr">${cogulAr ? 'Tekil ve Çoğul' : 'Tekil'}</div>
                 
-                <div style="display:flex; justify-content:center; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
-                    ${tekilAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${tekilAr}</span>` : ''}
-                    ${(tekilAr && cogulAr) ? `<span style="font-family:'Arakom', sans-serif; font-size:3.5rem; color:#f1c40f; margin: 0 10px; opacity:0.8;">ج</span>` : ''}
-                    ${cogulAr ? `<span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${cogulAr}</span>` : ''}
-                </div>
-                
-                <div style="color:#e2e8f0; font-size:1.6rem; margin-top:15px; letter-spacing:0.5px;" dir="ltr">
-                    ${tekilTr} ${tekilTr && cogulTr ? '<span style="opacity:0.5; margin:0 10px;">-</span>' : ''} ${cogulTr}
+                <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
+                    ${tekilAr ? `
+                    <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${tekilAr}</span>
+                        ${tekilTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${tekilTr}</span>` : ''}
+                    </div>` : ''}
+                    
+                    ${(tekilAr && cogulAr) ? `
+                    <div style="display:flex; align-items:center; justify-content:center; padding-top: 15px;">
+                        <span style="font-family:'Arakom', sans-serif; font-size:5rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">ج</span>
+                    </div>` : ''}
+                    
+                    ${cogulAr ? `
+                    <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${cogulAr}</span>
+                        ${cogulTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${cogulTr}</span>` : ''}
+                    </div>` : ''}
                 </div>
             </div>`;
             htmlContent += `</div>`;
@@ -1529,7 +1642,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
         let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
         
-        if (prefix) return `<span style="color: #64748b; font-weight: normal; margin-left: 6px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+        if (prefix) return `<span style="color: #64748b; font-weight: normal; margin-left: 15px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
         return `<span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
     }
 
@@ -1764,10 +1877,10 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     inlineContainer.style.overflowY = 'hidden'; 
     inlineContainer.style.paddingTop = '15px'; 
 
-    const popupWidth = 420;  const popupHeight = 410; 
+    const popupWidth = 600;  const popupHeight = 410; 
     const boxWidth = boxElement.offsetWidth; const rect = boxElement.getBoundingClientRect();
     let targetTop = (window.innerHeight / 2) - (popupHeight / 2) - rect.top;
-    let targetLeft = isVerb ? -popupWidth - 40 : boxWidth + 20;
+    let targetLeft = -popupWidth - 40;
 
     let globalLeft = rect.left + targetLeft; let globalRight = globalLeft + popupWidth;
     let globalTop = rect.top + targetTop; let globalBottom = globalTop + popupHeight;
@@ -3646,6 +3759,16 @@ function openMatrixFullscreen(e, btnElement) {
         }
 
         tableWrapper.appendChild(outerClone);
+
+        // Hangi tabloda kalındıysa onu tam ekranda da aç:
+        const origCarousel = originalCarouselOuter.querySelector('.conjugation-carousel');
+        if (origCarousel && newCarousel) {
+            let activeIndex = Math.round(origCarousel.scrollLeft / origCarousel.clientWidth);
+            if (isNaN(activeIndex)) activeIndex = 0;
+            setTimeout(() => {
+                newCarousel.scrollLeft = activeIndex * newCarousel.clientWidth;
+            }, 60);
+        }
     } else {
         // Eski fallback
         const originalTable = boxElement.querySelector('.conjugation-table');
@@ -4734,15 +4857,24 @@ function updateMainKeyboardPredictions() {
             // Harf içindeki kelimeleri alfabetik sırala
             matchesByLetter[letter].sort((a, b) => a.strippedAr.localeCompare(b.strippedAr, 'ar'));
             
+            resultsHTML += `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; width:100%; box-sizing:border-box; margin-bottom: 12px;">`;
+            
             for (const item of matchesByLetter[letter]) {
+                const ilkAnlam = (item.trText || "").split('/')[0].trim();
+                const kelimeler = ilkAnlam.split(' ');
+                const kisaltilmisAnlam = kelimeler.slice(0, 3).join(' ') + (kelimeler.length > 3 ? "..." : "");
+                
                 resultsHTML += `
-                    <div style="display:flex; justify-content:center; align-items:center; background:#f4f6f7; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0 auto 12px auto; padding:15px; border-radius:12px; width:100%; box-sizing: border-box;">
-                        <div style="flex:1; cursor:pointer; text-align:center;" onclick="showWordDetails('${item.rootKey}', '${item.kalipKey}', '${item.arText}', '${item.trText}')">
-                            <span style="font-family: \'Arakom\', sans-serif; font-size:3.5rem; font-weight:normal; color:#000000; display:block;">${item.arText}</span>
+                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:#f4f6f7; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding:15px 25px; border-radius:12px; flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); box-sizing: border-box; cursor:pointer; position:relative;" onclick="showWordDetails('${item.rootKey}', '${item.kalipKey}', '${item.arText}', '${item.trText}')">
+                        <span style="font-family: \'Arakom\', sans-serif; font-size:3.2rem; font-weight:normal; color:#000000; display:block; text-align:center; line-height:1.2;">${item.arText}</span>
+                        <span dir="ltr" style="font-family: \'Inter\', sans-serif; font-size:0.95rem; color:#555555; display:block; margin-top:8px; text-align:center; line-height:1.2; word-break: break-word;">${kisaltilmisAnlam}</span>
+                        <div style="position:absolute; top:50%; left:12px; transform:translateY(-50%); color:rgba(0,0,0,0.15); font-size:1.5rem;" title="Detayları Görüntüle">
+                            <i class="fas fa-layer-group"></i>
                         </div>
                     </div>
                 `;
             }
+            resultsHTML += `</div>`;
         }
         
         if (matchCount === 0 && rootMatches.length === 0) {

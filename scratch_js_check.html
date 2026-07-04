@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        window.onerror = function(msg, url, line) {
+            console.log("Error: " + msg + " at " + line);
+        };
+    </script>
+    <script src="verikaliplartablosu.js"></script>
+    <script src="sozlukverileri.js"></script>
+</head>
+<body>
+    <script>
+        console.log("Success! " + Object.keys(sozlukVerileri).length);
+    </script>
+</body>
+</html>
