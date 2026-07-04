@@ -5214,22 +5214,22 @@ const eski_sozlukVerileri = {
 
     // 53. H-M-D (ح م د) KÖKÜ - Övmek / Şükretmek
     "حمد": {
-        19: { base: { emoji: "🤲", arText: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", trText: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" }, suggestsPlus: true, "يَّة": { emoji: "🌸", arText: "حَمْدِيَّة", trText: "Hamdiye (İsim)." } }, // حَمْد + يَّة = حَمْدِيَّة
-        30: { base: { emoji: "🌟", arText: "وَمُبَشِّرًا بِرَسُولٍ يَأْتِي مِن بَعْدِي اسْمُهُ أَحْمَدُ", trText: "Benden sonra gelecek 'Ahmet' (çok övülen) adındaki bir peygamberi müjdeleyici olarak... (Saf Suresi)" } }, // أَحْمَد
-        35: { base: { emoji: "💎", arText: "إِنَّ الله هُوَ الْغَنِيُّ الْحَمِيدُ", trText: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } }, // حَمِيد
+        19: { base: { emoji: "🤲", arText: "حَمْد", trText: "Hamd / Övgü.", ornek: { ar: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", tr: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" } }, suggestsPlus: true, "يَّة": { emoji: "🌸", arText: "حَمْدِيَّة", trText: "Hamd / Övgü.", ornek: { ar: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", tr: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" } } }, // حَمْد + يَّة = حَمْدِيَّة
+        30: { base: { emoji: "🌟", arText: "أَحْمَد", trText: "Ahmet / Çok övülen.", ornek: { ar: "وَمُبَشِّرًا بِرَسُولٍ يَأْتِي مِن بَعْدِي اسْمُهُ أَحْمَدُ", tr: "Benden sonra gelecek 'Ahmet' (çok övülen) adındaki bir peygamberi müjdeleyici olarak... (Saf Suresi)" } } }, // أَحْمَد
+        35: { base: { emoji: "💎", arText: "حَمِيد", trText: "Hamid / Her türlü övgüye layık.", ornek: { ar: "إِنَّ الله هُوَ الْغَنِيُّ الْحَمِيدُ", tr: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } } }, // حَمِيد
         36: { kuralliCogul: "eril",
-            base: { emoji: "🏅", arText: "عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَحْمُودًا", trText: "Umulur ki Rabbin seni Makam-ı Mahmud'a (övülmüş bir makama) ulaştırır. (İsrâ Suresi)" } }, // مَحْمُود
-        63: { base: { emoji: "🌹", arText: "مُحَمَّدٌ رَّسُولُ اللهِ", trText: "Muhammed (s.a.v), Allah'ın elçisidir. (Fetih Suresi)" } } // مُحَمَّد
+            base: { emoji: "🏅", arText: "مَحْمُود", trText: "Mahmud / Övülmüş.", ornek: { ar: "عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَحْمُودًا", tr: "Umulur ki Rabbin seni Makam-ı Mahmud'a (övülmüş bir makama) ulaştırır. (İsrâ Suresi)" } } }, // مَحْمُود
+        63: { base: { emoji: "🌹", arText: "مُحَمَّد", trText: "Muhammed / Övülmüş.", ornek: { ar: "مُحَمَّدٌ رَّسُولُ اللهِ", tr: "Muhammed (s.a.v), Allah'ın elçisidir. (Fetih Suresi)" } } } // مُحَمَّد
     },
 
     // 54. Sh-H-R (ش ه ر) KÖKÜ - Belirmek / İlan Etmek / Ay / Şöhret
     "شهر": {
-        19: { base: { emoji: "📅", arText: "شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ", trText: "Ramazan ayı, içinde Kur'an'ın indirildiği aydır. (Bakara Suresi)" } }, // شَهْر
+        19: { base: { emoji: "📅", arText: "شَهْر", trText: "Ay.", ornek: { ar: "شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ", tr: "Ramazan ayı, içinde Kur'an'ın indirildiği aydır. (Bakara Suresi)" } } }, // شَهْر
         21: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
-                emoji: "🌟", arText: "النَّجَاحُ يَجْلِبُ الشُّهْرَةَ عَبْرَ الْعَمَلِ", trText: "Başarı, çalışmayla birlikte şöhreti (tanınmışlığı) getirir." } }, // شُهْر + ة = شُهْرَة
+                emoji: "🌟", arText: "شُهْرَة", trText: "Şöhret / Tanınmışlık.", ornek: { ar: "النَّجَاحُ يَجْلِبُ الشُّهْرَةَ عَبْرَ الْعَمَلِ", tr: "Başarı, çalışmayla birlikte şöhreti (tanınmışlığı) getirir." } } }, // شُهْر + ة = شُهْرَة
         36: { kuralliCogul: "eril",
-            base: { emoji: "🎤", arText: "هُوَ كَاتِبٌ مَشْهُورٌ فِي الْعَالَمِ", trText: "O, dünyada meşhur (tanınmış) bir yazardır." } }, // مَشْهُور
-        61: { base: { emoji: "📢", arText: "تَشْهِيرُ الْأَخْبَارِ الْكَاذِبَةِ مَمْنُوعٌ", trText: "Yalan haberlerin teşhir edilmesi (ifşa edilmesi/yayılması) yasaktır." } } // تَشْهِير
+            base: { emoji: "🎤", arText: "مَشْهُور", trText: "Meşhur / Tanınmış.", ornek: { ar: "هُوَ كَاتِبٌ مَشْهُورٌ فِي الْعَالَمِ", tr: "O, dünyada meşhur (tanınmış) bir yazardır." } } }, // مَشْهُور
+        61: { base: { emoji: "📢", arText: "تَشْهِير", trText: "Teşhir / İfşa etme, yayma.", ornek: { ar: "تَشْهِيرُ الْأَخْبَارِ الْكَاذِبَةِ مَمْنُوعٌ", tr: "Yalan haberlerin teşhir edilmesi (ifşa edilmesi/yayılması) yasaktır." } } } // تَشْهِير
     },
 
     // ==================================================================
@@ -5385,50 +5385,50 @@ const eski_sozlukVerileri = {
 
     // 56. F-K-R (ف ك ر) KÖKÜ - Düşünmek / Fikir
     "فكر": {
-        20: { base: { emoji: "🧠", arText: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", trText: "Fikir özgürdür ve kısıtlanamaz." }, suggestsPlus: true, "يّ": { emoji: "💡", arText: "حُقُوقُ الْمِلْكِيَّةِ الْفِكْرِيَّةِ", trText: "Fikri mülkiyet hakları." }, "ة": { kuralliCogul: "disil",
-                emoji: "💭", arText: "هَذِهِ فِكْرَةٌ مُمْتَازَةٌ جِدًّا", trText: "Bu, çok mükemmel bir fikir." } }, // فِكْر + ekler
-        91: { base: { emoji: "🤔", arText: "تَفَكُّرُ سَاعَةٍ خَيْرٌ مِنْ عِبَادَةِ سَنَةٍ", trText: "Bir saat tefekkür (derin düşünme), bir yıl ibadetten hayırlıdır." } }, // تَفَكُّر
-        92: { base: { emoji: "🧔", arText: "هُوَ كَاتِبٌ وَمُتَفَكِّرٌ كَبِيرٌ", trText: "O, büyük bir yazar ve mütefekkirdir (düşünürdür)." } } // مُتَفَكِّر
+        20: { base: { emoji: "🧠", arText: "فِكْر", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, suggestsPlus: true, "يّ": { emoji: "💡", arText: "حُقُوقُ الْمِلْكِيَّةِ الْفِكْرِيَّةِ", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, "ة": { kuralliCogul: "disil",
+                emoji: "💭", arText: "فِكْرَة", trText: "Fikir.", ornek: { ar: "هَذِهِ فِكْرَةٌ مُمْتَازَةٌ جِدًّا", tr: "Bu, çok mükemmel bir fikir." } } }, // فِكْر + ekler
+        91: { base: { emoji: "🤔", arText: "تَفَكُّر", trText: "Tefekkür / Derin düşünme.", ornek: { ar: "تَفَكُّرُ سَاعَةٍ خَيْرٌ مِنْ عِبَادَةِ سَنَةٍ", tr: "Bir saat tefekkür (derin düşünme), bir yıl ibadetten hayırlıdır." } } }, // تَفَكُّر
+        92: { base: { emoji: "🧔", arText: "مُتَفَكِّر", trText: "Mütefekkir / Düşünür.", ornek: { ar: "هُوَ كَاتِبٌ وَمُتَفَكِّرٌ كَبِيرٌ", tr: "O, büyük bir yazar ve mütefekkirdir (düşünürdür)." } } } // مُتَفَكِّر
     },
 
     // 57. W-K-L (و ك ل) KÖKÜ - Güvenmek / Vekil Tayin Etmek / Dayanmak
     "وكل": {
         22: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
-                emoji: "📜", arText: "أَعْطَاهُ وَكَالَةً عَامَّةً", trText: "Ona genel vekalet (temsil yetkisi) verdi." } }, // وَكَال + ة = وَكَالَة
-        35: { base: { emoji: "🛡️", arText: "حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ", trText: "Allah bize yeter, O ne güzel vekildir. (Âl-i İmrân Suresi)" } }, // وَكِيل
-        62: { base: { emoji: "👤", arText: "الْمُحَامِي يُدَافِعُ عَنْ مُوَكِّلِهِ", trText: "Avukat müvekkilini (kendisini vekil tayin edeni) savunur." } }, // مُوَكِّل
-        91: { base: { emoji: "🤲", arText: "وَمَنْ يَتَوَكَّلْ عَلَى اللهِ فَهُوَ حَسْبُهُ", trText: "Kim Allah'a tevekkül ederse, O ona yeter. (Talak Suresi)" } } // تَوَكُّل
+                emoji: "📜", arText: "وَكَالَة", trText: "Vekalet / Temsil yetkisi.", ornek: { ar: "أَعْطَاهُ وَكَالَةً عَامَّةً", tr: "Ona genel vekalet (temsil yetkisi) verdi." } } }, // وَكَال + ة = وَكَالَة
+        35: { base: { emoji: "🛡️", arText: "وَكِيل", trText: "Vekil.", ornek: { ar: "حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ", tr: "Allah bize yeter, O ne güzel vekildir. (Âl-i İmrân Suresi)" } } }, // وَكِيل
+        62: { base: { emoji: "👤", arText: "مُوَكِّل", trText: "Müvekkil.", ornek: { ar: "الْمُحَامِي يُدَافِعُ عَنْ مُوَكِّلِهِ", tr: "Avukat müvekkilini (kendisini vekil tayin edeni) savunur." } } }, // مُوَكِّل
+        91: { base: { emoji: "🤲", arText: "تَوَكُّل", trText: "Tevekkül.", ornek: { ar: "وَمَنْ يَتَوَكَّلْ عَلَى اللهِ فَهُوَ حَسْبُهُ", tr: "Kim Allah'a tevekkül ederse, O ona yeter. (Talak Suresi)" } } } // تَوَكُّل
     },
 
     // 58. Q-D-M (ق د م) KÖKÜ - Öne Geçmek / Eski / Sunmak / Adım
     "قدم": {
         17: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
                 emoji: "🪜", arText: "قَدَمَة", trText: "Adım / Basamak." } }, // قَدَم + ة = قَدَمَة
-        35: { base: { emoji: "🏛️", arText: "صَدَاقَتُنَا قَدِيمَةٌ وَقَوِيَّةٌ", trText: "Dostluğumuz kadim (eski) ve güçlüdür." } }, // قَدِيم
-        61: { base: { emoji: "🎁", arText: "تَقْدِيمُ الْهَدَايَا يَزِيدُ الْمَحَبَّةَ", trText: "Hediye takdim etmek (sunmak) sevgiyi artırır." } }, // تَقْدِيم
+        35: { base: { emoji: "🏛️", arText: "قَدِيم", trText: "Kadim / Eski.", ornek: { ar: "صَدَاقَتُنَا قَدِيمَةٌ وَقَوِيَّةٌ", tr: "Dostluğumuz kadim (eski) ve güçlüdür." } } }, // قَدِيم
+        61: { base: { emoji: "🎁", arText: "تَقْدِيم", trText: "Takdim / Sunma.", ornek: { ar: "تَقْدِيمُ الْهَدَايَا يَزِيدُ الْمَحَبَّةَ", tr: "Hediye takdim etmek (sunmak) sevgiyi artırır." } } }, // تَقْدِيم
         62: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
-                emoji: "📖", arText: "مُقَدِّمَةُ ابْنِ خَلْدُونَ أَثَرٌ تَارِيخِيٌّ عَظِيمٌ", trText: "İbn Haldun'un Mukaddime'si (önsözü/giriş eseri) harika bir tarihi eserdir." } } // مُقَدِّم + ة = مُقَدِّمَة
+                emoji: "📖", arText: "مُقَدِّمَة", trText: "Mukaddime / Önsöz, giriş.", ornek: { ar: "مُقَدِّمَةُ ابْنِ خَلْدُونَ أَثَرٌ تَارِيخِيٌّ عَظِيمٌ", tr: "İbn Haldun'un Mukaddime'si (önsözü/giriş eseri) harika bir tarihi eserdir." } } } // مُقَدِّم + ة = مُقَدِّمَة
     },
 
     // 59. K-B-R (ك ب ر) KÖKÜ - Büyümek / Büyük Olmak / Yücelik / Kibir
     "كبر": {
-        20: { base: { emoji: "🦚", arText: "الْكِبْرُ مَذْمُومٌ فِي الْأَخْلَاقِ", trText: "Kibir, ahlakta kınanmış (kötü) bir davranıştır." } }, // كِبْر
-        23: { base: { emoji: "🧓", arText: "اِحْتِرَامُ كِبَارِ السِّنِّ وَاجِبٌ", trText: "Yaşça büyük olanlara (büyüklere) saygı göstermek vaciptir." } }, // كِبَار
-        50: { base: { emoji: "🌌", arText: "اللهُ أَكْبَرُ مِنْ كُلِّ شَيْءٍ", trText: "Allah her şeyden en büyüktür (ekberdir)." } }, // أَكْبَر
-        51: { base: { emoji: "🌟", arText: "الْقِيَامَةُ هِيَ الدَّاهِيَةُ الْكُبْرَى", trText: "Kıyamet en büyük (kübra) hadisedir." } }, // كُبْرَى
-        61: { base: { emoji: "☝️", arText: "نُرَدِّدُ التَّكْبِيرَ فِي أَيَّامِ الْعِيدِ", trText: "Bayram günlerinde tekbir getiririz." } } // تَكْبِير
+        20: { base: { emoji: "🦚", arText: "كِبْر", trText: "Kibir.", ornek: { ar: "الْكِبْرُ مَذْمُومٌ فِي الْأَخْلَاقِ", tr: "Kibir, ahlakta kınanmış (kötü) bir davranıştır." } } }, // كِبْر
+        23: { base: { emoji: "🧓", arText: "كِبَار", trText: "Kibar / Yaşça büyükler.", ornek: { ar: "اِحْتِرَامُ كِبَارِ السِّنِّ وَاجِبٌ", tr: "Yaşça büyük olanlara (büyüklere) saygı göstermek vaciptir." } } }, // كِبَار
+        50: { base: { emoji: "🌌", arText: "أَكْبَر", trText: "Ekber / En büyük.", ornek: { ar: "اللهُ أَكْبَرُ مِنْ كُلِّ شَيْءٍ", tr: "Allah her şeyden en büyüktür (ekberdir)." } } }, // أَكْبَر
+        51: { base: { emoji: "🌟", arText: "كُبْرَى", trText: "Kübra / En büyük (müennes).", ornek: { ar: "الْقِيَامَةُ هِيَ الدَّاهِيَةُ الْكُبْرَى", tr: "Kıyamet en büyük (kübra) hadisedir." } } }, // كُبْرَى
+        61: { base: { emoji: "☝️", arText: "تَكْبِير", trText: "Tekbir.", ornek: { ar: "نُرَدِّدُ التَّكْبِيرَ فِي أَيَّامِ الْعِيدِ", tr: "Bayram günlerinde tekbir getiririz." } } } // تَكْبِير
     },
 
     // 60. '-D-L (ع د ل) KÖKÜ - Adalet / Eşitlik / Düzenleme
     "عدل": {
-        19: { suggestsPlus: true, "يَّة": { emoji: "🏛️", arText: "ذَهَبَ الْمُحَامِي إِلَى الْعَدْلِيَّةِ", trText: "Avukat adliyeye (sarayına) gitti." } }, // عَدْل + يَّة = عَدْلِيَّة
+        19: { suggestsPlus: true, "يَّة": { emoji: "🏛️", arText: "عَدْلِيَّة", trText: "Adliye / Adalet sarayı.", ornek: { ar: "ذَهَبَ الْمُحَامِي إِلَى الْعَدْلِيَّةِ", tr: "Avukat adliyeye (sarayına) gitti." } } }, // عَدْل + يَّة = عَدْلِيَّة
         22: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
-                emoji: "⚖️", arText: "الْعَدَالَةُ أَسَاسُ الْمُلْكِ", trText: "Adalet mülkün (devletin) temelidir." } }, // عَدَال + ة = عَدَالَة
+                emoji: "⚖️", arText: "عَدَالَة", trText: "Adalet.", ornek: { ar: "الْعَدَالَةُ أَسَاسُ الْمُلْكِ", tr: "Adalet mülkün (devletin) temelidir." } } }, // عَدَال + ة = عَدَالَة
         33: { kuralliCogul: "eril",
-            base: { emoji: "👨‍⚖️", arText: "هُوَ قَاضٍ عَادِلٌ يَحْكُمُ بِالْحَقِّ", trText: "O, hakla hükmeden adil bir kadıdır (hakimdir)." } }, // عَادِل
-        61: { suggestsPlus: true, "ات": { emoji: "🔧", arText: "إِجْرَاءُ تَعْدِيلَاتٍ جَدِيدَةٍ فِي الْقَانُونِ", trText: "Kanunda yeni tadilatlar (düzenlemeler/değişiklikler) yapmak." } }, // تَعْدِيل + ات = تَعْدِيلَات
-        69: { base: { emoji: "🟰", arText: "هَذَا الدَّوَاءُ مُعَادِلٌ لِلْآخَرِ", trText: "Bu ilaç diğeriyle muadildir (eşdeğerdir)." } }, // مُعَادِل
-        80: { base: { emoji: "🍃", arText: "الِاعْتِدَالُ فِي كُلِّ شَيْءٍ خَيْرٌ", trText: "Her şeyde itidal (ölçülülük/dengeli olmak) hayırlıdır." } } // اِعْتِدَال
+            base: { emoji: "👨‍⚖️", arText: "عَادِل", trText: "Adil.", ornek: { ar: "هُوَ قَاضٍ عَادِلٌ يَحْكُمُ بِالْحَقِّ", tr: "O, hakla hükmeden adil bir kadıdır (hakimdir)." } } }, // عَادِل
+        61: { suggestsPlus: true, "ات": { emoji: "🔧", arText: "تَعْدِيلَات", trText: "Tadilat / Değişiklikler.", ornek: { ar: "إِجْرَاءُ تَعْدِيلَاتٍ جَدِيدَةٍ فِي الْقَانُونِ", tr: "Kanunda yeni tadilatlar (düzenlemeler/değişiklikler) yapmak." } } }, // تَعْدِيل + ات = تَعْدِيلَات
+        69: { base: { emoji: "🟰", arText: "مُعَادِل", trText: "Muadil / Eşdeğer.", ornek: { ar: "هَذَا الدَّوَاءُ مُعَادِلٌ لِلْآخَرِ", tr: "Bu ilaç diğeriyle muadildir (eşdeğerdir)." } } }, // مُعَادِل
+        80: { base: { emoji: "🍃", arText: "اِعْتِدَال", trText: "İtidal / Denge, ölçülülük.", ornek: { ar: "الِاعْتِدَالُ فِي كُلِّ شَيْءٍ خَيْرٌ", tr: "Her şeyde itidal (ölçülülük/dengeli olmak) hayırlıdır." } } } // اِعْتِدَال
     },
 
 // ==================================================================
@@ -5453,19 +5453,18 @@ const eski_sozlukVerileri = {
         },
 
         20: { 
-            
-            base: { emoji: "🎬", arText: "رَدُّ فِعْلٍ", trText: "Tepki / Reaksiyon (Geri eylem)." }
+            base: { emoji: "🎬", arText: "فِعْل", trText: "Fiil / Eylem / İş.", ornek: { ar: "رَدُّ فِعْلٍ", tr: "Tepki / Reaksiyon (Geri eylem)." } }
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
         33: { 
             kuralliCogul: "eril",
-            base: { emoji: "👤", arText: "فَاعِلُ خَيْرٍ", trText: "İyilik yapan (hayırsever) / İşin öznesi." } 
+            base: { emoji: "👤", arText: "فَاعِلُ خَيْر", trText: "Hayırsever / İyilik yapan.", ornek: { ar: "فَاعِلُ خَيْرٍ", tr: "İyilik yapan (hayırsever) / İşin öznesi." } } 
         },
         
         // --- 34 Numaralı Kalıp (فَعَّال - Mübalağalı İsm-i Fail) ---
         34: { 
-            base: { emoji: "⚡", arText: "دَوْرٌ فَعَّالٌ", trText: "Çok etkili (aktif) rol." } 
+            base: { emoji: "⚡", arText: "فَعَّال", trText: "Faal / Çok etkili.", ornek: { ar: "دَوْرٌ فَعَّالٌ", tr: "Çok etkili (aktif) rol." } } 
         },
         
        
@@ -5487,13 +5486,13 @@ const eski_sozlukVerileri = {
 
         // --- 61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdarı) ---
         61: { 
-            base: { emoji: "📲", arText: "تَفْعِيلُ الْحِسَابِ", trText: "Hesabın aktifleştirilmesi (onaylanması)." } 
+            base: { emoji: "📲", arText: "تَفْعِيل", trText: "Aktifleştirme / Onaylama.", ornek: { ar: "تَفْعِيلُ الْحِسَابِ", tr: "Hesabın aktifleştirilmesi (onaylanması)." } } 
         },
         
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
         63: { 
             suggestsPlus: true, 
-            "ات": { emoji: "🟢", arText: "حِسَابٌ مُفَعَّلٌ", trText: "Aktifleştirilmiş (onaylı/etkin) hesap." } 
+            "ات": { emoji: "🟢", arText: "مُفَعَّل", trText: "Aktifleştirilmiş / Onaylı.", ornek: { ar: "حِسَابٌ مُفَعَّلٌ", tr: "Aktifleştirilmiş (onaylı/etkin) hesap." } } 
         },
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
@@ -5513,12 +5512,12 @@ const eski_sozlukVerileri = {
 
         // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı) ---
         80: { 
-            base: { emoji: "🌪️", arText: "اِفْتِعَالُ الْأَزَمَات", trText: "Krizler uydurma (suni kriz çıkarma işi)." } 
+            base: { emoji: "🌪️", arText: "اِفْتِعَال", trText: "Uydurma / Suni çıkarma.", ornek: { ar: "اِفْتِعَالُ الْأَزَمَات", tr: "Krizler uydurma (suni kriz çıkarma işi)." } } 
         },
         
         // --- 81 Numaralı Kalıp (مُفْتَعَل - İfti'âl Babı İsm-i Mef'ulü) ---
         81: { 
-            base: { emoji: "🚧", arText: "مُشْكِلَةٌ مُفْتَعَلَةٌ", trText: "Suni (yapay / kasıtlı çıkarılmış) sorun." } 
+            base: { emoji: "🚧", arText: "مُفْتَعَلَة", trText: "Suni / Yapay.", ornek: { ar: "مُشْكِلَةٌ مُفْتَعَلَةٌ", tr: "Suni (yapay / kasıtlı çıkarılmış) sorun." } } 
         }
     },
 
@@ -19066,7 +19065,7 @@ const eski_sozlukVerileri = {
             base: {
                 emoji: "🐾",
                 arText: "أَظْفَار / أَظَافِير",
-                trText: "Azfâr / Ezâfîr - Tırnaklar, Pençeler. Bu ismin çoğulu birden fazladır.",
+                trText: "Tırnaklar, Pençeler.", ornek: { ar: "أَظْفَار / أَظَافِير", tr: "Azfâr / Ezâfîr - Tırnaklar, Pençeler. Bu ismin çoğulu birden fazladır." },
                 ornek: [
                     { 
                         ar: "١. وَزْن أَفْعَال ⬅️ أَظْفَار", 

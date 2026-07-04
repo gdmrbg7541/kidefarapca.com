@@ -653,6 +653,49 @@ const sozlukVerileri = {
     },
 
     // ==================================================================
+    
+    // =================================================================================================
+    // AI_PROMPT: RENKLER İÇİN YÖNERGE (Sistemin Otomatik Kılavuzu)
+    // 1. Yeni bir renk eklendiğinde `isDictOnly: true` ve `tip: "renk"` kullanılmalıdır.
+    // 2. Renkler Müzekker ve Müennes formda gelir. Müzekker arText içine, Müennes ise muennes içine yazılır.
+    // 3. Yapı: { base: { emoji: "🎨", arText: "أَحْمَر", trText: "Kırmızı", muennes: "حَمْرَاء", ornek: { ar: "...", tr: "..." } } }
+    // =================================================================================================
+    "Renk: Kırmızı": {
+        isDictOnly: true,
+        tip: "renk",
+        tekil: { base: { emoji: "🔴", arText: "أَحْمَر", trText: "Kırmızı", muennes: "حَمْرَاء" } }
+    },
+    "Renk: Siyah": {
+        isDictOnly: true,
+        tip: "renk",
+        tekil: { base: { emoji: "⚫", arText: "أَسْوَد", trText: "Siyah", muennes: "سَوْدَاء" } }
+    },
+    "Renk: Beyaz": {
+        isDictOnly: true,
+        tip: "renk",
+        tekil: { base: { emoji: "⚪", arText: "أَبْيَض", trText: "Beyaz", muennes: "بَيْضَاء" } }
+    },
+    "Renk: Yeşil": {
+        isDictOnly: true,
+        tip: "renk",
+        tekil: { base: { emoji: "🟢", arText: "أَخْضَر", trText: "Yeşil", muennes: "خَضْرَاء" } }
+    },
+    "Renk: Mavi": {
+        isDictOnly: true,
+        tip: "renk",
+        tekil: { base: { emoji: "🔵", arText: "أَزْرَق", trText: "Mavi", muennes: "زَرْقَاء" } }
+    },
+    "Renk: Sarı": {
+        isDictOnly: true,
+        tip: "renk",
+        tekil: { base: { emoji: "🟡", arText: "أَصْفَر", trText: "Sarı", muennes: "صَفْرَاء" } }
+    },
+
+    // AI_PROMPT: HAFTANIN GÜNLERİ, SAYILAR, İSM-İ TASGİR, İSM-İ TAFDİL İÇİN YÖNERGE
+    // Haftanın günleri için: tip: "gun" (Örn: "Pazartesi": { isDictOnly: true, tip: "gun", tekil: { ... } })
+    // Sayılar için: tip: "sayi" (Örn: "Sayı 1": { isDictOnly: true, tip: "sayi", tekil: { ... } })
+    // İsm-i Tasgir için: tip: "tasgir", İsm-i Tafdil için: tip: "tafdil" kullanılmalıdır.
+
     // HAFTANIN GÜNLERİ (أيام الأسبوع)
     // ==================================================================
     "أحد": {

@@ -40,8 +40,8 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
     let rootData = null;
     let isFromDictionary = false;
     
-    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootKey]) {
-        rootData = sozlukVerileri[rootKey];
+    if (typeof veriKaliplarTablosu !== 'undefined' && veriKaliplarTablosu[rootKey]) {
+        rootData = veriKaliplarTablosu[rootKey];
     } else if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootKey]) {
         rootData = sozlukVerileri[rootKey];
         isFromDictionary = true;
@@ -228,13 +228,9 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 itemTekil = rootData[itemClicked.tekilId.toString()];
                 itemCogul = itemClicked;
             } else {
-                // Geriye dönük uyumluluk: Matematiksel ardışık arama
-                let k = parseInt(kalipKey);
-                if (!isNaN(k)) {
-                    let tekilId = hasVerbTriplet ? ((k % 2 === 0) ? k : k - 1) : ((k % 2 !== 0) ? k : k - 1);
-                    itemTekil = rootData[tekilId.toString()];
-                    itemCogul = rootData[(tekilId + 1).toString()];
-                }
+                // Sadece kendisini (tekil olarak) göster
+                itemTekil = itemClicked;
+                itemCogul = null;
             }
             
             if (itemTekil || itemCogul) {
@@ -243,31 +239,69 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 let cogulAr = itemCogul ? itemCogul.base.arText : '';
                 let tekilTr = (itemTekil && itemTekil.base.trText) ? itemTekil.base.trText : '';
                 let cogulTr = (itemCogul && itemCogul.base.trText) ? itemCogul.base.trText : '';
+                let ornekHtml = (itemTekil && itemTekil.base.ornek) ? `<div style="margin-top:25px; padding:15px; background:rgba(0,0,0,0.2); border-radius:10px;"><div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#f1c40f; margin-bottom:10px;" dir="rtl">${itemTekil.base.ornek.ar}</div><div style="color:#bdc3c7; font-size:1.2rem;" dir="ltr">${itemTekil.base.ornek.tr}</div></div>` : '';
                 let emoji = (itemTekil && itemTekil.base.emoji) ? itemTekil.base.emoji : ((itemCogul && itemCogul.base.emoji) ? itemCogul.base.emoji : '');
                 
+                let tip = (itemTekil && itemTekil.tip) || rootData.tip;
+                let isRenk = (tip === "renk");
+                let titleText = "";
+                
+                if (isRenk) {
+                    titleText = "🎨 RENK";
+                } else if (tip === "gun") {
+                    titleText = "📅 HAFTANIN GÜNÜ";
+                } else if (tip === "sayi") {
+                    titleText = "🔢 SAYI";
+                } else if (tip === "tasgir") {
+                    titleText = "🔍 İSM-İ TASGİR";
+                } else if (tip === "tafdil") {
+                    titleText = "🏆 İSM-İ TAFDİL";
+                } else if (cogulAr) {
+                    titleText = "Tekil ve Çoğul";
+                }
+                
+                let secondColAr = "";
+                let secondColTr = "";
+                let secondColLabel = "";
+                let separator = "ج";
+                let firstColLabel = "";
+                
+                if (isRenk && itemTekil && itemTekil.base.muennes) {
+                    secondColAr = itemTekil.base.muennes;
+                    secondColTr = "Müennes (Dişil)";
+                    firstColLabel = "Müzekker (Eril)";
+                    separator = "♀/♂";
+                } else if (cogulAr) {
+                    secondColAr = cogulAr;
+                    secondColTr = cogulTr;
+                }
+
                 htmlContent += `
                 <div style="width:100%; text-align:center; background:rgba(255,255,255,0.1); padding:40px 20px; border-radius:15px; border:1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
                     ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
-                    <div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9;" dir="ltr">${cogulAr ? 'Tekil ve Çoğul' : 'Tekil'}</div>
+                    ${titleText ? `<div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${titleText}</div>` : ''}
                     
-                    <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
+                    <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
                         ${tekilAr ? `
                         <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                            ${firstColLabel ? `<div style="color:#e74c3c; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${firstColLabel}</div>` : ''}
                             <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${tekilAr}</span>
                             ${tekilTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${tekilTr}</span>` : ''}
                         </div>` : ''}
                         
-                        ${(tekilAr && cogulAr) ? `
+                        ${(tekilAr && secondColAr) ? `
                         <div style="display:flex; align-items:center; justify-content:center; padding-top: 15px;">
-                            <span style="font-family:'Arakom', sans-serif; font-size:5rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">ج</span>
+                            <span style="font-family:'Arakom', sans-serif; font-size:4rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">${separator}</span>
                         </div>` : ''}
                         
-                        ${cogulAr ? `
+                        ${secondColAr ? `
                         <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                            <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${cogulAr}</span>
-                            ${cogulTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${cogulTr}</span>` : ''}
+                            ${isRenk ? `<div style="color:#e74c3c; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : ''}
+                            <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${secondColAr}</span>
+                            ${(!isRenk && secondColTr) ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${secondColTr}</span>` : ''}
                         </div>` : ''}
                     </div>
+                    ${ornekHtml}
                 </div>`;
                 htmlContent += `</div>`;
             } else {
@@ -401,12 +435,9 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 itemTekil = rootData[itemClicked.tekilId.toString()];
                 itemCogul = itemClicked;
             } else {
-                let k = parseInt(kalipKey);
-                if (!isNaN(k)) {
-                    let tekilId = ((k % 2 !== 0) ? k : k - 1);
-                    itemTekil = rootData[tekilId.toString()];
-                    itemCogul = rootData[(tekilId + 1).toString()];
-                }
+                // Sadece kendisini (tekil olarak) göster
+                itemTekil = itemClicked;
+                itemCogul = null;
             }
             
             // If itemTekil is not found due to math, fallback to itemClicked
@@ -423,31 +454,69 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             let cogulAr = itemCogul ? itemCogul.base.arText : '';
             let tekilTr = (itemTekil && itemTekil.base.trText) ? itemTekil.base.trText : '';
             let cogulTr = (itemCogul && itemCogul.base.trText) ? itemCogul.base.trText : '';
+            let ornekHtml = (itemTekil && itemTekil.base.ornek) ? `<div style="margin-top:25px; padding:15px; background:rgba(0,0,0,0.2); border-radius:10px;"><div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#f1c40f; margin-bottom:10px;" dir="rtl">${itemTekil.base.ornek.ar}</div><div style="color:#bdc3c7; font-size:1.2rem;" dir="ltr">${itemTekil.base.ornek.tr}</div></div>` : '';
             let emoji = (itemTekil && itemTekil.base.emoji) ? itemTekil.base.emoji : ((itemCogul && itemCogul.base.emoji) ? itemCogul.base.emoji : '');
             
+            let tip = (itemTekil && itemTekil.tip) || rootData.tip;
+            let isRenk = (tip === "renk");
+            let titleText = "";
+            
+            if (isRenk) {
+                titleText = "🎨 RENK";
+            } else if (tip === "gun") {
+                titleText = "📅 HAFTANIN GÜNÜ";
+            } else if (tip === "sayi") {
+                titleText = "🔢 SAYI";
+            } else if (tip === "tasgir") {
+                titleText = "🔍 İSM-İ TASGİR";
+            } else if (tip === "tafdil") {
+                titleText = "🏆 İSM-İ TAFDİL";
+            } else if (cogulAr) {
+                titleText = "Tekil ve Çoğul";
+            }
+            
+            let secondColAr = "";
+            let secondColTr = "";
+            let secondColLabel = "";
+            let separator = "ج";
+            let firstColLabel = "";
+            
+            if (isRenk && itemTekil && itemTekil.base.muennes) {
+                secondColAr = itemTekil.base.muennes;
+                secondColTr = "Müennes (Dişil)";
+                firstColLabel = "Müzekker (Eril)";
+                separator = "♀/♂";
+            } else if (cogulAr) {
+                secondColAr = cogulAr;
+                secondColTr = cogulTr;
+            }
+
             htmlContent += `
             <div style="width:100%; text-align:center; background:rgba(255,255,255,0.1); padding:40px 20px; border-radius:15px; border:1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
                 ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
-                <div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9;" dir="ltr">${cogulAr ? 'Tekil ve Çoğul' : 'Tekil'}</div>
+                ${titleText ? `<div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${titleText}</div>` : ''}
                 
-                <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; margin-bottom:20px; direction:rtl;">
+                <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
                     ${tekilAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                        ${firstColLabel ? `<div style="color:#e74c3c; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${firstColLabel}</div>` : ''}
                         <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${tekilAr}</span>
                         ${tekilTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
-                    ${(tekilAr && cogulAr) ? `
+                    ${(tekilAr && secondColAr) ? `
                     <div style="display:flex; align-items:center; justify-content:center; padding-top: 15px;">
-                        <span style="font-family:'Arakom', sans-serif; font-size:5rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">ج</span>
+                        <span style="font-family:'Arakom', sans-serif; font-size:4rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">${separator}</span>
                     </div>` : ''}
                     
-                    ${cogulAr ? `
+                    ${secondColAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${cogulAr}</span>
-                        ${cogulTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${cogulTr}</span>` : ''}
+                        ${isRenk ? `<div style="color:#e74c3c; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : ''}
+                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${secondColAr}</span>
+                        ${(!isRenk && secondColTr) ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
+                ${ornekHtml}
             </div>`;
             htmlContent += `</div>`;
         }
@@ -4786,29 +4855,16 @@ function updateMainKeyboardPredictions() {
                 if (kalipData.base && kalipData.base.arText) {
                     const strippedAr = window.stripHarakat(kalipData.base.arText);
                     
-                    // Sadece tek kelimeleri sözlükte göster (örnek cümleleri filtrele)
-                    if (strippedAr.trim().includes(" ")) continue;
+                    // Sözlükte en fazla 3 kelimeye kadar olan özel tamlamaları göster (uzun örnek cümleleri filtrele)
+                    if (strippedAr.trim().split(/\s+/).length > 3) continue;
 
                     // Çoğullar ve fiil çekimleri liste taramasında (arama boşken) gizlenir. Çoğullar her zaman gizlenir, tekilden açılır.
                     if (kalipData.isHiddenInList) {
                         continue;
                     }
 
-                    // KULLANICI İSTEĞİ: Sözlükte sadece şu kelimeler çıksın:
-                    // 1. Tanımlı köklere ait mazi, muzari, emir fiiller
-                    // 2. Sadece tekil ve çoğulu verilmiş olan sözlükverileri kelimeleri
-                    let k = parseInt(kalipKey, 10);
-                    let isAllowedVerb = false;
-                    if (!isNaN(k)) {
-                        isAllowedVerb = (k <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(k));
-                    }
-                    let isDictOnlyWord = (rootData.isDictOnly === true);
-                    let isStandaloneNoun = (kalipKey === "tekil"); // just in case
-                    let hasCogul = !!kalipData.cogulId; // Kök içinde özel olarak çoğulu tanımlanmış tekiller (Örn: صور kökündeki Kalıp 21)
-                    
-                    if (!isAllowedVerb && !isDictOnlyWord && !isStandaloneNoun && !hasCogul) {
-                        continue;
-                    }
+                    // Kullanıcı İsteği: Anlamı girilmiş (trText) tüm kelimeler sözlükte gösterilsin.
+                    // Herhangi bir filtreleme yapmıyoruz.
 
                     // Eğer aranan kelime kökün içinde geçiyorsa veya tam eşleşiyorsa
                     const isArabicSearch = /[\u0600-\u06FF]/.test(filter);
