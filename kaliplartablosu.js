@@ -387,16 +387,13 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
     overlay.style.display = 'block';
 };
 
-
 // --- SÖZLÜK MODU DEĞİŞKENLERİ VE FONKSİYONLARI ---
-
 
 
 window.stripHarakat = function(text) {
     if (!text || typeof text !== "string") return "";
     return text.replace(/[ً-ْٰ]/g, '');
 };
-
 
 // ==================================================================
 // YENİ KÖK SEÇİM SİSTEMİ (POPUP KLAVYE + TAHMİN)
@@ -496,17 +493,22 @@ function createFlatRootItem(root) {
 
 function selectRootFromMenu(root) {
     if (typeof closeSlideMenu === 'function') closeSlideMenu();
+    if (typeof closeKeyboard === 'function') closeKeyboard(); // Eski klavyeyi kapat
     
-    // Arama Verilerini Sıfırla (HTML'den sildiğimiz öğelerin JS'yi çökertmesini engeller)
+    // YENİ KLAVYEYİ KESİN OLARAK KAPAT
+    const popup = document.getElementById('integrated-keyboard-popup');
+    const backdrop = document.getElementById('keyboard-backdrop'); 
+    if (popup) popup.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.classList.remove("keyboard-active");
+
     currentSearchQuery = "";
-    
     const searchInput = document.getElementById("root-search");
     if (searchInput) searchInput.value = "";
-    
     const predictions = document.getElementById("root-predictions");
     if (predictions) predictions.innerHTML = "";
 
-    // Uygulamanın Orijinal Kök Seçme Komutunu Başlat
+    // DOĞRUDAN SEÇİM YAP (Search Keyboard mantığını bypass et)
     if (typeof selectReadyVerb === 'function') {
         selectReadyVerb(root);
     }
@@ -528,25 +530,24 @@ function openSearchKeyboard(e) {
 function closeSearchKeyboard() {
     const searchInput = document.getElementById('root-search');
     
-    if (searchInput && searchInput.value.length > 0) {
-        searchInput.value = "";
-        if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
-        if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter();
-        if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        if (typeof toggleRootHint === 'function') toggleRootHint(true);
-    } else {
-        const popup = document.getElementById('integrated-keyboard-popup');
-        const backdrop = document.getElementById('keyboard-backdrop'); 
-        
-        if (popup) popup.classList.remove('active');
-        if (backdrop) backdrop.classList.remove('active'); 
-        if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        
-        // EKSİKTİ: Klavyeyi boşken kapattığında da ışığı kontrol et!
-        if (typeof toggleRootHint === 'function') toggleRootHint(true);
-    }
+    // Her durumda inputu temizle
+    if (searchInput) searchInput.value = "";
+    if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
+    if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter();
+    
+    // Klavyeyi kesinlikle kapat
+    const popup = document.getElementById('integrated-keyboard-popup');
+    const backdrop = document.getElementById('keyboard-backdrop'); 
+    
+    if (popup) popup.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active'); 
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    
+    document.body.classList.remove("keyboard-active");
+    
+    // Çarpıya basıldığında vurguları ZORLA başlat (Kullanıcı talebi)
+    if (typeof toggleRootHint === 'function') toggleRootHint(true);
 }
-
 
 
 function handleSearchKey(char) {
@@ -599,7 +600,6 @@ function updatePredictionsAndFilter() {
     }
 }
 
-
 // --- AŞAĞIDAN ÇIKAN SLIDE MENÜ KONTROLLERİ ---
 function openSlideMenu(type) {
     closeSearchKeyboard(); // Klavye açıksa menü çakışmasın diye kapat
@@ -631,13 +631,15 @@ function closeSlideMenu() {
     
     if (slideMenu) slideMenu.classList.remove('active');
     if (slideBackdrop) slideBackdrop.classList.remove('active'); // KALKANI KAPAT
+    
+    // Çarpıya (veya dışarı) basıldığında ikon vurgularını başlat
+    if (typeof toggleRootHint === 'function') toggleRootHint(true);
 }
 
 // Sayfa Yüklendiğinde Sistemi Başlat
 document.addEventListener("DOMContentLoaded", () => {
     renderVerbMenu();
 });
-
 
 const SoundEngine = {
     ctx: null,
@@ -719,7 +721,6 @@ const SoundEngine = {
         osc.stop(now + 0.3);
     }
 };
-
 
 // Temizlik fonksiyonu
 function closeAllZoomedBoxes() {
@@ -871,7 +872,6 @@ function setTab(tabIndex) {
 }
 
 
-
 // --- 1. HAZIR KÖK MENÜSÜNÜ AÇMA (Arka planı sıfırlayarak açma) ---
 function openVerbModal() {
     // YENİ: Kitap ikonu direk Kelimeleri İncele (Akordiyon) açar
@@ -940,7 +940,6 @@ function selectReadyVerb(verb) {
     
     // KESİN ÇÖZÜM: Tablo sıfırlandıktan ve yeni kök hafızaya alındıktan SONRA vurguyu zorla kapat!
     if (typeof toggleRootHint === 'function') toggleRootHint(false);
-
 
     
     if (typeof closeVerbModal === 'function') closeVerbModal();
@@ -1211,7 +1210,6 @@ function handleBoxClick(boxElement) {
         
         textEl.innerHTML = coloredHTML;
         lastOriginalWord = plainWord; 
-
 
        // === YENİ EKLENEN KISIM: Kutuya "Kök Türetildi" ve "Çoklu Kullanım" etiketi ver ===
         const currentBox = textEl.closest('.glass-box');
@@ -1525,8 +1523,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         muzariListesi = VerbGenerator.generateVerbList(kok, numBab, 'muzari', muKalip, targetMuzariRef, activeSuffix);
         if (muzariListesi.length === 0) muzariListesi = kelimeListesi;
     }
-
-
 
 
 
@@ -1920,7 +1916,6 @@ function toggleKB(show) {
 }
 
 
-
 // --- ANA KLAVYEYİ KAPATMA VE SİLME ---
 function closeKeyboard() {
     // Yazılanları silmiyoruz, sadece kapatıyoruz.
@@ -1928,6 +1923,7 @@ function closeKeyboard() {
     if (overlay) overlay.style.display = 'none';
     if (typeof toggleKB === 'function') toggleKB(false);
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    if (typeof toggleRootHint === 'function') toggleRootHint(true);
     return;
 
     if (typeof currentRoot !== 'undefined' && currentRoot.length > 0) {
@@ -2872,7 +2868,6 @@ function applySuffix(rawSuffix) {
     }
 }
 
-
 // ===============================================================
 // 4. SON EK (SUFFIX) MOTORU (Bağlanmayan Harflerde Doğru Form Zekası)
 // ===============================================================
@@ -3050,7 +3045,6 @@ function applySuffix(suffix) {
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 }
 
-
 const originalResetTableOnly = window.resetTableOnly;
 window.resetTableOnly = function() {
     if (typeof originalResetTableOnly === "function") {
@@ -3118,7 +3112,6 @@ document.querySelectorAll('.glass-box').forEach(box => {
         box.setAttribute('data-original', text);
     }
 });
-
 
 function checkWordEasterEgg(boxElement, incomingSuffix = null) {
     const desktopPlus = document.querySelector('.fa-plus');
@@ -3442,7 +3435,6 @@ document.addEventListener('click', function(e) {
         }
     }
 }, true);
-
 
 let currentPulseTimeout = null;
 
@@ -4053,7 +4045,6 @@ const SarfEngine = {
             res = res.replace(emirRegex, "$1");
         }
 
-
        // 4. ECVEF FİİLLER
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
@@ -4069,7 +4060,6 @@ const SarfEngine = {
             res = res.replace(/(يُ|تُ|نُ|أُ|مُ)([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1$2ِي$3");
             res = res.replace(/اِسْتَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "اِسْتَ$1َا$2");
             res = res.replace(/(يَ|تَ|نَ|أَ|مُ)سْتَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1سْتَ$2ِي$3");
-
 
             // 4.1. EVRENSEL MEZÎD-ECVEF ZIRHI (İstifal, İf'al, İnfi'al vb.)
             // Bu blok, ortası 'و' veya 'ي' olan fiillerin Mezîd bablarda 
@@ -4484,7 +4474,6 @@ const universalKeyboardLayout = [
     ['ئ', 'ء', 'ؤ', 'ر', 'ى', 'ة', 'و', 'ز', 'ظ', 'BACKSPACE']
 ];
 
-
 function getLetterColor(char) {
     const colorMap = {
         'ب': '#d4efdf', 'ت': '#d4efdf', 'ث': '#d4efdf',
@@ -4660,7 +4649,9 @@ function updateMainKeyboardPredictions() {
             // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
             if (filter.length === 3) {
                 const exactExists = rootMatches.some(r => normalizeArabic(r) === normalizeArabic(filter));
-                if (!exactExists) {
+                const isNounOnly = typeof sozlukVerileri !== 'undefined' && sozlukVerileri[filter] && sozlukVerileri[filter].isDictOnly;
+                
+                if (!exactExists && !isNounOnly) {
                     rootMatches.unshift(filter);
                     if (rootMatches.length > 50) rootMatches.pop();
                 }
@@ -5345,7 +5336,6 @@ document.addEventListener('keydown', function(e) {
 });
 
 
-
 // İkinci parametre olarak 'isBackward' eklendi
 function activateBoxByRef(refId, isBackward = false) {
     // MOBİL İSE SADECE MOBİL GRİDDEN BUL
@@ -5476,18 +5466,18 @@ function flyEmojiToPlus(startEl) {
     });
 }
 
-
 // --- YÖNLENDİRME (HINT) KONTROLCÜSÜ ---
 function toggleRootHint(showRequest) {
     let shouldShow = showRequest;
 
     // AKILLI GÜVENLİK DUVARI: 
-    // Eğer seçili bir kök (currentRoot) varsa veya arama kutusunda yazı varsa animasyonu ZORLA KAPAT!
+    // Arama kutusunda yazı varsa animasyonu KAPAT! 
+    // NOT: Kullanıcı talebi üzerine 'hasRootText' kontrolü kaldırıldı, kök seçili olsa bile çarpıya basılınca ikonlar yanacak.
     const searchInput = document.getElementById('root-search');
     const hasSearchText = searchInput && searchInput.value.length > 0;
     const hasRootText = typeof currentRoot !== 'undefined' && currentRoot.length > 0;
 
-    if (hasRootText || hasSearchText) {
+    if (hasSearchText) {
         shouldShow = false;
     }
 
@@ -5832,7 +5822,6 @@ function playSfx(f, t, d) {
     o.start(); o.stop(window.mAudioCtx.currentTime + d);
 }
 
-
 // O KÖKTEKİ TÜM MAZİ FİİLLERİ VE ÖRNEK CÜMLELERİNİ BULAN FONKSİYON
 function getAvailableMaziVerbs(root) {
     const maziRefs = [1, 8, 11, 14, 52, 58, 64, 71, 77, 83, 88, 94, 100];
@@ -5948,7 +5937,6 @@ window.openMarathon = function() {
 
     const btnContainer = document.getElementById('marathon-verb-buttons');
     btnContainer.innerHTML = '';
-
 
    // Lobi Butonlarını Zenginleştirerek (Eğitim Kartı Olarak) Üret
     verbs.forEach(v => {
@@ -6415,7 +6403,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // --- KÖKLER VE KELİMELER İNCELEME (CHOICE MENU) MANTIĞI ---
 
-
 function openRootsModal() {
     // Her zaman aç (SVG sürekli ikon olarak kaldığı için)
     if (true) {
@@ -6457,7 +6444,6 @@ function showThematicView() {
         renderThematicLists();
     }
 }
-
 
 function toggleThematicAccordion(element, key) {
     // If it's already active, close it
@@ -6505,7 +6491,6 @@ function toggleThematicAccordion(element, key) {
 }
 let thematicCategoriesData = (typeof kategoriTanimlari !== 'undefined') ? JSON.parse(JSON.stringify(kategoriTanimlari)) : {};
 let activeMemoryGames = {};
-
 
 function renderThematicLists() {
     const container = document.getElementById('thematic-accordion-container');
@@ -6625,7 +6610,6 @@ function renderThematicLists() {
         if(r + rows < L) reorderedKeys.push(sortedKeys[r + rows]); // Orta Sütun
         if(r + 2*rows < L) reorderedKeys.push(sortedKeys[r + 2*rows]); // Sol Sütun
     }
-
 
     html = "";
     
@@ -6816,8 +6800,6 @@ function startMemoryGameFlow(key) {
 
 
 
-
-
 // --- HAFIZA OYUNU MANTIGI ---
 function setMemoryMode(key, mode) {
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -6889,7 +6871,6 @@ function toggleMultiplayer(key) {
 }
 
 
-
 function initMemoryGrid(key, forceShuffle = false) {
     let state = activeMemoryGames[key];
     let cat = thematicCategoriesData[key];
@@ -6956,7 +6937,6 @@ function initMemoryGrid(key, forceShuffle = false) {
         grid.style.gridAutoRows = "none";
         grid.setAttribute('data-total', displayList.length);
     }
-
 
     
     displayList.forEach(item => {
@@ -7152,7 +7132,6 @@ function toggleAccordionFullscreen(key, btnElement) {
     }
 }
 
-
 window.openCategoryFromModal = function(categoryKey) {
     const modal = document.getElementById('word-details-modal');
     const overlay = document.getElementById('word-details-overlay');
@@ -7224,3 +7203,4 @@ function startGameAndFullscreen(key) {
         toggleAccordionFullscreen(key, btnFs);
     }
 }
+

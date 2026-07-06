@@ -148,7 +148,7 @@ body:has(.glass-box.matrix-opened) .back-link {
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 60px !important;
+    width: 44px !important;
     height: 24px;
 }
 
@@ -2903,8 +2903,8 @@ input:checked +
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px !important;
-  height: 32px !important;
+  width: 44px;
+  height: 22px;
   margin: 0;
 }
 .switch input { 
@@ -3030,25 +3030,27 @@ input:checked + .slider:before {
 }
 
 
-/* Switch Override to guarantee styling */
-.switch .slider {
+/* Hafıza Oyunu Switch Override */
+.switch-wrapper .switch {
+    width: 44px !important;
+    height: 22px !important;
+}
+.switch-wrapper .switch .slider {
     background-color: #ffffff !important;
     border: 2px solid #4dabf7 !important;
 }
-.switch input:checked + .slider {
+.switch-wrapper .switch input:checked + .slider {
     background-color: #ffffff !important;
 }
-.switch .slider:before {
+.switch-wrapper .switch .slider:before {
     background-color: #4dabf7 !important;
-    left: 1px !important;
-    bottom: 1px !important;
-    height: 24px !important;
-    width: 24px !important;
+    height: 14px !important;
+    width: 14px !important;
     bottom: 2px !important;
     left: 2px !important;
 }
-.switch input:checked + .slider:before {
-    transform: translateX(28px) !important;
+.switch-wrapper .switch input:checked + .slider:before {
+    transform: translateX(22px) !important;
     background-color: #4dabf7 !important;
 }
 
@@ -3157,3 +3159,4 @@ input:checked + .slider:before {
     min-height: 0 !important;
     overflow: hidden !important;
 }
+
