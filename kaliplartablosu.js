@@ -6639,8 +6639,9 @@ function renderThematicLists() {
         // 1. Bu satırın başlıkları (Sırayla 3 sütuna yerleşir)
         for (const key of rowKeys) {
             const cat = categories[key];
+            if (!cat) continue;
             
-            let shuffledList = [...cat.items];
+            let shuffledList = cat.items ? [...cat.items] : [];
             shuffledList.sort(() => Math.random() - 0.5);
             activeMemoryGames[key] = {
                 mode: 'study',
@@ -6667,6 +6668,21 @@ function renderThematicLists() {
         
         // 2. Bu satırın İçerikleri (Tıklandığında tüm satırı kaplayacak şekilde başlıkların altına yerleşir)
         for (const key of rowKeys) {
+            const cat = categories[key];
+            if (!cat) continue;
+            
+            let pairOptions = "";
+            let maxPairs = cat.items ? cat.items.length : 0;
+            if (maxPairs < 6) {
+                pairOptions += `<option value="${maxPairs}" selected>${maxPairs} Çift</option>`;
+                pairOptions += `<option value="6" disabled>6 Çift</option>`;
+            } else {
+                pairOptions += `<option value="6" selected>6 Çift</option>`;
+            }
+            pairOptions += `<option value="8" ${maxPairs < 8 ? 'disabled' : ''}>8 Çift</option>`;
+            pairOptions += `<option value="10" ${maxPairs < 10 ? 'disabled' : ''}>10 Çift</option>`;
+            pairOptions += `<option value="12" ${maxPairs < 12 ? 'disabled' : ''}>12 Çift</option>`;
+
             html += `
                 <div id="content-${key}" class="thematic-accordion-panel" style="display:none; grid-column: 1 / -1; background: #f8f9fa; border: 2px solid #5c7cfa; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     <div class="thematic-accordion-content" style="display:block;">
@@ -6689,10 +6705,7 @@ function renderThematicLists() {
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
                                     <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" onchange="startMemoryGameFlow('${key}')">
-                                        <option value="6" selected>6 Çift</option>
-                                        <option value="8">8 Çift</option>
-                                        <option value="10">10 Çift</option>
-                                        <option value="12">12 Çift</option>
+                                        ${pairOptions}
                                     </select>
                                     
                                     <div class="switch-wrapper" style="display: flex; align-items: center; background: rgba(255,255,255,0.8); padding: 6px 12px; height: 44px; box-sizing: border-box; border-radius: 50px; gap: 5px; direction: ltr !important;">

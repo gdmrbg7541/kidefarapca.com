@@ -416,8 +416,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { // Kök Hali: مَكْتُوب
                 emoji: "✉️", 
                 arText: "مَكْتُوب", 
@@ -532,8 +531,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🎓", 
                 arText: "عَالِم", 
@@ -544,8 +542,7 @@ const eski_sozlukVerileri = {
                 }
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🧕", 
                 arText: "عَالِمَة", 
                 trText: "Kadın âlim.",
@@ -568,8 +565,7 @@ const eski_sozlukVerileri = {
         // --- 34 Numaralı Kalıp (فَعَّالَة - Mübalağa) ---
         34: { 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🧠", 
                 arText: "عَلَّامَة", 
                 trText: "Çok bilen / Allâme.",
@@ -581,8 +577,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "💡", 
                 arText: "مَعْلُوم", 
@@ -717,8 +712,7 @@ const eski_sozlukVerileri = {
                 ]
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "👩‍🏫", 
                 arText: "مُعَلِّمَة", 
                 trText: "Kadın öğretmen.",
@@ -867,8 +861,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🌟", 
                 arText: "قَادِر", 
@@ -1017,8 +1010,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🌕", 
                 arText: "كَامِل", 
@@ -1110,8 +1102,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🔑", 
                 arText: "مَالِك", 
@@ -1135,8 +1126,7 @@ const eski_sozlukVerileri = {
                 }
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "👸", 
                 arText: "مَلِيكَة", 
                 trText: "Kraliçe.",
@@ -1148,8 +1138,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🛡️", 
                 arText: "مَمْلُوك", 
@@ -1169,8 +1158,7 @@ const eski_sozlukVerileri = {
                 trText: "Hüküm sürülen yer."
             },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏰", 
                 arText: "مَمْلَكَة", 
                 trText: "Krallık / Memleket.",
@@ -1297,8 +1285,7 @@ const eski_sozlukVerileri = {
                 arText: "حُكْم",
                  emoji: "📖" },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🦉", 
                 arText: "حِكْمَة", 
                 trText: "Hikmet / Bilgelik.",
@@ -1320,8 +1307,7 @@ const eski_sozlukVerileri = {
         25: { 
             base: { emoji: "🏛️", arText: "حُكُوم", trText: "Hükümet (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏛️", 
                 arText: "حُكُومَة", 
                 trText: "Hükümet.",
@@ -1330,8 +1316,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🧑‍⚖️", 
                 arText: "حَاكِم", 
@@ -1351,8 +1336,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "⛓️", 
                 arText: "مَحْكُوم", 
@@ -1367,8 +1351,7 @@ const eski_sozlukVerileri = {
                 arText: "مَحْكَمَة",
  emoji: "⚖️" },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⚖️", 
                 arText: "مَحْكَمَة", 
                 trText: "Mahkeme.",
@@ -1515,8 +1498,7 @@ const eski_sozlukVerileri = {
             } 
         },
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🧠", 
                 arText: "عَارِف", 
@@ -1525,8 +1507,7 @@ const eski_sozlukVerileri = {
             } 
         },
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "👍", 
                 arText: "مَعْرُوف", 
@@ -1538,8 +1519,7 @@ const eski_sozlukVerileri = {
         37: { 
             base: { emoji: "💡", arText: "مَعْرِف", trText: "Bilgi kaynağı (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💡", 
                 arText: "مَعْرِفَة", 
                 trText: "Bilgi / Marifet.",
@@ -1699,8 +1679,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🤲", 
                 arText: "مَرْحُوم", 
@@ -1713,8 +1692,7 @@ const eski_sozlukVerileri = {
         38: { 
             base: { emoji: "🤝", arText: "مَرْحَم", trText: "Merhamet yeri (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🤝", 
                 arText: "مَرْحَمَة", 
                 trText: "Merhamet.",
@@ -1770,8 +1748,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "أَفْشُوا السَّلَامَ بَيْنَكُمْ", tr: "Aranızda selamı yayınız. (Hadis-i Şerif)" }
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🛡️", 
                 arText: "سَلَامَة", 
                 trText: "Selamet / Güvenlik.",
@@ -1780,7 +1757,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { kuralliCogul: "eril",
+        33: {
             base: { emoji: "😌", arText: "سَالِم", trText: "Sağ salim / Güvende." } }, 
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
@@ -1940,8 +1917,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🏇", arText: "فَاتِح", trText: "Fetheden / Fatih." } 
         },
         
@@ -1956,8 +1932,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "🔓", arText: "مَفْتُوح", trText: "Açık." } 
         },
         
@@ -2022,18 +1997,15 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "✍️", arText: "نَاظِم", trText: "Düzenleyen / Şair (Nazım)." } 
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "🎼", arText: "مَنْظُوم", trText: "Dizilmiş / Manzum." }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📜", 
                 arText: "مَنْظُومَة", 
                 trText: "Manzume / Şiir dizeleri.",
@@ -2157,8 +2129,7 @@ const eski_sozlukVerileri = {
         22: { 
             base: { emoji: "📜", arText: "شَهَاد", trText: "Şahitlik." },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📜", 
                 arText: "شَهَادَة", 
                 trText: "Şehadet / Şahitlik.",
@@ -2167,8 +2138,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👁️", 
                 arText: "شَاهِد", 
@@ -2252,8 +2222,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🌌", arText: "خَالِق", trText: "Yaratan / Halık." } 
         },
 
@@ -2263,8 +2232,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "🧬", arText: "مَخْلُوق", trText: "Yaratılmış / Mahluk." },
             suggestsPlus: true,
             "ات": { 
@@ -2367,8 +2335,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🙇", 
                 arText: "سَاجِد", 
@@ -2426,8 +2393,7 @@ const eski_sozlukVerileri = {
         17: { 
             base: { emoji: "🪙", arText: "صَدَق", trText: "Sadaka (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🪙", 
                 arText: "صَدَقَة", 
                 trText: "Sadaka / Hayır.",
@@ -2446,8 +2412,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👯", 
                 arText: "صَادِق", 
@@ -2492,8 +2457,7 @@ const eski_sozlukVerileri = {
             } 
         }, 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😒", 
                 arText: "حَاسِد", 
@@ -2548,8 +2512,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "📦", arText: "دَاخِل", trText: "İç / Dahil." }, 
             suggestsPlus: true, 
             "يَّة": { 
@@ -2647,8 +2610,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "💺", arText: "رَاكِب", trText: "Yolcu / Binen." } 
         },
         
@@ -2656,8 +2618,7 @@ const eski_sozlukVerileri = {
         38: { 
             base: { emoji: "⛴️", arText: "مَرْكَب", trText: "Gemi / Binek." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🛸", 
                 arText: "مَرْكَبَة", 
                 trText: "Araç / Binek.",
@@ -2750,8 +2711,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "📡", arText: "نَاقِل", trText: "Taşıyan / Aktaran." } 
         },
         
@@ -2761,8 +2721,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ul) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🚗", 
                 arText: "مَنْقُول", 
@@ -2858,8 +2817,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "🥤", arText: "مَشْرُوب", trText: "İçilen / Meşrubat." },
             suggestsPlus: true, 
             "ات": { 
@@ -2899,8 +2857,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { emoji: "👔", arText: "سَفِير", trText: "Büyükelçi (Sefir)." }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏢", 
                 arText: "سَفَارَة", 
                 trText: "Büyükelçilik (Sefaret).",
@@ -2970,8 +2927,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🤓", 
                 arText: "عَاقِل", 
@@ -2981,8 +2937,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "✅", 
                 arText: "مَعْقُول", 
@@ -3013,8 +2968,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🛡️", 
                 arText: "عَاصِم", 
@@ -3024,8 +2978,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "👼", 
                 arText: "مَعْصُوم", 
@@ -3125,8 +3078,7 @@ const eski_sozlukVerileri = {
         17: { 
             base: { emoji: "🍽️", arText: "طَبَق", trText: "Tabak / Katman." }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🥞", 
                 arText: "طَبَقَة", 
                 trText: "Tabaka / Katman.",
@@ -3215,8 +3167,7 @@ const eski_sozlukVerileri = {
         23: { 
             base: { emoji: "🕌", arText: "خِلَاف", trText: "Anlaşmazlık / Hilaf (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕌", 
                 arText: "خِلَافَة", 
                 trText: "Hilafet.",
@@ -3228,8 +3179,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { emoji: "👑", arText: "خَلِيف", trText: "Halife (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "👑", 
                 arText: "خَلِيفَة", 
                 trText: "Halife / Temsilci.",
@@ -3349,8 +3299,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🏞️", arText: "خَارِج", trText: "Dış / Hariç." } 
         },
         
@@ -3438,8 +3387,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "📦", arText: "مَعْمُول", trText: "Yapılmış / Mamul." } 
         },
         
@@ -3509,7 +3457,7 @@ const eski_sozlukVerileri = {
         23: { 
             base: { emoji: "📚", arText: "دِرَاس", trText: "Öğrenim (Yalın)." },
             suggestsPlus: true, 
-            "ة": { kuralliCogul: "disil",
+            "ة": {
                 emoji: "📚", arText: "دِرَاسَة", trText: "Öğrenim / Eğitim." } 
         },
         
@@ -3517,8 +3465,7 @@ const eski_sozlukVerileri = {
         38: { 
             base: { emoji: "🏫", arText: "مَدْرَسَة", trText: "Okul.", cogul: "مَدَارِس" },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏫", 
                 arText: "مَدْرَسَة", 
                 trText: "Okul / Medrese.",
@@ -3567,8 +3514,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "📖", 
                 arText: "حَافِظ", 
@@ -3576,8 +3522,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "فَاللهُ خَيْرٌ حَافِظًا", tr: "Allah en hayırlı koruyucudur. (Yusuf Suresi, 64)" }
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🧠", 
                 arText: "حَافِظَة", 
                 trText: "Hafıza / Bellek.",
@@ -3586,8 +3531,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🛡️", 
                 arText: "مَحْفُوظ", 
@@ -3641,8 +3585,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "👀", arText: "نَاظِر", trText: "Bakan / Nazır." } 
         },
         
@@ -3650,8 +3593,7 @@ const eski_sozlukVerileri = {
         38: { 
             base: { emoji: "🌄", arText: "مَنْظَر", trText: "Manzara / Görünüm." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌄", 
                 arText: "مَنْظَرَة", 
                 trText: "Manzara yeri.",
@@ -3860,8 +3802,7 @@ const eski_sozlukVerileri = {
         22: { 
             base: { emoji: "✨", arText: "سَعَاد", trText: "Mutluluk (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "✨", 
                 arText: "سَعَادَة", 
                 trText: "Saadet / Mutluluk.",
@@ -3883,8 +3824,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "فَمِنْهُمْ شَقِيٌّ وَسَعِيدٌ", tr: "Onlardan kimi bedbaht (mutsuz), kimi de bahtiyar (mutlu - said)dır. (Hûd Suresi, 105)" }
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🥰", 
                 arText: "سَعِيدَة", 
                 trText: "Mutlu (Kadın).",
@@ -3893,8 +3833,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🍀", 
                 arText: "مَسْعُود", 
@@ -3902,7 +3841,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "أَيَّامٌ مَسْعُودَةٌ", tr: "Mutlu (Mesut) ve uğurlu günler." }
             }, 
             suggestsPlus: true, 
-            "ة": { kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌻", arText: "مَسْعُودَة", trText: "Mesude (Mutlu kadın)." } 
         },
   
@@ -3956,8 +3895,7 @@ const eski_sozlukVerileri = {
             cekimi: ["اِجْهَلْ", "اِجْهَلَا", "اِجْهَلُوا", "اِجْهَلِي", "اِجْهَلَا", "اِجْهَلْنَ"],
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🙈", 
                 arText: "جَاهِل", 
@@ -3974,8 +3912,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "❓", 
                 arText: "مَجْهُول", 
@@ -4009,15 +3946,14 @@ const eski_sozlukVerileri = {
             cekimi: ["اُسْكُنْ", "اُسْكُنَا", "اُسْكُنُوا", "اُسْكُنِي", "اُسْكُنَا", "اُسْكُنْنَ"],
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { kuralliCogul: "eril",
+        33: {
             base: { emoji: "😌", arText: "سَاكِن", trText: "Sakin / Oturan." } }, 
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
             base: { emoji: "🕊️", arText: "سَكِين", trText: "Huzur (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "✨", 
                 arText: "سَكِينَة", 
                 trText: "Sekinet / Huzur ve güven.",
@@ -4026,8 +3962,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🏘️", 
                 arText: "مَسْكُون", 
@@ -4092,14 +4027,14 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { kuralliCogul: "eril",
+        33: {
             base: { emoji: "💪", arText: "جَاهِد", trText: "Çaba gösteren." } }, 
         
         // --- 69 Numaralı Kalıp (مُفَاعِل) ---
         69: { 
             base: { emoji: "🏇", arText: "مُجَاهِد", trText: "Mücahit / Mücadele eden." }, 
             suggestsPlus: true, 
-            "ة": { kuralliCogul: "disil",
+            "ة": {
                 emoji: "🧕", arText: "مُجَاهِدَة", trText: "Kadın mücahit." } 
         }, 
 
@@ -4215,7 +4150,6 @@ const eski_sozlukVerileri = {
             base: { emoji: "⚠️", arText: "مُشْكِل", trText: "Sorun (Yalın)." },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "⚠️",
                 arText: "مُشْكِلَة",
                 trText: "Sorun / Problem / Müşkül.",
@@ -4267,7 +4201,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { kuralliCogul: "eril",
+        36: {
             base: { emoji: "👤", arText: "مَنْسُوب", trText: "Mensup / İlişkili." } }, 
         
         // --- 64, 65, 66 Numaralı Kalıplar (Müfâ'ale Babı) ---
@@ -4333,8 +4267,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🎯", 
                 arText: "حَاصِل", 
@@ -4351,8 +4284,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🌾", 
                 arText: "مَحْصُول", 
@@ -4479,8 +4411,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🏛️", 
                 arText: "بَاقٍ", 
@@ -4488,8 +4419,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "وَاللهُ خَيْرٌ وَأَبْقَى", tr: "Allah (mükafatı) daha hayırlı ve daha kalıcıdır (bâkidir). (Tâhâ Suresi, 73)" }
             },
             suggestsPlus: true, // Öğrenci + butonuna basınca "Bakiye" çıkacak
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💰", 
                 arText: "بَاقِيَة", 
                 trText: "Bakiye / Geriye kalan şey, kalıntı, (hesapta) kalan miktar.",
@@ -4594,8 +4524,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true, // + ة ile Basîret
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💡", 
                 arText: "بَصِيرَة", 
                 trText: "Basîret / Kalp gözü, derin kavrayış, sezgi.",
@@ -4650,8 +4579,7 @@ const eski_sozlukVerileri = {
         23: { 
             base: { emoji: "✉️", arText: "رِسَال", trText: "Mesaj (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "✉️", 
                 arText: "رِسَالَة", 
                 trText: "Mesaj / Risale / Mektup.",
@@ -4731,12 +4659,11 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { kuralliCogul: "eril",
+        33: {
             base: { emoji: "🛡️", arText: "نَاصِر", trText: "Yardım eden / Nasır." } }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🏆", 
                 arText: "مَنْصُور", 
@@ -4792,12 +4719,10 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🤰", arText: "حَامِل", trText: "Taşıyan / Hamile." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🤰", 
                 arText: "حَامِلَة", 
                 trText: "Hamile kadın.",
@@ -4875,8 +4800,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { emoji: "💎", arText: "حَقِيق", trText: "Gerçek (Yalın)." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💎", 
                 arText: "حَقِيقَة", 
                 trText: "Hakikat / Gerçek.",
@@ -4966,8 +4890,7 @@ const eski_sozlukVerileri = {
     // ==================================================================
     "خلص": {
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "💎", 
                 arText: "خَالِص", 
@@ -5024,8 +4947,7 @@ const eski_sozlukVerileri = {
         }, 
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🕌", arText: "رَاشِد", trText: "Raşit / Doğru yolda olan." },
             suggestsPlus: true,
             "ونَ": { 
@@ -5130,8 +5052,7 @@ const eski_sozlukVerileri = {
             base: { emoji: "🛡️", arText: "أَمَان", trText: "Güvenlik / Aman." },
             ornek: { ar: "الْأَمَانُ وَالصِّحَّةُ نِعْمَتَانِ", tr: "Aman (güvenlik) ve sağlık iki büyük nimettir." },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📦", 
                 arText: "أَمَانَة", 
                 trText: "Emanet.",
@@ -5265,8 +5186,7 @@ const eski_sozlukVerileri = {
         22: { 
             base: { arText: "جَمَاع", trText: "Topluluk (kök form)." },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "👥", 
                 arText: "جَمَاعَة", 
                 trText: "Cemaat / Topluluk, grup.",
@@ -5284,8 +5204,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🕌", 
                 arText: "جَامِع", 
@@ -5296,8 +5215,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🎓", 
                 arText: "جَامِعَة", 
                 trText: "Üniversite.",
@@ -5309,16 +5227,14 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📦", 
                 arText: "مَجْمُوع", 
                 trText: "Mecmu / Toplanmış olan, toplam." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📰", 
                 arText: "مَجْمُوعَة", 
                 trText: "Mecmua / Grup, küme, koleksiyon, dergi.",
@@ -5339,8 +5255,7 @@ const eski_sozlukVerileri = {
         42: { 
             base: { arText: "جُمُع" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕋", 
                 arText: "جُمُعَة", 
                 trText: "Cuma / Toplanma günü.",
@@ -5396,7 +5311,7 @@ const eski_sozlukVerileri = {
         19: { base: { emoji: "🤲", arText: "حَمْد", trText: "Hamd / Övgü.", ornek: { ar: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", tr: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" } }, suggestsPlus: true, "يَّة": { emoji: "🌸", arText: "حَمْدِيَّة", trText: "Hamd / Övgü.", ornek: { ar: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", tr: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" } } }, // حَمْد + يَّة = حَمْدِيَّة
         30: { base: { emoji: "🌟", arText: "أَحْمَد", trText: "Ahmet / Çok övülen.", ornek: { ar: "وَمُبَشِّرًا بِرَسُولٍ يَأْتِي مِن بَعْدِي اسْمُهُ أَحْمَدُ", tr: "Benden sonra gelecek 'Ahmet' (çok övülen) adındaki bir peygamberi müjdeleyici olarak... (Saf Suresi)" } } }, // أَحْمَد
         35: { base: { emoji: "💎", arText: "حَمِيد", trText: "Hamid / Her türlü övgüye layık.", ornek: { ar: "إِنَّ الله هُوَ الْغَنِيُّ الْحَمِيدُ", tr: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } } }, // حَمِيد
-        36: { kuralliCogul: "eril",
+        36: {
             base: { emoji: "🏅", arText: "مَحْمُود", trText: "Mahmud / Övülmüş.", ornek: { ar: "عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَحْمُودًا", tr: "Umulur ki Rabbin seni Makam-ı Mahmud'a (övülmüş bir makama) ulaştırır. (İsrâ Suresi)" } } }, // مَحْمُود
         63: { base: { emoji: "🌹", arText: "مُحَمَّد", trText: "Muhammed / Övülmüş.", ornek: { ar: "مُحَمَّدٌ رَّسُولُ اللهِ", tr: "Muhammed (s.a.v), Allah'ın elçisidir. (Fetih Suresi)" } } } // مُحَمَّد
     },
@@ -5404,9 +5319,9 @@ const eski_sozlukVerileri = {
     // 54. Sh-H-R (ش ه ر) KÖKÜ - Belirmek / İlan Etmek / Ay / Şöhret
     "شهر": {
         19: { base: { emoji: "📅", arText: "شَهْر", trText: "Ay.", ornek: { ar: "شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ", tr: "Ramazan ayı, içinde Kur'an'ın indirildiği aydır. (Bakara Suresi)" } } }, // شَهْر
-        21: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
+        21: { suggestsPlus: true, "ة": {
                 emoji: "🌟", arText: "شُهْرَة", trText: "Şöhret / Tanınmışlık.", ornek: { ar: "النَّجَاحُ يَجْلِبُ الشُّهْرَةَ عَبْرَ الْعَمَلِ", tr: "Başarı, çalışmayla birlikte şöhreti (tanınmışlığı) getirir." } } }, // شُهْر + ة = شُهْرَة
-        36: { kuralliCogul: "eril",
+        36: {
             base: { emoji: "🎤", arText: "مَشْهُور", trText: "Meşhur / Tanınmış.", ornek: { ar: "هُوَ كَاتِبٌ مَشْهُورٌ فِي الْعَالَمِ", tr: "O, dünyada meşhur (tanınmış) bir yazardır." } } }, // مَشْهُور
         61: { base: { emoji: "📢", arText: "تَشْهِير", trText: "Teşhir / İfşa etme, yayma.", ornek: { ar: "تَشْهِيرُ الْأَخْبَارِ الْكَاذِبَةِ مَمْنُوعٌ", tr: "Yalan haberlerin teşhir edilmesi (ifşa edilmesi/yayılması) yasaktır." } } } // تَشْهِير
     },
@@ -5513,8 +5428,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😇", 
                 arText: "شَاكِر", 
@@ -5522,8 +5436,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "أَنَا شَاكِرٌ لَكَ عَلَى مَعْرُوفِكَ", tr: "İyiliğin için sana şâkirim (teşekkür ederim/minnettarım)." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌸", 
                 arText: "شَاكِرَة", 
                 trText: "Şükreden (Kadın formu)." 
@@ -5555,8 +5468,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "أَنَا مُتَشَكِّرٌ جِدًّا لِمُسَاعَدَتِكُمْ", tr: "Yardımınız için çok müteşekkirim (minnettarım)." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "👗", 
                 arText: "مُتَشَكِّرَة", 
                 trText: "Müteşekkir (Kadın formu)." 
@@ -5566,7 +5478,7 @@ const eski_sozlukVerileri = {
 
     // 56. F-K-R (ف ك ر) KÖKÜ - Düşünmek / Fikir
     "فكر": {
-        20: { base: { emoji: "🧠", arText: "فِكْر", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, suggestsPlus: true, "يّ": { emoji: "💡", arText: "حُقُوقُ الْمِلْكِيَّةِ الْفِكْرِيَّةِ", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, "ة": { kuralliCogul: "disil",
+        20: { base: { emoji: "🧠", arText: "فِكْر", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, suggestsPlus: true, "يّ": { emoji: "💡", arText: "حُقُوقُ الْمِلْكِيَّةِ الْفِكْرِيَّةِ", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, "ة": {
                 emoji: "💭", arText: "فِكْرَة", trText: "Fikir.", ornek: { ar: "هَذِهِ فِكْرَةٌ مُمْتَازَةٌ جِدًّا", tr: "Bu, çok mükemmel bir fikir." } } }, // فِكْر + ekler
         91: { base: { emoji: "🤔", arText: "تَفَكُّر", trText: "Tefekkür / Derin düşünme.", ornek: { ar: "تَفَكُّرُ سَاعَةٍ خَيْرٌ مِنْ عِبَادَةِ سَنَةٍ", tr: "Bir saat tefekkür (derin düşünme), bir yıl ibadetten hayırlıdır." } } }, // تَفَكُّر
         92: { base: { emoji: "🧔", arText: "مُتَفَكِّر", trText: "Mütefekkir / Düşünür.", ornek: { ar: "هُوَ كَاتِبٌ وَمُتَفَكِّرٌ كَبِيرٌ", tr: "O, büyük bir yazar ve mütefekkirdir (düşünürdür)." } } } // مُتَفَكِّر
@@ -5574,7 +5486,7 @@ const eski_sozlukVerileri = {
 
     // 57. W-K-L (و ك ل) KÖKÜ - Güvenmek / Vekil Tayin Etmek / Dayanmak
     "وكل": {
-        22: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
+        22: { suggestsPlus: true, "ة": {
                 emoji: "📜", arText: "وَكَالَة", trText: "Vekalet / Temsil yetkisi.", ornek: { ar: "أَعْطَاهُ وَكَالَةً عَامَّةً", tr: "Ona genel vekalet (temsil yetkisi) verdi." } } }, // وَكَال + ة = وَكَالَة
         35: { base: { emoji: "🛡️", arText: "وَكِيل", trText: "Vekil.", ornek: { ar: "حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ", tr: "Allah bize yeter, O ne güzel vekildir. (Âl-i İmrân Suresi)" } } }, // وَكِيل
         62: { base: { emoji: "👤", arText: "مُوَكِّل", trText: "Müvekkil.", ornek: { ar: "الْمُحَامِي يُدَافِعُ عَنْ مُوَكِّلِهِ", tr: "Avukat müvekkilini (kendisini vekil tayin edeni) savunur." } } }, // مُوَكِّل
@@ -5583,11 +5495,11 @@ const eski_sozlukVerileri = {
 
     // 58. Q-D-M (ق د م) KÖKÜ - Öne Geçmek / Eski / Sunmak / Adım
     "قدم": {
-        17: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
+        17: { suggestsPlus: true, "ة": {
                 emoji: "🪜", arText: "قَدَمَة", trText: "Adım / Basamak." } }, // قَدَم + ة = قَدَمَة
         35: { base: { emoji: "🏛️", arText: "قَدِيم", trText: "Kadim / Eski.", ornek: { ar: "صَدَاقَتُنَا قَدِيمَةٌ وَقَوِيَّةٌ", tr: "Dostluğumuz kadim (eski) ve güçlüdür." } } }, // قَدِيم
         61: { base: { emoji: "🎁", arText: "تَقْدِيم", trText: "Takdim / Sunma.", ornek: { ar: "تَقْدِيمُ الْهَدَايَا يَزِيدُ الْمَحَبَّةَ", tr: "Hediye takdim etmek (sunmak) sevgiyi artırır." } } }, // تَقْدِيم
-        62: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
+        62: { suggestsPlus: true, "ة": {
                 emoji: "📖", arText: "مُقَدِّمَة", trText: "Mukaddime / Önsöz, giriş.", ornek: { ar: "مُقَدِّمَةُ ابْنِ خَلْدُونَ أَثَرٌ تَارِيخِيٌّ عَظِيمٌ", tr: "İbn Haldun'un Mukaddime'si (önsözü/giriş eseri) harika bir tarihi eserdir." } } } // مُقَدِّم + ة = مُقَدِّمَة
     },
 
@@ -5607,7 +5519,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🐘",
                 arText: "كَبِيرَة",
                 trText: "Büyük (Dişil) / Büyük günah.",
@@ -5622,9 +5533,9 @@ const eski_sozlukVerileri = {
     // 60. '-D-L (ع د ل) KÖKÜ - Adalet / Eşitlik / Düzenleme
     "عدل": {
         19: { suggestsPlus: true, "يَّة": { emoji: "🏛️", arText: "عَدْلِيَّة", trText: "Adliye / Adalet sarayı.", ornek: { ar: "ذَهَبَ الْمُحَامِي إِلَى الْعَدْلِيَّةِ", tr: "Avukat adliyeye (sarayına) gitti." } } }, // عَدْل + يَّة = عَدْلِيَّة
-        22: { suggestsPlus: true, "ة": { kuralliCogul: "disil",
+        22: { suggestsPlus: true, "ة": {
                 emoji: "⚖️", arText: "عَدَالَة", trText: "Adalet.", ornek: { ar: "الْعَدَالَةُ أَسَاسُ الْمُلْكِ", tr: "Adalet mülkün (devletin) temelidir." } } }, // عَدَال + ة = عَدَالَة
-        33: { kuralliCogul: "eril",
+        33: {
             base: { emoji: "👨‍⚖️", arText: "عَادِل", trText: "Adil.", ornek: { ar: "هُوَ قَاضٍ عَادِلٌ يَحْكُمُ بِالْحَقِّ", tr: "O, hakla hükmeden adil bir kadıdır (hakimdir)." } } }, // عَادِل
         61: { suggestsPlus: true, "ات": { emoji: "🔧", arText: "تَعْدِيلَات", trText: "Tadilat / Değişiklikler.", ornek: { ar: "إِجْرَاءُ تَعْدِيلَاتٍ جَدِيدَةٍ فِي الْقَانُونِ", tr: "Kanunda yeni tadilatlar (düzenlemeler/değişiklikler) yapmak." } } }, // تَعْدِيل + ات = تَعْدِيلَات
         69: { base: { emoji: "🟰", arText: "مُعَادِل", trText: "Muadil / Eşdeğer.", ornek: { ar: "هَذَا الدَّوَاءُ مُعَادِلٌ لِلْآخَرِ", tr: "Bu ilaç diğeriyle muadildir (eşdeğerdir)." } } }, // مُعَادِل
@@ -5660,8 +5571,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "👤", arText: "فَاعِلُ خَيْر", trText: "Hayırsever / İyilik yapan.", ornek: { ar: "فَاعِلُ خَيْرٍ", tr: "İyilik yapan (hayırsever) / İşin öznesi." } } 
         },
         
@@ -5783,8 +5693,7 @@ const eski_sozlukVerileri = {
         19: { 
             base: { emoji: "🍎", arText: "أَكْل", trText: "Yemek (Masdar)." }
         },
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🙋", arText: "آكِل", trText: "Yiyen, Obur (İsm-i Fail)." }
         },
         36: { 
@@ -5814,22 +5723,19 @@ const eski_sozlukVerileri = {
         24: { 
             base: { emoji: "❓", arText: "سُؤَال", trText: "Soru / Sual." }
         },
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🙋‍♂️", arText: "سَائِل", trText: "Soran / İsteyen (Dilenci)." },
             ornek: {
                 ar: "وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ",
                 tr: "İsteyeni (dilenciyi) azarlama. (Duhâ Suresi, 10)"
             }
         },
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful)." }
         },
         38: { 
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📄", 
                 arText: "مَسْأَلَة", 
                 trText: "Mesele / Sorun." 
@@ -5864,12 +5770,10 @@ const eski_sozlukVerileri = {
         19: { 
             base: { emoji: "📜", arText: "بَيْع", trText: "Satış / Satmak (Masdar)." }
         },
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🛒", arText: "بَائِع", trText: "Satan / Satıcı / Bayi (İsm-i Fail)." }
         },
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "📦", arText: "مَبِيع", trText: "Satılan (İsm-i Meful)." }
         }
     },
@@ -5897,8 +5801,7 @@ const eski_sozlukVerileri = {
         24: { 
             base: { emoji: "❗", arText: "دُعَاء", trText: "Dua etmek." }
         },
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🗣️", arText: "دَاعٍ", trText: "Davet eden." },
             cekimi: [
                 { ar: "دَاعٍ", tr: "Belirsiz (Nekra) Kullanım" },
@@ -5962,15 +5865,13 @@ const eski_sozlukVerileri = {
             }
         },
         33: {
-            kuralliCogul: "eril",
             base: { 
                 emoji: "🚶‍♀️", 
                 arText: "مَاشٍ", 
                 trText: "Yürüyen / Yaya." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🐑", 
                 arText: "مَاشِيَة", 
                 trText: "Yürüyen (Kadın) / Küçükbaş Hayvan Sürüsü.",
@@ -6034,7 +5935,6 @@ const eski_sozlukVerileri = {
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: {
-            kuralliCogul: "eril",
             base: { 
                 emoji: "😊", 
                 arText: "رَاضٍ", 
@@ -6046,7 +5946,6 @@ const eski_sozlukVerileri = {
             ],
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "😌",
                 arText: "رَاضِيَة",
                 trText: "Razı olan.",
@@ -6059,7 +5958,6 @@ const eski_sozlukVerileri = {
 
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
         36: {
-            kuralliCogul: "eril",
             base: { 
                 emoji: "🥰", 
                 arText: "مَرْضِيّ", 
@@ -6067,7 +5965,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "💖",
                 arText: "مَرْضِيَّة",
                 trText: "Kendisinden razı olunan.",
@@ -6087,7 +5984,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🤲",
                 arText: "مَرْضَاة",
                 trText: "Rıza / Hoşnutluk kazanılacak şey.",
@@ -6124,8 +6020,7 @@ const eski_sozlukVerileri = {
                 trText: "Koruma (Yalın Hâl)" 
             },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🚧", 
                 arText: "وِقَايَة", 
                 trText: "Koruma / Önlem.",
@@ -6242,8 +6137,7 @@ const eski_sozlukVerileri = {
                 trText: "Hazırlık"},
             
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🎒", 
                 arText: "عُدَّة", 
                 trText: "Hazırlık / Teçhizat (İddet).",
@@ -6252,8 +6146,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "🗓️", arText: "مَعْدُود", trText: "Sayılmış / Sayılı." },
             suggestsPlus: true,
             "ات": { 
@@ -6398,7 +6291,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "📏",
                 arText: "سَوِيَّة",
                 trText: "Seviye / Düzey / Eşitlik.",
@@ -6496,8 +6388,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "♊", 
                 arText: "مُسَاوِيَة", 
                 trText: "Eşit olan (Kadın)." 
@@ -6628,8 +6519,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil / Vâsıl) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🙋‍♂️", 
                 arText: "وَاصِل", 
@@ -6639,8 +6529,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📦", 
                 arText: "مَوْصُول", 
@@ -6785,8 +6674,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "اَلنَّبِيُّ الْمُصْطَفَى الْمُخْتَارُ", tr: "Seçkin ve seçilmiş olan Peygamber." }
             }, 
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏡", 
                 arText: "مُخْتَارَة",
                 trText: "Seçilmiş (Kadın) / Kadın Muhtar." 
@@ -6908,8 +6796,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "اسْتَمِعْ إِلَى صَوْتِ الْوِجْدَانِ", tr: "Vicdanın sesini dinle." }
             } 
         }, 
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "✅", 
                 arText: "مَوْجُود", 
@@ -7030,8 +6917,7 @@ const eski_sozlukVerileri = {
                 trText: "Okuma (Yalın)." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📜", 
                 arText: "قِرَاءَة", 
                 trText: "Okumak / Kıraat (Masdar).",
@@ -7046,8 +6932,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "شَهْرُ رَمَضَانَ الَّذِي أُنْزِلَ فِيهِ الْقُرْآنُ", tr: "Ramazan ayı ki Kur'an onda indirilmiştir. (Bakara Suresi, 185)" }
             } 
         },
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "قَارِئ", 
@@ -7064,8 +6949,7 @@ const eski_sozlukVerileri = {
                 ]
             }
         },
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "✅", 
                 arText: "مَقْرُوء", 
@@ -7134,8 +7018,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "😔", 
                 arText: "مَحْرُوم", 
@@ -7290,8 +7173,7 @@ const eski_sozlukVerileri = {
             } 
         },
     
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🌩️", 
                 arText: "عَارِض", 
@@ -7299,8 +7181,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "حَدَثَ لَهُ عَارِضٌ صِحِّيٌّ", tr: "Başına bir sağlık engeli geldi." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⚠️", 
                 arText: "عَارِضَة", 
                 trText: "Arıza / Beklenmedik engel." 
@@ -7319,15 +7200,13 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "شَارِعٌ طَوِيلٌ وَعَرِيضٌ", tr: "Uzun ve geniş bir cadde." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📝", 
                 arText: "عَرِيضَة", 
                 trText: "Dilekçe (Geniş çaplı arz/sunum)."
             }
         }, 
         36: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "🎯",
                 arText: "مَعْرُوض",
@@ -7507,8 +7386,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👍", 
                 arText: "قَابِل", 
@@ -7531,8 +7409,7 @@ const eski_sozlukVerileri = {
                 trText: "Kategori / Tür / Taraf." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⛺", 
                 arText: "قَبِيلَة", 
                 trText: "Kabile / Boy.",
@@ -7677,8 +7554,7 @@ const eski_sozlukVerileri = {
                 trText: "Değer / Yücelik (Yalın)." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌟", 
                 arText: "كَرَامَة", 
                 trText: "Keramet / Onur / Saygınlık.",
@@ -7699,7 +7575,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🧕",
                 arText: "كَرِيمَة",
                 trText: "Kerime / Değerli (Kadın) / Kız evlat.",
@@ -7766,8 +7641,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "ضَيْفٌ مُكَرَّمٌ", tr: "Saygıdeğer (mükerrem) misafir." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕋", 
                 arText: "مُكَرَّمَة", 
                 trText: "Saygıdeğer / Mükerreme.",
@@ -7822,8 +7696,7 @@ const eski_sozlukVerileri = {
                 trText: "İfade (Yalın)." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📝", 
                 arText: "عِبَارَة", 
                 trText: "İbare / Cümle / Söz.",
@@ -7838,8 +7711,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "مَمْنُوعُ الْعُبُورِ", tr: "Geçiş yasaktır." }
             } 
         },
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🌬️", 
                 arText: "عَابِر", 
@@ -7980,8 +7852,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "أَطَالَ اللهُ عُمْرَكَ", tr: "Allah ömrünü uzatsın." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕋", 
                 arText: "عُمْرَة", 
                 trText: "Umre / Ziyaret (Kutsal mekanı şenlendirme).",
@@ -7996,8 +7867,7 @@ const eski_sozlukVerileri = {
                 trText: "İmar etme (Yalın)." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏢", 
                 arText: "عِمَارَة", 
                 trText: "Bina / Apartman / Mimari.",
@@ -8005,8 +7875,7 @@ const eski_sozlukVerileri = {
             } 
         },
 
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🌆", 
                 arText: "مَعْمُور", 
@@ -8014,8 +7883,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "بَلَدٌ مَعْمُورٌ بِالْخَيْرَاتِ", tr: "İyiliklerle mamur (şenlenmiş/bayındır) bir belde." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌍", 
                 arText: "مَعْمُورَة", 
                 trText: "Mamure / Yeryüzü."
@@ -8121,8 +7989,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "✅", 
                 arText: "لَازِم", 
@@ -8316,8 +8183,7 @@ const eski_sozlukVerileri = {
         23: { 
             base: { arText: "هِدَاي" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "✨", 
                 arText: "هِدَايَة", 
                 trText: "Hidayet / Doğru yolu bulma.",
@@ -8330,8 +8196,7 @@ const eski_sozlukVerileri = {
     // Sadece sistemin kelimenin ilk hali olduğunu anlaması için arText bırakıldı, ekrana bir şey açmaz.
     base: { arText: "هَدِيّ" }, 
     suggestsPlus: true,
-    "ة": { 
-        kuralliCogul: "disil",
+    "ة": {
                 emoji: "🎁", 
         arText: "هَدِيَّة", 
         trText: "Hediye / Armağan.",
@@ -8340,8 +8205,7 @@ const eski_sozlukVerileri = {
 },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🕊️", 
                 arText: "مَهْدِيّ", 
@@ -8755,8 +8619,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📄", 
                 arText: "مَبْحُوث", 
@@ -8825,8 +8688,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🏚️", 
                 arText: "مَتْرُوك", 
@@ -8874,8 +8736,7 @@ const eski_sozlukVerileri = {
         },
 
        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "تَابِع", 
@@ -8991,8 +8852,7 @@ const eski_sozlukVerileri = {
         // --- 23 Numaralı Kalıp (Çoğul İsim ve Masdar) ---
         23: { 
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💼", 
                 arText: "تِجَارَة", 
                 trText: "Ticaret.",
@@ -9134,8 +8994,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "📍", 
                 arText: "ثَابِت", 
@@ -9212,8 +9071,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "يَقْطِفُونَ الثَّمَرَ", tr: "Meyveleri (ürünleri) topluyorlar." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🍏", 
                 arText: "ثَمَرَة", 
                 trText: "Semere / Tek bir meyve / Sonuç.",
@@ -9267,8 +9125,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "ثِقْلُ الْمَسْؤُولِيَّةِ", tr: "Sorumluluğun yükü (ağırlığı)." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🥊", 
                 arText: "ثِقْلَة", 
                 trText: "Sıklet / Ağırlık derecesi, ağırlık basması.",
@@ -9348,8 +9205,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "ذَاكِر", 
@@ -9359,8 +9215,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📌", 
                 arText: "مَذْكُور", 
@@ -9577,8 +9432,7 @@ const eski_sozlukVerileri = {
                 arText: "زَارِع"
         },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌾", 
                 arText: "زِرَاعَة", 
                 trText: "Ziraat / Tarım.",
@@ -9592,8 +9446,7 @@ const eski_sozlukVerileri = {
                 arText: "مَزْرَعَة"
         },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏡", 
                 arText: "مَزْرَعَة", 
                 trText: "Mezraa / Çiftlik, tarım yapılan yer.",
@@ -9766,8 +9619,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🧍", 
                 arText: "صَابِر", 
@@ -9845,8 +9697,7 @@ const eski_sozlukVerileri = {
         23: { 
             base: { emoji: "🏭", arText: "صِنَاع", trText: "Sanat / Üretim (Yalın Hâl)." },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏭", 
                 arText: "صِنَاعَة", 
                 trText: "Sanayi / Endüstri / Zanaat.",
@@ -9855,8 +9706,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👨‍🏭", 
                 arText: "صَانِع", 
@@ -9866,8 +9716,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { emoji: "📦", arText: "مَصْنُوع", trText: "Masnu / Yapılmış, üretilmiş." },
             suggestsPlus: true,
             "ات": { 
@@ -9930,8 +9779,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😇", 
                 arText: "صَالِح", 
@@ -9952,8 +9800,7 @@ const eski_sozlukVerileri = {
                 arText: "مَصْلَحَة"
         },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⚖️", 
                 arText: "مَصْلَحَة", 
                 trText: "Maslahat / Genel fayda, kamu yararı, resmi daire.",
@@ -10088,11 +9935,9 @@ const eski_sozlukVerileri = {
             cekimi: ["ضِلَّ", "ضِلَّا", "ضِلُّوا", "ضِلِّي", "ضِلَّا", "اِضْلِلْنَ"]
         },
         33: {
-            kuralliCogul: "eril",
             base: { emoji: "📉", arText: "ضَالّ", trText: "Sapan / Doğru yoldan ayrılan." }
         },
         36: {
-            kuralliCogul: "eril",
             base: { emoji: "🌀", arText: "مَضْلُول", trText: "Saptırılmış." }
         },
         50: {
@@ -10169,8 +10014,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⚠️", 
                 arText: "ضَرْبَة", 
                 trText: "Darbe / Bir kere vurma (Masdar-ı Merra).",
@@ -10179,8 +10023,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🤺", 
                 arText: "ضَارِب", 
@@ -10193,8 +10036,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🤕", 
                 arText: "مَضْرُوب", 
@@ -10278,8 +10120,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "هُوَ مُضْطَرِبٌ مِنْ هَذَا الْوَضْعِ", tr: "O bu durumdan (halden) muzdariptir." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🤒", 
                 arText: "مُضْطَرِبَة", 
                 trText: "Muzdarip, çalkantılı, düzensiz.",
@@ -10324,8 +10165,7 @@ const eski_sozlukVerileri = {
                 arText: "مَضَرّ"
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🛑", 
                 arText: "مَضَرَّة", 
                 trText: "Mazarrat / Zarar veren şey, kötülük.",
@@ -10379,8 +10219,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "التَّدْخِينُ مُضِرٌّ بِالصِّحَّةِ", tr: "Sigara içmek sağlığa zararlıdır (mudırrdır)." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🚫", 
                 arText: "مُضِرَّة", 
                 trText: "Zararlı (Dişil/Cansız Çoğul).",
@@ -10503,8 +10342,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "شَهَادَةُ الضَّمَانِ", tr: "Garanti belgesi." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🛡️", 
                 arText: "ضَمَانَة", 
                 trText: "Güvence / Teminat." 
@@ -10512,8 +10350,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📑", 
                 arText: "مَضْمُون", 
@@ -10604,8 +10441,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "⭐", 
                 arText: "طَالِع", 
@@ -10794,8 +10630,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "طَالِبُ جَامِعَةٍ", tr: "Üniversite öğrencisi (ilme talip olan)." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "👩‍🎓", 
                 arText: "طَالِبَة", 
                 trText: "Kız Öğrenci / İsteyen.",
@@ -10833,8 +10668,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🎯", 
                 arText: "مَطْلُوب", 
@@ -10975,8 +10809,7 @@ const eski_sozlukVerileri = {
                 arText: "غَلَب"
         },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏅", 
                 arText: "غَلَبَة", 
                 trText: "Galebe / Üstünlük, galibiyet.",
@@ -10985,8 +10818,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😎", 
                 arText: "غَالِب", 
@@ -11022,8 +10854,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "😔", 
                 arText: "مَغْلُوب", 
@@ -11108,7 +10939,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "✨", 
                 arText: "مَغْفِرَة", 
                 trText: "Mağfiret / Bağışlama, günahları örtme.",
@@ -11125,8 +10955,7 @@ const eski_sozlukVerileri = {
             }
         },
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🕊️", 
                 arText: "غَافِر", 
@@ -11193,8 +11022,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "⏳", 
                 arText: "مَشْغُول", 
@@ -11209,8 +11037,7 @@ const eski_sozlukVerileri = {
                  
                 emoji: "🏭"},
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🧵", 
                 arText: "مَشْغَلَة", 
                 trText: "Meşgale / Uğraşılan, vakit harcanan iş." 
@@ -11243,16 +11070,14 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: {
                 arText: "حَسِيب",
                  
                 emoji: "⏱️"
         },
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💻", 
                 arText: "حَاسِبَة", 
                 trText: "Hesap makinesi / Bilgisayar (Hâsûb da kullanılır)." 
@@ -11295,8 +11120,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😠", 
                 arText: "ظَالِم", 
@@ -11305,8 +11129,7 @@ const eski_sozlukVerileri = {
         },
         
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🥺", 
                 arText: "مَظْلُوم", 
@@ -11339,8 +11162,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { arText: "وَثِيق" }, // Yalın hali sessiz
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📜", 
                 arText: "وَثِيقَة", 
                 trText: "Vesika / Belge, sağlam kanıt.",
@@ -11368,8 +11190,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { arText: "نَتِيج" }, // Yalın hali sessiz (Ekrana boş açılır)
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🎯", 
                 arText: "نَتِيجَة", 
                 trText: "Netice / Sonuç.",
@@ -11484,7 +11305,6 @@ const eski_sozlukVerileri = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "😇",
                 arText: "نَاصِح",
@@ -11500,8 +11320,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { arText: "نَصِيح" }, // Yalın hali sessiz
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💡", 
                 arText: "نَصِيحَة", 
                 trText: "Nasihat / Öğüt.",
@@ -11520,8 +11339,7 @@ const eski_sozlukVerileri = {
         22: { 
             base: { arText: "ثَقَاف" }, // Yalın hali sessiz
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏛️", 
                 arText: "ثَقَافَة", 
                 trText: "Sakafa / Kültür, eğitim, birikim.",
@@ -11549,8 +11367,7 @@ const eski_sozlukVerileri = {
         18: { 
             base: { arText: "شَرِك" }, // Yalın hali sessiz (Ekrana boş açılır)
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏢", 
                 arText: "شَرِكَة", 
                 trText: "Şirket / Ortaklık kurulan ticari yapı.",
@@ -11655,8 +11472,7 @@ const eski_sozlukVerileri = {
                 emoji: "⚡" 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🏃", 
                 arText: "حَرَكَة", 
                 trText: "Hareket / Kımıldama, devinim, sesli harf işareti.",
@@ -11913,8 +11729,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🤍", 
                 arText: "صَافٍ", 
@@ -11926,8 +11741,7 @@ const eski_sozlukVerileri = {
                 { ar: "اَلصَّافِي", tr: "Belirli (Marife) Kullanım - Ye harfi geri gelir." }
             ],
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "✨", 
                 arText: "صَافِيَة", 
                 trText: "Safiye / Saf, arınmış kadın." 
@@ -12068,16 +11882,14 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🛡️", 
                 arText: "عَافٍ", 
                 trText: "Affeden / Bağışlayan."
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🍵", 
                 arText: "عَافِيَة", 
                 trText: "Âfiyet / Sağlık, belalardan korunma.",
@@ -12139,7 +11951,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "📜",
                 arText: "وَصِيَّة",
                 trText: "Vasiyet / Vasiyetname, kesin öğüt.",
@@ -12289,8 +12100,7 @@ const eski_sozlukVerileri = {
         18: { 
             base: { arText: "كَلِم" }, // Yalın hali sessiz
             suggestsPlus: true, 
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📝", 
                 arText: "كَلِمَة", 
                 trText: "Kelime / Sözcük.",
@@ -12643,14 +12453,12 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { emoji: "🤓", arText: "فَاهِم", trText: "Anlayan." } 
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "✅", 
                 arText: "مَفْهُوم", 
@@ -12787,8 +12595,7 @@ const eski_sozlukVerileri = {
         34: { 
             base: { arText: "سَمَّاع" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🎧", 
                 arText: "سَمَّاعَة", 
                 trText: "Kulaklık / Stetoskop / Ahize.",
@@ -12922,8 +12729,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "فَرِيدٌ مِنْ نَوْعِهِ", tr: "Kendi türünde eşsiz (benzersiz / nevi şahsına münhasır)." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌸", 
                 arText: "فَرِيدَة", 
                 trText: "Feride / Eşsiz, benzersiz (Kadın ismi).",
@@ -13102,8 +12908,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "نَاسٍ", 
@@ -13120,8 +12925,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🍂", 
                 arText: "مَنْسِيّ", 
@@ -13273,8 +13077,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "✍️", 
                 arText: "شَاعِر", 
@@ -13290,8 +13093,7 @@ const eski_sozlukVerileri = {
         35: { 
             base: { arText: "شَعِير" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕋", 
                 arText: "شَعِيرَة", 
                 trText: "Şe'îre (Şeâir'in tekili) / İslami sembol, nişan, ibadet alameti.",
@@ -13430,8 +13232,7 @@ const eski_sozlukVerileri = {
             } 
         },
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🚶", 
                 arText: "غَافِل", 
@@ -13605,8 +13406,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "نَاطِق", 
@@ -13617,8 +13417,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🎤", 
                 arText: "نَاطِقَة", 
                 trText: "Sözcü / Konuşmacı.",
@@ -13630,8 +13429,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📑", 
                 arText: "مَنْطُوق", 
@@ -13664,8 +13462,7 @@ const eski_sozlukVerileri = {
                 trText: "Mıntak / Kemer, bele bağlanan kuşak." 
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🗺️", 
                 arText: "مِنْطَقَة", 
                 trText: "Mıntıka / Bölge, kuşak, alan.",
@@ -13979,8 +13776,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌋", 
                 arText: "قِيَامَة", 
                 trText: "Kıyamet / Diriliş, ölülerin topluca ayağa kalkması.",
@@ -14012,8 +13808,7 @@ const eski_sozlukVerileri = {
 
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🏛️", 
                 arText: "قَائِم", 
@@ -14178,8 +13973,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "جَالِس", 
@@ -14303,8 +14097,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👁️", 
                 arText: "وَاقِف", 
@@ -14317,8 +14110,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🔒", 
                 arText: "مَوْقُوف", 
@@ -14479,8 +14271,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👑", 
                 arText: "رَافِع", 
@@ -14499,8 +14290,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🚩", 
                 arText: "مَرْفُوع", 
@@ -14598,8 +14388,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🧳", 
                 arText: "نَازِل", 
@@ -14610,8 +14399,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⚠️", 
                 arText: "نَازِلَة", 
                 trText: "Nâzile / İnen musibet, başa gelen büyük felaket.",
@@ -14780,8 +14568,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "⏳", 
                 arText: "جَارٍ", 
@@ -14792,8 +14579,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "⛵", 
                 arText: "جَارِيَة", 
                 trText: "Câriye / Akan şey, gemi, hizmetçi kız.",
@@ -14945,8 +14731,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🔄", 
                 arText: "دَفْعَة", 
                 trText: "Defa / Bir kere itme, kerede ödeme, sefer.",
@@ -14958,8 +14743,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🚀", 
                 arText: "دَافِع", 
@@ -14972,8 +14756,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "💰", 
                 arText: "مَدْفُوع", 
@@ -15145,8 +14928,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "📌", 
                 arText: "قَاطِع", 
@@ -15159,8 +14941,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🔖", 
                 arText: "مَقْطُوع", 
@@ -15337,8 +15118,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "📝", 
                 arText: "مَرْسُوم", 
@@ -15404,8 +15184,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🥰", 
                 arText: "مَحْبُوب", 
@@ -15585,8 +15364,7 @@ const eski_sozlukVerileri = {
             } 
         },
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🧳", 
                 arText: "مَصْحُوب", 
@@ -15688,8 +15466,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🤵", 
                 arText: "خَادِم", 
@@ -15715,8 +15492,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "👑", 
                 arText: "مَخْدُوم", 
@@ -16113,8 +15889,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil - Eylemi Yapan) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👉", 
                 arText: "عَائِد", 
@@ -16265,8 +16040,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😇", 
                 arText: "نَافِع", 
@@ -16292,8 +16066,7 @@ const eski_sozlukVerileri = {
         38: { 
             base: { arText: "مَنْفَع" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "💎", 
                 arText: "مَنْفَعَة", 
                 trText: "Menfaat / Çıkar, fayda, yarar.",
@@ -16440,8 +16213,7 @@ const eski_sozlukVerileri = {
                 ornek: { ar: "هَذَا الْكِتَابُ يَتَكَوَّنُ مِنْ ثَلَاثَةِ أَقْسَامٍ", tr: "Bu kitap üç kısımdan (bölümden) oluşmaktadır." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🤲", 
                 arText: "قِسْمَة", 
                 trText: "Kısmet / Pay, nasip, bölme işlemi.",
@@ -16459,8 +16231,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👤", 
                 arText: "قَاسِم", 
@@ -16479,8 +16250,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🍰", 
                 arText: "مَقْسُوم", 
@@ -16650,8 +16420,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "⏮️", 
                 arText: "سَابِق", 
@@ -16668,8 +16437,7 @@ const eski_sozlukVerileri = {
                 ]
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📜", 
                 arText: "سَابِقَة", 
                 trText: "Sâbıka / Geçmişte olan şey, emsal, suç geçmişi.",
@@ -16867,8 +16635,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "➕", 
                 arText: "لَاحِق", 
@@ -16885,8 +16652,7 @@ const eski_sozlukVerileri = {
                 ]
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "📎", 
                 arText: "لَاحِقَة", 
                 trText: "Lâhika / Ek, sonek, mektup/belge eki.",
@@ -17085,8 +16851,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🙏", 
                 arText: "عَابِد", 
@@ -17105,8 +16870,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "✨", 
                 arText: "مَعْبُود", 
@@ -17286,8 +17050,7 @@ const eski_sozlukVerileri = {
                 }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕋", 
                 arText: "مُقَدَّسَة", 
                 trText: "Mukaddese / Kutsal (Dişil formu).",
@@ -17383,8 +17146,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "⛹️", 
                 arText: "لَاعِب", 
@@ -17403,8 +17165,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🃏", 
                 arText: "مَلْعُوب", 
@@ -17553,8 +17314,7 @@ const eski_sozlukVerileri = {
         22: { 
             base: { arText: "حَيَا" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌍", 
                 arText: "حَيَاة", 
                 trText: "Hayat / Yaşam.",
@@ -17733,8 +17493,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَيْعِل - Sıfat-ı Müşebbehe / İsm-i Fâil Yerine Kullanılır) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "💀", 
                 arText: "مَيِّت", 
@@ -17751,8 +17510,7 @@ const eski_sozlukVerileri = {
                 ]
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🥀", 
                 arText: "مَيْتَة", 
                 trText: "Meyte / Leş, kendiliğinden ölmüş hayvan.",
@@ -17933,8 +17691,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "👑", 
                 arText: "رَازِق", 
@@ -17960,8 +17717,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "👼", 
                 arText: "مَرْزُوق", 
@@ -18004,7 +17760,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🪖",
                 arText: "مُرْتَزِقَة",
                 trText: "Mürtezika / Paralı askerler.",
@@ -18109,8 +17864,7 @@ const eski_sozlukVerileri = {
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil / Kalıp) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "🧊", 
                 arText: "قَالِب", 
@@ -18120,16 +17874,14 @@ const eski_sozlukVerileri = {
         },
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
-        36: { 
-            kuralliCogul: "eril",
+        36: {
             base: { 
                 emoji: "🙃", 
                 arText: "مَقْلُوب", 
                 trText: "Maklup / Ters çevrilmiş."
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🍲", 
                 arText: "مَقْلُوبَة", 
                 trText: "Maklube / Ters çevrilmiş (Dişil). Tencerenin tepsi üzerine ters çevrilmesiyle sunulan meşhur bir Arap yemeği.",
@@ -18423,7 +18175,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🌸",
                 arText: "نَفِيسَة",
                 trText: "Nefise / Değerli kadın (Kız ismi)."
@@ -18561,7 +18312,6 @@ const eski_sozlukVerileri = {
             base: { arText: "رَوَح" }, // Yalın ve asli hali (İ'lâl'den önceki kök formu)
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "😌",
                 arText: "رَاحَة",
                 trText: "Râhat / Dinlenme, huzur, avuç içi.",
@@ -18623,7 +18373,6 @@ const eski_sozlukVerileri = {
             base: { arText: "مِرْوَح" },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🌀",
                 arText: "مِرْوَحَة",
                 trText: "Mirvaha / Vantilatör, pervane (Rüzgâr ve serinlik üreten alet)."
@@ -18649,7 +18398,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🤲",
                 arText: "تَرْوِيحَة",
                 trText: "Tervîha / Bir kerelik dinlenme molası.",
@@ -18802,7 +18550,6 @@ const eski_sozlukVerileri = {
         
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
         36: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "😔",
                 arText: "مَحْزُون",
@@ -18925,7 +18672,6 @@ const eski_sozlukVerileri = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "👤",
                 arText: "رَاجٍ",
@@ -18942,7 +18688,6 @@ const eski_sozlukVerileri = {
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
         36: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "🌟",
                 arText: "مَرْجُوّ",
@@ -19095,7 +18840,6 @@ const eski_sozlukVerileri = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "☀️",
                 arText: "ظَاهِر",
@@ -19279,7 +19023,6 @@ const eski_sozlukVerileri = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "👤",
                 arText: "ظَانّ",
@@ -19293,7 +19036,6 @@ const eski_sozlukVerileri = {
 
         // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl) ---
         36: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "⚖️",
                 arText: "مَظْنُون",
@@ -19488,7 +19230,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🗼",
                 arText: "مَنَارَة",
                 trText: "Minare / Işık saçan yer, deniz feneri.",
@@ -19552,7 +19293,6 @@ const eski_sozlukVerileri = {
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "✨",
                 arText: "مُنَوَّرَة",
                 trText: "Münevvere / Aydınlatılmış.",
@@ -19910,7 +19650,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "🚶",
                 arText: "خَاطِئ",
@@ -19922,7 +19661,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🔥",
                 arText: "خَاطِئَة",
                 trText: "Hâti'e / Hata eden, yanlışlık.",
@@ -20075,7 +19813,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             },
             suggestsPlus: true,
             "ة": {
-                kuralliCogul: "disil",
                 emoji: "🌩️",
                 arText: "مُصِيبَة",
                 trText: "Musîbet / İsabet eden şey, felaket, bela.",
@@ -20172,7 +19909,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "👑",
                 arText: "خَاصّ",
@@ -20306,7 +20042,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "👥",
                 arText: "عَامّ",
@@ -20392,7 +20127,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "🙋",
                 arText: "حَاضِر",
@@ -20513,7 +20247,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
-            kuralliCogul: "eril",
             base: {
                 emoji: "👤",
                 arText: "غَائِب",
@@ -20637,8 +20370,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         22: { 
             base: { arText: "سَمَاح" },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕊️", 
                 arText: "سَمَاحَة", 
                 trText: "Semâhat / Cömertlik, açık yüreklilik, bağışlayıcılık.",
@@ -20650,8 +20382,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         },
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        33: { 
-            kuralliCogul: "eril",
+        33: {
             base: { 
                 emoji: "😇", 
                 arText: "سَامِح", 
@@ -20672,8 +20403,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                 ornek: { ar: "رَجُلٌ سَمِيحٌ", tr: "Cömert (hoşgörülü) adam." }
             },
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🌸", 
                 arText: "سَمِيحَة", 
                 trText: "Semiha / Cömert, hoşgörülü kadın (Kız ismi)." 
@@ -20819,8 +20549,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         35: { 
             base: { arText: "عَقِيد" }, // Yalın hali
             suggestsPlus: true,
-            "ة": { 
-                kuralliCogul: "disil",
+            "ة": {
                 emoji: "🕋", 
                 arText: "عَقِيدَة", 
                 trText: "Akide / İnanç, iman esası.",
