@@ -6488,14 +6488,19 @@ function toggleThematicAccordion(element, key) {
         const targetIcon = element.querySelector('.thematic-accordion-icon');
         if(targetIcon) targetIcon.className = 'fas fa-chevron-up thematic-accordion-icon';
         
-        // Show viewer
+        // Optional: Show external viewer if exists
         const viewer = document.getElementById('thematic-viewer-container');
-        viewer.style.display = 'block';
-        
-        // Scroll to viewer softly so user sees the opened content
-        setTimeout(() => {
-            viewer.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-        }, 50);
+        if (viewer) {
+            viewer.style.display = 'block';
+            setTimeout(() => {
+                viewer.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            }, 50);
+        } else {
+            // If no external viewer, scroll to the accordion item itself
+            setTimeout(() => {
+                element.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }, 50);
+        }
     }
 }
 let thematicCategoriesData = (typeof kategoriTanimlari !== 'undefined') ? JSON.parse(JSON.stringify(kategoriTanimlari)) : {};

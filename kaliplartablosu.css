@@ -3143,9 +3143,10 @@ input:checked + .slider:before {
 }
 
 /* MEMORY GRID ROW FIX: Izgara satırlarını matematiksel olarak bölerek taşmayı %100 engelliyoruz */
+.thematic-words-grid.memory-mode.pairs-6 { grid-template-rows: repeat(3, minmax(0, 1fr)) !important; }
 .thematic-words-grid.memory-mode.pairs-8 { grid-template-rows: repeat(4, minmax(0, 1fr)) !important; }
-.thematic-words-grid.memory-mode.pairs-10 { grid-template-rows: repeat(5, minmax(0, 1fr)) !important; }
-.thematic-words-grid.memory-mode.pairs-12 { grid-template-rows: repeat(6, minmax(0, 1fr)) !important; }
+.thematic-words-grid.memory-mode.pairs-10 { grid-template-rows: repeat(4, minmax(0, 1fr)) !important; }
+.thematic-words-grid.memory-mode.pairs-12 { grid-template-rows: repeat(4, minmax(0, 1fr)) !important; }
 .thematic-words-grid.memory-mode.pairs-18 { grid-template-rows: repeat(6, minmax(0, 1fr)) !important; }
 .thematic-words-grid.memory-mode.pairs-20 { grid-template-rows: repeat(8, minmax(0, 1fr)) !important; }
 .thematic-words-grid.memory-mode.pairs-24 { grid-template-rows: repeat(8, minmax(0, 1fr)) !important; }
