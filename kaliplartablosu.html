@@ -12,7 +12,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
     
-    <link rel="stylesheet" href="kaliplar.css?v=7">
+    <link rel="stylesheet" href="kaliplartablosu.css?v=1783308178">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -35,10 +35,16 @@
     <div class="new-verb-layout">
         
         <div class="root-header" dir="ltr" style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px;">
-            <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
+            </div>
         </div>
 
-        <div class="roots-main-content">
+        <div id="thematic-words-content" class="thematic-words-content hidden" style=" width: 100%; flex: 1; overflow-y: auto; padding-right: 15px; padding-bottom: 50px;">
+            <div id="thematic-accordion-container" dir="rtl"></div>
+        </div>
+
+        <div id="roots-main-content" class="roots-main-content hidden">
             <div class="important-roots-wrapper">
                 <div id="important-roots-list" class="flat-root-list" dir="rtl">
                     </div>
@@ -103,13 +109,13 @@
 
 <div class="top-bar">
     <div id="root-display-box">
-        <div style="flex: 1; display: flex; gap: 15px; justify-content: center; align-items: center; border-left: 1px solid rgba(0,0,0,0.1);">
+        <div style="width: 100%; display: flex; gap: 15px; justify-content: space-evenly; align-items: center;">
+            <i class="fas fa-search root-icon" onclick="openKeyboard()" title="Arama"></i>
             <i class="fas fa-sync-alt root-icon" onclick="resetTableOnly()"></i>
             <i class="fas fa-plus root-icon" onclick="toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
-            <i class="fas fa-search root-icon" onclick="openKeyboard()"></i>
             <i class="fas fa-book root-icon" onclick="openVerbModal()" title="Hazır Fiiller"></i>
+            <span id="root-text-display" onclick="openRootsModal()"><i class="fas fa-sitemap root-icon sitemap-wave-hint" title="Kökler Listesi"></i></span>
         </div>
-        <span id="root-text-display">Kök Yaz</span>
     </div>  
 
     <div id="tabSwitch" class="segmented-switch mucerred-active">
@@ -419,9 +425,9 @@
 
     </div>
 </div>
-<script src="verikaliplartablosu.js"></script>
-<script src="sozlukverileri.js"></script>
-<script src="kaliplar.js"></script>
+<script src="veri_kokler.js?v=1783307489"></script>
+<script src="veri_sozluk.js?v=1783306683"></script>
+<script src="kaliplartablosu.js?v=1783308380"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
         <div id="top-bar-panel">
