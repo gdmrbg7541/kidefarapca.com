@@ -9,7 +9,7 @@
         { verbStart: 77, verbEnd: 79, nounStart: 80, nounEnd: 82 }, // Bab 11 Ifti'al
         { verbStart: 83, verbEnd: 85, nounStart: 86, nounEnd: 87 }, // Bab 12 If'ilal
         { verbStart: 88, verbEnd: 90, nounStart: 91, nounEnd: 93 }, // Bab 13 Tefa'ul
-        { verbStart: 94, verbEnd: 96, nounStart: 97, nounEnd: 99 }, // Bab 14 Tefâul
+        { verbStart: 94, verbEnd: 96, nounStart: 97, nounEnd: 99 }, // Bab 14 Tefaul
         { verbStart: 100, verbEnd: 102, nounStart: 103, nounEnd: 105 } // Bab 15 Istif'al
     ];
     for (let root in sozlukVerileri) {
@@ -32,7 +32,148 @@
 })();
 
 // --- KELİME DETAY MODALI ---
+
+function getMuttasilZamirleri(baseWord) {
+    let suffixHu = "هُ"; let suffixHuma = "هُمَا"; let suffixHum = "هُمْ";
+    let suffixHa = "هَا"; let suffixHumaF = "هُمَا"; let suffixHunne = "هُنَّ";
+    let suffixKe = "كَ"; let suffixKuma = "كُمَا"; let suffixKum = "كُمْ";
+    let suffixKi = "كِ"; let suffixKumaF = "كُمَا"; let suffixKunne = "كُنَّ";
+    let suffixNi = "ي"; let suffixNa = "نَا";
+
+    let base = baseWord.replace(/[‌‍﻿]/g, '').trim();
+    
+    // Exception Rules
+    if (base === "لِ") {
+        base = "لَ";
+        suffixNi = "ي";
+    } else if (base === "بِ") {
+        suffixHu = "هِ"; suffixHuma = "هِمَا"; suffixHum = "هِمْ"; suffixHunne = "هِنَّ";
+    } else if (base.endsWith("ى") || base.endsWith("َى")) {
+        base = base.replace(/َى$/, "َيْ").replace(/ى$/, "يْ");
+        suffixHu = "هِ"; suffixHuma = "هِمَا"; suffixHum = "هِمْ"; suffixHunne = "هِنَّ";
+    } else if (base.endsWith("ي") || base.endsWith("ِي")) {
+        suffixHu = "هِ"; suffixHuma = "هِمَا"; suffixHum = "هِمْ"; suffixHunne = "هِنَّ";
+    } else if (base === "مِنْ" || base === "عَنْ" || base === "إِنَّ" || base === "أَنَّ" || base === "لِأَنَّ" || base === "لَكِنَّ") {
+        if (base === "مِنْ" || base === "عَنْ") suffixNi = "ِّي";
+        else suffixNi = "ِي";
+    }
+    
+    let p1sg = base + suffixNi;
+    if (baseWord === "لِ") p1sg = "لِي";
+    else if (base === "لِأَنَّ") p1sg = "لِأَنَّنِي"; 
+    else if (base === "لَكِنَّ") p1sg = "لَكِنَّنِي"; 
+    else if (baseWord === "مِنْ") p1sg = "مِنِّي";
+    else if (baseWord === "عَنْ") p1sg = "عَنِّي";
+    
+    return [
+        {m: base + suffixHu, f: base + suffixHa}, // 3SG
+        {m: base + suffixHuma, f: base + suffixHumaF}, // 3DU
+        {m: base + suffixHum, f: base + suffixHunne}, // 3PL
+        {m: base + suffixKe, f: base + suffixKi}, // 2SG
+        {m: base + suffixKuma, f: base + suffixKumaF}, // 2DU
+        {m: base + suffixKum, f: base + suffixKunne}, // 2PL
+        {m: p1sg, f: p1sg}, // 1SG
+        {m: base + suffixNa, f: base + suffixNa} // 1PL
+    ];
+}
+
+function renderZamirCekimTable(baseWord) {
+    let zamirler = getMuttasilZamirleri(baseWord);
+    let html = `
+    <div style="margin-top: 30px; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); direction: rtl;">
+        <div style="color: #f1c40f; font-size: 1.6rem; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-table"></i> Zamir Çekim Tablosu</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; color: #bdc3c7; font-weight: bold;">Tekil (Müfred)</div>
+            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; color: #bdc3c7; font-weight: bold;">İkil (Müsenna)</div>
+            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; color: #bdc3c7; font-weight: bold;">Çoğul (Cemi')</div>
+            
+            <!-- 3. Şahıs Eril -->
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #3498db; opacity: 0.7;">O (E)</span>
+                ${zamirler[0].m}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #3498db; opacity: 0.7;">O İkisi (E)</span>
+                ${zamirler[1].m}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #3498db; opacity: 0.7;">Onlar (E)</span>
+                ${zamirler[2].m}
+            </div>
+            
+            <!-- 3. Şahıs Dişil -->
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #e74c3c; opacity: 0.7;">O (D)</span>
+                ${zamirler[0].f}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #e74c3c; opacity: 0.7;">O İkisi (D)</span>
+                ${zamirler[1].f}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #e74c3c; opacity: 0.7;">Onlar (D)</span>
+                ${zamirler[2].f}
+            </div>
+            
+            <!-- 2. Şahıs Eril -->
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #2ecc71; opacity: 0.7;">Sen (E)</span>
+                ${zamirler[3].m}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #2ecc71; opacity: 0.7;">Siz İkiniz (E)</span>
+                ${zamirler[4].m}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(46, 204, 113, 0.15); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #2ecc71; opacity: 0.7;">Siz (E)</span>
+                ${zamirler[5].m}
+            </div>
+            
+            <!-- 2. Şahıs Dişil -->
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(155, 89, 182, 0.15); border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #9b59b6; opacity: 0.7;">Sen (D)</span>
+                ${zamirler[3].f}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(155, 89, 182, 0.15); border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #9b59b6; opacity: 0.7;">Siz İkiniz (D)</span>
+                ${zamirler[4].f}
+            </div>
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(155, 89, 182, 0.15); border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #9b59b6; opacity: 0.7;">Siz (D)</span>
+                ${zamirler[5].f}
+            </div>
+            
+            <!-- 1. Şahıs (Ben / Biz) -->
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(241, 196, 15, 0.15); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #f1c40f; opacity: 0.7;">Ben</span>
+                ${zamirler[6].m}
+            </div>
+            <div style="grid-column: span 2; font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(241, 196, 15, 0.15); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #f1c40f; opacity: 0.7;">Biz</span>
+                ${zamirler[7].m}
+            </div>
+        </div>
+    </div>
+    `;
+    return html;
+}
+
+
 window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText) {
+    try {
+        _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText);
+    } catch(e) {
+        let modal = document.getElementById('wordDetailModal') || document.getElementById('word-details-modal');
+        if (modal) {
+            modal.innerHTML = '<div style="background:white; padding:20px; color:red; font-size:18px;">ERROR: ' + e.message + '<br>' + e.stack + '</div>';
+            modal.style.display = 'block';
+            document.getElementById('word-details-overlay').style.display = 'block';
+        } else {
+            alert('Error: ' + e.message);
+        }
+    }
+}
+function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     // if (typeof closeKeyboard === 'function') closeKeyboard();
 
     const kalipKey = parseInt(kalipKeyStr, 10);
@@ -95,20 +236,44 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
     const cleanTrText = exactTrText ? exactTrText.replace(/\./g, "").trim() : "";
     // İsimler/Sözlük modunda başlık gizlenecek (zaten kartta var)
     let isDictOnlyTitle = false;
-    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootKey] && sozlukVerileri[rootKey].isDictOnly) {
+    let rData = sozlukVerileri ? sozlukVerileri[rootKey] : null;
+    if (rData && rData.isDictOnly) {
         isDictOnlyTitle = true;
     }
     
-    const displayTitle = (exactArText && !isDictOnlyTitle) ? `
+    // Early computation of actualTip for header category button
+    let earlyActualTip = (rData && rData.tip) ? rData.tip : null;
+    if (earlyActualTip === "sayi" && rootKey.includes("Sıra:")) earlyActualTip = "sirasayi";
+    let kalipKeyNum = parseInt(kalipKeyStr);
+    if (kalipKeyNum === 49) earlyActualTip = "tasgir";
+    if (kalipKeyNum === 50 || kalipKeyNum === 51) earlyActualTip = "tafdil";
+    // Check if the specific item has a tip
+    let itemClickedEarly = rData ? (rData[kalipKeyStr] || rData[kalipKeyNum]) : null;
+    if (itemClickedEarly && itemClickedEarly.tip) earlyActualTip = itemClickedEarly.tip;
+    
+    let displayTitle = "";
+    if (earlyActualTip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[earlyActualTip]) {
+        let trT = thematicCategoriesData[earlyActualTip].title.toLocaleUpperCase('tr-TR');
+        displayTitle = `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${earlyActualTip}')" style="display:inline-flex; align-items:center; background: rgba(0,0,0,0.3); padding: 8px 30px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#f1c40f; font-size:1.6rem; font-weight: bold; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${thematicCategoriesData[earlyActualTip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.1rem; margin-left: 8px;"></i></span></div>`;
+    } else if (exactArText) {
+        displayTitle = `
         <div style="display:inline-flex; align-items:center; background: rgba(0,0,0,0.3); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);">
             <span style="font-size:3.5rem; color:#ffffff; font-family: 'Arakom', sans-serif; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${exactArText}</span>
-        </div>` : "";
+        </div>`;
+    }
     
     htmlContent += `<div style="display:flex; justify-content:center; align-items:center; border-bottom:${displayTitle ? '1px solid rgba(255,255,255,0.2)' : 'none'}; padding-bottom:${displayTitle ? '15px' : '0'}; margin-bottom:20px; position:relative; min-height:50px;">`;
     
     const compactRoot = rootKey.replace(/\s+/g, '');
     // LEFT CORNER: Vezin Tablosu Button
+    let isRootValidForTable = false;
     if ((compactRoot.length === 3 || compactRoot.length === 4) && typeof sozlukVerileri !== 'undefined' && sozlukVerileri[compactRoot]) {
+        if (!sozlukVerileri[compactRoot].isDictOnly) {
+            isRootValidForTable = true;
+        }
+    }
+    
+    if (isRootValidForTable) {
         htmlContent += `  <div style="position:absolute; left:0; cursor:pointer; background:#5cb85c; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index:10;" 
                             onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Vezin Tablosu">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
@@ -162,6 +327,7 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
         
         let isVerb = (maziId !== -1 && (kalipKey <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(kalipKey)));
         
+        let itemTekil, itemCogul;
         if (isVerb) {
             let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:#27ae60; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">FİİL</div>`;
             htmlContent += `<div style="position:relative; width:100%;">`;
@@ -196,7 +362,7 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             let itemClicked = rootData[kalipKeyStr] || rootData[kalipKey];
             if (!itemClicked) itemClicked = { base: { emoji: "", arText: exactArText, trText: exactTrText } };
             
-            let itemTekil, itemCogul;
+
 
             if (kalipKeyStr === "tekil" || kalipKeyStr === "cogul") {
                 itemTekil = rootData["tekil"];
@@ -286,7 +452,17 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 }
             }
             
-            let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:#2980b9; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">İSİM</div>`;
+            let tipToUse = (itemTekil && itemTekil.tip) || rootData.tip;
+            let muhurText = "İSİM";
+            let muhurColor = "#2980b9"; // Blue
+            
+            if (tipToUse === "soru") { muhurText = "SORU EDATI"; muhurColor = "#8e44ad"; } // Purple
+            else if (tipToUse === "harficer") { muhurText = "HARF-İ CER"; muhurColor = "#d35400"; } // Orange
+            else if (tipToUse === "zarf") { muhurText = "ZARF"; muhurColor = "#16a085"; } // Teal
+            else if (tipToUse === "baglac") { muhurText = "BAĞLAÇ"; muhurColor = "#c0392b"; } // Red
+            else if (tipToUse === "zamir" || tipToUse === "isaret" || tipToUse === "mevsul") { muhurText = "ZAMİR"; muhurColor = "#f39c12"; } // Yellow-Orange
+            
+            let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:${muhurColor}; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">${muhurText}</div>`;
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
             htmlContent += `<div style="display:flex; justify-content:center; align-items:center; width:100%; text-align:center;">`;
@@ -322,7 +498,8 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             
             let titleText = "";
             if (actualTip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[actualTip]) {
-                titleText = thematicCategoriesData[actualTip].icon + " " + thematicCategoriesData[actualTip].title.toLocaleUpperCase('tr-TR');
+                let trT = thematicCategoriesData[actualTip].title.toLocaleUpperCase('tr-TR');
+                titleText = thematicCategoriesData[actualTip].icon + " <span style='font-size:2.0rem;'>" + trT + "</span>";
             }
             
             let secondColAr = "";
@@ -343,14 +520,7 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
                 secondColLabel = "Çoğul (Cem')";
             }
             
-            let titleHtml = "";
-            if (titleText) {
-                if (actualTip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[actualTip]) {
-                    titleHtml = `<div onclick="openCategoryFromModal('${actualTip}')" style="display:inline-block; color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9; text-transform:uppercase; letter-spacing:1px; cursor:pointer; border-bottom: 2px dashed rgba(241,196,15,0.5); padding-bottom: 3px; transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.borderBottom='2px solid #f1c40f';" onmouseout="this.style.opacity='0.9'; this.style.borderBottom='2px dashed rgba(241,196,15,0.5)';" dir="ltr" title="Bu listeyi aç">${titleText} <i class="fas fa-external-link-alt" style="font-size: 1.1rem; margin-left: 8px;"></i></div>`;
-                } else {
-                    titleHtml = `<div style="color:#f1c40f; font-size:1.6rem; font-weight: normal; margin-bottom:25px; opacity:0.9; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${titleText}</div>`;
-                }
-            }
+            let titleHtml = '';
 
             htmlContent += `
             <div style="width:100%; text-align:center; background:rgba(255,255,255,0.1); padding:40px 20px; border-radius:15px; border:1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
@@ -382,6 +552,20 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
             htmlContent += `</div></div>`;
         }
     
+    // --- Zamir Çekimi Eklemesi ---
+    if (rootData && rootData.hasZamirCekimi) {
+        let zBase = rootData.zamirBase || (itemTekil && itemTekil.base.arText) || exactArText;
+        if (zBase) {
+            // Eğer "عِنْدَ / لَدَى" gibi çoklu yapı varsa parçala ve ilkini al (veya her ikisine de yap)
+            let bases = zBase.split("/").map(b => b.trim());
+            bases.forEach(b => {
+                if (b) {
+                    htmlContent += renderZamirCekimTable(b);
+                }
+            });
+        }
+    }
+    
     modal.innerHTML = htmlContent;
     modal.style.display = 'block';
     overlay.style.display = 'block';
@@ -400,8 +584,8 @@ window.stripHarakat = function(text) {
 // ==================================================================
 
 const PRONOUN_MAP = [
-    "Müfred Müzekker Gâib", "Tesniye Müzekker Gâib", "Cemi Müzekker Gâib",
-    "Müfred Müennes Gâibe", "Tesniye Müennes Gâibe", "Cemi Müennes Gâibe",
+    "Müfred Müzekker Gaib", "Tesniye Müzekker Gaib", "Cemi Müzekker Gaib",
+    "Müfred Müennes Gaibe", "Tesniye Müennes Gaibe", "Cemi Müennes Gaibe",
     "Müfred Müzekker Muhatab", "Tesniye Müzekker Muhatab", "Cemi Müzekker Muhatab",
     "Müfred Müennes Muhataba", "Tesniye Müennes Muhataba", "Cemi Müennes Muhataba",
     "Nefs-i Müt. Vahdeh", "Nefs-i Müt. Maal Gayr", "Nefs-i Müt. Maal Gayr"
@@ -792,6 +976,9 @@ window.onload = function() {
         }, { passive: true });
 
         sliderContainer.addEventListener('wheel', (e) => {
+            const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
+            if (zoomCheckbox && zoomCheckbox.checked) return; // Büyüme açıkken sekme değiştirmeyi iptal et
+            
             const now = Date.now();
             if (now - lastWheelTime < wheelCooldown) return; 
 
@@ -832,6 +1019,9 @@ function closeIfOutside(e) {
 }
 
 function handleSwipeGesture() {
+    const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
+    if (zoomCheckbox && zoomCheckbox.checked) return; // Büyüme açıkken sekme değiştirmeyi iptal et
+    
     const distance = touchStartX - touchEndX;
     if (Math.abs(distance) > minSwipeDistance) {
         if (distance > 0 && currentTabActive === 1) { setTab(0); } 
@@ -1612,8 +1802,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     
     if (hasCarousel) {
         // Okların yerini değiştirdik: İçeriye aldık ve ortaladık
-        html += `<button class="carousel-nav-btn right-btn" onclick="scrollConjugationCarousel(1, this)" style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: ltr;">❯</button>`;
-        html += `<button class="carousel-nav-btn left-btn" onclick="scrollConjugationCarousel(-1, this)" style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: ltr;">❮</button>`;
+        html += `<button class="carousel-nav-btn right-btn" onclick="scrollConjugationCarousel(1, this)" style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: rtl;">❯</button>`;
+        html += `<button class="carousel-nav-btn left-btn" onclick="scrollConjugationCarousel(-1, this)" style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: rtl;">❮</button>`;
     }
 
     html += `<div class="popup-scroll-wrapper conjugation-carousel hide-scrollbars" style="flex: 0 0 calc(100% - 80px); max-height: 60vh; overflow-y: hidden; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; display: flex; flex-direction: row; scrollbar-width: none; padding: 0; box-sizing: border-box; width: calc(100% - 80px);">`;
@@ -1630,8 +1820,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                 let item = kelimeListesi[i];
                 let wAr = item.ar || ''; let wTr = item.tr || ''; let ornek = item.ornek; 
                 if (isColorActive && wAr && !wAr.includes('<')) wAr = ColorEngine.colorize(wAr, kok.split(""));
-                let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: ltr;">${ornek.tr}</div></div>` : '';
-                let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: ltr;">${wTr}</span>` : '';
+                let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: rtl;">${ornek.tr}</div></div>` : '';
+                let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: rtl;">${wTr}</span>` : '';
                 html += `<tr><td style="background-color: ${bgColor} !important; padding: 25px 15px;"><span class="siga-text">${wAr}</span>${trHtml}${ornekHtml}</td></tr>`;
             }
             html += `</tbody></table></div>`;
@@ -1710,8 +1900,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             let wTr = typeof item === 'object' ? (item.tr || '') : '';
             let ornek = item.ornek; 
             if (isColorActive && wAr && !wAr.includes('<')) wAr = ColorEngine.colorize(wAr, kok.split(""));
-            let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: ltr;">${ornek.tr}</div></div>` : '';
-            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: ltr;">${wTr}</span>` : '';
+            let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: rtl;">${ornek.tr}</div></div>` : '';
+            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: rtl;">${wTr}</span>` : '';
             html += `<tr><td style="background-color: ${bgColor} !important; padding: 25px 15px;"><span class="siga-text">${wAr}</span>${trHtml}${ornekHtml}</td></tr>`;
         }
         html += `</tbody></table></div>`;
@@ -3340,7 +3530,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
         let combinedHtml = `
             <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 25px;">
                 <div style="font-family: 'Arakom', sans-serif; font-size: 90px; color: #000; direction: rtl; line-height: 1.2;">${data.arText || ""}</div>
-                <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #FF3B30; direction: ltr; line-height: 1.2;">${data.trText || ""}</div>
+                <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #FF3B30; direction: rtl; line-height: 1.2;">${data.trText || ""}</div>
             </div>
         `;
         
@@ -3352,7 +3542,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
                 combinedHtml += `
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; background: #f8f9fa; padding: 25px 20px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                         <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #000; direction: rtl; line-height: 1.4; text-align: center;">${orn.ar}</div>
-                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #475569; direction: ltr; line-height: 1.4; text-align: center;">${orn.tr}</div>
+                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #475569; direction: rtl; line-height: 1.4; text-align: center;">${orn.tr}</div>
                     </div>
                 `;
             });
@@ -3976,14 +4166,14 @@ const VerbGenerator = {
         }
 
         // ==============================================================================
-        // POPUP EMİR TEKİL MUHATAP KORUMA FİLTRESİ (Ecvef İstif'âl Zırhı)
+        // POPUP EMİR TEKİL MUHATAP KORUMA FİLTRESİ (Ecvef İstif'al Zırhı)
         // ==============================================================================
         // DİKKAT: kokArr yerine doğrudan "kok" stringini kullanıyoruz!
         if (tip === 'emir' && babNo === 15 && (kok[1] === 'و' || kok[1] === 'ي')) {
             // Emir tablosunun 0. indeksi Müfred Müzekker Muhatap (Sen - Erkek) kipidir.
             if (kelimeListesi[0]) {
                 // Kelime içindeki hatalı "اِسْتَرْوِحْ" veya "اِسْتَرْيِحْ" kalıplarını ayıklar
-                // ve iki sakinin çarpışması (İltikâ-i Sâkineyn) kuralına göre doğrudan "اِسْتَرِحْ" yapar.
+                // ve iki sakinin çarpışması (İltika-i Sakineyn) kuralına göre doğrudan "اِسْتَرِحْ" yapar.
                 kelimeListesi[0] = kelimeListesi[0].replace(/اِسْتَ([^\u064B-\u0652]*)ْ[وي][َُِ]([^\u064B-\u0652]*)ْ/g, "اِسْتَ$1ِ$2ْ");
                 
                 // Eğer "روح" köküne özel sert bir takılma varsa tam eşleşmeyle garantiye alalım:
@@ -3998,7 +4188,7 @@ const VerbGenerator = {
 };
 
 // ==============================================================================
-// ULTIMATE SARF ENGINE (İdğam, İbdal, İ'lâl, İlletli Harfler ve Hemze Motoru)
+// ULTIMATE SARF ENGINE (İdğam, İbdal, İ'lal, İlletli Harfler ve Hemze Motoru)
 // ==============================================================================
 const SarfEngine = {
     applyRules: function(word, r) {
@@ -4037,7 +4227,7 @@ const SarfEngine = {
             res = res.replace(/(^|\s)أِ/g, "$1إِ");
         }
 
-        // 3. MİSÂL FİİLLER (İLK HARF İLLETİ)
+        // 3. MİSAL FİİLLER (İLK HARF İLLETİ)
         if (r1 === 'و') {
             let muzariRegex = new RegExp(`([يتاأن])َوْ(${r2}[َِ]${r3}.*)`, 'g');
             res = res.replace(muzariRegex, "$1َ$2");
@@ -4051,7 +4241,7 @@ const SarfEngine = {
             let maziHareke = (ayn === 'و') ? 'ُ' : 'ِ';
             if (typeof numBab !== 'undefined' && numBab === 4) maziHareke = 'ِ'; // Bab 4 istisnası (خاف -> خِفْنَ)
 
-            // İSMİ FÂİL (33. Kalıp vb.) (نَاوِم / بَايِع -> نَائِم / بَائِع)
+            // İSMİ FAİL (33. Kalıp vb.) (نَاوِم / بَايِع -> نَائِم / بَائِع)
             let ismiFailRegex = new RegExp(`^${r1}َا[وي]ِ${r3}(.*)`, 'g');
             res = res.replace(ismiFailRegex, `${r1}َائِ${r3}$1`);
 
@@ -4061,8 +4251,8 @@ const SarfEngine = {
             res = res.replace(/اِسْتَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "اِسْتَ$1َا$2");
             res = res.replace(/(يَ|تَ|نَ|أَ|مُ)سْتَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1سْتَ$2ِي$3");
 
-            // 4.1. EVRENSEL MEZÎD-ECVEF ZIRHI (İstifal, İf'al, İnfi'al vb.)
-            // Bu blok, ortası 'و' veya 'ي' olan fiillerin Mezîd bablarda 
+            // 4.1. EVRENSEL MEZİD-ECVEF ZIRHI (İstifal, İf'al, İnfi'al vb.)
+            // Bu blok, ortası 'و' veya 'ي' olan fiillerin Mezid bablarda 
             // hatalı üretilen "استرويح" gibi formlarını "استرح" haline getirir.
             if ((r2 === 'و' || r2 === 'ي')) {
                 // İSTİF'AL BABI ZIRHI (اِسْتَرْوِحْ -> اِسْتَرِحْ)
@@ -4076,7 +4266,7 @@ const SarfEngine = {
                 res = res.replace(/([اأإآ]سْتَ[\u0621-\u064A])ْ[وي][َُِ]([\u0621-\u064A])ْ$/g, "$1ِ$2ْ");
                 res = res.replace(/([يتاأإن]سْتَ[\u0621-\u064A])ْ[وي][َُِ]([\u0621-\u064A])ْ$/g, "$1ِ$2ْ");
 
-                // İNFİ'ÂL BABI ZIRHI (اِنْفِعَال)
+                // İNFİ'AL BABI ZIRHI (اِنْفِعَال)
                 // Örn: اِنْقِوَا (Hatalı) -> اِنْقِوَاء (Doğru) -> اِنْقِيَاء
                 res = res.replace(/اِنْقِ[وي]َا/g, "اِنْقِيَاء");
                 
@@ -4154,7 +4344,7 @@ const SarfEngine = {
             res = res.replace(/اِسْتِ([\u0621-\u064A])ْ[وي]َا([\u0621-\u064A])(?!َة)/g, "اِسْتِ$1َا$2َة");
         }
 
-        // 5. NÂKIS (SON HARF İLLETİ) ve LEFİF FİİLLER (örn: نوى)
+        // 5. NAKIS (SON HARF İLLETİ) ve LEFİF FİİLLER (örn: نوى)
         if (r3 === 'و' || r3 === 'ي') {
             let lam = r3;
 
@@ -4213,7 +4403,7 @@ const SarfEngine = {
             res = res.replace(new RegExp(`مَ([\\u0621-\\u064A])ْ([\\u0621-\\u064A])َ[وي]$`, 'g'), `مَ$1ْ$2َى`);
         }
 
-        // 6. MEHMÛZ FİİLLER (HEMZE KURALLARI VE KÜRSÜ DEĞİŞİMLERİ)
+        // 6. MEHMUZ FİİLLER (HEMZE KURALLARI VE KÜRSÜ DEĞİŞİMLERİ)
         if (r.includes('أ') || r.includes('ء') || r.includes('إ') || r.includes('ؤ') || r.includes('ئ')) {
            // ==================================================================
             // ÖZEL İSTİSNA: أخذ (Almak), أكل (Yemek) ve أمر (Emretmek)
@@ -4258,7 +4448,7 @@ const SarfEngine = {
             res = res.replace(/اأَ/g, "اءَ"); // تَسَاأَلَ -> تَسَاءَلَ , قِرَاأَة -> قِرَاءَة
 
             // ==================================================================
-            // TESNİYE (ELİF) ZIRHI: Hemzeli Nâkıs fiiller için tesniye elifi kontrolü
+            // TESNİYE (ELİF) ZIRHI: Hemzeli Nakıs fiiller için tesniye elifi kontrolü
             // ==================================================================
             res = res.replace(/ءَا/g, "اءَا"); // Satırdaki hemze + Tesniye Elifi
             res = res.replace(/أَا/g, "آ");
@@ -4351,7 +4541,7 @@ const ColorEngine = {
                 }
 
                 // =========================================================
-                // YENİ KESİN ÇÖZÜM: NAKIS FİİL "تَا" (Gâibe Tesniye) HATASI
+                // YENİ KESİN ÇÖZÜM: NAKIS FİİL "تَا" (Gaibe Tesniye) HATASI
                 // =========================================================
                 // Eğer 3. kök harfini arıyorsak, o harf zayıf bir harfse,
                 // ve şu an baktığımız harften bir önceki harf ek olan (kırmızı) 'ت' ise:
@@ -4837,8 +5027,22 @@ function updateMainKeyboardPredictions() {
             // Harf başlığı
             resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 15px 0 10px 0; border-bottom:2px solid rgba(0,0,0,0.1); padding-bottom:5px; width: 100%;">[ ${letter} ]</div>`;
             
-            // Harf içindeki kelimeleri alfabetik sırala
-            matchesByLetter[letter].sort((a, b) => a.strippedAr.localeCompare(b.strippedAr, 'ar'));
+            // Harf içindeki kelimeleri sırala (Tam eşleşen ve kısa olanlar ÖNCE)
+            let searchFilter = window.stripHarakat(currentSearchQuery.trim());
+            matchesByLetter[letter].sort((a, b) => {
+                let aExact = (a.strippedAr === searchFilter) ? 1 : 0;
+                let bExact = (b.strippedAr === searchFilter) ? 1 : 0;
+                if (aExact !== bExact) return bExact - aExact;
+                
+                let aStarts = a.strippedAr.startsWith(searchFilter) ? 1 : 0;
+                let bStarts = b.strippedAr.startsWith(searchFilter) ? 1 : 0;
+                if (aStarts !== bStarts) return bStarts - aStarts;
+                
+                if (a.strippedAr.length !== b.strippedAr.length) {
+                    return a.strippedAr.length - b.strippedAr.length;
+                }
+                return a.strippedAr.localeCompare(b.strippedAr, 'ar');
+            });
             
             resultsHTML += `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; width:100%; box-sizing:border-box; margin-bottom: 12px;">`;
             
@@ -5534,19 +5738,19 @@ function getBabInfo(rawName) {
 
     const babs = [
         { 
-            keys: ["if'âl", "if'al", "ifal", "ifâl"], 
-            title: "İf'âl", 
+            keys: ["if'al", "if'al", "ifal", "ifal"], 
+            title: "İf'al", 
             harf: "أَ ـ ـ ـ", num: 4,
             desc: `
-            <p>• <b>Geçişlilik:</b> Lâzım (geçişsiz) fiilleri Müteaddi (geçişli) yapar. <br>Örn: <span class="arabic-sample">ضَحِكَ</span> (Güldü) → <span class="arabic-sample">أَضْحَكَ</span> (Güldürdü)</p>
+            <p>• <b>Geçişlilik:</b> Lazım (geçişsiz) fiilleri Müteaddi (geçişli) yapar. <br>Örn: <span class="arabic-sample">ضَحِكَ</span> (Güldü) → <span class="arabic-sample">أَضْحَكَ</span> (Güldürdü)</p>
             <p>• <b>Zaman ve Mekan:</b> Eylemin zamanla veya mekanla anlam kurmasını sağlar.<br>Örn: <span class="arabic-sample">أَصْبَحَ</span> (Sabaha girdi), <span class="arabic-sample">أَعْرَقَ</span> (Irak'a vardı)</p>
             <p>• <b>Durum Bildirme:</b> Bir sıfata veya duruma girmeyi belirtir.<br>Örn: <span class="arabic-sample">أَفْقَرَ</span> (Fakirleşti), <span class="arabic-sample">أَغْنَى</span> (Zenginleşti)</p>
             <p>• <span style="color:#ef4444; font-weight: normal;">Not:</span> İf'al hemzesi 'kat-i' hemzedir; her zaman yazılır ve okunur.<br>Örn: <span class="arabic-sample">قُلْتُ أَكْرِمْ!</span> (İkram et dedim!)</p>
             ` 
         },
         { 
-            keys: ["tef'îl", "tef'il", "tefil", "tefîl"], 
-            title: "Tef'îl", 
+            keys: ["tef'il", "tef'il", "tefil", "tefil"], 
+            title: "Tef'il", 
             harf: "ـ ـّ ـ", num: 4,
             desc: `
             <p>• <b>Geçişlilik:</b> Geçişsiz fiilleri geçişli yapar. <br>Örn: <span class="arabic-sample">عَلِمَ</span> (Bildi) → <span class="arabic-sample">عَلَّمَ</span> (Öğretti)</p>
@@ -5555,8 +5759,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["mufâ'ale", "mufa'ale", "müfâ'ale", "müfa'ale", "mufaale", "müfaale"], 
-            title: "Mufâ'ale", 
+            keys: ["mufa'ale", "mufa'ale", "müfa'ale", "müfa'ale", "mufaale", "müfaale"], 
+            title: "Mufa'ale", 
             harf: "ـ ـا ـ ـ", num: 4,
             desc: `
             <p>• <b>Müşareket:</b> İşteşlik (karşılıklılık) bildirir. <br>Örn: <span class="arabic-sample">كَتَبَ</span> (Yazdı) → <span class="arabic-sample">كَاتَبَ</span> (Yazıştı)</p>
@@ -5565,8 +5769,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["infi'âl", "infi'al", "infial", "infiâl"], 
-            title: "İnfi'âl", 
+            keys: ["infi'al", "infi'al", "infial", "infial"], 
+            title: "İnfi'al", 
             harf: "اِنْـ ـ ـ ـ", num: 5,
             desc: `
             <p>• <b>Edilgenlik:</b> Fiili edilgen (yapıldı) hale getirir. <br>Örn: <span class="arabic-sample">كَسَرَ</span> (Kırdı) → <span class="arabic-sample">اِنْكَسَرَ</span> (Kırıldı)</p>
@@ -5574,8 +5778,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["ifti'âl", "ifti'al", "iftial", "iftiâl"], 
-            title: "İfti'âl", 
+            keys: ["ifti'al", "ifti'al", "iftial", "iftial"], 
+            title: "İfti'al", 
             harf: "اِ ـ ـتَـ ـ ـ", num: 5,
             desc: `
             <p>• <b>Dönüşlülük:</b> Eylemin sonucunu belirtir. <br>Örn: <span class="arabic-sample">اِجْتَمَعَ</span> (Toplandı), <span class="arabic-sample">اِرْتَفَعَ</span> (Yükseldi)</p>
@@ -5584,8 +5788,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["if'ılâl", "if'ılal", "if'ilâl", "if'ilal", "ifılal", "ifilal", "ifılâl"], 
-            title: "İf'ılâl", 
+            keys: ["if'ılal", "if'ılal", "if'ilal", "if'ilal", "ifılal", "ifilal", "ifılal"], 
+            title: "İf'ılal", 
             harf: "اِ ـ ـ ـّ", num: 5,
             desc: `
             <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
@@ -5598,13 +5802,13 @@ function getBabInfo(rawName) {
             harf: "تَـ ـ ـّ ـ", num: 5,
             desc: `
             <p>• <b>Çaba:</b> Gayret ve sahiplenme bildirir. <br>Örn: <span class="arabic-sample">تَصَبَّرَ</span> (Sabretti), <span class="arabic-sample">تَوَسَّدَ</span> (Yastık edindi)</p>
-            <p>• <b>Dönüşlülük:</b> Tef'îl vezninin dönüşlü halidir. <br>Örn: <span class="arabic-sample">تَفَرَّقَ</span> (Dağıldı), <span class="arabic-sample">تَكَسَّرَ</span> (Parçalandı)</p>
+            <p>• <b>Dönüşlülük:</b> Tef'il vezninin dönüşlü halidir. <br>Örn: <span class="arabic-sample">تَفَرَّقَ</span> (Dağıldı), <span class="arabic-sample">تَكَسَّرَ</span> (Parçalandı)</p>
             <p>• <b>Kademelilik:</b> İşin aşama aşama yapıldığını belirtir. <br>Örn: <span class="arabic-sample">تَنَزَّلَ</span> (İndi)</p>
             ` 
         },
         { 
-            keys: ["tefâ'ul", "tefâul", "tefâ'ül", "tefâül"], 
-            title: "Tefâ'ul", 
+            keys: ["tefa'ul", "tefaul", "tefa'ül", "tefaül"], 
+            title: "Tefa'ul", 
             harf: "تَـ ـ ـا ـ ـ", num: 5,
             desc: `
             <p>• <b>İşteşlik:</b> Ortaklık belirtir. <br>Örn: <span class="arabic-sample">تَعَاوَنَ</span> (Yardımlaştı), <span class="arabic-sample">تَمَازَحَ</span> (Şakalaştı)</p>
@@ -5613,8 +5817,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["istif'âl", "istif'al", "istifal", "istifâl"], 
-            title: "İstif'âl", 
+            keys: ["istif'al", "istif'al", "istifal", "istifal"], 
+            title: "İstif'al", 
             harf: "اِسْتِـ ـ ـ ـ", num: 6,
             desc: `
             <p>• <b>İstek:</b> Talep ve bulmak manası verir. <br>Örn: <span class="arabic-sample">اِسْتَغْفَرَ</span> (Af diledi), <span class="arabic-sample">اِسْتَسْهَلَ</span> (Kolay buldu)</p>
@@ -5638,7 +5842,7 @@ window.showBabInfo = function(rawName) {
     let info = getBabInfo(rawName);
 
     if(overlay && titleEl && textEl && info) {
-        titleEl.innerText = info.title + " Bâbı";
+        titleEl.innerText = info.title + " Babı";
         textEl.innerHTML = info.desc; 
         
         overlay.style.display = 'flex';
@@ -5669,7 +5873,7 @@ window.initBabIcons = function() {
         let rawText = td.innerText || td.textContent;
         let originalText = rawText.replace(/ⓘ/g, '').trim(); 
         
-        // Bu yazı gerçekten bir Bâb adı mı diye soruyoruz
+        // Bu yazı gerçekten bir Bab adı mı diye soruyoruz
         let info = getBabInfo(originalText);
         
         if (info) {
@@ -5987,7 +6191,7 @@ window.openMarathon = function() {
                     <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
                         <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
                         <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
-                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: normal; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: normal; direction: rtl; letter-spacing: 0.3px;">${ornekTr}</div>
                     </div>`;
             }
         }
@@ -6643,7 +6847,13 @@ function renderThematicLists() {
                     <div class="thematic-accordion-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <i class="fas fa-chevron-down thematic-accordion-icon" id="icon-${key}"></i>
-                            <h3 class="thematic-accordion-title" style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 1.3rem;">${cat.icon} <span>${cat.title}</span></h3>
+                            <h3 class="thematic-accordion-title" style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 1.7rem;">
+                                ${cat.icon} 
+                                <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                                    <span>${cat.title}</span>
+                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:rgba(255,255,255,0.7); line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
+                                </div>
+                            </h3>
                         </div>
                     </div>
                 </div>

@@ -14,7 +14,9 @@
     --apple-dark: #1d1d1f;
 }
 
-body { 
+body {
+    font-family: 'Arakom', sans-serif; 
+    font-family: 'Arakom', sans-serif;
     background-color: #ffffff; 
     color: #000000; 
     margin: 0; 
@@ -86,7 +88,7 @@ body:has(.glass-box.matrix-opened) .back-link {
     color: #000000;
     cursor: pointer;
     font-size: 16px;
-    transition: color 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: none;
     font-family: 'Arakom', sans-serif !important;
     font-weight: normal !important;
     z-index: 2;
@@ -95,7 +97,7 @@ body:has(.glass-box.matrix-opened) .back-link {
 
 .switch-btn span {
     color: inherit !important; 
-    transition: all 0.1s ease-in-out;
+    transition: none;
 }
 
 .switch-btn span:last-child {
@@ -706,7 +708,7 @@ td:first-child {
     cursor: pointer;
     z-index: 100;
     font-size: 13px;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Arakom', sans-serif;
     font-weight: bold;
     animation: elegantRedGlow 2s infinite alternate;
     transition: transform 0.2s ease;
@@ -780,7 +782,7 @@ td:first-child {
     color: #FF3B30;
     cursor: pointer;
     font-weight: bold;
-    font-family: sans-serif;
+    font-family: 'Arakom', sans-serif;
     transition: all 0.2s ease;
     
     /* Yazılar kayarken çarpı karışmasın diye arkasına ufak buzlu bir yuvarlak ekledik */
@@ -844,7 +846,7 @@ td:first-child {
     background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex;
     align-items: center; justify-content: center; font-size: 28px; color: #000000; 
     cursor: pointer; z-index: 99999999; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    font-family: sans-serif; transition: transform 0.1s ease;
+    font-family: 'Arakom', sans-serif; transition: transform 0.1s ease;
 }
 .matrix-fullscreen-close:active { transform: scale(0.9); }
 
@@ -1331,7 +1333,7 @@ body.matrix-active { overflow: hidden !important; }
 }
 
 .siga-tr-text {
-    display: block; font-family: sans-serif !important; font-size: 16px; color: #555555; margin-top: 8px; font-weight: bold;
+    display: block; font-family: 'Arakom', sans-serif !important; font-size: 16px; color: #555555; margin-top: 8px; font-weight: bold;
 }
 
 /* =============================================================== */
@@ -1377,7 +1379,7 @@ body.matrix-active { overflow: hidden !important; }
     box-shadow: 
         inset 0 3px 6px rgba(0, 0, 0, 0.1),      /* İçeri göçme hissi veren iç gölge */
         0 0 0 #c7c7cc,                           /* Alt kalınlık sıfırlandı */
-        0 1px 2px rgba(0, 0, 0, 0.05);
+        0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 /* ========================================================= */
@@ -1500,7 +1502,7 @@ body.matrix-active { overflow: hidden !important; }
 
 /* Başlık */
 .bab-info-title {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Arakom', sans-serif;
     font-size: 46px; /* 40px'den 46px'e çıkarıldı */
     color: #0f172a; 
     margin-top: 0; 
@@ -1514,7 +1516,7 @@ body.matrix-active { overflow: hidden !important; }
 
 /* Bilgi Metni ve SCROLL Özelliği - DAHA BÜYÜK YAZI */
 .bab-info-text {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Arakom', sans-serif;
     font-size: 34px; /* 30px'den 34px'e çıkarıldı, artık daha da okunaklı */
     color: #334155; 
     line-height: 1.75; 
@@ -1562,7 +1564,7 @@ body.matrix-active { overflow: hidden !important; }
 
 /* Arapça Örnek Kelimeler ve Paragraf Stilleri */
 .arabic-sample {
-    font-family: 'Noto Naskh Arabic', serif;
+    font-family: 'Arakom', serif;
     color: #3b82f6; 
     font-weight: bold;
     font-size: 1.45em; /* Arapça kelimeler 34px'e göre oranlandı */
@@ -1591,7 +1593,7 @@ body.matrix-active { overflow: hidden !important; }
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: #f1f2f6; z-index: 9999999;
     display: none; flex-direction: column; overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Arakom', sans-serif;
     
     /* İŞTE KESİN ÇÖZÜM: Tüm sistemi soldan sağa (Türkçe) düzenine zorlar */
     direction: ltr !important; 
@@ -1887,7 +1889,7 @@ body.matrix-active { overflow: hidden !important; }
         text-align: center !important; 
         padding: 40px !important; 
         box-sizing: border-box !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: 'Arakom', sans-serif;
     }
     
     body > div:not(#mobile-portrait-warning) { display: none !important; }
@@ -1933,7 +1935,8 @@ body.matrix-active { overflow: hidden !important; }
 
 /* 4. MOBİL YATAY MOD (LANDSCAPE) MİKRO TASARIM VE KAHVERENGİ KUTU */
 @media screen and (max-width: 1024px) and (orientation: landscape) {
-    html, body { overflow: auto !important; -webkit-text-size-adjust: 100% !important; padding: 10px !important; background-color: #ffffff !important; }
+    html, body {
+    font-family: 'Arakom', sans-serif; overflow: auto !important; -webkit-text-size-adjust: 100% !important; padding: 10px !important; background-color: #ffffff !important; }
     .top-bar { gap: 6px !important; margin-bottom: 8px !important; }
     #root-display-box, .switch-btn, .segmented-switch, .zoom-toggle-area, .back-link { height: 30px !important; min-height: 30px !important; font-size: 12px !important; padding: 0 6px !important; }
     .temp-root-display { font-size: 2.5rem !important; height: 60px !important; }
@@ -2072,7 +2075,7 @@ body.matrix-active { overflow: hidden !important; }
     transform: translateX(-50%);
     font-size: 0.9rem;
     color: #8b5a2b;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Arakom', sans-serif;
     font-weight: bold;
     white-space: nowrap;
     text-shadow: 0 0 8px rgba(139, 90, 43, 0.6);
@@ -2694,7 +2697,7 @@ input:checked +
     width: 2px;
     background-color: #777;
     left: calc(33.333% - 2.5px);
-    z-index: 0;
+    z-index: 10;
     pointer-events: none;
 }
 #thematic-accordion-container::after {
@@ -2705,7 +2708,7 @@ input:checked +
     width: 2px;
     background-color: #777;
     left: calc(66.666% + 2.5px);
-    z-index: 0;
+    z-index: 10;
     pointer-events: none;
 }
 
@@ -3159,4 +3162,3 @@ input:checked + .slider:before {
     min-height: 0 !important;
     overflow: hidden !important;
 }
-
