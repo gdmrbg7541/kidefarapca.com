@@ -22,13 +22,13 @@ const kategoriTanimlari = {
     "ulasim": { title: "Ulaşım Araçları", arTitle: "وَسائِل النَّقْل", icon: "🚗", items: [] },
     "meslek": { title: "Meslekler", arTitle: "المِهَن", icon: "💼", items: [] },
     "aile": { title: "Aile Bireyleri", arTitle: "أَفْراد الأُسْرَة", icon: "👨‍👩‍👧‍👦", items: [] },
+    "hayvan": { title: "Hayvanlar", arTitle: "الحَيَوانات", icon: "🐪", items: [] },
+    "sifat": { title: "Sıfatlar", arTitle: "الصِّفات", icon: "✨", items: [] },
+    "isim": { title: "Genel İsimler", arTitle: "الأَسْماء", icon: "🏷️", items: [] },
     "kalip": { title: "Kalıplar ve İfadeler", arTitle: "التَّعْبيرات وَالقَوالِب", icon: "💬", items: [] }
 };
 
-const sozlukVerileri = {
-
-    "Kalıp: Günaydın": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "☀️", arText: "صَباح الخَيْر", trText: "Günaydın", ornek: { ar: "صَباح الخَيْر يا صَديقي", tr: "Günaydın arkadaşım." } } } },
-    "Kalıp: İyi Akşamlar": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🌙", arText: "مَساء الخَيْر", trText: "İyi Akşamlar", ornek: { ar: "مَساء الخَيْر لِلْجَميع", tr: "Herkese iyi akşamlar." } } } },
+const sozlukVerileri = {    "Kalıp: İyi Akşamlar": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🌙", arText: "مَساء الخَيْر", trText: "İyi Akşamlar", ornek: { ar: "مَساء الخَيْر لِلْجَميع", tr: "Herkese iyi akşamlar." } } } },
     "Kalıp: Nasılsın": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "❓", arText: "كَيْفَ حالُكَ؟", trText: "Nasılsın?", ornek: { ar: "مَرْحَبًا، كَيْفَ حالُكَ اليَوْم؟", tr: "Merhaba, bugün nasılsın?" } } } },
     "Kalıp: Teşekkürler": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "💖", arText: "شُكْرًا جَزيلًا", trText: "Çok teşekkür ederim", ornek: { ar: "شُكْرًا جَزيلًا عَلى مُساعَدَتِك", tr: "Yardımın için çok teşekkür ederim." } } } },
     "Kalıp: Rica Ederim": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "😊", arText: "عَفْوًا", trText: "Rica ederim / Bir şey değil", ornek: { ar: "- شُكْرًا جَزِيلًا. - عَفْوًا.", tr: "- Çok teşekkür ederim. - Rica ederim." } } } },
@@ -207,7 +207,7 @@ const sozlukVerileri = {
     "Mevsul: O Kimseler ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَللَّاتِي / اَللَّوَاتِي", trText: "O kimseler ki (Dişil / Çoğul)" } } },
 
     // Büyük sözlük veritabanını buraya dahil ediyoruz
-    ...eski_sozlukVerileri,
+    ...wordEasterEggs,
 
     // ==================================================================
     // يَوْم KELİMESİ
@@ -1164,6 +1164,6 @@ const sozlukVerileri = {
 };
 
 // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir
-if (typeof eski_sozlukVerileri !== 'undefined') {
-    Object.assign(sozlukVerileri, eski_sozlukVerileri);
+if (typeof wordEasterEggs !== 'undefined') {
+    Object.assign(sozlukVerileri, wordEasterEggs);
 }

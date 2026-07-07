@@ -341,8 +341,10 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         let itemTekil, itemCogul;
         if (isVerb) {
             let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:#27ae60; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">FİİL</div>`;
+            let rootDisplay = `<div style="position:absolute; top:-15px; right:15px; background-color:#e74c3c; color:white; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:1.1rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(5deg); z-index:20; font-family: 'Inter', sans-serif; text-shadow:0 1px 1px rgba(0,0,0,0.3);">Kök: ${rootKey}</div>`;
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
+            htmlContent += rootDisplay;
             htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; text-align:center;">`;
             const verbCards = [
                 { id: maziId, label: "Mazi", color: "#f39c12" },
@@ -635,8 +637,8 @@ function getRootEmoji(root) {
 
 function renderVerbMenu() {
     // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir (Önbellek sorunlarını aşmak için burada)
-    if (typeof eski_sozlukVerileri !== 'undefined') {
-        Object.assign(sozlukVerileri, eski_sozlukVerileri);
+    if (typeof wordEasterEggs !== 'undefined') {
+        Object.assign(sozlukVerileri, wordEasterEggs);
     }
     const importantContainer = document.getElementById("important-roots-list");
     const gridContainer = document.getElementById("letters-grid-container");
@@ -662,11 +664,23 @@ function renderVerbMenu() {
     const allRoots = Object.keys(sozlukVerileri);
     const rootsByLetter = {};
     arapcaHarfler.forEach(h => rootsByLetter[h] = []);
+    let totalRootsCount = 0;
     allRoots.forEach(root => {
         if (sozlukVerileri[root] && sozlukVerileri[root].isDictOnly) return;
         const firstLetter = root.charAt(0);
-        if(rootsByLetter[firstLetter]) rootsByLetter[firstLetter].push(root);
+        if(rootsByLetter[firstLetter]) {
+            rootsByLetter[firstLetter].push(root);
+            totalRootsCount++;
+        }
     });
+
+    const importantContainerRef = document.getElementById("important-roots-list");
+    if (importantContainerRef) {
+        importantContainerRef.innerHTML += `<div style="display: flex; align-items: center; justify-content: center; padding: 6px 20px; margin: 5px; background: rgba(255, 255, 255, 0.6); border: 2px dashed #95a5a6; border-radius: 30px; cursor: default; gap: 10px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" title="Sistemdeki Toplam Kök Sayısı">
+            <span dir="ltr" style="font-family: 'Inter', sans-serif !important; font-weight: 900; font-size: 1.4rem; color: #2c3e50; letter-spacing: 1px;">${totalRootsCount}</span>
+            <i class="fas fa-sitemap" style="color: #27ae60; font-size: 1.3rem;"></i>
+        </div>`;
+    }
 
     ranges.forEach(range => {
         let colHTML = `<div class="letter-column"><div class="col-range-header">${range.title}</div>`;
@@ -5080,22 +5094,26 @@ function updateMainKeyboardPredictions() {
                 let conjugationBadge = "";
                 let rootBadge = "";
                 
-                if (item.isConjugationMatch) {
-                    let kalipNum = parseInt(item.kalipKey);
-                    let verbType = "Fiil";
+                let kalipNum = parseInt(item.kalipKey);
+                let isVerbKalip = !isNaN(kalipNum) && kalipNum > 0;
+                
+                if (isVerbKalip && item.rootKey && !item.rootKey.includes(":")) {
+                    let verbType = "Kelime";
                     if ([8,11,14, 52,58,64,71,77,88,94,100].includes(kalipNum) || kalipNum === 1) verbType = "Mazi";
                     else if ([9,12,15, 53,59,65,72,78,89,95,101].includes(kalipNum) || kalipNum === 2 || kalipNum === 4 || kalipNum === 6) verbType = "Muzari";
                     else if ([10,13,16, 54,60,66,73,79,90,96,102].includes(kalipNum) || kalipNum === 3 || kalipNum === 5 || kalipNum === 7) verbType = "Emir";
                     
-                    let pronounIndex = item.matchedPronounIndex;
-                    if (verbType === "Emir") {
-                        // Emir kipleri sadece 2. şahıs (Muhatap) içindir. Sen, Siz İkiniz, Sizler (Eril/Dişil)
-                        // PRONOUN_MAP'te 2. şahıslar 6. indexten başlar. (6, 7, 8, 9, 10, 11)
-                        pronounIndex += 6; 
+                    if (item.isConjugationMatch) {
+                        let pronounIndex = item.matchedPronounIndex;
+                        if (verbType === "Emir") {
+                            pronounIndex += 6; 
+                        }
+                        let pronounStr = (pronounIndex >= 0 && typeof PRONOUN_MAP !== 'undefined' && PRONOUN_MAP[pronounIndex]) ? PRONOUN_MAP[pronounIndex] : "";
+                        conjugationBadge = `<div style="background-color:#3498db; color:white; padding:3px 8px; border-radius:10px; font-size:0.85rem; margin-top:8px; font-weight:bold; letter-spacing:0.5px; text-align:center;">${verbType} | Şahıs: ${pronounStr}</div>`;
+                    } else if (verbType !== "Kelime") {
+                        conjugationBadge = `<div style="background-color:#2ecc71; color:white; padding:3px 8px; border-radius:10px; font-size:0.85rem; margin-top:8px; font-weight:bold; letter-spacing:0.5px; text-align:center;">${verbType} (Kök Fiil)</div>`;
                     }
-                    let pronounStr = (pronounIndex >= 0 && PRONOUN_MAP[pronounIndex]) ? PRONOUN_MAP[pronounIndex] : "";
                     
-                    conjugationBadge = `<div style="background-color:#3498db; color:white; padding:3px 8px; border-radius:10px; font-size:0.85rem; margin-top:8px; font-weight:bold; letter-spacing:0.5px; text-align:center;">${verbType} | Şahıs: ${pronounStr}</div>`;
                     rootBadge = `<div style="color:#e74c3c; font-size:0.9rem; margin-top:4px; font-weight:bold; text-align:center;">Kök: ${item.rootKey}</div>`;
                 }
                 
