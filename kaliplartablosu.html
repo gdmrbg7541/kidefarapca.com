@@ -34,13 +34,12 @@
 <div id="verb-overlay" class="verb-overlay">
     <div class="new-verb-layout">
         
-        <div class="root-header" dir="ltr" style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px;">
-            <div style="display: flex; gap: 15px; align-items: center;">
+
+
+        <div id="thematic-words-content" class="thematic-words-content hidden" style=" width: 100%; flex: 1; overflow-y: auto; padding-right: 15px; padding-bottom: 50px; position: relative;">
+            <div dir="ltr" style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px; position: sticky; top: 0; z-index: 10;">
                 <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
             </div>
-        </div>
-
-        <div id="thematic-words-content" class="thematic-words-content hidden" style=" width: 100%; flex: 1; overflow-y: auto; padding-right: 15px; padding-bottom: 50px;">
             <div id="thematic-accordion-container" dir="rtl"></div>
         </div>
 
@@ -433,7 +432,7 @@
 </div>
 <script src="veri_kokler.js?v=1783311124"></script>
 <script src="veri_sozluk.js?v=1783311124"></script>
-<script src="kaliplartablosu.js?v=1783447958"></script>
+<script src="kaliplartablosu.js?v=1783448356"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
         <div id="top-bar-panel">

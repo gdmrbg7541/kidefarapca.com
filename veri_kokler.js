@@ -20052,7 +20052,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                 ]
             } 
         }
-    }
+    },
 
         
     "أمر": {

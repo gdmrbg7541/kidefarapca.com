@@ -676,10 +676,16 @@ function renderVerbMenu() {
 
     const importantContainerRef = document.getElementById("important-roots-list");
     if (importantContainerRef) {
-        importantContainerRef.innerHTML += `<div style="display: flex; align-items: center; justify-content: center; padding: 6px 20px; margin: 5px; background: rgba(255, 255, 255, 0.6); border: 2px dashed #95a5a6; border-radius: 30px; cursor: default; gap: 10px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" title="Sistemdeki Toplam Kök Sayısı">
+        let closeBtnHtml = `<div onclick="closeVerbModal()" style="display: flex; align-items: center; justify-content: center; padding: 6px 18px; margin: 5px; background: rgba(255, 255, 255, 0.6); border: 2px dashed #e74c3c; border-radius: 30px; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease;" title="Kapat" onmouseover="this.style.background='rgba(231, 76, 60, 0.1)'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.6)'; this.style.transform='scale(1)';">
+            <i class="fas fa-times" style="color: #e74c3c; font-size: 1.5rem;"></i>
+        </div>`;
+        
+        let countHtml = `<div style="display: flex; align-items: center; justify-content: center; padding: 6px 20px; margin: 5px; background: rgba(255, 255, 255, 0.6); border: 2px dashed #95a5a6; border-radius: 30px; cursor: default; gap: 10px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" title="Sistemdeki Toplam Kök Sayısı">
             <span dir="ltr" style="font-family: 'Inter', sans-serif !important; font-weight: 900; font-size: 1.4rem; color: #2c3e50; letter-spacing: 1px;">${totalRootsCount}</span>
             <i class="fas fa-sitemap" style="color: #27ae60; font-size: 1.3rem;"></i>
         </div>`;
+        
+        importantContainerRef.innerHTML = closeBtnHtml + importantContainerRef.innerHTML + countHtml;
     }
 
     ranges.forEach(range => {
@@ -6659,6 +6665,9 @@ function openRootsModal() {
         if (rootsContent) rootsContent.classList.remove('hidden');
         if (thematicContent) thematicContent.classList.add('hidden');
         
+        const rootHeader = document.querySelector('.root-header');
+        if (rootHeader) rootHeader.style.display = 'none';
+        
         const overlay = document.getElementById('verb-overlay');
         if (overlay) overlay.style.display = 'flex';
         
@@ -6688,6 +6697,9 @@ function showThematicView() {
     if (thematicContent) {
         thematicContent.classList.remove('hidden');
         thematicContent.style.display = 'block';
+        
+        const rootHeader = document.querySelector('.root-header');
+        if (rootHeader) rootHeader.style.display = 'flex';
         renderThematicLists();
     }
 }
