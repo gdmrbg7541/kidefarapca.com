@@ -676,11 +676,11 @@ function renderVerbMenu() {
 
     const importantContainerRef = document.getElementById("important-roots-list");
     if (importantContainerRef) {
-        let closeBtnHtml = `<div onclick="closeVerbModal()" style="display: flex; align-items: center; justify-content: center; padding: 6px 18px; margin: 5px; background: rgba(255, 255, 255, 0.6); border: 2px dashed #e74c3c; border-radius: 30px; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease;" title="Kapat" onmouseover="this.style.background='rgba(231, 76, 60, 0.1)'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.6)'; this.style.transform='scale(1)';">
-            <i class="fas fa-times" style="color: #e74c3c; font-size: 1.5rem;"></i>
+        let closeBtnHtml = `<div onclick="closeVerbModal()" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: 0; align-self: center; background: rgba(255, 255, 255, 0.6); border: 2px dashed #e74c3c; border-radius: 50%; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease;" title="Kapat" onmouseover="this.style.background='rgba(231, 76, 60, 0.1)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.6)'; this.style.transform='scale(1)';">
+            <i class="fas fa-times" style="color: #e74c3c; font-size: 1.2rem;"></i>
         </div>`;
         
-        let countHtml = `<div style="display: flex; align-items: center; justify-content: center; padding: 6px 20px; margin: 5px; background: rgba(255, 255, 255, 0.6); border: 2px dashed #95a5a6; border-radius: 30px; cursor: default; gap: 10px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" title="Sistemdeki Toplam Kök Sayısı">
+        let countHtml = `<div style="display: flex; align-items: center; justify-content: center; padding: 6px 20px; margin: 0; align-self: center; background: rgba(255, 255, 255, 0.6); border: 2px dashed #95a5a6; border-radius: 30px; cursor: default; gap: 10px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" title="Sistemdeki Toplam Kök Sayısı">
             <span dir="ltr" style="font-family: 'Inter', sans-serif !important; font-weight: 900; font-size: 1.4rem; color: #2c3e50; letter-spacing: 1px;">${totalRootsCount}</span>
             <i class="fas fa-sitemap" style="color: #27ae60; font-size: 1.3rem;"></i>
         </div>`;
@@ -716,7 +716,7 @@ function renderVerbMenu() {
 function createFlatRootItem(root) {
     return `<div class="flat-root-item root-item" data-root="${root}" onclick="selectRootFromMenu('${root}')">
         <span>${root}</span>
-        <span style="margin-right:8px;">${getRootEmoji(root)}</span>
+        <span>${getRootEmoji(root)}</span>
     </div>`;
 }
 
@@ -1865,8 +1865,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                 let item = kelimeListesi[i];
                 let wAr = item.ar || ''; let wTr = item.tr || ''; let ornek = item.ornek; 
                 if (isColorActive && wAr && !wAr.includes('<')) wAr = ColorEngine.colorize(wAr, kok.split(""));
-                let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: rtl;">${ornek.tr}</div></div>` : '';
-                let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: rtl;">${wTr}</span>` : '';
+                let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: ltr;">${ornek.tr}</div></div>` : '';
+                let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: ltr;">${wTr}</span>` : '';
                 html += `<tr><td style="background-color: ${bgColor} !important; padding: 25px 15px;"><span class="siga-text">${wAr}</span>${trHtml}${ornekHtml}</td></tr>`;
             }
             html += `</tbody></table></div>`;
@@ -1945,8 +1945,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             let wTr = typeof item === 'object' ? (item.tr || '') : '';
             let ornek = item.ornek; 
             if (isColorActive && wAr && !wAr.includes('<')) wAr = ColorEngine.colorize(wAr, kok.split(""));
-            let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: rtl;">${ornek.tr}</div></div>` : '';
-            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: rtl;">${wTr}</span>` : '';
+            let ornekHtml = ornek ? `<div class="ornek-box"><div style="font-family:'Arakom', sans-serif; font-size:20px; color:#000; text-align: center;">${ornek.ar}</div><div style="font-size:15px; color:#333; margin-top:6px; text-align: center; direction: ltr;">${ornek.tr}</div></div>` : '';
+            let trHtml = wTr ? `<span class="siga-tr-text" style="display: block; margin-top: 15px; font-size: 16px; color: #555; direction: ltr;">${wTr}</span>` : '';
             html += `<tr><td style="background-color: ${bgColor} !important; padding: 25px 15px;"><span class="siga-text">${wAr}</span>${trHtml}${ornekHtml}</td></tr>`;
         }
         html += `</tbody></table></div>`;
@@ -3419,7 +3419,12 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
     let activeKey = (searchKey && eggObj[searchKey]) ? searchKey : "base";
     let targetText = eggObj[activeKey] ? eggObj[activeKey].arText : null;
     
-    if (targetText) {
+    let shouldOverwriteText = true;
+    if (activeSuffix && activeKey === "base") {
+        shouldOverwriteText = false; // Ekin sözlükte karşılığı yoksa, görsel olarak eklenen eki ezme!
+    }
+    
+    if (targetText && shouldOverwriteText) {
         let wordCount = targetText.trim().split(/\s+/).length;
         if (wordCount === 1) {
             textEl.innerHTML = ColorEngine.colorize(targetText, currentRoot.split(""));
@@ -3575,7 +3580,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
         let combinedHtml = `
             <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 25px;">
                 <div style="font-family: 'Arakom', sans-serif; font-size: 90px; color: #000; direction: rtl; line-height: 1.2;">${data.arText || ""}</div>
-                <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #FF3B30; direction: rtl; line-height: 1.2;">${data.trText || ""}</div>
+                <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #FF3B30; direction: ltr; line-height: 1.2;">${data.trText || ""}</div>
             </div>
         `;
         
@@ -3587,7 +3592,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
                 combinedHtml += `
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; background: #f8f9fa; padding: 25px 20px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                         <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #000; direction: rtl; line-height: 1.4; text-align: center;">${orn.ar}</div>
-                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #475569; direction: rtl; line-height: 1.4; text-align: center;">${orn.tr}</div>
+                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #475569; direction: ltr; line-height: 1.4; text-align: center;">${orn.tr}</div>
                     </div>
                 `;
             });
@@ -6240,7 +6245,7 @@ window.openMarathon = function() {
                     <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
                         <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
                         <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
-                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: normal; direction: rtl; letter-spacing: 0.3px;">${ornekTr}</div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: normal; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
                     </div>`;
             }
         }

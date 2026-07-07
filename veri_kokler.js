@@ -5120,6 +5120,7 @@ const wordEasterEggs = {
     // 3. Bab (فَعَلَ - يَفْعَلُ) ve İfti'âl Babı
     // ==================================================================
     "جمع": {
+        "cemaat": { base: { emoji: "👥", arText: "جَمَاعَة", trText: "Cemaat / Topluluk." } },
         // --- 1 Numaralı Kalıp (Mücerret 3. Bab Mazi) ---
         1: { 
             base: { 
@@ -10005,6 +10006,7 @@ const wordEasterEggs = {
         }
     },
     "سرع": {
+        50: { base: { emoji: "⚡", arText: "أَسْرَع", trText: "Daha hızlı / En hızlı." } },
         // --- 11 Numaralı Kalıp (Mücerret 5. Bab Mazi - Nitelik Bildirir) ---
         11: {
             base: {
@@ -11069,6 +11071,8 @@ const wordEasterEggs = {
             cekimi: ["يَطْلُبُ", "يَطْلُبَانِ", "يَطْلُبُونَ", "تَطْلُبُ", "تَطْلُبَانِ", "يَطْلُبْنَ", "تَطْلُبُ", "تَطْلُبَانِ", "تَطْلُبُونَ", "تَطْلُبِينَ", "تَطْلُبَانِ", "تَطْلُبْنَ", "أَطْلُبُ", "نَطْلُبُ", "نَطْلُبُ"]
         },
 
+        3: { base: { emoji: "🙏", arText: "اُطْلُبْ", trText: "İste / Talep et." } },
+        3: { base: { emoji: "✨", arText: "نُرْ", trText: "Aydınlat / Işık saç." } },
         // --- 17 Numaralı Kalıp (فَعَل - Mücerret Masdar) ---
         17: { 
             base: { 
@@ -11161,6 +11165,15 @@ const wordEasterEggs = {
         }
     },
     "صلح": {
+        // --- 22 Numaralı Kalıp (فَعَال) ---
+        22: {
+            base: {
+                emoji: "🕌",
+                arText: "صَلَاح",
+                trText: "Salah / İyilik, düzelme, doğruluk.",
+                ornek: { ar: "صَلَاحُ الدِّينِ الْأَيُّوبِيّ", tr: "Dinin salahı/iyiliği (Selahaddin Eyyubi)." }
+            }
+        },
         // --- 21 Numaralı Kalıp (فُعْل - İsim/Masdar) ---
         21: { 
             base: { 
@@ -12228,6 +12241,7 @@ const wordEasterEggs = {
             cekimi: ["يَطْرُدُ", "يَطْرُدَانِ", "يَطْرُدُونَ", "تَطْرُدُ", "تَطْرُدَانِ", "يَطْرُدْنَ", "تَطْرُدُ", "تَطْرُدَانِ", "تَطْرُدُونَ", "تَطْرُدِينَ", "تَطْرُدَانِ", "تَطْرُدْنَ", "أَطْرُدُ", "نَطْرُدُ", "نَطْرُدُ"]
         },
 
+        3: { base: { emoji: "🚪", arText: "اُطْرُدْ", trText: "Kov." } },
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar / İsim) ---
         19: { 
             base: { 
@@ -15523,6 +15537,9 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             }
         },
 
+        3: { base: { emoji: "🏃‍♂️", arText: "رُحْ", trText: "Git." } },
+        3: { base: { emoji: "☀️", arText: "اُطْلُعْ", trText: "Doğ / Çık." } },
+        3: { base: { emoji: "🤔", arText: "ظُنَّ", trText: "San / Zannet." } },
         // --- 17 Numaralı Kalıp (فَعَل - İsim) ---
         17: {
             base: { arText: "رَوَح" }, // Yalın ve asli hali (İ'lâl'den önceki kök formu)
@@ -19652,6 +19669,10 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         }
     },
     "فضل": {
+        90: { base: { emoji: "🤲", arText: "تَفَضَّلَ", trText: "Lütfetti / Buyurdu." } },
+        91: { base: { emoji: "💬", arText: "يَتَفَضَّلُ", trText: "Lütfeder / Buyurur." } },
+        92: { base: { emoji: "🚪", arText: "تَفَضَّلْ", trText: "Buyur / Lütfen." } },
+        93: { base: { emoji: "🤝", arText: "مُتَفَضِّل", trText: "Lütfeden / İkram eden." } },
         58: { 
             base: { emoji: "⭐", arText: "فَضَّلَ", trText: "Tercih Etti" } 
         },
@@ -20486,4 +20507,144 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             }
         }
     },
+
+    "شرق": {
+        1: { base: { emoji: "🌅", arText: "شَرَقَ", trText: "Doğdu." } },
+        2: { base: { emoji: "☀️", arText: "يَشْرُقُ", trText: "Doğar." } },
+        3: { base: { emoji: "🌄", arText: "اُشْرُقْ", trText: "Doğ." } },
+        25: { base: { emoji: "🌅", arText: "شُرُوق", trText: "Doğuş / Güneşin doğması." } },
+        37: { base: { emoji: "🌍", arText: "مَشْرِق", trText: "Doğu." } }
+    },
+    "صغر": {
+        11: { base: { emoji: "🔽", arText: "صَغُرَ", trText: "Küçük oldu." } },
+        12: { base: { emoji: "📉", arText: "يَصْغُرُ", trText: "Küçük olur / Küçülür." } },
+        13: { base: { emoji: "🔽", arText: "اُصْغُرْ", trText: "Küçül." } },
+        35: { base: { emoji: "🐜", arText: "صَغِير", trText: "Küçük." } },
+        50: { 
+            base: { emoji: "🔬", arText: "أَصْغَر", trText: "Daha küçük / En küçük." },
+            suggestsPlus: true,
+            "يّ": { emoji: "🔻", arText: "أَصْغَرِيّ", trText: "Asgari / En alt sınır." }
+        }
+    },
+    "خفف": {
+        1: { base: { emoji: "🍃", arText: "خَفَّ", trText: "Hafifledi." } },
+        4: { base: { emoji: "💨", arText: "يَخِفُّ", trText: "Hafifler." } },
+        5: { base: { emoji: "🍃", arText: "خِفَّ", trText: "Hafifle." } },
+        35: { base: { emoji: "🪶", arText: "خَفِيف", trText: "Hafif." } },
+        50: { base: { emoji: "🎈", arText: "أَخَفّ", trText: "Daha hafif." } },
+        58: { base: { emoji: "📉", arText: "خَفَّفَ", trText: "Hafifletti." } }
+    },
+    "غلو": {
+        1: { base: { emoji: "📈", arText: "غَلَا", trText: "Pahalı oldu." } },
+        2: { base: { emoji: "💰", arText: "يَغْلُو", trText: "Pahalı olur." } },
+        3: { base: { emoji: "📈", arText: "اُغْلُ", trText: "Pahalı ol." } },
+        33: { base: { emoji: "💎", arText: "غَالٍ", trText: "Pahalı." } },
+        50: { base: { emoji: "👑", arText: "أَغْلَى", trText: "Daha pahalı." } }
+    },
+    "رخص": {
+        11: { base: { emoji: "📉", arText: "رَخُصَ", trText: "Ucuz oldu." } },
+        12: { base: { emoji: "🏷️", arText: "يَرْخُصُ", trText: "Ucuzlar." } },
+        13: { base: { emoji: "📉", arText: "اُرْخُصْ", trText: "Ucuzla." } },
+        35: { base: { emoji: "💸", arText: "رَخِيص", trText: "Ucuz." } },
+        50: { base: { emoji: "🏷️", arText: "أَرْخَص", trText: "Daha ucuz." } }
+    },
+    "طير": {
+        1: { base: { emoji: "🦅", arText: "طَارَ", trText: "Uçtu." } },
+        4: { base: { emoji: "🕊️", arText: "يَطِيرُ", trText: "Uçar." } },
+        5: { base: { emoji: "🦅", arText: "طِرْ", trText: "Uç." } },
+        33: { 
+            base: { emoji: "🦅", arText: "طَائِر", trText: "Uçan / Kuş." },
+            suggestsPlus: true,
+            "ة": { emoji: "✈️", arText: "طَائِرَة", trText: "Uçak." }
+        },
+        38: { base: { emoji: "🛬", arText: "مَطَار", trText: "Havaalanı." } },
+        43: { base: { emoji: "🐦", arText: "طُيُور", trText: "Kuşlar." } }
+    },
+    "سير": {
+        1: { base: { emoji: "🚶", arText: "سَارَ", trText: "Yürüdü / Gitti." } },
+        2: { base: { emoji: "🚶‍♂️", arText: "يَسِيرُ", trText: "Yürür / Gider." } },
+        3: { base: { emoji: "🚶‍♀️", arText: "سِرْ", trText: "Yürü / Git." } },
+        34: {
+            base: { emoji: "🚶‍♂️", arText: "سَيَّار", trText: "Çok yürüyen / Gezen." },
+            suggestsPlus: true,
+            "ة": { emoji: "🚗", arText: "سَيَّارَة", trText: "Araba." }
+        }
+    },
+    "قطر": {
+        1: { base: { emoji: "💧", arText: "قَطَرَ", trText: "Damladı." } },
+        2: { base: { emoji: "💦", arText: "يَقْطُرُ", trText: "Damlar." } },
+        3: { base: { emoji: "💧", arText: "اُقْطُرْ", trText: "Damla." } },
+        23: { base: { emoji: "🚂", arText: "قِطَار", trText: "Tren." } }
+    },
+    "طبب": {
+        20: { base: { emoji: "🩺", arText: "طِبّ", trText: "Tıp." } },
+        35: { base: { emoji: "👨‍⚕️", arText: "طَبِيب", trText: "Doktor." } }
+    },
+    "حدث": {
+        35: { base: { emoji: "✨", arText: "حَدِيث", trText: "Modern / Yeni / Hadis." } },
+        50: { base: { emoji: "🌟", arText: "أَحْدَث", trText: "Daha modern / En yeni." } },
+        1: { base: { emoji: "🎬", arText: "حَدَثَ", trText: "Meydana geldi / Oldu." } },
+        2: { base: { emoji: "🔄", arText: "يَحْدُثُ", trText: "Meydana gelir." } },
+        3: { base: { emoji: "🎬", arText: "اُحْدُثْ", trText: "Meydana gel / Ol." } },
+        33: {
+            base: { emoji: "⚠️", arText: "حَادِث", trText: "Olan / Kaza." },
+            suggestsPlus: true,
+            "ة": { emoji: "💥", arText: "حَادِثَة", trText: "Hadise / Olay." }
+        },
+        67: { base: { emoji: "🗣️", arText: "مُحَادَثَة", trText: "Konuşma / Sohbet." } },
+        "çoğul": { base: { emoji: "📰", arText: "حَوَادِث", trText: "Havadisler / Olaylar." } }
+    },
+    "بطأ": {
+        1: { base: { emoji: "🐢", arText: "بَطُؤَ", trText: "Yavaş oldu." } },
+        2: { base: { emoji: "⏳", arText: "يَبْطُؤُ", trText: "Yavaşlar." } },
+        3: { base: { emoji: "🐢", arText: "اُبْطُؤْ", trText: "Yavaşla." } },
+        35: { base: { emoji: "🐌", arText: "بَطِيء", trText: "Yavaş." } }
+    },
+    "طرق": {
+        1: { base: { emoji: "✊", arText: "طَرَقَ", trText: "Vurdu / Çaldı." } },
+        2: { base: { emoji: "🚪", arText: "يَطْرُقُ", trText: "Vurur / Çalar." } },
+        3: { base: { emoji: "🔨", arText: "اُطْرُقْ", trText: "Vur / Çal." } },
+        35: { base: { emoji: "🛣️", arText: "طَرِيق", trText: "Yol." } }
+    },
+    "قلل": {
+        1: { base: { emoji: "📉", arText: "قَلَّ", trText: "Azaldı." } },
+        4: { base: { emoji: "⬇️", arText: "يَقِلُّ", trText: "Azalır." } },
+        5: { base: { emoji: "🔻", arText: "قِلَّ", trText: "Azal." } },
+        20: { base: { emoji: "🤏", arText: "قِلَّة", trText: "Azlık." } },
+        35: { base: { emoji: "🤏", arText: "قَلِيل", trText: "Az." } },
+        50: { base: { emoji: "🔻", arText: "أَقَلّ", trText: "Daha az." } }
+    },
+    "كثر": {
+        11: { base: { emoji: "📈", arText: "كَثُرَ", trText: "Çoğaldı." } },
+        12: { base: { emoji: "⬆️", arText: "يَكْثُرُ", trText: "Çoğalır." } },
+        13: { base: { emoji: "➕", arText: "اُكْثُرْ", trText: "Çoğal." } },
+        35: { base: { emoji: "💯", arText: "كَثِير", trText: "Çok." } },
+        50: {
+            base: { emoji: "➕", arText: "أَكْثَر", trText: "Daha çok." },
+            suggestsPlus: true,
+            "يَّة": { emoji: "📊", arText: "أَكْثَرِيَّة", trText: "Çoğunluk / Ekseriyet." }
+        },
+        61: { base: { emoji: "📋", arText: "تَكْثِير", trText: "Çoğaltma." } }
+    },
+    "ضوء": {
+        1: { base: { emoji: "💡", arText: "ضَاءَ", trText: "Işıldadı / Parladı." } },
+        2: { base: { emoji: "✨", arText: "يَضُوءُ", trText: "Işıldar." } },
+        3: { base: { emoji: "💡", arText: "ضُءْ", trText: "Işılda." } },
+        19: { base: { emoji: "💡", arText: "ضَوْء", trText: "Işık." } }
+    },
+    "مرر": {
+        1: { base: { emoji: "🚶", arText: "مَرَّ", trText: "Geçti / Uğradı." } },
+        2: { base: { emoji: "🔄", arText: "يَمُرُّ", trText: "Geçer / Uğrar." } },
+        3: { base: { emoji: "➡️", arText: "مُرَّ", trText: "Geç / Uğra." } },
+        25: { base: { emoji: "🚦", arText: "مُرُور", trText: "Geçiş / Trafik." } }
+    },
+    "سوق": {
+        1: { base: { emoji: "🚗", arText: "سَاقَ", trText: "Sürdü / Sevk etti." } },
+        2: { base: { emoji: "🚚", arText: "يَسُوقُ", trText: "Sürer / Sevk eder." } },
+        3: { base: { emoji: "🏎️", arText: "سُقْ", trText: "Sür / Sevk et." } },
+        21: { base: { emoji: "🛒", arText: "سُوق", trText: "Çarşı / Pazar." } },
+        90: { base: { emoji: "🛍️", arText: "تَسَوَّقَ", trText: "Alışveriş yaptı." } },
+        91: { base: { emoji: "🛒", arText: "يَتَسَوَّقُ", trText: "Alışveriş yapar." } },
+        92: { base: { emoji: "🛍️", arText: "تَسَوَّقْ", trText: "Alışveriş yap." } }
+    }
 };

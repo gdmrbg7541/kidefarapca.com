@@ -28,7 +28,9 @@ const kategoriTanimlari = {
     "kalip": { title: "Kalıplar ve İfadeler", arTitle: "التَّعْبيرات وَالقَوالِب", icon: "💬", items: [] }
 };
 
-const sozlukVerileri = {    "Kalıp: İyi Akşamlar": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🌙", arText: "مَساء الخَيْر", trText: "İyi Akşamlar", ornek: { ar: "مَساء الخَيْر لِلْجَميع", tr: "Herkese iyi akşamlar." } } } },
+const sozlukVerileri = {
+    "İsim: Hadise": { isDictOnly: true, tekil: { base: { emoji: "💥", arText: "حَادِثَة", trText: "Hadise / Olay" } }, cogul: "حَوَادِث", cogulTr: "Hadiseler" },
+    "Kalıp: İyi Akşamlar": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🌙", arText: "مَساء الخَيْر", trText: "İyi Akşamlar", ornek: { ar: "مَساء الخَيْر لِلْجَميع", tr: "Herkese iyi akşamlar." } } } },
     "Kalıp: Nasılsın": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "❓", arText: "كَيْفَ حالُكَ؟", trText: "Nasılsın?", ornek: { ar: "مَرْحَبًا، كَيْفَ حالُكَ اليَوْم؟", tr: "Merhaba, bugün nasılsın?" } } } },
     "Kalıp: Teşekkürler": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "💖", arText: "شُكْرًا جَزيلًا", trText: "Çok teşekkür ederim", ornek: { ar: "شُكْرًا جَزيلًا عَلى مُساعَدَتِك", tr: "Yardımın için çok teşekkür ederim." } } } },
     "Kalıp: Rica Ederim": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "😊", arText: "عَفْوًا", trText: "Rica ederim / Bir şey değil", ornek: { ar: "- شُكْرًا جَزِيلًا. - عَفْوًا.", tr: "- Çok teşekkür ederim. - Rica ederim." } } } },
