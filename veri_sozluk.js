@@ -1,4 +1,6 @@
 const kategoriTanimlari = {
+        "olumsuz": { title: "Olumsuzluk Edatları", arTitle: "أَدَوات النَّفْي", icon: "🚫", items: [] },
+    "sart": { title: "Şart Edatları", arTitle: "أَدَوات الشَّرْط", icon: "⚖️", items: [] },
     "harficer": { title: "Harf-i Cerler", arTitle: "حُروف الجَرّ", icon: "🔤", items: [] },
     "baglac": { title: "Bağlaçlar", arTitle: "حُروف العَطْف", icon: "🔗", items: [] },
     "soru": { title: "Soru Edatları", arTitle: "أَدَوات الاسْتِفْهام", icon: "❓", items: [] },
@@ -115,7 +117,16 @@ const sozlukVerileri = {
     "Zarf: Altında": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "⬇️", arText: "تَحْتَ", trText: "Altında" } } },
     "Zarf: Önünde": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "➡️", arText: "أَمَامَ", trText: "Önünde" } } },
     "Zarf: Arkasında": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "⬅️", arText: "خَلْفَ / وَرَاءَ", trText: "Arkasında / Gerisinde" } } },
-    "Zarf: Yanında": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, zamirBase: "عِنْدَ / لَدَى", tekil: { base: { emoji: "👥", arText: "عِنْدَ / لَدَى", trText: "Yanında / Katında / Sahip" } } },
+        "Edat: La": { isDictOnly: true, tip: "olumsuz", tekil: { base: { emoji: "❌", arText: "لَا", trText: "Hayır / Değil (Olumsuzluk)" } } },
+    "Edat: Lem": { isDictOnly: true, tip: "olumsuz", tekil: { base: { emoji: "🛑", arText: "لَمْ", trText: "Yapmadı / Etmedi (Mazi Olumsuz)" } } },
+    "Edat: Lemma": { isDictOnly: true, tip: ["olumsuz", "zaman", "sart"], tekil: { base: { emoji: "⏳", arText: "لَمَّا", trText: "Henüz değil / ...dığında" } } },
+    "Edat: Len": { isDictOnly: true, tip: "olumsuz", tekil: { base: { emoji: "🚧", arText: "لَنْ", trText: "Asla yapmayacak (Gelecek Olumsuz)" } } },
+    "Edat: In": { isDictOnly: true, tip: ["sart", "olumsuz"], tekil: { base: { emoji: "⚖️", arText: "إِنْ", trText: "Eğer / Şayet / Değil (Olumsuz)" } } },
+    "Edat: Iza": { isDictOnly: true, tip: ["sart", "zaman"], tekil: { base: { emoji: "🕒", arText: "إِذَا", trText: "Zamanında / Eğer / Dığında" } } },
+    "Edat: Lev": { isDictOnly: true, tip: "sart", tekil: { base: { emoji: "💭", arText: "لَوْ", trText: "Keşke / Eğer (Gerçekleşmemiş şart)" } } },
+    "Edat: Leyse": { isDictOnly: true, tip: "olumsuz", tekil: { base: { emoji: "🚫", arText: "لَيْسَ", trText: "Değil (İsim cümlesi olumsuzu)" } } },
+    "Edat: Muz": { isDictOnly: true, tip: ["harficer", "zaman"], tekil: { base: { emoji: "⏳", arText: "مُذْ / مُنْذُ", trText: "-den beri (Zaman / Başlangıç)" } } },
+    "Edat: Inde Leda": { isDictOnly: true, tip: ["zaman", "zarf"], hasZamirCekimi: true, zamirBase: "عِنْدَ / لَدَى", tekil: { base: { emoji: "👥", arText: "عِنْدَ / لَدَى", trText: "Yanında / Katında / Sahip" } } },
     "Zarf: Arasında": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "↔️", arText: "بَيْنَ", trText: "Arasında" } } },
     "Zarf: Etrafında": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "🔄", arText: "حَوْلَ", trText: "Çevresinde / Etrafında" } } },
     "Zarf: İçinde": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "📥", arText: "دَاخِلَ", trText: "İçinde" } } },
@@ -124,11 +135,12 @@ const sozlukVerileri = {
     "Zarf: Orada": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "🗺️", arText: "هُنَاكَ / هُنَالِكَ", trText: "Orada / Şurada" } } },
 
     // --- Soru Edatları ---
-    "Soru: Ne": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "❓", arText: "مَا / مَاذَا", trText: "Ne? / Neler?" } } },
-    "Soru: Kim": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🧑‍⚖️", arText: "مَنْ", trText: "Kim? / Kimler?" } } },
+    "Soru: Maza": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "❓", arText: "مَاذَا", trText: "Ne? / Neler?" } } },
+    "Edat: Ma": { isDictOnly: true, tip: ["soru", "mevsul", "olumsuz"], tekil: { base: { emoji: "📦", arText: "مَا", trText: "Ne? / O şey ki / Değil (Olumsuzluk)" } } },
     "Soru: Nerede": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "📍", arText: "أَيْنَ", trText: "Nerede?" } } },
     "Soru: Ne Zaman": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "⏰", arText: "مَتَى", trText: "Ne Zaman?" } } },
     "Soru: Nasıl": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🤷", arText: "كَيْفَ", trText: "Nasıl?" } } },
+    "Edat: Men": { isDictOnly: true, tip: ["soru", "mevsul", "sart"], tekil: { base: { emoji: "👤", arText: "مَنْ", trText: "Kim? / O kimse ki / Kim ... yaparsa (Şart)" } } },
     "Soru: Neden": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🤔", arText: "لِمَاذَا", trText: "Neden? / Niçin?" } } },
     "Soru: Hangi": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🔀", arText: "أَيُّ", trText: "Hangi?" } } },
     "Soru: Kaç": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🔢", arText: "كَمْ", trText: "Kaç? / Ne Kadar?" } } },
@@ -152,11 +164,10 @@ const sozlukVerileri = {
     "Harficer: İla": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "➡️", arText: "إِلَى", trText: "-e / -a (Yönelme)" } } },
     "Harficer: Fi": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "📥", arText: "فِي", trText: "-de / -da (İçinde bulunma)" } } },
     "Harficer: An": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "⬅️", arText: "عَنْ", trText: "-den / Hakkında (Uzaklaşma)" } } },
-    "Harficer: Ala": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "⬆️", arText: "عَلَى", trText: "Üzerine / Üzerinde" } } },
-    "Harficer: Li": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "🏷️", arText: "لِ", trText: "İçin / Ait" } } },
+    "Edat: Ala": { isDictOnly: true, tip: ["harficer", "baglac"], hasZamirCekimi: true, tekil: { base: { emoji: "⬆️", arText: "عَلَى", trText: "Üzerine / Üzerinde" } } },
+    "Edat: Li": { isDictOnly: true, tip: ["harficer", "baglac"], hasZamirCekimi: true, tekil: { base: { emoji: "🏷️", arText: "لِ", trText: "İçin / Ait" } } },
     "Harficer: Bi": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "🤝", arText: "بِ", trText: "İle / Birlikte" } } },
     "Harficer: Ke": { isDictOnly: true, tip: "harficer", hasZamirCekimi: true, tekil: { base: { emoji: "👯", arText: "كَ", trText: "Gibi (Benzetme)" } } },
-    "Harficer: Kasem": { isDictOnly: true, tip: "harficer", tekil: { base: { emoji: "✋", arText: "وَ / تَ / بِ", trText: "Yemin harfleri (Vallahi vb.)" } } },
 
 
     // =================================================================================================
@@ -194,8 +205,6 @@ const sozlukVerileri = {
     "Mevsul: O İki Kimse ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗🔗", arText: "اَللَّتَانِ", trText: "O iki kimse ki (Dişil / İkil)" } } },
     "Mevsul: O Kimseler ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَلَّذِينَ", trText: "O kimseler ki (Eril / Çoğul)" } } },
     "Mevsul: O Kimseler ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَللَّاتِي / اَللَّوَاتِي", trText: "O kimseler ki (Dişil / Çoğul)" } } },
-    "Mevsul: Cansızlar için (Şey)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "📦", arText: "مَا", trText: "O şey ki (Cansızlar/Kavramlar için)" } } },
-    "Mevsul: Canlılar için (Kimse)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🧍", arText: "مَنْ", trText: "O kimse ki (Akıllılar/İnsanlar için)" } } },
 
     // Büyük sözlük veritabanını buraya dahil ediyoruz
     ...eski_sozlukVerileri,
@@ -1143,7 +1152,7 @@ const sozlukVerileri = {
     // ==================================================================
     // BAĞLAÇLAR (Atıf Harfleri)
     // ==================================================================
-    "Bağlaç: Ve": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "➕", arText: "وَ", trText: "Ve / İle" } } },
+    "Edat: Ve": { isDictOnly: true, tip: ["baglac", "harficer"], tekil: { base: { emoji: "➕", arText: "وَ", trText: "Ve / İle / Yemin harfi (Kasem)" } } },
     "Bağlaç: Fe": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "⏭️", arText: "فَ", trText: "Hemen sonra / Bu yüzden" } } },
     "Bağlaç: Sümme": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "⏳", arText: "ثُمَّ", trText: "Sonra / Daha sonra" } } },
     "Bağlaç: Ev": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "🔀", arText: "أَوْ", trText: "Veya / Yahut" } } },

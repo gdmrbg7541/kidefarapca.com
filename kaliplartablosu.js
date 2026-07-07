@@ -176,6 +176,7 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
         }
     }
 }
+
 function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     // if (typeof closeKeyboard === 'function') closeKeyboard();
 
@@ -301,6 +302,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                       </div>`;
                       
     htmlContent += `</div>`;
+
 
     // Eski sozlukVerileri Mantığı (Artık tüm kelimeler buradan geçiyor)
         let maziId = -1, muzariId = -1, emirId = -1, masdarId = -1;
@@ -468,21 +470,22 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let tipToUse = (itemTekil && itemTekil.tip) || rootData.tip;
             let tipList = Array.isArray(tipToUse) ? tipToUse : [tipToUse];
             
-            let muhurHtml = "";
-            tipList.forEach((tip, index) => {
-                let muhurText = "İSİM";
-                let muhurColor = "#7f8c8d"; // Gray
-                
-                if (tip === "soru") { muhurText = "SORU EDATI"; muhurColor = "#8e44ad"; } // Purple
-                else if (tip === "harficer") { muhurText = "HARF-İ CER"; muhurColor = "#d35400"; } // Orange
-                else if (tip === "zarf") { muhurText = "ZARF"; muhurColor = "#16a085"; } // Teal
-                else if (tip === "baglac") { muhurText = "BAĞLAÇ"; muhurColor = "#c0392b"; } // Red
-                else if (tip === "zamir" || tip === "isaret" || tip === "mevsul") { muhurText = "ZAMİR"; muhurColor = "#f39c12"; } // Yellow-Orange
-                
-                let topOffset = -15 + (index * 35);
-                muhurHtml += `<div style="position:absolute; top:${topOffset}px; left:15px; background-color:${muhurColor}; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.1rem; box-shadow:0 3px 6px rgba(0,0,0,0.15); border:2px solid rgba(255,255,255,0.9); transform:rotate(-5deg); z-index:20; font-family: 'Arakom', sans-serif; letter-spacing:1px;">${muhurText}</div>`;
-            });
-            
+                        let muhurHtml = "";
+            if (tipList && tipList.length > 0) {
+                                let anaTur = "İSİM";
+                let anaRenk = "#2980b9"; // Mavi
+                if (tipList.some(t => ['kalip'].includes(t))) {
+                    anaTur = "İFADE";
+                    anaRenk = "#8e44ad"; // Mor
+                } else if (tipList.some(t => ['zaman', 'zarf'].includes(t))) {
+                    anaTur = "ZARF";
+                    anaRenk = "#16a085"; // Turkuaz
+                } else if (tipList.some(t => ['harficer', 'baglac', 'soru', 'olumsuz', 'sart'].includes(t))) {
+                    anaTur = "EDAT";
+                    anaRenk = "#d35400"; // Turuncu
+                }
+                muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:${anaRenk}; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">${anaTur}</div>`;
+            }
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
             htmlContent += `<div style="display:flex; justify-content:center; align-items:center; width:100%; text-align:center;">`;
@@ -494,9 +497,11 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             if (itemTekil && itemTekil.base && itemTekil.base.ornek) {
                 let ornekler = Array.isArray(itemTekil.base.ornek) ? itemTekil.base.ornek : [itemTekil.base.ornek];
                 ornekHtml += `<div style="margin-top:25px; padding:15px; background:rgba(236, 240, 241, 0.6); border-radius:10px; border:1px solid rgba(189, 195, 199, 0.5);">`;
-                ornekler.forEach(ornek => {
+                ornekler.forEach((ornek, index) => {
                     if (ornek.ar && ornek.tr) {
-                        ornekHtml += `<div style="margin-bottom:15px; border-bottom:1px solid rgba(189, 195, 199, 0.3); padding-bottom:10px;">
+                        let isLast = index === ornekler.length - 1;
+                        let borderStyle = isLast ? "" : "border-bottom:1px solid rgba(189, 195, 199, 0.3); margin-bottom:15px; padding-bottom:10px;";
+                        ornekHtml += `<div style="${borderStyle}">
                                         <div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#d35400; margin-bottom:10px;" dir="rtl">${ornek.ar}</div>
                                         <div style="color:#7f8c8d; font-size:1.2rem; font-weight:500;" dir="ltr">${ornek.tr}</div>
                                       </div>`;
@@ -4958,10 +4963,10 @@ function updateMainKeyboardPredictions() {
                     let matchedConjugations = [];
                     
                     if (isArabicSearch) {
-                        matches = normalizeArabic(strippedAr).startsWith(normalizeArabic(filter));
+                        matches = normalizeArabic(strippedAr).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
                         if (!matches && kalipData.base.muennes) {
                             const strippedMuennes = window.stripHarakat(kalipData.base.muennes);
-                            matches = normalizeArabic(strippedMuennes).startsWith(normalizeArabic(filter));
+                            matches = normalizeArabic(strippedMuennes).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
                         }
                         
                         // DEEP CONJUGATION SEARCH
