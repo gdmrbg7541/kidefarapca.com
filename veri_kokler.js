@@ -3638,6 +3638,8 @@ const eski_sozlukVerileri = {
                 emoji: "📍", 
                 arText: "مَكَان", 
                 trText: "Yer / Mekan.",
+                cogul: "أَمَاكِن",
+                cogulTr: "Mekanlar.",
                 ornek: { ar: "شَرَفُ الْمَكَانِ بِالْمَكِينِ", tr: "Bir mekânın şerefi (değeri), orada bulunanlardan gelir. (Atasözü)" }
             } 
         },

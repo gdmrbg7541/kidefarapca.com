@@ -65,6 +65,9 @@ function getMuttasilZamirleri(baseWord) {
     else if (baseWord === "مِنْ") p1sg = "مِنِّي";
     else if (baseWord === "عَنْ") p1sg = "عَنِّي";
     
+    // Fix for words ending in Alif Maqsura or Ya (e.g. في, على, إلى) for 1SG
+    p1sg = p1sg.replace(/يْي$/, "يَّ").replace(/ِيي$/, "ِيَّ").replace(/يِي$/, "يَّ").replace(/يي$/, "يَّ");
+    
     return [
         {m: base + suffixHu, f: base + suffixHa}, // 3SG
         {m: base + suffixHuma, f: base + suffixHumaF}, // 3DU
@@ -80,38 +83,38 @@ function getMuttasilZamirleri(baseWord) {
 function renderZamirCekimTable(baseWord) {
     let zamirler = getMuttasilZamirleri(baseWord);
     let html = `
-    <div style="margin-top: 30px; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); direction: rtl;">
-        <div style="color: #f1c40f; font-size: 1.6rem; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-table"></i> Zamir Çekim Tablosu</div>
+    <div style="margin-top: 30px; background: rgba(255,255,255,0.85); border-radius: 15px; border: 1px solid rgba(189, 195, 199, 0.5); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); direction: rtl;">
+        <div style="color: #2980b9; font-size: 1.6rem; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-table"></i> Zamir Çekim Tablosu</div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; color: #bdc3c7; font-weight: bold;">Tekil (Müfred)</div>
-            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; color: #bdc3c7; font-weight: bold;">İkil (Müsenna)</div>
-            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; color: #bdc3c7; font-weight: bold;">Çoğul (Cemi')</div>
+            <div style="background: rgba(236, 240, 241, 0.6); padding: 10px; border-radius: 10px; color: #7f8c8d; font-weight: bold;">Tekil (Müfred)</div>
+            <div style="background: rgba(236, 240, 241, 0.6); padding: 10px; border-radius: 10px; color: #7f8c8d; font-weight: bold;">İkil (Müsenna)</div>
+            <div style="background: rgba(236, 240, 241, 0.6); padding: 10px; border-radius: 10px; color: #7f8c8d; font-weight: bold;">Çoğul (Cemi')</div>
             
             <!-- 3. Şahıs Eril -->
-            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
                 <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #3498db; opacity: 0.7;">O (E)</span>
                 ${zamirler[0].m}
             </div>
-            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
                 <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #3498db; opacity: 0.7;">O İkisi (E)</span>
                 ${zamirler[1].m}
             </div>
-            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
+            <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
                 <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #3498db; opacity: 0.7;">Onlar (E)</span>
                 ${zamirler[2].m}
             </div>
             
             <!-- 3. Şahıs Dişil -->
             <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
-                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #e74c3c; opacity: 0.7;">O (D)</span>
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #c0392b; opacity: 0.7;">O (D)</span>
                 ${zamirler[0].f}
             </div>
             <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
-                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #e74c3c; opacity: 0.7;">O İkisi (D)</span>
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #c0392b; opacity: 0.7;">O İkisi (D)</span>
                 ${zamirler[1].f}
             </div>
             <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
-                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #e74c3c; opacity: 0.7;">Onlar (D)</span>
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #c0392b; opacity: 0.7;">Onlar (D)</span>
                 ${zamirler[2].f}
             </div>
             
@@ -145,11 +148,11 @@ function renderZamirCekimTable(baseWord) {
             
             <!-- 1. Şahıs (Ben / Biz) -->
             <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(241, 196, 15, 0.15); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
-                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #f1c40f; opacity: 0.7;">Ben</span>
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #2980b9; opacity: 0.7;">Ben</span>
                 ${zamirler[6].m}
             </div>
             <div style="grid-column: span 2; font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(241, 196, 15, 0.15); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
-                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #f1c40f; opacity: 0.7;">Biz</span>
+                <span style="position: absolute; top: 5px; left: 5px; font-family: Arial; font-size: 0.9rem; color: #2980b9; opacity: 0.7;">Biz</span>
                 ${zamirler[7].m}
             </div>
         </div>
@@ -200,8 +203,8 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         modal.style.top = '50%';
         modal.style.left = '50%';
         modal.style.transform = 'translate(-50%, -50%)';
-        modal.style.background = '#2c3e50';
-        modal.style.color = '#ecf0f1';
+        modal.style.background = '#f8f9fa';
+        modal.style.color = '#333333';
         modal.style.padding = '20px';
         modal.style.borderRadius = '15px';
         modal.style.zIndex = '99999999';
@@ -252,13 +255,19 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     if (itemClickedEarly && itemClickedEarly.tip) earlyActualTip = itemClickedEarly.tip;
     
     let displayTitle = "";
-    if (earlyActualTip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[earlyActualTip]) {
-        let trT = thematicCategoriesData[earlyActualTip].title.toLocaleUpperCase('tr-TR');
-        displayTitle = `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${earlyActualTip}')" style="display:inline-flex; align-items:center; background: rgba(0,0,0,0.3); padding: 8px 30px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#f1c40f; font-size:1.6rem; font-weight: bold; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${thematicCategoriesData[earlyActualTip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.1rem; margin-left: 8px;"></i></span></div>`;
-    } else if (exactArText) {
+    let earlyTipList = Array.isArray(earlyActualTip) ? earlyActualTip : [earlyActualTip];
+    
+    earlyTipList.forEach(tip => {
+        if (tip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[tip]) {
+            let trT = thematicCategoriesData[tip].title.toLocaleUpperCase('tr-TR');
+            displayTitle += `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${tip}')" style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 8px 20px; margin: 0 5px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#333; font-size:1.3rem; font-weight: bold; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${thematicCategoriesData[tip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.0rem; margin-left: 5px;"></i></span></div>`;
+        }
+    });
+
+    if (!displayTitle && exactArText) {
         displayTitle = `
-        <div style="display:inline-flex; align-items:center; background: rgba(0,0,0,0.3); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);">
-            <span style="font-size:3.5rem; color:#ffffff; font-family: 'Arakom', sans-serif; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${exactArText}</span>
+        <div style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <span style="font-size:3.5rem; color:#1a1a1a; font-family: 'Arakom', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.1);">${exactArText}</span>
         </div>`;
     }
     
@@ -274,7 +283,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     }
     
     if (isRootValidForTable) {
-        htmlContent += `  <div style="position:absolute; left:0; cursor:pointer; background:#5cb85c; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index:10;" 
+        htmlContent += `  <div style="position:absolute; left:0; cursor:pointer; background:#5cb85c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
                             onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Vezin Tablosu">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
                           </div>`;
@@ -286,7 +295,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     }
     
     // RIGHT CORNER: Close Button
-    htmlContent += `  <div style="position:absolute; right:0; cursor:pointer; background:#e74c3c; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index:10;" 
+    htmlContent += `  <div style="position:absolute; right:0; cursor:pointer; background:#e74c3c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
                         onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none';" title="Kapat">
                         <i class="fas fa-times"></i>
                       </div>`;
@@ -350,11 +359,11 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 }
 
                 htmlContent += `
-                <div style="background:rgba(0,0,0,0.4); padding:30px 10px; border-radius:15px; border:2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                    <div style="color:${card.color}; font-size:1.6rem; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
+                <div style="background:rgba(236, 240, 241, 0.6); padding:30px 10px; border-radius:15px; border:1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="color:${card.color}; font-size:1.6rem; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
                     ${emoji}
-                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5);">${arText}</span>
-                    ${trText}
+                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
+                    ${trText ? trText.replace("color:#e2e8f0;", "color:#333; font-weight:500;") : ''}
                 </div>`;
             });
             htmlContent += `</div></div>`;
@@ -440,7 +449,11 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             } else {
                 // Sadece kendisini (tekil olarak) göster
                 itemTekil = itemClicked;
-                itemCogul = null;
+                if (itemClicked.base && itemClicked.base.cogul) {
+                    itemCogul = { base: { emoji: "", arText: itemClicked.base.cogul, trText: itemClicked.base.cogulTr || "" } };
+                } else {
+                    itemCogul = null;
+                }
             }
             
             // If itemTekil is not found due to math, fallback to itemClicked
@@ -453,16 +466,23 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             }
             
             let tipToUse = (itemTekil && itemTekil.tip) || rootData.tip;
-            let muhurText = "İSİM";
-            let muhurColor = "#2980b9"; // Blue
+            let tipList = Array.isArray(tipToUse) ? tipToUse : [tipToUse];
             
-            if (tipToUse === "soru") { muhurText = "SORU EDATI"; muhurColor = "#8e44ad"; } // Purple
-            else if (tipToUse === "harficer") { muhurText = "HARF-İ CER"; muhurColor = "#d35400"; } // Orange
-            else if (tipToUse === "zarf") { muhurText = "ZARF"; muhurColor = "#16a085"; } // Teal
-            else if (tipToUse === "baglac") { muhurText = "BAĞLAÇ"; muhurColor = "#c0392b"; } // Red
-            else if (tipToUse === "zamir" || tipToUse === "isaret" || tipToUse === "mevsul") { muhurText = "ZAMİR"; muhurColor = "#f39c12"; } // Yellow-Orange
+            let muhurHtml = "";
+            tipList.forEach((tip, index) => {
+                let muhurText = "İSİM";
+                let muhurColor = "#7f8c8d"; // Gray
+                
+                if (tip === "soru") { muhurText = "SORU EDATI"; muhurColor = "#8e44ad"; } // Purple
+                else if (tip === "harficer") { muhurText = "HARF-İ CER"; muhurColor = "#d35400"; } // Orange
+                else if (tip === "zarf") { muhurText = "ZARF"; muhurColor = "#16a085"; } // Teal
+                else if (tip === "baglac") { muhurText = "BAĞLAÇ"; muhurColor = "#c0392b"; } // Red
+                else if (tip === "zamir" || tip === "isaret" || tip === "mevsul") { muhurText = "ZAMİR"; muhurColor = "#f39c12"; } // Yellow-Orange
+                
+                let topOffset = -15 + (index * 35);
+                muhurHtml += `<div style="position:absolute; top:${topOffset}px; left:15px; background-color:${muhurColor}; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.1rem; box-shadow:0 3px 6px rgba(0,0,0,0.15); border:2px solid rgba(255,255,255,0.9); transform:rotate(-5deg); z-index:20; font-family: 'Arakom', sans-serif; letter-spacing:1px;">${muhurText}</div>`;
+            });
             
-            let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:${muhurColor}; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">${muhurText}</div>`;
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
             htmlContent += `<div style="display:flex; justify-content:center; align-items:center; width:100%; text-align:center;">`;
@@ -473,12 +493,12 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let ornekHtml = '';
             if (itemTekil && itemTekil.base && itemTekil.base.ornek) {
                 let ornekler = Array.isArray(itemTekil.base.ornek) ? itemTekil.base.ornek : [itemTekil.base.ornek];
-                ornekHtml += `<div style="margin-top:25px; padding:15px; background:rgba(0,0,0,0.2); border-radius:10px;">`;
+                ornekHtml += `<div style="margin-top:25px; padding:15px; background:rgba(236, 240, 241, 0.6); border-radius:10px; border:1px solid rgba(189, 195, 199, 0.5);">`;
                 ornekler.forEach(ornek => {
                     if (ornek.ar && ornek.tr) {
-                        ornekHtml += `<div style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
-                                        <div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#f1c40f; margin-bottom:10px;" dir="rtl">${ornek.ar}</div>
-                                        <div style="color:#bdc3c7; font-size:1.2rem;" dir="ltr">${ornek.tr}</div>
+                        ornekHtml += `<div style="margin-bottom:15px; border-bottom:1px solid rgba(189, 195, 199, 0.3); padding-bottom:10px;">
+                                        <div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#d35400; margin-bottom:10px;" dir="rtl">${ornek.ar}</div>
+                                        <div style="color:#7f8c8d; font-size:1.2rem; font-weight:500;" dir="ltr">${ornek.tr}</div>
                                       </div>`;
                     }
                 });
@@ -489,10 +509,10 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let emoji = (itemTekil && itemTekil.base.emoji) ? itemTekil.base.emoji : ((itemCogul && itemCogul.base.emoji) ? itemCogul.base.emoji : '');
             
             let tip = (itemTekil && itemTekil.tip) || rootData.tip;
-            let isRenk = (tip === "renk");
-            let isSayi = (tip === "sayi");
-            let actualTip = tip;
-            if (tip === "sayi" && rootKey.includes("Sıra:")) actualTip = "sirasayi";
+            let isRenk = tipList.includes("renk");
+            let isSayi = tipList.includes("sayi");
+            let actualTip = tipList[0] || "isim"; // Varsayılan tip ilk eleman olsun
+            if (tipList.includes("sayi") && rootKey.includes("Sıra:")) actualTip = "sirasayi";
             if (kalipKey === 49) actualTip = "tasgir";
             if (kalipKey === 50 || kalipKey === 51) actualTip = "tafdil";
             
@@ -523,28 +543,28 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let titleHtml = '';
 
             htmlContent += `
-            <div style="width:100%; text-align:center; background:rgba(255,255,255,0.1); padding:40px 20px; border-radius:15px; border:1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px);">
+            <div style="width:100%; text-align:center; background:rgba(255,255,255,0.95); padding:40px 20px; border-radius:15px; border:1px solid rgba(0,0,0,0.1); box-shadow: 0 8px 30px rgba(0,0,0,0.1); backdrop-filter: blur(10px);">
                 ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
                 ${titleHtml}
                 
                 <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
                     ${tekilAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        ${firstColLabel ? `<div style="background:rgba(241,196,15,0.15); color:#f1c40f; padding:6px 18px; border-radius:20px; border:1px solid rgba(241,196,15,0.4); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 4px 10px rgba(0,0,0,0.2);">${firstColLabel}</div>` : ''}
-                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${tekilAr}</span>
-                        ${tekilTr ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${tekilTr}</span>` : ''}
+                        ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel}</div>` : ''}
+                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
+                        ${tekilTr ? `<span style="color:#576574; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
                     ${(tekilAr && secondColAr) ? `
-                    <div style="display:flex; align-items:center; justify-content:center; padding-top: 15px;">
-                        <span style="font-family:'Arakom', sans-serif; font-size:4rem; color:#f1c40f; margin: 0 15px; opacity:0.8; line-height: 1.2;">${separator}</span>
+                    <div style="display:flex; align-items:center; justify-content:center; margin-top: 45px;">
+                        <span style="font-family:'Arakom', sans-serif; font-size:4rem; color:#e1b12c; margin: 0 15px; opacity:0.9; line-height: 1.2;">${separator}</span>
                     </div>` : ''}
                     
                     ${secondColAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#2ecc71; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.4); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 4px 10px rgba(0,0,0,0.2);">${secondColLabel}</div>` : ((isRenk || isSayi) ? `<div style="color:#e74c3c; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
-                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#fff; text-shadow:0 2px 5px rgba(0,0,0,0.5); line-height: 1.2;">${secondColAr}</span>
-                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#e2e8f0; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4;" dir="ltr">${secondColTr}</span>` : ''}
+                        ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
+                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
+                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
                 ${ornekHtml}
@@ -6711,11 +6731,12 @@ function renderThematicLists() {
         const rootData = sozlukVerileri[rootKey];
         
         if (rootData.isDictOnly && rootData.tip) {
-            const tip = rootData.tip;
-            let actualTip = tip;
-            if (tip === "sayi" && rootKey.includes("Sıra:")) actualTip = "sirasayi";
-            
-            if (!categories[actualTip]) {
+            let tipList = Array.isArray(rootData.tip) ? rootData.tip : [rootData.tip];
+            tipList.forEach(tip => {
+                let actualTip = tip;
+                if (tip === "sayi" && rootKey.includes("Sıra:")) actualTip = "sirasayi";
+                
+                if (!categories[actualTip]) {
                 // OTOMATİK ALGILAMA: Kullanıcı sozlukverileri.js'ye tip eklemiş ama kategoriTanimlari'na eklemeyi unutmuşsa,
                 // sistem çökmesin diye otomatik olarak geçici bir liste başlığı oluşturuyoruz.
                 let autoTitle = actualTip.replace(/_/g, " ");
@@ -6734,13 +6755,15 @@ function renderThematicLists() {
                     });
                 }
             }
+            });
         } else if (rootKey.length === 3) {
             // Tıpkı 'isDictOnly' gibi, kalıpların içindeki 'tip' özelliklerini tarayarak listelere ekle
             for (const kalipNo in rootData) {
                 const kData = rootData[kalipNo];
                 if (kData && kData.tip) {
-                    const tip = kData.tip;
-                    if (!categories[tip]) {
+                    let tipList = Array.isArray(kData.tip) ? kData.tip : [kData.tip];
+                    tipList.forEach(tip => {
+                        if (!categories[tip]) {
                         let autoTitle = tip.replace(/_/g, " ");
                         autoTitle = autoTitle.charAt(0).toUpperCase() + autoTitle.slice(1);
                         categories[tip] = { title: autoTitle, icon: "📌", items: [] };
@@ -6754,6 +6777,7 @@ function renderThematicLists() {
                             emoji: kData.base.emoji || ""
                         });
                     }
+                    });
                 }
             }
 
@@ -7160,12 +7184,12 @@ function initMemoryGrid(key, forceShuffle = false) {
                 <div class="memory-card-inner">
                     <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
                     <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
-                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0;">${item.arText}</div>
+                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${thematicCategoriesData[key]?.arFontSize ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${item.arText}</div>
                     </div>
                     <!-- ARKA YÜZ: Türkçe ve Emoji -->
                     <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                         <div style="font-size: 4rem; margin-bottom: 5px;">${item.emoji || '✨'}</div>
-                        <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center;" dir="ltr">${item.trText}</div>
+                        <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center; ${thematicCategoriesData[key]?.trFontSize ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
                     </div>
                 </div>
             `;

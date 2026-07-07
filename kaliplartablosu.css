@@ -2278,7 +2278,12 @@ html body .glass-box.tanimsiz-kok .ref {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, border-radius 0.3s ease;
+    border-radius: 15px;
+}
+
+.thematic-accordion-item.active .thematic-accordion-header {
+    border-radius: 15px 15px 0 0;
 }
 
 .thematic-accordion-header:hover {
@@ -2688,29 +2693,7 @@ input:checked +
     position: relative;
 }
 
-/* KESİNTİSİZ DİKEY ÇİZGİLER (Sütunları ayırmak için) */
-#thematic-accordion-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background-color: #777;
-    left: calc(33.333% - 2.5px);
-    z-index: 10;
-    pointer-events: none;
-}
-#thematic-accordion-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background-color: #777;
-    left: calc(66.666% + 2.5px);
-    z-index: 10;
-    pointer-events: none;
-}
+/* KESİNTİSİZ DİKEY ÇİZGİLER KALDIRILDI (Tasarım Bağımsızlığı) */
 
 
 .thematic-accordion-item {
@@ -3161,4 +3144,17 @@ input:checked + .slider:before {
 .thematic-words-grid.memory-mode .memory-card-face {
     min-height: 0 !important;
     overflow: hidden !important;
+}
+
+/* Fullscreen modundayken grid çizgilerini ve sütunları kaldır */
+.fullscreen-accordion #thematic-accordion-container {
+    border: none !important;
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.fullscreen-accordion .thematic-accordion-item {
+    border: none !important;
+    margin-bottom: 0 !important;
 }
