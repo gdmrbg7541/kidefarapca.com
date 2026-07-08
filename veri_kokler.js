@@ -1282,10 +1282,6 @@ const wordEasterEggs = {
         // --- 20 Numaralı Kalıp (فِعْل) ---
         20: { 
             base: {
-                arText: "حُكْم",
-                 emoji: "📖" },
-            suggestsPlus: true, 
-            "ة": {
                 emoji: "🦉", 
                 arText: "حِكْمَة", 
                 trText: "Hikmet / Bilgelik.",
@@ -6143,13 +6139,7 @@ const wordEasterEggs = {
 
         // --- 21 Numaralı Kalıp (فُعْل) ---
         21: { 
-            base: { 
-                emoji: "🔢", 
-                arText: "عُدّ", 
-                trText: "Hazırlık"},
-            
-            suggestsPlus: true, 
-            "ة": {
+            base: {
                 emoji: "🎒", 
                 arText: "عُدَّة", 
                 trText: "Hazırlık / Teçhizat (İddet).",
@@ -7857,14 +7847,7 @@ const wordEasterEggs = {
 
         // --- İsim ve Masdar Kalıpları ---
         21: { 
-            base: { 
-                emoji: "⏳", 
-                arText: "عُمْر", 
-                trText: "Ömür / Yaşam.",
-                ornek: { ar: "أَطَالَ اللهُ عُمْرَكَ", tr: "Allah ömrünü uzatsın." }
-            },
-            suggestsPlus: true,
-            "ة": {
+            base: {
                 emoji: "🕋", 
                 arText: "عُمْرَة", 
                 trText: "Umre / Ziyaret (Kutsal mekanı şenlendirme).",
@@ -9130,14 +9113,7 @@ const wordEasterEggs = {
 
         // --- 20 Numaralı Kalıp (فِعْل ve + ة ile فِعْلَة - Masdar-ı Hey'et) ---
         20: { 
-            base: { 
-                emoji: "📦", 
-                arText: "ثِقْل", 
-                trText: "Sıkl / Yük, Ağırlık (Maddi veya manevi).",
-                ornek: { ar: "ثِقْلُ الْمَسْؤُولِيَّةِ", tr: "Sorumluluğun yükü (ağırlığı)." }
-            },
-            suggestsPlus: true,
-            "ة": {
+            base: {
                 emoji: "🥊", 
                 arText: "ثِقْلَة", 
                 trText: "Sıklet / Ağırlık derecesi, ağırlık basması.",
@@ -13876,9 +13852,7 @@ const wordEasterEggs = {
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
         21: { 
-            base: { arText: "لُعْب" },
-            suggestsPlus: true,
-            "ة": { 
+            base: { 
                 emoji: "🧸", 
                 arText: "لُعْبَة", 
                 trText: "Lu'be / Oyuncak, oynanan oyun.",
@@ -14672,16 +14646,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
             base: { 
-                emoji: "🥊", 
-                arText: "ضَرْب", 
-                trText: "Darp / Vurma",
-                ornek: { 
-                    ar: "تَعَرَّضَ لِلضَّرْبِ", 
-                    tr: "Darba (saldırıya) maruz kaldı." 
-                }
-            },
-            suggestsPlus: true,
-            "ة": { 
                 emoji: "⚠️", 
                 arText: "ضَرْبَة", 
                 trText: "Darbe / Bir kere vurma (Masdar-ı Merra).",
@@ -15908,12 +15872,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 19 Numaralı Kalıp (فَعْل - Fa'l Vezni) ---
         19: { 
             base: { 
-                emoji: "🛠️", 
-                arText: "صَنْع", 
-                trText: "Yapma (Yalın Hâl)." 
-            },
-            suggestsPlus: true,
-            "ة": { 
                 emoji: "🎭", 
                 arText: "صَنْعَة", 
                 trText: "Sanat / İş, meslek, zanaat.",
@@ -16279,13 +16237,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 20 Numaralı Kalıp (فِعْل - İsim / +ة ile Masdar-ı Hey'et) ---
         20: { 
             base: { 
-                emoji: "🧩", 
-                arText: "قِسْم", 
-                trText: "Kısım / Bölüm, parça, şube.",
-                ornek: { ar: "هَذَا الْكِتَابُ يَتَكَوَّنُ مِنْ ثَلَاثَةِ أَقْسَامٍ", tr: "Bu kitap üç kısımdan (bölümden) oluşmaktadır." }
-            },
-            suggestsPlus: true,
-            "ة": { 
                 emoji: "🤲", 
                 arText: "قِسْمَة", 
                 trText: "Kısmet / Pay, nasip, bölme işlemi.",
@@ -16494,9 +16445,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim Formu) ---
         21: { 
-            base: { arText: "عُقْد" }, // Yalın hali sessiz
-            suggestsPlus: true,
-            "ة": { 
+            base: { 
                 emoji: "🔗", 
                 arText: "عُقْدَة", 
                 trText: "Ukde (Düğüm) / Çözülemeyen sorun, karmaşa.",
@@ -16514,7 +16463,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                         tr: "Semantik Not: Türkçede 'İçimde ukde kaldı' dediğimiz ifade tam olarak bu kelimedir. Çözülememiş, içeride kördüğüm olup kalmış dert, sızı veya ulaşılamamış heves demektir."
                     }
                 ]
-            } 
+            }, // Yalın hali sessiz
+             
         },
         // --- 35 Numaralı Kalıp (فَعِيل - Sıfat / İsim) ---
         35: { 
@@ -16688,16 +16638,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
             base: { 
-                emoji: "🥊", 
-                arText: "دَفْع", 
-                trText: "Def / İtme, uzaklaştırma, ödeme.",
-                ornek: {
-                    ar: "دَفْعُ الْبَلَاءِ",
-                    tr: "Belayı uzaklaştırma (Def-i bela)."
-                }
-            },
-            suggestsPlus: true,
-            "ة": { 
                 emoji: "🔄", 
                 arText: "دَفْعَة", 
                 trText: "Defa / Bir kere itme, kerede ödeme, sefer.",
@@ -17076,12 +17016,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
             base: { 
-                emoji: "☕", 
-                arText: "جَلْس", 
-                trText: "Cels / Oturma eylemi." 
-            },
-            suggestsPlus: true,
-            "ة": { 
                 emoji: "⚖️", 
                 arText: "جَلْسَة", 
                 trText: "Celse / Oturum, duruşma, toplantı.",
@@ -17800,9 +17734,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 19 Numaralı Kalıp (فَعْل ve + ة ile Zahmet) ---
         19: { 
-            base: {},
-            suggestsPlus: true,
-            "ة": { 
+            base: { 
                 emoji: "😓", 
                 arText: "زَحْمَة", 
                 trText: "Zahmet / Sıkışıklık. (💡 Semantik Değişim: Kelime Arapçada aslen 'kalabalık, sıkışıklık' anlamına gelirken, Türkçede bu sıkışıklığın doğurduğu 'yorgunluk, meşakkat, zorluk' şeklinde bir anlam kaymasına uğramıştır).",
@@ -17925,10 +17857,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 21 Numaralı Kalıp (فُعْل - İsim) ---
         21: { 
             base: { 
-                emoji: "🗣️"
-            },
-            suggestsPlus: true,
-            "ة": { 
                 emoji: "🌟", 
                 arText: "سُمْعَة", 
                 trText: "Süm'a / Şöhret, itibar, kulaktan kulağa yayılan nam.",
