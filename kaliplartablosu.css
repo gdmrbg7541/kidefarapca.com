@@ -1954,7 +1954,7 @@ body.matrix-active { overflow: hidden !important; }
     .ar-small, #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1.1 !important; }
     .siga-text { font-size: 18px !important; }
     
-    .glass-box { width: auto !important; min-width: 50px !important; max-width: 95% !important; padding: 4px 8px !important; margin: 2px auto !important; display: inline-block !important; box-sizing: border-box !important; }
+    .glass-box { width: auto !important; min-width: 50px !important; max-width: 95% !important; padding: 2px 8px !important; margin: 2px auto !important; display: inline-block !important; box-sizing: border-box !important; }
     .ref { font-size: 11px !important; top: 1px !important; right: 2px !important; padding: 1px 4px !important; }
     
     .verb-table { transform-origin: top right; width: 100% !important; }
@@ -3188,7 +3188,4 @@ input:checked + .slider:before {
     filter: brightness(1.1);
 }
 
-/* Emir fiillerindeki esre (kasra) taşmasını önlemek için alt boşluğu artır */
-.glass-box {
-    padding-bottom: 10px !important;
-}
+
