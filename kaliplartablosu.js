@@ -1929,8 +1929,20 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         </div>
         <div class="matrix-close-btn" style="z-index: 11; top: 2px;" onclick="closeInlineMatrix(event, this)">✕</div>
     `;
+    
+    let grammarBtnTitle = tip.replace('_mezid', '').replace('_', ' ').toUpperCase();
+    if (grammarBtnTitle === 'ZAMAN MEKAN') grammarBtnTitle = 'ZAMAN / MEKAN';
+    
+    html += `
+        <div style="position: absolute; top: 40px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 10;">
+            <button onclick="if(typeof openGrammarOverlay === 'function') openGrammarOverlay('${tip}')" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 6px 20px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px; transition: transform 0.1s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                ${grammarBtnTitle} KONU ANLATIMI
+            </button>
+        </div>
+    `;
 
-    html += `<div class="carousel-container-outer" style="position: relative; margin-top: 35px; width: 100%; display: flex; align-items: center; justify-content: center; height: calc(100% - 35px);">`;
+    html += `<div class="carousel-container-outer" style="position: relative; margin-top: 75px; width: 100%; display: flex; align-items: center; justify-content: center; height: calc(100% - 75px);">`;
     
     if (hasCarousel) {
         // Okların yerini değiştirdik: İçeriye aldık ve ortaladık
