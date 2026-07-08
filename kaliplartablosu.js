@@ -6245,8 +6245,10 @@ window.openMarathon = function() {
     window.isAtlasMode = false;
     document.getElementById('timer-display').style.display = 'block';
     document.getElementById('top-bar-panel').style.display = 'flex';
-    document.getElementById('screen-play').style.display = 'flex';
-    document.getElementById('screen-atlas').style.display = 'none';
+    document.getElementById('screen-play').style.display = '';
+    document.getElementById('screen-atlas').style.display = '';
+    document.getElementById('screen-result').style.display = '';
+    showMarathonScreen('screen-play');
     document.getElementById('live-total-score').style.display = 'block';
     document.getElementById('chrono-main').style.display = 'block';
     document.getElementById('stage-label').style.display = 'block';
@@ -6653,8 +6655,16 @@ window.loadMarathonTable = function() {
 
     const prevArr = document.getElementById('prev-arr');
     const nextArr = document.getElementById('next-arr');
-    if (prevArr) prevArr.disabled = (window.mCurrentStage === 0);
-    if (nextArr) nextArr.innerText = (window.mCurrentStage === 2) ? "✓" : "❯";
+    // Sol ok (İleri)
+    if (prevArr) {
+        prevArr.disabled = false;
+        prevArr.innerText = (window.mCurrentStage === 2) ? "✓" : "❮";
+    }
+    // Sağ ok (Geri)
+    if (nextArr) {
+        nextArr.disabled = (window.mCurrentStage === 0);
+        nextArr.innerText = "❯";
+    }
 };
 
 window.changeMarathonStage = function(dir) {
@@ -7711,8 +7721,10 @@ window.openAtlasOverlay = function(stage) {
     if (nextArr) nextArr.style.display = 'none';
     
     document.getElementById('top-bar-panel').style.display = 'none';
-    document.getElementById('screen-play').style.display = 'none';
-    document.getElementById('screen-atlas').style.display = 'flex';
+    document.getElementById('screen-play').style.display = '';
+    document.getElementById('screen-atlas').style.display = '';
+    document.getElementById('screen-result').style.display = '';
+    showMarathonScreen('screen-atlas');
     document.getElementById('screen-atlas').style.position = 'relative';
     
 
