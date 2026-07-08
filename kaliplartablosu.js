@@ -351,7 +351,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     earlyTipList.forEach(tip => {
         if (tip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[tip]) {
             let trT = thematicCategoriesData[tip].title.toLocaleUpperCase('tr-TR');
-            displayTitle += `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${tip}')" style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 8px 20px; margin: 0 5px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#333; font-size:1.3rem; font-weight: bold; text-transform:uppercase; letter-spacing:1px;" dir="ltr">${thematicCategoriesData[tip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.0rem; margin-left: 5px;"></i></span></div>`;
+            displayTitle += `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${tip}')" style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 8px 20px; margin: 0 5px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#333; font-size:1.3rem; font-weight: bold;  letter-spacing:1px;" dir="ltr">${thematicCategoriesData[tip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.0rem; margin-left: 5px;"></i></span></div>`;
         }
     });
 
@@ -627,7 +627,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             
             if ((isRenk || isSayi) && itemTekil && itemTekil.base.muennes) {
                 secondColAr = itemTekil.base.muennes;
-                secondColTr = "Müennes (Dişil)";
+                secondColLabel = "Müennes (Dişil)";
                 firstColLabel = "Müzekker (Eril)";
                 separator = "♀/♂";
             } else if (cogulAr) {
@@ -647,7 +647,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
                     ${tekilAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel}</div>` : ''}
+                        ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel.toLocaleUpperCase("tr-TR")}</div>` : ''}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
                         ${tekilTr ? `<span style="color:#576574; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
@@ -659,7 +659,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     
                     ${secondColAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
+                        ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel.toLocaleUpperCase("tr-TR")}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
                         ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
@@ -1204,6 +1204,7 @@ function openVerbModal() {
     
     // YENİ EKLENEN: Arkadaki eski tabloyu, renkleri ve kahverengi taşı tamamen temizle!
     currentRoot = "";
+    if (typeof toggleRootHint === 'function') toggleRootHint(true);
     const tempDisp = document.getElementById('temp-root-display');
     if (tempDisp) tempDisp.innerText = "";
     if (typeof updateTempDisplay === 'function') updateTempDisplay();
@@ -1218,6 +1219,7 @@ function openVerbModal() {
     // Arama kutusunu ve arka plan hafızasını tamamen sıfırla
     const searchInput = document.getElementById('root-search');
     if (searchInput) searchInput.value = "";
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
     if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
     
     // Doğru filtreleme fonksiyonu (Kayıp kökleri geri getirir)
@@ -1234,22 +1236,16 @@ function openVerbModal() {
 // --- 2. HAZIR KÖK MENÜSÜNÜ KAPATMA (Önce Sil, Sonra Kapat) ---
 function closeVerbModal() {
     const searchInput = document.getElementById('root-search');
+    if (searchInput) searchInput.value = "";
+    if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
+    if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter(); 
     
-    if (searchInput && searchInput.value.length > 0) {
-        searchInput.value = "";
-        if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
-        if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter(); 
-        if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        if (typeof toggleRootHint === 'function') toggleRootHint(true);
-    } else {
-        // Eğer kutu zaten boşsa menüyü tamamen kapat
-        document.getElementById('verb-overlay').style.display = 'none';
-        if (typeof closeSearchKeyboard === 'function') closeSearchKeyboard();
-        if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        
-        // EKSİKTİ: Menüyü boşken kapattığında da ana ekranda kelime yoksa ışığı geri yak!
-        if (typeof toggleRootHint === 'function') toggleRootHint(true);
-    }
+    const overlay = document.getElementById('verb-overlay');
+    if (overlay) overlay.style.display = 'none';
+    
+    if (typeof closeSearchKeyboard === 'function') closeSearchKeyboard();
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
+    if (typeof toggleRootHint === 'function') toggleRootHint(true);
 }
 
 function selectReadyVerb(verb) {
@@ -1913,7 +1909,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
         let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
         
-        if (prefix) return `<span style="color: #64748b; font-weight: normal; margin-left: 15px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+        if (prefix) return `<span style="color: #000000; font-weight: normal; margin-left: 15px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
         return `<span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
     }
 
@@ -3694,7 +3690,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
                 combinedHtml += `
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; background: #f8f9fa; padding: 25px 20px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                         <div style="font-family: 'Arakom', sans-serif; font-size: 55px; color: #000; direction: rtl; line-height: 1.4; text-align: center;">${orn.ar}</div>
-                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #475569; direction: ltr; line-height: 1.4; text-align: center;">${orn.tr}</div>
+                        <div style="font-family: 'Arakom', sans-serif; font-size: 30px; color: #000000; direction: ltr; line-height: 1.4; text-align: center;">${orn.tr}</div>
                     </div>
                 `;
             });
@@ -5835,9 +5831,9 @@ function toggleRootHint(showRequest) {
     // NOT: Kullanıcı talebi üzerine 'hasRootText' kontrolü kaldırıldı, kök seçili olsa bile çarpıya basılınca ikonlar yanacak.
     const searchInput = document.getElementById('root-search');
     const hasSearchText = searchInput && searchInput.value.length > 0;
-    const hasRootText = typeof currentRoot !== 'undefined' && currentRoot.length > 0;
+    const hasRootText = typeof currentRoot !== 'undefined' && currentRoot.length === 3;
 
-    if (hasSearchText) {
+    if (hasSearchText || hasRootText) {
         shouldShow = false;
     }
 
@@ -6020,10 +6016,10 @@ window.closeBabInfo = function(event) {
 window.initBabIcons = function() {
     // Renklerin daha koyu, tok ve okunaklı pastel tonları
     const pastelColors = ['#f87171', '#fb923c', '#eab308', '#4ade80', '#2dd4bf', '#22d3ee', '#38bdf8', '#60a5fa', '#a78bfa', '#c084fc', '#f472b6', '#fb7185'];
-    let colorIndex = 0;
+    
     // 'align="center"' olan td'leri bul (Masdar Tablosundaki Hücreler)
     const tdElements = document.querySelectorAll('td[align="center"]');
-    
+    let colorIndex = 0;
     tdElements.forEach(td => {
         // Hücre içindeki yazıyı (ikon html'i olmadan) saf metin olarak çekiyoruz
         let rawText = td.innerText || td.textContent;
@@ -6354,7 +6350,7 @@ window.openMarathon = function() {
         
         // Fiil kelimesi (Çok daha büyük ve net)
         let wordHtml = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(v.word, currentRoot.split("")) : v.word;
-        let btnHtml = `<div style="font-family: 'Arakom', serif; font-size: 4.8rem; font-weight: normal; color: #1e293b; text-align: center;">${wordHtml}</div>`;
+        let btnHtml = `<div style="font-family: 'Arakom', serif; font-size: 4.8rem; font-weight: normal; color: #000000; text-align: center;">${wordHtml}</div>`;
         
  
        
@@ -6368,10 +6364,10 @@ window.openMarathon = function() {
             
             if (ornekAr || ornekTr) {
                 btnHtml += `
-                    <div style="background: #f8fafc; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
+                    <div style="background: #f3f0ff; border-right: 5px solid #6c5ce7; border-radius: 16px; padding: 20px 25px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; gap: 15px; position: relative;">
                         <div style="position: absolute; top: 12px; right: 18px; color: #cbd5e1; font-size: 1.5rem;"><i class="fas fa-quote-right"></i></div>
                         <div style="font-family: 'Arakom', serif; font-size: 2.8rem; color: #0f172a; line-height: 1.5; direction: rtl;">${ornekAr}</div>
-                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #475569; font-weight: normal; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; color: #000000; font-weight: normal; direction: ltr; letter-spacing: 0.3px;">${ornekTr}</div>
                     </div>`;
             }
         }
@@ -6723,6 +6719,7 @@ function showMarathonScreen(id) {
 window.openKeyboard = function() {
     // Hafızayı ve ekranı temizle
     currentRoot = "";
+    if (typeof toggleRootHint === 'function') toggleRootHint(true);
     const tempDisp = document.getElementById('temp-root-display');
     if (tempDisp) tempDisp.innerText = "";
     if (typeof updateTempDisplay === 'function') updateTempDisplay();
@@ -6810,6 +6807,7 @@ function openRootsModal() {
         
         const searchInput = document.getElementById('root-search');
         if (searchInput) searchInput.value = "";
+        if (typeof toggleRootHint === 'function') toggleRootHint(true);
         if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = "";
         if (typeof updatePredictionsAndFilter === 'function') updatePredictionsAndFilter();
         
@@ -7007,14 +7005,20 @@ function renderThematicLists() {
 
     html = "";
     
+    var colorIndex = 0;
     // Satır Satır DOM oluşturuyoruz
     for(let r = 0; r < rows; r++) {
-        let rowKeys = [];
+        
+    // Pastel colors for accordion items
+    const pastelColors = ['#e6e2d8', '#d8dfd6', '#e8dadb', '#d4dbe0', '#ded9e3', '#e6dacb', '#d3dfdf', '#dadfda', '#e8e4d3', '#dfd7df'];
+    let rowKeys = [];
+
         if(r < L) rowKeys.push(sortedKeys[r]);
         if(r + rows < L) rowKeys.push(sortedKeys[r + rows]);
         if(r + 2*rows < L) rowKeys.push(sortedKeys[r + 2*rows]);
         
         // 1. Bu satırın başlıkları (Sırayla 3 sütuna yerleşir)
+        
         for (const key of rowKeys) {
             const cat = categories[key];
             if (!cat) continue;
@@ -7033,7 +7037,7 @@ function renderThematicLists() {
             };
             
             html += `
-                <div class="thematic-accordion-item" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
+                <div class="thematic-accordion-item" style="background: ${pastelColors[colorIndex++ % pastelColors.length]}; color: #000;" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
                     <div class="thematic-accordion-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <i class="fas fa-chevron-down thematic-accordion-icon" id="icon-${key}"></i>
@@ -7041,7 +7045,7 @@ function renderThematicLists() {
                                 ${cat.icon} 
                                 <div style="display:flex; flex-direction:column; align-items:flex-start;">
                                     <span>${cat.title}</span>
-                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:rgba(255,255,255,0.7); line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
+                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:#000; line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
                                 </div>
                             </h3>
                         </div>
@@ -7051,6 +7055,7 @@ function renderThematicLists() {
         }
         
         // 2. Bu satırın İçerikleri (Tıklandığında tüm satırı kaplayacak şekilde başlıkların altına yerleşir)
+        
         for (const key of rowKeys) {
             const cat = categories[key];
             if (!cat) continue;
@@ -7720,12 +7725,12 @@ window.openAtlasOverlay = function(stage) {
     // Verb Stages (with Tables)
     if (stage === 'mazi' || stage === 'mazi_mezid') {
         arTitle = "الماضي"; trTitle = "Geçmiş Zaman (Mazi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Mazi Fiil</strong>, genel olarak geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen bitişik zamirlerle (soneklerle) yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
-            <div style="background: #f8fafc; border-left: 4px solid #3b82f6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+            <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 8px;"><strong>1. Dua ve Beddua (Temenni):</strong> Mazi fiil çok sık olarak dua veya beddua bildirmek için kullanılır. "رَضِيَ اللهُ عَنْهُ" (Allah ondan razı olsun - Geçmiş zaman değil duadır). Veya "تَبَّتْ يَدَا أَبِي لَهَبٍ" (Ebu Leheb'in elleri kurusun).</li>
                     <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللَّهِ" (Allah'ın emri geldi/gelecek).</li>
@@ -7735,12 +7740,12 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'muzari' || stage === 'muzari_mezid') {
         arTitle = "المُضارِع"; trTitle = "Geniş / Şimdiki Zaman (Muzari)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Muzari Fiil</strong>, eylemin şu an yapıldığını (şimdiki zaman), her zaman yapıldığını (geniş zaman) veya gelecekte yapılacağını bildirir. Çekimi fiilin başına getirilen "Eteyne (أتين)" harfleriyle ve soneklerle yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
-            <div style="background: #f8fafc; border-left: 4px solid #8b5cf6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Muzari'nin Anlamını Değiştiren Edatlar:</h4>
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Muzari'nin Anlamını Değiştiren Edatlar:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 8px;"><strong>سَ / سَوْفَ (Gelecek Zaman):</strong> Muzarinin başına gelerek anlamı kesin olarak geleceğe taşır. "سَـ" yakın gelecek (Örn: سَيَعْلَمُونَ - Yakında bilecekler), "سَوْفَ" uzak gelecek bildirir.</li>
                     <li style="margin-bottom: 8px;"><strong>لَمْ / لَمَّا (Cehd-i Mutlak/Mustağrak):</strong> Muzariyi meczum (cezimli) yapar ve anlamını <em>kesin olarak geçmiş zamana ve olumsuza</em> çevirir. Örn: "لَمْ يَلِدْ" (Doğurmadı).</li>
@@ -7751,12 +7756,12 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'emir' || stage === 'emir_mezid') {
         arTitle = "الأَمْر"; trTitle = "Emir Kipi"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Emir Fiili</strong>, karşımızdaki kişiden (muhatap/muhataba) bir işi yapmasını istemek için kullanılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
-            <div style="background: #f8fafc; border-left: 4px solid #ef4444; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Edebi ve Kur'an'i Nüanslar (Emrin Mertebeleri):</h4>
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Edebi ve Kur'an'i Nüanslar (Emrin Mertebeleri):</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 8px;"><strong>1. Gerçek Emir (Üstten Alta):</strong> Amirin memura, babanın çocuğa, efendinin köleye verdiği talimatlardır. Gerçek manada emirdir.</li>
                     <li style="margin-bottom: 8px;"><strong>2. Dua ve Niyaz (Alttan Üste):</strong> Kulun Allah'a veya astın üste söylediği "Emir" kipleri teknik olarak emir kalıbında olsa da asla emir sayılmaz, <strong>Dua ve Yakarış</strong> kabul edilir. Kur'an'da ve dualarda çok sık geçer: <em>"رَبَّنَا اغْفِرْ لَنَا" (Rabbimiz, bizi bağışla!)</em>, <em>"ارْحَمْنَا" (Bize merhamet et)</em>.</li>
@@ -7769,18 +7774,18 @@ window.openAtlasOverlay = function(stage) {
     // Mücerred Nouns (No Tables)
     else if (stage === 'mastar') {
         arTitle = "المَصْدَر"; trTitle = "Mastar"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Mastar</strong>, eylemin kök adıdır (yapmak, etmek gibi). Fiilin bildirdiği işi, zamana veya şahsa bağlı olmadan bağımsız bir "isim" olarak ifade eder.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كِتَابَة</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Yazmak</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كِتَابَة</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazmak</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">دُخُول</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Girmek</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">دُخُول</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Girmek</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Mastar Çeşitleri:</h4>
+            <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Mastar Çeşitleri:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 6px;"><strong>Mastar-ı Gayr-i Mîmî:</strong> Asıl mastarlardır (Semâi). Örn: ذَهَاب (Gitmek).</li>
                     <li style="margin-bottom: 6px;"><strong>Mastar-ı Mîmî:</strong> Başında zait bir "mim (م)" bulunan mastardır. Örn: مَحَبَّة (Sevmek), مَوْت (Ölmek), مَطْلَب (Taleb etmek).</li>
@@ -7792,36 +7797,36 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_fail') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir. Sülasi mücerred (3 harfli) fiillerde <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كَاتِب</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Yazan / Kâtip</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كَاتِب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazan / Kâtip</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">عَالِم</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Bilen / Âlim</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">عَالِم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Bilen / Âlim</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Türkçe'deki Kullanımı:</h4>
+            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Kullanımı:</h4>
                 <p style="margin: 0;">Türkçemizde Arapça kökenli binlerce "İsmi Fail" kalıbı vardır. Sesi <em>-Â -İ</em> şeklinde uzatarak hissetmek çok kolaydır:<br><br>
                 <strong>Örnekler:</strong> Câhil, Hâkim, Sâlim, Zâlim, Fâtih, Kâşif, Nâzım, Şâir, Sâbır, Şâkir, Sâdık...</p>
             </div>
         </div>`;
     } else if (stage === 'ismi_meful') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir. Sülasi mücerred fiillerde <strong>"مَفْعُول" (Mef'ûl)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتُوب</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Yazılan / Mektup</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتُوب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazılan / Mektup</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَعْلُوم</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Bilinen / Malum</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَعْلُوم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Bilinen / Malum</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Türkçe'deki Kullanımı:</h4>
+            <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Kullanımı:</h4>
                 <p style="margin: 0;">Faili (yapanı) ve Mef'ulü (yapılanı) Türkçede ikili olarak sıkça kullanırız:<br>
                 Hâkim (hüküm veren) -> <strong>Mahkûm</strong> (Hüküm yemiş)<br>
                 Zâlim (zulmeden) -> <strong>Mazlûm</strong> (Zulme uğrayan)<br>
@@ -7831,18 +7836,18 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'zaman_mekan') {
         arTitle = "اِسْمُ الزَّمان والمَكان"; trTitle = "Zaman ve Mekan İsmi"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Eylemin yapıldığı <strong>zamanı</strong> veya eylemin gerçekleştiği <strong>yeri (mekan)</strong> ifade etmek için kullanılan kalıplardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتَب</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Yazı Yeri (Ofis/Mektep)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتَب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazı Yeri (Ofis/Mektep)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَسْجِد</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Secde Yeri (Mescit)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَسْجِد</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Secde Yeri (Mescit)</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #ec4899; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Temel Kalıplar ve Türkçe Kullanımı:</h4>
+            <div style="background: #fdf2f8; border-left: 4px solid #ec4899; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Temel Kalıplar ve Türkçe Kullanımı:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 6px;"><strong>مَفْعَل (Mef'al):</strong> Mekteb, Meclis, Mahşer, Mağrib (Batı), Meşrik (Doğu), Makber.</li>
                     <li style="margin-bottom: 6px;"><strong>مَفْعِل (Mef'il):</strong> Mescid, Menzil.</li>
@@ -7852,18 +7857,18 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_alet') {
         arTitle = "اِسْمُ الآلَة"; trTitle = "İsmi Alet (Alet İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Bir işin bizzat kendisiyle yapıldığı <strong>aleti, cihazı veya aracı</strong> ifade etmek için türetilen isimlerdir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مِفْتَاح</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Açma Aleti (Anahtar)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مِفْتَاح</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Açma Aleti (Anahtar)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مِكْنَسَة</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Süpürme Aleti (Süpürge)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مِكْنَسَة</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Süpürme Aleti (Süpürge)</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #14b8a6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Temel Kalıplar ve Türkçe Kullanımı:</h4>
+            <div style="background: #f0fdfa; border-left: 4px solid #14b8a6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Temel Kalıplar ve Türkçe Kullanımı:</h4>
                 <p style="margin-bottom: 10px;">İsmi Alet kalıpları genellikle <strong>Mİ (مِـ)</strong> sesiyle başlar.</p>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 6px;"><strong>مِفْعَال (Mif'âl):</strong> Miftah (Anahtar), Mizan (Terazi), Mikraz (Makas), Minşar (Testere), Miskal.</li>
@@ -7874,18 +7879,18 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'cemi_teksir') {
         arTitle = "جَمْعُ التَّكْسير"; trTitle = "Kırık Çoğul (Cemi Teksir)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Kelimenin tekil (müfred) yapısının kırılarak (harf eklenip çıkarılarak veya harekeleri değiştirilerek) oluşturulduğu <strong>düzensiz çoğul</strong> türüdür. Kurallı çoğullar gibi (Müslim > Müslimûn) sonuna standart bir ek almaz; ezberlenmesi gerekir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَقْلاَم</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Kalem) Kalemler</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَقْلاَم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Kalem) Kalemler</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُتُب</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Kitap) Kitaplar</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُتُب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Kitap) Kitaplar</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #06b6d4; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Türkçe'de Ne Kadar Çok Kullanıyoruz Farkında mısınız?</h4>
+            <div style="background: #ecfeff; border-left: 4px solid #06b6d4; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'de Ne Kadar Çok Kullanıyoruz Farkında mısınız?</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 6px;">Âlim -> <strong>Ulema</strong> (Alimler) / Şair -> <strong>Şuara</strong> (Şairler)</li>
                     <li style="margin-bottom: 6px;">Mescid -> <strong>Mesacid</strong> (Mescitler) / Mekteb -> <strong>Mekatib</strong></li>
@@ -7896,18 +7901,18 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tasgir') {
         arTitle = "اِسْمُ التَّصْغير"; trTitle = "İsmi Tasğir (Küçültme İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Varlığın küçüklüğünü, azlığını veya ona duyulan <strong>sevgi, şefkat ya da bazen küçümsemeyi</strong> ifade etmek için kullanılan özel kalıptır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كُتَيِّب</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Kitap) Kitapçık</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كُتَيِّب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Kitap) Kitapçık</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">وُلَيْد</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Veled) Çocukcağız</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">وُلَيْد</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Veled) Çocukcağız</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">En Meşhur Kalıp (فُعَيْل / Fu'eyl) ve Hayatımızdaki Yeri:</h4>
+            <div style="background: #fff1f2; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">En Meşhur Kalıp (فُعَيْل / Fu'eyl) ve Hayatımızdaki Yeri:</h4>
                 <p style="margin-bottom: 10px;">Türkçede kullandığımız pek çok özel isim aslında birer sevgi sözcüğü olan <strong>İsmi Tasğir</strong> kalıbındadır:</p>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 6px;">Hasan (Güzel) -> <strong>Hüseyin</strong> (Güzellik, Küçük ve sevimli Hasan)</li>
@@ -7919,18 +7924,18 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tafdil') {
         arTitle = "اِسْمُ التَّفْضيل"; trTitle = "İsmi Tafdil (Üstünlük İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Sıfatlarda kıyaslama (<strong>daha</strong>) veya en üstünlük (<strong>en</strong>) bildiren isimdir. Eril (Müzekker) için <strong>أَفْعَل (Ef'al)</strong>, Dişil (Müennes) için <strong>فُعْلَى (Fu'lâ)</strong> kalıbı kullanılır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَكْبَر</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">En Büyük (Eril)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَكْبَر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">En Büyük (Eril)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُبْرَى</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">En Büyük (Dişil)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُبْرَى</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">En Büyük (Dişil)</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Bildiğimiz Tüm 'En'ler:</h4>
+            <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Bildiğimiz Tüm 'En'ler:</h4>
                 <div style="display: flex; gap: 20px;">
                     <div style="flex: 1;">
                         <strong>Eril (أَفْعَل):</strong>
@@ -7957,53 +7962,53 @@ window.openAtlasOverlay = function(stage) {
     // Mezid Nouns (No Tables)
     else if (stage === 'mastar_mezid') {
         arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Mezid (harf eklenmiş) fiillerin mastarlarıdır. Sülasi Mücerred mastarların aksine, <strong>Mezid mastarlar tamamen kurallıdır (Kıyasîdir)</strong> ve her babın kendine özgü değişmez bir mastar kalıbı vardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">تَعْلِيم</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Tef'il Babı) Öğretmek</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">تَعْلِيم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il Babı) Öğretmek</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">اِسْتِغْفار</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(İstif'al) Bağışlanma Dilemek</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">اِسْتِغْفار</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dilemek</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Bab İsimleri Aslında Mastardır!</h4>
+            <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Bab İsimleri Aslında Mastardır!</h4>
                 <p style="margin: 0;">Bizim "İf'al, Tef'il, Mufaale" diyerek ezberlediğimiz bab isimleri, aslında o babların <strong>Mastar</strong> kalıplarından başka bir şey değildir. Türkçe'de kullandığımız "İslam, İmtihan, İstikbal, Mücadele, Tekbir, Tevekkül" kelimelerinin hepsi Mezid mastarlardır.</p>
             </div>
         </div>`;
     } else if (stage === 'ismi_fail_mezid') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Mezid fiillerde (harf eklenmiş fiillerde) işi yapanı gösterir. Kuralı çok basittir: Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">Türkçe'deki Harika Uyumu:</h4>
+            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
                 <p style="margin: 0;">Eğer bir kelime Türkçe'de <strong>"MÜ, MU"</strong> ile başlıyorsa ve sondan bir önceki sesli harfi ince (esre gibi i/ı) ise o eylemi yapan kişidir!<br>
                 Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Mümteh<strong>i</strong>n, Mütekebb<strong>i</strong>r, Muall<strong>i</strong>m...</p>
             </div>
         </div>`;
     } else if (stage === 'ismi_meful_mezid') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #475569; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Mezid fiillerde (harf eklenmiş fiillerde) yapılan işten etkileneni gösterir. Kuralı İsmi Fail ile neredeyse aynıdır: Muzari fiilin başına <strong>ötreli 'MİM' (مُ)</strong> getirilir, ancak İsmi Fail'in aksine <strong>sondan bir önceki harf ÜSTÜNLÜ</strong> okunur.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلَّم</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">Öğretilen (Kişi/Nesne)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلَّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Öğretilen (Kişi/Nesne)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَخْرَج</span><br><span style="font-size: 1.8rem; color: #475569; font-weight: bold;">(Maden vb.) Çıkarılan Şey</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَخْرَج</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Maden vb.) Çıkarılan Şey</span>
                 </div>
             </div>
-            <div style="background: #f8fafc; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e293b;">İsmi Fail - İsmi Mef'ul Ayrımı (Esre mi Üstün mü?):</h4>
+            <div style="background: #fff1f2; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">İsmi Fail - İsmi Mef'ul Ayrımı (Esre mi Üstün mü?):</h4>
                 <p style="margin: 0;">Türkçede de aynı kuralı kullanırız! Sondan bir önceki ses:<br>
                 <strong>İ / I ise Yapan (İsmi Fail):</strong> Mükr<strong>i</strong>m (İkram eden), Müstakb<strong>i</strong>l (Karşılayan).<br>
                 <strong>A / E ise Yapılan (İsmi Mef'ul):</strong> Mükr<strong>e</strong>m (İkram edilen), Müstakb<strong>e</strong>l (Karşılanan / Gelecek zaman).</p>
@@ -8271,3 +8276,5 @@ window.handleAtlasVerbChange = function(keepState = false) {
     }
     window._tempRevealedIndices = []; // reset after use
 };
+
+

@@ -566,7 +566,7 @@ td:first-child {
 .conjugation-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
+    margin-top: 5px;
     direction: rtl;
     table-layout: fixed;
 }
@@ -585,7 +585,7 @@ td:first-child {
 
 .conjugation-table td {
     border: 2px solid #000000;
-    padding: 14px 6px;
+    padding: 4px 2px;
     text-align: center;
     background: #ffffff;
     width: 33.33%;
@@ -2274,8 +2274,7 @@ html body .glass-box.tanimsiz-kok .ref {
 /* --- THEMATIC ACCORDION --- */
 .thematic-accordion-item {
     margin-bottom: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.05);
     border-radius: 15px;
     overflow: hidden;
 }
@@ -2283,7 +2282,7 @@ html body .glass-box.tanimsiz-kok .ref {
 .thematic-accordion-header {
     padding: 25px 30px;
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.4);
+    background: transparent;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2292,39 +2291,51 @@ html body .glass-box.tanimsiz-kok .ref {
 }
 
 .thematic-accordion-item.active .thematic-accordion-header {
-    border-radius: 15px 15px 0 0;
+    padding: 25px 30px;
+    cursor: pointer;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease, border-radius 0.3s ease;
+    border-radius: 15px;
 }
 
 .thematic-accordion-header:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.4);
 }
 
 .thematic-accordion-title {
     font-size: 2.2rem;
     font-family: 'Arakom', sans-serif;
-    color: #f1c40f;
+    color: #000;
     margin: 0;
 }
 
 .thematic-accordion-icon {
     font-size: 2rem;
-    color: #fff;
+    color: #000;
     transition: transform 0.3s ease;
 }
 
 .thematic-accordion-content {
     display: none;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .thematic-accordion-item.active .thematic-accordion-content {
-    display: block;
+    display: none;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .thematic-accordion-item.active .thematic-accordion-icon {
-    transform: rotate(180deg);
+    font-size: 2rem;
+    color: #000;
+    transition: transform 0.3s ease;
 }
 
 .thematic-words-grid {
@@ -2568,12 +2579,20 @@ input:checked +
     flex-direction: column;
 }
 .fullscreen-accordion .thematic-accordion-header {
-    border-radius: 0;
+    padding: 25px 30px;
+    cursor: pointer;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease, border-radius 0.3s ease;
+    border-radius: 15px;
 }
 .fullscreen-accordion .thematic-accordion-content {
-    flex: 1 !important;
-    /* display handled by js */ /* INLINE style display:block ezmek İÇİN ÇOK ÖNEMLİ */
-    flex-direction: column !important;
+    display: none;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 .fullscreen-accordion .thematic-words-grid.memory-mode {
     flex: 1;
@@ -2635,7 +2654,10 @@ input:checked +
 }
 
 .thematic-accordion-item {
-    direction: ltr !important;
+    margin-bottom: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 /* Sadece içerikteki tablolar RTL olarak kalsın istenirse (kartların içinde Arapça varsa vs.)
@@ -2646,13 +2668,20 @@ input:checked +
 
 /* Fullscreen UI Shrinking & Light Theme Enhancements */
 .fullscreen-accordion .thematic-accordion-header {
-    padding: 8px 15px !important;
-    background: rgba(255, 255, 255, 0.9) !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 25px 30px;
+    cursor: pointer;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease, border-radius 0.3s ease;
+    border-radius: 15px;
 }
 .fullscreen-accordion .thematic-accordion-title {
-    font-size: 1.5rem !important; /* Make emoji smaller */
-    color: #333 !important;
+    font-size: 2.2rem;
+    font-family: 'Arakom', sans-serif;
+    color: #000;
+    margin: 0;
 }
 .fullscreen-accordion button[title="Tam Ekran"] {
     font-size: 1rem !important;
@@ -2706,12 +2735,10 @@ input:checked +
 
 
 .thematic-accordion-item {
-    margin-bottom: 0 !important;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 15px !important;
-    position: relative;
-    overflow: visible !important;
+    margin-bottom: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 /* Çizgiler için sözde elementler (sadece aktif değilken ve son sütun değilken sağa çizgi ekler) */
@@ -2801,7 +2828,10 @@ input:checked +
 
 /* Tüm flex dikey silsilede büzülmeye (shrink) izin ver */
 .fullscreen-accordion .thematic-accordion-content {
-    min-height: 0 !important;
+    display: none;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 .fullscreen-accordion .thematic-words-grid.memory-mode {
     min-height: 0 !important;
@@ -3061,11 +3091,10 @@ input:checked + .slider:before {
 
 /* GUARANTEE FULLSCREEN MEMORY GRID FILLS THE SCREEN PROPERLY */
 .fullscreen-accordion .thematic-accordion-content {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    flex: 1 !important;
-    overflow: hidden !important; /* Force grid to shrink */
+    display: none;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 .fullscreen-accordion .thematic-words-grid.memory-mode {
     display: grid !important;
@@ -3164,8 +3193,10 @@ input:checked + .slider:before {
 }
 
 .fullscreen-accordion .thematic-accordion-item {
-    border: none !important;
-    margin-bottom: 0 !important;
+    margin-bottom: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 /* 3D Buton Başlık Efekti */
