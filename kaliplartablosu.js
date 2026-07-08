@@ -1,3 +1,90 @@
+
+window.isAtlasFullscreen = false;
+window.toggleAtlasFullscreen = function() {
+    window.isAtlasFullscreen = !window.isAtlasFullscreen;
+    let screenAtlas = document.getElementById('screen-atlas');
+    let fsBtn = document.getElementById('atlas-fs-btn');
+    if (window.isAtlasFullscreen) {
+        screenAtlas.classList.add('atlas-fullscreen');
+        if (fsBtn) fsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
+    } else {
+        screenAtlas.classList.remove('atlas-fullscreen');
+        if (fsBtn) fsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+    }
+    window.handleAtlasVerbChange(true);
+};
+
+
+window.colorizeAffixes = function(word, stage, index) {
+    let suffix = "";
+    let prefix = "";
+    
+    if (stage.includes('mazi')) {
+        const maziSuffixes = [
+            "َ", "َا", "ُوا", "َتْ", "َتَا", "ْنَ", "ْتَ", "ْتُمَا", "ْتُمْ", "ْتِ", "ْتُمَا", "ْتُنَّ", "ْتُ", "ْنَا", "ْنَا"
+        ];
+        suffix = maziSuffixes[index] || "";
+    } else if (stage.includes('muzari')) {
+        const muzariSuffixes = [
+            "ُ", "َانِ", "ُونَ", "ُ", "َانِ", "ْنَ", "ُ", "َانِ", "ُونَ", "ِينَ", "َانِ", "ْنَ", "ُ", "ُ", "ُ"
+        ];
+        suffix = muzariSuffixes[index] || "";
+        if (word.length >= 2) {
+            prefix = word.substring(0, 2);
+            word = word.substring(2);
+        }
+    } else if (stage.includes('emir')) {
+        const emirSuffixes = [
+            "ْ", "َا", "ُوا", "ِي", "َا", "ْنَ"
+        ];
+        suffix = emirSuffixes[index] || "";
+    }
+    
+    let root = word;
+    if (suffix && root.endsWith(suffix)) {
+        root = root.substring(0, root.length - suffix.length);
+    } else {
+        suffix = ""; // Fallback
+    }
+    
+    let rootColor = "#0f172a"; // Siyah (Slate 900)
+    let affixColor = "#ea580c"; // Orange
+    
+    let html = "";
+    if (prefix) {
+        html += `<span style="color: ${affixColor};">${prefix}</span>`;
+    }
+    html += `<span style="color: ${rootColor};">${root}</span>`;
+    if (suffix) {
+        html += `<span style="color: ${affixColor};">${suffix}</span>`;
+    }
+    
+    return html;
+};
+
+window.displayVerbsMap = {
+    'كتب': 'كَتَبَ',
+    'دخل': 'دَخَلَ',
+    'خرج': 'خَرَجَ',
+    'جلس': 'جَلَسَ',
+    'فتح': 'فَتَحَ',
+    'لبس': 'لَبِسَ',
+    'ذهب': 'ذَهَبَ',
+    'رجع': 'رَجَعَ',
+    'درس': 'دَرَسَ',
+    'nam': 'نامَ',
+    'شرب': 'شَرِبَ',
+    'أكل': 'أَكَلَ',
+    'غسل': 'غَسَلَ',
+    'استيقظ': 'اِسْتَيْقَظَ',
+    'توضأ': 'تَوَضَّأَ',
+    'صلى': 'صَلّى',
+    'تناول': 'تَناوَلَ',
+    'ساعد': 'ساعَدَ',
+    'نظف': 'نَظَّفَ',
+    'أراد': 'أَرادَ',
+    'سافر': 'سافَرَ'
+};
 // --- AUTO-FILL MEZID VERBS IF NOUN EXISTS ---
 (function autoFillMezidVerbs() {
     if (typeof sozlukVerileri === 'undefined') return;
@@ -268,7 +355,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     if (!displayTitle && exactArText) {
         displayTitle = `
         <div style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <span style="font-size:3.5rem; color:#1a1a1a; font-family: 'Arakom', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.1);">${exactArText}</span>
+            <span style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; font-family: 'Arakom', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.1);">${exactArText}</span>
         </div>`;
     }
     
@@ -354,7 +441,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             verbCards.forEach(card => {
                 let rData = rootData[card.id] || { base: {} };
                 
-                let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:3.5rem; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
+                let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
                 let trText = (rData.base && rData.base.trText) ? `<div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
                 let arText = (rData.base && rData.base.arText) ? rData.base.arText : "";
                 
@@ -364,9 +451,9 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
 
                 htmlContent += `
                 <div style="background:rgba(236, 240, 241, 0.6); padding:30px 10px; border-radius:15px; border:1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div style="color:${card.color}; font-size:1.6rem; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
+                    <div style="color:${card.color}; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
                     ${emoji}
-                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:4.5rem; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
+                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
                     ${trText ? trText.replace("color:#e2e8f0;", "color:#333; font-weight:500;") : ''}
                 </div>`;
             });
@@ -505,7 +592,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                         let borderStyle = isLast ? "" : "border-bottom:1px solid rgba(189, 195, 199, 0.3); margin-bottom:15px; padding-bottom:10px;";
                         ornekHtml += `<div style="${borderStyle}">
                                         <div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#d35400; margin-bottom:10px;" dir="rtl">${ornek.ar}</div>
-                                        <div style="color:#7f8c8d; font-size:1.2rem; font-weight:500;" dir="ltr">${ornek.tr}</div>
+                                        <div style="color:#7f8c8d; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight:500;" dir="ltr">${ornek.tr}</div>
                                       </div>`;
                     }
                 });
@@ -558,20 +645,20 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     ${tekilAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
                         ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel}</div>` : ''}
-                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
-                        ${tekilTr ? `<span style="color:#576574; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${tekilTr}</span>` : ''}
+                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
+                        ${tekilTr ? `<span style="color:#576574; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
                     ${(tekilAr && secondColAr) ? `
                     <div style="display:flex; align-items:center; justify-content:center; margin-top: 45px;">
-                        <span style="font-family:'Arakom', sans-serif; font-size:4rem; color:#e1b12c; margin: 0 15px; opacity:0.9; line-height: 1.2;">${separator}</span>
+                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#e1b12c; margin: 0 15px; opacity:0.9; line-height: 1.2;">${separator}</span>
                     </div>` : ''}
                     
                     ${secondColAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
                         ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
-                        <span style="font-family:'Arakom', sans-serif; font-size:5.5rem; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
-                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size:1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${secondColTr}</span>` : ''}
+                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
+                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
                 ${ornekHtml}
@@ -1847,8 +1934,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     
     if (hasCarousel) {
         // Okların yerini değiştirdik: İçeriye aldık ve ortaladık
-        html += `<button class="carousel-nav-btn right-btn" onclick="scrollConjugationCarousel(1, this)" style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: rtl;">❯</button>`;
-        html += `<button class="carousel-nav-btn left-btn" onclick="scrollConjugationCarousel(-1, this)" style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; font-weight: normal; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0; direction: rtl;">❮</button>`;
+        html += `<button class="carousel-nav-btn right-btn" onclick="scrollConjugationCarousel(1, this)" style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>`;
+        html += `<button class="carousel-nav-btn left-btn" onclick="scrollConjugationCarousel(-1, this)" style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 12; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; padding: 0;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>`;
     }
 
     html += `<div class="popup-scroll-wrapper conjugation-carousel hide-scrollbars" style="flex: 0 0 calc(100% - 80px); max-height: 60vh; overflow-y: hidden; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; display: flex; flex-direction: row; scrollbar-width: none; padding: 0; box-sizing: border-box; width: calc(100% - 80px);">`;
@@ -1900,7 +1987,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                 html += `<table class="conjugation-table" style="margin: 0; width: 100%; border-collapse: collapse;">`;
 
                 html += `<thead style="position: sticky; top: -1px; z-index: ${10 + tIndex}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <tr><th colspan="3" style="background-color: ${headBg} !important; color: white; padding: 8px; font-size: 15px; border-top: 2px solid #cbd5e1; border-radius: 8px 8px 0 0;">${theadText}</th></tr>
+                            <tr><th colspan="3" style="background-color: ${headBg} !important; color: white; padding: 8px; font-size: 15px; border-top: 2px solid #cbd5e1; border-radius: 8px 8px 0 0;">🏷️ ${theadText}</th></tr>
                             <tr style="background-color: ${subBg};"><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Müfred</th><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Tesniye</th><th style="padding: 4px; font-size: 13px; color: ${subColor}; border-bottom: 2px solid #cbd5e1;">Cemi</th></tr>
                          </thead><tbody style="border-bottom: 4px solid #cbd5e1;">`;
                          
@@ -6153,6 +6240,30 @@ window.mSkippedLobby = false;     // Lobinin atlanıp atlanmadığını tutan ha
 
 // 1. LOBİYİ AÇAR VE AKILLI KARAR VERİR
 window.openMarathon = function() {
+    window.isAtlasMode = false;
+    document.getElementById('timer-display').style.display = 'block';
+    document.getElementById('top-bar-panel').style.display = 'flex';
+    document.getElementById('screen-play').style.display = 'flex';
+    document.getElementById('screen-atlas').style.display = 'none';
+    document.getElementById('live-total-score').style.display = 'block';
+    document.getElementById('chrono-main').style.display = 'block';
+    document.getElementById('stage-label').style.display = 'block';
+    document.getElementById('pause-btn').style.display = 'block';
+    let atlasSel = document.getElementById('atlas-selector-container');
+    if(atlasSel) atlasSel.style.display = 'none';
+    
+    let prevArr = document.getElementById('prev-arr');
+    if (prevArr) prevArr.style.display = 'flex';
+    let nextArr = document.getElementById('next-arr');
+    if (nextArr) nextArr.style.display = 'flex';
+
+    let rootContainer = document.querySelector('.important-roots-wrapper');
+    if (rootContainer) rootContainer.style.display = 'flex';
+    let verbDisplay = document.getElementById('verb-root-display');
+    if (verbDisplay) verbDisplay.style.display = 'flex';
+    let scoreBar = document.getElementById('score-bar');
+    if(scoreBar) scoreBar.style.display = 'flex';
+
     if (!currentRoot || currentRoot.length !== 3) return;
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
@@ -6507,7 +6618,7 @@ window.loadMarathonTable = function() {
     const end = window.mRanges[window.mCurrentStage][1];
     
     const stageLabel = document.getElementById('stage-label');
-    if (stageLabel) stageLabel.innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
+    if (stageLabel) stageLabel.innerText = ["MAZİ (Geçmiş Zaman)", "MUZARİ (Şimdiki / Geniş)", "EMİR (Emir Kipi)"][window.mCurrentStage];
 
     window.mActiveSet.slice(start, end).forEach((w, i) => {
         const absoluteIdx = start + i;
@@ -7478,3 +7589,421 @@ function startGameAndFullscreen(key) {
     }
 }
 
+
+window.openGrammarOverlay = function(stage) {
+    window.openAtlasOverlay(stage);
+};
+
+// ===== ATLAS DATA =====
+window.isAtlasMode = false;
+
+window.atlasVerbsData = {
+        "استيقظ": {"trMean": {"mazi": "uyandı", "muzari": "uyanıyor", "emir": "uyan"}, "mazi": ["اِسْتَيْقَظَ", "اِسْتَيْقَظَا", "اِسْتَيْقَظُوا", "اِسْتَيْقَظَتْ", "اِسْتَيْقَظَتَا", "اِسْتَيْقَظْنَ", "اِسْتَيْقَظْتَ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُمْ", "اِسْتَيْقَظْتِ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُنَّ", "اِسْتَيْقَظْتُ", "اِسْتَيْقَظْنَا", "اِسْتَيْقَظْنَا"], "muzari": ["يَسْتَيْقِظُ", "يَسْتَيْقِظَانِ", "يَسْتَيْقِظُونَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "يَسْتَيْقِظْنَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظُونَ", "تَسْتَيْقِظِينَ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظْنَ", "أَسْتَيْقِظُ", "نَسْتَيْقِظُ", "نَسْتَيْقِظُ"], "emir": ["اِسْتَيْقِظْ", "اِسْتَيْقِظَا", "اِسْتَيْقِظُوا", "اِسْتَيْقِظِي", "اِسْتَيْقِظَا", "اِسْتَيْقِظْنَ"]},
+    "توضأ": {"trMean": {"mazi": "abdest aldı", "muzari": "abdest alıyor", "emir": "abdest al"}, "mazi": ["تَوَضَّأَ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّأَتْ", "تَوَضَّأَتَا", "تَوَضَّأْنَ", "تَوَضَّأْتَ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُمْ", "تَوَضَّأْتِ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُنَّ", "تَوَضَّأْتُ", "تَوَضَّأْنَا", "تَوَضَّأْنَا"], "muzari": ["يَتَوَضَّأُ", "يَتَوَضَّآنِ", "يَتَوَضَّأُونَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "يَتَوَضَّأْنَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "تَتَوَضَّأُونَ", "تَتَوَضَّأِينَ", "تَتَوَضَّآنِ", "تَتَوَضَّأْنَ", "أَتَوَضَّأُ", "نَتَوَضَّأُ", "نَتَوَضَّأُ"], "emir": ["تَوَضَّأْ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّئِي", "تَوَضَّآ", "تَوَضَّأْنَ"]},
+    "صلى": {"trMean": {"mazi": "namaz kıldı", "muzari": "namaz kılıyor", "emir": "namaz kıl"}, "mazi": ["صَلَّى", "صَلَّيَا", "صَلَّوْا", "صَلَّتْ", "صَلَّتَا", "صَلَّيْنَ", "صَلَّيْتَ", "صَلَّيْتُمَا", "صَلَّيْتُمْ", "صَلَّيْتِ", "صَلَّيْتُمَا", "صَلَّيْتُنَّ", "صَلَّيْتُ", "صَلَّيْنَا", "صَلَّيْنَا"], "muzari": ["يُصَلِّي", "يُصَلِّياَنِ", "يُصَلُّونَ", "تُصَلِّي", "تُصَلِّياَنِ", "يُصَلِّينَ", "تُصَلِّي", "تُصَلِّياَنِ", "تُصَلُّونَ", "تُصَلِّينَ", "تُصَلِّياَنِ", "تُصَلِّينَ", "أُصَلِّي", "نُصَلِّي", "نُصَلِّي"], "emir": ["صَلِّ", "صَلِّياَ", "صَلُّوا", "صَلِّي", "صَلِّياَ", "صَلِّينَ"]},
+    "تناول": {"trMean": {"mazi": "yedi", "muzari": "yiyor", "emir": "ye"}, "mazi": ["تَنَاوَلَ", "تَنَاوَلَا", "تَنَاوَلُوا", "تَنَاوَلَتْ", "تَنَاوَلَتَا", "تَنَاوَلْنَ", "تَنَاوَلْتَ", "تَنَاوَلْتُمَا", "تَنَاوَلْتُمْ", "تَنَاوَلْتِ", "تَنَاوَلْتُمَا", "تَنَاوَلْتُنَّ", "تَنَاوَلْتُ", "تَنَاوَلْنَا", "تَنَاوَلْنَا"], "muzari": ["يَتَنَاوَلُ", "يَتَنَاوَلَانِ", "يَتَنَاوَلُونَ", "تَتَنَاوَلُ", "تَتَنَاوَلَانِ", "يَتَنَاوَلْنَ", "تَتَنَاوَلُ", "تَتَنَاوَلَانِ", "تَتَنَاوَلُونَ", "تَتَنَاوَلِينَ", "تَتَنَاوَلَانِ", "تَتَنَاوَلْنَ", "أَتَنَاوَلُ", "نَتَنَاوَلُ", "نَتَنَاوَلُ"], "emir": ["تَنَاوَلْ", "تَنَاوَلَا", "تَنَاوَلُوا", "تَنَاوَلِي", "تَنَاوَلَا", "تَنَاوَلْنَ"]},
+    "ساعد": {"trMean": {"mazi": "yardım etti", "muzari": "yardım ediyor", "emir": "yardım et"}, "mazi": ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], "muzari": ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "تُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], "emir": ["سَاعِدْ", "سَاعِدَا", "سَاعِدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعِدْنَ"]},
+    "نظف": {"trMean": {"mazi": "temizledi", "muzari": "temizliyor", "emir": "temizle"}, "mazi": ["نَظَّفَ", "نَظَّفَا", "نَظَّفُوا", "نَظَّفَتْ", "نَظَّفَتَا", "نَظَّفْنَ", "نَظَّفْتَ", "نَظَّفْتُمَا", "نَظَّفْتُمْ", "نَظَّفْتِ", "نَظَّفْتُمَا", "نَظَّفْتُنَّ", "نَظَّفْتُ", "نَظَّفْنَا", "نَظَّفْنَا"], "muzari": ["يُنَظِّفُ", "يُنَظِّفَانِ", "يُنَظِّفُونَ", "تُنَظِّفُ", "تُنَظِّفَانِ", "يُنَظِّفْنَ", "تُنَظِّفُ", "تُنَظِّفَانِ", "تُنَظِّفُونَ", "تُنَظِّفِينَ", "تُنَظِّفَانِ", "تُنَظِّفْنَ", "أُنَظِّفُ", "نُنَظِّفُ", "نُنَظِّفُ"], "emir": ["نَظِّفْ", "نَظِّفَا", "نَظِّفُوا", "نَظِّفِي", "نَظِّفَا", "نَظِّفْنَ"]},
+    "أراد": {"trMean": {"mazi": "istedi", "muzari": "istiyor", "emir": "iste"}, "mazi": ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"], "muzari": ["يُرِيدُ", "يُرِيدَانِ", "يُرِيدُونَ", "تُرِيدُ", "تُرِيدَانِ", "يُرِدْنَ", "تُرِيدُ", "تُرِيدَانِ", "تُرِيدُونَ", "تُرِيدِينَ", "تُرِيدَانِ", "تُرِدْنَ", "أُرِيدُ", "نُرِيدُ", "نُرِيدُ"], "emir": ["أَرِدْ", "أَرِيدَا", "أَرِيدُوا", "أَرِيدِي", "أَرِيدَا", "أَرِدْنَ"]},
+    "سافر": {"trMean": {"mazi": "yolculuk yaptı", "muzari": "yolculuk yapıyor", "emir": "yolculuk yap"}, "mazi": ["سَافَرَ", "سَافَرَا", "سَافَرُوا", "سَافَرَتْ", "سَافَرَتَا", "سَافَرْنَ", "سَافَرْتَ", "سَافَرْتُمَا", "سَافَرْتُمْ", "سَافَرْتِ", "سَافَرْتُمَا", "سَافَرْتُنَّ", "سَافَرْتُ", "سَافَرْنَا", "سَافَرْنَا"], "muzari": ["يُسَافِرُ", "يُسَافِرَانِ", "يُسَافِرُونَ", "تُسَافِرُ", "تُسَافِرَانِ", "يُسَافِرْنَ", "تُسَافِرُ", "تُسَافِرَانِ", "تُسَافِرُونَ", "تُسَافِرِينَ", "تُسَافِرَانِ", "تُسَافِرْنَ", "أُسَافِرُ", "نُسَافِرُ", "نُسَافِرُ"], "emir": ["سَافِرْ", "سَافِرَا", "سَافِرُوا", "سَافِرِي", "سَافِرَا", "سَافِرْنَ"]},
+"كتب": { trMean: { mazi: "yazdı", muzari: "yazıyor", emir: "yaz" }, mazi: ["كَتَبَ", "كَتَبَا", "كَتَبُوا", "كَتَبَتْ", "كَتَبَتَا", "كَتَبْنَ", "كَتَبْتَ", "كَتَبْتُمَا", "كَتَبْتُمْ", "كَتَبْتِ", "كَتَبْتُمَا", "كَتَبْتُنَّ", "كَتَبْتُ", "كَتَبْنَا", "كَتَبْنَا"], muzari: ["يَكْتُبُ", "يَكْتُبَانِ", "يَكْتُبُونَ", "تَكْتُبُ", "تَكْتُبَانِ", "يَكْتُبْنَ", "تَكْتُبُ", "تَكْتُبَانِ", "تَكْتُبُونَ", "تَكْتُبِينَ", "تَكْتُبَانِ", "تَكْتُبْنَ", "أَكْتُبُ", "نَكْتُبُ", "نَكْتُبُ"], emir: ["اُكْتُبْ", "اُكْتُبَا", "اُكْتُبُوا", "اُكْتُبِي", "اُكْتُبَا", "اُكْتُبْنَ"] },
+    "دخل": { trMean: { mazi: "girdi", muzari: "giriyor", emir: "gir" }, mazi: ["دَخَلَ", "دَخَلَا", "دَخَلُوا", "دَخَلَتْ", "دَخَلَتَا", "دَخَلْنَ", "دَخَلْتَ", "دَخَلْتُمَا", "دَخَلْتُمْ", "دَخَلْتِ", "دَخَلْتُمَا", "دَخَلْتُنَّ", "دَخَلْتُ", "دَخَلْنَا", "دَخَلْنَا"], muzari: ["يَدْخُلُ", "يَدْخُلَانِ", "يَدْخُلُونَ", "تَدْخُلُ", "تَدْخُلَانِ", "يَدْخُلْنَ", "تَدْخُلُ", "تَدْخُلَانِ", "تَدْخُلُونَ", "تَدْخُلِينَ", "تَدْخُلَانِ", "تَدْخُلْنَ", "أَدْخُلُ", "نَدْخُلُ", "نَدْخُلُ"], emir: ["اُدْخُلْ", "اُدْخُلَا", "اُدْخُلُوا", "اُدْخُلِي", "اُدْخُلَا", "اُدْخُلْنَ"] },
+    "خرج": { trMean: { mazi: "çıktı", muzari: "çıkıyor", emir: "çık" }, mazi: ["خَرَجَ", "خَرَجَا", "خَرَجُوا", "خَرَجَتْ", "خَرَجَتَا", "خَرَجْنَ", "خَرَجْتَ", "خَرَجْتُمَا", "خَرَجْتُمْ", "خَرَجْتِ", "خَرَجْتُمَا", "خَرَجْتُنَّ", "خَرَجْتُ", "خَرَجْنَا", "خَرَجْنَا"], muzari: ["يَخْرُجُ", "يَخْرُجَانِ", "يَخْرُجُونَ", "تَخْرُجُ", "تَخْرُجَانِ", "يَخْرُجْنَ", "تَخْرُجُ", "تَخْرُجَانِ", "تَخْرُجُونَ", "تَخْرُجِينَ", "تَخْرُجَانِ", "تَخْرُجْنَ", "أَخْرُجُ", "نَخْرُجُ", "نَخْرُجُ"], emir: ["اُخْرُجْ", "اُخْرُجَا", "اُخْرُجُوا", "اُخْرُجِي", "اُخْرُجَا", "اُخْرُجْنَ"] },
+    "جلس": { trMean: { mazi: "oturdu", muzari: "oturuyor", emir: "otur" }, mazi: ["جَلَسَ", "جَلَسَا", "جَلَسُوا", "جَلَسَتْ", "جَلَسَتَا", "جَلَسْنَ", "جَلَسْتَ", "جَلَسْتُمَا", "جَلَسْتُمْ", "جَلَسْتِ", "جَلَسْتُمَا", "جَلَسْتُنَّ", "جَلَسْتُ", "جَلَسْنَا", "جَلَسْنَا"], muzari: ["يَجْلِسُ", "يَجْلِسَانِ", "يَجْلِسُونَ", "تَجْلِسُ", "تَجْلِسَانِ", "يَجْلِسْنَ", "تَجْلِسُ", "تَجْلِسَانِ", "تَجْلِسُونَ", "تَجْلِسِينَ", "تَجْلِسَانِ", "تَجْلِسْنَ", "أَجْلِسُ", "نَجْلِسُ", "نَجْلِسُ"], emir: ["اِجْلِسْ", "اِجْلِسَا", "اِجْلِسُوا", "اِجْلِسِي", "اِجْلِسَا", "اِجْلِسْنَ"] },
+    "فتح": { trMean: { mazi: "açtı", muzari: "açıyor", emir: "aç" }, mazi: ["فَتَحَ", "فَتَحَا", "فَتَحُوا", "فَتَحَتْ", "فَتَحَتَا", "فَتَحْنَ", "فَتَحْتَ", "فَتَحْتُمَا", "فَتَحْتُمْ", "فَتَحْتِ", "فَتَحْتُمَا", "فَتَحْتُنَّ", "فَتَحْتُ", "فَتَحْنَا", "فَتَحْنَا"], muzari: ["يَفْتَحُ", "يَفْتَحَانِ", "يَفْتَحُونَ", "تَفْتَحُ", "تَفْتَحَانِ", "يَفْتَحْنَ", "تَفْتَحُ", "تَفْتَحَانِ", "تَفْتَحُونَ", "تَفْتَحِينَ", "تَفْتَحَانِ", "تَفْتَحْنَ", "أَفْتَحُ", "نَفْتَحُ", "نَفْتَحُ"], emir: ["اِفْتَحْ", "اِفْتَحَا", "اِفْتَحُوا", "اِفْتَحِي", "اِفْتَحَا", "اِفْتَحْنَ"] },
+    "استيقظ": { trMean: { mazi: "uyandı", muzari: "uyanıyor", emir: "uyan" }, mazi: ["اِسْتَيْقَظَ", "اِسْتَيْقَظَا", "اِسْتَيْقَظُوا", "اِسْتَيْقَظَتْ", "اِسْتَيْقَظَتَا", "اِسْتَيْقَظْنَ", "اِسْتَيْقَظْتَ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُمْ", "اِسْتَيْقَظْتِ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُنَّ", "اِسْتَيْقَظْتُ", "اِسْتَيْقَظْنَا", "اِسْتَيْقَظْنَا"], muzari: ["يَسْتَيْقِظُ", "يَسْتَيْقِظَانِ", "يَسْتَيْقِظُونَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "يَسْتَيْقِظْنَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظُونَ", "تَسْتَيْقِظِينَ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظْنَ", "أَسْتَيْقِظُ", "نَسْتَيْقِظُ", "نَسْتَيْقِظُ"], emir: ["اِسْتَيْقِظْ", "اِسْتَيْقِظَا", "اِسْتَيْقِظُوا", "اِسْتَيْقِظِي", "اِسْتَيْقِظَا", "اِسْتَيْقِظْنَ"] },
+    "توضأ": { trMean: { mazi: "abdest aldı", muzari: "abdest alıyor", emir: "abdest al" }, mazi: ["تَوَضَّأَ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّأَتْ", "تَوَضَّأَتَا", "تَوَضَّأْنَ", "تَوَضَّأْتَ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُمْ", "تَوَضَّأْتِ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُنَّ", "تَوَضَّأْتُ", "تَوَضَّأْنَا", "تَوَضَّأْنَا"], muzari: ["يَتَوَضَّأُ", "يَتَوَضَّآنِ", "يَتَوَضَّأُونَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "يَتَوَضَّأْنَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "تَتَوَضَّأُونَ", "تَتَوَضَّأِينَ", "تَتَوَضَّآنِ", "تَتَوَضَّأْنَ", "أَتَوَضَّأُ", "نَتَوَضَّأُ", "نَتَوَضَّأُ"], emir: ["تَوَضَّأْ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّئِي", "تَوَضَّآ", "تَوَضَّأْنَ"] },
+    "صلى": { trMean: { mazi: "namaz kıldı", muzari: "namaz kılıyor", emir: "namaz kıl" }, mazi: ["صَلَّى", "صَلَّيَا", "صَلَّوْا", "صَلَّتْ", "صَلَّتَا", "صَلَّيْنَ", "صَلَّيْتَ", "صَلَّيْتُمَا", "صَلَّيْتُمْ", "صَلَّيْتِ", "صَلَّيْتُمَا", "صَلَّيْتُنَّ", "صَلَّيْتُ", "صَلَّيْنَا", "صَلَّيْنَا"], muzari: ["يُصَلِّي", "يُصَلِّياَنِ", "يُصَلُّونَ", "تُصَلِّي", "تُصَلِّياَنِ", "يُصَلِّينَ", "تُصَلِّي", "تُصَلِّياَنِ", "تُصَلُّونَ", "تُصَلِّيلِينَ", "تُصَلِّياَنِ", "يُصَلِّينَ", "أُصَلِّي", "نُصَلِّي", "نُصَلِّي"], emir: ["صَلِّ", "صَلِّياَ", "صَلُّوا", "صَلِّي", "صَلِّياَ", "صَلِّينَ"] },
+    "تناول": { trMean: { mazi: "yedi/aldı", muzari: "yiyor/alıyor", emir: "ye/al" }, mazi: ["تَنَاوَلَ", "تَنَاوَلَا", "تَنَاوَلُوا", "تَنَاوَلَتْ", "تَنَاوَلَتَا", "تَنَاوَلْنَ", "تَنَاوَلْتَ", "تَنَاوَلْتُمَا", "تَنَاوَلْتُمْ", "تَنَاوَلْتِ", "تَنَاوَلْتُمَا", "تَنَاوَلْتُنَّ", "تَنَاوَلْتُ", "تَنَاوَلْنَا", "تَنَاوَلْنَا"], muzari: ["يَتَنَاوَلُ", "يَتَنَاوَلَانِ", "يَتَنَاوَلُونَ", "تَتَنَاوَلُ", "تَتَنَاوَلَانِ", "يَتَنَاوَلْنَ", "تَتَنَاوَلُ", "تَتَنَاوَلَانِ", "تَتَنَاوَلُونَ", "تَتَنَاوَلِينَ", "تَتَنَاوَلَانِ", "تَتَنَاوَلْنَ", "أَتَنَاوَلُ", "نَتَنَاوَلُ", "نَتَنَاوَلُ"], emir: ["تَنَاوَلْ", "تَنَاوَلَا", "تَنَاوَلُوا", "تَنَاوَلِي", "تَنَاوَلَا", "تَنَاوَلْنَ"] },
+    "لبس": { trMean: { mazi: "giydi", muzari: "giyiyor", emir: "giy" }, mazi: ["لَبِسَ", "لَبِسَا", "لَبِسُوا", "لَبِسَتْ", "لَبِسَتَا", "لَبِسْنَ", "لَبِسْتَ", "لَبِسْتُمَا", "لَبِسْتُمْ", "لَبِسْتِ", "لَبِسْتُمَا", "لَبِسْتُنَّ", "لَبِسْتُ", "لَبِسْنَا", "لَبِسْنَا"], muzari: ["يَلْبَسُ", "يَلْبَسَانِ", "يَلْبَسُونَ", "تَلْبَسُ", "تَلْبَسَانِ", "يَلْبَسْنَ", "تَلْبَسُ", "تَلْبَسَانِ", "تَلْبَسُونَ", "تَلْبَسِينَ", "تَلْبَسَانِ", "تَلْبَسْنَ", "أَلْبَسُ", "نَلْبَسُ", "نَلْبَسُ"], emir: ["اِلْبَسْ", "اِلْبَسَا", "اِلْبَسُوا", "اِلْبَسِي", "اِلْبَسَا", "اِلْبَسْنَ"] },
+    "ذهب": { trMean: { mazi: "gitti", muzari: "gidiyor", emir: "git" }, mazi: ["ذَهَبَ", "ذَهَبَا", "ذَهَبُوا", "ذَهَبَتْ", "ذَهَبَتَا", "ذَهَبْنَ", "ذَهَبْتَ", "ذَهَبْتُمَا", "ذَهَبْتُمْ", "ذَهَبْتِ", "ذَهَبْتُمَا", "ذَهَبْتُنَّ", "ذَهَبْتُ", "ذَهَبْنَا", "ذَهَبْنَا"], muzari: ["يَذْهَبُ", "يَذْهَبَانِ", "يَذْهَبُونَ", "تَذْهَبُ", "تَذْهَبَانِ", "يَذْهَبْنَ", "تَذْهَبُ", "تَذْهَبَانِ", "تَذْهَبُونَ", "تَذْهَبِينَ", "تَذْهَبَانِ", "تَذْهَبْنَ", "أَذْهَبُ", "نَذْهَبُ", "نَذْهَبُ"], emir: ["اِذْهَبْ", "اِذْهَبَا", "اِذْهَبُوا", "اِذْهَبِي", "اِذْهَبَا", "اِذْهَبْنَ"] },
+    "رجع": { trMean: { mazi: "döndü", muzari: "dönüyor", emir: "dön" }, mazi: ["رَجَعَ", "رَجَعَا", "رَجَعُوا", "رَجَعَتْ", "رَجَعَتَا", "رَجَعْنَ", "رَجَعْتَ", "رَجَعْتُمَا", "رَجَعْتُمْ", "رَجَعْتِ", "رَجَعْتُمَا", "رَجَعْتُنَّ", "رَجَعْتُ", "رَجَعْنَا", "رَجَعْنَا"], muzari: ["يَرْجِعُ", "يَرْجِعَانِ", "يَرْجِعُونَ", "تَرْجِعُ", "تَرْجِعَانِ", "يَرْجِعْنَ", "تَرْجِعُ", "تَرْجِعَانِ", "تَرْجِعُونَ", "تَرْجِعِينَ", "تَرْجِعَانِ", "تَرْجِعْنَ", "أَرْجِعُ", "نَرْجِعُ", "نَرْجِعُ"], emir: ["اِرْجِعْ", "اِرْجِعَا", "اِرْجِعُوا", "اِرْجِعِي", "اِرْجِعَا", "اِرْجِعْنَ"] },
+    "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعَدْنَ"] },
+    "درس": { trMean: { mazi: "çalıştı", muzari: "çalışıyor", emir: "çalış" }, mazi: ["دَرَسَ", "دَرَسَا", "دَرَسُوا", "دَرَسَتْ", "دَرَسَتَا", "دَرَسْنَ", "دَرَسْتَ", "دَرَسْتُمَا", "دَرَسْتُمْ", "دَرَسْتِ", "دَرَسْتُمَا", "دَرَسْتُنَّ", "دَرَسْتُ", "دَرَسْنَا", "دَرَسْنَا"], muzari: ["يَدْرُسُ", "يَدْرُسَانِ", "يَدْرُسُونَ", "تَدْرُسُ", "تَدْرُسَانِ", "يَدْرُسْنَ", "تَدْرُسُ", "تَدْرُسَانِ", "تَدْرُسُونَ", "تَدْرُسِينَ", "تَدْرُسَانِ", "تَدْرُسْنَ", "أَدْرُسُ", "نَدْرُسُ", "نَدْرُسُ"], emir: ["اُدْرُسْ", "اُدْرُسَا", "اُدْرُسُوا", "اُدْرُسِي", "اُدْرُسَا", "اُدْرُسْنَ"] },
+    "nam": { trMean: { mazi: "uyudu", muzari: "uyuyor", emir: "uyu" }, mazi: ["نَامَ", "نَامَا", "نَامُوا", "نَامَتْ", "نَامَتَا", "نِمْنَ", "نِمْتَ", "نِمْتُمَا", "نِمْتُمْ", "نِمْتِ", "نِمْتُمَا", "نِمْتُنَّ", "نِمْتُ", "نِمْنَا", "نِمْنَا"], muzari: ["يَنَامُ", "يَنَامَانِ", "يَنَامُونَ", "تَنَامُ", "تَنَامَانِ", "يَنَامْنَ", "تَنَامُ", "تَنَامَانِ", "تَنَامُونَ", "تَنَامِينَ", "تَنَامَانِ", "تَنَامْنَ", "أَنَامُ", "نَنَامُ", "نَنَامُ"], emir: ["نَمْ", "نَامَا", "نَامُوا", "نَامِي", "نَامَا", "نَمْنَ"] },
+    "نظف": { trMean: { mazi: "temizledi", muzari: "temizliyor", emir: "temizle" }, mazi: ["نَظَّفَ", "نَظَّفَا", "نَظَّفُوا", "نَظَّفَتْ", "نَظَّفَتَا", "نَظَّفْنَ", "نَظَّفْتَ", "نَظَّفْتُمَا", "نَظَّفْتُمْ", "نَظَّفْتِ", "نَظَّفْتُمَا", "نَظَّفْتُنَّ", "نَظَّفْتُ", "نَظَّفْنَا", "نَظَّفْنَا"], muzari: ["يُنَظِّفُ", "يُنَظِّفَانِ", "يُنَظِّفُونَ", "تُنَظِّفُ", "تُنَظِّفَانِ", "يُنَظِّفْنَ", "تُنَظِّفُ", "تُنَظِّفَانِ", "تُنَظِّفُونَ", "تُنَظِّفِينَ", "تُنَظِّفَانِ", "تُنَظِّفْنَ", "أُنَظِّفُ", "نُنَظِّفُ", "نُنَظِّفُ"], emir: ["نَظِّفْ", "نَظِّفَا", "نَظِّفُوا", "نَظِّفِي", "نَظِّفَا", "نَظَّفْنَ"] },
+    "شرب": { trMean: { mazi: "içti", muzari: "içiyor", emir: "iç" }, mazi: ["شَرِبَ", "شَرِبَا", "شَرِبُوا", "شَرِبَتْ", "شَرِبَتَا", "شَرِبْنَ", "شَرِبْتَ", "شَرِبْتُمَا", "شَرِبْتُمْ", "شَرِبْتِ", "شَرِبْتُمَا", "شَرِبْتُنَّ", "شَرِبْتُ", "شَرِبْنَا", "شَرِبْنَا"], muzari: ["يَشْرَبُ", "يَشْرَبَانِ", "يَشْرَبُونَ", "تَشْرَبُ", "تَشْرَبَانِ", "يَشْرَبْنَ", "تَشْرَبُ", "تَشْرَبُونَ", "تَشْرَبُونَ", "تَشْرَبِينَ", "تَشْرَبَانِ", "تَشْرَبْنَ", "أَشْرَبُ", "نَشْرَبُ", "نَشْرَبُ"], emir: ["اِشْرَبْ", "اِشْرَبَا", "اِشْرَبُوا", "اِشْرَبِي", "اِشْرَبَا", "اِشْرَبْنَ"] },
+    "أكل": { trMean: { mazi: "yedi", muzari: "yiyor", emir: "ye" }, mazi: ["أَكَلَ", "أَكَلَا", "أَكَلُوا", "أَكَلَتْ", "أَكَلَتَا", "أكَلْنَ", "أَكَلْتَ", "أَكَلْتُمَا", "أَكَلْتُمْ", "أَكَلْتِ", "أَكَلْتُمَا", "أَكَلْتُنَّ", "أَكَلْتُ", "أَكَلْنَا", "أَكَلْنَا"], muzari: ["يَأْكُلُ", "يَأْكُلَانِ", "يَأْكُلُونَ", "تَأْكُلُ", "تَأْكُلَانِ", "يَأْكُلْنَ", "تَأْكُلُ", "تَأْكُلَانِ", "تَأْكُلُونَ", "تَأْكُلِينَ", "تَأْكُلَانِ", "تَأْكُلْنَ", "آكُلُ", "نَأْكُلُ", "نَأْكُلُ"], emir: ["كُلْ", "كُلَا", "كُلُوا", "كُلِي", "كُلَا", "كُلْنَ"] },
+    "أراد": { trMean: { mazi: "istedi", muzari: "istiyor", emir: "iste" }, mazi: ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"], muzari: ["يُرِيدُ", "يُرِيدَانِ", "يُرِيدُونَ", "تُرِيدُ", "تُرِيدَانِ", "يُرِيدْنَ", "تُرِيدُ", "تُرِيدَانِ", "تُرِيدُونَ", "تُرِيدِينَ", "تُرِيدَانِ", "تُرِيدْنَ", "أُرِيدُ", "نُرِيدُ", "نُرِيدُ"], emir: ["أَرِدْ", "أَرِيدَا", "أَرِيدُوا", "أَرِيدِي", "أَرِيدَا", "أَرِدْنَ"] },
+    "سافر": { trMean: { mazi: "seyahat etti", muzari: "seyahat ediyor", emir: "seyahat et" }, mazi: ["سَافَرَ", "سَافَرَا", "سَافَرُوا", "سَافَرَتْ", "سَافَرَتَا", "سَافَرْنَ", "سَافَرْتَ", "سَافَرْتُمَا", "سَافَرْتُمْ", "سَافَرْتِ", "سَافَرْتُمَا", "سَافَرْتُنَّ", "سَافَرْتُ", "سَافَرْنَا", "سَافَرْنَا"], muzari: ["يُسَافِرُ", "يُسَافِرَانِ", "يُسَافِرُونَ", "تُسَافِرُ", "تُسَافِرَانِ", "يُسَافِرْنَ", "تُسَافِرُ", "تُسَافِرَانِ", "تُسَافِرُونَ", "تُسَافِرِينَ", "تُسَافِرَانِ", "تُسَافِرْنَ", "أُسَافِرُ", "نُسَافِرُ", "نُسَافِرُ"], emir: ["سَافِرْ", "سَافِرَا", "سَافِرُوا", "سَافِرِي", "سَافِرَا", "سَافِرْنَ"] },
+    "غسل": { trMean: { mazi: "yıkadı", muzari: "yıkıyor", emir: "yıka" }, mazi: ["غَسَلَ", "غَسَلَا", "غَسَلُوا", "غَسَلَتْ", "غَسَلَتَا", "غَسَلْنَ", "غَسَلْتَ", "غَسَلْتُمَا", "غَسَلْتُمْ", "غَسَلْتِ", "غَسَلْتُمَا", "غَسَلْتُنَّ", "غَسَلْتُ", "غَسَلْنَا", "غَسَلْنَا"], muzari: ["يَغْسِلُ", "يَغْسِلَانِ", "يَغْسِلُونَ", "تَغْسِلُ", "تَغْسِلَانِ", "يَغْسِلْنَ", "تَغْسِلُ", "تَغْسِلَانِ", "تَغْسِلُونَ", "تَغْسِلِينَ", "تَغْسِلَانِ", "تَغْسِلْنَ", "أَغْسِلُ", "نَغْسِلُ", "نَغْسِلُ"], emir: ["اِغْسِلْ", "اِغْسِلَا", "اِغْسِلُوا", "اِغْسِلِي", "اِغْسِلَا", "اِغْسِلْنَ"] }
+};
+
+window.atlasMPats = [
+    {p: "ـ ـ ـ", m: "O #"}, {p: "ـ ـ ـ ا", m: "O ikisi #"}, {p: "ـ ـ ـ ُوا", m: "Onlar #lar"},
+    {p: "ـ ـ ـ تْ", m: "O #"}, {p: "ـ ـ ـ تَا", m: "O ikisi #"}, {p: "ـ ـ ـْ نَ", m: "Onlar #lar"},
+    {p: "ـ ـ ـْ تَ", m: "Sen #n"}, {p: "ـ ـ ـْ تُمَا", m: "Siz ikiniz #nız"}, {p: "ـ ـ ـْ تُـمْ", m: "Siz #nız"},
+    {p: "ـ ـ ـْ تِ", m: "Sen #n"}, {p: "ـ ـ ـْ تُمَا", m: "Siz ikiniz #nız"}, {p: "ـ ـ ـْ تُـنَّ", m: "Siz #nız"},
+    {p: "ـ ـ ـْ تُ", m: "Ben #m"}, {p: "ـ ـ ـْ نَا", m: "Biz #k"}, {p: "ـ ـ ـْ نَا", m: "Biz #k"}
+];
+
+window.atlasMuzPats = [
+    {p: "يـ ـ ـ ـ", m: "#"}, {p: "يـ ـ ـ ـ ان", m: "#lar"}, {p: "يـ ـ ـ ـ ون", m: "#lar"},
+    {p: "تـ ـ ـ ـ", m: "#"}, {p: "تـ ـ ـ ـ ان", m: "#lar"}, {p: "يـ ـ ـ ـ ن", m: "#lar"},
+    {p: "تـ ـ ـ ـ", m: "#sun"}, {p: "تـ ـ ـ ـ ان", m: "#sunuz"}, {p: "تـ ـ ـ ـ ون", m: "#sunuz"},
+    {p: "تـ ـ ـ ـ ين", m: "#sun"}, {p: "تـ ـ ـ ـ ان", m: "#sunuz"}, {p: "تـ ـ ـ ـ ن", m: "#sunuz"},
+    {p: "أـ ـ ـ ـ", m: "#um"}, {p: "نـ ـ ـ ـ", m: "#uz"}, {p: "نـ ـ ـ ـ", m: "#uz"}
+];
+
+window.atlasEPats = [
+    {p: "ا  ـ ـ", m: "#"}, {p: "ا  ـ ـ ا", m: "#ın"}, {p: "ا  ـ ـ وا", m: "#ın"},
+    {p: "ا  ـ ـ ي", m: "#"}, {p: "ا  ـ ـ ا", m: "#ın"}, {p: "ا  ـ ـ ن", m: "#ın"}
+];
+
+window.openAtlasOverlay = function(stage) {
+    window.isAtlasMode = true;
+    document.getElementById('marathon-overlay').classList.add('active');
+    document.getElementById('timer-display').style.display = 'none';
+    document.getElementById('live-total-score').style.display = 'none';
+    document.getElementById('chrono-main').style.display = 'none';
+    document.getElementById('stage-label').style.display = 'none';
+    document.getElementById('pause-btn').style.display = 'none';
+    
+    let rootContainer = document.querySelector('.important-roots-wrapper');
+    if (rootContainer) rootContainer.style.display = 'none';
+    
+    let verbDisplay = document.getElementById('verb-root-display');
+    if (verbDisplay) verbDisplay.style.display = 'none';
+    
+    let scoreBar = document.getElementById('score-bar');
+    if(scoreBar) scoreBar.style.display = 'none';
+    
+    document.getElementById('atlas-selector-container').style.display = 'flex';
+    
+    let selectionArea = document.getElementById('marathon-selection-area');
+    if (selectionArea) selectionArea.style.display = 'none';
+    
+    let countdownArea = document.getElementById('marathon-countdown-overlay');
+    if (countdownArea) countdownArea.style.display = 'none';
+    
+    let gameContainer = document.getElementById('game-container');
+    if (gameContainer) gameContainer.style.display = 'flex';
+    
+    document.getElementById('screen-play').classList.add('active');
+    document.getElementById('screen-result').classList.remove('active');
+    
+    let prevArr = document.getElementById('prev-arr');
+    if (prevArr) prevArr.style.display = 'none';
+    let nextArr = document.getElementById('next-arr');
+    if (nextArr) nextArr.style.display = 'none';
+    
+    document.getElementById('top-bar-panel').style.display = 'none';
+    document.getElementById('screen-play').style.display = 'none';
+    document.getElementById('screen-atlas').style.display = 'flex';
+    document.getElementById('screen-atlas').style.position = 'relative';
+    
+
+
+
+
+    
+    
+    window.currentStage = stage.replace('_mezid', '').toLowerCase();
+    let arTitle, trTitle, desc;
+    let hasTable = false;
+
+    // Verb Stages (with Tables)
+    if (stage === 'mazi' || stage === 'mazi_mezid') {
+        arTitle = "الماضي"; trTitle = "Geçmiş Zaman"; desc = "Mazi fiil, geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen bitişik zamirlerle (soneklerle) yapılır."; hasTable = true;
+    } else if (stage === 'muzari' || stage === 'muzari_mezid') {
+        arTitle = "المُضارِع"; trTitle = "Geniş / Şimdiki Zaman"; desc = "Muzari fiil, eylemin şu an yapıldığını veya her zaman yapıldığını (geniş zaman) bildirir. Çekimi fiilin başına ve sonuna eklenen harflerle (öneklere) ve bazen soneklere göre yapılır."; hasTable = true;
+    } else if (stage === 'emir' || stage === 'emir_mezid') {
+        arTitle = "الأَمْر"; trTitle = "Emir Kipi"; desc = "Emir fiili, karşımızdaki kişiden (muhatap/muhataba) bir işi yapmasını istemek için kullanılır."; hasTable = true;
+    } 
+    // Mücerred Nouns (No Tables)
+    else if (stage === 'mastar') {
+        arTitle = "المَصْدَر"; trTitle = "Mastar"; 
+        desc = `Mastar, eylemin kök adıdır (yapmak, etmek gibi). Fiilin bildirdiği işi, zamana veya şahsa bağlı olmadan bağımsız bir isim olarak ifade eder.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">كِتَابَة</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Yazmak</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">دُخُول</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Girmek</span></div></div>`;
+    } else if (stage === 'ismi_fail') {
+        arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
+        desc = `Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">كَاتِب</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Yazan / Yazar</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">عَالِم</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Bilen / Alim</span></div></div>`;
+    } else if (stage === 'ismi_meful') {
+        arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
+        desc = `Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">مَكْتُوب</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Yazılan / Mektup</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">مَعْلُوم</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Bilinen</span></div></div>`;
+    } else if (stage === 'zaman_mekan') {
+        arTitle = "اِسْمُ الزَّمان والمَكان"; trTitle = "Zaman ve Mekan İsmi"; 
+        desc = `Eylemin yapıldığı zamanı (zaman ismi) veya eylemin gerçekleştiği yeri (mekan ismi) ifade etmek için kullanılan kalıplardır.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">مَكْتَب</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Yazılan Yer / Ofis</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">مَطْبَخ</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Mutfak</span></div></div>`;
+    } else if (stage === 'ismi_alet') {
+        arTitle = "اِسْمُ الآلَة"; trTitle = "İsmi Alet (Alet İsmi)"; 
+        desc = `Bir işin bizzat kendisiyle yapıldığı aleti ifade etmek için türetilen kalıplardır.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">مِفْتَاح</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Anahtar</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">مِكْنَسَة</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Süpürge</span></div></div>`;
+    } else if (stage === 'cemi_teksir') {
+        arTitle = "جَمْعُ التَّكْسير"; trTitle = "Kırık Çoğul (Cemi Teksir)"; 
+        desc = `Kelimenin tekil yapısının kırılarak oluşturulduğu düzensiz çoğul türüdür.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">أَقْلاَم</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Kalemler</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">كُتُب</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Kitaplar</span></div></div>`;
+    } else if (stage === 'ismi_tasgir') {
+        arTitle = "اِسْمُ التَّصْغير"; trTitle = "İsmi Tasğir (Küçültme İsmi)"; 
+        desc = `Küçültme veya sevimlilik ifade eden özel kalıptır.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">كُتَيِّب</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Kitapçık</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">وُلَيْد</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Çocukcağız</span></div></div>`;
+    } else if (stage === 'ismi_tafdil') {
+        arTitle = "اِسْمُ التَّفْضيل"; trTitle = "İsmi Tafdil (Üstünlük İsmi)"; 
+        desc = `Kıyaslama bildiren üstünlük sıfatıdır.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">أَكْبَر</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">En Büyük</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">أَجْمَل</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">En Güzel</span></div></div>`;
+    }
+    
+    // Mezid Nouns (No Tables)
+    else if (stage === 'mastar_mezid') {
+        arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
+        desc = `Mezid fiillerin mastarları, her babın kendine özgü kalıbına (semâi olmayan, kıyasî kalıplara) göre gelir.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">تَعْلِيم</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Öğretmek</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">اِسْتِغْفار</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Bağışlanma Dilemek</span></div></div>`;
+    } else if (stage === 'ismi_fail_mezid') {
+        arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
+        desc = `Mezid fiillerde İsmi Fail, muzari fiilin başındaki harfin ötreli 'm' (مُ) yapılması ve sondan bir önceki harfin esreli okunmasıyla elde edilir.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">مُعَلِّم</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Öğreten / Öğretmen</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">مُسْتَغْفِر</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Bağışlanma Dileyen</span></div></div>`;
+    } else if (stage === 'ismi_meful_mezid') {
+        arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
+        desc = `Mezid fiillerde İsmi Mef'ul, muzari fiilin başındaki harfin ötreli 'm' (مُ) yapılması ve sondan bir önceki harfin üstünlü okunmasıyla elde edilir.<br><br><div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;"><div style="background: #eff6ff; padding: 30px 60px; border-radius: 20px; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #2563eb; display: block; margin-bottom: 10px;">مُعَلَّم</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Öğretilen</span></div><div style="background: #fff7ed; padding: 30px 60px; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 10px 15px rgba(0,0,0,0.05);"><span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 6rem; line-height: 1.2; color: #ea580c; display: block; margin-bottom: 10px;">مُسْتَخْرَج</span><br><span style="font-size: 2.2rem; color: #475569; font-weight: bold;">Çıkarılan</span></div></div>`;
+    } else {
+        arTitle = stage.toUpperCase(); trTitle = "Konu Anlatımı"; desc = "Bu konu ile ilgili açıklamalar eklenecektir.";
+    }
+
+    let elAr = document.getElementById('atlas-title-ar');
+
+    let elTr = document.getElementById('atlas-title-tr');
+    let elDesc = document.getElementById('atlas-desc');
+    
+    if(elAr) {
+        elAr.innerText = arTitle;
+        let isNoun = ['mastar', 'ismi_fail', 'ismi_meful', 'zaman_mekan', 'ismi_alet', 'cemi_teksir', 'ismi_tasgir', 'ismi_tafdil', 'mastar_mezid', 'ismi_fail_mezid', 'ismi_meful_mezid'].includes(stage);
+        elAr.style.color = isNoun ? '#16a34a' : '#2563eb'; // Green for Nouns, Blue for Verbs
+    }
+
+    if(elTr) elTr.innerText = trTitle;
+    if(elDesc) elDesc.innerHTML = desc;
+    
+    window.hasAtlasTable = hasTable;
+    
+    let tableView = document.getElementById('atlas-table-view');
+    let verbList = document.getElementById('atlas-verb-list');
+    let sidebarTitle = document.getElementById('atlas-sidebar-title');
+    
+    let sidebar = document.getElementById('atlas-right-sidebar');
+    
+    // Dynamically rebuild the verb list based on whether it is Mezid or Mücerred
+    if (verbList) {
+        verbList.innerHTML = '';
+        let isMezidStage = stage.includes('_mezid');
+        let mucerredKeys = ["كتب", "دخل", "خرج", "جلس", "فتح", "لبس", "ذهب", "رجع", "درس", "nam", "شرب", "أكل", "غسل"];
+        let mucerredIcons = ["✍️", "🚪", "🏃‍♂️", "🪑", "🔓", "👕", "🚶", "↩️", "📚", "🛏️", "🥛", "🍏", "🧼"];
+        let mezidKeys = ["استيقظ", "توضأ", "صلى", "تناول", "ساعد", "نظف", "أراد", "سافر"];
+        let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🧹", "🎯", "✈️"];
+        
+        let activeKeys = isMezidStage ? mezidKeys : mucerredKeys;
+        let activeIcons = isMezidStage ? mezidIcons : mucerredIcons;
+        
+        activeKeys.forEach((k, idx) => {
+            let icon = activeIcons[idx];
+            let voweled = (window.displayVerbsMap[k]) ? window.displayVerbsMap[k] : k;
+            
+            let btn = document.createElement('button');
+            btn.className = 'atlas-verb-btn';
+            if (idx === 0) btn.classList.add('active');
+            
+            btn.innerHTML = `<span>${icon}</span> <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 1.4rem;">${voweled}</span>`;
+            
+            btn.onclick = function() {
+                window.changeAtlasVerb(k, this);
+            };
+            
+            verbList.appendChild(btn);
+        });
+        
+        window.currentAtlasVerbKey = activeKeys[0];
+    }
+
+    let flexContainer = document.querySelector('#screen-atlas > div:first-of-type');
+    
+    if (!hasTable) {
+        if(tableView) tableView.style.display = 'none';
+        if(sidebar) sidebar.style.display = 'none';
+        if(flexContainer) {
+            flexContainer.style.justifyContent = 'center';
+            flexContainer.style.alignItems = 'center';
+        }
+    } else {
+        if(tableView) tableView.style.display = 'grid';
+        if(sidebar) sidebar.style.display = 'flex';
+        if(flexContainer) {
+            flexContainer.style.justifyContent = 'flex-start';
+            flexContainer.style.alignItems = 'center';
+        }
+        window.handleAtlasVerbChange();
+    }
+};
+
+window.changeAtlasVerb = function(key, btnEl) {
+    document.querySelectorAll('.atlas-verb-btn').forEach(btn => btn.classList.remove('active'));
+    if(btnEl) btnEl.classList.add('active');
+    window.currentAtlasVerbKey = key;
+    window.handleAtlasVerbChange();
+};
+
+window.handleAtlasVerbChange = function(keepState = false) {
+    let key = window.currentAtlasVerbKey || "كتب";
+    let v = window.atlasVerbsData[key];
+    if(!v) return;
+    
+    let fsBtn = document.getElementById('atlas-fs-btn');
+    if (window.currentStage === 'emir') {
+        if (fsBtn) fsBtn.style.display = 'none';
+        if (window.isAtlasFullscreen) {
+            window.isAtlasFullscreen = false;
+            let screenAtlas = document.getElementById('screen-atlas');
+            if(screenAtlas) screenAtlas.classList.remove('atlas-fullscreen');
+            if (fsBtn) fsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+        }
+    } else {
+        if (fsBtn) fsBtn.style.display = 'flex';
+    }
+    
+    window.currentAtlasVerbData = v;
+    
+    let container = document.getElementById('atlas-table-view');
+
+    window._tempRevealedIndices = [];
+    if (keepState && container.children.length > 0) {
+        let cells = container.querySelectorAll('.marathon-cell');
+        cells.forEach((cell, idx) => {
+            if (cell.classList.contains('atlas-revealed')) {
+                window._tempRevealedIndices.push(idx);
+            }
+        });
+    }
+
+    container.innerHTML = '';
+    
+    if (window.isAtlasFullscreen) {
+        container.style.flex = "1";
+        container.style.height = "100%";
+        container.style.display = "grid";
+        container.style.maxWidth = "100%";
+        container.style.width = "100%";
+        container.style.margin = "0";
+        container.style.gridTemplateRows = (window.currentStage === 'emir') ? "repeat(2, 1fr)" : "repeat(5, 1fr)";
+        document.getElementById('atlas-explanation').style.display = 'none'; // Hide header for maximum space
+    } else {
+        container.style.flex = "none";
+        container.style.height = "auto";
+        container.style.gridTemplateRows = "auto";
+        container.style.maxWidth = "100%";
+        document.getElementById('atlas-explanation').style.display = 'block';
+    }
+
+    
+    let count = (window.currentStage === 'emir') ? 6 : 15;
+    let pats = (window.currentStage === 'mazi') ? window.atlasMPats : (window.currentStage === 'muzari') ? window.atlasMuzPats : window.atlasEPats;
+    
+    let rowClasses = ["#e0f2fe", "#fce7f3", "#e0f2fe", "#fce7f3", "#f1f5f9"];
+    
+    for (let i = 0; i < count; i++) {
+        let btn = document.createElement('button');
+        btn.className = 'marathon-cell';
+        
+        let r = Math.floor(i / 3);
+        if (window.currentStage === 'emir') {
+            r = (i < 3) ? 0 : 1; 
+        }
+        btn.style.background = rowClasses[r];
+        btn.style.minHeight = window.isAtlasFullscreen ? "auto" : "13rem";
+        btn.style.height = window.isAtlasFullscreen ? "100%" : "auto";
+        btn.style.fontWeight = "normal";
+        btn.style.flexDirection = "column";
+        btn.style.justifyContent = "center";
+        btn.style.alignItems = "center";
+        btn.style.position = "relative";
+        
+        
+        let baseMean = v.trMean[window.currentStage];
+        let mean = "";
+        if (pats[i].m.includes('#')) {
+            let parts = pats[i].m.split('#');
+            let prefix = parts[0];
+            let suffix = parts[1] || "";
+            
+            if (suffix) {
+                let lastVowelMatch = baseMean.match(/[aıeiöüouAIEIÖÜOU]/g);
+                let lastVowel = lastVowelMatch ? lastVowelMatch[lastVowelMatch.length-1].toLowerCase() : 'a';
+                let isPalatal = ['e', 'i', 'ö', 'ü'].includes(lastVowel);
+                let isRounded = ['o', 'u', 'ö', 'ü'].includes(lastVowel);
+                
+                if (suffix === "lar") suffix = isPalatal ? "ler" : "lar";
+                else if (suffix === "nız") {
+                    if (isPalatal && isRounded) suffix = "nüz";
+                    else if (isPalatal) suffix = "niz";
+                    else if (isRounded) suffix = "nuz";
+                    else suffix = "nız";
+                }
+                else if (suffix === "ın") {
+                    // "otur" ends with consonant. "oku" ends with vowel? 
+                    // "okuın" -> "okuyun" (kaynaştırma) ? The user said "giyın" -> "giyin", "oturın" -> "oturun".
+                    // Let's just fix the basic harmony first.
+                    if (isPalatal && isRounded) suffix = "ün";
+                    else if (isPalatal) suffix = "in";
+                    else if (isRounded) suffix = "un";
+                    else suffix = "ın";
+                    
+                    // Harfle bitiyorsa (ünlü ile bitiyorsa) y ekle? Emirler genelde ünsüzle biter: otur, giy, yaz, sil. "oku" var! "okuun" -> okuyun.
+                    if (/[aıeiöüouAIEIÖÜOU]$/.test(baseMean)) suffix = "y" + suffix;
+                }
+                else if (suffix === "um") {
+                    if (isPalatal && isRounded) suffix = "üm";
+                    else if (isPalatal) suffix = "im";
+                    else if (isRounded) suffix = "um";
+                    else suffix = "ım";
+                }
+                else if (suffix === "uz") {
+                    if (isPalatal && isRounded) suffix = "üz";
+                    else if (isPalatal) suffix = "iz";
+                    else if (isRounded) suffix = "uz";
+                    else suffix = "ız";
+                }
+                else if (suffix === "sun") {
+                    if (isPalatal && isRounded) suffix = "sün";
+                    else if (isPalatal) suffix = "sin";
+                    else if (isRounded) suffix = "sun";
+                    else suffix = "sın";
+                }
+                else if (suffix === "sunuz") {
+                    if (isPalatal && isRounded) suffix = "sünüz";
+                    else if (isPalatal) suffix = "siniz";
+                    else if (isRounded) suffix = "sunuz";
+                    else suffix = "sınız";
+                }
+            }
+            mean = prefix + baseMean + suffix;
+        } else {
+            mean = pats[i].m;
+        }
+
+        let fullWord = v[window.currentStage][i];
+        let coloredWord = window.colorizeAffixes ? window.colorizeAffixes(fullWord, window.currentStage, i) : fullWord;
+        
+        // Kutunun içi
+        btn.innerHTML = `
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">
+                <span class="arabic" id="arab-text-${i}" style="font-size:${window.isAtlasFullscreen ? "clamp(3rem, 6.5vh, 6rem)" : "clamp(3.5rem, 5vw, 6rem)"}; pointer-events:none; color: #ea580c; letter-spacing: -2px;">${pats[i].p}</span>
+            </div>
+            <div style="height: ${window.isAtlasFullscreen ? "2rem" : "4rem"}; display: flex; align-items: flex-start; justify-content: center; width: 100%; margin-bottom: 0.5rem;">
+                <span style="font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2.5vh, 2.2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; color:#475569; pointer-events:none; font-family: sans-serif;">${mean}</span>
+            </div>
+        `;
+        
+        btn.onclick = function(e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            let arabSpan = this.querySelector(`#arab-text-${i}`);
+            if (this.classList.contains('atlas-revealed')) {
+                this.classList.remove('atlas-revealed');
+                arabSpan.innerHTML = pats[i].p;
+                arabSpan.style.color = '#ea580c';
+                arabSpan.style.fontSize = window.isAtlasFullscreen ? 'clamp(3rem, 6.5vh, 6rem)' : 'clamp(3.5rem, 5vw, 6rem)';
+                arabSpan.style.letterSpacing = '-2px';
+            } else {
+                this.classList.add('atlas-revealed');
+                arabSpan.innerHTML = coloredWord;
+                arabSpan.style.color = '#0f172a'; // Siyah (Slate 900)
+                arabSpan.style.fontSize = window.isAtlasFullscreen ? 'clamp(3.5rem, 8vh, 7rem)' : 'clamp(4.5rem, 7vw, 8rem)';
+                arabSpan.style.letterSpacing = 'normal';
+            }
+        };
+        container.appendChild(btn);
+        
+        if (window._tempRevealedIndices && window._tempRevealedIndices.includes(i)) {
+            btn.onclick();
+        }
+    }
+    window._tempRevealedIndices = []; // reset after use
+};

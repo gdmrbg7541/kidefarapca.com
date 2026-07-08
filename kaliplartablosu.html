@@ -201,14 +201,14 @@
                    <thead>
         <tr>
             <th class="baslik-notr">BABLAR</th>
-            <th class="baslik-fiil">MAZİ</th>
-            <th class="baslik-fiil">MUZARİ</th>
-            <th class="baslik-fiil">EMİR</th>
-            <th class="baslik-isim">MASTAR & SIFATI MÜŞEBBEHE</th>
-            <th class="baslik-isim">İSMİ FAİL</th>
-            <th class="baslik-isim">İSMİ MEF'UL</th>
-            <th class="baslik-isim">ZAMAN MEKAN</th>
-            <th class="baslik-isim">İSMİ ALET</th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('mazi')">MAZİ</th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('muzari')">MUZARİ</th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('emir')">EMİR</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('mastar')">MASTAR & SIFATI MÜŞEBBEHE</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_fail')">İSMİ FAİL</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_meful')">İSMİ MEF'UL</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('zaman_mekan')">ZAMAN MEKAN</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_alet')">İSMİ ALET</th>
         </tr>
     </thead>
                     <tbody>
@@ -286,7 +286,7 @@
 
                 <div class="footer-container">
     <div class="footer-block cemi-area">
-        <div class="block-title">CEMİ TEKSİR</div>
+        <div class="block-title th-3d-btn" onclick="openGrammarOverlay('cemi_teksir')">CEMİ TEKSİR</div>
         <div class="cemi-grid">
             <div class="glass-box" data-original="أَفْعَال"><span class="ref">41</span><span class="ar">أَفْعَال</span></div>
             <div class="glass-box" data-original="فُعُل"><span class="ref">42</span><span class="ar">فُعُل</span></div>
@@ -298,13 +298,13 @@
             <div class="glass-box" data-original="فَعَائِل"><span class="ref">48</span><span class="ar">فَعَائِل</span></div>
         </div>
     </div><div class="footer-block tasgir-area">
-    <div class="block-title">İSMİ TASĞİR</div>
+    <div class="block-title th-3d-btn" onclick="openGrammarOverlay('ismi_tasgir')">İSMİ TASĞİR</div>
     <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 35px);">
         <div class="glass-box" data-original="فُعَيْل"><span class="ref">49</span><span class="ar">فُعَيْل</span></div>
     </div>
 </div>
                    <div class="footer-block tafdil-area">
-    <div class="block-title">İSMİ TAFDİL</div>
+    <div class="block-title th-3d-btn" onclick="openGrammarOverlay('ismi_tafdil')">İSMİ TAFDİL</div>
     <div style="display: flex; flex-direction: column; gap: 0px; align-items: center;">
         <div class="glass-box" data-original="أَفْعَل"><span class="ref">50</span><span class="ar">أَفْعَل</span></div>
         <div class="glass-box" data-original="فُعْلَى"><span class="ref">51</span><span class="ar">فُعْلَى</span></div>
@@ -321,13 +321,13 @@
                 <table>
                     <thead>
         <tr>
-            <th width="100px" class="baslik-notr">3+</th>
-            <th class="baslik-fiil">MAZİ</th>
-            <th class="baslik-fiil">MUZARİ</th>
-            <th class="baslik-fiil">EMİR</th>
-            <th class="baslik-isim">MASTAR</th>
-            <th class="baslik-isim">İSMİ FAİL</th>
-            <th class="baslik-isim">İSMİ MEF'UL</th>
+            <th class="baslik-notr">3+</th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('mazi_mezid')">MAZİ</th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('muzari_mezid')">MUZARİ</th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('emir_mezid')">EMİR</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('mastar_mezid')">MASTAR</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_fail_mezid')">İSMİ FAİL</th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_meful_mezid')">İSMİ MEF'UL</th>
         </tr>
     </thead>
                    <tbody>
@@ -432,18 +432,43 @@
 </div>
 <script src="veri_kokler.js?v=1783311124"></script>
 <script src="veri_sozluk.js?v=1783311124"></script>
+<script src="veri_gramer.js"></script>
 <script src="kaliplartablosu.js?v=1783450660"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
-        <div id="top-bar-panel">
-            <div class="header-item"><button class="back-nav" onclick="goBackFromMarathon()">❮ GERİ</button></div>
+                        <div id="top-bar-panel">
+            <div class="header-item"><button class="back-nav" onclick="closeMarathon()">❮ GERİ</button></div>
+            <div class="header-item" id="atlas-selector-container" style="display:none; margin:0 15px;">
+                <select id="atlas-verb-selector" onchange="handleAtlasVerbChange()" style="font-family: 'Arakom', sans-serif; padding: 5px 10px; font-size: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0; outline: none; cursor: pointer; text-align: center; text-align-last: center; font-weight: normal; color: #2563eb; background: white;">
+                    <option value="كتب">كتب ✍️</option>
+                    <option value="دخل">دخل 🚪</option>
+                    <option value="خرج">خرج 🏃‍♂️</option>
+                    <option value="جلس">جلس 🪑</option>
+                    <option value="فتح">فتح 🔓</option>
+                    <option value="استيقظ">استيقظ ⏰</option>
+                    <option value="توضأ">توضأ 💧</option>
+                    <option value="صلى">صلى 🧎</option>
+                    <option value="تناول">تناول 🍽️</option>
+                    <option value="لبس">لبس 👕</option>
+                    <option value="ذهب">ذهب 🚶</option>
+                    <option value="رجع">رجع ↩️</option>
+                    <option value="ساعد">ساعد 🤝</option>
+                    <option value="درس">درس 📚</option>
+                    <option value="nam">نام 🛏️</option>
+                    <option value="نظف">نظف 🧹</option>
+                    <option value="شرب">شرب 🥛</option>
+                    <option value="أكل">أكل 🍏</option>
+                    <option value="أراد">أراد 🎯</option>
+                    <option value="سافر">سافر ✈️</option>
+                    <option value="غسل">غسل 🧼</option>
+                </select>
+            </div>
             <div class="header-item"><div id="stage-label" class="stage-badge ui-hidden">MAZİ</div></div>
             <div class="header-item"><button id="chrono-main" class="chrono-btn" style="display:none;" onclick="handleMarathonChronoClick()">⏱️</button></div>
             <div class="header-item"><button id="pause-btn" class="pause-circle ui-hidden" onclick="toggleMarathonPause()">||</button></div>
             <div class="header-item"><div class="timer-val ui-hidden" id="timer-display">0.00</div></div>
             <div class="header-item"><div class="score-val ui-hidden" id="live-total-score">100</div></div>
         </div>
-
         <div class="main-content" style="flex:1; display:flex; position:relative; overflow:hidden;">
             
             <div id="marathon-countdown-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; flex-direction: column;">
@@ -453,7 +478,7 @@
 
             <div id="marathon-selection-area" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f1f2f6; z-index: 200; display: none; align-items: center; justify-content: flex-start; flex-direction: column; padding: 50px 20px; overflow-y: auto; box-sizing: border-box;">
                 
-                <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 201; transition: 0.2s;">✕</button>
+                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 201; transition: 0.2s;">✕</button>
 
                 <h2 style="color: #6c5ce7; font-size: 2.5rem; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 25px;">Hangi fiili çalışmak istersiniz?</h2>
                 
@@ -461,12 +486,104 @@
                     </div>
             </div>
 
-            <button id="prev-arr" class="nav-arrow" style="left:15px;" onclick="changeMarathonStage(-1)">❮</button>
-            <button id="next-arr" class="nav-arrow" style="right:15px;" onclick="changeMarathonStage(1)">❯</button>
+            <button id="prev-arr" class="nav-arrow" style="left:15px; display: flex; align-items: center; justify-content: center;" onclick="changeMarathonStage(-1)"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            <button id="next-arr" class="nav-arrow" style="right:15px; display: flex; align-items: center; justify-content: center;" onclick="changeMarathonStage(1)"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
 
             <div id="game-container" style="flex:1; display:flex; width: 100%;">
                 <div id="screen-play" class="marathon-screen active"><div id="table-view" class="verb-table"></div></div>
-                <div id="screen-result" class="marathon-screen" style="text-align:center; overflow-y:auto; padding: 40px; width: 100%;">
+                
+                <style>
+                .atlas-verb-btn {
+                    font-family: 'Arakom', sans-serif;
+                    font-size: 2.4rem;
+                    padding: 12px 15px;
+                    border-radius: 8px;
+                    border: 1px solid #e2e8f0;
+                    background: white;
+                    color: #475569;
+                    cursor: pointer;
+                    transition: 0.2s;
+                    text-align: right;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .atlas-verb-btn:hover {
+                    background: #f1f5f9;
+                    border-color: #cbd5e1;
+                }
+                .atlas-verb-btn.active {
+                    background: #e0f2fe;
+                    border-color: #3b82f6;
+                    color: #1d4ed8;
+                }
+                #atlas-verb-list::-webkit-scrollbar { width: 6px; }
+                #atlas-verb-list::-webkit-scrollbar-track { background: transparent; }
+                #atlas-verb-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+                
+                
+                .atlas-fullscreen, .atlas-fullscreen * {
+                    box-sizing: border-box !important;
+                }
+                
+                .atlas-fullscreen #atlas-right-sidebar {
+                    width: 350px !important;
+                    min-width: 350px !important;
+                }
+                .atlas-fullscreen .atlas-verb-btn span {
+                    font-size: 2.2rem !important;
+                }
+                .atlas-fullscreen #atlas-sidebar-title {
+                    font-size: 1.6rem !important;
+                }
+                .atlas-fullscreen {
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    max-width: 100vw !important;
+                    max-height: 100vh !important;
+                    z-index: 9999 !important;
+                    background: #fff !important;
+                    border-radius: 0 !important;
+                    margin: 0 !important;
+                }
+                </style>
+                <div id="screen-atlas" class="marathon-screen" style="display: none; flex-direction: row; width: 100%; height: 100%;">
+                    <!-- 3 Columns for Verbs -->
+                    <div style="flex: 3; padding: 20px; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; background: #fff; width: 100%;">
+                        <div id="atlas-explanation" style="width: 100%; max-width: 100%; margin-bottom: 20px; text-align: center; background: transparent; padding: 0; border: none;">
+                            <h3 id="atlas-title-tr" style="font-size: 2.5rem; color: #475569; margin: 0 0 5px 0; font-family: sans-serif;">Geçmiş Zaman</h3>
+                            <h2 id="atlas-title-ar" class="arabic" style="font-size: 5rem; color: #2563eb; margin: 0 0 15px 0;">الماضي</h2>
+                            <p id="atlas-desc" style="font-size: 1.8rem; color: #64748b; line-height: 1.6; font-family: sans-serif; margin: 0;">Mazi fiil, geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen zamirlerle (soneklerle) yapılır.</p>
+                        </div>
+                        <div id="atlas-table-view" class="verb-table" style="width: 100%; max-width: 100%;"></div>
+                    </div>
+                    <!-- Absolute Close Button -->
+                    <button id="atlas-fs-btn" onclick="toggleAtlasFullscreen()" style="position: absolute; top: 20px; right: 80px; background: #3b82f6; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;">✕</button>
+                    <!-- 1 Column for Sidebar -->
+                    <div id="atlas-right-sidebar" style="width: 280px; min-width: 280px; flex: none; background: #f8fafc; border-left: 2px solid #e2e8f0; display: flex; flex-direction: column; padding: 20px; box-shadow: -4px 0 10px rgba(0,0,0,0.02); padding-top: 60px;">
+                        <h3 id="atlas-sidebar-title" style="text-align: right; color: #64748b; font-family: sans-serif; font-size: 1.1rem; margin-bottom: 15px; font-weight: normal; padding-right: 5px;">Örnek Fiiller</h3>
+                        <div id="atlas-verb-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
+                            <button class="atlas-verb-btn active" onclick="changeAtlasVerb('كتب', this)"><span>✍️</span> <span>كتب</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('دخل', this)"><span>🚪</span> <span>دخل</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('خرج', this)"><span>🏃‍♂️</span> <span>خرج</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('جلس', this)"><span>🪑</span> <span>جلس</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('فتح', this)"><span>🔓</span> <span>فتح</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('لبس', this)"><span>👕</span> <span>لبس</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('ذهب', this)"><span>🚶</span> <span>ذهب</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('رجع', this)"><span>↩️</span> <span>رجع</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('درس', this)"><span>📚</span> <span>درس</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('nam', this)"><span>🛏️</span> <span>نام</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('شرب', this)"><span>🥛</span> <span>شرب</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('أكل', this)"><span>🍏</span> <span>أكل</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('غسل', this)"><span>🧼</span> <span>غسل</span></button>
+                        </div>
+                    </div>
+                </div>
+<div id="screen-result" class="marathon-screen" style="text-align:center; overflow-y:auto; padding: 40px; width: 100%;">
                     <h1 style="color:#6c5ce7;">Okuma Testi Raporu</h1>
                     <div style="font-size: 7rem; color: #2ecc71; font-weight: bold;" id="final-score">0</div>
                     <div id="error-list"></div>

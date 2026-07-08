@@ -269,8 +269,17 @@ table {
 
 /* Bağımsız Başlık Genişlikleri */
 #tab1 th:nth-child(1) { width: 10% !important; min-width: 80px !important; }
-#tab2 th:nth-child(1) { width: 280px !important; min-width: 280px !important; max-width: 280px !important; }
 #table-view th:nth-child(1) { width: 280px !important; min-width: 280px !important; max-width: 280px !important; }
+
+/* Gramer Overlay RTL Arabic Text Helper */
+.grammar-arabic-text {
+    direction: rtl;
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    font-size: 1.6em;
+    display: inline-block;
+    padding: 0 5px;
+    color: #1a252f;
+}
 #table-view th:nth-child(1) { width: 22% !important; min-width: 350px; } 
 th:nth-child(2) { width: 11%; } 
 th:nth-child(3) { width: 11%; } 
@@ -309,7 +318,7 @@ td:first-child {
     border-bottom: 4px solid #9ca3af !important; 
     border-radius: 8px; 
     margin: 4px;
-    padding: 4px 2px 2px 2px; 
+    padding: 4px 2px 8px 2px; 
     text-align: center;
     transition: all 0.1s ease; 
     display: inline-block;
@@ -3157,4 +3166,29 @@ input:checked + .slider:before {
 .fullscreen-accordion .thematic-accordion-item {
     border: none !important;
     margin-bottom: 0 !important;
+}
+
+/* 3D Buton Başlık Efekti */
+.th-3d-btn {
+    cursor: pointer !important;
+    position: relative;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2), inset 0 2px 0 rgba(255,255,255,0.4) !important;
+    transform: translateY(0);
+    transition: all 0.1s ease !important;
+    user-select: none;
+    z-index: 2;
+}
+
+.th-3d-btn:active {
+    box-shadow: 0 0px 0 rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    transform: translateY(4px) !important;
+}
+
+.th-3d-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* Emir fiillerindeki esre (kasra) taşmasını önlemek için alt boşluğu artır */
+.glass-box {
+    padding-bottom: 10px !important;
 }
