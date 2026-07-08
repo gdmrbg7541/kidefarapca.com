@@ -6,15 +6,18 @@ window.toggleAtlasFullscreen = function() {
     let fsBtn = document.getElementById('atlas-fs-btn');
     let descBottom = document.getElementById('atlas-desc-bottom');
     if (window.isAtlasFullscreen) {
+        screenAtlas.style.position = 'fixed';
         screenAtlas.classList.add('atlas-fullscreen');
         if (descBottom) descBottom.style.display = 'none';
         if (fsBtn) fsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
     } else {
+        screenAtlas.style.position = 'relative';
         screenAtlas.classList.remove('atlas-fullscreen');
         if (descBottom) descBottom.style.display = 'block';
         if (fsBtn) fsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
     }
     window.handleAtlasVerbChange(true);
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
 };
 
 
@@ -1929,19 +1932,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         <div class="matrix-close-btn" style="z-index: 11; top: 2px;" onclick="closeInlineMatrix(event, this)">✕</div>
     `;
     
-    let grammarBtnTitle = tip.replace('_mezid', '').replace('_', ' ').toUpperCase();
-    if (grammarBtnTitle === 'ZAMAN MEKAN') grammarBtnTitle = 'ZAMAN / MEKAN';
-    
-    html += `
-        <div style="position: absolute; top: 40px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 10;">
-            <button onclick="if(typeof openGrammarOverlay === 'function') openGrammarOverlay('${tip}')" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 6px 20px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px; transition: transform 0.1s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-                ${grammarBtnTitle} KONU ANLATIMI
-            </button>
-        </div>
-    `;
-
-    html += `<div class="carousel-container-outer" style="position: relative; margin-top: 75px; width: 100%; display: flex; align-items: center; justify-content: center; height: calc(100% - 75px);">`;
+    html += `<div class="carousel-container-outer" style="position: relative; margin-top: 25px; width: 100%; display: flex; align-items: center; justify-content: center; height: calc(100% - 25px);">`;
     
     if (hasCarousel) {
         // Okların yerini değiştirdik: İçeriye aldık ve ortaladık
@@ -6288,7 +6279,9 @@ window.openMarathon = function() {
     window.mRaceMode = false;
     window.mSkippedLobby = false; 
 
-    document.getElementById('marathon-overlay').classList.add('active');
+    let mOverlay = document.getElementById('marathon-overlay');
+    mOverlay.classList.add('active');
+    mOverlay.scrollTop = 0;
     
     // Üst barı HEP GÖRÜNÜR tut ki GERİ tuşu kaybolmasın! Sadece içini temizle.
     document.getElementById('top-bar-panel').style.visibility = 'visible';
@@ -7672,7 +7665,17 @@ window.atlasEPats = [
 
 window.openAtlasOverlay = function(stage) {
     window.isAtlasMode = true;
-    document.getElementById('marathon-overlay').classList.add('active');
+    window.isAtlasFullscreen = false;
+    let _sa = document.getElementById('screen-atlas');
+    if(_sa) _sa.classList.remove('atlas-fullscreen');
+    let _scrollCont = document.querySelector('#screen-atlas > div:first-of-type');
+    if(_scrollCont) _scrollCont.scrollTop = 0;
+    let _fsb = document.getElementById('atlas-fs-btn');
+    if(_fsb) _fsb.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+
+    let mOverlay = document.getElementById('marathon-overlay');
+    mOverlay.classList.add('active');
+    mOverlay.scrollTop = 0;
     document.getElementById('timer-display').style.display = 'none';
     document.getElementById('live-total-score').style.display = 'none';
     document.getElementById('chrono-main').style.display = 'none';
@@ -8083,6 +8086,8 @@ window.openAtlasOverlay = function(stage) {
             flexContainer.style.justifyContent = 'center';
             flexContainer.style.alignItems = 'center';
         }
+        let _fBtn = document.getElementById('atlas-fs-btn');
+        if(_fBtn) _fBtn.style.display = 'none';
     } else {
         if(tableView) tableView.style.display = 'grid';
         if(sidebar) sidebar.style.display = 'flex';
@@ -8107,13 +8112,17 @@ window.handleAtlasVerbChange = function(keepState = false) {
     if(!v) return;
     
     let fsBtn = document.getElementById('atlas-fs-btn');
-    if (window.currentStage === 'emir') {
+    if (window.currentStage !== 'mazi' && window.currentStage !== 'muzari') {
         if (fsBtn) fsBtn.style.display = 'none';
         if (window.isAtlasFullscreen) {
             window.isAtlasFullscreen = false;
             let screenAtlas = document.getElementById('screen-atlas');
-            if(screenAtlas) screenAtlas.classList.remove('atlas-fullscreen');
+            if(screenAtlas) {
+                screenAtlas.style.position = 'relative';
+                screenAtlas.classList.remove('atlas-fullscreen');
+            }
             if (fsBtn) fsBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
         }
     } else {
         if (fsBtn) fsBtn.style.display = 'flex';

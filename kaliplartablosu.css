@@ -317,8 +317,8 @@ td:first-child {
     border-right: 1px solid #d1d5db !important;  
     border-bottom: 4px solid #9ca3af !important; 
     border-radius: 8px; 
-    margin: 4px;
-    padding: 4px 2px 8px 2px; 
+    margin: 2px;
+    padding: 2px 2px 4px 2px; 
     text-align: center;
     transition: all 0.1s ease; 
     display: inline-block;
@@ -372,8 +372,8 @@ td:first-child {
 
 .footer-container { 
     display: flex; 
-    gap: 15px; 
-    margin-top: 10px; 
+    gap: 10px; 
+    margin-top: 2px; 
     width: 100%;
 }
 
