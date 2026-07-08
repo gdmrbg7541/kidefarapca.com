@@ -1022,12 +1022,10 @@ const wordEasterEggs = {
         // --- 52 Numaralı Kalıp (أَفْعَلَ - Mazi / İf'âl Babı) ---
         52: { 
             cekimi: ["أَكْمَلَ", "أَكْمَلَا", "أَكْمَلُوا", "أَكْمَلَتْ", "أَكْمَلَتَا", "أَكْمَلْنَ", "أَكْمَلْتَ", "أَكْمَلْتُمَا", "أَكْمَلْتُمْ", "أَكْمَلْتِ", "أَكْمَلْتُمَا", "أَكْمَلْتُنَّ", "أَكْمَلْتُ", "أَكْمَلْنَا", "أَكْمَلْنَا"],
-            base: { emoji: "✅", arText: "أَكْمَلَ", trText: "Tamamladı (İkmal etti)." },
-            suggestsPlus: true,
-            "تُ": { 
-                emoji: "🤲", 
-                arText: "أَكْمَلْتُ", 
-                trText: "Ben tamamladım.",
+            base: { 
+                emoji: "✅", 
+                arText: "أَكْمَلَ", 
+                trText: "Tamamladı (İkmal etti).",
                 ornek: { ar: "الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ", tr: "Bugün sizin için dininizi kemale erdirdim (tamamladım). (Mâide Suresi, 3)" }
             }
         },
@@ -1570,13 +1568,11 @@ const wordEasterEggs = {
         },
         // --- 95 Numaralı Kalıp (يَتَفَاعَلُ - Muzari / Tefâ'ul Babı) ---
         95: { 
-            base: { emoji: "👥", arText: "يَتَعَارَفُ", trText: "Tanışır / Tanışıyor." },
-            suggestsPlus: true,
-            "ونَ": { 
-                emoji: "🌍", 
-                arText: "يَتَعَارَفُونَ", 
-                trText: "Tanışırlar (Muzari Çoğul).",
-                ornek: { ar: "وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا", tr: "Sizi tanışmanız için milletlere ve kabilelere ayırdık. (Hucurât Suresi, 13)" } 
+            base: { 
+                emoji: "👥", 
+                arText: "يَتَعَارَفُ", 
+                trText: "Tanışır / Tanışıyor.",
+                ornek: { ar: "وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا", tr: "Sizi tanışmanız için milletlere ve kabilelere ayırdık. (Hucurât Suresi, 13)" }
             }
         },
         // --- 96 Numaralı Kalıp (تَفَاعَلْ - Emir / Tefâ'ul Babı) ---
@@ -2261,12 +2257,10 @@ const wordEasterEggs = {
         
         // --- 90 Numaralı Kalıp (تَفَعَّلْ - Emir / Tefe'ul Babı) ---
         90: { 
-            base: { emoji: "🌸", arText: "تَخَلَّقْ", trText: "Ahlaklan / Huy edin!" },
-            suggestsPlus: true,
-            "وا": { 
-                emoji: "🌷", 
-                arText: "تَخَلَّقُوا", 
-                trText: "Ahlaklanın (Siz çoğul).",
+            base: { 
+                emoji: "🌸", 
+                arText: "تَخَلَّقْ", 
+                trText: "Ahlaklan / Huy edin!",
                 ornek: { ar: "تَخَلَّقُوا بِأَخْلَاقِ اللهِ", tr: "Allah'ın ahlakıyla ahlaklanın." }
             }
         }
