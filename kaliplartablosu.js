@@ -1176,8 +1176,8 @@ function handleSwipeGesture() {
 // ==================================================================
 // 1. TABLO GEÇİŞİ (Sağa Kayma ve Boşluk Hatasının Çözümü)
 // ==================================================================
-function setTab(tabIndex) {
-    if (typeof SoundEngine !== "undefined") SoundEngine.playClick(); 
+function setTab(tabIndex, noSound = false) {
+    if (!noSound && typeof SoundEngine !== "undefined") SoundEngine.playClick(); 
     const band = document.getElementById('mainSliderBandi');
     const switcher = document.getElementById('tabSwitch');
     
@@ -1697,7 +1697,7 @@ function closeInlineMatrix(e, btnElement) {
     }
 }
 
-function applyToSpecificBox(boxElement) {
+function applyToSpecificBox(boxElement, noSound = false) {
     const targetEl = boxElement.querySelector('.ar, .ar-small');
     if (!targetEl) return;
     const kalip = targetEl.getAttribute('data-original');
@@ -1705,7 +1705,7 @@ function applyToSpecificBox(boxElement) {
     clearOtherActiveBoxes(boxElement);
 
     if (boxElement.style.backgroundColor) {
-        SoundEngine.playClose();
+        if (!noSound && typeof SoundEngine !== "undefined") SoundEngine.playClose();
         
         // Kutu seçimi iptal edildiğinde de varsayılan kalıbı (فعل) renkli bırak
         targetEl.innerHTML = ColorEngine.colorize(kalip, ['ف', 'ع', 'ل']); 
@@ -1736,7 +1736,7 @@ function applyToSpecificBox(boxElement) {
         return;
     }
 
-    SoundEngine.playClick();
+    if (!noSound && typeof SoundEngine !== "undefined") SoundEngine.playClick();
     const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
     let plainWord = (currentRootSafe.length === 3) ? applyRootToKalip(currentRootSafe, kalip) : kalip;
     
@@ -8428,6 +8428,7 @@ function openFastDictionaryMode() {
     
     // SANKİ TÜM KALIPLARA BASILMIŞ GİBİ ARKA PLANI DOLDUR!
     const refs = getSortedRefsForRoot(currentRoot);
+    let didApply = false;
     refs.forEach(refId => {
         const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
             const refEl = b.querySelector('.ref');
@@ -8436,17 +8437,23 @@ function openFastDictionaryMode() {
         if (targetBox) {
             // Eğer daha önceden doldurulmamışsa, "applyToSpecificBox" çağır
             if (!targetBox.style.backgroundColor) {
-                applyToSpecificBox(targetBox);
+                applyToSpecificBox(targetBox, true);
+                didApply = true;
             }
         }
     });
     
+    // Ses patlamasını engellemek için, bir kere toplu ses çal
+    if (didApply && typeof SoundEngine !== "undefined") {
+        SoundEngine.playClick();
+    }
     
-    // Kök başlığını yaz (Tasarım olarak draggable-root-clone sınıfını kullanarak)
+    
+    // Kök başlığını yaz (Tasarım olarak draggable-root-clone sınıfını kullanarak daha büyük)
     const formattedTitle = formatArabicRoot(currentRoot);
     const fdmContainer = document.getElementById('fdm-root-container');
     if (fdmContainer) {
-        fdmContainer.innerHTML = `<div class="fdm-root-plate" style="background: #8b4513; border: 2px solid #cd853f; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-radius: 12px; font-family: 'Arakom', sans-serif; font-size: 2.5rem; color: #fff; position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; min-width: 140px; padding: 6px 12px 10px 0px;"><span class="root-text-content" style="color: #fff !important; text-shadow: 0 0 10px rgba(255, 238, 0, 0.5);">${formattedTitle}</span></div>`;
+        fdmContainer.innerHTML = `<div class="fdm-root-plate draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 3.8rem !important; padding: 14px 20px 20px 0px !important; min-width: 240px !important; border-radius: 18px !important;"><span class="root-text-content">${formattedTitle}</span></div>`;
     }
     
     // Listeleri temizle
@@ -8493,10 +8500,10 @@ function openFastDictionaryMode() {
         let numBg = isVerbListRow ? '#27ae60' : '#2980b9';
         
         const html = `
-            <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 12px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
-                <div style="width: 45px; text-align: center; font-weight: bold; font-size: 1.2rem; color: #ffffff; background: ${numBg}; border-radius: 5px; padding: 4px;">${refId}</div>
-                <div style="flex: 1; text-align: right; padding-right: 15px; font-family: 'Arakom', sans-serif; font-size: 2.2rem; color: #000;">${arText} ${emoji}</div>
-                <div style="flex: 1; text-align: left; color: #444; font-size: 1.4rem;" dir="ltr">${trText}</div>
+            <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 18px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
+                <div style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px;">${refId}</div>
+                <div style="flex: 1; text-align: right; padding-right: 20px; font-family: 'Arakom', sans-serif; font-size: 3.4rem; color: #000;">${arText} ${emoji}</div>
+                <div style="flex: 1; text-align: left; color: #444; font-size: 1.8rem;" dir="ltr">${trText}</div>
             </div>
         `;
         
@@ -8568,7 +8575,7 @@ function triggerFDMTab(tabType) {
     
     // Arka planı değiştir
     if (typeof setTab === 'function') {
-        setTab(isMucerred ? 0 : 1);
+        setTab(isMucerred ? 0 : 1, true); // FDM'de sekme değişirken ses çalma (Sessiz)
     }
     
     // Tablodaki Sarı Vurgulu Kutu (Emojiler) ve Listedeki Satırları Bul

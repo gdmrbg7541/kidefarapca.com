@@ -2302,7 +2302,6 @@ html body .glass-box.tanimsiz-kok .ref {
 
 /* --- THEMATIC ACCORDION --- */
 .thematic-accordion-item {
-    margin-bottom: 20px;
     border: 2px solid rgba(0, 0, 0, 0.05);
     border-radius: 15px;
     overflow: hidden;
@@ -2766,10 +2765,10 @@ input:checked +
 
 
 .thematic-accordion-item {
-    margin-bottom: 20px;
     border: 2px solid rgba(0, 0, 0, 0.05);
     border-radius: 15px;
     overflow: hidden;
+    position: relative;
 }
 
 /* Çizgiler için sözde elementler (sadece aktif değilken ve son sütun değilken sağa çizgi ekler) */
@@ -2779,26 +2778,9 @@ input:checked +
 .thematic-accordion-item.active {
     background: rgba(92, 124, 250, 0.4); /* Aktif sekme rengi */
     border-color: rgba(92, 124, 250, 0.8) !important;
-}
-
-/* Bütünlük (Continuity) Ok İşareti: Aktif başlığın altından, altta açılan panele işaret eder */
-.thematic-accordion-item.active::before {
-    content: "";
-    position: absolute;
-    bottom: -15px; /* Grid'in gap boşluğuna doğru sarkar */
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 15px 15px 0 15px;
-    border-style: solid;
-    border-color: #5c7cfa transparent transparent transparent;
-    z-index: 10;
-}
-
-
-/* Başlıklar artık genişlemiyor, yerinde sabit kalıyor */
-.thematic-accordion-item.active {
-    background: rgba(92, 124, 250, 0.4); /* Aktif sekme rengi */
-    border-color: rgba(92, 124, 250, 0.8) !important;
+    overflow: visible !important; /* Ok işaretinin görünmesi için */
+    z-index: 20; /* Panelin (z-index:5) üzerinde kalsın diye */
+    margin-bottom: 0 !important; /* Konteynerla aradaki fazlalık boşluğu kapatıp okun tam birleşmesini sağlar */
 }
 
 /* Bütünlük (Continuity) Ok İşareti: Aktif başlığın altından, altta açılan panele işaret eder */
@@ -3373,6 +3355,9 @@ select.memory-btn:disabled {
 /* Hide underlying elements when fullscreen accordion is active */
 body.has-fullscreen-accordion .verb-close-btn {
     display: none !important;
+}
+body.has-fullscreen-accordion .thematic-accordion-item {
+    display: none !important; /* Hafıza oyununda başlıkların görünmesini engeller */
 }
 body.has-fullscreen-accordion .thematic-words-content {
     overflow: hidden !important;
