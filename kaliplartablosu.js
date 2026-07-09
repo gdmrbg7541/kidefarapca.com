@@ -8403,6 +8403,9 @@ function openFastDictionaryMode() {
         return;
     }
     
+    // Animasyon durumunu sıfırla, böylece her açılışta liste sırayla açılsın
+    fdmAnimated = { mucerred: false, mezid: false };
+    
     if (!currentRoot || !sozlukVerileri[currentRoot]) return;
     
     // YENİ KLAVYEYİ KESİN OLARAK KAPAT
@@ -8417,7 +8420,11 @@ function openFastDictionaryMode() {
     const tb = document.querySelector('.top-bar');
     if (tb) tb.style.display = 'none';
     
-    document.querySelectorAll('.draggable-root-clone').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.draggable-root-clone').forEach(el => {
+        if (!el.closest('#fdm-root-container')) {
+            el.style.setProperty('display', 'none', 'important');
+        }
+    });
     
     // SANKİ TÜM KALIPLARA BASILMIŞ GİBİ ARKA PLANI DOLDUR!
     const refs = getSortedRefsForRoot(currentRoot);
@@ -8439,7 +8446,7 @@ function openFastDictionaryMode() {
     const formattedTitle = formatArabicRoot(currentRoot);
     const fdmContainer = document.getElementById('fdm-root-container');
     if (fdmContainer) {
-        fdmContainer.innerHTML = `<div class="draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important;"><span class="root-text-content">${formattedTitle}</span></div>`;
+        fdmContainer.innerHTML = `<div class="fdm-root-plate" style="background: #8b4513; border: 2px solid #cd853f; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-radius: 12px; font-family: 'Arakom', sans-serif; font-size: 2.5rem; color: #fff; position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; min-width: 140px; padding: 6px 12px 10px 0px;"><span class="root-text-content" style="color: #fff !important; text-shadow: 0 0 10px rgba(255, 238, 0, 0.5);">${formattedTitle}</span></div>`;
     }
     
     // Listeleri temizle
@@ -8613,7 +8620,12 @@ function triggerFDMTab(tabType) {
     // Toplam 3 saniye (3000ms) içinde hepsini aç
     const totalDuration = 3000;
     const count = Math.max(emojiBoxes.length, listRows.length);
-    if (count === 0) return;
+    if (count === 0) {
+        if (isMucerred) {
+            triggerFDMTab('mezid');
+        }
+        return;
+    }
     
     const delayStep = totalDuration / count;
     
