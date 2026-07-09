@@ -1811,10 +1811,12 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         inlineContainer = document.createElement('div');
         inlineContainer.className = 'conjugation-inline-container';
         // ÇÖZÜM: Hesaplama yapılmadan önce sayfa dışına taşmasını ve scroll çıkarmasını engelle
-        inlineContainer.style.visibility = 'hidden'; 
+        // Sadece visibility: hidden yapmak veya top: 0 atamak sayfa sonundaki öğelerde aşağı taşmaya neden olabilir.
+        // display: none ile DOM'a eklenirken hiç alan kaplamamasını sağlıyoruz.
+        inlineContainer.style.display = 'none'; 
         boxElement.appendChild(inlineContainer);
     } else {
-        inlineContainer.style.visibility = 'hidden'; 
+        inlineContainer.style.display = 'none'; 
     }
 
     if (!anaVezin) anaVezin = boxElement.getAttribute('data-original') || '';
@@ -2153,7 +2155,20 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     inlineContainer.style.overflowY = 'hidden'; 
     inlineContainer.style.paddingTop = '15px'; 
 
-    const popupWidth = 600;  const popupHeight = 410; 
+    // Ölçüm için geçici olarak fixed yapıp ekrana koyalım (böylece sayfa boyunu uzatmaz)
+    inlineContainer.style.position = 'fixed';
+    inlineContainer.style.visibility = 'hidden';
+    inlineContainer.style.display = 'block';
+    inlineContainer.style.top = '0px';
+    inlineContainer.style.left = '0px';
+    
+    const popupWidth = inlineContainer.offsetWidth || 600;  
+    const popupHeight = inlineContainer.offsetHeight || 410; 
+
+    // Ölçüm bitti. DOM hesaplamaları (getBoundingClientRect) sırasında sayfayı germemesi için gizle
+    inlineContainer.style.display = 'none'; 
+    inlineContainer.style.position = 'absolute'; 
+    
     const boxWidth = boxElement.offsetWidth; const rect = boxElement.getBoundingClientRect();
     let targetTop = (window.innerHeight / 2) - (popupHeight / 2) - rect.top;
     let targetLeft = -popupWidth - 40;
@@ -3644,8 +3659,13 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
                 else if (!isTop && !isLeft) animClass = 'pop-up-left';
 
                 emojiDiv.className = `elegant-emoji ${animClass}`; 
+                
+                // Kalıbın z-index'ini yükselterek emojinin diğer kalıpların arkasına kaçmasını engelliyoruz
+                boxElement.style.zIndex = "999999";
+                
                 emojiDiv.addEventListener('animationend', (e) => {
                     e.target.style.display = 'none'; 
+                    boxElement.style.zIndex = ""; // Animasyon bitince normale dön
                 });
             }
 
@@ -5005,8 +5025,10 @@ function updateMainKeyboardPredictions() {
                         <span class="dynamic-root-countdown"></span>
                     </span>
                     <div class="dynamic-root-progress"></div>
-                    <div class="welding-spark-emitter"></div>
-                    <span class="dynamic-root-text">${r}</span>
+                    <div style="position: relative; display: inline-flex; align-items: center; justify-content: center;">
+                        <div class="welding-spark-emitter"></div>
+                        <span class="dynamic-root-text">${r.split('').join(' ')}</span>
+                    </div>
                 `;
                 
                 setTimeout(() => {
@@ -5066,6 +5088,8 @@ function updateMainKeyboardPredictions() {
             for (const [kalipKey, kalipData] of Object.entries(rootData)) {
                 if (matchCount > 60) break;
                 if (kalipData.base && kalipData.base.arText) {
+                    // GUARD: Boş arText'li otomatik oluşturulmuş nesneleri atla (NaN önleme)
+                    if (kalipData.base.arText.trim() === "") continue;
                     const strippedAr = window.stripHarakat(kalipData.base.arText);
                     
                     // Sözlükte en fazla 3 kelimeye kadar olan özel tamlamaları göster (uzun örnek cümleleri filtrele)
@@ -5208,6 +5232,8 @@ function updateMainKeyboardPredictions() {
             resultsHTML += `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; width:100%; box-sizing:border-box;">`;
             
             for (const item of matchesByLetter[letter]) {
+                // GUARD: Geçersiz/boş girdileri ekrana yazdırma (NaN önleme)
+                if (!item.arText || item.arText.trim() === "" || !item.trText) continue;
                 const ilkAnlam = (item.trText || "").split('/')[0].trim();
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
@@ -5259,7 +5285,7 @@ function updateMainKeyboardPredictions() {
                             </div>
                             
                             <div style="flex: 1 1 0; min-width:0; text-align:right; padding-left: 15px;">
-                                <span style="font-family: \'Arakom\', sans-serif; font-size:clamp(3.0rem, 4vw, 4.8rem); font-weight:normal; color:#000000; line-height:1.2; display:block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <span style="font-family: \'Arakom\', sans-serif; font-size:clamp(3.0rem, 4vw, 4.8rem); font-weight:normal; color:#000000; line-height:1.5; padding: 10px 0; display:block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     ${item.arText}
                                 </span>
                             </div>
@@ -6069,13 +6095,13 @@ window.initBabIcons = function() {
                     let harfDisplay = info.harf;
                     // Şedde hack'leri kaldırıldı çünkü artık tüm şeddeler çizgilere (tatweel) bağlı ve native olarak sorunsuz render ediliyor.
                     leftBadgeHtml = `<span class="ar" style="line-height: 1; color: #FF3B30 !important; white-space: nowrap;" dir="rtl">${harfDisplay}</span>
-                        <span style="font-family: 'Arakom', sans-serif; font-weight: normal; font-size: 1.25rem; color: #94a3b8;">${info.num}</span>`;
+                        <span style="font-family: 'Arakom', sans-serif; font-weight: normal; font-size: 1.25rem; color: #94a3b8; justify-self: start; padding-left: 5px;">${info.num}</span>`;
                 }
                 
                 td.style.position = 'relative';
                 td.style.padding = '0';
                 td.innerHTML = `
-                <div style="display: grid; grid-template-columns: 135px 30px 85px 30px; justify-items: center; align-items: center; width: 100%; height: 100%;" dir="ltr">
+                <div style="display: grid; grid-template-columns: 110px 55px 85px 30px; justify-items: center; align-items: center; width: 100%; height: 100%;" dir="ltr">
                     ${leftBadgeHtml}
                     <span style="font-family: 'Arakom', sans-serif; font-size: 1.15rem; font-weight: normal; color: #FF3B30; white-space: nowrap;">${originalText}</span>
                     <span class="info-icon" style="position: relative !important; top: auto !important; transform: none !important; right: auto !important; margin: 0 !important; color: ${iconColor} !important; cursor: pointer;" title="${info.title} Özellikleri"><i class="fas fa-info-circle"></i></span>
@@ -8416,6 +8442,59 @@ function openFastDictionaryMode() {
     if (backdrop) backdrop.classList.remove('active');
     document.body.classList.remove("keyboard-active");
     
+    // Arka planı "Türet" (Onaylanmış) durumuna getir, böylece sözlük vurguları doğru çalışır
+    if (typeof confirmRoot === 'function') {
+        confirmRoot();
+    }
+    
+    // KULLANICI İSTEĞİ: Sözlükteki kelimeleri arka planda hazır türetilmiş olarak kutulara yerleştir (vurguları bozmadan)
+    const refs = getSortedRefsForRoot(currentRoot);
+    refs.forEach(refId => {
+        const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
+            const refEl = b.querySelector('.ref');
+            return refEl && parseInt(refEl.innerText.trim()) === refId;
+        });
+        
+        if (targetBox && !targetBox.classList.contains('kok-turendi')) {
+            const targetEl = targetBox.querySelector('.ar, .ar-small');
+            if (targetEl) {
+                const kalip = targetBox.getAttribute('data-original');
+                let plainWord = kalip;
+                const mapping = getBabAndType(refId);
+                const vezinObj = babVezinleri[mapping.babNo];
+                let kalipMetni = (vezinObj && vezinObj[mapping.type]) ? vezinObj[mapping.type] : kalip;
+                
+                if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRoot] && sozlukVerileri[currentRoot][refId]) {
+                    let eggObj = sozlukVerileri[currentRoot][refId];
+                    if (eggObj.base && eggObj.base.arText && eggObj.base.arText.trim().split(/\s+/).length === 1) {
+                        plainWord = eggObj.base.arText;
+                    } else if (eggObj.cekimi && eggObj.cekimi.length > 0) {
+                        let ilkEleman = eggObj.cekimi[0];
+                        plainWord = typeof ilkEleman === 'object' ? ilkEleman.ar : ilkEleman;
+                    } else if (eggObj.base && eggObj.base.cekimi && eggObj.base.cekimi.length > 0) {
+                        let ilkEleman = eggObj.base.cekimi[0];
+                        plainWord = typeof ilkEleman === 'object' ? ilkEleman.ar : ilkEleman;
+                    } else {
+                        plainWord = applyRootToKalip(currentRoot, kalipMetni);
+                    }
+                } else {
+                    plainWord = applyRootToKalip(currentRoot, kalipMetni);
+                }
+                
+                let activeRootArray = currentRoot.split("");
+                targetEl.innerHTML = ColorEngine.colorize(plainWord, activeRootArray);
+                targetBox.classList.add('kok-turendi');
+                targetBox.style.setProperty("background-color", "#bfffdf", "important"); 
+                targetBox.style.borderColor = "#000000";
+                
+                // Anlam vurguları ve ikonları için (kullanıcının istediği asıl vurgu)
+                if (typeof checkWordEasterEgg === 'function') {
+                    checkWordEasterEgg(targetBox);
+                }
+            }
+        }
+    });
+    
     // Üst barı ve sürüklenebilir kök levhasını gizle (kök levhası listeye dönüşüyormuş gibi)
     const tb = document.querySelector('.top-bar');
     if (tb) tb.style.display = 'none';
@@ -8426,34 +8505,39 @@ function openFastDictionaryMode() {
         }
     });
     
-    // SANKİ TÜM KALIPLARA BASILMIŞ GİBİ ARKA PLANI DOLDUR!
-    const refs = getSortedRefsForRoot(currentRoot);
-    let didApply = false;
-    refs.forEach(refId => {
-        const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
-            const refEl = b.querySelector('.ref');
-            return refEl && parseInt(refEl.innerText.trim()) === refId;
-        });
-        if (targetBox) {
-            // Eğer daha önceden doldurulmamışsa, "applyToSpecificBox" çağır
-            if (!targetBox.style.backgroundColor) {
-                applyToSpecificBox(targetBox, true);
-                didApply = true;
-            }
-        }
-    });
-    
     // Ses patlamasını engellemek için, bir kere toplu ses çal
-    if (didApply && typeof SoundEngine !== "undefined") {
+    if (typeof SoundEngine !== "undefined") {
         SoundEngine.playClick();
     }
     
     
-    // Kök başlığını yaz (Tasarım olarak draggable-root-clone sınıfını kullanarak daha büyük)
+    // Kök başlığını yaz ve yanına bilgi (legend) panelini ekle
     const formattedTitle = formatArabicRoot(currentRoot);
     const fdmContainer = document.getElementById('fdm-root-container');
     if (fdmContainer) {
-        fdmContainer.innerHTML = `<div class="fdm-root-plate draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 3.8rem !important; padding: 14px 20px 20px 0px !important; min-width: 240px !important; border-radius: 18px !important;"><span class="root-text-content">${formattedTitle}</span></div>`;
+        // Çarpı (X) butonu ile çakışmaması için sağdan margin verdik (margin-right: 70px)
+        const rootPlateHtml = `<div class="fdm-root-plate draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 70px 0 0 !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 4.2rem !important; padding: 14px 20px 20px 0px !important; min-width: 240px !important; border-radius: 18px !important; flex-shrink: 0;"><span class="root-text-content">${formattedTitle}</span></div>`;
+        
+        const infoHtml = `
+            <div dir="ltr" style="background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-family: 'Arakom', sans-serif; display: flex; flex-direction: column; justify-content: center; flex: 1; text-align: left;">
+                <div style="display: flex; gap: 30px; margin-bottom: 0px; justify-content: flex-start;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display:inline-block; width: 22px; height: 22px; background: #27ae60; border-radius: 6px;"></span>
+                        <span style="font-size: 1.8rem; color: #333; font-weight: bold;">FİİLLER</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display:inline-block; width: 22px; height: 22px; background: #2980b9; border-radius: 6px;"></span>
+                        <span style="font-size: 1.8rem; color: #333; font-weight: bold;">İSİMLER</span>
+                    </div>
+                </div>
+                <div style="font-size: 1.8rem; color: #555; line-height: 1.6;">
+                    <span style="font-weight: bold; color: #2980b9; font-size: 1.8rem;">Not:</span> Türkçeye geçen Arapça kelimeler genellikle isimlerdir.
+                </div>
+            </div>
+        `;
+        
+        // RTL sayfada ilk eleman sağda görünür. Bu yüzden rootPlateHtml'i başa alıyoruz.
+        fdmContainer.innerHTML = `<div style="display: flex; align-items: stretch; justify-content: space-between; width: 100%; gap: 30px; padding: 10px;">${rootPlateHtml}${infoHtml}</div>`;
     }
     
     // Listeleri temizle
@@ -8474,8 +8558,20 @@ function openFastDictionaryMode() {
         let emoji = "", arText = "", trText = "";
         
         let hasPlus = false;
+        let plusObj = null;
         if (refData) {
-            hasPlus = Object.keys(refData).some(k => k !== "base" && k !== "cekimi" && k !== "isNotVerb" && k !== "ornek" && k !== "tekil" && k !== "cogul" && k !== "isDictOnly" && k !== "tip" && k !== "cogulTr");
+            const ignoreKeys = ["base", "cekimi", "isNotVerb", "ornek", "tekil", "cogul", "isDictOnly", "tip", "cogulTr", "suggestsPlus", "hasZamirCekimi", "zamirBase"];
+            let pKey = Object.keys(refData).find(k => !ignoreKeys.includes(k));
+            if (pKey) {
+                hasPlus = true;
+                plusObj = refData[pKey];
+            } else if (refData.tekil) {
+                let pKeyTekil = Object.keys(refData.tekil).find(k => !ignoreKeys.includes(k));
+                if (pKeyTekil) {
+                    hasPlus = true;
+                    plusObj = refData.tekil[pKeyTekil];
+                }
+            }
         }
         
         if (refData.tekil && refData.tekil.base) {
@@ -8492,8 +8588,11 @@ function openFastDictionaryMode() {
             trText = refData.trText || refData.tr || "";
         }
         
-        if (hasPlus) {
-            emoji += " ➕";
+        // Eğer temel anlam (trText) boşsa ve + eki varsa, ilk eki varsayılan olarak göster
+        if ((!trText || trText.trim() === "") && hasPlus && plusObj) {
+            arText = plusObj.arText || plusObj.ar || arText; 
+            trText = plusObj.trText || plusObj.tr || "";
+            emoji = plusObj.emoji || emoji;
         }
         
         let isVerbListRow = (refId <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(refId));
@@ -8538,13 +8637,6 @@ function closeFastDictionaryMode() {
     if (tb) tb.style.display = 'flex';
     
     document.querySelectorAll('.draggable-root-clone').forEach(el => el.style.display = 'block');
-    
-    // Kapatıldığında matrisi sıfırla
-    document.querySelectorAll('.glass-box').forEach(box => {
-        if (box.style.backgroundColor) {
-            resetBox(box);
-        }
-    });
 }
 
 let fdmTimeouts = [];
