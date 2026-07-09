@@ -4778,7 +4778,7 @@ if (!document.getElementById('srf-color-fix')) {
         }
         
         .srf-char {
-            display: block !important; 
+            display: flex !important; align-items: center !important; justify-content: center !important; 
             margin: 0 !important;
             padding: 0 !important;
             font-variant-ligatures: none !important;
@@ -4787,7 +4787,7 @@ if (!document.getElementById('srf-color-fix')) {
         }
 
         .glass-box .ar, .glass-box .ar-small, .siga-text {
-            display: block !important;
+            display: flex !important; align-items: center !important; justify-content: center !important;
             text-align: center !important;
             width: 100% !important;
             direction: rtl !important;
@@ -5427,7 +5427,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formattedText = formatArabicRoot(currentRoot);
             const dragEl = document.createElement('div');
             dragEl.className = 'draggable-root-clone';
-            dragEl.innerText = formattedText;
+            dragEl.innerHTML = `<span class="root-text-content">${formattedText}</span>`;
             document.body.appendChild(dragEl);
 
             // Yeni elemanı sürüklenebilir yap
@@ -5466,7 +5466,7 @@ function autoSpawnRootClone() {
     const formattedText = formatArabicRoot(currentRoot);
     const dragEl = document.createElement('div');
     dragEl.className = 'draggable-root-clone';
-    dragEl.innerText = formattedText;
+    dragEl.innerHTML = `<span class="root-text-content">${formattedText}</span>`;
     document.body.appendChild(dragEl);
 
     makeElementDraggable(dragEl);
@@ -6131,11 +6131,21 @@ setInterval(() => {
         
         // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
         document.querySelectorAll('.draggable-root-clone').forEach(box => {
+            let wrapper = box.querySelector('.root-clone-buttons');
             let btn = box.querySelector('.kutu-timer-btn');
             let listBtn = box.querySelector('.kutu-list-btn');
+            
             if (canShowTimer && (!btn || !listBtn)) {
                 if(btn) btn.remove();
                 if(listBtn) listBtn.remove();
+                if(!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.className = 'root-clone-buttons';
+                    box.appendChild(wrapper);
+                } else {
+                    wrapper.innerHTML = ''; // Clear contents
+                }
+                
                 let newBtn = document.createElement('div');
                 newBtn.className = 'kutu-timer-btn';
                 newBtn.innerHTML = mySvg;
@@ -6144,8 +6154,6 @@ setInterval(() => {
                 newBtn.onmousedown = (e) => { e.stopPropagation(); };
                 newBtn.ontouchstart = (e) => { e.stopPropagation(); };
                 newBtn.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
-                
-                box.appendChild(newBtn);
 
                 let newListBtn = document.createElement('div');
                 newListBtn.className = 'kutu-list-btn';
@@ -6154,14 +6162,17 @@ setInterval(() => {
                 newListBtn.onmousedown = (e) => { e.stopPropagation(); };
                 newListBtn.ontouchstart = (e) => { e.stopPropagation(); };
                 newListBtn.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
-                box.appendChild(newListBtn);
-
                 
+                // Üstte liste, altta kronometre
+                wrapper.appendChild(newListBtn);
+                wrapper.appendChild(newBtn);
+                
+            } else if (!canShowTimer && wrapper) {
+                wrapper.remove();
             } else if (!canShowTimer && btn) {
+                // Eger wrapper yoksa ama butonlar varsa (eski yapi kalmissa)
                 btn.remove();
-                let listBtn = box.querySelector('.kutu-list-btn');
                 if(listBtn) listBtn.remove();
-                
             }
         });
 
@@ -8428,7 +8439,7 @@ function openFastDictionaryMode() {
     const formattedTitle = formatArabicRoot(currentRoot);
     const fdmContainer = document.getElementById('fdm-root-container');
     if (fdmContainer) {
-        fdmContainer.innerHTML = `<div class="draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: block !important;">${formattedTitle}</div>`;
+        fdmContainer.innerHTML = `<div class="draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important;"><span class="root-text-content">${formattedTitle}</span></div>`;
     }
     
     // Listeleri temizle
