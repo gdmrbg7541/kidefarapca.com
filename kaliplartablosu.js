@@ -5342,10 +5342,14 @@ function clearDraggableRoots() {
 // Bırakılmış bir tahtayı yeniden sürüklenebilir yapan fonksiyon
 function makeElementDraggable(el) {
     let isDragging = false;
+    let hasMoved = false;
 
     function onMouseDown(e) {
+        if (e.target.closest('.kutu-timer-btn') || e.target.closest('.kutu-list-btn')) return; // butonlara basılmışsa sürükleme
+        
         e.preventDefault();
         isDragging = true;
+        hasMoved = false;
         el.style.zIndex = 1000000;
         
         let startX = e.pageX || (e.touches && e.touches[0].pageX);
@@ -5356,6 +5360,7 @@ function makeElementDraggable(el) {
 
         function onMouseMove(moveEvent) {
             if (!isDragging) return;
+            hasMoved = true;
             let x = moveEvent.pageX || (moveEvent.touches && moveEvent.touches[0].pageX);
             let y = moveEvent.pageY || (moveEvent.touches && moveEvent.touches[0].pageY);
             el.style.left = (x - offsetX) + 'px';
@@ -5368,6 +5373,8 @@ function makeElementDraggable(el) {
             document.removeEventListener('mouseup', onMouseUp);
             document.removeEventListener('touchmove', onMouseMove);
             document.removeEventListener('touchend', onMouseUp);
+            
+            
         }
 
         document.addEventListener('mousemove', onMouseMove);
@@ -6117,11 +6124,15 @@ setInterval(() => {
 
         // Hatasız okunan tek satırlık zarif SVG kodu
         const mySvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
-
+        const listSvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
+        
         // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
         document.querySelectorAll('.draggable-root-clone').forEach(box => {
             let btn = box.querySelector('.kutu-timer-btn');
-            if (canShowTimer && !btn) {
+            let listBtn = box.querySelector('.kutu-list-btn');
+            if (canShowTimer && (!btn || !listBtn)) {
+                if(btn) btn.remove();
+                if(listBtn) listBtn.remove();
                 let newBtn = document.createElement('div');
                 newBtn.className = 'kutu-timer-btn';
                 newBtn.innerHTML = mySvg;
@@ -6132,8 +6143,22 @@ setInterval(() => {
                 newBtn.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
                 
                 box.appendChild(newBtn);
+
+                let newListBtn = document.createElement('div');
+                newListBtn.className = 'kutu-list-btn';
+                newListBtn.innerHTML = listSvg;
+                newListBtn.title = 'Hızlı Sözlük Modu';
+                newListBtn.onmousedown = (e) => { e.stopPropagation(); };
+                newListBtn.ontouchstart = (e) => { e.stopPropagation(); };
+                newListBtn.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                box.appendChild(newListBtn);
+
+                
             } else if (!canShowTimer && btn) {
                 btn.remove();
+                let listBtn = box.querySelector('.kutu-list-btn');
+                if(listBtn) listBtn.remove();
+                
             }
         });
 
@@ -6142,8 +6167,11 @@ setInterval(() => {
         if (textEl) {
             const desktopBox = textEl.parentElement; 
             let btnMain = desktopBox.querySelector('.kutu-timer-btn');
+            let listBtnMain = desktopBox.querySelector('.kutu-list-btn');
             
-            if (canShowTimer && !btnMain && !isDraggableOnScreen) {
+            if (canShowTimer && (!btnMain || !listBtnMain) && !isDraggableOnScreen) {
+                if(btnMain) btnMain.remove();
+                if(listBtnMain) listBtnMain.remove();
                 desktopBox.style.position = 'relative'; 
                 let newBtnMain = document.createElement('div');
                 newBtnMain.className = 'kutu-timer-btn';
@@ -6151,8 +6179,20 @@ setInterval(() => {
                 newBtnMain.title = 'Hız ve Telaffuz Testi';
                 newBtnMain.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
                 desktopBox.appendChild(newBtnMain);
+
+                let newListBtnMain = document.createElement('div');
+                newListBtnMain.className = 'kutu-list-btn';
+                newListBtnMain.innerHTML = listSvg;
+                newListBtnMain.title = 'Hızlı Sözlük Modu';
+                newListBtnMain.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                desktopBox.appendChild(newListBtnMain);
+
+                
             } else if ((!canShowTimer || isDraggableOnScreen) && btnMain) {
                 btnMain.remove();
+                let listBtnMain = desktopBox.querySelector('.kutu-list-btn');
+                if(listBtnMain) listBtnMain.remove();
+                
             }
         }
 
@@ -6161,16 +6201,30 @@ setInterval(() => {
         if (mobileRootDisplay) {
             const mobileBox = mobileRootDisplay.parentElement;
             let btnM = mobileBox.querySelector('.kutu-timer-btn-mobile');
+            let listBtnM = mobileBox.querySelector('.kutu-list-btn-mobile');
 
-            if (canShowTimer && !btnM) {
+            if (canShowTimer && (!btnM || !listBtnM)) {
+                if(btnM) btnM.remove();
+                if(listBtnM) listBtnM.remove();
                 mobileBox.style.position = 'relative';
                 let newBtnM = document.createElement('div');
                 newBtnM.className = 'kutu-timer-btn kutu-timer-btn-mobile';
                 newBtnM.innerHTML = mySvg;
                 newBtnM.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
                 mobileBox.appendChild(newBtnM);
+
+                let newListBtnM = document.createElement('div');
+                newListBtnM.className = 'kutu-list-btn kutu-list-btn-mobile';
+                newListBtnM.innerHTML = listSvg;
+                newListBtnM.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                mobileBox.appendChild(newListBtnM);
+
+                
             } else if (!canShowTimer && btnM) {
                 btnM.remove();
+                let listBtnM = mobileBox.querySelector('.kutu-list-btn-mobile');
+                if(listBtnM) listBtnM.remove();
+                
             }
         }
     } catch(err) { }
@@ -6182,7 +6236,7 @@ setInterval(() => {
 window.mActiveSet = [];
 window.mCurrentStage = 0;
 window.mRanges = [[0,0], [0,0], [0,0]];
-window.mErrorMemory = new Set();
+window.mErrorMemory = new Map();
 window.mTimerInterval = null;
 window.mStartTime = 0;
 window.mElapsedTime = 0;
@@ -6665,17 +6719,18 @@ window.loadMarathonTable = function() {
         let rowClass = (rowIndex === 4) ? 'mutekellim-row' : ((rowIndex % 2 === 0) ? 'muez-row' : 'mue-row');
         
         div.className = 'marathon-cell ' + rowClass;
-        if(window.mErrorMemory.has(absoluteIdx)) div.classList.add('error-active');
+        const errorKey = window.mCurrentStage + '_' + absoluteIdx;
+        if(window.mErrorMemory.has(errorKey)) div.classList.add('error-active');
         
         div.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(w, currentRoot.split("")) : w;
         
         div.onclick = function() {
-            if (window.mErrorMemory.has(absoluteIdx)) {
-                window.mErrorMemory.delete(absoluteIdx);
+            if (window.mErrorMemory.has(errorKey)) {
+                window.mErrorMemory.delete(errorKey);
                 this.classList.remove('error-active');
                 if (typeof playSfx === 'function') playSfx(400, 'sine', 0.1); 
             } else {
-                window.mErrorMemory.add(absoluteIdx);
+                window.mErrorMemory.set(errorKey, w);
                 this.classList.add('error-active');
                 if (typeof playSfx === 'function') playSfx(150, 'sawtooth', 0.2); 
             }
@@ -6712,10 +6767,10 @@ function finishMarathon() {
     const errList = document.getElementById('error-list');
     if (errList) {
         errList.innerHTML = '';
-        window.mErrorMemory.forEach(idx => {
+        window.mErrorMemory.forEach((word) => {
             const item = document.createElement('div');
             item.className = 'error-item'; 
-            item.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(window.mActiveSet[idx], currentRoot.split("")) : window.mActiveSet[idx];
+            item.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(word, currentRoot.split("")) : word;
             errList.appendChild(item);
         });
     }
@@ -6818,6 +6873,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // --- KÖKLER VE KELİMELER İNCELEME (CHOICE MENU) MANTIĞI ---
 
 function openRootsModal() {
+
     // Her zaman aç (SVG sürekli ikon olarak kaldığı için)
     if (true) {
         const rootsContent = document.getElementById('roots-main-content');
@@ -8322,3 +8378,264 @@ window.handleAtlasVerbChange = function(keepState = false) {
 };
 
 
+// ==========================================
+// HIZLI SÖZLÜK (FAST DICTIONARY MODE) MANTIĞI
+// ==========================================
+
+function openFastDictionaryMode() {
+    const fdm = document.getElementById('fast-dictionary-overlay');
+    if (fdm && fdm.style.display === 'flex') {
+        closeFastDictionaryMode();
+        return;
+    }
+    
+    if (!currentRoot || !sozlukVerileri[currentRoot]) return;
+    
+    // YENİ KLAVYEYİ KESİN OLARAK KAPAT
+    if (typeof closeKeyboard === 'function') closeKeyboard();
+    const popup = document.getElementById('integrated-keyboard-popup');
+    const backdrop = document.getElementById('keyboard-backdrop'); 
+    if (popup) popup.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.classList.remove("keyboard-active");
+    
+    // Üst barı ve sürüklenebilir kök levhasını gizle (kök levhası listeye dönüşüyormuş gibi)
+    const tb = document.querySelector('.top-bar');
+    if (tb) tb.style.display = 'none';
+    
+    document.querySelectorAll('.draggable-root-clone').forEach(el => el.style.display = 'none');
+    
+    // SANKİ TÜM KALIPLARA BASILMIŞ GİBİ ARKA PLANI DOLDUR!
+    const refs = getSortedRefsForRoot(currentRoot);
+    refs.forEach(refId => {
+        const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
+            const refEl = b.querySelector('.ref');
+            return refEl && parseInt(refEl.innerText.trim()) === refId;
+        });
+        if (targetBox) {
+            // Eğer daha önceden doldurulmamışsa, "applyToSpecificBox" çağır
+            if (!targetBox.style.backgroundColor) {
+                applyToSpecificBox(targetBox);
+            }
+        }
+    });
+    
+    
+    // Kök başlığını yaz (Tasarım olarak draggable-root-clone sınıfını kullanarak)
+    const formattedTitle = formatArabicRoot(currentRoot);
+    const fdmContainer = document.getElementById('fdm-root-container');
+    if (fdmContainer) {
+        fdmContainer.innerHTML = `<div class="draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 auto !important; cursor: default !important; z-index: 10 !important; display: block !important;">${formattedTitle}</div>`;
+    }
+    
+    // Listeleri temizle
+    const mucList = document.getElementById('fdm-mucerred-list');
+    const mezList = document.getElementById('fdm-mezid-list');
+    if (mucList) mucList.innerHTML = '';
+    if (mezList) mezList.innerHTML = '';
+    
+    // Sözlük verisini ayıkla
+    const rootData = sozlukVerileri[currentRoot];
+    let mucerredItems = [];
+    let mezidItems = [];
+    
+    Object.keys(rootData).forEach(refStr => {
+        if (refStr === 'isDictOnly' || refStr === 'tip') return;
+        const refId = parseInt(refStr);
+        const refData = rootData[refStr];
+        let emoji = "", arText = "", trText = "";
+        
+        let hasPlus = false;
+        if (refData) {
+            hasPlus = Object.keys(refData).some(k => k !== "base" && k !== "cekimi" && k !== "isNotVerb" && k !== "ornek" && k !== "tekil" && k !== "cogul" && k !== "isDictOnly" && k !== "tip" && k !== "cogulTr");
+        }
+        
+        if (refData.tekil && refData.tekil.base) {
+            emoji = refData.tekil.base.emoji || "";
+            arText = refData.tekil.base.arText || "";
+            trText = refData.tekil.base.trText || "";
+        } else if (refData.base) {
+            emoji = refData.base.emoji || "";
+            arText = refData.base.arText || refData.base.ar || "";
+            trText = refData.base.trText || refData.base.tr || "";
+        } else {
+            emoji = refData.emoji || "";
+            arText = refData.arText || refData.ar || "";
+            trText = refData.trText || refData.tr || "";
+        }
+        
+        if (hasPlus) {
+            emoji += " ➕";
+        }
+        
+        let isVerbListRow = (refId <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(refId));
+        let numBg = isVerbListRow ? '#27ae60' : '#2980b9';
+        
+        const html = `
+            <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 12px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
+                <div style="width: 45px; text-align: center; font-weight: bold; font-size: 1.2rem; color: #ffffff; background: ${numBg}; border-radius: 5px; padding: 4px;">${refId}</div>
+                <div style="flex: 1; text-align: right; padding-right: 15px; font-family: 'Arakom', sans-serif; font-size: 2.2rem; color: #000;">${arText} ${emoji}</div>
+                <div style="flex: 1; text-align: left; color: #444; font-size: 1.4rem;" dir="ltr">${trText}</div>
+            </div>
+        `;
+        
+        if (refId < 50) mucerredItems.push({refId, html});
+        else mezidItems.push({refId, html});
+    });
+    
+    // Sırala ve ekle
+    if (mucList) {
+        mucerredItems.sort((a,b) => a.refId - b.refId).forEach(item => mucList.innerHTML += item.html);
+    }
+    if (mezList) {
+        mezidItems.sort((a,b) => a.refId - b.refId).forEach(item => mezList.innerHTML += item.html);
+    }
+    
+    // Üst paneli gizleme kodu kaldırıldı; mevcut kök levhası görünür kalacak.
+
+    fdm.style.display = 'flex';
+    
+    // Varsayılan olarak Mücerred sekmesi açılır
+    // (Animasyonların doğru tetiklenmesi için küçük bir gecikme ekliyoruz)
+    setTimeout(() => {
+        triggerFDMTab('mucerred');
+    }, 50);
+}
+
+function closeFastDictionaryMode() {
+    const fdm = document.getElementById('fast-dictionary-overlay');
+    if (fdm) fdm.style.display = 'none';
+    
+    const tb = document.querySelector('.top-bar');
+    if (tb) tb.style.display = 'flex';
+    
+    document.querySelectorAll('.draggable-root-clone').forEach(el => el.style.display = 'block');
+    
+    // Kapatıldığında matrisi sıfırla
+    document.querySelectorAll('.glass-box').forEach(box => {
+        if (box.style.backgroundColor) {
+            resetBox(box);
+        }
+    });
+}
+
+let fdmTimeouts = [];
+let fdmAnimated = { mucerred: false, mezid: false };
+function triggerFDMTab(tabType) {
+    fdmTimeouts.forEach(clearTimeout);
+    fdmTimeouts = [];
+    const isMucerred = tabType === 'mucerred';
+    
+    // Sekme Stilleri
+    const tabMuc = document.getElementById('fdm-mucerred-tab');
+    const tabMez = document.getElementById('fdm-mezid-tab');
+    if (isMucerred) {
+        tabMuc.style.background = '#FF3B30';
+        tabMuc.style.color = '#ffffff';
+        tabMuc.style.boxShadow = '0 4px 10px rgba(255, 59, 48, 0.4)';
+        tabMez.style.background = 'rgba(255, 255, 255, 0.5)';
+        tabMez.style.color = '#555';
+        tabMez.style.boxShadow = 'none';
+    } else {
+        tabMez.style.background = '#FF3B30';
+        tabMez.style.color = '#ffffff';
+        tabMez.style.boxShadow = '0 4px 10px rgba(255, 59, 48, 0.4)';
+        tabMuc.style.background = 'rgba(255, 255, 255, 0.5)';
+        tabMuc.style.color = '#555';
+        tabMuc.style.boxShadow = 'none';
+    }
+    
+    // Arka planı değiştir
+    if (typeof setTab === 'function') {
+        setTab(isMucerred ? 0 : 1);
+    }
+    
+    // Tablodaki Sarı Vurgulu Kutu (Emojiler) ve Listedeki Satırları Bul
+    const activeTableId = isMucerred ? 'tab1' : 'tab2';
+    const activeTabEl = document.getElementById(activeTableId);
+    if (!activeTabEl) return;
+    
+    const emojiBoxes = Array.from(activeTabEl.querySelectorAll('.glass-box.sari-vurgu'));
+    emojiBoxes.sort((a,b) => {
+        const refA = a.querySelector('.ref') ? parseInt(a.querySelector('.ref').innerText) : 0;
+        const refB = b.querySelector('.ref') ? parseInt(b.querySelector('.ref').innerText) : 0;
+        return refA - refB;
+    });
+    
+    const listId = isMucerred ? 'fdm-mucerred-list' : 'fdm-mezid-list';
+    const listRows = Array.from(document.querySelectorAll('#' + listId + ' .fdm-list-row'));
+    
+    if (fdmAnimated[tabType]) {
+        // Zaten animasyon oynatıldıysa, sadece görünür olduklarından emin ol ve çık.
+        emojiBoxes.forEach(box => {
+            box.style.transition = 'all 0.4s ease';
+            box.style.transform = 'scale(1)';
+            box.style.opacity = '1';
+            box.style.zIndex = '30'; box.style.position = 'relative';
+        });
+        listRows.forEach(row => {
+            row.style.transition = 'all 0.4s ease';
+            row.style.transform = 'translateY(0)';
+            row.style.opacity = '1';
+        });
+        return;
+    }
+    
+    fdmAnimated[tabType] = true;
+
+    // Önce hepsini gizle
+    emojiBoxes.forEach(box => {
+        box.style.transition = 'none'; // Animasyonu sıfırla
+        box.style.transform = 'scale(0)';
+        box.style.opacity = '0';
+        box.style.zIndex = '30'; box.style.position = 'relative'; // Liste üzerine çıkması için
+    });
+    listRows.forEach(row => {
+        row.style.transition = 'none';
+        row.style.transform = 'translateY(20px)';
+        row.style.opacity = '0';
+    });
+    
+    // Toplam 3 saniye (3000ms) içinde hepsini aç
+    const totalDuration = 3000;
+    const count = Math.max(emojiBoxes.length, listRows.length);
+    if (count === 0) return;
+    
+    const delayStep = totalDuration / count;
+    
+    // Force reflow
+    void activeTabEl.offsetWidth;
+    
+    for (let i = 0; i < count; i++) {
+        let t = setTimeout(() => {
+            if (emojiBoxes[i]) {
+                emojiBoxes[i].style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                emojiBoxes[i].style.transform = 'scale(1.2)'; // Biraz büyük patlasın
+                emojiBoxes[i].style.opacity = '1';
+                
+                // Patlama efektinden sonra normale dön
+                let tInner = setTimeout(() => {
+                    if(emojiBoxes[i]) emojiBoxes[i].style.transform = 'scale(1)';
+                }, 400);
+                fdmTimeouts.push(tInner);
+            }
+            if (listRows[i]) {
+                listRows[i].style.transition = 'all 0.4s ease';
+                listRows[i].style.transform = 'translateY(0)';
+                listRows[i].style.opacity = '1';
+                
+                // Listedeki eleman görünür olduğunda scroll oraya kaysın (Opsiyonel: Eğer çok uzunsa)
+                listRows[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }, i * delayStep);
+        fdmTimeouts.push(t);
+    }
+    
+    // YENİ İSTEK: "süper mücerred listesi bitince mezid listesi otomatik başlasın"
+    if (isMucerred) {
+        let autoMezidTimer = setTimeout(() => {
+            triggerFDMTab('mezid');
+        }, totalDuration + 200); // Mücerred animasyonu bittikten hemen sonra
+        fdmTimeouts.push(autoMezidTimer);
+    }
+}
