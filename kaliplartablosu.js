@@ -4973,13 +4973,14 @@ function updateMainKeyboardPredictions() {
         let rootMatches = [];
         
         if (!hasSpace) {
-            // Veritabanındaki kelimelerin harekelerini silerek uzunluklarını ölçüyoruz (Örn: يَوْم -> يوم = 3 harf)
-            const allRoots = Object.keys(sozlukVerileri).filter(r => {
-                if (sozlukVerileri[r] && sozlukVerileri[r].isDictOnly) return false; // İsimler (tekil/çoğul) ana klavye aramasında çıkmaz
-                const stripped = window.stripHarakat ? window.stripHarakat(r) : r;
-                return stripped.length === 3 || stripped.length === 4;
-            });
-            rootMatches = allRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
+            if (!window._cachedAllRoots) {
+                window._cachedAllRoots = Object.keys(sozlukVerileri).filter(r => {
+                    if (sozlukVerileri[r] && sozlukVerileri[r].isDictOnly) return false;
+                    const stripped = window.stripHarakat ? window.stripHarakat(r) : r;
+                    return stripped.length === 3 || stripped.length === 4;
+                });
+            }
+            rootMatches = window._cachedAllRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
 
             // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
             if (filter.length === 3) {
@@ -5061,7 +5062,9 @@ function updateMainKeyboardPredictions() {
         let matchesByLetter = {};
         
         for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
+            if (matchCount > 60) break;
             for (const [kalipKey, kalipData] of Object.entries(rootData)) {
+                if (matchCount > 60) break;
                 if (kalipData.base && kalipData.base.arText) {
                     const strippedAr = window.stripHarakat(kalipData.base.arText);
                     
@@ -5096,7 +5099,7 @@ function updateMainKeyboardPredictions() {
                         matches = arMatch || muennesMatch;
                         
                         // DEEP CONJUGATION SEARCH
-                        if (!kalipData.cekimi && typeof VerbGenerator !== 'undefined' && typeof getBabAndType === 'function') {
+                        if (filter.length >= 2 && !kalipData.cekimi && typeof VerbGenerator !== 'undefined' && typeof getBabAndType === 'function') {
                             let mapping = getBabAndType(parseInt(kalipKey));
                             if (mapping && ['mazi', 'muzari', 'emir'].includes(mapping.type)) {
                                 let vObj = typeof babVezinleri !== 'undefined' ? babVezinleri[mapping.babNo] : null;
