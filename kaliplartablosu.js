@@ -176,12 +176,12 @@ function getMuttasilZamirleri(baseWord) {
 function renderZamirCekimTable(baseWord) {
     let zamirler = getMuttasilZamirleri(baseWord);
     let html = `
-    <div style="margin-top: 30px; background: rgba(255,255,255,0.85); border-radius: 15px; border: 1px solid rgba(189, 195, 199, 0.5); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); direction: rtl;">
+    <div style="margin-top: 30px; background: #ffffff; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); direction: rtl;">
         <div style="color: #2980b9; font-size: 1.6rem; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-table"></i> Zamir Çekim Tablosu</div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-            <div style="background: rgba(236, 240, 241, 0.6); padding: 10px; border-radius: 10px; color: #7f8c8d; font-weight: bold;">Tekil (Müfred)</div>
-            <div style="background: rgba(236, 240, 241, 0.6); padding: 10px; border-radius: 10px; color: #7f8c8d; font-weight: bold;">İkil (Müsenna)</div>
-            <div style="background: rgba(236, 240, 241, 0.6); padding: 10px; border-radius: 10px; color: #7f8c8d; font-weight: bold;">Çoğul (Cemi')</div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: bold;">Tekil (Müfred)</div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: bold;">İkil (Müsenna)</div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: bold;">Çoğul (Cemi')</div>
             
             <!-- 3. Şahıs Eril -->
             <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -297,7 +297,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         modal.style.top = '50%';
         modal.style.left = '50%';
         modal.style.transform = 'translate(-50%, -50%)';
-        modal.style.background = '#f8f9fa';
+        modal.style.background = '#ffffff';
         modal.style.color = '#333333';
         modal.style.padding = '20px';
         modal.style.borderRadius = '15px';
@@ -365,7 +365,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         </div>`;
     }
     
-    htmlContent += `<div style="display:flex; justify-content:center; align-items:center; border-bottom:${displayTitle ? '1px solid rgba(255,255,255,0.2)' : 'none'}; padding-bottom:${displayTitle ? '15px' : '0'}; margin-bottom:20px; position:relative; min-height:50px;">`;
+    htmlContent += `<div style="display:flex; justify-content:center; align-items:center; border-bottom:${displayTitle ? '1px solid rgba(255,255,255,0.2)' : 'none'}; padding-bottom:${displayTitle ? '15px' : '0'}; margin-bottom:20px; position:relative; min-height:50px; width:100%; box-sizing:border-box;">`;
     
     const compactRoot = rootKey.replace(/\s+/g, '');
     // LEFT CORNER: Vezin Tablosu Button
@@ -377,7 +377,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     }
     
     if (isRootValidForTable) {
-        htmlContent += `  <div style="position:absolute; left:0; cursor:pointer; background:#5cb85c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
+        htmlContent += `  <div style="position:absolute; left:15px; cursor:pointer; background:#5cb85c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
                             onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Vezin Tablosu">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
                           </div>`;
@@ -388,8 +388,10 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         htmlContent += `  <div style="margin:0; text-align:center; z-index:5;" dir="rtl">${displayTitle}</div>`;
     }
     
+
+                      
     // RIGHT CORNER: Close Button
-    htmlContent += `  <div style="position:absolute; right:0; cursor:pointer; background:#e74c3c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
+    htmlContent += `  <div style="position:absolute; right:15px; cursor:pointer; background:#e74c3c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
                         onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none';" title="Kapat">
                         <i class="fas fa-times"></i>
                       </div>`;
@@ -448,7 +450,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 let rData = rootData[card.id] || { base: {} };
                 
                 let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
-                let trText = (rData.base && rData.base.trText) ? `<div style="color:#e2e8f0; font-size:1.4rem; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
+                let trText = (rData.base && rData.base.trText) ? `<div style="color:#555; font-size:1.6rem; font-weight:bold; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
                 let arText = (rData.base && rData.base.arText) ? rData.base.arText : "";
                 
                 if (!arText && typeof generateTuremis === "function") {
@@ -456,11 +458,11 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 }
 
                 htmlContent += `
-                <div style="background:rgba(236, 240, 241, 0.6); padding:30px 10px; border-radius:15px; border:1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div style="background:#ffffff; padding:30px 10px; border-radius:15px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div style="color:${card.color}; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
                     ${emoji}
                     <span style="display:block; font-family:'Arakom', sans-serif; font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
-                    ${trText ? trText.replace("color:#e2e8f0;", "color:#333; font-weight:500;") : ''}
+                    ${trText}
                 </div>`;
             });
             htmlContent += `</div></div>`;
@@ -591,7 +593,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let ornekHtml = '';
             if (itemTekil && itemTekil.base && itemTekil.base.ornek) {
                 let ornekler = Array.isArray(itemTekil.base.ornek) ? itemTekil.base.ornek : [itemTekil.base.ornek];
-                ornekHtml += `<div style="margin-top:25px; padding:15px; background:rgba(236, 240, 241, 0.6); border-radius:10px; border:1px solid rgba(189, 195, 199, 0.5);">`;
+                ornekHtml += `<div style="margin-top:25px; padding:15px; background:#ffffff; border-radius:10px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.02);">`;
                 ornekler.forEach((ornek, index) => {
                     if (ornek.ar && ornek.tr) {
                         let isLast = index === ornekler.length - 1;
@@ -643,7 +645,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let titleHtml = '';
 
             htmlContent += `
-            <div style="width:100%; text-align:center; background:rgba(255,255,255,0.95); padding:40px 20px; border-radius:15px; border:1px solid rgba(0,0,0,0.1); box-shadow: 0 8px 30px rgba(0,0,0,0.1); backdrop-filter: blur(10px);">
+            <div style="width:100%; text-align:center; background:#ffffff; padding:40px 20px; border-radius:15px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
                 ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
                 ${titleHtml}
                 
@@ -652,7 +654,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
                         ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel.toLocaleUpperCase("tr-TR")}</div>` : ''}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
-                        ${tekilTr ? `<span style="color:#576574; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${tekilTr}</span>` : ''}
+                        ${tekilTr ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
                     ${(tekilAr && secondColAr) ? `
@@ -664,7 +666,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
                         ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel.toLocaleUpperCase("tr-TR")}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
-                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; margin-top:10px; text-align:center; line-height: 1.4; font-weight:500;" dir="ltr">${secondColTr}</span>` : ''}
+                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
                 ${ornekHtml}
@@ -742,9 +744,11 @@ function renderVerbMenu() {
     gridContainer.innerHTML = "";
 
     // 1. Önemli Kökler (Manuel sıralama korunur)
+    let importantHtml = "";
     onemliKokler.forEach(root => {
-        if(sozlukVerileri[root]) importantContainer.innerHTML += createFlatRootItem(root);
+        if(sozlukVerileri[root]) importantHtml += createFlatRootItem(root);
     });
+    importantContainer.innerHTML = importantHtml;
 
     // 2. 4 Sütunlu Bağımsız Scroll Sistemi
     const ranges = [
@@ -781,6 +785,7 @@ function renderVerbMenu() {
         importantContainerRef.innerHTML = closeBtnHtml + importantContainerRef.innerHTML + countHtml;
     }
 
+    let gridContainerHTML = "";
     ranges.forEach(range => {
         let colHTML = `<div class="letter-column"><div class="col-range-header">${range.title}</div>`;
         for(let i = range.start; i <= range.end; i++) {
@@ -799,8 +804,9 @@ function renderVerbMenu() {
             }
         }
         colHTML += `</div>`;
-        gridContainer.innerHTML += colHTML;
+        gridContainerHTML += colHTML;
     });
+    gridContainer.innerHTML = gridContainerHTML;
 
     // 3. İki Klavyeyi de Eş Zamanlı Oluşturur
     renderUniversalKeyboards();
@@ -5009,11 +5015,12 @@ function updateMainKeyboardPredictions() {
             window.startDynamicRootGenerationDefined = true;
         }
 
+        let predHtml = "";
         rootMatches.forEach(r => {
             const isDynamic = !sozlukVerileri[r];
             if (isDynamic) {
                 let spacedRoot = r.split('').join(' ');
-                predictionsContainer.innerHTML += `
+                predHtml += `
                     <div class="prediction-chip" onclick="window.startDynamicRootGeneration('${r}', this)" style="
                         background: linear-gradient(145deg, #8b5a2b, #6b4226) !important; 
                         border: 2px solid #a0522d !important;
@@ -5040,12 +5047,13 @@ function updateMainKeyboardPredictions() {
                     </div>`;
             } else {
                 const emoji = getRootEmoji(r);
-                predictionsContainer.innerHTML += `
+                predHtml += `
                     <div class="prediction-chip" onclick="selectRootFromMainKeyboard('${r}')" style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); box-sizing: border-box;">
                         ${r} ${emoji}
                     </div>`;
             }
         });
+        predictionsContainer.innerHTML = predHtml;
 
         // 2. Sözlük Sonuçları (Türevler)
         let resultsHTML = "";
@@ -5076,12 +5084,16 @@ function updateMainKeyboardPredictions() {
                     
                     let matchedConjugations = [];
                     
+                    let arMatch = false;
+                    let muennesMatch = false;
+                    
                     if (isArabicSearch) {
-                        matches = normalizeArabic(strippedAr).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
-                        if (!matches && kalipData.base.muennes) {
+                        arMatch = normalizeArabic(strippedAr).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
+                        if (kalipData.base.muennes) {
                             const strippedMuennes = window.stripHarakat(kalipData.base.muennes);
-                            matches = normalizeArabic(strippedMuennes).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
+                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
                         }
+                        matches = arMatch || muennesMatch;
                         
                         // DEEP CONJUGATION SEARCH
                         if (!kalipData.cekimi && typeof VerbGenerator !== 'undefined' && typeof getBabAndType === 'function') {
@@ -5145,7 +5157,13 @@ function updateMainKeyboardPredictions() {
                                 pushMatch(mc.arText, true, mc.pronounIndex);
                             });
                         } else {
-                            pushMatch(kalipData.base.arText, false, -1);
+                            // Sadece eşleşenleri veya arama yoksa/Türkçe aramaysa hepsini ekle
+                            if (!isArabicSearch || arMatch) {
+                                pushMatch(kalipData.base.arText, false, -1);
+                            }
+                            if (kalipData.base.muennes && (!isArabicSearch || muennesMatch)) {
+                                pushMatch(kalipData.base.muennes, false, -1);
+                            }
                         }
                     }
                 }
@@ -5163,8 +5181,9 @@ function updateMainKeyboardPredictions() {
         });
 
         for (const letter of sortedLetters) {
-            // Harf başlığı
-            resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 15px 0 10px 0; border-bottom:2px solid rgba(0,0,0,0.1); padding-bottom:5px; width: 100%;">[ ${letter} ]</div>`;
+            // Harf başlığı ve Kelimeleri Saran Kutu
+            resultsHTML += `<div style="background: rgba(255,255,255,0.8); border-radius: 16px; border: 2px solid rgba(0,0,0,0.05); padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;">`;
+            resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 0 0 15px 0; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:10px; width: 100%;">[ ${letter} ]</div>`;
             
             // Harf içindeki kelimeleri sırala (Tam eşleşen ve kısa olanlar ÖNCE)
             let searchFilter = window.stripHarakat(currentSearchQuery.trim());
@@ -5183,13 +5202,13 @@ function updateMainKeyboardPredictions() {
                 return a.strippedAr.localeCompare(b.strippedAr, 'ar');
             });
             
-            resultsHTML += `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; width:100%; box-sizing:border-box; margin-bottom: 12px;">`;
+            resultsHTML += `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; width:100%; box-sizing:border-box;">`;
             
             for (const item of matchesByLetter[letter]) {
                 const ilkAnlam = (item.trText || "").split('/')[0].trim();
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
-                const kisaltilmisAnlam = item.isConjugationMatch ? "" : kelimeler.slice(0, 3).join(' ') + (kelimeler.length > 3 ? "..." : "");
+                const kisaltilmisAnlam = kelimeler.slice(0, 3).join(' ') + (kelimeler.length > 3 ? "..." : "");
                 
                 let conjugationBadge = "";
                 let rootBadge = "";
@@ -5208,10 +5227,9 @@ function updateMainKeyboardPredictions() {
                         if (verbType === "Emir") {
                             pronounIndex += 6; 
                         }
-                        let pronounStr = (pronounIndex >= 0 && typeof PRONOUN_MAP !== 'undefined' && PRONOUN_MAP[pronounIndex]) ? PRONOUN_MAP[pronounIndex] : "";
-                        conjugationBadge = `<div style="background-color:#3498db; color:white; padding:3px 8px; border-radius:10px; font-size:0.85rem; margin-top:8px; font-weight:bold; letter-spacing:0.5px; text-align:center;">${verbType} | Şahıs: ${pronounStr}</div>`;
+                        // Conjugation badge removed by user request
                     } else if (verbType !== "Kelime") {
-                        conjugationBadge = `<div style="background-color:#2ecc71; color:white; padding:3px 8px; border-radius:10px; font-size:0.85rem; margin-top:8px; font-weight:bold; letter-spacing:0.5px; text-align:center;">${verbType} (Kök Fiil)</div>`;
+                        // Root verb badge removed by user request
                     }
                     
                     rootBadge = `<div style="color:#e74c3c; font-size:0.9rem; margin-top:4px; font-weight:bold; text-align:center;">Kök: ${item.rootKey}</div>`;
@@ -5223,13 +5241,25 @@ function updateMainKeyboardPredictions() {
                 let escapedRootKey = item.rootKey ? item.rootKey.replace(/"/g, "&quot;").replace(/'/g, "\\'") : "";
                 
                 resultsHTML += `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:#f4f6f7; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding:15px 15px; border-radius:12px; flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); box-sizing: border-box; cursor:pointer; position:relative;" onclick="showWordDetails('${escapedRootKey}', '${item.kalipKey}', '${escapedArText}', '${escapedTrText}')">
-                        <span style="font-family: \'Arakom\', sans-serif; font-size:3.2rem; font-weight:normal; color:#000000; display:block; text-align:center; line-height:1.2;">${item.arText}</span>
-                        <span dir="ltr" style="font-family: \'Inter\', sans-serif; font-size:0.95rem; color:#555555; display:block; margin-top:8px; text-align:center; line-height:1.2; word-break: break-word;">${kisaltilmisAnlam}</span>
-                        ${conjugationBadge}
-                        ${rootBadge}
-                        <div style="position:absolute; top:50%; left:12px; transform:translateY(-50%); color:rgba(0,0,0,0.15); font-size:1.5rem;" title="Detayları Görüntüle">
-                            <i class="fas fa-layer-group"></i>
+                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:#f4f6f7; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding:15px; border-radius:12px; flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); min-width: 0; box-sizing: border-box; cursor:pointer; position:relative; overflow: hidden;" onclick="showWordDetails('${escapedRootKey}', '${item.kalipKey}', '${escapedArText}', '${escapedTrText}')">
+                        
+                        <div dir="ltr" style="display:flex; flex-direction:row; width:100%; align-items:center; justify-content:space-between;">
+                            
+                            <div style="flex: 0 0 35px; display:flex; justify-content:center; align-items:center; color:rgba(0,0,0,0.15); font-size:2.2rem; margin-right: 15px;" title="Detayları Görüntüle">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+
+                            <div style="flex: 1 1 0; min-width:0; text-align:left; padding-right: 15px; border-right: 2px solid rgba(0,0,0,0.1);">
+                                <span dir="ltr" style="font-family: \'Inter\', sans-serif; font-size:1.6rem; font-weight:bold; color:#555555; line-height:1.2; word-break: break-word; display:block; overflow-wrap: break-word; hyphens: auto;">
+                                    ${kisaltilmisAnlam}
+                                </span>
+                            </div>
+                            
+                            <div style="flex: 1 1 0; min-width:0; text-align:right; padding-left: 15px;">
+                                <span style="font-family: \'Arakom\', sans-serif; font-size:clamp(3.0rem, 4vw, 4.8rem); font-weight:normal; color:#000000; line-height:1.2; display:block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    ${item.arText}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -7081,8 +7111,7 @@ function renderThematicLists() {
                         <div class="memory-game-controls" id="controls-${key}" style="display: flex; justify-content: space-between; align-items: center; width: 100%; direction: ltr !important; margin-bottom: 30px;">
                             
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <!-- Tam Ekran en solda -->
-                                <button class="memory-btn memory-fs-btn" id="btn-fs-${key}" onclick="toggleAccordionFullscreen('${key}', this)" title="Tam Ekran" style="display: none; padding: 4px 10px; font-size: 1.2rem; background: white; border: 2px solid #5c7cfa; color: #5c7cfa; border-radius: 8px; font-weight: bold;"><i class="fas fa-expand"></i></button>
+                                
                                 
                                 <!-- 1. Oyuncu Kutusu -->
                                 <div id="p1-box-${key}" class="player-box p-score-box active-p" style="display: none; color: #4dabf7; align-items: center;">
@@ -7096,14 +7125,14 @@ function renderThematicLists() {
                                 <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                                    <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" onchange="startMemoryGameFlow('${key}')">
+                                    <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" >
                                         ${pairOptions}
                                     </select>
                                     
                                     <div class="switch-wrapper" style="display: flex; align-items: center; background: rgba(255,255,255,0.8); padding: 6px 12px; height: 44px; box-sizing: border-box; border-radius: 50px; gap: 5px; direction: ltr !important;">
                                         <span style="font-size: 1.1rem; cursor: pointer;">👤</span>
                                         <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px; margin: 0;">
-                                            <input type="checkbox" id="mode-toggle-${key}" style="opacity:0; width:0; height:0;" onchange="startMemoryGameFlow('${key}')" checked>
+                                            <input type="checkbox" id="mode-toggle-${key}" style="opacity:0; width:0; height:0;"  checked>
                                             <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .4s; border-radius: 34px;"></span>
                                         </label>
                                         <span style="font-size: 1.1rem; cursor: pointer;">👥</span>
@@ -7161,54 +7190,57 @@ function openMemorySetup(key) {
     
     document.getElementById(`btn-mem-${key}`).style.display = 'none';
     document.getElementById(`mem-settings-${key}`).style.display = 'flex';
-    document.getElementById(`btn-fs-${key}`).style.display = 'inline-block';
-    
-    // Grid'i anında Hafıza moduna çevir (tam ekran yapmadan)
-    startMemoryGameFlow(key);
+        
+    // Grid'i başlatmıyoruz, sadece ayar panelini açıyoruz.
 }
 
 function cancelMemorySetup(key) {
-    const btnStart = document.getElementById(`btn-start-${key}`);
-    if (btnStart) btnStart.style.display = 'inline-block';
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
     
-    const btnStudy = document.getElementById(`btn-study-${key}`);
-    btnStudy.style.display = 'block';
-    btnStudy.style.opacity = '1';
-    btnStudy.classList.add('active');
+    if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = false;
     
-    document.getElementById(`btn-mem-${key}`).style.display = 'block';
-    document.getElementById(`mem-settings-${key}`).style.display = 'none';
-    document.getElementById(`btn-fs-${key}`).style.display = 'none';
+    const btnStart = document.getElementById(`btn-start-${key}`);
+    const btnCancel = document.getElementById(`btn-cancel-${key}`);
     
-    setMemoryMode(key, 'study');
-    initMemoryGrid(key);
+    if (btnStart) btnStart.style.display = 'inline-block';
+    if (btnCancel) btnCancel.style.display = 'none';
     
+    const toggle = document.getElementById(`mode-toggle-${key}`);
+    if (toggle) toggle.disabled = false;
+    
+    const pairCount = document.getElementById(`pairCount-${key}`);
+    if (pairCount) pairCount.disabled = false;
+    
+
     const item = document.getElementById(`content-${key}`);
     if (item && item.classList.contains('fullscreen-accordion')) {
-        const btnFs = document.getElementById(`btn-fs-${key}`);
-        if (btnFs) toggleAccordionFullscreen(key, btnFs);
+        toggleAccordionFullscreen(key, null);
+    }
+
+    startMemoryGameFlow(key);
+}
+
+function toggleMultiplayer(key) {
+    const toggle = document.getElementById(`mode-toggle-${key}`);
+    if (toggle) {
+        setMemoryMode(key, toggle.checked ? 'mem2' : 'mem1');
     }
 }
 
 function startMemoryGameFlow(key) {
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    const isMultiplayer = document.getElementById(`mode-toggle-${key}`).checked;
+    const toggle = document.getElementById(`mode-toggle-${key}`);
+    const isMultiplayer = toggle ? toggle.checked : true;
     const mode = isMultiplayer ? 'mem2' : 'mem1';
     
     // Set Memory Mode
     setMemoryMode(key, mode);
     initMemoryGrid(key);
-    
-    // DON'T call cancelMemorySetup(key) so the settings stay visible!
-    
-
 }
 
 
 
-// --- HAFIZA OYUNU MANTIGI ---
 function setMemoryMode(key, mode) {
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
@@ -7248,9 +7280,7 @@ function setMemoryMode(key, mode) {
         }
         if (memSettings) memSettings.style.display = 'none';
         
-        const btnFs = document.getElementById(`btn-fs-${key}`);
-        if (btnFs) btnFs.style.display = 'none';
-        
+                
         if (p1Box) p1Box.style.display = 'none';
         if (p2Box) p2Box.style.display = 'none';
     } else {
@@ -7270,14 +7300,6 @@ function setMemoryMode(key, mode) {
     
     initMemoryGrid(key);
 }
-
-function toggleMultiplayer(key) {
-    const toggle = document.getElementById(`mode-toggle-${key}`);
-    if (toggle) {
-        setMemoryMode(key, toggle.checked ? 'mem2' : 'mem1');
-    }
-}
-
 
 function initMemoryGrid(key, forceShuffle = false) {
     let state = activeMemoryGames[key];
@@ -7526,17 +7548,14 @@ function toggleAccordionFullscreen(key, btnElement) {
     
     if (item.classList.contains('fullscreen-accordion')) {
         item.classList.remove('fullscreen-accordion');
-        btnElement.innerHTML = '<i class="fas fa-expand"></i>'; // Maximize icon
+        document.body.classList.remove('has-fullscreen-accordion');
+        if (btnElement) btnElement.innerHTML = '<i class=\"fas fa-expand\"></i>'; // Maximize icon
         
-        // Eğer oyun modundaysa ve çıkıyorsa, küçültünce çalışma kartlarına dön.
-        // Eğer zaten çalışma kartlarındaysa, çalışma kartlarında kalsın.
-        const state = activeMemoryGames[key];
-        if (state && state.mode !== 'study') {
-            if (typeof cancelMemorySetup === 'function') cancelMemorySetup(key);
-        }
+        
     } else {
         item.classList.add('fullscreen-accordion');
-        btnElement.innerHTML = '<i class="fas fa-compress"></i>'; // Minimize icon
+        document.body.classList.add('has-fullscreen-accordion');
+        if (btnElement) btnElement.innerHTML = '<i class=\"fas fa-compress\"></i>'; // Minimize icon
     }
 }
 
@@ -7605,6 +7624,10 @@ function startGameAndFullscreen(key) {
     if (btnCancel) btnCancel.style.display = 'inline-block';
     startMemoryGameFlow(key);
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = true;
+    const toggle = document.getElementById(`mode-toggle-${key}`);
+    if (toggle) toggle.disabled = true;
+    const pairCount = document.getElementById(`pairCount-${key}`);
+    if (pairCount) pairCount.disabled = true;
     const btnFs = document.getElementById(`btn-fs-${key}`);
     const item = document.getElementById(`content-${key}`);
     if (item && !item.classList.contains('fullscreen-accordion')) {
