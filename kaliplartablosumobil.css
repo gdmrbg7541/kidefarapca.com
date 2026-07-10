@@ -1997,7 +1997,13 @@ body.matrix-active { overflow: hidden !important; }
     
     .important-roots-wrapper { margin-bottom: 5px !important; }
     #important-roots-list { gap: 6px !important; padding: 5px 0 5px 0 !important; }
-    .flat-root-item { padding: 4px 10px !important; font-size: 16px !important; border-bottom-width: 2px !important; border-radius: 6px !important; }
+    .flat-root-item { padding: 8px 12px !important; font-size: 22px !important; border-bottom-width: 2px !important; border-radius: 6px !important; }
+    
+    /* Mobilde kök levhasındaki maraton ve liste butonlarını gizle */
+    .draggable-root-clone .kutu-timer-btn,
+    .draggable-root-clone .kutu-list-btn {
+        display: none !important;
+    }
     .letters-grid { gap: 5px !important; }
     .letter-column { flex: 0 0 100% !important; scroll-snap-align: center !important; overflow-y: auto !important; height: 100% !important; border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; box-sizing: border-box !important; }
     .col-range-header { padding: 4px !important; font-size: 11px !important; margin-top: -2px !important; margin-left: -2px !important; margin-right: -2px !important; border-radius: 6px 6px 0 0 !important; border-bottom-width: 2px !important; }
@@ -2917,15 +2923,36 @@ input:checked +
 .thematic-words-grid.memory-mode.pairs-12 .memory-card-face.lang-ar { font-size: 2.1rem !important; }
 .thematic-words-grid.memory-mode.pairs-12 .memory-card-face.lang-tr { font-size: 1.5rem !important; }
 
-/* Çalışma kartları HER ZAMAN 3 sütun olsun */
+/* Çalışma kartları varsayılan olarak 3 sütun */
 .thematic-words-grid:not(.memory-mode) {
     grid-template-columns: repeat(3, 1fr) !important;
 }
-@media screen and (max-width: 768px) {
-    /* Mobilde 3 sütun çok sıkışık olursa diye 1'e düşür, ama kullanıcı ısrarla 3 istiyorsa yorum satırı yapabiliriz. Kullanıcı "her zaman 3 sütun" dediği için burada 1fr'yi kaldırmıyorum. */
+
+/* YATAY (LANDSCAPE) MOD KELİME LİSTELERİ */
+@media screen and (orientation: landscape) and (max-width: 1024px) {
     .thematic-words-grid:not(.memory-mode) {
         grid-template-columns: repeat(3, 1fr) !important;
     }
+}
+
+/* DİKEY (PORTRAIT) MOD KELİME LİSTELERİ & HAFIZA KARTLARI */
+@media screen and (orientation: portrait) {
+    /* Kelime listeleri (renkler, hayvanlar vs) dikeyde 2 sütun */
+    .thematic-words-grid:not(.memory-mode) {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    /* Üst kısımdaki "Not" ve "İsim/Fiiller" açıklamalarını 1.5 kat büyüt */
+    .fdm-info-text, .fdm-info-note, .fdm-info-note-title {
+        font-size: 2.7rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Hafıza kartlarında (memory-mode) dikeyde sütunları daraltıp satır sayısını artırıyoruz */
+    .thematic-words-grid.memory-mode[data-total="12"] { grid-template-columns: repeat(3, 1fr) !important; } /* 3 sütun 4 satır */
+    .thematic-words-grid.memory-mode[data-total="18"] { grid-template-columns: repeat(3, 1fr) !important; } /* 3 sütun 6 satır */
+    .thematic-words-grid.memory-mode[data-total="20"] { grid-template-columns: repeat(4, 1fr) !important; } /* 4 sütun 5 satır */
+    .thematic-words-grid.memory-mode[data-total="24"] { grid-template-columns: repeat(4, 1fr) !important; } /* 4 sütun 6 satır */
 }
 
 /* Hafıza ve Çalışma Kartlarının arkasındaki yazılar her zaman tam siyah olsun */
@@ -3740,14 +3767,28 @@ body {
     border-left: 1px solid rgba(0,0,0,0.03);
     z-index: 20;
     touch-action: none; /* Prevents native scrolling on the scrubber */
+    transition: width 0.2s ease, background 0.2s ease;
+}
+.mobile-alphabet-scrubber.is-scrubbing {
+    width: 60px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
 }
 .scrubber-letter {
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     color: #95a5a6;
     font-family: 'Arakom', sans-serif;
-    padding: 2px 0;
+    padding: 4px 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: none;
-    transition: color 0.2s, transform 0.2s;
+    transition: color 0.2s, transform 0.2s, font-size 0.2s;
+}
+.mobile-alphabet-scrubber.is-scrubbing .scrubber-letter {
+    font-size: 1.8rem;
+    color: #34495e;
 }
 .scrubber-letter.active {
     color: var(--primary-color);
@@ -3817,6 +3858,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 15px;
+    padding: 20px 10px;
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -3825,16 +3867,19 @@ body {
     transform: scale(0.95);
 }
 
-.mobile-grid-item i {
-    font-size: 3rem;
+.mobile-grid-item i, .mobile-grid-item svg {
+    font-size: 4.5rem;
+    width: 4.5rem;
+    height: 4.5rem;
     color: var(--primary-color);
 }
 
 .mobile-grid-item span {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: bold;
     font-family: system-ui, -apple-system, sans-serif;
     color: var(--text-color);
+    text-align: center;
 }
 
 /* --- MOBILE GRAMMAR MENU (Kitap Overlay) --- */
@@ -4004,17 +4049,37 @@ body {
         flex-direction: row;
         padding: 0 15px;
         border-left: none;
-        border-bottom: 1px solid rgba(0,0,0,0.03);
-        overflow-x: auto;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        border-bottom: none;
+        overflow-x: hidden;
+        justify-content: space-around;
+        order: 2; /* Alt kısma al */
+        transition: height 0.2s ease, background 0.2s ease;
+    }
+    
+    .mobile-alphabet-scrubber.is-scrubbing {
+        height: 80px;
+        width: 100%; /* Yatayda genişliği sabit tut */
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
     }
     
     .scrubber-letter {
-        padding: 0 10px;
-        font-size: 1.1rem;
+        padding: 0 5px;
+        font-size: 1.2rem;
+    }
+    
+    .mobile-alphabet-scrubber.is-scrubbing .scrubber-letter {
+        font-size: 1.8rem;
+    }
+    
+    .scrubber-letter.active {
+        transform: scale(1.5) translateY(-5px); /* Yatayda yukarı zıplasın */
     }
     
     .mobile-roots-content {
-        padding-top: 20px;
+        order: 1; /* Scrubber'ın üstünde kalması için */
+        padding-top: 0;
     }
 }
 
@@ -4263,17 +4328,27 @@ body {
     }
     
     .nav-arrow {
-        width: 55px !important;
-        height: 55px !important;
-        font-size: 1.8rem !important;
+        position: static !important;
+        width: 65px !important;
+        height: 65px !important;
+        font-size: 2.2rem !important;
         z-index: 9999 !important;
-        top: auto !important;
-        bottom: 15px !important;
-        transform: none !important;
         border-radius: 50% !important;
         background: #6c5ce7 !important;
         color: white !important;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+    }
+    
+    #top-bar-panel {
+        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: auto auto !important;
+        height: auto !important;
+        padding: 15px 10px !important;
+        gap: 15px !important;
+    }
+    #top-bar-panel .header-item button, #top-bar-panel .header-item select, #top-bar-panel .header-item .stage-badge, #top-bar-panel .header-item .timer-val, #top-bar-panel .header-item .score-val {
+        font-size: 1.6rem !important;
+        padding: 8px 12px !important;
     }
 }
 
