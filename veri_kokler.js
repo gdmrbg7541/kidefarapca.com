@@ -1,4 +1,10 @@
-
+// ============================================================================
+// DİKKAT - "ALLAH" (الله) LAFZI YAZIM KURALI:
+// Arapça metinlerde "Allah" lafzı yazılırken üzerine KESİNLİKLE manuel şedde (ّ)
+// EKLENMEYECEKTİR. Arakom fontu (ا ل ل ه) dizilimini otomatik olarak şeddeli
+// çizer. Şedde (اللَّه) eklenirse ekranda çift şedde hatası oluşur.
+// Doğru kullanım: الله (veya بِاللهِ, وَاللهِ vb.)
+// ============================================================================
 
 const letters = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
 let currentRoot = ""; 
@@ -450,6 +456,7 @@ const wordEasterEggs = {
 
         // --- 42 Numaralı Kalıp (فُعُل - Çoğul İsim) ---
         42: {
+            tekilId: 23,
             base: {
                 emoji: "📚",
                 arText: "كُتُب",
@@ -460,6 +467,7 @@ const wordEasterEggs = {
 
         // --- 45 Numaralı Kalıp (فُعَّال - Çoğul İsm-i Fâil) ---
         45: {
+            tekilId: 33,
             base: {
                 emoji: "👥",
                 arText: "كُتَّاب",
@@ -527,6 +535,7 @@ const wordEasterEggs = {
 
         // --- 20 Numaralı Kalıp (فِعْل - Masdar) ---
         20: { 
+            cogulId: 43,
             base: { 
                 emoji: "📖", 
                 arText: "عِلْم", 
@@ -540,6 +549,7 @@ const wordEasterEggs = {
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: {
+            cogulId: 46,
             base: { 
                 emoji: "🎓", 
                 arText: "عَالِم", 
@@ -609,6 +619,7 @@ const wordEasterEggs = {
         
         // --- 43 Numaralı Kalıp (فُعُول - Çoğul Masdar) ---
         43: { 
+            tekilId: 20,
             base: { 
                 emoji: "🔬", 
                 arText: "عُلُوم", 
@@ -622,6 +633,7 @@ const wordEasterEggs = {
         
         // --- 46 Numaralı Kalıp (فُعَلَاء - Çoğul İsm-i Fail) ---
         46: { 
+            tekilId: 33,
             base: { 
                 emoji: "👥", 
                 arText: "عُلَمَاء", 
@@ -960,6 +972,13 @@ const wordEasterEggs = {
             } 
         },
 
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             base: { emoji: "👑", arText: "اِقْتَدَرَ", trText: "Güç yetirdi / İktidar sahibi oldu." } 
@@ -1096,6 +1115,7 @@ const wordEasterEggs = {
         
         // --- 21 Numaralı Kalıp (فُعْل) ---
         21: { 
+            cogulId: 41,
             base: { 
                 emoji: "👑", 
                 arText: "مُلْك", 
@@ -1177,6 +1197,7 @@ const wordEasterEggs = {
         
         // --- 41 Numaralı Kalıp (أَفْعَال) ---
         41: { 
+            tekilId: 21,
             base: { 
                 emoji: "🏢", 
                 arText: "أَمْلَاك", 
@@ -1297,6 +1318,7 @@ const wordEasterEggs = {
         
         // --- 21 Numaralı Kalıp (فُعْل) ---
         21: { 
+            cogulId: 41,
             base: { 
                 emoji: "📜", 
                 arText: "حُكْم", 
@@ -1363,6 +1385,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: {
+            tekilId: 21,
             base: {
                 emoji: "⚖️",
                 arText: "أَحْكَام",
@@ -1549,6 +1572,13 @@ const wordEasterEggs = {
                 ornek: { ar: "تَعْرِيفُ الْمُصْطَلَحِ", tr: "Terimin tanımı (tarifi)." }
             } 
         },
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             base: { emoji: "🙌", arText: "اِعْتَرَفَ", trText: "İtiraf etti / Kabul etti." } 
@@ -1829,6 +1859,7 @@ const wordEasterEggs = {
 
         // --- 17 Numaralı Kalıp (فَعَل) ---
         17: { 
+            cogulId: 41,
             base: { 
                 emoji: "📰", 
                 arText: "خَبَر", 
@@ -1839,6 +1870,7 @@ const wordEasterEggs = {
         
         // --- 41 Numaralı Kalıp (أَفْعَال) ---
         41: { 
+            tekilId: 17,
             base: { 
                 emoji: "📺", 
                 arText: "أَخْبَار", 
@@ -2168,21 +2200,23 @@ const wordEasterEggs = {
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
+            cogulId: 46,
             base: { 
                 emoji: "🌹", 
                 arText: "شَهِيد", 
-                trText: "Şehit.",
-                ornek: { ar: "وَلَا تَحْسَبَنَّ الَّذِينَ قُتِلُوا فِي سَبِيلِ اللهِ أَمْوَاتًا", tr: "Allah yolunda öldürülenleri sakın ölüler sanma. (Âl-i İmrân Suresi, 169)" }
+                trText: "Şehit / Şahit.",
+                ornek: { ar: "وَكَفَىٰ بِاللهِ شَهِيدًا", tr: "Şahit (her şeyi hakkıyla gören) olarak Allah yeter. (Nisâ Suresi, 79)" }
             } 
         },
         
         // --- 46 Numaralı Kalıp (فُعَلَاء) ---
         46: { 
+            tekilId: 35,
             base: { 
-                emoji: "🇹🇷", 
+                emoji: "🌹", 
                 arText: "شُهَدَاء", 
-                trText: "Şehitler (Şüheda).",
-                ornek: { ar: "شُهَدَاءُ الْوَطَنِ لَا يَمُوتُونَ أَبَدًا", tr: "Vatan şehitleri (şüheda) asla ölmez." }
+                trText: "Şehitler (Şüheda) / Şahitler.",
+                ornek: { ar: "مِنَ النَّبِيِّينَ وَالصِّدِّيقِينَ وَالشُّهَدَاءِ وَالصَّالِحِينَ", tr: "Peygamberler, sıddıklar, şehitler (şüheda) ve salih kimselerle beraberdirler. (Nisâ Suresi, 69)" }
             } 
         },
         
@@ -2232,6 +2266,7 @@ const wordEasterEggs = {
 
         // --- 21 Numaralı Kalıp (فُعُل) ---
         21: { 
+            cogulId: 41,
             base: { 
                 emoji: "💎", 
                 arText: "خُلُق", 
@@ -2264,6 +2299,7 @@ const wordEasterEggs = {
         
         // --- 41 Numaralı Kalıp (أَفْعَال - Çoğul) ---
         41: { 
+            tekilId: 21,
             base: { 
                 emoji: "🤝", 
                 arText: "أَخْلَاق", 
@@ -2755,6 +2791,13 @@ const wordEasterEggs = {
             } 
         },
 
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             base: { emoji: "🛫", arText: "اِنْتَقَلَ", trText: "Geçti / Taşındı (İntikal etti)." } 
@@ -3056,6 +3099,13 @@ const wordEasterEggs = {
             } 
         },
         
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             cekimi: ["اِقْتَرَبَ", "اِقْتَرَبَا", "اِقْتَرَبُوا", "اِقْتَرَبَتْ", "اِقْتَرَبَتَا", "اِقْتَرَبْنَ", "اِقْتَرَبْتَ", "اِقْتَرَبْتُمَا", "اِقْتَرَبْتُمْ", "اِقْتَرَبْتِ", "اِقْتَرَبْتُمَا", "اِقْتَرَبْتُنَّ", "اِقْتَرَبْتُ", "اِقْتَرَبْنَا", "اِقْتَرَبْنَا"],
@@ -3209,6 +3259,7 @@ const wordEasterEggs = {
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
+            cogulId: 46,
             base: { emoji: "👑", arText: "خَلِيف", trText: "Halife (Yalın)." },
             suggestsPlus: true, 
             "ة": {
@@ -3221,6 +3272,7 @@ const wordEasterEggs = {
         
         // --- 46 Numaralı Kalıp (فُعَلَاء) ---
         46: { 
+            tekilId: 35,
             base: { 
                 emoji: "👥", 
                 arText: "خُلَفَاء", 
@@ -3264,6 +3316,13 @@ const wordEasterEggs = {
             } 
         }, 
         
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             base: { emoji: "↔️", arText: "اِخْتَلَفَ", trText: "İhtilafa düştü / Ayrılığa düştü." } 
@@ -3949,6 +4008,7 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: {
+            cogulId: 46,
             base: { 
                 emoji: "🙈", 
                 arText: "جَاهِل", 
@@ -3976,6 +4036,7 @@ const wordEasterEggs = {
         
         // --- 46 Numaralı Kalıp (فُعَلَاء) ---
         46: { 
+            tekilId: 33,
             base: { 
                 emoji: "🙉", 
                 arText: "جُهَلَاء", 
@@ -4000,8 +4061,15 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَاعِل) ---
         33: {
-            base: { emoji: "😌", arText: "سَاكِن", trText: "Sakin / Oturan." } }, 
+            cogulId: 45,
+            base: { emoji: "😌", arText: "سَاكِن", trText: "Sakin / Oturan." } 
+        }, 
         
+        // --- 45 Numaralı Kalıp (فُعَّال) ---
+        45: {
+            tekilId: 33,
+            base: { emoji: "👥", arText: "سُكَّان", trText: "Sakinler / Oturanlar / Nüfus." } 
+        },
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
             base: { emoji: "🕊️", arText: "سَكِين", trText: "Huzur (Yalın)." },
@@ -4575,6 +4643,7 @@ const wordEasterEggs = {
           // --- 21 Numaralı Kalıp (فَعَل - İsim/Masdar) ---
        // --- 17 Numaralı Kalıp (فَعَل - İsim/Masdar) ---
         17: { 
+            cogulId: 41,
             base: { 
                 emoji: "👁️", 
                 arText: "بَصَر", 
@@ -4635,6 +4704,7 @@ const wordEasterEggs = {
 
     // --- 41 Numaralı Kalıp (أَفْعَال - Cemi Mükesser / Kırık Çoğul) ---
         41: { 
+            tekilId: 17,
             base: { 
                 emoji: "👀", 
                 arText: "أَبْصَار", 
@@ -5717,17 +5787,31 @@ const wordEasterEggs = {
         },
 
         20: { 
-            base: { emoji: "🎬", arText: "فِعْل", trText: "Fiil / Eylem / İş.", ornek: { ar: "رَدُّ فِعْلٍ", tr: "Tepki / Reaksiyon (Geri eylem)." } }
+            base: { emoji: "🎬", arText: "فِعْل", trText: "Fiil / Eylem / İş.", ornek: { ar: "رَدُّ فِعْلٍ", tr: "Tepki / Reaksiyon (Geri eylem)." } },
+            cogulId: 41
+        },
+        
+        // --- 41 Numaralı Kalıp (أَفْعَال - Çoğul) ---
+        41: { 
+            tekilId: 20,
+            base: { emoji: "📚", arText: "أَفْعَال", trText: "Fiiller / Eylemler.", ornek: { ar: "أَفْعَالُ الْإِنْسَانِ", tr: "İnsanın fiilleri (eylemleri)." } } 
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fail) ---
         33: {
-            base: { emoji: "👤", arText: "فَاعِلُ خَيْر", trText: "Hayırsever / İyilik yapan.", ornek: { ar: "فَاعِلُ خَيْرٍ", tr: "İyilik yapan (hayırsever) / İşin öznesi." } } 
+            base: { emoji: "👤", arText: "فَاعِل", trText: "Fail / Yapan, eden, özne.", ornek: { ar: "فَاعِلُ خَيْرٍ", tr: "Hayırsever (iyilik yapan) / Cümledeki işi yapan özne." } } 
         },
         
         // --- 34 Numaralı Kalıp (فَعَّال - Mübalağalı İsm-i Fail) ---
         34: { 
-            base: { emoji: "⚡", arText: "فَعَّال", trText: "Faal / Çok etkili.", ornek: { ar: "دَوْرٌ فَعَّالٌ", tr: "Çok etkili (aktif) rol." } } 
+            base: { emoji: "⚡", arText: "فَعَّال", trText: "Faal / Çok etkili.", ornek: { ar: "دَوْرٌ فَعَّالٌ", tr: "Çok etkili (aktif) rol." } },
+            suggestsPlus: true,
+            "يَّة": { emoji: "📈", arText: "فَعَّالِيَّة", trText: "Faaliyet / Etkinlik.", ornek: { ar: "فَعَّالِيَّةُ الْمَشْرُوعِ", tr: "Projenin etkinliği (faaliyeti)." } }
+        },
+        
+        // --- 36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ul) ---
+        36: { 
+            base: { emoji: "🎯", arText: "مَفْعُول", trText: "Mef'ul / Yapılan, nesne, etki.", ornek: { ar: "مَفْعُولُ الدَّوَاءِ", tr: "İlacın etkisi (mef'ulü)." } } 
         },
         
        
@@ -5761,6 +5845,13 @@ const wordEasterEggs = {
             "ات": { emoji: "🟢", arText: "مُفَعَّل", trText: "Aktifleştirilmiş / Onaylı.", ornek: { ar: "حِسَابٌ مُفَعَّلٌ", tr: "Aktifleştirilmiş (onaylı/etkin) hesap." } } 
         },
 
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             cekimi: ["اِفْتَعَلَ", "اِفْتَعَلَا", "اِفْتَعَلُوا", "اِفْتَعَلَتْ", "اِفْتَعَلَتَا", "اِفْتَعَلْنَ", "اِفْتَعَلْتَ", "اِفْتَعَلْتُمَا", "اِفْتَعَلْتُمْ", "اِفْتَعَلْتِ", "اِفْتَعَلْتُمَا", "اِفْتَعَلْتُنَّ", "اِفْتَعَلْتُ", "اِفْتَعَلْنَا", "اِفْتَعَلْنَا"],
@@ -5787,7 +5878,14 @@ const wordEasterEggs = {
         // --- 81 Numaralı Kalıp (مُفْتَعَل - İfti'âl Babı İsm-i Mef'ulü) ---
         81: { 
             base: { emoji: "🚧", arText: "مُفْتَعَلَة", trText: "Suni / Yapay.", ornek: { ar: "مُشْكِلَةٌ مُفْتَعَلَةٌ", tr: "Suni (yapay / kasıtlı çıkarılmış) sorun." } } 
-        }
+        },
+
+        // --- Tefâ'ul Babı (94-98) ---
+        94: { base: { emoji: "🤝", arText: "تَفَاعَلَ", trText: "Etkileşime girdi." } },
+        95: { base: { emoji: "🤝", arText: "يَتَفَاعَلُ", trText: "Etkileşime girer." } },
+        96: { base: { emoji: "🗣️", arText: "تَفَاعَلْ", trText: "Etkileşime gir!" } },
+        97: { base: { emoji: "🔄", arText: "تَفَاعُل", trText: "Tefa'ul / Etkileşim, reaksiyon, interaktif olma.", ornek: { ar: "تَفَاعُلٌ اِجْتِمَاعِيٌّ", tr: "Sosyal etkileşim." } } },
+        98: { base: { emoji: "🧑‍🤝‍🧑", arText: "مُتَفَاعِل", trText: "Etkileşimli / İnteraktif.", ornek: { ar: "شَخْصٌ مُتَفَاعِلٌ", tr: "Etkileşimli (sosyal, interaktif) kişi." } } }
     },
 
 
@@ -6688,6 +6786,13 @@ const wordEasterEggs = {
             
         },
 
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
+
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
             base: { 
@@ -6763,6 +6868,13 @@ const wordEasterEggs = {
                 ornek: { ar: "أَسْئِلَةٌ مُتَعَدِّدَةُ الْخِيَارَاتِ", tr: "Çoktan seçmeli sorular." } 
             }
         },
+
+        // --- İnfi'âl Babı (71-75) ---
+        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi." } },
+        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır." } },
+        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!" } },
+        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
+        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli." } },
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 
@@ -8732,6 +8844,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Çoğul Kalıbı) ---
         41: { 
+            tekilId: 35,
             base: { 
                 emoji: "👥", 
                 arText: "أَيْتَام", 
@@ -8941,6 +9054,7 @@ const wordEasterEggs = {
 
        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: {
+            cogulId: 47,
             base: { 
                 emoji: "👤", 
                 arText: "تَابِع", 
@@ -8961,6 +9075,7 @@ const wordEasterEggs = {
 
         // --- 47 Numaralı Kalıp (Çoğul İsim Kalıbı - فَعَلَة) ---
         47: { 
+            tekilId: 33,
             base: { 
                 emoji: "🏛️", 
                 arText: "تَبَعَة", 
@@ -9090,6 +9205,7 @@ const wordEasterEggs = {
 
         // --- 45 Numaralı Kalıp (Çoğul) ---
         45: {
+            tekilId: 33,
             base: {
                 emoji: "👥",
                 arText: "تُجَّار",
@@ -9694,6 +9810,7 @@ const wordEasterEggs = {
         //             21 Numaralı Kalıp (فُعْل - İsim/Masdar)
         // ✦ ──────────────────────────────────────────────────────── ✦
         21: { 
+            tekilId: 21,
             cogulId: "21_cogul",
             base: { 
                 emoji: "🖼️", 
@@ -10550,6 +10667,7 @@ const wordEasterEggs = {
     "نفس": {
         // --- 17 Numaralı Kalıp (فَعَل - İsim) ---
         17: {
+            cogulId: 41,
             base: {
                 emoji: "🌬️",
                 arText: "نَفَس",
@@ -10656,6 +10774,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: {
+            tekilId: 17,
             base: {
                 emoji: "💨",
                 arText: "أَنْفَاس",
@@ -11070,6 +11189,7 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: { 
+            cogulId: 41,
             base: { 
                 emoji: "🧑‍🤝‍🧑", 
                 arText: "صَاحِب", 
@@ -11089,6 +11209,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: { 
+            tekilId: 33,
             base: { 
                 emoji: "🌟", 
                 arText: "أَصْحَاب", 
@@ -11345,6 +11466,7 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: { 
+            cogulId: "45, 47",
             base: { 
                 emoji: "👨‍🎓", 
                 arText: "طَالِب", 
@@ -11362,6 +11484,7 @@ const wordEasterEggs = {
 
         // --- 45 Numaralı Kalıp (فُعَّال - İsm-i Fâil Çoğulu 1) ---
         45: { 
+            tekilId: 33,
             base: { 
                 emoji: "🎓", 
                 arText: "طُلَّاب", 
@@ -11372,6 +11495,7 @@ const wordEasterEggs = {
 
         // --- 47 Numaralı Kalıp (فَعَلَة - İsm-i Fâil Çoğulu 2) ---
         47: { 
+            tekilId: 33,
             base: { 
                 emoji: "📚", 
                 arText: "طَلَبَة", 
@@ -11722,6 +11846,7 @@ const wordEasterEggs = {
 
        // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
+            cogulId: 41,
             base: { 
                 emoji: "🏛️", 
                 arText: "وَقْف", 
@@ -11799,6 +11924,7 @@ const wordEasterEggs = {
 
         // --- 40 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: { 
+            tekilId: 19,
             base: { 
                 emoji: "📜", 
                 arText: "أَوْقَاف", 
@@ -11922,6 +12048,7 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: { 
+            cogulId: 47,
             base: { 
                 emoji: "🤵", 
                 arText: "خَادِم", 
@@ -11935,6 +12062,7 @@ const wordEasterEggs = {
 
         // --- 47 Numaralı Kalıp (فَعَل - İsm-i Cem' / Topluluk İsmi - Çoğul) ---
         47: { 
+            tekilId: 33,
                base: { 
                 emoji: "👥", 
                 arText: "خَدَمَة", 
@@ -12210,6 +12338,7 @@ const wordEasterEggs = {
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim / Masdar) ---
         21: {
+            cogulId: 41,
             base: {
                 emoji: "💔",
                 arText: "حُزْن",
@@ -12258,6 +12387,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: {
+            tekilId: 21,
             base: {
                 emoji: "🌊",
                 arText: "أَحْزَان",
@@ -12367,6 +12497,7 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَيْعِل - Sıfat-ı Müşebbehe / İsm-i Fâil Yerine Kullanılır) ---
         33: { 
+            cogulId: 41,
             base: { 
                 emoji: "💀", 
                 arText: "مَيِّت", 
@@ -12415,6 +12546,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: { 
+            tekilId: 33,
             base: { 
                 emoji: "🪦", 
                 arText: "أَمْوَات", 
@@ -12787,6 +12919,7 @@ const wordEasterEggs = {
 
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: { 
+            cogulId: 46,
             base: { 
                 emoji: "✍️", 
                 arText: "شَاعِر", 
@@ -12800,6 +12933,7 @@ const wordEasterEggs = {
 
         // --- 35 Numaralı Kalıp (فَعِيل / +ة ile İsim) ---
         35: { 
+            cogulId: 48,
             base: { arText: "شَعِير" },
             suggestsPlus: true,
             "ة": { 
@@ -12834,6 +12968,7 @@ const wordEasterEggs = {
 
         // --- 46 Numaralı Kalıp (فُعَلَاء - Kırık Çoğul) ---
         46: {
+            tekilId: 33,
             base: {
                 emoji: "🎭", 
                 arText: "شُعَرَاء", 
@@ -12847,6 +12982,7 @@ const wordEasterEggs = {
 
         // --- 48 Numaralı Kalıp (فَعَائِل - Kırık Çoğul) ---
         48: {
+            tekilId: 35,
             base: {
                 emoji: "🕋",
                 arText: "شَعَائِر",
@@ -12900,6 +13036,7 @@ const wordEasterEggs = {
 
         // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / Kalıcı Özellik) ---
         35: { 
+            cogulId: 41,
             base: { 
                 emoji: "🌹", 
                 arText: "حَبِيب", 
@@ -12939,6 +13076,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: {
+            tekilId: 35,
             base: {
                 emoji: "🫂",
                 arText: "أَحْبَاب",
@@ -13453,6 +13591,7 @@ const wordEasterEggs = {
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
+            cogulId: 43,
             base: { 
                 emoji: "🖼️", 
                 arText: "رَسْم", 
@@ -13478,6 +13617,7 @@ const wordEasterEggs = {
 
         // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Çoğul Masdar) ---
         43: { 
+            tekilId: 19,
             base: { 
                 emoji: "📜", 
                 arText: "رُسُوم", 
@@ -14007,6 +14147,7 @@ const wordEasterEggs = {
 
         // --- 20 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         20: { 
+            cogulId: 41,
             base: { 
                 emoji: "🍞", 
                 arText: "رِزْق", 
@@ -14065,6 +14206,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: { 
+            tekilId: 20,
             base: { 
                 emoji: "🧺", 
                 arText: "أَرْزَاق", 
@@ -14164,6 +14306,7 @@ const wordEasterEggs = {
 
         // --- 18 Numaralı Kalıp (فَعِل - İsim / Masdar) ---
         18: { 
+            cogulId: 41,
             base: { 
                 emoji: "🎮", 
                 arText: "لَعِب", 
@@ -14241,6 +14384,7 @@ const wordEasterEggs = {
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: { 
+            tekilId: 18,
             base: { 
                 emoji: "🎲", 
                 arText: "أَلْعَاب", 
@@ -14678,6 +14822,7 @@ const wordEasterEggs = {
 
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Tekil) ---
         19: {
+            cogulId: 43,
             base: {
                 emoji: "🧠",
                 arText: "ظَنّ",
@@ -14724,6 +14869,7 @@ const wordEasterEggs = {
 
        // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
         43: {
+            tekilId: 19,
             base: {
                 emoji: "🌪️",
                 arText: "ظُنُون",
@@ -14807,6 +14953,7 @@ const wordEasterEggs = {
     "وجه": {
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
         19: {
+            cogulId: 43,
             base: {
                 emoji: "👤",
                 arText: "وَجْه",
@@ -14869,6 +15016,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
         43: {
+            tekilId: 19,
             base: {
                 emoji: "🎭",
                 arText: "وُجُوه",
@@ -16078,6 +16226,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
        // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
         19: { 
+            cogulId: 44,
             base: { 
                 emoji: "👤", 
                 arText: "عَبْد", 
@@ -16114,6 +16263,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 44 Numaralı Kalıp (فِعَال - Cem-i Mükesser / Kırık Çoğul) ---
         44: { 
+            tekilId: 19,
             base: { 
                 emoji: "👥", 
                 arText: "عِبَاد", 
@@ -16824,6 +16974,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
+            cogulId: 43,
             base: { 
                 emoji: "📜", 
                 arText: "عَقْد", 
@@ -16887,6 +17038,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
          // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
         43: { 
+            tekilId: 19,
             base: { 
                 emoji: "🤝", 
                 arText: "عُقُود", 
@@ -17965,6 +18117,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 21 Numaralı Kalıp (فُعْل - İsim / Tekil) ---
         21: {
+            cogulId: 41,
             base: {
                 emoji: "💅",
                 arText: "ظُفْر",
@@ -17984,6 +18137,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         
         // --- 41 Numaralı Kalıp (Cem-i Mükesser / Kırık Çoğul Formları) ---
         41: {
+            tekilId: 21,
             base: {
                 emoji: "🐾",
                 arText: "أَظْفَار / أَظَافِير",
@@ -18788,6 +18942,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
         19: { 
+            cogulId: 43,
             base: { 
                 emoji: "❤️", 
                 arText: "قَلْب", 
@@ -18817,6 +18972,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
         43: { 
+            tekilId: 19,
             base: { 
                 emoji: "💞", 
                 arText: "قُلُوب", 
@@ -20082,6 +20238,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
     "فرد": {
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
         19: { 
+            cogulId: 41,
             base: { 
                 emoji: "👤", 
                 arText: "فَرْد", 
@@ -20120,6 +20277,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Çoğul Kalıbı) ---
         41: { 
+            tekilId: 19,
             base: { 
                 emoji: "👥", 
                 arText: "أَفْرَاد", 
@@ -20488,6 +20646,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         },
         // --- 19 Numaralı Kalıp (فَعْل - Mücerret Masdar) ---
         19: { 
+            cogulId: 43,
             base: { 
                 emoji: "📋", 
                 arText: "أَمْر", 
@@ -20544,6 +20703,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 43 Numaralı Kalıp (فُعُول - Cem-i Mükesser / Kırık Çoğul) ---
         43: { 
+            tekilId: 19,
             base: { 
                 emoji: "📂", 
                 arText: "أُمُور", 
@@ -20807,6 +20967,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 17 Numaralı Kalıp (فَعَل - İsim / Masdar) ---
         17: {
+            cogulId: 41,
             base: {
                 emoji: "⚠️",
                 arText: "خَطَأ",
@@ -20849,6 +21010,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
         41: {
+            tekilId: 17,
             base: {
                 emoji: "📑",
                 arText: "أَخْطَاء",
@@ -20957,6 +21119,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         4: { base: { emoji: "🕊️", arText: "يَطِيرُ", trText: "Uçar." } },
         5: { base: { emoji: "🦅", arText: "طِرْ", trText: "Uç." } },
         33: { 
+            cogulId: 43,
             base: { emoji: "🦅", arText: "طَائِر", trText: "Uçan / Kuş." },
             suggestsPlus: true,
             "ة": { emoji: "✈️", arText: "طَائِرَة", trText: "Uçak." }
@@ -21059,7 +21222,10 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             base: { emoji: "🛒", arText: "سُوق", trText: "Çarşı / Pazar." },
             cogulId: 41
         },
-        41: { base: { emoji: "🏬", arText: "أَسْوَاق", trText: "Çarşılar / Pazarlar." } },
+        41: { 
+            tekilId: 21,
+            base: { emoji: "🏬", arText: "أَسْوَاق", trText: "Çarşılar / Pazarlar." } 
+        },
         90: { base: { emoji: "🛍️", arText: "تَسَوَّقَ", trText: "Alışveriş yaptı." } },
         91: { base: { emoji: "🛒", arText: "يَتَسَوَّقُ", trText: "Alışveriş yapar." } },
         92: { base: { emoji: "🛍️", arText: "تَسَوَّقْ", trText: "Alışveriş yap." } },
@@ -21076,6 +21242,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         },
         41: {
             isHiddenInList: true,
+            tekilId: 19,
             base: { emoji: "📚", arText: "أَنْوَاع", trText: "Çeşitler / Türler.", ornek: { ar: "أَنْوَاعُ الْفَوَاكِهِ", tr: "Meyve çeşitleri." } },
             suggestsPlus: true,
             "يَّ": { emoji: "🔄", arText: "أَنْوَاعِيّ", trText: "Envai / Çeşit çeşit.", ornek: { ar: "أَنْوَاعِيٌّ مُخْتَلِفَةٌ", tr: "Çeşit çeşit (farklı) türler. (Not: Türkçedeki 'Envai çeşit' kullanımı buradan gelir)." } }

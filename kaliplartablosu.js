@@ -324,7 +324,8 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             modal.style.display = 'none';
             overlay.style.display = 'none';
         };
-        document.body.appendChild(overlay);
+        document.getElementById("marathon-overlay").appendChild(overlay);
+
     }
     
     let htmlContent = "";
@@ -590,13 +591,20 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             let cogulAr = itemCogul ? itemCogul.base.arText : '';
             let tekilTr = (itemTekil && itemTekil.base.trText) ? itemTekil.base.trText : '';
             let cogulTr = (itemCogul && itemCogul.base.trText) ? itemCogul.base.trText : '';
-            let ornekHtml = '';
+            let allOrnekler = [];
             if (itemTekil && itemTekil.base && itemTekil.base.ornek) {
-                let ornekler = Array.isArray(itemTekil.base.ornek) ? itemTekil.base.ornek : [itemTekil.base.ornek];
+                allOrnekler = allOrnekler.concat(Array.isArray(itemTekil.base.ornek) ? itemTekil.base.ornek : [itemTekil.base.ornek]);
+            }
+            if (itemCogul && itemCogul.base && itemCogul.base.ornek && itemCogul !== itemTekil) {
+                allOrnekler = allOrnekler.concat(Array.isArray(itemCogul.base.ornek) ? itemCogul.base.ornek : [itemCogul.base.ornek]);
+            }
+
+            let ornekHtml = '';
+            if (allOrnekler.length > 0) {
                 ornekHtml += `<div style="margin-top:25px; padding:15px; background:#ffffff; border-radius:10px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.02);">`;
-                ornekler.forEach((ornek, index) => {
+                allOrnekler.forEach((ornek, index) => {
                     if (ornek.ar && ornek.tr) {
-                        let isLast = index === ornekler.length - 1;
+                        let isLast = index === allOrnekler.length - 1;
                         let borderStyle = isLast ? "" : "border-bottom:1px solid rgba(189, 195, 199, 0.3); margin-bottom:15px; padding-bottom:10px;";
                         ornekHtml += `<div style="${borderStyle}">
                                         <div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#d35400; margin-bottom:10px;" dir="rtl">${ornek.ar}</div>
@@ -605,7 +613,6 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     }
                 });
                 ornekHtml += `</div>`;
-                // If no valid ornek was added, clear it so it doesn't show an empty box
                 if (!ornekHtml.includes('dir="rtl"')) ornekHtml = '';
             }
             let emoji = (itemTekil && itemTekil.base.emoji) ? itemTekil.base.emoji : ((itemCogul && itemCogul.base.emoji) ? itemCogul.base.emoji : '');
@@ -1224,6 +1231,8 @@ function openVerbModal() {
     // Menüyü görünür yap
     const overlay = document.getElementById('verb-overlay');
     if (overlay) overlay.style.display = 'flex';
+        document.getElementById("game-wrapper").style.display = "none";
+
     
     // Arama kutusunu ve arka plan hafızasını tamamen sıfırla
     const searchInput = document.getElementById('root-search');
@@ -2445,6 +2454,9 @@ function resetTableOnly(isSilent = false) {
         box.style.zIndex = "";
         box.style.boxShadow = ""; 
         if (box.hasAttribute('data-tiklama-sayisi')) box.setAttribute('data-tiklama-sayisi', '0');
+        
+        let inlineTr = box.querySelector('.inline-tr-text');
+        if (inlineTr) inlineTr.remove();
 
         const el = box.querySelector('.ar, .ar-small');
         if (el) {
@@ -2470,8 +2482,9 @@ function resetTableOnly(isSilent = false) {
     
     const rootDisplay = document.getElementById('root-text-display');
     if (rootDisplay) {
-        rootDisplay.innerHTML = '<i class="fas fa-sitemap root-icon" title="Kökler Listesi"></i>';
+        rootDisplay.innerHTML = '<i class="fas fa-sitemap root-icon sitemap-wave-hint" title="Kökler Listesi"></i>';
     }
+    // tableBoard ghost mantığı tamamen silindi
     currentRoot = "";
     lastClickedBoxTextSpan = null;
     lastOriginalWord = "";
@@ -3469,7 +3482,7 @@ document.querySelectorAll('.glass-box').forEach(box => {
     }
 });
 
-function checkWordEasterEgg(boxElement, incomingSuffix = null) {
+function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = false, isInitialLoad = false) {
     const desktopPlus = document.querySelector('.fa-plus');
     const mobilePlus = document.getElementById('mobile-top-plus');
 
@@ -3576,16 +3589,20 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
     boxElement.classList.remove('coklu-kullanim', 'has-ornek');
     if (!isVerb) refEl.removeAttribute('onclick');
 
-    if (hasTableData && !isVerb) {
-        boxElement.classList.add('coklu-kullanim');
-        refEl.setAttribute('onclick', `
-            event.preventDefault(); 
-            event.stopPropagation(); 
-            const box = this.closest('.glass-box'); 
-            lastClickedBoxTextSpan = box.querySelector('.ar, .ar-small'); 
-            lastOriginalWord = box.getAttribute('data-original'); 
-            openConjugationPopup('${currentRoot}', ${refId}, 'isim', '');
-        `);
+    if (hasTableData) {
+        if (!isInitialLoad) {
+            boxElement.classList.add('coklu-kullanim');
+        }
+        if (!isVerb) {
+            refEl.setAttribute('onclick', `
+                event.preventDefault(); 
+                event.stopPropagation(); 
+                const box = this.closest('.glass-box'); 
+                lastClickedBoxTextSpan = box.querySelector('.ar, .ar-small'); 
+                lastOriginalWord = box.getAttribute('data-original'); 
+                openConjugationPopup('${currentRoot}', ${refId}, 'isim', '');
+            `);
+        }
     }
 
     // ===============================================================
@@ -3659,25 +3676,29 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null) {
             } 
             // EĞER BÜYÜTME KAPALIYSA (NORMAL MOD):
             else {
-                const boxRect = boxElement.getBoundingClientRect();
-                const isTop = boxRect.top < 250; 
-                const isLeft = (boxRect.left + boxRect.width / 2) < (window.innerWidth / 2); 
+                if (silentEmoji) {
+                    emojiDiv.className = 'elegant-emoji'; 
+                    emojiDiv.style.display = 'none';
+                } else {
+                    const boxRect = boxElement.getBoundingClientRect();
+                    const isTop = boxRect.top < 250; 
+                    const isLeft = (boxRect.left + boxRect.width / 2) < (window.innerWidth / 2); 
 
-                let animClass = 'pop-up-right'; 
-                if (isTop && isLeft) animClass = 'pop-down-right';
-                else if (isTop && !isLeft) animClass = 'pop-down-left';
-                else if (!isTop && isLeft) animClass = 'pop-up-right';
-                else if (!isTop && !isLeft) animClass = 'pop-up-left';
+                    let animClass = 'pop-up-right'; 
+                    if (isTop && isLeft) animClass = 'pop-down-right';
+                    else if (isTop && !isLeft) animClass = 'pop-down-left';
+                    else if (!isTop && isLeft) animClass = 'pop-up-right';
+                    else if (!isTop && !isLeft) animClass = 'pop-up-left';
 
-                emojiDiv.className = `elegant-emoji ${animClass}`; 
-                
-                // Kalıbın z-index'ini yükselterek emojinin diğer kalıpların arkasına kaçmasını engelliyoruz
-                boxElement.style.zIndex = "999999";
-                
-                emojiDiv.addEventListener('animationend', (e) => {
-                    e.target.style.display = 'none'; 
-                    boxElement.style.zIndex = ""; // Animasyon bitince normale dön
-                });
+                    emojiDiv.className = `elegant-emoji ${animClass}`; 
+                    
+                    boxElement.style.zIndex = "999999";
+                    
+                    emojiDiv.addEventListener('animationend', (e) => {
+                        e.target.style.display = 'none'; 
+                        boxElement.style.zIndex = ""; 
+                    });
+                }
             }
 
             // Orijinal kutunun hafızasını güncelle ve gizli emojiyi ekle (veri için gerekli)
@@ -3875,22 +3896,35 @@ function triggerAreaPulse(boxElement) {
 
         document.body.appendChild(cloneBox);
 
-        // =======================================================
-        // 2. KAHVERENGİ KÖK KUTUSU KLONU (Sadece kök varsa açılır)
-        // =======================================================
-        const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
-        
-        // Eğer seçili olan bir kök varsa (uzunluğu 3 harf ise) kahverengi kutuyu yarat!
         if (currentRootSafe.length === 3) {
             const rootClone = document.createElement('div');
             rootClone.id = 'crisp-root-clone';
-            rootClone.className = 'crisp-root-clone';
+            rootClone.className = 'crisp-root-clone draggable-root-clone';
+            rootClone.style.setProperty('pointer-events', 'auto', 'important');
+            rootClone.style.setProperty('cursor', 'grab', 'important');
             
-            // YENİ: Akıllı kök formatlayıcıyı kullanarak "kendinden sonra birleşmeyen harf" sorununu çözer
             let displayRoot = (typeof formatArabicRoot === 'function') ? formatArabicRoot(currentRootSafe) : currentRootSafe;
-            
             rootClone.innerHTML = `<span class="ar-root">${displayRoot}</span>`;
-            document.body.appendChild(rootClone);
+            
+            const container = document.getElementById('table-root-container');
+            if (container) {
+                rootClone.style.setProperty('position', 'absolute', 'important');
+                rootClone.style.setProperty('top', '50%', 'important');
+                rootClone.style.setProperty('left', '50%', 'important');
+                rootClone.style.setProperty('transform', 'translate(-50%, -50%) scale(0.35)', 'important');
+                rootClone.style.setProperty('margin', '0', 'important');
+                rootClone.style.setProperty('animation', 'none', 'important');
+                container.appendChild(rootClone);
+            } else {
+                document.body.appendChild(rootClone);
+            }
+            
+            // Sürüklenebilir yap
+            setTimeout(() => {
+                if (typeof makeElementDraggable === 'function') {
+                    makeElementDraggable(rootClone);
+                }
+            }, 50);
         }
 
     }, 10); 
@@ -3936,7 +3970,7 @@ function showEasterEggOverlay(arText, trText) {
         document.body.appendChild(overlay);
     }
     
-const arDiv = overlay.querySelector('.easter-egg-ar');
+    const arDiv = overlay.querySelector('.easter-egg-ar');
     const trDiv = overlay.querySelector('.easter-egg-tr');
     
     if (arText) { 
@@ -4137,6 +4171,38 @@ function highlightEasterEggBoxes(root) {
         });
         if (targetBox) {
             targetBox.classList.add('sari-vurgu');
+            
+            // KULLANICI İSTEĞİ: Sadece فعل kökü için kutuları tam "tıklanmış" (türetilmiş, yeşil) durumuna getir
+            if (root === "فعل") {
+                targetBox.classList.remove('sari-vurgu');
+                targetBox.classList.add('kok-turendi');
+                targetBox.classList.add('current-active-red');
+                targetBox.style.setProperty("background-color", "#bfffdf", "important"); 
+                targetBox.style.borderColor = "#000000";
+                targetBox.setAttribute('data-tiklama-sayisi', '3'); // Tıklanmış aşamasında kalsın (bir sonraki tık sıfırlar)
+                
+                const targetEl = targetBox.querySelector('.ar, .ar-small');
+                if (targetEl) {
+                    const kalip = targetBox.getAttribute('data-original');
+                    let plainWord = kalip;
+                    const mapping = typeof getBabAndType === 'function' ? getBabAndType(refId) : null;
+                    
+                    if (mapping && typeof applyRootToKalip === 'function') {
+                        let bNo = mapping.babNo || 1;
+                        let kalipMetni = kalip.replace(/[\u064B-\u0652]/g, ""); 
+                        plainWord = applyRootToKalip(root, kalipMetni, bNo, refId);
+                    } else if (typeof applyRootToKalip === 'function') {
+                        let kalipMetni = kalip.replace(/[\u064B-\u0652]/g, "");
+                        plainWord = applyRootToKalip(root, kalipMetni);
+                    }
+                    
+                    targetEl.innerHTML = typeof ColorEngine !== 'undefined' ? ColorEngine.colorize(plainWord, root.split("")) : plainWord;
+                }
+                
+                if (typeof checkWordEasterEgg === 'function') {
+                    checkWordEasterEgg(targetBox, null, true);
+                }
+            }
         }
     });
 }
@@ -6085,6 +6151,8 @@ window.showBabInfo = function(rawName) {
         textEl.innerHTML = info.desc; 
         
         overlay.style.display = 'flex';
+        document.getElementById("game-wrapper").style.display = "none";
+
         setTimeout(() => overlay.classList.add('active'), 10);
         if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
     }
@@ -6156,9 +6224,15 @@ window.initBabIcons = function() {
 };
 
 // Sayfa yüklendiğinde ve dinamik içerik değiştiğinde motoru çalıştır
-document.addEventListener("DOMContentLoaded", initBabIcons);
+document.addEventListener("DOMContentLoaded", () => {
+    initBabIcons();
+    setTimeout(() => { if (typeof selectReadyVerb === 'function') selectReadyVerb("فعل"); }, 300);
+});
 if (document.readyState === "complete" || document.readyState === "interactive") {
-    setTimeout(initBabIcons, 200);
+    setTimeout(() => {
+        initBabIcons();
+        if (typeof selectReadyVerb === 'function') selectReadyVerb("فعل");
+    }, 200);
 }
 // ===============================================================
 // 1. KRONOMETRE BUTONU EKLEYİCİ VE FİİL DEDEKTÖRÜ (SVG VERSİYONU)
@@ -6314,13 +6388,13 @@ window.mIsPaused = false;
 window.mRaceMode = false; // Yarışmanın başlayıp başlamadığını takip eder
 window.mAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-function playSfx(f, t, d) {
+function playSfx(f, t, d) { try {
     if (window.mAudioCtx.state === 'suspended') window.mAudioCtx.resume();
     const o = window.mAudioCtx.createOscillator(); const g = window.mAudioCtx.createGain();
     o.type = t; o.frequency.setValueAtTime(f, window.mAudioCtx.currentTime);
     g.gain.setValueAtTime(0.05, window.mAudioCtx.currentTime);
     o.connect(g); g.connect(window.mAudioCtx.destination);
-    o.start(); o.stop(window.mAudioCtx.currentTime + d);
+    o.start(); o.stop(window.mAudioCtx.currentTime + d); } catch(e) { console.warn("Sfx error", e); }
 }
 
 // O KÖKTEKİ TÜM MAZİ FİİLLERİ VE ÖRNEK CÜMLELERİNİ BULAN FONKSİYON
@@ -6409,6 +6483,9 @@ window.openMarathon = function() {
     document.getElementById('pause-btn').style.display = 'block';
     let atlasSel = document.getElementById('atlas-selector-container');
     if(atlasSel) atlasSel.style.display = 'none';
+    
+    const gw = document.getElementById("game-wrapper");
+    if (gw) gw.style.display = "flex";
     
     let prevArr = document.getElementById('prev-arr');
     if (prevArr) prevArr.style.display = 'flex';
@@ -6535,27 +6612,7 @@ window.openMarathon = function() {
     });
 };
 
-// LOBİDEN ÇIKIŞ VEYA OYUNDAN LOBİYE DÖNÜŞ BUTONU
-window.goBackFromMarathon = function() {
-    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-    const selectionArea = document.getElementById('marathon-selection-area');
-    
-    // Eğer Lobideyse tamamen kapat
-    if (selectionArea.style.display === 'flex') {
-        closeMarathon(); 
-    } else {
-        // Eğer Oyundaysa Lobiye dön
-        clearInterval(window.mTimerInterval);
-        window.openMarathon(); 
-    }
-};
 
-window.closeMarathon = function() {
-    if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-    clearInterval(window.mTimerInterval);
-    window.mRaceMode = false;
-    document.getElementById('marathon-overlay').classList.remove('active');
-};
 
 // 2. TABLOYU EKRANA DİZER, HEADER'I AÇAR (YARIŞMA HENÜZ BAŞLAMADI)
 function prepareMarathonPlay() {
@@ -6611,6 +6668,8 @@ window.closeMarathon = function() {
     // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
     hideMarathonHeaders();
     document.getElementById('chrono-main').style.display = 'none';
+    const gw = document.getElementById("game-wrapper");
+    if (gw) gw.style.display = "flex";
 };
 
 // 5. OYUN İÇİNDEKİ ⏱️ BUTONUNA BASILINCA 'BAŞLA' EKRANINI GETİRİR
@@ -6622,9 +6681,17 @@ window.handleMarathonChronoClick = function() {
         document.getElementById('chrono-main').classList.add('active'); 
         
         const overlay = document.getElementById('marathon-countdown-overlay');
+        document.getElementById("marathon-overlay").appendChild(overlay);
+
+        overlay.style.cssText = "position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background: #ffffff !important; z-index: 2147483647 !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-direction: column !important;";
+
         overlay.style.display = 'flex';
+        document.getElementById("game-wrapper").style.display = "none";
+
         
         const startBtn = document.getElementById('start-btn-ui');
+        startBtn.style.zIndex = "2147483647";
+
         startBtn.style.display = 'block';
         startBtn.disabled = false; 
         
@@ -6640,6 +6707,7 @@ window.handleMarathonChronoClick = function() {
         document.getElementById('timer-display').classList.remove('ui-visible');
         document.getElementById('live-total-score').classList.remove('ui-visible');
         document.getElementById('marathon-countdown-overlay').style.display = 'none';
+        document.getElementById("game-wrapper").style.display = "flex";
         
         window.mErrorMemory.clear();
         loadMarathonTable();
@@ -6649,6 +6717,8 @@ window.handleMarathonChronoClick = function() {
 // 6. "BAŞLA" BUTONUNA TIKLANINCA ÇALIŞIR (3-2-1 KUSURSUZ GÜVENLİ SAYIM)
 window.startMarathonCountdown = function() {
     const startBtn = document.getElementById('start-btn-ui');
+        startBtn.style.zIndex = "2147483647";
+
     startBtn.disabled = true; 
     startBtn.style.display = 'none';
     
@@ -6672,40 +6742,11 @@ window.startMarathonCountdown = function() {
         } else { 
             clearInterval(window.mCountdownInterval); 
             document.getElementById('marathon-countdown-overlay').style.display = 'none'; 
+            document.getElementById("game-wrapper").style.display = "flex";
             startMarathonTimer(); 
         }
     }, 1000);
 };
-// "BAŞLA" BUTONUNA TIKLANINCA ÇALIŞIR (3-2-1 KUSURSUZ GÜVENLİ SAYIM)
-window.startMarathonCountdown = function() {
-    const startBtn = document.getElementById('start-btn-ui');
-    startBtn.disabled = true; // HATA ÇÖZÜMÜ: Çift tıklanıp sayacın bozulmasını tamamen engeller!
-    startBtn.style.display = 'none';
-    
-    const cd = document.getElementById('countdown-text');
-    cd.style.display = 'block';
-    
-    window.mErrorMemory.clear(); 
-    window.mCurrentStage = 0; 
-    loadMarathonTable();
-    
-    let count = 3; 
-    cd.innerText = count;
-    playSfx(400, 'sine', 0.1); // İlk "3" der demez ses çalar
-    
-    const interval = setInterval(() => {
-        count--;
-        if (count > 0) { 
-            cd.innerText = count; 
-            playSfx(400, 'sine', 0.1); 
-        } else { 
-            clearInterval(interval); 
-            document.getElementById('marathon-countdown-overlay').style.display = 'none'; 
-            startMarathonTimer(); 
-        }
-    }, 1000);
-};
-
 // SAYACI VE PUANI BAŞLATIR
 function startMarathonTimer() {
     document.getElementById('pause-btn').classList.add('ui-visible');
@@ -6894,6 +6935,8 @@ window.openKeyboard = function() {
     // Klavyeyi ve Siyah Ekranı Aç
     const overlay = document.getElementById('keyboard-overlay');
     if (overlay) overlay.style.display = 'flex';
+        document.getElementById("game-wrapper").style.display = "none";
+
     
     if (typeof toggleKB === 'function') toggleKB(true);
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
@@ -6963,6 +7006,8 @@ function openRootsModal() {
         
         const overlay = document.getElementById('verb-overlay');
         if (overlay) overlay.style.display = 'flex';
+        document.getElementById("game-wrapper").style.display = "none";
+
         
         // Tabloyu vs sıfırla
         if (typeof updateTempDisplay === 'function') updateTempDisplay();
