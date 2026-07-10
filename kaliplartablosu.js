@@ -6131,7 +6131,7 @@ window.initBabIcons = function() {
                 td.style.position = 'relative';
                 td.style.padding = '0';
                 td.innerHTML = `
-                <div style="display: grid; grid-template-columns: 110px 55px 85px 30px; justify-items: center; align-items: center; width: 100%; height: 100%;" dir="ltr">
+                <div style="display: grid; grid-template-columns: 110px 25px 75px 25px; justify-content: space-evenly; justify-items: center; align-items: center; width: 100%; height: 100%;" dir="ltr">
                     ${leftBadgeHtml}
                     <span style="font-family: 'Arakom', sans-serif; font-size: 1.15rem; font-weight: normal; color: #FF3B30; white-space: nowrap;">${originalText}</span>
                     <span class="info-icon" style="position: relative !important; top: auto !important; transform: none !important; right: auto !important; margin: 0 !important; color: ${iconColor} !important; cursor: pointer;" title="${info.title} Özellikleri"><i class="fas fa-info-circle"></i></span>

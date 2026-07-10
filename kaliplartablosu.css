@@ -261,7 +261,7 @@ th {
 
 th.baslik-fiil { background-color: #34C759 !important; }
 th.baslik-isim { background-color: #2B88D9 !important; }
-th.baslik-notr { background-color: transparent !important; color: #FF3B30 !important; }
+th.baslik-notr { background-color: transparent !important; color: #FF3B30 !important; width: 245px !important; }
 
 table { 
     width: 100%; 
