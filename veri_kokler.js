@@ -10440,6 +10440,23 @@ const wordEasterEggs = {
             }
         },
 
+        // --- 50 Numaralı Kalıp (أَفْعَل - İsm-i Tafdil) ---
+        50: {
+            base: {
+                emoji: "🌟",
+                arText: "أَنْوَر",
+                trText: "Enver / Daha nurlu, en nurlu, çok parlak.",
+                ornek: { ar: "وَجْهٌ أَنْوَرُ", tr: "Çok nurlu (parlak) bir yüz." }
+            }
+        },
+
+        // --- İf'âl Babı (52-56) ---
+        52: { base: { emoji: "🌅", arText: "أَنَارَ", trText: "Aydınlattı / Işık verdi.", ornek: { ar: "أَنَارَ الشَّمْسُ الْأَرْضَ", tr: "Güneş yeryüzünü aydınlattı." } } },
+        53: { base: { emoji: "☀️", arText: "يُنِيرُ", trText: "Aydınlatır / Işık verir.", ornek: { ar: "الْعِلْمُ يُنِيرُ الْعَقْلَ", tr: "İlim aklı aydınlatır." } } },
+        54: { base: { emoji: "🕯️", arText: "أَنِرْ", trText: "Aydınlat!", ornek: { ar: "أَنِرْ طَرِيقَنَا", tr: "Yolumuzu aydınlat." } } },
+        55: { base: { emoji: "💡", arText: "إِنَارَة", trText: "İnare / Aydınlatma, ışıklandırma.", ornek: { ar: "إِنَارَةُ الشَّوَارِعِ", tr: "Sokakların aydınlatılması." } } },
+        56: { base: { emoji: "🌕", arText: "مُنِير", trText: "Münir / Aydınlatan, nurlu, parlak.", ornek: { ar: "قَمَرٌ مُنِيرٌ", tr: "Nurlu (parlak, aydınlatan) bir ay." } } },
+
         // --- 58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi - Çokluk / Geçişlilik) ---
         58: {
             base: {
@@ -21038,12 +21055,56 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         1: { base: { emoji: "🚗", arText: "سَاقَ", trText: "Sürdü / Sevk etti." } },
         2: { base: { emoji: "🚚", arText: "يَسُوقُ", trText: "Sürer / Sevk eder." } },
         3: { base: { emoji: "🏎️", arText: "سُقْ", trText: "Sür / Sevk et." } },
-        21: { base: { emoji: "🛒", arText: "سُوق", trText: "Çarşı / Pazar." } },
+        21: { 
+            base: { emoji: "🛒", arText: "سُوق", trText: "Çarşı / Pazar." },
+            cogulId: 41
+        },
+        41: { base: { emoji: "🏬", arText: "أَسْوَاق", trText: "Çarşılar / Pazarlar." } },
         90: { base: { emoji: "🛍️", arText: "تَسَوَّقَ", trText: "Alışveriş yaptı." } },
         91: { base: { emoji: "🛒", arText: "يَتَسَوَّقُ", trText: "Alışveriş yapar." } },
         92: { base: { emoji: "🛍️", arText: "تَسَوَّقْ", trText: "Alışveriş yap." } },
         // --- Otomatik Eklenen Fiiller ---
         88: { base: { emoji: "🛒", arText: "تَسَوَّقَ", trText: "Alışveriş yaptı / Çarşıya çıktı." } },
         89: { base: { emoji: "🛒", arText: "يَتَسَوَّقُ", trText: "Alışveriş yapar / Çarşıya çıkar." } },
+    },
+    "نوع": {
+        19: { 
+            base: { emoji: "📦", arText: "نَوْع", trText: "Çeşit / Tür.", ornek: { ar: "نَوْعٌ جَدِيدٌ", tr: "Yeni bir tür." } },
+            cogulId: 41,
+            suggestsPlus: true,
+            "يَّة": { emoji: "💎", arText: "نَوْعِيَّة", trText: "Kalite / Nitelik.", ornek: { ar: "نَوْعِيَّةُ التَّعْلِيمِ", tr: "Eğitimin kalitesi." } }
+        },
+        41: {
+            isHiddenInList: true,
+            base: { emoji: "📚", arText: "أَنْوَاع", trText: "Çeşitler / Türler.", ornek: { ar: "أَنْوَاعُ الْفَوَاكِهِ", tr: "Meyve çeşitleri." } },
+            suggestsPlus: true,
+            "يَّ": { emoji: "🔄", arText: "أَنْوَاعِيّ", trText: "Envai / Çeşit çeşit.", ornek: { ar: "أَنْوَاعِيٌّ مُخْتَلِفَةٌ", tr: "Çeşit çeşit (farklı) türler. (Not: Türkçedeki 'Envai çeşit' kullanımı buradan gelir)." } }
+        },
+        58: { base: { emoji: "🎨", arText: "نَوَّعَ", trText: "Çeşitlendirdi." } },
+        59: { base: { emoji: "🎨", arText: "يُنَوِّعُ", trText: "Çeşitlendirir." } },
+        60: { base: { emoji: "🎨", arText: "نَوِّعْ", trText: "Çeşitlendir!" } },
+        61: { base: { emoji: "🔀", arText: "تَنْوِيع", trText: "Çeşitlendirme / Varyasyon." } },
+        88: { base: { emoji: "🌿", arText: "تَنَوَّعَ", trText: "Çeşitlendi / Türlü türlü oldu." } },
+        89: { base: { emoji: "🌿", arText: "يَتَنَوَّعُ", trText: "Çeşitlenir / Türlü türlü olur." } },
+        90: { base: { emoji: "🌿", arText: "تَنَوَّعْ", trText: "Çeşitlen!" } },
+        91: { base: { emoji: "🌈", arText: "تَنَوُّع", trText: "Çeşitlilik / Zenginlik.", ornek: { ar: "التَّنَوُّعُ الثَّقَافِيُّ", tr: "Kültürel çeşitlilik." } } },
+        92: { base: { emoji: "🧩", arText: "مُتَنَوِّع", trText: "Çeşitli / Türlü türlü.", ornek: { ar: "أَشْيَاءُ مُتَنَوِّعَةٌ", tr: "Çeşitli şeyler." } } }
+    },
+    "نوم": {
+        1: { base: { emoji: "😴", arText: "نَامَ", trText: "Uyudu.", ornek: { ar: "نَامَ الطِّفْلُ", tr: "Çocuk uyudu." } } },
+        6: { base: { emoji: "🛌", arText: "يَنَامُ", trText: "Uyur.", ornek: { ar: "يَنَامُ مُبَكِّرًا", tr: "Erken uyur." } } },
+        7: { base: { emoji: "💤", arText: "نَمْ", trText: "Uyu!" } },
+        19: { base: { emoji: "🌙", arText: "نَوْم", trText: "Uyku.", ornek: { ar: "غُرْفَةُ النَّوْمِ", tr: "Yatak odası (Uyku odası)." } } },
+        33: { base: { emoji: "🥱", arText: "نَائِم", trText: "Uyuyan / Uykuda.", ornek: { ar: "هُوَ نَائِمٌ", tr: "O uykuda (uyuyor)." } } },
+        38: {
+            base: { emoji: "💭", arText: "مَنَام", trText: "Rüya / Uyku yeri.", ornek: { ar: "رَأَيْتُ فِي الْمَنَامِ", tr: "Rüyamda gördüm." } },
+            suggestsPlus: true,
+            "ة": { emoji: "👘", arText: "مَنَامَة", trText: "Pijama / Gecelik.", ornek: { ar: "مَنَامَةٌ جَدِيدَةٌ", tr: "Yeni bir pijama." } }
+        },
+        58: { base: { emoji: "🪄", arText: "نَوَّمَ", trText: "Uyuttu." } },
+        59: { base: { emoji: "🪄", arText: "يُنَوِّمُ", trText: "Uyutur." } },
+        60: { base: { emoji: "🪄", arText: "نَوِّمْ", trText: "Uyut!" } },
+        61: { base: { emoji: "🌀", arText: "تَنْوِيم", trText: "Uyutma / Hipnoz.", ornek: { ar: "تَنْوِيمٌ مَغْنَاطِيسِيٌّ", tr: "Manyetik uyutma (Hipnoz)." } } },
+        62: { base: { emoji: "💊", arText: "مُنَوِّم", trText: "Uyutan / Uyku ilacı.", ornek: { ar: "حُبُوبٌ مُنَوِّمَةٌ", tr: "Uyku hapları." } } }
     }
 };

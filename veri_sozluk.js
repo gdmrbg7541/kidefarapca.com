@@ -56,7 +56,6 @@ const sozlukVerileri = {
     "İsim: Şeyler": { isDictOnly: true, tekil: { base: { emoji: "📦", arText: "شَيْء", trText: "Şey" } }, cogul: "أَشْياء", cogulTr: "Şeyler" },
     "İsim: Sandık": { isDictOnly: true, tekil: { base: { emoji: "🧰", arText: "صُنْدوق", trText: "Sandık / Kutu" } }, cogul: "صَناديق", cogulTr: "Sandıklar" },
     "İsim: Adres": { isDictOnly: true, tekil: { base: { emoji: "📍", arText: "عُنْوَان", trText: "Adres / Başlık" } }, cogul: "عَناوين", cogulTr: "Adresler" },
-    "İsim: Tür": { isDictOnly: true, tekil: { base: { emoji: "🏷️", arText: "نَوْع", trText: "Tür / Çeşit" } }, cogul: "أَنْواع", cogulTr: "Türler" },
     "Sıfat: Taze": { isDictOnly: true, tekil: { base: { emoji: "🍃", arText: "طازَج", trText: "Taze" } } },
 
 

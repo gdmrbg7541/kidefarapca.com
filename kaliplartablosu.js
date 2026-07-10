@@ -1766,9 +1766,15 @@ function applyRootToKalip(root, kalip) {
     result = result.replace(/===A===/g, r[1]);
     result = result.replace(/===L===/g, r[2]);
     
+    // Tafdil ve Sifat Zırhı (Bu kalıplar İf'al babı mazi/muzari gibi İ'lal görmemeli)
+    let options = {};
+    if (kalip === "أَفْعَل" || kalip === "فُعْلَى" || kalip === "أَفْعَال") {
+        options.skipIfalEcvef = true;
+    }
+
     // Bütün muazzam kuralları (Ecvef, Misal, Şedde vb.) SarfEngine üzerinden tek seferde uygula!
     if (typeof SarfEngine !== 'undefined' && SarfEngine.applyRules) {
-        result = SarfEngine.applyRules(result, r);
+        result = SarfEngine.applyRules(result, r, options);
     }
     
     return result;
@@ -1788,9 +1794,14 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     if (!kok || kok.length !== 3) kok = "فعل"; 
 
-    const numBab = Number(babNo); 
+    let numBab = Number(babNo); 
     const refEl = boxElement.querySelector('.ref');
     const refId = refEl ? parseInt(refEl.innerText) : 0;
+
+    if (refId === 1 && typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kok]) {
+        if (sozlukVerileri[kok][4]) numBab = 2;
+        else if (sozlukVerileri[kok][6]) numBab = 3;
+    }
 
     document.querySelectorAll('.glass-box').forEach(box => { box.style.zIndex = "1"; });
     document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
@@ -4323,9 +4334,20 @@ const VerbGenerator = {
 
                         cekilmisKelime = emirPrefix + coreEmir + siga.suffix;
                     }
-                } // <--- İŞTE BURAYA EKSİK OLAN SÜSLÜ PARANTEZİ EKLEDİK
+                } 
 
-                if (typeof SarfEngine !== 'undefined') cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kokArr);
+                let callOptions = { numBab: babNo };
+                if (anaVezin === "أَفْعَل" || anaVezin === "فُعْلَى" || anaVezin === "أَفْعَال") {
+                    callOptions.skipIfalEcvef = true;
+                }
+                
+                // KULLANICI İSTİSNASI: Bazı kökler her durumda (Bab belirtilmese bile) esre alır
+                const maziKasraIstisnalari = ["نوم", "خوف", "موت"];
+                if (maziKasraIstisnalari.includes(kok)) {
+                     callOptions.forceMaziKasra = true;
+                }
+
+                if (typeof SarfEngine !== 'undefined') cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kokArr, callOptions);
                 kelimeListesi.push(cekilmisKelime);
             });
         }
@@ -4356,10 +4378,12 @@ const VerbGenerator = {
 // ULTIMATE SARF ENGINE (İdğam, İbdal, İ'lal, İlletli Harfler ve Hemze Motoru)
 // ==============================================================================
 const SarfEngine = {
-    applyRules: function(word, r) {
+    applyRules: function(word, r, options = {}) {
         if (!r || r.length !== 3) return word;
         let res = word;
         let [r1, r2, r3] = r; 
+        
+        let skipIfalEcvef = options.skipIfalEcvef || false;
 
         // 1. İFTİAL BABI (11. BAB) İBDAL VE İDĞAM KURALLARI
         if (r1 === 'و' || r1 === 'ي' || r1 === 'ث' || r1 === 'ت') {
@@ -4404,14 +4428,17 @@ const SarfEngine = {
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي')) {
             let ayn = r2;
             let maziHareke = (ayn === 'و') ? 'ُ' : 'ِ';
-            if (typeof numBab !== 'undefined' && numBab === 4) maziHareke = 'ِ'; // Bab 4 istisnası (خاف -> خِفْنَ)
+            let nb = Number(options.numBab);
+            if (nb === 3 || nb === 4 || nb === 6 || options.forceMaziKasra) maziHareke = 'ِ'; // Bab 3, 4 ve 6 istisnası (خاف -> خِفْنَ, نام -> نِمْنَ)
 
             // İSMİ FAİL (33. Kalıp vb.) (نَاوِم / بَايِع -> نَائِم / بَائِع)
             let ismiFailRegex = new RegExp(`^${r1}َا[وي]ِ${r3}(.*)`, 'g');
             res = res.replace(ismiFailRegex, `${r1}َائِ${r3}$1`);
 
             // İF'AL VE DİĞER MEZİD BABLAR İÇİN STANDART ÇEVİRİLER
-            res = res.replace(/أَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "أَ$1َا$2");
+            if (!skipIfalEcvef) {
+                res = res.replace(/أَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "أَ$1َا$2");
+            }
             res = res.replace(/(يُ|تُ|نُ|أُ|مُ)([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1$2ِي$3");
             res = res.replace(/اِسْتَ([\u0621-\u064A])ْ[وي]َ([\u0621-\u064A].*)/g, "اِسْتَ$1َا$2");
             res = res.replace(/(يَ|تَ|نَ|أَ|مُ)سْتَ([\u0621-\u064A])ْ[وي]ِ([\u0621-\u064A].*)/g, "$1سْتَ$2ِي$3");
@@ -4454,9 +4481,9 @@ const SarfEngine = {
             res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])ْ(.*)/g, "$1َ$2ْ$3");
             
             // Harekeli sonlar (Tesniye, Cemi -> عُودُوا, بِيعِي)
-            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])(?![ْ])(.*)/g, "$1ُو$2$3");
-            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])(?![ْ])(.*)/g, "$1ِي$2$3");
-            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])(?![ْ])(.*)/g, "$1َا$2$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?وُ(?!\u0627)([\u0621-\u064A])(?![ْ])(.*)/g, "$1ُو$2$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?يِ(?!\u0627)([\u0621-\u064A])(?![ْ])(.*)/g, "$1ِي$2$3");
+            res = res.replace(/^[اأإآء][ُِ]([\u0621-\u064A])[َْ]?[وي]َ(?!\u0627)([\u0621-\u064A])(?![ْ])(.*)/g, "$1َا$2$3");
 
             // (MUZARİ KURALLARI MAZİDEN ÖNCEYE ALINDI!)
             
@@ -4486,13 +4513,15 @@ const SarfEngine = {
             // ==========================================
             
             // MUZARİ HAREKELİ (MAZİDEN ÖNCE ÇALIŞIR, BÖYLECE YANLIŞLIKLA "يَبَاعُ" OLMAZ!)
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
-            
-            // Yanlış Bab eşleşmeleri için tablo görünüm düzeltici
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
+            if (!skipIfalEcvef) {
+                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وُ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
+                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يِ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
+                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?[وي]َ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
+                
+                // Yanlış Bab eşleşmeleri için tablo görünüm düzeltici
+                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
+                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
+            }
 
             // MAZİ HAREKELİ (Artık Muzari formları güvende olduğu için Mazi kuralları rahatça çalışabilir)
             res = res.replace(/([\u0621-\u064A])َ[وي][َِ]([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // عَوَدَ -> عَادَ
@@ -5095,10 +5124,11 @@ function updateMainKeyboardPredictions() {
                     // Sözlükte en fazla 3 kelimeye kadar olan özel tamlamaları göster (uzun örnek cümleleri filtrele)
                     if (strippedAr.trim().split(/\s+/).length > 3) continue;
 
-                    // Çoğullar ve fiil çekimleri liste taramasında (arama boşken) gizlenir. Çoğullar her zaman gizlenir, tekilden açılır.
-                    if (kalipData.isHiddenInList) {
-                        continue;
-                    }
+                    // Kullanıcının İsteği: "Çoğullar ve fiil çekimleri liste taramasında gizlenir" kuralı iptal edildi. 
+                    // Artık hiçbir kelime gizlenmeyecek.
+                    // if (kalipData.isHiddenInList) {
+                    //     continue;
+                    // }
 
                     // Kullanıcı İsteği: Anlamı girilmiş (trText) tüm kelimeler sözlükte gösterilsin.
                     // Herhangi bir filtreleme yapmıyoruz.
@@ -6718,8 +6748,14 @@ function buildMarathonDataForBab(maziRef) {
     if (maziRef === 1) {
         muzariRef = 2; emirRef = 3;
         if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[rootSafe]) {
-            if (sozlukVerileri[rootSafe][4]) { muzariRef = 4; emirRef = 5; }
-            else if (sozlukVerileri[rootSafe][6]) { muzariRef = 6; emirRef = 7; }
+            if (sozlukVerileri[rootSafe][4]) { 
+                muzariRef = 4; emirRef = 5; babNo = 2;
+                if (typeof babVezinleri !== 'undefined' && babVezinleri[2]) { muKalip = babVezinleri[2].muzari; eKalip = babVezinleri[2].emir; }
+            }
+            else if (sozlukVerileri[rootSafe][6]) { 
+                muzariRef = 6; emirRef = 7; babNo = 3;
+                if (typeof babVezinleri !== 'undefined' && babVezinleri[3]) { muKalip = babVezinleri[3].muzari; eKalip = babVezinleri[3].emir; }
+            }
         }
     }
 
@@ -8606,7 +8642,7 @@ function openFastDictionaryMode() {
             </div>
         `;
         
-        if (refId < 50) mucerredItems.push({refId, html});
+        if (refId <= 51) mucerredItems.push({refId, html});
         else mezidItems.push({refId, html});
     });
     
