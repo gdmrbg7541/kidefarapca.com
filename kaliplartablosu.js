@@ -3026,6 +3026,10 @@ function applyPrefix(prefix) {
         }
     }
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+    
+    // YENİ: Ek eklendikten sonra + menüsünü otomatik kapatır
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
 }
 
 // ===============================================================
@@ -3235,6 +3239,10 @@ function applySuffix(rawSuffix) {
             currentBox.style.boxShadow = "";
         }, 1500);
     }
+    
+    // YENİ: Ek eklendikten sonra + menüsünü otomatik kapatır
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
 }
 
 // ===============================================================
@@ -3412,6 +3420,10 @@ function applySuffix(suffix) {
     }
     
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+    
+    // YENİ: Ek eklendikten sonra + menüsünü otomatik kapatır
+    const menu = document.getElementById("suffix-dropdown");
+    if (menu) menu.style.display = "none";
 }
 
 const originalResetTableOnly = window.resetTableOnly;
