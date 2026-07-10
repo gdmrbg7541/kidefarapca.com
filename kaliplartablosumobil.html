@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kalıplar Tablosu</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+      
+      // MASAÜSTÜ YÖNLENDİRMESİ
+      // Eğer ekran genişliği 1024'ten büyükse ve cihaz mobil değilse masaüstü versiyona yönlendir
+      if (window.innerWidth > 1024 && !/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          window.location.replace("kaliplartablosu.html" + window.location.search + window.location.hash);
+      }
+    </script>
+    
+    <!-- Base CSS (Mobile) -->
+    <link rel="stylesheet" href="kaliplartablosumobil.css?v=1783635000">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+
+
+<div id="verb-overlay" class="verb-overlay">
+    <div class="new-verb-layout">
+        
+
+
+        <div id="thematic-words-content" class="thematic-words-content hidden" style=" width: 100%; flex: 1; overflow-y: auto; padding-right: 15px; padding-bottom: 50px; position: relative;">
+            <div dir="ltr" style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px; position: sticky; top: 0; z-index: 10;">
+                <div class="verb-close-btn" onclick="closeVerbModal()">✕</div>
+            </div>
+            <div id="thematic-accordion-container" dir="rtl"></div>
+        </div>
+
+        <div id="roots-main-content" class="roots-main-content hidden" style="position: relative;">
+            <div class="important-roots-wrapper">
+                <div id="important-roots-list" class="flat-root-list" dir="rtl">
+                    </div>
+            </div>
+
+            <div class="letters-grid-wrapper">
+                <div id="letters-grid-container" class="letters-grid" dir="rtl">
+                    </div>
+            </div>
+
+            <!-- MOBILE ROOTS VIEW -->
+            <div id="mobile-roots-list" style="display: none; height: 100%; width: 100%; position: absolute; top: 0; left: 0;"></div>
+        </div>
+
+        <div id="slide-menu-backdrop" class="slide-backdrop" onclick="closeSlideMenu()"></div>
+
+        <div id="slide-up-menu" class="slide-up-menu">
+            <div class="slide-header">
+                <h3 id="slide-title">Başlık</h3>
+                <button onclick="closeSlideMenu()" class="slide-close">✕</button>
+            </div>
+            <div id="slide-content" class="flat-root-list slide-content" dir="rtl"></div>
+        </div>
+
+    </div>
+</div>
+
+<div id="conjugation-overlay" class="conjugation-overlay">
+    <div class="conjugation-container">
+        <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px; z-index: 10;">✕</div>
+        <h3 id="conjugation-title" style="text-align: center; margin-top: 10px; font-family: 'Arakom' !important; font-weight: normal !important;">Fiil Çekim Tablosu</h3>
+        <div id="conjugation-content"></div>
+    </div>
+</div>
+
+<div id="keyboard-overlay" class="keyboard-overlay">
+    <div class="keyboard-container" dir="rtl" style="width: 100%;">
+        
+        
+        <div id="predictions-dashboard" style="display: flex; flex-direction: row; gap: 5px; width: calc(100% - 10px); max-width: none; margin: 10px auto 5px auto; align-items: stretch; flex-grow: 0; height: 51vh; min-height: 250px;" dir="rtl">
+            
+            <!-- Sağ Taraf (RTL'de ilk eleman sağa yaslanır): Sözlük -->
+            <div style="box-sizing: border-box; width: calc(65% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: bold; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><i class="fas fa-book-open" style="margin-left: 8px;"></i> Sözlük</h3>
+                <div id="dictionary-results" class="dictionary-results" dir="rtl" style="display:block; flex: 1; min-height: 0; overflow-y: auto; color: #000; padding: 15px 10px 20px 10px; text-align: center; overflow-x: hidden;"></div>
+            </div>
+
+            <!-- Sol Taraf (RTL'de ikinci eleman sola yaslanır): Kökler -->
+            <div style="box-sizing: border-box; width: calc(35% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><i class="fas fa-sitemap" style="margin-left: 10px;"></i> Vezinlere Bak</h3>
+                <div id="root-predictions-box" class="root-predictions" dir="rtl" style="display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 10px; flex: 1; min-height: 0; overflow-y: auto; padding: 15px 10px 20px 10px; box-sizing: border-box;"></div>
+            </div>
+
+        </div>
+        
+        <div class="keyboard-bottom-area" style="display: flex; flex-direction: column; align-items: center;">
+            <div id="temp-root-display" style="margin-bottom: 10px; min-height: 60px; display: flex; align-items: center; justify-content: center;"></div>
+            <input type="text" id="mobile-native-search" class="mobile-native-search" placeholder="Arapça kök veya kelime ara..." dir="rtl" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="display: none; width: 90%; max-width: 400px; height: 50px; border-radius: 12px; border: 2px solid #bdc3c7; font-size: 1.5rem; padding: 0 15px; text-align: center; font-family: 'Arakom', sans-serif; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); outline: none;">
+            <div id="main-keyboard-inner" class="keyboard-inner"></div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<div class="top-bar">
+    <div id="root-display-box" onclick="openRootsModal()" style="cursor: pointer;">
+        <div style="width: 100%; display: flex; gap: 15px; justify-content: space-evenly; align-items: center;">
+            <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
+            <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
+            <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
+            <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Hazır Fiiller"></i>
+            <span id="root-text-display"><i class="fas fa-sitemap root-icon sitemap-wave-hint" onclick="event.stopPropagation(); openRootsModal()" title="Kökler Listesi"></i></span>
+        </div>
+    </div>  
+
+    <div id="tabSwitch" class="segmented-switch mucerred-active">
+        <div class="switch-slider"></div>
+        
+        <button class="switch-btn mucerred-btn" onclick="setTab(0)" style="position: relative; display: inline-flex; align-items: center; justify-content: center; text-decoration: none !important;">
+            <span style="text-decoration: none; font-weight: 700;">SÜLASİ MÜCERRED</span>
+            <span style="position: absolute; right: 15px; background: rgba(128, 128, 128, 0.2); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; border: 1px solid rgba(128, 128, 128, 0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); letter-spacing: 0.5px;">3</span>
+        </button>
+        
+        <button class="switch-btn mezid-btn" onclick="setTab(1)" style="position: relative; display: inline-flex; align-items: center; justify-content: center; text-decoration: none !important;">
+            <span style="text-decoration: none; font-weight: 700;">SÜLASİ MEZİD</span>
+            <span style="position: absolute; right: 15px; background: rgba(128, 128, 128, 0.2); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; border: 1px solid rgba(128, 128, 128, 0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); letter-spacing: 0.5px; direction: ltr;">3+</span>
+        </button>
+    </div>
+
+    <div class="zoom-toggle-area">
+        <span class="zoom-toggle-label">BÜYÜTME</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="zoomToggleCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+
+    
+    <div class="back-btn-area">
+        <a href="https://kidefarapca.com" class="back-link" title="kidefarapca.com'a Dön">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+    </div>
+</div>
+
+<!-- Mobile Home Screen -->
+<div class="mobile-home-screen">
+    <div class="mobile-header">
+        <a href="https://kidefarapca.com" class="mobile-back-btn">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+    </div>
+    <div class="mobile-grid-container">
+        <!-- Kök Listesi -->
+        <div class="mobile-grid-item" onclick="openRootsModal()">
+            <i class="fas fa-sitemap"></i>
+            <span>Kökler</span>
+        </div>
+        <!-- Kelime Listesi -->
+        <div class="mobile-grid-item" onclick="openVerbModal()">
+            <i class="fas fa-list-ul"></i>
+            <span>Kelimeler</span>
+        </div>
+        <!-- Telaffuz -->
+        <div class="mobile-grid-item" onclick="if(typeof openTelaffuz === 'function') openTelaffuz(); else alert('Telaffuz özelliği yakında eklenecektir!');">
+            <i class="fas fa-stopwatch"></i>
+            <span>Telaffuz</span>
+        </div>
+        <!-- Kitap (Dilbilgisi) -->
+        <div class="mobile-grid-item" onclick="document.getElementById('mobile-grammar-menu-overlay').style.display='flex'">
+            <i class="fas fa-book"></i>
+            <span>Dilbilgisi</span>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Grammar Menu Overlay -->
+<div id="mobile-grammar-menu-overlay" class="mobile-grammar-overlay" style="display: none;">
+    <div class="mobile-grammar-content">
+        <div class="mobile-grammar-header" style="justify-content: flex-end;">
+            <button onclick="document.getElementById('mobile-grammar-menu-overlay').style.display='none'" class="slide-close">✕</button>
+        </div>
+        <div class="mobile-grammar-list" dir="rtl">
+            <button onclick="openGrammarOverlay('mazi')">Mazi Çekimi (ماضي)</button>
+            <button onclick="openGrammarOverlay('muzari')">Muzari Çekimi (مضارع)</button>
+            <button onclick="openGrammarOverlay('emir')">Emir Çekimi (أمر)</button>
+            <button onclick="openGrammarOverlay('mastar')">Mastar & S. Müşebbehe</button>
+            <button onclick="openGrammarOverlay('ismi_fail')">İsmi Fail</button>
+            <button onclick="openGrammarOverlay('zaman_mekan')">Zaman / Mekan</button>
+            <button onclick="openGrammarOverlay('ismi_meful')">İsmi Meful</button>
+            <button onclick="openGrammarOverlay('ismi_alet')">İsmi Alet</button>
+            <button onclick="openGrammarOverlay('cemi_teksir')">Cemi Teksir (Çoğullar)</button>
+            <button onclick="openGrammarOverlay('ismi_tasgir')">İsmi Tasğir (Küçültme)</button>
+            <button onclick="openGrammarOverlay('ismi_tafdil')">İsmi Tafdil (Kıyas)</button>
+        </div>
+    </div>
+</div>
+
+<div id="suffix-dropdown" style="display: none; position: absolute; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05); z-index: 2000; padding: 20px; direction: rtl; box-sizing: border-box; width: max-content; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; transform: translateZ(0);">
+    
+    <div style="display: flex; flex-direction: row; gap: 24px; align-items: stretch;">
+        
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 90px;">
+            <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 3px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;">ÖN EKLER</div>
+            
+            <button class="suffix-btn" onclick="applyPrefix('ال')"><span style="color: #2B88D9;">الـ ـ ـ</span></button>
+            <button class="suffix-btn" onclick="applyPrefix('وَ')"><span style="color: #34C759;">وَ <span style="color: #2B88D9;">ـ ـ</span></span></button>
+            <button class="suffix-btn" onclick="applyPrefix('لِ')"><span style="color: #34C759;">لِـ <span style="color: #2B88D9;">ـ ـ</span></span></button>
+            <button class="suffix-btn" onclick="applyPrefix('فَ')"><span style="color: #34C759;">فَـ <span style="color: #2B88D9;">ـ ـ</span></span></button>
+            <button class="suffix-btn" onclick="applyPrefix('كَ')"><span style="color: #2B88D9;">كَـ <span style="color: #2B88D9;">ـ ـ</span></span></button>
+            <button class="suffix-btn" onclick="applyPrefix('بِ')"><span style="color: #2B88D9;">بِـ <span style="color: #2B88D9;">ـ ـ</span></span></button>
+        </div>
+
+        <div style="width: 1px; background: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.1) 80%, rgba(0,0,0,0.0)); border-radius: 1px;"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px; min-width: 200px;">
+            <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 4px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;">SON EKLER</div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="suffix-btn" onclick="applySuffix('ا')"><span style="color: #2B88D9;">ـ ـ ـًا</span></button>
+                <button class="suffix-btn" onclick="applySuffix('ة')"><span style="color: #2B88D9;">ـ ـ ـة/ة</span></button>
+                <button class="suffix-btn" onclick="applySuffix('يّ')"><span style="color: #2B88D9;">ـ ـ ـيّ</span></button>
+                <button class="suffix-btn" onclick="applySuffix('يّة')"><span style="color: #2B88D9;">ـ ـ ـيّة</span></button>
+                
+                <div style="grid-column: span 2; height: 2px; background: #FF3B30; margin: 4px 0; border-radius: 1px;"></div>
+
+                <button class="suffix-btn" onclick="applySuffix('انِ')"><span style="color: #2B88D9;">ـ ـ ـانِ</span></button>
+                <button class="suffix-btn" onclick="applySuffix('يْنِ')"><span style="color: #2B88D9;">ـ ـ ـيْـنِ</span></button>
+                
+                <div style="grid-column: span 2; height: 2px; background: #FF3B30; margin: 4px 0; border-radius: 1px;"></div>
+
+                <button class="suffix-btn" onclick="applySuffix('ونَ')"><span style="color: #2B88D9;">ـ ـ ـونَ</span></button>
+                <button class="suffix-btn" onclick="applySuffix('ينَ')"><span style="color: #2B88D9;">ـ ـ ـيـنَ</span></button>
+                <button class="suffix-btn" onclick="applySuffix('ات')"><span style="color: #2B88D9;">ـ ـ ـات</span></button>
+                <button class="suffix-btn" onclick="applySuffix('يَّات')"><span style="color: #2B88D9;"> ـ ـ ـيَّات </span></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="window-pencere">
+    <div id="mainSliderBandi" class="slider-bandi">
+        
+        <div id="tab1" class="tab-content">
+            <div class="container">
+                <table>
+                   <thead>
+        <tr>
+            <th class="baslik-notr">BABLAR</th>
+            <th class="baslik-fiil th-3d-btn" style="width: 14%;" onclick="openGrammarOverlay('mazi')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">MAZİ<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-fiil th-3d-btn" style="width: 14%;" onclick="openGrammarOverlay('muzari')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">MUZARİ<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-fiil th-3d-btn" style="width: 14%;" onclick="openGrammarOverlay('emir')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">EMİR<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-isim th-3d-btn" style="width: 28%;" onclick="openGrammarOverlay('mastar')"><span style="display:inline-flex; align-items:center; justify-content:center; gap:4px; text-align: center; line-height: 1.2;">MASTAR & S.MÜŞEBBEHE<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-isim th-3d-btn" style="width: 14%;" onclick="openGrammarOverlay('ismi_fail')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">İSMİ FAİL<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-isim th-3d-btn" style="width: 14%;" onclick="openGrammarOverlay('zaman_mekan')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">ZAMAN MEKAN<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+        </tr>
+    </thead>
+                    <tbody>
+                        <tr>
+                            <tbody>
+                        <tr>
+                            <td align="center">Birinci Bab</td>
+                            <td rowspan="3" valign="middle" style="border-bottom: none; position: relative; padding-bottom: 20px;">
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; height: 100%;">
+                                    <div class="glass-box fiil-box is-verb" data-type="mazi" data-original="فَعَلَ"><span class="ref">1</span><span class="ar">فَعَلَ</span></div>
+                                    <!-- Kök Levhasının Çıkacağı Dinamik Konteyner -->
+                                    <div id="table-root-container" style="width: 180px; height: 90px; position: absolute; top: 280px; left: -120px; z-index: 50;"></div>
+                                </div>
+                            </td>
+                            <td style="border-bottom: none;"><div class="glass-box fiil-box is-verb" data-type="muzari" data-original="يَفْعُلُ"><span class="ref">2</span><span class="ar">يَفْعُلُ</span></div></td>
+                            <td style="border-bottom: none;"><div class="glass-box fiil-box is-verb" data-type="emir" data-original="أُفْعُلْ"><span class="ref">3</span><span class="ar">أُفْعُلْ</span></div></td>
+                            
+                            <td rowspan="6" valign="top">
+                                <div class="mastar-grid">
+                                    <div class="glass-box" data-original="فَعَل"><span class="ref">17</span><span class="ar-small">فَعَل</span></div>
+                                    <div class="glass-box" data-original="فَعِل"><span class="ref">18</span><span class="ar-small">فَعِل</span></div>
+                                    <div class="glass-box" data-original="فَعْل"><span class="ref">19</span><span class="ar-small">فَعْل</span></div>
+                                    <div class="glass-box" data-original="فِعْل"><span class="ref">20</span><span class="ar-small">فِعْل</span></div>
+                                    <div class="glass-box" data-original="فُعْل"><span class="ref">21</span><span class="ar-small">فُعْل</span></div>
+                                    <div class="glass-box" data-original="فَعَال"><span class="ref">22</span><span class="ar-small">فَعَال</span></div>
+                                    <div class="glass-box" data-original="فِعَال"><span class="ref">23</span><span class="ar-small">فِعَال</span></div>
+                                    <div class="glass-box" data-original="فُعَال"><span class="ref">24</span><span class="ar-small">فُعَال</span></div>
+                                    <div class="glass-box" data-original="فُعُول"><span class="ref">25</span><span class="ar-small">فُعُول</span></div>
+                                    <div class="glass-box" data-original="فَعُول"><span class="ref">26</span><span class="ar-small">فَعُول</span></div>
+                                    <div class="glass-box" data-original="فُعْلَان"><span class="ref">27</span><span class="ar-small">فُعْلَان</span></div>
+                                    <div class="glass-box" data-original="فَعْلَان"><span class="ref">28</span><span class="ar-small">فَعْلَان</span></div>
+                                    <div class="glass-box" data-original="فِعْلَان"><span class="ref">29</span><span class="ar-small">فِعْلَان</span></div>
+                                    <div class="glass-box" data-original="أَفْعَل"><span class="ref">30</span><span class="ar-small">أَفْعَل</span></div>
+                                    <div class="glass-box" data-original="فَعْلَاء"><span class="ref">31</span><span class="ar-small">فَعْلَاء</span></div>
+                                    <div class="glass-box" data-original="فَعْلَى"><span class="ref">32</span><span class="ar-small">فَعْلَى</span></div>
+                                </div>
+                            </td>
+                            <td rowspan="3" valign="middle" style="border-bottom: none;">
+                                <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; padding: 10px 0;">
+                                    <div class="glass-box" data-original="فَاعِل"><span class="ref">33</span><span class="ar">فَاعِل</span></div>
+                                    <div class="glass-box" data-original="فَعَّال"><span class="ref">34</span><span class="ar">فَعَّال</span></div>
+                                    <div class="glass-box" data-original="فَعِيل"><span class="ref">35</span><span class="ar">فَعِيل</span></div>
+                                </div>
+                            </td>
+                            <td rowspan="3" valign="middle" style="border-bottom: none;">
+                                <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; padding: 10px 0;">
+                                    <div class="glass-box" data-original="مَفْعِل"><span class="ref">37</span><span class="ar">مَفْعِل</span></div>
+                                    <div class="glass-box" data-original="مَفْعَل"><span class="ref">38</span><span class="ar">مَفْعَل</span></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">İkinci Bab</td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعِلُ"><span class="ref">4</span><span class="ar">يَفْعِلُ</span></div></td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعِلْ"><span class="ref">5</span><span class="ar">اِفْعِلْ</span></div></td>
+                        </tr>
+                        <tr>
+                            <td align="center">Üçüncü Bab</td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعَلُ"><span class="ref">6</span><span class="ar">يَفْعَلُ</span></div></td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعَلْ"><span class="ref">7</span><span class="ar">اِفْعَلْ</span></div></td>
+                        </tr>
+                        <tr>
+                            <td align="center">Dördüncü Bab</td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="mazi" data-original="فَعِلَ"><span class="ref">8</span><span class="ar">فَعِلَ</span></div></td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعَلُ"><span class="ref">9</span><span class="ar">يَفْعَلُ</span></div></td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعَلْ"><span class="ref">10</span><span class="ar">اِفْعَلْ</span></div></td>
+                            <td rowspan="3" valign="middle" style="border-top: none;">
+                                <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; padding: 10px 0;">
+                                    <div class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_meful')" style="font-size: 15px; font-weight: normal; padding: 6px 5px; border: 2px solid #ffffff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; color: white; width: 100%; box-sizing: border-box; margin: 8px 0;">İSMİ MEF'UL <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; opacity: 0.9;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
+                                    <div class="glass-box" data-original="مَفْعُول"><span class="ref">36</span><span class="ar">مَفْعُول</span></div>
+                                </div>
+                            </td>
+                            <td rowspan="3" valign="middle" style="border-top: none;">
+                                <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; padding: 10px 0;">
+                                    <div class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_alet')" style="font-size: 15px; font-weight: normal; padding: 6px 5px; border: 2px solid #ffffff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; color: white; width: 100%; box-sizing: border-box; margin: 8px 0;">İSMİ ALET <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; opacity: 0.9;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
+                                    <div class="glass-box" data-original="مِفْعَل"><span class="ref">39</span><span class="ar">مِفْعَل</span></div>
+                                    <div class="glass-box" data-original="مِفْعَال"><span class="ref">40</span><span class="ar">مِفْعَال</span></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">Beşinci Bab</td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="mazi" data-original="فَعُلَ"><span class="ref">11</span><span class="ar">فَعُلَ</span></div></td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعُلُ"><span class="ref">12</span><span class="ar">يَفْعُلُ</span></div></td>
+                            <td style="border-top: none; border-bottom: none;"><div class="glass-box fiil-box" data-type="emir" data-original="أُفْعُلْ"><span class="ref">13</span><span class="ar">أُفْعُلْ</span></div></td>
+                        </tr>
+                        <tr>
+                            <td align="center">Altıncı Bab</td>
+                            <td style="border-top: none;"><div class="glass-box fiil-box" data-type="mazi" data-original="فَعِلَ"><span class="ref">14</span><span class="ar">فَعِلَ</span></div></td>
+                            <td style="border-top: none;"><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعِلُ"><span class="ref">15</span><span class="ar">يَفْعِلُ</span></div></td>
+                            <td style="border-top: none;"><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعِلْ"><span class="ref">16</span><span class="ar">اِفْعِلْ</span></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="footer-container">
+    <div class="footer-block cemi-area">
+        <div class="block-title th-3d-btn" onclick="openGrammarOverlay('cemi_teksir')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">CEMİ TEKSİR<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></div>
+        <div class="cemi-grid">
+            <div class="glass-box" data-original="أَفْعَال"><span class="ref">41</span><span class="ar">أَفْعَال</span></div>
+            <div class="glass-box" data-original="فُعُل"><span class="ref">42</span><span class="ar">فُعُل</span></div>
+            <div class="glass-box" data-original="فُعُول"><span class="ref">43</span><span class="ar">فُعُول</span></div>
+            <div class="glass-box" data-original="فِعَال"><span class="ref">44</span><span class="ar">فِعَال</span></div>
+            <div class="glass-box" data-original="فُعَّال"><span class="ref">45</span><span class="ar">فُعَّال</span></div>
+            <div class="glass-box" data-original="فُعَلَاء"><span class="ref">46</span><span class="ar">فُعَلَاء</span></div>
+            <div class="glass-box" data-original="فَعَلَة"><span class="ref">47</span><span class="ar">فَعَلَة</span></div>
+            <div class="glass-box" data-original="فَعَائِل"><span class="ref">48</span><span class="ar">فَعَائِل</span></div>
+        </div>
+    </div><div class="footer-block tasgir-area">
+    <div class="block-title th-3d-btn" onclick="openGrammarOverlay('ismi_tasgir')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">İSMİ TASĞİR<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></div>
+    <div style="display: flex; justify-content: center; align-items: center; height: calc(100% - 35px);">
+        <div class="glass-box" data-original="فُعَيْل"><span class="ref">49</span><span class="ar">فُعَيْل</span></div>
+    </div>
+</div>
+                   <div class="footer-block tafdil-area">
+    <div class="block-title th-3d-btn" onclick="openGrammarOverlay('ismi_tafdil')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">İSMİ TAFDİL<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></div>
+    <div style="display: flex; flex-direction: column; gap: 0px; align-items: center;">
+        <div class="glass-box" data-original="أَفْعَل"><span class="ref">50</span><span class="ar">أَفْعَل</span></div>
+        <div class="glass-box" data-original="فُعْلَى"><span class="ref">51</span><span class="ar">فُعْلَى</span></div>
+    </div>
+</div>
+
+                    </div>
+                </div>
+            
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <div class="container">
+                <table>
+                    <thead>
+        <tr>
+            <th class="baslik-notr"><span style="background: #e2e8f0; color: #475569; padding: 4px 15px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"><bdi>3+</bdi></span></th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('mazi_mezid')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">MAZİ<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('muzari_mezid')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">MUZARİ<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-fiil th-3d-btn" onclick="openGrammarOverlay('emir_mezid')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">EMİR<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('mastar_mezid')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">MASTAR<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_fail_mezid')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">İSMİ FAİL<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+            <th class="baslik-isim th-3d-btn" onclick="openGrammarOverlay('ismi_meful_mezid')"><span style="display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; gap:4px;">İSMİ MEF'UL<svg class="header-info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-left: 6px; opacity: 0.9; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span></th>
+        </tr>
+    </thead>
+                   <tbody>
+    <tr>
+        <td align="center">İf'al</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="أَفْعَلَ"><span class="ref">52</span><span class="ar">أَفْعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يُفْعِلُ"><span class="ref">53</span><span class="ar">يُفْعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="أَفْعِلْ"><span class="ref">54</span><span class="ar">أَفْعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="إِفْعَال"><span class="ref">55</span><span class="ar">إِفْعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُفْعِل"><span class="ref">56</span><span class="ar">مُفْعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُفْعَل"><span class="ref">57</span><span class="ar">مُفْعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Tef'il</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَعَّلَ"><span class="ref">58</span><span class="ar">فَعَّلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يُفَعِّلُ"><span class="ref">59</span><span class="ar">يُفَعِّلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="فَعِّلْ"><span class="ref">60</span><span class="ar">فَعِّلْ</span></div></td>
+        <td><div class="glass-box" data-original="تَفْعِيل"><span class="ref">61</span><span class="ar">تَفْعِيل</span></div></td>
+        <td><div class="glass-box" data-original="مُفَعِّل"><span class="ref">62</span><span class="ar">مُفَعِّل</span></div></td>
+        <td><div class="glass-box" data-original="مُفَعَّل"><span class="ref">63</span><span class="ar">مُفَعَّل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Müfa'ale</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="فَاعَلَ"><span class="ref">64</span><span class="ar">فَاعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يُفَاعِلُ"><span class="ref">65</span><span class="ar">يُفَاعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="فَاعِلْ"><span class="ref">66</span><span class="ar">فَاعِلْ</span></div></td>
+        <td>
+            <div style="display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center;">
+                <div class="glass-box" style="width:45%; min-width:70px;" data-original="مُفَاعَلَة"><span class="ref">67</span><span class="ar">مُفَاعَلَة</span></div>
+                <div class="glass-box" style="width:45%; min-width:70px;" data-original="فِعَال"><span class="ref">68</span><span class="ar">فِعَال</span></div>
+            </div>
+        </td>
+        <td><div class="glass-box" data-original="مُفَاعِل"><span class="ref">69</span><span class="ar">مُفَاعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُفَاعَل"><span class="ref">70</span><span class="ar">مُفَاعَل</span></div></td>
+    </tr>
+    <tr style="height: 4px; background-color: #D0D0D0;">
+        <td colspan="7" style="padding: 0; border: none !important; background-color: #D0D0D0 !important; height: 4px;"></td>
+    </tr>
+    <tr>
+        <td align="center">İnfi'al</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِنْفَعَلَ"><span class="ref">71</span><span class="ar">اِنْفَعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَنْفَعِلُ"><span class="ref">72</span><span class="ar">يَنْفَعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="اِنْفَعِلْ"><span class="ref">73</span><span class="ar">اِنْفَعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="اِنْفِعَال"><span class="ref">74</span><span class="ar">اِنْفِعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُنْفَعِل"><span class="ref">75</span><span class="ar">مُنْفَعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُنْفَعَل"><span class="ref">76</span><span class="ar">مُنْفَعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İfti'al</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِفْتَعَلَ"><span class="ref">77</span><span class="ar">اِفْتَعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْتَعِلُ"><span class="ref">78</span><span class="ar">يَفْتَعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="اِفْتَعِلْ"><span class="ref">79</span><span class="ar">اِفْتَعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="اِفْتِعَال"><span class="ref">80</span><span class="ar">اِفْتِعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُفْتَعِل"><span class="ref">81</span><span class="ar">مُفْتَعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُفْتَعَل"><span class="ref">82</span><span class="ar">مُفْتَعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İf'ilal</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِفْعَلَّ"><span class="ref">83</span><span class="ar">اِفْعَلَّ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَفْعَلُّ"><span class="ref">84</span><span class="ar">يَفْعَلُّ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="اِفْعَلِلْ"><span class="ref">85</span><span class="ar">اِفْعَلِلْ</span></div></td>
+        <td><div class="glass-box" data-original="اِفْعِلَال"><span class="ref">86</span><span class="ar">اِفْعِلَال</span></div></td>
+        <td><div class="glass-box" data-original="مُفْعَلّ"><span class="ref">87</span><span class="ar">مُفْعَلّ</span></div></td>
+        <td><div class="glass-box" data-original="-"><span class="ref">x</span><span class="ar">-</span></div></td>
+    </tr>
+    <tr style="height: 4px; background-color: #D0D0D0;">
+        <td colspan="7" style="padding: 0; border: none !important; background-color: #D0D0D0 !important; height: 4px;"></td>
+    </tr>
+    <tr>
+        <td align="center">Tefe'ul</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="تَفَعَّلَ"><span class="ref">88</span><span class="ar">تَفَعَّلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَتَفَعَّلُ"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="تَفَعَّلْ"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
+        <td><div class="glass-box" data-original="تَفَعُّل"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَعِّل"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَعَّل"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">Tefa'ul</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="تَفَاعَلَ"><span class="ref">94</span><span class="ar">تَفَاعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَتَفَاعَلُ"><span class="ref">95</span><span class="ar">يَتَفَاعَلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="تَفَاعَلْ"><span class="ref">96</span><span class="ar">تَفَاعَلْ</span></div></td>
+        <td><div class="glass-box" data-original="تَفَاعُل"><span class="ref">97</span><span class="ar">تَفَاعُل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَاعِل"><span class="ref">98</span><span class="ar">مُتَفَاعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُتَفَاعَل"><span class="ref">99</span><span class="ar">مُتَفَاعَل</span></div></td>
+    </tr>
+    <tr>
+        <td align="center">İstif'al</td>
+        <td><div class="glass-box fiil-box" data-type="mazi" data-original="اِسْتَفْعَلَ"><span class="ref">100</span><span class="ar">اِسْتَفْعَلَ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="muzari" data-original="يَسْتَفْعِلُ"><span class="ref">101</span><span class="ar">يَسْتَفْعِلُ</span></div></td>
+        <td><div class="glass-box fiil-box" data-type="emir" data-original="اِسْتَفْعِلْ"><span class="ref">102</span><span class="ar">اِسْتَفْعِلْ</span></div></td>
+        <td><div class="glass-box" data-original="اِسْتِفْعَال"><span class="ref">103</span><span class="ar">اِسْتِفْعَال</span></div></td>
+        <td><div class="glass-box" data-original="مُسْتَفْعِل"><span class="ref">104</span><span class="ar">مُسْتَفْعِل</span></div></td>
+        <td><div class="glass-box" data-original="مُسْتَفْعَل"><span class="ref">105</span><span class="ar">مُسْتَفْعَل</span></div></td>
+    </tr>
+</tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="veri_kokler.js?v=1783311124"></script>
+<script src="veri_sozluk.js?v=1783311124"></script>
+<script src="veri_gramer.js"></script>
+<script src="kaliplartablosumobil.js?v=1783698254"></script>
+<div id="marathon-overlay" class="marathon-overlay">
+    <div id="game-wrapper">
+                        <div id="top-bar-panel">
+            <div class="header-item"><button class="back-nav" onclick="goBackFromMarathon()">❮ GERİ</button></div>
+            <div class="header-item" id="atlas-selector-container" style="display:none; margin:0 15px;">
+                <select id="atlas-verb-selector" onchange="handleAtlasVerbChange()" style="font-family: 'Arakom', sans-serif; padding: 5px 10px; font-size: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0; outline: none; cursor: pointer; text-align: center; text-align-last: center; font-weight: normal; color: #2563eb; background: white;">
+                    <option value="كتب">كتب ✍️</option>
+                    <option value="دخل">دخل 🚪</option>
+                    <option value="خرج">خرج 🏃‍♂️</option>
+                    <option value="جلس">جلس 🪑</option>
+                    <option value="فتح">فتح 🔓</option>
+                    <option value="استيقظ">استيقظ ⏰</option>
+                    <option value="توضأ">توضأ 💧</option>
+                    <option value="صلى">صلى 🧎</option>
+                    <option value="تناول">تناول 🍽️</option>
+                    <option value="لبس">لبس 👕</option>
+                    <option value="ذهب">ذهب 🚶</option>
+                    <option value="رجع">رجع ↩️</option>
+                    <option value="ساعد">ساعد 🤝</option>
+                    <option value="درس">درس 📚</option>
+                    <option value="nam">نام 🛏️</option>
+                    <option value="نظف">نظف 🧹</option>
+                    <option value="شرب">شرب 🥛</option>
+                    <option value="أكل">أكل 🍏</option>
+                    <option value="أراد">أراد 🎯</option>
+                    <option value="سافر">سافر ✈️</option>
+                    <option value="غسل">غسل 🧼</option>
+                </select>
+            </div>
+            <div class="header-item"><div id="stage-label" class="stage-badge ui-hidden">MAZİ</div></div>
+            <div class="header-item"><button id="chrono-main" class="chrono-btn" style="display:none;" onclick="handleMarathonChronoClick()">⏱️</button></div>
+            <div class="header-item"><button id="pause-btn" class="pause-circle ui-hidden" onclick="toggleMarathonPause()">||</button></div>
+            <div class="header-item"><div class="timer-val ui-hidden" id="timer-display">0.00</div></div>
+            <div class="header-item"><div class="score-val ui-hidden" id="live-total-score">100</div></div>
+        </div>
+        <div class="main-content" style="flex:1; display:flex; position:relative; overflow:hidden;">
+
+            <div id="marathon-selection-area" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f1f2f6; z-index: 200; display: none; align-items: center; justify-content: flex-start; flex-direction: column; padding: 50px 20px; overflow-y: auto; box-sizing: border-box;">
+                
+                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 201; transition: 0.2s;">✕</button>
+
+                <h2 style="color: #6c5ce7; font-size: 2.5rem; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 25px;">Hangi fiili çalışmak istersiniz?</h2>
+                
+                <div id="marathon-verb-buttons" style="display: flex; flex-direction: column; gap: 20px; justify-content: center; align-items: center; width: 100%; max-width: 600px;">
+                    </div>
+            </div>
+
+            <button id="prev-arr" class="nav-arrow" style="left:15px; display: flex; align-items: center; justify-content: center;" onclick="changeMarathonStage(1)">❮</button>
+
+<button id="next-arr" class="nav-arrow" style="right:15px; display: flex; align-items: center; justify-content: center;" onclick="changeMarathonStage(-1)">❯</button>
+            <div id="game-container" style="flex:1; display:flex; width: 100%;">
+                <div id="screen-play" class="marathon-screen active"><div id="table-view" class="verb-table"></div></div>
+                
+                <style>
+                .atlas-verb-btn {
+                    font-family: 'Arakom', sans-serif;
+                    font-size: 2.4rem;
+                    padding: 12px 15px;
+                    border-radius: 8px;
+                    border: 1px solid #e2e8f0;
+                    background: white;
+                    color: #475569;
+                    cursor: pointer;
+                    transition: 0.2s;
+                    text-align: right;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .atlas-verb-btn:hover {
+                    background: #f1f5f9;
+                    border-color: #cbd5e1;
+                }
+                .atlas-verb-btn.active {
+                    background: #e0f2fe;
+                    border-color: #3b82f6;
+                    color: #1d4ed8;
+                }
+                #atlas-verb-list::-webkit-scrollbar { width: 6px; }
+                #atlas-verb-list::-webkit-scrollbar-track { background: transparent; }
+                #atlas-verb-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+                
+                
+                .atlas-fullscreen, .atlas-fullscreen * {
+                    box-sizing: border-box !important;
+                }
+                
+                .atlas-fullscreen #atlas-right-sidebar {
+                    width: 350px !important;
+                    min-width: 350px !important;
+                }
+                .atlas-fullscreen .atlas-verb-btn span {
+                    font-size: 2.2rem !important;
+                }
+                .atlas-fullscreen #atlas-sidebar-title {
+                    font-size: 1.6rem !important;
+                }
+                .atlas-fullscreen {
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    max-width: 100vw !important;
+                    max-height: 100vh !important;
+                    z-index: 9999 !important;
+                    background: #fff !important;
+                    border-radius: 0 !important;
+                    margin: 0 !important;
+                    rootClone.style.setProperty('left', '50%', 'important');
+                rootClone.style.setProperty('transform', 'translate(-50%, -50%) scale(0.35)', 'important');
+                rootClone.style.setProperty('margin', '0', 'important');
+                rootClone.style.setProperty('animation', 'none', 'important'); // Animasyonun scale(1) ile kutuyu devasa yapmasını engeller
+                container.appendChild(rootClone);
+                }
+                
+</style>
+                <div id="screen-atlas" class="marathon-screen" style="display: none; flex-direction: row; width: 100%; height: 100%;">
+                    <!-- 3 Columns for Verbs -->
+                    <div style="flex: 3; padding: 20px; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; background: #fff; width: 100%;">
+                        <div id="atlas-explanation" style="width: 100%; max-width: 100%; margin-bottom: 20px; text-align: center; background: transparent; padding: 0; border: none;">
+                            <h3 id="atlas-title-tr" style="font-size: 2.5rem; color: #475569; margin: 0 0 5px 0; font-family: sans-serif;">Geçmiş Zaman</h3>
+                            <h2 id="atlas-title-ar" class="arabic" style="font-size: 5rem; color: #2563eb; margin: 0 0 15px 0;">الماضي</h2>
+                            <p id="atlas-desc" style="font-size: 1.8rem; color: #64748b; line-height: 1.6; font-family: sans-serif; margin: 0;">Mazi fiil, geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen zamirlerle (soneklerle) yapılır.</p>
+                        </div>
+                        <div id="atlas-table-view" class="verb-table" style="width: 100%; max-width: 100%;"></div>
+                        <div id="atlas-desc-bottom" style="width: 100%; margin-top: 20px;"></div>
+                    </div>
+                    <!-- Absolute Close Button -->
+                    <button id="atlas-fs-btn" onclick="toggleAtlasFullscreen()" style="position: absolute; top: 20px; right: 80px; background: #3b82f6; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;">✕</button>
+                    <!-- 1 Column for Sidebar -->
+                    <div id="atlas-right-sidebar" style="width: 280px; min-width: 280px; flex: none; background: #f8fafc; border-left: 2px solid #e2e8f0; display: flex; flex-direction: column; padding: 20px; box-shadow: -4px 0 10px rgba(0,0,0,0.02); padding-top: 60px;">
+                        <h3 id="atlas-sidebar-title" style="text-align: right; color: #64748b; font-family: sans-serif; font-size: 1.1rem; margin-bottom: 15px; font-weight: normal; padding-right: 5px;">Örnek Fiiller</h3>
+                        <div id="atlas-verb-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
+                            <button class="atlas-verb-btn active" onclick="changeAtlasVerb('كتب', this)"><span>✍️</span> <span>كتب</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('دخل', this)"><span>🚪</span> <span>دخل</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('خرج', this)"><span>🏃‍♂️</span> <span>خرج</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('جلس', this)"><span>🪑</span> <span>جلس</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('فتح', this)"><span>🔓</span> <span>فتح</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('لبس', this)"><span>👕</span> <span>لبس</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('ذهب', this)"><span>🚶</span> <span>ذهب</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('رجع', this)"><span>↩️</span> <span>رجع</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('درس', this)"><span>📚</span> <span>درس</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('nam', this)"><span>🛏️</span> <span>نام</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('شرب', this)"><span>🥛</span> <span>شرب</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('أكل', this)"><span>🍏</span> <span>أكل</span></button>
+                            <button class="atlas-verb-btn" onclick="changeAtlasVerb('غسل', this)"><span>🧼</span> <span>غسل</span></button>
+                        </div>
+                    </div>
+                </div>
+<div id="screen-result" class="marathon-screen" style="text-align:center; overflow-y:auto; padding: 40px; width: 100%;">
+                    <h1 style="color:#6c5ce7;">Okuma Testi Raporu</h1>
+                    <div style="font-size: 7rem; color: #2ecc71; font-weight: bold;" id="final-score">0</div>
+                    <div id="error-list"></div>
+                    <button class="back-nav" style="margin-top:40px; background:#6c5ce7; color:white;" onclick="closeMarathon()">TESTİ BİTİR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ========================================================= -->
+<!-- BAB BİLGİ (INFO) EKRANI (DEVASA KIRMIZI ÇARPILI TASARIM)  -->
+<!-- ========================================================= -->
+<div id="bab-info-overlay" class="bab-info-overlay" onclick="closeBabInfo(event)">
+    <div class="bab-info-content">
+        <button class="close-info-btn" onclick="closeBabInfo(event)">✕</button>
+        <h2 id="bab-info-title" class="bab-info-title">Bab Adı</h2>
+        <div id="bab-info-text" class="bab-info-text">Bilgiler buraya gelecek...</div>
+    </div>
+</div>
+<!-- HIZLI SÖZLÜK (FAST DICTIONARY MODE) -->
+<div id="fast-dictionary-overlay" style="display: none; position: fixed; top: 0; left: 0; transform: none; width: 100vw; max-width: none; height: 100vh; background: rgba(255, 255, 255, 0.35);  -webkit- border: none; border-radius: 0; box-shadow: none; z-index: 9999; flex-direction: column; overflow: hidden;">
+    <div style="position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; background: #fff; border: 2px solid #8b4513; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; color: #8b4513; z-index: 20;" onclick="closeFastDictionaryMode()">✕</div>
+    
+    <!-- Satır 1: Kök (Morphed Root Plate) -->
+    <div style="text-align: center; padding: 15px 0; border-bottom: none;">
+        <div id="fdm-root-container" style="display: flex; justify-content: center; align-items: center; min-height: 60px;"></div>
+    </div>
+    
+    <!-- Satır 2: Sekmeler (Tabs) -->
+    <div class="fdm-tabs-row" style="display: flex; flex-direction: row; width: 100%; background: transparent; padding: 0 15px;" dir="rtl">
+        <!-- Mücerred Sekmesi -->
+        <div onclick="triggerFDMTab('mucerred')" id="fdm-mucerred-tab" style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin: 10px 5px 0 5px; border-radius: 12px;">
+            <span>SÜLASİ MÜCERRED</span>
+            <span style="position: absolute; right: 15px; background: rgba(255, 255, 255, 0.3); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif;">3</span>
+        </div>
+        <!-- Mezid Sekmesi -->
+        <div onclick="triggerFDMTab('mezid')" id="fdm-mezid-tab" style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin: 10px 5px 0 5px; border-radius: 12px;">
+            <span>SÜLASİ MEZİD</span>
+            <span style="position: absolute; right: 15px; background: rgba(255, 255, 255, 0.3); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; direction: ltr;">3+</span>
+        </div>
+    </div>
+    
+    <!-- Satır 3: Listeler -->
+    <div class="fdm-lists-row" style="display: flex; flex: 1; min-height: 0; width: 100%; background: transparent;" dir="rtl">
+        <!-- Mücerred Listesi -->
+        <div id="fdm-mucerred-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-left: 2px solid rgba(139, 69, 19, 0.1);">
+            <div id="fdm-mucerred-list" style="flex: 1; overflow-y: auto; padding: 25px 10px 10px 10px; display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+        <!-- Mezid Listesi -->
+        <div id="fdm-mezid-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+            <div id="fdm-mezid-list" style="flex: 1; overflow-y: auto; padding: 25px 10px 10px 10px; display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+    </div>
+</div>
+    <div id="marathon-countdown-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ffffff;  z-index: 999999999 !important; display: none; align-items: center; justify-content: center; flex-direction: column;">
+        <button id="start-btn-ui" class="back-nav" style="padding: 20px 60px; font-size: 2.2rem; background: #2ecc71; color: white; border: none; border-radius: 50px;" onclick="startMarathonCountdown()">BAŞLA!</button>
+        <div id="countdown-text" style="font-size: 12rem; font-weight: bold; color: #6c5ce7; display: none;">3</div>
+    </div>
+    
+    <!-- TELAFFUZ (FİLTRE) OVERLAY -->
+    <div id="telaffuz-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #f8f9fa; z-index: 5000; display: none; flex-direction: column; overflow: hidden; font-family: 'Inter', sans-serif;">
+        <div style="background: #ffffff; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+            <div style="font-size: 1.4rem; font-weight: bold; color: #333;">
+                <i class="fas fa-stopwatch" style="color: #3498db; margin-right: 8px;"></i>Telaffuz Filtresi
+            </div>
+            <i class="fas fa-times" style="font-size: 1.8rem; color: #95a5a6; cursor: pointer;" onclick="document.getElementById('telaffuz-overlay').style.display='none'"></i>
+        </div>
+        
+        <div style="flex: 1; overflow-y: auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+            <!-- Harf Sayısı Seçimi -->
+            <div style="background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">Harf Sayısı (Bab)</div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="telaffuz-letter-filters">
+                    <!-- JS ile doldurulacak veya statik eklenecek -->
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 3)">3 Harfli</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 4)">4 Harfli</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 5)">5 Harfli</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 6)">6 Harfli</div>
+                </div>
+            </div>
+            
+            <!-- Aksam-ı Seb'a Seçimi -->
+            <div style="background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">Aksam-ı Seb'a</div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="telaffuz-aksam-filters">
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Sahih')">Sahih (Salim)</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Mehmuz')">Mehmuz</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Muzaaf')">Muzaaf</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Misal')">Misal</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Ecvef')">Ecvef</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Nakıs')">Nakıs</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Lefif')">Lefif</div>
+                </div>
+            </div>
+            
+            <button onclick="applyTelaffuzFilter()" style="background: #3498db; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);">Sonuçları Getir (Filtrele)</button>
+            
+            <!-- Sonuç Listesi -->
+            <div id="telaffuz-results" style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 40px;">
+                <!-- Dinamik olarak fiiller gelecek -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
