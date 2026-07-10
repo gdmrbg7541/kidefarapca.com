@@ -259,8 +259,8 @@ th {
     font-size: 15px;
 }
 
-th.baslik-fiil { background-color: #34C759 !important; }
-th.baslik-isim { background-color: #2B88D9 !important; }
+.baslik-fiil { background-color: #34C759 !important; }
+.baslik-isim { background-color: #2B88D9 !important; }
 th.baslik-notr { background-color: transparent !important; color: #FF3B30 !important; width: 245px !important; }
 
 table { 
@@ -327,7 +327,7 @@ td:first-child {
     transition: transform, background-color, color, opacity, box-shadow 0.1s ease; 
     display: inline-block;
     min-width: 100px;
-    width: 90%;
+    width: 125px;
     box-sizing: border-box;
     cursor: pointer;
     z-index: 1000;
@@ -374,7 +374,7 @@ td:first-child {
     justify-items: center;
 }
 
-.mastar-grid .glass-box { width: 95%; }
+.mastar-grid .glass-box { width: 125px !important; }
 
 .footer-container { 
     display: flex; 
@@ -691,6 +691,11 @@ td:first-child {
     z-index: 100;
 }
 
+/* Kök türetilmiş kutuların varsayılan yeşil arka planı (Kırmızı aktif değilse) */
+.glass-box.kok-turendi:not(.current-active-red) {
+    background-color: #bfffdf !important;
+}
+
 /* Kutu BÜYÜTÜLMEDİĞİ SÜRECE aşağı basık durur (Büyüyen Klonları Hariç Tutar!) */
 .glass-box.current-active-red:not(.pulse-highlight):not(.crisp-zoom-clone) {
     transform: translateY(2px) !important; 
@@ -807,8 +812,8 @@ td:first-child {
 /* Kapatma Butonu Tasarımı */
 .easter-egg-close-btn {
     position: absolute;
-    top: 15px; 
-    right: 15px;
+    top: 25px; 
+    right: 25px;
     z-index: 1000;
     width: 40px;
     height: 40px;
@@ -819,6 +824,7 @@ td:first-child {
     background: #f1f5f9;
     color: #64748b;
     font-size: 22px;
+    line-height: 1;
     cursor: pointer;
     font-weight: bold;
     font-family: 'Arakom', sans-serif;
@@ -959,7 +965,7 @@ td:first-child {
 }
 .draggable-root-clone:active { cursor: grabbing; }
 
-body:has(#zoomToggleCheckbox:checked) .draggable-root-clone {
+body:has(#zoomToggleCheckbox:checked) .draggable-root-clone:not(#crisp-root-clone) {
     opacity: 0 !important; pointer-events: none !important; transition: opacity 0.2s ease !important;
 }
 
@@ -1206,6 +1212,10 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     pointer-events: none !important;
 }
 
+#crisp-root-clone .root-clone-buttons {
+    display: none !important;
+}
+
 .crisp-zoom-clone .ar, .crisp-zoom-clone .ar-small {
     font-size: 180px !important; line-height: 1.2 !important; white-space: nowrap !important;
 }
@@ -1226,6 +1236,12 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     font-family: 'Arakom', sans-serif !important; font-size: 130px !important; color: #000000 !important; 
     text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4) !important; line-height: 1.2 !important; white-space: nowrap !important;
     display: block !important; direction: rtl !important; padding-bottom: 0px !important; 
+}
+
+.crisp-root-clone.is-ghost {
+    opacity: 0.4 !important;
+    filter: grayscale(30%) !important;
+    pointer-events: none !important;
 }
 
 @keyframes crispPopIn {

@@ -1477,8 +1477,16 @@ function handleBoxClick(boxElement) {
     const refId = parseInt(refEl.innerText);
     const kalip = boxElement.getAttribute('data-original');
 
+    const wasAlreadyActive = (typeof lastClickedBoxTextSpan !== 'undefined' && lastClickedBoxTextSpan === textEl);
     lastClickedBoxTextSpan = textEl;
     lastOriginalWord = kalip;
+
+    if (!wasAlreadyActive) {
+        const topPlusDesk = document.querySelector('.fa-plus');
+        if (topPlusDesk) topPlusDesk.classList.remove('plus-highlighted');
+        const topPlusMob = document.getElementById('mobile-top-plus');
+        if (topPlusMob) topPlusMob.classList.remove('plus-highlighted');
+    }
 
     if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
         const sortedRefs = getSortedRefsForRoot(currentRootSafe);
@@ -1584,9 +1592,31 @@ function handleBoxClick(boxElement) {
     if (isZoomEnabled) {
         if (tiklama === 0) {
             // 1. AŞAMA: Sadece Kırmızı Vurgu
-            document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+            document.querySelectorAll('.glass-box').forEach(b => {
+                b.classList.remove('current-active-red');
+                if (!b.classList.contains('kok-turendi')) b.removeAttribute('data-tiklama-sayisi');
+            });
             if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
                 boxElement.classList.add('current-active-red');
+                
+                const badge = boxElement.querySelector('.plus-hint-badge');
+                if (badge && !boxElement.hasAttribute('data-active-suffix')) {
+                    badge.style.transform = 'scale(1.5)';
+                    setTimeout(() => badge.style.transform = '', 300);
+                    
+                    const topPlusDesk = document.querySelector('.fa-plus');
+                    if (topPlusDesk) {
+                        topPlusDesk.classList.remove('plus-highlighted');
+                        void topPlusDesk.offsetWidth;
+                        topPlusDesk.classList.add('plus-highlighted');
+                    }
+                    const topPlusMob = document.getElementById('mobile-top-plus');
+                    if (topPlusMob) {
+                        topPlusMob.classList.remove('plus-highlighted');
+                        void topPlusMob.offsetWidth;
+                        topPlusMob.classList.add('plus-highlighted');
+                    }
+                }
             }
             if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
             boxElement.setAttribute('data-tiklama-sayisi', '1');
@@ -1614,6 +1644,37 @@ function handleBoxClick(boxElement) {
 
         } else {
             // 5. AŞAMA: Manuel Tıklamada Sıfırla
+            if (!wasAlreadyActive) {
+                document.querySelectorAll('.glass-box').forEach(b => {
+                    b.classList.remove('current-active-red');
+                    if (b.classList.contains('kok-turendi')) {
+                        b.style.setProperty("background-color", "#bfffdf", "important");
+                    } else {
+                        b.removeAttribute('data-tiklama-sayisi');
+                    }
+                });
+                boxElement.classList.add('current-active-red');
+                const badge = boxElement.querySelector('.plus-hint-badge');
+                if (badge && !boxElement.hasAttribute('data-active-suffix')) {
+                    badge.style.transform = 'scale(1.5)';
+                    setTimeout(() => badge.style.transform = '', 300);
+                    
+                    const topPlusDesk = document.querySelector('.fa-plus');
+                    if (topPlusDesk) {
+                        topPlusDesk.classList.remove('plus-highlighted');
+                        void topPlusDesk.offsetWidth;
+                        topPlusDesk.classList.add('plus-highlighted');
+                    }
+                    const topPlusMob = document.getElementById('mobile-top-plus');
+                    if (topPlusMob) {
+                        topPlusMob.classList.remove('plus-highlighted');
+                        void topPlusMob.offsetWidth;
+                        topPlusMob.classList.add('plus-highlighted');
+                    }
+                }
+                if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                return;
+            }
             if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
             if (typeof resetBox === 'function') resetBox(boxElement); 
             boxElement.removeAttribute('data-tiklama-sayisi');
@@ -1631,7 +1692,10 @@ function handleBoxClick(boxElement) {
         if (window.innerWidth <= 1024) {
             // MOBİL HIZLI SİSTEM: İLK TIKLAMADA TÜRET, İKİNCİDE SİL
             if (tiklama === 0) {
-                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                document.querySelectorAll('.glass-box').forEach(b => {
+                    b.classList.remove('current-active-red');
+                    if (!b.classList.contains('kok-turendi')) b.removeAttribute('data-tiklama-sayisi');
+                });
                 if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
                     boxElement.classList.add('current-active-red');
                 }
@@ -1641,6 +1705,37 @@ function handleBoxClick(boxElement) {
                 applyWordTransformation(); 
                 boxElement.setAttribute('data-tiklama-sayisi', '1');
             } else {
+                if (!wasAlreadyActive) {
+                    document.querySelectorAll('.glass-box').forEach(b => {
+                        b.classList.remove('current-active-red');
+                        if (b.classList.contains('kok-turendi')) {
+                            b.style.setProperty("background-color", "#bfffdf", "important");
+                        } else {
+                            b.removeAttribute('data-tiklama-sayisi');
+                        }
+                    });
+                    boxElement.classList.add('current-active-red');
+                    const badge = boxElement.querySelector('.plus-hint-badge');
+                    if (badge && !boxElement.hasAttribute('data-active-suffix')) {
+                        badge.style.transform = 'scale(1.5)';
+                        setTimeout(() => badge.style.transform = '', 300);
+                        
+                        const topPlusDesk = document.querySelector('.fa-plus');
+                        if (topPlusDesk) {
+                            topPlusDesk.classList.remove('plus-highlighted');
+                            void topPlusDesk.offsetWidth;
+                            topPlusDesk.classList.add('plus-highlighted');
+                        }
+                        const topPlusMob = document.getElementById('mobile-top-plus');
+                        if (topPlusMob) {
+                            topPlusMob.classList.remove('plus-highlighted');
+                            void topPlusMob.offsetWidth;
+                            topPlusMob.classList.add('plus-highlighted');
+                        }
+                    }
+                    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                    return;
+                }
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
@@ -1656,9 +1751,31 @@ function handleBoxClick(boxElement) {
             // MASAÜSTÜ KADEMELİ SİSTEM
             if (tiklama === 0) {
                 // 1. Tıklama: Kırmızı Vurgu
-                document.querySelectorAll('.glass-box').forEach(b => b.classList.remove('current-active-red'));
+                document.querySelectorAll('.glass-box').forEach(b => {
+                    b.classList.remove('current-active-red');
+                    if (!b.classList.contains('kok-turendi')) b.removeAttribute('data-tiklama-sayisi');
+                });
                 if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[currentRootSafe]) {
                     boxElement.classList.add('current-active-red');
+                    
+                    const badge = boxElement.querySelector('.plus-hint-badge');
+                    if (badge && !boxElement.hasAttribute('data-active-suffix')) {
+                        badge.style.transform = 'scale(1.5)';
+                        setTimeout(() => badge.style.transform = '', 300);
+                        
+                        const topPlusDesk = document.querySelector('.fa-plus');
+                        if (topPlusDesk) {
+                            topPlusDesk.classList.remove('plus-highlighted');
+                            void topPlusDesk.offsetWidth;
+                            topPlusDesk.classList.add('plus-highlighted');
+                        }
+                        const topPlusMob = document.getElementById('mobile-top-plus');
+                        if (topPlusMob) {
+                            topPlusMob.classList.remove('plus-highlighted');
+                            void topPlusMob.offsetWidth;
+                            topPlusMob.classList.add('plus-highlighted');
+                        }
+                    }
                 }
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClick();
                 boxElement.setAttribute('data-tiklama-sayisi', '1');
@@ -1671,6 +1788,37 @@ function handleBoxClick(boxElement) {
                 boxElement.setAttribute('data-tiklama-sayisi', '2');
             } else {
                 // 3. Tıklama ve sonrası: Kökü, dolguyu ve çerçeveyi tamamen sıfırla
+                if (!wasAlreadyActive) {
+                    document.querySelectorAll('.glass-box').forEach(b => {
+                        b.classList.remove('current-active-red');
+                        if (b.classList.contains('kok-turendi')) {
+                            b.style.setProperty("background-color", "#bfffdf", "important");
+                        } else {
+                            b.removeAttribute('data-tiklama-sayisi');
+                        }
+                    });
+                    boxElement.classList.add('current-active-red');
+                    const badge = boxElement.querySelector('.plus-hint-badge');
+                    if (badge && !boxElement.hasAttribute('data-active-suffix')) {
+                        badge.style.transform = 'scale(1.5)';
+                        setTimeout(() => badge.style.transform = '', 300);
+                        
+                        const topPlusDesk = document.querySelector('.fa-plus');
+                        if (topPlusDesk) {
+                            topPlusDesk.classList.remove('plus-highlighted');
+                            void topPlusDesk.offsetWidth;
+                            topPlusDesk.classList.add('plus-highlighted');
+                        }
+                        const topPlusMob = document.getElementById('mobile-top-plus');
+                        if (topPlusMob) {
+                            topPlusMob.classList.remove('plus-highlighted');
+                            void topPlusMob.offsetWidth;
+                            topPlusMob.classList.add('plus-highlighted');
+                        }
+                    }
+                    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+                    return;
+                }
                 if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
                 if (typeof resetBox === 'function') resetBox(boxElement);
                 boxElement.removeAttribute('data-tiklama-sayisi');
@@ -3013,6 +3161,12 @@ function applyPrefix(prefix) {
         currentBox.style.transform = "scale(1.05)";
         setTimeout(() => { currentBox.style.transform = ""; }, 150);
 
+        const clone = document.getElementById('crisp-zoom-clone');
+        if (clone) {
+            const cloneTextEl = clone.querySelector('.ar, .ar-small');
+            if (cloneTextEl) cloneTextEl.innerHTML = lastClickedBoxTextSpan.innerHTML;
+        }
+
         // İŞTE BURASI: Ek eklendikten sonra sarı vurguyu anında günceller/kapatır
         if (typeof updateSuffixHighlights === 'function') updateSuffixHighlights(currentBox);
 
@@ -3397,9 +3551,16 @@ function applySuffix(suffix) {
         currentBox.style.minWidth = "max-content"; 
         currentBox.style.paddingLeft = "8px"; 
         currentBox.style.paddingRight = "8px";
+        currentBox.style.paddingRight = "8px";
         currentBox.style.transition = "transform 0.1s ease";
         currentBox.style.transform = "scale(1.05)";
         setTimeout(() => { currentBox.style.transform = ""; }, 150);
+
+        const clone = document.getElementById('crisp-zoom-clone');
+        if (clone) {
+            const cloneTextEl = clone.querySelector('.ar, .ar-small');
+            if (cloneTextEl) cloneTextEl.innerHTML = lastClickedBoxTextSpan.innerHTML;
+        }
 
         if (typeof updateSuffixHighlights === 'function') updateSuffixHighlights(currentBox);
 
@@ -3621,8 +3782,10 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     // 6. GÖRSEL ANİMASYONLAR VE EMOJİLER
     // ===============================================================
     if (!activeSuffix && eggObj.suggestsPlus) {
-        if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
-        if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
+        if (typeof lastClickedBoxTextSpan !== 'undefined' && lastClickedBoxTextSpan === textEl) {
+            if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
+            if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
+        }
         
         if (!boxElement.hasAttribute('data-plus-animated')) {
             if (typeof flyEmojiToPlus === "function") flyEmojiToPlus(boxElement);
@@ -3639,8 +3802,10 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
             boxElement.appendChild(hintBadge);
         }
     } else {
-        if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
-        if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
+        if (typeof lastClickedBoxTextSpan !== 'undefined' && lastClickedBoxTextSpan === textEl) {
+            if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
+            if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
+        }
         
         let hintBadge = boxElement.querySelector('.plus-hint-badge');
         if (hintBadge) hintBadge.remove();
@@ -3908,6 +4073,7 @@ function triggerAreaPulse(boxElement) {
 
         document.body.appendChild(cloneBox);
 
+        const currentRootSafe = (typeof currentRoot !== 'undefined') ? currentRoot : "";
         if (currentRootSafe.length === 3) {
             const rootClone = document.createElement('div');
             rootClone.id = 'crisp-root-clone';
@@ -3918,18 +4084,7 @@ function triggerAreaPulse(boxElement) {
             let displayRoot = (typeof formatArabicRoot === 'function') ? formatArabicRoot(currentRootSafe) : currentRootSafe;
             rootClone.innerHTML = `<span class="ar-root">${displayRoot}</span>`;
             
-            const container = document.getElementById('table-root-container');
-            if (container) {
-                rootClone.style.setProperty('position', 'absolute', 'important');
-                rootClone.style.setProperty('top', '50%', 'important');
-                rootClone.style.setProperty('left', '50%', 'important');
-                rootClone.style.setProperty('transform', 'translate(-50%, -50%) scale(0.35)', 'important');
-                rootClone.style.setProperty('margin', '0', 'important');
-                rootClone.style.setProperty('animation', 'none', 'important');
-                container.appendChild(rootClone);
-            } else {
-                document.body.appendChild(rootClone);
-            }
+            document.body.appendChild(rootClone);
             
             // Sürüklenebilir yap
             setTimeout(() => {
@@ -4188,8 +4343,7 @@ function highlightEasterEggBoxes(root) {
             if (root === "فعل") {
                 targetBox.classList.remove('sari-vurgu');
                 targetBox.classList.add('kok-turendi');
-                targetBox.classList.add('current-active-red');
-                targetBox.style.setProperty("background-color", "#bfffdf", "important"); 
+                targetBox.style.setProperty("background-color", "#bfffdf", "important");
                 targetBox.style.borderColor = "#000000";
                 targetBox.setAttribute('data-tiklama-sayisi', '3'); // Tıklanmış aşamasında kalsın (bir sonraki tık sıfırlar)
                 
@@ -5892,7 +6046,10 @@ function activateBoxByRef(refId, isBackward = false) {
             window.scrollTo({ top: middle, behavior: 'smooth' });
 
             if (isBackward) {
-                document.querySelectorAll(containerSelector).forEach(b => b.classList.remove('current-active-red'));
+                document.querySelectorAll(containerSelector).forEach(b => {
+                    b.classList.remove('current-active-red');
+                    if (!b.classList.contains('kok-turendi')) b.removeAttribute('data-tiklama-sayisi');
+                });
                 targetBox.classList.add('current-active-red');
                 targetBox.classList.remove('sari-vurgu');
 
@@ -8577,7 +8734,7 @@ function openFastDictionaryMode() {
                 let activeRootArray = currentRoot.split("");
                 targetEl.innerHTML = ColorEngine.colorize(plainWord, activeRootArray);
                 targetBox.classList.add('kok-turendi');
-                targetBox.style.setProperty("background-color", "#bfffdf", "important"); 
+                targetBox.style.setProperty("background-color", "#bfffdf", "important");
                 targetBox.style.borderColor = "#000000";
                 
                 // Anlam vurguları ve ikonları için (kullanıcının istediği asıl vurgu)
