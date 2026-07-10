@@ -2714,130 +2714,9 @@ function updateSuffixHighlights(currentBox) {
     const menu = document.getElementById("suffix-dropdown");
     if (!menu || menu.style.display === "none") return;
 
-    const refEl = currentBox.querySelector('.ref');
-    if (!refEl) return;
-    
-    const refId = parseInt(refEl.innerText);
-    if (typeof currentRoot === 'undefined' || currentRoot.length !== 3) return;
-    if (typeof sozlukVerileri === 'undefined' || !sozlukVerileri[currentRoot]) return;
-    
-    const eggObj = sozlukVerileri[currentRoot][refId];
-    if (!eggObj) return;
-
-    const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
-    );
-
-    function standardize(t) {
-        if (!t) return "";
-        let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim(); 
-        original = original.replace(/[یى]/g, 'ي');
-        let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
-        if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
-        if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا'; 
-        return original.replace(/\u064E\u0651/g, '\u0651\u064E');
-    }
-
-    let currentWordText = currentBox.querySelector('.ar, .ar-small').innerText;
-    let currentWord = currentWordText.replace(/[\u200B-\u200D\uFEFF\n\r]/g, '').trim();
-    
-    let baseWordAr = eggObj.base ? eggObj.base.arText : "";
-    let isBase = false;
-    if (baseWordAr) {
-        if (standardize(currentWord) === standardize(baseWordAr)) {
-            isBase = true;
-        }
-    }
-
-    const possibleSuffixes = [
-        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
-        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
-        'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
-    ];
-
-    let existingSuffix = "";
-    if (!isBase) {
-        for (let ps of possibleSuffixes) {
-            if (currentWord.endsWith(ps)) {
-                existingSuffix = ps;
-                break;
-            }
-        }
-    }
-
-    // YENİ EKLENEN KISIM: Ön Ekleri (Prefix) Tespit Et
-    let existingPrefix = "";
-    let prefixSpan = currentBox.querySelector('.added-prefix');
-    if (prefixSpan && prefixSpan.dataset.prefix) {
-        existingPrefix = prefixSpan.dataset.prefix;
-    }
-
-    const targetMap = {
-        'يَّة': ['يّ', 'ة'],
-        'يَّات': ['يّ', 'ات'],
-        'يًّا': ['يّ', 'ا'], 
-        'يَّانِ': ['يّ', 'انِ'],
-        'يَّيْنِ': ['يّ', 'يْنِ'],
-        'يُّونَ': ['يّ', 'ونَ'],
-        'يِّينَ': ['يّ', 'ينَ'],
-        'تَانِ': ['ة', 'انِ'],
-        'تَيْنِ': ['ة', 'يْنِ'],
-        'يَّتَانِ': ['يّ', 'ة', 'انِ'],
-        'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
-    };
-
-    let fulfilledSuffixes = [];
-    if (existingSuffix) fulfilledSuffixes.push(existingSuffix);
-    
-    // YENİ: Ön Eki Zekaya Dahil Ettik
-    if (existingPrefix) fulfilledSuffixes.push(existingPrefix); 
-    
-    if (targetMap[existingSuffix]) {
-        fulfilledSuffixes.push(...targetMap[existingSuffix]);
-    }
-
-    const remainingTargets = availableSuffixes.filter(k => !fulfilledSuffixes.includes(standardize(k)));
-
+    // YENİ: Başlangıçta tüm vurguları temizle (erken dönsek bile eski kalıntı kalmasın)
     const suffixBtns = menu.querySelectorAll('button');
-    suffixBtns.forEach(btn => {
-        btn.classList.remove('suggested-suffix');
-        
-        let exactParam = "";
-        let onclickVal = btn.getAttribute('onclick');
-        if (onclickVal) {
-            let match = onclickVal.match(/'([^']+)'/); 
-            if (match && match[1]) {
-                exactParam = match[1];
-            }
-        }
-
-        let btnText = standardize(exactParam || btn.textContent); 
-        let isMatch = false;
-
-        if (fulfilledSuffixes.includes(btnText)) {
-            isMatch = false; 
-        } else {
-            for (let key of remainingTargets) {
-                let stdKey = standardize(key);
-                if (stdKey === btnText) {
-                    isMatch = true; break;
-                } else if (targetMap[stdKey] && targetMap[stdKey].includes(btnText)) {
-                    isMatch = true; break;
-                }
-            }
-        }
-
-        if (isMatch) btn.classList.add('suggested-suffix');
-    });
-}// ===============================================================
-// 1. CANLI SARI VURGU MOTORU (Ön Ekleri Destekleyen Sürüm)
-// ===============================================================
-function updateSuffixHighlights(currentBox) {
-    const menu = document.getElementById("suffix-dropdown");
-    if (!menu || menu.style.display === "none") return;
+    suffixBtns.forEach(btn => btn.classList.remove('suggested-suffix'));
 
     const refEl = currentBox.querySelector('.ref');
     if (!refEl) return;
@@ -2926,9 +2805,7 @@ function updateSuffixHighlights(currentBox) {
 
     const remainingTargets = availableSuffixes.filter(k => !fulfilledSuffixes.includes(standardize(k)));
 
-    const suffixBtns = menu.querySelectorAll('button');
     suffixBtns.forEach(btn => {
-        btn.classList.remove('suggested-suffix');
         
         let exactParam = "";
         let onclickVal = btn.getAttribute('onclick');
