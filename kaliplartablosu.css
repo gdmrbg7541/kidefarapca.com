@@ -322,7 +322,7 @@ td:first-child {
     border-bottom: 4px solid #9ca3af !important; 
     border-radius: 8px; 
     margin: 2px;
-    padding: 2px 2px 4px 2px; 
+    padding: 10px 2px 4px 2px; 
     text-align: center;
     transition: transform, background-color, color, opacity, box-shadow 0.1s ease; 
     display: inline-block;
@@ -361,8 +361,8 @@ td:first-child {
     z-index: 1000;
 }
 
-.ar { font-size: 42px; color: #000 !important; line-height: 1.2; }
-.ar-small { font-size: 30px; color: #000 !important; line-height: 1.2; }
+.ar { font-size: 40px; color: #000 !important; line-height: 1; }
+.ar-small { font-size: 30px; color: #000 !important; line-height: 1; }
 .ref { position: absolute; top: 2px; right: 4px; font-size: 14px; color: #FF3B30 !important; }
 
 .mastar-grid { 
@@ -423,8 +423,8 @@ td:first-child {
 }
 
 .full-screen-mode th, .full-screen-mode td { padding: 20px !important; }
-.cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; padding-top: 4px !important; padding-bottom: 4px !important; margin-top: 2px !important; margin-bottom: 2px !important; }
-.cemi-grid .glass-box .ar, .tafdil-area .glass-box .ar, .tasgir-area .glass-box .ar { line-height: 1.1 !important; margin-bottom: -2px !important; }
+.cemi-grid .glass-box, .tafdil-area .glass-box, .tasgir-area .glass-box { width: 95%; padding-top: 10px !important; padding-bottom: 4px !important; margin-top: 2px !important; margin-bottom: 2px !important; }
+.cemi-grid .glass-box .ar, .tafdil-area .glass-box .ar, .tasgir-area .glass-box .ar { line-height: 1 !important; margin-bottom: -2px !important; }
 
 .keyboard-overlay, .conjugation-overlay {
     display: none; 
@@ -633,8 +633,9 @@ td:first-child {
 .matrix-close-btn:hover { transform: scale(1.2); }
 
 #tab2 .ar { font-size: 2.2rem !important; }
-#tab2 .ar-small { font-size: 1.25rem !important; }
-#tab2 .glass-box { width: 92%; padding: 4px 2px; }
+#tab2 .conjugation-table { margin-top: 6px; }
+#tab2 .glass-box { width: 92%; padding: 10px 2px 4px 2px; }
+#tab2 .glass-box .ar { font-size: 38px; line-height: 1; }
 
 /* Büyüyen Kutu Efektleri ve Çakışma Önleyiciler */
 .zoom-overlay {
@@ -745,97 +746,112 @@ td:first-child {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.15) !important; 
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 9999999 !important;
     justify-content: center;
     align-items: center;
-    /* backdrop-filter removed for performance */
-    -webkit-/* backdrop-filter removed for performance */
+    animation: fadeInModal 0.3s ease-out;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUpModal {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .easter-egg-content {
     position: relative;
-
-    background: rgba(255, 255, 255, 0.85) !important;
-    /* backdrop-filter removed for performance */ 
-    -webkit-/* backdrop-filter removed for performance */
-
-    padding: 40px 30px 30px 30px; 
-    border: 2px solid #000000;
-    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* Mobilde taşmayı önleyen kritik özellik */
+    box-sizing: border-box;
+    /* Çarpı butonu metinle üst üste binmesin diye üstten 60px padding */
+    padding: 60px 20px 30px 20px; 
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 24px;
     text-align: center;
     
-    /* 1. Neredeyse tüm ekranı kaplasın */
-    width: 90vw !important; 
-    max-width: 1500px !important;
-    
-    /* 2. Dikeyde taşmayı engelle ve şık bir Scroll (Kaydırma) ekle */
-    max-height: 70vh !important; 
+    width: 96vw !important; 
+    max-width: 1800px !important;
+    max-height: 85vh !important; 
     overflow-y: auto !important; 
-    
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.2) inset;
+    animation: scaleUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Scroll (Kaydırma Çubuğu) Tasarımı */
 .easter-egg-content::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
+}
+.easter-egg-content::-webkit-scrollbar-track {
+    background: transparent;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 .easter-egg-content::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 10px;
-    border: 3px solid transparent;
-    background-clip: content-box;
+    background-color: rgba(148, 163, 184, 0.5);
+    border-radius: 20px;
 }
 .easter-egg-content::-webkit-scrollbar-thumb:hover {
-    background-color: #94a3b8;
+    background-color: rgba(148, 163, 184, 0.8);
 }
-/* AŞAĞI KAYDIKÇA SABİT KALAN ÇARPI BUTONU */
+
+/* Kapatma Butonu Tasarımı */
 .easter-egg-close-btn {
-    position: sticky;
-    top: 10px; /* Kaydırırken hep en üstten 10px mesafede yapışık kalır */
-    float: right; /* Sağa yaslar */
-    margin-top: -20px; 
-    margin-right: -10px;
-    margin-bottom: -30px; /* Altındaki metni aşağı itmesini engeller */
+    position: absolute;
+    top: 15px; 
+    right: 15px;
     z-index: 1000;
-    font-size: 28px;
-    color: #FF3B30;
-    cursor: pointer;
-    z-index: 1000;
-    font-weight: bold;
-    font-family: 'Arakom', sans-serif;
-    transition: transform, background-color, color, opacity, box-shadow 0.2s ease;
-    
-    /* Yazılar kayarken çarpı karışmasın diye arkasına ufak buzlu bir yuvarlak ekledik */
-    background: rgba(255, 255, 255, 0.85);
-    /* backdrop-filter removed for performance */
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 22px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Arakom', sans-serif;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .easter-egg-close-btn:hover { 
-    transform: scale(1.15); 
-    background: #FF3B30;
+    transform: scale(1.1) rotate(90deg); 
+    background: #ef4444;
     color: #ffffff;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
 }
 
-.easter-egg-close-btn:hover { transform: scale(1.2); }
-
 .easter-egg-ar {
-    font-size: 100px; direction: rtl; color: #000000;
-    margin-bottom: 15px; line-height: 1.4;
+    font-size: 110px; 
+    direction: rtl; 
+    color: #0f172a;
+    margin-bottom: 20px; 
+    line-height: 1.2;
     font-family: 'Arakom', sans-serif !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .easter-egg-tr {
-    font-size: 70px; direction: ltr; color: #FF3B30;
-    line-height: 1.4;
+    font-size: 60px; 
+    direction: ltr; 
+    color: #dc2626;
+    line-height: 1.3;
     font-family: 'Arakom', sans-serif !important;
+    font-weight: bold;
 }
 
 .sentence-emoji-header {
@@ -1079,7 +1095,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 
 .col-range-header {
     text-align: center; font-weight: normal; background: #2B88D9 !important; color: #ffffff !important;
-    border-bottom: 4px solid #ffffff !important; padding: 10px; position: sticky; top: 0; z-index: 2; 
+    border-bottom: 4px solid #ffffff !important; padding: 10px; position: sticky; top: 0; z-index: 1010; 
     font-size: 18px; font-family: 'Arakom', sans-serif; border-radius: 8px 8px 0 0;
     margin-top: -4px; margin-left: -4px; margin-right: -4px;
 }
@@ -1980,11 +1996,11 @@ body.matrix-active { overflow: hidden !important; }
     #root-display-box, .switch-btn, .segmented-switch, .zoom-toggle-area, .back-link { height: 30px !important; min-height: 30px !important; font-size: 12px !important; padding: 0 6px !important; }
     .temp-root-display { font-size: 2.5rem !important; height: 60px !important; }
     
-    .ar, #tab1 .ar, #tab2 .ar { font-size: 28px !important; line-height: 1.1 !important; }
-    .ar-small, #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1.1 !important; }
+    .ar, #tab1 .ar, #tab2 .ar { font-size: 28px !important; line-height: 1 !important; }
+    .ar-small, #tab1 .ar-small, #tab2 .ar-small { font-size: 20px !important; line-height: 1 !important; }
     .siga-text { font-size: 18px !important; }
     
-    .glass-box { width: auto !important; min-width: 50px !important; max-width: 95% !important; padding: 2px 8px !important; margin: 2px auto !important; display: inline-block !important; box-sizing: border-box !important; }
+    .glass-box { width: auto !important; min-width: 50px !important; max-width: 95% !important; padding: 10px 8px 4px 8px !important; margin: 2px auto !important; display: inline-block !important; box-sizing: border-box !important; }
     .ref { font-size: 11px !important; top: 1px !important; right: 2px !important; padding: 1px 4px !important; }
     
     .verb-table { transform-origin: top right; width: 100% !important; }
@@ -2017,7 +2033,7 @@ body.matrix-active { overflow: hidden !important; }
     .letters-grid { gap: 5px !important; }
     .letter-column { flex: 0 0 100% !important; scroll-snap-align: center !important; overflow-y: auto !important; height: 100% !important; border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; box-sizing: border-box !important; }
     .col-range-header { padding: 4px !important; font-size: 11px !important; margin-top: -2px !important; margin-left: -2px !important; margin-right: -2px !important; border-radius: 6px 6px 0 0 !important; border-bottom-width: 2px !important; }
-    .letter-column .glass-box { min-height: 30px !important; margin: 0 auto !important; width: 95% !important; padding: 2px !important; }
+    .letter-column .glass-box { min-height: 30px !important; margin: 0 auto !important; width: 95% !important; padding: 8px 2px 2px 2px !important; }
     
     /* Kahverengi Kök Kutusu Yaması */
     .draggable-root-clone { display: block !important; visibility: visible !important; opacity: 1 !important; z-index: 999999 !important; font-size: 2rem !important; min-width: 140px !important; padding: 6px 12px 10px 0px !important; }
@@ -2069,9 +2085,9 @@ body.matrix-active { overflow: hidden !important; }
 }
 
 @keyframes weldMove {
-    0% { right: 10%; opacity: 1; }
-    95% { right: 90%; opacity: 1; }
-    100% { right: 90%; opacity: 0; visibility: hidden; }
+    0% { right: -5%; opacity: 1; }
+    95% { right: 105%; opacity: 1; }
+    100% { right: 105%; opacity: 0; visibility: hidden; }
 }
 
 @keyframes weldSparks {
@@ -2103,7 +2119,7 @@ body.matrix-active { overflow: hidden !important; }
     position: relative;
     margin-top: 25px !important; 
     border: 2px dashed rgba(255, 238, 0, 0) !important;
-    background: rgba(0, 0, 0, 0.3) !important;
+    background: rgba(0, 0, 0, 0.75) !important;
     animation: fuseSettle 2.5s 3.2s ease-out forwards; /* Vurgu yavasca azalip biter */
 }
 
@@ -2131,7 +2147,7 @@ body.matrix-active { overflow: hidden !important; }
 .dynamic-root-progress {
     position: absolute;
     top: -10px; /* Cizgi ile kutu arasinda daha cok bosluk */
-    right: 10%; /* Sola dogru ilerlemesi icin right kullanildi */
+    left: 10%; /* Soldan saga ilerlemesi icin left kullanildi */
     height: 3px;
     background: #8b5a2b;
     border-radius: 2px;
@@ -2152,7 +2168,7 @@ body.matrix-active { overflow: hidden !important; }
 .welding-spark-emitter {
     position: absolute;
     top: 50%;
-    right: 10%;
+    right: -5%;
     width: 6px;
     height: 6px;
     background: #ffffff;
@@ -3364,6 +3380,11 @@ body.has-fullscreen-accordion .thematic-words-content {
 }
 
 /* Vezinlere Bak Arama Kısmı Öneri Kökleri (Sabit Boyut, Yanyana İkili, Büyük Yazı) */
+#root-predictions-box .prediction-chip.dynamic-root-chip {
+    margin-top: 35px !important; 
+    overflow: visible !important;
+}
+
 #root-predictions-box .prediction-chip {
     flex: 0 0 calc(50% - 5px) !important;
     max-width: calc(50% - 5px) !important;
@@ -3478,5 +3499,20 @@ body.has-fullscreen-accordion .thematic-words-content {
 .draggable-root-clone .kutu-list-btn svg {
     width: 18px !important; 
     height: 18px !important;
+}
+
+/* FDM Kök Levhasındaki SVG Butonlarını Daha Büyük Yap */
+.fdm-root-plate .kutu-timer-btn {
+    width: 40px !important;
+    height: 40px !important;
+}
+.fdm-root-plate .kutu-list-btn {
+    width: 40px !important;
+    height: 40px !important;
+}
+.fdm-root-plate .kutu-timer-btn svg,
+.fdm-root-plate .kutu-list-btn svg {
+    width: 24px !important;
+    height: 24px !important;
 }
 
