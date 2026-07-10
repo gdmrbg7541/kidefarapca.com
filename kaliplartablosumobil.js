@@ -829,6 +829,9 @@ function renderVerbMenu() {
         
         let scrubberHTML = `<div class="mobile-alphabet-scrubber" id="mobile-scrubber">`;
         
+        // Sadece simge olarak kullanılacak 10 kilometre taşı harfi belirle
+        const milestoneLetters = ["ا", "ت", "ج", "د", "س", "ص", "ع", "ف", "م", "ي"];
+        
         // Alfabe sırasına göre tüm grupları renderla
         arapcaHarfler.forEach(letter => {
             if (rootsByLetter[letter] && rootsByLetter[letter].length > 0) {
@@ -846,8 +849,10 @@ function renderVerbMenu() {
                 });
                 mobileHTML += `</div></div>`;
                 
-                // Scrubber'a ekle
-                scrubberHTML += `<div class="scrubber-letter" data-letter="${letter}">${letter}</div>`;
+                // Scrubber'a sadece 10 belirteç harfi ekle
+                if (milestoneLetters.includes(letter)) {
+                    scrubberHTML += `<div class="scrubber-letter" data-letter="${letter}">${letter}</div>`;
+                }
             }
         });
         
@@ -7193,7 +7198,8 @@ function toggleThematicAccordion(element, key) {
         if(icon) icon.className = 'fas fa-chevron-down thematic-accordion-icon';
         
         // Hide the viewer container completely if nothing is active
-        document.getElementById('thematic-viewer-container').style.display = 'none';
+        const tvc = document.getElementById('thematic-viewer-container');
+        if (tvc) tvc.style.display = 'none';
     } else {
         // Close all headers and contents
         const allItems = document.querySelectorAll('.thematic-accordion-item');
@@ -7982,6 +7988,7 @@ window.atlasVerbsData = {
     "ذهب": { trMean: { mazi: "gitti", muzari: "gidiyor", emir: "git" }, mazi: ["ذَهَبَ", "ذَهَبَا", "ذَهَبُوا", "ذَهَبَتْ", "ذَهَبَتَا", "ذَهَبْنَ", "ذَهَبْتَ", "ذَهَبْتُمَا", "ذَهَبْتُمْ", "ذَهَبْتِ", "ذَهَبْتُمَا", "ذَهَبْتُنَّ", "ذَهَبْتُ", "ذَهَبْنَا", "ذَهَبْنَا"], muzari: ["يَذْهَبُ", "يَذْهَبَانِ", "يَذْهَبُونَ", "تَذْهَبُ", "تَذْهَبَانِ", "يَذْهَبْنَ", "تَذْهَبُ", "تَذْهَبَانِ", "تَذْهَبُونَ", "تَذْهَبِينَ", "تَذْهَبَانِ", "تَذْهَبْنَ", "أَذْهَبُ", "نَذْهَبُ", "نَذْهَبُ"], emir: ["اِذْهَبْ", "اِذْهَبَا", "اِذْهَبُوا", "اِذْهَبِي", "اِذْهَبَا", "اِذْهَبْنَ"] },
     "رجع": { trMean: { mazi: "döndü", muzari: "dönüyor", emir: "dön" }, mazi: ["رَجَعَ", "رَجَعَا", "رَجَعُوا", "رَجَعَتْ", "رَجَعَتَا", "رَجَعْنَ", "رَجَعْتَ", "رَجَعْتُمَا", "رَجَعْتُمْ", "رَجَعْتِ", "رَجَعْتُمَا", "رَجَعْتُنَّ", "رَجَعْتُ", "رَجَعْنَا", "رَجَعْنَا"], muzari: ["يَرْجِعُ", "يَرْجِعَانِ", "يَرْجِعُونَ", "تَرْجِعُ", "تَرْجِعَانِ", "يَرْجِعْنَ", "تَرْجِعُ", "تَرْجِعَانِ", "تَرْجِعُونَ", "تَرْجِعِينَ", "تَرْجِعَانِ", "تَرْجِعْنَ", "أَرْجِعُ", "نَرْجِعُ", "نَرْجِعُ"], emir: ["اِرْجِعْ", "اِرْجِعَا", "اِرْجِعُوا", "اِرْجِعِي", "اِرْجِعَا", "اِرْجِعْنَ"] },
     "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعَدْنَ"] },
+    "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعِدْنَ"] },
     "درس": { trMean: { mazi: "çalıştı", muzari: "çalışıyor", emir: "çalış" }, mazi: ["دَرَسَ", "دَرَسَا", "دَرَسُوا", "دَرَسَتْ", "دَرَسَتَا", "دَرَسْنَ", "دَرَسْتَ", "دَرَسْتُمَا", "دَرَسْتُمْ", "دَرَسْتِ", "دَرَسْتُمَا", "دَرَسْتُنَّ", "دَرَسْتُ", "دَرَسْنَا", "دَرَسْنَا"], muzari: ["يَدْرُسُ", "يَدْرُسَانِ", "يَدْرُسُونَ", "تَدْرُسُ", "تَدْرُسَانِ", "يَدْرُسْنَ", "تَدْرُسُ", "تَدْرُسَانِ", "تَدْرُسُونَ", "تَدْرُسِينَ", "تَدْرُسَانِ", "تَدْرُسْنَ", "أَدْرُسُ", "نَدْرُسُ", "نَدْرُسُ"], emir: ["اُدْرُسْ", "اُدْرُسَا", "اُدْرُسُوا", "اُدْرُسِي", "اُدْرُسَا", "اُدْرُسْنَ"] },
     "nam": { trMean: { mazi: "uyudu", muzari: "uyuyor", emir: "uyu" }, mazi: ["نَامَ", "نَامَا", "نَامُوا", "نَامَتْ", "نَامَتَا", "نِمْنَ", "نِمْتَ", "نِمْتُمَا", "نِمْتُمْ", "نِمْتِ", "نِمْتُمَا", "نِمْتُنَّ", "نِمْتُ", "نِمْنَا", "نِمْنَا"], muzari: ["يَنَامُ", "يَنَامَانِ", "يَنَامُونَ", "تَنَامُ", "تَنَامَانِ", "يَنَامْنَ", "تَنَامُ", "تَنَامَانِ", "تَنَامُونَ", "تَنَامِينَ", "تَنَامَانِ", "تَنَامْنَ", "أَنَامُ", "نَنَامُ", "نَنَامُ"], emir: ["نَمْ", "نَامَا", "نَامُوا", "نَامِي", "نَامَا", "نَمْنَ"] },
     "نظف": { trMean: { mazi: "temizledi", muzari: "temizliyor", emir: "temizle" }, mazi: ["نَظَّفَ", "نَظَّفَا", "نَظَّفُوا", "نَظَّفَتْ", "نَظَّفَتَا", "نَظَّفْنَ", "نَظَّفْتَ", "نَظَّفْتُمَا", "نَظَّفْتُمْ", "نَظَّفْتِ", "نَظَّفْتُمَا", "نَظَّفْتُنَّ", "نَظَّفْتُ", "نَظَّفْنَا", "نَظَّفْنَا"], muzari: ["يُنَظِّفُ", "يُنَظِّفَانِ", "يُنَظِّفُونَ", "تُنَظِّفُ", "تُنَظِّفَانِ", "يُنَظِّفْنَ", "تُنَظِّفُ", "تُنَظِّفَانِ", "تُنَظِّفُونَ", "تُنَظِّفِينَ", "تُنَظِّفَانِ", "تُنَظِّفْنَ", "أُنَظِّفُ", "نُنَظِّفُ", "نُنَظِّفُ"], emir: ["نَظِّفْ", "نَظِّفَا", "نَظِّفُوا", "نَظِّفِي", "نَظِّفَا", "نَظَّفْنَ"] },
@@ -8150,11 +8157,11 @@ window.openAtlasOverlay = function(stage) {
                 </ul>
             </div>
         </div>`;
-    } else if (stage === 'ismi_fail') {
+    } else if (stage === 'ismi_fail' || stage === 'ismi_fail_mezid') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
         desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
-            <p>Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir. Sülasi mücerred (3 harfli) fiillerde <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
+            <p><strong>1. Mücerred (3 Harfli) Fiillerde:</strong> Fiili yapanı (özneyi) gösterir. <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 15px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
                     <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كَاتِب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazan / Kâtip</span>
                 </div>
@@ -8162,13 +8169,27 @@ window.openAtlasOverlay = function(stage) {
                     <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">عَالِم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Bilen / Âlim</span>
                 </div>
             </div>
-            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Kullanımı:</h4>
-                <p style="margin: 0;">Türkçemizde Arapça kökenli binlerce "İsmi Fail" kalıbı vardır. Sesi <em>-Â -İ</em> şeklinde uzatarak hissetmek çok kolaydır:<br><br>
-                <strong>Örnekler:</strong> Câhil, Hâkim, Sâlim, Zâlim, Fâtih, Kâşif, Nâzım, Şâir, Sâbır, Şâkir, Sâdık...</p>
+            
+            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 25px 0;">
+            
+            <p><strong>2. Mezid (Ekli) Fiillerde:</strong> Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 15px 0;">
+                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
+                </div>
+                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
+                </div>
+            </div>
+            
+            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
+                <p style="margin: 0;">Türkçemizde "İsmi Fail" kalıbı çok yaygındır:<br>
+                <strong>Mücerred (-Â -İ):</strong> Câhil, Hâkim, Zâlim, Şâir, Sâdık...<br>
+                <strong>Mezid (MÜ/MU ve sondan bir önceki esre):</strong> Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Muall<strong>i</strong>m...</p>
             </div>
         </div>`;
-    } else if (stage === 'ismi_meful') {
+    } else if (stage === 'ismi_meful' || stage === 'ismi_meful_mezid') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
         desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir. Sülasi mücerred fiillerde <strong>"مَفْعُول" (Mef'ûl)</strong> kalıbında gelir.</p>
@@ -8312,10 +8333,7 @@ window.openAtlasOverlay = function(stage) {
                 </div>
             </div>
         </div>`;
-    }
-    
-    // Mezid Nouns (No Tables)
-    else if (stage === 'mastar_mezid') {
+    } else if (stage === 'mastar_mezid') {
         arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
         desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Mezid (harf eklenmiş) fiillerin mastarlarıdır. Sülasi Mücerred mastarların aksine, <strong>Mezid mastarlar tamamen kurallıdır (Kıyasîdir)</strong> ve her babın kendine özgü değişmez bir mastar kalıbı vardır.</p>
@@ -8330,43 +8348,6 @@ window.openAtlasOverlay = function(stage) {
             <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Bab İsimleri Aslında Mastardır!</h4>
                 <p style="margin: 0;">Bizim "İf'al, Tef'il, Mufaale" diyerek ezberlediğimiz bab isimleri, aslında o babların <strong>Mastar</strong> kalıplarından başka bir şey değildir. Türkçe'de kullandığımız "İslam, İmtihan, İstikbal, Mücadele, Tekbir, Tevekkül" kelimelerinin hepsi Mezid mastarlardır.</p>
-            </div>
-        </div>`;
-    } else if (stage === 'ismi_fail_mezid') {
-        arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
-            <p>Mezid fiillerde (harf eklenmiş fiillerde) işi yapanı gösterir. Kuralı çok basittir: Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
-                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
-                </div>
-                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
-                </div>
-            </div>
-            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
-                <p style="margin: 0;">Eğer bir kelime Türkçe'de <strong>"MÜ, MU"</strong> ile başlıyorsa ve sondan bir önceki sesli harfi ince (esre gibi i/ı) ise o eylemi yapan kişidir!<br>
-                Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Mümteh<strong>i</strong>n, Mütekebb<strong>i</strong>r, Muall<strong>i</strong>m...</p>
-            </div>
-        </div>`;
-    } else if (stage === 'ismi_meful_mezid') {
-        arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
-            <p>Mezid fiillerde (harf eklenmiş fiillerde) yapılan işten etkileneni gösterir. Kuralı İsmi Fail ile neredeyse aynıdır: Muzari fiilin başına <strong>ötreli 'MİM' (مُ)</strong> getirilir, ancak İsmi Fail'in aksine <strong>sondan bir önceki harf ÜSTÜNLÜ</strong> okunur.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
-                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلَّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Öğretilen (Kişi/Nesne)</span>
-                </div>
-                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَخْرَج</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Maden vb.) Çıkarılan Şey</span>
-                </div>
-            </div>
-            <div style="background: #fff1f2; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">İsmi Fail - İsmi Mef'ul Ayrımı (Esre mi Üstün mü?):</h4>
-                <p style="margin: 0;">Türkçede de aynı kuralı kullanırız! Sondan bir önceki ses:<br>
-                <strong>İ / I ise Yapan (İsmi Fail):</strong> Mükr<strong>i</strong>m (İkram eden), Müstakb<strong>i</strong>l (Karşılayan).<br>
-                <strong>A / E ise Yapılan (İsmi Mef'ul):</strong> Mükr<strong>e</strong>m (İkram edilen), Müstakb<strong>e</strong>l (Karşılanan / Gelecek zaman).</p>
             </div>
         </div>`;
     } else {
@@ -8746,19 +8727,19 @@ function openFastDictionaryMode() {
         const rootPlateHtml = `<div class="fdm-root-plate draggable-root-clone fdm-mobile-resize" style="${rStyle}"><span class="root-text-content fdm-mobile-text">${formattedTitle}</span></div>`;
         
         const infoHtml = `
-            <div dir="ltr" class="fdm-info-box" style="background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-family: 'Arakom', sans-serif; display: flex; flex-direction: column; justify-content: center; flex: 1; text-align: left;">
+            <div dir="ltr" class="fdm-info-box" style="font-family: 'Arakom', sans-serif; display: flex; flex-direction: column; justify-content: center; flex: 1; text-align: left;">
                 <div style="display: flex; gap: 30px; margin-bottom: 0px; justify-content: flex-start;" class="fdm-info-row">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="display:inline-block; width: 22px; height: 22px; background: #27ae60; border-radius: 6px;" class="fdm-color-box"></span>
-                        <span style="font-size: 1.8rem; color: #333; font-weight: bold;" class="fdm-info-text">FİİLLER</span>
+                        <span style="font-size: 2.6rem; color: #333; font-weight: bold;" class="fdm-info-text">FİİLLER</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="display:inline-block; width: 22px; height: 22px; background: #2980b9; border-radius: 6px;" class="fdm-color-box"></span>
-                        <span style="font-size: 1.8rem; color: #333; font-weight: bold;" class="fdm-info-text">İSİMLER</span>
+                        <span style="font-size: 2.6rem; color: #333; font-weight: bold;" class="fdm-info-text">İSİMLER</span>
                     </div>
                 </div>
-                <div style="font-size: 1.8rem; color: #555; line-height: 1.6;" class="fdm-info-note">
-                    <span style="font-weight: bold; color: #2980b9; font-size: 1.8rem;" class="fdm-info-note-title">Not:</span> Türkçeye geçen Arapça kelimeler genellikle isimlerdir.
+                <div style="font-size: 2.4rem; color: #555; line-height: 1.6;" class="fdm-info-note">
+                    <span style="font-weight: bold; color: #2980b9; font-size: 2.4rem;" class="fdm-info-note-title">Not:</span> Türkçeye geçen Arapça kelimeler genellikle isimlerdir.
                 </div>
             </div>
         `;
@@ -9028,6 +9009,8 @@ function initAlphabetScrubber() {
     function handleScrub(e) {
         e.preventDefault(); // Varsayılan kaydırmayı engelle
         
+        scrubber.classList.add("is-scrubbing"); // Dokunulduğunda genişlet
+        
         let touch = e.touches ? e.touches[0] : e;
         let el = document.elementFromPoint(touch.clientX, touch.clientY);
         
@@ -9057,6 +9040,7 @@ function initAlphabetScrubber() {
     }
     
     function resetScrub() {
+        scrubber.classList.remove("is-scrubbing"); // Dokunma bitince daralt
         lastLetter = null;
         document.querySelectorAll(".scrubber-letter").forEach(l => l.classList.remove("active"));
     }
@@ -9064,6 +9048,7 @@ function initAlphabetScrubber() {
     scrubber.addEventListener("touchstart", handleScrub, {passive: false});
     scrubber.addEventListener("touchmove", handleScrub, {passive: false});
     scrubber.addEventListener("touchend", resetScrub);
+    scrubber.addEventListener("touchcancel", resetScrub);
 }
 
 // ==========================================
