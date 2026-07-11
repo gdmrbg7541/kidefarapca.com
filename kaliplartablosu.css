@@ -637,6 +637,19 @@ td:first-child {
 #tab2 .glass-box { width: 92%; padding: 10px 2px 4px 2px; }
 #tab2 .glass-box .ar { font-size: 38px; line-height: 1; }
 
+/* Mezid Bab Satırları (Canlı ama Göz Yormayan Dengeli Pasteller) */
+#tab2 tbody tr:nth-child(1) td { background-color: #f2d8d8 !important; } /* İf'al: Tatlı Kırmızı */
+#tab2 tbody tr:nth-child(2) td { background-color: #f2dfcc !important; } /* Tef'il: Tatlı Turuncu */
+#tab2 tbody tr:nth-child(3) td { background-color: #ebe5c5 !important; } /* Müfa'ale: Tatlı Sarı */
+/* 4. satır ayırıcı çizgidir */
+#tab2 tbody tr:nth-child(5) td { background-color: #d2ebd9 !important; } /* İnfi'al: Tatlı Yeşil */
+#tab2 tbody tr:nth-child(6) td { background-color: #c7e8e1 !important; } /* İfti'al: Tatlı Camgöbeği */
+#tab2 tbody tr:nth-child(7) td { background-color: #d2e0f0 !important; } /* İf'ilal: Tatlı Mavi */
+/* 8. satır ayırıcı çizgidir */
+#tab2 tbody tr:nth-child(9) td { background-color: #d9dff2 !important; } /* Tefe'ul: Tatlı İndigo */
+#tab2 tbody tr:nth-child(10) td { background-color: #e7d8f0 !important; } /* Tefa'ul: Tatlı Mor */
+#tab2 tbody tr:nth-child(11) td { background-color: #f0d8e6 !important; } /* İstif'al: Tatlı Pembe */
+
 /* Büyüyen Kutu Efektleri ve Çakışma Önleyiciler */
 .zoom-overlay {
     position: absolute;
