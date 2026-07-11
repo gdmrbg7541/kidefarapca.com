@@ -6257,8 +6257,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["tefa'ul", "tefe'ul", "tefeul", "tefaul", "tefa'ül", "tefe'ül", "tefaül", "tefeül"], 
-            title: "Tefa'ul", 
+            keys: ["tefe'ul", "tefeul", "tefe'ül", "tefeül"], 
+            title: "Tefe'ul", 
             harf: "تَـ ـ ـّ ـ", num: 5,
             desc: `
             <p>• <b>Çaba:</b> Gayret ve sahiplenme bildirir. <br>Örn: <span class="arabic-sample">تَصَبَّرَ</span> (Sabretti), <span class="arabic-sample">تَوَسَّدَ</span> (Yastık edindi)</p>
@@ -6279,7 +6279,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["istif'al", "istif'al", "istifal", "istifal"], 
             title: "İstif'al", 
-            harf: "اِسْتِـ ـ ـ ـ", num: 6,
+            harf: "اِسْتَـ ـ ـ ـ", num: 6,
             desc: `
             <p>• <b>İstek:</b> Talep ve bulmak manası verir. <br>Örn: <span class="arabic-sample">اِسْتَغْفَرَ</span> (Af diledi), <span class="arabic-sample">اِسْتَسْهَلَ</span> (Kolay buldu)</p>
             <p>• <b>Değişim:</b> Durum değişikliği veya vakit bildirir. <br>Örn: <span class="arabic-sample">اِسْتَحْجَرَ</span> (Taşlaştı), <span class="arabic-sample">اِسْتَحْصَدَ</span> (Hasat vakti geldi)</p>
