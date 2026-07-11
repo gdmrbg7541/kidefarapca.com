@@ -3,52 +3,39 @@ window.isAtlasFullscreen = false;
 
 window.colorizeArabicWord = function(word, root) {
     if (typeof word !== 'string' || typeof root !== 'string') return word || '';
-    // Extract root letters
+    
+    // Extract root letters as array
     let rootChars = root.replace(/[^\u0621-\u064A]/g, '').split('');
-    // Sadece 3 veya 4 harfli standart fiil köklerini renklendir (Kök tanımlı olmayanları atla)
-    if (rootChars.length !== 3 && rootChars.length !== 4) return word;
-    let resultHTML = "";
     
-    let currentColor = "#b91c1c"; // Dark Red for extra letters
-    let rootColor = "#000000"; // Black for root letters
-    let rootIndex = 0;
-    
-    // Helper to normalize Alef variants for matching
-    function normalizeAlef(c) {
-        return c.replace(/[أإآءؤئ]/g, 'ا');
+    // Eğer kök 3 harfli değilse standart renklendirme motorunu kullanılamaz, kelimeyi düz döndür.
+    // (ColorEngine genelde 3 harfliler için optimize edilmiştir)
+    if (rootChars.length !== 3) {
+        // Fallback: eski basit renklendiriciyi sadece 4+ harfli kökler için koru veya düz dön
+        return word; 
     }
-    
-    for (let i = 0; i < word.length; i++) {
-        let char = word[i];
-        
-        // Is it an Arabic letter?
-        if (/[\u0621-\u064A]/.test(char)) {
-            let isMatch = false;
-            if (rootIndex < rootChars.length) {
-                let nChar = normalizeAlef(char);
-                let nRoot = normalizeAlef(rootChars[rootIndex]);
-                if (nChar === nRoot) {
-                    isMatch = true;
-                }
-            }
+
+    // Kelimenin içindeki boşlukları korumak için boşluklara göre bölelim, 
+    // her kelimeyi ColorEngine ile renklendirip tekrar boşlukla birleştirelim.
+    if (typeof ColorEngine !== 'undefined' && typeof ColorEngine.colorize === 'function') {
+        let words = word.split(/\s+/);
+        let coloredWords = words.map(w => {
+            if (!w) return "";
+            // Eğer kelimede hiç Arapça harf yoksa (örn: noktalama işareti), dokunma
+            if (!/[\u0600-\u06FF]/.test(w)) return w;
             
-            if (isMatch) {
-                currentColor = rootColor;
-                rootIndex++;
-            } else {
-                currentColor = "#b91c1c";
-            }
-            resultHTML += `<span style="color: ${currentColor};">${char}</span>`;
-        } 
-        // Is it a diacritic?
-        else if (/[\u064B-\u065F\u0670]/.test(char)) {
-            resultHTML += `<span style="color: ${currentColor};">${char}</span>`;
-        } 
-        else {
-            resultHTML += char;
-        }
+            // YENİ: ColorEngine.colorize'ın gerektirdiği font-size sorunlarını aşmak için,
+            // srf-word sınıfından gelebilecek sorunları önlemek adına düz HTML döndürecek bir mini sargı yapabiliriz.
+            // Fakat ColorEngine.colorize zaten `<span class="srf-word" dir="rtl">...</span>` dönüyor,
+            // Bu span inline-flex olduğu için kelime bazında yan yana duracaktır.
+            // CSS'de srf-word içindeki font-size miras (inherit) alınır, bu sayede tablo dışındaki
+            // clamp(..) vb. font-size tanımları çalışmaya devam eder!
+            return ColorEngine.colorize(w, rootChars);
+        });
+        
+        return coloredWords.join(' ');
     }
-    return resultHTML;
+    
+    return word;
 };
 
 window.toggleAtlasFullscreen = function() {
@@ -321,6 +308,22 @@ window.showWordDetails = function(rootKey, kalipKeyStr, exactArText, exactTrText
     }
 }
 
+
+function getKalipFromRootData(rootData, keyStr) {
+    if (!keyStr) return null;
+    let keyStrString = keyStr.toString();
+    if (keyStrString.includes('+')) {
+        let parts = keyStrString.split('+');
+        let baseNum = parseInt(parts[0], 10);
+        let suffix = parts[1];
+        if (rootData[baseNum] && rootData[baseNum][suffix]) {
+            let innerObj = rootData[baseNum][suffix];
+            return Object.assign({}, innerObj, { base: innerObj });
+        }
+    }
+    return rootData[keyStrString] || rootData[parseInt(keyStrString, 10)];
+}
+
 function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     // if (typeof closeKeyboard === 'function') closeKeyboard();
 
@@ -410,12 +413,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         }
     });
 
-    if (!displayTitle && exactArText) {
-        displayTitle = `
-        <div style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <span style="font-size:${window.isAtlasFullscreen ? "clamp(2.4rem, 4vh, 4.5rem)" : "clamp(4.0rem, 6.0vw, 8.0rem)"}; color:#1a1a1a; font-family: 'Arakom', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.1);">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(exactArText, rootKey) : exactArText}</span>
-        </div>`;
-    }
+
     
     htmlContent += `<div style="display:flex; justify-content:center; align-items:center; border-bottom:${displayTitle ? '1px solid rgba(255,255,255,0.2)' : 'none'}; padding-bottom:${displayTitle ? '15px' : '0'}; margin-bottom:20px; position:relative; min-height:50px; width:100%; box-sizing:border-box;">`;
     
@@ -519,7 +517,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             });
             htmlContent += `</div></div>`;
         } else {
-            let itemClicked = rootData[kalipKeyStr] || rootData[kalipKey];
+            let itemClicked = getKalipFromRootData(rootData, kalipKeyStr);
             if (!itemClicked) itemClicked = { base: { emoji: "", arText: exactArText, trText: exactTrText } };
             
 
@@ -592,10 +590,10 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                         }
                     };
                 } else {
-                    itemCogul = rootData[itemClicked.cogulId.toString()];
+                    itemCogul = getKalipFromRootData(rootData, itemClicked.cogulId);
                 }
             } else if (itemClicked && itemClicked.tekilId) {
-                itemTekil = rootData[itemClicked.tekilId.toString()];
+                itemTekil = getKalipFromRootData(rootData, itemClicked.tekilId);
                 itemCogul = itemClicked;
             } else {
                 // Sadece kendisini (tekil olarak) göster
@@ -702,9 +700,11 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             
             let titleHtml = '';
 
+            let hasSeparator = (tekilAr && secondColAr);
+            
             htmlContent += `
             <div style="width:100%; text-align:center; background:#ffffff; padding:40px 20px; border-radius:15px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
-                ${emoji ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
+                ${(!hasSeparator && emoji) ? `<div style="font-size:5rem; margin-bottom:15px;">${emoji}</div>` : ''}
                 ${titleHtml}
                 
                 <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
@@ -712,11 +712,12 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:600px; flex: 1; min-width:300px;">
                         ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel.toLocaleUpperCase("tr-TR")}</div>` : ''}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(5.0rem, 7.0vw, 9.0rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(tekilAr, rootKey) : tekilAr}</span>
-                        ${tekilTr ? `<span style="color:#576574; font-size: 1.2rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${tekilTr}</span>` : ''}
+                        ${tekilTr ? `<span style="color:#555; font-size: clamp(1.6rem, 2.5vw, 2.2rem); margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
-                    ${(tekilAr && secondColAr) ? `
-                    <div style="display:flex; align-items:center; justify-content:center; margin-top: 45px;">
+                    ${hasSeparator ? `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:flex-start; margin-top: 10px;">
+                        ${emoji ? `<div style="font-size:3.5rem; margin-bottom:5px;">${emoji}</div>` : ''}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(5.0rem, 7.0vw, 9.0rem); color:#e1b12c; margin: 0 15px; opacity:0.9; line-height: 1.2;">${separator}</span>
                     </div>` : ''}
                     
@@ -724,7 +725,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:600px; flex: 1; min-width:300px;">
                         ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel.toLocaleUpperCase("tr-TR")}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(5.0rem, 7.0vw, 9.0rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(secondColAr, rootKey) : secondColAr}</span>
-                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size: 1.2rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${secondColTr}</span>` : ''}
+                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#555; font-size: clamp(1.6rem, 2.5vw, 2.2rem); margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
                 ${ornekHtml}
@@ -943,7 +944,7 @@ function handleSearchKey(char) {
     if (char === 'BACKSPACE') {
         currentSearchQuery = currentSearchQuery.slice(0, -1);
     } else {
-        if (currentSearchQuery.length < 3) { // Kökler max 3 harf olur
+        if (currentSearchQuery.length < 15) { // Kullanıcılar artık kelime arayabildiği için sınırı 15 harfe çıkarıyoruz
             currentSearchQuery += char;
         }
     }
@@ -1903,6 +1904,13 @@ function closeInlineMatrix(e, btnElement) {
             boxElement.classList.remove('no-transition');
         }, 50);
     }
+
+    // Çarpıya basınca aktif kutu seçimini kaldır ki Hızlı Liste'de + sızıntısı olmasın
+    lastClickedBoxTextSpan = null;
+    const desktopPlus = document.querySelector('.fa-plus');
+    const mobilePlus = document.getElementById('mobile-top-plus');
+    if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
+    if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
 }
 
 function applyToSpecificBox(boxElement, noSound = false) {
@@ -2024,6 +2032,15 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     boxElement.style.transform = "";
     void boxElement.offsetWidth; 
     setTimeout(() => { if (boxElement) boxElement.classList.remove('no-transition'); }, 50);
+
+    // YENİ: Farklı bir kalıba geçildiğinde eski + vurgusunu temizle ve yeni kutu için + kontrolü yap
+    const desktopPlus = document.querySelector('.fa-plus');
+    const mobilePlus = document.getElementById('mobile-top-plus');
+    if (desktopPlus) desktopPlus.classList.remove('plus-highlighted');
+    if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
+    if (typeof checkWordEasterEgg === 'function') {
+        checkWordEasterEgg(boxElement);
+    }
 
     let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
     if (!inlineContainer) {
@@ -3479,16 +3496,9 @@ function applySuffix(suffix) {
         currentBox.style.minWidth = "max-content"; 
         currentBox.style.paddingLeft = "8px"; 
         currentBox.style.paddingRight = "8px";
-        currentBox.style.paddingRight = "8px";
         currentBox.style.transition = "transform 0.1s ease";
         currentBox.style.transform = "scale(1.05)";
         setTimeout(() => { currentBox.style.transform = ""; }, 150);
-
-        const clone = document.getElementById('crisp-zoom-clone');
-        if (clone) {
-            const cloneTextEl = clone.querySelector('.ar, .ar-small');
-            if (cloneTextEl) cloneTextEl.innerHTML = lastClickedBoxTextSpan.innerHTML;
-        }
 
         if (typeof updateSuffixHighlights === 'function') updateSuffixHighlights(currentBox);
 
@@ -3505,6 +3515,13 @@ function applySuffix(suffix) {
                 return original.replace(/\u064E\u0651/g, '\u0651\u064E');
             };
             checkWordEasterEgg(currentBox, standardize(suffix));
+        }
+
+        // Klonu en son güncelle ki checkWordEasterEgg'in yaptığı değişiklikler klona da yansısın
+        const clone = document.getElementById('crisp-zoom-clone');
+        if (clone) {
+            const cloneTextEl = clone.querySelector('.ar, .ar-small');
+            if (cloneTextEl) cloneTextEl.innerHTML = lastClickedBoxTextSpan.innerHTML;
         }
     }
     
@@ -3709,7 +3726,8 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     // ===============================================================
     // 6. GÖRSEL ANİMASYONLAR VE EMOJİLER
     // ===============================================================
-    if (!activeSuffix && eggObj.suggestsPlus) {
+    let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus');
+    if (!activeSuffix && (eggObj.suggestsPlus || hasSuffixes)) {
         if (typeof lastClickedBoxTextSpan !== 'undefined' && lastClickedBoxTextSpan === textEl) {
             if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
             if (mobilePlus) mobilePlus.classList.add('plus-highlighted');
@@ -5274,9 +5292,26 @@ function updateMainKeyboardPredictions() {
         
         for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
             if (matchCount > 60) break;
-            for (const [kalipKey, kalipData] of Object.entries(rootData)) {
+            for (const [originalKalipKey, originalKalipData] of Object.entries(rootData)) {
                 if (matchCount > 60) break;
-                if (kalipData.base && kalipData.base.arText) {
+                
+                let itemsToProcess = [];
+                if (originalKalipData.base && originalKalipData.base.arText) {
+                    itemsToProcess.push({ kalipKey: originalKalipKey, kalipData: originalKalipData });
+                }
+                for (const suffix in originalKalipData) {
+                    if (suffix !== 'base' && suffix !== 'ornek' && suffix !== 'cekimi' && suffix !== 'suggestsPlus') {
+                        if (originalKalipData[suffix] && originalKalipData[suffix].arText) {
+                            itemsToProcess.push({ kalipKey: originalKalipKey + "+" + suffix, kalipData: { base: originalKalipData[suffix] } });
+                        }
+                    }
+                }
+                
+                for (let processItem of itemsToProcess) {
+                    let kalipKey = processItem.kalipKey;
+                    let kalipData = processItem.kalipData;
+                    
+                    if (kalipData.base && kalipData.base.arText) {
                     // GUARD: Boş arText'li otomatik oluşturulmuş nesneleri atla (NaN önleme)
                     if (kalipData.base.arText.trim() === "") continue;
                     const strippedAr = window.stripHarakat(kalipData.base.arText);
@@ -5305,10 +5340,32 @@ function updateMainKeyboardPredictions() {
                     let muennesMatch = false;
                     
                     if (isArabicSearch) {
-                        arMatch = normalizeArabic(strippedAr).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
+                        let getSearchVariants = (rawFilter) => {
+                            let norm = normalizeArabic(rawFilter);
+                            let variants = [norm];
+                            // Arapça'da kelime başına bitişen yaygın harf-i cerler ve bağlaçlar
+                            const prefixes = ['وال', 'فال', 'بال', 'كال', 'ال', 'لل', 'و', 'ف', 'ب', 'ك', 'ل'];
+                            for (let p of prefixes) {
+                                if (norm.startsWith(p) && norm.length > p.length) {
+                                    variants.push(norm.substring(p.length));
+                                }
+                            }
+                            return variants;
+                        };
+                        
+                        let searchVariants = getSearchVariants(filter);
+                        
+                        arMatch = normalizeArabic(strippedAr).split('/').some(part => {
+                            let pt = part.trim();
+                            return searchVariants.some(v => pt.startsWith(v));
+                        });
+                        
                         if (kalipData.base.muennes) {
                             const strippedMuennes = window.stripHarakat(kalipData.base.muennes);
-                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
+                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => {
+                                let pt = part.trim();
+                                return searchVariants.some(v => pt.startsWith(v));
+                            });
                         }
                         matches = arMatch || muennesMatch;
                         
@@ -5329,11 +5386,14 @@ function updateMainKeyboardPredictions() {
                         
                         if (kalipData.cekimi && Array.isArray(kalipData.cekimi)) {
                             kalipData.cekimi.forEach((c, cIndex) => {
-                                if (c && typeof c === 'string' && normalizeArabic(window.stripHarakat(c)).startsWith(normalizeArabic(filter))) {
-                                    matchedConjugations.push({
-                                        arText: c,
-                                        pronounIndex: cIndex
-                                    });
+                                if (c && typeof c === 'string') {
+                                    let normC = normalizeArabic(window.stripHarakat(c));
+                                    if (searchVariants.some(v => normC.startsWith(v))) {
+                                        matchedConjugations.push({
+                                            arText: c,
+                                            pronounIndex: cIndex
+                                        });
+                                    }
                                 }
                             });
                             
@@ -5384,6 +5444,7 @@ function updateMainKeyboardPredictions() {
                         }
                     }
                 }
+                } // End of itemsToProcess loop
             }
         }
         
@@ -6317,15 +6378,34 @@ window.initBabIcons = function() {
     });
 };
 
-// Sayfa yüklendiğinde ve dinamik içerik değiştiğinde motoru çalıştır
 document.addEventListener("DOMContentLoaded", () => {
     initBabIcons();
-    setTimeout(() => { if (typeof selectReadyVerb === 'function') selectReadyVerb("فعل"); }, 300);
+    
+    // Otomatik yükleme sayacı (Kullanıcı 3 kez görene kadar 'فعل' kökünü yükler)
+    try {
+        let loadCount = localStorage.getItem('fialLoadCount');
+        if (!loadCount) {
+            loadCount = 0;
+        } else {
+            loadCount = parseInt(loadCount, 10);
+        }
+        
+        if (loadCount < 3) {
+            localStorage.setItem('fialLoadCount', loadCount + 1);
+            // Kök yükleme için küçük bir gecikme (DOM'un tam hazır olması için)
+            setTimeout(() => {
+                if (typeof selectRootFromMainKeyboard === 'function' && typeof sozlukVerileri !== 'undefined' && sozlukVerileri['فعل']) {
+                    selectRootFromMainKeyboard('فعل');
+                }
+            }, 300);
+        }
+    } catch (e) {
+        console.error("Otomatik yükleme hatası:", e);
+    }
 });
 if (document.readyState === "complete" || document.readyState === "interactive") {
     setTimeout(() => {
         initBabIcons();
-        if (typeof selectReadyVerb === 'function') selectReadyVerb("فعل");
     }, 200);
 }
 // ===============================================================
