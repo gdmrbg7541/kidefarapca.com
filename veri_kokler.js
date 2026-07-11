@@ -5502,6 +5502,12 @@ const wordEasterEggs = {
         58: { base: { emoji: "📢", arText: "شَهَّرَ", trText: "Teşhir etti / Meşhur yaptı." } },
         59: { base: { emoji: "📢", arText: "يُشَهِّرُ", trText: "Teşhir eder / Meşhur yapar." } },
         60: { base: { emoji: "📢", arText: "شَهِّرْ", trText: "Teşhir et! / Meşhur yap!" } },
+        
+        77: { base: { emoji: "🌟", arText: "اِشْتَهَرَ", trText: "Meşhur oldu / Ünlendi." } },
+        78: { base: { emoji: "🌟", arText: "يَشْتَهِرُ", trText: "Meşhur olur / Ünlenir." } },
+        79: { base: { emoji: "🌟", arText: "اِشْتَهِرْ", trText: "Meşhur ol / Ünlen!" } },
+        80: { base: { emoji: "🌠", arText: "اِشْتِهَار", trText: "Meşhur olma / Ünlenme." } },
+        81: { base: { emoji: "👨‍🎤", arText: "مُشْتَهِر", trText: "Meşhur olan / Ünlenen." } }
     },
 
     // ==================================================================
@@ -21273,5 +21279,22 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         60: { base: { emoji: "🪄", arText: "نَوِّمْ", trText: "Uyut!" } },
         61: { base: { emoji: "🌀", arText: "تَنْوِيم", trText: "Uyutma / Hipnoz.", ornek: { ar: "تَنْوِيمٌ مَغْنَاطِيسِيٌّ", tr: "Manyetik uyutma (Hipnoz)." } } },
         62: { base: { emoji: "💊", arText: "مُنَوِّم", trText: "Uyutan / Uyku ilacı.", ornek: { ar: "حُبُوبٌ مُنَوِّمَةٌ", tr: "Uyku hapları." } } }
+    },
+    "رحب": {
+        11: { base: { emoji: "😌", arText: "رَحُبَ", trText: "Geniş ve ferah oldu." } },
+        12: { base: { emoji: "🏞️", arText: "يَرْحُبُ", trText: "Geniş ve ferah olur." } },
+        13: { base: { emoji: "👐", arText: "اُرْحُبْ", trText: "Geniş ol!" } },
+        
+        58: { base: { emoji: "🤗", arText: "رَحَّبَ", trText: "Karşıladı / 'Hoş geldin' dedi.", ornek: { ar: "رَحَّبَ الْمُدِيرُ بِالضُّيُوفِ", tr: "Müdür misafirleri karşıladı." } } },
+        59: { base: { emoji: "👋", arText: "يُرَحِّبُ", trText: "Karşılar / 'Hoş geldin' der." } },
+        60: { base: { emoji: "🤝", arText: "رَحِّبْ", trText: "Karşıla / 'Hoş geldin' de!" } },
+        61: { base: { emoji: "💐", arText: "تَرْحِيب", trText: "Karşılama / Selamlama.", ornek: { ar: "حَفْلَةُ تَرْحِيبٍ", tr: "Karşılama töreni (Hoş geldin partisi)." } } },
+        62: { base: { emoji: "🙋", arText: "مُرَحِّب", trText: "Karşılayan kişi." } },
+        
+        22: { base: { emoji: "🕊️", arText: "رَحَابَة", trText: "Genişlik / Ferahlık.", ornek: { ar: "رَحَابَةُ الصَّدْرِ", tr: "Göğüs genişliği (Sabır ve hoşgörü)." } } },
+        
+        38: { 
+            base: { emoji: "✨", arText: "مَرْحَبَا", trText: "Merhaba! / Hoş geldin!", ornek: { ar: "مَرْحَبَا بِكُمْ يَا أَصْدِقَائِي", tr: "Hoş geldiniz dostlarım!" } }
+        }
     }
 };

@@ -1,5 +1,56 @@
 
 window.isAtlasFullscreen = false;
+
+window.colorizeArabicWord = function(word, root) {
+    if (typeof word !== 'string' || typeof root !== 'string') return word || '';
+    // Extract root letters
+    let rootChars = root.replace(/[^\u0621-\u064A]/g, '').split('');
+    // Sadece 3 veya 4 harfli standart fiil köklerini renklendir (Kök tanımlı olmayanları atla)
+    if (rootChars.length !== 3 && rootChars.length !== 4) return word;
+    let resultHTML = "";
+    
+    let currentColor = "#b91c1c"; // Dark Red for extra letters
+    let rootColor = "#000000"; // Black for root letters
+    let rootIndex = 0;
+    
+    // Helper to normalize Alef variants for matching
+    function normalizeAlef(c) {
+        return c.replace(/[أإآءؤئ]/g, 'ا');
+    }
+    
+    for (let i = 0; i < word.length; i++) {
+        let char = word[i];
+        
+        // Is it an Arabic letter?
+        if (/[\u0621-\u064A]/.test(char)) {
+            let isMatch = false;
+            if (rootIndex < rootChars.length) {
+                let nChar = normalizeAlef(char);
+                let nRoot = normalizeAlef(rootChars[rootIndex]);
+                if (nChar === nRoot) {
+                    isMatch = true;
+                }
+            }
+            
+            if (isMatch) {
+                currentColor = rootColor;
+                rootIndex++;
+            } else {
+                currentColor = "#b91c1c";
+            }
+            resultHTML += `<span style="color: ${currentColor};">${char}</span>`;
+        } 
+        // Is it a diacritic?
+        else if (/[\u064B-\u065F\u0670]/.test(char)) {
+            resultHTML += `<span style="color: ${currentColor};">${char}</span>`;
+        } 
+        else {
+            resultHTML += char;
+        }
+    }
+    return resultHTML;
+};
+
 window.toggleAtlasFullscreen = function() {
     window.isAtlasFullscreen = !window.isAtlasFullscreen;
     let screenAtlas = document.getElementById('screen-atlas');
@@ -362,7 +413,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     if (!displayTitle && exactArText) {
         displayTitle = `
         <div style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 10px 40px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <span style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; font-family: 'Arakom', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.1);">${exactArText}</span>
+            <span style="font-size:${window.isAtlasFullscreen ? "clamp(2.4rem, 4vh, 4.5rem)" : "clamp(4.0rem, 6.0vw, 8.0rem)"}; color:#1a1a1a; font-family: 'Arakom', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.1);">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(exactArText, rootKey) : exactArText}</span>
         </div>`;
     }
     
@@ -450,8 +501,8 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             verbCards.forEach(card => {
                 let rData = rootData[card.id] || { base: {} };
                 
-                let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
-                let trText = (rData.base && rData.base.trText) ? `<div style="color:#555; font-size:1.6rem; font-weight:bold; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
+                let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:${window.isAtlasFullscreen ? "clamp(2.4rem, 4vh, 4.5rem)" : "clamp(4.0rem, 6.0vw, 8.0rem)"}; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
+                let trText = (rData.base && rData.base.trText) ? `<div style="color:#555; font-size:1.2rem; font-weight:bold; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
                 let arText = (rData.base && rData.base.arText) ? rData.base.arText : "";
                 
                 if (!arText && typeof generateTuremis === "function") {
@@ -462,7 +513,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 <div style="background:#ffffff; padding:30px 10px; border-radius:15px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div style="color:${card.color}; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
                     ${emoji}
-                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
+                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:${window.isAtlasFullscreen ? "clamp(2.4rem, 4vh, 4.5rem)" : "clamp(4.0rem, 6.0vw, 8.0rem)"}; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(arText, rootKey) : arText}</span>
                     ${trText}
                 </div>`;
             });
@@ -607,8 +658,8 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                         let isLast = index === allOrnekler.length - 1;
                         let borderStyle = isLast ? "" : "border-bottom:1px solid rgba(189, 195, 199, 0.3); margin-bottom:15px; padding-bottom:10px;";
                         ornekHtml += `<div style="${borderStyle}">
-                                        <div style="font-family:'Arakom', sans-serif; font-size:2rem; color:#d35400; margin-bottom:10px;" dir="rtl">${ornek.ar}</div>
-                                        <div style="color:#7f8c8d; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight:500;" dir="ltr">${ornek.tr}</div>
+                                        <div style="font-family:'Arakom', sans-serif; font-size:clamp(3.0rem, 4.0vw, 5.0rem); color:#d35400; margin-bottom:15px; line-height:1.4;" dir="rtl">${ornek.ar}</div>
+                                        <div style="color:#7f8c8d; font-size:${window.isAtlasFullscreen ? "clamp(1.6rem, 2.5vh, 2.5rem)" : "clamp(1.8rem, 2.5vw, 3.0rem)"}; font-weight:bold;" dir="ltr">${ornek.tr}</div>
                                       </div>`;
                     }
                 });
@@ -658,22 +709,22 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 
                 <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
                     ${tekilAr ? `
-                    <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; max-width:600px; flex: 1; min-width:300px;">
                         ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel.toLocaleUpperCase("tr-TR")}</div>` : ''}
-                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
-                        ${tekilTr ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${tekilTr}</span>` : ''}
+                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(5.0rem, 7.0vw, 9.0rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(tekilAr, rootKey) : tekilAr}</span>
+                        ${tekilTr ? `<span style="color:#576574; font-size: 1.2rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
                     ${(tekilAr && secondColAr) ? `
                     <div style="display:flex; align-items:center; justify-content:center; margin-top: 45px;">
-                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#e1b12c; margin: 0 15px; opacity:0.9; line-height: 1.2;">${separator}</span>
+                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(5.0rem, 7.0vw, 9.0rem); color:#e1b12c; margin: 0 15px; opacity:0.9; line-height: 1.2;">${separator}</span>
                     </div>` : ''}
                     
                     ${secondColAr ? `
-                    <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; max-width:600px; flex: 1; min-width:300px;">
                         ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel.toLocaleUpperCase("tr-TR")}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
-                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
-                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${secondColTr}</span>` : ''}
+                        <span style="font-family:'Arakom', sans-serif; font-size:clamp(5.0rem, 7.0vw, 9.0rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(secondColAr, rootKey) : secondColAr}</span>
+                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size: 1.2rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
                 ${ornekHtml}
@@ -5377,6 +5428,7 @@ function updateMainKeyboardPredictions() {
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
                 const kisaltilmisAnlam = kelimeler.slice(0, 3).join(' ') + (kelimeler.length > 3 ? "..." : "");
+                const trFontSize = kelimeler.length >= 3 ? "1.4rem" : "1.6rem";
                 
                 let conjugationBadge = "";
                 let rootBadge = "";
@@ -5407,25 +5459,21 @@ function updateMainKeyboardPredictions() {
                 let escapedArText = clickArText ? clickArText.replace(/"/g, "&quot;").replace(/'/g, "\\'") : "";
                 let escapedTrText = item.trText ? item.trText.replace(/"/g, "&quot;").replace(/'/g, "\\'") : "";
                 let escapedRootKey = item.rootKey ? item.rootKey.replace(/"/g, "&quot;").replace(/'/g, "\\'") : "";
+                let coloredArText = (typeof colorizeArabicWord === 'function' && item.rootKey) ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
                 
                 resultsHTML += `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:#f4f6f7; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding:15px; border-radius:12px; flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); min-width: 0; box-sizing: border-box; cursor:pointer; position:relative; overflow: hidden;" onclick="showWordDetails('${escapedRootKey}', '${item.kalipKey}', '${escapedArText}', '${escapedTrText}')">
+                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:#f4f6f7; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding:10px 5px 8px 5px; border-radius:12px; flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); min-width: 0; box-sizing: border-box; cursor:pointer; position:relative; overflow: hidden;" onclick="showWordDetails('${escapedRootKey}', '${item.kalipKey}', '${escapedArText}', '${escapedTrText}')">
                         
-                        <div dir="ltr" style="display:flex; flex-direction:row; width:100%; align-items:center; justify-content:space-between;">
-                            
-                            <div style="flex: 0 0 35px; display:flex; justify-content:center; align-items:center; color:rgba(0,0,0,0.15); font-size:2.2rem; margin-right: 15px;" title="Detayları Görüntüle">
-                                <i class="fas fa-layer-group"></i>
-                            </div>
-
-                            <div style="flex: 1 1 0; min-width:0; text-align:left; padding-right: 15px; border-right: 2px solid rgba(0,0,0,0.1);">
-                                <span dir="ltr" style="font-family: \'Inter\', sans-serif; font-size:1.6rem; font-weight:bold; color:#555555; line-height:1.2; word-break: break-word; display:block; overflow-wrap: break-word; hyphens: auto;">
-                                    ${kisaltilmisAnlam}
+                        <div dir="ltr" style="display:flex; flex-direction:column; width:100%; align-items:center; justify-content:center; position:relative;">
+                            <i class="fas fa-layer-group" style="position:absolute; top:0; left:0; color:rgba(0,0,0,0.05); font-size:1.5rem;"></i>
+                            <div style="width: 100%; text-align:center; margin-top:2px; margin-bottom:0px;">
+                                <span style="font-family: \'Arakom\', sans-serif; font-size:clamp(4.0rem, 6.0vw, 8.0rem); font-weight:normal; color:#000000; line-height:1.4; display:block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 6px 0; margin: -6px 0;">
+                                    ${coloredArText}
                                 </span>
                             </div>
-                            
-                            <div style="flex: 1 1 0; min-width:0; text-align:right; padding-left: 15px;">
-                                <span style="font-family: \'Arakom\', sans-serif; font-size:clamp(3.0rem, 4vw, 4.8rem); font-weight:normal; color:#000000; line-height:1.5; padding: 10px 0; display:block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    ${item.arText}
+                            <div style="width: 100%; text-align:center; margin-top: 4px;">
+                                <span dir="ltr" style="font-family: \'Inter\', sans-serif; font-size:${trFontSize}; font-weight:500; color:#555555; line-height:1.2; word-break: break-word; display:block; overflow-wrap: break-word; hyphens: auto;">
+                                    ${kisaltilmisAnlam}
                                 </span>
                             </div>
                         </div>
@@ -7603,7 +7651,7 @@ function initMemoryGrid(key, forceShuffle = false) {
                 <div class="memory-card-inner">
                     <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
                     <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
-                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${thematicCategoriesData[key]?.arFontSize ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${item.arText}</div>
+                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${thematicCategoriesData[key]?.arFontSize ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText}</div>
                     </div>
                     <!-- ARKA YÜZ: Türkçe ve Emoji -->
                     <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -7618,7 +7666,7 @@ function initMemoryGrid(key, forceShuffle = false) {
                 <div class="memory-card-inner">
                     <div class="memory-card-face memory-card-front"></div>
                     <div class="memory-card-face memory-card-back lang-${item.lang}">
-                        <span>${item.text}</span>
+                        <span>${(item.lang === 'ar' && typeof colorizeArabicWord === 'function') ? colorizeArabicWord(item.text, item.pairId) : item.text}</span>
                     </div>
                 </div>
             `;
@@ -8511,7 +8559,7 @@ window.handleAtlasVerbChange = function(keepState = false) {
         // Kutunun içi
         btn.innerHTML = `
             <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%;">
-                <span class="arabic" id="arab-text-${i}" style="font-size:${window.isAtlasFullscreen ? "clamp(3rem, 6.5vh, 6rem)" : "clamp(3.5rem, 5vw, 6rem)"}; pointer-events:none; color: #ea580c; letter-spacing: -2px;">${pats[i].p}</span>
+                <span class="arabic" id="arab-text-${i}" style="font-size:${window.isAtlasFullscreen ? "clamp(3rem, 6.5vh, 6rem)" : "clamp(4.0rem, 6.0vw, 8.0rem)"}; pointer-events:none; color: #ea580c; letter-spacing: -2px;">${pats[i].p}</span>
             </div>
             <div style="height: ${window.isAtlasFullscreen ? "2rem" : "4rem"}; display: flex; align-items: flex-start; justify-content: center; width: 100%; margin-bottom: 0.5rem;">
                 <span style="font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2.5vh, 2.2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; color:#475569; pointer-events:none; font-family: sans-serif;">${mean}</span>
@@ -8525,7 +8573,7 @@ window.handleAtlasVerbChange = function(keepState = false) {
                 this.classList.remove('atlas-revealed');
                 arabSpan.innerHTML = pats[i].p;
                 arabSpan.style.color = '#ea580c';
-                arabSpan.style.fontSize = window.isAtlasFullscreen ? 'clamp(3rem, 6.5vh, 6rem)' : 'clamp(3.5rem, 5vw, 6rem)';
+                arabSpan.style.fontSize = window.isAtlasFullscreen ? 'clamp(3rem, 6.5vh, 6rem)' : 'clamp(4.0rem, 6.0vw, 8.0rem)';
                 arabSpan.style.letterSpacing = '-2px';
             } else {
                 this.classList.add('atlas-revealed');
@@ -8643,7 +8691,7 @@ function openFastDictionaryMode() {
     const fdmContainer = document.getElementById('fdm-root-container');
     if (fdmContainer) {
         // Çarpı (X) butonu ile çakışmaması için sağdan margin verdik (margin-right: 70px)
-        const rootPlateHtml = `<div class="fdm-root-plate draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 70px 0 0 !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 4.2rem !important; padding: 14px 20px 20px 0px !important; min-width: 240px !important; border-radius: 18px !important; flex-shrink: 0;"><span class="root-text-content">${formattedTitle}</span></div>`;
+        const rootPlateHtml = `<div class="fdm-root-plate draggable-root-clone" style="position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 70px 0 0 !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 4.2rem !important; padding: 14px 20px 20px 10px !important; min-width: 250px !important; border-radius: 18px !important; flex-shrink: 0;"><span class="root-text-content">${formattedTitle}</span></div>`;
         
         const infoHtml = `
             <div dir="ltr" style="background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-family: 'Arakom', sans-serif; display: flex; flex-direction: column; justify-content: center; flex: 1; text-align: left;">
@@ -8724,11 +8772,12 @@ function openFastDictionaryMode() {
         
         let isVerbListRow = (refId <= 16 || [52,53,54, 58,59,60, 64,65,66, 71,72,73, 77,78,79, 88,89,90, 94,95,96, 100,101,102].includes(refId));
         let numBg = isVerbListRow ? '#27ae60' : '#2980b9';
+        let coloredArTextFdm = (typeof colorizeArabicWord === 'function' && currentRoot) ? colorizeArabicWord(arText, currentRoot) : arText;
         
         const html = `
             <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 18px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
                 <div style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px;">${refId}</div>
-                <div style="flex: 1; text-align: right; padding-right: 20px; font-family: 'Arakom', sans-serif; font-size: 3.4rem; color: #000;">${arText} ${emoji}</div>
+                <div style="flex: 1; text-align: right; padding-right: 20px; font-family: 'Arakom', sans-serif; font-size: 3.4rem; color: #000;">${coloredArTextFdm} ${emoji}</div>
                 <div style="flex: 1; text-align: left; color: #444; font-size: 1.8rem;" dir="ltr">${trText}</div>
             </div>
         `;

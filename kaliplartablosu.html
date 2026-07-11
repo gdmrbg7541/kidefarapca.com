@@ -107,13 +107,13 @@
 </div>
 
 <div class="top-bar">
-    <div id="root-display-box" onclick="openRootsModal()" style="cursor: pointer;">
+    <div id="root-display-box">
         <div style="width: 100%; display: flex; gap: 15px; justify-content: space-evenly; align-items: center;">
             <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
             <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
             <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
             <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Hazır Fiiller"></i>
-            <span id="root-text-display"><i class="fas fa-sitemap root-icon sitemap-wave-hint" onclick="event.stopPropagation(); openRootsModal()" title="Kökler Listesi"></i></span>
+            <span id="root-text-display" onclick="openRootsModal()" style="cursor: pointer;"><i class="fas fa-sitemap root-icon sitemap-wave-hint" title="Kökler Listesi"></i></span>
         </div>
     </div>  
 
@@ -452,7 +452,7 @@
 <script src="veri_kokler.js?v=1783311124"></script>
 <script src="veri_sozluk.js?v=1783311124"></script>
 <script src="veri_gramer.js"></script>
-<script src="kaliplartablosu.js?v=1783698254"></script>
+<script src="kaliplartablosu.js?v=1783772792"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
