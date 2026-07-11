@@ -2921,15 +2921,23 @@ const wordEasterEggs = {
             } 
         },
         
-        // --- 35 Numaralı Kalıp (فَعِيل) ---
-        35: { 
-            base: { emoji: "👔", arText: "سَفِير", trText: "Büyükelçi (Sefir)." }, 
-            suggestsPlus: true, 
-            "ة": {
+        // --- 22 Numaralı Kalıp (فَعَالَة) ---
+        22: {
+            base: {
                 emoji: "🏢", 
                 arText: "سَفَارَة", 
                 trText: "Büyükelçilik (Sefaret).",
                 ornek: { ar: "السَّفَارَةُ تُمَثِّلُ الدَّوْلَةَ فِي الْخَارِجِ", tr: "Büyükelçilik devleti yurtdışında temsil eder." }
+            }
+        },
+        
+        // --- 35 Numaralı Kalıp (فَعِيل) ---
+        35: { 
+            base: { 
+                emoji: "👔", 
+                arText: "سَفِير", 
+                trText: "Büyükelçi (Sefir).",
+                ornek: { ar: "اِسْتَقْبَلَ الرَّئِيسُ السَّفِيرَ", tr: "Başkan büyükelçiyi kabul etti." }
             } 
         },
         
@@ -2954,6 +2962,69 @@ const wordEasterEggs = {
             } 
         }
     }, 
+
+    // ==================================================================
+    // S-Y-H (س ي ح) KÖKÜ - Turizm / Gezmek
+    // ==================================================================
+    "سيح": { 
+        // --- 1, 4, 5 Numaralı Kalıplar (2. Bab - Ecvef Yâî) ---
+        1: { 
+            cekimi: ["سَاحَ", "سَاحَا", "سَاحُوا", "سَاحَتْ", "سَاحَتَا", "سِحْنَ", "سِحْتَ", "سِحْتُمَا", "سِحْتُمْ", "سِحْتِ", "سِحْتُمَا", "سِحْتُنَّ", "سِحْتُ", "سِحْنَا", "سِحْنَا"],
+            base: { emoji: "🚶", arText: "سَاحَ", trText: "Gezdi / Seyahat etti." } 
+        },
+        4: { 
+            cekimi: ["يَسِيحُ", "يَسِيحَانِ", "يَسِيحُونَ", "تَسِيحُ", "تَسِيحَانِ", "يَسِحْنَ", "تَسِيحُ", "تَسِيحَانِ", "تَسِيحُونَ", "تَسِيحِينَ", "تَسِيحَانِ", "تَسِحْنَ", "أَسِيحُ", "نَسِيحُ", "نَسِيحُ"],
+            base: { emoji: "🏞️", arText: "يَسِيحُ", trText: "Geziyor / Seyahat ediyor." } 
+        },
+        5: { 
+            cekimi: ["سِحْ", "سِيحَا", "سِيحُوا", "سِيحِي", "سِيحَا", "سِحْنَ"],
+            base: { emoji: "🧭", arText: "سِحْ", trText: "Gez / Seyahat et!" } 
+        },
+        
+        // --- 23 Numaralı Kalıp (فِعَالَة) ---
+        23: {
+            base: { 
+                emoji: "🏖️", 
+                arText: "سِيَاحَة", 
+                trText: "Turizm / Seyahat." 
+            },
+            "يَّة": {
+                emoji: "🗺️",
+                arText: "سِيَاحِيَّة",
+                trText: "Turistik.",
+                ornek: { ar: "مَدِينَةٌ سِيَاحِيَّةٌ", tr: "Turistik bir şehir." }
+            }
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: {
+            base: { 
+                emoji: "📸", 
+                arText: "سَائِح", 
+                trText: "Turist.",
+                cogulId: "45"
+            }
+        },
+
+        // --- 34 Numaralı Kalıp (فَعَّال) ---
+        34: {
+            base: { 
+                emoji: "🤠", 
+                arText: "سَيَّاح", 
+                trText: "Çok gezen / Seyyah." 
+            }
+        },
+
+        // --- 45 Numaralı Kalıp (فُعَّال) ---
+        45: {
+            base: { 
+                emoji: "👥", 
+                arText: "سُيَّاح", 
+                trText: "Turistler.",
+                tekilId: "33"
+            }
+        }
+    },
 
     // ==================================================================
     // 16. '-Q-L (ع ق ل) KÖKÜ - Akıl / Anlamak / Bağlamak
@@ -3042,7 +3113,15 @@ const wordEasterEggs = {
                 arText: "عَاصِم", 
                 trText: "Koruyan.",
                 ornek: { ar: "لَا عَاصِمَ الْيَوْمَ مِنْ أَمْرِ اللهِ", tr: "Bugün Allah'ın emrinden koruyacak hiçbir güç yoktur. (Hûd Suresi, 43)" }
-            } 
+            },
+            // Dişil Formu (Başkent)
+            "ة": {
+                emoji: "🏛️",
+                arText: "عَاصِمَة",
+                trText: "Başkent (Koruyan şehir).",
+                ornek: { ar: "أَنْقَرَةُ عَاصِمَةُ تُرْكِيَا", tr: "Ankara, Türkiye'nin başkentidir." },
+                cogulId: "cogul"
+            }
         }, 
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
@@ -3053,6 +3132,17 @@ const wordEasterEggs = {
                 trText: "Masum / Korunmuş.",
                 ornek: { ar: "الْأَطْفَالُ مَعْصُومُونَ", tr: "Çocuklar masumdur (günahsızdır)." }
             } 
+        },
+        
+        // --- Çoğul (Cemi) ---
+        "cogul": {
+            base: {
+                emoji: "🏙️",
+                arText: "عَوَاصِم",
+                trText: "Başkentler.",
+                ornek: { ar: "عَوَاصِمُ الدُّوَلِ", tr: "Devletlerin başkentleri." }
+            },
+            tekilId: "33+ة"
         }
     },
 
