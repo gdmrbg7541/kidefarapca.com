@@ -2908,6 +2908,76 @@ const wordEasterEggs = {
     },
 
     // ==================================================================
+    // R-W-' (ر و ع) KÖKÜ - Harika / Korku
+    // ==================================================================
+    "روع": { 
+        // --- 1, 2, 3 Numaralı Kalıplar (1. Bab - Ecvef Vâvî) ---
+        1: { 
+            cekimi: ["رَاعَ", "رَاعَا", "رَاعُوا", "رَاعَتْ", "رَاعَتَا", "رُعْنَ", "رُعْتَ", "رُعْتُمَا", "رُعْتُمْ", "رُعْتِ", "رُعْتُمَا", "رُعْتُنَّ", "رُعْتُ", "رُعْنَا", "رُعْنَا"],
+            base: { emoji: "😲", arText: "رَاعَ", trText: "Hayran bıraktı / Korkuttu." } 
+        },
+        2: { 
+            cekimi: ["يَرُوعُ", "يَرُوعَانِ", "يَرُوعُونَ", "تَرُوعُ", "تَرُوعَانِ", "يَرُعْنَ", "تَرُوعُ", "تَرُوعَانِ", "تَرُوعُونَ", "تَرُوعِينَ", "تَرُوعَانِ", "تَرُعْنَ", "أَرُوعُ", "نَرُوعُ", "نَرُوعُ"],
+            base: { emoji: "😮", arText: "يَرُوعُ", trText: "Hayran bırakıyor / Korkutuyor." } 
+        },
+        3: { 
+            cekimi: ["رُعْ", "رُوعَا", "رُوعُوا", "رُوعِي", "رُوعَا", "رُعْنَ"],
+            base: { emoji: "❗", arText: "رُعْ", trText: "Hayran bırak! / Korkut!" } 
+        },
+        
+        // --- 18 Numaralı Kalıp (فَعْل) ---
+        18: {
+            base: { 
+                emoji: "😨", 
+                arText: "رَوْع", 
+                trText: "Korku / Dehşet." 
+            },
+            "ة": {
+                emoji: "✨",
+                arText: "رَوْعَة",
+                trText: "İhtişam / Harikalık.",
+                ornek: { ar: "يَا لَلرَّوْعَةِ!", tr: "Ne harika! / Ne muhteşem!" }
+            }
+        },
+        
+        // --- 33 Numaralı Kalıp (فَاعِل) ---
+        33: {
+            base: { 
+                emoji: "🌟", 
+                arText: "رَائِع", 
+                trText: "Harika / Muhteşem." 
+            }
+        },
+
+        // --- 59 Numaralı Kalıp (Tef'îl Babı İsm-i Fâil) ---
+        59: {
+            base: { 
+                emoji: "😱", 
+                arText: "مُرَوِّع", 
+                trText: "Korkunç / Dehşet verici." 
+            }
+        },
+
+        // --- Kalıpsız Bağımsız İsimler (Tekil ve Çoğul) ---
+        "raia": {
+            base: { 
+                emoji: "🖼️", 
+                arText: "رَائِعَة", 
+                trText: "Başyapıt / Şaheser.",
+                cogulId: "revai"
+            }
+        },
+        "revai": {
+            base: { 
+                emoji: "📚", 
+                arText: "رَوَائِع", 
+                trText: "Şaheserler / Başyapıtlar.",
+                tekilId: "raia"
+            }
+        }
+    },
+
+    // ==================================================================
     // 15. S-F-R (س ف ر) KÖKÜ - Yolculuk / Açığa Çıkarmak
     // ==================================================================
     "سفر": { 
@@ -5937,8 +6007,9 @@ const wordEasterEggs = {
         
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
         63: { 
-            suggestsPlus: true, 
-            "ات": { emoji: "🟢", arText: "مُفَعَّل", trText: "Aktifleştirilmiş / Onaylı.", ornek: { ar: "حِسَابٌ مُفَعَّلٌ", tr: "Aktifleştirilmiş (onaylı/etkin) hesap." } } 
+            base: { emoji: "🟢", arText: "مُفَعَّل", trText: "Aktifleştirilmiş / Onaylı.", ornek: { ar: "حِسَابٌ مُفَعَّلٌ", tr: "Aktifleştirilmiş (onaylı/etkin) hesap." } },
+            "ات": { emoji: "🟢", arText: "مُفَعَّلَات", trText: "Aktifleştirilmiş olanlar / Onaylılar." },
+            suggestsPlus: true 
         },
 
         // --- İnfi'âl Babı (71-75) ---
