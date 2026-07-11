@@ -3444,14 +3444,7 @@ const wordEasterEggs = {
         // --- 35 Numaralı Kalıp (فَعِيل) ---
         35: { 
             cogulId: 46,
-            base: { emoji: "👑", arText: "خَلِيف", trText: "Halife (Yalın).", ornek: { ar: "هُوَ خَلِيفٌ صَالِحٌ", tr: "O salih bir haleftir." } },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "👑", 
-                arText: "خَلِيفَة", 
-                trText: "Halife / Temsilci.",
-                ornek: { ar: "إِنِّي جَاعِلٌ فِي الْأَرْضِ خَلِيفَةً", tr: "Muhakkak ben yeryüzünde bir halife var edeceğim. (Bakara Suresi, 30)" } 
-            } 
+            base: { emoji: "👑", arText: "خَلِيفَة", trText: "Halife / Temsilci.", ornek: { ar: "إِنِّي جَاعِلٌ فِي الْأَرْضِ خَلِيفَةً", tr: "Muhakkak ben yeryüzünde bir halife var edeceğim. (Bakara Suresi, 30)" } }
         }, 
         
         // --- 46 Numaralı Kalıp (فُعَلَاء) ---

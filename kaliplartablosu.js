@@ -5485,6 +5485,8 @@ function updateMainKeyboardPredictions() {
             for (const item of matchesByLetter[letter]) {
                 // GUARD: Geçersiz/boş girdileri ekrana yazdırma (NaN önleme)
                 if (!item.arText || item.arText.trim() === "" || !item.trText) continue;
+                // USER REQUEST: Hide unpatterned plurals and + items from quick list (NaN fix)
+                if (item.kalipKey === "+" || isNaN(parseInt(item.kalipKey))) continue;
                 const ilkAnlam = (item.trText || "").split('/')[0].trim();
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
@@ -8114,10 +8116,10 @@ window.openAtlasOverlay = function(stage) {
     // Verb Stages (with Tables)
     if (stage === 'mazi' || stage === 'mazi_mezid') {
         arTitle = "الماضي"; trTitle = "Geçmiş Zaman (Mazi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p><strong>Mazi Fiil</strong>, genel olarak geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen bitişik zamirlerle (soneklerle) yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8129,10 +8131,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'muzari' || stage === 'muzari_mezid') {
         arTitle = "المُضارِع"; trTitle = "Geniş / Şimdiki Zaman (Muzari)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p><strong>Muzari Fiil</strong>, eylemin şu an yapıldığını (şimdiki zaman), her zaman yapıldığını (geniş zaman) veya gelecekte yapılacağını bildirir. Çekimi fiilin başına getirilen "Eteyne (أتين)" harfleriyle ve soneklerle yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Muzari'nin Anlamını Değiştiren Edatlar:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8145,10 +8147,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'emir' || stage === 'emir_mezid') {
         arTitle = "الأَمْر"; trTitle = "Emir Kipi"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p><strong>Emir Fiili</strong>, karşımızdaki kişiden (muhatap/muhataba) bir işi yapmasını istemek için kullanılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Edebi ve Kur'an'i Nüanslar (Emrin Mertebeleri):</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8163,7 +8165,7 @@ window.openAtlasOverlay = function(stage) {
     // Mücerred Nouns (No Tables)
     else if (stage === 'mastar') {
         arTitle = "المَصْدَر"; trTitle = "Mastar"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p><strong>Mastar</strong>, eylemin kök adıdır (yapmak, etmek gibi). Fiilin bildirdiği işi, zamana veya şahsa bağlı olmadan bağımsız bir "isim" olarak ifade eder.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8186,7 +8188,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_fail') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir. Sülasi mücerred (3 harfli) fiillerde <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8204,7 +8206,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_meful') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir. Sülasi mücerred fiillerde <strong>"مَفْعُول" (Mef'ûl)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8225,7 +8227,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'zaman_mekan') {
         arTitle = "اِسْمُ الزَّمان والمَكان"; trTitle = "Zaman ve Mekan İsmi"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Eylemin yapıldığı <strong>zamanı</strong> veya eylemin gerçekleştiği <strong>yeri (mekan)</strong> ifade etmek için kullanılan kalıplardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8246,7 +8248,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_alet') {
         arTitle = "اِسْمُ الآلَة"; trTitle = "İsmi Alet (Alet İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Bir işin bizzat kendisiyle yapıldığı <strong>aleti, cihazı veya aracı</strong> ifade etmek için türetilen isimlerdir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8268,7 +8270,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'cemi_teksir') {
         arTitle = "جَمْعُ التَّكْسير"; trTitle = "Kırık Çoğul (Cemi Teksir)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Kelimenin tekil (müfred) yapısının kırılarak (harf eklenip çıkarılarak veya harekeleri değiştirilerek) oluşturulduğu <strong>düzensiz çoğul</strong> türüdür. Kurallı çoğullar gibi (Müslim > Müslimûn) sonuna standart bir ek almaz; ezberlenmesi gerekir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8290,7 +8292,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tasgir') {
         arTitle = "اِسْمُ التَّصْغير"; trTitle = "İsmi Tasğir (Küçültme İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Varlığın küçüklüğünü, azlığını veya ona duyulan <strong>sevgi, şefkat ya da bazen küçümsemeyi</strong> ifade etmek için kullanılan özel kalıptır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8313,7 +8315,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tafdil') {
         arTitle = "اِسْمُ التَّفْضيل"; trTitle = "İsmi Tafdil (Üstünlük İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Sıfatlarda kıyaslama (<strong>daha</strong>) veya en üstünlük (<strong>en</strong>) bildiren isimdir. Eril (Müzekker) için <strong>أَفْعَل (Ef'al)</strong>, Dişil (Müennes) için <strong>فُعْلَى (Fu'lâ)</strong> kalıbı kullanılır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8351,7 +8353,7 @@ window.openAtlasOverlay = function(stage) {
     // Mezid Nouns (No Tables)
     else if (stage === 'mastar_mezid') {
         arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Mezid (harf eklenmiş) fiillerin mastarlarıdır. Sülasi Mücerred mastarların aksine, <strong>Mezid mastarlar tamamen kurallıdır (Kıyasîdir)</strong> ve her babın kendine özgü değişmez bir mastar kalıbı vardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8368,7 +8370,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_fail_mezid') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Mezid fiillerde (harf eklenmiş fiillerde) işi yapanı gösterir. Kuralı çok basittir: Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8386,7 +8388,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_meful_mezid') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
             <p>Mezid fiillerde (harf eklenmiş fiillerde) yapılan işten etkileneni gösterir. Kuralı İsmi Fail ile neredeyse aynıdır: Muzari fiilin başına <strong>ötreli 'MİM' (مُ)</strong> getirilir, ancak İsmi Fail'in aksine <strong>sondan bir önceki harf ÜSTÜNLÜ</strong> okunur.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -9020,3 +9022,188 @@ function triggerFDMTab(tabType) {
         fdmTimeouts.push(autoMezidTimer);
     }
 }
+
+
+
+// --- GÜNÜN KÖKÜ (ROOT OF THE DAY) ---
+function showRootOfDay() {
+    if (typeof wordEasterEggs === 'undefined') return;
+    
+    // Verbs IDs to exclude
+    let verbIds = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16",
+                   "52","53","54","58","59","60","64","65","66","71","72","73","77","78","79",
+                   "83","84","85","88","89","90","94","95","96","100","101","102"];
+    
+    // En az 3 isim barındıran kökleri bulalım
+    let validRoots = [];
+    let allRootKeys = Object.keys(wordEasterEggs);
+    
+    for (let rKey of allRootKeys) {
+        let nounCount = 0;
+        let rData = wordEasterEggs[rKey];
+        for (let k in rData) {
+            if (!verbIds.includes(k) && rData[k].base && rData[k].base.arText) {
+                nounCount++;
+            }
+        }
+        if (nounCount >= 3) {
+            validRoots.push(rKey);
+        }
+    }
+    
+    if (validRoots.length === 0) return;
+    
+    // Her açılışta rastgele bir kök
+    let randomIndex = Math.floor(Math.random() * validRoots.length);
+    let selectedRootKey = validRoots[randomIndex];
+    let rData = wordEasterEggs[selectedRootKey];
+    
+    let wordsArray = [];
+    for (let k in rData) {
+        if (!verbIds.includes(k) && rData[k].base && rData[k].base.arText) {
+            wordsArray.push(rData[k].base);
+        }
+    }
+    
+    wordsArray = wordsArray.slice(0, 15); // Max 15 nouns
+    
+    // 15 Farklı şık iOS/Profesyonel renk paleti (Koyu ve okunabilir)
+    const colorPalette = [
+        "#FF3B30", // Kırmızı
+        "#007AFF", // Mavi
+        "#34C759", // Yeşil (Biraz koyulaştırıldı ama okunaklı)
+        "#5856D6", // İndigo / Mor
+        "#FF9500", // Turuncu
+        "#AF52DE", // Mor / Eflatun
+        "#FF2D55", // Pembe
+        "#0284C7", // Gök Mavisi (Koyu)
+        "#16A34A", // Zümrüt Yeşili
+        "#D97706", // Koyu Sarı / Altın
+        "#7C3AED", // Menekşe
+        "#0D9488", // Turkuaz / Deniz Mavisi
+        "#E11D48", // Koyu Gül Rengi
+        "#4B5563", // Havalı Gri
+        "#4338CA"  // Koyu Lacivert
+    ];
+    
+    let derivedWordsHTML = "";
+    for (let i = 0; i < wordsArray.length; i++) {
+        let w = wordsArray[i];
+        // Renklendirme kapatıldı (zaid harf renklendirmesi iptal), kelimenin tamamı tek renk olacak
+        let rawArText = w.arText; 
+        let cardColor = colorPalette[i % colorPalette.length];
+        
+        derivedWordsHTML += `
+            <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-align: center; transition: transform 0.2s, border-color 0.2s; flex: 0 1 200px; min-width: 160px; max-width: 260px;" onmouseover="this.style.borderColor='${cardColor}'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'">
+                <div style="font-family: 'Arakom', sans-serif; font-size: 52px; color: ${cardColor}; margin-bottom: 12px; line-height: 1.2;" dir="rtl">${rawArText}</div>
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #555555; font-weight: 600;" dir="ltr">${w.trText}</div>
+            </div>
+        `;
+    }
+    
+    // Harfleri tatweel (ـ) ile akıllı bir şekilde formatlama (Örn: كـ ـتـ ـب)
+    const nonJoining = ['ا', 'د', 'ذ', 'ر', 'ز', 'و', 'ؤ', 'ء', 'أ', 'إ', 'آ'];
+    let formattedRootArray = [];
+    for (let i = 0; i < selectedRootKey.length; i++) {
+        let char = selectedRootKey[i];
+        let isLast = (i === selectedRootKey.length - 1);
+        let prevNonJoining = (i === 0) || nonJoining.includes(selectedRootKey[i - 1]);
+        let currNonJoining = nonJoining.includes(char);
+        
+        let part = char;
+        if (!prevNonJoining) part = 'ـ' + part; // join right
+        if (!currNonJoining && !isLast) part = part + 'ـ'; // join left
+        
+        formattedRootArray.push(part);
+    }
+    let formattedRootText = formattedRootArray.join(' ');
+    
+    const modalOverlay = document.createElement("div");
+    modalOverlay.id = "rootOfDayOverlay";
+    modalOverlay.style.position = "fixed";
+    modalOverlay.style.top = "0";
+    modalOverlay.style.left = "0";
+    modalOverlay.style.width = "100vw";
+    modalOverlay.style.height = "100vh";
+    modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)"; 
+    modalOverlay.style.backdropFilter = "blur(10px)";
+    modalOverlay.style.WebkitBackdropFilter = "blur(10px)";
+    modalOverlay.style.zIndex = "2147483647";
+    modalOverlay.style.display = "flex";
+    modalOverlay.style.justifyContent = "center";
+    modalOverlay.style.alignItems = "center";
+    modalOverlay.style.opacity = "0";
+    modalOverlay.style.transition = "opacity 0.4s ease-out";
+    
+    // iOS/Apple-like professional design
+    modalOverlay.innerHTML = `
+        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            
+            <button onclick="closeRootOfDay()" style="position: absolute; top: 20px; right: 20px; background: #e2e8f0; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div style="display: inline-block; background: #ffffff; color: #000000; border: 2px solid #e2e8f0; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+                <i class="fas fa-seedling" style="margin-right: 6px; color: #FF3B30;"></i> GÜNÜN KÖKÜ
+            </div>
+            
+            <div style="font-family: 'Arakom', sans-serif; font-size: 100px; color: #1d1d1f; line-height: 1.1; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.05);" dir="rtl">
+                ${formattedRootText}
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 20px; margin-top: 25px; padding: 0 10px;">
+                ${derivedWordsHTML}
+            </div>
+            
+        </div>
+    `;
+    
+    // Fallback for mobile devices
+    let style = document.createElement('style');
+    style.innerHTML = `
+        @media (max-width: 900px) {
+            #rootOfDayOverlay > div > div:last-child > div {
+                flex: 0 1 200px !important;
+            }
+        }
+        @media (max-width: 600px) {
+            #rootOfDayOverlay > div > div:last-child > div {
+                flex: 0 1 140px !important;
+                min-width: 140px !important;
+                padding: 12px 8px !important;
+            }
+            #rootOfDayOverlay > div > div:last-child > div > div:first-child {
+                font-size: 38px !important;
+            }
+            #rootOfDayOverlay > div > div:nth-child(3) {
+                font-size: 70px !important;
+            }
+            #rootOfDayOverlay > div {
+                padding: 30px 15px !important;
+                border-radius: 20px !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(modalOverlay);
+    
+    setTimeout(() => {
+        modalOverlay.style.opacity = "1";
+        modalOverlay.firstElementChild.style.transform = "scale(1) translateY(0)";
+    }, 50);
+}
+
+
+document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { showRootOfDay(); }, 800); });
+
+
+window.closeRootOfDay = function() {
+    const modalOverlay = document.getElementById("rootOfDayOverlay");
+    if (modalOverlay) {
+        modalOverlay.style.opacity = "0";
+        modalOverlay.firstElementChild.style.transform = "scale(0.95) translateY(-20px)";
+        setTimeout(() => modalOverlay.remove(), 400);
+    }
+}
+
