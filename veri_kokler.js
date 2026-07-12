@@ -3662,7 +3662,12 @@ const wordEasterEggs = {
         },
         
         // --- 47 Numaralı Kalıp (فَعَلَة) ---
+        33: { 
+            cogulId: 47,
+            base: { emoji: "👷‍♂️", arText: "عَامِل", trText: "İşçi / Çalışan.", ornek: { ar: "عَامِلٌ نَشِيطٌ", tr: "Çalışkan bir işçi." } } 
+        },
         47: { 
+            tekilId: 33,
             base: { emoji: "👷", arText: "عَمَلَة", trText: "İşçiler (Cemi Teksir).", ornek: { ar: "يُدَافِعُ عَنْ حُقُوقِ الْعَمَلَةِ", tr: "İşçilerin haklarını savunuyor." } } 
         },
         
@@ -4447,10 +4452,10 @@ const wordEasterEggs = {
             cekimi: ["اِشْكِلْ", "اِشْكِلَا", "اِشْكِلُوا", "اِشْكِلِي", "اِشْكِلَا", "اِشْكِلْنَ"],
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
-        19: { base: { emoji: "📐", arText: "شَكْل", trText: "Şekil / Biçim.", ornek: { ar: "شَكْلٌ هَنْدَسِيٌّ", tr: "Geometrik bir şekil." } } }, 
+        19: { cogulId: 41, base: { emoji: "📐", arText: "شَكْل", trText: "Şekil / Biçim.", ornek: { ar: "شَكْلٌ هَنْدَسِيٌّ", tr: "Geometrik bir şekil." } } }, 
         
         // --- 41 Numaralı Kalıp (أَفْعَال) ---
-        41: { base: { emoji: "🎨", arText: "أَشْكَال", trText: "Şekiller.", ornek: { ar: "أَشْكَالٌ مُخْتَلِفَةٌ", tr: "Farklı şekiller." } } }, 
+        41: { tekilId: 19, base: { emoji: "🎨", arText: "أَشْكَال", trText: "Şekiller.", ornek: { ar: "أَشْكَالٌ مُخْتَلِفَةٌ", tr: "Farklı şekiller." } } }, 
         
         // --- 56 Numaralı Kalıp (مُفْعِل) ---
         56: { 
@@ -8608,31 +8613,34 @@ const wordEasterEggs = {
 
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: { 
-    base: { 
-        emoji: "🔤", 
-        arText: "لَفْظ", 
-        trText: "Lafız / Sözcük / İfade.",
-        ornek: { ar: "لَفْظُ الْجَلَالَةِ", tr: "Allah lafzı (Yücelik ifadesi)." },
+            cogulId: 42,
+            base: { 
+                emoji: "🔤", 
+                arText: "لَفْظ", 
+                trText: "Lafız / Sözcük / İfade.",
+                ornek: { ar: "لَفْظُ الْجَلَالَةِ", tr: "Allah lafzı (Yücelik ifadesi)." }
+            },
+            suggestsPlus: true,
+            "يّ": { 
+                emoji: "🗣️", 
+                arText: "لَفْظِيّ", 
+                trText: "Lafzi / Sözel." 
+            },
+            "يًّا": { 
+                emoji: "🗣️", 
+                arText: "لَفْظِيًّا", 
+                trText: "Lafzen / Sözel olarak." 
+            }
+        },
+        
         // --- Otomatik Eklenen Fiiller ---
         88: { base: { emoji: "🔊", arText: "تَلَفَّظَ", trText: "Telaffuz etti / Söyledi.", ornek: { ar: "تَلَفَّظَ بِكَلِمَاتٍ قَاسِيَةٍ", tr: "Sert kelimeler telaffuz etti/söyledi." } } },
         89: { base: { emoji: "🔊", arText: "يَتَلَفَّظُ", trText: "Telaffuz eder / Söyler.", ornek: { ar: "يَتَلَفَّظُ بِذِكْرِ اللهِ", tr: "Allah'ın zikrini telaffuz eder/söyler." } } },
         90: { base: { emoji: "🔊", arText: "تَلَفَّظْ", trText: "Telaffuz et! / Söyle!", ornek: { ar: "تَلَفَّظْ بِالْخَيْرِ دَائِمًا", tr: "Daima hayrı telaffuz et." } } },
-    },
-    suggestsPlus: true,
-    "يّ": { 
-        emoji: "🗣️", 
-        arText: "لَفْظِيّ", 
-        trText: "Lafzi / Sözel." 
-    },
-    "يًّا": { 
-        emoji: "🗣️", 
-        arText: "لَفْظِيًّا", 
-        trText: "Lafzen / Sözel olarak." 
-    }
-   },
 
         // --- 42 Numaralı Kalıp (أَفْعَال - Çoğul Kalıbı) ---
-        42: { 
+        42: {
+            tekilId: 19, 
             base: { 
                 emoji: "📝", 
                 arText: "أَلْفَاظ", 
@@ -21324,7 +21332,10 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             "ة": { emoji: "✈️", arText: "طَائِرَة", trText: "Uçak." }
         },
         38: { base: { emoji: "🛬", arText: "مَطَار", trText: "Havaalanı.", ornek: { ar: "ذَهَبَ إِلَى الْمَطَارِ", tr: "Havaalanına gitti." } } },
-        43: { base: { emoji: "🐦", arText: "طُيُور", trText: "Kuşlar.", ornek: { ar: "الطُّيُورُ تُهَاجِرُ خَرِيفًا", tr: "Kuşlar sonbaharda göç eder." } } }
+        43: { 
+            tekilId: 33,
+            base: { emoji: "🐦", arText: "طُيُور", trText: "Kuşlar.", ornek: { ar: "الطُّيُورُ تُهَاجِرُ خَرِيفًا", tr: "Kuşlar sonbaharda göç eder." } } 
+        }
     },
     "سير": {
         1: { base: { emoji: "🚶", arText: "سَارَ", trText: "Yürüdü / Gitti.", ornek: { ar: "سَارَ فِي الطَّرِيقِ بِمُفْرَدِهِ", tr: "Yolda tek başına yürüdü." } } },
@@ -21475,6 +21486,43 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         60: { base: { emoji: "🪄", arText: "نَوِّمْ", trText: "Uyut!", ornek: { ar: "نَوِّمْ أَخَاكَ الصَّغِيرَ", tr: "Küçük kardeşini uyut." } } },
         61: { base: { emoji: "🌀", arText: "تَنْوِيم", trText: "Uyutma / Hipnoz.", ornek: { ar: "تَنْوِيمٌ مَغْنَاطِيسِيٌّ", tr: "Manyetik uyutma (Hipnoz)." } } },
         62: { base: { emoji: "💊", arText: "مُنَوِّم", trText: "Uyutan / Uyku ilacı.", ornek: { ar: "حُبُوبٌ مُنَوِّمَةٌ", tr: "Uyku hapları." } } }
+    },
+    "طعم": {
+        8: { base: { emoji: "🍲", arText: "طَعِمَ", trText: "Tattı / Yedi.", ornek: { ar: "طَعِمَ الطَّعَامَ", tr: "Yemeği tattı/yedi." } } },
+        9: { base: { emoji: "😋", arText: "يَطْعَمُ", trText: "Tadıyor / Yiyor.", ornek: { ar: "يَطْعَمُ مِنْ ثِمَارِهَا", tr: "Onun meyvelerinden tadıyor." } } },
+        10: { base: { emoji: "🍽️", arText: "اِطْعَمْ", trText: "Tat / Ye!", ornek: { ar: "اِطْعَمْ مِنْ هَذَا", tr: "Bundan tat." } } },
+        
+        22: { 
+            cogulId: "22_cogul",
+            base: { emoji: "🍛", arText: "طَعَام", trText: "Yemek / Yiyecek.", ornek: { ar: "طَعَامٌ لَذِيذٌ", tr: "Lezzetli bir yemek." } }
+        },
+        "22_cogul": { 
+            tekilId: 22,
+            base: { emoji: "🍱", arText: "أَطْعِمَة", trText: "Yemekler / Yiyecekler.", ornek: { ar: "أَطْعِمَةٌ مُخْتَلِفَةٌ", tr: "Çeşitli yiyecekler." } } 
+        },
+
+        19: { base: { emoji: "👅", arText: "طَعْم", trText: "Tat / Lezzet.", ornek: { ar: "طَعْمُهُ حُلْوٌ", tr: "Onun tadı tatlıdır." } } },
+        
+        33: { base: { emoji: "🧑‍🍳", arText: "طَاعِم", trText: "Tadan / Yiyen.", ornek: { ar: "الطَّاعِمُ الشَّاكِرُ", tr: "Şükrederek yiyen." } } },
+        36: { base: { emoji: "🍔", arText: "مَطْعُوم", trText: "Yenilen / Tadılan şey.", ornek: { ar: "هَذَا غَيْرُ مَطْعُومٍ", tr: "Bu yenilecek bir şey değildir." } } },
+        38: { base: { emoji: "🏪", arText: "مَطْعَم", trText: "Restoran / Lokanta.", ornek: { ar: "ذَهَبْنَا إِلَى مَطْعَمٍ جَدِيدٍ", tr: "Yeni bir restorana gittik." } } },
+        
+        52: { base: { emoji: "🤲", arText: "أَطْعَمَ", trText: "Yedirdi / Doyurdu.", ornek: { ar: "أَطْعَمَ الْمِسْكِينَ", tr: "Fakiri doyurdu." } } },
+        53: { base: { emoji: "🥣", arText: "يُطْعِمُ", trText: "Yediriyor / Doyuruyor.", ornek: { ar: "يُطْعِمُ الْأَيْتَامَ", tr: "Yetimleri doyuruyor." } } },
+        54: { base: { emoji: "🥘", arText: "أَطْعِمْ", trText: "Yedir / Doyur!", ornek: { ar: "أَطْعِمُوا الْجَائِعَ", tr: "Aç olanı doyurun." } } },
+        55: { base: { emoji: "🍲", arText: "إِطْعَام", trText: "Yedirmek / Doyurmak.", ornek: { ar: "إِطْعَامُ فِي يَوْمٍ ذِي مَسْغَبَةٍ", tr: "Kıtlık gününde doyurmak." } } },
+        56: { base: { emoji: "🧑‍🍼", arText: "مُطْعِم", trText: "Yediren / Doyuran.", ornek: { ar: "هُوَ مُطْعِمُ الْفُقَرَاءِ", tr: "O, fakirleri doyurandır." } } },
+        
+        58: { base: { emoji: "💉", arText: "طَعَّمَ", trText: "Aşıladı.", ornek: { ar: "طَعَّمَ الطَّبِيبُ الطِّفْلَ", tr: "Doktor çocuğu aşıladı." } } },
+        59: { base: { emoji: "🩺", arText: "يُطَعِّمُ", trText: "Aşılıyor.", ornek: { ar: "يُطَعِّمُ الْأَشْجَارَ", tr: "Ağaçları aşılıyor." } } },
+        60: { base: { emoji: "🩹", arText: "طَعِّمْ", trText: "Aşıla!", ornek: { ar: "طَعِّمْ طِفْلَكَ", tr: "Çocuğunu aşıla." } } },
+        61: { base: { emoji: "🏥", arText: "تَطْعِيم", trText: "Aşı / Aşılama.", ornek: { ar: "حَمْلَةُ تَطْعِيمٍ", tr: "Aşı kampanyası." } } },
+        62: { base: { emoji: "👨‍⚕️", arText: "مُطَعِّم", trText: "Aşılayan.", ornek: { ar: "الْمُمَرِّضُ مُطَعِّمٌ", tr: "Hemşire aşılayandır." } } },
+        63: { base: { emoji: "🛡️", arText: "مُطَعَّم", trText: "Aşılanmış.", ornek: { ar: "الْأَطْفَالُ مُطَعَّمُونَ", tr: "Çocuklar aşılıdır." } } },
+        
+        100: { base: { emoji: "🥺", arText: "اِسْتَطْعَمَ", trText: "Yemek istedi.", ornek: { ar: "اِسْتَطْعَمَهُ فَأَطْعَمَهُ", tr: "Ondan yiyecek istedi, o da yedirdi." } } },
+        101: { base: { emoji: "🙏", arText: "يَسْتَطْعِمُ", trText: "Yemek istiyor.", ornek: { ar: "يَسْتَطْعِمُ النَّاسَ", tr: "İnsanlardan yiyecek istiyor." } } },
+        102: { base: { emoji: "🍽️", arText: "اِسْتَطْعِمْ", trText: "Yemek iste!", ornek: { ar: "اِسْتَطْعِمُوهُ", tr: "Ondan yiyecek isteyin." } } }
     },
     "رحب": {
         11: { base: { emoji: "😌", arText: "رَحُبَ", trText: "Geniş ve ferah oldu.", ornek: { ar: "رَحُبَ الْمَكَانُ بِهِمْ", tr: "Mekan onlarla ferah oldu." } } },
