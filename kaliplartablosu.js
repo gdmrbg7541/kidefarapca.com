@@ -7563,6 +7563,7 @@ function renderThematicLists() {
 
                             <!-- ORTA (Ayarlar veya Varsayılan Butonlar) -->
                             <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex: 1;">
+                                <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
                                 <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
@@ -7623,11 +7624,19 @@ function openMemorySetup(key) {
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = false;
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    // Çalışma kartları pasif olsun ama kaybolmasın
+    // Tüm butonları pasif yap ama kaybolmasın
+    const btnList = document.getElementById(`btn-list-${key}`);
+    if (btnList) {
+        btnList.classList.remove('active');
+        btnList.style.opacity = '0.6';
+        btnList.style.display = 'block';
+    }
     const btnStudy = document.getElementById(`btn-study-${key}`);
-    btnStudy.classList.remove('active');
-    btnStudy.style.opacity = '0.6';
-    btnStudy.style.display = 'block';
+    if (btnStudy) {
+        btnStudy.classList.remove('active');
+        btnStudy.style.opacity = '0.6';
+        btnStudy.style.display = 'block';
+    }
     
     document.getElementById(`btn-mem-${key}`).style.display = 'none';
     document.getElementById(`mem-settings-${key}`).style.display = 'flex';
@@ -7702,6 +7711,7 @@ function setMemoryMode(key, mode) {
     state.currentPlayer = 1;
     state.activeFlipped = [];
     
+    const listBtn = document.getElementById(`btn-list-${key}`);
     const studyBtn = document.getElementById(`btn-study-${key}`);
     const memBtn = document.getElementById(`btn-mem-${key}`);
     const memSettings = document.getElementById(`mem-settings-${key}`);
@@ -7709,23 +7719,25 @@ function setMemoryMode(key, mode) {
     const p1Box = document.getElementById(`p1-box-${key}`);
     const p2Box = document.getElementById(`p2-box-${key}`);
     
-    if (mode === 'study') {
-        if (studyBtn) {
-            studyBtn.style.display = 'block';
-            studyBtn.style.opacity = '1';
-            studyBtn.classList.add('active');
-        }
-        if (memBtn) {
-            memBtn.style.display = 'block';
-            memBtn.classList.remove('active');
-        }
+    if (listBtn) listBtn.classList.remove('active');
+    if (studyBtn) studyBtn.classList.remove('active');
+    if (memBtn) memBtn.classList.remove('active');
+    
+    if (listBtn) { listBtn.style.display = 'block'; listBtn.style.opacity = '1'; }
+    if (studyBtn) { studyBtn.style.display = 'block'; studyBtn.style.opacity = '1'; }
+    if (memBtn) { memBtn.style.display = 'block'; memBtn.style.opacity = '1'; }
+
+    if (mode === 'list') {
+        if (listBtn) listBtn.classList.add('active');
         if (memSettings) memSettings.style.display = 'none';
-        
-                
+        if (p1Box) p1Box.style.display = 'none';
+        if (p2Box) p2Box.style.display = 'none';
+    } else if (mode === 'study') {
+        if (studyBtn) studyBtn.classList.add('active');
+        if (memSettings) memSettings.style.display = 'none';
         if (p1Box) p1Box.style.display = 'none';
         if (p2Box) p2Box.style.display = 'none';
     } else {
-        if (studyBtn) studyBtn.classList.remove('active');
         if (memBtn) memBtn.classList.add('active');
         if (memSettings) memSettings.style.display = 'flex';
         
@@ -7756,8 +7768,9 @@ function initMemoryGrid(key, forceShuffle = false) {
     
     grid.innerHTML = '';
     const isStudy = state.mode === 'study';
+    const isList = state.mode === 'list';
     
-    grid.className = `thematic-words-grid ${isStudy ? '' : ('memory-mode pairs-' + pairCount)}`;
+    grid.className = `thematic-words-grid ${isList ? 'list-mode-grid' : (isStudy ? '' : ('memory-mode pairs-' + pairCount))}`;
     
     // Fallback if state.shuffledItems is missing
     if (!state.shuffledItems) {
@@ -7766,10 +7779,10 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
     
     let wordsCopy = [...cat.items];
-    let selectedWords = isStudy ? wordsCopy : state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
+    let selectedWords = (isStudy || isList) ? wordsCopy : state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
     
     // If somehow we selected less than pairCount (end of array), we wrap around or reshuffle
-    if (!isStudy && selectedWords.length < pairCount) {
+    if (!isStudy && !isList && selectedWords.length < pairCount) {
         state.shuffledItems = [...cat.items].sort(() => Math.random() - 0.5);
         state.roundIndex = 0;
         selectedWords = state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
@@ -7777,7 +7790,7 @@ function initMemoryGrid(key, forceShuffle = false) {
     
     let displayList = [];
 
-    if (isStudy) {
+    if (isStudy || isList) {
         displayList = selectedWords;
         if (forceShuffle) {
             displayList.sort(() => Math.random() - 0.5);
@@ -7811,6 +7824,19 @@ function initMemoryGrid(key, forceShuffle = false) {
 
     
     displayList.forEach(item => {
+        if (isList) {
+            const row = document.createElement('div');
+            row.className = 'list-mode-item';
+            let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
+            row.innerHTML = `
+                <div class="list-mode-tr" dir="ltr">${item.trText}</div>
+                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
+                <div class="list-mode-ar" dir="rtl">${arContent}</div>
+            `;
+            grid.appendChild(row);
+            return;
+        }
+
         const card = document.createElement('div');
         card.className = 'memory-card';
         card.dataset.id = isStudy ? item.rootKey : item.pairId;

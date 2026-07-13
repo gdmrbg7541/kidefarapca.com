@@ -730,6 +730,16 @@ let currentSearchQuery = "";
 function getRootEmoji(root) {
     if(sozlukVerileri[root]) {
         const keys = Object.keys(sozlukVerileri[root]);
+        
+        // Önce "sayi" tipine sahip bir kalıp var mı diye kontrol et (Örn: ثلث, ربع)
+        for (let i = 0; i < keys.length; i++) {
+            let kalip = sozlukVerileri[root][keys[i]];
+            if (kalip && kalip.tip === "sayi" && kalip.base && kalip.base.emoji) {
+                return kalip.base.emoji;
+            }
+        }
+        
+        // Yoksa eskisi gibi ilk geçerli kalıbın emojisini al
         if (keys.length > 0 && sozlukVerileri[root][keys[0]].base && sozlukVerileri[root][keys[0]].base.emoji) {
             return sozlukVerileri[root][keys[0]].base.emoji;
         }
@@ -2778,6 +2788,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.addEventListener('touchstart', startDragging, { passive: true });
         wrapper.addEventListener('touchend', stopDragging, { passive: true });
         wrapper.addEventListener('touchmove', (e) => {
+            let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly');
             if (isDown) {
                 const x = e.touches[0].pageX - wrapper.offsetLeft;
                 const walk = (x - startX) * 1.5;
@@ -2822,7 +2833,7 @@ function updateSuffixHighlights(currentBox) {
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly'
     );
 
     function standardize(t) {
@@ -3676,7 +3687,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     let matchedKey = null;
     if (activeSuffix) {
         for (let k in eggObj) {
-            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus') {
+            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly') {
                 if (stdFn(k) === activeSuffix) {
                     matchedKey = k;
                     break;
@@ -4298,14 +4309,47 @@ function highlightEasterEggBoxes(root) {
         b.classList.remove('sari-vurgu', 'current-active-red');
     });
 
+    const wildcardContainer = document.getElementById('wildcard-container');
+    if (wildcardContainer) wildcardContainer.innerHTML = ''; // Önceki joker kutuları temizle
+
     if (!root || root.length !== 3 || !sozlukVerileri[root]) return;
 
     const refs = getSortedRefsForRoot(root);
     refs.forEach(refId => {
-        const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
+        let targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
             const refEl = b.querySelector('.ref');
             return refEl && parseInt(refEl.innerText.trim()) === refId;
         });
+
+        // -------------------------------------------------------------
+        // JOKER KUTU MANTIĞI: Eğer bu kalıp ID'si HTML'de yoksa, 
+        // dinamik bir Joker (Extra) kutu oluştur!
+        // -------------------------------------------------------------
+        if (!targetBox && wildcardContainer) {
+            const newBox = document.createElement('div');
+            newBox.className = 'glass-box wildcard-box';
+            newBox.setAttribute('data-ref', refId);
+            newBox.setAttribute('data-original', '?');
+            newBox.style.paddingBottom = '8px'; // Ayn harfi vb. taşmasını önlemek için
+            
+            // handleBoxClick fonksiyonunun çalışabilmesi için standart iç yapı
+            newBox.innerHTML = `
+                <div class="ref" style="opacity: 0; pointer-events: none;">${refId}</div>
+                <div class="ar-small" style="font-family: 'Inter', sans-serif; color: #d35400;">?</div>
+            `;
+            
+            // Tüm tıklama ve animasyon mantığını standart sisteme devret!
+            newBox.onclick = function(e) {
+                if (typeof handleBoxClick === 'function') {
+                    handleBoxClick(this);
+                }
+            };
+            
+            wildcardContainer.appendChild(newBox);
+            targetBox = newBox; // Aşağıdaki 'sari-vurgu' vs. eklenebilmesi için referansı targetBox yap
+        }
+        // -------------------------------------------------------------
+
         if (targetBox) {
             targetBox.classList.add('sari-vurgu');
             
@@ -4866,10 +4910,17 @@ const ColorEngine = {
         return ['و', 'ي', 'ا', 'أ', 'إ', 'آ', 'ء', 'ى'].includes(char);
     },
 
-    isEquivalent: function(char1, char2) {
+    isEquivalent: function(char1, char2, rIndex = -1) {
     const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء']; // 'آ' burada mevcut
     const weaks = ['و', 'ي', 'ا', 'ى']; 
     
+    // YENİ: İlk kök harfinde (rIndex === 0) yalın Elif (ا) asla vav veya ya'nın dönüşümü olamaz. 
+    // Aksi halde وَاحِد kelimesindeki ilk Vav'ı bağlaç sanıp Elif'i kök zannediyor!
+    if (rIndex === 0) {
+        if (char1 === 'ا' && (char2 === 'و' || char2 === 'ي')) return false;
+        if (char2 === 'ا' && (char1 === 'و' || char1 === 'ي')) return false;
+    }
+
     // YENİ: Eğer karşılaştırılanlardan biri 'آ' ise, bunu 'أ' (kök hemzesi) ile denk kabul et
     if (char1 === 'آ' && char2 === 'أ') return true;
     if (char1 === 'أ' && char2 === 'آ') return true;
@@ -4887,12 +4938,14 @@ const ColorEngine = {
         let pureChars = finalWord.replace(/[\u064B-\u0652\u0670]/g, '');
         if (pureChars.match(/ف.*ع.*ل/)) {
             rootArray = ['ف', 'ع', 'ل'];
-        } else if (typeof currentRoot !== 'undefined') {
-            if (!currentRoot || currentRoot.trim() === "") {
+        } else if (!rootArray || rootArray.length !== 3 || (rootArray[0] === 'ف' && rootArray[1] === 'ع' && rootArray[2] === 'ل')) {
+            if (typeof currentRoot !== 'undefined' && currentRoot && currentRoot.trim() !== "") {
+                let tempArr = currentRoot.replace(/[^\u0621-\u064A]/g, '').split('');
+                if (tempArr.length === 3) rootArray = tempArr;
+                else rootArray = ['ف', 'ع', 'ل'];
+            } else {
                 rootArray = ['ف', 'ع', 'ل'];
             }
-        } else if (!rootArray || rootArray.length !== 3) {
-            rootArray = ['ف', 'ع', 'ل'];
         }
         
         finalWord = finalWord.replace(/\uFEFB([\u064B-\u0652\u0670]?)/g, 'ل$1ا')
@@ -4911,7 +4964,7 @@ const ColorEngine = {
         for (let i = 0; i < charsOnly.length; i++) {
             let c = charsOnly[i].char;
             
-            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex])) {
+            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
                 let isZiyade = false;
                 
                 if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {
@@ -4922,7 +4975,7 @@ const ColorEngine = {
                     for (let k = rIndex; k < 3; k++) {
                         let found = false;
                         for (let j = searchPointer; j < charsOnly.length; j++) {
-                            if (this.isEquivalent(charsOnly[j].char, rootArray[k])) {
+                            if (this.isEquivalent(charsOnly[j].char, rootArray[k], k)) {
                                 found = true;
                                 searchPointer = j + 1;
                                 break;
@@ -4953,7 +5006,7 @@ const ColorEngine = {
                     rIndex++;
                 }
             } 
-            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1]) && this.isWeak(rootArray[rIndex])) {
+            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1], rIndex + 1) && this.isWeak(rootArray[rIndex])) {
                 charsOnly[i].isRoot = true;
                 rIndex += 2;
             }
@@ -5088,7 +5141,8 @@ function renderUniversalKeyboards() {
                 if (char === 'BACKSPACE') {
                     searchHtml += `<div class="search-key uni-key backspace" onclick="handleSearchKey('BACKSPACE')">⌫</div>`;
                 } else {
-                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${char}</div>`;
+                    let displayChar = char === 'ه' ? 'هـ' : char;
+                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${displayChar}</div>`;
                 }
             });
             searchHtml += `</div>`;
@@ -5108,7 +5162,8 @@ function renderUniversalKeyboards() {
                 } else {
                     let bg = getLetterColor(char);
                     let styleAttr = bg ? `style="--key-bg: ${bg};"` : "";
-                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')" ${styleAttr}>${char}</div>`;
+                    let displayChar = char === 'ه' ? 'هـ' : char;
+                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')" ${styleAttr}>${displayChar}</div>`;
                 }
             });
             mainHtml += `</div>`;
@@ -5347,10 +5402,33 @@ function updateMainKeyboardPredictions() {
                     let muennesMatch = false;
                     
                     if (isArabicSearch) {
-                        arMatch = normalizeArabic(strippedAr).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
+                        let getSearchVariants = (rawFilter) => {
+                            let norm = normalizeArabic(rawFilter);
+                            let variants = [norm];
+                            if (hasExactMatchInDict) return variants;
+
+                            const prefixes = ['وال', 'فال', 'بال', 'كال', 'ال', 'لل', 'و', 'ف', 'ب', 'ك', 'ل'];
+                            for (let p of prefixes) {
+                                if (norm.startsWith(p) && norm.length > p.length) {
+                                    variants.push(norm.substring(p.length));
+                                }
+                            }
+                            return variants;
+                        };
+                        
+                        let searchVariants = getSearchVariants(filter);
+                        
+                        arMatch = normalizeArabic(strippedAr).split('/').some(part => {
+                            let pt = part.trim();
+                            return searchVariants.some(v => pt.startsWith(v) || (pt.startsWith('ال') && pt.substring(2).startsWith(v)));
+                        });
+                        
                         if (kalipData.base.muennes) {
                             const strippedMuennes = window.stripHarakat(kalipData.base.muennes);
-                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
+                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => {
+                                let pt = part.trim();
+                                return searchVariants.some(v => pt.startsWith(v) || (pt.startsWith('ال') && pt.substring(2).startsWith(v)));
+                            });
                         }
                         matches = arMatch || muennesMatch;
                         
@@ -5431,7 +5509,19 @@ function updateMainKeyboardPredictions() {
         
         // Arapça alfabetik sıralama
         const arabicAlphabet = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
+        let searchFilterExact = window.stripHarakat(filter);
+        let trSearchExact = filter.toLowerCase();
         const sortedLetters = Object.keys(matchesByLetter).sort((a, b) => {
+            let aExact = matchesByLetter[a].some(item => (item.strippedAr && item.strippedAr === searchFilterExact) || (item.trText && item.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact)));
+            let bExact = matchesByLetter[b].some(item => (item.strippedAr && item.strippedAr === searchFilterExact) || (item.trText && item.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact)));
+            if (aExact && !bExact) return -1;
+            if (!aExact && bExact) return 1;
+
+            let aStarts = searchFilterExact.length > 0 && matchesByLetter[a].some(item => item.strippedAr && item.strippedAr.startsWith(searchFilterExact));
+            let bStarts = searchFilterExact.length > 0 && matchesByLetter[b].some(item => item.strippedAr && item.strippedAr.startsWith(searchFilterExact));
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+
             let indexA = arabicAlphabet.indexOf(a);
             let indexB = arabicAlphabet.indexOf(b);
             if (indexA === -1) indexA = 999;
@@ -5445,14 +5535,13 @@ function updateMainKeyboardPredictions() {
             resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 0 0 15px 0; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:10px; width: 100%;">[ ${letter} ]</div>`;
             
             // Harf içindeki kelimeleri sırala (Tam eşleşen ve kısa olanlar ÖNCE)
-            let searchFilter = window.stripHarakat(currentSearchQuery.trim());
             matchesByLetter[letter].sort((a, b) => {
-                let aExact = (a.strippedAr === searchFilter) ? 1 : 0;
-                let bExact = (b.strippedAr === searchFilter) ? 1 : 0;
+                let aExact = (a.strippedAr === searchFilterExact || (a.trText && a.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact))) ? 1 : 0;
+                let bExact = (b.strippedAr === searchFilterExact || (b.trText && b.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact))) ? 1 : 0;
                 if (aExact !== bExact) return bExact - aExact;
                 
-                let aStarts = a.strippedAr.startsWith(searchFilter) ? 1 : 0;
-                let bStarts = b.strippedAr.startsWith(searchFilter) ? 1 : 0;
+                let aStarts = a.strippedAr.startsWith(searchFilterExact) ? 1 : 0;
+                let bStarts = b.strippedAr.startsWith(searchFilterExact) ? 1 : 0;
                 if (aStarts !== bStarts) return bStarts - aStarts;
                 
                 if (a.strippedAr.length !== b.strippedAr.length) {
@@ -5466,6 +5555,8 @@ function updateMainKeyboardPredictions() {
             for (const item of matchesByLetter[letter]) {
                 // GUARD: Geçersiz/boş girdileri ekrana yazdırma (NaN önleme)
                 if (!item.arText || item.arText.trim() === "" || !item.trText) continue;
+                // USER REQUEST: Hide unpatterned plurals and + items from quick list (NaN fix)
+                if (item.kalipKey === "+" || isNaN(parseInt(item.kalipKey))) continue;
                 const ilkAnlam = (item.trText || "").split('/')[0].trim();
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
@@ -7445,6 +7536,7 @@ function renderThematicLists() {
 
                             <!-- ORTA (Ayarlar veya Varsayılan Butonlar) -->
                             <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex: 1;">
+                                <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
                                 <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
@@ -7505,11 +7597,19 @@ function openMemorySetup(key) {
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = false;
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    // Çalışma kartları pasif olsun ama kaybolmasın
+    // Tüm butonları pasif yap ama kaybolmasın
+    const btnList = document.getElementById(`btn-list-${key}`);
+    if (btnList) {
+        btnList.classList.remove('active');
+        btnList.style.opacity = '0.6';
+        btnList.style.display = 'block';
+    }
     const btnStudy = document.getElementById(`btn-study-${key}`);
-    btnStudy.classList.remove('active');
-    btnStudy.style.opacity = '0.6';
-    btnStudy.style.display = 'block';
+    if (btnStudy) {
+        btnStudy.classList.remove('active');
+        btnStudy.style.opacity = '0.6';
+        btnStudy.style.display = 'block';
+    }
     
     document.getElementById(`btn-mem-${key}`).style.display = 'none';
     document.getElementById(`mem-settings-${key}`).style.display = 'flex';
@@ -7584,6 +7684,7 @@ function setMemoryMode(key, mode) {
     state.currentPlayer = 1;
     state.activeFlipped = [];
     
+    const listBtn = document.getElementById(`btn-list-${key}`);
     const studyBtn = document.getElementById(`btn-study-${key}`);
     const memBtn = document.getElementById(`btn-mem-${key}`);
     const memSettings = document.getElementById(`mem-settings-${key}`);
@@ -7591,23 +7692,25 @@ function setMemoryMode(key, mode) {
     const p1Box = document.getElementById(`p1-box-${key}`);
     const p2Box = document.getElementById(`p2-box-${key}`);
     
-    if (mode === 'study') {
-        if (studyBtn) {
-            studyBtn.style.display = 'block';
-            studyBtn.style.opacity = '1';
-            studyBtn.classList.add('active');
-        }
-        if (memBtn) {
-            memBtn.style.display = 'block';
-            memBtn.classList.remove('active');
-        }
+    if (listBtn) listBtn.classList.remove('active');
+    if (studyBtn) studyBtn.classList.remove('active');
+    if (memBtn) memBtn.classList.remove('active');
+    
+    if (listBtn) { listBtn.style.display = 'block'; listBtn.style.opacity = '1'; }
+    if (studyBtn) { studyBtn.style.display = 'block'; studyBtn.style.opacity = '1'; }
+    if (memBtn) { memBtn.style.display = 'block'; memBtn.style.opacity = '1'; }
+
+    if (mode === 'list') {
+        if (listBtn) listBtn.classList.add('active');
         if (memSettings) memSettings.style.display = 'none';
-        
-                
+        if (p1Box) p1Box.style.display = 'none';
+        if (p2Box) p2Box.style.display = 'none';
+    } else if (mode === 'study') {
+        if (studyBtn) studyBtn.classList.add('active');
+        if (memSettings) memSettings.style.display = 'none';
         if (p1Box) p1Box.style.display = 'none';
         if (p2Box) p2Box.style.display = 'none';
     } else {
-        if (studyBtn) studyBtn.classList.remove('active');
         if (memBtn) memBtn.classList.add('active');
         if (memSettings) memSettings.style.display = 'flex';
         
@@ -7638,8 +7741,9 @@ function initMemoryGrid(key, forceShuffle = false) {
     
     grid.innerHTML = '';
     const isStudy = state.mode === 'study';
+    const isList = state.mode === 'list';
     
-    grid.className = `thematic-words-grid ${isStudy ? '' : ('memory-mode pairs-' + pairCount)}`;
+    grid.className = `thematic-words-grid ${isList ? 'list-mode-grid' : (isStudy ? '' : ('memory-mode pairs-' + pairCount))}`;
     
     // Fallback if state.shuffledItems is missing
     if (!state.shuffledItems) {
@@ -7648,10 +7752,10 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
     
     let wordsCopy = [...cat.items];
-    let selectedWords = isStudy ? wordsCopy : state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
+    let selectedWords = (isStudy || isList) ? wordsCopy : state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
     
     // If somehow we selected less than pairCount (end of array), we wrap around or reshuffle
-    if (!isStudy && selectedWords.length < pairCount) {
+    if (!isStudy && !isList && selectedWords.length < pairCount) {
         state.shuffledItems = [...cat.items].sort(() => Math.random() - 0.5);
         state.roundIndex = 0;
         selectedWords = state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
@@ -7659,7 +7763,7 @@ function initMemoryGrid(key, forceShuffle = false) {
     
     let displayList = [];
 
-    if (isStudy) {
+    if (isStudy || isList) {
         displayList = selectedWords;
         if (forceShuffle) {
             displayList.sort(() => Math.random() - 0.5);
@@ -7693,6 +7797,19 @@ function initMemoryGrid(key, forceShuffle = false) {
 
     
     displayList.forEach(item => {
+        if (isList) {
+            const row = document.createElement('div');
+            row.className = 'list-mode-item';
+            let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
+            row.innerHTML = `
+                <div class="list-mode-tr" dir="ltr">${item.trText}</div>
+                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
+                <div class="list-mode-ar" dir="rtl">${arContent}</div>
+            `;
+            grid.appendChild(row);
+            return;
+        }
+
         const card = document.createElement('div');
         card.className = 'memory-card';
         card.dataset.id = isStudy ? item.rootKey : item.pairId;
@@ -9218,3 +9335,188 @@ function launchTelaffuzMarathon(root, refId) {
     document.getElementById('marathon-selection-area').style.display = 'none';
     prepareMarathonPlay();
 }
+
+
+
+// --- GÜNÜN KÖKÜ (ROOT OF THE DAY) ---
+function showRootOfDay() {
+    if (typeof wordEasterEggs === 'undefined') return;
+    
+    // Verbs IDs to exclude
+    let verbIds = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16",
+                   "52","53","54","58","59","60","64","65","66","71","72","73","77","78","79",
+                   "83","84","85","88","89","90","94","95","96","100","101","102"];
+    
+    // En az 3 isim barındıran kökleri bulalım
+    let validRoots = [];
+    let allRootKeys = Object.keys(wordEasterEggs);
+    
+    for (let rKey of allRootKeys) {
+        let nounCount = 0;
+        let rData = wordEasterEggs[rKey];
+        for (let k in rData) {
+            if (!verbIds.includes(k) && rData[k].base && rData[k].base.arText) {
+                nounCount++;
+            }
+        }
+        if (nounCount >= 3) {
+            validRoots.push(rKey);
+        }
+    }
+    
+    if (validRoots.length === 0) return;
+    
+    // Her açılışta rastgele bir kök
+    let randomIndex = Math.floor(Math.random() * validRoots.length);
+    let selectedRootKey = validRoots[randomIndex];
+    let rData = wordEasterEggs[selectedRootKey];
+    
+    let wordsArray = [];
+    for (let k in rData) {
+        if (!verbIds.includes(k) && rData[k].base && rData[k].base.arText) {
+            wordsArray.push(rData[k].base);
+        }
+    }
+    
+    wordsArray = wordsArray.slice(0, 15); // Max 15 nouns
+    
+    // 15 Farklı şık iOS/Profesyonel renk paleti (Koyu ve okunabilir)
+    const colorPalette = [
+        "#FF3B30", // Kırmızı
+        "#007AFF", // Mavi
+        "#34C759", // Yeşil (Biraz koyulaştırıldı ama okunaklı)
+        "#5856D6", // İndigo / Mor
+        "#FF9500", // Turuncu
+        "#AF52DE", // Mor / Eflatun
+        "#FF2D55", // Pembe
+        "#0284C7", // Gök Mavisi (Koyu)
+        "#16A34A", // Zümrüt Yeşili
+        "#D97706", // Koyu Sarı / Altın
+        "#7C3AED", // Menekşe
+        "#0D9488", // Turkuaz / Deniz Mavisi
+        "#E11D48", // Koyu Gül Rengi
+        "#4B5563", // Havalı Gri
+        "#4338CA"  // Koyu Lacivert
+    ];
+    
+    let derivedWordsHTML = "";
+    for (let i = 0; i < wordsArray.length; i++) {
+        let w = wordsArray[i];
+        // Renklendirme kapatıldı (zaid harf renklendirmesi iptal), kelimenin tamamı tek renk olacak
+        let rawArText = w.arText; 
+        let cardColor = colorPalette[i % colorPalette.length];
+        
+        derivedWordsHTML += `
+            <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-align: center; transition: transform 0.2s, border-color 0.2s; flex: 0 1 200px; min-width: 160px; max-width: 260px;" onmouseover="this.style.borderColor='${cardColor}'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'">
+                <div style="font-family: 'Arakom', sans-serif; font-size: 52px; color: ${cardColor}; margin-bottom: 12px; line-height: 1.2;" dir="rtl">${rawArText}</div>
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #555555; font-weight: 600;" dir="ltr">${w.trText}</div>
+            </div>
+        `;
+    }
+    
+    // Harfleri tatweel (ـ) ile akıllı bir şekilde formatlama (Örn: كـ ـتـ ـب)
+    const nonJoining = ['ا', 'د', 'ذ', 'ر', 'ز', 'و', 'ؤ', 'ء', 'أ', 'إ', 'آ'];
+    let formattedRootArray = [];
+    for (let i = 0; i < selectedRootKey.length; i++) {
+        let char = selectedRootKey[i];
+        let isLast = (i === selectedRootKey.length - 1);
+        let prevNonJoining = (i === 0) || nonJoining.includes(selectedRootKey[i - 1]);
+        let currNonJoining = nonJoining.includes(char);
+        
+        let part = char;
+        if (!prevNonJoining) part = 'ـ' + part; // join right
+        if (!currNonJoining && !isLast) part = part + 'ـ'; // join left
+        
+        formattedRootArray.push(part);
+    }
+    let formattedRootText = formattedRootArray.join(' ');
+    
+    const modalOverlay = document.createElement("div");
+    modalOverlay.id = "rootOfDayOverlay";
+    modalOverlay.style.position = "fixed";
+    modalOverlay.style.top = "0";
+    modalOverlay.style.left = "0";
+    modalOverlay.style.width = "100vw";
+    modalOverlay.style.height = "100vh";
+    modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)"; 
+    modalOverlay.style.backdropFilter = "blur(10px)";
+    modalOverlay.style.WebkitBackdropFilter = "blur(10px)";
+    modalOverlay.style.zIndex = "2147483647";
+    modalOverlay.style.display = "flex";
+    modalOverlay.style.justifyContent = "center";
+    modalOverlay.style.alignItems = "center";
+    modalOverlay.style.opacity = "0";
+    modalOverlay.style.transition = "opacity 0.4s ease-out";
+    
+    // iOS/Apple-like professional design
+    modalOverlay.innerHTML = `
+        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            
+            <button onclick="closeRootOfDay()" style="position: absolute; top: 20px; right: 20px; background: #e2e8f0; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div style="display: inline-block; background: #ffffff; color: #000000; border: 2px solid #e2e8f0; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+                <i class="fas fa-seedling" style="margin-right: 6px; color: #FF3B30;"></i> GÜNÜN KÖKÜ
+            </div>
+            
+            <div style="font-family: 'Arakom', sans-serif; font-size: 100px; color: #1d1d1f; line-height: 1.1; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.05);" dir="rtl">
+                ${formattedRootText}
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 20px; margin-top: 25px; padding: 0 10px;">
+                ${derivedWordsHTML}
+            </div>
+            
+        </div>
+    `;
+    
+    // Fallback for mobile devices
+    let style = document.createElement('style');
+    style.innerHTML = `
+        @media (max-width: 900px) {
+            #rootOfDayOverlay > div > div:last-child > div {
+                flex: 0 1 200px !important;
+            }
+        }
+        @media (max-width: 600px) {
+            #rootOfDayOverlay > div > div:last-child > div {
+                flex: 0 1 140px !important;
+                min-width: 140px !important;
+                padding: 12px 8px !important;
+            }
+            #rootOfDayOverlay > div > div:last-child > div > div:first-child {
+                font-size: 38px !important;
+            }
+            #rootOfDayOverlay > div > div:nth-child(3) {
+                font-size: 70px !important;
+            }
+            #rootOfDayOverlay > div {
+                padding: 30px 15px !important;
+                border-radius: 20px !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(modalOverlay);
+    
+    setTimeout(() => {
+        modalOverlay.style.opacity = "1";
+        modalOverlay.firstElementChild.style.transform = "scale(1) translateY(0)";
+    }, 50);
+}
+
+
+document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { showRootOfDay(); }, 800); });
+
+
+window.closeRootOfDay = function() {
+    const modalOverlay = document.getElementById("rootOfDayOverlay");
+    if (modalOverlay) {
+        modalOverlay.style.opacity = "0";
+        modalOverlay.firstElementChild.style.transform = "scale(0.95) translateY(-20px)";
+        setTimeout(() => modalOverlay.remove(), 400);
+    }
+}
+
