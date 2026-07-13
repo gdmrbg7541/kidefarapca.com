@@ -2788,7 +2788,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.addEventListener('touchstart', startDragging, { passive: true });
         wrapper.addEventListener('touchend', stopDragging, { passive: true });
         wrapper.addEventListener('touchmove', (e) => {
-            let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly');
+            let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not');
             if (isDown) {
                 const x = e.touches[0].pageX - wrapper.offsetLeft;
                 const walk = (x - startX) * 1.5;
@@ -2833,7 +2833,7 @@ function updateSuffixHighlights(currentBox) {
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly'
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not'
     );
 
     function standardize(t) {
@@ -3687,7 +3687,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     let matchedKey = null;
     if (activeSuffix) {
         for (let k in eggObj) {
-            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly') {
+            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not') {
                 if (stdFn(k) === activeSuffix) {
                     matchedKey = k;
                     break;
@@ -7415,13 +7415,27 @@ function renderThematicLists() {
         }
     }
     
+    const extractNum = (item) => {
+        if (!item) return 9999999;
+        if (item.rootKey) {
+            let m = item.rootKey.replace(/,/g, '').match(/\d+/);
+            if (m) return parseInt(m[0], 10);
+        }
+        if (item.trText) {
+            let m = item.trText.replace(/,/g, '').match(/^\d+/);
+            if (m) return parseInt(m[0], 10);
+        }
+        return 9999999;
+    };
     
-    // Kullanıcı talebi: Sayı kartları listelerde karışık görünsün
-    if (categories["sayi"] && categories["sayi"].items) {
-        categories["sayi"].items.sort(() => Math.random() - 0.5);
+    if (categories["sayi_rakam"] && categories["sayi_rakam"].items) {
+        categories["sayi_rakam"].items.sort((a, b) => extractNum(a) - extractNum(b));
+    }
+    if (categories["sayi_kelime"] && categories["sayi_kelime"].items) {
+        categories["sayi_kelime"].items.sort((a, b) => extractNum(a) - extractNum(b));
     }
     if (categories["sirasayi"] && categories["sirasayi"].items) {
-        categories["sirasayi"].items.sort(() => Math.random() - 0.5);
+        categories["sirasayi"].items.sort((a, b) => extractNum(a) - extractNum(b));
     }
 
     thematicCategoriesData = categories;
@@ -7473,7 +7487,7 @@ function renderThematicLists() {
             let shuffledList = cat.items ? [...cat.items] : [];
             shuffledList.sort(() => Math.random() - 0.5);
             activeMemoryGames[key] = {
-                mode: 'study',
+                mode: 'list',
                 scores: [0, 0],
                 currentPlayer: 1,
                 activeFlipped: [],
@@ -7536,8 +7550,8 @@ function renderThematicLists() {
 
                             <!-- ORTA (Ayarlar veya Varsayılan Butonlar) -->
                             <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex: 1;">
-                                <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
-                                <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
+                                <button class="memory-btn active" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
+                                <button class="memory-btn" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
                                     <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" >
@@ -7752,7 +7766,18 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
     
     let wordsCopy = [...cat.items];
-    let selectedWords = (isStudy || isList) ? wordsCopy : state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
+    let selectedWords;
+    if (isList) {
+        selectedWords = wordsCopy;
+    } else if (isStudy) {
+        if (key === 'sayi_rakam' || key === 'sayi_kelime' || key === 'sirasayi') {
+            selectedWords = state.shuffledItems;
+        } else {
+            selectedWords = wordsCopy;
+        }
+    } else {
+        selectedWords = state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
+    }
     
     // If somehow we selected less than pairCount (end of array), we wrap around or reshuffle
     if (!isStudy && !isList && selectedWords.length < pairCount) {
@@ -7765,7 +7790,9 @@ function initMemoryGrid(key, forceShuffle = false) {
 
     if (isStudy || isList) {
         displayList = selectedWords;
-        if (forceShuffle) {
+        if (isStudy && !forceShuffle) {
+            displayList.sort(() => Math.random() - 0.5);
+        } else if (forceShuffle) {
             displayList.sort(() => Math.random() - 0.5);
         }
         grid.style.height = "auto";
@@ -7796,53 +7823,70 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
 
     
-    displayList.forEach(item => {
-        if (isList) {
+    if (isList) {
+        const titleText = (thematicCategoriesData[key] && thematicCategoriesData[key].title) || 'Kelime Listesi';
+        const iconText = (thematicCategoriesData[key] && thematicCategoriesData[key].icon) || '📝';
+        
+        const paper = document.createElement('div');
+        paper.className = 'list-mode-paper';
+        
+        paper.innerHTML = `
+            <div class="list-mode-title">${iconText} ${titleText}</div>
+            <div class="list-mode-columns"></div>
+        `;
+        
+        const columnsContainer = paper.querySelector('.list-mode-columns');
+        
+        displayList.forEach((item, index) => {
             const row = document.createElement('div');
             row.className = 'list-mode-item';
             let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
             row.innerHTML = `
+                <div class="list-mode-num">${index + 1}.</div>
                 <div class="list-mode-tr" dir="ltr">${item.trText}</div>
                 <div class="list-mode-emoji">${item.emoji || '✨'}</div>
                 <div class="list-mode-ar" dir="rtl">${arContent}</div>
             `;
-            grid.appendChild(row);
-            return;
-        }
-
-        const card = document.createElement('div');
-        card.className = 'memory-card';
-        card.dataset.id = isStudy ? item.rootKey : item.pairId;
+            columnsContainer.appendChild(row);
+        });
         
-        if (isStudy) {
-            let kalipAction = item.kalipId ? `, '${item.kalipId}'` : "";
-            card.innerHTML = `
-                <div class="memory-card-inner">
-                    <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
-                    <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
-                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${thematicCategoriesData[key]?.arFontSize ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${item.arText}</div>
+        grid.appendChild(paper);
+    } else {
+        displayList.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.id = isStudy ? item.rootKey : item.pairId;
+            
+            if (isStudy) {
+                let kalipAction = item.kalipId ? `, '${item.kalipId}'` : "";
+                card.innerHTML = `
+                    <div class="memory-card-inner">
+                        <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
+                        <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
+                            <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${(thematicCategoriesData[key] && thematicCategoriesData[key].arFontSize) ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${item.arText}</div>
+                        </div>
+                        <!-- ARKA YÜZ: Türkçe ve Emoji -->
+                        <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <div style="font-size: 4rem; margin-bottom: 5px;">${item.emoji || '✨'}</div>
+                            <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center; ${(thematicCategoriesData[key] && thematicCategoriesData[key].trFontSize) ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
+                        </div>
                     </div>
-                    <!-- ARKA YÜZ: Türkçe ve Emoji -->
-                    <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                        <div style="font-size: 4rem; margin-bottom: 5px;">${item.emoji || '✨'}</div>
-                        <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center; ${thematicCategoriesData[key]?.trFontSize ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
+                `;
+                card.onclick = () => card.classList.toggle('flipped');
+            } else {
+                card.innerHTML = `
+                    <div class="memory-card-inner">
+                        <div class="memory-card-face memory-card-front"></div>
+                        <div class="memory-card-face memory-card-back lang-${item.lang}">
+                            <span>${item.text}</span>
+                        </div>
                     </div>
-                </div>
-            `;
-            card.onclick = () => card.classList.toggle('flipped');
-        } else {
-            card.innerHTML = `
-                <div class="memory-card-inner">
-                    <div class="memory-card-face memory-card-front"></div>
-                    <div class="memory-card-face memory-card-back lang-${item.lang}">
-                        <span>${item.text}</span>
-                    </div>
-                </div>
-            `;
-            card.onclick = () => handleMemoryFlip(key, card);
-        }
-        grid.appendChild(card);
-    });
+                `;
+                card.onclick = () => handleMemoryFlip(key, card);
+            }
+            grid.appendChild(card);
+        });
+    }
     
     // Skorları sıfırla
     state.scores = [0, 0];
@@ -8093,6 +8137,7 @@ window.atlasVerbsData = {
     "أراد": {"trMean": {"mazi": "istedi", "muzari": "istiyor", "emir": "iste"}, "mazi": ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"], "muzari": ["يُرِيدُ", "يُرِيدَانِ", "يُرِيدُونَ", "تُرِيدُ", "تُرِيدَانِ", "يُرِدْنَ", "تُرِيدُ", "تُرِيدَانِ", "تُرِيدُونَ", "تُرِيدِينَ", "تُرِيدَانِ", "تُرِدْنَ", "أُرِيدُ", "نُرِيدُ", "نُرِيدُ"], "emir": ["أَرِدْ", "أَرِيدَا", "أَرِيدُوا", "أَرِيدِي", "أَرِيدَا", "أَرِدْنَ"]},
     "سافر": {"trMean": {"mazi": "yolculuk yaptı", "muzari": "yolculuk yapıyor", "emir": "yolculuk yap"}, "mazi": ["سَافَرَ", "سَافَرَا", "سَافَرُوا", "سَافَرَتْ", "سَافَرَتَا", "سَافَرْنَ", "سَافَرْتَ", "سَافَرْتُمَا", "سَافَرْتُمْ", "سَافَرْتِ", "سَافَرْتُمَا", "سَافَرْتُنَّ", "سَافَرْتُ", "سَافَرْنَا", "سَافَرْنَا"], "muzari": ["يُسَافِرُ", "يُسَافِرَانِ", "يُسَافِرُونَ", "تُسَافِرُ", "تُسَافِرَانِ", "يُسَافِرْنَ", "تُسَافِرُ", "تُسَافِرَانِ", "تُسَافِرُونَ", "تُسَافِرِينَ", "تُسَافِرَانِ", "تُسَافِرْنَ", "أُسَافِرُ", "نُسَافِرُ", "نُسَافِرُ"], "emir": ["سَافِرْ", "سَافِرَا", "سَافِرُوا", "سَافِرِي", "سَافِرَا", "سَافِرْنَ"]},
 "كتب": { trMean: { mazi: "yazdı", muzari: "yazıyor", emir: "yaz" }, mazi: ["كَتَبَ", "كَتَبَا", "كَتَبُوا", "كَتَبَتْ", "كَتَبَتَا", "كَتَبْنَ", "كَتَبْتَ", "كَتَبْتُمَا", "كَتَبْتُمْ", "كَتَبْتِ", "كَتَبْتُمَا", "كَتَبْتُنَّ", "كَتَبْتُ", "كَتَبْنَا", "كَتَبْنَا"], muzari: ["يَكْتُبُ", "يَكْتُبَانِ", "يَكْتُبُونَ", "تَكْتُبُ", "تَكْتُبَانِ", "يَكْتُبْنَ", "تَكْتُبُ", "تَكْتُبَانِ", "تَكْتُبُونَ", "تَكْتُبِينَ", "تَكْتُبَانِ", "تَكْتُبْنَ", "أَكْتُبُ", "نَكْتُبُ", "نَكْتُبُ"], emir: ["اُكْتُبْ", "اُكْتُبَا", "اُكْتُبُوا", "اُكْتُبِي", "اُكْتُبَا", "اُكْتُبْنَ"] },
+    "كتب": { trMean: { mazi: "yazdı", muzari: "yazıyor", emir: "yaz" }, mazi: ["كَتَبَ", "كَتَبَا", "كَتَبُوا", "كَتَبَتْ", "كَتَبَتَا", "كَتَبْنَ", "كَتَبْتَ", "كَتَبْتُمَا", "كَتَبْتُمْ", "كَتَبْتِ", "كَتَبْتُمَا", "كَتَبْتُنَّ", "كَتَبْتُ", "كَتَبْنَا", "كَتَبْنَا"], muzari: ["يَكْتُبُ", "يَكْتُبَانِ", "يَكْتُبُونَ", "تَكْتُبُ", "تَكْتُبَانِ", "يَكْتُبْنَ", "تَكْتُبُ", "تَكْتُبَانِ", "تَكْتُبُونَ", "تَكْتُبِينَ", "تَكْتُبَانِ", "تَكْتُبْنَ", "أَكْتُبُ", "نَكْتُبُ", "نَكْتُبُ"], emir: ["اُكْتُبْ", "اُكْتُبَا", "اُكْتُبُوا", "اُكْتُبِي", "اُكْتُبَا", "اُكْتُبْنَ"] },
     "دخل": { trMean: { mazi: "girdi", muzari: "giriyor", emir: "gir" }, mazi: ["دَخَلَ", "دَخَلَا", "دَخَلُوا", "دَخَلَتْ", "دَخَلَتَا", "دَخَلْنَ", "دَخَلْتَ", "دَخَلْتُمَا", "دَخَلْتُمْ", "دَخَلْتِ", "دَخَلْتُمَا", "دَخَلْتُنَّ", "دَخَلْتُ", "دَخَلْنَا", "دَخَلْنَا"], muzari: ["يَدْخُلُ", "يَدْخُلَانِ", "يَدْخُلُونَ", "تَدْخُلُ", "تَدْخُلَانِ", "يَدْخُلْنَ", "تَدْخُلُ", "تَدْخُلَانِ", "تَدْخُلُونَ", "تَدْخُلِينَ", "تَدْخُلَانِ", "تَدْخُلْنَ", "أَدْخُلُ", "نَدْخُلُ", "نَدْخُلُ"], emir: ["اُدْخُلْ", "اُدْخُلَا", "اُدْخُلُوا", "اُدْخُلِي", "اُدْخُلَا", "اُدْخُلْنَ"] },
     "خرج": { trMean: { mazi: "çıktı", muzari: "çıkıyor", emir: "çık" }, mazi: ["خَرَجَ", "خَرَجَا", "خَرَجُوا", "خَرَجَتْ", "خَرَجَتَا", "خَرَجْنَ", "خَرَجْتَ", "خَرَجْتُمَا", "خَرَجْتُمْ", "خَرَجْتِ", "خَرَجْتُمَا", "خَرَجْتُنَّ", "خَرَجْتُ", "خَرَجْنَا", "خَرَجْنَا"], muzari: ["يَخْرُجُ", "يَخْرُجَانِ", "يَخْرُجُونَ", "تَخْرُجُ", "تَخْرُجَانِ", "يَخْرُجْنَ", "تَخْرُجُ", "تَخْرُجَانِ", "تَخْرُجُونَ", "تَخْرُجِينَ", "تَخْرُجَانِ", "تَخْرُجْنَ", "أَخْرُجُ", "نَخْرُجُ", "نَخْرُجُ"], emir: ["اُخْرُجْ", "اُخْرُجَا", "اُخْرُجُوا", "اُخْرُجِي", "اُخْرُجَا", "اُخْرُجْنَ"] },
     "جلس": { trMean: { mazi: "oturdu", muzari: "oturuyor", emir: "otur" }, mazi: ["جَلَسَ", "جَلَسَا", "جَلَسُوا", "جَلَسَتْ", "جَلَسَتَا", "جَلَسْنَ", "جَلَسْتَ", "جَلَسْتُمَا", "جَلَسْتُمْ", "جَلَسْتِ", "جَلَسْتُمَا", "جَلَسْتُنَّ", "جَلَسْتُ", "جَلَسْنَا", "جَلَسْنَا"], muzari: ["يَجْلِسُ", "يَجْلِسَانِ", "يَجْلِسُونَ", "تَجْلِسُ", "تَجْلِسَانِ", "يَجْلِسْنَ", "تَجْلِسُ", "تَجْلِسَانِ", "تَجْلِسُونَ", "تَجْلِسِينَ", "تَجْلِسَانِ", "تَجْلِسْنَ", "أَجْلِسُ", "نَجْلِسُ", "نَجْلِسُ"], emir: ["اِجْلِسْ", "اِجْلِسَا", "اِجْلِسُوا", "اِجْلِسِي", "اِجْلِسَا", "اِجْلِسْنَ"] },
@@ -8104,7 +8149,6 @@ window.atlasVerbsData = {
     "لبس": { trMean: { mazi: "giydi", muzari: "giyiyor", emir: "giy" }, mazi: ["لَبِسَ", "لَبِسَا", "لَبِسُوا", "لَبِسَتْ", "لَبِسَتَا", "لَبِسْنَ", "لَبِسْتَ", "لَبِسْتُمَا", "لَبِسْتُمْ", "لَبِسْتِ", "لَبِسْتُمَا", "لَبِسْتُنَّ", "لَبِسْتُ", "لَبِسْنَا", "لَبِسْنَا"], muzari: ["يَلْبَسُ", "يَلْبَسَانِ", "يَلْبَسُونَ", "تَلْبَسُ", "تَلْبَسَانِ", "يَلْبَسْنَ", "تَلْبَسُ", "تَلْبَسَانِ", "تَلْبَسُونَ", "تَلْبَسِينَ", "تَلْبَسَانِ", "تَلْبَسْنَ", "أَلْبَسُ", "نَلْبَسُ", "نَلْبَسُ"], emir: ["اِلْبَسْ", "اِلْبَسَا", "اِلْبَسُوا", "اِلْبَسِي", "اِلْبَسَا", "اِلْبَسْنَ"] },
     "ذهب": { trMean: { mazi: "gitti", muzari: "gidiyor", emir: "git" }, mazi: ["ذَهَبَ", "ذَهَبَا", "ذَهَبُوا", "ذَهَبَتْ", "ذَهَبَتَا", "ذَهَبْنَ", "ذَهَبْتَ", "ذَهَبْتُمَا", "ذَهَبْتُمْ", "ذَهَبْتِ", "ذَهَبْتُمَا", "ذَهَبْتُنَّ", "ذَهَبْتُ", "ذَهَبْنَا", "ذَهَبْنَا"], muzari: ["يَذْهَبُ", "يَذْهَبَانِ", "يَذْهَبُونَ", "تَذْهَبُ", "تَذْهَبَانِ", "يَذْهَبْنَ", "تَذْهَبُ", "تَذْهَبَانِ", "تَذْهَبُونَ", "تَذْهَبِينَ", "تَذْهَبَانِ", "تَذْهَبْنَ", "أَذْهَبُ", "نَذْهَبُ", "نَذْهَبُ"], emir: ["اِذْهَبْ", "اِذْهَبَا", "اِذْهَبُوا", "اِذْهَبِي", "اِذْهَبَا", "اِذْهَبْنَ"] },
     "رجع": { trMean: { mazi: "döndü", muzari: "dönüyor", emir: "dön" }, mazi: ["رَجَعَ", "رَجَعَا", "رَجَعُوا", "رَجَعَتْ", "رَجَعَتَا", "رَجَعْنَ", "رَجَعْتَ", "رَجَعْتُمَا", "رَجَعْتُمْ", "رَجَعْتِ", "رَجَعْتُمَا", "رَجَعْتُنَّ", "رَجَعْتُ", "رَجَعْنَا", "رَجَعْنَا"], muzari: ["يَرْجِعُ", "يَرْجِعَانِ", "يَرْجِعُونَ", "تَرْجِعُ", "تَرْجِعَانِ", "يَرْجِعْنَ", "تَرْجِعُ", "تَرْجِعَانِ", "تَرْجِعُونَ", "تَرْجِعِينَ", "تَرْجِعَانِ", "تَرْجِعْنَ", "أَرْجِعُ", "نَرْجِعُ", "نَرْجِعُ"], emir: ["اِرْجِعْ", "اِرْجِعَا", "اِرْجِعُوا", "اِرْجِعِي", "اِرْجِعَا", "اِرْجِعْنَ"] },
-    "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعَدْنَ"] },
     "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعِدْنَ"] },
     "درس": { trMean: { mazi: "çalıştı", muzari: "çalışıyor", emir: "çalış" }, mazi: ["دَرَسَ", "دَرَسَا", "دَرَسُوا", "دَرَسَتْ", "دَرَسَتَا", "دَرَسْنَ", "دَرَسْتَ", "دَرَسْتُمَا", "دَرَسْتُمْ", "دَرَسْتِ", "دَرَسْتُمَا", "دَرَسْتُنَّ", "دَرَسْتُ", "دَرَسْنَا", "دَرَسْنَا"], muzari: ["يَدْرُسُ", "يَدْرُسَانِ", "يَدْرُسُونَ", "تَدْرُسُ", "تَدْرُسَانِ", "يَدْرُسْنَ", "تَدْرُسُ", "تَدْرُسَانِ", "تَدْرُسُونَ", "تَدْرُسِينَ", "تَدْرُسَانِ", "تَدْرُسْنَ", "أَدْرُسُ", "نَدْرُسُ", "نَدْرُسُ"], emir: ["اُدْرُسْ", "اُدْرُسَا", "اُدْرُسُوا", "اُدْرُسِي", "اُدْرُسَا", "اُدْرُسْنَ"] },
     "nam": { trMean: { mazi: "uyudu", muzari: "uyuyor", emir: "uyu" }, mazi: ["نَامَ", "نَامَا", "نَامُوا", "نَامَتْ", "نَامَتَا", "نِمْنَ", "نِمْتَ", "نِمْتُمَا", "نِمْتُمْ", "نِمْتِ", "نِمْتُمَا", "نِمْتُنَّ", "نِمْتُ", "نِمْنَا", "نِمْنَا"], muzari: ["يَنَامُ", "يَنَامَانِ", "يَنَامُونَ", "تَنَامُ", "تَنَامَانِ", "يَنَامْنَ", "تَنَامُ", "تَنَامَانِ", "تَنَامُونَ", "تَنَامِينَ", "تَنَامَانِ", "تَنَامْنَ", "أَنَامُ", "نَنَامُ", "نَنَامُ"], emir: ["نَمْ", "نَامَا", "نَامُوا", "نَامِي", "نَامَا", "نَمْنَ"] },
@@ -8204,10 +8248,10 @@ window.openAtlasOverlay = function(stage) {
     // Verb Stages (with Tables)
     if (stage === 'mazi' || stage === 'mazi_mezid') {
         arTitle = "الماضي"; trTitle = "Geçmiş Zaman (Mazi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Mazi Fiil</strong>, genel olarak geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen bitişik zamirlerle (soneklerle) yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8219,10 +8263,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'muzari' || stage === 'muzari_mezid') {
         arTitle = "المُضارِع"; trTitle = "Geniş / Şimdiki Zaman (Muzari)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Muzari Fiil</strong>, eylemin şu an yapıldığını (şimdiki zaman), her zaman yapıldığını (geniş zaman) veya gelecekte yapılacağını bildirir. Çekimi fiilin başına getirilen "Eteyne (أتين)" harfleriyle ve soneklerle yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Muzari'nin Anlamını Değiştiren Edatlar:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8235,10 +8279,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'emir' || stage === 'emir_mezid') {
         arTitle = "الأَمْر"; trTitle = "Emir Kipi"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Emir Fiili</strong>, karşımızdaki kişiden (muhatap/muhataba) bir işi yapmasını istemek için kullanılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Edebi ve Kur'an'i Nüanslar (Emrin Mertebeleri):</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8253,7 +8297,7 @@ window.openAtlasOverlay = function(stage) {
     // Mücerred Nouns (No Tables)
     else if (stage === 'mastar') {
         arTitle = "المَصْدَر"; trTitle = "Mastar"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Mastar</strong>, eylemin kök adıdır (yapmak, etmek gibi). Fiilin bildirdiği işi, zamana veya şahsa bağlı olmadan bağımsız bir "isim" olarak ifade eder.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8274,11 +8318,11 @@ window.openAtlasOverlay = function(stage) {
                 </ul>
             </div>
         </div>`;
-    } else if (stage === 'ismi_fail' || stage === 'ismi_fail_mezid') {
+    } else if (stage === 'ismi_fail') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
-            <p><strong>1. Mücerred (3 Harfli) Fiillerde:</strong> Fiili yapanı (özneyi) gösterir. <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 15px 0;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+            <p>Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir. Sülasi mücerred (3 harfli) fiillerde <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
                     <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كَاتِب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazan / Kâtip</span>
                 </div>
@@ -8286,29 +8330,15 @@ window.openAtlasOverlay = function(stage) {
                     <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">عَالِم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Bilen / Âlim</span>
                 </div>
             </div>
-            
-            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 25px 0;">
-            
-            <p><strong>2. Mezid (Ekli) Fiillerde:</strong> Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 15px 0;">
-                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
-                </div>
-                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
-                </div>
-            </div>
-            
-            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
-                <p style="margin: 0;">Türkçemizde "İsmi Fail" kalıbı çok yaygındır:<br>
-                <strong>Mücerred (-Â -İ):</strong> Câhil, Hâkim, Zâlim, Şâir, Sâdık...<br>
-                <strong>Mezid (MÜ/MU ve sondan bir önceki esre):</strong> Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Muall<strong>i</strong>m...</p>
+            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Kullanımı:</h4>
+                <p style="margin: 0;">Türkçemizde Arapça kökenli binlerce "İsmi Fail" kalıbı vardır. Sesi <em>-Â -İ</em> şeklinde uzatarak hissetmek çok kolaydır:<br><br>
+                <strong>Örnekler:</strong> Câhil, Hâkim, Sâlim, Zâlim, Fâtih, Kâşif, Nâzım, Şâir, Sâbır, Şâkir, Sâdık...</p>
             </div>
         </div>`;
-    } else if (stage === 'ismi_meful' || stage === 'ismi_meful_mezid') {
+    } else if (stage === 'ismi_meful') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir. Sülasi mücerred fiillerde <strong>"مَفْعُول" (Mef'ûl)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8329,7 +8359,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'zaman_mekan') {
         arTitle = "اِسْمُ الزَّمان والمَكان"; trTitle = "Zaman ve Mekan İsmi"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Eylemin yapıldığı <strong>zamanı</strong> veya eylemin gerçekleştiği <strong>yeri (mekan)</strong> ifade etmek için kullanılan kalıplardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8350,7 +8380,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_alet') {
         arTitle = "اِسْمُ الآلَة"; trTitle = "İsmi Alet (Alet İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Bir işin bizzat kendisiyle yapıldığı <strong>aleti, cihazı veya aracı</strong> ifade etmek için türetilen isimlerdir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8372,7 +8402,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'cemi_teksir') {
         arTitle = "جَمْعُ التَّكْسير"; trTitle = "Kırık Çoğul (Cemi Teksir)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Kelimenin tekil (müfred) yapısının kırılarak (harf eklenip çıkarılarak veya harekeleri değiştirilerek) oluşturulduğu <strong>düzensiz çoğul</strong> türüdür. Kurallı çoğullar gibi (Müslim > Müslimûn) sonuna standart bir ek almaz; ezberlenmesi gerekir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8394,7 +8424,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tasgir') {
         arTitle = "اِسْمُ التَّصْغير"; trTitle = "İsmi Tasğir (Küçültme İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Varlığın küçüklüğünü, azlığını veya ona duyulan <strong>sevgi, şefkat ya da bazen küçümsemeyi</strong> ifade etmek için kullanılan özel kalıptır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8417,7 +8447,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tafdil') {
         arTitle = "اِسْمُ التَّفْضيل"; trTitle = "İsmi Tafdil (Üstünlük İsmi)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Sıfatlarda kıyaslama (<strong>daha</strong>) veya en üstünlük (<strong>en</strong>) bildiren isimdir. Eril (Müzekker) için <strong>أَفْعَل (Ef'al)</strong>, Dişil (Müennes) için <strong>فُعْلَى (Fu'lâ)</strong> kalıbı kullanılır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8450,9 +8480,12 @@ window.openAtlasOverlay = function(stage) {
                 </div>
             </div>
         </div>`;
-    } else if (stage === 'mastar_mezid') {
+    }
+    
+    // Mezid Nouns (No Tables)
+    else if (stage === 'mastar_mezid') {
         arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Mezid (harf eklenmiş) fiillerin mastarlarıdır. Sülasi Mücerred mastarların aksine, <strong>Mezid mastarlar tamamen kurallıdır (Kıyasîdir)</strong> ve her babın kendine özgü değişmez bir mastar kalıbı vardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8467,10 +8500,48 @@ window.openAtlasOverlay = function(stage) {
                 <p style="margin: 0;">Bizim "İf'al, Tef'il, Mufaale" diyerek ezberlediğimiz bab isimleri, aslında o babların <strong>Mastar</strong> kalıplarından başka bir şey değildir. Türkçe'de kullandığımız "İslam, İmtihan, İstikbal, Mücadele, Tekbir, Tevekkül" kelimelerinin hepsi Mezid mastarlardır.</p>
             </div>
         </div>`;
+    } else if (stage === 'ismi_fail_mezid') {
+        arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+            <p>Mezid fiillerde (harf eklenmiş fiillerde) işi yapanı gösterir. Kuralı çok basittir: Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
+                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
+                </div>
+                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
+                </div>
+            </div>
+            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
+                <p style="margin: 0;">Eğer bir kelime Türkçe'de <strong>"MÜ, MU"</strong> ile başlıyorsa ve sondan bir önceki sesli harfi ince (esre gibi i/ı) ise o eylemi yapan kişidir!<br>
+                Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Mümteh<strong>i</strong>n, Mütekebb<strong>i</strong>r, Muall<strong>i</strong>m...</p>
+            </div>
+        </div>`;
+    } else if (stage === 'ismi_meful_mezid') {
+        arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+            <p>Mezid fiillerde (harf eklenmiş fiillerde) yapılan işten etkileneni gösterir. Kuralı İsmi Fail ile neredeyse aynıdır: Muzari fiilin başına <strong>ötreli 'MİM' (مُ)</strong> getirilir, ancak İsmi Fail'in aksine <strong>sondan bir önceki harf ÜSTÜNLÜ</strong> okunur.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
+                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلَّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Öğretilen (Kişi/Nesne)</span>
+                </div>
+                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَخْرَج</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Maden vb.) Çıkarılan Şey</span>
+                </div>
+            </div>
+            <div style="background: #fff1f2; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">İsmi Fail - İsmi Mef'ul Ayrımı (Esre mi Üstün mü?):</h4>
+                <p style="margin: 0;">Türkçede de aynı kuralı kullanırız! Sondan bir önceki ses:<br>
+                <strong>İ / I ise Yapan (İsmi Fail):</strong> Mükr<strong>i</strong>m (İkram eden), Müstakb<strong>i</strong>l (Karşılayan).<br>
+                <strong>A / E ise Yapılan (İsmi Mef'ul):</strong> Mükr<strong>e</strong>m (İkram edilen), Müstakb<strong>e</strong>l (Karşılanan / Gelecek zaman).</p>
+            </div>
+        </div>`;
     } else {
         arTitle = stage.toUpperCase(); trTitle = "Konu Anlatımı"; desc = "Bu konu ile ilgili açıklamalar eklenecektir.";
     }
 
+    
     let elAr = document.getElementById('atlas-title-ar');
 
     let elTr = document.getElementById('atlas-title-tr');

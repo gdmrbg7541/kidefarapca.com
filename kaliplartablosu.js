@@ -7792,7 +7792,10 @@ function initMemoryGrid(key, forceShuffle = false) {
 
     if (isStudy || isList) {
         displayList = selectedWords;
-        if (forceShuffle) {
+        // isStudy ise her zaman karışık başlasın, isList ise sadece Karıştır (forceShuffle) butonuna basılınca karışsın
+        if (isStudy && !forceShuffle) {
+            displayList.sort(() => Math.random() - 0.5);
+        } else if (forceShuffle) {
             displayList.sort(() => Math.random() - 0.5);
         }
         grid.style.height = "auto";
@@ -7822,18 +7825,38 @@ function initMemoryGrid(key, forceShuffle = false) {
         grid.setAttribute('data-total', displayList.length);
     }
 
-    
-    displayList.forEach(item => {
+    let listColumnsContainer = null;
+    if (isList) {
+        const titleText = (thematicCategoriesData[key] && thematicCategoriesData[key].title) ? thematicCategoriesData[key].title : 'Kelime Listesi';
+        const iconText = (thematicCategoriesData[key] && thematicCategoriesData[key].icon) ? thematicCategoriesData[key].icon : '📝';
+        
+        const paper = document.createElement('div');
+        paper.className = 'list-mode-paper';
+        
+        paper.innerHTML = `
+            <div class="list-mode-title">${iconText} ${titleText}</div>
+            <div class="list-mode-columns"></div>
+        `;
+        grid.appendChild(paper);
+        listColumnsContainer = paper.querySelector('.list-mode-columns');
+    }
+
+    displayList.forEach((item, index) => {
         if (isList) {
             const row = document.createElement('div');
             row.className = 'list-mode-item';
             let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
             row.innerHTML = `
+                <div class="list-mode-num">${index + 1}.</div>
                 <div class="list-mode-tr" dir="ltr">${item.trText}</div>
                 <div class="list-mode-emoji">${item.emoji || '✨'}</div>
                 <div class="list-mode-ar" dir="rtl">${arContent}</div>
             `;
-            grid.appendChild(row);
+            if (listColumnsContainer) {
+                listColumnsContainer.appendChild(row);
+            } else {
+                grid.appendChild(row);
+            }
             return;
         }
 
@@ -7847,12 +7870,12 @@ function initMemoryGrid(key, forceShuffle = false) {
                 <div class="memory-card-inner">
                     <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
                     <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
-                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${thematicCategoriesData[key]?.arFontSize ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText}</div>
+                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${(thematicCategoriesData[key] && thematicCategoriesData[key].arFontSize) ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText}</div>
                     </div>
                     <!-- ARKA YÜZ: Türkçe ve Emoji -->
                     <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                         <div style="font-size: 4rem; margin-bottom: 5px;">${item.emoji || '✨'}</div>
-                        <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center; ${thematicCategoriesData[key]?.trFontSize ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
+                        <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center; ${(thematicCategoriesData[key] && thematicCategoriesData[key].trFontSize) ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
                     </div>
                 </div>
             `;
