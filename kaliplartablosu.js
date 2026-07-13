@@ -782,6 +782,16 @@ let currentSearchQuery = "";
 function getRootEmoji(root) {
     if(sozlukVerileri[root]) {
         const keys = Object.keys(sozlukVerileri[root]);
+        
+        // Önce "sayi" tipine sahip bir kalıp var mı diye kontrol et (Örn: ثلث, ربع)
+        for (let i = 0; i < keys.length; i++) {
+            let kalip = sozlukVerileri[root][keys[i]];
+            if (kalip && kalip.tip === "sayi" && kalip.base && kalip.base.emoji) {
+                return kalip.base.emoji;
+            }
+        }
+        
+        // Yoksa eskisi gibi ilk geçerli kalıbın emojisini al
         if (keys.length > 0 && sozlukVerileri[root][keys[0]].base && sozlukVerileri[root][keys[0]].base.emoji) {
             return sozlukVerileri[root][keys[0]].base.emoji;
         }
@@ -2797,7 +2807,7 @@ function updateSuffixHighlights(currentBox) {
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly'
     );
 
     function standardize(t) {
@@ -3651,7 +3661,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     let matchedKey = null;
     if (activeSuffix) {
         for (let k in eggObj) {
-            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus') {
+            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly') {
                 if (stdFn(k) === activeSuffix) {
                     matchedKey = k;
                     break;
@@ -3726,7 +3736,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     // ===============================================================
     // 6. GÖRSEL ANİMASYONLAR VE EMOJİLER
     // ===============================================================
-    let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus');
+    let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly');
     if (!activeSuffix && (eggObj.suggestsPlus || hasSuffixes)) {
         if (typeof lastClickedBoxTextSpan !== 'undefined' && lastClickedBoxTextSpan === textEl) {
             if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
@@ -4274,14 +4284,47 @@ function highlightEasterEggBoxes(root) {
         b.classList.remove('sari-vurgu', 'current-active-red');
     });
 
+    const wildcardContainer = document.getElementById('wildcard-container');
+    if (wildcardContainer) wildcardContainer.innerHTML = ''; // Önceki joker kutuları temizle
+
     if (!root || root.length !== 3 || !sozlukVerileri[root]) return;
 
     const refs = getSortedRefsForRoot(root);
     refs.forEach(refId => {
-        const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
+        let targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
             const refEl = b.querySelector('.ref');
             return refEl && parseInt(refEl.innerText.trim()) === refId;
         });
+
+        // -------------------------------------------------------------
+        // JOKER KUTU MANTIĞI: Eğer bu kalıp ID'si HTML'de yoksa, 
+        // dinamik bir Joker (Extra) kutu oluştur!
+        // -------------------------------------------------------------
+        if (!targetBox && wildcardContainer) {
+            const newBox = document.createElement('div');
+            newBox.className = 'glass-box wildcard-box';
+            newBox.setAttribute('data-ref', refId);
+            newBox.setAttribute('data-original', '?');
+            newBox.style.paddingBottom = '8px'; // Ayn harfi vb. taşmasını önlemek için
+            
+            // handleBoxClick fonksiyonunun çalışabilmesi için standart iç yapı
+            newBox.innerHTML = `
+                <div class="ref" style="opacity: 0; pointer-events: none;">${refId}</div>
+                <div class="ar-small" style="font-family: 'Inter', sans-serif; color: #d35400;">?</div>
+            `;
+            
+            // Tüm tıklama ve animasyon mantığını standart sisteme devret!
+            newBox.onclick = function(e) {
+                if (typeof handleBoxClick === 'function') {
+                    handleBoxClick(this);
+                }
+            };
+            
+            wildcardContainer.appendChild(newBox);
+            targetBox = newBox; // Aşağıdaki 'sari-vurgu' vs. eklenebilmesi için referansı targetBox yap
+        }
+        // -------------------------------------------------------------
+
         if (targetBox) {
             targetBox.classList.add('sari-vurgu');
             
@@ -4842,10 +4885,17 @@ const ColorEngine = {
         return ['و', 'ي', 'ا', 'أ', 'إ', 'آ', 'ء', 'ى'].includes(char);
     },
 
-    isEquivalent: function(char1, char2) {
+    isEquivalent: function(char1, char2, rIndex = -1) {
     const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء']; // 'آ' burada mevcut
     const weaks = ['و', 'ي', 'ا', 'ى']; 
     
+    // YENİ: İlk kök harfinde (rIndex === 0) yalın Elif (ا) asla vav veya ya'nın dönüşümü olamaz. 
+    // Aksi halde وَاحِد kelimesindeki ilk Vav'ı bağlaç sanıp Elif'i kök zannediyor!
+    if (rIndex === 0) {
+        if (char1 === 'ا' && (char2 === 'و' || char2 === 'ي')) return false;
+        if (char2 === 'ا' && (char1 === 'و' || char1 === 'ي')) return false;
+    }
+
     // YENİ: Eğer karşılaştırılanlardan biri 'آ' ise, bunu 'أ' (kök hemzesi) ile denk kabul et
     if (char1 === 'آ' && char2 === 'أ') return true;
     if (char1 === 'أ' && char2 === 'آ') return true;
@@ -4863,12 +4913,14 @@ const ColorEngine = {
         let pureChars = finalWord.replace(/[\u064B-\u0652\u0670]/g, '');
         if (pureChars.match(/ف.*ع.*ل/)) {
             rootArray = ['ف', 'ع', 'ل'];
-        } else if (typeof currentRoot !== 'undefined') {
-            if (!currentRoot || currentRoot.trim() === "") {
+        } else if (!rootArray || rootArray.length !== 3 || (rootArray[0] === 'ف' && rootArray[1] === 'ع' && rootArray[2] === 'ل')) {
+            if (typeof currentRoot !== 'undefined' && currentRoot && currentRoot.trim() !== "") {
+                let tempArr = currentRoot.replace(/[^\u0621-\u064A]/g, '').split('');
+                if (tempArr.length === 3) rootArray = tempArr;
+                else rootArray = ['ف', 'ع', 'ل'];
+            } else {
                 rootArray = ['ف', 'ع', 'ل'];
             }
-        } else if (!rootArray || rootArray.length !== 3) {
-            rootArray = ['ف', 'ع', 'ل'];
         }
         
         finalWord = finalWord.replace(/\uFEFB([\u064B-\u0652\u0670]?)/g, 'ل$1ا')
@@ -4887,7 +4939,7 @@ const ColorEngine = {
         for (let i = 0; i < charsOnly.length; i++) {
             let c = charsOnly[i].char;
             
-            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex])) {
+            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
                 let isZiyade = false;
                 
                 if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {
@@ -4898,7 +4950,7 @@ const ColorEngine = {
                     for (let k = rIndex; k < 3; k++) {
                         let found = false;
                         for (let j = searchPointer; j < charsOnly.length; j++) {
-                            if (this.isEquivalent(charsOnly[j].char, rootArray[k])) {
+                            if (this.isEquivalent(charsOnly[j].char, rootArray[k], k)) {
                                 found = true;
                                 searchPointer = j + 1;
                                 break;
@@ -4929,7 +4981,7 @@ const ColorEngine = {
                     rIndex++;
                 }
             } 
-            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1]) && this.isWeak(rootArray[rIndex])) {
+            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1], rIndex + 1) && this.isWeak(rootArray[rIndex])) {
                 charsOnly[i].isRoot = true;
                 rIndex += 2;
             }
@@ -5064,7 +5116,8 @@ function renderUniversalKeyboards() {
                 if (char === 'BACKSPACE') {
                     searchHtml += `<div class="search-key uni-key backspace" onclick="handleSearchKey('BACKSPACE')">⌫</div>`;
                 } else {
-                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${char}</div>`;
+                    let displayChar = char === 'ه' ? 'هـ' : char;
+                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${displayChar}</div>`;
                 }
             });
             searchHtml += `</div>`;
@@ -5084,7 +5137,8 @@ function renderUniversalKeyboards() {
                 } else {
                     let bg = getLetterColor(char);
                     let styleAttr = bg ? `style="--key-bg: ${bg};"` : "";
-                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')" ${styleAttr}>${char}</div>`;
+                    let displayChar = char === 'ه' ? 'هـ' : char;
+                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')" ${styleAttr}>${displayChar}</div>`;
                 }
             });
             mainHtml += `</div>`;
@@ -5290,10 +5344,29 @@ function updateMainKeyboardPredictions() {
         let matchCount = 0;
         let matchesByLetter = {};
         
+        // YENİ: Kök veya kelimelerde %100 birebir eşleşen bir şey var mı kontrolü
+        let hasExactMatchInDict = false;
+        let searchFilterExact = window.stripHarakat(filter);
+        if (searchFilterExact.length > 0 && /[\u0600-\u06FF]/.test(searchFilterExact)) {
+            let normFilter = window.normalizeArabic ? normalizeArabic(searchFilterExact) : searchFilterExact;
+            for (const rootD of Object.values(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
+                for (const kData of Object.values(rootD)) {
+                    if (kData.base && kData.base.arText) {
+                        let normItem = window.normalizeArabic ? normalizeArabic(window.stripHarakat(kData.base.arText)) : window.stripHarakat(kData.base.arText);
+                        if (normItem.startsWith(normFilter)) {
+                            hasExactMatchInDict = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasExactMatchInDict) break;
+            }
+        }
+
         for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
-            if (matchCount > 60) break;
+            if (matchCount > 300) break;
             for (const [originalKalipKey, originalKalipData] of Object.entries(rootData)) {
-                if (matchCount > 60) break;
+                if (matchCount > 300) break;
                 
                 let itemsToProcess = [];
                 if (originalKalipData.base && originalKalipData.base.arText) {
@@ -5343,6 +5416,9 @@ function updateMainKeyboardPredictions() {
                         let getSearchVariants = (rawFilter) => {
                             let norm = normalizeArabic(rawFilter);
                             let variants = [norm];
+                            // Eğer tam eşleşme varsa, önek koparma işlemi yapma! (vahid yazınca vav'ı bağlaç sanıp ehad aramasını engeller)
+                            if (hasExactMatchInDict) return variants;
+
                             // Arapça'da kelime başına bitişen yaygın harf-i cerler ve bağlaçlar
                             const prefixes = ['وال', 'فال', 'بال', 'كال', 'ال', 'لل', 'و', 'ف', 'ب', 'ك', 'ل'];
                             for (let p of prefixes) {
@@ -5357,14 +5433,14 @@ function updateMainKeyboardPredictions() {
                         
                         arMatch = normalizeArabic(strippedAr).split('/').some(part => {
                             let pt = part.trim();
-                            return searchVariants.some(v => pt.startsWith(v));
+                            return searchVariants.some(v => pt.startsWith(v) || (pt.startsWith('ال') && pt.substring(2).startsWith(v)));
                         });
                         
                         if (kalipData.base.muennes) {
                             const strippedMuennes = window.stripHarakat(kalipData.base.muennes);
                             muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => {
                                 let pt = part.trim();
-                                return searchVariants.some(v => pt.startsWith(v));
+                                return searchVariants.some(v => pt.startsWith(v) || (pt.startsWith('ال') && pt.substring(2).startsWith(v)));
                             });
                         }
                         matches = arMatch || muennesMatch;
@@ -5450,7 +5526,19 @@ function updateMainKeyboardPredictions() {
         
         // Arapça alfabetik sıralama
         const arabicAlphabet = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
+        searchFilterExact = window.stripHarakat(filter);
+        let trSearchExact = filter.toLowerCase();
         const sortedLetters = Object.keys(matchesByLetter).sort((a, b) => {
+            let aExact = matchesByLetter[a].some(item => (item.strippedAr && item.strippedAr === searchFilterExact) || (item.trText && item.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact)));
+            let bExact = matchesByLetter[b].some(item => (item.strippedAr && item.strippedAr === searchFilterExact) || (item.trText && item.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact)));
+            if (aExact && !bExact) return -1;
+            if (!aExact && bExact) return 1;
+
+            let aStarts = searchFilterExact.length > 0 && matchesByLetter[a].some(item => item.strippedAr && item.strippedAr.startsWith(searchFilterExact));
+            let bStarts = searchFilterExact.length > 0 && matchesByLetter[b].some(item => item.strippedAr && item.strippedAr.startsWith(searchFilterExact));
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+
             let indexA = arabicAlphabet.indexOf(a);
             let indexB = arabicAlphabet.indexOf(b);
             if (indexA === -1) indexA = 999;
@@ -5464,14 +5552,13 @@ function updateMainKeyboardPredictions() {
             resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 0 0 15px 0; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:10px; width: 100%;">[ ${letter} ]</div>`;
             
             // Harf içindeki kelimeleri sırala (Tam eşleşen ve kısa olanlar ÖNCE)
-            let searchFilter = window.stripHarakat(currentSearchQuery.trim());
             matchesByLetter[letter].sort((a, b) => {
-                let aExact = (a.strippedAr === searchFilter) ? 1 : 0;
-                let bExact = (b.strippedAr === searchFilter) ? 1 : 0;
+                let aExact = (a.strippedAr === searchFilterExact || (a.trText && a.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact))) ? 1 : 0;
+                let bExact = (b.strippedAr === searchFilterExact || (b.trText && b.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact))) ? 1 : 0;
                 if (aExact !== bExact) return bExact - aExact;
                 
-                let aStarts = a.strippedAr.startsWith(searchFilter) ? 1 : 0;
-                let bStarts = b.strippedAr.startsWith(searchFilter) ? 1 : 0;
+                let aStarts = a.strippedAr.startsWith(searchFilterExact) ? 1 : 0;
+                let bStarts = b.strippedAr.startsWith(searchFilterExact) ? 1 : 0;
                 if (aStarts !== bStarts) return bStarts - aStarts;
                 
                 if (a.strippedAr.length !== b.strippedAr.length) {
@@ -7229,7 +7316,8 @@ function toggleThematicAccordion(element, key) {
         if(icon) icon.className = 'fas fa-chevron-down thematic-accordion-icon';
         
         // Hide the viewer container completely if nothing is active
-        document.getElementById('thematic-viewer-container').style.display = 'none';
+        const viewerContainer = document.getElementById('thematic-viewer-container');
+        if (viewerContainer) viewerContainer.style.display = 'none';
     } else {
         // Close all headers and contents
         const allItems = document.querySelectorAll('.thematic-accordion-item');
@@ -8116,10 +8204,10 @@ window.openAtlasOverlay = function(stage) {
     // Verb Stages (with Tables)
     if (stage === 'mazi' || stage === 'mazi_mezid') {
         arTitle = "الماضي"; trTitle = "Geçmiş Zaman (Mazi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Mazi Fiil</strong>, genel olarak geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen bitişik zamirlerle (soneklerle) yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8131,10 +8219,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'muzari' || stage === 'muzari_mezid') {
         arTitle = "المُضارِع"; trTitle = "Geniş / Şimdiki Zaman (Muzari)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Muzari Fiil</strong>, eylemin şu an yapıldığını (şimdiki zaman), her zaman yapıldığını (geniş zaman) veya gelecekte yapılacağını bildirir. Çekimi fiilin başına getirilen "Eteyne (أتين)" harfleriyle ve soneklerle yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Muzari'nin Anlamını Değiştiren Edatlar:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8147,10 +8235,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'emir' || stage === 'emir_mezid') {
         arTitle = "الأَمْر"; trTitle = "Emir Kipi"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Emir Fiili</strong>, karşımızdaki kişiden (muhatap/muhataba) bir işi yapmasını istemek için kullanılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Edebi ve Kur'an'i Nüanslar (Emrin Mertebeleri):</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8165,7 +8253,7 @@ window.openAtlasOverlay = function(stage) {
     // Mücerred Nouns (No Tables)
     else if (stage === 'mastar') {
         arTitle = "المَصْدَر"; trTitle = "Mastar"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p><strong>Mastar</strong>, eylemin kök adıdır (yapmak, etmek gibi). Fiilin bildirdiği işi, zamana veya şahsa bağlı olmadan bağımsız bir "isim" olarak ifade eder.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8188,7 +8276,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_fail') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir. Sülasi mücerred (3 harfli) fiillerde <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8206,7 +8294,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_meful') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir. Sülasi mücerred fiillerde <strong>"مَفْعُول" (Mef'ûl)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8227,7 +8315,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'zaman_mekan') {
         arTitle = "اِسْمُ الزَّمان والمَكان"; trTitle = "Zaman ve Mekan İsmi"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Eylemin yapıldığı <strong>zamanı</strong> veya eylemin gerçekleştiği <strong>yeri (mekan)</strong> ifade etmek için kullanılan kalıplardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8248,7 +8336,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_alet') {
         arTitle = "اِسْمُ الآلَة"; trTitle = "İsmi Alet (Alet İsmi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Bir işin bizzat kendisiyle yapıldığı <strong>aleti, cihazı veya aracı</strong> ifade etmek için türetilen isimlerdir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8270,7 +8358,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'cemi_teksir') {
         arTitle = "جَمْعُ التَّكْسير"; trTitle = "Kırık Çoğul (Cemi Teksir)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Kelimenin tekil (müfred) yapısının kırılarak (harf eklenip çıkarılarak veya harekeleri değiştirilerek) oluşturulduğu <strong>düzensiz çoğul</strong> türüdür. Kurallı çoğullar gibi (Müslim > Müslimûn) sonuna standart bir ek almaz; ezberlenmesi gerekir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8292,7 +8380,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tasgir') {
         arTitle = "اِسْمُ التَّصْغير"; trTitle = "İsmi Tasğir (Küçültme İsmi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Varlığın küçüklüğünü, azlığını veya ona duyulan <strong>sevgi, şefkat ya da bazen küçümsemeyi</strong> ifade etmek için kullanılan özel kalıptır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8315,7 +8403,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tafdil') {
         arTitle = "اِسْمُ التَّفْضيل"; trTitle = "İsmi Tafdil (Üstünlük İsmi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Sıfatlarda kıyaslama (<strong>daha</strong>) veya en üstünlük (<strong>en</strong>) bildiren isimdir. Eril (Müzekker) için <strong>أَفْعَل (Ef'al)</strong>, Dişil (Müennes) için <strong>فُعْلَى (Fu'lâ)</strong> kalıbı kullanılır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8353,7 +8441,7 @@ window.openAtlasOverlay = function(stage) {
     // Mezid Nouns (No Tables)
     else if (stage === 'mastar_mezid') {
         arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Mezid (harf eklenmiş) fiillerin mastarlarıdır. Sülasi Mücerred mastarların aksine, <strong>Mezid mastarlar tamamen kurallıdır (Kıyasîdir)</strong> ve her babın kendine özgü değişmez bir mastar kalıbı vardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8370,7 +8458,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_fail_mezid') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Mezid fiillerde (harf eklenmiş fiillerde) işi yapanı gösterir. Kuralı çok basittir: Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
@@ -8388,7 +8476,7 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_meful_mezid') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: clamp(1.4rem, 0.6vw + 0.8rem, 2.0rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
             <p>Mezid fiillerde (harf eklenmiş fiillerde) yapılan işten etkileneni gösterir. Kuralı İsmi Fail ile neredeyse aynıdır: Muzari fiilin başına <strong>ötreli 'MİM' (مُ)</strong> getirilir, ancak İsmi Fail'in aksine <strong>sondan bir önceki harf ÜSTÜNLÜ</strong> okunur.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">

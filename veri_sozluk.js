@@ -29,6 +29,46 @@ const kategoriTanimlari = {
 };
 
 const sozlukVerileri = {
+    "شيم": {
+        "31": {
+            "base": {
+                "arText": "شَيْمَاء",
+                "trText": "Benli (kadın) / Güzel huylu",
+                "emoji": "👧🏻"
+            },
+            "tip": {
+                "arText": "الْوَزْن: فَعْلَاء (Sıfat-ı Müşebbehe / Müennes)"
+            },
+            "ornek": {
+                "ar": "الشَّيْمَاءُ أُخْتُ النَّبِيِّ فِي الرَّضَاعَةِ.",
+                "tr": "Şeymâ, Peygamberimizin (s.a.v) süt kardeşidir."
+            },
+            "isDictOnly": true
+        },
+        "30": {
+            "base": {
+                "arText": "أَشْيَم",
+                "trText": "Benli (erkek)",
+                "emoji": "👦🏻"
+            },
+            "tip": {
+                "arText": "الْوَزْن: أَفْعَل (Sıfat-ı Müşebbehe / Müzekker)"
+            },
+            "isDictOnly": true
+        },
+        "200": {
+            "base": {
+                "arText": "شِيمَة",
+                "trText": "Huy / Karakter / Adet",
+                "emoji": "🧬"
+            },
+            "ornek": {
+                "ar": "الْكَرَمُ مِنْ شِيَمِ الْعَرَبِ.",
+                "tr": "Cömertlik, Arapların huylarındandır."
+            },
+            "isDictOnly": true
+        }
+    },
     "İsim: Hadise": { isDictOnly: true, tekil: { base: { emoji: "💥", arText: "حَادِثَة", trText: "Hadise / Olay" } }, cogul: "حَوَادِث", cogulTr: "Hadiseler" },
     "Kalıp: İyi Akşamlar": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🌙", arText: "مَساء الخَيْر", trText: "İyi Akşamlar", ornek: { ar: "مَساء الخَيْر لِلْجَميع", tr: "Herkese iyi akşamlar." } } } },
     "Kalıp: Nasılsın": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "❓", arText: "كَيْفَ حالُكَ؟", trText: "Nasılsın?", ornek: { ar: "مَرْحَبًا، كَيْفَ حالُكَ اليَوْم؟", tr: "Merhaba, bugün nasılsın?" } } } },
@@ -860,41 +900,9 @@ const sozlukVerileri = {
         tip: "sayi",
         tekil: { base: { emoji: "٠", arText: "صِفْر", trText: "Sıfır" } }
     },
-    "Sayı: 1": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "١", arText: "وَاحِد", trText: "Bir", muennes: "وَاحِدَة" } }
-    },
-    "Sayı: 2": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "٢", arText: "اِثْنَان", trText: "İki", muennes: "اِثْنَتَان" } }
-    },
-    "Sayı: 3": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "٣", arText: "ثَلَاثَة", trText: "Üç", muennes: "ثَلَاث" } }
-    },
-    "Sayı: 4": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "٤", arText: "أَرْبَعَة", trText: "Dört", muennes: "أَرْبَع" } }
-    },
-    "Sayı: 5": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "٥", arText: "خَمْسَة", trText: "Beş", muennes: "خَمْس" } }
-    },
-    "Sayı: 6": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "٦", arText: "سِتَّة", trText: "Altı", muennes: "سِتّ" } }
-    },
-    "Sayı: 7": {
-        isDictOnly: true,
-        tip: "sayi",
-        tekil: { base: { emoji: "٧", arText: "سَبْعَة", trText: "Yedi", muennes: "سَبْع" } }
-    },
+
+
+
     "Sayı: 8": {
         isDictOnly: true,
         tip: "sayi",
@@ -935,12 +943,9 @@ const sozlukVerileri = {
     "Sayı: 1,000,000,000": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "١٠٠٠٠٠٠٠٠٠", "arText": "مِلْيَار", "trText": "Bir Milyar" } } },
     
     "Sıra: 1.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "١.", "arText": "الْأَوَّل", "trText": "1. Birinci", "muennes": "الْأُولَى" } } },
-    "Sıra: 2.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٢.", "arText": "الثَّانِي", "trText": "2. İkinci", "muennes": "الثَّانِيَة" } } },
-    "Sıra: 3.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٣.", "arText": "الثَّالِث", "trText": "3. Üçüncü", "muennes": "الثَّالِثَة" } } },
-    "Sıra: 4.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٤.", "arText": "الرَّابِع", "trText": "4. Dördüncü", "muennes": "الرَّابِعَة" } } },
-    "Sıra: 5.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٥.", "arText": "الْخَامِس", "trText": "5. Beşinci", "muennes": "الْخَامِسَة" } } },
-    "Sıra: 6.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٦.", "arText": "السَّادِس", "trText": "6. Altıncı", "muennes": "السَّادِسَة" } } },
-    "Sıra: 7.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٧.", "arText": "السَّابِع", "trText": "7. Yedinci", "muennes": "السَّابِعَة" } } },
+
+
+
     "Sıra: 8.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٨.", "arText": "الثَّامِن", "trText": "8. Sekizinci", "muennes": "الثَّامِنَة" } } },
     "Sıra: 9.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "٩.", "arText": "التَّاسِع", "trText": "9. Dokuzuncu", "muennes": "التَّاسِعَة" } } },
     "Sıra: 10.": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "١٠.", "arText": "الْعَاشِر", "trText": "10. Onuncu", "muennes": "الْعَاشِرَة" } } },
@@ -1003,21 +1008,7 @@ const sozlukVerileri = {
         "tip": "gun",
         "tekil": { base: { emoji: "🌙", arText: "الِاثْنَيْن", trText: "Pazartesi (Haftanın 2. günü)." } }
     },
-    "ثلاثاء": {
-        "isDictOnly": true,
-        "tip": "gun",
-        "tekil": { base: { emoji: "🔥", arText: "الثُّلَاثَاء", trText: "Salı (Haftanın 3. günü)." } }
-    },
-    "أربعاء": {
-        "isDictOnly": true,
-        "tip": "gun",
-        "tekil": { base: { emoji: "💧", arText: "الْأَرْبِعَاء", trText: "Çarşamba (Haftanın 4. günü)." } }
-    },
-    "خميس": {
-        "isDictOnly": true,
-        "tip": "gun",
-        "tekil": { base: { emoji: "🌳", arText: "الْخَمِيس", trText: "Perşembe (Haftanın 5. günü)." } }
-    },
+
     "جمعة": {
         "isDictOnly": true,
         "tip": "gun",
