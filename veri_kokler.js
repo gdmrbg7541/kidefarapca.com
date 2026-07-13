@@ -12074,10 +12074,20 @@ const wordEasterEggs = {
             },
             suggestsPlus: true,
             "ة": { 
+                cogulId: "33_ة_cogul",
                 emoji: "👩‍🎓", 
                 arText: "طَالِبَة", 
                 trText: "Kız Öğrenci / İsteyen.",
                 ornek: { ar: "هِيَ طَالِبَةٌ مُجْتَهِدَةٌ", tr: "O, çalışkan bir kız öğrencidir." }
+            }
+        },
+        
+        "33_ة_cogul": {
+            "isHiddenInList": true,
+            "base": { 
+                "emoji": "👩‍🎓👩‍🎓", 
+                "arText": "طَالِبَات", 
+                "trText": "Kız Öğrenciler" 
             }
         },
 
@@ -22588,6 +22598,241 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         78: { base: { emoji: "🌳", arText: "يَقْتَلِعُ", trText: "Kökünden söker.", ornek: { ar: "يَقْتَلِعُ الْجُذُورَ", tr: "Kökleri söküp atıyor." } } },
         79: { base: { emoji: "🌳", arText: "اِقْتَلِعْ", trText: "Kökünden sök!", ornek: { ar: "اِقْتَلِعِ الْأَعْشَابَ الضَّارَّةَ", tr: "Zararlı otları kökünden sök." } } },
         80: { base: { emoji: "🚜", arText: "اِقْتِلَاع", trText: "Kökünden sökme / Sökülüp atılma (Masdar).", ornek: { ar: "اِقْتِلَاعُ الْفَسَادِ", tr: "Yolsuzluğun kökünün kazınması." } } }
+    },
+    
+    "أرخ": {
+        58: { base: { arText: "أَرَّخَ", trText: "Tarihledi / Zamanını belirledi.", ornek: { ar: "أَرَّخَ الكَاتِبُ الرِّسَالَةَ", tr: "Yazar mektuba tarih attı." } } },
+        59: { base: { arText: "يُؤَرِّخُ", trText: "Tarihler / Tarih atar.", ornek: { ar: "يُؤَرِّخُ المُؤَرِّخُ الأَحْدَاثَ", tr: "Tarihçi olayları kaydeder." } } },
+        60: { base: { arText: "أَرِّخْ", trText: "Tarihle! / Tarih at!", ornek: { ar: "أَرِّخْ هَذِهِ الوَثِيقَةَ", tr: "Bu belgeye tarih at." } } },
+        61: {
+            cogulId: "61_cogul",
+            base: {
+                arText: "تَارِيخ",
+                trText: "Tarih / Geçmiş.",
+                ornek: { ar: "تَارِيخُ الإِسْلامِ", tr: "İslam tarihi.", not: "Semantik Not: 'Tarih' kelimesi aslen (أَرَّخَ) fiilinin Tef'îl babından masdarıdır. Telaffuz kolaylığı için (تَأْرِيخ) kelimesindeki hemze elife dönüşmüştür." }
+            }
+        },
+        "61_cogul": {
+            base: {
+                arText: "تَوَارِيخ",
+                trText: "Tarihler (Çoğul).",
+                ornek: { ar: "تَوَارِيخُ مُهِمَّةٌ", tr: "Önemli tarihler." }
+            }
+        }
+    },
+
+    // ==================================================================
+    // سور KÖKÜ
+    // ==================================================================
+    "سور": {
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             1 Numaralı Kalıp (فَعَلَ - Mücerret 1. Bab Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        1: { 
+            base: { 
+                emoji: "🦘", 
+                arText: "سَارَ", 
+                trText: "Sıçradı, saldırdı",
+                ornek: { ar: "سَارَ عَلَى عَدُوِّهِ", tr: "Düşmanının üzerine sıçradı (saldırdı)." }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             2 Numaralı Kalıp (يَفْعُلُ - Mücerret 1. Bab Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        2: { 
+            base: { 
+                emoji: "🦘", 
+                arText: "يَسُورُ", 
+                trText: "Sıçrar, saldırır" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             3 Numaralı Kalıp (أُفْعُلْ - Mücerret 1. Bab Emir)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        3: { 
+            base: { 
+                emoji: "❗", 
+                arText: "سُرْ", 
+                trText: "Sıçra, saldır!" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             19 Numaralı Kalıp (فَعْل - Masdar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        19: { 
+            base: { 
+                emoji: "💨", 
+                arText: "سَوْر", 
+                trText: "Sıçramak, saldırmak",
+                ornek: { ar: "سَوْرَةُ الْغَضَبِ", tr: "Öfkenin patlaması (şiddeti)." }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             33 Numaralı Kalıp (فَاعِل - İsm-i Fâil)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        33: { 
+            base: { 
+                emoji: "👤", 
+                arText: "سَائِر", 
+                trText: "Sıçrayan, saldıran" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             36 Numaralı Kalıp (مَفْعُول - İsm-i Mef'ûl)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        36: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "مَسُور", 
+                trText: "Üzerine sıçranan, saldırılan" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             21 Numaralı Kalıp (فُعْل - Masdar / İsim)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        21: { 
+            cogulId: "41",
+            base: { 
+                emoji: "🧱", 
+                arText: "سُور", 
+                trText: "Sur, duvar",
+                ornek: { ar: "فَضُرِبَ بَيْنَهُم بِسُورٍ لَّهُ بَابٌ", tr: "Nihayet aralarına kapısı olan bir sur (duvar) çekilir. (Hadid Suresi, 13)" }
+            },
+            suggestsPlus: true,
+            "ة": { 
+                cogulId: "42",
+                emoji: "📖", 
+                arText: "سُورَة", 
+                trText: "Kur'an Suresi, yüksek derece",
+                ornek: [
+                    { ar: "سُورَةٌ أَنزَلْنَاهَا وَفَرَضْنَاهَا", tr: "Bu, indirdiğimiz ve (hükümlerini) farz kıldığımız bir suredir. (Nur Suresi, 1)" },
+                    { ar: "💡 مَعْلُومَة لُغَوِيَّة", tr: "Kelime Bilgisi: 'Sûr' (Şehir Surları) şehri çevreleyip koruduğu gibi, 'Sûre' de içindeki ayetleri çepeçevre sarıp müstakil bir bütün oluşturduğu için aynı kökten (س-و-ر) isim almıştır." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             41 Numaralı Kalıp (أَفْعَال - Çoğul)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        41: { 
+            base: { 
+                emoji: "🧱", 
+                arText: "أَسْوَار", 
+                trText: "Surlar, duvarlar"
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             42 Numaralı Kalıp (فُعَل - Çoğul)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        42: { 
+            base: { 
+                emoji: "📖", 
+                arText: "سُوَر", 
+                trText: "Sureler",
+                ornek: { ar: "فَأْتُوا بِعَشْرِ سُوَرٍ مِّثْلِهِ مُفْتَرَيَاتٍ", tr: "Haydi onun gibi uydurulmuş on sure getirin. (Hud Suresi, 13)" }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             58 Numaralı Kalıp (Tef'îl Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        58: { 
+            base: { 
+                emoji: "🧱", 
+                arText: "سَوَّرَ", 
+                trText: "Duvarla çevirdi, sur çekti",
+                ornek: { ar: "سَوَّرَ الْمَدِينَةَ", tr: "Şehrin etrafını surla çevirdi." }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             59 Numaralı Kalıp (Tef'îl Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        59: { 
+            base: { 
+                emoji: "🧱", 
+                arText: "يُسَوِّرُ", 
+                trText: "Duvarla çevirir" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             61 Numaralı Kalıp (Tef'îl Masdar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        61: { 
+            base: { 
+                emoji: "🚧", 
+                arText: "تَسْوِير", 
+                trText: "Duvarla çevirmek, sur örmek" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             64 Numaralı Kalıp (Mufâ'ale Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        64: { 
+            base: { 
+                emoji: "💭", 
+                arText: "سَاوَرَ", 
+                trText: "Saldırdı, (duygu) içini kapladı",
+                ornek: { ar: "سَاوَرَهُ الشَّكُّ", tr: "İçini şüphe kapladı (şüphe ona saldırdı)." }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             65 Numaralı Kalıp (Mufâ'ale Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        65: { 
+            base: { 
+                emoji: "💭", 
+                arText: "يُسَاوِرُ", 
+                trText: "(Duygu vb.) İçini kaplıyor",
+                ornek: { ar: "يُسَاوِرُنِي الْقَلَقُ", tr: "Beni endişe sarıyor." }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             88 Numaralı Kalıp (Tefa'ul Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        88: { 
+            base: { 
+                emoji: "🧗", 
+                arText: "تَسَوَّرَ", 
+                trText: "Duvara tırmandı, duvardan aştı",
+                ornek: { ar: "إِذْ تَسَوَّرُوا الْمِحْرَابَ", tr: "Hani onlar mabedin duvarına tırmanıp (aşmışlardı). (Sâd Suresi, 21)" }
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             89 Numaralı Kalıp (Tefa'ul Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        89: { 
+            base: { 
+                emoji: "🧗", 
+                arText: "يَتَسَوَّرُ", 
+                trText: "Duvara tırmanıyor, duvardan aşıyor" 
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             91 Numaralı Kalıp (Tefa'ul Masdar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        91: { 
+            base: { 
+                emoji: "🧗", 
+                arText: "تَسَوُّر", 
+                trText: "Duvara tırmanmak, duvardan aşmak" 
+            }
+        }
+
     },
 
 };
