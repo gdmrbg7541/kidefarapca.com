@@ -3608,3 +3608,81 @@ body.has-fullscreen-accordion .thematic-words-content {
     height: 24px !important;
 }
 
+
+/* BULUNAN EN SON CSS TASARIMI (list-mode-paper vb.) */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+
+/* LİSTE MODU */
+.thematic-words-grid.list-mode-grid {
+    display: block !important;
+    direction: ltr;
+}
+
+.list-mode-paper {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 30px 40px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Caveat', 'Comic Sans MS', cursive;
+}
+
+.list-mode-title {
+    font-size: 3rem;
+    font-weight: normal !important;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #e0e0e0;
+}
+
+.list-mode-columns {
+    column-count: 2;
+    column-gap: 50px;
+    column-rule: 1px solid #e0e0e0; /* Ortadaki çizgi */
+}
+
+.list-mode-item {
+    break-inside: avoid-column;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.05); /* Sadece hafif bir alt çizgi */
+    transition: background 0.2s ease;
+}
+
+.list-mode-item:hover {
+    background: rgba(0,0,0,0.02); /* Üzerine gelince çok hafif belirginlik */
+}
+
+.list-mode-num {
+    font-size: 1.4rem;
+    font-weight: normal !important;
+    color: #adb5bd;
+    margin-right: 15px;
+    flex: 0 0 auto;
+}
+
+.list-mode-tr {
+    font-size: 1.4rem;
+    font-weight: normal !important;
+    color: #495057;
+    flex: 1;
+    text-align: left;
+    margin-right: 10px;
+}
+
+.list-mode-ar {
+    font-size: 2.4rem;
+    font-family: 'Arakom', sans-serif !important;
+    color: #000;
+    flex: 1;
+    text-align: right;
+    margin-left: 10px;
+}
+
