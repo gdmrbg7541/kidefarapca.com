@@ -22076,11 +22076,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         4: { base: { emoji: "🧿", arText: "يَعِينُ", trText: "Gözü değer / Nazar eder.", ornek: { ar: "يَعِينُ الْحَاسِدُ بِعَيْنِهِ", tr: "Haset eden kişi gözüyle nazar eder." } } },
         5: { base: { emoji: "🧿", arText: "عِنْ", trText: "Gözün değsin / Nazar et! (Beddua gibi)", ornek: { ar: "لَا تَعِنْ أَخَاكَ", tr: "Kardeşine nazar etme (göz değdirme)." } } },
         
-        17: { 
-            base: { emoji: "🧿", arText: "عَيْن", trText: "Nazar / Göz değmesi (Masdar).", ornek: { ar: "الْعَيْنُ حَقٌّ", tr: "Nazar (göz değmesi) haktır. (Hadis)" } }
-        },
         19: { 
-            base: { emoji: "👁️", arText: "عَيْن", trText: "Göz / Pınar / Su kaynağı / Casus (İsim).", muennes: "عَيْنٌ", ornek: { ar: "فِيهَا عَيْنٌ جَارِيَةٌ", tr: "Orada akan bir pınar vardır. (Ğâşiye Suresi, 12)" } }
+            base: { emoji: "👁️", arText: "عَيْن", trText: "Göz / Pınar / Su kaynağı / Casus (İsim) | Nazar / Göz değmesi (Masdar).", muennes: "عَيْنٌ", ornek: { ar: "فِيهَا عَيْنٌ جَارِيَةٌ - الْعَيْنُ حَقٌّ", tr: "Orada akan bir pınar vardır. (Ğâşiye, 12) - Nazar (göz değmesi) haktır. (Hadis)" } }
         },
         43: { 
             base: { emoji: "👀", arText: "عُيُون", trText: "Gözler / Pınarlar (Çoğul).", ornek: { ar: "تَرَى أَعْيُنَهُمْ تَفِيضُ مِنَ الدَّمْعِ", tr: "Gözlerinin yaşla dolup taştığını görürsün. (Mâide Suresi, 83) (Not: İnsan gözü için genellikle أَعْيُن, su pınarları için عُيُون kullanılır, ancak birbirinin yerine de geçebilirler.)" } }
@@ -22130,4 +22127,467 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         90: { base: { emoji: "📌", arText: "تَعَيَّنْ", trText: "Kesinleş!", ornek: { ar: "تَعَيَّنْ فِي مَوْقِفِكَ", tr: "Duruşunda belirgin (kesin) ol." } } },
         91: { base: { emoji: "📍", arText: "تَعَيُّن", trText: "Taayyün / Belirlenme / Somutlaşma.", ornek: { ar: "تَعَيُّنُ الْأَهْدَافِ مُهِمٌّ", tr: "Hedeflerin belirginleşmesi (taayyün etmesi) önemlidir." } } }
     },
+
+    // ==================================================================
+    // 65. '-N-F (أ ن ف) KÖKÜ - Burun, Uç Nokta, Kibir, Yeniden Başlama
+    // ==================================================================
+    "أنف": {
+        // --- İsim ve Zarf Kalıpları ---
+        19: { 
+            base: { 
+                emoji: "👃", 
+                arText: "أَنْف", 
+                trText: "Burun (Anatomik organ).", 
+                ornek: { 
+                    ar: "وَالْأَنْفَ بِالْأَنْفِ", 
+                    tr: "Buruna karşılık burun. (Mâide Suresi, 45)" 
+                } 
+            }
+        },
+        43: { 
+            base: { 
+                emoji: "👃", 
+                arText: "أُنُوف", 
+                trText: "Burunlar (Çoğul).", 
+                ornek: { 
+                    ar: "آنَاف وَأُنُوف", 
+                    tr: "Burun kelimesinin çoğulları.",
+                    not: "Not: 'Anf' kelimesi anatomik burun anlamına gelse de kelimenin kökenindeki ana fikir 'bir şeyin en uç noktası ve başlangıcı'dır."
+                } 
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "آنِفاً", 
+                trText: "Az önce / Biraz önce (Zaman Zarfı).", 
+                ornek: { 
+                    ar: "كَمَا ذَكَرْنَا آنِفاً", 
+                    tr: "Az önce (demin) zikrettiğimiz gibi.",
+                    not: "Semantik Not: 'Ânifen' kelimesi İsm-i Fâil kalıbındadır. Bir şeyin 'burnu', o şeyin en uç ve bize en yakın noktasıdır. Zaman çizgisinde de bize en yakın 'uç nokta' az öncesi olduğu için kelime 'az önce' anlamı kazanmıştır." 
+                } 
+            } 
+        },
+
+        // --- Sülasi Mücerred (4. Bab) ---
+        8: { base: { emoji: "😒", arText: "أَنِفَ", trText: "Burun kıvırdı / Gurur yaptı / Tenezzül etmedi.", ornek: { ar: "أَنِفَ مِنَ الْعَمَلِ الدُّونِ", tr: "Aşağı işi yapmayı küçümsedi (burun kıvırdı)." } } },
+        9: { base: { emoji: "😒", arText: "يَأْنَفُ", trText: "Burun kıvırır / Küçümser.", ornek: { ar: "يَأْنَفُ عَنِ قَبُولِ الْمُسَاعَدَةِ", tr: "Yardım kabul etmekten gurur yapar (burun kıvırır)." } } },
+        10: { base: { emoji: "😒", arText: "اِئْنَفْ", trText: "Burun kıvır! / Gurur yap!", ornek: { ar: "لَا تائْنَفْ عَنِ قَبُولِ الْحَقِّ", tr: "Hakikati kabul etmeye karşı burun kıvırma (kibirlenme)." } } },
+        20: { 
+            base: { 
+                emoji: "😤", 
+                arText: "أَنَفَة", 
+                trText: "Kibir / Gurur / Tenezzül etmeme (Masdar).", 
+                ornek: { 
+                    ar: "مَنَعَتْهُ أَنَفَتُهُ مِنَ الِاعْتِذَارِ", 
+                    tr: "Gururu (kibri) ondan özür dilemesini engelledi.",
+                    not: "Semantik Not: Tıpkı Türkçedeki 'burnu havada olmak' veya 'burun kıvırmak' deyimleri gibi, Arapçada da kibir ve gurur kavramları anatomik olarak burun (enf) kökünden türetilmiştir." 
+                } 
+            } 
+        },
+
+        // --- 100-105 Numaralı Kalıplar (İstif'âl Babı - Baştan Başlamak / İstinaf) ---
+        100: { base: { emoji: "🔄", arText: "اِسْتَأْنَفَ", trText: "Yeniden başladı / İstinaf etti.", ornek: { ar: "اِسْتَأْنَفَ الْعَمَلَ بَعْدَ الِاسْتِرَاحَةِ", tr: "Moladan sonra işe yeniden başladı." } } },
+        101: { base: { emoji: "🔄", arText: "يَسْتَأْنِفُ", trText: "Yeniden başlar / İstinaf eder.", ornek: { ar: "يَسْتَأْنِفُ الْمُحَامِي قَرَارَ الْمَحْكَمَةِ", tr: "Avukat mahkemenin kararını istinaf ediyor (yeniden incelenmesini istiyor)." } } },
+        102: { base: { emoji: "▶️", arText: "اِسْتَأْنِفْ", trText: "Yeniden başla! / İstinaf et!", ornek: { ar: "اِسْتَأْنِفْ حَيَاتَكَ بِطَاقَةٍ جَدِيدَةٍ", tr: "Hayatına yeni bir enerjiyle baştan başla." } } },
+        103: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "اِسْتِينَاف", 
+                trText: "İstinaf / Yeniden başlama (Masdar).", 
+                ornek: { 
+                    ar: "مَحْكَمَةُ الِاسْتِينَافِ", 
+                    tr: "İstinaf Mahkemesi.",
+                    not: "Semantik Not: 'İstif'âl' babı bir eyleme yönelmeyi ifade eder. Bir işin en ucuna, yani 'burnuna (enf)' geri dönmek, o işe en başından yeniden başlamak demektir. Hukuktaki 'İstinaf' (bir kararın bir üst mahkemece baştan görülmesi) kelimesi bu anatomik kökten türemiştir." 
+                } 
+            } 
+        },
+        104: { base: { emoji: "👨‍⚖️", arText: "مُسْتَأْنِف", trText: "Yeniden başlayan / İstinaf eden (İsm-i Fâil).", ornek: { ar: "الْمُحَامِي الْمُسْتَأْنِفُ لِلْقَضِيَّةِ", tr: "Davayı istinaf eden avukat." } } },
+        105: { base: { emoji: "📜", arText: "مُسْتَأْنَف", trText: "Yeniden başlanan şey / İstinaf edilen karar (İsm-i Mef'ul).", ornek: { ar: "الْقَرَارُ الْمُسْتَأْنَفُ", tr: "İstinaf edilen karar." } } }
+    },
+
+    // ==================================================================
+    // 66. SH-M-L (ش م ل) KÖKÜ - Kapsamak, İçermek, Kuzey, Topluluk
+    // ==================================================================
+    "شمل": {
+        // --- İsim, Sıfat ve Zarf Kalıpları ---
+        22: { 
+            base: { 
+                emoji: "🧭", 
+                arText: "شَمَال", 
+                trText: "Kuzey / Sol taraf.", 
+                ornek: { 
+                    ar: "اَلرِّيحُ الشَّمَالِيَّةُ", 
+                    tr: "Kuzey rüzgarı.",
+                    not: "Semantik Not: 'Şemâl' kelimesi 'Şimâl' ile aynı köktendir ve eş anlamlıdır. Araplar yönleri rüzgarlara göre isimlendirdiklerinden bu iki söyleyiş de yaygındır."
+                } 
+            } 
+        },
+        23: { 
+            base: { 
+                emoji: "🧭", 
+                arText: "شِمَال", 
+                trText: "Kuzey / Sol taraf.", 
+                ornek: { 
+                    ar: "اِتَّجَهَ نَحْوَ الشِّمَالِ", 
+                    tr: "Kuzeye doğru yöneldi.",
+                    not: "Semantik Not: 'Şimâl' kelimesi Arapçada hem 'kuzey' hem de 'sol taraf' anlamına gelir (Sağ taraf ve güney anlamına gelen 'Yemin' kelimesinin zıddıdır). Çoğulu شَمَائِل (şemâil) şeklinde gelir."
+                } 
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "🌐", 
+                arText: "شَامِل", 
+                trText: "Şâmil / Kapsamlı / Genel (İsm-i Fâil).", 
+                ornek: { 
+                    ar: "تَقْرِيرٌ شَامِلٌ لِجَمِيعِ التَّفَاصِيلِ", 
+                    tr: "Tüm detayları içeren kapsamlı (şâmil) bir rapor." 
+                } 
+            } 
+        },
+        19: { 
+            base: { 
+                emoji: "👨‍👩‍👧‍👦", 
+                arText: "شَمْل", 
+                trText: "Şeml / Topluluk / Dağınıklığın toplanması (İsim/Masdar).", 
+                ornek: { 
+                    ar: "جَمَعَ اللهُ شَمْلَهُمْ", 
+                    tr: "Allah onların dağınıklığını topladı (bir araya getirdi).",
+                    not: "Semantik Not: 'Cem-i Şeml' ifadesi Arapçada ailenin veya bir topluluğun dağıldıktan sonra tekrar bir araya gelmesini ifade eden çok meşhur bir kalıptır."
+                } 
+            } 
+        },
+
+        // --- Sülasi Mücerred (1. Bab - Kapsamak / İçine Almak) ---
+        1: { base: { emoji: "🫂", arText: "شَمَلَ", trText: "Kapsadı / İçine aldı / Kuşattı.", ornek: { ar: "شَمَلَ الْقَرَارُ الْجَمِيعَ", tr: "Karar herkesi kapsadı (içine aldı)." } } },
+        2: { base: { emoji: "🫂", arText: "يَشْمُلُ", trText: "Kapsar / İçine alır.", ornek: { ar: "رَحْمَةُ اللهِ تَشْمُلُ كُلَّ شَيْءٍ", tr: "Allah'ın rahmeti her şeyi kapsar (kuşatır)." } } },
+        3: { base: { emoji: "🫂", arText: "اُشْمُلْ", trText: "Kapsa! / İçine al!", ornek: { ar: "اُشْمُلْ بِعَطْفِكَ الْفُقَرَاءَ", tr: "Şefkatinle fakirleri de kapsa (onlara da şefkat göster)." } } },
+        25: { 
+            base: { 
+                emoji: "📦", 
+                arText: "شُمُول", 
+                trText: "Şümul / Kapsama / İçine alma (Masdar).", 
+                ornek: { 
+                    ar: "شُمُولُ التَّأْمِينِ", 
+                    tr: "Sigortanın kapsamı (şümulü)." 
+                } 
+            } 
+        },
+
+        // --- 77-82 Numaralı Kalıplar (İfti'âl Babı - İhtiva Etmek / Kapsamak) ---
+        77: { base: { emoji: "📂", arText: "اِشْتَمَلَ", trText: "Kapsadı / İhtiva etti.", ornek: { ar: "اِشْتَمَلَ الْكِتَابُ عَلَى خَمْسَةِ فُصُولٍ", tr: "Kitap beş bölümü kapsadı (beş bölümden oluştu)." } } },
+        78: { base: { emoji: "📂", arText: "يَشْتَمِلُ", trText: "Kapsar / İhtiva eder.", ornek: { ar: "هَذَا الْمَشْرُوعُ يَشْتَمِلُ عَلَى مَخَاطِرَ", tr: "Bu proje bazı riskleri ihtiva eder (barındırır)." } } },
+        79: { base: { emoji: "📂", arText: "اِشْتَمِلْ", trText: "Kapsa! / İhtiva et!", ornek: { ar: "اِشْتَمِلْ فِي بَحْثِكَ عَلَى جَمِيعِ الْمَصَادِرِ", tr: "Araştırmanda tüm kaynakları kapsa (içine al)." } } },
+        80: { base: { emoji: "📁", arText: "اِشْتِمَال", trText: "İhtiva etme / Kapsama (Masdar).", ornek: { ar: "اِشْتِمَالُ الرِّسَالَةِ عَلَى مَعْلُومَاتٍ مُهِمَّةٍ", tr: "Mesajın önemli bilgiler içermesi (kapsaması)." } } },
+        81: { base: { emoji: "🗂️", arText: "مُشْتَمِل", trText: "Kapsayan / İhtiva eden (İsm-i Fâil).", ornek: { ar: "عَقْدٌ مُشْتَمِلٌ عَلَى شُرُوطٍ صَارِمَةٍ", tr: "Sıkı şartları ihtiva eden sözleşme." } } },
+        82: { 
+            base: { 
+                emoji: "🏡", 
+                arText: "مُشْتَمَل", 
+                trText: "Müştemilât / Kapsanan şey / Eklenti (İsm-i Mef'ul).", 
+                ornek: { 
+                    ar: "بَاعَ الْبَيْتَ بِمُشْتَمَلَاتِهِ", 
+                    tr: "Evi müştemilatıyla (içindeki eklentileriyle) birlikte sattı.",
+                    not: "Semantik Not: Türkçede mimari bir terim olarak kullandığımız 'Müştemilat' (Evin ek binaları, kömürlük vs.), kelime anlamı olarak 'evin kapsamına giren, evin sınırları içinde ihtiva edilen şeyler' demektir." 
+                } 
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 67. J-N-B (ج ن ب) KÖKÜ - Yan, Yabancı, Güney, Sakınmak
+    // ==================================================================
+    "جنب": {
+        // --- İsim ve Sıfat Kalıpları ---
+        19: { 
+            base: { 
+                emoji: "🧍", 
+                arText: "جَنْب", 
+                trText: "Yan taraf / Böğür.", 
+                ornek: { 
+                    ar: "وَالصَّاحِبِ بِالْجَنْبِ", 
+                    tr: "Yanınızdaki (yakın) arkadaşa. (Nisâ Suresi, 36)" 
+                } 
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "➡️", 
+                arText: "جَانِب", 
+                trText: "Yan taraf / Yön / Cihet.", 
+                ornek: { 
+                    ar: "مِنْ جَانِبٍ آخَرَ", 
+                    tr: "Diğer bir yönden (diğer yandan)." 
+                } 
+            } 
+        },
+        26: { 
+            base: { 
+                emoji: "🧭", 
+                arText: "جَنُوب", 
+                trText: "Güney.", 
+                ornek: { 
+                    ar: "اَلرِّيحُ الْجَنُوبِيَّةُ", 
+                    tr: "Güney rüzgarı.",
+                    not: "Semantik Not: Yön adları genellikle o yönden esen rüzgarlarla anılır. 'Cenûb' (Güney) kelimesi az önce gördüğümüz 'Şimâl / Şemâl' (Kuzey) kelimesinin tam zıddıdır."
+                } 
+            } 
+        },
+        30: { 
+            base: { 
+                emoji: "🌍", 
+                arText: "أَجْنَبِيّ", 
+                trText: "Ecnebî / Yabancı / Dışarıdan gelen.", 
+                ornek: { 
+                    ar: "رَجُلٌ أَجْنَبِيٌّ", 
+                    tr: "Yabancı bir adam.",
+                    not: "Semantik Not: 'Yan' kökünden türemiştir. 'Kendi yanımızdan/içimizden olmayan, dışarıdan (başka bir yandan) gelen kişi' mantığıyla Türkçedeki 'Ecnebi' kavramını oluşturur. Çoğulu أَجَانِب (Ecânib)'dir."
+                } 
+            } 
+        },
+        21: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "جُنُب", 
+                trText: "Cünüb / Uzak duran / Yabancı / Abdesti olmayan.", 
+                ornek: { 
+                    ar: "وَالْجَارِ الْجُنُبِ", 
+                    tr: "Uzak (yabancı) komşuya. (Nisâ Suresi, 36)",
+                    not: "Semantik Not: Dini bir terim olan 'Cünüb', ibadetten ve mescidden 'uzak durması gereken' durumu ifade eder. Kur'an'da ise 'uzak komşu' (câr-i cünüb) anlamında, akraba veya yakın olmayan komşuyu belirtmek için kullanılmıştır."
+                } 
+            } 
+        },
+        // --- 77-80 Numaralı Kalıplar (İfti'âl Babı - Sakınmak / Kaçınmak / Uzak Durmak) ---
+        77: { base: { emoji: "🛡️", arText: "اِجْتَنَبَ", trText: "Sakındı / Kaçındı / Uzak durdu.", ornek: { ar: "اِجْتَنَبَ الْمُؤْمِنُ الْمَعَاصِيَ", tr: "Mümin günahlardan sakındı (onların yanından uzaklaştı)." } } },
+        78: { base: { emoji: "🛡️", arText: "يَجْتَنِبُ", trText: "Sakınır / Kaçınır.", ornek: { ar: "يَجْتَنِبُ الصَّالِحُونَ قَرِينَ السُّوءِ", tr: "Salih kişiler kötü arkadaştan sakınır." } } },
+        79: { base: { emoji: "✋", arText: "اِجْتَنِبْ", trText: "Sakın! / Uzak dur!", ornek: { ar: "فَاجْتَنِبُوا الرِّجْسَ مِنَ الْأَوْثَانِ", tr: "Putlara tapma pisliğinden sakının (uzak durun)! (Hac Suresi, 30)" } } },
+        80: { base: { emoji: "⛔", arText: "اِجْتِنَاب", trText: "İctinâb / Sakınma / Uzak durma (Masdar).", ornek: { ar: "اِجْتِنَابُ الشُّبُهَاتِ", tr: "Şüpheli şeylerden sakınmak." } } },
+
+        // --- 58-61 Numaralı Kalıplar (Tef'îl Babı - Uzak Tutmak / Korumak) ---
+        58: { base: { emoji: "🛑", arText: "جَنَّبَ", trText: "Uzak tuttu / Korudu.", ornek: { ar: "جَنَّبَهُ اللهُ السُّوءَ", tr: "Allah onu kötülükten uzak tuttu." } } },
+        59: { base: { emoji: "🛑", arText: "يُجَنِّبُ", trText: "Uzak tutar.", ornek: { ar: "يُجَنِّبُ الْأَبُ أَبْنَاءَهُ الْخَطَرَ", tr: "Baba çocuklarını tehlikeden uzak tutar." } } },
+        60: { base: { emoji: "🛑", arText: "جَنِّبْ", trText: "Uzak tut!", ornek: { ar: "وَاجْنُبْنِي وَبَنِيَّ أَنْ نَعْبُدَ الْأَصْنَامَ", tr: "Beni ve oğullarımı putlara tapmaktan uzak tut. (İbrahim Suresi, 35 - Not: Bu ayette Sülasi emir olan 'ücnüb' kullanılmıştır ancak tef'il babı olan 'cennib' de aynı kökten aynı amaca hizmet eder.)" } } },
+        61: { base: { emoji: "🚧", arText: "تَجْنِيب", trText: "Tecnîb / Uzak tutma (Masdar).", ornek: { ar: "تَجْنِيبُ الْأَطْفَالِ الْمَخَاطِرَ", tr: "Çocukları tehlikelerden uzak tutma." } } }
+    },
+
+    // ==================================================================
+    // 68. W-S-T (و س ط) KÖKÜ - Orta, Aracı, Vasat
+    // ==================================================================
+    "وسط": {
+        // --- İsim ve Sıfat Kalıpları ---
+        19: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "وَسَط", 
+                trText: "Vasat / Orta / Merkez / Dengeli.", 
+                ornek: { 
+                    ar: "أُمَّةً وَسَطاً", 
+                    tr: "Orta (dengeli / adil) bir ümmet. (Bakara Suresi, 143)",
+                    not: "Semantik Not: 'Vasat' kelimesi Arapçada 'dengeli, aşırılıktan uzak, altın oran' anlamında çok olumlu bir kelimedir. Ancak Türkçeye geçerken anlam kaymasına uğramış ve maalesef 'sıradan, ortalama, kötüye yakın' anlamında kullanılmaya başlanmıştır."
+                } 
+            } 
+        },
+        35: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "وَسِيط", 
+                trText: "Vasîṭ / Aracı / Arabulucu / Medyatör.", 
+                ornek: { 
+                    ar: "لَعِبَ دَوْرَ الْوَسِيطِ", 
+                    tr: "Arabulucu (vasıt) rolü oynadı." 
+                } 
+            } 
+        },
+        33: { 
+            base: { 
+                emoji: "🚌", 
+                arText: "وَاسِطَة", 
+                trText: "Vâsıta / Aracı / Araç.", 
+                ornek: { 
+                    ar: "بِوَاسِطَةِ صَدِيقٍ", 
+                    tr: "Bir arkadaş vasıtasıyla (aracılığıyla).",
+                    not: "Semantik Not: 'Vâsıta' kelimesi bir amaca ulaşmak için 'ortada duran', iki şeyi birbirine bağlayan araç demektir. Günlük hayatta bindiğimiz araçlara 'vasıta' dememizin sebebi de bizi hedefimize bağlayan aracı olmalarıdır."
+                } 
+            } 
+        },
+
+        // --- 50-51 Numaralı Kalıplar (İsm-i Tafdil - En orta / En dengeli) ---
+        50: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "أَوْسَط", 
+                trText: "Evsaṭ / En orta / Daha orta / En dengeli (İsm-i Tafdil - Eril).", 
+                ornek: [
+                    { 
+                        ar: "خَيْرُ الْأُمُورِ أَوْسَطُهَا", 
+                        tr: "İşlerin en hayırlısı ortası (dengeli olanı)dır. (Hadis-i Şerif)",
+                        not: "Semantik Not: 'Evsat' kelimesi sadece fiziksel olarak 'en ortada olan' değil, aynı zamanda aşırılıklardan (ifrat ve tefrit) uzak, 'en dengeli ve en hayırlı olan' anlamına gelir."
+                    },
+                    {
+                        ar: "اَلشَّرْقُ الْأَوْسَطُ",
+                        tr: "Ortadoğu."
+                    }
+                ]
+            } 
+        },
+        51: { 
+            base: { 
+                emoji: "🕌", 
+                arText: "وُسْطَى", 
+                trText: "Vusṭâ / En orta / Ortadaki (İsm-i Tafdil - Dişil).", 
+                ornek: { 
+                    ar: "حَافِظُوا عَلَى الصَّلَوَاتِ وَالصَّلَاةِ الْوُسْطَى", 
+                    tr: "Namazlara ve özellikle orta namaza (vusta) devam edin. (Bakara Suresi, 238)" 
+                } 
+            } 
+        },
+
+        // --- 88-92 Numaralı Kalıplar (Tefa'ul Babı - Araya Girmek / Aracılık Etmek) ---
+        88: { base: { emoji: "⚖️", arText: "تَوَسَّطَ", trText: "Aracılık etti / Araya girdi / Ortada yer aldı.", ornek: { ar: "تَوَسَّطَ فِي حَلِّ النِّزَاعِ", tr: "Anlaşmazlığın çözümünde aracılık etti (araya girdi)." } } },
+        89: { base: { emoji: "⚖️", arText: "يَتَوَسَّطُ", trText: "Aracılık eder / Araya girer / Ortada bulunur.", ornek: { ar: "يَتَوَسَّطُ لِصَدِيقِهِ", tr: "Arkadaşı için aracılık ediyor." } } },
+        90: { base: { emoji: "⚖️", arText: "تَوَسَّطْ", trText: "Aracılık et! / Araya gir!", ornek: { ar: "تَوَسَّطْ خَيْراً", tr: "Hayırlı bir iş için aracılık et." } } },
+        91: { base: { emoji: "🕊️", arText: "تَوَسُّط", trText: "Tevessut / Aracılık etme / Ortada buluşma (Masdar).", ornek: { ar: "بِتَوَسُّطٍ مِنَ الْأُمَمِ الْمُتَّحِدَةِ", tr: "Birleşmiş Milletlerin aracılığıyla (tevessütüyle)." } } },
+        92: { 
+            base: { 
+                emoji: "🏫", 
+                arText: "مُتَوَسِّط", 
+                trText: "Müteveṣṣit / Orta dereceli / Aracılık eden (İsm-i Fâil).", 
+                ornek: { 
+                    ar: "اَلْمَدْرَسَةُ الْمُتَوَسِّطَةُ", 
+                    tr: "Ortaokul.",
+                    not: "Semantik Not: 'Müteveṣṣit' kelimesi ilkokul ile lise arasında, eğitimin 'ortasında' yer alan kademe olduğu için Arapçada Ortaokul anlamında kullanılır. Aynı zamanda 'ortalama' (متوسط العمر - ortalama yaş) anlamı da vardır."
+                } 
+            } 
+        }
+    },
+
+    // ==================================================================
+    // 69. W-Q-A (و ق ع) KÖKÜ - Düşmek, Vuku bulmak, İmzalamak
+    // ==================================================================
+            "وقع": {
+        // --- Sülasi Mücerred (3. Bab) ---
+        1: { base: { emoji: "⬇️", arText: "وَقَعَ", trText: "Düştü / Vuku buldu / Meydana geldi.", ornek: { ar: "وَقَعَ الْحَادِثُ", tr: "Kaza vuku buldu (meydana geldi)." } } },
+        6: { base: { emoji: "⬇️", arText: "يَقَعُ", trText: "Düşer / Bulunur / Meydana gelir.", ornek: { ar: "تَقَعُ الْمَدِينَةُ فِي الشَّمَالِ", tr: "Şehir kuzeyde düşer (kuzeyde bulunur / konumlanır)." } } },
+        7: { base: { emoji: "⬇️", arText: "قَعْ", trText: "Düş! / Meydana gel! (Emir).", ornek: { ar: "قَعْ عَلَى الْأَرْضِ", tr: "Yere düş." } } },
+        25: { 
+            base: { emoji: "📜", arText: "وُقُوع", trText: "Meydana gelme / Düşme.", ornek: { ar: "وُقُوعُ الزِّلْزَالِ", tr: "Depremin vuku bulması (meydana gelmesi)." } },
+            "ات": { emoji: "📜", arText: "وُقُوعَات", trText: "Vukuatlar (Çoğul).", ornek: { ar: "سِجِلُّ الْوُقُوعَاتِ", tr: "Vukuatlar (olaylar) sicili." } }
+        },
+
+        // --- İsim, Sıfat ve Mekan Kalıpları ---
+        33: { 
+            base: { emoji: "👁️", arText: "وَاقِع", trText: "Gerçekleşen / Gerçeklik.", ornek: { ar: "فِي الْوَاقِعِ", tr: "Gerçekte, hakikatte." } },
+            "ة": { 
+                emoji: "💥", 
+                arText: "وَاقِعَة", 
+                trText: "Vâkıa (Olay / Kıyamet).", 
+                ornek: { 
+                    ar: "إِذَا وَقَعَتِ الْوَاقِعَةُ", 
+                    tr: "Gerçekleşecek olan (Kıyamet) koptuğu zaman. (Vâkıa Suresi, 1)",
+                    not: "Semantik Not: 'Vâkıa', 33 numaralı İsm-i Fâil kalıbının (Vâkı') sonuna dişil (ة) eklenmiş halidir. Tekil ve sarsıcı bir 'olay'ı, özelde ise Kıyamet'i ifade eder."
+                } 
+            }
+        },
+        37: { 
+            base: { 
+                emoji: "📍", 
+                arText: "مَوْقِع", 
+                trText: "Konum / Yer / Web Sitesi (İsm-i Mekân).", 
+                ornek: { 
+                    ar: "الْمَوْقِعُ الْإِلِكْتُرُونِيُّ", 
+                    tr: "Elektronik konum (Web sitesi)." 
+                } 
+            } 
+        },
+
+        // --- 58-61 Numaralı Kalıplar (Tef'îl Babı - İmzalamak / Tuğra Çekmek) ---
+        58: { base: { emoji: "✍️", arText: "وَقَّعَ", trText: "İmzaladı.", ornek: { ar: "وَقَّعَ الْمُدِيرُ الْعَقْدَ", tr: "Müdür sözleşmeyi imzaladı." } } },
+        59: { base: { emoji: "✍️", arText: "يُوَقِّعُ", trText: "İmzalar.", ornek: { ar: "يُوَقِّعُ الْأَوْرَاقَ", tr: "Evrakları imzalıyor." } } },
+        60: { base: { emoji: "✍️", arText: "وَقِّعْ", trText: "İmzala!", ornek: { ar: "وَقِّعْ هُنَا", tr: "Burayı imzala." } } },
+        61: { 
+            base: { 
+                emoji: "✒️", 
+                arText: "تَوْقِيع", 
+                trText: "İmza / İmzalama (Masdar).", 
+                ornek: { 
+                    ar: "تَوْقِيعُ الِاتِّفَاقِيَّةِ", 
+                    tr: "Anlaşmanın imzalanması.",
+                    not: "Semantik Not: 'Tevki' kelimesi, bir belgeye iz bırakmak, damga vurmak anlamında 'düşürmek' kökünden gelir. Osmanlı Devleti'nde padişahın imzası olan tuğrayı çeken görevliye 'Nişancı' veya 'Tevkiî' denmesi de bu sebepledir."
+                } 
+            } 
+        },
+
+        // --- 88-93 Numaralı Kalıplar (Tefa'ul Babı - Beklemek / Umut Etmek) ---
+        88: { base: { emoji: "⏳", arText: "تَوَقَّعَ", trText: "Bekledi / Umdu / Tahmin etti.", ornek: { ar: "تَوَقَّعَ النَّجَاحَ", tr: "Başarıyı umdu (bekledi)." } } },
+        89: { base: { emoji: "⏳", arText: "يَتَوَقَّعُ", trText: "Bekler / Tahmin eder.", ornek: { ar: "أَتَوَقَّعُ أَنْ تُمْطِرَ", tr: "Yağmur yağmasını bekliyorum (tahmin ediyorum)." } } },
+        91: { 
+            base: { 
+                emoji: "💭", 
+                arText: "تَوَقُّع", 
+                trText: "Beklenti / Tahmin / Öngörü (Masdar).", 
+                ornek: { 
+                    ar: "حَسَبَ التَّوَقُّعَاتِ", 
+                    tr: "Beklentilere (tahminlere) göre.",
+                    not: "Semantik Not: 'Tevekku', bir şeyin kendi üzerine 'düşmesini' (vuku bulmasını) zihnen beklemek, yani beklenti içine girmek veya gelecekte olacağını öngörmek demektir."
+                } 
+            } 
+        },
+        93: { base: { emoji: "🎯", arText: "مُتَوَقَّع", trText: "Beklenen / Umulan / Öngörülen (İsm-i Mef'ul).", ornek: { ar: "النَّتِيجَةُ الْمُتَوَقَّعَةُ", tr: "Beklenen sonuç." } } }
+    },
+
+    // ==================================================================
+    // 70. Q-L-A (ق ل ع) KÖKÜ - Sökmek, Kalkış Yapmak, Vazgeçmek
+    // ==================================================================
+    "قلع": {
+        // --- Sülasi Mücerred (3. Bab) ---
+        1: { base: { emoji: "🦷", arText: "قَلَعَ", trText: "Söktü / Kopardı / Çıkardı.", ornek: { ar: "قَلَعَ الطَّبِيبُ السِّنَّ", tr: "Doktor dişi çekti (söktü)." } } },
+        6: { base: { emoji: "🦷", arText: "يَقْلَعُ", trText: "Söker / Çıkarır.", ornek: { ar: "يَقْلَعُ الْأَشْجَارَ", tr: "Ağaçları söküyor." } } },
+        7: { base: { emoji: "🦷", arText: "اِقْلَعْ", trText: "Sök! / Çıkar! (Emir).", ornek: { ar: "اِقْلَعْ هَذَا الْمِسْمَارَ", tr: "Bu çiviyi sök." } } },
+        8: { base: { emoji: "🔧", arText: "قَلْع", trText: "Sökmek / Çıkarmak (Masdar).", ornek: { ar: "قَلْعُ الْأَسْنَانِ", tr: "Diş çekimi (sökülmesi)." } } },
+
+        // --- İsim Kalıpları ---
+        19: { 
+            cogulId: 44,
+            base: { 
+                emoji: "🏰", 
+                arText: "قَلْعَة", 
+                trText: "Kale / Hisar.", 
+                ornek: { ar: "قَلْعَةُ أَنْقَرَةَ", tr: "Ankara Kalesi.", not: "Semantik Not: 'Kale' kelimesi, düşmanın söküp atmasının zor olduğu sağlam yapılar için, veya dağdan yontularak/sökülerek yapıldığı için 'kal'a' (sökmek) kökünden türetilmiştir." } 
+            } 
+        },
+        44: { 
+            tekilId: 19,
+            base: { 
+                emoji: "🏰", 
+                arText: "قِلَاع", 
+                trText: "Kaleler / Hisarlar (Çoğul).", 
+                ornek: { ar: "اَلْقِلَاعُ التَّارِيخِيَّةُ", tr: "Tarihi kaleler." } 
+            } 
+        },
+
+        // --- 52-55 Numaralı Kalıplar (İf'âl Babı - Havalanmak / Vazgeçmek) ---
+        52: { base: { emoji: "🛫", arText: "أَقْلَعَ", trText: "Havalandı (uçak) / Demir aldı (gemi) / Vazgeçti.", ornek: [ { ar: "أَقْلَعَتِ الطَّائِرَةُ", tr: "Uçak havalandı (kalkış yaptı)." }, { ar: "أَقْلَعَ عَنِ التَّدْخِينِ", tr: "Sigarayı bıraktı (vazgeçti)." } ] } },
+        53: { base: { emoji: "🛫", arText: "يُقْلِعُ", trText: "Havalanır / Vazgeçer.", ornek: { ar: "مَتَى تُقْلِعُ الطَّائِرَةُ؟", tr: "Uçak ne zaman kalkacak?" } } },
+        54: { base: { emoji: "🛫", arText: "أَقْلِعْ", trText: "Havalan! / Vazgeç!", ornek: { ar: "أَقْلِعْ عَنِ الْعَادَاتِ السَّيِّئَةِ", tr: "Kötü alışkanlıkları bırak." } } },
+        55: { 
+            base: { 
+                emoji: "✈️", 
+                arText: "إِقْلَاع", 
+                trText: "Kalkış (Uçak) / Vazgeçme / Bırakma (Masdar).", 
+                ornek: { 
+                    ar: "صَالَةُ الْإِقْلَاعِ", 
+                    tr: "Kalkış (gidiş) salonu.",
+                    not: "Semantik Not: 'İklâ' kelimesi uçağın yerden, veya geminin demir atılan limandan kendini 'söküp ayırması' mecazından gelmektedir."
+                } 
+            } 
+        },
+
+        // --- 77-80 Numaralı Kalıplar (İfti'âl Babı - Kökünden Sökmek) ---
+        77: { base: { emoji: "🌳", arText: "اِقْتَلَعَ", trText: "Kökünden söktü / Kopardı.", ornek: { ar: "اِقْتَلَعَ الْعَاصِفَةُ الشَّجَرَةَ", tr: "Fırtına ağacı kökünden söktü." } } },
+        78: { base: { emoji: "🌳", arText: "يَقْتَلِعُ", trText: "Kökünden söker.", ornek: { ar: "يَقْتَلِعُ الْجُذُورَ", tr: "Kökleri söküp atıyor." } } },
+        79: { base: { emoji: "🌳", arText: "اِقْتَلِعْ", trText: "Kökünden sök!", ornek: { ar: "اِقْتَلِعِ الْأَعْشَابَ الضَّارَّةَ", tr: "Zararlı otları kökünden sök." } } },
+        80: { base: { emoji: "🚜", arText: "اِقْتِلَاع", trText: "Kökünden sökme / Sökülüp atılma (Masdar).", ornek: { ar: "اِقْتِلَاعُ الْفَسَادِ", tr: "Yolsuzluğun kökünün kazınması." } } }
+    },
+
 };

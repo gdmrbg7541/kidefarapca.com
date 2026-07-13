@@ -2788,7 +2788,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.addEventListener('touchstart', startDragging, { passive: true });
         wrapper.addEventListener('touchend', stopDragging, { passive: true });
         wrapper.addEventListener('touchmove', (e) => {
-            let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not');
+            let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not' && k !== 'cogulId' && k !== 'tekilId');
             if (isDown) {
                 const x = e.touches[0].pageX - wrapper.offsetLeft;
                 const walk = (x - startX) * 1.5;
@@ -2833,7 +2833,7 @@ function updateSuffixHighlights(currentBox) {
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not'
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not' && k !== 'cogulId' && k !== 'tekilId'
     );
 
     function standardize(t) {
@@ -3687,7 +3687,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     let matchedKey = null;
     if (activeSuffix) {
         for (let k in eggObj) {
-            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not') {
+            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not' && k !== 'cogulId' && k !== 'tekilId') {
                 if (stdFn(k) === activeSuffix) {
                     matchedKey = k;
                     break;
@@ -4964,7 +4964,18 @@ const ColorEngine = {
         for (let i = 0; i < charsOnly.length; i++) {
             let c = charsOnly[i].char;
             
-            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
+            // YENİ: Misal Fiil (Vavlı) Muzari 'ي' Harfi Hatası
+            // Kök 'و' ile başlıyorsa ve kelimedeki harf 'ي' ise, bu 'ي' genellikle Muzaraat harfidir (örn: يَقَعُ).
+            // Sadece 'م', 'إ', 'ا', 'أ', 'ت' harflerinden sonra gelen 'ي' kök harfi (dönüşmüş vav) olabilir.
+            let isMisalMuzariPrefix = false;
+            if (rIndex === 0 && c === 'ي' && rootArray[0] === 'و') {
+                let prevChar = i > 0 ? charsOnly[i - 1].char : '';
+                if (!['م', 'إ', 'ا', 'أ', 'ت'].includes(prevChar)) {
+                    isMisalMuzariPrefix = true;
+                }
+            }
+
+            if (!isMisalMuzariPrefix && rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
                 let isZiyade = false;
                 
                 if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {

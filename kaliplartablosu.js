@@ -2807,7 +2807,7 @@ function updateSuffixHighlights(currentBox) {
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly'
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'cogulId' && k !== 'tekilId'
     );
 
     function standardize(t) {
@@ -3661,7 +3661,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     let matchedKey = null;
     if (activeSuffix) {
         for (let k in eggObj) {
-            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly') {
+            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'cogulId' && k !== 'tekilId') {
                 if (stdFn(k) === activeSuffix) {
                     matchedKey = k;
                     break;
@@ -3736,7 +3736,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     // ===============================================================
     // 6. GÖRSEL ANİMASYONLAR VE EMOJİLER
     // ===============================================================
-    let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly');
+    let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'cogulId' && k !== 'tekilId');
     if (!activeSuffix && (eggObj.suggestsPlus || hasSuffixes)) {
         if (typeof lastClickedBoxTextSpan !== 'undefined' && lastClickedBoxTextSpan === textEl) {
             if (desktopPlus) desktopPlus.classList.add('plus-highlighted');
@@ -4939,7 +4939,18 @@ const ColorEngine = {
         for (let i = 0; i < charsOnly.length; i++) {
             let c = charsOnly[i].char;
             
-            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
+            // YENİ: Misal Fiil (Vavlı) Muzari 'ي' Harfi Hatası
+            // Kök 'و' ile başlıyorsa ve kelimedeki harf 'ي' ise, bu 'ي' genellikle Muzaraat harfidir (örn: يَقَعُ).
+            // Sadece 'م', 'إ', 'ا', 'أ', 'ت' harflerinden sonra gelen 'ي' kök harfi (dönüşmüş vav) olabilir.
+            let isMisalMuzariPrefix = false;
+            if (rIndex === 0 && c === 'ي' && rootArray[0] === 'و') {
+                let prevChar = i > 0 ? charsOnly[i - 1].char : '';
+                if (!['م', 'إ', 'ا', 'أ', 'ت'].includes(prevChar)) {
+                    isMisalMuzariPrefix = true;
+                }
+            }
+
+            if (!isMisalMuzariPrefix && rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
                 let isZiyade = false;
                 
                 if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {
@@ -5373,7 +5384,7 @@ function updateMainKeyboardPredictions() {
                     itemsToProcess.push({ kalipKey: originalKalipKey, kalipData: originalKalipData });
                 }
                 for (const suffix in originalKalipData) {
-                    if (suffix !== 'base' && suffix !== 'ornek' && suffix !== 'cekimi' && suffix !== 'suggestsPlus') {
+                    if (suffix !== 'base' && suffix !== 'ornek' && suffix !== 'cekimi' && suffix !== 'suggestsPlus' && suffix !== 'tip' && suffix !== 'isDictOnly' && suffix !== 'cogulId' && suffix !== 'tekilId') {
                         if (originalKalipData[suffix] && originalKalipData[suffix].arText) {
                             itemsToProcess.push({ kalipKey: originalKalipKey + "+" + suffix, kalipData: { base: originalKalipData[suffix] } });
                         }
