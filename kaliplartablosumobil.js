@@ -5869,6 +5869,7 @@ function getSortedRefsForRoot(root) {
     if (!sozlukVerileri[root]) return [];
     return Object.keys(sozlukVerileri[root])
         .map(Number)
+        .filter(n => !isNaN(n))
         .sort((a, b) => a - b);
 }
 
