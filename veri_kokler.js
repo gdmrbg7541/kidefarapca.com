@@ -227,7 +227,7 @@ const wordEasterEggs = {
     "عشر": {
         // --- 17 Numaralı Kalıp (Sayı) ---
         17: { 
-            base: { emoji: "🔟", arText: "عَشَرَة", trText: "10 / On rakamı.", muennes: "عَشْر", ornek: { ar: "الْعَشَرَةُ الْمُبَشَّرَةُ", tr: "Cennetle müjdelenen on sahabi (Aşere-i Mübeşşere)." } },
+            base: { emoji: "🔟", arText: "عَشَرَة", trText: "10", muennes: "عَشْر", ornek: { ar: "الْعَشَرَةُ الْمُبَشَّرَةُ", tr: "Cennetle müjdelenen on sahabi (Aşere-i Mübeşşere)." } },
             tip: "sayi"
         },
         
@@ -269,7 +269,7 @@ const wordEasterEggs = {
     "تسع": {
         // --- 20 Numaralı Kalıp (Sayı) ---
         20: { 
-            base: { emoji: "9️⃣", arText: "تِسْعَة", trText: "9 / Dokuz rakamı.", muennes: "تِسْع", ornek: { ar: "تِسْعَةُ رِجَالٍ", tr: "Dokuz adam." } },
+            base: { emoji: "9️⃣", arText: "تِسْعَة", trText: "9", muennes: "تِسْع", ornek: { ar: "تِسْعَةُ رِجَالٍ", tr: "Dokuz adam." } },
             tip: "sayi"
         },
         
@@ -304,7 +304,7 @@ const wordEasterEggs = {
         
         // --- 22 Numaralı Kalıp (Sayı) ---
         22: { 
-            base: { emoji: "8️⃣", arText: "ثَمَانِيَة", trText: "8 / Sekiz rakamı.", muennes: "ثَمَانٍ", ornek: { ar: "ثَمَانِيَةُ أَبْوَابٍ", tr: "Sekiz kapı." } },
+            base: { emoji: "8️⃣", arText: "ثَمَانِيَة", trText: "8", muennes: "ثَمَانٍ", ornek: { ar: "ثَمَانِيَةُ أَبْوَابٍ", tr: "Sekiz kapı." } },
             tip: "sayi"
         },
 
@@ -350,7 +350,7 @@ const wordEasterEggs = {
             base: { 
                 emoji: "2️⃣", 
                 arText: "اِثْنَانِ", 
-                trText: "2 / İki rakamı.", 
+                trText: "2", 
                 ornek: { ar: "اِثْنَانِ مِنْهُمْ", tr: "Onlardan ikisi. (Not: Aslında kökü ثني olup, son harfi olan (ي) düşmüş ve başa Elif-i Vasl almıştır. Yapısal olarak 29. kalıba (فعلان) benzediği için buraya eklenmiştir.)" } 
             },
             tip: "sayi",
@@ -393,7 +393,7 @@ const wordEasterEggs = {
         
         // --- 22 Numaralı Kalıp (Sayı - Üç) ---
         22: { 
-            base: { emoji: "3️⃣", arText: "ثَلَاثَة", trText: "3 / Üç rakamı.", muennes: "ثَلَاث", ornek: { ar: "ثَلَاثَةُ رِجَالٍ", tr: "Üç adam." } },
+            base: { emoji: "3️⃣", arText: "ثَلَاثَة", trText: "3", muennes: "ثَلَاث", ornek: { ar: "ثَلَاثَةُ رِجَالٍ", tr: "Üç adam." } },
             tip: "sayi"
         },
 
@@ -4402,7 +4402,7 @@ const wordEasterEggs = {
         
         // --- 20 Numaralı Kalıp (فِعْلَة - Sayı) ---
         20: { 
-            base: { emoji: "6️⃣", arText: "سِتَّة", trText: "6 / Altı rakamı.", muennes: "سِتّ", ornek: { ar: "سِتَّةُ أَيَّامٍ", tr: "Altı gün." } },
+            base: { emoji: "6️⃣", arText: "سِتَّة", trText: "6", muennes: "سِتّ", ornek: { ar: "سِتَّةُ أَيَّامٍ", tr: "Altı gün." } },
             tip: "sayi"
         },
 
@@ -5628,7 +5628,7 @@ const wordEasterEggs = {
         
         // --- 19 Numaralı Kalıp (فَعْلَة - Sayı) ---
         19: { 
-            base: { emoji: "5️⃣", arText: "خَمْسَة", trText: "5 / Beş rakamı.", muennes: "خَمْس", ornek: { ar: "خَمْسُ صَلَوَاتٍ", tr: "Beş vakit namaz." } },
+            base: { emoji: "5️⃣", arText: "خَمْسَة", trText: "5", muennes: "خَمْس", ornek: { ar: "خَمْسُ صَلَوَاتٍ", tr: "Beş vakit namaz." } },
             tip: "sayi"
         },
 
@@ -14386,7 +14386,7 @@ const wordEasterEggs = {
     "سبع": {
         // --- 19 Numaralı Kalıp (فَعْلَة - Sayı) ---
         19: { 
-            base: { emoji: "7️⃣", arText: "سَبْعَة", trText: "7 / Yedi rakamı.", muennes: "سَبْع", ornek: { ar: "سَبْعَةُ أَيَّامٍ", tr: "Yedi gün." } },
+            base: { emoji: "7️⃣", arText: "سَبْعَة", trText: "7", muennes: "سَبْع", ornek: { ar: "سَبْعَةُ أَيَّامٍ", tr: "Yedi gün." } },
             tip: "sayi"
         },
 
@@ -21987,7 +21987,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         
         // --- 30 Numaralı Kalıp (Sayı) ---
         30: { 
-            base: { emoji: "4️⃣", arText: "أَرْبَعَة", trText: "4 / Dört rakamı.", muennes: "أَرْبَع", ornek: { ar: "أَرْبَعَةُ رِجَالٍ", tr: "Dört adam." } },
+            base: { emoji: "4️⃣", arText: "أَرْبَعَة", trText: "4", muennes: "أَرْبَع", ornek: { ar: "أَرْبَعَةُ رِجَالٍ", tr: "Dört adam." } },
             tip: "sayi"
         },
 
@@ -22065,5 +22065,69 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         90: { base: { emoji: "🤫", arText: "تَوَحَّدْ", trText: "İçine kapan / Tek kal!", ornek: { ar: "تَوَحَّدْ لِلتَّفْكِيرِ", tr: "Düşünmek için yalnız kal/içine kapan." } } },
         91: { base: { emoji: "🧩", arText: "تَوَحُّد", trText: "Otizm / İzolasyon / İçine kapanma.", ornek: { ar: "مَرَضُ التَّوَحُّدِ عِنْدَ الْأَطْفَالِ", tr: "Çocuklarda otizm hastalığı." } } },
         92: { base: { emoji: "🧒", arText: "مُتَوَحِّد", trText: "Otizmli / Yalnızlığı seven.", ornek: { ar: "هُوَ طِفْلٌ مُتَوَحِّدٌ", tr: "O otizmli bir çocuktur." } } }
-    }
+    },
+
+    // ==================================================================
+    // 64. 'A-Y-N (ع ي ن) KÖKÜ - Göz, Görmek, Belirlemek
+    // ==================================================================
+    "عين": {
+        // --- Sülasi Mücerred (2. Bab - Ecvef-i Yaî) ---
+        1: { base: { emoji: "🧿", arText: "عَانَ", trText: "Göz değdi / Nazar etti.", ornek: { ar: "عَانَ الرَّجُلُ الصَّبِيَّ", tr: "Adamın çocuğa gözü değdi (nazar etti)." } } },
+        4: { base: { emoji: "🧿", arText: "يَعِينُ", trText: "Gözü değer / Nazar eder.", ornek: { ar: "يَعِينُ الْحَاسِدُ بِعَيْنِهِ", tr: "Haset eden kişi gözüyle nazar eder." } } },
+        5: { base: { emoji: "🧿", arText: "عِنْ", trText: "Gözün değsin / Nazar et! (Beddua gibi)", ornek: { ar: "لَا تَعِنْ أَخَاكَ", tr: "Kardeşine nazar etme (göz değdirme)." } } },
+        
+        17: { 
+            base: { emoji: "🧿", arText: "عَيْن", trText: "Nazar / Göz değmesi (Masdar).", ornek: { ar: "الْعَيْنُ حَقٌّ", tr: "Nazar (göz değmesi) haktır. (Hadis)" } }
+        },
+        19: { 
+            base: { emoji: "👁️", arText: "عَيْن", trText: "Göz / Pınar / Su kaynağı / Casus (İsim).", muennes: "عَيْنٌ", ornek: { ar: "فِيهَا عَيْنٌ جَارِيَةٌ", tr: "Orada akan bir pınar vardır. (Ğâşiye Suresi, 12)" } }
+        },
+        43: { 
+            base: { emoji: "👀", arText: "عُيُون", trText: "Gözler / Pınarlar (Çoğul).", ornek: { ar: "تَرَى أَعْيُنَهُمْ تَفِيضُ مِنَ الدَّمْعِ", tr: "Gözlerinin yaşla dolup taştığını görürsün. (Mâide Suresi, 83) (Not: İnsan gözü için genellikle أَعْيُن, su pınarları için عُيُون kullanılır, ancak birbirinin yerine de geçebilirler.)" } }
+        },
+
+        // --- 58, 59, 60, 61, 62, 63 Numaralı Kalıplar (Tef'îl Babı - Belirlemek / Tayin Etmek) ---
+        58: { base: { emoji: "📌", arText: "عَيَّنَ", trText: "Tayin etti / Belirledi / Atadı.", ornek: { ar: "عَيَّنَ الْمُدِيرُ الْمُوَظَّفَ الْجَدِيدَ", tr: "Müdür yeni çalışanı atadı (tayin etti)." } } },
+        59: { base: { emoji: "📌", arText: "يُعَيِّنُ", trText: "Tayin eder / Belirler.", ornek: { ar: "يُعَيِّنُ الْقَاضِي مَوْعِدَ الْجَلْسَةِ", tr: "Hakim duruşma vaktini belirler." } } },
+        60: { base: { emoji: "📌", arText: "عَيِّنْ", trText: "Tayin et! / Belirle!", ornek: { ar: "عَيِّنْ هَدَفَكَ فِي الْحَيَاةِ", tr: "Hayattaki hedefini belirle." } } },
+        61: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "تَعْيِين", 
+                trText: "Tayin / Belirleme / Atama.", 
+                ornek: { 
+                    ar: "تَمَّ تَعْيِينُهُ مُدِيرًا لِلشَّرِكَةِ", 
+                    tr: "Şirkete müdür olarak atanması (tayini) gerçekleşti.",
+                    not: "Semantik Not: 'Tayin' kelimesi, bir şeyi 'gözle (ayn - عَيْن) görülür, somut ve belirgin hale getirmek' kökünden türemiştir. Soyut bir kararın gözle görülür bir atamaya dönüşmesini ifade eder." 
+                } 
+            } 
+        },
+        62: { base: { emoji: "👤", arText: "مُعَيِّن", trText: "Tayin eden / Belirleyen.", ornek: { ar: "هُوَ مُعَيِّنُ الْوَقْتِ", tr: "Vakti belirleyen odur." } } },
+        63: { base: { emoji: "✅", arText: "مُعَيَّن", trText: "Muayyen / Belirli / Tayin edilmiş.", ornek: { ar: "فِي وَقْتٍ مُعَيَّنٍ", tr: "Belirli (muayyen) bir vakitte." } } },
+
+        // --- 64, 65, 66, 67, 69, 70 Numaralı Kalıplar (Mufâ'ale Babı - Muayene Etmek / Bizzat Görmek) ---
+        64: { base: { emoji: "🩺", arText: "عَايَنَ", trText: "Kendi gözüyle gördü / Muayene etti.", ornek: { ar: "عَايَنَ الطَّبِيبُ الْمَرِيضَ", tr: "Doktor hastayı muayene etti." } } },
+        65: { base: { emoji: "🩺", arText: "يُعَايِنُ", trText: "Kendi gözüyle görür / Muayene eder.", ornek: { ar: "يُعَايِنُ الْخَبِيرُ مَكَانَ الْحَادِثِ", tr: "Uzman, kaza mahallini bizzat inceliyor (gözlemliyor)." } } },
+        66: { base: { emoji: "🔎", arText: "عَايِنْ", trText: "Gözünle gör! / Muayene et!", ornek: { ar: "عَايِنِ الْوَضْعَ بِنَفْسِكَ", tr: "Durumu bizzat kendin gözlemle (muayene et)." } } },
+        67: { 
+            base: { 
+                emoji: "🔬", 
+                arText: "مُعَايَنَة", 
+                trText: "Muayene / Bizzat gözlemleme.", 
+                ornek: { 
+                    ar: "مُعَايَنَةُ الطَّبِيبِ ضَرُورِيَّةٌ", 
+                    tr: "Doktorun muayenesi gereklidir.",
+                    not: "Semantik Not: 'Muayene', bir şeyi 'kendi gözüyle (ayn) bizzat görmek, karşılıklı gözlemlemek' demektir. Doktorun hastayı fiziki olarak bizzat kendi gözüyle incelemesi bu yüzdendir."
+                } 
+            } 
+        },
+        69: { base: { emoji: "👨‍⚕️", arText: "مُعَايِن", trText: "Muayene eden / Gözlemci.", ornek: { ar: "الطَّبِيبُ الْمُعَايِنُ لِلْمَرِيضِ", tr: "Hastayı muayene eden doktor." } } },
+        70: { base: { emoji: "🛌", arText: "مُعَايَن", trText: "Muayene edilen / Gözlemlenen.", ornek: { ar: "الْمَرِيضُ الْمُعَايَنُ", tr: "Muayene edilen hasta." } } },
+
+        // --- 88, 89, 90, 91 Numaralı Kalıplar (Tefa'ul Babı - Belirlenmek / Kesinleşmek) ---
+        88: { base: { emoji: "📌", arText: "تَعَيَّنَ", trText: "Belirlendi / Kesinleşti / Atandı.", ornek: { ar: "تَعَيَّنَ عَلَيْهِ الْأَمْرُ", tr: "İş onun üzerine kesinleşti (vacip oldu)." } } },
+        89: { base: { emoji: "📌", arText: "يَتَعَيَّنُ", trText: "Belirlenir / Kesinleşir / Gerekir.", ornek: { ar: "يَتَعَيَّنُ عَلَيْنَا الْخُرُوجُ الْآنَ", tr: "Şimdi çıkmamız gerekiyor (kaçınılmaz oldu)." } } },
+        90: { base: { emoji: "📌", arText: "تَعَيَّنْ", trText: "Kesinleş!", ornek: { ar: "تَعَيَّنْ فِي مَوْقِفِكَ", tr: "Duruşunda belirgin (kesin) ol." } } },
+        91: { base: { emoji: "📍", arText: "تَعَيُّن", trText: "Taayyün / Belirlenme / Somutlaşma.", ornek: { ar: "تَعَيُّنُ الْأَهْدَافِ مُهِمٌّ", tr: "Hedeflerin belirginleşmesi (taayyün etmesi) önemlidir." } } }
+    },
 };
