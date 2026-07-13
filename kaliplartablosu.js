@@ -8254,11 +8254,11 @@ window.openAtlasOverlay = function(stage) {
     let mOverlay = document.getElementById('marathon-overlay');
     mOverlay.classList.add('active');
     mOverlay.scrollTop = 0;
-    document.getElementById('timer-display').style.display = 'none';
-    document.getElementById('live-total-score').style.display = 'none';
-    document.getElementById('chrono-main').style.display = 'none';
-    document.getElementById('stage-label').style.display = 'none';
-    document.getElementById('pause-btn').style.display = 'none';
+    let _t = document.getElementById('timer-display'); if(_t) _t.style.display = 'none';
+    let _l = document.getElementById('live-total-score'); if(_l) _l.style.display = 'none';
+    let _c = document.getElementById('chrono-main'); if(_c) _c.style.display = 'none';
+    let _s = document.getElementById('stage-label'); if(_s) _s.style.display = 'none';
+    let _p = document.getElementById('pause-btn'); if(_p) _p.style.display = 'none';
     
     let rootContainer = document.querySelector('.important-roots-wrapper');
     if (rootContainer) rootContainer.style.display = 'none';
