@@ -6817,7 +6817,7 @@ window.openMarathon = function() {
     }
     window.isAtlasMode = false;
     document.getElementById('timer-display').style.display = 'block';
-    document.getElementById('top-bar-panel').style.display = 'flex';
+    document.getElementById('top-bar-panel').style.display = 'grid'; // CSS'teki grid yapısını bozmamak için flex yerine grid yapıldı
     document.getElementById('screen-play').style.display = '';
     document.getElementById('screen-atlas').style.display = '';
     document.getElementById('screen-result').style.display = '';
