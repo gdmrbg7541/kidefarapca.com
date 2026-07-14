@@ -2798,11 +2798,17 @@ input:checked +
 
 #thematic-accordion-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: 15px;
     align-items: start;
     direction: ltr;
     position: relative;
+}
+
+@media screen and (min-width: 769px) {
+    #thematic-accordion-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* KESİNTİSİZ DİKEY ÇİZGİLER KALDIRILDI (Tasarım Bağımsızlığı) */
@@ -2838,13 +2844,6 @@ input:checked +
     border-style: solid;
     border-color: #5c7cfa transparent transparent transparent;
     z-index: 10;
-}
-
-
-@media screen and (max-width: 768px) {
-    #thematic-accordion-container {
-        grid-template-columns: 1fr;
-    }
 }
 
 

@@ -7547,7 +7547,6 @@ function renderThematicLists() {
     thematicCategoriesData = categories;
     let html = "";
 
-    
     // Kategorileri önem sırasına göre (kategoriTanimlari'ndaki tanımlanma sırasıyla) diz
     const originalKeys = typeof kategoriTanimlari !== 'undefined' ? Object.keys(kategoriTanimlari) : [];
     const sortedKeys = Object.keys(categories).filter(key => categories[key].items.length > 0).sort((a, b) => {
@@ -7558,52 +7557,40 @@ function renderThematicLists() {
         return idxA - idxB;
     });
 
-    // Dikey (yukarıdan aşağıya) ve Sağdan Sola (RTL) okuma düzeni için Grid Matrix'i oluştur
-    const L = sortedKeys.length;
-    const cols = 3;
-    const rows = Math.ceil(L / cols);
-    const reorderedKeys = [];
-    
-    for(let r = 0; r < rows; r++) {
-        if(r < L) reorderedKeys.push(sortedKeys[r]); // Sağ Sütun
-        if(r + rows < L) reorderedKeys.push(sortedKeys[r + rows]); // Orta Sütun
-        if(r + 2*rows < L) reorderedKeys.push(sortedKeys[r + 2*rows]); // Sol Sütun
-    }
-
-    html = "";
-    
-    var colorIndex = 0;
-    // Satır Satır DOM oluşturuyoruz
-    for(let r = 0; r < rows; r++) {
-        
-    // Pastel colors for accordion items
     const pastelColors = ['#e6e2d8', '#d8dfd6', '#e8dadb', '#d4dbe0', '#ded9e3', '#e6dacb', '#d3dfdf', '#dadfda', '#e8e4d3', '#dfd7df'];
-    let rowKeys = [];
+    var colorIndex = 0;
 
-        if(r < L) rowKeys.push(sortedKeys[r]);
-        if(r + rows < L) rowKeys.push(sortedKeys[r + rows]);
-        if(r + 2*rows < L) rowKeys.push(sortedKeys[r + 2*rows]);
+    for (const key of sortedKeys) {
+        const cat = categories[key];
+        if (!cat) continue;
         
-        // 1. Bu satırın başlıkları (Sırayla 3 sütuna yerleşir)
-        
-        for (const key of rowKeys) {
-            const cat = categories[key];
-            if (!cat) continue;
-            
-            let shuffledList = cat.items ? [...cat.items] : [];
-            shuffledList.sort(() => Math.random() - 0.5);
-            activeMemoryGames[key] = {
-                mode: 'list',
-                scores: [0, 0],
-                currentPlayer: 1,
-                activeFlipped: [],
-                isProcessing: false,
-                matches: 0,
-                shuffledItems: shuffledList,
-                roundIndex: 0
-            };
-            
-            html += `
+        let shuffledList = cat.items ? [...cat.items] : [];
+        shuffledList.sort(() => Math.random() - 0.5);
+        activeMemoryGames[key] = {
+            mode: 'list',
+            scores: [0, 0],
+            currentPlayer: 1,
+            activeFlipped: [],
+            isProcessing: false,
+            matches: 0,
+            shuffledItems: shuffledList,
+            roundIndex: 0
+        };
+
+        let pairOptions = "";
+        let maxPairs = cat.items ? cat.items.length : 0;
+        if (maxPairs < 6) {
+            pairOptions += `<option value="${maxPairs}" selected>${maxPairs} Çift</option>`;
+            pairOptions += `<option value="6" disabled>6 Çift</option>`;
+        } else {
+            pairOptions += `<option value="6" selected>6 Çift</option>`;
+        }
+        pairOptions += `<option value="8" ${maxPairs < 8 ? 'disabled' : ''}>8 Çift</option>`;
+        pairOptions += `<option value="10" ${maxPairs < 10 ? 'disabled' : ''}>10 Çift</option>`;
+        pairOptions += `<option value="12" ${maxPairs < 12 ? 'disabled' : ''}>12 Çift</option>`;
+
+        html += `
+            <div class="thematic-accordion-wrapper" style="break-inside: avoid; margin-bottom: 15px;">
                 <div class="thematic-accordion-item" style="background: ${pastelColors[colorIndex++ % pastelColors.length]}; color: #000;" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
                     <div class="thematic-accordion-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
@@ -7618,35 +7605,12 @@ function renderThematicLists() {
                         </div>
                     </div>
                 </div>
-            `;
-        }
-        
-        // 2. Bu satırın İçerikleri (Tıklandığında tüm satırı kaplayacak şekilde başlıkların altına yerleşir)
-        
-        for (const key of rowKeys) {
-            const cat = categories[key];
-            if (!cat) continue;
-            
-            let pairOptions = "";
-            let maxPairs = cat.items ? cat.items.length : 0;
-            if (maxPairs < 6) {
-                pairOptions += `<option value="${maxPairs}" selected>${maxPairs} Çift</option>`;
-                pairOptions += `<option value="6" disabled>6 Çift</option>`;
-            } else {
-                pairOptions += `<option value="6" selected>6 Çift</option>`;
-            }
-            pairOptions += `<option value="8" ${maxPairs < 8 ? 'disabled' : ''}>8 Çift</option>`;
-            pairOptions += `<option value="10" ${maxPairs < 10 ? 'disabled' : ''}>10 Çift</option>`;
-            pairOptions += `<option value="12" ${maxPairs < 12 ? 'disabled' : ''}>12 Çift</option>`;
-
-            html += `
-                <div id="content-${key}" class="thematic-accordion-panel" style="display:none; grid-column: 1 / -1; background: #f8f9fa; border: 2px solid #5c7cfa; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                
+                <div id="content-${key}" class="thematic-accordion-panel" style="display:none; background: #f8f9fa; border: 2px solid #5c7cfa; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 15px; position: relative; z-index: 5;">
                     <div class="thematic-accordion-content" style="display:block;">
                         <div class="memory-game-controls" id="controls-${key}" style="display: flex; justify-content: space-between; align-items: center; width: 100%; direction: ltr !important; margin-bottom: 30px;">
                             
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                
-                                
                                 <!-- 1. Oyuncu Kutusu -->
                                 <div id="p1-box-${key}" class="player-box p-score-box active-p" style="display: none; color: #4dabf7; align-items: center;">
                                     <svg fill="#4dabf7" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -7676,8 +7640,6 @@ function renderThematicLists() {
                                     <button id="btn-start-${key}" class="memory-btn wave-btn" style="background: #4dabf7; color: white; font-weight: normal; font-size: 1.2rem; height: 44px; box-sizing: border-box; padding: 8px 20px;" onclick="startGameAndFullscreen('${key}')">Başla</button>
                                     <button id="btn-cancel-${key}" class="memory-btn" style="display: none; background: #ff8787; color: white; height: 44px; box-sizing: border-box; padding: 8px 20px; font-size: 1.2rem;" onclick="cancelMemorySetup('${key}')">✖</button>
                                 </div>
-                                
-                                
                             </div>
 
                             <div style="display: flex; gap: 10px; align-items: center;">
@@ -7693,8 +7655,8 @@ function renderThematicLists() {
                         <div class="thematic-words-grid" id="grid-${key}"></div>
                     </div>
                 </div>
-            `;
-        }
+            </div>
+        `;
     }
     
     container.innerHTML = html;
