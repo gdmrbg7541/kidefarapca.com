@@ -4531,7 +4531,7 @@ body {
 .list-mode-item {
     direction: ltr !important;
 }
-.study-card-tr {
+.memory-card-back .lang-tr {
     font-size: 1.8rem !important;
 }
 .list-mode-tr {
@@ -4556,4 +4556,19 @@ body {
     width: 35px !important;
     height: 35px !important;
     font-size: 1rem !important;
+}
+
+/* --- TEK SÜTUN VE KELİME LİSTELERİ SOLDA --- */
+.thematic-words-grid {
+    grid-template-columns: 1fr !important;
+}
+
+/* --- MOBİL ÇALIŞMA KARTLARI YAZI BOYUTU (SADECE MOBİL) --- */
+@media screen and (max-width: 1024px) {
+    .memory-card-back .lang-tr {
+        font-size: 1.3rem !important;
+    }
+    .memory-card-front .lang-ar {
+        font-size: 2.2rem !important;
+    }
 }

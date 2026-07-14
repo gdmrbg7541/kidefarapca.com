@@ -7442,14 +7442,15 @@ function renderThematicLists() {
 
     // Dikey (yukarıdan aşağıya) ve Sağdan Sola (RTL) okuma düzeni için Grid Matrix'i oluştur
     const L = sortedKeys.length;
-    const cols = 3;
+    const isMobile = window.innerWidth <= 1024;
+    const cols = isMobile ? 1 : 3;
     const rows = Math.ceil(L / cols);
     const reorderedKeys = [];
     
     for(let r = 0; r < rows; r++) {
-        if(r < L) reorderedKeys.push(sortedKeys[r]); // Sağ Sütun
-        if(r + rows < L) reorderedKeys.push(sortedKeys[r + rows]); // Orta Sütun
-        if(r + 2*rows < L) reorderedKeys.push(sortedKeys[r + 2*rows]); // Sol Sütun
+        for(let c = 0; c < cols; c++) {
+            if (r + c*rows < L) reorderedKeys.push(sortedKeys[r + c*rows]);
+        }
     }
 
     html = "";
@@ -7462,11 +7463,11 @@ function renderThematicLists() {
     const pastelColors = ['#e6e2d8', '#d8dfd6', '#e8dadb', '#d4dbe0', '#ded9e3', '#e6dacb', '#d3dfdf', '#dadfda', '#e8e4d3', '#dfd7df'];
     let rowKeys = [];
 
-        if(r < L) rowKeys.push(sortedKeys[r]);
-        if(r + rows < L) rowKeys.push(sortedKeys[r + rows]);
-        if(r + 2*rows < L) rowKeys.push(sortedKeys[r + 2*rows]);
+        for(let c = 0; c < cols; c++) {
+            if (r + c*rows < L) rowKeys.push(sortedKeys[r + c*rows]);
+        }
         
-        // 1. Bu satırın başlıkları (Sırayla 3 sütuna yerleşir)
+        // 1. Bu satırın başlıkları (Sırayla sütunlara yerleşir)
         
         for (const key of rowKeys) {
             const cat = categories[key];
@@ -7524,52 +7525,9 @@ function renderThematicLists() {
             html += `
                 <div id="content-${key}" class="thematic-accordion-panel" style="display:none; grid-column: 1 / -1; background: #f8f9fa; border: 2px solid #5c7cfa; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     <div class="thematic-accordion-content" style="display:block;">
-                        <div class="memory-game-controls" id="controls-${key}" style="display: flex; justify-content: space-between; align-items: center; width: 100%; direction: ltr !important; margin-bottom: 30px;">
-                            
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                
-                                
-                                <!-- 1. Oyuncu Kutusu -->
-                                <div id="p1-box-${key}" class="player-box p-score-box active-p" style="display: none; color: #4dabf7; align-items: center;">
-                                    <svg fill="#4dabf7" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                                    <span id="s1-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: bold; margin-left: 8px;">0</span>
-                                </div>
-                            </div>
-
-                            <!-- ORTA (Ayarlar veya Varsayılan Butonlar) -->
-                            <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex: 1;">
-                                <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
-                                <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
-                                <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
-                                <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                                    <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" >
-                                        ${pairOptions}
-                                    </select>
-                                    
-                                    <div class="switch-wrapper" style="display: flex; align-items: center; background: rgba(255,255,255,0.8); padding: 6px 12px; height: 44px; box-sizing: border-box; border-radius: 50px; gap: 5px; direction: ltr !important;">
-                                        <span style="font-size: 1.1rem; cursor: pointer;">👤</span>
-                                        <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px; margin: 0;">
-                                            <input type="checkbox" id="mode-toggle-${key}" style="opacity:0; width:0; height:0;"  checked>
-                                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: .4s; border-radius: 34px;"></span>
-                                        </label>
-                                        <span style="font-size: 1.1rem; cursor: pointer;">👥</span>
-                                    </div>
-                                    
-                                    <button id="btn-start-${key}" class="memory-btn wave-btn" style="background: #4dabf7; color: white; font-weight: bold; font-size: 1.2rem; height: 44px; box-sizing: border-box; padding: 8px 20px;" onclick="startGameAndFullscreen('${key}')">Başla</button>
-                                    <button id="btn-cancel-${key}" class="memory-btn" style="display: none; background: #ff8787; color: white; height: 44px; box-sizing: border-box; padding: 8px 20px; font-size: 1.2rem;" onclick="cancelMemorySetup('${key}')">✖</button>
-                                </div>
-                                
-                                
-                            </div>
-
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <!-- 2. Oyuncu Kutusu en sağda -->
-                                <div id="p2-box-${key}" class="player-box p-score-box" style="display: none; color: #ff8787; align-items: center;">
-                                    <svg fill="#ff8787" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                                    <span id="s2-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: bold; margin-left: 8px;">0</span>
-                                </div>
-                            </div>
-                            
+                        <div class="memory-game-controls" id="controls-${key}" style="display: flex; justify-content: center; align-items: center; width: 100%; direction: ltr !important; margin-bottom: 30px; gap: 10px;">
+                            <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
+                            <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                         </div>
                         
                         <div class="thematic-words-grid" id="grid-${key}"></div>
