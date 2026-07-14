@@ -4441,9 +4441,9 @@ body {
 
 /* Grid İkonları ve Başlıklar */
 .mobile-grid-item i, .mobile-grid-item svg {
-    font-size: 6.5rem !important;
-    width: 6.5rem !important;
-    height: 6.5rem !important;
+    font-size: 5.5rem !important;
+    width: 5.5rem !important;
+    height: 5.5rem !important;
 }
 .mobile-grid-item span {
     font-size: 2.2rem !important;
