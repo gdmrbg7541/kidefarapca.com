@@ -7943,7 +7943,7 @@ function initMemoryGrid(key, forceShuffle = false) {
                 <div class="list-mode-num">${index + 1}.</div>
                 <div class="list-mode-tr" dir="ltr">${item.trText}</div>
                 <div class="list-mode-emoji">${item.emoji || '✨'}</div>
-                <div class="list-mode-ar" dir="rtl">${arContent}</div>
+                <div class="list-mode-ar" dir="ltr">${arContent}</div>
             `;
             if (listColumnsContainer) {
                 listColumnsContainer.appendChild(row);
