@@ -180,7 +180,7 @@ function openGrammarOverlay(topicKey) {
         overlay.innerHTML = `
             <div class="grammar-modal" style="width: 100%; height: 100%; transform: translateY(100vh); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; overflow: hidden; background-color: #fafafa; direction: ltr; text-align: left;">
                 <div style="background: #2c3e50; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 2;">
-                    <h2 class="grammar-title" style="margin: 0; font-size: 38px; font-weight: bold; color: #ecf0f1; font-family: 'Inter', sans-serif;">Gramer Detayı</h2>
+                    <h2 class="grammar-title" style="margin: 0; font-size: 38px; font-weight: normal; color: #ecf0f1; font-family: 'Inter', sans-serif;">Gramer Detayı</h2>
                     <button class="grammar-close-btn" onclick="closeGrammarOverlay()" style="background: rgba(255,255,255,0.15); border: none; font-size: 48px; color: #ecf0f1; cursor: pointer; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.2s;">&times;</button>
                 </div>
                 <div class="grammar-content-container" style="padding: 50px; overflow-y: auto; flex-grow: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;">
@@ -448,30 +448,30 @@ GramerVerileri["mazi"] = {
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="0" data-suffix="ـــُـوا" onclick="playGameCell('mazi', 0, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــُـوا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="1" data-suffix="ـــَـا" onclick="playGameCell('mazi', 1, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="2" data-suffix="ـــَـ" onclick="playGameCell('mazi', 2, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Gâib (Eril O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Gâib (Eril O)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="3" data-suffix="ـــْـنَ" onclick="playGameCell('mazi', 3, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="4" data-suffix="ـــَـتَا" onclick="playGameCell('mazi', 4, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـتَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="5" data-suffix="ـــَـتْ" onclick="playGameCell('mazi', 5, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـتْ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Gâibe (Dişil O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Gâibe (Dişil O)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="6" data-suffix="ـــْـتُمْ" onclick="playGameCell('mazi', 6, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُمْ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="7" data-suffix="ـــْـتُمَا" onclick="playGameCell('mazi', 7, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُمَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="8" data-suffix="ـــْـتَ" onclick="playGameCell('mazi', 8, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتَ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Muhatab (Eril Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Muhatab (Eril Sen)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="9" data-suffix="ـــْـتُنَّ" onclick="playGameCell('mazi', 9, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُنَّ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="10" data-suffix="ـــْـتُمَا" onclick="playGameCell('mazi', 10, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُمَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="11" data-suffix="ـــْـتِ" onclick="playGameCell('mazi', 11, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتِ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Muhataba (Dişil Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Muhataba (Dişil Sen)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td colspan="2" style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="12" data-suffix="ـــْـنَا" onclick="playGameCell('mazi', 12, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـنَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="13" data-suffix="ـــْـتُ" onclick="playGameCell('mazi', 13, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Mütekellim (Biz/Ben)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Mütekellim (Biz/Ben)</td>
                     </tr>
                 </tbody>
             </table>
@@ -505,30 +505,30 @@ GramerVerileri["mazi_mezid"] = {
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="0" data-suffix="ـــُـوا" onclick="playGameCell('mazi_mezid', 0, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــُـوا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="1" data-suffix="ـــَـا" onclick="playGameCell('mazi_mezid', 1, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="2" data-suffix="ـــَـ" onclick="playGameCell('mazi_mezid', 2, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Gâib (Eril O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Gâib (Eril O)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="3" data-suffix="ـــْـنَ" onclick="playGameCell('mazi_mezid', 3, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="4" data-suffix="ـــَـتَا" onclick="playGameCell('mazi_mezid', 4, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـتَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="5" data-suffix="ـــَـتْ" onclick="playGameCell('mazi_mezid', 5, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـتْ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Gâibe (Dişil O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Gâibe (Dişil O)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="6" data-suffix="ـــْـتُمْ" onclick="playGameCell('mazi_mezid', 6, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُمْ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="7" data-suffix="ـــْـتُمَا" onclick="playGameCell('mazi_mezid', 7, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُمَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="8" data-suffix="ـــْـتَ" onclick="playGameCell('mazi_mezid', 8, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتَ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Muhatab (Eril Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Muhatab (Eril Sen)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="9" data-suffix="ـــْـتُنَّ" onclick="playGameCell('mazi_mezid', 9, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُنَّ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="10" data-suffix="ـــْـتُمَا" onclick="playGameCell('mazi_mezid', 10, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُمَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="11" data-suffix="ـــْـتِ" onclick="playGameCell('mazi_mezid', 11, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتِ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Muhataba (Dişil Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Muhataba (Dişil Sen)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td colspan="2" style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="12" data-suffix="ـــْـنَا" onclick="playGameCell('mazi_mezid', 12, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـنَا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="13" data-suffix="ـــْـتُ" onclick="playGameCell('mazi_mezid', 13, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـتُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Mütekellim (Biz/Ben)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Mütekellim (Biz/Ben)</td>
                     </tr>
                 </tbody>
             </table>
@@ -562,30 +562,30 @@ GramerVerileri["muzari"] = {
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="0" data-suffix="يَـ ــُونَ" onclick="playGameCell('muzari', 0, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــُونَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="1" data-suffix="يَـ ــَانِ" onclick="playGameCell('muzari', 1, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="2" data-suffix="يَـ ــُ" onclick="playGameCell('muzari', 2, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Gâib (Eril O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Gâib (Eril O)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="3" data-suffix="يَـ ــْنَ" onclick="playGameCell('muzari', 3, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــْنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="4" data-suffix="تَـ ــَانِ" onclick="playGameCell('muzari', 4, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="5" data-suffix="تَـ ــُ" onclick="playGameCell('muzari', 5, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Gâibe (Dişil O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Gâibe (Dişil O)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="6" data-suffix="تَـ ــُونَ" onclick="playGameCell('muzari', 6, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــُونَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="7" data-suffix="تَـ ــَانِ" onclick="playGameCell('muzari', 7, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="8" data-suffix="تَـ ــُ" onclick="playGameCell('muzari', 8, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Muhatab (Eril Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Muhatab (Eril Sen)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="9" data-suffix="تَـ ــْنَ" onclick="playGameCell('muzari', 9, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــْنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="10" data-suffix="تَـ ــَانِ" onclick="playGameCell('muzari', 10, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="11" data-suffix="تَـ ــِينَ" onclick="playGameCell('muzari', 11, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــِينَ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Muhataba (Dişil Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Muhataba (Dişil Sen)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td colspan="2" style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="12" data-suffix="نَـ ــُ" onclick="playGameCell('muzari', 12, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">نَـ ــُ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="13" data-suffix="أَ ــُ" onclick="playGameCell('muzari', 13, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">أَ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Mütekellim (Biz/Ben)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Mütekellim (Biz/Ben)</td>
                     </tr>
                 </tbody>
             </table>
@@ -619,30 +619,30 @@ GramerVerileri["muzari_mezid"] = {
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="0" data-suffix="يَـ ــُونَ" onclick="playGameCell('muzari_mezid', 0, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــُونَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="1" data-suffix="يَـ ــَانِ" onclick="playGameCell('muzari_mezid', 1, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="2" data-suffix="يَـ ــُ" onclick="playGameCell('muzari_mezid', 2, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Gâib (Eril O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Gâib (Eril O)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="3" data-suffix="يَـ ــْنَ" onclick="playGameCell('muzari_mezid', 3, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">يَـ ــْنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="4" data-suffix="تَـ ــَانِ" onclick="playGameCell('muzari_mezid', 4, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="5" data-suffix="تَـ ــُ" onclick="playGameCell('muzari_mezid', 5, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Gâibe (Dişil O)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Gâibe (Dişil O)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="6" data-suffix="تَـ ــُونَ" onclick="playGameCell('muzari_mezid', 6, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــُونَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="7" data-suffix="تَـ ــَانِ" onclick="playGameCell('muzari_mezid', 7, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="8" data-suffix="تَـ ــُ" onclick="playGameCell('muzari_mezid', 8, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Muhatab (Eril Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Muhatab (Eril Sen)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="9" data-suffix="تَـ ــْنَ" onclick="playGameCell('muzari_mezid', 9, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــْنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="10" data-suffix="تَـ ــَانِ" onclick="playGameCell('muzari_mezid', 10, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــَانِ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="11" data-suffix="تَـ ــِينَ" onclick="playGameCell('muzari_mezid', 11, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">تَـ ــِينَ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Muhataba (Dişil Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Muhataba (Dişil Sen)</td>
                     </tr>
                     <tr style="background-color: #f8f9fa;">
                         <td colspan="2" style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="12" data-suffix="نَـ ــُ" onclick="playGameCell('muzari_mezid', 12, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">نَـ ــُ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="13" data-suffix="أَ ــُ" onclick="playGameCell('muzari_mezid', 13, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">أَ ــُ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Mütekellim (Biz/Ben)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Mütekellim (Biz/Ben)</td>
                     </tr>
                 </tbody>
             </table>
@@ -676,13 +676,13 @@ GramerVerileri["emir"] = {
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="0" data-suffix="اِ ـــُـوا" onclick="playGameCell('emir', 0, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">اِ ـــُـوا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="1" data-suffix="اِ ـــَـا" onclick="playGameCell('emir', 1, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">اِ ـــَـا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="2" data-suffix="اِ ـــْـ" onclick="playGameCell('emir', 2, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">اِ ـــْـ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Muhatab (Eril Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Muhatab (Eril Sen)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="3" data-suffix="اِ ـــْـنَ" onclick="playGameCell('emir', 3, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">اِ ـــْـنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="4" data-suffix="اِ ـــَـا" onclick="playGameCell('emir', 4, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">اِ ـــَـا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="5" data-suffix="اِ ـــِـي" onclick="playGameCell('emir', 5, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">اِ ـــِـي</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Muhataba (Dişil Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Muhataba (Dişil Sen)</td>
                     </tr>
                 </tbody>
             </table>
@@ -716,13 +716,13 @@ GramerVerileri["emir_mezid"] = {
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="0" data-suffix="ـــُـوا" onclick="playGameCell('emir_mezid', 0, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــُـوا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="1" data-suffix="ـــَـا" onclick="playGameCell('emir_mezid', 1, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="2" data-suffix="ـــْـ" onclick="playGameCell('emir_mezid', 2, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـ</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: bold; font-size: 20px;">Muhatab (Eril Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #e9ecef; font-weight: normal; font-size: 20px;">Muhatab (Eril Sen)</td>
                     </tr>
                     <tr style="background-color: #ffffff;">
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="3" data-suffix="ـــْـنَ" onclick="playGameCell('emir_mezid', 3, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــْـنَ</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="4" data-suffix="ـــَـا" onclick="playGameCell('emir_mezid', 4, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــَـا</span></td>
                         <td style="padding: 10px; border: 1px solid #ddd; cursor: pointer; transition: 0.3s;" class="game-cell" data-idx="5" data-suffix="ـــِـي" onclick="playGameCell('emir_mezid', 5, this)"><span class="grammar-arabic-text" style="font-size: 65px; font-weight: normal !important; color: #e74c3c;">ـــِـي</span></td>
-                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: bold; font-size: 20px;">Muhataba (Dişil Sen)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background-color: #f1f3f5; font-weight: normal; font-size: 20px;">Muhataba (Dişil Sen)</td>
                     </tr>
                 </tbody>
             </table>

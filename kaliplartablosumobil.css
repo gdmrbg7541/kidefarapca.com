@@ -1,3 +1,14 @@
+
+/* Tarayıcı varsayılan kalınlaştırma özelliklerini iptal eden genel sıfırlama (Kullanıcı Talebi) */
+h1, h2, h3, h4, h5, h6, b, strong, th {
+    font-weight: normal !important;
+}
+
+/* Arapça fontların (ör. Arakom) tarayıcı tarafından sahte olarak kalınlaştırılmasını (synthesize) engeller */
+* {
+    font-synthesis: none !important;
+}
+
 @font-face {
     font-family: 'Arakom';
     src: url('./arakom.ttf') format('truetype');
@@ -305,7 +316,7 @@ td {
 
 td:first-child {
     color: #FF3B30 !important;
-    font-weight: bold; 
+    font-weight: normal; 
 }
 
 .conjugation-table td:first-child {
@@ -749,7 +760,7 @@ td:first-child {
     z-index: 100;
     font-size: 13px;
     font-family: 'Arakom', sans-serif;
-    font-weight: bold;
+    font-weight: normal;
     animation: elegantRedGlow 2s infinite alternate;
     transition: transform 0.2s ease;
 }
@@ -840,7 +851,7 @@ td:first-child {
     font-size: 22px;
     line-height: 1;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: normal;
     font-family: 'Arakom', sans-serif;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -871,7 +882,7 @@ td:first-child {
     color: #dc2626;
     line-height: 1.3;
     font-family: 'Arakom', sans-serif !important;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .sentence-emoji-header {
@@ -1081,7 +1092,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
     background-color: #f0fdf4 !important; color: #166534 !important;
     border-top: 1px solid #86efac !important; border-left: 1px solid #86efac !important;
     border-right: 1px solid #86efac !important; border-bottom: 4px solid #22c55e !important; 
-    box-shadow: 0 4px 10px rgba(52, 199, 89, 0.15); font-weight: bold; border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(52, 199, 89, 0.15); font-weight: normal; border-radius: 10px;
 }
 #important-roots-list .flat-root-item:hover { background-color: #dcfce7 !important; border-bottom-color: #16a34a !important; transform: translateY(-2px); }
 #important-roots-list .flat-root-item:active { border-top: 2px solid #86efac !important; border-bottom-width: 1px !important; transform: translateY(2px); box-shadow: none; }
@@ -1126,7 +1137,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .mini-popup-btn {
     color: #2c3e50; border: 1px solid rgba(255,255,255,0.8); padding: 12px 25px; border-radius: 30px;
     font-family: 'Arakom', sans-serif; font-size: 18px; box-shadow: 0 6px 15px rgba(0,0,0,0.06); cursor: pointer;
-    z-index: 1000; transition: 0.3s; font-weight: bold;
+    z-index: 1000; transition: 0.3s; font-weight: normal;
 }
 .mini-popup-btn.btn-aksam { background: rgba(163, 191, 250, 0.9); }
 .mini-popup-btn.btn-mezid { background: rgba(252, 165, 165, 0.9); }
@@ -1166,7 +1177,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .slide-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid rgba(200, 210, 224, 0.5); padding-bottom: 15px; }
 .slide-header h3 { margin: 0; font-size: 24px; color: #334155; }
 .slide-close { background: #f1f5f9; border: none; font-size: 20px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-    z-index: 1000; color: #ef4444; font-weight: bold;}
+    z-index: 1000; color: #ef4444; font-weight: normal;}
 .slide-content { overflow-y: auto; flex: 1; align-content: flex-start;}
 
 /* --- KLAVYE İÇİN GÖRÜNMEZ TIKLAMA KALKANI (İPTAL EDİLDİ) --- */
@@ -1277,7 +1288,7 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 }
 #suffix-dropdown .key.suggested-suffix {
     background-color: #fbbf24 !important; color: #1e293b !important; border-color: #f59e0b !important;
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); transform: scale(1.08); font-weight: bold; transition: transform, background-color, color, opacity, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); transform: scale(1.08); font-weight: normal; transition: transform, background-color, color, opacity, box-shadow 0.3s ease;
 }
 
 .plus-hint-badge {
@@ -1411,7 +1422,7 @@ body.matrix-active { overflow: hidden !important; }
 }
 
 .siga-tr-text {
-    display: block; font-family: 'Arakom', sans-serif !important; font-size: 16px; color: #555555; margin-top: 8px; font-weight: bold;
+    display: block; font-family: 'Arakom', sans-serif !important; font-size: 16px; color: #555555; margin-top: 8px; font-weight: normal;
 }
 
 /* =============================================================== */
@@ -1646,7 +1657,7 @@ body.matrix-active { overflow: hidden !important; }
 .arabic-sample {
     font-family: 'Arakom', serif;
     color: #3b82f6; 
-    font-weight: bold;
+    font-weight: normal;
     font-size: 1.45em; /* Arapça kelimeler 34px'e göre oranlandı */
     direction: rtl;
     display: inline-block;
@@ -1709,9 +1720,9 @@ body.matrix-active { overflow: hidden !important; }
 .chrono-btn.active { filter: grayscale(0); transform: scale(1.1); }
 .pause-circle { width: 45px; height: 45px; border-radius: 50%; border: none; background: #636e72; color: white; cursor: pointer;
     z-index: 1000; font-size: 1.2rem; }
-.stage-badge { background: #6c5ce7; color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; }
-.timer-val { font-size: 2.2rem; font-weight: bold; color: #ff7675; font-family: monospace; }
-.score-val { font-size: 2.2rem; font-weight: bold; color: #6c5ce7; }
+.stage-badge { background: #6c5ce7; color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.1rem; font-weight: normal; }
+.timer-val { font-size: 2.2rem; font-weight: normal; color: #ff7675; font-family: monospace; }
+.score-val { font-size: 2.2rem; font-weight: normal; color: #6c5ce7; }
 
 .nav-arrow {
     position: absolute; top: 50%; transform: translateY(-50%);
@@ -1731,7 +1742,7 @@ body.matrix-active { overflow: hidden !important; }
 .marathon-cell { 
     display: flex; align-items: center; justify-content: center; border-radius: 18px; 
     font-family: 'Arakom', serif; font-size: clamp(2.8rem, 9.5vh, 7.5rem); 
-    font-weight: bold; border: 2px solid rgba(0,0,0,0.03); cursor: pointer;
+    font-weight: normal; border: 2px solid rgba(0,0,0,0.03); cursor: pointer;
     z-index: 1000;
 }
 .muez-row { background-color: #e3f2fd; color: #1565c0; }
@@ -1904,7 +1915,7 @@ body.matrix-active { overflow: hidden !important; }
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 100% !important; 
+    height: auto !important; 
     max-height: none !important;
     /* display handled by js */
     flex-direction: column !important;
@@ -1935,12 +1946,12 @@ body.matrix-active { overflow: hidden !important; }
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 100% !important;
+    height: auto !important;
 }
 
 /* 5. Gri Sütunların kendisi (Kaydırma motoru içeride kalır) */
 .letter-column {
-    height: 100% !important; 
+    height: auto !important; 
     min-height: 0 !important;
     overflow-y: auto !important;
     box-sizing: border-box !important;
@@ -2019,7 +2030,7 @@ body.matrix-active { overflow: hidden !important; }
         display: none !important;
     }
     .letters-grid { gap: 5px !important; }
-    .letter-column { flex: 0 0 100% !important; scroll-snap-align: center !important; overflow-y: auto !important; height: 100% !important; border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; box-sizing: border-box !important; }
+    .letter-column { flex: 0 0 100% !important; scroll-snap-align: center !important; overflow-y: auto !important; height: auto !important; border-width: 2px !important; border-radius: 8px !important; gap: 4px !important; padding-right: 2px !important; padding-bottom: 80px !important; box-sizing: border-box !important; }
     .col-range-header { padding: 4px !important; font-size: 11px !important; margin-top: -2px !important; margin-left: -2px !important; margin-right: -2px !important; border-radius: 6px 6px 0 0 !important; border-bottom-width: 2px !important; }
     .letter-column .glass-box { min-height: 30px !important; margin: 0 auto !important; width: 95% !important; padding: 8px 2px 2px 2px !important; }
     
@@ -2031,7 +2042,7 @@ body.matrix-active { overflow: hidden !important; }
 
 /* 5. MARATON SEÇİM EKRANI KAYDIRMA YAMASI */
 #marathon-selection-area { justify-content: flex-start !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; padding-bottom: 80px !important; }
-#marathon-verb-buttons { justify-content: flex-start !important; height: 100% !important; min-height: max-content !important; padding-bottom: 40px !important; margin-top: 20px !important; }
+#marathon-verb-buttons { justify-content: flex-start !important; height: auto !important; min-height: max-content !important; padding-bottom: 40px !important; margin-top: 20px !important; }
 
 /* Tablo iskeletinin ve metinlerin seçilmesini engeller */
 #table-view, .verb-table {
@@ -2119,7 +2130,7 @@ body.matrix-active { overflow: hidden !important; }
     font-size: 0.9rem;
     color: #8b5a2b;
     font-family: 'Arakom', sans-serif;
-    font-weight: bold;
+    font-weight: normal;
     white-space: nowrap;
     text-shadow: 0 0 8px rgba(139, 90, 43, 0.6);
     opacity: 0;
@@ -2296,7 +2307,7 @@ html body .glass-box.tanimsiz-kok .ref {
 
 .choice-title {
     font-size: 3.5rem;
-    font-weight: bold;
+    font-weight: normal;
     color: #fff;
     text-align: center;
     text-transform: uppercase;
@@ -2493,7 +2504,7 @@ html body .glass-box.tanimsiz-kok .ref {
     transform: scale(1.05); /* Hafif büyüme animasyonu */
     box-shadow: 0 0 40px rgba(0,0,0,0.15);
 }
-.p-label { font-size: 1.1rem; font-weight: bold; opacity: 0.6; }
+.p-label { font-size: 1.1rem; font-weight: normal; opacity: 0.6; }
 .p-label { font-size: 0.8rem; }
 .p-score { font-size: 2.5rem; font-weight: 900; margin-top: 5px; }
 .p-score { font-size: 1.4rem; margin-top: 0; }
@@ -2588,7 +2599,7 @@ input:checked +
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
 
-.p-label { font-size: 1.1rem; font-weight: bold; opacity: 0.6; }
+.p-label { font-size: 1.1rem; font-weight: normal; opacity: 0.6; }
 .p-score { font-size: 2.5rem; font-weight: 900; margin-top: 5px; }
 
 

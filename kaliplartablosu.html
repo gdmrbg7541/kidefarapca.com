@@ -78,7 +78,7 @@
 
 <div id="conjugation-overlay" class="conjugation-overlay">
     <div class="conjugation-container">
-        <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px; z-index: 10;">✕</div>
+        <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: normal; padding: 5px 10px; z-index: 10;">✕</div>
         <h3 id="conjugation-title" style="text-align: center; margin-top: 10px; font-family: 'Arakom' !important; font-weight: normal !important;">Fiil Çekim Tablosu</h3>
         <div id="conjugation-content"></div>
     </div>
@@ -92,7 +92,7 @@
             
             <!-- Sağ Taraf (RTL'de ilk eleman sağa yaslanır): Sözlük -->
             <div style="box-sizing: border-box; width: calc(65% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: bold; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><span id="dict-status-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ccc; margin-left: 8px; margin-right: 8px;"></span><i class="fas fa-book-open"></i> Sözlük</h3>
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: normal; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><span id="dict-status-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ccc; margin-left: 8px; margin-right: 8px;"></span><i class="fas fa-book-open"></i> Sözlük</h3>
                 <div id="dictionary-results" class="dictionary-results" dir="rtl" style="display:block; flex: 1; min-height: 0; overflow-y: auto; color: #000; padding: 15px 10px 20px 10px; text-align: center; overflow-x: hidden;"></div>
             </div>
 
@@ -474,7 +474,7 @@
         <div style="background: white; padding: 30px; border-radius: 16px; text-align: center; max-width: 400px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" onclick="event.stopPropagation()">
             <h3 id="aksam-info-title" style="margin-top: 0; color: #2c3e50; font-size: 1.8rem; margin-bottom: 15px;"></h3>
             <p id="aksam-info-text" style="color: #34495e; font-size: 1.2rem; line-height: 1.5; margin-bottom: 25px;"></p>
-            <button onclick="document.getElementById('aksam-info-overlay').style.display='none'" style="padding: 10px 25px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: bold; transition: background 0.2s;">Tamam</button>
+            <button onclick="document.getElementById('aksam-info-overlay').style.display='none'" style="padding: 10px 25px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: normal; transition: background 0.2s;">Tamam</button>
         </div>
     </div>
     
@@ -482,7 +482,7 @@
     <div id="telaffuz-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5000; display: none; flex-direction: column; font-family: 'Inter', sans-serif; overflow: hidden;">
         
         <div style="background: rgba(255, 255, 255, 0.95); padding: 15px 30px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);" dir="ltr">
-            <div style="font-size: 2.2rem; font-weight: bold; color: #2c3e50; display: flex; align-items: center;">
+            <div style="font-size: 2.2rem; font-weight: normal; color: #2c3e50; display: flex; align-items: center;">
                 <i class="fas fa-stopwatch" style="color: #3498db; margin-right: 15px; font-size: 2.6rem;"></i> Maraton Filtresi
             </div>
             <i class="fas fa-times" style="font-size: 3rem; color: #95a5a6; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#e74c3c'" onmouseout="this.style.color='#95a5a6'" onclick="document.getElementById('telaffuz-overlay').style.display='none'"></i>
@@ -625,7 +625,7 @@
 
             <div id="marathon-selection-area" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f1f2f6; z-index: 200; display: none; align-items: center; justify-content: flex-start; flex-direction: column; padding: 50px 20px; overflow-y: auto; box-sizing: border-box;">
                 
-                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 201; transition: 0.2s;">✕</button>
+                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: normal; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 201; transition: 0.2s;">✕</button>
 
                 <h2 style="color: #6c5ce7; font-size: 2.5rem; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 25px;">Hangi fiili çalışmak istersiniz?</h2>
                 
@@ -716,7 +716,7 @@
                     </div>
                     <!-- Absolute Close Button -->
                     <button id="atlas-fs-btn" onclick="toggleAtlasFullscreen()" style="position: absolute; top: 20px; right: 80px; background: #3b82f6; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
-                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;">✕</button>
+                    <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: normal; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;">✕</button>
                     <!-- 1 Column for Sidebar -->
                     <div id="atlas-right-sidebar" style="width: 280px; min-width: 280px; flex: none; background: #f8fafc; border-left: 2px solid #e2e8f0; display: flex; flex-direction: column; padding: 20px; box-shadow: -4px 0 10px rgba(0,0,0,0.02); padding-top: 60px;">
                         <h3 id="atlas-sidebar-title" style="text-align: right; color: #64748b; font-family: sans-serif; font-size: 1.1rem; margin-bottom: 15px; font-weight: normal; padding-right: 5px;">Örnek Fiiller</h3>
@@ -739,7 +739,7 @@
                 </div>
 <div id="screen-result" class="marathon-screen" style="text-align:center; overflow-y:auto; padding: 40px; width: 100%;">
                     <h1 style="color:#6c5ce7;">Okuma Testi Raporu</h1>
-                    <div style="font-size: 7rem; color: #2ecc71; font-weight: bold;" id="final-score">0</div>
+                    <div style="font-size: 7rem; color: #2ecc71; font-weight: normal;" id="final-score">0</div>
                     <div id="error-list"></div>
                     <button class="back-nav" style="margin-top:40px; background:#6c5ce7; color:white;" onclick="closeMarathon()">TESTİ BİTİR</button>
                 </div>
@@ -759,7 +759,7 @@
 </div>
 <!-- HIZLI SÖZLÜK (FAST DICTIONARY MODE) -->
 <div id="fast-dictionary-overlay" style="display: none; position: fixed; top: 0; left: 0; transform: none; width: 100vw; max-width: none; height: 100vh; background: rgba(255, 255, 255, 0.35);  -webkit- border: none; border-radius: 0; box-shadow: none; z-index: 9999; flex-direction: column; overflow: hidden;">
-    <div style="position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; background: #fff; border: 2px solid #8b4513; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; color: #8b4513; z-index: 20;" onclick="closeFastDictionaryMode()">✕</div>
+    <div style="position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; background: #fff; border: 2px solid #8b4513; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: normal; cursor: pointer; color: #8b4513; z-index: 20;" onclick="closeFastDictionaryMode()">✕</div>
     
     <!-- Satır 1: Kök (Morphed Root Plate) -->
     <div style="text-align: center; padding: 15px 0; border-bottom: none;">
@@ -788,7 +788,7 @@
 </div>
     <div id="marathon-countdown-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ffffff;  z-index: 999999999 !important; display: none; align-items: center; justify-content: center; flex-direction: column;">
         <button id="start-btn-ui" class="back-nav" style="padding: 20px 60px; font-size: 2.2rem; background: #2ecc71; color: white; border: none; border-radius: 50px;" onclick="startMarathonCountdown()">BAŞLA!</button>
-        <div id="countdown-text" style="font-size: 12rem; font-weight: bold; color: #6c5ce7; display: none;">3</div>
+        <div id="countdown-text" style="font-size: 12rem; font-weight: normal; color: #6c5ce7; display: none;">3</div>
     </div>
 
 <!-- GLOBAL LOADING SCRIPT -->
