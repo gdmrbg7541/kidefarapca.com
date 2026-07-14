@@ -4760,14 +4760,14 @@ const SarfEngine = {
             // (MUZARİ KURALLARI MAZİDEN ÖNCEYE ALINDI!)
             
             // MUZARİ Sükunlar (Kadın Çoğul -> يَعُدْنَ, يَبِعْنَ, يَخَفْنَ)
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?ُو([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?ِي([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?َا([\u0621-\u064A])ْ/g, "$1َ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?ُو([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?ِي([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?َا([\u0621-\u064A])ْ/g, "$1َ$2ْ");
             
             // Ham Gelişler (يَعْوُدْنَ -> يَعُدْنَ)
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
-            res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])ْ/g, "$1َ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وُ([\u0621-\u064A])ْ/g, "$1ُ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يِ([\u0621-\u064A])ْ/g, "$1ِ$2ْ");
+            res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?[وي]َ([\u0621-\u064A])ْ/g, "$1َ$2ْ");
 
             // MAZİ Şeddeli Ekler
             res = res.replace(/([\u0621-\u064A])َا([\u0621-\u064A])ّ/g, `$1${maziHareke}$2ّ`);
@@ -4786,13 +4786,13 @@ const SarfEngine = {
             
             // MUZARİ HAREKELİ (MAZİDEN ÖNCE ÇALIŞIR, BÖYLECE YANLIŞLIKLA "يَبَاعُ" OLMAZ!)
             if (!skipIfalEcvef) {
-                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وُ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
-                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يِ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
-                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?[وي]َ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وُ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يِ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?[وي]َ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
                 
                 // Yanlış Bab eşleşmeleri için tablo görünüm düzeltici
-                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
-                res = res.replace(/([يتاأإن][َُِ]?[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
             }
 
             // MAZİ HAREKELİ (Artık Muzari formları güvende olduğu için Mazi kuralları rahatça çalışabilir)
@@ -7100,6 +7100,8 @@ window.startMarathonCountdown = function() {
 };
 // SAYACI VE PUANI BAŞLATIR
 function startMarathonTimer() {
+    document.getElementById('top-bar-panel').style.visibility = 'visible';
+    document.getElementById('top-bar-panel').style.display = 'grid';
     document.getElementById('pause-btn').classList.add('ui-visible');
     document.getElementById('timer-display').classList.add('ui-visible');
     document.getElementById('live-total-score').classList.add('ui-visible');
@@ -9670,6 +9672,13 @@ function launchTelaffuzMarathon(root, refId) {
         topBar.style.display = 'grid';
         topBar.style.visibility = 'visible';
     }
+    
+    document.getElementById('timer-display').style.display = 'block';
+    document.getElementById('live-total-score').style.display = 'block';
+    document.getElementById('chrono-main').style.display = 'block';
+    document.getElementById('stage-label').style.display = 'block';
+    document.getElementById('pause-btn').style.display = 'block';
+    document.getElementById('game-wrapper').style.display = 'flex';
     
     if (typeof hideMarathonHeaders === 'function') hideMarathonHeaders(); 
     const chronoMain = document.getElementById('chrono-main');

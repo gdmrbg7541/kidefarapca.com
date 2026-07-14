@@ -95,6 +95,347 @@ const sigaSablonlari = {
 };
 
 const wordEasterEggs = {
+    "نول": {
+        33: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "نَائِل", 
+                trText: "Erişen / Ulaşan / Nâil olan",
+                ornek: [
+                    { ar: "نَائِلُ الْمُرَادِ", tr: "Muradına eren (amacına ulaşan)." },
+                    { ar: "هُوَ نَائِلٌ جَائِزَةً", tr: "O, bir ödül alan kişidir." }
+                ]
+            }
+        },
+        64: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "نَاوَلَ", 
+                trText: "Verdi / Uzattı / Sundu",
+                ornek: [
+                    { ar: "نَاوَلَنِي الْكِتَابَ", tr: "Bana kitabı uzattı (verdi)." },
+                    { ar: "يُنَاوِلُ الطَّعَامَ", tr: "Yemeği sunar (uzatır)." }
+                ]
+            }
+        },
+        65: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "يُنَاوِلُ", 
+                trText: "Verir / Uzatır / Sunar",
+                ornek: [
+                    { ar: "يُنَاوِلُ الضَّيْفَ قَهْوَةً", tr: "Misafire kahve ikram eder (sunar)." },
+                    { ar: "يُنَاوِلُنِي قَلَمًا", tr: "Bana bir kalem uzatır." }
+                ]
+            }
+        },
+        66: { 
+            base: { 
+                emoji: "🤲", 
+                arText: "نَاوِلْ", 
+                trText: "Ver / Uzat / Sun",
+                ornek: [
+                    { ar: "نَاوِلْنِي ذَلِكَ الْمِلَفَّ", tr: "Bana şu dosyayı uzat." },
+                    { ar: "نَاوِلْهُ الْمَاءَ", tr: "Ona suyu ver." }
+                ]
+            }
+        },
+        67: { 
+            base: { 
+                emoji: "🎁", 
+                arText: "مُنَاوَلَة", 
+                trText: "Vermek / Uzatmak",
+                ornek: [
+                    { ar: "مُنَاوَلَةُ الْأَشْيَاءِ بِالْيَدِ الْيُمْنَى", tr: "Eşyaları sağ el ile vermek." },
+                    { ar: "سُرْعَةُ الْمُنَاوَلَةِ", tr: "Verme (iletme) hızı." }
+                ]
+            }
+        },
+        68: { 
+            base: { 
+                emoji: "🎁", 
+                arText: "نِوَال", 
+                trText: "Vermek / Bahşiş",
+                ornek: [
+                    { ar: "كَثِيرُ النِّوَالِ", tr: "Bahşişi (ikramı) bol olan." },
+                    { ar: "طَلَبَ النِّوَالَ", tr: "İhsan (bahşiş) istedi." }
+                ]
+            }
+        },
+        69: { 
+            base: { 
+                emoji: "💁", 
+                arText: "مُنَاوِل", 
+                trText: "Veren / Uzatan",
+                ornek: [
+                    { ar: "هُوَ مُنَاوِلُ الْكُتُبِ", tr: "O, kitapları verendir." },
+                    { ar: "جَاءَ الْمُنَاوِلُ", tr: "Uzatan (veren) kişi geldi." }
+                ]
+            }
+        },
+        70: { 
+            base: { 
+                emoji: "📦", 
+                arText: "مُنَاوَل", 
+                trText: "Kendisine verilen / Uzatılan",
+                ornek: [
+                    { ar: "الْمَبْلَغُ الْمُنَاوَلُ", tr: "Uzatılan (verilen) meblağ." },
+                    { ar: "أَمْرٌ مُنَاوَلٌ", tr: "Kendisine iletilmiş emir." }
+                ]
+            }
+        },
+        94: { 
+            base: { 
+                emoji: "🍽️", 
+                arText: "تَنَاوَلَ", 
+                trText: "Aldı / Yedi / Ele aldı",
+                ornek: [
+                    { ar: "تَنَاوَلَ طَعَامَهُ", tr: "Yemeğini yedi." },
+                    { ar: "تَنَاوَلَ الْمَوْضُوعَ بِتَفْصِيلٍ", tr: "Konuyu detaylıca ele aldı." }
+                ]
+            }
+        },
+        95: { 
+            base: { 
+                emoji: "🍽️", 
+                arText: "يَتَنَاوَلُ", 
+                trText: "Alır / Yer / Ele alır",
+                ornek: [
+                    { ar: "يَتَنَاوَلُ الْعَشَاءَ حَالِيًّا", tr: "Şu anda akşam yemeği yiyor." },
+                    { ar: "هَذَا الْكِتَابُ يَتَنَاوَلُ التَّارِيخَ", tr: "Bu kitap tarihi ele alıyor." }
+                ]
+            }
+        },
+        96: { 
+            base: { 
+                emoji: "🍽️", 
+                arText: "تَنَاوَلْ", 
+                trText: "Al / Ye / Ele al",
+                ornek: [
+                    { ar: "تَنَاوَلْ دَوَاءَكَ", tr: "İlacını al (iç)." },
+                    { ar: "تَنَاوَلْ هَذَا الْمِلَفَّ", tr: "Bu dosyayı ele al (incele)." }
+                ]
+            }
+        },
+        97: { 
+            base: { 
+                emoji: "🍎", 
+                arText: "تَنَاوُل", 
+                trText: "Almak / Yemek / Ele almak",
+                ornek: [
+                    { ar: "تَنَاوُلُ الْفُطُورِ ضَرُورِيٌّ", tr: "Kahvaltı yapmak (yemek) gereklidir." },
+                    { ar: "تَنَاوُلُ الْمَوْضُوعِ جَيِّدٌ", tr: "Konunun ele alınması güzel." }
+                ]
+            }
+        },
+        98: { 
+            base: { 
+                emoji: "🙋", 
+                arText: "مُتَنَاوِل", 
+                trText: "Alan / Yiyen / Ele alan",
+                ornek: [
+                    { ar: "مُتَنَاوِلُ الدَّوَاءِ", tr: "İlacı alan (içen) kişi." },
+                    { ar: "مُتَنَاوِلُ الطَّعَامِ", tr: "Yemeği yiyen kimse." }
+                ]
+            }
+        },
+        99: { 
+            base: { 
+                emoji: "📑", 
+                arText: "مُتَنَاوَل", 
+                trText: "Alınan / Yenilen / Ele alınan",
+                ornek: [
+                    { ar: "فِي مُتَنَاوَلِ الْجَمِيعِ", tr: "Herkesin ulaşabileceği yerde (elinin altında)." },
+                    { ar: "مَوْضُوعٌ مُتَنَاوَلٌ", tr: "Ele alınmış bir konudur." }
+                ]
+            }
+        }
+    },
+
+    "نصف": {
+        20: { 
+            base: { 
+                emoji: "🌗", 
+                arText: "نِصْف", 
+                trText: "Yarım / Yarı",
+                ornek: [
+                    { ar: "نِصْفُ تُفَّاحَة", tr: "Yarım elma." },
+                    { ar: "قَطَعَهُ نِصْفَيْنِ", tr: "Onu iki yarıya (ikiye) böldü." }
+                ]
+            }
+        },
+        52: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "أَنْصَفَ", 
+                trText: "İnsaflı davrandı / Adil oldu",
+                ornek: [
+                    { ar: "أَنْصَفَ الْقَاضِي الْمَظْلُوم", tr: "Hakim mazluma adil davrandı." },
+                    { ar: "أَنْصَفَ فِي حُكْمِه", tr: "Hükmünde insaflı oldu." }
+                ]
+            }
+        },
+        53: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "يُنْصِفُ", 
+                trText: "İnsaflı davranır / Adil olur",
+                ornek: [
+                    { ar: "يُنْصِفُ النَّاس", tr: "İnsanlara adil davranır." },
+                    { ar: "لَا يُنْصِفُ أَحَدًا", tr: "Kimseye insaflı davranmaz." }
+                ]
+            }
+        },
+        54: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "أَنْصِفْ", 
+                trText: "İnsaflı ol / Hakkını ver",
+                ornek: [
+                    { ar: "أَنْصِفْ نَفْسَك", tr: "Kendine insaflı ol." },
+                    { ar: "أَنْصِفِ الْمَظْلُوم", tr: "Mazlumun hakkını ver (adil ol)." }
+                ]
+            }
+        },
+        55: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "إِنْصَاف", 
+                trText: "İnsaf / Adalet",
+                ornek: [
+                    { ar: "يَطْلُبُ الْإِنْصَاف", tr: "İnsaf (adalet) istiyor." },
+                    { ar: "تَعَامَلَ بِإِنْصَاف", tr: "İnsafla (adaletle) muamele etti." },
+                    { ar: "💡 مَعْلُومَة دَلَالِيَّة", tr: "Semantik Not: 'İnsaf' kelimesi, bir şeyi tam ortadan ikiye bölmek (nıfs) kökünden gelir. Teraziyi eşit tutmak, kimseyi kayırmadan herkese hakkını yarı yarıya vermek anlamında adaleti ifade eder." }
+                ]
+            }
+        },
+        56: { 
+            base: { 
+                emoji: "👤", 
+                arText: "مُنْصِف", 
+                trText: "İnsaflı / Adil kimse",
+                ornek: [
+                    { ar: "هُوَ رَجُلٌ مُنْصِف", tr: "O insaflı bir adamdır." },
+                    { ar: "قَاضٍ مُنْصِف", tr: "Adil hakim." }
+                ]
+            }
+        },
+        57: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُنْصَف", 
+                trText: "Kendisine adil davranılan / İnsaf edilen",
+                ornek: [
+                    { ar: "حَقٌّ مُنْصَف", tr: "Yerini bulan hak." }
+                ]
+            }
+        },
+        64: { 
+            base: { 
+                emoji: "🍕", 
+                arText: "نَاصَفَ", 
+                trText: "İkiye böldü / Yarı yarıya paylaştı",
+                ornek: [
+                    { ar: "نَاصَفَ صَدِيقَهُ الطَّعَام", tr: "Yemeği arkadaşıyla yarı yarıya paylaştı." }
+                ]
+            }
+        },
+        65: { 
+            base: { 
+                emoji: "🍕", 
+                arText: "يُنَاصِفُ", 
+                trText: "İkiye böler / Yarı yarıya paylaşır",
+                ornek: [
+                    { ar: "يُنَاصِفُ الْأَرْبَاح", tr: "Kârı yarı yarıya paylaşır." }
+                ]
+            }
+        },
+        66: { 
+            base: { 
+                emoji: "🍕", 
+                arText: "نَاصِفْ", 
+                trText: "Yarı yarıya paylaş",
+                ornek: [
+                    { ar: "نَاصِفْ أَخَاكَ الْمَالَ", tr: "Parayı kardeşinle yarı yarıya bölüş." }
+                ]
+            }
+        },
+        67: { 
+            base: { 
+                emoji: "🤝", 
+                arText: "مُنَاصَفَة", 
+                trText: "Yarı yarıya / Eşit şekilde bölüşerek",
+                ornek: [
+                    { ar: "تَقَاسَمَا بِالْمُنَاصَفَة", tr: "Yarı yarıya paylaştılar." },
+                    { ar: "شَرِكَةٌ مُنَاصَفَة", tr: "Yarı yarıya ortaklı şirket." }
+                ]
+            }
+        },
+        77: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "اِنْتَصَفَ", 
+                trText: "Yarısına ulaştı / Ortasına geldi",
+                ornek: [
+                    { ar: "اِنْتَصَفَ اللَّيْل", tr: "Gece yarılandı." },
+                    { ar: "اِنْتَصَفَ الشَّهْر", tr: "Ayın ortası oldu (yarılandı)." }
+                ]
+            }
+        },
+        78: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "يَنْتَصِفُ", 
+                trText: "Yarısına ulaşır / Ortasına gelir",
+                ornek: [
+                    { ar: "يَنْتَصِفُ النَّهَارُ سَرِيعًا", tr: "Gündüz hızlıca yarılanıyor." }
+                ]
+            }
+        },
+        79: { 
+            base: { 
+                emoji: "⏳", 
+                arText: "اِنْتَصِفْ", 
+                trText: "Yarısına ulaş / Öcünü al",
+                ornek: [
+                    { ar: "اِنْتَصِفْ مِنْ ظَالِمِك", tr: "Zaliminden öcünü al (hakkını al)." }
+                ]
+            }
+        },
+        80: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "اِنْتِصَاف", 
+                trText: "Yarılanma / Öç alma (hakkını alma)",
+                ornek: [
+                    { ar: "اِنْتِصَافُ الشَّهْر", tr: "Ayın yarılanması." },
+                    { ar: "اِنْتِصَافُ الْمَظْلُوم", tr: "Mazlumun öcünü alması." },
+                    { ar: "💡 مَعْلُومَة دَلَالِيَّة", tr: "Semantik Not: 'İntisaf', haksızlığa uğrayan kişinin gasp edilen 'kendi yarısını / payını' geri alıp teraziyi dengelemesi mantığından hareketle 'öç almak' anlamına evrilmiştir." }
+                ]
+            }
+        },
+        81: { 
+            base: { 
+                emoji: "👤", 
+                arText: "مُنْتَصِف", 
+                trText: "Yarıya ulaşan / Öç alan",
+                ornek: [
+                    { ar: "هُوَ مُنْتَصِفٌ مِنْ عَدُوِّه", tr: "O, düşmanından öcünü alandır." }
+                ]
+            }
+        },
+        82: { 
+            base: { 
+                emoji: "🕛", 
+                arText: "مُنْتَصَف", 
+                trText: "Orta / Yarı",
+                ornek: [
+                    { ar: "فِي مُنْتَصَفِ اللَّيْل", tr: "Gece yarısında." },
+                    { ar: "مُنْتَصَفُ الطَّرِيق", tr: "Yolun yarısı (ortası)." }
+                ]
+            }
+        }
+    },
 
     // ==================================================================
     // ك ف ر KÖKÜ - Örtmek / İnkar Etmek / Nankörlük
@@ -12040,7 +12381,6 @@ const wordEasterEggs = {
         },
 
         3: { base: { emoji: "🙏", arText: "اُطْلُبْ", trText: "İste / Talep et.", ornek: { ar: "اُطْلُبِ الْعِلْمَ وَلَوْ بِالصِّينِ", tr: "Çin'de bile olsa ilmi iste/talep et." } } },
-        3: { base: { emoji: "✨", arText: "نُرْ", trText: "Aydınlat / Işık saç.", ornek: { ar: "نُرْ عُقُولَنَا", tr: "Akıllarımızı aydınlat." } } },
         // --- 17 Numaralı Kalıp (فَعَل - Mücerret Masdar) ---
         17: { 
             base: { 
@@ -12060,6 +12400,7 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
         33: { 
             cogulId: "45, 47",
+            tip: "meslek",
             base: { 
                 emoji: "👨‍🎓", 
                 arText: "طَالِب", 
@@ -16188,11 +16529,17 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             base: { 
                 emoji: "✨", 
                 arText: "حَيّ", 
-                trText: "Hayy / Diri, yaşayan, canlı.",
-                ornek: { 
-                    ar: "اللهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", 
-                    tr: "Allah, O'ndan başka ilah yoktur; Diridir (Hayy'dır), her şeyi ayakta tutandır. (Bakara Suresi, 255)" 
-                }
+                trText: "Hayy / Diri, yaşayan, canlı, mahalle.",
+                ornek: [
+                    { 
+                        ar: "اللهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", 
+                        tr: "Allah, O'ndan başka ilah yoktur; Diridir (Hayy'dır), her şeyi ayakta tutandır. (Bakara Suresi, 255)" 
+                    },
+                    {
+                        ar: "سَكَنَ فِي حَيٍّ جَدِيدٍ",
+                        tr: "Yeni bir mahalleye yerleşti."
+                    }
+                ]
             } 
         },
 
@@ -21783,7 +22130,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         34: {
             base: { emoji: "🚶‍♂️", arText: "سَيَّار", trText: "Çok yürüyen / Gezen.", ornek: { ar: "هُوَ كَوْكَبٌ سَيَّارٌ", tr: "O gezen bir gezegendir." } },
             suggestsPlus: true,
-            "ة": { emoji: "🚗", arText: "سَيَّارَة", trText: "Araba." }
+            "ة": { tip: "ulaşım araçları", emoji: "🚗", arText: "سَيَّارَة", trText: "Araba." }
         }
     },
     "قطر": {
@@ -22824,4 +23171,720 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     },
 
+
+    // ==================================================================
+    // ركز KÖKÜ
+    // ==================================================================
+    "ركز": {
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             1 Numaralı Kalıp (فَعَلَ - Mücerret 1. Bab Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        1: { 
+            base: { 
+                emoji: "📍", 
+                arText: "رَكَزَ", 
+                trText: "Dikti / Sapladı",
+                ornek: [
+                    { ar: "رَكَزَ الرُّمْحَ فِي الْأَرْض", tr: "Mızrağı yere sapladı." },
+                    { ar: "رَكَزَ الْعَلَمَ فِي الْقِمَّة", tr: "Bayrağı zirveye dikti." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             2 Numaralı Kalıp (يَفْعُلُ - Mücerret 1. Bab Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        2: { 
+            base: { 
+                emoji: "⛺", 
+                arText: "يَرْكُزُ", 
+                trText: "Dikiyor / Saplıyor",
+                ornek: [
+                    { ar: "يَرْكُزُ الْخَيْمَةَ فِي الصَّحْرَاء", tr: "Çadırı çöle kuruyor (sabitliyor)." },
+                    { ar: "يَرْكُزُ الْعَمُودَ فِي مَكَانِه", tr: "Direği yerine sabitliyor." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             3 Numaralı Kalıp (أُفْعُلْ - Mücerret 1. Bab Emir)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        3: { 
+            base: { 
+                emoji: "📌", 
+                arText: "اُرْكُزْ", 
+                trText: "Dik / Sapla",
+                ornek: [
+                    { ar: "اُرْكُزْ رُمْحَك", tr: "Mızrağını sapla." },
+                    { ar: "اُرْكُزِ الْخَيْمَةَ هُنَا", tr: "Çadırı buraya kur." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             58 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        58: { 
+            base: { 
+                emoji: "🎯", 
+                arText: "رَكَّزَ", 
+                trText: "Odakladı / Yoğunlaştırdı",
+                ornek: [
+                    { ar: "رَكَّزَ انْتِبَاهَهُ عَلَى الْمُشْكِلَة", tr: "Dikkatini probleme odakladı." },
+                    { ar: "رَكَّزَ جُهُودَهُ فِي الْبَحْث", tr: "Çabalarını araştırmaya yoğunlaştırdı." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             59 Numaralı Kalıp (يُفَعِّلُ - Tef'îl Babı Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        59: { 
+            base: { 
+                emoji: "🔍", 
+                arText: "يُرَكِّزُ", 
+                trText: "Odaklıyor / Yoğunlaşıyor",
+                ornek: [
+                    { ar: "يُرَكِّزُ عَلَى أَهْدَافِه", tr: "Hedeflerine odaklanıyor." },
+                    { ar: "يُرَكِّزُ فِي دِرَاسَتِه", tr: "Dersine (çalışmasına) yoğunlaşıyor. (Not: 'Odaklanmak' anlamında 'في' veya 'على' harf-i cerleri ile sıkça kullanılır.)" }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             60 Numaralı Kalıp (فَعِّلْ - Tef'îl Babı Emir)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        60: { 
+            base: { 
+                emoji: "🧠", 
+                arText: "رَكِّزْ", 
+                trText: "Odakla / Odaklan",
+                ornek: [
+                    { ar: "رَكِّزْ فِي دَرْسِك", tr: "Dersine odaklan." },
+                    { ar: "رَكِّزْ عَلَى عَمَلِك", tr: "İşine odaklan." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             61 Numaralı Kalıp (تَفْعِيل - Tef'îl Babı Masdar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        61: { 
+            base: { 
+                emoji: "🧘‍♂️", 
+                arText: "تَرْكِيز", 
+                trText: "Odaklanma / Konsantrasyon",
+                ornek: [
+                    { ar: "يَحْتَاجُ إِلَى تَرْكِيز شَدِيد", tr: "Yüksek (şiddetli) konsantrasyona ihtiyaç duyuyor." },
+                    { ar: "فَقَدَ التَّرْكِيز", tr: "Odaklanmayı (dikkatini) kaybetti." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             88 Numaralı Kalıp (تَفَعَّلَ - Tefa'ul Babı Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        88: { 
+            base: { 
+                emoji: "👑", 
+                arText: "تَرَكَّزَ", 
+                trText: "Merkezileşti / Toplandı",
+                ornek: [
+                    { ar: "تَرَكَّزَتِ السُّلْطَةُ فِي يَدِه", tr: "Otorite onun elinde merkezileşti." },
+                    { ar: "تَرَكَّزَ الاهْتِمَامُ عَلَيْه", tr: "İlgi onun üzerinde toplandı." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             89 Numaralı Kalıp (يَتَفَعَّلُ - Tefa'ul Babı Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        89: { 
+            base: { 
+                emoji: "🏙️", 
+                arText: "يَتَرَكَّزُ", 
+                trText: "Merkezileşiyor / Toplanıyor",
+                ornek: [
+                    { ar: "يَتَرَكَّزُ السُّكَّانُ فِي الْمُدُن", tr: "Nüfus şehirlerde yoğunlaşıyor." },
+                    { ar: "تَتَرَكَّزُ الْجُهُودُ عَلَى التَّعْلِيم", tr: "Çabalar eğitime odaklanıyor (toplanıyor)." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             90 Numaralı Kalıp (تَفَعَّلْ - Tefa'ul Babı Emir)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        90: { 
+            base: { 
+                emoji: "📸", 
+                arText: "تَرَكَّزْ", 
+                trText: "Odaklan / Merkezlen",
+                ornek: [
+                    { ar: "تَرَكَّزْ عَلَى الْهَدَف", tr: "Hedefe merkezlen." },
+                    { ar: "تَرَكَّزُوا فِي مَكَانٍ وَاحِد", tr: "Tek bir yerde toplanın (merkezileşin)." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             91 Numaralı Kalıp (تَفَعُّل - Tefa'ul Babı Masdar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        91: { 
+            base: { 
+                emoji: "💰", 
+                arText: "تَرَكُّز", 
+                trText: "Yoğunlaşma / Toplanma",
+                ornek: [
+                    { ar: "تَرَكُّزُ الثَّرْوَة", tr: "Servetin (bir yerde) toplanması." },
+                    { ar: "تَرَكُّزُ السُّكَّان", tr: "Nüfus yoğunlaşması." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             77 Numaralı Kalıp (اِفْتَعَلَ - İftî'âl Babı Mazi)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        77: { 
+            base: { 
+                emoji: "🦯", 
+                arText: "اِرْتَكَزَ", 
+                trText: "Dayandı / Temel Aldı",
+                ornek: [
+                    { ar: "اِرْتَكَزَ عَلَى الْعَصَا", tr: "Bastonuna yaslandı (fiziksel)." },
+                    { ar: "اِرْتَكَزَ الْقَرَارُ عَلَى الْقَانُون", tr: "Karar, kanuna dayandı (soyut)." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             78 Numaralı Kalıp (يَفْتَعِلُ - İftî'âl Babı Muzari)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        78: { 
+            base: { 
+                emoji: "⚓", 
+                arText: "يَرْتَكِزُ", 
+                trText: "Dayanıyor / Temel Alıyor",
+                ornek: [
+                    { ar: "يَرْتَكِزُ الْبَحْثُ عَلَى مَصَادِرَ مُوَثَّقَة", tr: "Araştırma güvenilir kaynaklara dayanıyor." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             79 Numaralı Kalıp (اِفْتَعِلْ - İftî'âl Babı Emir)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        79: { 
+            base: { 
+                emoji: "⚖️", 
+                arText: "اِرْتَكِزْ", 
+                trText: "Dayan / Yaslan",
+                ornek: [
+                    { ar: "اِرْتَكِزْ عَلَى الْحَقَائِق", tr: "Gerçeklere dayan (temel al)." },
+                    { ar: "اِرْتَكِزْ عَلَى مَبَادِئِك", tr: "İlkelerine dayan." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             80 Numaralı Kalıp (اِفْتِعَال - İftî'âl Babı Masdar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        80: { 
+            base: { 
+                emoji: "⚓", 
+                arText: "اِرْتِكَاز", 
+                trText: "Dayanma / Temel Alma",
+                ornek: [
+                    { ar: "نُقْطَةُ ارْتِكَاز", tr: "Dayanak noktası (Destek noktası)." },
+                    { ar: "الِارْتِكَازُ عَلَى الدَّلِيل", tr: "Kanıta (delile) dayanma." }
+                ]
+            }
+        },
+
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             38 Numaralı Kalıp (مَفْعَل - İsmi Zaman / Mekân)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        38: { 
+            base: { 
+                emoji: "🏬", 
+                arText: "مَرْكَز", 
+                trText: "Merkez / Üs",
+                ornek: [
+                    { ar: "مَرْكَزُ التَّسَوُّق", tr: "Alışveriş merkezi." },
+                    { ar: "مَرْكَزُ الشُّرْطَة", tr: "Karakol (Polis merkezi)." }
+                ]
+            }
+        }
+
+    },
+    "بعد": {
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             11, 12, 13 Numaralı Kalıp (فَعُلَ - Mücerret 5. Bab)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        11: { 
+            base: { 
+                emoji: "🔭", 
+                arText: "بَعُدَ", 
+                trText: "Uzak oldu / Uzaklaştı",
+                ornek: [
+                    { ar: "بَعُدَ الْمَكَانُ جِدًّا", tr: "Mekan çok uzak oldu." },
+                    { ar: "بَعُدَ عَنِ الْمَدِينَة", tr: "Şehirden uzaklaştı." }
+                ]
+            }
+        },
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //                   19 Numaralı Kalıp (İsm-i Zaman / Mekan / Zarf)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        19: { 
+            base: { 
+                emoji: "⏭️", 
+                arText: "بَعْدَ", 
+                trText: "Sonra / Daha sonra",
+                ornek: [
+                    { ar: "بَعْدَ الصَّلَاة", tr: "Namazdan sonra." },
+                    { ar: "سَأَعُودُ بَعْدَ قَلِيل", tr: "Biraz sonra döneceğim." }
+                ]
+            }
+        },
+        12: { 
+            base: { 
+                emoji: "🔭", 
+                arText: "يَبْعُدُ", 
+                trText: "Uzak oluyor / Uzaklaşıyor",
+                ornek: [
+                    { ar: "يَبْعُدُ بَيْتِي عَنِ الْمَدْرَسَة", tr: "Evim okula uzaktır (uzak oluyor)." },
+                    { ar: "يَبْعُدُ عَنِ الْأَصْدِقَاء", tr: "Arkadaşlardan uzaklaşıyor." }
+                ]
+            }
+        },
+        13: { 
+            base: { 
+                emoji: "🔭", 
+                arText: "اُبْعُدْ", 
+                trText: "Uzak ol / Uzaklaş",
+                ornek: [
+                    { ar: "اُبْعُدْ عَنِ النَّار", tr: "Ateşten uzak ol." },
+                    { ar: "اُبْعُدْ عَنْ هَذَا الْمَكَان", tr: "Bu mekandan uzaklaş." }
+                ]
+            }
+        },
+        
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             Zarf / İsm-i Zaman (19 Numaralı Kalıp)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        19: { 
+            tip: "zaman",
+            base: { 
+                emoji: "⏳", 
+                arText: "بَعْدَ", 
+                trText: "Sonra",
+                ornek: [
+                    { ar: "بَعْدَ قَلِيل", tr: "Biraz sonra." },
+                    { ar: "بَعْدَ الظُّهْر", tr: "Öğleden sonra." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             Masdar / Sıfat (21 ve 35 Numaralı Kalıplar)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        21: { 
+            base: { 
+                emoji: "📏", 
+                arText: "بُعْد", 
+                trText: "Uzaklık / Mesafe / Boyut",
+                ornek: [
+                    { ar: "عَلَى بُعْدِ مِتْرَيْن", tr: "İki metre uzaklıkta." },
+                    { ar: "بُعْدُ النَّظَر", tr: "İleri görüşlülük (Uzağı görme)." }
+                ]
+            }
+        },
+        35: { 
+            base: { 
+                emoji: "📍", 
+                arText: "بَعِيد", 
+                trText: "Uzak / Iraksak",
+                ornek: [
+                    { ar: "هُوَ مَكَانٌ بَعِيد", tr: "O uzak bir mekandır." },
+                    { ar: "بَعِيدٌ عَنِ الْعَيْن", tr: "Gözden uzak." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             52, 53, 54 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        52: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "أَبْعَدَ", 
+                trText: "Uzaklaştırdı / Bertaraf etti",
+                ornek: [
+                    { ar: "أَبْعَدَ الْخَطَرَ عَنَّا", tr: "Tehlikeyi bizden uzaklaştırdı." },
+                    { ar: "أَبْعَدَهُ عَنِ الْفَرِيق", tr: "Onu takımdan uzaklaştırdı." }
+                ]
+            }
+        },
+        53: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "يُبْعِدُ", 
+                trText: "Uzaklaştırıyor",
+                ornek: [
+                    { ar: "يُبْعِدُ الشُّبُهَاتِ عَنْ نَفْسِه", tr: "Şüpheleri kendinden uzaklaştırıyor." },
+                    { ar: "يُبْعِدُ الْأَطْفَالَ عَنِ الشَّارِع", tr: "Çocukları sokaktan uzaklaştırıyor." }
+                ]
+            }
+        },
+        54: { 
+            base: { 
+                emoji: "🚫", 
+                arText: "أَبْعِدْ", 
+                trText: "Uzaklaştır",
+                ornek: [
+                    { ar: "أَبْعِدْ هَذَا الشَّيْءَ عَنِّي", tr: "Bu şeyi benden uzaklaştır." },
+                    { ar: "أَبْعِدِ الْكَلْب", tr: "Köpeği uzaklaştır." }
+                ]
+            }
+        },
+        55: { 
+            base: { 
+                emoji: "🚷", 
+                arText: "إِبْعَاد", 
+                trText: "Uzaklaştırma / Sınır dışı etme",
+                ornek: [
+                    { ar: "قَرَّرُوا إِبْعَادَه", tr: "Onu uzaklaştırmaya karar verdiler." },
+                    { ar: "إِبْعَادٌ عَنِ الْوَطَن", tr: "Vatandan uzaklaştırma (sürgün)." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             58, 59, 60 Numaralı Kalıp (فَعَّلَ - Tef'îl Babı)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        58: { 
+            base: { 
+                emoji: "↔️", 
+                arText: "بَعَّدَ", 
+                trText: "Uzaklaştırdı / Arasını açtı",
+                ornek: [
+                    { ar: "بَعَّدَ بَيْنَ الْكُرْسِيَّيْن", tr: "İki sandalyenin arasını açtı." },
+                    { ar: "بَعَّدَ الْمَسَافَة", tr: "Mesafeyi uzattı." }
+                ]
+            }
+        },
+        59: { 
+            base: { 
+                emoji: "↔️", 
+                arText: "يُبَعِّدُ", 
+                trText: "Uzaklaştırıyor / Arasını açıyor",
+                ornek: [
+                    { ar: "يُبَعِّدُ الْأَشْيَاء", tr: "Eşyaları uzaklaştırıyor." },
+                    { ar: "يُبَعِّدُ بَيْنَ الصَّدِيقَيْن", tr: "İki arkadaşın arasını açıyor." }
+                ]
+            }
+        },
+        60: { 
+            base: { 
+                emoji: "↔️", 
+                arText: "بَعِّدْ", 
+                trText: "Uzaklaştır / Arasını aç",
+                ornek: [
+                    { ar: "بَعِّدْ هَذَا قَلِيلًا", tr: "Bunu biraz uzaklaştır." },
+                    { ar: "بَعِّدْ بَيْنَهُمَا", tr: "İkisinin arasını aç." }
+                ]
+            }
+        },
+        61: { 
+            base: { 
+                emoji: "📏", 
+                arText: "تَبْعِيد", 
+                trText: "Uzaklaştırma (Mesafelendirme)",
+                ornek: [
+                    { ar: "تَبْعِيدُ الْمَسَافَةِ ضَرُورِيّ", tr: "Mesafeyi uzaklaştırmak gereklidir." },
+                    { ar: "سِيَاسَةُ التَّبْعِيد", tr: "Uzaklaştırma politikası." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             64, 65, 66 Numaralı Kalıp (فَاعَلَ - Mufâ'ale Babı)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        64: { 
+            base: { 
+                emoji: "🧍‍♂️ 🧍‍♀️", 
+                arText: "بَاعَدَ", 
+                trText: "Uzak durdu / Mesafeli oldu",
+                ornek: [
+                    { ar: "بَاعَدَ بَيْنَهُمَا", tr: "Aralarını uzak tuttu." },
+                    { ar: "بَاعَدَ عَنِ الْمَشَاكِل", tr: "Problemlerden uzak durdu." }
+                ]
+            }
+        },
+        65: { 
+            base: { 
+                emoji: "🧍‍♂️ 🧍‍♀️", 
+                arText: "يُبَاعِدُ", 
+                trText: "Uzak duruyor / Mesafeli oluyor",
+                ornek: [
+                    { ar: "يُبَاعِدُ بَيْنَ الْكَلِمَات", tr: "Kelimelerin arasını uzak tutuyor (ayrık yazıyor)." },
+                    { ar: "يُبَاعِدُ نَفْسَهُ عَنِ الْخَطَر", tr: "Kendini tehlikeden uzak tutuyor." }
+                ]
+            }
+        },
+        66: { 
+            base: { 
+                emoji: "🧍‍♂️ 🧍‍♀️", 
+                arText: "بَاعِدْ", 
+                trText: "Uzak dur / Mesafeli ol",
+                ornek: [
+                    { ar: "بَاعِدْ بَيْنَ الْخَطَوَات", tr: "Adımların arasını açık tut." },
+                    { ar: "بَاعِدْ عَنْ أَهْلِ السُّوء", tr: "Kötü insanlardan uzak dur." }
+                ]
+            }
+        },
+        67: { 
+            base: { 
+                emoji: "🧍‍♂️ 🧍‍♀️", 
+                arText: "مُبَاعَدَة", 
+                trText: "Mesafe koyma / Uzak durma",
+                ornek: [
+                    { ar: "مُبَاعَدَةُ الْأَسْطُر", tr: "Satır aralığı (satırları birbirinden uzaklaştırma)." },
+                    { ar: "الْمُبَاعَدَةُ الاِجْتِمَاعِيَّة", tr: "Sosyal mesafe koyma." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             77, 78, 79 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        77: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "اِبْتَعَدَ", 
+                trText: "Uzaklaştı / Çekildi",
+                ornek: [
+                    { ar: "اِبْتَعَدَ عَنِ الْمَكَان", tr: "Mekandan uzaklaştı." },
+                    { ar: "اِبْتَعَدَ عَنِ الْمَشَاكِل", tr: "Problemlerden uzak durdu." }
+                ]
+            }
+        },
+        78: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "يَبْتَعِدُ", 
+                trText: "Uzaklaşıyor / Çekiliyor",
+                ornek: [
+                    { ar: "يَبْتَعِدُ عَنِ الْخَطَر", tr: "Tehlikeden uzaklaşıyor." },
+                    { ar: "يَبْتَعِدُ عَنْ أَصْدِقَاءِ السُّوء", tr: "Kötü arkadaşlardan uzak duruyor." }
+                ]
+            }
+        },
+        79: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "اِبْتَعِدْ", 
+                trText: "Uzaklaş / Çekil",
+                ornek: [
+                    { ar: "اِبْتَعِدْ عَنِّي", tr: "Benden uzaklaş." },
+                    { ar: "اِبْتَعِدْ عَنِ النَّار", tr: "Ateşten uzaklaş." }
+                ]
+            }
+        },
+        80: { 
+            base: { 
+                emoji: "🚶‍♂️", 
+                arText: "اِبْتِعَاد", 
+                trText: "Uzaklaşma / Uzak durma",
+                ornek: [
+                    { ar: "الاِبْتِعَادُ عَنِ الْمَعَاصِي", tr: "Günahlardan uzak durma." },
+                    { ar: "فَضَّلَ الاِبْتِعَاد", tr: "Uzaklaşmayı tercih etti." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             94, 95, 96 Numaralı Kalıp (تَفَاعَلَ - Tefâ'ul Babı)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        94: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "تَبَاعَدَ", 
+                trText: "Birbirinden uzaklaştı",
+                ornek: [
+                    { ar: "تَبَاعَدَتِ الْفَتْرَات", tr: "Aralıklar uzaklaştı (seyrekleşti)." },
+                    { ar: "تَبَاعَدَ الْأَصْدِقَاء", tr: "Arkadaşlar birbirinden uzaklaştı." }
+                ]
+            }
+        },
+        95: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "يَتَبَاعَدُ", 
+                trText: "Birbirinden uzaklaşıyor",
+                ornek: [
+                    { ar: "يَتَبَاعَدُ النَّاسُ عَنْ بَعْضِهِم", tr: "İnsanlar birbirinden uzaklaşıyor." },
+                    { ar: "الزَّمَنُ يَتَبَاعَد", tr: "Zaman giderek uzaklaşıyor." }
+                ]
+            }
+        },
+        96: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "تَبَاعَدْ", 
+                trText: "Uzaklaş",
+                ornek: [
+                    { ar: "تَبَاعَدْ عَنِ الْمَكَان", tr: "Mekandan uzaklaş." },
+                    { ar: "تَبَاعَدُوا قَلِيلًا", tr: "Biraz (birbirinizden) uzaklaşın." }
+                ]
+            }
+        },
+        97: { 
+            base: { 
+                emoji: "🌌", 
+                arText: "تَبَاعُد", 
+                trText: "Uzaklaşma / Mesafe",
+                ornek: [
+                    { ar: "التَّبَاعُدُ الاِجْتِمَاعِيّ", tr: "Sosyal mesafe." },
+                    { ar: "تَبَاعُدُ وِجْهَاتِ النَّظَر", tr: "Görüşlerin birbirinden uzaklaşması." }
+                ]
+            }
+        },
+
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        //             100, 101, 102 Numaralı Kalıp (اِسْتَفْعَلَ - İstif'âl Babı)
+        // ✦ ──────────────────────────────────────────────────────── ✦
+        100: { 
+            base: { 
+                emoji: "🙅‍♂️", 
+                arText: "اِسْتَبْعَدَ", 
+                trText: "İhtimal vermedi / Dışladı",
+                ornek: [
+                    { ar: "اِسْتَبْعَدَ الْفِكْرَة", tr: "Fikri dışladı (ihtimal dışı bıraktı)." },
+                    { ar: "اِسْتَبْعَدَ وُقُوعَ الْحَادِث", tr: "Kazanın olacağına ihtimal vermedi." }
+                ]
+            }
+        },
+        101: { 
+            base: { 
+                emoji: "🙅‍♂️", 
+                arText: "يَسْتَبْعِدُ", 
+                trText: "İhtimal vermiyor / Dışlıyor",
+                ornek: [
+                    { ar: "أَسْتَبْعِدُ هَذَا الْخَبَر", tr: "Bu habere ihtimal vermiyorum." },
+                    { ar: "يَسْتَبْعِدُ النَّجَاح", tr: "Başarıyı uzak bir ihtimal olarak görüyor." }
+                ]
+            }
+        },
+        102: { 
+            base: { 
+                emoji: "🙅‍♂️", 
+                arText: "اِسْتَبْعِدْ", 
+                trText: "Dışla / İhtimal verme",
+                ornek: [
+                    { ar: "اِسْتَبْعِدْ هَذَا الْخِيَار", tr: "Bu seçeneği dışla (ele)." },
+                    { ar: "اِسْتَبْعِدِ الاِحْتِمَالَ الضَّعِيف", tr: "Zayıf ihtimali dışla." }
+                ]
+            }
+        },
+        103: { 
+            base: { 
+                emoji: "❌", 
+                arText: "اِسْتِبْعَاد", 
+                trText: "Dışlama / Eleme / Uzak görme",
+                ornek: [
+                    { ar: "تَمَّ اِسْتِبْعَادُ اللَّاعِب", tr: "Oyuncu (kadro dışı bırakılarak) elendi." },
+                    { ar: "سِيَاسَةُ الاِسْتِبْعَاد", tr: "Dışlama politikası." }
+                ]
+            }
+        }
+    },
+
+    // ==================================================================
+    // D-W-R (د و ر) KÖKÜ - Dönmek, İdare Etmek, Rol, Ev
+    // ==================================================================
+    "دور": {
+        // --- Sülasi Mücerred (1. Bab - Ecvaf Fiil) ---
+        1: { base: { emoji: "🔄", arText: "دَارَ", trText: "Döndü.", ornek: [{ ar: "دَارَتِ الْأَرْضُ", tr: "Dünya döndü." }, { ar: "دَارَ حَوْلَ الْمَوْضُوعِ", tr: "Konunun etrafında döndü/dolaştı." }] } },
+        2: { base: { emoji: "🔄", arText: "يَدُورُ", trText: "Döner.", ornek: [{ ar: "يَدُورُ فِي ذِهْنِي", tr: "Zihnimde dönüp duruyor (dolanıyor)." }, { ar: "الْأَرْضُ تَدُورُ حَوْلَ الشَّمْسِ", tr: "Dünya Güneş'in etrafında döner." }] } },
+        3: { base: { emoji: "❗", arText: "دُرْ", trText: "Dön!", ornek: [{ ar: "دُرْ إِلَى الْيَمِينِ", tr: "Sağa dön." }, { ar: "دُرْ حَوْلَ نَفْسِكَ", tr: "Kendi etrafında dön." }] } },
+
+        19: { 
+            base: { emoji: "🎭", arText: "دَوْر", trText: "Rol / Sıra / Tur / Dönem (Masdar/İsim).", ornek: [{ ar: "جَاءَ دَوْرُكَ", tr: "Sıran geldi." }, { ar: "لَعِبَ دَوْرًا مُهِمًّا", tr: "Önemli bir rol oynadı." }] },
+            suggestsPlus: true,
+            "ة": { emoji: "🔁", arText: "دَوْرَة", trText: "Döngü / Kurs / Turnuva / Oturum.", ornek: [{ ar: "دَوْرَةٌ تَدْرِيبِيَّة", tr: "Eğitim kursu." }, { ar: "الدَّوْرَةُ الدَّمَوِيَّة", tr: "Kan dolaşımı." }] } 
+        },
+        22: { base: { emoji: "🏠", arText: "دَار", trText: "Ev / Yurt / Diyar.", ornek: [{ ar: "الدَّارُ الْآخِرَة", tr: "Ahiret yurdu.", not: "Semantik Not: Aslı 'davar' olan kelime, Arapçadaki ses (illet) kuralı gereği ortadaki vav harfinin elife dönüşmesiyle 'dâr' şeklini almıştır." }] } },
+        
+        34: { base: { emoji: "🎡", arText: "دَوَّار", trText: "Kavşak / Dönen şey (Mübalağalı İsm-i Fâil).", ornek: [{ ar: "دَوَّارُ الْمُرُورِ", tr: "Trafik kavşağı." }, { ar: "دَوَّارُ الْبَحْرِ", tr: "Deniz tutması (baş dönmesi)." }] } },
+        
+        33: { 
+            base: { arText: "دَائِر" },
+            suggestsPlus: true,
+            "ة": { 
+                emoji: "⭕", 
+                arText: "دَائِرَة", 
+                trText: "Daire / Çember / Kurum / Büro.", 
+                ornek: [
+                    { ar: "دَائِرَةٌ حُكُومِيَّة", tr: "Devlet dairesi (kurumu)." },
+                    { ar: "رَسَمَ دَائِرَةً", tr: "Bir daire (çember) çizdi." }
+                ]
+            } 
+        },
+
+        28: { base: { emoji: "🌀", arText: "دَوَرَان", trText: "Dönme / Dönüş / Devir (Masdar).", ornek: [{ ar: "دَوَرَانُ الْأَرْضِ", tr: "Dünyanın dönüşü." }, { ar: "دَوَرَانُ الرَّأْسِ", tr: "Baş dönmesi." }] } },
+        38: { base: { emoji: "🪐", arText: "مَدَار", trText: "Yörünge / Eksen / Merkez (İsm-i Mekân/Zaman).", ornek: [{ ar: "مَدَارُ الْأَرْضِ", tr: "Dünyanın yörüngesi." }, { ar: "عَلَى مَدَارِ السَّاعَةِ", tr: "Günün her saati (24 saat boyunca)." }] } },
+
+        // --- İf'âl Babı (Yönetmek, İdare Etmek, Döndürmek) ---
+        52: { base: { emoji: "👔", arText: "أَدَارَ", trText: "Yönetti / İdare etti / Döndürdü.", ornek: [{ ar: "أَدَارَ الشَّرِكَةَ بِنَجَاحٍ", tr: "Şirketi başarıyla yönetti." }, { ar: "أَدَارَ وَجْهَهُ", tr: "Yüzünü (başka yöne) döndürdü/çevirdi." }] } },
+        53: { base: { emoji: "👔", arText: "يُدِيرُ", trText: "Yönetir / İdare eder.", ornek: [{ ar: "يُدِيرُ الْمَشْرُوعَ", tr: "Projeyi yönetiyor." }, { ar: "يُدِيرُ ظَهْرَهُ", tr: "Sırtını dönüyor." }] } },
+        54: { base: { emoji: "👔", arText: "أَدِرْ", trText: "Yönet! / İdare et! (Emir).", ornek: [{ ar: "أَدِرْ أَعْمَالَكَ بِحِكْمَةٍ", tr: "İşlerini hikmetle (akıllıca) yönet." }, { ar: "أَدِرِ الْمُحَرِّكَ", tr: "Motoru çalıştır (döndür)." }] } },
+        55: { base: { emoji: "🏢", arText: "إِدَارَة", trText: "İdare / Yönetim / Müdürlük (Masdar).", ornek: [{ ar: "إِدَارَةُ الْأَعْمَالِ", tr: "İşletme (iş yönetimi)." }, { ar: "مَجْلِسُ الْإِدَارَةِ", tr: "Yönetim kurulu." }] } },
+        56: { tip: "meslek", base: { emoji: "💼", arText: "مُدِير", trText: "Müdür / Yönetici (İsm-i Fâil).", ornek: [{ ar: "مُدِيرُ الْمَدْرَسَةِ", tr: "Okul müdürü." }, { ar: "الْمُدِيرُ الْعَامُّ", tr: "Genel müdür." }] } }
+    },
+
+    "قشط": {
+        // --- 1. Bab (Mazi, Muzari, Emir) ---
+        1: { base: { emoji: "🔪", arText: "قَشَطَ", trText: "Sıyırdı / Kazıdı / Soydu.", ornek: [{ ar: "قَشَطَ الْجِلْدَ", tr: "Deriyi sıyırdı/yüzdü." }, { ar: "قَشَطَ الْوَرَقَةَ", tr: "Kağıdı (üzerindekini) kazıdı." }] } },
+        4: { base: { emoji: "🔪", arText: "يَقْشِطُ", trText: "Sıyırır / Kazır.", ornek: [{ ar: "يَقْشِطُ الطِّلَاءَ", tr: "Boyayı kazıyor." }, { ar: "يَقْشِطُ الْجُرْحَ", tr: "Yarayı sıyırıyor." }] } },
+        5: { base: { emoji: "❗", arText: "اِقْشِطْ", trText: "Sıyır! / Kazı!", ornek: [{ ar: "اِقْشِطْ هَذَا السَّطْحَ", tr: "Bu yüzeyi kazı." }] } },
+
+        // --- Masdar ---
+        19: { base: { emoji: "📝", arText: "قَشْط", trText: "Sıyırmak / Kazımak (Masdar).", ornek: [{ ar: "بِطَاقَةُ قَشْطٍ", tr: "Kazı kazan bileti." }] } },
+
+        // --- Özel İsim Formu (Kışta) ---
+        20: { tip: "yiyecek", base: { emoji: "🥛", arText: "قِشْطَة", trText: "Kaymak / Krema. (Mısır Argosunda: Süper / Tamam / Harika).", ornek: [{ ar: "حَلَوِيَّاتٌ بِالْقِشْطَةِ", tr: "Kaymaklı tatlılar." }, { ar: "قِشْطَة! اِتَّفَقْنَا", tr: "Süper! Anlaştık.", not: "Semantik Not: Mısır'da 'Tamam, süper' anlamında çok sık kullanılan günlük bir ifadedir. Ayrıca Mısır'da su aygırına sevimlilik katmak için 'سَيِّد قِشْطَة' (Bay Kaymak) denir." }] } },
+
+        // --- İsm-i Fail ve Meful ---
+        33: { base: { emoji: "👤", arText: "قَاشِط", trText: "Sıyıran / Kazıyan.", ornek: [{ ar: "رَجُلٌ قَاشِطٌ", tr: "Sıyıran (kazıyan) adam." }] } },
+        36: { base: { emoji: "📄", arText: "مَقْشُوط", trText: "Sıyrılmış / Yüzeyi kazınmış.", ornek: [{ ar: "سَطْحٌ مَقْشُوطٌ", tr: "Kazınmış yüzey." }] } },
+
+        // --- İsm-i Alet (Alet İsimleri) ---
+        34: { 
+            base: { arText: "قَشَّاط" },
+            suggestsPlus: true,
+            "ة": { emoji: "🧹", arText: "قَشَّاطَة", trText: "Çekçek / Yer Sileceği. (Levant Bölgesi).", ornek: [{ ar: "نَظَّفَ الْأَرْضَ بِالْقَشَّاطَةِ", tr: "Yeri çekçek (yer sileceği) ile temizledi.", not: "Kültürel Not: Şam/Levant (Suriye, Lübnan, Ürdün) bölgesinde yerdeki suyu çekmeye yarayan alete verilen çok yaygın bir isimdir." }] } 
+        },
+        39: { 
+            base: { arText: "مِقْشَط" },
+            suggestsPlus: true,
+            "ة": { emoji: "🛠️", arText: "مِقْشَطَة", trText: "Kazıyıcı alet / Rende / Törpü.", ornek: [{ ar: "مِقْشَطَةُ الْخَشَبِ", tr: "Ahşap rendesi." }] } 
+        }
+    }
 };

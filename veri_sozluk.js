@@ -30,6 +30,25 @@ const kategoriTanimlari = {
 };
 
 const sozlukVerileri = {
+    "نصف": {
+        20: { word: "نِصْف", meaning: "Yarım / Yarı", type: "İsim", refId: "20", root: "نصف" },
+        52: { word: "أَنْصَفَ", meaning: "İnsaflı davrandı / Adil oldu", type: "Mazi", refId: "52", root: "نصف", m: ["55"] },
+        53: { word: "يُنْصِفُ", meaning: "İnsaflı davranır / Adil olur", type: "Muzari", refId: "53", root: "نصف" },
+        54: { word: "أَنْصِفْ", meaning: "İnsaflı ol / Hakkını ver", type: "Emir", refId: "54", root: "نصف" },
+        55: { word: "إِنْصَاف", meaning: "İnsaf / Adalet", type: "Mastar", refId: "55", root: "نصف" },
+        56: { word: "مُنْصِف", meaning: "İnsaflı / Adil kimse", type: "İsm-i Fail", refId: "56", root: "نصف" },
+        57: { word: "مُنْصَف", meaning: "Kendisine adil davranılan", type: "İsm-i Meful", refId: "57", root: "نصف" },
+        64: { word: "نَاصَفَ", meaning: "İkiye böldü / Yarı yarıya paylaştı", type: "Mazi", refId: "64", root: "نصف", m: ["67"] },
+        65: { word: "يُنَاصِفُ", meaning: "İkiye böler / Yarı yarıya paylaşır", type: "Muzari", refId: "65", root: "نصف" },
+        66: { word: "نَاصِفْ", meaning: "Yarı yarıya paylaş", type: "Emir", refId: "66", root: "نصف" },
+        67: { word: "مُنَاصَفَة", meaning: "Yarı yarıya / Eşit şekilde bölüşerek", type: "Mastar", refId: "67", root: "نصف" },
+        77: { word: "اِنْتَصَفَ", meaning: "Yarısına ulaştı / Ortasına geldi", type: "Mazi", refId: "77", root: "نصف", m: ["80"] },
+        78: { word: "يَنْتَصِفُ", meaning: "Yarısına ulaşır / Ortasına gelir", type: "Muzari", refId: "78", root: "نصف" },
+        79: { word: "اِنْتَصِفْ", meaning: "Yarısına ulaş / Öcünü al", type: "Emir", refId: "79", root: "نصف" },
+        80: { word: "اِنْتِصَاف", meaning: "Yarılanma / Öç alma (hakkını alma)", type: "Mastar", refId: "80", root: "نصف" },
+        81: { word: "مُنْتَصِف", meaning: "Yarıya ulaşan / Öç alan", type: "İsm-i Fail", refId: "81", root: "نصف" },
+        82: { word: "مُنْتَصَف", meaning: "Orta / Yarı", type: "İsm-i Meful", refId: "82", root: "نصف" }
+    },
 
     "رود": {
         "1": {
@@ -242,7 +261,7 @@ const sozlukVerileri = {
     "Zaman: Gece": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "🌃", arText: "لَيْلاً", trText: "Gece" } } },
     "Zaman: Gündüz": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "☀️", arText: "نَهَاراً", trText: "Gündüz" } } },
     "Zaman: Önce": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏮️", arText: "قَبْلَ", trText: "Önce" } } },
-    "Zaman: Sonra": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏭️", arText: "بَعْدَ", trText: "Sonra" } } },
+
 
     // --- Zarflar (Mekan vs) ---
     "Zarf: Üstünde": { isDictOnly: true, tip: "zarf", hasZamirCekimi: true, tekil: { base: { emoji: "⬆️", arText: "فَوْقَ", trText: "Üzerinde / Üstünde" } } },
@@ -458,18 +477,6 @@ const sozlukVerileri = {
         }
     },
 
-    // ==================================================================
-    // ARABA KELİMESİ
-    // ==================================================================
-    "سيارة": {
-        "isDictOnly": true,
-        "tekil": {
-            base: { emoji: "🚗", arText: "سَيّارَة", trText: "Araba" }
-        },
-        "cogul": { 
-            base: { emoji: "🚗", arText: "سَيّارات", trText: "Arabalar" }
-        }
-    },
 
     // ==================================================================
     // SOKAK KELİMESİ
@@ -1852,7 +1859,7 @@ const sozlukVerileri = {
     "İçecek: Meyve Suyu": { isDictOnly: true, tip: "icecek", tekil: { base: { emoji: "🧃", arText: "عَصِير", trText: "Meyve Suyu", ornek: { ar: "عَصِيرُ التُّفَّاحِ", tr: "Elma suyu." } } } }
 
 ,
-    "Araba": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚗", arText: "سَيَّارَة", trText: "Araba" } } },
+
     "Otobüs": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚌", arText: "حَافِلَة", trText: "Otobüs" } } },
     "Kamyon": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚚", arText: "شَاحِنَة", trText: "Kamyon" } } },
     "Tren": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚂", arText: "قِطَار", trText: "Tren" } } },
@@ -1903,6 +1910,22 @@ const sozlukVerileri = {
     "Bağlaç: Sümme": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "⏳", arText: "ثُمَّ", trText: "Sonra / Daha sonra" } } },
     "Bağlaç: Ev": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "🔀", arText: "أَوْ", trText: "Veya / Yahut" } } },
     "Bağlaç: Em": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "⚖️", arText: "أَمْ", trText: "Yoksa / Veya" } } },
+    "نول": {
+        33: { word: "نَائِل", meaning: "Erişen / Ulaşan / Nâil olan", type: "İsm-i Fail", refId: "33", root: "نول" },
+        64: { word: "نَاوَلَ", meaning: "Verdi / Uzattı / Sundu", type: "Mazi", refId: "64", root: "نول", m: ["67", "68"] },
+        65: { word: "يُنَاوِلُ", meaning: "Verir / Uzatır / Sunar", type: "Muzari", refId: "65", root: "نول" },
+        66: { word: "نَاوِلْ", meaning: "Ver / Uzat / Sun", type: "Emir", refId: "66", root: "نول" },
+        67: { word: "مُنَاوَلَة", meaning: "Vermek / Uzatmak", type: "Mastar", refId: "67", root: "نول" },
+        68: { word: "نِوَال", meaning: "Vermek / Bahşiş", type: "Mastar", refId: "68", root: "نول" },
+        69: { word: "مُنَاوِل", meaning: "Veren / Uzatan", type: "İsm-i Fail", refId: "69", root: "نول" },
+        70: { word: "مُنَاوَل", meaning: "Kendisine verilen / Uzatılan", type: "İsm-i Meful", refId: "70", root: "نول" },
+        94: { word: "تَنَاوَلَ", meaning: "Aldı / Yedi / Ele aldı", type: "Mazi", refId: "94", root: "نول", m: ["97"] },
+        95: { word: "يَتَنَاوَلُ", meaning: "Alır / Yer / Ele alır", type: "Muzari", refId: "95", root: "نول" },
+        96: { word: "تَنَاوَلْ", meaning: "Al / Ye / Ele al", type: "Emir", refId: "96", root: "نول" },
+        97: { word: "تَنَاوُل", meaning: "Almak / Yemek / Ele almak", type: "Mastar", refId: "97", root: "نول" },
+        98: { word: "مُتَنَاوِل", meaning: "Alan / Yiyen / Ele alan", type: "İsm-i Fail", refId: "98", root: "نول" },
+        99: { word: "مُتَنَاوَل", meaning: "Alınan / Yenilen / Ele alınan", type: "İsm-i Meful", refId: "99", root: "نول" }
+    },
     "Bağlaç: Bel": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "🔙", arText: "بَلْ", trText: "Aksine / Bilakis" } } },
     "Bağlaç: Li-enne": { isDictOnly: true, tip: "baglac", hasZamirCekimi: true, tekil: { base: { emoji: "💡", arText: "لِأَنَّ", trText: "Çünkü / -dığı için" } } },
     "Bağlaç: Lakin": { isDictOnly: true, tip: "baglac", hasZamirCekimi: true, zamirBase: "لَكِنَّ", tekil: { base: { emoji: "✋", arText: "لَكِنْ", trText: "Fakat / Ancak" } } },
