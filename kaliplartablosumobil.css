@@ -4537,3 +4537,27 @@ body {
     direction: ltr;
     text-align: left;
 }
+
+/* TELAFFUZ MODU ÖZEL HEADER AYARLARI */
+.telaffuz-mode #top-bar-panel {
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    height: auto !important;
+    padding: 10px !important;
+    gap: 10px !important;
+}
+
+.telaffuz-mode #top-bar-panel .header-item button, 
+.telaffuz-mode #top-bar-panel .header-item select, 
+.telaffuz-mode #top-bar-panel .header-item .stage-badge, 
+.telaffuz-mode #top-bar-panel .header-item .timer-val, 
+.telaffuz-mode #top-bar-panel .header-item .score-val {
+    font-size: 1.2rem !important;
+    padding: 6px 10px !important;
+}
+
+.telaffuz-mode #top-bar-panel .pause-circle {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 1rem !important;
+}

@@ -7176,7 +7176,7 @@ window.loadMarathonTable = function() {
     const end = window.mRanges[window.mCurrentStage][1];
     
     const stageLabel = document.getElementById('stage-label');
-    if (stageLabel) stageLabel.innerText = ["MAZİ (Geçmiş Zaman)", "MUZARİ (Şimdiki / Geniş)", "EMİR (Emir Kipi)"][window.mCurrentStage];
+    if (stageLabel) stageLabel.innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
 
     window.mActiveSet.slice(start, end).forEach((w, i) => {
         const absoluteIdx = start + i;
@@ -9191,6 +9191,7 @@ function triggerFDMTab(tabType) {
     
     // Force reflow
     void activeTabEl.offsetWidth;
+
     
     for (let i = 0; i < count; i++) {
         let t = setTimeout(() => {
@@ -9624,6 +9625,7 @@ function launchTelaffuzMarathon(root, refId) {
     let mOverlay = document.getElementById('marathon-overlay');
     if (mOverlay) {
         mOverlay.classList.add('active');
+        mOverlay.classList.add('telaffuz-mode');
         mOverlay.scrollTop = 0;
     }
     
