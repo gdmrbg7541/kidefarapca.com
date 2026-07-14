@@ -227,8 +227,7 @@ const wordEasterEggs = {
     "عشر": {
         // --- 17 Numaralı Kalıp (Sayı) ---
         17: { 
-            base: { emoji: "🔟", arText: "عَشَرَة", trText: "10", muennes: "عَشْر", ornek: { ar: "الْعَشَرَةُ الْمُبَشَّرَةُ", tr: "Cennetle müjdelenen on sahabi (Aşere-i Mübeşşere)." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "عَشَرَة", trText: "10", muennes: "عَشْر", ornek: { ar: "الْعَشَرَةُ الْمُبَشَّرَةُ", tr: "Cennetle müjdelenen on sahabi (Aşere-i Mübeşşere)." } }
         },
         
         // --- 21 Numaralı Kalıp (فُعْل - Kesir) ---
@@ -237,7 +236,6 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Sıra Sayısı) ---
         33: { 
             base: { emoji: "🏅", arText: "الْعَاشِر", trText: "10. Onuncu (Sıra sayısı).", ornek: { ar: "الْيَوْمُ الْعَاشِرُ", tr: "Onuncu gün." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "الْعَاشِرَة", trText: "10. Onuncu (Müennes).", ornek: { ar: "السَّاعَةُ الْعَاشِرَةُ", tr: "Saat on." } }
         },
 
@@ -269,8 +267,7 @@ const wordEasterEggs = {
     "تسع": {
         // --- 20 Numaralı Kalıp (Sayı) ---
         20: { 
-            base: { emoji: "9️⃣", arText: "تِسْعَة", trText: "9", muennes: "تِسْع", ornek: { ar: "تِسْعَةُ رِجَالٍ", tr: "Dokuz adam." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "تِسْعَة", trText: "9", muennes: "تِسْع", ornek: { ar: "تِسْعَةُ رِجَالٍ", tr: "Dokuz adam." } }
         },
         
         // --- 21 Numaralı Kalıp (فُعْل - Kesir) ---
@@ -279,7 +276,6 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Sıra Sayısı) ---
         33: { 
             base: { emoji: "🏅", arText: "التَّاسِع", trText: "9. Dokuzuncu (Sıra sayısı).", ornek: { ar: "الشَّهْرُ التَّاسِعُ", tr: "Dokuzuncu ay." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "التَّاسِعَة", trText: "9. Dokuzuncu (Müennes).", ornek: { ar: "السَّاعَةُ التَّاسِعَةُ", tr: "Saat dokuz." } }
         },
 
@@ -304,14 +300,12 @@ const wordEasterEggs = {
         
         // --- 22 Numaralı Kalıp (Sayı) ---
         22: { 
-            base: { emoji: "8️⃣", arText: "ثَمَانِيَة", trText: "8", muennes: "ثَمَانٍ", ornek: { ar: "ثَمَانِيَةُ أَبْوَابٍ", tr: "Sekiz kapı." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "ثَمَانِيَة", trText: "8", muennes: "ثَمَانٍ", ornek: { ar: "ثَمَانِيَةُ أَبْوَابٍ", tr: "Sekiz kapı." } }
         },
 
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Sıra Sayısı) ---
         33: { 
             base: { emoji: "🏅", arText: "الثَّامِن", trText: "8. Sekizinci (Sıra sayısı).", ornek: { ar: "الدَّرْسُ الثَّامِنُ", tr: "Sekizinci ders." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "الثَّامِنَة", trText: "8. Sekizinci (Müennes).", ornek: { ar: "السَّاعَةُ الثَّامِنَةُ", tr: "Saat sekiz." } }
         },
 
@@ -348,20 +342,18 @@ const wordEasterEggs = {
         // --- 29 Numaralı Kalıp (فَعْلَان - Yapısal Benzerlikten Dolayı) ---
         29: { 
             base: { 
-                emoji: "2️⃣", 
+                emoji: "🔢", 
                 arText: "اِثْنَانِ", 
                 trText: "2", 
                 ornek: { ar: "اِثْنَانِ مِنْهُمْ", tr: "Onlardan ikisi. (Not: Aslında kökü ثني olup, son harfi olan (ي) düşmüş ve başa Elif-i Vasl almıştır. Yapısal olarak 29. kalıba (فعلان) benzediği için buraya eklenmiştir.)" } 
             },
-            tip: "sayi",
             suggestsPlus: true,
-            "ة": { emoji: "2️⃣", arText: "اِثْنَتَانِ", trText: "2 / İki (Müennes).", ornek: { ar: "سَاعَتَانِ اِثْنَتَانِ", tr: "İki saat." } }
+            "ة": { emoji: "🔢", arText: "اِثْنَتَانِ", trText: "2 / İki (Müennes).", ornek: { ar: "سَاعَتَانِ اِثْنَتَانِ", tr: "İki saat." } }
         },
 
         // --- 33 Numaralı Kalıp (İsm-i Fâil - İkinci) ---
         33: { 
             base: { emoji: "🥈", arText: "الثَّانِي", trText: "2. İkinci (Sıra sayısı) / Katlayan.", ornek: { ar: "هُوَ الثَّانِي فِي الصَّفِّ", tr: "O, sınıfta ikincidir." } },
-            tip: "sirasayi",
             suggestsPlus: true,
             "ة": { emoji: "🥈", arText: "الثَّانِيَة", trText: "2. İkinci (Müennes) / Saniye.", ornek: { ar: "اِنْتَظِرْ ثَانِيَةً", tr: "Bir saniye bekle." } }
         },
@@ -393,8 +385,7 @@ const wordEasterEggs = {
         
         // --- 22 Numaralı Kalıp (Sayı - Üç) ---
         22: { 
-            base: { emoji: "3️⃣", arText: "ثَلَاثَة", trText: "3", muennes: "ثَلَاث", ornek: { ar: "ثَلَاثَةُ رِجَالٍ", tr: "Üç adam." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "ثَلَاثَة", trText: "3", muennes: "ثَلَاث", ornek: { ar: "ثَلَاثَةُ رِجَالٍ", tr: "Üç adam." } }
         },
 
         // --- 24 Numaralı Kalıp (فُعَال - Üleştirme Sayısı) ---
@@ -406,7 +397,6 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Üçüncü) ---
         33: { 
             base: { emoji: "🥉", arText: "الثَّالِث", trText: "3. Üçüncü (Sıra sayısı).", ornek: { ar: "هُوَ الثَّالِثُ فِي الصَّفِّ", tr: "O, sınıfta üçüncüdür." } },
-            tip: "sirasayi",
             "ة": { emoji: "🥉", arText: "الثَّالِثَة", trText: "3. Üçüncü (Müennes).", ornek: { ar: "الْمَرَّةُ الثَّالِثَةُ", tr: "Üçüncü defa." } }
         },
         
@@ -4402,8 +4392,7 @@ const wordEasterEggs = {
         
         // --- 20 Numaralı Kalıp (فِعْلَة - Sayı) ---
         20: { 
-            base: { emoji: "6️⃣", arText: "سِتَّة", trText: "6", muennes: "سِتّ", ornek: { ar: "سِتَّةُ أَيَّامٍ", tr: "Altı gün." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "سِتَّة", trText: "6", muennes: "سِتّ", ornek: { ar: "سِتَّةُ أَيَّامٍ", tr: "Altı gün." } }
         },
 
         // --- 24 Numaralı Kalıp (فُعَال - Üleştirme Sayısı) ---
@@ -4415,7 +4404,6 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Altıncı) ---
         33: { 
             base: { emoji: "🏅", arText: "السَّادِس", trText: "6. Altıncı (Sıra sayısı).", ornek: { ar: "الْيَوْمُ السَّادِسُ", tr: "Altıncı gün." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "السَّادِسَة", trText: "6. Altıncı (Müennes).", ornek: { ar: "السَّاعَةُ السَّادِسَةُ", tr: "Saat altı." } }
         },
 
@@ -5628,8 +5616,7 @@ const wordEasterEggs = {
         
         // --- 19 Numaralı Kalıp (فَعْلَة - Sayı) ---
         19: { 
-            base: { emoji: "5️⃣", arText: "خَمْسَة", trText: "5", muennes: "خَمْس", ornek: { ar: "خَمْسُ صَلَوَاتٍ", tr: "Beş vakit namaz." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "خَمْسَة", trText: "5", muennes: "خَمْس", ornek: { ar: "خَمْسُ صَلَوَاتٍ", tr: "Beş vakit namaz." } }
         },
 
         // --- 24 Numaralı Kalıp (فُعَال - Üleştirme Sayısı) ---
@@ -5641,7 +5628,6 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Beşinci) ---
         33: { 
             base: { emoji: "🏅", arText: "الْخَامِس", trText: "5. Beşinci (Sıra sayısı).", ornek: { ar: "الدَّرْسُ الْخَامِسُ", tr: "Beşinci ders." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "الْخَامِسَة", trText: "5. Beşinci (Müennes).", ornek: { ar: "السَّاعَةُ الْخَامِسَةُ", tr: "Saat beş." } }
         },
 
@@ -6238,9 +6224,17 @@ const wordEasterEggs = {
 
     // 56. F-K-R (ف ك ر) KÖKÜ - Düşünmek / Fikir
     "فكر": {
+        // --- 58-62 Numaralı Kalıplar (Tef'îl Babı) ---
+        58: { base: { emoji: "🤔", arText: "فَكَّرَ", trText: "Düşündü / Fikir yürüttü.", ornek: { ar: "فَكَّرَ فِي الْمَوْضُوعِ طَوِيلًا", tr: "Konu hakkında uzunca düşündü." } } },
+        59: { base: { emoji: "🤔", arText: "يُفَكِّرُ", trText: "Düşünür / Fikir yürütür.", ornek: { ar: "فِيمَ تُفَكِّرُ؟", tr: "Ne düşünüyorsun?" } } },
+        60: { base: { emoji: "🗣️", arText: "فَكِّرْ", trText: "Düşün / Fikir yürüt!", ornek: { ar: "فَكِّرْ قَبْلَ أَنْ تَتَكَلَّمَ", tr: "Konuşmadan önce düşün." } } },
+        61: { base: { emoji: "🧠", arText: "تَفْكِير", trText: "Düşünme / Tefekkür / Fikir yürütme.", ornek: { ar: "طَرِيقَةُ التَّفْكِيرِ", tr: "Düşünce tarzı." } } },
+        62: { base: { emoji: "👤", arText: "مُفَكِّر", trText: "Düşünen / Düşünür (Mütefekkir).", ornek: { ar: "هُوَ مُفَكِّرٌ إِسْلَامِيٌّ", tr: "O, İslami bir düşünürdür." }, suggestsPlus: true, "ة": { emoji: "📓", arText: "مُفَكِّرَة", trText: "Ajanda / Not defteri." } } },
+
         20: { base: { emoji: "🧠", arText: "فِكْر", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, suggestsPlus: true, "يّ": { emoji: "💡", arText: "حُقُوقُ الْمِلْكِيَّةِ الْفِكْرِيَّةِ", trText: "Fikir / Düşünce.", ornek: { ar: "الْفِكْرُ حُرٌّ وَلَا يُقَيَّدُ", tr: "Fikir özgürdür ve kısıtlanamaz." } }, "ة": {
                 emoji: "💭", arText: "فِكْرَة", trText: "Fikir.", ornek: { ar: "هَذِهِ فِكْرَةٌ مُمْتَازَةٌ جِدًّا", tr: "Bu, çok mükemmel bir fikir." } } }, // فِكْر + ekler
         91: { base: { emoji: "🤔", arText: "تَفَكُّر", trText: "Tefekkür / Derin düşünme.", ornek: { ar: "تَفَكُّرُ سَاعَةٍ خَيْرٌ مِنْ عِبَادَةِ سَنَةٍ", tr: "Bir saat tefekkür (derin düşünme), bir yıl ibadetten hayırlıdır." } } }, // تَفَكُّر
+        41: { tekilId: 20, base: { emoji: "💡", arText: "أَفْكَار", trText: "Fikirler / Düşünceler.", ornek: { ar: "تَبَادُلُ الْأَفْكَارِ", tr: "Fikir alışverişi." } } },
         92: { base: { emoji: "🧔", arText: "مُتَفَكِّر", trText: "Mütefekkir / Düşünür.", ornek: { ar: "هُوَ كَاتِبٌ وَمُتَفَكِّرٌ كَبِيرٌ", tr: "O, büyük bir yazar ve mütefekkirdir (düşünürdür)." } } }, // مُتَفَكِّر
         // --- Otomatik Eklenen Fiiller ---
         88: { base: { emoji: "🤔", arText: "تَفَكَّرَ", trText: "Tefekkür etti / Derin düşündü.", ornek: { ar: "تَفَكَّرَ فِي خَلْقِ السَّمَاوَاتِ", tr: "Göklerin yaratılışı hakkında tefekkür etti." } } },
@@ -14396,8 +14390,7 @@ const wordEasterEggs = {
     "سبع": {
         // --- 19 Numaralı Kalıp (فَعْلَة - Sayı) ---
         19: { 
-            base: { emoji: "7️⃣", arText: "سَبْعَة", trText: "7", muennes: "سَبْع", ornek: { ar: "سَبْعَةُ أَيَّامٍ", tr: "Yedi gün." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "سَبْعَة", trText: "7", muennes: "سَبْع", ornek: { ar: "سَبْعَةُ أَيَّامٍ", tr: "Yedi gün." } }
         },
 
         // --- 21 Numaralı Kalıp (فُعْل - Kesir) ---
@@ -14426,7 +14419,6 @@ const wordEasterEggs = {
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Sıra) ---
         33: { 
             base: { emoji: "🏅", arText: "السَّابِع", trText: "7. Yedinci (Sıra sayısı).", ornek: { ar: "الْيَوْمُ السَّابِعُ", tr: "Yedinci gün." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "السَّابِعَة", trText: "7. Yedinci (Müennes).", ornek: { ar: "السَّاعَةُ السَّابِعَةُ", tr: "Saat yedi." } }
         },
 
@@ -21997,8 +21989,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         
         // --- 30 Numaralı Kalıp (Sayı) ---
         30: { 
-            base: { emoji: "4️⃣", arText: "أَرْبَعَة", trText: "4", muennes: "أَرْبَع", ornek: { ar: "أَرْبَعَةُ رِجَالٍ", tr: "Dört adam." } },
-            tip: "sayi"
+            base: { emoji: "🔢", arText: "أَرْبَعَة", trText: "4", muennes: "أَرْبَع", ornek: { ar: "أَرْبَعَةُ رِجَالٍ", tr: "Dört adam." } }
         },
 
         // --- 24 Numaralı Kalıp (فُعَال - Üleştirme Sayısı) ---
@@ -22010,7 +22001,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         // --- 33 Numaralı Kalıp (İsm-i Fâil - Dördüncü) ---
         33: { 
             base: { emoji: "🏅", arText: "الرَّابِع", trText: "4. Dördüncü (Sıra sayısı).", ornek: { ar: "الدَّرْسُ الرَّابِعُ", tr: "Dördüncü ders." } },
-            tip: "sirasayi",
             "ة": { emoji: "🏅", arText: "الرَّابِعَة", trText: "4. Dördüncü (Müennes) / Rabia.", ornek: { ar: "رَابِعَةُ الْعَدَوِيَّةِ", tr: "Rabiatül Adeviyye (Ünlü kadın sufi)." } }
         },
 
@@ -22045,10 +22035,9 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         
         // --- 33 Numaralı Kalıp (İsm-i Fâil) ---
         33: { 
-            base: { emoji: "1️⃣", arText: "وَاحِد", trText: "1 / Bir / Vahid (Matematiksel).", ornek: { ar: "وَاحِدٌ، اِثْنَانِ، ثَلَاثَةٌ...", tr: "Bir, iki, üç..." } },
-            tip: "sayi",
+            base: { emoji: "🔢", arText: "وَاحِد", trText: "1 / Bir / Vahid (Matematiksel).", ornek: { ar: "وَاحِدٌ، اِثْنَانِ، ثَلَاثَةٌ...", tr: "Bir, iki, üç..." } },
             suggestsPlus: true,
-            "ة": { emoji: "1️⃣", arText: "وَاحِدَة", trText: "1 / Bir / Vahide (Müennes)." }
+            "ة": { emoji: "🔢", arText: "وَاحِدَة", trText: "1 / Bir / Vahide (Müennes)." }
         },
         
         // --- 35 Numaralı Kalıp (Sıfat-ı Müşebbehe) ---

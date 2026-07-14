@@ -92,13 +92,13 @@
             
             <!-- Sağ Taraf (RTL'de ilk eleman sağa yaslanır): Sözlük -->
             <div style="box-sizing: border-box; width: calc(65% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: bold; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><i class="fas fa-book-open" style="margin-left: 8px;"></i> Sözlük</h3>
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: bold; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><span id="dict-status-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ccc; margin-left: 8px; margin-right: 8px;"></span><i class="fas fa-book-open"></i> Sözlük</h3>
                 <div id="dictionary-results" class="dictionary-results" dir="rtl" style="display:block; flex: 1; min-height: 0; overflow-y: auto; color: #000; padding: 15px 10px 20px 10px; text-align: center; overflow-x: hidden;"></div>
             </div>
 
             <!-- Sol Taraf (RTL'de ikinci eleman sola yaslanır): Kökler -->
             <div style="box-sizing: border-box; width: calc(35% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><i class="fas fa-sitemap" style="margin-left: 10px;"></i> Vezinlere Bak</h3>
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: center; padding: 8px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><span id="root-status-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ccc; margin-left: 10px; margin-right: 8px;"></span><i class="fas fa-sitemap"></i> Vezinlere Bak</h3>
                 <div id="root-predictions-box" class="root-predictions" dir="rtl" style="display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 10px; flex: 1; min-height: 0; overflow-y: auto; padding: 15px 10px 20px 10px; box-sizing: border-box;"></div>
             </div>
 
@@ -116,15 +116,21 @@
 </div>
 
 <div class="top-bar">
-    <div id="root-display-box" onclick="openRootsModal()" style="cursor: pointer;">
-        <div style="width: 100%; display: flex; gap: 15px; justify-content: space-evenly; align-items: center;">
-            <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
-            <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
-            <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
-            <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Hazır Fiiller"></i>
-            <span id="root-text-display"><i class="fas fa-sitemap root-icon sitemap-wave-hint" onclick="event.stopPropagation(); openRootsModal()" title="Kökler Listesi"></i></span>
+    <div id="root-display-box">
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; box-sizing: border-box;" dir="ltr">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Hazır Fiiller"></i>
+                <span id="root-text-display"><i class="fas fa-sitemap root-icon sitemap-wave-hint" onclick="event.stopPropagation(); openRootsModal()" title="Kökler Listesi"></i></span>
+                <span id="static-list-btn" class="root-icon" onclick="event.stopPropagation(); openFastDictionaryMode()" title="Hızlı Sözlük Modu" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span>
+                <span id="static-timer-btn" class="root-icon" onclick="event.stopPropagation(); window.openMarathon()" title="Hız ve Telaffuz Testi" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
+                <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
+                <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
+            </div>
         </div>
-    </div>  
+    </div>
 
     <div id="tabSwitch" class="segmented-switch mucerred-active">
         <div class="switch-slider"></div>
@@ -516,10 +522,10 @@
 
     </div>
 </div>
-    <script src="veri_kokler.js?v=96"></script>
-    <script src="veri_sozluk.js?v=96"></script>
-<script src="veri_gramer.js?v=96"></script>
-<script src="kaliplartablosumobil.js?v=96"></script>
+    <script src="veri_kokler.js?v=103"></script>
+    <script src="veri_sozluk.js?v=103"></script>
+<script src="veri_gramer.js?v=103"></script>
+<script src="kaliplartablosumobil.js?v=103"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
@@ -711,22 +717,139 @@
         <!-- Mezid Sekmesi -->
         <div onclick="triggerFDMTab('mezid')" id="fdm-mezid-tab" style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin: 10px 5px 0 5px; border-radius: 12px;">
             <span>SÜLASİ MEZİD</span>
-            <span style="position: absolute; right: 15px; background: rgba(255, 255, 255, 0.3); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; direction: ltr;">3+</span>
+            <span style="position: absolute; left: 15px; background: rgba(255, 255, 255, 0.3); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; direction: ltr;">3+</span>
         </div>
     </div>
     
-    <!-- Satır 3: Listeler -->
-    <div class="fdm-lists-row" style="display: flex; flex: 1; min-height: 0; width: 100%; background: transparent;" dir="rtl">
-        <!-- Mücerred Listesi -->
-        <div id="fdm-mucerred-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-left: 2px solid rgba(139, 69, 19, 0.1);">
-            <div id="fdm-mucerred-list" style="flex: 1; overflow-y: auto; padding: 25px 10px 10px 10px; display: flex; flex-direction: column; gap: 12px;"></div>
+    <!-- Tab İçerikleri -->
+    <div style="flex: 1; overflow-y: auto; padding: 15px; position: relative;" id="fdm-tab-contents-container">
+        <!-- Mücerred İçerik -->
+        <div id="fdm-tab-content-mucerred" style="display: none; height: 100%;">
+            <div id="fdm-mucerred-list" style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px;"></div>
         </div>
-        <!-- Mezid Listesi -->
-        <div id="fdm-mezid-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-            <div id="fdm-mezid-list" style="flex: 1; overflow-y: auto; padding: 25px 10px 10px 10px; display: flex; flex-direction: column; gap: 12px;"></div>
+        
+        <!-- Mezid İçerik -->
+        <div id="fdm-tab-content-mezid" style="display: none; height: 100%;">
+            <div id="fdm-mezid-list" style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px;"></div>
         </div>
     </div>
 </div>
+
+<!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
+<div id="aksam-info-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 6000; display: none; justify-content: center; align-items: center; font-family: 'Inter', sans-serif;" onclick="this.style.display='none'">
+    <div style="background: white; padding: 25px; border-radius: 16px; text-align: center; max-width: 90%; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" onclick="event.stopPropagation()">
+        <h3 id="aksam-info-title" style="margin-top: 0; color: #2c3e50; font-size: 1.6rem; margin-bottom: 12px;"></h3>
+        <p id="aksam-info-text" style="color: #34495e; font-size: 1.1rem; line-height: 1.5; margin-bottom: 20px;"></p>
+        <button onclick="document.getElementById('aksam-info-overlay').style.display='none'" style="padding: 10px 25px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: background 0.2s;">Tamam</button>
+    </div>
+</div>
+
+<!-- TELAFFUZ (FİLTRE) OVERLAY (MOBİL İÇİN ÖZEL TASARIM) -->
+<div id="telaffuz-overlay-mobil" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #f8fafc; z-index: 5000; display: none; flex-direction: column; font-family: 'Inter', sans-serif; overflow: hidden;">
+    <div style="background: rgba(255, 255, 255, 0.95); padding: 15px 20px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10;" dir="ltr">
+        <div style="font-size: 1.4rem; font-weight: bold; color: #2c3e50; display: flex; align-items: center;">
+            <i class="fas fa-stopwatch" style="color: #3498db; margin-right: 10px; font-size: 1.8rem;"></i> Maraton Filtresi
+        </div>
+        <i class="fas fa-times" style="font-size: 2rem; color: #95a5a6; padding: 10px; margin: -10px;" onclick="document.getElementById('telaffuz-overlay-mobil').style.display='none'"></i>
+    </div>
+        
+        <!-- İçerik -->
+        <div style="padding: 20px; display: flex; flex-direction: column; gap: 20px; flex: 1; overflow-y: scroll;" dir="ltr">
+            
+            <!-- Filtreler Container -->
+            <div style="display: flex; justify-content: center; background: #ffffff; border-radius: 12px; padding: 20px 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); gap: 15px;" dir="rtl">
+                
+                <!-- Harf Sayısı Filtresi (En Sağda, Sütun Halinde) -->
+                <div style="display: flex; flex-direction: column; gap: 8px; justify-content: center;" id="telaffuz-letter-filters">
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 3)" style="padding: 8px 15px; font-size: 1.2rem; height: auto;">3</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 4)" style="padding: 8px 15px; font-size: 1.2rem; height: auto;">4</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 5)" style="padding: 8px 15px; font-size: 1.2rem; height: auto;">5</div>
+                    <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 6)" style="padding: 8px 15px; font-size: 1.2rem; height: auto;">6</div>
+                </div>
+                
+                <div style="width: 2px; background: #e2e8f0; margin: 5px 0;"></div>
+                
+                <!-- Aksam-ı Seb'a Seçimi -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; flex: 1; width: 100%;">
+                    <div style="font-weight: 700; color: #2c3e50; font-size: 1.4rem; text-align: center; display: flex; align-items: center; justify-content: center;" dir="ltr">Aksam-ı Seb'a <i class="fas fa-info-circle" style="color: #3498db; cursor: pointer; margin-left: 15px; font-size: 1.3rem; transition: color 0.2s;" onmouseover="this.style.color='#2980b9'" onmouseout="this.style.color='#3498db'" onclick="showAksamSebaGenelInfo(event)"></i></div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 20px; width: 100%;" id="telaffuz-aksam-filters">
+                        
+                        <!-- Sahih Fiiller Grubu -->
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                            <div style="display: inline-flex; flex-direction: column; align-items: stretch;">
+                                <div style="text-align: center; font-weight: 700; color: #7f8c8d; font-size: 1.1rem; border-bottom: 3px solid #bdc3c7; padding-bottom: 8px; margin-bottom: 10px;">Sahih Fiiller</div>
+                                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Sahih')">
+                                    <div class="aksam-name">Salim</div>
+                                    <div class="aksam-visual" style="text-decoration: line-through; opacity: 0.8; font-size: 1.4rem; margin-bottom: 2px; font-family: 'Arakom', sans-serif;">ا و ي ء ـّـ</div>
+                                </div>
+                                <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Mehmuz')">
+                                    <div class="aksam-name"><span style="color:#e74c3c">Me</span>hm<span style="color:#e74c3c">u</span>z</div>
+                                    <div class="aksam-visual" style="opacity: 0.9; font-size: 1.9rem; margin-bottom: 2px; font-family: 'Arakom', sans-serif;">أ إ ئ ؤ</div>
+                                </div>
+                                <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Muzaaf')">
+                                    <div class="aksam-name">Muz<span style="color:#e74c3c">aa</span>f</div>
+                                    <div class="aksam-visual" style="opacity: 0.9; font-size: 2.2rem; transform: translateY(-10px); line-height: 0; font-family: 'Arakom', sans-serif;">ـّـ</div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <!-- Mu'tel Fiiller Grubu -->
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                            <div style="display: inline-flex; flex-direction: column; align-items: stretch;">
+                                <div style="text-align: center; font-weight: 700; color: #7f8c8d; font-size: 1.1rem; border-bottom: 3px solid #bdc3c7; padding-bottom: 8px; margin-bottom: 10px;">Mu'tel Fiiller (Elif, Vav, Ye alanlar)</div>
+                                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Misal')">
+                            <div class="aksam-name"><span style="color:#e74c3c">M</span>isal</div>
+                            <div class="aksam-visual" style="opacity: 0.9; font-size: 1.9rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
+                                <div>و ــ ــ</div>
+                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
+                                <div>يـ ــ ــ</div>
+                            </div>
+                        </div>
+                        <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Ecvef')">
+                            <div class="aksam-name">Ec<span style="color:#e74c3c">v</span>ef</div>
+                            <div class="aksam-visual" style="opacity: 0.9; font-size: 1.9rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
+                                <div>ـ ـ ـا ـ ـ ـ</div>
+                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
+                                <div>ـ ـ ـو ـ ـ ـ</div>
+                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
+                                <div>ـ ـ ـيـ ـ ـ</div>
+                            </div>
+                        </div>
+                        <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Nakıs')">
+                            <div class="aksam-name">Nakı<span style="color:#e74c3c">s</span></div>
+                            <div class="aksam-visual" style="opacity: 0.9; font-size: 1.9rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
+                                <div>ـ ـ ـ ـا</div>
+                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
+                                <div>ـ ـ ـ ـي</div>
+                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
+                                <div>ـ ـ ـ ـو</div>
+                            </div>
+                        </div>
+                        <div class="t-filter-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Lefif')">
+                            <div class="aksam-name">Lefif</div>
+                            <div class="aksam-visual" style="opacity: 0.9; font-size: 1.9rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
+                                <div>ــ و ي</div>
+                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
+                                <div>ــ و ا</div>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Sonuç Listesi -->
+            <div id="telaffuz-results" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding-bottom: 40px; width: 100%; box-sizing: border-box;" dir="rtl">
+                <!-- Dinamik olarak fiiller gelecek -->
+            </div>
+        </div>
+    </div>
     <div id="marathon-countdown-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ffffff;  z-index: 999999999 !important; display: none; align-items: center; justify-content: center; flex-direction: column;">
         <button id="start-btn-ui" class="back-nav" style="padding: 20px 60px; font-size: 2.2rem; background: #2ecc71; color: white; border: none; border-radius: 50px;" onclick="startMarathonCountdown()">BAŞLA!</button>
         <div id="countdown-text" style="font-size: 12rem; font-weight: bold; color: #6c5ce7; display: none;">3</div>
@@ -756,7 +879,7 @@
             
             <!-- Aksam-ı Seb'a Seçimi -->
             <div style="background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">Aksam-ı Seb'a</div>
+                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; justify-content: flex-start;" dir="ltr">Aksam-ı Seb'a <i class="fas fa-info-circle" style="color: #3498db; cursor: pointer; margin-left: 15px; font-size: 1.2rem; transition: color 0.2s;" onmouseover="this.style.color='#2980b9'" onmouseout="this.style.color='#3498db'" onclick="showAksamSebaGenelInfo(event)"></i></div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="telaffuz-aksam-filters">
                     <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Sahih')">Sahih (Salim)</div>
                     <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Mehmuz')">Mehmuz</div>
@@ -768,10 +891,8 @@
                 </div>
             </div>
             
-            <button onclick="applyTelaffuzFilter()" style="background: #3498db; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);">Sonuçları Getir (Filtrele)</button>
-            
             <!-- Sonuç Listesi -->
-            <div id="telaffuz-results" style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 40px;">
+            <div id="telaffuz-results" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding-bottom: 40px; width: 100%; box-sizing: border-box;">
                 <!-- Dinamik olarak fiiller gelecek -->
             </div>
         </div>

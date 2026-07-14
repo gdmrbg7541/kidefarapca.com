@@ -807,6 +807,10 @@ window.stripHarakat = function(text) {
 // YENİ KÖK SEÇİM SİSTEMİ (POPUP KLAVYE + TAHMİN)
 // ==================================================================
 
+let typingTimer;
+currentRoot = ""; 
+window.activeConfirmedRoot = "";
+
 const PRONOUN_MAP = [
     "Müfred Müzekker Gaib", "Tesniye Müzekker Gaib", "Cemi Müzekker Gaib",
     "Müfred Müennes Gaibe", "Tesniye Müennes Gaibe", "Cemi Müennes Gaibe",
@@ -1029,7 +1033,8 @@ function updatePredictionsAndFilter() {
     if (filter.length > 0) {
         const allRoots = Object.keys(sozlukVerileri);
         // Yazılan harflerle BAŞLAYAN kökleri öncelikli getir
-        const matches = allRoots.filter(r => r.startsWith(filter)).slice(0, 15);
+        // Kullanıcı isteği: Sayı ve sıra sayıları sözlük aramasında çıkmasın
+        const matches = allRoots.filter(r => r.startsWith(filter) && !r.startsWith("Sayı:") && !r.startsWith("Sıra:")).slice(0, 15);
         
         matches.forEach(r => {
             predictionsContainer.innerHTML += `
@@ -1381,6 +1386,7 @@ function selectReadyVerb(verb) {
     if (trimmedRoot.length !== 3) return;
     
     currentRoot = trimmedRoot;
+    window.activeConfirmedRoot = trimmedRoot;
     
     // KESİN ÇÖZÜM: Tablo sıfırlandıktan ve yeni kök hafızaya alındıktan SONRA vurguyu zorla kapat!
     if (typeof toggleRootHint === 'function') toggleRootHint(false);
@@ -2634,6 +2640,7 @@ function highlightKey(char) {
 
 function confirmRoot() {
     if (currentRoot.length === 3) {
+        window.activeConfirmedRoot = currentRoot;
         SoundEngine.playReset();
 
         toggleKB(false);
@@ -2755,6 +2762,7 @@ function resetTableOnly(isSilent = false) {
     }
     // tableBoard ghost mantığı tamamen silindi
     currentRoot = "";
+    window.activeConfirmedRoot = "";
     lastClickedBoxTextSpan = null;
     lastOriginalWord = "";
     
@@ -5315,16 +5323,26 @@ function updateMainKeyboardPredictions() {
                     return stripped.length === 3 || stripped.length === 4;
                 });
             }
-            rootMatches = window._cachedAllRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
+            const normFilter = normalizeArabic(filter);
+            const searchVariants = typeof getSearchVariants === 'function' ? getSearchVariants(normFilter) : [normFilter];
 
-            // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
+            rootMatches = window._cachedAllRoots.filter(r => {
+                let normRoot = normalizeArabic(r);
+                return searchVariants.some(v => normRoot.startsWith(v));
+            }).slice(0, 50);
+
+            // Dinamik Kök Oluşturma Çipi: 
+            // Sadece yazdığı şey (tam olarak) 3 harfliyse ve ekrandaki kök sonuçlarında yoksa öner!
             if (filter.length === 3) {
-                const exactExists = rootMatches.some(r => normalizeArabic(r) === normalizeArabic(filter));
-                const isNounOnly = typeof sozlukVerileri !== 'undefined' && sozlukVerileri[filter] && sozlukVerileri[filter].isDictOnly;
+                // Kök listesinde birebir kendisi var mı? (zaten tanımlı bir fiil kökü mü?)
+                const exactExists = rootMatches.some(r => normalizeArabic(r) === normFilter);
                 
-                if (!exactExists && !isNounOnly) {
-                    rootMatches.unshift(filter);
-                    if (rootMatches.length > 50) rootMatches.pop();
+                // Zaten bir fiil kökü değilse, (sözlükte isim olsa bile) kök oluşturmasına izin ver
+                if (!exactExists) {
+                    if (!rootMatches.includes(filter)) {
+                        rootMatches.unshift(filter);
+                        if (rootMatches.length > 50) rootMatches.pop();
+                    }
                 }
             }
         }
@@ -5355,7 +5373,9 @@ function updateMainKeyboardPredictions() {
 
         let predHtml = "";
         rootMatches.forEach(r => {
-            const isDynamic = !sozlukVerileri[r];
+            // Sözlükte hiç yoksa veya sadece isim olarak (isDictOnly) varsa bu dinamik köktür (sihirli değnek)
+            const isDynamic = typeof sozlukVerileri === 'undefined' || !sozlukVerileri[r] || sozlukVerileri[r].isDictOnly;
+            
             if (isDynamic) {
                 let spacedRoot = r.split('').join(' ');
                 predHtml += `
@@ -5403,7 +5423,8 @@ function updateMainKeyboardPredictions() {
         let searchFilterExact = window.stripHarakat(filter);
         if (searchFilterExact.length > 0 && /[\u0600-\u06FF]/.test(searchFilterExact)) {
             let normFilter = window.normalizeArabic ? normalizeArabic(searchFilterExact) : searchFilterExact;
-            for (const rootD of Object.values(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
+            for (const [rootK, rootD] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
+                    if (rootK.startsWith('Sayı:') || rootK.startsWith('Sıra:')) continue;
                 for (const kData of Object.values(rootD)) {
                     if (kData.base && kData.base.arText) {
                         let normItem = window.normalizeArabic ? normalizeArabic(window.stripHarakat(kData.base.arText)) : window.stripHarakat(kData.base.arText);
@@ -5418,6 +5439,7 @@ function updateMainKeyboardPredictions() {
         }
 
         for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
+            if (rootKey.startsWith('Sayı:') || rootKey.startsWith('Sıra:')) continue;
             if (matchCount > 300) break;
             for (const [originalKalipKey, originalKalipData] of Object.entries(rootData)) {
                 if (matchCount > 300) break;
@@ -5627,7 +5649,8 @@ function updateMainKeyboardPredictions() {
                 // GUARD: Geçersiz/boş girdileri ekrana yazdırma (NaN önleme)
                 if (!item.arText || item.arText.trim() === "" || !item.trText) continue;
                 // USER REQUEST: Hide unpatterned plurals and + items from quick list (NaN fix)
-                if (item.kalipKey === "+" || isNaN(parseInt(item.kalipKey))) continue;
+                let isDictWord = item.rootKey && (item.rootKey.includes(":") || (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[item.rootKey] && sozlukVerileri[item.rootKey].isDictOnly));
+                if (!isDictWord && (item.kalipKey === "+" || isNaN(parseInt(item.kalipKey)))) continue;
                 const ilkAnlam = (item.trText || "").split('/')[0].trim();
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
@@ -5686,7 +5709,15 @@ function updateMainKeyboardPredictions() {
             }
             resultsHTML += `</div>`;
         }
-        
+        const rootDot = document.getElementById("root-status-dot");
+        const dictDot = document.getElementById("dict-status-dot");
+        if (rootDot) {
+            rootDot.style.backgroundColor = rootMatches.length > 0 ? "#4CAF50" : "#F44336";
+        }
+        if (dictDot) {
+            dictDot.style.backgroundColor = (matchCount > 0) ? "#4CAF50" : "#F44336";
+        }
+
         if (matchCount === 0 && rootMatches.length === 0) {
             dictResults.style.display = "block";
             dictResults.innerHTML = "<div style='text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
@@ -5700,6 +5731,14 @@ function updateMainKeyboardPredictions() {
             }
         }
     } else {
+        const rootDot = document.getElementById("root-status-dot");
+        const dictDot = document.getElementById("dict-status-dot");
+        let isDataLoaded = typeof sozlukVerileri !== 'undefined' && Object.keys(sozlukVerileri).length > 0;
+        let defaultColor = isDataLoaded ? "#4CAF50" : "#F44336";
+        
+        if (rootDot) rootDot.style.backgroundColor = defaultColor;
+        if (dictDot) dictDot.style.backgroundColor = defaultColor;
+
         dictResults.style.display = "none";
         dictResults.innerHTML = "";
     }
@@ -5883,6 +5922,7 @@ function autoSpawnRootClone() {
     const formattedText = formatArabicRoot(currentRoot);
     const dragEl = document.createElement('div');
     dragEl.className = 'draggable-root-clone';
+    dragEl.dataset.root = currentRoot;
     dragEl.innerHTML = `<span class="root-text-content">${formattedText}</span>`;
     document.body.appendChild(dragEl);
 
@@ -6569,21 +6609,24 @@ function hasVerbsToRead(root) {
 
 setInterval(() => {
     try {
-        const currentRootSafe = typeof currentRoot !== 'undefined' ? currentRoot : "";
+        const currentRootSafe = typeof window !== 'undefined' && window.activeConfirmedRoot ? window.activeConfirmedRoot : "";
         const canShowTimer = hasVerbsToRead(currentRootSafe);
         const isDraggableOnScreen = document.querySelector('.draggable-root-clone') !== null;
 
         // Hatasız okunan tek satırlık zarif SVG kodu
-        const mySvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
-        const listSvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
+        const mySvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
+        const listSvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
         
         // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
         document.querySelectorAll('.draggable-root-clone').forEach(box => {
+            let boxRootSafe = box.dataset.root || "";
+            const boxCanShowTimer = hasVerbsToRead(boxRootSafe);
+            
             let wrapper = box.querySelector('.root-clone-buttons');
             let btn = box.querySelector('.kutu-timer-btn');
             let listBtn = box.querySelector('.kutu-list-btn');
             
-            if (canShowTimer && (!btn || !listBtn)) {
+            if (boxCanShowTimer && (!btn || !listBtn)) {
                 if(btn) btn.remove();
                 if(listBtn) listBtn.remove();
                 if(!wrapper) {
@@ -6615,47 +6658,26 @@ setInterval(() => {
                 wrapper.appendChild(newListBtn);
                 wrapper.appendChild(newBtn);
                 
-            } else if (!canShowTimer && wrapper) {
+            } else if (!boxCanShowTimer && wrapper) {
                 wrapper.remove();
-            } else if (!canShowTimer && btn) {
+            } else if (!boxCanShowTimer && btn) {
                 // Eger wrapper yoksa ama butonlar varsa (eski yapi kalmissa)
                 btn.remove();
                 if(listBtn) listBtn.remove();
             }
         });
 
-        // B. ANA SABİT KUTU İÇİN (Yukarıdaki Header)
-        const textEl = document.getElementById('root-text-display');
-        if (textEl) {
-            const desktopBox = textEl.parentElement; 
-            let btnMain = desktopBox.querySelector('.kutu-timer-btn');
-            let listBtnMain = desktopBox.querySelector('.kutu-list-btn');
-            
-            if (canShowTimer && (!btnMain || !listBtnMain) && !isDraggableOnScreen) {
-                if(btnMain) btnMain.remove();
-                if(listBtnMain) listBtnMain.remove();
-                desktopBox.style.position = 'relative'; 
-                let newBtnMain = document.createElement('div');
-                newBtnMain.className = 'kutu-timer-btn';
-                newBtnMain.innerHTML = mySvg;
-                newBtnMain.title = 'Hız ve Telaffuz Testi';
-                newBtnMain.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
-                desktopBox.appendChild(newBtnMain);
-
-                let newListBtnMain = document.createElement('div');
-                newListBtnMain.className = 'kutu-list-btn';
-                newListBtnMain.innerHTML = listSvg;
-                newListBtnMain.title = 'Hızlı Sözlük Modu';
-                newListBtnMain.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
-                desktopBox.appendChild(newListBtnMain);
-
-                
-            } else if ((!canShowTimer || isDraggableOnScreen) && btnMain) {
-                btnMain.remove();
-                let listBtnMain = desktopBox.querySelector('.kutu-list-btn');
-                if(listBtnMain) listBtnMain.remove();
-                
-            }
+        // Block B was removed to statically keep the icons in the HTML top bar
+        // YENİ EKLENEN: Sabit SVG'lerin animasyonu (dalga ve turuncu renk)
+        const staticList = document.getElementById('static-list-btn');
+        const staticTimer = document.getElementById('static-timer-btn');
+        if (staticList) {
+            staticList.classList.toggle('svg-wave-active', canShowTimer);
+            staticList.style.opacity = canShowTimer ? '1' : '0.4';
+            staticList.style.pointerEvents = canShowTimer ? 'auto' : 'none';
+        }
+        if (staticTimer) {
+            staticTimer.classList.toggle('svg-wave-active', canShowTimer);
         }
 
         // C. MOBİL ÜST BAR İÇİN
@@ -6788,6 +6810,11 @@ window.mSkippedLobby = false;     // Lobinin atlanıp atlanmadığını tutan ha
 
 // 1. LOBİYİ AÇAR VE AKILLI KARAR VERİR
 window.openMarathon = function() {
+    const safeRoot = window.activeConfirmedRoot ? window.activeConfirmedRoot.trim() : "";
+    if (!safeRoot || !hasVerbsToRead(safeRoot)) {
+        if (typeof openTelaffuz === 'function') openTelaffuz();
+        return;
+    }
     window.isAtlasMode = false;
     document.getElementById('timer-display').style.display = 'block';
     document.getElementById('top-bar-panel').style.display = 'flex';
@@ -6986,8 +7013,14 @@ window.closeMarathon = function() {
     // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
     hideMarathonHeaders();
     document.getElementById('chrono-main').style.display = 'none';
-    const gw = document.getElementById("game-wrapper");
-    if (gw) gw.style.display = "flex";
+    
+    if (window.mLaunchedFromTelaffuz) {
+        document.getElementById('telaffuz-overlay').style.display = 'block';
+        window.mLaunchedFromTelaffuz = false;
+    } else {
+        const gw = document.getElementById("game-wrapper");
+        if (gw) gw.style.display = "flex";
+    }
 };
 
 // 5. OYUN İÇİNDEKİ ⏱️ BUTONUNA BASILINCA 'BAŞLA' EKRANINI GETİRİR
@@ -7498,12 +7531,17 @@ function renderThematicLists() {
     }
     
     
-    // Kullanıcı talebi: Sayı kartları listelerde karışık görünsün
+    // Kullanıcı talebi: Sayılar ve sıra sayıları ardışık olsun
+    const numberSort = (a, b) => {
+        let numA = parseInt(a.trText.replace(/\./g, '').match(/\d+/)?.[0] || 0);
+        let numB = parseInt(b.trText.replace(/\./g, '').match(/\d+/)?.[0] || 0);
+        return numA - numB;
+    };
     if (categories["sayi"] && categories["sayi"].items) {
-        categories["sayi"].items.sort(() => Math.random() - 0.5);
+        categories["sayi"].items.sort(numberSort);
     }
     if (categories["sirasayi"] && categories["sirasayi"].items) {
-        categories["sirasayi"].items.sort(() => Math.random() - 0.5);
+        categories["sirasayi"].items.sort(numberSort);
     }
 
     thematicCategoriesData = categories;
@@ -7555,7 +7593,7 @@ function renderThematicLists() {
             let shuffledList = cat.items ? [...cat.items] : [];
             shuffledList.sort(() => Math.random() - 0.5);
             activeMemoryGames[key] = {
-                mode: 'study',
+                mode: 'list',
                 scores: [0, 0],
                 currentPlayer: 1,
                 activeFlipped: [],
@@ -7618,8 +7656,8 @@ function renderThematicLists() {
 
                             <!-- ORTA (Ayarlar veya Varsayılan Butonlar) -->
                             <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex: 1;">
-                                <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
-                                <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
+                                <button class="memory-btn active" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
+                                <button class="memory-btn" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
                                     <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" >
@@ -8182,6 +8220,10 @@ function startGameAndFullscreen(key) {
 
 
 window.openGrammarOverlay = function(stage) {
+    if (window.event) {
+        window.event.preventDefault();
+        window.event.stopPropagation();
+    }
     window.openAtlasOverlay(stage);
 };
 
@@ -8279,6 +8321,9 @@ window.openAtlasOverlay = function(stage) {
     
     let gameContainer = document.getElementById('game-container');
     if (gameContainer) gameContainer.style.display = 'flex';
+    
+    let gameWrapper = document.getElementById('game-wrapper');
+    if (gameWrapper) gameWrapper.style.display = 'flex';
     
     document.getElementById('screen-play').classList.add('active');
     document.getElementById('screen-result').classList.remove('active');
@@ -9401,5 +9446,203 @@ window.closeRootOfDay = function() {
         modalOverlay.firstElementChild.style.transform = "scale(0.95) translateY(-20px)";
         setTimeout(() => modalOverlay.remove(), 400);
     }
+}
+
+// --- TELAFFUZ FILTRESI VE MARATON ARAMA ---
+window.telaffuzFilters = {
+    letter: [],
+    aksam: []
+};
+
+function openTelaffuz() {
+    document.getElementById('telaffuz-overlay').style.display = 'flex';
+    applyTelaffuzFilter();
+}
+
+function toggleTFilter(el, type, value) {
+    if (el.classList.contains('active')) {
+        el.classList.remove('active');
+        window.telaffuzFilters[type] = [];
+    } else {
+        // Remove active class from all sibling chips
+        let containerId = type === 'letter' ? 'telaffuz-letter-filters' : 'telaffuz-aksam-filters';
+        let container = document.getElementById(containerId);
+        if (container) {
+            container.querySelectorAll('.t-filter-chip').forEach(chip => chip.classList.remove('active'));
+        }
+        
+        el.classList.add('active');
+        window.telaffuzFilters[type] = [value];
+    }
+    applyTelaffuzFilter();
+}
+
+function showAksamSebaGenelInfo(e) {
+    if(e) e.stopPropagation();
+    document.getElementById('aksam-info-title').innerText = "Aksam-ı Seb'a Nedir?";
+    document.getElementById('aksam-info-text').innerHTML = "Yükleniyor...";
+    document.getElementById('aksam-info-overlay').style.display = 'flex';
+    
+    fetch('aksam_seba_info.html')
+        .then(response => {
+            if (!response.ok) throw new Error('Bulunamadı');
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('aksam-info-text').innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById('aksam-info-text').innerHTML = "<p style='text-align:center;'>Bilgi dosyası (aksam_seba_info.html) bulunamadı. Lütfen sunucuya yükleyiniz.</p>";
+        });
+}
+
+function getAksamIseba(root) {
+    const letters = root.replace(/\s/g, '').split('');
+    if (letters.length !== 3) return ["Sahih"]; 
+    const l1 = letters[0], l2 = letters[1], l3 = letters[2];
+    const illats = ['و', 'ي'];
+    const hamzas = ['ء', 'أ', 'إ', 'ؤ', 'ئ', 'ا']; 
+    
+    let isIllat1 = illats.includes(l1);
+    let isIllat2 = illats.includes(l2);
+    let isIllat3 = illats.includes(l3);
+    let hasHamza = hamzas.includes(l1) || hamzas.includes(l2) || hamzas.includes(l3);
+    let isMuzaaf = (l2 === l3);
+    
+    let types = [];
+    let illatCount = [isIllat1, isIllat2, isIllat3].filter(Boolean).length;
+    
+    if (illatCount >= 2) types.push("Lefif");
+    else if (isIllat3) types.push("Nakıs");
+    else if (isIllat2) types.push("Ecvef");
+    else if (isIllat1) types.push("Misal");
+    
+    if (hasHamza && !isIllat1 && !isIllat2 && !isIllat3) {
+        types.push("Mehmuz");
+    } else if (hasHamza) {
+        types.push("Mehmuz"); 
+    }
+    
+    if (isMuzaaf && !types.includes("Lefif") && !types.includes("Nakıs")) types.push("Muzaaf");
+    
+    if (types.length === 0) types.push("Sahih");
+    
+    return types;
+}
+
+function getLetterCountFromRefId(refId) {
+    refId = parseInt(refId);
+    if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].includes(refId)) return 3; 
+    if ([52, 53, 54, 58, 59, 60, 64, 65, 66].includes(refId)) return 4; 
+    if ([71, 72, 73, 77, 78, 79, 83, 84, 85, 88, 89, 90, 94, 95, 96].includes(refId)) return 5; 
+    if ([100, 101, 102].includes(refId)) return 6; 
+    return -1;
+}
+
+function applyTelaffuzFilter() {
+    const resContainer = document.getElementById('telaffuz-results');
+    resContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align:center; padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;" dir="ltr">
+            <i class="fas fa-spinner fa-pulse" style="font-size: 4rem; color: #3498db; margin-bottom: 20px;"></i>
+            <div style="font-size: 1.4rem; color: #2c3e50; font-weight: 700;">Maraton Fiilleri Yükleniyor...</div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        let results = [];
+        const requiredAksam = window.telaffuzFilters.aksam;
+        const requiredLetters = window.telaffuzFilters.letter;
+        
+        if (requiredAksam.length === 0 && requiredLetters.length === 0) {
+            resContainer.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; color:#e74c3c; font-size: 1.4rem; font-weight: 500;" dir="ltr">Lütfen en az bir filtre seçin.</div>';
+            return;
+        }
+
+        const sourceObj = typeof wordEasterEggs !== 'undefined' ? wordEasterEggs : {};
+        const allRoots = Object.keys(sourceObj);
+        allRoots.forEach(root => {
+            const aksamList = getAksamIseba(root);
+            
+            if (requiredAksam.length > 0) {
+                const matchAksam = requiredAksam.some(a => aksamList.includes(a));
+                if (!matchAksam) return;
+            }
+            
+            // Kökün tanımlı fiil hallerini al
+            const verbs = (typeof getAvailableMaziVerbs === 'function') ? getAvailableMaziVerbs(root) : [];
+            verbs.forEach(v => {
+                const lCount = getLetterCountFromRefId(v.refId);
+                if (requiredLetters.length > 0) {
+                    if (!requiredLetters.includes(lCount)) return;
+                }
+                
+                results.push({
+                    root: root,
+                    verb: v.word,
+                    refId: v.refId,
+                    aksam: aksamList.join(', '),
+                    letters: lCount
+                });
+            });
+        });
+        
+        if (results.length === 0) {
+            resContainer.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding: 20px; font-size: 1.2rem;" dir="ltr">Kriterlere uygun fiil bulunamadı.</div>';
+        } else {
+            resContainer.innerHTML = '';
+            
+            // Sonuçları alfabeye göre sırala (Önce Hemzeli vb.)
+            results.sort((a, b) => a.verb.localeCompare(b.verb, 'ar'));
+            
+            results.forEach(r => {
+                const escapedRoot = r.root.replace(/"/g, "&quot;").replace(/'/g, "\\'");
+                resContainer.innerHTML += `
+                    <div class="t-result-item" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})" style="padding: 20px; border-radius: 16px;" dir="rtl">
+                        <div style="display:flex; flex-direction:column; text-align: right;">
+                            <span class="t-result-ar" style="font-size: 4rem; line-height: 1.3;">${r.verb}</span>
+                        </div>
+                        <i class="fas fa-play-circle" style="font-size: 3rem; color: #2ecc71;"></i>
+                    </div>
+                `;
+            });
+        }
+    }, 10);
+}
+
+function launchTelaffuzMarathon(root, refId) {
+    document.getElementById('telaffuz-overlay').style.display = 'none';
+    currentRoot = root;
+    
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+    
+    clearInterval(window.mTimerInterval);
+    clearInterval(window.mCountdownInterval); 
+    window.mCurrentStage = 0; 
+    window.mErrorMemory.clear(); 
+    window.mElapsedTime = 0; 
+    window.mIsPaused = false;
+    window.mRaceMode = false;
+    window.mSkippedLobby = true; 
+    window.mLaunchedFromTelaffuz = true;
+    
+    let mOverlay = document.getElementById('marathon-overlay');
+    if (mOverlay) {
+        mOverlay.classList.add('active');
+        mOverlay.scrollTop = 0;
+    }
+    
+    const topBar = document.getElementById('top-bar-panel');
+    if(topBar) topBar.style.visibility = 'visible';
+    
+    if (typeof hideMarathonHeaders === 'function') hideMarathonHeaders(); 
+    const chronoMain = document.getElementById('chrono-main');
+    if(chronoMain) chronoMain.style.display = 'none'; 
+    
+    if (typeof buildMarathonDataForBab === 'function') buildMarathonDataForBab(refId);
+    
+    let selArea = document.getElementById('marathon-selection-area');
+    if (selArea) selArea.style.display = 'none';
+    
+    if (typeof prepareMarathonPlay === 'function') prepareMarathonPlay();
 }
 

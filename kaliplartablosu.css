@@ -52,7 +52,7 @@ body:has(.glass-box.matrix-opened) .back-link {
 }
 
 #root-display-box {
-    width: 320px;
+    width: 380px;
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
@@ -2927,6 +2927,14 @@ input:checked +
     transition: transform, background-color, color, opacity, box-shadow 0.3s ease;
 }
 
+.svg-wave-active {
+    animation: sitemapWavePulse 1.5s infinite ease-out !important;
+    color: #f39c12 !important; 
+    border-radius: 50% !important; 
+    display: flex;
+    transition: transform, background-color, color, opacity, box-shadow 0.3s ease;
+}
+
 
 .score-board.active-score { /* display handled by js */ }
 
@@ -3660,6 +3668,17 @@ body.has-fullscreen-accordion .thematic-words-content {
     background: rgba(0,0,0,0.02); /* Üzerine gelince çok hafif belirginlik */
 }
 
+.list-mode.aksam-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
 .list-mode-num {
     font-size: 1.4rem;
     font-weight: normal !important;
@@ -3686,3 +3705,105 @@ body.has-fullscreen-accordion .thematic-words-content {
     margin-left: 10px;
 }
 
+/* TELAFFUZ FILTRE CSS */
+.t-filter-chip {
+    padding: 8px 16px;
+    background: transparent;
+    color: #2ecc71;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: 2px solid #2ecc71;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+.desktop-chip {
+    padding: 10px 25px !important;
+    font-size: 1.5rem !important;
+    border-radius: 30px !important;
+}
+.t-filter-chip.active {
+    background: transparent;
+    color: #e74c3c !important;
+    border-color: #e74c3c !important;
+    box-shadow: none;
+}
+.desktop-chip.active {
+    background: #eff6ff;
+    color: #3498db;
+    border-color: #3498db;
+    box-shadow: none;
+}
+.aksam-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px 25px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 12px;
+    box-shadow: none !important;
+    gap: 10px;
+    height: 100%;
+}
+.aksam-chip::after {
+    content: '';
+    display: block;
+    width: 90px;
+    height: 8px;
+    background-color: #2ecc71;
+    border-radius: 8px;
+    margin-top: 6px;
+    transition: background-color 0.2s ease;
+}
+.aksam-chip.active {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+.aksam-chip.active::after {
+    background-color: #e74c3c !important;
+}
+.aksam-chip.active .aksam-name {
+    /* Kept original colors intact for highlighting */
+}
+.aksam-chip.active .aksam-visual {
+    /* Kept original colors intact for highlighting */
+}
+.aksam-chip .aksam-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.aksam-chip .aksam-visual {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
+}
+.t-result-item {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+.t-result-ar {
+    font-family: 'Arakom', sans-serif;
+    font-size: 2rem;
+    color: #000;
+}
+.t-result-tag {
+    font-size: 0.8rem;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 5px;
+}
