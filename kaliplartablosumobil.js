@@ -177,11 +177,11 @@ function renderZamirCekimTable(baseWord) {
     let zamirler = getMuttasilZamirleri(baseWord);
     let html = `
     <div style="margin-top: 30px; background: #ffffff; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); direction: rtl;">
-        <div style="color: #2980b9; font-size: 1.6rem; margin-bottom: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-table"></i> Zamir Çekim Tablosu</div>
+        <div style="color: #2980b9; font-size: 1.6rem; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"><i class="fas fa-table"></i> Zamir Çekim Tablosu</div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: normal;">Tekil (Müfred)</div>
-            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: normal;">İkil (Müsenna)</div>
-            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: normal;">Çoğul (Cemi')</div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: bold;">Tekil (Müfred)</div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: bold;">İkil (Müsenna)</div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 10px; color: #555; border: 1px solid rgba(0,0,0,0.05); font-weight: bold;">Çoğul (Cemi')</div>
             
             <!-- 3. Şahıs Eril -->
             <div style="font-family: 'Arakom', sans-serif; font-size: 3.5rem; background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 15px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -355,7 +355,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     earlyTipList.forEach(tip => {
         if (tip && typeof thematicCategoriesData !== 'undefined' && thematicCategoriesData[tip]) {
             let trT = thematicCategoriesData[tip].title.toLocaleUpperCase('tr-TR');
-            displayTitle += `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${tip}')" style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 8px 20px; margin: 0 5px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#333; font-size:1.3rem; font-weight: normal;  letter-spacing:1px;" dir="ltr">${thematicCategoriesData[tip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.0rem; margin-left: 5px;"></i></span></div>`;
+            displayTitle += `<div onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; openCategoryFromModal('${tip}')" style="display:inline-flex; align-items:center; background: rgba(255,255,255,0.8); padding: 8px 20px; margin: 0 5px; border-radius: 50px; border: 1px solid rgba(189, 195, 199, 0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor:pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';" title="Bu listeyi aç"><span style="color:#333; font-size:1.3rem; font-weight: bold;  letter-spacing:1px;" dir="ltr">${thematicCategoriesData[tip].icon} ${trT} <i class="fas fa-external-link-alt" style="font-size: 1.0rem; margin-left: 5px;"></i></span></div>`;
         }
     });
 
@@ -436,8 +436,8 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
         
         let itemTekil, itemCogul;
         if (isVerb) {
-            let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:#27ae60; color:white; padding:5px 20px; border-radius:20px; font-weight: normal; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">FİİL</div>`;
-            let rootDisplay = `<div style="position:absolute; top:-15px; right:15px; background-color:#e74c3c; color:white; padding:5px 15px; border-radius:20px; font-weight: normal; font-size:1.1rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(5deg); z-index:20; font-family: 'Inter', sans-serif; text-shadow:0 1px 1px rgba(0,0,0,0.3);">Kök: ${rootKey}</div>`;
+            let muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:#27ae60; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">FİİL</div>`;
+            let rootDisplay = `<div style="position:absolute; top:-15px; right:15px; background-color:#e74c3c; color:white; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:1.1rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(5deg); z-index:20; font-family: 'Inter', sans-serif; text-shadow:0 1px 1px rgba(0,0,0,0.3);">Kök: ${rootKey}</div>`;
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
             htmlContent += rootDisplay;
@@ -451,7 +451,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 let rData = rootData[card.id] || { base: {} };
                 
                 let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
-                let trText = (rData.base && rData.base.trText) ? `<div style="color:#555; font-size:1.6rem; font-weight: normal; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
+                let trText = (rData.base && rData.base.trText) ? `<div style="color:#555; font-size:1.6rem; font-weight:bold; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
                 let arText = (rData.base && rData.base.arText) ? rData.base.arText : "";
                 
                 if (!arText && typeof generateTuremis === "function") {
@@ -460,7 +460,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
 
                 htmlContent += `
                 <div style="background:#ffffff; padding:30px 10px; border-radius:15px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div style="color:${card.color}; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight: normal; margin-bottom:15px;" dir="ltr">${card.label}</div>
+                    <div style="color:${card.color}; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
                     ${emoji}
                     <span style="display:block; font-family:'Arakom', sans-serif; font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
                     ${trText}
@@ -582,7 +582,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     anaTur = "EDAT";
                     anaRenk = "#d35400"; // Turuncu
                 }
-                muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:${anaRenk}; color:white; padding:5px 20px; border-radius:20px; font-weight: normal; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">${anaTur}</div>`;
+                muhurHtml = `<div style="position:absolute; top:-15px; left:15px; background-color:${anaRenk}; color:white; padding:5px 20px; border-radius:20px; font-weight:bold; font-size:1.3rem; box-shadow:0 4px 10px rgba(0,0,0,0.4); border:2px solid rgba(255,255,255,0.8); transform:rotate(-10deg); z-index:20; font-family: 'Arakom', sans-serif; text-shadow:0 1px 2px rgba(0,0,0,0.5); letter-spacing:1px;">${anaTur}</div>`;
             }
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
@@ -659,9 +659,9 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                 <div style="display:flex; justify-content:center; align-items:flex-start; gap:25px; flex-wrap:wrap; direction:rtl;">
                     ${tekilAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight: normal; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel.toLocaleUpperCase("tr-TR")}</div>` : ''}
+                        ${firstColLabel ? `<div style="background:rgba(0, 0, 0, 0.05); color:#333; padding:6px 18px; border-radius:20px; border:1px solid rgba(0, 0, 0, 0.1); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${firstColLabel.toLocaleUpperCase("tr-TR")}</div>` : ''}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${tekilAr}</span>
-                        ${tekilTr ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight: normal; color: #555;" dir="ltr">${tekilTr}</span>` : ''}
+                        ${tekilTr ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${tekilTr}</span>` : ''}
                     </div>` : ''}
                     
                     ${(tekilAr && secondColAr) ? `
@@ -671,9 +671,9 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
                     
                     ${secondColAr ? `
                     <div style="display:flex; flex-direction:column; align-items:center; max-width:300px;">
-                        ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight: normal; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel.toLocaleUpperCase("tr-TR")}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight: normal;">${secondColTr}</div>` : '')}
+                        ${secondColLabel ? `<div style="background:rgba(46,204,113,0.15); color:#27ae60; padding:6px 18px; border-radius:20px; border:1px solid rgba(46,204,113,0.3); font-size:1.1rem; margin-bottom:15px; font-weight:bold; letter-spacing:1px;  box-shadow:0 2px 5px rgba(0,0,0,0.05);">${secondColLabel.toLocaleUpperCase("tr-TR")}</div>` : ((isRenk || isSayi) ? `<div style="color:#c0392b; font-size:1.1rem; margin-bottom:10px; font-weight:bold;">${secondColTr}</div>` : '')}
                         <span style="font-family:'Arakom', sans-serif; font-size:clamp(2.5rem, 4.5vw, 5.5rem); color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1); line-height: 1.2;">${secondColAr}</span>
-                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight: normal; color: #555;" dir="ltr">${secondColTr}</span>` : ''}
+                        ${(!(isRenk || isSayi) && secondColTr) ? `<span style="color:#576574; font-size: 1.6rem; margin-top:10px; text-align:center; line-height: 1.4; font-weight:bold; color: #555;" dir="ltr">${secondColTr}</span>` : ''}
                     </div>` : ''}
                 </div>
                 ${ornekHtml}
@@ -725,22 +725,11 @@ const aksamSebaKokleri = ["أمن", "شدد", "أكل", "سأل", "وجد", "ق�
 const mezidFiilKokleri = ["عدد", "صلي", "سوي", "وصل", "خير", "وضأ", "عون", "وفي", "طوي", "خبر", "نظم", "حقق", "كمل", "شكل"];
 
 const arapcaHarfler = "أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
-let currentSearchQuery = "";
-window.activeConfirmedRoot = "";
+let currentSearchQuery = ""; 
 
 function getRootEmoji(root) {
     if(sozlukVerileri[root]) {
         const keys = Object.keys(sozlukVerileri[root]);
-        
-        // Önce "sayi" tipine sahip bir kalıp var mı diye kontrol et (Örn: ثلث, ربع)
-        for (let i = 0; i < keys.length; i++) {
-            let kalip = sozlukVerileri[root][keys[i]];
-            if (kalip && kalip.tip === "sayi" && kalip.base && kalip.base.emoji) {
-                return kalip.base.emoji;
-            }
-        }
-        
-        // Yoksa eskisi gibi ilk geçerli kalıbın emojisini al
         if (keys.length > 0 && sozlukVerileri[root][keys[0]].base && sozlukVerileri[root][keys[0]].base.emoji) {
             return sozlukVerileri[root][keys[0]].base.emoji;
         }
@@ -989,8 +978,7 @@ function updatePredictionsAndFilter() {
     if (filter.length > 0) {
         const allRoots = Object.keys(sozlukVerileri);
         // Yazılan harflerle BAŞLAYAN kökleri öncelikli getir
-        // Kullanıcı isteği: Sayı ve sıra sayıları sözlük aramasında çıkmasın
-        const matches = allRoots.filter(r => r.startsWith(filter) && !r.startsWith("Sayı:") && !r.startsWith("Sıra:")).slice(0, 15);
+        const matches = allRoots.filter(r => r.startsWith(filter)).slice(0, 15);
         
         matches.forEach(r => {
             predictionsContainer.innerHTML += `
@@ -1342,7 +1330,6 @@ function selectReadyVerb(verb) {
     if (trimmedRoot.length !== 3) return;
     
     currentRoot = trimmedRoot;
-    window.activeConfirmedRoot = trimmedRoot;
     
     // KESİN ÇÖZÜM: Tablo sıfırlandıktan ve yeni kök hafızaya alındıktan SONRA vurguyu zorla kapat!
     if (typeof toggleRootHint === 'function') toggleRootHint(false);
@@ -2619,7 +2606,6 @@ function highlightKey(char) {
 
 function confirmRoot() {
     if (currentRoot.length === 3) {
-        window.activeConfirmedRoot = currentRoot;
         SoundEngine.playReset();
 
         toggleKB(false);
@@ -2741,7 +2727,6 @@ function resetTableOnly(isSilent = false) {
     }
     // tableBoard ghost mantığı tamamen silindi
     currentRoot = "";
-    window.activeConfirmedRoot = "";
     lastClickedBoxTextSpan = null;
     lastOriginalWord = "";
     
@@ -2793,7 +2778,6 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.addEventListener('touchstart', startDragging, { passive: true });
         wrapper.addEventListener('touchend', stopDragging, { passive: true });
         wrapper.addEventListener('touchmove', (e) => {
-            let hasSuffixes = Object.keys(eggObj).some(k => k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not' && k !== 'cogulId' && k !== 'tekilId');
             if (isDown) {
                 const x = e.touches[0].pageX - wrapper.offsetLeft;
                 const walk = (x - startX) * 1.5;
@@ -2838,7 +2822,7 @@ function updateSuffixHighlights(currentBox) {
     if (!eggObj) return;
 
     const availableSuffixes = Object.keys(eggObj).filter(k => 
-        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not' && k !== 'cogulId' && k !== 'tekilId'
+        k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus'
     );
 
     function standardize(t) {
@@ -3692,7 +3676,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     let matchedKey = null;
     if (activeSuffix) {
         for (let k in eggObj) {
-            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus' && k !== 'tip' && k !== 'isDictOnly' && k !== 'not' && k !== 'cogulId' && k !== 'tekilId') {
+            if (k !== 'base' && k !== 'ornek' && k !== 'cekimi' && k !== 'suggestsPlus') {
                 if (stdFn(k) === activeSuffix) {
                     matchedKey = k;
                     break;
@@ -4314,47 +4298,14 @@ function highlightEasterEggBoxes(root) {
         b.classList.remove('sari-vurgu', 'current-active-red');
     });
 
-    const wildcardContainer = document.getElementById('wildcard-container');
-    if (wildcardContainer) wildcardContainer.innerHTML = ''; // Önceki joker kutuları temizle
-
     if (!root || root.length !== 3 || !sozlukVerileri[root]) return;
 
     const refs = getSortedRefsForRoot(root);
     refs.forEach(refId => {
-        let targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
+        const targetBox = Array.from(document.querySelectorAll('.glass-box')).find(b => {
             const refEl = b.querySelector('.ref');
             return refEl && parseInt(refEl.innerText.trim()) === refId;
         });
-
-        // -------------------------------------------------------------
-        // JOKER KUTU MANTIĞI: Eğer bu kalıp ID'si HTML'de yoksa, 
-        // dinamik bir Joker (Extra) kutu oluştur!
-        // -------------------------------------------------------------
-        if (!targetBox && wildcardContainer) {
-            const newBox = document.createElement('div');
-            newBox.className = 'glass-box wildcard-box';
-            newBox.setAttribute('data-ref', refId);
-            newBox.setAttribute('data-original', '?');
-            newBox.style.paddingBottom = '8px'; // Ayn harfi vb. taşmasını önlemek için
-            
-            // handleBoxClick fonksiyonunun çalışabilmesi için standart iç yapı
-            newBox.innerHTML = `
-                <div class="ref" style="opacity: 0; pointer-events: none;">${refId}</div>
-                <div class="ar-small" style="font-family: 'Inter', sans-serif; color: #d35400;">?</div>
-            `;
-            
-            // Tüm tıklama ve animasyon mantığını standart sisteme devret!
-            newBox.onclick = function(e) {
-                if (typeof handleBoxClick === 'function') {
-                    handleBoxClick(this);
-                }
-            };
-            
-            wildcardContainer.appendChild(newBox);
-            targetBox = newBox; // Aşağıdaki 'sari-vurgu' vs. eklenebilmesi için referansı targetBox yap
-        }
-        // -------------------------------------------------------------
-
         if (targetBox) {
             targetBox.classList.add('sari-vurgu');
             
@@ -4915,17 +4866,10 @@ const ColorEngine = {
         return ['و', 'ي', 'ا', 'أ', 'إ', 'آ', 'ء', 'ى'].includes(char);
     },
 
-    isEquivalent: function(char1, char2, rIndex = -1) {
+    isEquivalent: function(char1, char2) {
     const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء']; // 'آ' burada mevcut
     const weaks = ['و', 'ي', 'ا', 'ى']; 
     
-    // YENİ: İlk kök harfinde (rIndex === 0) yalın Elif (ا) asla vav veya ya'nın dönüşümü olamaz. 
-    // Aksi halde وَاحِد kelimesindeki ilk Vav'ı bağlaç sanıp Elif'i kök zannediyor!
-    if (rIndex === 0) {
-        if (char1 === 'ا' && (char2 === 'و' || char2 === 'ي')) return false;
-        if (char2 === 'ا' && (char1 === 'و' || char1 === 'ي')) return false;
-    }
-
     // YENİ: Eğer karşılaştırılanlardan biri 'آ' ise, bunu 'أ' (kök hemzesi) ile denk kabul et
     if (char1 === 'آ' && char2 === 'أ') return true;
     if (char1 === 'أ' && char2 === 'آ') return true;
@@ -4943,14 +4887,12 @@ const ColorEngine = {
         let pureChars = finalWord.replace(/[\u064B-\u0652\u0670]/g, '');
         if (pureChars.match(/ف.*ع.*ل/)) {
             rootArray = ['ف', 'ع', 'ل'];
-        } else if (!rootArray || rootArray.length !== 3 || (rootArray[0] === 'ف' && rootArray[1] === 'ع' && rootArray[2] === 'ل')) {
-            if (typeof currentRoot !== 'undefined' && currentRoot && currentRoot.trim() !== "") {
-                let tempArr = currentRoot.replace(/[^\u0621-\u064A]/g, '').split('');
-                if (tempArr.length === 3) rootArray = tempArr;
-                else rootArray = ['ف', 'ع', 'ل'];
-            } else {
+        } else if (typeof currentRoot !== 'undefined') {
+            if (!currentRoot || currentRoot.trim() === "") {
                 rootArray = ['ف', 'ع', 'ل'];
             }
+        } else if (!rootArray || rootArray.length !== 3) {
+            rootArray = ['ف', 'ع', 'ل'];
         }
         
         finalWord = finalWord.replace(/\uFEFB([\u064B-\u0652\u0670]?)/g, 'ل$1ا')
@@ -4969,18 +4911,7 @@ const ColorEngine = {
         for (let i = 0; i < charsOnly.length; i++) {
             let c = charsOnly[i].char;
             
-            // YENİ: Misal Fiil (Vavlı) Muzari 'ي' Harfi Hatası
-            // Kök 'و' ile başlıyorsa ve kelimedeki harf 'ي' ise, bu 'ي' genellikle Muzaraat harfidir (örn: يَقَعُ).
-            // Sadece 'م', 'إ', 'ا', 'أ', 'ت' harflerinden sonra gelen 'ي' kök harfi (dönüşmüş vav) olabilir.
-            let isMisalMuzariPrefix = false;
-            if (rIndex === 0 && c === 'ي' && rootArray[0] === 'و') {
-                let prevChar = i > 0 ? charsOnly[i - 1].char : '';
-                if (!['م', 'إ', 'ا', 'أ', 'ت'].includes(prevChar)) {
-                    isMisalMuzariPrefix = true;
-                }
-            }
-
-            if (!isMisalMuzariPrefix && rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
+            if (rIndex < 3 && this.isEquivalent(c, rootArray[rIndex])) {
                 let isZiyade = false;
                 
                 if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {
@@ -4991,7 +4922,7 @@ const ColorEngine = {
                     for (let k = rIndex; k < 3; k++) {
                         let found = false;
                         for (let j = searchPointer; j < charsOnly.length; j++) {
-                            if (this.isEquivalent(charsOnly[j].char, rootArray[k], k)) {
+                            if (this.isEquivalent(charsOnly[j].char, rootArray[k])) {
                                 found = true;
                                 searchPointer = j + 1;
                                 break;
@@ -5022,7 +4953,7 @@ const ColorEngine = {
                     rIndex++;
                 }
             } 
-            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1], rIndex + 1) && this.isWeak(rootArray[rIndex])) {
+            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1]) && this.isWeak(rootArray[rIndex])) {
                 charsOnly[i].isRoot = true;
                 rIndex += 2;
             }
@@ -5157,8 +5088,7 @@ function renderUniversalKeyboards() {
                 if (char === 'BACKSPACE') {
                     searchHtml += `<div class="search-key uni-key backspace" onclick="handleSearchKey('BACKSPACE')">⌫</div>`;
                 } else {
-                    let displayChar = char === 'ه' ? 'هـ' : char;
-                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${displayChar}</div>`;
+                    searchHtml += `<div class="search-key uni-key" onclick="handleSearchKey('${char}')">${char}</div>`;
                 }
             });
             searchHtml += `</div>`;
@@ -5178,8 +5108,7 @@ function renderUniversalKeyboards() {
                 } else {
                     let bg = getLetterColor(char);
                     let styleAttr = bg ? `style="--key-bg: ${bg};"` : "";
-                    let displayChar = char === 'ه' ? 'هـ' : char;
-                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')" ${styleAttr}>${displayChar}</div>`;
+                    mainHtml += `<div class="key uni-key" onclick="addLetter('${char}')" ${styleAttr}>${char}</div>`;
                 }
             });
             mainHtml += `</div>`;
@@ -5302,26 +5231,16 @@ function updateMainKeyboardPredictions() {
                     return stripped.length === 3 || stripped.length === 4;
                 });
             }
-            const normFilter = normalizeArabic(filter);
-            const searchVariants = typeof getSearchVariants === 'function' ? getSearchVariants(normFilter) : [normFilter];
+            rootMatches = window._cachedAllRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
 
-            rootMatches = window._cachedAllRoots.filter(r => {
-                let normRoot = normalizeArabic(r);
-                return searchVariants.some(v => normRoot.startsWith(v));
-            }).slice(0, 50);
-
-            // Dinamik Kök Oluşturma Çipi: 
-            // Sadece yazdığı şey (tam olarak) 3 harfliyse ve ekrandaki kök sonuçlarında yoksa öner!
+            // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
             if (filter.length === 3) {
-                // Kök listesinde birebir kendisi var mı? (zaten tanımlı bir fiil kökü mü?)
-                const exactExists = rootMatches.some(r => normalizeArabic(r) === normFilter);
+                const exactExists = rootMatches.some(r => normalizeArabic(r) === normalizeArabic(filter));
+                const isNounOnly = typeof sozlukVerileri !== 'undefined' && sozlukVerileri[filter] && sozlukVerileri[filter].isDictOnly;
                 
-                // Zaten bir fiil kökü değilse, (sözlükte isim olsa bile) kök oluşturmasına izin ver
-                if (!exactExists) {
-                    if (!rootMatches.includes(filter)) {
-                        rootMatches.unshift(filter);
-                        if (rootMatches.length > 50) rootMatches.pop();
-                    }
+                if (!exactExists && !isNounOnly) {
+                    rootMatches.unshift(filter);
+                    if (rootMatches.length > 50) rootMatches.pop();
                 }
             }
         }
@@ -5396,7 +5315,6 @@ function updateMainKeyboardPredictions() {
         let matchesByLetter = {};
         
         for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
-            if (rootKey.startsWith('Sayı:') || rootKey.startsWith('Sıra:')) continue;
             if (matchCount > 60) break;
             for (const [kalipKey, kalipData] of Object.entries(rootData)) {
                 if (matchCount > 60) break;
@@ -5429,33 +5347,10 @@ function updateMainKeyboardPredictions() {
                     let muennesMatch = false;
                     
                     if (isArabicSearch) {
-                        let getSearchVariants = (rawFilter) => {
-                            let norm = normalizeArabic(rawFilter);
-                            let variants = [norm];
-                            if (hasExactMatchInDict) return variants;
-
-                            const prefixes = ['وال', 'فال', 'بال', 'كال', 'ال', 'لل', 'و', 'ف', 'ب', 'ك', 'ل'];
-                            for (let p of prefixes) {
-                                if (norm.startsWith(p) && norm.length > p.length) {
-                                    variants.push(norm.substring(p.length));
-                                }
-                            }
-                            return variants;
-                        };
-                        
-                        let searchVariants = getSearchVariants(filter);
-                        
-                        arMatch = normalizeArabic(strippedAr).split('/').some(part => {
-                            let pt = part.trim();
-                            return searchVariants.some(v => pt.startsWith(v) || (pt.startsWith('ال') && pt.substring(2).startsWith(v)));
-                        });
-                        
+                        arMatch = normalizeArabic(strippedAr).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
                         if (kalipData.base.muennes) {
                             const strippedMuennes = window.stripHarakat(kalipData.base.muennes);
-                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => {
-                                let pt = part.trim();
-                                return searchVariants.some(v => pt.startsWith(v) || (pt.startsWith('ال') && pt.substring(2).startsWith(v)));
-                            });
+                            muennesMatch = normalizeArabic(strippedMuennes).split('/').some(part => part.trim().startsWith(normalizeArabic(filter)));
                         }
                         matches = arMatch || muennesMatch;
                         
@@ -5536,19 +5431,7 @@ function updateMainKeyboardPredictions() {
         
         // Arapça alfabetik sıralama
         const arabicAlphabet = "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي".split(" ");
-        let searchFilterExact = window.stripHarakat(filter);
-        let trSearchExact = filter.toLowerCase();
         const sortedLetters = Object.keys(matchesByLetter).sort((a, b) => {
-            let aExact = matchesByLetter[a].some(item => (item.strippedAr && item.strippedAr === searchFilterExact) || (item.trText && item.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact)));
-            let bExact = matchesByLetter[b].some(item => (item.strippedAr && item.strippedAr === searchFilterExact) || (item.trText && item.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact)));
-            if (aExact && !bExact) return -1;
-            if (!aExact && bExact) return 1;
-
-            let aStarts = searchFilterExact.length > 0 && matchesByLetter[a].some(item => item.strippedAr && item.strippedAr.startsWith(searchFilterExact));
-            let bStarts = searchFilterExact.length > 0 && matchesByLetter[b].some(item => item.strippedAr && item.strippedAr.startsWith(searchFilterExact));
-            if (aStarts && !bStarts) return -1;
-            if (!aStarts && bStarts) return 1;
-
             let indexA = arabicAlphabet.indexOf(a);
             let indexB = arabicAlphabet.indexOf(b);
             if (indexA === -1) indexA = 999;
@@ -5562,13 +5445,14 @@ function updateMainKeyboardPredictions() {
             resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 0 0 15px 0; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:10px; width: 100%;">[ ${letter} ]</div>`;
             
             // Harf içindeki kelimeleri sırala (Tam eşleşen ve kısa olanlar ÖNCE)
+            let searchFilter = window.stripHarakat(currentSearchQuery.trim());
             matchesByLetter[letter].sort((a, b) => {
-                let aExact = (a.strippedAr === searchFilterExact || (a.trText && a.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact))) ? 1 : 0;
-                let bExact = (b.strippedAr === searchFilterExact || (b.trText && b.trText.toLowerCase().split(/[ \/.,()]+/).includes(trSearchExact))) ? 1 : 0;
+                let aExact = (a.strippedAr === searchFilter) ? 1 : 0;
+                let bExact = (b.strippedAr === searchFilter) ? 1 : 0;
                 if (aExact !== bExact) return bExact - aExact;
                 
-                let aStarts = a.strippedAr.startsWith(searchFilterExact) ? 1 : 0;
-                let bStarts = b.strippedAr.startsWith(searchFilterExact) ? 1 : 0;
+                let aStarts = a.strippedAr.startsWith(searchFilter) ? 1 : 0;
+                let bStarts = b.strippedAr.startsWith(searchFilter) ? 1 : 0;
                 if (aStarts !== bStarts) return bStarts - aStarts;
                 
                 if (a.strippedAr.length !== b.strippedAr.length) {
@@ -5582,9 +5466,6 @@ function updateMainKeyboardPredictions() {
             for (const item of matchesByLetter[letter]) {
                 // GUARD: Geçersiz/boş girdileri ekrana yazdırma (NaN önleme)
                 if (!item.arText || item.arText.trim() === "" || !item.trText) continue;
-                // USER REQUEST: Hide unpatterned plurals and + items from quick list (NaN fix)
-                let isDictWord = item.rootKey && (item.rootKey.includes(":") || (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[item.rootKey] && sozlukVerileri[item.rootKey].isDictOnly));
-                if (!isDictWord && (item.kalipKey === "+" || isNaN(parseInt(item.kalipKey)))) continue;
                 const ilkAnlam = (item.trText || "").split('/')[0].trim();
                 const kelimeler = ilkAnlam.split(' ');
                 // Sadece normal (kök) eşleşmelerinde Türkçe anlamı göster, çekimlerde gösterme çünkü anlam şahsa göre değişiyor
@@ -5612,7 +5493,7 @@ function updateMainKeyboardPredictions() {
                         // Root verb badge removed by user request
                     }
                     
-                    rootBadge = `<div style="color:#e74c3c; font-size:0.9rem; margin-top:4px; font-weight: normal; text-align:center;">Kök: ${item.rootKey}</div>`;
+                    rootBadge = `<div style="color:#e74c3c; font-size:0.9rem; margin-top:4px; font-weight:bold; text-align:center;">Kök: ${item.rootKey}</div>`;
                 }
                 
                 let clickArText = item.isConjugationMatch ? item.originalArText : item.arText;
@@ -5630,7 +5511,7 @@ function updateMainKeyboardPredictions() {
                             </div>
 
                             <div style="flex: 1 1 0; min-width:0; text-align:left; padding-right: 15px; border-right: 2px solid rgba(0,0,0,0.1);">
-                                <span class="dict-result-tr" dir="ltr" style="font-family: 'Inter', sans-serif; font-size:1.6rem; font-weight: normal; color:#555555; line-height:1.2; word-break: break-word; display:block; overflow-wrap: break-word; hyphens: auto;">
+                                <span class="dict-result-tr" dir="ltr" style="font-family: 'Inter', sans-serif; font-size:1.6rem; font-weight:bold; color:#555555; line-height:1.2; word-break: break-word; display:block; overflow-wrap: break-word; hyphens: auto;">
                                     ${kisaltilmisAnlam}
                                 </span>
                             </div>
@@ -5645,15 +5526,8 @@ function updateMainKeyboardPredictions() {
                 `;
             }
             resultsHTML += `</div>`;
-        const rootDot = document.getElementById("root-status-dot");
-        const dictDot = document.getElementById("dict-status-dot");
-        if (rootDot) {
-            rootDot.style.backgroundColor = rootMatches.length > 0 ? "#4CAF50" : "#F44336";
         }
-        if (dictDot) {
-            dictDot.style.backgroundColor = (matchCount > 0) ? "#4CAF50" : "#F44336";
-        }
-
+        
         if (matchCount === 0 && rootMatches.length === 0) {
             dictResults.style.display = "block";
             dictResults.innerHTML = "<div style='text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
@@ -5667,14 +5541,6 @@ function updateMainKeyboardPredictions() {
             }
         }
     } else {
-        const rootDot = document.getElementById("root-status-dot");
-        const dictDot = document.getElementById("dict-status-dot");
-        let isDataLoaded = typeof sozlukVerileri !== 'undefined' && Object.keys(sozlukVerileri).length > 0;
-        let defaultColor = isDataLoaded ? "#4CAF50" : "#F44336";
-        
-        if (rootDot) rootDot.style.backgroundColor = defaultColor;
-        if (dictDot) dictDot.style.backgroundColor = defaultColor;
-
         dictResults.style.display = "none";
         dictResults.innerHTML = "";
     }
@@ -5858,7 +5724,6 @@ function autoSpawnRootClone() {
     const formattedText = formatArabicRoot(currentRoot);
     const dragEl = document.createElement('div');
     dragEl.className = 'draggable-root-clone';
-    dragEl.dataset.root = currentRoot;
     dragEl.innerHTML = `<span class="root-text-content">${formattedText}</span>`;
     document.body.appendChild(dragEl);
 
@@ -5902,7 +5767,6 @@ function getSortedRefsForRoot(root) {
     if (!sozlukVerileri[root]) return [];
     return Object.keys(sozlukVerileri[root])
         .map(Number)
-        .filter(n => !isNaN(n))
         .sort((a, b) => a - b);
 }
 
@@ -6377,8 +6241,8 @@ function getBabInfo(rawName) {
             ` 
         },
         { 
-            keys: ["tefe'ul", "tefeul", "tefe'ül", "tefeül"], 
-            title: "Tefe'ul", 
+            keys: ["tefa'ul", "tefe'ul", "tefeul", "tefaul", "tefa'ül", "tefe'ül", "tefaül", "tefeül"], 
+            title: "Tefa'ul", 
             harf: "تَـ ـ ـّ ـ", num: 5,
             desc: `
             <p>• <b>Çaba:</b> Gayret ve sahiplenme bildirir. <br>Örn: <span class="arabic-sample">تَصَبَّرَ</span> (Sabretti), <span class="arabic-sample">تَوَسَّدَ</span> (Yastık edindi)</p>
@@ -6399,7 +6263,7 @@ function getBabInfo(rawName) {
         { 
             keys: ["istif'al", "istif'al", "istifal", "istifal"], 
             title: "İstif'al", 
-            harf: "اِسْتَـ ـ ـ ـ", num: 6,
+            harf: "اِسْتِـ ـ ـ ـ", num: 6,
             desc: `
             <p>• <b>İstek:</b> Talep ve bulmak manası verir. <br>Örn: <span class="arabic-sample">اِسْتَغْفَرَ</span> (Af diledi), <span class="arabic-sample">اِسْتَسْهَلَ</span> (Kolay buldu)</p>
             <p>• <b>Değişim:</b> Durum değişikliği veya vakit bildirir. <br>Örn: <span class="arabic-sample">اِسْتَحْجَرَ</span> (Taşlaştı), <span class="arabic-sample">اِسْتَحْصَدَ</span> (Hasat vakti geldi)</p>
@@ -6526,24 +6390,21 @@ function hasVerbsToRead(root) {
 
 setInterval(() => {
     try {
-        const currentRootSafe = typeof window !== 'undefined' && window.activeConfirmedRoot ? window.activeConfirmedRoot : "";
+        const currentRootSafe = typeof currentRoot !== 'undefined' ? currentRoot : "";
         const canShowTimer = hasVerbsToRead(currentRootSafe);
         const isDraggableOnScreen = document.querySelector('.draggable-root-clone') !== null;
 
         // Hatasız okunan tek satırlık zarif SVG kodu
-        const mySvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
-        const listSvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
+        const mySvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
+        const listSvg = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
         
         // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
         document.querySelectorAll('.draggable-root-clone').forEach(box => {
-            let boxRootSafe = box.dataset.root || "";
-            const boxCanShowTimer = hasVerbsToRead(boxRootSafe);
-            
             let wrapper = box.querySelector('.root-clone-buttons');
             let btn = box.querySelector('.kutu-timer-btn');
             let listBtn = box.querySelector('.kutu-list-btn');
             
-            if (boxCanShowTimer && (!btn || !listBtn)) {
+            if (canShowTimer && (!btn || !listBtn)) {
                 if(btn) btn.remove();
                 if(listBtn) listBtn.remove();
                 if(!wrapper) {
@@ -6575,26 +6436,47 @@ setInterval(() => {
                 wrapper.appendChild(newListBtn);
                 wrapper.appendChild(newBtn);
                 
-            } else if (!boxCanShowTimer && wrapper) {
+            } else if (!canShowTimer && wrapper) {
                 wrapper.remove();
-            } else if (!boxCanShowTimer && btn) {
+            } else if (!canShowTimer && btn) {
                 // Eger wrapper yoksa ama butonlar varsa (eski yapi kalmissa)
                 btn.remove();
                 if(listBtn) listBtn.remove();
             }
         });
 
-        // Block B was removed to statically keep the icons in the HTML top bar
-        // YENİ EKLENEN: Sabit SVG'lerin animasyonu (dalga ve turuncu renk)
-        const staticList = document.getElementById('static-list-btn');
-        const staticTimer = document.getElementById('static-timer-btn');
-        if (staticList) {
-            staticList.classList.toggle('svg-wave-active', canShowTimer);
-            staticList.style.opacity = canShowTimer ? '1' : '0.4';
-            staticList.style.pointerEvents = canShowTimer ? 'auto' : 'none';
-        }
-        if (staticTimer) {
-            staticTimer.classList.toggle('svg-wave-active', canShowTimer);
+        // B. ANA SABİT KUTU İÇİN (Yukarıdaki Header)
+        const textEl = document.getElementById('root-text-display');
+        if (textEl) {
+            const desktopBox = textEl.parentElement; 
+            let btnMain = desktopBox.querySelector('.kutu-timer-btn');
+            let listBtnMain = desktopBox.querySelector('.kutu-list-btn');
+            
+            if (canShowTimer && (!btnMain || !listBtnMain) && !isDraggableOnScreen) {
+                if(btnMain) btnMain.remove();
+                if(listBtnMain) listBtnMain.remove();
+                desktopBox.style.position = 'relative'; 
+                let newBtnMain = document.createElement('div');
+                newBtnMain.className = 'kutu-timer-btn';
+                newBtnMain.innerHTML = mySvg;
+                newBtnMain.title = 'Hız ve Telaffuz Testi';
+                newBtnMain.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
+                desktopBox.appendChild(newBtnMain);
+
+                let newListBtnMain = document.createElement('div');
+                newListBtnMain.className = 'kutu-list-btn';
+                newListBtnMain.innerHTML = listSvg;
+                newListBtnMain.title = 'Hızlı Sözlük Modu';
+                newListBtnMain.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                desktopBox.appendChild(newListBtnMain);
+
+                
+            } else if ((!canShowTimer || isDraggableOnScreen) && btnMain) {
+                btnMain.remove();
+                let listBtnMain = desktopBox.querySelector('.kutu-list-btn');
+                if(listBtnMain) listBtnMain.remove();
+                
+            }
         }
 
         // C. MOBİL ÜST BAR İÇİN
@@ -6727,14 +6609,9 @@ window.mSkippedLobby = false;     // Lobinin atlanıp atlanmadığını tutan ha
 
 // 1. LOBİYİ AÇAR VE AKILLI KARAR VERİR
 window.openMarathon = function() {
-    const safeRoot = window.activeConfirmedRoot ? window.activeConfirmedRoot.trim() : "";
-    if (!safeRoot || !hasVerbsToRead(safeRoot)) {
-        if (typeof openTelaffuz === 'function') openTelaffuz();
-        return;
-    }
     window.isAtlasMode = false;
     document.getElementById('timer-display').style.display = 'block';
-    document.getElementById('top-bar-panel').style.display = 'grid'; // CSS'teki grid yapısını bozmamak için flex yerine grid yapıldı
+    document.getElementById('top-bar-panel').style.display = 'flex';
     document.getElementById('screen-play').style.display = '';
     document.getElementById('screen-atlas').style.display = '';
     document.getElementById('screen-result').style.display = '';
@@ -6930,14 +6807,8 @@ window.closeMarathon = function() {
     // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
     hideMarathonHeaders();
     document.getElementById('chrono-main').style.display = 'none';
-    
-    if (window.mLaunchedFromTelaffuz) {
-        document.getElementById('telaffuz-overlay').style.display = 'block';
-        window.mLaunchedFromTelaffuz = false;
-    } else {
-        const gw = document.getElementById("game-wrapper");
-        if (gw) gw.style.display = "flex";
-    }
+    const gw = document.getElementById("game-wrapper");
+    if (gw) gw.style.display = "flex";
 };
 
 // 5. OYUN İÇİNDEKİ ⏱️ BUTONUNA BASILINCA 'BAŞLA' EKRANINI GETİRİR
@@ -7453,40 +7324,13 @@ function renderThematicLists() {
         }
     }
     
-    const extractNum = (item) => {
-        if (!item) return 9999999;
-        if (item.rootKey) {
-            let m = item.rootKey.replace(/,/g, '').match(/\d+/);
-            if (m) return parseInt(m[0], 10);
-        }
-        if (item.trText) {
-            let m = item.trText.replace(/,/g, '').match(/^\d+/);
-            if (m) return parseInt(m[0], 10);
-        }
-        return 9999999;
-    };
     
-    if (categories["sayi_rakam"] && categories["sayi_rakam"].items) {
-        categories["sayi_rakam"].items.sort((a, b) => extractNum(a) - extractNum(b));
-    }
-    if (categories["sayi_kelime"] && categories["sayi_kelime"].items) {
-        categories["sayi_kelime"].items.sort((a, b) => extractNum(a) - extractNum(b));
-    }
-    if (categories["sirasayi"] && categories["sirasayi"].items) {
-        categories["sirasayi"].items.sort((a, b) => extractNum(a) - extractNum(b));
-    }
-
-    // Kullanıcı talebi: Sayılar ve sıra sayıları ardışık olsun
-    const numberSort = (a, b) => {
-        let numA = parseInt(a.trText.replace(/\./g, '').match(/\d+/)?.[0] || 0);
-        let numB = parseInt(b.trText.replace(/\./g, '').match(/\d+/)?.[0] || 0);
-        return numA - numB;
-    };
+    // Kullanıcı talebi: Sayı kartları listelerde karışık görünsün
     if (categories["sayi"] && categories["sayi"].items) {
-        categories["sayi"].items.sort(numberSort);
+        categories["sayi"].items.sort(() => Math.random() - 0.5);
     }
     if (categories["sirasayi"] && categories["sirasayi"].items) {
-        categories["sirasayi"].items.sort(numberSort);
+        categories["sirasayi"].items.sort(() => Math.random() - 0.5);
     }
 
     thematicCategoriesData = categories;
@@ -7538,7 +7382,7 @@ function renderThematicLists() {
             let shuffledList = cat.items ? [...cat.items] : [];
             shuffledList.sort(() => Math.random() - 0.5);
             activeMemoryGames[key] = {
-                mode: 'list',
+                mode: 'study',
                 scores: [0, 0],
                 currentPlayer: 1,
                 activeFlipped: [],
@@ -7595,17 +7439,16 @@ function renderThematicLists() {
                                 <!-- 1. Oyuncu Kutusu -->
                                 <div id="p1-box-${key}" class="player-box p-score-box active-p" style="display: none; color: #4dabf7; align-items: center;">
                                     <svg fill="#4dabf7" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                                    <span id="s1-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: normal; margin-left: 8px;">0</span>
+                                    <span id="s1-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: bold; margin-left: 8px;">0</span>
                                 </div>
                             </div>
 
                             <!-- ORTA (Ayarlar veya Varsayılan Butonlar) -->
                             <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex: 1;">
-                                <button class="memory-btn active" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
-                                <button class="memory-btn" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
+                                <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                                 <button class="memory-btn" id="btn-mem-${key}" onclick="openMemorySetup('${key}')">Hafıza Oyunu</button>
                                 <div id="mem-settings-${key}" class="mem-settings" style="display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                                    <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: normal; background: white; color: #333;" >
+                                    <select id="pairCount-${key}" class="memory-btn" style="border: 2px solid #5c7cfa; padding: 10px; font-size: 1.2rem; height: 44px; box-sizing: border-box; font-weight: bold; background: white; color: #333;" >
                                         ${pairOptions}
                                     </select>
                                     
@@ -7618,7 +7461,7 @@ function renderThematicLists() {
                                         <span style="font-size: 1.1rem; cursor: pointer;">👥</span>
                                     </div>
                                     
-                                    <button id="btn-start-${key}" class="memory-btn wave-btn" style="background: #4dabf7; color: white; font-weight: normal; font-size: 1.2rem; height: 44px; box-sizing: border-box; padding: 8px 20px;" onclick="startGameAndFullscreen('${key}')">Başla</button>
+                                    <button id="btn-start-${key}" class="memory-btn wave-btn" style="background: #4dabf7; color: white; font-weight: bold; font-size: 1.2rem; height: 44px; box-sizing: border-box; padding: 8px 20px;" onclick="startGameAndFullscreen('${key}')">Başla</button>
                                     <button id="btn-cancel-${key}" class="memory-btn" style="display: none; background: #ff8787; color: white; height: 44px; box-sizing: border-box; padding: 8px 20px; font-size: 1.2rem;" onclick="cancelMemorySetup('${key}')">✖</button>
                                 </div>
                                 
@@ -7629,7 +7472,7 @@ function renderThematicLists() {
                                 <!-- 2. Oyuncu Kutusu en sağda -->
                                 <div id="p2-box-${key}" class="player-box p-score-box" style="display: none; color: #ff8787; align-items: center;">
                                     <svg fill="#ff8787" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                                    <span id="s2-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: normal; margin-left: 8px;">0</span>
+                                    <span id="s2-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: bold; margin-left: 8px;">0</span>
                                 </div>
                             </div>
                             
@@ -7662,19 +7505,11 @@ function openMemorySetup(key) {
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = false;
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    // Tüm butonları pasif yap ama kaybolmasın
-    const btnList = document.getElementById(`btn-list-${key}`);
-    if (btnList) {
-        btnList.classList.remove('active');
-        btnList.style.opacity = '0.6';
-        btnList.style.display = 'block';
-    }
+    // Çalışma kartları pasif olsun ama kaybolmasın
     const btnStudy = document.getElementById(`btn-study-${key}`);
-    if (btnStudy) {
-        btnStudy.classList.remove('active');
-        btnStudy.style.opacity = '0.6';
-        btnStudy.style.display = 'block';
-    }
+    btnStudy.classList.remove('active');
+    btnStudy.style.opacity = '0.6';
+    btnStudy.style.display = 'block';
     
     document.getElementById(`btn-mem-${key}`).style.display = 'none';
     document.getElementById(`mem-settings-${key}`).style.display = 'flex';
@@ -7749,7 +7584,6 @@ function setMemoryMode(key, mode) {
     state.currentPlayer = 1;
     state.activeFlipped = [];
     
-    const listBtn = document.getElementById(`btn-list-${key}`);
     const studyBtn = document.getElementById(`btn-study-${key}`);
     const memBtn = document.getElementById(`btn-mem-${key}`);
     const memSettings = document.getElementById(`mem-settings-${key}`);
@@ -7757,25 +7591,23 @@ function setMemoryMode(key, mode) {
     const p1Box = document.getElementById(`p1-box-${key}`);
     const p2Box = document.getElementById(`p2-box-${key}`);
     
-    if (listBtn) listBtn.classList.remove('active');
-    if (studyBtn) studyBtn.classList.remove('active');
-    if (memBtn) memBtn.classList.remove('active');
-    
-    if (listBtn) { listBtn.style.display = 'block'; listBtn.style.opacity = '1'; }
-    if (studyBtn) { studyBtn.style.display = 'block'; studyBtn.style.opacity = '1'; }
-    if (memBtn) { memBtn.style.display = 'block'; memBtn.style.opacity = '1'; }
-
-    if (mode === 'list') {
-        if (listBtn) listBtn.classList.add('active');
+    if (mode === 'study') {
+        if (studyBtn) {
+            studyBtn.style.display = 'block';
+            studyBtn.style.opacity = '1';
+            studyBtn.classList.add('active');
+        }
+        if (memBtn) {
+            memBtn.style.display = 'block';
+            memBtn.classList.remove('active');
+        }
         if (memSettings) memSettings.style.display = 'none';
-        if (p1Box) p1Box.style.display = 'none';
-        if (p2Box) p2Box.style.display = 'none';
-    } else if (mode === 'study') {
-        if (studyBtn) studyBtn.classList.add('active');
-        if (memSettings) memSettings.style.display = 'none';
+        
+                
         if (p1Box) p1Box.style.display = 'none';
         if (p2Box) p2Box.style.display = 'none';
     } else {
+        if (studyBtn) studyBtn.classList.remove('active');
         if (memBtn) memBtn.classList.add('active');
         if (memSettings) memSettings.style.display = 'flex';
         
@@ -7806,9 +7638,8 @@ function initMemoryGrid(key, forceShuffle = false) {
     
     grid.innerHTML = '';
     const isStudy = state.mode === 'study';
-    const isList = state.mode === 'list';
     
-    grid.className = `thematic-words-grid ${isList ? 'list-mode-grid' : (isStudy ? '' : ('memory-mode pairs-' + pairCount))}`;
+    grid.className = `thematic-words-grid ${isStudy ? '' : ('memory-mode pairs-' + pairCount)}`;
     
     // Fallback if state.shuffledItems is missing
     if (!state.shuffledItems) {
@@ -7817,21 +7648,10 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
     
     let wordsCopy = [...cat.items];
-    let selectedWords;
-    if (isList) {
-        selectedWords = wordsCopy;
-    } else if (isStudy) {
-        if (key === 'sayi_rakam' || key === 'sayi_kelime' || key === 'sirasayi') {
-            selectedWords = state.shuffledItems;
-        } else {
-            selectedWords = wordsCopy;
-        }
-    } else {
-        selectedWords = state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
-    }
+    let selectedWords = isStudy ? wordsCopy : state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
     
     // If somehow we selected less than pairCount (end of array), we wrap around or reshuffle
-    if (!isStudy && !isList && selectedWords.length < pairCount) {
+    if (!isStudy && selectedWords.length < pairCount) {
         state.shuffledItems = [...cat.items].sort(() => Math.random() - 0.5);
         state.roundIndex = 0;
         selectedWords = state.shuffledItems.slice(state.roundIndex, state.roundIndex + pairCount);
@@ -7839,11 +7659,9 @@ function initMemoryGrid(key, forceShuffle = false) {
     
     let displayList = [];
 
-    if (isStudy || isList) {
+    if (isStudy) {
         displayList = selectedWords;
-        if (isStudy && !forceShuffle) {
-            displayList.sort(() => Math.random() - 0.5);
-        } else if (forceShuffle) {
+        if (forceShuffle) {
             displayList.sort(() => Math.random() - 0.5);
         }
         grid.style.height = "auto";
@@ -7874,70 +7692,40 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
 
     
-    if (isList) {
-        const titleText = (thematicCategoriesData[key] && thematicCategoriesData[key].title) || 'Kelime Listesi';
-        const iconText = (thematicCategoriesData[key] && thematicCategoriesData[key].icon) || '📝';
+    displayList.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.dataset.id = isStudy ? item.rootKey : item.pairId;
         
-        const paper = document.createElement('div');
-        paper.className = 'list-mode-paper';
-        
-        paper.innerHTML = `
-            <div class="list-mode-title">${iconText} ${titleText}</div>
-            <div class="list-mode-columns"></div>
-        `;
-        
-        const columnsContainer = paper.querySelector('.list-mode-columns');
-        
-        displayList.forEach((item, index) => {
-            const row = document.createElement('div');
-            row.className = 'list-mode-item';
-            let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
-            row.innerHTML = `
-                <div class="list-mode-num">${index + 1}.</div>
-                <div class="list-mode-tr" dir="ltr">${item.trText}</div>
-                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
-                <div class="list-mode-ar" dir="rtl">${arContent}</div>
+        if (isStudy) {
+            let kalipAction = item.kalipId ? `, '${item.kalipId}'` : "";
+            card.innerHTML = `
+                <div class="memory-card-inner">
+                    <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
+                    <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${thematicCategoriesData[key]?.arFontSize ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${item.arText}</div>
+                    </div>
+                    <!-- ARKA YÜZ: Türkçe ve Emoji -->
+                    <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <div style="font-size: 4rem; margin-bottom: 5px;">${item.emoji || '✨'}</div>
+                        <div class="lang-tr" style="font-weight: bold; color: #333; text-align: center; ${thematicCategoriesData[key]?.trFontSize ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
+                    </div>
+                </div>
             `;
-            columnsContainer.appendChild(row);
-        });
-        
-        grid.appendChild(paper);
-    } else {
-        displayList.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'memory-card';
-            card.dataset.id = isStudy ? item.rootKey : item.pairId;
-            
-            if (isStudy) {
-                let kalipAction = item.kalipId ? `, '${item.kalipId}'` : "";
-                card.innerHTML = `
-                    <div class="memory-card-inner">
-                        <!-- ÖN YÜZ: Sadece Arapça (Büyük ve Ortalanmış) -->
-                        <div class="memory-card-face memory-card-front" style="display: flex; align-items: center; justify-content: center;">
-                            <div class="lang-ar" style="text-align: center; margin: 0; padding: 0; ${(thematicCategoriesData[key] && thematicCategoriesData[key].arFontSize) ? `font-size: ${thematicCategoriesData[key].arFontSize} !important;` : ''}">${item.arText}</div>
-                        </div>
-                        <!-- ARKA YÜZ: Türkçe ve Emoji -->
-                        <div class="memory-card-face memory-card-back" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                            <div style="font-size: 4rem; margin-bottom: 5px;">${item.emoji || '✨'}</div>
-                            <div class="lang-tr" style="font-weight: normal; color: #333; text-align: center; ${(thematicCategoriesData[key] && thematicCategoriesData[key].trFontSize) ? `font-size: ${thematicCategoriesData[key].trFontSize} !important;` : ''}" dir="ltr">${item.trText}</div>
-                        </div>
+            card.onclick = () => card.classList.toggle('flipped');
+        } else {
+            card.innerHTML = `
+                <div class="memory-card-inner">
+                    <div class="memory-card-face memory-card-front"></div>
+                    <div class="memory-card-face memory-card-back lang-${item.lang}">
+                        <span>${item.text}</span>
                     </div>
-                `;
-                card.onclick = () => card.classList.toggle('flipped');
-            } else {
-                card.innerHTML = `
-                    <div class="memory-card-inner">
-                        <div class="memory-card-face memory-card-front"></div>
-                        <div class="memory-card-face memory-card-back lang-${item.lang}">
-                            <span>${item.text}</span>
-                        </div>
-                    </div>
-                `;
-                card.onclick = () => handleMemoryFlip(key, card);
-            }
-            grid.appendChild(card);
-        });
-    }
+                </div>
+            `;
+            card.onclick = () => handleMemoryFlip(key, card);
+        }
+        grid.appendChild(card);
+    });
     
     // Skorları sıfırla
     state.scores = [0, 0];
@@ -8009,7 +7797,7 @@ function checkMemoryMatch(key) {
                 
                 // Show custom popup or alert
                 const popup = document.createElement('div');
-                popup.style.cssText = "position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(255,255,255,0.95); padding:30px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.2); z-index:9999999; text-align:center; font-size:1.5rem; font-weight: normal; color:#333;";
+                popup.style.cssText = "position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(255,255,255,0.95); padding:30px; border-radius:15px; box-shadow:0 10px 40px rgba(0,0,0,0.2); z-index:9999999; text-align:center; font-size:1.5rem; font-weight:bold; color:#333;";
                 popup.innerText = msg;
                 document.body.appendChild(popup);
                 
@@ -8172,10 +7960,6 @@ function startGameAndFullscreen(key) {
 
 
 window.openGrammarOverlay = function(stage) {
-    if (window.event) {
-        window.event.preventDefault();
-        window.event.stopPropagation();
-    }
     window.openAtlasOverlay(stage);
 };
 
@@ -8192,7 +7976,6 @@ window.atlasVerbsData = {
     "أراد": {"trMean": {"mazi": "istedi", "muzari": "istiyor", "emir": "iste"}, "mazi": ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"], "muzari": ["يُرِيدُ", "يُرِيدَانِ", "يُرِيدُونَ", "تُرِيدُ", "تُرِيدَانِ", "يُرِدْنَ", "تُرِيدُ", "تُرِيدَانِ", "تُرِيدُونَ", "تُرِيدِينَ", "تُرِيدَانِ", "تُرِدْنَ", "أُرِيدُ", "نُرِيدُ", "نُرِيدُ"], "emir": ["أَرِدْ", "أَرِيدَا", "أَرِيدُوا", "أَرِيدِي", "أَرِيدَا", "أَرِدْنَ"]},
     "سافر": {"trMean": {"mazi": "yolculuk yaptı", "muzari": "yolculuk yapıyor", "emir": "yolculuk yap"}, "mazi": ["سَافَرَ", "سَافَرَا", "سَافَرُوا", "سَافَرَتْ", "سَافَرَتَا", "سَافَرْنَ", "سَافَرْتَ", "سَافَرْتُمَا", "سَافَرْتُمْ", "سَافَرْتِ", "سَافَرْتُمَا", "سَافَرْتُنَّ", "سَافَرْتُ", "سَافَرْنَا", "سَافَرْنَا"], "muzari": ["يُسَافِرُ", "يُسَافِرَانِ", "يُسَافِرُونَ", "تُسَافِرُ", "تُسَافِرَانِ", "يُسَافِرْنَ", "تُسَافِرُ", "تُسَافِرَانِ", "تُسَافِرُونَ", "تُسَافِرِينَ", "تُسَافِرَانِ", "تُسَافِرْنَ", "أُسَافِرُ", "نُسَافِرُ", "نُسَافِرُ"], "emir": ["سَافِرْ", "سَافِرَا", "سَافِرُوا", "سَافِرِي", "سَافِرَا", "سَافِرْنَ"]},
 "كتب": { trMean: { mazi: "yazdı", muzari: "yazıyor", emir: "yaz" }, mazi: ["كَتَبَ", "كَتَبَا", "كَتَبُوا", "كَتَبَتْ", "كَتَبَتَا", "كَتَبْنَ", "كَتَبْتَ", "كَتَبْتُمَا", "كَتَبْتُمْ", "كَتَبْتِ", "كَتَبْتُمَا", "كَتَبْتُنَّ", "كَتَبْتُ", "كَتَبْنَا", "كَتَبْنَا"], muzari: ["يَكْتُبُ", "يَكْتُبَانِ", "يَكْتُبُونَ", "تَكْتُبُ", "تَكْتُبَانِ", "يَكْتُبْنَ", "تَكْتُبُ", "تَكْتُبَانِ", "تَكْتُبُونَ", "تَكْتُبِينَ", "تَكْتُبَانِ", "تَكْتُبْنَ", "أَكْتُبُ", "نَكْتُبُ", "نَكْتُبُ"], emir: ["اُكْتُبْ", "اُكْتُبَا", "اُكْتُبُوا", "اُكْتُبِي", "اُكْتُبَا", "اُكْتُبْنَ"] },
-    "كتب": { trMean: { mazi: "yazdı", muzari: "yazıyor", emir: "yaz" }, mazi: ["كَتَبَ", "كَتَبَا", "كَتَبُوا", "كَتَبَتْ", "كَتَبَتَا", "كَتَبْنَ", "كَتَبْتَ", "كَتَبْتُمَا", "كَتَبْتُمْ", "كَتَبْتِ", "كَتَبْتُمَا", "كَتَبْتُنَّ", "كَتَبْتُ", "كَتَبْنَا", "كَتَبْنَا"], muzari: ["يَكْتُبُ", "يَكْتُبَانِ", "يَكْتُبُونَ", "تَكْتُبُ", "تَكْتُبَانِ", "يَكْتُبْنَ", "تَكْتُبُ", "تَكْتُبَانِ", "تَكْتُبُونَ", "تَكْتُبِينَ", "تَكْتُبَانِ", "تَكْتُبْنَ", "أَكْتُبُ", "نَكْتُبُ", "نَكْتُبُ"], emir: ["اُكْتُبْ", "اُكْتُبَا", "اُكْتُبُوا", "اُكْتُبِي", "اُكْتُبَا", "اُكْتُبْنَ"] },
     "دخل": { trMean: { mazi: "girdi", muzari: "giriyor", emir: "gir" }, mazi: ["دَخَلَ", "دَخَلَا", "دَخَلُوا", "دَخَلَتْ", "دَخَلَتَا", "دَخَلْنَ", "دَخَلْتَ", "دَخَلْتُمَا", "دَخَلْتُمْ", "دَخَلْتِ", "دَخَلْتُمَا", "دَخَلْتُنَّ", "دَخَلْتُ", "دَخَلْنَا", "دَخَلْنَا"], muzari: ["يَدْخُلُ", "يَدْخُلَانِ", "يَدْخُلُونَ", "تَدْخُلُ", "تَدْخُلَانِ", "يَدْخُلْنَ", "تَدْخُلُ", "تَدْخُلَانِ", "تَدْخُلُونَ", "تَدْخُلِينَ", "تَدْخُلَانِ", "تَدْخُلْنَ", "أَدْخُلُ", "نَدْخُلُ", "نَدْخُلُ"], emir: ["اُدْخُلْ", "اُدْخُلَا", "اُدْخُلُوا", "اُدْخُلِي", "اُدْخُلَا", "اُدْخُلْنَ"] },
     "خرج": { trMean: { mazi: "çıktı", muzari: "çıkıyor", emir: "çık" }, mazi: ["خَرَجَ", "خَرَجَا", "خَرَجُوا", "خَرَجَتْ", "خَرَجَتَا", "خَرَجْنَ", "خَرَجْتَ", "خَرَجْتُمَا", "خَرَجْتُمْ", "خَرَجْتِ", "خَرَجْتُمَا", "خَرَجْتُنَّ", "خَرَجْتُ", "خَرَجْنَا", "خَرَجْنَا"], muzari: ["يَخْرُجُ", "يَخْرُجَانِ", "يَخْرُجُونَ", "تَخْرُجُ", "تَخْرُجَانِ", "يَخْرُجْنَ", "تَخْرُجُ", "تَخْرُجَانِ", "تَخْرُجُونَ", "تَخْرُجِينَ", "تَخْرُجَانِ", "تَخْرُجْنَ", "أَخْرُجُ", "نَخْرُجُ", "نَخْرُجُ"], emir: ["اُخْرُجْ", "اُخْرُجَا", "اُخْرُجُوا", "اُخْرُجِي", "اُخْرُجَا", "اُخْرُجْنَ"] },
     "جلس": { trMean: { mazi: "oturdu", muzari: "oturuyor", emir: "otur" }, mazi: ["جَلَسَ", "جَلَسَا", "جَلَسُوا", "جَلَسَتْ", "جَلَسَتَا", "جَلَسْنَ", "جَلَسْتَ", "جَلَسْتُمَا", "جَلَسْتُمْ", "جَلَسْتِ", "جَلَسْتُمَا", "جَلَسْتُنَّ", "جَلَسْتُ", "جَلَسْنَا", "جَلَسْنَا"], muzari: ["يَجْلِسُ", "يَجْلِسَانِ", "يَجْلِسُونَ", "تَجْلِسُ", "تَجْلِسَانِ", "يَجْلِسْنَ", "تَجْلِسُ", "تَجْلِسَانِ", "تَجْلِسُونَ", "تَجْلِسِينَ", "تَجْلِسَانِ", "تَجْلِسْنَ", "أَجْلِسُ", "نَجْلِسُ", "نَجْلِسُ"], emir: ["اِجْلِسْ", "اِجْلِسَا", "اِجْلِسُوا", "اِجْلِسِي", "اِجْلِسَا", "اِجْلِسْنَ"] },
@@ -8204,6 +7987,7 @@ window.atlasVerbsData = {
     "لبس": { trMean: { mazi: "giydi", muzari: "giyiyor", emir: "giy" }, mazi: ["لَبِسَ", "لَبِسَا", "لَبِسُوا", "لَبِسَتْ", "لَبِسَتَا", "لَبِسْنَ", "لَبِسْتَ", "لَبِسْتُمَا", "لَبِسْتُمْ", "لَبِسْتِ", "لَبِسْتُمَا", "لَبِسْتُنَّ", "لَبِسْتُ", "لَبِسْنَا", "لَبِسْنَا"], muzari: ["يَلْبَسُ", "يَلْبَسَانِ", "يَلْبَسُونَ", "تَلْبَسُ", "تَلْبَسَانِ", "يَلْبَسْنَ", "تَلْبَسُ", "تَلْبَسَانِ", "تَلْبَسُونَ", "تَلْبَسِينَ", "تَلْبَسَانِ", "تَلْبَسْنَ", "أَلْبَسُ", "نَلْبَسُ", "نَلْبَسُ"], emir: ["اِلْبَسْ", "اِلْبَسَا", "اِلْبَسُوا", "اِلْبَسِي", "اِلْبَسَا", "اِلْبَسْنَ"] },
     "ذهب": { trMean: { mazi: "gitti", muzari: "gidiyor", emir: "git" }, mazi: ["ذَهَبَ", "ذَهَبَا", "ذَهَبُوا", "ذَهَبَتْ", "ذَهَبَتَا", "ذَهَبْنَ", "ذَهَبْتَ", "ذَهَبْتُمَا", "ذَهَبْتُمْ", "ذَهَبْتِ", "ذَهَبْتُمَا", "ذَهَبْتُنَّ", "ذَهَبْتُ", "ذَهَبْنَا", "ذَهَبْنَا"], muzari: ["يَذْهَبُ", "يَذْهَبَانِ", "يَذْهَبُونَ", "تَذْهَبُ", "تَذْهَبَانِ", "يَذْهَبْنَ", "تَذْهَبُ", "تَذْهَبَانِ", "تَذْهَبُونَ", "تَذْهَبِينَ", "تَذْهَبَانِ", "تَذْهَبْنَ", "أَذْهَبُ", "نَذْهَبُ", "نَذْهَبُ"], emir: ["اِذْهَبْ", "اِذْهَبَا", "اِذْهَبُوا", "اِذْهَبِي", "اِذْهَبَا", "اِذْهَبْنَ"] },
     "رجع": { trMean: { mazi: "döndü", muzari: "dönüyor", emir: "dön" }, mazi: ["رَجَعَ", "رَجَعَا", "رَجَعُوا", "رَجَعَتْ", "رَجَعَتَا", "رَجَعْنَ", "رَجَعْتَ", "رَجَعْتُمَا", "رَجَعْتُمْ", "رَجَعْتِ", "رَجَعْتُمَا", "رَجَعْتُنَّ", "رَجَعْتُ", "رَجَعْنَا", "رَجَعْنَا"], muzari: ["يَرْجِعُ", "يَرْجِعَانِ", "يَرْجِعُونَ", "تَرْجِعُ", "تَرْجِعَانِ", "يَرْجِعْنَ", "تَرْجِعُ", "تَرْجِعَانِ", "تَرْجِعُونَ", "تَرْجِعِينَ", "تَرْجِعَانِ", "تَرْجِعْنَ", "أَرْجِعُ", "نَرْجِعُ", "نَرْجِعُ"], emir: ["اِرْجِعْ", "اِرْجِعَا", "اِرْجِعُوا", "اِرْجِعِي", "اِرْجِعَا", "اِرْجِعْنَ"] },
+    "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعَدْنَ"] },
     "ساعد": { trMean: { mazi: "yardım etti", muzari: "yardım ediyor", emir: "yardım et" }, mazi: ["سَاعَدَ", "سَاعَدَا", "سَاعَدُوا", "سَاعَدَتْ", "سَاعَدَتَا", "سَاعَدْنَ", "سَاعَدْتَ", "سَاعَدْتُمَا", "سَاعَدْتُمْ", "سَاعَدْتِ", "سَاعَدْتُمَا", "سَاعَدْتُنَّ", "سَاعَدْتُ", "سَاعَدْنَا", "سَاعَدْنَا"], muzari: ["يُسَاعِدُ", "يُسَاعِدَانِ", "يُسَاعِدُونَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "تُسَاعِدُ", "تُسَاعِدَانِ", "تُسَاعِدُونَ", "تُسَاعِدِينَ", "تُسَاعِدَانِ", "يُسَاعِدْنَ", "أُسَاعِدُ", "نُسَاعِدُ", "نُسَاعِدُ"], emir: ["سَاعِدْ", "سَاعِدَا", "سَاعَدُوا", "سَاعِدِي", "سَاعِدَا", "سَاعِدْنَ"] },
     "درس": { trMean: { mazi: "çalıştı", muzari: "çalışıyor", emir: "çalış" }, mazi: ["دَرَسَ", "دَرَسَا", "دَرَسُوا", "دَرَسَتْ", "دَرَسَتَا", "دَرَسْنَ", "دَرَسْتَ", "دَرَسْتُمَا", "دَرَسْتُمْ", "دَرَسْتِ", "دَرَسْتُمَا", "دَرَسْتُنَّ", "دَرَسْتُ", "دَرَسْنَا", "دَرَسْنَا"], muzari: ["يَدْرُسُ", "يَدْرُسَانِ", "يَدْرُسُونَ", "تَدْرُسُ", "تَدْرُسَانِ", "يَدْرُسْنَ", "تَدْرُسُ", "تَدْرُسَانِ", "تَدْرُسُونَ", "تَدْرُسِينَ", "تَدْرُسَانِ", "تَدْرُسْنَ", "أَدْرُسُ", "نَدْرُسُ", "نَدْرُسُ"], emir: ["اُدْرُسْ", "اُدْرُسَا", "اُدْرُسُوا", "اُدْرُسِي", "اُدْرُسَا", "اُدْرُسْنَ"] },
     "nam": { trMean: { mazi: "uyudu", muzari: "uyuyor", emir: "uyu" }, mazi: ["نَامَ", "نَامَا", "نَامُوا", "نَامَتْ", "نَامَتَا", "نِمْنَ", "نِمْتَ", "نِمْتُمَا", "نِمْتُمْ", "نِمْتِ", "نِمْتُمَا", "نِمْتُنَّ", "نِمْتُ", "نِمْنَا", "نِمْنَا"], muzari: ["يَنَامُ", "يَنَامَانِ", "يَنَامُونَ", "تَنَامُ", "تَنَامَانِ", "يَنَامْنَ", "تَنَامُ", "تَنَامَانِ", "تَنَامُونَ", "تَنَامِينَ", "تَنَامَانِ", "تَنَامْنَ", "أَنَامُ", "نَنَامُ", "نَنَامُ"], emir: ["نَمْ", "نَامَا", "نَامُوا", "نَامِي", "نَامَا", "نَمْنَ"] },
@@ -8249,11 +8033,11 @@ window.openAtlasOverlay = function(stage) {
     let mOverlay = document.getElementById('marathon-overlay');
     mOverlay.classList.add('active');
     mOverlay.scrollTop = 0;
-    let _t = document.getElementById('timer-display'); if(_t) _t.style.display = 'none';
-    let _l = document.getElementById('live-total-score'); if(_l) _l.style.display = 'none';
-    let _c = document.getElementById('chrono-main'); if(_c) _c.style.display = 'none';
-    let _s = document.getElementById('stage-label'); if(_s) _s.style.display = 'none';
-    let _p = document.getElementById('pause-btn'); if(_p) _p.style.display = 'none';
+    document.getElementById('timer-display').style.display = 'none';
+    document.getElementById('live-total-score').style.display = 'none';
+    document.getElementById('chrono-main').style.display = 'none';
+    document.getElementById('stage-label').style.display = 'none';
+    document.getElementById('pause-btn').style.display = 'none';
     
     let rootContainer = document.querySelector('.important-roots-wrapper');
     if (rootContainer) rootContainer.style.display = 'none';
@@ -8274,9 +8058,6 @@ window.openAtlasOverlay = function(stage) {
     
     let gameContainer = document.getElementById('game-container');
     if (gameContainer) gameContainer.style.display = 'flex';
-    
-    let gameWrapper = document.getElementById('game-wrapper');
-    if (gameWrapper) gameWrapper.style.display = 'flex';
     
     document.getElementById('screen-play').classList.add('active');
     document.getElementById('screen-result').classList.remove('active');
@@ -8306,10 +8087,10 @@ window.openAtlasOverlay = function(stage) {
     // Verb Stages (with Tables)
     if (stage === 'mazi' || stage === 'mazi_mezid') {
         arTitle = "الماضي"; trTitle = "Geçmiş Zaman (Mazi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Mazi Fiil</strong>, genel olarak geçmişte yapılmış ve tamamlanmış eylemleri ifade eder. Çekimi fiilin sonuna eklenen bitişik zamirlerle (soneklerle) yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8321,10 +8102,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'muzari' || stage === 'muzari_mezid') {
         arTitle = "المُضارِع"; trTitle = "Geniş / Şimdiki Zaman (Muzari)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Muzari Fiil</strong>, eylemin şu an yapıldığını (şimdiki zaman), her zaman yapıldığını (geniş zaman) veya gelecekte yapılacağını bildirir. Çekimi fiilin başına getirilen "Eteyne (أتين)" harfleriyle ve soneklerle yapılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0; margin-bottom: 40px;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Muzari'nin Anlamını Değiştiren Edatlar:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8337,10 +8118,10 @@ window.openAtlasOverlay = function(stage) {
         </div>`; hasTable = true;
     } else if (stage === 'emir' || stage === 'emir_mezid') {
         arTitle = "الأَمْر"; trTitle = "Emir Kipi"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Emir Fiili</strong>, karşımızdaki kişiden (muhatap/muhataba) bir işi yapmasını istemek için kullanılır.</p>
         </div>`;
-        descBottom = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 0 0 20px 0; border-radius: 0 10px 10px 0;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Edebi ve Kur'an'i Nüanslar (Emrin Mertebeleri):</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8355,14 +8136,14 @@ window.openAtlasOverlay = function(stage) {
     // Mücerred Nouns (No Tables)
     else if (stage === 'mastar') {
         arTitle = "المَصْدَر"; trTitle = "Mastar"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p><strong>Mastar</strong>, eylemin kök adıdır (yapmak, etmek gibi). Fiilin bildirdiği işi, zamana veya şahsa bağlı olmadan bağımsız bir "isim" olarak ifade eder.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كِتَابَة</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Yazmak</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كِتَابَة</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazmak</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">دُخُول</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Girmek</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">دُخُول</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Girmek</span>
                 </div>
             </div>
             <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8376,34 +8157,48 @@ window.openAtlasOverlay = function(stage) {
                 </ul>
             </div>
         </div>`;
-    } else if (stage === 'ismi_fail') {
+    } else if (stage === 'ismi_fail' || stage === 'ismi_fail_mezid') {
         arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Etken Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
-            <p>Fiili yapanı, eylemi gerçekleştireni (özneyi) gösteren türemiş isimdir. Sülasi mücerred (3 harfli) fiillerde <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+            <p><strong>1. Mücerred (3 Harfli) Fiillerde:</strong> Fiili yapanı (özneyi) gösterir. <strong>"فَاعِل" (Fâil)</strong> kalıbında gelir.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 15px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كَاتِب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Yazan / Kâtip</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كَاتِب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazan / Kâtip</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">عَالِم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Bilen / Âlim</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">عَالِم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Bilen / Âlim</span>
                 </div>
             </div>
-            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Kullanımı:</h4>
-                <p style="margin: 0;">Türkçemizde Arapça kökenli binlerce "İsmi Fail" kalıbı vardır. Sesi <em>-Â -İ</em> şeklinde uzatarak hissetmek çok kolaydır:<br><br>
-                <strong>Örnekler:</strong> Câhil, Hâkim, Sâlim, Zâlim, Fâtih, Kâşif, Nâzım, Şâir, Sâbır, Şâkir, Sâdık...</p>
+            
+            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 25px 0;">
+            
+            <p><strong>2. Mezid (Ekli) Fiillerde:</strong> Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
+            <div style="display: flex; justify-content: center; gap: 60px; margin: 15px 0;">
+                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il) Öğreten/Muallim</span>
+                </div>
+                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dileyen</span>
+                </div>
+            </div>
+            
+            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
+                <p style="margin: 0;">Türkçemizde "İsmi Fail" kalıbı çok yaygındır:<br>
+                <strong>Mücerred (-Â -İ):</strong> Câhil, Hâkim, Zâlim, Şâir, Sâdık...<br>
+                <strong>Mezid (MÜ/MU ve sondan bir önceki esre):</strong> Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Muall<strong>i</strong>m...</p>
             </div>
         </div>`;
-    } else if (stage === 'ismi_meful') {
+    } else if (stage === 'ismi_meful' || stage === 'ismi_meful_mezid') {
         arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Edilgen Ortaç)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Yapılan işten (eylemden) etkilenen kişiyi veya nesneyi gösteren türemiş isimdir. Sülasi mücerred fiillerde <strong>"مَفْعُول" (Mef'ûl)</strong> kalıbında gelir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتُوب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Yazılan / Mektup</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتُوب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazılan / Mektup</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَعْلُوم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Bilinen / Malum</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَعْلُوم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Bilinen / Malum</span>
                 </div>
             </div>
             <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8417,14 +8212,14 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'zaman_mekan') {
         arTitle = "اِسْمُ الزَّمان والمَكان"; trTitle = "Zaman ve Mekan İsmi"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Eylemin yapıldığı <strong>zamanı</strong> veya eylemin gerçekleştiği <strong>yeri (mekan)</strong> ifade etmek için kullanılan kalıplardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتَب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Yazı Yeri (Ofis/Mektep)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مَكْتَب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Yazı Yeri (Ofis/Mektep)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَسْجِد</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Secde Yeri (Mescit)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مَسْجِد</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Secde Yeri (Mescit)</span>
                 </div>
             </div>
             <div style="background: #fdf2f8; border-left: 4px solid #ec4899; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8438,14 +8233,14 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_alet') {
         arTitle = "اِسْمُ الآلَة"; trTitle = "İsmi Alet (Alet İsmi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Bir işin bizzat kendisiyle yapıldığı <strong>aleti, cihazı veya aracı</strong> ifade etmek için türetilen isimlerdir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مِفْتَاح</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Açma Aleti (Anahtar)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مِفْتَاح</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Açma Aleti (Anahtar)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مِكْنَسَة</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Süpürme Aleti (Süpürge)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مِكْنَسَة</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Süpürme Aleti (Süpürge)</span>
                 </div>
             </div>
             <div style="background: #f0fdfa; border-left: 4px solid #14b8a6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8460,14 +8255,14 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'cemi_teksir') {
         arTitle = "جَمْعُ التَّكْسير"; trTitle = "Kırık Çoğul (Cemi Teksir)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Kelimenin tekil (müfred) yapısının kırılarak (harf eklenip çıkarılarak veya harekeleri değiştirilerek) oluşturulduğu <strong>düzensiz çoğul</strong> türüdür. Kurallı çoğullar gibi (Müslim > Müslimûn) sonuna standart bir ek almaz; ezberlenmesi gerekir.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَقْلاَم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Kalem) Kalemler</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَقْلاَم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Kalem) Kalemler</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُتُب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Kitap) Kitaplar</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُتُب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Kitap) Kitaplar</span>
                 </div>
             </div>
             <div style="background: #ecfeff; border-left: 4px solid #06b6d4; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8482,14 +8277,14 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tasgir') {
         arTitle = "اِسْمُ التَّصْغير"; trTitle = "İsmi Tasğir (Küçültme İsmi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Varlığın küçüklüğünü, azlığını veya ona duyulan <strong>sevgi, şefkat ya da bazen küçümsemeyi</strong> ifade etmek için kullanılan özel kalıptır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كُتَيِّب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Kitap) Kitapçık</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">كُتَيِّب</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Kitap) Kitapçık</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">وُلَيْد</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Veled) Çocukcağız</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">وُلَيْد</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Veled) Çocukcağız</span>
                 </div>
             </div>
             <div style="background: #fff1f2; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8505,14 +8300,14 @@ window.openAtlasOverlay = function(stage) {
         </div>`;
     } else if (stage === 'ismi_tafdil') {
         arTitle = "اِسْمُ التَّفْضيل"; trTitle = "İsmi Tafdil (Üstünlük İsmi)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Sıfatlarda kıyaslama (<strong>daha</strong>) veya en üstünlük (<strong>en</strong>) bildiren isimdir. Eril (Müzekker) için <strong>أَفْعَل (Ef'al)</strong>, Dişil (Müennes) için <strong>فُعْلَى (Fu'lâ)</strong> kalıbı kullanılır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَكْبَر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">En Büyük (Eril)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">أَكْبَر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">En Büyük (Eril)</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُبْرَى</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">En Büyük (Dişil)</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">كُبْرَى</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">En Büyük (Dişil)</span>
                 </div>
             </div>
             <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8538,19 +8333,16 @@ window.openAtlasOverlay = function(stage) {
                 </div>
             </div>
         </div>`;
-    }
-    
-    // Mezid Nouns (No Tables)
-    else if (stage === 'mastar_mezid') {
+    } else if (stage === 'mastar_mezid') {
         arTitle = "المَصْدَر"; trTitle = "Mastar (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
+        desc = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
             <p>Mezid (harf eklenmiş) fiillerin mastarlarıdır. Sülasi Mücerred mastarların aksine, <strong>Mezid mastarlar tamamen kurallıdır (Kıyasîdir)</strong> ve her babın kendine özgü değişmez bir mastar kalıbı vardır.</p>
             <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
                 <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">تَعْلِيم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Tef'il Babı) Öğretmek</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">تَعْلِيم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(Tef'il Babı) Öğretmek</span>
                 </div>
                 <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">اِسْتِغْفار</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(İstif'al) Bağışlanma Dilemek</span>
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">اِسْتِغْفار</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">(İstif'al) Bağışlanma Dilemek</span>
                 </div>
             </div>
             <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
@@ -8558,48 +8350,10 @@ window.openAtlasOverlay = function(stage) {
                 <p style="margin: 0;">Bizim "İf'al, Tef'il, Mufaale" diyerek ezberlediğimiz bab isimleri, aslında o babların <strong>Mastar</strong> kalıplarından başka bir şey değildir. Türkçe'de kullandığımız "İslam, İmtihan, İstikbal, Mücadele, Tekbir, Tevekkül" kelimelerinin hepsi Mezid mastarlardır.</p>
             </div>
         </div>`;
-    } else if (stage === 'ismi_fail_mezid') {
-        arTitle = "اِسْمُ الفاعِل"; trTitle = "İsmi Fail (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
-            <p>Mezid fiillerde (harf eklenmiş fiillerde) işi yapanı gösterir. Kuralı çok basittir: Muzari fiilin başındaki muzaraat harfi atılır, yerine <strong>ötreli 'MİM' (مُ)</strong> getirilir ve <strong>sondan bir önceki harf ESRELİ</strong> okunur.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
-                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلِّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Tef'il) Öğreten/Muallim</span>
-                </div>
-                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَغْفِر</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(İstif'al) Bağışlanma Dileyen</span>
-                </div>
-            </div>
-            <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">Türkçe'deki Harika Uyumu:</h4>
-                <p style="margin: 0;">Eğer bir kelime Türkçe'de <strong>"MÜ, MU"</strong> ile başlıyorsa ve sondan bir önceki sesli harfi ince (esre gibi i/ı) ise o eylemi yapan kişidir!<br>
-                Müsl<strong>i</strong>m (Teslim olan), Mü'm<strong>i</strong>n (İman eden), Münaf<strong>ı</strong>k, Müşr<strong>i</strong>k, Mümteh<strong>i</strong>n, Mütekebb<strong>i</strong>r, Muall<strong>i</strong>m...</p>
-            </div>
-        </div>`;
-    } else if (stage === 'ismi_meful_mezid') {
-        arTitle = "اِسْمُ المَفْعول"; trTitle = "İsmi Mef'ul (Mezid)"; 
-        desc = `<div style="text-align: left; font-size: clamp(2.0rem, 0.5vw + 1.6rem, 2.3rem); color: #000000; line-height: 1.7;">
-            <p>Mezid fiillerde (harf eklenmiş fiillerde) yapılan işten etkileneni gösterir. Kuralı İsmi Fail ile neredeyse aynıdır: Muzari fiilin başına <strong>ötreli 'MİM' (مُ)</strong> getirilir, ancak İsmi Fail'in aksine <strong>sondan bir önceki harf ÜSTÜNLÜ</strong> okunur.</p>
-            <div style="display: flex; justify-content: center; gap: 60px; margin: 25px 0;">
-                <div style="background: #eff6ff; padding: 20px 40px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #2563eb; display: block; margin-bottom: 5px;">مُعَلَّم</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">Öğretilen (Kişi/Nesne)</span>
-                </div>
-                <div style="background: #fff7ed; padding: 20px 40px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">مُسْتَخْرَج</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: normal;">(Maden vb.) Çıkarılan Şey</span>
-                </div>
-            </div>
-            <div style="background: #fff1f2; border-left: 4px solid #f43f5e; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #000000;">İsmi Fail - İsmi Mef'ul Ayrımı (Esre mi Üstün mü?):</h4>
-                <p style="margin: 0;">Türkçede de aynı kuralı kullanırız! Sondan bir önceki ses:<br>
-                <strong>İ / I ise Yapan (İsmi Fail):</strong> Mükr<strong>i</strong>m (İkram eden), Müstakb<strong>i</strong>l (Karşılayan).<br>
-                <strong>A / E ise Yapılan (İsmi Mef'ul):</strong> Mükr<strong>e</strong>m (İkram edilen), Müstakb<strong>e</strong>l (Karşılanan / Gelecek zaman).</p>
-            </div>
-        </div>`;
     } else {
         arTitle = stage.toUpperCase(); trTitle = "Konu Anlatımı"; desc = "Bu konu ile ilgili açıklamalar eklenecektir.";
     }
 
-    
     let elAr = document.getElementById('atlas-title-ar');
 
     let elTr = document.getElementById('atlas-title-tr');
@@ -8977,15 +8731,15 @@ function openFastDictionaryMode() {
                 <div style="display: flex; gap: 30px; margin-bottom: 0px; justify-content: flex-start;" class="fdm-info-row">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="display:inline-block; width: 22px; height: 22px; background: #27ae60; border-radius: 6px;" class="fdm-color-box"></span>
-                        <span style="font-size: 2.6rem; color: #333; font-weight: normal;" class="fdm-info-text">FİİLLER</span>
+                        <span style="font-size: 2.6rem; color: #333; font-weight: bold;" class="fdm-info-text">FİİLLER</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="display:inline-block; width: 22px; height: 22px; background: #2980b9; border-radius: 6px;" class="fdm-color-box"></span>
-                        <span style="font-size: 2.6rem; color: #333; font-weight: normal;" class="fdm-info-text">İSİMLER</span>
+                        <span style="font-size: 2.6rem; color: #333; font-weight: bold;" class="fdm-info-text">İSİMLER</span>
                     </div>
                 </div>
                 <div style="font-size: 2.4rem; color: #555; line-height: 1.6;" class="fdm-info-note">
-                    <span style="font-weight: normal; color: #2980b9; font-size: 2.4rem;" class="fdm-info-note-title">Not:</span> Türkçeye geçen Arapça kelimeler genellikle isimlerdir.
+                    <span style="font-weight: bold; color: #2980b9; font-size: 2.4rem;" class="fdm-info-note-title">Not:</span> Türkçeye geçen Arapça kelimeler genellikle isimlerdir.
                 </div>
             </div>
         `;
@@ -9059,7 +8813,7 @@ function openFastDictionaryMode() {
         
         const html = `
             <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 18px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
-                <div style="width: 65px; text-align: center; font-weight: normal; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px;">${refId}</div>
+                <div style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px;">${refId}</div>
                 <div style="flex: 1; text-align: right; padding-right: 20px; font-family: 'Arakom', sans-serif; font-size: 3.4rem; color: #000;">${arText} ${emoji}</div>
                 <div style="flex: 1; text-align: left; color: #444; font-size: 1.8rem;" dir="ltr">${trText}</div>
             </div>
@@ -9308,7 +9062,6 @@ window.telaffuzFilters = {
 
 function openTelaffuz() {
     document.getElementById('telaffuz-overlay').style.display = 'flex';
-    applyTelaffuzFilter();
 }
 
 function toggleTFilter(el, type, value) {
@@ -9326,60 +9079,6 @@ function toggleTFilter(el, type, value) {
         el.classList.add('active');
         window.telaffuzFilters[type] = [value];
     }
-    applyTelaffuzFilter();
-}
-
-function showAksamSebaGenelInfo(e) {
-    if(e) e.stopPropagation();
-    document.getElementById('aksam-info-title').innerText = "Aksam-ı Seb'a Nedir?";
-    document.getElementById('aksam-info-overlay').style.display = 'flex';
-    document.getElementById('aksam-info-text').innerHTML = `
-<div style="text-align: left; direction: ltr; padding: 25px; font-family: 'Inter', sans-serif;">
-    <p style="margin-bottom: 35px; font-size: 2.5rem; color: #1e293b; line-height: 1.8;" dir="ltr">
-        <strong style="color: #6c5ce7; font-size: 3rem;">Aksam-ı Seb'a (Yedi Kısım)</strong>, Arapça fiillerin ve kelimelerin içerdikleri temel harflerin (kök harflerin) ses ve yapı özelliklerine göre yedi farklı gruba ayrılmasıdır. Bir kelimenin kökündeki harflerin sahih (sağlam) veya illetli (zayıf) oluşu, o kelimenin nasıl çekimleneceğini doğrudan belirler.
-    </p>
-
-    <div style="background: #f0f9ff; border-left: 10px solid #3b82f6; padding: 30px; margin-bottom: 40px; border-radius: 0 16px 16px 0; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);" dir="ltr">
-        <h4 style="margin: 0 0 20px 0; color: #1d4ed8; font-size: 3rem; font-weight: normal; border-bottom: 3px solid #bfdbfe; padding-bottom: 12px;" dir="ltr">Telaffuz İçin Önemi</h4>
-        <p style="margin: 0; font-size: 2.5rem; color: #334155; line-height: 1.8;" dir="ltr">
-            Arapçada illet harfleri (Vav, Ya, Elif) sesli harf işlevi de görebilir. Bu harflerin düşmesi, dönüşmesi veya başka bir harfle kaynaşması kelimenin vurgusunu ve doğal telaffuzunu tamamen değiştirir. Aksam-ı Seb'a'yı bilmek, illetli harflerin nerede uzatılacağını, nerede okunmayacağını öngörmeyi ve akıcı, doğru bir telaffuz (artikülasyon) yakalamayı sağlar.
-            <br><br>
-            <span style="color: #64748b; font-size: 2.5rem;">Örnek:</span> İkinci harfi illetli olan Ecvef bir kelimede, harfin dönüşümü sesi belirler:
-            <br>
-            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 3.2rem; color: #3b82f6; margin: 0 10px; display: inline-block;">قَوَلَ</span>
-            <span style="font-size: 2.5rem;">(Kavele) ➔</span>
-            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 3.2rem; color: #1d4ed8; margin: 0 10px; display: inline-block;">قَالَ</span>
-            <span style="font-size: 2.5rem;">(Kâle - Elif'e dönüşüp uzatılır)</span>
-        </p>
-    </div>
-
-    <div style="background: #fff7ed; border-left: 10px solid #f97316; padding: 30px; margin-bottom: 40px; border-radius: 0 16px 16px 0; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);" dir="ltr">
-        <h4 style="margin: 0 0 20px 0; color: #c2410c; font-size: 3rem; font-weight: normal; border-bottom: 3px solid #fed7aa; padding-bottom: 12px;" dir="ltr">Dilbilgisi İçin Önemi</h4>
-        <p style="margin: 0; font-size: 2.5rem; color: #334155; line-height: 1.8;" dir="ltr">
-            Cümle kurulumlarında, özellikle mazi (geçmiş), muzari (şimdiki) ve emir kiplerinde fiil çekimleri çekirdek yapıya göre şekillenir.
-            <br><br>
-            Örneğin; bir fiil <strong style="color: #c2410c;">Misal</strong> (illet harfi başta) ise emir kipinde ilk harfini kaybedebilir:
-            <br>
-            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 3.2rem; color: #f97316; margin: 0 10px; display: inline-block;">وَجَدَ</span>
-            <span style="font-size: 2.5rem;">(Vecede) ➔ Emir:</span>
-            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 3.2rem; color: #c2410c; margin: 0 10px; display: inline-block;">جِدْ</span>
-            <span style="font-size: 2.5rem;">(Cid)</span>
-            <br><br>
-            Veya <strong style="color: #c2410c;">Ecvef</strong> (illet harfi ortada) ise çoğul dişil çekimlerinde ortadaki harf tamamen düşebilir:
-            <br>
-            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 3.2rem; color: #f97316; margin: 0 10px; display: inline-block;">قَالَ</span>
-            <span style="font-size: 2.5rem;">(Kâle) ➔ Dişil Çoğul:</span>
-            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 3.2rem; color: #c2410c; margin: 0 10px; display: inline-block;">قُلْنَ</span>
-            <span style="font-size: 2.5rem;">(Kulne)</span>
-        </p>
-    </div>
-
-    <p style="margin-bottom: 0; font-size: 2.2rem; color: #64748b; font-style: italic; line-height: 1.7; text-align: center; border-top: 1px dashed #cbd5e1; padding-top: 30px;" dir="ltr">
-        Kısacası bu yedi kategori; kelimenin genetik şifresini çözer, doğru telaffuzu garanti eder ve dilbilgisi istisnalarını kurallaştırır.
-    </p>
-</div>
-`;
-
 }
 
 function getAksamIseba(root) {
@@ -9427,12 +9126,7 @@ function getLetterCountFromRefId(refId) {
 
 function applyTelaffuzFilter() {
     const resContainer = document.getElementById('telaffuz-results');
-    resContainer.innerHTML = `
-        <div style="text-align:center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;" dir="ltr">
-            <i class="fas fa-spinner fa-pulse" style="font-size: 3rem; color: #3498db; margin-bottom: 15px;"></i>
-            <div style="font-size: 1.2rem; color: #2c3e50; font-weight: 700;">Fiiller Yükleniyor...</div>
-        </div>
-    `;
+    resContainer.innerHTML = '<div style="text-align:center; padding: 20px;">Filtreleniyor...</div>';
     
     setTimeout(() => {
         let results = [];
@@ -9440,12 +9134,11 @@ function applyTelaffuzFilter() {
         const requiredLetters = window.telaffuzFilters.letter;
         
         if (requiredAksam.length === 0 && requiredLetters.length === 0) {
-            resContainer.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; color:#e74c3c; font-size: 1.2rem; font-weight: 500;" dir="ltr">Lütfen en az bir filtre seçin.</div>';
+            resContainer.innerHTML = '<div style="text-align:center; color:#e74c3c; padding: 20px; font-size: 1.2rem;">Lütfen en az bir filtre seçin.</div>';
             return;
         }
 
-        const sourceObj = typeof wordEasterEggs !== 'undefined' ? wordEasterEggs : {};
-        const allRoots = Object.keys(sourceObj);
+        const allRoots = Object.keys(sozlukVerileri);
         allRoots.forEach(root => {
             const aksamList = getAksamIseba(root);
             
@@ -9454,7 +9147,7 @@ function applyTelaffuzFilter() {
                 if (!matchAksam) return;
             }
             
-            const verbs = (typeof getAvailableMaziVerbs === 'function') ? getAvailableMaziVerbs(root) : [];
+            const verbs = getAvailableMaziVerbs(root);
             verbs.forEach(v => {
                 const lCount = getLetterCountFromRefId(v.refId);
                 if (requiredLetters.length > 0) {
@@ -9472,19 +9165,19 @@ function applyTelaffuzFilter() {
         });
         
         if (results.length === 0) {
-            resContainer.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding: 20px; font-size: 1.2rem;" dir="ltr">Kriterlere uygun fiil bulunamadı.</div>';
+            resContainer.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding: 20px; font-size: 1.2rem;">Kriterlere uygun fiil bulunamadı.</div>';
         } else {
             resContainer.innerHTML = '';
-            
-            // Sonuçları alfabeye göre sırala
-            results.sort((a, b) => a.verb.localeCompare(b.verb, 'ar'));
-            
             results.forEach(r => {
                 const escapedRoot = r.root.replace(/"/g, "&quot;").replace(/'/g, "\\'");
                 resContainer.innerHTML += `
-                    <div class="t-result-item" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})" dir="rtl">
-                        <div style="display:flex; flex-direction:column; text-align: right;">
+                    <div class="t-result-item" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})">
+                        <div style="display:flex; flex-direction:column;">
                             <span class="t-result-ar">${r.verb}</span>
+                            <div style="margin-top: 5px;">
+                                <span class="t-result-tag">${r.aksam}</span>
+                                <span class="t-result-tag">${r.letters} Harf</span>
+                            </div>
                         </div>
                         <i class="fas fa-play-circle" style="font-size: 2rem; color: #2ecc71;"></i>
                     </div>
@@ -9508,213 +9201,20 @@ function launchTelaffuzMarathon(root, refId) {
     window.mIsPaused = false;
     window.mRaceMode = false;
     window.mSkippedLobby = true; 
-    window.mLaunchedFromTelaffuz = true;
     
     let mOverlay = document.getElementById('marathon-overlay');
-    if (mOverlay) {
-        mOverlay.classList.add('active');
-        mOverlay.scrollTop = 0;
-    }
+    mOverlay.classList.add('active');
+    mOverlay.scrollTop = 0;
     
     const topBar = document.getElementById('top-bar-panel');
-    if(topBar) {
-        topBar.style.display = 'grid';
-        topBar.style.visibility = 'visible';
-    }
+    if(topBar) topBar.style.visibility = 'visible';
     
-    if (typeof hideMarathonHeaders === 'function') hideMarathonHeaders(); 
+    hideMarathonHeaders(); 
     const chronoMain = document.getElementById('chrono-main');
     if(chronoMain) chronoMain.style.display = 'none'; 
     
-    if (typeof buildMarathonDataForBab === 'function') buildMarathonDataForBab(refId);
+    buildMarathonDataForBab(refId);
     
-    let selArea = document.getElementById('marathon-selection-area');
-    if (selArea) selArea.style.display = 'none';
-    
-    if (typeof prepareMarathonPlay === 'function') prepareMarathonPlay();
+    document.getElementById('marathon-selection-area').style.display = 'none';
+    prepareMarathonPlay();
 }
-
-
-
-// --- GÜNÜN KÖKÜ (ROOT OF THE DAY) ---
-function showRootOfDay() {
-    if (typeof wordEasterEggs === 'undefined') return;
-    
-    // Verbs IDs to exclude
-    let verbIds = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16",
-                   "52","53","54","58","59","60","64","65","66","71","72","73","77","78","79",
-                   "83","84","85","88","89","90","94","95","96","100","101","102"];
-    
-    // En az 3 isim barındıran kökleri bulalım
-    let validRoots = [];
-    let allRootKeys = Object.keys(wordEasterEggs);
-    
-    for (let rKey of allRootKeys) {
-        let nounCount = 0;
-        let rData = wordEasterEggs[rKey];
-        for (let k in rData) {
-            if (!verbIds.includes(k) && rData[k].base && rData[k].base.arText) {
-                nounCount++;
-            }
-        }
-        if (nounCount >= 3) {
-            validRoots.push(rKey);
-        }
-    }
-    
-    if (validRoots.length === 0) return;
-    
-    // Her açılışta rastgele bir kök
-    let randomIndex = Math.floor(Math.random() * validRoots.length);
-    let selectedRootKey = validRoots[randomIndex];
-    let rData = wordEasterEggs[selectedRootKey];
-    
-    let wordsArray = [];
-    for (let k in rData) {
-        if (!verbIds.includes(k) && rData[k].base && rData[k].base.arText) {
-            wordsArray.push(rData[k].base);
-        }
-    }
-    
-    wordsArray = wordsArray.slice(0, 15); // Max 15 nouns
-    
-    // 15 Farklı şık iOS/Profesyonel renk paleti (Koyu ve okunabilir)
-    const colorPalette = [
-        "#FF3B30", // Kırmızı
-        "#007AFF", // Mavi
-        "#34C759", // Yeşil (Biraz koyulaştırıldı ama okunaklı)
-        "#5856D6", // İndigo / Mor
-        "#FF9500", // Turuncu
-        "#AF52DE", // Mor / Eflatun
-        "#FF2D55", // Pembe
-        "#0284C7", // Gök Mavisi (Koyu)
-        "#16A34A", // Zümrüt Yeşili
-        "#D97706", // Koyu Sarı / Altın
-        "#7C3AED", // Menekşe
-        "#0D9488", // Turkuaz / Deniz Mavisi
-        "#E11D48", // Koyu Gül Rengi
-        "#4B5563", // Havalı Gri
-        "#4338CA"  // Koyu Lacivert
-    ];
-    
-    let derivedWordsHTML = "";
-    for (let i = 0; i < wordsArray.length; i++) {
-        let w = wordsArray[i];
-        // Renklendirme kapatıldı (zaid harf renklendirmesi iptal), kelimenin tamamı tek renk olacak
-        let rawArText = w.arText; 
-        let cardColor = colorPalette[i % colorPalette.length];
-        
-        derivedWordsHTML += `
-            <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-align: center; transition: transform 0.2s, border-color 0.2s; flex: 0 1 200px; min-width: 160px; max-width: 260px;" onmouseover="this.style.borderColor='${cardColor}'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'">
-                <div style="font-family: 'Arakom', sans-serif; font-size: 52px; color: ${cardColor}; margin-bottom: 12px; line-height: 1.2;" dir="rtl">${rawArText}</div>
-                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #555555; font-weight: 600;" dir="ltr">${w.trText}</div>
-            </div>
-        `;
-    }
-    
-    // Harfleri tatweel (ـ) ile akıllı bir şekilde formatlama (Örn: كـ ـتـ ـب)
-    const nonJoining = ['ا', 'د', 'ذ', 'ر', 'ز', 'و', 'ؤ', 'ء', 'أ', 'إ', 'آ'];
-    let formattedRootArray = [];
-    for (let i = 0; i < selectedRootKey.length; i++) {
-        let char = selectedRootKey[i];
-        let isLast = (i === selectedRootKey.length - 1);
-        let prevNonJoining = (i === 0) || nonJoining.includes(selectedRootKey[i - 1]);
-        let currNonJoining = nonJoining.includes(char);
-        
-        let part = char;
-        if (!prevNonJoining) part = 'ـ' + part; // join right
-        if (!currNonJoining && !isLast) part = part + 'ـ'; // join left
-        
-        formattedRootArray.push(part);
-    }
-    let formattedRootText = formattedRootArray.join(' ');
-    
-    const modalOverlay = document.createElement("div");
-    modalOverlay.id = "rootOfDayOverlay";
-    modalOverlay.style.position = "fixed";
-    modalOverlay.style.top = "0";
-    modalOverlay.style.left = "0";
-    modalOverlay.style.width = "100vw";
-    modalOverlay.style.height = "100vh";
-    modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)"; 
-    modalOverlay.style.backdropFilter = "blur(10px)";
-    modalOverlay.style.WebkitBackdropFilter = "blur(10px)";
-    modalOverlay.style.zIndex = "2147483647";
-    modalOverlay.style.display = "flex";
-    modalOverlay.style.justifyContent = "center";
-    modalOverlay.style.alignItems = "center";
-    modalOverlay.style.opacity = "0";
-    modalOverlay.style.transition = "opacity 0.4s ease-out";
-    
-    // iOS/Apple-like professional design
-    modalOverlay.innerHTML = `
-        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-            
-            <button onclick="closeRootOfDay()" style="position: absolute; top: 20px; right: 20px; background: #e2e8f0; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <div style="display: inline-block; background: #ffffff; color: #000000; border: 2px solid #e2e8f0; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
-                <i class="fas fa-seedling" style="margin-right: 6px; color: #FF3B30;"></i> GÜNÜN KÖKÜ
-            </div>
-            
-            <div style="font-family: 'Arakom', sans-serif; font-size: 100px; color: #1d1d1f; line-height: 1.1; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.05);" dir="rtl">
-                ${formattedRootText}
-            </div>
-            
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 20px; margin-top: 25px; padding: 0 10px;">
-                ${derivedWordsHTML}
-            </div>
-            
-        </div>
-    `;
-    
-    // Fallback for mobile devices
-    let style = document.createElement('style');
-    style.innerHTML = `
-        @media (max-width: 900px) {
-            #rootOfDayOverlay > div > div:last-child > div {
-                flex: 0 1 200px !important;
-            }
-        }
-        @media (max-width: 600px) {
-            #rootOfDayOverlay > div > div:last-child > div {
-                flex: 0 1 140px !important;
-                min-width: 140px !important;
-                padding: 12px 8px !important;
-            }
-            #rootOfDayOverlay > div > div:last-child > div > div:first-child {
-                font-size: 38px !important;
-            }
-            #rootOfDayOverlay > div > div:nth-child(3) {
-                font-size: 70px !important;
-            }
-            #rootOfDayOverlay > div {
-                padding: 30px 15px !important;
-                border-radius: 20px !important;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(modalOverlay);
-    
-    setTimeout(() => {
-        modalOverlay.style.opacity = "1";
-        modalOverlay.firstElementChild.style.transform = "scale(1) translateY(0)";
-    }, 50);
-}
-
-
-document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { showRootOfDay(); }, 800); });
-
-
-window.closeRootOfDay = function() {
-    const modalOverlay = document.getElementById("rootOfDayOverlay");
-    if (modalOverlay) {
-        modalOverlay.style.opacity = "0";
-        modalOverlay.firstElementChild.style.transform = "scale(0.95) translateY(-20px)";
-        setTimeout(() => modalOverlay.remove(), 400);
-    }
-}
-
