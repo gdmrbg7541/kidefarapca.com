@@ -186,29 +186,39 @@ async function checkTeacherAccess(targetUrl) {
         return;
     }
     
+    // Tarayıcıların popup engelleyicilerine takılmamak için
+    // asenkron işlem öncesi boş bir sekme açıyoruz.
+    let newTab = null;
+    if (targetUrl.includes('listelerim.html') || targetUrl.includes('kaliplartablosu.html')) {
+        newTab = window.open('about:blank', '_blank');
+    }
+
     try {
         const doc = await db.collection("kullanicilar").doc(user.uid).get();
         if (doc.exists) {
             const userData = doc.data();
             const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
             if (isTeacher) {
-                if (targetUrl.includes('listelerim.html') || targetUrl.includes('kaliplartablosu.html')) {
-                    window.open(targetUrl, '_blank');
+                if (newTab) {
+                    newTab.location.href = targetUrl;
                 } else {
                     window.location.href = targetUrl;
                 }
             } else {
+                if (newTab) newTab.close();
                 setRole('teacher');
                 errEl.innerText = "Sadece öğretmen hesapları bu alana girebilir. Öğretmen misiniz?";
                 openLoginModal(true);
                 // Kullanıcıyı çıkarmıyoruz ki diğer alanları gezebilsin, ama bu butona basarsa uyarı görüyor.
             }
         } else {
+            if (newTab) newTab.close();
             setRole('teacher');
             errEl.innerText = "Kullanıcı bilgisi bulunamadı.";
             openLoginModal(true);
         }
     } catch(e) {
+        if (newTab) newTab.close();
         console.error("Öğretmen kontrol hatası:", e);
     }
 }

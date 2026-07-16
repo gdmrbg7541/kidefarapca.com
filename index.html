@@ -536,7 +536,7 @@
 
 <a href="javascript:void(0)" 
    class="floating-tool-button kaliplar-tablosu-btn" 
-   onclick="if(!firebase.auth().currentUser) { window.pendingRedirectUrl = 'kaliplartablosu.html'; openLoginModal(false); return false; } window.location.href = 'kaliplartablosu.html'; return false;">
+   onclick="if(!firebase.auth().currentUser) { window.pendingRedirectUrl = 'kaliplartablosu.html'; openLoginModal(false); return false; } window.open('kaliplartablosu.html', '_blank'); return false;">
    Kalıplar Tablosu 📋
 </a>
 
