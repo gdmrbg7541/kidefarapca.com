@@ -7,56 +7,7 @@
     <title>Listelerim</title>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-<div id="login-modal" style="display:flex; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: #F7F9FC; align-items: center; justify-content: center; backdrop-filter: blur(12px);">
-    <div class="auth-card">
-        
-        <div class="auth-header-area">
-            <h2 id="auth-title">Giriş Paneli</h2>
-            <p class="marhey-text" id="auth-desc" style="font-weight:400;">Lütfen giriş yapmak istediğiniz rolü seçin.</p>
-        </div>
 
-        <div class="role-selector" style="display: flex; gap: 8px; margin-bottom: 20px;">
-            <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn active-role">Öğretmen</button>
-            <button onclick="setRole('student')" id="btn-student" class="role-btn">Öğrenci</button>
-        </div>
-
-        <div class="input-container">
-            <div style="margin-bottom: 15px;">
-                <div class="input-group" style="width: 100%; margin-bottom: 0;">
-                    <input type="email" id="email" placeholder=" " required>
-                    <label id="primary-label" class="marhey-text">E-posta Adresi</label>
-                </div>
-            </div>
-
-            <div id="password-main-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <div class="input-group" style="flex: 1; margin-bottom: 0;">
-                    <input type="password" id="password" placeholder=" " required>
-                    <label id="password-label" class="marhey-text">Şifre</label>
-                </div>
-                <span class="toggle-pass-btn" onclick="togglePassword('password')">👁️</span>
-            </div>
-
-            <div id="re-password-group" style="display: none; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <div class="input-group" style="flex: 1; margin-bottom: 0;">
-                    <input type="password" id="re-password" placeholder=" ">
-                    <label class="marhey-text">Şifreyi Onayla</label>
-                </div>
-                <span class="toggle-pass-btn" onclick="togglePassword('re-password')">👁️</span>
-            </div>
-        </div>
-        
-        <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
-        
-        <p id="hata-mesaji" class="marhey-text" style="color:red; font-size:12px; height: 15px;"></p>
-
-        <div class="auth-footer marhey-text" id="auth-footer-links">
-            <span id="auth-switch-text">Hesabınız yok mu?</span> 
-            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
-        </div>
-            
-        </div>
-    </div>
-</div>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
@@ -1008,7 +959,7 @@ body.role-student button[onclick*="switchView"] {
     <button class="tab" onclick="switchTab(2)">Sınavlar</button>
     <button class="tab" onclick="switchTab(3)">Genel Sonuç</button>
     <button class="tab" onclick="switchTab(4)">Kurayla Seç!</button>
-    <button class="tab" onclick="switchTab(5)">Görev Gönder</button> <button class="tab" onclick="switchTab(6)">Geri Sayım</button>
+    <button class="tab" onclick="switchTab(5)">Görev Gönder | Beta </button> <button class="tab" onclick="switchTab(6)">Geri Sayım</button>
     <button class="tab" onclick="switchTab(7)">Kronometre</button>
     <button class="tab" onclick="switchTab(8)">Takım Oluştur</button>
     <button class="tab" onclick="switchTab(9)">📅 Haftalık Plan</button>
@@ -2704,16 +2655,11 @@ function addConfigRow(t) {
 function loginButonTikla() {
     const user = firebase.auth().currentUser;
     if (user) {
-        // Eğer kullanıcı varsa çıkış onayı iste
         if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
-            firebase.auth().signOut().then(() => {
-                alert("Başarıyla çıkış yapıldı.");
-                location.reload(); // Sayfayı yenileyerek temiz bir başlangıç yapın
-            });
+            firebase.auth().signOut();
         }
     } else {
-        // Kullanıcı yoksa giriş modalını aç
-        modalAc(); 
+        window.location.replace("index.html");
     }
 }
    
@@ -3128,7 +3074,7 @@ firebase.auth().onAuthStateChanged((user) => {
         
         // Giriş yapıldığında arayüzü hazırla
         document.body.classList.add('logged-in');
-        modalKapat(); 
+        
         
         // Buton görünümünü güncelle
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
@@ -3141,32 +3087,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
     } else {
         console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
-        
-        // --- KRİTİK TEMİZLİK: GÜVENLİK VE VERİ SIZINTISI ÖNLEME ---
-        
-        // 1. RAM üzerindeki verileri sıfırla
-        data = { levels: {}, levelOrder: [] }; 
-        curLId = null; 
-        curCId = null;
-        
-        // 2. Sidebar'ı boş veriyle temizle
-        if (typeof renderSidebar === "function") {
-            renderSidebar(); 
-        }
-
-        
-
-        // 4. Arayüz kısıtlamalarını geri getir
-        document.body.classList.remove('logged-in');
-        
-        // 5. Giriş butonunu eski haline getir
-        loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
-        loginBtn.style.background = "#34495e"; 
-        
-        // Kullanıcı giriş yapmamışsa modalı otomatik aç
-        setTimeout(() => { 
-            if(!firebase.auth().currentUser) modalAc(); 
-        }, 1000);
+        window.location.replace("index.html");
     }
 });
 
