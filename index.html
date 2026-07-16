@@ -17,6 +17,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="index.css">
+  <script>
+      // Set window name so that other tabs can focus this tab back instead of opening duplicates
+      if (!window.name) {
+          window.name = 'indexTab';
+      }
+  </script>
 </head>
 <body>
 <!-- KULLANICI GİRİŞ PANELİ (MODAL) -->
@@ -541,7 +547,7 @@
    Kalıplar Tablosu 📋
 </a>
 
-<a id="listelerim-btn" href="listelerim.html" target="listelerimTab" onclick="return handleTeacherClick(event, 'listelerim.html')" class="floating-tool-button" rel="noopener noreferrer">Listelerim 📋</a>
+<a id="listelerim-btn" href="listelerim.html" target="listelerimTab" onclick="return handleTeacherClick(event, 'listelerim.html')" class="floating-tool-button">Listelerim 📋</a>
 
 <script src="index.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>

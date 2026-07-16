@@ -902,13 +902,21 @@ body.role-student button[onclick*="switchView"] {
 </style>
 
 <div id="sidebar">
-    <h2 style="margin-bottom:0;">🏫 Listelerim</h2>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0;">
+        <button onclick="window.close(); window.location.href='index.html';" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: #34495e; transition: 0.3s;" title="Ana Sayfaya Dön" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+        <h2 style="margin:0;">🏫 Listelerim</h2>
+    </div>
     <div id="teacher-code-display" style="font-size: 0.8rem; color: #f1c40f; margin-bottom: 15px; font-weight: bold; opacity: 0.8;"></div>
     
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
       <button class="btn-add" id="login-nav-btn" onclick="loginButonTikla()" style="background: #34495e; color: white; margin-bottom: 8px;">
-    🔑 Öğretmen Girişi
-</button>
+          🔑 Öğretmen Girişi
+      </button>
    <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;">🗓️ Tatiller</button>
         <button class="btn-add" onclick="addLevel()" style="margin-bottom:0;">+ Seviye Ekle</button>
 

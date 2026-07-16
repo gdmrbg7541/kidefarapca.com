@@ -201,7 +201,7 @@ function handleTeacherClick(event, targetUrl) {
     const errEl = document.getElementById('hata-mesaji');
 
     if (!user) {
-        event.preventDefault(); // Yeni sekmeyi engelle
+        event.preventDefault();
         setRole('teacher');
         errEl.innerText = "Lütfen Öğretmen olarak giriş yapın.";
         window.pendingRedirectUrl = targetUrl;
@@ -210,14 +210,14 @@ function handleTeacherClick(event, targetUrl) {
     }
     
     if (!window.hasTeacherAccess) {
-        event.preventDefault(); // Yeni sekmeyi engelle
+        event.preventDefault();
         setRole('teacher');
         errEl.innerText = "Şu anda Öğrenci olarak giriş yaptınız veya öğretmen yetkiniz yok. Lütfen Öğretmen sekmesinden giriş yapın.";
         openLoginModal(true);
         return false;
     }
 
-    // Her şey uygunsa, tarayıcının doğal yeni sekme açma işlemine (target="_blank") izin ver
+    // NATIVE TARAYICI DAVRANIŞINA İZİN VER: <a> etiketindeki target="listelerimTab" çalışacak
     return true;
 }
 
@@ -225,11 +225,13 @@ function handleTeacherClick(event, targetUrl) {
 function handleAnyLoginClick(event, targetUrl) {
     const user = firebase.auth().currentUser;
     if (!user) {
-        event.preventDefault(); // Yeni sekmeyi engelle
+        event.preventDefault();
         window.pendingRedirectUrl = targetUrl;
         openLoginModal(false);
         return false;
     }
+    
+    // NATIVE TARAYICI DAVRANIŞINA İZİN VER: <a> etiketindeki target="kaliplarTab" çalışacak
     return true;
 }
 
