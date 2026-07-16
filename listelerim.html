@@ -1621,21 +1621,9 @@ function updateActivityTable() {
         });
     }
 }
-function modalAc() {
-    document.getElementById('login-modal').style.display = 'flex';
-}
-
-
-// Modalın dışına tıklanarak kapanmasını engelleyen yapı
-window.onclick = function(event) {
-    let modal = document.getElementById("login-modal");
-    // Bu kısmı boş bırakıyoruz veya dış tıklama kontrolünü siliyoruz.
-    // Böylece sadece modalKapat() fonksiyonu tetiklendiğinde kapanacaktır.
-}
-
-function modalKapat() {
-    document.getElementById('login-modal').style.display = 'none';
-}
+function modalAc() {}
+window.onclick = null;
+function modalKapat() {}
 
 async function login() {
     const email = document.getElementById('email').value;
@@ -3157,7 +3145,6 @@ function misafirGiris() {
     loadDataFromLocal();
     
     // 2. Modalı gizle ve kilitleri aç
-    document.getElementById('login-modal').style.display = 'none';
     document.body.classList.add('logged-in');
     
     // 3. Misafir modunu hafızaya al
