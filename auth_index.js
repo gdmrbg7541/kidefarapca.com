@@ -77,15 +77,23 @@ async function authIslemi() {
 
             // Başarılı giriş
             alert("Giriş Başarılı!");
+            // Bekleyen yönlendirme varsa oraya git
             if (window.pendingRedirectUrl) {
                 if (window.pendingRedirectUrl.includes('listelerim.html') || window.pendingRedirectUrl.includes('kaliplartablosu.html')) {
-                    let tabName = window.pendingRedirectUrl.includes('listelerim.html') ? 'listelerimTab' : 'kaliplarTab';
-                    window.open(window.pendingRedirectUrl, tabName);
                     closeLoginModal();
+                    // Asenkron işlem sonrası window.open engellenebileceği için sahte bir <a> etiketiyle tıklama simüle ediyoruz
+                    let link = document.createElement('a');
+                    link.href = window.pendingRedirectUrl;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.pendingRedirectUrl = null;
                 } else {
                     window.location.href = window.pendingRedirectUrl;
                 }
-                window.pendingRedirectUrl = null;
+            } else {
+                closeLoginModal();
             }
         } else {
             const rePass = document.getElementById('re-password').value;
