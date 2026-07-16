@@ -20,10 +20,86 @@
 </head>
 <body>
 
+<div id="login-modal" style="display:none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(247, 249, 252, 0.85); align-items: center; justify-content: center; backdrop-filter: blur(12px);">
+    <div class="auth-card" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; display: flex; flex-direction: column; align-items: center; position: relative;">
+        
+        <div onclick="document.getElementById('login-modal').style.display='none'" style="position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; color:#7f8c8d;">✕</div>
+
+        <div class="auth-header-area" style="text-align: center; margin-bottom: 20px;">
+            <h2 id="auth-title" style="margin: 0; font-family: 'Marhey', sans-serif; color: #2c3e50;">Giriş Paneli</h2>
+            <p class="marhey-text" id="auth-desc" style="font-weight:400; color: #7f8c8d; margin-top: 5px;">Lütfen giriş yapmak istediğiniz rolü seçin.</p>
+        </div>
+
+        <div class="role-selector" style="display: flex; gap: 8px; margin-bottom: 20px; width: 100%;">
+            <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn" style="flex: 1; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; background: white; cursor: pointer; transition: 0.3s;">Öğretmen</button>
+            <button onclick="setRole('student')" id="btn-student" class="role-btn active-role" style="flex: 1; padding: 10px; border: 1px solid #3498db; background: #ebf5fb; color: #2980b9; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold;">Öğrenci</button>
+        </div>
+
+        <div class="input-container" style="width: 100%;">
+            <div style="margin-bottom: 15px;">
+                <div class="input-group" style="width: 100%; display: flex; flex-direction: column;">
+                    <label id="primary-label" class="marhey-text" style="margin-bottom: 5px; color: #34495e; font-size: 0.9em;">E-posta Adresi</label>
+                    <input type="email" id="email" required style="padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 1em;">
+                </div>
+            </div>
+
+            <div id="password-main-group" style="margin-bottom: 15px;">
+                <div class="input-group" style="width: 100%; display: flex; flex-direction: column;">
+                    <label id="password-label" class="marhey-text" style="margin-bottom: 5px; color: #34495e; font-size: 0.9em;">Şifre</label>
+                    <div style="display: flex; align-items: center; border: 1px solid #bdc3c7; border-radius: 8px; overflow: hidden;">
+                        <input type="password" id="password" required style="flex: 1; padding: 12px; border: none; outline: none; font-size: 1em;">
+                        <span class="toggle-pass-btn" onclick="togglePassword('password')" style="padding: 0 15px; cursor: pointer; background: #f8f9f9; display: flex; align-items: center; height: 100%;">👁️</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="re-password-group" style="display: none; margin-bottom: 15px;">
+                <div class="input-group" style="width: 100%; display: flex; flex-direction: column;">
+                    <label class="marhey-text" style="margin-bottom: 5px; color: #34495e; font-size: 0.9em;">Şifreyi Onayla</label>
+                    <div style="display: flex; align-items: center; border: 1px solid #bdc3c7; border-radius: 8px; overflow: hidden;">
+                        <input type="password" id="re-password" style="flex: 1; padding: 12px; border: none; outline: none; font-size: 1em;">
+                        <span class="toggle-pass-btn" onclick="togglePassword('re-password')" style="padding: 0 15px; cursor: pointer; background: #f8f9f9; display: flex; align-items: center; height: 100%;">👁️</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()" style="width: 100%; padding: 14px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s;">Giriş Yap</button>
+        
+        <p id="hata-mesaji" class="marhey-text" style="color:#e74c3c; font-size:13px; height: 15px; margin-top: 15px; text-align: center; width: 100%;"></p>
+
+        <div class="auth-footer marhey-text" id="auth-footer-links" style="margin-top: 15px; text-align: center; width: 100%; font-size: 0.9em;">
+            <span id="auth-switch-text" style="color: #7f8c8d;">Hesabınız yok mu?</span> 
+            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()" style="color: #3498db; text-decoration: none; font-weight: bold;">Kayıt Ol</a>
+        </div>
+            
+    </div>
+</div>
+
+<style>
+.role-btn.active-role {
+    border-color: #3498db !important;
+    background: #ebf5fb !important;
+    color: #2980b9 !important;
+    font-weight: bold;
+}
+.role-btn:not(.active-role) {
+    border-color: #bdc3c7 !important;
+    background: white !important;
+    color: #7f8c8d !important;
+    font-weight: normal;
+}
+</style>
+
 <header class="site-header">
-  <div class="container">
-    <h1>kidefarapca.com</h1>
-    <p class="arabic-welcome">أهلاً وسهلاً</p>
+  <div class="container header-flex-container">
+    <div class="header-titles">
+      <h1>kidefarapca.com</h1>
+      <p class="arabic-welcome">أهلاً وسهلاً</p>
+    </div>
+    <div id="header-auth-container">
+        <button id="header-auth-btn" onclick="document.getElementById('login-modal').style.display='flex'">Giriş Yap / Kayıt</button>
+    </div>
   </div>
 </header>
 
@@ -94,7 +170,6 @@
         </a>
       </div>
     </section>
-
     <section id="sunum-slaytlari" class="content-section">
       <h2>📊 Sunumlar</h2>
       <div class="game-grid mobile-scroll-grid-single" id="slayt-galerisi-container">
@@ -300,6 +375,65 @@
       </div>
     </section>
 
+
+    <!-- KURSLAR VE PAKETLER ALANI -->
+    <section id="kurslar-section" class="content-section">
+      <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        📚 Özel Kurslar
+        <button onclick="openPackageModal()" style="font-size: 0.8em; padding: 5px 15px; background: #E67E22; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Marhey', sans-serif;">Paket Al 🛒</button>
+      </h2>
+      <div class="game-grid mobile-scroll-grid-single">
+        
+        <!-- Kurs 1 -->
+        <a href="javascript:void(0)" onclick="checkPackageAccess(1, 'Kurslar-Dersler/kurslar.html')" class="game-card kss-card locked-course">
+          <div class="default-game-content" style="position: relative;">
+            <div class="course-lock-overlay" id="lock-1" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:12px; z-index:10;">
+              <span style="font-size: 2.5rem;">🔒</span>
+              <span style="font-family:'Marhey',sans-serif; color:#e74c3c; font-weight:bold; margin-top:10px;">Kilitli</span>
+            </div>
+            <div class="default-game-emoji">🎓</div>
+            <h3>Sarfa Giriş</h3>
+            <span class="game-card-description">6 kalıp üzerinden animasyonlu bir şekilde kök-vezin mantığını video eşliğinde öğreneceksiniz.</span>
+            <span class="status-badge" style="background:#bdc3c7; color:white;">Kursu Gör</span>
+          </div>
+        </a>
+
+        <!-- Kurs 2 -->
+        <a href="javascript:void(0)" onclick="checkPackageAccess(2, 'Kurslar-Dersler/kurslar.html')" class="game-card kss-card locked-course">
+          <div class="default-game-content" style="position: relative;">
+            <div class="course-lock-overlay" id="lock-2" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:12px; z-index:10;">
+              <span style="font-size: 2.5rem;">🔒</span>
+              <span style="font-family:'Marhey',sans-serif; color:#e74c3c; font-weight:bold; margin-top:10px;">Kilitli</span>
+            </div>
+            <div class="default-game-emoji">🚀</div>
+            <h3>Temel Sarf ve Nahiv (A2 Giriş)</h3>
+            <span class="game-card-description">İsim ve Fiil cümleleri, kelime çekim mantığı ve kural dışı fiiller.</span>
+            <span class="status-badge" style="background:#bdc3c7; color:white;">Kursu Gör</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Paket Al Modal -->
+    <div id="packageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10001; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div style="background:white; padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%; position:relative;">
+            <div onclick="closePackageModal()" style="position:absolute; top:10px; right:15px; font-size:1.5rem; cursor:pointer; color:#7f8c8d;">✕</div>
+            <h2 style="font-family:'Marhey',sans-serif; color:#2c3e50;">Paket Satın Alma</h2>
+            <p style="color:#7f8c8d; margin-top:15px; font-size:1.1em; line-height:1.5;">
+                Paket satın alma ve abonelik modülü şu anda <strong>yapım aşamasındadır</strong>. Yakında aktif edilecektir!
+            </p>
+            <button onclick="closePackageModal()" style="background:#3498db; color:white; border:none; padding:10px 30px; border-radius:8px; font-weight:bold; font-family:'Marhey',sans-serif; font-size:1.1em; margin-top:20px; cursor:pointer;">Anladım</button>
+        </div>
+    </div>
+
+    <script>
+        function openPackageModal() { document.getElementById('packageModal').style.display = 'flex'; }
+        function closePackageModal() { document.getElementById('packageModal').style.display = 'none'; }
+    </script>
+    <!-- KURSLAR BİTİŞ -->
+
+
     <section id="sinifici-materyaller" class="content-section">
       <h2>🛠️ Sınıfiçi Materyaller</h2>
       <div class="game-grid mobile-scroll-grid-single">
@@ -399,17 +533,19 @@
   </div>
 </footer>
 
-<a href="kaliplartablosu.html" 
+<a href="javascript:void(0)" 
    class="floating-tool-button kaliplar-tablosu-btn" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   onclick="var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); window.open(isMobile ? 'kaliplartablosumobil.html' : 'kaliplartablosu.html', '_blank'); return false;">
+   onclick="if(!firebase.auth().currentUser) { document.getElementById('login-modal').style.display='flex'; return false; } var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); window.open(isMobile ? '../kaliplartablosumobil.html' : '../kaliplartablosu.html', '_blank'); return false;">
    Kalıplar Tablosu 📋
 </a>
 
-<a href="listelerim.html" class="floating-tool-button" target="_blank" rel="noopener noreferrer">Listelerim 📋</a>
+<a href="javascript:void(0)" onclick="checkTeacherAccess('listelerim.html')" class="floating-tool-button" rel="noopener noreferrer">Listelerim 📋</a>
 
 <script src="index.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="auth_index.js"></script>
 
 </body>
 </html>

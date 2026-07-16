@@ -29,6 +29,37 @@ body{
 .site-header h1{font-family:'Marhey',sans-serif;font-size:2.5em;margin:0;font-weight:700}
 .arabic-welcome{font-family:'Harmattan',sans-serif;font-size:2em;font-weight:700;margin:0}
 
+.header-flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+.header-titles {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 30px;
+}
+
+#header-auth-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Marhey', sans-serif;
+  font-size: 0.9em;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+#header-auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
 #one-cikan-card {
   display: block;
   text-decoration: none;
@@ -80,7 +111,7 @@ body{
   font-family:'Marhey',sans-serif;color:#16A085;margin:0 0 15px;padding:8px 10px;font-size:1.8em;
   backdrop-filter:blur(6px);background:rgba(255,255,255,0.75);
   border-radius:8px;border:1px solid #E0E6ED;position:sticky;
-  top: calc(var(--header-height) + 10px); 
+  top: calc(var(--header-height) - 2px); 
   z-index:20;
   box-shadow:0 2px 6px rgba(0,0,0,0.08);
   animation:headingFade .35s ease-out;transform-origin:center;
@@ -312,15 +343,22 @@ body{
 }
  
 @media (max-width:576px){
-  .site-header .container{flex-direction:column;gap:8px}
-  .site-header h1{font-size:2em}.arabic-welcome{font-size:1.6em}
+  .header-flex-container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  .header-titles {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 15px;
+  }
+  .site-header h1{font-size:1.3em}.arabic-welcome{font-size:1.1em}
+  #header-auth-btn { padding: 6px 10px; font-size: 0.8em; }
    
   .container{
     padding:10px;
     margin-top: 15px; 
-  }
-  .site-header .container {
-    margin-top: 0;
   }
   .content-section{padding:15px}
   .youtube-channels{flex-direction:column;align-items:center}
