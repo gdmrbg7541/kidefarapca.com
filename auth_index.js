@@ -223,9 +223,16 @@ function handleTeacherClick(event, targetUrl) {
 
 // Kalıplar Tablosu gibi herkese açık (ama giriş gerektiren) alanlar için
 function handleAnyLoginClick(event, targetUrl) {
+    // Mobilden giriliyorsa giriş isteme (Kalıplar Tablosu'nun mobil versiyonu farklıdır)
+    const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+        return true; // Giriş sormadan native tıklamaya (target="_blank") izin ver
+    }
+
     const user = firebase.auth().currentUser;
     if (!user) {
         event.preventDefault();
+        document.getElementById('hata-mesaji').innerText = "Bu içeriği görüntülemek için lütfen giriş yapın.";
         window.pendingRedirectUrl = targetUrl;
         openLoginModal(false);
         return false;
