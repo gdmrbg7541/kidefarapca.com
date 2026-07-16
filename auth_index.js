@@ -70,7 +70,11 @@ async function authIslemi() {
     try {
         if (isLoginMode) {
             await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-            await firebase.auth().signInWithEmailAndPassword(email, pass);
+            const cred = await firebase.auth().signInWithEmailAndPassword(email, pass);
+            
+            // Oturum için seçilen rolü kaydet
+            localStorage.setItem('activeSessionRole', selectedRole);
+
             // Başarılı giriş
             alert("Giriş Başarılı!");
             if (window.pendingRedirectUrl) {
@@ -95,6 +99,7 @@ async function authIslemi() {
                 packages: [],
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
+            localStorage.setItem('activeSessionRole', selectedRole);
             alert("Kayıt Başarılı!");
             if (window.pendingRedirectUrl) {
                 if (window.pendingRedirectUrl.includes('listelerim.html') || window.pendingRedirectUrl.includes('kaliplartablosu.html')) {
@@ -129,8 +134,21 @@ firebase.auth().onAuthStateChanged(async (user) => {
             const doc = await db.collection("kullanicilar").doc(user.uid).get();
             if (doc.exists) {
                 const userData = doc.data();
-                const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
-                const isStudent = userData.role === 'student' && !userData.teacherStaticCode;
+                const activeRole = localStorage.getItem('activeSessionRole') || 'student';
+                const isTeacherAcc = userData.role === 'teacher' || userData.teacherStaticCode || userData.userData;
+                
+                let isTeacher = false;
+                let isStudent = false;
+
+                if (isTeacherAcc) {
+                    if (activeRole === 'student') {
+                        isStudent = true; // Öğretmen öğrenci olarak girmiş
+                    } else {
+                        isTeacher = true; // Öğretmen öğretmen olarak girmiş
+                    }
+                } else {
+                    isStudent = true; // Öğrenci hesabı her halükarda öğrencidir (öğretmen seçse bile)
+                }
                 
                 const roleBadge = document.getElementById('user-role-badge');
                 if (roleBadge) {
@@ -197,19 +215,27 @@ async function checkTeacherAccess(targetUrl) {
         const doc = await db.collection("kullanicilar").doc(user.uid).get();
         if (doc.exists) {
             const userData = doc.data();
-            const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
-            if (isTeacher) {
-                if (newTab) {
-                    newTab.location.href = targetUrl;
+            const activeRole = localStorage.getItem('activeSessionRole') || 'student';
+            const isTeacherAcc = userData.role === 'teacher' || userData.teacherStaticCode || userData.userData;
+            
+            if (isTeacherAcc) {
+                if (activeRole === 'student') {
+                    if (newTab) newTab.close();
+                    setRole('teacher');
+                    errEl.innerText = "Şu anda Öğrenci olarak giriş yaptınız. Öğretmen alanına girmek için lütfen Öğretmen sekmesinden giriş yapın.";
+                    openLoginModal(true);
                 } else {
-                    window.location.href = targetUrl;
+                    if (newTab) {
+                        newTab.location.href = targetUrl;
+                    } else {
+                        window.location.href = targetUrl;
+                    }
                 }
             } else {
                 if (newTab) newTab.close();
                 setRole('teacher');
                 errEl.innerText = "Sadece öğretmen hesapları bu alana girebilir. Öğretmen misiniz?";
                 openLoginModal(true);
-                // Kullanıcıyı çıkarmıyoruz ki diğer alanları gezebilsin, ama bu butona basarsa uyarı görüyor.
             }
         } else {
             if (newTab) newTab.close();
