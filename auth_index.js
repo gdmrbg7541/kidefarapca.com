@@ -84,7 +84,7 @@ async function authIslemi() {
                 return;
             }
             const cred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
-            await db.collection("users").doc(cred.user.uid).set({
+            await db.collection("kullanicilar").doc(cred.user.uid).set({
                 email: email,
                 role: selectedRole,
                 packages: [],
@@ -116,21 +116,23 @@ firebase.auth().onAuthStateChanged(async (user) => {
         }
 
         try {
-            const doc = await db.collection("users").doc(user.uid).get();
+            const doc = await db.collection("kullanicilar").doc(user.uid).get();
             if (doc.exists) {
                 const userData = doc.data();
+                const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
+                const isStudent = userData.role === 'student' && !userData.teacherStaticCode;
                 
                 const roleBadge = document.getElementById('user-role-badge');
                 if (roleBadge) {
                     roleBadge.style.display = 'inline-block';
-                    if (userData.role === 'teacher') roleBadge.innerText = '👨‍🏫 Öğretmen';
-                    else if (userData.role === 'student') roleBadge.innerText = '🎓 Öğrenci';
+                    if (isTeacher) roleBadge.innerText = '👨‍🏫 Öğretmen';
+                    else if (isStudent) roleBadge.innerText = '🎓 Öğrenci';
                     else if (userData.role === 'admin') roleBadge.innerText = '👑 Yönetici';
-                    else roleBadge.innerText = userData.role;
+                    else roleBadge.innerText = userData.role || '🎓 Öğrenci'; // Default to student if unknown
                 }
 
                 if (listelerimBtn) {
-                    if (userData.role === 'student') {
+                    if (isStudent) {
                         listelerimBtn.style.display = 'none';
                     } else {
                         listelerimBtn.style.display = '';
@@ -175,10 +177,11 @@ async function checkTeacherAccess(targetUrl) {
     }
     
     try {
-        const doc = await db.collection("users").doc(user.uid).get();
+        const doc = await db.collection("kullanicilar").doc(user.uid).get();
         if (doc.exists) {
             const userData = doc.data();
-            if (userData.role === 'teacher') {
+            const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
+            if (isTeacher) {
                 window.location.href = targetUrl;
             } else {
                 setRole('teacher');
@@ -206,12 +209,13 @@ async function checkPackageAccess(packageId, targetUrl) {
     }
     
     try {
-        const doc = await db.collection("users").doc(user.uid).get();
+        const doc = await db.collection("kullanicilar").doc(user.uid).get();
         if (doc.exists) {
             const userData = doc.data();
             const packages = userData.packages || [];
+            const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
             
-            if (packages.includes(packageId) || userData.role === 'teacher') {
+            if (packages.includes(packageId) || isTeacher) {
                 // Paketi varsa veya öğretmense girebilir
                 window.location.href = targetUrl;
             } else {
