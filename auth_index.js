@@ -79,7 +79,8 @@ async function authIslemi() {
             alert("Giriş Başarılı!");
             if (window.pendingRedirectUrl) {
                 if (window.pendingRedirectUrl.includes('listelerim.html') || window.pendingRedirectUrl.includes('kaliplartablosu.html')) {
-                    window.open(window.pendingRedirectUrl, '_blank');
+                    let tabName = window.pendingRedirectUrl.includes('listelerim.html') ? 'listelerimTab' : 'kaliplarTab';
+                    window.open(window.pendingRedirectUrl, tabName);
                     closeLoginModal();
                 } else {
                     window.location.href = window.pendingRedirectUrl;
@@ -103,7 +104,8 @@ async function authIslemi() {
             alert("Kayıt Başarılı!");
             if (window.pendingRedirectUrl) {
                 if (window.pendingRedirectUrl.includes('listelerim.html') || window.pendingRedirectUrl.includes('kaliplartablosu.html')) {
-                    window.open(window.pendingRedirectUrl, '_blank');
+                    let tabName = window.pendingRedirectUrl.includes('listelerim.html') ? 'listelerimTab' : 'kaliplarTab';
+                    window.open(window.pendingRedirectUrl, tabName);
                     closeLoginModal();
                 } else {
                     window.location.href = window.pendingRedirectUrl;
@@ -150,6 +152,8 @@ firebase.auth().onAuthStateChanged(async (user) => {
                     isStudent = true; // Öğrenci hesabı her halükarda öğrencidir (öğretmen seçse bile)
                 }
                 
+                window.hasTeacherAccess = isTeacher;
+                
                 const roleBadge = document.getElementById('user-role-badge');
                 if (roleBadge) {
                     roleBadge.style.display = 'inline-block';
@@ -191,62 +195,42 @@ function cikisYap() {
     firebase.auth().signOut();
 }
 
-// Öğretmen Araçları (Listelerim) kontrolü
-async function checkTeacherAccess(targetUrl) {
+// Öğretmen Araçları (Listelerim) Doğal Tıklama Kontrolü
+function handleTeacherClick(event, targetUrl) {
     const user = firebase.auth().currentUser;
     const errEl = document.getElementById('hata-mesaji');
 
     if (!user) {
+        event.preventDefault(); // Yeni sekmeyi engelle
         setRole('teacher');
         errEl.innerText = "Lütfen Öğretmen olarak giriş yapın.";
         window.pendingRedirectUrl = targetUrl;
         openLoginModal(true);
-        return;
+        return false;
     }
     
-    // Tarayıcıların popup engelleyicilerine takılmamak için
-    // asenkron işlem öncesi boş bir sekme açıyoruz.
-    let newTab = null;
-    if (targetUrl.includes('listelerim.html') || targetUrl.includes('kaliplartablosu.html')) {
-        newTab = window.open('about:blank', '_blank');
+    if (!window.hasTeacherAccess) {
+        event.preventDefault(); // Yeni sekmeyi engelle
+        setRole('teacher');
+        errEl.innerText = "Şu anda Öğrenci olarak giriş yaptınız veya öğretmen yetkiniz yok. Lütfen Öğretmen sekmesinden giriş yapın.";
+        openLoginModal(true);
+        return false;
     }
 
-    try {
-        const doc = await db.collection("kullanicilar").doc(user.uid).get();
-        if (doc.exists) {
-            const userData = doc.data();
-            const activeRole = localStorage.getItem('activeSessionRole') || 'student';
-            const isTeacherAcc = userData.role === 'teacher' || userData.teacherStaticCode || userData.userData;
-            
-            if (isTeacherAcc) {
-                if (activeRole === 'student') {
-                    if (newTab) newTab.close();
-                    setRole('teacher');
-                    errEl.innerText = "Şu anda Öğrenci olarak giriş yaptınız. Öğretmen alanına girmek için lütfen Öğretmen sekmesinden giriş yapın.";
-                    openLoginModal(true);
-                } else {
-                    if (newTab) {
-                        newTab.location.href = targetUrl;
-                    } else {
-                        window.location.href = targetUrl;
-                    }
-                }
-            } else {
-                if (newTab) newTab.close();
-                setRole('teacher');
-                errEl.innerText = "Sadece öğretmen hesapları bu alana girebilir. Öğretmen misiniz?";
-                openLoginModal(true);
-            }
-        } else {
-            if (newTab) newTab.close();
-            setRole('teacher');
-            errEl.innerText = "Kullanıcı bilgisi bulunamadı.";
-            openLoginModal(true);
-        }
-    } catch(e) {
-        if (newTab) newTab.close();
-        console.error("Öğretmen kontrol hatası:", e);
+    // Her şey uygunsa, tarayıcının doğal yeni sekme açma işlemine (target="_blank") izin ver
+    return true;
+}
+
+// Kalıplar Tablosu gibi herkese açık (ama giriş gerektiren) alanlar için
+function handleAnyLoginClick(event, targetUrl) {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        event.preventDefault(); // Yeni sekmeyi engelle
+        window.pendingRedirectUrl = targetUrl;
+        openLoginModal(false);
+        return false;
     }
+    return true;
 }
 
 // Kurs / Paket kontrolü

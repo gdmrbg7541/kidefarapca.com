@@ -534,13 +534,14 @@
   </div>
 </footer>
 
-<a href="javascript:void(0)" 
+<a href="kaliplartablosu.html" 
+   target="kaliplarTab"
    class="floating-tool-button kaliplar-tablosu-btn" 
-   onclick="if(!firebase.auth().currentUser) { window.pendingRedirectUrl = 'kaliplartablosu.html'; openLoginModal(false); return false; } window.open('kaliplartablosu.html', '_blank'); return false;">
+   onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')">
    Kalıplar Tablosu 📋
 </a>
 
-<a id="listelerim-btn" href="javascript:void(0)" onclick="checkTeacherAccess('listelerim.html')" class="floating-tool-button" rel="noopener noreferrer">Listelerim 📋</a>
+<a id="listelerim-btn" href="listelerim.html" target="listelerimTab" onclick="return handleTeacherClick(event, 'listelerim.html')" class="floating-tool-button" rel="noopener noreferrer">Listelerim 📋</a>
 
 <script src="index.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
