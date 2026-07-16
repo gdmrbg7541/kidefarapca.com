@@ -2647,6 +2647,7 @@ function loginButonTikla() {
             firebase.auth().signOut();
         }
     } else {
+        window.close();
         window.location.replace("index.html");
     }
 }
@@ -3075,6 +3076,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
     } else {
         console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
+        window.close();
         window.location.replace("index.html");
     }
 });
