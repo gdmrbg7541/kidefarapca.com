@@ -111,7 +111,7 @@ body{
   font-family:'Marhey',sans-serif;color:#16A085;margin:0 0 15px;padding:8px 10px;font-size:1.8em;
   backdrop-filter:blur(6px);background:rgba(255,255,255,0.75);
   border-radius:8px;border:1px solid #E0E6ED;position:sticky;
-  top: calc(var(--header-height) - 2px); 
+  top: calc(var(--header-height) + 8px); 
   z-index:20;
   box-shadow:0 2px 6px rgba(0,0,0,0.08);
   animation:headingFade .35s ease-out;transform-origin:center;
