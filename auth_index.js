@@ -74,7 +74,12 @@ async function authIslemi() {
             // Başarılı giriş
             alert("Giriş Başarılı!");
             if (window.pendingRedirectUrl) {
-                window.location.href = window.pendingRedirectUrl;
+                if (window.pendingRedirectUrl.includes('listelerim.html')) {
+                    window.open(window.pendingRedirectUrl, '_blank');
+                    closeLoginModal();
+                } else {
+                    window.location.href = window.pendingRedirectUrl;
+                }
                 window.pendingRedirectUrl = null;
             }
         } else {
@@ -92,7 +97,12 @@ async function authIslemi() {
             });
             alert("Kayıt Başarılı!");
             if (window.pendingRedirectUrl) {
-                window.location.href = window.pendingRedirectUrl;
+                if (window.pendingRedirectUrl.includes('listelerim.html')) {
+                    window.open(window.pendingRedirectUrl, '_blank');
+                    closeLoginModal();
+                } else {
+                    window.location.href = window.pendingRedirectUrl;
+                }
                 window.pendingRedirectUrl = null;
             }
         }
@@ -182,7 +192,11 @@ async function checkTeacherAccess(targetUrl) {
             const userData = doc.data();
             const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
             if (isTeacher) {
-                window.location.href = targetUrl;
+                if (targetUrl.includes('listelerim.html')) {
+                    window.open(targetUrl, '_blank');
+                } else {
+                    window.location.href = targetUrl;
+                }
             } else {
                 setRole('teacher');
                 errEl.innerText = "Sadece öğretmen hesapları bu alana girebilir. Öğretmen misiniz?";
