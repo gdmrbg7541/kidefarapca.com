@@ -74,7 +74,7 @@ async function authIslemi() {
             // Başarılı giriş
             alert("Giriş Başarılı!");
             if (window.pendingRedirectUrl) {
-                if (window.pendingRedirectUrl.includes('listelerim.html')) {
+                if (window.pendingRedirectUrl.includes('listelerim.html') || window.pendingRedirectUrl.includes('kaliplartablosu.html')) {
                     window.open(window.pendingRedirectUrl, '_blank');
                     closeLoginModal();
                 } else {
@@ -97,7 +97,7 @@ async function authIslemi() {
             });
             alert("Kayıt Başarılı!");
             if (window.pendingRedirectUrl) {
-                if (window.pendingRedirectUrl.includes('listelerim.html')) {
+                if (window.pendingRedirectUrl.includes('listelerim.html') || window.pendingRedirectUrl.includes('kaliplartablosu.html')) {
                     window.open(window.pendingRedirectUrl, '_blank');
                     closeLoginModal();
                 } else {
@@ -192,7 +192,7 @@ async function checkTeacherAccess(targetUrl) {
             const userData = doc.data();
             const isTeacher = userData.role === 'teacher' || userData.teacherStaticCode;
             if (isTeacher) {
-                if (targetUrl.includes('listelerim.html')) {
+                if (targetUrl.includes('listelerim.html') || targetUrl.includes('kaliplartablosu.html')) {
                     window.open(targetUrl, '_blank');
                 } else {
                     window.location.href = targetUrl;
