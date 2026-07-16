@@ -23,6 +23,19 @@ function setRole(role) {
     document.getElementById('btn-' + role).classList.add('active-role');
 }
 
+function openLoginModal(hideStudent = false) {
+    const studentBtn = document.getElementById('btn-student');
+    if (studentBtn) {
+        studentBtn.style.display = hideStudent ? 'none' : '';
+    }
+    document.getElementById('login-modal').style.display = 'flex';
+}
+
+function closeLoginModal() {
+    document.getElementById('login-modal').style.display = 'none';
+    window.pendingRedirectUrl = null;
+}
+
 function moduDegistir() {
     isLoginMode = !isLoginMode;
     document.getElementById('auth-title').innerText = isLoginMode ? "Giriş Paneli" : "Kayıt Paneli";
@@ -91,6 +104,7 @@ async function authIslemi() {
 // State Observer
 firebase.auth().onAuthStateChanged(async (user) => {
     const authBtn = document.getElementById('header-auth-btn');
+    const listelerimBtn = document.getElementById('listelerim-btn');
 
     if (user) {
         document.getElementById('login-modal').style.display = 'none';
@@ -100,12 +114,32 @@ firebase.auth().onAuthStateChanged(async (user) => {
             authBtn.style.background = "#e74c3c";
             authBtn.onclick = cikisYap;
         }
+
+        try {
+            const doc = await db.collection("users").doc(user.uid).get();
+            if (doc.exists) {
+                const userData = doc.data();
+                if (listelerimBtn) {
+                    if (userData.role === 'student') {
+                        listelerimBtn.style.display = 'none';
+                    } else {
+                        listelerimBtn.style.display = '';
+                    }
+                }
+            }
+        } catch(e) {
+            console.error("Rol kontrol hatası:", e);
+        }
+
     } else {
         // Misafir Kullanıcı
         if (authBtn) {
             authBtn.innerText = "Giriş Yap / Kayıt";
             authBtn.style.background = "#3498db";
-            authBtn.onclick = function() { document.getElementById('login-modal').style.display = 'flex'; };
+            authBtn.onclick = function() { openLoginModal(false); };
+        }
+        if (listelerimBtn) {
+            listelerimBtn.style.display = ''; // Misafirken görünsün
         }
     }
 });
@@ -118,13 +152,12 @@ function cikisYap() {
 async function checkTeacherAccess(targetUrl) {
     const user = firebase.auth().currentUser;
     const errEl = document.getElementById('hata-mesaji');
-    const modal = document.getElementById('login-modal');
 
     if (!user) {
         setRole('teacher');
         errEl.innerText = "Lütfen Öğretmen olarak giriş yapın.";
         window.pendingRedirectUrl = targetUrl;
-        modal.style.display = 'flex';
+        openLoginModal(true);
         return;
     }
     
@@ -137,13 +170,13 @@ async function checkTeacherAccess(targetUrl) {
             } else {
                 setRole('teacher');
                 errEl.innerText = "Sadece öğretmen hesapları bu alana girebilir. Öğretmen misiniz?";
-                modal.style.display = 'flex';
+                openLoginModal(true);
                 // Kullanıcıyı çıkarmıyoruz ki diğer alanları gezebilsin, ama bu butona basarsa uyarı görüyor.
             }
         } else {
             setRole('teacher');
             errEl.innerText = "Kullanıcı bilgisi bulunamadı.";
-            modal.style.display = 'flex';
+            openLoginModal(true);
         }
     } catch(e) {
         console.error("Öğretmen kontrol hatası:", e);
@@ -155,7 +188,7 @@ async function checkPackageAccess(packageId, targetUrl) {
     const user = firebase.auth().currentUser;
     if (!user) {
         window.pendingRedirectUrl = targetUrl;
-        document.getElementById('login-modal').style.display = 'flex';
+        openLoginModal(false);
         return;
     }
     
