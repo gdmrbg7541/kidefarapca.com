@@ -535,7 +535,7 @@
 
 <a href="javascript:void(0)" 
    class="floating-tool-button kaliplar-tablosu-btn" 
-   onclick="if(!firebase.auth().currentUser) { window.pendingRedirectUrl = 'kaliplartablosu.html'; document.getElementById('login-modal').style.display='flex'; return false; } var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); window.location.href = (isMobile ? 'kaliplartablosumobil.html' : 'kaliplartablosu.html'); return false;">
+   onclick="if(!firebase.auth().currentUser) { window.pendingRedirectUrl = 'kaliplartablosu.html'; document.getElementById('login-modal').style.display='flex'; return false; } window.location.href = 'kaliplartablosu.html'; return false;">
    Kalıplar Tablosu 📋
 </a>
 
