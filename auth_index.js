@@ -119,6 +119,16 @@ firebase.auth().onAuthStateChanged(async (user) => {
             const doc = await db.collection("users").doc(user.uid).get();
             if (doc.exists) {
                 const userData = doc.data();
+                
+                const roleBadge = document.getElementById('user-role-badge');
+                if (roleBadge) {
+                    roleBadge.style.display = 'inline-block';
+                    if (userData.role === 'teacher') roleBadge.innerText = '👨‍🏫 Öğretmen';
+                    else if (userData.role === 'student') roleBadge.innerText = '🎓 Öğrenci';
+                    else if (userData.role === 'admin') roleBadge.innerText = '👑 Yönetici';
+                    else roleBadge.innerText = userData.role;
+                }
+
                 if (listelerimBtn) {
                     if (userData.role === 'student') {
                         listelerimBtn.style.display = 'none';
@@ -133,6 +143,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
     } else {
         // Misafir Kullanıcı
+        const roleBadge = document.getElementById('user-role-badge');
+        if (roleBadge) roleBadge.style.display = 'none';
+
         if (authBtn) {
             authBtn.innerText = "Giriş Yap / Kayıt";
             authBtn.style.background = "#3498db";
