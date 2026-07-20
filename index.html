@@ -1738,6 +1738,22 @@
   }
   function handleTeacherClick(e, url){ return handleAnyLoginClick(e, url); }
   window.handleAnyLoginClick=handleAnyLoginClick; window.handleTeacherClick=handleTeacherClick;
+
+  // Sarf Motoru: masaüstü sürümü (kaliplartablosu.html) mobil-dikeyde sadece "telefonu çevir"
+  // uyarısı gösterip içeriği gizliyor. Bu yüzden MOBİLDE mobil sürümü (kaliplartablosumobil.html) aç.
+  (function(){
+    function _fixSarfMobil(){
+      var isMobile = window.innerWidth<=768 || /Mobi|Android/i.test(navigator.userAgent);
+      if(!isMobile) return;
+      var sarf=document.querySelector('.floating-tool-button.kaliplar-tablosu-btn');
+      if(sarf){
+        sarf.setAttribute('href','kaliplartablosumobil.html');
+        sarf.setAttribute('onclick',"return handleAnyLoginClick(event, 'kaliplartablosumobil.html')");
+      }
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', _fixSarfMobil);
+    else _fixSarfMobil();
+  })();
   function openListelerim(e){ if(e&&e.preventDefault) e.preventDefault();
     var role=(typeof appState!=="undefined" && appState.userRole)?appState.userRole:null;
     var loggedIn=(typeof firebase!=="undefined" && firebase.auth && firebase.auth().currentUser);
