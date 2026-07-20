@@ -9,8 +9,8 @@
 </head>
 <body>
 
-    <a href="https://kidefarapca.com" class="home-link" id="home-btn" title="Anasayfaya Dön">
-        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <a href="index.html" onclick="return ikikiGeri(event)" class="home-link" id="home-btn" title="Geri">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
     </a>
 
     <div class="screen active" id="screen-intro">
@@ -117,12 +117,23 @@
         </div>
 
         <div class="arena-controls">
-            <button class="btn-ui btn-secondary" onclick="resetScores()">SKORU SIFIRLA</button>
             <button class="btn-ui btn-primary" id="btn-action-main" onclick="triggerAction()">SORUYU GÖSTER</button>
-            <button class="btn-ui btn-secondary" onclick="exitArena()">ÇIKIŞ</button>
         </div>
     </div>
 
     <script src="ikikidijital.js"></script>
+    <script src="geri.js"></script>
+    <script>
+      // Geri butonu: oyun ekranındaysa menüye (intro) dön; menüdeyse index'e (yoksa siteye)
+      function ikikiGeri(e){
+        var arena = document.getElementById('screen-arena');
+        if (arena && arena.classList.contains('active')) {
+          if (typeof exitArena === 'function') exitArena();
+          if (e && e.preventDefault) e.preventDefault();
+          return false;
+        }
+        return (typeof kidefGeriDon === 'function') ? kidefGeriDon(e) : true;
+      }
+    </script>
 </body>
 </html>

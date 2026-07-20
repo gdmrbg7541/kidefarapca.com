@@ -476,6 +476,14 @@ main.active { display: block; }
     max-width: 90%; margin: auto; direction: ltr; text-align: center; 
 }
 #results-screen .overlay-content { padding-top: 40px; padding-bottom: 40px; }
+/* İlk sayfa (başlangıç ekranı): konteyner kutusu olmasın, elementler serbest dursun */
+#start-screen .overlay-content {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    max-width: 100%;
+}
 .overlay h1, .overlay h2 { color: var(--text-color); margin-top: 0; font-family: var(--font-family) !important; }
 .start-options { display: flex; justify-content: center; gap: 15px; margin-top: 25px; margin-bottom: 30px; flex-wrap: wrap; }
 
@@ -723,8 +731,15 @@ main.active { display: block; }
     z-index: 10;
     font-family: var(--font-family);
     transition: all 0.2s ease;
-    line-height: 1; 
+    line-height: 1;
 }
+/* İlk sayfa geri tuşu: sayfanın sol-üstünde sabit + SVG ok */
+#start-back-button {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+}
+#start-back-button svg { width: 55%; height: 55%; display: block; }
 .back-button:hover {
     box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1);
     transform: scale(1.05);

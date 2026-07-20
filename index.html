@@ -1,117 +1,304 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>kidefarapca.com</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FV9JD15KLW');
-  </script>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="index.css">
-  <script>
-      // Set window name so that other tabs can focus this tab back instead of opening duplicates
-      if (!window.name) {
-          window.name = 'indexTab';
-      }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kidefarapca.com</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2320C997' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>">
+    <!-- Tekil CSS Dosyası -->
+    <link rel="stylesheet" href="kurslar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="listelerim.css">
+    <style>
+      /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
+      html { overflow-y: scroll; }
+      body { overflow-x: clip !important; }
+      header { position: sticky !important; top: 0 !important; z-index: 300 !important; }
+      /* birlesik ust bosluk: header ile ilk kategori arasini azalt */
+      .container { margin-top: 8px !important; }
+      #home-hub-section > .content-section { margin-top: 12px; }
+      /* listelerim: container kisitlamasindan cikar - tam genislik, sol/sag bosluk yok, header altina otur */
+      #listelerim-section { margin: 0 !important; padding: 0 !important; }
+      #listelerim-section > #ll-root { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); height: calc(100vh - var(--header-height, 64px)); }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<style>
+/* ==== CANLI DERS: TAŞINABİLİR PENCERE (siteden bağımsız, sürüklenebilir) ==== */
+#live-class-modal.windowed {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    pointer-events: none !important;   /* arka plandaki site tıklanabilir kalsın */
+    display: block !important;         /* ortalamayı iptal et */
+}
+#live-class-modal.windowed #live-modal-content {
+    pointer-events: auto !important;   /* pencere kendisi tıklanabilir */
+    position: fixed !important;
+    top: 20px; right: 20px; left: auto; bottom: auto;
+    width: 460px !important;
+    max-width: 92vw !important;
+    height: auto !important;
+    max-height: 82vh !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 14px 50px rgba(0,0,0,0.6) !important;
+    overflow: hidden !important;
+    resize: both !important;           /* kenardan boyutlandırılabilir */
+}
+#live-class-modal.windowed #live-flex-container {
+    height: 260px !important;
+    min-height: 0 !important;
+}
+#live-class-modal.windowed #live-modal-header {
+    cursor: move !important;           /* başlıktan tutup taşı */
+    user-select: none !important;
+}
+/* Sohbet pencere modunda da açılabilsin; dar gelirse pencereyi köşeden büyüt */
+/* Küçük pencerede sohbet/katılımcı paneli hiç açılmaz (sadece kırmızı nokta bildirir) */
+#live-class-modal.windowed .live-sidebar {
+    display: none !important;
+    width: 0 !important;
+}
+/* Küçük pencerede kontrol düğmeleri ve simgeleri küçülsün (yine de kullanılabilir) */
+#live-class-modal.windowed .live-class-controls { bottom: 8px !important; gap: 6px !important; }
+#live-class-modal.windowed .live-class-btn { width: 30px !important; height: 30px !important; }
+#live-class-modal.windowed .live-class-btn svg { width: 15px !important; height: 15px !important; }
+#live-class-modal.windowed #btn-leave { margin-left: 4px !important; }
+</style>
 </head>
 <body>
-<!-- KULLANICI GİRİŞ PANELİ (MODAL) -->
-<div id="login-modal" style="display:none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(247, 249, 252, 0.85); align-items: center; justify-content: center; backdrop-filter: blur(12px);" onclick="if(event.target === this) closeLoginModal()">
-    <div class="auth-card" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; display: flex; flex-direction: column; align-items: center; position: relative;">
-        
-        <div onclick="closeLoginModal()" style="position:absolute; top:10px; right:15px; font-size:1.6rem; cursor:pointer; color:#e74c3c; font-weight: bold; background: #fdf2f0; padding: 2px 12px; border-radius: 8px; transition: 0.3s; z-index: 10;">✕</div>
 
-        <div class="auth-header-area" style="text-align: center; margin-bottom: 20px;">
-            <h2 id="auth-title" style="margin: 0; font-family: 'Marhey', sans-serif; color: #2c3e50;">Giriş Paneli</h2>
-            <p class="marhey-text" id="auth-desc" style="font-weight:400; color: #7f8c8d; margin-top: 5px;">Lütfen giriş yapmak istediğiniz rolü seçin.</p>
+    <!-- Firebase SDK (Önce yüklenmeli) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- HEADER: Sadece Logo, Kullanıcı Bilgisi ve Login/Logout Butonları -->
+    <header>
+        <div style="display:flex; align-items:center; gap: 15px;">
+            <h1 onclick="changeView('home-hub-section')" style="cursor:pointer; margin:0; white-space:nowrap;">kidefarapca.com</h1>
+            <div id="header-live-dot" class="live-dot" style="display: none; position: absolute; top: -5px; right: -5px;" title="Canlı yayınınız başlıyor!"></div>
+            <nav id="header-nav-tabs" style="display:flex; gap: 15px; margin-left: 20px;">
+                <a href="#" id="tab-paketler" onclick="changeView('offline-list'); event.preventDefault();" style="color: rgba(255,255,255,0.8); text-decoration: none; font-weight: bold; font-size: 1rem; padding: 5px 2px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color=(this.style.borderBottom.includes('white') ? 'white' : 'rgba(255,255,255,0.8)')">Paketler</a>
+                <a href="#" id="tab-online-packages" onclick="changeView('online-packages-list'); event.preventDefault();" style="color: rgba(255,255,255,0.8); text-decoration: none; font-weight: bold; font-size: 1rem; padding: 5px 2px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color=(this.style.borderBottom.includes('white') ? 'white' : 'rgba(255,255,255,0.8)')">Canlı Ders Paketleri</a>
+                <a href="#" id="tab-booking" onclick="changeView('booking-section'); event.preventDefault();" style="color: rgba(255,255,255,0.8); text-decoration: none; font-weight: bold; font-size: 1rem; padding: 5px 2px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color=(this.style.borderBottom.includes('white') ? 'white' : 'rgba(255,255,255,0.8)')">Ders Talep Et</a>
+                <a href="#" id="tab-admin-panel" onclick="changeView('admin-section'); renderAdminPanel(); event.preventDefault();" style="display:none; color: rgba(255,255,255,0.8); text-decoration: none; font-weight: bold; font-size: 1rem; padding: 5px 2px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Yönetici Paneli ⚙️</a>
+                <a href="#" id="tab-teacher-panel" onclick="changeView('teacher-section'); event.preventDefault();" style="display:none; color: rgba(255,255,255,0.8); text-decoration: none; font-weight: bold; font-size: 1rem; padding: 5px 2px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color=(this.style.borderBottom.includes('white') ? 'white' : 'rgba(255,255,255,0.8)')">Panelim</a>
+                <a href="#" id="tab-listelerim" onclick="openListelerim(event)" style="display:none; color: rgba(255,255,255,0.8); text-decoration: none; font-weight: bold; font-size: 1rem; padding: 5px 2px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Listelerim 📋</a>
+            </nav>
         </div>
-
-        <div class="role-selector" style="display: flex; gap: 8px; margin-bottom: 20px; width: 100%;">
-            <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn" style="flex: 1; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; background: white; cursor: pointer; transition: 0.3s;">Öğretmen</button>
-            <button onclick="setRole('student')" id="btn-student" class="role-btn active-role" style="flex: 1; padding: 10px; border: 1px solid #3498db; background: #ebf5fb; color: #2980b9; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold;">Öğrenci</button>
+        <div class="user-controls" style="display:flex; align-items:center; gap:12px;">
+            <div id="user-info" class="user-profile-btn" style="display:none; position:relative; cursor:pointer;" onclick="if(appState.userRole==='student' || appState.userRole==='admin') toggleStudentProfile()"></div>
+            <button id="header-login-btn" class="btn btn-secondary" onclick="showLoginModal()">Giriş Yap / Kayıt</button>
+            <button id="logout-btn" class="btn btn-danger" style="display:none; align-items:center; gap:5px;" onclick="cikisYap()">Çıkış Yap</button>
         </div>
+    </header>
 
-        <div class="input-container" style="width: 100%;">
-            <div style="margin-bottom: 15px;">
-                <div class="input-group" style="width: 100%; display: flex; flex-direction: column;">
-                    <label id="primary-label" class="marhey-text" style="margin-bottom: 5px; color: #34495e; font-size: 0.9em;">E-posta Adresi</label>
-                    <input type="email" id="email" required style="padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 1em;">
-                </div>
-            </div>
-
-            <div id="password-main-group" style="margin-bottom: 15px;">
-                <div class="input-group" style="width: 100%; display: flex; flex-direction: column;">
-                    <label id="password-label" class="marhey-text" style="margin-bottom: 5px; color: #34495e; font-size: 0.9em;">Şifre</label>
-                    <div style="display: flex; align-items: center; border: 1px solid #bdc3c7; border-radius: 8px; overflow: hidden;">
-                        <input type="password" id="password" required style="flex: 1; padding: 12px; border: none; outline: none; font-size: 1em;">
-                        <span class="toggle-pass-btn" onclick="togglePassword('password')" style="padding: 0 15px; cursor: pointer; background: #f8f9f9; display: flex; align-items: center; height: 100%;">👁️</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="re-password-group" style="display: none; margin-bottom: 15px;">
-                <div class="input-group" style="width: 100%; display: flex; flex-direction: column;">
-                    <label class="marhey-text" style="margin-bottom: 5px; color: #34495e; font-size: 0.9em;">Şifreyi Onayla</label>
-                    <div style="display: flex; align-items: center; border: 1px solid #bdc3c7; border-radius: 8px; overflow: hidden;">
-                        <input type="password" id="re-password" style="flex: 1; padding: 12px; border: none; outline: none; font-size: 1em;">
-                        <span class="toggle-pass-btn" onclick="togglePassword('re-password')" style="padding: 0 15px; cursor: pointer; background: #f8f9f9; display: flex; align-items: center; height: 100%;">👁️</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()" style="width: 100%; padding: 14px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s;">Giriş Yap</button>
-        
-        <p id="hata-mesaji" class="marhey-text" style="color:#e74c3c; font-size:13px; height: 15px; margin-top: 15px; text-align: center; width: 100%;"></p>
-
-        <div class="auth-footer marhey-text" id="auth-footer-links" style="margin-top: 15px; text-align: center; width: 100%; font-size: 0.9em;">
-            <span id="auth-switch-text" style="color: #7f8c8d;">Hesabınız yok mu?</span> 
-            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()" style="color: #3498db; text-decoration: none; font-weight: bold;">Kayıt Ol</a>
-        </div>
+    <!-- GENEL GİRİŞ MODALI (Header üzerinden tıklanırsa açılır) -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-content glass-card" style="box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            <div class="modal-close" onclick="closeLoginModal()">✖</div>
+            <h2 id="auth-title" style="color:#16A085; margin-top:0;">Sisteme Giriş Yap</h2>
             
-    </div>
-</div>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button onclick="setRole('student')" id="btn-student" class="role-btn active-role">Öğrenci</button>
+                <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn">Öğretmen</button>
+            </div>
 
-<style>
-.role-btn.active-role {
-    border-color: #3498db !important;
-    background: #ebf5fb !important;
-    color: #2980b9 !important;
-    font-weight: bold;
-}
-.role-btn:not(.active-role) {
-    border-color: #bdc3c7 !important;
-    background: white !important;
-    color: #7f8c8d !important;
-    font-weight: normal;
-}
-</style>
+            <div style="display: none; gap: 15px; width: 100%; flex-wrap: wrap;" id="student-extra-group">
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label>Ad Soyad</label>
+                    <input type="text" id="student-name" placeholder="Örn: Ali Yılmaz">
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label>Meslek <span style="color:#EF5350;">*</span></label>
+                    <input type="text" id="student-profession" placeholder="Örn: Öğretmen, Mühendis..." required>
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label>Cinsiyet <span style="color:#EF5350;">*</span></label>
+                    <select id="student-gender" required style="width:100%; padding:12px; border:1px solid #E9EEF5; border-radius:12px; font-family:inherit; box-sizing:border-box; background:#fff;">
+                        <option value="">Seçiniz…</option>
+                        <option value="erkek">Erkek</option>
+                        <option value="kadin">Kadın</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; width: 100%; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label>E-posta Adresi</label>
+                    <input type="email" id="email" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="form-group" id="phone-group" style="display: none; flex: 1; min-width: 200px;">
+                    <label>Telefon Numarası <span style="color:#EF5350;">*</span></label>
+                    <div style="display: flex;">
+                        <span style="padding: 12px; background: #E9EEF5; border: 1px solid #E9EEF5; border-radius: 12px 0 0 12px; color: #555; font-weight: bold;">+90</span>
+                        <input type="tel" id="phone" placeholder="5XX XXX XX XX" pattern="^5[0-9]{9}$" maxlength="10" style="border-radius: 0 12px 12px 0; border-left: none;">
+                    </div>
+                </div>
+            </div>
 
-<header class="site-header">
-  <div class="container header-flex-container">
-    <div class="header-titles">
-      <h1>kidefarapca.com</h1>
-      <p class="arabic-welcome">أهلاً وسهلاً</p>
-    </div>
-    <div id="header-auth-container" style="display:flex; align-items:center;">
-        <span id="user-role-badge" style="display:none; margin-right: 15px; font-family: 'Marhey', sans-serif; font-size: 0.9em; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); color: white; white-space: nowrap;"></span>
-        <button id="header-auth-btn" onclick="openLoginModal(false)">Giriş Yap / Kayıt</button>
-    </div>
-  </div>
-</header>
+            <div style="display: flex; gap: 15px; width: 100%; flex-wrap: wrap;">
+                <div class="form-group" style="position:relative; flex: 1; min-width: 200px;">
+                    <label>Şifre</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                    <span style="position:absolute; right:15px; top:40px; cursor:pointer;" onclick="togglePassword('password')">👁️</span>
+                </div>
+                <div class="form-group" id="re-password-group" style="display: none; position:relative; flex: 1; min-width: 200px;">
+                    <label>Şifreyi Onayla</label>
+                    <input type="password" id="re-password" placeholder="••••••••">
+                    <span style="position:absolute; right:15px; top:40px; cursor:pointer;" onclick="togglePassword('re-password')">👁️</span>
+                </div>
+            </div>
 
-<div class="container">
-  <main>
+            <div class="form-group" id="teacher-cv-group" style="display: none;">
+                <label>Özgeçmiş (CV) / Neden Siz?</label>
+                <textarea id="teacher-cv" placeholder="Üniversite, bölüm, mezuniyet, tecrübe ve başarılarınızdan bahsedin..." rows="4" style="width: 100%; padding: 12px; border: 1px solid #E9EEF5; border-radius: 12px; font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+            </div>
+            
+            <div class="form-group" id="teacher-file-group" style="display: none;">
+                <label>Diploma veya E-devlet Belgesi (PDF/JPG)</label>
+                <input type="file" id="teacher-file" accept=".pdf,.jpg,.jpeg,.png" style="width: 100%; padding: 10px; border: 1px dashed #16A085; border-radius: 12px; background: #f0f8ff; box-sizing: border-box;">
+                <small style="color: #666; display: block; margin-top: 5px;">* Lütfen yeterliliğinizi doğrulayan bir belge yükleyin.</small>
+            </div>
+            
+            <button id="auth-action-btn" class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="authIslemi()">Giriş Yap</button>
+            <p id="hata-mesaji" style="color:#ff6b6b; font-size:13px; min-height:15px; margin: 10px 0;"></p>
+            
+            <div style="text-align:center; font-size:14px;" id="auth-switch-container">
+                <span id="auth-switch-text">Hesabınız yok mu?</span> 
+                <span class="auth-toggle-text" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAKET DETAY MODALI (Info Iconuna basıldığında açılır) -->
+    <div id="package-info-modal" class="modal-overlay">
+        <div class="modal-content glass-card" style="box-shadow: 0 10px 40px rgba(0,0,0,0.5); width: 90%; max-width: 750px;">
+            <div class="modal-close" onclick="closePackageModal()">✖</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;">
+                <h2 id="modal-pkg-title" style="color:#16A085; margin:0; padding-right: 20px; font-size: 1.8rem;">Paket Adı</h2>
+                <div id="modal-pkg-price" style="font-size: 1.5rem; color: #F39C12; font-weight: bold; white-space: nowrap; background: rgba(243, 156, 18, 0.1); padding: 5px 15px; border-radius: 8px;">Fiyat</div>
+            </div>
+            
+            <div id="modal-pkg-details-container" style="text-align: left;">
+                <!-- JS tarafından doldurulacak -->
+            </div>
+            
+            <div id="modal-pkg-footer" style="margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                <button class="btn btn-secondary" onclick="closePackageModal()" style="width: 100%;">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- CANLI DERS MODALI -->
+    <div id="live-class-modal" class="modal-overlay" style="display:none; z-index: 2000;">
+        <div id="live-modal-content" class="modal-content glass-card" style="width: 95%; max-width: 900px; padding: 0; background: #111; border: none; overflow: hidden;">
+            <div id="live-modal-header" style="padding: 15px 20px; background: rgba(0,0,0,0.8); display: flex; justify-content: space-between; align-items: center; color: white; position: relative; z-index: 20;">
+                <h3 style="margin: 0; color: white; display: flex; align-items: center;"><span class="live-dot" style="margin-right: 10px;"></span> Canlı Ders Odası</h3>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div id="fullscreen-btn" style="cursor: pointer; font-size: 1.2rem;" onclick="toggleFullScreen()" title="Tam Ekran">⛶</div>
+                    <div style="cursor: pointer; font-size: 1.5rem;" onclick="closeLiveClassRoom()" title="Kapat">✖</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; width: 100%; height: 60vh; min-height: 400px;" id="live-flex-container">
+                <!-- Sol Video Alanı -->
+                <div class="live-class-room" id="live-class-room-container" style="flex: 1; position: relative;">
+                    <video id="screen-video" autoplay muted playsinline style="display:none;"></video>
+                    
+                    <!-- Unified Grid for participants -->
+                    <div id="main-video-grid" class="main-video-grid">
+                        <div class="participant-box" id="local-box">
+                            <video id="local-video" autoplay muted playsinline></video>
+                            <div class="camera-off-avatar" id="local-avatar" style="display:none;">S</div>
+                            <div class="participant-label">Siz</div>
+                        </div>
+                    </div>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 1;" id="live-wait-msg">
+                        <p style="font-size: 1.2rem; margin-bottom: 10px;">Kamera Başlatılıyor...</p>
+                        <p style="color: #aaa; font-size: 0.9rem;">Karşı taraf bekleniyor.</p>
+                    </div>
+                    <div class="live-class-controls">
+                        <button class="live-class-btn" onclick="toggleMute()" id="btn-mute" title="Mikrofonu Aç/Kapat">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        </button>
+                        <button class="live-class-btn" onclick="toggleRemoteAudio()" id="btn-speaker" title="Tüm sesleri kapat (karşı tarafı sustur)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        </button>
+                        <button class="live-class-btn" onclick="toggleVideo()" id="btn-video" title="Kamerayı Aç/Kapat">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </button>
+                        <div style="position: relative; display: inline-block;" class="tooltip-container">
+                            <button class="live-class-btn" onclick="toggleScreenShare()" id="btn-screen" title="Ekran Paylaş" style="background: rgba(32,201,151,0.8);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            </button>
+                            <span class="tooltip-text">Bir pencere ya da tüm ekranı paylaş</span>
+                        </div>
+                        <button class="live-class-btn" onclick="openLivePip()" id="btn-pip" title="Mini Pencere (her zaman üstte)" style="background: rgba(255,255,255,0.2);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="2" y="3" width="20" height="14" rx="2"></rect><rect x="12" y="9" width="8" height="6" rx="1" fill="currentColor" stroke="none"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        </button>
+                        <button class="live-class-btn" onclick="generateInviteLink()" id="btn-invite" title="Davet Linki Kopyala" style="background: rgba(255,255,255,0.2);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        </button>
+                        <button class="live-class-btn" id="btn-participants" onclick="toggleSidebar('participants')" title="Katılımcılar" style="background: rgba(255,255,255,0.2);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        </button>
+                        <button class="live-class-btn" id="btn-chat" onclick="toggleSidebar('chat')" title="Sohbet" style="background: rgba(255,255,255,0.2); position: relative;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <span id="chat-unread-dot" style="display:none; position:absolute; top:5px; right:5px; width:11px; height:11px; background:#EF5350; border-radius:50%; border:2px solid #111; box-shadow:0 0 4px rgba(239,83,80,0.8);"></span>
+                        </button>
+                        <button class="live-class-btn" onclick="closeLiveClassRoom()" id="btn-leave" title="Dersten Ayrıl" style="background: #EF5350; margin-left: 10px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sağ Yan Panel (Sidebar) -->
+                <div id="live-sidebar" class="live-sidebar">
+                    <div class="sidebar-tabs">
+                        <div class="sidebar-tab active" id="tab-btn-participants" onclick="switchSidebarTab('participants')">Katılımcılar</div>
+                        <div class="sidebar-tab" id="tab-btn-chat" onclick="switchSidebarTab('chat')">Sohbet</div>
+                    </div>
+                    <div class="sidebar-content" id="sidebar-content-participants">
+                        <ul id="participants-list" style="list-style: none; padding: 0; margin: 0;">
+                            <!-- Dinamik Doldurulacak -->
+                        </ul>
+                    </div>
+                    <div class="sidebar-content" id="sidebar-content-chat" style="display:none; flex-direction: column;">
+                        <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+                            <div style="text-align:center; color:#999; font-size:0.8rem; margin-top:10px;">Sohbete katıldınız.</div>
+                        </div>
+                        <div style="padding: 10px; border-top: 1px solid #333; display: flex; gap: 5px;">
+                            <input type="text" id="chat-input" placeholder="Mesaj yazın..." style="flex: 1; padding: 8px; border-radius: 4px; border: none; background: #333; color: white;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                            <button onclick="sendChatMessage()" style="background: #20C997; color: white; border: none; padding: 0 15px; border-radius: 4px; cursor: pointer;">➤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="toast-message" class="toast-message">Link Kopyalandı!</div>
+
+    <div class="container">
+
+        <!-- ANA MENÜ (index kart menüsü) -->
+        <section id="home-hub-section" class="app-section" style="display:block;">
+
 
  <section id="premium-kurslar" class="content-section premium-section" style="display: none;">
   <div class="premium-layout">
@@ -383,62 +570,6 @@
     </section>
 
 
-    <!-- KURSLAR VE PAKETLER ALANI -->
-    <section id="kurslar-section" class="content-section">
-      <h2 style="display:flex; justify-content:space-between; align-items:center;">
-        📚 Özel Kurslar
-        <button onclick="openPackageModal()" style="font-size: 0.8em; padding: 5px 15px; background: #E67E22; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Marhey', sans-serif;">Paket Al 🛒</button>
-      </h2>
-      <div class="game-grid mobile-scroll-grid-single">
-        
-        <!-- Kurs 1 -->
-        <a href="javascript:void(0)" onclick="checkPackageAccess(1, 'kurslar.html')" class="game-card kss-card locked-course">
-          <div class="default-game-content" style="position: relative;">
-            <div class="course-lock-overlay" id="lock-1" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:12px; z-index:10;">
-              <span style="font-size: 2.5rem;">🔒</span>
-              <span style="font-family:'Marhey',sans-serif; color:#e74c3c; font-weight:bold; margin-top:10px;">Kilitli</span>
-            </div>
-            <div class="default-game-emoji">🎓</div>
-            <h3>Sarfa Giriş</h3>
-            <span class="game-card-description">6 kalıp üzerinden animasyonlu bir şekilde kök-vezin mantığını video eşliğinde öğreneceksiniz.</span>
-            <span class="status-badge" style="background:#bdc3c7; color:white;">Kursu Gör</span>
-          </div>
-        </a>
-
-        <!-- Kurs 2 -->
-        <a href="javascript:void(0)" onclick="checkPackageAccess(2, 'kurslar.html')" class="game-card kss-card locked-course">
-          <div class="default-game-content" style="position: relative;">
-            <div class="course-lock-overlay" id="lock-2" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:12px; z-index:10;">
-              <span style="font-size: 2.5rem;">🔒</span>
-              <span style="font-family:'Marhey',sans-serif; color:#e74c3c; font-weight:bold; margin-top:10px;">Kilitli</span>
-            </div>
-            <div class="default-game-emoji">🚀</div>
-            <h3>Temel Sarf ve Nahiv (A2 Giriş)</h3>
-            <span class="game-card-description">İsim ve Fiil cümleleri, kelime çekim mantığı ve kural dışı fiiller.</span>
-            <span class="status-badge" style="background:#bdc3c7; color:white;">Kursu Gör</span>
-          </div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- KİLİTLİ PAKET UYARI MODALI -->
-    <div id="packageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10001; align-items:center; justify-content:center; backdrop-filter:blur(5px);" onclick="if(event.target === this) closePackageModal()">
-        <div style="background:white; padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%; position:relative;">
-            <div onclick="closePackageModal()" style="position:absolute; top:10px; right:15px; font-size:1.6rem; cursor:pointer; color:#e74c3c; font-weight: bold; background: #fdf2f0; padding: 2px 12px; border-radius: 8px; transition: 0.3s; z-index: 10;">✕</div>
-            <h2 style="font-family:'Marhey',sans-serif; color:#2c3e50;">Paket Satın Alma</h2>
-            <p style="color:#7f8c8d; margin-top:15px; font-size:1.1em; line-height:1.5;">
-                Paket satın alma ve abonelik modülü şu anda <strong>yapım aşamasındadır</strong>. Yakında aktif edilecektir!
-            </p>
-            <button onclick="closePackageModal()" style="background:#3498db; color:white; border:none; padding:10px 30px; border-radius:8px; font-weight:bold; font-family:'Marhey',sans-serif; font-size:1.1em; margin-top:20px; cursor:pointer;">Anladım</button>
-        </div>
-    </div>
-
-    <script>
-        function openPackageModal() { document.getElementById('packageModal').style.display = 'flex'; }
-        function closePackageModal() { document.getElementById('packageModal').style.display = 'none'; }
-    </script>
-    <!-- KURSLAR BİTİŞ -->
 
 
     <section id="sinifici-materyaller" class="content-section">
@@ -511,49 +642,1009 @@
         </a>
       </div>
     </section>
-  </main>
+
+    <!-- Iletisim / Destek (anasayfa alt) -->
+    <footer class="site-footer" style="margin-top:24px;">
+      <div class="footer-links" style="padding:20px 0; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:15px; flex-wrap:wrap;">
+        <a href="mailto:gdmrbg7541@gmail.com" style="color:#fff; text-decoration:underline; font-weight:700; font-size:1.1em;">İletişim</a>
+        <span style="color:#fff; opacity:0.5; font-size:1.5em;">|</span>
+        <a href="javascript:void(0)" onclick="openSupportModal()" style="background:linear-gradient(45deg,#FFC107,#FF9800); color:#000; padding:12px 25px; border-radius:50px; text-decoration:none; font-weight:800; font-size:1.3em; box-shadow:0 4px 15px rgba(0,0,0,0.2); display:inline-flex; align-items:center; gap:8px; border:2px solid #fff;">🎮 Destek Ol 🚀</a>
+      </div>
+      <p style="opacity:0.9;">&copy; 2025 kidefarapca.com - Tüm Hakları Saklıdır.</p>
+    </footer>
+  
+        </section>
+
+        <!-- DASHBOARD: MİSAFİR VEYA ÖĞRENCİ ANA EKRANI -->
+        <section id="dashboard-section" class="app-section" style="display:none;"></section>
+
+        <!-- ADMIN EKRANI -->
+        <section id="admin-section" class="app-section" style="display:none;"></section>
+        
+        <!-- STUDENT PROFILE EKRANI -->
+        <section id="student-profile-section" class="app-section" style="display:none;"></section>
+
+        <!-- PAKET DERSİ ÇALIŞMA EKRANI (Profile ait; paketler yalnızca satın alma içindir) -->
+        <section id="lesson-section" class="app-section" style="display:none;">
+            <div id="active-package-area" style="display:none; position: relative; padding-bottom: 96px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; gap:12px; flex-wrap:wrap;">
+                    <h3 id="current-package-title" style="color: #16A085; margin:0; font-size: 1.3rem; font-weight:700;"></h3>
+                    <button onclick="exitLesson()" title="Dersi kapat ve profile dön" style="background:#EF5350; color:#fff; border:none; padding:9px 18px; border-radius:10px; font-weight:bold; cursor:pointer; font-family:inherit; white-space:nowrap;">Dersten Çık</button>
+                </div>
+
+                <div id="course-player-window" style="display: flex; flex-direction: column;">
+                    
+                    <div id="step-content-wrapper" style="display: flex; flex-direction: row; gap: 25px; flex-wrap: wrap;">
+                        <div id="lesson-material-container" style="margin:0; flex: 1; min-width: 300px; display:block;">
+                            <div id="topic-text">Yükleniyor...</div>
+                        </div>
+
+                        <div id="student-question-area" style="margin:0; flex: 1; min-width: 300px; display:none; font-family: 'Times New Roman', Times, serif;">
+                            <div id="question-text" style="font-size: 5.5rem; margin-bottom: 40px; color:#333; font-weight:600; line-height: 1.4;">Soru hazırlanıyor...</div>
+                            <div id="question-actions" style="display: flex; gap: 15px;">
+                                <!-- Soru aksiyonları -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Navigation & Timeline (her zaman ekranın altında SABİT) -->
+                <div id="lesson-bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; background: #fff; border-top: 1px solid #eee; box-shadow: 0 -4px 14px rgba(0,0,0,0.08); padding: 12px 20px; box-sizing: border-box;">
+                    <button class="btn btn-outline" id="prev-step-btn" onclick="prevKazanim()" style="padding: 10px 20px; flex-shrink: 0;">< Önceki Adım</button>
+
+                    <div class="kazanim-timeline small-timeline" id="kazanim-timeline-render" style="justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0; flex: 1;"></div>
+
+                    <button class="btn btn-primary" id="next-step-btn" onclick="nextKazanim()" style="padding: 10px 30px; flex-shrink: 0;">Sonraki Adım ></button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- TEACHER EKRANI -->
+        <section id="teacher-section" class="app-section" style="display:none;"></section>
+
+<!-- ===== LISTELERIM (birlestirildi) ===== -->
+<section id="listelerim-section" class="app-section" style="display:none;">
+  <div id="ll-root">
+<button onclick="llToggleSidebar()" class="ll-reopen" title="Menüyü aç">☰</button>
+<!-- Yükleniyor Ekranı -->
+<div id="loading-overlay" style="display:none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: transparent; pointer-events:none; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="border: 8px solid #f3f3f3; border-top: 8px solid var(--accent); border-radius: 50%; width: 60px; height: 60px; animation: ll_spin 1s linear infinite; margin-bottom: 20px;"></div>
+    <h2 style="color: var(--primary); font-family: sans-serif;">Veriler Yükleniyor...</h2>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-links" style="padding:20px 0; margin-bottom:10px; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
-    <a href="mailto:gdmrbg7541@gmail.com" style="color:#fff; text-decoration:underline; font-weight:700; font-size:1.1em;">İletişim</a>
-    <span style="color:#fff; opacity:0.5; font-size: 1.5em;">|</span>
+<div id="sidebar">
+    <div style="position:relative; display:flex; align-items:center; justify-content:center; min-height:1.8em; margin-bottom:0;"><a href="javascript:void(0)" onclick="changeView('home-hub-section'); return false;" id="listelerim-home-ico" title="Ana Sayfa" aria-label="Ana Sayfa" style="position:absolute; left:0; color:#fff; display:inline-flex; align-items:center; text-decoration:none; opacity:0.9;"><svg viewBox="0 0 24 24" fill="currentColor" style="width:1.6em; height:1.6em; pointer-events:none;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></a><h2 style="margin:0; text-align:center;">🏫 Listelerim</h2><button onclick="llToggleSidebar()" title="Menüyü kapat" style="position:absolute; right:0; background:none; border:none; color:#fff; cursor:pointer; font-size:1.4em; line-height:1; padding:0 4px;">«</button></div>
+    <div id="teacher-code-display" style="font-size: 0.8rem; color: #ffffff; margin-bottom: 15px; font-weight: bold; opacity: 0.95;"></div>
     
-    <a href="javascript:void(0)" onclick="openSupportModal()" style="background: linear-gradient(45deg, #FFC107, #FF9800); color: #000; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.3em; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; border: 2px solid #fff;">
-      🎮 Destek Ol 🚀
-    </a>
-  </div>
-  <p style="opacity: 0.9;">&copy; 2025 kidefarapca.com - Tüm Hakları Saklıdır.</p>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+      <button class="btn-add" id="login-nav-btn" onclick="loginButonTikla()" style="background: #34495e; color: white; margin-bottom: 8px;">
+    🔑 Öğretmen Girişi
+</button>
+   <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;">🗓️ Tatiller</button>
+        <button class="btn-add" onclick="addLevel()" style="margin-bottom:0;">+ Seviye Ekle</button>
 
-  <div id="supportModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
-    <div style="background-color:#fff; margin:15% auto; padding:30px; border-radius:20px; width:90%; max-width:400px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:4px solid #FFC107; animation: modalPop 0.3s ease-out;">
-      <span onclick="closeSupportModal()" style="position:absolute; right:15px; top:10px; font-size:28px; font-weight:bold; cursor:pointer; color:#aaa;">&times;</span>
-      <div style="font-size:3em; margin-bottom:10px;">🎁</div>
-      <h2 style="font-family:'Marhey',sans-serif; color:#E67E22; margin-top:0;">Destek Ol!</h2>
-      <p style="font-family:'Nunito',sans-serif; font-size:1.1em; color:#333; line-height:1.5;">
-        Kidef Arapça sitesini desteklemek için: <br>
-        <strong style="color:#27AE60;">kidefarapca@gmail.com</strong> <br>
-        üzerinden bizimle iletişime geçebilirsiniz.
-      </p>
-      <button onclick="closeSupportModal()" style="background:#27AE60; color:#fff; border:none; padding:10px 30px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:1em; margin-top:10px;">Kapat</button>
+    </div>
+
+
+
+    <div id="levelNav" style="flex: 1; overflow-y: auto;"></div>
+
+
+    <div class="role-preview-buttons" style="display: flex; gap: 10px; margin-bottom: 15px;">
+    
+    <button onclick="switchView('student')" class="marhey-text" style="flex: 1; padding: 10px; border-radius: 8px; border: none; background: #f3e5f5; color: #7b1fa2; cursor: pointer;">
+        Öğrenci Görünümü
+    </button>
+</div>
+
+<div id="student-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #F7F9FC; z-index: 99999; overflow-y: auto; padding: 40px 20px;">
+    <div class="student-content-wrapper marhey-text" style="max-width: 1100px; margin: 0 auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div>
+                <h1 style="color: #7B1FA2; margin: 0; font-size: 2rem;">Öğrenci Dünyası 🚀</h1>
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Hoş geldin! Bugün harika işler çıkaracaksın.</p>
+            </div>
+            <button onclick="switchView('teacher')" style="padding: 12px 25px; border-radius: 12px; border: 2px solid #7B1FA2; background: transparent; color: #7B1FA2; cursor: pointer; font-family: 'Marhey'; font-weight: bold; transition: 0.3s;">
+                Çıkış Yap
+            </button>
+        </div>
+        
+        <div id="student-dynamic-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+            </div>
+
+    </div>
+</div>
+
+   
+</div>
+
+<div id="content">
+    <div class="header">
+        <h2 id="viewTitle">Sınıf Seçiniz</h2>
+    </div>
+    <div id="ll-select-hint" style="display:none; text-align:center; padding:70px 20px; color:#95a5a6;"><div style="font-size:3.5rem; margin-bottom:10px;">📚👈</div><h2 style="font-family:'Marhey',sans-serif; color:#7f8c8d; margin:0;">Lütfen soldan bir seviye ve sınıf seçin</h2></div>
+
+<div class="tabs">
+    <button class="tab" onclick="switchTab(0)">Öğrenciler</button>
+    <button class="tab" onclick="switchTab(1)">Performans</button>
+    <button class="tab" onclick="switchTab(2)">Sınavlar</button>
+    <button class="tab" onclick="switchTab(3)">Genel Sonuç</button>
+    <button class="tab" onclick="switchTab(4)">Kurayla Seç!</button>
+    <button class="tab" onclick="switchTab(5)">Görev Gönder</button> <button class="tab" onclick="switchTab(6)">Geri Sayım</button>
+    <button class="tab" onclick="switchTab(7)">Kronometre</button>
+    <button class="tab" onclick="switchTab(8)">Takım Oluştur</button>
+    <button class="tab" onclick="switchTab(9)">📅 Haftalık Plan</button>
+</div>
+
+    <div id="tab0" class="tab-panel active">
+        <h3>Öğrenci Yönetimi</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="text" id="singleStuName" placeholder="Öğrenci Adı Soyadı...">
+            <button class="btn-add" onclick="addSingleStudent()" style="margin:0;">+ Ekle</button>
+        </div>
+        <table id="stuTable"></table> </div>
+
+    <div id="tab1" class="tab-panel"><table id="hwTable"></table></div>
+    <div id="tab2" class="tab-panel"><table id="exTable"></table></div>
+    <div id="tab3" class="tab-panel"><table id="resTable"></table></div>
+    <div id="tab4" class="tab-panel">
+        <div id="luckyBox" style="text-align:center; padding:30px; background:#fff; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px;">
+            <div id="luckyStudent" style="font-size:2.5em; font-weight:bold; color:var(--primary); min-height:1.5em;">Öğrenci Seçin</div>
+            <div id="activityType" style="font-size:1.2em; color:var(--accent); margin-top:10px; font-weight:bold;"></div>
+        </div>
+        <div class="activity-grid">
+            <button class="act-btn" style="background:#3498db" onclick="pick('Konuşma','#3498db')">Konuşma</button>
+            <button class="act-btn" style="background:#e74c3c" onclick="pick('Yazma','#e74c3c')">Yazma</button>
+            <button class="act-btn" style="background:#2ecc71" onclick="pick('Okuma','#2ecc71')">Okuma</button>
+            <button class="act-btn" style="background:#f1c40f" onclick="pick('Vezin','#f1c40f')">Vezin</button>
+            <button class="act-btn" style="background:#9b59b6" onclick="pick('Sözlük','#9b59b6')">Sözlük</button>
+            <button class="act-btn" style="background:#e67e22" onclick="pick('Tercüme','#e67e22')">Tercüme</button>
+        </div>
+        <div style="margin-top:30px;"><table id="activityStatusTable"></table></div>
+        <button onclick="resetPools()" style="margin-top:20px; padding:10px; cursor:pointer;">Havuzları Sıfırla</button>
+    </div>
+
+<div id="tab5" class="tab-panel">
+    <h3>⏳ Manuel Geri Sayım</h3>
+    
+    <div class="tool-display" id="countdown-display" style="font-size: 6rem; text-align: center; margin: 10px 0; font-weight: bold; color: #ffffff; background: #2c3e50; border-radius: 15px; font-family: monospace; padding: 20px;">00:00</div>
+    
+    <div class="tool-controls" style="display: flex; flex-direction: column; align-items: center; gap: 25px;">
+        
+        <div style="display: flex; align-items: center; gap: 20px; background: #2c3e50; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            
+            <button type="button" onclick="adjustCountdown(-1)" style="width: 70px; height: 70px; font-size: 2.5rem; border-radius: 50%; border: 3px solid #ffffff; background: transparent; color: #ffffff; cursor: pointer; font-weight: bold;">-</button>
+            
+            <div style="text-align: center; min-width: 100px;">
+                <div style="font-size: 0.9rem; color: #bdc3c7; font-weight: bold;">DAKİKA</div>
+                <div id="manual-min-val" style="font-size: 4rem; font-weight: bold; color: #ffffff;">0</div>
+            </div>
+            
+            <button type="button" onclick="adjustCountdown(1)" style="width: 70px; height: 70px; font-size: 2.5rem; border-radius: 50%; border: 3px solid #ffffff; background: transparent; color: #ffffff; cursor: pointer; font-weight: bold;">+</button>
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+            <button type="button" onclick="startCountdown()" style="padding: 15px 35px; font-size: 1.3rem; background: var(--success); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">▶ Başlat</button>
+            <button type="button" onclick="stopCountdown()" style="padding: 15px 35px; font-size: 1.3rem; background: #f39c12; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">Duraklat</button>
+            <button type="button" onclick="resetCountdown()" style="padding: 15px 35px; font-size: 1.3rem; background: #95a5a6; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold;">🔄 Sıfırla</button>
+        </div>
+    </div>
+</div>
+        <div id="tab6" class="tab-panel">
+    <h3>⏱️ Kronometre</h3>
+    <div class="tool-display" id="stopwatch-display">00:00:00</div>
+    <div class="tool-controls">
+        <button class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
+        <button class="tool-btn btn-stop" onclick="stopStopwatch()">Durdur</button>
+        <button class="tool-btn btn-lap" onclick="recordLap()">Tur</button>
+        <button class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
+    </div>
+    <div id="lapList" style="margin-top:20px; max-height:200px; overflow-y:auto; border-top:1px solid #ddd; padding-top:10px;"></div>
+</div>
+
+
+<div id="tab7" class="tab-panel">
+    <h3>🤝 Takım Oluşturucu</h3>
+    <p>Sınıftaki öğrencileri rastgele takımlara ayırır.</p>
+    <div class="tool-controls">
+        <button class="tool-btn btn-start" onclick="createTeams(2)">2'li Takımlar</button>
+        <button class="tool-btn btn-start" onclick="createTeams(3)">3'lü Takımlar</button>
+        <button class="tool-btn btn-start" onclick="createTeams(4)">4'lü Takımlar</button>
+        <button class="tool-btn btn-start" onclick="createTeams(5)">5'li Takımlar</button>
+        <button class="tool-btn btn-start" onclick="createTeams(6)">6'lı Takımlar</button>
+        <button class="tool-btn btn-reset" onclick="clearTeams()">Temizle</button>
+    </div>
+    <div id="teamContainer" class="team-grid"></div>
+</div>
+
+    <div id="tab8" class="tab-panel">
+        <div style="background: #fffde7; padding: 15px; border-radius: 10px; border: 1px solid #fbc02d; margin-bottom: 20px;">
+            <h3 style="margin:0; color:var(--primary);">📍 Kaldığımız Yer</h3>
+            <input type="text" id="stayedPoint" placeholder="Örn: 5. Ünite, Sayfa 42'de kaldık..." onchange="updateStayedPoint(this.value)" style="width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3>📅 Haftalık Kazanım Takibi</h3>
+            
+        </div>
+<table id="planTable">
+    <thead>
+        <tr>
+            <th width="120">Hafta / Tarih</th>
+            <th>Kazanım / Konu (Arapça)</th>
+            <th width="80" style="text-align:center;">İşlendi</th>
+        </tr>
+    </thead>
+    <tbody id="planBody"></tbody>
+</table>
+
+</div>
+
+<div id="tab9" class="tab-panel">
+    <div class="header">
+        <h2 class="marhey-text">🚀 Görev Gönderim & Yama Paneli</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div style="background:#fdfdfd; padding:20px; border-radius:15px; border:1px solid #ddd;">
+            <h4 class="marhey-text">⚙️ Gönderim Seçenekleri</h4>
+            
+            <label style="display:block; margin-top:10px;">📅 Son Teslim Tarihi:</label>
+            <input type="date" id="m-deadline" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+
+            <label style="display:block; margin-top:10px;">⌛ Süre (Dakika):</label>
+            <input type="number" id="m-duration" placeholder="Örn: 45" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+
+            <label style="display:block; margin-top:10px;">🎯 Hedef:</label>
+            <select id="m-target-type" onchange="toggleMTarget()" style="width:100%; padding:8px; border-radius:8px;">
+                <option value="class">Bu Sınıfın Tamamı</option>
+                <option value="student">Özel Bir Öğrenci</option>
+                <option value="level">Tüm Seviye (Örn: Tüm 9'lar)</option>
+            </select>
+
+            <div id="m-student-select-wrap" style="display:none; margin-top:10px;">
+                <label>👤 Öğrenci Seçin:</label>
+                <select id="m-student-list" style="width:100%; padding:8px; border-radius:8px;"></select>
+            </div>
+        </div>
+        
+        <div style="background:#e8f0fe; padding:20px; border-radius:15px; display:flex; align-items:center; justify-content:center; text-align:center;">
+            <p class="marhey-text" style="color:#1a73e8;">Soldan ayarları yapın, aşağıdan ödev başlığına tıklayarak gönderimi tamamlayın.</p>
+        </div>
+    </div>
+
+    <div id="mission-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;"></div>
+
+    <div id="patchModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:25px; border-radius:15px; box-shadow:0 0 30px rgba(0,0,0,0.3); z-index:10001; width:90%; max-width:600px;">
+        <h3 id="patchTitle" class="marhey-text">Görev Yama Düzenle</h3>
+        <textarea id="patchCodeInput" class="note-textarea" style="height:150px;" placeholder="Bu göreve özel açıklama veya kod yamasını buraya yazın..."></textarea>
+        <div style="display:flex; gap:10px; justify-content: flex-end; margin-top:15px;">
+            <button onclick="closePatchModal()" class="tool-btn btn-reset">İptal</button>
+            <button onclick="savePatch()" class="tool-btn btn-start">Yamayı Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<div id="customAlertModal">
+    <div class="alert-box">
+        <span id="alertIcon" style="font-size:50px;">⚠️</span>
+        <div id="alertTitle" style="font-size:1.2em; font-weight:bold; margin:10px 0;">Uyarı</div>
+        <div id="alertText" style="color:#666; margin-bottom:20px;">Bu işlemi onaylıyor musunuz?</div>
+        <div class="alert-buttons">
+            <button id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
+            <button id="alertConfirmBtn" class="alert-btn btn-confirm" onclick="closeAlert(true)">Tamam</button>
+        </div>
+    </div>
+</div>
+
+<div id="skillModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:white; width:90%; max-width:500px; padding:25px; border-radius:15px;">
+        <h3 id="skillModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Becerileri</h3>
+        <hr><div id="skillSliders"></div>
+        <div style="text-align:right; margin-top:20px;">
+            <button onclick="closeSkillModal()" style="padding:10px 20px; background:var(--success); color:white; border:none; border-radius:5px; cursor:pointer;">Kaydet ve Kapat</button>
+        </div>
+    </div>
+</div>
+
+<div id="lvlModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:95%; max-width:600px; background:white; padding:30px; box-shadow:0 0 100px rgba(0,0,0,0.5); z-index:999999; border-radius:15px; color:#333; max-height:85vh; overflow-y:auto;">
+    <h3 style="margin-top:0; color:var(--primary);">⚙️ Seviye Ayarlarını Düzenle</h3>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <h4 style="border-bottom: 2px solid var(--accent); color:var(--secondary);">Ödevler (Ağırlık %)</h4>
+            <div id="lvlHwList"></div>
+            <button class="btn-add" onclick="addConfigRow('hw')" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <h4 style="border-bottom: 2px solid var(--danger); color:var(--secondary);">Sınavlar (Ağırlık %)</h4>
+            <div id="lvlExList"></div>
+            <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+        <h4 style="color:var(--secondary);">🎯 Kura Başlıkları</h4>
+        <div id="lvlKuraList"></div>
+        <button class="btn-add" onclick="addKuraRow()" style="width:100%; margin-top:10px; background:#2ecc71;">+ Kura Başlığı Ekle</button>
+    </div>
+
+    <div style="text-align: right; margin-top:20px; padding-top:15px; border-top:1px solid #eee;">
+        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:5px; margin-right:10px; font-weight:bold;">İptal</button>
+        <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
+    </div>
+</div>
+
+</div><!-- /#content -->
+<!-- listelerim ek modallar (note/defter/tatil) -->
+<div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(5px);">
+    <div style="background:white; width:95%; max-width:600px; padding:30px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <h3 id="noteModalTitle" style="margin-top:0; color:var(--primary); font-family:'Marhey';">Öğrenci Notu</h3>
+        <textarea id="studentNoteText" class="note-textarea"></textarea>
+        <div style="text-align:right; margin-top:20px;">
+            <button onclick="closeNoteModal()" style="padding:15px 30px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:10px; font-weight:bold; font-size:1.1rem; width:100%;">Değişiklikleri Kaydet ve Kapat</button>
+        </div>
+    </div>
+</div>
+<div id="defterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; align-items:center; justify-content:center;">
+    <div style="background:white; width:90%; max-width:800px; height:80vh; padding:25px; border-radius:15px; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="color:var(--primary);">📖 Haftalık Kazanım Defteri</h2>
+            <button onclick="document.getElementById('defterModal').style.display='none'" style="cursor:pointer; padding:5px 10px;">Kapat X</button>
+        </div>
+        <hr>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:20px;">
+            <button class="tab" onclick="showKazanım(5)">5. Sınıf</button>
+            <button class="tab" onclick="showKazanım(6)">6. Sınıf</button>
+            <button class="tab" onclick="showKazanım(7)">7. Sınıf</button>
+            <button class="tab" onclick="showKazanım(8)">8. Sınıf</button>
+        </div>
+        <div id="kazanimContent" style="background:#f9f9f9; padding:15px; border-radius:8px; min-height:200px;">
+            Lütfen sınıf seçiniz. (Kazanım verileri buraya eklenecek)
+        </div>
+    </div>
+</div>
+
+<div id="tatilModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(6px);">
+    <div style="background:white; width:95%; max-width:600px; max-height: 85vh; padding:25px; border-radius:20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); overflow-y: auto; scrollbar-width: thin;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="color:var(--primary); margin:0;">🗓️ 2026-2027 Akademik Takvim</h2>
+            <button onclick="document.getElementById('tatilModal').style.display='none'" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;">&times;</button>
+        </div>
+        <hr style="opacity: 0.2; margin-bottom: 15px;">
+        
+        <table style="width:100%; text-align:left; border-collapse: collapse; font-size: 0.95rem;">
+            <thead>
+                <tr style="background: #f8f9fa; color: var(--primary); border-bottom: 2px solid #ddd;">
+                    <th style="padding: 10px;">Dönem / Tatil Adı</th>
+                    <th style="padding: 10px;">Tarih Aralığı</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #eee;"><td>🏫 Okulların Açılması</td><td>14 Eylül 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🇹🇷 Cumhuriyet Bayramı</td><td>29 Ekim 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background:#fff9db;"><td>🍂 1. Dönem Ara Tatil</td><td>16 - 20 Kasım 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🎄 Yılbaşı Tatili</td><td>01 Ocak 2027</td></tr>
+                <tr style="border-bottom: 2px solid #dee2e6; background:#e3f2fd; font-weight: bold;"><td>❄️ Yarıyıl (Sömestr) Tatili</td><td>25 Ocak - 5 Şubat 2027</td></tr>
+                
+                <tr style="border-bottom: 1px solid #eee; background:#fff9db;"><td>🌱 2. Dönem Ara Tatil</td><td>8 - 12 Mart 2027</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background:#fff4e6;"><td>🌙 Ramazan Bayramı</td><td>9 - 11 Mart 2027</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🎈 23 Nisan U.E.G.B.</td><td>23 Nisan 2027</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background:#f3f0ff;"><td>🐏 Kurban Bayramı</td><td>16 - 19 Mayıs 2027</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🏃 19 Mayıs G.S.B.</td><td>19 Mayıs 2027</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td>🗳️ 15 Temmuz Demokrasi B.</td><td>15 Temmuz 2027</td></tr>
+                <tr style="border-bottom: 2px solid #primary; font-weight: bold; color: var(--danger);"><td>☀️ Okulların Kapanışı</td><td>25 Haziran 2027</td></tr>
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 20px; background: #e7f5ff; padding: 10px; border-radius: 8px; font-size: 0.85rem; color: #1971c2;">
+            💡 <b>Not:</b> Ramazan ve Kurban Bayramı tarihleri hicri takvime göre değişebileceği için idari tatil ilanlarına dikkat edilmelidir.
+        </div>
+        
+        <br>
+        <button onclick="document.getElementById('tatilModal').style.display='none'" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition: 0.3s;">Anladım, Kapat</button>
+    </div>
+</div>
+
+  </div>
+</section>
+
+
+        <!-- OFFLINE EĞİTİMLER -->
+        <section id="offline-section" class="app-section" style="display:none; padding-bottom: 120px;">
+            <h2>Özel Eğitim Paketleri</h2>
+            <div class="package-grid" id="package-list-area"></div>
+            
+            <div id="offline-checkout-summary" class="glass-card" style="display:none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; border-radius: 0; margin: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.15); border-top: 4px solid #20C997; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.1rem; color: #555;">
+                    <span style="font-weight: 700; color: #333;">Seçilen Paketleri Satın Al</span>
+                    <br>
+                    <small>İstediğiniz paketleri yukarıdan seçebilirsiniz.</small>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <span id="offline-total-text" style="font-size: 1.5rem; font-weight: bold; margin-right: 20px; color: #20C997;"></span>
+                    <button class="btn btn-success" style="font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 10px rgba(32,201,151,0.4);" onclick="bookOfflinePackages()">Satın Alma Adımına Geç</button>
+                </div>
+            </div>
+
+
+        </section>
+
+        <!-- CANLI DERS PAKETLERİ (YENİ EKLENEN) -->
+        <section id="online-packages-section" class="app-section" style="display:none; padding-bottom: 100px;">
+            <h2>Canlı Ders Eğitim Paketleri</h2>
+            <div class="package-grid" id="online-package-list-area"></div>
+
+            <div id="online-schedule-container"></div>
+            
+            <div id="online-checkout-summary" class="glass-card" style="display:none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; border-radius: 0; margin: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.15); border-top: 4px solid #20C997; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.1rem; color: #555;">
+                    <span style="font-weight: 700; color: #333;">Seçilen Canlı Paketleri Satın Al</span>
+                    <br>
+                    <small>İstediğiniz paketleri yukarıdan seçebilirsiniz.</small>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <span id="online-total-text" style="font-size: 1.5rem; font-weight: bold; margin-right: 20px; color: #20C997;"></span>
+                    <button class="btn btn-success" style="font-size: 1.1rem; padding: 12px 30px; box-shadow: 0 4px 10px rgba(32,201,151,0.4);" onclick="bookOnlinePackages()">Satın Alma Adımına Geç</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- BİREBİR RANDEVU VE CANLI DERS -->
+        <section id="booking-section" class="app-section" style="display:none;">
+            <h2>Birebir Canlı Ders ve Randevu Modülü</h2>
+
+            <!-- (Kaldırıldı) Eski "İnteraktif Sınıf (Ders Ekranı)" bloğu — canlı ders artık WebRTC modalıyla yürüyor -->
+
+            <!-- 1. Aşama: Paket Seçimi -->
+            <div id="online-step-1" class="glass-card mt-20" style="transition: max-height 0.4s ease, opacity 0.4s ease; overflow: hidden;">
+                <h3 style="color:#16A085; margin-top:0; cursor:pointer;" onclick="editOnlineStep1()">
+                    1. Eğitim Paketi Seçimi
+                    <span id="step1-header-total" style="float:right; font-size:1.1rem; color:#20C997; display:none;"></span>
+                </h3>
+                <div class="mt-20">
+                    <label style="color:rgba(0,0,0,0.7); display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span>Konuşma ve Pratik Paketleri (Birden fazla seçebilirsiniz)</span>
+                        <span style="color: #F39C12; font-weight: bold; font-size: 1.1rem; background: rgba(243, 156, 18, 0.1); padding: 4px 10px; border-radius: 6px; display:inline-flex; align-items:center; gap:5px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 40dk / Ders</span>
+                    </label>
+                    <div id="online-package-list" style="max-height: 320px; overflow-y: auto; padding-right: 10px;"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px;">
+                        <span id="step1-live-total" style="font-weight: bold; font-size: 1.1rem; color: #20C997;">Ara Toplam: 0 ₺</span>
+                        <button class="btn btn-primary" onclick="checkOnlineStep1()">Seçimi Tamamla</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Aşama: Eğitmen ve Takvim -->
+            <div id="online-step-2" class="glass-card mt-20" style="opacity: 0.4; pointer-events: none; transition: 0.4s ease; overflow: hidden;">
+                <h3 style="color:#F39C12; margin-top:0; cursor:pointer;" onclick="editOnlineStep2()">2. Ders Saati Seçimi</h3>
+                <div class="mt-20 form-group" style="display: none;">
+                    <label>Eğitmen Seçin (Takvim için):</label>
+                    <select id="teacher-select" onchange="renderCalendar()"></select>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:20px;">
+                    <p style="color: rgba(0,0,0,0.6); font-size: 0.9rem; margin:0;">* Yeşil saatleri seçin. Farklı hafta ve aylardan seçim yapabilirsiniz; seçimleriniz korunur.</p>
+                    <span id="step2-selected-count" style="background:#F39C12; color:#fff; font-weight:bold; padding:6px 14px; border-radius:20px; font-size:0.9rem; white-space:nowrap;">Seçilen: 0 saat</span>
+                </div>
+                <div id="calendar-week-nav" style="margin-top: 20px;"></div>
+                <div id="calendar-view" class="mt-10"></div>
+                
+                <div style="margin-top: 20px; text-align: right; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 20px;">
+                    <button class="btn btn-primary" onclick="checkOnlineStep2()">Seçimi Tamamla</button>
+                </div>
+            </div>
+
+            <!-- 3. Aşama: Dersi Onayla ve Ödemeye Geç -->
+            <div id="online-step-3" class="glass-card mt-20" style="opacity: 0.4; pointer-events: none; transition: 0.4s ease; overflow: hidden; max-height: 70px;">
+                <h3 style="color:#20C997; margin-top:0; cursor:pointer;" onclick="editOnlineStep3()">3. Seçim Özeti</h3>
+
+                <div class="mt-20" style="background: rgba(255,255,255,0.5); padding: 15px; border-radius: 8px; border-left: 4px solid #20C997;">
+                    <h4 style="margin-top:0; margin-bottom:10px;">Seçim Özeti</h4>
+                    <div id="selected-summary" style="font-size: 1rem; color: rgba(0,0,0,0.8); line-height: 1.6;">Henüz seçim yapılmadı</div>
+                </div>
+
+                <p style="margin-top: 16px; color:#20C997; font-weight:600; text-align:right;">Ödemeye geçmek için aşağıdaki <strong>Satın Al</strong> butonunu kullanın.</p>
+            </div>
+        </section>
+
+        <!-- YENİ BİRLEŞTİRİLMİŞ ÖDEME & KAYIT EKRANI (CHECKOUT FLOW) -->
+        <section id="checkout-section" class="app-section" style="display:none;">
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <button onclick="goBack()" style="background:#E9EEF5; color:#333; border:none; padding:9px 18px; border-radius:10px; font-weight:bold; cursor:pointer; font-family:inherit; white-space:nowrap;">← Geri</button>
+                <h2 style="margin:0;">Siparişi Tamamla</h2>
+            </div>
+            <div class="checkout-grid">
+                
+                <!-- SOL TARAFI (Auth veya Onay) -->
+                <div>
+                    <!-- Zaten giriş yaptıysa gösterilecek kısım -->
+                    <div id="checkout-logged-in-view" class="glass-card" style="display: none; text-align: center;">
+                        <h3 style="color:#38ef7d; margin-top:0;">Giriş Yapıldı ✅</h3>
+                        <p>Şu an <strong><span id="checkout-user-email"></span></strong> hesabı ile işlem yapıyorsunuz.</p>
+                        <p style="font-size: 0.9rem; color:rgba(0,0,0,0.6);">Hesap size ait değilse yukarıdan çıkış yapabilirsiniz.</p>
+                        <button class="btn btn-success mt-20" style="width:100%; font-size: 1.1rem; padding: 15px;" onclick="confirmPurchase()">Ödemeyi Yaptım & Onayla</button>
+                    </div>
+
+                    <!-- Misafirse gösterilecek giriş/kayıt formu -->
+                    <div id="checkout-auth-form" class="glass-card">
+                        <h3 style="color:#16A085; margin-top:0;" id="checkout-auth-title">İşleme Devam Etmek İçin Giriş Yapın</h3>
+                        <p style="font-size:0.9rem; color:rgba(0,0,0,0.6);">Ödemenizin ve paketinizin hesabınıza işlenebilmesi için kayıt olmanız veya giriş yapmanız gereklidir.</p>
+                        
+                        <div class="form-group mt-20" id="checkout-student-name-group" style="display: none;">
+                            <label>İsim Soyisim</label>
+                            <input type="text" id="checkout-student-name" placeholder="Örn: Ali Yılmaz">
+                        </div>
+                        
+                        <div class="form-group" id="checkout-student-profession-group" style="display: none;">
+                            <label>Meslek / Bölüm (İsteğe Bağlı)</label>
+                            <input type="text" id="checkout-student-profession" placeholder="Örn: İlahiyat Öğrencisi">
+                        </div>
+
+                        <div class="form-group">
+                            <label>E-posta Adresi</label>
+                            <input type="email" id="checkout-email" placeholder="ornek@mail.com" required>
+                        </div>
+                        <div class="form-group" style="position:relative;">
+                            <label>Şifre</label>
+                            <input type="password" id="checkout-password" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-group" id="checkout-re-password-group" style="display: none; position:relative;">
+                            <label>Şifreyi Onayla</label>
+                            <input type="password" id="checkout-re-password" placeholder="••••••••">
+                        </div>
+                        
+                        <div class="form-group" id="checkout-phone-group" style="display: none;">
+                            <label>Telefon Numarası</label>
+                            <div style="display: flex;">
+                                <span style="padding: 12px; background: #E9EEF5; border: 1px solid #E9EEF5; border-radius: 12px 0 0 12px; color: #555; font-weight: bold;">+90</span>
+                                <input type="tel" id="checkout-phone" placeholder="5XX XXX XX XX" pattern="^5[0-9]{9}$" maxlength="10" style="border-radius: 0 12px 12px 0; border-left: none;">
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary mt-10" style="width:100%;" onclick="checkoutAuthIslemi()" id="checkout-action-btn">Giriş Yap</button>
+                        <p id="checkout-hata-mesaji" style="color:#ff6b6b; font-size:13px; min-height:15px; margin: 10px 0;"></p>
+                        
+                        <div style="text-align:center; font-size:14px;">
+                            <span id="checkout-switch-text">Hesabınız yok mu?</span> 
+                            <span class="auth-toggle-text" onclick="toggleCheckoutAuthMode()" id="checkout-switch-link">Kayıt Ol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAĞ TARAFI (IBAN & Paket Bilgisi) -->
+                <div id="checkout-package-info">
+                    <!-- Dinamik olarak JS'den doldurulacak -->
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- TEKİL JS DOSYASI -->
+        <script src="ogretmen.js"></script>
+        <script src="paketler.js"></script>
+        <script src="state.js"></script>
+    <script src="auth.js"></script>
+    <script src="router.js"></script>
+    <script src="offline-packages.js"></script>
+    <script src="online-packages.js"></script>
+    <script src="checkout.js"></script>
+    <script src="course-content.js"></script>
+    <script src="teacher-admin.js"></script>
+    <script src="alarm.js"></script>
+    <script src="live-lesson.js"></script>
+    <script src="listelerim.js"></script>
+
+    <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
+    <script>
+        let isCheckoutLoginMode = true;
+        function toggleCheckoutAuthMode() {
+            isCheckoutLoginMode = !isCheckoutLoginMode;
+            if(isCheckoutLoginMode) {
+                document.getElementById('checkout-auth-title').innerText = "İşleme Devam Etmek İçin Giriş Yapın";
+                document.getElementById('checkout-action-btn').innerText = "Giriş Yap";
+                document.getElementById('checkout-switch-text').innerText = "Hesabınız yok mu?";
+                document.getElementById('checkout-switch-link').innerText = "Kayıt Ol";
+                document.getElementById('checkout-re-password-group').style.display = "none";
+                document.getElementById('checkout-student-name-group').style.display = "none";
+                document.getElementById('checkout-student-profession-group').style.display = "none";
+                document.getElementById('checkout-phone-group').style.display = "none";
+            } else {
+                document.getElementById('checkout-auth-title').innerText = "İşleme Devam Etmek İçin Kayıt Olun";
+                document.getElementById('checkout-action-btn').innerText = "Kayıt Ol";
+                document.getElementById('checkout-switch-text').innerText = "Zaten hesabınız var mı?";
+                document.getElementById('checkout-switch-link').innerText = "Giriş Yap";
+                document.getElementById('checkout-re-password-group').style.display = "block";
+                document.getElementById('checkout-student-name-group').style.display = "block";
+                document.getElementById('checkout-student-profession-group').style.display = "block";
+                document.getElementById('checkout-phone-group').style.display = "block";
+            }
+        }
+
+        function checkoutAuthIslemi() {
+            const email = document.getElementById('checkout-email').value.trim();
+            const pass = document.getElementById('checkout-password').value;
+            const errorEl = document.getElementById('checkout-hata-mesaji');
+            errorEl.innerText = "";
+
+            if (!email || !pass) {
+                errorEl.innerText = "Lütfen tüm alanları doldurun.";
+                return;
+            }
+
+            localStorage.setItem('savedEmail', email);
+            localStorage.setItem('activeSessionRole', 'student');
+            selectedRole = 'student';
+
+            if (!isFirebaseReady) {
+                let users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
+                if (!isCheckoutLoginMode) {
+                    const pass2 = document.getElementById('checkout-re-password').value;
+                    const phone = document.getElementById('checkout-phone').value.trim();
+                    if (pass !== pass2) { errorEl.innerText = "Şifreler uyuşmuyor."; return; }
+                    if (!phone.match(/^5[0-9]{9}$/)) { errorEl.innerText = "Lütfen 5 ile başlayan 10 haneli bir telefon numarası girin."; return; }
+                    if (users[email]) { errorEl.innerText = "Bu e-posta zaten kayıtlı."; return; }
+                    
+                    users[email] = { password: pass, phone: "+90" + phone };
+                    localStorage.setItem('mockUsers', JSON.stringify(users));
+                } else {
+                    if (!users[email] || users[email].password !== pass) {
+                        errorEl.innerText = "Kullanıcı bulunamadı veya şifre hatalı. Lütfen önce kayıt olun."; 
+                        return;
+                    }
+                }
+                basariliGiris(email, users[email] ? users[email].phone : "");
+                return;
+            }
+
+            if (isCheckoutLoginMode) {
+                firebase.auth().signInWithEmailAndPassword(email, pass)
+                .then((userCredential) => { 
+                    // onAuthStateChanged ilgilenecek
+                })
+                .catch((error) => { errorEl.innerText = "Giriş başarısız: " + error.message; });
+            } else {
+                const pass2 = document.getElementById('checkout-re-password').value;
+                const phone = document.getElementById('checkout-phone').value.trim();
+                const sName = document.getElementById('checkout-student-name').value.trim();
+                const sProf = document.getElementById('checkout-student-profession').value.trim();
+                if (pass !== pass2) { errorEl.innerText = "Şifreler uyuşmuyor."; return; }
+                
+                firebase.auth().createUserWithEmailAndPassword(email, pass)
+                .then((userCredential) => { 
+                    db.collection('users').doc(email).set({
+                        role: 'student',
+                        name: sName || "Belirtilmedi",
+                        profession: sProf || "Belirtilmedi",
+                        phone: "+90" + phone,
+                        purchasedPackages: [],
+                        progress: {}
+                    }).then(() => {
+                        // onAuthStateChanged ilgilenecek
+                    });
+                })
+                .catch((error) => { errorEl.innerText = "Kayıt başarısız: " + error.message; });
+            }
+        }
+    </script>
+    <script src="index.js"></script>
+    <script src="geri.js"></script>
+
+<!-- ORTAK SEPET (Paketler + Canlı Ders + Ders Talep) -->
+<style>
+  #offline-checkout-summary, #online-checkout-summary { display:none !important; }
+  #unified-cart { display:none; position:fixed; bottom:0; left:0; right:0; z-index:200; background:rgba(255,255,255,0.97); backdrop-filter:blur(10px); box-shadow:0 -6px 22px rgba(0,0,0,0.18); border-top:4px solid #20C997; padding:12px 24px; align-items:center; justify-content:space-between; gap:16px; box-sizing:border-box; }
+  #unified-cart .uc-buy[disabled]{ opacity:.45; cursor:not-allowed; }
+  @media (max-width:640px){ #unified-cart{ padding:10px 14px; } #unified-cart .uc-items{ display:none; } }
+</style>
+<div id="unified-cart">
+  <div style="min-width:0;">
+    <div style="font-weight:700; color:#333;">🛒 <span id="uc-count">0</span> ürün</div>
+    <div id="uc-items" class="uc-items" style="font-size:0.8rem; color:#7f8c8d; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52vw;">Henüz seçim yok — paket seçin</div>
+  </div>
+  <div style="display:flex; align-items:center; gap:16px; flex-shrink:0;">
+    <span id="uc-total" style="font-size:1.4rem; font-weight:bold; color:#20C997; white-space:nowrap;">0 ₺</span>
+    <button id="uc-buy" class="btn btn-success uc-buy" onclick="unifiedCartBuy()" style="padding:12px 26px; font-size:1.05rem;">Satın Al</button>
+  </div>
+</div>
+<script>
+(function(){
+  function pnum(p){ return typeof p.price==='number' ? p.price : (parseInt(String(p.price||'').replace(/[^0-9]/g,''))||0); }
+  window.updateUnifiedCart=function(){
+    if(typeof appState==='undefined') return;
+    var cart=document.getElementById('unified-cart'); if(!cart) return;
+    var v=appState.currentView;
+    var show=(v==='offline-list'||v==='online-packages-list'||v==='booking-section');
+    // yuzen araclar (Listelerim / Kaliplar Tablosu) paket-sepet gorunumlerinde gizlensin (sepetle cakismasin)
+    var onHome=(v==='home-hub-section');
+    var tools=document.querySelectorAll('.floating-tool-button');
+    for(var ti=0; ti<tools.length; ti++){ tools[ti].style.display = onHome ? '' : 'none'; }
+    if(!show){ cart.style.display='none'; return; }
+    var off=appState.selectedOfflinePackages||[];
+    var on=appState.selectedOnlinePackages||[];
+    var offT=off.reduce(function(s,id){ var pk=(appState.packages||[]).find(function(x){return x.id===id;}); return s+(pk?pnum(pk):0); },0);
+    var onT=on.reduce(function(s,pk){ return s+pnum(pk); },0);
+    var total=offT+onT, count=off.length+on.length;
+    var names=[];
+    off.forEach(function(id){ var pk=(appState.packages||[]).find(function(x){return x.id===id;}); if(pk) names.push(pk.title); });
+    on.forEach(function(pk){ names.push(pk.name||('Paket '+pk.id)); });
+    var el;
+    if(el=document.getElementById('uc-count')) el.innerText=count;
+    if(el=document.getElementById('uc-total')) el.innerText=total.toLocaleString('tr-TR')+' ₺';
+    if(el=document.getElementById('uc-items')) el.innerText=names.length?names.join(', '):'Henüz seçim yok — paket seçin';
+    var b=document.getElementById('uc-buy'); if(b){ b.disabled=(count===0); }
+    cart.style.display='flex';
+  };
+  window.unifiedCartBuy=function(){
+    var off=(appState.selectedOfflinePackages||[]).length;
+    var on=(appState.selectedOnlinePackages||[]).length;
+    var v=appState.currentView;
+    if(off && typeof bookOfflinePackages==='function'){ bookOfflinePackages(); return; }
+    if(on){
+      // Canlı/özel ders: takvimden saatler seçildiyse doğrudan ÖDEMEYE geç;
+      // henüz seçilmediyse önce takvim adımına (Ders Talep Et) yönlendir.
+      var hasSlots = appState.selectedSlots && appState.selectedSlots.length > 0;
+      if(v==='booking-section' && hasSlots && typeof bookLiveLesson==='function'){ bookLiveLesson(); }
+      else if(typeof bookOnlinePackages==='function'){ bookOnlinePackages(); }
+    }
+  };
+  setInterval(function(){ try{ window.updateUnifiedCart(); }catch(e){} }, 500);
+})();
+</script>
+
+<script>
+(function(){
+  // Birlesik: gercek header yuksekligini olcup --header-height'i ayarla (kategori basligi boslugu icin)
+  function setHeaderH(){ var h=document.querySelector('header'); if(h) document.documentElement.style.setProperty('--header-height', h.offsetHeight + 'px'); }
+  document.addEventListener('DOMContentLoaded', setHeaderH);
+  window.addEventListener('load', setHeaderH);
+  window.addEventListener('resize', setHeaderH);
+  setTimeout(setHeaderH, 300); setTimeout(setHeaderH, 1000);
+})();
+</script>
+
+<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')">Sarf Motoru ⚙️</a>
+
+<!-- Öneri / İletişim butonu (Sarf Motoru'nun üstünde) -->
+<button id="feedbackFab" onclick="openMyMessages()" title="Mesajlar & İletişim" aria-label="Mesajlar ve iletişim" class="feedback-fab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2"></path><rect x="1" y="14" width="5" height="7" rx="1.5"></rect><rect x="18" y="14" width="5" height="7" rx="1.5"></rect><path d="M21 20v0a3 3 0 0 1-3 3h-4"></path></svg>
+  <span id="fab-msg-dot" style="display:none; position:absolute; top:4px; right:4px; width:13px; height:13px; background:#2ECC71; border-radius:50%; box-shadow:0 0 0 2px #fff;"></span>
+</button>
+
+<!-- Destek modali (global, gizli) -->
+<div id="supportModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
+  <div style="background-color:#fff; margin:15% auto; padding:30px; border-radius:20px; width:90%; max-width:400px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:4px solid #FFC107;">
+    <span onclick="closeSupportModal()" style="position:absolute; right:15px; top:10px; font-size:28px; font-weight:bold; cursor:pointer; color:#aaa;">&times;</span>
+    <div style="font-size:3em; margin-bottom:10px;">🎁</div>
+    <h2 style="font-family:'Marhey',sans-serif; color:#E67E22; margin-top:0;">Destek Ol!</h2>
+    <p style="font-family:'Nunito',sans-serif; font-size:1.1em; color:#333; line-height:1.5;">Kidef Arapça sitesini desteklemek için: <br><strong style="color:#27AE60;">kidefarapca@gmail.com</strong> <br>üzerinden bizimle iletişime geçebilirsiniz.</p>
+    <button onclick="closeSupportModal()" style="background:#27AE60; color:#fff; border:none; padding:10px 30px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:1em; margin-top:10px;">Kapat</button>
+  </div>
+</div>
+
+<style>
+.feedback-fab{
+  position:fixed; right:25px; bottom:135px; z-index:1000;
+  width:52px; height:52px; border-radius:50%; border:none; cursor:pointer;
+  background:#20C997; color:#fff; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.25); transition:.3s;
+}
+.feedback-fab:hover{ transform:translateY(-3px) scale(1.06); background:#16A085; }
+.feedback-fab svg{ width:26px; height:26px; }
+@media(max-width:768px){ .feedback-fab{ bottom:135px; right:20px; width:48px; height:48px; } }
+</style>
+
+<!-- Öneri / İletişim modalı -->
+<div id="feedbackModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
+  <div style="background-color:#fff; margin:8% auto; padding:26px; border-radius:20px; width:92%; max-width:440px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:4px solid #20C997;">
+    <span onclick="closeFeedbackModal()" style="position:absolute; right:15px; top:10px; font-size:28px; font-weight:bold; cursor:pointer; color:#aaa;">&times;</span>
+    <div style="text-align:center; color:#16A085;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:42px;height:42px;"><path d="M3 14v-2a9 9 0 0 1 18 0v2"></path><rect x="1" y="14" width="5" height="7" rx="1.5"></rect><rect x="18" y="14" width="5" height="7" rx="1.5"></rect><path d="M21 20a3 3 0 0 1-3 3h-4"></path></svg>
+    </div>
+    <h2 style="font-family:'Marhey',sans-serif; color:#16A085; margin:6px 0 4px; text-align:center;">Öneri & İletişim</h2>
+    <p style="font-family:'Nunito',sans-serif; font-size:0.95em; color:#666; line-height:1.4; text-align:center; margin-top:0;">Eleştiri, tavsiye veya merak ettiklerinizi yazın — doğrudan bize ulaşır.</p>
+    <select id="fb-category" style="width:100%; padding:11px; border:1px solid #E9EEF5; border-radius:10px; margin-bottom:10px; font-family:inherit; box-sizing:border-box;">
+      <option value="Eleştiri">Eleştiri</option>
+      <option value="Tavsiye">Tavsiye</option>
+      <option value="Merak / Soru">Merak / Soru</option>
+      <option value="Diğer">Diğer</option>
+    </select>
+    <input id="fb-name" type="text" placeholder="Adınız (isteğe bağlı)" style="width:100%; padding:11px; border:1px solid #E9EEF5; border-radius:10px; margin-bottom:10px; font-family:inherit; box-sizing:border-box;">
+    <textarea id="fb-message" rows="4" placeholder="Mesajınızı yazın..." style="width:100%; padding:11px; border:1px solid #E9EEF5; border-radius:10px; font-family:inherit; resize:vertical; box-sizing:border-box;"></textarea>
+    <button onclick="sendFeedback()" style="width:100%; background:#20C997; color:#fff; border:none; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:1em; margin-top:10px;">Gönder</button>
+    <p id="fb-status" style="font-size:13px; min-height:16px; margin:8px 0 0; text-align:center;"></p>
+  </div>
+</div>
+
+<!-- Kullanıcı ↔ Yönetici yazışma modalı -->
+<div id="myMsgModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
+  <div style="background-color:#fff; margin:6% auto; padding:0; border-radius:18px; width:94%; max-width:460px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5); overflow:hidden; display:flex; flex-direction:column; max-height:80vh;">
+    <div style="background:#16A085; color:#fff; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
+      <strong>Öneri & İletişim</strong>
+      <span onclick="closeMyMessages()" style="cursor:pointer; font-size:24px; line-height:1;">&times;</span>
+    </div>
+    <div id="mymsg-list" style="flex:1; overflow-y:auto; padding:14px; min-height:220px; background:#f7f9fc;"></div>
+    <div style="display:flex; gap:8px; padding:12px; border-top:1px solid #E9EEF5;">
+      <input id="mymsg-input" type="text" placeholder="Mesaj yazın…" onkeypress="if(event.key==='Enter') sendMyMessage()" style="flex:1; padding:11px; border:1px solid #E9EEF5; border-radius:10px; font-family:inherit;">
+      <button onclick="sendMyMessage()" style="background:#20C997; color:#fff; border:none; border-radius:10px; padding:0 18px; font-weight:bold; cursor:pointer;">Gönder</button>
     </div>
   </div>
-</footer>
+</div>
 
-<a href="kaliplartablosu.html" 
-   target="_blank"
-   class="floating-tool-button kaliplar-tablosu-btn" 
-   onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')">
-   Kalıplar Tablosu 📋
-</a>
+<script>
+  function _fbEsc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _fbUser(){ return (typeof firebase!=='undefined' && firebase.auth) ? firebase.auth().currentUser : null; }
+  function _fbIsAdmin(){ return typeof appState!=='undefined' && appState.userRole==='admin'; }
+  function _fbEmail(){ var u=_fbUser(); return (u && !u.isAnonymous && u.email) ? u.email : ''; }
 
-<a id="listelerim-btn" href="listelerim.html" target="_blank" onclick="return handleTeacherClick(event, 'listelerim.html')" class="floating-tool-button">Listelerim 📋</a>
+  function openFeedbackModal(){ var m=document.getElementById('feedbackModal'); if(m) m.style.display='block'; var s=document.getElementById('fb-status'); if(s) s.innerText=''; }
+  function closeFeedbackModal(){ var m=document.getElementById('feedbackModal'); if(m) m.style.display='none'; }
 
-<script src="index.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="auth_index.js?v=5"></script>
+  // KULLANICI: öneri/mesaj gönder (mesajlar koleksiyonu)
+  async function sendFeedback(){
+    var msg=(document.getElementById('fb-message').value||'').trim();
+    var kat=document.getElementById('fb-category').value;
+    var ad=(document.getElementById('fb-name').value||'').trim();
+    var st=document.getElementById('fb-status');
+    if(!msg){ if(st){ st.style.color='#EF5350'; st.innerText='Lütfen mesajınızı yazın.'; } return; }
+    try{
+      if(typeof firebase==='undefined' || !firebase.firestore){ throw new Error('Firebase yok'); }
+      var u=_fbUser();
+      // Anonim/girişsiz kişi mesaj atamaz — giriş istenir
+      if(!u || u.isAnonymous || !u.email){
+        if(st){ st.style.color='#EF5350'; st.innerText='Mesaj göndermek için lütfen giriş yapın veya kayıt olun.'; }
+        setTimeout(function(){ closeFeedbackModal(); if(typeof showLoginModal==='function') showLoginModal(); }, 1300);
+        return;
+      }
+      await firebase.firestore().collection('mesajlar').add({
+        uid: u ? u.uid : '', email: _fbEmail(),
+        ad: ad || (typeof appState!=='undefined' && appState.currentUserName) || 'Anonim',
+        from: 'user', kategori: kat || 'Diğer', text: msg,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        readByAdmin: false, readByUser: true
+      });
+      document.getElementById('fb-message').value=''; document.getElementById('fb-name').value='';
+      if(st){ st.style.color='#20C997'; st.innerText='Teşekkürler! Mesajınız iletildi. 🙏 Cevap için ✉️ Mesajlar bölümünü takip edin.'; }
+      setTimeout(closeFeedbackModal, 1800);
+    }catch(e){ console.warn('Mesaj gönderilemedi:', e); if(st){ st.style.color='#EF5350'; st.innerText='Gönderilemedi. Lütfen tekrar deneyin.'; } }
+  }
 
+  // ✉️ butonu: admin -> panel, kullanıcı -> yazışma
+  function openMessages(){
+    if(_fbIsAdmin()){
+      if(typeof changeView==='function') changeView('admin-section');
+      if(typeof renderAdminPanel==='function') renderAdminPanel();
+      setTimeout(function(){ var d=document.getElementById('admin-messages-details'); if(d){ d.open=true; if(typeof loadAdminFeedback==='function') loadAdminFeedback(); } }, 150);
+    } else { openMyMessages(); }
+  }
+  function closeMyMessages(){ var m=document.getElementById('myMsgModal'); if(m) m.style.display='none'; }
+  async function openMyMessages(){
+    var u=_fbUser(); if(!u || u.isAnonymous){ if(typeof showLoginModal==='function') showLoginModal(); return; }
+    var m=document.getElementById('myMsgModal'); if(m) m.style.display='block';
+    await loadMyMessages();
+  }
+  async function loadMyMessages(){
+    var box=document.getElementById('mymsg-list'); if(!box) return;
+    var u=_fbUser(); if(!u){ box.innerHTML='Giriş yapın.'; return; }
+    box.innerHTML='Yükleniyor…';
+    try{
+      var snap=await firebase.firestore().collection('mesajlar').where('uid','==',u.uid).get();
+      var arr=[]; snap.forEach(function(d){ arr.push({ref:d.ref, m:d.data()}); });
+      arr.sort(function(a,b){ var ta=(a.m.createdAt&&a.m.createdAt.toMillis)?a.m.createdAt.toMillis():0; var tb=(b.m.createdAt&&b.m.createdAt.toMillis)?b.m.createdAt.toMillis():0; return ta-tb; });
+      var html=''; var toMark=[];
+      arr.forEach(function(x){ var m=x.m; var mine=m.from==='user';
+        html+='<div style="text-align:'+(mine?'right':'left')+'; margin:6px 0;"><span style="display:inline-block; max-width:82%; padding:9px 12px; border-radius:12px; background:'+(mine?'#20C997':'#E9EEF5')+'; color:'+(mine?'#fff':'#333')+'; text-align:left; white-space:pre-wrap;">'+_fbEsc(m.text||m.mesaj||'')+'</span></div>';
+        if(!mine && !m.readByUser) toMark.push(x.ref);
+      });
+      box.innerHTML=html||'<p style="color:#888; text-align:center; line-height:1.5;">Eleştiri, tavsiye veya merak ettiklerinizi buradan yazabilirsiniz.<br>Size yine buradan cevap verilir.</p>';
+      box.scrollTop=box.scrollHeight;
+      toMark.forEach(function(r){ r.update({readByUser:true}).catch(function(){}); });
+      setTimeout(checkUnreadMessages, 600);
+    }catch(e){ box.innerHTML='<p style="color:#EF5350;">Yüklenemedi.</p>'; console.warn(e); }
+  }
+  async function sendMyMessage(){
+    var inp=document.getElementById('mymsg-input'); if(!inp) return; var t=(inp.value||'').trim(); if(!t) return;
+    var u=_fbUser(); if(!u) return; inp.value='';
+    try{
+      await firebase.firestore().collection('mesajlar').add({
+        uid:u.uid, email:_fbEmail(), ad:(typeof appState!=='undefined' && appState.currentUserName)||'Kullanıcı',
+        from:'user', kategori:'Mesaj', text:t,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(), readByAdmin:false, readByUser:true
+      });
+      loadMyMessages();
+    }catch(e){ console.warn('Mesaj gönderilemedi:', e); }
+  }
+
+  // Yeşil nokta bildirimi (indeks gerektirmeyen tek-filtreli sorgular)
+  async function checkUnreadMessages(){
+    try{
+      var u=_fbUser(); if(!u || typeof firebase==='undefined' || !firebase.firestore){ _setMsgDot(false); return; }
+      if(_fbIsAdmin()){
+        var s=await firebase.firestore().collection('mesajlar').where('readByAdmin','==',false).limit(30).get();
+        var any=false; s.forEach(function(d){ if(d.data().from==='user') any=true; }); _setMsgDot(any);
+      } else {
+        var s2=await firebase.firestore().collection('mesajlar').where('uid','==',u.uid).limit(50).get();
+        var any2=false; s2.forEach(function(d){ var m=d.data(); if(m.from==='admin' && !m.readByUser) any2=true; }); _setMsgDot(any2);
+      }
+    }catch(e){ _setMsgDot(false); }
+  }
+  function _setMsgDot(on){
+    var u=_fbUser();
+    var loggedIn=(on && u && !u.isAnonymous);
+    // İletişim (kulaklık) butonundaki bildirim noktası — kullanıcı için
+    var fd=document.getElementById('fab-msg-dot');
+    if(fd) fd.style.display=(loggedIn && !_fbIsAdmin())?'block':'none';
+    // Profil (isim) alanındaki bildirim noktası — herkes için (her sayfada görünür)
+    var ui=document.getElementById('user-info');
+    if(ui){
+      var pd=document.getElementById('profile-msg-dot');
+      if(loggedIn){
+        if(!pd){
+          pd=document.createElement('span');
+          pd.id='profile-msg-dot';
+          pd.style.cssText='position:absolute; top:-2px; right:-2px; width:11px; height:11px; background:#2ECC71; border-radius:50%; box-shadow:0 0 0 2px rgba(20,20,20,0.4); pointer-events:none; z-index:5;';
+          ui.appendChild(pd);
+        }
+        pd.style.display='block';
+      } else if(pd){ pd.style.display='none'; }
+    }
+  }
+
+  // ✉️ buton görünürlüğü (giriş yapan herkes) + FAB görünürlüğü (sadece anasayfa, admin değil)
+  // İletişim butonunu Sarf Motoru'nun tam 10px ÜSTÜNE yerleştir (ekrandan bağımsız kesin)
+  function positionFeedbackFab(){
+    var sarf=document.querySelector('.floating-tool-button.kaliplar-tablosu-btn');
+    var fab=document.getElementById('feedbackFab');
+    if(!sarf || !fab) return;
+    var r=sarf.getBoundingClientRect();
+    var bottomVal=(window.innerHeight - r.top) + 10; // Sarf'ın üst kenarı + 10px
+    if(bottomVal<80) bottomVal=80;
+    fab.style.bottom=bottomVal+'px';
+  }
+  function updateFeedbackFabVisibility(){
+    var fab=document.getElementById('feedbackFab');
+    var onHome=(typeof appState!=='undefined' && appState.currentView)?(appState.currentView==='home-hub-section'):true;
+    if(fab){
+      var show=(onHome && !_fbIsAdmin());
+      fab.style.display=show?'flex':'none';
+      if(show) positionFeedbackFab();
+    }
+  }
+  window.addEventListener('resize', function(){ try{ positionFeedbackFab(); }catch(e){} });
+  setInterval(function(){ try{ updateFeedbackFabVisibility(); }catch(e){} }, 500);
+  setInterval(function(){ try{ checkUnreadMessages(); }catch(e){} }, 15000);
+  document.addEventListener('DOMContentLoaded', function(){ try{ positionFeedbackFab(); }catch(e){} setTimeout(function(){ try{ checkUnreadMessages(); }catch(e){} }, 2500); });
+  window.addEventListener('load', function(){ try{ positionFeedbackFab(); }catch(e){} });
+
+  window.openFeedbackModal=openFeedbackModal; window.closeFeedbackModal=closeFeedbackModal; window.sendFeedback=sendFeedback;
+  window.openMessages=openMessages; window.openMyMessages=openMyMessages; window.closeMyMessages=closeMyMessages;
+  window.sendMyMessage=sendMyMessage; window.loadMyMessages=loadMyMessages; window.checkUnreadMessages=checkUnreadMessages;
+</script>
+<script>
+  function handleAnyLoginClick(e, url){
+    var isMobile = window.innerWidth<=768 || /Mobi|Android/i.test(navigator.userAgent);
+    if(isMobile) return true;
+    var loggedIn = (typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser);
+    if(!loggedIn){ if(e&&e.preventDefault) e.preventDefault(); if(typeof showLoginModal==='function') showLoginModal(); return false; }
+    return true;
+  }
+  function handleTeacherClick(e, url){ return handleAnyLoginClick(e, url); }
+  window.handleAnyLoginClick=handleAnyLoginClick; window.handleTeacherClick=handleTeacherClick;
+  function openListelerim(e){ if(e&&e.preventDefault) e.preventDefault();
+    var role=(typeof appState!=="undefined" && appState.userRole)?appState.userRole:null;
+    var loggedIn=(typeof firebase!=="undefined" && firebase.auth && firebase.auth().currentUser);
+    if(!loggedIn){ if(typeof showLoginModal==="function") showLoginModal(); return false; }
+    if(role==="student"){ alert("📋 Listelerim yalnızca öğretmenler içindir."); return false; }
+    if(typeof changeView==="function") changeView("listelerim-section");
+    if(typeof initListelerim==="function") setTimeout(initListelerim,60);
+    return false; }
+  window.openListelerim=openListelerim;
+</script>
 </body>
 </html>

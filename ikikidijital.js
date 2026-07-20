@@ -178,13 +178,9 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    // Anasayfa SVG Tuşu Kontrolü
+    // Geri tuşu HER ekranda görünür kalsın (oyun sırasında da kaybolmasın)
     const homeBtn = document.getElementById('home-btn');
-    if (id === 'screen-intro') {
-        homeBtn.style.display = 'flex';
-    } else {
-        homeBtn.style.display = 'none';
-    }
+    if (homeBtn) homeBtn.style.display = 'flex';
 }
 
 function startGame(cat) {

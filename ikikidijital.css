@@ -105,14 +105,16 @@ body {
 /* YARIŞMA ALANI (ARENA) */
 .arena-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    position: relative;
+    text-align: center;
     width: 100%;
     border-bottom: 2px solid rgba(0,0,0,0.05);
     padding-bottom: clamp(5px, 2vh, 15px);
 }
 .arena-title { font-size: clamp(18px, 4vw, 32px); color: var(--accent-red); }
-.arena-header .subtitle { font-size: clamp(14px, 3vw, 22px); }
+.arena-header .subtitle { font-size: clamp(14px, 3vw, 22px); position: absolute; right: 0; top: 50%; transform: translateY(-50%); margin: 0; }
 
 .arena-workspace {
     display: flex;
