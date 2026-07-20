@@ -170,8 +170,7 @@
     };
    // Sabitler
     const ALL_AVAILABLE_PATTERNS = Object.keys(embeddedGameData.patterns);
-    const patternSoundFiles = { "33": "k1k33.wav", "36": "k1k36.wav" };
-    let patternSounds = {};
+    // Dosya tabanlı kalıp sesleri kaldırıldı — sadece Web Audio (tarayıcı-üretimi) sesler kullanılıyor.
     const rootColors = ["#007bff", "#dc3545", "#ffc107", "#198754", "#6f42c1", "#fd7e14", "#20c997", "#6610f2"];
 
 
@@ -200,29 +199,14 @@
         const startBackButton = document.getElementById('start-back-button');
         const resultsBackButton = document.getElementById('results-back-button');
 
-        // Ses Mantiği
+        // Ses Mantiği (yalnızca Web Audio / tarayıcı-üretimi sesler)
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        let arePatternSoundsLoaded = false;
-        function loadPatternSounds() {
-            if (arePatternSoundsLoaded) return;
-            patternSounds = {};
-            for (const patternId in patternSoundFiles) {
-                try {
-                    const audio = new Audio(patternSoundFiles[patternId]);
-                    audio.preload = 'auto';
-                    patternSounds[patternId] = audio;
-                } catch (e) { console.error(`Error loading sound for pattern ${patternId}: ${patternSoundFiles[patternId]}`, e); }
-            }
-            arePatternSoundsLoaded = true;
-            console.log("Pattern sounds loaded:", Object.keys(patternSounds).length);
-        }
         async function playGenericSound(type) {
             if (!audioContext) { console.warn("AudioContext desteklenmiyor."); return; }
             if (audioContext.state === 'suspended') {
-                try { await audioContext.resume(); console.log("AudioContext kullanıcı etkileşimiyle başlatıldı."); } 
+                try { await audioContext.resume(); }
                 catch (e) { console.error("AudioContext resume failed:", e); return; }
             }
-            if (!arePatternSoundsLoaded) { loadPatternSounds(); }
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             oscillator.connect(gainNode); gainNode.connect(audioContext.destination);
@@ -605,9 +589,8 @@
                  }
                  activeWordEl.classList.add('correct', 'done'); 
                  setTimeout(() => activeWordEl.classList.remove('correct'), 500);
-                 l2_correctPatternsFound++; 
-                 if (patternSounds[droppedPatternId]) { patternSounds[droppedPatternId].play().catch(err => console.error("Pattern sound play failed:", err)); }
-             
+                 l2_correctPatternsFound++;
+
              // YANLIŞ EŞLEŞME
              } else { 
                  playGenericSound('incorrect');
@@ -836,7 +819,7 @@
         // Başlangıç ekranı geri tuşu -> kidefarapca.com'a git
         startBackButton.addEventListener('click', () => {
             playGenericSound('touch');
-            window.location.href = "https://kidefarapca.com";
+            kidefGeriDon();
         });
 
         // Oyun içi geri tuşu -> Ana menüye dön
@@ -860,7 +843,7 @@
         // Başlangıç ekranı geri tuşu -> kidefarapca.com'a git
         startBackButton.addEventListener('click', () => {
             playGenericSound('touch');
-            window.location.href = "https://kidefarapca.com";
+            kidefGeriDon();
         });
 
         // Oyun içi geri tuşu -> Ana menüye dön
