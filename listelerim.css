@@ -1,0 +1,727 @@
+/* listelerim.css — tum seciciler #ll-root altina kapsullendi (index ile cakismasin) */
+#ll-root{
+            --primary: #D84315; --secondary: #E67E22; --accent: #F39C12;
+            --success: #27ae60; --light: #ecf0f1; --white: #ffffff; --danger: #e74c3c;
+            --warning: #f1c40f;
+        }
+#ll-root{ font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: #f0f2f5; }
+#ll-root #sidebar{ width: 300px; background: var(--primary); color: white; padding: 15px; display: flex; flex-direction: column; }
+#ll-root .btn-add{ background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; }
+#ll-root .level-container{ margin-bottom: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 5px; }
+#ll-root .level-head{ display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 8px; background: var(--secondary); border-radius: 6px; }
+#ll-root .level-head > span{ white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#ll-root .level-actions{ display: none; gap: 4px; justify-content: flex-end; align-items: center; }
+#ll-root .level-actions button, #ll-root .class-actions button{
+            background: rgba(255, 255, 255, 0.15); border: none; color: #ffffff; padding: 4px 10px;
+            border-radius: 4px; cursor: pointer; transition: all 0.2s ease; font-size: 14px;
+        }
+#ll-root .level-actions button:hover, #ll-root .class-actions button:hover{ transform: scale(1.1); background: var(--accent); }
+#ll-root .class-list{ margin-left: 10px; margin-top: 5px; display: none; }
+#ll-root .class-list.active{ display: block; }
+#ll-root .class-item{ display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-radius: 4px; transition: 0.2s; }
+#ll-root .class-item:hover{ background: rgba(255,255,255,0.1); }
+#ll-root .class-link{ cursor: pointer; color: rgba(255,255,255,0.9); text-decoration: none; flex: 1; }
+#ll-root .class-link:hover{ color: white; }
+#ll-root #content{ flex: 1; padding: 25px; overflow-y: auto; display: none; }
+#ll-root .header{ background: var(--white); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+#ll-root .tabs{ 
+    display: flex; 
+    flex-wrap: wrap; 
+    border-bottom: 2px solid #ddd; 
+    margin-bottom: 20px; 
+    gap: 5px; 
+}
+#ll-root .tab{ 
+    padding: 15px 20px; 
+    cursor: pointer; 
+    border: none; 
+    background: #f1f3f5; 
+    font-weight: 700; 
+    color: var(--secondary); 
+    white-space: nowrap;
+    flex: 1 1 calc(20% - 10px); 
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+    font-size: 1.1rem; 
+    border-bottom: 3px solid transparent;
+}
+#ll-root .tab:hover{
+    background: #e9ecef;
+    color: var(--accent);
+}
+#ll-root .tab.active{ 
+    background: var(--white);
+    border-bottom: 4px solid var(--accent); 
+    color: var(--accent); 
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+}
+#ll-root .tab-panel{ display: none; background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+#ll-root .tab-panel.active{ display: block; }
+#ll-root table{ width: 100%; border-collapse: collapse; margin-top: 10px; }
+#ll-root th, #ll-root td{ border: 1px solid #ddd; padding: 10px; text-align: left; }
+#ll-root th{ background: #f8f9fa;text-align: center !important; }
+#ll-root input[type="number"], #ll-root input[type="text"]{ width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+#ll-root #stuTable input[type="text"]{
+    font-size: 1.2rem !important;
+    font-weight: 600;
+}
+#ll-root .activity-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+#ll-root .act-btn{ padding: 25px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 1.1em; transition: 0.2s; }
+#ll-root .marker{ display: inline-block; width: 18px; height: 18px; margin-left: 4px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); }
+#ll-root .tool-display{
+            font-size: 4rem; font-weight: bold; text-align: center; margin: 20px 0;
+            background: #2c3e50; color: #ecf0f1; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace;
+        }
+#ll-root .tool-controls{ display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+#ll-root .tool-btn{
+            padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold; color: white;
+            transition: transform 0.1s;
+        }
+#ll-root .tool-btn:active{ transform: scale(0.95); }
+#ll-root .btn-start{ background: var(--success); }
+#ll-root .btn-stop{ background: var(--danger); }
+#ll-root .btn-reset{ background: var(--secondary); }
+#ll-root .btn-lap{ background: var(--warning); color: #333; }
+#ll-root .team-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+#ll-root .team-card{ background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+#ll-root .team-title{ font-weight: bold; color: var(--accent); margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+#ll-root .team-member{ padding: 4px 0; border-bottom: 1px dotted #ccc; font-size: 0.95em; }
+#ll-root .skill-slider{ -webkit-appearance: none; width: 100%; height: 12px; border-radius: 10px; background: #e0e0e0; outline: none; margin: 10px 0; }
+#ll-root .skill-slider::-webkit-slider-thumb{ -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #ffffff; cursor: pointer; border: 3px solid var(--accent); }
+#ll-root #customAlertModal{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+#ll-root .alert-box{ background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; animation: ll_popIn 0.3s; }
+@keyframes ll_popIn{ from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+#ll-root .alert-btn{ padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px; }
+#ll-root .btn-confirm{ background: var(--accent); color: white; }
+#ll-root .btn-cancel{ background: #eee; color: #666; }
+#ll-root .dragging-row{ opacity: 0.5; background-color: #f1f1f1; border: 2px dashed var(--accent); }
+#ll-root .note-textarea{
+    width: 100%;
+    height: 250px;           
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.3rem !important; 
+    line-height: 1.5;
+    color: #2c3e50;
+    resize: none;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s;
+}
+#ll-root .note-textarea:focus{
+    border-color: var(--accent);
+    background-color: #f8f9fa;
+}
+#ll-root .action-cell{
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    gap: 15px;              
+}
+#ll-root .action-cell button{
+    margin: 0;              
+    width: 45px;            
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 22px;
+}
+#ll-root .action-cell button:hover{
+    background: var(--light);
+    transform: scale(1.1);
+}
+#ll-root #tab8{
+    width: 100%; 
+    box-sizing: border-box;
+}
+#ll-root #planTable input[type="text"]{
+    width: 100%;
+    padding: 5px;
+    border: 1px solid transparent;
+    background: transparent;
+}
+#ll-root #planTable input[type="text"]:focus{
+    border-color: var(--accent);
+    background: #fff;
+    outline: none;
+}
+#ll-root #planTable tr{
+    transition: background-color 0.3s ease;
+}
+#ll-root #planTable tr:hover{
+    background-color: #f5f5f5;
+}
+#ll-root #planBody{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px;
+}
+#ll-root #planBody tr{
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    background: #fff;
+}
+#ll-root #planTable thead{ display: none; }
+#ll-root .week-info{
+    min-width: 100px;
+    border-right: 2px solid #eee;
+    margin-right: 15px;
+    padding-right: 10px;
+}
+#ll-root .week-number{
+    font-size: 1.4rem; 
+    font-weight: bold;
+    color: var(--primary);
+    display: block;
+}
+#ll-root .week-date{
+    font-size: 0.9rem;
+    color: #666;
+}
+#ll-root .plan-container{
+    display: flex;
+    gap: 40px;
+    background: #fdfdfd;
+    padding: 20px;
+    border-radius: 12px;
+    position: relative;
+    width: 100%;
+    min-width: 1000px;
+    box-sizing: border-box;
+}
+#ll-root .plan-container::after{
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: var(--primary); 
+    transform: translateX(-50%);
+    opacity: 0.15;
+}
+#ll-root .period-column{
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+#ll-root .plan-card{
+    display: flex;
+    width: 100%;
+    min-height: 70px; 
+    height: auto;     
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+#ll-root .week-info{
+    min-width: 100px; 
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa;
+    border-right: 2px solid #eee;
+    gap: 2px;
+}
+#ll-root .gain-input-area{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+#ll-root .gain-input-area textarea{
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 1.05rem;
+    outline: none;
+    resize: none;      
+    height: auto;      
+    min-height: 50px;
+    font-family: inherit;
+    line-height: 1.4;
+}
+#ll-root .check-container{
+    min-width: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid #f0f0f0;
+}
+#ll-root .date-start{ 
+    background: #e3f2fd; 
+    color: #1565c0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+    width: 90%;
+    text-align: center;
+}
+#ll-root .date-end{ 
+    background: #fff3e0; 
+    color: #e65100;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    width: 90%;
+    text-align: center;
+}
+#ll-root .week-number{ 
+    font-size: 1.2rem; 
+    font-weight: 800; 
+    color: var(--primary); 
+    margin-bottom: 5px;
+}
+#ll-root .holiday-week{
+    background: #e74c3c !important; 
+    color: white !important;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-align: center;
+    width: 90%;
+    margin-top: 3px;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+#ll-root .plan-card.is-holiday .date-start, #ll-root .plan-card.is-holiday .date-end{
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+#ll-root .plan-card.is-current-week{
+    border: 2px solid #3498db;
+    background-color: #f0f9ff;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    position: relative;
+    z-index: 1;
+}
+#ll-root .holiday-separator{
+    background-color: #f8f9fa;
+    border: 1px dashed #cbd5e0;
+    border-radius: 8px;
+    margin: 5px 0;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#ll-root .holiday-content{
+    font-size: 0.85rem;
+    color: #718096;
+    font-weight: 600;
+}
+#ll-root .holiday-dates{
+    font-weight: normal;
+    margin-left: 5px;
+    font-size: 0.8rem;
+}
+#ll-root .plan-card{
+    display: flex;
+    align-items: stretch;
+    min-height: 60px; 
+    margin-bottom: 5px;
+}
+#ll-root.sidebar-closed #sidebar{
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: 0.3s;
+}
+#ll-root #sidebar{
+    transition: 0.3s;
+    position: relative;
+}
+#ll-root.sidebar-closed #content{
+    margin-left: 0;
+}
+#ll-root .toggle-btn{
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 10000;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+#ll-root.sidebar-closed .toggle-btn{
+    left: 10px;
+}
+#ll-root #levelSettingsPanel{
+    display: block !important; 
+    opacity: 1 !important;
+}
+#ll-root #lvlModal{
+    display: none; 
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 90%; 
+    max-width: 600px; 
+    background: white; 
+    padding: 30px; 
+    box-shadow: 0 0 100px rgba(0,0,0,0.5); 
+    z-index: 999999; 
+    border-radius: 15px;
+    color: #333;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+#ll-root .student-box{
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: 50px;
+}
+#ll-root .student-box:hover{
+    filter: brightness(0.7);
+    color: transparent !important;
+}
+#ll-root .student-box:hover::after{
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    pointer-events: none; 
+}
+#ll-root .selected-student-item{
+    position: relative;
+    display: inline-block;
+    margin: 3px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 60px;
+    text-align: center;
+}
+#ll-root .selected-student-item:hover{
+    filter: brightness(0.8);
+    color: transparent !important;
+}
+#ll-root .big-action-btn{
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 24px !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+#ll-root .big-action-btn{
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 24px !important; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+#ll-root .big-action-btn:hover{
+    transform: scale(1.1);
+    background: #f0f2f5;
+}
+#ll-root .delete-btn{
+    color: #e74c3c !important;
+    border-color: #fab1a0 !important;
+}
+#ll-root .student-name-input{
+    border: none;
+    background: transparent;
+    font-size: 1.25rem !important; 
+    font-weight: 600;
+    width: 100%;
+    padding: 8px 15px;
+    font-family: inherit;
+}
+#ll-root .student-name-input:focus{
+    background: rgba(52, 152, 219, 0.05);
+    outline: none;
+    border-bottom: 2px solid var(--accent);
+}
+#ll-root #stuTable th{
+    font-size: 1.1rem;
+    padding: 12px 5px;
+}
+#ll-root .selected-student-item:hover::after{
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    pointer-events: none; 
+}
+#ll-root #sidebar, #ll-root #content{ 
+    display: none !important; 
+}
+#ll-root.logged-in #sidebar{ 
+    display: flex !important; 
+}
+#ll-root.logged-in #content{ 
+    display: block !important; 
+}
+#ll-root .class-item.active-class{
+    background-color: #e74c3c !important; 
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+#ll-root .class-item.active-class .class-link{
+    color: white !important; 
+    font-weight: bold;
+}
+#ll-root #active-class-title{
+    color: #e74c3c !important; 
+    font-weight: 900;          
+    font-size: 3rem;           
+    font-family: 'Marhey', sans-serif;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); 
+}
+#ll-root 700&display=swap');
+
+
+#login-modal, #ll-root .auth-card, #ll-root #auth-title, #ll-root #auth-subtitle, #ll-root .index-btn-style, #ll-root .marhey-text, #ll-root .input-group label, #ll-root .input-group input, #ll-root .auth-footer, #ll-root .local-storage-warning p, #ll-root .ghost-btn, #ll-root #hata-mesaji{
+    font-family: 'Marhey', sans-serif !important;
+}
+#ll-root #login-modal{
+    display: flex;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #F7F9FC; 
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+}
+#ll-root .auth-card{
+    background: #ffffff;
+    padding: 20px 30px; 
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(22, 160, 133, 0.1);
+    width: 95%;
+    max-width: 500px;
+    text-align: center;
+    border: 2px solid #E9EEF5;
+    box-sizing: border-box;
+}
+#ll-root .auth-header-area{
+    margin-bottom: 12px; 
+}
+#ll-root #auth-action-btn{
+    margin-bottom: 20px !important; 
+}
+#ll-root .toggle-pass{
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0.5;
+    z-index: 10;
+}
+#ll-root #auth-title{
+    color: #16A085;
+    margin: 5px 0 2px 0;
+    font-size: 22px;
+}
+#ll-root #auth-subtitle{
+    font-size: 13px;
+    color: #7F8C8D;
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+#ll-root .toggle-pass-btn{
+    width: 45px;      
+    height: 45px;     
+    flex-shrink: 0;   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F0F2F5;
+    border-radius: 12px;
+    cursor: pointer;
+}
+#ll-root .input-group{
+    position: relative;
+    margin-bottom: 15px; 
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1;
+}
+#ll-root .input-group input{
+    width: 100%;
+    padding: 12px 15px; 
+    border: 2px solid #F0F2F5;
+    border-radius: 12px;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+    transition: all 0.3s ease;
+    box-sizing: border-box; 
+    display: block;
+}
+#ll-root .input-group label{
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95A5A6;
+    pointer-events: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+#ll-root .input-group input:focus + label, #ll-root .input-group input:not(:placeholder-shown) + label{
+    top: 0px;
+    left: 12px;
+    font-size: 11px;
+    background: white;
+    padding: 0 5px;
+    color: #16A085;
+}
+#ll-root .index-btn-style{
+    width: 100%;
+    padding: 12px; 
+    background: linear-gradient(90deg, #FFC107, #F39C12);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+#ll-root .local-storage-warning{
+    margin-top: 15px; 
+    padding-top: 12px;
+    border-top: 1px dashed #D5DBDB;
+}
+#ll-root .local-storage-warning p{
+    font-size: 12px;
+    color: #7F8C8D;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+#ll-root .ghost-btn{
+    background: #F0F3F4;
+    border: none;
+    color: #5D6D7E;
+    padding: 8px 20px; 
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+}
+#ll-root #auth-switch-link{
+    color: #EF5350;
+    text-decoration: none;
+    font-weight: bold;
+}
+#ll-root .role-btn{
+    flex: 1;
+    padding: 10px 5px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: #f0f2f5;
+    color: #777;
+    cursor: pointer;
+    font-family: 'Nunito', 'Arakom', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+#ll-root .role-btn.active-role{
+    background: #E8F0FE; 
+    color: #1a73e8;
+    border-color: #1a73e8;
+    font-weight: bold;
+}
+#ll-root .marhey-text{
+    font-weight: 400 !important;
+}
+#ll-root .mission-card{
+    background: #f8f9fa;
+    border: 2px solid #eee;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.3s;
+    cursor: pointer;
+}
+#ll-root .mission-card:hover{
+    border-color: var(--accent);
+    background: #fff;
+    transform: translateY(-3px);
+}
+#ll-root .mission-card h4{ margin: 0 0 10px 0; color: var(--primary); }
+#ll-root .mission-card .status{ font-size: 0.8rem; color: #7f8c8d; }
+#ll-root.role-student .btn-add, #ll-root.role-student .level-actions, #ll-root.role-student .class-actions{
+    opacity: 0.3;
+    pointer-events: none; 
+}
+#ll-root.role-student button[onclick*="switchView"]{
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    border: 2px solid #7B1FA2;
+}
+#ll-root .secure-code.revealed{
+    color: #1a73e8 !important;
+    background: #E8F0FE !important;
+    user-select: text !important; 
+}
+@keyframes ll_spin{ 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* ===== index ile uyumlu tema (font + sidebar) ===== */
+#ll-root{ font-family: 'Nunito', sans-serif; }
+#ll-root h1, #ll-root h2, #ll-root h3, #ll-root .marhey-text{ font-family: 'Marhey', sans-serif; }
+#ll-root #sidebar{ background: linear-gradient(160deg, #FFC107 0%, #F39C12 45%, #EF5350 100%); }
+#ll-root #sidebar h2, #ll-root #sidebar #listelerim-home-ico{ color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.15); }
+
+/* sidebar ac/kapa yeniden-ac butonu */
+#ll-root .ll-reopen{ display:none; position:fixed; left:8px; top:calc(var(--header-height,60px) + 8px); z-index:10000; background:var(--primary); color:#fff; border:none; border-radius:6px; padding:8px 12px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2); font-size:1.1em; }
+#ll-root.sidebar-closed .ll-reopen{ display:block; }
