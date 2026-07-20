@@ -1466,11 +1466,11 @@
 <div id="myMsgModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
   <div style="background-color:#fff; margin:6% auto; padding:0; border-radius:18px; width:94%; max-width:460px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5); overflow:hidden; display:flex; flex-direction:column; max-height:80vh;">
     <div style="background:#16A085; color:#fff; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
-      <strong>Öneri & İletişim</strong>
+      <strong id="mymsg-title">Öneri & İletişim</strong>
       <span onclick="closeMyMessages()" style="cursor:pointer; font-size:24px; line-height:1;">&times;</span>
     </div>
     <div id="mymsg-list" style="flex:1; overflow-y:auto; padding:14px; min-height:220px; background:#f7f9fc;"></div>
-    <div style="display:flex; gap:8px; padding:12px; border-top:1px solid #E9EEF5;">
+    <div id="mymsg-inputrow" style="display:flex; gap:8px; padding:12px; border-top:1px solid #E9EEF5;">
       <input id="mymsg-input" type="text" placeholder="Mesaj yazın…" onkeypress="if(event.key==='Enter') sendMyMessage()" style="flex:1; padding:11px; border:1px solid #E9EEF5; border-radius:10px; font-family:inherit;">
       <button onclick="sendMyMessage()" style="background:#20C997; color:#fff; border:none; border-radius:10px; padding:0 18px; font-weight:bold; cursor:pointer;">Gönder</button>
     </div>
@@ -1527,7 +1527,108 @@
   async function openMyMessages(){
     var u=_fbUser(); if(!u || u.isAnonymous){ if(typeof showLoginModal==='function') showLoginModal(); return; }
     var m=document.getElementById('myMsgModal'); if(m) m.style.display='block';
-    await loadMyMessages();
+    var title=document.getElementById('mymsg-title');
+    var inputrow=document.getElementById('mymsg-inputrow');
+    if(_fbIsAdmin()){
+      // YÖNETİCİ: mesaj atan kişiler akordiyon halinde
+      if(title) title.textContent='Gelen Mesajlar';
+      if(inputrow) inputrow.style.display='none';
+      await loadAdminConversations();
+    } else {
+      // KULLANICI: kendi yazışması
+      if(title) title.textContent='Öneri & İletişim';
+      if(inputrow) inputrow.style.display='flex';
+      await loadMyMessages();
+    }
+  }
+
+  // YÖNETİCİ: mesaj atan kişileri akordiyon olarak yükle (en son kişi en aşağıda)
+  async function loadAdminConversations(){
+    var box=document.getElementById('mymsg-list'); if(!box) return;
+    box.innerHTML='Yükleniyor…';
+    try{
+      var snap=await firebase.firestore().collection('mesajlar').orderBy('createdAt','asc').limit(800).get();
+      if(snap.empty){ box.innerHTML='<p style="color:#888; text-align:center; margin-top:20px;">Henüz mesaj yok.</p>'; return; }
+      var groups={}, order=[];
+      snap.forEach(function(doc){
+        var m=doc.data(); var k=m.uid || ('anon-'+doc.id);
+        if(!groups[k]){ groups[k]={uid:m.uid||'', email:m.email||'', ad:m.ad||'Anonim', msgs:[], lastFrom:'', lastAt:0, unread:0}; order.push(k); }
+        var g=groups[k];
+        if(m.email) g.email=m.email;
+        if(m.ad && m.ad!=='Anonim') g.ad=m.ad;
+        g.msgs.push(m);
+        var t=(m.createdAt&&m.createdAt.toMillis)?m.createdAt.toMillis():0;
+        if(t>=g.lastAt){ g.lastAt=t; g.lastFrom=m.from; }
+        if(m.from==='user' && !m.readByAdmin) g.unread++;
+      });
+      // En son yazışan kişi EN AŞAĞIDA olacak şekilde sırala (eski üstte)
+      order.sort(function(a,b){ return groups[a].lastAt - groups[b].lastAt; });
+      var html='';
+      order.forEach(function(k){
+        var g=groups[k];
+        var needsReply=(g.lastFrom==='user');   // cevaplanmamış → kırmızı nokta
+        var canReply=!!g.email;
+        var uidEsc=_fbEsc(g.uid);
+        var emailEsc=_fbEsc(g.email);
+        var safeAd=_fbEsc(g.ad).replace(/['\\]/g,'');
+        html+='<div class="adm-conv" data-uid="'+uidEsc+'" style="border:1px solid #E9EEF5; border-radius:12px; margin-bottom:10px; background:#fff; overflow:hidden;">';
+        html+='<div class="adm-conv-head" onclick="toggleAdminConv(this)" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; cursor:pointer; user-select:none;">';
+        html+='<span style="display:flex; align-items:center; gap:8px;"><span style="color:#16A085; font-weight:bold;">'+_fbEsc(g.ad)+'</span>'+(canReply?'':' <span style="font-size:11px; color:#bbb;">(anonim)</span>')+'</span>';
+        html+='<span style="display:flex; align-items:center; gap:9px;">'+(needsReply?'<span class="adm-dot" title="Cevap bekliyor" style="width:11px; height:11px; background:#EF5350; border-radius:50%; box-shadow:0 0 0 2px #fff; display:inline-block;"></span>':'')+'<span class="adm-caret" style="color:#bbb; font-size:12px; transition:.2s;">▾</span></span>';
+        html+='</div>';
+        html+='<div class="adm-conv-body" style="display:none; border-top:1px solid #F0F3F7;">';
+        html+='<div class="adm-conv-msgs" style="max-height:260px; overflow-y:auto; padding:10px 12px; background:#f7f9fc;">';
+        g.msgs.forEach(function(m){
+          var admin=(m.from==='admin');
+          html+='<div style="text-align:'+(admin?'right':'left')+'; margin:5px 0;"><span style="display:inline-block; max-width:86%; padding:8px 11px; border-radius:12px; background:'+(admin?'#20C997':'#E9EEF5')+'; color:'+(admin?'#fff':'#333')+'; text-align:left; white-space:pre-wrap; font-size:14px;">'+_fbEsc(m.text||m.mesaj||'')+'</span></div>';
+        });
+        html+='</div>';
+        if(canReply){
+          html+='<div style="display:flex; gap:6px; padding:10px 12px; border-top:1px solid #F0F3F7;"><input id="mreply-'+uidEsc+'" type="text" placeholder="Cevap yazın…" onkeypress="if(event.key===\'Enter\') adminModalReply(\''+uidEsc+'\',\''+emailEsc+'\',\''+safeAd+'\')" style="flex:1; padding:9px; border:1px solid #E9EEF5; border-radius:9px; font-family:inherit;"><button onclick="adminModalReply(\''+uidEsc+'\',\''+emailEsc+'\',\''+safeAd+'\')" style="background:#20C997; color:#fff; border:none; border-radius:9px; padding:0 16px; font-weight:bold; cursor:pointer;">Gönder</button></div>';
+        } else {
+          html+='<div style="padding:10px 12px; font-size:12px; color:#aaa;">Anonim ziyaretçi — cevaplanamaz.</div>';
+        }
+        html+='</div></div>';
+      });
+      box.innerHTML=html;
+      box.scrollTop=box.scrollHeight;   // en son kişi en aşağıda görünsün
+      setTimeout(checkUnreadMessages, 800);
+    }catch(e){ box.innerHTML='<p style="color:#EF5350; text-align:center;">Yüklenemedi: '+_fbEsc(e&&e.message?e.message:e)+'</p>'; console.warn(e); }
+  }
+
+  // Akordiyon aç/kapa
+  function toggleAdminConv(head){
+    var body=head.nextElementSibling; if(!body) return;
+    var caret=head.querySelector('.adm-caret');
+    if(body.style.display!=='none'){ body.style.display='none'; if(caret) caret.style.transform=''; return; }
+    body.style.display='block';
+    if(caret) caret.style.transform='rotate(180deg)';
+    var msgs=body.querySelector('.adm-conv-msgs'); if(msgs) msgs.scrollTop=msgs.scrollHeight;
+    var wrap=head.parentElement; var uid=wrap?wrap.getAttribute('data-uid'):'';
+    if(uid) _markConvRead(uid);
+  }
+  // Kişinin okunmamış mesajlarını okundu işaretle (global bildirim noktası için)
+  function _markConvRead(uid){
+    if(!uid) return;
+    try{
+      firebase.firestore().collection('mesajlar').where('uid','==',uid).get()
+        .then(function(s){ s.forEach(function(d){ var m=d.data(); if(m.from==='user' && !m.readByAdmin) d.ref.update({readByAdmin:true}).catch(function(){}); }); setTimeout(checkUnreadMessages,700); })
+        .catch(function(){});
+    }catch(e){}
+  }
+  // Yönetici pop-up içinden cevap gönder
+  function adminModalReply(uid, email, ad){
+    var inp=document.getElementById('mreply-'+uid); if(!inp) return;
+    var t=(inp.value||'').trim(); if(!t) return; inp.value='';
+    firebase.firestore().collection('mesajlar').add({
+      uid:uid, email:email||'', ad:ad||'Kullanıcı', from:'admin', kategori:'Cevap', text:t,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(), readByAdmin:true, readByUser:false
+    }).then(function(){
+      loadAdminConversations().then(function(){
+        var wrap=document.querySelector('.adm-conv[data-uid="'+_fbEsc(uid)+'"]');
+        if(wrap){ var head=wrap.querySelector('.adm-conv-head'); if(head) toggleAdminConv(head); wrap.scrollIntoView({block:'nearest'}); }
+      });
+    }).catch(function(e){ if(typeof showCustomAlert==='function') showCustomAlert('Gönderilemedi: '+(e.message||e)); });
   }
   async function loadMyMessages(){
     var box=document.getElementById('mymsg-list'); if(!box) return;
@@ -1579,7 +1680,7 @@
     var loggedIn=(on && u && !u.isAnonymous);
     // İletişim (kulaklık) butonundaki bildirim noktası — kullanıcı için
     var fd=document.getElementById('fab-msg-dot');
-    if(fd) fd.style.display=(loggedIn && !_fbIsAdmin())?'block':'none';
+    if(fd) fd.style.display=loggedIn?'block':'none';
     // Profil (isim) alanındaki bildirim noktası — herkes için (her sayfada görünür)
     var ui=document.getElementById('user-info');
     if(ui){
@@ -1611,7 +1712,7 @@
     var fab=document.getElementById('feedbackFab');
     var onHome=(typeof appState!=='undefined' && appState.currentView)?(appState.currentView==='home-hub-section'):true;
     if(fab){
-      var show=(onHome && !_fbIsAdmin());
+      var show=onHome; // yönetici dahil herkes anasayfada iletişim pop-up'ını görür
       fab.style.display=show?'flex':'none';
       if(show) positionFeedbackFab();
     }
@@ -1625,6 +1726,7 @@
   window.openFeedbackModal=openFeedbackModal; window.closeFeedbackModal=closeFeedbackModal; window.sendFeedback=sendFeedback;
   window.openMessages=openMessages; window.openMyMessages=openMyMessages; window.closeMyMessages=closeMyMessages;
   window.sendMyMessage=sendMyMessage; window.loadMyMessages=loadMyMessages; window.checkUnreadMessages=checkUnreadMessages;
+  window.loadAdminConversations=loadAdminConversations; window.toggleAdminConv=toggleAdminConv; window.adminModalReply=adminModalReply;
 </script>
 <script>
   function handleAnyLoginClick(e, url){
