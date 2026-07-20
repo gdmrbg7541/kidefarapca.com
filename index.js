@@ -42,11 +42,12 @@ document.addEventListener("DOMContentLoaded", () => {
         isException = true;
     }
 
-    if (href.endsWith(".html") && !isException) { 
-      a.setAttribute("target", "_self");
-      a.removeAttribute("rel");
-    } 
-    else if (isException) { 
+    if (href.endsWith(".html") && !isException) {
+      // Oyun/araç sayfaları YENİ SEKMEDE açılsın (rel="opener": geri tuşu sekmeyi kapatabilsin)
+      a.setAttribute("target", "_blank");
+      a.setAttribute("rel", "opener");
+    }
+    else if (isException) {
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
     }
@@ -118,15 +119,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (card.getAttribute('target') === '_blank') {
-        e.preventDefault(); 
         if (isTouchDevice) {
+          // Mobil: ilk dokunuş kartı ortalar; açmak için rozete ("Aç/Başla") basılır
+          e.preventDefault();
           card.scrollIntoView({
               behavior: 'smooth',
               block: 'nearest',
               inline: 'center'
           });
+          return;
         }
-        return; 
+        // Masaüstü: karta tıklayınca varsayılan davranışla YENİ SEKMEDE açılsın
+        return true;
       }
       
       if (card.id === 'one-cikan-card' && isTouchDevice) {

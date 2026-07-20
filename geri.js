@@ -3,23 +3,45 @@
 // ANASAYFA (kidefAnasayfa)         : dogrudan index.html (yoksa kidefarapca.com)
 // Ayrica: site geri tusu olan her sayfada, tusun yanina otomatik "Anasayfa" (ev) tusu eklenir.
 
-function kidefAnasayfa(e) {
-    if (e && e.preventDefault) e.preventDefault();
+// Sayfa index'ten YENI SEKMEDE mi acildi? (index linkleri target="_blank" rel="opener")
+function _kidefYeniSekme() {
+    try { return !!(window.opener && !window.opener.closed); } catch (_) { return false; }
+}
+
+// Dogrudan index'e (erisilemezse siteye) git
+function _kidefGotoIndex() {
     var indexUrl;
     try { indexUrl = new URL('index.html', window.location.href).href; }
     catch (_) { indexUrl = 'index.html'; }
     if (window.location.protocol === 'file:' || typeof fetch !== 'function') {
         window.location.href = indexUrl;
-        return false;
+        return;
     }
     fetch(indexUrl, { method: 'HEAD' })
         .then(function (r) { window.location.href = (r && r.ok) ? indexUrl : 'https://kidefarapca.com'; })
         .catch(function () { window.location.href = indexUrl; });
+}
+
+// Yeni sekmede acildiysa SEKMEYI KAPAT; tarayici izin vermezse index'e don.
+function _kidefKapatVeyaIndex() {
+    if (_kidefYeniSekme()) {
+        try { window.close(); } catch (_) {}
+        setTimeout(function () { if (!window.closed) _kidefGotoIndex(); }, 250);
+        return true;
+    }
+    return false;
+}
+
+function kidefAnasayfa(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (_kidefKapatVeyaIndex()) return false;   // yeni sekme -> kapat
+    _kidefGotoIndex();
     return false;
 }
 
 function kidefGeri(e) {
     if (e && e.preventDefault) e.preventDefault();
+    if (_kidefKapatVeyaIndex()) return false;   // yeni sekme -> kapat
     var ref = document.referrer || '';
     var host = window.location.host || '';
     var ayniSite = !!ref && ((host && ref.indexOf(host) !== -1) || ref.indexOf('index.html') !== -1);
@@ -29,6 +51,20 @@ function kidefGeri(e) {
     }
     return kidefAnasayfa(e);             // gecmis yok / dis kaynak -> index
 }
+
+// Duz index.html linkleri (onclick'siz geri tuslari) da yeni sekmede sekmeyi kapatsin
+(function () {
+    document.addEventListener('click', function (ev) {
+        if (!_kidefYeniSekme()) return;
+        var a = (ev.target && ev.target.closest) ? ev.target.closest('a[href]') : null;
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        if (/(^|\/)index\.html([?#].*)?$/i.test(href)) {
+            ev.preventDefault();
+            _kidefKapatVeyaIndex();
+        }
+    }, true);
+})();
 
 window.kidefAnasayfa = kidefAnasayfa;
 window.kidefGeri = kidefGeri;
