@@ -901,6 +901,166 @@
         align-self: flex-end; /* Arapçayı sağa yasla */
     }
 }
+
+/* ==== KONTEYNER TASARIMLARI KALDIRILDI: hem ilk sayfa hem oyun ekranı; elementler tüm sayfayı kullansın ==== */
+#game-container {
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+}
+#level2-container {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+    height: auto;
+    min-height: 100vh;
+    padding: 12px;
+}
+#start-screen .overlay-content {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: 100%;
+    padding: 12px;
+}
+/* İlk sayfa geri tuşu sayfanın sol-üstünde sabit */
+#start-back-button {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+}
+
+/* ============================================================= */
+/* ===  YENİ ELEMENT YERLEŞİM TASARIMI (Zamana Karşı!)  ======== */
+/* ============================================================= */
+
+/* Sayfa zemini: yumuşak degrade derinlik, üstten hizalı */
+body {
+    background-image:
+        radial-gradient(1100px 520px at 50% -12%, rgba(0,123,255,0.07), transparent 62%),
+        linear-gradient(180deg, #fbfcfe 0%, #eef2f7 100%);
+    background-size: auto;
+    align-items: flex-start;
+}
+
+/* Sayfayı ortala, ferah dikey ritim (evrensel, konteynır değil) */
+#game-container, #level2-container {
+    box-sizing: border-box;   /* padding genişliğe eklenmesin -> taşma yok */
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+#level2-container {
+    gap: 14px;
+}
+
+/* Türkçe kelime bandı: tam genişlikte, hafif ışıltılı zemin (kutu değil, band) */
+#l2-turkish-word-area {
+    background: linear-gradient(180deg, #ffffff, #f5f8fc);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(0,0,0,0.035);
+    border-radius: 16px;
+}
+
+/* Zaman / Puan pilleri: yumuşak yüzen görünüm */
+#l2-timer, #l2-score-display {
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+/* Kartlar tek tek elementler olarak modern dokunuş (arka planda konteynır yok) */
+.l2-pattern-group { border-radius: 18px; }
+.l2-draggable-root {
+    border-radius: 18px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* --------------------------------------------------------- */
+/* MASAÜSTÜ: HUD + Kelime Bandı + Tam Yükseklik Oyun Alanı    */
+/* --------------------------------------------------------- */
+@media (min-width: 769px) {
+
+    /* Tam genişlik — her iki kenardan 10px (kök sütunu dahil) */
+    #level2-container {
+        max-width: none;
+        margin: 0;
+        padding: 12px 10px 16px 10px;
+    }
+
+    /* HUD: geri tuşu + zaman + puan HEPSİ TEK SATIRDA */
+    #l2-top-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        padding-top: 10px;   /* geri tuşu artık akışta, üstte yer açmaya gerek yok */
+    }
+    /* Geri tuşunu akışa al (absolute değil) — zaman ve puanla aynı satırda */
+    #game-back-button {
+        position: static;
+        top: auto;
+        left: auto;
+        order: 0;
+    }
+    #l2-timer, #l2-score-display {
+        order: 1;
+        font-size: 1.5em;
+        padding: 9px 24px;
+    }
+
+    /* Türkçe kelimeler kendi tam-genişlik bandında, HUD'un altında */
+    #l2-turkish-word-area {
+        order: 2;
+        flex-basis: 100%;
+        padding: 10px 14px;
+        gap: 10px;
+        min-height: auto;
+    }
+    .l2-target-word {
+        font-size: 1.3em;
+        padding: 7px 14px;
+    }
+
+    /* Oyun alanı: çizgisiz, doğal yükseklik (zorlama yok -> taşma/scroll yok) */
+    #l2-main-game-area {
+        border-top: none;
+        padding-top: 10px;
+        gap: clamp(20px, 3vw, 40px);
+        min-height: 0;
+        align-items: start;
+    }
+
+    /* Kalıplar: kalan alanı doldurur (taşma olmaz) */
+    #l2-patterns-wrapper {
+        flex: 1 1 0;
+        min-width: 0;
+        align-content: start;
+        gap: 16px 20px;
+    }
+
+    /* Kökler: sabit oranlı sağ sütun — satırdan taşmaz */
+    #l2-roots-sidebar {
+        flex: 0 0 27%;
+        min-width: 0;
+        box-sizing: border-box;
+        align-content: start;
+        gap: 14px;
+        /* Kartların üst çizgisi/gölgesi kırpılmasın diye üstten boşluk */
+        padding: 14px 6px 6px;
+    }
+}
+
+/* --------------------------------------------------------- */
+/* MOBİL: mevcut dikey akışa hafif rötuşlar                    */
+/* --------------------------------------------------------- */
+@media (max-width: 768px) {
+    #l2-turkish-word-area { padding: 8px 10px; }
+    #l2-timer, #l2-score-display { border-radius: 12px; }
+    #l2-roots-sidebar { box-sizing: border-box; padding-top: 10px; }
+}
     </style>
     </head>
 <body>
@@ -926,8 +1086,8 @@
 
         <div id="start-screen" class="overlay"> 
             <div class="overlay-content"> 
-                <div class="back-button" id="start-back-button">&#8617;</div>
-                <h1>Zamana Karşı! ⏱️</h1> 
+                <div class="back-button" id="start-back-button" data-kidef-done="1">&#8617;</div>
+                <h1>Zamana Karşı! ⏱️</h1>
                 <h2>Seviye Seç:</h2> 
                 <div class="start-options"> 
                     <button class="start-button-option" data-difficulty="easy">Kolay</button> 
@@ -2065,12 +2225,13 @@
             
             // LÜTFEN "index.html" kısmını,
             // dönmek istediğiniz sayfanın adıyla (örn: "menu.html") değiştirin.
-            window.location.href = "https://kidefarapca.com"; 
+            kidefGeriDon(); 
         });
 
         // Oyunu başlat
         initializeGame();
     });
     </script>
+    <script src="geri.js"></script>
 </body>
 </html>

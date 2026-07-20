@@ -117,7 +117,7 @@ main.active { display: block; }
     display: inline-flex; align-items: center; gap: 15px; 
     padding: 12px 24px; 
     font-family: var(--font-family-arabic) !important; 
-    font-size: calc(var(--base-font-size) * 1.3); 
+    font-size: calc(var(--base-font-size) * 1.9); 
     font-weight: bold; line-height: 1; 
     
     background-color: var(--background-color); /* Arka planla aynı */
@@ -162,7 +162,7 @@ main.active { display: block; }
     display: inline-flex; align-items: center; gap: 15px; 
     padding: 12px 24px; 
     font-family: var(--font-family-arabic) !important; 
-    font-size: calc(var(--base-font-size) * 1.3); 
+    font-size: calc(var(--base-font-size) * 1.9); 
     font-weight: bold; line-height: 1; 
     
     background-color: var(--background-color); /* Mat arka plan */
@@ -359,18 +359,18 @@ main.active { display: block; }
 
 .l2-pattern-number {
     font-family: var(--font-family-arabic) !important;
-    font-size: calc(var(--base-font-size) * 1.15); 
+    font-size: calc(var(--base-font-size) * 1.35); /* vezin harfleri biraz büyütüldü */
     font-weight: normal;
-    color: var(--error-color); 
+    color: var(--error-color);
     position: absolute; 
     width: calc(100% - var(--circle-size) - 15px); 
     height: 100%; top: 0; left: 0; 
     display: flex; align-items: center; justify-content: center;
-    gap: 40px; 
+    gap: 20px; /* kalıp harfleri arası boşluk kısaltıldı (40 -> 20) */
     direction: rtl;
     padding: 0 10px;
     pointer-events: none;
-    transition: opacity 0.3s ease; 
+    transition: opacity 0.3s ease;
 }
 .l2-pattern-number span { display: inline-block; line-height: 1; background-color: transparent; padding: 3px 6px; border-radius: 4px; }
 .l2-pattern-number.hidden { opacity: 0; }
@@ -613,9 +613,9 @@ main.active { display: block; }
     }
 
     /* GÜNCELLENDİ: Kök kartı mobilde büyütüldü */
-    .l2-draggable-root { 
+    .l2-draggable-root {
         gap: 10px; /* Artırıldı */
-        font-size: calc(var(--base-font-size) * 1.5); /* Artırıldı (1.05 idi) */
+        font-size: calc(var(--base-font-size) * 1.8); /* kök harfi büyütüldü */
         padding: 10px 16px; /* Artırıldı (4px 8px idi) */
     }
     
@@ -755,11 +755,39 @@ main.active { display: block; }
     position: relative;
 }
 
+/* Üst satır: geri tuşu + Türkçe kelimeler AYNI satırda */
+#l2-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 15px;
+    direction: ltr;          /* geri tuşu solda kalsın (konteyner rtl olsa da) */
+    flex-shrink: 0;
+}
+/* Geri tuşunu akışa al (absolute değil) — kelimelerle aynı satır */
+#game-back-button {
+    position: static;
+    top: auto;
+    left: auto;
+    flex: 0 0 auto;
+}
+/* Kelimeler kalan alanda ortalı */
+#l2-header-row #l2-turkish-words-progress {
+    flex: 1 1 auto;
+    margin: 0;
+}
+/* Geri tuşunu dengeleyen görünmez boşluk -> kelimeler tam ortalı */
+#l2-header-row::after {
+    content: "";
+    flex: 0 0 44px;
+}
+
 /* Geri tuşuyla içerik çakışmasın diye boşluk ekle */
-#l2-root-area,
 #start-screen h1,
 #results-screen h2 {
-    margin-top: 30px; 
+    margin-top: 30px;
 }
 
 /* Mobil cihazlar için geri tuşu ayarı */
@@ -771,11 +799,12 @@ main.active { display: block; }
         height: 38px;
         font-size: 1.3em;
     }
-    #l2-root-area,
     #start-screen h1,
     #results-screen h2 {
         margin-top: 25px; /* Mobilde boşluk azaltıldı */
     }
+    #l2-header-row { order: 1; margin-bottom: 8px; }
+    #l2-header-row::after { flex-basis: 38px; } /* mobil geri tuşu boyutu */
 }
 /* YENİ EKLENDİ: Masaüstü 16:9 Oran Kuralı */
 @media (min-width: 601px) and (orientation: landscape) {
@@ -827,4 +856,24 @@ main.active { display: block; }
     max-width: 1400px; /* 16:9 ekranlar için makul bir sınır */
     margin-left: auto;
     margin-right: auto;
+}
+/* ==== Oyun ekranında da konteyner kutusu OLMASIN; elementler tüm sayfayı kullansın ==== */
+#game-container {
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+}
+#level2-container {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+    height: auto;
+    min-height: 100vh;
+    /* Üst satır (geri tuşu + Türkçe kelimeler) ile sayfa üstü arasına boşluk + dikey ortalama */
+    padding: 40px 12px 20px;
+    justify-content: center;
 }
