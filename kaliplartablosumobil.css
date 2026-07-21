@@ -5120,3 +5120,43 @@ body {
     /* Tablo tam genişlik (masaüstü margin:0 110px kaldırıldı) */
     .verb-table { margin: 0 !important; gap: 8px !important; }
 }
+
+/* ===== ATLAS MOBİL İNCE AYAR: fiil/emoji/scroll/içerik fontları ===== */
+@media screen and (max-width: 1024px) {
+    /* Tam ekran DEĞİLKEN: tek scroll, fiiller üstte tablo altta */
+    #screen-atlas:not(.atlas-fullscreen) { overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; }
+    #screen-atlas:not(.atlas-fullscreen) #atlas-right-sidebar { max-height: none !important; overflow: visible !important; flex: none !important; }
+    #screen-atlas:not(.atlas-fullscreen) > div:first-of-type { overflow: visible !important; flex: none !important; }
+
+    /* 1) Tablodaki fiiller (Arapça) daha küçük — hem desen hem açılan kelime */
+    #screen-atlas .marathon-cell .arabic { font-size: clamp(2rem, 8vw, 3.2rem) !important; letter-spacing: normal !important; }
+    #screen-atlas:not(.atlas-fullscreen) .marathon-cell { min-height: 0 !important; }
+
+    /* 2) Örnek fiil kartlarında emoji daha küçük */
+    #atlas-verb-list .atlas-verb-btn > span:first-child { font-size: 0.9rem !important; }
+    #atlas-verb-list .atlas-verb-btn .arabic { font-size: 1.05rem !important; }
+
+    /* 3) Dilbilgisi içerik yazı boyutları (mobil) */
+    #atlas-desc, #atlas-desc-bottom,
+    #atlas-desc > div, #atlas-desc-bottom > div { font-size: 1rem !important; line-height: 1.55 !important; }
+    #atlas-desc p, #atlas-desc li, #atlas-desc-bottom p, #atlas-desc-bottom li { font-size: 1rem !important; }
+    #atlas-desc h4, #atlas-desc-bottom h4 { font-size: 1.05rem !important; }
+    #atlas-desc .arabic, #atlas-desc-bottom .arabic { font-size: 2.4rem !important; }
+    #atlas-desc span[style*="1.8rem"], #atlas-desc-bottom span[style*="1.8rem"] { font-size: 1.1rem !important; }
+    #atlas-desc span[style*="4rem"], #atlas-desc-bottom span[style*="4rem"] { font-size: 2.4rem !important; }
+}
+
+/* ===== ATLAS MOBİL SCROLL DÜZELTME (tam ekran değilken) ===== */
+@media screen and (max-width: 1024px) {
+    /* #screen-atlas kendisi taşmasın; scroll ana içerikte olsun */
+    #screen-atlas:not(.atlas-fullscreen) { flex-direction: column !important; overflow: hidden !important; height: 100% !important; }
+    /* Fiiller (sidebar) üstte sabit, doğal yükseklik */
+    #screen-atlas:not(.atlas-fullscreen) #atlas-right-sidebar {
+        flex: 0 0 auto !important; max-height: none !important; overflow: visible !important;
+    }
+    /* Ana içerik (başlık + tablo + alt açıklamalar) kalan alanda scroll olsun */
+    #screen-atlas:not(.atlas-fullscreen) > div:first-of-type {
+        flex: 1 1 0 !important; min-height: 0 !important; overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important; overscroll-behavior: contain !important;
+    }
+}

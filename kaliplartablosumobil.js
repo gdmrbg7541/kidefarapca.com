@@ -6907,6 +6907,14 @@ window.closeMarathon = function() {
     hideMarathonHeaders();
     document.getElementById('chrono-main').style.display = 'none';
 
+    // Dilbilgisi listesinden gelindiyse çarpıya basınca o listeye geri dön
+    if (window._atlasFromGrammar) {
+        window._atlasFromGrammar = false;
+        const gwg = document.getElementById("game-wrapper");
+        if (gwg) gwg.style.display = "flex";
+        const gmenu = document.getElementById('mobile-grammar-menu-overlay');
+        if (gmenu) gmenu.style.display = 'flex';
+    } else
     // Telaffuz ekranından başlatıldıysa oraya geri dön; değilse ana araca dön
     if (window.mLaunchedFromTelaffuz) {
         const tel = document.getElementById('telaffuz-overlay');
