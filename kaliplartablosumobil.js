@@ -4535,6 +4535,13 @@ const VerbGenerator = {
                             else if (babNo === 5) aynMazi = "ُ";
                             cekilmisKelime = r1 + "َ" + r2 + aynMazi + r3 + siga.ek; 
                         }
+                    } else if (babNo === 15 && r2 === r3) {
+                        // İstif'al babı muzaaf (حقق): idğam (şedde) sakin ekli şahıslarda açılır (fekk-i idğam)
+                        let baseSeddeli = `اِسْتَ${r1}َ${r2}`;      // اِسْتَحَق -> +şeddeli ek -> اِسْتَحَقَّ
+                        let baseAcik = `اِسْتَ${r1}ْ${r2}َ${r3}`;   // اِسْتَحْقَق -> +sakin ek -> اِسْتَحْقَقْتُ
+                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"];
+                        if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index];
+                        else cekilmisKelime = baseAcik + siga.ek;
                     } else {
                         let tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin) : "";
                         let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
@@ -4861,19 +4868,18 @@ const SarfEngine = {
             res = res.replace(/اُأْ/g, "أُو"); 
             res = res.replace(/اِأْ/g, "إِي"); 
            res = res.replace(/أَا/g, "آ");
-            res = res.replace(/ءَا/g, "آ"); 
             
-            res = res.replace(/ْأِ/g, "ْئِ"); 
-            res = res.replace(/َأِ/g, "َئِ"); 
-            res = res.replace(/ُأِ/g, "ُئِ"); 
-            res = res.replace(/ِأَ/g, "ِئَ"); 
-            res = res.replace(/ِأْ/g, "ِئْ"); 
-            res = res.replace(/ِأُ/g, "ِئُ"); 
+            res = res.replace(/ْ[أء]ِ/g, "ْئِ"); 
+            res = res.replace(/َ[أء]ِ/g, "َئِ"); 
+            res = res.replace(/ُ[أء]ِ/g, "ُئِ"); 
+            res = res.replace(/ِ[أء]َ/g, "ِئَ"); 
+            res = res.replace(/ِ[أء]ْ/g, "ِئْ"); 
+            res = res.replace(/ِ[أء]ُ/g, "ِئُ"); 
             
-            res = res.replace(/ْأُ/g, "ْؤُ"); 
-            res = res.replace(/َأُ/g, "َؤُ"); 
-            res = res.replace(/ُأَ/g, "ُؤَ"); 
-            res = res.replace(/ُأْ/g, "ُؤْ"); 
+            res = res.replace(/ْ[أء]ُ/g, "ْؤُ"); 
+            res = res.replace(/َ[أء]ُو/g, "َؤُو"); 
+            res = res.replace(/ُ[أء]َ/g, "ُؤَ"); 
+            res = res.replace(/ُ[أء]ْ/g, "ُؤْ"); 
             // --- BURADAN İTİBAREN YENİ EKLENEN KISIM ---
             // C. SON HARF HEMZE (Hemze-i Mutatarrife) VE UZATMA KURALLARI
             // 1. Hemze kelimenin sonundaysa ve öncesinde uzatma (Elif) varsa satıra (ء) oturur.
@@ -4890,7 +4896,6 @@ const SarfEngine = {
             // ==================================================================
             // TESNİYE (ELİF) ZIRHI: Hemzeli Nakıs fiiller için tesniye elifi kontrolü
             // ==================================================================
-            res = res.replace(/ءَا/g, "اءَا"); // Satırdaki hemze + Tesniye Elifi
             res = res.replace(/أَا/g, "آ");
             res = res.replace(/ئَا/g, "ئَا");   // Ye kürsüsündeki hemze + Tesniye Elifi (koru)
             res = res.replace(/ؤَا/g, "ؤَا");   // Vav kürsüsündeki hemze + Tesniye Elifi (koru)
