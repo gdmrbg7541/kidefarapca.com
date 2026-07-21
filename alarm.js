@@ -233,6 +233,40 @@ window.deleteStudent = async function(email) {
     }
 };
 
+// ==========================================================================
+// MÜFREDAT KALICILIĞI — Firestore: mufredat/{pkgId}
+// ==========================================================================
+function saveMufredat(pkgId){
+    if (typeof firebase === 'undefined' || !firebase.firestore) return;
+    var data = appState.kazanimData[pkgId];
+    if (!data) return;
+    firebase.firestore().collection('mufredat').doc(String(pkgId)).set({
+        total: data.total || 0,
+        steps: data.steps || {}
+    }).catch(function(e){ console.warn('mufredat kaydedilemedi:', e && e.code); });
+}
+function loadMufredat(){
+    if (typeof firebase === 'undefined' || !firebase.firestore) return;
+    firebase.firestore().collection('mufredat').get().then(function(snap){
+        var changed = false;
+        snap.forEach(function(d){
+            var saved = d.data() || {};
+            if (!appState.kazanimData[d.id]) appState.kazanimData[d.id] = { total: saved.total || 0, steps: {} };
+            var base = appState.kazanimData[d.id];
+            if (typeof saved.total === 'number' && saved.total > 0) base.total = saved.total;
+            if (saved.steps) base.steps = Object.assign({}, base.steps, saved.steps);
+            changed = true;
+        });
+        if (changed && typeof renderAdminPackageManagement === 'function'
+            && typeof appState !== 'undefined' && appState.userRole === 'admin'
+            && document.getElementById('admin-offline-packages')) {
+            renderAdminPackageManagement();
+        }
+    }).catch(function(e){ console.warn('mufredat okunamadı:', e && e.code); });
+}
+window.saveMufredat = saveMufredat;
+window.loadMufredat = loadMufredat;
+
 function renderKazanimStepsHTML(pkgId, pkgName) {
     let pkgData = appState.kazanimData[pkgId] || { total: 5, steps: {} };
     let totalCount = pkgData.total;
@@ -308,7 +342,7 @@ window.updateTotalKazanimCount = function(pkgId) {
     else appState.kazanimData[pkgId].total = val;
     
     localStorage.setItem('mockKazanimData', JSON.stringify(appState.kazanimData));
-    saveTeachers();
+    saveMufredat(pkgId);
     showCustomAlert("Toplam kazanım sayısı güncellendi.");
     renderAdminPackageManagement();
 };
@@ -472,7 +506,7 @@ window.saveAdvancedKazanimDetail = function() {
     let stepNum = appState.currentCMSStepNum;
     appState.kazanimData[pkgId].steps[stepNum] = appState.currentCMSStepData;
     localStorage.setItem('mockKazanimData', JSON.stringify(appState.kazanimData));
-    saveTeachers(); // Push to Firebase
+    saveMufredat(pkgId); // Firestore: mufredat/{pkgId}
     document.getElementById('cms-modal').style.display = 'none';
     showCustomAlert(`Adım ${stepNum} başarıyla kaydedildi.`);
     renderAdminPackageManagement();

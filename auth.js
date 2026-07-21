@@ -52,12 +52,17 @@ function saveTeachers() {
     localStorage.setItem('mockStudentProgress', JSON.stringify(appState.studentProgress));
 
     if (typeof firebase !== 'undefined' && isFirebaseReady) {
+        // studentProgress'ten "self" HARİÇ yaz: kullanıcıların kendi ilerlemesi zaten
+        // kullanicilar/{uid}.progress içinde tutuluyor. Böylece global/appState dokümanı
+        // kullanıcı sayısıyla sınırsız büyümez (Firestore 1MB doküman limiti korunur).
+        var _spSave = {};
+        for (var _k in appState.studentProgress) { if (_k !== 'self') _spSave[_k] = appState.studentProgress[_k]; }
+        // kazanimData YAZILMIYOR: global'den hiç geri okunmuyor (paketlerden yeniden kuruluyor) — ölü yük.
         db.collection('global').doc('appState').set({
             teacherApplications: appState.teacherApplications,
             teacherAlarms: appState.teacherAlarms,
-            studentProgress: appState.studentProgress,
-            kazanimData: appState.kazanimData
-        });
+            studentProgress: _spSave
+        }).catch(function(e){ console.warn('global/appState yazılamadı:', e && e.code); });
         
     }
 }
@@ -99,7 +104,13 @@ if (typeof firebase !== 'undefined' && isFirebaseReady) {
             const data = doc.data();
             if (data.teacherApplications) appState.teacherApplications = data.teacherApplications;
             if (data.teacherAlarms) appState.teacherAlarms = data.teacherAlarms;
-            if (data.studentProgress) appState.studentProgress = data.studentProgress;
+            if (data.studentProgress) {
+                // Global'den yalnızca öğretmen notları alınır; "self" (kişisel ilerleme) global'de tutulmaz
+                var _spLoad = {};
+                for (var _k in data.studentProgress) { if (_k !== 'self') _spLoad[_k] = data.studentProgress[_k]; }
+                if (appState.studentProgress && appState.studentProgress['self']) _spLoad['self'] = appState.studentProgress['self'];
+                appState.studentProgress = _spLoad;
+            }
             
             // Re-render UI if dashboard is active since we got new data
             if(appState.currentView === 'dashboard-section') {
@@ -141,6 +152,7 @@ function initAppAsGuest() {
     if(appState.studentProgress["self"]) {
         appState.studentProgress["self"][appState.currentUser] = {};
     }
+    if (typeof window._stopMsgDot === 'function') window._stopMsgDot();
     updateHeaderUI();
     initApp();
 }
@@ -458,7 +470,12 @@ function updateHeaderUI() {
     checkActiveLessonStatus();
 
     // Mesaj bildirimi (yeşil nokta) kontrolü — girişte hemen bak
-    if (typeof checkUnreadMessages === 'function') setTimeout(checkUnreadMessages, 800);
+    // Mesaj bildirimi: gercek zamanli dinleyiciyi baslat (rol artik yuklu)
+    if (typeof window._refreshMsgDot === 'function') window._refreshMsgDot();
+    else if (typeof checkUnreadMessages === 'function') setTimeout(checkUnreadMessages, 800);
+
+    // Müfredat (kazanimData) düzenlemelerini Firestore'dan yükle ve tabanın üstüne bindir
+    if (typeof loadMufredat === 'function') loadMufredat();
 }
 
 function checkActiveLessonStatus() {

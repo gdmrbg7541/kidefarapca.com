@@ -80,10 +80,6 @@
 </head>
 <body>
 
-    <!-- Firebase SDK (Önce yüklenmeli) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <!-- HEADER: Sadece Logo, Kullanıcı Bilgisi ve Login/Logout Butonları -->
     <header>
@@ -1221,10 +1217,6 @@
 
     </div>
 
-    <!-- FIREBASE SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <!-- TEKİL JS DOSYASI -->
         <script src="ogretmen.js"></script>
@@ -1394,7 +1386,7 @@
       else if(typeof bookOnlinePackages==='function'){ bookOnlinePackages(); }
     }
   };
-  setInterval(function(){ try{ window.updateUnifiedCart(); }catch(e){} }, 500);
+  setInterval(function(){ try{ window.updateUnifiedCart(); }catch(e){} }, 2000);
 })();
 </script>
 
@@ -1611,7 +1603,7 @@
   function _markConvRead(uid){
     if(!uid) return;
     try{
-      firebase.firestore().collection('mesajlar').where('uid','==',uid).get()
+      firebase.firestore().collection('mesajlar').where('uid','==',uid).limit(500).get()
         .then(function(s){ s.forEach(function(d){ var m=d.data(); if(m.from==='user' && !m.readByAdmin) d.ref.update({readByAdmin:true}).catch(function(){}); }); setTimeout(checkUnreadMessages,700); })
         .catch(function(){});
     }catch(e){}
@@ -1635,7 +1627,7 @@
     var u=_fbUser(); if(!u){ box.innerHTML='Giriş yapın.'; return; }
     box.innerHTML='Yükleniyor…';
     try{
-      var snap=await firebase.firestore().collection('mesajlar').where('uid','==',u.uid).get();
+      var snap=await firebase.firestore().collection('mesajlar').where('uid','==',u.uid).limit(500).get();
       var arr=[]; snap.forEach(function(d){ arr.push({ref:d.ref, m:d.data()}); });
       arr.sort(function(a,b){ var ta=(a.m.createdAt&&a.m.createdAt.toMillis)?a.m.createdAt.toMillis():0; var tb=(b.m.createdAt&&b.m.createdAt.toMillis)?b.m.createdAt.toMillis():0; return ta-tb; });
       var html=''; var toMark=[];
@@ -1675,6 +1667,29 @@
       }
     }catch(e){ _setMsgDot(false); }
   }
+  // Bildirim noktasi: 15sn polling yerine gercek zamanli onSnapshot dinleyici
+  var _msgDotUnsub=null;
+  function _stopMsgDotListener(){ if(_msgDotUnsub){ try{_msgDotUnsub();}catch(e){} _msgDotUnsub=null; } }
+  function _startMsgDotListener(){
+    _stopMsgDotListener();
+    var u=_fbUser();
+    if(!u || u.isAnonymous || typeof firebase==='undefined' || !firebase.firestore){ _setMsgDot(false); return; }
+    var admin=_fbIsAdmin();
+    try{
+      var col=firebase.firestore().collection('mesajlar');
+      var q=admin ? col.where('readByAdmin','==',false).limit(30) : col.where('uid','==',u.uid).limit(50);
+      _msgDotUnsub=q.onSnapshot(function(snap){
+        var any=false;
+        snap.forEach(function(d){ var m=d.data();
+          if(admin){ if(m.from==='user') any=true; }
+          else { if(m.from==='admin' && !m.readByUser) any=true; }
+        });
+        _setMsgDot(any);
+      }, function(){ _setMsgDot(false); });
+    }catch(e){ _setMsgDot(false); }
+  }
+  window._refreshMsgDot=_startMsgDotListener;
+  window._stopMsgDot=function(){ _stopMsgDotListener(); _setMsgDot(false); };
   function _setMsgDot(on){
     var u=_fbUser();
     var loggedIn=(on && u && !u.isAnonymous);
@@ -1718,14 +1733,14 @@
     }
   }
   window.addEventListener('resize', function(){ try{ positionFeedbackFab(); }catch(e){} });
-  setInterval(function(){ try{ updateFeedbackFabVisibility(); }catch(e){} }, 500);
-  setInterval(function(){ try{ checkUnreadMessages(); }catch(e){} }, 15000);
+  setInterval(function(){ try{ updateFeedbackFabVisibility(); }catch(e){} }, 2000);
   document.addEventListener('DOMContentLoaded', function(){ try{ positionFeedbackFab(); }catch(e){} setTimeout(function(){ try{ checkUnreadMessages(); }catch(e){} }, 2500); });
   window.addEventListener('load', function(){ try{ positionFeedbackFab(); }catch(e){} });
 
   window.openFeedbackModal=openFeedbackModal; window.closeFeedbackModal=closeFeedbackModal; window.sendFeedback=sendFeedback;
   window.openMessages=openMessages; window.openMyMessages=openMyMessages; window.closeMyMessages=closeMyMessages;
   window.sendMyMessage=sendMyMessage; window.loadMyMessages=loadMyMessages; window.checkUnreadMessages=checkUnreadMessages;
+  window.updateFeedbackFabVisibility=updateFeedbackFabVisibility;
   window.loadAdminConversations=loadAdminConversations; window.toggleAdminConv=toggleAdminConv; window.adminModalReply=adminModalReply;
 </script>
 <script>

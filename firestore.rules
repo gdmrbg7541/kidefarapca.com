@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid))
+        && get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isTeacherOrAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid))
+        && get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data.role in ['teacher', 'admin'];
+    }
+    // Kullanıcı hesapları — birleşik tek hesap sistemi
+    match /kullanicilar/{uid} {
+      allow read:   if isOwner(uid) || isAdmin();
+      // Kayıt: sadece kendi dokümanı, rol yalnız 'student' veya 'teacher' olabilir (admin olamaz)
+      allow create: if isOwner(uid) && request.resource.data.role in ['student', 'teacher'];
+      // Güncelleme: kendi dokümanı ama ROLÜNÜ değiştiremez (yetki yükseltmeyi engeller); admin her şeyi yapabilir
+      allow update: if (isOwner(uid) && request.resource.data.role == resource.data.role) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    // Canlı ders odaları (misafir/anonim dahil, imzalı olsun yeter) — Aşama 3'te daraltılacak
+    match /rooms/{roomId} {
+      allow read, write: if isSignedIn();
+      match /{document=**} { allow read, write: if isSignedIn(); }
+    }
+    // Global uygulama durumu — GEÇİCİ (Aşama 3'te öğretmen/randevu şemasıyla daraltılacak)
+    match /global/{doc} {
+      // Okuma herkese (giris yapmis); yazma sadece ogretmen/admin - ogrenciler ortak veriyi bozamaz
+      allow read:  if isSignedIn();
+      allow write: if isTeacherOrAdmin();
+    }
+    // Ödeme siparişleri — öğrenci kendi siparişini oluşturur; yönetici okur/onaylar/reddeder
+    match /siparisler/{orderId} {
+      allow read:          if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create:        if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+    // İletişim mesajları — kullanıcı kendi mesajını yazar; yönetici herkese cevap yazar ve hepsini okur
+    match /mesajlar/{msgId} {
+      allow read:   if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn() && (
+                       (request.resource.data.from == 'user'  && request.resource.data.uid == request.auth.uid)
+                       || (request.resource.data.from == 'admin' && isAdmin())
+                     );
+      allow update: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+    // Müfredat içeriği (kazanım adımları) — giriş yapan okur, yönetici düzenler/yazar
+    match /mufredat/{pkgId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

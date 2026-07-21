@@ -179,6 +179,29 @@ function renderAdminPanel() {
                 <div id="admin-all-lessons" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
             </details>
 
+            <details class="admin-details" name="admin-accordion">
+                <summary class="admin-summary">👨‍🏫 Öğretmenler</summary>
+                <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
+            </details>
+
+            <details class="admin-details" name="admin-accordion">
+                <summary class="admin-summary">🗓️ Öğretmen Takvim Düzenleyici</summary>
+                <div style="padding:10px 0;">
+                    <select id="admin-teacher-edit-select" onchange="renderAdminTeacherScheduleEditor()" style="width:100%; max-width:320px; padding:8px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:12px; background:#fff;"></select>
+                    <div id="admin-teacher-schedule-editor"></div>
+                </div>
+            </details>
+
+            <details class="admin-details" name="admin-accordion">
+                <summary class="admin-summary">📦 Çevrimdışı Paketler ve Müfredat</summary>
+                <div id="admin-offline-packages" style="margin-top: 15px; margin-bottom: 10px; max-height: 500px; overflow-y: auto;"></div>
+            </details>
+
+            <details class="admin-details" name="admin-accordion">
+                <summary class="admin-summary">🎥 Canlı Ders Paketleri ve Müfredat</summary>
+                <div id="admin-online-packages" style="margin-top: 15px; margin-bottom: 10px; max-height: 500px; overflow-y: auto;"></div>
+            </details>
+
 
         </div>
         

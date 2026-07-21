@@ -357,6 +357,9 @@ function changeView(viewName, isBackAction = false) {
 
     // Birleşik sayfa: giriş/profil bilgileri YALNIZCA anasayfada (hub) görünsün; kurs ekranlarında gizli
     appState.currentView = viewName;
+    // Navigasyonda aninda guncelle (500ms polling yerine olay tabanli)
+    try{ if(window.updateUnifiedCart) window.updateUnifiedCart(); }catch(e){}
+    try{ if(window.updateFeedbackFabVisibility) window.updateFeedbackFabVisibility(); }catch(e){}
 
     const backBtn = document.getElementById('header-back-icon');
     const homeBtn = document.getElementById('header-home-icon');
