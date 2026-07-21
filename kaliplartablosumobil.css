@@ -5198,3 +5198,7 @@ body {
     /* Türkçe anlamlar çok daha küçük */
     #screen-atlas .marathon-cell > div:last-child span { font-size: 0.78rem !important; line-height: 1.2 !important; }
 }
+
+/* Dilbilgisi kart numara rozeti */
+.gram-card { position: relative !important; }
+.gram-num { position: absolute; top: 8px; left: 10px; font-size: 0.85rem; font-weight: 700; color: #94a3b8; font-family: system-ui, -apple-system, sans-serif; line-height: 1; }
