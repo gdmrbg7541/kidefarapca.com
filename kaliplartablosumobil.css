@@ -4951,3 +4951,12 @@ body {
         box-shadow: 0 4px 14px rgba(0,0,0,0.25) !important;
     }
 }
+
+/* ===== FDM (Hızlı Liste) yatay scroll engelleme — genişlik sabit ===== */
+#fast-dictionary-overlay, #fdm-mucerred-container, #fdm-mezid-container,
+#fdm-mucerred-list, #fdm-mezid-list { overflow-x: hidden; max-width: 100%; }
+.fdm-list-row { max-width: 100%; box-sizing: border-box; }
+.fdm-list-row > div { min-width: 0; }
+.fdm-list-row > div:nth-child(2) { overflow-wrap: anywhere; word-break: break-word; }
+.fdm-list-row > div:nth-child(3) { overflow-wrap: anywhere; }
+#fdm-root-container, #fdm-root-container > div { max-width: 100%; overflow: hidden; }

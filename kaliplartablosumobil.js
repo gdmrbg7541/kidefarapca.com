@@ -888,6 +888,7 @@ function createFlatRootItem(root) {
 }
 
 function selectRootFromMenu(root) {
+    window._fdmReturnToRoots = true; // FDM çarpısına basınca kök listesine dönsün
     if (typeof closeSlideMenu === 'function') closeSlideMenu();
     if (typeof closeKeyboard === 'function') closeKeyboard(); // Eski klavyeyi kapat
     
@@ -6526,7 +6527,7 @@ setInterval(() => {
                 newListBtn.title = 'Hızlı Sözlük Modu';
                 newListBtn.onmousedown = (e) => { e.stopPropagation(); };
                 newListBtn.ontouchstart = (e) => { e.stopPropagation(); };
-                newListBtn.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                newListBtn.onclick = (e) => { e.stopPropagation(); window._fdmReturnToRoots=false; openFastDictionaryMode(); };
                 
                 // Üstte liste, altta kronometre
                 wrapper.appendChild(newListBtn);
@@ -6563,7 +6564,7 @@ setInterval(() => {
                 newListBtnMain.className = 'kutu-list-btn';
                 newListBtnMain.innerHTML = listSvg;
                 newListBtnMain.title = 'Hızlı Sözlük Modu';
-                newListBtnMain.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                newListBtnMain.onclick = (e) => { e.stopPropagation(); window._fdmReturnToRoots=false; openFastDictionaryMode(); };
                 desktopBox.appendChild(newListBtnMain);
 
                 
@@ -6595,7 +6596,7 @@ setInterval(() => {
                 let newListBtnM = document.createElement('div');
                 newListBtnM.className = 'kutu-list-btn kutu-list-btn-mobile';
                 newListBtnM.innerHTML = listSvg;
-                newListBtnM.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                newListBtnM.onclick = (e) => { e.stopPropagation(); window._fdmReturnToRoots=false; openFastDictionaryMode(); };
                 mobileBox.appendChild(newListBtnM);
 
                 
@@ -8925,6 +8926,21 @@ function openFastDictionaryMode() {
         mezidItems.sort((a,b) => a.refId - b.refId).forEach(item => mezList.innerHTML += item.html);
     }
     
+    // Mücerred/Mezid örneği yoksa o sekmeyi pasif göster
+    window._fdmMucEmpty = (mucerredItems.length === 0);
+    window._fdmMezEmpty = (mezidItems.length === 0);
+    (function(){
+        var tMuc = document.getElementById('fdm-mucerred-tab');
+        var tMez = document.getElementById('fdm-mezid-tab');
+        function setPassive(el, passive){
+            if(!el) return;
+            if(passive){ el.style.opacity='0.35'; el.style.pointerEvents='none'; el.style.filter='grayscale(1)'; el.setAttribute('data-fdm-empty','1'); }
+            else { el.style.opacity=''; el.style.pointerEvents=''; el.style.filter=''; el.removeAttribute('data-fdm-empty'); }
+        }
+        setPassive(tMuc, window._fdmMucEmpty);
+        setPassive(tMez, window._fdmMezEmpty);
+    })();
+    
     // Üst paneli gizleme kodu kaldırıldı; mevcut kök levhası görünür kalacak.
 
     fdm.style.display = 'flex';
@@ -8932,13 +8948,19 @@ function openFastDictionaryMode() {
     // Varsayılan olarak Mücerred sekmesi açılır
     // (Animasyonların doğru tetiklenmesi için küçük bir gecikme ekliyoruz)
     setTimeout(() => {
-        triggerFDMTab('mucerred');
+        triggerFDMTab(window._fdmMucEmpty ? 'mezid' : 'mucerred');
     }, 50);
 }
 
 function closeFastDictionaryMode() {
     const fdm = document.getElementById('fast-dictionary-overlay');
     if (fdm) fdm.style.display = 'none';
+    
+    // Kök listesinden gelindiyse çarpıya basınca kök listesine geri dön
+    if (window._fdmReturnToRoots) {
+        window._fdmReturnToRoots = false;
+        if (typeof openRootsModal === 'function') { openRootsModal(); return; }
+    }
     
     const tb = document.querySelector('.top-bar');
     if (tb) tb.style.display = 'flex';
@@ -8949,6 +8971,9 @@ function closeFastDictionaryMode() {
 let fdmTimeouts = [];
 let fdmAnimated = { mucerred: false, mezid: false };
 function triggerFDMTab(tabType) {
+    // Boş sekme istenirse dolu olana yönlendir
+    if (tabType === 'mucerred' && window._fdmMucEmpty && !window._fdmMezEmpty) tabType = 'mezid';
+    else if (tabType === 'mezid' && window._fdmMezEmpty && !window._fdmMucEmpty) tabType = 'mucerred';
     fdmTimeouts.forEach(clearTimeout);
     fdmTimeouts = [];
     const isMucerred = tabType === 'mucerred';
@@ -9051,7 +9076,7 @@ function triggerFDMTab(tabType) {
         return;
     }
     
-    const delayStep = totalDuration / count;
+    const delayStep = 180; // sabit sıralı açılış (3sn toplam sınır kaldırıldı)
     
     // Force reflow
     void activeTabEl.offsetWidth;
