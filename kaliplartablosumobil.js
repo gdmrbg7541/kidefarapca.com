@@ -7792,9 +7792,10 @@ function initMemoryGrid(key, forceShuffle = false) {
             row.className = 'list-mode-item';
             let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
             row.innerHTML = `
-                <div class="list-mode-ar" dir="rtl">${arContent}</div>
-                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
+                <div class="list-mode-num">${index + 1}.</div>
                 <div class="list-mode-tr" dir="ltr">${item.trText}</div>
+                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
+                <div class="list-mode-ar" dir="rtl">${arContent}</div>
             `;
             if (listColumnsContainer) listColumnsContainer.appendChild(row);
             else grid.appendChild(row);
