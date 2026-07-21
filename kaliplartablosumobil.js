@@ -7771,19 +7771,34 @@ function initMemoryGrid(key, forceShuffle = false) {
     }
 
     
-    displayList.forEach(item => {
+    // LİSTE MODU: masaüstü ile aynı "kağıt" formatı (mobilde CSS ile tek sütun)
+    let listColumnsContainer = null;
+    if (isList) {
+        const titleText = (thematicCategoriesData[key] && thematicCategoriesData[key].title) ? thematicCategoriesData[key].title : 'Kelime Listesi';
+        const iconText = (thematicCategoriesData[key] && thematicCategoriesData[key].icon) ? thematicCategoriesData[key].icon : '📝';
+        const paper = document.createElement('div');
+        paper.className = 'list-mode-paper';
+        paper.innerHTML = `
+            <div class="list-mode-title">${iconText} ${titleText}</div>
+            <div class="list-mode-columns"></div>
+        `;
+        grid.appendChild(paper);
+        listColumnsContainer = paper.querySelector('.list-mode-columns');
+    }
+
+    displayList.forEach((item, index) => {
         if (isList) {
             const row = document.createElement('div');
-            row.className = 'notebook-item';
+            row.className = 'list-mode-item';
             let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
             row.innerHTML = `
-                <div class="notebook-header">
-                    <span class="notebook-tr" dir="ltr">${item.trText}</span>
-                    <span class="notebook-emoji">${item.emoji || '✨'}</span>
-                </div>
-                <div class="notebook-ar" dir="rtl">${arContent}</div>
+                <div class="list-mode-num">${index + 1}.</div>
+                <div class="list-mode-tr" dir="ltr">${item.trText}</div>
+                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
+                <div class="list-mode-ar" dir="rtl">${arContent}</div>
             `;
-            grid.appendChild(row);
+            if (listColumnsContainer) listColumnsContainer.appendChild(row);
+            else grid.appendChild(row);
             return;
         }
 
