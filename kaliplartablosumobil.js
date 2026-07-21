@@ -7071,10 +7071,43 @@ function buildMarathonDataForBab(maziRef) {
 // ===============================================================
 // MARATON (KRONOMETRE) ARAYÜZ YARDIMCI FONKSİYONLARI
 // ===============================================================
+// === MARATON TABLOLARI: KAYDIRARAK (SWIPE) GEÇİŞ — mazi/muzari/emir ===
+// Hem dokunmatik (mobil) hem fare-sürükleme (masaüstü) için Pointer Events.
+window.attachMarathonSwipe = window.attachMarathonSwipe || function(el) {
+    if (!el || el._mSwipeAttached) return;
+    el._mSwipeAttached = true;
+    el.style.touchAction = 'pan-y'; // dikey scroll korunur, yatay jest JS'e gelir
+    let sx = 0, sy = 0, down = false, swiped = false;
+    const THRESH = 55;
+    el.addEventListener('pointerdown', function(e) {
+        if (window.isAtlasMode) { down = false; return; }
+        if (e.pointerType === 'mouse' && e.button !== 0) { down = false; return; }
+        sx = e.clientX; sy = e.clientY; down = true; swiped = false;
+    });
+    el.addEventListener('pointermove', function(e) {
+        if (!down || swiped) return;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if (Math.abs(dx) > THRESH && Math.abs(dx) > Math.abs(dy) * 1.3) {
+            swiped = true;
+            // Oklarla ayni yon: sola kaydir = ileri (❮ / dir=1), saga kaydir = geri (❯ / dir=-1)
+            if (dx < 0) { if (window.mCurrentStage < 2) window.changeMarathonStage(1); }
+            else { if (window.mCurrentStage > 0) window.changeMarathonStage(-1); }
+        }
+    });
+    el.addEventListener('pointerup', function() { down = false; });
+    el.addEventListener('pointercancel', function() { down = false; });
+    el.addEventListener('pointerleave', function() { down = false; });
+    // Kaydirma sonrasi yanlislikla hucre tiklamasini (hata isaretleme) engelle
+    el.addEventListener('click', function(e) {
+        if (swiped) { e.stopPropagation(); e.preventDefault(); swiped = false; }
+    }, true);
+};
+
 window.loadMarathonTable = function() {
     const table = document.getElementById('table-view');
     if (!table) return;
     table.innerHTML = '';
+    if (typeof window.attachMarathonSwipe === 'function') window.attachMarathonSwipe(document.getElementById('screen-play'));
     
     const start = window.mRanges[window.mCurrentStage][0];
     const end = window.mRanges[window.mCurrentStage][1];
@@ -9349,6 +9382,15 @@ function launchTelaffuzMarathon(root, refId) {
     
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
+    // İLK-AÇILIŞ BEYAZ SAYFA DÜZELTMESİ: openMarathon ile aynı görünürlük sıfırlamaları.
+    // (telaffuz yolu bunları atlıyordu; soğuk ilk açılışta konteynır boş/beyaz kalabiliyordu)
+    window.isAtlasMode = false;
+    let _sp = document.getElementById('screen-play'); if (_sp) _sp.style.display = '';
+    let _sa = document.getElementById('screen-atlas'); if (_sa) _sa.style.display = '';
+    let _sr = document.getElementById('screen-result'); if (_sr) _sr.style.display = '';
+    let _gw = document.getElementById('game-wrapper'); if (_gw) _gw.style.display = 'flex';
+    let _asel = document.getElementById('atlas-selector-container'); if (_asel) _asel.style.display = 'none';
+    
     clearInterval(window.mTimerInterval);
     clearInterval(window.mCountdownInterval); 
     window.mCurrentStage = 0; 
@@ -9375,6 +9417,14 @@ function launchTelaffuzMarathon(root, refId) {
     
     document.getElementById('marathon-selection-area').style.display = 'none';
     prepareMarathonPlay();
+    
+    // İlk-boya (first-paint) zamanlama düzeltmesi: bir sonraki karede tabloyu yeniden çiz.
+    requestAnimationFrame(function() {
+        if (window.mLaunchedFromTelaffuz && document.getElementById('marathon-overlay').classList.contains('active')) {
+            showMarathonScreen('screen-play');
+            if (typeof window.loadMarathonTable === 'function') window.loadMarathonTable();
+        }
+    });
 }
 
 
