@@ -4743,3 +4743,61 @@ body {
     justify-content: center !important;
 }
 #mobile-nav-arrows-container .nav-arrow:active { background: #d1c4e9 !important; }
+
+/* === DİKEY: 6 harfli fiillerde sütun eşitliği (sol boşluk/asimetri düzeltmesi) === */
+#table-view .marathon-cell { min-width: 0 !important; }
+
+/* === MOBİL YATAY (LANDSCAPE) MARATON DÜZENİ === */
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+    /* 1) Header TEK SATIR (6 sütun) */
+    #game-wrapper #top-bar-panel {
+        grid-template-columns: repeat(6, 1fr) !important;
+        grid-template-rows: auto !important;
+        height: auto !important;
+        padding: 6px 10px !important;
+        gap: 6px !important;
+    }
+    #game-wrapper #top-bar-panel .header-item button,
+    #game-wrapper #top-bar-panel .header-item select,
+    #game-wrapper #top-bar-panel .header-item .stage-badge,
+    #game-wrapper #top-bar-panel .header-item .timer-val,
+    #game-wrapper #top-bar-panel .header-item .score-val {
+        font-size: 1.1rem !important;
+        padding: 5px 8px !important;
+    }
+
+    /* 2) Oklar 6. satır DEĞİL; tablonun iki yanında (masaüstü gibi) */
+    #screen-play { position: relative !important; }
+    #mobile-nav-arrows-container {
+        position: static !important;
+        display: block !important;
+        height: 0 !important;
+        margin: 0 !important;
+    }
+    #mobile-nav-arrows-container .nav-arrow {
+        position: absolute !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 52px !important;
+        height: 80px !important;
+        border-radius: 12px !important;
+        background: rgba(108, 92, 231, 0.12) !important;
+        color: #6c5ce7 !important;
+        border: none !important;
+        box-shadow: none !important;
+        font-size: 2.2rem !important;
+        z-index: 50 !important;
+    }
+    #mobile-nav-arrows-container #prev-arr { left: 6px !important; right: auto !important; }
+    #mobile-nav-arrows-container #next-arr { right: 6px !important; left: auto !important; }
+
+    /* 3) Tabloya yanlarda ok için yer + fiiller DAHA KÜÇÜK */
+    #table-view.verb-table {
+        margin: 0 64px !important;
+        max-width: none !important;
+        width: auto !important;
+    }
+    #table-view .marathon-cell {
+        font-size: clamp(1.4rem, 5.5vh, 2.6rem) !important;
+    }
+}
