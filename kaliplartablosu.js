@@ -4561,6 +4561,13 @@ const VerbGenerator = {
                             else if (babNo === 5) aynMazi = "ُ";
                             cekilmisKelime = r1 + "َ" + r2 + aynMazi + r3 + siga.ek; 
                         }
+                    } else if (babNo === 15 && r2 === r3) {
+                        // İstif'al babı muzaaf (حقق): idğam (şedde) sakin ekli şahıslarda açılır (fekk-i idğam)
+                        let baseSeddeli = `اِسْتَ${r1}َ${r2}`;
+                        let baseAcik = `اِسْتَ${r1}ْ${r2}َ${r3}`;
+                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"];
+                        if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index];
+                        else cekilmisKelime = baseAcik + siga.ek;
                     } else {
                         let tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin) : "";
                         let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
@@ -4887,19 +4894,18 @@ const SarfEngine = {
             res = res.replace(/اُأْ/g, "أُو"); 
             res = res.replace(/اِأْ/g, "إِي"); 
            res = res.replace(/أَا/g, "آ");
-            res = res.replace(/ءَا/g, "آ"); 
             
-            res = res.replace(/ْأِ/g, "ْئِ"); 
-            res = res.replace(/َأِ/g, "َئِ"); 
-            res = res.replace(/ُأِ/g, "ُئِ"); 
-            res = res.replace(/ِأَ/g, "ِئَ"); 
-            res = res.replace(/ِأْ/g, "ِئْ"); 
-            res = res.replace(/ِأُ/g, "ِئُ"); 
+            res = res.replace(/ْ[أء]ِ/g, "ْئِ"); 
+            res = res.replace(/َ[أء]ِ/g, "َئِ"); 
+            res = res.replace(/ُ[أء]ِ/g, "ُئِ"); 
+            res = res.replace(/ِ[أء]َ/g, "ِئَ"); 
+            res = res.replace(/ِ[أء]ْ/g, "ِئْ"); 
+            res = res.replace(/ِ[أء]ُ/g, "ِئُ"); 
             
-            res = res.replace(/ْأُ/g, "ْؤُ"); 
-            res = res.replace(/َأُ/g, "َؤُ"); 
-            res = res.replace(/ُأَ/g, "ُؤَ"); 
-            res = res.replace(/ُأْ/g, "ُؤْ"); 
+            res = res.replace(/ْ[أء]ُ/g, "ْؤُ"); 
+            res = res.replace(/َ[أء]ُو/g, "َؤُو"); 
+            res = res.replace(/ُ[أء]َ/g, "ُؤَ"); 
+            res = res.replace(/ُ[أء]ْ/g, "ُؤْ"); 
             // --- BURADAN İTİBAREN YENİ EKLENEN KISIM ---
             // C. SON HARF HEMZE (Hemze-i Mutatarrife) VE UZATMA KURALLARI
             // 1. Hemze kelimenin sonundaysa ve öncesinde uzatma (Elif) varsa satıra (ء) oturur.
@@ -4916,7 +4922,6 @@ const SarfEngine = {
             // ==================================================================
             // TESNİYE (ELİF) ZIRHI: Hemzeli Nakıs fiiller için tesniye elifi kontrolü
             // ==================================================================
-            res = res.replace(/ءَا/g, "اءَا"); // Satırdaki hemze + Tesniye Elifi
             res = res.replace(/أَا/g, "آ");
             res = res.replace(/ئَا/g, "ئَا");   // Ye kürsüsündeki hemze + Tesniye Elifi (koru)
             res = res.replace(/ؤَا/g, "ؤَا");   // Vav kürsüsündeki hemze + Tesniye Elifi (koru)
@@ -9625,14 +9630,12 @@ function applyTelaffuzFilter() {
         if (results.length === 0) {
             resContainer.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding: 20px; font-size: 1.2rem;" dir="ltr">Kriterlere uygun fiil bulunamadı.</div>';
         } else {
-            resContainer.innerHTML = '';
-            
             // Sonuçları alfabeye göre sırala (Önce Hemzeli vb.)
             results.sort((a, b) => a.verb.localeCompare(b.verb, 'ar'));
-            
+            let _mhtml = ''; // PERFORMANS: tek string, tek innerHTML
             results.forEach(r => {
                 const escapedRoot = r.root.replace(/"/g, "&quot;").replace(/'/g, "\\'");
-                resContainer.innerHTML += `
+                _mhtml += `
                     <div class="t-result-item" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})" style="padding: 20px; border-radius: 16px;" dir="rtl">
                         <div style="display:flex; flex-direction:column; text-align: right;">
                             <span class="t-result-ar" style="font-size: 4rem; line-height: 1.3;">${r.verb}</span>
@@ -9641,6 +9644,7 @@ function applyTelaffuzFilter() {
                     </div>
                 `;
             });
+            resContainer.innerHTML = _mhtml;
         }
     }, 10);
 }
