@@ -9472,8 +9472,8 @@ function showRootOfDay() {
         }
         @media (orientation: landscape) and (max-height: 600px) {
             #rootOfDayOverlay > div {
-                padding: 18px 22px !important;
-                max-height: 94vh !important;
+                padding: 14px 20px 46px 20px !important;
+                max-height: 96vh !important;
             }
             #rootOfDayOverlay > div > div:nth-child(3) {
                 font-size: 46px !important;
@@ -9482,6 +9482,7 @@ function showRootOfDay() {
             #rootOfDayOverlay > div > div:last-child {
                 gap: 10px !important;
                 margin-top: 12px !important;
+                padding-bottom: 28px !important;
             }
             #rootOfDayOverlay > div > div:last-child > div {
                 flex: 0 1 108px !important;

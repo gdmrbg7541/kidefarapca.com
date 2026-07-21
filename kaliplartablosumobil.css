@@ -4801,3 +4801,31 @@ body {
         font-size: clamp(1.6rem, 6vh, 2.9rem) !important;
     }
 }
+
+/* === MOBİL YATAY: ince ayar (header küçük, konteynır serbest, fiil büyük+boşluk) === */
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+    /* Header elemanları daha küçük */
+    #game-wrapper #top-bar-panel { padding: 3px 8px !important; gap: 4px !important; }
+    #game-wrapper #top-bar-panel .header-item button,
+    #game-wrapper #top-bar-panel .header-item select,
+    #game-wrapper #top-bar-panel .header-item .stage-badge,
+    #game-wrapper #top-bar-panel .header-item .timer-val,
+    #game-wrapper #top-bar-panel .header-item .score-val {
+        font-size: 0.72rem !important;
+        padding: 2px 5px !important;
+    }
+    .header-item .back-nav { font-size: 0.72rem !important; padding: 3px 6px !important; }
+
+    /* Fiil tablosunu konteynırdan KURTAR: daha çok alan */
+    #game-wrapper { margin: 3px !important; border-radius: 10px !important; box-shadow: none !important; }
+    #screen-play.marathon-screen { padding: 2px 6px !important; }
+    .main-content { padding: 0 !important; }
+
+    /* Fiiller biraz daha büyük + kutu içi boşluk (üst/alta çarpmasın) */
+    #table-view.verb-table { gap: 6px !important; }
+    #table-view .marathon-cell {
+        font-size: clamp(1.8rem, 6.6vh, 3.2rem) !important;
+        padding: 6px 8px !important;
+        line-height: 1.05 !important;
+    }
+}
