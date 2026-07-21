@@ -9470,6 +9470,28 @@ function showRootOfDay() {
                 border-radius: 20px !important;
             }
         }
+        @media (orientation: landscape) and (max-height: 600px) {
+            #rootOfDayOverlay > div {
+                padding: 18px 22px !important;
+                max-height: 94vh !important;
+            }
+            #rootOfDayOverlay > div > div:nth-child(3) {
+                font-size: 46px !important;
+                margin-bottom: 12px !important;
+            }
+            #rootOfDayOverlay > div > div:last-child {
+                gap: 10px !important;
+                margin-top: 12px !important;
+            }
+            #rootOfDayOverlay > div > div:last-child > div {
+                flex: 0 1 108px !important;
+                min-width: 108px !important;
+                padding: 8px 6px !important;
+            }
+            #rootOfDayOverlay > div > div:last-child > div > div:first-child {
+                font-size: 26px !important;
+            }
+        }
     `;
     document.head.appendChild(style);
     
