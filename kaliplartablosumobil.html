@@ -557,12 +557,9 @@
                     </div>
             </div>
 
-            <div id="mobile-nav-arrows-container" style="display: flex; justify-content: center; gap: 40px; margin-top: 15px; margin-bottom: 15px; order: 99; width: 100%;">
-                <button id="prev-arr" class="nav-arrow" style="display: flex; align-items: center; justify-content: center;" onclick="changeMarathonStage(1)">❮</button>
-                <button id="next-arr" class="nav-arrow" style="display: flex; align-items: center; justify-content: center;" onclick="changeMarathonStage(-1)">❯</button>
-            </div>
+            <!-- nav oklar artık tablonun altında (6. satır gibi) — screen-play içine taşındı -->
             <div id="game-container" style="flex:1; display:flex; width: 100%;">
-                <div id="screen-play" class="marathon-screen active"><div id="table-view" class="verb-table"></div></div>
+                <div id="screen-play" class="marathon-screen active"><div id="table-view" class="verb-table"></div><div id="mobile-nav-arrows-container"><button id="prev-arr" class="nav-arrow" onclick="changeMarathonStage(1)">❮</button><button id="next-arr" class="nav-arrow" onclick="changeMarathonStage(-1)">❯</button></div></div>
                 
                 <style>
                 .atlas-verb-btn {

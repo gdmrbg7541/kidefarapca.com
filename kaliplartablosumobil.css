@@ -4713,3 +4713,33 @@ body {
     gap: 0 !important;
     padding: 0 10px !important; /* Kenarlardan hafif boşluk */
 }
+
+/* === Maraton gezinme okları: tablonun 6. satırı gibi === */
+#mobile-nav-arrows-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 5px !important;
+    margin: 5px 5px 0 5px !important;
+    width: auto !important;
+    order: 0 !important;
+    flex: 0 0 auto !important;
+    direction: ltr !important;
+}
+#mobile-nav-arrows-container .nav-arrow {
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    height: 3.4rem !important;
+    min-height: 3.4rem !important;
+    border-radius: 10px !important;
+    background: #ede7f6 !important;
+    color: #6c5ce7 !important;
+    border: 2px solid #d1c4e9 !important;
+    box-shadow: none !important;
+    font-size: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+#mobile-nav-arrows-container .nav-arrow:active { background: #d1c4e9 !important; }
