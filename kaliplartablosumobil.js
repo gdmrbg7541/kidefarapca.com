@@ -8546,6 +8546,13 @@ window.openAtlasOverlay = function(stage) {
             flexContainer.style.justifyContent = 'flex-start';
             flexContainer.style.alignItems = 'center';
         }
+        // Mobil: örnek fiilleri (sidebar) konu anlatımının hemen altına taşı (scroll'a dahil olsun)
+        if (window.innerWidth <= 1024 && flexContainer && sidebar) {
+            let _expl = document.getElementById('atlas-explanation');
+            if (_expl && sidebar.parentElement !== flexContainer) {
+                _expl.insertAdjacentElement('afterend', sidebar);
+            }
+        }
         window.handleAtlasVerbChange();
         // İlk açılışta içerik boş kalmasın: overlay tam görünür olduktan sonra tekrar render et
         requestAnimationFrame(function(){

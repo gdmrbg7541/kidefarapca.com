@@ -5160,3 +5160,41 @@ body {
         -webkit-overflow-scrolling: touch !important; overscroll-behavior: contain !important;
     }
 }
+
+/* ===== ATLAS MOBİL SIRA: anlatım → örnek fiiller → tablo → notlar (tek scroll) ===== */
+@media screen and (max-width: 1024px) {
+    #screen-atlas:not(.atlas-fullscreen) { flex-direction: column !important; overflow: hidden !important; height: 100% !important; }
+    /* Ana içerik = scroll konteyneri (içinde: anlatım, örnek fiiller, tablo, notlar) */
+    #screen-atlas:not(.atlas-fullscreen) > div:first-of-type {
+        flex: 1 1 0 !important; min-height: 0 !important; overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important; overscroll-behavior: contain !important;
+        padding: 55px 12px 24px 12px !important; display: flex !important; flex-direction: column !important; align-items: stretch !important;
+    }
+    /* Taşınan örnek fiiller bloğu: doğal sıra, tam genişlik, çerçevesiz */
+    #atlas-right-sidebar {
+        order: 0 !important; width: 100% !important; min-width: 0 !important; flex: 0 0 auto !important;
+        border: none !important; box-shadow: none !important; background: transparent !important;
+        padding: 0 !important; max-height: none !important; overflow: visible !important; margin: 2px 0 14px 0 !important;
+    }
+    /* "Örnek Fiiller" başlığı küçük */
+    #atlas-sidebar-title { text-align: center !important; font-size: 0.8rem !important; font-weight: normal !important; color: #94a3b8 !important; margin: 0 0 8px 0 !important; }
+    #atlas-verb-list { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; overflow: visible !important; padding-right: 0 !important; }
+    /* Tam ekranda örnek fiiller gizli (sadece tablo) */
+    #screen-atlas.atlas-fullscreen #atlas-right-sidebar { display: none !important; }
+}
+
+/* ===== DİLBİLGİSİ ÜST HİZA + TAM EKRAN KAPAT (MOBİL) ===== */
+.mobile-grammar-overlay { justify-content: flex-start !important; padding-top: 18px !important; box-sizing: border-box !important; }
+@media screen and (max-width: 1024px) {
+    #atlas-fs-btn { display: none !important; }
+}
+
+/* ===== ATLAS HÜCRE: TÜRKÇE KÜÇÜK + ÜST BOŞLUK (MOBİL) ===== */
+@media screen and (max-width: 1024px) {
+    /* Arapça çekim kutunun üstüyle çakışmasın diye üstten boşluk */
+    #screen-atlas .marathon-cell { padding-top: 14px !important; padding-bottom: 6px !important; }
+    /* Alt satır (Türkçe anlam) yüksekliği içeriğe göre, gereksiz boşluk olmasın */
+    #screen-atlas .marathon-cell > div:last-child { height: auto !important; margin-top: 2px !important; margin-bottom: 4px !important; }
+    /* Türkçe anlamlar çok daha küçük */
+    #screen-atlas .marathon-cell > div:last-child span { font-size: 0.78rem !important; line-height: 1.2 !important; }
+}
