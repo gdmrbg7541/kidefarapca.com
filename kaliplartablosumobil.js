@@ -6905,6 +6905,7 @@ window.closeMarathon = function() {
     if (window.mLaunchedFromTelaffuz) {
         const tel = document.getElementById('telaffuz-overlay');
         if (tel) tel.style.display = 'block';
+        document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
         window.mLaunchedFromTelaffuz = false;
     } else {
         const gw = document.getElementById("game-wrapper");
@@ -9150,6 +9151,7 @@ window.telaffuzFilters = {
 
 function openTelaffuz() {
     document.getElementById('telaffuz-overlay').style.display = 'flex';
+    document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';
 }
 
 function toggleTFilter(el, type, value) {
@@ -9278,6 +9280,7 @@ function applyTelaffuzFilter() {
 
 function launchTelaffuzMarathon(root, refId) {
     document.getElementById('telaffuz-overlay').style.display = 'none';
+    document.documentElement.style.overflow='';document.body.style.overflow='';
     currentRoot = root;
     
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();

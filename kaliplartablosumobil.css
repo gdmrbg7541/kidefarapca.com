@@ -4859,3 +4859,30 @@ body {
     border-radius: 8px !important;
     border-width: 1.5px !important;
 }
+
+/* === OKUMA TESTİ RAPORU — MOBİL YATAY: buton taşmasın, hatalı fiiller kutuda scroll === */
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+    #screen-result {
+        overflow: hidden !important;      /* ekran kendi kaymaz; sadece liste kayar */
+        padding: 8px 16px !important;
+        justify-content: flex-start !important;
+    }
+    #screen-result h1 { font-size: 1.1rem !important; margin: 2px 0 4px 0 !important; }
+    #screen-result #final-score { font-size: clamp(1.8rem, 6.5vh, 2.8rem) !important; margin: 0 !important; }
+    #error-list {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        margin-top: 8px !important;
+        gap: 8px !important;
+    }
+    #screen-result .back-nav {          /* TESTİ BİTİR butonu */
+        margin-top: 10px !important;
+        flex-shrink: 0 !important;
+        padding: 8px 20px !important;
+    }
+    .error-item {
+        font-size: clamp(1rem, 3.2vh, 1.35rem) !important;
+        padding: 3px 9px !important;
+    }
+}
