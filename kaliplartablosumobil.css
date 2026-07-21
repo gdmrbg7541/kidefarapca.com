@@ -5202,3 +5202,22 @@ body {
 /* Dilbilgisi kart numara rozeti */
 .gram-card { position: relative !important; }
 .gram-num { position: absolute; top: 8px; left: 10px; font-size: 0.85rem; font-weight: 700; color: #94a3b8; font-family: system-ui, -apple-system, sans-serif; line-height: 1; }
+
+
+/* === GÜNÜN KÖKÜ (rootOfDayOverlay): MOBİLDE TAM EKRAN === */
+/* Not: 'body ...' ile özgüllük artırıldı ki JS içinde sonradan head'e eklenen
+   <style> bloğundaki (#rootOfDayOverlay > div) !important kurallarını da geçsin. */
+@media (max-width: 1024px) {
+    #rootOfDayOverlay { padding: 0 !important; }
+    body #rootOfDayOverlay > div {
+        width: 100vw !important;
+        max-width: none !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 46px 16px 30px 16px !important;
+        box-sizing: border-box !important;
+    }
+}
