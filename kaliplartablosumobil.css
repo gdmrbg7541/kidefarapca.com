@@ -4839,3 +4839,23 @@ body {
     #telaffuz-overlay .t-result-tag { font-size: 0.68rem !important; padding: 2px 6px !important; }
     #telaffuz-results .t-result-item { padding: 10px !important; }
 }
+
+/* === MARATON OKUMA TESTİ RAPORU (mobil): hatalı fiiller çok küçük + kendi scroll'u === */
+#screen-result { padding: 18px !important; min-height: 0 !important; }
+#screen-result h1 { font-size: 1.6rem !important; margin: 6px 0 10px !important; }
+#screen-result #final-score { font-size: clamp(2.8rem, 11vw, 4.5rem) !important; }
+#error-list {
+    max-height: 52vh !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    align-content: flex-start !important;
+    padding: 6px 2px 14px 2px !important;
+    margin-top: 12px !important;
+}
+.error-item {
+    font-size: clamp(1.1rem, 3.6vw, 1.5rem) !important;
+    padding: 4px 10px !important;
+    border-radius: 8px !important;
+    border-width: 1.5px !important;
+}
