@@ -4886,3 +4886,39 @@ body {
         padding: 3px 9px !important;
     }
 }
+
+/* === HIZLI SÖZLÜK (FDM): tab'lar dar+küçük, kelime/emoji çok daha küçük === */
+/* Tab satırı ve sekmeler */
+.fdm-tabs-row { padding: 0 8px !important; }
+#fdm-mucerred-tab, #fdm-mezid-tab {
+    padding: 6px 8px !important;
+    font-size: 0.85rem !important;
+    margin: 6px 4px 0 4px !important;
+    border-radius: 10px !important;
+}
+#fdm-mucerred-tab > span[style*="absolute"],
+#fdm-mezid-tab > span[style*="absolute"] {
+    font-size: 0.68rem !important;
+    padding: 1px 6px !important;
+    right: 8px !important;
+}
+#fdm-root-container { min-height: 46px !important; }
+/* Liste satırları: küçük */
+.fdm-list-row { padding: 8px 10px !important; box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important; }
+.fdm-list-row > div:nth-child(1) { width: 40px !important; font-size: 1rem !important; padding: 4px !important; }
+.fdm-list-row > div:nth-child(2) { font-size: 2rem !important; padding-right: 10px !important; }
+.fdm-list-row > div:nth-child(3) { font-size: 1.05rem !important; }
+#fdm-mucerred-list, #fdm-mezid-list { padding: 12px 8px 8px 8px !important; gap: 8px !important; }
+
+/* Mobil YATAY: daha da küçük */
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+    #fdm-mucerred-tab, #fdm-mezid-tab { padding: 4px 6px !important; font-size: 0.72rem !important; margin: 4px 3px 0 3px !important; }
+    #fdm-mucerred-tab > span[style*="absolute"],
+    #fdm-mezid-tab > span[style*="absolute"] { font-size: 0.58rem !important; }
+    #fdm-root-container { min-height: 36px !important; }
+    .fdm-list-row { padding: 5px 8px !important; }
+    .fdm-list-row > div:nth-child(1) { width: 32px !important; font-size: 0.8rem !important; padding: 3px !important; }
+    .fdm-list-row > div:nth-child(2) { font-size: 1.5rem !important; }
+    .fdm-list-row > div:nth-child(3) { font-size: 0.85rem !important; }
+    #fdm-mucerred-list, #fdm-mezid-list { padding: 8px 6px !important; gap: 6px !important; }
+}
