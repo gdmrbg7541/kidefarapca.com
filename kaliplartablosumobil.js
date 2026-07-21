@@ -9424,7 +9424,7 @@ function showRootOfDay() {
     
     // iOS/Apple-like professional design
     modalOverlay.innerHTML = `
-        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
             
             <button onclick="closeRootOfDay()" style="position: absolute; top: 20px; right: 20px; background: #e2e8f0; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">
                 <i class="fas fa-times"></i>
@@ -9497,6 +9497,7 @@ function showRootOfDay() {
     document.head.appendChild(style);
     
     document.body.appendChild(modalOverlay);
+    document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden';
     
     setTimeout(() => {
         modalOverlay.style.opacity = "1";
@@ -9509,6 +9510,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { showRoo
 
 
 window.closeRootOfDay = function() {
+    document.documentElement.style.overflow=''; document.body.style.overflow='';
     const modalOverlay = document.getElementById("rootOfDayOverlay");
     if (modalOverlay) {
         modalOverlay.style.opacity = "0";

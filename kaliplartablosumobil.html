@@ -722,7 +722,7 @@
     <!-- TELAFFUZ (FİLTRE) OVERLAY -->
     <div id="telaffuz-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #f8f9fa; z-index: 5000; display: none; flex-direction: column; overflow: hidden; font-family: 'Inter', sans-serif;">
         <div style="background: #ffffff; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
-            <div style="font-size: 1.4rem; font-weight: bold; color: #333;">
+            <div style="font-size: 1.05rem; font-weight: bold; color: #333;">
                 <i class="fas fa-stopwatch" style="color: #3498db; margin-right: 8px;"></i>Telaffuz Filtresi
             </div>
             <i class="fas fa-times" style="font-size: 1.8rem; color: #95a5a6; cursor: pointer;" onclick="document.getElementById('telaffuz-overlay').style.display='none'"></i>
@@ -731,7 +731,7 @@
         <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
             <!-- Harf Sayısı Seçimi -->
             <div style="background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">Harf Sayısı (Bab)</div>
+                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 0.9rem;">Harf Sayısı (Bab)</div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="telaffuz-letter-filters">
                     <!-- JS ile doldurulacak veya statik eklenecek -->
                     <div class="t-filter-chip" onclick="toggleTFilter(this, 'letter', 3)">3 Harfli</div>
@@ -743,7 +743,7 @@
             
             <!-- Aksam-ı Seb'a Seçimi -->
             <div style="background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">Aksam-ı Seb'a</div>
+                <div style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 0.9rem;">Aksam-ı Seb'a</div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="telaffuz-aksam-filters">
                     <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Sahih')">Sahih (Salim)</div>
                     <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Mehmuz')">Mehmuz</div>
@@ -755,7 +755,7 @@
                 </div>
             </div>
             
-            <button onclick="applyTelaffuzFilter()" style="background: #3498db; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);">Sonuçları Getir (Filtrele)</button>
+            <button onclick="applyTelaffuzFilter()" style="background: #3498db; color: white; border: none; padding: 11px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);">Sonuçları Getir (Filtrele)</button>
             
             <!-- Sonuç Listesi -->
             <div id="telaffuz-results" style="display: flex; flex-direction: column; gap: 10px; padding-bottom: 40px;">

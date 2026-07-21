@@ -4376,7 +4376,7 @@ body {
         gap: 5px !important;
     }
     .marathon-cell {
-        font-size: clamp(2.6rem, 8vw, 4rem) !important; /* fiil boyutu biraz daha küçültüldü (3/9/4.5 -> 2.6/8/4) */
+        font-size: clamp(1.6rem, 5.2vw, 2.5rem) !important; /* fiil boyutu biraz daha küçültüldü (3/9/4.5 -> 2.6/8/4) */
         padding: 0 2px !important;
         border-radius: 10px !important;
         line-height: 1 !important;
@@ -4824,8 +4824,18 @@ body {
     /* Fiiller biraz daha büyük + kutu içi boşluk (üst/alta çarpmasın) */
     #table-view.verb-table { gap: 6px !important; }
     #table-view .marathon-cell {
-        font-size: clamp(1.8rem, 6.6vh, 3.2rem) !important;
+        font-size: clamp(1.5rem, 5.6vh, 2.7rem) !important;
         padding: 6px 8px !important;
         line-height: 1.05 !important;
     }
+}
+
+
+/* === TELAFFUZ FİLTRE EKRANI: mobilde (dikey+yatay) elementler daha küçük === */
+@media (max-width: 1024px) {
+    #telaffuz-overlay .t-filter-chip { font-size: 0.8rem !important; padding: 5px 10px !important; }
+    #telaffuz-overlay .t-result-ar { font-size: 1.8rem !important; }
+    #telaffuz-overlay .t-result-tr { font-size: 0.85rem !important; }
+    #telaffuz-overlay .t-result-tag { font-size: 0.68rem !important; padding: 2px 6px !important; }
+    #telaffuz-results .t-result-item { padding: 10px !important; }
 }
