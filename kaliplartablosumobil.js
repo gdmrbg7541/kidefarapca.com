@@ -6900,8 +6900,16 @@ window.closeMarathon = function() {
     // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
     hideMarathonHeaders();
     document.getElementById('chrono-main').style.display = 'none';
-    const gw = document.getElementById("game-wrapper");
-    if (gw) gw.style.display = "flex";
+
+    // Telaffuz ekranından başlatıldıysa oraya geri dön; değilse ana araca dön
+    if (window.mLaunchedFromTelaffuz) {
+        const tel = document.getElementById('telaffuz-overlay');
+        if (tel) tel.style.display = 'block';
+        window.mLaunchedFromTelaffuz = false;
+    } else {
+        const gw = document.getElementById("game-wrapper");
+        if (gw) gw.style.display = "flex";
+    }
 };
 
 // 5. OYUN İÇİNDEKİ ⏱️ BUTONUNA BASILINCA 'BAŞLA' EKRANINI GETİRİR
@@ -7476,7 +7484,7 @@ function renderThematicLists() {
             let shuffledList = cat.items ? [...cat.items] : [];
             shuffledList.sort(() => Math.random() - 0.5);
             activeMemoryGames[key] = {
-                mode: 'study',
+                mode: 'list',
                 scores: [0, 0],
                 currentPlayer: 1,
                 activeFlipped: [],
@@ -7526,8 +7534,8 @@ function renderThematicLists() {
                 <div id="content-${key}" class="thematic-accordion-panel" style="display:none; grid-column: 1 / -1; background: #f8f9fa; border: 2px solid #5c7cfa; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     <div class="thematic-accordion-content" style="display:block;">
                         <div class="memory-game-controls" id="controls-${key}" style="display: flex; justify-content: center; align-items: center; width: 100%; direction: ltr !important; margin-bottom: 30px; gap: 10px;">
-                            <button class="memory-btn" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
-                            <button class="memory-btn active" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
+                            <button class="memory-btn active" id="btn-list-${key}" onclick="setMemoryMode('${key}', 'list')">Liste Modu</button>
+                            <button class="memory-btn" id="btn-study-${key}" onclick="setMemoryMode('${key}', 'study')">Çalışma Kartları</button>
                         </div>
                         
                         <div class="thematic-words-grid" id="grid-${key}"></div>
@@ -7759,12 +7767,14 @@ function initMemoryGrid(key, forceShuffle = false) {
     displayList.forEach(item => {
         if (isList) {
             const row = document.createElement('div');
-            row.className = 'list-mode-item';
+            row.className = 'notebook-item';
             let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
             row.innerHTML = `
-                <div class="list-mode-tr" dir="ltr">${item.trText}</div>
-                <div class="list-mode-emoji">${item.emoji || '✨'}</div>
-                <div class="list-mode-ar" dir="rtl">${arContent}</div>
+                <div class="notebook-header">
+                    <span class="notebook-tr" dir="ltr">${item.trText}</span>
+                    <span class="notebook-emoji">${item.emoji || '✨'}</span>
+                </div>
+                <div class="notebook-ar" dir="rtl">${arContent}</div>
             `;
             grid.appendChild(row);
             return;
@@ -9278,8 +9288,9 @@ function launchTelaffuzMarathon(root, refId) {
     window.mElapsedTime = 0; 
     window.mIsPaused = false;
     window.mRaceMode = false;
-    window.mSkippedLobby = true; 
-    
+    window.mSkippedLobby = true;
+    window.mLaunchedFromTelaffuz = true;   // telaffuz ekranından başlatıldı -> çıkışta oraya dön
+
     let mOverlay = document.getElementById('marathon-overlay');
     mOverlay.classList.add("telaffuz-mode");
     mOverlay.classList.add('active');

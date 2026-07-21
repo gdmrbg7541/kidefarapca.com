@@ -4376,7 +4376,7 @@ body {
         gap: 5px !important;
     }
     .marathon-cell {
-        font-size: clamp(4rem, 12vw, 6rem) !important;
+        font-size: clamp(2.6rem, 8vw, 4rem) !important; /* fiil boyutu biraz daha küçültüldü (3/9/4.5 -> 2.6/8/4) */
         padding: 0 2px !important;
         border-radius: 10px !important;
         line-height: 1 !important;
@@ -4559,16 +4559,157 @@ body {
 }
 
 /* --- TEK SÜTUN VE KELİME LİSTELERİ SOLDA --- */
-.thematic-words-grid {
-    grid-template-columns: 1fr !important;
+@media screen and (max-width: 1024px) {
+    .thematic-words-grid, 
+    .thematic-words-grid:not(.memory-mode), 
+    .thematic-words-grid.list-mode-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 /* --- MOBİL ÇALIŞMA KARTLARI YAZI BOYUTU (SADECE MOBİL) --- */
 @media screen and (max-width: 1024px) {
     .memory-card-back .lang-tr {
-        font-size: 1.3rem !important;
+        font-size: 0.75rem !important;
     }
     .memory-card-front .lang-ar {
-        font-size: 2.2rem !important;
+        font-size: 1.2rem !important;
     }
+    .memory-card-back div:first-child {
+        font-size: 1.8rem !important; /* Emojiyi de çok küçült */
+    }
+    
+    /* Hızlı Liste Modu (List Mode) Küçültmeleri */
+    .list-mode-tr {
+        font-size: 0.85rem !important;
+    }
+    .list-mode-ar {
+        font-size: 1.3rem !important;
+    }
+    .list-mode-emoji {
+        font-size: 1.6rem !important;
+    }
+}
+
+/* --- MOBİL KELİME LİSTESİ BAŞLIK BOYUTLARI --- */
+@media screen and (max-width: 1024px) {
+    .thematic-accordion-title {
+        font-size: 1.2rem !important;
+    }
+    .thematic-accordion-title div span:nth-child(1) {
+        font-size: 1.2rem !important;
+    }
+    .thematic-accordion-title div span:nth-child(2) {
+        font-size: 1.6rem !important;
+    }
+}
+
+/* --- DEFTER GÖRÜNÜMÜ (LİSTE MODU) --- */
+.thematic-accordion-panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 10px 0 !important;
+}
+
+.list-mode-item {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid #ddd !important; /* Defter çizgisi */
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 2px 2px !important; /* Boşluklar sıfıra yaklaştırıldı */
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0 !important; /* TR ve AR arasındaki boşluk tamamen sıfırlandı */
+    position: relative !important; /* Emoji'nin doğru hizalanması için şart */
+    min-height: 0 !important;
+}
+
+/* Kategori içi kelimelerin (satırların) arasındaki boşluğu sıfırla */
+.thematic-words-grid.list-mode-grid {
+    gap: 0 !important;
+}
+
+/* Üst Kısım (Türkçe Anlam = Liste Başlığı) */
+.list-mode-tr {
+    font-weight: bold !important;
+    color: #444 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* Alt Kısım (Arapça Kelime) */
+.list-mode-ar {
+    width: 100% !important;
+    text-align: left !important;
+    direction: ltr !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* Emoji Konumu */
+.list-mode-emoji {
+    position: absolute !important;
+    right: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+}
+
+/* --- YENİ DEFTER TASARIMI (LİSTE MODU) --- */
+.notebook-item {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 10px 5px !important;
+    border-bottom: 1px solid #dcdde1 !important; /* İnce gri defter çizgisi */
+    background: transparent !important;
+    margin: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* En alt satırın çizgisini kaldır */
+.notebook-item:last-child {
+    border-bottom: none !important;
+}
+
+.notebook-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 5px !important; /* TR ile AR arası boşluk */
+    width: 100% !important;
+}
+
+.notebook-tr {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #2f3640 !important;
+    text-align: left !important;
+    line-height: 1.2 !important;
+}
+
+.notebook-emoji {
+    font-size: 1.4rem !important;
+    line-height: 1 !important;
+}
+
+.notebook-ar {
+    font-size: 1.5rem !important;
+    color: #111 !important;
+    text-align: right !important; /* Arapça sağa dayalı */
+    direction: rtl !important; /* Sağdan sola okuma */
+    font-family: 'Arakom', sans-serif !important;
+    line-height: 1.3 !important;
+    width: 100% !important;
+}
+
+/* Kategori içi kelimelerin (satırların) arasındaki boşluğu sıfırla */
+.thematic-words-grid.list-mode-grid {
+    gap: 0 !important;
+    padding: 0 10px !important; /* Kenarlardan hafif boşluk */
 }
