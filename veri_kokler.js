@@ -7791,14 +7791,6 @@ const wordEasterEggs = {
             }
         },
 
-        // --- İnfi'âl Babı (71-75) ---
-        71: { base: { emoji: "😮", arText: "اِنْفَعَلَ", trText: "Etkilendi / Heyecanlandı / Pasif tepki verdi.", ornek: { ar: "اِنْفَعَلَ بِسَبَبِ الْأَخْبَارِ", tr: "Haberlerden dolayı heyecanlandı/tepki verdi." } } },
-        72: { base: { emoji: "😮", arText: "يَنْفَعِلُ", trText: "Etkilenir / Heyecanlanır.", ornek: { ar: "يَنْفَعِلُ بِسُهُولَةٍ", tr: "Kolayca heyecanlanır/tepki verir." } } },
-        73: { base: { emoji: "❗", arText: "اِنْفَعِلْ", trText: "Etkilen!", ornek: { ar: "لَا تَنْفَعِلْ بِسُرْعَةٍ", tr: "Hızlıca heyecanlanma/sinirlenme." } } },
-        74: { base: { emoji: "💓", arText: "اِنْفِعَال", trText: "İnfi'al / Etkilenme, heyecan, reaksiyon.", ornek: { ar: "حَالَةُ اِنْفِعَالٍ", tr: "Heyecan (infi'al) hali." } } },
-        75: { base: { emoji: "😳", arText: "مُنْفَعِل", trText: "Etkilenen / Heyecanlı, sinirli.",
-                ornek: { ar: "كَانَ مُنْفَعِلًا جِدًّا", tr: "Çok heyecanlı/sinirliydi." }
-            } },
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
         77: { 

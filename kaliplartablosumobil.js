@@ -9226,7 +9226,8 @@ function applyTelaffuzFilter() {
             return;
         }
 
-        const allRoots = Object.keys(sozlukVerileri);
+        const sourceObj = typeof wordEasterEggs !== 'undefined' ? wordEasterEggs : {};
+        const allRoots = Object.keys(sourceObj);
         allRoots.forEach(root => {
             const aksamList = getAksamIseba(root);
             
