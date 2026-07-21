@@ -8539,6 +8539,10 @@ window.openAtlasOverlay = function(stage) {
             flexContainer.style.alignItems = 'center';
         }
         window.handleAtlasVerbChange();
+        // İlk açılışta içerik boş kalmasın: overlay tam görünür olduktan sonra tekrar render et
+        requestAnimationFrame(function(){
+            if (window.hasAtlasTable && window.isAtlasMode) window.handleAtlasVerbChange(true);
+        });
     }
 };
 

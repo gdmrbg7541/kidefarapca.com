@@ -5050,8 +5050,8 @@ body {
     font-family: 'Caveat', 'Comic Sans MS', cursive !important;
 }
 .list-mode-title {
-    font-size: 2.2rem !important; font-weight: normal !important; text-align: center !important;
-    color: #2c3e50 !important; margin-bottom: 18px !important; padding-bottom: 12px !important;
+    font-size: 1.45rem !important; font-weight: normal !important; text-align: center !important;
+    color: #2c3e50 !important; margin-bottom: 12px !important; padding-bottom: 10px !important;
     border-bottom: 2px dashed #e0e0e0 !important;
 }
 .list-mode-columns { column-count: 1 !important; column-gap: 0 !important; column-rule: none !important; }
@@ -5065,3 +5065,58 @@ body {
 .list-mode-tr { font-size: 1.2rem !important; font-weight: normal !important; color: #495057 !important; flex: 1 !important; text-align: left !important; min-width: 0 !important; width: auto !important; position: static !important; padding: 0 !important; line-height: 1.25 !important; }
 .list-mode-emoji { font-size: 1.9rem !important; margin: 0 10px !important; flex: 0 0 auto !important; position: static !important; transform: none !important; right: auto !important; top: auto !important; }
 .list-mode-ar { font-size: 2rem !important; font-family: 'Arakom', sans-serif !important; color: #000 !important; flex: 1 !important; text-align: right !important; direction: rtl !important; min-width: 0 !important; width: auto !important; padding: 0 !important; line-height: 1.3 !important; }
+
+/* ===== DİLBİLGİSİ KART IZGARASI (MOBİL) ===== */
+.mobile-grammar-title { margin: 0; font-size: 1.5rem; font-weight: 700; color: #2c3e50; font-family: system-ui, -apple-system, sans-serif; }
+.mobile-grammar-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    width: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 16px 4px 30px 4px; box-sizing: border-box; align-content: start;
+}
+.gram-card {
+    background: #ffffff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.03);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    padding: 18px 8px; cursor: pointer; text-align: center; min-height: 118px; box-sizing: border-box;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.gram-card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+.gram-ico { font-size: 2.3rem; line-height: 1; }
+.gram-lbl { font-size: 0.98rem; font-weight: 600; color: #2c3e50; line-height: 1.2; font-family: system-ui, -apple-system, sans-serif; }
+.gram-ar { font-size: 1.05rem; font-family: 'Arakom', sans-serif; line-height: 1; }
+.gram-card.gram-verb { border-top: 3px solid #FF3B30; }
+.gram-card.gram-verb .gram-ar { color: #FF3B30; }
+.gram-card.gram-noun { border-top: 3px solid #2980b9; }
+.gram-card.gram-noun .gram-ar { color: #2980b9; }
+/* header düzeni: başlık solda, çarpı sağda */
+.mobile-grammar-header { justify-content: space-between !important; }
+
+/* ===== ATLAS MOBİL DÜZEN: FİİLLER ÜSTTE 3 SÜTUN, TABLO ALTTA ===== */
+@media screen and (max-width: 1024px) {
+    #screen-atlas { flex-direction: column !important; }
+    /* Fiil listesi (sidebar) en üste */
+    #atlas-right-sidebar {
+        order: -1 !important; width: 100% !important; min-width: 0 !important;
+        border-left: none !important; border-bottom: 2px solid #e2e8f0 !important;
+        box-shadow: none !important; padding: 10px !important; padding-top: 58px !important;
+        max-height: 40vh !important; overflow-y: auto !important; box-sizing: border-box !important;
+    }
+    #atlas-sidebar-title { text-align: center !important; margin: 0 0 10px 0 !important; font-size: 1rem !important; }
+    #atlas-verb-list {
+        display: grid !important; grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important; overflow-y: visible !important; padding-right: 0 !important;
+    }
+    #atlas-verb-list .atlas-verb-btn {
+        justify-content: center !important; align-items: center !important;
+        padding: 10px 4px !important; gap: 5px !important; text-align: center !important;
+        border-radius: 12px !important; box-sizing: border-box !important;
+    }
+    /* Ana içerik (başlık + tablo) altta */
+    #screen-atlas > div:first-of-type { padding: 12px !important; order: 0 !important; }
+    #atlas-explanation { margin-bottom: 12px !important; }
+    #atlas-title-tr { font-size: 1.5rem !important; }
+    #atlas-title-ar { font-size: 2.6rem !important; margin-bottom: 8px !important; }
+    #atlas-desc { font-size: 1rem !important; line-height: 1.5 !important; }
+    /* Tablo tam genişlik (masaüstü margin:0 110px kaldırıldı) */
+    .verb-table { margin: 0 !important; gap: 8px !important; }
+}
