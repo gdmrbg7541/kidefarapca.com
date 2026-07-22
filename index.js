@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.innerHTML = `
             <div class="default-game-content">
                 <div class="default-game-emoji">📊</div>
-                <h3 style="font-family: 'Arakom', sans-serif !important; font-weight: normal !important; min-height: 2.6em; font-size: 1.1em; display:flex; align-items:center; justify-content:center; text-align:center;">
+                <h3 style="min-height: 2.6em; font-size: 1.1em; display:flex; align-items:center; justify-content:center; text-align:center;">
                     ${gorunenIsim}
                 </h3>
                 <span class="game-card-description">Etkileşimli Slayt</span>

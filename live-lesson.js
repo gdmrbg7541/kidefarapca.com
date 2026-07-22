@@ -344,7 +344,7 @@ function renderOnlinePackages() {
     // 1. ÖZEL DERS SEÇENEĞİ (SABİT OLARAK EN ÜSTTE)
     const isCustomSelected = appState.selectedOnlinePackages.find(x => x.id === 100);
     const customCount = appState.customLessonCount || 0;
-    const customPrice = customCount * 400;
+    const customPrice = customCount * 720;
     const customTopic = appState.customLessonTopic || '';
 
     html += `
@@ -395,7 +395,7 @@ window.changeCustomLessonCount = function(delta) {
     appState.customLessonCount = count;
 
     document.getElementById('custom-lesson-count').innerText = count;
-    document.getElementById('custom-lesson-price').innerText = count * 400;
+    document.getElementById('custom-lesson-price').innerText = count * 720;
 
     // Eğer paket seçiliyse, sepet fiyatını güncelle
     const index = appState.selectedOnlinePackages.findIndex(x => x.id === 100);
@@ -405,7 +405,7 @@ window.changeCustomLessonCount = function(delta) {
             appState.selectedOnlinePackages.splice(index, 1);
             renderOnlinePackages();
         } else {
-            appState.selectedOnlinePackages[index].price = count * 400;
+            appState.selectedOnlinePackages[index].price = count * 720;
             appState.selectedOnlinePackages[index].hours = `${count} Saat Özel Ders`;
             appState.selectedOnlinePackages[index].name = `Özel Ders: ${appState.customLessonTopic || 'Belirtilmedi'}`;
         }
@@ -445,7 +445,7 @@ window.selectCustomOnlinePackage = function(el) {
         appState.selectedOnlinePackages.push({
             id: 100,
             name: `Özel Ders: ${topic}`,
-            price: count * 400,
+            price: count * 720,
             hours: `${count} Saat Özel Ders`,
             desc: "İsteğe özel birebir canlı ders",
             isCustom: true
