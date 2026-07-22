@@ -87,6 +87,8 @@
         /* Başlangıç Ekranları */
         #selection-screen {
              max-width: 400px;
+             margin-top: auto;
+             margin-bottom: auto;
              margin-left: auto;
              margin-right: auto;
              padding: 1rem;
@@ -482,6 +484,8 @@
             font-weight: 700; line-height: 1;
             margin-top: 5px;
         }
+        /* Q4: hareke/ek daha buyuk, bold degil */
+        .options-container.q4-grid button span.ar { font-size: 1.9rem; font-weight: 400; }
         .options-container.q4-grid button.hint-blue,
         .options-container.q4-grid button.hint-pink {
              background-color: #fff;
@@ -529,7 +533,7 @@
 
         
         .top-left-button {
-            position: absolute; 
+            position: fixed; 
             top: 1rem; 
             left: 1rem;
             background-color: rgba(255,255,255,0.7);
@@ -542,7 +546,7 @@
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.2s; 
-            z-index: 10;
+            z-index: 1000;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .top-left-button:hover { 
@@ -553,6 +557,28 @@
 
         /* YENİ (HATA DÜZELTMESİ): !important eklendi */
         .hidden { display: none !important; }
+
+        /* Masaustu: tam ekran kullanim + okunurluk */
+        @media (min-width: 769px) {
+            #game-container { max-width: 1400px; }
+            #selection-screen { max-width: 540px; }
+            #difficulty-selection, #player-mode-selection { margin-top: 1.75rem; }
+            #selection-screen h3, #difficulty-selection h3, #player-mode-selection h3 { font-size: 1.5rem; margin-bottom: 0.9rem; }
+            #difficulty-buttons, #player-mode-buttons { gap: 12px; }
+            #difficulty-buttons button, #player-mode-buttons button { font-size: 1.5rem; padding: 16px 24px; border-radius: 16px; }
+            #start-game-button { font-size: 1.75rem; padding: 16px 44px; }
+            .top-left-button { top: 1.2rem; left: 1.2rem; font-size: 1.9rem; padding: 6px 20px 9px 20px; }
+            h1 { font-size: 2.6rem; }
+            .question-title { font-size: 1.9rem; margin-bottom: 0.75rem; }
+            .turkish-meaning { font-size: 1.9rem; }
+            .arabic-word { font-size: clamp(4.5rem, 8vw, 7.5rem); }
+            #timer-display { font-size: 2.2rem; }
+            .options-container { max-width: 1050px; gap: 1.5rem; }
+            body.mode-1p .options-container { max-width: 1150px; }
+            .options-container.q4-grid { max-width: 1150px; }
+            .options-container button { font-size: 1.7rem; min-height: 120px; padding: 20px; border-radius: 1.25rem; }
+            .options-container.q4-grid button span.ar { font-size: 2.4rem; font-weight: 400; }
+        }
 
         /* Mobil Dikey Mod (9:16) */
         @media (max-width: 768px) {
@@ -679,6 +705,11 @@
              }
         }
 
+
+        /* Sarf ekleri renklendirme */
+        .sarf-al { color: #1a9c4a; }
+        .sarf-ta { color: #e0218a; }
+        .sarf-ek { color: #1565c0; }
     </style>
 </head>
 <body>
@@ -810,6 +841,19 @@
         
         // --- Element Tanımlamaları ---
         const selectionScreenEl = document.getElementById('selection-screen'); const difficultyButtons = document.querySelectorAll('#difficulty-buttons button'); const playerModeButtons = document.querySelectorAll('#player-mode-buttons button'); const startGameButton = document.getElementById('start-game-button'); const gameArea = document.getElementById('game-area'); const mainGameContentEl = document.getElementById('main-game-content'); const timerDisplayEl = document.getElementById('timer-display'); const player1AreaEl = document.getElementById('player1-area'); const arabicWordElP1 = document.getElementById('arabic-word-p1'); const turkishMeaningElP1 = document.getElementById('turkish-meaning-p1'); const questionTitleElP1 = document.getElementById('question-title-p1'); const optionsContainerP1 = document.getElementById('options-container-p1'); const player2AreaEl = document.getElementById('player2-area'); const arabicWordElP2 = document.getElementById('arabic-word-p2'); const turkishMeaningElP2 = document.getElementById('turkish-meaning-p2'); const questionTitleElP2 = document.getElementById('question-title-p2'); const optionsContainerP2 = document.getElementById('options-container-p2'); 
+        var _SARF_H=(function(){var c='';for(var i=0x064B;i<=0x0652;i++)c+=String.fromCharCode(i);return '['+c+String.fromCharCode(0x0670)+']';})();
+        function colorizeSarf(w){
+          if(typeof w!=='string'||!w) return w;
+          var H=_SARF_H, al='', ek='', mid=w;
+          var mAl=mid.match(new RegExp('^([اأٱ]'+H+'*ل'+H+'*)'));
+          if(mAl){ al='<span class="sarf-al">'+mAl[1]+'</span>'; mid=mid.slice(mAl[1].length); }
+          var mF=mid.match(new RegExp('(ا'+H+'*ت'+H+'*)$'));
+          if(mF){ ek='<span class="sarf-ta">'+mF[1]+'</span>'; mid=mid.slice(0,mid.length-mF[1].length); }
+          else { var mM=mid.match(new RegExp('(و'+H+'*ن'+H+'*|ي'+H+'*ن'+H+'*|ا'+H+'*ن'+H+'*)$')); if(mM){ ek='<span class="sarf-ek">'+mM[1]+'</span>'; mid=mid.slice(0,mid.length-mM[1].length); } }
+          mid=mid.replace(new RegExp('(ة'+H+'*)$'),'<span class="sarf-ta">$1</span>');
+          return al+mid+ek;
+        }
+        window.colorizeSarf=colorizeSarf;
         
         const backButton = document.getElementById('back-button');
         const homeButton = document.getElementById('home-button');
@@ -828,7 +872,7 @@
         backButton.addEventListener('click', goToDifficultySelection);
         homeButton.addEventListener('click', () => {
             playClickSound();
-            window.location.href = 'https://kidefarapca.com';
+            kidefGeriDon();
         });
         
         
@@ -895,9 +939,9 @@
             mainGameContentEl.style.pointerEvents = 'auto'; 
             backButton.classList.remove('hidden'); 
             currentWordP1 = shuffledWords.pop(); 
-            arabicWordElP1.innerHTML = currentWordP1.html; 
+            arabicWordElP1.innerHTML = colorizeSarf(currentWordP1.html); 
             turkishMeaningElP1.textContent = currentWordP1.turkish; 
-            if (gameMode === 2) { currentWordP2 = shuffledWords.pop(); while(currentWordP1.html === currentWordP2.html && shuffledWords.length > 0) { shuffledWords.unshift(currentWordP2); currentWordP2 = shuffledWords.pop(); } if (currentWordP1.html === currentWordP2.html) { alert("Listede kalan son iki kelime aynı."); goToDifficultySelection(); return; } arabicWordElP2.innerHTML = currentWordP2.html; turkishMeaningElP2.textContent = currentWordP2.turkish; player2AreaEl.classList.remove('hidden'); } else { player2AreaEl.classList.add('hidden'); } 
+            if (gameMode === 2) { currentWordP2 = shuffledWords.pop(); while(currentWordP1.html === currentWordP2.html && shuffledWords.length > 0) { shuffledWords.unshift(currentWordP2); currentWordP2 = shuffledWords.pop(); } if (currentWordP1.html === currentWordP2.html) { alert("Listede kalan son iki kelime aynı."); goToDifficultySelection(); return; } arabicWordElP2.innerHTML = colorizeSarf(currentWordP2.html); turkishMeaningElP2.textContent = currentWordP2.turkish; player2AreaEl.classList.remove('hidden'); } else { player2AreaEl.classList.add('hidden'); } 
             optionsContainerP1.innerHTML = ''; 
             if (optionsContainerP2) optionsContainerP2.innerHTML = ''; 
             optionsContainerP1.style.pointerEvents = 'auto'; 
@@ -1171,5 +1215,6 @@
 
     </script>
 
+    <script src="geri.js"></script>
 </body>
 </html>
