@@ -2698,10 +2698,10 @@ input:checked +
     border: 2px solid transparent;
 }
 .t-filter-chip.active {
-    background: #e0f2fe;
-    color: #0369a1;
-    border-color: #38bdf8;
-    font-weight: 600;
+    background: linear-gradient(45deg, #FFC107, #FF9800);
+    color: #000000;
+    border-color: #FF9800;
+    font-weight: 700;
 }
 .t-result-item {
     display: flex;
@@ -3638,10 +3638,10 @@ body.has-fullscreen-accordion .thematic-words-content {
     border: 2px solid transparent;
 }
 .t-filter-chip.active {
-    background: #e0f2fe;
-    color: #0369a1;
-    border-color: #38bdf8;
-    font-weight: 600;
+    background: linear-gradient(45deg, #FFC107, #FF9800);
+    color: #000000;
+    border-color: #FF9800;
+    font-weight: 700;
 }
 .t-result-item {
     display: flex;
@@ -3882,6 +3882,7 @@ body {
     height: 100dvh;
     padding: 20px;
     box-sizing: border-box;
+    background: linear-gradient(160deg, #FFC107, #FF9800);   /* turuncu-sari gradyan ARKA PLANDA */
 }
 
 .mobile-header {
@@ -3922,7 +3923,7 @@ body {
     background: var(--card-bg);
     border-radius: 22px;
     border: 1px solid rgba(0,0,0,0.05);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -4128,15 +4129,20 @@ body {
     }
     
     .mobile-alphabet-scrubber {
-        width: 100%;
+        width: 100vw;
+        max-width: 100vw;
+        box-sizing: border-box;
         height: 40px;
-        flex-direction: row;
-        padding: 0 15px;
+        flex-direction: row-reverse;
+        /* Sagda genis bosluk: elif yuvarlak kose / centik guvenli alanindan iceride kalsin */
+        padding-left: 12px;
+        padding-right: max(34px, env(safe-area-inset-right, 34px));
         border-left: none;
         border-top: 1px solid rgba(0,0,0,0.05);
         border-bottom: none;
         overflow-x: hidden;
-        justify-content: space-around;
+        justify-content: center;
+        gap: 3px;
         order: 2; /* Alt kısma al */
         transition: height 0.2s ease, background 0.2s ease;
     }
@@ -4150,8 +4156,8 @@ body {
     
     .scrubber-letter {
         padding: 0 2px;
-        font-size: 0.82rem;
-        flex: 1 1 auto;
+        font-size: 0.64rem;
+        flex: 0 1 auto;
         min-width: 0;
     }
     
@@ -5280,5 +5286,30 @@ body {
         box-shadow: none !important;
         padding: 14px 18px 20px 18px !important;
         box-sizing: border-box !important;
+    }
+}
+
+
+/* === DİLBİLGİSİ (ATLAS) İÇERİĞİ: mobilde yatay taşmayı önle + ortala === */
+@media screen and (max-width: 1024px) {
+    #atlas-desc, #atlas-desc-bottom {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    /* Hicbir alt eleman kabi asamaz -> yatay scroll biter */
+    #atlas-desc *, #atlas-desc-bottom * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    /* Ornek kart satirlari: sar + ortala + kucuk bosluk (tasmaz, ortalanir) */
+    #atlas-desc div, #atlas-desc-bottom div {
+        flex-wrap: wrap !important;
+        gap: 14px !important;
+    }
+    /* Kart ici buyuk Arapca fontlari mobilde kucult (iki kart yan yana sigsin) */
+    #atlas-desc .arabic[style*="4rem"], #atlas-desc-bottom .arabic[style*="4rem"],
+    #atlas-desc-bottom .arabic[style*="3.4rem"] {
+        font-size: 2.7rem !important;
     }
 }
