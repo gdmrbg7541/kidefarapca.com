@@ -5261,7 +5261,11 @@ body {
 /* Not: 'body ...' ile özgüllük artırıldı ki JS içinde sonradan head'e eklenen
    <style> bloğundaki (#rootOfDayOverlay > div) !important kurallarını da geçsin. */
 @media (max-width: 1024px) {
-    #rootOfDayOverlay { padding: 0 !important; }
+    #rootOfDayOverlay {
+        padding: 0 !important;
+        height: 100dvh !important;      /* overlay de dvh -> kart ortalaninca ust/alt bosluk kalmaz */
+        align-items: stretch !important;
+    }
     body #rootOfDayOverlay > div {
         width: 100vw !important;
         max-width: none !important;
