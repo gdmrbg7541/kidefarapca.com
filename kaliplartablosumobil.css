@@ -5604,3 +5604,23 @@ body {
         padding: 10px !important;
     }
 }
+
+
+/* === ARAMA MODU: SAYFA/OVERLAY KAYMASIN (input'a dokununca) ===
+   Overlay ve container kendileri kaymasin; sadece panel icleri kaysin.
+   Boylece inputa dokununca tarayici sayfayi yukari itemez. */
+#keyboard-overlay.native-search-mode {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+}
+#keyboard-overlay.native-search-mode .keyboard-container {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+}
+/* panel icleri kaydirilabilir kalsin (sonuc/kok listeleri) */
+#keyboard-overlay.native-search-mode #dictionary-results,
+#keyboard-overlay.native-search-mode #root-predictions-box {
+    overscroll-behavior: contain !important;
+    touch-action: pan-y !important;
+}

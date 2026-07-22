@@ -387,7 +387,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     
     if (isRootValidForTable) {
         htmlContent += `  <div style="position:absolute; left:15px; cursor:pointer; background:#5cb85c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
-                            onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Hızlı Liste">
+                            onclick="openFastListFromWordDetails('${compactRoot}');" title="Hızlı Liste">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
                           </div>`;
     }
@@ -2600,6 +2600,19 @@ setTimeout(() => {
             currentRoot = this.value;
             if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = this.value;
             updateMainKeyboardPredictions();
+        });
+        // Inputa odaklaninca/dokununca sayfa yukari kaymasin (telefon klavyesi alttan cikar,
+        // yerimiz zaten ayrilmis). Herhangi bir kaymayi aninda geri al.
+        var _msPin = function() {
+            if (!window._msScrollLocked) return;
+            try { window.scrollTo(0, window._msSavedScrollY || 0); } catch (e) {}
+            var ov = document.getElementById('keyboard-overlay');
+            if (ov) ov.scrollTop = 0;
+        };
+        nativeSearchInput.addEventListener('focus', function() {
+            _msPin();
+            setTimeout(_msPin, 50);
+            setTimeout(_msPin, 250);
         });
     }
 }, 500);
@@ -5696,9 +5709,15 @@ function selectRootFromMainKeyboard(root) {
         if (fdmAcik && prevRoot === root) {
             // Liste zaten bu kok icin acik: oldugu gibi birak
         } else {
-            if (fdmAcik && typeof closeFastDictionaryMode === 'function') closeFastDictionaryMode();
-            // Aramadan gelindiyse donus icin isaretle
-            if (_fromSearch) { window._fdmReturnToSearch = true; window._lastMobileSearchQuery = _prevQuery; }
+            if (fdmAcik && typeof closeFastDictionaryMode === 'function') {
+                var _rwTmp = window._fdmReturnToWordDetails, _rsTmp = window._fdmReturnToSearch;
+                window._fdmReturnToWordDetails = false; window._fdmReturnToSearch = false;
+                closeFastDictionaryMode();
+            }
+            if (_fromSearch) {
+                window._lastMobileSearchQuery = _prevQuery;
+                if (!window._fdmReturnToWordDetails) window._fdmReturnToSearch = true;
+            }
             setTimeout(function(){ openFastDictionaryMode(); }, 80);
         }
     }
@@ -9128,6 +9147,25 @@ function closeFastDictionaryMode() {
     const fdm = document.getElementById('fast-dictionary-overlay');
     if (fdm) fdm.style.display = 'none';
 
+    // KELIME DETAY KARTINDAN (mazi/muzari/emir, tekil/cogul, mustakil) gelindiyse:
+    // carpiya basinca kart KAPANMASIN -> karti geri goster (arama da arkada geri acilir)
+    if (window._fdmReturnToWordDetails) {
+        window._fdmReturnToWordDetails = false;
+        var _ovW = document.getElementById('keyboard-overlay');
+        if (_ovW) { _ovW.style.display = 'flex'; _ovW.classList.add('native-search-mode'); }
+        var _niW = document.getElementById('mobile-native-search');
+        var _qW = window._lastMobileSearchQuery || '';
+        if (_niW) _niW.value = _qW;
+        try { currentRoot = _qW; } catch (e) {}
+        if (typeof updateMainKeyboardPredictions === 'function') updateMainKeyboardPredictions();
+        if (typeof window._msLockScroll === 'function') window._msLockScroll();
+        var _wo = document.getElementById('word-details-overlay');
+        var _wm = document.getElementById('word-details-modal');
+        if (_wo) _wo.style.display = 'block';
+        if (_wm) _wm.style.display = 'block';
+        return;
+    }
+
     // ARAMADAN gelindiyse: carpiya basinca aramada kalinan yere geri don
     if (window._fdmReturnToSearch) {
         window._fdmReturnToSearch = false;
@@ -9877,6 +9915,18 @@ function showAksamSebaGenelInfo(e) {
 // Ana ekrandaki buyutec: Sozluk/arama overlay'ini acar.
 // Bu modda bizim Arapca klavye GIZLI; telefonun kendi klavyesi kullanilir
 // (alttaki inputa odaklaninca acilir). Ustte iki panel: sagda Sozluk, solda Kokler.
+// Kelime detay kartindan (mazi/muzari/emir, tekil/cogul, mustakil) kok baglantisi -> hizli liste.
+// Carpiya basilinca kart geri gelsin diye isaretle.
+window.openFastListFromWordDetails = function(root) {
+    window._fdmReturnToWordDetails = true;
+    window._fdmReturnToSearch = false;
+    var wo = document.getElementById('word-details-overlay');
+    var wm = document.getElementById('word-details-modal');
+    if (wo) wo.style.display = 'none';
+    if (wm) wm.style.display = 'none';
+    if (typeof selectRootFromMainKeyboard === 'function') selectRootFromMainKeyboard(root);
+};
+
 window.openMobileSearch = function() {
     try {
         var rod = document.getElementById('rootOfDayOverlay');
