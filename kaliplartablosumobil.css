@@ -3883,6 +3883,7 @@ body {
 
 /* --- MOBILE HOME SCREEN 2x2 GRID --- */
 .mobile-home-screen {
+    position: relative;        /* arama butonu (alt-orta) icin referans */
     display: flex;
     flex-direction: column;
     justify-content: center;   /* grid'i dikeyde ortala */
@@ -4021,14 +4022,6 @@ body {
     border-bottom: 2px solid rgba(0,0,0,0.05);
 }
 
-.mobile-grammar-header h3 {
-    margin: 0;
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 1.3rem;
-    color: #333;
-    font-weight: 800;
-}
-
 .mobile-grammar-header button {
     background: none;
     border: none;
@@ -4036,30 +4029,6 @@ body {
     font-weight: bold;
     cursor: pointer;
     color: #333;
-}
-
-.mobile-grammar-list {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: 15px;
-    gap: 10px;
-}
-
-.mobile-grammar-list button {
-    background: transparent;
-    border: none;
-    padding: 12px;
-    font-size: 1.4rem;
-    font-family: system-ui, -apple-system, sans-serif;
-    text-align: center;
-    cursor: pointer;
-    color: #333;
-    font-weight: 500;
-}
-
-.mobile-grammar-list button:active {
-    color: var(--primary-color, #2980b9);
 }
 
 /* --- KEYBOARD OVERLAY (Sözlük Modu, Kökler Gizli) --- */
@@ -5377,4 +5346,127 @@ body {
     text-align: center;
     justify-content: center;
     font-weight: 700;
+}
+
+
+/* === ILK SAYFA: ARAMA BUTONU (alt-orta) === */
+.mobile-search-btn {
+    position: absolute;
+    left: 50%;
+    bottom: max(26px, env(safe-area-inset-bottom, 26px));
+    transform: translateX(-50%);
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #FF9800;
+    border: none;
+    padding: 0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 50;
+}
+.mobile-search-btn:hover {
+    box-shadow: 0 8px 22px rgba(0,0,0,0.24);
+}
+.mobile-search-btn:active {
+    transform: translateX(-50%) scale(0.9);
+}
+.mobile-search-btn svg {
+    display: block;
+}
+
+
+/* === ILK SAYFA ARAMASI: TELEFON KLAVYELI MOD ===
+   Bizim Arapca klavye gizli; telefonun kendi klavyesi kullanilir.
+   Ustte iki panel yan yana (dir=rtl: sagda Sozluk %65, solda Kokler %35). */
+#keyboard-overlay.native-search-mode .keyboard-container {
+    height: 100dvh !important;
+    justify-content: flex-start !important;
+}
+#keyboard-overlay.native-search-mode #predictions-dashboard {
+    flex-direction: row !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 10px auto 6px auto !important;
+    gap: 6px !important;
+}
+#keyboard-overlay.native-search-mode #predictions-dashboard > div {
+    height: 100% !important;
+}
+#keyboard-overlay.native-search-mode #predictions-dashboard > div:first-child {
+    width: calc(65% - 3px) !important;   /* Sozluk (RTL'de sagda) */
+    flex: unset !important;
+}
+#keyboard-overlay.native-search-mode #predictions-dashboard > div:last-child {
+    width: calc(35% - 3px) !important;   /* Kokler (RTL'de solda) */
+    flex: unset !important;
+    display: flex !important;            /* "Kokler Gizli" kuralini bu modda iptal et */
+}
+#keyboard-overlay.native-search-mode #root-predictions-box {
+    display: flex !important;
+}
+#keyboard-overlay.native-search-mode #main-keyboard-inner { display: none !important; }
+#keyboard-overlay.native-search-mode #temp-root-display { display: none !important; }
+#keyboard-overlay.native-search-mode .keyboard-bottom-area {
+    width: 100% !important;
+    padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px !important;
+    box-sizing: border-box !important;
+}
+#keyboard-overlay.native-search-mode #mobile-native-search {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    background: #ffffff;
+}
+
+
+/* === ARAMA MODU: SOZLUK KARTLARI (tek sutun, arapca ustte, kucuk fontlar) === */
+#keyboard-overlay.native-search-mode .dict-result-item {
+    flex: 0 0 100% !important;      /* tek sutun: yan yana kutu yok */
+    max-width: 100% !important;
+    padding: 8px 10px !important;
+    border-width: 2px !important;
+}
+#keyboard-overlay.native-search-mode .dict-result-item > div {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1px !important;
+}
+/* katman ikonu bu kompakt gorunumde gizli */
+#keyboard-overlay.native-search-mode .dict-result-item > div > div:nth-child(1) {
+    display: none !important;
+}
+/* Turkce anlam: ALTTA, ortali, daha kucuk */
+#keyboard-overlay.native-search-mode .dict-result-item > div > div:nth-child(2) {
+    order: 2 !important;
+    width: 100% !important;
+    text-align: center !important;
+    padding-right: 0 !important;
+    border-right: none !important;
+}
+/* Arapca kelime: USTTE, ortali */
+#keyboard-overlay.native-search-mode .dict-result-item > div > div:nth-child(3) {
+    order: 1 !important;
+    width: 100% !important;
+    text-align: center !important;
+    padding-left: 0 !important;
+}
+#keyboard-overlay.native-search-mode .dict-result-ar {
+    font-size: 1.55rem !important;
+    padding: 0 !important;
+    line-height: 1.45 !important;
+    white-space: normal !important;
+}
+#keyboard-overlay.native-search-mode .dict-result-tr {
+    font-size: 0.82rem !important;   /* turkce ozellikle daha kucuk */
+    font-weight: 600 !important;
+    color: #64748b !important;
+    line-height: 1.3 !important;
 }

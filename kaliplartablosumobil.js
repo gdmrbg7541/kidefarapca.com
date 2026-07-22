@@ -2514,7 +2514,7 @@ function toggleKB(show) {
 function closeKeyboard() {
     // Yazılanları silmiyoruz, sadece kapatıyoruz.
     const overlay = document.getElementById('keyboard-overlay');
-    if (overlay) overlay.style.display = 'none';
+    if (overlay) { overlay.style.display = 'none'; overlay.classList.remove('native-search-mode'); }
     if (typeof toggleKB === 'function') toggleKB(false);
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
     if (typeof toggleRootHint === 'function') toggleRootHint(true);
@@ -2667,6 +2667,11 @@ function confirmRoot() {
 document.addEventListener('keydown', function(e) {
     const overlay = document.getElementById('keyboard-overlay');
     if (!overlay || overlay.style.display === 'none' || overlay.style.display === '') return;
+    // TELEFON KLAVYESI FIX: yerel arama inputu odakliysa karisma.
+    // Input kendi siler/yazar; 'input' event'i currentRoot'u zaten guncelliyor.
+    // (Eskiden Backspace burada preventDefault ile yutuluyordu: sonuclar degisiyor
+    //  ama inputtaki harfler silinmiyormus gibi kaliyordu.)
+    if (document.activeElement && document.activeElement.id === 'mobile-native-search') return;
     const key = e.key.toLocaleLowerCase('tr-TR');
     if (key === 'backspace') {
         handleBackspace();
@@ -5381,6 +5386,26 @@ function updateMainKeyboardPredictions() {
         let matchCount = 0;
         let matchesByLetter = {};
         
+        // Kök veya kelimelerde %100 birebir eşleşen bir şey var mı kontrolü (masaüstünden port)
+        let hasExactMatchInDict = false;
+        let _exactSearchStr = window.stripHarakat(filter);
+        if (_exactSearchStr.length > 0 && /[\u0600-\u06FF]/.test(_exactSearchStr)) {
+            let normFilter = window.normalizeArabic ? normalizeArabic(_exactSearchStr) : _exactSearchStr;
+            for (const [rootK, rootD] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
+                if (rootK.startsWith('Sayı:') || rootK.startsWith('Sıra:')) continue;
+                for (const kData of Object.values(rootD)) {
+                    if (kData.base && kData.base.arText) {
+                        let normItem = window.normalizeArabic ? normalizeArabic(window.stripHarakat(kData.base.arText)) : window.stripHarakat(kData.base.arText);
+                        if (normItem.startsWith(normFilter)) {
+                            hasExactMatchInDict = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasExactMatchInDict) break;
+            }
+        }
+
         for (const [rootKey, rootData] of Object.entries(typeof sozlukVerileri !== 'undefined' ? sozlukVerileri : {})) {
             if (matchCount > 60) break;
             for (const [kalipKey, kalipData] of Object.entries(rootData)) {
@@ -9808,3 +9833,28 @@ function showAksamSebaGenelInfo(e) {
 </div>
 `;
 }
+
+
+// === ILK SAYFA ARAMA BUTONU (TELEFON KLAVYELI MOD) ===
+// Ana ekrandaki buyutec: Sozluk/arama overlay'ini acar.
+// Bu modda bizim Arapca klavye GIZLI; telefonun kendi klavyesi kullanilir
+// (alttaki inputa odaklaninca acilir). Ustte iki panel: sagda Sozluk, solda Kokler.
+window.openMobileSearch = function() {
+    try {
+        var rod = document.getElementById('rootOfDayOverlay');
+        if (rod && typeof window.closeRootOfDay === 'function') window.closeRootOfDay();
+    } catch (e) {}
+    if (typeof window.openKeyboard === 'function') window.openKeyboard();
+    var ov = document.getElementById('keyboard-overlay');
+    if (ov) ov.classList.add('native-search-mode');
+    var ni = document.getElementById('mobile-native-search');
+    if (ni) {
+        ni.value = '';
+        try { currentRoot = ''; } catch (e) {}
+        if (typeof updateTempDisplay === 'function') updateTempDisplay();
+        if (typeof updateMainKeyboardPredictions === 'function') updateMainKeyboardPredictions();
+        // Kullanici dokunusu icinde odaklan -> telefon klavyesi acilir
+        try { ni.focus(); } catch (e) {}
+        setTimeout(function(){ try { ni.focus(); } catch (e) {} }, 200);
+    }
+};
