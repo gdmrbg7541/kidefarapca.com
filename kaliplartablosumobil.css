@@ -5253,7 +5253,7 @@ body {
         padding: 0 !important; max-height: none !important; overflow: visible !important; margin: 2px 0 14px 0 !important;
     }
     /* "Örnek Fiiller" başlığı küçük */
-    #atlas-sidebar-title { text-align: center !important; font-size: 0.8rem !important; font-weight: normal !important; color: #94a3b8 !important; margin: 0 0 8px 0 !important; }
+    #atlas-sidebar-title { text-align: center !important; font-size: 0.95rem !important; font-weight: 700 !important; color: #FF9800 !important; margin: 0 0 8px 0 !important; }
     #atlas-verb-list { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; overflow: visible !important; padding-right: 0 !important; }
     /* Tam ekranda örnek fiiller gizli (sadece tablo) */
     #screen-atlas.atlas-fullscreen #atlas-right-sidebar { display: none !important; }
