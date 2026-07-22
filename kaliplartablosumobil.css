@@ -5391,8 +5391,8 @@ body {
 }
 #keyboard-overlay.native-search-mode #predictions-dashboard {
     flex-direction: row !important;
-    flex: 1 1 auto !important;
-    height: auto !important;
+    flex: 0 0 auto !important;
+    height: 50dvh !important;          /* iki panel ekranin ~%50'si */
     min-height: 0 !important;
     margin: 10px auto 6px auto !important;
     gap: 6px !important;
@@ -5415,10 +5415,27 @@ body {
 #keyboard-overlay.native-search-mode #main-keyboard-inner { display: none !important; }
 #keyboard-overlay.native-search-mode #temp-root-display { display: none !important; }
 #keyboard-overlay.native-search-mode .keyboard-bottom-area {
+    flex: 0 0 auto !important;         /* asagi itilme yok: panellerin hemen altinda */
+    height: 8dvh !important;           /* ekranin ~%8'i */
+    min-height: 48px !important;
     width: 100% !important;
-    padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px !important;
+    margin: 0 !important;
+    padding: 2px 10px !important;
     box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* Fazladan beyaz konteyneri kaldir: sadece input gorunsun */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
 }
+#keyboard-overlay.native-search-mode #mobile-native-search {
+    height: min(50px, 8dvh) !important;
+}
+/* kalan ~%40 bos kalir -> telefonun kendi klavyesi oraya acilir */
 #keyboard-overlay.native-search-mode #mobile-native-search {
     display: block !important;
     width: 100% !important;
@@ -5469,4 +5486,121 @@ body {
     font-weight: 600 !important;
     color: #64748b !important;
     line-height: 1.3 !important;
+}
+
+
+/* === ARAMA MODU: PANEL BASLIK VE KOK CIPLERI === */
+/* "Sozluk" ve "Vezinlere Bak" basliklari daha kucuk */
+#keyboard-overlay.native-search-mode #predictions-dashboard h3 {
+    font-size: 1.02rem !important;
+    padding: 6px 8px !important;
+}
+/* Vezinlere Bak: kokler TEK SUTUN, emojiler kucuk */
+#keyboard-overlay.native-search-mode #root-predictions-box .prediction-chip {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 0.9rem !important;      /* emoji boyutunu kucultur */
+    padding: 8px 6px !important;
+}
+#keyboard-overlay.native-search-mode #root-predictions-box .prediction-chip-text {
+    font-size: 1.2rem !important;
+}
+/* Arama kutusu bosken (placeholder gorunurken) LTR; yazmaya baslayinca RTL'ye doner */
+#keyboard-overlay.native-search-mode #mobile-native-search:placeholder-shown {
+    direction: ltr !important;
+    text-align: center !important;
+}
+
+
+/* === KELIME DETAY KARTLARI: MOBIL ENTEGRASYONU ===
+   showWordDetails penceresi (fiil karti mazi/muzari/emir, tekil/cogul, mustakil kelime)
+   masaustu boyutlariyla geliyordu; telefonda okunur kompakt duzene cevrildi. */
+@media (max-width: 700px) {
+    /* pencere */
+    #word-details-modal {
+        width: 94% !important;
+        padding: 14px 10px !important;
+        max-height: 88dvh !important;
+        border-radius: 14px !important;
+    }
+    /* ust kosedeki yuvarlak butonlar (kapat + hizli liste) */
+    #word-details-modal [title="Kapat"],
+    #word-details-modal [title="Hızlı Liste"] {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.3rem !important;
+    }
+    /* FIIL/ISIM muhru ve "Kök:" rozeti */
+    #word-details-modal div[style*="rotate(-10deg)"] {
+        font-size: 0.95rem !important;
+        padding: 3px 12px !important;
+        top: -10px !important;
+        left: 6px !important;
+    }
+    #word-details-modal div[style*="rotate(5deg)"] {
+        font-size: 0.85rem !important;
+        padding: 3px 10px !important;
+        top: -10px !important;
+        right: 6px !important;
+    }
+    /* MAZI/MUZARI/EMIR kartlari: 3 sutun yerine tek sutun */
+    #word-details-modal div[style*="repeat(3, 1fr)"] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        margin-top: 14px !important;
+    }
+    #word-details-modal div[style*="padding:30px 10px"] {
+        padding: 14px 8px !important;
+    }
+    /* buyuk arapca yazilar (fiil karti + tekil/cogul) */
+    #word-details-modal span[style*="clamp(3.5rem"],
+    #word-details-modal div[style*="clamp(3.5rem"] {
+        font-size: 2rem !important;
+    }
+    #word-details-modal span[style*="clamp(2.5rem"] {
+        font-size: 1.9rem !important;
+    }
+    /* turkce anlamlar */
+    #word-details-modal [style*="font-size:1.6rem"] {
+        font-size: 1rem !important;
+        margin-top: 8px !important;
+    }
+    /* kart etiketi (Mazi/Muzari/Emir) ve ornek turkceleri */
+    #word-details-modal [style*="clamp(1.5rem"] {
+        font-size: 1rem !important;
+    }
+    /* buyuk emoji */
+    #word-details-modal div[style*="font-size:5rem"] {
+        font-size: 2.6rem !important;
+        margin-bottom: 8px !important;
+    }
+    /* baslik (tema adi) */
+    #word-details-modal span[style*="font-size:2.0rem"] {
+        font-size: 1.15rem !important;
+    }
+    /* mustakil / tekil-cogul ana karti */
+    #word-details-modal div[style*="padding:40px 20px"] {
+        padding: 20px 10px !important;
+    }
+    /* tekil-cogul arasi ayirac (ج): alt alta dizilimde havada kaliyor, gizle
+       (COGUL rozeti zaten var) */
+    #word-details-modal div[style*="margin-top: 45px"] {
+        display: none !important;
+    }
+    /* tekil/cogul rozetleri */
+    #word-details-modal div[style*="letter-spacing:1px"] {
+        font-size: 0.82rem !important;
+        padding: 4px 12px !important;
+        margin-bottom: 8px !important;
+    }
+    /* ornek cumleler (arapca) */
+    #word-details-modal div[style*="font-size:2rem"][dir="rtl"] {
+        font-size: 1.35rem !important;
+    }
+    /* ornek kutusu */
+    #word-details-modal div[style*="margin-top:25px"] {
+        margin-top: 14px !important;
+        padding: 10px !important;
+    }
 }

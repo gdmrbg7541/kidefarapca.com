@@ -387,7 +387,7 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
     
     if (isRootValidForTable) {
         htmlContent += `  <div style="position:absolute; left:15px; cursor:pointer; background:#5cb85c; color: white; width:50px; height:50px; border-radius:50%; font-size:2.0rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index:10;" 
-                            onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Vezin Tablosu">
+                            onclick="document.getElementById('word-details-overlay').style.display='none'; document.getElementById('word-details-modal').style.display='none'; selectRootFromMainKeyboard('${compactRoot}');" title="Hızlı Liste">
                             <i class="fas fa-sitemap" style="transform: rotate(180deg);"></i>
                           </div>`;
     }
@@ -5676,9 +5676,23 @@ function updateMainKeyboardPredictions() {
 }
 
 function selectRootFromMainKeyboard(root) {
+    var prevRoot = (typeof currentRoot !== 'undefined') ? currentRoot : '';
     currentRoot = root;
     updateTempDisplay();
     confirmRoot(); // Kökü onaylar, tabloları açar ve klavyeyi kapatır
+
+    // KULLANICI İSTEĞİ: Kök seçilince (arama önerisi çipi veya kelime detayındaki
+    // kök butonu) o kökün HIZLI LİSTESİ acilsin.
+    var fdm = document.getElementById('fast-dictionary-overlay');
+    var fdmAcik = fdm && fdm.style.display === 'flex';
+    if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[root] && typeof openFastDictionaryMode === 'function') {
+        if (fdmAcik && prevRoot === root) {
+            // Liste zaten bu kok icin acik: oldugu gibi birak
+        } else {
+            if (fdmAcik && typeof closeFastDictionaryMode === 'function') closeFastDictionaryMode();
+            setTimeout(function(){ openFastDictionaryMode(); }, 80);
+        }
+    }
 }
 
 // --- EVRENSEL BÜYÜTME KAPATICI ---
