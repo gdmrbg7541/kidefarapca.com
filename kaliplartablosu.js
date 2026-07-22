@@ -8748,10 +8748,9 @@ window.openAtlasOverlay = function(stage) {
         if(tableView) tableView.style.display = 'none';
         if(sidebar) sidebar.style.display = 'none';
         if(flexContainer) {
-            // Once evrensel 'flex-start' (her tarayicida baslik gorunur), sonra destekleniyorsa 'safe center' ile ortala.
-            // Eski/gomulu tarayicilarda (akilli tahta) 'safe center' yok sayilir -> 'flex-start' kalir -> baslik kirpilmaz.
+            // Baslik ASLA kirpilmasin: her tarayicida guvenilir sekilde uste hizala.
+            // (safe center bazi gomulu/akilli-tahta tarayicilarinda dogru calismiyor, o yuzden kullanmiyoruz)
             flexContainer.style.justifyContent = 'flex-start';
-            flexContainer.style.justifyContent = 'safe center';
             flexContainer.style.alignItems = 'center';
         }
         let _fBtn = document.getElementById('atlas-fs-btn');
