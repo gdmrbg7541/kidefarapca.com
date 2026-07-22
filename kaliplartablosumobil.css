@@ -5217,7 +5217,32 @@ body {
         max-height: 100dvh !important;
         border-radius: 0 !important;
         box-shadow: none !important;
-        padding: 46px 16px 30px 16px !important;
+        padding: 18px 16px 26px 16px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+
+/* === GÜNÜN KÖKÜ: MOBİL YATAY (LANDSCAPE) TAM EKRAN ===
+   Bazı geniş telefonlar yatayda 1024px'den geniş; max-width:1024 kuralı onları
+   kaçırıyor, JS içindeki (orientation:landscape) 96vh kuralı kazanıyordu.
+   Bu blok yatayı genişlikten bağımsız kapsar ve daha yüksek özgüllükle geçer. */
+@media (orientation: landscape) and (max-width: 1366px) {
+    #rootOfDayOverlay {
+        padding: 0 !important;
+        height: 100dvh !important;
+        align-items: stretch !important;
+    }
+    body #rootOfDayOverlay > div {
+        width: 100vw !important;
+        max-width: none !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 14px 18px 20px 18px !important;
         box-sizing: border-box !important;
     }
 }
