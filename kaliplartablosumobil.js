@@ -9811,6 +9811,25 @@ function showRootOfDay() {
                 font-size: 26px !important;
             }
         }
+        /* MOBIL YATAY: gunun koku TAM EKRAN (harici CSS'e bagimli olmadan, yuksek ozgulluk) */
+        @media (orientation: landscape) {
+            body #rootOfDayOverlay {
+                height: 100vh !important;
+                height: 100dvh !important;
+                align-items: stretch !important;
+                padding: 0 !important;
+            }
+            body #rootOfDayOverlay > div {
+                width: 100vw !important;
+                max-width: none !important;
+                height: 100vh !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
+                min-height: 100dvh !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+        }
     `;
     document.head.appendChild(style);
     
