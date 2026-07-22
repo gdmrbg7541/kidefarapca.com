@@ -9150,7 +9150,7 @@ function openFastDictionaryMode() {
         
         const html = `
             <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 18px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
-                <div style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px; ${isVerbListRow ? 'cursor:pointer;' : ''}" ${isVerbListRow ? `onclick="event.stopPropagation(); openFdmMazi(${refId});" title="Mazi olumlu/olumsuz cekimi"` : ''}>${refId}</div>
+                <div class="${isVerbListRow ? 'fdm-num-btn' : ''}" style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px; ${isVerbListRow ? 'cursor:pointer;' : ''}" ${isVerbListRow ? `onclick="event.stopPropagation(); openFdmMazi(${refId});" title="Cekim tablosuna dokun"` : ''}>${refId}</div>
                 <div style="flex: 1; text-align: right; padding-right: 20px; font-family: 'Arakom', sans-serif; font-size: 3.4rem; color: #000;">${arText} ${emoji}</div>
                 <div style="flex: 1; text-align: left; color: #444; font-size: 1.8rem;" dir="ltr">${trText}</div>
             </div>

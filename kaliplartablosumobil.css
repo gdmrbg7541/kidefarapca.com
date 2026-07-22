@@ -5355,8 +5355,8 @@ body {
     left: 50%;
     bottom: max(26px, env(safe-area-inset-bottom, 26px));
     transform: translateX(-50%);
-    width: 58px;
-    height: 58px;
+    width: 66px;
+    height: 66px;
     border-radius: 50%;
     background: #ffffff;
     color: #FF9800;
@@ -5676,3 +5676,28 @@ body {
         width: auto !important;
     }
 }
+
+
+/* Arama SVG'si biraz daha buyuk */
+.mobile-search-btn svg { width: 32px !important; height: 32px !important; }
+
+/* Hizli liste: yesil kalip numarasi TIKLANABILIR vurgusu */
+.fdm-num-btn {
+    position: relative;
+    box-shadow: 0 3px 9px rgba(0,0,0,0.28) !important;
+    border: 2px solid rgba(255,255,255,0.75) !important;
+    box-sizing: border-box;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+.fdm-num-btn::after {
+    content: '';
+    position: absolute;
+    right: 4px; bottom: 3px;
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(255,255,255,0.95);
+}
+.fdm-num-btn:hover { filter: brightness(1.06); box-shadow: 0 5px 14px rgba(0,0,0,0.32) !important; }
+.fdm-num-btn:active { transform: scale(0.9); box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important; }
