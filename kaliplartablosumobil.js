@@ -9311,6 +9311,9 @@ function toggleTFilter(el, type, value) {
         el.classList.add('active');
         window.telaffuzFilters[type] = [value];
     }
+    // Cipe basinca OTOMATIK filtrele; hizli tiklamalari debounce ile birlestir (cihaz kasmasin)
+    if (window._telFilterTimer) clearTimeout(window._telFilterTimer);
+    window._telFilterTimer = setTimeout(function(){ applyTelaffuzFilter(); }, 70);
 }
 
 function getAksamIseba(root) {
@@ -9400,22 +9403,23 @@ function applyTelaffuzFilter() {
         if (results.length === 0) {
             resContainer.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding: 20px; font-size: 1.2rem;">Kriterlere uygun fiil bulunamadı.</div>';
         } else {
-            resContainer.innerHTML = '';
+            // O(n): tek string olustur, innerHTML'i BIR KEZ ata (dongude += = O(n^2) donmaya yol aciyordu)
+            let _html = '';
             results.forEach(r => {
                 const escapedRoot = r.root.replace(/"/g, "&quot;").replace(/'/g, "\\'");
-                resContainer.innerHTML += `
+                _html += `
                     <div class="t-result-item" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})">
-                        <div style="display:flex; flex-direction:column;">
-                            <span class="t-result-ar">${r.verb}</span>
-                            <div style="margin-top: 5px;">
-                                <span class="t-result-tag">${r.aksam}</span>
-                                <span class="t-result-tag">${r.letters} Harf</span>
-                            </div>
+                        <span class="t-result-ar">${r.verb}</span>
+                        <div class="t-result-tags">
+                            <span class="t-result-tag">${r.aksam}</span>
+                            <span class="t-result-tag">${r.letters} Harf</span>
                         </div>
-                        <i class="fas fa-play-circle" style="font-size: 2rem; color: #2ecc71;"></i>
                     </div>
                 `;
             });
+            resContainer.innerHTML = _html;
+            // Yeni sonuclarda scroll'u basa al (ikinci filtrede takili kalmasin)
+            if (resContainer.parentElement) resContainer.parentElement.scrollTop = resContainer.offsetTop - 20;
         }
     }, 10);
 }
@@ -9697,3 +9701,80 @@ window.closeRootOfDay = function() {
     }
 }
 
+
+
+function showAksamSebaGenelInfo(e) {
+    if (e) e.stopPropagation();
+    var titleEl = document.getElementById('aksam-info-title');
+    if (titleEl) titleEl.innerText = "Aksam-ı Seb'a Nedir?";
+    var ov = document.getElementById('aksam-info-overlay');
+    if (ov) ov.style.display = 'flex';
+    var txt = document.getElementById('aksam-info-text');
+    if (!txt) return;
+    txt.innerHTML = `
+<div style="text-align: left; direction: ltr; padding: 18px; font-family: 'Inter', sans-serif;">
+    <p style="margin: 0 0 20px 0; font-size: 0.95rem; color: #1e293b; line-height: 1.65;" dir="ltr">
+        <strong style="color: #6c5ce7; font-size: 1.1rem;">Aksam-ı Seb'a (Yedi Kısım)</strong>, Arapça fiillerin ve kelimelerin içerdikleri temel harflerin (kök harflerin) ses ve yapı özelliklerine göre yedi farklı gruba ayrılmasıdır. Bir kelimenin kökündeki harflerin sahih (sağlam) veya illetli (zayıf) oluşu, o kelimenin nasıl çekimleneceğini doğrudan belirler.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 13px 15px;" dir="ltr">
+            <div style="font-weight: 700; color: #15803d; font-size: 1rem; margin-bottom: 8px;">Sahih (Sağlam) Fiiller — 3 Kısım</div>
+            <div style="font-size: 0.88rem; color: #334155; line-height: 1.85;">Kök harflerinde illet harfi (<span dir="rtl" style="font-family:'Arakom',sans-serif;">و ي ا</span>) <b>bulunmaz</b>.
+                <br><b>Salim:</b> İllet, hemze ve şedde yok — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">نَصَرَ</span>
+                <br><b>Mehmuz:</b> Kök harflerinden biri hemze — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">سَأَلَ</span>
+                <br><b>Muzaaf:</b> Son iki harfi aynı (şeddeli) — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">مَدَّ</span>
+            </div>
+        </div>
+        <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 13px 15px;" dir="ltr">
+            <div style="font-weight: 700; color: #b91c1c; font-size: 1rem; margin-bottom: 8px;">Mutel (İlletli) Fiiller — 4 Kısım</div>
+            <div style="font-size: 0.88rem; color: #334155; line-height: 1.85;">Kökünde en az bir illet harfi (<span dir="rtl" style="font-family:'Arakom',sans-serif;">و ي ا</span>) <b>bulunur</b>.
+                <br><b>Misal:</b> İlk harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">وَجَدَ</span>
+                <br><b>Ecvef:</b> Orta harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">قَالَ</span>
+                <br><b>Nakıs:</b> Son harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">رَمَى</span>
+                <br><b>Lefif:</b> İki harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">طَوَى</span>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: #f0f9ff; border-left: 5px solid #3b82f6; padding: 14px 16px; margin-bottom: 18px; border-radius: 0 12px 12px 0; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);" dir="ltr">
+        <h4 style="margin: 0 0 10px 0; color: #1d4ed8; font-size: 1.05rem; font-weight: 600; border-bottom: 2px solid #bfdbfe; padding-bottom: 8px;" dir="ltr">Telaffuz İçin Önemi</h4>
+        <p style="margin: 0; font-size: 0.92rem; color: #334155; line-height: 1.65;" dir="ltr">
+            Arapçada illet harfleri (Vav, Ya, Elif) sesli harf işlevi de görebilir. Bu harflerin düşmesi, dönüşmesi veya başka bir harfle kaynaşması kelimenin vurgusunu ve doğal telaffuzunu tamamen değiştirir. Aksam-ı Seb'a'yı bilmek, illetli harflerin nerede uzatılacağını, nerede okunmayacağını öngörmeyi ve akıcı, doğru bir telaffuz (artikülasyon) yakalamayı sağlar.
+            <br><br>
+            <span style="color: #64748b; font-size: 0.9rem;">Örnek:</span> İkinci harfi illetli olan Ecvef bir kelimede, harfin dönüşümü sesi belirler:
+            <br>
+            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 1.6rem; color: #3b82f6; margin: 0 6px; display: inline-block;">قَوَلَ</span>
+            <span style="font-size: 0.9rem;">(Kavele) ➔</span>
+            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 1.6rem; color: #1d4ed8; margin: 0 6px; display: inline-block;">قَالَ</span>
+            <span style="font-size: 0.9rem;">(Kâle - Elif'e dönüşüp uzatılır)</span>
+        </p>
+    </div>
+
+    <div style="background: #fff7ed; border-left: 5px solid #f97316; padding: 14px 16px; margin-bottom: 18px; border-radius: 0 12px 12px 0; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.08);" dir="ltr">
+        <h4 style="margin: 0 0 10px 0; color: #c2410c; font-size: 1.05rem; font-weight: 600; border-bottom: 2px solid #fed7aa; padding-bottom: 8px;" dir="ltr">Dilbilgisi İçin Önemi</h4>
+        <p style="margin: 0; font-size: 0.92rem; color: #334155; line-height: 1.65;" dir="ltr">
+            Cümle kurulumlarında, özellikle mazi (geçmiş), muzari (şimdiki) ve emir kiplerinde fiil çekimleri çekirdek yapıya göre şekillenir.
+            <br><br>
+            Örneğin; bir fiil <strong style="color: #c2410c;">Misal</strong> (illet harfi başta) ise emir kipinde ilk harfini kaybedebilir:
+            <br>
+            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 1.6rem; color: #f97316; margin: 0 6px; display: inline-block;">وَجَدَ</span>
+            <span style="font-size: 0.9rem;">(Vecede) ➔ Emir:</span>
+            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 1.6rem; color: #c2410c; margin: 0 6px; display: inline-block;">جِدْ</span>
+            <span style="font-size: 0.9rem;">(Cid)</span>
+            <br><br>
+            Veya <strong style="color: #c2410c;">Ecvef</strong> (illet harfi ortada) ise çoğul dişil çekimlerinde ortadaki harf tamamen düşebilir:
+            <br>
+            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 1.6rem; color: #f97316; margin: 0 6px; display: inline-block;">قَالَ</span>
+            <span style="font-size: 0.9rem;">(Kâle) ➔ Dişil Çoğul:</span>
+            <span dir="rtl" style="font-family: 'Arakom', sans-serif !important; font-size: 1.6rem; color: #c2410c; margin: 0 6px; display: inline-block;">قُلْنَ</span>
+            <span style="font-size: 0.9rem;">(Kulne)</span>
+        </p>
+    </div>
+
+    <p style="margin: 0; font-size: 0.88rem; color: #64748b; font-style: italic; line-height: 1.6; text-align: center; border-top: 1px dashed #cbd5e1; padding-top: 18px;" dir="ltr">
+        Kısacası bu yedi kategori; kelimenin genetik şifresini çözer, doğru telaffuzu garanti eder ve dilbilgisi istisnalarını kurallaştırır.
+    </p>
+</div>
+`;
+}

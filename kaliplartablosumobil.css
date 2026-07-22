@@ -2699,9 +2699,9 @@ input:checked +
 }
 .t-filter-chip.active {
     background: linear-gradient(45deg, #FFC107, #FF9800);
-    color: #000000;
+    color: #ffffff;
     border-color: #FF9800;
-    font-weight: 700;
+    font-weight: 400 !important;   /* aktifte yazi bold olmasin */
 }
 .t-result-item {
     display: flex;
@@ -3639,9 +3639,9 @@ body.has-fullscreen-accordion .thematic-words-content {
 }
 .t-filter-chip.active {
     background: linear-gradient(45deg, #FFC107, #FF9800);
-    color: #000000;
+    color: #ffffff;
     border-color: #FF9800;
-    font-weight: 700;
+    font-weight: 400 !important;   /* aktifte yazi bold olmasin */
 }
 .t-result-item {
     display: flex;
@@ -3757,7 +3757,7 @@ body {
 }
 .mobile-roots-close {
     position: absolute;
-    right: 12px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     background: rgba(231, 76, 60, 0.1);
@@ -3905,18 +3905,29 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 46px;
+    height: 46px;
     background: transparent;
-    border-radius: 10px;
-    color: #a1a1a6;           /* soluk gri - vurgusuz */
+    border-radius: 50%;
+    color: #ffffff;
     text-decoration: none;
     box-shadow: none;
-    opacity: 0.85;
+    opacity: 1;
+    transition: background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+.mobile-back-btn:hover {
+    background: rgba(255,255,255,0.22) !important;
+}
+.mobile-back-btn:active {
+    background: rgba(255,255,255,0.32) !important;
 }
 .mobile-back-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 27px;
+    height: 27px;
+    stroke: #ffffff;
+    stroke-width: 3;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.22));
 }
 
 .mobile-grid-container {
@@ -4535,17 +4546,18 @@ body {
 
 /* --- USER REQUESTED SIZING UPDATES --- */
 
-/* Geri Tuşu: kucuk ve sade (vurgusuz) */
+/* Geri Tuşu: beyaz ok + sik hover */
 .mobile-back-btn {
-    width: 32px !important;
-    height: 32px !important;
-    background: transparent !important;
+    width: 46px !important;
+    height: 46px !important;
     box-shadow: none !important;
 }
 .mobile-back-btn svg {
-    width: 18px !important;
-    height: 18px !important;
-    stroke: #a1a1a6 !important;   /* mavi yerine soluk gri - vurgusuz */
+    width: 27px !important;
+    height: 27px !important;
+    stroke: #ffffff !important;   /* canli beyaz ok (turuncu gradyan uzerinde) */
+    stroke-width: 3 !important;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.22));
 }
 
 /* Grid İkonlari: biraz daha buyuk; renk tek degil, her karta pastel ton */
@@ -5127,20 +5139,31 @@ body {
     padding: 16px 4px 30px 4px; box-sizing: border-box; align-content: start;
 }
 .gram-card {
-    background: #ffffff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    border: 1px solid rgba(0,0,0,0.03);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-    padding: 18px 8px; cursor: pointer; text-align: center; min-height: 118px; box-sizing: border-box;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: #ffffff; border-radius: 18px; box-shadow: 0 6px 20px rgba(17,24,39,0.07);
+    border: 1px solid rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+    padding: 20px 10px 15px; cursor: pointer; text-align: center; min-height: 132px; box-sizing: border-box;
+    position: relative; overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-.gram-card:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-.gram-ico { font-size: 2.3rem; line-height: 1; }
-.gram-lbl { font-size: 0.98rem; font-weight: 600; color: #2c3e50; line-height: 1.2; font-family: system-ui, -apple-system, sans-serif; }
-.gram-ar { font-size: 1.05rem; font-family: 'Arakom', sans-serif; line-height: 1; }
-.gram-card.gram-verb { border-top: 3px solid #FF3B30; }
-.gram-card.gram-verb .gram-ar { color: #FF3B30; }
-.gram-card.gram-noun { border-top: 3px solid #2980b9; }
-.gram-card.gram-noun .gram-ar { color: #2980b9; }
+.gram-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+}
+.gram-card.gram-verb::before { background: linear-gradient(90deg, #FFB300, #FF6B00); }
+.gram-card.gram-noun::before { background: linear-gradient(90deg, #36A2EB, #2563eb); }
+.gram-card:active { transform: scale(0.96); box-shadow: 0 3px 10px rgba(0,0,0,0.09); }
+.gram-ico {
+    font-size: 1.85rem; line-height: 1;
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+.gram-card.gram-verb .gram-ico { background: rgba(255,152,0,0.13); }
+.gram-card.gram-noun .gram-ico { background: rgba(41,128,185,0.13); }
+.gram-lbl { font-size: 0.92rem; font-weight: 700; color: #1f2937; line-height: 1.25; font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.2px; }
+.gram-ar { font-size: 1.2rem; font-family: 'Arakom', sans-serif; line-height: 1; font-weight: 400; }
+.gram-card.gram-verb .gram-ar { color: #FF6B00; }
+.gram-card.gram-noun .gram-ar { color: #2563eb; }
 /* header düzeni: başlık solda, çarpı sağda */
 .mobile-grammar-header { justify-content: space-between !important; }
 
@@ -5254,7 +5277,7 @@ body {
 
 /* Dilbilgisi kart numara rozeti */
 .gram-card { position: relative !important; }
-.gram-num { position: absolute; top: 8px; left: 10px; font-size: 0.85rem; font-weight: 700; color: #94a3b8; font-family: system-ui, -apple-system, sans-serif; line-height: 1; }
+.gram-num { position: absolute; top: 10px; left: 12px; font-size: 0.72rem; font-weight: 800; color: #cbd5e1; font-family: system-ui, -apple-system, sans-serif; line-height: 1; z-index: 2; }
 
 
 /* === GÜNÜN KÖKÜ (rootOfDayOverlay): MOBİLDE TAM EKRAN === */
@@ -5327,4 +5350,31 @@ body {
     #atlas-desc-bottom .arabic[style*="3.4rem"] {
         font-size: 2.7rem !important;
     }
+}
+
+
+/* === TELAFFUZ: 2 sutun sonuc kartlari (RTL) + numara cipleri === */
+#telaffuz-results { direction: rtl; }
+#telaffuz-results .t-result-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 12px 8px !important;
+    text-align: center;
+    min-width: 0;
+}
+#telaffuz-results .t-result-ar { font-size: 1.9rem !important; margin: 0 !important; }
+#telaffuz-results .t-result-tags { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+#telaffuz-results .t-result-tag { font-size: 0.62rem !important; margin: 0 !important; padding: 2px 6px !important; }
+
+/* Harf sayisi: tek sutun, sadece rakam - numara cip gorunumu */
+#telaffuz-letter-filters .t-filter-chip {
+    font-size: 0.8rem !important;
+    padding: 4px 0 !important;
+    min-width: 36px;
+    text-align: center;
+    justify-content: center;
+    font-weight: 700;
 }
