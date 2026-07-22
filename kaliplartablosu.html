@@ -2,6 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <!-- _kidef_mobil_redirect: mobil cihazlarda mobil sürüme yönlendir -->
+    <script>
+      (function(){
+        var ua = navigator.userAgent || '';
+        var isMobile = /Mobi|Android|iPhone|iPod|iPad/i.test(ua) || window.innerWidth <= 768;
+        if (isMobile && location.search.indexOf('nomobil') === -1) {
+          location.replace('kaliplartablosumobil.html');
+        }
+      })();
+    </script>
     <title>Kalıplar Tablosu</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
@@ -21,7 +31,7 @@
 <!-- GLOBAL LOADING SCREEN -->
 <div id="global-loading-screen" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background:white; z-index:9999999; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#333; transition: opacity 0.3s ease;">
     <div style="width: 50px; height: 50px; border: 4px solid rgba(41, 128, 185, 0.2); border-left-color: #2980b9; border-radius: 50%; animation: spin-loader 1s linear infinite;"></div>
-    <h2 style="margin-top:20px; font-family:'Arakom', 'Arial', sans-serif; font-size: 20px; font-weight: normal; color: #7f8c8d;">Yükleniyor...</h2>
+    <h2 style="margin-top:20px; font-family:'Arakom', 'Arial', sans-serif; font-size: 20px; font-weight: normal; color: #7f8c8d; direction: ltr; unicode-bidi: isolate;">Yükleniyor...</h2>
     <style>@keyframes spin-loader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
 </div>
 
@@ -155,7 +165,7 @@
 
     
     <div class="back-btn-area">
-        <a href="javascript:void(0)" onclick="window.close(); window.location.href='https://kidefarapca.com';" class="back-link" title="kidefarapca.com'a Dön">
+        <a href="index.html" onclick="return kidefGeriDon(event)" class="back-link" title="kidefarapca.com'a Dön" data-kidef-done="1">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
@@ -466,8 +476,7 @@
 
     </div>
 </div>
-    <script src="veri_sozluk.js?v=110"></script>
-    <script src="veri_kokler.js?v=113"></script>
+    <script src="veri_kokler.js?v=110"></script>
     </div>
     
     <!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
@@ -587,9 +596,9 @@
         </div>
     </div>
 
-<script src="veri_sozluk.js?v=113"></script>
-<script src="veri_gramer.js?v=113"></script>
-<script src="kaliplartablosu.js?v=113"></script>
+<script src="veri_sozluk.js?v=110"></script>
+<script src="veri_gramer.js?v=110"></script>
+<script src="kaliplartablosu.js?v=110"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
@@ -806,5 +815,6 @@
     });
 </script>
 
+    <script src="geri.js"></script>
 </body>
 </html>
