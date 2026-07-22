@@ -2515,6 +2515,7 @@ function closeKeyboard() {
     // Yazılanları silmiyoruz, sadece kapatıyoruz.
     const overlay = document.getElementById('keyboard-overlay');
     if (overlay) { overlay.style.display = 'none'; overlay.classList.remove('native-search-mode'); }
+    if (typeof window._msUnlockScroll === 'function') window._msUnlockScroll();
     if (typeof toggleKB === 'function') toggleKB(false);
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
     if (typeof toggleRootHint === 'function') toggleRootHint(true);
@@ -5374,8 +5375,8 @@ function updateMainKeyboardPredictions() {
             } else {
                 const emoji = getRootEmoji(r);
                 predHtml += `
-                    <div class="prediction-chip" onclick="selectRootFromMainKeyboard('${r}')" style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); box-sizing: border-box;">
-                        <span class="prediction-chip-text">${r}</span> ${emoji}
+                    <div class="prediction-chip" onclick="selectRootFromMainKeyboard('${r}')" style="flex: 0 0 calc(50% - 5px); max-width: calc(50% - 5px); box-sizing: border-box; display:flex; align-items:center; justify-content:center; gap:8px; direction:ltr;">
+                        <span class="prediction-chip-text" dir="rtl">${r}</span><span class="prediction-chip-emoji">${emoji}</span>
                     </div>`;
             }
         });
@@ -5677,6 +5678,12 @@ function updateMainKeyboardPredictions() {
 
 function selectRootFromMainKeyboard(root) {
     var prevRoot = (typeof currentRoot !== 'undefined') ? currentRoot : '';
+    // Arama modundan mi geliniyor? (hizli liste kapatilinca aramada kalinan yere donmek icin)
+    var _ovSearch = document.getElementById('keyboard-overlay');
+    var _fromSearch = !!(_ovSearch && _ovSearch.classList.contains('native-search-mode'));
+    var _niSearch = document.getElementById('mobile-native-search');
+    var _prevQuery = _niSearch ? _niSearch.value : '';
+
     currentRoot = root;
     updateTempDisplay();
     confirmRoot(); // Kökü onaylar, tabloları açar ve klavyeyi kapatır
@@ -5690,6 +5697,8 @@ function selectRootFromMainKeyboard(root) {
             // Liste zaten bu kok icin acik: oldugu gibi birak
         } else {
             if (fdmAcik && typeof closeFastDictionaryMode === 'function') closeFastDictionaryMode();
+            // Aramadan gelindiyse donus icin isaretle
+            if (_fromSearch) { window._fdmReturnToSearch = true; window._lastMobileSearchQuery = _prevQuery; }
             setTimeout(function(){ openFastDictionaryMode(); }, 80);
         }
     }
@@ -9118,7 +9127,22 @@ function openFastDictionaryMode() {
 function closeFastDictionaryMode() {
     const fdm = document.getElementById('fast-dictionary-overlay');
     if (fdm) fdm.style.display = 'none';
-    
+
+    // ARAMADAN gelindiyse: carpiya basinca aramada kalinan yere geri don
+    if (window._fdmReturnToSearch) {
+        window._fdmReturnToSearch = false;
+        var _ov = document.getElementById('keyboard-overlay');
+        if (_ov) { _ov.style.display = 'flex'; _ov.classList.add('native-search-mode'); }
+        var _ni = document.getElementById('mobile-native-search');
+        var _q = window._lastMobileSearchQuery || '';
+        if (_ni) _ni.value = _q;
+        try { currentRoot = _q; } catch (e) {}
+        if (typeof updateTempDisplay === 'function') updateTempDisplay();
+        if (typeof updateMainKeyboardPredictions === 'function') updateMainKeyboardPredictions();
+        if (typeof window._msLockScroll === 'function') window._msLockScroll();
+        return;
+    }
+
     // Kök listesinden gelindiyse çarpıya basınca kök listesine geri dön
     if (window._fdmReturnToRoots) {
         window._fdmReturnToRoots = false;
@@ -9871,4 +9895,27 @@ window.openMobileSearch = function() {
         try { ni.focus(); } catch (e) {}
         setTimeout(function(){ try { ni.focus(); } catch (e) {} }, 200);
     }
+    if (typeof window._msLockScroll === 'function') window._msLockScroll();
+};
+
+// Arama acikken sayfa kaymasin: body'yi sabitle (yazılınca yukari kaymayi onler)
+window._msLockScroll = function() {
+    if (window._msScrollLocked) return;
+    window._msSavedScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = (-window._msSavedScrollY) + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    window._msScrollLocked = true;
+};
+window._msUnlockScroll = function() {
+    if (!window._msScrollLocked) return;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, window._msSavedScrollY || 0);
+    window._msScrollLocked = false;
 };
