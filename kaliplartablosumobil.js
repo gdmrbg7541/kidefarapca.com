@@ -859,10 +859,8 @@ function renderVerbMenu() {
                 });
                 mobileHTML += `</div></div>`;
                 
-                // Scrubber'a sadece 10 belirteç harfi ekle
-                if (milestoneLetters.includes(letter)) {
-                    scrubberHTML += `<div class="scrubber-letter" data-letter="${letter}">${letter}</div>`;
-                }
+                // Scrubber'a kökü olan HER harfi ekle (tüm harfler görünür)
+                scrubberHTML += `<div class="scrubber-letter" data-letter="${letter}">${letter}</div>`;
             }
         });
         
@@ -8297,6 +8295,24 @@ window.openAtlasOverlay = function(stage) {
                     <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 4rem; color: #ea580c; display: block; margin-bottom: 5px;">دُخُول</span><br><span style="font-size: 1.8rem; color: #000000; font-weight: bold;">Girmek</span>
                 </div>
             </div>
+        </div>`;
+        descBottom = `<div style="text-align: left; font-size: 1.4rem; color: #000000; line-height: 1.7;">
+            <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 10px 0 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Mezîd (Artırılmış) Mastarlar & Fark</h4>
+                <p style="margin: 0;"><strong>Sülâsî Mücerred</strong> (3 harfli) mastarlar <strong>semâîdir</strong> (kalıpsızdır, sözlükten öğrenilir). <strong>Mezîd</strong> (harf eklenmiş) mastarlar ise <strong>kıyâsîdir</strong> — her babın değişmez bir mastar kalıbı vardır, kurala göre türetilir.</p>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin: 20px 0;">
+                <div style="background: #eff6ff; padding: 18px 30px; border-radius: 15px; border: 2px solid #bfdbfe; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 3.4rem; color: #2563eb; display: block; margin-bottom: 5px;">تَعْلِيم</span><span style="font-size: 1.5rem; color: #000000; font-weight: bold;">(Tef'îl) Öğretmek</span>
+                </div>
+                <div style="background: #fff7ed; padding: 18px 30px; border-radius: 15px; border: 2px solid #fed7aa; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                    <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 3.4rem; color: #ea580c; display: block; margin-bottom: 5px;">اِسْتِغْفار</span><span style="font-size: 1.5rem; color: #000000; font-weight: bold;">(İstif'âl) Bağışlanma Dilemek</span>
+                </div>
+            </div>
+            <div style="background: #eef2ff; border-left: 4px solid #6366f1; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #000000;">Bab İsimleri Aslında Mastardır!</h4>
+                <p style="margin: 0;">"İf'âl, Tef'îl, Mufâale" diye ezberlediğimiz bab isimleri, aslında o babların <strong>Mastar</strong> kalıplarıdır. Türkçedeki "İslâm, İmtihân, İstikbâl, Mücâdele, Tekbîr, Tevekkül" gibi kelimelerin hepsi Mezîd mastardır.</p>
+            </div>
             <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 0 10px 10px 0;">
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Mastar Çeşitleri:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
@@ -8532,33 +8548,43 @@ window.openAtlasOverlay = function(stage) {
     // Dynamically rebuild the verb list based on whether it is Mezid or Mücerred
     if (verbList) {
         verbList.innerHTML = '';
-        let isMezidStage = stage.includes('_mezid');
+        // Mobilde mezid/mucerred ayri sekme yok -> ORNEKLERE IKISINDEN DE ver, farki etiketle belirt
         let mucerredKeys = ["كتب", "دخل", "خرج", "جلس", "فتح", "لبس", "ذهب", "رجع", "درس", "nam", "شرب", "أكل", "غسل"];
         let mucerredIcons = ["✍️", "🚪", "🏃‍♂️", "🪑", "🔓", "👕", "🚶", "↩️", "📚", "🛏️", "🥛", "🍏", "🧼"];
         let mezidKeys = ["استيقظ", "توضأ", "صلى", "تناول", "ساعد", "نظف", "أراد", "سافر"];
         let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🧹", "🎯", "✈️"];
-        
-        let activeKeys = isMezidStage ? mezidKeys : mucerredKeys;
-        let activeIcons = isMezidStage ? mezidIcons : mucerredIcons;
-        
-        activeKeys.forEach((k, idx) => {
-            let icon = activeIcons[idx];
-            let voweled = (window.displayVerbsMap[k]) ? window.displayVerbsMap[k] : k;
-            
-            let btn = document.createElement('button');
-            btn.className = 'atlas-verb-btn';
-            if (idx === 0) btn.classList.add('active');
-            
-            btn.innerHTML = `<span>${icon}</span> <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 1.4rem;">${voweled}</span>`;
-            
-            btn.onclick = function() {
-                window.changeAtlasVerb(k, this);
-            };
-            
-            verbList.appendChild(btn);
-        });
-        
-        window.currentAtlasVerbKey = activeKeys[0];
+
+        // Kisa fark notu (farklara deginme)
+        let _infoNote = document.createElement('div');
+        _infoNote.style.cssText = "font-size: 0.72rem; color: #94a3b8; line-height: 1.4; margin: 0 4px 8px; text-align: right; font-family: system-ui, -apple-system, sans-serif;";
+        _infoNote.innerHTML = "Mücerred: 3 harfli sade kök. Mezîd: köke harf eklenmiş türev fiil. İkisinden de örnek var:";
+        verbList.appendChild(_infoNote);
+
+        function _atlasSection(label) {
+            let h = document.createElement('div');
+            h.style.cssText = "font-family: system-ui, -apple-system, sans-serif; font-size: 0.78rem; font-weight: 700; color: #64748b; letter-spacing: 0.02em; margin: 8px 4px 4px; text-align: right;";
+            h.textContent = label;
+            verbList.appendChild(h);
+        }
+        function _atlasVerbBtns(keys, icons, firstActive) {
+            keys.forEach((k, idx) => {
+                let icon = icons[idx];
+                let voweled = (window.displayVerbsMap[k]) ? window.displayVerbsMap[k] : k;
+                let btn = document.createElement('button');
+                btn.className = 'atlas-verb-btn';
+                if (firstActive && idx === 0) btn.classList.add('active');
+                btn.innerHTML = `<span>${icon}</span> <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 1.4rem;">${voweled}</span>`;
+                btn.onclick = function() { window.changeAtlasVerb(k, this); };
+                verbList.appendChild(btn);
+            });
+        }
+
+        _atlasSection("Sülâsî Mücerred");
+        _atlasVerbBtns(mucerredKeys, mucerredIcons, true);
+        _atlasSection("Mezîd (Artırılmış)");
+        _atlasVerbBtns(mezidKeys, mezidIcons, false);
+
+        window.currentAtlasVerbKey = mucerredKeys[0];
     }
 
     let flexContainer = document.querySelector('#screen-atlas > div:first-of-type');
@@ -9190,52 +9216,70 @@ function initAlphabetScrubber() {
     const scrubber = document.getElementById("mobile-scrubber");
     const contentArea = document.getElementById("mobile-roots-content-area");
     if (!scrubber || !contentArea) return;
-    
+
     let lastLetter = null;
-    
+
+    function goToLetter(letter, el) {
+        if (!letter) return;
+        document.querySelectorAll(".scrubber-letter").forEach(l => l.classList.remove("active"));
+        if (el) el.classList.add("active");
+        const targetGroup = document.getElementById("letter-group-" + letter);
+        if (!targetGroup) return;
+        // Sticky header yuksekligi kadar bosluk birak; offsetTop yerine gercek konum farki (saglam)
+        const headerEl = contentArea.querySelector(".mobile-roots-header");
+        const headerH = headerEl ? headerEl.offsetHeight : 64;
+        const cRect = contentArea.getBoundingClientRect();
+        const gRect = targetGroup.getBoundingClientRect();
+        let newTop = contentArea.scrollTop + (gRect.top - cRect.top) - headerH - 8;
+        if (newTop < 0) newTop = 0;
+        contentArea.scrollTo({ top: newTop, behavior: "smooth" });
+        if (navigator.vibrate) { try { navigator.vibrate(8); } catch (_) {} }
+    }
+
+    function letterElFromPoint(x, y) {
+        const el = document.elementFromPoint(x, y);
+        if (!el) return null;
+        if (el.classList && el.classList.contains("scrubber-letter")) return el;
+        return el.closest ? el.closest(".scrubber-letter") : null;
+    }
+
     function handleScrub(e) {
-        e.preventDefault(); // Varsayılan kaydırmayı engelle
-        
-        scrubber.classList.add("is-scrubbing"); // Dokunulduğunda genişlet
-        
-        let touch = e.touches ? e.touches[0] : e;
-        let el = document.elementFromPoint(touch.clientX, touch.clientY);
-        
-        if (el && el.classList.contains("scrubber-letter")) {
-            let letter = el.getAttribute("data-letter");
+        e.preventDefault();
+        scrubber.classList.add("is-scrubbing");
+        const touch = e.touches ? e.touches[0] : e;
+        const letterEl = letterElFromPoint(touch.clientX, touch.clientY);
+        if (letterEl) {
+            const letter = letterEl.getAttribute("data-letter");
             if (letter !== lastLetter) {
                 lastLetter = letter;
-                
-                document.querySelectorAll(".scrubber-letter").forEach(l => l.classList.remove("active"));
-                el.classList.add("active");
-                
-                const targetGroup = document.getElementById("letter-group-" + letter);
-                if (targetGroup) {
-                    const headerOffset = 80;
-                    const topPos = targetGroup.offsetTop - headerOffset;
-                    contentArea.scrollTo({
-                        top: topPos > 0 ? topPos : 0,
-                        behavior: "smooth"
-                    });
-                    
-                    if (navigator.vibrate) {
-                        navigator.vibrate(10);
-                    }
-                }
+                goToLetter(letter, letterEl);
             }
         }
     }
-    
+
     function resetScrub() {
-        scrubber.classList.remove("is-scrubbing"); // Dokunma bitince daralt
+        scrubber.classList.remove("is-scrubbing");
         lastLetter = null;
-        document.querySelectorAll(".scrubber-letter").forEach(l => l.classList.remove("active"));
+        setTimeout(function () {
+            document.querySelectorAll(".scrubber-letter").forEach(l => l.classList.remove("active"));
+        }, 400);
     }
-    
+
+    // Dokunmatik surukle
     scrubber.addEventListener("touchstart", handleScrub, {passive: false});
     scrubber.addEventListener("touchmove", handleScrub, {passive: false});
     scrubber.addEventListener("touchend", resetScrub);
     scrubber.addEventListener("touchcancel", resetScrub);
+    // Tek tik / fare (masaustu + guvenli dokunus)
+    scrubber.addEventListener("click", function (e) {
+        const letterEl = e.target && e.target.closest ? e.target.closest(".scrubber-letter") : null;
+        if (letterEl) {
+            goToLetter(letterEl.getAttribute("data-letter"), letterEl);
+            setTimeout(function () {
+                document.querySelectorAll(".scrubber-letter").forEach(l => l.classList.remove("active"));
+            }, 600);
+        }
+    });
 }
 
 // ==========================================

@@ -3816,43 +3816,49 @@ body {
 
 /* Sağ Kenar Alfabe Kaydırıcısı (Scrubber) */
 .mobile-alphabet-scrubber {
-    width: 35px;
+    width: 44px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(5px);
-    border-left: 1px solid rgba(0,0,0,0.03);
+    padding: 12px 0;
+    background: rgba(250, 250, 252, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-left: 1px solid rgba(0,0,0,0.05);
     z-index: 20;
-    touch-action: none; /* Prevents native scrolling on the scrubber */
+    flex-shrink: 0;
+    touch-action: none; /* Kendi native scroll'unu engelle */
     transition: width 0.2s ease, background 0.2s ease;
 }
 .mobile-alphabet-scrubber.is-scrubbing {
-    width: 60px;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+    width: 62px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: -6px 0 20px rgba(0,0,0,0.08);
 }
 .scrubber-letter {
-    font-size: 1.2rem;
-    color: #95a5a6;
+    font-size: 0.92rem;
+    color: #86868b;
     font-family: 'Arakom', sans-serif;
-    padding: 4px 0;
+    padding: 2px 0;
     flex: 1;
+    min-height: 0;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: none;
-    transition: color 0.2s, transform 0.2s, font-size 0.2s;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    /* pointer-events: none KALDIRILDI -> tik/elementFromPoint calisir (asil navigasyon hatasi buydu) */
+    transition: color 0.15s, transform 0.15s, font-size 0.15s;
 }
 .mobile-alphabet-scrubber.is-scrubbing .scrubber-letter {
-    font-size: 1.8rem;
-    color: #34495e;
+    font-size: 1.15rem;
+    color: #48484a;
 }
 .scrubber-letter.active {
     color: var(--primary-color);
-    transform: scale(1.5) translateX(-5px);
+    transform: scale(1.45) translateX(-4px);
     font-weight: bold;
 }
 
@@ -3870,6 +3876,8 @@ body {
 .mobile-home-screen {
     display: flex;
     flex-direction: column;
+    justify-content: center;   /* grid'i dikeyde ortala */
+    align-items: center;       /* grid'i yatayda ortala (genislik sabit kalir) */
     height: 100vh;
     height: 100dvh;
     padding: 20px;
@@ -3887,13 +3895,14 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    background: var(--card-bg);
+    width: 32px;
+    height: 32px;
+    background: transparent;
     border-radius: 10px;
-    color: var(--text-color);
+    color: #a1a1a6;           /* soluk gri - vurgusuz */
     text-decoration: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: none;
+    opacity: 0.85;
 }
 .mobile-back-btn svg {
     width: 20px;
@@ -3903,43 +3912,52 @@ body {
 .mobile-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 20px;
-    flex: 1;
-    margin-bottom: 20px;
+    gap: 14px;
+    width: 100%;
+    max-width: 440px;
 }
 
 .mobile-grid-item {
+    position: relative;
     background: var(--card-bg);
-    border-radius: 24px;
-    box-shadow: var(--card-shadow);
+    border-radius: 22px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-    padding: 20px 10px;
+    gap: 11px;
+    min-width: 0;            /* 1fr track'in dogru hesaplanmasi icin (aspect-ratio geri besleme dongusunu kirar) */
+    height: 150px;
+    padding: 16px 10px;
     cursor: pointer;
-    transition: transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .mobile-grid-item:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    border-color: rgba(0,0,0,0.09);
 }
 
+/* Sade minimal: kucuk, notr ikon (site paletiyle uyumlu) */
 .mobile-grid-item i, .mobile-grid-item svg {
-    font-size: 4.5rem;
-    width: 4.5rem;
-    height: 4.5rem;
-    color: var(--primary-color);
+    font-size: 1.95rem;
+    width: auto;
+    height: auto;
+    color: #1d1d1f;
+    opacity: 0.8;
 }
 
 .mobile-grid-item span {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.02rem;
+    font-weight: 600;
     font-family: system-ui, -apple-system, sans-serif;
     color: var(--text-color);
     text-align: center;
+    letter-spacing: -0.01em;
 }
 
 /* --- MOBILE GRAMMAR MENU (Kitap Overlay) --- */
@@ -4045,6 +4063,7 @@ body {
 @media screen and (orientation: landscape) {
     .mobile-home-screen {
         justify-content: center;
+        align-items: center;
         padding-left: 30px; /* Sol tarafa ekstra boşluk */
         padding-right: 20px; /* Sağ tarafı normale döndürdük */
     }
@@ -4056,13 +4075,19 @@ body {
     
     .mobile-grid-container {
         grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 1fr;
-        height: 60%;
+        max-width: 820px;
         width: 100%;
-        margin: 0;
-        flex: none; /* Prevents flex from overriding the height */
+        gap: 12px;
         box-sizing: border-box;
     }
+    .mobile-grid-item {
+        height: 118px;
+        padding: 12px 8px;
+        gap: 8px;
+        border-radius: 20px;
+    }
+    .mobile-grid-item i, .mobile-grid-item svg { font-size: 1.7rem; }
+    .mobile-grid-item span { font-size: 0.92rem; }
 }
 
 /* --- FULL SCREEN MODALS ON MOBILE --- */
@@ -4124,8 +4149,10 @@ body {
     }
     
     .scrubber-letter {
-        padding: 0 5px;
-        font-size: 1.2rem;
+        padding: 0 2px;
+        font-size: 0.82rem;
+        flex: 1 1 auto;
+        min-width: 0;
     }
     
     .mobile-alphabet-scrubber.is-scrubbing .scrubber-letter {
@@ -4491,25 +4518,34 @@ body {
 
 /* --- USER REQUESTED SIZING UPDATES --- */
 
-/* Geri Tuşu Büyütme */
+/* Geri Tuşu: kucuk ve sade (vurgusuz) */
 .mobile-back-btn {
-    width: 56px !important;
-    height: 56px !important;
-}
-.mobile-back-btn svg {
     width: 32px !important;
     height: 32px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+.mobile-back-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke: #a1a1a6 !important;   /* mavi yerine soluk gri - vurgusuz */
 }
 
-/* Grid İkonları ve Başlıklar */
+/* Grid İkonlari: biraz daha buyuk; renk tek degil, her karta pastel ton */
 .mobile-grid-item i, .mobile-grid-item svg {
-    font-size: 6.5rem !important;
-    width: 6.5rem !important;
-    height: 6.5rem !important;
+    font-size: 2.4rem !important;
+    width: auto !important;
+    height: auto !important;
+    opacity: 0.9 !important;
 }
 .mobile-grid-item span {
-    font-size: 2.2rem !important;
+    font-size: 1.02rem !important;
 }
+/* Her karta pastel bir ton (sade, site paletiyle uyumlu) */
+.mobile-grid-item:nth-child(1) i { color: #e8705f; }  /* Kokler - mercan */
+.mobile-grid-item:nth-child(2) i { color: #5b9bd5; }  /* Kelimeler - mavi */
+.mobile-grid-item:nth-child(3) i { color: #57b894; }  /* Telaffuz - yesil */
+.mobile-grid-item:nth-child(4) i { color: #a97bd1; }  /* Dilbilgisi - mor */
 
 /* Kök Listesi Boyutları (3 Kat Daha Büyük) */
 @media screen and (max-width: 1024px) {
