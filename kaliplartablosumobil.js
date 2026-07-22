@@ -7089,9 +7089,9 @@ window.attachMarathonSwipe = window.attachMarathonSwipe || function(el) {
         const dx = e.clientX - sx, dy = e.clientY - sy;
         if (Math.abs(dx) > THRESH && Math.abs(dx) > Math.abs(dy) * 1.3) {
             swiped = true;
-            // Oklarla ayni yon: sola kaydir = ileri (❮ / dir=1), saga kaydir = geri (❯ / dir=-1)
-            if (dx < 0) { if (window.mCurrentStage < 2) window.changeMarathonStage(1); }
-            else { if (window.mCurrentStage > 0) window.changeMarathonStage(-1); }
+            // Yon ters cevrildi (kullanici istegi): sola kaydir = geri (dir=-1), saga kaydir = ileri (dir=1)
+            if (dx < 0) { if (window.mCurrentStage > 0) window.changeMarathonStage(-1); }
+            else { if (window.mCurrentStage < 2) window.changeMarathonStage(1); }
         }
     });
     el.addEventListener('pointerup', function() { down = false; });
