@@ -2115,73 +2115,13 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
 
     function generateCellContent(w, tip, numBab, tableType, isColorActive, kok, wordIndex) {
-        if (!w) return "";
-        let clean = (typeof w === 'object' ? w.ar : w).replace(/[\u200C\u200D\uFEFF]/g, ''); 
-        let prefix = "";
-        let coreWord = clean;
-
-        if (tableType === 'ma') prefix = "مَا";
-        else if (tableType === 'la') prefix = "لَا";
-        else if (tableType === 'lam') {
-            prefix = "لَمْ";
-            const duals = [1, 4, 7, 10];
-            const pluralMasc = [2, 8];
-            const singFem = [9];
-            const pluralFem = [5, 11];
-
-            if (duals.includes(wordIndex)) coreWord = clean.replace(/نِ?$/, ''); 
-            else if (pluralMasc.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, 'ا'); 
-            else if (singFem.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, ''); 
-            else if (pluralFem.includes(wordIndex)) coreWord = clean; 
-            else {
-                if (/[\u0651]/.test(clean.slice(-2))) {
-                    coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E'); // Kusursuz لَمْ يَضُرَّ
-                }
-                else if (/ُ$/.test(clean)) {
-                    coreWord = clean.replace(/ُ$/, 'ْ');
-                    coreWord = coreWord.replace(/ُ?و([\u0621-\u064A])ْ$/, 'ُ$1ْ'); 
-                    coreWord = coreWord.replace(/ِ?ي([\u0621-\u064A])ْ$/, 'ِ$1ْ'); 
-                    coreWord = coreWord.replace(/َ?ا([\u0621-\u064A])ْ$/, 'َ$1ْ'); 
-                }
-                else if (/ِي$/.test(clean)) coreWord = clean.replace(/ِي$/, 'ِ');
-                else if (/ُو$/.test(clean)) coreWord = clean.replace(/ُو$/, 'ُ');
-                else if (/َى$/.test(clean)) coreWord = clean.replace(/َى$/, 'َ');
-                else if (/ا$/.test(clean)) coreWord = clean.replace(/ا$/, 'َ');
-            }
-        }
-        else if (tableType === 'nehiy') {
-            prefix = "لَا";
-            
-            // 1. Görünmez karakterleri, boşlukları ve HTML kalıntılarını temizler
-            let cleanWord = clean.replace(/^[\s\u200B-\u200D\uFEFF]+/, ''); 
-            
-            // 2. İŞTE SİHİRLİ SATIR: Emir fiilin başındaki Elif/Hemze harfini ve üzerindeki TÜM harekeleri (Görünmez \u0654 Üst Hemzeler dahil) KESİNLİKLE yok eder!
-            let strippedWord = cleanWord.replace(/^[اأإآء][\u064B-\u065F]*/, '');
-            
-            // 3. İf'al grubu (7,8,9. Bab) için ötreli (تُ), diğerleri için üstünlü (تَ) harfi ekler
-            let taPrefix = (numBab === 7 || numBab === 8 || numBab === 9) ? "تُ" : "تَ";
-            coreWord = taPrefix + strippedWord;
-            
-            // 4. İSTİSNA: Emir kipinde düşen hemzeyi, Nehiy tablosu oluşturulurken geri getiriyoruz
-            if (kok === "أخذ" && coreWord.startsWith("تَخُذ")) {
-                coreWord = coreWord.replace("تَخُذ", "تَأْخُذ");
-            } else if (kok === "أكل" && coreWord.startsWith("تَكُل")) {
-                coreWord = coreWord.replace("تَكُل", "تَأْكُل");
-            } else if (kok === "أمر" && coreWord.startsWith("تَمُر")) {
-                coreWord = coreWord.replace("تَمُر", "تَأْمُر");
-            }
-        }
-
-        let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
-        
-        if (prefix) return `<span style="color: #000000; font-weight: normal; margin-left: 15px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
-        return `<span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+        return window.buildConjCell(w, tip, numBab, tableType, isColorActive, kok, wordIndex);
     }
 
     let tablesToRender = [];
     if (isVerb && typeof kelimeListesi[0] !== 'object') {
         if (tip === 'mazi') tablesToRender = ['olumlu', 'ma', 'lam', 'la'];
-        else if (tip === 'muzari') tablesToRender = ['olumlu', 'la'];
+        else if (tip === 'muzari') tablesToRender = ['olumlu', 'la', 'len'];
         else if (tip === 'emir') tablesToRender = ['olumlu', 'nehiy'];
     }
 
@@ -2242,6 +2182,11 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     headBg = "#d35400"; 
                     subBg = "#fdf2e9";
                     subColor = "#ba4a00";
+                } else if (tableType === 'len') {
+                    theadText = "Nefy-i İstikbal (لَنْ / Gelecek Olumsuz)";
+                    headBg = "#16a085";
+                    subBg = "#e8f8f5";
+                    subColor = "#0e6655";
                 } else if (tableType === 'nehiy') {
                     theadText = "Nehiy (Olumsuz Emir)";
                     headBg = "#e74c3c"; subBg = "#fcf1f1"; subColor = "#a94442";
@@ -2269,6 +2214,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                         bgColor = (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
                     } else if (tableType === 'lam') {
                         bgColor = (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
+                    } else if (tableType === 'len') {
+                        bgColor = (rowIndex % 2 === 0) ? '#e8f8f5' : '#d1f2eb';
                     }
                     
                     let currentList = (tableType === 'lam') ? muzariListesi : kelimeListesi;
@@ -4421,6 +4368,89 @@ function highlightEasterEggBoxes(root) {
 // ==============================================================================
 // EVRENSEL ÇEKİM ÜRETİCİ (DRY PRENSİBİ - TÜM SİSTEMLER BURAYI KULLANIR)
 // ==============================================================================
+window.buildConjCell = function(w, tip, numBab, tableType, isColorActive, kok, wordIndex) {
+        if (!w) return "";
+        let clean = (typeof w === 'object' ? w.ar : w).replace(/[\u200C\u200D\uFEFF]/g, ''); 
+        let prefix = "";
+        let coreWord = clean;
+
+        if (tableType === 'ma') prefix = "مَا";
+        else if (tableType === 'la') prefix = "لَا";
+        else if (tableType === 'lam') {
+            prefix = "لَمْ";
+            const duals = [1, 4, 7, 10];
+            const pluralMasc = [2, 8];
+            const singFem = [9];
+            const pluralFem = [5, 11];
+
+            if (duals.includes(wordIndex)) coreWord = clean.replace(/نِ?$/, ''); 
+            else if (pluralMasc.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, 'ا'); 
+            else if (singFem.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, ''); 
+            else if (pluralFem.includes(wordIndex)) coreWord = clean; 
+            else {
+                if (/[\u0651]/.test(clean.slice(-2))) {
+                    coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E'); // Kusursuz لَمْ يَضُرَّ
+                }
+                else if (/ُ$/.test(clean)) {
+                    coreWord = clean.replace(/ُ$/, 'ْ');
+                    coreWord = coreWord.replace(/ُ?و([\u0621-\u064A])ْ$/, 'ُ$1ْ'); 
+                    coreWord = coreWord.replace(/ِ?ي([\u0621-\u064A])ْ$/, 'ِ$1ْ'); 
+                    coreWord = coreWord.replace(/َ?ا([\u0621-\u064A])ْ$/, 'َ$1ْ'); 
+                }
+                else if (/ِي$/.test(clean)) coreWord = clean.replace(/ِي$/, 'ِ');
+                else if (/ُو$/.test(clean)) coreWord = clean.replace(/ُو$/, 'ُ');
+                else if (/َى$/.test(clean)) coreWord = clean.replace(/َى$/, 'َ');
+                else if (/ا$/.test(clean)) coreWord = clean.replace(/ا$/, 'َ');
+            }
+        }
+        else if (tableType === 'nehiy') {
+            prefix = "لَا";
+            
+            // 1. Görünmez karakterleri, boşlukları ve HTML kalıntılarını temizler
+            let cleanWord = clean.replace(/^[\s\u200B-\u200D\uFEFF]+/, ''); 
+            
+            // 2. İŞTE SİHİRLİ SATIR: Emir fiilin başındaki Elif/Hemze harfini ve üzerindeki TÜM harekeleri (Görünmez \u0654 Üst Hemzeler dahil) KESİNLİKLE yok eder!
+            let strippedWord = cleanWord.replace(/^[اأإآء][\u064B-\u065F]*/, '');
+            
+            // 3. İf'al grubu (7,8,9. Bab) için ötreli (تُ), diğerleri için üstünlü (تَ) harfi ekler
+            let taPrefix = (numBab === 7 || numBab === 8 || numBab === 9) ? "تُ" : "تَ";
+            coreWord = taPrefix + strippedWord;
+            
+            // 4. İSTİSNA: Emir kipinde düşen hemzeyi, Nehiy tablosu oluşturulurken geri getiriyoruz
+            if (kok === "أخذ" && coreWord.startsWith("تَخُذ")) {
+                coreWord = coreWord.replace("تَخُذ", "تَأْخُذ");
+            } else if (kok === "أكل" && coreWord.startsWith("تَكُل")) {
+                coreWord = coreWord.replace("تَكُل", "تَأْكُل");
+            } else if (kok === "أمر" && coreWord.startsWith("تَمُر")) {
+                coreWord = coreWord.replace("تَمُر", "تَأْمُر");
+            }
+        }
+        else if (tableType === 'len') {
+            prefix = "لَنْ";
+            const duals = [1, 4, 7, 10];
+            const pluralMasc = [2, 8];
+            const singFem = [9];
+            const pluralFem = [5, 11];
+            if (duals.includes(wordIndex)) coreWord = clean.replace(/نِ?$/, '');
+            else if (pluralMasc.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, 'ا');
+            else if (singFem.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, '');
+            else if (pluralFem.includes(wordIndex)) coreWord = clean;
+            else {
+                if (/[\u0651]/.test(clean.slice(-2))) coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E');
+                else if (/ُ$/.test(clean)) coreWord = clean.replace(/ُ$/, 'َ');
+                else if (/ِي$/.test(clean)) coreWord = clean + 'َ';
+                else if (/ُو$/.test(clean)) coreWord = clean + 'َ';
+                else if (/َى$/.test(clean)) coreWord = clean;
+                else coreWord = clean;
+            }
+        }
+
+        let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
+        
+        if (prefix) return `<span style="color: #000000; font-weight: normal; margin-left: 15px; display: inline-block; direction: rtl;">${prefix}</span><span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+        return `<span style="display: inline-block; direction: rtl;">${coloredCore}</span>`;
+    };
+
 const VerbGenerator = {
     getDynamicAynHareke: function(kokArr, bNo, vezin, rId) {
         // ==========================================
@@ -9120,7 +9150,7 @@ function openFastDictionaryMode() {
         
         const html = `
             <div class="fdm-list-row" data-ref="${refId}" style="display: flex; padding: 18px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); align-items: center; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
-                <div style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px;">${refId}</div>
+                <div style="width: 65px; text-align: center; font-weight: bold; font-size: 1.8rem; color: #ffffff; background: ${numBg}; border-radius: 6px; padding: 8px; ${isVerbListRow ? 'cursor:pointer;' : ''}" ${isVerbListRow ? `onclick="event.stopPropagation(); openFdmMazi(${refId});" title="Mazi olumlu/olumsuz cekimi"` : ''}>${refId}</div>
                 <div style="flex: 1; text-align: right; padding-right: 20px; font-family: 'Arakom', sans-serif; font-size: 3.4rem; color: #000;">${arText} ${emoji}</div>
                 <div style="flex: 1; text-align: left; color: #444; font-size: 1.8rem;" dir="ltr">${trText}</div>
             </div>
@@ -9957,6 +9987,132 @@ function showAksamSebaGenelInfo(e) {
 // (alttaki inputa odaklaninca acilir). Ustte iki panel: sagda Sozluk, solda Kokler.
 // Kelime detay kartindan (mazi/muzari/emir, tekil/cogul, mustakil) kok baglantisi -> hizli liste.
 // Carpiya basilinca kart geri gelsin diye isaretle.
+// === HIZLI LISTE: yesil kalip numarasina basinca ilgili fiilin MAZI olumlu/olumsuz cekimi (tam ekran) ===
+window._fdmMaziPron = ["O", "O ikisi", "Onlar", "O \u2640", "O ikisi \u2640", "Onlar \u2640", "Sen", "Siz ikiniz", "Siz", "Sen \u2640", "Siz ikiniz \u2640", "Siz \u2640", "Ben", "Biz"];
+
+window.openFdmMazi = function(refId) {
+    try {
+        var root = (typeof currentRoot !== 'undefined' && currentRoot) ? currentRoot : '';
+        if (!root) return;
+        var rootData = (typeof sozlukVerileri !== 'undefined') ? sozlukVerileri[root] : null;
+        if (!rootData || typeof getBabAndType !== 'function' || typeof VerbGenerator === 'undefined' || typeof babVezinleri === 'undefined') return;
+
+        var bt = getBabAndType(refId);
+        var tip = (bt && bt.type) ? bt.type : 'mazi';       // mazi / muzari / emir
+        var babNo = (bt && bt.babNo) ? bt.babNo : 1;
+        var isColor = (root.length === 3);
+
+        var kalip = babVezinleri[babNo] ? babVezinleri[babNo][tip] : '';
+        var baseList = VerbGenerator.generateVerbList(root, babNo, tip, kalip, refId) || [];
+        if (!baseList.length) return;
+        baseList = baseList.slice(0, (tip === 'emir') ? 6 : 15);
+
+        // Mazi icin Cehd-i Mutlak (لَمْ) muzari meczum listesi gerekir
+        var muzForLam = null;
+        if (tip === 'mazi') {
+            var muBab = babNo, muKalip = babVezinleri[babNo] ? babVezinleri[babNo].muzari : 'يَفْعُلُ', muzariRef = refId + 1;
+            if (refId === 1) {
+                muzariRef = 2;
+                if (rootData[4]) { muzariRef = 4; muBab = 2; if (babVezinleri[2]) muKalip = babVezinleri[2].muzari; }
+                else if (rootData[6]) { muzariRef = 6; muBab = 3; if (babVezinleri[3]) muKalip = babVezinleri[3].muzari; }
+            } else if (refId === 8) muzariRef = 9;
+            else if (refId === 11) muzariRef = 12;
+            else if (refId === 14) muzariRef = 15;
+            muzForLam = (VerbGenerator.generateVerbList(root, muBab, 'muzari', muKalip, muzariRef) || []).slice(0, 15);
+        }
+
+        var tables = (tip === 'mazi') ? ['olumlu','ma','lam','la'] : (tip === 'muzari') ? ['olumlu','la','len'] : ['olumlu','nehiy'];
+        var SYM = { olumlu:'+', ma:'مَا', la:'لَا', lam:'لَمْ', len:'لَنْ', nehiy:'لَا' };
+
+        function META(tt){
+            if (tt === 'olumlu') return { title: (tip==='mazi'?'Malum Mazi (Olumlu)':tip==='muzari'?'Malum Muzari (Olumlu)':'Emir (Olumlu)'), head:'#27ae60', sub:'#eafaf1', subC:'#1e8449' };
+            if (tt === 'ma')    return { title:'Menfi Mazi (مَا)', head:'#e74c3c', sub:'#fcf1f1', subC:'#a94442' };
+            if (tt === 'lam')   return { title:'Cehd-i Mutlak (لَمْ)', head:'#d35400', sub:'#fdf2e9', subC:'#ba4a00' };
+            if (tt === 'len')   return { title:'Nefy-i İstikbal (لَنْ)', head:'#16a085', sub:'#e8f8f5', subC:'#0e6655' };
+            if (tt === 'nehiy') return { title:'Nehiy (Olumsuz Emir)', head:'#e74c3c', sub:'#fcf1f1', subC:'#a94442' };
+            // la
+            return { title:(tip==='mazi'?'İnkari Mazi / Dua (لَا)':'Menfi Muzari (لَا)'), head:(tip==='mazi'?'#9b59b6':'#e74c3c'), sub:(tip==='mazi'?'#f5eef8':'#fcf1f1'), subC:(tip==='mazi'?'#7d3c98':'#a94442') };
+        }
+        function rowBg(tt, rowIndex){
+            if (rowIndex === 4) return '#f8fafc';
+            if (tt === 'olumlu') return (rowIndex % 2 === 0) ? '#e3f2fd' : '#fce4ec';
+            if (tt === 'ma' || tt === 'nehiy' || (tt === 'la' && tip === 'muzari')) return (rowIndex % 2 === 0) ? '#ffebee' : '#fbe9e7';
+            if (tt === 'la' && tip === 'mazi') return (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
+            if (tt === 'lam') return (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
+            if (tt === 'len') return (rowIndex % 2 === 0) ? '#e8f8f5' : '#d1f2eb';
+            return '#ffffff';
+        }
+        function buildTable(tt){
+            var list = (tt === 'lam') ? muzForLam : baseList;
+            var cellTip = (tt === 'lam') ? 'mazi' : tip;
+            var meta = META(tt);
+            var total = list.length;
+            var h = '<table style="margin:0 auto; width:100%; max-width:560px; border-collapse:separate; border-spacing:0; direction:rtl; box-shadow:0 4px 16px rgba(0,0,0,0.06); border-radius:12px; overflow:hidden;">';
+            h += '<thead><tr><th colspan="3" style="background:' + meta.head + '; color:#fff; padding:11px; font-size:1rem; font-weight:800;">' + meta.title + '</th></tr>';
+            h += '<tr><th style="padding:6px; font-size:0.78rem; color:#222 !important; font-weight:700; background:' + meta.sub + '; border-bottom:2px solid rgba(0,0,0,0.06);">Müfred</th>'
+               + '<th style="padding:6px; font-size:0.78rem; color:#222 !important; font-weight:700; background:' + meta.sub + '; border-bottom:2px solid rgba(0,0,0,0.06);">Tesniye</th>'
+               + '<th style="padding:6px; font-size:0.78rem; color:#222 !important; font-weight:700; background:' + meta.sub + '; border-bottom:2px solid rgba(0,0,0,0.06);">Cemi</th></tr></thead><tbody>';
+            for (var i = 0; i < total; i += 3) {
+                var rowIndex = i / 3;
+                var bg = rowBg(tt, rowIndex);
+                h += '<tr>';
+                for (var j = 0; j < 3; j++) {
+                    var idx = i + j;
+                    var cell = (idx < total && list[idx] != null && list[idx] !== '') ? window.buildConjCell(list[idx], cellTip, babNo, tt, isColor, root, idx) : '';
+                    h += '<td style="background:' + bg + '; padding:14px 5px; text-align:center; border:1px solid rgba(0,0,0,0.03);"><div style="font-family:\'Arakom\',sans-serif; font-size:1.5rem; line-height:1.5; display:flex; justify-content:center; align-items:center;">' + cell + '</div></td>';
+                }
+                h += '</tr>';
+            }
+            h += '</tbody></table>';
+            return h;
+        }
+
+        var pagesHtml = '', btnsHtml = '';
+        tables.forEach(function(tt, idx){
+            pagesHtml += '<div class="fdm-mazi-page" style="flex:0 0 100%; scroll-snap-align:center; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 12px 24px 12px; box-sizing:border-box;">' + buildTable(tt) + '</div>';
+            var meta = META(tt);
+            btnsHtml += '<button id="fdm-mazi-t' + idx + '" onclick="_fdmMaziGo(' + idx + ')" data-col="' + meta.head + '" style="border:none; cursor:pointer; padding:8px 16px; border-radius:20px; font-weight:800; font-size:1.05rem; min-width:48px; background:' + (idx===0?meta.head:'#eceff4') + '; color:' + (idx===0?'#fff':'#64748b') + '; font-family:\'Arakom\',sans-serif;">' + SYM[tt] + '</button>';
+        });
+
+        var titleTr = (tip === 'mazi') ? 'Mazi Çekimi' : (tip === 'muzari') ? 'Muzari Çekimi' : 'Emir Çekimi';
+        var old = document.getElementById('fdm-mazi-overlay'); if (old) old.remove();
+        var ov = document.createElement('div');
+        ov.id = 'fdm-mazi-overlay';
+        ov.style.cssText = 'position:fixed; inset:0; width:100vw; height:100dvh; background:#f4f6fa; z-index:2000000000; display:flex; flex-direction:column; font-family:Inter,-apple-system,sans-serif;';
+        ov.innerHTML =
+            '<div style="flex-shrink:0; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.06); padding:12px 14px; position:relative; display:flex; flex-direction:column; align-items:center; gap:10px;">'
+          +   '<div style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%;">'
+          +     '<span style="font-family:\'Arakom\',sans-serif; font-size:1.6rem; color:#111; direction:rtl;">' + root.split('').join(' ') + '</span>'
+          +     '<span style="font-weight:800; color:#334155; font-size:1.02rem;">' + titleTr + '</span>'
+          +     '<i class="fas fa-times" onclick="document.getElementById(\'fdm-mazi-overlay\').remove();" style="position:absolute; right:14px; top:12px; font-size:1.6rem; color:#94a3b8; cursor:pointer;"></i>'
+          +   '</div>'
+          +   '<div id="fdm-mazi-tabs" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; direction:rtl;">' + btnsHtml + '</div>'
+          + '</div>'
+          + '<div id="fdm-mazi-carousel" style="flex:1; min-height:0; display:flex; flex-direction:row; direction:rtl; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-behavior:smooth; -webkit-overflow-scrolling:touch;">' + pagesHtml + '</div>';
+        document.body.appendChild(ov);
+
+        var car = document.getElementById('fdm-mazi-carousel');
+        var pageEls = car.querySelectorAll('.fdm-mazi-page');
+        var n = tables.length;
+        function _setActive(idx){
+            for (var t = 0; t < n; t++){ var el = document.getElementById('fdm-mazi-t' + t); if (el){ var col = el.getAttribute('data-col'); el.style.background = (t===idx) ? col : '#eceff4'; el.style.color = (t===idx) ? '#fff' : '#64748b'; } }
+        }
+        // RTL: sayfalar sagdan sola dizili; yon-bagimsiz kaydirma icin scrollIntoView kullan.
+        window._fdmMaziGo = function(idx){ if (!pageEls[idx]) return; pageEls[idx].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' }); _setActive(idx); };
+        car.addEventListener('scroll', function(){
+            var cr = car.getBoundingClientRect();
+            var center = cr.left + cr.width / 2;
+            var best = 0, bestDist = Infinity;
+            for (var i = 0; i < pageEls.length; i++){
+                var r = pageEls[i].getBoundingClientRect();
+                var d = Math.abs((r.left + r.width / 2) - center);
+                if (d < bestDist){ bestDist = d; best = i; }
+            }
+            _setActive(best);
+        }, { passive: true });
+    } catch (e) { try { console.log('openFdmMazi err', e.message); } catch(_){} }
+};
+
 window.openFastListFromWordDetails = function(root) {
     window._fdmReturnToWordDetails = true;
     window._fdmReturnToSearch = false;

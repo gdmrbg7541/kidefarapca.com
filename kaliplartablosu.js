@@ -2212,6 +2212,25 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                 coreWord = coreWord.replace("تَمُر", "تَأْمُر");
             }
         }
+        else if (tableType === 'len') {
+            prefix = "لَنْ";
+            const duals = [1, 4, 7, 10];
+            const pluralMasc = [2, 8];
+            const singFem = [9];
+            const pluralFem = [5, 11];
+            if (duals.includes(wordIndex)) coreWord = clean.replace(/نِ?$/, '');
+            else if (pluralMasc.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, 'ا');
+            else if (singFem.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, '');
+            else if (pluralFem.includes(wordIndex)) coreWord = clean;
+            else {
+                if (/[\u0651]/.test(clean.slice(-2))) coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E');
+                else if (/ُ$/.test(clean)) coreWord = clean.replace(/ُ$/, 'َ');
+                else if (/ِي$/.test(clean)) coreWord = clean + 'َ';
+                else if (/ُو$/.test(clean)) coreWord = clean + 'َ';
+                else if (/َى$/.test(clean)) coreWord = clean;
+                else coreWord = clean;
+            }
+        }
 
         let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
         
@@ -2222,7 +2241,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     let tablesToRender = [];
     if (isVerb && typeof kelimeListesi[0] !== 'object') {
         if (tip === 'mazi') tablesToRender = ['olumlu', 'ma', 'lam', 'la'];
-        else if (tip === 'muzari') tablesToRender = ['olumlu', 'la'];
+        else if (tip === 'muzari') tablesToRender = ['olumlu', 'la', 'len'];
         else if (tip === 'emir') tablesToRender = ['olumlu', 'nehiy'];
     }
 
@@ -2283,6 +2302,11 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     headBg = "#d35400"; 
                     subBg = "#fdf2e9";
                     subColor = "#ba4a00";
+                } else if (tableType === 'len') {
+                    theadText = "Nefy-i İstikbal (لَنْ / Gelecek Olumsuz)";
+                    headBg = "#16a085";
+                    subBg = "#e8f8f5";
+                    subColor = "#0e6655";
                 } else if (tableType === 'nehiy') {
                     theadText = "Nehiy (Olumsuz Emir)";
                     headBg = "#e74c3c"; subBg = "#fcf1f1"; subColor = "#a94442";
@@ -2310,6 +2334,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                         bgColor = (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
                     } else if (tableType === 'lam') {
                         bgColor = (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
+                    } else if (tableType === 'len') {
+                        bgColor = (rowIndex % 2 === 0) ? '#e8f8f5' : '#d1f2eb';
                     }
                     
                     let currentList = (tableType === 'lam') ? muzariListesi : kelimeListesi;
