@@ -566,12 +566,12 @@ td:first-child {
     background: #ffffff !important;
     border: 3px solid #000000;
     border-radius: 16px;       
-    padding: 20px;             
+    padding: 14px;             
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     z-index: 999999 !important; 
-    width: 600px !important; 
-    max-width: 95vw !important;
-    max-height: 85vh !important;
+    width: 500px !important;    /* tam ekran olmayan tablo biraz daha kucuk */
+    max-width: 92vw !important;
+    max-height: 74vh !important;
     overflow-y: auto !important;
     opacity: 0;
     pointer-events: none;
@@ -3818,3 +3818,14 @@ body.has-fullscreen-accordion .thematic-words-content {
     border-radius: 10px;
     margin-right: 5px;
 }
+
+
+/* POPUP KUCULTME: tam ekran olmayan cekim tablolari biraz daha kucuk acilsin */
+.conjugation-inline-container .conjugation-carousel { max-height: 52vh !important; }
+.conjugation-inline-container .conjugation-carousel > div { max-height: 52vh !important; }
+
+
+/* KALIP-POPUP KATMAN DUZELTME: acik popup kutusu stacking context olusturmasin,
+   boylece kutunun kalibi (numarasi) asla baska popuplarin ustune cikmaz.
+   Yukseklik yalnizca .conjugation-inline-container'a (popup) verilir. */
+.glass-box.matrix-opened { z-index: auto !important; }

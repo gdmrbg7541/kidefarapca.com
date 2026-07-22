@@ -5223,7 +5223,9 @@ body {
     }
     /* "Örnek Fiiller" başlığı küçük */
     #atlas-sidebar-title { text-align: center !important; font-size: 0.95rem !important; font-weight: 700 !important; color: #FF9800 !important; margin: 0 0 8px 0 !important; }
-    #atlas-verb-list { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; overflow: visible !important; padding-right: 0 !important; }
+    #atlas-verb-list { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; overflow: visible !important; padding-right: 0 !important; direction: rtl !important; }
+    /* Ornek fiiller RTL dizilsin ama bolum basliklari solda kalsin */
+    #atlas-verb-list > div[style*="grid-column"] { direction: ltr !important; }
     /* Tam ekranda örnek fiiller gizli (sadece tablo) */
     #screen-atlas.atlas-fullscreen #atlas-right-sidebar { display: none !important; }
 }
@@ -5401,11 +5403,11 @@ body {
     height: 100% !important;
 }
 #keyboard-overlay.native-search-mode #predictions-dashboard > div:first-child {
-    width: calc(65% - 3px) !important;   /* Sozluk (RTL'de sagda) */
+    width: calc(58% - 3px) !important;   /* Sozluk (RTL'de sagda) - biraz daraltildi */
     flex: unset !important;
 }
 #keyboard-overlay.native-search-mode #predictions-dashboard > div:last-child {
-    width: calc(35% - 3px) !important;   /* Kokler (RTL'de solda) */
+    width: calc(42% - 3px) !important;   /* Kokler/Vezinler (RTL'de solda) - biraz genisletildi */
     flex: unset !important;
     display: flex !important;            /* "Kokler Gizli" kuralini bu modda iptal et */
 }
@@ -5500,11 +5502,11 @@ body {
     flex: 0 0 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
-    font-size: 0.9rem !important;      /* emoji boyutunu kucultur */
-    padding: 8px 6px !important;
+    font-size: 1.15rem !important;     /* emoji boyutu (biraz daha buyuk) */
+    padding: 9px 6px !important;
 }
 #keyboard-overlay.native-search-mode #root-predictions-box .prediction-chip-text {
-    font-size: 1.2rem !important;
+    font-size: 1.5rem !important;
 }
 /* Arama kutusu bosken (placeholder gorunurken) LTR; yazmaya baslayinca RTL'ye doner */
 #keyboard-overlay.native-search-mode #mobile-native-search:placeholder-shown {

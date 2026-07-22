@@ -107,6 +107,15 @@ window.colorizeAffixes = function(word, stage, index) {
 };
 
 window.displayVerbsMap = {
+    'قرأ': 'قَرَأَ',
+    'ظنّ': 'ظَنَّ',
+    'وجد': 'وَجَدَ',
+    'قال': 'قَالَ',
+    'نسي': 'نَسِيَ',
+    'علّم': 'عَلَّمَ',
+    'اعترف': 'اِعْتَرَفَ',
+    'انقلب': 'اِنْقَلَبَ',
+
     'كتب': 'كَتَبَ',
     'دخل': 'دَخَلَ',
     'خرج': 'خَرَجَ',
@@ -1266,13 +1275,8 @@ function closeIfOutside(e) {
                      e.target.closest('#suffix-dropdown');
                      
     if (!isInside) {
-        // Tabloları Kapat
-        document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
-            const closeBtn = box.querySelector('.matrix-close-btn');
-            if (closeBtn) closeInlineMatrix(null, closeBtn);
-        });
-        
-        // Boşluğa tıklanınca/dokunulunca Büyümüş Kutu (Zoom) Varsa Kapat
+        // COKLU POPUP: disariya tiklayinca fiil popuplari KAPANMASIN (sadece X ile kapanir).
+        // Sadece buyumus kutu (zoom) varsa kapat.
         if (typeof closeAllZoomedBoxes === 'function') {
             closeAllZoomedBoxes();
         }
@@ -1418,10 +1422,7 @@ function clearOtherActiveBoxes(currentBox) {
             box.style.transform = "";
             void box.offsetWidth;
             
-            if (box.classList.contains('matrix-opened')) {
-                const closeBtn = box.querySelector('.matrix-close-btn');
-                if (closeBtn) closeInlineMatrix(null, closeBtn);
-            }
+            // COKLU POPUP: baska fiil popuplarini KAPATMA (sadece X ile kapanir).
             
             setTimeout(() => {
                 if (box) box.classList.remove('no-transition');
@@ -2078,13 +2079,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         else if (sozlukVerileri[kok][6]) numBab = 3;
     }
 
-    document.querySelectorAll('.glass-box').forEach(box => { box.style.zIndex = "1"; });
-    document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
-        if (openBox !== boxElement) {
-            const openCloseBtn = openBox.querySelector('.matrix-close-btn');
-            if (openCloseBtn) closeInlineMatrix(null, openCloseBtn);
-        }
-    });
+    // COKLU POPUP: acik fiil popuplari otomatik KAPANMASIN (sadece kendi X'i ile kapanir).
+    document.querySelectorAll('.glass-box:not(.matrix-opened)').forEach(box => { box.style.zIndex = "1"; });
 
     boxElement.classList.add('no-transition'); 
     boxElement.classList.remove("pulse-highlight");
@@ -2537,8 +2533,24 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         document.removeEventListener('touchmove', onPopupDragMove); document.removeEventListener('touchend', onPopupDragEnd);
     };
     dragBar.addEventListener('mousedown', onPopupDragStart); dragBar.addEventListener('touchstart', onPopupDragStart, { passive: false });
-    boxElement.style.zIndex = "999999"; boxElement.classList.add('matrix-opened');
+    boxElement.style.zIndex = '';  // kutu stacking context olusturmasin (kalip popuplarin ustune cikmasin)
+    boxElement.classList.add('matrix-opened');
+    if (inlineContainer) inlineContainer.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
 }
+
+// COKLU POPUP: bir popup'a (matrix-opened kutu) tiklandiginda EN ONE gelsin
+(function(){
+    function _raisePopup(e){
+        var t = e.target;
+        var box = (t && t.closest) ? t.closest('.glass-box.matrix-opened') : null;
+        if (box) {
+            var cont = box.querySelector('.conjugation-inline-container');
+            if (cont) cont.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
+        }
+    }
+    document.addEventListener('mousedown', _raisePopup, true);
+    document.addEventListener('touchstart', _raisePopup, { passive: true, capture: true });
+})();
 
 // Global tıklama (kapatma) event listener'ı aynen kalıyor
 document.addEventListener('click', function(e) {
@@ -2548,15 +2560,7 @@ document.addEventListener('click', function(e) {
     const fullscreenOverlay = e.target.closest('#matrix-fullscreen-overlay');
 
     if (!conjugationContainer && !glassBox && !fullscreenOverlay) {
-        const openedBoxes = document.querySelectorAll('.glass-box.matrix-opened');
-        if (openedBoxes.length > 0) {
-            openedBoxes.forEach(box => {
-                const closeBtn = box.querySelector('.matrix-close-btn');
-                if (closeBtn) closeInlineMatrix(e, closeBtn);
-            });
-            e.preventDefault();
-            e.stopPropagation();
-        }
+        // COKLU POPUP: disariya tiklayinca fiil popuplari KAPANMASIN (sadece X ile kapanir).
     }
 }, true);
 
@@ -5751,7 +5755,7 @@ function updateMainKeyboardPredictions() {
 
         if (matchCount === 0 && rootMatches.length === 0) {
             dictResults.style.display = "block";
-            dictResults.innerHTML = "<div style='text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
+            dictResults.innerHTML = "<div dir='ltr' style='direction:ltr; text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
         } else {
             if (resultsHTML === "") {
                 dictResults.style.display = "none";
@@ -8297,6 +8301,15 @@ window.openGrammarOverlay = function(stage) {
 window.isAtlasMode = false;
 
 window.atlasVerbsData = {
+    "قرأ": { trMean: { mazi: "okudu", muzari: "okuyor", emir: "oku" }, mazi: ["قَرَأَ", "قَرَآ", "قَرَأُوا", "قَرَأَتْ", "قَرَأَتَا", "قَرَأْنَ", "قَرَأْتَ", "قَرَأْتُمَا", "قَرَأْتُمْ", "قَرَأْتِ", "قَرَأْتُمَا", "قَرَأْتُنَّ", "قَرَأْتُ", "قَرَأْنَا", "قَرَأْنَا"], muzari: ["يَقْرَأُ", "يَقْرَآنِ", "يَقْرَأُونَ", "تَقْرَأُ", "تَقْرَآنِ", "يَقْرَأْنَ", "تَقْرَأُ", "تَقْرَآنِ", "تَقْرَأُونَ", "تَقْرَئِينَ", "تَقْرَآنِ", "تَقْرَأْنَ", "أَقْرَأُ", "نَقْرَأُ", "نَقْرَأُ"], emir: ["اِقْرَأْ", "اِقْرَآ", "اِقْرَأُوا", "اِقْرَئِي", "اِقْرَآ", "اِقْرَأْنَ"] },
+    "ظنّ": { trMean: { mazi: "sandı", muzari: "sanıyor", emir: "san" }, mazi: ["ظَنَّ", "ظَنَّا", "ظَنُّوا", "ظَنَّتْ", "ظَنَّتَا", "ظَنَنَّ", "ظَنَنْتَ", "ظَنَنْتُمَا", "ظَنَنْتُمْ", "ظَنَنْتِ", "ظَنَنْتُمَا", "ظَنَنْتُنَّ", "ظَنَنْتُ", "ظَنَنَّا", "ظَنَنَّا"], muzari: ["يَظُنُّ", "يَظُنَّانِ", "يَظُنُّونَ", "تَظُنُّ", "تَظُنَّانِ", "يَظْنُنَّ", "تَظُنُّ", "تَظُنَّانِ", "تَظُنُّونَ", "تَظُنِّينَ", "تَظُنَّانِ", "تَظْنُنَّ", "أَظُنُّ", "نَظُنُّ", "نَظُنُّ"], emir: ["ظُنَّ", "ظُنَّا", "ظُنُّوا", "ظُنِّي", "ظُنَّا", "اُظْنُنَّ"] },
+    "وجد": { trMean: { mazi: "buldu", muzari: "buluyor", emir: "bul" }, mazi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"], muzari: ["يَجِدُ", "يَجِدَانِ", "يَجِدُونَ", "تَجِدُ", "تَجِدَانِ", "يَجِدْنَ", "تَجِدُ", "تَجِدَانِ", "تَجِدُونَ", "تَجِدِينَ", "تَجِدَانِ", "تَجِدْنَ", "أَجِدُ", "نَجِدُ", "نَجِدُ"], emir: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"] },
+    "قال": { trMean: { mazi: "söyledi", muzari: "söylüyor", emir: "söyle" }, mazi: ["قَالَ", "قَالَا", "قَالُوا", "قَالَتْ", "قَالَتَا", "قُلْنَ", "قُلْتَ", "قُلْتُمَا", "قُلْتُمْ", "قُلْتِ", "قُلْتُمَا", "قُلْتُنَّ", "قُلْتُ", "قُلْنَا", "قُلْنَا"], muzari: ["يَقُولُ", "يَقُولَانِ", "يَقُولُونَ", "تَقُولُ", "تَقُولَانِ", "يَقُلْنَ", "تَقُولُ", "تَقُولَانِ", "تَقُولُونَ", "تَقُولِينَ", "تَقُولَانِ", "تَقُلْنَ", "أَقُولُ", "نَقُولُ", "نَقُولُ"], emir: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"] },
+    "نسي": { trMean: { mazi: "unuttu", muzari: "unutuyor", emir: "unut" }, mazi: ["نَسِيَ", "نَسِيَا", "نَسُوا", "نَسِيَتْ", "نَسِيَتَا", "نَسِينَ", "نَسِيتَ", "نَسِيتُمَا", "نَسِيتُمْ", "نَسِيتِ", "نَسِيتُمَا", "نَسِيتُنَّ", "نَسِيتُ", "نَسِينَا", "نَسِينَا"], muzari: ["يَنْسَى", "يَنْسَيَانِ", "يَنْسَوْنَ", "تَنْسَى", "تَنْسَيَانِ", "يَنْسَيْنَ", "تَنْسَى", "تَنْسَيَانِ", "تَنْسَوْنَ", "تَنْسَيْنَ", "تَنْسَيَانِ", "تَنْسَيْنَ", "أَنْسَى", "نَنْسَى", "نَنْسَى"], emir: ["اِنْسَ", "اِنْسَيَا", "اِنْسَوْا", "اِنْسَيْ", "اِنْسَيَا", "اِنْسَيْنَ"] },
+    "علّم": { trMean: { mazi: "öğretti", muzari: "öğretiyor", emir: "öğret" }, mazi: ["عَلَّمَ", "عَلَّمَا", "عَلَّمُوا", "عَلَّمَتْ", "عَلَّمَتَا", "عَلَّمْنَ", "عَلَّمْتَ", "عَلَّمْتُمَا", "عَلَّمْتُمْ", "عَلَّمْتِ", "عَلَّمْتُمَا", "عَلَّمْتُنَّ", "عَلَّمْتُ", "عَلَّمْنَا", "عَلَّمْنَا"], muzari: ["يُعَلِّمُ", "يُعَلِّمَانِ", "يُعَلِّمُونَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "يُعَلِّمْنَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "تُعَلِّمُونَ", "تُعَلِّمِينَ", "تُعَلِّمَانِ", "تُعَلِّمْنَ", "أُعَلِّمُ", "نُعَلِّمُ", "نُعَلِّمُ"], emir: ["عَلِّمْ", "عَلِّمَا", "عَلِّمُوا", "عَلِّمِي", "عَلِّمَا", "عَلِّمْنَ"] },
+    "اعترف": { trMean: { mazi: "itiraf etti", muzari: "itiraf ediyor", emir: "itiraf et" }, mazi: ["اِعْتَرَفَ", "اِعْتَرَفَا", "اِعْتَرَفُوا", "اِعْتَرَفَتْ", "اِعْتَرَفَتَا", "اِعْتَرَفْنَ", "اِعْتَرَفْتَ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُمْ", "اِعْتَرَفْتِ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُنَّ", "اِعْتَرَفْتُ", "اِعْتَرَفْنَا", "اِعْتَرَفْنَا"], muzari: ["يَعْتَرِفُ", "يَعْتَرِفَانِ", "يَعْتَرِفُونَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "يَعْتَرِفْنَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "تَعْتَرِفُونَ", "تَعْتَرِفِينَ", "تَعْتَرِفَانِ", "تَعْتَرِفْنَ", "أَعْتَرِفُ", "نَعْتَرِفُ", "نَعْتَرِفُ"], emir: ["اِعْتَرِفْ", "اِعْتَرِفَا", "اِعْتَرِفُوا", "اِعْتَرِفِي", "اِعْتَرِفَا", "اِعْتَرِفْنَ"] },
+    "انقلب": { trMean: { mazi: "devrildi", muzari: "devriliyor", emir: "devril" }, mazi: ["اِنْقَلَبَ", "اِنْقَلَبَا", "اِنْقَلَبُوا", "اِنْقَلَبَتْ", "اِنْقَلَبَتَا", "اِنْقَلَبْنَ", "اِنْقَلَبْتَ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُمْ", "اِنْقَلَبْتِ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُنَّ", "اِنْقَلَبْتُ", "اِنْقَلَبْنَا", "اِنْقَلَبْنَا"], muzari: ["يَنْقَلِبُ", "يَنْقَلِبَانِ", "يَنْقَلِبُونَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "يَنْقَلِبْنَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "تَنْقَلِبُونَ", "تَنْقَلِبِينَ", "تَنْقَلِبَانِ", "تَنْقَلِبْنَ", "أَنْقَلِبُ", "نَنْقَلِبُ", "نَنْقَلِبُ"], emir: ["اِنْقَلِبْ", "اِنْقَلِبَا", "اِنْقَلِبُوا", "اِنْقَلِبِي", "اِنْقَلِبَا", "اِنْقَلِبْنَ"] },
+
         "استيقظ": {"trMean": {"mazi": "uyandı", "muzari": "uyanıyor", "emir": "uyan"}, "mazi": ["اِسْتَيْقَظَ", "اِسْتَيْقَظَا", "اِسْتَيْقَظُوا", "اِسْتَيْقَظَتْ", "اِسْتَيْقَظَتَا", "اِسْتَيْقَظْنَ", "اِسْتَيْقَظْتَ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُمْ", "اِسْتَيْقَظْتِ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُنَّ", "اِسْتَيْقَظْتُ", "اِسْتَيْقَظْنَا", "اِسْتَيْقَظْنَا"], "muzari": ["يَسْتَيْقِظُ", "يَسْتَيْقِظَانِ", "يَسْتَيْقِظُونَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "يَسْتَيْقِظْنَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظُونَ", "تَسْتَيْقِظِينَ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظْنَ", "أَسْتَيْقِظُ", "نَسْتَيْقِظُ", "نَسْتَيْقِظُ"], "emir": ["اِسْتَيْقِظْ", "اِسْتَيْقِظَا", "اِسْتَيْقِظُوا", "اِسْتَيْقِظِي", "اِسْتَيْقِظَا", "اِسْتَيْقِظْنَ"]},
     "توضأ": {"trMean": {"mazi": "abdest aldı", "muzari": "abdest alıyor", "emir": "abdest al"}, "mazi": ["تَوَضَّأَ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّأَتْ", "تَوَضَّأَتَا", "تَوَضَّأْنَ", "تَوَضَّأْتَ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُمْ", "تَوَضَّأْتِ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُنَّ", "تَوَضَّأْتُ", "تَوَضَّأْنَا", "تَوَضَّأْنَا"], "muzari": ["يَتَوَضَّأُ", "يَتَوَضَّآنِ", "يَتَوَضَّأُونَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "يَتَوَضَّأْنَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "تَتَوَضَّأُونَ", "تَتَوَضَّأِينَ", "تَتَوَضَّآنِ", "تَتَوَضَّأْنَ", "أَتَوَضَّأُ", "نَتَوَضَّأُ", "نَتَوَضَّأُ"], "emir": ["تَوَضَّأْ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّئِي", "تَوَضَّآ", "تَوَضَّأْنَ"]},
     "صلى": {"trMean": {"mazi": "namaz kıldı", "muzari": "namaz kılıyor", "emir": "namaz kıl"}, "mazi": ["صَلَّى", "صَلَّيَا", "صَلَّوْا", "صَلَّتْ", "صَلَّتَا", "صَلَّيْنَ", "صَلَّيْتَ", "صَلَّيْتُمَا", "صَلَّيْتُمْ", "صَلَّيْتِ", "صَلَّيْتُمَا", "صَلَّيْتُنَّ", "صَلَّيْتُ", "صَلَّيْنَا", "صَلَّيْنَا"], "muzari": ["يُصَلِّي", "يُصَلِّياَنِ", "يُصَلُّونَ", "تُصَلِّي", "تُصَلِّياَنِ", "يُصَلِّينَ", "تُصَلِّي", "تُصَلِّياَنِ", "تُصَلُّونَ", "تُصَلِّينَ", "تُصَلِّياَنِ", "تُصَلِّينَ", "أُصَلِّي", "نُصَلِّي", "نُصَلِّي"], "emir": ["صَلِّ", "صَلِّياَ", "صَلُّوا", "صَلِّي", "صَلِّياَ", "صَلِّينَ"]},
@@ -8740,10 +8753,10 @@ window.openAtlasOverlay = function(stage) {
     if (verbList) {
         verbList.innerHTML = '';
         let isMezidStage = stage.includes('_mezid');
-        let mucerredKeys = ["كتب", "دخل", "خرج", "جلس", "فتح", "لبس", "ذهب", "رجع", "درس", "nam", "شرب", "أكل", "غسل"];
-        let mucerredIcons = ["✍️", "🚪", "🏃‍♂️", "🪑", "🔓", "👕", "🚶", "↩️", "📚", "🛏️", "🥛", "🍏", "🧼"];
-        let mezidKeys = ["استيقظ", "توضأ", "صلى", "تناول", "ساعد", "نظف", "أراد", "سافر"];
-        let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🧹", "🎯", "✈️"];
+        let mucerredKeys = ["كتب", "قرأ", "ظنّ", "أكل", "وجد", "قال", "نسي", "درس", "ذهب"];
+        let mucerredIcons = ["✍️", "📖", "🤔", "🍏", "🔍", "🗣️", "🤷", "📚", "🚶"];
+        let mezidKeys = ["استيقظ", "توضأ", "صلى", "تناول", "ساعد", "أراد", "علّم", "اعترف", "انقلب"];
+        let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🎯", "👨‍🏫", "💬", "🔄"];
         
         let activeKeys = isMezidStage ? mezidKeys : mucerredKeys;
         let activeIcons = isMezidStage ? mezidIcons : mucerredIcons;

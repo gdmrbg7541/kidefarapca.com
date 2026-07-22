@@ -5354,18 +5354,7 @@ function updateMainKeyboardPredictions() {
             }
             rootMatches = window._cachedAllRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
 
-            // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
-            // NOT: Sadece ARAPÇA harfler icin "Kök Oluştur" cikar; latin/rakam vb. yazilinca cikmasin.
-            const _isArabicFilter = /[\u0600-\u06FF]/.test(filter);
-            if (filter.length === 3 && _isArabicFilter) {
-                const exactExists = rootMatches.some(r => normalizeArabic(r) === normalizeArabic(filter));
-                const isNounOnly = typeof sozlukVerileri !== 'undefined' && sozlukVerileri[filter] && sozlukVerileri[filter].isDictOnly;
-                
-                if (!exactExists && !isNounOnly) {
-                    rootMatches.unshift(filter);
-                    if (rootMatches.length > 50) rootMatches.pop();
-                }
-            }
+            // KOK OLUSTURMA OZELLIGI KALDIRILDI (mobil): tanimsiz kokler icin dinamik "Kok Olustur" onerisi eklenmez.
         }
         
         if (!window.startDynamicRootGenerationDefined) {
@@ -5620,7 +5609,7 @@ function updateMainKeyboardPredictions() {
         for (const letter of sortedLetters) {
             // Harf başlığı ve Kelimeleri Saran Kutu
             resultsHTML += `<div style="background: rgba(255,255,255,0.8); border-radius: 16px; border: 2px solid rgba(0,0,0,0.05); padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;">`;
-            resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:2.2rem; font-weight:normal; text-align:center; margin: 0 0 15px 0; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:10px; width: 100%;">[ ${letter} ]</div>`;
+            resultsHTML += `<div style="font-family: \'Arakom\', sans-serif; color:#000000; font-size:1.5rem; font-weight:normal; text-align:center; margin: 0 0 10px 0; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:7px; width: 100%;">[ ${letter} ]</div>`;
             
             // Harf içindeki kelimeleri sırala (Tam eşleşen ve kısa olanlar ÖNCE)
             matchesByLetter[letter].sort((a, b) => {
@@ -5714,7 +5703,7 @@ function updateMainKeyboardPredictions() {
 
         if (matchCount === 0 && rootMatches.length === 0) {
             dictResults.style.display = "block";
-            dictResults.innerHTML = "<div style='text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
+            dictResults.innerHTML = "<div dir='ltr' style='direction:ltr; text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
         } else {
             if (resultsHTML === "") {
                 dictResults.style.display = "none";
