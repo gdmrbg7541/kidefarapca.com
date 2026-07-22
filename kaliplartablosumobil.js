@@ -9614,7 +9614,15 @@ function showRootOfDay() {
     document.head.appendChild(style);
     
     document.body.appendChild(modalOverlay);
-    document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden';
+    // Arka planı kilitle: iOS'ta overflow:hidden yetmez, body'yi position:fixed ile donduruyoruz
+    window._rodScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    document.documentElement.style.overflow='hidden';
+    document.body.style.overflow='hidden';
+    document.body.style.position='fixed';
+    document.body.style.top = (-window._rodScrollY) + 'px';
+    document.body.style.left='0';
+    document.body.style.right='0';
+    document.body.style.width='100%';
     
     setTimeout(() => {
         modalOverlay.style.opacity = "1";
@@ -9627,7 +9635,15 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { showRoo
 
 
 window.closeRootOfDay = function() {
-    document.documentElement.style.overflow=''; document.body.style.overflow='';
+    // Arka plan kilidini kaldir ve kaydirma konumunu geri yukle
+    document.documentElement.style.overflow='';
+    document.body.style.overflow='';
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.left='';
+    document.body.style.right='';
+    document.body.style.width='';
+    if (typeof window._rodScrollY === 'number') { window.scrollTo(0, window._rodScrollY); window._rodScrollY = null; }
     const modalOverlay = document.getElementById("rootOfDayOverlay");
     if (modalOverlay) {
         modalOverlay.style.opacity = "0";
