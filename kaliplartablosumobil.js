@@ -449,32 +449,37 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
             htmlContent += rootDisplay;
-            htmlContent += `<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; text-align:center;">`;
             const verbCards = [
                 { id: maziId, label: "Mazi", color: "#f39c12" },
                 { id: muzariId, label: "Muzari", color: "#3498db" },
                 { id: emirId, label: "Emir", color: "#e74c3c" }
             ];
-            verbCards.forEach(card => {
+            // YENI TASARIM (mobil): her kip AYRI KUTU, dikey dizili. Kutu: baslik ustte (altinda cizgi),
+            // altindaki satirda solda ANLAM - ortada EMOJI - sagda ARAPCA.
+            let _verbBoxes = '';
+            verbCards.forEach((card) => {
                 let rData = rootData[card.id] || { base: {} };
-                
-                let emoji = (rData.base && rData.base.emoji) ? `<div style="font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; margin-bottom:15px;">${rData.base.emoji}</div>` : '';
-                let trText = (rData.base && rData.base.trText) ? `<div style="color:#555; font-size:1.6rem; font-weight:bold; margin-top:20px; letter-spacing:0.5px;" dir="ltr">${rData.base.trText}</div>` : '';
+                let emoji = (rData.base && rData.base.emoji) ? rData.base.emoji : '';
+                let trText = (rData.base && rData.base.trText) ? rData.base.trText : '';
                 let arText = (rData.base && rData.base.arText) ? rData.base.arText : "";
-                
                 if (!arText && typeof generateTuremis === "function") {
                     arText = generateTuremis(rootKey, card.id);
                 }
-
-                htmlContent += `
-                <div style="background:#ffffff; padding:30px 10px; border-radius:15px; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div style="color:${card.color}; font-size:${window.isAtlasFullscreen ? "clamp(1.2rem, 2vh, 2rem)" : "clamp(1.5rem, 2vw, 2.5rem)"}; font-weight: bold; margin-bottom:15px;" dir="ltr">${card.label}</div>
-                    ${emoji}
-                    <span style="display:block; font-family:'Arakom', sans-serif; font-size:${window.isAtlasFullscreen ? "clamp(2.8rem, 5.5vh, 5.5rem)" : "clamp(3.5rem, 5vw, 6rem)"}; color:#1a1a1a; text-shadow:0 1px 3px rgba(0,0,0,0.1);">${arText}</span>
-                    ${trText}
-                </div>`;
+                _verbBoxes += `
+                    <div style="width:100%; box-sizing:border-box; background:#ffffff; padding:12px 14px; border-radius:14px; border:1px solid rgba(0,0,0,0.05); box-shadow:0 3px 12px rgba(0,0,0,0.05);">
+                        <div style="color:${card.color}; font-weight:bold; font-size:1.02rem; padding-bottom:6px; border-bottom:2px solid ${card.color}; margin-bottom:10px; letter-spacing:0.3px; text-align:center;" dir="ltr">${card.label}</div>
+                        <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px; width:100%;">
+                            <div style="text-align:left; color:#576574; font-weight:600; font-size:0.82rem; line-height:1.3; min-width:0; overflow-wrap:anywhere;" dir="ltr">${trText}</div>
+                            <div style="text-align:center; font-size:1.75rem; line-height:1;">${emoji}</div>
+                            <div style="text-align:right; font-family:'Arakom', sans-serif; font-size:2rem; color:#1a1a1a; line-height:1.35; min-width:0;">${arText}</div>
+                        </div>
+                    </div>`;
             });
-            htmlContent += `</div></div>`;
+            htmlContent += `
+                <div style="display:flex; flex-direction:column; gap:12px; margin-top:34px; width:100%;">
+                    ${_verbBoxes}
+                </div>`;
+            htmlContent += `</div>`;
         } else {
             let itemClicked = rootData[kalipKeyStr] || rootData[kalipKey];
             if (!itemClicked) itemClicked = { base: { emoji: "", arText: exactArText, trText: exactTrText } };
@@ -5320,7 +5325,9 @@ function updateMainKeyboardPredictions() {
             rootMatches = window._cachedAllRoots.filter(r => normalizeArabic(r).startsWith(normalizeArabic(filter))).slice(0, 50);
 
             // Eğer kullanıcı tam 3 harf yazdıysa ve bu yazdığı şey mevcut köklerde (ya da ekranda) yoksa, ilk sıraya öneri olarak ekle
-            if (filter.length === 3) {
+            // NOT: Sadece ARAPÇA harfler icin "Kök Oluştur" cikar; latin/rakam vb. yazilinca cikmasin.
+            const _isArabicFilter = /[\u0600-\u06FF]/.test(filter);
+            if (filter.length === 3 && _isArabicFilter) {
                 const exactExists = rootMatches.some(r => normalizeArabic(r) === normalizeArabic(filter));
                 const isNounOnly = typeof sozlukVerileri !== 'undefined' && sozlukVerileri[filter] && sozlukVerileri[filter].isDictOnly;
                 
@@ -5670,6 +5677,11 @@ function updateMainKeyboardPredictions() {
             resultsHTML += `</div>`;
         }
         
+        const _rootDot = document.getElementById("root-status-dot");
+        const _dictDot = document.getElementById("dict-status-dot");
+        if (_rootDot) _rootDot.style.backgroundColor = rootMatches.length > 0 ? "#4CAF50" : "#F44336";
+        if (_dictDot) _dictDot.style.backgroundColor = (matchCount > 0) ? "#4CAF50" : "#F44336";
+
         if (matchCount === 0 && rootMatches.length === 0) {
             dictResults.style.display = "block";
             dictResults.innerHTML = "<div style='text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
@@ -5683,6 +5695,12 @@ function updateMainKeyboardPredictions() {
             }
         }
     } else {
+        const _rootDot2 = document.getElementById("root-status-dot");
+        const _dictDot2 = document.getElementById("dict-status-dot");
+        let _isDataLoaded = typeof sozlukVerileri !== 'undefined' && Object.keys(sozlukVerileri).length > 0;
+        let _defColor = _isDataLoaded ? "#4CAF50" : "#F44336";
+        if (_rootDot2) _rootDot2.style.backgroundColor = _defColor;
+        if (_dictDot2) _dictDot2.style.backgroundColor = _defColor;
         dictResults.style.display = "none";
         dictResults.innerHTML = "";
     }
@@ -5718,7 +5736,10 @@ function selectRootFromMainKeyboard(root) {
                 window._lastMobileSearchQuery = _prevQuery;
                 if (!window._fdmReturnToWordDetails) window._fdmReturnToSearch = true;
             }
-            setTimeout(function(){ openFastDictionaryMode(); }, 80);
+            // FLASH ONLEME: eskiden setTimeout(80) vardi; o boslukta tarayici arama kapaninca
+            // ana sayfayi cizip flash yapiyordu. Artik SENKRON aciyoruz: arama gizleme + hizli
+            // liste gosterme ayni JS calismasinda olur, arada hic paint (bosluk) olmaz.
+            openFastDictionaryMode();
         }
     }
 }
@@ -9008,7 +9029,7 @@ function openFastDictionaryMode() {
         // Masaüstü için orijinal inline !important kurallarını geri getiriyoruz ki masaüstü bozulmasın.
         const rStyle = isDesktopFDM 
             ? "position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 70px 0 0 !important; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 4.2rem !important; padding: 14px 20px 20px 0px !important; min-width: 240px !important; border-radius: 18px !important; flex-shrink: 0;" 
-            : "position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 70px 0 0; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 14px 20px 20px 0px; min-width: 240px; border-radius: 18px !important; flex-shrink: 0;";
+            : "position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin: 0 70px 0 0; cursor: default !important; z-index: 10 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 14px 20px 20px 0px; min-width: 240px; border-radius: 8px !important; flex-shrink: 0;";
             
         const rootPlateHtml = `<div class="fdm-root-plate draggable-root-clone fdm-mobile-resize" style="${rStyle}"><span class="root-text-content fdm-mobile-text">${formattedTitle}</span></div>`;
         

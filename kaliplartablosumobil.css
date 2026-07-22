@@ -5520,9 +5520,16 @@ body {
     /* pencere */
     #word-details-modal {
         width: 94% !important;
-        padding: 14px 10px !important;
+        padding: 14px 12px !important;
+        /* Tam ekran degil: ORTALI ve ICERIK KADAR yukseklik (fazla bosluk olmasin) */
+        height: auto !important;
         max-height: 88dvh !important;
-        border-radius: 14px !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        border-radius: 16px !important;
+        overflow-y: auto !important;
     }
     /* ust kosedeki yuvarlak butonlar (kapat + hizli liste) */
     #word-details-modal [title="Kapat"],
@@ -5579,9 +5586,10 @@ body {
     #word-details-modal span[style*="font-size:2.0rem"] {
         font-size: 1.15rem !important;
     }
-    /* mustakil / tekil-cogul ana karti */
+    /* mustakil / tekil-cogul ana karti: ust bosluk (ISIM/EDAT etiketi yaziyla cakismasin) */
     #word-details-modal div[style*="padding:40px 20px"] {
-        padding: 20px 10px !important;
+        padding: 34px 12px 20px !important;
+        margin-top: 12px !important;
     }
     /* tekil-cogul arasi ayirac (ج): alt alta dizilimde havada kaliyor, gizle
        (COGUL rozeti zaten var) */
@@ -5623,4 +5631,48 @@ body {
 #keyboard-overlay.native-search-mode #root-predictions-box {
     overscroll-behavior: contain !important;
     touch-action: pan-y !important;
+}
+
+
+/* === FDM TASMA DUZELTME (mobil): sekmeler + kahverengi kok levhasi sagdan tasmasin === */
+@media (max-width: 1024px) {
+    /* Sekme satiri: padding icerde kalsin (box-sizing) -> sekmeler tasmaz */
+    .fdm-tabs-row {
+        box-sizing: border-box !important;
+        max-width: 100vw !important;
+    }
+    #fdm-mucerred-tab, #fdm-mezid-tab {
+        min-width: 0 !important;   /* flex icinde tasmayi onler */
+    }
+    #fdm-mucerred-tab > span:first-child,
+    #fdm-mezid-tab > span:first-child {
+        white-space: nowrap;
+    }
+    /* Kok levhasi sarmalayicisi: padding/gen. box-sizing + X butonuna pay birak */
+    #fdm-root-container > div {
+        box-sizing: border-box !important;
+        gap: 10px !important;
+        padding: 6px 56px 6px 12px !important;   /* sagda X butonu icin pay */
+        justify-content: space-between !important;
+    }
+    /* Bilgi kutusu kuculebilsin ki levhayi saga itip tasirmasin */
+    #fdm-root-container .fdm-info-box {
+        min-width: 0 !important;
+        flex: 1 1 0 !important;
+    }
+    /* Kahverengi levha: sag margin kaldir, tasmasin, harf sag-sol AZ bosluk, ORTALI, koseler az yuvarlak */
+    .fdm-mobile-resize {
+        margin: 0 !important;
+        min-width: 0 !important;
+        max-width: 46vw !important;
+        flex-shrink: 0 !important;
+        padding: 6px 8px !important;
+        border-radius: 8px !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    .fdm-mobile-resize .root-text-content, .fdm-mobile-text {
+        text-align: center !important;
+        width: auto !important;
+    }
 }
