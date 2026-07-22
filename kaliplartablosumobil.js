@@ -8567,7 +8567,9 @@ window.openAtlasOverlay = function(stage) {
         if(tableView) tableView.style.display = 'none';
         if(sidebar) sidebar.style.display = 'none';
         if(flexContainer) {
-            flexContainer.style.justifyContent = 'center';
+            // Once evrensel 'flex-start' (her tarayicida baslik gorunur), sonra destekleniyorsa 'safe center' ile ortala.
+            flexContainer.style.justifyContent = 'flex-start';
+            flexContainer.style.justifyContent = 'safe center';
             flexContainer.style.alignItems = 'center';
         }
         let _fBtn = document.getElementById('atlas-fs-btn');

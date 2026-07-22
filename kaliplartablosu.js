@@ -8748,7 +8748,9 @@ window.openAtlasOverlay = function(stage) {
         if(tableView) tableView.style.display = 'none';
         if(sidebar) sidebar.style.display = 'none';
         if(flexContainer) {
-            // 'safe center': icerik sigarsa ortalar, sigmazsa uste hizalar (baslik kirpilmaz, scroll edilir)
+            // Once evrensel 'flex-start' (her tarayicida baslik gorunur), sonra destekleniyorsa 'safe center' ile ortala.
+            // Eski/gomulu tarayicilarda (akilli tahta) 'safe center' yok sayilir -> 'flex-start' kalir -> baslik kirpilmaz.
+            flexContainer.style.justifyContent = 'flex-start';
             flexContainer.style.justifyContent = 'safe center';
             flexContainer.style.alignItems = 'center';
         }
