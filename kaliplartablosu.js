@@ -8748,7 +8748,8 @@ window.openAtlasOverlay = function(stage) {
         if(tableView) tableView.style.display = 'none';
         if(sidebar) sidebar.style.display = 'none';
         if(flexContainer) {
-            flexContainer.style.justifyContent = 'center';
+            // 'safe center': icerik sigarsa ortalar, sigmazsa uste hizalar (baslik kirpilmaz, scroll edilir)
+            flexContainer.style.justifyContent = 'safe center';
             flexContainer.style.alignItems = 'center';
         }
         let _fBtn = document.getElementById('atlas-fs-btn');
