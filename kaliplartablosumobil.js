@@ -8680,18 +8680,31 @@ window.openAtlasOverlay = function(stage) {
         let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🎯", "👨‍🏫", "💬", "🔄"];
 
 
-        function _atlasSection(label) {
+        // Ornek fiiller: akordiyon (Mucerred/Mezid kapali gelir)
+        window._toggleAtlasGroup = function(groupId, headerEl){
+            var open = !headerEl.classList.contains('open');
+            headerEl.classList.toggle('open', open);
+            var chev = headerEl.querySelector('.atlas-acc-chev');
+            if (chev) chev.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+            document.querySelectorAll('.atlas-verb-btn[data-atlas-group="'+groupId+'"]').forEach(function(b){ b.style.display = open ? '' : 'none'; });
+        };
+        function _atlasSection(label, groupId) {
             let h = document.createElement('div');
-            h.style.cssText = "grid-column: 1 / -1; font-family: system-ui, -apple-system, sans-serif; font-size: 0.9rem; font-weight: 800; color: #475569; letter-spacing: 0.01em; margin: 10px 2px 4px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; text-align: left;";
-            h.textContent = label;
+            h.className = 'atlas-acc-header';
+            h.setAttribute('data-atlas-head', groupId);
+            h.style.cssText = "grid-column: 1 / -1; direction: ltr; font-family: system-ui, -apple-system, sans-serif; font-size: 0.95rem; font-weight: 800; color: #475569; letter-spacing: 0.01em; margin: 10px 2px 6px; padding: 11px 14px; border: 2px solid #e2e8f0; border-radius: 12px; background: #f8fafc; text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; -webkit-user-select: none; user-select: none;";
+            h.innerHTML = '<span>' + label + '</span><span class="atlas-acc-chev" style="transition: transform .25s ease; font-size: 0.9rem; color:#94a3b8;">\u25BE</span>';
+            h.onclick = function(){ window._toggleAtlasGroup(groupId, h); };
             verbList.appendChild(h);
         }
-        function _atlasVerbBtns(keys, icons, firstActive) {
+        function _atlasVerbBtns(keys, icons, groupId, firstActive) {
             keys.forEach((k, idx) => {
                 let icon = icons[idx];
                 let voweled = (window.displayVerbsMap[k]) ? window.displayVerbsMap[k] : k;
                 let btn = document.createElement('button');
                 btn.className = 'atlas-verb-btn';
+                btn.setAttribute('data-atlas-group', groupId);
+                btn.style.display = 'none';   // baslangicta kapali (akordiyon)
                 if (firstActive && idx === 0) btn.classList.add('active');
                 btn.innerHTML = `<span>${icon}</span> <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 1.4rem;">${voweled}</span>`;
                 btn.onclick = function() { window.changeAtlasVerb(k, this); };
@@ -8699,10 +8712,10 @@ window.openAtlasOverlay = function(stage) {
             });
         }
 
-        _atlasSection("Sülâsî Mücerred");
-        _atlasVerbBtns(mucerredKeys, mucerredIcons, true);
-        _atlasSection("Sülâsî Mezîd");
-        _atlasVerbBtns(mezidKeys, mezidIcons, false);
+        _atlasSection("Sülâsî Mücerred", "mucerred");
+        _atlasVerbBtns(mucerredKeys, mucerredIcons, "mucerred", true);
+        _atlasSection("Sülâsî Mezîd", "mezid");
+        _atlasVerbBtns(mezidKeys, mezidIcons, "mezid", false);
 
         window.currentAtlasVerbKey = mucerredKeys[0];
     }
@@ -9880,7 +9893,7 @@ function showRootOfDay() {
         modalOverlay.firstElementChild.style.transform = "scale(1) translateY(0)";
     }, 50);
 
-    // ==== GUNUN KOKU OYUNU (mobil): akici kirmizi kenar geri sayimi (20sn/kelime) + kart cevirme ====
+    // ==== GUNUN KOKU (mobil): geri sayimsiz; karta dokununca cevrilir ====
     (function(){
       var panel = modalOverlay.querySelector('#rod-panel');
       var cards = Array.prototype.slice.call(modalOverlay.querySelectorAll('.rod-card'));
@@ -9911,13 +9924,10 @@ function showRootOfDay() {
       function endGame(){ if(ended) return; ended=true; if(endTimer) clearTimeout(endTimer);
         if(rect){ rect.style.transition='stroke-dashoffset .3s linear'; rect.style.strokeDashoffset = P.toFixed(1); }
         var rest=cards.filter(function(c){return !isFlipped(c);}); rest.forEach(function(c,i){ setTimeout(function(){ flip(c); }, i*280); }); }
-      cards.forEach(function(c){ c.addEventListener('click', function(){
-        if(ended){ flip(c); return; }
-        if(flip(c)){ var rem=curRemaining()-20000; remaining=Math.max(0,rem); if(remaining<=0){ endGame(); } else { startDrain(); } }
-      }); });
+      cards.forEach(function(c){ c.addEventListener('click', function(){ flip(c); }); });
       function reposition(){ if(svg && panel && rect){ svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px'; var w=panel.offsetWidth,h=panel.offsetHeight,sw=6; svg.setAttribute('width',w); svg.setAttribute('height',h); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); } }
       window.addEventListener('resize', reposition);
-      setTimeout(function(){ buildTimer(); startDrain(); }, 550);
+      /* geri sayim (kirmizi kenar) mobilde kaldirildi */
     })();
 }
 
