@@ -53,6 +53,10 @@
         header #logout-btn, header #header-login-btn{ padding:5px 10px !important; }
         header #user-info{ font-size:0.9em !important; }
       }
+      /* Profil butonu (header): basinca ve profildeyken vurgu */
+      #user-info.user-profile-btn{ -webkit-tap-highlight-color:transparent; }
+      #user-info.user-profile-btn:active{ transform:scale(0.93) !important; background:rgba(255,255,255,0.5) !important; }
+      #user-info.user-profile-btn.profile-open{ background:#fff !important; color:#F39C12 !important; border-color:#fff !important; box-shadow:0 0 0 3px rgba(255,255,255,0.65), 0 4px 14px rgba(0,0,0,0.2) !important; }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1246,7 +1250,7 @@
         <script src="paketler.js"></script>
         <script src="state.js"></script>
     <script src="auth.js?v=20260723a"></script>
-    <script src="router.js?v=20260723b"></script>
+    <script src="router.js?v=20260723c"></script>
     <script src="offline-packages.js"></script>
     <script src="online-packages.js"></script>
     <script src="checkout.js"></script>

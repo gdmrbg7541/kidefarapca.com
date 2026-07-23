@@ -262,6 +262,10 @@ function changeView(viewName, isBackAction = false) {
         }
     }
 
+    // Profil butonunu (header emoji) profil goruntusundeyken vurgula
+    var _uinfo = document.getElementById('user-info');
+    if (_uinfo) _uinfo.classList.toggle('profile-open', (viewName === 'student-profile-section' || viewName === 'teacher-section'));
+
     if (viewName !== 'student-profile-section' && appState.currentView === 'student-profile-section') {
         appState.profileScrollPos = window.scrollY || document.documentElement.scrollTop;
         const details = document.getElementById('student-info-details');
