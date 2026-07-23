@@ -195,18 +195,18 @@
         <span class="soa-title">🎮 Oyunlar</span><span class="soa-chev">▾</span>
       </button>
       <div class="soa-body">
-        <div class="soa-strip-title">Kelimenin Serüveni 👣</div>
+        <div class="soa-strip-title">Kelimenin Serüveni • Kökten kalıba 👣</div>
         <div class="soa-strip">
-          <a href="harekeavcisi.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">1</span><span class="soa-emoji">🎯</span><span class="soa-name">Hareke Avcısı</span></a>
-          <a href="ikikidijital.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">2</span><span class="soa-emoji">⚔️</span><span class="soa-name">İkiki</span></a>
-          <a href="kokutani.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">3</span><span class="soa-emoji">🔎</span><span class="soa-name">Kökü Tanı</span></a>
-          <a href="koktengovdeye.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">4</span><span class="soa-emoji">🛠️</span><span class="soa-name">Kökten Gövdeye</span></a>
-          <a href="zamanlayaris.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">5</span><span class="soa-emoji">⏱️</span><span class="soa-name">Zamanla Yarış</span></a>
+          <a href="harekeavcisi.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FF7A7A,#EE5253)"><div class="soa-num">1</div><div class="soa-emoji">🎯</div><div class="soa-name">Hareke Avcısı</div><div class="soa-desc">Doğru harekeleri yakala.</div></a>
+          <a href="ikikidijital.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#8B7CFF,#5A50E0)"><div class="soa-num">2</div><div class="soa-emoji">⚔️</div><div class="soa-name">İkiki</div><div class="soa-desc">Kelimeleri ilk sen türet!</div></a>
+          <a href="kokutani.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#2BD4B5,#0E9E86)"><div class="soa-num">3</div><div class="soa-emoji">🔎</div><div class="soa-name">Kökü Tanı</div><div class="soa-desc">Kökten türeyen kelimeleri bul!</div></a>
+          <a href="koktengovdeye.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FFB84D,#F39C12)"><div class="soa-num">4</div><div class="soa-emoji">🛠️</div><div class="soa-name">Kökten Gövdeye</div><div class="soa-desc">Kökü doğru kalıba sürükle!</div></a>
+          <a href="zamanlayaris.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FF7EB3,#FF2D75)"><div class="soa-num">5</div><div class="soa-emoji">⏱️</div><div class="soa-name">Zamanla Yarış</div><div class="soa-desc">Kök&kalıptan gövdeye!</div></a>
         </div>
         <div class="soa-strip-title">Yakında</div>
         <div class="soa-strip">
-          <div class="soa-card soa-passive"><span class="soa-emoji">🧠</span><span class="soa-name">Bilgi Yarışması</span><span class="soa-badge">Yakında</span></div>
-          <div class="soa-card soa-passive"><span class="soa-emoji">🧩</span><span class="soa-name">Gizemli Bulmaca</span><span class="soa-badge">Yakında</span></div>
+          <div class="soa-card soa-passive"><div class="soa-emoji">🧠</div><div class="soa-name">Bilgi Yarışması</div><div class="soa-badge">Yakında</div></div>
+          <div class="soa-card soa-passive"><div class="soa-emoji">🧩</div><div class="soa-name">Gizemli Bulmaca</div><div class="soa-badge">Yakında</div></div>
         </div>
       </div>
     </div>
@@ -217,20 +217,25 @@
         font-size:1.05rem; font-weight:800; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.18); }
       #sarfOyunlarAcc .soa-chev{ transition:transform .28s ease; font-size:1.1rem; }
       #sarfOyunlarAcc.open .soa-chev{ transform:rotate(180deg); }
-      #sarfOyunlarAcc .soa-body{ position:absolute; left:0; right:0; bottom:calc(100% + 10px); background:rgba(255,255,255,0.97); border-radius:16px; box-shadow:0 -8px 26px rgba(0,0,0,0.22); padding:4px 10px 10px; max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height .32s ease, opacity .25s ease; }
-      #sarfOyunlarAcc.open .soa-body{ max-height:min(58vh,340px); opacity:1; pointer-events:auto; }
-      #sarfOyunlarAcc .soa-strip-title{ font-weight:800; color:#334155; margin:12px 4px 8px; font-size:.9rem; }
-      #sarfOyunlarAcc .soa-strip{ display:flex; gap:10px; overflow-x:auto; padding:2px 4px 12px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; direction:ltr; }
-      #sarfOyunlarAcc .soa-strip::-webkit-scrollbar{ height:6px; }
+      /* ASAGI dogru acilan overlay (grid sabit kalir) */
+      #sarfOyunlarAcc .soa-body{ position:absolute; left:0; right:0; top:calc(100% + 10px); background:#ffffff; border-radius:18px; box-shadow:0 12px 32px rgba(0,0,0,0.25); padding:8px 12px 14px; max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height .32s ease, opacity .25s ease; }
+      #sarfOyunlarAcc.open .soa-body{ max-height:min(66vh,380px); overflow-y:auto; opacity:1; pointer-events:auto; }
+      /* === Masaustu ile AYNI kart tasarimi === */
+      #sarfOyunlarAcc .soa-strip-title{ font-weight:800; color:#334155; margin:12px 4px 8px; font-size:1.05rem; }
+      #sarfOyunlarAcc .soa-strip{ display:flex; gap:12px; overflow-x:auto; padding:2px 2px 12px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; direction:ltr; }
+      #sarfOyunlarAcc .soa-strip::-webkit-scrollbar{ height:7px; }
       #sarfOyunlarAcc .soa-strip::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:20px; }
-      #sarfOyunlarAcc .soa-card{ flex:0 0 108px; scroll-snap-align:start; position:relative; text-decoration:none;
-        background:linear-gradient(160deg,#FFFFFF,#EFFBF6); border:1px solid #d1f2eb; border-radius:14px; padding:12px 8px;
-        display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; box-shadow:0 2px 7px rgba(0,0,0,.06); }
-      #sarfOyunlarAcc .soa-num{ position:absolute; top:6px; left:6px; width:20px; height:20px; border-radius:50%; background:#16A085; color:#fff; font-weight:800; font-size:.72rem; display:flex; align-items:center; justify-content:center; }
-      #sarfOyunlarAcc .soa-emoji{ font-size:1.8rem; margin-top:2px; }
-      #sarfOyunlarAcc .soa-name{ font-weight:800; font-size:.82rem; color:#16A085; line-height:1.15; }
+      #sarfOyunlarAcc .soa-card{ flex:0 0 140px; scroll-snap-align:start; background:linear-gradient(160deg,#FFFFFF,#EFFBF6); border:1px solid #d1f2eb; border-radius:16px; padding:14px 10px; text-decoration:none; color:#1e293b; position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; box-shadow:0 3px 10px rgba(0,0,0,.08); }
+      #sarfOyunlarAcc .soa-num{ position:absolute; top:7px; left:7px; width:23px; height:23px; border-radius:50%; background:#16A085; color:#fff; font-weight:800; font-size:.82rem; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,.18); }
+      #sarfOyunlarAcc .soa-emoji{ font-size:2.2rem; margin-top:4px; filter:drop-shadow(0 2px 3px rgba(0,0,0,.18)); }
+      #sarfOyunlarAcc .soa-name{ font-weight:800; font-size:1rem; color:#16A085; letter-spacing:.2px; }
+      #sarfOyunlarAcc .soa-desc{ font-size:.78rem; color:#475569; line-height:1.35; font-weight:600; }
+      #sarfOyunlarAcc .soa-card.soa-av{ border:none; color:#fff; box-shadow:0 8px 22px rgba(0,0,0,.22); }
+      #sarfOyunlarAcc .soa-card.soa-av .soa-name{ color:#fff; }
+      #sarfOyunlarAcc .soa-card.soa-av .soa-desc{ color:rgba(255,255,255,.95); }
+      #sarfOyunlarAcc .soa-card.soa-av .soa-num{ background:#fff; color:#1e293b; }
       #sarfOyunlarAcc .soa-card.soa-passive{ opacity:.72; filter:grayscale(.35); background:linear-gradient(160deg,#FFFFFF,#F1F5F9); border-color:#e2e8f0; }
-      #sarfOyunlarAcc .soa-badge{ font-size:.64rem; background:#F39C12; color:#fff; padding:2px 8px; border-radius:10px; font-weight:800; }
+      #sarfOyunlarAcc .soa-badge{ font-size:.68rem; background:#F39C12; color:#fff; padding:2px 9px; border-radius:12px; font-weight:800; }
     </style>
     <script>
       function toggleSarfOyunlarAcc(){ var a=document.getElementById('sarfOyunlarAcc'); if(!a) return;
