@@ -598,7 +598,7 @@
 
 <script src="veri_sozluk.js?v=110"></script>
 <script src="veri_gramer.js?v=110"></script>
-<script src="kaliplartablosu.js?v=117"></script>
+<script src="kaliplartablosu.js?v=119"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
@@ -900,7 +900,7 @@
     var ready=false, gone=false, entered=false;
     setTimeout(function(){ ready=true; }, 1200);
     function tabEl(){ return document.getElementById('sarfOyunlarTab'); }
-    var t0=tabEl(); if(t0){ t0.classList.add('sot-preenter'); }
+    var t0=tabEl(); if(t0){ t0.classList.add('sot-preenter'); t0.addEventListener('animationend', function(){ if(t0) t0.classList.remove('sot-enter','sot-pop'); }); }
 
     function spawnFX(){
       var t=tabEl(); if(!t) return;
@@ -934,21 +934,26 @@
       t.classList.remove('sot-pop'); void t.offsetWidth; t.classList.add('sot-pop');
     };
     function startEntry(){ if(entered) return; entered=true; var t=tabEl(); if(!t) return; if(gone) return; t.classList.remove('sot-preenter','sot-pop'); void t.offsetWidth; t.classList.add('sot-enter'); }
-    // Gunun koku / yukleme ekrani kapaninca peek animasyonu oynasin
-    var tries=0; var iv=setInterval(function(){
-      tries++;
-      var od=document.getElementById('rootOfDayOverlay');
-      var ls=document.getElementById('global-loading-screen');
-      var odGone=!od || getComputedStyle(od).display==='none' || od.offsetParent===null;
-      var lsGone=!ls || getComputedStyle(ls).display==='none';
-      if((odGone && lsGone) || tries>50){ clearInterval(iv); startEntry(); }
-    }, 300);
+    // Peek animasyonu: "Gunun Koku" penceresi KAPATILDIKTAN sonra baslasin
+    if(typeof window.closeRootOfDay==='function'){ var _crd=window.closeRootOfDay; window.closeRootOfDay=function(){ var r=_crd.apply(this,arguments); setTimeout(startEntry, 500); return r; }; }
+    // Emniyet: gunun koku hic gosterilmezse/kapanmazsa bir sure sonra yine de cik
+    setTimeout(function(){ if(!document.getElementById('rootOfDayOverlay')) startEntry(); }, 20000);
 
     var HIDE=['openRootsModal','openVerbModal','openKeyboard','openSearchKeyboard','openFastDictionaryMode','selectRootFromMenu','selectRootFromMainKeyboard'];
     HIDE.forEach(function(fn){ if(typeof window[fn]==='function'){ var _o=window[fn]; window[fn]=function(){ try{ window.hideSarfOyunlarTab(); }catch(e){} return _o.apply(this, arguments); }; } });
     var SHOW=['closeKeyboard','closeVerbModal','closeFastDictionaryMode','closeMarathon'];
     SHOW.forEach(function(fn){ if(typeof window[fn]==='function'){ var _o=window[fn]; window[fn]=function(){ var r=_o.apply(this, arguments); try{ window.showSarfOyunlarTab(); }catch(e){} return r; }; } });
     if(typeof window.resetTableOnly==='function'){ var _rt=window.resetTableOnly; window.resetTableOnly=function(isSilent){ var r=_rt.apply(this, arguments); try{ if(!isSilent) window.showSarfOyunlarTab(); }catch(e){} return r; }; }
+
+    // === Bosta 30sn kalinca sekme sayfada gezinsin; fare/dokunusta HEMEN evine kacsin ===
+    var idleTimer=null, wandering=false, wanderIv=null;
+    function homeReset(fast){ var t=tabEl(); if(!t) return; t.style.transition = fast ? 'transform .3s cubic-bezier(.34,1.4,.64,1)' : ''; t.style.transform=''; }
+    function moveRandom(){ var t=tabEl(); if(!t||!wandering) return; var tw=t.offsetWidth, th=t.offsetHeight, vw=window.innerWidth, vh=window.innerHeight; var TL=16+Math.random()*(vw-tw-32), TT=16+Math.random()*(vh-th-32); var dx=TL-(vw-tw), dy=TT-vh/2; t.style.transition='transform 2.4s ease-in-out'; t.style.transform='translate('+dx.toFixed(0)+'px,'+dy.toFixed(0)+'px)'; }
+    function startWander(){ var t=tabEl(); if(!t||gone||wandering||!entered) return; if(t.style.display==='none'||t.classList.contains('sot-gone')||t.classList.contains('sot-preenter')) return; if(document.getElementById('rootOfDayOverlay')) return; wandering=true; t.classList.remove('sot-enter','sot-pop'); t.style.willChange='transform'; moveRandom(); wanderIv=setInterval(moveRandom, 2700); }
+    function stopWander(){ if(!wandering) return; wandering=false; if(wanderIv){ clearInterval(wanderIv); wanderIv=null; } homeReset(true); }
+    function resetIdle(){ if(wandering) stopWander(); if(idleTimer) clearTimeout(idleTimer); idleTimer=setTimeout(startWander, 30000); }
+    ['mousemove','mousedown','keydown','touchstart','wheel','scroll'].forEach(function(ev){ window.addEventListener(ev, resetIdle, {passive:true}); });
+    resetIdle();
   })();
 </script>
 <!-- ===== /SARF MOTORU OYUNLAR paneli ===== -->

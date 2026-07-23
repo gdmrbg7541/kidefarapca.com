@@ -9407,6 +9407,11 @@ function showRootOfDay() {
         "#4B5563", // Havalı Gri
         "#4338CA"  // Koyu Lacivert
     ];
+    // Soru isareti (kapali) yuzu icin daha yumusak / dinlendirici tonlar
+    const softPalette = [
+        "#7E9AB8","#83AB87","#A98CB6","#C09A70","#74A5A2","#BC8794","#8E93A8","#AC9877",
+        "#8BA4C0","#95B08C","#B58C9A","#7AA1B2","#BFA079","#9AA6BE","#A6AE8C"
+    ];
     
     let derivedWordsHTML = "";
     for (let i = 0; i < wordsArray.length; i++) {
@@ -9414,11 +9419,19 @@ function showRootOfDay() {
         // Renklendirme kapatıldı (zaid harf renklendirmesi iptal), kelimenin tamamı tek renk olacak
         let rawArText = w.arText; 
         let cardColor = colorPalette[i % colorPalette.length];
+        let softColor = softPalette[i % softPalette.length];
         
         derivedWordsHTML += `
-            <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-align: center; transition: transform 0.2s, border-color 0.2s; flex: 0 1 200px; min-width: 160px; max-width: 260px;" onmouseover="this.style.borderColor='${cardColor}'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'">
-                <div style="font-family: 'Arakom', sans-serif; font-size: 52px; color: ${cardColor}; margin-bottom: 12px; line-height: 1.2;" dir="rtl">${rawArText}</div>
-                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #555555; font-weight: 600;" dir="ltr">${w.trText}</div>
+            <div class="rod-card" data-idx="${i}" style="flex: 0 1 200px; min-width: 160px; max-width: 260px; height: 168px; perspective: 900px; cursor: pointer;">
+              <div class="rod-card-inner" style="position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d;">
+                <div class="rod-face" style="position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: ${softColor}; color: rgba(255,255,255,0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.10);">
+                  <span style="font-size: 64px; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.18);">?</span>
+                </div>
+                <div class="rod-face" style="position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; background: #ffffff; border: 2px solid ${cardColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 10px;">
+                  <div style="font-family: 'Arakom', sans-serif; font-size: 46px; color: ${cardColor}; line-height: 1.2;" dir="rtl">${rawArText}</div>
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; color: #555555; font-weight: 600; margin-top: 8px;" dir="ltr">${w.trText}</div>
+                </div>
+              </div>
             </div>
         `;
     }
@@ -9459,7 +9472,7 @@ function showRootOfDay() {
     
     // iOS/Apple-like professional design
     modalOverlay.innerHTML = `
-        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <div id="rod-panel" style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
             
             <button onclick="closeRootOfDay()" style="position: absolute; top: 20px; right: 20px; background: #e2e8f0; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">
                 <i class="fas fa-times"></i>
@@ -9514,6 +9527,50 @@ function showRootOfDay() {
         modalOverlay.style.opacity = "1";
         modalOverlay.firstElementChild.style.transform = "scale(1) translateY(0)";
     }, 50);
+
+    // ==== GUNUN KOKU OYUNU: akici kirmizi kenar geri sayimi (20sn/kelime) + kart cevirme ====
+    (function(){
+      var panel = modalOverlay.querySelector('#rod-panel');
+      var cards = Array.prototype.slice.call(modalOverlay.querySelectorAll('.rod-card'));
+      var n = cards.length; if(n===0 || !panel) return;
+      var totalMs = n*20000, remaining = totalMs, ended=false;
+      var svg=null, rect=null, P=0, NS='http://www.w3.org/2000/svg';
+      var drainStart=0, endTimer=null;
+      function isFlipped(c){ return c.getAttribute('data-flipped')==='1'; }
+      function flip(c){ if(isFlipped(c)) return false; c.setAttribute('data-flipped','1'); var inner=c.querySelector('.rod-card-inner'); if(inner) inner.style.transform='rotateY(180deg)'; return true; }
+      function curRemaining(){ return Math.max(0, remaining - (Date.now()-drainStart)); }
+      function buildTimer(){
+        var w=panel.offsetWidth, h=panel.offsetHeight, r=26, sw=6;
+        svg=document.createElementNS(NS,'svg'); svg.style.position='absolute'; svg.style.pointerEvents='none'; svg.style.zIndex='6';
+        rect=document.createElementNS(NS,'rect'); rect.setAttribute('fill','none'); rect.setAttribute('stroke','#FF3B30'); rect.setAttribute('stroke-width',sw); rect.setAttribute('stroke-linecap','round'); rect.style.filter='drop-shadow(0 0 5px rgba(255,59,48,.5))'; rect.style.willChange='stroke-dashoffset';
+        svg.appendChild(rect); modalOverlay.appendChild(svg);
+        svg.setAttribute('width',w); svg.setAttribute('height',h); svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px';
+        rect.setAttribute('x',sw/2); rect.setAttribute('y',sw/2); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); rect.setAttribute('rx',r); rect.setAttribute('ry',r);
+        var ww=w-sw, hh=h-sw; P = 2*((ww-2*r)+(hh-2*r)) + 2*Math.PI*r;
+        rect.style.strokeDasharray = P; rect.style.strokeDashoffset = '0';
+      }
+      function startDrain(){
+        if(!rect) return; var rem = remaining; var frac = rem/totalMs;
+        rect.style.transition='none';
+        rect.style.strokeDashoffset = (P*(1-frac)).toFixed(1);
+        void rect.getBoundingClientRect(); // reflow
+        rect.style.transition = 'stroke-dashoffset '+rem+'ms linear';
+        rect.style.strokeDashoffset = P.toFixed(1);
+        drainStart = Date.now();
+        if(endTimer) clearTimeout(endTimer);
+        endTimer = setTimeout(endGame, rem);
+      }
+      function endGame(){ if(ended) return; ended=true; if(endTimer) clearTimeout(endTimer);
+        if(rect){ rect.style.transition='stroke-dashoffset .3s linear'; rect.style.strokeDashoffset = P.toFixed(1); }
+        var rest=cards.filter(function(c){return !isFlipped(c);}); rest.forEach(function(c,i){ setTimeout(function(){ flip(c); }, i*280); }); }
+      cards.forEach(function(c){ c.addEventListener('click', function(){
+        if(ended){ flip(c); return; }
+        if(flip(c)){ var rem=curRemaining()-20000; remaining=Math.max(0,rem); if(remaining<=0){ endGame(); } else { startDrain(); } }
+      }); });
+      function reposition(){ if(svg && panel && rect){ svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px'; var w=panel.offsetWidth,h=panel.offsetHeight,sw=6; svg.setAttribute('width',w); svg.setAttribute('height',h); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); } }
+      window.addEventListener('resize', reposition);
+      setTimeout(function(){ buildTimer(); startDrain(); }, 550);
+    })();
 }
 
 
