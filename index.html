@@ -53,10 +53,14 @@
         header #logout-btn, header #header-login-btn{ padding:5px 10px !important; }
         header #user-info{ font-size:0.9em !important; }
       }
-      /* Profil butonu (header): basinca ve profildeyken vurgu */
-      #user-info.user-profile-btn{ -webkit-tap-highlight-color:transparent; }
-      #user-info.user-profile-btn:active{ transform:scale(0.93) !important; background:rgba(255,255,255,0.5) !important; }
-      #user-info.user-profile-btn.profile-open{ background:#fff !important; color:#F39C12 !important; border-color:#fff !important; box-shadow:0 0 0 3px rgba(255,255,255,0.65), 0 4px 14px rgba(0,0,0,0.2) !important; }
+      /* Profil butonu (header): KUTUSUZ; aktif/profildeyken sadece altta beyaz cizgi */
+      #user-info.user-profile-btn{ -webkit-tap-highlight-color:transparent; background:transparent !important; border:none !important; box-shadow:none !important; border-radius:0 !important; padding:4px 4px !important; border-bottom:3px solid transparent !important; transition:border-color 0.2s ease, transform 0.15s ease !important; }
+      #user-info.user-profile-btn:hover{ background:transparent !important; box-shadow:none !important; transform:none !important; }
+      #user-info.user-profile-btn:active{ transform:scale(0.92) !important; }
+      #user-info.user-profile-btn.profile-open{ background:transparent !important; color:#fff !important; border-bottom:3px solid #fff !important; box-shadow:none !important; }
+      /* Site ismi: anasayfadayken altinda beyaz cizgi */
+      header h1 #brand-name{ border-bottom:3px solid transparent; padding-bottom:2px; transition:border-color 0.2s ease; }
+      header h1.home-active #brand-name{ border-bottom-color:#fff; }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -111,7 +115,7 @@
     <!-- HEADER: Sadece Logo, Kullanıcı Bilgisi ve Login/Logout Butonları -->
     <header>
         <div style="display:flex; align-items:center; gap: 15px;">
-            <h1 onclick="changeView('home-hub-section')" style="cursor:pointer; margin:0; white-space:nowrap;">kidefarapca.com</h1>
+            <h1 onclick="changeView('home-hub-section')" style="cursor:pointer; margin:0; white-space:nowrap;"><span id="brand-name">kidefarapca.com</span></h1>
             <div id="header-live-dot" class="live-dot" style="display: none; position: absolute; top: -5px; right: -5px;" title="Canlı yayınınız başlıyor!"></div>
             <nav id="header-nav-tabs" style="display:flex; gap: 15px; margin-left: 20px;">
                 <a href="#" id="tab-paketler" onclick="changeView('offline-list'); event.preventDefault();" title="Paketler" aria-label="Paketler" style="color: rgba(255,255,255,0.8); text-decoration: none; display:inline-flex; align-items:center; justify-content:center; padding: 5px 9px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color=(this.style.borderBottom.includes('white') ? 'white' : 'rgba(255,255,255,0.8)')"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></a>
@@ -1250,7 +1254,7 @@
         <script src="paketler.js"></script>
         <script src="state.js"></script>
     <script src="auth.js?v=20260723a"></script>
-    <script src="router.js?v=20260723c"></script>
+    <script src="router.js?v=20260723d"></script>
     <script src="offline-packages.js"></script>
     <script src="online-packages.js"></script>
     <script src="checkout.js"></script>

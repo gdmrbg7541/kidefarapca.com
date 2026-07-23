@@ -265,6 +265,8 @@ function changeView(viewName, isBackAction = false) {
     // Profil butonunu (header emoji) profil goruntusundeyken vurgula
     var _uinfo = document.getElementById('user-info');
     if (_uinfo) _uinfo.classList.toggle('profile-open', (viewName === 'student-profile-section' || viewName === 'teacher-section'));
+    var _brandH1 = document.querySelector('header h1');
+    if (_brandH1) _brandH1.classList.toggle('home-active', (viewName === 'home-hub-section'));
 
     if (viewName !== 'student-profile-section' && appState.currentView === 'student-profile-section') {
         appState.profileScrollPos = window.scrollY || document.documentElement.scrollTop;
