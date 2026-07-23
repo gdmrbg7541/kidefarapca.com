@@ -815,6 +815,73 @@
     });
 </script>
 
+<!-- ===== SARF MOTORU: Sağdan açılan OYUNLAR paneli (kelimenin serüveni + yakında) ===== -->
+<style>
+  #sarfOyunlarTab{ position:fixed; right:0; top:50%; transform:translateY(-50%); z-index:99997;
+    background:linear-gradient(135deg,#16A085,#20C997); color:#fff; border:none; border-radius:14px 0 0 14px;
+    padding:14px 9px; cursor:pointer; box-shadow:-3px 3px 12px rgba(0,0,0,0.22); display:flex; flex-direction:column;
+    align-items:center; gap:5px; font-weight:800; font-size:.72rem; letter-spacing:.5px; }
+  #sarfOyunlarTab .sot-chev{ font-size:1.35rem; line-height:1; animation:sotNudge 1.6s ease-in-out infinite; }
+  @keyframes sotNudge{ 0%,100%{ transform:translateX(0);} 50%{ transform:translateX(-3px);} }
+  #sarfOyunlarTab .sot-emoji{ font-size:1.25rem; }
+  #sarfOyunlarOverlay{ position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:99998; opacity:0; pointer-events:none; transition:opacity .3s ease; }
+  #sarfOyunlarOverlay.open{ opacity:1; pointer-events:auto; }
+  #sarfOyunlarPanel{ position:fixed; top:0; right:0; height:100vh; width:400px; max-width:90vw; background:#fff;
+    z-index:99999; box-shadow:-8px 0 30px rgba(0,0,0,.28); transform:translateX(100%); transition:transform .34s cubic-bezier(.4,0,.2,1);
+    display:flex; flex-direction:column; padding:18px 16px; overflow-y:auto; box-sizing:border-box; direction:ltr; text-align:left; }
+  #sarfOyunlarPanel.open{ transform:translateX(0); }
+  #sarfOyunlarPanel .sop-head{ display:flex; justify-content:space-between; align-items:center; font-size:1.4rem; font-weight:800; color:#16A085; margin-bottom:6px; }
+  #sarfOyunlarPanel .sop-close{ background:none; border:none; font-size:1.9rem; line-height:1; cursor:pointer; color:#94a3b8; }
+  #sarfOyunlarPanel .sop-strip-title{ font-weight:800; color:#334155; margin:14px 0 8px; font-size:.98rem; }
+  #sarfOyunlarPanel .sop-strip{ display:flex; gap:12px; overflow-x:auto; padding:2px 2px 12px; scroll-snap-type:x proximity; direction:ltr; }
+  #sarfOyunlarPanel .sop-strip::-webkit-scrollbar{ height:7px; }
+  #sarfOyunlarPanel .sop-strip::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:20px; }
+  #sarfOyunlarPanel .sop-card{ flex:0 0 145px; scroll-snap-align:start; background:linear-gradient(160deg,#FFFFFF,#EFFBF6);
+    border:1px solid #d1f2eb; border-radius:16px; padding:14px 10px; text-decoration:none; color:#1e293b; position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); transition:transform .15s, box-shadow .15s; }
+  #sarfOyunlarPanel .sop-card:hover{ transform:translateY(-4px); box-shadow:0 8px 18px rgba(0,0,0,.13); }
+  #sarfOyunlarPanel .sop-num{ position:absolute; top:8px; left:8px; width:23px; height:23px; border-radius:50%; background:#16A085; color:#fff; font-weight:800; font-size:.8rem; display:flex; align-items:center; justify-content:center; }
+  #sarfOyunlarPanel .sop-emoji{ font-size:2.1rem; margin-top:4px; }
+  #sarfOyunlarPanel .sop-name{ font-weight:800; font-size:.96rem; color:#16A085; }
+  #sarfOyunlarPanel .sop-desc{ font-size:.74rem; color:#64748b; line-height:1.3; }
+  #sarfOyunlarPanel .sop-card.sop-passive{ opacity:.72; cursor:not-allowed; filter:grayscale(.35); background:linear-gradient(160deg,#FFFFFF,#F1F5F9); border-color:#e2e8f0; }
+  #sarfOyunlarPanel .sop-badge{ font-size:.68rem; background:#F39C12; color:#fff; padding:2px 9px; border-radius:12px; font-weight:800; }
+  @media (max-width:520px){ #sarfOyunlarTab{ font-size:.66rem; padding:12px 7px; } }
+</style>
+<button id="sarfOyunlarTab" onclick="toggleSarfOyunlar()" aria-label="Oyunlar" title="Oyunlar">
+  <span class="sot-chev">&#8249;</span><span class="sot-emoji">🎮</span><span>Oyunlar</span>
+</button>
+<div id="sarfOyunlarOverlay" onclick="toggleSarfOyunlar(false)"></div>
+<aside id="sarfOyunlarPanel" aria-hidden="true">
+  <div class="sop-head"><span>🎮 Oyunlar</span><button class="sop-close" onclick="toggleSarfOyunlar(false)" aria-label="Kapat">&times;</button></div>
+  <div class="sop-strip-title">Kelimenin Serüveni • Kökten kalıba 👣</div>
+  <div class="sop-strip">
+    <a href="harekeavcisi.html" target="_blank" rel="opener" class="sop-card"><div class="sop-num">1</div><div class="sop-emoji">🎯</div><div class="sop-name">Hareke Avcısı</div><div class="sop-desc">Doğru harekeleri yakala.</div></a>
+    <a href="ikikidijital.html" target="_blank" rel="opener" class="sop-card"><div class="sop-num">2</div><div class="sop-emoji">⚔️</div><div class="sop-name">İkiki</div><div class="sop-desc">Kelimeleri ilk sen türet!</div></a>
+    <a href="kokutani.html" target="_blank" rel="opener" class="sop-card"><div class="sop-num">3</div><div class="sop-emoji">🔎</div><div class="sop-name">Kökü Tanı</div><div class="sop-desc">Kökten türeyen kelimeleri bul!</div></a>
+    <a href="kaliplartablosudijital.html" target="_blank" rel="opener" class="sop-card"><div class="sop-num">4</div><div class="sop-emoji">🛠️</div><div class="sop-name">Kalıplar Tablosu</div><div class="sop-desc">Kökü doğru kalıba sürükle!</div></a>
+    <a href="zamanlayaris.html" target="_blank" rel="opener" class="sop-card"><div class="sop-num">5</div><div class="sop-emoji">⏱️</div><div class="sop-name">Zamanla Yarış</div><div class="sop-desc">Kök&kalıptan gövdeye!</div></a>
+  </div>
+  <div class="sop-strip-title">Yakında</div>
+  <div class="sop-strip">
+    <div class="sop-card sop-passive"><div class="sop-emoji">🧠</div><div class="sop-name">Bilgi Yarışması</div><div class="sop-badge">Yakında</div></div>
+    <div class="sop-card sop-passive"><div class="sop-emoji">🧩</div><div class="sop-name">Gizemli Bulmaca</div><div class="sop-badge">Yakında</div></div>
+  </div>
+</aside>
+<script>
+  function toggleSarfOyunlar(force){
+    var p=document.getElementById('sarfOyunlarPanel'), o=document.getElementById('sarfOyunlarOverlay'), t=document.getElementById('sarfOyunlarTab');
+    if(!p) return;
+    var open=(typeof force==='boolean')?force:!p.classList.contains('open');
+    p.classList.toggle('open',open); if(o) o.classList.toggle('open',open);
+    p.setAttribute('aria-hidden',open?'false':'true');
+    if(t) t.style.display=open?'none':'flex';
+  }
+  window.toggleSarfOyunlar=toggleSarfOyunlar;
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') toggleSarfOyunlar(false); });
+</script>
+<!-- ===== /SARF MOTORU OYUNLAR paneli ===== -->
+
     <script src="geri.js"></script>
 </body>
 </html>

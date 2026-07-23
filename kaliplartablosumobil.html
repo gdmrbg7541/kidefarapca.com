@@ -183,6 +183,57 @@
             <span>Dilbilgisi</span>
         </div>
     </div>
+    <!-- ===== OYUNLAR akordiyonu (kapalı; açınca yatay scroll) ===== -->
+    <div id="sarfOyunlarAcc">
+      <button type="button" class="soa-head" onclick="toggleSarfOyunlarAcc()" aria-expanded="false">
+        <span class="soa-title">🎮 Oyunlar</span><span class="soa-chev">▾</span>
+      </button>
+      <div class="soa-body">
+        <div class="soa-strip-title">Kelimenin Serüveni 👣</div>
+        <div class="soa-strip">
+          <a href="harekeavcisi.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">1</span><span class="soa-emoji">🎯</span><span class="soa-name">Hareke Avcısı</span></a>
+          <a href="ikikidijital.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">2</span><span class="soa-emoji">⚔️</span><span class="soa-name">İkiki</span></a>
+          <a href="kokutani.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">3</span><span class="soa-emoji">🔎</span><span class="soa-name">Kökü Tanı</span></a>
+          <a href="kaliplartablosudijital.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">4</span><span class="soa-emoji">🛠️</span><span class="soa-name">Kalıplar Tablosu</span></a>
+          <a href="zamanlayaris.html" target="_blank" rel="opener" class="soa-card"><span class="soa-num">5</span><span class="soa-emoji">⏱️</span><span class="soa-name">Zamanla Yarış</span></a>
+        </div>
+        <div class="soa-strip-title">Yakında</div>
+        <div class="soa-strip">
+          <div class="soa-card soa-passive"><span class="soa-emoji">🧠</span><span class="soa-name">Bilgi Yarışması</span><span class="soa-badge">Yakında</span></div>
+          <div class="soa-card soa-passive"><span class="soa-emoji">🧩</span><span class="soa-name">Gizemli Bulmaca</span><span class="soa-badge">Yakında</span></div>
+        </div>
+      </div>
+    </div>
+    <style>
+      #sarfOyunlarAcc{ width:100%; max-width:520px; margin:10px auto 0; box-sizing:border-box; direction:ltr; text-align:left; }
+      #sarfOyunlarAcc .soa-head{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
+        background:linear-gradient(135deg,#16A085,#20C997); color:#fff; border:none; border-radius:14px; padding:12px 18px;
+        font-size:1.05rem; font-weight:800; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.18); }
+      #sarfOyunlarAcc .soa-chev{ transition:transform .28s ease; font-size:1.1rem; }
+      #sarfOyunlarAcc.open .soa-chev{ transform:rotate(180deg); }
+      #sarfOyunlarAcc .soa-body{ max-height:0; overflow:hidden; transition:max-height .34s ease; }
+      #sarfOyunlarAcc.open .soa-body{ max-height:420px; }
+      #sarfOyunlarAcc .soa-strip-title{ font-weight:800; color:#334155; margin:12px 4px 8px; font-size:.9rem; }
+      #sarfOyunlarAcc .soa-strip{ display:flex; gap:10px; overflow-x:auto; padding:2px 4px 12px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; direction:ltr; }
+      #sarfOyunlarAcc .soa-strip::-webkit-scrollbar{ height:6px; }
+      #sarfOyunlarAcc .soa-strip::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:20px; }
+      #sarfOyunlarAcc .soa-card{ flex:0 0 108px; scroll-snap-align:start; position:relative; text-decoration:none;
+        background:linear-gradient(160deg,#FFFFFF,#EFFBF6); border:1px solid #d1f2eb; border-radius:14px; padding:12px 8px;
+        display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; box-shadow:0 2px 7px rgba(0,0,0,.06); }
+      #sarfOyunlarAcc .soa-num{ position:absolute; top:6px; left:6px; width:20px; height:20px; border-radius:50%; background:#16A085; color:#fff; font-weight:800; font-size:.72rem; display:flex; align-items:center; justify-content:center; }
+      #sarfOyunlarAcc .soa-emoji{ font-size:1.8rem; margin-top:2px; }
+      #sarfOyunlarAcc .soa-name{ font-weight:800; font-size:.82rem; color:#16A085; line-height:1.15; }
+      #sarfOyunlarAcc .soa-card.soa-passive{ opacity:.72; filter:grayscale(.35); background:linear-gradient(160deg,#FFFFFF,#F1F5F9); border-color:#e2e8f0; }
+      #sarfOyunlarAcc .soa-badge{ font-size:.64rem; background:#F39C12; color:#fff; padding:2px 8px; border-radius:10px; font-weight:800; }
+    </style>
+    <script>
+      function toggleSarfOyunlarAcc(){ var a=document.getElementById('sarfOyunlarAcc'); if(!a) return;
+        var open=!a.classList.contains('open'); a.classList.toggle('open',open);
+        var h=a.querySelector('.soa-head'); if(h) h.setAttribute('aria-expanded',open?'true':'false'); }
+      window.toggleSarfOyunlarAcc=toggleSarfOyunlarAcc;
+    </script>
+    <!-- ===== /OYUNLAR akordiyonu ===== -->
+
     <button id="mobile-search-btn" class="mobile-search-btn" onclick="if (window.openMobileSearch) openMobileSearch();" title="Arama" aria-label="Arama">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
