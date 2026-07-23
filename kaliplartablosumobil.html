@@ -20,7 +20,7 @@
     </script>
     
     <!-- Base CSS (Mobile) -->
-    <link rel="stylesheet" href="kaliplartablosumobil.css?v=1784300086">
+    <link rel="stylesheet" href="kaliplartablosumobil.css?v=1784300088">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -182,6 +182,12 @@
             <i class="fas fa-book"></i>
             <span>Dilbilgisi</span>
         </div>
+    <button id="mobile-search-btn" class="mobile-search-btn" onclick="if (window.openMobileSearch) openMobileSearch();" title="Arama" aria-label="Arama">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </button>
     </div>
     <!-- ===== OYUNLAR akordiyonu (kapalı; açınca yatay scroll) ===== -->
     <div id="sarfOyunlarAcc">
@@ -205,14 +211,14 @@
       </div>
     </div>
     <style>
-      #sarfOyunlarAcc{ width:100%; max-width:520px; margin:10px auto 0; box-sizing:border-box; direction:ltr; text-align:left; }
+      #sarfOyunlarAcc{ width:100%; max-width:520px; margin:10px auto 0; box-sizing:border-box; direction:ltr; text-align:left; position:relative; z-index:60; }
       #sarfOyunlarAcc .soa-head{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px;
         background:linear-gradient(135deg,#16A085,#20C997); color:#fff; border:none; border-radius:14px; padding:12px 18px;
         font-size:1.05rem; font-weight:800; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.18); }
       #sarfOyunlarAcc .soa-chev{ transition:transform .28s ease; font-size:1.1rem; }
       #sarfOyunlarAcc.open .soa-chev{ transform:rotate(180deg); }
-      #sarfOyunlarAcc .soa-body{ max-height:0; overflow:hidden; transition:max-height .34s ease; }
-      #sarfOyunlarAcc.open .soa-body{ max-height:420px; }
+      #sarfOyunlarAcc .soa-body{ position:absolute; left:0; right:0; bottom:calc(100% + 10px); background:rgba(255,255,255,0.97); border-radius:16px; box-shadow:0 -8px 26px rgba(0,0,0,0.22); padding:4px 10px 10px; max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height .32s ease, opacity .25s ease; }
+      #sarfOyunlarAcc.open .soa-body{ max-height:min(58vh,340px); opacity:1; pointer-events:auto; }
       #sarfOyunlarAcc .soa-strip-title{ font-weight:800; color:#334155; margin:12px 4px 8px; font-size:.9rem; }
       #sarfOyunlarAcc .soa-strip{ display:flex; gap:10px; overflow-x:auto; padding:2px 4px 12px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; direction:ltr; }
       #sarfOyunlarAcc .soa-strip::-webkit-scrollbar{ height:6px; }
@@ -234,12 +240,6 @@
     </script>
     <!-- ===== /OYUNLAR akordiyonu ===== -->
 
-    <button id="mobile-search-btn" class="mobile-search-btn" onclick="if (window.openMobileSearch) openMobileSearch();" title="Arama" aria-label="Arama">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-    </button>
 </div>
 
 <!-- Mobile Grammar Menu Overlay -->

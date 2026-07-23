@@ -3937,7 +3937,13 @@ body {
     gap: 14px;
     width: 100%;
     max-width: 440px;
+    position: relative;   /* ortadaki arama butonu icin referans */
 }
+/* Ortadaki arama butonuna dogru ic koseleri yuvarla */
+.mobile-grid-item:nth-child(1) { border-bottom-right-radius: 48px; }  /* Kokler */
+.mobile-grid-item:nth-child(2) { border-bottom-left-radius: 48px; }   /* Kelimeler */
+.mobile-grid-item:nth-child(3) { border-top-right-radius: 48px; }     /* Telaffuz */
+.mobile-grid-item:nth-child(4) { border-top-left-radius: 48px; }      /* Dilbilgisi */
 
 .mobile-grid-item {
     position: relative;
@@ -4064,8 +4070,8 @@ body {
     }
     
     .mobile-grid-container {
-        grid-template-columns: repeat(4, 1fr);
-        max-width: 820px;
+        grid-template-columns: 1fr 1fr;   /* landscape'te de 2x2 (ortada arama butonu) */
+        max-width: 460px;
         width: 100%;
         gap: 12px;
         box-sizing: border-box;
@@ -5355,8 +5361,8 @@ body {
 .mobile-search-btn {
     position: absolute;
     left: 50%;
-    bottom: max(26px, env(safe-area-inset-bottom, 26px));
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 66px;
     height: 66px;
     border-radius: 50%;
@@ -5377,7 +5383,7 @@ body {
     box-shadow: 0 8px 22px rgba(0,0,0,0.24);
 }
 .mobile-search-btn:active {
-    transform: translateX(-50%) scale(0.9);
+    transform: translate(-50%, -50%) scale(0.9);
 }
 .mobile-search-btn svg {
     display: block;
