@@ -422,6 +422,7 @@ function basariliGiris(userEmail, userPhone = "", userName = "") {
 }
 
 function cikisYap() {
+    window._llLoadedUid = null; // Listelerim'i yeni oturumda tazele
     localStorage.removeItem('mockSession');
     if (isFirebaseReady) {
         firebase.auth().signOut().then(() => {

@@ -1,6 +1,6 @@
 // ===== listelerim.js (index'e birlestirildi, tek firebase) =====
 function llRootEl(){ return document.getElementById('ll-root') || document.body; }
-function initListelerim(){ try{ var b=document.getElementById('login-nav-btn'); if(b) b.style.display='none'; var u=(window.firebase&&firebase.auth&&firebase.auth().currentUser); if(u && typeof verileriGetir==='function') verileriGetir(u.uid); setTimeout(function(){ if(typeof syncLevelActions==='function') syncLevelActions(); }, 900); }catch(e){console.error('initListelerim',e);} }
+function initListelerim(){ try{ var b=document.getElementById('login-nav-btn'); if(b) b.style.display='none'; var u=(window.firebase&&firebase.auth&&firebase.auth().currentUser); if(u && typeof verileriGetir==='function' && window._llLoadedUid !== u.uid){ window._llLoadedUid = u.uid; verileriGetir(u.uid); } setTimeout(function(){ if(typeof syncLevelActions==='function') syncLevelActions(); }, 900); }catch(e){console.error('initListelerim',e);} }
 window.initListelerim=initListelerim;
 
 const mufredatVerisi = {

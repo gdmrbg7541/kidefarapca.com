@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Kelimenin Serüveni - Kökten Gövdeye</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="kaliplartablosudijital.css">
+</head>
+<body>
+    <div id="game-container">
+        <main id="level2-container">
+            <div id="l2-header-row">
+                <div class="back-button" id="game-back-button">&#8617;</div>
+                <div id="l2-turkish-words-progress"></div>
+            </div>
+            
+            <div id="l2-root-area"> 
+                <div id="l2-draggable-root-wrapper"></div> 
+            </div>
+            
+            <div id="l2-mistakes"></div>
+            
+            <div id="l2-patterns-wrapper"></div>
+            
+            <div id="l2-global-result"></div>
+
+            <div id="l2-bottom-area">
+                <div class="l2-passive-suffixes">  ـ ـ ـة - ـ ـ ة   |   ـ ـ ـيّ - ـ ـ ـيَّة   |   ـ ـ ـات  |   ـ ـ ـًا </div>
+                <button id="next-button" class="hidden">İlerle ▶</button>
+            </div>
+        </main>
+
+        <div id="start-screen" class="overlay"> 
+            <div class="overlay-content"> 
+                <div class="back-button" id="start-back-button" data-kidef-done="1"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+                <h1>Kelimenin Serüveni</h1> 
+                <h2>Kökü Kalıba Yerleştir</h2> 
+                <div class="image-previews"> 
+                     <div class="image-preview"> <img src="sayfa1.png" alt="Kalıp Tablosu Sayfa 1"> <p>Kalıp Tablosu 1</p> </div> 
+                     <div class="image-preview"> <img src="sayfa2.png" alt="Kalıp Tablosu Sayfa 2"> <p>Kalıp Tablosu 2</p> </div> 
+                </div> 
+                <div class="start-options"> 
+                    <button class="start-button-option" data-mode="1"> Kendini Dene!</button> 
+                </div> 
+            </div> 
+        </div>
+
+        <div id="results-screen" class="overlay hidden"> 
+            <div class="overlay-content"> 
+                <div class="back-button" id="results-back-button">&#8617;</div> 
+                <h2 id="results-title">Oyun Bitti!</h2> 
+                <div id="results-details"></div> 
+                <button id="play-again-button">Ana Menüye Dön</button> 
+            </div> 
+        </div>
+    
+        <div id="orientation-warning" class="overlay">
+            <div class="overlay-content">
+                <h2>Lütfen Cihazı Dik Tutun</h2>
+                <p>Bu oyun en iyi dikey modda çalışır.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="kaliplartablosudijital.js"></script>
+    <script src="geri.js"></script>
+</body>
+</html>
