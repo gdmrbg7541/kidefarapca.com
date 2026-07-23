@@ -946,11 +946,16 @@
     if(typeof window.resetTableOnly==='function'){ var _rt=window.resetTableOnly; window.resetTableOnly=function(isSilent){ var r=_rt.apply(this, arguments); try{ if(!isSilent) window.showSarfOyunlarTab(); }catch(e){} return r; }; }
 
     // === Bosta 30sn kalinca sekme sayfada gezinsin; fare/dokunusta HEMEN evine kacsin ===
-    var idleTimer=null, wandering=false, wanderIv=null;
+    var idleTimer=null, wandering=false, wanderIv=null, curDx=0, curDy=0, walkInit=false;
     function homeReset(fast){ var t=tabEl(); if(!t) return; t.style.transition = fast ? 'transform .3s cubic-bezier(.34,1.4,.64,1)' : ''; t.style.transform=''; }
-    function moveRandom(){ var t=tabEl(); if(!t||!wandering) return; var tw=t.offsetWidth, th=t.offsetHeight, vw=window.innerWidth, vh=window.innerHeight; var TL=16+Math.random()*(vw-tw-32), TT=16+Math.random()*(vh-th-32); var dx=TL-(vw-tw), dy=TT-vh/2; t.style.transition='transform 2.4s ease-in-out'; t.style.transform='translate('+dx.toFixed(0)+'px,'+dy.toFixed(0)+'px)'; }
-    function startWander(){ var t=tabEl(); if(!t||gone||wandering||!entered) return; if(t.style.display==='none'||t.classList.contains('sot-gone')||t.classList.contains('sot-preenter')) return; if(document.getElementById('rootOfDayOverlay')) return; wandering=true; t.classList.remove('sot-enter','sot-pop'); t.style.willChange='transform'; moveRandom(); wanderIv=setInterval(moveRandom, 2700); }
-    function stopWander(){ if(!wandering) return; wandering=false; if(wanderIv){ clearInterval(wanderIv); wanderIv=null; } homeReset(true); }
+    function stepWalk(){ var t=tabEl(); if(!t||!wandering) return; var tw=t.offsetWidth, th=t.offsetHeight, vw=window.innerWidth, vh=window.innerHeight;
+      if(!walkInit){ curDx=0; curDy=-th/2; walkInit=true; }
+      curDx += (Math.random()*2-1)*85; curDy += (Math.random()*2-1)*65;
+      var left=(vw-tw)+curDx; if(left<10) curDx+=(10-left); else if(left>vw-tw-10) curDx-=(left-(vw-tw-10));
+      var top=vh/2+curDy; if(top<10) curDy+=(10-top); else if(top>vh-th-10) curDy-=(top-(vh-th-10));
+      t.style.transition='transform 1.6s ease-in-out'; t.style.transform='translate('+curDx.toFixed(0)+'px,'+curDy.toFixed(0)+'px)'; }
+    function startWander(){ var t=tabEl(); if(!t||gone||wandering||!entered) return; if(t.style.display==='none'||t.classList.contains('sot-gone')||t.classList.contains('sot-preenter')) return; if(document.getElementById('rootOfDayOverlay')) return; wandering=true; walkInit=false; t.classList.remove('sot-enter','sot-pop'); t.style.willChange='transform'; stepWalk(); wanderIv=setInterval(stepWalk, 2000); }
+    function stopWander(){ if(!wandering) return; wandering=false; walkInit=false; if(wanderIv){ clearInterval(wanderIv); wanderIv=null; } homeReset(true); }
     function resetIdle(){ if(wandering) stopWander(); if(idleTimer) clearTimeout(idleTimer); idleTimer=setTimeout(startWander, 30000); }
     ['mousemove','mousedown','keydown','touchstart','wheel','scroll'].forEach(function(ev){ window.addEventListener(ev, resetIdle, {passive:true}); });
     resetIdle();
