@@ -445,10 +445,10 @@ function updateHeaderUI() {
         const icon = (appState.userRole === 'admin') ? '😎 '
             : (appState.userRole === 'teacher') ? (_g === 'kadin' ? '👩‍🏫 ' : (_g === 'erkek' ? '👨‍🏫 ' : '🧑‍🏫 '))
             : (_g === 'kadin' ? '👩‍🎓 ' : (_g === 'erkek' ? '👨‍🎓 ' : '🎓 '));
-        const dropdownIcon = (appState.userRole === 'student' || appState.userRole === 'admin') ? ' <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>' : '';
+        const dropdownIcon = (appState.userRole === 'student' || appState.userRole === 'admin' || appState.userRole === 'teacher') ? ' <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>' : '';
         userInfoEl.style.display = 'flex';
         const _dispName = (appState.currentUserName && appState.currentUserName !== "Öğrenci" && appState.currentUserName !== "Belirtilmedi") ? appState.currentUserName : (appState.currentUser || "");
-        userInfoEl.innerHTML = icon + _dispName + dropdownIcon;
+        userInfoEl.innerHTML = icon + '<span class="uinfo-name">' + _dispName + '</span>' + dropdownIcon;
     }
     
     document.getElementById('logout-btn').style.display = isGuest ? 'none' : 'inline-block';
@@ -476,6 +476,7 @@ function updateHeaderUI() {
 
     // Müfredat (kazanimData) düzenlemelerini Firestore'dan yükle ve tabanın üstüne bindir
     if (typeof loadMufredat === 'function') loadMufredat();
+    if (typeof loadTeacherSchedules === 'function') loadTeacherSchedules();
 }
 
 function checkActiveLessonStatus() {

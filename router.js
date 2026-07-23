@@ -217,7 +217,7 @@ function changeView(viewName, isBackAction = false) {
     // Yalnızca yönetici (veya PAKETLER_AKTIF=true) tıklayabilir. "Ders Talep Et" her zaman aktif.
     var _pkgClickable = (appState.PAKETLER_AKTIF === true) || _isAdmin;
     if (tabTeacherPanel) tabTeacherPanel.style.display = 'none';
-    if (tabListelerim) tabListelerim.style.display = 'inline-block';
+    if (tabListelerim) tabListelerim.style.display = (_isTeacher || _isAdmin) ? 'inline-block' : 'none';
     if (tabBooking) tabBooking.style.display = _isTeacher ? 'none' : 'inline-block'; // Ders Talep Et her zaman aktif
     [tabPaketler, tabOnlinePackages].forEach(function(t){
         if (!t) return;
