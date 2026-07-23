@@ -1836,14 +1836,28 @@ function verileriGetir(uid) {
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
+        // Her zaman bu hesabin KENDI verisini yukle; baska hesaptan kalan yerel veri asla gorunmesin
         if (doc.exists && doc.data().userData) {
             try {
                 data = JSON.parse(doc.data().userData); 
+                if (!data || typeof data !== 'object') data = { levels: {}, levelOrder: [] };
+                if (!data.levels) data.levels = {};
                 console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
             } catch (e) {
                 console.error("JSON ayrıştırma hatası:", e);
+                data = { levels: {}, levelOrder: [] };
             }
+        } else {
+            // Bu hesabin kendi listesi yok -> bos basla (onceki ogretmenin listeleri gorunmesin)
+            data = { levels: {}, levelOrder: [] };
         }
+        // Yerel kopyayi ve ogretmen kodunu da bu hesaba gore guncelle (hesaplar arasi sizinti engellenir)
+        try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch(e){}
+        try {
+            var _sc = (doc.exists && doc.data().teacherStaticCode) ? doc.data().teacherStaticCode : null;
+            if (_sc) localStorage.setItem('teacher_static_code', _sc);
+            else localStorage.removeItem('teacher_static_code');
+        } catch(e){}
 
         // 1. Sidebar'ı oluştur
         renderSidebar(); 
