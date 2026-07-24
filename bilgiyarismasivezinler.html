@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=20">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=21">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -48,6 +48,21 @@
         <span id="adminAd" class="biy-admin-ad"></span>
       </div>
     </header>
+
+    <div class="biy-konu-panel">
+      <div class="biy-konu-secim">
+        <label for="konuSecim" class="biy-konu-label">Konu</label>
+        <select id="konuSecim" class="biy-konu-select" onchange="BIY.konuSec(this.value)"></select>
+      </div>
+      <div class="biy-pdf-onizleme">
+        <a class="biy-pdf-a4" id="pdfKart" target="_blank" rel="noopener" title="PDF'i aç">
+          <span class="biy-pdf-rozet">PDF</span>
+          <span class="biy-pdf-baslik" id="pdfBaslik"></span>
+          <span class="biy-pdf-cizgiler"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </a>
+        <a class="biy-btn biy-btn-mavi biy-pdf-indir" id="pdfIndir" download>⬇ PDF indir</a>
+      </div>
+    </div>
 
     <div class="biy-menu">
       <button class="biy-menu-kart" onclick="BIY.acSorular()">
@@ -117,6 +132,6 @@
 
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=17"></script>
+<script src="bilgiyarismasivezinler.js?v=18"></script>
 </body>
 </html>

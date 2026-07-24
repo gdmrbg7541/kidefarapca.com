@@ -72,8 +72,29 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-geri-tus:hover { background: #e2e8f0; border-color: #cbd5e1; color: #FF3B30; }
 .biy-geri-tus:active { transform: translateY(1px); }
 
+/* ---- konu seçimi + PDF önizleme ---- */
+.biy-konu-panel { display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 34px 20px 8px; }
+.biy-konu-secim { display: flex; flex-direction: column; gap: 8px; }
+.biy-konu-label { font-family: 'Marhey',sans-serif; font-weight: 700; color: #64748b; font-size: 1.1rem; }
+.biy-konu-select { appearance: none; -webkit-appearance: none; background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2316A085' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 16px center;
+  border: 2px solid #E9EEF5; border-radius: 14px; padding: 16px 46px 16px 20px; font-family: inherit; font-size: 1.35rem; font-weight: 700; color: #16A085; cursor: pointer; min-width: 280px; box-shadow: 0 4px 12px rgba(0,0,0,.05); }
+.biy-konu-select:focus { outline: none; border-color: #20C997; }
+
+.biy-pdf-onizleme { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.biy-pdf-a4 { position: relative; width: 132px; height: 187px; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,.12); display: flex; flex-direction: column; padding: 16px 14px; text-decoration: none; overflow: hidden; transition: transform .15s, box-shadow .15s; }
+.biy-pdf-a4:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,.18); }
+.biy-pdf-a4:before { content: ""; position: absolute; top: 0; right: 0; border-width: 0 26px 26px 0; border-style: solid; border-color: #F7F9FC #F7F9FC #E2E8F0 #E2E8F0; border-radius: 0 0 0 6px; }
+.biy-pdf-rozet { align-self: flex-start; background: #EF5350; color: #fff; font-family: 'Marhey',sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .5px; padding: 3px 9px; border-radius: 5px; box-shadow: 0 2px 5px rgba(239,83,80,.35); }
+.biy-pdf-baslik { margin-top: 12px; font-weight: 800; font-size: .82rem; color: #334155; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.biy-pdf-cizgiler { margin-top: auto; display: flex; flex-direction: column; gap: 6px; }
+.biy-pdf-cizgiler i { height: 5px; border-radius: 3px; background: #EDF2F7; }
+.biy-pdf-cizgiler i:nth-child(1){ width: 100%; } .biy-pdf-cizgiler i:nth-child(2){ width: 92%; } .biy-pdf-cizgiler i:nth-child(3){ width: 96%; } .biy-pdf-cizgiler i:nth-child(4){ width: 78%; } .biy-pdf-cizgiler i:nth-child(5){ width: 88%; } .biy-pdf-cizgiler i:nth-child(6){ width: 60%; }
+.biy-pdf-a4.biy-pasif { opacity: .5; pointer-events: none; }
+.biy-pdf-indir { padding: 12px 24px; font-size: 1.05rem; border-radius: 12px; }
+.biy-pdf-indir.gizli { display: none; }
+
 /* ---- ana menü ---- */
-.biy-menu { flex: 1; display: flex; gap: 26px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 44px 20px; }
+.biy-menu { flex: 0 0 auto; display: flex; gap: 26px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 20px 20px 44px; }
 .biy-menu-kart {
   width: 300px; height: 220px; cursor: pointer; color: #333; font-family: inherit;
   background: #fff; border: 1px solid #E9EEF5; border-radius: 20px;
