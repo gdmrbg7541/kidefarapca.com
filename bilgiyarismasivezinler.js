@@ -367,12 +367,7 @@ const BIY = {
       if (taze){
         state.sonucAnimIndex = idx;
         SES.sonuc();                                  // sonuç ekranı açıldı
-        // sıralama değişimi kontrolü → liderlik büyürken (adım 3) ses
-        const ids = state.takimListe.map(x => x.id);
-        const newR = BIY._rank(BIY._puanKumul(idx), ids), prevR = BIY._rank(BIY._puanKumul(idx - 1), ids);
-        const degisti = ids.some(id => (newR[id] || ids.length) < (prevR[id] || ids.length));
-        BIY._sonucOynat();
-        if (degisti) state.sonucTimerlar.push(setTimeout(() => SES.siraDegisti(), 4300));
+        BIY._sonucOynat();                            // sıralama sesi FLIP anında (_liderlikGecis) çalar
       }
       return;
     }
@@ -474,13 +469,28 @@ const BIY = {
     const ids = state.takimListe.map(t => t.id);
     const newP = BIY._puanKumul(idx), prevP = BIY._puanKumul(idx - 1);
     const newR = BIY._rank(newP, ids), prevR = BIY._rank(prevP, ids);
-    const sirali = state.takimListe.slice().sort((a,b) => (newP[b.id]||0) - (newP[a.id]||0));
-    const lider = sirali.map((tk,i) => {
-      const delta = (prevR[tk.id]||ids.length) - (newR[tk.id]||ids.length); // >0 yükseldi
-      const ok = delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit">–</span>');
-      const cls = delta > 0 ? 'biy-lider-yukari' : (delta < 0 ? 'biy-lider-asagi' : '');
-      return '<li class="'+cls+'" style="--i:'+i+'"><span class="biy-lider-sira">'+(i+1)+'</span>'+ok+'<span class="biy-lider-ad">'+kacis(tk.ad)+'</span><b>'+(newP[tk.id]||0)+'</b></li>';
-    }).join("");
+    const veri = state.takimListe.map(tk => {
+      const ns = newR[tk.id] || ids.length, ps = prevR[tk.id] || ids.length;
+      return { id: tk.id, ad: tk.ad, ns: ns, ps: ps, np: newP[tk.id] || 0, pp: prevP[tk.id] || 0, delta: ps - ns };
+    });
+    let lider;
+    if (taze){
+      // BAŞLANGIÇ: önceki sıralama + önceki puanlar (oklar boş) — FLIP ile yeni sıraya kayacak
+      const dizi = veri.slice().sort((a,b) => (b.pp - a.pp) || (b.np - a.np));
+      lider = dizi.map(r =>
+        '<li class="biy-lider-satir" data-id="'+r.id+'" data-yeni-sira="'+r.ns+'" data-yeni-puan="'+r.np+'" data-delta="'+r.delta+'">' +
+          '<span class="biy-lider-sira">'+r.ps+'</span><span class="biy-ok biy-ok-sabit"></span>' +
+          '<span class="biy-lider-ad">'+kacis(r.ad)+'</span><b>'+r.pp+'</b></li>'
+      ).join("");
+    } else {
+      // yenileme sonrası: doğrudan yeni sıralamayı göster
+      const dizi = veri.slice().sort((a,b) => a.ns - b.ns);
+      lider = dizi.map(r => {
+        const ok = r.delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (r.delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit"></span>');
+        const cls = r.delta > 0 ? ' biy-lider-yukari' : (r.delta < 0 ? ' biy-lider-asagi' : '');
+        return '<li class="biy-lider-satir'+cls+'" data-id="'+r.id+'"><span class="biy-lider-sira">'+r.ns+'</span>'+ok+'<span class="biy-lider-ad">'+kacis(r.ad)+'</span><b>'+r.np+'</b></li>';
+      }).join("");
+    }
     const son = (idx + 1 >= toplam);
     const step = taze ? 0 : 4;   // yeniden render (yenileme) olursa animasyonu atla, son durumu göster
     return '<div class="biy-oyun-orta biy-sonuc-ekran" data-step="'+step+'">' +
@@ -499,10 +509,49 @@ const BIY = {
     BIY._sonucTemizle();
     const set = (n) => { const e = document.querySelector(".biy-sonuc-ekran"); if (e) e.setAttribute("data-step", String(n)); };
     // 0: doğru şık büyük (giriş animasyonu CSS'te) →
-    state.sonucTimerlar.push(setTimeout(() => set(1), 1500));  // 1: sınıfların cevapları görünür
-    state.sonucTimerlar.push(setTimeout(() => set(2), 3600));  // 2: doğru şık küçülür
-    state.sonucTimerlar.push(setTimeout(() => set(3), 4300));  // 3: liderlik tablosu büyür + sıra atlayanlar
-    state.sonucTimerlar.push(setTimeout(() => set(4), 6200));  // 4: buton görünür
+    state.sonucTimerlar.push(setTimeout(() => set(1), 1500));               // 1: sınıfların cevapları görünür
+    state.sonucTimerlar.push(setTimeout(() => set(2), 3600));               // 2: doğru şık küçülür
+    state.sonucTimerlar.push(setTimeout(() => set(3), 4300));               // 3: liderlik tablosu belirir (önceki sıra)
+    state.sonucTimerlar.push(setTimeout(() => BIY._liderlikGecis(), 5150)); //    sıralama animasyonu (satırlar yeni yerine kayar)
+    state.sonucTimerlar.push(setTimeout(() => set(4), 7000));               // 4: buton görünür
+  },
+  // liderlik tablosu — satırları önceki sıralamadan yeni sıralamaya FLIP ile kaydırır
+  _liderlikGecis(){
+    const ol = document.querySelector(".biy-lider-ol"); if (!ol) return;
+    const satirlar = Array.from(ol.children); if (!satirlar.length) return;
+    // FIRST — mevcut konumlar
+    const ilk = new Map(); satirlar.forEach(li => ilk.set(li, li.getBoundingClientRect().top));
+    // yeni sıraya göre yeniden diz
+    const yeni = satirlar.slice().sort((a,b) => (+a.dataset.yeniSira) - (+b.dataset.yeniSira));
+    yeni.forEach(li => ol.appendChild(li));
+    // içerikleri güncelle: sıra no, puan, ok, vurgu
+    let degisti = false;
+    yeni.forEach(li => {
+      const delta = +(li.dataset.delta || 0);
+      const sira = li.querySelector(".biy-lider-sira"); if (sira) sira.textContent = li.dataset.yeniSira;
+      const puan = li.querySelector("b"); if (puan) puan.textContent = li.dataset.yeniPuan;
+      const ok = li.querySelector(".biy-ok");
+      if (delta > 0){ if (ok){ ok.textContent = "▲"; ok.className = "biy-ok biy-ok-yukari"; } li.classList.add("biy-lider-yukari"); degisti = true; }
+      else if (delta < 0){ if (ok){ ok.textContent = "▼"; ok.className = "biy-ok biy-ok-asagi"; } li.classList.add("biy-lider-asagi"); degisti = true; }
+      else { if (ok){ ok.textContent = ""; ok.className = "biy-ok biy-ok-sabit"; } }
+    });
+    // LAST + INVERT
+    yeni.forEach(li => {
+      const son = li.getBoundingClientRect().top;
+      const dy = (ilk.get(li) || son) - son;
+      li.style.transition = "none";
+      li.style.transform = dy ? ("translateY(" + dy + "px)") : "translateY(0)";
+    });
+    // PLAY
+    void ol.getBoundingClientRect();
+    requestAnimationFrame(() => {
+      yeni.forEach((li, i) => {
+        li.style.transition = "transform .8s cubic-bezier(.22,1,.36,1)";
+        li.style.transitionDelay = (i * 0.05) + "s";
+        li.style.transform = "translateY(0)";
+      });
+    });
+    if (degisti) SES.siraDegisti();
   },
   _sonucTemizle(){ (state.sonucTimerlar || []).forEach(t => clearTimeout(t)); state.sonucTimerlar = []; },
 

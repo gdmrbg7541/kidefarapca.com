@@ -340,10 +340,10 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
   background: var(--c); color: #fff; border-radius: 22px; padding: 32px 46px; margin: 8px auto 0; max-width: 94%;
   box-shadow: 0 16px 38px rgba(0,0,0,.20);
   transform-origin: center top;
-  animation: biyDbGir .75s cubic-bezier(.2,1.5,.4,1) both;
+  animation: biyDbGir .6s cubic-bezier(.22,1,.36,1) both;
   transition: padding .55s cubic-bezier(.4,0,.2,1), border-radius .55s, box-shadow .55s, gap .55s;
 }
-@keyframes biyDbGir { 0%{ transform: scale(.25) translateY(-12px); opacity: 0; } 60%{ transform: scale(1.08); opacity: 1; } 100%{ transform: scale(1); } }
+@keyframes biyDbGir { 0%{ transform: scale(.72) translateY(-6px); opacity: 0; } 55%{ opacity: 1; } 70%{ transform: scale(1.03); } 100%{ transform: scale(1); opacity: 1; } }
 .biy-db-etiket { font-size: 1rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; opacity: .92; transition: font-size .5s, opacity .5s; }
 .biy-db-sik { display: flex; align-items: center; gap: 16px; }
 .biy-db-harf { width: 48px; height: 48px; border-radius: 13px; background: rgba(255,255,255,.24); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.6rem; transition: all .5s; }
@@ -351,7 +351,7 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-dogru-buyuk.ar .biy-db-metin { direction: rtl; font-size: 2.9rem; }
 
 /* hızlı kalp atışı — o an büyüyen elemana uygulanır */
-@keyframes biyKalp { 0%,100%{ transform: scale(1); } 12%{ transform: scale(1.07); } 24%{ transform: scale(1); } 36%{ transform: scale(1.07); } 50%{ transform: scale(1); } }
+@keyframes biyKalp { 0%,100%{ transform: scale(1); } 10%{ transform: scale(1.05); } 20%{ transform: scale(1); } 30%{ transform: scale(1.05); } 42%{ transform: scale(1); } }
 /* ADIM 0 — doğru şık büyükken kalp atışı */
 .biy-sonuc-ekran[data-step="0"] .biy-db-sik { animation: biyKalp .8s ease-in-out infinite; }
 
@@ -396,26 +396,24 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-sonuc-ekran[data-step="4"] .biy-reveal-tablo tbody tr { animation: biySatirGir .45s ease both; animation-delay: calc(var(--r) * .12s); }
 @keyframes biySatirGir { from{ opacity: 0; transform: translateX(-18px); } to{ opacity: 1; transform: none; } }
 
-/* ADIM 3 — liderlik tablosu BÜYÜR + sıra atlayan takım animasyonu */
-.biy-sonuc-lider { margin-top: 22px; opacity: 0; transform: scale(.82) translateY(14px); transform-origin: top center; transition: opacity .55s ease, transform .65s cubic-bezier(.2,1.4,.35,1); }
+/* ADIM 3 — liderlik tablosu belirir; satırlar önceki sıradan yeni sıraya kayar (FLIP) */
+.biy-sonuc-lider { margin-top: 26px; opacity: 0; transform: translateY(26px); transform-origin: top center; transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
 .biy-sonuc-ekran[data-step="3"] .biy-sonuc-lider,
-.biy-sonuc-ekran[data-step="4"] .biy-sonuc-lider { opacity: 1; transform: scale(1) translateY(0); }
-.biy-sonuc-lider h4 { text-align: center; color: #F39C12; font-size: 1.35rem; margin: 0 0 12px; }
-.biy-sonuc-lider .biy-lider-ol { list-style: none; padding: 0; max-width: 560px; margin: 0 auto; }
-.biy-sonuc-lider li { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #E9EEF5; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; font-weight: 700; box-shadow: 0 3px 8px rgba(0,0,0,.05); transition: border-color .4s, background .4s; }
-.biy-lider-sira { width: 30px; text-align: center; color: #94a3b8; font-weight: 800; }
+.biy-sonuc-ekran[data-step="4"] .biy-sonuc-lider { opacity: 1; transform: translateY(0); }
+.biy-sonuc-lider h4 { text-align: center; color: #F39C12; font-size: 1.7rem; margin: 0 0 16px; }
+.biy-sonuc-lider .biy-lider-ol { list-style: none; padding: 0; max-width: 680px; margin: 0 auto; position: relative; }
+.biy-sonuc-lider li { display: flex; align-items: center; gap: 16px; background: #fff; border: 1px solid #E9EEF5; border-radius: 16px; padding: 18px 24px; margin-bottom: 12px; font-weight: 700; font-size: 1.4rem; box-shadow: 0 4px 12px rgba(0,0,0,.06); will-change: transform; }
+.biy-lider-sira { min-width: 42px; text-align: center; color: #94a3b8; font-weight: 800; font-size: 1.5rem; }
 .biy-lider-ad { flex: 1; }
-.biy-sonuc-lider li b { color: #16A085; font-size: 1.2rem; }
-.biy-ok { width: 20px; text-align: center; font-weight: 900; font-size: 1.1rem; }
-.biy-ok-yukari { color: #27AE60; } .biy-ok-asagi { color: #EF5350; } .biy-ok-sabit { color: #cbd5e1; }
-/* sıra atlayan (yükselen) takım vurgusu — tablo büyüyünce başlar */
-.biy-sonuc-ekran[data-step="3"] .biy-lider-yukari,
-.biy-sonuc-ekran[data-step="4"] .biy-lider-yukari { border-color: #27AE60; animation: biyParla 1.4s ease calc(.35s + var(--i)*.1s) 2 both; }
-@keyframes biyParla { 0%{ box-shadow: 0 3px 8px rgba(0,0,0,.05); background: #fff; } 30%{ box-shadow: 0 0 0 4px rgba(39,174,96,.45); background: #E6FAF5; } 100%{ box-shadow: 0 3px 8px rgba(0,0,0,.05); background: #fff; } }
-.biy-sonuc-ekran[data-step="3"] .biy-lider-yukari .biy-ok-yukari,
-.biy-sonuc-ekran[data-step="4"] .biy-lider-yukari .biy-ok-yukari { display: inline-block; animation: biyOkZipla .6s ease calc(.45s + var(--i)*.1s) 4; }
-@keyframes biyOkZipla { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-6px); } }
-.biy-lider-asagi { border-color: #FBD9D9; }
+.biy-sonuc-lider li b { color: #16A085; font-size: 1.6rem; }
+.biy-ok { min-width: 26px; text-align: center; font-weight: 900; font-size: 1.4rem; }
+.biy-ok-yukari { color: #27AE60; } .biy-ok-asagi { color: #EF5350; } .biy-ok-sabit { color: transparent; }
+/* sıra atlayan (yükselen) takım vurgusu — satır yeni yerine kayarken parlar */
+.biy-lider-yukari { border-color: #27AE60 !important; animation: biyParla 1.8s cubic-bezier(.4,0,.2,1) both; }
+@keyframes biyParla { 0%{ box-shadow: 0 4px 12px rgba(0,0,0,.06); background: #fff; } 22%{ box-shadow: 0 0 0 3px rgba(39,174,96,.5), 0 10px 26px rgba(39,174,96,.28); background: #EAFBF4; } 100%{ box-shadow: 0 4px 12px rgba(0,0,0,.06); background: #fff; } }
+.biy-lider-yukari .biy-ok-yukari { display: inline-block; animation: biyOkZipla .55s ease .15s 3; }
+@keyframes biyOkZipla { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-7px); } }
+.biy-lider-asagi { border-color: #FBD9D9 !important; }
 
 /* ADIM 4 — buton görünür */
 .biy-sonuc-ekran .biy-oyun-kontrol { opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .4s ease, transform .4s ease; }
@@ -446,12 +444,13 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
   #ekranOyunAdmin .biy-sonuc-ekran[data-step="4"] .biy-dogru-buyuk.ar .biy-db-metin { font-size: 2.4rem; }
   #ekranOyunAdmin .biy-sonuc-ekran[data-step="1"] .biy-reveal-tablo th { font-size: 2rem; padding: 22px; }
   #ekranOyunAdmin .biy-sonuc-ekran[data-step="1"] .biy-reveal-tablo td { font-size: 2.3rem; padding: 26px 18px; }
-  #ekranOyunAdmin .biy-sonuc-lider { max-width: 720px; margin-left: auto; margin-right: auto; }
-  #ekranOyunAdmin .biy-sonuc-lider h4 { font-size: 1.7rem; }
-  #ekranOyunAdmin .biy-sonuc-lider li { font-size: 1.6rem; padding: 16px 24px; }
-  #ekranOyunAdmin .biy-sonuc-lider li b { font-size: 1.7rem; }
-  #ekranOyunAdmin .biy-ok { font-size: 1.5rem; width: 28px; }
-  #ekranOyunAdmin .biy-lider-sira { width: 40px; }
+  #ekranOyunAdmin .biy-sonuc-lider { max-width: 920px; margin-left: auto; margin-right: auto; }
+  #ekranOyunAdmin .biy-sonuc-lider .biy-lider-ol { max-width: 920px; }
+  #ekranOyunAdmin .biy-sonuc-lider h4 { font-size: 2.3rem; margin-bottom: 22px; }
+  #ekranOyunAdmin .biy-sonuc-lider li { font-size: 2.3rem; padding: 24px 34px; border-radius: 20px; margin-bottom: 16px; gap: 22px; }
+  #ekranOyunAdmin .biy-sonuc-lider li b { font-size: 2.5rem; }
+  #ekranOyunAdmin .biy-ok { font-size: 2.1rem; min-width: 40px; }
+  #ekranOyunAdmin .biy-lider-sira { min-width: 62px; font-size: 2.3rem; }
   /* final — yansıtılan ekranda devasa sınıf isimleri */
   #ekranOyunAdmin .biy-final h1 { font-size: 3.2rem; }
   #ekranOyunAdmin .biy-final-ol { max-width: 1000px; }
