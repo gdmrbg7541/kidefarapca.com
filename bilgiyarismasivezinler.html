@@ -68,13 +68,6 @@
       </div>
     </div>
 
-    <div class="biy-seviye-secim">
-      <span class="biy-seviye-label">Zorluk seviyesi:</span>
-      <button class="biy-seviye-btn" data-seviye="kolay" onclick="BIY.setSeviye('kolay')">Kolay</button>
-      <button class="biy-seviye-btn" data-seviye="orta" onclick="BIY.setSeviye('orta')">Orta</button>
-      <button class="biy-seviye-btn" data-seviye="zor" onclick="BIY.setSeviye('zor')">Zor</button>
-    </div>
-
     <div class="biy-seviye-secim biy-sorusayi-secim">
       <span class="biy-seviye-label">Soru sayısı:</span>
       <button class="biy-sayi-btn" data-sayi="10" onclick="BIY.setSoruSayisi(10)">10</button>
@@ -85,7 +78,6 @@
       <input id="soruSayiInput" class="biy-sayi-input" type="number" min="1" max="50" step="1" placeholder="Özel"
              onchange="BIY.setSoruSayisiManuel(this.value)" title="Konudaki soru sayısına kadar">
     </div>
-    <p class="biy-ayar-not">Zorluk ve soru sayısı dijital yarışma için; sınıf modu seçilen zorluğun sorularını gösterir.</p>
 
     <div class="biy-menu">
       <button class="biy-menu-kart" id="kartSinif" onclick="BIY.acSinif()">
@@ -100,7 +92,7 @@
         <span class="biy-menu-desc">Takım oluştur · link &amp; karekod · lobi</span>
       </button>
     </div>
-    <p id="menuNot" class="biy-menu-not gizli">Başlamak için yukarıdan konu (ya da havuzdan soru), zorluk seviyesi ve soru sayısını seçin.</p>
+    <p id="menuNot" class="biy-menu-not gizli">Başlamak için yukarıdan konu (ya da havuzdan soru) ve soru sayısını seçin.</p>
   </section>
 
   <!-- ADMIN — Sorular önizleme -->
@@ -167,6 +159,6 @@
 
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=50"></script>
+<script src="bilgiyarismasivezinler.js?v=51"></script>
 </body>
 </html>

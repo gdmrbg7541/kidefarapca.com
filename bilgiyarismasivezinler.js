@@ -637,9 +637,8 @@ const BIY = {
     const havuz = BIY._secSet().size;
     const konuVar = (BIY._aktifSorular().length > 0);
     const icerik = havuz > 0 || konuVar;                 // konu ya da havuzdan soru
-    const seviyeSecili = !!state.seviye;                 // zorluk seçili
     const sayiSecili = (state.soruSayisi != null && state.soruSayisi > 0);  // soru sayısı seçili
-    const aktif = icerik && seviyeSecili && sayiSecili;
+    const aktif = icerik && sayiSecili;
     ["kartSinif", "kartDijital"].forEach(id => { const el = $(id); if (el) el.classList.toggle("biy-pasif", !aktif); });
     const not = $("menuNot"); if (not) not.classList.toggle("gizli", aktif);
     BIY._dijitalKartDurum();
@@ -661,11 +660,10 @@ const BIY = {
     if (havuz.length){ list = havuz.slice(); kaynak = "Karışık · seçili sorular (" + havuz.length + ")"; }
     else {
       const k = BIY._aktifKonu(); if (!k) return;   // konu da havuz da yoksa açma
-      const z = SEVIYE_ZORLUK[state.seviye] || 1;
-      list = (k.sorular || []).filter(s => s.zorluk === z);
-      kaynak = k.ad + " · " + (ZORLUK_AD[z] || "");
+      list = (k.sorular || []).slice();             // konunun tüm soruları (zorluk fark etmez)
+      kaynak = k.ad;
     }
-    if (!list.length){   // seçilen zorlukta soru yoksa uyar
+    if (!list.length){   // soru yoksa uyar
       state.sinifList = []; state.sinifIndex = 0; state.sinifCevapAcik = false;
       const kb0 = $("sinifKaynak"); if (kb0) kb0.textContent = kaynak;
       BIY._sinifRender();
@@ -728,7 +726,6 @@ const BIY = {
       // yalnızca AKTİF oyun (oyun/beraberlik) kaldığı yerden devam eder; lobi/bitti → ana sayfa
       if (dr0 !== 'oyun' && dr0 !== 'beraberlik'){ BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); return; }
       state.odaId = kayit.oda;
-      state.seviye = kayit.seviye || 'kolay';
       state.oyunSorulari = Array.isArray(kayit.sorular) ? kayit.sorular : [];
       state.yedekSorular = Array.isArray(kayit.yedek) ? kayit.yedek : [];
       state.yedekSoruMap = kayit.yedekMap || {};
@@ -736,7 +733,6 @@ const BIY = {
       if (kayit.ber){ state.berHedef = kayit.ber.hedef||0; state.berTakimlar = kayit.ber.takimlar||[]; state.berSabit = kayit.ber.sabit||{}; state.berNo = kayit.ber.no||0; state.berSorular = kayit.ber.sorular||[]; }
       if (state.takimAbone) state.takimAbone();
       state.takimAbone = ref.collection('takimlar').orderBy('olusturmaZamani').onSnapshot(s => BIY._takimlariCiz(s));
-      BIY.setSeviye(state.seviye);
       BIY._adminOyunaGec();   // aktif oyuna geri dön
     } catch(e){ console.error('Devam hatası:', e); BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); }
   },
@@ -908,12 +904,6 @@ const BIY = {
   },
 
   /* ---------- YARIŞMAYI BAŞLAT (oyun döngüsü) ---------- */
-  setSeviye(s){
-    state.seviye = s;
-    document.querySelectorAll(".biy-seviye-btn").forEach(b => b.classList.toggle("secili", b.getAttribute("data-seviye") === s));
-    BIY._soruSayiSinir();
-    BIY._menuDurum();
-  },
   setSoruSayisi(n){
     const max = state.soruSayiMax || 50;
     n = Math.max(1, Math.min(max, parseInt(n, 10) || max));
@@ -954,17 +944,12 @@ const BIY = {
       secilen = hv.map(soruHazirla);
       yedek = [];   // görülmemiş yedek sorulmaz
     } else {
-      const hedefZ = SEVIYE_ZORLUK[state.seviye] || 1;
-      const tumu = BIY._aktifSorular();
+      const tumu = BIY._aktifSorular().slice();   // konunun tüm soruları (zorluk fark etmez)
       if (!tumu.length){ $("baslatNot").textContent = "«" + (BIY._aktifKonu() ? BIY._aktifKonu().ad : "") + "» konusunda henüz soru yok."; return; }
-      const karistir = (a) => { for (let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = a[i]; a[i] = a[j]; a[j] = g; } return a; };
-      // önce seçilen zorluk (karışık), yetmezse diğer zorluklardan tamamla
-      const oncelik = karistir(tumu.filter(s => s.zorluk === hedefZ));
-      const digerler = karistir(tumu.filter(s => s.zorluk !== hedefZ));
-      const sirali = oncelik.concat(digerler);
+      for (let i = tumu.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = tumu[i]; tumu[i] = tumu[j]; tumu[j] = g; }
       const hedefSayi = Math.max(1, Math.min(50, state.soruSayisi || TUR_SORU_SAYISI));
-      secilen = sirali.slice(0, Math.min(hedefSayi, sirali.length)).map(soruHazirla);
-      yedek = sirali.slice(secilen.length).map(soruHazirla);
+      secilen = tumu.slice(0, Math.min(hedefSayi, tumu.length)).map(soruHazirla);
+      yedek = tumu.slice(secilen.length).map(soruHazirla);
     }
     state.oyunSorulari = secilen;
     state.yedekSorular = yedek;   // beraberlikte yedek olarak kullanılır
