@@ -307,6 +307,7 @@ const state = {
   odaTakim: null,            // takım: {oda, takim}
   takimAd: "",
   takimAbone: null, odaAboneAdmin: null, odaAbone: null, cevapAbone: null,
+  ayarKilidiKapali: false,   // lobiye dönünce ayarlar (konu/seviye/soru sayısı) takım bağlıyken de açılır
   oda: null,                 // canlı oda dokümanı
   takimListe: [],            // [{id, ad, bagli, puan}]
   cevaplar: {},              // "takimId_index" -> {takimId, ad, index, secilen}
@@ -597,7 +598,12 @@ const BIY = {
   /* ---------- Takım Oluştur / Lobi ---------- */
   acTakimlar(){
     ekranGoster("ekranTakimlar");
-    if (!state.odaId){ $("takimlarGrid").innerHTML = ""; $("odaBilgi").classList.add("gizli"); }
+    if (!state.odaId){
+      $("takimlarGrid").innerHTML = ""; $("odaBilgi").classList.add("gizli");
+      const b = $("baslatBtn"); if (b) b.classList.add("gizli");
+      const n = $("baslatNot"); if (n) n.textContent = "";
+      BIY._kontrolleriAc();
+    }
     BIY._soruSayiSinir(); BIY._soruSecSayiGuncelle();
   },
   // --- Kalıcılık (sayfa yenilense de oyun kaybolmasın) ---
@@ -641,12 +647,46 @@ const BIY = {
     ov.querySelector(".biy-onay-evet").onclick = () => { kapat(); onEvet(); };
     ov.addEventListener("click", e => { if (e.target === ov) kapat(); });
   },
-  // canlı yarışmadan çıkış (yanlışlıkla çıkışa karşı onaylı)
+  // canlı yarışmadan çıkış → lobiye dön (takım bağlantıları KORUNUR)
   yaristanCik(){
-    BIY._onay("Yarışmadan çıkılsın mı?", "Aktif yarışma sonlandırılıp ana menüye dönülecek. Emin misiniz?", "Evet, çık", async function(){
-      try { if (state.odaId) await db.collection(KOLEKSIYON).doc(state.odaId).update({ durum: "bitti", sonSira: [] }); } catch(e){}
-      BIY.oyunuBitir();
-    });
+    BIY._onay("Lobiye dönülsün mü?",
+      "Yarışma durdurulup lobiye dönülür. Takım bağlantıları korunur — konu veya soru sayısını değiştirip yeniden başlatabilirsiniz.",
+      "Evet, lobiye dön", function(){ BIY.lobiyeDon(); });
+  },
+  // oyunu durdurup lobiye döner; oda + takım karekod bağlantıları kopmaz
+  async lobiyeDon(){
+    // 1) oyun dinleyicilerini kapat (takım aboneliği KORUNUR → kartlar canlı kalır)
+    if (state.odaAboneAdmin){ state.odaAboneAdmin(); state.odaAboneAdmin = null; }
+    if (state.cevapAbone){ state.cevapAbone(); state.cevapAbone = null; }
+    sayacDurdur(); BIY._sonucTemizle();
+    // 2) odayı lobiye al + eski cevapları temizle (yeni tura karışmasın), bağlantı kopmaz
+    try {
+      if (state.odaId){
+        await BIY._cevaplariSil();
+        await db.collection(KOLEKSIYON).doc(state.odaId).update({
+          durum: "lobi", faz: "cevap", aktifIndex: -1, toplamSoru: 0,
+          sonSira: [], berHedef: 0, berTakimlar: [], berSabit: {}, berNo: 0
+        });
+      }
+    } catch(e){ console.error(e); }
+    // 3) oyun/beraberlik state'ini sıfırla (odaId ve takımlar korunur)
+    state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1; state.sonucAnimIndex = -1; state.finalKonfeti = false;
+    state.hepsiSesIndex = -1;
+    state.yedekSorular = []; state.yedekSoruMap = {}; state.berHedef = 0; state.berTakimlar = []; state.berSabit = {}; state.berNo = 0; state.berSorular = [];
+    state.ayarKilidiKapali = true;   // lobiye döndük → ayarlar takım bağlıyken de değiştirilebilir
+    BIY._temizleKayit();
+    // 4) lobi ekranına dön, ayarları aç
+    ekranGoster("ekranTakimlar");
+    BIY._kontrolleriAc();
+    BIY._soruSayiSinir(); BIY._soruSecSayiGuncelle();
+  },
+  // odanın cevaplar alt-koleksiyonunu temizle (oda yeniden kullanılırken)
+  _cevaplariSil(){
+    if (!state.odaId) return Promise.resolve();
+    return db.collection(KOLEKSIYON).doc(state.odaId).collection("cevaplar").get().then(cs => {
+      if (cs.empty) return;
+      const batch = db.batch(); cs.forEach(d => batch.delete(d.ref)); return batch.commit();
+    }).catch(e => console.warn("cevap temizle:", e));
   },
   oyunuBitir(){
     BIY._temizleKayit();
@@ -657,8 +697,18 @@ const BIY = {
     state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1; state.sonucAnimIndex = -1; state.finalKonfeti = false;
     state.baglSet = null; state.baglIlk = false; state.hepsiSesIndex = -1;
     state.yedekSorular = []; state.yedekSoruMap = {}; state.berHedef = 0; state.berTakimlar = []; state.berSabit = {}; state.berNo = 0; state.berSorular = [];
+    state.ayarKilidiKapali = false;
     if (state.secilenSet) state.secilenSet.clear(); BIY._soruSecSayiGuncelle();
+    BIY._kontrolleriAc();
+    const bB = $("baslatBtn"); if (bB) bB.classList.add("gizli");
+    const bN = $("baslatNot"); if (bN) bN.textContent = "";
     BIY.anasayfa();
+  },
+  // takım silinince/yarış bitince kilitli tüm ayar kontrollerini yeniden aç
+  _kontrolleriAc(){
+    document.querySelectorAll(".biy-seviye-btn, .biy-sayi-btn").forEach(b => { b.disabled = false; b.classList.remove("biy-pasif"); });
+    ["soruSayiInput", "soruSecBtn", "konuSecim"].forEach(id => { const el = $(id); if (el){ el.disabled = false; el.classList.remove("biy-pasif"); } });
+    document.querySelectorAll(".biy-seviye-label").forEach(l => l.classList.remove("biy-pasif"));
   },
 
   async _odayiHazirla(){
@@ -701,7 +751,7 @@ const BIY = {
       const t = doc.data(); state.takimListe.push({ id: doc.id, ad: t.ad, bagli: !!t.bagli, puan: t.puan || 0 });
       sayi++; if (t.bagli) bagli++;
       const link = takimLinki(state.odaId, doc.id); const qrId = "qr_" + doc.id;
-      const kart = document.createElement("div"); kart.className = "biy-takim-kart";
+      const kart = document.createElement("div"); kart.className = "biy-takim-kart " + (t.bagli ? "biy-kart-bagli" : "biy-kart-bekliyor");
       kart.innerHTML =
         '<button class="biy-sil" title="Sil" onclick="BIY.takimSil(\''+doc.id+'\')">✕</button>' +
         '<h3>'+ kacis(t.ad) +'</h3>' +
@@ -713,7 +763,8 @@ const BIY = {
       catch(err){ console.warn("QR:", err); }
     });
     // takım eklendiyse zorluk seviyesi, soru sayısı ve soru seçimi kilitlenir; hepsi silinince açılır
-    const kilit = sayi > 0;
+    // (lobiye dönüldüyse ayarKilidiKapali=true → takım bağlıyken de değiştirilebilir)
+    const kilit = sayi > 0 && !state.ayarKilidiKapali;
     document.querySelectorAll(".biy-seviye-btn, .biy-sayi-btn").forEach(b => { b.disabled = kilit; b.classList.toggle("biy-pasif", kilit); });
     const sInp = $("soruSayiInput"); if (sInp){ sInp.disabled = kilit; sInp.classList.toggle("biy-pasif", kilit); }
     const ssBtn = $("soruSecBtn"); if (ssBtn){ ssBtn.disabled = kilit; ssBtn.classList.toggle("biy-pasif", kilit); }
@@ -806,6 +857,8 @@ const BIY = {
     state.yedekSorular = yedek;   // beraberlikte yedek olarak kullanılır
     state.yedekSoruMap = {};
     state.berHedef = 0; state.berTakimlar = []; state.berSabit = {}; state.berNo = 0; state.berSorular = [];
+    state.ayarKilidiKapali = false;   // yeni tur başladı → normal kilit davranışı
+    await BIY._cevaplariSil();         // oda yeniden kullanılıyorsa eski cevapları temizle
     try {
       await db.collection(KOLEKSIYON).doc(state.odaId).update({
         durum: "oyun", faz: "cevap", aktifIndex: 0, toplamSoru: secilen.length, soruSuresi: SORU_SURESI,
@@ -1265,6 +1318,8 @@ const BIY = {
   _renderTakim(){
     const o = state.oda; if (!o){ return; }
     if (o.durum === "lobi" || o.aktifIndex === -1){
+      // yeni tura hazırlık: önceki turun cevap takibini sıfırla (oda yeniden kullanılıyor olabilir)
+      state.sonCevapIndex = -1; try { localStorage.removeItem('biy_cevap'); } catch(e){}
       BIY._takimIcerik('✅', state.takimAd, 'Bağlandın! Yöneticinin yarışmayı başlatması bekleniyor…',
         '<div class="biy-bekle-nokta"><span></span><span></span><span></span></div>');
       sayacDurdur(); return;

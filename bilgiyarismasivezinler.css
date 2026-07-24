@@ -150,10 +150,15 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-oda-bilgi b { color: #16A085; }
 
 .biy-takimlar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; padding: 14px 22px 26px; max-width: 980px; margin: 0 auto; width: 100%; }
-.biy-takim-kart { background: #fff; border: 1px solid #E9EEF5; border-radius: 14px; padding: 14px; text-align: center; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,.06); }
-.biy-takim-kart h3 { margin: 0 0 3px; font-size: 1.1rem; color: #27AE60; }
-.biy-takim-durum { font-size: .78rem; font-weight: 800; margin-bottom: 10px; font-family: 'Marhey',sans-serif; }
-.biy-bekliyor { color: #F39C12; } .biy-bagli { color: #27AE60; }
+.biy-takim-kart { background: #fff; border: 2px solid #E9EEF5; border-radius: 14px; padding: 14px; text-align: center; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,.06); transition: background .3s, border-color .3s; }
+.biy-takim-kart h3 { margin: 0 0 5px; font-size: 1.6rem; font-weight: 800; color: #27AE60; transition: color .3s; }
+/* bağlanana kadar kırmızı dolgulu, bağlanınca yeşile döner */
+.biy-kart-bekliyor { background: #FDE8E6; border-color: #EF9A93; }
+.biy-kart-bekliyor h3 { color: #E53935; }
+.biy-kart-bagli { background: #E4FBF1; border-color: #7FDDB8; }
+.biy-kart-bagli h3 { color: #159C72; }
+.biy-takim-durum { font-size: .82rem; font-weight: 800; margin-bottom: 10px; font-family: 'Marhey',sans-serif; }
+.biy-bekliyor { color: #E53935; } .biy-bagli { color: #159C72; }
 .biy-qr { background: #fff; padding: 7px; border-radius: 10px; display: inline-block; line-height: 0; border: 1px solid #E9EEF5; }
 .biy-qr img, .biy-qr canvas { display: block; }
 .biy-takim-link { margin-top: 9px; display: flex; gap: 6px; }
