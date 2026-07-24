@@ -89,6 +89,13 @@ const BIY = {
 
   anasayfa(){ ekranGoster("ekranAnasayfa"); },
 
+  // Geri: sekmeyi (dosyayı) kapatmayı dene; kapanmazsa kaliplartablosu.html'e git
+  geriDon(){
+    try { window.close(); } catch(e){}
+    // target="_blank" ile açılan sekme çoğu tarayıcıda script ile kapanmaz → yönlendir
+    setTimeout(function(){ location.href = "kaliplartablosu.html"; }, 120);
+  },
+
   /* ---------- Sorular önizleme (her tipten bir örnek) ---------- */
   acSorular(){
     const liste = $("sorularListe");

@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Bilgi Yarışması — Vezinler & Kelimeler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=3">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -39,12 +41,11 @@
   <section id="ekranAnasayfa" class="biy-ekran gizli">
     <header class="biy-header">
       <div class="biy-header-sol">
-        <span class="biy-logo-sm">🏆</span>
-        <span class="biy-baslik">Bilgi Yarışması <small>· Vezinler &amp; Kelimeler</small></span>
+        <button class="biy-geri-tus" onclick="BIY.geriDon()" title="Açıldığın yere dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+        <span class="biy-baslik">🏆 Bilgi Yarışması <small>· Vezinler &amp; Kelimeler</small></span>
       </div>
       <div class="biy-header-sag">
         <span id="adminAd" class="biy-admin-ad"></span>
-        <a class="biy-cikis" href="index.html" title="Siteye dön">⤶</a>
       </div>
     </header>
 
@@ -65,7 +66,7 @@
   <!-- ADMIN — Sorular önizleme -->
   <section id="ekranSorular" class="biy-ekran gizli">
     <div class="biy-ust-bar">
-      <button class="biy-geri" onclick="BIY.anasayfa()">‹ Geri</button>
+      <button class="biy-geri-tus" onclick="BIY.geriDon()" title="Kapat ve kaliplartablosu'na dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
       <h2>Soru Türleri — Örnek Sorular</h2>
     </div>
     <div id="sorularListe" class="biy-sorular-liste"></div>
@@ -74,7 +75,7 @@
   <!-- ADMIN — Takım oluştur + lobi -->
   <section id="ekranTakimlar" class="biy-ekran gizli">
     <div class="biy-ust-bar">
-      <button class="biy-geri" onclick="BIY.anasayfa()">‹ Geri</button>
+      <button class="biy-geri-tus" onclick="BIY.geriDon()" title="Kapat ve kaliplartablosu'na dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
       <h2>Takım Oluştur &amp; Lobi</h2>
     </div>
 
@@ -106,6 +107,6 @@
 
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=1"></script>
+<script src="bilgiyarismasivezinler.js?v=3"></script>
 </body>
 </html>
