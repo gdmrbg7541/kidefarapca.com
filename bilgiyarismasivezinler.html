@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=4">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=7">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -67,7 +67,12 @@
   <section id="ekranSorular" class="biy-ekran gizli">
     <div class="biy-ust-bar">
       <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Üst menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
-      <h2>Soru Türleri — Örnek Sorular</h2>
+      <h2>Örnek Sorular</h2>
+    </div>
+    <div class="biy-sekme-bar">
+      <button class="biy-sekme secili" data-z="1" onclick="BIY.sorularSekme(1)">Kolay</button>
+      <button class="biy-sekme" data-z="2" onclick="BIY.sorularSekme(2)">Orta</button>
+      <button class="biy-sekme" data-z="3" onclick="BIY.sorularSekme(3)">Zor</button>
     </div>
     <div id="sorularListe" class="biy-sorular-liste"></div>
   </section>
@@ -112,6 +117,6 @@
 
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=4"></script>
+<script src="bilgiyarismasivezinler.js?v=5"></script>
 </body>
 </html>

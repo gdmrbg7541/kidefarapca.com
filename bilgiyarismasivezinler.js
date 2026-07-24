@@ -58,6 +58,7 @@ const SEVIYE_ZORLUK = { kolay: 1, orta: 2, zor: 3 };
 const state = {
   mod: null, uid: null,
   seviye: "kolay",           // kolay | orta | zor  (zor => 5 şık)
+  sorularZ: 1,               // Sorular önizleme sekmesi (zorluk)
   odaId: null,               // admin: oda kodu
   odaTakim: null,            // takım: {oda, takim}
   takimAd: "",
@@ -125,13 +126,14 @@ const BIY = {
   },
 
   /* ---------- Sorular önizleme ---------- */
-  acSorular(){
+  acSorular(){ BIY.sorularSekme(state.sorularZ || 1); ekranGoster("ekranSorular"); },
+  sorularSekme(z){
+    state.sorularZ = z;
+    document.querySelectorAll(".biy-sekme").forEach(b => b.classList.toggle("secili", +b.getAttribute("data-z") === z));
     const liste = $("sorularListe"); liste.innerHTML = "";
-    Object.keys(TIP_BILGI).forEach(tip => {
-      const ornek = SORULAR.find(s => s.tip === tip);
-      if (ornek) liste.appendChild(BIY._soruKartEl(ornek, true));
-    });
-    ekranGoster("ekranSorular");
+    const list = SORULAR.filter(s => s.zorluk === z);
+    if (!list.length){ liste.innerHTML = '<p class="biy-alt" style="text-align:center">Bu seviyede henüz örnek yok.</p>'; return; }
+    list.forEach(s => liste.appendChild(BIY._soruKartEl(s, true)));
   },
   _soruKartEl(s, dogruGoster){
     const t = TIP_BILGI[s.tip] || { ad: s.tip, emoji: "❓" };

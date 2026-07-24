@@ -236,3 +236,20 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
   .biy-oyun-arapca { font-size: 2.3rem; }
   .biy-seviye-secim { padding: 0 14px; }
 }
+
+/* Sorular sayfası — zorluk sekmeleri */
+.biy-sekme-bar { display: flex; gap: 8px; justify-content: center; padding: 18px 22px 0; flex-wrap: wrap; }
+.biy-sekme { border: 2px solid #E9EEF5; background: #fff; color: #475569; padding: 8px 22px; border-radius: 999px; cursor: pointer; font-family: 'Marhey',sans-serif; font-weight: 700; font-size: 1rem; transition: all .15s; }
+.biy-sekme:hover { border-color: #cbd5e1; }
+.biy-sekme.secili { color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.biy-sekme[data-z="1"].secili { background: #27AE60; }
+.biy-sekme[data-z="2"].secili { background: #F39C12; }
+.biy-sekme[data-z="3"].secili { background: #EF5350; }
+
+/* 5. şık (tek kalan) ortalı ve diğerleriyle AYNI genişlikte (tek sütun) */
+.biy-secenekler > .biy-secenek:last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - 5px); justify-self: center; }
+.biy-a-optlar   > .biy-a-opt:last-child:nth-child(odd)   { grid-column: 1 / -1; width: calc(50% - 6px); justify-self: center; }
+@media (max-width: 640px) {
+  .biy-secenekler > .biy-secenek:last-child:nth-child(odd),
+  .biy-a-optlar   > .biy-a-opt:last-child:nth-child(odd) { grid-column: auto; width: auto; justify-self: stretch; }
+}
