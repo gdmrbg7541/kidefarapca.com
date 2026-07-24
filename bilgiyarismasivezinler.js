@@ -694,8 +694,20 @@ const BIY = {
     }
     if (state.sinifIndex >= list.length) state.sinifIndex = 0;
     const s = list[state.sinifIndex];
-    govde.innerHTML = "";
-    govde.appendChild(BIY._soruKartEl(s, state.sinifCevapAcik));
+    const t = TIP_BILGI[s.tip] || { ad: s.tip, emoji: "❓" };
+    let sikHtml = "";
+    s.secenekler.forEach((sec, i) => {
+      const dogruMu = state.sinifCevapAcik && i === s.dogru;
+      const sinif = "biy-secenek" + (dogruMu ? " dogru" : "") + (s.arSecenek ? " biy-arapca-secenek" : "");
+      sikHtml += '<div class="'+sinif+'"><span class="biy-sik">'+String.fromCharCode(65+i)+'</span><span class="biy-secenek-metin">'+ kacis(sec) +'</span></div>';
+    });
+    govde.innerHTML =
+      '<div class="biy-sinif-soru">' +
+        '<span class="biy-soru-tip">'+t.emoji+' '+t.ad+'</span>' +
+        (s.arapca ? '<div class="biy-sinif-arapca">'+ kacis(s.arapca) +'</div>' : '') +
+        '<div class="biy-sinif-metin">'+ kacis(s.soru) +'</div>' +
+      '</div>' +
+      '<div class="biy-sinif-siklar">'+ sikHtml +'</div>';
     if (sayac) sayac.textContent = (state.sinifIndex + 1) + " / " + list.length;
     if (cbtn) cbtn.textContent = state.sinifCevapAcik ? "Cevabı Gizle" : "Cevabı Göster";
   },
