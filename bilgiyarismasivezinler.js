@@ -70,7 +70,9 @@ const state = {
   cevaplar: {},              // "takimId_index" -> {takimId, ad, index, secilen}
   oyunSorulari: [],          // admin: seçilen sorular (cevap dahil)
   sayacInterval: null,
-  sonCevapIndex: -1
+  sonCevapIndex: -1,
+  sonucAnimIndex: -1,        // sonuç ekranı animasyonu hangi soru için oynatıldı
+  sonucTimerlar: []          // sonuç ekranı adım zamanlayıcıları (temizlik için)
 };
 
 /* ---------------- Yardımcılar ---------------- */
@@ -188,7 +190,8 @@ const BIY = {
     if (state.odaAboneAdmin) state.odaAboneAdmin();
     if (state.cevapAbone) state.cevapAbone();
     if (state.takimAbone) state.takimAbone();
-    state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1;
+    BIY._sonucTemizle();
+    state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1; state.sonucAnimIndex = -1;
     BIY.anasayfa();
   },
 
@@ -307,8 +310,14 @@ const BIY = {
     if (!soru){ kap.innerHTML = '<div class="biy-oyun-orta"><p class="biy-alt">Bu turun soruları bellekte yok (sayfa yenilenmiş olabilir). Lütfen yarışmayı yeniden başlatın.</p><button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()">Ana Menü</button></div>'; return; }
     const sonuc = (o.faz === "sonuc");
     const t = TIP_BILGI[soru.tip] || { ad: soru.tip, emoji: "❓" };
-    // SONUÇ EKRANI — soru ekranından tamamen ayrı
-    if (sonuc){ sayacDurdur(); kap.innerHTML = BIY._sonucEkranHtml(idx, soru); return; }
+    // SONUÇ EKRANI — soru ekranından tamamen ayrı (adım adım animasyonlu)
+    if (sonuc){
+      sayacDurdur();
+      const taze = (state.sonucAnimIndex !== idx);
+      kap.innerHTML = BIY._sonucEkranHtml(idx, soru, taze);
+      if (taze){ state.sonucAnimIndex = idx; BIY._sonucOynat(); }
+      return;
+    }
     // cevaplar (bu index)
     const buCevaplar = {}; Object.values(state.cevaplar).forEach(c => { if (c.index === idx) buCevaplar[c.takimId] = c; });
     const cevapSayisi = Object.keys(buCevaplar).length;
@@ -322,17 +331,25 @@ const BIY = {
     // üst bilgi + sayaç
     const kalan = kalanSaniye();
     const yuzde = Math.max(0, Math.min(100, (kalan / (o.soruSuresi || SORU_SURESI)) * 100));
-    const gizli = state.soruGizli && !sonuc;   // gizleme yalnız cevap fazında
-    const gizleBtn = '<button class="biy-gizle-btn" onclick="BIY.soruGizleToggle()">' + (state.soruGizli ? '👁️ Soruyu Göster' : '🙈 Soruyu Gizle') + '</button>';
+    const gizli = state.soruGizli;
+    // göz ikonu (tur sırasının yanında): açık göz = görünür (tıkla gizle), çapraz göz = gizli (tıkla göster)
+    const gozSvg = state.soruGizli
+      ? '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+      : '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    const gozBtn = '<button class="biy-gizle-svg" title="'+(state.soruGizli?'Soruyu göster':'Soruyu gizle')+'" onclick="BIY.soruGizleToggle()">'+gozSvg+'</button>';
+
+    const cips = state.takimListe.map(tk =>
+      '<span class="biy-cip '+(buCevaplar[tk.id]?'ok':'')+'">'+(buCevaplar[tk.id]?'<span class="biy-cip-tik">✓</span> ':'')+kacis(tk.ad)+'</span>'
+    ).join("");
+    const hepsi = state.takimListe.length > 0 && cevapSayisi >= state.takimListe.length;
 
     let govde =
       '<div class="biy-oyun-ust">' +
-        '<div class="biy-oyun-sira">Soru '+(idx+1)+' / '+(o.toplamSoru||state.oyunSorulari.length)+'</div>' +
+        '<div class="biy-oyun-sira">Soru '+(idx+1)+' / '+(o.toplamSoru||state.oyunSorulari.length)+' '+gozBtn+'</div>' +
         '<div class="biy-oyun-tip"><span class="biy-soru-tip">'+t.emoji+' '+t.ad+'</span> <span class="biy-zorluk z'+soru.zorluk+'">'+ZORLUK_AD[soru.zorluk]+' · '+PUAN[soru.zorluk]+' puan</span></div>' +
-        (sonuc ? '' : '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>sn</small></div>') +
+        '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>sn</small></div>' +
       '</div>' +
-      (sonuc ? '' : '<div class="biy-gizle-alan">'+gizleBtn+'</div>') +
-      (sonuc ? '' : '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>');
+      '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>';
 
     if (gizli){
       govde += '<div class="biy-soru-gizli"><span class="biy-sg-emoji">🙈</span><b>Soru gizli</b><small>Takımlar soruyu kendi cihazlarında görüyor</small></div>';
@@ -341,31 +358,24 @@ const BIY = {
         (soru.arapca ? '<div class="biy-oyun-arapca">'+ kacis(soru.arapca) +'</div>' : '') +
         '<div class="biy-a-optlar">'+ opt +'</div>';
     }
+    govde += '<div class="biy-cevap-durum">'+cevapSayisi+' / '+state.takimListe.length+' takım cevapladı'+(hepsi?' — sonuç açılıyor…':'')+'</div>' +
+             '<div class="biy-cipler">'+cips+'</div>';
 
-    if (!sonuc){
-      // cevaplayan takımlar
-      let cips = state.takimListe.map(tk =>
-        '<span class="biy-cip '+(buCevaplar[tk.id]?'ok':'')+'">'+(buCevaplar[tk.id]?'<span class="biy-cip-tik">✓</span> ':'')+kacis(tk.ad)+'</span>'
-      ).join("");
-      const hepsi = state.takimListe.length > 0 && cevapSayisi >= state.takimListe.length;
-      govde += '<div class="biy-cevap-durum">'+cevapSayisi+' / '+state.takimListe.length+' takım cevapladı'+(hepsi?' — sonuç açılıyor…':'')+'</div>' +
-               '<div class="biy-cipler">'+cips+'</div>' +
-               '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonucGoster()">Sonucu Göster</button></div>';
-      // tüm takımlar cevaplayınca otomatik sonuç
-      if (hepsi && state.otoSonucIndex !== idx){
-        state.otoSonucIndex = idx;
-        setTimeout(function(){ if (state.oda && state.oda.faz === 'cevap' && (state.oda.aktifIndex||0) === idx) BIY.sonucGoster(); }, 450);
-      }
-    }
     kap.innerHTML = '<div class="biy-oyun-orta">'+govde+'</div>';
 
-    // sayaç
-    if (!sonuc){
-      sayacBaslat(() => {
-        const k = kalanSaniye(); const el = $("sayacNum"); if (el) el.textContent = k;
-        const bar = document.querySelector(".biy-sayac-bar i"); if (bar) bar.style.width = Math.max(0, Math.min(100, (k/(o.soruSuresi||SORU_SURESI))*100)) + "%";
-      });
-    } else sayacDurdur();
+    // otomatik sonuç: tüm takımlar cevaplayınca
+    if (hepsi && state.otoSonucIndex !== idx){
+      state.otoSonucIndex = idx;
+      setTimeout(function(){ if (state.oda && state.oda.faz === 'cevap' && (state.oda.aktifIndex||0) === idx) BIY.sonucGoster(); }, 450);
+    }
+    // sayaç + süre bitince otomatik sonuç
+    sayacBaslat(() => {
+      const k = kalanSaniye(); const el = $("sayacNum"); if (el) el.textContent = k;
+      const bar = document.querySelector(".biy-sayac-bar i"); if (bar) bar.style.width = Math.max(0, Math.min(100, (k/(o.soruSuresi||SORU_SURESI))*100)) + "%";
+      if (k <= 0 && state.oda && state.oda.faz === 'cevap' && (state.oda.aktifIndex||0) === idx && state.otoSonucIndex !== idx){
+        state.otoSonucIndex = idx; BIY.sonucGoster();
+      }
+    });
   },
 
   // belirli index'e kadar (dahil) her takımın toplam puanı
@@ -383,17 +393,22 @@ const BIY = {
     ids.forEach(id => { const p = puanMap[id] || 0; r[id] = 1 + ids.filter(o => (puanMap[o]||0) > p).length; });
     return r;
   },
-  // AYRI SONUÇ EKRANI (soru ekranından bağımsız)
-  _sonucEkranHtml(idx, soru){
+  // AYRI SONUÇ EKRANI (soru ekranından bağımsız) — adım adım animasyonlu
+  // Akış: (0) doğru şık büyük → (1) sınıfların cevapları → (2) doğru şık küçülür → (3) liderlik tablosu büyür + sıra atlayanlar → (4) buton
+  _sonucEkranHtml(idx, soru, taze){
     const o = state.oda;
     const toplam = o.toplamSoru || state.oyunSorulari.length;
     const buCevaplar = {}; Object.values(state.cevaplar).forEach(c => { if (c.index === idx) buCevaplar[c.takimId] = c; });
-    const dogruMetin = String.fromCharCode(65 + soru.dogru) + ') ' + soru.secenekler[soru.dogru];
-    const satir = state.takimListe.map(tk => {
-      const c = buCevaplar[tk.id]; const dogruMu = c && c.secilen === soru.dogru;
-      const secMetin = c ? (String.fromCharCode(65 + c.secilen) + ') ' + soru.secenekler[c.secilen]) : "—";
+    // doğru şık (büyük gösterim)
+    const di = soru.dogru;
+    const dogruRenk = SIK_RENK[di] || "#27AE60";
+    const dogruHarf = String.fromCharCode(65 + di);
+    const arCls = soru.arSecenek ? " ar" : "";
+    // sınıfların sonucu (şık gösterilmez; sadece durum + puan)
+    const satir = state.takimListe.map((tk,ri) => {
+      const c = buCevaplar[tk.id]; const dogruMu = c && c.secilen === di;
       const kazanc = dogruMu ? ('+' + PUAN[soru.zorluk]) : '0';
-      return '<tr class="'+(c?(dogruMu?'dogru':'yanlis'):'yok')+'"><td>'+kacis(tk.ad)+'</td><td class="'+(soru.arSecenek?'ar-hucre':'')+'">'+kacis(secMetin)+'</td><td>'+(c?(dogruMu?'✅ Doğru':'❌ Yanlış'):'⏳ Cevapsız')+'</td><td>'+kazanc+'</td></tr>';
+      return '<tr class="'+(c?(dogruMu?'dogru':'yanlis'):'yok')+'" style="--r:'+ri+'"><td>'+kacis(tk.ad)+'</td><td>'+(c?(dogruMu?'✅ Doğru':'❌ Yanlış'):'⏳ Cevapsız')+'</td><td>'+kazanc+'</td></tr>';
     }).join("");
     // puan durumu + sıra değişimi (bu sorudan önce vs sonra)
     const ids = state.takimListe.map(t => t.id);
@@ -407,15 +422,29 @@ const BIY = {
       return '<li class="'+cls+'" style="--i:'+i+'"><span class="biy-lider-sira">'+(i+1)+'</span>'+ok+'<span class="biy-lider-ad">'+kacis(tk.ad)+'</span><b>'+(newP[tk.id]||0)+'</b></li>';
     }).join("");
     const son = (idx + 1 >= toplam);
-    return '<div class="biy-oyun-orta biy-sonuc-ekran">' +
+    const step = taze ? 0 : 4;   // yeniden render (yenileme) olursa animasyonu atla, son durumu göster
+    return '<div class="biy-oyun-orta biy-sonuc-ekran" data-step="'+step+'">' +
       '<div class="biy-sonuc-baslik">📊 Sonuç · Soru '+(idx+1)+' / '+toplam+'</div>' +
-      '<div class="biy-sonuc-soru">'+kacis(soru.soru)+'</div>' +
-      '<div class="biy-dogru-kutu'+(soru.arSecenek?' ar':'')+'"><span class="biy-dogru-etiket">Doğru cevap</span><span class="biy-dogru-metin">'+kacis(dogruMetin)+'</span></div>' +
-      '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Cevabı</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
-      '<div class="biy-sonuc-lider"><h4>Puan Durumu</h4><ol class="biy-lider-ol">'+lider+'</ol></div>' +
+      '<div class="biy-dogru-buyuk'+arCls+'" style="--c:'+dogruRenk+'">' +
+        '<span class="biy-db-etiket">Doğru Cevap</span>' +
+        '<div class="biy-db-sik"><span class="biy-db-harf">'+dogruHarf+'</span><span class="biy-db-metin">'+kacis(soru.secenekler[di])+'</span></div>' +
+      '</div>' +
+      '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
+      '<div class="biy-sonuc-lider"><h4>🏆 Puan Durumu</h4><ol class="biy-lider-ol">'+lider+'</ol></div>' +
       '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+(son?'🏁 Yarışmayı Bitir':'Sonraki Soru ›')+'</button></div>' +
     '</div>';
   },
+  // sonuç ekranı adım animasyonu sürücüsü
+  _sonucOynat(){
+    BIY._sonucTemizle();
+    const set = (n) => { const e = document.querySelector(".biy-sonuc-ekran"); if (e) e.setAttribute("data-step", String(n)); };
+    // 0: doğru şık büyük (giriş animasyonu CSS'te) →
+    state.sonucTimerlar.push(setTimeout(() => set(1), 1500));  // 1: sınıfların cevapları görünür
+    state.sonucTimerlar.push(setTimeout(() => set(2), 3600));  // 2: doğru şık küçülür
+    state.sonucTimerlar.push(setTimeout(() => set(3), 4300));  // 3: liderlik tablosu büyür + sıra atlayanlar
+    state.sonucTimerlar.push(setTimeout(() => set(4), 6200));  // 4: buton görünür
+  },
+  _sonucTemizle(){ (state.sonucTimerlar || []).forEach(t => clearTimeout(t)); state.sonucTimerlar = []; },
 
   _siraliTakimlar(){
     return state.takimListe.slice().sort((a,b) => (b.puan||0) - (a.puan||0));
@@ -461,6 +490,7 @@ const BIY = {
   },
   async sonrakiSoru(){
     if (!state.odaId || !state.oda) return;
+    BIY._sonucTemizle();
     const next = (state.oda.aktifIndex || 0) + 1;
     try {
       if (next >= (state.oda.toplamSoru || state.oyunSorulari.length)){
@@ -533,6 +563,7 @@ const BIY = {
       : (kalan<=0 ? '<div class="biy-t-alindi biy-gec">⌛ Süre doldu</div>' : '<div class="biy-t-ipucu">Bir şık seç</div>');
     $("takimIcerik").className = "biy-oyun-orta";
     $("takimIcerik").innerHTML =
+      '<div class="biy-t-kimlik"><span class="biy-t-kimlik-nokta"></span><span class="biy-t-kimlik-ad">'+kacis(state.takimAd)+'</span></div>' +
       '<div class="biy-t-ust"><span class="biy-soru-tip">'+t.emoji+' '+t.ad+'</span>' +
         '<span class="biy-t-sayac" id="sayacNum">'+kalan+'</span></div>' +
       '<div class="biy-oyun-soru">'+kacis(s.soru)+'</div>' +
