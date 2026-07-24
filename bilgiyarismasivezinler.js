@@ -280,7 +280,7 @@ const BIY = {
         '<div class="biy-qr" id="'+qrId+'"></div>' +
         '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">Kopyala</button></div>';
       grid.appendChild(kart);
-      try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 168, height: 168, correctLevel: QRCode.CorrectLevel.M }); } }
+      try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M }); } }
       catch(err){ console.warn("QR:", err); }
     });
     const baslat = $("baslatBtn");
