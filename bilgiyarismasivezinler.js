@@ -60,8 +60,13 @@ const SEVIYE_ZORLUK = { kolay: 1, orta: 2, zor: 3 };
    • pdf: repo kökündeki PDF dosyasının adı (boş bırakılırsa indirme/önizleme pasif olur).
    • sorular: SORULAR ile aynı biçimde; boşsa o konuda yarışma başlatılamaz.                        */
 const KONULAR = [
-  { id: "vezinler", ad: "Vezinler & Kelimeler", pdf: "Vezinler Bilgi Yarışması.pdf", sorular: SORULAR }
-  // Örnek: { id: "nahiv", ad: "Nahiv", pdf: "Nahiv Bilgi Yarışması.pdf", sorular: [] },
+  { id: "vezinler", ad: "Vezinler & Kelimeler", pdf: "Vezinler Bilgi Yarışması.pdf", sorular: SORULAR },
+  // Pasif başlıklar — ileride güncellenecek. Aktif etmek için: pasif'i kaldır, ad/pdf/sorular'ı doldur.
+  { id: "konu2", ad: "Konu 2", pdf: "", sorular: [], pasif: true },
+  { id: "konu3", ad: "Konu 3", pdf: "", sorular: [], pasif: true },
+  { id: "konu4", ad: "Konu 4", pdf: "", sorular: [], pasif: true },
+  { id: "konu5", ad: "Konu 5", pdf: "", sorular: [], pasif: true },
+  { id: "konu6", ad: "Konu 6", pdf: "", sorular: [], pasif: true }
 ];
 
 /* ---------------- Durum ---------------- */
@@ -181,7 +186,7 @@ const BIY = {
   _aktifSorular(){ const k = BIY._aktifKonu(); return (k && k.sorular) || []; },
   _konulariHazirla(){
     const sel = $("konuSecim"); if (!sel) return;
-    sel.innerHTML = KONULAR.map(k => '<option value="'+k.id+'"'+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+'</option>').join("");
+    sel.innerHTML = KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · yakında':'')+'</option>').join("");
     BIY._pdfOnizleGuncelle();
   },
   konuSec(id){ state.konuId = id; BIY._pdfOnizleGuncelle(); },
