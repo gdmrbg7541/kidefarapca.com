@@ -59,7 +59,7 @@ const state = {
   mod: null, uid: null,
   seviye: "kolay",           // kolay | orta | zor  (zor => 5 şık)
   sorularZ: 1,               // Sorular önizleme sekmesi (zorluk)
-  soruGizli: false,          // admin ekranında soruyu gizle/göster (kalıcı toggle)
+  soruGizli: true,           // admin ekranında soruyu gizle/göster (açılışta gizli)
   otoSonucIndex: -1,         // tüm takımlar cevaplayınca otomatik sonuç kilidi
   odaId: null,               // admin: oda kodu
   odaTakim: null,            // takım: {oda, takim}
@@ -396,23 +396,32 @@ const BIY = {
     ).join("");
     const hepsi = state.takimListe.length > 0 && cevapSayisi >= state.takimListe.length;
 
+    const sayacHtml = '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>sn</small></div>';
+    const barHtml = '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>';
+
     let govde =
       '<div class="biy-oyun-ust">' +
         '<div class="biy-oyun-sira">Soru '+(idx+1)+' / '+(o.toplamSoru||state.oyunSorulari.length)+' '+gozBtn+'</div>' +
         '<div class="biy-oyun-tip"><span class="biy-soru-tip">'+t.emoji+' '+t.ad+'</span> <span class="biy-zorluk z'+soru.zorluk+'">'+ZORLUK_AD[soru.zorluk]+' · '+PUAN[soru.zorluk]+' puan</span></div>' +
-        '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>sn</small></div>' +
+        // soru gizliyken geri sayım üstte değil, aşağıda büyük gösterilir
+        (gizli ? '' : sayacHtml) +
       '</div>' +
-      '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>';
+      (gizli ? '' : barHtml);
 
     if (gizli){
-      govde += '<div class="biy-soru-gizli"><span class="biy-sg-emoji">🙈</span><b>Soru gizli</b><small>Takımlar soruyu kendi cihazlarında görüyor</small></div>';
+      govde += '<div class="biy-soru-gizli"><b>Soru gizli</b><small>Takımlar soruyu kendi cihazlarında görüyor</small></div>';
     } else {
       govde += '<div class="biy-oyun-soru">'+ kacis(soru.soru) +'</div>' +
         (soru.arapca ? '<div class="biy-oyun-arapca">'+ kacis(soru.arapca) +'</div>' : '') +
         '<div class="biy-a-optlar">'+ opt +'</div>';
     }
-    govde += '<div class="biy-cevap-durum">'+cevapSayisi+' / '+state.takimListe.length+' takım cevapladı'+(hepsi?' — sonuç açılıyor…':'')+'</div>' +
-             '<div class="biy-cipler">'+cips+'</div>';
+    // sınıfların durumu (gizliyken çok daha büyük)
+    govde += '<div class="biy-cevap-durum'+(gizli?' biy-dev':'')+'">'+cevapSayisi+' / '+state.takimListe.length+' takım cevapladı'+(hepsi?' — sonuç açılıyor…':'')+'</div>' +
+             '<div class="biy-cipler'+(gizli?' biy-dev':'')+'">'+cips+'</div>';
+    // gizliyken geri sayım AŞAĞIDA ve devasa
+    if (gizli){
+      govde += '<div class="biy-alt-sayac">'+barHtml+'<div class="biy-sayac biy-sayac-dev"><span id="sayacNum">'+kalan+'</span><small>sn</small></div></div>';
+    }
 
     kap.innerHTML = '<div class="biy-oyun-orta">'+govde+'</div>';
 
@@ -473,85 +482,47 @@ const BIY = {
       const ns = newR[tk.id] || ids.length, ps = prevR[tk.id] || ids.length;
       return { id: tk.id, ad: tk.ad, ns: ns, ps: ps, np: newP[tk.id] || 0, pp: prevP[tk.id] || 0, delta: ps - ns };
     });
-    let lider;
-    if (taze){
-      // BAŞLANGIÇ: önceki sıralama + önceki puanlar (oklar boş) — FLIP ile yeni sıraya kayacak
-      const dizi = veri.slice().sort((a,b) => (b.pp - a.pp) || (b.np - a.np));
-      lider = dizi.map(r =>
-        '<li class="biy-lider-satir" data-id="'+r.id+'" data-yeni-sira="'+r.ns+'" data-yeni-puan="'+r.np+'" data-delta="'+r.delta+'">' +
-          '<span class="biy-lider-sira">'+r.ps+'</span><span class="biy-ok biy-ok-sabit"></span>' +
-          '<span class="biy-lider-ad">'+kacis(r.ad)+'</span><b>'+r.pp+'</b></li>'
-      ).join("");
-    } else {
-      // yenileme sonrası: doğrudan yeni sıralamayı göster
-      const dizi = veri.slice().sort((a,b) => a.ns - b.ns);
-      lider = dizi.map(r => {
-        const ok = r.delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (r.delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit"></span>');
-        const cls = r.delta > 0 ? ' biy-lider-yukari' : (r.delta < 0 ? ' biy-lider-asagi' : '');
-        return '<li class="biy-lider-satir'+cls+'" data-id="'+r.id+'"><span class="biy-lider-sira">'+r.ns+'</span>'+ok+'<span class="biy-lider-ad">'+kacis(r.ad)+'</span><b>'+r.np+'</b></li>';
-      }).join("");
-    }
+    // liderlik: yeni sıralama (büyük, sabit oklar — animasyon yok)
+    const dizi = veri.slice().sort((a,b) => a.ns - b.ns);
+    const lider = dizi.map(r => {
+      const ok = r.delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (r.delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit"></span>');
+      const cls = r.delta > 0 ? ' biy-lider-yukari' : (r.delta < 0 ? ' biy-lider-asagi' : '');
+      return '<li class="biy-lider-satir'+cls+'"><span class="biy-lider-sira">'+r.ns+'</span>'+ok+'<span class="biy-lider-ad">'+kacis(r.ad)+'</span><b>'+r.np+'</b></li>';
+    }).join("");
+    const degisti = veri.some(r => r.delta !== 0);
     const son = (idx + 1 >= toplam);
-    const step = taze ? 0 : 4;   // yeniden render (yenileme) olursa animasyonu atla, son durumu göster
-    return '<div class="biy-oyun-orta biy-sonuc-ekran" data-step="'+step+'">' +
+    const step = taze ? 0 : 2;   // yenileme olursa doğrudan son sahne (liderlik)
+    return '<div class="biy-oyun-orta biy-sonuc-ekran" data-degisti="'+(degisti?1:0)+'" data-step="'+step+'">' +
       '<div class="biy-sonuc-baslik">📊 Sonuç · Soru '+(idx+1)+' / '+toplam+'</div>' +
-      '<div class="biy-dogru-buyuk'+arCls+'" style="--c:'+dogruRenk+'">' +
-        '<span class="biy-db-etiket">Doğru Cevap</span>' +
-        '<div class="biy-db-sik"><span class="biy-db-harf">'+dogruHarf+'</span><span class="biy-db-metin">'+kacis(soru.secenekler[di])+'</span></div>' +
+      '<div class="biy-sonuc-sahne">' +
+        // SAHNE 1: doğru cevap (devasa)
+        '<div class="biy-sahne-oge oge-dogru">' +
+          '<div class="biy-dogru-buyuk'+arCls+'" style="--c:'+dogruRenk+'">' +
+            '<span class="biy-db-etiket">Doğru Cevap</span>' +
+            '<div class="biy-db-sik"><span class="biy-db-harf">'+dogruHarf+'</span><span class="biy-db-metin">'+kacis(soru.secenekler[di])+'</span></div>' +
+          '</div>' +
+        '</div>' +
+        // SAHNE 2: sınıfların cevapları (devasa)
+        '<div class="biy-sahne-oge oge-reveal">' +
+          '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
+        '</div>' +
+        // SAHNE 3: liderlik tablosu (devasa)
+        '<div class="biy-sahne-oge oge-lider">' +
+          '<div class="biy-sonuc-lider"><h4>🏆 Puan Durumu</h4><ol class="biy-lider-ol">'+lider+'</ol></div>' +
+        '</div>' +
       '</div>' +
-      '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
-      '<div class="biy-sonuc-lider"><h4>🏆 Puan Durumu</h4><ol class="biy-lider-ol">'+lider+'</ol></div>' +
       '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+(son?'🏁 Yarışmayı Bitir':'Sonraki Soru ›')+'</button></div>' +
     '</div>';
   },
-  // sonuç ekranı adım animasyonu sürücüsü
+  // sonuç ekranı sahne akışı: her öğe devasa gösterilir; yenisi gelince önceki yukarı kayıp kaybolur
   _sonucOynat(){
     BIY._sonucTemizle();
+    const el0 = document.querySelector(".biy-sonuc-ekran");
+    const degisti = el0 && el0.getAttribute("data-degisti") === "1";
     const set = (n) => { const e = document.querySelector(".biy-sonuc-ekran"); if (e) e.setAttribute("data-step", String(n)); };
-    // 0: doğru şık büyük (giriş animasyonu CSS'te) →
-    state.sonucTimerlar.push(setTimeout(() => set(1), 1500));               // 1: sınıfların cevapları görünür
-    state.sonucTimerlar.push(setTimeout(() => set(2), 3600));               // 2: doğru şık küçülür
-    state.sonucTimerlar.push(setTimeout(() => set(3), 4300));               // 3: liderlik tablosu belirir (önceki sıra)
-    state.sonucTimerlar.push(setTimeout(() => BIY._liderlikGecis(), 5150)); //    sıralama animasyonu (satırlar yeni yerine kayar)
-    state.sonucTimerlar.push(setTimeout(() => set(4), 7000));               // 4: buton görünür
-  },
-  // liderlik tablosu — satırları önceki sıralamadan yeni sıralamaya FLIP ile kaydırır
-  _liderlikGecis(){
-    const ol = document.querySelector(".biy-lider-ol"); if (!ol) return;
-    const satirlar = Array.from(ol.children); if (!satirlar.length) return;
-    // FIRST — mevcut konumlar
-    const ilk = new Map(); satirlar.forEach(li => ilk.set(li, li.getBoundingClientRect().top));
-    // yeni sıraya göre yeniden diz
-    const yeni = satirlar.slice().sort((a,b) => (+a.dataset.yeniSira) - (+b.dataset.yeniSira));
-    yeni.forEach(li => ol.appendChild(li));
-    // içerikleri güncelle: sıra no, puan, ok, vurgu
-    let degisti = false;
-    yeni.forEach(li => {
-      const delta = +(li.dataset.delta || 0);
-      const sira = li.querySelector(".biy-lider-sira"); if (sira) sira.textContent = li.dataset.yeniSira;
-      const puan = li.querySelector("b"); if (puan) puan.textContent = li.dataset.yeniPuan;
-      const ok = li.querySelector(".biy-ok");
-      if (delta > 0){ if (ok){ ok.textContent = "▲"; ok.className = "biy-ok biy-ok-yukari"; } li.classList.add("biy-lider-yukari"); degisti = true; }
-      else if (delta < 0){ if (ok){ ok.textContent = "▼"; ok.className = "biy-ok biy-ok-asagi"; } li.classList.add("biy-lider-asagi"); degisti = true; }
-      else { if (ok){ ok.textContent = ""; ok.className = "biy-ok biy-ok-sabit"; } }
-    });
-    // LAST + INVERT
-    yeni.forEach(li => {
-      const son = li.getBoundingClientRect().top;
-      const dy = (ilk.get(li) || son) - son;
-      li.style.transition = "none";
-      li.style.transform = dy ? ("translateY(" + dy + "px)") : "translateY(0)";
-    });
-    // PLAY
-    void ol.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      yeni.forEach((li, i) => {
-        li.style.transition = "transform .8s cubic-bezier(.22,1,.36,1)";
-        li.style.transitionDelay = (i * 0.05) + "s";
-        li.style.transform = "translateY(0)";
-      });
-    });
-    if (degisti) SES.siraDegisti();
+    state.sonucTimerlar.push(setTimeout(() => set(1), 2400));   // sahne 2: sınıf cevapları (doğru cevap yukarı kaybolur)
+    state.sonucTimerlar.push(setTimeout(() => set(2), 5000));   // sahne 3: liderlik + buton (cevaplar yukarı kaybolur)
+    if (degisti) state.sonucTimerlar.push(setTimeout(() => SES.siraDegisti(), 5100));
   },
   _sonucTemizle(){ (state.sonucTimerlar || []).forEach(t => clearTimeout(t)); state.sonucTimerlar = []; },
 
