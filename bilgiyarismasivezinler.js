@@ -160,6 +160,38 @@ const BIY = {
     ekranGoster("ekranTakimlar");
     if (!state.odaId){ $("takimlarGrid").innerHTML = ""; $("odaBilgi").classList.add("gizli"); }
   },
+  // --- Kalıcılık (sayfa yenilense de oyun kaybolmasın) ---
+  _kaydet(){
+    try { localStorage.setItem('biy_aktif', JSON.stringify({ oda: state.odaId, sorular: state.oyunSorulari, seviye: state.seviye, ts: Date.now() })); } catch(e){}
+  },
+  _temizleKayit(){ try { localStorage.removeItem('biy_aktif'); } catch(e){} },
+  async _devamEt(kayit){
+    try {
+      if (kayit.ts && (Date.now() - kayit.ts) > 12*3600*1000){ BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); return; }
+      const ref = db.collection(KOLEKSIYON).doc(kayit.oda);
+      const snap = await ref.get();
+      if (!snap.exists || snap.data().durum === 'bitti'){ BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); return; }
+      state.odaId = kayit.oda;
+      state.seviye = kayit.seviye || 'kolay';
+      state.oyunSorulari = Array.isArray(kayit.sorular) ? kayit.sorular : [];
+      if (state.takimAbone) state.takimAbone();
+      state.takimAbone = ref.collection('takimlar').orderBy('olusturmaZamani').onSnapshot(s => BIY._takimlariCiz(s));
+      $('odaBilgi').classList.remove('gizli');
+      $('odaBilgi').innerHTML = "Oda kodu: <b>" + kayit.oda + "</b> · takımlar linkle/karekodla katılır";
+      BIY.setSeviye(state.seviye);
+      if (snap.data().durum === 'oyun'){ BIY._adminOyunaGec(); }
+      else { ekranGoster('ekranTakimlar'); }
+    } catch(e){ console.error('Devam hatası:', e); BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); }
+  },
+  oyunuBitir(){
+    BIY._temizleKayit();
+    if (state.odaAboneAdmin) state.odaAboneAdmin();
+    if (state.cevapAbone) state.cevapAbone();
+    if (state.takimAbone) state.takimAbone();
+    state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1;
+    BIY.anasayfa();
+  },
+
   async _odayiHazirla(){
     if (state.odaId) return state.odaId;
     let kod, ref, mevcut = true, deneme = 0;
@@ -177,6 +209,7 @@ const BIY = {
     if (state.takimAbone) state.takimAbone();
     state.takimAbone = db.collection(KOLEKSIYON).doc(kod).collection("takimlar")
       .orderBy("olusturmaZamani").onSnapshot(snap => BIY._takimlariCiz(snap));
+    BIY._kaydet();
     return kod;
   },
   async takimEkle(){
@@ -245,6 +278,7 @@ const BIY = {
         aktifSoru: temizSoru(secilen[0]),
         soruBaslangic: firebase.firestore.FieldValue.serverTimestamp()
       });
+      BIY._kaydet();
       BIY._adminOyunaGec();
     } catch(e){ console.error(e); $("baslatNot").textContent = "Başlatılamadı: " + (e.code || e.message); }
   },
@@ -398,7 +432,7 @@ const BIY = {
       '<ol class="biy-final-ol">' +
         sirali.map((t,i) => '<li class="'+(i<3?'podyum':'')+'"><span class="biy-final-sira">'+(madalya[i]||(i+1))+'</span><span class="biy-final-ad">'+kacis(t.ad)+'</span><b>'+(t.puan||0)+'</b></li>').join("") +
       '</ol>' +
-      '<button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()" style="margin-top:20px">Ana Menü</button>' +
+      '<button class="biy-btn biy-btn-mavi" onclick="BIY.oyunuBitir()" style="margin-top:20px">Ana Menü</button>' +
     '</div>';
   },
 
@@ -449,6 +483,8 @@ const BIY = {
       const snap = await takimRef.get();
       if (!snap.exists){ BIY._takimIcerik('❌','Takım bulunamadı','Bu link geçersiz ya da takım silinmiş olabilir.'); return; }
       state.takimAd = snap.data().ad || "Takım";
+      // yenileme sonrası: bu soruyu zaten cevapladıysa hatırla
+      try { const kc = JSON.parse(localStorage.getItem('biy_cevap') || 'null'); if (kc && kc.oda === oda && kc.takim === takim) state.sonCevapIndex = kc.index; } catch(e){}
       await takimRef.update({ bagli: true, sonGorulme: firebase.firestore.FieldValue.serverTimestamp() });
       setInterval(() => { takimRef.update({ sonGorulme: firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{}); }, 20000);
       window.addEventListener("pagehide", () => { takimRef.update({ bagli: false }).catch(()=>{}); });
@@ -518,6 +554,7 @@ const BIY = {
         takimId: state.odaTakim.takim, ad: state.takimAd, index: idx, secilen: optIdx,
         zaman: firebase.firestore.FieldValue.serverTimestamp()
       });
+      try { localStorage.setItem('biy_cevap', JSON.stringify({ oda: state.odaTakim.oda, takim: state.odaTakim.takim, index: idx })); } catch(e){}
     } catch(e){ console.error(e); state.sonCevapIndex = -1; }
     BIY._renderTakim();
   }
@@ -557,7 +594,10 @@ window.BIY = BIY;
       if (rol === "teacher" || rol === "admin"){
         const isim = (doc.data().name && doc.data().name !== "Belirtilmedi") ? doc.data().name : (user.email || "Yönetici");
         $("adminAd").textContent = (rol === "admin" ? "Yönetici: " : "Öğretmen: ") + isim;
-        ekranGoster("ekranAnasayfa");
+        // sayfa yenilenmişse aktif odaya/oyuna dön
+        let kayit = null; try { kayit = JSON.parse(localStorage.getItem('biy_aktif') || 'null'); } catch(e){}
+        if (kayit && kayit.oda){ BIY._devamEt(kayit); }
+        else ekranGoster("ekranAnasayfa");
       } else {
         $("girisRolNot").textContent = "Bu hesabın rolü öğrenci. Yarışmayı yalnızca öğretmen/yönetici yönetebilir.";
         ekranGoster("ekranGirisKapisi");
