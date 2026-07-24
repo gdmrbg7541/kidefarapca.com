@@ -294,11 +294,11 @@ const KONULAR = [
 /* ---------------- Durum ---------------- */
 const state = {
   mod: null, uid: null,
-  konuId: (KONULAR[0] && KONULAR[0].id) || null,  // seçili konu
-  seviye: "kolay",           // kolay | orta | zor  (zor => 5 şık)
+  konuId: null,              // seçili konu (açılışta seçili değil)
+  seviye: null,              // kolay | orta | zor  (başta seçili değil)
   sorularZ: 1,               // Sorular önizleme sekmesi (zorluk)
   soruGizli: true,           // admin ekranında soruyu gizle/göster (açılışta gizli)
-  soruSayisi: 20,            // turdaki soru sayısı (10-50)
+  soruSayisi: null,          // turdaki soru sayısı (başta seçili değil)
   soruSayiMax: 50,           // seçili konu+seviyedeki mevcut soruya göre üst sınır
   secilenSet: null,          // elle seçilen soru anahtarları (Set) — havuzdan
   soruSecArama: "",          // soru havuzu arama metni
@@ -314,6 +314,7 @@ const state = {
   oyunSorulari: [],          // admin: seçilen sorular (cevap dahil)
   sayacInterval: null,
   sonCevapIndex: -1,
+  sinifKonu: null, sinifZ: 1, sinifList: [], sinifIndex: 0, sinifCevapAcik: false,   // sınıf modu (çevrimdışı)
   sonucAnimIndex: -1,        // sonuç ekranı animasyonu hangi soru için oynatıldı
   sonucTimerlar: [],         // sonuç ekranı adım zamanlayıcıları (temizlik için)
   finalKonfeti: false,       // yarışma bitti ekranında konfeti bir kez patlar
@@ -411,7 +412,7 @@ function sayacDurdur(){ if (state.sayacInterval){ clearInterval(state.sayacInter
    =========================================================== */
 const BIY = {
 
-  anasayfa(){ sayacDurdur(); ekranGoster("ekranAnasayfa"); },
+  anasayfa(){ sayacDurdur(); ekranGoster("ekranAnasayfa"); BIY._menuDurum(); },
 
   // Geri: sekmeyi (dosyayı) kapatmayı dene; kapanmazsa kaliplartablosu.html'e git
   geriDon(){
@@ -420,8 +421,9 @@ const BIY = {
   },
 
   /* ---------- Konu seçimi ---------- */
-  _aktifKonu(){ return KONULAR.find(k => k.id === state.konuId) || KONULAR[0] || { ad: "", pdf: "", sorular: [] }; },
+  _aktifKonu(){ return state.konuId ? (KONULAR.find(k => k.id === state.konuId) || null) : null; },
   _aktifSorular(){ const k = BIY._aktifKonu(); return (k && k.sorular) || []; },
+  _konuVurgu(){ const sel = $("konuSecim"); if (sel) sel.classList.toggle("secili", !!state.konuId); },
   // tüm konulardaki soruların havuzu (elle seçim için)
   _soruHavuzu(){
     const havuz = [];
@@ -430,17 +432,30 @@ const BIY = {
   },
   _konulariHazirla(){
     const sel = $("konuSecim"); if (!sel) return;
-    sel.innerHTML = KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · yakında':'')+'</option>').join("");
+    sel.innerHTML = '<option value=""'+(state.konuId?'':' selected')+' disabled hidden>Konu seçin…</option>' +
+      KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · yakında':'')+'</option>').join("");
+    if (!state.konuId) sel.value = "";
+    BIY._konuVurgu();
     BIY._pdfOnizleGuncelle();
   },
-  konuSec(id){ state.konuId = id; BIY._pdfOnizleGuncelle(); BIY._soruSayiSinir(); },
+  konuSec(id){
+    state.konuId = id || null;
+    if (state.konuId){ const set = BIY._secSet(); if (set.size) set.clear(); }   // konu seçildi → havuz seçimini sıfırla
+    BIY._konuVurgu();
+    BIY._soruSecSayiGuncelle();   // havuz tuşu/sayaç + pdf + sınır + menü hepsini günceller
+  },
 
   /* ---------- Soru Havuzu (elle seçim) ---------- */
   _secSet(){ if (!state.secilenSet) state.secilenSet = new Set(); return state.secilenSet; },
   _soruSecSayiGuncelle(){
     const n = BIY._secSet().size;
+    // havuzdan soru seçildiyse konu seçimi kalkar (tek kaynak: havuz ya da konu)
+    if (n > 0 && state.konuId){ state.konuId = null; const sel = $("konuSecim"); if (sel) sel.value = ""; BIY._konuVurgu(); }
     const b = $("soruSecSayi"); if (b) b.textContent = "(" + n + ")";
     const btn = $("soruSecBtn"); if (btn) btn.classList.toggle("biy-secili-var", n > 0);
+    BIY._pdfOnizleGuncelle();
+    BIY._soruSayiSinir();
+    BIY._menuDurum();
   },
   soruSecAc(){
     if ($("soruSecBtn") && $("soruSecBtn").disabled) return;
@@ -539,23 +554,37 @@ const BIY = {
   },
   // seçili konu+seviyedeki mevcut soruya göre soru sayısı üst sınırını ayarla
   _soruSayiSinir(){
-    const mevcut = BIY._aktifSorular().filter(s => s.zorluk === (SEVIYE_ZORLUK[state.seviye] || 1)).length;
+    const havuz = BIY._secSet().size;
+    const inp = $("soruSayiInput");
+    const lbl = document.querySelector(".biy-sorusayi-secim .biy-seviye-label");
+    // HAVUZ seçili → soru sayısı = seçilen soru sayısı (sabit); hazır rakamlar pasif, manuel alanda o sayı yazılı
+    if (havuz > 0){
+      state.soruSayiMax = havuz;
+      state.soruSayisi = havuz;
+      document.querySelectorAll(".biy-sayi-btn").forEach(b => { b.disabled = true; b.classList.add("biy-pasif"); b.classList.remove("secili"); });
+      if (inp){ inp.disabled = false; inp.readOnly = true; inp.max = havuz; inp.min = 1; inp.value = havuz; inp.classList.add("biy-secili"); }
+      if (lbl) lbl.textContent = "Soru sayısı (havuzdan " + havuz + "):";
+      return;
+    }
+    let mevcut;
+    if (state.konuId) mevcut = BIY._aktifSorular().filter(s => s.zorluk === (SEVIYE_ZORLUK[state.seviye] || 1)).length;
+    else mevcut = 50;                                                    // konu/havuz yok → sınır uygulanmasın
     const max = Math.max(1, Math.min(50, mevcut));
     state.soruSayiMax = max;
     document.querySelectorAll(".biy-sayi-btn").forEach(b => {
       const v = +b.getAttribute("data-sayi"); const dis = v > max;
       b.disabled = dis; b.classList.toggle("biy-pasif", dis);
     });
-    const inp = $("soruSayiInput"); if (inp){ inp.max = max; inp.min = 1; inp.placeholder = "≤ " + max; }
-    const lbl = document.querySelector(".biy-sorusayi-secim .biy-seviye-label");
+    if (inp){ inp.disabled = false; inp.readOnly = false; inp.classList.remove("biy-secili"); inp.max = max; inp.min = 1; inp.placeholder = "≤ " + max; }
     if (lbl) lbl.textContent = "Soru sayısı (en çok " + max + "):";
-    if (state.soruSayisi > max) BIY.setSoruSayisi(max); else BIY.setSoruSayisi(state.soruSayisi);
+    if (state.soruSayisi != null){ if (state.soruSayisi > max) BIY.setSoruSayisi(max); else BIY.setSoruSayisi(state.soruSayisi); }
   },
   _pdfOnizleGuncelle(){
+    const havuz = BIY._secSet().size;
     const k = BIY._aktifKonu();
-    const baslik = $("pdfBaslik"); if (baslik) baslik.textContent = k.ad || "";
+    const baslik = $("pdfBaslik"); if (baslik) baslik.textContent = havuz > 0 ? "Karışık" : (k ? (k.ad || "") : "");
     const kart = $("pdfKart"), indir = $("pdfIndir");
-    const varMi = !!(k && k.pdf);
+    const varMi = !havuz && !!(k && k.pdf);
     const url = varMi ? encodeURI(k.pdf) : "";
     if (kart){ if (varMi){ kart.href = url; kart.classList.remove("biy-pasif"); } else { kart.removeAttribute("href"); kart.classList.add("biy-pasif"); } }
     if (indir){
@@ -584,7 +613,7 @@ const BIY = {
     s.secenekler.forEach((sec, i) => {
       const dogruMu = dogruGoster && i === s.dogru;
       const sinif = "biy-secenek" + (dogruMu ? " dogru" : "") + (s.arSecenek ? " biy-arapca-secenek" : "");
-      sikHtml += '<div class="'+sinif+'"><span class="biy-sik">'+String.fromCharCode(65+i)+'</span>'+ kacis(sec) +'</div>';
+      sikHtml += '<div class="'+sinif+'"><span class="biy-sik">'+String.fromCharCode(65+i)+'</span><span class="biy-secenek-metin">'+ kacis(sec) +'</span></div>';
     });
     kart.innerHTML =
       '<span class="biy-soru-tip">'+t.emoji+' '+t.ad+'</span>' +
@@ -595,11 +624,72 @@ const BIY = {
     return kart;
   },
 
+  // ana menü kartları: geçerli içerik (havuz soruları veya soru içeren konu) seçiliyken aktif olur
+  _menuDurum(){
+    const havuz = BIY._secSet().size;
+    const konuVar = (BIY._aktifSorular().length > 0);
+    const icerik = havuz > 0 || konuVar;                 // konu ya da havuzdan soru
+    const seviyeSecili = !!state.seviye;                 // zorluk seçili
+    const sayiSecili = (state.soruSayisi != null && state.soruSayisi > 0);  // soru sayısı seçili
+    const aktif = icerik && seviyeSecili && sayiSecili;
+    ["kartSinif", "kartDijital"].forEach(id => { const el = $(id); if (el) el.classList.toggle("biy-pasif", !aktif); });
+    const not = $("menuNot"); if (not) not.classList.toggle("gizli", aktif);
+  },
+
+  /* ---------- Sınıf Modu (çevrimdışı: soruları sınıfça çöz) ---------- */
+  // yukarıda seçilen konuyu / havuz sorularını kullanır (ekranında ayrı seçim yok)
+  acSinif(){
+    const havuz = BIY._secilenSorular();
+    let list, kaynak;
+    if (havuz.length){ list = havuz.slice(); kaynak = "Karışık · seçili sorular (" + havuz.length + ")"; }
+    else {
+      const k = BIY._aktifKonu(); if (!k) return;   // konu da havuz da yoksa açma
+      const z = SEVIYE_ZORLUK[state.seviye] || 1;
+      list = (k.sorular || []).filter(s => s.zorluk === z);
+      kaynak = k.ad + " · " + (ZORLUK_AD[z] || "");
+    }
+    if (!list.length){   // seçilen zorlukta soru yoksa uyar
+      state.sinifList = []; state.sinifIndex = 0; state.sinifCevapAcik = false;
+      const kb0 = $("sinifKaynak"); if (kb0) kb0.textContent = kaynak;
+      BIY._sinifRender();
+      ekranGoster("ekranSinif");
+      return;
+    }
+    state.sinifList = list; state.sinifIndex = 0; state.sinifCevapAcik = false;
+    const kb = $("sinifKaynak"); if (kb) kb.textContent = kaynak;
+    BIY._sinifRender();
+    ekranGoster("ekranSinif");
+  },
+  sinifGit(delta){
+    const n = (state.sinifList || []).length; if (!n) return;
+    state.sinifIndex = (state.sinifIndex + delta + n) % n;
+    state.sinifCevapAcik = false;
+    BIY._sinifRender();
+  },
+  sinifCevap(){ state.sinifCevapAcik = !state.sinifCevapAcik; BIY._sinifRender(); },
+  _sinifRender(){
+    const govde = $("sinifGovde"); if (!govde) return;
+    const list = state.sinifList || [];
+    const sayac = $("sinifSayac"), cbtn = $("sinifCevapBtn");
+    if (!list.length){
+      govde.innerHTML = '<div class="biy-sinif-bos">Bu konuda bu seviyede henüz soru yok.</div>';
+      if (sayac) sayac.textContent = "0 / 0";
+      if (cbtn) cbtn.textContent = "Cevabı Göster";
+      return;
+    }
+    if (state.sinifIndex >= list.length) state.sinifIndex = 0;
+    const s = list[state.sinifIndex];
+    govde.innerHTML = "";
+    govde.appendChild(BIY._soruKartEl(s, state.sinifCevapAcik));
+    if (sayac) sayac.textContent = (state.sinifIndex + 1) + " / " + list.length;
+    if (cbtn) cbtn.textContent = state.sinifCevapAcik ? "Cevabı Gizle" : "Cevabı Göster";
+  },
+
   /* ---------- Takım Oluştur / Lobi ---------- */
   acTakimlar(){
     ekranGoster("ekranTakimlar");
     if (!state.odaId){
-      $("takimlarGrid").innerHTML = ""; $("odaBilgi").classList.add("gizli");
+      $("takimlarGrid").innerHTML = "";
       const b = $("baslatBtn"); if (b) b.classList.add("gizli");
       const n = $("baslatNot"); if (n) n.textContent = "";
       BIY._kontrolleriAc();
@@ -629,8 +719,6 @@ const BIY = {
       if (kayit.ber){ state.berHedef = kayit.ber.hedef||0; state.berTakimlar = kayit.ber.takimlar||[]; state.berSabit = kayit.ber.sabit||{}; state.berNo = kayit.ber.no||0; state.berSorular = kayit.ber.sorular||[]; }
       if (state.takimAbone) state.takimAbone();
       state.takimAbone = ref.collection('takimlar').orderBy('olusturmaZamani').onSnapshot(s => BIY._takimlariCiz(s));
-      $('odaBilgi').classList.remove('gizli');
-      $('odaBilgi').innerHTML = "Oda kodu: <b>" + kayit.oda + "</b> · takımlar linkle/karekodla katılır";
       BIY.setSeviye(state.seviye);
       BIY._adminOyunaGec();   // aktif oyuna geri dön
     } catch(e){ console.error('Devam hatası:', e); BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); }
@@ -723,8 +811,6 @@ const BIY = {
       olusturan: state.uid || null, olusturmaZamani: firebase.firestore.FieldValue.serverTimestamp()
     });
     state.odaId = kod;
-    $("odaBilgi").classList.remove("gizli");
-    $("odaBilgi").innerHTML = "Oda kodu: <b>" + kod + "</b> · takımlar linkle/karekodla katılır";
     if (state.takimAbone) state.takimAbone();
     state.takimAbone = db.collection(KOLEKSIYON).doc(kod).collection("takimlar")
       .orderBy("olusturmaZamani").onSnapshot(snap => BIY._takimlariCiz(snap));
@@ -759,7 +845,7 @@ const BIY = {
         '<div class="biy-qr" id="'+qrId+'"></div>' +
         '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">Kopyala</button></div>';
       grid.appendChild(kart);
-      try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M }); } }
+      try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 170, height: 170, correctLevel: QRCode.CorrectLevel.M }); } }
       catch(err){ console.warn("QR:", err); }
     });
     // takım eklendiyse zorluk seviyesi, soru sayısı ve soru seçimi kilitlenir; hepsi silinince açılır
@@ -808,6 +894,7 @@ const BIY = {
     state.seviye = s;
     document.querySelectorAll(".biy-seviye-btn").forEach(b => b.classList.toggle("secili", b.getAttribute("data-seviye") === s));
     BIY._soruSayiSinir();
+    BIY._menuDurum();
   },
   setSoruSayisi(n){
     const max = state.soruSayiMax || 50;
@@ -816,6 +903,7 @@ const BIY = {
     const hazir = SORU_SAYI_SECENEK.indexOf(n) >= 0;
     document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.toggle("secili", +b.getAttribute("data-sayi") === n));
     const inp = $("soruSayiInput"); if (inp){ inp.value = hazir ? "" : n; }
+    BIY._menuDurum();
   },
   setSoruSayisiManuel(v){
     let n = parseInt(v, 10);
@@ -826,6 +914,7 @@ const BIY = {
     // manuel giriş yapıldı → hazır rakamlardaki yeşil vurgu kalksın
     document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.remove("secili"));
     const inp = $("soruSayiInput"); if (inp) inp.value = n;
+    BIY._menuDurum();
   },
 
   async yarisiBaslat(){
@@ -1438,6 +1527,8 @@ window.addEventListener("beforeunload", function(e){
         const isim = (doc.data().name && doc.data().name !== "Belirtilmedi") ? doc.data().name : (user.email || "Yönetici");
         $("adminAd").textContent = (rol === "admin" ? "Yönetici: " : "Öğretmen: ") + isim;
         BIY._konulariHazirla();
+        BIY._soruSayiSinir();
+        BIY._menuDurum();
         // sayfa yenilenmişse aktif odaya/oyuna dön
         let kayit = null; try { kayit = JSON.parse(localStorage.getItem('biy_aktif') || 'null'); } catch(e){}
         if (kayit && kayit.oda){ BIY._devamEt(kayit); }

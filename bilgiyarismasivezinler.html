@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=40">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=49">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -68,18 +68,38 @@
       </div>
     </div>
 
+    <div class="biy-seviye-secim">
+      <span class="biy-seviye-label">Zorluk seviyesi:</span>
+      <button class="biy-seviye-btn" data-seviye="kolay" onclick="BIY.setSeviye('kolay')">Kolay</button>
+      <button class="biy-seviye-btn" data-seviye="orta" onclick="BIY.setSeviye('orta')">Orta</button>
+      <button class="biy-seviye-btn" data-seviye="zor" onclick="BIY.setSeviye('zor')">Zor</button>
+    </div>
+
+    <div class="biy-seviye-secim biy-sorusayi-secim">
+      <span class="biy-seviye-label">Soru sayısı:</span>
+      <button class="biy-sayi-btn" data-sayi="10" onclick="BIY.setSoruSayisi(10)">10</button>
+      <button class="biy-sayi-btn" data-sayi="15" onclick="BIY.setSoruSayisi(15)">15</button>
+      <button class="biy-sayi-btn" data-sayi="20" onclick="BIY.setSoruSayisi(20)">20</button>
+      <button class="biy-sayi-btn" data-sayi="25" onclick="BIY.setSoruSayisi(25)">25</button>
+      <button class="biy-sayi-btn" data-sayi="50" onclick="BIY.setSoruSayisi(50)">50</button>
+      <input id="soruSayiInput" class="biy-sayi-input" type="number" min="1" max="50" step="1" placeholder="Özel"
+             onchange="BIY.setSoruSayisiManuel(this.value)" title="Konudaki soru sayısına kadar">
+    </div>
+    <p class="biy-ayar-not">Zorluk ve soru sayısı dijital yarışma için; sınıf modu seçilen zorluğun sorularını gösterir.</p>
+
     <div class="biy-menu">
-      <button class="biy-menu-kart" onclick="BIY.acSorular()">
-        <span class="biy-menu-emoji">❓</span>
-        <span class="biy-menu-ad">Sorular</span>
-        <span class="biy-menu-desc">Her soru türünden örnekler</span>
+      <button class="biy-menu-kart" id="kartSinif" onclick="BIY.acSinif()">
+        <span class="biy-menu-emoji">🏫</span>
+        <span class="biy-menu-ad">Sınıf Modu</span>
+        <span class="biy-menu-desc">İnternetsiz · soruları sınıfça çöz, cevabı göster</span>
       </button>
-      <button class="biy-menu-kart" onclick="BIY.acTakimlar()">
+      <button class="biy-menu-kart" id="kartDijital" onclick="BIY.acTakimlar()">
         <span class="biy-menu-emoji">👥</span>
-        <span class="biy-menu-ad">Takım Oluştur</span>
-        <span class="biy-menu-desc">Takım ekle · link &amp; karekod · lobi</span>
+        <span class="biy-menu-ad">Dijital Yarışma</span>
+        <span class="biy-menu-desc">Takım oluştur · link &amp; karekod · lobi</span>
       </button>
     </div>
+    <p id="menuNot" class="biy-menu-not gizli">Başlamak için yukarıdan konu (ya da havuzdan soru), zorluk seviyesi ve soru sayısını seçin.</p>
   </section>
 
   <!-- ADMIN — Sorular önizleme -->
@@ -96,6 +116,22 @@
     <div id="sorularListe" class="biy-sorular-liste"></div>
   </section>
 
+  <!-- ADMIN — Sınıf Modu (çevrimdışı: sorular & cevaplar sınıfta) -->
+  <section id="ekranSinif" class="biy-ekran gizli">
+    <div class="biy-ust-bar">
+      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Üst menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <h2>Sınıf Modu</h2>
+      <span id="sinifKaynak" class="biy-sinif-kaynak"></span>
+    </div>
+    <div id="sinifGovde" class="biy-sinif-govde"></div>
+    <div class="biy-sinif-nav">
+      <button class="biy-btn biy-btn-mavi" onclick="BIY.sinifGit(-1)">◀ Önceki</button>
+      <span id="sinifSayac" class="biy-sinif-sayac">0 / 0</span>
+      <button class="biy-btn biy-btn-yesil" id="sinifCevapBtn" onclick="BIY.sinifCevap()">Cevabı Göster</button>
+      <button class="biy-btn biy-btn-mavi" onclick="BIY.sinifGit(1)">Sonraki ▶</button>
+    </div>
+  </section>
+
   <!-- ADMIN — Takım oluştur + lobi -->
   <section id="ekranTakimlar" class="biy-ekran gizli">
     <div class="biy-ust-bar">
@@ -103,31 +139,11 @@
       <h2>Takım Oluştur &amp; Lobi</h2>
     </div>
 
-    <div class="biy-seviye-secim">
-      <span class="biy-seviye-label">Zorluk seviyesi:</span>
-      <button class="biy-seviye-btn secili" data-seviye="kolay" onclick="BIY.setSeviye('kolay')">Kolay</button>
-      <button class="biy-seviye-btn" data-seviye="orta" onclick="BIY.setSeviye('orta')">Orta</button>
-      <button class="biy-seviye-btn" data-seviye="zor" onclick="BIY.setSeviye('zor')">Zor</button>
-    </div>
-
-    <div class="biy-seviye-secim biy-sorusayi-secim">
-      <span class="biy-seviye-label">Soru sayısı:</span>
-      <button class="biy-sayi-btn" data-sayi="10" onclick="BIY.setSoruSayisi(10)">10</button>
-      <button class="biy-sayi-btn" data-sayi="15" onclick="BIY.setSoruSayisi(15)">15</button>
-      <button class="biy-sayi-btn secili" data-sayi="20" onclick="BIY.setSoruSayisi(20)">20</button>
-      <button class="biy-sayi-btn" data-sayi="25" onclick="BIY.setSoruSayisi(25)">25</button>
-      <button class="biy-sayi-btn" data-sayi="50" onclick="BIY.setSoruSayisi(50)">50</button>
-      <input id="soruSayiInput" class="biy-sayi-input" type="number" min="1" max="50" step="1" placeholder="Özel"
-             onchange="BIY.setSoruSayisiManuel(this.value)" title="Konudaki soru sayısına kadar">
-    </div>
-
     <div class="biy-takim-yap">
       <input id="takimAdiInput" type="text" placeholder="Takım / sınıf adı (ör. 1-A)" maxlength="24"
              onkeydown="if(event.key==='Enter')BIY.takimEkle()">
       <button class="biy-btn biy-btn-yesil" onclick="BIY.takimEkle()">+ Takım Ekle</button>
     </div>
-
-    <div id="odaBilgi" class="biy-oda-bilgi gizli"></div>
 
     <div id="takimlarGrid" class="biy-takimlar-grid"></div>
 
@@ -150,6 +166,6 @@
 
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=38"></script>
+<script src="bilgiyarismasivezinler.js?v=46"></script>
 </body>
 </html>
