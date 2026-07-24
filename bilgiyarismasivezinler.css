@@ -155,8 +155,8 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-oda-bilgi { max-width: 860px; margin: 0 auto 6px; width: 100%; text-align: center; color: #64748b; font-size: 1.15rem; }
 .biy-oda-bilgi b { color: #16A085; }
 
-.biy-takimlar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; padding: 22px 40px 34px; max-width: 1400px; margin: 0 auto; width: 100%; justify-content: center; }
-.biy-takim-kart { background: #fff; border: 2px solid #E9EEF5; border-radius: 20px; padding: 24px 22px; text-align: center; position: relative; box-shadow: 0 6px 18px rgba(0,0,0,.08); transition: background .3s, border-color .3s; }
+.biy-takimlar-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; padding: 22px 40px 34px; max-width: 1400px; margin: 0 auto; width: 100%; }
+.biy-takim-kart { box-sizing: border-box; flex: 0 0 330px; background: #fff; border: 2px solid #E9EEF5; border-radius: 20px; padding: 24px 22px; text-align: center; position: relative; box-shadow: 0 6px 18px rgba(0,0,0,.08); transition: background .3s, border-color .3s; }
 .biy-takim-kart h3 { margin: 0 0 8px; font-size: 2.1rem; font-weight: 800; color: #27AE60; transition: color .3s; }
 /* bağlanana kadar kırmızı dolgulu, bağlanınca yeşile döner */
 .biy-kart-bekliyor { background: #FDE8E6; border-color: #EF9A93; }
@@ -277,9 +277,10 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 #ekranTakim #takimIcerik.biy-oyun-orta { align-self: center; }
 
 /* üst şerit + sayaç */
-.biy-oyun-ust { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; padding-right: 96px; }
-.biy-oyun-sira { font-family: 'Marhey',sans-serif; font-weight: 700; font-size: 1.2rem; color: #16A085; }
-.biy-oyun-tip { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.biy-oyun-ust { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; margin-bottom: 6px; }
+.biy-oyun-sira { justify-self: start; font-family: 'Marhey',sans-serif; font-weight: 700; font-size: 1.2rem; color: #16A085; }
+.biy-oyun-tip { justify-self: center; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.biy-oyun-ust > .biy-sayac { justify-self: end; margin-right: 84px; }
 .biy-sayac { display: flex; align-items: baseline; gap: 4px; background: #EF5350; color: #fff; padding: 5px 16px; border-radius: 14px; font-family: 'Marhey',sans-serif; box-shadow: 0 4px 10px rgba(239,83,80,.35); }
 .biy-sayac span { font-size: 1.7rem; font-weight: 800; }
 .biy-sayac small { font-size: .8rem; opacity: .9; }
@@ -440,7 +441,7 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 /* MASAÜSTÜNDE admin oyun ekranı büyük — ekranı doldur */
 @media (min-width: 900px) {
   #ekranOyunAdmin .biy-oyun-orta { max-width: 1180px; width: 96%; padding: 30px 24px 56px; }
-  #ekranOyunAdmin .biy-oyun-ust { padding-right: 124px; }
+  #ekranOyunAdmin .biy-oyun-ust > .biy-sayac { margin-right: 124px; }
   #ekranOyunAdmin .biy-oyun-sira { font-size: 1.8rem; }
   #ekranOyunAdmin .biy-soru-tip { font-size: 1.1rem; padding: 7px 18px; }
   #ekranOyunAdmin .biy-zorluk { font-size: 1.15rem; }
