@@ -273,6 +273,8 @@ const BIY = {
     if (!soru){ kap.innerHTML = '<div class="biy-oyun-orta"><p class="biy-alt">Bu turun soruları bellekte yok (sayfa yenilenmiş olabilir). Lütfen yarışmayı yeniden başlatın.</p><button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()">Ana Menü</button></div>'; return; }
     const sonuc = (o.faz === "sonuc");
     const t = TIP_BILGI[soru.tip] || { ad: soru.tip, emoji: "❓" };
+    // SONUÇ EKRANI — soru ekranından tamamen ayrı
+    if (sonuc){ sayacDurdur(); kap.innerHTML = BIY._sonucEkranHtml(idx, soru); return; }
     // cevaplar (bu index)
     const buCevaplar = {}; Object.values(state.cevaplar).forEach(c => { if (c.index === idx) buCevaplar[c.takimId] = c; });
     const cevapSayisi = Object.keys(buCevaplar).length;
@@ -318,21 +320,8 @@ const BIY = {
       // tüm takımlar cevaplayınca otomatik sonuç
       if (hepsi && state.otoSonucIndex !== idx){
         state.otoSonucIndex = idx;
-        setTimeout(function(){ if (state.oda && state.oda.faz === 'cevap' && (state.oda.aktifIndex||0) === idx) BIY.sonucGoster(); }, 700);
+        setTimeout(function(){ if (state.oda && state.oda.faz === 'cevap' && (state.oda.aktifIndex||0) === idx) BIY.sonucGoster(); }, 450);
       }
-    } else {
-      // reveal tablosu
-      let satir = state.takimListe.slice().map(tk => {
-        const c = buCevaplar[tk.id];
-        const dogruMu = c && c.secilen === soru.dogru;
-        const secMetin = c ? (String.fromCharCode(65 + c.secilen) + ') ' + soru.secenekler[c.secilen]) : "—";
-        const kazanc = dogruMu ? ('+'+PUAN[soru.zorluk]) : '0';
-        return '<tr class="'+(c?(dogruMu?'dogru':'yanlis'):'yok')+'"><td>'+kacis(tk.ad)+'</td><td class="ar-hucre">'+kacis(secMetin)+'</td><td>'+(c?(dogruMu?'✅ Doğru':'❌ Yanlış'):'⏳ Cevapsız')+'</td><td>'+kazanc+'</td></tr>';
-      }).join("");
-      const son = (idx + 1 >= (o.toplamSoru || state.oyunSorulari.length));
-      govde += '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Cevabı</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
-               '<div class="biy-mini-lider">'+ BIY._miniLiderHtml() +'</div>' +
-               '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+(son?'🏁 Yarışmayı Bitir':'Sonraki Soru ›')+'</button></div>';
     }
     kap.innerHTML = '<div class="biy-oyun-orta">'+govde+'</div>';
 
@@ -343,6 +332,55 @@ const BIY = {
         const bar = document.querySelector(".biy-sayac-bar i"); if (bar) bar.style.width = Math.max(0, Math.min(100, (k/(o.soruSuresi||SORU_SURESI))*100)) + "%";
       });
     } else sayacDurdur();
+  },
+
+  // belirli index'e kadar (dahil) her takımın toplam puanı
+  _puanKumul(cutoff){
+    const t = {};
+    Object.values(state.cevaplar).forEach(c => {
+      if (c.index > cutoff) return;
+      const s = state.oyunSorulari[c.index]; if (!s) return;
+      if (c.secilen === s.dogru) t[c.takimId] = (t[c.takimId] || 0) + (PUAN[s.zorluk] || 10);
+    });
+    return t;
+  },
+  _rank(puanMap, ids){
+    const r = {};
+    ids.forEach(id => { const p = puanMap[id] || 0; r[id] = 1 + ids.filter(o => (puanMap[o]||0) > p).length; });
+    return r;
+  },
+  // AYRI SONUÇ EKRANI (soru ekranından bağımsız)
+  _sonucEkranHtml(idx, soru){
+    const o = state.oda;
+    const toplam = o.toplamSoru || state.oyunSorulari.length;
+    const buCevaplar = {}; Object.values(state.cevaplar).forEach(c => { if (c.index === idx) buCevaplar[c.takimId] = c; });
+    const dogruMetin = String.fromCharCode(65 + soru.dogru) + ') ' + soru.secenekler[soru.dogru];
+    const satir = state.takimListe.map(tk => {
+      const c = buCevaplar[tk.id]; const dogruMu = c && c.secilen === soru.dogru;
+      const secMetin = c ? (String.fromCharCode(65 + c.secilen) + ') ' + soru.secenekler[c.secilen]) : "—";
+      const kazanc = dogruMu ? ('+' + PUAN[soru.zorluk]) : '0';
+      return '<tr class="'+(c?(dogruMu?'dogru':'yanlis'):'yok')+'"><td>'+kacis(tk.ad)+'</td><td class="'+(soru.arSecenek?'ar-hucre':'')+'">'+kacis(secMetin)+'</td><td>'+(c?(dogruMu?'✅ Doğru':'❌ Yanlış'):'⏳ Cevapsız')+'</td><td>'+kazanc+'</td></tr>';
+    }).join("");
+    // puan durumu + sıra değişimi (bu sorudan önce vs sonra)
+    const ids = state.takimListe.map(t => t.id);
+    const newP = BIY._puanKumul(idx), prevP = BIY._puanKumul(idx - 1);
+    const newR = BIY._rank(newP, ids), prevR = BIY._rank(prevP, ids);
+    const sirali = state.takimListe.slice().sort((a,b) => (newP[b.id]||0) - (newP[a.id]||0));
+    const lider = sirali.map((tk,i) => {
+      const delta = (prevR[tk.id]||ids.length) - (newR[tk.id]||ids.length); // >0 yükseldi
+      const ok = delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit">–</span>');
+      const cls = delta > 0 ? 'biy-lider-yukari' : (delta < 0 ? 'biy-lider-asagi' : '');
+      return '<li class="'+cls+'" style="--i:'+i+'"><span class="biy-lider-sira">'+(i+1)+'</span>'+ok+'<span class="biy-lider-ad">'+kacis(tk.ad)+'</span><b>'+(newP[tk.id]||0)+'</b></li>';
+    }).join("");
+    const son = (idx + 1 >= toplam);
+    return '<div class="biy-oyun-orta biy-sonuc-ekran">' +
+      '<div class="biy-sonuc-baslik">📊 Sonuç · Soru '+(idx+1)+' / '+toplam+'</div>' +
+      '<div class="biy-sonuc-soru">'+kacis(soru.soru)+'</div>' +
+      '<div class="biy-dogru-kutu'+(soru.arSecenek?' ar':'')+'"><span class="biy-dogru-etiket">Doğru cevap</span><span class="biy-dogru-metin">'+kacis(dogruMetin)+'</span></div>' +
+      '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Cevabı</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
+      '<div class="biy-sonuc-lider"><h4>Puan Durumu</h4><ol class="biy-lider-ol">'+lider+'</ol></div>' +
+      '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+(son?'🏁 Yarışmayı Bitir':'Sonraki Soru ›')+'</button></div>' +
+    '</div>';
   },
 
   _siraliTakimlar(){
