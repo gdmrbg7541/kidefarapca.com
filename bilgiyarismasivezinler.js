@@ -441,9 +441,8 @@ const BIY = {
       '</div>' +
       (gizli ? '' : barHtml);
 
-    if (gizli){
-      govde += '<div class="biy-soru-gizli"><b>Soru gizli</b><small>Takımlar soruyu kendi cihazlarında görüyor</small></div>';
-    } else {
+    // soru gizliyken hiçbir kutu gösterilmez (sınıf durumu + geri sayım aşağıda büyük)
+    if (!gizli){
       govde += '<div class="biy-oyun-soru">'+ kacis(soru.soru) +'</div>' +
         (soru.arapca ? '<div class="biy-oyun-arapca">'+ kacis(soru.arapca) +'</div>' : '') +
         '<div class="biy-a-optlar">'+ opt +'</div>';
@@ -496,11 +495,14 @@ const BIY = {
     const o = state.oda;
     const toplam = o.toplamSoru || state.oyunSorulari.length;
     const buCevaplar = {}; Object.values(state.cevaplar).forEach(c => { if (c.index === idx) buCevaplar[c.takimId] = c; });
-    // doğru şık (büyük gösterim)
+    // soru + şıklar (doğru şık vurgulu)
     const di = soru.dogru;
-    const dogruRenk = SIK_RENK[di] || "#27AE60";
-    const dogruHarf = String.fromCharCode(65 + di);
-    const arCls = soru.arSecenek ? " ar" : "";
+    let optHtml = "";
+    soru.secenekler.forEach((sec, i) => {
+      const dg = (i === di);
+      optHtml += '<div class="biy-a-opt'+(dg?' dogru':'')+(soru.arSecenek?' ar':'')+'" style="--c:'+SIK_RENK[i]+'">' +
+        '<span class="biy-a-harf">'+String.fromCharCode(65+i)+'</span><span class="biy-a-metin">'+kacis(sec)+'</span>'+(dg?'<span class="biy-a-tik">✓</span>':'')+'</div>';
+    });
     // sınıfların sonucu (şık gösterilmez; sadece durum + puan)
     const satir = state.takimListe.map((tk,ri) => {
       const c = buCevaplar[tk.id]; const dogruMu = c && c.secilen === di;
@@ -525,27 +527,38 @@ const BIY = {
     const degisti = veri.some(r => r.delta !== 0);
     const son = (idx + 1 >= toplam);
     const step = taze ? 0 : 2;   // yenileme olursa doğrudan son sahne (liderlik)
+    const t = TIP_BILGI[soru.tip] || { ad: soru.tip, emoji: "❓" };
     return '<div class="biy-oyun-orta biy-sonuc-ekran" data-degisti="'+(degisti?1:0)+'" data-step="'+step+'">' +
       '<div class="biy-sonuc-baslik">📊 Sonuç · Soru '+(idx+1)+' / '+toplam+'</div>' +
       '<div class="biy-sonuc-sahne">' +
-        // SAHNE 1: doğru cevap (devasa)
+        // SAHNE 1: soru cümlesi + şıklar + vurgulu doğru şık
         '<div class="biy-sahne-oge oge-dogru">' +
-          '<div class="biy-dogru-buyuk'+arCls+'" style="--c:'+dogruRenk+'">' +
-            '<span class="biy-db-etiket">Doğru Cevap</span>' +
-            '<div class="biy-db-sik"><span class="biy-db-harf">'+dogruHarf+'</span><span class="biy-db-metin">'+kacis(soru.secenekler[di])+'</span></div>' +
-          '</div>' +
+          '<div class="biy-sonuc-soru-cumle">'+kacis(soru.soru)+'</div>' +
+          (soru.arapca ? '<div class="biy-oyun-arapca">'+kacis(soru.arapca)+'</div>' : '') +
+          '<div class="biy-a-optlar">'+optHtml+'</div>' +
         '</div>' +
-        // SAHNE 2: sınıfların cevapları (devasa)
+        // SAHNE 2: sınıfların verdiği cevaplar (devasa)
         '<div class="biy-sahne-oge oge-reveal">' +
           '<div class="biy-reveal"><table class="biy-reveal-tablo"><thead><tr><th>Takım</th><th>Durum</th><th>Puan</th></tr></thead><tbody>'+satir+'</tbody></table></div>' +
         '</div>' +
-        // SAHNE 3: liderlik tablosu (devasa)
+        // SAHNE 3: güncel puan durumu (devasa)
         '<div class="biy-sahne-oge oge-lider">' +
           '<div class="biy-sonuc-lider"><h4>🏆 Puan Durumu</h4><ol class="biy-lider-ol">'+lider+'</ol></div>' +
         '</div>' +
       '</div>' +
+      // aşağıda üç ilerleme çizgisi — tıklayınca ilgili sayfaya geçer
+      '<div class="biy-sonuc-nokta">' +
+        '<button class="biy-nokta" data-adim="0" onclick="BIY.sonucAdim(0)" title="Soru & doğru şık"></button>' +
+        '<button class="biy-nokta" data-adim="1" onclick="BIY.sonucAdim(1)" title="Sınıfların cevapları"></button>' +
+        '<button class="biy-nokta" data-adim="2" onclick="BIY.sonucAdim(2)" title="Puan durumu"></button>' +
+      '</div>' +
       '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+(son?'🏁 Yarışmayı Bitir':'Sonraki Soru ›')+'</button></div>' +
     '</div>';
+  },
+  // ilerleme çizgisine basınca ilgili sonuç sayfasına geç (otomatik akışı durdur)
+  sonucAdim(n){
+    BIY._sonucTemizle();
+    const e = document.querySelector(".biy-sonuc-ekran"); if (e) e.setAttribute("data-step", String(n));
   },
   // sonuç ekranı sahne akışı: her öğe devasa gösterilir; yenisi gelince önceki yukarı kayıp kaybolur
   _sonucOynat(){
