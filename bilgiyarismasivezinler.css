@@ -186,6 +186,15 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-seviye-btn { border: 2px solid #E9EEF5; background: #fff; color: #475569; padding: 14px 34px; border-radius: 999px; cursor: pointer; font-family: 'Marhey',sans-serif; font-weight: 700; font-size: 1.3rem; transition: all .15s; }
 .biy-seviye-btn:hover { border-color: #cbd5e1; }
 .biy-seviye-btn.secili { color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+/* soru sayısı seçici */
+.biy-sorusayi-secim { margin-top: 4px; }
+.biy-sayi-btn { border: 2px solid #E9EEF5; background: #fff; color: #475569; padding: 12px 24px; border-radius: 999px; cursor: pointer; font-family: 'Marhey',sans-serif; font-weight: 700; font-size: 1.2rem; transition: all .15s; }
+.biy-sayi-btn:hover { border-color: #cbd5e1; }
+.biy-sayi-btn.secili { color: #fff; border-color: transparent; background: #16A085; box-shadow: 0 4px 10px rgba(22,160,133,.25); }
+.biy-sayi-input { width: 96px; border: 2px solid #E9EEF5; border-radius: 12px; padding: 11px 14px; font-family: inherit; font-size: 1.1rem; font-weight: 700; color: #16A085; text-align: center; }
+.biy-sayi-input:focus { outline: none; border-color: #20C997; }
+/* beraberlik başlığı (aynı tasarım, kırmızı vurgu) */
+.biy-oyun-sira.biy-ber, .biy-sonuc-baslik.biy-ber { color: #EF5350 !important; }
 .biy-seviye-btn[data-seviye="kolay"].secili { background: #27AE60; }
 .biy-seviye-btn[data-seviye="orta"].secili  { background: #F39C12; }
 .biy-seviye-btn[data-seviye="zor"].secili   { background: #EF5350; }
