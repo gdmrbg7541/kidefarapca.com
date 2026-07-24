@@ -414,8 +414,20 @@ const BIY = {
 
   anasayfa(){ sayacDurdur(); ekranGoster("ekranAnasayfa"); BIY._menuDurum(); },
 
-  // Geri: sekmeyi (dosyayı) kapatmayı dene; kapanmazsa kaliplartablosu.html'e git
+  // Geri: dosyadan çık. Bağlı cihaz varsa onay iste; çıkışta odayı kapat (cihazlar ayrılsın).
   geriDon(){
+    if (state.odaId && (state.takimListe || []).some(t => t.bagli)){
+      BIY._onay("Çıkılsın mı?", "Bağlı sınıf/cihazlar var — çıkarsanız bağlantıları kesilecek.", "Evet, çık", function(){ BIY._geriCik(); });
+      return;
+    }
+    BIY._geriCik();
+  },
+  async _geriCik(){
+    if (state.odaId){
+      try { await db.collection(KOLEKSIYON).doc(state.odaId).update({ durum: "bitti", sonSira: [] }); } catch(e){}
+      try { if (state.odaAboneAdmin) state.odaAboneAdmin(); if (state.cevapAbone) state.cevapAbone(); if (state.takimAbone) state.takimAbone(); } catch(e){}
+      BIY._temizleKayit();
+    }
     try { window.close(); } catch(e){}
     setTimeout(function(){ location.href = "kaliplartablosu.html"; }, 120);
   },

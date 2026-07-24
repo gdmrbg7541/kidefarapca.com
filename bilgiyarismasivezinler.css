@@ -394,17 +394,18 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-sinif-kontrol { display: flex; align-items: center; justify-content: center; gap: 18px 26px; flex-wrap: wrap; padding: 8px 22px 0; }
 .biy-sinif-kontrol .biy-konu-select { min-width: 240px; }
 .biy-sinif-kontrol .biy-sekme-bar { padding: 0; }
-/* Sınıf Modu: kutusuz, iki sütun (sol soru / sağ şıklar), tek ekrana sığar (scroll yok) */
-.biy-sinif-govde { flex: 1; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 3vw; padding: 2vh 4vw; }
-.biy-sinif-soru { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.2vh; text-align: center; min-width: 0; }
+/* Sınıf Modu: kutusuz, iki sütun (sol şıklar / sağ soru), tek ekrana sığar (scroll yok) */
+#ekranSinif { height: 100vh; max-height: 100vh; overflow: hidden; }
+.biy-sinif-govde { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; flex-direction: row-reverse; align-items: stretch; gap: 3vw; padding: 2vh 4vw; }
+.biy-sinif-siklar { flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; gap: 1.6vh; min-width: 0; min-height: 0; }
+.biy-sinif-soru { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.2vh; text-align: center; min-width: 0; }
 .biy-sinif-soru .biy-soru-tip { font-size: clamp(.85rem, 1.8vh, 1.1rem); }
 .biy-sinif-arapca { font-family: 'Harmattan','Traditional Arabic',serif; direction: rtl; color: #16A085; font-weight: 700; font-size: clamp(2.6rem, 10vh, 7rem); line-height: 1.15; }
 .biy-sinif-metin { font-size: clamp(1.3rem, 3.4vh, 2.5rem); font-weight: 700; color: #2c3e50; line-height: 1.3; }
-.biy-sinif-siklar { display: flex; flex-direction: column; justify-content: center; gap: 1.5vh; min-width: 0; }
-.biy-sinif-siklar .biy-secenek { font-size: clamp(1.05rem, 2.5vh, 1.9rem); padding: clamp(8px, 1.7vh, 20px) 20px; }
-.biy-sinif-siklar .biy-arapca-secenek { font-size: clamp(1.4rem, 3.4vh, 2.7rem); }
-.biy-sinif-siklar .biy-sik { width: clamp(28px, 4.6vh, 42px); height: clamp(28px, 4.6vh, 42px); flex-basis: clamp(28px, 4.6vh, 42px); font-size: clamp(.85rem, 2vh, 1.4rem); }
-@media (max-width: 780px){ .biy-sinif-govde { grid-template-columns: 1fr; gap: 1.4vh; overflow-y: auto; } }
+.biy-sinif-siklar .biy-secenek { font-size: clamp(1.2rem, 3vh, 2.3rem); padding: clamp(10px, 2vh, 24px) 22px; }
+.biy-sinif-siklar .biy-arapca-secenek { font-size: clamp(1.6rem, 4vh, 3rem); }
+.biy-sinif-siklar .biy-sik { width: clamp(32px, 5vh, 48px); height: clamp(32px, 5vh, 48px); flex-basis: clamp(32px, 5vh, 48px); font-size: clamp(1rem, 2.4vh, 1.6rem); }
+@media (max-width: 780px){ #ekranSinif { height: auto; max-height: none; overflow: visible; } .biy-sinif-govde { flex-direction: column; gap: 1.6vh; overflow-y: auto; } }
 .biy-sinif-bos { text-align: center; color: #94a3b8; font-size: 1.25rem; padding: 50px 20px; }
 .biy-sinif-nav { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 14px 22px 28px; flex-wrap: wrap; }
 .biy-sinif-nav .biy-btn { padding: 12px 26px; font-size: 1.05rem; }
