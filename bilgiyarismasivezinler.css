@@ -147,3 +147,92 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
   .biy-baslik { font-size: 1.15rem; }
   .biy-takim-yap { flex-direction: column; }
 }
+
+/* ===========================================================
+   Seviye seçici + Canlı Oyun
+   =========================================================== */
+.biy-seviye-secim { max-width: 720px; margin: 6px auto 0; width: 100%; padding: 0 22px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.biy-seviye-label { color: #64748b; font-weight: 700; font-family: 'Marhey',sans-serif; }
+.biy-seviye-btn { border: 2px solid #E9EEF5; background: #fff; color: #475569; padding: 8px 18px; border-radius: 999px; cursor: pointer; font-family: 'Marhey',sans-serif; font-weight: 700; font-size: .95rem; transition: all .15s; }
+.biy-seviye-btn:hover { border-color: #cbd5e1; }
+.biy-seviye-btn.secili { color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.biy-seviye-btn[data-seviye="kolay"].secili { background: #27AE60; }
+.biy-seviye-btn[data-seviye="orta"].secili  { background: #F39C12; }
+.biy-seviye-btn[data-seviye="zor"].secili   { background: #EF5350; }
+
+/* oyun ortası */
+.biy-oyun-orta { max-width: 900px; width: 94%; margin: 0 auto; padding: 26px 16px 60px; }
+#ekranTakim { align-items: stretch; justify-content: flex-start; padding-top: 4vh; }
+#ekranTakim #takimIcerik.biy-oyun-orta { align-self: center; }
+
+/* üst şerit + sayaç */
+.biy-oyun-ust { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.biy-oyun-sira { font-family: 'Marhey',sans-serif; font-weight: 700; font-size: 1.2rem; color: #16A085; }
+.biy-oyun-tip { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.biy-sayac { display: flex; align-items: baseline; gap: 4px; background: #EF5350; color: #fff; padding: 5px 16px; border-radius: 14px; font-family: 'Marhey',sans-serif; box-shadow: 0 4px 10px rgba(239,83,80,.35); }
+.biy-sayac span { font-size: 1.7rem; font-weight: 800; }
+.biy-sayac small { font-size: .8rem; opacity: .9; }
+.biy-sayac-bar { height: 8px; background: #E9EEF5; border-radius: 999px; overflow: hidden; margin: 4px 0 14px; }
+.biy-sayac-bar i { display: block; height: 100%; background: linear-gradient(90deg,#F39C12,#EF5350); transition: width .4s linear; }
+
+.biy-oyun-soru { font-size: 1.5rem; font-weight: 700; color: #2c3e50; text-align: center; margin: 8px 0; font-family: 'Marhey',sans-serif; }
+.biy-oyun-arapca { font-family: 'Harmattan','Traditional Arabic',serif; font-size: 3rem; direction: rtl; text-align: center; color: #16A085; font-weight: 700; margin: 6px 0 18px; }
+
+/* admin seçenekler */
+.biy-a-optlar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.biy-a-opt { display: flex; align-items: center; gap: 12px; background: var(--c); color: #fff; border-radius: 14px; padding: 15px 18px; font-size: 1.2rem; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.biy-a-opt.ar .biy-a-metin { font-family: 'Harmattan',serif; direction: rtl; font-size: 1.55rem; }
+.biy-a-harf { width: 34px; height: 34px; flex: 0 0 34px; background: rgba(255,255,255,.28); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+.biy-a-metin { flex: 1; }
+.biy-a-tik { font-size: 1.4rem; }
+.biy-a-opt.dogru { box-shadow: 0 0 0 4px #fff, 0 0 0 8px #27AE60, 0 6px 16px rgba(0,0,0,.2); }
+
+.biy-cevap-durum { text-align: center; font-family: 'Marhey',sans-serif; font-weight: 700; color: #16A085; margin: 16px 0 8px; font-size: 1.1rem; }
+.biy-cipler { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.biy-cip { background: #F0F4F8; color: #64748b; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: .9rem; }
+.biy-cip.ok { background: #E6FAF5; color: #16A085; }
+.biy-oyun-kontrol { text-align: center; margin-top: 24px; }
+
+/* reveal tablosu */
+.biy-reveal { margin-top: 18px; overflow-x: auto; }
+.biy-reveal-tablo { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+.biy-reveal-tablo th { background: #16A085; color: #fff; padding: 10px; font-family: 'Marhey',sans-serif; font-size: .95rem; }
+.biy-reveal-tablo td { padding: 10px 12px; border-top: 1px solid #E9EEF5; text-align: center; font-weight: 600; }
+.biy-reveal-tablo td:first-child { text-align: left; font-weight: 700; }
+.biy-reveal-tablo .ar-hucre { font-family: 'Harmattan',serif; direction: rtl; font-size: 1.15rem; }
+.biy-reveal-tablo tr.dogru td { background: #E6FAF5; }
+.biy-reveal-tablo tr.yanlis td { background: #FFF0F0; }
+.biy-reveal-tablo tr.yok td { color: #94a3b8; }
+
+.biy-mini-lider { margin-top: 22px; }
+.biy-mini-lider h4 { font-family: 'Marhey',sans-serif; color: #F39C12; text-align: center; margin: 0 0 8px; font-size: 1.15rem; }
+.biy-lider-ol { list-style: none; padding: 0; max-width: 420px; margin: 0 auto; }
+.biy-lider-ol li { display: flex; justify-content: space-between; background: #fff; border: 1px solid #E9EEF5; border-radius: 10px; padding: 8px 14px; margin-bottom: 6px; font-weight: 700; }
+.biy-lider-ol li b { color: #16A085; }
+
+/* final */
+.biy-final { text-align: center; }
+.biy-final-ol { list-style: none; padding: 0; max-width: 460px; margin: 20px auto 0; }
+.biy-final-ol li { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #E9EEF5; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,.05); }
+.biy-final-ol li.podyum { border-color: #F1C40F; background: #FFFDF5; }
+.biy-final-sira { font-size: 1.5rem; font-weight: 800; width: 44px; text-align: center; }
+.biy-final-ad { flex: 1; text-align: left; font-weight: 700; font-size: 1.15rem; }
+.biy-final-ol li b { color: #16A085; font-size: 1.3rem; }
+
+/* takım oyun ekranı */
+.biy-t-ust { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.biy-t-sayac { background: #EF5350; color: #fff; min-width: 44px; height: 44px; padding: 0 6px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-family: 'Marhey',sans-serif; font-weight: 800; font-size: 1.3rem; }
+.biy-t-optlar { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 8px; }
+.biy-t-opt { display: flex; align-items: center; gap: 12px; background: var(--c); color: #fff; border: none; border-radius: 14px; padding: 18px; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,.14); transition: transform .1s; text-align: left; width: 100%; }
+.biy-t-opt.ar { font-family: 'Harmattan',serif; direction: rtl; font-size: 1.5rem; }
+.biy-t-opt:active { transform: scale(.98); }
+.biy-t-opt:disabled { opacity: .45; cursor: default; }
+.biy-t-alindi { text-align: center; margin-top: 18px; font-family: 'Marhey',sans-serif; font-weight: 800; font-size: 1.25rem; color: #16A085; }
+.biy-t-alindi.biy-gec { color: #EF5350; }
+.biy-t-ipucu { text-align: center; margin-top: 14px; color: #94a3b8; }
+
+@media (max-width: 640px) {
+  .biy-a-optlar { grid-template-columns: 1fr; }
+  .biy-oyun-arapca { font-size: 2.3rem; }
+  .biy-seviye-secim { padding: 0 14px; }
+}
