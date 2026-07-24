@@ -72,8 +72,44 @@ const state = {
   sayacInterval: null,
   sonCevapIndex: -1,
   sonucAnimIndex: -1,        // sonuç ekranı animasyonu hangi soru için oynatıldı
-  sonucTimerlar: []          // sonuç ekranı adım zamanlayıcıları (temizlik için)
+  sonucTimerlar: [],         // sonuç ekranı adım zamanlayıcıları (temizlik için)
+  finalKonfeti: false,       // yarışma bitti ekranında konfeti bir kez patlar
+  baglSet: null,             // o an bağlı takım id kümesi (yeni bağlanmayı yakalamak için)
+  baglIlk: false,            // ilk takım snapshot'ı işlendi mi (açılışta ses çalmamak için)
+  hepsiSesIndex: -1          // "tümü cevapladı" sesi hangi soru için çalındı
 };
+
+/* ---------------- Ses (sinüs dalgası — Web Audio) ---------------- */
+const SES = {
+  ctx: null,
+  _ac(){
+    try {
+      if (!this.ctx){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; this.ctx = new AC(); }
+      if (this.ctx.state === "suspended") this.ctx.resume();
+      return this.ctx;
+    } catch(e){ return null; }
+  },
+  _ton(ac, freq, t0, sure, kazanc){
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(freq, t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(kazanc, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + sure);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0 + sure + 0.03);
+  },
+  _cal(notalar, kazanc){
+    const ac = this._ac(); if (!ac) return;
+    const now = ac.currentTime + 0.01;
+    notalar.forEach(n => this._ton(ac, n.f, now + (n.t || 0), n.d || 0.15, (n.g || kazanc || 0.14)));
+  },
+  baglandi(){ this._cal([{f:659,t:0,d:0.12},{f:988,t:0.10,d:0.18}], 0.13); },                          // takım bağlandı: yükselen ding
+  hepsiCevap(){ this._cal([{f:523,t:0,d:0.11},{f:659,t:0.09,d:0.11},{f:784,t:0.18,d:0.20}], 0.13); },  // tümü cevapladı: do-mi-sol
+  sonuc(){ this._cal([{f:392,t:0,d:0.14},{f:587,t:0.12,d:0.24}], 0.15); },                              // sonuç ekranı açıldı
+  siraDegisti(){ this._cal([{f:494,t:0,d:0.10},{f:740,t:0.08,d:0.10},{f:988,t:0.16,d:0.20}], 0.12); }   // sıralama değişti: hızlı yükseliş
+};
+// ilk kullanıcı hareketinde ses bağlamını aç (tarayıcı otomatik oynatma kısıtı)
+["pointerdown","keydown","touchstart"].forEach(ev => window.addEventListener(ev, () => SES._ac(), { passive: true }));
 
 /* ---------------- Yardımcılar ---------------- */
 function $(id){ return document.getElementById(id); }
@@ -191,7 +227,8 @@ const BIY = {
     if (state.cevapAbone) state.cevapAbone();
     if (state.takimAbone) state.takimAbone();
     BIY._sonucTemizle();
-    state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1; state.sonucAnimIndex = -1;
+    state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1; state.sonucAnimIndex = -1; state.finalKonfeti = false;
+    state.baglSet = null; state.baglIlk = false; state.hepsiSesIndex = -1;
     BIY.anasayfa();
   },
 
@@ -243,12 +280,19 @@ const BIY = {
         '<div class="biy-qr" id="'+qrId+'"></div>' +
         '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">Kopyala</button></div>';
       grid.appendChild(kart);
-      try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 132, height: 132, correctLevel: QRCode.CorrectLevel.M }); } }
+      try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 168, height: 168, correctLevel: QRCode.CorrectLevel.M }); } }
       catch(err){ console.warn("QR:", err); }
     });
     const baslat = $("baslatBtn");
     if (sayi >= 2) baslat.classList.remove("gizli"); else baslat.classList.add("gizli");
     $("baslatNot").textContent = sayi === 0 ? "" : (sayi + " takım · " + bagli + " bağlandı" + (sayi < 2 ? " · başlatmak için en az 2 takım" : ""));
+    // yeni bağlanan takım(lar) için ses (açılışta çalmaz)
+    const simdiBagli = new Set(state.takimListe.filter(t => t.bagli).map(t => t.id));
+    if (state.baglIlk && state.baglSet){
+      let yeni = false; simdiBagli.forEach(id => { if (!state.baglSet.has(id)) yeni = true; });
+      if (yeni) SES.baglandi();
+    }
+    state.baglSet = simdiBagli; state.baglIlk = true;
   },
   async takimSil(takimId){
     if (!state.odaId) return;
@@ -304,7 +348,12 @@ const BIY = {
   _renderAdminOyun(){
     const o = state.oda, kap = $("ekranOyunAdmin");
     if (!o) return;
-    if (o.durum === "bitti"){ sayacDurdur(); kap.innerHTML = BIY._leaderboardHtml(true); return; }
+    if (o.durum === "bitti"){
+      sayacDurdur(); BIY._sonucTemizle();
+      kap.innerHTML = BIY._leaderboardHtml(true);
+      if (!state.finalKonfeti){ state.finalKonfeti = true; BIY._konfetiPatlat(); }
+      return;
+    }
     const idx = o.aktifIndex || 0;
     const soru = state.oyunSorulari[idx];
     if (!soru){ kap.innerHTML = '<div class="biy-oyun-orta"><p class="biy-alt">Bu turun soruları bellekte yok (sayfa yenilenmiş olabilir). Lütfen yarışmayı yeniden başlatın.</p><button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()">Ana Menü</button></div>'; return; }
@@ -315,7 +364,16 @@ const BIY = {
       sayacDurdur();
       const taze = (state.sonucAnimIndex !== idx);
       kap.innerHTML = BIY._sonucEkranHtml(idx, soru, taze);
-      if (taze){ state.sonucAnimIndex = idx; BIY._sonucOynat(); }
+      if (taze){
+        state.sonucAnimIndex = idx;
+        SES.sonuc();                                  // sonuç ekranı açıldı
+        // sıralama değişimi kontrolü → liderlik büyürken (adım 3) ses
+        const ids = state.takimListe.map(x => x.id);
+        const newR = BIY._rank(BIY._puanKumul(idx), ids), prevR = BIY._rank(BIY._puanKumul(idx - 1), ids);
+        const degisti = ids.some(id => (newR[id] || ids.length) < (prevR[id] || ids.length));
+        BIY._sonucOynat();
+        if (degisti) state.sonucTimerlar.push(setTimeout(() => SES.siraDegisti(), 4300));
+      }
       return;
     }
     // cevaplar (bu index)
@@ -363,6 +421,8 @@ const BIY = {
 
     kap.innerHTML = '<div class="biy-oyun-orta">'+govde+'</div>';
 
+    // tüm takımlar cevaplayınca ses (soru başına bir kez)
+    if (hepsi && state.hepsiSesIndex !== idx){ state.hepsiSesIndex = idx; SES.hepsiCevap(); }
     // otomatik sonuç: tüm takımlar cevaplayınca
     if (hepsi && state.otoSonucIndex !== idx){
       state.otoSonucIndex = idx;
@@ -459,10 +519,35 @@ const BIY = {
     return '<div class="biy-oyun-orta biy-final">' +
       '<div class="biy-logo">🏆</div><h1>Yarışma Bitti!</h1>' +
       '<ol class="biy-final-ol">' +
-        sirali.map((t,i) => '<li class="'+(i<3?'podyum':'')+'"><span class="biy-final-sira">'+(madalya[i]||(i+1))+'</span><span class="biy-final-ad">'+kacis(t.ad)+'</span><b>'+(t.puan||0)+'</b></li>').join("") +
+        sirali.map((t,i) => '<li class="'+(i<3?'podyum':'')+(i===0?' birinci':'')+'" style="--i:'+i+'"><span class="biy-final-sira">'+(madalya[i]||(i+1))+'</span><span class="biy-final-ad">'+kacis(t.ad)+'</span><b>'+(t.puan||0)+'</b></li>').join("") +
       '</ol>' +
       '<button class="biy-btn biy-btn-mavi" onclick="BIY.oyunuBitir()" style="margin-top:20px">Ana Menü</button>' +
     '</div>';
+  },
+  // yarışma bitti — konfeti patlaması (harici kütüphane yok)
+  _konfetiPatlat(){
+    const renkler = ["#F1C40F","#EF5350","#27AE60","#3498DB","#9B59B6","#FF7AC6","#F39C12","#20C997","#FFFFFF"];
+    const kap = document.createElement("div");
+    kap.className = "biy-konfeti-kap";
+    let h = "";
+    const N = 160;
+    for (let i = 0; i < N; i++){
+      const sol = (Math.random()*100).toFixed(2);
+      const renk = renkler[(Math.random()*renkler.length)|0];
+      const gecikme = (Math.random()*0.9).toFixed(2);
+      const sure = (2.6 + Math.random()*2.4).toFixed(2);
+      const don = ((Math.random()*900 - 450)|0);
+      const en = 6 + (Math.random()*9|0);
+      const yuvarlak = Math.random() < 0.35;
+      const boy = yuvarlak ? en : Math.max(4, (en*0.5)|0);
+      const sx = ((Math.random()*46 - 23)|0);
+      h += '<i style="left:'+sol+'%;background:'+renk+';width:'+en+'px;height:'+boy+'px;border-radius:'+(yuvarlak?'50%':'2px')+
+           ';animation-delay:'+gecikme+'s;animation-duration:'+sure+'s;--don:'+don+'deg;--sx:'+sx+'px"></i>';
+    }
+    kap.innerHTML = h;
+    const hedef = document.getElementById("ekranOyunAdmin") || document.body;
+    hedef.appendChild(kap);
+    setTimeout(function(){ if (kap.parentNode) kap.parentNode.removeChild(kap); }, 8000);
   },
 
   soruGizleToggle(){ state.soruGizli = !state.soruGizli; BIY._renderAdminOyun(); },
