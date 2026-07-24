@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bilgi Yarışması — Vezinler & Kelimeler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=1">
+
+<!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- QR üretimi -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<div id="biy-app">
+
+  <!-- Yükleniyor -->
+  <section id="ekranYukleniyor" class="biy-ekran">
+    <div class="biy-spinner"></div>
+    <p>Yükleniyor…</p>
+  </section>
+
+  <!-- Giriş kapısı (admin değilse) -->
+  <section id="ekranGirisKapisi" class="biy-ekran gizli">
+    <div class="biy-kart biy-orta">
+      <div class="biy-logo">🏆</div>
+      <h1>Bilgi Yarışması</h1>
+      <p class="biy-alt">Yarışmayı yönetmek için önce <b>öğretmen/yönetici</b> hesabıyla giriş yapmalısın.</p>
+      <a class="biy-btn biy-btn-mavi" href="index.html">Girişe git</a>
+      <p id="girisRolNot" class="biy-not"></p>
+    </div>
+  </section>
+
+  <!-- ADMIN — Ana sayfa -->
+  <section id="ekranAnasayfa" class="biy-ekran gizli">
+    <header class="biy-header">
+      <div class="biy-header-sol">
+        <span class="biy-logo-sm">🏆</span>
+        <span class="biy-baslik">Bilgi Yarışması <small>· Vezinler &amp; Kelimeler</small></span>
+      </div>
+      <div class="biy-header-sag">
+        <span id="adminAd" class="biy-admin-ad"></span>
+        <a class="biy-cikis" href="index.html" title="Siteye dön">⤶</a>
+      </div>
+    </header>
+
+    <div class="biy-menu">
+      <button class="biy-menu-kart" onclick="BIY.acSorular()">
+        <span class="biy-menu-emoji">❓</span>
+        <span class="biy-menu-ad">Sorular</span>
+        <span class="biy-menu-desc">Her soru türünden örnekler</span>
+      </button>
+      <button class="biy-menu-kart" onclick="BIY.acTakimlar()">
+        <span class="biy-menu-emoji">👥</span>
+        <span class="biy-menu-ad">Takım Oluştur</span>
+        <span class="biy-menu-desc">Takım ekle · link &amp; karekod · lobi</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ADMIN — Sorular önizleme -->
+  <section id="ekranSorular" class="biy-ekran gizli">
+    <div class="biy-ust-bar">
+      <button class="biy-geri" onclick="BIY.anasayfa()">‹ Geri</button>
+      <h2>Soru Türleri — Örnek Sorular</h2>
+    </div>
+    <div id="sorularListe" class="biy-sorular-liste"></div>
+  </section>
+
+  <!-- ADMIN — Takım oluştur + lobi -->
+  <section id="ekranTakimlar" class="biy-ekran gizli">
+    <div class="biy-ust-bar">
+      <button class="biy-geri" onclick="BIY.anasayfa()">‹ Geri</button>
+      <h2>Takım Oluştur &amp; Lobi</h2>
+    </div>
+
+    <div class="biy-takim-yap">
+      <input id="takimAdiInput" type="text" placeholder="Takım / sınıf adı (ör. 1-A)" maxlength="24"
+             onkeydown="if(event.key==='Enter')BIY.takimEkle()">
+      <button class="biy-btn biy-btn-yesil" onclick="BIY.takimEkle()">+ Takım Ekle</button>
+    </div>
+
+    <div id="odaBilgi" class="biy-oda-bilgi gizli"></div>
+
+    <div id="takimlarGrid" class="biy-takimlar-grid"></div>
+
+    <div class="biy-baslat-alan">
+      <button id="baslatBtn" class="biy-btn biy-btn-buyuk gizli" onclick="BIY.yarisiBaslat()">🚀 Yarışı Başlat</button>
+      <p id="baslatNot" class="biy-not"></p>
+    </div>
+  </section>
+
+  <!-- TAKIM MODU — katılım / lobi -->
+  <section id="ekranTakim" class="biy-ekran gizli">
+    <div class="biy-kart biy-orta">
+      <div id="takimDurumEmoji" class="biy-logo">⏳</div>
+      <h1 id="takimAdBaslik">Takım</h1>
+      <p id="takimDurumMetin" class="biy-alt">Odaya bağlanılıyor…</p>
+      <div id="takimBekleAnim" class="biy-bekle-nokta gizli"><span></span><span></span><span></span></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="bilgiyarismasivezinler.js?v=1"></script>
+</body>
+</html>
