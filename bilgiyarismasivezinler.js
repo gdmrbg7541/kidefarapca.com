@@ -440,7 +440,10 @@ const BIY = {
   },
   konuSec(id){
     state.konuId = id || null;
-    if (state.konuId){ const set = BIY._secSet(); if (set.size) set.clear(); }   // konu seçildi → havuz seçimini sıfırla
+    if (state.konuId){
+      const set = BIY._secSet();
+      if (set.size){ set.clear(); state.soruSayisi = null; }   // havuzdan vazgeçildi → seçimi + soru sayısını sıfırla
+    }
     BIY._konuVurgu();
     BIY._soruSecSayiGuncelle();   // havuz tuşu/sayaç + pdf + sınır + menü hepsini günceller
   },
@@ -578,6 +581,7 @@ const BIY = {
     if (inp){ inp.disabled = false; inp.readOnly = false; inp.classList.remove("biy-secili"); inp.max = max; inp.min = 1; inp.placeholder = "≤ " + max; }
     if (lbl) lbl.textContent = "Soru sayısı (en çok " + max + "):";
     if (state.soruSayisi != null){ if (state.soruSayisi > max) BIY.setSoruSayisi(max); else BIY.setSoruSayisi(state.soruSayisi); }
+    else { document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.remove("secili")); if (inp) inp.value = ""; }
   },
   _pdfOnizleGuncelle(){
     const havuz = BIY._secSet().size;
@@ -634,6 +638,15 @@ const BIY = {
     const aktif = icerik && seviyeSecili && sayiSecili;
     ["kartSinif", "kartDijital"].forEach(id => { const el = $(id); if (el) el.classList.toggle("biy-pasif", !aktif); });
     const not = $("menuNot"); if (not) not.classList.toggle("gizli", aktif);
+    BIY._dijitalKartDurum();
+  },
+  // bağlı cihaz varsa Dijital Yarışma kartının çerçevesi yeşil + rozet
+  _dijitalKartDurum(){
+    const bagli = (state.takimListe || []).filter(t => t.bagli).length;
+    const aktifOda = !!state.odaId && bagli > 0;
+    const el = $("kartDijital"); if (el) el.classList.toggle("biy-bagli-var", aktifOda);
+    const rozet = $("dijitalBagliRozet");
+    if (rozet){ rozet.textContent = "● " + bagli + " cihaz bağlı"; rozet.classList.toggle("gizli", !aktifOda); }
   },
 
   /* ---------- Sınıf Modu (çevrimdışı: soruları sınıfça çöz) ---------- */
@@ -878,6 +891,7 @@ const BIY = {
       if (yeni) SES.baglandi();
     }
     state.baglSet = simdiBagli; state.baglIlk = true;
+    BIY._dijitalKartDurum();   // ana menü kartı için bağlı cihaz göstergesini güncelle
   },
   async takimSil(takimId){
     if (!state.odaId) return;
@@ -1229,7 +1243,10 @@ const BIY = {
       '<ol class="biy-final-ol">' +
         sirali.map((t,i) => '<li class="'+(i<3?'podyum':'')+(i===0?' birinci':'')+'" style="--i:'+i+'"><span class="biy-final-sira">'+(madalya[i]||(i+1))+'</span><span class="biy-final-ad">'+kacis(t.ad)+'</span><b>'+puanOf(t)+'</b></li>').join("") +
       '</ol>' +
-      '<button class="biy-btn biy-btn-mavi" onclick="BIY.oyunuBitir()" style="margin-top:20px">Ana Menü</button>' +
+      '<div class="biy-final-butonlar">' +
+        '<button class="biy-btn biy-btn-yesil" onclick="BIY.lobiyeDon()">🔄 Lobiye Dön (takımlar bağlı kalır)</button>' +
+        '<button class="biy-btn biy-btn-mavi" onclick="BIY.oyunuBitir()">Bitir &amp; Menü</button>' +
+      '</div>' +
     '</div>';
   },
   // yarışma bitti — konfeti patlaması (harici kütüphane yok)

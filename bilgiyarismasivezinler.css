@@ -116,6 +116,10 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-menu-kart:nth-child(1):before { background: #20C997; }
 .biy-menu-kart:nth-child(2):before { background: #F39C12; }
 .biy-menu-kart:hover { transform: translateY(-5px); box-shadow: 0 12px 26px rgba(0,0,0,0.14); }
+/* bağlı cihaz varken Dijital Yarışma kartı yeşil çerçeveli */
+.biy-menu-kart.biy-bagli-var { border: 2px solid #27AE60; box-shadow: 0 0 0 3px rgba(39,174,96,.22), 0 8px 22px rgba(39,174,96,.22); }
+.biy-bagli-rozet { position: absolute; top: 12px; right: 12px; background: #27AE60; color: #fff; font-family: 'Marhey',sans-serif; font-weight: 800; font-size: .8rem; padding: 5px 12px; border-radius: 999px; box-shadow: 0 3px 8px rgba(39,174,96,.35); z-index: 2; }
+.biy-final-butonlar { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
 .biy-menu-emoji { font-size: 62px; }
 .biy-menu-ad { font-size: 1.5rem; font-weight: 700; color: #16A085; }
 .biy-menu-kart:nth-child(2) .biy-menu-ad { color: #F39C12; }
