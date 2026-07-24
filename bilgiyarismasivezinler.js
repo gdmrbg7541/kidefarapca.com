@@ -228,13 +228,67 @@ const SEVIYE_ZORLUK = { kolay: 1, orta: 2, zor: 3 };
    • pdf: repo kökündeki PDF dosyasının adı (boş bırakılırsa indirme/önizleme pasif olur).
    • sorular: SORULAR ile aynı biçimde; boşsa o konuda yarışma başlatılamaz.                        */
 const KONULAR = [
-  { id: "vezinler", ad: "Vezinler & Kelimeler", pdf: "Vezinler Bilgi Yarışması.pdf", sorular: SORULAR },
-  // Pasif başlıklar — ileride güncellenecek. Aktif etmek için: pasif'i kaldır, ad/pdf/sorular'ı doldur.
-  { id: "konu2", ad: "Konu 2", pdf: "", sorular: [], pasif: true },
-  { id: "konu3", ad: "Konu 3", pdf: "", sorular: [], pasif: true },
-  { id: "konu4", ad: "Konu 4", pdf: "", sorular: [], pasif: true },
-  { id: "konu5", ad: "Konu 5", pdf: "", sorular: [], pasif: true },
-  { id: "konu6", ad: "Konu 6", pdf: "", sorular: [], pasif: true }
+{ id: "vezinler", ad: "Vezinler & Kelimeler", pdf: "Vezinler Bilgi Yarışması.pdf", sorular: SORULAR },
+  { id: "harficer", ad: "Harf-i Cerler", pdf: "", sorular: [
+      {"id":1,"tip":"anlam","zorluk":1,"soru":"«مُنْذُ» ne demek?","secenekler":["-den beri","-den, -dan (başlangıç/ayrılma)","üzerine, üstünde","-e kadar"],"dogru":0,"arapca":"مُنْذُ"},
+      {"id":2,"tip":"anlam","zorluk":1,"soru":"«فِي» ne demek?","secenekler":["içinde, -de/-da","-den, hakkında (uzaklaşma)","-den, -dan (başlangıç/ayrılma)","ile, vasıtasıyla"],"dogru":0,"arapca":"فِي"},
+      {"id":3,"tip":"anlam","zorluk":1,"soru":"«حَتَّى» ne demek?","secenekler":["-e kadar","ile, vasıtasıyla","-den, hakkında (uzaklaşma)","içinde, -de/-da"],"dogru":0,"arapca":"حَتَّى"},
+      {"id":4,"tip":"anlam","zorluk":1,"soru":"«عَنْ» ne demek?","secenekler":["-den, hakkında (uzaklaşma)","gibi","-den, -dan (başlangıç/ayrılma)","-den beri"],"dogru":0,"arapca":"عَنْ"},
+      {"id":5,"tip":"anlam","zorluk":2,"soru":"«için, -e ait» kelimesinin Arapçası hangisidir?","secenekler":["لِ","عَلَى","فِي","حَتَّى"],"dogru":0,"arSecenek":true},
+      {"id":6,"tip":"anlam","zorluk":2,"soru":"«ile, vasıtasıyla» kelimesinin Arapçası hangisidir?","secenekler":["بِ","عَنْ","فِي","حَتَّى"],"dogru":0,"arSecenek":true},
+      {"id":7,"tip":"anlam","zorluk":2,"soru":"«-e, -a (yönelme/bitiş)» kelimesinin Arapçası hangisidir?","secenekler":["إِلَى","عَلَى","لِ","مُنْذُ"],"dogru":0,"arSecenek":true},
+      {"id":8,"tip":"anlam","zorluk":3,"soru":"«üzerine, üstünde» kelimesinin Arapçası hangisidir?","secenekler":["عَلَى","عَنْ","كَ","مُنْذُ","فِي"],"dogru":0,"arSecenek":true},
+      {"id":9,"tip":"anlam","zorluk":3,"soru":"«مِنْ» ne demek?","secenekler":["-den, -dan (başlangıç/ayrılma)","içinde, -de/-da","için, -e ait","ile, vasıtasıyla","-e, -a (yönelme/bitiş)"],"dogru":0,"arapca":"مِنْ"},
+      {"id":10,"tip":"anlam","zorluk":3,"soru":"«gibi» kelimesinin Arapçası hangisidir?","secenekler":["كَ","بِ","فِي","مِنْ","عَلَى"],"dogru":0,"arSecenek":true}
+  ] },
+  { id: "sahiszamir", ad: "Şahıs Zamirleri", pdf: "", sorular: [
+      {"id":1,"tip":"anlam","zorluk":1,"soru":"«هُنَّ» ne demek?","secenekler":["onlar (dişil)","o (dişil)","biz","onlar (eril)"],"dogru":0,"arapca":"هُنَّ"},
+      {"id":2,"tip":"anlam","zorluk":1,"soru":"«هِيَ» ne demek?","secenekler":["o (dişil)","sen (eril)","biz","onlar (eril)"],"dogru":0,"arapca":"هِيَ"},
+      {"id":3,"tip":"anlam","zorluk":1,"soru":"«هُمْ» ne demek?","secenekler":["onlar (eril)","sen (dişil)","onlar (dişil)","siz (eril çoğul)"],"dogru":0,"arapca":"هُمْ"},
+      {"id":4,"tip":"anlam","zorluk":1,"soru":"«أَنْتِ» ne demek?","secenekler":["sen (dişil)","onlar (dişil)","o (dişil)","ben"],"dogru":0,"arapca":"أَنْتِ"},
+      {"id":5,"tip":"anlam","zorluk":2,"soru":"«ben» kelimesinin Arapçası hangisidir?","secenekler":["أَنَا","أَنْتُمَا","هُنَّ","هُوَ"],"dogru":0,"arSecenek":true},
+      {"id":6,"tip":"anlam","zorluk":2,"soru":"«biz» kelimesinin Arapçası hangisidir?","secenekler":["نَحْنُ","أَنْتُمْ","هُوَ","هُمْ"],"dogru":0,"arSecenek":true},
+      {"id":7,"tip":"anlam","zorluk":2,"soru":"«ikiniz» kelimesinin Arapçası hangisidir?","secenekler":["أَنْتُمَا","أَنْتَ","هُنَّ","هُمْ"],"dogru":0,"arSecenek":true},
+      {"id":8,"tip":"anlam","zorluk":3,"soru":"«siz (eril çoğul)» kelimesinin Arapçası hangisidir?","secenekler":["أَنْتُمْ","هُمْ","هُنَّ","أَنَا","هُوَ"],"dogru":0,"arSecenek":true},
+      {"id":9,"tip":"anlam","zorluk":3,"soru":"«أَنْتَ» ne demek?","secenekler":["sen (eril)","ben","ikiniz","siz (eril çoğul)","sen (dişil)"],"dogru":0,"arapca":"أَنْتَ"},
+      {"id":10,"tip":"anlam","zorluk":3,"soru":"«o (eril)» kelimesinin Arapçası hangisidir?","secenekler":["هُوَ","هُنَّ","أَنْتُمْ","هِيَ","أَنْتَ"],"dogru":0,"arSecenek":true}
+  ] },
+  { id: "isaret", ad: "İşaret İsimleri", pdf: "", sorular: [
+      {"id":1,"tip":"anlam","zorluk":1,"soru":"«هُنَا» ne demek?","secenekler":["burası","bu ikisi (eril)","bu ikisi (dişil)","bunlar (çoğul)"],"dogru":0,"arapca":"هُنَا"},
+      {"id":2,"tip":"anlam","zorluk":1,"soru":"«هَذَانِ» ne demek?","secenekler":["bu ikisi (eril)","onlar (uzak)","orası","bu (eril, tekil)"],"dogru":0,"arapca":"هَذَانِ"},
+      {"id":3,"tip":"anlam","zorluk":1,"soru":"«هُنَاكَ» ne demek?","secenekler":["orası","bu (eril, tekil)","onlar (uzak)","bunlar (çoğul)"],"dogru":0,"arapca":"هُنَاكَ"},
+      {"id":4,"tip":"anlam","zorluk":1,"soru":"«ذَلِكَ» ne demek?","secenekler":["şu/o (eril, uzak)","bu ikisi (eril)","bunlar (çoğul)","bu (eril, tekil)"],"dogru":0,"arapca":"ذَلِكَ"},
+      {"id":5,"tip":"anlam","zorluk":2,"soru":"«bu (dişil, tekil)» kelimesinin Arapçası hangisidir?","secenekler":["هَذِهِ","ذَلِكَ","هَذَا","أُولَئِكَ"],"dogru":0,"arSecenek":true},
+      {"id":6,"tip":"anlam","zorluk":2,"soru":"«bu (eril, tekil)» kelimesinin Arapçası hangisidir?","secenekler":["هَذَا","ذَلِكَ","تِلْكَ","هَذِهِ"],"dogru":0,"arSecenek":true},
+      {"id":7,"tip":"anlam","zorluk":2,"soru":"«onlar (uzak)» kelimesinin Arapçası hangisidir?","secenekler":["أُولَئِكَ","هَؤُلَاءِ","ذَلِكَ","هَذَانِ"],"dogru":0,"arSecenek":true},
+      {"id":8,"tip":"anlam","zorluk":3,"soru":"«bunlar (çoğul)» kelimesinin Arapçası hangisidir?","secenekler":["هَؤُلَاءِ","هَذِهِ","هَاتَانِ","هَذَا","ذَلِكَ"],"dogru":0,"arSecenek":true},
+      {"id":9,"tip":"anlam","zorluk":3,"soru":"«هَاتَانِ» ne demek?","secenekler":["bu ikisi (dişil)","bu (eril, tekil)","burası","bu ikisi (eril)","orası"],"dogru":0,"arapca":"هَاتَانِ"},
+      {"id":10,"tip":"anlam","zorluk":3,"soru":"«şu/o (dişil, uzak)» kelimesinin Arapçası hangisidir?","secenekler":["تِلْكَ","هَذَانِ","ذَلِكَ","هُنَاكَ","هُنَا"],"dogru":0,"arSecenek":true}
+  ] },
+  { id: "sayilar", ad: "Sayılar (1–10)", pdf: "", sorular: [
+      {"id":1,"tip":"anlam","zorluk":1,"soru":"«تِسْعَة» ne demek?","secenekler":["dokuz (9)","sekiz (8)","bir (1)","beş (5)"],"dogru":0,"arapca":"تِسْعَة"},
+      {"id":2,"tip":"anlam","zorluk":1,"soru":"«سِتَّة» ne demek?","secenekler":["altı (6)","beş (5)","on (10)","sekiz (8)"],"dogru":0,"arapca":"سِتَّة"},
+      {"id":3,"tip":"anlam","zorluk":1,"soru":"«أَرْبَعَة» ne demek?","secenekler":["dört (4)","dokuz (9)","altı (6)","bir (1)"],"dogru":0,"arapca":"أَرْبَعَة"},
+      {"id":4,"tip":"anlam","zorluk":1,"soru":"«ثَلَاثَة» ne demek?","secenekler":["üç (3)","iki (2)","on (10)","yedi (7)"],"dogru":0,"arapca":"ثَلَاثَة"},
+      {"id":5,"tip":"anlam","zorluk":2,"soru":"«on (10)» kelimesinin Arapçası hangisidir?","secenekler":["عَشَرَة","أَرْبَعَة","سِتَّة","خَمْسَة"],"dogru":0,"arSecenek":true},
+      {"id":6,"tip":"anlam","zorluk":2,"soru":"«yedi (7)» kelimesinin Arapçası hangisidir?","secenekler":["سَبْعَة","اِثْنَان","ثَمَانِيَة","ثَلَاثَة"],"dogru":0,"arSecenek":true},
+      {"id":7,"tip":"anlam","zorluk":2,"soru":"«bir (1)» kelimesinin Arapçası hangisidir?","secenekler":["وَاحِد","عَشَرَة","ثَلَاثَة","ثَمَانِيَة"],"dogru":0,"arSecenek":true},
+      {"id":8,"tip":"anlam","zorluk":3,"soru":"«iki (2)» kelimesinin Arapçası hangisidir?","secenekler":["اِثْنَان","سَبْعَة","وَاحِد","تِسْعَة","ثَمَانِيَة"],"dogru":0,"arSecenek":true},
+      {"id":9,"tip":"anlam","zorluk":3,"soru":"«ثَمَانِيَة» ne demek?","secenekler":["sekiz (8)","dört (4)","yedi (7)","on (10)","iki (2)"],"dogru":0,"arapca":"ثَمَانِيَة"},
+      {"id":10,"tip":"anlam","zorluk":3,"soru":"«beş (5)» kelimesinin Arapçası hangisidir?","secenekler":["خَمْسَة","ثَلَاثَة","عَشَرَة","ثَمَانِيَة","وَاحِد"],"dogru":0,"arSecenek":true}
+  ] },
+  { id: "renkler", ad: "Renkler", pdf: "", sorular: [
+      {"id":1,"tip":"anlam","zorluk":1,"soru":"«رَمَادِيّ» ne demek?","secenekler":["gri","sarı","yeşil","kahverengi"],"dogru":0,"arapca":"رَمَادِيّ"},
+      {"id":2,"tip":"anlam","zorluk":1,"soru":"«أَخْضَر» ne demek?","secenekler":["yeşil","beyaz","turuncu","pembe"],"dogru":0,"arapca":"أَخْضَر"},
+      {"id":3,"tip":"anlam","zorluk":1,"soru":"«وَرْدِيّ» ne demek?","secenekler":["pembe","sarı","siyah","beyaz"],"dogru":0,"arapca":"وَرْدِيّ"},
+      {"id":4,"tip":"anlam","zorluk":1,"soru":"«أَحْمَر» ne demek?","secenekler":["kırmızı","siyah","sarı","kahverengi"],"dogru":0,"arapca":"أَحْمَر"},
+      {"id":5,"tip":"anlam","zorluk":2,"soru":"«kahverengi» kelimesinin Arapçası hangisidir?","secenekler":["بُنِّيّ","وَرْدِيّ","بُرْتُقَالِيّ","أَخْضَر"],"dogru":0,"arSecenek":true},
+      {"id":6,"tip":"anlam","zorluk":2,"soru":"«sarı» kelimesinin Arapçası hangisidir?","secenekler":["أَصْفَر","رَمَادِيّ","أَبْيَض","وَرْدِيّ"],"dogru":0,"arSecenek":true},
+      {"id":7,"tip":"anlam","zorluk":2,"soru":"«turuncu» kelimesinin Arapçası hangisidir?","secenekler":["بُرْتُقَالِيّ","أَصْفَر","أَبْيَض","بُنِّيّ"],"dogru":0,"arSecenek":true},
+      {"id":8,"tip":"anlam","zorluk":3,"soru":"«mavi» kelimesinin Arapçası hangisidir?","secenekler":["أَزْرَق","بُنِّيّ","بُرْتُقَالِيّ","رَمَادِيّ","أَخْضَر"],"dogru":0,"arSecenek":true},
+      {"id":9,"tip":"anlam","zorluk":3,"soru":"«أَبْيَض» ne demek?","secenekler":["beyaz","mavi","turuncu","gri","sarı"],"dogru":0,"arapca":"أَبْيَض"},
+      {"id":10,"tip":"anlam","zorluk":3,"soru":"«siyah» kelimesinin Arapçası hangisidir?","secenekler":["أَسْوَد","أَحْمَر","وَرْدِيّ","أَصْفَر","بُنِّيّ"],"dogru":0,"arSecenek":true}
+  ] }
 ];
 
 /* ---------------- Durum ---------------- */
@@ -245,6 +299,9 @@ const state = {
   sorularZ: 1,               // Sorular önizleme sekmesi (zorluk)
   soruGizli: true,           // admin ekranında soruyu gizle/göster (açılışta gizli)
   soruSayisi: 20,            // turdaki soru sayısı (10-50)
+  soruSayiMax: 50,           // seçili konu+seviyedeki mevcut soruya göre üst sınır
+  secilenSet: null,          // elle seçilen soru anahtarları (Set) — havuzdan
+  soruSecArama: "",          // soru havuzu arama metni
   otoSonucIndex: -1,         // tüm takımlar cevaplayınca otomatik sonuç kilidi
   odaId: null,               // admin: oda kodu
   odaTakim: null,            // takım: {oda, takim}
@@ -310,6 +367,8 @@ function $(id){ return document.getElementById(id); }
 function ekranGoster(id){
   document.querySelectorAll(".biy-ekran").forEach(e => e.classList.add("gizli"));
   const el = $(id); if (el) el.classList.remove("gizli");
+  // çıkış tuşu yalnızca canlı oyun ekranında görünür
+  const cik = $("cikisTus"); if (cik) cik.classList.toggle("gizli", id !== "ekranOyunAdmin");
 }
 function kacis(t){ const d = document.createElement("div"); d.textContent = t == null ? "" : String(t); return d.innerHTML; }
 function rastgeleKod(uzunluk){
@@ -362,12 +421,135 @@ const BIY = {
   /* ---------- Konu seçimi ---------- */
   _aktifKonu(){ return KONULAR.find(k => k.id === state.konuId) || KONULAR[0] || { ad: "", pdf: "", sorular: [] }; },
   _aktifSorular(){ const k = BIY._aktifKonu(); return (k && k.sorular) || []; },
+  // tüm konulardaki soruların havuzu (elle seçim için)
+  _soruHavuzu(){
+    const havuz = [];
+    KONULAR.forEach(k => { if (Array.isArray(k.sorular)) k.sorular.forEach(q => havuz.push({ key: k.id + "#" + q.id, konuId: k.id, konuAd: k.ad, soru: q })); });
+    return havuz;
+  },
   _konulariHazirla(){
     const sel = $("konuSecim"); if (!sel) return;
     sel.innerHTML = KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · yakında':'')+'</option>').join("");
     BIY._pdfOnizleGuncelle();
   },
-  konuSec(id){ state.konuId = id; BIY._pdfOnizleGuncelle(); },
+  konuSec(id){ state.konuId = id; BIY._pdfOnizleGuncelle(); BIY._soruSayiSinir(); },
+
+  /* ---------- Soru Havuzu (elle seçim) ---------- */
+  _secSet(){ if (!state.secilenSet) state.secilenSet = new Set(); return state.secilenSet; },
+  _soruSecSayiGuncelle(){
+    const n = BIY._secSet().size;
+    const b = $("soruSecSayi"); if (b) b.textContent = "(" + n + ")";
+    const btn = $("soruSecBtn"); if (btn) btn.classList.toggle("biy-secili-var", n > 0);
+  },
+  soruSecAc(){
+    if ($("soruSecBtn") && $("soruSecBtn").disabled) return;
+    const eski = $("biySoruSec"); if (eski) eski.remove();
+    state.soruSecArama = "";
+    const ov = document.createElement("div"); ov.id = "biySoruSec"; ov.className = "biy-onay-ov biy-soru-sec-ov";
+    ov.innerHTML =
+      '<div class="biy-soru-sec-kutu">' +
+        '<div class="biy-soru-sec-bas">' +
+          '<h3>🎯 Soru Havuzu</h3>' +
+          '<span class="biy-soru-sec-say" id="soruSecSecili"></span>' +
+          '<button class="biy-soru-sec-kapat" onclick="BIY.soruSecKapat()">✕</button>' +
+        '</div>' +
+        '<div class="biy-soru-sec-liste" id="soruSecListe"></div>' +
+        '<div class="biy-soru-sec-alt">' +
+          '<button class="biy-btn biy-onay-hayir" onclick="BIY.soruSecTemizle()">Tümünü Temizle</button>' +
+          '<button class="biy-btn biy-btn-yesil" onclick="BIY.soruSecKapat()">Bitti</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener("click", e => { if (e.target === ov) BIY.soruSecKapat(); });
+    BIY._soruSecRender();
+  },
+  soruSecAra(v){ state.soruSecArama = (v||"").toLowerCase(); BIY._soruSecRender(); },
+  _soruSecRender(){
+    const kap = $("soruSecListe"); if (!kap) return;
+    const set = BIY._secSet();
+    const ara = state.soruSecArama;
+    const zorAd = { 1:"Kolay", 2:"Orta", 3:"Zor" };
+    let html = "";
+    KONULAR.forEach(k => {
+      if (!Array.isArray(k.sorular) || !k.sorular.length) return;
+      const sorular = k.sorular.filter(q => !ara || (q.soru + " " + (q.arapca||"") + " " + q.secenekler.join(" ")).toLowerCase().indexOf(ara) >= 0);
+      if (!sorular.length) return;
+      const seciliSay = k.sorular.filter(q => set.has(k.id + "#" + q.id)).length;
+      const acik = ara ? true : !!(state.soruSecAcik && state.soruSecAcik[k.id]);
+      html += '<div class="biy-hs-grup'+(acik?' acik':'')+'" data-konu="'+k.id+'">' +
+        '<div class="biy-hs-baslik" onclick="BIY.soruSecAkordiyon(\''+k.id+'\')">' +
+        '<span class="biy-hs-ok">▸</span>' +
+        '<b>'+kacis(k.ad)+'</b> <span class="biy-hs-say">('+seciliSay+'/'+k.sorular.length+')</span>' +
+        '<button class="biy-hs-tumu" onclick="event.stopPropagation();BIY.soruSecTumu(\''+k.id+'\')">Tümünü seç/kaldır</button></div>' +
+        '<div class="biy-hs-govde">';
+      sorular.forEach(q => {
+        const key = k.id + "#" + q.id; const sec = set.has(key);
+        const dogruSik = q.secenekler[q.dogru];
+        html += '<label class="biy-hs-satir'+(sec?' secili':'')+'" data-key="'+key+'">' +
+          '<input type="checkbox" '+(sec?'checked':'')+' onchange="BIY.soruSecTik(\''+key+'\', this)">' +
+          '<span class="biy-hs-zor z'+q.zorluk+'">'+zorAd[q.zorluk]+'</span>' +
+          '<span class="biy-hs-metin">'+kacis(q.soru)+(q.arapca?' <i>'+kacis(q.arapca)+'</i>':'')+
+            ' <b class="biy-hs-dogru">✓ '+kacis(dogruSik)+'</b></span>' +
+        '</label>';
+      });
+      html += '</div></div>';
+    });
+    kap.innerHTML = html || '<p class="biy-alt" style="text-align:center">Sonuç yok.</p>';
+    BIY._soruSecSayilar();
+  },
+  // sayaçları (grup başlıkları + toplam + buton) satırları yeniden çizmeden güncelle
+  _soruSecSayilar(){
+    const set = BIY._secSet();
+    document.querySelectorAll(".biy-hs-grup").forEach(g => {
+      const k = KONULAR.find(x => x.id === g.getAttribute("data-konu")); if (!k) return;
+      const sec = k.sorular.filter(q => set.has(k.id + "#" + q.id)).length;
+      const sp = g.querySelector(".biy-hs-say"); if (sp) sp.textContent = "(" + sec + "/" + k.sorular.length + ")";
+    });
+    const say = $("soruSecSecili"); if (say) say.textContent = "Seçili: " + set.size;
+    BIY._soruSecSayiGuncelle();
+  },
+  // tek satır: yeniden çizmeden aç/kapa (kaydırma korunur)
+  soruSecTik(key, cb){
+    const set = BIY._secSet();
+    if (set.has(key)) set.delete(key); else set.add(key);
+    if (cb){ const row = cb.closest(".biy-hs-satir"); if (row) row.classList.toggle("secili", cb.checked); }
+    BIY._soruSecSayilar();
+  },
+  // akordiyon: başlığa tıkla → aç/kapa (yeniden çizmeden, kaydırma korunur)
+  soruSecAkordiyon(konuId){
+    if (!state.soruSecAcik) state.soruSecAcik = {};
+    state.soruSecAcik[konuId] = !state.soruSecAcik[konuId];
+    const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]');
+    if (g) g.classList.toggle("acik", !!state.soruSecAcik[konuId]);
+  },
+  soruSecTumu(konuId){
+    const set = BIY._secSet();
+    const k = KONULAR.find(x => x.id === konuId); if (!k) return;
+    const hepsiSecili = k.sorular.every(q => set.has(konuId + "#" + q.id));
+    k.sorular.forEach(q => { const key = konuId + "#" + q.id; if (hepsiSecili) set.delete(key); else set.add(key); });
+    BIY._soruSecRender();
+  },
+  soruSecTemizle(){ BIY._secSet().clear(); BIY._soruSecRender(); BIY._soruSecSayiGuncelle(); },
+  soruSecKapat(){ const ov = $("biySoruSec"); if (ov) ov.remove(); BIY._soruSecSayiGuncelle(); },
+  // elle seçilen sorular (havuzdan) — sıralı liste
+  _secilenSorular(){
+    const set = BIY._secSet(); if (!set.size) return [];
+    return BIY._soruHavuzu().filter(h => set.has(h.key)).map(h => h.soru);
+  },
+  // seçili konu+seviyedeki mevcut soruya göre soru sayısı üst sınırını ayarla
+  _soruSayiSinir(){
+    const mevcut = BIY._aktifSorular().filter(s => s.zorluk === (SEVIYE_ZORLUK[state.seviye] || 1)).length;
+    const max = Math.max(1, Math.min(50, mevcut));
+    state.soruSayiMax = max;
+    document.querySelectorAll(".biy-sayi-btn").forEach(b => {
+      const v = +b.getAttribute("data-sayi"); const dis = v > max;
+      b.disabled = dis; b.classList.toggle("biy-pasif", dis);
+    });
+    const inp = $("soruSayiInput"); if (inp){ inp.max = max; inp.min = 1; inp.placeholder = "≤ " + max; }
+    const lbl = document.querySelector(".biy-sorusayi-secim .biy-seviye-label");
+    if (lbl) lbl.textContent = "Soru sayısı (en çok " + max + "):";
+    if (state.soruSayisi > max) BIY.setSoruSayisi(max); else BIY.setSoruSayisi(state.soruSayisi);
+  },
   _pdfOnizleGuncelle(){
     const k = BIY._aktifKonu();
     const baslik = $("pdfBaslik"); if (baslik) baslik.textContent = k.ad || "";
@@ -416,6 +598,7 @@ const BIY = {
   acTakimlar(){
     ekranGoster("ekranTakimlar");
     if (!state.odaId){ $("takimlarGrid").innerHTML = ""; $("odaBilgi").classList.add("gizli"); }
+    BIY._soruSayiSinir(); BIY._soruSecSayiGuncelle();
   },
   // --- Kalıcılık (sayfa yenilense de oyun kaybolmasın) ---
   _kaydet(){
@@ -428,7 +611,9 @@ const BIY = {
       if (kayit.ts && (Date.now() - kayit.ts) > 12*3600*1000){ BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); return; }
       const ref = db.collection(KOLEKSIYON).doc(kayit.oda);
       const snap = await ref.get();
-      if (!snap.exists || snap.data().durum === 'bitti'){ BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); return; }
+      const dr0 = snap.exists ? snap.data().durum : null;
+      // yalnızca AKTİF oyun (oyun/beraberlik) kaldığı yerden devam eder; lobi/bitti → ana sayfa
+      if (dr0 !== 'oyun' && dr0 !== 'beraberlik'){ BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); return; }
       state.odaId = kayit.oda;
       state.seviye = kayit.seviye || 'kolay';
       state.oyunSorulari = Array.isArray(kayit.sorular) ? kayit.sorular : [];
@@ -441,10 +626,27 @@ const BIY = {
       $('odaBilgi').classList.remove('gizli');
       $('odaBilgi').innerHTML = "Oda kodu: <b>" + kayit.oda + "</b> · takımlar linkle/karekodla katılır";
       BIY.setSeviye(state.seviye);
-      const dr = snap.data().durum;
-      if (dr === 'oyun' || dr === 'beraberlik'){ BIY._adminOyunaGec(); }
-      else { ekranGoster('ekranTakimlar'); }
+      BIY._adminOyunaGec();   // aktif oyuna geri dön
     } catch(e){ console.error('Devam hatası:', e); BIY._temizleKayit(); ekranGoster('ekranAnasayfa'); }
+  },
+  // özel onay penceresi (native confirm yerine)
+  _onay(baslik, metin, evetMetin, onEvet){
+    const eski = $("biyOnay"); if (eski) eski.remove();
+    const ov = document.createElement("div"); ov.id = "biyOnay"; ov.className = "biy-onay-ov";
+    ov.innerHTML = '<div class="biy-onay-kutu"><h3>'+kacis(baslik)+'</h3><p>'+kacis(metin)+'</p>' +
+      '<div class="biy-onay-btnlar"><button class="biy-onay-hayir">Vazgeç</button><button class="biy-onay-evet">'+kacis(evetMetin)+'</button></div></div>';
+    document.body.appendChild(ov);
+    const kapat = () => { if (ov.parentNode) ov.remove(); };
+    ov.querySelector(".biy-onay-hayir").onclick = kapat;
+    ov.querySelector(".biy-onay-evet").onclick = () => { kapat(); onEvet(); };
+    ov.addEventListener("click", e => { if (e.target === ov) kapat(); });
+  },
+  // canlı yarışmadan çıkış (yanlışlıkla çıkışa karşı onaylı)
+  yaristanCik(){
+    BIY._onay("Yarışmadan çıkılsın mı?", "Aktif yarışma sonlandırılıp ana menüye dönülecek. Emin misiniz?", "Evet, çık", async function(){
+      try { if (state.odaId) await db.collection(KOLEKSIYON).doc(state.odaId).update({ durum: "bitti", sonSira: [] }); } catch(e){}
+      BIY.oyunuBitir();
+    });
   },
   oyunuBitir(){
     BIY._temizleKayit();
@@ -455,6 +657,7 @@ const BIY = {
     state.odaId = null; state.oyunSorulari = []; state.oda = null; state.otoSonucIndex = -1; state.sonucAnimIndex = -1; state.finalKonfeti = false;
     state.baglSet = null; state.baglIlk = false; state.hepsiSesIndex = -1;
     state.yedekSorular = []; state.yedekSoruMap = {}; state.berHedef = 0; state.berTakimlar = []; state.berSabit = {}; state.berNo = 0; state.berSorular = [];
+    if (state.secilenSet) state.secilenSet.clear(); BIY._soruSecSayiGuncelle();
     BIY.anasayfa();
   },
 
@@ -509,9 +712,28 @@ const BIY = {
       try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M }); } }
       catch(err){ console.warn("QR:", err); }
     });
+    // takım eklendiyse zorluk seviyesi, soru sayısı ve soru seçimi kilitlenir; hepsi silinince açılır
+    const kilit = sayi > 0;
+    document.querySelectorAll(".biy-seviye-btn, .biy-sayi-btn").forEach(b => { b.disabled = kilit; b.classList.toggle("biy-pasif", kilit); });
+    const sInp = $("soruSayiInput"); if (sInp){ sInp.disabled = kilit; sInp.classList.toggle("biy-pasif", kilit); }
+    const ssBtn = $("soruSecBtn"); if (ssBtn){ ssBtn.disabled = kilit; ssBtn.classList.toggle("biy-pasif", kilit); }
+    const kSel = $("konuSecim"); if (kSel){ kSel.disabled = kilit; kSel.classList.toggle("biy-pasif", kilit); }
+    const sLbl = document.querySelector(".biy-sorusayi-secim .biy-seviye-label");
+    const zLbl = document.querySelector(".biy-seviye-secim .biy-seviye-label");
+    if (zLbl) zLbl.classList.toggle("biy-pasif", kilit);
+    if (sLbl) sLbl.classList.toggle("biy-pasif", kilit);
+    if (!kilit) BIY._soruSayiSinir();   // kilit açıldıysa mevcut soruya göre üst sınırı yeniden uygula
+
     const baslat = $("baslatBtn");
-    if (sayi >= 2) baslat.classList.remove("gizli"); else baslat.classList.add("gizli");
-    $("baslatNot").textContent = sayi === 0 ? "" : (sayi + " takım · " + bagli + " bağlandı" + (sayi < 2 ? " · başlatmak için en az 2 takım" : ""));
+    // yarışma yalnızca en az 2 takım varsa VE hepsi bağlandıysa başlatılabilir
+    const hepsiBagli = (sayi >= 2 && bagli === sayi);
+    if (hepsiBagli) baslat.classList.remove("gizli"); else baslat.classList.add("gizli");
+    $("baslatNot").textContent =
+      sayi === 0 ? "" :
+      (sayi < 2 ? (sayi + " takım · başlatmak için en az 2 takım gerekli")
+                : (bagli < sayi ? (sayi + " takım · " + bagli + " bağlandı — hepsi bağlanınca başlatılabilir"
+                                   + " (" + (sayi - bagli) + " takım bekleniyor)")
+                                : ("✓ " + sayi + " takım hazır — başlatabilirsiniz")));
     // yeni bağlanan takım(lar) için ses (açılışta çalmaz)
     const simdiBagli = new Set(state.takimListe.filter(t => t.bagli).map(t => t.id));
     if (state.baglIlk && state.baglSet){
@@ -534,9 +756,11 @@ const BIY = {
   setSeviye(s){
     state.seviye = s;
     document.querySelectorAll(".biy-seviye-btn").forEach(b => b.classList.toggle("secili", b.getAttribute("data-seviye") === s));
+    BIY._soruSayiSinir();
   },
   setSoruSayisi(n){
-    n = Math.max(10, Math.min(50, parseInt(n, 10) || 20));
+    const max = state.soruSayiMax || 50;
+    n = Math.max(1, Math.min(max, parseInt(n, 10) || max));
     state.soruSayisi = n;
     const hazir = SORU_SAYI_SECENEK.indexOf(n) >= 0;
     document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.toggle("secili", +b.getAttribute("data-sayi") === n));
@@ -545,23 +769,41 @@ const BIY = {
   setSoruSayisiManuel(v){
     let n = parseInt(v, 10);
     if (isNaN(n)){ return; }
-    n = Math.max(10, Math.min(50, n));
+    const max = state.soruSayiMax || 50;
+    n = Math.max(1, Math.min(max, n));
     state.soruSayisi = n;
-    document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.toggle("secili", +b.getAttribute("data-sayi") === n));
-    const inp = $("soruSayiInput"); if (inp) inp.value = (SORU_SAYI_SECENEK.indexOf(n) >= 0) ? "" : n;
+    // manuel giriş yapıldı → hazır rakamlardaki yeşil vurgu kalksın
+    document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.remove("secili"));
+    const inp = $("soruSayiInput"); if (inp) inp.value = n;
   },
 
   async yarisiBaslat(){
     if (!state.odaId) return;
-    const hedefZ = SEVIYE_ZORLUK[state.seviye] || 1;
-    let havuz = BIY._aktifSorular().filter(s => s.zorluk === hedefZ);
-    if (!havuz.length){ $("baslatNot").textContent = "«" + BIY._aktifKonu().ad + "» konusunda bu seviyede henüz soru yok."; return; }
-    for (let i = havuz.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = havuz[i]; havuz[i] = havuz[j]; havuz[j] = g; }
-    const hedefSayi = Math.max(10, Math.min(50, state.soruSayisi || TUR_SORU_SAYISI));
-    const secilen = havuz.slice(0, Math.min(hedefSayi, havuz.length)).map(soruHazirla);
+    // tüm takımlar bağlanmadan başlatılamaz
+    const sayi = state.takimListe.length;
+    const bagli = state.takimListe.filter(t => t.bagli).length;
+    if (sayi < 2){ $("baslatNot").textContent = "Başlatmak için en az 2 takım gerekli."; return; }
+    if (bagli < sayi){ $("baslatNot").textContent = "Tüm takımlar bağlanmadan yarışma başlatılamaz (" + (sayi - bagli) + " takım bekleniyor)."; return; }
+
+    let secilen, yedek;
+    const elle = BIY._secilenSorular();   // öğretmenin havuzdan elle seçtiği sorular
+    if (elle.length){
+      // MANUEL: yalnızca öğretmenin görüp seçtiği sorular sorulur
+      let hv = elle.slice();
+      for (let i = hv.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = hv[i]; hv[i] = hv[j]; hv[j] = g; }
+      secilen = hv.map(soruHazirla);
+      yedek = [];   // görülmemiş yedek sorulmaz
+    } else {
+      const hedefZ = SEVIYE_ZORLUK[state.seviye] || 1;
+      let havuz = BIY._aktifSorular().filter(s => s.zorluk === hedefZ);
+      if (!havuz.length){ $("baslatNot").textContent = "«" + BIY._aktifKonu().ad + "» konusunda bu seviyede henüz soru yok."; return; }
+      for (let i = havuz.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = havuz[i]; havuz[i] = havuz[j]; havuz[j] = g; }
+      const hedefSayi = Math.max(1, Math.min(50, state.soruSayisi || TUR_SORU_SAYISI));
+      secilen = havuz.slice(0, Math.min(hedefSayi, havuz.length)).map(soruHazirla);
+      yedek = havuz.slice(secilen.length).map(soruHazirla);
+    }
     state.oyunSorulari = secilen;
-    // kalan sorular beraberlikte yedek olarak kullanılır
-    state.yedekSorular = havuz.slice(secilen.length).map(soruHazirla);
+    state.yedekSorular = yedek;   // beraberlikte yedek olarak kullanılır
     state.yedekSoruMap = {};
     state.berHedef = 0; state.berTakimlar = []; state.berSabit = {}; state.berNo = 0; state.berSorular = [];
     try {
@@ -1100,6 +1342,12 @@ const BIY = {
   }
 };
 window.BIY = BIY;
+// canlı yarışmada sekme kapatma/yenileme kazasına karşı uyarı
+window.addEventListener("beforeunload", function(e){
+  if (state.mod === "admin" && state.oda && (state.oda.durum === "oyun" || state.oda.durum === "beraberlik")){
+    e.preventDefault(); e.returnValue = "";
+  }
+});
 
 /* ===========================================================
    Başlangıç / mod yönlendirme

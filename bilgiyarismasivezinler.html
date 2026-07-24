@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=26">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=39">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -42,7 +42,7 @@
     <header class="biy-header">
       <div class="biy-header-sol">
         <button class="biy-geri-tus" onclick="BIY.geriDon()" title="Açıldığın yere dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
-        <span class="biy-baslik">🏆 Bilgi Yarışması <small>· Vezinler &amp; Kelimeler</small></span>
+        <span class="biy-baslik">🏆 Bilgi Yarışması</span>
       </div>
       <div class="biy-header-sag">
         <span id="adminAd" class="biy-admin-ad"></span>
@@ -53,6 +53,10 @@
       <div class="biy-konu-secim">
         <label for="konuSecim" class="biy-konu-label">Konu</label>
         <select id="konuSecim" class="biy-konu-select" onchange="BIY.konuSec(this.value)"></select>
+      </div>
+      <div class="biy-soru-sec-secim">
+        <span class="biy-konu-label">Soru Seç</span>
+        <button class="biy-btn biy-soru-sec-btn" id="soruSecBtn" onclick="BIY.soruSecAc()">🎯 Havuzdan seç <b id="soruSecSayi">(0)</b></button>
       </div>
       <div class="biy-pdf-onizleme">
         <a class="biy-pdf-a4" id="pdfKart" target="_blank" rel="noopener" title="PDF'i aç">
@@ -113,8 +117,8 @@
       <button class="biy-sayi-btn secili" data-sayi="20" onclick="BIY.setSoruSayisi(20)">20</button>
       <button class="biy-sayi-btn" data-sayi="25" onclick="BIY.setSoruSayisi(25)">25</button>
       <button class="biy-sayi-btn" data-sayi="50" onclick="BIY.setSoruSayisi(50)">50</button>
-      <input id="soruSayiInput" class="biy-sayi-input" type="number" min="10" max="50" step="1" placeholder="Özel"
-             onchange="BIY.setSoruSayisiManuel(this.value)" title="10-50 arası">
+      <input id="soruSayiInput" class="biy-sayi-input" type="number" min="1" max="50" step="1" placeholder="Özel"
+             onchange="BIY.setSoruSayisiManuel(this.value)" title="Konudaki soru sayısına kadar">
     </div>
 
     <div class="biy-takim-yap">
@@ -141,8 +145,11 @@
   <!-- ADMIN — canlı oyun (yansıtılan ekran) -->
   <section id="ekranOyunAdmin" class="biy-ekran gizli"></section>
 
+  <!-- canlı yarışmadan çıkış (onaylı) -->
+  <button id="cikisTus" class="biy-cikis-tus gizli" onclick="BIY.yaristanCik()" title="Yarışmadan çık">✕ Çık</button>
+
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=25"></script>
+<script src="bilgiyarismasivezinler.js?v=35"></script>
 </body>
 </html>
