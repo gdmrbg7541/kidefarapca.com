@@ -376,6 +376,9 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
    =========================================================== */
 .biy-sonuc-ekran { display: flex; flex-direction: column; }
 .biy-sonuc-baslik { text-align: center; font-size: 1.6rem; color: #16A085; font-weight: 800; margin-bottom: 6px; }
+/* beraberlik başlığı */
+.biy-ber-baslik { text-align: center; font-size: 1.7rem; font-weight: 800; color: #EF5350; margin-bottom: 16px; }
+@media (min-width: 900px){ #ekranOyunAdmin .biy-ber-baslik { font-size: 2.6rem; margin-bottom: 24px; } }
 
 /* SAHNE — öğeler aynı hücrede üst üste; tek seferde biri görünür */
 .biy-sonuc-sahne { display: grid; justify-items: center; align-items: start; margin-top: 22px; }
@@ -416,8 +419,18 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-sonuc-lider li b { color: #16A085; font-size: 1.8rem; }
 .biy-ok { min-width: 28px; text-align: center; font-weight: 900; font-size: 1.5rem; }
 .biy-ok-yukari { color: #27AE60; } .biy-ok-asagi { color: #EF5350; } .biy-ok-sabit { color: transparent; }
-.biy-lider-yukari { border-color: #27AE60 !important; background: #F3FCF8; }
-.biy-lider-asagi { border-color: #FBD9D9 !important; }
+/* liderliğe doğru yükselen / aşağı satırlara inen sınıflar */
+.biy-lider-yukari { border-color: #27AE60 !important; background: #F0FBF6; }
+.biy-lider-asagi { border-color: #F1B0B0 !important; background: #FEF5F5; }
+.biy-sonuc-ekran[data-step="2"] .biy-lider-yukari { animation: biyYuksel .6s cubic-bezier(.22,1,.36,1) both; }
+.biy-sonuc-ekran[data-step="2"] .biy-lider-asagi { animation: biyIn .6s cubic-bezier(.22,1,.36,1) both; }
+@keyframes biyYuksel { 0%{ transform: translateY(30px); opacity: .2; } 100%{ transform: translateY(0); opacity: 1; } }
+@keyframes biyIn { 0%{ transform: translateY(-30px); opacity: .2; } 100%{ transform: translateY(0); opacity: 1; } }
+/* seçilen şık hücresi */
+.biy-rev-sik { white-space: nowrap; }
+.biy-rev-harf { display: inline-flex; align-items: center; justify-content: center; min-width: 1.7em; height: 1.7em; padding: 0 .35em; border-radius: 7px; background: #EEF2F7; color: #475569; font-weight: 900; }
+.biy-rev-metin.ar { direction: rtl; }
+.biy-rev-yok { color: #94a3b8; }
 
 /* sahne 1 — soru cümlesi + şıklar */
 .biy-sonuc-soru-cumle { text-align: center; font-weight: 800; color: #334155; font-size: 1.8rem; margin: 4px 0 14px; }
