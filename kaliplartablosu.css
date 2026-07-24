@@ -735,12 +735,12 @@ td:first-child {
 }
 
 /* Kutu BÜYÜTÜLMEDİĞİ SÜRECE aşağı basık durur (Büyüyen Klonları Hariç Tutar!) */
-.glass-box.current-active-red:not(.pulse-highlight):not(.crisp-zoom-clone) {
+.glass-box.current-active-red:not(.pulse-highlight):not(.crisp-zoom-clone):not(.matrix-opened) {
     transform: translateY(2px) !important; 
 }
 
 /* Fareyle üzerine gelindiğinde zıplamasını engeller (Büyüyen Klonları Hariç Tutar!) */
-.glass-box.current-active-red:not(.pulse-highlight):not(.crisp-zoom-clone):hover {
+.glass-box.current-active-red:not(.pulse-highlight):not(.crisp-zoom-clone):not(.matrix-opened):hover {
     transform: translateY(2px) !important; 
     background-color: #fff0ed !important; 
     box-shadow: inset 0 4px 12px rgba(255, 59, 48, 0.25), 0 1px 2px rgba(255, 59, 48, 0.1) !important; 

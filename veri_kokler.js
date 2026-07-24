@@ -23870,5 +23870,81 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             suggestsPlus: true,
             "ة": { emoji: "🛠️", arText: "مِقْشَطَة", trText: "Kazıyıcı alet / Rende / Törpü.", ornek: [{ ar: "مِقْشَطَةُ الْخَشَبِ", tr: "Ahşap rendesi." }] } 
         }
-    }
+    },
+    // ==================================================================
+    // عرج KÖKÜ  (yükselmek / topallamak / kıvrılmak)
+    // ==================================================================
+    "عرج": {
+        1: { base: { emoji: "🪜", arText: "عَرَجَ", trText: "yükseldi, (göğe) çıktı", ornek: { ar: "لَيْلَةَ الْمِعْرَاجِ عَرَجَ بِالنَّبِيِّ ﷺ إِلَى السَّمَاءِ", tr: "Mi'râc gecesi Peygamber ﷺ göğe yükseltildi." } } },
+        2: { base: { emoji: "⬆️", arText: "يَعْرُجُ", trText: "yükselir, (yukarı) çıkar", ornek: { ar: "وَمَا يَنْزِلُ مِنَ السَّمَاءِ وَمَا يَعْرُجُ فِيهَا", tr: "Gökten ineni ve oraya yükseleni (bilir). (Sebe, 2)" } } },
+        3: { base: { emoji: "🚀", arText: "اُعْرُجْ", trText: "yüksel! (yukarı) çık!", ornek: { ar: "اُعْرُجْ بِرُوحِكَ إِلَى مَعَالِي الْأُمُورِ", tr: "Ruhunla yüce hedeflere yüksel. (özlü söz)" } } },
+        8: { base: { emoji: "🦵", arText: "عَرِجَ", trText: "topal oldu, aksadı", ornek: { ar: "عَرِجَ الرَّجُلُ فَصَارَ يَمْشِي بِصُعُوبَةٍ", tr: "Adam topal oldu ve zorlukla yürür hâle geldi." } } },
+        9: { base: { emoji: "🚶", arText: "يَعْرَجُ", trText: "topallar, aksar", ornek: { ar: "مَنْ كُسِرَتْ رِجْلُهُ يَعْرَجُ حِينَ يَمْشِي", tr: "Ayağı kırılan kişi yürürken aksar." } } },
+        10: { base: { emoji: "🦿", arText: "اِعْرَجْ", trText: "aksa, topalla (emir - nadir)", ornek: { ar: "لَا تَعْرَجْ فِي مَشْيِكَ مَا دُمْتَ قَادِرًا", tr: "Gücün yettiği sürece yürüyüşünde aksama. (nehiy örneği)" } } },
+        17: { base: { emoji: "🩼", arText: "عَرَج", trText: "topallık, aksaklık", ornek: { ar: "الْعَرَجُ لَا يَمْنَعُ صَاحِبَهُ مِنَ الْخَيْرِ", tr: "Topallık, sahibini hayırdan alıkoymaz. (özlü söz)" } } },
+        25: { base: { emoji: "🌌", arText: "عُرُوج", trText: "yükseliş, göğe çıkış (Mi'râc)", ornek: { ar: "تَعْرُجُ الْمَلَائِكَةُ وَالرُّوحُ إِلَيْهِ", tr: "Melekler ve Rûh O'na yükselir. (Meâric, 4)" } } },
+        27: { base: { emoji: "🦵", arText: "عُرْجَان", trText: "topallar (أَعْرَج çoğulu)", ornek: { ar: "يُرْحَمُ الْعُرْجَانُ وَالضُّعَفَاءُ", tr: "Topallara ve zayıflara merhamet edilir. (özlü söz)" } } },
+        31: { base: { emoji: "🐑", arText: "عَرْجَاء", trText: "topal (dişi / hayvan)", ornek: { ar: "وَالْعَرْجَاءُ الْبَيِّنُ ظَلْعُهَا لَا تُجْزِئُ فِي الْأَضَاحِي", tr: "Topallığı açıkça belli olan hayvan kurbanlıkta geçerli olmaz. (Hadis)" } } },
+        40: { cogulId: "40_cogul", base: { emoji: "🪜", arText: "مِعْرَاج", trText: "merdiven, yükseliş aracı (Mi'râc)", ornek: { ar: "وَمَعَارِجَ عَلَيْهَا يَظْهَرُونَ", tr: "...ve üzerine çıkacakları merdivenler/basamaklar. (Zuhruf, 33)" } } },
+        "40_cogul": { "isHiddenInList": true, "base": { emoji: "🪜", arText: "مَعَارِج", trText: "merdivenler, yükseliş basamakları" } },
+        "?": { base: { emoji: "🕊️", arText: "مَعَارِج", trText: "yükseliş basamakları (Meâric Sûresi)", ornek: { ar: "مِنَ اللّهِ ذِي الْمَعَارِجِ", tr: "Yükseliş basamaklarının sahibi Allah'tan. (Meâric, 3)" } } },
+        30: { base: { emoji: "🦯", arText: "أَعْرَج", trText: "topal (kimse)", ornek: { ar: "وَلَا عَلَى الْأَعْرَجِ حَرَجٌ", tr: "Topala da bir güçlük (vebal) yoktur. (Nûr, 61)" } } },
+        58: { base: { emoji: "🛑", arText: "عَرَّجَ", trText: "(bir yere) uğrayıp durdu; eğri büğrü yaptı", ornek: { ar: "مَا عَرَّجَ الْمُسَافِرُ عَلَى الْمَنْزِلِ", tr: "Yolcu, konağa uğrayıp beklemedi." } } },
+        71: { base: { emoji: "🛣️", arText: "اِنْعَرَجَ", trText: "eğrildi, kıvrıldı, döndü (yol)", ornek: { ar: "اِنْعَرَجَ الطَّرِيقُ نَحْوَ الْجَبَلِ", tr: "Yol dağa doğru kıvrıldı." } } },
+        88: { base: { emoji: "〰️", arText: "تَعَرَّجَ", trText: "dolambaçlı/yılankavi oldu, kıvrıldı", ornek: { ar: "تَعَرَّجَ الْمَسَارُ فِي أَعَالِي الْجِبَالِ", tr: "Patika, dağların zirvelerinde dolambaçlı hâle geldi." } } },
+        59: { base: { emoji: "🛑", arText: "يُعَرِّجُ", trText: "uğrar/durur; eğrileştirir", ornek: { ar: "لَا يُعَرِّجُ الْعَاقِلُ عَلَى تَوَافِهِ الْأُمُورِ", tr: "Akıllı kişi önemsiz işlere takılıp durmaz. (özlü söz)" } } },
+        60: { base: { emoji: "🛑", arText: "عَرِّجْ", trText: "uğra! bir dur!", ornek: { ar: "عَرِّجْ عَلَيْنَا سَاعَةً نَتَحَدَّثْ", tr: "Bir saatliğine bize uğra da sohbet edelim." } } },
+        72: { base: { emoji: "🌊", arText: "يَنْعَرِجُ", trText: "kıvrılır, döner (yol/nehir)", ornek: { ar: "يَنْعَرِجُ النَّهْرُ بَيْنَ الْبَسَاتِينِ", tr: "Nehir, bahçeler arasında kıvrılarak akar." } } },
+        73: { base: { emoji: "↩️", arText: "اِنْعَرِجْ", trText: "kıvrıl, dön (emir)", ornek: { ar: "اِنْعَرِجْ يَمِينًا عِنْدَ الْمَسْجِدِ", tr: "Câminin yanında sağa dön." } } },
+        89: { base: { emoji: "💨", arText: "يَتَعَرَّجُ", trText: "dolambaçlı ilerler, kıvrılır", ornek: { ar: "يَتَعَرَّجُ الدُّخَانُ صَاعِدًا فِي الْهَوَاءِ", tr: "Duman, havada kıvrılarak yükselir." } } },
+        90: { base: { emoji: "〰️", arText: "تَعَرَّجْ", trText: "kıvrıl, dolambaçlı ilerle (emir)", ornek: { ar: "تَعَرَّجْ مَعَ الطَّرِيقِ حَتَّى تَبْلُغَ الْقِمَّةَ", tr: "Zirveye ulaşana dek yolun kıvrımlarını izle." } } }
+    },
+        // ==================================================================
+        // جدد KÖKÜ
+        // ==================================================================
+        "جدد": {
+            1: { base: { emoji: "💪", arText: "جَدَّ", trText: "Yeni oldu; ciddileşti, gayret etti", ornek: { ar: "مَنْ جَدَّ وَجَدَ وَمَنْ زَرَعَ حَصَدَ", tr: "Kim ciddiyetle çalışırsa bulur, kim ekerse biçer. (özlü söz)" } } },
+            4: { base: { emoji: "📚", arText: "يَجِدُّ", trText: "Gayret eder, ciddiyet gösterir", ornek: { ar: "الطَّالِبُ يَجِدُّ فِي طَلَبِ الْعِلْمِ", tr: "Öğrenci ilim talebinde ciddiyetle çalışır." } } },
+            5: { base: { emoji: "🎯", arText: "جِدَّ", trText: "Gayret et!, ciddiyetle çalış!", ornek: { ar: "جِدَّ فِي عَمَلِكَ تَنَلْ مُرَادَكَ", tr: "İşinde gayret et ki muradına eresin. (özlü söz)" } } },
+            17: { base: { emoji: "🛣️", arText: "جَدَد", trText: "Düz sert yer, açık ve dümdüz yol", ornek: { ar: "مَنْ سَلَكَ الْجَدَدَ أَمِنَ الْعِثَارَ", tr: "Kim düz yolu (جَدَد) tutarsa tökezlemekten emin olur. (özlü söz)" } } },
+            19: { cogulId: "41", base: { emoji: "👴", arText: "جَدّ", trText: "Dede, büyükbaba; ata; talih, baht", ornek: { ar: "وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ", tr: "Baht/servet sahibine, senin katında bahtı fayda vermez. (hadis)" } } },
+            20: {
+                base: { emoji: "🔥", arText: "جِدّ", trText: "Ciddiyet, gayret (zıddı هَزْل = şaka)", ornek: { ar: "ثَلَاثٌ جِدُّهُنَّ جِدٌّ وَهَزْلُهُنَّ جِدٌّ", tr: "Üç şey vardır: ciddisi de ciddidir, şakası da ciddidir. (hadis)" } },
+                suggestsPlus: true, // '+' ile يّة son ekini önerir → جِدِّيَّة (ciddiyet)
+                "ية": {
+                    emoji: "⚖️",
+                    arText: "جِدِّيَّة",
+                    trText: "Ciddiyet, ciddi oluş (nisbet yâ'sı + tâ merbûta)",
+                    ornek: [
+                        { ar: "الْجِدِّيَّةُ فِي الْعَمَلِ سِرُّ النَّجَاحِ", tr: "İşte ciddiyet, başarının sırrıdır. (özlü söz)" },
+                        { ar: "يَتَعَامَلُ مَعَ الْأُمُورِ بِجِدِّيَّةٍ تَامَّةٍ", tr: "Meseleleri tam bir ciddiyetle ele alır." }
+                    ]
+                }
+            },
+            33: { base: { emoji: "🧐", arText: "جَادّ", trText: "Ciddi, azimli (olan)", ornek: { ar: "الرَّجُلُ الْجَادُّ يَبْلُغُ هَدَفَهُ", tr: "Ciddi ve azimli kişi hedefine ulaşır." } } },
+            35: { base: { emoji: "🆕", arText: "جَدِيد", trText: "Yeni", ornek: { ar: "بَلْ هُمْ فِي لَبْسٍ مِنْ خَلْقٍ جَدِيدٍ", tr: "Doğrusu onlar yeni bir yaratılıştan şüphe içindedirler. (Kāf, 15)" } } },
+            41: { base: { emoji: "🌳", arText: "أَجْداد", trText: "Atalar, dedeler, ecdat", ornek: { ar: "وَرِثْنَا الْحِكْمَةَ عَنْ أَجْدَادِنَا", tr: "Hikmeti atalarımızdan miras aldık. (özlü söz)" } } },
+            43: { base: { emoji: "🧬", arText: "جُدُود", trText: "Dedeler, atalar (جَدّ'in diğer çoğulu)", ornek: { ar: "تَعَاقَبَتِ الْجُدُودُ جِيلًا بَعْدَ جِيلٍ", tr: "Dedeler nesilden nesile birbirini izledi." } } },
+            58: { base: { emoji: "🔧", arText: "جَدَّدَ", trText: "Yeniledi, tazeledi, tecdit etti", ornek: { ar: "جَدَّدَ الْمُؤْمِنُ عَهْدَهُ مَعَ رَبِّهِ", tr: "Mümin, Rabbiyle olan ahdini yeniledi." } } },
+            59: { base: { emoji: "🔄", arText: "يُجَدِّدُ", trText: "Yeniler, tazeler", ornek: { ar: "يَبْعَثُ اللّهُ مَنْ يُجَدِّدُ لِهَذِهِ الْأُمَّةِ دِينَهَا", tr: "Allah, bu ümmete dinini yenileyecek kimseyi gönderir. (hadis)" } } },
+            60: { base: { emoji: "🔃", arText: "جَدِّدْ", trText: "Yenile!, tazele!", ornek: { ar: "جَدِّدُوا إِيمَانَكُمْ بِقَوْلِ لَا إِلَهَ إِلَّا اللّهُ", tr: "İmanınızı 'lâ ilâhe illallah' diyerek yenileyin. (hadis)" } } },
+            61: { base: { emoji: "🛠️", arText: "تَجْدِيد", trText: "Yenileme, tazeleme, tecdit", ornek: { ar: "تَجْدِيدُ النِّيَّةِ فِي الْعِبَادَةِ يَزِيدُ الْأَجْرَ", tr: "İbadette niyeti tazelemek sevabı artırır. (özlü söz)" } } },
+            62: { base: { emoji: "🌟", arText: "مُجَدِّد", trText: "Yenileyen; (dinî) müceddid, ıslahçı", ornek: { ar: "عُمَرُ بْنُ عَبْدِ الْعَزِيزِ مُجَدِّدُ الْقَرْنِ الْأَوَّلِ", tr: "Ömer b. Abdülazîz, birinci asrın müceddididir." } } },
+            63: { base: { emoji: "✨", arText: "مُجَدَّد", trText: "Yenilenmiş, tazelenmiş", ornek: { ar: "الْعَهْدُ الْمُجَدَّدُ أَقْوَى مِنَ الْقَدِيمِ", tr: "Yenilenmiş ahit, eskisinden daha sağlamdır." } } },
+            52: { base: { emoji: "🏃", arText: "أَجَدَّ", trText: "Bir işte ciddiyet gösterdi, gayrete geldi", ornek: { ar: "أَجَدَّ فِي طَلَبِ الْعِلْمِ حَتَّى نَبَغَ", tr: "İlim talebinde ciddiyet gösterdi, nihayet temayüz etti." } } },
+            53: { base: { emoji: "🏋️", arText: "يُجِدُّ", trText: "Gayret eder, ciddiyet gösterir" } },
+            54: { base: { emoji: "📣", arText: "أَجِدَّ", trText: "Gayret et!, ciddiyet göster!" } },
+            56: { base: { emoji: "🐝", arText: "مُجِدّ", trText: "Çalışkan, gayretli, azimli", ornek: { ar: "الطَّالِبُ الْمُجِدُّ يَنَالُ النَّجَاحَ", tr: "Çalışkan öğrenci başarıya ulaşır. (özlü söz)" } } },
+            88: { base: { emoji: "🌱", arText: "تَجَدَّدَ", trText: "Yenilendi, kendiliğinden tazelendi", ornek: { ar: "تَجَدَّدَ نَشَاطُهُ بَعْدَ الرَّاحَةِ", tr: "Dinlendikten sonra enerjisi tazelendi." } } },
+            89: { base: { emoji: "🔁", arText: "يَتَجَدَّدُ", trText: "Yenilenir, tazelenir", ornek: { ar: "يَتَجَدَّدُ الْأَمَلُ مَعَ كُلِّ صَبَاحٍ", tr: "Umut her sabahla yenilenir. (özlü söz)" } } },
+            90: { base: { emoji: "🌄", arText: "تَجَدَّدْ", trText: "Yenilen!, tazelen!", ornek: { ar: "تَجَدَّدْ كُلَّ يَوْمٍ تَكُنْ خَيْرًا مِنْ أَمْسِكَ", tr: "Her gün yenilen ki dününden daha iyi olasın. (özlü söz)" } } },
+            91: { base: { emoji: "🔋", arText: "تَجَدُّد", trText: "Yenilenme, tazelenme", ornek: { ar: "تَجَدُّدُ الْخَلَايَا سُنَّةٌ مِنْ سُنَنِ الْحَيَاةِ", tr: "Hücrelerin yenilenmesi, hayatın kanunlarından biridir." } } },
+            92: { base: { emoji: "♻️", arText: "مُتَجَدِّد", trText: "Yenilenen; yenilenebilir (طَاقَة مُتَجَدِّدَة)", ornek: { ar: "الطَّاقَةُ الْمُتَجَدِّدَةُ صَدِيقَةٌ لِلْبِيئَةِ", tr: "Yenilenebilir enerji çevre dostudur." } } },
+            100: { base: { emoji: "💡", arText: "اِسْتَجَدَّ", trText: "Yeni ortaya çıktı, yeni meydana geldi", ornek: { ar: "اِسْتَجَدَّ فِي الْأَمْرِ مَا لَمْ يَكُنْ فِي الْحُسْبَانِ", tr: "İşte hesapta olmayan yeni bir durum ortaya çıktı." } } },
+            101: { base: { emoji: "🔎", arText: "يَسْتَجِدُّ", trText: "Yeni olarak ortaya çıkar, gelişir", ornek: { ar: "يَسْتَجِدُّ فِي كُلِّ عَصْرٍ مَا يَحْتَاجُ إِلَى اجْتِهَادٍ", tr: "Her çağda içtihat gerektiren yeni durumlar ortaya çıkar." } } },
+            102: { base: { emoji: "🙌", arText: "اِسْتَجِدَّ", trText: "Yeni bir şey edin; tazele!", ornek: { ar: "اِسْتَجِدَّ عَزْمًا كُلَّمَا فَتَرَتْ هِمَّتُكَ", tr: "Gayretin gevşedikçe yeni bir azim edin. (özlü söz)" } } },
+            104: { base: { emoji: "🌐", arText: "مُسْتَجِدّ", trText: "Yeni ortaya çıkan, yeni gelen (ör. yeni öğrenci)", ornek: { ar: "الطَّالِبُ الْمُسْتَجِدُّ يَحْتَاجُ إِلَى إِرْشَادٍ", tr: "Yeni kayıt olan öğrenci rehberliğe ihtiyaç duyar." } } },
+            105: { base: { emoji: "📰", arText: "مُسْتَجَدّ", trText: "Yeni ortaya çıkmış olan; مُسْتَجَدَّات = güncel gelişmeler", ornek: { ar: "نُتَابِعُ آخِرَ الْمُسْتَجَدَّاتِ أَوَّلًا بِأَوَّلٍ", tr: "Son gelişmeleri anbean takip ediyoruz." } } }
+        },
+
 };

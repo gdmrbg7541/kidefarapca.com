@@ -3700,7 +3700,8 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
 
     const refEl = boxElement.querySelector('.ref');
     if (!refEl) return;
-    const refId = parseInt(refEl.innerText);
+    let refId = parseInt(refEl.innerText);
+    if (isNaN(refId)) refId = (refEl.innerText || '').trim();
     const isVerb = boxElement.classList.contains('fiil-box');
 
     // ===============================================================
@@ -5999,10 +6000,10 @@ function getReadyRoots() {
 
 function getSortedRefsForRoot(root) {
     if (!sozlukVerileri[root]) return [];
-    return Object.keys(sozlukVerileri[root])
-        .map(Number)
-        .filter(n => !isNaN(n))
-        .sort((a, b) => a - b);
+    const keys = Object.keys(sozlukVerileri[root]);
+    const nums = keys.map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+    const extras = keys.filter(k => isNaN(Number(k)) && !(sozlukVerileri[root][k] && sozlukVerileri[root][k].isHiddenInList));  // joker anahtarlar (ör. "?"), gizli anahtarlar hariç
+    return nums.concat(extras);
 }
 
 // ==================================================================
@@ -6652,54 +6653,14 @@ setInterval(() => {
         const mySvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
         const listSvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
         
-        // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
+        // A. KAHVERENGİ LEVHA: timer/liste SVG'leri header'a sabitlendi, buradan kaldırıldı
         document.querySelectorAll('.draggable-root-clone').forEach(box => {
-            let boxRootSafe = box.dataset.root || "";
-            const boxCanShowTimer = hasVerbsToRead(boxRootSafe);
-            
-            let wrapper = box.querySelector('.root-clone-buttons');
-            let btn = box.querySelector('.kutu-timer-btn');
-            let listBtn = box.querySelector('.kutu-list-btn');
-            
-            if (boxCanShowTimer && (!btn || !listBtn)) {
-                if(btn) btn.remove();
-                if(listBtn) listBtn.remove();
-                if(!wrapper) {
-                    wrapper = document.createElement('div');
-                    wrapper.className = 'root-clone-buttons';
-                    box.appendChild(wrapper);
-                } else {
-                    wrapper.innerHTML = ''; // Clear contents
-                }
-                
-                let newBtn = document.createElement('div');
-                newBtn.className = 'kutu-timer-btn';
-                newBtn.innerHTML = mySvg;
-                newBtn.title = 'Hız ve Telaffuz Testi';
-                
-                newBtn.onmousedown = (e) => { e.stopPropagation(); };
-                newBtn.ontouchstart = (e) => { e.stopPropagation(); };
-                newBtn.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
-
-                let newListBtn = document.createElement('div');
-                newListBtn.className = 'kutu-list-btn';
-                newListBtn.innerHTML = listSvg;
-                newListBtn.title = 'Hızlı Sözlük Modu';
-                newListBtn.onmousedown = (e) => { e.stopPropagation(); };
-                newListBtn.ontouchstart = (e) => { e.stopPropagation(); };
-                newListBtn.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
-                
-                // Üstte liste, altta kronometre
-                wrapper.appendChild(newListBtn);
-                wrapper.appendChild(newBtn);
-                
-            } else if (!boxCanShowTimer && wrapper) {
-                wrapper.remove();
-            } else if (!boxCanShowTimer && btn) {
-                // Eger wrapper yoksa ama butonlar varsa (eski yapi kalmissa)
-                btn.remove();
-                if(listBtn) listBtn.remove();
-            }
+            const wrapper = box.querySelector('.root-clone-buttons');
+            if (wrapper) wrapper.remove();
+            const oldBtn = box.querySelector('.kutu-timer-btn');
+            if (oldBtn) oldBtn.remove();
+            const oldListBtn = box.querySelector('.kutu-list-btn');
+            if (oldListBtn) oldListBtn.remove();
         });
 
         // Block B was removed to statically keep the icons in the HTML top bar
