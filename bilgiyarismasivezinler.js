@@ -564,13 +564,17 @@ const BIY = {
     if (havuz > 0){
       state.soruSayiMax = havuz;
       state.soruSayisi = havuz;
+      state.soruSayiHavuzdan = true;   // bu sayı havuzdan geldi → havuz bırakılınca sıfırlanacak
       document.querySelectorAll(".biy-sayi-btn").forEach(b => { b.disabled = true; b.classList.add("biy-pasif"); b.classList.remove("secili"); });
       if (inp){ inp.disabled = false; inp.readOnly = true; inp.max = havuz; inp.min = 1; inp.value = havuz; inp.classList.add("biy-secili"); }
       if (lbl) lbl.textContent = "Soru sayısı (havuzdan " + havuz + "):";
       return;
     }
+    // havuz modundan çıkıldıysa havuz kaynaklı soru sayısını sıfırla (öğretmen yeniden seçsin)
+    if (state.soruSayiHavuzdan){ state.soruSayisi = null; state.soruSayiHavuzdan = false; }
     let mevcut;
-    if (state.konuId) mevcut = BIY._aktifSorular().filter(s => s.zorluk === (SEVIYE_ZORLUK[state.seviye] || 1)).length;
+    // dijital yarışma seçilen zorluğu önceliklendirip gerekirse diğer zorluklardan tamamlar → üst sınır konunun TÜM sorusu
+    if (state.konuId) mevcut = BIY._aktifSorular().length;
     else mevcut = 50;                                                    // konu/havuz yok → sınır uygulanmasın
     const max = Math.max(1, Math.min(50, mevcut));
     state.soruSayiMax = max;
@@ -914,6 +918,7 @@ const BIY = {
     const max = state.soruSayiMax || 50;
     n = Math.max(1, Math.min(max, parseInt(n, 10) || max));
     state.soruSayisi = n;
+    state.soruSayiHavuzdan = false;
     const hazir = SORU_SAYI_SECENEK.indexOf(n) >= 0;
     document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.toggle("secili", +b.getAttribute("data-sayi") === n));
     const inp = $("soruSayiInput"); if (inp){ inp.value = hazir ? "" : n; }
@@ -925,6 +930,7 @@ const BIY = {
     const max = state.soruSayiMax || 50;
     n = Math.max(1, Math.min(max, n));
     state.soruSayisi = n;
+    state.soruSayiHavuzdan = false;
     // manuel giriş yapıldı → hazır rakamlardaki yeşil vurgu kalksın
     document.querySelectorAll(".biy-sayi-btn").forEach(b => b.classList.remove("secili"));
     const inp = $("soruSayiInput"); if (inp) inp.value = n;
@@ -949,12 +955,16 @@ const BIY = {
       yedek = [];   // görülmemiş yedek sorulmaz
     } else {
       const hedefZ = SEVIYE_ZORLUK[state.seviye] || 1;
-      let havuz = BIY._aktifSorular().filter(s => s.zorluk === hedefZ);
-      if (!havuz.length){ $("baslatNot").textContent = "«" + BIY._aktifKonu().ad + "» konusunda bu seviyede henüz soru yok."; return; }
-      for (let i = havuz.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = havuz[i]; havuz[i] = havuz[j]; havuz[j] = g; }
+      const tumu = BIY._aktifSorular();
+      if (!tumu.length){ $("baslatNot").textContent = "«" + (BIY._aktifKonu() ? BIY._aktifKonu().ad : "") + "» konusunda henüz soru yok."; return; }
+      const karistir = (a) => { for (let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = a[i]; a[i] = a[j]; a[j] = g; } return a; };
+      // önce seçilen zorluk (karışık), yetmezse diğer zorluklardan tamamla
+      const oncelik = karistir(tumu.filter(s => s.zorluk === hedefZ));
+      const digerler = karistir(tumu.filter(s => s.zorluk !== hedefZ));
+      const sirali = oncelik.concat(digerler);
       const hedefSayi = Math.max(1, Math.min(50, state.soruSayisi || TUR_SORU_SAYISI));
-      secilen = havuz.slice(0, Math.min(hedefSayi, havuz.length)).map(soruHazirla);
-      yedek = havuz.slice(secilen.length).map(soruHazirla);
+      secilen = sirali.slice(0, Math.min(hedefSayi, sirali.length)).map(soruHazirla);
+      yedek = sirali.slice(secilen.length).map(soruHazirla);
     }
     state.oyunSorulari = secilen;
     state.yedekSorular = yedek;   // beraberlikte yedek olarak kullanılır
