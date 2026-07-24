@@ -59,6 +59,8 @@ const state = {
   mod: null, uid: null,
   seviye: "kolay",           // kolay | orta | zor  (zor => 5 şık)
   sorularZ: 1,               // Sorular önizleme sekmesi (zorluk)
+  soruGizli: false,          // admin ekranında soruyu gizle/göster (kalıcı toggle)
+  otoSonucIndex: -1,         // tüm takımlar cevaplayınca otomatik sonuç kilidi
   odaId: null,               // admin: oda kodu
   odaTakim: null,            // takım: {oda, takim}
   takimAd: "",
@@ -284,25 +286,40 @@ const BIY = {
     // üst bilgi + sayaç
     const kalan = kalanSaniye();
     const yuzde = Math.max(0, Math.min(100, (kalan / (o.soruSuresi || SORU_SURESI)) * 100));
+    const gizli = state.soruGizli && !sonuc;   // gizleme yalnız cevap fazında
+    const gizleBtn = '<button class="biy-gizle-btn" onclick="BIY.soruGizleToggle()">' + (state.soruGizli ? '👁️ Soruyu Göster' : '🙈 Soruyu Gizle') + '</button>';
+
     let govde =
       '<div class="biy-oyun-ust">' +
         '<div class="biy-oyun-sira">Soru '+(idx+1)+' / '+(o.toplamSoru||state.oyunSorulari.length)+'</div>' +
         '<div class="biy-oyun-tip"><span class="biy-soru-tip">'+t.emoji+' '+t.ad+'</span> <span class="biy-zorluk z'+soru.zorluk+'">'+ZORLUK_AD[soru.zorluk]+' · '+PUAN[soru.zorluk]+' puan</span></div>' +
         (sonuc ? '' : '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>sn</small></div>') +
       '</div>' +
-      (sonuc ? '' : '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>') +
-      '<div class="biy-oyun-soru">'+ kacis(soru.soru) +'</div>' +
-      (soru.arapca ? '<div class="biy-oyun-arapca">'+ kacis(soru.arapca) +'</div>' : '') +
-      '<div class="biy-a-optlar">'+ opt +'</div>';
+      (sonuc ? '' : '<div class="biy-gizle-alan">'+gizleBtn+'</div>') +
+      (sonuc ? '' : '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>');
+
+    if (gizli){
+      govde += '<div class="biy-soru-gizli"><span class="biy-sg-emoji">🙈</span><b>Soru gizli</b><small>Takımlar soruyu kendi cihazlarında görüyor</small></div>';
+    } else {
+      govde += '<div class="biy-oyun-soru">'+ kacis(soru.soru) +'</div>' +
+        (soru.arapca ? '<div class="biy-oyun-arapca">'+ kacis(soru.arapca) +'</div>' : '') +
+        '<div class="biy-a-optlar">'+ opt +'</div>';
+    }
 
     if (!sonuc){
       // cevaplayan takımlar
       let cips = state.takimListe.map(tk =>
-        '<span class="biy-cip '+(buCevaplar[tk.id]?'ok':'')+'">'+(buCevaplar[tk.id]?'✓ ':'')+kacis(tk.ad)+'</span>'
+        '<span class="biy-cip '+(buCevaplar[tk.id]?'ok':'')+'">'+(buCevaplar[tk.id]?'<span class="biy-cip-tik">✓</span> ':'')+kacis(tk.ad)+'</span>'
       ).join("");
-      govde += '<div class="biy-cevap-durum">'+cevapSayisi+' / '+state.takimListe.length+' takım cevapladı</div>' +
+      const hepsi = state.takimListe.length > 0 && cevapSayisi >= state.takimListe.length;
+      govde += '<div class="biy-cevap-durum">'+cevapSayisi+' / '+state.takimListe.length+' takım cevapladı'+(hepsi?' — sonuç açılıyor…':'')+'</div>' +
                '<div class="biy-cipler">'+cips+'</div>' +
                '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonucGoster()">Sonucu Göster</button></div>';
+      // tüm takımlar cevaplayınca otomatik sonuç
+      if (hepsi && state.otoSonucIndex !== idx){
+        state.otoSonucIndex = idx;
+        setTimeout(function(){ if (state.oda && state.oda.faz === 'cevap' && (state.oda.aktifIndex||0) === idx) BIY.sonucGoster(); }, 700);
+      }
     } else {
       // reveal tablosu
       let satir = state.takimListe.slice().map(tk => {
@@ -346,6 +363,8 @@ const BIY = {
       '<button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()" style="margin-top:20px">Ana Menü</button>' +
     '</div>';
   },
+
+  soruGizleToggle(){ state.soruGizli = !state.soruGizli; BIY._renderAdminOyun(); },
 
   async sonucGoster(){
     if (!state.odaId) return;
