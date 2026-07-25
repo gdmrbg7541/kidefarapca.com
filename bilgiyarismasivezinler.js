@@ -21,6 +21,7 @@ const firebaseConfig = {
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const KOLEKSIYON = "bilgiYarismasi";
+const PDF_AKTIF = false;     // PDF'ler hazır olunca true yap → PDF önizleme/indirme geri gelir
 const SORU_SURESI = 60;      // saniye
 const TUR_SORU_SAYISI = 20;  // varsayılan soru sayısı
 const SORU_SAYI_SECENEK = [10, 15, 20, 25, 50];
@@ -206,6 +207,59 @@ const KONULAR = [
     {"id":50,"tip":"anlam","zorluk":1,"soru":"«اليَسار» ne demek?","secenekler":["sol","ekmek","elma","et","ev"],"dogru":0,"arapca":"اليَسار"},
     {"id":51,"tip":"anlam","zorluk":1,"soru":"«عاصِمَة» ne demek?","secenekler":["başkent","öğle yemeği","üzüm","şehir","şeker"],"dogru":0,"arapca":"عاصِمَة"},
     {"id":52,"tip":"anlam","zorluk":1,"soru":"«مَدينَة» ne demek?","secenekler":["şehir","üzüm","şeker","akşam","akşam yemeği"],"dogru":0,"arapca":"مَدينَة"}
+  ] },
+  { id: "dokuz", ad: "9. Sınıf Kelimeleri", pdf: "", sorular: [
+    {"id": 1, "tip": "anlam", "zorluk": 1, "soru": "«أُسْرَة / عَائِلَة» ne demek?", "secenekler": ["Aile", "Çok / Oldukça", "Muayene ediyor", "Banyo", "Müdür / Müdire"], "dogru": 0, "arapca": "أُسْرَة / عَائِلَة"},
+    {"id": 2, "tip": "anlam", "zorluk": 1, "soru": "«وَالِد / أَب» ne demek?", "secenekler": ["Baba", "Ne?", "Eski", "Müdür / Müdire", "Mutfak"], "dogru": 0, "arapca": "وَالِد / أَب"},
+    {"id": 3, "tip": "anlam", "zorluk": 1, "soru": "«وَالِدَة / أُم» ne demek?", "secenekler": ["Anne", "Ev", "Nerede?", "Erkek kardeş", "İşçi"], "dogru": 0, "arapca": "وَالِدَة / أُم"},
+    {"id": 4, "tip": "anlam", "zorluk": 1, "soru": "«جَد» ne demek?", "secenekler": ["Dede", "Banyo", "Oda", "Anne", "Yemek pişiriyor"], "dogru": 0, "arapca": "جَد"},
+    {"id": 5, "tip": "anlam", "zorluk": 1, "soru": "«جَدَّة» ne demek?", "secenekler": ["Babaanne / Anneanne", "Rahat", "Restoran", "Nerede?", "Kız çocuk"], "dogru": 0, "arapca": "جَدَّة"},
+    {"id": 6, "tip": "anlam", "zorluk": 1, "soru": "«أَخ» ne demek?", "secenekler": ["Erkek kardeş", "Kız çocuk", "Oda", "Öğretmen", "Doktor"], "dogru": 0, "arapca": "أَخ"},
+    {"id": 7, "tip": "anlam", "zorluk": 1, "soru": "«أُخْت» ne demek?", "secenekler": ["Kız kardeş", "Mühendis", "Öğrenci", "Doktor", "Yatak"], "dogru": 0, "arapca": "أُخْت"},
+    {"id": 8, "tip": "anlam", "zorluk": 1, "soru": "«ابْن» ne demek?", "secenekler": ["Oğul", "Eski", "Kız çocuk", "Saygı duyuyorum", "Kapı"], "dogru": 0, "arapca": "ابْن"},
+    {"id": 9, "tip": "anlam", "zorluk": 1, "soru": "«ابْنَة» ne demek?", "secenekler": ["Kız çocuk", "Ev hanımı", "Mutfak", "Muayene ediyor", "Oğul"], "dogru": 0, "arapca": "ابْنَة"},
+    {"id": 10, "tip": "anlam", "zorluk": 1, "soru": "«مُدَرِّس / مُدَرِّسَة» ne demek?", "secenekler": ["Öğretmen", "Ev", "Oğul", "Baba", "Aşçı"], "dogru": 0, "arapca": "مُدَرِّس / مُدَرِّسَة"},
+    {"id": 11, "tip": "anlam", "zorluk": 1, "soru": "«طَبِيب / طَبِيبَة» ne demek?", "secenekler": ["Doktor", "Kız çocuk", "Masa", "Anne", "Çok / Oldukça"], "dogru": 0, "arapca": "طَبِيب / طَبِيبَة"},
+    {"id": 12, "tip": "anlam", "zorluk": 1, "soru": "«مُهَنْدِس / مُهَنْدِسَة» ne demek?", "secenekler": ["Mühendis", "Aşçı", "Saygı duyuyorum", "Ev hanımı", "Rahat"], "dogru": 0, "arapca": "مُهَنْدِس / مُهَنْدِسَة"},
+    {"id": 13, "tip": "anlam", "zorluk": 1, "soru": "«عَامِل / عَامِلَة» ne demek?", "secenekler": ["İşçi", "Masa", "Öğretmen", "Yatak", "Anne"], "dogru": 0, "arapca": "عَامِل / عَامِلَة"},
+    {"id": 14, "tip": "anlam", "zorluk": 1, "soru": "«طَبَّاخ / طَبَّاحَة» ne demek?", "secenekler": ["Aşçı", "Sandalye", "Çok / Oldukça", "Okul", "İşçi"], "dogru": 0, "arapca": "طَبَّاخ / طَبَّاحَة"},
+    {"id": 15, "tip": "anlam", "zorluk": 1, "soru": "«طَالِب / طَالِبَة» ne demek?", "secenekler": ["Öğrenci", "Pencere", "Yeni", "Doktor", "Balkon"], "dogru": 0, "arapca": "طَالِب / طَالِبَة"},
+    {"id": 16, "tip": "anlam", "zorluk": 1, "soru": "«مُدِير / مُدِيرَة» ne demek?", "secenekler": ["Müdür / Müdire", "Ev hanımı", "Seviyorum", "Yatak", "Kız çocuk"], "dogru": 0, "arapca": "مُدِير / مُدِيرَة"},
+    {"id": 17, "tip": "anlam", "zorluk": 1, "soru": "«رَبَّةُ بَيْت» ne demek?", "secenekler": ["Ev hanımı", "Hastane", "Buzdolabı", "Yeni", "Nerede?"], "dogru": 0, "arapca": "رَبَّةُ بَيْت"},
+    {"id": 18, "tip": "anlam", "zorluk": 1, "soru": "«بَيْت» ne demek?", "secenekler": ["Ev", "Ders anlatıyor / Öğretiyor", "Temiz", "Saygı duyuyorum", "Balkon"], "dogru": 0, "arapca": "بَيْت"},
+    {"id": 19, "tip": "anlam", "zorluk": 1, "soru": "«مَدْرَسَة» ne demek?", "secenekler": ["Okul", "Banyo", "Yatak", "Birinci", "Kapı"], "dogru": 0, "arapca": "مَدْرَسَة"},
+    {"id": 20, "tip": "anlam", "zorluk": 1, "soru": "«مُسْتَشْفَى» ne demek?", "secenekler": ["Hastane", "Müdür / Müdire", "Bulunuyor / Var", "İkinci", "Banyo"], "dogru": 0, "arapca": "مُسْتَشْفَى"},
+    {"id": 21, "tip": "anlam", "zorluk": 1, "soru": "«مَصْنَع» ne demek?", "secenekler": ["Fabrika", "Aile", "Masa", "Banyo", "Ev hanımı"], "dogru": 0, "arapca": "مَصْنَع"},
+    {"id": 22, "tip": "anlam", "zorluk": 1, "soru": "«مَطْعَم» ne demek?", "secenekler": ["Restoran", "Yeni", "Hastane", "Müdür / Müdire", "Sandalye"], "dogru": 0, "arapca": "مَطْعَم"},
+    {"id": 23, "tip": "anlam", "zorluk": 1, "soru": "«شَرِكَة» ne demek?", "secenekler": ["Şirket", "Aile", "Yeni", "Erkek kardeş", "Çok / Oldukça"], "dogru": 0, "arapca": "شَرِكَة"},
+    {"id": 24, "tip": "anlam", "zorluk": 1, "soru": "«غُرْفَة» ne demek?", "secenekler": ["Oda", "Seviyorum", "Yatak odası", "Aşçı", "Hastane"], "dogru": 0, "arapca": "غُرْفَة"},
+    {"id": 25, "tip": "anlam", "zorluk": 1, "soru": "«غُرْفَة النَّوْم» ne demek?", "secenekler": ["Yatak odası", "Çamaşır makinesi", "Dede", "Sandalye", "Yemek pişiriyor"], "dogru": 0, "arapca": "غُرْفَة النَّوْم"},
+    {"id": 26, "tip": "anlam", "zorluk": 1, "soru": "«غُرْفَة الجُلُوس» ne demek?", "secenekler": ["Oturma odası", "Okul", "Temiz", "Mühendis", "Babaanne / Anneanne"], "dogru": 0, "arapca": "غُرْفَة الجُلُوس"},
+    {"id": 27, "tip": "anlam", "zorluk": 1, "soru": "«مَطْبَخ» ne demek?", "secenekler": ["Mutfak", "Dede", "Ders anlatıyor / Öğretiyor", "Ne?", "Muayene ediyor"], "dogru": 0, "arapca": "مَطْبَخ"},
+    {"id": 28, "tip": "anlam", "zorluk": 1, "soru": "«حَمَّام» ne demek?", "secenekler": ["Banyo", "Rahat", "Oğul", "İşçi", "Yatak"], "dogru": 0, "arapca": "حَمَّام"},
+    {"id": 29, "tip": "anlam", "zorluk": 1, "soru": "«شُرْفَة» ne demek?", "secenekler": ["Balkon", "Bulunuyor / Var", "Oda", "Yeni", "Rahat"], "dogru": 0, "arapca": "شُرْفَة"},
+    {"id": 30, "tip": "anlam", "zorluk": 1, "soru": "«نَافِذَة» ne demek?", "secenekler": ["Pencere", "Balkon", "Hastane", "Çamaşır makinesi", "Oda"], "dogru": 0, "arapca": "نَافِذَة"},
+    {"id": 31, "tip": "anlam", "zorluk": 1, "soru": "«بَاب» ne demek?", "secenekler": ["Kapı", "Yeni", "Rahat", "Yemek pişiriyor", "İşçi"], "dogru": 0, "arapca": "بَاب"},
+    {"id": 32, "tip": "anlam", "zorluk": 1, "soru": "«ثَلَّاجَة» ne demek?", "secenekler": ["Buzdolabı", "Anne", "Yemek pişiriyor", "Sandalye", "İkinci"], "dogru": 0, "arapca": "ثَلَّاجَة"},
+    {"id": 33, "tip": "anlam", "zorluk": 1, "soru": "«غَسَّالَة» ne demek?", "secenekler": ["Çamaşır makinesi", "Ne?", "Yemek pişiriyor", "Banyo", "Kız çocuk"], "dogru": 0, "arapca": "غَسَّالَة"},
+    {"id": 34, "tip": "anlam", "zorluk": 1, "soru": "«سَرِير» ne demek?", "secenekler": ["Yatak", "Masa", "Buzdolabı", "Ev hanımı", "Pencere"], "dogru": 0, "arapca": "سَرِير"},
+    {"id": 35, "tip": "anlam", "zorluk": 1, "soru": "«كُرْسِي» ne demek?", "secenekler": ["Sandalye", "Öğretmen", "Ders anlatıyor / Öğretiyor", "Banyo", "Restoran"], "dogru": 0, "arapca": "كُرْسِي"},
+    {"id": 36, "tip": "anlam", "zorluk": 1, "soru": "«طَاوِلَة» ne demek?", "secenekler": ["Masa", "Mutfak", "İşçi", "Oda", "Öğretmen"], "dogru": 0, "arapca": "طَاوِلَة"},
+    {"id": 37, "tip": "anlam", "zorluk": 1, "soru": "«يُدَرِّسُ» ne demek?", "secenekler": ["Ders anlatıyor / Öğretiyor", "Seviyorum", "Kız çocuk", "Müdür / Müdire", "Çamaşır makinesi"], "dogru": 0, "arapca": "يُدَرِّسُ"},
+    {"id": 38, "tip": "anlam", "zorluk": 1, "soru": "«يَفْحَصُ» ne demek?", "secenekler": ["Muayene ediyor", "İşçi", "Balkon", "Birinci", "Oğul"], "dogru": 0, "arapca": "يَفْحَصُ"},
+    {"id": 39, "tip": "anlam", "zorluk": 1, "soru": "«تَطْبُخُ» ne demek?", "secenekler": ["Yemek pişiriyor", "Babaanne / Anneanne", "Doktor", "Temiz", "Restoran"], "dogru": 0, "arapca": "تَطْبُخُ"},
+    {"id": 40, "tip": "anlam", "zorluk": 1, "soru": "«أُحِبُّ» ne demek?", "secenekler": ["Seviyorum", "Doktor", "Çok / Oldukça", "Birinci", "Bulunuyor / Var"], "dogru": 0, "arapca": "أُحِبُّ"},
+    {"id": 41, "tip": "anlam", "zorluk": 1, "soru": "«أَحْتَرِمُ» ne demek?", "secenekler": ["Saygı duyuyorum", "Oğul", "Sandalye", "Ne?", "Banyo"], "dogru": 0, "arapca": "أَحْتَرِمُ"},
+    {"id": 42, "tip": "anlam", "zorluk": 1, "soru": "«يُوجَدُ» ne demek?", "secenekler": ["Bulunuyor / Var", "Fabrika", "İkinci", "Masa", "Temiz"], "dogru": 0, "arapca": "يُوجَدُ"},
+    {"id": 43, "tip": "anlam", "zorluk": 1, "soru": "«مُرِيح» ne demek?", "secenekler": ["Rahat", "İşçi", "Doktor", "Anne", "Okul"], "dogru": 0, "arapca": "مُرِيح"},
+    {"id": 44, "tip": "anlam", "zorluk": 1, "soru": "«نَظِيف» ne demek?", "secenekler": ["Temiz", "Saygı duyuyorum", "Aile", "Banyo", "Nerede?"], "dogru": 0, "arapca": "نَظِيف"},
+    {"id": 45, "tip": "anlam", "zorluk": 1, "soru": "«جَدِيد» ne demek?", "secenekler": ["Yeni", "Oğul", "Temiz", "Nerede?", "Ev"], "dogru": 0, "arapca": "جَدِيد"},
+    {"id": 46, "tip": "anlam", "zorluk": 1, "soru": "«قَدِيم» ne demek?", "secenekler": ["Eski", "Balkon", "Öğretmen", "Ev hanımı", "Okul"], "dogru": 0, "arapca": "قَدِيم"},
+    {"id": 47, "tip": "anlam", "zorluk": 1, "soru": "«كَثِيرًا» ne demek?", "secenekler": ["Çok / Oldukça", "Ev hanımı", "Müdür / Müdire", "Banyo", "Oğul"], "dogru": 0, "arapca": "كَثِيرًا"},
+    {"id": 48, "tip": "anlam", "zorluk": 1, "soru": "«الأَوَّل» ne demek?", "secenekler": ["Birinci", "Balkon", "Oğul", "Eski", "Babaanne / Anneanne"], "dogru": 0, "arapca": "الأَوَّل"},
+    {"id": 49, "tip": "anlam", "zorluk": 1, "soru": "«الثَّانِي» ne demek?", "secenekler": ["İkinci", "Seviyorum", "Yatak", "Doktor", "Babaanne / Anneanne"], "dogru": 0, "arapca": "الثَّانِي"},
+    {"id": 50, "tip": "anlam", "zorluk": 1, "soru": "«مَا / مَاذَا» ne demek?", "secenekler": ["Ne?", "Banyo", "Erkek kardeş", "Öğretmen", "Seviyorum"], "dogru": 0, "arapca": "مَا / مَاذَا"},
+    {"id": 51, "tip": "anlam", "zorluk": 1, "soru": "«أَيْن» ne demek?", "secenekler": ["Nerede?", "Oğul", "Baba", "Ne?", "Restoran"], "dogru": 0, "arapca": "أَيْن"},
   ] },
   { id: "dilbilgisi1", ad: "Dilbilgisi 1 (Mücerret)", pdf: "", sorular: [
     {"id":1,"tip":"gramer","zorluk":1,"soru":"Mazi fiil hangi zamanı bildirir?","secenekler":["Görülen (di'li) geçmiş zaman","Şimdiki / geniş zaman","Gelecek zaman","Emir (buyruk)","Geniş zamanın olumsuzu"],"dogru":0},
@@ -564,6 +618,14 @@ const BIY = {
     const k = BIY._aktifKonu();
     const baslik = $("pdfBaslik"); if (baslik) baslik.textContent = havuz > 0 ? "Karışık" : (k ? (k.ad || "") : "");
     const kart = $("pdfKart"), indir = $("pdfIndir");
+    // PDF'ler henüz hazır değil → tüm önizleme bloğunu gizle (PDF_AKTIF=true olunca geri gelir)
+    const blok = kart && kart.closest(".biy-pdf-onizleme");
+    if (blok) blok.classList.toggle("gizli", !PDF_AKTIF);
+    if (!PDF_AKTIF){
+      if (kart){ kart.removeAttribute("href"); kart.classList.add("biy-pasif"); }
+      if (indir){ indir.removeAttribute("href"); indir.classList.add("gizli"); }
+      return;
+    }
     const varMi = !havuz && !!(k && k.pdf);
     const url = varMi ? encodeURI(k.pdf) : "";
     if (kart){ if (varMi){ kart.href = url; kart.classList.remove("biy-pasif"); } else { kart.removeAttribute("href"); kart.classList.add("biy-pasif"); } }
