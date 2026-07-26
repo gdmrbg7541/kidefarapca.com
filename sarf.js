@@ -396,6 +396,33 @@ const App = {
     playSound(key) {
         if (!this.state.audioCtx) return;
         if (this.state.audioCtx.state === 'suspended') this.state.audioCtx.resume();
+        const ctx = this.state.audioCtx;
+        /* Çok notalı ezgiler — dijital yarışmanın canlı anları için.
+           (katildi: odaya biri girdi · hepsiCevap: herkes cevapladı ·
+            sonucAcildi: sonuç sahnesi · siraDegisti: sıralama oynadı ·
+            zafer: yarışma bitti) */
+        const ezgiler = {
+            katildi:     [{f:659,t:0,d:.12},{f:988,t:.10,d:.18}],
+            hepsiCevap:  [{f:523,t:0,d:.11},{f:659,t:.09,d:.11},{f:784,t:.18,d:.20}],
+            sonucAcildi: [{f:392,t:0,d:.14},{f:587,t:.12,d:.24}],
+            siraDegisti: [{f:494,t:0,d:.10},{f:740,t:.08,d:.10},{f:988,t:.16,d:.20}],
+            zafer:       [{f:523,t:0,d:.16},{f:659,t:.14,d:.16},{f:784,t:.28,d:.18},{f:1047,t:.42,d:.5}]
+        };
+        const ezgi = ezgiler[key];
+        if (ezgi) {
+            const t0 = ctx.currentTime + 0.01;
+            ezgi.forEach(n => {
+                const b = t0 + n.t;
+                const eg = ctx.createGain(); eg.connect(ctx.destination);
+                eg.gain.setValueAtTime(0.0001, b);
+                eg.gain.exponentialRampToValueAtTime(0.13, b + 0.02);
+                eg.gain.exponentialRampToValueAtTime(0.0001, b + n.d);
+                const eo = ctx.createOscillator(); eo.type = 'sine';
+                eo.frequency.setValueAtTime(n.f, b);
+                eo.connect(eg); eo.start(b); eo.stop(b + n.d + 0.03);
+            });
+            return;
+        }
         const sounds = {
             click:   { f:520, t:'square',   d:.07 },
             correct: { f:520, t:'sine',     d:.22, glide:880 },
@@ -403,7 +430,6 @@ const App = {
             gear:    { f:180, t:'triangle', d:.35 }
         };
         const s = sounds[key]; if (!s) return;
-        const ctx = this.state.audioCtx;
         const g = ctx.createGain(); g.connect(ctx.destination);
         g.gain.setValueAtTime(0.0001, ctx.currentTime);
         g.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.01);
@@ -1261,8 +1287,10 @@ const Quiz = {
     temizle() {
         (this.state.abone || []).forEach(f => { try { f(); } catch (e) {} });
         if (this.state.sayacTimer) clearInterval(this.state.sayacTimer);
+        (this.state.sonucTimer || []).forEach(t => clearTimeout(t));
         const onay = document.getElementById('qz-onay');
         if (onay) onay.remove();
+        document.querySelectorAll('.qz-konfeti-kap').forEach(k => k.remove());
         this.state = {};
         this._gorunum = null;
     },
@@ -1454,6 +1482,10 @@ const Quiz = {
         this.state.takimlar = [];
         this.state.cevaplar = [];
         this.state.veriGeldi = false;
+        /* Katılım sesi için: ilk anlık görüntü sessiz geçer, sonrasında
+           listeye yeni bir kimlik eklendiğinde odadaki her cihaz ses çalar. */
+        this.state.katilSet = null;
+        this.state.hepsiSesIndex = -1;
         this.state.abone.push(ref.onSnapshot(s => {
             if (!s.exists) {
                 /* Odayı kapatan biziz: sessizce çık. */
@@ -1471,6 +1503,15 @@ const Quiz = {
         this.state.abone.push(ref.collection('takimlar').onSnapshot(q => {
             this.state.takimlar = q.docs.map(d => Object.assign({ id: d.id }, d.data()))
                 .sort((a, b) => (a.olusturmaZamani || 0) - (b.olusturmaZamani || 0));
+            /* Odaya yeni biri katıldıysa: odayı kuranın ve önceden bağlanmış
+               herkesin cihazında kısa bir "ding" çalar. */
+            const simdiki = new Set(this.state.takimlar.map(t => t.id));
+            if (this.state.katilSet) {
+                let yeni = false;
+                simdiki.forEach(id => { if (!this.state.katilSet.has(id)) yeni = true; });
+                if (yeni) App.playSound('katildi');
+            }
+            this.state.katilSet = simdiki;
             this.guncelle();
         }));
         this.state.abone.push(ref.collection('cevaplar').onSnapshot(q => {
@@ -1497,7 +1538,11 @@ const Quiz = {
     gorunumCiz() {
         const o = this.state.oda;
         if (o.durum === 'lobi')      this.lobiCiz();
-        else if (o.durum === 'oyun') this.oyunCiz();
+        else if (o.durum === 'oyun') {
+            /* Soru fazı ve sonuç fazı artık iki ayrı ekran:
+               sonuç, adım adım açılan bir sahne olarak gösterilir. */
+            if (o.faz === 'sonuc') this.sonucCiz(); else this.oyunCiz();
+        }
         else                          this.bitisCiz();
     },
 
@@ -1662,7 +1707,7 @@ const Quiz = {
                   'dönersin, “اِتَّصِلْ” rozetiyle aynı soruya geri gelirsin.</div>'
                 : '') +
             '</div>' +
-            (yonetici ? '<div class="qz-kart"><h3>🏅 Sıralama</h3><div class="qz-sira" id="qz-sira"></div></div>' : '')
+            (yonetici ? '<div class="qz-kart"><h3>🏅 Puan Durumu</h3><div class="qz-sira" id="qz-sira"></div></div>' : '')
         );
 
         if (!yonetici) {
@@ -1740,26 +1785,302 @@ const Quiz = {
         } catch (e) {}
     },
 
+    /* ================= puan / sıra yardımcıları =================
+       Puanlar hem takım belgesindeki "puan" alanında hem de her cevapta
+       tutulur. Sıra değişimini (▲▼) gösterebilmek için "şu soruya kadar"
+       ve "bir önceki soruya kadar" toplamları cevaplardan hesaplanır. */
+    puanKumul(sonIndex) {
+        const t = {};
+        (this.state.cevaplar || []).forEach(c => {
+            if (c.index <= sonIndex && c.puan) t[c.takimId] = (t[c.takimId] || 0) + c.puan;
+        });
+        return t;
+    },
+    siraDizisi(puanMap) {
+        return (this.state.takimlar || []).map(t => t.id)
+            .sort((a, b) => (puanMap[b] || 0) - (puanMap[a] || 0));
+    },
+    rankHaritasi(puanMap) {
+        const ids = (this.state.takimlar || []).map(t => t.id);
+        const r = {};
+        ids.forEach(id => {
+            const p = puanMap[id] || 0;
+            r[id] = 1 + ids.filter(o => (puanMap[o] || 0) > p).length;
+        });
+        return r;
+    },
+    adBul(id) {
+        const t = (this.state.takimlar || []).find(x => x.id === id);
+        return t ? t.ad : '';
+    },
+
+    /* ================= soru sonucu (adım adım sahne) =================
+       Akış: (0) soru + doğru şık → (1) kim ne dedi → (2) puan durumu.
+       Alt taraftaki üç çizgiye basarak sahneler arasında gezilebilir. */
+    sonucCiz() {
+        const o = this.state.oda;
+        const idx = o.index;
+        const soru = o.sorular[idx];
+        const yonetici = this.state.rol === 'yonetici';
+        const harfler = ['أ', 'ب', 'ج', 'د'];
+        if (this.state.sayacTimer) clearInterval(this.state.sayacTimer);
+        const taze = (this.state.sonucAnimIndex !== idx);
+        const son = (idx + 1 >= o.sorular.length);
+
+        const sikHtml = soru.secenekler.map((sec, i) =>
+            '<div class="qz-secenek kilit' + (i === soru.dogru ? ' dogru' : ' solgun') + '">' +
+              '<span class="harf">' + harfler[i] + '</span>' +
+              '<span class="metin">' + this.kacis(sec) + '</span>' +
+              (i === soru.dogru ? '<span class="tik">✓</span>' : '') +
+            '</div>').join('');
+
+        this.ciz(
+            '<div class="qz-sonuc-ekran" id="qz-sonuc-ekran" data-step="' + (taze ? 0 : 2) + '">' +
+              '<div class="qz-sonuc-baslik">📊 Sonuç · Soru ' + (idx + 1) + ' / ' + o.sorular.length + '</div>' +
+              '<div class="qz-sonuc-sahne">' +
+                /* SAHNE 1 — soru ve doğru şık */
+                '<div class="qz-sahne-oge oge-dogru">' +
+                  '<div class="qz-soru" dir="rtl">' + this.kacis(soru.s) + '</div>' +
+                  '<div class="qz-soru-ar">' + this.kacis(soru.ar) + '</div>' +
+                  '<div class="qz-durum">' + this.kacis(soru.tr) + '</div>' +
+                  '<div class="qz-secenekler">' + sikHtml + '</div>' +
+                '</div>' +
+                /* SAHNE 2 — kim ne cevapladı */
+                '<div class="qz-sahne-oge oge-reveal">' +
+                  '<h4 class="qz-sahne-baslik">🙋 Kim ne dedi?</h4>' +
+                  '<table class="qz-rev-tablo">' +
+                    '<thead><tr><th>Takım / kişi</th><th>Seçtiği</th><th>Durum</th></tr></thead>' +
+                    '<tbody id="qz-rev-body"></tbody>' +
+                  '</table>' +
+                '</div>' +
+                /* SAHNE 3 — puan durumu */
+                '<div class="qz-sahne-oge oge-lider">' +
+                  '<h4 class="qz-sahne-baslik">🏆 Puan Durumu</h4>' +
+                  '<ol class="qz-lider-ol" id="qz-lider-ol"></ol>' +
+                '</div>' +
+              '</div>' +
+              '<div class="qz-sonuc-nokta" id="qz-sonuc-nokta">' +
+                '<button class="qz-nokta" data-adim="0" title="Soru ve doğru şık"></button>' +
+                '<button class="qz-nokta" data-adim="1" title="Verilen cevaplar"></button>' +
+                '<button class="qz-nokta" data-adim="2" title="Puan durumu"></button>' +
+              '</div>' +
+              '<div class="qz-sonuc-kontrol">' +
+                (yonetici
+                  ? '<div class="qz-satir">' +
+                      '<button class="qz-btn" id="qz-sonraki">' +
+                        (son ? 'Yarışı Bitir 🏁' : 'Sonraki Soru ▶') +
+                      '</button>' +
+                      '<button class="qz-btn kirmizi" id="qz-oyundan-cik">🚪 Oyundan Çık</button>' +
+                    '</div>'
+                  : '<div class="qz-durum" id="qz-benim-sonuc"></div>' +
+                    '<div class="qz-kod-not" style="margin-top:8px">' +
+                      (son ? 'Yarışmanın bitmesi bekleniyor…' : 'Sonraki soru bekleniyor…') +
+                    '</div>') +
+              '</div>' +
+            '</div>'
+        );
+
+        const nokta = document.getElementById('qz-sonuc-nokta');
+        if (nokta) nokta.addEventListener('click', e => {
+            const b = e.target.closest('.qz-nokta');
+            if (b) { App.playSound('click'); this.sonucAdim(parseInt(b.dataset.adim, 10)); }
+        });
+        if (yonetici) {
+            document.getElementById('qz-sonraki').addEventListener('click', () => this.sonrakiSoru());
+            document.getElementById('qz-oyundan-cik').addEventListener('click', () => this.kapatmayiSor());
+        }
+
+        const degisti = this.sonucYamala();
+        if (taze) {
+            this.state.sonucAnimIndex = idx;
+            App.playSound('sonucAcildi');
+            this.sonucOynat(degisti);
+        }
+    },
+
+    /* Sonuç sahnesinin dinamik parçaları: cevap tablosu, puan durumu ve
+       katılımcının kendi sonucu. Sıra değişip değişmediğini döndürür. */
+    sonucYamala() {
+        const o = this.state.oda;
+        if (!o || !document.getElementById('qz-sonuc-ekran')) return false;
+        const idx = o.index;
+        const soru = o.sorular[idx];
+        const harfler = ['أ', 'ب', 'ج', 'د'];
+        const buCevaplar = {};
+        (this.state.cevaplar || []).forEach(c => { if (c.index === idx) buCevaplar[c.takimId] = c; });
+
+        const govde = document.getElementById('qz-rev-body');
+        if (govde) {
+            const takimlar = this.state.takimlar || [];
+            govde.innerHTML = takimlar.length
+                ? takimlar.map((tk, ri) => {
+                    const c = buCevaplar[tk.id];
+                    const dogruMu = !!c && c.secim === soru.dogru;
+                    const secim = c
+                        ? '<b class="qz-rev-harf">' + harfler[c.secim] + '</b> ' +
+                          '<span class="qz-rev-metin" dir="rtl">' + this.kacis(soru.secenekler[c.secim]) + '</span>'
+                        : '<span class="qz-rev-yok">—</span>';
+                    const durum = c ? (dogruMu ? '✅ Doğru' : '❌ Yanlış') : '⏳ Cevapsız';
+                    return '<tr class="' + (c ? (dogruMu ? 'dogru' : 'yanlis') : 'yok') + '" style="--r:' + ri + '">' +
+                             '<td>' + this.kacis(tk.ad) + '</td>' +
+                             '<td class="qz-rev-sik">' + secim + '</td>' +
+                             '<td>' + durum + '</td>' +
+                           '</tr>';
+                  }).join('')
+                : '<tr class="yok"><td colspan="3">Katılan yok.</td></tr>';
+        }
+
+        const yeniP = this.puanKumul(idx), oncekiP = this.puanKumul(idx - 1);
+        const sira = this.siraDizisi(yeniP);
+        const yeniR = this.rankHaritasi(yeniP), oncekiR = this.rankHaritasi(oncekiP);
+        const ol = document.getElementById('qz-lider-ol');
+        if (ol) {
+            ol.innerHTML = sira.length
+                ? sira.map(id => {
+                    const ns = yeniR[id] || sira.length, ps = oncekiR[id] || sira.length;
+                    const fark = ps - ns;
+                    const ok = fark > 0 ? '<span class="qz-ok yukari">▲</span>'
+                             : (fark < 0 ? '<span class="qz-ok asagi">▼</span>'
+                                         : '<span class="qz-ok sabit"></span>');
+                    const cls = fark > 0 ? ' yukari' : (fark < 0 ? ' asagi' : '');
+                    return '<li class="qz-lider-satir' + cls + (id === this.state.takimId ? ' benim' : '') + '">' +
+                             '<span class="qz-lider-sira">' + ns + '</span>' + ok +
+                             '<span class="qz-lider-ad">' + this.kacis(this.adBul(id)) + '</span>' +
+                             '<b>' + (yeniP[id] || 0) + '</b>' +
+                           '</li>';
+                  }).join('')
+                : '<li class="qz-lider-satir bos">Henüz puan yok.</li>';
+        }
+
+        const benim = document.getElementById('qz-benim-sonuc');
+        if (benim && this.state.rol === 'takim') {
+            const c = buCevaplar[this.state.takimId];
+            benim.innerHTML = !c
+                ? '⏳ Bu soruya cevap veremedin.'
+                : (c.secim === soru.dogru
+                    ? '🎉 Doğru! <b>+' + (c.puan || 0) + '</b> puan · toplam <b>' +
+                      (yeniP[this.state.takimId] || 0) + '</b>'
+                    : '❌ Bu sefer olmadı · toplam <b>' + (yeniP[this.state.takimId] || 0) + '</b>');
+        }
+
+        return sira.some(id => (oncekiR[id] || sira.length) !== (yeniR[id] || sira.length));
+    },
+
+    /* Sahneleri sırayla açar; sıralama değiştiyse puan durumu belirirken
+       kısa bir "sıra değişti" ezgisi çalar. */
+    sonucOynat(degisti) {
+        (this.state.sonucTimer || []).forEach(t => clearTimeout(t));
+        this.state.sonucTimer = [];
+        const ayarla = n => {
+            const e = document.getElementById('qz-sonuc-ekran');
+            if (e) e.setAttribute('data-step', String(n));
+        };
+        this.state.sonucTimer.push(setTimeout(() => ayarla(1), 4500));
+        this.state.sonucTimer.push(setTimeout(() => ayarla(2), 8000));
+        if (degisti) this.state.sonucTimer.push(setTimeout(() => App.playSound('siraDegisti'), 8200));
+    },
+
+    /* Alt çizgilerden birine basılınca otomatik akış durur, o sahne açılır. */
+    sonucAdim(n) {
+        (this.state.sonucTimer || []).forEach(t => clearTimeout(t));
+        this.state.sonucTimer = [];
+        const e = document.getElementById('qz-sonuc-ekran');
+        if (e) e.setAttribute('data-step', String(n));
+    },
+
+    /* Yarışma bitti — harici kütüphane olmadan konfeti. */
+    konfetiPatlat() {
+        const renkler = ['#7c3aed', '#a78bfa', '#fbbf24', '#28a745', '#2980b9', '#ef4444', '#f472b6', '#ffffff'];
+        const kap = document.createElement('div');
+        kap.className = 'qz-konfeti-kap';
+        let h = '';
+        for (let i = 0; i < 120; i++) {
+            const sol = (Math.random() * 100).toFixed(2);
+            const renk = renkler[(Math.random() * renkler.length) | 0];
+            const gecikme = (Math.random() * 0.9).toFixed(2);
+            const sure = (2.6 + Math.random() * 2.2).toFixed(2);
+            const don = ((Math.random() * 900 - 450) | 0);
+            const en = 6 + (Math.random() * 8 | 0);
+            const yuvarlak = Math.random() < 0.35;
+            const boy = yuvarlak ? en : Math.max(4, (en * 0.5) | 0);
+            const sx = ((Math.random() * 46 - 23) | 0);
+            h += '<i style="left:' + sol + '%;background:' + renk + ';width:' + en + 'px;height:' + boy +
+                 'px;border-radius:' + (yuvarlak ? '50%' : '2px') + ';animation-delay:' + gecikme +
+                 's;animation-duration:' + sure + 's;--don:' + don + 'deg;--sx:' + sx + 'px"></i>';
+        }
+        kap.innerHTML = h;
+        (this.ekran() || document.body).appendChild(kap);
+        setTimeout(() => { if (kap.parentNode) kap.parentNode.removeChild(kap); }, 8000);
+    },
+
     /* ================= bitiş ================= */
     bitisCiz() {
+        const yonetici = this.state.rol === 'yonetici';
         this.ciz(
-            this.baslikHtml() +
-            '<div class="qz-kart">' +
-              '<div class="qz-bekle">🏆 اِنْتَهَتِ المُسابَقَة</div>' +
-              '<div class="qz-sira" id="qz-sira" style="margin-top:14px"></div>' +
-            '</div>' +
-            (this.state.rol === 'yonetici'
-                ? '<div class="qz-satir"><button class="qz-btn kirmizi" id="qz-kapat">Odayı Kapat</button></div>'
-                : '')
+            '<div class="qz-kart qz-final">' +
+              '<div class="qz-final-logo">🏆</div>' +
+              '<div class="qz-bekle" dir="rtl">اِنْتَهَتِ المُسابَقَة</div>' +
+              '<div class="qz-final-alt">Yarışma bitti!</div>' +
+              '<div id="qz-final-benim"></div>' +
+              '<ol class="qz-final-ol" id="qz-final-ol"></ol>' +
+              (yonetici
+                ? '<div class="qz-satir" style="margin-top:20px">' +
+                    '<button class="qz-btn kirmizi" id="qz-kapat">🚪 Odayı Kapat</button>' +
+                  '</div>' +
+                  '<div class="qz-kod-not" style="margin-top:8px">Odayı kapatınca katılanların ' +
+                  'ekranında “yarışma sona erdi” yazar. Geri (←) tuşu odayı kapatmaz.</div>'
+                : '<div class="qz-kod-not" style="margin-top:16px">Sıralama yukarıda; odayı kuran ' +
+                  'kişi odayı kapatana kadar bu ekran açık kalır.</div>') +
+            '</div>'
         );
         const k = document.getElementById('qz-kapat');
         if (k) k.addEventListener('click', () => this.kapatmayiSor());
+        this.finalYamala();
+        if (!this.state.finalKonfeti) {
+            this.state.finalKonfeti = true;
+            App.playSound('zafer');
+            this.konfetiPatlat();
+        }
+    },
+
+    /* Final tablosu: madalyalı podyum + katılımcıya kendi derecesi. */
+    finalYamala() {
+        const ol = document.getElementById('qz-final-ol');
+        if (!ol) return;
+        const P = this.puanKumul(1e9);
+        const puanOf = t => (t.puan != null ? t.puan : (P[t.id] || 0));
+        const sirali = (this.state.takimlar || []).slice().sort((a, b) => puanOf(b) - puanOf(a));
+        const madalya = ['🥇', '🥈', '🥉'];
+        ol.innerHTML = sirali.length
+            ? sirali.map((t, i) =>
+                '<li class="' + (i < 3 ? 'podyum' : '') + (i === 0 ? ' birinci' : '') +
+                    (t.id === this.state.takimId ? ' benim' : '') + '" style="--i:' + i + '">' +
+                  '<span class="qz-final-sira">' + (madalya[i] || (i + 1)) + '</span>' +
+                  '<span class="qz-final-ad">' + this.kacis(t.ad) + '</span>' +
+                  '<b>' + puanOf(t) + '</b>' +
+                '</li>').join('')
+            : '<li class="bos">Katılan yok.</li>';
+
+        const benim = document.getElementById('qz-final-benim');
+        if (benim && this.state.rol === 'takim') {
+            const yer = sirali.findIndex(t => t.id === this.state.takimId) + 1;
+            if (!yer) { benim.className = ''; benim.innerHTML = ''; return; }
+            benim.className = 'qz-final-benim' + (yer === 1 ? ' bir' : '');
+            benim.innerHTML =
+                '<div class="qz-fb-emoji">' + (yer === 1 ? '🎉' : '🏅') + '</div>' +
+                '<h4>' + (yer === 1 ? 'Tebrikler, birinci oldun! 🥇' : yer + '. oldun') + '</h4>' +
+                '<div class="qz-durum">Toplam puanın: <b>' + puanOf(sirali[yer - 1]) + '</b></div>';
+        }
     },
 
     /* ================= dinamik yamalar ================= */
     yamala() {
         const o = this.state.oda; if (!o) return;
         const takimlar = this.state.takimlar || [];
+
+        /* Ayrı ekranlar: sonuç sahnesi ve final tablosu kendi yamalarını ister. */
+        if (document.getElementById('qz-sonuc-ekran')) this.sonucYamala();
+        if (document.getElementById('qz-final-ol'))    this.finalYamala();
 
         /* Lobideki takım/kişi çipleri */
         const cipler = document.getElementById('qz-takimlar');
@@ -1800,6 +2121,20 @@ const Quiz = {
         const buSoru = (this.state.cevaplar || []).filter(c => c.index === o.index);
         if (sayi && this.state.rol === 'yonetici') {
             sayi.textContent = '✔ ' + buSoru.length + ' / ' + takimlar.length;
+        }
+
+        /* Herkes cevapladıysa: her cihazda kısa bir ezgi, yöneticide de
+           kısa bir gecikmeyle sonuç sahnesi açılır. */
+        if (o.faz === 'soru' && takimlar.length > 0 && buSoru.length >= takimlar.length &&
+            this.state.hepsiSesIndex !== o.index) {
+            this.state.hepsiSesIndex = o.index;
+            App.playSound('hepsiCevap');
+            if (this.state.rol === 'yonetici') {
+                setTimeout(() => {
+                    const s = this.state.oda;
+                    if (s && s.durum === 'oyun' && s.faz === 'soru' && s.index === o.index) this.sonucaGec();
+                }, 700);
+            }
         }
 
         /* Kendi cevabımı hatırla (sayfa yeniden çizilirse) */

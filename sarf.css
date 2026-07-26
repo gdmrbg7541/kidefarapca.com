@@ -843,3 +843,151 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
 /* ---- Askıya alınmış oturum varken rozet "devam ediyor" der ---- */
 .menu-connect.devam { box-shadow: 0 0 0 3px rgba(251, 191, 36, .55), 0 8px 22px rgba(124,58,237,.4); }
 .menu-connect.devam .mc-nokta { background: #fbbf24; box-shadow: 0 0 0 3px rgba(251,191,36,.35); }
+
+
+/* ==========================================================================
+   SORU SONUCU SAHNESİ  (bilgiyarismasivezinler.html'deki akışın karşılığı)
+   Üç sahne aynı ızgara gözünde durur; data-step değiştikçe biri belirir,
+   diğeri yukarı kayarak kaybolur.
+   ========================================================================== */
+.qz-sonuc-ekran { display: flex; flex-direction: column; width: 100%; }
+.qz-sonuc-baslik {
+    text-align: center; color: var(--secondary);
+    font-size: clamp(1.05rem, 3vw, 1.45rem); margin-bottom: 4px;
+}
+.qz-sonuc-sahne { display: grid; justify-items: center; align-items: start; margin-top: 14px; }
+.qz-sonuc-sahne > .qz-sahne-oge {
+    grid-area: 1 / 1; width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: #fff; border-radius: 24px;
+    padding: clamp(14px, 3vw, 26px);
+    box-shadow: 0 10px 30px rgba(44, 62, 80, .10);
+    opacity: 0; transform: translateY(26px); pointer-events: none;
+    transition: opacity .45s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+.qz-sonuc-ekran[data-step="0"] .oge-dogru,
+.qz-sonuc-ekran[data-step="1"] .oge-reveal,
+.qz-sonuc-ekran[data-step="2"] .oge-lider { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.qz-sonuc-ekran[data-step="1"] .oge-dogru,
+.qz-sonuc-ekran[data-step="2"] .oge-dogru,
+.qz-sonuc-ekran[data-step="2"] .oge-reveal { opacity: 0; transform: translateY(-60px); pointer-events: none; }
+.qz-sahne-baslik { color: var(--secondary); font-size: clamp(1.05rem, 3vw, 1.4rem); margin-bottom: 10px; }
+.qz-secenek.solgun { opacity: .45; }
+.qz-secenek .tik { flex: 0 0 auto; color: var(--success); font-size: 1.3em; }
+
+/* --- Sahne 2: kim ne dedi --- */
+.qz-rev-tablo { width: 100%; border-collapse: collapse; font-size: clamp(.85rem, 2.4vw, 1.05rem); }
+.qz-rev-tablo th {
+    text-align: left; padding: 8px 10px; color: var(--primary);
+    opacity: .6; font-size: .85em; border-bottom: 2px solid rgba(124,58,237,.15);
+}
+.qz-rev-tablo td { padding: 10px; border-bottom: 1px solid rgba(44,62,80,.08); }
+.qz-rev-tablo tr.dogru td { background: rgba(40,167,69,.10); }
+.qz-rev-tablo tr.yanlis td { background: rgba(220,53,69,.08); }
+.qz-rev-tablo tr.yok td { opacity: .6; }
+.qz-rev-tablo tr td:first-child { border-radius: 10px 0 0 10px; }
+.qz-rev-tablo tr td:last-child { border-radius: 0 10px 10px 0; }
+.qz-rev-harf {
+    display: inline-block; min-width: 1.7em; text-align: center;
+    background: rgba(124,58,237,.12); color: var(--secondary); border-radius: 8px; padding: 1px 4px;
+    font-family: var(--font-ar);
+}
+.qz-rev-metin { font-family: var(--font-ar); font-size: 1.35em; }
+.qz-rev-yok { opacity: .5; }
+.qz-sonuc-ekran[data-step="1"] .qz-rev-tablo tbody tr {
+    animation: qzRevGir .4s ease-out both; animation-delay: calc(var(--r) * .08s);
+}
+@keyframes qzRevGir { from { opacity: 0; transform: translateX(-14px); } }
+
+/* --- Sahne 3: puan durumu --- */
+.qz-lider-ol { list-style: none; padding: 0; width: 100%; max-width: 520px; margin: 0 auto; }
+.qz-lider-satir {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(124,58,237,.06); border: 2px solid transparent; border-radius: 16px;
+    padding: 12px 16px; margin-bottom: 9px; font-size: clamp(.95rem, 2.6vw, 1.2rem);
+}
+.qz-lider-satir .qz-lider-sira { min-width: 1.7em; text-align: center; opacity: .55; }
+.qz-lider-satir .qz-lider-ad { flex: 1 1 auto; }
+.qz-lider-satir b { color: var(--secondary); }
+.qz-lider-satir.benim { box-shadow: 0 0 0 2px rgba(124,58,237,.35); }
+.qz-lider-satir.bos { justify-content: center; opacity: .6; }
+.qz-ok { width: 1em; text-align: center; font-size: .8em; }
+.qz-ok.yukari { color: var(--success); }
+.qz-ok.asagi { color: var(--danger); }
+.qz-lider-satir.yukari { border-color: rgba(40,167,69,.55); background: rgba(40,167,69,.10); }
+.qz-lider-satir.asagi { border-color: rgba(220,53,69,.40); background: rgba(220,53,69,.07); }
+.qz-sonuc-ekran[data-step="2"] .qz-lider-satir.yukari { animation: qzYuksel .6s cubic-bezier(.22,1,.36,1) both; }
+.qz-sonuc-ekran[data-step="2"] .qz-lider-satir.asagi { animation: qzIn .6s cubic-bezier(.22,1,.36,1) both; }
+@keyframes qzYuksel { from { transform: translateY(26px); opacity: .4; } }
+@keyframes qzIn { from { transform: translateY(-26px); opacity: .4; } }
+
+/* --- Sahne göstergesi (üç çizgi) --- */
+.qz-sonuc-nokta { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+.qz-nokta {
+    width: 26px; height: 6px; border: none; border-radius: 3px; cursor: pointer;
+    background: rgba(124,58,237,.22); transition: width .3s ease, background .3s ease;
+}
+.qz-sonuc-ekran[data-step="0"] .qz-nokta[data-adim="0"],
+.qz-sonuc-ekran[data-step="1"] .qz-nokta[data-adim="1"],
+.qz-sonuc-ekran[data-step="2"] .qz-nokta[data-adim="2"] { background: var(--secondary); width: 46px; }
+
+/* Yönetici düğmeleri / katılımcı özeti son sahnede belirir. */
+.qz-sonuc-kontrol {
+    margin-top: 16px; text-align: center;
+    opacity: 0; transform: translateY(8px); pointer-events: none;
+    transition: opacity .4s ease, transform .4s ease;
+}
+.qz-sonuc-ekran[data-step="2"] .qz-sonuc-kontrol { opacity: 1; transform: none; pointer-events: auto; }
+
+/* ==========================================================================
+   FİNAL EKRANI — madalyalı podyum + konfeti
+   ========================================================================== */
+.qz-final { text-align: center; }
+.qz-final-logo { font-size: clamp(2.8rem, 9vw, 4.4rem); line-height: 1; margin-bottom: 4px; }
+.qz-final-alt { opacity: .7; font-size: clamp(.9rem, 2.5vw, 1.1rem); margin-top: 2px; }
+.qz-final-ol { list-style: none; padding: 0; width: 100%; max-width: 560px; margin: 18px auto 0; }
+.qz-final-ol li {
+    display: flex; align-items: center; gap: 14px; text-align: left;
+    background: #fff; border: 2px solid rgba(124,58,237,.16); border-radius: 18px;
+    padding: 14px 18px; margin-bottom: 10px;
+    box-shadow: 0 6px 16px rgba(44,62,80,.07);
+    opacity: 0; transform: translateY(18px) scale(.96);
+    animation: qzFinalGir .55s cubic-bezier(.2,1.3,.4,1) both;
+    animation-delay: calc(.15s + var(--i) * .18s);
+}
+@keyframes qzFinalGir { to { opacity: 1; transform: none; } }
+.qz-final-ol li.podyum { border-color: rgba(252,211,77,.75); background: #fffdf5; }
+.qz-final-ol li.benim { box-shadow: 0 0 0 3px rgba(124,58,237,.30), 0 6px 16px rgba(44,62,80,.07); }
+.qz-final-ol li.bos { justify-content: center; opacity: .6; }
+.qz-final-sira { flex: 0 0 auto; width: 1.9em; text-align: center; font-size: clamp(1.3rem, 4vw, 1.8rem); }
+.qz-final-ad { flex: 1 1 auto; font-size: clamp(1rem, 2.8vw, 1.3rem); }
+.qz-final-ol li b { flex: 0 0 auto; color: var(--secondary); font-size: clamp(1rem, 2.8vw, 1.3rem); }
+.qz-final-ol li.birinci {
+    border-color: #fbbf24;
+    background: linear-gradient(180deg, #fffbea, #fff6d6);
+    box-shadow: 0 10px 26px rgba(243,156,18,.26); padding: 20px;
+}
+.qz-final-ol li.birinci .qz-final-sira { font-size: clamp(1.8rem, 6vw, 2.6rem); }
+.qz-final-ol li.birinci .qz-final-ad { font-size: clamp(1.25rem, 4vw, 1.9rem); color: #b9770b; }
+.qz-final-ol li.birinci b { font-size: clamp(1.2rem, 3.6vw, 1.7rem); color: #f39c12; }
+
+.qz-final-benim {
+    margin-top: 16px; padding: 14px 18px; border-radius: 20px;
+    background: rgba(124,58,237,.07); display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+}
+.qz-final-benim.bir { background: linear-gradient(180deg, #fffbea, #fff6d6); }
+.qz-fb-emoji { font-size: clamp(2rem, 6vw, 2.8rem); line-height: 1; }
+.qz-final-benim h4 { color: var(--primary); font-size: clamp(1.05rem, 3vw, 1.35rem); }
+
+.qz-konfeti-kap { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 60; }
+.qz-konfeti-kap i {
+    position: absolute; top: -24px; display: block; opacity: 0; will-change: transform;
+    animation-name: qzKonfeti; animation-timing-function: cubic-bezier(.35,.05,.7,1);
+    animation-fill-mode: both;
+}
+@keyframes qzKonfeti {
+    0%   { opacity: 0; transform: translate3d(0, -10px, 0) rotate(0deg); }
+    8%   { opacity: 1; }
+    100% { opacity: .9; transform: translate3d(var(--sx), 105vh, 0) rotate(var(--don)); }
+}
