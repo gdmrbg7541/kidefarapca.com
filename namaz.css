@@ -1,0 +1,218 @@
+:root {
+            --bg: #f8faff;
+            --card-bg: #ffffff;
+            --primary: #2d3436;
+            --accent: #0984e3;
+            --success: #00b894;
+            --danger: #d63031;
+            --gold: #fdcb6e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: var(--primary);
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            height: 90vh;
+            margin: auto;
+            background: var(--card-bg);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-header {
+            display: flex;
+            background: #f1f2f6;
+            padding: 10px;
+            border-radius: 30px 30px 0 0;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            color: #636e72;
+        }
+
+        .nav-btn.active {
+            color: var(--accent);
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HİKAYE BÖLÜMÜ (SÜTUNSUZ TAM ORTALI) --- */
+        #story {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        #story.active {
+            display: flex !important;
+        }
+
+        .slide-text-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #slide-box {
+            font-size: 2.8rem;
+            line-height: 1.5;
+            color: #2d3436;
+            width: 100%;
+            display: block; /* Sütunlaşmayı engellemek için block yapıldı */
+        }
+
+        .fade-in {
+            animation: fadeInSlide 0.5s ease-in-out;
+        }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight { color: var(--accent); font-weight: 800; display: inline; }
+
+        /* --- ZAMAN PLANLAYICI --- */
+        .planner-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 40px;
+            height: 100%;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .act-card {
+            padding: 15px;
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .act-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #eee !important;
+            pointer-events: none;
+        }
+
+        .grid-24 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .hour-jeton {
+            background: #f1f2f6;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #b2bec3;
+        }
+
+        .hour-jeton.filled { color: white; transform: scale(1.02); }
+
+        /* --- LİSTELER --- */
+        .list-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-card {
+            background: #f8faff;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .info-card:hover { border-color: var(--accent); }
+
+        .answer, .meal {
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+            color: var(--success);
+            font-size: 1.1rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .footer-controls {
+            padding: 15px 40px;
+            background: #fff;
+            border-top: 2px solid #f1f2f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .stats-badge {
+            padding: 8px 20px;
+            background: #e17055;
+            color: white;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .btn-main {
+            padding: 12px 30px;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }

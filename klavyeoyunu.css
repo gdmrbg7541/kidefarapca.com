@@ -1,0 +1,319 @@
+html { font-size: clamp(12px, 1.2vw, 16px); }
+
+        :root {
+            --bg-start: #f7f9fc; --bg-end: #e8eef5; --primary-color: #5E81AC; --accent-color: #f7b733; --surface-color: #FFFFFF; --text-color: #2e3440; --text-light-color: #FFFFFF; --correct-color: #2ddc73; --incorrect-color: #f24c4c; --shadow-light: rgba(46, 52, 64, 0.07); --shadow-medium: rgba(46, 52, 64, 0.12); --border-radius-sm: 8px; --border-radius-md: 12px; --border-radius-lg: 16px;
+            --button-bg: var(--surface-color); --button-shadow: 0 3px #d8dee9; --button-hover-bg: #eceff4; --button-selected-bg: var(--primary-color); --button-selected-color: var(--text-light-color); --button-selected-shadow: 0 0 0 3px var(--accent-color);
+            --easy-color: #a3be8c; --medium-color: #ebcb8b; --hard-color: #bf616a;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+
+        body { font-family: 'Marhey', sans-serif; background-color: var(--bg-start); background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text-color); text-align: center; text-rendering: optimizeLegibility; }
+        button, input { font-family: inherit; }
+
+        #game-wrapper { width: 100%; height: 100%; position: relative; }
+
+        .screen { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; position: absolute; top: 0; left: 0; transition: opacity 0.5s; overflow-y: auto; padding: 20px; }
+        .screen.active { display: flex; }
+
+        /* --- Başlangıç Ekranı --- */
+        #start-screen { gap: 25px; justify-content: center; }
+        .start-title { font-size: clamp(2.2rem, 5vw, 3rem); color: var(--text-color); margin-bottom: 10px; }
+        .difficulty-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; width: 100%; max-width: 500px; margin-bottom: 20px; }
+        .difficulty-button { background-color: var(--button-bg); border: 2px solid transparent; border-radius: var(--border-radius-md); padding: 15px 20px; font-size: 1.3rem; font-weight: bold; color: var(--text-color); cursor: pointer; transition: all 0.2s ease; box-shadow: var(--button-shadow); }
+        .difficulty-button:hover { background-color: var(--button-hover-bg); transform: translateY(-1px); box-shadow: 0 4px #cdd3db; }
+        .difficulty-button:active { transform: translateY(1px); box-shadow: 0 2px #d8dee9; }
+        .difficulty-button.selected { transform: none; }
+        .difficulty-button[data-difficulty="easy"].selected { background-color: var(--easy-color); color: var(--text-light-color); border-color: darken(var(--easy-color), 10%); box-shadow: 0 0 10px rgba(163, 190, 140, 0.5); }
+        .difficulty-button[data-difficulty="medium"].selected { background-color: var(--medium-color); color: var(--text-color); border-color: darken(var(--medium-color), 10%); box-shadow: 0 0 10px rgba(235, 203, 139, 0.5); }
+        .difficulty-button[data-difficulty="hard"].selected { background-color: var(--hard-color); color: var(--text-light-color); border-color: darken(var(--hard-color), 10%); box-shadow: 0 0 10px rgba(191, 97, 106, 0.5); }
+
+        #start-game-btn { margin-top: 15px; font-size: 1.6rem; font-weight: bold; padding: 12px 30px; border-radius: var(--border-radius-md); border:none; width: 100%; max-width: 500px;}
+        #start-game-btn:disabled { background-color: #bdc3c7; color: #7f8c8d; opacity: 0.7; box-shadow: none; cursor: not-allowed; transform: none; }
+        #start-game-btn:not(:disabled) { background-color: var(--correct-color); color: white; animation: button-glow 1.5s infinite ease-in-out; cursor: pointer; box-shadow: 0 4px 15px rgba(45, 220, 115, 0.4); }
+
+        /* --- Oyun Ekranı --- */
+        #typing-screen { justify-content: center; gap: 15px; padding: 15px 15px 20px 15px; }
+        .header-navigation { position: absolute; top: 10px; left: 10px; z-index: 200; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 5px; }
+        .back-btn svg { width: 35px; height: 35px; fill: var(--text-color); transition: all 0.2s; opacity: 0.8; filter: drop-shadow(0 1px 2px var(--shadow-light)); }
+        .back-btn:hover svg { opacity: 1; transform: scale(1.1); }
+        .hidden { display: none !important; }
+
+        #typing-main-container { display: flex; flex-direction: column; width: 100%; gap: 15px; align-items: center; }
+        #typing-game-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; flex-grow: 0; justify-content: center; }
+        #typing-interactive-elements { width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 10px; }
+        .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(46, 52, 64, 0.85); z-index: 200; display: none; justify-content: center; align-items: center; font-size: clamp(8rem, 30vw, 15rem); font-weight: bold; color: var(--accent-color); text-shadow: 0 0 15px rgba(247, 183, 51, 0.5);}
+        .typing-stats { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 1.6rem; gap: 20px; flex-shrink: 0; }
+        .stat-item { position: relative; display: flex; align-items: center; gap: 8px; background-color: var(--surface-color); padding: 6px 12px; border-radius: var(--border-radius-md); transition: all 0.3s; box-shadow: 0 2px 8px var(--shadow-light); }
+        .score-effects-container-typing { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; overflow: visible; }
+        .typing-score-effect { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 2.2rem; font-weight: bold; color: var(--correct-color); text-shadow: 1px 1px 2px rgba(255,255,255,0.7); animation: pop-up-and-fade 1.5s ease-out forwards; }
+        @keyframes pop-up-and-fade { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 1; } 50% { transform: translate(-50%, -50px) scale(1.1); opacity: 1; } 100% { transform: translate(-50%, -70px) scale(0.8); opacity: 0; } }
+        .stat-item svg { width: 28px; height: 28px; fill: var(--primary-color); }
+        
+        .progress-container { width: 100%; text-align: center; margin-bottom: 10px; flex-shrink: 0;}
+        .word-progress-bar {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(0, 1fr);
+            column-gap: 10px;
+            width: 100%;
+            max-width: 800px;
+            padding: 5px 10px;
+            justify-content: stretch;
+            direction: rtl;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            border-radius: var(--border-radius-sm);
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        .word-progress-item {
+             font-family: 'Harmattan', sans-serif !important;
+             font-size: 1.2rem;
+             padding: 4px 8px;
+             border-radius: var(--border-radius-sm);
+             background-color: #e5e9f0;
+             color: #6c757d;
+             white-space: nowrap;
+             transition: all 0.3s ease;
+             border: 1px solid transparent;
+        }
+        .word-progress-item.active { background-color: var(--accent-color); color: var(--text-color); border-color: darken(var(--accent-color), 10%); font-weight: bold;}
+        .word-progress-item.correct { background-color: var(--correct-color); color: var(--text-light-color); border-color: darken(var(--correct-color), 10%); }
+        .word-progress-item.incorrect { background-color: var(--incorrect-color); color: var(--text-light-color); border-color: darken(var(--incorrect-color), 10%); }
+
+        #typing-prompt { direction: rtl; font-family: 'Harmattan', sans-serif !important; font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: bold; background-color: var(--surface-color); border-radius: var(--border-radius-lg); min-height: 120px; display: flex; align-items: center; justify-content: center; width: 100%; box-shadow: 0 4px 15px var(--shadow-light); padding: 10px; flex-shrink: 0; line-height: 1.2;}
+        .typing-input-area { display: flex; align-items: stretch; gap: 10px; width: 100%; flex-direction: row; flex-shrink: 0; }
+        
+        #typing-input { 
+            font-size: 2rem; 
+            flex-grow: 1; 
+            padding: 12px; 
+            border-radius: var(--border-radius-md); 
+            border: 2px solid #d8dee9; 
+            background: var(--surface-color); 
+            color: var(--text-color); 
+            text-align: right; 
+            direction: rtl; 
+            transition: box-shadow 0.2s, border-color 0.2s; 
+            font-family: 'Harmattan', sans-serif !important; 
+            min-width: 0;
+            /* --- DEĞİŞİKLİK EKLENDİ --- */
+            display: none !important;
+        }
+        
+        #typing-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(94, 129, 172, 0.2); }
+        #typing-input:disabled { background-color: #eceff4; cursor: not-allowed; }
+        #typing-input.correct-input { border-color: var(--correct-color); }
+        #typing-input.incorrect-input { border-color: var(--incorrect-color); animation: shake 0.5s; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        
+        #typing-submit-btn {
+            border: none; background-color: var(--correct-color); color: var(--text-light-color); border-radius: var(--border-radius-md); padding: 0; width: 80px; flex-shrink: 0; cursor: pointer; transition: all 0.2s; 
+            box-shadow: 0 4px #28b05d; /* 'darken' fonksiyonu düzeltildi */
+            display: flex; align-items: center; justify-content: center;
+        }
+        #typing-submit-btn:hover {
+            background-color: #2ad368; /* 'darken' fonksiyonu düzeltildi */
+            transform: translateY(-1px); 
+            box-shadow: 0 5px #28b05d; /* 'darken' fonksiyonu düzeltildi */
+        }
+        #typing-submit-btn:active {
+            /* Basılma anındaki renk değişimi kaldırıldı */
+            transform: translateY(1px); 
+            box-shadow: 0 2px #28b05d; /* 'darken' fonksiyonu düzeltildi */
+        }
+
+        #typing-submit-btn svg { width: 30px; height: 30px; fill: white; pointer-events: none; }
+        
+        #virtual-keyboard { direction: rtl; padding: 10px; display: flex; flex-direction: column; gap: 6px; background-color: rgba(0,0,0,0.03); border-radius: var(--border-radius-md); width: 100%; max-width: 800px; transition: all 0.3s; flex-shrink: 0; margin-top: 15px; }
+        .keyboard-row { display: flex; justify-content: center; gap: 6px; }
+        .keyboard-key { font-family: 'Harmattan'; color: var(--text-color); border: none; border-radius: var(--border-radius-sm); font-size: clamp(1.2rem, 3vw, 1.8rem); padding: clamp(6px, 1.5vh, 10px) clamp(3px, 1vw, 6px); cursor: pointer; transition: all 0.1s ease; flex: 1; display: flex; justify-content: center; align-items: center; min-height: 40px; }
+        .keyboard-key:active { transform: translateY(2px); }
+        .keyboard-key.backspace { background-color: #e5e9f0; flex-grow: 1.5;}
+        .keyboard-key svg { width: clamp(18px, 4vw, 22px); height: clamp(18px, 4vw, 22px); fill: var(--text-color); pointer-events: none;}
+        .keyboard-key.space-bar { position: relative; background-color: #e5e9f0; flex-grow: 6;}
+        
+        #typing-prompt.start-mode {
+             background-color: var(--correct-color); color: var(--text-light-color); cursor: pointer;
+             animation: pulse-start 2.5s infinite ease-in-out;
+             font-family: 'Marhey', sans-serif !important; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem);
+         }
+        @keyframes pulse-start {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px var(--shadow-light); opacity: 0.95; }
+            50% { transform: scale(1.03); box-shadow: 0 6px 20px rgba(45, 220, 115, 0.3); opacity: 1; }
+        }
+
+        /* --- Sonuç Ekranı --- */
+        .results-screen { justify-content: center; gap: 20px; padding: 20px 15px 40px 15px; }
+        .results-screen h2 { font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 15px; }
+        .results-stats { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; font-size: 1.2rem; }
+        .results-stat-item { background-color: var(--surface-color); padding: 8px 12px; border-radius: var(--border-radius-md); box-shadow: var(--shadow-light); }
+        .results-stat-item strong { color: var(--primary-color); margin-left: 5px; }
+        
+        #results-details { text-align: left; width: 100%; max-width: 700px; max-height: 40vh; overflow-y: auto; background: var(--surface-color); padding: 20px; border-radius: var(--border-radius-md); box-shadow: var(--shadow-light); margin-bottom: 20px;}
+        #results-details h3 { font-size: 1.8rem; margin-bottom: 15px; color: var(--incorrect-color); }
+        #results-details ul { list-style: none; padding: 0; margin: 0; }
+        #results-details li {
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            line-height: 1.8;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        #results-details li:last-child { border-bottom: none; }
+        #results-details .prompt { font-weight: bold; direction: rtl; display: inline-block; margin-right: 5px; font-size: 1.7rem; }
+        #results-details .user-answer { font-size: 1.6rem; color: var(--incorrect-color); text-decoration: line-through; background-color: rgba(240, 128, 128, 0.2); padding: 2px 5px; border-radius: var(--border-radius-sm); direction: rtl; display: inline-block; margin: 0 3px;}
+        #results-details .correct-answer { font-size: 1.6rem; color: var(--correct-color); background-color: rgba(143, 188, 143, 0.2); padding: 2px 5px; border-radius: var(--border-radius-sm); direction: rtl; display: inline-block; margin-left: 3px;}
+        #results-details .turkish-translation {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            display: block;
+            margin-top: 5px;
+            margin-left: 5px;
+            font-family: 'Marhey', sans-serif !important;
+        }
+
+        .win-buttons { display: flex; gap: 25px; margin-top: 10px; }
+        .win-buttons .icon-btn { background-color: transparent; border: none; cursor: pointer; transition: all 0.3s ease; padding: 5px;}
+        .win-buttons .icon-btn:hover { transform: scale(1.1); }
+        .win-buttons .icon-btn svg { width: 50px; height: 50px; fill: var(--primary-color); }
+        .win-buttons .icon-btn:hover svg { fill: var(--accent-color); }
+
+        /* Orientation warning stilleri */
+        #orientation-warning { display: none; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-start); color: var(--text-color); text-align: center; padding: 20px; z-index: 9999; }
+        #orientation-warning svg { width: 80px; height: 80px; fill: var(--primary-color); margin-bottom: 20px; animation: rotate-anim 2s infinite ease-in-out; }
+        #orientation-warning h2 { font-size: 2rem; }
+        @keyframes rotate-anim { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
+        @keyframes button-glow { 0%, 100% { box-shadow: 0 0 8px rgba(45, 220, 115, 0.5); } 50% { box-shadow: 0 0 20px rgba(45, 220, 115, 0.8); } }
+
+        /* Media Queries */
+         @media (max-height: 600px) and (orientation: landscape){
+             #typing-screen { justify-content: center; }
+             #virtual-keyboard { max-width: 700px; }
+             .keyboard-key { font-size: clamp(1rem, 2.5vw, 1.6rem); padding: clamp(4px, 1.2vh, 8px) clamp(2px, 0.8vw, 5px);}
+         }
+         @media (max-height: 500px) and (orientation: landscape){
+            #typing-screen { justify-content: flex-start; padding: 5px; gap: 5px;}
+             #typing-main-container { gap: 5px;}
+             #typing-game-area { gap: 5px;}
+             #typing-interactive-elements { gap: 5px; margin-top: 5px;}
+            .typing-stats { font-size: 1rem; gap: 8px;}
+            .stat-item { padding: 3px 6px; gap: 4px; }
+            .stat-item svg { width: 18px; height: 18px;}
+            .word-progress-bar {
+                display: grid;
+                grid-auto-flow: column;
+                grid-auto-columns: minmax(0, 1fr);
+                column-gap: 10px;
+                width: 100%;
+                max-width: 800px;
+                padding: 5px 10px;
+                justify-content: stretch;
+                direction: rtl;
+                margin-bottom: 10px;
+                flex-shrink: 0;
+                border-radius: var(--border-radius-sm);
+                background-color: rgba(0,0,0,0.02);
+            }
+            .word-progress-item { font-size: 1rem; padding: 2px 4px; }
+            #typing-prompt { font-size: clamp(1.8rem, 5vw, 3rem); min-height: 60px; padding: 5px;}
+            #typing-input { font-size: 1.4rem; padding: 6px; }
+            #typing-submit-btn { width: 50px; }
+            #typing-submit-btn svg { width: 20px; height: 20px; }
+            #virtual-keyboard { gap: 3px; padding: 4px; border-radius: var(--border-radius-sm); margin-top: 5px;}
+            .keyboard-row { gap: 3px; }
+            .keyboard-key { font-size: clamp(0.9rem, 2vw, 1.3rem); padding: clamp(3px, 1vh, 6px) clamp(2px, 0.8vw, 4px); min-height: 25px;}
+            .keyboard-key svg { width: clamp(14px, 2.5vw, 18px); height: clamp(14px, 2.5vw, 18px);}
+         }
+        @media (max-width: 600px) {
+            .start-title { font-size: 2rem; }
+            .difficulty-button { font-size: 1.1rem; padding: 12px 15px;}
+            #start-game-btn { font-size: 1.4rem; padding: 10px 20px;}
+            #typing-screen { gap: 10px; padding: 10px; justify-content: flex-start; }
+             #typing-main-container { gap: 10px;}
+             #typing-game-area { gap: 10px; justify-content: flex-start; }
+            #typing-interactive-elements { gap: 10px; margin-top: 5px;}
+            .typing-stats { font-size: 1.3rem; gap: 10px;}
+            .stat-item { padding: 5px 10px; gap: 5px; }
+            .stat-item svg { width: 24px; height: 24px; }
+            .word-progress-item { font-size: 1rem; }
+            #typing-prompt { font-size: clamp(2rem, 6vw, 3.5rem); min-height: 100px; }
+            #typing-input { font-size: 1.8rem; padding: 10px; }
+            #typing-submit-btn { width: 70px; }
+            #typing-submit-btn svg { width: 28px; height: 28px; }
+            #virtual-keyboard { gap: 5px; padding: 8px; border-radius: var(--border-radius-sm); margin-top: 10px;}
+            .keyboard-row { gap: 5px; }
+            .keyboard-key { font-size: clamp(1.1rem, 3vw, 1.6rem); padding: clamp(5px, 1.2vh, 9px) clamp(3px, 1vw, 5px); min-height: 35px;}
+            .keyboard-key svg { width: clamp(17px, 3.5vw, 21px); height: clamp(17px, 3.5vw, 21px);}
+            .results-screen h2 { font-size: 2rem; }
+            .results-stats { font-size: 1.1rem; gap: 10px; }
+            #results-details { padding: 15px; max-height: 35vh;}
+            #results-details h3 { font-size: 1.5rem; }
+            #results-details li { font-size: 1.4rem; }
+            .win-buttons { gap: 20px; }
+            .win-buttons .icon-btn svg { width: 44px; height: 44px; }
+        }
+
+        /* Font Aileleri */
+        html, body { font-family: 'Marhey', sans-serif !important; }
+        #typing-prompt, .status-word, .keyboard-key, #results-details .prompt, #results-details .user-answer, #results-details .correct-answer, .word-progress-item, #typing-input, .typing-input-proxy {
+            font-family: 'Harmattan', sans-serif !important;
+        }
+        button, .start-title, h2, h3, label, .stat-item span, .results-stats, .progress-label, #results-details .turkish-translation {
+            font-family: 'Marhey', sans-serif !important;
+        }
+
+
+@media (max-width: 600px){
+  .word-progress-bar{
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    column-gap: 8px;
+    row-gap: 8px;
+    width: 100%;
+  }
+  .word-progress-item{
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    justify-self: center;
+  }
+}
+
+
+/* Mobile: keep disabled input visually normal */
+@media (hover: none) and (pointer: coarse){
+  #typing-input:disabled {
+    background: var(--surface-color);
+    color: var(--text-color);
+    opacity: 1;
+    cursor: default;
+    -webkit-text-fill-color: var(--text-color);
+  }
+  #typing-input { caret-color: transparent; }
+}
+
+
+/* Proxy display for mobile (prevents OS keyboard by hiding the actual input) */
+.typing-input-proxy{
+  /* --- DEĞİŞİKLİK YAPILDI --- */
+  display:block;
+  font-size: 2rem;
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  border: 2px solid #d8dee9;
+  background: var(--surface-color);
+  color: var(--text-color);
+  text-align: right;
+  direction: rtl;
+  min-height: 56px;
+  box-shadow: 0 0 0 3px rgba(94, 129, 172, 0); /* no focus ring */
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex-grow: 1;
+  min-width: 0;
+}
+@media (hover:none) and (pointer:coarse){
+  /* --- DEĞİŞİKLİKLER SİLİNDİ (Artık global) --- */
+}

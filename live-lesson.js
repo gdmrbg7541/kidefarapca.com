@@ -8,6 +8,37 @@
    - Bağlantı durumu göstergesi
    - beforeunload dinleyici sızıntısı düzeltildi
    ========================================== */
+/* ==== Canlı ders saat ücreti: 15 USD -> TL (canlı kur, otomatik) ==== */
+window.LESSON_USD = 15;
+window.LESSON_HOURLY_TL = 720; // kur çekilene kadar yedek değer
+window.hourlyLessonTL = function(){ return window.LESSON_HOURLY_TL || 720; };
+(function(){
+  function applyRate(rate){
+    if(!rate || !isFinite(rate) || rate <= 0) return;
+    window.USD_TRY_RATE = rate;
+    window.LESSON_HOURLY_TL = Math.round(window.LESSON_USD * rate);
+    try{
+      if(window.appState && Array.isArray(appState.selectedOnlinePackages)){
+        var i = appState.selectedOnlinePackages.findIndex(function(x){return x.id===100;});
+        if(i>-1) appState.selectedOnlinePackages[i].price = (appState.customLessonCount||0) * window.LESSON_HOURLY_TL;
+      }
+      if(typeof renderOnlinePackages==='function') renderOnlinePackages();
+      if(typeof updateCustomLessonTotal==='function') updateCustomLessonTotal();
+    }catch(e){}
+  }
+  function fetchRate(){
+    fetch('https://open.er-api.com/v6/latest/USD').then(function(r){return r.json();})
+      .then(function(d){ if(d && d.rates && d.rates.TRY) applyRate(d.rates.TRY); })
+      .catch(function(){
+        fetch('https://api.exchangerate.host/latest?base=USD&symbols=TRY').then(function(r){return r.json();})
+          .then(function(d){ if(d && d.rates && d.rates.TRY) applyRate(d.rates.TRY); })
+          .catch(function(){});
+      });
+  }
+  fetchRate();
+  setInterval(fetchRate, 30*60*1000); // sayfa açıkken her 30 dk yenile
+})();
+
 let peerConnection = null;
 
 // --- Bağlantı durum değişkenleri ---
@@ -344,7 +375,7 @@ function renderOnlinePackages() {
     // 1. ÖZEL DERS SEÇENEĞİ (SABİT OLARAK EN ÜSTTE)
     const isCustomSelected = appState.selectedOnlinePackages.find(x => x.id === 100);
     const customCount = appState.customLessonCount || 0;
-    const customPrice = customCount * 720;
+    const customPrice = customCount * window.hourlyLessonTL();
     const customTopic = appState.customLessonTopic || '';
 
     html += `
@@ -395,7 +426,7 @@ window.changeCustomLessonCount = function(delta) {
     appState.customLessonCount = count;
 
     document.getElementById('custom-lesson-count').innerText = count;
-    document.getElementById('custom-lesson-price').innerText = count * 720;
+    document.getElementById('custom-lesson-price').innerText = count * window.hourlyLessonTL();
 
     // Eğer paket seçiliyse, sepet fiyatını güncelle
     const index = appState.selectedOnlinePackages.findIndex(x => x.id === 100);
@@ -405,7 +436,7 @@ window.changeCustomLessonCount = function(delta) {
             appState.selectedOnlinePackages.splice(index, 1);
             renderOnlinePackages();
         } else {
-            appState.selectedOnlinePackages[index].price = count * 720;
+            appState.selectedOnlinePackages[index].price = count * window.hourlyLessonTL();
             appState.selectedOnlinePackages[index].hours = `${count} Saat Özel Ders`;
             appState.selectedOnlinePackages[index].name = `Özel Ders: ${appState.customLessonTopic || 'Belirtilmedi'}`;
         }
@@ -445,7 +476,7 @@ window.selectCustomOnlinePackage = function(el) {
         appState.selectedOnlinePackages.push({
             id: 100,
             name: `Özel Ders: ${topic}`,
-            price: count * 720,
+            price: count * window.hourlyLessonTL(),
             hours: `${count} Saat Özel Ders`,
             desc: "İsteğe özel birebir canlı ders",
             isCustom: true
