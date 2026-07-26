@@ -1,0 +1,817 @@
+h1, h2, h3, h4, h5, h6, strong, b { font-weight: normal !important; }
+
+@font-face {
+    font-family: 'Arakom';
+    src: url('arakom.ttf') format('truetype'),
+         url('ARAKOM.TTF') format('truetype'),
+         url('Arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --primary: #2c3e50;
+    --secondary: #7c3aed;
+    --accent: #2980b9;
+    --success: #28a745;
+    --danger: #dc3545;
+    --text-main: #34495e;
+    --font-ar: 'Arakom', 'Markazi Text', 'Tahoma', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+body {
+    font-family: var(--font-ar);
+    background-color: #fbfbfd;
+    background-image:
+        radial-gradient(circle at 8% 12%, rgba(124, 58, 237, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 92% 15%, rgba(41, 128, 185, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 88%, rgba(124, 58, 237, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 10% 90%, rgba(41, 128, 185, 0.08) 0%, transparent 45%);
+    background-attachment: fixed;
+    color: var(--text-main);
+    position: relative;
+}
+
+/* --- Arka plan uçuşan emojiler --- */
+.floating-emojis {
+    position: fixed; inset: 0; width: 100vw; height: 100dvh;
+    pointer-events: none; z-index: -2; overflow: hidden;
+}
+.floating-emojis span {
+    position: absolute; opacity: 0.18;
+    animation: float ease-in-out infinite alternate;
+}
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(-18px) rotate(8deg) scale(1.05); }
+}
+.fe-1 { top:6%; left:5%; font-size:clamp(2rem,6vw,4.5rem); animation-duration:13s; }
+.fe-2 { top:10%; right:6%; font-size:clamp(2.5rem,7vw,5.5rem); animation-duration:16s; animation-delay:-3s; }
+.fe-3 { top:80%; left:8%; font-size:clamp(2.2rem,6vw,4.8rem); animation-duration:14s; animation-delay:-6s; }
+.fe-4 { top:82%; right:8%; font-size:clamp(2rem,5vw,4rem); animation-duration:17s; animation-delay:-2s; }
+.fe-5 { top:42%; left:3%; font-size:clamp(1.8rem,5vw,3.8rem); animation-duration:15s; animation-delay:-8s; }
+.fe-6 { top:45%; right:3%; font-size:clamp(1.8rem,5vw,3.8rem); animation-duration:12s; animation-delay:-4s; }
+
+/* --- Ekran (screen) sistemi --- */
+.screen {
+    display: none; position: absolute; inset: 0; width: 100%; height: 100dvh;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 2vh 2vw; overflow-y: auto;
+}
+.screen.active { display: flex; }
+
+/* --- Geri butonu (ortak) --- */
+.back-btn {
+    position: fixed; top: 16px; left: 16px; z-index: 500;
+    width: clamp(38px, 8vw, 52px); height: clamp(38px, 8vw, 52px);
+    background: rgba(255,255,255,0.9); border: 2px solid var(--primary);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--primary); transition: all .25s ease;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.back-btn:hover { background: var(--primary); color: #fff; transform: scale(1.08); }
+.back-btn svg { width: 55%; height: 55%; fill: currentColor; }
+
+/* --- Üst ilerleme göstergesi (ortak) --- */
+.progress-pill {
+    position: fixed; top: 16px; right: 16px; z-index: 500;
+    background: rgba(255,255,255,0.92); border: 2px solid var(--accent);
+    color: var(--accent); border-radius: 30px;
+    padding: 8px 20px; font-size: clamp(1rem, 3vw, 1.4rem);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* ============ GİRİŞ (MENU) EKRANI ============ */
+.menu-wrap {
+    width: 100%; max-width: 1000px; display: flex; flex-direction: column;
+    align-items: center; gap: clamp(20px, 4vh, 48px); z-index: 10;
+}
+.menu-header {
+    text-align: center; background: rgba(255,255,255,0.85); backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px); padding: clamp(16px,4vw,34px) clamp(20px,6vw,60px);
+    border-radius: 36px; border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+.menu-badge {
+    display: inline-block; background: linear-gradient(135deg, var(--secondary), #a78bfa);
+    color: #fff; padding: 8px clamp(18px,4vw,34px); border-radius: 26px;
+    font-size: clamp(1.1rem, 3vw, 1.7rem); margin-bottom: 18px;
+    box-shadow: 0 4px 15px rgba(124,58,237,0.35);
+}
+.menu-header h1 { font-size: clamp(2rem, 6vw, 3.6rem); color: var(--primary); direction: rtl; }
+.menu-header p { font-size: clamp(1rem, 3vw, 1.4rem); opacity: .75; margin-top: 6px; }
+
+/* Başlık satırı: başlık kutusu ortada kalır, bağlantı rozeti mutlak konumla
+   satırın sağ ucuna oturur ve dikeyde başlıkla aynı hizada durur. */
+.menu-top {
+    position: relative; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+}
+/* Bağlantı rozeti — bilerek oyun kartlarına benzemez: küçük, hap biçimli,
+   dolu mor gradyan, beyaz yazı ve yanıp sönen "canlı" noktası var. */
+.menu-connect {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    display: inline-flex; align-items: center; gap: 9px; direction: rtl;
+    font-family: var(--font-ar); cursor: pointer; white-space: nowrap;
+    background: linear-gradient(135deg, var(--secondary), #a78bfa);
+    color: #fff; border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 999px; padding: 7px clamp(13px, 2vw, 18px);
+    font-size: clamp(0.95rem, 2.2vw, 1.25rem); line-height: 1;
+    box-shadow: 0 6px 18px rgba(124,58,237,0.35);
+    transition: transform .25s ease, box-shadow .25s ease; z-index: 12;
+}
+.menu-connect:hover { transform: translateY(-50%) scale(1.07); box-shadow: 0 10px 26px rgba(124,58,237,0.5); }
+.menu-connect .mc-ikon { font-size: 1.15em; }
+.menu-connect .mc-nokta {
+    width: 9px; height: 9px; border-radius: 50%; background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74,222,128,0.35); animation: mcNabiz 1.7s ease-in-out infinite;
+}
+@keyframes mcNabiz { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+
+/* Izgarada yine üç oyun kartı var: tek esnek satır. */
+.menu-grid {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: clamp(14px, 3vw, 30px); width: 100%;
+}
+.menu-card {
+    position: relative; overflow: hidden; background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 2px solid rgba(255,255,255,1); border-radius: clamp(20px,4vw,30px);
+    padding: clamp(16px, 4vw, 30px); text-align: center; cursor: pointer;
+    color: var(--primary); display: flex; flex-direction: column; align-items: center;
+    justify-content: center; box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+    transition: all .35s cubic-bezier(.25,.8,.25,1);
+    flex: 1 1 210px; max-width: 300px; min-height: 190px;
+}
+.menu-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 40px rgba(124,58,237,0.18); border-color: rgba(124,58,237,0.4); }
+.menu-card .icon-circle {
+    width: clamp(50px, 10vw, 78px); height: clamp(50px, 10vw, 78px);
+    background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.5));
+    border: 2px solid rgba(255,255,255,1); border-radius: 20px; display: flex;
+    align-items: center; justify-content: center; margin-bottom: 14px;
+    font-size: clamp(1.7rem, 5vw, 2.8rem); box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.menu-card h2 { font-size: clamp(1.15rem, 3.2vw, 1.55rem); direction: rtl; line-height: 1.35; }
+.menu-card p { font-size: clamp(.8rem, 2.2vw, 1rem); opacity: .7; margin-top: 6px; }
+
+/* ============ ORTAK: bitiş / kutlama katmanı ============ */
+.done-overlay {
+    position: fixed; inset: 0; background: rgba(44,62,80,0.55); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; z-index: 900;
+}
+.done-overlay.show { display: flex; }
+.done-card {
+    background: #fff; border-radius: 28px; padding: clamp(24px,5vw,46px);
+    text-align: center; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.done-card .emoji { font-size: clamp(3rem, 8vw, 5rem); }
+.done-card h2 { font-size: clamp(1.4rem, 4vw, 2.1rem); color: var(--primary); direction: rtl; }
+.done-buttons { display: flex; gap: 14px; margin-top: 6px; }
+.done-buttons button {
+    font-family: var(--font-ar); border: none; border-radius: 16px; padding: 12px 26px;
+    font-size: clamp(1rem, 2.6vw, 1.3rem); cursor: pointer; transition: all .2s ease;
+}
+.btn-primary { background: var(--secondary); color: #fff; }
+.btn-primary:hover { background: #6829d6; transform: translateY(-2px); }
+.btn-secondary { background: #eef0f3; color: var(--primary); }
+.btn-secondary:hover { background: #dfe3e8; }
+
+/* Dar ekranda başlık kutusu satırın tamamını kaplar; rozet mutlak kalsaydı
+   üstüne binerdi. Bu yüzden akışa alınır ve başlığın üstünde sağa yaslanır. */
+@media (max-width: 700px) {
+    /* column-reverse: rozet DOM'da başlıktan sonra ama ekranda üstünde kalsın. */
+    .menu-top { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
+    .menu-connect { position: static; transform: none; align-self: flex-end; }
+    .menu-connect:hover { transform: scale(1.06); }
+}
+
+@media (max-width: 480px) {
+    .menu-card { flex: 1 1 100%; max-width: 100%; min-height: 100px; flex-direction: row; gap: 14px; text-align: right; justify-content: flex-start; padding: 14px 18px; }
+    .menu-card .icon-circle { margin-bottom: 0; width: 50px; height: 50px; font-size: 1.6rem; }
+}
+
+/* ============ OYUN 1: KÖKTEN KALIBA ============ */
+.g1-wrap { display: flex; flex-direction: column; align-items: center; z-index: 10; width: 100%; padding-top: clamp(0px, calc(25vw - 100px), 190px); }
+.g1-title {
+    position: fixed; top: 16px; left: 70px; right: 145px;
+    min-height: clamp(38px, 8vw, 52px); display: flex; align-items: center; justify-content: center;
+    direction: rtl; text-align: center; color: var(--primary);
+    z-index: 8; pointer-events: none;
+}
+.g1-title { font-size: clamp(1.1rem, 3.6vw, 2.1rem); margin-bottom: 0; }
+
+/* ---------- OYUN 1: ÜSTTEKİ KÖK SEÇİM ŞERİDİ (revizyon 23) ----------
+   Oyun artık hiçbir kök seçili DEĞİLKEN açılıyor. Beş kök burada TEK SATIR
+   hâlinde ve RTL (sağdan sola) sırayla duruyor; bir köke basılınca hem
+   "تَصْريفُ الفِعْل" penceresi hem de sürükle-bırak tahtası etkinleşiyor.
+   Şerit .g1-wrap'in içinde akışta durduğu için sağ üstteki sabit çekim
+   düğmesiyle çakışmasın diye .g1-wrap'in padding-top'u 186px'e çıkarıldı. */
+.g1-root-bar {
+    display: flex; flex-direction: row; flex-wrap: nowrap; direction: rtl;
+    justify-content: center; align-items: center;
+    gap: clamp(5px, 1.2vw, 14px); width: 100%; padding: 0 6px;
+    margin-bottom: clamp(12px, 2.4vw, 26px);
+}
+.g1-root-bar-chip {
+    flex: 0 0 auto; cursor: pointer; user-select: none; direction: rtl; white-space: nowrap;
+    padding: clamp(5px, 1.1vw, 11px) clamp(9px, 1.9vw, 22px); border-radius: 999px;
+    border: 3px solid var(--root-line, rgba(124,58,237,.35));
+    background: var(--root-fill, rgba(255,255,255,.75));
+    color: var(--root-solid, var(--primary));
+    font-size: clamp(.9rem, 2.9vw, 1.9rem); line-height: 1.25;
+    transition: transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease;
+}
+.g1-root-bar-chip:hover { transform: translateY(-2px); border-color: var(--root-solid, var(--secondary)); }
+.g1-root-bar-chip.active {
+    background: var(--root-solid, var(--secondary));
+    border-color: var(--root-solid, var(--secondary));
+    color: #fff; transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+.g1-root-bar-chip.done { opacity: .5; }
+.g1-root-bar-chip.done::after { content: ' \2713'; }
+/* Hiçbir kök seçilmemişken tahtanın ortasında duran yönlendirme. */
+.g1-pick-hint {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    direction: rtl; text-align: center; color: var(--primary); opacity: .5;
+    font-size: clamp(1.05rem, 3.6vw, 2rem); white-space: nowrap; pointer-events: none;
+}
+
+.g1-circle {
+    position: relative;
+    width: clamp(270px, 84vw, 460px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+}
+
+.g1-root-chip {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: clamp(92px, 27vw, 176px); height: clamp(92px, 27vw, 176px); border-radius: 50%;
+    background: linear-gradient(135deg, var(--secondary), #a78bfa); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(1.5rem, 6vw, 2.4rem); cursor: grab; direction: rtl; white-space: nowrap;
+    box-shadow: 0 8px 25px rgba(124,58,237,.35); user-select: none; touch-action: none;
+    transition: opacity .2s; z-index: 5;
+}
+.g1-root-chip.dragging-source { opacity: .3; }
+.g1-ghost {
+    border-radius: 50%; background: linear-gradient(135deg, var(--secondary), #a78bfa); color: #fff;
+    display: flex; align-items: center; justify-content: center; direction: rtl; white-space: nowrap;
+    font-size: clamp(1.5rem, 6vw, 2.4rem); box-shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+
+.g1-cell {
+    position: absolute; transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: clamp(90px, 26vw, 172px); min-height: clamp(90px, 26vw, 172px);
+    /* --root-line / --root-fill JS'te o turun kökünün rengine göre atanıyor. */
+    border: 3px dashed var(--root-line, rgba(124,58,237,.35)); border-radius: 22px;
+    background: var(--root-fill, rgba(255,255,255,.72)); padding: 6px 4px;
+    transition: border-color .25s ease, background .25s ease;
+}
+.g1-cell .g1-emoji { font-size: clamp(2rem, 7.5vw, 3.3rem); line-height: 1; transition: font-size .25s ease, margin .25s ease; }
+.g1-cell .g1-word-label { opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; text-align: center; direction: rtl; line-height: 1.25; transition: opacity .3s ease, max-height .3s ease, margin .3s ease; }
+.g1-cell.solved { border-style: solid; border-color: var(--root-solid, var(--success)); background: var(--root-tint, rgba(40,167,69,.08)); }
+.g1-cell.solved .g1-emoji { font-size: clamp(1.5rem, 5.5vw, 2.4rem); margin-bottom: 2px; }
+.g1-cell.solved .g1-word-label { opacity: 1; max-height: 3.2em; margin-top: 4px; }
+.g1-word-ar { font-size: clamp(1.05rem, 3.8vw, 1.5rem); color: var(--root-solid, var(--primary)); }
+.detail-line { display: block; font-size: clamp(.85rem, 2.6vw, 1.15rem); opacity: .8; color: var(--text-main); direction: rtl; margin-top: 2px; }
+.g1-cell.flash-good { animation: goodPulseAbs .5s ease; }
+.g1-cell.flash-bad { animation: badShakeAbs .4s ease; }
+@keyframes goodPulse { 0%{transform:scale(1);} 50%{transform:scale(1.15);} 100%{transform:scale(1);} }
+@keyframes badShake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
+@keyframes goodPulseAbs { 0%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.15);} 100%{transform:translate(-50%,-50%) scale(1);} }
+@keyframes badShakeAbs { 0%,100%{transform:translate(-50%,-50%) translateX(0);} 25%{transform:translate(-50%,-50%) translateX(-8px);} 75%{transform:translate(-50%,-50%) translateX(8px);} }
+
+/* ---------- OYUN 1: FİİL ÇEKİMİ PENCERESİ ----------
+   SAĞ üst köşede, ilerleme rozetinin ALTINDA (araya ~20px boşluk bırakılarak)
+   küçük bir düğme; basınca aşağı doğru bir pencere açılıyor. Pencerede önce
+   ÜÇ BAŞLIK YATAY duruyor (الماضي / المُضارِع / الأَمْر); hangisine basılırsa
+   YALNIZCA onun tekil çekimi başlıkların ALTINDA açılıyor. Renkler o turun
+   kökünün rengine bağlı (--root-* değişkenleri paintRootOutline ile atanıyor).
+   KONUM NOTU: rozet top:16px (masaüstünde 24px) + yaklaşık 41-55px yükseklik;
+   düğmenin top'u bu yüzden clamp(78px, 13vw, 100px) — rozete yapışmıyor. */
+/* HOST = düğme + pencere ikilisinin kabı. Dar ekranda (< 901px) sağ üst köşede
+   SABİT durur; masaüstünde (>= 901px) `position: relative` olup kök şeridinin
+   İÇİNDE, köklerle AYNI SATIRDA akar (bkz. revizyon 24). Pencere her iki hâlde de
+   host'a göre `absolute` konumlandığı için tek bir konum modeli yetiyor. */
+.g1-conj-host {
+    position: fixed; right: clamp(16px, 2vw, 24px); top: clamp(78px, 13vw, 100px); z-index: 520;
+    flex: 0 0 auto; margin-inline-end: clamp(8px, 1.6vw, 26px);
+}
+/* KUTUSUZ tasarim (revizyon 25): cerceve/zemin/golge yok, kok cipleriyle
+   karistirilmasin diye sadece renkli metin + acilir ok. */
+.g1-conj-btn {
+    display: flex; align-items: center; gap: 6px; direction: rtl;
+    background: none; border: 0; border-radius: 0; padding: 0; box-shadow: none;
+    color: var(--root-solid, var(--secondary));
+    cursor: pointer; user-select: none; font-weight: 700;
+    font-size: clamp(1.25rem, 4.6vw, 2.5rem); white-space: nowrap;
+    transition: opacity .25s ease, transform .25s ease;
+}
+.g1-conj-btn:hover { transform: translateY(-1px); opacity: .78; }
+/* Kök seçilmeden çekim penceresi açılamaz. */
+.g1-conj-btn.disabled { opacity: .38; filter: grayscale(1); pointer-events: none; box-shadow: none; }
+.g1-conj-btn .caret { font-size: .7em; opacity: .7; transition: transform .25s ease; }
+.g1-conj-btn.open .caret { transform: rotate(180deg); }
+
+.g1-conj-panel {
+    position: absolute; right: 0; top: calc(100% + clamp(10px, 1.6vw, 18px)); z-index: 519;
+    width: clamp(300px, 92vw, 600px); max-height: 66vh; overflow-y: auto;
+    background: rgba(255,255,255,.97);
+    border: 2px solid var(--root-solid, rgba(124,58,237,.35));
+    border-radius: 18px; padding: 12px; direction: rtl;
+    box-shadow: 0 14px 40px rgba(0,0,0,.16);
+    opacity: 0; transform: translateY(-10px) scale(.97); pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease;
+}
+.g1-conj-panel.open { opacity: 1; transform: none; pointer-events: auto; }
+
+.g1-conj-tabs { display: flex; flex-direction: row; gap: 6px; }
+.g1-conj-tab {
+    flex: 1 1 0; text-align: center; cursor: pointer; user-select: none;
+    padding: 8px 4px; border-radius: 12px; white-space: nowrap;
+    border: 2px solid var(--root-line, rgba(124,58,237,.35));
+    background: var(--root-fill, rgba(255,255,255,.7));
+    color: var(--primary); font-size: clamp(1.25rem, 4.6vw, 2.5rem);
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.g1-conj-tab:hover { border-color: var(--root-solid, var(--secondary)); }
+.g1-conj-tab.active {
+    background: var(--root-solid, var(--secondary));
+    border-color: var(--root-solid, var(--secondary)); color: #fff;
+}
+
+.g1-conj-list { display: none; flex-direction: column; gap: 5px; margin-top: 10px; }
+.g1-conj-list.show { display: flex; animation: conjDrop .3s ease; }
+@keyframes conjDrop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+.g1-conj-row {
+    display: flex; align-items: baseline; gap: clamp(8px, 1.4vw, 18px); justify-content: center;
+    padding: 6px 12px; border-radius: 10px; text-align: center;
+    background: var(--root-tint, rgba(124,58,237,.07));
+    font-size: clamp(1.25rem, 4.6vw, 2.8rem);
+}
+/* Zamir ve fiil ayri sutunlarda degil: yanyana duruyor ve ikisi birlikte
+   satirin ortasinda hizalaniyor (revizyon 25). */
+.g1-conj-row .pron { flex: 0 0 auto; text-align: center; opacity: .62; color: var(--text-main); }
+.g1-conj-row .verb { flex: 0 0 auto; text-align: center; color: var(--root-solid, var(--primary)); }
+/* Emirde çekimi olmayan zamirler (أَنا / هُوَ / هِيَ) boş bırakılmıyor, tire ile
+   gösteriliyor; böylece üç zaman tablosu da 5 satır ve satırlar birebir hizalı. */
+.g1-conj-row .verb.none { opacity: .38; color: var(--text-main); }
+.g1-conj-hint { text-align: center; opacity: .58; margin-top: 10px; font-size: clamp(.8rem, 2.4vw, 1rem); }
+
+/* ============ OYUN 2: KELİMEYİ KÖKÜNE AYIRMA ============ */
+.g2-wrap { display: flex; flex-direction: column; align-items: center; z-index: 10; width: 100%; padding-top: clamp(64px, 13vh, 110px); }
+.g2-stage {
+    display: flex; flex-direction: row; align-items: center; justify-content: center;
+    gap: clamp(20px, 6vw, 64px); width: 100%; max-width: 920px; flex-wrap: wrap;
+}
+.g2-machine { display: flex; flex-direction: column; align-items: center; gap: 16px; min-width: clamp(150px, 30vw, 220px); }
+.g2-gear-visual {
+    position: relative; width: clamp(120px, 26vw, 200px); height: clamp(120px, 26vw, 200px);
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.6); border-radius: 50%; border: 3px dashed rgba(124,58,237,.3);
+}
+.g2-gear-visual .gear { position: absolute; font-size: clamp(3rem, 10vw, 6rem); animation: spin 6s linear infinite; }
+.g2-gear-visual .gear.g2 { font-size: clamp(1.8rem, 6vw, 3.4rem); animation-duration: 4s; animation-direction: reverse; opacity: .85; transform: translate(28%, 28%); }
+@keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+/* ---------- SÜRÜKLEME İPUCU ----------
+   Sürüklenebilir kutular arada bir hafifçe kalkıp sallanır; öğrenci böylece
+   elemanın tutulup taşınabileceğini kendiliğinden anlar. İpucu bilinçli olarak
+   KISITLI: öğrenci ilk sürüklemesini tamamlar tamamlamaz (body.drag-learned)
+   tamamen susar, sürükleme sırasında ve fareyle üzerine gelindiğinde durur
+   (tıklama noktası kaymasın diye), "hareketi azalt" sistem ayarında hiç oynamaz.
+   Genlik küçük tutuldu (≤5px) — dikkat dağıtmasın. */
+@keyframes dragHint {
+    0%, 68%, 100% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(-5px) rotate(-2.5deg); }
+    82% { transform: translateY(-1px) rotate(2.5deg); }
+    89% { transform: translateY(-3px) rotate(-1.5deg); }
+    95% { transform: translateY(0) rotate(0deg); }
+}
+/* Oyun 1'in kök çipi mutlak konumlu ve translate(-50%,-50%) ile ortalanıyor;
+   animasyon bu kaydırmayı ezmemeli, bu yüzden ayrı bir keyframe gerekiyor. */
+@keyframes dragHintCentered {
+    0%, 68%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    75% { transform: translate(-50%, calc(-50% - 5px)) rotate(-2.5deg); }
+    82% { transform: translate(-50%, calc(-50% - 1px)) rotate(2.5deg); }
+    89% { transform: translate(-50%, calc(-50% - 3px)) rotate(-1.5deg); }
+    95% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+.g1-root-chip { animation: dragHintCentered 3.4s ease-in-out infinite; }
+.g2-word-chip, .g3-root-chip { animation: dragHint 3.4s ease-in-out infinite; }
+/* Listedeki kutular sırayla dalgalansın; hepsi aynı anda zıplarsa gürültü olur. */
+.g2-word-chip:nth-child(2), .g3-root-chip:nth-child(2) { animation-delay: .16s; }
+.g2-word-chip:nth-child(3), .g3-root-chip:nth-child(3) { animation-delay: .32s; }
+.g2-word-chip:nth-child(4), .g3-root-chip:nth-child(4) { animation-delay: .48s; }
+.g2-word-chip:nth-child(5), .g3-root-chip:nth-child(5) { animation-delay: .64s; }
+.g1-root-chip.dragging-source, .g1-root-chip:hover,
+.g2-word-chip.dragging-source, .g2-word-chip:hover, .g2-word-chip.used,
+.g3-root-chip.dragging-source, .g3-root-chip:hover,
+body.drag-learned .g1-root-chip,
+body.drag-learned .g2-word-chip,
+body.drag-learned .g3-root-chip { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+    .g1-root-chip, .g2-word-chip, .g3-root-chip { animation: none; }
+}
+.g2-gear-visual.grinding .gear { animation-duration: .35s !important; }
+.g2-gear-visual.grinding { box-shadow: 0 0 30px rgba(124,58,237,.5); }
+
+/* Çıkarılan kökler sahnenin en solunda TEK SIRA (tek sütun) hâlinde birikir;
+   sarmalanmaz, kutular birbiriyle aynı genişliktedir (align-items: stretch).
+   min-width, ilk kök çıkana kadar sahnenin kaymaması içindir. */
+.g2-output-tray {
+    display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch;
+    gap: 10px; justify-content: center; min-height: 74px;
+    min-width: clamp(135px, 27vw, 195px);
+}
+.g2-root-result {
+    background: #fff; border: 2px solid var(--success); border-radius: 16px; padding: 12px 26px;
+    direction: rtl; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    font-size: clamp(1.7rem, 5vw, 2.5rem); color: var(--primary); animation: popIn .4s ease;
+}
+@keyframes popIn { from{transform:scale(0); opacity:0;} to{transform:scale(1); opacity:1;} }
+
+.g2-words { display: flex; flex-direction: column; gap: 16px; align-items: flex-end; }
+.g2-word-chip {
+    background: linear-gradient(135deg, #fff, #f7f5ff); border: 2px solid var(--secondary);
+    border-radius: 18px; padding: 14px 32px; font-size: clamp(1.9rem, 6vw, 2.9rem);
+    direction: rtl; cursor: grab; box-shadow: 0 4px 14px rgba(124,58,237,.12);
+    user-select: none; touch-action: none; transition: opacity .2s;
+}
+.g2-word-chip.dragging-source { opacity: .3; }
+.g2-word-chip.used { opacity: .25; pointer-events: none; text-decoration: line-through; }
+.g2-ghost {
+    background: linear-gradient(135deg, #fff, #f7f5ff); border: 2px solid var(--secondary);
+    border-radius: 18px; padding: 14px 32px; direction: rtl; box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    font-size: clamp(1.9rem, 6vw, 2.9rem);
+}
+
+@media (max-width: 600px) {
+    .g2-stage { flex-direction: column; }
+    .g2-words { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+    /* Dar ekranda sahne zaten dikey; kökler tek sütun yerine yatay sarmalansın
+       ve eskisi gibi çarkın hemen altında kalsın. */
+    .g2-machine { order: 1; }
+    .g2-output-tray { order: 2; flex-direction: row; flex-wrap: wrap; align-items: center; min-width: 0; max-width: 320px; }
+    .g2-words { order: 3; }
+}
+
+/* ============ OYUN 3: ÇOKLU KÖK AYNI KALIBA ============ */
+.g3-wrap { display: flex; flex-direction: column; align-items: center; z-index: 10; width: 100%; padding-top: clamp(64px, 13vh, 110px); }
+.g3-stage {
+    display: flex; flex-direction: row; align-items: center; justify-content: center;
+    gap: clamp(16px, 4vw, 50px); width: 100%; max-width: 980px; flex-wrap: wrap;
+}
+.g3-output-slot {
+    min-width: clamp(165px, 33vw, 250px); min-height: clamp(130px, 25vw, 190px);
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.75); border: 3px dashed rgba(41,128,185,.35);
+    border-radius: 22px; direction: rtl; text-align: center;
+    font-size: clamp(2rem, 6.4vw, 3.1rem); color: var(--primary); padding: 14px;
+    transition: all .25s ease; flex-direction: column;
+}
+.g3-output-slot .empty-msg { font-size: clamp(.9rem, 2.8vw, 1.15rem); opacity: .6; }
+.g3-output-slot .detail-line { font-size: clamp(1.05rem, 3.2vw, 1.5rem); }
+.g3-output-slot.filled {
+    border-style: solid; border-color: var(--root-solid, var(--success));
+    background: var(--root-tint, rgba(40,167,69,.08));
+    color: var(--root-solid, var(--primary)); animation: popIn .4s ease;
+}
+.g3-output-slot.invalid { border-color: var(--danger); background: rgba(220,53,69,.06); }
+
+.g3-pattern-box { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.g3-pattern-nav { display: flex; align-items: center; gap: 16px; }
+.g3-pattern-arrow {
+    width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--accent);
+    background: #fff; color: var(--accent); display: flex; align-items: center;
+    justify-content: center; cursor: pointer; font-size: 1.4rem; transition: all .2s; flex-shrink: 0;
+}
+.g3-pattern-arrow:hover { background: var(--accent); color: #fff; }
+.g3-pattern-slot {
+    width: clamp(175px, 35vw, 265px); height: clamp(175px, 35vw, 265px); border-radius: 28px;
+    background: linear-gradient(135deg, #fff, #eaf3fb); border: 3px dashed rgba(41,128,185,.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(2.4rem, 9vw, 3.8rem); color: var(--accent); direction: rtl; transition: all .2s;
+}
+.g3-pattern-slot.shake { animation: badShake .4s ease; border-color: var(--danger); }
+
+.g3-roots { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+/* Kalıp metni tek bir satır-içi kutu olarak kalmalı; flex kabında doğrudan
+   metin + <span> karışımı olsaydı her parça ayrı flex öğesi olur ve Arapça
+   harf birleşmesi tamamen kopardı. */
+.g3-pattern-text { display: inline-block; white-space: nowrap; }
+.zaid-letter { color: var(--danger); }
+.g3-flow-word {
+    position: fixed; transform: translate(-50%, -50%) scale(1); opacity: 1;
+    font-family: var(--font-ar); font-size: clamp(2rem, 6.4vw, 3.1rem); color: var(--root-solid, var(--success));
+    z-index: 600; pointer-events: none;
+    /* Süzülme animasyonu bilinçli olarak yavaş: öğrenci kelimenin kalıptan
+       çıkışını gözle takip edebilsin. Solma (opacity) yolun sonuna doğru
+       başlasın diye gecikmeli. */
+    transition: left 1.4s cubic-bezier(.4,0,.2,1), top 1.4s cubic-bezier(.4,0,.2,1), transform 1.4s ease, opacity .55s ease .85s;
+}
+.g3-root-chip {
+    background: linear-gradient(135deg, var(--secondary), #a78bfa); color: #fff; border-radius: 16px;
+    padding: 14px 32px; font-size: clamp(1.9rem, 6vw, 2.9rem); direction: rtl; cursor: grab;
+    box-shadow: 0 4px 14px rgba(124,58,237,.25); user-select: none; touch-action: none; transition: opacity .2s;
+}
+.g3-root-chip.dragging-source { opacity: .3; }
+.g3-ghost {
+    background: linear-gradient(135deg, var(--secondary), #a78bfa); color: #fff; border-radius: 16px;
+    padding: 14px 32px; direction: rtl; box-shadow: 0 10px 25px rgba(0,0,0,.3); font-size: clamp(1.9rem, 6vw, 2.9rem);
+}
+
+.g3-checklist { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; max-width: 240px; margin-top: 4px; }
+.g3-dot {
+    width: 15px; height: 15px; border-radius: 50%; background: #fff;
+    border: 2px solid var(--root-dot, #dfe3e8); box-sizing: border-box;
+    transition: background .3s;
+}
+.g3-dot.done { background: var(--root-dot, var(--success)); }
+
+@media (max-width: 700px) {
+    .g3-stage { flex-direction: column-reverse; }
+    .g3-roots { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+}
+
+/* Kısa telefon ekranları (ör. 360x640, iPhone SE): oyun 3'ün üç katı
+   dikey olarak dizildiğinden büyütülmüş kutular ekrana sığmıyordu.
+   Burada ölçüler yüksekliğe (vh) bağlanır; yazılar hâlâ eski hâlinden
+   büyük ama sahne kırpılmadan tamamen görünür. */
+@media (max-width: 900px) and (max-height: 720px) {
+    .g3-wrap { padding-top: clamp(50px, 9vh, 70px); }
+    .g3-stage { gap: 10px; }
+    .g3-output-slot { min-height: 18vh; font-size: 4.6vh; padding: 8px; }
+    .g3-output-slot .empty-msg { font-size: 2.1vh; }
+    .g3-output-slot .detail-line { font-size: 2.4vh; }
+    .g3-pattern-slot { width: 23vh; height: 23vh; font-size: 6vh; }
+    .g3-pattern-arrow { width: 5.6vh; height: 5.6vh; font-size: 2.6vh; }
+    .g3-roots { gap: 8px; }
+    .g3-root-chip, .g3-ghost { font-size: 4.2vh; padding: 8px 20px; }
+    .g3-checklist { margin-top: 0; }
+    .g3-dot { width: 12px; height: 12px; }
+}
+
+/* =========================================================
+   MASAÜSTÜ TASARIMI — genİş ekranlarda tüm ekranı kullanan,
+   belirgin biçimde büyütülmüş bağımsız düzen
+========================================================= */
+@media (min-width: 901px) {
+    .back-btn { width: 58px; height: 58px; top: 24px; left: 24px; }
+    .progress-pill { top: 24px; right: 24px; font-size: 1.5rem; padding: 10px 26px; }
+
+    /* --- Menü ---
+       Dikey ölçüler vh'ye bağlı: alçak ekranda küçülür, yüksek ekranda eski
+       değerine döner. Bağlantı rozeti ızgaranın dışında, başlık hizasında. */
+    .menu-wrap { max-width: min(1700px, 94vw); gap: clamp(22px, 4.2vh, 60px); }
+    .menu-header { padding: clamp(16px, 3vh, 40px) clamp(34px, 6vw, 80px); border-radius: 44px; }
+    .menu-badge { font-size: clamp(1.3rem, 2.4vh, 2rem); padding: 10px 40px; margin-bottom: clamp(10px, 2vh, 22px); }
+    .menu-header h1 { font-size: clamp(2.4rem, 5vh, 4.2rem); }
+    .menu-connect { padding: 9px 22px; font-size: clamp(1.05rem, 1.9vh, 1.45rem); gap: 11px; }
+    .menu-grid { gap: clamp(16px, 3vh, 40px); }
+    .menu-card { flex: 1 1 260px; max-width: 420px; min-height: clamp(150px, 26vh, 260px); padding: clamp(18px, 3vh, 42px); border-radius: 34px; }
+    .menu-card .icon-circle {
+        width: clamp(58px, 9.5vh, 104px); height: clamp(58px, 9.5vh, 104px);
+        font-size: clamp(2rem, 4vh, 3.6rem); margin-bottom: clamp(8px, 1.8vh, 20px); border-radius: 26px;
+    }
+    .menu-card h2 { font-size: clamp(1.3rem, 2.3vh, 1.9rem); }
+
+    /* --- Oyun 1: kökten kalıba --- */
+    .g1-wrap { max-width: none; padding-top: clamp(24px, 3.5vw, 50px); }
+    /* Çekim düğmesi artık sabit değil: kök şeridinin en sağındaki öğe. */
+    .g1-conj-host { position: relative; right: auto; top: auto; }
+    /* Beş kök + düğme aynı satıra sığsın diye çipler ve aralar masaüstünde
+       biraz daralıyor. 901px (kırılma noktası) ölçülerek ayarlandı. */
+    .g1-root-bar { gap: clamp(4px, .8vw, 14px); }
+    .g1-root-bar-chip {
+        font-size: clamp(.95rem, 2.2vw, 2rem);
+        padding: clamp(5px, 1vw, 11px) clamp(7px, 1.4vw, 22px);
+    }
+    .g1-title { top: 24px; left: 100px; right: 210px; min-height: 58px; font-size: 2.3rem; margin-bottom: 0; }
+    .g1-circle { width: min(780px, 64vmin); }
+    .g1-root-chip { width: min(230px, 19vmin); height: min(230px, 19vmin); font-size: 2.5rem; }
+    .g1-ghost { font-size: 2.5rem; }
+    .g1-cell { width: min(215px, 17vmin); min-height: min(215px, 17vmin); border-radius: 30px; }
+    .g1-cell .g1-emoji { font-size: 6.2rem; }
+    .g1-cell.solved .g1-emoji { font-size: 4.6rem; }
+    .g1-word-ar { font-size: 2.1rem; }
+    .detail-line { font-size: 1.15rem; }
+
+    /* --- Oyun 2: kelimeyi köküne ayır --- */
+    .g2-stage { max-width: min(1700px, 94vw); gap: clamp(30px, 5vw, 100px); }
+    .g2-machine { min-width: 280px; gap: 22px; }
+    .g2-gear-visual { width: min(280px, 20vmin); height: min(280px, 20vmin); }
+    .g2-gear-visual .gear { font-size: 7.5rem; }
+    .g2-gear-visual .gear.g2 { font-size: 4.2rem; }
+    .g2-output-tray { min-width: 215px; gap: 14px; }
+    .g2-root-result { font-size: 2.5rem; padding: 15px 32px; border-radius: 20px; }
+    .g2-words { gap: 20px; }
+    .g2-word-chip { font-size: 2.7rem; padding: 17px 38px; border-radius: 22px; }
+    .g2-ghost { font-size: 2.7rem; padding: 17px 38px; border-radius: 22px; }
+
+    /* --- Oyun 3: çoklu kök aynı kalıba --- */
+    /* Boşluk ekran genişliğiyle ölçeklensin: kutular büyüdüğü için sabit 90px
+       boşlukta dar masaüstlerinde sahne alt satıra sarmalanıp taşıyordu. */
+    .g3-stage { max-width: min(1700px, 94vw); gap: clamp(24px, 4.5vw, 90px); }
+    /* min(...) ile ikinci bir tavan: kısa ekranlarda (ör. 960x600 dizüstü)
+       kutular yüksekliğe göre kendiliğinden küçülsün, sahne taşmasın. */
+    .g3-output-slot { min-width: min(300px, 39vh); min-height: min(235px, 31vh); font-size: min(3.1rem, 6.6vh); border-radius: 30px; }
+    .g3-output-slot .empty-msg { font-size: 1.25rem; }
+    .g3-output-slot .detail-line { font-size: 1.4rem; }
+    .g3-flow-word { font-size: min(3.1rem, 6.6vh); }
+    .g3-pattern-arrow { width: 56px; height: 56px; font-size: 1.7rem; }
+    .g3-pattern-slot { width: min(300px, 24vmin); height: min(300px, 24vmin); font-size: min(3.7rem, 8vh); border-radius: 32px; }
+    .g3-roots { gap: 18px; }
+    .g3-root-chip { font-size: min(2.7rem, 5.8vh); padding: 17px 38px; border-radius: 22px; }
+    .g3-ghost { font-size: min(2.7rem, 5.8vh); padding: 17px 38px; border-radius: 22px; }
+    .g3-checklist { max-width: 280px; gap: 9px; }
+    .g3-dot { width: 18px; height: 18px; }
+
+    /* --- Bitiş / kutlama --- */
+    .done-card { padding: 56px; border-radius: 34px; }
+    .done-card .emoji { font-size: 5.5rem; }
+    .done-card h2 { font-size: 2.4rem; }
+    .done-buttons button { font-size: 1.4rem; padding: 14px 32px; }
+}
+
+/* =========================================================
+   GENİŞ MASAÜSTÜ — kök, vezin ve türeyen kelimeler iyice büyük.
+   Yalnızca hem geniş hem yeterince yüksek ekranlarda uygulanır;
+   dar/kısa masaüstlerinde yukarıdaki orta boy değerler geçerli kalır.
+========================================================= */
+@media (min-width: 1380px) and (min-height: 800px) {
+    /* Kelime kutuları büyüyünce çark görseli küçük kalıyordu; ölçek korunuyor. */
+    .g2-gear-visual { width: min(320px, 26vmin); height: min(320px, 26vmin); }
+    .g2-gear-visual .gear { font-size: 9.5rem; }
+    .g2-gear-visual .gear.g2 { font-size: 5.3rem; }
+    .g2-root-result { font-size: 3.2rem; padding: 18px 36px; border-radius: 22px; }
+    .g2-output-tray { min-width: 275px; gap: 16px; }
+    .g2-word-chip { font-size: 3.5rem; padding: 20px 46px; border-radius: 24px; }
+    .g2-ghost { font-size: 3.5rem; padding: 20px 46px; border-radius: 24px; }
+
+    .g3-output-slot { min-width: 375px; min-height: 295px; font-size: 4.1rem; border-radius: 32px; }
+    .g3-output-slot .detail-line { font-size: 1.75rem; }
+    .g3-flow-word { font-size: 4.1rem; }
+    .g3-pattern-slot { width: min(340px, 30vmin); height: min(340px, 30vmin); font-size: 5rem; border-radius: 34px; }
+    .g3-root-chip { font-size: 3.5rem; padding: 20px 46px; border-radius: 24px; }
+    .g3-ghost { font-size: 3.5rem; padding: 20px 46px; border-radius: 24px; }
+}
+
+/* =========================================================
+   OYUN 4: DİJİTAL YARIŞMA (Firebase)
+   Kart: "اِتَّصِلْ" — öğretmen bir oda kurar, öğrenciler linkten
+   ya da karekoddan katılır. Tüm ekranlar tek bir #quiz-screen
+   içine JS ile çizilir; .qz- öneki bu bölüme özeldir.
+========================================================= */
+.qz-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(12px, 2.2vw, 22px); z-index: 10; width: 100%;
+    max-width: 900px; padding: clamp(56px, 11vh, 96px) 4vw 4vh;
+}
+.qz-baslik { font-size: clamp(1.2rem, 4vw, 2rem); color: var(--primary); text-align: center; }
+.qz-alt { font-size: clamp(.85rem, 2.4vw, 1.05rem); opacity: .7; text-align: center; max-width: 620px; line-height: 1.55; }
+
+.qz-kart {
+    background: rgba(255,255,255,.9); border: 2px solid rgba(124,58,237,.25);
+    border-radius: 22px; padding: clamp(16px, 3vw, 28px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.08); width: 100%;
+}
+.qz-kart + .qz-kart { margin-top: 4px; }
+.qz-kart h3 { font-size: clamp(1rem, 2.8vw, 1.3rem); color: var(--secondary); margin-bottom: 10px; }
+
+.qz-btn {
+    font-family: inherit; cursor: pointer; user-select: none; border: 0;
+    border-radius: 999px; padding: clamp(9px, 1.8vw, 14px) clamp(18px, 3.4vw, 30px);
+    font-size: clamp(.95rem, 2.6vw, 1.15rem); color: #fff;
+    background: linear-gradient(135deg, var(--secondary), #a78bfa);
+    box-shadow: 0 6px 18px rgba(124,58,237,.28);
+    transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+}
+.qz-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(124,58,237,.34); }
+.qz-btn:disabled { opacity: .45; pointer-events: none; box-shadow: none; }
+.qz-btn.gri { background: linear-gradient(135deg, #64748b, #94a3b8); box-shadow: 0 6px 18px rgba(100,116,139,.25); }
+.qz-btn.yesil { background: linear-gradient(135deg, #059669, #34d399); box-shadow: 0 6px 18px rgba(5,150,105,.28); }
+.qz-btn.kirmizi { background: linear-gradient(135deg, #b91c1c, #f87171); box-shadow: 0 6px 18px rgba(185,28,28,.25); }
+
+.qz-input {
+    font-family: inherit; font-size: clamp(.95rem, 2.6vw, 1.1rem);
+    padding: 10px 14px; border-radius: 14px; border: 2px solid rgba(124,58,237,.3);
+    background: #fff; color: var(--text-main); min-width: 0; flex: 1 1 140px;
+}
+.qz-input:focus { outline: none; border-color: var(--secondary); }
+.qz-satir { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+
+.qz-sayi-secim { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+.qz-sayi {
+    cursor: pointer; user-select: none; border: 2px solid rgba(124,58,237,.3);
+    background: #fff; color: var(--primary); border-radius: 12px;
+    padding: 7px 16px; font-family: inherit; font-size: clamp(.9rem, 2.4vw, 1.05rem);
+    transition: all .18s ease;
+}
+.qz-sayi.secili { background: var(--secondary); border-color: var(--secondary); color: #fff; }
+
+/* --- Lobi --- */
+.qz-kod {
+    font-size: clamp(2.4rem, 11vw, 5rem); letter-spacing: .18em; text-align: center;
+    color: var(--secondary); line-height: 1.1; font-weight: 700 !important;
+}
+.qz-kod-not { text-align: center; opacity: .65; font-size: clamp(.8rem, 2.2vw, .95rem); }
+.qz-lobi-orta { display: flex; flex-wrap: wrap; gap: clamp(14px, 3vw, 28px); align-items: center; justify-content: center; }
+.qz-qr { background: #fff; padding: 10px; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,.1); line-height: 0; }
+.qz-qr img, .qz-qr canvas { display: block; }
+.qz-link {
+    word-break: break-all; font-size: clamp(.75rem, 2vw, .9rem); opacity: .75;
+    max-width: 340px; text-align: center; direction: ltr;
+}
+.qz-takimlar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+.qz-takim-cip {
+    background: rgba(124,58,237,.1); border: 2px solid rgba(124,58,237,.28);
+    border-radius: 999px; padding: 6px 16px; font-size: clamp(.85rem, 2.3vw, 1.05rem);
+    color: var(--primary); display: flex; align-items: center; gap: 8px;
+}
+.qz-takim-cip .sil { cursor: pointer; opacity: .5; font-size: .9em; }
+.qz-takim-cip .sil:hover { opacity: 1; color: var(--danger); }
+.qz-takim-cip .puan { opacity: .6; font-size: .85em; }
+
+/* --- Canlı soru --- */
+.qz-ust {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; width: 100%; font-size: clamp(.85rem, 2.3vw, 1.05rem); opacity: .8;
+}
+.qz-sayac {
+    font-size: clamp(1.1rem, 3.2vw, 1.6rem); color: var(--secondary);
+    min-width: 3.2em; text-align: center; font-weight: 700 !important;
+}
+.qz-sayac.az { color: var(--danger); }
+.qz-soru {
+    font-size: clamp(1.05rem, 3.2vw, 1.7rem); text-align: center;
+    line-height: 1.6; color: var(--primary);
+}
+.qz-soru-ar {
+    font-family: var(--font-ar); direction: rtl; text-align: center;
+    font-size: clamp(2rem, 8vw, 4rem); color: var(--secondary); margin: 6px 0 2px;
+}
+.qz-secenekler { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 6px; }
+.qz-secenek {
+    display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none;
+    background: #fff; border: 2px solid rgba(124,58,237,.28); border-radius: 16px;
+    padding: clamp(8px, 1.8vw, 14px) clamp(12px, 2.4vw, 20px);
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    text-align: right;
+}
+.qz-secenek:hover { transform: translateY(-2px); border-color: var(--secondary); }
+.qz-secenek .harf {
+    flex: 0 0 auto; width: 2em; height: 2em; border-radius: 50%;
+    background: rgba(124,58,237,.12); color: var(--secondary);
+    display: flex; align-items: center; justify-content: center; font-size: .95em;
+}
+.qz-secenek .metin { flex: 1 1 auto; direction: rtl; font-family: var(--font-ar); font-size: clamp(1.3rem, 4.4vw, 2.2rem); }
+.qz-secenek.tr .metin { font-family: inherit; direction: ltr; text-align: left; font-size: clamp(.95rem, 2.6vw, 1.15rem); }
+.qz-secenek.secili { border-color: var(--secondary); background: rgba(124,58,237,.1); }
+.qz-secenek.dogru { border-color: var(--success); background: rgba(40,167,69,.14); }
+.qz-secenek.yanlis { border-color: var(--danger); background: rgba(220,53,69,.12); }
+.qz-secenek.kilit { pointer-events: none; }
+
+.qz-durum { text-align: center; font-size: clamp(.85rem, 2.4vw, 1.05rem); opacity: .75; }
+.qz-bekle { text-align: center; font-size: clamp(1rem, 3vw, 1.35rem); color: var(--secondary); }
+
+/* --- Sıralama --- */
+.qz-sira { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.qz-sira-satir {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(124,58,237,.07); border-radius: 14px; padding: 10px 16px;
+    font-size: clamp(.95rem, 2.6vw, 1.2rem);
+}
+.qz-sira-satir .yer { flex: 0 0 auto; width: 1.8em; text-align: center; opacity: .6; }
+.qz-sira-satir .ad { flex: 1 1 auto; }
+.qz-sira-satir .puan { flex: 0 0 auto; color: var(--secondary); }
+.qz-sira-satir.bir { background: linear-gradient(135deg, rgba(252,211,77,.35), rgba(252,211,77,.12)); }
+
+.qz-uyari {
+    background: rgba(220,53,69,.08); border: 2px solid rgba(220,53,69,.3);
+    border-radius: 18px; padding: clamp(14px, 3vw, 24px); width: 100%;
+    font-size: clamp(.85rem, 2.4vw, 1.02rem); line-height: 1.65; color: var(--text-main);
+}
+.qz-uyari code {
+    background: rgba(0,0,0,.06); border-radius: 6px; padding: 1px 6px;
+    font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .92em; direction: ltr;
+}
+
+/* --- Siteye donus dugmesi (kidefarapca.com) ---------------------------
+   Oyun ici .back-btn ile ayni gorunum; sadece bag (<a>) oldugu icin
+   alt cizgi ve miras alinan yazi rengi sifirlanir. geri.js bu dugmeyi
+   kopyalayip yanina "Anasayfa" (ev) tusunu ekler. */
+a.back-btn.kidef-siteye { text-decoration: none; color: var(--primary); }
+a.back-btn.kidef-siteye:hover { color: #fff; }
+

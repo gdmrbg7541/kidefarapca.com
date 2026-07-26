@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>الصَّرْف - أَلْعاب الجُذور وَالأَوْزان</title>
+
+<!-- Sitenin geri kalaniyla ayni Google Analytics etiketi. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- 4. oyun (dijital yarışma) için Firebase 8.10.1 compat SDK + karekod üreticisi.
+     Bu üç dosya sadece "اِتَّصِلْ" kartı için gereklidir; internet yoksa ya da
+     yüklenemezse diğer üç oyun normal çalışmaya devam eder. -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="sarf.css">
+</head>
+<body>
+
+<div class="floating-emojis">
+    <span class="fe-1">📖</span>
+    <span class="fe-2">✍️</span>
+    <span class="fe-3">⚙️</span>
+    <span class="fe-4">🕌</span>
+    <span class="fe-5">📚</span>
+    <span class="fe-6">🎓</span>
+</div>
+
+<!-- ================= GİRİŞ EKRANI ================= -->
+<main class="screen active" id="start-screen">
+    <!-- Siteye donus. geri.js bu dugmenin yanina "Anasayfa" (ev) tusunu
+         kendisi ekler; diger oyun sayfalariyla ayni davranis. -->
+    <a href="index.html" class="back-btn kidef-siteye" id="start-back-button"
+       onclick="return kidefGeriDon(event)" title="Geri" aria-label="Geri">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </a>
+    <div class="menu-wrap">
+        <!-- Başlık satırı: başlık ortada, bağlantı rozeti onun hizasında sağ üstte. -->
+        <div class="menu-top">
+            <div class="menu-header">
+                <span class="menu-badge">عِلْمُ الصَّرْف</span>
+                <h1>مِنَ الجَذْرِ إِلى الكَلِمَة</h1>
+            </div>
+            <!-- Dijital yarışma (Firebase) girişi. Oyun kartı değil, küçük bir
+                 rozet: mor gradyan, hap biçimli, canlı yayın noktalı.
+                 "اِتَّصِلْ" = bağlan -->
+            <button type="button" class="menu-connect" data-goto="quiz-screen">
+                <span class="mc-nokta"></span>
+                <span class="mc-ar">اِتَّصِلْ</span>
+                <span class="mc-ikon">🏆</span>
+            </button>
+        </div>
+        <div class="menu-grid">
+            <div class="menu-card" data-goto="game1-screen">
+                <div class="icon-circle">🧩</div>
+                <h2>مِنَ الجَذْرِ إِلى الصّورَة</h2>
+            </div>
+            <div class="menu-card" data-goto="game2-screen">
+                <div class="icon-circle">⚙️</div>
+                <h2>اِسْتَخْرِج الجَذْر</h2>
+            </div>
+            <div class="menu-card" data-goto="game3-screen">
+                <div class="icon-circle">🔤</div>
+                <h2>الجَذْر وَالوَزْن</h2>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ================= OYUN 1: KÖKTEN KALIBA (root-to-emoji) ================= -->
+<main class="screen" id="game1-screen"></main>
+
+<!-- ================= OYUN 2: KELİMEYİ KÖKÜNE AYIR (word-to-gear) ================= -->
+<main class="screen" id="game2-screen"></main>
+
+<!-- ================= OYUN 3: ÇOKLU KÖK AYNI KALIBA (roots-to-pattern) ================= -->
+<main class="screen" id="game3-screen"></main>
+
+<!-- ================= OYUN 4: DİJİTAL YARIŞMA (Firebase) ================= -->
+<main class="screen" id="quiz-screen"></main>
+
+<div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+        <div class="emoji" id="done-emoji">🎉</div>
+        <h2 id="done-text">أَحْسَنْتَ!</h2>
+        <div class="done-buttons">
+            <button class="btn-primary" id="done-replay">مِن جَديد 🔄</button>
+            <button class="btn-secondary" id="done-menu">القائِمَة ↩</button>
+        </div>
+    </div>
+</div>
+
+<script src="sarf.js"></script>
+<script src="geri.js"></script>
+</body>
+</html>
