@@ -1172,6 +1172,9 @@ function quizSorulariUret() {
 const Quiz = {
     _db: null,
     _gorunum: null,
+    /* Geri tuşuyla ekrandan ayrılınca oda KAPANMAZ; buraya alınır ve
+       "اِتَّصِلْ" rozetine tekrar basılınca kaldığı yerden devam eder. */
+    _saklanan: null,
     state: {},
 
     /* --- Firebase tembel başlatma; ayar boşsa null döner --- */
@@ -1195,9 +1198,55 @@ const Quiz = {
     /* ================= giriş noktaları ================= */
     start() {
         this.temizle();
+        /* Askıya alınmış bir oturum varsa doğrudan ona dön. */
+        if (this._saklanan && this.db()) { this.devamEt(); return; }
         this.state = { rol: null, soruSayisi: 10, secim: null };
         if (!this.db()) { this.uyariCiz(); return; }
         this.girisCiz();
+    },
+
+    /* Geri tuşu: odayı kapatmaz, katılanları atmaz. Sadece dinlemeyi
+       durdurup menüye döner; oda Firestore'da olduğu gibi kalır. */
+    askiyaAl() {
+        this._saklanan = {
+            rol: this.state.rol,
+            odaKod: this.state.odaKod,
+            takimId: this.state.takimId,
+            takimAdi: this.state.takimAdi,
+            soruSayisi: this.state.soruSayisi || 10
+        };
+        this.temizle();
+        App.showScreen('start-screen');
+        const rozet = document.querySelector('.menu-connect');
+        if (rozet) rozet.classList.add('devam');
+    },
+
+    /* Askıdaki oturuma dönüş: aynı odayı yeniden dinlemeye başlarız,
+       oda hangi aşamadaysa ekran oraya kendiliğinden kurulur. */
+    devamEt() {
+        const s = this._saklanan;
+        this._saklanan = null;
+        const rozet = document.querySelector('.menu-connect');
+        if (rozet) rozet.classList.remove('devam');
+        this.state = {
+            rol: s.rol, odaKod: s.odaKod, takimId: s.takimId,
+            takimAdi: s.takimAdi, soruSayisi: s.soruSayisi, secim: null
+        };
+        this.ciz(
+            this.baslikHtml() +
+            '<div class="qz-kart">' +
+              '<div class="qz-bekle">🔌 Odaya yeniden bağlanılıyor…</div>' +
+              '<div class="qz-durum" style="margin-top:10px">Oda: <b>' +
+                this.kacis(s.odaKod) + '</b></div>' +
+            '</div>'
+        );
+        this.dinle(s.odaKod);
+    },
+
+    /* Geri (←) tuşu. Odadaysak çıkmak değil, askıya almak gerekir. */
+    geriBas() {
+        if (this.state.odaKod) { this.askiyaAl(); return; }
+        this.cik();
     },
 
     /* Öğrenci linki: ...sarf.html?oda=KOD */
@@ -1212,12 +1261,44 @@ const Quiz = {
     temizle() {
         (this.state.abone || []).forEach(f => { try { f(); } catch (e) {} });
         if (this.state.sayacTimer) clearInterval(this.state.sayacTimer);
+        const onay = document.getElementById('qz-onay');
+        if (onay) onay.remove();
         this.state = {};
         this._gorunum = null;
     },
     cik() {
         this.temizle();
+        this._saklanan = null;
+        const rozet = document.querySelector('.menu-connect');
+        if (rozet) rozet.classList.remove('devam');
         App.showScreen('start-screen');
+    },
+
+    /* --------- sayfa içi onay penceresi ---------
+       Tarayıcının confirm() kutusu kullanılmaz; sayfa içi katman çizilir. */
+    onaySor(baslik, mesaj, evetMetin, evetFn) {
+        const eski = document.getElementById('qz-onay');
+        if (eski) eski.remove();
+        const kat = document.createElement('div');
+        kat.className = 'qz-onay show';
+        kat.id = 'qz-onay';
+        kat.innerHTML =
+            '<div class="qz-onay-kart">' +
+              '<div class="qz-onay-emoji">⚠️</div>' +
+              '<h3>' + this.kacis(baslik) + '</h3>' +
+              '<p>' + this.kacis(mesaj) + '</p>' +
+              '<div class="qz-satir" style="margin-top:6px">' +
+                '<button class="qz-btn gri" id="qz-onay-hayir">Vazgeç</button>' +
+                '<button class="qz-btn kirmizi" id="qz-onay-evet">' + this.kacis(evetMetin) + '</button>' +
+              '</div>' +
+            '</div>';
+        document.body.appendChild(kat);
+        const kapat = () => { if (kat.parentNode) kat.parentNode.removeChild(kat); };
+        document.getElementById('qz-onay-hayir')
+            .addEventListener('click', () => { App.playSound('click'); kapat(); });
+        document.getElementById('qz-onay-evet')
+            .addEventListener('click', () => { App.playSound('click'); kapat(); evetFn(); });
+        kat.addEventListener('click', e => { if (e.target === kat) kapat(); });
     },
 
     /* ================= ortak çizim ================= */
@@ -1227,7 +1308,7 @@ const Quiz = {
             '<div class="back-btn" id="qz-back">' + BACK_SVG + '</div>' +
             '<div class="qz-wrap">' + icHtml + '</div>';
         const b = document.getElementById('qz-back');
-        if (b) b.addEventListener('click', () => { App.playSound('click'); this.cik(); });
+        if (b) b.addEventListener('click', () => { App.playSound('click'); this.geriBas(); });
     },
     baslikHtml() {
         return '<div class="qz-baslik" dir="rtl">اِتَّصِلْ · المُسابَقَة الرَّقَمِيَّة</div>';
@@ -1250,11 +1331,19 @@ const Quiz = {
     /* ================= 1. ekran: kur / katıl ================= */
     girisCiz() {
         const sayilar = [5, 10, 15, 20, 30];
+        /* Karekod ya da davet linkiyle gelen kişi yalnızca KATILIR:
+           oda kurma kartı (ve içindeki soru sayısı seçimi) hiç çizilmez. */
+        const katilimci = !!this.state.hazirKod;
         this.ciz(
             this.baslikHtml() +
-            '<div class="qz-alt">Öğretmen bir oda kurar; öğrenciler karekodu okutup ya da linke tıklayıp ' +
-            'takım adıyla katılır. Sorular bu dosyadaki köklerden, vezinlerden ve fiil çekimlerinden üretilir.</div>' +
+            '<div class="qz-alt">' + (katilimci
+                ? 'Bir yarışma odasına davet edildin. Takımının adını ya da kendi adını yaz ve katıl; ' +
+                  'sorular, odayı kuran kişi yarışmayı başlattığında burada belirecek.'
+                : 'Bir kişi oda kurar; katılmak isteyenler karekodu okutup ya da linke tıklayıp ' +
+                  'takım adıyla veya kendi adıyla girer — odaya bir takım da tek bir kişi de katılabilir. ' +
+                  'Sorular bu dosyadaki köklerden, vezinlerden ve fiil çekimlerinden üretilir.') + '</div>' +
 
+            (katilimci ? '' :
             '<div class="qz-kart">' +
               '<h3>🎓 Yeni oda kur</h3>' +
               '<div class="qz-sayi-secim" id="qz-sayilar">' +
@@ -1265,28 +1354,32 @@ const Quiz = {
               '<div class="qz-satir" style="margin-top:16px">' +
                 '<button class="qz-btn" id="qz-kur">🚀 Odayı Kur</button>' +
               '</div>' +
-            '</div>' +
+            '</div>') +
 
             '<div class="qz-kart">' +
               '<h3>👥 Odaya katıl</h3>' +
               '<div class="qz-satir">' +
                 '<input class="qz-input" id="qz-kod-in" placeholder="Oda kodu" maxlength="6" ' +
                        'value="' + (this.state.hazirKod || '') + '" style="max-width:150px;text-transform:uppercase">' +
-                '<input class="qz-input" id="qz-ad-in" placeholder="Takım adı" maxlength="24">' +
+                '<input class="qz-input" id="qz-ad-in" placeholder="Takım / kişi adı" maxlength="24">' +
                 '<button class="qz-btn yesil" id="qz-katil">Katıl</button>' +
               '</div>' +
               '<div class="qz-durum" id="qz-giris-durum" style="margin-top:10px"></div>' +
+              '<div class="qz-kod-not" style="margin-top:8px">Tek başına da katılabilirsin; ' +
+              'ad kutusuna kendi adını yazman yeterli.</div>' +
             '</div>'
         );
 
-        document.getElementById('qz-sayilar').addEventListener('click', e => {
+        const sayiKutu = document.getElementById('qz-sayilar');
+        if (sayiKutu) sayiKutu.addEventListener('click', e => {
             const b = e.target.closest('.qz-sayi'); if (!b) return;
             this.state.soruSayisi = parseInt(b.dataset.n, 10);
             document.querySelectorAll('#qz-sayilar .qz-sayi').forEach(x => x.classList.remove('secili'));
             b.classList.add('secili');
             App.playSound('click');
         });
-        document.getElementById('qz-kur').addEventListener('click', () => this.odaKur());
+        const kurBtn = document.getElementById('qz-kur');
+        if (kurBtn) kurBtn.addEventListener('click', () => this.odaKur());
         document.getElementById('qz-katil').addEventListener('click', () => this.takimKatil());
         document.getElementById('qz-ad-in').addEventListener('keydown', e => {
             if (e.key === 'Enter') this.takimKatil();
@@ -1332,7 +1425,7 @@ const Quiz = {
         const durum = document.getElementById('qz-giris-durum');
         const kod = (document.getElementById('qz-kod-in').value || '').trim().toUpperCase();
         const ad  = (document.getElementById('qz-ad-in').value || '').trim();
-        if (!kod || !ad) { durum.textContent = 'Oda kodu ve takım adı gerekli.'; return; }
+        if (!kod || !ad) { durum.textContent = 'Oda kodu ve bir ad (takım ya da kişi adı) gerekli.'; return; }
         durum.textContent = 'Bağlanılıyor…';
         try {
             const ref = db.collection(SARF_KOLEKSIYON).doc(kod);
@@ -1360,8 +1453,18 @@ const Quiz = {
         this.state.abone = [];
         this.state.takimlar = [];
         this.state.cevaplar = [];
+        this.state.veriGeldi = false;
         this.state.abone.push(ref.onSnapshot(s => {
-            if (!s.exists) { this.cik(); return; }
+            if (!s.exists) {
+                /* Odayı kapatan biziz: sessizce çık. */
+                if (this.state.kapatiliyor) return;
+                /* Hiç veri gelmeden yoksa: oda zaten kapanmış (ör. askıdan
+                   dönüş). Veri geldikten sonra kaybolduysa: kuran kişi çıktı. */
+                if (this.state.veriGeldi) this.iptalCiz();
+                else this.odaYokCiz(kod);
+                return;
+            }
+            this.state.veriGeldi = true;
             this.state.oda = s.data();
             this.guncelle();
         }));
@@ -1398,6 +1501,40 @@ const Quiz = {
         else                          this.bitisCiz();
     },
 
+    /* Oda ortadan kalktı: katılanlara soru göstermeye devam etmek yerine
+       ne olduğunu açıkça söyleyen bir ekran çizilir. */
+    iptalCiz() {
+        const bittiMi = !!(this.state.oda && this.state.oda.durum === 'bitti');
+        this.temizle();
+        this._saklanan = null;
+        this.ciz(
+            this.baslikHtml() +
+            '<div class="qz-kart qz-iptal">' +
+              '<div class="qz-iptal-emoji">' + (bittiMi ? '🏁' : '🚪') + '</div>' +
+              '<h3>' + (bittiMi ? 'Yarışma sona erdi' : 'Yarışma iptal edildi') + '</h3>' +
+              '<div class="qz-durum" style="margin-top:6px">' + (bittiMi
+                  ? 'Odayı kuran kişi odayı kapattı. Katıldığın için teşekkürler!'
+                  : 'Odayı kuran kişi yarışmadan çıktı, bu yüzden yarışma iptal edildi. ' +
+                    'Kalan soru yok; yeni bir oda kodu geldiğinde tekrar katılabilirsin.') + '</div>' +
+              '<div class="qz-satir" style="margin-top:18px">' +
+                '<button class="qz-btn" id="qz-iptal-tamam">Tamam</button>' +
+              '</div>' +
+            '</div>'
+        );
+        const t = document.getElementById('qz-iptal-tamam');
+        if (t) t.addEventListener('click', () => { App.playSound('click'); this.start(); });
+    },
+
+    /* Askıdan dönerken oda artık yoksa: giriş ekranına not düşerek dön. */
+    odaYokCiz(kod) {
+        this.temizle();
+        this._saklanan = null;
+        this.state = { rol: null, soruSayisi: 10, secim: null };
+        this.girisCiz();
+        const d = document.getElementById('qz-giris-durum');
+        if (d) d.textContent = 'Oda ' + kod + ' artık açık değil — yarışma kapatılmış görünüyor.';
+    },
+
     /* ================= lobi ================= */
     katilimLinki() {
         const temel = location.href.split('#')[0].split('?')[0];
@@ -1425,6 +1562,9 @@ const Quiz = {
                       '<button class="qz-btn kirmizi" id="qz-kapat">Odayı Kapat</button>' +
                     '</div>' +
                     '<div class="qz-durum" id="qz-lobi-durum" style="margin-top:10px"></div>' +
+                    '<div class="qz-kod-not" style="margin-top:8px">Geri (←) tuşu odayı kapatmaz: ' +
+                    'menüye dönersin, katılanlar odada kalır ve “اِتَّصِلْ” rozetine basınca ' +
+                    'her şey kaldığı yerden devam eder.</div>' +
                   '</div>'
                 : '<div class="qz-kart">' +
                     '<div class="qz-bekle">أَهْلاً وَسَهْلاً، ' + this.kacis(this.state.takimAdi) + ' 👋</div>' +
@@ -1443,14 +1583,18 @@ const Quiz = {
                 kutu.remove();
             }
             document.getElementById('qz-baslat').addEventListener('click', () => this.yarisiBaslat());
-            document.getElementById('qz-kapat').addEventListener('click', () => this.odayiKapat());
+            document.getElementById('qz-kapat').addEventListener('click', () => this.kapatmayiSor());
         }
     },
 
     async yarisiBaslat() {
-        if (!this.state.takimlar.length) {
+        /* Yarışma iki taraf olmadan anlamlı değil: en az iki takım ya da
+           iki kişi odada olmalı. */
+        if ((this.state.takimlar || []).length < 2) {
             const d = document.getElementById('qz-lobi-durum');
-            if (d) d.textContent = 'En az bir takım katılmalı.';
+            if (d) d.textContent = 'Başlatmak için odada en az iki takım (ya da iki kişi) olmalı — şu an ' +
+                                   (this.state.takimlar || []).length + '.';
+            App.playSound('wrong');
             return;
         }
         App.playSound('click');
@@ -1458,7 +1602,25 @@ const Quiz = {
             durum: 'oyun', faz: 'soru', index: 0, soruZamani: Date.now()
         });
     },
+
+    /* Odayı kapatmak geri dönüşü olmayan bir iş: önce onay sorulur. */
+    kapatmayiSor() {
+        App.playSound('click');
+        const oynuyor = !!(this.state.oda && this.state.oda.durum === 'oyun');
+        this.onaySor(
+            oynuyor ? 'Yarışmadan çıkmak istiyor musun?' : 'Odayı kapatmak istiyor musun?',
+            oynuyor
+                ? 'Yarışma iptal edilir, oda silinir ve katılanların ekranında “yarışma iptal edildi” yazar. ' +
+                  'Sadece ekrandan ayrılmak istiyorsan geri (←) tuşunu kullan; o zaman yarışma devam eder.'
+                : 'Oda silinir ve katılanların bağlantısı kesilir. Sadece menüye dönmek istiyorsan ' +
+                  'geri (←) tuşunu kullan; oda açık kalır.',
+            oynuyor ? 'Evet, yarışmayı bitir' : 'Evet, odayı kapat',
+            () => this.odayiKapat()
+        );
+    },
+
     async odayiKapat() {
+        this.state.kapatiliyor = true;
         try { await this.odaRef().delete(); } catch (e) {}
         this.cik();
     },
@@ -1493,7 +1655,11 @@ const Quiz = {
                     '<button class="qz-btn" id="qz-sonraki">' +
                       (o.index + 1 < o.sorular.length ? 'Sonraki Soru ▶' : 'Yarışı Bitir 🏁') +
                     '</button>' +
-                  '</div>'
+                    '<button class="qz-btn kirmizi" id="qz-oyundan-cik">🚪 Oyundan Çık</button>' +
+                  '</div>' +
+                  '<div class="qz-kod-not" style="margin-top:8px">Yarışmayı iptal etmek için ' +
+                  '“Oyundan Çık” tuşunu kullan. Geri (←) tuşu yarışmayı bitirmez; sadece menüye ' +
+                  'dönersin, “اِتَّصِلْ” rozetiyle aynı soruya geri gelirsin.</div>'
                 : '') +
             '</div>' +
             (yonetici ? '<div class="qz-kart"><h3>🏅 Sıralama</h3><div class="qz-sira" id="qz-sira"></div></div>' : '')
@@ -1507,6 +1673,7 @@ const Quiz = {
         } else {
             document.getElementById('qz-sonuc').addEventListener('click', () => this.sonucaGec());
             document.getElementById('qz-sonraki').addEventListener('click', () => this.sonrakiSoru());
+            document.getElementById('qz-oyundan-cik').addEventListener('click', () => this.kapatmayiSor());
         }
         this.sayaciKur();
     },
@@ -1586,7 +1753,7 @@ const Quiz = {
                 : '')
         );
         const k = document.getElementById('qz-kapat');
-        if (k) k.addEventListener('click', () => this.odayiKapat());
+        if (k) k.addEventListener('click', () => this.kapatmayiSor());
     },
 
     /* ================= dinamik yamalar ================= */
@@ -1594,12 +1761,22 @@ const Quiz = {
         const o = this.state.oda; if (!o) return;
         const takimlar = this.state.takimlar || [];
 
-        /* Lobideki takım çipleri */
+        /* Lobideki takım/kişi çipleri */
         const cipler = document.getElementById('qz-takimlar');
         if (cipler) {
             cipler.innerHTML = takimlar.length
                 ? takimlar.map(t => '<span class="qz-takim-cip">' + this.kacis(t.ad) + '</span>').join('')
                 : '<span class="qz-kod-not">Henüz katılan yok…</span>';
+        }
+
+        /* Başlat tuşu iki katılımcıya kadar kilitli kalır. */
+        const baslatBtn = document.getElementById('qz-baslat');
+        if (baslatBtn) baslatBtn.disabled = (takimlar.length < 2);
+        const lobiDurum = document.getElementById('qz-lobi-durum');
+        if (lobiDurum && this.state.rol === 'yonetici' && o.durum === 'lobi') {
+            lobiDurum.textContent = takimlar.length < 2
+                ? 'Başlamak için en az iki takım (ya da iki kişi) gerekli — şu an ' + takimlar.length + '.'
+                : takimlar.length + ' katılımcı hazır; istediğin an başlatabilirsin.';
         }
 
         /* Sıralama tablosu */
@@ -1613,7 +1790,7 @@ const Quiz = {
                       '<span class="ad">' + this.kacis(t.ad) + '</span>' +
                       '<span class="puan">' + (t.puan || 0) + '</span>' +
                     '</div>').join('')
-                : '<div class="qz-kod-not">Takım yok.</div>';
+                : '<div class="qz-kod-not">Henüz katılan yok.</div>';
         }
 
         if (o.durum !== 'oyun') return;
@@ -1647,7 +1824,7 @@ const Quiz = {
         const durum = document.getElementById('qz-oyun-durum');
         if (durum) {
             if (this.state.rol === 'yonetici') {
-                durum.textContent = acik ? 'Cevap açıkta — sınıfa gösterebilirsin.' : 'Takımlar cevaplıyor…';
+                durum.textContent = acik ? 'Cevap açıkta — sınıfa gösterebilirsin.' : 'Katılanlar cevaplıyor…';
             } else if (acik) {
                 durum.textContent = this.state.secim === null
                     ? 'Cevap veremedin.'
@@ -1655,7 +1832,7 @@ const Quiz = {
             } else {
                 durum.textContent = this.state.secim === null
                     ? 'Bir şık seç.'
-                    : 'Cevabın kaydedildi, diğer takımlar bekleniyor…';
+                    : 'Cevabın kaydedildi, diğerleri bekleniyor…';
             }
         }
     },
