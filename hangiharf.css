@@ -1,0 +1,282 @@
+html {
+            height: 100%;
+        }
+        body {
+            font-family: 'Marhey', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Marhey Font */
+            padding: 1rem; padding-top: 1rem;
+            background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            background-attachment: fixed; background-size: 200% 200%;
+            animation: background-pan 15s ease infinite;
+            overscroll-behavior-y: contain;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Masaüstü ve intro ekranları için ortalama */
+
+            height: calc(var(--vh, 1vh) * 100);
+            min-height: calc(var(--vh, 1vh) * 100);
+            overflow: hidden; /* Body'nin kaymasını engelle */
+        }
+        @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* Arapça Font Önceliği */
+        [lang="ar"], .word, .option span { font-family: 'Arakom', 'Harmattan', system-ui, sans-serif; direction: rtl; }
+
+        body, button, h1, h2, h3, p, div:not([lang="ar"]) { direction: ltr; }
+        #back-btn {
+            position: fixed; top: 1rem; left: 1rem; z-index: 3000; width: 48px; height: 48px;
+            background-color: rgba(255, 255, 255, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        #back-btn svg { width: 24px; height: 24px; }
+
+        #game-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            max-height: 100%; /* Body padding'ine göre ayarlanacak */
+            
+            flex-direction: row; /* Masaüstü varsayılan */
+            gap: 1rem; 
+            
+            flex-grow: 1;
+            min-height: 0; /* Flexbox taşma sorunlarını engeller */
+        }
+
+        #top-progress-bar {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 1rem auto;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            padding: 0 0.5rem;
+            flex-shrink: 0;
+            direction: rtl; /* Sağdan sola ilerleme */
+        }
+        .progress-word { height: 8px; background-color: rgba(255, 255, 255, 0.4); border-radius: 4px; transition: background-color 0.3s ease; }
+        .progress-word.correct { background-color: #28a745; } .progress-word.incorrect { background-color: #dc3545; }
+        .player-screen {
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            flex-grow: 1;
+            flex-basis: 0;
+            min-height: 0;
+            justify-content: space-between;
+        }
+        #player-1 { background-color: rgba(227, 242, 253, 0.5); } #player-2 { background-color: rgba(255, 243, 224, 0.5); }
+        body.mode-1p #player-2 { display: none; } body.mode-1p #player-1 { width: 100%; max-width: 800px; margin: 0 auto; } body.mode-1p #game-wrapper { justify-content: center; } body.mode-1p #player-1 .player-icon-wrapper { display: none; } body.mode-1p #top-progress-bar { display: grid; order: -1; } body.mode-1p #player-1 #progress-1, body.mode-1p #player-2 #progress-2 { display: none; }
+
+        body.mode-1p #player-1 .status-bar { justify-content: space-between; } /* Puan ve Zamanı iki uca yasla */
+        body.mode-1p #p1-timer { display: flex; }
+        body.mode-1p #p1-score-wrapper { /* margin-right: auto; kaldırıldı */ }
+
+        #modal.mode-1p #result-column-2 { display: none; } #modal.mode-1p .results-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+        body.mode-2p #player-1, body.mode-2p #player-2 { width: 50%; } #modal.mode-2p .results-grid { grid-template-columns: 1fr; } /* Varsayılan 1 sütun */ body.mode-2p #top-progress-bar { display: none; }
+        body.mode-2p #progress-1, body.mode-2p #progress-2 {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0.5rem auto 1rem auto;
+            flex-shrink: 0;
+            direction: rtl; /* Sağdan sola ilerleme */
+        }
+        body.mode-2p .progress-word { height: 8px; border-radius: 4px; }
+        body.mode-2p .status-bar { justify-content: flex-end; }
+
+        .player-icon-wrapper .flex {
+            align-items: center; /* Dikey hizalama */
+            line-height: 1; /* H1'deki ekstra boşluğu azaltmak için */
+        }
+        .player-icon-wrapper h1 {
+            direction: ltr;
+            font-size: 2.5em;
+            line-height: 1; /* Dikey boşluğu kaldır */
+        }
+        .player-icon-wrapper svg {
+            width: 1em;  /* Font boyutuna göre ölçeklen */
+            height: 1em; /* Font boyutuna göre ölçeklen */
+            font-size: 2.5em; /* H1 ile aynı em değeri */
+        }
+
+
+        .question-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Dikey Ortalama */
+            align-items: center;
+            gap: 1rem;
+            order: 0;
+            overflow-y: auto; /* İçerik Kaydırma */
+            min-height: 0;
+            padding-bottom: 1rem; /* Alt boşluk */
+        }
+        .word { font-size: clamp(2.5rem, 10vw, 5rem); color: #1f2937; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-weight: 700; }
+        .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; max-width: 400px; }
+        .option { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.05); color: #1f2937; border-radius: 1rem; padding: 1rem; text-align: center; font-size: clamp(1.8rem, 8vw, 3rem); cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .option:hover { background-color: #f8f9fa; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.12); } .option:active { transform: scale(0.98); transition-duration: 0.1s; } .option.correct { background-color: #d4edda; border-color: #28a745; } .option.incorrect { background-color: #f8d7da; border-color: #dc3545; } .option.disabled { pointer-events: none; opacity: 0.7; } .option span { color: #111827; font-weight: 700; }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            font-size: 1.25rem;
+            position: relative;
+            flex-shrink: 0;
+        }
+        #modal { position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 1rem; display: none; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); } 
+        .modal-content { background-color: white; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 95%; max-width: 800px; position: relative; margin: auto; max-height: calc(var(--vh, 1vh) * 90); overflow-y: auto; } /* 90vh -> vh fix */
+        .results-grid { display: grid; gap: 1rem; margin-top: 1.5rem; } 
+        .result-column { padding: 1rem; border-radius: 1rem; position: relative; overflow: hidden; }
+
+        .result-item {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            direction: rtl; /* <<< SAĞDAN SOLA SIRALAMA İÇİN */
+        }
+
+        .intro-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; overflow-y: auto; } 
+        .info-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); }
+        .difficulty-btn { padding: 0.8rem 2rem; font-size: 1.5rem; color: white; border-radius: 0.75rem; transition: all 0.2s; width: 100%; max-width: 384px; } .difficulty-btn.easy { background-color: #22c55e; } .difficulty-btn.easy:hover { background-color: #16a34a; } .difficulty-btn.medium { background-color: #f97316; } .difficulty-btn.medium:hover { background-color: #ea580c; } .difficulty-btn.hard { background-color: #ef4444; } .difficulty-btn.hard:hover { background-color: #dc2626; }
+        .modal-secondary-btn { font-size: 1.25rem; font-weight: 600; padding: 0.75rem 1.5rem; background-color: #f3f4f6; color: #1f2937; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: all 0.2s ease; } .modal-secondary-btn:hover { background-color: #e5e7eb; }
+        #countdown-overlay { font-size: clamp(8rem, 30vw, 15rem); color: white; font-weight: bold; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .player-screen.flash-correct { animation: flash-green 0.6s ease-out; } .player-screen.incorrect-answer-effect { animation: shake-and-flash-red 0.6s ease-out; } @keyframes flash-green { 0%, 100% { background-color: rgba(227, 242, 253, 0.5); } 50% { background-color: rgba(40, 167, 69, 0.5); } } #player-2.flash-correct { animation: flash-green-p2 0.6s ease-out; } @keyframes flash-green-p2 { 0%, 100% { background-color: rgba(255, 243, 224, 0.5); } 50% { background-color: rgba(40, 167, 69, 0.5); } } @keyframes shake-and-flash-red { 0% { transform: translateX(0); background-color: rgba(227, 242, 253, 0.5); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } 50% { background-color: rgba(220, 53, 69, 0.5); } 100% { transform: translateX(0); background-color: rgba(227, 242, 253, 0.5); } } #player-2.incorrect-answer-effect { animation: shake-and-flash-red-p2 0.6s ease-out; } @keyframes shake-and-flash-red-p2 { 0% { transform: translateX(0); background-color: rgba(255, 243, 224, 0.5); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } 50% { background-color: rgba(220, 53, 69, 0.5); } 100% { transform: translateX(0); background-color: rgba(255, 243, 224, 0.5); } }
+        .flying-char { position: absolute; font-size: 3rem; font-weight: 700; color: #1f2937; opacity: 1; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; z-index: 10; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .score-popup { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); font-size: 2.5rem; font-weight: bold; color: #ffc107; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); animation: score-anim 1.2s ease-out forwards; pointer-events: none; z-index: 20; } @keyframes score-anim { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 50% { transform: translate(-50%, -40px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(0.9); } }
+        .confetti { position: absolute; width: 10px; height: 10px; background-color: red; opacity: 0; animation: fall 4s linear infinite; } @keyframes fall { 0% { transform: translateY(-100vh) rotateZ(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; } }
+        
+        /* Tablet (genişlik 768px+) Yatay Mod */
+        @media (min-width: 768px) and (orientation: landscape) {
+             #modal.mode-2p .results-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ============================================================
+        GÜNCELLEME 4: MOBİL (PORTRAIT) - DAHA BÜYÜK FONT VE PADDING
+        ============================================================
+        */
+        @media (max-width: 900px) {
+             body { 
+                padding: 0.25rem; /* <<< Kenar boşluğu azaltıldı (daha fazla alan için) */
+                justify-content: flex-start; /* 'center' yerine 'flex-start' */
+             }
+             #back-btn { top: 0.5rem; left: 0.5rem; width: 40px; height: 40px; } #back-btn svg { width: 20px; height: 20px; }
+             
+             /* Dikey (Portrait) modda oyun ekranları alt alta gelir */
+             #game-wrapper{ 
+                flex-direction: column; 
+                gap: 0.5rem; 
+             }
+             .player-screen{ 
+                padding: 0.5rem; /* <<< Padding düzenlendi */
+                width: 100% !important; 
+                max-width: 100% !important; 
+                flex-grow: 1; 
+                min-height: 0; 
+             }
+             body.mode-2p .player-screen { flex-basis: 0; }
+             .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 2em; }
+             .question-container { gap: 0.5rem; padding-bottom: 0.5rem; } /* <<< Gap artırıldı */
+             
+             /* <<< ANA GÜNCELLEME (KELİME FONTU) */
+             .word { font-size: clamp(2.5rem, 10vw, 4.5rem); } 
+             
+             .options { gap: 0.5rem; } 
+             
+             /* <<< ANA GÜNCELLEME (SEÇENEK FONTU) */
+             .option { 
+                padding: 0.5rem; /* <<< Padding artırıldı */
+                font-size: clamp(1.8rem, 8vw, 2.8rem); /* <<< Font büyütüldü */
+                min-height: 44px;
+             }
+             
+             /* <<< ANA GÜNCELLEME (SKOR/ZAMAN FONTU) */
+             .status-bar { 
+                padding: 0.5rem 0.75rem; /* <<< Padding artırıldı */
+                font-size: 1.1rem; /* <<< Font büyütüldü */
+             }
+             
+             body.mode-2p #progress-1, body.mode-2p #progress-2 { gap: 2px; max-width: 150px; margin: 0.3rem auto 0.5rem auto; }
+             body.mode-2p .progress-word { height: 4px; border-radius: 2px; }
+             #top-progress-bar { margin-bottom: 0.4rem; padding: 0 0.25rem; gap: 2px; } .progress-word { height: 5px; border-radius: 2.5px; }
+             .modal-content{ 
+                padding: 1rem; 
+                width: 95%; 
+                max-height: calc(var(--vh, 1vh) * 85); /* 85vh -> vh fix */
+             } 
+             .results-grid { margin-top: 0.75rem; }
+             .result-column { padding: 0.5rem; } .result-item { font-size: 1.2rem; gap: 0.4rem; margin-bottom: 0.3rem; }
+             h1 { font-size: 2rem !important; } h2 { font-size: 1.5rem !important; } h3:not([lang="ar"]) { font-size: 1.2rem !important; } p { font-size: 1rem !important; }
+        }
+
+        /* ============================================================
+        GÜNCELLEME 4: MOBİL (LANDSCAPE) - DAHA BÜYÜK FONT
+        ============================================================
+        */
+        @media (max-width: 900px) and (orientation: landscape) {
+             #back-btn { top: 0.5rem; left: 0.5rem; width: 36px; height: 36px; } #back-btn svg { width: 18px; height: 18px; }
+            #game-wrapper { 
+                flex-direction: row; 
+                gap: 0.5rem; 
+            }
+            .player-screen { 
+                padding: 0.4rem 0.6rem; 
+                width: 50% !important; 
+                flex-basis: 0; 
+            }
+             body.mode-1p #player-1 { max-width: 600px; }
+            .player-icon-wrapper h1, .player-icon-wrapper svg { font-size: 1.5em; }
+            .question-container { gap: 0.2rem; padding-bottom: 0.2rem; }
+            
+            /* <<< ANA GÜNCELLEME (KELİME FONTU) */
+            .word { font-size: clamp(1.8rem, 8vh, 2.8rem); }
+            
+            .options { gap: 0.3rem; max-width: 300px; }
+
+            /* <<< ANA GÜNCELLEME (SEÇENEK FONTU) */
+            .option { 
+                padding: 0.4rem; /* <<< Padding artırıldı */
+                font-size: clamp(1.6rem, 7vh, 2.2rem); /* <<< Font büyütüldü */
+                min-height: 32px; 
+                border-radius: 0.75rem; 
+            } 
+            
+            /* <<< ANA GÜNCELLEME (SKOR/ZAMAN FONTU) */
+            .status-bar { 
+                padding: 0.4rem 0.6rem; /* <<< Padding artırıldı */
+                font-size: 0.9rem; /* <<< Font büyütüldü */
+                border-radius: 0.75rem; 
+            }
+             .status-bar span:first-child { font-size: 1.2em; }
+            body.mode-2p #progress-1, body.mode-2p #progress-2 { max-width: 100px; margin: 0.2rem auto 0.4rem auto; gap: 1px; }
+             body.mode-2p .progress-word { height: 3px; border-radius: 1.5px; }
+             #top-progress-bar { margin-bottom: 0.3rem; gap: 1px; max-width: 500px; }
+             #top-progress-bar .progress-word { height: 4px; border-radius: 2px; }
+             .modal-content { 
+                padding: 0.8rem; 
+                max-height: calc(var(--vh, 1vh) * 85); /* 85vh -> vh fix */
+             } 
+             .results-grid { margin-top: 0.5rem; gap: 0.5rem; }
+             .result-column { padding: 0.4rem; } .result-item { font-size: 0.9rem; gap: 0.3rem; margin-bottom: 0.3rem;}
+             .modal-content h2 { font-size: 1.3rem !important; margin-bottom: 0.5rem;}
+             .result-column h3 { font-size: 1rem !important; margin-bottom: 0.3rem;}
+        }
+
+        .result-column h3 { font-family: 'Marhey', system-ui, sans-serif; }

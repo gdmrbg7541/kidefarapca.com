@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+
+    // ============================================================
+    //  VEZİNLER BİLGİ YARIŞMASI  (ayrı Firebase projesi)
+    //  Oda + takımlar + cevaplar. Bu proje yalnızca yarışma verisi içindir.
+    //  Admin (öğretmen/yönetici) yetkisi ANA sitedeki (kidefarapca-98f9c)
+    //  girişten UI tarafında kontrol edilir; bu projede admin ve takımların
+    //  hepsi anonim imzalı bağlandığından kural olarak isSignedIn() yeterli.
+    // ============================================================
+    match /bilgiYarismasi/{oda} {
+      allow read, write: if isSignedIn();
+      match /{alt=**} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // Tanımlı olmayan her yol VARSAYILAN OLARAK REDDEDİLİR.
+  }
+}

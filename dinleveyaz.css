@@ -1,0 +1,219 @@
+:root {
+            --font-poppins: 'Poppins', sans-serif;
+            --font-harmattan: 'Harmattan', Arial, sans-serif;
+            /* Renkler önceki gibi */
+            --color-bg: #f0f7ff;
+            --color-surface: #ffffff;
+            --color-shadow-light: #ffffff;
+            --color-shadow-dark: #c2d9f0;
+            --color-text-primary: #2d3142;
+            --color-text-secondary: #7b88a1;
+            --color-accent-1: #f3722c;
+            --color-accent-2: #f8961e;
+            --color-selected-bg: var(--color-accent-1);
+            --color-selected-text: #ffffff;
+            --color-correct: #90be6d;
+            --color-error: #f94144;
+            --color-correct-light: #edf7e7;
+            --color-error-light: #feeaea;
+            --color-score: #fca311;
+            --border-radius-main: 1.2rem;
+            --border-radius-small: 0.8rem;
+        }
+
+        html {
+            font-size: min(calc(100vw / 120), calc(100dvh / 67.5));
+            overflow: hidden;
+        }
+
+        body {
+            font-family: var(--font-poppins); background: var(--color-bg); color: var(--color-text-primary); margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; height: 100dvh; overflow: hidden;
+        }
+
+        #gameWrapper {
+            width: 120rem; height: 67.5rem; position: relative;
+            overflow: hidden; background: var(--color-bg);
+            box-shadow: 0 0 2rem rgba(0,0,0,0.15);
+        }
+
+        .screen {
+            width: 100%; height: 100%; max-width: none; max-height: none;
+            position: absolute; top: 0; left: 0; margin: auto;
+            background-color: transparent; border-radius: 0; box-shadow: none; border: none;
+            padding: 2rem; box-sizing: border-box;
+            display: none; flex-direction: column; align-items: center; justify-content: flex-start;
+        }
+        .screen.active { display: flex; }
+
+        #gameScreen, #scoreScreen { flex-grow: 1; min-height: 0; width: 100%; justify-content: space-between; overflow: hidden; }
+        #homeScreen { text-align: center; justify-content: center; }
+
+        .title-container { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-shrink: 0;}
+        .title-text h1 { font-size: 4.5rem; color: var(--color-accent-1); margin: 0; font-family: var(--font-poppins); text-shadow: 1px 1px 2px var(--color-shadow-dark); }
+        .title-text h2 { font-size: 3.5rem; font-weight: 700; color: var(--color-text-primary); margin: 0; text-shadow: 1px 1px 1px var(--color-shadow-light); font-family: var(--font-harmattan); }
+        #homeScreen h3 { font-size: 2.2rem; font-family: var(--font-poppins); color: var(--color-text-secondary); padding-bottom: 0.5rem; margin-top: 1rem; font-weight: 600; border-bottom: 2px solid var(--color-accent-1); margin-bottom: 1.5rem; flex-shrink: 0; width: auto; display: inline-block;}
+       #levelSelect { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); /* 4 sütunlu düzene geçirildi */
+            gap: 1rem; 
+            width: 100%; 
+            max-width: 45rem; 
+            margin: 0 auto 1rem; 
+        }
+
+        .key-button {
+            padding: 0.8rem 1rem; font-size: 1rem; font-weight: 600; font-family: inherit;
+            border: none; border-radius: var(--border-radius-small); cursor: pointer;
+            transition: all 0.2s ease-out; color: var(--color-text-primary);
+            background: var(--color-surface);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+            display: inline-flex; justify-content: center; align-items: center;
+            line-height: 1.2; vertical-align: middle; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
+        }
+        .key-button:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.98); }
+        .key-button:hover:not(:disabled) { color: var(--color-accent-1); }
+        .level-btn { font-size: 1.8rem; padding: 1.2rem 1.8rem; font-weight: 700;}
+        .level-btn.selected { background: var(--color-selected-bg); color: var(--color-selected-text); box-shadow: inset 3px 3px 6px #d15a1a, inset -3px -3px 6px #ff8a3e; transform: none; }
+        .action-btn { font-size: 1.3rem; border-radius: var(--border-radius-small); padding: 0.8rem 1.5rem; }
+
+        .back-button {
+            font-size: 1.5rem; width: 4rem; height: 4rem; padding: 0; color: var(--color-text-secondary); background: var(--color-surface);
+            border: none; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; border-radius: var(--border-radius-small);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light); transition: all 0.2s ease-out;
+        }
+        .back-button::before { content: ''; display: inline-block; width: 0.8em; height: 0.8em; border-top: 0.3em solid currentColor; border-left: 0.3em solid currentColor; transform: rotate(-45deg); margin-right: 0.2em; }
+        .back-button:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.98); }
+        .back-button:hover:not(:disabled) { color: var(--color-accent-1); }
+
+        #scoreToHomeButton { font-size: 1.5rem; width: auto; min-width: 5rem; height: 4rem; padding: 0 1.5rem; margin: 1.5rem auto 0; display: block; color: var(--color-text-secondary); background: var(--color-surface); }
+        #scoreToHomeButton:hover:not(:disabled) { color: var(--color-accent-1); }
+
+        #gameHeader { position: relative; display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: none; margin-bottom: 0.5rem; flex-shrink: 0; padding-left: 0; padding-right: 0; width: 100%; max-width: 45rem; margin-left: auto; margin-right: auto; }
+        .header-info { font-size: 1.5rem; font-weight: 600; font-family: var(--font-poppins); background: var(--color-surface); padding: 0.5rem 1rem; border-radius: var(--border-radius-small); box-shadow: 2px 2px 4px var(--color-shadow-dark), -2px -2px 4px var(--color-shadow-light);}
+        #levelScoreDisplay { color: var(--color-score); font-weight: 700; }
+        #timerDisplay { color: var(--color-error); font-weight: 700; font-size: 1.7rem;}
+        #mistakeCounter { color: var(--color-error); font-size: 2rem; letter-spacing: 2px; margin-left: 0.5rem; margin-right: 0.5rem; background: none; box-shadow: none; padding: 0;}
+        .game-main { text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 0; padding: 0; width: 100%; overflow: hidden; }
+        #gameContent { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; width: 100%; max-width: 40rem; margin: auto; }
+        #turkishWord, #arabicOutputContainer { padding: 0.5rem 1rem; min-height: auto; display: flex; align-items: center; position: relative; background: var(--color-surface); border: none; border-radius: var(--border-radius-main); box-shadow: inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); width: 100%; text-align: center; justify-content: center; flex-basis: auto; box-sizing: border-box; flex-shrink: 0; line-height: 1.3; overflow: hidden; word-break: break-all; }
+        #turkishWord { order: 3; font-size: 4rem; margin-top: 0; margin-bottom: 0; font-family: var(--font-poppins); font-weight: 600; color: var(--color-text-primary); }
+        #arabicOutputContainer { order: 1; gap: 0.5rem; direction: rtl; background: var(--color-surface); margin-bottom: 0; }
+        
+        #arabicOutputDisplay { width: auto; max-width: 100%; white-space: normal; font-family: var(--font-harmattan); font-weight: 700; line-height: 1.3; border: none; background: none; padding: 0; box-shadow: none; direction: rtl; cursor: default; font-size: 6rem; transition: none; color: var(--color-text-primary); }
+        
+        #arabicOutputDisplay[lang="ar"] { font-family: var(--font-harmattan); /* Ekstra güvence */ }
+        #arabicOutputDisplay.empty::before { content: '...'; color: var(--color-text-secondary); font-weight: normal; font-size: 1.5rem; opacity: 0.8; width: 100%; text-align: center;}
+        #correctAnswerContainer, #correctAnswerDisplay, #helperGrid, .char-btn, .separator, .tool-btn-danger, #checkButton { display: none !important; }
+
+        #letterBankContainer { order: 2; overflow-y: auto; padding: 0.2rem; margin: 0; width: 100%; box-sizing: border-box; max-width: 100%; display: flex; align-items: center; justify-content: center; min-height: auto; flex-shrink: 0; }
+        #letterBank { display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.4rem; align-items: center; justify-content: center; padding: 0; max-width: 100%; margin: 0 auto; }
+        
+        /* GÜNCELLENDİ: Buton boyutu yatayda 7rem'e büyütüldü */
+        .letter-bank-btn { font-family: var(--font-harmattan); font-weight: 700; font-size: 5rem; width: 7rem; height: 7rem; padding: 0.3rem 0; margin: 0.2rem; background: var(--color-surface); color: var(--color-text-primary); border: none; box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light); border-radius: 0.8rem; transition: all 0.1s ease-out; line-height: 1; vertical-align: middle; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; cursor: pointer; flex-shrink: 0; box-sizing: border-box; }
+        
+        .letter-bank-btn[lang="ar"] { font-family: var(--font-harmattan); /* Ekstra güvence */ }
+        .letter-bank-btn:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.97); }
+        
+        .letter-bank-btn.hareke-char { font-size: 4rem; }
+        
+        .letter-bank-btn.correct-form { background-color: var(--color-correct-light) !important; color: var(--color-correct) !important; box-shadow: inset 2px 2px 4px #76b198, inset -2px -2px 4px #baffa0 !important; cursor: default; transform: none !important; }
+        .letter-bank-btn.error-form { background-color: var(--color-error-light) !important; color: var(--color-error) !important; box-shadow: inset 2px 2px 4px #d35f61, inset -2px -2px 4px #ff8386 !important; animation: shake 0.3s ease-in-out; transform: none !important; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        #audioControl { display: flex; position: relative; width: 4.5rem; height: 4rem; /* Sabit boyut */ }
+        #audioControl button, #nextButton {
+             position: absolute; /* Butonları üst üste bindir */
+             top: 0; left: 0; /* Aynı konuma yerleştir */
+             font-size: 2.5rem; width: 100%; height: 100%; padding: 0; /* Konteyneri doldur */
+             color: var(--color-selected-text); background: var(--color-accent-1);
+             border: none; border-radius: var(--border-radius-small);
+             box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+             transition: all 0.2s ease-out, opacity 0.3s, visibility 0.3s;
+             display: inline-flex; justify-content: center; align-items: center; /* İçeriği ortala */
+        }
+        #audioControl button:hover:not(:disabled), #nextButton:hover:not(:disabled) { background: var(--color-accent-2); color: var(--color-selected-text); }
+        #audioControl button:active:not(:disabled), #nextButton:active:not(:disabled) { box-shadow: inset 2px 2px 4px #d15a1a, inset -2px -2px 4px #ff8a3e; transform: scale(0.98); }
+        #audioControl button.hidden, #nextButton.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        @keyframes blink { 0% { opacity: 1; transform: scale(1); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 10px var(--color-accent-2); } 50% { opacity: 0.8; transform: scale(1.03); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 20px 5px var(--color-accent-1); } 100% { opacity: 1; transform: scale(1); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 10px var(--color-accent-2); } }
+        .blinking-button { animation: blink 1.2s infinite ease-in-out; }
+        :disabled { background: var(--color-surface) !important; color: var(--color-text-secondary) !important; box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light) !important; cursor: not-allowed !important; transform: none !important; opacity: 0.7 !important; }
+        .letter-bank-btn.correct-form:disabled { background-color: var(--color-correct-light) !important; color: var(--color-correct) !important; box-shadow: inset 2px 2px 4px #76b198, inset -2px -2px 4px #baffa0 !important; opacity: 0.8 !important; }
+        #gameFooter { text-align: center; flex-shrink: 0; padding-top: 0.8rem; margin-top: 0.5rem; border-top: none; display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 0; padding-right: 0; max-width: 45rem; margin-left: auto; margin-right: auto; }
+        #pointsBurst { position: absolute; top: 0.5rem; left: 5.5rem; font-size: 1.2rem; font-weight: bold; color: var(--color-score); opacity: 0; pointer-events: none; white-space: nowrap; background: var(--color-surface); padding: 0.3rem 0.6rem; border-radius: 5px; box-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        #pointsBurst.active { animation: points-burst 0.8s ease-out forwards; }
+        @keyframes points-burst { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 50% { transform: translateY(-15px) scale(1.1); opacity: 0.9; } 100% { transform: translateY(-30px) scale(0.9); opacity: 0; } }
+        #scoreScreen { align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+        #scoreScreen h2 { font-size: 2.5rem; color: var(--color-accent-1); margin-bottom: 1rem; text-shadow: 1px 1px 2px var(--color-shadow-dark);}
+        #scoreScreen p { font-size: 1.8rem; color: var(--color-text-primary); margin-bottom: 1.5rem; }
+        #finalScoreValue { font-weight: bold; color: var(--color-score); } #totalPossibleScore { color: var(--color-text-secondary); }
+        #incorrectList { width: 100%; max-width: 25rem; margin-top: 1rem; border-top: 1px solid var(--color-shadow-dark); padding-top: 1rem; text-align: left; }
+        #incorrectList h3 { font-size: 1.3rem; color: var(--color-error); margin-bottom: 0.5rem; text-align: center; }
+        #incorrectList ul { list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; }
+        #incorrectList li { font-size: 1.1rem; color: var(--color-text-primary); padding: 0.3rem 0.5rem; border-bottom: 1px dashed var(--color-shadow-dark); display: flex; justify-content: space-between; align-items: center; }
+        #incorrectList li span:first-child { font-size: 1rem; color: var(--color-text-secondary); }
+        #incorrectList li span:last-child { font-family: var(--font-harmattan); font-size: 1.5rem; font-weight: bold; margin-left: 0.5rem; direction: rtl; }
+        #incorrectList li span:last-child[lang="ar"] { font-family: var(--font-harmattan); /* Ekstra güvence */ }
+
+
+        /* --- GÜNCELLENDİ: Dinamik Harf Satırı Genişlikleri (Yatay/Varsayılan - Yeni 7rem Buton Boyutuna Göre) --- */
+        /* Yatay Buton: 7rem + 0.4rem gap = ~7.4rem */
+        #letterBankContainer.rows-2 #letterBank { max-width: 30rem; } /* 4/satır (5-8 harf) */
+        #letterBankContainer.rows-3 #letterBank { max-width: 38rem; } /* 5/satır (9-10, 12-14 harf) */
+        #letterBankContainer.rows-4 #letterBank { max-width: 38rem; } /* 5/satır (16+ harf) */
+        #letterBankContainer.rows-5 #letterBank { max-width: 23rem; } /* 3/satır (15 harf) */
+        #letterBankContainer.rows-11 #letterBank { max-width: 30rem; } /* 4/satır (11 harf -> 4-4-3) */
+        /* --- --- */
+
+        /* --- DİKEY EKRAN (Telefon/Tablet) 540x960 ORANI --- */
+        @media (orientation: portrait) {
+            html { font-size: min(calc(100vw / 33.75), calc(100dvh / 60)); }
+            #gameWrapper { width: 33.75rem; height: 60rem; }
+            .screen { padding: 1rem; }
+            .title-text h1 { font-size: 3.5rem; } .title-text h2 { font-size: 2.8rem; }
+            #homeScreen h3 { font-size: 1.8rem; }
+            #levelSelect { max-width: 100%; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .level-btn { font-size: 1.5rem; padding: 1rem; }
+            #gameHeader { max-width: 100%; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+            .header-info { font-size: 1.2rem; } #timerDisplay { font-size: 1.4rem; } #mistakeCounter { font-size: 1.5rem; }
+            
+            #gameContent { 
+                max-width: 100%; 
+                gap: 1rem; /* Minimum boşluk */
+                flex-grow: 1; /* Dikey alanı doldur */
+                justify-content: space-evenly; /* Öğeleri dikeyde eşit dağıt */
+            }
+            #turkishWord { font-size: 3rem; }
+            #arabicOutputDisplay { font-size: 5rem; } 
+
+            #letterBankContainer { margin: 0; padding: 0.1rem; }
+            #letterBank { gap: 0.2rem; max-width: 100%; }
+            
+            /* GÜNCELLENDİ: Buton boyutu dikeyde 4.5rem'e büyütüldü */
+            .letter-bank-btn { font-size: 3.5rem; width: 4.5rem; height: 4.5rem; margin: 0.1rem; border-radius: 0.5rem; padding: 0.2rem 0; }
+            
+            /* GÜNCELLENDİ: Hareke font boyutu dikeyde 3rem'e büyütüldü */
+            .letter-bank-btn.hareke-char { font-size: 3rem; }
+            
+            .back-button { width: 3.5rem; height: 3.2rem; font-size: 1.2rem; }
+            .back-button::before{ width: 0.7em; height: 0.7em; border-width: 0.25em; }
+            #audioControl { width: 3.5rem; height: 3.2rem; /* Boyutu eşitle */}
+            #audioControl button, #nextButton { font-size: 2rem; width: 100%; height: 100%; } /* Konteyneri doldur */
+            #scoreScreen h2 { font-size: 2rem; } #scoreScreen p { font-size: 1.5rem; }
+            #incorrectList { max-width: 100%; }
+            #incorrectList li { font-size: 1rem; } #incorrectList li span:last-child { font-size: 1.3rem; }
+
+            /* --- GÜNCELLENDİ: Dikey için dinamik satır genişlikleri (Yeni 4.5rem Buton Boyutuna Göre) --- */
+            /* Dikey Buton: 4.5rem + 0.2rem gap = ~4.7rem */
+            #letterBankContainer.rows-2 #letterBank { max-width: 19rem; } /* 4/satır (5-8 harf) */
+            #letterBankContainer.rows-3 #letterBank { max-width: 24rem; } /* 5/satır (9-10, 12-14 harf) */
+            #letterBankContainer.rows-4 #letterBank { max-width: 24rem; } /* 5/satır (16+ harf) */
+            #letterBankContainer.rows-5 #letterBank { max-width: 15rem; } /* 3/satır (15 harf) */
+            #letterBankContainer.rows-11 #letterBank { max-width: 19rem; } /* 4/satır (11 harf -> 4-4-3) */
+            
+            #homeScreen {
+                justify-content: space-evenly;
+            }
+        }

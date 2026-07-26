@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YDT Arapça: İnteraktif Eğitim Paneli</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link rel="stylesheet" href="dilbilgisikonuanlatimi.css">
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+    <h2>📖 YDT Konu Listesi</h2>
+    <div id="menu-items"></div>
+</div>
+
+<div class="main-content">
+    <div id="welcome" class="welcome-screen">
+        <h1 style="color: var(--p); font-size: 2.5em;">Arapça YDT Başarı Paneli</h1>
+        <p style="font-size: 1.2em; color: #7f8c8d;">Lütfen sol menüden çalışmak istediğiniz konuyu seçin.</p>
+        <div style="margin-top: 30px; opacity: 0.5;">[ Sol taraftan bir başlığa tıklayın ]</div>
+    </div>
+
+    <div id="content-area" class="content-card">
+        <h1 id="topic-title" style="color: var(--p); margin-top: 0;"></h1>
+        <div id="topic-description"></div>
+        
+        <div class="test-section" id="test-wrapper">
+            <div class="quiz-title">✍️ Konu Kavrama Testi</div>
+            <div id="quiz-content">
+                <p id="q-text" class="arabic" style="text-align: right;"></p>
+                <div id="options-box"></div>
+                <div class="explanation" id="q-explanation"></div>
+                <div style="margin-top: 20px;">
+                    <button class="btn-start" id="next-btn" onclick="loadNextQuestion()" style="display: none;">Sıradaki Soru</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="dilbilgisikonuanlatimi.js"></script>
+
+</body>
+</html>

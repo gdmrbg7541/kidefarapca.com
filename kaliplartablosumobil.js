@@ -3623,7 +3623,8 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
 
     const refEl = boxElement.querySelector('.ref');
     if (!refEl) return;
-    const refId = parseInt(refEl.innerText);
+    let refId = parseInt(refEl.innerText);
+    if (isNaN(refId)) refId = (refEl.innerText || '').trim();
     const isVerb = boxElement.classList.contains('fiil-box');
 
     // ===============================================================
@@ -5975,9 +5976,10 @@ function getReadyRoots() {
 
 function getSortedRefsForRoot(root) {
     if (!sozlukVerileri[root]) return [];
-    return Object.keys(sozlukVerileri[root])
-        .map(Number)
-        .sort((a, b) => a - b);
+    const keys = Object.keys(sozlukVerileri[root]);
+    const nums = keys.map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
+    const extras = keys.filter(k => isNaN(Number(k)) && !(sozlukVerileri[root][k] && sozlukVerileri[root][k].isHiddenInList));  // joker anahtarlar (ör. "?"), gizli anahtarlar hariç
+    return nums.concat(extras);
 }
 
 // ==================================================================

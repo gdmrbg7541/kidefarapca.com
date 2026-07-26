@@ -1,0 +1,418 @@
+:root {
+            --font-poppins: 'Poppins', sans-serif;
+            --font-harmattan: 'Harmattan', Arial, sans-serif;
+            --color-bg: #f0f7ff;
+            --color-surface: #ffffff;
+            --color-shadow-light: #ffffff;
+            --color-shadow-dark: #c2d9f0;
+            --color-text-primary: #2d3142;
+            --color-text-secondary: #7b88a1;
+            --color-accent-1: #f3722c;
+            --color-accent-2: #f8961e;
+            --color-selected-bg: var(--color-accent-1);
+            --color-selected-text: #ffffff;
+            --color-correct: #90be6d;
+            --color-error: #f94144;
+            --color-correct-light: #edf7e7;
+            --color-error-light: #feeaea;
+            --border-radius-main: 1.2rem;
+            --border-radius-small: 0.8rem;
+        }
+
+        html {
+            font-size: min(calc(100vw / 120), calc(100dvh / 67.5));
+            overflow: hidden;
+        }
+
+        body {
+            font-family: var(--font-poppins); background: var(--color-bg); color: var(--color-text-primary); margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; height: 100dvh; overflow: hidden;
+        }
+        
+        /* --- YENİ: Tam Ekran Stilleri --- */
+        body.fullscreen #gameWrapper {
+            width: 100vw;
+            height: calc(100vw * 9 / 16); /* 16:9 en boy oranı */
+            max-height: 100vh;
+            max-width: calc(100vh * 16 / 9);
+            border-radius: 0;
+            box-shadow: none;
+            position: fixed; /* Tam ekranı doldurması için */
+            top: 0;
+            left: 0;
+            z-index: 9999;
+        }
+
+        #gameWrapper {
+            width: 120rem; height: 67.5rem; position: relative;
+            overflow: hidden; background: var(--color-bg);
+            box-shadow: 0 0 2rem rgba(0,0,0,0.15);
+            /* Tam ekran geçişini yumuşat */
+            transition: width 0.3s ease, height 0.3s ease, max-height 0.3s ease, max-width 0.3s ease;
+        }
+
+        .screen {
+            width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0;
+            padding: 2rem; box-sizing: border-box;
+            display: none; flex-direction: column; align-items: center; justify-content: flex-start;
+        }
+        .screen.active { display: flex; }
+        
+        #gameScreen { flex-grow: 1; min-height: 0; width: 100%; justify-content: flex-start; overflow: hidden; }
+        #homeScreen { text-align: center; justify-content: center; }
+
+        .title-container { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-shrink: 0;}
+        .title-text h1 { font-size: 4.5rem; color: var(--color-accent-1); margin: 0; }
+        .title-text h2 { font-size: 3.5rem; font-weight: 700; color: var(--color-text-primary); margin: 0; font-family: var(--font-harmattan); }
+        #homeScreen h3 { font-size: 2.2rem; color: var(--color-text-secondary); padding-bottom: 0.5rem; margin-top: 1rem; font-weight: 600; border-bottom: 2px solid var(--color-accent-1); margin-bottom: 1.5rem; width: auto; display: inline-block;}
+        #levelSelect { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); /* 4 sütunlu düzene geçirildi */
+            gap: 1rem; 
+            width: 100%; 
+            max-width: 45rem; 
+            margin: 0 auto 1rem; 
+        }
+
+        .key-button {
+            padding: 0.8rem 1rem; font-size: 1rem; font-weight: 600; font-family: inherit;
+            border: none; border-radius: var(--border-radius-small); cursor: pointer;
+            transition: all 0.2s ease-out; color: var(--color-text-primary);
+            background: var(--color-surface);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+            display: inline-flex; justify-content: center; align-items: center;
+            line-height: 1.2; user-select: none;
+        }
+        .key-button:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.98); }
+        .key-button:hover:not(:disabled) { color: var(--color-accent-1); }
+        
+        .level-btn { font-size: 1.8rem; padding: 1.2rem 1.8rem; font-weight: 700;}
+        .level-btn.selected { background: var(--color-selected-bg); color: var(--color-selected-text); box-shadow: inset 3px 3px 6px #d15a1a, inset -3px -3px 6px #ff8a3e; transform: none; }
+        
+        #gameHeader {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+            flex-shrink: 0;
+            margin-bottom: 1rem;
+            gap: 1rem; /* Butonlar ve başlık arasına boşluk koy */
+        }
+
+        /* --- YENİ: Geri ve Tam Ekran Buton Stili (Neumorphic) --- */
+        .header-controls-left {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+        
+        .icon-button {
+            /* key-button stilini miras al */
+            padding: 0;
+            font-size: 1.5rem;
+            width: 4rem; 
+            height: 4rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            /* key-button'dan kopyalandı */
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            background: var(--color-surface);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.2;
+            user-select: none;
+            flex-shrink: 0; /* Küçülmesin */
+        }
+        .icon-button:active:not(:disabled) { 
+            box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); 
+            transform: scale(0.98); 
+        }
+        .icon-button:hover:not(:disabled) { 
+            color: var(--color-accent-1); 
+        }
+        .icon-button svg {
+            width: 2.2rem;
+            height: 2.2rem;
+            fill: currentColor;
+        }
+
+        /* --- YENİ: Tam Ekran SVG Kontrolü --- */
+        .fullscreen-btn .icon-open { display: block; }
+        .fullscreen-btn .icon-close { display: none; }
+        body.fullscreen .fullscreen-btn .icon-open { display: none; }
+        body.fullscreen .fullscreen-btn .icon-close { display: block; }
+
+        .game-main { text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 0; padding: 0; width: 100%; overflow: hidden; }
+        #gameContent { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1.5rem; width: 100%; max-width: 60rem; margin: 0 auto; flex-grow: 1; min-height: 0; }
+        
+        #arabicOutputContainer { 
+            padding: 1rem 1.5rem; min-height: 8rem; display: flex; align-items: center; position: relative; 
+            background: var(--color-surface); border: none; border-radius: var(--border-radius-main); 
+            box-shadow: inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); 
+            width: 100%; text-align: center; justify-content: center;
+            box-sizing: border-box; overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        /* --- GÜNCELLENDİ: Türkçe Kelime Alanı --- */
+        #turkishWord { 
+            /* Temel stil (arabicOutputContainer'dan) */
+            padding: 0.5rem 1rem;
+            display: flex; 
+            align-items: center; 
+            position: relative; 
+            background: var(--color-surface); 
+            border: none; 
+            border-radius: var(--border-radius-main); 
+            box-shadow: inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); 
+            text-align: center; 
+            justify-content: center;
+            box-sizing: border-box; 
+            overflow: hidden;
+            flex-shrink: 0;
+            
+            /* Özel stil */
+            font-size: 3rem; /* Sığması için biraz küçültüldü */
+            font-family: var(--font-poppins); 
+            font-weight: 600; 
+            color: var(--color-text-primary); 
+            
+            /* İstenen değişiklikler */
+            max-height: 100px; /* 100px sınırı */
+            min-height: auto; /* Min-height'i kaldır */
+            overflow-y: auto; /* Gerekirse kaydır */
+            
+            /* Layout için */
+            flex-grow: 1; /* Header'da kalan boşluğu doldur */
+            flex-basis: 0; /* Eşit dağılım için */
+        }
+        
+        #arabicOutputDisplay { 
+            font-family: var(--font-harmattan); font-weight: 700; line-height: 1.3; 
+            direction: rtl; font-size: 6rem; color: var(--color-text-primary); 
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        #arabicOutputDisplay.empty::before { content: '...'; color: var(--color-text-secondary); font-weight: normal; font-size: 2rem; opacity: 0.8; }
+        
+        #choiceBankContainer {
+            order: 2;
+            width: 100%;
+            flex-grow: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            background: rgba(0,0,0,0.02);
+            border-radius: var(--border-radius-main);
+        }
+        #choiceBank {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .choice-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            width: 100%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            border-radius: var(--border-radius-small);
+            background: var(--color-bg);
+            transition: opacity 0.3s ease;
+        }
+        
+        .choice-btn {
+            font-family: var(--font-harmattan); font-weight: 700;
+            font-size: 5.5rem;
+            width: 100%;
+            height: 9rem;
+            padding: 0.5rem;
+            margin: 0;
+            line-height: 1;
+            /* key-button stilini miras al */
+            font-family: var(--font-harmattan);
+            border: none;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            color: var(--color-text-primary);
+            background: var(--color-surface);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+        .choice-btn:active:not(:disabled) { 
+            box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); 
+            transform: scale(0.98); 
+        }
+        .choice-btn[lang="ar"] { font-family: var(--font-harmattan); }
+
+        .choice-btn.correct-form { 
+            background-color: var(--color-correct-light) !important; color: var(--color-correct) !important; 
+            box-shadow: inset 2px 2px 4px #76b198, inset -2px -2px 4px #baffa0 !important; 
+            cursor: default; transform: none !important; 
+        }
+        .choice-btn.error-form { 
+            background-color: var(--color-error-light) !important; color: var(--color-error) !important; 
+            box-shadow: inset 2px 2px 4px #d35f61, inset -2px -2px 4px #ff8386 !important; 
+            animation: shake 0.3s ease-in-out; 
+            transform: none !important; 
+        }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        /* --- GÜNCELLENDİ: Ses Kontrol Konumu --- */
+        #audioControl { 
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10;
+            width: 5rem; height: 5rem; /* Butonu büyüt */
+        }
+        #playAudioButton {
+             font-size: 2.5rem; 
+             width: 100%; 
+             height: 100%; 
+             padding: 0;
+             color: var(--color-selected-text); 
+             background: var(--color-accent-1);
+             border-radius: 50%; /* Daire yap */
+             /* key-button stilini kullan */
+             border: none;
+             cursor: pointer;
+             transition: all 0.2s ease-out;
+             box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+             display: inline-flex;
+             justify-content: center;
+             align-items: center;
+             user-select: none;
+        }
+        #playAudioButton:hover:not(:disabled) { background: var(--color-accent-2); }
+        #playAudioButton:active:not(:disabled) { box-shadow: inset 2px 2px 4px #d15a1a, inset -2px -2px 4px #ff8a3e; transform: scale(0.98); }
+
+        @keyframes blink { 0% { transform: scale(1); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 10px var(--color-accent-2); } 50% { transform: scale(1.03); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 20px 5px var(--color-accent-1); } 100% { transform: scale(1); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 10px var(--color-accent-2); } }
+        .blinking-button { animation: blink 1.2s infinite ease-in-out; }
+        
+        :disabled { 
+            background: var(--color-surface) !important; color: var(--color-text-secondary) !important; 
+            box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light) !important; 
+            cursor: not-allowed !important; transform: none !important; opacity: 0.7 !important; 
+        }
+        .choice-btn.correct-form:disabled { 
+            background-color: var(--color-correct-light) !important; color: var(--color-correct) !important; 
+            box-shadow: inset 2px 2px 4px #76b198, inset -2px -2px 4px #baffa0 !important; opacity: 0.8 !important; 
+        }
+        
+        .choice-row.disabled {
+            opacity: 0.6;
+            background: var(--color-correct-light);
+        }
+        .choice-row.active-step {
+            box-shadow: 0 0 10px 3px var(--color-accent-2);
+        }
+
+
+        /* Dikey ekran için düzenlemeler */
+        @media (orientation: portrait) {
+            html { font-size: min(calc(100vw / 33.75), calc(100dvh / 60)); }
+            
+            /* YENİ: Dikey tam ekran ayarı */
+            body.fullscreen #gameWrapper {
+                width: 100vw;
+                height: 100vh; /* Dikeyde tam ekran */
+                max-height: 100vh;
+                max-width: 100vw;
+            }
+            
+            #gameWrapper { width: 33.75rem; height: 60rem; }
+            .screen { padding: 1rem; }
+            
+            /* YENİ: Ana sayfa üst kontrol butonları (Dikey) */
+            .header-controls-left {
+                top: 1rem;
+                left: 1rem;
+                gap: 0.5rem;
+            }
+            .icon-button {
+                width: 3.5rem;
+                height: 3.2rem;
+                font-size: 1.2rem;
+            }
+            .icon-button svg {
+                width: 2rem;
+                height: 2rem;
+            }
+            
+            .title-text h1 { font-size: 3.5rem; } .title-text h2 { font-size: 2.8rem; }
+            #homeScreen h3 { font-size: 1.8rem; }
+            #levelSelect { max-width: 100%; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .level-btn { font-size: 1.5rem; padding: 1rem; }
+
+            #gameHeader { margin-bottom: 0.5rem; }
+            
+            #gameContent { max-width: 100%; gap: 0.8rem; }
+            /* GÜNCELLENDİ: Türkçe Kelime (Dikey) */
+            #turkishWord { 
+                font-size: 2.5rem; 
+                min-height: auto; 
+                padding: 0.5rem; 
+                max-height: 80px; /* Dikeyde de sınırla */
+            }
+            #arabicOutputDisplay { font-size: 4rem; } 
+            #arabicOutputContainer { min-height: 5rem; }
+
+            #choiceBankContainer { padding: 0.3rem; }
+            #choiceBank { gap: 0.8rem; }
+            .choice-row { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+            .choice-btn { font-size: 3.5rem; height: 5.5rem; border-radius: 0.5rem; }
+            
+            /* GÜNCELLENDİ: Ses Kontrol (Dikey) */
+            #audioControl {
+                bottom: 1rem;
+                right: 1rem;
+                width: 4.5rem;
+                height: 4.5rem;
+            }
+        }
+
+         /* Dikey modda DEĞİLKEN (yani yatay modda) */
+        @media (orientation: landscape) {
+            
+            /* Bu seçici, 'choice-row-centered-options' sınıfına sahip bir satırın
+              DOĞRUDAN altındaki 'choice-btn'leri hedefler.
+              
+              ':first-child:nth-last-child(2)' kısmı:
+              Bu butonun hem ilk çocuk (first-child) 
+              HEM DE sondan ikinci (nth-last-child(2)) olmasını şart koşar.
+              
+              Bu, yalnızca ebeveynin (choice-row) TOPLAM 2 çocuğu (yani 2 butonu)
+              olduğunda doğru olur.
+            */
+            
+            .choice-row-centered-options > .choice-btn:first-child:nth-last-child(2) {
+                /* Yatay modda 4 sütunlu bir grid'imiz var (repeat(4, 1fr)).
+                  İlk butonu 2. sütundan başlatarak (1. sütunu boş bırakarak),
+                  2 butonu 2. ve 3. sütunlara yerleştirip ortalamış oluruz.
+                */
+                grid-column-start: 2;
+            }
+        }

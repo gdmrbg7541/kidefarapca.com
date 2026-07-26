@@ -85,13 +85,22 @@ const ROOTS_GAME1 = [
         ]
     },
     {
-        root: "ح ر م",
+        root: "ف ك ر",
         targets: [
-            { emoji:"🚫",  word:"حَرام" },
-            { emoji:"👨‍👩‍👧", word:"مَحْرَم" },
-            { emoji:"🕋",  word:"إحْرام" },
-            { emoji:"🌙",  word:"مُحَرَّم" },
-            { emoji:"😔",  word:"مَحْروم" }
+            { emoji:"🧠",  word:"فِكْر" },
+            { emoji:"💡",  word:"فِكْرَة" },
+            { emoji:"🧘",  word:"تَفَكُّر" },
+            { emoji:"💭",  word:"أَفْكار" }
+        ]
+    },
+    {
+        root: "ع ر ف",
+        targets: [
+            { emoji:"🧓",  word:"عارِف" },
+            { emoji:"📝",  word:"تَعْريف" },
+            { emoji:"🔍",  word:"مَعْرِفَة" },
+            { emoji:"🕯️",  word:"عِرْفان" },
+            { emoji:"📜",  word:"عُرْف" }
         ]
     }
 ];
@@ -100,30 +109,56 @@ const ROOTS_GAME1 = [
    öğretmenin verdiği listeden seçildi. 1. tur "مَ" zaid, 2. tur
    "مُ/تَ" zaid, 3. tur ise ح م د + ق د ر ailesi (iki kök, beş kelime). */
 /* ---------- FİİL ÇEKİMİ (yalnızca oyun 1'deki kökler için) ----------
-   Sülâsî mücerredde çekim, 2. kök harfinin mâzî ve muzâri harekesiyle
-   belirlenir; bu yüzden 60 kelimeyi tek tek yazmak yerine iki harekeden
-   üretiyoruz (buildConjugation). Emir hemzesi muzâri harekesine göre
-   damme (يَكْتُبُ → اُكْتُبْ) ya da kesre (يَعْلَمُ → اِعْلَمْ) alır. */
+   Her kök, öğretmenin istediği bab'dan çekiliyor:
+     I. bab  (sülâsî mücerred, فَعَلَ)  → د ر س , ك ت ب
+     II. bab (فَعَّلَ, şeddeli)          → س ل م , ف ك ر , ع ر ف
+     V. bab  (تَفَعَّلَ, başta zaid تَ)   → ع ل م
+   60 kelimeyi tek tek yazmak yerine her bab için mâzî/muzâri gövdesi,
+   muzâri ön ekinin harekesi ve emirdeki vasıl hemzesi tarif ediliyor;
+   gerisini buildConjugation üretiyor. Sülâsîde emir hemzesi muzâri
+   harekesine göre damme (يَكْتُبُ → اُكْتُبْ) ya da kesre (يَعْلَمُ → اِعْلَمْ)
+   alır; II. ve V. babda gövde zaten harekeli başladığı için vasıl
+   hemzesi YOKTUR (سَلِّمْ , تَعَلَّمْ). */
 const FATHA = '\u064E', DAMMA = '\u064F', KASRA = '\u0650', SUKUN = '\u0652';
+const SHADDA = '\u0651';
 const HARAKA = { a: FATHA, u: DAMMA, i: KASRA };
 
-const VERB_VOWELS = {
-    "د ر س": { past: 'a', pres: 'u' },  // دَرَسَ – يَدْرُسُ – اُدْرُسْ
-    "ع ل م": { past: 'i', pres: 'a' },  // عَلِمَ – يَعْلَمُ – اِعْلَمْ
-    "ك ت ب": { past: 'a', pres: 'u' },  // كَتَبَ – يَكْتُبُ – اُكْتُبْ
-    "س ل م": { past: 'i', pres: 'a' },  // سَلِمَ – يَسْلَمُ – اِسْلَمْ
-    "ح ر م": { past: 'a', pres: 'i' }   // حَرَمَ – يَحْرِمُ – اِحْرِمْ
+const VERB_FORMS = {
+    "د ر س": { bab: 'I',  past: 'a', pres: 'u' },  // دَرَسَ  – يَدْرُسُ   – اُدْرُسْ
+    "ك ت ب": { bab: 'I',  past: 'a', pres: 'u' },  // كَتَبَ  – يَكْتُبُ   – اُكْتُبْ
+    "ع ل م": { bab: 'V' },                          // تَعَلَّمَ – يَتَعَلَّمُ – تَعَلَّمْ
+    "س ل م": { bab: 'II' },                         // سَلَّمَ  – يُسَلِّمُ  – سَلِّمْ
+    "ف ك ر": { bab: 'II' },                         // فَكَّرَ  – يُفَكِّرُ  – فَكِّرْ
+    "ع ر ف": { bab: 'II' }                          // عَرَّفَ  – يُعَرِّفُ  – عَرِّفْ
 };
 
 function buildConjugation(root) {
-    const v = VERB_VOWELS[root];
+    const v = VERB_FORMS[root];
     if (!v) return null;
     const p = root.split(' ');
     if (p.length !== 3) return null;
     const f = p[0], a = p[1], l = p[2];
-    const madiStem = f + FATHA + a + HARAKA[v.past];   // كَتَ
-    const mudStem  = f + SUKUN + a + HARAKA[v.pres];   // كْتُ
-    const wasl     = 'ا' + (v.pres === 'u' ? DAMMA : KASRA);
+
+    /* madiStem / mudStem : son kök harfinden ÖNCEKİ kısım.
+       onEk  : muzâri ön ekinin (أ ت ي) harekesi.
+       wasl  : emirde başa gelen vasıl hemzesi ('' ise hiç gelmez). */
+    let madiStem, mudStem, onEk, wasl;
+    if (v.bab === 'II') {
+        madiStem = f + FATHA + a + SHADDA + FATHA;                 // سَلَّ
+        mudStem  = f + FATHA + a + SHADDA + KASRA;                 // سَلِّ
+        onEk     = DAMMA;                                          // يُسَلِّمُ
+        wasl     = '';                                             // سَلِّمْ
+    } else if (v.bab === 'V') {
+        madiStem = 'ت' + FATHA + f + FATHA + a + SHADDA + FATHA;   // تَعَلَّ
+        mudStem  = madiStem;                                       // يَتَعَلَّمُ
+        onEk     = FATHA;
+        wasl     = '';                                             // تَعَلَّمْ
+    } else {
+        madiStem = f + FATHA + a + HARAKA[v.past];                 // كَتَ
+        mudStem  = f + SUKUN + a + HARAKA[v.pres];                 // كْتُ
+        onEk     = FATHA;
+        wasl     = 'ا' + (v.pres === 'u' ? DAMMA : KASRA);         // اُ / اِ
+    }
     return {
         madi: [
             ['أَنا',   madiStem + l + SUKUN + 'ت' + DAMMA],
@@ -133,11 +168,11 @@ function buildConjugation(root) {
             ['هِيَ',   madiStem + l + FATHA + 'ت' + SUKUN]
         ],
         mudari: [
-            ['أَنا',   'أ' + FATHA + mudStem + l + DAMMA],
-            ['أَنْتَ', 'ت' + FATHA + mudStem + l + DAMMA],
-            ['أَنْتِ', 'ت' + FATHA + mudStem + l + 'ين' + FATHA],
-            ['هُوَ',   'ي' + FATHA + mudStem + l + DAMMA],
-            ['هِيَ',   'ت' + FATHA + mudStem + l + DAMMA]
+            ['أَنا',   'أ' + onEk + mudStem + l + DAMMA],
+            ['أَنْتَ', 'ت' + onEk + mudStem + l + DAMMA],
+            ['أَنْتِ', 'ت' + onEk + mudStem + l + 'ين' + FATHA],
+            ['هُوَ',   'ي' + onEk + mudStem + l + DAMMA],
+            ['هِيَ',   'ت' + onEk + mudStem + l + DAMMA]
         ],
         /* Emir yalnızca muhataba (أَنْتَ / أَنْتِ) yapılır; diğer üç zamirde çekim
            YOKTUR. Tablo yine de 5 satır basılıyor (null = tire), ki üç zamanın
@@ -228,7 +263,9 @@ const ROOT_COLORS = {
     "ح ر م": ["#c026d3", "#f0abfc"], // fuşya
     "ق د ر": ["#92400e", "#e0ac82"], // bronz
     "ج ل س": ["#4338ca", "#a5b4fc"], // çivit
-    "س ج د": ["#0f766e", "#5eead4"]  // petrol
+    "س ج د": ["#0f766e", "#5eead4"], // petrol
+    "ف ك ر": ["#be185d", "#fbcfe8"], // gül
+    "ع ر ف": ["#0369a1", "#7dd3fc"]  // gök mavisi
 };
 const DEFAULT_ROOT_COLOR = ["#7c3aed", "#a78bfa"];
 function rootColors(root) { return ROOT_COLORS[root] || DEFAULT_ROOT_COLOR; }
@@ -810,14 +847,12 @@ const Game2 = {
             <div class="progress-pill" id="g2-progress">${this.state.doneTotal} / ${this.totalWords()}</div>
             <div class="g2-wrap">
                 <div class="g1-title" dir="rtl">اُسْحَبِ الكَلِمَةَ إِلى الآلَةِ لِتَسْتَخْرِجَ جَذْرَها</div>
-                <div class="g2-stage">
-                    <div class="g2-output-tray" id="g2-output"></div>
+                <div class="g2-stage" id="g2-stage" style="--g2-satir:${this.state.words.length}">
                     <div class="drop-zone g2-machine" id="g2-machine">
                         <div class="g2-gear-visual" id="g2-gear">
                             <span class="gear">⚙️</span><span class="gear g2">⚙️</span>
                         </div>
                     </div>
-                    <div class="g2-words" id="g2-words"></div>
                 </div>
             </div>
         `;
@@ -826,17 +861,29 @@ const Game2 = {
             App.showScreen('start-screen');
         });
 
-        const wordsWrap = document.getElementById('g2-words');
+        const stage = document.getElementById('g2-stage');
         this.state.words.forEach((w, i) => {
+            /* Önce o kelimeye ait (şimdilik boş) kök yuvası, hemen ardından
+               kelime kutusu ekleniyor. Izgara ikisini aynı satıra yerleştirdiği
+               için çıkan kök kelimesinin tam karşısında beliriyor. */
+            const slot = document.createElement('div');
+            slot.className = 'g2-root-slot';
+            slot.id = 'g2-slot-' + i;
+            stage.appendChild(slot);
+
             const chip = document.createElement('div');
             chip.className = 'g2-word-chip';
             chip.dir = 'rtl';
+            /* Sürükleme ipucu dalgası sırayla gelsin: kutular artık yuvalarla
+               dönüşümlü sıralandığı için gecikme CSS'teki nth-child yerine
+               buradan veriliyor. */
+            chip.style.animationDelay = (i * 0.16) + 's';
             // Zaid (kökten gelmeyen ek) harfler burada da kırmızı gösteriliyor.
             chip.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>`;
             chip.dataset.index = i;
             // Kelimenin çerçevesi ait olduğu kökün rengini alıyor.
             paintRootBadge(chip, w.root);
-            wordsWrap.appendChild(chip);
+            stage.appendChild(chip);
 
             App.makeDraggable(chip, {
                 getClone: () => {
@@ -863,13 +910,13 @@ const Game2 = {
 
         setTimeout(() => {
             gear.classList.remove('grinding');
-            const out = document.getElementById('g2-output');
+            const slot = document.getElementById('g2-slot-' + chip.dataset.index);
             const res = document.createElement('div');
             res.className = 'g2-root-result';
             res.dir = 'rtl';
             res.innerHTML = `<div>${formatRootDisplay(w.root)}</div>`;
             paintRootBadge(res, w.root);
-            out.appendChild(res);
+            if (slot) slot.appendChild(res);
             App.playSound('correct');
 
             this.state.usedCount++;
@@ -1169,12 +1216,12 @@ function quizSorulariUret() {
         amr:    ['الأَمْر',    'emir']
     };
     const tumFiiller = [];
-    Object.keys(VERB_VOWELS).forEach(r => {
+    Object.keys(VERB_FORMS).forEach(r => {
         const c = buildConjugation(r);
         if (!c) return;
         ['madi', 'mudari', 'amr'].forEach(z => c[z].forEach(p => { if (p[1]) tumFiiller.push(p[1]); }));
     });
-    Object.keys(VERB_VOWELS).forEach(root => {
+    Object.keys(VERB_FORMS).forEach(root => {
         const c = buildConjugation(root);
         if (!c) return;
         ['madi', 'mudari', 'amr'].forEach(z => c[z].forEach(pair => {

@@ -27,6 +27,17 @@ service cloud.firestore {
       allow read, write: if isSignedIn();
       match /{document=**} { allow read, write: if isSignedIn(); }
     }
+
+    // Bilgi Yarışması — oda + takımlar + cevaplar (sınıf içi canlı yarışma)
+    match /bilgiYarismasi/{oda} {
+      // Oda bilgisini giriş yapmış/anonim herkes okur; oda oluşturma ve başlatma sadece öğretmen/yönetici
+      allow read:                   if isSignedIn();
+      allow create, update, delete: if isTeacherOrAdmin();
+      // Takımlar ve cevaplar — takımlar (anonim) kendi bağlantı/cevaplarını yazar
+      match /{alt=**} {
+        allow read, write: if isSignedIn();
+      }
+    }
     // Global uygulama durumu — GEÇİCİ (Aşama 3'te öğretmen/randevu şemasıyla daraltılacak)
     match /global/{doc} {
       // Okuma herkese (giris yapmis); yazma sadece ogretmen/admin - ogrenciler ortak veriyi bozamaz
@@ -53,6 +64,11 @@ service cloud.firestore {
     match /mufredat/{pkgId} {
       allow read:  if isSignedIn();
       allow write: if isAdmin();
+    }
+    // Öğretmen müsaitlik takvimleri — giriş yapan okur (öğrenci randevu için görür), öğretmen/yönetici yazar
+    match /takvimler/{teacherId} {
+      allow read:  if isSignedIn();
+      allow write: if isTeacherOrAdmin();
     }
   }
 }

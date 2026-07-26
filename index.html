@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <script>
+    /* Vitrin kapısı: siteye her yeni girişte önce indexyeni.html (vitrin) açılır.
+       Vitrin açılınca oturum işareti bırakır; aynı oturumda index'e dönüş ve site içi
+       gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i silmen yeterli. */
+    try{ if(!sessionStorage.getItem('kidefVitrin')) location.replace('indexyeni.html'); }catch(e){}
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kidefarapca.com</title>
@@ -483,15 +489,6 @@
       <h2>🎮 Oyunlar</h2>
       <div class="soft-green-block">
         <div class="game-grid mobile-scroll-grid-single">
-
-          <a href="sarf.html" target="_blank" rel="opener" class="game-card kss-card">
-            <div class="default-game-content">
-              <div class="default-game-emoji">🌱</div>
-              <h3>Kökten Kelimeye</h3>
-              <span class="game-card-description">Kök ve kalıp oyunları + canlı yarışma.</span>
-              <span class="status-badge available">Hemen Oyna</span>
-            </div>
-          </a>
 
           <a href="hangiharf.html" target="_blank" rel="opener" class="game-card kss-card">
             <div class="default-game-content">
@@ -1208,7 +1205,7 @@
         <script src="ogretmen.js"></script>
         <script src="paketler.js"></script>
         <script src="state.js"></script>
-    <script src="auth.js?v=20260723b"></script>
+    <script src="auth.js?v=20260723a"></script>
     <script src="router.js?v=20260723d"></script>
     <script src="offline-packages.js"></script>
     <script src="online-packages.js"></script>
@@ -1217,7 +1214,7 @@
     <script src="teacher-admin.js"></script>
     <script src="alarm.js"></script>
     <script src="live-lesson.js?v=20260722c"></script>
-    <script src="listelerim.js?v=20260723b"></script>
+    <script src="listelerim.js?v=20260723a"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
     <script>
