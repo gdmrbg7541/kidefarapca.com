@@ -1,0 +1,204 @@
+html { font-size: clamp(16px, 1.6vw, 24px); }
+
+        :root {
+            --bg-start: #f7f9fc; --bg-end: #e8eef5; --primary-color: #5E81AC; --accent-color: #f7b733; --surface-color: #FFFFFF; --text-color: #2e3440; --text-light-color: #FFFFFF; --player1-color: #64a7fa; --player2-color: #f77d7d; --correct-color: #2ddc73; --incorrect-color: #f24c4c; --shadow-light: rgba(46, 52, 64, 0.07); --shadow-medium: rgba(46, 52, 64, 0.12); --border-radius-sm: 8px; --border-radius-md: 12px; --border-radius-lg: 16px;
+            --button-bg: var(--surface-color); --button-shadow: 0 3px #d8dee9; --button-hover-bg: #eceff4; --button-selected-bg: var(--primary-color); --button-selected-color: var(--text-light-color); --button-selected-shadow: 0 0 0 3px var(--accent-color);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+
+        body { font-family: 'Marhey', sans-serif; background-color: var(--bg-start); background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text-color); text-align: center; text-rendering: optimizeLegibility; }
+        button, input, select { font-family: inherit; }
+
+        #game-wrapper { width: 100%; height: 100%; position: relative; }
+
+        .screen { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; position: absolute; top: 0; left: 0; transition: opacity 0.5s; overflow-y: auto; padding: 20px; }
+        .screen.active { display: flex; }
+
+        /* --- YENİ BUTON TASARIMLARI (Geri ve Tam Ekran) --- */
+        .back-button-container {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 300; /* En üstte durması için */
+        }
+
+        .back-button, #fullscreen-btn {
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            width: clamp(40px, 8vmin, 50px);
+            height: clamp(40px, 8vmin, 50px);
+            padding: 0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover, #fullscreen-btn:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .back-button svg, #fullscreen-btn svg {
+            width: clamp(24px, 5vmin, 28px);
+            height: clamp(24px, 5vmin, 28px);
+            fill: #555;
+        }
+
+        /* Tam Ekran Butonu Konumu */
+        #fullscreen-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 300;
+        }
+
+        /* Tam Ekran İkon Değişimi */
+        .icon-close { display: none; }
+        body.fullscreen .icon-open { display: none; }
+        body.fullscreen .icon-close { display: block; }
+        /* ------------------------------------------------ */
+
+        /* --- Başlangıç Ekranı --- */
+        #start-screen { gap: 25px; justify-content: center; padding-top: 60px; /* Üst butonlar için boşluk */ }
+        .start-title { font-size: clamp(2.2rem, 5vw, 3rem); color: var(--text-color); margin-bottom: 10px; }
+        .start-options { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px; }
+        .option-group { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+        .option-group label { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 5px; text-align: left; }
+        .player-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .player-button, #lesson-select, #start-game-btn { background-color: var(--button-bg); border: none; border-radius: var(--border-radius-md); padding: 12px 15px; font-size: 1.2rem; font-weight: 500; color: var(--text-color); cursor: pointer; transition: all 0.2s ease; box-shadow: var(--button-shadow); text-align: center; }
+
+        .player-button:hover, #lesson-select:hover { background-color: var(--button-hover-bg); transform: translateY(-1px); box-shadow: 0 4px #cdd3db; }
+        .player-button:active, #start-game-btn:not(:disabled):active { transform: translateY(1px); box-shadow: 0 2px #d8dee9; }
+        .player-button.selected { background-color: var(--button-selected-bg); color: var(--text-light-color); font-weight: bold; box-shadow: var(--button-selected-shadow); transform: none; }
+
+        #lesson-select { width: 100%; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235E81AC'%3E%3Cpath d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 24px; padding-right: 40px; text-align-last: center; }
+        #lesson-select:disabled { background-color: #eceff4; opacity: 0.7; cursor: not-allowed; }
+
+        #start-game-btn { margin-top: 15px; font-size: 1.4rem; font-weight: bold; }
+        #start-game-btn:disabled { background-color: #bdc3c7; color: #7f8c8d; opacity: 0.7; box-shadow: none; cursor: not-allowed; transform: none; }
+        #start-game-btn:not(:disabled) { background-color: var(--correct-color); color: white; animation: button-glow 1.5s infinite ease-in-out; cursor: pointer; box-shadow: 0 4px 15px rgba(45, 220, 115, 0.4); transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
+        #start-game-btn:not(:disabled):hover { background-color: #28b863; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45, 220, 115, 0.5); animation: none; }
+        #start-game-btn:not(:disabled):active { background-color: #23a358; transform: translateY(1px); box-shadow: 0 2px 10px rgba(45, 220, 115, 0.4); animation: none; }
+
+
+        /* --- Oyun Ekranı --- */
+        #quiz-screen { padding: 15px; padding-top: 70px; /* Geri butonu için boşluk */ gap: 15px; justify-content: flex-start; }
+        #quiz-screen.single-player-mode { justify-content: center; }
+        #results-screen { justify-content: center; padding-top: 60px; }
+
+        .hidden { display: none !important; }
+
+        #quiz-container { display: flex; flex-direction: row; gap: 15px; width: 100%; height: 100%; max-width: 1500px; position: relative; }
+        #quiz-container::after { content: ''; position: absolute; top: 5%; bottom: 5%; left: 50%; transform: translateX(-50%); width: 2px; background-color: rgba(0,0,0,0.08); border-radius: 2px; }
+
+        #quiz-screen.single-player-mode #quiz-container { flex-direction: column; max-width: 700px; height: auto; }
+        #quiz-screen.single-player-mode #quiz-container::after { display: none; }
+        #quiz-screen.single-player-mode .quiz-player-area.p2 { display: none; }
+        #quiz-screen.single-player-mode .quiz-player-area.p1 { width: 100%; min-height: unset; }
+
+        .countdown-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(46, 52, 64, 0.75); backdrop-filter: blur(4px); z-index: 200; display: none; justify-content: center; align-items: center; font-size: clamp(10rem, 35vw, 20rem); font-weight: bold; color: var(--accent-color); text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #quiz-start-btn { font-size: 4rem; padding: 20px 60px; border-radius: var(--border-radius-lg); border: none; background-color: var(--correct-color); color: white; cursor: pointer; box-shadow: 0 8px 30px rgba(45, 220, 115, 0.5); animation: wave-pulse 2s infinite ease-in-out; transform: scale(1.1); }
+
+        .quiz-player-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 15px; gap: 15px; border-radius: var(--border-radius-lg); transition: transform 0.5s, box-shadow 0.5s; position: relative; min-height: 400px; }
+        .score-effects-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; overflow: hidden; border-radius: var(--border-radius-lg); }
+        .score-effect { position: absolute; top: 50%; left: 50%; transform: translateX(-50%); font-size: 3.5rem; font-weight: bold; color: var(--text-light-color); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); padding: 5px 15px; border-radius: var(--border-radius-sm); display: flex; align-items: center; gap: 10px; animation: float-up-and-fade 2s ease-out forwards; }
+        .score-effect.bonus { z-index: 101; }
+        .burst-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .particle { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; margin-top: -5px; margin-left: -5px; background-color: var(--accent-color); border-radius: 50%; opacity: 0; animation: burst 1.2s ease-out; }
+        @keyframes burst { 0% { transform: rotate(var(--angle)) translateY(20px) scale(1); opacity: 1; } 100% { transform: rotate(var(--angle)) translateY(120px) scale(0); opacity: 0; } }
+        .score-effect svg { width: 32px; height: 32px; fill: white; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5)); }
+        @keyframes float-up-and-fade { 0% { transform: translate(-50%, 0); opacity: 1; } 100% { transform: translate(-50%, -300px); opacity: 0; } }
+        .quiz-player-area.shake { animation: shake 0.5s; }
+        .quiz-option-btn.shake { animation: shake 0.5s; }
+
+        .quiz-top-bar { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px; padding: 0 5px; flex-shrink: 0; }
+        .quiz-game-content { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 15px; width: 100%; flex-grow: 1; }
+        .quiz-player-area .quiz-progress { font-size: 1.6rem; color: var(--text-color); font-weight: bold; display: flex; align-items: center; flex-shrink: 0; }
+        .quiz-score-display { display: flex; align-items: center; gap: 8px; }
+        .quiz-score-display svg { width: 28px; height: 28px; fill: var(--accent-color); }
+        .quiz-player-area .progress-bar { flex-grow: 1; margin: 0; flex-direction: row-reverse; display: flex; gap: 4px; height: 10px; flex-shrink: 1; width: auto; }
+        .progress-segment { flex: 1; background-color: #e5e9f0; border-radius: 5px; transition: all 0.3s ease; }
+        .progress-segment.correct { background-color: var(--correct-color); }
+        .progress-segment.incorrect { background-color: var(--incorrect-color); }
+        .progress-segment.active { background-color: var(--accent-color); transform: scaleY(1.5); }
+
+        .quiz-player-area .quiz-question { font-size: clamp(2.5rem, 10cqw, 4rem); font-weight: bold; padding: 15px; background-color: var(--surface-color); border-radius: var(--border-radius-md); min-height: 120px; display: block; white-space: normal; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; text-align: center; width: 100%; box-shadow: 0 4px 15px var(--shadow-light); margin-bottom: 15px; direction: rtl; container-type: inline-size; flex-shrink: 0; display: flex; align-items: center; justify-content: center;}
+        .quiz-player-area .quiz-options { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; flex-grow: 1; }
+        .quiz-options.five-options { grid-template-columns: 1fr 1fr; }
+        .quiz-options.five-options .quiz-option-btn:last-child { grid-column: 1 / -1; }
+
+        .quiz-player-area .quiz-option-btn { font-family: inherit; border: 2px solid; color: var(--text-color); font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: bold; padding: 12px; border-radius: var(--border-radius-md); cursor: pointer; transition: all 0.2s ease-in-out; box-shadow: 0 2px 8px var(--shadow-light); min-height: 50px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; direction: ltr; }
+        .quiz-option-btn.selected { transform: scale(1.02); }
+        .p1 .quiz-option-btn.selected { border-color: var(--player1-color); box-shadow: 0 4px 10px rgba(100, 167, 250, 0.4); }
+        .p2 .quiz-option-btn.selected { border-color: var(--player2-color); box-shadow: 0 4px 10px rgba(247, 125, 125, 0.4); }
+        .quiz-option-btn.correct { background-color: var(--correct-color) !important; border-color: var(--correct-color) !important; color: var(--text-light-color) !important; transform: scale(1.03); }
+        .quiz-option-btn.incorrect { background-color: var(--incorrect-color) !important; border-color: var(--incorrect-color) !important; color: var(--text-light-color) !important; transform: scale(1.03); }
+        .quiz-option-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .quiz-option-btn.correct:disabled, .quiz-option-btn.incorrect:disabled { opacity: 1; }
+        .quiz-player-area.p1 { background-color: rgba(100, 167, 250, 0.1); }
+        .quiz-player-area.p1 .quiz-option-btn { background-color: #f0f6ff; border-color: #d1e3ff; }
+        .quiz-player-area.p1 .quiz-option-btn:hover:not(:disabled) { background-color: #e2eeff; border-color: var(--player1-color); transform: translateY(-2px); }
+        .quiz-player-area.p2 { background-color: rgba(247, 125, 125, 0.1); }
+        .quiz-player-area.p2 .quiz-option-btn { background-color: #fff0f0; border-color: #ffd6d6; }
+        .quiz-player-area.p2 .quiz-option-btn:hover:not(:disabled) { background-color: #ffe4e4; border-color: var(--player2-color); transform: translateY(-2px); }
+
+        .game-over-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--surface-color); padding: 30px 50px; border-radius: var(--border-radius-lg); border: none; z-index: 200; display: flex; flex-direction: column; align-items: center; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .game-start-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(46, 52, 64, 0.7); backdrop-filter: blur(5px); z-index: 150; display: flex; justify-content: center; align-items: center; }
+
+        #results-screen h2 { font-size: clamp(2.5rem, 6vw, 4rem); margin-bottom: 15px; margin-top: 0; }
+        #results-screen h3 { font-size: clamp(2rem, 5vw, 3rem); margin: 10px 0; }
+        #results-screen p { font-size: clamp(1.2rem, 3vw, 1.8rem); margin: 10px 0; color: var(--primary-color); }
+        .unlocked-message { font-size: clamp(1.8rem, 5vw, 2.8rem) !important; font-weight: bold; color: var(--correct-color) !important; animation: button-glow 1.5s infinite ease-in-out; text-shadow: 0 0 10px rgba(45, 220, 115, 0.5); margin-top: 10px !important; }
+
+        #quiz-winner-icon-container { display: flex; justify-content: center; gap: 10px; }
+        #quiz-winner-icon-container svg { width: clamp(50px, 10vw, 80px); height: clamp(50px, 10vw, 80px); }
+        #quiz-win-text.p1-win { color: var(--player1-color); }
+        #quiz-winner-icon-container.p1-win svg { fill: var(--player1-color); }
+        #quiz-win-text.p2-win { color: var(--player2-color); }
+        #quiz-winner-icon-container.p2-win svg { fill: var(--player2-color); }
+        #quiz-win-text.draw { color: var(--accent-color); }
+        #quiz-winner-icon-container.draw svg { width: clamp(40px, 8vw, 60px); height: clamp(40px, 8vw, 60px); }
+        #quiz-winner-icon-container.draw svg:first-child { fill: var(--player1-color); }
+        #quiz-winner-icon-container.draw svg:last-child { fill: var(--player2-color); }
+
+        .win-buttons { display: flex; gap: 30px; margin-top: 15px; }
+        .win-buttons .icon-btn { background-color: transparent; border: none; cursor: pointer; transition: all 0.3s ease; padding: 5px;}
+        .win-buttons .icon-btn:hover { transform: scale(1.1); }
+        .win-buttons .icon-btn svg { width: clamp(40px, 8vw, 56px); height: clamp(40px, 8vw, 56px); fill: var(--primary-color); }
+        .win-buttons .icon-btn:hover svg { fill: var(--accent-color); }
+
+        @keyframes pulse-start { 0%, 100% { transform: scale(1); box-shadow: 0 4px 15px var(--shadow-light); opacity: 0.95; } 50% { transform: scale(1.03); box-shadow: 0 6px 20px rgba(45, 220, 115, 0.3); opacity: 1; } }
+        @keyframes wave-pulse { 0%, 100% { transform: scale(1.1); box-shadow: 0 8px 30px rgba(45, 220, 115, 0.5); } 50% { transform: scale(1.15); box-shadow: 0 12px 40px rgba(45, 220, 115, 0.7); } }
+        @keyframes button-glow { 0%, 100% { box-shadow: 0 0 8px rgba(45, 220, 115, 0.5); } 50% { box-shadow: 0 0 20px rgba(45, 220, 115, 0.8); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        @media (max-width: 1000px) {
+            #quiz-container { flex-direction: column; gap: 10px; height: auto; }
+            #quiz-container::after { display: none; }
+            .quiz-player-area { min-height: unset; }
+        }
+         @media (max-width: 600px) {
+             .start-title { font-size: 2.2rem; }
+             .option-group label { font-size: 1.3rem; }
+             .player-button, #lesson-select { font-size: 1.2rem; padding: 12px 14px;}
+             #start-game-btn { font-size: 1.4rem; padding: 12px 20px;}
+             #quiz-screen { padding: 10px; gap: 10px; padding-top: 60px;}
+             .quiz-player-area { padding: 10px;}
+             .quiz-player-area .quiz-question { font-size: 2.5rem; min-height: 80px; padding: 10px;}
+             .quiz-player-area .quiz-option-btn { font-size: 1.4rem; padding: 12px; min-height: 50px;}
+             #quiz-start-btn { font-size: 3rem; padding: 15px 40px; transform: scale(1);}
+             @keyframes wave-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(45, 220, 115, 0.4); } 50% { transform: scale(1.05); box-shadow: 0 10px 30px rgba(45, 220, 115, 0.6); } }
+             .game-over-overlay { padding: 20px; width: 90%; }
+         }
+
+        html, body { font-family: 'Marhey', sans-serif !important; }
+        .quiz-question, .status-word { font-family: 'Harmattan', sans-serif !important; }
+        button, input, select, .start-title, h2, h3, label, .quiz-option-btn, .quiz-progress, p { font-family: 'Marhey', sans-serif !important; }

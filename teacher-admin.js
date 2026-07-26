@@ -1016,7 +1016,7 @@ function renderTeacherPanel() {
             </details>
 
             <details class="admin-details" name="teacher-accordion">
-                <summary class="admin-summary">Takvim ve Müsaitlik Yönetimi</summary>
+                <summary class="admin-summary">📅 Ders Ver — Müsaitlik Takvimim</summary>
                 <div id="teacher-schedule-editor" style="margin-top: 15px; margin-bottom: 10px;"></div>
             </details>
         </div>
@@ -1407,12 +1407,41 @@ function renderTeacherScheduleEditor() {
     editor.innerHTML = getTeacherCalendarEditorHtml(teacherId, false);
 }
 
+// ==========================================================================
+// ÖĞRETMEN MÜSAİTLİK TAKVİMİ KALICILIĞI — Firestore: takvimler/{teacherId}
+// ==========================================================================
+function saveTeacherSchedule(teacherId){
+    if (typeof firebase === 'undefined' || !firebase.firestore) return;
+    var sched = teacherSchedules[teacherId];
+    if (!sched) return;
+    firebase.firestore().collection('takvimler').doc(String(teacherId)).set({
+        schedule: sched
+    }).catch(function(e){ console.warn('takvim kaydedilemedi:', e && e.code); });
+}
+function loadTeacherSchedules(){
+    if (typeof firebase === 'undefined' || !firebase.firestore) return;
+    firebase.firestore().collection('takvimler').get().then(function(snap){
+        var changed=false;
+        snap.forEach(function(d){
+            var saved = d.data() || {};
+            if (Array.isArray(saved.schedule)) { teacherSchedules[d.id] = saved.schedule; changed=true; }
+        });
+        if (changed) {
+            if (typeof renderTeacherScheduleEditor === 'function' && document.getElementById('teacher-schedule-editor')) renderTeacherScheduleEditor();
+            if (typeof renderAdminTeacherScheduleEditor === 'function' && document.getElementById('admin-teacher-schedule-editor') && document.getElementById('admin-teacher-schedule-editor').innerHTML.trim() !== '') renderAdminTeacherScheduleEditor();
+        }
+    }).catch(function(e){ console.warn('takvimler okunamadı:', e && e.code); });
+}
+window.saveTeacherSchedule = saveTeacherSchedule;
+window.loadTeacherSchedules = loadTeacherSchedules;
+
 async function toggleSlotStatus(teacherId, groupName, time, element, isStudentBooked = false) {
     if (isStudentBooked) {
         showCustomAlert("Bu saat spesifik olarak bir öğrenci randevusuna ayrılmıştır.\n\nEğer bu saati açmak istiyorsanız, öncelikle 'Tüm Randevu Talepleri' (veya Derslerim) bölümünden öğrencinin randevusunu iptal etmelisiniz.");
         return;
     }
 
+    if (!teacherSchedules[teacherId]) teacherSchedules[teacherId] = (typeof createDefaultSchedule === 'function' ? createDefaultSchedule() : []);
     const group = teacherSchedules[teacherId].find(g => g.name === groupName);
     if (!group) return;
     const currentStatus = group.data[time] || "musait";
@@ -1434,7 +1463,7 @@ async function toggleSlotStatus(teacherId, groupName, time, element, isStudentBo
     const icon = newStatus === "dolu" ? "❌" : "✅";
     element.innerHTML = `${icon} ${time}<br><small style="font-size:0.7rem;">${label}</small>`;
     
-    saveTeachers();
+    saveTeacherSchedule(teacherId);
 }
 
 // Sürüklenebilir Kamera Mantığı

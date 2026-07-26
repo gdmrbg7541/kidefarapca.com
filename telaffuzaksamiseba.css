@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Noto+Naskh+Arabic:wght@700&display=swap');
+
+        :root {
+            --primary: #6c5ce7; --success: #2ecc71; --danger: #ff7675; --bg: #f1f2f6;
+            --muez-bg: #e3f2fd; --mue-bg: #fce4ec;
+            --arabic-font: 'Noto Naskh Arabic', serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif; background-color: var(--bg);
+            height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        #game-wrapper {
+            flex: 1; background: white; margin: 10px; border-radius: 20px;
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+
+        /* --- PROFESYONEL HEADER --- */
+        #top-bar-panel {
+            background: #f8f9fa; border-bottom: 3px solid #eee;
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            align-items: center; justify-items: center;
+            height: 110px; flex-shrink: 0; padding: 0 10px;
+        }
+
+        .header-item { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .ui-hidden { visibility: hidden; opacity: 0; transition: 0.3s; }
+        .ui-visible { visibility: visible !important; opacity: 1 !important; }
+
+        .back-nav { 
+            font-size: 1.1rem; border: 2px solid var(--primary); 
+            background: white; color: var(--primary); padding: 8px 15px;
+            border-radius: 12px; cursor: pointer; font-weight: bold;
+        }
+
+        .chrono-btn { font-size: 2.5rem; background: none; border: none; cursor: pointer; filter: grayscale(1); transition: 0.3s; display: none; }
+        .chrono-btn.active { filter: grayscale(0); transform: scale(1.1); }
+        .pause-circle { width: 55px; height: 55px; border-radius: 50%; border: none; background: #636e72; color: white; cursor: pointer; font-size: 1.5rem; }
+        .stage-badge { background: var(--primary); color: white; padding: 5px 15px; border-radius: 10px; font-size: 1.3rem; font-weight: bold; }
+        .timer-val { font-size: 2.8rem; font-weight: bold; color: var(--danger); font-family: monospace; }
+        .score-val { font-size: 2.8rem; font-weight: bold; color: var(--primary); }
+
+        /* --- NAVİGASYON --- */
+        .nav-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 75px; height: 110px; background: rgba(108, 92, 231, 0.1);
+            border: none; border-radius: 15px; cursor: pointer;
+            font-size: 3rem; color: var(--primary); z-index: 50; display: none;
+            transition: 0.3s;
+        }
+        .nav-arrow:disabled { opacity: 0.1; cursor: not-allowed; }
+        .arrow-right.finish-ready { background: var(--danger); color: white; }
+
+        /* --- EKRANLAR --- */
+        .screen { display: none; flex: 1; flex-direction: column; padding: 20px; width: 100%; }
+        .active { display: flex; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; flex: 1; }
+        .cat-btn { font-size: 1.8rem; border-radius: 15px; border: none; background: var(--primary); color: white; cursor: pointer; }
+        .fiil-btn { font-family: var(--arabic-font); font-size: 2.5rem; background: #2d3436; color: white; border-radius: 15px; border: none; cursor: pointer; }
+
+        /* TABLO */
+        .verb-table { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; direction: rtl; margin: 0 110px; }
+        .cell { 
+            display: flex; align-items: center; justify-content: center; border-radius: 18px; 
+            font-family: var(--arabic-font); font-size: clamp(2rem, 6vh, 4.5rem); 
+            font-weight: bold; border: 2px solid rgba(0,0,0,0.03); cursor: pointer;
+        }
+        .muez-row { background-color: var(--muez-bg); color: #1565c0; }
+        .mue-row { background-color: var(--mue-bg); color: #c2185b; }
+        .cell.error-active { background-color: var(--danger) !important; color: white !important; }
+
+        /* SONUÇ */
+        #error-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px; direction: rtl; }
+        .error-item { font-family: var(--arabic-font); font-size: 1.8rem; background: #fee2e2; padding: 8px 20px; border-radius: 12px; color: var(--danger); border: 2px solid var(--danger); }
+   
+
+/* --- GENEL MOBİL DÜZELTMELERİ (ORTAK) --- */
+.cell, .fiil-btn, .cat-btn {
+    padding: 2px !important; /* Tüm kutu içi boşlukları minimuma indirildi */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
+/* --- SADECE MOBİL DİKEY (PORTRAIT) --- */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    body { overflow-y: auto !important; height: auto !important; }
+    #game-wrapper { overflow: visible !important; height: auto !important; min-height: 100dvh; margin: 5px; }
+
+    #top-bar-panel {
+        position: sticky; top: 0; z-index: 1000;
+        height: auto; padding: 5px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* 1. LİSTE VE IZGARA KAPSAYICILARI */
+    #cat-list, #fiil-list, .verb-table {
+        display: grid !important;
+        justify-content: center !important;
+        padding: 8px 45px !important; /* Üst-alt boşluğu 10'dan 8'e çektik */
+        gap: 6px !important;         /* Kutular arası boşluğu daralttık */
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+
+    /* Seçim ekranı tek sütun */
+    #cat-list, #fiil-list { grid-template-columns: 1fr !important; }
+
+    /* Oyun ızgarası 3 sütun */
+    .verb-table { 
+        grid-template-columns: repeat(3, 1fr) !important; 
+        direction: rtl; 
+    }
+
+    /* 2. BUTONLAR VE HÜCRELER (AYRI AYRI AYARLANDI) */
+    
+    /* Fiil Seçim Butonları (Salim, Mehmuz vb.) */
+    .cat-btn, .fiil-btn {
+        min-height: 44px !important;  /* Yüksekliği kısalttık */
+        font-size: 1.2rem !important; /* Okunabilir dengeli boyut */
+        padding: 4px !important;
+        width: 100%;
+        max-width: 260px;
+        display: flex !important;
+        align-items: center; justify-content: center;
+        border-radius: 10px !important;
+    }
+
+    /* Örnek Fiil Hücreleri (Ketebe, Ketebâ vb.) */
+    .verb-table .cell {
+        min-height: 42px !important;  /* Hücreleri dikeyde daralttık */
+        font-size: 1.6rem !important; /* YAZILAR BÜYÜTÜLDÜ (Daha net Arapça) */
+        padding: 0 !important;
+        width: 100%;
+        display: flex !important;
+        align-items: center; justify-content: center;
+        border-radius: 8px !important;
+        line-height: 1;
+    }
+
+    /* 3. NAVİGASYON OKLARI */
+    .nav-arrow {
+        width: 38px !important;
+        height: 70px !important;
+        font-size: 1.6rem !important;
+        top: 50% !important;
+        background: rgba(108, 92, 231, 0.1) !important;
+        border-radius: 8px !important;
+        z-index: 1100;
+    }
+    #prev-arr { left: 4px !important; }
+    #next-arr { right: 4px !important; }
+}
+
+/* --- SADECE MOBİL YATAY (LANDSCAPE) GÜNCEL --- */
+@media screen and (max-height: 450px) and (orientation: landscape) {
+    body, #game-wrapper { 
+        overflow: hidden !important; 
+        height: 100vh !important; 
+    }
+
+    /* 1. HEADER DÜZENLEME (Boşluğu Yok Etmek İçin) */
+    #top-bar-panel {
+        height: 35px !important;       /* 60px'den 35px'e düşürüldü */
+        margin-bottom: 0px !important;  /* Alttaki boşluk sıfırlandı */
+        display: flex !important;
+        justify-content: space-between;
+        padding: 0 70px;
+        background: rgba(255,255,255,0.9);
+    }
+    .header-item { transform: scale(0.6); }
+
+    /* 2. IZGARA KAPSAYICI (Header'a Yaklaştırma) */
+    #cat-list, #fiil-list, .verb-table {
+        display: grid !important;
+        justify-content: center !important;
+        align-content: start !important; /* Ortalamak yerine en üste (header dibine) yaslar */
+        padding: 5px 70px 10px 70px !important; /* Üstten çok az 5px pay bıraktık */
+        gap: 4px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        height: calc(100vh - 35px) !important;
+    }
+
+    /* 3. KUTU VE ARAPÇA HARF DÜZENLEME (Hemzelerin Sığması İçin) */
+    .cell, .cat-btn, .fiil-btn {
+        height: 38px !important;        /* Sabit yükseklik biraz artırıldı (Hemzeler için) */
+        min-height: 38px !important;
+        
+        /* Yazı boyutunu hafifçe dengeledik, kutuya sığması kritik */
+        font-size: 1.4rem !important;   
+        
+        width: 100% !important;
+        padding: 0 2px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center; 
+        justify-content: center;
+        
+        /* ÖNEMLİ: Arapça karakterleri kutu içinde dikeyde biraz aşağı iter */
+        padding-top: 4px !important; 
+        line-height: 1.2 !important; 
+        box-sizing: border-box;
+    }
+
+    #cat-list, #fiil-list { grid-template-columns: repeat(2, 1fr) !important; }
+    .verb-table { grid-template-columns: repeat(3, 1fr) !important; direction: rtl; }
+
+    /* 4. NAVİGASYON OKLARI */
+    .nav-arrow { 
+        height: 60px !important; 
+        width: 50px !important; 
+        font-size: 1.5rem !important; 
+        top: 55% !important; 
+    }
+}
