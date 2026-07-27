@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <script>
-    /* Vitrin kapısı: siteye her yeni girişte önce indexyeni.html (vitrin) açılır.
-       Vitrin açılınca oturum işareti bırakır; aynı oturumda index'e dönüş ve site içi
-       gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i silmen yeterli. */
-    try{ if(!sessionStorage.getItem('kidefVitrin')) location.replace('indexyeni.html'); }catch(e){}
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kidefarapca.com</title>
@@ -399,12 +393,6 @@
         </a>
       </div>
     </section>
-    <section id="sunum-slaytlari" class="content-section">
-      <h2>📊 Sunumlar</h2>
-      <div class="game-grid mobile-scroll-grid-single" id="slayt-galerisi-container">
-      </div>
-    </section>
-
     <section id="temel-beceriler" class="content-section">
       <h2>🧠 Beceriler & Dilbilgisi | 🧑🏻‍🏫👩‍🏫 Öğretmen Özel</h2>
       <div class="game-grid mobile-scroll-grid-single">
@@ -432,6 +420,15 @@
             <div class="default-game-emoji">🎧👆</div>
             <h3>Dinle ve Seç</h3>
             <span class="game-card-description">Kelimeyi oluşturan harfleri seç!</span>
+            <span class="status-badge available">Hemen Başla</span>
+          </div>
+        </a>
+
+        <a href="sarf.html" target="_blank" rel="opener" class="game-card kss-card">
+          <div class="default-game-content">
+            <div class="default-game-emoji">🏭⚒️</div>
+            <h3>Kelime Fabrikası</h3>
+            <span class="game-card-description">Kelimeyi öğüt, kökten yeni kelimeler döv!</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -487,64 +484,95 @@
     
     <section id="oyunlar" class="content-section">
       <h2>🎮 Oyunlar</h2>
+      <!-- Oyun kartlari: sosyal hesap kartlariyla ayni dil - her oyuna ozel
+           canli gradyan, buzlu cam ikon halkasi ve beyaz "Hemen Oyna" rozeti. -->
+      <style>
+        .oyun-card{ border:none; color:#fff; overflow:hidden; }
+        .oyun-card::after{ content:''; position:absolute; top:-30px; right:-30px; width:110px; height:110px;
+          border-radius:50%; background:rgba(255,255,255,.12); pointer-events:none; }
+        .oyun-ikon{ width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.2);
+          display:flex; align-items:center; justify-content:center; margin-bottom:8px;
+          font-size:1.9em; line-height:1;
+          box-shadow:inset 0 0 0 2px rgba(255,255,255,.35); }
+        .oyun-card h3{ color:#fff !important; text-shadow:0 1px 3px rgba(0,0,0,.25); }
+        .oyun-card .game-card-description{ color:rgba(255,255,255,.94) !important; }
+        .oyun-card .status-badge{ background:#fff !important; font-weight:800; margin-top:auto; }
+        .oyun-yesil{   background:linear-gradient(150deg,#2BD4B5,#0E9E86); }
+        .oyun-mor{     background:linear-gradient(150deg,#8B7CFF,#5A50E0); }
+        .oyun-kirmizi{ background:linear-gradient(150deg,#FF7A7A,#EE5253); }
+        .oyun-turuncu{ background:linear-gradient(150deg,#FFB84D,#F39C12); }
+        .oyun-pembe{   background:linear-gradient(150deg,#FF7EB3,#FF2D75); }
+        .oyun-mavi{    background:linear-gradient(150deg,#5AB4FF,#2563EB); }
+        .oyun-yesil .status-badge{   color:#0E9E86 !important; }
+        .oyun-mor .status-badge{     color:#5A50E0 !important; }
+        .oyun-kirmizi .status-badge{ color:#EE5253 !important; }
+        .oyun-turuncu .status-badge{ color:#F39C12 !important; }
+        .oyun-pembe .status-badge{   color:#FF2D75 !important; }
+        .oyun-mavi .status-badge{    color:#2563EB !important; }
+      </style>
       <div class="soft-green-block">
         <div class="game-grid mobile-scroll-grid-single">
-
-          <a href="hangiharf.html" target="_blank" rel="opener" class="game-card kss-card">
+          <a href="hangiharf.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-yesil">
             <div class="default-game-content">
-              <div class="default-game-emoji">⚔️</div>
+              <div class="oyun-ikon">🔤</div>
               <h3>Hangi Harf?</h3>
               <span class="game-card-description">Hızlıca doğru harfi bul.</span>
-              <span class="status-badge available">Hemen Oyna</span>
+              <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
 
-          <a href="klavyeoyunu.html" target="_blank" rel="opener" class="game-card kss-card">
+          <a href="klavyeoyunu.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-mor">
             <div class="default-game-content">
-              <div class="default-game-emoji">⌨️</div>
+              <div class="oyun-ikon">⌨️</div>
               <h3>Klavye Oyunu</h3>
               <span class="game-card-description">Arapça klavye pratiği yap.</span>
-              <span class="status-badge available">Hemen Oyna</span>
+              <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
 
-          <a href="testkapismasi.html" target="_blank" rel="opener" class="game-card kss-card">
+          <a href="testkapismasi.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-kirmizi">
             <div class="default-game-content">
-              <div class="default-game-emoji">⚔️</div>
+              <div class="oyun-ikon">⚔️</div>
               <h3>Test Kapışması</h3>
               <span class="game-card-description">İki kişilik kelime testi.</span>
-              <span class="status-badge available">Hemen Oyna</span>
+              <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
 
-          <a href="hafizakartlari.html" target="_blank" rel="opener" class="game-card kss-card">
+          <a href="hafizakartlari.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-turuncu">
             <div class="default-game-content">
-              <div class="default-game-emoji">⚔️</div>
+              <div class="oyun-ikon">🃏</div>
               <h3>Hafıza Kartları</h3>
               <span class="game-card-description">Kelime kartlarını eşleştir.</span>
-              <span class="status-badge available">Hemen Oyna</span>
+              <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
 
-          <a href="renkler.html" target="_blank" rel="opener" class="game-card kss-card">
+          <a href="renkler.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-pembe">
             <div class="default-game-content">
-              <div class="default-game-emoji">⚔️</div>
+              <div class="oyun-ikon">🎨</div>
               <h3>Renkler</h3>
               <span class="game-card-description">Renkleri öğren.</span>
-              <span class="status-badge available">Hemen Oyna</span>
+              <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
 
-          <a href="isimx4.html" target="_blank" rel="opener" class="game-card kss-card">
+          <a href="isimx4.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-mavi">
             <div class="default-game-content">
-              <div class="default-game-emoji">⚔️</div>
+              <div class="oyun-ikon">🧩</div>
               <h3>İsim x 4</h3>
-              <span class="game-card-description"> İsmin 4 özelliğini analiz et!</span>
-              <span class="status-badge available">Hemen Oyna</span>
+              <span class="game-card-description">İsmin 4 özelliğini analiz et!</span>
+              <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
         </div>
 
+      </div>
+    </section>
+
+    <section id="sunum-slaytlari" class="content-section">
+      <h2>📊 Sunumlar</h2>
+      <div class="game-grid mobile-scroll-grid-single" id="slayt-galerisi-container">
       </div>
     </section>
 
@@ -590,33 +618,74 @@
     </section>
 
     <section id="youtube-kanallari" class="content-section">
-      <h2>📺 Sosyal Hesaplar </h2>
+      <h2>🌐 Sosyal Hesaplar</h2>
+      <!-- Sosyal hesap kartlari: marka renkleriyle (YouTube kirmizi, Instagram
+           gradyan) ozel tasarim. Grid/mobil kaydirma davranisi icin mevcut
+           game-card/kss-card siniflari korunur; gorunum .sosyal-card ile ezilir. -->
+      <style>
+        .sosyal-card{ border:none; color:#fff; overflow:hidden; }
+        .sosyal-card.sosyal-yt{ background:linear-gradient(150deg,#FF4E45,#C4302B 55%,#8E1C14); }
+        .sosyal-card.sosyal-ig{ background:linear-gradient(140deg,#F58529 0%,#DD2A7B 45%,#8134AF 80%,#515BD4 100%); }
+        .sosyal-card::after{ content:''; position:absolute; top:-30px; right:-30px; width:110px; height:110px;
+          border-radius:50%; background:rgba(255,255,255,.12); pointer-events:none; }
+        .sosyal-ikon{ width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.2);
+          display:flex; align-items:center; justify-content:center; margin-bottom:8px;
+          box-shadow:inset 0 0 0 2px rgba(255,255,255,.35); }
+        .sosyal-ikon svg{ width:28px; height:28px; fill:#fff; }
+        .sosyal-card h3{ color:#fff !important; text-shadow:0 1px 3px rgba(0,0,0,.25); }
+        .sosyal-kullanici{ display:inline-block; background:rgba(255,255,255,.22); color:#fff;
+          border-radius:50px; padding:2px 12px; font-weight:700; font-size:.85em; margin:2px 0 6px;
+          direction:ltr; unicode-bidi:embed; }
+        .sosyal-card .game-card-description{ color:rgba(255,255,255,.94) !important; }
+        .sosyal-card .status-badge{ background:#fff !important; font-weight:800; margin-top:auto; }
+        .sosyal-yt .status-badge{ color:#C4302B !important; }
+        .sosyal-ig .status-badge{ color:#C13584 !important; }
+        /* 4 hesap sabit: masaustunde kartlari ortala. index.css'teki
+           .mobile-scroll-grid-single kurallari !important oldugu icin
+           burada da !important gerekir; mobil kaydirma bozulmaz. */
+        @media (min-width:769px){
+          #youtube-kanallari .game-grid{ justify-content:center !important; }
+        }
+      </style>
       <div class="game-grid mobile-scroll-grid-single">
-        
-        <a href="https://www.youtube.com/@kidefarapca" class="game-card kss-card">
+
+        <a href="https://www.youtube.com/@kidefarapca" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-yt">
           <div class="default-game-content">
-            <div class="default-game-emoji">📺</div>
-            <h3>Kidef Arapça (YouTube)</h3>
+            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></div>
+            <h3>Kidef Arapça</h3>
+            <span class="sosyal-kullanici">@kidefarapca</span>
             <span class="game-card-description">Eğitici oyunlar ve içerikler.</span>
-            <span class="status-badge available" style="background-color:#c4302b;">Ziyaret Et</span>
-          </div>
-        </a>
-        
-        <a href="https://www.youtube.com/@geylanidemirbag" class="game-card kss-card">
-          <div class="default-game-content">
-            <div class="default-game-emoji">📺</div>
-            <h3>Geylani Demirbağ (YouTube)</h3>
-            <span class="game-card-description">Geliştirici kanalımız.</span>
-            <span class="status-badge available" style="background-color:#c4302b;">Ziyaret Et</span>
+            <span class="status-badge available">▶ Abone Ol</span>
           </div>
         </a>
 
-        <a href="https://www.instagram.com/kidefarapca/" class="game-card kss-card">
+        <a href="https://www.youtube.com/@geylanidemirbag" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-yt">
           <div class="default-game-content">
-            <div class="default-game-emoji">📺</div>
-            <h3>Kidef Arapça (İnstagram)</h3>
-            <span class="game-card-description"> Eğlenceli Arapça'nın nabzını kaçırmayın! </span>
-            <span class="status-badge available" style="background-color:#c4302b;">Ziyaret Et</span>
+            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></div>
+            <h3>Geylani Demirbağ</h3>
+            <span class="sosyal-kullanici">@geylanidemirbag</span>
+            <span class="game-card-description">Geliştirici kanalımız.</span>
+            <span class="status-badge available">▶ Abone Ol</span>
+          </div>
+        </a>
+
+        <a href="https://www.instagram.com/kidefarapca/" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-ig">
+          <div class="default-game-content">
+            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2a3.8 3.8 0 0 1-.9 1.4c-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2A8 8 0 0 0 12 4.2c-3.1 0-3.5 0-4.7.1-1.1.1-1.4.2-1.7.3-.4.2-.7.4-1 .7-.3.3-.5.6-.7 1-.1.3-.2.6-.3 1.7-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.4.3 1.7.2.4.4.7.7 1 .3.3.6.5 1 .7.3.1.6.2 1.7.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.4-.2 1.7-.3.4-.2.7-.4 1-.7.3-.3.5-.6.7-1 .1-.3.2-.6.3-1.7.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.4-.3-1.7a2.7 2.7 0 0 0-.7-1 2.7 2.7 0 0 0-1-.7c-.3-.1-.6-.2-1.7-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.4a5.1 5.1 0 1 1 0 10.3 5.1 5.1 0 0 1 0-10.3zm0 2a3.1 3.1 0 1 0 0 6.3 3.1 3.1 0 0 0 0-6.3zm5.4-3.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg></div>
+            <h3>Kidef Arapça</h3>
+            <span class="sosyal-kullanici">@kidefarapca</span>
+            <span class="game-card-description">Eğlenceli Arapça'nın nabzını kaçırmayın!</span>
+            <span class="status-badge available">📸 Takip Et</span>
+          </div>
+        </a>
+
+        <a href="https://www.instagram.com/gylndmrbg/" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-ig">
+          <div class="default-game-content">
+            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2a3.8 3.8 0 0 1-.9 1.4c-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2A8 8 0 0 0 12 4.2c-3.1 0-3.5 0-4.7.1-1.1.1-1.4.2-1.7.3-.4.2-.7.4-1 .7-.3.3-.5.6-.7 1-.1.3-.2.6-.3 1.7-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.4.3 1.7.2.4.4.7.7 1 .3.3.6.5 1 .7.3.1.6.2 1.7.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.4-.2 1.7-.3.4-.2.7-.4 1-.7.3-.3.5-.6.7-1 .1-.3.2-.6.3-1.7.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.4-.3-1.7a2.7 2.7 0 0 0-.7-1 2.7 2.7 0 0 0-1-.7c-.3-.1-.6-.2-1.7-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.4a5.1 5.1 0 1 1 0 10.3 5.1 5.1 0 0 1 0-10.3zm0 2a3.1 3.1 0 1 0 0 6.3 3.1 3.1 0 0 0 0-6.3zm5.4-3.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg></div>
+            <h3>Geylani Demirbağ</h3>
+            <span class="sosyal-kullanici">@gylndmrbg</span>
+            <span class="game-card-description">Geliştirici hesabı; yeni içerik haberleri.</span>
+            <span class="status-badge available">📸 Takip Et</span>
           </div>
         </a>
       </div>
@@ -1761,6 +1830,40 @@
     if(typeof initListelerim==="function") setTimeout(initListelerim,60);
     return false; }
   window.openListelerim=openListelerim;
+</script>
+<script>
+/* Kart renkleri: index.css'teki nth-of-type kurallari her kategoride ayni
+   sirayla (1. kart hep mavi, 2. hep lila...) boyuyordu. Burada ayni pastel
+   palet her yuklemede KARISIK dagitilir; ayni gridde yan yana iki kart
+   ayni renge dusmez. Ozel tasarimli kartlar (oyun/sosyal/premium) haric. */
+(function(){
+  var PALET = ['#EBF5FF','#F4F0FF','#FFF9E6','#FFF4E8','#E6F7FF','#E6FAF5','#FFF0F0','#F0F5E6','#FFEBF9'];
+  function karistir(d){
+    d = d.slice();
+    for (var i = d.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = d[i]; d[i] = d[j]; d[j] = t;
+    }
+    return d;
+  }
+  function boya(){
+    var gridler = document.querySelectorAll('.game-grid');
+    for (var g = 0; g < gridler.length; g++) {
+      var kartlar = gridler[g].querySelectorAll(
+        ':scope > .game-card:not(.game-card-soon):not(.oyun-card):not(.sosyal-card):not(.premium-card)');
+      var deste = karistir(PALET), onceki = '';
+      for (var k = 0; k < kartlar.length; k++) {
+        if (!deste.length) deste = karistir(PALET);
+        var renk = deste.pop();
+        if (renk === onceki && deste.length) { deste.unshift(renk); renk = deste.pop(); }
+        kartlar[k].style.backgroundColor = renk;
+        onceki = renk;
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boya);
+  else boya();
+})();
 </script>
 </body>
 </html>
