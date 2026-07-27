@@ -3019,27 +3019,57 @@ const Quiz = {
     },
 
     /* ================= canlı soru ================= */
+    /* Yönetici (yansıtılan) ekranda soru başta GİZLİDİR; göz tuşuyla açılır
+       (bilgiyarismasivezinler'deki davranışın aynısı). Öğrenci ekranını
+       etkilemez. Puan durumu soru ekranında gösterilmez; sonuç sahnesinde
+       ve final tablosunda zaten var. */
+    soruGizli: true,
+    _gozSvg(gizli) {
+        return gizli
+            ? '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+            : '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    },
+    soruGizleToggle() {
+        this.soruGizli = !this.soruGizli;
+        const icerik = document.getElementById('qz-soru-icerik');
+        const goz = document.getElementById('qz-goz');
+        if (icerik) icerik.classList.toggle('gizli', this.soruGizli);
+        if (goz) {
+            goz.innerHTML = this._gozSvg(this.soruGizli);
+            goz.title = this.soruGizli ? 'Soruyu göster' : 'Soruyu gizle';
+        }
+    },
     oyunCiz() {
         const o = this.state.oda;
         const soru = o.sorular[o.index];
         const yonetici = this.state.rol === 'yonetici';
         const harfler = ['أ', 'ب', 'ج', 'د'];
+        const gizli = yonetici && this.soruGizli;
         this.ciz(
             '<div class="qz-ust">' +
               '<span>' + (o.index + 1) + ' / ' + o.sorular.length + '</span>' +
               '<span class="qz-sayac" id="qz-sayac">--</span>' +
+              (yonetici
+                ? '<button class="qz-goz" id="qz-goz" title="' +
+                  (gizli ? 'Soruyu göster' : 'Soruyu gizle') + '">' + this._gozSvg(gizli) + '</button>'
+                : '') +
               '<span id="qz-cevap-sayi"></span>' +
             '</div>' +
             '<div class="qz-kart">' +
-              '<div class="qz-soru" dir="rtl">' + this.kacis(soru.s) + '</div>' +
-              '<div class="qz-soru-ar">' + this.kacis(soru.ar) + '</div>' +
-              '<div class="qz-durum">' + this.kacis(soru.tr) + '</div>' +
-              '<div class="qz-secenekler" id="qz-secenekler">' +
-                soru.secenekler.map((sec, i) =>
-                    '<div class="qz-secenek' + (yonetici ? ' kilit' : '') + '" data-i="' + i + '">' +
-                      '<span class="harf">' + harfler[i] + '</span>' +
-                      '<span class="metin">' + this.kacis(sec) + '</span>' +
-                    '</div>').join('') +
+              '<div class="qz-soru-sar">' +
+                '<div id="qz-soru-icerik" class="qz-soru-icerik' + (gizli ? ' gizli' : '') + '">' +
+                  '<div class="qz-soru" dir="rtl">' + this.kacis(soru.s) + '</div>' +
+                  '<div class="qz-soru-ar">' + this.kacis(soru.ar) + '</div>' +
+                  '<div class="qz-durum">' + this.kacis(soru.tr) + '</div>' +
+                  '<div class="qz-secenekler" id="qz-secenekler">' +
+                    soru.secenekler.map((sec, i) =>
+                        '<div class="qz-secenek' + (yonetici ? ' kilit' : '') + '" data-i="' + i + '">' +
+                          '<span class="harf">' + harfler[i] + '</span>' +
+                          '<span class="metin">' + this.kacis(sec) + '</span>' +
+                        '</div>').join('') +
+                  '</div>' +
+                '</div>' +
+                (yonetici ? '<div class="qz-gizli-not">Soru gizli — göstermek için göz tuşuna bas</div>' : '') +
               '</div>' +
               '<div class="qz-durum" id="qz-oyun-durum" style="margin-top:12px"></div>' +
               (yonetici
@@ -3054,8 +3084,7 @@ const Quiz = {
                   '“Oyundan Çık” tuşunu kullan. Geri (←) tuşu yarışmayı bitirmez; sadece menüye ' +
                   'dönersin, “اِتَّصِلْ” rozetiyle aynı soruya geri gelirsin.</div>'
                 : '') +
-            '</div>' +
-            (yonetici ? '<div class="qz-kart"><h3>🏅 Puan Durumu</h3><div class="qz-sira" id="qz-sira"></div></div>' : '')
+            '</div>'
         );
 
         if (!yonetici) {
@@ -3064,6 +3093,7 @@ const Quiz = {
                 if (el) this.cevapVer(parseInt(el.dataset.i, 10));
             });
         } else {
+            document.getElementById('qz-goz').addEventListener('click', () => this.soruGizleToggle());
             document.getElementById('qz-sonuc').addEventListener('click', () => this.sonucaGec());
             document.getElementById('qz-sonraki').addEventListener('click', () => this.sonrakiSoru());
             document.getElementById('qz-oyundan-cik').addEventListener('click', () => this.kapatmayiSor());

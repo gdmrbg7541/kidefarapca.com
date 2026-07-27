@@ -1654,3 +1654,23 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     border: 2px solid var(--secondary, #7C3AED); border-radius: 8px;
     padding: 2px 8px; width: 9em; max-width: 40vw; outline: none;
 }
+
+
+/* ============ YÖNETİCİ EKRANINDA SORU GİZLEME ============ */
+.qz-goz {
+    background: none; border: none; cursor: pointer; color: var(--secondary, #7C3AED);
+    display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 8px;
+}
+.qz-goz:hover { background: rgba(124,58,237,.12); }
+.qz-soru-sar { position: relative; }
+.qz-soru-icerik.gizli {
+    filter: blur(18px); opacity: .55;
+    pointer-events: none; user-select: none;
+}
+.qz-gizli-not {
+    display: none; position: absolute; inset: 0;
+    align-items: center; justify-content: center; text-align: center;
+    font-weight: 700; color: var(--primary, #2c3e50); font-size: 1.15rem;
+    pointer-events: none;
+}
+.qz-soru-icerik.gizli + .qz-gizli-not { display: flex; }
