@@ -271,7 +271,15 @@ document.addEventListener("DOMContentLoaded", () => {
         
         card.innerHTML = `
             <div class="default-game-content">
-                <div class="default-game-emoji">📊</div>
+                <div class="default-game-emoji"><svg viewBox="0 0 64 64" aria-hidden="true" style="width:1.6em;height:1.6em;display:block;overflow:visible">
+                    <line x1="6" y1="8" x2="58" y2="8" stroke="#64748b" stroke-width="4.5" stroke-linecap="round"/>
+                    <rect x="12" y="10" width="40" height="31" rx="3" fill="#fff" stroke="#b9c3d4" stroke-width="2.2"/>
+                    <rect x="17" y="15" width="19" height="5" rx="2.2" fill="#7C3AED"/>
+                    <line class="kga-madde" x1="17" y1="27" x2="46" y2="27" stroke="#94a3b8" stroke-width="3.2" stroke-linecap="round"/>
+                    <line class="kga-madde m2x" x1="17" y1="34" x2="40" y2="34" stroke="#cbd5e1" stroke-width="3.2" stroke-linecap="round"/>
+                    <circle class="kga-imlec" cx="47" cy="33" r="3" fill="#EE5253"/>
+                    <path d="M32 41 v6 m0 0 a3 3 0 1 0 .1 0" fill="none" stroke="#94a3b8" stroke-width="2.4"/>
+                </svg></div>
                 <h3 style="min-height: 2.6em; font-size: 1.1em; display:flex; align-items:center; justify-content:center; text-align:center;">
                     ${gorunenIsim}
                 </h3>

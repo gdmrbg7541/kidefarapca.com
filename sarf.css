@@ -470,8 +470,13 @@ body {
 .g2-makine-svg { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 8px 14px rgba(44,62,80,.16)); }
 /* Kırıcı silindirler: boşta ağır ağır, öğütürken deli gibi döner */
 .g2-kirici { transform-origin: 0px 0px; animation: g2KiriciDon 3.2s linear infinite; }
-.g2-kirici.ters { animation-direction: reverse; }
+/* Kavraşma: iki çarkın da 8'er dişi var (45° arayla). Sağdaki çark yarım
+   diş payı (22.5°) kaydırılmış başlar ve ters yönde AYNI hızla döner —
+   böylece soldaki çarkın dişi hep sağdakinin diş boşluğuna girer,
+   birbirlerini çeviriyor görüntüsü bozulmaz. */
+.g2-kirici.ters { animation-name: g2KiriciDonTers; }
 @keyframes g2KiriciDon { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes g2KiriciDonTers { from { transform: rotate(22.5deg); } to { transform: rotate(-337.5deg); } }
 .g2-fabrika.grinding .g2-kirici { animation-duration: .3s; }
 /* Öğütürken gövde zorlanıyormuş gibi titrer */
 .g2-fabrika.grinding .g2-govde { animation: g2Titre .11s linear infinite; }
@@ -506,7 +511,7 @@ body {
 .g2-bant::after, .g2-rampa::after { right: 3px; }
 @keyframes g2BantAkis { from { background-position: 0 0; } to { background-position: -32px 0; } }
 .g2-fabrika.grinding .g2-bant, .g2-fabrika.grinding .g2-rampa { animation-duration: .4s; }
-.g2-bant { right: 0; bottom: 42%; width: 21%; z-index: 1; }
+.g2-bant { right: 0; bottom: 36%; width: 21%; z-index: 1; }
 /* Çıkış rampası (sol): yukarı eğimli, külçeyi konteynıra taşır */
 .g2-rampa { left: 3%; bottom: 32%; width: 32%; transform: rotate(24deg); transform-origin: 100% 50%; z-index: 1; }
 /* Şeffaf cam konteyner (sol alt, fabrikanın dışına doğru taşar) */
@@ -573,9 +578,11 @@ body {
 }
 /* Vezin levhaları: örsün üstünde yan yana; kök seçilince uygunlar açılır */
 .g2-vezinler {
-    /* Ustanın ve köklerin ÜSTÜNDE, iki satır hâlinde */
-    display: grid; grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column; grid-auto-columns: max-content;
+    /* Ustanın ve köklerin ÜSTÜNDE. Satır satır dolar: önce üst satır
+       sağdan sola, sonra bir altı — liste yukarıdan aşağıya okunur.
+       Sütun sayısını JS belirler (vezin adedi / satır sayısı). */
+    display: grid; grid-auto-flow: row; grid-auto-columns: max-content;
+    justify-content: center;
     gap: clamp(12px, 2.2vh, 22px) clamp(8px, .9vw, 18px);
     direction: rtl;
     margin: clamp(6px, 1.6vh, 18px) auto 0;
@@ -587,7 +594,7 @@ body {
     background: linear-gradient(#fffdf6, #f7edda);
     border: 2px solid #a9743f;
     box-shadow: 0 0 0 2px #8a5a2c, 0 5px 10px rgba(90,58,28,.18);
-    font-size: var(--vf, clamp(1.5rem, 3.4vh, 2.2rem)); line-height: 1.45;
+    font-size: var(--vf, clamp(1.7rem, 4vh, 2.6rem)); line-height: 1.45;
     transition: transform .2s ease, opacity .2s ease, box-shadow .2s ease;
     user-select: none;
 }
@@ -598,11 +605,14 @@ body {
 /* Kök rafı: forkliftin dizdiği tıklanabilir külçeler (her biri kendi rafında) */
 .g2-kokraf {
     display: flex; flex-direction: column; align-items: center;
-    gap: clamp(12px, 2vh, 20px); min-width: clamp(100px, 10vw, 150px);
+    /* En geniş kök harfleri (örn. "ط ع م") bile yatay scroll'suz sığsın */
+    gap: clamp(12px, 2vh, 20px); min-width: clamp(150px, 15vw, 240px);
     margin-right: clamp(6px, 1vw, 20px);
+    overflow-x: hidden;
 }
 /* Raftaki külçeler iri ve okunaklı */
-.g2-kokraf .g2-kulce { font-size: min(2.4rem, 4.8vh); }
+/* Yazı boyu rafla birlikte ölçeklenir: en geniş kökte bile taşma olmaz */
+.g2-kokraf .g2-kulce { font-size: min(2.4rem, 4.8vh, calc(3vw - 9px)); }
 .g2-kok-kulce {
     position: relative; cursor: pointer;
     transition: transform .2s ease, opacity .3s ease, filter .2s ease;
@@ -649,13 +659,17 @@ body {
    (satır × sütun) yerleşir ve alabilecekleri EN BÜYÜK boyutu alırlar.
    Ör. 6 kelime → 3 raf × 2'şer, 9 kelime → 3 raf × 3'er. */
 #g2-vitrinKutu {
-    width: clamp(420px, calc(26.5vw + 100px), 680px);
+    width: clamp(620px, calc(26.5vw + 300px), 880px);
+    /* Ürünler SAĞDAN SOLA, yukarıdan aşağıya dizilir (Arapça okuma yönü) */
+    direction: rtl;
     /* En alttan en yukarıya: tente + raf payı dışında tüm ekran boyu */
     height: calc(100vh - clamp(140px, 17vh, 185px));
     min-width: 0; min-height: 0;
     display: grid; grid-template-columns: 1fr;
     align-items: center; justify-items: center;
-    gap: 0; padding: 20px 16px 14px;
+    align-content: start;
+    /* Kartlar birbirine yapışmasın: raf araları ve sütun arası boşluk */
+    gap: clamp(14px, 2.6vh, 26px) 14px; padding: 20px 16px 14px;
     font-size: 1rem; overflow: hidden;
 }
 #g2-vitrinKutu .g3-out-bekle { margin: auto; }
@@ -906,6 +920,8 @@ body.drag-learned .g3-root-chip { animation: none; }
 }
 /* ---------- VİTRİN: türeyen kelimenin sergilendiği dükkân camekânı ---------- */
 .g3-vitrin { display: flex; flex-direction: column; align-items: center; position: relative; }
+/* Atölyede vitrin sola dayanıp kırpılmasın: sol kenarla arasında 10px pay */
+#game2-screen .g3-vitrin { margin-left: 20px; flex-shrink: 0; }
 /* Tente: turuncu-krem çizgili, alt kenarı fistolu dükkân tentesi */
 .g3-tente {
     position: relative; z-index: 2; width: calc(100% + 48px); height: 26px;
@@ -1166,7 +1182,8 @@ body.drag-learned .g3-root-chip { animation: none; }
     .g2-fabrika { width: min(920px, 108vh, 62vw); }
     .g2-kulce { font-size: min(2.15rem, 4.3vh); }
     .g2-gezgin { font-size: min(2.2rem, 4.4vh); }
-    .g2-vezin { font-size: min(2.2rem, 4.2vh); }
+    /* Büyük ekran boyu da --vf'e saygı duymalı; yoksa sığdırma çalışmaz */
+    .g2-vezin { font-size: var(--vf, min(2.6rem, 4.8vh)); }
     .g2-kokraf { gap: min(18px, 2.2vh); }
 
     .g2-ghost { font-size: 2.7rem; padding: 17px 38px; border-radius: 22px; }
@@ -1561,15 +1578,43 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
 .menu-grid { flex-direction: column; align-items: center; }
 .menu-grid .menu-card {
     flex: none;
-    width: min(420px, 92vw);
+    width: min(640px, 94vw);
     max-width: none;
     /* Çerçeve, bağlantı barıyla aynı mor tonunda */
     border-color: var(--secondary);
 }
+/* Kart içi mini fabrika sahnesi: vitrin + usta/örs + öğütücü */
+.mf-onizleme {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: clamp(14px, 2vw, 30px); width: 100%;
+    margin-bottom: clamp(8px, 1.6vh, 18px); pointer-events: none;
+}
+.mf-vitrin {
+    position: relative; width: clamp(90px, 9vw, 130px); height: clamp(110px, 12vw, 160px);
+    background: linear-gradient(#fffdf6, #f6ecd9);
+    border: 3px solid #a9743f; border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(90,58,28,.18);
+    display: flex; align-items: center; justify-content: center;
+}
+.mf-tente {
+    position: absolute; top: -12px; left: -6px; right: -6px; height: 16px;
+    border-radius: 8px 8px 0 0;
+    background: repeating-linear-gradient(90deg, #f6b93b 0 14px, #fff 14px 28px);
+    border: 2px solid #d98c0a;
+}
+.mf-cam { font-size: 1.6rem; opacity: .8; }
+.mf-usta { position: relative; }
+.mf-usta > svg { width: clamp(88px, 9vw, 128px); height: auto; overflow: visible; }
+.mf-usta .usta-kol { transform: rotate(38deg); transform-origin: 0 0; }
+.mf-ors { position: absolute; right: -46px; bottom: -2px; width: clamp(58px, 6vw, 84px); }
+.mf-ors svg { width: 100%; height: auto; }
+.mf-makine { margin-left: clamp(26px, 3vw, 48px); }
+.mf-makine svg { width: clamp(130px, 14vw, 190px); height: auto; }
+
 .menu-grid .menu-card:hover { border-color: #a78bfa; }
 .menu-connect {
     position: static; transform: none;
-    width: min(420px, 92vw);
+    width: min(640px, 94vw);
     justify-content: center;
     min-height: 95px;                 /* kartın (190px) yarısı */
     border-radius: clamp(20px, 4vw, 30px);
@@ -1587,4 +1632,13 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
 }
 @media (max-width: 480px) {
     .menu-connect { min-height: 60px; }
+}
+
+
+/* Dar ekranda tek kart yine dikey dizilir: önizleme üstte, başlık altta
+   (genel .menu-card "satır" düzeni başlığı taşırıyordu). */
+@media (max-width: 480px) {
+    .menu-grid .menu-card { flex-direction: column; text-align: center; padding: 14px 12px; gap: 8px; }
+    .mf-onizleme { gap: 10px; }
+    .mf-ors { right: -30px; }
 }

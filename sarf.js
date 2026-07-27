@@ -472,6 +472,16 @@ const App = {
         this.dom.screens = document.querySelectorAll('.screen');
         this.dom.doneOverlay = document.getElementById('done-overlay');
 
+        /* Menü kartındaki fabrika önizlemesi: oyunun kendi SVG'leriyle
+           mini sahne (vitrin + usta/örs + öğütücü makine). */
+        const mf = document.getElementById('mfOnizleme');
+        if (mf) {
+            mf.innerHTML =
+                `<div class="mf-vitrin"><div class="mf-tente"></div><div class="mf-cam">✨</div></div>` +
+                `<div class="mf-usta">${G3_USTA_SVG}<div class="mf-ors">${G2_ORS2_SVG}</div></div>` +
+                `<div class="mf-makine">${G2_MAKINE_SVG}</div>`;
+        }
+
         /* Üç oyun kartı + sağ üstteki bağlantı rozeti aynı yönlendirmeyi kullanır. */
         document.querySelectorAll('.menu-card, .menu-connect').forEach(card => {
             card.addEventListener('click', () => {
@@ -1044,7 +1054,7 @@ const G2_MAKINE_SVG = `
   <!-- pencere: içinde birbirine ters dönen iki kırıcı -->
   <circle cx="111" cy="102" r="37" fill="#2c3e50"/>
   <circle cx="111" cy="102" r="32" fill="#34495e"/>
-  <g transform="translate(96,102)"><g class="g2-kirici">
+  <g transform="translate(98,102) scale(1.25)"><g class="g2-kirici">
     <circle r="11" fill="#95a5a6"/><circle r="3.6" fill="#5d6d7e"/>
     <rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#95a5a6"/>
     <rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#95a5a6"/>
@@ -1055,7 +1065,7 @@ const G2_MAKINE_SVG = `
     <rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6" transform="rotate(45)"/>
     <rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6" transform="rotate(45)"/>
   </g></g>
-  <g transform="translate(127,102)"><g class="g2-kirici ters">
+  <g transform="translate(129,102)"><g class="g2-kirici ters">
     <circle r="11" fill="#aab7b8"/><circle r="3.6" fill="#5d6d7e"/>
     <rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#aab7b8"/>
     <rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#aab7b8"/>
@@ -1681,13 +1691,19 @@ const Game2 = {
         // Yalnız öğütme fazında ve konteynırda külçe varken çalışır
         if (this.state.phase !== 'grind' || !this.state.bekleyen.length) return;
         this.state.phase = 'pan';
-        // Bu parti = konteynırdakiler + raftaki vezni bitmemiş kökler
-        // (yarım kalan kök yeni partiyle birlikte rafta kalmaya devam eder)
+        // Raftaki vezni bitmemiş kökler YERİNDE kalır (yeniden taşınmaz);
+        // forklift yalnız konteynırdaki YENİ kökleri getirir.
         const yarimlar = this.state.shelf.filter(r => this.kalanVezin(r) > 0);
-        this.state.shelf = [...new Set([...yarimlar, ...this.state.bekleyen])];
+        const yeniler = [...new Set(this.state.bekleyen)].filter(r => !yarimlar.includes(r));
+        this.state.shelf = [...yarimlar, ...yeniler];
+        this.state.tasinan = yeniler;
         this.state.bekleyen = [];
         document.getElementById('g2-forklift').classList.remove('hazir');
-        document.getElementById('g2-kokraf').innerHTML = '';
+        // Rafı komple silme: yalnız vezinleri bitmiş (pasif) çipler kalkar,
+        // yarım köklerin çipleri işaretleriyle birlikte rafta durur.
+        document.querySelectorAll('.g2-kok-kulce').forEach(k => {
+            if (!yarimlar.includes(k.dataset.kok)) k.remove();
+        });
         App.playSound('forklift');
         this.kamera(1, 1700);
         this.forkliftTasi(); // kamera kayarken forklift de yola çıkar
@@ -1705,7 +1721,8 @@ const Game2 = {
         setTimeout(() => {
             // Yük çatala biner, konteynır boşalır, burun rafa döner
             document.getElementById('g2-kapIc').innerHTML = '';
-            yuk.innerHTML = this.state.shelf.map(r =>
+            const tasinan = this.state.tasinan || this.state.shelf;
+            yuk.innerHTML = tasinan.map(r =>
                 `<div class="g2-kulce g2-mini" dir="rtl">${formatRootDisplay(r)}</div>`).join('');
             fl.classList.add('donus');
             const dr = dunya.getBoundingClientRect();
@@ -1717,13 +1734,15 @@ const Game2 = {
         }, 450);
 
         setTimeout(() => {
-            // Külçeler rafın dibinde tek tek boşaltılır
-            this.state.shelf.forEach((r, i) => {
+            // Külçeler rafın dibinde tek tek boşaltılır (yalnız yeni gelenler)
+            const tasinan = this.state.tasinan || this.state.shelf;
+            tasinan.forEach((r, i) => {
                 setTimeout(() => {
                     if (yuk.firstElementChild) yuk.firstElementChild.remove();
                     const k = document.createElement('div');
                     k.className = 'g2-kulce g2-kok-kulce';
                     k.dir = 'rtl';
+                    k.dataset.kok = r;
                     k.textContent = formatRootDisplay(r);
                     k.style.color = rootColors(r)[0];
                     k.addEventListener('click', () => this.kokSec(r, k));
@@ -1742,7 +1761,7 @@ const Game2 = {
                 fl.style.left = this.parkYeri + '%';
                 App.playSound('forklift');
                 setTimeout(() => fl.classList.remove('donus'), 1550);
-            }, this.state.shelf.length * 240 + 250);
+            }, tasinan.length * 240 + 250);
         }, 450 + 1650);
     },
 
@@ -1753,7 +1772,10 @@ const Game2 = {
         this.state.selRoot = root;
         App.playSound('click');
         // Vitrin tek kökün dükkânıdır: başka köke geçilince raflar boşalır
-        if (this.vitrinKok && this.vitrinKok !== root) this.vitrinSifirla();
+        if (this.vitrinKok && this.vitrinKok !== root) {
+            this.vitrinSifirla();
+            this.vitrinDoldur(root); // bu kökün önceden dövülenleri hatırlanır
+        }
         this.vitrinKok = root;
         document.querySelectorAll('.g2-kok-kulce').forEach(k => k.classList.remove('secili'));
         chipEl.classList.add('secili');
@@ -1766,11 +1788,47 @@ const Game2 = {
 
     /* Vitrin tek kökün ürünlerini sergiler; boşaltmak için */
     vitrinKok: null,
+
+    /* Çift yüzlü ürün kartı: ön = emoji + kelime, arka = Türkçe anlam.
+       Hem dövme anında hem vitrini hafızadan geri doldururken kullanılır. */
+    urunKartiEkle(out, root, vezin) {
+        const urun = document.createElement('div');
+        urun.className = 'g2-urun';
+        urun.dir = 'rtl';
+        urun.style.borderColor = rootColors(root)[0];
+        urun.innerHTML =
+            `<div class="g2-urun-ic">` +
+            `<div class="g2-urun-on"><span class="g2-urun-emoji">${vezin.emoji}</span><span class="g2-urun-kelime"><span class="g3-pattern-text">${formatWordVsRoot(vezin.word, root)}</span></span></div>` +
+            `<div class="g2-urun-arka" dir="ltr">${vezin.tr || '—'}</div>` +
+            `</div>`;
+        urun.addEventListener('click', () => {
+            App.playSound('click');
+            urun.classList.toggle('cevrik');
+        });
+        out.appendChild(urun);
+        return urun;
+    },
+
+    /* Kökler arasında gezinme hafızası: bu kök için daha önce dövülmüş
+       kelimeler (forgedPairs) vitrine geri dizilir — emek kaybolmaz. */
+    vitrinDoldur(root) {
+        const out = document.getElementById('g2-vitrinKutu');
+        if (!out) return;
+        const eskiler = this.kokVezinleri(root)
+            .filter(v => this.state.forgedPairs.has(root + '|' + v.no));
+        if (!eskiler.length) return;
+        const bekle = out.querySelector('.g3-out-bekle');
+        if (bekle) bekle.remove();
+        eskiler.forEach(v => this.urunKartiEkle(out, root, v));
+        this.vitrinYerlestir();
+    },
+
     vitrinSifirla() {
         const vit = document.getElementById('g2-vitrinKutu');
         if (!vit) return;
         vit.classList.remove('filled', 'invalid');
         vit.style.gridTemplateColumns = '1fr';
+        vit.style.gridTemplateRows = '';
         vit.innerHTML = '<span class="g3-out-bekle">✨</span>';
     },
 
@@ -1785,15 +1843,23 @@ const Game2 = {
         const st = getComputedStyle(out);
         const W = out.clientWidth - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight);
         const H = out.clientHeight - parseFloat(st.paddingTop) - parseFloat(st.paddingBottom);
-        let enIyi = { font: 0, sutun: 1 };
-        for (let c = 1; c <= n; c++) {
-            const r = Math.ceil(n / c);
-            // kart genişliği ~5 yazı boyu, yüksekliği (emoji+kelime+raf) ~3.3 yazı boyu
-            const font = Math.min((W / c) / 5.0, (H / r) / 3.3);
-            if (font > enIyi.font) enIyi = { font, sutun: c };
-        }
-        out.style.gridTemplateColumns = `repeat(${enIyi.sutun}, 1fr)`;
-        out.style.setProperty('--uf', Math.min(48, Math.max(12, enIyi.font)).toFixed(1) + 'px');
+        /* Sütun sayısı kökün TOPLAM vezin sayısına bağlı: 10 ve üzeri
+           vezni olan kökte 3 sütun, daha az olanda 2 sütun. Yazı boyu da
+           toplamdan hesaplanır: kelimeler dövüldükçe kart boyutu oynamaz,
+           hepsi bitince vitrin tam dolar. */
+        const kok = this.vitrinKok;
+        const toplam = Math.max(n, kok ? this.kokVezinleri(kok).length : n);
+        const SUTUN = toplam >= 10 ? 3 : 2;
+        const satir = Math.max(2, Math.ceil(toplam / SUTUN));
+        const araY = parseFloat(getComputedStyle(out).rowGap) || 0;
+        const font = Math.min((W / SUTUN) / 5.0, ((H - (satir - 1) * araY) / satir) / 3.3);
+        out.style.gridTemplateColumns = `repeat(${SUTUN}, 1fr)`;
+        /* DOLU raflar vitrinin TÜM yüksekliğine eşit dağılır: 2 raf varsa
+           ikisi ekrana yayılır, 5 olunca beşi paylaşır — altta ölü boşluk
+           hiç kalmaz. Yazı boyu yine plandaki toplamdan gelir (sabit kalır). */
+        const doluSatir = Math.max(1, Math.ceil(n / SUTUN));
+        out.style.gridTemplateRows = `repeat(${doluSatir}, 1fr)`;
+        out.style.setProperty('--uf', Math.min(48, Math.max(12, font)).toFixed(1) + 'px');
     },
 
     /* Örs boşalır, usta çekicini indirir (dinlenme pozu) */
@@ -1814,6 +1880,13 @@ const Game2 = {
         panel.style.removeProperty('--vf');
         if (!root) return;
         const liste = this.kokVezinleri(root);
+        /* Çok vezinli köklerde panel 3 satıra çıkar. Akış SATIR SATIR:
+           önce üst satır sağdan sola dolar, sonra alttaki — böylece liste
+           yukarıdan aşağıya doğru okunur. */
+        const satirSayisi = liste.length > 8 ? 3 : 2;
+        const sutunSayisi = Math.max(1, Math.ceil(liste.length / satirSayisi));
+        panel.style.gridTemplateRows = '';
+        panel.style.gridTemplateColumns = `repeat(${sutunSayisi}, max-content)`;
         liste.forEach(e => {
             const b = document.createElement('div');
             b.dir = 'rtl';
@@ -1836,8 +1909,11 @@ const Game2 = {
         if (!ic) return;
         let deneme = 0;
         const adim = () => {
-            if (deneme++ > 8) return;
-            if (ic.scrollWidth <= ic.clientWidth + 2) return; // sığdı
+            if (deneme++ > 12) return;
+            /* scrollWidth ortalanmış (margin:auto) taşmayı her tarayıcıda
+               saymaz; panelin kendi genişliği kapla karşılaştırılır. */
+            const panelW = panel.getBoundingClientRect().width;
+            if (panelW <= ic.clientWidth + 2 && ic.scrollWidth <= ic.clientWidth + 2) return; // sığdı
             const ornek = panel.querySelector('.g2-vezin');
             if (!ornek) return;
             const su = parseFloat(getComputedStyle(ornek).fontSize);
@@ -1894,7 +1970,15 @@ const Game2 = {
 
             // Kelime örsten vitrine süzülür (zaid harfler köke göre kırmızı)
             const wordHtml = `<span class="g3-pattern-text">${formatWordVsRoot(word, root)}</span>`;
-            const oR = ors.getBoundingClientRect(), vR = out.getBoundingClientRect();
+            const oR = ors.getBoundingClientRect();
+            // Kart önce GİZLİ eklenir; kelime vitrinin ortasına değil,
+            // kartın gerçekten çıkacağı rafa/hücreye uçar.
+            const bekle = out.querySelector('.g3-out-bekle');
+            if (bekle) bekle.remove();
+            const urun = this.urunKartiEkle(out, root, vezin);
+            urun.style.visibility = 'hidden';
+            this.vitrinYerlestir();
+            const hedefR = urun.getBoundingClientRect();
             const flow = document.createElement('div');
             flow.className = 'g3-flow-word';
             flow.dir = 'rtl';
@@ -1904,34 +1988,19 @@ const Game2 = {
             flow.style.top = (oR.top + oR.height / 2) + 'px';
             document.body.appendChild(flow);
             requestAnimationFrame(() => requestAnimationFrame(() => {
-                flow.style.left = (vR.left + vR.width / 2) + 'px';
-                flow.style.top = (vR.top + vR.height / 2) + 'px';
+                flow.style.left = (hedefR.left + hedefR.width / 2) + 'px';
+                flow.style.top = (hedefR.top + hedefR.height / 2) + 'px';
                 flow.style.transform = 'translate(-50%, -50%) scale(.55)';
                 flow.style.opacity = '0';
             }));
 
             setTimeout(() => {
                 flow.remove();
-                // Vitrin BİRİKTİRİR: her dövülen kelime kendi raf kartıyla eklenir
-                const bekle = out.querySelector('.g3-out-bekle');
-                if (bekle) bekle.remove();
-                const urun = document.createElement('div');
-                urun.className = 'g2-urun';
-                urun.dir = 'rtl';
-                urun.style.borderColor = rootColors(root)[0];
-                // Çift yüzlü kart: ön = emoji + kelime, arka = Türkçe anlam.
-                // Tıklanınca döner (günün kökü kartları gibi).
-                urun.innerHTML =
-                    `<div class="g2-urun-ic">` +
-                    `<div class="g2-urun-on"><span class="g2-urun-emoji">${vezin.emoji}</span><span class="g2-urun-kelime">${wordHtml}</span></div>` +
-                    `<div class="g2-urun-arka" dir="ltr">${vezin.tr || '—'}</div>` +
-                    `</div>`;
-                urun.addEventListener('click', () => {
-                    App.playSound('click');
-                    urun.classList.toggle('cevrik');
-                });
-                out.appendChild(urun);
-                this.vitrinYerlestir();
+                // Uçuş bitti: gizli kart yerinde belirir (popIn yeniden oynar)
+                urun.style.visibility = '';
+                urun.style.animation = 'none';
+                void urun.offsetWidth;
+                urun.style.animation = '';
 
                 // Çift işlendi olarak kaydedilir; kök ilk kez dövüldüyse sayaç ilerler
                 this.state.forgedPairs.add(root + '|' + vezin.no);

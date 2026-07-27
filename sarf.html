@@ -27,7 +27,7 @@
 <!-- ?v=NN: tarayıcı eski sarf.css/sarf.js kopyasını önbellekten sunmasın diye
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
-<link rel="stylesheet" href="sarf.css?v=84">
+<link rel="stylesheet" href="sarf.css?v=102">
 </head>
 <body>
 
@@ -55,28 +55,9 @@
             <!-- Birleşik "Kelime Fabrikası": öğütücü + usta atölyesi tek oyunda.
                  İkon: çark pencereli makine, üstünde çekiç, altında altın külçe. -->
             <div class="menu-card" data-goto="game2-screen">
-                <div class="icon-circle"><svg viewBox="0 0 100 100" aria-hidden="true">
-                    <g transform="rotate(-32 24 20)">
-                        <rect x="6" y="16" width="28" height="6" rx="3" fill="#a9743f"/>
-                        <rect x="28" y="8" width="11" height="22" rx="3.5" fill="#7f8c8d"/>
-                        <rect x="28" y="8" width="11" height="7" rx="3.5" fill="#95a5a6"/>
-                    </g>
-                    <path d="M56,30 l2,-5.4 2,5.4 5.4,2 -5.4,2 -2,5.4 -2,-5.4 -5.4,-2 Z" fill="#f6b93b"/>
-                    <rect x="24" y="38" width="54" height="40" rx="8" fill="#d7dde5" stroke="#9aa6b3" stroke-width="2.5"/>
-                    <rect x="24" y="38" width="54" height="11" rx="5.5" fill="#7C3AED"/>
-                    <path d="M78,52 L93,45 L93,68 L78,61 Z" fill="#8f9aa8"/>
-                    <g transform="translate(51,62)" fill="#16A085">
-                        <circle r="10.5" fill="#34495e"/>
-                        <g><rect x="-2.2" y="-12.6" width="4.4" height="5" rx="2"/><rect x="-2.2" y="7.6" width="4.4" height="5" rx="2"/>
-                           <rect x="-12.6" y="-2.2" width="5" height="4.4" rx="2"/><rect x="7.6" y="-2.2" width="5" height="4.4" rx="2"/>
-                           <rect x="-2.2" y="-12.6" width="4.4" height="5" rx="2" transform="rotate(45)"/><rect x="-2.2" y="7.6" width="4.4" height="5" rx="2" transform="rotate(45)"/>
-                           <rect x="-12.6" y="-2.2" width="5" height="4.4" rx="2" transform="rotate(45)"/><rect x="7.6" y="-2.2" width="5" height="4.4" rx="2" transform="rotate(45)"/></g>
-                        <circle r="6.5"/>
-                        <circle r="2.4" fill="#ffffff"/>
-                    </g>
-                    <path d="M12,96 L46,96 L42,84 L16,84 Z" fill="#f6c344"/>
-                    <path d="M16,84 L42,84 L40.6,88 L17.4,88 Z" fill="#ffeeb0"/>
-                </svg></div>
+                <!-- Önizleme sahnesi sarf.js tarafından doldurulur:
+                     mini vitrin + usta/örs + öğütücü makine (oyunun kendi SVG'leri). -->
+                <div class="mf-onizleme" id="mfOnizleme"></div>
                 <h2>مَصْنَعُ الْكَلِمَاتِ</h2>
             </div>
             <!-- Dijital yarışma (Firebase) girişi: kartla aynı genişlikte,
@@ -118,7 +99,7 @@
      kaliplartablosu'ndaki "Günün Kökü" ile aynı kaynaktan gelir. -->
 <script src="veri_vezin_numaralari.js"></script>
 <script src="veri_kokler.js"></script>
-<script src="sarf.js?v=84"></script>
+<script src="sarf.js?v=102"></script>
 <script src="geri.js"></script>
 </body>
 </html>

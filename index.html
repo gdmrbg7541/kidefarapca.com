@@ -116,6 +116,128 @@
 #live-class-modal.windowed .live-class-btn svg { width: 15px !important; height: 15px !important; }
 #live-class-modal.windowed #btn-leave { margin-left: 4px !important; }
 </style>
+    <style id="kartikon-stil">
+    /* ============ KART SVG İKONLARI ============
+       Emojiler yerine her karta özel, kendi animasyonu olan SVG'ler.
+       Boyut em ile ölçülür: mevcut emoji font boyutlarına uyar. */
+    .default-game-emoji svg, .oyun-ikon svg { width: 1.6em; height: 1.6em; display: block; overflow: visible; }
+    .kg [class^="kga-"], .kg [class*=" kga-"] { transform-box: fill-box; }
+    /* Alfabe: harf fişleri kitaptan yükselip süzülür */
+    .kga-yuz { animation: kgYuz 2.6s ease-in-out infinite; }
+    .kga-yuz.g2x { animation-delay: .65s; } .kga-yuz.g3x { animation-delay: 1.3s; }
+    @keyframes kgYuz { 0%{transform:translateY(9px);opacity:0} 30%{opacity:1} 75%{opacity:1} 100%{transform:translateY(-7px);opacity:0} }
+    /* Dinle: ses dalgaları nabız gibi */
+    .kga-dalga { animation: kgDalga 1.5s ease-in-out infinite; }
+    .kga-dalga.g2x { animation-delay: .4s; }
+    @keyframes kgDalga { 0%,100%{opacity:.15} 50%{opacity:1} }
+    /* Yaz: kalem yazıyormuş gibi sallanır */
+    .kga-kalem { transform-origin: 20% 90%; animation: kgKalem 1.2s ease-in-out infinite; }
+    @keyframes kgKalem { 0%,100%{transform:rotate(0) translateX(0)} 50%{transform:rotate(-9deg) translateX(2px)} }
+    /* Seç: parmak tıklar, seçenek parlar */
+    .kga-parmak { animation: kgParmak 1.6s ease-in-out infinite; }
+    @keyframes kgParmak { 0%,100%{transform:translateY(0)} 40%{transform:translateY(5px)} 55%{transform:translateY(5px)} }
+    .kga-secim { animation: kgSecim 1.6s ease-in-out infinite; }
+    @keyframes kgSecim { 0%,35%,90%,100%{opacity:0} 45%,70%{opacity:1} }
+    /* Fabrika: çark döner, duman tüter */
+    .kga-cark { transform-origin: 50% 50%; animation: kgCarkDon 5s linear infinite; }
+    @keyframes kgCarkDon { to { transform: rotate(360deg); } }
+    .kga-duman { animation: kgDuman 2.2s ease-out infinite; }
+    .kga-duman.g2x { animation-delay: 1.1s; }
+    @keyframes kgDuman { 0%{transform:translateY(0) scale(.6);opacity:0} 25%{opacity:.85} 100%{transform:translateY(-13px) scale(1.25);opacity:0} }
+    /* Atlas: koşucu zıplar, hız çizgileri parlar */
+    .kga-kosucu { animation: kgKos .7s ease-in-out infinite; }
+    @keyframes kgKos { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+    .kga-hiz { animation: kgHiz .7s linear infinite; }
+    @keyframes kgHiz { 0%{opacity:0;transform:translateX(4px)} 40%{opacity:.9} 100%{opacity:0;transform:translateX(-6px)} }
+    /* Sözlük: büyüteç satırları tarar */
+    .kga-buyutec { animation: kgTara 2.8s ease-in-out infinite alternate; }
+    @keyframes kgTara { 0%{transform:translate(-9px,-2px)} 100%{transform:translate(10px,4px)} }
+    /* Aksâm-ı Seb'a: 7 dilim ağır ağır döner */
+    .kga-yedili { transform-origin: 50% 50%; animation: kgYediDon 16s linear infinite; }
+    @keyframes kgYediDon { to { transform: rotate(360deg); } }
+    /* Mezid: anahtar cıvatayı sıkar, + harfleri belirir */
+    .kga-anahtar { transform-origin: 32px 36px; animation: kgAnahtar 1.7s ease-in-out infinite; }
+    @keyframes kgAnahtar { 0%,100%{transform:rotate(-16deg)} 50%{transform:rotate(14deg)} }
+    .kga-arti { animation: kgArti 1.7s ease-in-out infinite; }
+    @keyframes kgArti { 0%,40%,100%{opacity:0;transform:scale(.6)} 60%,80%{opacity:1;transform:scale(1.1)} }
+    /* Simültane: değişim okları yarım tur atar, baloncuklar nefes alır */
+    .kga-oklar { transform-origin: 50% 50%; animation: kgOklar 2.6s cubic-bezier(.5,0,.3,1) infinite; }
+    @keyframes kgOklar { 0%,32%{transform:rotate(0)} 62%,100%{transform:rotate(180deg)} }
+    .kga-balon { animation: kgBalon 2.6s ease-in-out infinite; }
+    .kga-balon.g2x { animation-delay: 1.3s; }
+    @keyframes kgBalon { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2.5px)} }
+    /* Hangi Harf: fiş yassılıp soru işaretinden harfe döner */
+    .kga-flip { transform-origin: 50% 50%; animation: kgFlip 2.4s ease-in-out infinite; }
+    @keyframes kgFlip { 0%,38%,62%,100%{transform:scaleX(1)} 46%,54%{transform:scaleX(.08)} }
+    .kga-yuzA { animation: kgYuzA 2.4s step-end infinite; }
+    .kga-yuzB { animation: kgYuzB 2.4s step-end infinite; }
+    @keyframes kgYuzA { 0%{opacity:1} 50%{opacity:0} 100%{opacity:1} }
+    @keyframes kgYuzB { 0%{opacity:0} 50%{opacity:1} 100%{opacity:0} }
+    /* Klavye: tuşlar sırayla basılır */
+    .kga-tus { animation: kgTus 1.5s ease-in-out infinite; }
+    .kga-tus.g2x { animation-delay: .5s; } .kga-tus.g3x { animation-delay: 1s; }
+    @keyframes kgTus { 0%,30%,100%{transform:translateY(0)} 12%{transform:translateY(2.6px)} }
+    /* Test Kapışması: kılıçlar çarpışır, kıvılcım çakar */
+    .kga-kilicL { transform-origin: 14px 52px; animation: kgKilicL 1.9s ease-in-out infinite; }
+    .kga-kilicR { transform-origin: 50px 52px; animation: kgKilicR 1.9s ease-in-out infinite; }
+    @keyframes kgKilicL { 0%,100%{transform:rotate(-38deg)} 38%{transform:rotate(9deg)} 48%{transform:rotate(3deg)} 60%{transform:rotate(7deg)} }
+    @keyframes kgKilicR { 0%,100%{transform:rotate(38deg)} 38%{transform:rotate(-9deg)} 48%{transform:rotate(-3deg)} 60%{transform:rotate(-7deg)} }
+    .kga-carp { transform-origin: 50% 50%; animation: kgCarp 1.9s ease-out infinite; }
+    @keyframes kgCarp { 0%,36%,70%,100%{opacity:0;transform:scale(.2)} 42%{opacity:1;transform:scale(1.25)} 55%{opacity:.6;transform:scale(.9)} }
+    /* Hafıza: sağdaki kart dönüp yıldızını gösterir */
+    .kga-hafiza { transform-origin: 50% 50%; animation: kgFlip 2.8s ease-in-out infinite; }
+    .kga-hyuzA { animation: kgYuzA 2.8s step-end infinite; }
+    .kga-hyuzB { animation: kgYuzB 2.8s step-end infinite; }
+    /* Renkler: boya damlaları sırayla nabız atar */
+    .kga-renk { transform-box: fill-box; transform-origin: 50% 50%; animation: kgRenk 2s ease-in-out infinite; }
+    .kga-renk.g2x { animation-delay: .5s; } .kga-renk.g3x { animation-delay: 1s; } .kga-renk.g4x { animation-delay: 1.5s; }
+    @keyframes kgRenk { 0%,45%,100%{transform:scale(1)} 18%{transform:scale(1.55)} }
+    /* İsim x4: dörtlü parçalar ayrılıp birleşir */
+    .kga-q1 { animation: kgQ1 2.2s ease-in-out infinite; } .kga-q2 { animation: kgQ2 2.2s ease-in-out infinite; }
+    .kga-q3 { animation: kgQ3 2.2s ease-in-out infinite; } .kga-q4 { animation: kgQ4 2.2s ease-in-out infinite; }
+    @keyframes kgQ1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-3.5px,-3.5px)} }
+    @keyframes kgQ2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(3.5px,-3.5px)} }
+    @keyframes kgQ3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-3.5px,3.5px)} }
+    @keyframes kgQ4 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(3.5px,3.5px)} }
+    /* Serüven: rota kendini çizer, iğne zıplar */
+    .kga-rota { stroke-dasharray: 5 5; animation: kgRota 2.6s linear infinite; }
+    @keyframes kgRota { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+    .kga-pin { animation: kgPin 2.6s ease-in-out infinite; }
+    @keyframes kgPin { 0%,60%,100%{transform:translateY(0)} 74%{transform:translateY(-6px)} 86%{transform:translateY(0)} 92%{transform:translateY(-2.5px)} }
+    /* Kısa Sureler: yıldızlar sırayla parıldar */
+    .kga-parla { transform-box: fill-box; transform-origin: 50% 50%; animation: kgParla 2.4s ease-in-out infinite; }
+    .kga-parla.g2x { animation-delay: .8s; } .kga-parla.g3x { animation-delay: 1.6s; }
+    @keyframes kgParla { 0%,55%,100%{opacity:.15;transform:scale(.55)} 25%{opacity:1;transform:scale(1.15)} }
+    /* Namaz: eller hafifçe yükselir, nur süzülür */
+    .kga-dua { animation: kgDua 2.8s ease-in-out infinite; }
+    @keyframes kgDua { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2.5px)} }
+    .kga-nur { transform-box: fill-box; transform-origin: 50% 50%; animation: kgNur 2.8s ease-in-out infinite; }
+    @keyframes kgNur { 0%,100%{opacity:.25;transform:scale(.85)} 50%{opacity:.85;transform:scale(1.12)} }
+    /* YDT: kep havaya atılır, püskül savrulur */
+    .kga-kep { animation: kgKep 2.4s ease-in-out infinite; }
+    @keyframes kgKep { 0%,100%{transform:translateY(0) rotate(0)} 45%{transform:translateY(-7px) rotate(-8deg)} 60%{transform:translateY(-4px) rotate(3deg)} }
+    .kga-puskul { transform-origin: 0 0; animation: kgPuskul 2.4s ease-in-out infinite; }
+    @keyframes kgPuskul { 0%,100%{transform:rotate(0)} 45%{transform:rotate(22deg)} 70%{transform:rotate(-10deg)} }
+    /* YouTube: play nabzı + beğeni pop + abone zili */
+    .kga-ucgen { transform-box: fill-box; transform-origin: 50% 50%; animation: kgUcgen 2.4s ease-in-out infinite; }
+    @keyframes kgUcgen { 0%,24%,100%{transform:scale(1)} 12%{transform:scale(1.22)} }
+    .kga-begen { transform-box: fill-box; transform-origin: 50% 100%; animation: kgBegen 2.4s ease-in-out infinite; }
+    @keyframes kgBegen { 0%,20%{opacity:0;transform:scale(.3)} 32%,55%{opacity:1;transform:scale(1.08)} 75%,100%{opacity:0;transform:scale(.6)} }
+    .kga-zil { transform-box: fill-box; transform-origin: 50% 0; animation: kgZil 2.4s ease-in-out infinite; }
+    @keyframes kgZil { 0%,55%,100%{transform:rotate(0)} 64%{transform:rotate(17deg)} 73%{transform:rotate(-13deg)} 82%{transform:rotate(7deg)} 90%{transform:rotate(0)} }
+    /* Instagram: mercekte akış kayar, beğeni kalpleri süzülür */
+    .kga-akis { animation: kgAkis 2.2s linear infinite; }
+    @keyframes kgAkis { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+    .kga-kalp { transform-box: fill-box; transform-origin: 50% 50%; animation: kgKalp 2.6s ease-out infinite; }
+    .kga-kalp.k2x { animation-delay: 1.3s; }
+    @keyframes kgKalp { 0%{opacity:0;transform:translateY(7px) scale(.45)} 22%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-15px) scale(1.1)} }
+    /* Sunumlar: maddeler yazılır, lazer imleç gezinir */
+    .kga-madde { transform-box: fill-box; transform-origin: 0 50%; animation: kgMadde 3.2s ease-in-out infinite; }
+    .kga-madde.m2x { animation-delay: .55s; }
+    @keyframes kgMadde { 0%,10%{transform:scaleX(0)} 32%,82%{transform:scaleX(1)} 96%,100%{transform:scaleX(0)} }
+    .kga-imlec { animation: kgImlec 3.2s ease-in-out infinite; }
+    @keyframes kgImlec { 0%,100%{transform:translate(0,0);opacity:0} 14%{opacity:1;transform:translate(-5px,-7px)} 45%{transform:translate(-24px,1px)} 74%{opacity:1;transform:translate(-8px,6px)} 90%{opacity:0} }
+    </style>
 </head>
 <body>
 
@@ -391,7 +513,13 @@
 
         <a href="ydtarapca.html" target="_blank" rel="opener" class="game-card kss-card desktop-only">
           <div class="default-game-content">
-            <div class="default-game-emoji">🎓</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <g class="kga-kep">
+                <polygon points="32,12 58,23 32,34 6,23" fill="#2c3e50"/>
+                <path d="M20 30 v10 q12 7 24 0 v-10" fill="none" stroke="#2c3e50" stroke-width="5"/>
+                <g class="kga-puskul" transform="translate(56,24)"><line x1="0" y1="0" x2="0" y2="13" stroke="#F39C12" stroke-width="2.6"/><circle cx="0" cy="15.5" r="3" fill="#F39C12"/></g>
+              </g>
+            </svg></div>
             <h3>YDT Arapça</h3>
             <span class="game-card-description">Sınav hazırlık ve soru pratikleri.</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -405,7 +533,13 @@
         
         <a href="alfabe.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">📖🔤</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <g class="kga-yuz"><rect x="9" y="8" width="13" height="13" rx="3" fill="#7C3AED"/><text x="15.5" y="18.5" font-size="10" fill="#fff" text-anchor="middle">ا</text></g>
+              <g class="kga-yuz g2x"><rect x="25.5" y="5" width="13" height="13" rx="3" fill="#F39C12"/><text x="32" y="15.5" font-size="10" fill="#fff" text-anchor="middle">ب</text></g>
+              <g class="kga-yuz g3x"><rect x="42" y="8" width="13" height="13" rx="3" fill="#EE5253"/><text x="48.5" y="18.5" font-size="10" fill="#fff" text-anchor="middle">ت</text></g>
+              <path d="M8 52 V26 q12 -6 24 0 q12 -6 24 0 v26 q-12 -5 -24 0 q-12 -5 -24 0 Z" fill="#fff" stroke="#16A085" stroke-width="3"/>
+              <line x1="32" y1="25" x2="32" y2="52" stroke="#16A085" stroke-width="2.4"/>
+            </svg></div>
             <h3>Alfabe</h3>
             <span class="game-card-description">Harfleri Pekiştir.</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -414,7 +548,14 @@
 
         <a href="dinleveyaz.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🎧✍️</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M10 34 a17 17 0 0 1 34 0" fill="none" stroke="#2563EB" stroke-width="4.5" stroke-linecap="round"/>
+              <rect x="7" y="32" width="9" height="15" rx="4" fill="#2563EB"/>
+              <rect x="38" y="32" width="9" height="15" rx="4" fill="#2563EB"/>
+              <path class="kga-dalga" d="M22 36 q3.5 5 0 10" fill="none" stroke="#5AB4FF" stroke-width="2.6" stroke-linecap="round"/>
+              <path class="kga-dalga g2x" d="M28 34 q4.5 7 0 14" fill="none" stroke="#5AB4FF" stroke-width="2.6" stroke-linecap="round"/>
+              <g class="kga-kalem"><path d="M38 48 l14 -10 5 6.5 -14 10 -7 2 Z" fill="#F39C12" stroke="#c87f0a" stroke-width="1.6"/><path d="M52 38 l5 6.5 3.2 -2.3 -5 -6.6 Z" fill="#EE5253"/></g>
+            </svg></div>
             <h3>Dinle ve Yaz</h3>
             <span class="game-card-description">Duyduğun kelimeyi yaz.</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -423,7 +564,15 @@
 
         <a href="dinlevesec.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🎧👆</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M8 22 a13 13 0 0 1 26 0" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+              <rect x="5.5" y="20" width="8" height="12" rx="3.5" fill="#2563EB"/>
+              <rect x="29" y="20" width="8" height="12" rx="3.5" fill="#2563EB"/>
+              <rect x="10" y="42" width="18" height="11" rx="4" fill="#e9edf4" stroke="#b9c3d4" stroke-width="1.6"/>
+              <rect class="kga-secim" x="10" y="42" width="18" height="11" rx="4" fill="#4ade80"/>
+              <rect x="34" y="42" width="18" height="11" rx="4" fill="#e9edf4" stroke="#b9c3d4" stroke-width="1.6"/>
+              <g class="kga-parmak"><path d="M22 26 q3 -4 5.4 -.6 l6 9 q-6 4 -10 1 Z" fill="#f6c89f" stroke="#d99a62" stroke-width="1.4"/><rect x="24.5" y="21.5" width="4.6" height="12" rx="2.3" fill="#f6c89f" stroke="#d99a62" stroke-width="1.4" transform="rotate(-32 26.8 27.5)"/></g>
+            </svg></div>
             <h3>Dinle ve Seç</h3>
             <span class="game-card-description">Kelimeyi oluşturan harfleri seç!</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -432,7 +581,13 @@
 
         <a href="sarf.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🏭⚒️</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <circle class="kga-duman" cx="18" cy="20" r="4.5" fill="#cfd8e3"/>
+              <circle class="kga-duman g2x" cx="22" cy="17" r="5.5" fill="#dde5ee"/>
+              <rect x="13" y="20" width="9" height="14" rx="2.5" fill="#8f9aa8"/>
+              <path d="M8 56 V34 l14 -8 v8 l14 -8 v8 l14 -8 v30 Z" fill="#d7dde5" stroke="#9aa6b3" stroke-width="2.4"/>
+              <g class="kga-cark"><circle cx="38" cy="44" r="7.5" fill="#7C3AED"/><rect x="36.5" y="33.5" width="3" height="5" rx="1.4" fill="#7C3AED"/><rect x="36.5" y="49.5" width="3" height="5" rx="1.4" fill="#7C3AED"/><rect x="27.5" y="42.5" width="5" height="3" rx="1.4" fill="#7C3AED"/><rect x="43.5" y="42.5" width="5" height="3" rx="1.4" fill="#7C3AED"/><circle cx="38" cy="44" r="3.4" fill="#fff"/></g>
+            </svg></div>
             <h3>Kelime Fabrikası</h3>
             <span class="game-card-description">Kelimeyi öğüt, kökten yeni kelimeler döv!</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -441,7 +596,13 @@
 
         <a href="fiiller.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">📖🏃‍♂️</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M6 54 V30 q10 -5 20 0 q10 -5 20 0 v24 q-10 -4 -20 0 q-10 -4 -20 0 Z" fill="#fff" stroke="#16A085" stroke-width="2.8"/>
+              <line x1="26" y1="29" x2="26" y2="54" stroke="#16A085" stroke-width="2.2"/>
+              <line class="kga-hiz" x1="36" y1="14" x2="43" y2="14" stroke="#5AB4FF" stroke-width="2.6" stroke-linecap="round"/>
+              <line class="kga-hiz" x1="34" y1="20" x2="42" y2="20" stroke="#5AB4FF" stroke-width="2.6" stroke-linecap="round" style="animation-delay:.25s"/>
+              <g class="kga-kosucu"><circle cx="51" cy="9" r="4.4" fill="#EE5253"/><path d="M51 13.5 l-1.2 8 m1.2 -8 l5 4.5 m-6.2 3.5 l-5 5 m5 -5 l6 5" stroke="#EE5253" stroke-width="3" stroke-linecap="round" fill="none"/></g>
+            </svg></div>
             <h3>Fiil Çekim Atlası</h3>
             <span class="game-card-description">Mazi, muzari ve emir çekimlerini keşfet!</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -450,7 +611,14 @@
 
         <a href="sozluksimulasyonu.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🔎</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <rect x="10" y="8" width="44" height="48" rx="6" fill="#fff" stroke="#b9c3d4" stroke-width="2.4"/>
+              <line x1="17" y1="20" x2="47" y2="20" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
+              <line x1="17" y1="30" x2="47" y2="30" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
+              <line x1="17" y1="40" x2="47" y2="40" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
+              <line x1="17" y1="48" x2="37" y2="48" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
+              <g class="kga-buyutec"><circle cx="32" cy="30" r="9.5" fill="rgba(90,180,255,.22)" stroke="#2563EB" stroke-width="3.4"/><line x1="39" y1="37" x2="46" y2="44" stroke="#2563EB" stroke-width="4.4" stroke-linecap="round"/></g>
+            </svg></div>
             <h3>Sözlük Simülasyonu</h3>
             <span class="game-card-description">Kelimenin yalın halini bul!</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -459,7 +627,13 @@
 
         <a href="aksamiseba.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🧩</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <g class="kga-yedili">
+                <g fill-rule="evenodd"><path d="M32 32 L32 7 A25 25 0 0 1 51.5 16.4 Z" fill="#EE5253"/><path d="M32 32 L51.5 16.4 A25 25 0 0 1 56.4 26.4 Z" fill="#F39C12"/><path d="M32 32 L56.4 26.4 A25 25 0 0 1 54.3 43.1 Z" fill="#f6c344"/><path d="M32 32 L54.3 43.1 A25 25 0 0 1 42.8 54.6 Z" fill="#27AE60"/><path d="M32 32 L42.8 54.6 A25 25 0 0 1 21.2 54.6 Z" fill="#16A085"/><path d="M32 32 L21.2 54.6 A25 25 0 0 1 8.6 37.5 Z" fill="#2563EB"/><path d="M32 32 L8.6 37.5 A25 25 0 0 1 32 7 Z" fill="#7C3AED"/></g>
+              </g>
+              <circle cx="32" cy="32" r="10" fill="#fff" stroke="#64748b" stroke-width="2"/>
+              <text x="32" y="37.5" font-size="14" fill="#334155" text-anchor="middle" font-weight="bold">٧</text>
+            </svg></div>
             <h3>Aksâmı Seb'a</h3>
             <span class="game-card-description">Fiillerin 7 halini keşfet!</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -469,7 +643,13 @@
 
         <a href="mezidfiiller.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🛠️</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <text class="kga-arti" x="12" y="17" font-size="13" fill="#27AE60" font-weight="bold">+ح</text>
+              <text class="kga-arti" x="42" y="14" font-size="13" fill="#EE5253" font-weight="bold" style="animation-delay:.85s">+س</text>
+              <polygon points="32,28 39,32 39,40 32,44 25,40 25,32" fill="#94a3b8" stroke="#64748b" stroke-width="2"/>
+              <circle cx="32" cy="36" r="3.2" fill="#e2e8f0"/>
+              <g class="kga-anahtar"><path d="M32 36 L48 50 a5.5 5.5 0 1 1 -7 6 l-13 -14" fill="none" stroke="#7C3AED" stroke-width="6" stroke-linecap="round"/></g>
+            </svg></div>
             <h3>Mezid Fiiller</h3>
             <span class="game-card-description">Türemiş fiilleri keşfet!</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -478,7 +658,11 @@
 
         <a href="muhadese.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🔀</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <g class="kga-balon"><rect x="4" y="8" width="24" height="18" rx="7" fill="#16A085"/><path d="M12 25 l-2.5 6 7 -5.5 Z" fill="#16A085"/><text x="16" y="21.5" font-size="12" fill="#fff" text-anchor="middle">ع</text></g>
+              <g class="kga-balon g2x"><rect x="36" y="36" width="24" height="18" rx="7" fill="#2563EB"/><path d="M52 53 l2.5 6 -7 -5.5 Z" fill="#2563EB"/><text x="48" y="49.5" font-size="11.5" fill="#fff" text-anchor="middle" font-weight="bold">T</text></g>
+              <g class="kga-oklar"><path d="M24 40 a10 10 0 0 0 8 8 m0 0 l-4.5 .8 m4.5 -.8 l-1 -4.3" fill="none" stroke="#F39C12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 24 a10 10 0 0 0 -8 -8 m0 0 l4.5 -.8 m-4.5 .8 l1 4.3" fill="none" stroke="#F39C12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+            </svg></div>
             <h3>Simültane Çeviri</h3>
             <span class="game-card-description"> İHL & İHO Çeviri ve Kelime </span>
             <span class="status-badge available">İncele!</span>
@@ -520,7 +704,9 @@
         <div class="game-grid mobile-scroll-grid-single">
           <a href="hangiharf.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-yesil">
             <div class="default-game-content">
-              <div class="oyun-ikon">🔤</div>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+                <g class="kga-flip"><rect x="14" y="14" width="36" height="36" rx="8" fill="#fff"/><text class="kga-yuzA" x="32" y="42" font-size="24" fill="#334155" text-anchor="middle" font-weight="bold">؟</text><text class="kga-yuzB" x="32" y="41" font-size="23" fill="#EE5253" text-anchor="middle" font-weight="bold">ح</text></g>
+              </svg></div>
               <h3>Hangi Harf?</h3>
               <span class="game-card-description">Hızlıca doğru harfi bul.</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
@@ -529,7 +715,13 @@
 
           <a href="klavyeoyunu.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-mor">
             <div class="default-game-content">
-              <div class="oyun-ikon">⌨️</div>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+                <rect x="6" y="18" width="52" height="28" rx="6" fill="#fff"/>
+                <g class="kga-tus"><rect x="12" y="24" width="9" height="7" rx="2" fill="#8B7CFF"/></g>
+                <g class="kga-tus g2x"><rect x="27.5" y="24" width="9" height="7" rx="2" fill="#8B7CFF"/></g>
+                <g class="kga-tus g3x"><rect x="43" y="24" width="9" height="7" rx="2" fill="#8B7CFF"/></g>
+                <rect x="17" y="35" width="30" height="6" rx="2.6" fill="#cdc6ff"/>
+              </svg></div>
               <h3>Klavye Oyunu</h3>
               <span class="game-card-description">Arapça klavye pratiği yap.</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
@@ -538,7 +730,11 @@
 
           <a href="testkapismasi.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-kirmizi">
             <div class="default-game-content">
-              <div class="oyun-ikon">⚔️</div>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+                <g class="kga-carp"><path d="M32 18 l2.6 6.5 6.6 2.5 -6.6 2.5 -2.6 6.5 -2.6 -6.5 -6.6 -2.5 6.6 -2.5 Z" fill="#ffe082"/></g>
+                <g class="kga-kilicL"><rect x="12.4" y="16" width="4.4" height="26" rx="2.2" fill="#f2f5f9"/><rect x="8.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="12.9" y="44" width="3.4" height="8" rx="1.7" fill="#a1887f"/></g>
+                <g class="kga-kilicR"><rect x="47.2" y="16" width="4.4" height="26" rx="2.2" fill="#f2f5f9"/><rect x="43.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="47.7" y="44" width="3.4" height="8" rx="1.7" fill="#a1887f"/></g>
+              </svg></div>
               <h3>Test Kapışması</h3>
               <span class="game-card-description">İki kişilik kelime testi.</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
@@ -547,7 +743,10 @@
 
           <a href="hafizakartlari.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-turuncu">
             <div class="default-game-content">
-              <div class="oyun-ikon">🃏</div>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+                <g transform="rotate(-8 20 34)"><rect x="9" y="16" width="22" height="32" rx="5" fill="#fff"/><text x="20" y="38" font-size="15" fill="#5A50E0" text-anchor="middle" font-weight="bold">؟</text></g>
+                <g class="kga-hafiza" transform="rotate(8 44 34)"><rect x="33" y="16" width="22" height="32" rx="5" fill="#fff"/><text class="kga-hyuzA" x="44" y="38" font-size="15" fill="#5A50E0" text-anchor="middle" font-weight="bold">؟</text><text class="kga-hyuzB" x="44" y="38" font-size="15" fill="#FF9800" text-anchor="middle">★</text></g>
+              </svg></div>
               <h3>Hafıza Kartları</h3>
               <span class="game-card-description">Kelime kartlarını eşleştir.</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
@@ -556,7 +755,13 @@
 
           <a href="renkler.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-pembe">
             <div class="default-game-content">
-              <div class="oyun-ikon">🎨</div>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+                <path d="M32 8 a24 24 0 1 0 0 48 c5 0 6 -3.4 4 -6.6 -2.4 -3.8 -.6 -8.4 4.6 -8.4 h6.8 A24 24 0 0 0 32 8 Z" fill="#fff"/>
+                <circle class="kga-renk" cx="21" cy="22" r="4.6" fill="#EE5253"/>
+                <circle class="kga-renk g2x" cx="34" cy="16" r="4.6" fill="#2563EB"/>
+                <circle class="kga-renk g3x" cx="45" cy="24" r="4.6" fill="#F39C12"/>
+                <circle class="kga-renk g4x" cx="17" cy="36" r="4.6" fill="#27AE60"/>
+              </svg></div>
               <h3>Renkler</h3>
               <span class="game-card-description">Renkleri öğren.</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
@@ -565,7 +770,12 @@
 
           <a href="isimx4.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-mavi">
             <div class="default-game-content">
-              <div class="oyun-ikon">🧩</div>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+                <g class="kga-q1"><rect x="12" y="12" width="18" height="18" rx="4" fill="#fff"/><text x="21" y="26" font-size="12" fill="#2563EB" text-anchor="middle">م</text></g>
+                <g class="kga-q2"><rect x="34" y="12" width="18" height="18" rx="4" fill="#fff"/><text x="43" y="26" font-size="12" fill="#EE5253" text-anchor="middle">ف</text></g>
+                <g class="kga-q3"><rect x="12" y="34" width="18" height="18" rx="4" fill="#fff"/><text x="21" y="48" font-size="12" fill="#F39C12" text-anchor="middle">ع</text></g>
+                <g class="kga-q4"><rect x="34" y="34" width="18" height="18" rx="4" fill="#fff"/><text x="43" y="48" font-size="12" fill="#27AE60" text-anchor="middle">ل</text></g>
+              </svg></div>
               <h3>İsim x 4</h3>
               <span class="game-card-description">İsmin 4 özelliğini analiz et!</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
@@ -590,7 +800,13 @@
       <div class="game-grid mobile-scroll-grid-single">
         <a href="kssi.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🗺️</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M8 14 l16 -5 16 5 16 -5 v40 l-16 5 -16 -5 -16 5 Z" fill="#eafaf3" stroke="#16A085" stroke-width="2.6"/>
+              <line x1="24" y1="9" x2="24" y2="49" stroke="#bfe8d8" stroke-width="2"/>
+              <line x1="40" y1="14" x2="40" y2="54" stroke="#bfe8d8" stroke-width="2"/>
+              <path class="kga-rota" d="M14 44 q10 -8 18 -2 q10 7 18 -22" fill="none" stroke="#EE5253" stroke-width="3" stroke-linecap="round"/>
+              <g class="kga-pin"><path d="M50 10 a6.5 6.5 0 0 1 6.5 6.5 c0 4.8 -6.5 11 -6.5 11 s-6.5 -6.2 -6.5 -11 A6.5 6.5 0 0 1 50 10 Z" fill="#EE5253"/><circle cx="50" cy="16.5" r="2.6" fill="#fff"/></g>
+            </svg></div>
             <h3>Kelimenin Serüveni</h3>
             <span class="game-card-description">Sunum ve etkinlikler. (6 Seviye)</span>
             <span class="status-badge available">İncele!</span>
@@ -605,7 +821,12 @@
         
         <a href="kisasureler.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">✨</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M40 8 a20 20 0 1 0 14 34 a17 17 0 1 1 -14 -34 Z" fill="#F39C12"/>
+              <path class="kga-parla" d="M20 14 l2.2 5.6 5.6 2.2 -5.6 2.2 -2.2 5.6 -2.2 -5.6 -5.6 -2.2 5.6 -2.2 Z" fill="#f6c344"/>
+              <path class="kga-parla g2x" d="M46 44 l1.9 4.8 4.8 1.9 -4.8 1.9 -1.9 4.8 -1.9 -4.8 -4.8 -1.9 4.8 -1.9 Z" fill="#f6c344"/>
+              <path class="kga-parla g3x" d="M14 40 l1.5 3.8 3.8 1.5 -3.8 1.5 -1.5 3.8 -1.5 -3.8 -3.8 -1.5 3.8 -1.5 Z" fill="#ffd54f"/>
+            </svg></div>
             <h3>Kısa Sureler</h3>
             <span class="game-card-description">Ezberini güçlendir 🦾</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -614,7 +835,13 @@
 
         <a href="namaz.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
-            <div class="default-game-emoji">🤲</div>
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <circle class="kga-nur" cx="32" cy="16" r="9" fill="#ffe082"/>
+              <g class="kga-dua">
+                <path d="M12 52 q-2 -14 6 -20 q6 -4 10 2 q3 5 1 10 l-3 8 Z" fill="#f6c89f" stroke="#d99a62" stroke-width="1.8"/>
+                <path d="M52 52 q2 -14 -6 -20 q-6 -4 -10 2 q-3 5 -1 10 l3 8 Z" fill="#f6c89f" stroke="#d99a62" stroke-width="1.8"/>
+              </g>
+            </svg></div>
             <h3>Namaz</h3>
             <span class="game-card-description">Namaz Dinin Direğidir.</span>
             <span class="status-badge available">Hemen Başla</span>
@@ -634,10 +861,10 @@
         .sosyal-card.sosyal-ig{ background:linear-gradient(140deg,#F58529 0%,#DD2A7B 45%,#8134AF 80%,#515BD4 100%); }
         .sosyal-card::after{ content:''; position:absolute; top:-30px; right:-30px; width:110px; height:110px;
           border-radius:50%; background:rgba(255,255,255,.12); pointer-events:none; }
-        .sosyal-ikon{ width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.2);
+        .sosyal-ikon{ width:66px; height:66px; border-radius:50%; background:rgba(255,255,255,.2);
           display:flex; align-items:center; justify-content:center; margin-bottom:8px;
           box-shadow:inset 0 0 0 2px rgba(255,255,255,.35); }
-        .sosyal-ikon svg{ width:28px; height:28px; fill:#fff; }
+        .sosyal-ikon svg{ width:52px; height:52px; }
         .sosyal-card h3{ color:#fff !important; text-shadow:0 1px 3px rgba(0,0,0,.25); }
         .sosyal-kullanici{ display:inline-block; background:rgba(255,255,255,.22); color:#fff;
           border-radius:50px; padding:2px 12px; font-weight:700; font-size:.85em; margin:2px 0 6px;
@@ -657,7 +884,12 @@
 
         <a href="https://www.youtube.com/@kidefarapca" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-yt">
           <div class="default-game-content">
-            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></div>
+            <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
+              <g class="kga-zil"><path d="M50 6 q6 1 6 8 v3 l2.4 3 h-16.8 l2.4 -3 v-3 q0 -7 6 -8 Z" fill="#ffd54f"/><circle cx="50" cy="21.5" r="2.2" fill="#ffd54f"/></g>
+              <g class="kga-begen"><path d="M6 44 h4.6 v11 H6 Z M12 44 l4 -7.6 q2.6 .6 2 3.6 l-.8 4 h6.4 q2.8 0 2.2 2.8 l-1.6 6.4 q-.5 1.8 -2.4 1.8 h-9.8 Z" fill="#fff"/><text x="30" y="49" font-size="8.5" fill="#ffd54f" font-weight="bold">+1</text></g>
+              <rect x="15" y="20" width="34" height="24" rx="8" fill="#fff"/>
+              <path class="kga-ucgen" d="M28.5 26.5 L38.5 32 L28.5 37.5 Z" fill="#C4302B"/>
+            </svg></div>
             <h3>Kidef Arapça</h3>
             <span class="sosyal-kullanici">@kidefarapca</span>
             <span class="game-card-description">Eğitici oyunlar ve içerikler.</span>
@@ -667,7 +899,12 @@
 
         <a href="https://www.youtube.com/@geylanidemirbag" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-yt">
           <div class="default-game-content">
-            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></div>
+            <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
+              <g class="kga-zil"><path d="M50 6 q6 1 6 8 v3 l2.4 3 h-16.8 l2.4 -3 v-3 q0 -7 6 -8 Z" fill="#ffd54f"/><circle cx="50" cy="21.5" r="2.2" fill="#ffd54f"/></g>
+              <g class="kga-begen"><path d="M6 44 h4.6 v11 H6 Z M12 44 l4 -7.6 q2.6 .6 2 3.6 l-.8 4 h6.4 q2.8 0 2.2 2.8 l-1.6 6.4 q-.5 1.8 -2.4 1.8 h-9.8 Z" fill="#fff"/><text x="30" y="49" font-size="8.5" fill="#ffd54f" font-weight="bold">+1</text></g>
+              <rect x="15" y="20" width="34" height="24" rx="8" fill="#fff"/>
+              <path class="kga-ucgen" d="M28.5 26.5 L38.5 32 L28.5 37.5 Z" fill="#C4302B"/>
+            </svg></div>
             <h3>Geylani Demirbağ</h3>
             <span class="sosyal-kullanici">@geylanidemirbag</span>
             <span class="game-card-description">Geliştirici kanalımız.</span>
@@ -677,7 +914,20 @@
 
         <a href="https://www.instagram.com/kidefarapca/" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-ig">
           <div class="default-game-content">
-            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2a3.8 3.8 0 0 1-.9 1.4c-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2A8 8 0 0 0 12 4.2c-3.1 0-3.5 0-4.7.1-1.1.1-1.4.2-1.7.3-.4.2-.7.4-1 .7-.3.3-.5.6-.7 1-.1.3-.2.6-.3 1.7-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.4.3 1.7.2.4.4.7.7 1 .3.3.6.5 1 .7.3.1.6.2 1.7.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.4-.2 1.7-.3.4-.2.7-.4 1-.7.3-.3.5-.6.7-1 .1-.3.2-.6.3-1.7.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.4-.3-1.7a2.7 2.7 0 0 0-.7-1 2.7 2.7 0 0 0-1-.7c-.3-.1-.6-.2-1.7-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.4a5.1 5.1 0 1 1 0 10.3 5.1 5.1 0 0 1 0-10.3zm0 2a3.1 3.1 0 1 0 0 6.3 3.1 3.1 0 0 0 0-6.3zm5.4-3.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg></div>
+            <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
+              <rect x="10" y="12" width="40" height="40" rx="11" fill="none" stroke="#fff" stroke-width="3.6"/>
+              <circle cx="41.5" cy="20.5" r="2.6" fill="#fff"/>
+              <clipPath id="igMercekA"><circle cx="30" cy="32" r="9.4"/></clipPath>
+              <g clip-path="url(#igMercekA)"><g class="kga-akis">
+                <rect x="23.5" y="24" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.9)"/>
+                <rect x="23.5" y="34" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.5)"/>
+                <rect x="23.5" y="44" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.9)"/>
+                <rect x="23.5" y="54" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.5)"/>
+              </g></g>
+              <circle cx="30" cy="32" r="9.4" fill="none" stroke="#fff" stroke-width="3.2"/>
+              <path class="kga-kalp" d="M55 34 c-2.4 -2.4 -6.2 -.7 -6.2 2.1 0 2.3 2.7 4 6.2 7 3.5 -3 6.2 -4.7 6.2 -7 0 -2.8 -3.8 -4.5 -6.2 -2.1 Z" fill="#fff"/>
+              <path class="kga-kalp k2x" d="M58 22 c-1.7 -1.7 -4.4 -.5 -4.4 1.5 0 1.6 1.9 2.8 4.4 5 2.5 -2.2 4.4 -3.4 4.4 -5 0 -2 -2.7 -3.2 -4.4 -1.5 Z" fill="rgba(255,255,255,.85)"/>
+            </svg></div>
             <h3>Kidef Arapça</h3>
             <span class="sosyal-kullanici">@kidefarapca</span>
             <span class="game-card-description">Eğlenceli Arapça'nın nabzını kaçırmayın!</span>
@@ -687,7 +937,20 @@
 
         <a href="https://www.instagram.com/gylndmrbg/" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-ig">
           <div class="default-game-content">
-            <div class="sosyal-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2a3.8 3.8 0 0 1-.9 1.4c-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2A8 8 0 0 0 12 4.2c-3.1 0-3.5 0-4.7.1-1.1.1-1.4.2-1.7.3-.4.2-.7.4-1 .7-.3.3-.5.6-.7 1-.1.3-.2.6-.3 1.7-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.4.3 1.7.2.4.4.7.7 1 .3.3.6.5 1 .7.3.1.6.2 1.7.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.4-.2 1.7-.3.4-.2.7-.4 1-.7.3-.3.5-.6.7-1 .1-.3.2-.6.3-1.7.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.4-.3-1.7a2.7 2.7 0 0 0-.7-1 2.7 2.7 0 0 0-1-.7c-.3-.1-.6-.2-1.7-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.4a5.1 5.1 0 1 1 0 10.3 5.1 5.1 0 0 1 0-10.3zm0 2a3.1 3.1 0 1 0 0 6.3 3.1 3.1 0 0 0 0-6.3zm5.4-3.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg></div>
+            <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
+              <rect x="10" y="12" width="40" height="40" rx="11" fill="none" stroke="#fff" stroke-width="3.6"/>
+              <circle cx="41.5" cy="20.5" r="2.6" fill="#fff"/>
+              <clipPath id="igMercekB"><circle cx="30" cy="32" r="9.4"/></clipPath>
+              <g clip-path="url(#igMercekB)"><g class="kga-akis">
+                <rect x="23.5" y="24" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.9)"/>
+                <rect x="23.5" y="34" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.5)"/>
+                <rect x="23.5" y="44" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.9)"/>
+                <rect x="23.5" y="54" width="13" height="7" rx="2.4" fill="rgba(255,255,255,.5)"/>
+              </g></g>
+              <circle cx="30" cy="32" r="9.4" fill="none" stroke="#fff" stroke-width="3.2"/>
+              <path class="kga-kalp" d="M55 34 c-2.4 -2.4 -6.2 -.7 -6.2 2.1 0 2.3 2.7 4 6.2 7 3.5 -3 6.2 -4.7 6.2 -7 0 -2.8 -3.8 -4.5 -6.2 -2.1 Z" fill="#fff"/>
+              <path class="kga-kalp k2x" d="M58 22 c-1.7 -1.7 -4.4 -.5 -4.4 1.5 0 1.6 1.9 2.8 4.4 5 2.5 -2.2 4.4 -3.4 4.4 -5 0 -2 -2.7 -3.2 -4.4 -1.5 Z" fill="rgba(255,255,255,.85)"/>
+            </svg></div>
             <h3>Geylani Demirbağ</h3>
             <span class="sosyal-kullanici">@gylndmrbg</span>
             <span class="game-card-description">Geliştirici hesabı; yeni içerik haberleri.</span>
@@ -1383,7 +1646,7 @@
             }
         }
     </script>
-    <script src="index.js?v=20260722b"></script>
+    <script src="index.js?v=20260727"></script>
     <script src="geri.js"></script>
 
 <!-- ORTAK SEPET (Paketler + Canlı Ders + Ders Talep) -->

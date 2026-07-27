@@ -26,6 +26,35 @@
       a.back-btn.kidef-siteye:hover{ background:var(--ikincil-renk); color:#fff; transform:scale(1.08); }
       a.back-btn.kidef-siteye svg{ width:55%; height:55%; fill:currentColor; }
     </style>
+    <style id="seviye-ikon-stil">
+    /* Seviye kartlarındaki emojiler yerine özel animasyonlu SVG'ler */
+    .seviye-emoji svg { width: 1.5em; height: 1.5em; display: block; margin: 0 auto; overflow: visible; }
+    /* 1: kupa — üstünde ışıltı döner, kupa hafif sallanır */
+    .sv-kupa { transform-box: fill-box; transform-origin: 50% 90%; animation: svKupa 2.6s ease-in-out infinite; }
+    @keyframes svKupa { 0%,100%{transform:rotate(0)} 30%{transform:rotate(-6deg)} 60%{transform:rotate(5deg)} }
+    .sv-isilti { transform-box: fill-box; transform-origin: 50% 50%; animation: svIsilti 2.6s ease-in-out infinite; }
+    @keyframes svIsilti { 0%,60%,100%{opacity:0;transform:scale(.4)} 20%,40%{opacity:1;transform:scale(1.15)} }
+    /* 2: tablo — çubuklar sırayla boy atar */
+    .sv-cubuk { transform-box: fill-box; transform-origin: 50% 100%; animation: svCubuk 2.2s ease-in-out infinite; }
+    .sv-cubuk.c2 { animation-delay: .3s; } .sv-cubuk.c3 { animation-delay: .6s; }
+    @keyframes svCubuk { 0%,15%{transform:scaleY(.25)} 45%,80%{transform:scaleY(1)} 100%{transform:scaleY(.25)} }
+    /* 3: yapboz — parça yuvasına oturur */
+    .sv-parca { animation: svParca 2.4s ease-in-out infinite; }
+    @keyframes svParca { 0%,20%{transform:translate(9px,-9px);opacity:.75} 55%,85%{transform:translate(0,0);opacity:1} 100%{transform:translate(9px,-9px);opacity:.75} }
+    /* 4: ikiki — "2" kartları sırayla zıplar */
+    .sv-iki { animation: svIki 1.8s ease-in-out infinite; }
+    .sv-iki.b2 { animation-delay: .9s; }
+    @keyframes svIki { 0%,50%,100%{transform:translateY(0)} 25%{transform:translateY(-5px)} }
+    /* 5: ağaç — kökten gövdeye can gelir, taç nefes alır */
+    .sv-tac { transform-box: fill-box; transform-origin: 50% 95%; animation: svTac 3s ease-in-out infinite; }
+    @keyframes svTac { 0%,100%{transform:scale(.92)} 50%{transform:scale(1.06)} }
+    .sv-kok { animation: svKok 3s ease-in-out infinite; }
+    @keyframes svKok { 0%,100%{opacity:.5} 50%{opacity:1} }
+    /* 6: balon — üç nokta "yazıyor..." gibi yanar */
+    .sv-nokta { animation: svNokta 1.5s ease-in-out infinite; }
+    .sv-nokta.n2 { animation-delay: .25s; } .sv-nokta.n3 { animation-delay: .5s; }
+    @keyframes svNokta { 0%,60%,100%{opacity:.25;transform:translateY(0)} 30%{opacity:1;transform:translateY(-2.5px)} }
+    </style>
 </head>
 <body>
 
@@ -48,37 +77,65 @@
     <main class="seviye-grid">
         
         <div class="seviye-kutu seviye-1">
-            <span class="seviye-emoji">🏆</span>
+            <span class="seviye-emoji"><svg viewBox="0 0 64 64" aria-hidden="true">
+                <path class="sv-isilti" d="M32 2 l1.8 4.6 4.6 1.8 -4.6 1.8 -1.8 4.6 -1.8 -4.6 -4.6 -1.8 4.6 -1.8 Z" fill="#ffd54f"/>
+                <g class="sv-kupa">
+                  <path d="M20 18 h24 v10 a12 12 0 0 1 -24 0 Z" fill="#F39C12"/>
+                  <path d="M20 20 h-7 a8 8 0 0 0 9 9 M44 20 h7 a8 8 0 0 1 -9 9" fill="none" stroke="#F39C12" stroke-width="3.4"/>
+                  <rect x="28.5" y="39" width="7" height="7" fill="#c87f0a"/>
+                  <rect x="22" y="46" width="20" height="5.5" rx="2.4" fill="#c87f0a"/>
+                </g>
+              </svg></span>
             <h3>Seviye 1: En çok kelime bulan kazanır</h3>
             <div class="oyun-tipi tip-takim">Takım Oyunu • 2 Oyun</div>
         </div>
 
         <div class="seviye-kutu seviye-2">
-            <span class="seviye-emoji">📊</span>
+            <span class="seviye-emoji"><svg viewBox="0 0 64 64" aria-hidden="true">
+                <line x1="10" y1="54" x2="54" y2="54" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+                <rect class="sv-cubuk" x="14" y="30" width="9" height="24" rx="2.5" fill="#e74c3c"/>
+                <rect class="sv-cubuk c2" x="27.5" y="18" width="9" height="36" rx="2.5" fill="#3498db"/>
+                <rect class="sv-cubuk c3" x="41" y="38" width="9" height="16" rx="2.5" fill="#f39c12"/>
+              </svg></span>
             <h3>Seviye 2: Kalıplar tablosu</h3>
             <div class="oyun-tipi tip-rekabet">İki Kişilik Oyun</div>
         </div>
 
         <div class="seviye-kutu seviye-3">
-            <span class="seviye-emoji">🧩</span>
+            <span class="seviye-emoji"><svg viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M10 24 h20 v-6 a6 6 0 0 1 12 0 v6 h12 v30 h-44 Z" fill="none" stroke="#1abc9c" stroke-width="3" stroke-dasharray="5 4"/>
+                <g class="sv-parca"><path d="M14 28 h14 v10 a5 5 0 0 0 8 0 v-10 h14 v22 h-36 Z" fill="#1abc9c"/></g>
+              </svg></span>
             <h3>Seviye 3: Bul kalıbı al puanı</h3>
             <div class="oyun-tipi tip-takim">Takım Oyunu • 2 Oyun</div>
         </div>
 
         <div class="seviye-kutu seviye-4">
-            <span class="seviye-emoji">✌️</span>
+            <span class="seviye-emoji"><svg viewBox="0 0 64 64" aria-hidden="true">
+                <g class="sv-iki"><rect x="8" y="14" width="22" height="30" rx="5" fill="#f39c12"/><text x="19" y="36.5" font-size="17" fill="#fff" text-anchor="middle" font-weight="bold">2</text></g>
+                <g class="sv-iki b2"><rect x="34" y="20" width="22" height="30" rx="5" fill="#9b59b6"/><text x="45" y="42.5" font-size="17" fill="#fff" text-anchor="middle" font-weight="bold">2</text></g>
+              </svg></span>
             <h3>Seviye 4: İkiki</h3>
             <div class="oyun-tipi tip-rekabet">İki Kişilik Oyun • 4 Renk 4 Oyun</div>
         </div>
 
         <div class="seviye-kutu seviye-5">
-            <span class="seviye-emoji">🌳</span>
+            <span class="seviye-emoji"><svg viewBox="0 0 64 64" aria-hidden="true">
+                <g class="sv-tac"><circle cx="32" cy="20" r="13" fill="#27AE60"/><circle cx="21" cy="27" r="9" fill="#2ecc71"/><circle cx="43" cy="27" r="9" fill="#2ecc71"/></g>
+                <path d="M29.5 32 q1 8 -3 12 M34.5 32 q-1 8 3 12 M32 30 v22" stroke="#8d6e42" stroke-width="4.4" fill="none" stroke-linecap="round"/>
+                <g class="sv-kok"><path d="M32 52 q-6 2 -11 7 M32 52 q6 2 11 7 M32 52 v8" stroke="#a9743f" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="3.5 3"/></g>
+              </svg></span>
             <h3>Seviye 5: Kökten gövdeye</h3>
             <div class="oyun-tipi tip-takim">Takım Oyunu</div>
         </div>
 
         <div class="seviye-kutu seviye-6">
-            <span class="seviye-emoji">💬</span>
+            <span class="seviye-emoji"><svg viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M8 12 h48 a0 0 0 0 1 0 0 v28 a8 8 0 0 1 -8 8 h-22 l-12 9 3 -9 h-1 a8 8 0 0 1 -8 -8 Z" fill="#34495e" opacity=".92"/>
+                <circle class="sv-nokta" cx="21" cy="27" r="4" fill="#fff"/>
+                <circle class="sv-nokta n2" cx="32" cy="27" r="4" fill="#fff"/>
+                <circle class="sv-nokta n3" cx="43" cy="27" r="4" fill="#fff"/>
+              </svg></span>
             <h3>Seviye 6: Kök-kelime-cümle</h3>
             <div class="oyun-tipi tip-takim">Takım Oyunu • 3 Oyun</div>
         </div>
