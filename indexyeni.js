@@ -58,7 +58,6 @@ function heroCiz(zaman, kayHiz){
 const alfabeDuvar = $('alfabeDuvar');
 HARFLER.forEach(h => { const s=document.createElement('span'); s.textContent=h; alfabeDuvar.appendChild(s); });
 const duvarHarfleri = [...alfabeDuvar.children];
-const alfabeSayacB = document.querySelector('#alfabeSayac b');
 
 /* ============ 3 · KELİME FABRİKASI ============ */
 const KALIPLAR = [
@@ -98,12 +97,8 @@ function carkSvg(R, r, dis, renk){
 }
 const carkSolK = $('carkSol'), carkSagK = $('carkSag');
 const kucukCark = innerWidth < 640;
-carkSolK.innerHTML = carkSvg(kucukCark?44:86, kucukCark?32:64, 12, 'rgba(22,160,133,.75)') +
-                     carkSvg(kucukCark?26:52, kucukCark?18:38, 8,  'rgba(243,156,18,.7)');
-carkSagK.innerHTML = carkSvg(kucukCark?44:86, kucukCark?32:64, 12, 'rgba(22,160,133,.75)') +
-                     carkSvg(kucukCark?26:52, kucukCark?18:38, 8,  'rgba(243,156,18,.7)');
-carkSolK.children[1].style.marginTop = '-14px'; carkSolK.children[1].style.marginLeft = '46%';
-carkSagK.children[1].style.marginTop = '-14px'; carkSagK.children[1].style.marginRight = '46%';
+carkSolK.innerHTML = carkSvg(kucukCark?44:86, kucukCark?32:64, 12, 'rgba(22,160,133,.75)');
+carkSagK.innerHTML = carkSvg(kucukCark?26:52, kucukCark?18:38, 8,  'rgba(243,156,18,.7)');
 const carklar = [...document.querySelectorAll('.cark')];
 
 const kadran = $('kadran'), halka = $('kadranHalka');
@@ -119,74 +114,104 @@ function etiketYerlestir(){
 }
 etiketYerlestir();
 
-/* kökten ağaca: 12 kök (uçtan gövdeye, aşağıdan yukarı) → kalın gövde → dallanan taç → kelime yaprakları */
+/* BİLGİ AĞACI — profesyonel illüstrasyon: konik dolgulu dallar, katmanlı taç, kelime etiketleri */
 (function(){
+  const rngYap = s => () => { s|=0; s=s+0x6D2B79F5|0; let t=Math.imul(s^s>>>15,1|s); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+  const rng = rngYap(42);
+  const GOVDE_RENK = '#2c3e50';
+  let dallar='', tacaltlar='', pilller='', harfler='';
+
+  /* --- konik (uçta incelen) dolgulu dal parçası --- */
+  function dalCiz(x1,y1,x2,y2,w1,w2,bük){
+    const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1;
+    const px=-dy/L, py=dx/L;
+    const mx=(x1+x2)/2+px*bük, my=(y1+y2)/2+py*bük;
+    return 'M'+(x1+px*w1/2).toFixed(1)+','+(y1+py*w1/2).toFixed(1)+
+      ' Q'+(mx+px*(w1+w2)/4).toFixed(1)+','+(my+py*(w1+w2)/4).toFixed(1)+
+      ' '+(x2+px*w2/2).toFixed(1)+','+(y2+py*w2/2).toFixed(1)+
+      ' L'+(x2-px*w2/2).toFixed(1)+','+(y2-py*w2/2).toFixed(1)+
+      ' Q'+(mx-px*(w1+w2)/4).toFixed(1)+','+(my-py*(w1+w2)/4).toFixed(1)+
+      ' '+(x1-px*w1/2).toFixed(1)+','+(y1-py*w1/2).toFixed(1)+' Z';
+  }
+  /* --- gövde ve taç dalları: özyinelemeli, tohumlu --- */
+  function dallan(x,y,aci,boy,gen,derinlik){
+    let x2 = x + Math.cos(aci)*boy, y2 = y + Math.sin(aci)*boy;
+    if (derinlik >= 1 && (x2 > 338 || x2 < 96 || y2 > 520)){   /* taç dışına kaçanı yukarı katla */
+      aci = aci*.42 + (-Math.PI/2)*.58;
+      x2 = x + Math.cos(aci)*boy; y2 = y + Math.sin(aci)*boy;
+    }
+    const gen2 = gen*.6;
+    dallar += '<path d="'+dalCiz(x,y,x2,y2,gen,gen2,(rng()-.5)*boy*.55)+'" fill="'+GOVDE_RENK+'"/>';
+    if (derinlik >= 5 || gen2 < 1.6) return;
+    const adet = derinlik===0 ? 3 : (rng()<.7 ? 2 : 3);
+    for (let i=0;i<adet;i++){
+      const yayil = (i-(adet-1)/2) * ((derinlik<2 ? .5 : .8) + rng()*.2) + (rng()-.5)*.16;   /* alt kollar dik, taç içinde gür */
+      dallan(x2,y2, aci+yayil, boy*(.66+rng()*.08), gen2, derinlik+1);
+    }
+  }
+  dallan(230,690,-Math.PI/2,105,40,0);   /* zeytin: kısa ve kalın gövde */
+
+  /* --- kökler: 4 ana kol × 3 uç = 12 kök, RTL harfli --- */
   const AILELER = [
-    {harfler:['ك','ت','ب'], tipX:[402,374,346], renk:'#16A085', acik:'#E6FAF5', hub:[326,214],
-     sozler:[['كاتِب',356,66],['مَكْتوب',410,128],['كِتاب',344,182],['مَكْتَب',406,246],['مَكْتَبة',356,306]]},
-    {harfler:['ع','ل','م'], tipX:[302,274,246], renk:'#48c9b0', acik:'#EAFBF7', hub:[258,204],
-     sozler:[['عالِم',246,50],['مَعْلوم',296,112],['عِلْم',228,168],['تَعْليم',292,232],['مُعَلِّم',240,296]]},
-    {harfler:['ف','ت','ح'], tipX:[178,150,122], renk:'#F39C12', acik:'#FFF6E3', hub:[152,208],
-     sozler:[['فاتِح',152,62],['مَفْتوح',100,124],['مِفْتاح',172,180],['فَتْح',96,240],['اِفْتِتاح',160,302]]},
-    {harfler:['د','ر','س'], tipX:[94,66,38], renk:'#2c3e50', acik:'#ECF0F5', hub:[84,232],
-     sozler:[['دارِس',52,100],['مَدْروس',94,158],['دَرْس',36,218],['مُدَرِّس',96,278],['مَدْرَسة',54,336]]}
+    {harfler:['ع','م','ل'], renk:'#16A085', kol:[330,782], uclar:[[392,862],[352,876],[312,868]],
+     sozler:['عَمَل','عامِل','مَعْمَل','عَمَليّة','اِسْتِعْمال'], px:372},
+    {harfler:['ع','ل','م'], renk:'#48c9b0', kol:[268,806], uclar:[[292,880],[262,888],[232,880]],
+     sozler:['عالِم','مَعْلوم','عِلْم','تَعْليم','مُعَلِّم'], px:278},
+    {harfler:['ف','ت','ح'], renk:'#F39C12', kol:[192,806], uclar:[[212,880],[182,888],[152,878]],
+     sozler:['فاتِح','مَفْتوح','مِفْتاح','فَتْح','اِفْتِتاح'], px:182},
+    {harfler:['د','ر','س'], renk:'#2c3e50', kol:[130,782], uclar:[[142,864],[110,872],[76,858]],
+     sozler:['دَرْس','مُدَرِّس','مَدْرَسة','دِراسة','تَدْريس'], px:88}
   ];
-  const GX = 220, GA = 640, GT = 372;   /* gövde x, alt, tepe */
-  const GOLGE = [ [220,185,140,'rgba(22,160,133,.13)'], [365,170,88,'rgba(72,201,176,.18)'],
-    [265,160,90,'rgba(22,160,133,.15)'], [135,175,90,'rgba(72,201,176,.18)'],
-    [62,225,78,'rgba(22,160,133,.15)'], [215,70,70,'rgba(72,201,176,.16)'], [210,300,85,'rgba(22,160,133,.12)'] ];
-  let kokler='', harfler='', govde='', dallar='', yapraklar='';
-  /* kökler: UÇTAN gövdeye çizilir → animasyon aşağıdan yukarı akar */
-  AILELER.forEach((a,ai)=>{
-    a.tipX.forEach((tx,i)=>{
-      const ty = 850 + (i===1 ? 16 : 0) - ai*2;
-      kokler += '<path class="cizgi agac-kok" pathLength="100" stroke-width="2.6" d="M'+tx+','+ty+
-        ' C'+((GX+tx)/2)+','+(ty-110)+' '+GX+',710 '+GX+','+GA+'"/>';
-      harfler += '<text class="kok-yazi" x="'+tx+'" y="'+(ty+26)+'" font-size="21" fill="'+a.renk+'" text-anchor="middle">'+a.harfler[i]+'</text>';
+  AILELER.forEach(a=>{
+    dallar += '<path d="'+dalCiz(230,672, a.kol[0],a.kol[1], 26, 8, (a.kol[0]-230)*.18)+'" fill="'+GOVDE_RENK+'"/>';
+    a.uclar.forEach((u,i)=>{
+      dallar += '<path d="'+dalCiz(a.kol[0],a.kol[1], u[0],u[1], 7.5, 1.6, (u[0]-a.kol[0])*.3)+'" fill="'+GOVDE_RENK+'"/>';
+      harfler += '<text class="kok-yazi" data-y="'+(u[1]+24)+'" x="'+u[0]+'" y="'+(u[1]+24)+'" font-size="20" fill="'+a.renk+'" text-anchor="middle">'+a.harfler[i]+'</text>';
     });
   });
-  /* gövde: alttan yukarı, kalından inceye 3 parça */
-  govde += '<path class="cizgi agac-govde" pathLength="100" stroke-width="17" d="M'+GX+','+GA+' C216,600 224,560 220,520"/>';
-  govde += '<path class="cizgi agac-govde" pathLength="100" stroke-width="12" d="M220,520 C218,480 224,450 221,440"/>';
-  govde += '<path class="cizgi agac-govde" pathLength="100" stroke-width="9"  d="M221,440 C219,415 222,392 220,'+GT+'"/>';
-  /* ana kollar: gövde tepesinden aile merkezine, kalın→ince iki parça */
-  AILELER.forEach(a=>{
-    const [hx,hy]=a.hub, mx=(220+hx)/2, my=(GT+hy)/2 - 24;
-    dallar += '<path class="cizgi agac-dal" pathLength="100" stroke-width="6.5" d="M220,'+GT+' Q'+mx+','+(my+18)+' '+((220+hx)/2)+','+((GT+hy)/2)+'"/>';
-    dallar += '<path class="cizgi agac-dal" pathLength="100" stroke-width="4" d="M'+((220+hx)/2)+','+((GT+hy)/2)+' Q'+((mx+hx)/2)+','+((my+hy)/2)+' '+hx+','+hy+'"/>';
-    /* her kelimeye kendi ince dalı */
+
+  /* --- taç: katmanlı yaprak kütleleri (arka koyu, ön açık) --- */
+  const KUMELER = [
+    [230,142,102], [116,196,86], [344,196,86], [60,286,68], [400,286,68],
+    [230,256,88], [96,362,58], [364,362,58], [230,352,62],
+    [84,430,54], [378,430,54], [156,414,46], [306,414,46]
+  ];
+  const desen = r => [[0,0,r],[-r*.62,r*.14,r*.6],[r*.62,r*.16,r*.64],[-r*.3,-r*.5,r*.52],[r*.32,-r*.48,r*.55],[0,r*.42,r*.6]];
+  KUMELER.forEach(k=>{
+    tacaltlar += '<g class="tac-kume" data-y="'+k[1]+'">' +
+      desen(k[2]).map(d=>'<circle cx="'+(k[0]+d[0])+'" cy="'+(k[1]+d[1])+'" r="'+d[2]+'" fill="#B7D9C9"/>').join('') +
+      desen(k[2]*.78).map(d=>'<circle cx="'+(k[0]+d[0])+'" cy="'+(k[1]+d[1]-k[2]*.1)+'" r="'+d[2]+'" fill="#DAEEE3"/>').join('') +
+      '</g>';
+  });
+
+  /* --- kelime etiketleri: beyaz haplar, aile renginde --- */
+  AILELER.forEach((a,ai)=>{
     a.sozler.forEach((s,si)=>{
-      const lx=s[1], ly=s[2];
-      const ax = lx + (hx-lx)*.3, ay = ly + (hy-ly)*.3;
-      const px = (hx+ax)/2 + (si%2 ? 12 : -12), py = (hy+ay)/2 + (si%2 ? -8 : 8);
-      dallar += '<path class="cizgi agac-ince" pathLength="100" stroke-width="2" d="M'+hx+','+hy+' Q'+px+','+py+' '+ax+','+ay+'"/>';
-      /* özel yaprak: damarlı, kelimeli */
-      const don = [-8,7,-5,6,-3][si];
-      yapraklar += '<g transform="translate('+lx+','+ly+') rotate('+don+')"><g class="soz-yaprak">' +
-        '<path d="M-44,0 Q-22,-18 0,-18 Q27,-18 44,0 Q27,18 0,18 Q-22,18 -44,0 Z" fill="'+a.acik+'" stroke="'+a.renk+'" stroke-width="1.8"/>' +
-        '<line x1="-36" y1="0" x2="36" y2="0" stroke="'+a.renk+'" stroke-width="1" opacity=".3"/>' +
-        '<text y="6" font-size="17" fill="'+a.renk+'" text-anchor="middle">'+s[0]+'</text>' +
+      const y = 118 + si*52 + (ai%2 ? 14 : 0);
+      const x = a.px + (si%2 ? -14 : 10);
+      const w = s.length*11 + 26;
+      pilller += '<g transform="translate('+x+','+y+')"><g class="soz-yaprak">' +
+        '<rect x="'+(-w/2)+'" y="-15" width="'+w+'" height="30" rx="15" fill="#ffffff" stroke="'+a.renk+'" stroke-width="1.7"/>' +
+        '<text y="6" font-size="16.5" fill="'+a.renk+'" text-anchor="middle">'+s+'</text>' +
         '</g></g>';
     });
-    /* süs dalcıkları */
-    dallar += '<path class="cizgi agac-ince" pathLength="100" stroke-width="1.6" d="M'+hx+','+hy+' q10,-26 6,-44"/>';
-    dallar += '<path class="cizgi agac-ince" pathLength="100" stroke-width="1.6" d="M'+hx+','+hy+' q-14,-20 -26,-30"/>';
   });
+
+  const TANELER = [[168,180,4],[300,164,4],[212,236,4.2],[128,286,3.8],[348,272,4],[86,340,3.6],[382,338,3.6],[262,318,4]];
+  tacaltlar += '<g class="tac-kume" data-y="300">' +
+    TANELER.map(t=>'<circle cx="'+t[0]+'" cy="'+t[1]+'" r="'+t[2]+'" fill="#16A085" opacity=".55"/>').join('') + '</g>';
   document.getElementById('agac').innerHTML =
-  '<svg viewBox="0 0 460 900">' +
-    GOLGE.map(g=>'<circle class="yaprak" cx="'+g[0]+'" cy="'+g[1]+'" r="'+g[2]+'" fill="'+g[3]+'"/>').join('') +
-    kokler + govde + dallar + harfler + yapraklar +
+  '<svg viewBox="0 0 460 920">' +
+    '<defs><clipPath id="agacClip"><rect id="agacClipRect" x="0" y="920" width="460" height="920"/></clipPath></defs>' +
+    '<g clip-path="url(#agacClip)">' + dallar + '</g>' +
+    tacaltlar + harfler + pilller +
   '</svg>';
 })();
 const agacEl = $('agac');
-const agacKokler = [...agacEl.querySelectorAll('.agac-kok')];
-const agacGovdeler = [...agacEl.querySelectorAll('.agac-govde')];
-const agacDallar = [...agacEl.querySelectorAll('.agac-dal')];
-const agacInceler = [...agacEl.querySelectorAll('.agac-ince')];
-const agacYapraklar = [...agacEl.querySelectorAll('.yaprak')];
+const agacClipRect = $('agacClipRect');
+const agacKumeler = [...agacEl.querySelectorAll('.tac-kume')];
 const agacYazilar = [...agacEl.querySelectorAll('.kok-yazi')];
 const agacSozler = [...agacEl.querySelectorAll('.soz-yaprak')];
-function cizEl(el, t){ el.style.strokeDashoffset = 100 * (1 - kirp(t, 0, 1)); }
 
 function kokGuncelle(p){
   const giris = eV(kirp(p/.12, 0, 1));
@@ -205,16 +230,19 @@ function kokGuncelle(p){
     c.style.transform = 'rotate(' + (DON*oran + (i*13)) + 'deg)';
   });
   kelimeler.forEach((k,i)=>{ k.classList.toggle('actik', DON >= i*72 - 1); });
-  /* ağaç aşağıdan yukarıya büyür: harfler → kökler → gövde → kollar → ince dallar → yapraklar */
+  /* ağaç aşağıdan yukarıya büyür: dip → kökler → gövde → taç → etiketler */
   const tp = kirp((p-.42)/.58, 0, 1);
-  agacEl.style.opacity = tp > 0 ? .85 : 0;
-  agacYazilar.forEach((y,i)=> y.classList.toggle('gel', tp > .01 + i*.006));
-  agacKokler.forEach((k,i)=> cizEl(k, (tp - .03 - i*.008)/.14));
-  agacGovdeler.forEach((g,i)=> cizEl(g, (tp - .18 - i*.06)/.1));
-  agacDallar.forEach((d,i)=> cizEl(d, (tp - .38 - i*.018)/.12));
-  agacInceler.forEach((d,i)=> cizEl(d, (tp - .52 - i*.007)/.1));
-  agacYapraklar.forEach((y,i)=> y.classList.toggle('gel', tp > .45 + i*.02));
-  agacSozler.forEach((s,i)=> s.classList.toggle('gel', tp > .62 + i*.014));
+  agacEl.style.opacity = tp > 0 ? .95 : 0;
+  const silme = eV(kirp(tp/.6, 0, 1));           // alttan yukarı açılma perdesi
+  agacClipRect.setAttribute('y', 920 * (1 - silme));
+  agacYazilar.forEach(y=>{
+    const ey = +y.dataset.y;
+    y.classList.toggle('gel', silme > (920-ey+16)/920);
+  });
+  agacKumeler.forEach((k,i)=>{
+    k.classList.toggle('gel', tp > .4 + i*.02);
+  });
+  agacSozler.forEach((s,i)=> s.classList.toggle('gel', tp > .58 + i*.014));
 }
 
 /* ============ 4 · OYUN SAHASI ============ */
@@ -509,7 +537,7 @@ function dongu(zaman){
         h.classList.toggle('yandi', i < yanan);
         h.classList.toggle('son', i === yanan-1);
       });
-      alfabeSayacB.textContent = yanan; sonSayi = yanan;
+      sonSayi = yanan;
     }
   }
 
