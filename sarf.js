@@ -478,7 +478,7 @@ const App = {
                 this.playSound('click');
                 const target = card.dataset.goto;
                 if (target === 'game1-screen') Game1.start();
-                else if (target === 'game2-screen') Game2.start();
+                else if (target === 'game2-screen') { this.yonergeSesCal(); Game2.start(); }
                 else if (target === 'game3-screen') Game3.start();
                 else if (target === 'quiz-screen') { Quiz.start(); }
                 this.showScreen(target);
@@ -515,8 +515,25 @@ const App = {
         if (t) t.classList.add('active');
     },
 
+    /* Yönerge sesi: tıklama jestinin İÇİNDE başlatılır ki tarayıcının
+       otomatik oynatma engeline takılmasın. Tek Audio nesnesi paylaşılır;
+       yonergeGoster çift çalmayı önlemek için bunu kontrol eder. */
+    yonergeSes: null,
+    yonergeSesCal() {
+        try {
+            if (!this.yonergeSes) this.yonergeSes = new Audio('yonergesarf.mp3');
+            this.yonergeSes.currentTime = 0;
+            this.yonergeSes.play().catch(() => {});
+        } catch (e) {}
+    },
+
     playSound(key) {
-        if (!this.state.audioCtx) return;
+        /* Bağlam henüz kurulmadıysa (örn. sayfadaki İLK tıklama) burada kur:
+           çağrı zaten bir kullanıcı jesti içinden geliyor. */
+        if (!this.state.audioCtx) {
+            try { this.state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+            if (!this.state.audioCtx) return;
+        }
         if (this.state.audioCtx.state === 'suspended') this.state.audioCtx.resume();
         const ctx = this.state.audioCtx;
         /* Çok notalı ezgiler — dijital yarışmanın canlı anları için.
@@ -614,12 +631,12 @@ const App = {
         };
 
         if (key === 'grind') {
-            gurultu(t, 1.15, 'lowpass', 260, .8, .15);
-            gurultu(t, 1.15, 'bandpass', 900, 2.5, .06);
+            gurultu(t, 1.15, 'lowpass', 480, .8, .3);
+            gurultu(t, 1.15, 'bandpass', 1100, 2.5, .16);
             const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 52;
             const og = ctx.createGain();
             og.gain.setValueAtTime(.0001, t);
-            og.gain.exponentialRampToValueAtTime(.08, t + .06);
+            og.gain.exponentialRampToValueAtTime(.14, t + .06);
             og.gain.exponentialRampToValueAtTime(.0001, t + 1.15);
             const lfo = ctx.createOscillator(); lfo.frequency.value = 9;
             const lg = ctx.createGain(); lg.gain.value = 6;
@@ -627,11 +644,11 @@ const App = {
             o.connect(og); og.connect(cikis);
             o.start(t); lfo.start(t); o.stop(t + 1.2); lfo.stop(t + 1.2);
         } else if (key === 'hammer') {
-            ton(t, .09, 'sine', 150, 58, .38);
-            ton(t + .004, .22, 'triangle', 420, 0, .09);
-            ton(t + .004, .18, 'triangle', 637, 0, .07);
-            ton(t + .004, .14, 'triangle', 988, 0, .05);
-            gurultu(t, .07, 'highpass', 2600, 1, .11);
+            ton(t, .09, 'sine', 150, 58, .5);
+            ton(t + .004, .22, 'triangle', 420, 0, .22);
+            ton(t + .004, .18, 'triangle', 637, 0, .17);
+            ton(t + .004, .14, 'triangle', 988, 0, .12);
+            gurultu(t, .07, 'highpass', 2600, 1, .18);
         } else if (key === 'forklift') {
             const o = ctx.createOscillator(); o.type = 'sawtooth';
             o.frequency.setValueAtTime(78, t);
@@ -640,23 +657,23 @@ const App = {
             const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380; f.Q.value = 1;
             const g = ctx.createGain();
             g.gain.setValueAtTime(.0001, t);
-            g.gain.exponentialRampToValueAtTime(.11, t + .08);
+            g.gain.exponentialRampToValueAtTime(.17, t + .08);
             g.gain.exponentialRampToValueAtTime(.0001, t + 1.55);
             const lfo = ctx.createOscillator(); lfo.frequency.value = 13;
             const lg = ctx.createGain(); lg.gain.value = 5;
             lfo.connect(lg); lg.connect(o.frequency);
             o.connect(f); f.connect(g); g.connect(cikis);
             o.start(t); lfo.start(t); o.stop(t + 1.6); lfo.stop(t + 1.6);
-            ton(t + .5, .14, 'square', 988, 0, .04);   // bip
-            ton(t + .9, .14, 'square', 988, 0, .04);   // bip
+            ton(t + .5, .14, 'square', 988, 0, .08);   // bip
+            ton(t + .9, .14, 'square', 988, 0, .08);   // bip
         } else if (key === 'clink') {
-            ton(t, .1, 'triangle', 1180, 0, .12);
-            ton(t + .008, .16, 'triangle', 1770, 0, .06);
-            gurultu(t, .03, 'highpass', 4000, 1, .05);
+            ton(t, .1, 'triangle', 1180, 0, .26);
+            ton(t + .008, .16, 'triangle', 1770, 0, .14);
+            gurultu(t, .03, 'highpass', 4000, 1, .1);
         } else if (key === 'ding') {
-            ton(t, .5, 'sine', 880, 0, .13);
-            ton(t, .55, 'sine', 1318, 0, .06);
-            ton(t + .09, .4, 'sine', 1760, 0, .04);
+            ton(t, .5, 'sine', 880, 0, .2);
+            ton(t, .55, 'sine', 1318, 0, .1);
+            ton(t + .09, .4, 'sine', 1760, 0, .07);
         }
     },
 
@@ -1162,7 +1179,10 @@ const Game2 = {
         clearTimeout(this.yonergeZaman);
         this.yonergeZaman = setTimeout(() => y.classList.remove('goster'), sure || 3000);
         if (sesliMi) {
-            try { new Audio('yonergesarf.mp3').play().catch(() => {}); } catch (e) {}
+            /* Menü kartına tıklanırken ses çoktan başladıysa dokunma;
+               başka bir yoldan gelindiyse (örn. مِنْ جَدِيدٍ) burada başlat. */
+            const ses = App.yonergeSes;
+            if (!(ses && !ses.paused && !ses.ended)) App.yonergeSesCal();
         }
     },
 
@@ -1505,6 +1525,9 @@ const Game2 = {
 
     /* Tıklanan kelime kutusundan bandın ucuna kısa bir uçuş, sonra öğütme */
     kelimeTikla(chip, w) {
+        // Atölye fazındayken kaydırıp geri gelen oyuncu kelimeye tıklarsa
+        // öğütmeye kendiliğinden dönülür (raftaki kökler kaybolmaz).
+        if (this.state.phase === 'forge' && !this.dovuyor) this.state.phase = 'grind';
         if (this.state.phase !== 'grind') return;
         if (chip.classList.contains('used')) return;
         chip.classList.add('used');
@@ -1640,8 +1663,10 @@ const Game2 = {
         // Yalnız öğütme fazında ve konteynırda külçe varken çalışır
         if (this.state.phase !== 'grind' || !this.state.bekleyen.length) return;
         this.state.phase = 'pan';
-        // Bu parti = konteynırda o an ne varsa (kısmi parti olabilir)
-        this.state.shelf = [...new Set(this.state.bekleyen)];
+        // Bu parti = konteynırdakiler + raftaki vezni bitmemiş kökler
+        // (yarım kalan kök yeni partiyle birlikte rafta kalmaya devam eder)
+        const yarimlar = this.state.shelf.filter(r => this.kalanVezin(r) > 0);
+        this.state.shelf = [...new Set([...yarimlar, ...this.state.bekleyen])];
         this.state.bekleyen = [];
         document.getElementById('g2-forklift').classList.remove('hazir');
         document.getElementById('g2-kokraf').innerHTML = '';
@@ -1684,6 +1709,11 @@ const Game2 = {
                     k.textContent = formatRootDisplay(r);
                     k.style.color = rootColors(r)[0];
                     k.addEventListener('click', () => this.kokSec(r, k));
+                    // Önceki partiden gelen, en az bir kez dövülmüş kök ✓ ile iner
+                    if (this.state.forgedRoots.has(r)) {
+                        k.classList.add('islendi');
+                        k.insertAdjacentHTML('beforeend', '<span class="g2-kk-check">✓</span>');
+                    }
                     raf.appendChild(k);
                     App.playSound('clink');
                 }, i * 240);
@@ -1911,14 +1941,13 @@ const Game2 = {
                 this.vezinleriGuncelle();
                 this.dovuyor = false;
 
-                // Tuşsuz akış: her kök en az bir kez dövülünce (ya da partinin
-                // tüm vezinleri bitince) kısa bir beklemeyle kendiliğinden ilerler.
+                // Tuşsuz akış: yalnız partideki TÜM vezinler dövülünce
+                // kendiliğinden ilerler. Tek vezin dövmek atölyeden atmaz;
+                // isteyen kalan vezinlerle üretmeye devam eder, isteyen
+                // kaydırıp öğütücüye döner (kelimeye tıklamak yeter).
                 const hepsiDovuldu = this.state.shelf.every(r => this.kalanVezin(r) === 0);
-                const herKokBirKez = this.state.shelf.every(r => this.state.forgedRoots.has(r));
                 if (hepsiDovuldu) {
                     setTimeout(() => this.ilerle(), 1300);
-                } else if (herKokBirKez) {
-                    setTimeout(() => this.ilerle(), 1700);
                 }
             }, 1450);
         }, 260 + VURUS_SAYISI * VURUS_ARASI + 120);
