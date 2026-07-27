@@ -2346,84 +2346,171 @@ function qzSoruYap(dogru, havuz) {
 }
 
 /* ---------------------------------------------------------
-   SORU ÜRETİCİ — beş soru ailesi:
-   1) kelime → kök          2) kök → türeyen kelime
-   3) kelime → vezin        4) kök + vezin → kelime
-   5) fiil çekimi (mâzî / muzâri / emir)
+   SORU ÜRETİCİ — merkezî veriden (veri_kokler.js) beslenir.
+   Dokuz soru ailesi:
+   1) kelime → kök              2) kök → türeyen kelime
+   3) kelime → vezin            4) kök + vezin → kelime
+   5) fiil çekimi (mâzî/muzâri/emir)
+   6) kelime → Türkçe anlam     7) anlam → kelime
+   8) örnek cümlede boşluk      9) farklı kökten olanı bul
+   10) zâid harfi bul
+   Oda kurulurken üretilir, karıştırılıp istenen sayıda soru alınır.
 --------------------------------------------------------- */
+
+/* Merkezî isim-vezni kayıtları: {root, no, vezinAr, word, tr, ornek} */
+function qzMerkeziKayitlar() {
+    const L = [];
+    if (typeof wordEasterEggs === 'undefined') return L;
+    Object.keys(wordEasterEggs).forEach(duz => {
+        if (duz.length < 3 || duz.length > 4) return;
+        const root = duz.split('').join(' ');
+        const d = wordEasterEggs[duz];
+        Object.keys(d).forEach(no => {
+            if (G2_FIIL_NOLARI.has(no)) return;
+            const bs = d[no] && d[no].base;
+            if (!bs || !bs.arText) return;
+            L.push({
+                root, no,
+                vezinAr: (typeof KALIP_DATA !== 'undefined' && KALIP_DATA[no]) ? KALIP_DATA[no].ar : '',
+                word: bs.arText,
+                tr: bs.trText || '',
+                ornek: (bs.ornek && bs.ornek.ar) ? bs.ornek : null
+            });
+        });
+    });
+    return L;
+}
+
 function quizSorulariUret() {
     const S = [];
-    const kokSet = new Set();
-    const kelimeKok = [];
+    const M = qzMerkeziKayitlar();
+    const ornekle = (dizi, n) => qzKaristir(dizi.slice()).slice(0, n);
 
-    ROOTS_GAME1.forEach(g => {
-        kokSet.add(g.root);
-        g.targets.forEach(t => kelimeKok.push({ word: t.word, root: g.root, oyun1: true }));
-    });
-    GAME2_ROUNDS.forEach(tur => tur.forEach(x => {
-        kokSet.add(x.root);
-        kelimeKok.push({ word: x.word, root: x.root, oyun1: false });
-    }));
-    GAME3_PATTERNS.forEach(p => Object.keys(p.map).forEach(r => kokSet.add(r)));
+    if (M.length) {
+        const kokSet = new Set(M.map(x => x.root));
+        const kokGorunum = Array.from(kokSet).map(r => formatRootDisplay(r));
+        const tumKelimeler = M.map(x => x.word);
+        const vezinAdlari = [];
+        M.forEach(x => { if (x.vezinAr && vezinAdlari.indexOf(x.vezinAr) === -1) vezinAdlari.push(x.vezinAr); });
+        const kokKelimeleri = {};
+        M.forEach(x => { (kokKelimeleri[x.root] = kokKelimeleri[x.root] || []).push(x); });
+        const kokler = Object.keys(kokKelimeleri);
 
-    const kokler = Array.from(kokSet);
-    const kokGorunum = kokler.map(r => formatRootDisplay(r));
-    const kelimeHavuz = kelimeKok.map(x => x.word);
-
-    /* 1) Kelime → kök */
-    kelimeKok.forEach(x => {
-        const k = qzSoruYap(formatRootDisplay(x.root), kokGorunum);
-        S.push({
-            ar: x.word,
-            s: 'ما جَذْرُ هٰذِهِ الكَلِمَة؟',
-            tr: 'Bu kelimenin kökü hangisidir?',
-            secenekler: k.secenekler, dogru: k.dogru
+        /* 1) Kelime → kök */
+        ornekle(M, 26).forEach(x => {
+            const k = qzSoruYap(formatRootDisplay(x.root), kokGorunum);
+            S.push({ ar: x.word,
+                s: 'ما جَذْرُ هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimenin kökü hangisidir?',
+                secenekler: k.secenekler, dogru: k.dogru });
         });
-    });
 
-    /* 2) Kök → o kökten türeyen kelime (yalnızca oyun 1 kelimeleri) */
-    kelimeKok.filter(x => x.oyun1).forEach(x => {
-        const disHavuz = kelimeKok.filter(y => y.root !== x.root).map(y => y.word);
-        const k = qzSoruYap(x.word, disHavuz);
-        S.push({
-            ar: formatRootDisplay(x.root),
-            s: 'أَيُّ كَلِمَةٍ مُشْتَقَّةٌ مِنْ هٰذا الجَذْر؟',
-            tr: 'Bu kökten türeyen kelime hangisidir?',
-            secenekler: k.secenekler, dogru: k.dogru
+        /* 2) Kök → türeyen kelime */
+        ornekle(kokler, 26).forEach(r => {
+            const kendi = kokKelimeleri[r];
+            const dogru = kendi[Math.floor(Math.random() * kendi.length)].word;
+            const disHavuz = M.filter(y => y.root !== r).map(y => y.word);
+            const k = qzSoruYap(dogru, disHavuz);
+            S.push({ ar: formatRootDisplay(r),
+                s: 'أَيُّ كَلِمَةٍ مُشْتَقَّةٌ مِنْ هٰذا الجَذْر؟', tr: 'Bu kökten türeyen kelime hangisidir?',
+                secenekler: k.secenekler, dogru: k.dogru });
         });
-    });
 
-    /* 3) Kelime → vezin (çeldiriciler için birkaç tanıdık vezin eklendi) */
-    const vezinHavuz = GAME3_PATTERNS.map(p => p.name)
-        .concat(['فَعيل', 'تَفْعيل', 'إِفْعال', 'مَفْعَلَة', 'اِفْتِعال', 'مُفْتَعِل']);
-    GAME3_PATTERNS.forEach(p => Object.keys(p.map).forEach(r => {
-        const k = qzSoruYap(p.name, vezinHavuz);
-        S.push({
-            ar: p.map[r],
-            s: 'ما وَزْنُ هٰذِهِ الكَلِمَة؟',
-            tr: 'Bu kelimenin vezni hangisidir?',
-            secenekler: k.secenekler, dogru: k.dogru
+        /* 3) Kelime → vezin */
+        ornekle(M.filter(x => x.vezinAr), 26).forEach(x => {
+            const k = qzSoruYap(x.vezinAr, vezinAdlari);
+            S.push({ ar: x.word,
+                s: 'ما وَزْنُ هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimenin vezni hangisidir?',
+                secenekler: k.secenekler, dogru: k.dogru });
         });
-    }));
 
-    /* 4) Kök + vezin → kelime */
-    GAME3_PATTERNS.forEach(p => Object.keys(p.map).forEach(r => {
-        const k = qzSoruYap(p.map[r], kelimeHavuz);
-        S.push({
-            ar: formatRootDisplay(r),
-            s: 'أَيُّ كَلِمَةٍ عَلى وَزْنِ «' + p.name + '» مِنْ هٰذا الجَذْر؟',
-            tr: '«' + p.name + '» vezninde bu kökten gelen kelime hangisidir?',
-            secenekler: k.secenekler, dogru: k.dogru
+        /* 4) Kök + vezin → kelime (çeldiriciler önce AYNI kökün öbür vezinleri) */
+        ornekle(M.filter(x => x.vezinAr), 26).forEach(x => {
+            const aynikok = kokKelimeleri[x.root].filter(y => y.word !== x.word).map(y => y.word);
+            const havuz = qzKaristir(aynikok).concat(qzKaristir(tumKelimeler.filter(w => w !== x.word)));
+            const k = qzSoruYap(x.word, havuz);
+            S.push({ ar: formatRootDisplay(x.root),
+                s: 'أَيُّ كَلِمَةٍ عَلى وَزْنِ «' + x.vezinAr + '» مِنْ هٰذا الجَذْر؟',
+                tr: '«' + x.vezinAr + '» vezninde bu kökten gelen kelime hangisidir?',
+                secenekler: k.secenekler, dogru: k.dogru });
         });
-    }));
 
-    /* 5) Fiil çekimi — mâzî / muzâri / emir */
+        /* 6) Kelime → Türkçe anlam */
+        const anlamli = M.filter(x => x.tr);
+        ornekle(anlamli, 26).forEach(x => {
+            const disAnlam = anlamli.filter(y => y.root !== x.root).map(y => y.tr);
+            const k = qzSoruYap(x.tr, disAnlam);
+            S.push({ ar: x.word,
+                s: 'ما مَعْنى هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimenin anlamı nedir?',
+                secenekler: k.secenekler, dogru: k.dogru });
+        });
+
+        /* 7) Türkçe anlam → kelime */
+        ornekle(anlamli, 26).forEach(x => {
+            const disKelime = anlamli.filter(y => y.root !== x.root).map(y => y.word);
+            const k = qzSoruYap(x.word, disKelime);
+            S.push({ ar: '«' + x.tr + '»',
+                s: 'أَيُّ كَلِمَةٍ تَحْمِلُ هٰذا المَعْنى؟', tr: 'Bu anlamı taşıyan kelime hangisidir?',
+                secenekler: k.secenekler, dogru: k.dogru });
+        });
+
+        /* 8) Örnek cümlede boşluk doldurma */
+        const cumleli = M.filter(x => x.ornek && x.ornek.ar &&
+            x.ornek.ar.split(/\s+/).indexOf(x.word) !== -1);
+        ornekle(cumleli, 26).forEach(x => {
+            const aynikok = kokKelimeleri[x.root].filter(y => y.word !== x.word).map(y => y.word);
+            const havuz = qzKaristir(aynikok).concat(qzKaristir(tumKelimeler.filter(w => w !== x.word)));
+            const k = qzSoruYap(x.word, havuz);
+            S.push({ ar: x.ornek.ar.split(/\s+/).map(t => t === x.word ? '______' : t).join(' '),
+                s: 'أَكْمِلِ الفَراغ.', tr: 'Boşluğa uygun kelimeyi seç.',
+                secenekler: k.secenekler, dogru: k.dogru });
+        });
+
+        /* 9) Farklı kökten olanı bul */
+        const zenginKokler = kokler.filter(r => kokKelimeleri[r].length >= 3);
+        ornekle(zenginKokler, 18).forEach(r => {
+            const ucu = ornekle(kokKelimeleri[r], 3).map(y => y.word);
+            const digerKok = ornekle(kokler.filter(q => q !== r), 1)[0];
+            if (!digerKok) return;
+            const yabanci = kokKelimeleri[digerKok][Math.floor(Math.random() * kokKelimeleri[digerKok].length)].word;
+            const secenekler = qzKaristir(ucu.concat([yabanci]));
+            S.push({ ar: '',
+                s: 'أَيُّ كَلِمَةٍ مِنْ جَذْرٍ مُخْتَلِف؟', tr: 'Hangi kelime diğerlerinden FARKLI bir kökten gelir?',
+                secenekler: secenekler, dogru: secenekler.indexOf(yabanci) });
+        });
+
+        /* 10) Zâid harfi bul: kelimede kökten OLMAYAN harf. Kök harfleriyle
+           çakışan zâid harfler (ör. mîm'li köklerde ön ek م) atlanır ki tek
+           doğru cevap kalsın. */
+        const zaidli = [];
+        M.forEach(x => {
+            const rootHarf = x.root.split(' ').filter(Boolean);
+            if (rootHarf.length !== 3) return;
+            if (new Set(rootHarf).size !== 3) return; // tekrarlı kök harfi → çift seçenek olurdu
+            const kumeler = splitArabicClusters(x.word);
+            const zi = computeZaidIndices(x.word, x.root);
+            if (!zi.length) return;
+            const adaylar = zi.map(i => kumeler[i] && kumeler[i][0])
+                .filter(h => h && rootHarf.indexOf(h) === -1);
+            if (!adaylar.length) return;
+            // ة gibi tek başına okunması güç işaretler de sorulabilir; sorun değil
+            zaidli.push({ word: x.word, dogru: adaylar[0], rootHarf });
+        });
+        ornekle(zaidli, 18).forEach(x => {
+            const secenekler = qzKaristir([x.dogru].concat(x.rootHarf));
+            S.push({ ar: x.word,
+                s: 'أَيُّ حَرْفٍ زائِدٌ في هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimedeki zâid (kökten olmayan) harf hangisidir?',
+                secenekler: secenekler, dogru: secenekler.indexOf(x.dogru) });
+        });
+    }
+
+    /* 5) Fiil çekimi — mâzî / muzâri / emir (yerleşik çekim verisinden) */
     const zamanAd = {
         madi:   ['الماضي',    'geçmiş zaman (mâzî)'],
         mudari: ['المُضارِع',  'geniş/şimdiki zaman (muzâri)'],
         amr:    ['الأَمْر',    'emir']
     };
     const tumFiiller = [];
+    const fiilSorulari = [];
     Object.keys(VERB_FORMS).forEach(r => {
         const c = buildConjugation(r);
         if (!c) return;
@@ -2434,16 +2521,22 @@ function quizSorulariUret() {
         if (!c) return;
         ['madi', 'mudari', 'amr'].forEach(z => c[z].forEach(pair => {
             if (!pair[1]) return;               // emirde çekimi olmayan zamirler atlanır
-            const k = qzSoruYap(pair[1], tumFiiller);
-            S.push({
-                ar: formatRootDisplay(root),
-                s: 'ما ' + zamanAd[z][0] + ' مِنْ هٰذا الجَذْرِ لِـ «' + pair[0] + '»؟',
-                tr: 'Bu kökün ' + zamanAd[z][1] + ' çekimi (' + pair[0] + ') hangisidir?',
-                secenekler: k.secenekler, dogru: k.dogru
-            });
+            fiilSorulari.push({ root, z, pair });
         }));
     });
+    ornekle(fiilSorulari, 30).forEach(f => {
+        const k = qzSoruYap(f.pair[1], tumFiiller);
+        S.push({
+            ar: formatRootDisplay(f.root),
+            s: 'ما ' + zamanAd[f.z][0] + ' مِنْ هٰذا الجَذْرِ لِـ «' + f.pair[0] + '»؟',
+            tr: 'Bu kökün ' + zamanAd[f.z][1] + ' çekimi (' + f.pair[0] + ') hangisidir?',
+            secenekler: k.secenekler, dogru: k.dogru
+        });
+    });
 
+    /* Emniyet: merkezî veri yüklenmediyse en azından fiil soruları vardır;
+       o da yoksa eski küçük listelerden temel sorular üretilebilirdi ama
+       bu durumda oda kuran taraf zaten sarf.html'i tam yüklemiş demektir. */
     return S;
 }
 
@@ -3329,6 +3422,42 @@ const Quiz = {
     },
 
     /* ================= dinamik yamalar ================= */
+    /* Yönetici, lobideki bir çipe tıklayınca çip yerinde giriş kutusuna
+       dönüşür; Enter/odak kaybı kaydeder, Esc vazgeçer. Yeni ad Firestore'a
+       yazılır — takımın kendi ekranı dahil herkese anında yansır. */
+    takimDuzenleme: false,
+    takimAdiDuzenle(cip) {
+        if (this.takimDuzenleme) return;
+        if (!this.state.oda || this.state.rol !== 'yonetici') return;
+        const id = cip.dataset.tid;
+        const t = (this.state.takimlar || []).find(x => x.id === id);
+        if (!t) return;
+        this.takimDuzenleme = true;
+        cip.innerHTML = '';
+        const inp = document.createElement('input');
+        inp.className = 'qz-cip-input';
+        inp.dir = 'auto';
+        inp.maxLength = 24;
+        inp.value = t.ad || '';
+        cip.appendChild(inp);
+        inp.focus(); inp.select();
+        const bitir = (kaydet) => {
+            if (!this.takimDuzenleme) return;
+            this.takimDuzenleme = false;
+            const yeni = inp.value.trim();
+            if (kaydet && yeni && yeni !== t.ad) {
+                this.odaRef().collection('takimlar').doc(id).update({ ad: yeni }).catch(() => {});
+                t.ad = yeni; // anlık görünüm; kalıcısı zaten Firestore'dan gelecek
+            }
+            this.yamala();
+        };
+        inp.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); bitir(true); }
+            else if (e.key === 'Escape') { e.preventDefault(); bitir(false); }
+        });
+        inp.addEventListener('blur', () => bitir(true));
+    },
+
     yamala() {
         const o = this.state.oda; if (!o) return;
         const takimlar = this.state.takimlar || [];
@@ -3337,12 +3466,25 @@ const Quiz = {
         if (document.getElementById('qz-sonuc-ekran')) this.sonucYamala();
         if (document.getElementById('qz-final-ol'))    this.finalYamala();
 
-        /* Lobideki takım/kişi çipleri */
+        /* Lobideki takım/kişi çipleri. Odayı kuran (yönetici) bir çipe
+           tıklayıp takımın adını değiştirebilir; düzenleme sürerken gelen
+           anlık güncellemeler kutucuğu silmesin diye yeniden çizim atlanır. */
         const cipler = document.getElementById('qz-takimlar');
-        if (cipler) {
+        if (cipler && !this.takimDuzenleme) {
+            const duzenleyebilir = this.state.rol === 'yonetici';
             cipler.innerHTML = takimlar.length
-                ? takimlar.map(t => '<span class="qz-takim-cip">' + this.kacis(t.ad) + '</span>').join('')
+                ? takimlar.map(t =>
+                    '<span class="qz-takim-cip' + (duzenleyebilir ? ' duzenlenebilir' : '') +
+                    '" data-tid="' + t.id + '"' +
+                    (duzenleyebilir ? ' title="Adı değiştirmek için tıkla"' : '') + '>' +
+                    this.kacis(t.ad) +
+                    (duzenleyebilir ? '<span class="qz-cip-kalem">✎</span>' : '') +
+                    '</span>').join('')
                 : '<span class="qz-kod-not">Henüz katılan yok…</span>';
+            if (duzenleyebilir) {
+                cipler.querySelectorAll('.qz-takim-cip').forEach(c =>
+                    c.addEventListener('click', () => this.takimAdiDuzenle(c)));
+            }
         }
 
         /* Başlat tuşu iki katılımcıya kadar kilitli kalır. */

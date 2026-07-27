@@ -1642,3 +1642,15 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     .mf-onizleme { gap: 10px; }
     .mf-ors { right: -30px; }
 }
+
+
+/* ============ LOBİDE TAKIM ADI DÜZENLEME (yönetici) ============ */
+.qz-takim-cip.duzenlenebilir { cursor: pointer; }
+.qz-takim-cip.duzenlenebilir:hover { box-shadow: 0 0 0 2px rgba(124,58,237,.45); }
+.qz-cip-kalem { margin-inline-start: 6px; opacity: .55; font-size: .85em; }
+.qz-takim-cip.duzenlenebilir:hover .qz-cip-kalem { opacity: 1; }
+.qz-cip-input {
+    font: inherit; color: inherit; background: rgba(255,255,255,.9);
+    border: 2px solid var(--secondary, #7C3AED); border-radius: 8px;
+    padding: 2px 8px; width: 9em; max-width: 40vw; outline: none;
+}
