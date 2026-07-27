@@ -1829,6 +1829,7 @@ const Game2 = {
         vit.classList.remove('filled', 'invalid');
         vit.style.gridTemplateColumns = '1fr';
         vit.style.gridTemplateRows = '';
+        vit.style.gridAutoFlow = '';
         vit.innerHTML = '<span class="g3-out-bekle">✨</span>';
     },
 
@@ -1854,11 +1855,11 @@ const Game2 = {
         const araY = parseFloat(getComputedStyle(out).rowGap) || 0;
         const font = Math.min((W / SUTUN) / 5.0, ((H - (satir - 1) * araY) / satir) / 3.3);
         out.style.gridTemplateColumns = `repeat(${SUTUN}, 1fr)`;
-        /* DOLU raflar vitrinin TÜM yüksekliğine eşit dağılır: 2 raf varsa
-           ikisi ekrana yayılır, 5 olunca beşi paylaşır — altta ölü boşluk
-           hiç kalmaz. Yazı boyu yine plandaki toplamdan gelir (sabit kalır). */
-        const doluSatir = Math.max(1, Math.ceil(n / SUTUN));
-        out.style.gridTemplateRows = `repeat(${doluSatir}, 1fr)`;
+        /* Akış SÜTUN SÜTUN: ilk kelime sağ üstte, sonraki hemen ALTINA gelir;
+           sütun (planlanan raf sayısı kadar) dolunca soldaki sütuna geçilir.
+           Satırlar 1fr: vitrin yüksekliği her zaman eşit paylaşılır. */
+        out.style.gridAutoFlow = 'column';
+        out.style.gridTemplateRows = `repeat(${satir}, 1fr)`;
         out.style.setProperty('--uf', Math.min(48, Math.max(12, font)).toFixed(1) + 'px');
     },
 
