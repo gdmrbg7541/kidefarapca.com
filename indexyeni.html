@@ -148,15 +148,17 @@ a{ color:inherit; text-decoration:none; }
 /* ======================= 5 · SİS ODASI ======================= */
 #gizemPerde{ height:180vh; }
 #gizemSahne{ background:var(--zemin2); }
+#sisKelimeler{ position:absolute; inset:0; pointer-events:none; }
+#sisKelimeler span{ position:absolute; font-family:'Amiri', serif; direction:rtl; opacity:.5; white-space:nowrap; }
 #gizemMetin{ text-align:center; padding:0 16px; }
-#gizemMetin .ar{ font-family:'Arakom','Amiri'; font-size:clamp(2.4rem,7.5vw,5rem); color:var(--koyu); line-height:1.7; }
-#gizemMetin .tr{ margin-top:12px; color:var(--metin); font-size:clamp(1.05rem,2.2vw,1.4rem); }
+#gizemMetin .ar{ font-family:'Arakom','Amiri'; font-size:clamp(2.4rem,7.5vw,5rem); color:var(--deniz); line-height:1.7; text-shadow:0 2px 14px rgba(22,160,133,.25); }
+#gizemMetin .tr{ margin-top:12px; color:var(--yesil); font-size:clamp(1.05rem,2.2vw,1.4rem); }
 #gizemMetin .davet{ margin-top:26px; }
 #gizemMetin .davet span{ display:inline-block; padding:12px 28px; border:1px solid var(--amber);
   border-radius:40px; color:var(--amber); letter-spacing:2px; font-size:1rem; background:#fff; }
 #sisOrtusu{ position:absolute; inset:0; pointer-events:none;
   background:radial-gradient(circle var(--r,120px) at var(--x,50%) var(--y,50%),
-    transparent 0%, rgba(240,244,248,.96) 34%, var(--zemin3) 72%); }
+    transparent 0%, rgba(255,231,186,.95) 34%, #F9DCA9 72%); }
 #gizemIpucu{ position:absolute; bottom:30px; left:0; right:0; text-align:center; color:var(--sis);
   font-size:.95rem; letter-spacing:2px; }
 
@@ -288,6 +290,7 @@ footer{ text-align:center; padding:30px 16px; color:var(--sis); font-size:.9rem;
 <!-- 5 · SİS ODASI -->
 <section class="perde" id="gizemPerde">
   <div class="sabit" id="gizemSahne">
+    <div id="sisKelimeler"></div>
     <div id="gizemMetin">
       <div class="ar">اُطْلُبُوا الْعِلْمَ مِنَ الْمَهْدِ إِلَى اللَّحْدِ</div>
       <div class="tr">“Beşikten mezara kadar ilmi isteyin.”</div>
@@ -512,9 +515,9 @@ function oyunCiz(){
   '</svg>';
 })();
 function tacSvg(x,y,renk){
-  return '<g class="tac-g" transform="translate('+x+','+y+')">' +
+  return '<g transform="translate('+x+','+y+')"><g class="tac-g">' +
     '<path d="M0,16 L3,5 L8,12 L13,0 L18,12 L23,5 L26,16 Z" fill="'+renk+'"/>' +
-    '<rect x="0" y="17" width="26" height="4" rx="2" fill="'+renk+'"/></g>';
+    '<rect x="0" y="17" width="26" height="4" rx="2" fill="'+renk+'"/></g></g>';
 }
 function dalgaMotif(){  // deniz motifi
   return '<g opacity=".35"><path d="M20,268 q20,-14 40,0 t40,0 t40,0 t40,0 t40,0" fill="none" stroke="#48c9b0" stroke-width="3"/>' +
@@ -554,7 +557,7 @@ function takimSvg(sinif, renk, renk2, motif){
     '<rect x="30" y="208" width="200" height="12" rx="6" fill="#E9EEF5"/>' +
     '<rect class="skorCubuk" x="30" y="208" width="0" height="12" rx="6" fill="'+renk2+'"/>' +
     '<text class="puanYazi" x="130" y="262" text-anchor="middle" font-size="26" fill="#2c3e50"></text>' +
-    tacSvg(148, 238, renk) +
+    tacSvg(160, 238, renk) +
     '</svg>';
 }
 $('takimA').innerHTML = takimSvg('tA','#16A085','#48c9b0', dalgaMotif());
@@ -697,6 +700,17 @@ function ozellikGuncelle(p){
 
 /* ============ 5 · SİS ODASI ============ */
 const gizemSahne = $('gizemSahne'), sisOrtusu = $('sisOrtusu');
+/* sisin altında klasik hatla kelimeler */
+(function(){
+  const K = [
+    ['عِلْم',8,6,2.4,'#16A085',-8], ['حِكْمَة',78,4,2.0,'#F39C12',6], ['نُور',88,22,2.6,'#16A085',10],
+    ['كِتاب',4,38,2.2,'#F39C12',-12], ['قَلَم',90,58,2.1,'#16A085',-6], ['مَعْرِفَة',6,72,2.3,'#F39C12',8],
+    ['صَبْر',80,80,2.5,'#16A085',-10], ['أَدَب',16,88,2.0,'#F39C12',5], ['فَهْم',48,7,1.9,'#16A085',12],
+    ['قِرَاءَة',38,86,2.2,'#16A085',-5], ['حَرْف',66,90,1.9,'#F39C12',9], ['دَرْس',2,55,1.9,'#16A085',7]
+  ];
+  $('sisKelimeler').innerHTML = K.map(k=>
+    '<span style="left:'+k[1]+'%;top:'+k[2]+'%;font-size:'+k[3]+'rem;color:'+k[4]+';transform:rotate('+k[5]+'deg)">'+k[0]+'</span>').join('');
+})();
 let felX = innerWidth/2, felY = innerHeight/2, felHX = felX, felHY = felY;
 gizemSahne.addEventListener('mousemove', e => { felHX = e.clientX; felHY = e.clientY; });
 gizemSahne.addEventListener('touchmove', e => { felHX = e.touches[0].clientX; felHY = e.touches[0].clientY; }, {passive:true});
