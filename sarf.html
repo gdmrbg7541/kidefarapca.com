@@ -27,7 +27,7 @@
 <!-- ?v=NN: tarayıcı eski sarf.css/sarf.js kopyasını önbellekten sunmasın diye
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
-<link rel="stylesheet" href="sarf.css?v=36">
+<link rel="stylesheet" href="sarf.css?v=61">
 </head>
 <body>
 
@@ -65,17 +65,51 @@
             </button>
         </div>
         <div class="menu-grid">
+            <!-- Kart ikonları: her oyunun içeriğini anlatan özel SVG çizimler.
+                 1) kök harfleri yukarı, resim çerçevesine türer
+                 2) çark makinesi kökü söker çıkarır
+                 3) usta atölyesi: örs + çekiç + kıvılcım -->
             <div class="menu-card" data-goto="game1-screen">
-                <div class="icon-circle">🧩</div>
+                <div class="icon-circle"><svg viewBox="0 0 100 100" aria-hidden="true">
+                    <rect x="18" y="6" width="64" height="46" rx="7" fill="#ffffff" stroke="#16A085" stroke-width="3.5"/>
+                    <circle cx="66" cy="19" r="6" fill="#f6b93b"/>
+                    <path d="M22,48 L40,26 L52,41 L60,32 L78,48 Z" fill="#48c9b0"/>
+                    <path d="M50,74 L50,60 M43,66 L50,58 L57,66" fill="none" stroke="#f39c12" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <g font-family="'Markazi Text'" font-size="15" text-anchor="middle" fill="#ffffff">
+                        <rect x="60" y="80" width="17" height="17" rx="5" fill="#7C3AED"/>
+                        <rect x="41" y="80" width="17" height="17" rx="5" fill="#9d5cf5"/>
+                        <rect x="22" y="80" width="17" height="17" rx="5" fill="#7C3AED"/>
+                        <text x="68.5" y="93.5">ك</text><text x="49.5" y="93.5">ت</text><text x="30.5" y="93.5">ب</text>
+                    </g>
+                </svg></div>
                 <h2>مِنَ الجَذْرِ إِلى الصّورَة</h2>
             </div>
+            <!-- Birleşik "Kelime Fabrikası": öğütücü + usta atölyesi tek oyunda.
+                 İkon: çark pencereli makine, üstünde çekiç, altında altın külçe. -->
             <div class="menu-card" data-goto="game2-screen">
-                <div class="icon-circle">⚙️</div>
-                <h2>اِسْتَخْرِج الجَذْر</h2>
-            </div>
-            <div class="menu-card" data-goto="game3-screen">
-                <div class="icon-circle">🔤</div>
-                <h2>الجَذْر وَالوَزْن</h2>
+                <div class="icon-circle"><svg viewBox="0 0 100 100" aria-hidden="true">
+                    <g transform="rotate(-32 24 20)">
+                        <rect x="6" y="16" width="28" height="6" rx="3" fill="#a9743f"/>
+                        <rect x="28" y="8" width="11" height="22" rx="3.5" fill="#7f8c8d"/>
+                        <rect x="28" y="8" width="11" height="7" rx="3.5" fill="#95a5a6"/>
+                    </g>
+                    <path d="M56,30 l2,-5.4 2,5.4 5.4,2 -5.4,2 -2,5.4 -2,-5.4 -5.4,-2 Z" fill="#f6b93b"/>
+                    <rect x="24" y="38" width="54" height="40" rx="8" fill="#d7dde5" stroke="#9aa6b3" stroke-width="2.5"/>
+                    <rect x="24" y="38" width="54" height="11" rx="5.5" fill="#7C3AED"/>
+                    <path d="M78,52 L93,45 L93,68 L78,61 Z" fill="#8f9aa8"/>
+                    <g transform="translate(51,62)" fill="#16A085">
+                        <circle r="10.5" fill="#34495e"/>
+                        <g><rect x="-2.2" y="-12.6" width="4.4" height="5" rx="2"/><rect x="-2.2" y="7.6" width="4.4" height="5" rx="2"/>
+                           <rect x="-12.6" y="-2.2" width="5" height="4.4" rx="2"/><rect x="7.6" y="-2.2" width="5" height="4.4" rx="2"/>
+                           <rect x="-2.2" y="-12.6" width="4.4" height="5" rx="2" transform="rotate(45)"/><rect x="-2.2" y="7.6" width="4.4" height="5" rx="2" transform="rotate(45)"/>
+                           <rect x="-12.6" y="-2.2" width="5" height="4.4" rx="2" transform="rotate(45)"/><rect x="7.6" y="-2.2" width="5" height="4.4" rx="2" transform="rotate(45)"/></g>
+                        <circle r="6.5"/>
+                        <circle r="2.4" fill="#ffffff"/>
+                    </g>
+                    <path d="M12,96 L46,96 L42,84 L16,84 Z" fill="#f6c344"/>
+                    <path d="M16,84 L42,84 L40.6,88 L17.4,88 Z" fill="#ffeeb0"/>
+                </svg></div>
+                <h2>مَصْنَعُ الكَلِمات</h2>
             </div>
         </div>
     </div>
@@ -104,7 +138,7 @@
     </div>
 </div>
 
-<script src="sarf.js?v=36"></script>
+<script src="sarf.js?v=60"></script>
 <script src="geri.js"></script>
 </body>
 </html>

@@ -187,30 +187,93 @@ function buildConjugation(root) {
     };
 }
 
+/* Birleşik fabrika (revizyon 50): her turun 5 kelimesi 5 FARKLI kökten
+   gelir ve her kökün atölyede en az iki vezin karşılığı vardır; böylece
+   öğütülen her külçe ustanın elinde mutlaka yeni bir kelimeye dönüşebilir. */
 const GAME2_ROUNDS = [
     [
-        { word:"مَسْجِد",  root:"س ج د" },
-        { word:"مَجْلِس",  root:"ج ل س" },
-        { word:"مُحْتَرَم", root:"ح ر م" },
-        { word:"مَحْمود",  root:"ح م د" },
-        { word:"مَدْرَسَة", root:"د ر س" }
+        { word:"مَكْتَب",   root:"ك ت ب" },
+        { word:"مُحْتَرَم",  root:"ح ر م" },
+        { word:"مَحْمود",   root:"ح م د" },
+        { word:"مَدْرَسَة",  root:"د ر س" },
+        { word:"عُلوم",     root:"ع ل م" }
     ],
     [
-        { word:"تَقْدير",  root:"ق د ر" },
-        { word:"مُحَمَّد",  root:"ح م د" },
-        { word:"تَسْليم",  root:"س ل م" },
-        { word:"مُقْتَدِر", root:"ق د ر" },
-        { word:"مَعْلوم",  root:"ع ل م" }
+        { word:"مُقْتَدِر",  root:"ق د ر" },
+        { word:"سَلام",     root:"س ل م" },
+        { word:"عالَم",     root:"ع ل م" },
+        { word:"مُحَمَّد",   root:"ح م د" },
+        { word:"كِتاب",     root:"ك ت ب" }
     ],
     [
-        { word:"أَحْمَد",   root:"ح م د" },
-        { word:"اِقْتِدار", root:"ق د ر" },
-        { word:"قُدْرَة",   root:"ق د ر" },
-        { word:"حَمْد",    root:"ح م د" },
-        { word:"قَدَر",    root:"ق د ر" }
+        { word:"أَحْمَد",    root:"ح م د" },
+        { word:"قُدْرَة",    root:"ق د ر" },
+        { word:"دُروس",     root:"د ر س" },
+        { word:"حَرام",     root:"ح ر م" },
+        { word:"عُلَماء",    root:"ع ل م" }
     ]
 ];
 
+/* Oyun 3 atölyesi: örs ipucu (boş kalıba silik çizilir) ve çekiçli usta.
+   Usta tek parça SVG'dir; sadece .usta-kol grubu (omuzdan itibaren kol + çekiç)
+   CSS ile döner. Dış <g> konumlandırır, iç <g> animasyon alır — böylece CSS
+   transform'u SVG konum transform'unu ezmez. */
+const G3_ORS_SVG = `
+<svg viewBox="0 0 120 74" class="g3-ors-cizim" aria-hidden="true">
+  <path d="M14,18 L106,18 L106,30 C92,34 84,40 80,48 L74,48 L74,56 L84,66 L36,66 L46,56 L46,48 L40,48 C34,38 24,32 14,30 Z"
+        fill="none" stroke="#6f7d8c" stroke-width="5" stroke-linejoin="round"/>
+</svg>`;
+
+const G3_USTA_SVG = `
+<svg viewBox="0 0 160 190" class="g3-usta-cizim" aria-hidden="true">
+  <!-- gövde: teal gömlek + deri önlük -->
+  <path d="M48,74 Q70,60 92,74 L96,96 L44,96 Z" fill="#16A085"/>
+  <!-- bacaklar + ayakkabılar (önlüğün altından görünür) -->
+  <rect x="53" y="160" width="14" height="24" rx="5" fill="#34495e"/>
+  <rect x="75" y="160" width="14" height="24" rx="5" fill="#34495e"/>
+  <rect x="53" y="179" width="23" height="8" rx="4" fill="#2c3e50"/>
+  <rect x="75" y="179" width="23" height="8" rx="4" fill="#2c3e50"/>
+  <path d="M46,86 L94,86 L102,168 L38,168 Z" fill="#8a5a2c"/>
+  <path d="M56,86 L60,66 M84,86 L80,66" stroke="#6f4621" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <rect x="40" y="122" width="60" height="9" rx="4" fill="#6f4621"/>
+  <rect x="56" y="138" width="28" height="20" rx="5" fill="#a9743f"/>
+  <!-- baş: kasketli, bıyıklı güleç usta -->
+  <circle cx="70" cy="40" r="17" fill="#f6c9a0"/>
+  <path d="M52,36 Q54,20 70,20 Q86,20 88,34 L94,36 Q94,41 88,40 Q70,34 52,38 Z" fill="#8a5a2c"/>
+  <circle cx="77" cy="39" r="2.2" fill="#2c3e50"/>
+  <path d="M70,49 Q76,53 82,48" stroke="#b0713e" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <path d="M72,45 Q77,48 82,44" stroke="#6f4621" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- uzak kol: maşayla örsü tutar -->
+  <path d="M50,78 Q40,104 56,122" stroke="#127a66" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <circle cx="58" cy="124" r="6.5" fill="#f6c9a0"/>
+  <path d="M62,126 L86,136 M62,129 L84,142" stroke="#7f8c8d" stroke-width="3.4" stroke-linecap="round"/>
+  <!-- yakın kol + çekiç: omuz (92,80) etrafında döner -->
+  <g transform="translate(92,80)">
+    <g class="usta-kol">
+      <path d="M0,0 Q16,-6 28,-20" stroke="#16A085" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <circle cx="30" cy="-22" r="7" fill="#f6c9a0"/>
+      <rect x="26" y="-27" width="40" height="8" rx="3.5" transform="rotate(-38 30 -22)" fill="#a9743f"/>
+      <g transform="rotate(-38 30 -22)">
+        <rect x="60" y="-38" width="16" height="30" rx="4" fill="#7f8c8d"/>
+        <rect x="60" y="-38" width="16" height="9" rx="4" fill="#95a5a6"/>
+      </g>
+    </g>
+  </g>
+</svg>`;
+
+/* Oyun 3'te türeyen her kelimenin anlamını sezdiren emoji.
+   Kelime çıkış kutusunda kelimenin üzerinde büyükçe gösterilir. */
+const GAME3_EMOJI = {
+    "عالِم":"🎓", "كاتِب":"✍️", "سالِم":"🙋", "حامِد":"🙏", "قادِر":"💪",
+    "مُدَرِّس":"👨‍🏫", "مُعَلِّم":"🧑‍🏫",
+    "مَعْلوم":"✅", "مَكْتوب":"✉️", "مَحْمود":"👏", "مَحْروم":"😔",
+    "مَدْروس":"📖", "مَقْدور":"🏋️",
+    "تَسْليم":"🤝", "تَدْريس":"📚", "تَقْدير":"🏅",
+    "تَعْليم":"📘", "تَحْميد":"📿", "تَحْريم":"⛔"
+};
+
+/* Dört vezin (revizyon 50: تَفْعيل eklendi ve مَفْعول genişletildi) —
+   böylece öğütücüden çıkan HER kökün en az iki vezin seçeneği olur. */
 const GAME3_PATTERNS = [
     {
         name: "فاعِل",
@@ -225,7 +288,12 @@ const GAME3_PATTERNS = [
     {
         name: "مَفْعول",
         zaid: [0, 3], // م و
-        map: { "ع ل م":"مَعْلوم", "ك ت ب":"مَكْتوب", "ح م د":"مَحْمود", "ح ر م":"مَحْروم" }
+        map: { "ع ل م":"مَعْلوم", "ك ت ب":"مَكْتوب", "ح م د":"مَحْمود", "ح ر م":"مَحْروم", "د ر س":"مَدْروس", "ق د ر":"مَقْدور" }
+    },
+    {
+        name: "تَفْعيل",
+        zaid: [0, 3], // ت ي
+        map: { "س ل م":"تَسْليم", "د ر س":"تَدْريس", "ق د ر":"تَقْدير", "ع ل م":"تَعْليم", "ح م د":"تَحْميد", "ح ر م":"تَحْريم" }
     }
 ];
 
@@ -460,6 +528,14 @@ const App = {
             });
             return;
         }
+        /* Fabrika sesleri: düz sinüs yerine katmanlı sentez —
+           gürültü kaynağı + filtre + zarf. Dosya yok, lisans yok,
+           çevrimdışı çalışır ve her cihazda aynı tınlar. */
+        if (key === 'grind' || key === 'hammer' || key === 'forklift' ||
+            key === 'clink' || key === 'ding') {
+            this.fabrikaSesi(key, ctx);
+            return;
+        }
         const sounds = {
             click:   { f:520, t:'square',   d:.07 },
             correct: { f:520, t:'sine',     d:.22, glide:880 },
@@ -474,6 +550,97 @@ const App = {
         const o = ctx.createOscillator(); o.type = s.t; o.frequency.setValueAtTime(s.f, ctx.currentTime);
         if (s.glide) o.frequency.linearRampToValueAtTime(s.glide, ctx.currentTime + s.d);
         o.connect(g); o.start(); o.stop(ctx.currentTime + s.d);
+    },
+
+    /* Tek seferlik beyaz gürültü tamponu (tüm gürültü sesleri bundan beslenir) */
+    gurultuTamponu(ctx) {
+        if (!this.state.gurultuBuf) {
+            const b = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+            const d = b.getChannelData(0);
+            for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+            this.state.gurultuBuf = b;
+        }
+        return this.state.gurultuBuf;
+    },
+
+    /* Atölye/fabrika ses tasarımı:
+       grind    = öğütücü (derin gürleme + çakıl gürültüsü + devir dalgası)
+       hammer   = çekiç (tok darbe + metal çınlama + kıvılcım tıssı)
+       forklift = kaldırıcı (motor homurtusu + geri vites bip-bip'i)
+       clink    = külçe (kısa metalik tınlama)
+       ding     = vitrin zili (sıcak çan + parıltı) */
+    fabrikaSesi(key, ctx) {
+        const t = ctx.currentTime + .01;
+        const cikis = ctx.destination;
+        const gurultu = (bas, sure, tip, frek, q, tepe) => {
+            const src = ctx.createBufferSource();
+            src.buffer = this.gurultuTamponu(ctx); src.loop = true;
+            const f = ctx.createBiquadFilter(); f.type = tip; f.frequency.value = frek; f.Q.value = q;
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(.0001, bas);
+            g.gain.exponentialRampToValueAtTime(tepe, bas + .03);
+            g.gain.exponentialRampToValueAtTime(.0001, bas + sure);
+            src.connect(f); f.connect(g); g.connect(cikis);
+            src.start(bas); src.stop(bas + sure + .05);
+        };
+        const ton = (bas, sure, tip, f0, f1, tepe) => {
+            const o = ctx.createOscillator(); o.type = tip;
+            o.frequency.setValueAtTime(f0, bas);
+            if (f1) o.frequency.exponentialRampToValueAtTime(f1, bas + sure);
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(.0001, bas);
+            g.gain.exponentialRampToValueAtTime(tepe, bas + .015);
+            g.gain.exponentialRampToValueAtTime(.0001, bas + sure);
+            o.connect(g); g.connect(cikis);
+            o.start(bas); o.stop(bas + sure + .05);
+            return o;
+        };
+
+        if (key === 'grind') {
+            gurultu(t, 1.15, 'lowpass', 260, .8, .15);
+            gurultu(t, 1.15, 'bandpass', 900, 2.5, .06);
+            const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 52;
+            const og = ctx.createGain();
+            og.gain.setValueAtTime(.0001, t);
+            og.gain.exponentialRampToValueAtTime(.08, t + .06);
+            og.gain.exponentialRampToValueAtTime(.0001, t + 1.15);
+            const lfo = ctx.createOscillator(); lfo.frequency.value = 9;
+            const lg = ctx.createGain(); lg.gain.value = 6;
+            lfo.connect(lg); lg.connect(o.frequency);
+            o.connect(og); og.connect(cikis);
+            o.start(t); lfo.start(t); o.stop(t + 1.2); lfo.stop(t + 1.2);
+        } else if (key === 'hammer') {
+            ton(t, .09, 'sine', 150, 58, .38);
+            ton(t + .004, .22, 'triangle', 420, 0, .09);
+            ton(t + .004, .18, 'triangle', 637, 0, .07);
+            ton(t + .004, .14, 'triangle', 988, 0, .05);
+            gurultu(t, .07, 'highpass', 2600, 1, .11);
+        } else if (key === 'forklift') {
+            const o = ctx.createOscillator(); o.type = 'sawtooth';
+            o.frequency.setValueAtTime(78, t);
+            o.frequency.linearRampToValueAtTime(96, t + .7);
+            o.frequency.linearRampToValueAtTime(80, t + 1.5);
+            const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380; f.Q.value = 1;
+            const g = ctx.createGain();
+            g.gain.setValueAtTime(.0001, t);
+            g.gain.exponentialRampToValueAtTime(.11, t + .08);
+            g.gain.exponentialRampToValueAtTime(.0001, t + 1.55);
+            const lfo = ctx.createOscillator(); lfo.frequency.value = 13;
+            const lg = ctx.createGain(); lg.gain.value = 5;
+            lfo.connect(lg); lg.connect(o.frequency);
+            o.connect(f); f.connect(g); g.connect(cikis);
+            o.start(t); lfo.start(t); o.stop(t + 1.6); lfo.stop(t + 1.6);
+            ton(t + .5, .14, 'square', 988, 0, .04);   // bip
+            ton(t + .9, .14, 'square', 988, 0, .04);   // bip
+        } else if (key === 'clink') {
+            ton(t, .1, 'triangle', 1180, 0, .12);
+            ton(t + .008, .16, 'triangle', 1770, 0, .06);
+            gurultu(t, .03, 'highpass', 4000, 1, .05);
+        } else if (key === 'ding') {
+            ton(t, .5, 'sine', 880, 0, .13);
+            ton(t, .55, 'sine', 1318, 0, .06);
+            ton(t + .09, .4, 'sine', 1760, 0, .04);
+        }
     },
 
     showDone(emoji, text) {
@@ -797,11 +964,115 @@ const Game1 = {
 
 /* =========================================================
    OYUN 2 — اِسْتَخْرِج الجَذْر (kelimeyi köküne ayırma)
+   ---------------------------------------------------------
+   ÖĞÜTÜCÜ FABRİKA: kelime sağdaki yürüyen banda biner, makineye
+   girip kaybolur; makine titreyerek öğütür; soldan çıkan "saf
+   metal" (altın külçe üzerinde kök) eğimli rampadan yukarı taşınır
+   ve rampanın ucundan şeffaf cam konteynıra düşer.
 ========================================================= */
+const G2_MAKINE_SVG = `
+<svg viewBox="0 0 230 170" class="g2-makine-svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="g2met" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef1f5"/><stop offset="1" stop-color="#c3cad4"/>
+    </linearGradient>
+  </defs>
+  <!-- baca + duman (duman sadece öğütürken görünür) -->
+  <rect x="50" y="6" width="20" height="30" rx="5" fill="#8f9aa8"/>
+  <circle class="g2-duman d1" cx="60" cy="0" r="7" fill="#cfd8e3" opacity="0"/>
+  <circle class="g2-duman d2" cx="66" cy="-6" r="9" fill="#dde5ee" opacity="0"/>
+  <!-- gövde -->
+  <rect x="26" y="30" width="170" height="122" rx="15" fill="url(#g2met)" stroke="#9aa6b3" stroke-width="2"/>
+  <rect x="26" y="30" width="170" height="24" rx="12" fill="#7C3AED" opacity=".85"/>
+  <circle cx="38" cy="42" r="2.6" fill="#e6d9ff"/><circle cx="184" cy="42" r="2.6" fill="#e6d9ff"/>
+  <circle cx="38" cy="140" r="2.6" fill="#93a0af"/><circle cx="184" cy="140" r="2.6" fill="#93a0af"/>
+  <!-- giriş ağzı (sağ): huni -->
+  <path d="M196,82 L226,66 L226,120 L196,104 Z" fill="#8f9aa8"/>
+  <rect x="192" y="78" width="10" height="30" rx="4" fill="#77828f"/>
+  <!-- pencere: içinde birbirine ters dönen iki kırıcı -->
+  <circle cx="111" cy="102" r="37" fill="#2c3e50"/>
+  <circle cx="111" cy="102" r="32" fill="#34495e"/>
+  <g transform="translate(96,102)"><g class="g2-kirici">
+    <circle r="11" fill="#95a5a6"/><circle r="3.6" fill="#5d6d7e"/>
+    <rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#95a5a6"/>
+    <rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#95a5a6"/>
+    <rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6"/>
+    <rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6"/>
+    <rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#95a5a6" transform="rotate(45)"/>
+    <rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#95a5a6" transform="rotate(45)"/>
+    <rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6" transform="rotate(45)"/>
+    <rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6" transform="rotate(45)"/>
+  </g></g>
+  <g transform="translate(127,102)"><g class="g2-kirici ters">
+    <circle r="11" fill="#aab7b8"/><circle r="3.6" fill="#5d6d7e"/>
+    <rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#aab7b8"/>
+    <rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#aab7b8"/>
+    <rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#aab7b8"/>
+    <rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#aab7b8"/>
+    <rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#aab7b8" transform="rotate(45)"/>
+    <rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#aab7b8" transform="rotate(45)"/>
+    <rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#aab7b8" transform="rotate(45)"/>
+    <rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#aab7b8" transform="rotate(45)"/>
+  </g></g>
+  <!-- çıkış oluğu (sol alt): rampaya döker -->
+  <path d="M26,120 L2,130 L2,146 L26,140 Z" fill="#8f9aa8"/>
+</svg>`;
+
+/* Otomatik kaldırıcı (forklift): külçeleri konteynırdan alıp
+   atölyedeki kök rafına taşır. Çatal sağa bakar; dönüşte geri
+   geri gider (forkliftler gibi), yük çatalda kalır. */
+/* Atölye örsü: kesikli kutu yerine, ahşap kütüğün üstünde duran DOLU bir örs.
+   Kök harfleri örs tablasının üzerinde belirir. */
+const G2_ORS2_SVG = `
+<svg viewBox="0 0 220 175" class="g2-ors2-svg" aria-hidden="true">
+  <!-- ahşap kütük -->
+  <rect x="52" y="118" width="116" height="44" fill="#8a5a2c"/>
+  <ellipse cx="110" cy="162" rx="58" ry="9" fill="#6f4621"/>
+  <ellipse cx="110" cy="118" rx="58" ry="10" fill="#a9743f"/>
+  <ellipse cx="110" cy="118" rx="40" ry="6.5" fill="none" stroke="#8a5a2c" stroke-width="2"/>
+  <ellipse cx="110" cy="118" rx="20" ry="3.4" fill="none" stroke="#8a5a2c" stroke-width="1.6"/>
+  <!-- örs -->
+  <path d="M44,62 L176,62 L176,76 C158,81 146,89 140,99 L130,99 L130,107 L146,120 L74,120 L90,107 L90,99 L80,99 C70,88 56,80 44,76 Z" fill="#7f8c8d"/>
+  <rect x="38" y="54" width="144" height="13" rx="6.5" fill="#95a5a6"/>
+  <rect x="38" y="54" width="144" height="5" rx="2.5" fill="#aab7b8"/>
+</svg>`;
+
+const G2_FORKLIFT_SVG = `
+<svg viewBox="0 0 150 100" class="g2-forklift-svg" aria-hidden="true">
+  <rect x="14" y="60" width="76" height="11" rx="5" fill="#d98c0a"/>
+  <rect x="18" y="44" width="64" height="22" rx="7" fill="#F39C12"/>
+  <path d="M30,46 L34,24 L64,24 L64,46 Z" fill="#f7b955"/>
+  <rect x="38" y="29" width="20" height="13" rx="3" fill="#e8f6ff" stroke="#d98c0a" stroke-width="1.5"/>
+  <circle cx="32" cy="77" r="12" fill="#2c3e50"/><circle cx="32" cy="77" r="5" fill="#95a5a6"/>
+  <circle cx="74" cy="77" r="12" fill="#2c3e50"/><circle cx="74" cy="77" r="5" fill="#95a5a6"/>
+  <rect x="92" y="14" width="7" height="62" rx="3" fill="#7f8c8d"/>
+  <rect x="88" y="10" width="20" height="6" rx="3" fill="#7f8c8d"/>
+  <rect x="99" y="70" width="44" height="6" rx="3" fill="#95a5a6"/>
+</svg>`;
+
 const Game2 = {
-    /* Oyun 2 artık üç turdan oluşuyor (bkz. GAME2_ROUNDS).
-       roundIdx = kaçıncı tur, usedCount = bu turda çözülen, doneTotal = toplam. */
-    state: { roundIdx: 0, words: [], usedCount: 0, doneTotal: 0 },
+    /* BİRLEŞİK FABRİKA (revizyon 50): iki sahneli tek oyun.
+       Sağ sahne = öğütücü (kelime → kök), sol sahne = usta atölyesi
+       (kök + vezin → yeni kelime). Tur akışı:
+         1. 5 kelime öğütülür, külçeler konteynıra düşer
+         2. kamera sola kayar, forklift külçeleri kök rafına taşır
+         3. öğrenci raftan kök seçer → yalnız o kökle çalışan vezinler açılır
+         4. vezin seçilince usta döver, kelime emojisiyle vitrine çıkar
+         5. tüm kökler işlenince kamera sağa döner, yeni parti gelir */
+    state: { roundIdx: 0, words: [], grindCount: 0, doneTotal: 0,
+             bekleyen: [],            // öğütülüp konteynırda bekleyen kökler
+             shelf: [],               // şu an rafta duran parti
+             forgedPairs: new Set(),  // bu turda dövülen kök|vezin çiftleri
+             forgedRoots: new Set(),  // bu turda en az bir kez dövülen kökler
+             selRoot: null, phase: 'grind' },
+
+    /* Bir kökün girebildiği vezin sayısı ve kalan (dövülmemiş) vezinleri */
+    kokVezinleri(root) {
+        return GAME3_PATTERNS.filter(p => p.map[root]);
+    },
+    kalanVezin(root) {
+        return this.kokVezinleri(root).filter(p => !this.state.forgedPairs.has(root + '|' + p.name)).length;
+    },
 
     shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -811,122 +1082,648 @@ const Game2 = {
         return arr;
     },
 
+    /* Toplam iş = öğütülecek kelimeler + dövülecek kökler (her tur 5+5) */
     totalWords() {
-        return GAME2_ROUNDS.reduce((sum, r) => sum + r.length, 0);
+        return GAME2_ROUNDS.reduce((sum, r) => sum + r.length * 2, 0);
     },
 
     start() {
         this.state.roundIdx = 0;
         this.state.doneTotal = 0;
-        this.renderRound();
-    },
-
-    renderRound() {
-        this.state.words = this.shuffle(GAME2_ROUNDS[this.state.roundIdx].slice());
-        this.state.usedCount = 0;
+        this.ilkYonerge = true; // ses yalnız oyunun en başında çalar
         this.render();
+        this.rondKur(false);
     },
 
-    nextRound() {
-        this.state.roundIdx++;
-        if (this.state.roundIdx >= GAME2_ROUNDS.length) {
-            App.showDone('⚙️', 'أَحْسَنْتَ! لَقَد اسْتَخْرَجْتَ كُلَّ الجُذور');
-            document.getElementById('done-replay').onclick = () => {
-                App.hideDone();
-                this.start();
-            };
-            return;
+    /* Yönergeyi ekranın ortasında gösterir, 3 sn sonra kaybolur.
+       sesliMi=true ise yonergesarf.mp3 de çalınır (dosya yoksa sessiz geçer). */
+    yonergeZaman: null,
+    yonergeGoster(metin, sesliMi) {
+        const y = document.getElementById('g2-yonerge');
+        if (!y) return;
+        y.innerHTML = metin;
+        y.classList.add('goster');
+        clearTimeout(this.yonergeZaman);
+        this.yonergeZaman = setTimeout(() => y.classList.remove('goster'), 3000);
+        if (sesliMi) {
+            try { new Audio('yonergesarf.mp3').play().catch(() => {}); } catch (e) {}
         }
-        this.renderRound();
     },
 
     render() {
         const screen = document.getElementById('game2-screen');
         screen.innerHTML = `
             <div class="back-btn" id="g2-back">${BACK_SVG}</div>
-            <div class="progress-pill" id="g2-progress">${this.state.doneTotal} / ${this.totalWords()}</div>
-            <div class="g2-wrap">
-                <div class="g1-title" dir="rtl">اُسْحَبِ الكَلِمَةَ إِلى الآلَةِ لِتَسْتَخْرِجَ جَذْرَها</div>
-                <div class="g2-stage" id="g2-stage" style="--g2-satir:${this.state.words.length}">
-                    <div class="drop-zone g2-machine" id="g2-machine">
-                        <div class="g2-gear-visual" id="g2-gear">
-                            <span class="gear">⚙️</span><span class="gear g2">⚙️</span>
+            <div class="progress-pill" id="g2-progress">0 / ${this.totalWords()}</div>
+            <!-- Yönerge artık üstte sabit durmaz: faz başında ekranın
+                 ortasında belirir, (ilk sefer yonergesarf.mp3 ile) okunur
+                 ve kendiliğinden kaybolur -->
+            <div class="g2-yonerge" id="g2-yonerge" dir="rtl"></div>
+            <div class="g2-dunya" id="g2-dunya">
+                <!-- SOL SAHNE: USTA ATÖLYESİ -->
+                <section class="g2-sahne">
+                    <div class="g2-atolye-ic">
+                        <div class="g2-vezinler" id="g2-vezinler"></div>
+                        <div class="g3-vitrin">
+                            <div class="g3-tente"></div>
+                            <div class="g3-output-slot" id="g2-vitrinKutu"><span class="g3-out-bekle">✨</span></div>
+                            <div class="g3-raf"></div>
                         </div>
+                        <div class="g3-ors-kutu" id="g2-orsKutu">
+                            <div class="g2-ors2" id="g2-ors" dir="rtl">${G2_ORS2_SVG}<span class="g2-ors-kok-yazi" id="g2-orsIc"></span></div>
+                            <div class="g3-usta" id="g2-usta">${G3_USTA_SVG}</div>
+                            <div class="g3-kivilcimlar" id="g2-kivilcimlar2"></div>
+                        </div>
+                        <div class="g2-kokraf" id="g2-kokraf"></div>
                     </div>
-                </div>
+                    <div class="g2-gecis-tus" id="g2-devamTus" dir="rtl">⚙️ تابِعْ</div>
+                </section>
+                <!-- (dunya kapanmadan önce her iki sahneyi de görebilen öğeler yok;
+                     kaydırak dünya DIŞINDA sabit durur) -->
+                <!-- SAĞ SAHNE: ÖĞÜTÜCÜ -->
+                <section class="g2-sahne">
+                    <div class="g2-stage" id="g2-stage">
+                        <!-- Fabrika sahnesinin tamamı bırakma alanıdır -->
+                        <div class="g2-fabrika drop-zone g2-machine" id="g2-fabrika">
+                            <div class="g2-kap" id="g2-kap"><div class="g2-kap-ic" id="g2-kapIc"></div></div>
+                            <div class="g2-rampa" id="g2-rampa"></div>
+                            <div class="g2-govde" id="g2-govde">${G2_MAKINE_SVG}</div>
+                            <div class="g2-bant" id="g2-bant"></div>
+                        </div>
+                        <div class="g2-kelimeler" id="g2-kelimeler"></div>
+                    </div>
+                </section>
+                <!-- Forklift dünyaya aittir (sahnelere değil): hep konteynırın
+                     altında bekler, kök türetilince vurgulanır, tıklanınca
+                     kesintisiz tek sahne boyunca rafa taşır -->
+                <div class="g2-forklift" id="g2-forklift" title="اِنْقُلِ الجُذور">${G2_FORKLIFT_SVG}<div class="g2-fork-yuk" id="g2-forkYuk"></div></div>
             </div>
         `;
         document.getElementById('g2-back').addEventListener('click', () => {
             App.playSound('click');
             App.showScreen('start-screen');
         });
+        // Forklift: kök varken tıklanırsa o anki külçeler ustaya gider
+        document.getElementById('g2-forklift').addEventListener('click', () => {
+            this.atolyeyeGec();
+        });
+        // Atölyede iş bitince (her kök en az bir kez dövülünce) devam tuşu
+        document.getElementById('g2-devamTus').addEventListener('click', () => {
+            App.playSound('click');
+            this.ilerle();
+        });
+        this.jestleriKur();
+    },
 
-        const stage = document.getElementById('g2-stage');
+    /* Çift parmak jestleri: trackpad'de yatay iki parmak kaydırması (wheel
+       deltaX) ve dokunmatikte iki parmakla sürükleme de kamerayı gezdirir.
+       Tek parmak serbest kalır (kelime sürükleme bozulmaz); jest bitince
+       kamera en yakın sahneye oturur. */
+    jestleriKur() {
+        if (this.jestlerHazir) return; // ekran elemanı kalıcı, bir kez bağla
+        this.jestlerHazir = true;
+        const ekran = document.getElementById('game2-screen');
+
+        let wheelZaman = null;
+        ekran.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // dikey scroll'a karışma
+            e.preventDefault();
+            const k = Math.max(0, Math.min(1, this.kamDeger - e.deltaX / window.innerWidth));
+            this.kamera(k, 0);
+            clearTimeout(wheelZaman);
+            wheelZaman = setTimeout(() => {
+                this.kamera(this.kamDeger > .5 ? 1 : 0, 550);
+            }, 170);
+        }, { passive: false });
+
+        /* Tıklanabilir/sürüklenebilir öğeler pan'a KARIŞMAZ; boşluklardan
+           tek parmak / fare sürüklemesiyle de sahne kaydırılabilir. */
+        const etkilesimli = '.g2-word-chip, .g2-kok-kulce, .g2-vezin, .g2-forklift-tus, ' +
+            '.g2-gecis-tus, .back-btn, .progress-pill, input, a, button';
+        let panX = null, panY = null, panAktif = false;
+        const panBas = (x, y, hedef) => {
+            if (hedef && hedef.closest && hedef.closest(etkilesimli)) return false;
+            panX = x; panY = y; panAktif = false;
+            return true;
+        };
+        const panHareket = (x, y) => {
+            if (panX === null) return false;
+            const dx = x - panX, dy = y - panY;
+            if (!panAktif) {
+                if (Math.abs(dx) < 6) return false;
+                if (Math.abs(dy) > Math.abs(dx)) { panX = null; return false; } // dikey niyet
+                panAktif = true;
+            }
+            const k = Math.max(0, Math.min(1, this.kamDeger + dx / window.innerWidth));
+            panX = x; panY = y;
+            this.kamera(k, 0);
+            return true;
+        };
+        const panBirak = () => {
+            if (panX !== null && panAktif) this.kamera(this.kamDeger > .5 ? 1 : 0, 550);
+            panX = null; panAktif = false;
+        };
+        ekran.addEventListener('mousedown', (e) => { if (panBas(e.clientX, e.clientY, e.target)) e.preventDefault(); });
+        window.addEventListener('mousemove', (e) => panHareket(e.clientX, e.clientY));
+        window.addEventListener('mouseup', panBirak);
+
+        let dokunX = null;
+        ekran.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                dokunX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                panX = null;
+            } else if (e.touches.length === 1) {
+                panBas(e.touches[0].clientX, e.touches[0].clientY, e.target);
+            }
+        }, { passive: true });
+        ekran.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && dokunX !== null) {
+                e.preventDefault();
+                const x = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const k = Math.max(0, Math.min(1, this.kamDeger + (x - dokunX) / window.innerWidth));
+                dokunX = x;
+                this.kamera(k, 0);
+            } else if (e.touches.length === 1) {
+                if (panHareket(e.touches[0].clientX, e.touches[0].clientY)) e.preventDefault();
+            }
+        }, { passive: false });
+        ekran.addEventListener('touchend', (e) => {
+            if (dokunX !== null && e.touches.length < 2) {
+                dokunX = null;
+                this.kamera(this.kamDeger > .5 ? 1 : 0, 550);
+            }
+            if (e.touches.length === 0) panBirak();
+        });
+    },
+
+    /* Kamera: kam=0 öğütücü (sağ sahne), kam=1 atölye (sol sahne). ms=0 → anında. */
+    kamDeger: 0,
+    kamera(kam, ms) {
+        const dunya = document.getElementById('g2-dunya');
+        if (!dunya) return;
+        this.kamDeger = kam;
+        dunya.style.transition = ms ? `transform ${ms}ms cubic-bezier(.65,0,.3,1)` : 'none';
+        dunya.style.transform = `translateX(${(kam - 1) * 50}%)`;
+    },
+
+    /* Bir turu kurar: öğütücü tarafını yeni kelimelerle doldurur,
+       atölye tarafını sıfırlar. gecisli=true ise kamera sağa dönerek gelir. */
+    rondKur(gecisli) {
+        const s = this.state;
+        s.words = this.shuffle(GAME2_ROUNDS[s.roundIdx].slice());
+        s.grindCount = 0;
+        s.bekleyen = [];
+        s.shelf = [];
+        s.forgedPairs = new Set();
+        s.forgedRoots = new Set();
+        s.selRoot = null;
+        s.phase = 'grind';
+        this.dusumSayisi = 0;
+        const fl = document.getElementById('g2-forklift');
+        fl.classList.remove('hazir', 'donus');
+        document.getElementById('g2-devamTus').classList.remove('gorunur');
+
+        this.kamera(0, gecisli ? 1700 : 0);
+
+        this.yonergeGoster('اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَها', this.ilkYonerge);
+        this.ilkYonerge = false;
+        document.getElementById('g2-kapIc').innerHTML = '';
+        document.getElementById('g2-kokraf').innerHTML = '';
+        document.getElementById('g2-forkYuk').innerHTML = '';
+        const vit = document.getElementById('g2-vitrinKutu');
+        vit.classList.remove('filled', 'invalid');
+        vit.innerHTML = '<span class="g3-out-bekle">✨</span>';
+        this.orsBosalt();
+        this.vezinleriGuncelle();
+        this.kelimeleriDoldur();
+        // Ekran .active olduktan sonra ölç (start() showScreen'den önce çalışır)
+        setTimeout(() => this.parkKur(), 60);
+    },
+
+    /* Forklift'in daimî park yeri: konteynırın tam altı (gerçek yerleşimden
+       ölçülür; her ekran boyutunda konteynırı bulur). */
+    parkYeri: 51,
+    parkKur() {
+        const fl = document.getElementById('g2-forklift');
+        const kap = document.getElementById('g2-kap');
+        const dunya = document.getElementById('g2-dunya');
+        if (!fl || !kap || !dunya) return;
+        const dr = dunya.getBoundingClientRect();
+        const kr = kap.getBoundingClientRect();
+        const flw = fl.getBoundingClientRect().width || 150;
+        if (dr.width < 10) { setTimeout(() => this.parkKur(), 150); return; } // ekran henüz görünmüyor
+        this.parkYeri = ((kr.left + kr.width * .5 - flw * .5 - dr.left) / dr.width) * 100;
+        fl.style.transition = 'none';
+        fl.style.left = this.parkYeri + '%';
+        requestAnimationFrame(() => { fl.style.transition = ''; });
+    },
+
+    kelimeleriDoldur() {
+        const liste = document.getElementById('g2-kelimeler');
+        liste.innerHTML = '';
         this.state.words.forEach((w, i) => {
-            /* Önce o kelimeye ait (şimdilik boş) kök yuvası, hemen ardından
-               kelime kutusu ekleniyor. Izgara ikisini aynı satıra yerleştirdiği
-               için çıkan kök kelimesinin tam karşısında beliriyor. */
-            const slot = document.createElement('div');
-            slot.className = 'g2-root-slot';
-            slot.id = 'g2-slot-' + i;
-            stage.appendChild(slot);
-
             const chip = document.createElement('div');
             chip.className = 'g2-word-chip';
             chip.dir = 'rtl';
-            /* Sürükleme ipucu dalgası sırayla gelsin: kutular artık yuvalarla
-               dönüşümlü sıralandığı için gecikme CSS'teki nth-child yerine
-               buradan veriliyor. */
             chip.style.animationDelay = (i * 0.16) + 's';
             // Zaid (kökten gelmeyen ek) harfler burada da kırmızı gösteriliyor.
             chip.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>`;
             chip.dataset.index = i;
             // Kelimenin çerçevesi ait olduğu kökün rengini alıyor.
             paintRootBadge(chip, w.root);
-            stage.appendChild(chip);
+            liste.appendChild(chip);
 
-            App.makeDraggable(chip, {
-                getClone: () => {
-                    const c = document.createElement('div');
-                    c.className = 'g2-ghost';
-                    c.dir = 'rtl';
-                    c.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>`;
-                    paintRootBadge(c, w.root);
-                    return c;
-                },
-                onDrop: (target) => this.handleDrop(target, chip, w)
-            });
+            // Sürükleme yok: kelimeye TIKLANINCA kendiliğinden banda uçar
+            chip.addEventListener('click', () => this.kelimeTikla(chip, w));
         });
     },
 
-    handleDrop(target, chip, w) {
-        if (!target.classList.contains('g2-machine')) return;
+    grinds: 0,
+
+    /* Tıklanan kelime kutusundan bandın ucuna kısa bir uçuş, sonra öğütme */
+    kelimeTikla(chip, w) {
+        if (this.state.phase !== 'grind') return;
         if (chip.classList.contains('used')) return;
         chip.classList.add('used');
+        App.playSound('click');
 
-        const gear = document.getElementById('g2-gear');
-        gear.classList.add('grinding');
-        App.playSound('gear');
+        const bant = document.getElementById('g2-bant');
+        const cr = chip.getBoundingClientRect(), br = bant.getBoundingClientRect();
+        const ucan = document.createElement('div');
+        ucan.className = 'g2-ghost g2-ucan';
+        ucan.dir = 'rtl';
+        ucan.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>`;
+        paintRootBadge(ucan, w.root);
+        ucan.style.left = (cr.left + cr.width / 2) + 'px';
+        ucan.style.top = (cr.top + cr.height / 2) + 'px';
+        document.body.appendChild(ucan);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            ucan.style.left = (br.right - 6) + 'px';
+            ucan.style.top = (br.top - 2) + 'px';
+            ucan.style.transform = 'translate(-50%,-100%) scale(.8)';
+        }));
+        setTimeout(() => { ucan.remove(); this.ogut(w); }, 480);
+    },
+
+    ogut(w) {
+        const fab = document.getElementById('g2-fabrika');
+        const bant = document.getElementById('g2-bant');
+        const govde = document.getElementById('g2-govde');
+        const rampa = document.getElementById('g2-rampa');
+        const kap = document.getElementById('g2-kap');
+        const fr = fab.getBoundingClientRect();
+
+        /* 1) Kelime, giriş bandının sağ ucuna biner ve makinenin
+              ağzına doğru kayar; ağza varınca küçülüp kaybolur. */
+        const gez = document.createElement('div');
+        gez.className = 'g2-gezgin';
+        gez.dir = 'rtl';
+        gez.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>`;
+        paintRootBadge(gez, w.root);
+        fab.appendChild(gez);
+        const br = bant.getBoundingClientRect(), gr = govde.getBoundingClientRect();
+        gez.style.left = (br.right - fr.left - 8) + 'px';
+        gez.style.top = (br.top - fr.top - 4) + 'px';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            gez.style.left = (gr.right - fr.left - 6) + 'px';
+            gez.style.transform = 'translate(-50%,-100%) scale(.4)';
+            gez.style.opacity = '0';
+        }));
 
         setTimeout(() => {
-            gear.classList.remove('grinding');
-            const slot = document.getElementById('g2-slot-' + chip.dataset.index);
-            const res = document.createElement('div');
-            res.className = 'g2-root-result';
-            res.dir = 'rtl';
-            res.innerHTML = `<div>${formatRootDisplay(w.root)}</div>`;
-            paintRootBadge(res, w.root);
-            if (slot) slot.appendChild(res);
-            App.playSound('correct');
+            gez.remove();
+            /* 2) Makine öğütür: gövde zorlanır gibi titrer, kırıcılar
+                  hızlanır, bacadan duman tüter. Aynı anda birden çok
+                  kelime öğütülebilsin diye sayaç tutuluyor. */
+            this.grinds++;
+            fab.classList.add('grinding');
+            App.playSound('grind');
 
-            this.state.usedCount++;
-            this.state.doneTotal++;
-            document.getElementById('g2-progress').textContent = `${this.state.doneTotal} / ${this.totalWords()}`;
-            if (this.state.usedCount === this.state.words.length) {
-                // Tur bitti: ya sonraki turu kur ya da bitiş ekranini goster.
-                setTimeout(() => this.nextRound(), 900);
+            setTimeout(() => {
+                this.grinds--;
+                if (this.grinds <= 0) fab.classList.remove('grinding');
+
+                /* 3) Saf metal çıktı: kök yazılı altın külçe, eğimli
+                      rampanın dibinden tepesine tırmanır. */
+                const rr = rampa.getBoundingClientRect();
+                const kulce = document.createElement('div');
+                kulce.className = 'g2-kulce g2-kulce-gezgin';
+                kulce.dir = 'rtl';
+                kulce.textContent = formatRootDisplay(w.root);
+                fab.appendChild(kulce);
+                kulce.style.left = (rr.right - fr.left - 20) + 'px';
+                kulce.style.top = (rr.bottom - fr.top - 12) + 'px';
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    kulce.style.left = (rr.left - fr.left + 22) + 'px';
+                    kulce.style.top = (rr.top - fr.top - 2) + 'px';
+                }));
+
+                setTimeout(() => {
+                    /* 4) Rampanın ucundan şeffaf konteynıra düşer. Düşüş noktası
+                          her seferinde farklı: külçeler simetrik yığılmaz,
+                          gerçek bir kap gibi rastgele savrulup birikir. */
+                    const kr = kap.getBoundingClientRect();
+                    /* Külçeler sırayla bir SOLA bir SAĞA savrulur (asimetrik) */
+                    this.dusumSayisi = (this.dusumSayisi || 0) + 1;
+                    const solda = this.dusumSayisi % 2 === 1;
+                    const dagilX = solda ? (.14 + Math.random() * .24) : (.6 + Math.random() * .24);
+                    const donme = (Math.random() * 26 - 13).toFixed(1);
+                    kulce.classList.add('dusuyor');
+                    kulce.style.left = (kr.left - fr.left + kr.width * dagilX) + 'px';
+                    kulce.style.top = (kr.top - fr.top + kr.height * (.34 + Math.random() * .2)) + 'px';
+                    kulce.style.transform = `translate(-50%,-50%) rotate(${donme}deg) scale(.94)`;
+
+                    setTimeout(() => {
+                        kulce.remove();
+                        const kalici = document.createElement('div');
+                        kalici.className = 'g2-kulce';
+                        kalici.dir = 'rtl';
+                        kalici.textContent = formatRootDisplay(w.root);
+                        // Kapta da çarpık dursun; sol/sağ tarafına yaslanarak biriksin
+                        kalici.style.transform = `rotate(${donme}deg)`;
+                        if (solda) {
+                            kalici.style.marginRight = 'auto';
+                            kalici.style.marginLeft = Math.round(Math.random() * 8) + 'px';
+                        } else {
+                            kalici.style.marginLeft = 'auto';
+                            kalici.style.marginRight = Math.round(Math.random() * 8) + 'px';
+                        }
+                        document.getElementById('g2-kapIc').appendChild(kalici);
+                        App.playSound('clink');
+
+                        this.state.grindCount++;
+                        this.state.bekleyen.push(w.root);
+                        this.state.doneTotal++;
+                        document.getElementById('g2-progress').textContent = `${this.state.doneTotal} / ${this.totalWords()}`;
+                        // Konteynırda külçe var: bekleyen forklift vurgulanır
+                        if (this.state.phase === 'grind') {
+                            document.getElementById('g2-forklift').classList.add('hazir');
+                        }
+                        if (this.state.grindCount === this.state.words.length) {
+                            // Bütün kelimeler öğütüldü: kamera atölyeye kayar.
+                            setTimeout(() => this.atolyeyeGec(), 900);
+                        }
+                    }, 460);
+                }, 1000);
+            }, 1150);
+        }, 900);
+    },
+
+    /* ---------- 2. PERDE: ATÖLYE ---------- */
+
+    atolyeyeGec() {
+        // Yalnız öğütme fazında ve konteynırda külçe varken çalışır
+        if (this.state.phase !== 'grind' || !this.state.bekleyen.length) return;
+        this.state.phase = 'pan';
+        // Bu parti = konteynırda o an ne varsa (kısmi parti olabilir)
+        this.state.shelf = [...new Set(this.state.bekleyen)];
+        this.state.bekleyen = [];
+        document.getElementById('g2-forklift').classList.remove('hazir');
+        document.getElementById('g2-kokraf').innerHTML = '';
+        this.yonergeGoster('اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَديدَة', false);
+        App.playSound('forklift');
+        this.kamera(1, 1700);
+        this.forkliftTasi(); // kamera kayarken forklift de yola çıkar
+    },
+
+    /* Forklift zaten konteynırın altında bekler: yükü alır, burnunu
+       çevirir, kesintisiz sahne boyunca rafın dibine sürer, boşaltır,
+       sonra park yerine döner. */
+    forkliftTasi() {
+        const fl = document.getElementById('g2-forklift');
+        const yuk = document.getElementById('g2-forkYuk');
+        const raf = document.getElementById('g2-kokraf');
+        const dunya = document.getElementById('g2-dunya');
+
+        setTimeout(() => {
+            // Yük çatala biner, konteynır boşalır, burun rafa döner
+            document.getElementById('g2-kapIc').innerHTML = '';
+            yuk.innerHTML = this.state.shelf.map(r =>
+                `<div class="g2-kulce g2-mini" dir="rtl">${formatRootDisplay(r)}</div>`).join('');
+            fl.classList.add('donus');
+            const dr = dunya.getBoundingClientRect();
+            const rr = raf.getBoundingClientRect();
+            const flw = fl.getBoundingClientRect().width;
+            const hedef = Math.max(.5, ((rr.left - dr.left - flw * .92) / dr.width) * 100);
+            fl.style.left = hedef + '%';
+            App.playSound('forklift');
+        }, 450);
+
+        setTimeout(() => {
+            // Külçeler rafın dibinde tek tek boşaltılır
+            this.state.shelf.forEach((r, i) => {
+                setTimeout(() => {
+                    if (yuk.firstElementChild) yuk.firstElementChild.remove();
+                    const k = document.createElement('div');
+                    k.className = 'g2-kulce g2-kok-kulce';
+                    k.dir = 'rtl';
+                    k.textContent = formatRootDisplay(r);
+                    k.style.color = rootColors(r)[0];
+                    k.addEventListener('click', () => this.kokSec(r, k));
+                    raf.appendChild(k);
+                    App.playSound('clink');
+                }, i * 240);
+            });
+            setTimeout(() => {
+                this.state.phase = 'forge';
+                // Boşaltma bitti: konteynırın altındaki yerine döner
+                fl.style.left = this.parkYeri + '%';
+                App.playSound('forklift');
+                setTimeout(() => fl.classList.remove('donus'), 1550);
+            }, this.state.shelf.length * 240 + 250);
+        }, 450 + 1650);
+    },
+
+    kokSec(root, chipEl) {
+        if (this.state.phase !== 'forge') return;
+        if (this.kalanVezin(root) === 0) return; // bütün vezinleri kullanılmış
+        if (this.dovuyor) return;
+        this.state.selRoot = root;
+        App.playSound('click');
+        document.querySelectorAll('.g2-kok-kulce').forEach(k => k.classList.remove('secili'));
+        chipEl.classList.add('secili');
+        // Seçilen kök örse konur (kendi rengiyle); usta çekicini kaldırır
+        document.getElementById('g2-orsIc').innerHTML =
+            `<span style="color:${rootColors(root)[0]}">${formatRootDisplay(root)}</span>`;
+        document.getElementById('g2-orsKutu').classList.add('hazir');
+        this.vezinleriGuncelle();
+    },
+
+    /* Örs boşalır, usta çekicini indirir (dinlenme pozu) */
+    orsBosalt() {
+        const ic = document.getElementById('g2-orsIc');
+        if (ic) ic.innerHTML = '';
+        const kutu = document.getElementById('g2-orsKutu');
+        if (kutu) kutu.classList.remove('hazir');
+    },
+
+    /* Vezin levhaları: kök seçili değilse hepsi kilitli; seçiliyse yalnız
+       o kökten gerçek kelime türeten vezinler aktif olur. */
+    vezinleriGuncelle() {
+        const panel = document.getElementById('g2-vezinler');
+        panel.innerHTML = '';
+        const root = this.state.selRoot;
+        GAME3_PATTERNS.forEach(p => {
+            const b = document.createElement('div');
+            b.dir = 'rtl';
+            const uygun = root && p.map[root];
+            const dovulmus = uygun && this.state.forgedPairs.has(root + '|' + p.name);
+            // Dövülmüş vezin ✓ ile işaretli kalır; kök diğer vezinleriyle
+            // çalışmaya devam edebilir (tek vezinle pasifleşmez).
+            b.className = 'g2-vezin' + (dovulmus ? ' bitti' : (uygun ? ' aktif' : ' kilitli'));
+            b.innerHTML = `<span class="g3-pattern-text">${formatPatternDisplay(p)}</span>`;
+            if (uygun && !dovulmus) b.addEventListener('click', () => this.dovVeUret(p, b));
+            panel.appendChild(b);
+        });
+    },
+
+    /* Usta seçilen kökü seçilen vezinle döver; kelime vitrine uçar. */
+    dovuyor: false,
+    dovVeUret(pattern, vezinEl) {
+        if (this.state.phase !== 'forge' || this.dovuyor) return;
+        const root = this.state.selRoot;
+        const word = root && pattern.map[root];
+        if (!word) return;
+        this.dovuyor = true;
+        vezinEl.classList.add('secili');
+
+        const usta = document.getElementById('g2-usta');
+        const orsKutu = document.getElementById('g2-orsKutu');
+        const ors = document.getElementById('g2-ors');
+        const kivilcimlar = document.getElementById('g2-kivilcimlar2');
+        const out = document.getElementById('g2-vitrinKutu');
+
+        usta.classList.add('calisiyor');
+        const VURUS_ARASI = 340, VURUS_SAYISI = 3;
+        const kivilcimSac = () => {
+            for (let i = 0; i < 9; i++) {
+                const k = document.createElement('span');
+                k.className = 'g3-kivilcim';
+                const aci = (Math.random() * .9 + .05) * Math.PI;
+                const uzak = 34 + Math.random() * 52;
+                k.style.setProperty('--kx', (Math.cos(aci) * uzak).toFixed(0) + 'px');
+                k.style.setProperty('--ky', (-Math.sin(aci) * uzak).toFixed(0) + 'px');
+                k.style.background = Math.random() < .5 ? '#f6b93b' : '#e67e22';
+                kivilcimlar.appendChild(k);
+                setTimeout(() => k.remove(), 650);
             }
-        }, 500);
+        };
+        for (let v = 0; v < VURUS_SAYISI; v++) {
+            setTimeout(() => {
+                App.playSound('hammer');
+                kivilcimSac();
+                orsKutu.classList.add('sarsil');
+                setTimeout(() => orsKutu.classList.remove('sarsil'), 220);
+            }, 260 + v * VURUS_ARASI);
+        }
+
+        setTimeout(() => {
+            usta.classList.remove('calisiyor');
+            App.playSound('ding');
+
+            // Kelime örsten vitrine süzülür
+            const wordHtml = `<span class="g3-pattern-text">${formatDerivedDisplay(word, pattern)}</span>`;
+            const oR = ors.getBoundingClientRect(), vR = out.getBoundingClientRect();
+            const flow = document.createElement('div');
+            flow.className = 'g3-flow-word';
+            flow.dir = 'rtl';
+            flow.innerHTML = wordHtml;
+            flow.style.setProperty('--root-solid', rootColors(root)[0]);
+            flow.style.left = (oR.left + oR.width / 2) + 'px';
+            flow.style.top = (oR.top + oR.height / 2) + 'px';
+            document.body.appendChild(flow);
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                flow.style.left = (vR.left + vR.width / 2) + 'px';
+                flow.style.top = (vR.top + vR.height / 2) + 'px';
+                flow.style.transform = 'translate(-50%, -50%) scale(.55)';
+                flow.style.opacity = '0';
+            }));
+
+            setTimeout(() => {
+                flow.remove();
+                paintRootOutline(out, root);
+                out.classList.add('filled');
+                const emoji = GAME3_EMOJI[word] || '⭐';
+                out.innerHTML = `<div class="g3-out-emoji">${emoji}</div><div class="g3-out-word">${wordHtml}</div>`;
+
+                // Çift işlendi olarak kaydedilir; kök ilk kez dövüldüyse sayaç ilerler
+                this.state.forgedPairs.add(root + '|' + pattern.name);
+                if (!this.state.forgedRoots.has(root)) {
+                    this.state.forgedRoots.add(root);
+                    this.state.doneTotal++;
+                    document.getElementById('g2-progress').textContent = `${this.state.doneTotal} / ${this.totalWords()}`;
+                }
+
+                // Raf külçesi: bütün vezinleri bittiyse pasifleşir, yoksa
+                // ✓ rozetiyle AKTİF kalır (başka vezinlerle tekrar dövülebilir)
+                const secilikulce = document.querySelector('.g2-kok-kulce.secili');
+                if (this.kalanVezin(root) === 0) {
+                    this.state.selRoot = null;
+                    this.orsBosalt();
+                    if (secilikulce) {
+                        secilikulce.classList.remove('secili', 'islendi');
+                        secilikulce.classList.add('kullanildi');
+                    }
+                } else if (secilikulce) {
+                    secilikulce.classList.add('islendi'); // kök seçili ve örste kalır
+                    if (!secilikulce.querySelector('.g2-kk-check')) {
+                        secilikulce.insertAdjacentHTML('beforeend', '<span class="g2-kk-check">✓</span>');
+                    }
+                }
+                this.vezinleriGuncelle();
+                this.dovuyor = false;
+
+                // Partinin durumuna göre: her şey dövüldüyse otomatik ilerle,
+                // her kök en az bir kez dövüldüyse devam tuşu görünür
+                const hepsiDovuldu = this.state.shelf.every(r => this.kalanVezin(r) === 0);
+                const herKokBirKez = this.state.shelf.every(r => this.state.forgedRoots.has(r));
+                if (hepsiDovuldu) {
+                    setTimeout(() => this.ilerle(), 1300);
+                } else if (herKokBirKez) {
+                    document.getElementById('g2-devamTus').classList.add('gorunur');
+                }
+            }, 1450);
+        }, 260 + VURUS_SAYISI * VURUS_ARASI + 120);
+    },
+
+    /* Parti bitti: sırada ne varsa oraya — konteynırda bekleyen külçe varsa
+       yeni parti, öğütülmemiş kelime varsa değirmene dönüş, yoksa yeni tur. */
+    ilerle() {
+        if (this.dovuyor) return;
+        document.getElementById('g2-devamTus').classList.remove('gorunur');
+        this.state.selRoot = null;
+        this.orsBosalt();
+
+        if (this.state.bekleyen.length) {
+            // Atölyedeyken yeni külçeler birikmiş: forklift yeni partiyi getirsin
+            this.state.phase = 'grind';
+            this.atolyeyeGec();
+            return;
+        }
+        if (this.state.grindCount < this.state.words.length) {
+            // Öğütülecek kelime kaldı: kamera değirmene döner
+            this.state.phase = 'grind';
+            this.yonergeGoster('اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَها', false);
+            this.kamera(0, 1700);
+            document.getElementById('g2-kokraf').innerHTML = '';
+            this.vezinleriGuncelle();
+            return;
+        }
+        this.rondBitti();
+    },
+
+    rondBitti() {
+        this.state.roundIdx++;
+        if (this.state.roundIdx >= GAME2_ROUNDS.length) {
+            App.showDone('🏭', 'أَحْسَنْتَ! مِنَ الكَلِمَةِ إِلى الجَذْرِ وَمِنَ الجَذْرِ إِلى الكَلِمَة');
+            document.getElementById('done-replay').onclick = () => {
+                App.hideDone();
+                this.start();
+            };
+            return;
+        }
+        // Kamera sağa döner, yeni kelime partisi hazır bekler
+        this.rondKur(true);
     }
 };
 
@@ -955,14 +1752,26 @@ const Game3 = {
             <div class="g3-wrap">
                 <div class="g1-title" dir="rtl">اُسْحَبِ الجَذْرَ إِلى الوَزْنِ لِتَصْنَعَ كَلِمَةً جَديدَة</div>
                 <div class="g3-stage">
-                    <div class="g3-output-slot" id="g3-output"><span class="empty-msg">الكَلِمَة هُنا سَتَظْهَر</span></div>
+                    <!-- VİTRİN: türeyen kelime, tenteli bir dükkân vitrininde sergilenir -->
+                    <div class="g3-vitrin">
+                        <div class="g3-tente"></div>
+                        <div class="g3-output-slot" id="g3-output"><span class="g3-out-bekle">✨</span></div>
+                        <div class="g3-raf"></div>
+                    </div>
+                    <!-- ATÖLYE: vezin, çekiç kullanan bir USTA; kök vezin levhasının
+                         altındaki örse bırakılır, usta onu dövüp işler -->
                     <div class="g3-pattern-box">
                         <div class="g3-pattern-nav">
                             <div class="g3-pattern-arrow" id="g3-prev">‹</div>
-                            <div class="drop-zone g3-pattern-slot" id="g3-slot" dir="rtl"><span class="g3-pattern-text">${formatPatternDisplay(pattern)}</span></div>
+                            <div class="g3-ors-kutu" id="g3-orsKutu">
+                                <div class="g3-vezin-levha" dir="rtl"><span class="g3-pattern-text">${formatPatternDisplay(pattern)}</span></div>
+                                <div class="drop-zone g3-pattern-slot" id="g3-slot" dir="rtl"><span class="g3-slot-ic" id="g3-slotIc">${G3_ORS_SVG}</span></div>
+                                <div class="g3-usta" id="g3-usta">${G3_USTA_SVG}</div>
+                                <div class="g3-kivilcimlar" id="g3-kivilcimlar"></div>
+                                <div class="g3-tezgah"></div>
+                            </div>
                             <div class="g3-pattern-arrow" id="g3-next">›</div>
                         </div>
-                        <div class="g3-checklist" id="g3-checklist"></div>
                     </div>
                     <div class="g3-roots" id="g3-roots"></div>
                 </div>
@@ -1002,16 +1811,17 @@ const Game3 = {
                 onDrop: (target) => this.handleDrop(target, r)
             });
         });
-        this.renderChecklist();
     },
 
     changePattern(delta) {
+        if (this.forging) return; // usta çalışırken sahne değişmez
         this.state.patternIdx = (this.state.patternIdx + delta + GAME3_PATTERNS.length) % GAME3_PATTERNS.length;
         this.render();
     },
 
     handleDrop(target, root) {
         if (!target.classList.contains('g3-pattern-slot')) return;
+        if (this.forging) return; // çekiç çalışırken yeni kök alınmaz
         const pattern = GAME3_PATTERNS[this.state.patternIdx];
         const word = pattern.map[root];
         const slot = document.getElementById('g3-slot');
@@ -1026,23 +1836,28 @@ const Game3 = {
             slot.classList.add('shake');
             setTimeout(() => slot.classList.remove('shake'), 400);
             out.classList.add('invalid');
-            out.innerHTML = `<span class="empty-msg">${formatRootDisplay(root)} + <span class="g3-pattern-text">${formatPatternDisplay(pattern)}</span> &larr; لا تُوجَد كَلِمَة بِهٰذا الوَزْن</span>`;
+            out.innerHTML = `<span class="empty-msg">لا تُوجَد كَلِمَة بِهٰذا الوَزْن 🚫</span>`;
             return;
         }
 
-        App.playSound('correct');
         // Türeyen kelimede de zaid harfler kırmızı gösteriliyor (kalıptaki
         // zaid index'leri türeyen kelimede aynı harflere denk gelir).
         const wordHtml = `<span class="g3-pattern-text">${formatDerivedDisplay(word, pattern)}</span>`;
-        this.flowWordToOutput(wordHtml, slot, out, root, () => {
+        // Önce atölye çalışır: usta çekicini 3 kez indirir, kıvılcımlar saçılır;
+        // ancak ondan sonra işlenmiş kelime vitrine süzülür.
+        this.dov(slot, root, () => {
+            App.playSound('correct');
+            this.flowWordToOutput(wordHtml, slot, out, root, () => {
             out.classList.add('filled');
-            out.innerHTML = `<div>${wordHtml}</div><div class="detail-line">${formatRootDisplay(root)} + <span class="g3-pattern-text">${formatPatternDisplay(pattern)}</span></div>`;
+            // Sadece emoji + büyük kelime; "kök + vezin" bilgi satırı bilinçli
+            // olarak gösterilmiyor (öğrenci zaten o ikisini birleştirdi).
+            const emoji = GAME3_EMOJI[word] || '⭐';
+            out.innerHTML = `<div class="g3-out-emoji">${emoji}</div><div class="g3-out-word">${wordHtml}</div>`;
 
             const key = pattern.name + '|' + root;
             if (!this.state.doneSet.has(key)) {
                 this.state.doneSet.add(key);
                 document.getElementById('g3-progress').textContent = `${this.state.doneSet.size} / ${this.totalValid()}`;
-                this.renderChecklist();
                 if (this.state.doneSet.size === this.totalValid()) {
                     setTimeout(() => {
                         App.showDone('🏆', 'أَحْسَنْتَ! لَقَد اكْتَشَفْتَ كُلَّ الاِشْتِقاقات');
@@ -1053,7 +1868,60 @@ const Game3 = {
                     }, 900);
                 }
             }
+            });
         });
+    },
+
+    /* ATÖLYE EFEKTİ — usta çekicini örsteki kökün üzerine 3 kez indirir; her
+       vuruşta örs sarsılır, kıvılcım saçılır ve "tak" sesi çalar. Dövme boyunca
+       bırakılan kök örsün üstünde görünür; bitince done() çağrılır. */
+    forging: false,
+    dov(slot, root, done) {
+        this.forging = true;
+        const usta = document.getElementById('g3-usta');
+        const kivilcimlar = document.getElementById('g3-kivilcimlar');
+        const orsKutu = document.getElementById('g3-orsKutu');
+        const slotIc = document.getElementById('g3-slotIc');
+        if (!usta || !orsKutu) { this.forging = false; done(); return; }
+
+        // Kök, işlenmek üzere örsün üstüne konur (kendi rengiyle)
+        if (slotIc) {
+            slotIc.innerHTML = `<span class="g3-slot-kok" style="color:${rootColors(root)[0]}">${formatRootDisplay(root)}</span>`;
+        }
+
+        usta.classList.add('calisiyor');
+        const VURUS_ARASI = 340, VURUS_SAYISI = 3;
+
+        const kivilcimSac = () => {
+            for (let i = 0; i < 9; i++) {
+                const k = document.createElement('span');
+                k.className = 'g3-kivilcim';
+                const aci = (Math.random() * .9 + .05) * Math.PI;   // yukarı yarım daire
+                const uzak = 34 + Math.random() * 52;
+                k.style.setProperty('--kx', (Math.cos(aci) * uzak).toFixed(0) + 'px');
+                k.style.setProperty('--ky', (-Math.sin(aci) * uzak).toFixed(0) + 'px');
+                k.style.background = Math.random() < .5 ? '#f6b93b' : '#e67e22';
+                kivilcimlar.appendChild(k);
+                setTimeout(() => k.remove(), 650);
+            }
+        };
+
+        for (let v = 0; v < VURUS_SAYISI; v++) {
+            setTimeout(() => {
+                App.playSound('hammer');
+                kivilcimSac();
+                orsKutu.classList.add('sarsil');
+                setTimeout(() => orsKutu.classList.remove('sarsil'), 220);
+            }, 260 + v * VURUS_ARASI);
+        }
+
+        setTimeout(() => {
+            usta.classList.remove('calisiyor');
+            // İş bitti: örs boşalır, kelime vitrine doğru yola çıkar
+            if (slotIc) slotIc.innerHTML = G3_ORS_SVG;
+            this.forging = false;
+            done();
+        }, 260 + VURUS_SAYISI * VURUS_ARASI + 120);
     },
 
     /* Doğru kelimenin kalıptan süzülerek çıkış kutusuna uçtuğu görsel efekt.
@@ -1084,20 +1952,6 @@ const Game3 = {
             flow.remove();
             onArrive();
         }, 1450); // .g3-flow-word geçiş süresiyle (1.4s) uyumlu
-    },
-
-    renderChecklist() {
-        const pattern = GAME3_PATTERNS[this.state.patternIdx];
-        const wrap = document.getElementById('g3-checklist');
-        wrap.innerHTML = '';
-        Object.keys(pattern.map).forEach((root) => {
-            const dot = document.createElement('div');
-            dot.className = 'g3-dot' + (this.state.doneSet.has(pattern.name + '|' + root) ? ' done' : '');
-            dot.title = formatRootDisplay(root);
-            // Nokta, temsil ettigi kokun rengini alir; tamamlaninca dolar.
-            dot.style.setProperty('--root-dot', rootColors(root)[0]);
-            wrap.appendChild(dot);
-        });
     }
 };
 
