@@ -54,12 +54,7 @@ function heroCiz(zaman, kayHiz){
   b.innerHTML = bol(s1,'soluk',0) + '<br>' + bol(s2,'',s1.length+2);
 })();
 
-/* ============ 2 · ALFABE DUVARI ============ */
-const alfabeDuvar = $('alfabeDuvar');
-HARFLER.forEach(h => { const s=document.createElement('span'); s.textContent=h; alfabeDuvar.appendChild(s); });
-const duvarHarfleri = [...alfabeDuvar.children];
-
-/* ============ 3 · KELİME FABRİKASI ============ */
+/* ============ 2 · KELİME FABRİKASI ============ */
 const KALIPLAR = [
   {vezin:'فاعِل',    ar:'كاتِب',    tr:'yazar'},
   {vezin:'مَفْعول',  ar:'مَكْتوب',  tr:'mektup'},
@@ -512,11 +507,11 @@ const hale = $('hale');
 addEventListener('mousemove', e => { hale.style.left = e.clientX+'px'; hale.style.top = e.clientY+'px'; });
 
 /* =================== ANA DÖNGÜ =================== */
-const alfabePerde = $('alfabePerde'), kokPerde = $('kokPerde'), oyunPerde = $('oyunPerde');
+const kokPerde = $('kokPerde'), oyunPerde = $('oyunPerde');
 const gizemPerde = $('gizemPerde'), finalPerde = $('finalPerde');
 const isik = $('isik'), kapiSol = $('kapiSol'), kapiSag = $('kapiSag');
 const dokuman = document.documentElement;
-let sonSayi = -1, yonlendi = false;
+let yonlendi = false;
 
 function dongu(zaman){
   const kayHiz = kirp(Math.abs(hedefY - sY)*.06, 0, 8);
@@ -528,18 +523,6 @@ function dongu(zaman){
   noktalar.forEach((n,i)=> n.classList.toggle('aktif', i === aktifIdx));
 
   if (hedefY < vh * 1.2 && !azHareket) heroCiz(zaman, kayHiz);
-
-  { /* alfabe */
-    const p = perdeP(alfabePerde);
-    const yanan = Math.round(p * 28);
-    if (yanan !== sonSayi){
-      duvarHarfleri.forEach((h,i)=>{
-        h.classList.toggle('yandi', i < yanan);
-        h.classList.toggle('son', i === yanan-1);
-      });
-      sonSayi = yanan;
-    }
-  }
 
   kokGuncelle(perdeP(kokPerde));
 

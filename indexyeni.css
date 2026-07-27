@@ -84,19 +84,7 @@ a{ color:inherit; text-decoration:none; }
   animation:harfGel .8s cubic-bezier(.2,.9,.25,1.2) forwards; animation-delay:calc(.55s + var(--i)*.045s); }
 @keyframes harfGel{ to{ opacity:1; transform:none; } }
 
-/* ======================= 2 · ALFABE DUVARI ======================= */
-#alfabePerde{ height:170vh; }
-#alfabeSahne{ background:var(--zemin); }
-.alfabe-duvar{ display:grid; grid-template-columns:repeat(7,1fr); gap:clamp(8px,1.6vw,20px);
-  direction:rtl; width:min(760px,92vw); margin-top:26px; }
-.alfabe-duvar span{ font-family:'Arakom','Amiri'; font-size:clamp(1.7rem,4.6vw,3.1rem); text-align:center;
-  color:rgba(44,62,80,.12); transition:color .45s, text-shadow .45s, transform .45s; transform:scale(.86); }
-.alfabe-duvar span.yandi{ color:var(--deniz); text-shadow:0 4px 18px rgba(22,160,133,.35); transform:scale(1); }
-.alfabe-duvar span.yandi.son{ color:var(--amber); text-shadow:0 4px 18px rgba(243,156,18,.45); }
-#alfabeSayac{ margin-top:22px; font-size:1.15rem; color:var(--sis); letter-spacing:2px; }
-#alfabeSayac b{ color:var(--amber); font-weight:normal; font-size:1.5rem; }
-
-/* ============ 3 · KELİME FABRİKASI (çarklar + vezin kadranı) ============ */
+/* ============ 2 · KELİME FABRİKASI (çarklar + vezin kadranı) ============ */
 #agac{ position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:flex-end;
   padding-right:2vw; z-index:0; pointer-events:none; opacity:0; }
 #agac svg{ height:min(94vh,900px); width:auto; overflow:visible; }
@@ -241,7 +229,6 @@ footer{ text-align:center; padding:30px 16px; color:var(--sis); font-size:.9rem;
   .saha{ gap:12px; margin-top:2vh; }
   #takimA svg, #takimB svg{ width:150px; height:auto; }
   #kumKart svg{ width:126px; height:auto; }
-  #alfabePerde{ height:125vh; }
   #kokPerde{ height:155vh; }
   #oyunPerde{ height:175vh; }
   #gizemPerde{ height:135vh; }
