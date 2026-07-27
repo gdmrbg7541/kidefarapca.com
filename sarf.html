@@ -27,7 +27,7 @@
 <!-- ?v=NN: tarayıcı eski sarf.css/sarf.js kopyasını önbellekten sunmasın diye
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
-<link rel="stylesheet" href="sarf.css?v=61">
+<link rel="stylesheet" href="sarf.css?v=65">
 </head>
 <body>
 
@@ -138,7 +138,12 @@
     </div>
 </div>
 
-<script src="sarf.js?v=60"></script>
+<!-- Kök verisi artık merkezî: veri_kokler.js (wordEasterEggs) +
+     veri_vezin_numaralari.js (KALIP_DATA). Atölyedeki isim vezinleri,
+     kaliplartablosu'ndaki "Günün Kökü" ile aynı kaynaktan gelir. -->
+<script src="veri_vezin_numaralari.js"></script>
+<script src="veri_kokler.js"></script>
+<script src="sarf.js?v=67"></script>
 <script src="geri.js"></script>
 </body>
 </html>

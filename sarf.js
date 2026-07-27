@@ -1050,6 +1050,45 @@ const G2_FORKLIFT_SVG = `
   <rect x="99" y="70" width="44" height="6" rx="3" fill="#95a5a6"/>
 </svg>`;
 
+/* =========================================================
+   MERKEZÎ KÖK VERİSİ KÖPRÜSÜ (revizyon 62)
+   Atölyedeki isim vezinleri artık veri_kokler.js'teki
+   wordEasterEggs'ten gelir — kaliplartablosu'ndaki "Günün Kökü"
+   ile birebir aynı süzgeç: fiil numaraları dışlanır, kalan her
+   numara o köke tanımlı bir İSİM veznidir.
+========================================================= */
+const G2_FIIL_NOLARI = new Set([
+    "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16",
+    "52","53","54","58","59","60","64","65","66","71","72","73","77","78","79",
+    "83","84","85","88","89","90","94","95","96","100","101","102"
+]);
+
+/* root ('ك ت ب') → o köke tanımlı isim vezinleri:
+   [{ no, vezinAr, word, emoji, tr }] (numara sırasıyla) */
+function g2KokIsimVezinleri(root) {
+    const liste = [];
+    if (typeof wordEasterEggs !== 'undefined') {
+        const d = wordEasterEggs[root.replace(/ /g, '')];
+        if (d) {
+            Object.keys(d).forEach(no => {
+                if (G2_FIIL_NOLARI.has(no)) return;
+                const b = d[no] && d[no].base;
+                if (!b || !b.arText) return;
+                const vezinAr = (typeof KALIP_DATA !== 'undefined' && KALIP_DATA[no]) ? KALIP_DATA[no].ar : '';
+                liste.push({ no, vezinAr, word: b.arText, emoji: b.emoji || '⭐', tr: b.trText || '' });
+            });
+        }
+    }
+    // Emniyet: merkezî veri yüklenemezse eski yerleşik kalıplara düş
+    if (!liste.length) {
+        GAME3_PATTERNS.forEach(p => {
+            const w = p.map[root];
+            if (w) liste.push({ no: 'g3-' + p.name, vezinAr: p.name, word: w, emoji: GAME3_EMOJI[w] || '⭐', tr: '' });
+        });
+    }
+    return liste;
+}
+
 const Game2 = {
     /* BİRLEŞİK FABRİKA (revizyon 50): iki sahneli tek oyun.
        Sağ sahne = öğütücü (kelime → kök), sol sahne = usta atölyesi
@@ -1066,12 +1105,12 @@ const Game2 = {
              forgedRoots: new Set(),  // bu turda en az bir kez dövülen kökler
              selRoot: null, phase: 'grind' },
 
-    /* Bir kökün girebildiği vezin sayısı ve kalan (dövülmemiş) vezinleri */
+    /* Bir kökün isim vezinleri (merkezî veriden) ve kalan (dövülmemiş) sayısı */
     kokVezinleri(root) {
-        return GAME3_PATTERNS.filter(p => p.map[root]);
+        return g2KokIsimVezinleri(root);
     },
     kalanVezin(root) {
-        return this.kokVezinleri(root).filter(p => !this.state.forgedPairs.has(root + '|' + p.name)).length;
+        return this.kokVezinleri(root).filter(e => !this.state.forgedPairs.has(root + '|' + e.no)).length;
     },
 
     shuffle(arr) {
@@ -1152,6 +1191,9 @@ const Game2 = {
                         </div>
                         <div class="g2-kelimeler" id="g2-kelimeler"></div>
                     </div>
+                    <!-- Tur başında görünür: kelime setini merkezî veriden
+                         rastgele yeniler (ilk kelime öğütülünce kaybolur) -->
+                    <div class="g2-gecis-tus" id="g2-karistirTus" dir="rtl">🎲 كَلِمات جَديدَة</div>
                 </section>
                 <!-- Forklift dünyaya aittir (sahnelere değil): hep konteynırın
                      altında bekler, kök türetilince vurgulanır, tıklanınca
@@ -1171,6 +1213,10 @@ const Game2 = {
         document.getElementById('g2-devamTus').addEventListener('click', () => {
             App.playSound('click');
             this.ilerle();
+        });
+        // Rastgele kelime seti
+        document.getElementById('g2-karistirTus').addEventListener('click', () => {
+            this.kelimeleriKaristir();
         });
         this.jestleriKur();
     },
@@ -1285,19 +1331,45 @@ const Game2 = {
 
         this.kamera(0, gecisli ? 1700 : 0);
 
-        this.yonergeGoster('اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَها', this.ilkYonerge);
-        this.ilkYonerge = false;
+        // İKİ yönerge de yalnız oyunun EN BAŞINDA, art arda gösterilir;
+        // sonraki faz geçişlerinde bir daha çıkmaz.
+        if (this.ilkYonerge) {
+            this.ilkYonerge = false;
+            this.yonergeGoster('اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَها', true);
+            setTimeout(() => this.yonergeGoster('اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَديدَة', false), 3500);
+        }
         document.getElementById('g2-kapIc').innerHTML = '';
         document.getElementById('g2-kokraf').innerHTML = '';
         document.getElementById('g2-forkYuk').innerHTML = '';
-        const vit = document.getElementById('g2-vitrinKutu');
-        vit.classList.remove('filled', 'invalid');
-        vit.innerHTML = '<span class="g3-out-bekle">✨</span>';
+        this.vitrinKok = null;
+        this.vitrinSifirla();
         this.orsBosalt();
         this.vezinleriGuncelle();
         this.kelimeleriDoldur();
+        document.getElementById('g2-karistirTus').classList.add('gorunur');
         // Ekran .active olduktan sonra ölç (start() showScreen'den önce çalışır)
         setTimeout(() => this.parkKur(), 60);
+    },
+
+    /* Kelime setini merkezî veriden rastgele yeniler: en az 2 isim vezni
+       olan 5 FARKLI kök seçilir, her birinden rastgele bir kelime alınır. */
+    kelimeleriKaristir() {
+        if (this.state.phase !== 'grind' || this.state.grindCount > 0) return;
+        if (typeof wordEasterEggs === 'undefined') return;
+        App.playSound('click');
+        const uygun = Object.keys(wordEasterEggs).filter(r => {
+            if (r.length !== 3) return false;                     // üç harfli kökler
+            return g2KokIsimVezinleri(r.split('').join(' ')).length >= 2;
+        });
+        if (uygun.length < 5) return;
+        const secilen = this.shuffle(uygun.slice()).slice(0, 5);
+        this.state.words = secilen.map(r => {
+            const spaced = r.split('').join(' ');
+            const vezinler = g2KokIsimVezinleri(spaced);
+            const secim = vezinler[Math.floor(Math.random() * vezinler.length)];
+            return { word: secim.word, root: spaced };
+        });
+        this.kelimeleriDoldur();
     },
 
     /* Forklift'in daimî park yeri: konteynırın tam altı (gerçek yerleşimden
@@ -1346,6 +1418,8 @@ const Game2 = {
         if (chip.classList.contains('used')) return;
         chip.classList.add('used');
         App.playSound('click');
+        // İlk kelime yola çıktı: karıştırma tuşu kaybolur
+        document.getElementById('g2-karistirTus').classList.remove('gorunur');
 
         const bant = document.getElementById('g2-bant');
         const cr = chip.getBoundingClientRect(), br = bant.getBoundingClientRect();
@@ -1480,7 +1554,6 @@ const Game2 = {
         this.state.bekleyen = [];
         document.getElementById('g2-forklift').classList.remove('hazir');
         document.getElementById('g2-kokraf').innerHTML = '';
-        this.yonergeGoster('اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَديدَة', false);
         App.playSound('forklift');
         this.kamera(1, 1700);
         this.forkliftTasi(); // kamera kayarken forklift de yola çıkar
@@ -1540,6 +1613,9 @@ const Game2 = {
         if (this.dovuyor) return;
         this.state.selRoot = root;
         App.playSound('click');
+        // Vitrin tek kökün dükkânıdır: başka köke geçilince raflar boşalır
+        if (this.vitrinKok && this.vitrinKok !== root) this.vitrinSifirla();
+        this.vitrinKok = root;
         document.querySelectorAll('.g2-kok-kulce').forEach(k => k.classList.remove('secili'));
         chipEl.classList.add('secili');
         // Seçilen kök örse konur (kendi rengiyle); usta çekicini kaldırır
@@ -1547,6 +1623,38 @@ const Game2 = {
             `<span style="color:${rootColors(root)[0]}">${formatRootDisplay(root)}</span>`;
         document.getElementById('g2-orsKutu').classList.add('hazir');
         this.vezinleriGuncelle();
+    },
+
+    /* Vitrin tek kökün ürünlerini sergiler; boşaltmak için */
+    vitrinKok: null,
+    vitrinSifirla() {
+        const vit = document.getElementById('g2-vitrinKutu');
+        if (!vit) return;
+        vit.classList.remove('filled', 'invalid');
+        vit.style.gridTemplateColumns = '1fr';
+        vit.innerHTML = '<span class="g3-out-bekle">✨</span>';
+    },
+
+    /* SABİT vitrinde akıllı yerleşim: n kelime için tüm satır×sütun
+       kombinasyonları denenir, kelimeleri EN BÜYÜK gösteren seçilir.
+       (6 kelime → 2 sütun × 3 raf, 9 kelime → 3 sütun × 3 raf gibi) */
+    vitrinYerlestir() {
+        const out = document.getElementById('g2-vitrinKutu');
+        if (!out) return;
+        const n = out.querySelectorAll('.g2-urun').length;
+        if (!n) return;
+        const st = getComputedStyle(out);
+        const W = out.clientWidth - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight);
+        const H = out.clientHeight - parseFloat(st.paddingTop) - parseFloat(st.paddingBottom);
+        let enIyi = { font: 0, sutun: 1 };
+        for (let c = 1; c <= n; c++) {
+            const r = Math.ceil(n / c);
+            // kart genişliği ~5 yazı boyu, yüksekliği (emoji+kelime+raf) ~3.3 yazı boyu
+            const font = Math.min((W / c) / 5.0, (H / r) / 3.3);
+            if (font > enIyi.font) enIyi = { font, sutun: c };
+        }
+        out.style.gridTemplateColumns = `repeat(${enIyi.sutun}, 1fr)`;
+        out.style.setProperty('--uf', Math.min(48, Math.max(12, enIyi.font)).toFixed(1) + 'px');
     },
 
     /* Örs boşalır, usta çekicini indirir (dinlenme pozu) */
@@ -1557,32 +1665,34 @@ const Game2 = {
         if (kutu) kutu.classList.remove('hazir');
     },
 
-    /* Vezin levhaları: kök seçili değilse hepsi kilitli; seçiliyse yalnız
-       o kökten gerçek kelime türeten vezinler aktif olur. */
+    /* Vezin levhaları: kök seçili değilken panel boştur; kök seçilince
+       YALNIZ o köke veri_kokler.js'te tanımlı İSİM vezinleri belirir.
+       Vezin adındaki zaid harfler ف ع ل köküne göre kırmızı boyanır. */
     vezinleriGuncelle() {
         const panel = document.getElementById('g2-vezinler');
         panel.innerHTML = '';
         const root = this.state.selRoot;
-        GAME3_PATTERNS.forEach(p => {
+        if (!root) return;
+        this.kokVezinleri(root).forEach(e => {
             const b = document.createElement('div');
             b.dir = 'rtl';
-            const uygun = root && p.map[root];
-            const dovulmus = uygun && this.state.forgedPairs.has(root + '|' + p.name);
+            const dovulmus = this.state.forgedPairs.has(root + '|' + e.no);
             // Dövülmüş vezin ✓ ile işaretli kalır; kök diğer vezinleriyle
             // çalışmaya devam edebilir (tek vezinle pasifleşmez).
-            b.className = 'g2-vezin' + (dovulmus ? ' bitti' : (uygun ? ' aktif' : ' kilitli'));
-            b.innerHTML = `<span class="g3-pattern-text">${formatPatternDisplay(p)}</span>`;
-            if (uygun && !dovulmus) b.addEventListener('click', () => this.dovVeUret(p, b));
+            b.className = 'g2-vezin' + (dovulmus ? ' bitti' : ' aktif');
+            b.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(e.vezinAr || e.word, 'ف ع ل')}</span>`;
+            if (!dovulmus) b.addEventListener('click', () => this.dovVeUret(e, b));
             panel.appendChild(b);
         });
     },
 
-    /* Usta seçilen kökü seçilen vezinle döver; kelime vitrine uçar. */
+    /* Usta seçilen kökü seçilen vezinle döver; kelime vitrine uçar.
+       vezin = g2KokIsimVezinleri'nden bir kayıt: {no, vezinAr, word, emoji, tr} */
     dovuyor: false,
-    dovVeUret(pattern, vezinEl) {
+    dovVeUret(vezin, vezinEl) {
         if (this.state.phase !== 'forge' || this.dovuyor) return;
         const root = this.state.selRoot;
-        const word = root && pattern.map[root];
+        const word = root && vezin.word;
         if (!word) return;
         this.dovuyor = true;
         vezinEl.classList.add('secili');
@@ -1621,8 +1731,8 @@ const Game2 = {
             usta.classList.remove('calisiyor');
             App.playSound('ding');
 
-            // Kelime örsten vitrine süzülür
-            const wordHtml = `<span class="g3-pattern-text">${formatDerivedDisplay(word, pattern)}</span>`;
+            // Kelime örsten vitrine süzülür (zaid harfler köke göre kırmızı)
+            const wordHtml = `<span class="g3-pattern-text">${formatWordVsRoot(word, root)}</span>`;
             const oR = ors.getBoundingClientRect(), vR = out.getBoundingClientRect();
             const flow = document.createElement('div');
             flow.className = 'g3-flow-word';
@@ -1641,13 +1751,29 @@ const Game2 = {
 
             setTimeout(() => {
                 flow.remove();
-                paintRootOutline(out, root);
-                out.classList.add('filled');
-                const emoji = GAME3_EMOJI[word] || '⭐';
-                out.innerHTML = `<div class="g3-out-emoji">${emoji}</div><div class="g3-out-word">${wordHtml}</div>`;
+                // Vitrin BİRİKTİRİR: her dövülen kelime kendi raf kartıyla eklenir
+                const bekle = out.querySelector('.g3-out-bekle');
+                if (bekle) bekle.remove();
+                const urun = document.createElement('div');
+                urun.className = 'g2-urun';
+                urun.dir = 'rtl';
+                urun.style.borderColor = rootColors(root)[0];
+                // Çift yüzlü kart: ön = emoji + kelime, arka = Türkçe anlam.
+                // Tıklanınca döner (günün kökü kartları gibi).
+                urun.innerHTML =
+                    `<div class="g2-urun-ic">` +
+                    `<div class="g2-urun-on"><span class="g2-urun-emoji">${vezin.emoji}</span><span class="g2-urun-kelime">${wordHtml}</span></div>` +
+                    `<div class="g2-urun-arka" dir="ltr">${vezin.tr || '—'}</div>` +
+                    `</div>`;
+                urun.addEventListener('click', () => {
+                    App.playSound('click');
+                    urun.classList.toggle('cevrik');
+                });
+                out.appendChild(urun);
+                this.vitrinYerlestir();
 
                 // Çift işlendi olarak kaydedilir; kök ilk kez dövüldüyse sayaç ilerler
-                this.state.forgedPairs.add(root + '|' + pattern.name);
+                this.state.forgedPairs.add(root + '|' + vezin.no);
                 if (!this.state.forgedRoots.has(root)) {
                     this.state.forgedRoots.add(root);
                     this.state.doneTotal++;
@@ -1703,7 +1829,6 @@ const Game2 = {
         if (this.state.grindCount < this.state.words.length) {
             // Öğütülecek kelime kaldı: kamera değirmene döner
             this.state.phase = 'grind';
-            this.yonergeGoster('اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَها', false);
             this.kamera(0, 1700);
             document.getElementById('g2-kokraf').innerHTML = '';
             this.vezinleriGuncelle();
