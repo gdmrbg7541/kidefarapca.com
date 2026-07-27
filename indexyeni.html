@@ -72,9 +72,6 @@ a{ color:inherit; text-decoration:none; }
 .hero-tr .harf{ display:inline-block; opacity:0; transform:translateY(40px) rotate(6deg);
   animation:harfGel .8s cubic-bezier(.2,.9,.25,1.2) forwards; animation-delay:calc(.55s + var(--i)*.045s); }
 @keyframes harfGel{ to{ opacity:1; transform:none; } }
-.hero-slogan{ margin-top:14px; color:var(--metin); font-size:clamp(1.05rem,2.2vw,1.35rem);
-  opacity:0; animation:sade 1.2s ease 1.5s forwards; }
-@keyframes sade{ to{opacity:1} }
 
 /* ======================= 2 · ALFABE DUVARI ======================= */
 #alfabePerde{ height:170vh; }
@@ -137,14 +134,12 @@ a{ color:inherit; text-decoration:none; }
 .saha svg{ display:block; filter:drop-shadow(0 14px 28px rgba(44,62,80,.13)); }
 .saha text{ font-family:'Arakom', sans-serif; }
 .saha .ar-harf{ font-family:'Arakom','Amiri', serif; }
-.uye-g{ transform-box:fill-box; transform-origin:center; transform:scale(.75); transition:transform .5s cubic-bezier(.2,.9,.3,1.4); }
-.uye-g circle{ fill:#F0F4F8; stroke:transparent; stroke-width:2; transition:.4s; }
-.uye-g text{ fill:rgba(44,62,80,.28); transition:.4s; }
-.uye-g.geldi{ transform:scale(1); }
-.tA .uye-g.geldi circle{ fill:#E6FAF5; stroke:#48c9b0; }
-.tA .uye-g.geldi text{ fill:#16A085; }
-.tB .uye-g.geldi circle{ fill:#FFF6E3; stroke:#FFC107; }
-.tB .uye-g.geldi text{ fill:#F39C12; }
+.uye-g{ transform-box:fill-box; transform-origin:center; transform:scale(.78); filter:grayscale(1); opacity:.45;
+  transition:transform .5s cubic-bezier(.2,.9,.3,1.4), filter .5s, opacity .5s; }
+.uye-g.geldi{ transform:scale(1); filter:none; opacity:1; }
+.tA .gomlek{ fill:#16A085; } .tB .gomlek{ fill:#F39C12; }
+#lunapark svg{ display:block; margin:0 auto; overflow:visible; }
+#ddCark{ will-change:transform; }
 .tac-g{ opacity:0; transform-box:fill-box; transform-origin:center; transform:translateY(8px) scale(.5);
   transition:all .5s cubic-bezier(.2,.9,.3,1.5); }
 .tac-g.goster{ opacity:1; transform:none; }
@@ -245,8 +240,7 @@ footer{ text-align:center; padding:30px 16px; color:var(--sis); font-size:.9rem;
   <canvas id="heroTuval"></canvas>
   <div class="hero-ic">
     <div class="hero-ar arabic">الْعَرَبِيَّة</div>
-    <h1 class="hero-tr" id="heroBaslik">Marka değil, Misyon: Kidef Arapça</h1>
-    <p class="hero-slogan">Bir dili ezberlemezsin — içinde yolculuk edersin.</p>
+    <h1 class="hero-tr" id="heroBaslik"></h1>
   </div>
 </section>
 
@@ -281,7 +275,7 @@ footer{ text-align:center; padding:30px 16px; color:var(--sis); font-size:.9rem;
   <div class="sabit" id="oyunSahne">
     <canvas id="oyunTuval"></canvas>
     <div class="oyun-ic">
-      <h2 class="baslik">Öğrenmek <span class="vurgu2">oyunla</span> kalıcı olur</h2>
+      <div id="lunapark"></div>
       <div class="saha">
         <div id="takimA"></div>
         <div id="kumKart"></div>
@@ -374,9 +368,10 @@ function heroCiz(zaman, kayHiz){
 }
 (function(){
   const b = $('heroBaslik');
-  const metin = b.textContent, sinir = metin.indexOf('Kidef');
-  b.innerHTML = [...metin].map((h,i) =>
-    h===' ' ? ' ' : '<span class="harf'+(i<sinir?' soluk':'')+'" style="--i:'+i+'">'+h+'</span>').join('');
+  const bol = (s, sinif, kayma) => [...s].map((h,i) =>
+    h===' ' ? ' ' : '<span class="harf'+(sinif?' '+sinif:'')+'" style="--i:'+(i+kayma)+'">'+h+'</span>').join('');
+  const s1 = 'Marka değil, Misyon:', s2 = 'Kidef Arapça';
+  b.innerHTML = bol(s1,'soluk',0) + '<br>' + bol(s2,'',s1.length+2);
 })();
 
 /* ============ 2 · ALFABE DUVARI ============ */
@@ -492,7 +487,30 @@ function oyunCiz(){
   }
 }
 /* --- özel SVG üreticiler --- */
-const UYE_A = ['ا','ب','ت','ث','ج'], UYE_B = ['د','ر','س','ع','م'];
+/* lunapark: dönen dolap + çadır + bayrak */
+(function(){
+  let kabin='', jant='';
+  for(let i=0;i<8;i++){
+    const a=i*Math.PI/4, x=95+Math.cos(a)*50, y=78+Math.sin(a)*50;
+    jant += '<line x1="95" y1="78" x2="'+x+'" y2="'+y+'" stroke="#2c3e50" stroke-width="2" opacity=".55"/>';
+    kabin += '<circle cx="'+x+'" cy="'+y+'" r="8" fill="'+(i%2?'#F39C12':'#16A085')+'" stroke="#ffffff" stroke-width="2.5"/>';
+  }
+  document.getElementById('lunapark').innerHTML =
+  '<svg width="360" height="160" viewBox="0 0 380 160">' +
+    '<line x1="70" y1="150" x2="95" y2="82" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>' +
+    '<line x1="120" y1="150" x2="95" y2="82" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>' +
+    '<g id="ddCark"><circle cx="95" cy="78" r="50" fill="none" stroke="#2c3e50" stroke-width="3"/>'+jant+kabin+
+    '<circle cx="95" cy="78" r="7" fill="#FFC107" stroke="#2c3e50" stroke-width="2"/></g>' +
+    '<line x1="230" y1="150" x2="368" y2="150" stroke="#E9EEF5" stroke-width="4" stroke-linecap="round"/>' +
+    '<line x1="40" y1="150" x2="150" y2="150" stroke="#E9EEF5" stroke-width="4" stroke-linecap="round"/>' +
+    '<rect x="240" y="92" width="112" height="58" rx="6" fill="#ffffff" stroke="#E9EEF5" stroke-width="2"/>' +
+    '<path d="M232,92 L296,48 L360,92 Z" fill="#FFC107"/>' +
+    '<path d="M252,92 L296,61 L340,92 Z" fill="#F39C12"/>' +
+    '<rect x="286" y="116" width="20" height="34" rx="3" fill="#E6FAF5" stroke="#48c9b0" stroke-width="2"/>' +
+    '<line x1="296" y1="48" x2="296" y2="26" stroke="#2c3e50" stroke-width="2.5"/>' +
+    '<path d="M296,26 L318,32 L296,39 Z" fill="#16A085"/>' +
+  '</svg>';
+})();
 function tacSvg(x,y,renk){
   return '<g class="tac-g" transform="translate('+x+','+y+')">' +
     '<path d="M0,16 L3,5 L8,12 L13,0 L18,12 L23,5 L26,16 Z" fill="'+renk+'"/>' +
@@ -508,24 +526,39 @@ function gunesMotif(){  // güneş motifi
     isik += '<line x1="'+(215+Math.cos(a)*22)+'" y1="'+(52+Math.sin(a)*22)+'" x2="'+(215+Math.cos(a)*31)+'" y2="'+(52+Math.sin(a)*31)+'" stroke="#FFC107" stroke-width="3" stroke-linecap="round"/>'; }
   return '<g opacity=".55"><circle cx="215" cy="52" r="15" fill="#FFC107" opacity=".8"/>'+isik+'</g>';
 }
-function takimSvg(sinif, ad, renk, renk2, motif, harfler){
-  const uyeler = harfler.map((hf,i)=>
-    '<g class="uye-g"><circle cx="'+(46+i*42)+'" cy="158" r="19"/>' +
-    '<text class="ar-harf" x="'+(46+i*42)+'" y="165" text-anchor="middle" font-size="19">'+hf+'</text></g>').join('');
+function takimSvg(sinif, renk, renk2, motif){
+  const uyeler = [0,1,2,3].map(i=>{
+    const uzunSac = (i%2===1);
+    return '<g transform="translate('+(40+i*60)+',134) scale(1.22)"><g class="uye-g">' +
+    /* saç (arka daire) + uzun saçta yan lüleler */
+    '<circle cx="0" cy="-13" r="11" fill="#2c3e50"/>' +
+    (uzunSac ? '<path d="M-11,-14 q-3.5,9 -1.5,15 l4.5,0 q-2,-8 -0.5,-13 Z" fill="#2c3e50"/>' +
+               '<path d="M11,-14 q3.5,9 1.5,15 l-4.5,0 q2,-8 0.5,-13 Z" fill="#2c3e50"/>' : '') +
+    /* yüz */
+    '<circle cx="0" cy="-11" r="9.6" fill="#FFDFC0"/>' +
+    '<circle cx="-3.4" cy="-11.5" r="1.15" fill="#2c3e50"/>' +
+    '<circle cx="3.4" cy="-11.5" r="1.15" fill="#2c3e50"/>' +
+    '<path d="M-3,-7.4 q3,2.8 6,0" fill="none" stroke="#2c3e50" stroke-width="1.4" stroke-linecap="round"/>' +
+    /* gömlek (takım rengi) + yaka */
+    '<path class="gomlek" d="M-16,27 v-4 a16,16 0 0 1 32,0 v4 Z"/>' +
+    '<path d="M-4,8.5 L0,13 L4,8.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+    /* koltukta kitap */
+    '<g transform="rotate(-10 13 18)"><rect x="8" y="12" width="11" height="14" rx="1.6" fill="#FFC107" stroke="#2c3e50" stroke-width="1.4"/>' +
+    '<line x1="13.5" y1="12.5" x2="13.5" y2="25.5" stroke="#ffffff" stroke-width="1.4"/></g>' +
+    '</g></g>';
+  }).join('');
   return '<svg class="'+sinif+'" width="260" height="310" viewBox="0 0 260 310">' +
     '<rect x="4" y="4" width="252" height="302" rx="20" fill="#ffffff" stroke="#E9EEF5"/>' +
     motif +
-    '<path d="M46,18 h168 a10,10 0 0 1 10,10 v20 a10,10 0 0 1 -10,10 h-168 a10,10 0 0 1 -10,-10 v-20 a10,10 0 0 1 10,-10 Z" fill="'+renk+'"/>' +
-    '<text x="130" y="46" text-anchor="middle" font-size="17" fill="#ffffff" letter-spacing="1">'+ad+'</text>' +
     uyeler +
     '<rect x="30" y="208" width="200" height="12" rx="6" fill="#E9EEF5"/>' +
     '<rect class="skorCubuk" x="30" y="208" width="0" height="12" rx="6" fill="'+renk2+'"/>' +
-    '<text class="puanYazi" x="130" y="262" text-anchor="middle" font-size="26" fill="#2c3e50">0</text>' +
+    '<text class="puanYazi" x="130" y="262" text-anchor="middle" font-size="26" fill="#2c3e50"></text>' +
     tacSvg(148, 238, renk) +
     '</svg>';
 }
-$('takimA').innerHTML = takimSvg('tA','TAKIM DENİZ','#16A085','#48c9b0', dalgaMotif(), UYE_A);
-$('takimB').innerHTML = takimSvg('tB','TAKIM GÜNEŞ','#F39C12','#FFC107', gunesMotif(), UYE_B);
+$('takimA').innerHTML = takimSvg('tA','#16A085','#48c9b0', dalgaMotif());
+$('takimB').innerHTML = takimSvg('tB','#F39C12','#FFC107', gunesMotif());
 const svgA = $('takimA').firstChild, svgB = $('takimB').firstChild;
 const uyelerA = [...svgA.querySelectorAll('.uye-g')], uyelerB = [...svgB.querySelectorAll('.uye-g')];
 const skorA = svgA.querySelector('.skorCubuk'), skorB = svgB.querySelector('.skorCubuk');
@@ -540,7 +573,6 @@ $('kumKart').innerHTML = '<svg width="220" height="310" viewBox="0 0 220 310">' 
   '<clipPath id="altCam"><path d="M72,226 L148,226 C148,188 122,162 112,152 L108,152 C98,162 72,188 72,226 Z"/></clipPath>' +
   '</defs>' +
   '<rect x="4" y="4" width="212" height="302" rx="20" fill="#ffffff" stroke="#E9EEF5"/>' +
-  '<text x="110" y="40" text-anchor="middle" font-size="14" fill="#7a8ca0" letter-spacing="3">SÜRE ERİYOR</text>' +
   '<rect x="58" y="58" width="104" height="12" rx="6" fill="#2c3e50"/>' +
   '<rect x="58" y="230" width="104" height="12" rx="6" fill="#2c3e50"/>' +
   '<path d="M72,74 L148,74 C148,112 122,138 112,148 L108,152 C98,162 72,188 72,226 L148,226 C148,188 122,162 112,152 L108,148 C98,138 72,112 72,74 Z" fill="rgba(230,250,245,.5)" stroke="#48c9b0" stroke-width="2.5" stroke-linejoin="round"/>' +
@@ -555,6 +587,8 @@ function renkKaristir(c1, c2, t){
 }
 let sonSaniye = -1, akisFaz = 0;
 function oyunGuncelle(p){
+  /* dönme dolap kaydırmayla döner */
+  const dd = $('ddCark'); if (dd) dd.setAttribute('transform', 'rotate(' + (p*420) + ' 95 78)');
   /* takım üyeleri sırayla sahaya iner */
   const uyeP = kirp((p-.05)/.4, 0, 1);
   const toplamUye = uyelerA.length + uyelerB.length;
@@ -576,13 +610,14 @@ function oyunGuncelle(p){
   const deniz=[22,160,133], amber=[243,156,18], kirmizi=[239,83,80];
   zamanSayi.setAttribute('fill', zP > .8 ? 'rgb(239,83,80)' : '#2c3e50');
   /* skor yarışı — önde giden el değiştirir */
-  const sP = kirp((p-.35)/.6, 0, 1);
+  const sP = kirp((p-.04)/.82, 0, 1);
   const a = eV(sP) * 88 * (1 + Math.sin(sP*7)*.10);
   const b = eV(sP) * 84 * (1 - Math.sin(sP*7)*.12);
   skorA.setAttribute('width', kirp(a,0,100)*2);
   skorB.setAttribute('width', kirp(b,0,100)*2);
-  puanA.textContent = Math.round(a*10);
-  puanB.textContent = Math.round(b*10);
+  const pa = Math.round(a*10), pb = Math.round(b*10);
+  puanA.textContent = pa > 0 ? pa : '';
+  puanB.textContent = pb > 0 ? pb : '';
   tacA.classList.toggle('goster', sP > .9 && a >= b);
   tacB.classList.toggle('goster', sP > .9 && b > a);
 }
@@ -595,9 +630,9 @@ function oyunGuncelle(p){
     tik += '<line x1="'+(60+Math.cos(a)*40)+'" y1="'+(84+Math.sin(a)*40)+'" x2="'+(60+Math.cos(a)*46)+'" y2="'+(84+Math.sin(a)*46)+'" stroke="#2c3e50" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>'; }
   $('ozKron').innerHTML =
     '<svg width="130" height="150" viewBox="0 0 120 150">' +
-    '<rect x="52" y="4" width="16" height="12" rx="4" fill="#2c3e50"/>' +
-    '<rect x="57" y="14" width="6" height="10" fill="#2c3e50"/>' +
-    '<line x1="88" y1="22" x2="97" y2="31" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>' +
+    '<rect x="52" y="6" width="16" height="11" rx="4" fill="#2c3e50"/>' +
+    '<rect x="57" y="15" width="6" height="18" fill="#2c3e50"/>' +
+    '<line x1="96" y1="48" x2="104" y2="39" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>' +
     '<circle cx="60" cy="84" r="52" fill="#ffffff" stroke="#16A085" stroke-width="4"/>' + tik +
     '<line id="kronIbre" x1="60" y1="84" x2="60" y2="48" stroke="#F39C12" stroke-width="4" stroke-linecap="round"/>' +
     '<circle cx="60" cy="84" r="5" fill="#F39C12"/>' +
@@ -613,9 +648,10 @@ function oyunGuncelle(p){
     '<g class="halka-g" id="hh3"><circle cx="60" cy="80" r="17" fill="#FFF6E3" stroke="#FFC107" stroke-width="2.5"/></g>' +
     '<circle id="vurus" cx="60" cy="80" r="8" fill="none" stroke="#F39C12" stroke-width="3" opacity="0"/>' +
     '<g id="okG" opacity="0">' +
-    '<line x1="60" y1="80" x2="102" y2="38" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>' +
-    '<path d="M60,80 L72,76 L64,68 Z" fill="#F39C12"/>' +
-    '<path d="M96,32 L112,28 L108,44 Z" fill="#16A085"/>' +
+    '<line x1="68.5" y1="71.5" x2="94" y2="46" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>' +
+    '<path d="M60,80 L72,75.1 L64.9,68 Z" fill="#F39C12"/>' +
+    '<path d="M94,46 L105,43.5 L101,40 Z" fill="#16A085"/>' +
+    '<path d="M94,46 L96.5,35 L100,39 Z" fill="#16A085"/>' +
     '</g>' +
     '<circle id="hedefGoz" cx="60" cy="80" r="6" fill="#F39C12" opacity="0"/>' +
     '</svg><div class="ad">Etkili</div><div class="alt">tam on ikiden</div>';
