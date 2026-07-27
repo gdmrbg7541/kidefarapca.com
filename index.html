@@ -237,6 +237,38 @@
     @keyframes kgMadde { 0%,10%{transform:scaleX(0)} 32%,82%{transform:scaleX(1)} 96%,100%{transform:scaleX(0)} }
     .kga-imlec { animation: kgImlec 3.2s ease-in-out infinite; }
     @keyframes kgImlec { 0%,100%{transform:translate(0,0);opacity:0} 14%{opacity:1;transform:translate(-5px,-7px)} 45%{transform:translate(-24px,1px)} 74%{opacity:1;transform:translate(-8px,6px)} 90%{opacity:0} }
+    /* ---- Bölüm başlığı ikonları ---- */
+    .content-section h2 svg.kbas { width: 1.15em; height: 1.15em; display: inline-block; vertical-align: -0.2em; overflow: visible; }
+    .kb-sayfa { transform-box: fill-box; transform-origin: 0% 50%; animation: kbSayfa 2.6s ease-in-out infinite; }
+    @keyframes kbSayfa { 0%,55%,100%{transform:scaleX(1)} 70%{transform:scaleX(.08)} 85%{transform:scaleX(.75)} }
+    .kb-kep { animation: kbKep 2.6s ease-in-out infinite; }
+    @keyframes kbKep { 0%,100%{transform:translateY(0) rotate(0)} 40%{transform:translateY(-4px) rotate(-8deg)} 55%{transform:translateY(-2px) rotate(3deg)} }
+    .kb-beyin { transform-box: fill-box; transform-origin: 50% 60%; animation: kbBeyin 2.2s ease-in-out infinite; }
+    @keyframes kbBeyin { 0%,100%{transform:scale(1)} 18%{transform:scale(1.1)} 34%{transform:scale(1)} }
+    .kb-fikir { transform-box: fill-box; transform-origin: 50% 100%; animation: kbFikir 2.2s ease-in-out infinite; }
+    @keyframes kbFikir { 0%,40%,100%{opacity:0;transform:scale(.3)} 12%,26%{opacity:1;transform:scale(1)} }
+    .kb-cubuk-i { transform-box: fill-box; transform-origin: 50% 100%; animation: kbCubukI 2.4s ease-in-out infinite; }
+    .kb-cubuk-i.c2 { animation-delay: .3s; } .kb-cubuk-i.c3 { animation-delay: .6s; }
+    @keyframes kbCubukI { 0%,15%{transform:scaleY(.3)} 45%,80%{transform:scaleY(1)} 100%{transform:scaleY(.3)} }
+    .kb-kol { animation: kbKol 2.4s ease-in-out infinite; }
+    @keyframes kbKol { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-9deg)} 40%{transform:rotate(6deg)} 60%{transform:rotate(-3deg)} }
+    .kb-somun-b { transform-box: fill-box; transform-origin: 78% 78%; animation: kbSomunB 1.9s ease-in-out infinite; }
+    @keyframes kbSomunB { 0%,100%{transform:rotate(-14deg)} 50%{transform:rotate(12deg)} }
+    .kb-kalpp { transform-box: fill-box; transform-origin: 50% 100%; animation: kbKalpp 2.6s ease-in-out infinite; }
+    @keyframes kbKalpp { 0%{opacity:0;transform:translateY(4px) scale(.5)} 25%{opacity:1;transform:translateY(-1px) scale(1)} 60%{opacity:1} 100%{opacity:0;transform:translateY(-9px) scale(1.05)} }
+    .kb-meridyen { transform-box: fill-box; transform-origin: 50% 50%; animation: kbMeridyen 7s linear infinite; }
+    @keyframes kbMeridyen { to { transform: rotate(360deg); } }
+    .kb-pedbtn { animation: kbPedBtn 1.4s ease-in-out infinite; }
+    .kb-pedbtn.b2 { animation-delay: .7s; }
+    @keyframes kbPedBtn { 0%,45%,100%{opacity:.5} 18%{opacity:1} }
+    .kb-ped { transform-box: fill-box; transform-origin: 50% 60%; animation: kbPed 3s ease-in-out infinite; }
+    @keyframes kbPed { 0%,100%{transform:rotate(0)} 22%{transform:rotate(-7deg)} 48%{transform:rotate(6deg)} 70%{transform:rotate(-3deg)} }
+    /* Sarf Motoru: dönen çark */
+    .kb-motor-cark { width: 1.15em; height: 1.15em; display: inline-block; vertical-align: -0.2em; overflow: visible; }
+    .kb-motor-cark g { transform-box: fill-box; transform-origin: 50% 50%; animation: kbMeridyen 3.5s linear infinite; }
+    /* İletişim (kulaklık) tuşu: müzik dinler gibi tatlı tempo tutar */
+    .feedback-fab svg { transform-origin: 50% 62%; animation: kbFabDinle 3.6s ease-in-out infinite; }
+    @keyframes kbFabDinle { 0%,62%,100%{transform:rotate(0) scale(1)} 68%{transform:rotate(-9deg) scale(1.06)} 76%{transform:rotate(8deg) scale(1.03)} 84%{transform:rotate(-5deg) scale(1.05)} 92%{transform:rotate(0) scale(1)} }
     </style>
 </head>
 <body>
@@ -492,7 +524,7 @@
   </div>
 </section>
     <section id="etkilesimli-kitaplar" class="content-section">
-      <h2>📚 Etkileşimli Kitaplar | 🎓 Akademi </h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="40" width="48" height="9" rx="3" fill="#EE5253"/><rect x="12" y="30" width="40" height="9" rx="3" fill="#2563EB"/><path d="M14 28 v-16 q9 -5 18 0 q9 -5 18 0 v16 q-9 -4 -18 0 q-9 -4 -18 0 Z" fill="#fff" stroke="#16A085" stroke-width="2.6"/><line x1="32" y1="11" x2="32" y2="28" stroke="#16A085" stroke-width="2"/><path class="kb-sayfa" d="M32 12 q9 -5 18 0 v16 q-9 -4 -18 0 Z" fill="#eafaf3"/></svg> Etkileşimli Kitaplar | <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><g class="kb-kep"><polygon points="32,16 58,27 32,38 6,27" fill="#2c3e50"/><path d="M21 34 v9 q11 6 22 0 v-9" fill="none" stroke="#2c3e50" stroke-width="4.6"/><line x1="55" y1="28" x2="55" y2="40" stroke="#F39C12" stroke-width="2.4"/><circle cx="55" cy="42.5" r="2.6" fill="#F39C12"/></g></svg> Akademi </h2>
       <div class="game-grid mobile-scroll-grid-single">
         
         <a href="flipbookkidef.html" target="_blank" rel="opener" class="game-card kss-card">
@@ -528,7 +560,7 @@
       </div>
     </section>
     <section id="temel-beceriler" class="content-section">
-      <h2>🧠 Beceriler & Dilbilgisi | 🧑🏻‍🏫👩‍🏫 Öğretmen Özel</h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><path class="kb-fikir" d="M32 2 l1.7 4.3 4.3 1.7 -4.3 1.7 -1.7 4.3 -1.7 -4.3 -4.3 -1.7 4.3 -1.7 Z" fill="#F39C12"/><g class="kb-beyin"><path d="M30 16 a9 9 0 0 0 -9 9 a8 8 0 0 0 -4.5 13.5 a8.5 8.5 0 0 0 8 11 a9 9 0 0 0 5.5 2.2 Z" fill="#ff8fa3"/><path d="M34 16 a9 9 0 0 1 9 9 a8 8 0 0 1 4.5 13.5 a8.5 8.5 0 0 1 -8 11 a9 9 0 0 1 -5.5 2.2 Z" fill="#f96d87"/><path d="M26 26 q-3.4 3.4 0 6.8 M38 26 q3.4 3.4 0 6.8 M25 42 q3.5 2.4 7 0" stroke="rgba(140,20,45,.4)" stroke-width="2.2" fill="none" stroke-linecap="round"/></g></svg> Beceriler & Dilbilgisi | <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="10" width="40" height="28" rx="4" fill="#eafaf3" stroke="#16A085" stroke-width="2.6"/><text x="26" y="30" font-size="14" fill="#16A085" text-anchor="middle" font-family="inherit">أ ب</text><circle cx="50" cy="24" r="6.5" fill="#f6c89f"/><path d="M50 31 q-7 2 -7 12 h14 q0 -10 -7 -12 Z" fill="#7C3AED"/><g class="kb-kol" style="transform-origin:50px 33px"><line x1="50" y1="33" x2="38" y2="22" stroke="#f6c89f" stroke-width="3.6" stroke-linecap="round"/></g></svg> Öğretmen Özel</h2>
       <div class="game-grid mobile-scroll-grid-single">
         
         <a href="alfabe.html" target="_blank" rel="opener" class="game-card kss-card">
@@ -673,7 +705,7 @@
     </section>
     
     <section id="oyunlar" class="content-section">
-      <h2>🎮 Oyunlar</h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><g class="kb-ped"><path d="M16 20 h32 q10 0 11 12 l1.5 12 q.5 8 -7 8 q-5 0 -8 -6 l-2 -4 h-23 l-2 4 q-3 6 -8 6 q-7.5 0 -7 -8 l1.5 -12 q1 -12 11 -12 Z" fill="#7C3AED"/><rect x="20" y="28" width="12" height="4.4" rx="2.2" fill="#fff"/><rect x="23.8" y="24.2" width="4.4" height="12" rx="2.2" fill="#fff"/><circle class="kb-pedbtn" cx="44" cy="27" r="3.2" fill="#4ade80"/><circle class="kb-pedbtn b2" cx="50" cy="33" r="3.2" fill="#ffd54f"/></g></svg> Oyunlar</h2>
       <!-- Oyun kartlari: sosyal hesap kartlariyla ayni dil - her oyuna ozel
            canli gradyan, buzlu cam ikon halkasi ve beyaz "Hemen Oyna" rozeti. -->
       <style>
@@ -787,7 +819,7 @@
     </section>
 
     <section id="sunum-slaytlari" class="content-section">
-      <h2>📊 Sunumlar</h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><line x1="10" y1="54" x2="54" y2="54" stroke="#64748b" stroke-width="3.4" stroke-linecap="round"/><rect class="kb-cubuk-i" x="14" y="28" width="10" height="26" rx="2.6" fill="#EE5253"/><rect class="kb-cubuk-i c2" x="27" y="16" width="10" height="38" rx="2.6" fill="#2563EB"/><rect class="kb-cubuk-i c3" x="40" y="36" width="10" height="18" rx="2.6" fill="#F39C12"/></svg> Sunumlar</h2>
       <div class="game-grid mobile-scroll-grid-single" id="slayt-galerisi-container">
       </div>
     </section>
@@ -796,7 +828,7 @@
 
 
     <section id="sinifici-materyaller" class="content-section">
-      <h2>🛠️ Sınıfiçi Materyaller</h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 50 L38 26 l6 6 -24 24 q-4 2 -6 0 t0 -6 Z" fill="#a9743f"/><path d="M38 26 l-5 -5 q-2 -8 6 -12 l4 4 -3 5 5 5 5 -3 4 4 q-4 8 -12 6 Z" fill="#94a3b8"/><g class="kb-somun-b"><path d="M34 40 L50 54 a5 5 0 1 1 -6.4 5.4 l-13 -13.4" fill="none" stroke="#7C3AED" stroke-width="5.4" stroke-linecap="round"/></g></svg> Sınıfiçi Materyaller</h2>
       <div class="game-grid mobile-scroll-grid-single">
         <a href="kssi.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
@@ -816,7 +848,7 @@
     </section>
 
     <section id="degerler-egitimi" class="content-section">
-      <h2>📖 Değerler Eğitimi</h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><path class="kb-kalpp" d="M32 8 c-3 -3 -7.8 -.8 -7.8 2.8 0 3 3.4 5.2 7.8 9 4.4 -3.8 7.8 -6 7.8 -9 0 -3.6 -4.8 -5.8 -7.8 -2.8 Z" fill="#EE5253"/><path d="M8 52 V26 q12 -6 24 0 q12 -6 24 0 v26 q-12 -5 -24 0 q-12 -5 -24 0 Z" fill="#fff" stroke="#16A085" stroke-width="2.8"/><line x1="32" y1="25" x2="32" y2="52" stroke="#16A085" stroke-width="2.2"/></svg> Değerler Eğitimi</h2>
       <div class="game-grid mobile-scroll-grid-single">
         
         <a href="kisasureler.html" target="_blank" rel="opener" class="game-card kss-card">
@@ -851,7 +883,7 @@
     </section>
 
     <section id="youtube-kanallari" class="content-section">
-      <h2>🌐 Sosyal Hesaplar</h2>
+      <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#e8f4fd" stroke="#2563EB" stroke-width="3"/><g class="kb-meridyen"><ellipse cx="32" cy="32" rx="10" ry="24" fill="none" stroke="#5AB4FF" stroke-width="2.2"/><ellipse cx="32" cy="32" rx="19" ry="24" fill="none" stroke="rgba(90,180,255,.5)" stroke-width="1.8"/></g><line x1="8" y1="32" x2="56" y2="32" stroke="#5AB4FF" stroke-width="2.2"/><path d="M13 19 a24 24 0 0 1 38 0 M13 45 a24 24 0 0 0 38 0" fill="none" stroke="rgba(90,180,255,.55)" stroke-width="1.8"/></svg> Sosyal Hesaplar</h2>
       <!-- Sosyal hesap kartlari: marka renkleriyle (YouTube kirmizi, Instagram
            gradyan) ozel tasarim. Grid/mobil kaydirma davranisi icin mevcut
            game-card/kss-card siniflari korunur; gorunum .sosyal-card ile ezilir. -->
@@ -1722,7 +1754,7 @@
 })();
 </script>
 
-<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')">Sarf Motoru ⚙️</a>
+<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')">Sarf Motoru <svg class="kb-motor-cark" viewBox="0 0 64 64" aria-hidden="true"><g><circle cx="32" cy="32" r="12" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="6" fill="#0E9E86"/></g></svg></a>
 
 <!-- Öneri / İletişim butonu (Sarf Motoru'nun üstünde) -->
 <button id="feedbackFab" onclick="openMyMessages()" title="Mesajlar & İletişim" aria-label="Mesajlar ve iletişim" class="feedback-fab">
@@ -2132,6 +2164,39 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boya);
   else boya();
+})();
+</script>
+<script>
+/* ============ KAYNAK KORUMA (CAYDIRICI) ============
+   ÖNEMLİ NOT: Bu tam bir güvenlik önlemi DEĞİLDİR. Tarayıcı sayfayı
+   göstermek için CSS/JS'i indirmek zorunda olduğundan kaynak kodu
+   Ctrl+U, doğrudan URL veya curl ile yine alınabilir. Bu blok yalnızca
+   sıradan kullanıcıyı sağ tık / geliştirici araçlarından caydırır.
+   Asıl koruma Firestore kurallarındadır. */
+(function(){
+  // Sağ tık menüsünü engelle
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); }, false);
+  // Geliştirici araçları kısayolları: F12, Ctrl/Cmd+Shift+I/J/C, Ctrl/Cmd+U
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    var mod = e.ctrlKey || e.metaKey;
+    if (
+      e.keyCode === 123 ||                                  // F12
+      (mod && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) ||
+      (mod && k === 'u')                                    // kaynağı görüntüle
+    ) { e.preventDefault(); return false; }
+  }, false);
+})();
+</script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
 })();
 </script>
 </body>

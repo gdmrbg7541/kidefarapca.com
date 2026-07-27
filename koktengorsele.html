@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مِنَ الْجَذْرِ إِلَى الصُّورَةِ - كوكتن غورسله</title>
+
+<!-- Sitenin geri kalaniyla ayni Google Analytics etiketi. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Bu sayfa sarf motorunun "tek oyun" kipidir: body üzerindeki
+     data-tek-oyun="game1" işareti menüyü atlatır, doğrudan
+     "Kökten Görsele" (مِنَ الْجَذْرِ إِلَى الصُّورَةِ) oyununu açar.
+     Firebase gerekmez; yarışma yalnız sarf.html üzerindedir. -->
+<link rel="stylesheet" href="sarf.css?v=105">
+</head>
+<body data-tek-oyun="game1">
+
+<div class="floating-emojis">
+    <span class="fe-1">📖</span>
+    <span class="fe-2">✍️</span>
+    <span class="fe-3">🖼️</span>
+    <span class="fe-4">🕌</span>
+    <span class="fe-5">📚</span>
+    <span class="fe-6">🎓</span>
+</div>
+
+<!-- Menü yok: ekranlar sarf.js tarafından yönetilir, oyun 1 doğrudan açılır.
+     Boş main'ler sarf.js'in ekran listesiyle uyum için duruyor. -->
+<main class="screen" id="start-screen"></main>
+<main class="screen" id="game1-screen"></main>
+<main class="screen" id="game2-screen"></main>
+<main class="screen" id="game3-screen"></main>
+<main class="screen" id="quiz-screen"></main>
+
+<div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+        <div class="emoji" id="done-emoji">🎉</div>
+        <h2 id="done-text">أَحْسَنْتَ!</h2>
+        <div class="done-buttons">
+            <button class="btn-primary" id="done-replay">مِنْ جَدِيدٍ 🔄</button>
+            <button class="btn-secondary" id="done-menu">الْقَائِمَةُ ↩</button>
+        </div>
+    </div>
+</div>
+
+<!-- Kök verisi merkezî dosyalardan gelir (sarf.html ile aynı). -->
+<script src="veri_vezin_numaralari.js"></script>
+<script src="veri_kokler.js"></script>
+<script src="sarf.js?v=105"></script>
+<script src="geri.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

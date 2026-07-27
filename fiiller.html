@@ -9,7 +9,7 @@
 <body>
 
 <header>
-    <a href="https://kidefarapca.com" class="home-btn" title="Kidef Arapça'ya Dön">
+    <a href="index.html" onclick="return kidefGeriDon(event)" class="home-btn" title="Kidef Arapça'ya Dön">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -76,5 +76,17 @@
 </main>
 <script src="fiiller.js"></script>
 
+    <script src="geri.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
 </body>
 </html>
