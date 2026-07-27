@@ -1552,3 +1552,39 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     8%   { opacity: 1; }
     100% { opacity: .9; transform: translate3d(var(--sx), 105vh, 0) rotate(var(--don)); }
 }
+
+
+/* ============ TEK KARTLI MENÜ DÜZENİ ============
+   Kelime Fabrikası tek kart; bağlantı (yarışma) tuşu artık başlık
+   hizasındaki küçük rozet değil, kartın ALTINDA kartla aynı genişlikte
+   ve yarı yüksekliğinde bir bar. */
+.menu-grid { flex-direction: column; align-items: center; }
+.menu-grid .menu-card {
+    flex: none;
+    width: min(420px, 92vw);
+    max-width: none;
+    /* Çerçeve, bağlantı barıyla aynı mor tonunda */
+    border-color: var(--secondary);
+}
+.menu-grid .menu-card:hover { border-color: #a78bfa; }
+.menu-connect {
+    position: static; transform: none;
+    width: min(420px, 92vw);
+    justify-content: center;
+    min-height: 95px;                 /* kartın (190px) yarısı */
+    border-radius: clamp(20px, 4vw, 30px);
+    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    gap: 12px;
+}
+.menu-connect:hover { transform: scale(1.03); box-shadow: 0 10px 26px rgba(124,58,237,0.5); }
+@media (min-width: 901px) and (min-height: 500px) {
+    .menu-connect {
+        min-height: clamp(75px, 13vh, 130px);  /* kart yüksekliğinin yarısı */
+        border-radius: 34px;
+        font-size: clamp(1.35rem, 2.6vh, 1.9rem);
+        padding: 9px 22px;
+    }
+}
+@media (max-width: 480px) {
+    .menu-connect { min-height: 60px; }
+}

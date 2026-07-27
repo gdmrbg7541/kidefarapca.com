@@ -488,6 +488,7 @@ const App = {
         document.getElementById('done-menu').addEventListener('click', () => {
             this.playSound('click');
             this.hideDone();
+            if (this.tekOyunCikis()) return;
             this.showScreen('start-screen');
         });
 
@@ -506,7 +507,23 @@ const App = {
         try { odaKod = new URLSearchParams(location.search).get('oda'); } catch (e) {}
         if (odaKod) { Quiz.katilimlaBasla(odaKod.trim().toUpperCase()); return; }
 
+        /* Tek oyun kipi (örn. koktengorsele.html): menü atlanır, sayfa
+           doğrudan kendi oyununu açar; geri tuşları da siteye döner. */
+        if (document.body.dataset.tekOyun === 'game1') {
+            Game1.start();
+            this.showScreen('game1-screen');
+            return;
+        }
+
         this.showScreen('start-screen');
+    },
+
+    /* Tek oyun kipinde "menüye dön" anlamı yoktur: siteye dönülür. */
+    tekOyunCikis() {
+        if (!document.body.dataset.tekOyun) return false;
+        try { if (window.kidefGeri) { kidefGeri(); return true; } } catch (e) {}
+        location.href = 'index.html';
+        return true;
     },
 
     showScreen(id) {
@@ -864,6 +881,7 @@ const Game1 = {
         `;
         document.getElementById('g1-back').addEventListener('click', () => {
             App.playSound('click');
+            if (App.tekOyunCikis()) return;
             App.showScreen('start-screen');
         });
 

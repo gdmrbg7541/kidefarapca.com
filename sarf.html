@@ -27,7 +27,7 @@
 <!-- ?v=NN: tarayıcı eski sarf.css/sarf.js kopyasını önbellekten sunmasın diye
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
-<link rel="stylesheet" href="sarf.css?v=81">
+<link rel="stylesheet" href="sarf.css?v=84">
 </head>
 <body>
 
@@ -42,48 +42,16 @@
 
 <!-- ================= GİRİŞ EKRANI ================= -->
 <main class="screen active" id="start-screen">
-    <!-- Siteye donus. geri.js bu dugmenin yanina "Anasayfa" (ev) tusunu
-         kendisi ekler; diger oyun sayfalariyla ayni davranis. -->
+    <!-- Siteye donus. data-kidef-done="1" sayesinde geri.js ayrica
+         "Anasayfa" (ev) tusu EKLEMEZ; tek geri tusu yeterli. -->
     <a href="index.html" class="back-btn kidef-siteye" id="start-back-button"
-       onclick="return kidefGeriDon(event)" title="Geri" aria-label="Geri">
+       data-kidef-done="1" onclick="return kidefGeriDon(event)" title="Geri" aria-label="Geri">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
     </a>
     <div class="menu-wrap">
-        <!-- Başlık satırı: başlık ortada, bağlantı rozeti onun hizasında sağ üstte. -->
-        <div class="menu-top">
-            <div class="menu-header">
-                <span class="menu-badge">عِلْمُ الصَّرْفِ</span>
-                <h1>مِنَ الْجَذْرِ إِلَى الْكَلِمَةِ</h1>
-            </div>
-            <!-- Dijital yarışma (Firebase) girişi. Oyun kartı değil, küçük bir
-                 rozet: mor gradyan, hap biçimli, canlı yayın noktalı.
-                 "اِتَّصِلْ" = bağlan -->
-            <button type="button" class="menu-connect" data-goto="quiz-screen">
-                <span class="mc-nokta"></span>
-                <span class="mc-ar">اِتَّصِلْ</span>
-                <span class="mc-ikon">🏆</span>
-            </button>
-        </div>
         <div class="menu-grid">
-            <!-- Kart ikonları: her oyunun içeriğini anlatan özel SVG çizimler.
-                 1) kök harfleri yukarı, resim çerçevesine türer
-                 2) çark makinesi kökü söker çıkarır
-                 3) usta atölyesi: örs + çekiç + kıvılcım -->
-            <div class="menu-card" data-goto="game1-screen">
-                <div class="icon-circle"><svg viewBox="0 0 100 100" aria-hidden="true">
-                    <rect x="18" y="6" width="64" height="46" rx="7" fill="#ffffff" stroke="#16A085" stroke-width="3.5"/>
-                    <circle cx="66" cy="19" r="6" fill="#f6b93b"/>
-                    <path d="M22,48 L40,26 L52,41 L60,32 L78,48 Z" fill="#48c9b0"/>
-                    <path d="M50,74 L50,60 M43,66 L50,58 L57,66" fill="none" stroke="#f39c12" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <g font-family="'Markazi Text'" font-size="15" text-anchor="middle" fill="#ffffff">
-                        <rect x="60" y="80" width="17" height="17" rx="5" fill="#7C3AED"/>
-                        <rect x="41" y="80" width="17" height="17" rx="5" fill="#9d5cf5"/>
-                        <rect x="22" y="80" width="17" height="17" rx="5" fill="#7C3AED"/>
-                        <text x="68.5" y="93.5">ك</text><text x="49.5" y="93.5">ت</text><text x="30.5" y="93.5">ب</text>
-                    </g>
-                </svg></div>
-                <h2>مِنَ الْجَذْرِ إِلَى الصُّورَةِ</h2>
-            </div>
+            <!-- "Kökten görsele" oyunu artık ayrı sayfada: koktengorsele.html.
+                 Burada tek kart var: birleşik Kelime Fabrikası. -->
             <!-- Birleşik "Kelime Fabrikası": öğütücü + usta atölyesi tek oyunda.
                  İkon: çark pencereli makine, üstünde çekiç, altında altın külçe. -->
             <div class="menu-card" data-goto="game2-screen">
@@ -111,6 +79,13 @@
                 </svg></div>
                 <h2>مَصْنَعُ الْكَلِمَاتِ</h2>
             </div>
+            <!-- Dijital yarışma (Firebase) girişi: kartla aynı genişlikte,
+                 yarı yükseklikte mor bar. "اِتَّصِلْ" = bağlan -->
+            <button type="button" class="menu-connect" data-goto="quiz-screen">
+                <span class="mc-nokta"></span>
+                <span class="mc-ar">اِتَّصِلْ</span>
+                <span class="mc-ikon">🏆</span>
+            </button>
         </div>
     </div>
 </main>
@@ -143,7 +118,7 @@
      kaliplartablosu'ndaki "Günün Kökü" ile aynı kaynaktan gelir. -->
 <script src="veri_vezin_numaralari.js"></script>
 <script src="veri_kokler.js"></script>
-<script src="sarf.js?v=81"></script>
+<script src="sarf.js?v=84"></script>
 <script src="geri.js"></script>
 </body>
 </html>
