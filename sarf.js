@@ -336,7 +336,24 @@ const ROOT_COLORS = {
     "ع ر ف": ["#0369a1", "#7dd3fc"]  // gök mavisi
 };
 const DEFAULT_ROOT_COLOR = ["#7c3aed", "#a78bfa"];
-function rootColors(root) { return ROOT_COLORS[root] || DEFAULT_ROOT_COLOR; }
+/* Tanımlı listede olmayan kökler için renk havuzu: rastgele gelen HER kök
+   de kendi rengini alır (oturum boyunca aynı kalır). */
+const RASTGELE_RENKLER = [
+    ["#0e7490", "#67e8f9"], ["#b45309", "#fcd34d"], ["#15803d", "#86efac"],
+    ["#be123c", "#fda4af"], ["#6d28d9", "#c4b5fd"], ["#0369a1", "#7dd3fc"],
+    ["#a16207", "#fde68a"], ["#065f46", "#6ee7b7"], ["#9d174d", "#f9a8d4"],
+    ["#4338ca", "#a5b4fc"], ["#c2410c", "#fdba74"], ["#0f766e", "#5eead4"]
+];
+const rastgeleRenkCache = {};
+function rootColors(root) {
+    if (ROOT_COLORS[root]) return ROOT_COLORS[root];
+    if (!rastgeleRenkCache[root]) {
+        let h = 0;
+        for (const ch of root) h = (h * 31 + ch.charCodeAt(0)) % 9973;
+        rastgeleRenkCache[root] = RASTGELE_RENKLER[h % RASTGELE_RENKLER.length];
+    }
+    return rastgeleRenkCache[root];
+}
 function hexToRgba(hex, alpha) {
     const h = hex.replace('#', '');
     const n = parseInt(h, 16);
@@ -821,7 +838,7 @@ const Game1 = {
             <div class="back-btn" id="g1-back">${BACK_SVG}</div>
             <div class="progress-pill" id="g1-pill">0 / ${ROOTS_GAME1.length}</div>
             <div class="g1-wrap">
-                <div class="g1-title" dir="rtl">اُسْحَبِ الجَذْرَ إِلى الصّورَةِ المُناسِبَة</div>
+                <div class="g1-title" dir="rtl">اُسْحَبِ الْجَذْرَ إِلَى الصُّورَةِ الْمُنَاسِبَةِ.</div>
                 <div class="g1-root-bar" id="g1-root-bar" dir="rtl">
                     <div class="g1-conj-host" id="g1-conj-host"></div>
                 </div>
@@ -950,7 +967,7 @@ const Game1 = {
         this.updatePill();
 
         if (this.state.done.length >= ROOTS_GAME1.length) {
-            App.showDone('🎉', 'أَحْسَنْتَ! لَقَد أَتْمَمْتَ كُلَّ الجُذور');
+            App.showDone('🎉', 'أَحْسَنْتَ! لَقَدْ أَتْمَمْتَ كُلَّ الْجُذُورِ.');
             document.getElementById('done-replay').onclick = () => {
                 App.hideDone();
                 this.start();
@@ -1137,13 +1154,13 @@ const Game2 = {
     /* Yönergeyi ekranın ortasında gösterir, 3 sn sonra kaybolur.
        sesliMi=true ise yonergesarf.mp3 de çalınır (dosya yoksa sessiz geçer). */
     yonergeZaman: null,
-    yonergeGoster(metin, sesliMi) {
+    yonergeGoster(metin, sesliMi, sure) {
         const y = document.getElementById('g2-yonerge');
         if (!y) return;
         y.innerHTML = metin;
         y.classList.add('goster');
         clearTimeout(this.yonergeZaman);
-        this.yonergeZaman = setTimeout(() => y.classList.remove('goster'), 3000);
+        this.yonergeZaman = setTimeout(() => y.classList.remove('goster'), sure || 3000);
         if (sesliMi) {
             try { new Audio('yonergesarf.mp3').play().catch(() => {}); } catch (e) {}
         }
@@ -1153,7 +1170,6 @@ const Game2 = {
         const screen = document.getElementById('game2-screen');
         screen.innerHTML = `
             <div class="back-btn" id="g2-back">${BACK_SVG}</div>
-            <div class="progress-pill" id="g2-progress">0 / ${this.totalWords()}</div>
             <!-- Yönerge artık üstte sabit durmaz: faz başında ekranın
                  ortasında belirir, (ilk sefer yonergesarf.mp3 ile) okunur
                  ve kendiliğinden kaybolur -->
@@ -1162,20 +1178,25 @@ const Game2 = {
                 <!-- SOL SAHNE: USTA ATÖLYESİ -->
                 <section class="g2-sahne">
                     <div class="g2-atolye-ic">
-                        <div class="g2-vezinler" id="g2-vezinler"></div>
+                        <!-- SOL: dikey uzun vitrin -->
                         <div class="g3-vitrin">
                             <div class="g3-tente"></div>
                             <div class="g3-output-slot" id="g2-vitrinKutu"><span class="g3-out-bekle">✨</span></div>
                             <div class="g3-raf"></div>
                         </div>
-                        <div class="g3-ors-kutu" id="g2-orsKutu">
-                            <div class="g2-ors2" id="g2-ors" dir="rtl">${G2_ORS2_SVG}<span class="g2-ors-kok-yazi" id="g2-orsIc"></span></div>
-                            <div class="g3-usta" id="g2-usta">${G3_USTA_SVG}</div>
-                            <div class="g3-kivilcimlar" id="g2-kivilcimlar2"></div>
+                        <!-- SAĞ: üstte vezinler (2 satır), altta usta + kökler -->
+                        <div class="g2-sag">
+                            <div class="g2-vezinler" id="g2-vezinler"></div>
+                            <div class="g2-sag-alt">
+                                <div class="g3-ors-kutu" id="g2-orsKutu">
+                                    <div class="g2-ors2" id="g2-ors" dir="rtl">${G2_ORS2_SVG}<span class="g2-ors-kok-yazi" id="g2-orsIc"></span></div>
+                                    <div class="g3-usta" id="g2-usta">${G3_USTA_SVG}</div>
+                                    <div class="g3-kivilcimlar" id="g2-kivilcimlar2"></div>
+                                </div>
+                                <div class="g2-kokraf" id="g2-kokraf"></div>
+                            </div>
                         </div>
-                        <div class="g2-kokraf" id="g2-kokraf"></div>
                     </div>
-                    <div class="g2-gecis-tus" id="g2-devamTus" dir="rtl">⚙️ تابِعْ</div>
                 </section>
                 <!-- (dunya kapanmadan önce her iki sahneyi de görebilen öğeler yok;
                      kaydırak dünya DIŞINDA sabit durur) -->
@@ -1193,7 +1214,11 @@ const Game2 = {
                     </div>
                     <!-- Tur başında görünür: kelime setini merkezî veriden
                          rastgele yeniler (ilk kelime öğütülünce kaybolur) -->
-                    <div class="g2-gecis-tus" id="g2-karistirTus" dir="rtl">🎲 كَلِمات جَديدَة</div>
+                    <div class="g2-gecis-tus g2-yenile" id="g2-karistirTus" title="كَلِمات جَديدَة">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z" fill="#ffffff"/>
+                        </svg>
+                    </div>
                 </section>
                 <!-- Forklift dünyaya aittir (sahnelere değil): hep konteynırın
                      altında bekler, kök türetilince vurgulanır, tıklanınca
@@ -1208,11 +1233,6 @@ const Game2 = {
         // Forklift: kök varken tıklanırsa o anki külçeler ustaya gider
         document.getElementById('g2-forklift').addEventListener('click', () => {
             this.atolyeyeGec();
-        });
-        // Atölyede iş bitince (her kök en az bir kez dövülünce) devam tuşu
-        document.getElementById('g2-devamTus').addEventListener('click', () => {
-            App.playSound('click');
-            this.ilerle();
         });
         // Rastgele kelime seti
         document.getElementById('g2-karistirTus').addEventListener('click', () => {
@@ -1230,15 +1250,27 @@ const Game2 = {
         this.jestlerHazir = true;
         const ekran = document.getElementById('game2-screen');
 
-        let wheelZaman = null;
+        /* HASSASİYET: ekranın ~%40'ı kadar sürüklemek sahne değiştirmeye
+           yeter (2.5×). Ayrıca kısa ama kararlı bir itiş (%10) bile
+           bırakınca kamerayı o yöne oturtur — uzun uzun çekmek gerekmez. */
+        const HIZ = 2.5, ESIK = .10;
+        const yonSnap = (basKam) => {
+            const fark = this.kamDeger - basKam;
+            const hedef = fark > ESIK ? 1 : (fark < -ESIK ? 0 : (this.kamDeger > .5 ? 1 : 0));
+            this.kamera(hedef, 550);
+        };
+
+        let wheelZaman = null, wheelBasKam = null;
         ekran.addEventListener('wheel', (e) => {
             if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // dikey scroll'a karışma
             e.preventDefault();
-            const k = Math.max(0, Math.min(1, this.kamDeger - e.deltaX / window.innerWidth));
+            if (wheelBasKam === null) wheelBasKam = this.kamDeger;
+            const k = Math.max(0, Math.min(1, this.kamDeger - e.deltaX * 1.6 / window.innerWidth));
             this.kamera(k, 0);
             clearTimeout(wheelZaman);
             wheelZaman = setTimeout(() => {
-                this.kamera(this.kamDeger > .5 ? 1 : 0, 550);
+                yonSnap(wheelBasKam);
+                wheelBasKam = null;
             }, 170);
         }, { passive: false });
 
@@ -1246,10 +1278,10 @@ const Game2 = {
            tek parmak / fare sürüklemesiyle de sahne kaydırılabilir. */
         const etkilesimli = '.g2-word-chip, .g2-kok-kulce, .g2-vezin, .g2-forklift-tus, ' +
             '.g2-gecis-tus, .back-btn, .progress-pill, input, a, button';
-        let panX = null, panY = null, panAktif = false;
+        let panX = null, panY = null, panAktif = false, panBasKam = 0;
         const panBas = (x, y, hedef) => {
             if (hedef && hedef.closest && hedef.closest(etkilesimli)) return false;
-            panX = x; panY = y; panAktif = false;
+            panX = x; panY = y; panAktif = false; panBasKam = this.kamDeger;
             return true;
         };
         const panHareket = (x, y) => {
@@ -1260,23 +1292,24 @@ const Game2 = {
                 if (Math.abs(dy) > Math.abs(dx)) { panX = null; return false; } // dikey niyet
                 panAktif = true;
             }
-            const k = Math.max(0, Math.min(1, this.kamDeger + dx / window.innerWidth));
+            const k = Math.max(0, Math.min(1, this.kamDeger + dx * HIZ / window.innerWidth));
             panX = x; panY = y;
             this.kamera(k, 0);
             return true;
         };
         const panBirak = () => {
-            if (panX !== null && panAktif) this.kamera(this.kamDeger > .5 ? 1 : 0, 550);
+            if (panX !== null && panAktif) yonSnap(panBasKam);
             panX = null; panAktif = false;
         };
         ekran.addEventListener('mousedown', (e) => { if (panBas(e.clientX, e.clientY, e.target)) e.preventDefault(); });
         window.addEventListener('mousemove', (e) => panHareket(e.clientX, e.clientY));
         window.addEventListener('mouseup', panBirak);
 
-        let dokunX = null;
+        let dokunX = null, dokunBasKam = 0;
         ekran.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 dokunX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                dokunBasKam = this.kamDeger;
                 panX = null;
             } else if (e.touches.length === 1) {
                 panBas(e.touches[0].clientX, e.touches[0].clientY, e.target);
@@ -1286,7 +1319,7 @@ const Game2 = {
             if (e.touches.length === 2 && dokunX !== null) {
                 e.preventDefault();
                 const x = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                const k = Math.max(0, Math.min(1, this.kamDeger + (x - dokunX) / window.innerWidth));
+                const k = Math.max(0, Math.min(1, this.kamDeger + (x - dokunX) * HIZ / window.innerWidth));
                 dokunX = x;
                 this.kamera(k, 0);
             } else if (e.touches.length === 1) {
@@ -1296,7 +1329,7 @@ const Game2 = {
         ekran.addEventListener('touchend', (e) => {
             if (dokunX !== null && e.touches.length < 2) {
                 dokunX = null;
-                this.kamera(this.kamDeger > .5 ? 1 : 0, 550);
+                yonSnap(dokunBasKam);
             }
             if (e.touches.length === 0) panBirak();
         });
@@ -1316,7 +1349,9 @@ const Game2 = {
        atölye tarafını sıfırlar. gecisli=true ise kamera sağa dönerek gelir. */
     rondKur(gecisli) {
         const s = this.state;
-        s.words = this.shuffle(GAME2_ROUNDS[s.roundIdx].slice());
+        // Her tur (ilk açılış dahil) rastgele kelimelerle kurulur; merkezî
+        // veri yüklenemezse yerleşik turlara düşülür.
+        s.words = this.rastgeleKelimeSeti() || this.shuffle(GAME2_ROUNDS[s.roundIdx].slice());
         s.grindCount = 0;
         s.bekleyen = [];
         s.shelf = [];
@@ -1327,16 +1362,18 @@ const Game2 = {
         this.dusumSayisi = 0;
         const fl = document.getElementById('g2-forklift');
         fl.classList.remove('hazir', 'donus');
-        document.getElementById('g2-devamTus').classList.remove('gorunur');
 
         this.kamera(0, gecisli ? 1700 : 0);
 
-        // İKİ yönerge de yalnız oyunun EN BAŞINDA, art arda gösterilir;
-        // sonraki faz geçişlerinde bir daha çıkmaz.
+        // İKİ yönerge TEK kartta, tam harekeli ve nokta ile; yalnız oyunun
+        // EN BAŞINDA gösterilir, sonraki faz geçişlerinde bir daha çıkmaz.
         if (this.ilkYonerge) {
             this.ilkYonerge = false;
-            this.yonergeGoster('اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَها', true);
-            setTimeout(() => this.yonergeGoster('اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَديدَة', false), 3500);
+            this.yonergeGoster(
+                'اِضْغَطْ عَلَى الْكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَهَا.' +
+                '<br>' +
+                'اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَدِيدَةً.',
+                true, 5200);
         }
         document.getElementById('g2-kapIc').innerHTML = '';
         document.getElementById('g2-kokraf').innerHTML = '';
@@ -1351,24 +1388,72 @@ const Game2 = {
         setTimeout(() => this.parkKur(), 60);
     },
 
-    /* Kelime setini merkezî veriden rastgele yeniler: en az 2 isim vezni
-       olan 5 FARKLI kök seçilir, her birinden rastgele bir kelime alınır. */
-    kelimeleriKaristir() {
-        if (this.state.phase !== 'grind' || this.state.grindCount > 0) return;
-        if (typeof wordEasterEggs === 'undefined') return;
-        App.playSound('click');
+    /* Rastgele kelime seti: en az 5 isim vezni olan 5 FARKLI kök seçilir,
+       her birinden rastgele bir kelime alınır. Sete giren tanımsız köklere
+       o an havuzdan BENZERSİZ renkler atanır (set içinde çakışma olmaz). */
+    rastgeleKelimeSeti() {
+        if (typeof wordEasterEggs === 'undefined') return null;
         const uygun = Object.keys(wordEasterEggs).filter(r => {
             if (r.length !== 3) return false;                     // üç harfli kökler
-            return g2KokIsimVezinleri(r.split('').join(' ')).length >= 2;
+            return g2KokIsimVezinleri(r.split('').join(' ')).length >= 5;
         });
-        if (uygun.length < 5) return;
+        if (uygun.length < 5) return null;
         const secilen = this.shuffle(uygun.slice()).slice(0, 5);
-        this.state.words = secilen.map(r => {
+        const renkPaketi = this.shuffle(RASTGELE_RENKLER.slice());
+        return secilen.map(r => {
             const spaced = r.split('').join(' ');
+            if (!ROOT_COLORS[spaced] && !rastgeleRenkCache[spaced] && renkPaketi.length) {
+                rastgeleRenkCache[spaced] = renkPaketi.pop();
+            }
             const vezinler = g2KokIsimVezinleri(spaced);
             const secim = vezinler[Math.floor(Math.random() * vezinler.length)];
             return { word: secim.word, root: spaced };
         });
+    },
+
+    kelimeleriKaristir() {
+        if (this.state.phase !== 'grind' || this.state.grindCount > 0) return;
+        const yeni = this.rastgeleKelimeSeti();
+        if (!yeni) return;
+        App.playSound('click');
+        this.state.words = yeni;
+        this.kelimeleriDoldur();
+    },
+
+    /* Tek kelimelik yedek: hariç tutulan köklerin DIŞINDA, en az 5 isim
+       vezinli rastgele bir kökten rastgele bir kelime getirir. Sete yeni
+       giren köke, mevcut köklerle çakışmayan bir renk atanır. */
+    rastgeleTekKelime(haricKokler) {
+        if (typeof wordEasterEggs === 'undefined') return null;
+        const aday = Object.keys(wordEasterEggs).filter(r => {
+            if (r.length !== 3) return false;
+            const spaced = r.split('').join(' ');
+            if (haricKokler.has(spaced)) return false;
+            return g2KokIsimVezinleri(spaced).length >= 5;
+        });
+        if (!aday.length) return null;
+        const r = aday[Math.floor(Math.random() * aday.length)];
+        const spaced = r.split('').join(' ');
+        if (!ROOT_COLORS[spaced] && !rastgeleRenkCache[spaced]) {
+            const kullanilan = new Set([...haricKokler].map(k => rootColors(k)[0]));
+            const renk = this.shuffle(RASTGELE_RENKLER.slice()).find(c => !kullanilan.has(c[0]));
+            rastgeleRenkCache[spaced] = renk || RASTGELE_RENKLER[Math.floor(Math.random() * RASTGELE_RENKLER.length)];
+        }
+        const vezinler = g2KokIsimVezinleri(spaced);
+        return { word: vezinler[Math.floor(Math.random() * vezinler.length)].word, root: spaced };
+    },
+
+    /* ✕ ile çıkarılan kelimenin yerine anında yeni bir kelime gelir.
+       (Amaç: Türkçede yaşayan türevleri olan kökleri seçebilmek.) */
+    kelimeDegistir(i) {
+        const s = this.state;
+        if (this.state.phase !== 'grind') return;
+        if (!s.words[i] || s.words[i].used) return;
+        const haric = new Set(s.words.map(w => w.root).concat(s.bekleyen));
+        const yeni = this.rastgeleTekKelime(haric);
+        if (!yeni) return;
+        App.playSound('click');
+        s.words[i] = yeni;
         this.kelimeleriDoldur();
     },
 
@@ -1395,11 +1480,12 @@ const Game2 = {
         liste.innerHTML = '';
         this.state.words.forEach((w, i) => {
             const chip = document.createElement('div');
-            chip.className = 'g2-word-chip';
+            chip.className = 'g2-word-chip' + (w.used ? ' used' : '');
             chip.dir = 'rtl';
             chip.style.animationDelay = (i * 0.16) + 's';
             // Zaid (kökten gelmeyen ek) harfler burada da kırmızı gösteriliyor.
-            chip.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>`;
+            chip.innerHTML = `<span class="g3-pattern-text">${formatWordVsRoot(w.word, w.root)}</span>` +
+                `<span class="g2-cikar" title="كَلِمَة أُخْرَى">×</span>`;
             chip.dataset.index = i;
             // Kelimenin çerçevesi ait olduğu kökün rengini alıyor.
             paintRootBadge(chip, w.root);
@@ -1407,6 +1493,11 @@ const Game2 = {
 
             // Sürükleme yok: kelimeye TIKLANINCA kendiliğinden banda uçar
             chip.addEventListener('click', () => this.kelimeTikla(chip, w));
+            // ✕: bu kelimeyi çıkar, yerine başka kökten yenisi gelsin
+            chip.querySelector('.g2-cikar').addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.kelimeDegistir(i);
+            });
         });
     },
 
@@ -1417,6 +1508,7 @@ const Game2 = {
         if (this.state.phase !== 'grind') return;
         if (chip.classList.contains('used')) return;
         chip.classList.add('used');
+        w.used = true; // liste yeniden çizilirse durum korunur
         App.playSound('click');
         // İlk kelime yola çıktı: karıştırma tuşu kaybolur
         document.getElementById('g2-karistirTus').classList.remove('gorunur');
@@ -1528,7 +1620,6 @@ const Game2 = {
                         this.state.grindCount++;
                         this.state.bekleyen.push(w.root);
                         this.state.doneTotal++;
-                        document.getElementById('g2-progress').textContent = `${this.state.doneTotal} / ${this.totalWords()}`;
                         // Konteynırda külçe var: bekleyen forklift vurgulanır
                         if (this.state.phase === 'grind') {
                             document.getElementById('g2-forklift').classList.add('hazir');
@@ -1672,8 +1763,10 @@ const Game2 = {
         const panel = document.getElementById('g2-vezinler');
         panel.innerHTML = '';
         const root = this.state.selRoot;
+        panel.style.removeProperty('--vf');
         if (!root) return;
-        this.kokVezinleri(root).forEach(e => {
+        const liste = this.kokVezinleri(root);
+        liste.forEach(e => {
             const b = document.createElement('div');
             b.dir = 'rtl';
             const dovulmus = this.state.forgedPairs.has(root + '|' + e.no);
@@ -1684,6 +1777,26 @@ const Game2 = {
             if (!dovulmus) b.addEventListener('click', () => this.dovVeUret(e, b));
             panel.appendChild(b);
         });
+        this.vezinleriSigdir();
+    },
+
+    /* Levhalar sahneye sığana kadar yazı boyu kademeli küçültülür
+       (vitrindeki "en büyük boyut" mantığının vezin paneli karşılığı). */
+    vezinleriSigdir() {
+        const panel = document.getElementById('g2-vezinler');
+        const ic = panel && panel.parentElement;
+        if (!ic) return;
+        let deneme = 0;
+        const adim = () => {
+            if (deneme++ > 8) return;
+            if (ic.scrollWidth <= ic.clientWidth + 2) return; // sığdı
+            const ornek = panel.querySelector('.g2-vezin');
+            if (!ornek) return;
+            const su = parseFloat(getComputedStyle(ornek).fontSize);
+            panel.style.setProperty('--vf', (su * .88).toFixed(1) + 'px');
+            requestAnimationFrame(adim);
+        };
+        requestAnimationFrame(adim);
     },
 
     /* Usta seçilen kökü seçilen vezinle döver; kelime vitrine uçar.
@@ -1777,7 +1890,6 @@ const Game2 = {
                 if (!this.state.forgedRoots.has(root)) {
                     this.state.forgedRoots.add(root);
                     this.state.doneTotal++;
-                    document.getElementById('g2-progress').textContent = `${this.state.doneTotal} / ${this.totalWords()}`;
                 }
 
                 // Raf külçesi: bütün vezinleri bittiyse pasifleşir, yoksa
@@ -1799,14 +1911,14 @@ const Game2 = {
                 this.vezinleriGuncelle();
                 this.dovuyor = false;
 
-                // Partinin durumuna göre: her şey dövüldüyse otomatik ilerle,
-                // her kök en az bir kez dövüldüyse devam tuşu görünür
+                // Tuşsuz akış: her kök en az bir kez dövülünce (ya da partinin
+                // tüm vezinleri bitince) kısa bir beklemeyle kendiliğinden ilerler.
                 const hepsiDovuldu = this.state.shelf.every(r => this.kalanVezin(r) === 0);
                 const herKokBirKez = this.state.shelf.every(r => this.state.forgedRoots.has(r));
                 if (hepsiDovuldu) {
                     setTimeout(() => this.ilerle(), 1300);
                 } else if (herKokBirKez) {
-                    document.getElementById('g2-devamTus').classList.add('gorunur');
+                    setTimeout(() => this.ilerle(), 1700);
                 }
             }, 1450);
         }, 260 + VURUS_SAYISI * VURUS_ARASI + 120);
@@ -1816,7 +1928,7 @@ const Game2 = {
        yeni parti, öğütülmemiş kelime varsa değirmene dönüş, yoksa yeni tur. */
     ilerle() {
         if (this.dovuyor) return;
-        document.getElementById('g2-devamTus').classList.remove('gorunur');
+        if (this.state.phase !== 'forge') return; // çifte tetiklenme koruması
         this.state.selRoot = null;
         this.orsBosalt();
 
@@ -1840,7 +1952,7 @@ const Game2 = {
     rondBitti() {
         this.state.roundIdx++;
         if (this.state.roundIdx >= GAME2_ROUNDS.length) {
-            App.showDone('🏭', 'أَحْسَنْتَ! مِنَ الكَلِمَةِ إِلى الجَذْرِ وَمِنَ الجَذْرِ إِلى الكَلِمَة');
+            App.showDone('🏭', 'أَحْسَنْتَ! مِنَ الْكَلِمَةِ إِلَى الْجَذْرِ وَمِنَ الْجَذْرِ إِلَى الْكَلِمَةِ.');
             document.getElementById('done-replay').onclick = () => {
                 App.hideDone();
                 this.start();
@@ -1875,7 +1987,7 @@ const Game3 = {
             <div class="back-btn" id="g3-back">${BACK_SVG}</div>
             <div class="progress-pill" id="g3-progress">${this.state.doneSet.size} / ${this.totalValid()}</div>
             <div class="g3-wrap">
-                <div class="g1-title" dir="rtl">اُسْحَبِ الجَذْرَ إِلى الوَزْنِ لِتَصْنَعَ كَلِمَةً جَديدَة</div>
+                <div class="g1-title" dir="rtl">اُسْحَبِ الْجَذْرَ إِلَى الْوَزْنِ لِتَصْنَعَ كَلِمَةً جَدِيدَةً.</div>
                 <div class="g3-stage">
                     <!-- VİTRİN: türeyen kelime, tenteli bir dükkân vitrininde sergilenir -->
                     <div class="g3-vitrin">
@@ -1985,7 +2097,7 @@ const Game3 = {
                 document.getElementById('g3-progress').textContent = `${this.state.doneSet.size} / ${this.totalValid()}`;
                 if (this.state.doneSet.size === this.totalValid()) {
                     setTimeout(() => {
-                        App.showDone('🏆', 'أَحْسَنْتَ! لَقَد اكْتَشَفْتَ كُلَّ الاِشْتِقاقات');
+                        App.showDone('🏆', 'أَحْسَنْتَ! لَقَدِ اكْتَشَفْتَ كُلَّ الِاشْتِقَاقَاتِ.');
                         document.getElementById('done-replay').onclick = () => {
                             App.hideDone();
                             this.start();

@@ -421,8 +421,10 @@ body {
 .g2-sahne {
     width: 50%; height: 100%; position: relative; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    padding-top: clamp(56px, 10vh, 96px);
+    padding-top: clamp(12px, 2.5vh, 28px);
 }
+/* Geri tuşu vitrinin üstüne biner (ekran alanı boşa gitmez) */
+#game2-screen .back-btn { z-index: 60; }
 /* SAHNE = 3 SÜTUNLU IZGARA (revizyon 35):
    sol sütun kelimenin kök yuvası, orta sütun çark (bütün satırlar boyunca
    uzanır), sağ sütun kelime kutusu. Her kelime KENDİ SATIRINDA olduğu için
@@ -565,25 +567,27 @@ body {
 /* ---------- ATÖLYE SAHNESİ (sol) ---------- */
 .g2-atolye-ic {
     position: relative; width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: flex-end;
-    gap: clamp(22px, 3vw, 64px);
-    padding: 0 clamp(16px, 3vw, 56px) clamp(40px, 7vh, 80px) clamp(12px, 2vw, 40px);
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(10px, 1.4vw, 30px);
+    padding: 0 clamp(10px, 1.5vw, 30px) clamp(40px, 7vh, 80px) clamp(8px, 1.2vw, 24px);
 }
 /* Vezin levhaları: örsün üstünde yan yana; kök seçilince uygunlar açılır */
 .g2-vezinler {
-    display: flex; flex-wrap: wrap; justify-content: center;
-    gap: clamp(6px, .9vw, 14px); direction: rtl;
-    min-height: 40px;
-    /* Sahnenin en üstünde, başlığın hemen altında asılı durur */
-    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-    z-index: 6; width: max-content; max-width: 94%;
+    /* Ustanın ve köklerin ÜSTÜNDE, iki satır hâlinde */
+    display: grid; grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column; grid-auto-columns: max-content;
+    gap: clamp(12px, 2.2vh, 22px) clamp(8px, .9vw, 18px);
+    direction: rtl;
+    margin: clamp(6px, 1.6vh, 18px) auto 0;
+    min-height: 2.5em; z-index: 6;
 }
+/* Levha boyu JS ile sığdırılır (--vf): sahne taşarsa yazı kademeli küçülür */
 .g2-vezin {
-    padding: 1px 14px 5px; border-radius: 12px; direction: rtl; text-align: center;
+    padding: 2px 18px 7px; border-radius: 14px; direction: rtl; text-align: center;
     background: linear-gradient(#fffdf6, #f7edda);
     border: 2px solid #a9743f;
     box-shadow: 0 0 0 2px #8a5a2c, 0 5px 10px rgba(90,58,28,.18);
-    font-size: clamp(1.2rem, 2.6vh, 1.7rem); line-height: 1.45;
+    font-size: var(--vf, clamp(1.5rem, 3.4vh, 2.2rem)); line-height: 1.45;
     transition: transform .2s ease, opacity .2s ease, box-shadow .2s ease;
     user-select: none;
 }
@@ -594,9 +598,11 @@ body {
 /* Kök rafı: forkliftin dizdiği tıklanabilir külçeler (her biri kendi rafında) */
 .g2-kokraf {
     display: flex; flex-direction: column; align-items: center;
-    gap: clamp(12px, 2vh, 20px); min-width: clamp(110px, 12vw, 170px);
-    margin-right: clamp(10px, 1.6vw, 34px);
+    gap: clamp(12px, 2vh, 20px); min-width: clamp(100px, 10vw, 150px);
+    margin-right: clamp(6px, 1vw, 20px);
 }
+/* Raftaki külçeler iri ve okunaklı */
+.g2-kokraf .g2-kulce { font-size: min(2.4rem, 4.8vh); }
 .g2-kok-kulce {
     position: relative; cursor: pointer;
     transition: transform .2s ease, opacity .3s ease, filter .2s ease;
@@ -626,14 +632,26 @@ body {
 /* ---------- BİRLEŞİK FABRİKA VİTRİNİ: sola yaslı, büyük, çok raflı ----------
    Dövülen HER kelime vitrine bir raf kartı olarak eklenir; sayı arttıkça
    kartlar akıllıca küçülür, gerekirse dikey kaydırma açılır. */
-/* Usta+örs vitrine yakın (solda) durur; raf sağda kalır */
-.g2-atolye-ic .g3-ors-kutu { margin-right: auto; }
+/* Sağ bölge: üstte vezinler, altta usta + kökler */
+.g2-sag {
+    flex: 1; min-width: 0; height: 100%;
+    display: flex; flex-direction: column;
+}
+.g2-sag-alt {
+    flex: 1; display: flex; align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 clamp(8px, 1vw, 24px);
+}
+/* Usta+örs aşağıda, zemine yakın durur */
+.g2-sag-alt .g3-ors-kutu { align-self: flex-end; margin-bottom: clamp(16px, 3.5vh, 42px); }
+.g2-sag-alt .g2-kokraf { align-self: center; }
 /* SABİT vitrin: boyut değişmez; kelimeler JS'in hesapladığı ızgaraya
    (satır × sütun) yerleşir ve alabilecekleri EN BÜYÜK boyutu alırlar.
    Ör. 6 kelime → 3 raf × 2'şer, 9 kelime → 3 raf × 3'er. */
 #g2-vitrinKutu {
-    width: clamp(380px, 40vw, 780px);
-    height: clamp(300px, 58vh, 640px);
+    width: clamp(420px, calc(26.5vw + 100px), 680px);
+    /* En alttan en yukarıya: tente + raf payı dışında tüm ekran boyu */
+    height: calc(100vh - clamp(140px, 17vh, 185px));
     min-width: 0; min-height: 0;
     display: grid; grid-template-columns: 1fr;
     align-items: center; justify-items: center;
@@ -696,7 +714,7 @@ body {
 .g3-usta-cizim { overflow: visible; }
 /* Usta örsün hemen yanında durur; vuruş açısı da tablaya (köke) değecek
    kadar geniş — g3'tekinden ayrı keyframe kullanılır */
-#g2-orsKutu .g3-usta { z-index: 5; left: -46px; bottom: -6px; }
+#g2-orsKutu .g3-usta { z-index: 5; left: -78px; bottom: -6px; width: min(248px, 44vh); }
 #g2-orsKutu .g3-usta.calisiyor .usta-kol { animation-name: g2UstaVur; }
 @keyframes g2UstaVur {
     0%   { transform: rotate(-46deg); }
@@ -736,8 +754,16 @@ body {
 }
 .g2-gecis-tus.gorunur { display: block; animation: popIn .35s ease; }
 .g2-gecis-tus:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 26px rgba(230,126,34,.5), inset 0 1px 0 rgba(255,255,255,.35); }
-#g2-devamTus { right: 3%; }
-#g2-karistirTus { left: 3%; }
+/* Yenile tuşu: yalnız dönüşüm ikonu, yuvarlak, sağ altta */
+#g2-karistirTus {
+    right: 3%; left: auto;
+    width: clamp(52px, 6.5vh, 66px); height: clamp(52px, 6.5vh, 66px);
+    padding: 0; border-radius: 50%;
+    display: none; align-items: center; justify-content: center;
+}
+#g2-karistirTus.gorunur { display: flex; }
+#g2-karistirTus svg { width: 58%; height: 58%; display: block; transition: transform .45s ease; }
+#g2-karistirTus:hover svg { transform: rotate(180deg); }
 
 /* ---------- ORTA YÖNERGE: faz başında belirir, okunur, kaybolur ---------- */
 .g2-yonerge {
@@ -831,8 +857,21 @@ body.drag-learned .g3-root-chip { animation: none; }
     direction: rtl; cursor: pointer; box-shadow: 0 4px 14px rgba(124,58,237,.12);
     user-select: none; transition: opacity .2s;
 }
+.g2-word-chip { position: relative; }
 .g2-word-chip.dragging-source { opacity: .3; }
 .g2-word-chip.used { opacity: .25; pointer-events: none; text-decoration: line-through; }
+/* Kelimeyi setten çıkarma çarpısı: köşede küçük kırmızı yuvarlak */
+.g2-cikar {
+    position: absolute; top: -9px; left: -9px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #e74c3c; color: #fff;
+    font-size: 15px; line-height: 21px; text-align: center;
+    font-family: sans-serif; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    opacity: .85; transition: transform .15s ease, opacity .15s ease;
+}
+.g2-cikar:hover { transform: scale(1.18); opacity: 1; }
+.g2-word-chip.used .g2-cikar { display: none; }
 .g2-ghost {
     background: linear-gradient(135deg, #fff, #f7f5ff); border: 2px solid var(--secondary);
     border-radius: 18px; padding: 11px 20px; direction: rtl; box-shadow: 0 10px 25px rgba(0,0,0,.25);
@@ -848,13 +887,13 @@ body.drag-learned .g3-root-chip { animation: none; }
     .g2-stage { --g2-kutu-font: clamp(1.6rem, 5.1vw, 2.3rem); }
     /* Atölye telefonda dikey dizilir: usta+örs üstte, raf ortada, vitrin altta */
     .g2-atolye-ic { flex-direction: column; height: auto; gap: 20px; padding-bottom: 110px; }
-    .g2-vezinler { position: static; transform: none; width: auto; order: 0; }
-    .g2-atolye-ic .g3-ors-kutu { margin-right: 0; }
+    .g2-sag, .g2-sag-alt { display: contents; }
+    .g2-vezinler { display: flex; flex-wrap: wrap; justify-content: center; order: 2; max-width: 94vw; margin: 0; }
     #g2-vitrinKutu { width: min(92vw, 460px); height: 44vh; }
-    .g2-atolye-ic .g3-ors-kutu { order: 1; }
-    .g2-kokraf { order: 2; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 16px 20px; min-width: 0;
+    .g2-atolye-ic .g3-ors-kutu { order: 1; align-self: center; margin-bottom: 0; }
+    .g2-kokraf { order: 3; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 16px 20px; min-width: 0;
         max-height: none; overflow: visible; margin-right: 0; }
-    .g2-atolye-ic .g3-vitrin { order: 3; }
+    .g2-atolye-ic .g3-vitrin { order: 4; }
     .g2-forklift { width: 96px; }
     .g2-fabrika { margin-top: -4vh; }
 }
@@ -1127,7 +1166,7 @@ body.drag-learned .g3-root-chip { animation: none; }
     .g2-fabrika { width: min(920px, 108vh, 62vw); }
     .g2-kulce { font-size: min(2.15rem, 4.3vh); }
     .g2-gezgin { font-size: min(2.2rem, 4.4vh); }
-    .g2-vezin { font-size: min(1.8rem, 3.4vh); }
+    .g2-vezin { font-size: min(2.2rem, 4.2vh); }
     .g2-kokraf { gap: min(18px, 2.2vh); }
 
     .g2-ghost { font-size: 2.7rem; padding: 17px 38px; border-radius: 22px; }
