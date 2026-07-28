@@ -177,9 +177,13 @@
 
         /* --- DİKEY EKRAN (Telefon/Tablet) 540x960 ORANI --- */
         @media (orientation: portrait) {
-            html { font-size: min(calc(100vw / 33.75), calc(100dvh / 60)); }
-            #gameWrapper { width: 33.75rem; height: 60rem; }
+            html { font-size: min(calc(100vw / 33.75), calc(100dvh / 68)); }
+            #gameWrapper { width: 33.75rem; height: 68rem; }
             .screen { padding: 1rem; }
+            /* Uzun telefonlarda ana menü içeriği tuvalden taşarsa kaydırılabilsin
+               (Başla düğmesi her zaman erişilebilir kalır) */
+            #homeScreen{ overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+                justify-content:flex-start; padding-bottom:2rem; }
             .title-text h1 { font-size: 3.5rem; } .title-text h2 { font-size: 2.8rem; }
             #homeScreen h3 { font-size: 1.8rem; }
             #levelSelect { max-width: 100%; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
@@ -530,12 +534,19 @@
     .ks-turkce{ font-size:1.9rem; }
     .ks-arapca{ min-height:3.4rem; }
     .ks-typed{ font-size:4.6rem; }
-    .tus-grup.harfler{ gap:0.6rem; }
-    .harf-tus .ht-form{ font-size:3.6rem; min-width:2rem; }
-    .harf-tus{ gap:0.4rem; padding:0.6rem 0.3rem; } .harf-tus .ht-form + .ht-form{ padding-right:0.4rem; }
-    .hareke-tus{ min-width:4rem; padding:0.4rem 0.5rem; }
-    .hareke-tus .hk-mark{ font-size:3.6rem; font-weight:400; } .hareke-tus .hk-name{ font-size:0.8rem; }
+    /* Harf tuşları: telefonda 2 sütun — kartlar geniş, 4 hâl taşmadan sığar */
+    .tus-grup.harfler{ grid-template-columns:repeat(2,1fr); grid-auto-rows:minmax(5.6rem,1fr); gap:0.6rem; }
+    .harf-tus{ gap:0.25rem; padding:0.5rem 0.3rem; }
+    .harf-tus .ht-form{ font-size:3rem; min-width:1.6rem; }
+    .harf-tus .ht-form + .ht-form{ padding-right:0.3rem; }
+    /* Hareke satırı ekrana sığsın: gerekirse alt satıra sarsın, yatay kaydırma olmasın */
+    .tus-grup.harekeler{ flex-wrap:wrap; overflow-x:visible; row-gap:0.5rem; }
+    .hareke-grup{ padding:0 0.5rem; gap:0.3rem; }
+    .hareke-tus{ min-width:3.2rem; padding:0.35rem 0.35rem; }
+    .hareke-tus .hk-mark{ font-size:3rem; font-weight:400; } .hareke-tus .hk-name{ font-size:0.8rem; }
     .slayt-tuslar{ gap:0.7rem; }
+    /* Liste biraz kısalsın ki klavyeye daha çok yer kalsın */
+    .slayt-mod .kelime-liste{ max-height:18rem; }
 }
 
 /* Slayt modunda dikey sıra: KELİME LİSTESİ ÜSTTE (tüm sınıf görür), tuşlar
@@ -554,6 +565,13 @@
 #gameHeader .back-button{ position:static; width:3.4rem; height:3.4rem; font-size:1.2rem; flex-shrink:0; }
 #gameHeader .back-button::before{ margin-right:0; }
 #gameHeader #levelScoreDisplay{ flex:0 0 auto; }
+/* Duraklat / Devam tuşu — geri tuşunun hemen yanında */
+.pause-button{ position:static; width:3.4rem; height:3.4rem; padding:0; flex-shrink:0;
+    color:var(--color-accent-1); }
+.pause-button .ico{ width:1.7rem; height:1.7rem; }
+.pause-button .ico-resume{ display:none; }
+.pause-button.is-paused .ico-pause{ display:none; }
+.pause-button.is-paused .ico-resume{ display:inline-block; }
 /* Kronometre + ses çizgisi birleşik widget */
 .zaman-widget{ display:flex; align-items:center; gap:0.9rem; flex:1 1 auto; min-width:0; }
 .zw-timer{ font-family:var(--font-poppins); font-weight:700; font-size:1.5rem; color:var(--color-error);

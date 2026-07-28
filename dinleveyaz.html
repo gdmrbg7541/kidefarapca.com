@@ -89,6 +89,10 @@
             <div id="geriSayim" class="geri-sayim" aria-hidden="true"></div>
             <header id="gameHeader" class="game-header">
                 <button id="backToHomeButton" class="back-button key-button" title="Geri" aria-label="Geri"></button>
+                <button id="pauseButton" class="pause-button key-button" title="Duraklat" aria-label="Duraklat">
+                    <svg class="ico ico-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></svg>
+                    <svg class="ico ico-resume" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                </button>
                 <!-- Kronometre + ses zaman çizgisi birleşik (uzun çizgi), ortada -->
                 <div id="zamanWidget" class="zaman-widget">
                     <span id="timerDisplay" class="zw-timer"><svg class="ico ico-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line class="clock-hand" x1="12" y1="12" x2="12" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="15" y2="13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="timerValue">--</span><span class="zw-unit">s</span></span>
@@ -121,9 +125,7 @@
             </main>
 
             <footer id="gameFooter" class="game-footer">
-                <button id="prevWordButton" class="nav-btn key-button" title="Önceki kelime" aria-label="Önceki"><svg class="ico ico-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <div id="kelimeGosterge" class="kelime-gosterge">–</div>
-                <button id="nextWordButton" class="nav-btn key-button" title="Sonraki kelime" aria-label="Sonraki"><svg class="ico ico-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <!-- eski oyun mantığının beklediği gizli elemanlar -->
                 <button id="playAudioButton" style="display:none"></button>
                 <button id="nextButton" style="display:none"></button>

@@ -118,6 +118,8 @@
         let examMode = false;                 // ana ekrandaki anahtardan gelir
         let autoMode = false;                 // Otomatik Yazım: harfler kendiliğinden çıkar
         let autoRevealTimer = null;
+        let paused = false;                   // Duraklat/Devam durumu (Sınav modu hariç)
+        const pauseButton = document.getElementById('pauseButton');
         const ZWJ = '‍';                 // birleştirme için sıfır-genişlik joiner
         // Sonraki harfe BAĞLANMAYAN harfler: bunların baş/orta hâli yoktur
         const BAGLANMAYAN = new Set(['ا','أ','إ','آ','ٱ','د','ذ','ر','ز','و','ؤ','ة','ء','ى']);
@@ -278,7 +280,9 @@
                         const tus = document.createElement('button');
                         tus.className = 'slayt-tus hareke-tus key-button';
                         tus.dataset.value = mark; tus.setAttribute('lang','ar');
-                        tus.innerHTML = `<span class="hk-mark">ـ${mark}</span><span class="hk-name">${ad}</span>`;
+                        // Tatvil (ـ) yerine noktalı taşıyıcı daire (U+25CC): üstün üstte,
+                        // esre altta görünür; tenvinler de aynı şekilde konumlanır.
+                        tus.innerHTML = `<span class="hk-mark">◌${mark}</span><span class="hk-name">${ad}</span>`;
                         g.appendChild(tus);
                     });
                 });
@@ -378,25 +382,35 @@
         }
 
         // --- 3-2-1 geri sayım (kelime seçilince ekranda) ---
+        // Durum modül düzeyinde tutulur ki Duraklat/Devam geri sayımı da dondurabilsin.
+        let geriSayimN = 0;
+        let geriSayimSonra = null;
+        function geriSayimCalisiyor(){ return !!geriSayimSonra; }   // geri sayım sürüyor mu (donmuş da olabilir)
         function stopGeriSayim(){
             if (countdownTimer){ clearTimeout(countdownTimer); countdownTimer = null; }
+            geriSayimSonra = null;
             if (geriSayimEl){ geriSayimEl.classList.remove('aktif','pop'); }
+        }
+        function geriSayimGoster(){
+            if (!geriSayimEl) return;
+            geriSayimEl.textContent = geriSayimN;
+            geriSayimEl.classList.remove('pop'); void geriSayimEl.offsetWidth; geriSayimEl.classList.add('pop');
+        }
+        function geriSayimTick(){
+            geriSayimN--;
+            if (geriSayimN >= 1){ geriSayimGoster(); countdownTimer = setTimeout(geriSayimTick, 1000); }
+            else {
+                geriSayimEl.classList.remove('aktif','pop'); countdownTimer = null;
+                const s = geriSayimSonra; geriSayimSonra = null; if (s) s();
+            }
         }
         function startGeriSayim(sonra){
             stopGeriSayim();
             if (!geriSayimEl){ sonra(); return; }
-            let n = 3;
-            const goster = () => {
-                geriSayimEl.textContent = n;
-                geriSayimEl.classList.remove('pop'); void geriSayimEl.offsetWidth; geriSayimEl.classList.add('pop');
-            };
-            geriSayimEl.classList.add('aktif'); goster();
-            const tick = () => {
-                n--;
-                if (n >= 1){ goster(); countdownTimer = setTimeout(tick, 1000); }
-                else { geriSayimEl.classList.remove('aktif','pop'); countdownTimer = null; sonra(); }
-            };
-            countdownTimer = setTimeout(tick, 1000);
+            geriSayimSonra = sonra;
+            geriSayimN = 3;
+            geriSayimEl.classList.add('aktif'); geriSayimGoster();
+            countdownTimer = setTimeout(geriSayimTick, 1000);
         }
 
         // --- Kelime seçme / ileri-geri gezinme ---
@@ -407,6 +421,7 @@
             stopGeriSayim(); stopDictation(); clearTimeout(autoRevealTimer);
             clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
             gameActive = false; wordActive = false; waitingForAudioClick = false;
+            paused = false; setPauseButtonState();
             currentWordIndex = index;
             loadWord();
         }
@@ -550,6 +565,9 @@
             autoMode = !!(autoCheckbox && autoCheckbox.checked);
             gameMainEl.classList.toggle('exam-mode', examMode);
             gameMainEl.classList.toggle('auto-mode', autoMode);
+            // Duraklat/Devam tuşu: Sınav modu dışındaki iki modda görünür
+            paused = false;
+            if (pauseButton){ pauseButton.style.display = examMode ? 'none' : 'inline-flex'; setPauseButtonState(); }
             levelWords = [...gameData[selectedLevel].words].sort(() => Math.random() - 0.5);
             currentWordIndex = 0;
             currentLevelScore = 0; incorrectWords = []; tamamlananlar = new Set();
@@ -647,6 +665,7 @@
             if (!waitingForAudioClick) return;
             initAudioContext();
             waitingForAudioClick = false; wordActive = true;
+            paused = false; setPauseButtonState();
             dictate(currentWord._tekrar || 1);
             startTimer();
             disableLetterBank(false);
@@ -733,6 +752,52 @@
             }, 1000);
         }
 
+        // --- Duraklat / Devam (Sınav modu hariç iki modda da) ---
+        function setPauseButtonState(){
+            if (!pauseButton) return;
+            pauseButton.classList.toggle('is-paused', paused);
+            pauseButton.title = paused ? 'Devam et' : 'Duraklat';
+            pauseButton.setAttribute('aria-label', paused ? 'Devam et' : 'Duraklat');
+        }
+        function pauseGame(){
+            if (paused) return;
+            const geriSayimda = geriSayimCalisiyor();
+            if (!gameActive && !geriSayimda) return;
+            paused = true;
+            if (geriSayimda){
+                clearTimeout(countdownTimer); countdownTimer = null;   // rakam ekranda donar
+            } else {
+                clearInterval(timerInterval);
+                stopDictation();
+                clearTimeout(autoRevealTimer);
+                sesIlerlemeDurdur();
+                try { audio.pause(); } catch(e){}
+            }
+            setPauseButtonState();
+        }
+        function resumeGame(){
+            if (!paused) return;
+            paused = false;
+            setPauseButtonState();
+            if (geriSayimCalisiyor()){
+                // Geri sayım donmuştu: kaldığı rakamdan devam et
+                clearTimeout(countdownTimer);
+                countdownTimer = setTimeout(geriSayimTick, 1000);
+                return;
+            }
+            if (remainingTime <= 0) return;
+            startTimer();                              // sayaç + kırmızı ilerleme, kalan süreyle
+            dictate(currentWord._tekrar || 1);         // sesi kalan süreye yeniden dağıt
+            if (autoMode){
+                clearTimeout(autoRevealTimer);
+                autoRevealTimer = setTimeout(autoRevealNext, Math.max(300, saniyePerHarf * 1000));
+            }
+        }
+        function togglePause(){
+            if (examMode) return;
+            paused ? resumeGame() : pauseGame();
+        }
+
         function checkAnswer(timeUp = false) {
              if (!wordActive && !waitingForAudioClick && !timeUp) return;
              wordActive = false; waitingForAudioClick = false; stopDictation(); stopGeriSayim(); sesIlerlemeDurdur();
@@ -741,6 +806,7 @@
              updateSiraVurgusu();   // sıra vurgusunu temizle
              clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
              gameActive = false; disableAllButtons(true);
+             paused = false; setPauseButtonState();
 
              // SINAV MODU: tuşlara tıklanmaz; süre bitince sıradaki kelimeye geç
              if (examMode) { autoNextTimeout = setTimeout(nextWord, 800); return; }
@@ -804,6 +870,7 @@
         function showHomeScreen() {
             stopDictation(); stopGeriSayim(); clearTimeout(autoRevealTimer);
             clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); gameActive = false; wordActive = false; waitingForAudioClick = false; clearInterval(timerInterval);
+            paused = false; setPauseButtonState();
             gameScreen.classList.remove('active');
             scoreScreen.classList.remove('active');
             homeScreen.classList.add('active');
@@ -814,6 +881,7 @@
 
         // Olay Dinleyicileri
         backToHomeButton.addEventListener('click', showHomeScreen);
+        if (pauseButton) pauseButton.addEventListener('click', () => { initAudioContext(); togglePause(); });
         scoreToHomeButton.addEventListener('click', showHomeScreen);
         nextButton.addEventListener('click', nextWord);
 
