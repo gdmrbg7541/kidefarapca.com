@@ -33,11 +33,6 @@
                 </div>
             </div>
             <h3>Seviyeler</h3>
-            <label id="examToggle" class="exam-toggle">
-                <input type="checkbox" id="examCheckbox">
-                <span class="exam-switch"></span>
-                <span class="exam-label">📝 Sınav Modu <small>(cevap gizli)</small></span>
-            </label>
             <div id="levelSelect" class="button-grid">
                 <button class="level-btn key-button" data-level="1">Seviye 1</button>
                 <button class="level-btn key-button" data-level="2">Seviye 2</button>
@@ -49,18 +44,36 @@
                 <button class="level-btn key-button" data-level="8">Seviye 8</button>
             </div>
 
+            <div id="modSecim" class="mod-secim">
+                <label id="clickToggle" class="exam-toggle">
+                    <input type="checkbox" id="clickCheckbox" checked>
+                    <span class="exam-switch"></span>
+                    <span class="exam-label"><svg class="ico ico-click" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5l0 11.5 2.9-2.7 1.8 4.2 2.1-0.9-1.8-4.1 3.9-0.3L9 3.5z" fill="currentColor"/><path class="click-spark s1" d="M5 6.5l-1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="click-spark s2" d="M4.5 11h-2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="click-spark s3" d="M6 15.5l-1.6 1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Alıştırma Modu <small>(öğrenci tıklayarak yazar)</small></span>
+                </label>
+                <label id="examToggle" class="exam-toggle">
+                    <input type="checkbox" id="examCheckbox">
+                    <span class="exam-switch"></span>
+                    <span class="exam-label"><svg class="ico ico-pencil" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/><path class="pen-tip" d="M20.7 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Sınav Modu <small>(cevap gizli)</small></span>
+                </label>
+                <label id="autoToggle" class="exam-toggle">
+                    <input type="checkbox" id="autoCheckbox">
+                    <span class="exam-switch"></span>
+                    <span class="exam-label"><svg class="ico ico-auto" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.7 4.1 4.1 1.7-4.1 1.7L12 14l-1.7-4L6.2 8.3l4.1-1.7L12 2.5z" fill="currentColor"/><circle cx="18.5" cy="16.5" r="1.9" fill="currentColor"/><circle cx="6" cy="16" r="1.3" fill="currentColor"/></svg>Otomatik Yazım <small>(harfler kendiliğinden çıkar)</small></span>
+                </label>
+            </div>
+
             <!-- Zaman ve tekrar ayarları: seviyeye göre hazır gelir, elle değiştirilebilir -->
             <div id="ayarlar" class="ayarlar">
                 <div class="ayar-satir">
-                    <span class="ayar-label">⏱️ Harf başına saniye</span>
+                    <span class="ayar-label"><svg class="ico ico-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line class="clock-hand" x1="12" y1="12" x2="12" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="15" y2="13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Harf başına saniye</span>
                     <div class="stepper">
                         <button type="button" class="step-btn" data-target="saniyeInput" data-delta="-1">−</button>
-                        <input id="saniyeInput" class="ayar-input" type="number" min="1" max="30" value="6" inputmode="numeric">
+                        <input id="saniyeInput" class="ayar-input" type="number" min="1" max="30" value="9" inputmode="numeric">
                         <button type="button" class="step-btn" data-target="saniyeInput" data-delta="1">+</button>
                     </div>
                 </div>
                 <div class="ayar-satir">
-                    <span class="ayar-label">🔊 Tekrar sayısı</span>
+                    <span class="ayar-label"><svg class="ico ico-speaker" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path class="wave w1" d="M16 8.7a4 4 0 010 6.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="wave w2" d="M18.6 6.2a7.5 7.5 0 010 11.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Tekrar sayısı</span>
                     <div class="stepper">
                         <button type="button" class="step-btn" data-target="tekrarInput" data-delta="-1">−</button>
                         <input id="tekrarInput" class="ayar-input" type="number" min="1" max="15" value="4" inputmode="numeric">
@@ -68,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            <button id="baslaButton" class="action-btn key-button" disabled>Başla ▶</button>
+            <button id="baslaButton" class="action-btn key-button" disabled><span>Başla</span><svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
             </div>
 
         <div id="gameScreen" class="screen">
@@ -78,7 +91,7 @@
                 <button id="backToHomeButton" class="back-button key-button" title="Geri" aria-label="Geri"></button>
                 <!-- Kronometre + ses zaman çizgisi birleşik (uzun çizgi), ortada -->
                 <div id="zamanWidget" class="zaman-widget">
-                    <span id="timerDisplay" class="zw-timer">⏱️--s</span>
+                    <span id="timerDisplay" class="zw-timer"><svg class="ico ico-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line class="clock-hand" x1="12" y1="12" x2="12" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="15" y2="13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="timerValue">--</span><span class="zw-unit">s</span></span>
                     <div id="sesCizelgesi" class="ses-cizelgesi" aria-hidden="true"></div>
                 </div>
                 <div id="levelScoreDisplay" class="header-info">Puan: 0</div>
@@ -108,9 +121,9 @@
             </main>
 
             <footer id="gameFooter" class="game-footer">
-                <button id="prevWordButton" class="nav-btn key-button" title="Önceki kelime" aria-label="Önceki">◀</button>
+                <button id="prevWordButton" class="nav-btn key-button" title="Önceki kelime" aria-label="Önceki"><svg class="ico ico-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <div id="kelimeGosterge" class="kelime-gosterge">–</div>
-                <button id="nextWordButton" class="nav-btn key-button" title="Sonraki kelime" aria-label="Sonraki">▶</button>
+                <button id="nextWordButton" class="nav-btn key-button" title="Sonraki kelime" aria-label="Sonraki"><svg class="ico ico-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <!-- eski oyun mantığının beklediği gizli elemanlar -->
                 <button id="playAudioButton" style="display:none"></button>
                 <button id="nextButton" style="display:none"></button>

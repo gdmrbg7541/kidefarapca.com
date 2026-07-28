@@ -67,13 +67,15 @@
         const tekrarInput = document.getElementById('tekrarInput');
         const baslaButton = document.getElementById('baslaButton');
         // Seviyelerin hazır ayarları (harf başına saniye / harf başına tekrar)
-        const SEVIYE_AYAR = { '1':{sn:6,tk:4}, '2':{sn:5,tk:4}, '3':{sn:5,tk:3}, '4':{sn:4,tk:3},
-                              '5':{sn:4,tk:2}, '6':{sn:3,tk:2}, '7':{sn:2,tk:2}, '8':{sn:1,tk:1} };
+        const SEVIYE_AYAR = { '1':{sn:9,tk:4}, '2':{sn:8,tk:4}, '3':{sn:8,tk:3}, '4':{sn:7,tk:3},
+                              '5':{sn:7,tk:3}, '6':{sn:6,tk:3}, '7':{sn:5,tk:3}, '8':{sn:4,tk:3} };
         let saniyePerHarf = 6, tekrarPerHarf = 4;
         let harekeYok = false;   // son 4 seviyede (5-8) harekeler gösterilmez, yalnız harfler yazılır
         const backToHomeButton = document.getElementById('backToHomeButton');
         const scoreToHomeButton = document.getElementById('scoreToHomeButton');
         const timerDisplay = document.getElementById('timerDisplay');
+        const timerValueEl = document.getElementById('timerValue');
+        const setTimer = (v) => { if (timerValueEl) timerValueEl.textContent = v; };
         const gameHeader = document.getElementById('gameHeader');
         const gameMain = document.getElementById('gameMain');
         const gameFooter = document.getElementById('gameFooter');
@@ -110,8 +112,12 @@
         const harekeTuslarEl = document.getElementById('harekeTuslar');
         const slideAnswerEl  = document.getElementById('slideAnswer');
         const sesCizelgesiEl = document.getElementById('sesCizelgesi');
+        const clickCheckbox  = document.getElementById('clickCheckbox');
         const examCheckbox   = document.getElementById('examCheckbox');
+        const autoCheckbox   = document.getElementById('autoCheckbox');
         let examMode = false;                 // ana ekrandaki anahtardan gelir
+        let autoMode = false;                 // Otomatik Yazım: harfler kendiliğinden çıkar
+        let autoRevealTimer = null;
         const ZWJ = '‍';                 // birleştirme için sıfır-genişlik joiner
         // Sonraki harfe BAĞLANMAYAN harfler: bunların baş/orta hâli yoktur
         const BAGLANMAYAN = new Set(['ا','أ','إ','آ','ٱ','د','ذ','ر','ز','و','ؤ','ة','ء','ى']);
@@ -398,7 +404,7 @@
             if (!levelWords.length) return;
             if (index < 0) index = 0;
             if (index >= levelWords.length) index = levelWords.length - 1;
-            stopGeriSayim(); stopDictation();
+            stopGeriSayim(); stopDictation(); clearTimeout(autoRevealTimer);
             clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
             gameActive = false; wordActive = false; waitingForAudioClick = false;
             currentWordIndex = index;
@@ -506,6 +512,19 @@
                 inp.value = v;
             });
         });
+        // Üç mod (Alıştırma / Sınav / Otomatik) birbirini dışlar: her zaman tam biri açık
+        const modCheckboxlar = [clickCheckbox, examCheckbox, autoCheckbox].filter(Boolean);
+        modCheckboxlar.forEach((cb) => {
+            cb.addEventListener('change', () => {
+                if (cb.checked) {
+                    // Bu mod açıldı: diğer ikisini kapat
+                    modCheckboxlar.forEach((o) => { if (o !== cb) o.checked = false; });
+                } else {
+                    // Açık modu kapatmaya çalıştı: hiçbiri kalmasın diye Alıştırma'ya dön
+                    if (!modCheckboxlar.some((o) => o.checked) && clickCheckbox) clickCheckbox.checked = true;
+                }
+            });
+        });
         // Başla: seçilen seviye + güncel (hazır ya da elle değiştirilmiş) ayarlarla başlar
         if (baslaButton) baslaButton.addEventListener('click', () => {
             if (!selectedLevel) return;
@@ -528,7 +547,9 @@
             harekeYok = (parseInt(selectedLevel, 10) >= 5);   // son 4 seviye: harekesiz (yalnız harfler)
             // Sınav modu: ana ekrandaki anahtardan; açıkken slaytın cevap tarafı gizli
             examMode = !!(examCheckbox && examCheckbox.checked);
+            autoMode = !!(autoCheckbox && autoCheckbox.checked);
             gameMainEl.classList.toggle('exam-mode', examMode);
+            gameMainEl.classList.toggle('auto-mode', autoMode);
             levelWords = [...gameData[selectedLevel].words].sort(() => Math.random() - 0.5);
             currentWordIndex = 0;
             currentLevelScore = 0; incorrectWords = []; tamamlananlar = new Set();
@@ -601,7 +622,7 @@
             // Harf sayısı (harekeler hariç) — zaman ve tekrar bundan hesaplanır
             const harfSayisi = Math.max(1, Array.from(currentWord.ar).filter(c => !HAREKELER.has(c)).length);
             remainingTime = harfSayisi * saniyePerHarf;
-            timerDisplay.textContent = `⏱️${remainingTime}s`;
+            setTimer(remainingTime);
             clearInterval(timerInterval);
             turkishWordEl.textContent = currentWord.tr;
             // Slaytı bu kelimeye göre çiz; sesin kaç kez tekrarlanacağı = kök harf sayısı
@@ -630,6 +651,26 @@
             startTimer();
             disableLetterBank(false);
             updateSiraVurgusu();   // ilk sıra: harf tarafı
+            if (autoMode){
+                // Otomatik yazım: her harf, süresi (saniyePerHarf) dolunca kendiliğinden çıkar
+                clearTimeout(autoRevealTimer);
+                autoRevealTimer = setTimeout(autoRevealNext, Math.max(300, saniyePerHarf * 1000));
+            }
+        }
+
+        // Otomatik yazım: sıradaki HARF ve ona bitişik harekeleri birlikte gösterir
+        function autoRevealNext(){
+            if (!autoMode || !wordActive) return;
+            if (expectedFullCharIndex >= fullWordChars.length){ checkAnswer(false); return; }
+            appendCharToOutput(fullWordChars[expectedFullCharIndex].char);
+            expectedFullCharIndex++;
+            while (expectedFullCharIndex < fullWordChars.length && HAREKELER.has(fullWordChars[expectedFullCharIndex].char)){
+                appendCharToOutput(fullWordChars[expectedFullCharIndex].char);
+                expectedFullCharIndex++;
+            }
+            updateSiraVurgusu();
+            if (expectedFullCharIndex >= fullWordChars.length){ checkAnswer(false); }
+            else { autoRevealTimer = setTimeout(autoRevealNext, Math.max(300, saniyePerHarf * 1000)); }
         }
 
         function populateLetterBank() {
@@ -683,11 +724,11 @@
             sesIlerlemeBaslat(remainingTime);   // kırmızı zaman ilerlemesini başlat
             timerInterval = setInterval(() => {
                 if (!gameActive) { clearInterval(timerInterval); return; }
-                remainingTime--; timerDisplay.textContent = `⏱️${remainingTime}s`;
+                remainingTime--; setTimer(remainingTime);
                 if (remainingTime <= 0) {
-                    clearInterval(timerInterval); timerDisplay.textContent = '⏱️0s';
-                    gameActive = false; wordActive = false;
-                    checkAnswer(true); // Zaman bitti
+                    clearInterval(timerInterval); setTimer(0);
+                    // Otomatik yazımda süre bitince kelime düşmez; harf gösterimi tamamlar.
+                    if (!autoMode){ gameActive = false; wordActive = false; checkAnswer(true); }
                 }
             }, 1000);
         }
@@ -695,6 +736,7 @@
         function checkAnswer(timeUp = false) {
              if (!wordActive && !waitingForAudioClick && !timeUp) return;
              wordActive = false; waitingForAudioClick = false; stopDictation(); stopGeriSayim(); sesIlerlemeDurdur();
+             clearTimeout(autoRevealTimer);
              playAudioButton.classList.remove('blinking-button');
              updateSiraVurgusu();   // sıra vurgusunu temizle
              clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
@@ -760,7 +802,7 @@
         }
 
         function showHomeScreen() {
-            stopDictation(); stopGeriSayim();
+            stopDictation(); stopGeriSayim(); clearTimeout(autoRevealTimer);
             clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); gameActive = false; wordActive = false; waitingForAudioClick = false; clearInterval(timerInterval);
             gameScreen.classList.remove('active');
             scoreScreen.classList.remove('active');
