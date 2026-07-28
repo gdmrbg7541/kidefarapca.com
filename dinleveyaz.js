@@ -63,6 +63,9 @@
         const gameScreen = document.getElementById('gameScreen');
         const scoreScreen = document.getElementById('scoreScreen');
         const levelSelect = document.getElementById('levelSelect');
+        const seviyeAkordiyon = document.getElementById('seviyeAkordiyon');
+        const seviyeBaslik = document.getElementById('seviyeBaslik');
+        const seviyeSecili = document.getElementById('seviyeSecili');
         const saniyeInput = document.getElementById('saniyeInput');
         const tekrarInput = document.getElementById('tekrarInput');
         const baslaButton = document.getElementById('baslaButton');
@@ -503,6 +506,15 @@
         // Seviye seçildiğinde Web Audio bağlamını başlat
         // Seviye seçimi: hazır zaman/tekrar değerlerini yükler (elle değiştirilebilir),
         // oyunu BAŞLATMAZ — "Başla" tuşu başlatır.
+        // Seviye akordiyonu: aç/kapa (mobilde etkin; masaüstünde grid CSS ile hep açık)
+        function seviyeAkordiyonAyarla(acik){
+            if (!seviyeAkordiyon) return;
+            seviyeAkordiyon.classList.toggle('acik', acik);
+            if (seviyeBaslik) seviyeBaslik.setAttribute('aria-expanded', acik ? 'true' : 'false');
+        }
+        if (seviyeBaslik) seviyeBaslik.addEventListener('click', () => {
+            seviyeAkordiyonAyarla(!seviyeAkordiyon.classList.contains('acik'));
+        });
         levelSelect.addEventListener('click', (e) => {
             if (e.target.classList.contains('level-btn')) {
                 initAudioContext();
@@ -513,6 +525,9 @@
                 const a = SEVIYE_AYAR[selectedLevel];
                 if (a){ if (saniyeInput) saniyeInput.value = a.sn; if (tekrarInput) tekrarInput.value = a.tk; }
                 if (baslaButton) baslaButton.disabled = false;
+                // Seçim yapıldı: başlıkta seçili seviyeyi göster ve akordiyonu kapat (mobil)
+                if (seviyeSecili) seviyeSecili.textContent = 'Seviye ' + selectedLevel;
+                seviyeAkordiyonAyarla(false);
             }
         });
         // Ayar arttır/azalt (± tuşları)
@@ -878,6 +893,9 @@
             history.replaceState({ screen: 'home' }, '', window.location.pathname);
              if (selectedLevelBtn) { selectedLevelBtn.classList.remove('selected'); selectedLevelBtn = null; } selectedLevel = null;
              if (baslaButton) baslaButton.disabled = true;
+             // Ana menüye dönünce akordiyonu tekrar aç ve seçili rozeti temizle
+             if (seviyeSecili) seviyeSecili.textContent = '';
+             seviyeAkordiyonAyarla(true);
         }
 
         // Olay Dinleyicileri

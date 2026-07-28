@@ -32,33 +32,37 @@
                     <h2>اِسْتَمِعْ وَاكْتُبْ</h2>
                 </div>
             </div>
-            <h3>Seviyeler</h3>
-            <div id="levelSelect" class="button-grid">
-                <button class="level-btn key-button" data-level="1">Seviye 1</button>
-                <button class="level-btn key-button" data-level="2">Seviye 2</button>
-                <button class="level-btn key-button" data-level="3">Seviye 3</button>
-                <button class="level-btn key-button" data-level="4">Seviye 4</button>
-                <button class="level-btn key-button" data-level="5">Seviye 5</button>
-                <button class="level-btn key-button" data-level="6">Seviye 6</button>
-                <button class="level-btn key-button" data-level="7">Seviye 7</button>
-                <button class="level-btn key-button" data-level="8">Seviye 8</button>
+            <div id="seviyeAkordiyon" class="seviye-akordiyon acik">
+                <button type="button" id="seviyeBaslik" class="seviye-baslik" aria-expanded="true">
+                    <span class="sb-metin">Seviyeler</span>
+                    <span id="seviyeSecili" class="sb-secili"></span>
+                    <svg class="ico ico-chevron sb-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div id="levelSelect" class="button-grid">
+                    <button class="level-btn key-button" data-level="1">Seviye 1</button>
+                    <button class="level-btn key-button" data-level="2">Seviye 2</button>
+                    <button class="level-btn key-button" data-level="3">Seviye 3</button>
+                    <button class="level-btn key-button" data-level="4">Seviye 4</button>
+                    <button class="level-btn key-button" data-level="5">Seviye 5</button>
+                    <button class="level-btn key-button" data-level="6">Seviye 6</button>
+                    <button class="level-btn key-button" data-level="7">Seviye 7</button>
+                    <button class="level-btn key-button" data-level="8">Seviye 8</button>
+                </div>
             </div>
 
+            <!-- Modlar: yan yana 3 sütun, yalnız içeriği yansıtan SVG'ler (metin yok) -->
             <div id="modSecim" class="mod-secim">
-                <label id="clickToggle" class="exam-toggle">
+                <label id="clickToggle" class="mod-btn" title="Alıştırma — tıklayarak yaz" aria-label="Alıştırma modu (tıklayarak yaz)">
                     <input type="checkbox" id="clickCheckbox" checked>
-                    <span class="exam-switch"></span>
-                    <span class="exam-label"><svg class="ico ico-click" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5l0 11.5 2.9-2.7 1.8 4.2 2.1-0.9-1.8-4.1 3.9-0.3L9 3.5z" fill="currentColor"/><path class="click-spark s1" d="M5 6.5l-1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="click-spark s2" d="M4.5 11h-2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="click-spark s3" d="M6 15.5l-1.6 1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Alıştırma Modu <small>(öğrenci tıklayarak yazar)</small></span>
+                    <svg class="ico ico-click" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5l0 11.5 2.9-2.7 1.8 4.2 2.1-0.9-1.8-4.1 3.9-0.3L9 3.5z" fill="currentColor"/><path class="click-spark s1" d="M5 6.5l-1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="click-spark s2" d="M4.5 11h-2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="click-spark s3" d="M6 15.5l-1.6 1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
                 </label>
-                <label id="examToggle" class="exam-toggle">
+                <label id="examToggle" class="mod-btn" title="Sınav — cevap gizli" aria-label="Sınav modu (cevap gizli)">
                     <input type="checkbox" id="examCheckbox">
-                    <span class="exam-switch"></span>
-                    <span class="exam-label"><svg class="ico ico-pencil" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25z"/><path class="pen-tip" d="M20.7 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Sınav Modu <small>(cevap gizli)</small></span>
+                    <svg class="ico ico-exam" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.7" fill="currentColor"/><line x1="4" y1="3.5" x2="20" y2="20.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </label>
-                <label id="autoToggle" class="exam-toggle">
+                <label id="autoToggle" class="mod-btn" title="Otomatik — harfler kendiliğinden çıkar" aria-label="Otomatik yazım (harfler kendiliğinden çıkar)">
                     <input type="checkbox" id="autoCheckbox">
-                    <span class="exam-switch"></span>
-                    <span class="exam-label"><svg class="ico ico-auto" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.7 4.1 4.1 1.7-4.1 1.7L12 14l-1.7-4L6.2 8.3l4.1-1.7L12 2.5z" fill="currentColor"/><circle cx="18.5" cy="16.5" r="1.9" fill="currentColor"/><circle cx="6" cy="16" r="1.3" fill="currentColor"/></svg>Otomatik Yazım <small>(harfler kendiliğinden çıkar)</small></span>
+                    <svg class="ico ico-auto" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.7 4.1 4.1 1.7-4.1 1.7L12 14l-1.7-4L6.2 8.3l4.1-1.7L12 2.5z" fill="currentColor"/><circle cx="18.5" cy="16.5" r="1.9" fill="currentColor"/><circle cx="6" cy="16" r="1.3" fill="currentColor"/></svg>
                 </label>
             </div>
 
