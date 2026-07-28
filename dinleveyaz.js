@@ -70,6 +70,7 @@
         const SEVIYE_AYAR = { '1':{sn:6,tk:4}, '2':{sn:5,tk:4}, '3':{sn:5,tk:3}, '4':{sn:4,tk:3},
                               '5':{sn:4,tk:2}, '6':{sn:3,tk:2}, '7':{sn:2,tk:2}, '8':{sn:1,tk:1} };
         let saniyePerHarf = 6, tekrarPerHarf = 4;
+        let harekeYok = false;   // son 4 seviyede (5-8) harekeler gösterilmez, yalnız harfler yazılır
         const backToHomeButton = document.getElementById('backToHomeButton');
         const scoreToHomeButton = document.getElementById('scoreToHomeButton');
         const timerDisplay = document.getElementById('timerDisplay');
@@ -130,6 +131,7 @@
         ];
         const UZATMA_HARFLERI = [ ['ا','Uzatma'], ['و','Uzatma'], ['ي','Uzatma'] ];
         const TA_MARBUTA = [ ['ـة','Bitişik'], ['ة','Ayrı'] ];      // ـة ة (aynı harf: ة)
+        const MADD = new Set(['ا','و','ي']);                        // uzatma (med) harfleri
         // Hareke panelinde de bulunan harfler (uzatma + tâ marbûta)
         const HAREKE_PANEL_HARF = new Set(['ا','و','ي','ة']);
 
@@ -139,9 +141,8 @@
         function siradakiHarekeTarafi(){
             if (!wordActive || expectedFullCharIndex >= fullWordChars.length) return null;
             const cur = fullWordChars[expectedFullCharIndex].char;
-            if (HAREKELER.has(cur)) return true;
-            if (HAREKE_PANEL_HARF.has(cur) && expectedFullCharIndex > 0) return true;
-            return false;
+            if (HAREKELER.has(cur)) return true;   // yalnız harekeler hareke tarafı
+            return false;                          // tüm harfler (ا و ي ة dahil) harf gridinde
         }
         function updateSiraVurgusu(){
             if (!harfTuslarEl || !harekeTuslarEl) return;
@@ -204,6 +205,10 @@
                 satir.className = cls;
                 satir.dataset.index = i;
 
+                const no = document.createElement('span');
+                no.className = 'ks-no';
+                no.textContent = (i + 1) + '.';
+
                 const tr = document.createElement('div');
                 tr.className = 'ks-turkce';
                 tr.textContent = w.tr;
@@ -216,11 +221,15 @@
                 typed.className = 'ks-typed';
                 typed.setAttribute('dir', 'rtl'); typed.setAttribute('lang', 'ar');
                 // tamamlanan: cevabı yeşil göster — ama SINAV MODUNDA cevap gizli kalır
-                if (tamamlananlar.has(i) && i !== currentWordIndex && !examMode) typed.textContent = w.ar;
+                if (tamamlananlar.has(i) && i !== currentWordIndex && !examMode){
+                    typed.textContent = harekeYok
+                        ? Array.from(w.ar).filter(c => !HAREKELER.has(c)).join('')
+                        : w.ar;
+                }
                 box.appendChild(typed);
                 if (i === currentWordIndex) aktifKutu = typed;
 
-                satir.appendChild(tr); satir.appendChild(box);
+                satir.appendChild(no); satir.appendChild(tr); satir.appendChild(box);
                 kelimeListeEl.appendChild(satir);
             });
             // Sıradaki kelime listenin EN BAŞINA gelir; tamamlanan kelimeler yukarıda
@@ -250,42 +259,24 @@
                 harfTuslarEl.appendChild(tus);
             });
             harekeTuslarEl.innerHTML = '';
-            const yeniGrup = () => {
-                const g = document.createElement('div'); g.className = 'hareke-grup';
-                harekeTuslarEl.appendChild(g); return g;
-            };
-            // 1-3) Harekeler: kısa harekeler, tenvinler, şedde/cezim (her biri ayrı grup)
-            HAREKE_GRUPLARI.forEach(grup => {
-                const g = yeniGrup();
-                grup.forEach(([mark, ad]) => {
-                    const tus = document.createElement('button');
-                    tus.className = 'slayt-tus hareke-tus key-button';
-                    tus.dataset.value = mark; tus.setAttribute('lang','ar');
-                    tus.innerHTML = `<span class="hk-mark">ـ${mark}</span><span class="hk-name">${ad}</span>`;
-                    g.appendChild(tus);
+            // Uzatma ve tâ marbûta grupları kaldırıldı: bütün harfler (ا و ي ة dahil)
+            // zaten harf gridinde. Son 4 seviyede (harekeYok) harekeler de gösterilmez.
+            if (!harekeYok){
+                const yeniGrup = () => {
+                    const g = document.createElement('div'); g.className = 'hareke-grup';
+                    harekeTuslarEl.appendChild(g); return g;
+                };
+                HAREKE_GRUPLARI.forEach(grup => {
+                    const g = yeniGrup();
+                    grup.forEach(([mark, ad]) => {
+                        const tus = document.createElement('button');
+                        tus.className = 'slayt-tus hareke-tus key-button';
+                        tus.dataset.value = mark; tus.setAttribute('lang','ar');
+                        tus.innerHTML = `<span class="hk-mark">ـ${mark}</span><span class="hk-name">${ad}</span>`;
+                        g.appendChild(tus);
+                    });
                 });
-            });
-            // 4) Uzatma (med) harfleri grubu: ا و ي
-            const gUz = yeniGrup();
-            UZATMA_HARFLERI.forEach(([harf, ad]) => {
-                const tus = document.createElement('button');
-                tus.className = 'slayt-tus hareke-tus uzatma-tus key-button'
-                              + (BAGLANMAYAN.has(harf) ? ' uz-baglanmaz' : '');
-                tus.dataset.value = harf; tus.setAttribute('lang','ar');
-                tus.innerHTML = `<span class="hk-mark uzatma-mark">${harf}</span><span class="hk-name">${ad}</span>`;
-                gUz.appendChild(tus);
-            });
-            // 5) Tâ marbûta grubu: ـة (bitişik) ve ة (ayrı) — ikisi de ة harfini yazar
-            const gTa = yeniGrup();
-            TA_MARBUTA.forEach(([disp, ad]) => {
-                const tus = document.createElement('button');
-                // Tâ marbûta grubu → pembe (kırmızı değil)
-                tus.className = 'slayt-tus hareke-tus uzatma-tus tamarbuta-tus key-button';
-                tus.dataset.value = 'ة'; tus.setAttribute('lang','ar');
-                tus.dataset.formtype = (disp === 'ـة') ? 'son' : 'yalin';   // bitişik = son hâl, ayrı = normal
-                tus.innerHTML = `<span class="hk-mark uzatma-mark">${disp}</span><span class="hk-name">${ad}</span>`;
-                gTa.appendChild(tus);
-            });
+            }
             slideAnswerEl.textContent = word.ar;   // "Doğru:" satırı (sınav modunda gizli)
         }
 
@@ -309,9 +300,13 @@
             const bas = document.createElement('div'); bas.className = 'sc-basla';
             bas.innerHTML = '<svg viewBox="0 0 24 24" width="1.6rem" height="1.6rem" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
             bar.appendChild(bas);
+            const track = document.createElement('div'); track.className = 'sc-track'; bar.appendChild(track);
+            const prog = document.createElement('div'); prog.className = 'sc-progress'; bar.appendChild(prog);
             for (let i = 1; i <= total; i++){
+                const f = (total <= 1) ? 0 : (i - 1) / total;   // çizgi üzerindeki konum (0..1)
                 const dot = document.createElement('div');
                 dot.className = 'sc-dot'; dot.dataset.i = i;
+                dot.style.left = 'calc(2.1rem + ' + f + ' * (100% - 2.4rem))';
                 dot.innerHTML = '<span class="sc-num">' + i + '</span>';
                 bar.appendChild(dot);
             }
@@ -331,32 +326,49 @@
                 d.classList.remove('playing'); d.classList.add('done');
             });
         }
+        // Kırmızı zaman ilerlemesi: süre boyunca soldan sağa dolar
+        function sesIlerlemeBaslat(saniye){
+            const p = sesCizelgesiEl && sesCizelgesiEl.querySelector('.sc-progress');
+            if (!p) return;
+            p.style.transition = 'none';
+            p.style.transform = 'translateY(-50%) scaleX(0)';
+            void p.offsetWidth;   // reflow
+            p.style.transition = 'transform ' + Math.max(0.1, saniye) + 's linear';
+            p.style.transform = 'translateY(-50%) scaleX(1)';
+        }
+        function sesIlerlemeDurdur(){
+            const p = sesCizelgesiEl && sesCizelgesiEl.querySelector('.sc-progress');
+            if (!p) return;
+            const t = getComputedStyle(p).transform;   // mevcut ilerlemeyi dondur
+            p.style.transition = 'none';
+            p.style.transform = (t && t !== 'none') ? t : 'translateY(-50%) scaleX(0)';
+        }
 
-        // --- Otomatik tekrar (imla): kelime sesi kök-harf sayısı kadar tekrarlanır ---
-        let dictateTimer = null, dictateLeft = 0;
+        // --- Otomatik tekrar (imla): ses, kırmızı ilerleme her RAKAMA geldiğinde çalar ---
+        let dictateTimers = [];
         function stopDictation(){
-            if (dictateTimer){ clearTimeout(dictateTimer); dictateTimer = null; }
-            audio.onended = null; dictateLeft = 0;
+            dictateTimers.forEach(t => clearTimeout(t)); dictateTimers = [];
+            audio.onended = null;
         }
         function dictate(times){
             stopDictation();
             const total = Math.max(1, times);
             buildSesCizelgesi(total);          // çizelgeyi sıfırla/kur
-            // İlk ses hemen çalar; kalan tekrarlar kelimenin SÜRESİNE yayılır
-            // (zamanda harf sayısı kadar ses tekrarı).
+            // Her nokta (rakam) kelimenin süresi boyunca belli bir konumdadır; kırmızı
+            // ilerleme o noktaya geldiğinde o tekrarın sesi çalar ve nokta yanar.
             const totalMs = Math.max(1, remainingTime) * 1000;
-            const interval = Math.max(1200, totalMs / total);
-            let idx = 0;
-            const calOnce = () => {
-                idx++;
-                markSesCizelgesi(idx);         // çalan tekrarı vurgula
-                try { if (!audio.paused){ audio.pause(); audio.currentTime = 0; } } catch(e){}
-                audio.src = currentWord.audioSrc;
-                const p = audio.play(); if (p) p.catch(()=>{});
-                if (idx < total){ dictateTimer = setTimeout(calOnce, interval); }
-                else { audio.onended = () => finishSesCizelgesi(); }
-            };
-            calOnce();
+            for (let i = 1; i <= total; i++){
+                const f = (total <= 1) ? 0 : (i - 1) / total;   // noktanın konumu (0..1)
+                const son = (i === total);
+                const t = setTimeout(() => {
+                    markSesCizelgesi(i);
+                    try { if (!audio.paused){ audio.pause(); audio.currentTime = 0; } } catch(e){}
+                    audio.src = currentWord.audioSrc;
+                    const p = audio.play(); if (p) p.catch(()=>{});
+                    if (son) { audio.onended = () => finishSesCizelgesi(); }
+                }, f * totalMs);
+                dictateTimers.push(t);
+            }
         }
 
         // --- 3-2-1 geri sayım (kelime seçilince ekranda) ---
@@ -513,6 +525,7 @@
             // Zaman/tekrar ayarlarını oku (hazır ya da elle değiştirilmiş)
             saniyePerHarf = Math.max(1, Math.min(60, parseInt(saniyeInput && saniyeInput.value, 10) || 6));
             tekrarPerHarf = Math.max(1, Math.min(20, parseInt(tekrarInput && tekrarInput.value, 10) || 1));
+            harekeYok = (parseInt(selectedLevel, 10) >= 5);   // son 4 seviye: harekesiz (yalnız harfler)
             // Sınav modu: ana ekrandaki anahtardan; açıkken slaytın cevap tarafı gizli
             examMode = !!(examCheckbox && examCheckbox.checked);
             gameMainEl.classList.toggle('exam-mode', examMode);
@@ -557,7 +570,10 @@
             // 4 veya daha az harf için sınıf eklenmez (varsayılan 1 satır)
             // --- ---
 
-            originalWord = currentWord.ar;
+            // Son 4 seviyede harekeler yazılmaz: hedef yalnız harflerden oluşur.
+            originalWord = harekeYok
+                ? Array.from(currentWord.ar).filter(c => !HAREKELER.has(c)).join('')
+                : currentWord.ar;
             fullWordChars = Array.from(originalWord).map((char, index) => ({ char: char, id: `${char}-${index}` }));
             // Her harfin bulunduğu yere göre DOĞRU yazılış hâlini hesapla
             // (baş/orta/son/normal). Öğrenci yanlış hâle basarsa hata sayılır.
@@ -565,14 +581,20 @@
                 const li = [];
                 fullWordChars.forEach((o, idx) => { if (!HAREKELER.has(o.char)) li.push(idx); });
                 for (let j = 0; j < li.length; j++){
-                    const ch   = fullWordChars[li[j]].char;
+                    const idx  = li[j];
+                    const ch   = fullWordChars[idx].char;
                     const prev = j > 0 ? fullWordChars[li[j-1]].char : null;
                     const oncekiBaglar  = (j > 0) && !BAGLANMAYAN.has(prev);          // önceki harf bu harfe bağlanıyor mu
                     const sonrakiBaglar = !BAGLANMAYAN.has(ch) && (j < li.length - 1); // bu harf sonrakine bağlanıyor mu
-                    fullWordChars[li[j]].form =
+                    fullWordChars[idx].form =
                         (!oncekiBaglar && !sonrakiBaglar) ? 'yalin' :
                         (!oncekiBaglar &&  sonrakiBaglar) ? 'bas'   :
                         ( oncekiBaglar &&  sonrakiBaglar) ? 'orta'  : 'son';
+                    // Uzatma (med): madd harfi (ا/و/ي) ve ÜZERİNDE hareke YOK, kelime başı değil.
+                    // Harekesi olan و/ي/ا (ör. هُوَ'deki و) uzatma değil, sıradan harftir.
+                    const sonraki = fullWordChars[idx + 1];
+                    fullWordChars[idx].uzatma = MADD.has(ch) && j > 0 &&
+                        (!sonraki || !HAREKELER.has(sonraki.char));
                 }
             })();
             const letterCount = fullWordChars.length;
@@ -658,6 +680,7 @@
 
         function startTimer() {
             clearInterval(timerInterval); gameActive = true;
+            sesIlerlemeBaslat(remainingTime);   // kırmızı zaman ilerlemesini başlat
             timerInterval = setInterval(() => {
                 if (!gameActive) { clearInterval(timerInterval); return; }
                 remainingTime--; timerDisplay.textContent = `⏱️${remainingTime}s`;
@@ -671,7 +694,7 @@
 
         function checkAnswer(timeUp = false) {
              if (!wordActive && !waitingForAudioClick && !timeUp) return;
-             wordActive = false; waitingForAudioClick = false; stopDictation(); stopGeriSayim();
+             wordActive = false; waitingForAudioClick = false; stopDictation(); stopGeriSayim(); sesIlerlemeDurdur();
              playAudioButton.classList.remove('blinking-button');
              updateSiraVurgusu();   // sıra vurgusunu temizle
              clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
