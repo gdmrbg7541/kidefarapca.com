@@ -396,7 +396,7 @@
       solda Türkçe, sağda Arapça yazım. Ekranın en çok ~yarısını kaplar; kelimeler
       yazıldıkça liste kayar, en üst ve en alt kelimeler görülebilir. */
 .kelime-liste{
-    position:relative;
+    position:relative; box-sizing:border-box;
     display:grid; grid-template-columns:1fr 1fr; column-gap:5rem; row-gap:0;
     width:100%; max-width:112rem; margin:0 auto; align-content:start;
     flex:0 1 auto; max-height:26rem; min-height:0; overflow-y:auto;
@@ -415,6 +415,9 @@
 .kelime-satir{
     display:flex; align-items:center; gap:1rem; min-height:11rem; max-height:18rem; overflow:hidden;
     scroll-margin-top:1rem;
+    /* Aktif kırmızı kutunun halkası (box-shadow) kenarlara değmesin diye satırlar
+       yatayda içeri alınır; kaydırılabilir kapsayıcı kenardan kırpmaz. */
+    margin-inline:0.9rem;
     padding:0.6rem 0.3rem 1.6rem; border-bottom:2px solid rgba(60,80,140,0.16);
     transition:opacity .45s ease, max-height .45s ease, min-height .45s ease, margin .45s ease,
                padding .45s ease, transform .45s ease, border-color .2s;
@@ -631,6 +634,14 @@
     color:var(--color-text-secondary); min-width:6rem; text-align:center; }
 @media (orientation: portrait){
     #gameHeader .back-button{ width:3rem; height:3rem; font-size:1rem; }
+}
+/* MOBİL header: ÜST satır = geri + duraklat/oynat + puan; ALT satır = yalnız
+   zaman çizgisi (tam genişlik). Masaüstünde tek satırda kalır. */
+@media (orientation: portrait), (max-height: 520px){
+    #gameHeader{ flex-wrap:wrap; justify-content:flex-start; align-items:center;
+        gap:0.5rem; row-gap:0.6rem; }
+    #gameHeader #levelScoreDisplay{ margin-left:auto; }
+    #gameHeader .zaman-widget{ order:10; flex:1 1 100%; width:100%; }
 }
 
 /* ===================================================================
