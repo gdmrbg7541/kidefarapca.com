@@ -177,8 +177,13 @@
 
         /* --- DİKEY EKRAN (Telefon/Tablet) 540x960 ORANI --- */
         @media (orientation: portrait) {
-            html { font-size: min(calc(100vw / 33.75), calc(100dvh / 68)); }
-            #gameWrapper { width: 33.75rem; height: 68rem; }
+            /* NEDEN düzeltmesi: Sabit 1:2.015 tuval (33.75×68) min() ile ölçeklenince,
+               cihaz bu orandan daha "az uzun" olduğunda (kısa telefonlar, tabletler ve
+               tarayıcı çubuğu dvh'yi kısaltınca) YÜKSEKLİK kısıtlı olur → yanlarda dar
+               boş bantlar çıkar. Çözüm: genişliği HER ZAMAN tam kullan (font yalnız
+               genişliğe göre), yükseklik cihaza göre esnesin (100dvh). */
+            html { font-size: calc(100vw / 33.75); }
+            #gameWrapper { width: 100vw; height: 100dvh; }
             .screen { padding: 1rem; }
             /* Uzun telefonlarda ana menü içeriği tuvalden taşarsa kaydırılabilsin
                (Başla düğmesi her zaman erişilebilir kalır) */
@@ -479,8 +484,8 @@
 /* Hareke grubu: RTL sıralı tek satır, 5 alt grup (kısa · tenvin · şedde/cezim ·
    uzatma · tâ marbûta) aralarında dikey ayraç ile — sabit, en altta */
 .tus-grup.harekeler{ flex-wrap:nowrap; justify-content:center; gap:0; overflow-x:auto;
-    flex:0 0 auto; align-items:stretch; direction:rtl; }
-.hareke-grup{ display:flex; align-items:stretch; gap:0.7rem; padding:0 1.1rem; }
+    flex:0 0 auto; align-items:center; direction:rtl; }
+.hareke-grup{ display:flex; align-items:center; gap:0.7rem; padding:0 1.1rem; }
 .hareke-grup + .hareke-grup{ border-inline-start:3px solid rgba(60,80,140,0.25); }
 /* Uzatma (med) harfleri — harakatlardan ayırmak için koyu ve kalın */
 .hareke-tus.uzatma-tus .uzatma-mark{ color:var(--color-text-primary); font-weight:700; }
@@ -496,7 +501,7 @@
 .harf-tus{ gap:0.8rem; width:100%; direction:rtl; padding:0.4rem 0.6rem; overflow:hidden; }
 .harf-tus .ht-form{ font-family:var(--font-harmattan); font-weight:700; font-size:5.6rem; line-height:1.1;
     color:var(--color-text-primary); min-width:3.4rem; text-align:center; flex:1 1 0; }
-.harf-tus .ht-form + .ht-form{ border-right:2px solid var(--color-shadow-dark); padding-right:0.6rem; }
+.harf-tus .ht-form + .ht-form{ border-right:1px solid rgba(60,80,140,0.15); padding-right:0.6rem; }
 /* Harf hâlleri renkleri: baş yeşil, orta mavi, son mor, normal siyah */
 .harf-tus .ht-bas{ color:#1f9d55; }
 .harf-tus .ht-orta{ color:#2b6cb0; }
@@ -507,10 +512,15 @@
 .hareke-tus.uzatma-tus.uz-baglanmaz .uzatma-mark{ color:var(--color-error); }
 
 /* Hareke tuşu: işaret + ad */
-.hareke-tus{ flex-direction:column; gap:0.1rem; min-width:6rem; padding:0.4rem 0.8rem 0.7rem; overflow:visible; }
-.hareke-tus .hk-mark{ font-family:var(--font-harmattan); font-weight:400; line-height:1.3; }
-/* Harekeler (üstün/esre/ötre, tenvin, şedde/cezim): SİYAH ve konteynıra sığacak boyut */
-.hareke-tus:not(.uzatma-tus) .hk-mark{ font-size:4.4rem; color:var(--color-text-primary); }
+/* align-items:center (yukarıda) sayesinde tuşlar satır boyunca UZAMAZ — yükseklik
+   içeriğe göre kompakt kalır. Yalın harekeler baseline'a göre üstte/altta durduğu
+   için ölçülü bir satır yüksekliği + küçük dikey boşluk yeterli: üsttekiler üstten,
+   alttakiler alttan az bir payla durur, taşmaz; kutu da uzamaz. */
+.hareke-tus{ flex-direction:column; gap:0.1rem; min-width:6rem; padding:0.55rem 0.8rem; overflow:visible; }
+.hareke-tus .hk-mark{ font-family:var(--font-harmattan); font-weight:400; line-height:1.5; }
+/* Harekeler (üstün/esre/ötre, tenvin, şedde/cezim): SİYAH; boyut ölçülü tutulur ki
+   satır kutusu (dolayısıyla tuş) gereksiz uzamasın, kutu kareye yakın kalsın. */
+.hareke-tus:not(.uzatma-tus) .hk-mark{ font-size:3.6rem; color:var(--color-text-primary); }
 /* Uzatma harfleri (ا و ي): harf boyutunda, koyu */
 .hareke-tus.uzatma-tus .uzatma-mark{ font-size:6.2rem; color:var(--color-text-primary); font-weight:700; }
 /* Tâ marbûta: PEMBE */
@@ -534,19 +544,27 @@
     .ks-turkce{ font-size:1.9rem; }
     .ks-arapca{ min-height:3.4rem; }
     .ks-typed{ font-size:4.6rem; }
-    /* Harf tuşları: telefonda 2 sütun — kartlar geniş, 4 hâl taşmadan sığar */
-    .tus-grup.harfler{ grid-template-columns:repeat(2,1fr); grid-auto-rows:minmax(5.6rem,1fr); gap:0.6rem; }
-    .harf-tus{ gap:0.25rem; padding:0.5rem 0.3rem; }
-    .harf-tus .ht-form{ font-size:3rem; min-width:1.6rem; }
-    .harf-tus .ht-form + .ht-form{ padding-right:0.3rem; }
+    /* Harf tuşları: telefonda TAM GENİŞLİK tek sütun — ekranı yatayda dengeli
+       kullanır. Her kart tek bir tuştur; 4 hâl kartın enine eşit yayılır (bol
+       yer → taşma/kırpılma olmaz). Dikeyde uzamaz (yükseklik içeriğe göre). */
+    .tus-grup.harfler{ display:flex; flex-direction:column; align-items:stretch;
+        gap:0.6rem; overflow-y:auto; }
+    .harf-tus{ width:100%; gap:0.4rem; padding:0.5rem 1rem; overflow:hidden; }
+    .harf-tus .ht-form{ font-size:3.8rem; min-width:0; flex:1 1 0; line-height:1.15; }
+    .harf-tus .ht-form + .ht-form{ padding-right:0.5rem; }
     /* Hareke satırı ekrana sığsın: gerekirse alt satıra sarsın, yatay kaydırma olmasın */
     .tus-grup.harekeler{ flex-wrap:wrap; overflow-x:visible; row-gap:0.5rem; }
     .hareke-grup{ padding:0 0.5rem; gap:0.3rem; }
-    .hareke-tus{ min-width:3.2rem; padding:0.35rem 0.35rem; }
-    .hareke-tus .hk-mark{ font-size:3rem; font-weight:400; } .hareke-tus .hk-name{ font-size:0.8rem; }
+    .hareke-tus{ min-width:3.8rem; padding:0.45rem 0.4rem; }
+    /* :not(.uzatma-tus) ile aynı özgüllük — yoksa taban 3.6rem'i ezemezdi ve kutu uzardı */
+    .hareke-tus:not(.uzatma-tus) .hk-mark{ font-size:2.9rem; line-height:1.5; } .hareke-tus .hk-name{ font-size:0.8rem; }
     .slayt-tuslar{ gap:0.7rem; }
-    /* Liste biraz kısalsın ki klavyeye daha çok yer kalsın */
-    .slayt-mod .kelime-liste{ max-height:18rem; }
+    /* Ana alanı ORANSAL böl: liste ~%38, klavye ~%62. Tam-genişlik dolgusuyla
+       birlikte rem bütçesi cihaza göre değiştiğinden, sabit yükseklikler yerine
+       oran kullanınca harf kartları asla sıfıra inmez (gerekirse liste/klavye
+       kendi içinde kayar). #gameMain.slayt-mod özgüllüğü sonraki taban kuralını ezer. */
+    #gameMain.slayt-mod .kelime-liste{ flex:1 1 38%; max-height:none; min-height:0; }
+    #gameMain.slayt-mod .slayt-tuslar{ flex:1 1 62%; min-height:0; }
 }
 
 /* Slayt modunda dikey sıra: KELİME LİSTESİ ÜSTTE (tüm sınıf görür), tuşlar

@@ -280,9 +280,10 @@
                         const tus = document.createElement('button');
                         tus.className = 'slayt-tus hareke-tus key-button';
                         tus.dataset.value = mark; tus.setAttribute('lang','ar');
-                        // Tatvil (ـ) yerine noktalı taşıyıcı daire (U+25CC): üstün üstte,
-                        // esre altta görünür; tenvinler de aynı şekilde konumlanır.
-                        tus.innerHTML = `<span class="hk-mark">◌${mark}</span><span class="hk-name">${ad}</span>`;
+                        // Taşıyıcı yok: hareke tek başına gösterilir (ne tatvil ne daire).
+                        // Bu font harekeleri yalın olarak doğru konumlar: üstün/ötre üstte,
+                        // esre altta; tenvinler de aynı şekilde. Böylece kutudan taşma olmaz.
+                        tus.innerHTML = `<span class="hk-mark">${mark}</span><span class="hk-name">${ad}</span>`;
                         g.appendChild(tus);
                     });
                 });
