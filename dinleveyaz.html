@@ -33,6 +33,11 @@
                 </div>
             </div>
             <h3>Seviyeler</h3>
+            <label id="examToggle" class="exam-toggle">
+                <input type="checkbox" id="examCheckbox">
+                <span class="exam-switch"></span>
+                <span class="exam-label">📝 Sınav Modu <small>(cevap gizli)</small></span>
+            </label>
             <div id="levelSelect" class="button-grid">
                 <button class="level-btn key-button" data-level="1">Seviye 1</button>
                 <button class="level-btn key-button" data-level="2">Seviye 2</button>
@@ -43,34 +48,72 @@
                 <button class="level-btn key-button" data-level="7">Seviye 7</button>
                 <button class="level-btn key-button" data-level="8">Seviye 8</button>
             </div>
+
+            <!-- Zaman ve tekrar ayarları: seviyeye göre hazır gelir, elle değiştirilebilir -->
+            <div id="ayarlar" class="ayarlar">
+                <div class="ayar-satir">
+                    <span class="ayar-label">⏱️ Harf başına saniye</span>
+                    <div class="stepper">
+                        <button type="button" class="step-btn" data-target="saniyeInput" data-delta="-1">−</button>
+                        <input id="saniyeInput" class="ayar-input" type="number" min="1" max="30" value="6" inputmode="numeric">
+                        <button type="button" class="step-btn" data-target="saniyeInput" data-delta="1">+</button>
+                    </div>
+                </div>
+                <div class="ayar-satir">
+                    <span class="ayar-label">🔊 Tekrar sayısı</span>
+                    <div class="stepper">
+                        <button type="button" class="step-btn" data-target="tekrarInput" data-delta="-1">−</button>
+                        <input id="tekrarInput" class="ayar-input" type="number" min="1" max="15" value="4" inputmode="numeric">
+                        <button type="button" class="step-btn" data-target="tekrarInput" data-delta="1">+</button>
+                    </div>
+                </div>
+            </div>
+            <button id="baslaButton" class="action-btn key-button" disabled>Başla ▶</button>
             </div>
 
         <div id="gameScreen" class="screen">
+            <!-- Kelime seçilince 3-2-1 geri sayım -->
+            <div id="geriSayim" class="geri-sayim" aria-hidden="true"></div>
             <header id="gameHeader" class="game-header">
+                <button id="backToHomeButton" class="back-button key-button" title="Geri" aria-label="Geri"></button>
+                <!-- Kronometre + ses zaman çizgisi birleşik (uzun çizgi), ortada -->
+                <div id="zamanWidget" class="zaman-widget">
+                    <span id="timerDisplay" class="zw-timer">⏱️--s</span>
+                    <div id="sesCizelgesi" class="ses-cizelgesi" aria-hidden="true"></div>
+                </div>
                 <div id="levelScoreDisplay" class="header-info">Puan: 0</div>
                 <div id="pointsBurst"></div>
-                <div id="mistakeCounter" class="header-info"></div>
-                <div id="timerDisplay" class="header-info">⏱️--s</div>
+                <div id="mistakeCounter" class="header-info" style="display:none"></div>
             </header>
 
-            <main id="gameMain" class="game-main">
-                <div id="gameContent">
-                    <div id="arabicOutputContainer">
-                        <div id="arabicOutputDisplay" class="arabic-output empty" dir="rtl" lang="ar"></div>
-                    </div>
-                    <div id="letterBankContainer">
-                       <div id="letterBank"></div>
-                    </div>
-                    <div id="turkishWord">Kelime</div>
+            <main id="gameMain" class="game-main slayt-mod">
+                <!-- 1) Birleşik tuş konteynırı: harf tuşları (her biri 4 hâl) + hareke tuşları -->
+                <div id="tusKonteyner" class="slayt-tuslar">
+                    <div id="harfTuslar" class="tus-grup harfler"></div>
+                    <div id="harekeTuslar" class="tus-grup harekeler"></div>
                 </div>
+
+                <!-- 2) İki sütun kelime listesi: her Türkçe kelimenin sağında Arapça
+                     yazım kutusu. Sıradaki kelime vurgulu; doğru yazılınca kaybolur,
+                     alttaki kelimeler yukarı kayar. -->
+                <div id="kelimeListe" class="kelime-liste"></div>
+
+                <!-- eski oyun mantığının beklediği gizli elemanlar -->
+                <div id="turkishWord" style="display:none"></div>
+                <div id="arabicOutputContainer" style="display:none">
+                    <div id="arabicOutputDisplay" class="arabic-output empty" dir="rtl" lang="ar"></div>
+                </div>
+                <div id="letterBankContainer" style="display:none"><div id="letterBank"></div></div>
+                <span id="slideAnswer" style="display:none" dir="rtl" lang="ar"></span>
             </main>
 
             <footer id="gameFooter" class="game-footer">
-                <button id="backToHomeButton" class="back-button key-button"></button>
-                <div id="audioControl">
-                     <button id="playAudioButton" class="key-button">🎧</button>
-                     <button id="nextButton" class="key-button hidden">➡️</button>
-                </div>
+                <button id="prevWordButton" class="nav-btn key-button" title="Önceki kelime" aria-label="Önceki">◀</button>
+                <div id="kelimeGosterge" class="kelime-gosterge">–</div>
+                <button id="nextWordButton" class="nav-btn key-button" title="Sonraki kelime" aria-label="Sonraki">▶</button>
+                <!-- eski oyun mantığının beklediği gizli elemanlar -->
+                <button id="playAudioButton" style="display:none"></button>
+                <button id="nextButton" style="display:none"></button>
             </footer>
         </div>
 

@@ -1,6 +1,7 @@
+@font-face{ font-family:'Arakom'; src:url('arakom.ttf') format('truetype'); font-display:swap; }
 :root {
             --font-poppins: 'Poppins', sans-serif;
-            --font-harmattan: 'Harmattan', Arial, sans-serif;
+            --font-harmattan: 'Arakom', 'Harmattan', Arial, sans-serif;
             /* Renkler önceki gibi */
             --color-bg: #f0f7ff;
             --color-surface: #ffffff;
@@ -217,3 +218,340 @@
                 justify-content: space-evenly;
             }
         }
+/* ===================================================================
+   SLAYT TAHTASI + SINAV MODU  (Dinle ve Yaz — birleşik sürüm)
+   =================================================================== */
+
+/* Ana ekran: Sınav Modu anahtarı */
+.exam-toggle{
+    display:inline-flex; align-items:center; gap:0.7rem; cursor:pointer;
+    margin:0 auto 1.2rem; padding:0.7rem 1.4rem; border-radius:var(--border-radius-small);
+    background:var(--color-surface);
+    box-shadow:4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+    user-select:none; -webkit-user-select:none;
+}
+.exam-toggle input{ display:none; }
+.exam-switch{ position:relative; width:3.4rem; height:1.9rem; border-radius:1rem; flex-shrink:0;
+    background:var(--color-bg);
+    box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light);
+    transition:background .2s; }
+.exam-switch::after{ content:''; position:absolute; top:0.25rem; left:0.25rem; width:1.4rem; height:1.4rem;
+    border-radius:50%; background:var(--color-surface);
+    box-shadow:2px 2px 4px var(--color-shadow-dark); transition:left .2s, background .2s; }
+.exam-toggle input:checked + .exam-switch{ background:var(--color-accent-1); }
+.exam-toggle input:checked + .exam-switch::after{ left:1.75rem; background:#fff; }
+.exam-label{ font-size:1.4rem; font-weight:600; color:var(--color-text-primary); }
+.exam-label small{ font-size:1rem; color:var(--color-text-secondary); font-weight:500; }
+
+/* Ana ekran: harf başına zaman/tekrar ayarları (seviyeye göre hazır, elle değişir) */
+.ayarlar{ display:flex; flex-direction:column; gap:0.9rem; margin:1.3rem auto 0; width:100%; max-width:28rem; }
+.ayar-satir{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.ayar-label{ font-family:var(--font-poppins); font-weight:600; font-size:1.2rem; color:var(--color-text-secondary); }
+.stepper{ display:flex; align-items:center; gap:0.5rem; flex:0 0 auto; }
+.step-btn{ width:2.8rem; height:2.8rem; border:none; border-radius:var(--border-radius-small);
+    background:var(--color-surface); color:var(--color-accent-1); font-size:1.7rem; font-weight:700; cursor:pointer;
+    box-shadow:3px 3px 6px var(--color-shadow-dark), -3px -3px 6px var(--color-shadow-light);
+    display:flex; align-items:center; justify-content:center; line-height:1; }
+.step-btn:active{ box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); }
+.ayar-input{ width:3.8rem; height:2.8rem; text-align:center; font-family:var(--font-poppins); font-weight:700;
+    font-size:1.35rem; color:var(--color-text-primary); border:none; border-radius:var(--border-radius-small);
+    background:var(--color-surface); -moz-appearance:textfield;
+    box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); }
+.ayar-input::-webkit-outer-spin-button, .ayar-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+#baslaButton{ margin:1.4rem auto 0; display:block; font-size:1.6rem; font-weight:700; padding:0.9rem 2.6rem;
+    background:var(--color-accent-1); color:#fff;
+    box-shadow:4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light); }
+#baslaButton:disabled{ opacity:0.55; cursor:not-allowed; background:var(--color-surface); color:var(--color-text-secondary); }
+
+/* Oyun ekranı yeni düzen: üstte slayt, altta etkileşim */
+#gameScreen .game-main{ justify-content:flex-start; gap:1.2rem; }
+#slideBoard{ width:100%; max-width:104rem; flex:0 0 auto; height:23rem;
+    display:flex; gap:1.4rem; box-sizing:border-box; }
+#gameScreen #gameContent{ max-width:70rem; flex:1 1 auto; justify-content:center; }
+
+.slide-col{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center;
+    background:var(--color-surface); border-radius:var(--border-radius-main); padding:1rem 1.2rem;
+    box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light);
+    box-sizing:border-box; overflow:hidden; }
+.slide-col-title{ font-size:1.5rem; font-weight:700; color:var(--color-accent-1);
+    margin-bottom:0.7rem; flex-shrink:0; }
+
+/* Harf hâlleri ızgarası */
+.slide-forms{ display:flex; flex-wrap:wrap; gap:0.7rem; align-items:flex-start; justify-content:center;
+    width:100%; overflow-y:auto; flex:1 1 auto; align-content:flex-start; padding:0.2rem; }
+.lf-card{ display:grid; grid-template-columns:repeat(4,1fr); gap:0.15rem;
+    background:var(--color-bg); border-radius:0.7rem; padding:0.4rem;
+    box-shadow:3px 3px 6px var(--color-shadow-dark), -3px -3px 6px var(--color-shadow-light); }
+.lf-cell{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    min-width:3.4rem; padding:0.1rem 0.15rem; }
+.lf-form{ font-family:var(--font-harmattan); font-weight:700; font-size:3rem; line-height:1.1;
+    color:var(--color-text-primary); }
+.lf-cap{ font-size:0.85rem; color:var(--color-text-secondary); margin-top:0.1rem; }
+
+/* Harekeler şeridi (ilk seviyeler) */
+.slide-hareke{ display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; width:100%;
+    margin-top:0.6rem; flex-shrink:0; }
+.slide-hareke:empty{ display:none; }
+.hk-cell{ display:flex; flex-direction:column; align-items:center;
+    background:var(--color-bg); border-radius:0.6rem; padding:0.25rem 0.55rem;
+    box-shadow:2px 2px 4px var(--color-shadow-dark), -2px -2px 4px var(--color-shadow-light); }
+.hk-mark{ font-family:var(--font-harmattan); font-weight:700; font-size:2.2rem; line-height:1;
+    color:var(--color-accent-1); }
+.hk-name{ font-size:0.8rem; color:var(--color-text-secondary); margin-top:0.1rem; }
+
+/* Doğru kelime tarafı */
+.slide-answer{ justify-content:center; }
+.slide-answer-word{ font-family:var(--font-harmattan); font-weight:700;
+    font-size:7rem; line-height:1.25; color:var(--color-text-primary); text-align:center;
+    flex:1 1 auto; display:flex; align-items:center; justify-content:center; width:100%; }
+.slide-exam-note{ display:none; font-size:1.3rem; color:var(--color-text-secondary);
+    font-weight:600; text-align:center; }
+
+/* SINAV MODU: harf ve harekelere tıklanamaz (sadece izlenir/dinlenir) */
+#gameMain.exam-mode #tusKonteyner{ pointer-events:none; }
+/* SINAV MODU: cevap tarafı gizlenir, harfler kalır */
+#slideBoard.exam-mode .slide-answer-word{ display:none; }
+#slideBoard.exam-mode .slide-exam-note{ display:flex; align-items:center; justify-content:center;
+    flex:1 1 auto; opacity:.75; }
+
+/* Birleşik düzende (slayt + oyun) yatay ekranda etkileşim alanı sığsın */
+@media (orientation: landscape){
+    #gameScreen #gameContent .letter-bank-btn{ font-size:3.6rem; width:5rem; height:5rem; }
+    #gameScreen #gameContent .letter-bank-btn.hareke-char{ font-size:3rem; }
+    #gameScreen #turkishWord{ font-size:3rem; }
+    #gameScreen #arabicOutputDisplay{ font-size:4.5rem; }
+    #gameScreen .game-main{ overflow:hidden; }
+    #gameScreen #letterBankContainer{ max-height:16rem; }
+}
+
+/* --- Dikey ekran (telefon) uyarlaması --- */
+@media (orientation: portrait){
+    .exam-label{ font-size:1.2rem; }
+    #gameScreen .game-main{ justify-content:flex-start; gap:0.8rem; overflow:hidden; }
+    #slideBoard{ height:24rem; flex:0 0 auto; flex-direction:column; gap:0.6rem; max-width:100%; }
+    .slide-col{ padding:0.6rem 0.7rem; }
+    .slide-letters{ flex:1 1 auto; min-height:0; }
+    .slide-answer{ flex:0 0 auto; height:6.5rem; }
+    .slide-col-title{ font-size:1.2rem; margin-bottom:0.35rem; }
+    .slide-forms{ gap:0.4rem; flex:1 1 auto; min-height:0; }
+    .lf-cell{ min-width:2.5rem; }
+    .lf-form{ font-size:2.1rem; }
+    .lf-cap{ font-size:0.72rem; }
+    .slide-hareke{ margin-top:0.35rem; }
+    .hk-mark{ font-size:1.7rem; } .hk-name{ font-size:0.72rem; }
+    .slide-answer-word{ font-size:4rem; }
+    #gameScreen #gameContent{ flex:1 1 auto; gap:0.6rem; justify-content:center; }
+    #gameScreen #letterBankContainer{ max-height:15rem; }
+}
+
+/* ===================================================================
+   SLAYT/KLAVYE DÜZENİ (birleşik tuşlar + Türkçe kelime listesi)
+   =================================================================== */
+#gameScreen .game-main.slayt-mod{
+    justify-content:flex-start; align-items:center; gap:1rem; padding-top:0.5rem; overflow:hidden;
+}
+
+/* 2) İki sütun DEFTER listesi (kutusuz): her satır çizgili bir defter satırı;
+      solda Türkçe, sağda Arapça yazım. Ekranın en çok ~yarısını kaplar; kelimeler
+      yazıldıkça liste kayar, en üst ve en alt kelimeler görülebilir. */
+.kelime-liste{
+    position:relative;
+    display:grid; grid-template-columns:1fr 1fr; column-gap:3.5rem; row-gap:0;
+    width:100%; max-width:96rem; margin:0 auto; align-content:start;
+    flex:0 1 auto; max-height:26rem; min-height:0; overflow-y:auto;
+    padding:0.4rem 1.4rem 0.4rem 2.6rem;
+    /* Defter: ortada dikey ayraç + solda kırmızı kenar çizgisi */
+    background:
+      linear-gradient(to right, transparent calc(50% - 1px),
+          rgba(60,80,140,0.14) 50%, transparent calc(50% + 1px)),
+      linear-gradient(to right, transparent 1.5rem,
+          rgba(210,70,70,0.35) 1.5rem, rgba(210,70,70,0.35) calc(1.5rem + 2px),
+          transparent calc(1.5rem + 2px));
+    background-attachment:local;
+}
+/* Satırlar BÜYÜK: yaklaşık yarım ekranlık listede ~4 kelime (2 satır × 2 sütun)
+   görünür; gerisi için kaydırılır, baştaki (üstteki) kelimeler görünmez olur. */
+.kelime-satir{
+    display:flex; align-items:center; gap:1rem; min-height:11rem; max-height:18rem; overflow:hidden;
+    padding:0.6rem 0.3rem; border-bottom:2px solid rgba(60,80,140,0.16);
+    transition:opacity .45s ease, max-height .45s ease, min-height .45s ease, margin .45s ease,
+               padding .45s ease, transform .45s ease, border-color .2s;
+}
+.kelime-satir.cikiyor{ opacity:0; min-height:0; max-height:0; margin:0; padding-top:0; padding-bottom:0;
+    border-bottom-color:transparent; transform:translateY(-0.4rem); }
+.ks-turkce{
+    flex:0 0 auto; text-align:left; white-space:nowrap;
+    font-family:var(--font-poppins); font-weight:700; font-size:2.8rem;
+    color:var(--color-text-secondary); background:none; padding:0; box-shadow:none;
+    transition:color .2s;
+}
+.ks-arapca{
+    flex:1 1 0; position:relative; min-height:5rem; text-align:left; direction:rtl;
+    background:none; box-shadow:none; overflow:hidden; display:flex; align-items:center;
+}
+/* Tıklayınca yazılan kısım kırmızı; doğru tamamlanınca yeşile döner (aşağıda) */
+.ks-typed{ direction:rtl; display:inline-block;
+    font-family:var(--font-harmattan); font-weight:700; font-size:5.5rem; line-height:1.1;
+    color:var(--color-error); }
+/* Sıradaki (aktif) kelime vurgulu — kutusuz: renk + kalın çizgi */
+.kelime-satir.aktif{ border-bottom-color:var(--color-accent-1); }
+.kelime-satir.aktif .ks-turkce{ color:var(--color-accent-1); }
+/* Doğru tamamlandı: yeşil yazı */
+.kelime-satir.tamamlandi .ks-turkce{ color:var(--color-correct); }
+.kelime-satir.tamamlandi .ks-typed{ color:var(--color-correct); }
+
+/* 0) Ses zaman çizgisi — kronometreyle birleşik, UZUN (widget'ı doldurur) */
+.ses-cizelgesi{ display:flex; align-items:center; flex:1 1 auto; min-width:0; padding:0; margin:0; }
+.sc-bar{ display:flex; align-items:center; width:100%; position:relative; justify-content:space-between; }
+/* Tek uzun çizgi (hoparlörden sonuna kadar) */
+.sc-bar::after{ content:''; position:absolute; left:2.1rem; right:0.3rem; top:50%; height:0.32rem;
+    background:var(--color-shadow-dark); border-radius:2px; transform:translateY(-50%); z-index:0; }
+.sc-basla{ display:flex; align-items:center; justify-content:center; color:var(--color-accent-1); z-index:1; }
+.sc-basla svg{ width:1.6rem !important; height:1.6rem !important; }
+.sc-dot{ position:relative; width:2rem; height:2rem; border-radius:50%;
+    background:var(--color-surface); color:var(--color-text-secondary);
+    box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light);
+    display:flex; align-items:center; justify-content:center; z-index:1; transition:all .2s; flex:0 0 auto; }
+.sc-dot .sc-num{ font-family:var(--font-poppins); font-weight:700; font-size:0.9rem; }
+.sc-dot:not(:first-of-type)::before{ display:none; }   /* tek çizgi kullanılıyor */
+
+/* 3-2-1 geri sayım katmanı (kelime seçilince) */
+#gameScreen{ position:relative; }
+.geri-sayim{ position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    z-index:80; pointer-events:none; font-family:var(--font-poppins); font-weight:800;
+    color:var(--color-accent-1); font-size:18rem; line-height:1;
+    text-shadow:0 6px 24px rgba(0,0,0,0.18); }
+.geri-sayim.aktif{ display:flex; }
+.geri-sayim.pop{ animation:geriPop 1s ease-out; }
+@keyframes geriPop{
+    0%{ transform:scale(0.3); opacity:0; }
+    25%{ transform:scale(1.15); opacity:1; }
+    100%{ transform:scale(0.95); opacity:0.85; } }
+/* Çalınmış tekrarlar */
+.sc-dot.done{ background:var(--color-accent-1); color:#fff;
+    box-shadow:2px 2px 5px var(--color-shadow-dark), -2px -2px 5px var(--color-shadow-light); }
+.sc-dot.done::before, .sc-dot.playing::before{ background:var(--color-accent-1); }
+/* Şu an çalan tekrar — nabız gibi atar */
+.sc-dot.playing{ background:var(--color-accent-1); color:#fff; transform:scale(1.15);
+    animation:scPulse 0.7s ease-out infinite; }
+@keyframes scPulse{
+    0%{ box-shadow:0 0 0 0 rgba(230,120,40,0.55); }
+    100%{ box-shadow:0 0 0 1.1rem rgba(230,120,40,0); } }
+
+/* 3) Birleşik tuş konteynırı */
+.slayt-tuslar{ display:flex; flex-direction:column; align-items:center; gap:1rem;
+    width:100%; max-width:112rem; flex:1 1 auto; min-height:0; overflow-y:auto; padding:0.4rem; }
+.tus-grup{ display:flex; flex-wrap:wrap; gap:0.8rem; justify-content:center; align-items:stretch;
+    width:100%; box-sizing:border-box; padding:0.5rem; border-radius:1.3rem;
+    transition:box-shadow .2s ease, background-color .2s ease; }
+/* SIRA VURGUSU: yalnız sıradaki HARF TUŞU / HAREKE GRUBU vurgulanır. Yalnızca
+   çerçeve (outline) + hafif zemin — tuşların boyutu ya da gölgesi DEĞİŞMEZ. */
+.harf-tus.sira-aktif{ background:rgba(230,120,40,0.10);
+    outline:3px solid var(--color-accent-1); outline-offset:-3px; }
+.hareke-grup.sira-aktif{ background:rgba(230,120,40,0.12); border-radius:0.8rem;
+    outline:3px solid var(--color-accent-1); outline-offset:-2px; }
+/* Harf grubu: bir satırda 3 harf, RTL (ilk harf sağda). Konteynır dikey olarak
+   kalan alanı doldurur (ekranın aşağısına kadar); satırlar yükseklikçe büyür. */
+.tus-grup.harfler{ display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:minmax(7rem,1fr);
+    direction:rtl; gap:1.2rem; width:100%; flex:1 1 0; min-height:0; overflow-y:auto; align-content:stretch; }
+/* Hareke grubu: RTL sıralı tek satır, 5 alt grup (kısa · tenvin · şedde/cezim ·
+   uzatma · tâ marbûta) aralarında dikey ayraç ile — sabit, en altta */
+.tus-grup.harekeler{ flex-wrap:nowrap; justify-content:center; gap:0; overflow-x:auto;
+    flex:0 0 auto; align-items:stretch; direction:rtl; }
+.hareke-grup{ display:flex; align-items:stretch; gap:0.7rem; padding:0 1.1rem; }
+.hareke-grup + .hareke-grup{ border-inline-start:3px solid rgba(60,80,140,0.25); }
+/* Uzatma (med) harfleri — harakatlardan ayırmak için koyu ve kalın */
+.hareke-tus.uzatma-tus .uzatma-mark{ color:var(--color-text-primary); font-weight:700; }
+.hareke-tus.uzatma-tus{ box-shadow:5px 5px 10px var(--color-shadow-dark),
+    -5px -5px 10px var(--color-shadow-light), inset 0 0 0 2px rgba(60,80,140,0.20); }
+
+/* Harf tuşu: 4 hâl yan yana, TEK buton */
+.slayt-tus{ background:var(--color-surface); border:none; border-radius:var(--border-radius-small);
+    box-shadow:5px 5px 10px var(--color-shadow-dark), -5px -5px 10px var(--color-shadow-light);
+    cursor:pointer; transition:all .12s ease-out; padding:0.6rem 0.8rem;
+    display:flex; align-items:center; justify-content:center; }
+.slayt-tus:active:not(:disabled){ box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); transform:scale(0.97); }
+.harf-tus{ gap:0.8rem; width:100%; direction:rtl; padding:0.9rem 0.6rem; }
+.harf-tus .ht-form{ font-family:var(--font-harmattan); font-weight:700; font-size:6.5rem; line-height:1;
+    color:var(--color-text-primary); min-width:3.4rem; text-align:center; flex:1 1 0; }
+.harf-tus .ht-form + .ht-form{ border-right:2px solid var(--color-shadow-dark); padding-right:0.6rem; }
+/* Harf hâlleri renkleri: baş yeşil, orta mavi, son mor, normal siyah */
+.harf-tus .ht-bas{ color:#1f9d55; }
+.harf-tus .ht-orta{ color:#2b6cb0; }
+.harf-tus .ht-son{ color:#7b3fa0; }
+.harf-tus .ht-yalin{ color:var(--color-text-primary); }
+/* Kendinden sonrakiyle BİRLEŞMEYEN harfler: hepsi kırmızı (harf + uzatma + tâ marbûta) */
+.harf-tus.harf-baglanmaz .ht-form{ color:var(--color-error); }
+.hareke-tus.uzatma-tus.uz-baglanmaz .uzatma-mark{ color:var(--color-error); }
+
+/* Hareke tuşu: işaret + ad */
+.hareke-tus{ flex-direction:column; gap:0.1rem; min-width:6rem; padding:0.5rem 0.8rem; overflow:hidden; }
+.hareke-tus .hk-mark{ font-family:var(--font-harmattan); font-weight:400; line-height:1; }
+/* Harekeler (üstün/esre/ötre, tenvin, şedde/cezim): SİYAH ve konteynıra sığacak boyut */
+.hareke-tus:not(.uzatma-tus) .hk-mark{ font-size:4.4rem; color:var(--color-text-primary); }
+/* Uzatma harfleri (ا و ي): harf boyutunda, koyu */
+.hareke-tus.uzatma-tus .uzatma-mark{ font-size:6.2rem; color:var(--color-text-primary); font-weight:700; }
+/* Tâ marbûta: PEMBE */
+.hareke-tus.uzatma-tus.tamarbuta-tus .uzatma-mark{ color:#e84e8a; }
+/* Alt tuşlardaki Türkçe adlar gösterilmez (üstün/esre/uzatma/bitişik vb.) */
+.hareke-tus .hk-name{ display:none; }
+
+/* Çakma geribildirimleri (tekrar kullanılan tuşlar) */
+.slayt-tus.dogru-flash{ box-shadow:inset 3px 3px 6px #76b198, inset -3px -3px 6px #baffa0 !important; }
+.slayt-tus.error-form{ box-shadow:inset 3px 3px 6px #d35f61, inset -3px -3px 6px #ff8386 !important; animation:shake 0.3s ease-in-out; }
+
+/* Dikey ekran (telefon) */
+@media (orientation: portrait){
+    /* Telefonda tek sütun defter: ortadaki ayraç yok, yalnız kırmızı kenar */
+    .kelime-liste{ grid-template-columns:1fr; column-gap:0; max-width:60rem; padding:0.3rem 1rem 0.3rem 2.2rem;
+        background:linear-gradient(to right, transparent 1.3rem,
+            rgba(210,70,70,0.35) 1.3rem, rgba(210,70,70,0.35) calc(1.3rem + 2px),
+            transparent calc(1.3rem + 2px)); background-attachment:local; }
+    /* Telefonda da ~4 kelime görünür: satırlar makul büyük, tek sütun */
+    .kelime-satir{ min-height:5.5rem; }
+    .ks-turkce{ font-size:1.9rem; }
+    .ks-arapca{ min-height:3.4rem; }
+    .ks-typed{ font-size:3.4rem; }
+    .tus-grup.harfler{ gap:0.6rem; }
+    .harf-tus .ht-form{ font-size:3.6rem; min-width:2rem; }
+    .harf-tus{ gap:0.4rem; padding:0.6rem 0.3rem; } .harf-tus .ht-form + .ht-form{ padding-right:0.4rem; }
+    .hareke-tus{ min-width:4rem; padding:0.4rem 0.5rem; }
+    .hareke-tus .hk-mark{ font-size:3.6rem; font-weight:400; } .hareke-tus .hk-name{ font-size:0.8rem; }
+    .slayt-tuslar{ gap:0.7rem; }
+}
+
+/* Slayt modunda dikey sıra: KELİME LİSTESİ ÜSTTE (tüm sınıf görür), tuşlar
+   (harf + hareke) ALTTA — basması kolay, klavye gibi. */
+.slayt-mod .kelime-liste{ order:1; flex:0 0 auto; max-height:23rem; margin-top:0; }
+/* Tuşlar: kelime listesinin hemen altından ekranın en altına kadar uzanır;
+   harf konteynırı büyür, hareke satırı en altta tam görünür (kesilmez). */
+.slayt-mod .slayt-tuslar{ order:2; flex:1 1 auto; min-height:0; max-height:none;
+    justify-content:flex-start; overflow:hidden; margin-top:0; }
+/* Tuşlara yer açmak için altbilgi kompakt (headphone kaldırıldı, sadece ileri tuşu) */
+#gameScreen #gameFooter{ padding-top:0.3rem; margin-top:0.2rem; }
+#gameScreen #audioControl{ width:3.4rem; height:3.2rem; }
+
+/* Simetrik header: geri (sol) · zaman widget (orta, uzun) · puan (sağ) */
+#gameHeader{ max-width:82rem; padding-left:0; justify-content:space-between; gap:1rem; }
+#gameHeader .back-button{ position:static; width:3.4rem; height:3.4rem; font-size:1.2rem; flex-shrink:0; }
+#gameHeader .back-button::before{ margin-right:0; }
+#gameHeader #levelScoreDisplay{ flex:0 0 auto; }
+/* Kronometre + ses çizgisi birleşik widget */
+.zaman-widget{ display:flex; align-items:center; gap:0.9rem; flex:1 1 auto; min-width:0; }
+.zw-timer{ font-family:var(--font-poppins); font-weight:700; font-size:1.5rem; color:var(--color-error);
+    background:var(--color-surface); padding:0.4rem 0.9rem; border-radius:var(--border-radius-small);
+    box-shadow:2px 2px 4px var(--color-shadow-dark), -2px -2px 4px var(--color-shadow-light); flex:0 0 auto; }
+/* Footer: ileri/geri gezinme */
+#gameFooter{ justify-content:center; gap:1.5rem; }
+.nav-btn{ font-size:1.7rem; width:4.2rem; height:3.6rem; color:var(--color-text-secondary);
+    background:var(--color-surface); border:none; border-radius:var(--border-radius-small); cursor:pointer;
+    box-shadow:4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+    display:inline-flex; align-items:center; justify-content:center; transition:all .15s; }
+.nav-btn:active:not(:disabled){ box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); transform:scale(0.97); }
+.nav-btn:hover:not(:disabled){ color:var(--color-accent-1); }
+.nav-btn:disabled{ opacity:0.45; cursor:default; }
+.kelime-gosterge{ font-family:var(--font-poppins); font-weight:700; font-size:1.4rem;
+    color:var(--color-text-secondary); min-width:6rem; text-align:center; }
+@media (orientation: portrait){
+    #gameHeader .back-button{ width:3rem; height:3rem; font-size:1rem; }
+}

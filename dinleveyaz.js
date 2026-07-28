@@ -63,6 +63,13 @@
         const gameScreen = document.getElementById('gameScreen');
         const scoreScreen = document.getElementById('scoreScreen');
         const levelSelect = document.getElementById('levelSelect');
+        const saniyeInput = document.getElementById('saniyeInput');
+        const tekrarInput = document.getElementById('tekrarInput');
+        const baslaButton = document.getElementById('baslaButton');
+        // Seviyelerin hazır ayarları (harf başına saniye / harf başına tekrar)
+        const SEVIYE_AYAR = { '1':{sn:6,tk:4}, '2':{sn:5,tk:4}, '3':{sn:5,tk:3}, '4':{sn:4,tk:3},
+                              '5':{sn:4,tk:2}, '6':{sn:3,tk:2}, '7':{sn:2,tk:2}, '8':{sn:1,tk:1} };
+        let saniyePerHarf = 6, tekrarPerHarf = 4;
         const backToHomeButton = document.getElementById('backToHomeButton');
         const scoreToHomeButton = document.getElementById('scoreToHomeButton');
         const timerDisplay = document.getElementById('timerDisplay');
@@ -74,6 +81,12 @@
         const mistakeCounter = document.getElementById('mistakeCounter');
         const playAudioButton = document.getElementById('playAudioButton');
         const nextButton = document.getElementById('nextButton');
+        const prevWordButton = document.getElementById('prevWordButton');
+        const nextWordButton = document.getElementById('nextWordButton');
+        const kelimeGostergeEl = document.getElementById('kelimeGosterge');
+        const geriSayimEl = document.getElementById('geriSayim');
+        let tamamlananlar = new Set();   // doğru yazılan kelime indeksleri (serbest gezinme için)
+        let countdownTimer = null;
         const turkishWordEl = document.getElementById('turkishWord');
         const arabicOutputEl = document.getElementById('arabicOutputDisplay');
         const arabicOutputContainer = document.getElementById('arabicOutputContainer');
@@ -87,6 +100,304 @@
         const incorrectListEl = document.getElementById('incorrectList');
         const incorrectWordsUlEl = document.getElementById('incorrectWordsUl');
 
+        // ================= SLAYT TAHTASI + SINAV MODU + OTOMATİK TEKRAR =================
+        const gameMainEl     = document.getElementById('gameMain');
+        const kelimeListeEl  = document.getElementById('kelimeListe');
+        let   aktifKutu      = null;   // sıradaki kelimenin yazım kutusu (.ks-typed)
+        const tusKonteynerEl = document.getElementById('tusKonteyner');
+        const harfTuslarEl   = document.getElementById('harfTuslar');
+        const harekeTuslarEl = document.getElementById('harekeTuslar');
+        const slideAnswerEl  = document.getElementById('slideAnswer');
+        const sesCizelgesiEl = document.getElementById('sesCizelgesi');
+        const examCheckbox   = document.getElementById('examCheckbox');
+        let examMode = false;                 // ana ekrandaki anahtardan gelir
+        const ZWJ = '‍';                 // birleştirme için sıfır-genişlik joiner
+        // Sonraki harfe BAĞLANMAYAN harfler: bunların baş/orta hâli yoktur
+        const BAGLANMAYAN = new Set(['ا','أ','إ','آ','ٱ','د','ذ','ر','ز','و','ؤ','ة','ء','ى']);
+        const HAREKELER = new Set(['َ','ً','ِ','ٍ','ُ','ٌ','ّ','ْ','ٰ']);
+        // İlk seviyelerde gösterilecek hareke cetveli (işaret + Türkçe ad)
+        const HAREKE_CETVELI = [
+            ['َ','Üstün'], ['ِ','Esre'], ['ُ','Ötre'], ['ْ','Cezm'],
+            ['ّ','Şedde'], ['ً','İki üstün'], ['ٍ','İki esre'], ['ٌ','İki ötre']
+        ];
+        const HAREKE_SEVIYE_SINIRI = 3;       // 1-3. seviyelerde hareke cetveli gösterilir
+        // Hareke panelinin grupları (soldan sağa görünecek şekilde):
+        //  1) kısa harekeler  2) tenvinler  3) şedde/cezim  4) uzatma harfleri  5) tâ marbûta
+        const HAREKE_GRUPLARI = [
+            [ ['ُ','Ötre'], ['ِ','Esre'], ['َ','Üstün'] ],
+            [ ['ٌ','İki ötre'], ['ٍ','İki esre'], ['ً','İki üstün'] ],
+            [ ['ّ','Şedde'], ['ْ','Cezim'] ]
+        ];
+        const UZATMA_HARFLERI = [ ['ا','Uzatma'], ['و','Uzatma'], ['ي','Uzatma'] ];
+        const TA_MARBUTA = [ ['ـة','Bitişik'], ['ة','Ayrı'] ];      // ـة ة (aynı harf: ة)
+        // Hareke panelinde de bulunan harfler (uzatma + tâ marbûta)
+        const HAREKE_PANEL_HARF = new Set(['ا','و','ي','ة']);
+
+        // Sıra vurgusu: bir sonraki harf mi yoksa hareke tarafı mı bekleniyor?
+        // Harakat → hareke tarafı; kelime içinde (baş değil) gelen uzatma harfi
+        // veya tâ marbûta da hareke tarafı sayılır; diğer harfler → harf tarafı.
+        function siradakiHarekeTarafi(){
+            if (!wordActive || expectedFullCharIndex >= fullWordChars.length) return null;
+            const cur = fullWordChars[expectedFullCharIndex].char;
+            if (HAREKELER.has(cur)) return true;
+            if (HAREKE_PANEL_HARF.has(cur) && expectedFullCharIndex > 0) return true;
+            return false;
+        }
+        function updateSiraVurgusu(){
+            if (!harfTuslarEl || !harekeTuslarEl) return;
+            // Önceki vurguları temizle (yalnız ilgili tuş/grup vurgulanır, hepsi değil)
+            harfTuslarEl.querySelectorAll('.harf-tus.sira-aktif').forEach(el => el.classList.remove('sira-aktif'));
+            harekeTuslarEl.querySelectorAll('.hareke-grup.sira-aktif').forEach(el => el.classList.remove('sira-aktif'));
+            const t = siradakiHarekeTarafi();
+            if (t === null) return;
+            const cur = fullWordChars[expectedFullCharIndex].char;
+            if (t === true){
+                // Sıradaki karakterin bulunduğu HAREKE GRUBUNU vurgula
+                const grup = Array.from(harekeTuslarEl.querySelectorAll('.hareke-grup'))
+                    .find(g => Array.from(g.querySelectorAll('.slayt-tus')).some(b => b.dataset.value === cur));
+                if (grup) grup.classList.add('sira-aktif');
+            } else {
+                // Sıradaki HARFİN tuşunu vurgula
+                const key = Array.from(harfTuslarEl.querySelectorAll('.harf-tus'))
+                    .find(b => b.dataset.value === cur);
+                if (key) key.classList.add('sira-aktif');
+            }
+        }
+
+        // Bir harfin dört hâli (yalın / baş / orta / son). Bağlanmayan harflerde
+        // baş hâli yalınla, orta hâli son hâliyle aynı görünür (kurala uygun).
+        // GÖRÜNÜR birleştirme için ZWJ yerine tatvil (ـ) kullanılır; böylece
+        // baş/orta/son hâllerdeki bağlantı çizgisi ekranda net görünür.
+        const TATVIL = 'ـ';   // U+0640 kashida/tatweel
+        function harfHalleri(ch){
+            const T = TATVIL;
+            const bag = !BAGLANMAYAN.has(ch);
+            return {
+                yalin: ch,
+                bas:   bag ? ch + T : ch,        // baş: sola bağlanır
+                orta:  bag ? T + ch + T : T + ch, // orta: iki yana (bağlanmayanda yalnız sağa)
+                son:   T + ch                     // son: sağa bağlanır
+            };
+        }
+        // Kelimeden (harekeleri atarak) benzersiz kök harfleri ilk görülme sırasıyla al
+        function kelimeHarfleri(ar){
+            const gorulen = new Set(), out = [];
+            for (const c of Array.from(ar)){
+                if (HAREKELER.has(c)) continue;
+                if (gorulen.has(c)) continue;
+                gorulen.add(c); out.push(c);
+            }
+            return out;
+        }
+        // İki sütun kelime listesi: her satır [Türkçe | Arapça yazım kutusu].
+        // Tamamlanan (currentWordIndex'ten küçük) kelimeler listeden çıkarılır;
+        // böylece doğru yazıldıkça kelime kaybolur, alttakiler yukarı kayar.
+        function renderTurkce(){
+            if (!kelimeListeEl) return;
+            kelimeListeEl.innerHTML = '';
+            aktifKutu = null;
+            levelWords.forEach((w, i) => {
+                const satir = document.createElement('div');
+                let cls = 'kelime-satir';
+                if (i === currentWordIndex) cls += ' aktif';
+                else if (tamamlananlar.has(i)) cls += ' tamamlandi';  // yazılan kelime kalır
+                satir.className = cls;
+                satir.dataset.index = i;
+
+                const tr = document.createElement('div');
+                tr.className = 'ks-turkce';
+                tr.textContent = w.tr;
+
+                const box = document.createElement('div');
+                box.className = 'ks-arapca';
+                box.setAttribute('dir', 'rtl'); box.setAttribute('lang', 'ar');
+
+                const typed = document.createElement('span');
+                typed.className = 'ks-typed';
+                typed.setAttribute('dir', 'rtl'); typed.setAttribute('lang', 'ar');
+                // tamamlanan: cevabı yeşil göster — ama SINAV MODUNDA cevap gizli kalır
+                if (tamamlananlar.has(i) && i !== currentWordIndex && !examMode) typed.textContent = w.ar;
+                box.appendChild(typed);
+                if (i === currentWordIndex) aktifKutu = typed;
+
+                satir.appendChild(tr); satir.appendChild(box);
+                kelimeListeEl.appendChild(satir);
+            });
+            // Sıradaki kelime listenin EN BAŞINA gelir; tamamlanan kelimeler yukarıda
+            // KALIR (kaybolmaz) ve yukarı kaydırınca görülebilir.
+            const akt = kelimeListeEl.querySelector('.kelime-satir.aktif');
+            if (akt && akt.scrollIntoView) akt.scrollIntoView({ block: 'start' });
+        }
+
+        // Birleşik tuş konteynırı: harf tuşları (her biri 4 hâl, TEK buton, tekrar
+        // kullanılır) + 8 hareke tuşu. Öğrenci sırayla tıklayarak kelimeyi yazar.
+        function renderKeys(word){
+            harfTuslarEl.innerHTML = '';
+            // Harfler kelimedeki sırayla (karıştırılmadan); RTL dizilim CSS'te
+            // sağlanır: kelimenin ilk harfi (ör. قلم'de ق) en sağda görünür.
+            const harfler = kelimeHarfleri(word.ar);
+            harfler.forEach(ch => {
+                const h = harfHalleri(ch);
+                const tus = document.createElement('button');
+                // Kendinden sonrakiyle BİRLEŞMEYEN harfler kırmızı gösterilir
+                tus.className = 'slayt-tus harf-tus key-button'
+                              + (BAGLANMAYAN.has(ch) ? ' harf-baglanmaz' : '');
+                tus.dataset.value = ch; tus.setAttribute('lang','ar');
+                // RTL sıra: baş → orta → son → normal (yalın). Renkler: baş yeşil,
+                // orta mavi, son mor, normal siyah (birleşmeyen harflerde hepsi kırmızı).
+                tus.innerHTML = ['bas','orta','son','yalin']
+                    .map(k => `<span class="ht-form ht-${k}">${h[k]}</span>`).join('');
+                harfTuslarEl.appendChild(tus);
+            });
+            harekeTuslarEl.innerHTML = '';
+            const yeniGrup = () => {
+                const g = document.createElement('div'); g.className = 'hareke-grup';
+                harekeTuslarEl.appendChild(g); return g;
+            };
+            // 1-3) Harekeler: kısa harekeler, tenvinler, şedde/cezim (her biri ayrı grup)
+            HAREKE_GRUPLARI.forEach(grup => {
+                const g = yeniGrup();
+                grup.forEach(([mark, ad]) => {
+                    const tus = document.createElement('button');
+                    tus.className = 'slayt-tus hareke-tus key-button';
+                    tus.dataset.value = mark; tus.setAttribute('lang','ar');
+                    tus.innerHTML = `<span class="hk-mark">ـ${mark}</span><span class="hk-name">${ad}</span>`;
+                    g.appendChild(tus);
+                });
+            });
+            // 4) Uzatma (med) harfleri grubu: ا و ي
+            const gUz = yeniGrup();
+            UZATMA_HARFLERI.forEach(([harf, ad]) => {
+                const tus = document.createElement('button');
+                tus.className = 'slayt-tus hareke-tus uzatma-tus key-button'
+                              + (BAGLANMAYAN.has(harf) ? ' uz-baglanmaz' : '');
+                tus.dataset.value = harf; tus.setAttribute('lang','ar');
+                tus.innerHTML = `<span class="hk-mark uzatma-mark">${harf}</span><span class="hk-name">${ad}</span>`;
+                gUz.appendChild(tus);
+            });
+            // 5) Tâ marbûta grubu: ـة (bitişik) ve ة (ayrı) — ikisi de ة harfini yazar
+            const gTa = yeniGrup();
+            TA_MARBUTA.forEach(([disp, ad]) => {
+                const tus = document.createElement('button');
+                // Tâ marbûta grubu → pembe (kırmızı değil)
+                tus.className = 'slayt-tus hareke-tus uzatma-tus tamarbuta-tus key-button';
+                tus.dataset.value = 'ة'; tus.setAttribute('lang','ar');
+                tus.dataset.formtype = (disp === 'ـة') ? 'son' : 'yalin';   // bitişik = son hâl, ayrı = normal
+                tus.innerHTML = `<span class="hk-mark uzatma-mark">${disp}</span><span class="hk-name">${ad}</span>`;
+                gTa.appendChild(tus);
+            });
+            slideAnswerEl.textContent = word.ar;   // "Doğru:" satırı (sınav modunda gizli)
+        }
+
+        // Tuşlar tekrar kullanılır: tıklamada kısa yeşil/kırmızı çakma
+        function flashKey(key, tur){
+            const cls = tur === 'correct' ? 'dogru-flash' : 'error-form';
+            key.classList.add(cls);
+            setTimeout(() => key.classList.remove('dogru-flash', 'error-form'), 260);
+        }
+        function disableKeys(disabled){
+            document.querySelectorAll('#tusKonteyner .slayt-tus').forEach(b => {
+                b.disabled = disabled; b.style.opacity = disabled ? '0.6' : '1';
+            });
+        }
+
+        // --- Ses zaman çizelgesi: kaç kez ve ne zaman çalınacağı görsel ---
+        function buildSesCizelgesi(total){
+            if (!sesCizelgesiEl) return;
+            sesCizelgesiEl.innerHTML = '';
+            const bar = document.createElement('div'); bar.className = 'sc-bar';
+            const bas = document.createElement('div'); bas.className = 'sc-basla';
+            bas.innerHTML = '<svg viewBox="0 0 24 24" width="1.6rem" height="1.6rem" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+            bar.appendChild(bas);
+            for (let i = 1; i <= total; i++){
+                const dot = document.createElement('div');
+                dot.className = 'sc-dot'; dot.dataset.i = i;
+                dot.innerHTML = '<span class="sc-num">' + i + '</span>';
+                bar.appendChild(dot);
+            }
+            sesCizelgesiEl.appendChild(bar);
+        }
+        function markSesCizelgesi(idx){
+            if (!sesCizelgesiEl) return;
+            sesCizelgesiEl.querySelectorAll('.sc-dot').forEach(d => {
+                const i = +d.dataset.i;
+                d.classList.toggle('playing', i === idx);
+                d.classList.toggle('done', i < idx);
+            });
+        }
+        function finishSesCizelgesi(){
+            if (!sesCizelgesiEl) return;
+            sesCizelgesiEl.querySelectorAll('.sc-dot').forEach(d => {
+                d.classList.remove('playing'); d.classList.add('done');
+            });
+        }
+
+        // --- Otomatik tekrar (imla): kelime sesi kök-harf sayısı kadar tekrarlanır ---
+        let dictateTimer = null, dictateLeft = 0;
+        function stopDictation(){
+            if (dictateTimer){ clearTimeout(dictateTimer); dictateTimer = null; }
+            audio.onended = null; dictateLeft = 0;
+        }
+        function dictate(times){
+            stopDictation();
+            const total = Math.max(1, times);
+            buildSesCizelgesi(total);          // çizelgeyi sıfırla/kur
+            // İlk ses hemen çalar; kalan tekrarlar kelimenin SÜRESİNE yayılır
+            // (zamanda harf sayısı kadar ses tekrarı).
+            const totalMs = Math.max(1, remainingTime) * 1000;
+            const interval = Math.max(1200, totalMs / total);
+            let idx = 0;
+            const calOnce = () => {
+                idx++;
+                markSesCizelgesi(idx);         // çalan tekrarı vurgula
+                try { if (!audio.paused){ audio.pause(); audio.currentTime = 0; } } catch(e){}
+                audio.src = currentWord.audioSrc;
+                const p = audio.play(); if (p) p.catch(()=>{});
+                if (idx < total){ dictateTimer = setTimeout(calOnce, interval); }
+                else { audio.onended = () => finishSesCizelgesi(); }
+            };
+            calOnce();
+        }
+
+        // --- 3-2-1 geri sayım (kelime seçilince ekranda) ---
+        function stopGeriSayim(){
+            if (countdownTimer){ clearTimeout(countdownTimer); countdownTimer = null; }
+            if (geriSayimEl){ geriSayimEl.classList.remove('aktif','pop'); }
+        }
+        function startGeriSayim(sonra){
+            stopGeriSayim();
+            if (!geriSayimEl){ sonra(); return; }
+            let n = 3;
+            const goster = () => {
+                geriSayimEl.textContent = n;
+                geriSayimEl.classList.remove('pop'); void geriSayimEl.offsetWidth; geriSayimEl.classList.add('pop');
+            };
+            geriSayimEl.classList.add('aktif'); goster();
+            const tick = () => {
+                n--;
+                if (n >= 1){ goster(); countdownTimer = setTimeout(tick, 1000); }
+                else { geriSayimEl.classList.remove('aktif','pop'); countdownTimer = null; sonra(); }
+            };
+            countdownTimer = setTimeout(tick, 1000);
+        }
+
+        // --- Kelime seçme / ileri-geri gezinme ---
+        function gotoWord(index){
+            if (!levelWords.length) return;
+            if (index < 0) index = 0;
+            if (index >= levelWords.length) index = levelWords.length - 1;
+            stopGeriSayim(); stopDictation();
+            clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
+            gameActive = false; wordActive = false; waitingForAudioClick = false;
+            currentWordIndex = index;
+            loadWord();
+        }
+        function updateKelimeGosterge(){
+            if (kelimeGostergeEl) kelimeGostergeEl.textContent = (currentWordIndex + 1) + ' / ' + levelWords.length;
+            if (prevWordButton) prevWordButton.disabled = (currentWordIndex <= 0);
+            if (nextWordButton) nextWordButton.disabled = (currentWordIndex >= levelWords.length - 1);
+        }
+
         let selectedLevel = null;
         let currentWordIndex = 0;
         let levelWords = [], currentWord = {}, timerInterval, remainingTime = 0;
@@ -94,6 +405,7 @@
         let gameActive = false;
         let wordActive = false;
         let autoNextTimeout;
+        let autoStartTimeout;
         let audio = new Audio(); // Kelime sesleri için
         let waitingForAudioClick = false;
         let selection = [];
@@ -141,59 +453,77 @@
             setTimeout(() => pointsBurst.classList.remove('active'), 800);
         }
 
-        // Hata kaydetme ve yanlış sesini çalma
+        // Kalpler kaldırıldı: yanlış tuş yalnızca kısa kırmızı çakma yapar,
+        // oyunu bitirmez. Öğrenci doğru harfe basana kadar devam edebilir.
         function registerMistake(buttonRef) {
-             if (!wordActive || mistakesMade >= mistakesAllowed) return;
+             if (!wordActive) return;
              playSound('incorrect'); // Yanlış sesini çal
-             mistakesMade++;
-             updateMistakeDisplay();
              if (buttonRef) {
                   buttonRef.classList.add('error-form');
                   setTimeout(() => buttonRef.classList.remove('error-form'), 300);
              }
-             if (mistakesMade >= mistakesAllowed) {
-                  console.log("Hata hakkı bitti!");
-                  checkAnswer(true); // Hata hakkı dolduğunda kontrol et
-             }
         }
 
-         function updateMistakeDisplay() {
-             let hearts = '';
-             for (let i = 0; i < mistakesAllowed - mistakesMade; i++) { hearts += '❤️ '; }
-             for (let i = 0; i < mistakesMade; i++) { hearts += '🖤 '; }
-             mistakeCounter.textContent = hearts.trim() || '🖤';
-         }
+         function updateMistakeDisplay() { /* kalpler kaldırıldı */ }
 
         // Seviye seçildiğinde Web Audio bağlamını başlat
+        // Seviye seçimi: hazır zaman/tekrar değerlerini yükler (elle değiştirilebilir),
+        // oyunu BAŞLATMAZ — "Başla" tuşu başlatır.
         levelSelect.addEventListener('click', (e) => {
             if (e.target.classList.contains('level-btn')) {
-                initAudioContext(); // Ses bağlamını başlat/kontrol et
+                initAudioContext();
                 if (selectedLevelBtn) { selectedLevelBtn.classList.remove('selected'); }
                 selectedLevel = e.target.dataset.level;
                 selectedLevelBtn = e.target;
                 selectedLevelBtn.classList.add('selected');
-                console.log("Level selected:", selectedLevel);
-                startGame();
+                const a = SEVIYE_AYAR[selectedLevel];
+                if (a){ if (saniyeInput) saniyeInput.value = a.sn; if (tekrarInput) tekrarInput.value = a.tk; }
+                if (baslaButton) baslaButton.disabled = false;
             }
+        });
+        // Ayar arttır/azalt (± tuşları)
+        document.querySelectorAll('.step-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const inp = document.getElementById(btn.dataset.target);
+                if (!inp) return;
+                const delta = parseInt(btn.dataset.delta, 10) || 0;
+                let v = (parseInt(inp.value, 10) || 0) + delta;
+                const mn = parseInt(inp.min, 10), mx = parseInt(inp.max, 10);
+                if (!isNaN(mn)) v = Math.max(mn, v);
+                if (!isNaN(mx)) v = Math.min(mx, v);
+                inp.value = v;
+            });
+        });
+        // Başla: seçilen seviye + güncel (hazır ya da elle değiştirilmiş) ayarlarla başlar
+        if (baslaButton) baslaButton.addEventListener('click', () => {
+            if (!selectedLevel) return;
+            initAudioContext();
+            startGame();
         });
 
         function startGame() {
             const gameMode = 'single';
             console.log(`Starting game - Level: ${selectedLevel}, Mode: ${gameMode}`);
-            clearTimeout(autoNextTimeout);
+            clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout);
             if (!gameData[selectedLevel] || !gameData[selectedLevel].words) {
                 console.error(`Oyun verisi bulunamadı! Seviye: ${selectedLevel}`);
                 if (selectedLevelBtn) { selectedLevelBtn.classList.remove('selected'); }
                 return;
             }
+            // Zaman/tekrar ayarlarını oku (hazır ya da elle değiştirilmiş)
+            saniyePerHarf = Math.max(1, Math.min(60, parseInt(saniyeInput && saniyeInput.value, 10) || 6));
+            tekrarPerHarf = Math.max(1, Math.min(20, parseInt(tekrarInput && tekrarInput.value, 10) || 1));
+            // Sınav modu: ana ekrandaki anahtardan; açıkken slaytın cevap tarafı gizli
+            examMode = !!(examCheckbox && examCheckbox.checked);
+            gameMainEl.classList.toggle('exam-mode', examMode);
             levelWords = [...gameData[selectedLevel].words].sort(() => Math.random() - 0.5);
             currentWordIndex = 0;
-            currentLevelScore = 0; incorrectWords = [];
+            currentLevelScore = 0; incorrectWords = []; tamamlananlar = new Set();
             const numWords = levelWords.length;
             basePointsPerWord = Math.floor(100 / numWords);
             pointsRemainder = 100 % numWords;
             levelScoreDisplay.textContent = `Puan: 0`;
-            mistakeCounter.style.display = 'block';
+            mistakeCounter.style.display = 'none';
             homeScreen.classList.remove('active');
             scoreScreen.classList.remove('active');
             gameScreen.classList.add('active');
@@ -229,17 +559,55 @@
 
             originalWord = currentWord.ar;
             fullWordChars = Array.from(originalWord).map((char, index) => ({ char: char, id: `${char}-${index}` }));
+            // Her harfin bulunduğu yere göre DOĞRU yazılış hâlini hesapla
+            // (baş/orta/son/normal). Öğrenci yanlış hâle basarsa hata sayılır.
+            (function(){
+                const li = [];
+                fullWordChars.forEach((o, idx) => { if (!HAREKELER.has(o.char)) li.push(idx); });
+                for (let j = 0; j < li.length; j++){
+                    const ch   = fullWordChars[li[j]].char;
+                    const prev = j > 0 ? fullWordChars[li[j-1]].char : null;
+                    const oncekiBaglar  = (j > 0) && !BAGLANMAYAN.has(prev);          // önceki harf bu harfe bağlanıyor mu
+                    const sonrakiBaglar = !BAGLANMAYAN.has(ch) && (j < li.length - 1); // bu harf sonrakine bağlanıyor mu
+                    fullWordChars[li[j]].form =
+                        (!oncekiBaglar && !sonrakiBaglar) ? 'yalin' :
+                        (!oncekiBaglar &&  sonrakiBaglar) ? 'bas'   :
+                        ( oncekiBaglar &&  sonrakiBaglar) ? 'orta'  : 'son';
+                }
+            })();
             const letterCount = fullWordChars.length;
-            remainingTime = letterCount * gameData[selectedLevel].timePerLetter;
+            // Harf sayısı (harekeler hariç) — zaman ve tekrar bundan hesaplanır
+            const harfSayisi = Math.max(1, Array.from(currentWord.ar).filter(c => !HAREKELER.has(c)).length);
+            remainingTime = harfSayisi * saniyePerHarf;
             timerDisplay.textContent = `⏱️${remainingTime}s`;
             clearInterval(timerInterval);
             turkishWordEl.textContent = currentWord.tr;
+            // Slaytı bu kelimeye göre çiz; sesin kaç kez tekrarlanacağı = kök harf sayısı
+            renderTurkce(); renderKeys(currentWord);
+            currentWord._tekrar = Math.max(1, tekrarPerHarf);   // toplam tekrar (kelime başına)
+            buildSesCizelgesi(currentWord._tekrar);   // ses çalmadan önce çizelgeyi göster
+            stopDictation();
             selection = []; expectedFullCharIndex = 0; mistakesMade = 0;
             arabicOutputEl.textContent = ''; arabicOutputEl.classList.add('empty');
             arabicOutputContainer.style.boxShadow = 'inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light)';
-            populateLetterBank(); disableLetterBank(true); updateMistakeDisplay();
-            playAudioButton.disabled = false; playAudioButton.classList.add('blinking-button');
+            disableKeys(true); updateMistakeDisplay(); updateSiraVurgusu();
+            updateKelimeGosterge();
+            // Kelime seçilince: 3-2-1 geri say → sonra ilk ses + harf sayısı kadar tekrar.
             waitingForAudioClick = true;
+            clearTimeout(autoStartTimeout);
+            startGeriSayim(startCurrentWord);
+        }
+
+        // Sesi otomatik başlat (kulaklık tuşuna gerek yok): imlayı çaldır,
+        // sayacı başlat ve tuşları etkinleştir.
+        function startCurrentWord() {
+            if (!waitingForAudioClick) return;
+            initAudioContext();
+            waitingForAudioClick = false; wordActive = true;
+            dictate(currentWord._tekrar || 1);
+            startTimer();
+            disableLetterBank(false);
+            updateSiraVurgusu();   // ilk sıra: harf tarafı
         }
 
         function populateLetterBank() {
@@ -260,13 +628,29 @@
             buttonElements.forEach(btn => letterBank.appendChild(btn));
         }
 
-        function appendCharToOutput(char) { arabicOutputEl.classList.remove('empty'); arabicOutputEl.textContent += char; }
-        function disableLetterBank(disabled) {
-            letterBank.querySelectorAll('.letter-bank-btn').forEach(btn => {
-                if (btn.classList.contains('correct-form')) { btn.disabled = true; btn.style.opacity = '0.75'; }
-                else { btn.disabled = disabled; btn.style.opacity = btn.disabled ? '0.65' : '1'; }
-            });
+        function appendCharToOutput(char) {
+            arabicOutputEl.classList.remove('empty');
+            arabicOutputEl.textContent += char;
+            if (aktifKutu) aktifKutu.textContent = gorunenYazi();   // sıradaki kelimenin kutusuna yansıt
         }
+        // Yazılan yerde son harfin GERÇEK hâli görünsün: son harf ileri bağlanıyorsa
+        // (baş/orta hâl) sonuna görünür tatvil (ـ) eklenir. Böylece öğrenci "bu harften
+        // sonra harf gelecek mi" bağını yazıya bakarak anlayabilir (Arapça'nın otomatik
+        // olarak son harfi sonda/yalın göstermesi yanıltmaz).
+        function sonYazilanHarfHali(){
+            const n = Math.min(Array.from(arabicOutputEl.textContent).length, fullWordChars.length);
+            for (let k = n - 1; k >= 0; k--){
+                if (!HAREKELER.has(fullWordChars[k].char)) return fullWordChars[k].form;
+            }
+            return null;
+        }
+        function gorunenYazi(){
+            let s = arabicOutputEl.textContent;
+            const hal = sonYazilanHarfHali();
+            if (hal === 'bas' || hal === 'orta') s += TATVIL;   // ileri bağlanıyor → görünür çizgi
+            return s;
+        }
+        function disableLetterBank(disabled) { disableKeys(disabled); }
         function disableAllButtons(disabled) {
              disableLetterBank(disabled);
              playAudioButton.disabled = disabled;
@@ -287,21 +671,32 @@
 
         function checkAnswer(timeUp = false) {
              if (!wordActive && !waitingForAudioClick && !timeUp) return;
-             wordActive = false; waitingForAudioClick = false;
+             wordActive = false; waitingForAudioClick = false; stopDictation(); stopGeriSayim();
              playAudioButton.classList.remove('blinking-button');
-             clearTimeout(autoNextTimeout); clearInterval(timerInterval);
+             updateSiraVurgusu();   // sıra vurgusunu temizle
+             clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
              gameActive = false; disableAllButtons(true);
+
+             // SINAV MODU: tuşlara tıklanmaz; süre bitince sıradaki kelimeye geç
+             if (examMode) { autoNextTimeout = setTimeout(nextWord, 800); return; }
 
              const constructedWord = arabicOutputEl.textContent;
              if(constructedWord === "") arabicOutputEl.classList.add('empty');
              else arabicOutputEl.classList.remove('empty');
              const targetWordForCheck = fullWordChars.map(item => item.char).join('');
-             const isCorrect = constructedWord.trim() === targetWordForCheck.trim() && !timeUp && mistakesMade < mistakesAllowed;
+             const isCorrect = constructedWord.trim() === targetWordForCheck.trim() && !timeUp;
 
              if (isCorrect) {
-                 let pointsAwarded = basePointsPerWord; if (currentWordIndex < pointsRemainder) { pointsAwarded++; }
-                 currentLevelScore += pointsAwarded; levelScoreDisplay.textContent = `Puan: ${currentLevelScore}`; triggerPointsBurst(pointsAwarded);
+                 // Puan yalnızca kelime İLK kez doğru yazıldığında verilir (serbest gezinme)
+                 if (!tamamlananlar.has(currentWordIndex)) {
+                     let pointsAwarded = basePointsPerWord + (tamamlananlar.size < pointsRemainder ? 1 : 0);
+                     currentLevelScore += pointsAwarded; levelScoreDisplay.textContent = `Puan: ${currentLevelScore}`; triggerPointsBurst(pointsAwarded);
+                     tamamlananlar.add(currentWordIndex);
+                 }
                  arabicOutputContainer.style.boxShadow = 'inset 3px 3px 6px #76b198, inset -3px -3px 6px #baffa0';
+                 // Doğru yazılan satır yeşile döner ve LİSTEDE KALIR (kaybolmaz).
+                 const aktifSatir = kelimeListeEl.querySelector('.kelime-satir.aktif');
+                 if (aktifSatir){ aktifSatir.classList.add('tamamlandi'); }
                  autoNextTimeout = setTimeout(nextWord, 1000); // Doğruysa 1sn sonra otomatik geç
              } else {
                  if (timeUp || mistakesMade >= mistakesAllowed) { playSound('incorrect'); }
@@ -315,8 +710,9 @@
         }
 
         function nextWord() {
-            currentWordIndex++;
-            loadWord(); // Yeni kelime yükle (loadWord butonları sıfırlar)
+            if (currentWordIndex + 1 < levelWords.length) { gotoWord(currentWordIndex + 1); }
+            else if (tamamlananlar.size >= levelWords.length) { showScoreScreen(); }
+            // aksi halde son kelimede kal — kullanıcı ileri/geri ile gezinebilir
         }
 
         function showScoreScreen() {
@@ -341,12 +737,14 @@
         }
 
         function showHomeScreen() {
-            clearTimeout(autoNextTimeout); gameActive = false; wordActive = false; waitingForAudioClick = false; clearInterval(timerInterval);
+            stopDictation(); stopGeriSayim();
+            clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); gameActive = false; wordActive = false; waitingForAudioClick = false; clearInterval(timerInterval);
             gameScreen.classList.remove('active');
             scoreScreen.classList.remove('active');
             homeScreen.classList.add('active');
             history.replaceState({ screen: 'home' }, '', window.location.pathname);
              if (selectedLevelBtn) { selectedLevelBtn.classList.remove('selected'); selectedLevelBtn = null; } selectedLevel = null;
+             if (baslaButton) baslaButton.disabled = true;
         }
 
         // Olay Dinleyicileri
@@ -359,30 +757,57 @@
             if (waitingForAudioClick) {
                 waitingForAudioClick = false; wordActive = true;
                 playAudioButton.classList.remove('blinking-button');
-                playAudio(); startTimer(); disableLetterBank(false);
-            } else if (wordActive || gameActive) { playAudio();
+                dictate(currentWord._tekrar || 1); startTimer(); disableLetterBank(false);
+            } else if (wordActive || gameActive) { dictate(currentWord._tekrar || 1);
             } else if (!gameActive && currentWord && currentWord.audioSrc) { playAudio(); }
         });
 
-        letterBank.addEventListener('click', (e) => {
+        // Birleşik tuş konteynırı — tekrar kullanılabilir klavye
+        tusKonteynerEl.addEventListener('click', (e) => {
             if (!wordActive) return; initAudioContext();
-            const clickedButton = e.target.closest('.letter-bank-btn:not(:disabled)');
-            if (!clickedButton) return;
+            const key = e.target.closest('.slayt-tus:not(:disabled)');
+            if (!key) return;
+            playSound('touch');
+            const clickedChar = key.dataset.value;
+            if (expectedFullCharIndex >= fullWordChars.length) { registerMistake(key); return; }
+            const expectedObj = fullWordChars[expectedFullCharIndex];
+            if (clickedChar !== expectedObj.char) { registerMistake(key); return; }
 
-            playSound('touch'); // Dokunma sesini çal
+            // HARF HÂLİ KONTROLÜ: doğru yazılış (baş/orta/son/normal) seçilmeli.
+            // Aynı görünen hâller (ör. bağlanmayan harfte baş=normal) kabul edilir.
+            let tiklananHal = null;
+            if (key.classList.contains('harf-tus')) {
+                const span = e.target.closest('.ht-form');
+                tiklananHal = span
+                    ? ['bas','orta','son','yalin'].find(f => span.classList.contains('ht-' + f))
+                    : null;
+                if (!tiklananHal && expectedObj.form) { registerMistake(key); return; } // hâl belirsiz
+            } else if (key.classList.contains('tamarbuta-tus')) {
+                tiklananHal = key.dataset.formtype || null;                              // bitişik/ayrı
+            }
+            if (tiklananHal && expectedObj.form) {
+                const h = harfHalleri(clickedChar);
+                if (h[tiklananHal] !== h[expectedObj.form]) { registerMistake(key); return; } // yanlış hâl
+            }
 
-            const clickedChar = clickedButton.dataset.value; const clickedId = clickedButton.dataset.id;
-             if (expectedFullCharIndex >= fullWordChars.length) { registerMistake(clickedButton); return; }
-             const expectedObj = fullWordChars[expectedFullCharIndex];
-             
-             // --- BU SATIR DOĞRU MANTIĞI İÇERİYOR ---
-             if (clickedChar === expectedObj.char) {
-                 // playSound('correct'); // KALDIRILDI
-                 appendCharToOutput(clickedChar); clickedButton.disabled = true; clickedButton.classList.add('correct-form');
-                 expectedFullCharIndex++;
-                 if (expectedFullCharIndex === fullWordChars.length) { checkAnswer(false); }
-             } else { registerMistake(clickedButton); }
-         });
+            appendCharToOutput(clickedChar);
+            flashKey(key, 'correct');
+            expectedFullCharIndex++;
+            updateSiraVurgusu();   // sıra vurgusunu güncelle (harf ↔ hareke)
+            if (expectedFullCharIndex === fullWordChars.length) { checkAnswer(false); }
+        });
+
+        // Bir kelimeye tıklayınca o kelime seçilir; ilgili harfleri çıkar ve
+        // 3-2-1 geri sayımdan sonra sesi çalar.
+        kelimeListeEl.addEventListener('click', (e) => {
+            const satir = e.target.closest('.kelime-satir');
+            if (!satir) return;
+            const idx = parseInt(satir.dataset.index, 10);
+            if (!isNaN(idx)) { initAudioContext(); gotoWord(idx); }
+        });
+        // İleri / geri tuşlarıyla kelimeler arası geçiş
+        if (prevWordButton) prevWordButton.addEventListener('click', () => { initAudioContext(); gotoWord(currentWordIndex - 1); });
+        if (nextWordButton) nextWordButton.addEventListener('click', () => { initAudioContext(); gotoWord(currentWordIndex + 1); });
 
         window.addEventListener('popstate', (event) => {
              if (gameScreen.classList.contains('active') || scoreScreen.classList.contains('active')) { showHomeScreen(); }
