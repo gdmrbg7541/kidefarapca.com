@@ -359,10 +359,25 @@
 @media (orientation: landscape) and (max-height: 520px){
     /* #gameMain öznitelik özgüllüğü, sonraki taban grid kuralını ezmek için gerekli.
        Kartlar sınırlı genişlikte (64rem) tek sütun; kapsayıcı ana eksende ortalanır. */
-    #gameMain .tus-grup.harfler{ display:flex; flex-direction:column; align-items:stretch;
-        gap:0.6rem; overflow-y:auto; width:100%; max-width:64rem; }
+    #gameMain .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap; align-items:stretch;
+        gap:0.6rem; overflow-y:auto; overflow-x:hidden; width:100%; max-width:64rem; }
     #gameMain .harf-tus{ width:100%; gap:0.5rem; padding:0.4rem 1.1rem; overflow:hidden; }
     #gameMain .harf-tus .ht-form{ flex:1 1 0; min-width:0; font-size:4.6rem; }
+}
+
+/* DOKUNMATİK cihazlar (mobil + tablet), HER YÖNDE: her HARF grubu TEK satır —
+   asla iki grup yan yana, asla yatay kaydırıp aramak gerekmez. Hareke grupları da
+   alt satıra sarar (yatay kaydırma yok). Masaüstü (pointer:fine) 3 sütunda kalır. */
+@media (pointer: coarse){
+    /* flex-wrap:nowrap ŞART: yoksa sütun taşınca kartlar ikinci sütuna sarar
+       (yan yana). nowrap ile tek sütun kalır, taşarsa DİKEY kaydırılır. */
+    #gameMain .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap;
+        align-items:stretch; gap:0.6rem; width:100%; max-width:64rem;
+        overflow-x:hidden; overflow-y:auto; }
+    #gameMain .harf-tus{ width:100%; gap:0.5rem; padding:0.4rem 1rem; overflow:hidden; }
+    #gameMain .harf-tus .ht-form{ flex:1 1 0; min-width:0; }
+    #gameMain .tus-grup.harekeler{ flex-wrap:wrap; overflow-x:hidden;
+        row-gap:0.5rem; justify-content:center; }
 }
 
 /* --- Dikey ekran (telefon) uyarlaması --- */
@@ -573,8 +588,8 @@
     /* Harf tuşları: telefonda TAM GENİŞLİK tek sütun — ekranı yatayda dengeli
        kullanır. Her kart tek bir tuştur; 4 hâl kartın enine eşit yayılır (bol
        yer → taşma/kırpılma olmaz). Dikeyde uzamaz (yükseklik içeriğe göre). */
-    .tus-grup.harfler{ display:flex; flex-direction:column; align-items:stretch;
-        gap:0.6rem; overflow-y:auto; }
+    .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap; align-items:stretch;
+        gap:0.6rem; overflow-y:auto; overflow-x:hidden; }
     .harf-tus{ width:100%; gap:0.4rem; padding:0.5rem 1rem; overflow:hidden; }
     .harf-tus .ht-form{ font-size:3.8rem; min-width:0; flex:1 1 0; line-height:1.15; }
     .harf-tus .ht-form + .ht-form{ padding-right:0.5rem; }
