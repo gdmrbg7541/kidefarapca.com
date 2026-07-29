@@ -950,8 +950,10 @@ body.drag-learned .g3-root-chip { animation: none; }
        (tente +48px, raf +60px genişlediği için pay bırakılır) */
     #game2-screen .g3-vitrin { margin-left: 0; }
     #g2-vitrinKutu { width: min(78vw, 420px); height: 34dvh; }
-    /* Vitrindeki kelime kartları bir tık daha iri görünsün */
+    /* Vitrindeki kartlar iri; ARAPÇA KELİME ekstra büyük, emoji küçük */
     #g2-vitrinKutu .g2-urun { font-size: calc(var(--uf, 1.6rem) * 1.18); }
+    #g2-vitrinKutu .g2-urun-kelime { font-size: 1.4em; }
+    #g2-vitrinKutu .g2-urun-emoji { font-size: .55em; }
 
     /* Alt şerit: usta solda küçük, örs sağında, kökler en sağda */
     .g2-sag { display: contents; }
@@ -966,14 +968,17 @@ body.drag-learned .g3-root-chip { animation: none; }
     }
     /* Örs SABİT durur: sola çapalı, kök sayısından etkilenmez.
        Usta en solda (örsün soluna taşan mutlak konum), örs onun sağında. */
-    .g2-sag-alt .g3-ors-kutu { align-self: flex-end; margin-bottom: 0; margin-left: 27vw; flex: 0 0 auto; }
+    .g2-sag-alt .g3-ors-kutu { align-self: flex-end; margin-bottom: 0; margin-left: 30vw; flex: 0 0 auto; }
     .g2-ors2 { width: clamp(76px, 23vw, 108px); margin-left: 0; }
-    #g2-orsKutu .g3-usta { width: clamp(88px, 27vw, 126px); left: -28vw; bottom: 0; }
+    #g2-orsKutu .g3-usta { width: clamp(98px, 30vw, 142px); left: -31vw; bottom: 0; }
     .g2-sag-alt .g2-kokraf {
         flex-direction: column; flex-wrap: nowrap; align-self: flex-end;
-        justify-content: flex-end; gap: 10px;
-        max-height: 26dvh; overflow-y: auto; margin-right: 0;
+        justify-content: flex-end; gap: 8px;
+        /* Şeritten daha uzun olabilir ve alt boşluğa doğru SARKAR:
+           5 kök iç kaydırma olmadan dizilir */
+        max-height: 32dvh; overflow-y: auto; margin-right: 0;
         margin-left: auto; flex: 0 0 auto;
+        margin-bottom: -4dvh;
         width: clamp(96px, 28vw, 150px); min-width: 0;
     }
     .g2-kokraf .g2-kulce { font-size: clamp(1.1rem, 4.5vw, 1.7rem); }
