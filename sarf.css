@@ -926,7 +926,22 @@ body.drag-learned .g3-root-chip { animation: none; }
        (bütçe dvh ile kurulur: dikeyde SCROLL OLMADAN her şey sığar) */
     .g2-atolye-ic { padding-top: 6dvh; padding-bottom: 6dvh; }
     .g2-atolye-ic .g3-vitrin { order: 1; }
-    .g2-vezinler { order: 2; }
+    /* Vezin şeridi SABİT yükseklikte: kök seçilince levhalar belirse de
+       kökler ve usta yerinden OYNAMAZ. Levhalar tek satırda dizilir,
+       sığmazsa yatay kaydırma açılır. */
+    .g2-vezinler {
+        order: 2;
+        display: flex !important; flex-wrap: nowrap !important;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-x: auto; overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        height: clamp(58px, 8.5dvh, 82px);
+        min-height: 0;
+        width: 94vw; max-width: 94vw;
+        padding: 0 4px; box-sizing: border-box;
+    }
+    .g2-vezinler .g2-vezin { flex: 0 0 auto; }
     /* Dar ekranda JS'in sığdırma döngüsü (display:contents'li kapsayıcı
        yüzünden) yazıyı aşırı küçültüyordu; levha boyu burada sabitlenir,
        levhalar gerekirse alt satıra sarar. */
