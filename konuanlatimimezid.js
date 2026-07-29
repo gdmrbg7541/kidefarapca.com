@@ -1,3 +1,221 @@
+/* ===== Renklendirme motoru (kaliplartablosu.html'den) — kök harfleri siyah,
+   eklenen (mezîd) harfleri kırmızı yapar. ===== */
+const ColorEngine = {
+    isHaraka: function(char) {
+        return /[\u064B-\u0652\u0670]/.test(char);
+    },
+
+    isWeak: function(char) {
+        return ['و', 'ي', 'ا', 'أ', 'إ', 'آ', 'ء', 'ى'].includes(char);
+    },
+
+    isEquivalent: function(char1, char2, rIndex = -1) {
+    const hamzas = ['ا', 'أ', 'إ', 'آ', 'ؤ', 'ئ', 'ء']; // 'آ' burada mevcut
+    const weaks = ['و', 'ي', 'ا', 'ى']; 
+    
+    // YENİ: İlk kök harfinde (rIndex === 0) yalın Elif (ا) asla vav veya ya'nın dönüşümü olamaz. 
+    // Aksi halde وَاحِد kelimesindeki ilk Vav'ı bağlaç sanıp Elif'i kök zannediyor!
+    if (rIndex === 0) {
+        if (char1 === 'ا' && (char2 === 'و' || char2 === 'ي')) return false;
+        if (char2 === 'ا' && (char1 === 'و' || char1 === 'ي')) return false;
+    }
+
+    // YENİ: Eğer karşılaştırılanlardan biri 'آ' ise, bunu 'أ' (kök hemzesi) ile denk kabul et
+    if (char1 === 'آ' && char2 === 'أ') return true;
+    if (char1 === 'أ' && char2 === 'آ') return true;
+
+    if (char1 === char2) return true;
+    if (hamzas.includes(char1) && hamzas.includes(char2)) return true;
+    if (weaks.includes(char1) && weaks.includes(char2)) return true; 
+    return false;
+},
+
+    colorize: function(finalWord, rootArray = ['ف', 'ع', 'ل']) {
+        // Harfleri temizle
+        finalWord = finalWord.replace(/[\s\u200C\u200D\uFEFFـ]/g, '');
+
+        let pureChars = finalWord.replace(/[\u064B-\u0652\u0670]/g, '');
+        if (pureChars.match(/ف.*ع.*ل/)) {
+            rootArray = ['ف', 'ع', 'ل'];
+        } else if (!rootArray || rootArray.length !== 3 || (rootArray[0] === 'ف' && rootArray[1] === 'ع' && rootArray[2] === 'ل')) {
+            if (typeof currentRoot !== 'undefined' && currentRoot && currentRoot.trim() !== "") {
+                let tempArr = currentRoot.replace(/[^\u0621-\u064A]/g, '').split('');
+                if (tempArr.length === 3) rootArray = tempArr;
+                else rootArray = ['ف', 'ع', 'ل'];
+            } else {
+                rootArray = ['ف', 'ع', 'ل'];
+            }
+        }
+        
+        finalWord = finalWord.replace(/\uFEFB([\u064B-\u0652\u0670]?)/g, 'ل$1ا')
+                             .replace(/\uFEF7([\u064B-\u0652\u0670]?)/g, 'ل$1أ')
+                             .replace(/\uFEF9([\u064B-\u0652\u0670]?)/g, 'ل$1إ')
+                             .replace(/\uFEF5([\u064B-\u0652\u0670]?)/g, 'ل$1آ');
+        
+        let charsOnly = [];
+        for (let i = 0; i < finalWord.length; i++) {
+            if (!this.isHaraka(finalWord[i])) {
+                charsOnly.push({ char: finalWord[i], isRoot: false });
+            }
+        }
+
+        let rIndex = 0;
+        for (let i = 0; i < charsOnly.length; i++) {
+            let c = charsOnly[i].char;
+            
+            // YENİ: Misal Fiil (Vavlı) Muzari 'ي' Harfi Hatası
+            // Kök 'و' ile başlıyorsa ve kelimedeki harf 'ي' ise, bu 'ي' genellikle Muzaraat harfidir (örn: يَقَعُ).
+            // Sadece 'م', 'إ', 'ا', 'أ', 'ت' harflerinden sonra gelen 'ي' kök harfi (dönüşmüş vav) olabilir.
+            let isMisalMuzariPrefix = false;
+            if (rIndex === 0 && c === 'ي' && rootArray[0] === 'و') {
+                let prevChar = i > 0 ? charsOnly[i - 1].char : '';
+                if (!['م', 'إ', 'ا', 'أ', 'ت'].includes(prevChar)) {
+                    isMisalMuzariPrefix = true;
+                }
+            }
+
+            if (!isMisalMuzariPrefix && rIndex < 3 && this.isEquivalent(c, rootArray[rIndex], rIndex)) {
+                let isZiyade = false;
+                
+                if (rIndex < 2 && ['س', 'أ', 'إ', 'آ', 'ل', 'ت', 'م', 'و', 'ن', 'ي', 'ه', 'ا', 'ء'].includes(c)) {
+                    let searchPointer = i + 1;
+                    let rootMatchCount = 0;
+                    let requiredMatches = 3 - rIndex; 
+
+                    for (let k = rIndex; k < 3; k++) {
+                        let found = false;
+                        for (let j = searchPointer; j < charsOnly.length; j++) {
+                            if (this.isEquivalent(charsOnly[j].char, rootArray[k], k)) {
+                                found = true;
+                                searchPointer = j + 1;
+                                break;
+                            }
+                        }
+                        if (found) rootMatchCount++;
+                    }
+
+                    if (rootMatchCount === requiredMatches) {
+                        isZiyade = true; 
+                    }
+                }
+
+                // =========================================================
+                // YENİ KESİN ÇÖZÜM: NAKIS FİİL "تَا" (Gaibe Tesniye) HATASI
+                // =========================================================
+                // Eğer 3. kök harfini arıyorsak, o harf zayıf bir harfse,
+                // ve şu an baktığımız harften bir önceki harf ek olan (kırmızı) 'ت' ise:
+                // Bu harf kök değil, Tesniye ekidir! Kırmızı kalmalıdır!
+                if (rIndex === 2 && this.isWeak(rootArray[2])) {
+                    if (i > 0 && charsOnly[i - 1].char === 'ت' && charsOnly[i - 1].isRoot === false) {
+                        isZiyade = true;
+                    }
+                }
+
+                if (!isZiyade) {
+                    charsOnly[i].isRoot = true; 
+                    rIndex++;
+                }
+            } 
+            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1], rIndex + 1) && this.isWeak(rootArray[rIndex])) {
+                charsOnly[i].isRoot = true;
+                rIndex += 2;
+            }
+        }
+
+        // KELİMEYİ ATOMİK PARÇALARA BÖLME
+        let parsedWord = [];
+        let i = 0;
+        let charIdx = 0;
+        while (i < finalWord.length) {
+            let char = finalWord[i];
+            if (this.isHaraka(char)) { i++; continue; }
+            
+            let isRoot = false;
+            if (charIdx < charsOnly.length && charsOnly[charIdx].char === char) {
+                isRoot = charsOnly[charIdx].isRoot;
+                charIdx++;
+            }
+            
+            let harekeler = "";
+            let j = i + 1;
+            while (j < finalWord.length && this.isHaraka(finalWord[j])) {
+                harekeler += finalWord[j];
+                j++;
+            }
+            parsedWord.push({ base: char, hareke: harekeler, isRoot: isRoot });
+            i = j;
+        }
+
+        // ATOMİK KUTULARI VE BAĞLAYICILARI (ZWJ) İNŞA ETME
+        let resultHtml = "";
+        const nonConnectors = ['ا', 'أ', 'إ', 'آ', 'د', 'ذ', 'ر', 'ز', 'و', 'ؤ', 'ء', 'ى', 'ة'];
+
+        for (let k = 0; k < parsedWord.length; k++) {
+            let current = parsedWord[k];
+            let prev = k > 0 ? parsedWord[k - 1] : null;
+            let next = k < parsedWord.length - 1 ? parsedWord[k + 1] : null;
+            
+            let connectRight = false; // Sağdaki harfe (Öncekine) birleşecek mi?
+            let connectLeft = false;  // Soldaki harfe (Sonrakine) birleşecek mi?
+            
+            if (prev && !nonConnectors.includes(prev.base) && current.base !== 'ء') {
+                connectRight = true;
+            }
+            if (next && !nonConnectors.includes(current.base) && next.base !== 'ء') {
+                connectLeft = true;
+            }
+            
+            let prefix = connectRight ? "&zwj;" : "";
+            let suffix = connectLeft ? "&zwj;" : "";
+            let color = current.isRoot ? "#000000" : "#E53935";
+            
+            // Her harf tek başına bir zırhın içinde!
+            resultHtml += `<span class="srf-char" style="color: ${color} !important;">${prefix}${current.base}${current.hareke}${suffix}</span>`;
+        }
+
+        return `<span class="srf-word" dir="rtl">${resultHtml}</span>`;
+    }
+};
+
+// SİHİRLİ ATOMİK HİZALAMA VE LİGATÜR ENGELLEYİCİ CSS
+if (!document.getElementById('srf-color-fix')) {
+    const style = document.createElement('style');
+    style.id = 'srf-color-fix';
+    style.innerHTML = `
+        .srf-word {
+            display: inline-flex !important; 
+            flex-direction: row !important;
+            justify-content: center !important;
+            align-items: center !important;
+            direction: rtl !important;
+            white-space: nowrap !important;
+        }
+        
+        .srf-char {
+            display: flex !important; align-items: center !important; justify-content: center !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            font-variant-ligatures: none !important;
+            font-family: 'Arakom', sans-serif !important;
+            font-weight: normal !important;
+        }
+
+        .glass-box .ar, .glass-box .ar-small, .siga-text {
+            display: flex !important; align-items: center !important; justify-content: center !important;
+            text-align: center !important;
+            width: 100% !important;
+            direction: rtl !important;
+        }
+        .conjugation-table td, .conjugation-table th {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+
+
 const vezinData = {
     "İf'al": {
         labels: ["أَفْعَلَ", "يُفْعِلُ", "أَفْعِلْ", "إِفْعَال", "مُفْعِل", "مُفْعَل"],
@@ -161,8 +379,12 @@ const vezinData = {
     const headerCell = document.createElement('div');
     headerCell.className = "cell header-sub";
     
-    // Yazı içeriği aynı, sadece dikey hizalamayı kontrol altına alıyoruz
-    const sub = i > 0 ? `<div class="pattern-label">${data.labels[i-1]}</div>` : "";
+    // Yazı içeriği aynı; kalıp şablonunu renklendirme motoruyla boyuyoruz
+    // (ف ع ل kökü siyah, eklenen mezîd harfleri kırmızı)
+    const labelHtml = (i > 0 && typeof ColorEngine !== 'undefined')
+        ? ColorEngine.colorize(data.labels[i-1], ['ف','ع','ل'])
+        : (i > 0 ? data.labels[i-1] : "");
+    const sub = i > 0 ? `<div class="pattern-label">${labelHtml}</div>` : "";
     
     // 'h' (Mazi vb.) yazısını bir span içine alarak satır yüksekliğini kontrol ediyoruz
     headerCell.innerHTML = `<span style="line-height:1; display:block;">${h}</span>${sub}`;
@@ -241,16 +463,16 @@ Object.assign(flyingRoot.style, {
             <div class="meaning-popup">${rootObj.mean[col]}</div>
         `;
 
-        // Zaid harfleri yukarıdan süzme efekti (Görsel şov kısmı)
+        // Zaid harfleri yukarıdan SIRAYLA yaylanarak süzülür (canlı görsel şov)
         const zaidElements = target.querySelectorAll('.zaid-drop');
-        zaidElements.forEach(zaid => {
-            zaid.style.transform = 'translateY(-50px)';
+        zaidElements.forEach((zaid, zi) => {
+            zaid.style.transform = 'translateY(-55px) scale(1.35)';
             zaid.style.opacity = '0';
             setTimeout(() => {
-                zaid.style.transition = 'all 0.6s ease-out';
-                zaid.style.transform = 'translateY(0)';
+                zaid.style.transition = 'transform .55s cubic-bezier(.34,1.6,.5,1), opacity .35s ease-out';
+                zaid.style.transform = 'translateY(0) scale(1)';
                 zaid.style.opacity = '1';
-            }, 100);
+            }, 90 + zi * 90);
         });
 
         // 3. ASIL ÇÖZÜM: Harfler birleşsin (İllüzyon)
@@ -260,9 +482,15 @@ Object.assign(flyingRoot.style, {
             const fullWord = vezinData[activeVezin].roots[row].derived[col];
             const turkishMean = rootObj.mean[col]; // Türkçe anlamı buradan alıyoruz
 
+            // Renklendirme motoru: kök harfleri siyah, eklenen (mezîd) harfleri kırmızı
+            const rootChars = (rootObj.word || '').replace(/[^ء-ي]/g, '').split('');
+            const coloredWord = (typeof ColorEngine !== 'undefined')
+                ? ColorEngine.colorize(fullWord, rootChars)
+                : fullWord;
+
             target.innerHTML = `
                 <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%;">
-                    <div class="final-word">${fullWord}</div>
+                    <div class="final-word">${coloredWord}</div>
                 </div>
                 <div class="meaning-popup" style="display: block; opacity: 1; transform: translateY(0);">
                     ${turkishMean}
