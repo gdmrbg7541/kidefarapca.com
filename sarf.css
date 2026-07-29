@@ -926,6 +926,10 @@ body.drag-learned .g3-root-chip { animation: none; }
     .g2-atolye-ic { padding-top: clamp(48px, 8vh, 72px); }
     .g2-atolye-ic .g3-vitrin { order: 1; }
     .g2-vezinler { order: 2; }
+    /* Dar ekranda JS'in sığdırma döngüsü (display:contents'li kapsayıcı
+       yüzünden) yazıyı aşırı küçültüyordu; levha boyu burada sabitlenir,
+       levhalar gerekirse alt satıra sarar. */
+    .g2-vezinler { --vf: clamp(1.5rem, 5.5vw, 2.3rem) !important; }
     #g2-vitrinKutu { height: 28vh; }
 
     /* Alt şerit: usta solda küçük, örs sağında, kökler en sağda */
