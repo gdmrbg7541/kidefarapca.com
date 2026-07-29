@@ -70,8 +70,8 @@
         const tekrarInput = document.getElementById('tekrarInput');
         const baslaButton = document.getElementById('baslaButton');
         // Seviyelerin hazır ayarları (harf başına saniye / harf başına tekrar)
-        const SEVIYE_AYAR = { '1':{sn:9,tk:4}, '2':{sn:8,tk:4}, '3':{sn:8,tk:3}, '4':{sn:7,tk:3},
-                              '5':{sn:7,tk:3}, '6':{sn:6,tk:3}, '7':{sn:5,tk:3}, '8':{sn:4,tk:3} };
+        const SEVIYE_AYAR = { '1':{sn:9,tk:6}, '2':{sn:8,tk:6}, '3':{sn:8,tk:5}, '4':{sn:7,tk:5},
+                              '5':{sn:7,tk:4}, '6':{sn:6,tk:4}, '7':{sn:5,tk:3}, '8':{sn:4,tk:3} };
         let saniyePerHarf = 6, tekrarPerHarf = 4;
         let harekeYok = false;   // son 4 seviyede (5-8) harekeler gösterilmez, yalnız harfler yazılır
         const backToHomeButton = document.getElementById('backToHomeButton');

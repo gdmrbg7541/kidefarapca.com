@@ -428,12 +428,12 @@
 /* Satırlar BÜYÜK: yaklaşık yarım ekranlık listede ~4 kelime (2 satır × 2 sütun)
    görünür; gerisi için kaydırılır, baştaki (üstteki) kelimeler görünmez olur. */
 .kelime-satir{
-    display:flex; align-items:center; gap:1rem; min-height:11rem; max-height:18rem; overflow:hidden;
+    display:flex; align-items:center; gap:1rem; min-height:6.5rem; max-height:12rem; overflow:hidden;
     scroll-margin-top:1rem;
     /* Aktif kırmızı kutunun halkası (box-shadow) kenarlara değmesin diye satırlar
        yatayda içeri alınır; kaydırılabilir kapsayıcı kenardan kırpmaz. */
     margin-inline:0.9rem;
-    padding:0.6rem 0.3rem 1.6rem; border-bottom:2px solid rgba(60,80,140,0.16);
+    padding:0.35rem 0.3rem 0.8rem; border-bottom:2px solid rgba(60,80,140,0.16);
     transition:opacity .45s ease, max-height .45s ease, min-height .45s ease, margin .45s ease,
                padding .45s ease, transform .45s ease, border-color .2s;
 }
@@ -450,12 +450,12 @@
     transition:color .2s;
 }
 .ks-arapca{
-    flex:1 1 0; position:relative; min-height:5rem; text-align:left; direction:rtl;
+    flex:1 1 0; position:relative; min-height:3.4rem; text-align:left; direction:rtl;
     background:none; box-shadow:none; overflow:visible; display:flex; align-items:center;
 }
 /* Tıklayınca yazılan kısım kırmızı; doğru tamamlanınca yeşile döner (aşağıda) */
 .ks-typed{ direction:rtl; display:inline-block;
-    font-family:var(--font-harmattan); font-weight:700; font-size:7rem; line-height:1.4;
+    font-family:var(--font-harmattan); font-weight:700; font-size:5.6rem; line-height:1.15;
     color:var(--color-error); }
 /* Seslendirilen (aktif) kelime: hafif yuvarlatılmış KIRMIZI KUTU ile vurgulanır */
 .kelime-satir.aktif{ border-bottom-color:transparent; border-radius:0.9rem;
@@ -580,11 +580,11 @@
         background:linear-gradient(to right, transparent 1.3rem,
             rgba(210,70,70,0.35) 1.3rem, rgba(210,70,70,0.35) calc(1.3rem + 2px),
             transparent calc(1.3rem + 2px)); background-attachment:local; }
-    /* Telefonda da ~4 kelime görünür: satırlar makul büyük, tek sütun */
-    .kelime-satir{ min-height:5.5rem; }
+    /* Telefonda satırlar daha kompakt: dikey boşluk azaltıldı */
+    .kelime-satir{ min-height:4rem; padding:0.3rem 0.3rem 0.6rem; }
     .ks-turkce{ font-size:1.9rem; }
-    .ks-arapca{ min-height:3.4rem; }
-    .ks-typed{ font-size:4.6rem; }
+    .ks-arapca{ min-height:2.8rem; }
+    .ks-typed{ font-size:4.2rem; }
     /* Harf tuşları: telefonda TAM GENİŞLİK tek sütun — ekranı yatayda dengeli
        kullanır. Her kart tek bir tuştur; 4 hâl kartın enine eşit yayılır (bol
        yer → taşma/kırpılma olmaz). Dikeyde uzamaz (yükseklik içeriğe göre). */
@@ -619,9 +619,10 @@
 #gameScreen #gameFooter{ padding-top:0.3rem; margin-top:0.2rem; }
 #gameScreen #audioControl{ width:3.4rem; height:3.2rem; }
 
-/* Simetrik header: geri (sol) · zaman widget (orta, uzun) · puan (sağ) */
-#gameHeader{ max-width:82rem; padding-left:0; justify-content:space-between; gap:1rem; }
-#gameHeader .back-button{ position:static; width:3.4rem; height:3.4rem; font-size:1.2rem; flex-shrink:0; }
+/* Simetrik header: geri (EN SOL) · zaman widget (orta, uzun) · puan (sağ).
+   Tam genişlik → geri tuşu her zaman en solda sabit kalır (ortalanmış değil). */
+#gameHeader{ max-width:none; width:100%; padding-left:0; justify-content:space-between; gap:1rem; }
+#gameHeader .back-button{ position:static; width:3.4rem; height:3.4rem; font-size:1.2rem; flex-shrink:0; margin-right:0; }
 #gameHeader .back-button::before{ margin-right:0; }
 #gameHeader #levelScoreDisplay{ flex:0 0 auto; }
 /* Duraklat / Devam tuşu — geri tuşunun hemen yanında */
