@@ -6668,12 +6668,17 @@ setInterval(() => {
         const staticList = document.getElementById('static-list-btn');
         const staticTimer = document.getElementById('static-timer-btn');
         if (staticList) {
-            staticList.classList.toggle('svg-wave-active', canShowTimer);
+            staticList.classList.remove('svg-wave-active');
+            staticList.classList.toggle('svg-wave-red', canShowTimer);
             staticList.style.opacity = canShowTimer ? '1' : '0.4';
             staticList.style.pointerEvents = canShowTimer ? 'auto' : 'none';
         }
         if (staticTimer) {
-            staticTimer.classList.toggle('svg-wave-active', canShowTimer);
+            // Kronometrenin dalga vurgusu YEŞİL: sayfa açılışında (kök seçilmemişken)
+            // ve fiilli bir kök seçiliyken de yeşil dalga ile vurgulanır.
+            const noRootSelected = !currentRootSafe || currentRootSafe.length !== 3;
+            staticTimer.classList.remove('svg-wave-active');
+            staticTimer.classList.toggle('svg-wave-green', noRootSelected || canShowTimer);
         }
 
         // C. MOBİL ÜST BAR İÇİN

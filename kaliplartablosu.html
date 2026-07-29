@@ -22,7 +22,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
     
-    <link rel="stylesheet" href="kaliplartablosu.css?v=117">
+    <link rel="stylesheet" href="kaliplartablosu.css?v=119">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -130,8 +130,8 @@
             <div style="display: flex; gap: 15px; align-items: center;">
                 <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Hazır Fiiller"></i>
                 <span id="root-text-display" onclick="openRootsModal()" style="cursor: pointer;"><i class="fas fa-sitemap root-icon sitemap-wave-hint" title="Kökler Listesi"></i></span>
-                <span id="static-list-btn" class="root-icon" onclick="event.stopPropagation(); openFastDictionaryMode()" title="Hızlı Sözlük Modu" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span>
                 <span id="static-timer-btn" class="root-icon" onclick="event.stopPropagation(); window.openMarathon()" title="Hız ve Telaffuz Testi" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span>
+                <span id="static-list-btn" class="root-icon" onclick="event.stopPropagation(); openFastDictionaryMode()" title="Hızlı Sözlük Modu" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span>
             </div>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
@@ -783,7 +783,7 @@
 
 <script src="veri_sozluk.js?v=110"></script>
 <script src="veri_gramer.js?v=110"></script>
-<script src="kaliplartablosu.js?v=119"></script>
+<script src="kaliplartablosu.js?v=122"></script>
 <script src="babodak.js?v=1"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
@@ -1009,6 +1009,7 @@
     align-items:center; gap:3px; direction:ltr; }
   #sarfOyunlarTab.sot-preenter{ transform:translate(140%,-50%); }
   #sarfOyunlarTab.sot-gone{ opacity:0 !important; visibility:hidden !important; pointer-events:none !important; }
+  #sarfOyunlarTab.sot-hidden-maraton{ display:none !important; }
   @keyframes sotPeek{ 0%{transform:translate(140%,-50%) rotate(0);} 15%{transform:translate(60%,-50%) rotate(0);} 26%{transform:translate(60%,-50%) rotate(-12deg);} 40%{transform:translate(60%,-50%) rotate(12deg);} 52%{transform:translate(60%,-50%) rotate(0);} 62%{transform:translate(60%,-50%) rotate(0);} 83%{transform:translate(-12%,-50%) rotate(0);} 100%{transform:translate(0,-50%) rotate(0);} }
   #sarfOyunlarTab.sot-enter{ animation:sotPeek 2.4s cubic-bezier(.4,0,.2,1) both; }
   @keyframes sotPop{ 0%{transform:translate(140%,-50%);} 55%{transform:translate(-12%,-50%);} 100%{transform:translate(0,-50%);} }
@@ -1115,6 +1116,27 @@
   }
   window.toggleSarfOyunlar=toggleSarfOyunlar;
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') toggleSarfOyunlar(false); });
+  /* Maraton ekrani (filtre veya oyun) ya da HIZLI LISTE acikken oyunlar sekmesi gorunmesin */
+  (function(){
+    var t=document.getElementById('sarfOyunlarTab');
+    if(!t) return;
+    var tel=document.getElementById('telaffuz-overlay');
+    var mar=document.getElementById('marathon-overlay');
+    var fdm=document.getElementById('fast-dictionary-overlay');
+    function isShown(el){
+      if(!el) return false;
+      if(el.classList.contains('active')) return true;
+      return getComputedStyle(el).display !== 'none';
+    }
+    function upd(){
+      t.classList.toggle('sot-hidden-maraton', isShown(tel) || isShown(mar) || isShown(fdm));
+    }
+    var mo=new MutationObserver(upd);
+    if(tel) mo.observe(tel,{attributes:true,attributeFilter:['style','class']});
+    if(mar) mo.observe(mar,{attributes:true,attributeFilter:['style','class']});
+    if(fdm) mo.observe(fdm,{attributes:true,attributeFilter:['style','class']});
+    upd();
+  })();
   /* === Oyunlar sekmesi: peek girisi, sihirli kaybolus (duman/parilti), geri gelme === */
   (function(){
     var ready=false, gone=false, entered=false;
@@ -1159,11 +1181,20 @@
     // Emniyet: gunun koku hic gosterilmezse/kapanmazsa bir sure sonra yine de cik
     setTimeout(function(){ if(!document.getElementById('rootOfDayOverlay')) startEntry(); }, 20000);
 
+    /* rootPicked: kullanici bir kok/fiil sectiyse (konu anlatimi basladiysa) true olur.
+       Modal kapanislari sekmeyi SADECE rootPicked=false iken geri getirir:
+       - Kitap listesine bakip kapatti -> gorunur
+       - Kok listesine bakti ama koke tiklamadan kapatti -> gorunur
+       - Maratona goz gezdirip cikti -> gorunur
+       - Bir koke tikladi / hizli liste acti (ders basladi) -> kapanista gizli kalir
+       Sifirlama (resetTableOnly) her zaman geri getirir. */
+    var rootPicked=false;
     var HIDE=['openRootsModal','openVerbModal','openKeyboard','openSearchKeyboard','openFastDictionaryMode','selectRootFromMenu','selectRootFromMainKeyboard'];
-    HIDE.forEach(function(fn){ if(typeof window[fn]==='function'){ var _o=window[fn]; window[fn]=function(){ try{ window.hideSarfOyunlarTab(); }catch(e){} return _o.apply(this, arguments); }; } });
-    var SHOW=['closeKeyboard','closeVerbModal','closeFastDictionaryMode','closeMarathon'];
-    SHOW.forEach(function(fn){ if(typeof window[fn]==='function'){ var _o=window[fn]; window[fn]=function(){ var r=_o.apply(this, arguments); try{ window.showSarfOyunlarTab(); }catch(e){} return r; }; } });
-    if(typeof window.resetTableOnly==='function'){ var _rt=window.resetTableOnly; window.resetTableOnly=function(isSilent){ var r=_rt.apply(this, arguments); try{ if(!isSilent) window.showSarfOyunlarTab(); }catch(e){} return r; }; }
+    var PICK={selectRootFromMenu:1, selectRootFromMainKeyboard:1, openFastDictionaryMode:1};
+    HIDE.forEach(function(fn){ if(typeof window[fn]==='function'){ var _o=window[fn]; window[fn]=function(){ try{ if(PICK[fn] && ready) rootPicked=true; window.hideSarfOyunlarTab(); }catch(e){} return _o.apply(this, arguments); }; } });
+    var SHOW=['closeKeyboard','closeVerbModal','closeMarathon'];
+    SHOW.forEach(function(fn){ if(typeof window[fn]==='function'){ var _o=window[fn]; window[fn]=function(){ var r=_o.apply(this, arguments); try{ if(!rootPicked) window.showSarfOyunlarTab(); }catch(e){} return r; }; } });
+    if(typeof window.resetTableOnly==='function'){ var _rt=window.resetTableOnly; window.resetTableOnly=function(isSilent){ var r=_rt.apply(this, arguments); try{ if(!isSilent){ rootPicked=false; window.showSarfOyunlarTab(); } }catch(e){} return r; }; }
 
     // === Bosta 30sn kalinca sekme sayfada gezinsin; fare/dokunusta HEMEN evine kacsin ===
     var idleTimer=null, wandering=false, wanderIv=null, curDx=0, curDy=0, walkInit=false;
@@ -1174,7 +1205,7 @@
       var left=(vw-tw)+curDx; if(left<10) curDx+=(10-left); else if(left>vw-tw-10) curDx-=(left-(vw-tw-10));
       var top=vh/2+curDy; if(top<10) curDy+=(10-top); else if(top>vh-th-10) curDy-=(top-(vh-th-10));
       t.style.transition='transform 1.6s ease-in-out'; t.style.transform='translate('+curDx.toFixed(0)+'px,'+curDy.toFixed(0)+'px)'; }
-    function startWander(){ var t=tabEl(); if(!t||gone||wandering||!entered) return; if(t.style.display==='none'||t.classList.contains('sot-gone')||t.classList.contains('sot-preenter')) return; if(document.getElementById('rootOfDayOverlay')) return; wandering=true; walkInit=false; t.classList.remove('sot-enter','sot-pop'); t.style.willChange='transform'; stepWalk(); wanderIv=setInterval(stepWalk, 2000); }
+    function startWander(){ var t=tabEl(); if(!t||gone||wandering||!entered) return; if(t.style.display==='none'||t.classList.contains('sot-gone')||t.classList.contains('sot-preenter')||t.classList.contains('sot-hidden-maraton')) return; if(document.getElementById('rootOfDayOverlay')) return; wandering=true; walkInit=false; t.classList.remove('sot-enter','sot-pop'); t.style.willChange='transform'; stepWalk(); wanderIv=setInterval(stepWalk, 2000); }
     function stopWander(){ if(!wandering) return; wandering=false; walkInit=false; if(wanderIv){ clearInterval(wanderIv); wanderIv=null; } homeReset(true); }
     function resetIdle(){ if(wandering) stopWander(); if(idleTimer) clearTimeout(idleTimer); idleTimer=setTimeout(startWander, 30000); }
     ['mousemove','mousedown','keydown','touchstart','wheel','scroll'].forEach(function(ev){ window.addEventListener(ev, resetIdle, {passive:true}); });
