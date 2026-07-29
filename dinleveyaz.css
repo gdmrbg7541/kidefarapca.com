@@ -520,8 +520,10 @@
     outline:3px solid var(--color-accent-1); outline-offset:-2px; }
 /* Harf grubu: bir satırda 3 harf, RTL (ilk harf sağda). Konteynır dikey olarak
    kalan alanı doldurur (ekranın aşağısına kadar); satırlar yükseklikçe büyür. */
-.tus-grup.harfler{ display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:minmax(7rem,1fr);
-    direction:rtl; gap:1.2rem; width:100%; flex:1 1 0; min-height:0; overflow-y:auto; align-content:stretch; }
+/* Masaüstü: SABİT yükseklikli kartlar (satırlar dikeyde uzayıp gerilmez);
+   align-content:start ile üstten dizilir, kalan boşluk altta kalır. */
+.tus-grup.harfler{ display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:9rem;
+    direction:rtl; gap:1.2rem; width:100%; flex:1 1 0; min-height:0; overflow-y:auto; align-content:start; }
 /* Hareke grubu: RTL sıralı tek satır, 5 alt grup (kısa · tenvin · şedde/cezim ·
    uzatma · tâ marbûta) aralarında dikey ayraç ile — sabit, en altta */
 .tus-grup.harekeler{ flex-wrap:nowrap; justify-content:center; gap:0; overflow-x:auto;
@@ -540,7 +542,7 @@
     display:flex; align-items:center; justify-content:center; }
 .slayt-tus:active:not(:disabled){ box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); transform:scale(0.97); }
 .harf-tus{ gap:0.8rem; width:100%; direction:rtl; padding:0.4rem 0.6rem; overflow:hidden; }
-.harf-tus .ht-form{ font-family:var(--font-harmattan); font-weight:700; font-size:5.6rem; line-height:1.1;
+.harf-tus .ht-form{ font-family:var(--font-harmattan); font-weight:700; font-size:6.6rem; line-height:1.1;
     color:var(--color-text-primary); min-width:3.4rem; text-align:center; flex:1 1 0; }
 .harf-tus .ht-form + .ht-form{ border-right:1px solid rgba(60,80,140,0.15); padding-right:0.6rem; }
 /* Harf hâlleri renkleri: baş yeşil, orta mavi, son mor, normal siyah */
@@ -604,8 +606,8 @@
        birlikte rem bütçesi cihaza göre değiştiğinden, sabit yükseklikler yerine
        oran kullanınca harf kartları asla sıfıra inmez (gerekirse liste/klavye
        kendi içinde kayar). #gameMain.slayt-mod özgüllüğü sonraki taban kuralını ezer. */
-    #gameMain.slayt-mod .kelime-liste{ flex:1 1 38%; max-height:none; min-height:0; }
-    #gameMain.slayt-mod .slayt-tuslar{ flex:1 1 62%; min-height:0; }
+    #gameMain.slayt-mod .kelime-liste{ flex:1 1 30%; max-height:none; min-height:0; }
+    #gameMain.slayt-mod .slayt-tuslar{ flex:1 1 70%; min-height:0; }
 }
 
 /* Slayt modunda dikey sıra: KELİME LİSTESİ ÜSTTE (tüm sınıf görür), tuşlar
