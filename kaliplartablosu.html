@@ -490,7 +490,192 @@
             <button onclick="document.getElementById('aksam-info-overlay').style.display='none'" style="padding: 10px 25px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: normal; transition: background 0.2s;">Tamam</button>
         </div>
     </div>
-    
+
+    <!-- AKSAM-I SEB'A KAVRAM ŞEMASI OVERLAY -->
+    <style id="aksam-sema-style">
+        #aksam-sema-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            z-index: 6000; display: none; justify-content: center; align-items: center;
+            font-family: 'Inter', sans-serif;
+        }
+        #aksam-sema-panel {
+            background: #f4f6f7; padding: 30px 45px; border-radius: 16px;
+            max-width: 1500px; width: 97vw; height: 96vh; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center;
+            direction: ltr;
+        }
+        #aksam-sema-panel .as-root, #aksam-sema-panel .as-col-title,
+        #aksam-sema-panel .as-card-title, #aksam-sema-panel .as-card-desc,
+        #aksam-sema-panel .as-ask-btn, #aksam-sema-panel .as-hint {
+            direction: ltr; unicode-bidi: isolate; text-align: center;
+        }
+        #aksam-sema-panel .as-root {
+            background: #2c3e50; color: white; padding: 15px 55px; border-radius: 12px;
+            font-size: 3.2rem; font-weight: 700; margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer; flex-shrink: 0;
+        }
+        #aksam-sema-panel .as-branches {
+            display: flex; justify-content: center; align-items: stretch;
+            gap: 30px; width: 100%; flex: 1; min-height: 0;
+        }
+        #aksam-sema-panel .as-col {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            background: white; border-radius: 15px; padding: 25px;
+            border: 2px solid #E9EEF5; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        #aksam-sema-panel .as-col-title {
+            padding: 14px 30px; border-radius: 8px; font-size: 2.6rem; font-weight: 700;
+            color: white; margin-bottom: 22px; width: 80%;
+            cursor: pointer; box-sizing: border-box; flex-shrink: 0;
+        }
+        #aksam-sema-panel .as-sahih-bg { background-color: #20C997; }
+        #aksam-sema-panel .as-mutel-bg { background-color: #F39C12; }
+        #aksam-sema-panel .as-grid {
+            display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr;
+            gap: 18px; width: 100%; flex: 1; min-height: 0;
+        }
+        #aksam-sema-panel .as-card {
+            background: #fdfdfd; border-left: 5px solid #ccc; border-radius: 10px;
+            padding: 16px 12px; box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            text-align: center; transition: transform 0.2s;
+            display: flex; flex-direction: column; justify-content: space-evenly;
+            min-height: 150px;
+        }
+        #aksam-sema-panel .as-card:hover { transform: translateY(-3px); border-left-width: 8px; }
+        #aksam-sema-panel .as-card.as-sahih { border-color: #20C997; }
+        #aksam-sema-panel .as-card.as-mutel { border-color: #F39C12; }
+        #aksam-sema-panel .as-center { grid-column: 1 / -1; width: 50%; margin: 0 auto; }
+        #aksam-sema-panel .as-hideable {
+            cursor: pointer; border-radius: 5px; padding: 4px; display: block;
+            position: relative;
+        }
+        #aksam-sema-panel .as-card-title { font-weight: 700; font-size: 2.4rem; color: #2c3e50; margin-bottom: 6px; }
+        #aksam-sema-panel .as-card-desc { font-size: 1.9rem; color: #7f8c8d; margin-bottom: 10px; line-height: 1.3; }
+        #aksam-sema-panel .as-card-example {
+            font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: 4rem; color: #2c3e50;
+            background: #ecf0f1; border-radius: 6px; padding: 6px 12px; direction: rtl;
+        }
+        #aksam-sema-panel .as-hidden {
+            background-color: #34495e !important; color: transparent !important;
+            user-select: none;
+        }
+        #aksam-sema-panel .as-hidden::after {
+            content: attr(data-text);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #f1c40f; font-weight: 700; font-size: 1.9rem;
+            font-family: 'Inter', sans-serif; text-align: center; width: 100%; line-height: 1.2;
+            direction: ltr; unicode-bidi: isolate;
+        }
+        #aksam-sema-panel .as-ask-btn {
+            background: #EE5253; color: white; font-size: 1.7rem; padding: 16px 65px;
+            border: none; border-radius: 50px; box-shadow: 0 4px 10px rgba(238, 82, 83, 0.35);
+            cursor: pointer; font-weight: 700; margin-top: 26px; transition: transform 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+        #aksam-sema-panel .as-ask-btn:active { transform: scale(0.95); }
+        @media (max-height: 840px) {
+            #aksam-sema-panel { padding: 20px 30px; }
+            #aksam-sema-panel .as-root { font-size: 2.3rem; padding: 10px 35px; margin-bottom: 16px; }
+            #aksam-sema-panel .as-col { padding: 16px; }
+            #aksam-sema-panel .as-col-title { font-size: 1.9rem; padding: 9px 25px; margin-bottom: 14px; }
+            #aksam-sema-panel .as-card { min-height: 115px; padding: 10px; }
+            #aksam-sema-panel .as-card-title { font-size: 1.8rem; }
+            #aksam-sema-panel .as-card-desc { font-size: 1.4rem; }
+            #aksam-sema-panel .as-card-example { font-size: 2.8rem; }
+            #aksam-sema-panel .as-ask-btn { margin-top: 16px; padding: 12px 50px; font-size: 1.4rem; }
+        }
+    </style>
+    <div id="aksam-sema-overlay" onclick="closeAksamSema()">
+        <button onclick="closeAksamSema()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 26px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 100; display: flex; align-items: center; justify-content: center;">✕</button>
+        <div id="aksam-sema-panel" dir="ltr" onclick="event.stopPropagation()">
+            <div class="as-root as-hideable" data-type="root" onclick="asToggle(this)">AKSAM-I SEB'A</div>
+            <div class="as-branches">
+                <div class="as-col">
+                    <div class="as-col-title as-mutel-bg as-hideable" data-type="group" onclick="asToggle(this)">MU'TEL</div>
+                    <div class="as-grid">
+                        <div class="as-card as-mutel">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">MİSAL</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">İLK harf illetli.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">وَجَدَ</span>
+                        </div>
+                        <div class="as-card as-mutel">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">ECVEF</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">ORTA harf illetli.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">قَالَ</span>
+                        </div>
+                        <div class="as-card as-mutel">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">NAKIS</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">SON harf illetli.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">رَمَى</span>
+                        </div>
+                        <div class="as-card as-mutel">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">LEFİF</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">İKİ illetli.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">طَوَى</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="as-col">
+                    <div class="as-col-title as-sahih-bg as-hideable" data-type="group" onclick="asToggle(this)">SAHİH</div>
+                    <div class="as-grid">
+                        <div class="as-card as-sahih">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">SALİM</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">İllet, hemze yok.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">كَتَبَ</span>
+                        </div>
+                        <div class="as-card as-sahih">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">MEHMUZ</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">Hemze (ء) var.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">أَكَلَ</span>
+                        </div>
+                        <div class="as-card as-sahih as-center">
+                            <span class="as-hideable as-card-title" data-type="title" onclick="asToggle(this)">MUDAAF</span>
+                            <span class="as-hideable as-card-desc" data-type="desc" onclick="asToggle(this)">Şeddeli fiil.</span>
+                            <span class="as-hideable as-card-example" data-type="example" onclick="asToggle(this)">مَدَّ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="as-ask-btn" onclick="asSor()">SOR</button>
+            <div class="as-hint" style="margin-top: 8px; color: #7f8c8d; font-size: 0.95rem;">Cevap için gizli kutuya tıkla</div>
+        </div>
+    </div>
+    <script id="aksam-sema-script">
+        function openAksamSema(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('aksam-sema-overlay').style.display = 'flex';
+        }
+        function closeAksamSema() {
+            document.getElementById('aksam-sema-overlay').style.display = 'none';
+        }
+        function asToggle(el) {
+            if (el.classList.contains('as-hidden')) {
+                el.classList.remove('as-hidden');
+            }
+        }
+        function asSor() {
+            var panel = document.getElementById('aksam-sema-panel');
+            panel.querySelectorAll('.as-hidden').forEach(function(el) {
+                el.classList.remove('as-hidden');
+            });
+            var candidates = panel.querySelectorAll('.as-hideable');
+            var selected = candidates[Math.floor(Math.random() * candidates.length)];
+            var questionText = "?";
+            switch (selected.getAttribute('data-type')) {
+                case 'root': questionText = "Konu?"; break;
+                case 'group': questionText = "Grup?"; break;
+                case 'title': questionText = "Fiil?"; break;
+                case 'desc': questionText = "Tanım?"; break;
+                case 'example': questionText = "Örnek?"; break;
+            }
+            selected.setAttribute('data-text', questionText);
+            selected.classList.add('as-hidden');
+        }
+    </script>
+
     <!-- TELAFFUZ (FİLTRE) OVERLAY (MASAÜSTÜ İÇİN ÖZEL TASARIM) -->
     <div id="telaffuz-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5000; display: none; flex-direction: column; font-family: 'Inter', sans-serif; overflow: hidden;">
         
@@ -518,7 +703,7 @@
                 
                 <!-- Aksam-ı Seb'a -->
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; flex: 1;">
-                    <div style="font-weight: 700; color: #2c3e50; font-size: 1.8rem; text-align: center; display: flex; align-items: center; justify-content: center;" dir="ltr">Aksam-ı Seb'a <i class="fas fa-info-circle" style="color: #3498db; cursor: pointer; margin-left: 15px; font-size: 1.4rem; transition: color 0.2s;" onmouseover="this.style.color='#2980b9'" onmouseout="this.style.color='#3498db'" onclick="showAksamSebaGenelInfo(event)"></i></div>
+                    <div style="font-weight: 700; color: #2c3e50; font-size: 1.8rem; text-align: center; display: flex; align-items: center; justify-content: center;" dir="ltr">Aksam-ı Seb'a <i class="fas fa-info-circle" style="color: #3498db; cursor: pointer; margin-left: 15px; font-size: 1.4rem; transition: color 0.2s;" onmouseover="this.style.color='#2980b9'" onmouseout="this.style.color='#3498db'" onclick="showAksamSebaGenelInfo(event)"></i><span title="Kavram Şeması" style="color: #16A085; cursor: pointer; margin-left: 12px; display: inline-flex; align-items: center; transition: color 0.2s;" onmouseover="this.style.color='#117A65'" onmouseout="this.style.color='#16A085'" onclick="openAksamSema(event)"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2.5" width="7" height="5.5" rx="1.2"/><path d="M12 8v3.5M6.5 11.5h11M6.5 11.5V15M17.5 11.5V15"/><rect x="3" y="15" width="7" height="5.5" rx="1.2"/><rect x="14" y="15" width="7" height="5.5" rx="1.2"/></svg></span></div>
                     <div style="display: flex; gap: 30px; justify-content: center; flex-wrap: nowrap; width: 100%;" id="telaffuz-aksam-filters">
                         <!-- Sahih Fiiller Grubu -->
                         <div style="display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 300px;">

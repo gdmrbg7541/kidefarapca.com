@@ -12,7 +12,7 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-    <link rel="stylesheet" href="kavramtesti.css">
+    <link rel="stylesheet" href="kavramtesti.css?v=2">
 </head>
 <body>
 
@@ -22,7 +22,6 @@
             <button class="menu-btn" onclick="window.location.href='aksamiseba.html'" style="padding: 10px 15px;">🏠</button>
             
             <button class="menu-btn active" onclick="switchTab('schema')">Fiil Şeması</button>
-            <button class="menu-btn" onclick="switchTab('hunter')">Kavram Avcısı</button>
         </div>
     </nav>
 
@@ -87,30 +86,9 @@
             </div>
         </div>
 
-        <div id="tab-hunter" class="tab-section">
-            <div class="hunter-header">
-                <h2 style="color:var(--primary); margin:0;">Hangi fiilin türü diğerlerinden farklı?</h2>
-                <p style="color:#7f8c8d;">Gruptaki diğer kelimelerden farklı türde olanı bul.</p>
-            </div>
-
-            <div class="game-info">
-                <span>Soru: <span id="level-indicator">1 / 20</span></span>
-                <span>Puan: <span id="score-board" style="color:var(--secondary)">0</span></span>
-            </div>
-
-            <div class="hunter-grid" id="hunter-area">
-                </div>
-            
-            <div id="hunter-feedback" style="text-align:center; margin-top:10px; font-weight:bold; font-size:1.1rem; min-height:20px;"></div>
-            
-            <div style="text-align:center;">
-                <button id="next-level-btn" class="next-btn" style="display:none;" onclick="nextHunterLevel()">➡️</button>
-            </div>
-        </div>
-
     </div>
 
-<script src="kavramtesti.js"></script>
+<script src="kavramtesti.js?v=2"></script>
 
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
