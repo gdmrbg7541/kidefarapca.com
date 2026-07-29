@@ -924,7 +924,7 @@ body.drag-learned .g3-root-chip { animation: none; }
 
     /* Atölye sırası: vitrin -> vezinler -> alt şerit
        (bütçe dvh ile kurulur: dikeyde SCROLL OLMADAN her şey sığar) */
-    .g2-atolye-ic { padding-top: 6dvh; padding-bottom: 6dvh; }
+    .g2-atolye-ic { padding-top: 5dvh; padding-bottom: 5dvh; }
     .g2-atolye-ic .g3-vitrin { order: 1; }
     /* Vezin şeridi SABİT yükseklikte: kök seçilince levhalar belirse de
        kökler ve usta yerinden OYNAMAZ. Levhalar tek satırda dizilir,
@@ -949,7 +949,9 @@ body.drag-learned .g3-root-chip { animation: none; }
     /* Vitrin sağdan taşmasın: sol pay kalksın, camekân daralsın
        (tente +48px, raf +60px genişlediği için pay bırakılır) */
     #game2-screen .g3-vitrin { margin-left: 0; }
-    #g2-vitrinKutu { width: min(78vw, 420px); height: 30dvh; }
+    #g2-vitrinKutu { width: min(78vw, 420px); height: 34dvh; }
+    /* Vitrindeki kelime kartları bir tık daha iri görünsün */
+    #g2-vitrinKutu .g2-urun { font-size: calc(var(--uf, 1.6rem) * 1.18); }
 
     /* Alt şerit: usta solda küçük, örs sağında, kökler en sağda */
     .g2-sag { display: contents; }
@@ -960,7 +962,7 @@ body.drag-learned .g3-root-chip { animation: none; }
         padding: 0 10px; box-sizing: border-box;
         /* Şerit yüksekliği SABİT: raf dolunca büyüyüp ustayı/örsü
            aşağı itmesin (raf max-height'ı ile aynı) */
-        height: 28dvh; flex: 0 0 auto;
+        height: 26dvh; flex: 0 0 auto;
     }
     /* Örs SABİT durur: sola çapalı, kök sayısından etkilenmez.
        Usta en solda (örsün soluna taşan mutlak konum), örs onun sağında. */
@@ -970,7 +972,7 @@ body.drag-learned .g3-root-chip { animation: none; }
     .g2-sag-alt .g2-kokraf {
         flex-direction: column; flex-wrap: nowrap; align-self: flex-end;
         justify-content: flex-end; gap: 10px;
-        max-height: 28dvh; overflow-y: auto; margin-right: 0;
+        max-height: 26dvh; overflow-y: auto; margin-right: 0;
         margin-left: auto; flex: 0 0 auto;
         width: clamp(96px, 28vw, 150px); min-width: 0;
     }
