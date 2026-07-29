@@ -606,8 +606,8 @@
        birlikte rem bütçesi cihaza göre değiştiğinden, sabit yükseklikler yerine
        oran kullanınca harf kartları asla sıfıra inmez (gerekirse liste/klavye
        kendi içinde kayar). #gameMain.slayt-mod özgüllüğü sonraki taban kuralını ezer. */
-    #gameMain.slayt-mod .kelime-liste{ flex:1 1 30%; max-height:none; min-height:0; }
-    #gameMain.slayt-mod .slayt-tuslar{ flex:1 1 70%; min-height:0; }
+    #gameMain.slayt-mod .kelime-liste{ flex:1 1 26%; max-height:none; min-height:0; }
+    #gameMain.slayt-mod .slayt-tuslar{ flex:1 1 74%; min-height:0; }
 }
 
 /* Slayt modunda dikey sıra: KELİME LİSTESİ ÜSTTE (tüm sınıf görür), tuşlar
