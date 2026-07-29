@@ -318,20 +318,23 @@ html { font-size: clamp(12px, 1.2vw, 16px); }
 
 /* Proxy display for mobile (prevents OS keyboard by hiding the actual input) */
 .typing-input-proxy{
-  /* --- DEĞİŞİKLİK YAPILDI --- */
-  display:block;
+  /* SABİT YÜKSEKLİK: harf yazılınca kutu büyümez */
+  display:flex;
+  align-items: center;
+  justify-content: flex-start; /* rtl: sağdan başlar */
   font-size: 2.6rem;
-  padding: 16px 18px;
+  line-height: 1.1;
+  padding: 0 18px;
   border-radius: var(--border-radius-md);
   border: 2px solid #d8dee9;
   background: var(--surface-color);
   color: var(--text-color);
   text-align: right;
   direction: rtl;
-  min-height: 74px;
+  height: 80px;
   box-shadow: 0 0 0 3px rgba(94, 129, 172, 0); /* no focus ring */
-  white-space: pre-wrap;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
   flex-grow: 1;
   min-width: 0;
 }
@@ -355,10 +358,17 @@ html { font-size: clamp(12px, 1.2vw, 16px); }
     /* Kelime kutudan taşmasın: yazı hücre genişliğiyle birlikte ölçeklenir */
     .word-progress-item { font-size: min(2rem, 1.75vw, 3.2vh); padding: min(6px, 0.8vh) 4px; min-width: 0; overflow: hidden; }
     #typing-prompt:not(.start-mode) { min-height: 18vh; font-size: min(5rem, 10vh); }
-    .typing-input-proxy { font-size: min(3rem, 6vh); min-height: min(88px, 11vh); padding: min(18px, 2vh) 22px; }
+    .typing-input-proxy { font-size: min(3rem, 6vh); height: min(96px, 12vh); padding: 0 22px; }
     #typing-submit-btn { width: 110px; }
     #typing-submit-btn svg { width: min(44px, 5vh); height: min(44px, 5vh); }
     #virtual-keyboard { max-width: min(1400px, 95vw); padding: min(14px, 1.5vh); gap: min(9px, 1vh); margin-top: 0; }
     .keyboard-row { gap: min(9px, 0.8vw); }
     .keyboard-key { font-size: min(2.1rem, 4vh); min-height: min(56px, 6.5vh); padding: min(8px, 1vh) 4px; }
+}
+
+
+/* ============ MOBİL: geri tuşu ile puan rozeti çakışmasın ============ */
+@media (max-width: 1099px) {
+    /* Puan/zaman satırı geri tuşunun sağından başlar */
+    #typing-screen .typing-stats { padding-left: 52px; }
 }
