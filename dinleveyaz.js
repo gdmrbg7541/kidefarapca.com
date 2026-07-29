@@ -770,6 +770,8 @@
 
         // --- Duraklat / Devam (Sınav modu hariç iki modda da) ---
         function setPauseButtonState(){
+            // Duraklatınca harf/hareke tuşları tıklanamaz olsun (CSS: pointer-events:none)
+            if (gameMainEl) gameMainEl.classList.toggle('duraklatildi', paused);
             if (!pauseButton) return;
             pauseButton.classList.toggle('is-paused', paused);
             pauseButton.title = paused ? 'Devam et' : 'Duraklat';

@@ -374,8 +374,10 @@
     #gameMain .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap;
         align-items:stretch; gap:0.6rem; width:100%; max-width:64rem;
         overflow-x:hidden; overflow-y:auto; }
-    #gameMain .harf-tus{ width:100%; gap:0.5rem; padding:0.4rem 1rem; overflow:hidden; }
-    #gameMain .harf-tus .ht-form{ flex:1 1 0; min-width:0; }
+    #gameMain .harf-tus{ width:100%; gap:0.5rem; padding:0.4rem 1rem 0.7rem; overflow:hidden; }
+    /* line-height 1.45: ع gibi kuyruklu (alt uzantılı) harflerin kuyruğu satır
+       kutusuna sığar, kutudan taşıp kırpılmaz. */
+    #gameMain .harf-tus .ht-form{ flex:1 1 0; min-width:0; line-height:1.45; }
     #gameMain .tus-grup.harekeler{ flex-wrap:wrap; overflow-x:hidden;
         row-gap:0.5rem; justify-content:center; }
 }
@@ -437,7 +439,7 @@
     transition:opacity .45s ease, max-height .45s ease, min-height .45s ease, margin .45s ease,
                padding .45s ease, transform .45s ease, border-color .2s;
 }
-.kelime-satir.cikiyor{ opacity:0; min-height:0; max-height:0; margin:0; padding-top:0; padding-bottom:0;
+.kelime-satir.cikiyor{ opacity:0; min-height:0; max-height:0; overflow:hidden; margin:0; padding-top:0; padding-bottom:0;
     border-bottom-color:transparent; transform:translateY(-0.4rem); }
 .ks-no{
     flex:0 0 auto; align-self:center; min-width:2.4rem; text-align:right;
@@ -457,6 +459,14 @@
 .ks-typed{ direction:rtl; display:inline-block;
     font-family:var(--font-harmattan); font-weight:700; font-size:5.6rem; line-height:1.15;
     color:var(--color-error); }
+/* Masaüstünde (fare = pointer:fine) yazılan Arapça çok daha büyük; satır içeriğe
+   göre büyüdüğü için (aşağıda overflow düzeltmesi) kelime kutuya sığar. */
+@media (pointer: fine){
+    .ks-typed{ font-size:8rem; }
+    /* Büyük Arapça sığsın diye satır yüksekliği artırıldı (grid izi sabit
+       yükseklik kullandığından min-height ile garanti ediyoruz). */
+    .kelime-satir{ min-height:10rem; max-height:18rem; }
+}
 /* Seslendirilen (aktif) kelime: hafif yuvarlatılmış KIRMIZI KUTU ile vurgulanır */
 .kelime-satir.aktif{ border-bottom-color:transparent; border-radius:0.9rem;
     box-shadow:0 0 0 3px var(--color-error); }
@@ -716,6 +726,8 @@
 
 /* OTOMATİK YAZIM: klavyeye tıklanmaz (harfler kendiliğinden çıkar) */
 #gameMain.auto-mode #tusKonteyner{ pointer-events:none; }
+/* DURAKLATILDIĞINDA: harf ve hareke tuşları tıklanamaz */
+#gameMain.duraklatildi #tusKonteyner{ pointer-events:none; }
 /* Otomatik mod ikonu — hafif parıldar */
 .ico-auto{ color:var(--color-accent-1); animation:ico-auto 2.4s ease-in-out infinite; transform-origin:50% 50%; }
 @keyframes ico-auto{ 0%,100%{ opacity:0.85; transform:scale(1) rotate(0); } 50%{ opacity:1; transform:scale(1.08) rotate(6deg); } }
