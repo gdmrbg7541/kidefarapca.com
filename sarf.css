@@ -1799,4 +1799,29 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     }
     .g2-fabrika { width: min(56vw, 470px); margin-top: 0; }
     .g2-forklift { width: clamp(70px, 18vh, 96px); }
+
+    /* --- GİRİŞ (MENÜ) EKRANI: kart, SVG'ler ve bağlantı barı küçülür,
+           kart ile bar yan yana geçer -> scroll olmaz --- */
+    #start-screen { overflow: hidden; }
+    #start-screen .menu-wrap { padding: 0 12px; }
+    #start-screen .menu-grid { flex-direction: row; align-items: stretch; justify-content: center; gap: 12px; }
+    #start-screen .menu-card {
+        width: min(58vw, 460px); min-height: 0;
+        padding: 10px 14px; border-radius: 20px;
+    }
+    #start-screen .menu-card h2 { font-size: clamp(1.2rem, 6vh, 1.7rem); }
+    .mf-onizleme { gap: 12px; margin-bottom: 6px; }
+    .mf-vitrin { width: clamp(56px, 16vh, 84px); height: clamp(68px, 20vh, 104px); border-width: 2px; }
+    .mf-tente { top: -9px; height: 12px; }
+    .mf-cam { font-size: 1.1rem; }
+    .mf-usta > svg { width: clamp(54px, 16vh, 82px); }
+    .mf-ors { right: -28px; bottom: -1px; width: clamp(36px, 10vh, 52px); }
+    .mf-makine { margin-left: 16px; }
+    .mf-makine svg { width: clamp(80px, 24vh, 120px); }
+    #start-screen .menu-connect {
+        width: clamp(120px, 20vw, 200px); min-height: 0;
+        align-self: stretch; border-radius: 20px;
+        font-size: clamp(1rem, 5.5vh, 1.4rem);
+        flex-direction: column; gap: 8px;
+    }
 }
