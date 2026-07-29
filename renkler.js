@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let qT; if(this.state.playerMode === 2) { qT = this.state.answerLog[pS.i]?.questionType; if (!qT) { qT = Math.random() < 0.5 ? 'textToColor' : 'colorToText'; if (!this.state.answerLog[pS.i]) this.state.answerLog[pS.i] = {}; this.state.answerLog[pS.i].questionType = qT; } } else { qT = Math.random() < 0.5 ? 'textToColor' : 'colorToText'; } this.state.currentQuestionType = qT; 
 
-            let oC = 4; const wAC = oC - 1;
-            if(pD.options) { pD.options.innerHTML = ''; pD.options.classList.remove('five-options', 'four-options'); if (oC === 4) { pD.options.classList.add('four-options'); } }
+            let oC = 5; const wAC = oC - 1;
+            if(pD.options) { pD.options.innerHTML = ''; pD.options.classList.remove('five-options', 'four-options'); if (oC === 4) { pD.options.classList.add('four-options'); } else if (oC === 5) { pD.options.classList.add('five-options'); } }
             
             if (qT === 'textToColor') { // Soru Yazı (Arapça) -> Cevap Renk
                 pD.question.textContent = word.arabic; pD.question.style.backgroundColor = 'var(--surface-color)'; pD.question.classList.remove('color-question');

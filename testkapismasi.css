@@ -1,14 +1,15 @@
+@font-face { font-family: 'Arakom'; src: url('arakom.ttf') format('truetype'); font-display: swap; }
 html { font-size: clamp(16px, 1.6vw, 24px); }
 
         :root {
-            --bg-start: #f7f9fc; --bg-end: #e8eef5; --primary-color: #5E81AC; --accent-color: #f7b733; --surface-color: #FFFFFF; --text-color: #2e3440; --text-light-color: #FFFFFF; --player1-color: #64a7fa; --player2-color: #f77d7d; --correct-color: #2ddc73; --incorrect-color: #f24c4c; --shadow-light: rgba(46, 52, 64, 0.07); --shadow-medium: rgba(46, 52, 64, 0.12); --border-radius-sm: 8px; --border-radius-md: 12px; --border-radius-lg: 16px;
+            --bg-start: #F7F9FC; --bg-end: #EDF2F8; --primary-color: #16A085; --accent-color: #F39C12; --surface-color: #FFFFFF; --text-color: #2c3e50; --text-light-color: #FFFFFF; --player1-color: #5AB4FF; --player2-color: #EE5253; --correct-color: #20C997; --incorrect-color: #EE5253; --shadow-light: rgba(46, 52, 64, 0.07); --shadow-medium: rgba(46, 52, 64, 0.12); --border-radius-sm: 8px; --border-radius-md: 12px; --border-radius-lg: 16px;
             --button-bg: var(--surface-color); --button-shadow: 0 3px #d8dee9; --button-hover-bg: #eceff4; --button-selected-bg: var(--primary-color); --button-selected-color: var(--text-light-color); --button-selected-shadow: 0 0 0 3px var(--accent-color);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-synthesis: none; -webkit-font-synthesis: none; }
 
         html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
 
-        body { font-family: 'Marhey', sans-serif; background-color: var(--bg-start); background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text-color); text-align: center; text-rendering: optimizeLegibility; }
+        body { font-family: 'Rubik', sans-serif; background-color: var(--bg-start); background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text-color); text-align: center; text-rendering: optimizeLegibility; }
         button, input, select { font-family: inherit; }
 
         #game-wrapper { width: 100%; height: 100%; position: relative; }
@@ -121,7 +122,7 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
 
         .quiz-top-bar { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 10px; padding: 0 5px; flex-shrink: 0; }
         .quiz-game-content { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 15px; width: 100%; flex-grow: 1; }
-        .quiz-player-area .quiz-progress { font-size: 1.6rem; color: var(--text-color); font-weight: bold; display: flex; align-items: center; flex-shrink: 0; }
+        .quiz-player-area .quiz-progress { font-size: 1.6rem; color: var(--text-color); font-weight: normal; display: flex; align-items: center; flex-shrink: 0; }
         .quiz-score-display { display: flex; align-items: center; gap: 8px; }
         .quiz-score-display svg { width: 28px; height: 28px; fill: var(--accent-color); }
         .quiz-player-area .progress-bar { flex-grow: 1; margin: 0; flex-direction: row-reverse; display: flex; gap: 4px; height: 10px; flex-shrink: 1; width: auto; }
@@ -130,12 +131,12 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
         .progress-segment.incorrect { background-color: var(--incorrect-color); }
         .progress-segment.active { background-color: var(--accent-color); transform: scaleY(1.5); }
 
-        .quiz-player-area .quiz-question { font-size: clamp(2.5rem, 10cqw, 4rem); font-weight: bold; padding: 15px; background-color: var(--surface-color); border-radius: var(--border-radius-md); min-height: 120px; display: block; white-space: normal; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; text-align: center; width: 100%; box-shadow: 0 4px 15px var(--shadow-light); margin-bottom: 15px; direction: rtl; container-type: inline-size; flex-shrink: 0; display: flex; align-items: center; justify-content: center;}
+        .quiz-player-area .quiz-question { font-size: clamp(2.5rem, 10cqw, 4rem); font-weight: normal; padding: 15px; background-color: var(--surface-color); border-radius: var(--border-radius-md); min-height: 120px; display: block; white-space: normal; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; text-align: center; width: 100%; box-shadow: 0 4px 15px var(--shadow-light); margin-bottom: 15px; direction: rtl; container-type: inline-size; flex-shrink: 0; display: flex; align-items: center; justify-content: center;}
         .quiz-player-area .quiz-options { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; flex-grow: 1; }
         .quiz-options.five-options { grid-template-columns: 1fr 1fr; }
         .quiz-options.five-options .quiz-option-btn:last-child { grid-column: 1 / -1; }
 
-        .quiz-player-area .quiz-option-btn { font-family: inherit; border: 2px solid; color: var(--text-color); font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: bold; padding: 12px; border-radius: var(--border-radius-md); cursor: pointer; transition: all 0.2s ease-in-out; box-shadow: 0 2px 8px var(--shadow-light); min-height: 50px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; direction: ltr; }
+        .quiz-player-area .quiz-option-btn { font-family: inherit; border: 2px solid; color: var(--text-color); font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: normal; padding: 10px 12px; border-radius: var(--border-radius-md); cursor: pointer; transition: all 0.2s ease-in-out; box-shadow: 0 2px 8px var(--shadow-light); min-height: 50px; display: flex; align-items: center; justify-content: center; white-space: normal; line-height: 1.22; overflow: hidden; text-align: center; direction: ltr; }
         .quiz-option-btn.selected { transform: scale(1.02); }
         .p1 .quiz-option-btn.selected { border-color: var(--player1-color); box-shadow: 0 4px 10px rgba(100, 167, 250, 0.4); }
         .p2 .quiz-option-btn.selected { border-color: var(--player2-color); box-shadow: 0 4px 10px rgba(247, 125, 125, 0.4); }
@@ -199,6 +200,60 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
              .game-over-overlay { padding: 20px; width: 90%; }
          }
 
-        html, body { font-family: 'Marhey', sans-serif !important; }
-        .quiz-question, .status-word { font-family: 'Harmattan', sans-serif !important; }
-        button, input, select, .start-title, h2, h3, label, .quiz-option-btn, .quiz-progress, p { font-family: 'Marhey', sans-serif !important; }
+        html, body { font-family: 'Rubik', sans-serif !important; }
+        .quiz-question, .status-word { font-family: 'Arakom', 'Noto Naskh Arabic', sans-serif !important; }
+        button, input, select, .start-title, h2, h3, label, .quiz-progress, p { font-family: 'Rubik', sans-serif !important; }
+        .quiz-option-btn { font-family: 'Arakom', 'Noto Naskh Arabic', 'Rubik', sans-serif !important; }
+
+/* ============ TEK KİŞİLİK MASAÜSTÜ: TÜM EKRAN, HER ŞEY BÜYÜK ============ */
+@media (min-width: 1100px) {
+    #quiz-screen.single-player-mode { padding-top: 15px; }
+    #quiz-screen.single-player-mode #quiz-container { max-width: min(1350px, 94vw); }
+    #quiz-screen.single-player-mode .quiz-player-area { gap: 2.2vh; padding: 2vh 2vw; }
+    #quiz-screen.single-player-mode .quiz-player-area .quiz-progress { font-size: min(2.1rem, 3.6vh); width: 100%; }
+    #quiz-screen.single-player-mode .quiz-player-area .quiz-question {
+        min-height: 30vh; font-size: min(6.5rem, 13vh); margin-bottom: 0;
+    }
+    #quiz-screen.single-player-mode .quiz-player-area .quiz-option-btn {
+        font-size: min(2.6rem, 5vh); min-height: min(96px, 12vh); padding: 1vh 20px;
+    }
+    #quiz-screen.single-player-mode .quiz-player-area .quiz-options { gap: 1.8vh; }
+}
+
+
+/* ============ ÖZEL ANİMASYONLU SVG İKONLAR ============ */
+/* Oyun içi skor yıldızı: nazikçe parlar */
+.quiz-score-display svg { fill: var(--accent-color); transform-origin: center; animation: yildiz-parla 2.2s ease-in-out infinite; }
+@keyframes yildiz-parla { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.18) rotate(8deg); } }
+
+/* Sonuç ekranı yıldızları: sırayla zıplayarak gelir */
+.star-rating svg { transform-origin: center; animation: yildiz-gel .6s cubic-bezier(.34, 1.56, .64, 1) backwards; }
+.star-rating svg:nth-child(1) { animation-delay: .15s; }
+.star-rating svg:nth-child(2) { animation-delay: .4s; }
+.star-rating svg:nth-child(3) { animation-delay: .65s; }
+@keyframes yildiz-gel { from { transform: scale(0) rotate(-140deg); opacity: 0; } }
+
+/* Dolu yıldızlar geldikten sonra ışıldamaya devam eder */
+.star-rating svg.yildiz-dolu { animation: yildiz-gel .6s cubic-bezier(.34, 1.56, .64, 1) backwards, yildiz-isilti 2s ease-in-out 1.2s infinite; }
+@keyframes yildiz-isilti { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(243, 156, 18, 0)); } 50% { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(243, 156, 18, .7)); } }
+
+/* 2 kişilik kazanan/berabere kişi ikonları: sevinçle zıplar */
+#quiz-winner-icon-container.p1-win svg, #quiz-winner-icon-container.p2-win svg, #quiz-winner-icon-container.draw svg { animation: kazanan-zipla 1s ease-in-out infinite; transform-origin: center bottom; }
+#quiz-winner-icon-container.draw svg:last-child { animation-delay: .5s; }
+@keyframes kazanan-zipla { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
+
+/* Bonus şimşeği: çakar */
+.score-effect.bonus svg { animation: simsek-cak .25s ease-in-out 4; transform-origin: center; }
+@keyframes simsek-cak { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: .65; } }
+
+/* Tekrar oyna: üzerine gelince döner; ana menü evi sallanır */
+#play-again-btn:hover svg { animation: ikon-don .7s linear infinite; transform-origin: center; }
+@keyframes ikon-don { to { transform: rotate(360deg); } }
+#back-to-start-btn:hover svg { animation: ev-salla .5s ease-in-out infinite; transform-origin: center bottom; }
+@keyframes ev-salla { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .quiz-score-display svg, .star-rating svg, .star-rating svg.yildiz-dolu,
+    #quiz-winner-icon-container svg, .score-effect.bonus svg,
+    #play-again-btn:hover svg, #back-to-start-btn:hover svg { animation: none; }
+}

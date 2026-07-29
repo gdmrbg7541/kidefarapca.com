@@ -300,7 +300,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
 
                  const getStarHtml = (count, size = "clamp(40px, 8vw, 60px)") => {
                      const starSVG = `<svg viewBox="0 0 24 24" style="width: ${size}; height: ${size};" fill="%s"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>`;
-                     const filledStar = starSVG.replace('%s', 'var(--accent-color)');
+                     const filledStar = starSVG.replace('<svg ', '<svg class="yildiz-dolu" ').replace('%s', 'var(--accent-color)');
                      const emptyStar = starSVG.replace('%s', '#eceff4');
                      let html = ''; for (let i = 0; i < 3; i++) { html += (i < count) ? filledStar : emptyStar; }
                      return `<div id="quiz-winner-icon-container" class="star-rating">${html}</div>`;
@@ -553,7 +553,48 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
                 playerDom.options.innerHTML = '';
                 if (optionCount === 5) { playerDom.options.classList.add('five-options'); } else { playerDom.options.classList.remove('five-options'); }
             }
-            options.forEach((text) => { const btn = document.createElement('button'); btn.className = 'quiz-option-btn'; btn.textContent = text; btn.onclick = (e) => this.checkAnswer(e.currentTarget, word.turkish, playerNum); if(playerDom.options) playerDom.options.appendChild(btn); });
+            options.forEach((text) => { const btn = document.createElement('button'); btn.className = 'quiz-option-btn'; const sp = document.createElement('span'); sp.textContent = text; btn.appendChild(sp); btn.onclick = (e) => this.checkAnswer(e.currentTarget, word.turkish, playerNum); if(playerDom.options) playerDom.options.appendChild(btn); });
+            /* AKILLI SIĞDIRMA: uzun (2-3+ kelimelik) şıklar kutuya orantılı
+               olarak küçültülerek sığdırılır; kısa şıklar olduğu gibi kalır.
+               Ölçüm canvas ile yapılır (ellipsis/scrollWidth tuzaklarından
+               bağımsız). Font geç yüklenirse ve yerleşim gecikirse yeniden dener. */
+            if (playerDom.options) {
+                const sigdir = (btn) => {
+                    const sp = btn.firstElementChild;
+                    if (!sp || btn.clientWidth < 40) return; // henüz yerleşmedi
+                    btn.style.fontSize = '';
+                    const cs = getComputedStyle(btn);
+                    let fs = parseFloat(cs.fontSize);
+                    const tabanFs = fs;
+                    const cv = sigdir._c || (sigdir._c = document.createElement('canvas'));
+                    const ctx = cv.getContext('2d');
+                    const avail = btn.clientWidth - 30;
+                    const words = sp.textContent.split(/\s+/).filter(Boolean);
+                    /* Canvas ile satır sayısı tahmini (greedy kelime sarma):
+                       metin 2 satıra sığıyorsa yazı boyu korunur ve kutu
+                       içinde iki satır olarak dizilir; sığmıyorsa küçülür. */
+                    const satirSayisi = (deneme) => {
+                        ctx.font = cs.fontWeight + ' ' + deneme + 'px ' + cs.fontFamily;
+                        const bosluk = ctx.measureText(' ').width;
+                        let lines = 1, cur = 0;
+                        for (const kelime of words) {
+                            const kw = ctx.measureText(kelime).width;
+                            if (kw > avail) return 99; // tek kelime bile sığmıyor
+                            if (cur === 0) cur = kw;
+                            else if (cur + bosluk + kw <= avail) cur += bosluk + kw;
+                            else { lines++; cur = kw; }
+                        }
+                        return lines;
+                    };
+                    let guard = 0;
+                    while (satirSayisi(fs) > 2 && fs > 12 && guard++ < 24) fs *= 0.94;
+                    if (fs !== tabanFs) btn.style.fontSize = fs.toFixed(1) + 'px';
+                };
+                const hepsiniSigdir = () => playerDom.options.querySelectorAll('.quiz-option-btn').forEach(sigdir);
+                requestAnimationFrame(hepsiniSigdir);
+                setTimeout(hepsiniSigdir, 450);
+                if (document.fonts && document.fonts.ready) document.fonts.ready.then(hepsiniSigdir);
+            }
 
             if(playerNum === 1) this.state.p1StartTime = Date.now(); else this.state.p2StartTime = Date.now();
         },
