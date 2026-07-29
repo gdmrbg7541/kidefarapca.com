@@ -140,6 +140,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const ev = new Event('input', { bubbles: true });
                 inputEl.dispatchEvent(ev);
               };
+
+              /* OTOMATİK GEÇİŞ: kelime doğru tamamlandığı anda onay tuşunu
+                 beklemeden kontrol tetiklenir ve sonraki kelimeye geçilir. */
+              const otoKontrol = () => {
+                const st = TypingGame.state;
+                if (!st || !st.words || inputEl.disabled) return;
+                const hedef = st.words[st.currentIndex];
+                if (!hedef) return;
+                const yazilan = Utils.normalizeForTyping((inputEl.value || '').trim());
+                if (yazilan && yazilan === Utils.normalizeForTyping(hedef.arabic)) {
+                  setTimeout(() => TypingGame.checkAnswer(), 130);
+                }
+              };
+              inputEl.addEventListener('input', otoKontrol);
               
               const appendChar = (ch) => {
                 const newVal = (inputEl.value || '') + ch;

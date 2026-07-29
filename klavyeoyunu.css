@@ -361,7 +361,7 @@ html { font-size: clamp(12px, 1.2vw, 16px); }
     .typing-input-proxy { font-size: min(3rem, 6vh); height: min(96px, 12vh); padding: 0 22px; }
     #typing-submit-btn { width: 110px; }
     #typing-submit-btn svg { width: min(44px, 5vh); height: min(44px, 5vh); }
-    #virtual-keyboard { max-width: min(1400px, 95vw); padding: min(14px, 1.5vh); gap: min(9px, 1vh); margin-top: 0; }
+    #virtual-keyboard { max-width: min(1100px, 75vw); padding: min(14px, 1.5vh); gap: min(9px, 1vh); margin-top: 0; }
     .keyboard-row { gap: min(9px, 0.8vw); }
     .keyboard-key { font-size: min(2.1rem, 4vh); min-height: min(56px, 6.5vh); padding: min(8px, 1vh) 4px; }
 }
