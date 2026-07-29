@@ -1739,3 +1739,57 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     pointer-events: none;
 }
 .qz-soru-icerik.gizli + .qz-gizli-not { display: flex; }
+
+
+/* ============ MOBİL YATAY: masaüstü yerleşiminin küçültülmüşü ============
+   Yapı masaüstüyle aynı (solda vitrin; sağda üstte vezinler, altta
+   usta + örs + kök rafı / öğütücüde makine + kelime sütunu yan yana),
+   yalnız ölçüler ekrana sığacak şekilde küçültülür. */
+@media (max-height: 500px) and (orientation: landscape) {
+    .g2-sahne { align-items: center; overflow: hidden; }
+
+    /* --- ATÖLYE --- */
+    .g2-atolye-ic {
+        flex-direction: row; height: 100%;
+        padding: 42px 8px 30px; gap: 8px;
+    }
+    .g2-atolye-ic .g3-vitrin { order: 0; margin-left: 8px; }
+    #g2-vitrinKutu { width: min(34vw, 330px); height: calc(100dvh - 118px); }
+
+    .g2-sag { display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%; }
+    .g2-vezinler {
+        order: 0;
+        display: grid !important;
+        overflow: visible; height: auto; width: auto; max-width: none;
+        min-height: 2.2em; margin: 2px auto 0; padding: 0;
+        gap: 8px;
+        --vf: clamp(.95rem, 5.2vh, 1.5rem) !important;
+    }
+    .g2-sag-alt {
+        display: flex; order: 0; height: auto; flex: 1;
+        flex-direction: row; align-items: flex-end; justify-content: space-between;
+        width: auto; padding: 0 6px; margin: 0;
+    }
+    .g2-sag-alt .g3-ors-kutu { margin-left: 96px; margin-bottom: 8px; flex: 0 0 auto; }
+    .g2-ors2 { width: clamp(88px, 24vh, 122px); margin-left: 0; }
+    #g2-orsKutu .g3-usta { width: clamp(80px, 30vh, 122px); left: -96px; bottom: 0; }
+    .g2-sag-alt .g2-kokraf {
+        flex-direction: column; width: auto; min-width: clamp(90px, 24vh, 140px);
+        max-height: 56vh; overflow-y: auto; margin: 0 6px 0 auto; gap: 8px;
+    }
+    .g2-kokraf .g2-kulce { font-size: clamp(1rem, 4.6vh, 1.5rem); }
+
+    /* --- ÖĞÜTÜCÜ --- */
+    .g2-stage {
+        flex-direction: row; padding-top: 0;
+        --g2-kutu-font: clamp(1.1rem, 6.2vh, 1.7rem);
+        --g2-kutu-en: clamp(120px, 26vw, 200px);
+    }
+    .g2-kelimeler {
+        order: 0; flex-direction: column; flex-wrap: nowrap;
+        align-items: flex-end; gap: 6px;
+        max-height: 84dvh; overflow-y: auto;
+    }
+    .g2-fabrika { width: min(56vw, 470px); margin-top: 0; }
+    .g2-forklift { width: clamp(70px, 18vh, 96px); }
+}
