@@ -273,7 +273,8 @@ const IM_CARPI = '<svg class="yp-im yp-im-no" viewBox="0 0 34 34" role="img"'
 function yanPaneliKur() {
     const yan = document.getElementById('g1yan');
     if (!yan) return;
-    let s = '<div class="yp-baslik">Kendinden sonrakiyle birleşmeyen harfler</div>';
+    /* Başlıkta her kelimenin ilk harfi büyük */
+    let s = '<div class="yp-baslik">Kendinden Sonrakiyle Birleşmeyen Harfler</div>';
     s += '<div class="yp-tablo">';
     /* Başlık satırı: sağ sütun = önceki harfe bağlanır (✓), sol sütun = sonraki
        harfe bağlanmaz (✗). İşaretin altındaki özel SVG ok, alttaki harften
@@ -369,6 +370,8 @@ const ui = {
         if(target) target.classList.add('active');
         
         if(e && e.currentTarget) e.currentTarget.classList.add('active');
+        /* Odak modu yalnız harf tablosu içindir: başka sekmeye geçilirse kapanır */
+        if (id !== 'p1' && typeof tamEkran !== 'undefined' && tamEkran.acik) tamEkran.kapat();
         const gs = document.getElementById('p1-switch');
         if (gs) gs.classList.toggle('gizli', id !== 'p1');
         /* Switch gizliyken mobilde sağdaki rezerv boşluk da kalksın */
@@ -448,6 +451,68 @@ function syncModeIcons() {
         if (m) m.classList.toggle('on', inp.checked);
     });
 }
+
+/* ================= ODAK / TAM EKRAN =================
+   "Sadece harfleri göster": yan panel, alt şerit, sekme düğmeleri ve ana sayfa
+   düğmesi gizlenir; harf tablosu tüm alanı kaplar ve harfler büyür. Tarayıcının
+   Fullscreen API'si varsa o da istenir, böylece tarayıcı çubukları da kalkar;
+   izin verilmezse sayfa içi odak modu tek başına yeter.
+   Çıkış: aynı düğme, Esc tuşu ya da tarayıcının tam ekrandan çıkması.
+   ==================================================== */
+const tamEkran = {
+    acik: false,
+    cevir() { this.acik ? this.kapat() : this.ac(); },
+    /* Kart harfleri SVG ve boyları harfGrid.layout() ile ölçülüyor; kart ölçüsü
+       değiştiği anda yeniden ölçülmeleri gerekir. İki rAF: sınıf değişiminin
+       yerleşime yansımasını bekleriz. Tarayıcı tam ekrana geçerken viewport bir
+       kez daha değişir, o yüzden bir de gecikmeli ölçüm yapılır. */
+    olcumYenile() {
+        if (typeof harfGrid === 'undefined' || !harfGrid.layout) return;
+        requestAnimationFrame(() => requestAnimationFrame(() => harfGrid.layout()));
+        setTimeout(() => harfGrid.layout(), 260);
+        setTimeout(() => harfGrid.layout(), 700);
+    },
+    ac() {
+        if (this.acik) return;
+        playClick();
+        /* Odak modu yalnız Harf Tanıtımı sekmesi için: başka sekmedeysek oraya dön */
+        const p1 = document.getElementById('p1');
+        if (p1 && !p1.classList.contains('active')) {
+            const dg = document.querySelector('.nav-tabs .tab-trigger');
+            if (dg) dg.click();
+        }
+        this.acik = true;
+        document.body.classList.add('harf-tam');
+        const btn = document.getElementById('tam-btn');
+        if (btn) btn.title = 'Odak modundan çık (Esc)';
+        this.olcumYenile();
+        const kok = document.documentElement;
+        if (kok.requestFullscreen) { const q = kok.requestFullscreen(); if (q && q.catch) q.catch(() => {}); }
+        else if (kok.webkitRequestFullscreen) { try { kok.webkitRequestFullscreen(); } catch (e) {} }
+    },
+    kapat() {
+        if (!this.acik) return;
+        playClick();
+        this.acik = false;
+        document.body.classList.remove('harf-tam');
+        const btn = document.getElementById('tam-btn');
+        if (btn) btn.title = 'Sadece harfleri göster (tam ekran)';
+        this.olcumYenile();
+        const fs = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fs) {
+            if (document.exitFullscreen) { const q = document.exitFullscreen(); if (q && q.catch) q.catch(() => {}); }
+            else if (document.webkitExitFullscreen) { try { document.webkitExitFullscreen(); } catch (e) {} }
+        }
+    }
+};
+/* Tarayıcı tam ekrandan kendi çıkarsa (Esc / F11) odak modu da kapanır */
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ad => document.addEventListener(ad, () => {
+    const fs = document.fullscreenElement || document.webkitFullscreenElement;
+    if (!fs && tamEkran.acik) tamEkran.kapat();
+}));
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && tamEkran.acik) tamEkran.kapat();
+});
 
 /* Hafıza kartlarının arka yüzündeki geometrik tezhip motifi */
 const MEM_ORNAMENT = '<svg class="mem-orn" viewBox="0 0 100 100" aria-hidden="true">'

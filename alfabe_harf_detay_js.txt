@@ -401,7 +401,10 @@ const harfGrid = {
         }
         const fits = info.map(o => Math.min(o.fitW, o.fitH)).sort((a, b) => a - b);
         const base = fits[Math.min(2, fits.length - 1)];
-        const H = Math.max(18, Math.min(130, base));
+        /* Odak (tam ekran) modunda kartlar çok daha yüksek: üst sınır da açılır,
+           yoksa harfler 130px'te takılıp kart içinde küçük görünüyor. */
+        const enBuyuk = document.body.classList.contains('harf-tam') ? 210 : 130;
+        const H = Math.max(18, Math.min(enBuyuk, base));
         info.forEach(o => {
             const h = Math.max(18, Math.min(H, o.fitW, o.fitH));
             o.svgs.forEach(s => setH(s, h));

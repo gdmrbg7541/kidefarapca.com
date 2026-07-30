@@ -140,25 +140,31 @@
         .tablo-sar { flex: 1; height: 100%; min-width: 0; }
 
         /* --- SAĞ PANEL: kendinden sonrakiyle birleşmeyen harfler ---
-           Kutu tasarımı YOK: çerçeve/gölge/hücre arka planı kaldırıldı,
-           harfler doğrudan sayfa üzerinde duruyor. Başlık ve harfler büyük. */
+           Başlık + harfler TEK parça olarak kalın gri bir kutunun içinde durur.
+           Hücrelerin kendi çerçevesi/zemini yok; kutu bir tane, en dışta. */
         .yan-panel {
             flex: 0 0 clamp(126px, 11.6vw, 186px); min-width: 0;
-            background: transparent; border: 0; border-radius: 0; box-shadow: none;
-            padding: 2px 2px 0; overflow: hidden;
-            display: flex; flex-direction: column; gap: 6px;
+            background: #fff; border: 3px solid #cfd8e3; border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            padding: 4px 2px 6px; overflow: hidden;
+            display: flex; flex-direction: column; gap: 4px;
         }
+        /* Başlığın altındaki ayırıcı çizgi kaldırıldı: kutunun kendi çerçevesi
+           zaten bölümü sınırlıyor, ikinci bir çizgi kalabalık yapıyordu. */
         .yp-baslik {
             background: transparent; color: #117A65; text-align: center;
-            padding: 0 2px 7px; line-height: 1.2;
+            padding: 0 2px 3px; line-height: 1.2;
             font-size: clamp(1.1rem, 1.5vw, 1.72rem);
-            border-bottom: 2px solid #16A085;
+            border-bottom: 0;
         }
         /* direction: rtl -> ilk hücre sağda: sağ sütun ـا (✓ →), sol sütun ا (← ✗)
            Sütunlar "auto": her sütun kendi içeriği kadar yer kaplar ve ızgara
            ortalanır — böylece aynı harfin iki biçimi yan yana, birbirine YAKIN
            durur; eskiden 1fr sütunlar harfleri panelin iki ucuna savuruyordu. */
         .yp-tablo {
+            /* overflow: hücrelerden değil ızgaradan kırpılır — satır çizgileri
+               hücre sınırını aşıp panelin iki ucuna kadar uzayabilsin. */
+            overflow: hidden;
             flex: 1; min-height: 0; direction: rtl; display: grid;
             grid-template-columns: auto auto; justify-content: center;
             grid-template-rows: auto repeat(6, minmax(0, 1fr));
@@ -275,7 +281,7 @@
             100%     { stroke-dashoffset: 9; opacity: 0; }
         }
         .yp-hucre {
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; overflow: visible;
             border: 0; background: transparent;
         }
         .yp-harf { font-size: clamp(2.4rem, 6.6vh, 4.8rem); line-height: 1.3; }
@@ -283,8 +289,19 @@
         .yp-c-no .yp-harf { color: #C0392B; }
         /* Harf, arakom hattının dış hattından SVG olarak çizilir: kartlardaki
            harflerle birebir aynı biçim. Yükseklik ortak, taban çizgisi ortak. */
-        .yp-harf-svg { display: flex; align-items: center; justify-content: center; max-width: 100%; }
-        .yp-svg { height: clamp(3.2rem, 9.4vh, 6.4rem); width: auto; max-width: 100%; display: block; overflow: visible; }
+        .yp-harf-svg { display: flex; align-items: center; justify-content: center; max-width: 100%; position: relative; }
+        .yp-svg { height: clamp(3.2rem, 9.4vh, 6.4rem); width: auto; max-width: 100%; display: block; overflow: visible; position: relative; z-index: 1; }
+        /* SATIR (referans) ÇİZGİSİ — kartlardaki ile aynı mantık: harflerin
+           taban çizgisi SVG'nin altından %43.84 yukarıda (viewBox 730, taban 410).
+           Böylece dal/ra/vav gibi harflerin kuyruğunun çizginin ALTINA indiği
+           görülür. Çizgi satırın tamamına uzasın diye hücre sınırını aşar; ızgara
+           overflow: hidden olduğu için panelin kenarında biter. Yalnız ✓ sütunu
+           çiziyor: iki sütun da çizse alfa üst üste binip koyulaşıyordu. */
+        .yp-c-ok .yp-harf-svg::before {
+            content: ""; position: absolute; z-index: 0;
+            left: -400px; right: -400px; bottom: 43.84%;
+            height: 2px; background-color: rgba(0, 0, 0, 0.22);
+        }
         .yp-svg path { fill: currentColor; stroke: none; }
         /* harfin metni ekran okuyucu/testler için durur, görünmez */
         .yp-gizli { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -293,15 +310,25 @@
            İşaretler harfsiz: tek parça uzatma çizgisi (tatvil ــــ) üzerinde
            gösteriliyor, çizgi hepsinde aynı. Ögeler TEK SATIRDA sağdan sola
            dizilir; Türkçe adlar ekranda yazılmaz (title ipucunda). */
+        /* Kutu yüksekliği içeriğe göre kısaldı: etiket üstte ince bir boşlukla
+           duruyor, altında da yalnız harfin kendi payı kalıyor. Eskiden şerit
+           140px'ti ve içerik ortalandığı için etiketin üstünde 26-38px ölü
+           boşluk oluşuyordu. */
+        /* Yükseklik neden 84 -> 98px: harekelerin bir kısmı (esre ـِ, kesratan ـٍ)
+           çizginin ALTINA iner. Etiket yukarıya yapışık durduğu için (justify-content
+           flex-start) fazladan yükseklik tamamen alta eklenir; böylece esrenin altında
+           ~14px nefes payı kalır ve harf kutunun kenarına değmez. Etiketle harf arası
+           bundan etkilenmez. Masaüstünde harf boyu genişlikle sınırlı olduğundan
+           tablodan çalınan bu 14px harfleri küçültmüyor. */
         .alt-serit {
-            flex: 0 0 auto; height: clamp(112px, 15.5vh, 168px);
+            flex: 0 0 auto; height: clamp(98px, 11.4vh, 116px);
             direction: rtl; display: flex; gap: 10px; align-items: stretch;
         }
         .as-kutu {
             flex: 1; min-width: 0; overflow: hidden;
             background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
-            box-shadow: var(--shadow-sm); padding: 5px 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            box-shadow: var(--shadow-sm); padding: 4px 8px 2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0;
         }
         .as-baslik {
             font-size: clamp(0.72rem, 0.92vw, 1.06rem); color: #117A65;
@@ -316,7 +343,11 @@
         .as-kutu.as-genis { flex: 1.5; }
         .as-kutu.as-genis .as-liste { gap: clamp(16px, 2vw, 40px); }
         .as-oge { display: flex; align-items: center; justify-content: center; min-width: 0; }
-        .as-harf { font-size: clamp(1.6rem, 5.2vh, 3.3rem); line-height: 1.3; color: #2c3e50; }
+        /* line-height 1.3 -> 1.15: satır kutusunun harfin üstünde bıraktığı yarım
+           satır boşluğu (half-leading) sıfırlanır, böylece etiket ile harf arası
+           birkaç piksel daralır. Daha da kısaltmak "uzatma harfleri" kutusundaki
+           uzun elif/vav'ı etikete yapıştırıyordu, o yüzden 1.15'te durdu. */
+        .as-harf { font-size: clamp(1.6rem, 5.2vh, 3.3rem); line-height: 1.15; color: #2c3e50; }
 
         /* TENVİN: yalnız kelime sonuna gelir. İşaretli çizginin sağında
            (kelimenin devamı yönünde) aralıklı çizgi durur; soluk renkte,
@@ -328,7 +359,7 @@
         .as-kutu.as-tenvin .as-liste { gap: clamp(18px, 2.4vw, 48px); }
         .as-oge-kesik { align-items: baseline; gap: clamp(2px, 0.35vw, 7px); }
         .as-kesik {
-            font-size: clamp(1.6rem, 5.2vh, 3.3rem); line-height: 1.3;
+            font-size: clamp(1.6rem, 5.2vh, 3.3rem); line-height: 1.15;
             color: #9aabbb; letter-spacing: 0.06em; white-space: nowrap;
             user-select: none;
         }
@@ -657,6 +688,72 @@
         .grp-ico--yazi.on svg path, .grp-ico--yazi.on svg circle { stroke: #16A085; }
         .grp-ico--ses.on  svg path, .grp-ico--ses.on  svg circle { stroke: #E67E22; }
 
+        /* ================= ODAK / TAM EKRAN =================
+           Switch'in yanındaki ince ayıraç ve dört köşeli odak düğmesi.
+           Kapalıyken köşeler dışa doğru nefes alır (genişleme), açıkken içe
+           doğru toplanır (küçülme). İki grup asla birlikte görünmez.
+           ==================================================== */
+        .hdr-ayirac {
+            width: 1px; align-self: stretch; margin: 3px 1px;
+            background: #E9EEF5; flex: 0 0 1px;
+        }
+        .grp-ico--tam .gt-kapa { display: none; }
+        body.harf-tam .grp-ico--tam .gt-ac   { display: none; }
+        body.harf-tam .grp-ico--tam .gt-kapa { display: block; }
+        .grp-ico--tam:hover { background: rgba(22,160,133,.10); }
+        .grp-ico--tam svg path { stroke: #16A085; stroke-width: 3.4; }
+        body.harf-tam .grp-ico--tam { background: rgba(243,156,18,.16); }
+        body.harf-tam .grp-ico--tam svg path { stroke: #E67E22; }
+        .grp-ico--tam .gt-a1 { animation: gtAc1 2.4s ease-in-out infinite; }
+        .grp-ico--tam .gt-a2 { animation: gtAc2 2.4s ease-in-out infinite; }
+        .grp-ico--tam .gt-a3 { animation: gtAc3 2.4s ease-in-out infinite; }
+        .grp-ico--tam .gt-a4 { animation: gtAc4 2.4s ease-in-out infinite; }
+        @keyframes gtAc1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2.6px, -2.6px); } }
+        @keyframes gtAc2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(2.6px, -2.6px); } }
+        @keyframes gtAc3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(2.6px, 2.6px); } }
+        @keyframes gtAc4 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2.6px, 2.6px); } }
+        /* açıkken aynı köşeler ters yöne, içe doğru toplanır */
+        /* İçe toplanan köşeler zaten merkeze yakın: 2.6px'te ortada birleşip artı
+           işaretine benziyorlardı. Bu yüzden açık durumda genlik 1.3px. */
+        body.harf-tam .grp-ico--tam .gt-i1 { animation: gtKapa3 2.4s ease-in-out infinite; }
+        body.harf-tam .grp-ico--tam .gt-i2 { animation: gtKapa4 2.4s ease-in-out infinite; }
+        body.harf-tam .grp-ico--tam .gt-i3 { animation: gtKapa1 2.4s ease-in-out infinite; }
+        body.harf-tam .grp-ico--tam .gt-i4 { animation: gtKapa2 2.4s ease-in-out infinite; }
+        @keyframes gtKapa1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-1.3px, -1.3px); } }
+        @keyframes gtKapa2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(1.3px, -1.3px); } }
+        @keyframes gtKapa3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(1.3px, 1.3px); } }
+        @keyframes gtKapa4 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-1.3px, 1.3px); } }
+
+        /* --- ODAK MODU: sayfada sadece harf tablosu (+ switch) kalır --- */
+        body.harf-tam .site-header,
+        body.harf-tam .home-link,
+        body.harf-tam .tab-trigger,
+        body.harf-tam #g1yan,
+        body.harf-tam #g1alt { display: none !important; }
+        body.harf-tam .nav-tabs {
+            min-height: 54px; box-shadow: none; background: transparent;
+            border: 0; padding: 0; margin: 0;
+        }
+        /* Normalde switch header'ın ALT kenarına yapışıktır (bottom: 8px). Odakta
+           header gizlenip şerit 54px'e indiğinden bu hesap switch'i ekranın
+           üstünden 4px taşırıyordu: tepesi kesiliyordu. Odakta üstten hizalanır. */
+        body.harf-tam .hdr-switch { top: 5px; bottom: auto; right: 12px; }
+        body.harf-tam .content-area { padding: 4px 3px 5px; }
+        body.harf-tam .p1-duzen { gap: 0; }
+        /* Odakta kartlar tüm yüksekliği kullanır: harfler mümkün olan en büyük
+           boyuta çıksın diye kart içi boşluklar da biraz açılır. */
+        /* Odakta her piksel harfe gitsin: hücre ve kart iç boşlukları kısılır,
+           böylece kartın genişliği (harf boyunu belirleyen ölçü) büyür. */
+        body.harf-tam .harf-tablo { --ht-pad: 2px; }
+        body.harf-tam .char-card { padding: 5px 2px; }
+        /* Kartlardaki harfler yazı değil SVG: boyutlarını harfGrid.layout() ölçüp
+           veriyor. Bu yüzden odak modunda font-size ile büyütmeye çalışmak işe
+           yaramıyor — tamEkran.ac() sınıfı ekledikten sonra layout()'u yeniden
+           çağırır, harfler yeni kart ölçüsüne göre kendiliğinden büyür. */
+        body.harf-tam .tr-label { font-size: clamp(1.05rem, 2.1vh, 1.5rem); margin-top: 4px; }
+        body.harf-tam .char-card .card-num { min-width: 31px; height: 31px; font-size: 1.14rem; }
+        body.harf-tam .char-card .mz-ok { width: clamp(24px, 2.6vw, 34px); height: clamp(24px, 2.6vw, 34px); }
+
         /* YAZI ikonu = KALEM: kalem kendini çizer, sonra yazarken sağa kayar,
            altındaki iki satır soldan sağa doğru "yazılır". */
         .grp-ico .gk-govde { stroke-dasharray: 96; stroke-width: 2.7; }
@@ -794,7 +891,7 @@
                 /* Şeffaf kenarlar: zemin gradyanı altta görünür, kayan sekmeler
                    soldaki ana sayfa butonunun ve sağdaki switch'in altına girmez. */
                 border-left: 54px solid transparent;   /* sol: ana sayfa butonu */
-                border-right: 148px solid transparent; /* sağ: gruplama switch'i */
+                border-right: 192px solid transparent; /* sağ: gruplama switch'i + odak düğmesi */
                 border-top: 0; border-bottom: 0;
                 padding-left: 0 !important; padding-right: 0 !important;
                 justify-content: flex-start !important; 
@@ -835,7 +932,7 @@
             .yp-svg { height: 56px; }
             .yp-baslik { font-size: 1.22rem; }
             .alt-serit { height: auto; flex-wrap: wrap; margin-top: 10px; padding-bottom: 10px; }
-            .as-kutu { flex: 1 1 45%; min-height: 84px; }
+            .as-kutu { flex: 1 1 45%; min-height: 84px; } /* esre/kesratan alta iniyor: alt pay */
             .as-kutu.as-genis { flex: 1 1 100%; }
             .as-kutu.as-genis .as-liste { gap: 13px; }
             .as-kutu.as-tenvin .as-liste { gap: 22px; }
@@ -845,6 +942,25 @@
             .harf-tablo { height: auto; min-width: 900px; --ht-pad: 3px; --ht-w: 2px; --ht-kalin: 4px; }
             .ht-cell { height: auto; }
             .ht-cell > .char-card { min-height: 88px; }
+
+            /* --- ODAK MODU (mobil) ---
+               Mobilde sayfa normalde dikey kayar ve tablo içeriğe göre uzar.
+               Odakta ise kaydırma kapanır, tablo görünür yüksekliğin tamamını
+               kaplar; satırlar %25'e bölünür, böylece harfler ekranı doldurur.
+               Yatay kaydırma korunur: tablo 7 sütun kalsın diye min-width duruyor. */
+            body.harf-tam { overflow: hidden; }
+            body.harf-tam .nav-tabs { min-height: 44px; border-right-width: 192px; }
+            body.harf-tam .content-area { overflow: hidden !important; padding: 2px 4px 4px; }
+            body.harf-tam #p1 { overflow-y: hidden !important; height: 100%; padding: 0 !important; }
+            body.harf-tam .p1-duzen { display: flex; height: 100%; }
+            body.harf-tam .p1-ust { display: flex; height: 100%; min-height: 0; }
+            body.harf-tam .tablo-sar { height: 100%; padding-bottom: 0; }
+            /* Mobilde tablo zaten yatay kaydırılıyor (min-width 900px). Odakta
+               kaydırma alanını genişletiriz: hücre genişliği artar, harfler de
+               boyca büyür — dikey yerin tamamı kullanılabilir hale gelir. */
+            body.harf-tam .harf-tablo { height: 100%; min-width: 1400px; --ht-pad: 2px; }
+            body.harf-tam .ht-cell { height: 25%; }
+            body.harf-tam .ht-cell > .char-card { min-height: 0; }
             .grid-flip { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(7, 1fr); }
             /* Mobilde kartlar küçük: jeton harfin üstüne binmesin */
             .char-card .card-num { min-width: 21px; height: 21px; padding: 0 4px; font-size: 0.8rem; border-width: 1.5px; top: 3px; left: 4px; }
