@@ -320,8 +320,12 @@
            ~14px nefes payı kalır ve harf kutunun kenarına değmez. Etiketle harf arası
            bundan etkilenmez. Masaüstünde harf boyu genişlikle sınırlı olduğundan
            tablodan çalınan bu 14px harfleri küçültmüyor. */
+        /* +10px daha (98 -> 108): aşağıdaki garantili etiket-harf boşluğu (as-liste
+           margin-top) alttaki esre payından çalmasın diye şerit bir tık daha
+           yükseldi. Masaüstünde harf boyu genişlikle sınırlı olduğu için bu da
+           tablodaki harfleri küçültmüyor (ölçüldü). */
         .alt-serit {
-            flex: 0 0 auto; height: clamp(98px, 11.4vh, 116px);
+            flex: 0 0 auto; height: clamp(108px, 12.4vh, 126px);
             direction: rtl; display: flex; gap: 10px; align-items: stretch;
         }
         .as-kutu {
@@ -330,13 +334,25 @@
             box-shadow: var(--shadow-sm); padding: 4px 8px 2px;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0;
         }
+        /* Etiket asla ezilmesin/küçülmesin: sütun ekseninde flex-shrink kapalı.
+           Aksi halde kutu daralınca etiketin satır kutusu kısalır ve mürekkebi
+           altındaki harfin üstüne taşabilir. */
         .as-baslik {
+            flex: 0 0 auto;
             font-size: clamp(0.72rem, 0.92vw, 1.06rem); color: #117A65;
             background: #E6FAF5; border-radius: 999px; padding: 2px 11px; white-space: nowrap;
+            line-height: 1.35;
         }
+        /* margin-top: etiket ile harf arasındaki AYIRMA boşluğu. Daha önce bu
+           boşluk yalnızca yazı tipinin satır-içi payına (half-leading) bırakılmıştı;
+           o pay tarayıcı/font metriğine göre değiştiği için cezim–şedde gibi
+           çizginin ÜSTÜNE binen işaretler etikete değebiliyordu. Artık boşluk
+           metrikten bağımsız ve garanti. Şerit 10px yükseltildiği için alttaki
+           esre payı bundan etkilenmiyor. */
         .as-liste {
             direction: rtl; display: flex; flex-direction: row; flex-wrap: nowrap;
-            align-items: center; justify-content: center;
+            align-items: center; justify-content: center; flex: 0 0 auto;
+            margin-top: clamp(6px, 0.85vh, 11px);
             gap: clamp(9px, 1.4vw, 26px); min-height: 0; min-width: 0;
         }
         /* üç ögeli kutular (harekeler / tenvin) tek satırda rahat sığsın */
@@ -932,7 +948,10 @@
             .yp-svg { height: 56px; }
             .yp-baslik { font-size: 1.22rem; }
             .alt-serit { height: auto; flex-wrap: wrap; margin-top: 10px; padding-bottom: 10px; }
-            .as-kutu { flex: 1 1 45%; min-height: 84px; } /* esre/kesratan alta iniyor: alt pay */
+            /* 84 -> 92px: etiket-harf ayırma boşluğu (as-liste margin-top) alttaki
+               esre/kesratan payından çalmasın. */
+            .as-kutu { flex: 1 1 45%; min-height: 92px; } /* esre/kesratan alta iniyor: alt pay */
+            .as-liste { margin-top: 5px; }
             .as-kutu.as-genis { flex: 1 1 100%; }
             .as-kutu.as-genis .as-liste { gap: 13px; }
             .as-kutu.as-tenvin .as-liste { gap: 22px; }
