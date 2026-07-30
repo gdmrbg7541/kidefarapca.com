@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Okuma</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <link rel="stylesheet" href="okuma.css?v=1">
+</head>
+<body>
+
+<div class="main-app">
+    <nav class="nav-tabs">
+        <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank" class="home-link" title="Ana Sayfa">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </a>
+
+        <!-- Sağ üstteki araç şeridi: harf boyutu ve odak (tam ekran) düğmesi.
+             Alfabe sayfasındaki hdr-switch ile aynı dili konuşur. -->
+        <div class="switch-wrapper hdr-switch" id="ok-switch">
+            <span class="mode-ico ok-ico ok-ico--kucult" title="Yazıyı küçült" onclick="okuma.boyut(-1)">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <circle class="oi-mercek" cx="21" cy="21" r="13"></circle>
+                    <line class="oi-sap" x1="30.5" y1="30.5" x2="42" y2="42"></line>
+                    <line class="oi-eksi" x1="14" y1="21" x2="28" y2="21"></line>
+                </svg>
+            </span>
+            <span class="ok-boyut-deger" id="ok-boyut">%100</span>
+            <span class="mode-ico ok-ico ok-ico--buyut" title="Yazıyı büyüt" onclick="okuma.boyut(1)">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <circle class="oi-mercek" cx="21" cy="21" r="13"></circle>
+                    <line class="oi-sap" x1="30.5" y1="30.5" x2="42" y2="42"></line>
+                    <line class="oi-eksi" x1="14" y1="21" x2="28" y2="21"></line>
+                    <line class="oi-arti" x1="21" y1="14" x2="21" y2="28"></line>
+                </svg>
+            </span>
+            <span class="hdr-ayirac" aria-hidden="true"></span>
+            <!-- ODAK: sadece okuma tablosu kalsın -->
+            <span class="mode-ico ok-ico ok-ico--tam" id="ok-tam-ico" title="Odak modu: sadece tablo" onclick="okuma.tamEkran()">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <g class="gt-kose">
+                        <path class="gt-k" d="M18 8H8V18"></path>
+                        <path class="gt-k" d="M30 8H40V18"></path>
+                        <path class="gt-k" d="M30 40H40V30"></path>
+                        <path class="gt-k" d="M18 40H8V30"></path>
+                    </g>
+                </svg>
+            </span>
+        </div>
+
+        <button class="tab-trigger active" onclick="okuma.sekme(event, 'o1')">Hece</button>
+        <button class="tab-trigger" onclick="okuma.sekme(event, 'o2')">Uzatma</button>
+        <button class="tab-trigger" onclick="okuma.sekme(event, 'o3')">Cezim</button>
+        <button class="tab-trigger" onclick="okuma.sekme(event, 'o4')">Şedde</button>
+        <button class="tab-trigger" onclick="okuma.sekme(event, 'o5')">Kelime</button>
+    </nav>
+
+    <main class="content-area">
+        <!-- HECE: harf + hareke (bâ / bi / bu) -->
+        <section id="o1" class="panel active">
+            <div class="ok-duzen">
+                <div class="ok-serit" id="o1-serit"></div>
+                <div class="ok-tablo-sar"><div class="ok-tablo" id="o1-tablo"></div></div>
+            </div>
+        </section>
+
+        <!-- UZATMA: med harfleriyle uzun okuyuş (bâ / bî / bû) -->
+        <section id="o2" class="panel">
+            <div class="ok-duzen">
+                <div class="ok-serit" id="o2-serit"></div>
+                <div class="ok-tablo-sar"><div class="ok-tablo" id="o2-tablo"></div></div>
+            </div>
+        </section>
+
+        <!-- CEZİM: sâkin harf (eb / ib / ub) -->
+        <section id="o3" class="panel">
+            <div class="ok-duzen">
+                <div class="ok-serit" id="o3-serit"></div>
+                <div class="ok-tablo-sar"><div class="ok-tablo" id="o3-tablo"></div></div>
+            </div>
+        </section>
+
+        <!-- ŞEDDE: harfi iki kez okuma (ebbe / ibbi / ubbu) -->
+        <section id="o4" class="panel">
+            <div class="ok-duzen">
+                <div class="ok-serit" id="o4-serit"></div>
+                <div class="ok-tablo-sar"><div class="ok-tablo" id="o4-tablo"></div></div>
+            </div>
+        </section>
+
+        <!-- KELİME: öğrenilen kuralların gerçek kelimelerde okunuşu -->
+        <section id="o5" class="panel">
+            <div class="ok-duzen">
+                <div class="ok-serit" id="o5-serit"></div>
+                <div class="ok-tablo-sar"><div class="ok-tablo ok-tablo--kelime" id="o5-tablo"></div></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Büyük gösterim: bir hücreye tıklayınca tahtaya yansıtmalık dev okuyuş -->
+<div class="ok-buyut" id="ok-buyut" onclick="okuma.buyutKapat()">
+    <div class="ok-buyut-kutu" onclick="event.stopPropagation()">
+        <button class="ok-buyut-kapat" onclick="okuma.buyutKapat()" title="Kapat">&times;</button>
+        <div class="ok-buyut-ar" id="ok-buyut-ar"></div>
+        <div class="ok-buyut-tr" id="ok-buyut-tr"></div>
+        <div class="ok-buyut-not" id="ok-buyut-not"></div>
+        <div class="ok-buyut-gez">
+            <button onclick="okuma.buyutGez(-1)" title="Önceki">‹</button>
+            <button onclick="okuma.buyutGez(1)" title="Sonraki">›</button>
+        </div>
+    </div>
+</div>
+
+<script src="okuma.js?v=1"></script>
+<script src="geri.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

@@ -126,6 +126,13 @@
     .kga-yuz { animation: kgYuz 2.6s ease-in-out infinite; }
     .kga-yuz.g2x { animation-delay: .65s; } .kga-yuz.g3x { animation-delay: 1.3s; }
     @keyframes kgYuz { 0%{transform:translateY(9px);opacity:0} 30%{opacity:1} 75%{opacity:1} 100%{transform:translateY(-7px);opacity:0} }
+    /* Okuma: vurgu şeridi sağdan sola satırı okur, sonra alt satıra iner */
+    .kga-oku-satir { animation: kgOkuSatir 4.2s step-end infinite; }
+    @keyframes kgOkuSatir { 0%{transform:translateY(0)} 33.34%{transform:translateY(7px)} 66.67%{transform:translateY(14px)} 100%{transform:translateY(14px)} }
+    .kga-oku-kay { transform-origin: 100% 50%; animation: kgOkuKay 1.4s ease-in-out infinite; }
+    @keyframes kgOkuKay { 0%{transform:scaleX(0)} 65%,100%{transform:scaleX(1)} }
+    .kga-oku-kelime { animation: kgOkuKelime 4.2s ease-in-out infinite; }
+    @keyframes kgOkuKelime { 0%,100%{opacity:.35;transform:translateY(1.5px)} 50%{opacity:1;transform:translateY(0)} }
     /* Dinle: ses dalgaları nabız gibi */
     .kga-dalga { animation: kgDalga 1.5s ease-in-out infinite; }
     .kga-dalga.g2x { animation-delay: .4s; }
@@ -574,6 +581,26 @@
             </svg></div>
             <h3>Alfabe</h3>
             <span class="game-card-description">Harfleri Pekiştir.</span>
+            <span class="status-badge available">Hemen Başla</span>
+          </div>
+        </a>
+
+        <a href="okuma.html" target="_blank" rel="opener" class="game-card kss-card">
+          <div class="default-game-content">
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <text class="kga-oku-kelime" x="32" y="15" font-size="13" fill="#16A085" text-anchor="middle">اقرأ</text>
+              <path d="M6 54 V24 q13 -6 26 0 q13 -6 26 0 v30 q-13 -5 -26 0 q-13 -5 -26 0 Z" fill="#fff" stroke="#16A085" stroke-width="2.8"/>
+              <line x1="32" y1="23" x2="32" y2="54" stroke="#16A085" stroke-width="2.2"/>
+              <line x1="10" y1="33" x2="26" y2="31" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
+              <line x1="10" y1="40" x2="26" y2="38" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
+              <line x1="10" y1="47" x2="26" y2="45" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
+              <g class="kga-oku-satir"><rect class="kga-oku-kay" x="38" y="28" width="17" height="6.4" rx="3.2" fill="#F39C12" opacity=".42"/></g>
+              <line x1="38" y1="31" x2="54" y2="33" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
+              <line x1="38" y1="38" x2="54" y2="40" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
+              <line x1="38" y1="45" x2="54" y2="47" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
+            </svg></div>
+            <h3>Okuma</h3>
+            <span class="game-card-description">Arapça metin okuma pratiği.</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>

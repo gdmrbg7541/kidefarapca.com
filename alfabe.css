@@ -528,12 +528,13 @@
         /* Harf kartları tıklanabilir */
         .char-card { cursor: pointer; position: relative; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
 
-        /* Kart numarası (1-28): labirentteki adım numarası — belirgin, dolu turkuaz jeton */
+        /* Kart numarası (1-28): labirentteki adım numarası — dolu turkuaz jeton.
+           Jeton küçültüldü: harfe yer açsın, sıra bilgisi göze batmadan okunsun. */
         .char-card .card-num {
             position: absolute; top: 5px; left: 6px;
             display: flex; align-items: center; justify-content: center;
-            min-width: 27px; height: 27px; padding: 0 6px;
-            font-size: 1rem; font-weight: normal !important; line-height: 1;
+            min-width: 21px; height: 21px; padding: 0 5px;
+            font-size: 0.8rem; font-weight: normal !important; line-height: 1;
             color: #fff !important; background: #16A085;
             border: 2px solid #fff; border-radius: 999px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.20);
@@ -809,7 +810,7 @@
            yaramıyor — tamEkran.ac() sınıfı ekledikten sonra layout()'u yeniden
            çağırır, harfler yeni kart ölçüsüne göre kendiliğinden büyür. */
         body.harf-tam .tr-label { font-size: clamp(1.05rem, 2.1vh, 1.5rem); margin-top: 4px; }
-        body.harf-tam .char-card .card-num { min-width: 31px; height: 31px; font-size: 1.14rem; }
+        body.harf-tam .char-card .card-num { min-width: 25px; height: 25px; font-size: 0.94rem; }
         body.harf-tam .char-card .mz-ok { width: clamp(24px, 2.6vw, 34px); height: clamp(24px, 2.6vw, 34px); }
 
         /* YAZI ikonu = KALEM: kalem kendini çizer, sonra yazarken sağa kayar,
@@ -1111,7 +1112,7 @@
             body.harf-tam .ht-cell > .char-card { min-height: 0; }
             .grid-flip { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(7, 1fr); }
             /* Mobilde kartlar küçük: jeton harfin üstüne binmesin */
-            .char-card .card-num { min-width: 21px; height: 21px; padding: 0 4px; font-size: 0.8rem; border-width: 1.5px; top: 3px; left: 4px; }
+            .char-card .card-num { min-width: 18px; height: 18px; padding: 0 4px; font-size: 0.68rem; border-width: 1.5px; top: 3px; left: 4px; }
             .char-card.maze-start::after, .char-card.maze-end::after { font-size: 0.48rem; padding: 2px 5px; top: 3px; right: 4px; }
             
             .score-board { flex-direction: column; align-items: center; }
