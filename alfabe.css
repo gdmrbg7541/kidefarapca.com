@@ -121,13 +121,75 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Harf Tanıtımı */
-        .grid-intro { display: grid; gap: 5px; height: 100%; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(4, 1fr); direction: rtl; }
+        /* Harf Tanıtımı — Word'deki tablo mantığı: 7 sütun x 4 satırlık gerçek bir tablo,
+           her hücrenin içinde bir harf kutusu. Çizgiler hücre kenarlarıdır (ortada değil),
+           border-collapse ile tek çizgi olarak birleşirler.
+           Dizilim sağdan başlar: 1. satır sağdan sola 1..7, 2. satır soldan sağa 8..14, ...
+           (yılan dizilim: 8 → 7'nin altında, 15 → 14'ün altında; giriş elif, çıkış ye) */
+        .tablo-sar { height: 100%; }
+        .harf-tablo {
+            --ht-line: #16A085;      /* çizgi rengi — site yeşili */
+            --ht-w: 3px;             /* çizgi kalınlığı ("biraz kalın", şık duvar) */
+            --ht-kalin: 5px;         /* "kalin" durumu: daha da kalın */
+            --ht-vurgu: #E67E22;     /* "vurgu" durumu: site turuncusu */
+            --ht-pad: clamp(3px, 0.5vw, 8px);   /* hücre içi boşluk: kutu ile çizgi arası */
+
+            width: 100%; height: 100%;
+            table-layout: fixed; border-collapse: collapse;
+            direction: rtl;   /* ilk hücre en sağda: elif sağ üstte */
+        }
+        /* Her kenarın tek bir sahibi var: hücre kendi ÜST ve SAĞ çizgisini çizer,
+           en alt satır ayrıca ALT, en sol sütun ayrıca SOL çizgiyi çizer.
+           Böylece iki hücre aynı çizgiyi paylaşmaz ve tek tek ayarlanabilir.
+           VARSAYILAN: her kenarın yeri ayrılmıştır ama çizgi görünmez (transparent).
+           Hangi çizgi görünecekse JS'teki TABLO_KENAR listesinde yazılıdır; böylece
+           çizgi açıp kapatmak tabloyu hiç oynatmaz (kalınlık her zaman ayrılmış). */
+        .ht-cell {
+            width: calc(100% / 7); height: 25%;
+            padding: var(--ht-pad); vertical-align: middle;
+            border-top: var(--ht-w) solid transparent;
+            border-right: var(--ht-w) solid transparent;
+        }
+        .ht-cell.ht-son-satir { border-bottom: var(--ht-w) solid transparent; }
+        .ht-cell.ht-son-sutun { border-left: var(--ht-w) solid transparent; }
+        .ht-cell > .char-card { width: 100%; height: 100%; }
+
+        /* Kenar ayar sınıfları — JS'teki TABLO_KENAR listesinden gelir.
+           cizgi: çizgiyi göster | yok: gizle | kalin: kalınlaştır | vurgu: turuncuya boya */
+        .ht-cell.k-ust-cizgi { border-top-color: var(--ht-line); }
+        .ht-cell.k-sag-cizgi { border-right-color: var(--ht-line); }
+        .ht-cell.k-alt-cizgi { border-bottom-color: var(--ht-line); }
+        .ht-cell.k-sol-cizgi { border-left-color: var(--ht-line); }
+        .ht-cell.k-ust-kalin { border-top-width: var(--ht-kalin); }
+        .ht-cell.k-sag-kalin { border-right-width: var(--ht-kalin); }
+        .ht-cell.k-alt-kalin { border-bottom-width: var(--ht-kalin); }
+        .ht-cell.k-sol-kalin { border-left-width: var(--ht-kalin); }
+        .ht-cell.k-ust-vurgu { border-top-color: var(--ht-vurgu); }
+        .ht-cell.k-sag-vurgu { border-right-color: var(--ht-vurgu); }
+        .ht-cell.k-alt-vurgu { border-bottom-color: var(--ht-vurgu); }
+        .ht-cell.k-sol-vurgu { border-left-color: var(--ht-vurgu); }
+        /* "yok" en sonda: daha önce açılmış bir çizgiyi kapatabilsin */
+        .ht-cell.k-ust-yok   { border-top-color: transparent; }
+        .ht-cell.k-sag-yok   { border-right-color: transparent; }
+        .ht-cell.k-alt-yok   { border-bottom-color: transparent; }
+        .ht-cell.k-sol-yok   { border-left-color: transparent; }
+
+        .char-card.maze-start { border-color: #16A085 !important; box-shadow: 0 0 0 2px rgba(22,160,133,0.30), var(--shadow-sm); }
+        .char-card.maze-end   { border-color: #E67E22 !important; box-shadow: 0 0 0 2px rgba(230,126,34,0.30), var(--shadow-sm); }
+        .char-card.maze-start::after, .char-card.maze-end::after {
+            content: "GİRİŞ"; position: absolute; top: 5px; right: 6px;
+            font-size: 0.58rem; letter-spacing: 0.6px; line-height: 1;
+            color: #fff; background: #16A085; padding: 3px 7px; border-radius: 999px;
+            pointer-events: none; user-select: none;
+        }
+        .char-card.maze-end::after { content: "ÇIKIŞ"; background: #E67E22; }
         .char-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 3px; box-shadow: var(--shadow-sm); }
         /* Kart içeriği asla sütunu genişletmesin: 1fr sütunlar gerçekten eşit kalsın,
            yoksa mini SVG'lerin genişliği ızgarayı panelden taşırıyor. */
-        .grid-intro > .char-card { min-width: 0; min-height: 0; overflow: hidden; }
-        .grid-intro > .char-card > .arabic-seq { max-width: 100%; }
+        /* Kart içeriği hücreyi genişletmesin: tablo table-layout:fixed olduğu için
+           sütunlar zaten eşit, taşan içerik gizlenir. */
+        .ht-cell .char-card { min-width: 0; min-height: 0; overflow: hidden; }
+        .ht-cell .char-card > .arabic-seq { max-width: 100%; overflow: hidden; }
         .arabic-seq { font-size: 2.2rem; display: flex; gap: 12px; position: relative; z-index: 1; }
         .arabic-seq::before { content: ""; position: absolute; left: 0; right: 0; top: 65%; height: 2px; background-color: rgba(0, 0, 0, 0.25); z-index: -1; }
         .b-green { color: #16a34a !important; }
@@ -141,14 +203,8 @@
 
         /* Izgarada canlı yazım mini kutuları */
         .arabic-seq.hg-live { align-items: flex-end; gap: 9px; justify-content: center; padding: 0 !important; }
-        /* Orta boy ekranlarda (tablet / küçük laptop) 7 sütun harfleri çok küçültüyordu:
-           5 sütun x 6 satır ile kart alanını daha iyi kullan. */
-        @media (min-width: 769px) and (max-width: 1279px) {
-            .grid-intro { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(6, 1fr); }
-        }
-        @media (min-width: 1280px) {
-            .grid-intro { grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(5, 1fr); }
-        }
+        /* Sütun/satır sayısı artık her masaüstü genişliğinde sabit: 7 x 4.
+           Yer yetmediğinde harfler harfGrid.layout() ile küçülür. */
         /* Satır (referans) çizgisi: canlı yazım kutularında da görünsün.
            Harflerin taban çizgisi mini SVG'nin altından %43.84 yukarıda (410/730). */
         .arabic-seq.hg-live::before { display: block; top: auto; bottom: 43.84%; }
@@ -157,15 +213,18 @@
         /* Harf kartları tıklanabilir */
         .char-card { cursor: pointer; position: relative; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
 
-        /* Kart numarası (1-28): küçük ve zarif, bold değil */
+        /* Kart numarası (1-28): labirentteki adım numarası — belirgin, dolu turkuaz jeton */
         .char-card .card-num {
-            position: absolute; top: 5px; left: 7px;
-            font-size: 0.72rem; font-weight: normal !important; line-height: 1;
-            color: #94a3b8 !important; background: #f1f5f9;
-            border: 1px solid #e2e8f0; border-radius: 999px;
-            padding: 2px 7px; letter-spacing: 0.3px;
+            position: absolute; top: 5px; left: 6px;
+            display: flex; align-items: center; justify-content: center;
+            min-width: 27px; height: 27px; padding: 0 6px;
+            font-size: 1rem; font-weight: normal !important; line-height: 1;
+            color: #fff !important; background: #16A085;
+            border: 2px solid #fff; border-radius: 999px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.20);
             pointer-events: none; user-select: none;
         }
+        .char-card.maze-end .card-num { background: #E67E22; }
         .char-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: var(--shadow-md); border-color: var(--accent); }
 
         /* Benzer yazılan harf aileleri: açık pastel arka planlar */
@@ -180,8 +239,7 @@
         .char-card.fam-fe   { background: #EAEBF8; border-color: #D6D8EE; }
         .char-card.fam-tek  { background: #EDF2F8; border-color: #DCE5F0; }
 
-        /* Pastel zeminde okunurluk: numara baloncuğu ve hayalet harf */
-        .char-card .card-num { background: rgba(255,255,255,0.78); border-color: rgba(148,163,184,0.35); }
+        /* Pastel zeminde okunurluk: hayalet harf ve referans çizgisi */
         .hg-ghost { fill: rgba(15, 23, 42, 0.07); }
         .arabic-seq::before { background-color: rgba(0, 0, 0, 0.22); }
 
@@ -432,10 +490,19 @@
             .nav-tabs::-webkit-scrollbar { display: none; }
             .tab-trigger { padding: 10px 15px; flex-shrink: 0; }
             .content-area { overflow-y: auto !important; }
-            #p1 { overflow-x: auto !important; overflow-y: auto !important; }
+            /* direction: rtl -> yatay kaydırma sağdan başlar, yani mobilde de
+               ilk görünen kart elif (giriş) olur. */
+            #p1 { overflow-x: auto !important; overflow-y: auto !important; direction: rtl; }
             #p1.active { display: block !important; }
-            .grid-intro { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; grid-template-rows: auto !important; height: auto !important; min-width: 650px !important; padding-bottom: 15px; }
+            /* Tablo mobilde de 7x4 kalır: yatay kaydırılır, dizilim ve çizgiler bozulmaz. */
+            .tablo-sar { height: auto; padding-bottom: 15px; }
+            .harf-tablo { height: auto; min-width: 900px; --ht-pad: 3px; --ht-w: 2px; --ht-kalin: 4px; }
+            .ht-cell { height: auto; }
+            .ht-cell > .char-card { min-height: 88px; }
             .grid-flip { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(7, 1fr); }
+            /* Mobilde kartlar küçük: jeton harfin üstüne binmesin */
+            .char-card .card-num { min-width: 21px; height: 21px; padding: 0 4px; font-size: 0.8rem; border-width: 1.5px; top: 3px; left: 4px; }
+            .char-card.maze-start::after, .char-card.maze-end::after { font-size: 0.48rem; padding: 2px 5px; top: 3px; right: 4px; }
             
             .score-board { flex-direction: column; align-items: center; }
             .player-box { flex-direction: row; flex: none; width: 90%; height: 50px; max-height: none; gap: 10px; margin: 15px 0 5px 0; padding: 5px; }

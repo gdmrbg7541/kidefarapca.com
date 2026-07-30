@@ -103,6 +103,79 @@ window.handleFlipBox = function(el) {
     }
 };
 
+/* ============================================================
+   TABLO ÇİZGİLERİ — tek tek ayarlanabilir kenarlar
+   ------------------------------------------------------------
+   Varsayılan olarak HİÇBİR tablo çizgisi görünmez; sadece burada yazılanlar çizilir.
+   Her satır bir çizgi tarifidir:
+     { n: harf numarası / '1-6' / '7,8,21,22', kenar: 'ust'|'alt'|'sag'|'sol',
+       durum: 'cizgi' | 'yok' | 'kalin' | 'vurgu'  (boşlukla birleştirilebilir) }
+   Örnekler:
+     { n: '1-6', kenar: 'alt', durum: 'cizgi' }        -> 1..6'nın altına çizgi çeker
+     { n: 7,     kenar: 'alt', durum: 'yok'   }        -> 7 ile 8 arasını açık bırakır
+     { n: 1,     kenar: 'sag', durum: 'cizgi kalin' }  -> elifin sağındaki dış çizgiyi kalın çizer
+   İki hücrenin paylaştığı çizgi tek bir yerde tanımlıdır: aşağıdaki çözücü
+   çizginin sahibi hücreyi bulup sınıfı ona ekler, o yüzden hangi kartın
+   üstünden/altından söylersen fark etmez, çizgi doğru yerde değişir.
+   ============================================================ */
+const TABLO_KENAR = [
+    /* --- LABİRENT DUVARLARI: satırlar arası, dönüş noktaları açık --- */
+    { n: '1-6',   kenar: 'alt', durum: 'cizgi' },   /* 7'nin altı açık  -> 7'den 8'e iner */
+    { n: '8-13',  kenar: 'alt', durum: 'cizgi' },   /* 14'ün altı açık  -> 14'ten 15'e iner */
+    { n: '15-20', kenar: 'alt', durum: 'cizgi' },   /* 21'in altı açık  -> 21'den 22'ye iner */
+
+    /* --- DIŞ ÇERÇEVE: 1'in sağı (giriş) ve 28'in sağı (çıkış) hariç --- */
+    { n: '1-7',       kenar: 'ust', durum: 'cizgi' },   /* üst kenar */
+    { n: '7,8,21,22', kenar: 'sol', durum: 'cizgi' },   /* sol kenar (en soldaki sütun) */
+    { n: '22-28',     kenar: 'alt', durum: 'cizgi' },   /* alt kenar */
+    { n: '14,15',     kenar: 'sag', durum: 'cizgi' }    /* sağ kenar — 1 ve 28 açık kalır */
+];
+
+/* '1-6' , '7,8,21,22' , 12 , [1,2] -> [1,2,...] */
+function kenarNumaralari(n) {
+    if (typeof n === 'number') return [n];
+    if (Array.isArray(n)) return n.map(Number);
+    const cikti = [];
+    String(n).split(',').forEach(par => {
+        const t = par.trim();
+        if (!t) return;
+        const m = t.match(/^(\d+)\s*-\s*(\d+)$/);
+        if (!m) { cikti.push(+t); return; }
+        const a = Math.min(+m[1], +m[2]), b = Math.max(+m[1], +m[2]);
+        for (let i = a; i <= b; i++) cikti.push(i);
+    });
+    return cikti;
+}
+
+function tabloKenarlariUygula() {
+    const SUTUN = 7, SATIR = 4;
+    const hucre = (r, c) => document.querySelector(`.ht-cell[data-r="${r}"][data-c="${c}"]`);
+    const yer = n => {
+        const i = n - 1, r = Math.floor(i / SUTUN), s = i % SUTUN;
+        return { r: r, c: (r % 2 === 0) ? s : SUTUN - 1 - s };   // yılan dizilim
+    };
+    TABLO_KENAR.forEach(k => {
+        kenarNumaralari(k.n).forEach(n => {
+            const p = yer(n);
+            let el = null, yon = null;
+            if (k.kenar === 'ust')       { el = hucre(p.r, p.c); yon = 'ust'; }
+            else if (k.kenar === 'alt')  {
+                if (p.r < SATIR - 1) { el = hucre(p.r + 1, p.c); yon = 'ust'; }
+                else                 { el = hucre(p.r, p.c);     yon = 'alt'; }
+            }
+            else if (k.kenar === 'sag')  { el = hucre(p.r, p.c); yon = 'sag'; }
+            else if (k.kenar === 'sol')  {
+                if (p.c < SUTUN - 1) { el = hucre(p.r, p.c + 1); yon = 'sag'; }
+                else                 { el = hucre(p.r, p.c);     yon = 'sol'; }
+            }
+            if (!el) return;
+            String(k.durum).trim().split(/\s+/).forEach(d => {
+                if (d) el.classList.add('k-' + yon + '-' + d);
+            });
+        });
+    });
+}
+
 const ui = {
     tab: (e, id) => {
         if (e) e.preventDefault(); 
@@ -119,22 +192,48 @@ const ui = {
     init: () => {
         const g1 = document.getElementById('g1');
         g1.innerHTML = "";
-        harfler.forEach((i, idx) => {
-            const nc = i.nobind ? 'nobind' : '';
-            const fc = 'fam-' + (HARF_AILE[i.h] || 'tek');
-            g1.innerHTML += `
-                <div class="char-card ${nc} ${fc}" onclick="harfDetay.open(${idx})" title="Detay için tıkla: mahreç ve yazılış">
-                    <span class="card-num">${idx + 1}</span>
-                    <div class="arabic-seq" style="display: flex; justify-content: center; width: 100%;">
-                        <span class="b-green">${i.b}</span>
-                        <span class="o-blue">${i.o}</span>
-                        <span class="s-purple">${i.s}</span>
-                        <span class="n-black">${i.h}</span>
-                    </div>
-                    <div class="tr-label">${i.tr}</div>
-                </div>`;
-        });
-        
+        /* --- HARF TABLOSU: 7 sütun x 4 satır, Word tablosu gibi ---
+           Her harf kendi kutusunda, her kutu bir tablo hücresinin içinde.
+           Dizilim sağdan başlar ve yılan gibi devam eder:
+             1. satır  sağdan sola : 1 ... 7
+             2. satır  soldan sağa : 8 ... 14   (8 → 7'nin altında)
+             3. satır  sağdan sola : 15 ... 21  (15 → 14'ün altında)
+             4. satır  soldan sağa : 22 ... 28  (22 → 21'in altında, ye sağ altta)
+           Giriş elif (1), çıkış ye (28). */
+        const HT_SATIR = 4, HT_SUTUN = 7;
+        let html = '<table class="harf-tablo"><tbody>';
+        for (let r = 0; r < HT_SATIR; r++) {
+            html += '<tr>';
+            for (let c = 0; c < HT_SUTUN; c++) {   // c = 0 -> en sağdaki hücre (tablo rtl)
+                const n = (r % 2 === 0) ? r * HT_SUTUN + c + 1 : r * HT_SUTUN + (HT_SUTUN - c);
+                const idx = n - 1;
+                const i = harfler[idx];
+                const nc = i.nobind ? 'nobind' : '';
+                const fc = 'fam-' + (HARF_AILE[i.h] || 'tek');
+                let mz = '';
+                if (n === 1) mz = 'maze-start';
+                if (n === harfler.length) mz = 'maze-end';
+                const hucre = 'ht-cell'
+                    + (r === HT_SATIR - 1 ? ' ht-son-satir' : '')
+                    + (c === HT_SUTUN - 1 ? ' ht-son-sutun' : '');
+                html += `<td class="${hucre}" data-n="${n}" data-r="${r}" data-c="${c}">
+                    <div class="char-card ${nc} ${fc} ${mz}" data-idx="${idx}" onclick="harfDetay.open(${idx})" title="Detay için tıkla: mahreç ve yazılış">
+                        <span class="card-num">${n}</span>
+                        <div class="arabic-seq" style="display: flex; justify-content: center; width: 100%;">
+                            <span class="b-green">${i.b}</span>
+                            <span class="o-blue">${i.o}</span>
+                            <span class="s-purple">${i.s}</span>
+                            <span class="n-black">${i.h}</span>
+                        </div>
+                        <div class="tr-label">${i.tr}</div>
+                    </div></td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
+        g1.innerHTML = html;
+        tabloKenarlariUygula();
+
         const g2 = document.getElementById('g2');
         g2.innerHTML = "";
         harfler.forEach(i => {
@@ -160,7 +259,7 @@ function syncModeIcons() {
     });
 }
 
-/* Kart arkası süsü: sitenin geometrik motifi (8 köşeli yıldız + dönen halka) */
+/* Hafıza kartlarının arka yüzündeki geometrik tezhip motifi */
 const MEM_ORNAMENT = '<svg class="mem-orn" viewBox="0 0 100 100" aria-hidden="true">'
     + '<rect x="26" y="26" width="48" height="48" rx="4"/>'
     + '<rect x="26" y="26" width="48" height="48" rx="4" transform="rotate(45 50 50)"/>'

@@ -245,7 +245,10 @@ const harfGrid = {
         const NS = 'http://www.w3.org/2000/svg';
         const H = 58; // mini kutu yüksekliği (px)
 
-        cards.forEach((card, idx) => {
+        cards.forEach((card, sira) => {
+            /* Kartlar tabloda yılan dizilimle durduğu için DOM sırası alfabe sırası
+               değildir: hangi harf olduğunu data-idx söyler. */
+            const idx = card.dataset.idx != null ? +card.dataset.idx : sira;
             const h = harfler[idx];
             const yaz = HARF_YAZIM[h.h];
             if (!yaz) return;
