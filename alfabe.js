@@ -28,6 +28,20 @@ const harfler = [
         {h: 'ه', tr: 'He', b:'هـ', o:'ـهـ', s:'ـه'}, 
         {h: 'ي', tr: 'Ye', b:'يـ', o:'ـيـ', s:'ـي'}
     ];
+
+/* Yazılışı birbirine benzeyen harf aileleri (kart arka plan renkleri için).
+   Aynı gövdeyi paylaşan harfler aynı grupta; kendine özgü yazılan harfler "tek". */
+const HARF_AILE = {
+    'ب':'be',  'ت':'be',  'ث':'be',
+    'ج':'cim', 'ح':'cim', 'خ':'cim',
+    'د':'dal', 'ذ':'dal',
+    'ر':'ra',  'ز':'ra',
+    'س':'sin', 'ش':'sin',
+    'ص':'sad', 'ض':'sad',
+    'ط':'ta',  'ظ':'ta',
+    'ع':'ayn', 'غ':'ayn',
+    'ف':'fe',  'ق':'fe'
+};
 // --- WEB AUDIO API İLE SİNÜS DALGASI (SINE WAVE) SES ÜRETECİ ---
 let audioCtx;
 function initAudio() {
@@ -105,10 +119,12 @@ const ui = {
     init: () => {
         const g1 = document.getElementById('g1');
         g1.innerHTML = "";
-        harfler.forEach(i => {
+        harfler.forEach((i, idx) => {
             const nc = i.nobind ? 'nobind' : '';
+            const fc = 'fam-' + (HARF_AILE[i.h] || 'tek');
             g1.innerHTML += `
-                <div class="char-card ${nc}">
+                <div class="char-card ${nc} ${fc}" onclick="harfDetay.open(${idx})" title="Detay için tıkla: mahreç ve yazılış">
+                    <span class="card-num">${idx + 1}</span>
                     <div class="arabic-seq" style="display: flex; justify-content: space-around; width: 100%; padding: 0 5px;">
                         <span class="b-green">${i.b}</span>
                         <span class="o-blue">${i.o}</span>
