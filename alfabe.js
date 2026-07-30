@@ -285,25 +285,37 @@ function yanPaneliKur() {
    böylece işaretin çizginin üstünde mi altında mı olduğu net görünür.
    Her kutuda ögeler TEK SATIRDA, sağdan sola dizilir; Türkçe adları ekranda
    yazılmaz, fare ile üzerine gelince ipucu (title) olarak görünür.
-   genis: true -> kutu daha geniş olsun (hareke + tenvin altı öge) */
+   genis: true -> kutu daha geniş olsun (üç ögeli hareke / tenvin kutuları)
+   kls  -> kutunun tamamına verilen renk sınıfı (ör. tâ-i merbûta pembe)
+   Öge kls -> tek ögeye verilen renk sınıfı (ör. elif ve vav kırmızı) */
 const CIZ = 'ــــ';      /* dört tatvil: tek parça uzatma çizgisi */
+/* Tenvin yalnız KELİME SONUNA gelir: işaretli çizginin sağında (yani kelimenin
+   devamı yönünde) aralıklı çizgi durur — "öncesi kelimenin geri kalanı" demek. */
+const KESIK = 'ـ ـ';
 const ALT_KUTULAR = [
-    { ad: 'Harekeler – Tenvin', genis: true, ogeler: [
-        { g: CIZ + 'َ', ad: 'üstün' },  { g: CIZ + 'ً', ad: 'iki üstün' },
-        { g: CIZ + 'ِ', ad: 'esre' },   { g: CIZ + 'ٍ', ad: 'iki esre' },
-        { g: CIZ + 'ُ', ad: 'ötre' },   { g: CIZ + 'ٌ', ad: 'iki ötre' } ] },
+    { ad: 'Harekeler', genis: true, ogeler: [
+        { g: CIZ + 'َ', ad: 'üstün' }, { g: CIZ + 'ِ', ad: 'esre' }, { g: CIZ + 'ُ', ad: 'ötre' } ] },
+    { ad: 'Tenvin', genis: true, kesik: true, kls: 'as-tenvin', ogeler: [
+        { g: CIZ + 'ً', ad: 'iki üstün — yalnız kelime sonunda' },
+        { g: CIZ + 'ٍ', ad: 'iki esre — yalnız kelime sonunda' },
+        { g: CIZ + 'ٌ', ad: 'iki ötre — yalnız kelime sonunda' } ] },
     { ad: 'Cezim – Şedde',   ogeler: [ { g: CIZ + 'ْ', ad: 'cezim' }, { g: CIZ + 'ّ', ad: 'şedde' } ] },
-    { ad: 'Uzatma harfleri', ogeler: [ { g: 'ا', ad: 'elif' }, { g: 'و', ad: 'vav' }, { g: 'ي', ad: 'ye' } ] },
-    { ad: 'Tâ-i Merbûta',    ogeler: [ { g: 'ـة', ad: 'sonda' }, { g: 'ة', ad: 'yalın' } ] }
+    { ad: 'Uzatma harfleri', ogeler: [
+        { g: 'ا', ad: 'elif', kls: 'as-kirmizi' }, { g: 'و', ad: 'vav', kls: 'as-kirmizi' },
+        { g: 'ي', ad: 'ye' } ] },
+    { ad: 'Tâ-i Merbûta', kls: 'as-pembe', ogeler: [ { g: 'ـة', ad: 'sonda' }, { g: 'ة', ad: 'yalın' } ] }
 ];
 
 function altSeridiKur() {
     const alt = document.getElementById('g1alt');
     if (!alt) return;
     alt.innerHTML = ALT_KUTULAR.map(k =>
-        `<div class="as-kutu${k.genis ? ' as-genis' : ''}"><div class="as-baslik">${k.ad}</div>`
+        `<div class="as-kutu${k.genis ? ' as-genis' : ''}${k.kls ? ' ' + k.kls : ''}">`
+        + `<div class="as-baslik">${k.ad}</div>`
         + `<div class="as-liste">`
-        + k.ogeler.map(o => `<div class="as-oge" title="${o.ad}"><span class="as-harf">${o.g}</span></div>`).join('')
+        + k.ogeler.map(o => `<div class="as-oge${k.kesik ? ' as-oge-kesik' : ''}${o.kls ? ' ' + o.kls : ''}" title="${o.ad}">`
+            + (k.kesik ? `<span class="as-kesik" aria-hidden="true">${KESIK}</span>` : '')
+            + `<span class="as-harf">${o.g}</span></div>`).join('')
         + '</div></div>'
     ).join('');
 }
