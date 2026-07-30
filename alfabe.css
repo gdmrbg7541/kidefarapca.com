@@ -369,8 +369,8 @@
 
         .harf-tablo {
             --ht-line: #16A085;      /* çizgi rengi — site yeşili */
-            --ht-w: 3px;             /* çizgi kalınlığı ("biraz kalın", şık duvar) */
-            --ht-kalin: 5px;         /* "kalin" durumu: daha da kalın */
+            --ht-w: 5px;             /* çizgi kalınlığı ("biraz kalın", şık duvar) */
+            --ht-kalin: 8px;         /* "kalin" durumu: daha da kalın */
             --ht-vurgu: #E67E22;     /* "vurgu" durumu: site turuncusu */
             --ht-pad: clamp(3px, 0.5vw, 8px);   /* hücre içi boşluk: kutu ile çizgi arası */
 
@@ -541,6 +541,15 @@
         }
         .harf-tablo:not(.dizili) .char-card.maze-end .card-num { background: #EF5350; }
         .char-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: var(--shadow-md); border-color: var(--accent); }
+        /* Harf ızgarasında kart hover'da YÜKSELMEZ. Kart, hücrenin kenarlığından
+           sonra boyandığı için yükselip büyüyen kart aile çizgisinin (yeşil
+           duvarın) üstünü kapatıyordu — özellikle boşluğun 2px'e indiği odak
+           modunda çizgi tamamen kayboluyordu. Yükselme yerine yeşil bir halka:
+           vurgu aynı derecede belli, çizgiler hiç bozulmuyor. */
+        .ht-cell .char-card:hover {
+            transform: none;
+            box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.34), var(--shadow-md);
+        }
 
         /* Benzer YAZILAN harf aileleri: açık pastel arka planlar */
         .mod-yazi .char-card.fam-be   { background: #E8F2FD; border-color: #CFE3F7; }
@@ -1078,7 +1087,7 @@
             .as-harf { font-size: 1.95rem; }
             .as-kesik { font-size: 1.95rem; }
             .as-baslik { font-size: 0.78rem; }
-            .harf-tablo { height: auto; min-width: 900px; --ht-pad: 3px; --ht-w: 2px; --ht-kalin: 4px; }
+            .harf-tablo { height: auto; min-width: 900px; --ht-pad: 3px; --ht-w: 3px; --ht-kalin: 6px; }
             .ht-cell { height: auto; }
             .ht-cell > .char-card { min-height: 88px; }
 
