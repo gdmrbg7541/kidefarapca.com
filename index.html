@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="listelerim.css">
+    <link rel="stylesheet" href="listelerim.css?v=20260730a">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -1137,7 +1137,7 @@
         </div>
         <table id="stuTable"></table> </div>
 
-    <div id="tab1" class="tab-panel"><table id="hwTable"></table></div>
+    <div id="tab1" class="tab-panel"><div id="behBilgi"></div><table id="hwTable"></table></div>
     <div id="tab2" class="tab-panel"><table id="exTable"></table></div>
     <div id="tab3" class="tab-panel"><table id="resTable"></table></div>
     <div id="tab4" class="tab-panel">
@@ -1299,7 +1299,9 @@
     </div>
 </div>
 
-<div id="lvlModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:95%; max-width:600px; background:white; padding:30px; box-shadow:0 0 100px rgba(0,0,0,0.5); z-index:999999; border-radius:15px; color:#333; max-height:85vh; overflow-y:auto;">
+<!-- Seviye Ayarlari: ekranin %80'ini kaplayan buyuk overlay.
+     Olculer listelerim.css icindeki #lvlModal kuralindan gelir. -->
+<div id="lvlModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:80vw; height:80vh; background:white; box-shadow:0 25px 80px rgba(0,0,0,0.45); z-index:999999; border-radius:18px; color:#333; overflow:hidden;">
     <h3 style="margin-top:0; color:var(--primary);">⚙️ Seviye Ayarlarını Düzenle</h3>
     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 200px;">
@@ -1323,6 +1325,48 @@
     <div style="text-align: right; margin-top:20px; padding-top:15px; border-top:1px solid #eee;">
         <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:5px; margin-right:10px; font-weight:bold;">İptal</button>
         <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
+    </div>
+</div>
+
+<!-- ARTI / EKSİ SEBEP POPUP'I — performans sekmesinde + veya - basilinca acilir.
+     Sebep secilmeden puan verilemez; secim ve not sisteme kaydedilir. -->
+<div id="behModal">
+    <div class="beh-pen">
+        <div class="beh-pen-bas">
+            <div>
+                <h3 id="behBaslik">Artı Puan</h3>
+                <div class="beh-kim" id="behOgrenci">Öğrenci</div>
+            </div>
+            <div class="beh-rozet" id="behMiktar">+1</div>
+        </div>
+        <div class="beh-pen-govde">
+            <div class="beh-baslik" id="behSoru">Sebebini seçin:</div>
+            <div class="beh-secenekler" id="behSecenekler"></div>
+            <textarea class="beh-not-alan" id="behNot" placeholder="İsterseniz kısa bir açıklama ekleyin (isteğe bağlı)..."></textarea>
+        </div>
+        <div class="beh-pen-alt">
+            <button class="beh-vazgec" onclick="behKapat()">Vazgeç</button>
+            <button class="beh-onay" id="behOnay" onclick="behKaydet()" disabled>Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<!-- DAVRANIŞ GEÇMİŞİ — verilen her artı/eksinin sebebi ve tarihi -->
+<div id="behLogModal">
+    <div class="beh-pen">
+        <div class="beh-pen-bas">
+            <div>
+                <h3>🕘 Davranış Geçmişi</h3>
+                <div class="beh-kim" id="behLogOgrenci">Öğrenci</div>
+            </div>
+        </div>
+        <div class="beh-pen-govde">
+            <div class="beh-ozet" id="behLogOzet"></div>
+            <div id="behLogListe"></div>
+        </div>
+        <div class="beh-pen-alt">
+            <button class="beh-vazgec" onclick="behLogKapat()">Kapat</button>
+        </div>
     </div>
 </div>
 
@@ -1586,7 +1630,7 @@
     <script src="teacher-admin.js"></script>
     <script src="alarm.js"></script>
     <script src="live-lesson.js?v=20260722c"></script>
-    <script src="listelerim.js?v=20260723a"></script>
+    <script src="listelerim.js?v=20260730a"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
     <script>

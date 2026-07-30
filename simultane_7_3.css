@@ -17,17 +17,50 @@
     --glass-bg: rgba(255, 255, 255, 0.05);
 }
 
+/* ===== ARAKOM YAZI TIPI =====
+   Dosya adi kucuk harfle (arakom.ttf) yazildi; GitHub Pages buyuk/kucuk
+   harf duyarli oldugu icin 'Arakom.ttf' canlida bulunamiyordu.
+   Hem 'Arakom' hem 'arakom' adiyla tanimli. */
 @font-face {
     font-family: 'Arakom';
-    src: url('Arakom.ttf') format('truetype');
+    src: url('arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'arakom';
+    src: url('arakom.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-    font-family: 'Inter', sans-serif; 
+/* Sayfadaki her yazi (Turkce + Arapca) Arakom ile gosterilir. */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arakom', sans-serif !important;
+    font-weight: normal !important;
+}
+
+/* Font Awesome ikonlari Arakom'dan muaf: ikon fontu ezilirse
+   simgeler bozuk karakter olarak gorunur. */
+.fa, .fas, .far, .fal, .fad, .fab,
+.fa-solid, .fa-regular, .fa-light, .fa-duotone, .fa-brands,
+[class^="fa-"], [class*=" fa-"] {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", FontAwesome !important;
+}
+.fas, .fa-solid, [class^="fa-"], [class*=" fa-"] { font-weight: 900 !important; }
+.far, .fa-regular { font-weight: 400 !important; }
+.fab, .fa-brands {
+    font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands" !important;
+    font-weight: 400 !important;
+}
+
+body {
+    font-family: 'Arakom', sans-serif;
     background: var(--bg-color); 
     /* Mobil tarayıcı çubukları için dvh kullanımı: */
     height: 100vh; /* Eski tarayıcılar için yedek */
@@ -96,7 +129,7 @@ table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 
 th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
 th { background: #f8fafc; font-weight: normal; }
 .ar-txt { 
-    font-family: 'IBM Plex Sans Arabic', sans-serif; 
+    font-family: 'Arakom', sans-serif; 
     font-size: 1.3rem; 
     direction: rtl;
     line-height: 1.6; 
@@ -124,7 +157,7 @@ th { background: #f8fafc; font-weight: normal; }
 #sentence-mode { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; }
 .tr-container { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; justify-content: center; width: 100%; }
 .ar-output { 
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-family: 'Arakom', sans-serif;
     font-size: 1.3rem;
     direction: rtl; 
     display: block; 

@@ -725,3 +725,245 @@
 /* sidebar ac/kapa yeniden-ac butonu */
 #ll-root .ll-reopen{ display:none; position:fixed; left:8px; top:calc(var(--header-height,60px) + 8px); z-index:10000; background:var(--primary); color:#fff; border:none; border-radius:6px; padding:8px 12px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2); font-size:1.1em; }
 #ll-root.sidebar-closed .ll-reopen{ display:block; }
+
+/* ======================================================================
+   SEVİYE AYARLARI — BÜYÜK OVERLAY (%80 x %80)
+   Not: #lvlModal, #ll-root'un altinda ama position:fixed oldugu icin
+   secicileri #ll-root'a bagli tutmuyoruz; id yeterince ozgun.
+   ====================================================================== */
+#lvlModal{
+    /* index.html'deki satir ici stil ile ayni degerler; burada da sabitlenir
+       ki tarayici farklarinda kutu kucuk kalmasin. */
+    width: 80vw !important;
+    height: 80vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    padding: 0 !important;
+    overflow: hidden !important;          /* kaydirma govdede olacak */
+    display: none;                         /* acilinca JS 'flex' yapar */
+    flex-direction: column;
+    font-family: 'Nunito', sans-serif;
+    --primary: #D84315; --secondary: #E67E22; --accent: #F39C12;
+    --success: #27ae60; --light: #ecf0f1; --white: #ffffff; --danger: #e74c3c;
+    /* Arka plan karartmasi: ayri bir div gerekmesin diye devasa yayilimli golge
+       kullaniyoruz; modal kapaninca karartma da kendiliginden kayboluyor. */
+    box-shadow: 0 25px 80px rgba(0,0,0,0.45),
+                0 0 0 100vmax rgba(20, 25, 40, 0.55) !important;
+}
+#lvlModal .lvl-bas{
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 18px 26px;
+    background: linear-gradient(135deg, #F39C12 0%, #E67E22 55%, #D84315 100%);
+    color: #fff;
+}
+#lvlModal .lvl-bas h3{ margin: 0; font-family: 'Marhey', sans-serif; font-size: 1.5rem; color: #fff; }
+#lvlModal .lvl-bas .lvl-ad{ font-size: 0.9rem; opacity: 0.9; }
+#lvlModal .lvl-kapat{
+    background: rgba(255,255,255,0.18); border: none; color: #fff;
+    width: 38px; height: 38px; border-radius: 50%; font-size: 1.5rem; line-height: 1;
+    cursor: pointer; transition: background 0.2s;
+}
+#lvlModal .lvl-kapat:hover{ background: rgba(255,255,255,0.35); }
+
+#lvlModal .lvl-govde{
+    flex: 1 1 auto; overflow-y: auto; padding: 22px 26px;
+    background: #f7f9fc;
+}
+#lvlModal .lvl-izgara{
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px; align-items: start;
+}
+#lvlModal .lvl-kart{
+    background: #fff; border-radius: 14px; padding: 16px 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06); border: 1px solid #eef1f5;
+}
+#lvlModal .lvl-kart h4{
+    margin: 0 0 12px; padding-bottom: 8px; font-size: 1.05rem;
+    font-family: 'Marhey', sans-serif; color: var(--secondary);
+    border-bottom: 2px solid var(--accent);
+}
+#lvlModal .lvl-kart.lvl-genis{ grid-column: 1 / -1; }
+#lvlModal .lvl-bilgi{
+    background: #e3f2fd; color: #1565c0; padding: 12px 14px; border-radius: 10px;
+    margin-bottom: 18px; font-size: 0.9rem; line-height: 1.45; border-left: 5px solid #1565c0;
+}
+#lvlModal .lvl-alt{
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: flex-end; gap: 14px;
+    padding: 14px 26px; background: #fff; border-top: 1px solid #e7ebf0;
+}
+#lvlModal .lvl-alt .lvl-not{ margin-right: auto; font-size: 0.8rem; color: #7f8c8d; font-style: italic; }
+#lvlModal .lvl-alt button{ padding: 11px 22px; border: none; border-radius: 9px; cursor: pointer; font-weight: bold; font-size: 0.95rem; }
+#lvlModal .lvl-iptal{ background: #eceff3; color: #4a5560; }
+#lvlModal .lvl-kaydet{ background: var(--success); color: #fff; }
+#lvlModal input[type="text"], #lvlModal input[type="number"]{
+    padding: 8px 10px; border: 1px solid #dfe4ea; border-radius: 8px; font-family: inherit; font-size: 0.95rem;
+}
+#lvlModal .btn-add{ background: var(--success); color: #fff; border: none; padding: 9px; border-radius: 8px; cursor: pointer; }
+
+/* ---------- DAVRANIŞ PUANI (artı / eksi) BÖLÜMÜ ---------- */
+#lvlModal .beh-ust{ display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+#lvlModal .beh-ust .beh-tanim{ font-size: 0.85rem; color: #7f8c8d; max-width: 640px; line-height: 1.45; }
+
+/* Aç/kapa anahtari */
+.beh-anahtar{ display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; white-space: nowrap; }
+.beh-anahtar input{ position: absolute; opacity: 0; width: 0; height: 0; }
+.beh-anahtar .beh-ray{
+    width: 54px; height: 30px; border-radius: 999px; background: #cfd6de;
+    position: relative; transition: background 0.25s; flex-shrink: 0;
+}
+.beh-anahtar .beh-ray::after{
+    content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px;
+    border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.25s;
+}
+.beh-anahtar input:checked + .beh-ray{ background: var(--success, #27ae60); }
+.beh-anahtar input:checked + .beh-ray::after{ transform: translateX(24px); }
+.beh-anahtar .beh-durum{ font-weight: bold; color: #95a5a6; font-size: 0.95rem; }
+.beh-anahtar input:checked ~ .beh-durum{ color: var(--success, #27ae60); }
+
+/* Pasifken icerik sonuk ve tiklanamaz olur */
+#lvlModal .beh-icerik{ margin-top: 16px; transition: opacity 0.25s; }
+#lvlModal .beh-icerik.pasif{ opacity: 0.4; pointer-events: none; filter: grayscale(0.6); }
+
+#lvlModal .beh-satir{ display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+#lvlModal .beh-satir > label{ font-weight: bold; color: #2c3e50; font-size: 0.95rem; }
+.beh-adim{ display: inline-flex; gap: 8px; }
+.beh-adim button{
+    width: 46px; height: 42px; border-radius: 10px; border: 2px solid #dfe4ea;
+    background: #fff; color: #5b6875; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+    transition: all 0.18s;
+}
+.beh-adim button:hover{ border-color: var(--accent, #F39C12); }
+.beh-adim button.secili{ background: var(--accent, #F39C12); border-color: var(--accent, #F39C12); color: #fff; }
+#lvlModal .beh-ornek{ font-size: 0.85rem; color: #7f8c8d; }
+
+/* Sebep basliklari duzenleyicisi */
+#lvlModal .beh-sebep-kolon{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+#lvlModal .beh-kutu{ border: 1px solid #eef1f5; border-radius: 12px; padding: 12px 14px; background: #fbfcfe; }
+#lvlModal .beh-kutu h5{ margin: 0 0 10px; font-size: 0.95rem; font-family: 'Marhey', sans-serif; }
+#lvlModal .beh-kutu.arti h5{ color: #27ae60; }
+#lvlModal .beh-kutu.eksi h5{ color: #e74c3c; }
+#lvlModal .beh-liste{ display: flex; flex-direction: column; gap: 6px; max-height: 210px; overflow-y: auto; }
+#lvlModal .beh-liste .beh-sat{ display: flex; gap: 6px; align-items: center; }
+#lvlModal .beh-liste .beh-sat input{ flex: 1; min-width: 0; }
+#lvlModal .beh-liste .beh-sat button{
+    background: #fdecea; color: #e74c3c; border: none; border-radius: 8px;
+    padding: 7px 10px; cursor: pointer; font-size: 0.9rem; flex-shrink: 0;
+}
+#lvlModal .beh-ekle{ margin-top: 10px; width: 100%; border: 2px dashed #cfd6de; background: #fff; color: #7f8c8d; padding: 8px; border-radius: 9px; cursor: pointer; font-weight: bold; }
+#lvlModal .beh-ekle:hover{ border-color: var(--accent, #F39C12); color: var(--accent, #F39C12); }
+
+@media (max-width: 900px){
+    #lvlModal{ width: 94vw !important; height: 90vh !important; }
+    #lvlModal .lvl-bas{ padding: 14px 16px; }
+    #lvlModal .lvl-bas h3{ font-size: 1.2rem; }
+    #lvlModal .lvl-govde{ padding: 16px; }
+    #lvlModal .lvl-alt{ padding: 12px 16px; flex-wrap: wrap; }
+    #lvlModal .lvl-alt .lvl-not{ display: none; }
+}
+
+/* ======================================================================
+   PERFORMANS SEKMESİ — DAVRANIŞ SÜTUNU
+   ====================================================================== */
+#ll-root .beh-uyari{
+    background: #fff8e1; border-left: 5px solid #F39C12; color: #8a6d3b;
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 0.88rem; line-height: 1.45;
+}
+#ll-root .beh-hucre{ display: flex; align-items: center; justify-content: center; gap: 8px; }
+#ll-root .beh-tus{
+    width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent;
+    font-size: 1.15rem; font-weight: bold; line-height: 1; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s;
+    flex-shrink: 0; padding: 0;
+}
+#ll-root .beh-tus.arti{ background: #27ae60; color: #fff; box-shadow: 0 3px 8px rgba(39,174,96,0.28); }
+#ll-root .beh-tus.arti:hover{ transform: scale(1.08); }
+#ll-root .beh-tus.eksi{ background: #fff; color: #e74c3c; border-color: rgba(231,76,60,0.4); }
+#ll-root .beh-tus.eksi:hover{ background: #e74c3c; color: #fff; border-color: transparent; }
+#ll-root .beh-tus:active{ transform: scale(0.9); }
+#ll-root .beh-net{
+    min-width: 46px; text-align: center; font-weight: bold; font-size: 1.05rem;
+    padding: 4px 8px; border-radius: 8px; background: #f1f3f5; color: #7f8c8d;
+}
+#ll-root .beh-net.arti{ background: #e8f7ef; color: #1e8449; }
+#ll-root .beh-net.eksi{ background: #fdecea; color: #c0392b; }
+#ll-root .beh-gecmis-tus{
+    background: none; border: none; cursor: pointer; font-size: 1rem; opacity: 0.55; padding: 2px 4px;
+}
+#ll-root .beh-gecmis-tus:hover{ opacity: 1; }
+
+/* ======================================================================
+   ARTI / EKSİ SEBEP POPUP'I
+   ====================================================================== */
+#behModal, #behLogModal{
+    display: none; position: fixed; inset: 0; z-index: 1000000;
+    align-items: center; justify-content: center;
+    background: rgba(20, 25, 40, 0.6); backdrop-filter: blur(4px);
+    font-family: 'Nunito', sans-serif;
+}
+#behModal .beh-pen, #behLogModal .beh-pen{
+    background: #fff; width: 92%; max-width: 640px; max-height: 86vh;
+    border-radius: 18px; overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+#behModal .beh-pen-bas, #behLogModal .beh-pen-bas{
+    padding: 16px 22px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+#behModal.yon-arti .beh-pen-bas{ background: linear-gradient(135deg, #2ecc71, #1e8449); }
+#behModal.yon-eksi .beh-pen-bas{ background: linear-gradient(135deg, #ef5350, #c0392b); }
+#behLogModal .beh-pen-bas{ background: linear-gradient(135deg, #F39C12, #D84315); }
+#behModal .beh-pen-bas h3, #behLogModal .beh-pen-bas h3{ margin: 0; font-family: 'Marhey', sans-serif; font-size: 1.25rem; color: #fff; }
+#behModal .beh-pen-bas .beh-kim, #behLogModal .beh-pen-bas .beh-kim{ font-size: 0.88rem; opacity: 0.92; }
+#behModal .beh-rozet{
+    background: rgba(255,255,255,0.22); border-radius: 12px; padding: 6px 16px;
+    font-size: 1.4rem; font-weight: bold; line-height: 1;
+}
+#behModal .beh-pen-govde, #behLogModal .beh-pen-govde{ padding: 18px 22px; overflow-y: auto; }
+#behModal .beh-baslik{ font-weight: bold; color: #2c3e50; margin-bottom: 10px; font-size: 0.95rem; }
+#behModal .beh-secenekler{ display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 9px; }
+#behModal .beh-sec{
+    padding: 12px 14px; border-radius: 11px; border: 2px solid #e4e9ef; background: #fbfcfe;
+    text-align: left; cursor: pointer; font-size: 0.92rem; color: #2c3e50; font-family: inherit;
+    transition: all 0.15s; line-height: 1.3;
+}
+#behModal .beh-sec:hover{ border-color: #b9c3ce; }
+#behModal.yon-arti .beh-sec.secili{ border-color: #27ae60; background: #e8f7ef; color: #1e8449; font-weight: bold; }
+#behModal.yon-eksi .beh-sec.secili{ border-color: #e74c3c; background: #fdecea; color: #c0392b; font-weight: bold; }
+#behModal .beh-not-alan{
+    width: 100%; box-sizing: border-box; margin-top: 14px; padding: 10px 12px;
+    border: 1px solid #dfe4ea; border-radius: 10px; font-family: inherit; font-size: 0.92rem; resize: vertical; min-height: 62px;
+}
+#behModal .beh-pen-alt, #behLogModal .beh-pen-alt{
+    padding: 14px 22px; border-top: 1px solid #eef1f5; display: flex; gap: 12px; justify-content: flex-end; background: #fff;
+}
+#behModal .beh-pen-alt button, #behLogModal .beh-pen-alt button{
+    padding: 11px 22px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 0.95rem;
+}
+#behModal .beh-vazgec, #behLogModal .beh-vazgec{ background: #eceff3; color: #4a5560; }
+#behModal.yon-arti .beh-onay{ background: #27ae60; color: #fff; }
+#behModal.yon-eksi .beh-onay{ background: #e74c3c; color: #fff; }
+#behModal .beh-onay:disabled{ background: #cfd6de !important; color: #8b97a3 !important; cursor: not-allowed; }
+
+/* Geçmiş listesi */
+#behLogModal .beh-kayit{
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    border: 1px solid #eef1f5; border-radius: 11px; margin-bottom: 8px; background: #fbfcfe;
+}
+#behLogModal .beh-kayit .beh-d{
+    min-width: 44px; text-align: center; font-weight: bold; padding: 5px 8px; border-radius: 8px; flex-shrink: 0;
+}
+#behLogModal .beh-kayit .beh-d.arti{ background: #e8f7ef; color: #1e8449; }
+#behLogModal .beh-kayit .beh-d.eksi{ background: #fdecea; color: #c0392b; }
+#behLogModal .beh-kayit .beh-sebep{ flex: 1; min-width: 0; color: #2c3e50; font-size: 0.94rem; }
+#behLogModal .beh-kayit .beh-sebep small{ display: block; color: #95a5a6; font-size: 0.78rem; margin-top: 2px; }
+#behLogModal .beh-kayit .beh-kaldir{
+    background: #fdecea; color: #e74c3c; border: none; border-radius: 8px; padding: 7px 10px; cursor: pointer; flex-shrink: 0;
+}
+#behLogModal .beh-bos{ text-align: center; color: #95a5a6; padding: 26px 10px; }
+#behLogModal .beh-ozet{
+    display: flex; gap: 14px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap;
+}
+#behLogModal .beh-ozet div{ background: #f7f9fc; border-radius: 11px; padding: 10px 16px; text-align: center; min-width: 92px; }
+#behLogModal .beh-ozet span{ display: block; font-size: 1.3rem; font-weight: bold; color: #2c3e50; }
+#behLogModal .beh-ozet small{ color: #95a5a6; font-size: 0.76rem; }

@@ -1047,7 +1047,7 @@ const wordColors = [
     '#800000', '#aaffc3', '#808000', '#000075', '#d2691e'
 ];
 
-const AR_FONT = "'IBM Plex Sans Arabic', sans-serif";
+const AR_FONT = "'Arakom', sans-serif";
 const TR_FONT = "'Inter', sans-serif";
 
 // --- 2. MOD VE NAVİGASYON ---

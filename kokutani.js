@@ -561,11 +561,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         
-        // YENİ EVENT LISTENER EKLENDİ (UYARI KALDIRILDI)
+        /* GERİ TUŞU (ana menü)
+           Bu sayfa kalıplar tablosundan yeni sekmede (target="_blank") açıldığı için
+           tarayıcı geçmişi boştur; history.back() hiçbir şey yapmaz. Bu yüzden
+           doğrudan kalıplar tablosuna gidiyoruz. Hangi sürüme döneceğimizi önce
+           geldiğimiz sayfadan (referrer), o yoksa ekran genişliğinden anlıyoruz. */
+        function kokuGeriHedefi() {
+            var ref = '';
+            try { ref = (document.referrer || '').toLowerCase(); } catch (e) { ref = ''; }
+
+            if (ref.indexOf('kaliplartablosumobil') !== -1) return 'kaliplartablosumobil.html';
+            if (ref.indexOf('kaliplartablosu') !== -1) return 'kaliplartablosu.html';
+
+            var mobil = (window.innerWidth || 0) <= 820 ||
+                        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+            return mobil ? 'kaliplartablosumobil.html' : 'kaliplartablosu.html';
+        }
+
         backButtonStart.addEventListener('click', () => {
             playGenericSound('touch');
-            // Ana menüde olduğumuz için direkt tarayıcıda geri git
-            history.back();
+            window.location.href = kokuGeriHedefi();
         });
 
         function startGameMode(mode) {

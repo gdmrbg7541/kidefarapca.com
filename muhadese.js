@@ -187,7 +187,7 @@ const educationData = {
                 btn.classList.add('hazir-sinif');
             }
 
-            btn.onclick = () => selectClass(classLevel, btn);
+            btn.onclick = () => selectClass(classLevel, btn, true);
 
             if (classLevel === lastClass) {
                 btnContainer.appendChild(btn);
@@ -199,7 +199,9 @@ const educationData = {
     }
 
     // Sınıf Seçildiğinde İçeriği Göster
-    function selectClass(level, btnElement) {
+    /* kullaniciSecti: sadece kullanici bir sinifa tikladiginda sayfayi asagi
+       kaydiriyoruz. Ilk aciliste kaydirmiyoruz ki baslik gorunsun. */
+    function selectClass(level, btnElement, kullaniciSecti) {
         localStorage.setItem('lastSelectedClass', level);
         document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
         btnElement.classList.add('active');
@@ -236,7 +238,9 @@ let lessonsHTML = unit.lessons.map(lesson => {
             container.appendChild(unitCard);
         });
 
-        window.scrollTo({ top: headerHeight(), behavior: 'smooth' });
+        if (kullaniciSecti) {
+            window.scrollTo({ top: headerHeight(), behavior: 'smooth' });
+        }
     }
 
     function headerHeight() {

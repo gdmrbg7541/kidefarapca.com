@@ -1,208 +1,348 @@
+/* ============================================================
+   MUHADESE (Arapça Konuşma Modülü)
+   Site renk paletiyle yeniden tasarlandı.
+   Palet: sarı #FFC107 → turuncu #F39C12 → kırmızı #EF5350
+   Zemin: #F7F9FC, vurgu çizgisi: #E53935
+   ============================================================ */
+
 :root {
-            --pdf-red: #b30b00;
-            --pdf-dark: #8b0000;
-            --bg-light: #f1f5f9;
-            --text-main: #1e293b;
-        }
+    /* Site ana renkleri */
+    --sari:        #FFC107;
+    --turuncu:     #F39C12;
+    --kirmizi:     #EF5350;
+    --kirmizi-koyu:#E53935;
+    --tugla:       #D84315;
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: var(--text-main); line-height: 1.6; }
+    /* Zemin ve yazı */
+    --zemin:       #F7F9FC;
+    --kart:        #FFFFFF;
+    --cizgi:       #E8EDF5;
+    --yazi:        #2F3A4A;
+    --yazi-soluk:  #6B7A90;
 
-        /* Header */
-        header {
-            background: var(--pdf-red);
-            color: white;
-            padding: 50px 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: relative; /* Ana sayfa butonu için gerekli */
-        }
-        header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
+    /* Hazır (yeşil) durum */
+    --yesil:       #16A34A;
+    --yesil-koyu:  #15803D;
+    --yesil-acik:  #F0FDF4;
+    --yesil-orta:  #DCFCE7;
 
-        /* --- YENİ EKLENEN ANA SAYFA BUTONU --- */
-        .home-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.2); /* Yarı saydam beyaz */
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: background 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .home-btn:hover {
-            background: white;
-            color: var(--pdf-red);
-        }
-
-        /* Sınıf Seçici */
-        .class-selector {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: -30px;
-            padding: 0 15px;
-            z-index: 100;
-            position: relative;
-        }
-
-        .class-btn {
-            background: white;
-            border: 2px solid var(--pdf-red);
-            color: var(--pdf-red);
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            font-size: 1rem;
-        }
-
-        .class-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-        .class-btn.active { background: var(--pdf-red); color: white; }
-
-        /* İçerik Konteynırı */
-        .container {
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        /* Ünite Kartları */
-        .unit-card {
-            background: white;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        .unit-header {
-            padding: 20px 25px;
-            background: #fafafa;
-            color: var(--pdf-red);
-            font-weight: 900;
-            font-size: 1.3rem;
-            border-bottom: 2px solid #f1f1f1;
-            display: flex;
-            align-items: center;
-        }
-        .unit-header::before {
-            content: "";
-            width: 10px;
-            height: 25px;
-            background: var(--pdf-red);
-            margin-right: 15px;
-            border-radius: 4px;
-        }
-
-        /* Ders Listesi */
-        .lesson-list { padding: 10px 0; }
-
-        .lesson-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 25px;
-            border-bottom: 1px solid #f1f5f9;
-            transition: background 0.2s;
-        }
-        .lesson-item:hover { background: #f8fafc; }
-        .lesson-item:last-child { border-bottom: none; }
-
-        .lesson-info { display: flex; flex-direction: column; }
-        .lesson-name { font-weight: 700; color: #334155; font-size: 1.1rem; }
-
-        /* Aksiyon Butonları */
-        .btn-group { display: flex; gap: 10px; }
-
-        .action-btn {
-            padding: 10px 18px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 700;
-            transition: all 0.2s ease;
-            text-align: center;
-            min-width: 110px;
-        }
-
-        .btn-kelime { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .btn-kelime:hover { background: #e2e8f0; color: #1e293b; }
-
-        .btn-simultane { background: var(--pdf-red); color: white; }
-        .btn-simultane:hover { background: var(--pdf-dark); }
-
-        /* Mobil Düzenleme */
-        @media (max-width: 600px) {
-            .lesson-item { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .btn-group { width: 100%; }
-            .action-btn { flex: 1; font-size: 0.8rem; padding: 12px 5px; }
-            header h1 { font-size: 1.6rem; }
-            
-            /* Mobilde ana sayfa butonu */
-            .home-btn {
-                position: static;
-                display: inline-block;
-                margin-bottom: 15px;
-            }
-        }
-
-        /* --- HAZIR KELİME & SİMULTANE TASARIMI --- */
-        .btn-kelime.hazir {
-            border-color: #16a34a; 
-            color: #16a34a;       
-            background-color: #f0fdf4; 
-        }
-        .btn-kelime.hazir:hover { background-color: #dcfce7; }
-
-        .btn-simultane.hazir { background-color: #16a34a; }
-        .btn-simultane.hazir:hover { background-color: #15803d; }
-
-        /* --- HAZIR SINIF (YEŞİL) TASARIMI --- */
-        .class-btn.hazir-sinif {
-            border-color: #16a34a;  
-            color: #16a34a;         
-            background-color: #f0fdf4; 
-        }
-        .class-btn.hazir-sinif:hover {
-            background-color: #dcfce7; 
-            box-shadow: 0 6px 12px rgba(22, 163, 74, 0.25); 
-        }
-        .class-btn.hazir-sinif.active {
-            background-color: #16a34a;
-            color: white;
-            border-color: #16a34a;
-        }
-
-/* Eğer ders ismi boşsa satırı daha derli toplu göster */
-.lesson-item:has(.lesson-name:empty) {
-    justify-content: center; /* Butonları ortala */
-    padding: 25px;
+    --golge:       0 6px 18px rgba(31, 41, 55, 0.07);
+    --golge-derin: 0 14px 32px rgba(31, 41, 55, 0.14);
 }
 
-/* 7. Sınıfa özel veya genel buton genişletme */
-.lesson-item:has(.lesson-name:empty) .btn-group {
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Marhey', 'Harmattan', sans-serif;
+    color: var(--yazi);
+    line-height: 1.6;
+    background-color: var(--zemin);
+    /* Sitenin geri kalanındaki noktalı doku */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%23E3E9F2'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===================== ÜST BAŞLIK ===================== */
+header {
+    position: relative;
+    background: linear-gradient(90deg, var(--sari) 0%, var(--turuncu) 50%, var(--kirmizi) 100%);
+    border-bottom: 2px solid var(--kirmizi-koyu);
+    color: #fff;
+    padding: 30px 20px 46px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(216, 67, 21, 0.18);
+}
+
+header h1 {
+    font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: .2px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, .18);
+    margin: 0 auto;
+    max-width: 900px;
+}
+
+/* "(Yeşil olanları kullanabilirsiniz)" bilgi şeridi */
+.header-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.header-note::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #A5F3B4;
+    box-shadow: 0 0 0 3px rgba(165, 243, 180, .35);
+}
+
+/* ===================== GERİ / ANA SAYFA TUŞU ===================== */
+.home-btn {
+    position: absolute;
+    left: 15px;
+    bottom: 8px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: transform .22s ease, background .22s ease,
+                box-shadow .22s ease, color .22s ease;
+}
+.home-btn svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+    pointer-events: none;
+}
+.home-btn:hover,
+.home-btn:focus-visible {
+    transform: translateY(-3px);
+    background: var(--turuncu);
+    color: #fff;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    outline: none;
+}
+.home-btn:active { transform: translateY(-1px); }
+
+/* ===================== SINIF SEÇİCİ ===================== */
+.class-selector {
+    position: relative;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: -26px;
+    padding: 0 15px;
+}
+
+.class-btn {
+    background: var(--kart);
+    border: 2px solid var(--turuncu);
+    color: var(--tugla);
+    padding: 14px 26px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease;
+    box-shadow: var(--golge);
+}
+.class-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--golge-derin);
+}
+.class-btn.active {
+    background: linear-gradient(135deg, var(--turuncu) 0%, var(--kirmizi) 100%);
+    border-color: var(--kirmizi-koyu);
+    color: #fff;
+}
+
+/* Hazır (içeriği tamamlanmış) sınıflar yeşil */
+.class-btn.hazir-sinif {
+    border-color: var(--yesil);
+    color: var(--yesil);
+    background: var(--yesil-acik);
+}
+.class-btn.hazir-sinif:hover {
+    background: var(--yesil-orta);
+    box-shadow: 0 10px 20px rgba(22, 163, 74, 0.22);
+}
+.class-btn.hazir-sinif.active {
+    background: linear-gradient(135deg, var(--yesil) 0%, var(--yesil-koyu) 100%);
+    border-color: var(--yesil-koyu);
+    color: #fff;
+}
+
+/* ===================== İÇERİK ALANI ===================== */
+.container {
+    max-width: 1040px;
+    margin: 42px auto 60px;
+    padding: 0 20px;
+}
+
+/* ===================== ÜNİTE KARTLARI ===================== */
+.unit-card {
+    background: var(--kart);
+    border: 1px solid var(--cizgi);
+    border-radius: 20px;
+    margin-bottom: 26px;
+    overflow: hidden;
+    box-shadow: var(--golge);
+    transition: box-shadow .25s ease, transform .25s ease;
+}
+.unit-card:hover {
+    box-shadow: var(--golge-derin);
+    transform: translateY(-2px);
+}
+
+.unit-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(90deg, #FFF8E7 0%, #FFF3E0 55%, #FFF1F0 100%);
+    border-bottom: 2px solid #F7E3C8;
+    color: var(--tugla);
+    font-size: 1.28rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+.unit-header::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 8px;
+    height: 30px;
+    margin-right: 15px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--sari) 0%, var(--kirmizi) 100%);
+}
+
+/* ===================== DERS LİSTESİ ===================== */
+.lesson-list { padding: 6px 0; }
+
+.lesson-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #F2F5FA;
+    transition: background .2s ease;
+}
+.lesson-item:hover { background: #FDFBF7; }
+.lesson-item:last-child { border-bottom: none; }
+
+.lesson-info { display: flex; flex-direction: column; min-width: 0; }
+
+.lesson-name {
+    font-size: 1.14rem;
+    font-weight: 500;
+    color: #3B4757;
+    line-height: 1.6;
+}
+
+/* ===================== AKSİYON BUTONLARI ===================== */
+.btn-group { display: flex; gap: 10px; flex: 0 0 auto; }
+
+.action-btn {
+    padding: 11px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 132px;
+    white-space: nowrap;
+    transition: all .22s ease;
+}
+
+.btn-kelime {
+    background: #F4F7FC;
+    color: #4A5A70;
+    border: 1px solid #D9E2EF;
+}
+.btn-kelime:hover {
+    background: #E9EFF8;
+    color: var(--yazi);
+    transform: translateY(-2px);
+}
+
+.btn-simultane {
+    background: linear-gradient(135deg, var(--turuncu) 0%, var(--kirmizi) 100%);
+    color: #fff;
+    border: 1px solid transparent;
+}
+.btn-simultane:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(239, 83, 80, 0.32);
+}
+
+/* Hazır dersler yeşil */
+.btn-kelime.hazir {
+    border-color: var(--yesil);
+    color: var(--yesil);
+    background: var(--yesil-acik);
+}
+.btn-kelime.hazir:hover { background: var(--yesil-orta); color: var(--yesil-koyu); }
+
+.btn-simultane.hazir {
+    background: linear-gradient(135deg, var(--yesil) 0%, var(--yesil-koyu) 100%);
+}
+.btn-simultane.hazir:hover { box-shadow: 0 10px 18px rgba(22, 163, 74, 0.3); }
+
+/* ===================== DERS ADI BOŞSA ===================== */
+.lesson-item:has(.lesson-name:empty),
+.lesson-item:has(.lesson-name[style*="display:none"]) {
+    justify-content: center;
+    padding: 24px;
+}
+.lesson-item:has(.lesson-name:empty) .btn-group,
+.lesson-item:has(.lesson-name[style*="display:none"]) .btn-group {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Yan yana iki dev buton */
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
+.lesson-item:has(.lesson-name:empty) .action-btn,
+.lesson-item:has(.lesson-name[style*="display:none"]) .action-btn {
+    padding: 16px;
+    font-size: 1.08rem;
+    letter-spacing: .6px;
+}
 
-.lesson-item:has(.lesson-name:empty) .action-btn {
-    padding: 15px;
-    font-size: 1.1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* ===================== MOBİL ===================== */
+@media (max-width: 680px) {
+    header { padding: 22px 16px 26px; }
+    header h1 { font-size: 1.28rem; padding: 0 46px; }
+    .header-note { font-size: .9rem; padding: 5px 13px; }
+
+    .home-btn {
+        position: fixed;
+        left: 6px;
+        top: 7px;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        z-index: 30;
+        background: rgba(255, 255, 255, 0.22);
+    }
+    .home-btn svg { width: 18px; height: 18px; }
+
+    .class-selector { margin-top: 18px; gap: 9px; }
+    .class-btn { padding: 11px 18px; font-size: .98rem; }
+
+    .container { margin: 28px auto 44px; padding: 0 14px; }
+
+    .unit-header { font-size: 1.08rem; padding: 16px 18px; }
+    .unit-header::before { height: 26px; margin-right: 12px; }
+
+    .lesson-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 13px;
+        padding: 16px 18px;
+    }
+    .lesson-name { font-size: 1.04rem; }
+    .btn-group { width: 100%; }
+    .action-btn { flex: 1; min-width: 0; font-size: .92rem; padding: 13px 6px; }
 }

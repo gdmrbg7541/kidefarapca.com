@@ -1,6 +1,31 @@
+/* ===== ARAKOM YAZI TIPI =====
+   Site genelinde kullanilan Arakom fontu. Buyuk/kucuk harf duyarli
+   sunuculara karsi dosya adi kucuk harfle yazildi: arakom.ttf
+   Hem 'Arakom' hem 'arakom' adiyla tanimlandi ki eski kurallar da calissin. */
+@font-face {
+    font-family: 'Arakom';
+    src: url('arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'arakom';
+    src: url('arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Sayfadaki her yazi (Turkce + Arapca) Arakom ile gosterilir. */
+* {
+    font-family: 'Arakom', sans-serif !important;
+    font-weight: normal !important;
+}
+
 :root {
-            --font-tr: 'Marhey', sans-serif;
-            --font-ar: 'Harmattan', serif;
+            --font-tr: 'Arakom', sans-serif;
+            --font-ar: 'Arakom', serif;
             
             --primary-color: #0073e6; 
             --success-color: #28a745; 
@@ -349,8 +374,8 @@
             text-align: center;
         }
         .question-area-vs .question-text-vs span {
-             font-family: Marhey, !important; 
-             font-weight: 900;
+             font-family: 'Arakom', sans-serif !important;
+             font-weight: normal;
              margin-right: 10px;
         }
 

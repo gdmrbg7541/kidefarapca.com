@@ -6,9 +6,35 @@
             --bg-color: #ffffff;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-    font-family: 'Inter', sans-serif; 
+        /* ===== ARAKOM YAZI TIPI =====
+           Dosya adi kucuk harfle (arakom.ttf) yazildi; GitHub Pages buyuk/kucuk
+           harf duyarli oldugu icin buyuk harfli yazim canlida bulunamiyor.
+           Hem 'Arakom' hem 'arakom' adiyla tanimli. */
+        @font-face {
+            font-family: 'Arakom';
+            src: url('arakom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'arakom';
+            src: url('arakom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* Sayfadaki her yazi (Turkce + Arapca) Arakom ile gosterilir. */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arakom', sans-serif !important;
+            font-weight: normal !important;
+        }
+        body {
+    font-family: 'Arakom', sans-serif;
     background: var(--bg-color); 
     /* Mobil tarayıcı çubukları için dvh kullanımı: */
     height: 100vh; /* Eski tarayıcılar için yedek */
@@ -83,7 +109,7 @@
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         th { background: #f8fafc; font-weight: normal; }
        .ar-txt { 
-    font-family: 'IBM Plex Sans Arabic', sans-serif; 
+    font-family: 'Arakom', sans-serif; 
     font-size: 1.3rem; 
     direction: rtl;
     line-height: 1.6; /* Harf çıkıntıları için alan açar */
@@ -112,7 +138,7 @@
         #sentence-mode { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; }
         .tr-container { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; justify-content: center; width: 100%; }
        .ar-output { 
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-family: 'Arakom', sans-serif;
     font-size: 1.3rem;
     direction: rtl; 
     display: block; /* Flex yerine block kullanarak kelime akışını doğal bırakıyoruz */

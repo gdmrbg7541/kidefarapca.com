@@ -1038,37 +1038,211 @@ function renderGrades(type) {
     let config = data.levels[curLId].config[type];
     let table = document.getElementById(type + 'Table');
     if (!table) return;
-    
+
+    // Davranış puanı yalnızca Performans sekmesinde (hw) ve seviye ayarında
+    // açıldıysa görünür. Kapalıysa tablo eskisi gibi kalır.
+    const beh = (type === 'hw') ? behAyar(curLId) : null;
+    const behAcik = !!(beh && beh.aktif);
+    if (type === 'hw') behBilgiCiz(beh);
+
     // Tablo başlıklarını oluştur
-    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th>Ağ. ORT</th></tr>`;
-    
+    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th>Ağ. ORT</th>${behAcik ? '<th>Davranış</th>' : ''}</tr>`;
+
     data.levels[curLId].classes[curCId].students.forEach((s, si) => {
         let row = table.insertRow();
         row.insertCell().innerText = s.name;
-        
+
         let weightedTotal = 0;
-        
+
         config.forEach((c, ci) => {
             // Veri varsa al, yoksa 0 kabul et
             let val = (s[type] && s[type][ci]) ? parseFloat(s[type][ci]) : 0;
             let weight = parseFloat(c.w || 0) / 100;
             weightedTotal += (val * weight);
-            
+
             row.insertCell().innerHTML = `
-                <input type="number" 
-                       value="${val}" 
-                       onfocus="if(this.value=='0'){this.value='';} this.select();" 
-                       onblur="if(this.value.trim()==''){this.value='0';}" 
-                       onchange="updateGrade('${type}',${si},${ci},this.value)" 
+                <input type="number"
+                       value="${val}"
+                       onfocus="if(this.value=='0'){this.value='';} this.select();"
+                       onblur="if(this.value.trim()==''){this.value='0';}"
+                       onchange="updateGrade('${type}',${si},${ci},this.value)"
                        style="width:60px; text-align:center; border-radius:4px; border:1px solid #ddd;">`;
         });
-        
+
         // Ağırlıklı ortalamayı hücreye yaz
         let avgCell = row.insertCell();
         avgCell.style.fontWeight = "bold";
         avgCell.style.color = "var(--primary)";
         avgCell.innerText = weightedTotal.toFixed(2);
+
+        // Davranış sütunu: eksi tuşu — net puan — artı tuşu — geçmiş
+        if (behAcik) {
+            const net = behNet(s);
+            const sinif = net > 0 ? 'arti' : (net < 0 ? 'eksi' : '');
+            const cell = row.insertCell();
+            cell.innerHTML = `
+                <div class="beh-hucre">
+                    <button class="beh-tus eksi" onclick="behAc(${si},-1)" title="Eksi ver (-${beh.adim})">&minus;</button>
+                    <span class="beh-net ${sinif}">${net > 0 ? '+' : ''}${net}</span>
+                    <button class="beh-tus arti" onclick="behAc(${si},1)" title="Artı ver (+${beh.adim})">+</button>
+                    <button class="beh-gecmis-tus" onclick="behGecmis(${si})" title="Davranış geçmişi">🕘</button>
+                </div>`;
+        }
     });
+}
+
+/* ==========================================================================
+   DAVRANIŞ PUANI — PERFORMANS SEKMESİ İŞLEYİŞİ
+   ========================================================================== */
+
+/* Öğrencinin net davranış puanı: kayıtların toplamı.
+   Toplamı ayrıca saklamıyoruz ki bir kayıt silinince puan kendiliğinden düzelsin. */
+function behNet(s) {
+    if (!s || !Array.isArray(s.behLog)) return 0;
+    return s.behLog.reduce((t, k) => t + (parseInt(k.d) || 0), 0);
+}
+
+/* Performans sekmesinin üstündeki bilgi/uyarı şeridi. */
+function behBilgiCiz(beh) {
+    const kutu = document.getElementById('behBilgi');
+    if (!kutu) return;
+    if (!beh || !beh.aktif) {
+        kutu.innerHTML = `<div class="beh-uyari">⚖️ <strong>Davranış puanı kapalı.</strong>
+            Öğrencilere artı/eksi verebilmek için soldaki seviyenin <strong>⚙️ Seviye Ayarları</strong> penceresinden
+            “Davranış Puanı” bölümünü açmanız yeterli.</div>`;
+    } else {
+        kutu.innerHTML = `<div class="beh-uyari" style="border-left-color:#27ae60; background:#f2fbf5; color:#1e8449;">
+            ⚖️ <strong>Davranış puanı açık.</strong> Her basış <strong>${beh.adim}</strong> puan değerinde;
+            artı veya eksiye bastığınızda sebep sorulur ve sisteme kaydedilir.</div>`;
+    }
+}
+
+let behSecim = null;   // { si, yon, adim, sebep }
+
+/* + veya - tuşuna basılınca sebep popup'ını açar. */
+function behAc(si, yon) {
+    const beh = behAyar(curLId);
+    if (!beh || !beh.aktif) return;
+    const s = data.levels[curLId].classes[curCId].students[si];
+    if (!s) return;
+
+    behSecim = { si: si, yon: (yon < 0 ? -1 : 1), adim: beh.adim, sebep: null };
+
+    const modal = document.getElementById('behModal');
+    const arti = behSecim.yon > 0;
+    modal.classList.toggle('yon-arti', arti);
+    modal.classList.toggle('yon-eksi', !arti);
+
+    document.getElementById('behBaslik').innerText = arti ? '➕ Artı Puan' : '➖ Eksi Puan';
+    document.getElementById('behOgrenci').innerText = s.name;
+    document.getElementById('behMiktar').innerText = (arti ? '+' : '−') + beh.adim;
+    document.getElementById('behSoru').innerText = arti
+        ? 'Hangi davranışı için artı veriyorsunuz?'
+        : 'Hangi davranışı için eksi veriyorsunuz?';
+
+    const liste = arti ? beh.arti : beh.eksi;
+    document.getElementById('behSecenekler').innerHTML = liste.map((t, i) =>
+        `<button type="button" class="beh-sec" onclick="behSebepSec(this, ${i})">${behKacis(t)}</button>`
+    ).join('');
+
+    document.getElementById('behNot').value = '';
+    document.getElementById('behOnay').disabled = true;
+    modal.style.display = 'flex';
+}
+
+/* Popup'ta bir sebep başlığı seçilir. */
+function behSebepSec(el, i) {
+    if (!behSecim) return;
+    const beh = behAyar(curLId);
+    const liste = behSecim.yon > 0 ? beh.arti : beh.eksi;
+    behSecim.sebep = liste[i];
+    document.querySelectorAll('#behSecenekler .beh-sec').forEach(b => b.classList.remove('secili'));
+    el.classList.add('secili');
+    document.getElementById('behOnay').disabled = false;
+}
+
+function behKapat() {
+    behSecim = null;
+    const m = document.getElementById('behModal');
+    if (m) m.style.display = 'none';
+}
+
+/* Sebebiyle birlikte puanı kaydeder (localStorage + Firestore -> save()). */
+function behKaydet() {
+    if (!behSecim || !behSecim.sebep) return;
+    const s = data.levels[curLId].classes[curCId].students[behSecim.si];
+    if (!s) return;
+    if (!Array.isArray(s.behLog)) s.behLog = [];
+
+    const d = new Date();
+    const ikili = n => String(n).padStart(2, '0');
+    s.behLog.push({
+        d: behSecim.yon * behSecim.adim,                 // +2 / -1 gibi
+        sebep: behSecim.sebep,                           // seçilen başlık
+        not: (document.getElementById('behNot').value || '').trim(),
+        tarih: `${ikili(d.getDate())}.${ikili(d.getMonth() + 1)}.${d.getFullYear()} ${ikili(d.getHours())}:${ikili(d.getMinutes())}`,
+        ts: d.getTime()
+    });
+
+    if (typeof playBeep === 'function') playBeep(behSecim.yon > 0 ? 880 : 320, 140);
+    save();
+    behKapat();
+    renderGrades('hw');
+}
+
+/* Bir öğrencinin davranış geçmişini gösterir. */
+let behLogStu = null;
+function behGecmis(si) {
+    behLogStu = si;
+    const s = data.levels[curLId].classes[curCId].students[si];
+    if (!s) return;
+    document.getElementById('behLogOgrenci').innerText = s.name;
+    behLogCiz();
+    document.getElementById('behLogModal').style.display = 'flex';
+}
+
+function behLogCiz() {
+    const s = data.levels[curLId].classes[curCId].students[behLogStu];
+    const kayitlar = (s && Array.isArray(s.behLog)) ? s.behLog : [];
+    const artiT = kayitlar.filter(k => k.d > 0).reduce((t, k) => t + k.d, 0);
+    const eksiT = kayitlar.filter(k => k.d < 0).reduce((t, k) => t + k.d, 0);
+
+    document.getElementById('behLogOzet').innerHTML = `
+        <div><span style="color:#1e8449;">+${artiT}</span><small>Artı</small></div>
+        <div><span style="color:#c0392b;">${eksiT}</span><small>Eksi</small></div>
+        <div><span>${artiT + eksiT > 0 ? '+' : ''}${artiT + eksiT}</span><small>Net</small></div>`;
+
+    const kap = document.getElementById('behLogListe');
+    if (!kayitlar.length) {
+        kap.innerHTML = `<div class="beh-bos">Henüz kayıt yok.</div>`;
+        return;
+    }
+    // En yeni kayıt en üstte
+    kap.innerHTML = kayitlar.map((k, i) => ({ k: k, i: i })).reverse().map(o => `
+        <div class="beh-kayit">
+            <div class="beh-d ${o.k.d > 0 ? 'arti' : 'eksi'}">${o.k.d > 0 ? '+' : ''}${o.k.d}</div>
+            <div class="beh-sebep">${behKacis(o.k.sebep)}
+                <small>${behKacis(o.k.tarih || '')}${o.k.not ? ' • ' + behKacis(o.k.not) : ''}</small>
+            </div>
+            <button class="beh-kaldir" onclick="behKayitSil(${o.i})" title="Bu kaydı sil">🗑️</button>
+        </div>`).join('');
+}
+
+/* Yanlışlıkla verilen bir puanı sebebiyle birlikte kaldırır. */
+function behKayitSil(i) {
+    const s = data.levels[curLId].classes[curCId].students[behLogStu];
+    if (!s || !Array.isArray(s.behLog)) return;
+    if (!confirm("Bu davranış kaydı silinsin mi? Puan da geri alınacak.")) return;
+    s.behLog.splice(i, 1);
+    save();
+    behLogCiz();
+    renderGrades('hw');
+}
+
+function behLogKapat() {
+    const m = document.getElementById('behLogModal');
+    if (m) m.style.display = 'none';
+    behLogStu = null;
 }
 
     function updateGrade(t, si, ci, v) {
@@ -1212,68 +1386,236 @@ function addKuraRow(name = "") {
     }
 
     // --- SEVİYE AYARLARI ---
+
+/* ==========================================================================
+   DAVRANIŞ PUANI (ARTI / EKSİ) — VARSAYILANLAR
+   Bu bölüm seviye ayarlarında HER ZAMAN görünür, ama varsayılan olarak
+   PASİFTİR. Öğretmen isterse anahtarı açar; ancak o zaman Performans
+   sekmesinde öğrencilere +/- verilebilir.
+   ========================================================================== */
+const BEH_VARSAYILAN_EKSI = [
+    "Sınıf düzenini bozmak",
+    "Saygısızlık",
+    "Ödevini yapmamak",
+    "Derse geç kalmak",
+    "İzinsiz konuşmak",
+    "Arkadaşını rahatsız etmek",
+    "Ders malzemesi getirmemek",
+    "Derste telefonla ilgilenmek",
+    "Ders dışı işle uğraşmak",
+    "Sıra ve temizlik kurallarına uymamak"
+];
+const BEH_VARSAYILAN_ARTI = [
+    "Çalışkan",
+    "Örnek davranış",
+    "Derse aktif katılım",
+    "Ödevini eksiksiz yapmak",
+    "Arkadaşına yardım etmek",
+    "Nazik ve saygılı",
+    "Sorumluluk almak",
+    "Defteri temiz ve düzenli",
+    "Gönüllü söz almak",
+    "Belirgin gelişme gösterdi"
+];
+
+/* Seviyenin davranış ayarını getirir; yoksa varsayılanı kurar. */
+function behAyar(lId) {
+    const lvl = data.levels[lId];
+    if (!lvl) return null;
+    if (!lvl.config) lvl.config = {};
+    if (!lvl.config.beh) {
+        lvl.config.beh = {
+            aktif: false,                        // varsayılan: PASİF
+            adim: 1,                             // bir basışta verilen puan (1-3)
+            arti: BEH_VARSAYILAN_ARTI.slice(),
+            eksi: BEH_VARSAYILAN_EKSI.slice()
+        };
+    }
+    const b = lvl.config.beh;
+    if (typeof b.aktif !== 'boolean') b.aktif = false;
+    b.adim = Math.min(3, Math.max(1, parseInt(b.adim) || 1));   // en az 1, en fazla 3
+    if (!Array.isArray(b.arti) || !b.arti.length) b.arti = BEH_VARSAYILAN_ARTI.slice();
+    if (!Array.isArray(b.eksi) || !b.eksi.length) b.eksi = BEH_VARSAYILAN_EKSI.slice();
+    return b;
+}
+
+/* HTML'e güvenli yazdırma (sebep başlıkları kullanıcıdan geliyor). */
+function behKacis(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // 1. Ayar Penceresini Açan Ana Fonksiyon
 function openLvlConfig(lId) {
-    curLId = lId; 
+    curLId = lId;
     const lvl = data.levels[lId];
     if (!lvl) return;
 
     const modal = document.getElementById('lvlModal');
     if (!modal) return;
 
-    modal.style.display = 'block';
-
-    // Modal içeriğini her açılışta sıfırdan ve düzenli bir yapıyla kuralım
-    modal.innerHTML = `
-        <h3 style="margin-top:0; color:var(--primary); font-family:'Marhey';">⚙️ Seviye Ayarları</h3>
-        
-        <div style="background: #e3f2fd; color: #1565c0; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.4; border-left: 5px solid #1565c0; font-family: sans-serif;">
-            <div style="font-weight: bold; margin-bottom: 3px;">📢 Kapsam Bilgilendirmesi:</div>
-            Bu seviyede yapacağınız isim ve ağırlık (%) değişiklikleri, bu seviyeye bağlı <strong>tüm sınıflarda</strong> otomatik olarak güncellenir. Değişiklikler Ödev, Sınav ve Kura sekmelerinin tamamını etkiler.
-        </div>
-        
-        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 200px;">
-                <h4 style="border-bottom: 2px solid var(--accent); color:var(--secondary);">Ödevler (Ağırlık %)</h4>
-                <div id="lvlHwList"></div>
-                <button class="btn-add" onclick="addConfigRow('hw')" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
-            </div>
-            <div style="flex: 1; min-width: 200px;">
-                <h4 style="border-bottom: 2px solid var(--danger); color:var(--secondary);">Sınavlar (Ağırlık %)</h4>
-                <div id="lvlExList"></div>
-                <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
-            </div>
-        </div>
-
-        <div style="margin-top:25px; border-top:2px solid #eee; padding-top:15px;">
-            <h4 style="color:var(--accent); font-family:'Marhey'; margin-bottom:10px;">🎯 Kura Kategorileri</h4>
-            <div id="lvlKuraList"></div>
-            <button class="btn-add" onclick="addKuraRow()" style="width:100%; margin-top:10px; background:#2ecc71;">+ Yeni Kura Kutusu Ekle</button>
-        </div>
-
-        <div style="text-align: right; margin-top:30px; padding-top:15px; border-top:1px solid #eee; display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
-            <span style="font-size: 0.8rem; color: #7f8c8d; font-style: italic;">* Tüm sınıflar ve sekmeler güncellenecektir.</span>
-            <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:8px; font-weight:bold;">İptal</button>
-            <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:8px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
-        </div>
-    `;
-
     // 1. Veri Yapısı Kontrolü (Eğer yoksa varsayılanları ata)
     if (!lvl.config) lvl.config = {};
     if (!lvl.config.hw) lvl.config.hw = [{n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}];
     if (!lvl.config.ex) lvl.config.ex = [{n: 'Dinleme', w: 25}, {n: 'Konuşma', w: 25}, {n: 'Yazılı', w: 50}];
     if (!lvl.config.kura) lvl.config.kura = [{n: 'Konuşma'}, {n: 'Yazma'}, {n: 'Okuma'}, {n: 'Vezin'}, {n: 'Sözlük'}, {n: 'Tercüme'}];
+    const beh = behAyar(lId);
+
+    // Pencere artık ekranın %80'ini kaplıyor: başlık + kaydırılan gövde + alt bar
+    modal.style.display = 'flex';
+
+    // Modal içeriğini her açılışta sıfırdan ve düzenli bir yapıyla kuralım
+    modal.innerHTML = `
+        <div class="lvl-bas">
+            <div>
+                <h3>⚙️ Seviye Ayarları</h3>
+                <div class="lvl-ad">${behKacis(lvl.name || '')}</div>
+            </div>
+            <button class="lvl-kapat" onclick="lvlKapat()" title="Kapat">&times;</button>
+        </div>
+
+        <div class="lvl-govde">
+            <div class="lvl-bilgi">
+                <div style="font-weight: bold; margin-bottom: 3px;">📢 Kapsam Bilgilendirmesi:</div>
+                Bu seviyede yapacağınız isim ve ağırlık (%) değişiklikleri, bu seviyeye bağlı <strong>tüm sınıflarda</strong> otomatik olarak güncellenir. Değişiklikler Ödev, Sınav ve Kura sekmelerinin tamamını etkiler.
+            </div>
+
+            <div class="lvl-izgara">
+                <div class="lvl-kart">
+                    <h4>📘 Ödevler (Ağırlık %)</h4>
+                    <div id="lvlHwList"></div>
+                    <button class="btn-add" onclick="addConfigRow('hw')" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
+                </div>
+                <div class="lvl-kart">
+                    <h4 style="border-bottom-color: var(--danger);">📝 Sınavlar (Ağırlık %)</h4>
+                    <div id="lvlExList"></div>
+                    <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
+                </div>
+                <div class="lvl-kart">
+                    <h4 style="border-bottom-color: #2ecc71;">🎯 Kura Kategorileri</h4>
+                    <div id="lvlKuraList"></div>
+                    <button class="btn-add" onclick="addKuraRow()" style="width:100%; margin-top:10px; background:#2ecc71;">+ Yeni Kura Kutusu Ekle</button>
+                </div>
+
+                <div class="lvl-kart lvl-genis">
+                    <h4 style="border-bottom-color:#27ae60;">⚖️ Davranış Puanı (Artı / Eksi)</h4>
+                    <div class="beh-ust">
+                        <div class="beh-tanim">
+                            Bu bölüm her seviyede hazır bulunur ve <strong>varsayılan olarak kapalıdır</strong>.
+                            Açarsanız <strong>Performans</strong> sekmesinde her öğrencinin yanında artı/eksi tuşları belirir.
+                            Her basışta sebep sorulur ve seçilen sebep tarihiyle birlikte sisteme kaydedilir.
+                        </div>
+                        <label class="beh-anahtar">
+                            <input type="checkbox" id="behAktif" ${beh.aktif ? 'checked' : ''} onchange="behAktifDegisti(this)">
+                            <span class="beh-ray"></span>
+                            <span class="beh-durum" id="behDurumYazi">${beh.aktif ? 'Açık' : 'Kapalı'}</span>
+                        </label>
+                    </div>
+
+                    <div class="beh-icerik ${beh.aktif ? '' : 'pasif'}" id="behIcerik">
+                        <div class="beh-satir">
+                            <label>Bir basışta verilecek puan:</label>
+                            <div class="beh-adim" id="behAdim">
+                                <button type="button" class="${beh.adim === 1 ? 'secili' : ''}" onclick="behAdimSec(1)">1</button>
+                                <button type="button" class="${beh.adim === 2 ? 'secili' : ''}" onclick="behAdimSec(2)">2</button>
+                                <button type="button" class="${beh.adim === 3 ? 'secili' : ''}" onclick="behAdimSec(3)">3</button>
+                            </div>
+                            <span class="beh-ornek" id="behOrnek">Örnek: bir artı <strong>+${beh.adim}</strong>, bir eksi <strong>-${beh.adim}</strong> puan.</span>
+                        </div>
+
+                        <div class="beh-sebep-kolon">
+                            <div class="beh-kutu arti">
+                                <h5>➕ Artı sebepleri (örnek alınacak davranışlar)</h5>
+                                <div class="beh-liste" id="behArtiListe"></div>
+                                <button type="button" class="beh-ekle" onclick="behSebepEkle('arti')">+ Yeni başlık ekle</button>
+                            </div>
+                            <div class="beh-kutu eksi">
+                                <h5>➖ Eksi sebepleri (sık görülen hatalar)</h5>
+                                <div class="beh-liste" id="behEksiListe"></div>
+                                <button type="button" class="beh-ekle" onclick="behSebepEkle('eksi')">+ Yeni başlık ekle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lvl-alt">
+            <span class="lvl-not">* Tüm sınıflar ve sekmeler güncellenecektir.</span>
+            <button class="lvl-iptal" onclick="lvlKapat()">İptal</button>
+            <button class="lvl-kaydet" onclick="saveLvlConfig()">Değişiklikleri Kaydet</button>
+        </div>
+    `;
 
     // 2. Ödevleri yükle
     lvl.config.hw.forEach(item => addConfigRowWithData('hw', item.n, item.w));
-    
+
     // 3. Sınavları yükle
     lvl.config.ex.forEach(item => addConfigRowWithData('ex', item.n, item.w));
 
     // 4. Kura başlıklarını yükle (Sınavdan bağımsız kendi dizisinden çeker)
     lvl.config.kura.forEach(item => {
-        addKuraRowWithData(item.n); 
+        addKuraRowWithData(item.n);
     });
+
+    // 5. Davranış sebep başlıklarını yükle
+    beh.arti.forEach(t => behSebepSatiri('arti', t));
+    beh.eksi.forEach(t => behSebepSatiri('eksi', t));
+}
+
+/* Seviye ayarları penceresini kapatır. */
+function lvlKapat() {
+    const m = document.getElementById('lvlModal');
+    if (m) m.style.display = 'none';
+}
+
+/* Anahtar açılıp kapandığında alt ayarları sönükleştir/canlandır. */
+function behAktifDegisti(el) {
+    const icerik = document.getElementById('behIcerik');
+    const yazi = document.getElementById('behDurumYazi');
+    if (icerik) icerik.classList.toggle('pasif', !el.checked);
+    if (yazi) yazi.innerText = el.checked ? 'Açık' : 'Kapalı';
+}
+
+/* Bir basışta verilecek puanı seçer (en az 1, en fazla 3). */
+function behAdimSec(n) {
+    n = Math.min(3, Math.max(1, parseInt(n) || 1));
+    const kutu = document.getElementById('behAdim');
+    if (!kutu) return;
+    Array.from(kutu.children).forEach((b, i) => b.classList.toggle('secili', (i + 1) === n));
+    const ornek = document.getElementById('behOrnek');
+    if (ornek) ornek.innerHTML = `Örnek: bir artı <strong>+${n}</strong>, bir eksi <strong>-${n}</strong> puan.`;
+}
+
+/* Seçili adım değerini okur. */
+function behAdimOku() {
+    const kutu = document.getElementById('behAdim');
+    if (!kutu) return 1;
+    let n = 1;
+    Array.from(kutu.children).forEach((b, i) => { if (b.classList.contains('secili')) n = i + 1; });
+    return Math.min(3, Math.max(1, n));
+}
+
+/* Sebep başlığı satırı ekler (artı veya eksi listesine). */
+function behSebepSatiri(tur, metin) {
+    const kap = document.getElementById(tur === 'arti' ? 'behArtiListe' : 'behEksiListe');
+    if (!kap) return;
+    const sat = document.createElement('div');
+    sat.className = 'beh-sat';
+    sat.innerHTML = `
+        <input type="text" class="beh-${tur}-n" value="${behKacis(metin)}" placeholder="Başlık...">
+        <button type="button" onclick="this.parentElement.remove()" title="Kaldır">✖</button>`;
+    kap.appendChild(sat);
+}
+function behSebepEkle(tur) {
+    behSebepSatiri(tur, '');
+    const kap = document.getElementById(tur === 'arti' ? 'behArtiListe' : 'behEksiListe');
+    if (kap && kap.lastElementChild) {
+        kap.scrollTop = kap.scrollHeight;
+        const inp = kap.lastElementChild.querySelector('input');
+        if (inp) inp.focus();
+    }
 }
 
 // Yardımcı Fonksiyon: Kura satırını veriyle ekler
@@ -1346,16 +1688,31 @@ function saveLvlConfig() {
         }
     });
 
+    // 4. Davranış puanı ayarlarını topla (bölüm her zaman penceredeydi)
+    const behKutu = document.getElementById('behAktif');
+    if (behKutu) {
+        const beh = behAyar(curLId);
+        beh.aktif = behKutu.checked;
+        beh.adim = behAdimOku();
+
+        let yeniArti = [], yeniEksi = [];
+        document.querySelectorAll('.beh-arti-n').forEach(el => { if (el.value.trim() !== "") yeniArti.push(el.value.trim()); });
+        document.querySelectorAll('.beh-eksi-n').forEach(el => { if (el.value.trim() !== "") yeniEksi.push(el.value.trim()); });
+        // Liste tamamen boşaltıldıysa varsayılanlara dön (sebepsiz puan verilmesin)
+        beh.arti = yeniArti.length ? yeniArti : BEH_VARSAYILAN_ARTI.slice();
+        beh.eksi = yeniEksi.length ? yeniEksi : BEH_VARSAYILAN_EKSI.slice();
+    }
+
     // Verileri birbirinden bağımsız dizilere mühürle
     data.levels[curLId].config.hw = newHw;
     data.levels[curLId].config.ex = newEx;
     data.levels[curLId].config.kura = newKura; // Yeni bağımsız kura dizisi
 
-    save(); 
+    save();
 
     // Arayüzü kapat ve güncelle
     document.getElementById('lvlModal').style.display = 'none';
-    
+
     // Kura butonlarını sadece 'kura' dizisinden çizecek şekilde tetikle
     renderActivityButtons();
 
@@ -1365,7 +1722,7 @@ function saveLvlConfig() {
         renderResults();
     }
     
-    alert("Tüm ayarlar (Ödev, Sınav ve Kura) bağımsız olarak kaydedildi!");
+    alert("Tüm ayarlar (Ödev, Sınav, Kura ve Davranış Puanı) kaydedildi!");
 }
 
 function renderConfRows(t, items) {
