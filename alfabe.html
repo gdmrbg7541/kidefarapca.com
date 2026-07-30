@@ -11,18 +11,48 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe.css?v=16">
+    <link rel="stylesheet" href="alfabe.css?v=22">
 </head>
 <body>
 
 <div class="main-app">
     <nav class="nav-tabs">
+        <!-- Harf Tanıtımı sekmesi için gruplama switch'i: yazılışı benzeyenler / okunuşu benzeyenler -->
         <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank" class="home-link" title="Ana Sayfa">
             <svg viewBox="0 0 24 24">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
         </a>
+        <div class="switch-wrapper hdr-switch" id="p1-switch">
+            <!-- KALEM ikonu: yazılışları benzeyen harfler modu.
+                 Kalem kendini çizer, sonra alt satırı yazarken sağa doğru kayar. -->
+            <span class="mode-ico grp-ico grp-ico--yazi on" title="Yazılışları benzeyen harfleri renklendir" onclick="harfGrup.sec('yazi')">
+                <svg viewBox="0 0 48 48">
+                    <g class="gk-el">
+                        <path class="gk-govde" d="M34 5.5L42.5 14L20 36.5L9 39.5L12 28.5Z"></path>
+                        <path class="gk-bilezik" d="M28.5 11L37 19.5"></path>
+                        <path class="gk-uc" d="M12 28.5L20 36.5"></path>
+                    </g>
+                    <path class="gk-cizgi gk-c1" d="M6 44H24"></path>
+                    <path class="gk-cizgi gk-c2" d="M27 44H42"></path>
+                </svg>
+            </span>
+            <label class="switch">
+                <input type="checkbox" id="grup-toggle" onchange="harfGrup.sec(this.checked ? 'ses' : 'yazi')">
+                <span class="slider"></span>
+            </label>
+            <!-- SES ikonu: okunuşları benzeyen harfler modu.
+                 Hoparlörden üç dalga sırayla yayılır. -->
+            <span class="mode-ico grp-ico grp-ico--ses" title="Okunuşları benzeyen harfleri renklendir" onclick="harfGrup.sec('ses')">
+                <svg viewBox="0 0 48 48">
+                    <path class="gs-hoparlor" d="M6 19H14L25 10V38L14 29H6Z"></path>
+                    <path class="gs-dalga gs-d1" d="M30 19.5a8 8 0 0 1 0 9"></path>
+                    <path class="gs-dalga gs-d2" d="M35 14.5a15 15 0 0 1 0 19"></path>
+                    <path class="gs-dalga gs-d3" d="M40 9.5a22 22 0 0 1 0 29"></path>
+                </svg>
+            </span>
+        </div>
         <button class="tab-trigger active" onclick="ui.tab(event, 'p1')">Harf Tanıtımı</button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p2')">Kartlar</button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p3')">Hafıza</button>
@@ -178,8 +208,8 @@
     </main>
 </div>
 
-<script src="alfabe_harf_detay.js?v=16"></script>
-<script src="alfabe.js?v=11"></script>
+<script src="alfabe_harf_detay.js?v=17"></script>
+<script src="alfabe.js?v=16"></script>
     <script src="geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

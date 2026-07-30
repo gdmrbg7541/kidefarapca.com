@@ -111,6 +111,12 @@
             stroke-linecap: round; stroke-linejoin: round;
         }
 
+        /* Dar masaüstü/tablet: sekmeler ortada kalsın ama switch'e değmesin */
+        @media (min-width: 769px) and (max-width: 1080px) {
+            .nav-tabs { padding-left: 170px; padding-right: 170px; }
+            .tab-trigger { padding: 11px 16px; font-size: 1.05rem; }
+        }
+
         .content-area { flex: 1; padding: 8px; overflow: hidden; background: transparent; position: relative; }
         .panel { display: none; height: 100%; width: 100%; animation: fadeIn 0.4s ease; position: relative; }
         .panel.active { display: block; }
@@ -133,60 +139,104 @@
         .p1-ust   { flex: 1; display: flex; gap: 10px; min-height: 0; }
         .tablo-sar { flex: 1; height: 100%; min-width: 0; }
 
-        /* --- SAĞ PANEL: kendinden sonrakiyle birleşmeyen harfler --- */
+        /* --- SAĞ PANEL: kendinden sonrakiyle birleşmeyen harfler ---
+           Kutu tasarımı YOK: çerçeve/gölge/hücre arka planı kaldırıldı,
+           harfler doğrudan sayfa üzerinde duruyor. Başlık ve harfler büyük. */
         .yan-panel {
-            flex: 0 0 clamp(152px, 15vw, 248px); min-width: 0;
-            background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
-            box-shadow: var(--shadow-sm); padding: 8px; overflow: hidden;
-            display: flex; flex-direction: column; gap: 8px;
+            flex: 0 0 clamp(134px, 12.8vw, 214px); min-width: 0;
+            background: transparent; border: 0; border-radius: 0; box-shadow: none;
+            padding: 2px 2px 0; overflow: hidden;
+            display: flex; flex-direction: column; gap: 6px;
         }
         .yp-baslik {
-            background: #16A085; color: #fff; border-radius: 10px;
-            padding: 7px 8px; text-align: center; line-height: 1.18;
-            font-size: clamp(0.7rem, 0.86vw, 0.98rem);
+            background: transparent; color: #117A65; text-align: center;
+            padding: 0 2px 7px; line-height: 1.2;
+            font-size: clamp(1.1rem, 1.5vw, 1.72rem);
+            border-bottom: 2px solid #16A085;
         }
-        /* direction: rtl -> ilk hücre sağda: sağ sütun ـا (✓), sol sütun ا (✗) */
+        /* direction: rtl -> ilk hücre sağda: sağ sütun ـا (✓ →), sol sütun ا (← ✗) */
         .yp-tablo {
             flex: 1; min-height: 0; direction: rtl; display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto repeat(6, minmax(0, 1fr));
-            gap: 5px;
+            column-gap: 5px; row-gap: 2px;
         }
+        /* İşaret üstte, özel SVG ok altta: ok, işaret ile ilk harf (elif)
+           satırı arasındaki ~50px boşluğu doldurur. */
         .yp-th {
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; line-height: 1; font-size: clamp(1.05rem, 1.35vw, 1.55rem);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px;
+            direction: ltr; background: transparent; line-height: 1;
+            font-size: clamp(1.3rem, 1.7vw, 1.95rem);
+            margin-bottom: 11px;
         }
-        .yp-ok { background: #E6FAF5; color: #117A65; }
-        .yp-no { background: #FDECEA; color: #C0392B; }
+        .yp-ok { color: #117A65; }
+        .yp-no { color: #C0392B; }
+        /* --- özel animasyonlu ok: harften kalkar, yukarıda işarete doğru kıvrılır --- */
+        .yp-yon {
+            width: clamp(35px, 3.5vw, 48px); height: clamp(32px, 3.2vw, 44px);
+            display: block; overflow: visible;
+        }
+        .yp-yon path {
+            fill: none; stroke: currentColor; stroke-width: 3.1;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .yp-ok-govde { stroke-dasharray: 58; animation: ypOkCiz 3.4s ease-in-out infinite; }
+        .yp-ok-uc { animation: ypOkUc 3.4s ease-in-out infinite; }
+        .yp-no .yp-ok-govde { animation-delay: .5s; }
+        .yp-no .yp-ok-uc { animation-delay: .5s; }
+        @keyframes ypOkCiz {
+            0% { stroke-dashoffset: 58; opacity: .35; }
+            40%, 82% { stroke-dashoffset: 0; opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: .35; }
+        }
+        @keyframes ypOkUc {
+            0%, 30% { opacity: 0; }
+            48%, 82% { opacity: 1; }
+            100% { opacity: 0; }
+        }
         .yp-hucre {
             display: flex; align-items: center; justify-content: center; overflow: hidden;
-            border: 1px solid #eef2f7; border-radius: 8px; background: #FBFDFF;
+            border: 0; background: transparent;
         }
-        .yp-c-ok { border-color: #BDEBE0; background: #F4FCF9; }
-        .yp-c-no { border-color: #F5C6C0; background: #FEF7F6; }
-        .yp-harf { font-size: clamp(1.5rem, 3.4vh, 2.9rem); line-height: 1.3; }
+        .yp-harf { font-size: clamp(2.4rem, 6.6vh, 4.8rem); line-height: 1.3; }
         .yp-c-ok .yp-harf { color: #117A65; }
         .yp-c-no .yp-harf { color: #C0392B; }
+        /* Harf, arakom hattının dış hattından SVG olarak çizilir: kartlardaki
+           harflerle birebir aynı biçim. Yükseklik ortak, taban çizgisi ortak. */
+        .yp-harf-svg { display: flex; align-items: center; justify-content: center; max-width: 100%; }
+        .yp-svg { height: clamp(3.2rem, 9.4vh, 6.4rem); width: auto; max-width: 100%; display: block; overflow: visible; }
+        .yp-svg path { fill: currentColor; stroke: none; }
+        /* harfin metni ekran okuyucu/testler için durur, görünmez */
+        .yp-gizli { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-        /* --- ALT ŞERİT --- */
+        /* --- ALT ŞERİT ---
+           İşaretler harfsiz: tek parça uzatma çizgisi (tatvil ــــ) üzerinde
+           gösteriliyor, çizgi hepsinde aynı. Ögeler TEK SATIRDA sağdan sola
+           dizilir; Türkçe adlar ekranda yazılmaz (title ipucunda). */
         .alt-serit {
-            flex: 0 0 auto; height: clamp(84px, 12.5vh, 138px);
+            flex: 0 0 auto; height: clamp(112px, 15.5vh, 168px);
             direction: rtl; display: flex; gap: 10px; align-items: stretch;
         }
         .as-kutu {
             flex: 1; min-width: 0; overflow: hidden;
             background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
-            box-shadow: var(--shadow-sm); padding: 6px 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+            box-shadow: var(--shadow-sm); padding: 5px 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
         }
         .as-baslik {
             font-size: clamp(0.72rem, 0.92vw, 1.06rem); color: #117A65;
             background: #E6FAF5; border-radius: 999px; padding: 2px 11px; white-space: nowrap;
         }
-        .as-satir { direction: rtl; display: flex; gap: clamp(6px, 1.1vw, 20px); align-items: flex-end; justify-content: center; min-width: 0; }
-        .as-oge { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0; }
-        .as-harf { font-size: clamp(1.5rem, 3.4vh, 2.7rem); line-height: 1.28; color: #2c3e50; }
-        .as-ad   { font-size: clamp(0.62rem, 0.78vw, 0.88rem); color: #7b8794; white-space: nowrap; }
+        .as-liste {
+            direction: rtl; display: flex; flex-direction: row; flex-wrap: nowrap;
+            align-items: center; justify-content: center;
+            gap: clamp(5px, 1.05vw, 22px); min-height: 0; min-width: 0;
+        }
+        /* altı ögeli kutu (hareke + tenvin) tek satırda sığsın: daha geniş */
+        .as-kutu.as-genis { flex: 2.35; }
+        .as-kutu.as-genis .as-liste { gap: clamp(12px, 1.75vw, 36px); }
+        .as-oge { display: flex; align-items: center; justify-content: center; min-width: 0; }
+        .as-harf { font-size: clamp(1.6rem, 5.2vh, 3.3rem); line-height: 1.3; color: #2c3e50; }
 
         .harf-tablo {
             --ht-line: #16A085;      /* çizgi rengi — site yeşili */
@@ -236,14 +286,42 @@
         .ht-cell.k-sol-yok   { border-left-color: transparent; }
 
         .char-card.maze-start { border-color: #16A085 !important; box-shadow: 0 0 0 2px rgba(22,160,133,0.30), var(--shadow-sm); }
-        .char-card.maze-end   { border-color: #E67E22 !important; box-shadow: 0 0 0 2px rgba(230,126,34,0.30), var(--shadow-sm); }
-        .char-card.maze-start::after, .char-card.maze-end::after {
-            content: "GİRİŞ"; position: absolute; top: 5px; right: 6px;
-            font-size: 0.58rem; letter-spacing: 0.6px; line-height: 1;
-            color: #fff; background: #16A085; padding: 3px 7px; border-radius: 999px;
-            pointer-events: none; user-select: none;
+        .char-card.maze-end   { border-color: #EF5350 !important; box-shadow: 0 0 0 2px rgba(239,83,80,0.30), var(--shadow-sm); }
+
+        /* GİRİŞ / ÇIKIŞ: yazı yerine animasyonlu ok SVG'si.
+           Giriş oku kapıya doğru girer (yeşil), çıkış oku kapıdan dışarı çıkar (kırmızı).
+           Renkler koyu değil: harf panelindeki yeşil/kırmızı ile aynı aile. */
+        .char-card .mz-ok {
+            position: absolute; top: 4px; right: 5px;
+            width: clamp(20px, 2vw, 27px); height: clamp(20px, 2vw, 27px);
+            overflow: visible; pointer-events: none; user-select: none;
         }
-        .char-card.maze-end::after { content: "ÇIKIŞ"; background: #E67E22; }
+        .mz-ok path { fill: none; stroke: currentColor; stroke-width: 3.1; stroke-linecap: round; stroke-linejoin: round; }
+        .mz-ok-giris { color: #16A085; }
+        .mz-ok-cikis { color: #EF5350; }
+        .mz-kapi { opacity: .55; }
+        /* Ok her an "ok" olarak okunur: gövde hiç kaybolmaz, sadece kapıya doğru
+           (giriş) veya kapıdan dışarı (çıkış) süzülür; ucu hafifçe öne atar. */
+        .mz-ok-giris .mz-govde,
+        .mz-ok-giris .mz-uc { animation: mzGir 2.4s ease-in-out infinite; }
+        .mz-ok-giris .mz-uc { animation-delay: .08s; }
+        .mz-ok-cikis .mz-govde,
+        .mz-ok-cikis .mz-uc { animation: mzCik 2.4s ease-in-out infinite; }
+        .mz-ok-cikis .mz-uc { animation-delay: .08s; }
+        @keyframes mzGir {
+            0%   { transform: translateX(-4.5px); opacity: .45; }
+            38%  { transform: translateX(0);      opacity: 1; }
+            70%  { transform: translateX(2px);    opacity: 1; }
+            88%  { transform: translateX(-4.5px); opacity: .45; }
+            100% { transform: translateX(-4.5px); opacity: .45; }
+        }
+        @keyframes mzCik {
+            0%   { transform: translateX(-3.5px); opacity: .5; }
+            38%  { transform: translateX(0);      opacity: 1; }
+            70%  { transform: translateX(3.5px);  opacity: 1; }
+            88%  { transform: translateX(-3.5px); opacity: .5; }
+            100% { transform: translateX(-3.5px); opacity: .5; }
+        }
         .char-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 3px; box-shadow: var(--shadow-sm); }
         /* Kart içeriği asla sütunu genişletmesin: 1fr sütunlar gerçekten eşit kalsın,
            yoksa mini SVG'lerin genişliği ızgarayı panelden taşırıyor. */
@@ -285,20 +363,30 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.20);
             pointer-events: none; user-select: none;
         }
-        .char-card.maze-end .card-num { background: #E67E22; }
+        .char-card.maze-end .card-num { background: #EF5350; }
         .char-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: var(--shadow-md); border-color: var(--accent); }
 
-        /* Benzer yazılan harf aileleri: açık pastel arka planlar */
-        .char-card.fam-be   { background: #E8F2FD; border-color: #CFE3F7; }
-        .char-card.fam-cim  { background: #E8F6EA; border-color: #CFE8D5; }
-        .char-card.fam-dal  { background: #FDF6E0; border-color: #F1E5BE; }
-        .char-card.fam-ra   { background: #E2F3F1; border-color: #C6E5E1; }
-        .char-card.fam-sin  { background: #F3E9F8; border-color: #E3D3EC; }
-        .char-card.fam-sad  { background: #FCE8EF; border-color: #F2D2DD; }
-        .char-card.fam-ta   { background: #FDF0DE; border-color: #F3DDBE; }
-        .char-card.fam-ayn  { background: #F4F7DE; border-color: #E4EBBD; }
-        .char-card.fam-fe   { background: #EAEBF8; border-color: #D6D8EE; }
-        .char-card.fam-tek  { background: #EDF2F8; border-color: #DCE5F0; }
+        /* Benzer YAZILAN harf aileleri: açık pastel arka planlar */
+        .mod-yazi .char-card.fam-be   { background: #E8F2FD; border-color: #CFE3F7; }
+        .mod-yazi .char-card.fam-cim  { background: #E8F6EA; border-color: #CFE8D5; }
+        .mod-yazi .char-card.fam-dal  { background: #FDF6E0; border-color: #F1E5BE; }
+        .mod-yazi .char-card.fam-ra   { background: #E2F3F1; border-color: #C6E5E1; }
+        .mod-yazi .char-card.fam-sin  { background: #F3E9F8; border-color: #E3D3EC; }
+        .mod-yazi .char-card.fam-sad  { background: #FCE8EF; border-color: #F2D2DD; }
+        .mod-yazi .char-card.fam-ta   { background: #FDF0DE; border-color: #F3DDBE; }
+        .mod-yazi .char-card.fam-ayn  { background: #F4F7DE; border-color: #E4EBBD; }
+        .mod-yazi .char-card.fam-fe   { background: #EAEBF8; border-color: #D6D8EE; }
+        .mod-yazi .char-card.fam-tek  { background: #EDF2F8; border-color: #DCE5F0; }
+
+        /* Benzer OKUNAN harf grupları (mahreç/ses yakınlığı) */
+        .mod-ses .char-card.ses-s    { background: #FFEAD1; border-color: #F6D5AA; }
+        .mod-ses .char-card.ses-z    { background: #DDF0FE; border-color: #B9DFF7; }
+        .mod-ses .char-card.ses-t    { background: #E7F7DA; border-color: #CCEBB5; }
+        .mod-ses .char-card.ses-d    { background: #F4E4FD; border-color: #E2CAF4; }
+        .mod-ses .char-card.ses-h    { background: #FFE0E2; border-color: #F7C2C4; }
+        .mod-ses .char-card.ses-k    { background: #D8F3EC; border-color: #B4E4D8; }
+        .mod-ses .char-card.ses-ayn  { background: #FFF5BE; border-color: #F0E28C; }
+        .mod-ses .char-card.ses-tek  { background: #EDF2F8; border-color: #DCE5F0; }
 
         /* Pastel zeminde okunurluk: hayalet harf ve referans çizgisi */
         .hg-ghost { fill: rgba(15, 23, 42, 0.07); }
@@ -326,7 +414,19 @@
             font-size: 1.6rem; line-height: 1; cursor: pointer; box-shadow: var(--shadow-sm);
             display: flex; align-items: center; justify-content: center; z-index: 5;
         }
-        #hd-name { font-size: 2.6rem; font-weight: bold; color: var(--primary); text-align: center; }
+        /* Sol üstte harfin sıra numarası (karttaki jetonun büyüğü).
+           Renk koyu değil: panel harflerindeki yeşil ile aynı aile. */
+        #hd-no {
+            position: absolute; top: 14px; left: 14px;
+            min-width: 52px; height: 52px; padding: 0 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem; line-height: 1;
+            color: #117A65; background: #E6FAF5;
+            border: 2px solid #16A085; border-radius: 999px;
+            box-shadow: 0 4px 10px rgba(22,160,133,0.20);
+            pointer-events: none; user-select: none; z-index: 5;
+        }
+        #hd-name { font-size: 2.6rem; font-weight: bold; color: #117A65; text-align: center; padding: 0 62px; }
 
         /* 4 sütun: başta / ortada / sonda / yalın */
         #hd-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -361,7 +461,8 @@
         @media (max-width: 768px) {
             #hd-cols { grid-template-columns: repeat(2, 1fr); }
             #hd-card { padding: 18px; gap: 12px; }
-            #hd-name { font-size: 1.9rem; }
+            #hd-no { top: 10px; left: 10px; min-width: 38px; height: 38px; padding: 0 9px; font-size: 1.2rem; border-width: 1.5px; }
+            #hd-name { font-size: 1.9rem; padding: 0 46px; }
             .hd-sec-text { font-size: 1.1rem; }
             .hd-col-label { font-size: 1.1rem; }
             .hd-col-box { height: min(26vh, 220px); }
@@ -432,6 +533,49 @@
         .mode-ico--multi.on .mi-p2 { animation: miBob 1.7s ease-in-out infinite .85s; transform-origin: 32px 40px; }
         @keyframes miBob { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2.5px) scale(1.05); } }
         @keyframes miSpark { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(90deg); } }
+
+        /* --- HARF TANITIMI: gruplama switch'i (header) --- */
+        .hdr-switch {
+            position: absolute; right: 15px; bottom: 8px; z-index: 10;
+            padding: 4px 11px; gap: 7px;
+        }
+        .hdr-switch.gizli { display: none; }
+        .grp-ico { width: 34px; height: 34px; padding: 3px; }
+        .grp-ico--yazi:hover { background: rgba(22,160,133,.10); }
+        .grp-ico--ses:hover  { background: rgba(243,156,18,.12); }
+        .grp-ico--yazi.on { background: rgba(22,160,133,.14); }
+        .grp-ico--ses.on  { background: rgba(243,156,18,.16); }
+        .grp-ico--yazi.on svg path, .grp-ico--yazi.on svg circle { stroke: #16A085; }
+        .grp-ico--ses.on  svg path, .grp-ico--ses.on  svg circle { stroke: #E67E22; }
+
+        /* YAZI ikonu = KALEM: kalem kendini çizer, sonra yazarken sağa kayar,
+           altındaki iki satır soldan sağa doğru "yazılır". */
+        .grp-ico .gk-govde { stroke-dasharray: 96; stroke-width: 2.7; }
+        .grp-ico .gk-bilezik { stroke-dasharray: 13; }
+        .grp-ico .gk-cizgi { stroke-width: 2.7; }
+        .grp-ico .gk-c1 { stroke-dasharray: 18; }
+        .grp-ico .gk-c2 { stroke-dasharray: 15; }
+        .grp-ico--yazi.on .gk-el { animation: gkKay 3.4s ease-in-out infinite; }
+        .grp-ico--yazi.on .gk-govde { animation: gkCiz 3.4s ease-in-out infinite; }
+        .grp-ico--yazi.on .gk-bilezik { animation: gkCizKisa 3.4s ease-in-out infinite .25s; }
+        .grp-ico--yazi.on .gk-uc { animation: gkUc 3.4s ease-in-out infinite .3s; }
+        .grp-ico--yazi.on .gk-c1 { animation: gkSatir1 3.4s ease-in-out infinite; }
+        .grp-ico--yazi.on .gk-c2 { animation: gkSatir2 3.4s ease-in-out infinite; }
+        @keyframes gkCiz { 0% { stroke-dashoffset: 96; } 26%, 100% { stroke-dashoffset: 0; } }
+        @keyframes gkCizKisa { 0% { stroke-dashoffset: 13; } 26%, 100% { stroke-dashoffset: 0; } }
+        @keyframes gkUc { 0%, 8% { opacity: 0; } 26%, 100% { opacity: 1; } }
+        @keyframes gkKay { 0%, 30% { transform: translateX(-9px); } 62% { transform: translateX(0); } 78%, 100% { transform: translateX(-9px); } }
+        @keyframes gkSatir1 { 0%, 30% { stroke-dashoffset: 18; } 58%, 82% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 18; } }
+        @keyframes gkSatir2 { 0%, 46% { stroke-dashoffset: 15; } 66%, 82% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 15; } }
+
+        /* SES ikonu: hoparlörden sırayla yayılan üç ses dalgası */
+        .grp-ico--ses.on .gs-hoparlor { fill: rgba(243,156,18,.20); animation: gsHop 1.9s ease-in-out infinite; transform-origin: 12px 24px; }
+        .grp-ico .gs-dalga { stroke-width: 2.8; }
+        .grp-ico--ses.on .gs-d1 { animation: gsDalga 1.9s ease-in-out infinite; transform-origin: 26px 24px; }
+        .grp-ico--ses.on .gs-d2 { animation: gsDalga 1.9s ease-in-out infinite .22s; transform-origin: 26px 24px; }
+        .grp-ico--ses.on .gs-d3 { animation: gsDalga 1.9s ease-in-out infinite .44s; transform-origin: 26px 24px; }
+        @keyframes gsHop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        @keyframes gsDalga { 0% { opacity: .18; transform: scale(.78); } 45% { opacity: 1; transform: scale(1); } 100% { opacity: .18; transform: scale(.78); } }
 
         .select-pair { font-family: 'arakom'; font-size: 1.15rem; padding: 7px 12px; border-radius: 12px; border: 1px solid #E9EEF5; outline: none; cursor: pointer; background: #fff; color: #117A65; box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
         .select-pair:focus { border-color: #16A085; }
@@ -538,18 +682,31 @@
         /* Mobil Optimizasyon */
         @media (max-width: 768px) {
             .nav-tabs { 
-                padding-left: 65px !important; /* Solda buton için boşluk bırakır */
+                /* Şeffaf kenarlar: zemin gradyanı altta görünür, kayan sekmeler
+                   soldaki ana sayfa butonunun ve sağdaki switch'in altına girmez. */
+                border-left: 54px solid transparent;   /* sol: ana sayfa butonu */
+                border-right: 148px solid transparent; /* sağ: gruplama switch'i */
+                border-top: 0; border-bottom: 0;
+                padding-left: 0 !important; padding-right: 0 !important;
                 justify-content: flex-start !important; 
                 overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: none; 
             }
 
              .home-link {
-                position: sticky !important; /* Sağa kaydırsan bile buton solda sabit kalır */
-                left: 10px;
-                bottom: 5px;
-            } 
+                position: fixed !important; /* Sekme şeridi kayarken buton sol üstte sabit kalır */
+                left: 8px; top: 7px; bottom: auto; z-index: 30;
+                width: 36px; height: 36px; border-radius: 10px;
+            }
+            .home-link svg { width: 19px; height: 19px; } 
+            .nav-tabs.sw-yok { border-right-width: 12px; } /* switch yoksa rezerv boşluk gerekmez */
             .nav-tabs::-webkit-scrollbar { display: none; }
             .tab-trigger { padding: 10px 15px; flex-shrink: 0; }
+            .hdr-switch {
+                position: fixed !important; /* Sekme şeridi kayarken switch sağ üstte sabit kalır */
+                top: 7px; right: 8px; bottom: auto; z-index: 30;
+                padding: 3px 7px; gap: 4px;
+            }
+            .grp-ico { width: 26px; height: 26px; padding: 2px; }
             .content-area { overflow-y: auto !important; }
             #p1 { overflow-x: hidden !important; overflow-y: auto !important; }
             #p1.active { display: block !important; }
@@ -561,13 +718,17 @@
                Yatay kaydırma artık sadece tabloya ait; panel ve şerit ekran genişliğinde kalır. */
             .tablo-sar { height: auto; padding-bottom: 12px; overflow-x: auto; direction: rtl; }
             .yan-panel { flex: none; width: 100%; margin-top: 4px; }
-            .yp-tablo { grid-template-rows: auto repeat(6, 52px); }
-            .yp-th { font-size: 1.15rem; }
-            .yp-harf { font-size: 1.9rem; }
+            .yp-tablo { grid-template-rows: auto repeat(6, 62px); }
+            .yp-th { font-size: 1.5rem; margin-bottom: 6px; }
+            .yp-yon { width: 30px; height: 25px; }
+            .yp-harf { font-size: 2.5rem; }
+            .yp-svg { height: 56px; }
+            .yp-baslik { font-size: 1.22rem; }
             .alt-serit { height: auto; flex-wrap: wrap; margin-top: 10px; padding-bottom: 10px; }
-            .as-kutu { flex: 1 1 45%; min-height: 86px; }
-            .as-harf { font-size: 1.85rem; }
-            .as-ad { font-size: 0.68rem; }
+            .as-kutu { flex: 1 1 45%; min-height: 84px; }
+            .as-kutu.as-genis { flex: 1 1 100%; }
+            .as-kutu.as-genis .as-liste { gap: 13px; }
+            .as-harf { font-size: 1.95rem; }
             .as-baslik { font-size: 0.78rem; }
             .harf-tablo { height: auto; min-width: 900px; --ht-pad: 3px; --ht-w: 2px; --ht-kalin: 4px; }
             .ht-cell { height: auto; }
