@@ -339,16 +339,30 @@ function triggerAction() {
     }
 }
 
-function addScore(p) {
-    p === 1 ? score1++ : score2++;
+/* Puan ekle / geri al.
+   adim = 1  -> artı tuşu (varsayılan, eski çağrılar bozulmasın diye)
+   adim = -1 -> eksi tuşu: yanlışlıkla verilen puanı geri alır.
+   Puan hiçbir zaman sıfırın altına inmez. */
+function addScore(p, adim) {
+    if (adim === undefined) adim = 1;
+    if (p === 1) score1 = Math.max(0, score1 + adim);
+    else         score2 = Math.max(0, score2 + adim);
+    yazPuanlar();
+}
+
+/* Skorları ekrana bas; eksi tuşunu geri alınacak puan yoksa kapat. */
+function yazPuanlar() {
     document.getElementById('score-1').innerText = score1;
     document.getElementById('score-2').innerText = score2;
+    var e1 = document.getElementById('minus-1');
+    var e2 = document.getElementById('minus-2');
+    if (e1) e1.disabled = (score1 === 0);
+    if (e2) e2.disabled = (score2 === 0);
 }
 
 function resetScores() {
     score1 = 0; score2 = 0;
-    document.getElementById('score-1').innerText = "0";
-    document.getElementById('score-2').innerText = "0";
+    yazPuanlar();
 }
 
 function exitArena() {

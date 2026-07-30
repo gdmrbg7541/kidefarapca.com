@@ -1,3 +1,19 @@
+/* Arakom yazı tipi: aşağıdaki "*" kuralı Arakom istiyordu ama font hiç
+   tanıtılmadığı için tarayıcı sessizce sans-serif'e düşüyordu. Artık tanıtılıyor. */
+@font-face {
+    font-family: 'Arakom';
+    src: url('arakom.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+    font-display: swap;
+}
+/* Sitenin diğer sayfaları fontu küçük harfle çağırıyor; ikisi de çalışsın. */
+@font-face {
+    font-family: 'arakom';
+    src: url('arakom.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+    font-display: swap;
+}
+
 /* AÇIK RENKLİ KURUMSAL TEMA */
 :root {
     --bg-main: #f8fafc;       
@@ -143,8 +159,14 @@ body {
     min-width: clamp(80px, 15vw, 160px);
     text-align: center;
 }
+/* Puan tuşları: artı ana tuş, eksi onun yanında küçük bir düzeltme tuşu */
+.score-ctrl {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.8vmin, 16px);
+}
 .plus-btn {
-    width: clamp(50px, 10vmin, 85px); 
+    width: clamp(50px, 10vmin, 85px);
     height: clamp(50px, 10vmin, 85px);
     border-radius: 50%;
     background: var(--accent-green);
@@ -157,8 +179,34 @@ body {
     cursor: pointer !important;
     transition: transform 0.1s;
     box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    flex-shrink: 0;
 }
 .plus-btn:active { transform: scale(0.9); }
+
+/* EKSİ (düzeltme) TUŞU — yanlışlıkla fazla verilen puanı geri alır.
+   Kasıtlı olarak daha küçük ve içi boş: yanlışlıkla basılması zorlaşsın. */
+.minus-btn {
+    width: clamp(36px, 7vmin, 60px);
+    height: clamp(36px, 7vmin, 60px);
+    border-radius: 50%;
+    background: var(--bg-panel);
+    color: var(--accent-red);
+    font-size: clamp(20px, 4vmin, 36px);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(239, 68, 68, 0.35);
+    cursor: pointer !important;
+    transition: transform 0.1s, background 0.2s, color 0.2s, opacity 0.2s;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+    flex-shrink: 0;
+}
+.minus-btn:hover { background: var(--accent-red); color: #fff; border-color: transparent; }
+.minus-btn:active { transform: scale(0.9); }
+/* Puan sıfırken geri alınacak bir şey yok: tuş sönük ve tıklanamaz */
+.minus-btn:disabled { opacity: 0.3; cursor: not-allowed !important; }
+.minus-btn:disabled:hover { background: var(--bg-panel); color: var(--accent-red); border-color: rgba(239, 68, 68, 0.35); }
 .student-label { color: var(--text-muted); font-size: clamp(12px, 2.5vmin, 18px); margin-top: 5px; }
 
 /* MERKEZ ALAN TASARIMI */
