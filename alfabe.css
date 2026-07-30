@@ -143,7 +143,7 @@
            Kutu tasarımı YOK: çerçeve/gölge/hücre arka planı kaldırıldı,
            harfler doğrudan sayfa üzerinde duruyor. Başlık ve harfler büyük. */
         .yan-panel {
-            flex: 0 0 clamp(134px, 12.8vw, 214px); min-width: 0;
+            flex: 0 0 clamp(126px, 11.6vw, 186px); min-width: 0;
             background: transparent; border: 0; border-radius: 0; box-shadow: none;
             padding: 2px 2px 0; overflow: hidden;
             display: flex; flex-direction: column; gap: 6px;
@@ -154,12 +154,15 @@
             font-size: clamp(1.1rem, 1.5vw, 1.72rem);
             border-bottom: 2px solid #16A085;
         }
-        /* direction: rtl -> ilk hücre sağda: sağ sütun ـا (✓ →), sol sütun ا (← ✗) */
+        /* direction: rtl -> ilk hücre sağda: sağ sütun ـا (✓ →), sol sütun ا (← ✗)
+           Sütunlar "auto": her sütun kendi içeriği kadar yer kaplar ve ızgara
+           ortalanır — böylece aynı harfin iki biçimi yan yana, birbirine YAKIN
+           durur; eskiden 1fr sütunlar harfleri panelin iki ucuna savuruyordu. */
         .yp-tablo {
             flex: 1; min-height: 0; direction: rtl; display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: auto auto; justify-content: center;
             grid-template-rows: auto repeat(6, minmax(0, 1fr));
-            column-gap: 5px; row-gap: 2px;
+            column-gap: clamp(5px, 0.8vw, 13px); row-gap: 2px;
         }
         /* İşaret üstte, özel SVG ok altta: ok, işaret ile ilk harf (elif)
            satırı arasındaki ~50px boşluğu doldurur. */
@@ -173,7 +176,7 @@
         .yp-no { color: #C0392B; }
         /* --- özel animasyonlu ok: harften kalkar, yukarıda işarete doğru kıvrılır --- */
         .yp-yon {
-            width: clamp(35px, 3.5vw, 48px); height: clamp(32px, 3.2vw, 44px);
+            width: clamp(32px, 3vw, 42px); height: clamp(32px, 2.8vw, 39px);
             display: block; overflow: visible;
         }
         .yp-yon path {
@@ -193,6 +196,83 @@
             0%, 30% { opacity: 0; }
             48%, 82% { opacity: 1; }
             100% { opacity: 0; }
+        }
+
+        /* ================= ✓ / ✗ İŞARETLERİ (SVG) =================
+           İkisi de ok animasyonu BİTTİKTEN sonra belirir: ok döngüsü 3.4s ve
+           ucu %48'de tamamlanıyor, işaretler bu yüzden %47'ye kadar görünmez.
+             TİK  -> soldan sağa çizilir, aynı anda aşağıdan yukarı süzülür.
+             ÇARPI-> iki kol sırayla çizilir, sonra titrer ve çatlaklar açılır.
+           =========================================================== */
+        .yp-im {
+            width: clamp(24px, 2.3vw, 32px); height: clamp(24px, 2.3vw, 32px);
+            display: block; overflow: visible;
+        }
+        .yp-im path {
+            fill: none; stroke: currentColor;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .yp-im .yi-tik { stroke-width: 3.7; stroke-dasharray: 34; stroke-dashoffset: 34; }
+        .yp-im .yi-x path { stroke-width: 3.7; stroke-dasharray: 25; stroke-dashoffset: 25; }
+        .yp-im .yi-x { transform-origin: 17px 17px; }
+        .yp-im .yi-catlak path { stroke-width: 1.4; stroke-dasharray: 9; stroke-dashoffset: 9; opacity: 0; }
+
+        /* --- TİK: soldan sağa çiz + aşağıdan yukarı belir --- */
+        .yp-ok .yp-im-ok { animation: ypTikGel 3.4s ease-out infinite; }
+        .yp-ok .yp-im-ok .yi-tik { animation: ypTikCiz 3.4s ease-out infinite; }
+        @keyframes ypTikGel {
+            0%, 47%  { opacity: 0; transform: translateY(6px); }
+            58%      { opacity: 1; }
+            74%, 92% { opacity: 1; transform: translateY(0); }
+            100%     { opacity: 0; transform: translateY(6px); }
+        }
+        @keyframes ypTikCiz {
+            0%, 48%  { stroke-dashoffset: 34; }
+            76%, 92% { stroke-dashoffset: 0; }
+            100%     { stroke-dashoffset: 34; }
+        }
+
+        /* --- ÇARPI: çiz -> titre -> çatla.  Sol sütunun oku .5s gecikmeli
+               başladığı için işaret de aynı gecikmeyi alır. --- */
+        .yp-no .yp-im-no { animation: ypCarpiGel 3.4s ease-out infinite .5s; }
+        .yp-no .yp-im-no .yi-x1 { animation: ypXCiz1 3.4s ease-out infinite .5s; }
+        .yp-no .yp-im-no .yi-x2 { animation: ypXCiz2 3.4s ease-out infinite .5s; }
+        .yp-no .yp-im-no .yi-x  { animation: ypTitre 3.4s ease-in-out infinite .5s; }
+        .yp-no .yp-im-no .yi-catlak path { animation: ypCatlak 3.4s ease-out infinite .5s; }
+        .yp-no .yp-im-no .yi-c2 { animation-delay: .56s; }
+        .yp-no .yp-im-no .yi-c3 { animation-delay: .62s; }
+        .yp-no .yp-im-no .yi-c4 { animation-delay: .68s; }
+        @keyframes ypCarpiGel {
+            0%, 46%  { opacity: 0; transform: scale(.82); }
+            56%      { opacity: 1; transform: scale(1.08); }
+            63%, 92% { opacity: 1; transform: scale(1); }
+            100%     { opacity: 0; transform: scale(.82); }
+        }
+        @keyframes ypXCiz1 {
+            0%, 47%  { stroke-dashoffset: 25; }
+            58%, 92% { stroke-dashoffset: 0; }
+            100%     { stroke-dashoffset: 25; }
+        }
+        @keyframes ypXCiz2 {
+            0%, 52%  { stroke-dashoffset: 25; }
+            64%, 92% { stroke-dashoffset: 0; }
+            100%     { stroke-dashoffset: 25; }
+        }
+        /* titreme: çarpı tamamlandıktan hemen sonra kısa, sert bir sarsıntı */
+        @keyframes ypTitre {
+            0%, 64%   { transform: translate(0, 0) rotate(0deg); }
+            67%       { transform: translate(-1.7px, .7px) rotate(-4deg); }
+            70%       { transform: translate(1.7px, -.7px) rotate(4deg); }
+            73%       { transform: translate(-1.2px, -.6px) rotate(-2.5deg); }
+            76%       { transform: translate(.9px, .5px) rotate(1.5deg); }
+            79%, 100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        /* çatlaklar: sarsıntının içinde açılır, ince ve soluk kalır */
+        @keyframes ypCatlak {
+            0%, 69%  { stroke-dashoffset: 9; opacity: 0; }
+            73%      { opacity: .8; }
+            82%, 92% { stroke-dashoffset: 0; opacity: .8; }
+            100%     { stroke-dashoffset: 9; opacity: 0; }
         }
         .yp-hucre {
             display: flex; align-items: center; justify-content: center; overflow: hidden;
@@ -328,12 +408,15 @@
         .mz-ok-cikis .mz-govde,
         .mz-ok-cikis .mz-uc { animation: mzCik 2.4s ease-in-out infinite; }
         .mz-ok-cikis .mz-uc { animation-delay: .08s; }
+        /* GİRİŞ oku SOLA bakar: alfabe sırası sağ üstten başlayıp sola doğru
+           ilerlediği için giriş yönü de soldur. Ok sağdan gelip kapıya (solda)
+           doğru süzülür. */
         @keyframes mzGir {
-            0%   { transform: translateX(-4.5px); opacity: .45; }
+            0%   { transform: translateX(4.5px);  opacity: .45; }
             38%  { transform: translateX(0);      opacity: 1; }
-            70%  { transform: translateX(2px);    opacity: 1; }
-            88%  { transform: translateX(-4.5px); opacity: .45; }
-            100% { transform: translateX(-4.5px); opacity: .45; }
+            70%  { transform: translateX(-2px);   opacity: 1; }
+            88%  { transform: translateX(4.5px);  opacity: .45; }
+            100% { transform: translateX(4.5px);  opacity: .45; }
         }
         @keyframes mzCik {
             0%   { transform: translateX(-3.5px); opacity: .5; }
@@ -515,6 +598,12 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #F39C12; }
         input:checked + .slider:before { transform: translateX(20px); }
+        /* Harf Tanıtımı switch'i rtl akışta duruyor: kalem ikonu SAĞDA, ses ikonu
+           SOLDA. Topuz da o yöne baksın ki "hangi taraftaysa o taraftaki ikon
+           vurgulu" olsun: yazı modunda topuz sağda (kalemin yanında), ses
+           modunda sola kayar (hoparlörün yanına). */
+        #p1-switch .slider:before { left: auto; right: 3px; }
+        #p1-switch input:checked + .slider:before { transform: translateX(-20px); }
 
         /* --- MOD İKONLARI (emoji yerine animasyonlu SVG) --- */
         .mode-ico {
@@ -738,9 +827,10 @@
                Yatay kaydırma artık sadece tabloya ait; panel ve şerit ekran genişliğinde kalır. */
             .tablo-sar { height: auto; padding-bottom: 12px; overflow-x: auto; direction: rtl; }
             .yan-panel { flex: none; width: 100%; margin-top: 4px; }
-            .yp-tablo { grid-template-rows: auto repeat(6, 62px); }
+            .yp-tablo { grid-template-rows: auto repeat(6, 62px); column-gap: 16px; }
             .yp-th { font-size: 1.5rem; margin-bottom: 6px; }
             .yp-yon { width: 30px; height: 25px; }
+            .yp-im { width: 26px; height: 26px; }
             .yp-harf { font-size: 2.5rem; }
             .yp-svg { height: 56px; }
             .yp-baslik { font-size: 1.22rem; }

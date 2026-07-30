@@ -249,6 +249,27 @@ function ypHarf(i, form) {
         + `<span class="yp-gizli">${g}</span></span>`;
 }
 
+/* ✓ ve ✗ artık yazı değil SVG. İkisi de ok animasyonu bittikten sonra belirir
+   (zamanlama CSS'te: ok döngüsü 3.4s, işaretler %47'ye kadar görünmez).
+     TİK   -> tek yol, soldan sağa çizilir; aynı anda aşağıdan yukarı süzülür.
+     ÇARPI -> iki kol sırayla çizilir, sonra .yi-x titrer ve dört ince çatlak
+              (.yi-catlak) kolların üzerindeki noktalardan dışa doğru kırılır.
+              Çatlaklar merkezden çıkmaz: merkezden çıkarsa çarpı yıldıza
+              benziyordu, kollardan kırılınca gerçek çatlak gibi duruyor. */
+const IM_TIK = '<svg class="yp-im yp-im-ok" viewBox="0 0 34 34" role="img"'
+    + ' aria-label="öncesine bağlanır"><path class="yi-tik" d="M6 18.5L13.5 26L28 8"></path></svg>';
+const IM_CARPI = '<svg class="yp-im yp-im-no" viewBox="0 0 34 34" role="img"'
+    + ' aria-label="sonrasına bağlanmaz">'
+    + '<g class="yi-x">'
+    + '<path class="yi-x1" d="M8.5 8.5L25.5 25.5"></path>'
+    + '<path class="yi-x2" d="M25.5 8.5L8.5 25.5"></path></g>'
+    + '<g class="yi-catlak">'
+    + '<path class="yi-c1" d="M19 19L23 17L26.5 18.5"></path>'
+    + '<path class="yi-c2" d="M13 13L9.5 15.5L6 14"></path>'
+    + '<path class="yi-c3" d="M15 19L17 23L15.5 26.5"></path>'
+    + '<path class="yi-c4" d="M21 13L19 9L20.5 5.5"></path>'
+    + '</g></svg>';
+
 function yanPaneliKur() {
     const yan = document.getElementById('g1yan');
     if (!yan) return;
@@ -264,8 +285,8 @@ function yanPaneliKur() {
     const okSol = '<svg class="yp-yon" viewBox="0 0 46 42" aria-hidden="true">'
         + '<path class="yp-ok-govde" d="M31 39C31 23 29 10 14 10"></path>'
         + '<path class="yp-ok-uc" d="M20 4.5L13 10L20 15.5"></path></svg>';
-    s += '<div class="yp-th yp-ok"><span class="yp-im">✓</span>' + okSag + '</div>';
-    s += '<div class="yp-th yp-no"><span class="yp-im">✗</span>' + okSol + '</div>';
+    s += '<div class="yp-th yp-ok">' + IM_TIK + okSag + '</div>';
+    s += '<div class="yp-th yp-no">' + IM_CARPI + okSol + '</div>';
     harfler.filter(i => i.nobind).forEach(i => {
         s += `<div class="yp-hucre yp-c-ok" title="${i.tr}: öncesine bağlanır">${ypHarf(i, 's')}</div>`;
         s += `<div class="yp-hucre yp-c-no" title="${i.tr}: sonrasına bağlanmaz">${ypHarf(i, 'b')}</div>`;
@@ -325,10 +346,12 @@ function altSeridiKur() {
    Giriş: ok kapıdan içeri girer (yeşil).  Çıkış: ok kapıdan dışarı çıkar (kırmızı).
    Kart üstünde eski yazı etiketinin durduğu yerde (sağ üst) durur.
    ============================================================ */
+/* Giriş oku SOLA bakar: alfabe sırası sağ üst köşeden (elif) başlayıp sola
+   doğru ilerliyor, yani giriş yönü sol. Kapı da bu yüzden solda. */
 const MZ_OK_GIRIS = '<svg class="mz-ok mz-ok-giris" viewBox="0 0 34 34" aria-hidden="true">'
-    + '<path class="mz-kapi" d="M22 5H29V29H22"></path>'
-    + '<path class="mz-govde" d="M4 17H20"></path>'
-    + '<path class="mz-uc" d="M15 11.5L20.5 17L15 22.5"></path></svg>';
+    + '<path class="mz-kapi" d="M12 5H5V29H12"></path>'
+    + '<path class="mz-govde" d="M30 17H14"></path>'
+    + '<path class="mz-uc" d="M19 11.5L13.5 17L19 22.5"></path></svg>';
 const MZ_OK_CIKIS = '<svg class="mz-ok mz-ok-cikis" viewBox="0 0 34 34" aria-hidden="true">'
     + '<path class="mz-kapi" d="M12 5H5V29H12"></path>'
     + '<path class="mz-govde" d="M14 17H30"></path>'
