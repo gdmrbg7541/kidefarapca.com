@@ -86,6 +86,10 @@ const harfGrup = {
             const ad = (this.mod === 'ses') ? (c.dataset.sesAd || '') : (c.dataset.aileAd || '');
             c.title = 'Detay için tıkla: mahreç ve yazılış' + (ad ? ' — ' + ad : '');
         });
+        /* Dizili moddayken switch sadece rengi değil dizilişi de değiştirir:
+           kalem tarafında yazılış aileleri, hoparlör tarafında ses grupları
+           yan yana gelsin diye kartlar yeniden paketlenip animasyonla dizilir. */
+        if (typeof dizilis !== 'undefined' && dizilis.acik) dizilis.uygula(true);
     },
     sec: function (mod) { playClick(); this.set(mod); }
 };
@@ -225,6 +229,245 @@ function tabloKenarlariUygula() {
 }
 
 /* ============================================================
+   DİZİLİŞ MODU — harfleri ailelerine göre topla
+   ------------------------------------------------------------
+   Tablonun iki ayrı görünümü var:
+
+     ALFABETİK (varsayılan) : labirent. 1'den 28'e yılan gibi
+        ilerler, satır aralarında duvar vardır, 1'de giriş
+        28'de çıkış oku durur. Sıranın kendisini ezberlemek için.
+
+     DİZİLİ : labirent söner (duvarlar şeffaflaşır, oklar ve
+        giriş/çıkış vurgusu kaybolur), kartlar aynı gövdeyi
+        (ya da başlıktaki switch "okunuş" tarafındaysa aynı sesi)
+        paylaşan harfler yan yana gelecek şekilde yerlerine kayar,
+        her ailenin etrafına yuvarlak köşeli bir kuşak çizilir.
+        Şekil/ses ayrımını görmek için.
+
+   Kart numarası iki görünümde de kartla birlikte taşınır: dizili
+   moddayken "bu harf alfabede kaçıncı" bilgisi kaybolmasın diye.
+
+   PAKETLEME KURALI: hiçbir aile satır sınırında bölünmemeli.
+   7 sütunluk bir satır 3+3+1, 3+2+2, 2+2+2+1 gibi kombinasyonlarla
+   tam dolduğu için aşağıdaki açgözlü paketleyici 28 harfi 4 satıra
+   BOŞ HÜCRE BIRAKMADAN ve hiçbir aileyi kırmadan yerleştirebiliyor.
+   Önce büyük aileler yerleşir (stabil azalan sıra), artan yerler
+   "benzeri yok" harfleriyle doldurulur; böylece tekil harfler
+   doğal olarak alt satırlarda toplanır.
+   ============================================================ */
+
+/* Aile kuşaklarının rengi — kart arka planlarının bir ton koyusu. */
+const DZ_RENK = {
+    yazi: { be:'#7FB3E8', cim:'#84C795', dal:'#DCC46A', ra:'#7CCBC2', sin:'#B995CE',
+            sad:'#E39BB6', ta:'#E3B778', ayn:'#C2CE79', fe:'#9BA0DA' },
+    ses:  { s:'#EFB16A', z:'#7BC0EE', t:'#A2D882', d:'#C295E8', h:'#EE9195',
+            k:'#72CDB8', ayn:'#DFC94A' }
+};
+
+/* mod: 'yazi' | 'ses'  ->  [[{idx, grup, boy}, ...] x satir]
+   Dönen dizide her satır tam "sutun" uzunluğunda ve her ailenin
+   üyeleri ardışıktır. Paketleme tutmazsa null döner (çağıran
+   taraf o zaman alfabetik dizilime düşer). */
+function aileleriPaketle(mod, sutun, satir) {
+    const tablo = (mod === 'ses') ? HARF_SES : HARF_AILE;
+    const gruplar = [], yeri = new Map(), tekler = [];
+    harfler.forEach((h, idx) => {
+        const g = tablo[h.h];
+        if (!g) { tekler.push(idx); return; }
+        if (!yeri.has(g)) { yeri.set(g, gruplar.length); gruplar.push({ ad: g, uyeler: [] }); }
+        gruplar[yeri.get(g)].uyeler.push(idx);
+    });
+    /* stabil azalan: büyük aileler önce, eşitlerde alfabetik sıra korunur */
+    gruplar.forEach((g, i) => g._s = i);
+    gruplar.sort((a, b) => (b.uyeler.length - a.uyeler.length) || (a._s - b._s));
+
+    const satirlar = [];
+    let g = 0, t = 0;
+    for (let r = 0; r < satir; r++) {
+        const dizi = [];
+        let guvenlik = 0;
+        while (dizi.length < sutun && guvenlik++ < 64) {
+            const kalan = sutun - dizi.length;
+            if (g < gruplar.length && gruplar[g].uyeler.length <= kalan) {
+                const gr = gruplar[g++];
+                gr.uyeler.forEach(ix => dizi.push({ idx: ix, grup: gr.ad, boy: gr.uyeler.length }));
+            } else if (t < tekler.length) {
+                dizi.push({ idx: tekler[t++], grup: null, boy: 1 });
+            } else break;
+        }
+        satirlar.push(dizi);
+    }
+    /* güvenlik: tam dolmadıysa bu paketleme kullanılmaz */
+    const toplam = satirlar.reduce((a, s) => a + s.length, 0);
+    if (toplam !== harfler.length || satirlar.some(s => s.length !== sutun)) return null;
+    return satirlar;
+}
+
+/* =====================================================================
+   YAZILIŞ ANİMASYONU DÜĞMESİ
+   Tablodaki 28 kartın hepsi aynı anda sürekli yazılınca ekran hareketli
+   oluyor; bu yüzden ızgara animasyonu artık varsayılan olarak KAPALI.
+   Kapalıyken harfler tamamlanmış hâlde durur. Düğmeye basınca tüm kartlar
+   baştan, birlikte yazılmaya başlar. Bir harfe tıklayınca açılan büyüteç
+   ekranındaki yazılış animasyonu bu düğmeden etkilenmez; orada her zaman
+   çalışır.
+   ===================================================================== */
+const yazimAnim = {
+    acik: false,
+
+    cevir: function () {
+        if (typeof playClick === 'function') playClick();
+        this.acik = !this.acik;
+        this.uygula();
+    },
+
+    uygula: function () {
+        if (typeof harfGrid !== 'undefined') {
+            harfGrid.calis = this.acik;
+            /* Açılışta ortak saat sıfırlanır: bütün harfler baştan ve
+               birlikte yazılmaya başlasın. Kapanışta ise harflerin tam
+               hâline oturması için "oturtuldu" sayacı geçersiz kılınır. */
+            harfGrid.t0 = null;
+            harfGrid.oturanSay = -1;
+        }
+        this.ikonSenkron();
+    },
+
+    ikonSenkron: function () {
+        const b = document.getElementById('yaz-btn');
+        if (!b) return;
+        b.classList.toggle('on', this.acik);
+        b.title = this.acik ? 'Yazılış animasyonunu durdur'
+                            : 'Harflerin yazılış animasyonunu başlat';
+    }
+};
+
+const dizilis = {
+    acik: false,
+    mesgul: false,
+    SUTUN: 7,
+    SATIR: 4,
+
+    /* Süren bir kaydırma animasyonunu anında bitirir. Böylece kullanıcı
+       düğmeye üst üste bassa ya da switch'i çevirir çevirmez dizilişi
+       değiştirse tıklama yutulmaz; kartlar bulundukları yere oturur ve
+       yeni animasyon temiz bir ölçümle başlar. */
+    dur: function () {
+        if (this._zmn) { clearTimeout(this._zmn); this._zmn = null; }
+        document.querySelectorAll('.harf-tablo .char-card').forEach(k => {
+            k.style.removeProperty('transition');
+            k.style.removeProperty('transform');
+            k.style.removeProperty('z-index');
+        });
+        this.mesgul = false;
+    },
+
+    cevir: function () {
+        if (typeof playClick === 'function') playClick();
+        this.acik = !this.acik;
+        this.uygula(true);
+        this.ikonSenkron();
+    },
+
+    ikonSenkron: function () {
+        const t = document.querySelector('.harf-tablo');
+        if (t) t.classList.toggle('dizili', this.acik);
+        document.querySelectorAll('.grp-ico--diz').forEach(e => {
+            e.classList.toggle('on', this.acik);
+            e.title = this.acik ? 'Alfabetik sıraya (labirente) dön'
+                                : 'Harfleri ailelerine göre diz';
+        });
+    },
+
+    /* Kartları hedef hücrelere taşır. anim=true ise FLIP ile kaydırır. */
+    uygula: function (anim) {
+        this.dur();                                   /* önceki animasyon varsa yerine otursun */
+        const tablo = document.querySelector('.harf-tablo');
+        if (!tablo) return;
+        const kartlar = Array.from(tablo.querySelectorAll('.char-card'));
+        if (kartlar.length !== harfler.length) return;
+
+        const hucre = (r, c) => tablo.querySelector(`.ht-cell[data-r="${r}"][data-c="${c}"]`);
+        const kartOf = idx => tablo.querySelector(`.char-card[data-idx="${idx}"]`);
+
+        /* hedef: [{kart, td, grup, ilk, son, boy}] */
+        const plan = [];
+        let paket = null;
+        if (this.acik) paket = aileleriPaketle(harfGrup.mod, this.SUTUN, this.SATIR);
+        if (this.acik && paket) {
+            paket.forEach((dizi, r) => dizi.forEach((oge, c) => {
+                const td = hucre(r, c), kart = kartOf(oge.idx);
+                if (!td || !kart) return;
+                /* aynı gruptaki komşuları bul: dizi içinde ardışıklar */
+                const oncekiAyni = c > 0 && oge.grup && dizi[c - 1].grup === oge.grup;
+                const sonrakiAyni = c < dizi.length - 1 && oge.grup && dizi[c + 1].grup === oge.grup;
+                plan.push({
+                    kart, td, grup: oge.grup, boy: oge.boy,
+                    ilk: !!oge.grup && !oncekiAyni,      /* kuşağın sağ ucu (rtl: başlangıç) */
+                    son: !!oge.grup && !sonrakiAyni      /* kuşağın sol ucu */
+                });
+            }));
+        } else {
+            /* alfabetik / labirent: yılan dizilim */
+            for (let r = 0; r < this.SATIR; r++) {
+                for (let c = 0; c < this.SUTUN; c++) {
+                    const n = (r % 2 === 0) ? r * this.SUTUN + c + 1 : r * this.SUTUN + (this.SUTUN - c);
+                    const td = hucre(r, c), kart = kartOf(n - 1);
+                    if (td && kart) plan.push({ kart, td, grup: null, boy: 1, ilk: false, son: false });
+                }
+            }
+        }
+        if (plan.length !== harfler.length) return;
+
+        /* 1) eski konumları ölç */
+        const eski = anim ? new Map(kartlar.map(k => [k, k.getBoundingClientRect()])) : null;
+
+        /* 2) kuşak sınıflarını yenile + kartları hedeflerine taşı */
+        tablo.querySelectorAll('.ht-cell').forEach(td => {
+            td.classList.remove('dz-g', 'dz-bas', 'dz-son');
+            td.style.removeProperty('--dz-renk');
+        });
+        kartlar.forEach(k => k.remove());
+        const renkler = DZ_RENK[harfGrup.mod === 'ses' ? 'ses' : 'yazi'] || {};
+        plan.forEach(p => {
+            p.td.appendChild(p.kart);
+            if (this.acik && p.grup && p.boy > 1) {
+                p.td.classList.add('dz-g');
+                if (p.ilk) p.td.classList.add('dz-bas');
+                if (p.son) p.td.classList.add('dz-son');
+                if (renkler[p.grup]) p.td.style.setProperty('--dz-renk', renkler[p.grup]);
+            }
+        });
+
+        if (!anim || !eski) return;
+
+        /* 3) yeni konumları ölç, farkı ters uygula, sonra sıfıra animasyonla git */
+        this.mesgul = true;
+        const isler = [];
+        plan.forEach((p, i) => {
+            const e = eski.get(p.kart); if (!e) return;
+            const y = p.kart.getBoundingClientRect();
+            const dx = e.left - y.left, dy = e.top - y.top;
+            if (!dx && !dy) return;
+            isler.push({ kart: p.kart, dx, dy, gecikme: Math.min(140, i * 5) });
+        });
+        isler.forEach(o => {
+            o.kart.style.transition = 'none';
+            o.kart.style.zIndex = '4';
+            o.kart.style.transform = `translate(${o.dx}px, ${o.dy}px)`;
+        });
+        void tablo.offsetWidth;                       /* reflow: başlangıç durumu sabitlensin */
+        requestAnimationFrame(() => {
+            isler.forEach(o => {
+                o.kart.style.transition = `transform .62s cubic-bezier(.22,.85,.26,1) ${o.gecikme}ms`;
+                o.kart.style.transform = '';
+            });
+            this._zmn = setTimeout(() => { this._zmn = null; this.dur(); }, 900);
+        });
+    }
+};
+
+/* ============================================================
    SAĞ PANEL — kendinden sonrakiyle birleşmeyen harfler
    ------------------------------------------------------------
    6 harf (ا د ذ ر ز و), 6 satır 2 sütun:
@@ -252,10 +495,9 @@ function ypHarf(i, form) {
 /* ✓ ve ✗ artık yazı değil SVG. İkisi de ok animasyonu bittikten sonra belirir
    (zamanlama CSS'te: ok döngüsü 3.4s, işaretler %47'ye kadar görünmez).
      TİK   -> tek yol, soldan sağa çizilir; aynı anda aşağıdan yukarı süzülür.
-     ÇARPI -> iki kol sırayla çizilir, sonra .yi-x titrer ve dört ince çatlak
-              (.yi-catlak) kolların üzerindeki noktalardan dışa doğru kırılır.
-              Çatlaklar merkezden çıkmaz: merkezden çıkarsa çarpı yıldıza
-              benziyordu, kollardan kırılınca gerçek çatlak gibi duruyor. */
+     ÇARPI -> iki kol sırayla çizilir, o kadar. Önceden burada bir sarsıntı ve
+              çatlama efekti vardı; gözü yorduğu için kaldırıldı, işaret artık
+              sakin biçimde belirip duruyor. */
 const IM_TIK = '<svg class="yp-im yp-im-ok" viewBox="0 0 34 34" role="img"'
     + ' aria-label="öncesine bağlanır"><path class="yi-tik" d="M6 18.5L13.5 26L28 8"></path></svg>';
 const IM_CARPI = '<svg class="yp-im yp-im-no" viewBox="0 0 34 34" role="img"'
@@ -263,12 +505,7 @@ const IM_CARPI = '<svg class="yp-im yp-im-no" viewBox="0 0 34 34" role="img"'
     + '<g class="yi-x">'
     + '<path class="yi-x1" d="M8.5 8.5L25.5 25.5"></path>'
     + '<path class="yi-x2" d="M25.5 8.5L8.5 25.5"></path></g>'
-    + '<g class="yi-catlak">'
-    + '<path class="yi-c1" d="M19 19L23 17L26.5 18.5"></path>'
-    + '<path class="yi-c2" d="M13 13L9.5 15.5L6 14"></path>'
-    + '<path class="yi-c3" d="M15 19L17 23L15.5 26.5"></path>'
-    + '<path class="yi-c4" d="M21 13L19 9L20.5 5.5"></path>'
-    + '</g></svg>';
+    + '</svg>';
 
 function yanPaneliKur() {
     const yan = document.getElementById('g1yan');
@@ -426,6 +663,10 @@ const ui = {
         yanPaneliKur();
         altSeridiKur();
         harfGrup.set(harfGrup.mod);
+        /* Tablo yeniden çizildiyse dizili görünüm de yeniden kurulsun (animasyonsuz) */
+        if (typeof dizilis !== 'undefined') { dizilis.ikonSenkron(); if (dizilis.acik) dizilis.uygula(false); }
+        /* Yazılış animasyonu düğmesinin durumu tablo yeniden çizilse de korunur */
+        if (typeof yazimAnim !== 'undefined') yazimAnim.uygula();
 
         const g2 = document.getElementById('g2');
         g2.innerHTML = "";

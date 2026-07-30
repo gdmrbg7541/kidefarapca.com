@@ -11,7 +11,7 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe.css?v=30">
+    <link rel="stylesheet" href="alfabe.css?v=33">
 </head>
 <body>
 
@@ -55,6 +55,42 @@
             <!-- ODAK (tam ekran): sadece harf tablosu kalsın.
                  Kapalıyken dört köşe dışa doğru açılır, açıkken içe doğru toplanır. -->
             <span class="hdr-ayirac" aria-hidden="true"></span>
+            <!-- DİZİLİŞ: alfabetik labirent <-> ailelere göre dizili görünüm.
+                 Kapalıyken yedi çubuk eşit aralıklı durur ve altlarında tek bir
+                 uzun yol (labirent) vardır; açıkken çubuklar 3+2+2 diye kümelenir
+                 ve her kümenin altına kendi kancası çizilir. -->
+            <span class="mode-ico grp-ico grp-ico--diz" id="diz-btn" title="Harfleri ailelerine göre diz" onclick="dizilis.cevir()">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <g class="gd-kutular">
+                        <rect class="gd-n gd-n1" x="1.5"   y="10" width="4.2" height="14" rx="1.8"></rect>
+                        <rect class="gd-n gd-n2" x="7.93"  y="10" width="4.2" height="14" rx="1.8"></rect>
+                        <rect class="gd-n gd-n3" x="14.37" y="10" width="4.2" height="14" rx="1.8"></rect>
+                        <rect class="gd-n gd-n4" x="20.8"  y="10" width="4.2" height="14" rx="1.8"></rect>
+                        <rect class="gd-n gd-n5" x="27.23" y="10" width="4.2" height="14" rx="1.8"></rect>
+                        <rect class="gd-n gd-n6" x="33.67" y="10" width="4.2" height="14" rx="1.8"></rect>
+                        <rect class="gd-n gd-n7" x="40.1"  y="10" width="4.2" height="14" rx="1.8"></rect>
+                    </g>
+                    <path class="gd-yol" d="M1 29H44.8"></path>
+                    <path class="gd-kume gd-ku1" d="M1 26V29H15.3V26"></path>
+                    <path class="gd-kume gd-ku2" d="M20 26V29H29.8V26"></path>
+                    <path class="gd-kume gd-ku3" d="M35 26V29H44.8V26"></path>
+                </svg>
+            </span>
+            <!-- YAZILIŞ ANİMASYONU: tablodaki tüm harfler sürekli yazılsın mı?
+                 Kapalıyken harf tamamlanmış olarak durur (kalem beklemede),
+                 açıkken kalem ucu harfin üstünde gezinir ve harf tekrar tekrar
+                 kendini yazar. Bir harfe tıklanınca açılan büyüteçte yazılış
+                 animasyonu bu düğmeden bağımsız olarak her zaman çalışır. -->
+            <span class="mode-ico grp-ico grp-ico--yaz" id="yaz-btn" title="Harflerin yazılış animasyonunu başlat" onclick="yazimAnim.cevir()">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <path class="gy-iz" d="M7 17C7 30 13.5 35.5 24 35.5C34.5 35.5 41 30 41 17"></path>
+                    <path class="gy-harf" d="M7 17C7 30 13.5 35.5 24 35.5C34.5 35.5 41 30 41 17"></path>
+                    <circle class="gy-nokta" cx="24" cy="43" r="2.6"></circle>
+                    <g class="gy-uc">
+                        <path class="gy-uc-govde" d="M0 0L9 -9"></path>
+                    </g>
+                </svg>
+            </span>
             <span class="mode-ico grp-ico grp-ico--tam" id="tam-btn" title="Sadece harfleri göster (tam ekran)" onclick="tamEkran.cevir()">
                 <svg viewBox="0 0 48 48" aria-hidden="true">
                     <g class="gt-ac">
@@ -227,8 +263,8 @@
     </main>
 </div>
 
-<script src="alfabe_harf_detay.js?v=18"></script>
-<script src="alfabe.js?v=21"></script>
+<script src="alfabe_harf_detay.js?v=20"></script>
+<script src="alfabe.js?v=24"></script>
     <script src="geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

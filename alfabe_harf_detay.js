@@ -144,6 +144,15 @@ const harfDetay = {
         defs.appendChild(mask);
         svg.appendChild(defs);
 
+        // Satır (referans) çizgisi — kartlardaki ile aynı hizada: harflerin
+        // taban çizgisi viewBox'ta y=410'dur. İki yana bolca taşırılır,
+        // SVG kendi görüntü alanında kırptığı için kutuyu baştan sona keser.
+        const satir = document.createElementNS(NS, 'line');
+        satir.setAttribute('x1', -4000); satir.setAttribute('x2', 4000);
+        satir.setAttribute('y1', 410);   satir.setAttribute('y2', 410);
+        satir.setAttribute('class', 'hd-satir');
+        svg.appendChild(satir);
+
         // Soluk kılavuz: harfin tamamı
         const guide = document.createElementNS(NS, 'path');
         guide.setAttribute('d', data.fill);
@@ -239,6 +248,13 @@ const harfDetay = {
 const harfGrid = {
     items: [],      // {el, len, t0, dur, tap, cycle, form}
     started: false,
+    /* Izgara animasyonu varsayılan olarak KAPALI: 28 kart aynı anda
+       yazılınca ekran fazla hareketli oluyor. Başlıktaki yazılış düğmesi
+       (yazimAnim) bu bayrağı açıp kapatır. Kapalıyken harfler tamamlanmış
+       hâlde durur; büyüteç (harfDetay) bundan etkilenmez. */
+    calis: false,
+    t0: null,         // animasyon açıldığı andaki saat (hepsi baştan başlasın)
+    oturanSay: -1,    // kapalıyken tam hâline oturtulan darbe sayısı
 
     init: function() {
         if (this.started) return;
@@ -415,13 +431,27 @@ const harfGrid = {
         // sadece Harf Tanıtımı sekmesi görünürken çalış
         const p1 = document.getElementById('p1');
         if (document.visibilityState === 'visible' && p1 && p1.classList.contains('active')) {
-            for (const it of this.items) {
-                const t = now % it.cycle;
-                let f;
-                if (t < it.t0) f = 0;
-                else if (t >= it.t0 + it.dur) f = 1;
-                else { const x = (t - it.t0) / it.dur; f = x < 0.5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2) / 2; }
-                it.el.style.strokeDashoffset = it.len * (1 - f);
+            if (this.calis) {
+                /* Ortak saat düğmeye basıldığı anda sıfırlanır: bütün kartlar
+                   aynı yerden, birlikte yazmaya başlar. */
+                if (this.t0 == null) this.t0 = now;
+                const zaman = now - this.t0;
+                for (const it of this.items) {
+                    const t = zaman % it.cycle;
+                    let f;
+                    if (t < it.t0) f = 0;
+                    else if (t >= it.t0 + it.dur) f = 1;
+                    else { const x = (t - it.t0) / it.dur; f = x < 0.5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2) / 2; }
+                    it.el.style.strokeDashoffset = it.len * (1 - f);
+                }
+                this.oturanSay = -1;
+            } else if (this.oturanSay !== this.items.length) {
+                /* Kapalıyken harfler yarım kalmasın: her darbe tam açılır,
+                   kart normal (statik) harf gibi görünür. Darbeler init()
+                   sırasında parça parça eklendiği için sayı değişince
+                   yeniden oturtulur. */
+                for (const it of this.items) it.el.style.strokeDashoffset = 0;
+                this.oturanSay = this.items.length;
             }
         }
         requestAnimationFrame(this.tick);

@@ -178,8 +178,11 @@
             font-size: clamp(1.3rem, 1.7vw, 1.95rem);
             margin-bottom: 11px;
         }
-        .yp-ok { color: #117A65; }
-        .yp-no { color: #C0392B; }
+        /* Yeşil/kırmızı, tablodaki harflerde kullanılan canlı site renkleriyle
+           birebir aynı: giriş/çıkış kartlarının kenarlığı, sıra numarası rozeti
+           ve labirent okları da bu ikiliyi kullanıyor. */
+        .yp-ok { color: #16A085; }
+        .yp-no { color: #EF5350; }
         /* --- özel animasyonlu ok: harften kalkar, yukarıda işarete doğru kıvrılır --- */
         .yp-yon {
             width: clamp(32px, 3vw, 42px); height: clamp(32px, 2.8vw, 39px);
@@ -208,7 +211,7 @@
            İkisi de ok animasyonu BİTTİKTEN sonra belirir: ok döngüsü 3.4s ve
            ucu %48'de tamamlanıyor, işaretler bu yüzden %47'ye kadar görünmez.
              TİK  -> soldan sağa çizilir, aynı anda aşağıdan yukarı süzülür.
-             ÇARPI-> iki kol sırayla çizilir, sonra titrer ve çatlaklar açılır.
+             ÇARPI-> iki kol sırayla çizilir; sarsıntı/çatlama yok, sakin durur.
            =========================================================== */
         .yp-im {
             width: clamp(24px, 2.3vw, 32px); height: clamp(24px, 2.3vw, 32px);
@@ -220,8 +223,6 @@
         }
         .yp-im .yi-tik { stroke-width: 3.7; stroke-dasharray: 34; stroke-dashoffset: 34; }
         .yp-im .yi-x path { stroke-width: 3.7; stroke-dasharray: 25; stroke-dashoffset: 25; }
-        .yp-im .yi-x { transform-origin: 17px 17px; }
-        .yp-im .yi-catlak path { stroke-width: 1.4; stroke-dasharray: 9; stroke-dashoffset: 9; opacity: 0; }
 
         /* --- TİK: soldan sağa çiz + aşağıdan yukarı belir --- */
         .yp-ok .yp-im-ok { animation: ypTikGel 3.4s ease-out infinite; }
@@ -238,16 +239,13 @@
             100%     { stroke-dashoffset: 34; }
         }
 
-        /* --- ÇARPI: çiz -> titre -> çatla.  Sol sütunun oku .5s gecikmeli
-               başladığı için işaret de aynı gecikmeyi alır. --- */
+        /* --- ÇARPI: yalnızca belirir ve iki kolu sırayla çizilir. Sol sütunun
+               oku .5s gecikmeli başladığı için işaret de aynı gecikmeyi alır.
+               (Eskiden burada bir sarsıntı + çatlama animasyonu vardı,
+               dikkat dağıttığı için kaldırıldı.) --- */
         .yp-no .yp-im-no { animation: ypCarpiGel 3.4s ease-out infinite .5s; }
         .yp-no .yp-im-no .yi-x1 { animation: ypXCiz1 3.4s ease-out infinite .5s; }
         .yp-no .yp-im-no .yi-x2 { animation: ypXCiz2 3.4s ease-out infinite .5s; }
-        .yp-no .yp-im-no .yi-x  { animation: ypTitre 3.4s ease-in-out infinite .5s; }
-        .yp-no .yp-im-no .yi-catlak path { animation: ypCatlak 3.4s ease-out infinite .5s; }
-        .yp-no .yp-im-no .yi-c2 { animation-delay: .56s; }
-        .yp-no .yp-im-no .yi-c3 { animation-delay: .62s; }
-        .yp-no .yp-im-no .yi-c4 { animation-delay: .68s; }
         @keyframes ypCarpiGel {
             0%, 46%  { opacity: 0; transform: scale(.82); }
             56%      { opacity: 1; transform: scale(1.08); }
@@ -264,29 +262,13 @@
             64%, 92% { stroke-dashoffset: 0; }
             100%     { stroke-dashoffset: 25; }
         }
-        /* titreme: çarpı tamamlandıktan hemen sonra kısa, sert bir sarsıntı */
-        @keyframes ypTitre {
-            0%, 64%   { transform: translate(0, 0) rotate(0deg); }
-            67%       { transform: translate(-1.7px, .7px) rotate(-4deg); }
-            70%       { transform: translate(1.7px, -.7px) rotate(4deg); }
-            73%       { transform: translate(-1.2px, -.6px) rotate(-2.5deg); }
-            76%       { transform: translate(.9px, .5px) rotate(1.5deg); }
-            79%, 100% { transform: translate(0, 0) rotate(0deg); }
-        }
-        /* çatlaklar: sarsıntının içinde açılır, ince ve soluk kalır */
-        @keyframes ypCatlak {
-            0%, 69%  { stroke-dashoffset: 9; opacity: 0; }
-            73%      { opacity: .8; }
-            82%, 92% { stroke-dashoffset: 0; opacity: .8; }
-            100%     { stroke-dashoffset: 9; opacity: 0; }
-        }
         .yp-hucre {
             display: flex; align-items: center; justify-content: center; overflow: visible;
             border: 0; background: transparent;
         }
         .yp-harf { font-size: clamp(2.4rem, 6.6vh, 4.8rem); line-height: 1.3; }
-        .yp-c-ok .yp-harf { color: #117A65; }
-        .yp-c-no .yp-harf { color: #C0392B; }
+        .yp-c-ok .yp-harf { color: #16A085; }
+        .yp-c-no .yp-harf { color: #EF5350; }
         /* Harf, arakom hattının dış hattından SVG olarak çizilir: kartlardaki
            harflerle birebir aynı biçim. Yükseklik ortak, taban çizgisi ortak. */
         .yp-harf-svg { display: flex; align-items: center; justify-content: center; max-width: 100%; position: relative; }
@@ -407,6 +389,8 @@
             padding: var(--ht-pad); vertical-align: middle;
             border-top: var(--ht-w) solid transparent;
             border-right: var(--ht-w) solid transparent;
+            position: relative;
+            transition: border-color .45s ease;
         }
         .ht-cell.ht-son-satir { border-bottom: var(--ht-w) solid transparent; }
         .ht-cell.ht-son-sutun { border-left: var(--ht-w) solid transparent; }
@@ -432,8 +416,48 @@
         .ht-cell.k-alt-yok   { border-bottom-color: transparent; }
         .ht-cell.k-sol-yok   { border-left-color: transparent; }
 
-        .char-card.maze-start { border-color: #16A085 !important; box-shadow: 0 0 0 2px rgba(22,160,133,0.30), var(--shadow-sm); }
-        .char-card.maze-end   { border-color: #EF5350 !important; box-shadow: 0 0 0 2px rgba(239,83,80,0.30), var(--shadow-sm); }
+        .harf-tablo:not(.dizili) .char-card.maze-start { border-color: #16A085 !important; box-shadow: 0 0 0 2px rgba(22,160,133,0.30), var(--shadow-sm); }
+        .harf-tablo:not(.dizili) .char-card.maze-end   { border-color: #EF5350 !important; box-shadow: 0 0 0 2px rgba(239,83,80,0.30), var(--shadow-sm); }
+
+        /* ============================================================
+           DİZİLİŞ MODU — aileler yan yana
+           ------------------------------------------------------------
+           Alfabetik görünümde tablo bir labirenttir: duvarlar ve 1→28
+           yolu harflerin sırasını anlatır. Diziliş moduna geçilince o
+           anlatım geçerliliğini yitirdiği için duvarlar ve giriş/çıkış
+           okları yumuşakça söner; yerine aynı aileden harfleri kucaklayan
+           yuvarlak köşeli birer kuşak gelir. Kuşağın rengi ailenin kendi
+           kart rengiyle aynı ailedendir, böylece göz aynı işareti iki kez
+           öğrenmek zorunda kalmaz.
+           ============================================================ */
+        .harf-tablo.dizili .ht-cell { border-color: transparent !important; }
+
+        .char-card .mz-ok { transition: opacity .35s ease; }
+        .harf-tablo.dizili .char-card .mz-ok { opacity: 0; }
+
+        /* Aile kuşağı: hücrenin arkasına çizilen şerit. border-collapse
+           yüzünden komşu hücrelerin dolgu kutuları arasında var(--ht-w)
+           kadar boşluk kalır; şerit iki yandan o kadar taşırılarak
+           kesintisiz görünür. Uçlarda taşma kırpılır ve köşe yuvarlanır. */
+        .ht-cell.dz-g::before {
+            content: ''; position: absolute; z-index: 0; pointer-events: none;
+            top: 1px; bottom: 1px;
+            left: calc(-1 * var(--ht-w)); right: calc(-1 * var(--ht-w));
+            border-top: 2px solid var(--dz-renk, #cfd8e3);
+            border-bottom: 2px solid var(--dz-renk, #cfd8e3);
+            background: color-mix(in srgb, var(--dz-renk, #cfd8e3) 11%, transparent);
+            opacity: 0; transition: opacity .4s ease .18s;
+        }
+        .ht-cell.dz-bas::before {
+            right: 1px; border-right: 2px solid var(--dz-renk, #cfd8e3);
+            border-top-right-radius: 13px; border-bottom-right-radius: 13px;
+        }
+        .ht-cell.dz-son::before {
+            left: 1px; border-left: 2px solid var(--dz-renk, #cfd8e3);
+            border-top-left-radius: 13px; border-bottom-left-radius: 13px;
+        }
+        .harf-tablo.dizili .ht-cell.dz-g::before { opacity: 1; }
+        .ht-cell > .char-card { position: relative; z-index: 1; }
 
         /* GİRİŞ / ÇIKIŞ: yazı yerine animasyonlu ok SVG'si.
            Giriş oku kapıya doğru girer (yeşil), çıkış oku kapıdan dışarı çıkar (kırmızı).
@@ -480,7 +504,9 @@
         .ht-cell .char-card { min-width: 0; min-height: 0; overflow: hidden; }
         .ht-cell .char-card > .arabic-seq { max-width: 100%; overflow: hidden; }
         .arabic-seq { font-size: 2.2rem; display: flex; gap: 12px; position: relative; z-index: 1; }
-        .arabic-seq::before { content: ""; position: absolute; left: 0; right: 0; top: 65%; height: 2px; background-color: rgba(0, 0, 0, 0.25); z-index: -1; }
+        /* Satır (referans) çizgisi biraz kalınlaştırıldı: harfin kuyruğunun
+           çizginin altına inip inmediği daha net okunsun. */
+        .arabic-seq::before { content: ""; position: absolute; left: 0; right: 0; top: 65%; height: 3px; background-color: rgba(0, 0, 0, 0.25); z-index: -1; }
         .b-green { color: #16a34a !important; }
         .o-blue  { color: #2563eb !important; }
         .s-purple { color: #9333ea !important; }
@@ -513,7 +539,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.20);
             pointer-events: none; user-select: none;
         }
-        .char-card.maze-end .card-num { background: #EF5350; }
+        .harf-tablo:not(.dizili) .char-card.maze-end .card-num { background: #EF5350; }
         .char-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: var(--shadow-md); border-color: var(--accent); }
 
         /* Benzer YAZILAN harf aileleri: açık pastel arka planlar */
@@ -590,6 +616,13 @@
         }
         .hd-col-box:hover { border-color: var(--accent); transform: translateY(-3px); }
         .hd-yaz-svg { width: 100%; height: 100%; }
+        /* Büyüteç kutusunda da satır çizgisi: harfin çizginin neresine oturduğu,
+           kuyruğun altına inip inmediği burada da görünsün. Çizgi harfin
+           viewBox'ında y=410 (taban) hizasında durur; iki yana taşırılıp SVG
+           görüntü alanında kırpıldığı için kutuyu baştan sona keser.
+           vector-effect sayesinde harf ne kadar büyütülürse büyütülsün
+           çizginin kalınlığı sabit kalır. */
+        .hd-satir { stroke: rgba(0, 0, 0, 0.22); stroke-width: 3; vector-effect: non-scaling-stroke; }
 
         /* Kalem animasyonu katmanları */
         .hd-ghost { fill: #eef2f7; }
@@ -799,6 +832,82 @@
         @keyframes gsHop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         @keyframes gsDalga { 0% { opacity: .18; transform: scale(.78); } 45% { opacity: 1; transform: scale(1); } 100% { opacity: .18; transform: scale(.78); } }
 
+        /* DİZİLİŞ ikonu: kapalıyken yedi çubuk eşit aralıklı durur ve altlarında
+           tek bir uzun yol (labirent) uzanır; açıkken çubuklar 3+2+2 diye kümelenir,
+           uzun yol silinir ve her kümenin altına kendi kancası çizilir. */
+        .grp-ico--diz:hover { background: rgba(243,156,18,.12); }
+        .grp-ico--diz.on { background: rgba(243,156,18,.16); }
+        .grp-ico--diz .gd-n {
+            fill: #A9B7C3; stroke: none;
+            transition: transform .5s cubic-bezier(.22,.9,.24,1.25), fill .3s ease;
+        }
+        .grp-ico--diz.on .gd-n { fill: #E67E22; }
+        .grp-ico--diz.on .gd-n2 { transform: translateX(-1.83px); }
+        .grp-ico--diz.on .gd-n3 { transform: translateX(-3.67px); }
+        .grp-ico--diz.on .gd-n4 { transform: translateX(-0.3px); }
+        .grp-ico--diz.on .gd-n5 { transform: translateX(-2.13px); }
+        .grp-ico--diz.on .gd-n6 { transform: translateX(1.83px); }
+        .grp-ico--diz .gd-yol {
+            stroke: #A9B7C3; stroke-dasharray: 44; stroke-dashoffset: 0; stroke-width: 2.6;
+            transition: stroke-dashoffset .45s ease;
+        }
+        .grp-ico--diz.on .gd-yol { stroke-dashoffset: 44; }
+        .grp-ico--diz .gd-kume {
+            stroke: #E67E22; stroke-dasharray: 22; stroke-dashoffset: 22; stroke-width: 2.6;
+            transition: stroke-dashoffset .45s ease .12s;
+        }
+        .grp-ico--diz.on .gd-kume { stroke-dashoffset: 0; }
+
+        /* YAZILIŞ ANİMASYONU düğmesi: kapalıyken harf (be benzeri kâse + nokta)
+           tamamlanmış ve gri durur; açıkken turuncuya döner, kalem ucu harfin
+           üstünde gezinirken harf kendini tekrar tekrar yazar. */
+        .grp-ico--yaz:hover { background: rgba(243,156,18,.12); }
+        .grp-ico--yaz.on { background: rgba(243,156,18,.16); }
+        .grp-ico--yaz svg { overflow: visible; }
+        /* İz: harfin soluk hayaleti — animasyon sırasında nereye yazıldığı belli olsun */
+        .grp-ico--yaz .gy-iz {
+            stroke: #A9B7C3; stroke-width: 3; stroke-linecap: round; fill: none;
+            opacity: 0; transition: opacity .3s ease;
+        }
+        .grp-ico--yaz.on .gy-iz { opacity: .28; }
+        .grp-ico--yaz .gy-harf {
+            stroke: #A9B7C3; stroke-width: 3; stroke-linecap: round; fill: none;
+            stroke-dasharray: 62; stroke-dashoffset: 0;
+            transition: stroke .3s ease;
+        }
+        .grp-ico--yaz.on .gy-harf { stroke: #E67E22; animation: gyYaz 2.6s ease-in-out infinite; }
+        .grp-ico--yaz .gy-nokta {
+            fill: #A9B7C3; stroke: none; transition: fill .3s ease;
+            transform-box: fill-box; transform-origin: center;
+        }
+        .grp-ico--yaz.on .gy-nokta { fill: #E67E22; animation: gyNokta 2.6s ease-in-out infinite; }
+        /* Kalem ucu: harfin çizgisini takip eder (CSS hareket yolu) */
+        .grp-ico--yaz .gy-uc {
+            opacity: 0;
+            offset-path: path('M7 17C7 30 13.5 35.5 24 35.5C34.5 35.5 41 30 41 17');
+            offset-rotate: 0deg; offset-distance: 0%;
+        }
+        .grp-ico--yaz .gy-uc-govde {
+            stroke: #E67E22; stroke-width: 3.4; stroke-linecap: round; fill: none;
+        }
+        .grp-ico--yaz.on .gy-uc { animation: gyUc 2.6s ease-in-out infinite; }
+
+        @keyframes gyYaz {
+            0%   { stroke-dashoffset: 62; }
+            62%  { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes gyNokta {
+            0%, 66%  { opacity: 0; transform: scale(.4); }
+            76%, 100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes gyUc {
+            0%   { opacity: 1; offset-distance: 0%; }
+            62%  { opacity: 1; offset-distance: 100%; }
+            72%  { opacity: 0; offset-distance: 100%; }
+            100% { opacity: 0; offset-distance: 100%; }
+        }
+
         .select-pair { font-family: 'arakom'; font-size: 1.15rem; padding: 7px 12px; border-radius: 12px; border: 1px solid #E9EEF5; outline: none; cursor: pointer; background: #fff; color: #117A65; box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
         .select-pair:focus { border-color: #16A085; }
 
@@ -1000,6 +1109,22 @@
             .duel-stage { flex-direction: column; }
             .q-display { font-size: 5rem !important; }
             .btn-ans { font-size: 1.4rem !important; }
+        }
+
+/* Diziliş düğmesi eklenince başlıktaki switch dörde çıktı; dar ekranlarda
+   sekme şeridinin üstüne binmesin diye ikonlar ve aralıklar biraz kısılır.
+   Böylece switch genişliği düğme eklenmeden önceki değere geri döner. */
+        @media (max-width: 900px) {
+            .hdr-switch { padding: 3px 6px; gap: 3px; }
+            .hdr-switch .grp-ico { width: 23px; height: 23px; padding: 1px; }
+            .hdr-switch .hdr-ayirac { margin: 0; }
+            /* Dar şeritte ikonlar birbirine çok yakın: üzerine gelince
+               2px yukarı zıplama titremeye yol açıyor, burada kapalı. */
+            .hdr-switch .mode-ico:hover { transform: none; }
+            /* Beş ikon dar ekrana sığsın diye yazı/ses topuzu da küçülür */
+            .hdr-switch .switch { width: 34px; height: 20px; }
+            .hdr-switch .slider:before { height: 14px; width: 14px; bottom: 3px; }
+            #p1-switch.hdr-switch input:checked + .slider:before { transform: translateX(-14px); }
         }
 
 /* Büyük Switch Tasarımı (Yarışma Modu İçin) */
