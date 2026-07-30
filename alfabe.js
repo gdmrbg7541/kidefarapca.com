@@ -176,6 +176,51 @@ function tabloKenarlariUygula() {
     });
 }
 
+/* ============================================================
+   SAĞ PANEL — kendinden sonrakiyle birleşmeyen harfler
+   ------------------------------------------------------------
+   6 harf (ا د ذ ر ز و), 6 satır 2 sütun:
+     sağ sütun  ✓  ـا  -> kendinden ÖNCEKİ harfe bağlanır (harfler[].s = sonda)
+     sol sütun  ✗  ا   -> kendinden SONRAKİ harfe bağlanmaz (harfler[].b = başta)
+   Liste elle yazılmadı; harfler dizisindeki nobind işaretinden geliyor,
+   yani harf verisi değişirse panel kendiliğinden güncellenir.
+   ============================================================ */
+function yanPaneliKur() {
+    const yan = document.getElementById('g1yan');
+    if (!yan) return;
+    let s = '<div class="yp-baslik">Kendinden sonrakiyle birleşmeyen harfler</div>';
+    s += '<div class="yp-tablo">';
+    s += '<div class="yp-th yp-ok">✓</div><div class="yp-th yp-no">✗</div>';
+    harfler.filter(i => i.nobind).forEach(i => {
+        s += `<div class="yp-hucre yp-c-ok" title="${i.tr}: öncesine bağlanır"><span class="yp-harf">${i.s}</span></div>`;
+        s += `<div class="yp-hucre yp-c-no" title="${i.tr}: sonrasına bağlanmaz"><span class="yp-harf">${i.b}</span></div>`;
+    });
+    s += '</div>';
+    yan.innerHTML = s;
+}
+
+/* ============================================================
+   ALT ŞERİT — sağdan sola sıralanır (şerit direction: rtl)
+     1) harekeler   2) cezim - şedde   3) uzatma harfleri   4) tâ-i merbûta
+   Kutuları/ögeleri buradan ekleyip çıkarabilirsin, sıra dizideki sıradır.
+   ============================================================ */
+const ALT_KUTULAR = [
+    { ad: 'Harekeler',       ogeler: [ { g: 'بَ', ad: 'üstün' }, { g: 'بِ', ad: 'esre' }, { g: 'بُ', ad: 'ötre' } ] },
+    { ad: 'Cezim – Şedde',   ogeler: [ { g: 'بْ', ad: 'cezim' }, { g: 'بّ', ad: 'şedde' } ] },
+    { ad: 'Uzatma harfleri', ogeler: [ { g: 'بَا', ad: 'elif' }, { g: 'بُو', ad: 'vav' }, { g: 'بِي', ad: 'ye' } ] },
+    { ad: 'Tâ-i Merbûta',    ogeler: [ { g: 'ـة', ad: 'sonda' }, { g: 'ة', ad: 'yalın' } ] }
+];
+
+function altSeridiKur() {
+    const alt = document.getElementById('g1alt');
+    if (!alt) return;
+    alt.innerHTML = ALT_KUTULAR.map(k =>
+        `<div class="as-kutu"><div class="as-baslik">${k.ad}</div><div class="as-satir">`
+        + k.ogeler.map(o => `<div class="as-oge"><span class="as-harf">${o.g}</span><span class="as-ad">${o.ad}</span></div>`).join('')
+        + '</div></div>'
+    ).join('');
+}
+
 const ui = {
     tab: (e, id) => {
         if (e) e.preventDefault(); 
@@ -233,6 +278,8 @@ const ui = {
         html += '</tbody></table>';
         g1.innerHTML = html;
         tabloKenarlariUygula();
+        yanPaneliKur();
+        altSeridiKur();
 
         const g2 = document.getElementById('g2');
         g2.innerHTML = "";
