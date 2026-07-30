@@ -336,6 +336,70 @@ const harfGrid = {
         });
         this.tick = this.tick.bind(this);
         requestAnimationFrame(this.tick);
+        // kutuları karta göre ölçekle (kart sınırlarını sonuna kadar kullan)
+        requestAnimationFrame(() => requestAnimationFrame(() => harfGrid.layout()));
+        let rt;
+        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => harfGrid.layout(), 150); });
+    },
+
+    // Her kartın iç genişlik/yüksekliğini ölçüp mini kutuları büyütür.
+    // Ölçek tüm kartlarda ortaktır; sadece çok geniş harfler (ص ض) kendi kartına sığacak kadar küçülür.
+    layout: function() {
+        const grid = document.getElementById('g1');
+        if (!grid) return;
+        const cards = grid.querySelectorAll('.char-card');
+        if (!cards.length) return;
+        const GAP = 9;
+        const info = [];
+        // Ölçmeden önce kutuları sıfırla: aksi halde mevcut SVG genişlikleri
+        // sütunları kendisi genişletiyor ve ölçüm döngüye giriyor.
+        const allSvg = grid.querySelectorAll('svg.hg-svg');
+        const setH = function(s, h) {
+            const vb = s.getAttribute('viewBox').split(/\s+/);
+            s.style.height = h.toFixed(1) + 'px';
+            s.style.width = ((+vb[2]) / (+vb[3]) * h).toFixed(1) + 'px';
+        };
+        allSvg.forEach(s => { s.style.width = '0px'; s.style.height = '0px'; });
+        void grid.offsetWidth; // reflow
+        // Mobilde ızgara satırları "auto": kart yüksekliği içeriğe göre büyür,
+        // yani yükseklik bir sınır değildir; ölçüyü genişlik belirler.
+        const rowsAuto = window.matchMedia('(max-width: 768px)').matches;
+        cards.forEach(card => {
+            const seq = card.querySelector('.arabic-seq.hg-live');
+            if (!seq) return;
+            const svgs = Array.prototype.slice.call(seq.querySelectorAll('svg.hg-svg'));
+            if (!svgs.length) return;
+            let sum = 0;
+            svgs.forEach(s => {
+                const vb = s.getAttribute('viewBox').split(/\s+/);
+                sum += (+vb[2]) / (+vb[3]);
+            });
+            if (!sum) return;
+            const label = card.querySelector('.tr-label');
+            // Formlar arası boşluk kart genişliğine göre: küçük kartlarda boşluk
+            // harflerden çalmasın.
+            const raw = seq.clientWidth;
+            const g = Math.max(3, Math.min(GAP, raw / 24));
+            seq.style.gap = g.toFixed(1) + 'px';
+            const availW = raw - g * (svgs.length - 1) - 2;
+            let availH = rowsAuto ? Infinity
+                                  : card.clientHeight - (label ? label.offsetHeight : 0) - 12;
+            if (availH < 18) availH = 18;
+            if (availW <= 0) return;
+            info.push({ svgs: svgs, fitW: availW / sum, fitH: availH });
+        });
+        if (!info.length) {
+            // Ölçüm yapılamadıysa kutuları sıfırda bırakma: güvenli bir boya dön.
+            allSvg.forEach(s => setH(s, 46));
+            return;
+        }
+        const fits = info.map(o => Math.min(o.fitW, o.fitH)).sort((a, b) => a - b);
+        const base = fits[Math.min(2, fits.length - 1)];
+        const H = Math.max(18, Math.min(130, base));
+        info.forEach(o => {
+            const h = Math.max(18, Math.min(H, o.fitW, o.fitH));
+            o.svgs.forEach(s => setH(s, h));
+        });
     },
 
     tick: function(now) {

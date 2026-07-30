@@ -125,7 +125,7 @@ const ui = {
             g1.innerHTML += `
                 <div class="char-card ${nc} ${fc}" onclick="harfDetay.open(${idx})" title="Detay için tıkla: mahreç ve yazılış">
                     <span class="card-num">${idx + 1}</span>
-                    <div class="arabic-seq" style="display: flex; justify-content: space-around; width: 100%; padding: 0 5px;">
+                    <div class="arabic-seq" style="display: flex; justify-content: center; width: 100%;">
                         <span class="b-green">${i.b}</span>
                         <span class="o-blue">${i.o}</span>
                         <span class="s-purple">${i.s}</span>
@@ -143,16 +143,39 @@ const ui = {
         });
         
         if(typeof memoryGame !== 'undefined') memoryGame.init();
+        if(typeof syncModeIcons === 'function') syncModeIcons();
     }
 };
 
+/* Mod ikonları: her switch-wrapper içindeki checkbox durumuna göre
+   hangi SVG'nin canlı (animasyonlu) olacağını belirler. */
+function syncModeIcons() {
+    document.querySelectorAll('.switch-wrapper').forEach(w => {
+        const inp = w.querySelector('input[type="checkbox"]');
+        if (!inp) return;
+        const s = w.querySelector('.mode-ico--single');
+        const m = w.querySelector('.mode-ico--multi');
+        if (s) s.classList.toggle('on', !inp.checked);
+        if (m) m.classList.toggle('on', inp.checked);
+    });
+}
+
+/* Kart arkası süsü: sitenin geometrik motifi (8 köşeli yıldız + dönen halka) */
+const MEM_ORNAMENT = '<svg class="mem-orn" viewBox="0 0 100 100" aria-hidden="true">'
+    + '<rect x="26" y="26" width="48" height="48" rx="4"/>'
+    + '<rect x="26" y="26" width="48" height="48" rx="4" transform="rotate(45 50 50)"/>'
+    + '<circle cx="50" cy="50" r="14"/>'
+    + '<circle class="mo-dot" cx="50" cy="50" r="41"/>'
+    + '</svg>';
+
 const memoryGame = {
     mode: 'single', turn: 1, opened: [], matchedCount: 0, targetPairs: 9, scores: { p1: 0, p2: 0 },
-    
+
     toggleSwitch: function(isMulti) {
         document.getElementById('mem-toggle').checked = isMulti;
         playClick();
         this.mode = isMulti ? 'multi' : 'single';
+        syncModeIcons();
         this.init();
     },
 
@@ -172,13 +195,19 @@ const memoryGame = {
 
         let items = [];
         [...harfler].sort(() => Math.random() - 0.5).slice(0, this.targetPairs).forEach(h => {
-            items.push({ text: h.h, match: h.tr });
-            items.push({ text: h.tr, match: h.tr });
+            items.push({ text: h.h, match: h.tr, ar: true });
+            items.push({ text: h.tr, match: h.tr, ar: false });
         });
 
         items.sort(() => Math.random() - 0.5).forEach(item => {
             const card = document.createElement('div');
-            card.className = 'mem-item'; card.innerText = item.text; card.dataset.match = item.match;
+            card.className = 'mem-item ' + (item.ar ? 'mem-ar' : 'mem-tr');
+            card.dataset.match = item.match;
+            card.innerHTML = '<div class="mem-inner">'
+                + '<div class="mem-face mem-front"><span class="mem-txt"></span></div>'
+                + '<div class="mem-face mem-back">' + MEM_ORNAMENT + '</div>'
+                + '</div>';
+            card.querySelector('.mem-txt').textContent = item.text;
             card.onclick = () => this.handleFlip(card);
             g3.appendChild(card);
         });
@@ -266,6 +295,7 @@ const game = {
         playClick();
         this.mode = m;
         document.getElementById('yarisma-toggle').checked = (m === 'multi');
+        syncModeIcons();
     },
 
     // Yeni eklendi: Menüye / Mod seçimine geri dönme
