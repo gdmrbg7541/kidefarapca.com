@@ -740,3 +740,44 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
   #admin-dock{ width:100%; border-left:none; z-index:360; }
   body.admin-dock-open{ padding-right:0; }
 }
+
+/* ==================================================================
+   ÖĞRETMEN KODU KARTI  (teacher-section / renderTeacherPanel)
+   Öğretmen kendi sabit kodunu profilinde net görsün diye eklendi.
+   ================================================================== */
+.tch-kod-karti{
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  background:linear-gradient(135deg,#FFF8F2 0%,#FFEDE0 100%);
+  border:2px dashed #E8A87C;
+  border-radius:16px;
+  padding:16px 20px;
+  margin:0 0 22px;
+  box-shadow:0 4px 14px rgba(216,67,21,.08);
+}
+.tch-kod-sol{ flex:0 0 auto; }
+.tch-kod-etiket{
+  font-size:.78rem; letter-spacing:1.5px; font-weight:700; color:#B34700;
+}
+.tch-kod-deger{
+  font-family:'Nunito','Marhey',sans-serif;
+  font-size:2rem; line-height:1.15; font-weight:700; color:#D84315;
+  letter-spacing:1px; user-select:all;
+}
+.tch-kod-sag{ flex:1 1 220px; display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+.tch-kod-kopyala{
+  background:#D84315; color:#fff; border:none; border-radius:10px;
+  padding:9px 18px; font-size:.95rem; font-weight:700; cursor:pointer;
+  font-family:inherit; transition:.2s;
+}
+.tch-kod-kopyala:hover{ background:#B34700; transform:translateY(-1px); }
+.tch-kod-not{ font-size:.82rem; color:#8a5a3c; }
+.tch-kod-satir{
+  font-family:'Nunito','Marhey',sans-serif; font-weight:700;
+  color:#D84315; background:#FFF3EA; border:1px dashed #E8A87C;
+  border-radius:8px; padding:2px 10px; letter-spacing:1px; user-select:all;
+}
+@media (max-width:600px){
+  .tch-kod-karti{ padding:14px; gap:10px; }
+  .tch-kod-deger{ font-size:1.6rem; }
+  .tch-kod-sag{ flex:1 1 100%; }
+}

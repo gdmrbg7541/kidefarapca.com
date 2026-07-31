@@ -1,0 +1,1009 @@
+/* ==========================================================================
+   OGRENCI HESAP SISTEMI  —  ogrencihesap.js
+   --------------------------------------------------------------------------
+   AKIS ("Kod bir kez -> sonra e-posta"):
+     1) Ogretmen ogrenciyi ekler  -> zaten uretilen kisiye ozel kod
+        (orn. TCH-4582-X8B2) buluta "davet" olarak yazilir.
+     2) Ogrenci siteye E-POSTA ile kayit olur / giris yapar.
+     3) Ogrenci bu kodu BIR KEZ girer -> ogretmene "istek" duser.
+     4) Ogretmen onaylar -> hesap o ogrenci satirina KALICI baglanir.
+     5) Bundan sonra ogrenci hep e-posta ile girer; kod bir daha sorulmaz
+        ve kod tek kullanimliktir (kullanildi=true).
+
+   E-POSTA ILE GIRIS YAPMAMIS HIC KIMSE MESAJ GONDEREMEZ.
+
+   FIRESTORE KOLEKSIYONLARI
+     davetler/{KOD}          -> ogretmenin yayinladigi davet
+     ogrenciBaglari/{uid}    -> ogrencinin istegi / kalici baglantisi
+     ogrenciOzet/{uid}       -> ogretmenin yazdigi, ogrenciye ozel ayna kayit
+     ogrenciMesaj/{otoId}    -> ogrenciden ogretmene giden mesaj kutusu
+
+   NOT: Bu dosya listelerim.js'e DOKUNMADAN calisir; gerekli yerlerde
+   mevcut fonksiyonlari sarmalar (save, ogrenciYeniMesaj, renderSidebar...).
+   ========================================================================== */
+
+(function () {
+    'use strict';
+
+    var OH = window.OH = window.OH || {};
+
+    var C_DAVET = 'davetler';
+    var C_BAG   = 'ogrenciBaglari';
+    var C_OZET  = 'ogrenciOzet';
+    var C_MSG   = 'ogrenciMesaj';
+
+    /* ---------------------------------------------------------------- 0. YARDIMCILAR */
+
+    function fb() {
+        return (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) ? firebase : null;
+    }
+    function oturum() {
+        var f = fb();
+        try { return (f && f.auth) ? f.auth().currentUser : null; } catch (e) { return null; }
+    }
+    function veri() {
+        var f = fb();
+        if (!f) return null;
+        try {
+            if (typeof db !== 'undefined' && db) return db;
+            return f.firestore();
+        } catch (e) { return null; }
+    }
+    function zamanDamga() {
+        var f = fb();
+        try { return f.firestore.FieldValue.serverTimestamp(); } catch (e) { return Date.now(); }
+    }
+    function esc(s) {
+        if (typeof behKacis === 'function') return behKacis(s);
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+        });
+    }
+    function ikon(n, c) { return (typeof llIcon === 'function') ? llIcon(n, c) : ''; }
+
+    function rol() {
+        try { return (typeof appState !== 'undefined' && appState.userRole) ? appState.userRole : ''; } catch (e) { return ''; }
+    }
+    function ogretmenMi() { var r = rol(); return r === 'teacher' || r === 'admin'; }
+
+    function tarihYaz(d) {
+        var i = function (n) { return String(n).padStart(2, '0'); };
+        return i(d.getDate()) + '.' + i(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + i(d.getHours()) + ':' + i(d.getMinutes());
+    }
+
+    /* Ogrencinin yerel oturum kaydi (listelerim.js'in bekledigi bicim). */
+    function yerelOgrenci() {
+        try { return JSON.parse(localStorage.getItem('logged_student') || 'null'); } catch (e) { return null; }
+    }
+
+    OH.bag = null;          // ogrenciBaglari/{uid} onbellegi
+    OH.istekler = [];       // ogretmen: bekleyen istekler
+    OH._kurulum = false;
+
+    OH.bagliMi = function () { return !!(OH.bag && OH.bag.durum === 'onayli'); };
+    OH.bekliyorMu = function () { return !!(OH.bag && OH.bag.durum === 'bekliyor'); };
+
+    /* E-posta ile gercek bir oturum var mi? (anonim/misafir sayilmaz) */
+    OH.epostaGirisiVar = function () {
+        var u = oturum();
+        return !!(u && !u.isAnonymous && u.email);
+    };
+
+    /* ================================================================ 1. OGRETMEN: DAVETLERI YAYINLA */
+
+    /* Her ogrenci satirindaki loginCode'u buluta "davet" olarak yazar.
+       Yalnizca degisenler yazilir (imza karsilastirmasi) -> gereksiz yazma olmaz. */
+    OH.davetleriYayinla = function (zorla) {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return Promise.resolve(0);
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) return Promise.resolve(0);
+
+        var anahtarDepo = 'oh_yayin_' + u.uid;
+        var yayin = {};
+        try { yayin = JSON.parse(localStorage.getItem(anahtarDepo) || '{}'); } catch (e) { yayin = {}; }
+
+        var tKod = localStorage.getItem('teacher_static_code') || '';
+        var tAd = '';
+        try {
+            tAd = (typeof appState !== 'undefined' && appState.currentUserName) ? appState.currentUserName : '';
+        } catch (e) { }
+        if (!tAd || tAd === 'Belirtilmedi') tAd = (u.email || 'Ogretmen');
+
+        var isler = [];
+        var sira = (d.levelOrder && d.levelOrder.length) ? d.levelOrder : Object.keys(d.levels);
+
+        sira.forEach(function (lId) {
+            var lvl = d.levels[lId];
+            if (!lvl || !lvl.classes) return;
+            Object.keys(lvl.classes).forEach(function (cId) {
+                var cls = lvl.classes[cId];
+                var ogr = (cls && cls.students) || [];
+                ogr.forEach(function (s, si) {
+                    var kod = (s.loginCode || '').toString().trim().toUpperCase();
+                    if (!kod) return;
+                    var imza = [lId, cId, si, s.name || '', s.hesapUid || ''].join('~');
+                    if (!zorla && yayin[kod] === imza) return;
+                    yayin[kod] = imza;
+                    isler.push(D.collection(C_DAVET).doc(kod).set({
+                        kod: kod,
+                        ogretmenUid: u.uid,
+                        ogretmenAd: tAd,
+                        ogretmenKod: tKod,
+                        lId: lId, cId: cId, sIdx: si,
+                        ad: s.name || '',
+                        seviyeAd: lvl.name || '',
+                        sinifAd: (cls.name || cId),
+                        kullanildi: !!s.hesapUid,
+                        ogrenciUid: s.hesapUid || null,
+                        guncelleme: Date.now()
+                    }, { merge: true }));
+                });
+            });
+        });
+
+        if (!isler.length) return Promise.resolve(0);
+        return Promise.all(isler).then(function () {
+            try { localStorage.setItem(anahtarDepo, JSON.stringify(yayin)); } catch (e) { }
+            return isler.length;
+        }).catch(function (e) {
+            console.warn('OH davet yayini:', e && (e.code || e.message));
+            return 0;
+        });
+    };
+
+    /* ================================================================ 2. OGRETMEN: OGRENCI AYNA KAYITLARI */
+
+    /* Onayli her ogrenci icin ogrenciOzet/{uid} yazar.
+       Ogrenci ogretmenin ana verisini (kullanicilar/{ogretmenUid}.userData)
+       ASLA okuyamaz; yalnizca kendi dilimini gorur. */
+    OH.ozetleriYaz = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return Promise.resolve(0);
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) return Promise.resolve(0);
+
+        var mesajlar = (Array.isArray(d.mesajlar) ? d.mesajlar : []);
+        var isler = [];
+        var tAd = '';
+        try { tAd = (typeof appState !== 'undefined' && appState.currentUserName) ? appState.currentUserName : (u.email || ''); } catch (e) { tAd = u.email || ''; }
+
+        Object.keys(d.levels).forEach(function (lId) {
+            var lvl = d.levels[lId];
+            if (!lvl || !lvl.classes) return;
+            Object.keys(lvl.classes).forEach(function (cId) {
+                var cls = lvl.classes[cId];
+                var ogr = (cls && cls.students) || [];
+                ogr.forEach(function (s, si) {
+                    if (!s || !s.hesapUid) return;
+                    var K = lId + '|' + cId + '|' + si;
+                    /* Yalnizca bu ogrenciye gelen mesajlar + kendi cevaplari */
+                    var benim = mesajlar.filter(function (m) {
+                        return (m.hedef || []).indexOf(K) > -1;
+                    }).map(function (m) {
+                        return {
+                            id: m.id, baslik: m.baslik || '', metin: m.metin || '',
+                            tarih: m.tarih || '', ts: m.ts || 0,
+                            gonderen: m.gonderen || 'ogretmen',
+                            etiket: m.etiket || '',
+                            hedef: [K],
+                            okuyan: (m.okuyan || []).indexOf(K) > -1 ? [K] : [],
+                            ozel: !!m.ozel,
+                            cevaplar: (m.cevaplar || []).filter(function (c) { return c.k === K; })
+                        };
+                    });
+                    isler.push(D.collection(C_OZET).doc(s.hesapUid).set({
+                        ogretmenUid: u.uid,
+                        ogretmenAd: tAd,
+                        ogrenciUid: s.hesapUid,
+                        lId: lId, cId: cId, sIdx: si,
+                        ad: s.name || '',
+                        seviyeAd: lvl.name || '',
+                        sinifAd: (cls.name || cId),
+                        odev: s.hw || [],
+                        sinav: s.ex || [],
+                        beceri: s.skills || {},
+                        gorevler: s.personalMissions || [],
+                        mesajlar: benim,
+                        guncelleme: Date.now()
+                    }, { merge: true }));
+                });
+            });
+        });
+
+        if (!isler.length) return Promise.resolve(0);
+        return Promise.all(isler).then(function () { return isler.length; })
+            .catch(function (e) { console.warn('OH ozet yazimi:', e && (e.code || e.message)); return 0; });
+    };
+
+    /* save() sonrasi tek seferde (gecikmeli) calisir. */
+    var _kayitZaman = null;
+    OH.kaydetSonrasi = function () {
+        if (!ogretmenMi() || !oturum()) return;
+        if (_kayitZaman) clearTimeout(_kayitZaman);
+        _kayitZaman = setTimeout(function () {
+            _kayitZaman = null;
+            OH.davetleriYayinla();
+            OH.ozetleriYaz();
+        }, 1500);
+    };
+
+    /* ================================================================ 3. OGRETMEN: BEKLEYEN ISTEKLER */
+
+    OH._istekAbone = null;
+
+    OH.istekleriDinle = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return;
+        if (OH._istekAbone) { try { OH._istekAbone(); } catch (e) { } OH._istekAbone = null; }
+        try {
+            OH._istekAbone = D.collection(C_BAG)
+                .where('ogretmenUid', '==', u.uid)
+                .where('durum', '==', 'bekliyor')
+                .onSnapshot(function (snap) {
+                    OH.istekler = [];
+                    snap.forEach(function (doc) {
+                        var v = doc.data() || {};
+                        v._id = doc.id;
+                        OH.istekler.push(v);
+                    });
+                    OH.rozetGuncelle();
+                    var g = document.getElementById('ohIstekGovde');
+                    if (g && document.getElementById('ohIstekModal') &&
+                        document.getElementById('ohIstekModal').style.display !== 'none') OH.istekCiz();
+                }, function (e) { console.warn('OH istek dinleyici:', e && (e.code || e.message)); });
+        } catch (e) { console.warn('OH istek dinleyici kurulamadi', e); }
+    };
+
+    OH.rozetGuncelle = function () {
+        var n = OH.istekler.length;
+        var b = document.getElementById('ohIstekTus');
+        if (!b) return;
+        var r = document.getElementById('ohIstekRozet');
+        if (r) {
+            r.textContent = n ? String(n) : '';
+            r.style.display = n ? 'inline-flex' : 'none';
+        }
+        b.style.display = 'flex';
+    };
+
+    /* Sidebar'a "Bekleyen Istekler" tusunu yerlestirir. */
+    OH.tusYerlestir = function () {
+        if (!ogretmenMi()) return;
+        var nav = document.getElementById('levelNav');
+        if (!nav || document.getElementById('ohIstekTus')) return;
+        var b = document.createElement('button');
+        b.id = 'ohIstekTus';
+        b.type = 'button';
+        b.title = 'Hesabini baglamak isteyen ogrenciler';
+        b.setAttribute('style',
+            'display:flex; align-items:center; justify-content:center; gap:8px; width:calc(100% - 10px);' +
+            'margin:0 5px 12px 5px; padding:9px 10px; border-radius:9px; cursor:pointer;' +
+            'background:#fff; color:#B34700; border:1px solid #F0DACA;' +
+            'box-shadow:0 1px 3px rgba(216,67,21,.07); font-family:inherit; font-size:.82rem; font-weight:700;');
+        b.innerHTML = ikon('kullanici') + '<span>Bekleyen İstekler</span>' +
+            '<span id="ohIstekRozet" style="display:none; align-items:center; justify-content:center;' +
+            'min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:#E74C3C; color:#fff;' +
+            'font-size:.72rem; line-height:20px;"></span>';
+        b.onclick = function () { OH.istekPaneliAc(); };
+        var kod = nav.querySelector('.teacher-code-area');
+        if (kod && kod.nextSibling) nav.insertBefore(b, kod.nextSibling);
+        else if (kod) nav.appendChild(b);
+        else nav.insertBefore(b, nav.firstChild);
+        OH.rozetGuncelle();
+    };
+
+    function istekKatman() {
+        var k = document.getElementById('ohIstekModal');
+        if (k) return k;
+        k = document.createElement('div');
+        k.id = 'ohIstekModal';
+        k.setAttribute('style',
+            'display:none; position:fixed; inset:0; z-index:10050; background:rgba(0,0,0,.55);' +
+            'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+        k.innerHTML =
+            '<div style="background:#fff; width:100%; max-width:640px; max-height:86vh; border-radius:18px;' +
+            'overflow:hidden; display:flex; flex-direction:column; box-shadow:0 18px 46px rgba(0,0,0,.35);">' +
+            '<div style="background:linear-gradient(135deg,#F39C12 0%,#E67E22 48%,#D84315 100%); color:#fff;' +
+            'padding:14px 18px; display:flex; align-items:center; justify-content:space-between;">' +
+            '<strong style="font-size:1.02rem;">Hesap Bağlama İstekleri</strong>' +
+            '<span id="ohIstekKapat" style="cursor:pointer; font-size:26px; line-height:1;">&times;</span></div>' +
+            '<div id="ohIstekGovde" style="flex:1; overflow-y:auto; padding:16px; background:#FFF8F2;"></div>' +
+            '</div>';
+        document.body.appendChild(k);
+        k.querySelector('#ohIstekKapat').onclick = function () { OH.istekPaneliKapat(); };
+        return k;
+    }
+
+    OH.istekPaneliAc = function () {
+        var k = istekKatman();
+        OH.istekCiz();
+        k.style.display = 'flex';
+    };
+    OH.istekPaneliKapat = function () {
+        var k = document.getElementById('ohIstekModal');
+        if (k) k.style.display = 'none';
+    };
+
+    OH.istekCiz = function () {
+        var g = document.getElementById('ohIstekGovde');
+        if (!g) return;
+        if (!OH.istekler.length) {
+            g.innerHTML =
+                '<div style="text-align:center; padding:34px 12px; color:#8B6A57;">' +
+                '<div style="opacity:.5;">' + ikon('kullanici', 'lli-xxl') + '</div>' +
+                '<p style="margin:14px 0 6px; font-size:1rem;">Bekleyen istek yok.</p>' +
+                '<p style="margin:0; font-size:.86rem; color:#A6836E;">Öğrenciniz e-posta ile kayıt olup kendi ' +
+                'giriş kodunu girdiğinde isteği burada görünür.</p></div>';
+            return;
+        }
+        g.innerHTML = OH.istekler.map(function (it) {
+            return '' +
+                '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
+                'margin-bottom:11px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
+                '<div style="font-size:1rem; color:#9C3B0C; margin-bottom:3px;">' + esc(it.ad || 'Öğrenci') + '</div>' +
+                '<div style="font-size:.84rem; color:#6B4A38; margin-bottom:2px;">' + esc(it.email || '') + '</div>' +
+                '<div style="font-size:.79rem; color:#A6836E; margin-bottom:10px;">' +
+                esc(it.seviyeAd || '') + (it.sinifAd ? ' / ' + esc(it.sinifAd) : '') +
+                ' &nbsp;·&nbsp; Kod: ' + esc(it.kod || '') + '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                '<button type="button" onclick="OH.istekOnayla(\'' + esc(it._id) + '\')" ' +
+                'style="flex:1; padding:9px; border:none; border-radius:9px; cursor:pointer; font-family:inherit;' +
+                'font-weight:700; color:#fff; background:linear-gradient(135deg,#20C997,#16A085);">Onayla</button>' +
+                '<button type="button" onclick="OH.istekReddet(\'' + esc(it._id) + '\')" ' +
+                'style="padding:9px 16px; border:1px solid #F0DACA; border-radius:9px; cursor:pointer;' +
+                'font-family:inherit; font-weight:700; color:#B34700; background:#fff;">Reddet</button>' +
+                '</div></div>';
+        }).join('');
+    };
+
+    /* Onay: hesap ogrenci satirina kalici baglanir, kod tuketilir. */
+    OH.istekOnayla = function (uid) {
+        var u = oturum(), D = veri();
+        if (!u || !D) return;
+        var it = OH.istekler.filter(function (x) { return x._id === uid; })[0];
+        if (!it) return;
+
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        var satir = null;
+        try { satir = d.levels[it.lId].classes[it.cId].students[it.sIdx]; } catch (e) { satir = null; }
+
+        /* Koordinat kaymissa kodla yeniden bul (ogrenci silinip eklenmis olabilir). */
+        if (!satir || (satir.loginCode || '').toUpperCase() !== (it.kod || '').toUpperCase()) {
+            var bulundu = null;
+            try {
+                Object.keys(d.levels).forEach(function (lId) {
+                    var lvl = d.levels[lId];
+                    if (!lvl || !lvl.classes || bulundu) return;
+                    Object.keys(lvl.classes).forEach(function (cId) {
+                        if (bulundu) return;
+                        var ogr = (lvl.classes[cId].students) || [];
+                        for (var i = 0; i < ogr.length; i++) {
+                            if ((ogr[i].loginCode || '').toUpperCase() === (it.kod || '').toUpperCase()) {
+                                bulundu = { s: ogr[i], lId: lId, cId: cId, sIdx: i };
+                                return;
+                            }
+                        }
+                    });
+                });
+            } catch (e) { }
+            if (!bulundu) {
+                alert('Bu koda ait öğrenci satırı listenizde bulunamadı. Öğrenci silinmiş olabilir.');
+                return;
+            }
+            satir = bulundu.s; it.lId = bulundu.lId; it.cId = bulundu.cId; it.sIdx = bulundu.sIdx;
+        }
+
+        satir.hesapUid = uid;
+        satir.hesapEmail = it.email || '';
+        if (typeof save === 'function') save();
+
+        var yaz = [
+            D.collection(C_BAG).doc(uid).set({
+                durum: 'onayli', lId: it.lId, cId: it.cId, sIdx: it.sIdx,
+                onayTarih: zamanDamga()
+            }, { merge: true }),
+            D.collection(C_DAVET).doc(it.kod).set({
+                kullanildi: true, ogrenciUid: uid, guncelleme: Date.now()
+            }, { merge: true })
+        ];
+        Promise.all(yaz).then(function () {
+            return OH.ozetleriYaz();
+        }).then(function () {
+            OH.istekCiz();
+        }).catch(function (e) {
+            alert('Onay kaydedilemedi: ' + (e && (e.message || e.code)));
+        });
+    };
+
+    OH.istekReddet = function (uid) {
+        var D = veri();
+        if (!D) return;
+        if (!confirm('Bu isteği reddetmek istediğinize emin misiniz?')) return;
+        D.collection(C_BAG).doc(uid).set({ durum: 'red', onayTarih: zamanDamga() }, { merge: true })
+            .then(function () { OH.istekCiz(); })
+            .catch(function (e) { alert('İşlem yapılamadı: ' + (e && (e.message || e.code))); });
+    };
+
+    /* ================================================================ 4. OGRETMEN: UZAKTAN GELEN OGRENCI MESAJLARI */
+
+    OH._msgAbone = null;
+
+    OH.mesajlariDinle = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return;
+        if (OH._msgAbone) { try { OH._msgAbone(); } catch (e) { } OH._msgAbone = null; }
+        try {
+            OH._msgAbone = D.collection(C_MSG)
+                .where('ogretmenUid', '==', u.uid)
+                .where('islendi', '==', false)
+                .onSnapshot(function (snap) {
+                    if (snap.empty) return;
+                    var d = (typeof data !== 'undefined' && data) ? data : null;
+                    if (!d) return;
+                    if (!Array.isArray(d.mesajlar)) d.mesajlar = [];
+                    var eklendi = 0, kapat = [];
+                    snap.forEach(function (doc) {
+                        var v = doc.data() || {};
+                        var K = v.lId + '|' + v.cId + '|' + v.sIdx;
+                        /* Ayni mesaj iki kez islenmesin */
+                        var varMi = d.mesajlar.some(function (m) { return m.id === 'B' + doc.id; });
+                        if (!varMi) {
+                            var t = new Date(v.ts || Date.now());
+                            d.mesajlar.push({
+                                id: 'B' + doc.id,
+                                kapsam: { tur: 'ogrenci', lId: v.lId, cId: v.cId, si: v.sIdx },
+                                etiket: 'Öğrenciden mesaj',
+                                baslik: '',
+                                metin: String(v.metin || '').slice(0, 1000),
+                                ts: v.ts || Date.now(),
+                                tarih: v.tarih || tarihYaz(t),
+                                gonderen: 'ogrenci',
+                                ad: v.ad || 'Öğrenci',
+                                ozel: true,
+                                ogretmenOkudu: false,
+                                hedef: [K],
+                                okuyan: [K],
+                                cevaplar: []
+                            });
+                            eklendi++;
+                        }
+                        kapat.push(doc.ref.set({ islendi: true }, { merge: true }));
+                    });
+                    if (eklendi && typeof save === 'function') save();
+                    if (eklendi) {
+                        try { if (typeof imCiz === 'function') imCiz(); } catch (e) { }
+                        try { if (typeof duyuruSayacGuncelle === 'function') duyuruSayacGuncelle(); } catch (e) { }
+                    }
+                    Promise.all(kapat).catch(function () { });
+                }, function (e) { console.warn('OH mesaj dinleyici:', e && (e.code || e.message)); });
+        } catch (e) { console.warn('OH mesaj dinleyici kurulamadi', e); }
+    };
+
+    /* ================================================================ 5. OGRENCI: KOD GIRME EKRANI */
+
+    function kodKatman() {
+        var k = document.getElementById('ohKodModal');
+        if (k) return k;
+        k = document.createElement('div');
+        k.id = 'ohKodModal';
+        k.setAttribute('style',
+            'display:none; position:fixed; inset:0; z-index:10060; background:rgba(0,0,0,.6);' +
+            'backdrop-filter:blur(5px); align-items:center; justify-content:center; padding:16px;');
+        k.innerHTML =
+            '<div style="background:#fff; width:100%; max-width:470px; border-radius:20px; overflow:hidden;' +
+            'box-shadow:0 18px 46px rgba(0,0,0,.4);">' +
+            '<div style="background:linear-gradient(135deg,#F39C12 0%,#E67E22 48%,#D84315 100%); color:#fff;' +
+            'padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">' +
+            '<strong style="font-size:1.05rem;">Sınıfıma Katıl</strong>' +
+            '<span id="ohKodKapat" style="cursor:pointer; font-size:26px; line-height:1;">&times;</span></div>' +
+            '<div id="ohKodGovde" style="padding:20px; background:#FFF8F2;"></div></div>';
+        document.body.appendChild(k);
+        k.querySelector('#ohKodKapat').onclick = function () { OH.kodModalKapat(); };
+        return k;
+    }
+
+    OH.kodModalAc = function () {
+        var k = kodKatman();
+        OH.kodCiz();
+        k.style.display = 'flex';
+    };
+    OH.kodModalKapat = function () {
+        var k = document.getElementById('ohKodModal');
+        if (k) k.style.display = 'none';
+    };
+
+    OH.kodCiz = function (mesaj, hataMi) {
+        var g = document.getElementById('ohKodGovde');
+        if (!g) return;
+
+        if (!OH.epostaGirisiVar()) {
+            g.innerHTML =
+                '<p style="margin:0 0 14px; color:#6B4A38; line-height:1.6;">Öğretmeninin sınıfına katılmak için ' +
+                'önce <b>e-posta ile giriş</b> yapmalısın. E-posta ile giriş yapmadan mesaj gönderemezsin.</p>' +
+                '<button type="button" onclick="OH.kodModalKapat(); if(typeof showLoginModal===\'function\') showLoginModal();" ' +
+                'style="width:100%; padding:13px; border:none; border-radius:12px; cursor:pointer; font-family:inherit;' +
+                'font-weight:700; color:#fff; background:linear-gradient(135deg,#20C997,#16A085);">Giriş Yap / Kayıt Ol</button>';
+            return;
+        }
+
+        if (OH.bagliMi()) {
+            g.innerHTML =
+                '<div style="text-align:center; padding:10px 0 4px;">' + ikon('onay', 'lli-xxl') + '</div>' +
+                '<p style="margin:12px 0 6px; text-align:center; color:#16A085; font-size:1.05rem;">Hesabın bağlı.</p>' +
+                '<p style="margin:0 0 16px; text-align:center; color:#6B4A38; font-size:.9rem;">' +
+                esc(OH.bag.seviyeAd || '') + (OH.bag.sinifAd ? ' / ' + esc(OH.bag.sinifAd) : '') +
+                '<br>Öğretmenin: ' + esc(OH.bag.ogretmenAd || '') + '</p>' +
+                '<p style="margin:0; text-align:center; color:#A6836E; font-size:.83rem;">Bundan sonra sadece ' +
+                'e-posta ile giriş yapman yeterli; kod bir daha sorulmaz.</p>';
+            return;
+        }
+
+        if (OH.bekliyorMu()) {
+            g.innerHTML =
+                '<div style="text-align:center; padding:10px 0 4px;">' + ikon('bekle', 'lli-xxl') + '</div>' +
+                '<p style="margin:12px 0 6px; text-align:center; color:#B34700; font-size:1.05rem;">Onay bekleniyor</p>' +
+                '<p style="margin:0 0 6px; text-align:center; color:#6B4A38; font-size:.9rem;">İsteğin ' +
+                esc(OH.bag.ogretmenAd || 'öğretmenine') + ' iletildi. Onaylandığında sınıfın açılır.</p>' +
+                '<p style="margin:14px 0 0; text-align:center; color:#A6836E; font-size:.82rem;">Kod: ' +
+                esc(OH.bag.kod || '') + '</p>';
+            return;
+        }
+
+        g.innerHTML =
+            '<p style="margin:0 0 6px; color:#6B4A38; line-height:1.6;">Öğretmeninin sana verdiği kişiye özel kodu ' +
+            'buraya <b>bir kez</b> gir. Öğretmenin onayladıktan sonra bu kod bir daha sorulmaz; ' +
+            'her zaman e-posta ile giriş yaparsın.</p>' +
+            '<p style="margin:0 0 14px; color:#A6836E; font-size:.82rem;">Örnek: TCH-4582-X8B2</p>' +
+            '<input type="text" id="ohKodGiris" maxlength="40" placeholder="ÖĞRETMEN KODUN" autocomplete="off" ' +
+            'style="width:100%; box-sizing:border-box; padding:14px; border:1px solid #E8A87C; border-radius:12px;' +
+            'font-family:inherit; font-size:1.05rem; letter-spacing:1px; text-transform:uppercase; text-align:center;' +
+            'color:#B34700; background:#fff;">' +
+            '<p id="ohKodNot" style="min-height:18px; margin:9px 0; font-size:.85rem; color:' +
+            (hataMi ? '#E74C3C' : '#16A085') + ';">' + esc(mesaj || '') + '</p>' +
+            '<button type="button" id="ohKodTus" ' +
+            'style="width:100%; padding:13px; border:none; border-radius:12px; cursor:pointer; font-family:inherit;' +
+            'font-weight:700; font-size:1rem; color:#fff;' +
+            'background:linear-gradient(135deg,#F39C12,#D84315);">İstek Gönder</button>';
+
+        var inp = document.getElementById('ohKodGiris');
+        var tus = document.getElementById('ohKodTus');
+        if (tus) tus.onclick = function () { OH.kodGonder(); };
+        if (inp) {
+            inp.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); OH.kodGonder(); } };
+            setTimeout(function () { try { inp.focus(); } catch (e) { } }, 60);
+        }
+    };
+
+    OH.kodGonder = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D) { OH.kodCiz('Bağlantı kurulamadı. Sayfayı yenileyip tekrar dene.', true); return; }
+        var el = document.getElementById('ohKodGiris');
+        var kod = ((el && el.value) || '').trim().toUpperCase();
+        if (!kod) { OH.kodCiz('Lütfen kodunu yaz.', true); return; }
+
+        var not = document.getElementById('ohKodNot');
+        if (not) { not.style.color = '#16A085'; not.textContent = 'Kod kontrol ediliyor…'; }
+
+        D.collection(C_DAVET).doc(kod).get().then(function (doc) {
+            if (!doc.exists) { OH.kodCiz('Bu kod bulunamadı. Öğretmeninden tekrar iste.', true); return; }
+            var v = doc.data() || {};
+            if (v.kullanildi && v.ogrenciUid && v.ogrenciUid !== u.uid) {
+                OH.kodCiz('Bu kod daha önce başka bir hesaba bağlanmış.', true); return;
+            }
+            var ad = '';
+            try { ad = (typeof appState !== 'undefined' && appState.currentUserName) ? appState.currentUserName : ''; } catch (e) { }
+            if (!ad || ad === 'Belirtilmedi' || ad === 'Öğrenci') ad = v.ad || (u.email || '');
+
+            return D.collection(C_BAG).doc(u.uid).set({
+                uid: u.uid,
+                email: u.email || '',
+                ad: ad,
+                kod: kod,
+                ogretmenUid: v.ogretmenUid,
+                ogretmenAd: v.ogretmenAd || '',
+                lId: v.lId, cId: v.cId, sIdx: v.sIdx,
+                seviyeAd: v.seviyeAd || '',
+                sinifAd: v.sinifAd || '',
+                durum: 'bekliyor',
+                istekTarih: zamanDamga()
+            }, { merge: true }).then(function () {
+                OH.bag = {
+                    uid: u.uid, email: u.email || '', ad: ad, kod: kod,
+                    ogretmenUid: v.ogretmenUid, ogretmenAd: v.ogretmenAd || '',
+                    lId: v.lId, cId: v.cId, sIdx: v.sIdx,
+                    seviyeAd: v.seviyeAd || '', sinifAd: v.sinifAd || '',
+                    durum: 'bekliyor'
+                };
+                OH.kodCiz();
+                OH.bannerGuncelle();
+            });
+        }).catch(function (e) {
+            OH.kodCiz('İstek gönderilemedi: ' + (e && (e.message || e.code)), true);
+        });
+    };
+
+    /* ================================================================ 6. OGRENCI: VERI KURULUMU (AYNA) */
+
+    OH._ozetAbone = null;
+
+    /* Onayli ogrenci icin, listelerim.js'in bekledigi bicimde YEREL bir veri
+       iskeleti kurar. Boylece mevcut ogrenci ekranlari (mesaj kutusu, rozet)
+       hicbir degisiklik olmadan calisir. */
+    OH.ogrenciVeriKur = function (ozet) {
+        if (!OH.bag || !ozet) return;
+        var lId = OH.bag.lId, cId = OH.bag.cId, si = OH.bag.sIdx;
+        var ogrenciler = [];
+        for (var i = 0; i < si; i++) ogrenciler.push({ name: '', loginCode: '', hw: [], ex: [], skills: {}, notes: '' });
+        ogrenciler.push({
+            name: ozet.ad || OH.bag.ad || 'Öğrenci',
+            loginCode: OH.bag.kod || '',
+            hw: ozet.odev || [],
+            ex: ozet.sinav || [],
+            skills: ozet.beceri || {},
+            personalMissions: ozet.gorevler || [],
+            history: [],
+            notes: '',
+            hesapUid: OH.bag.uid
+        });
+
+        var yeni = { levels: {}, levelOrder: [lId], mesajlar: (ozet.mesajlar || []) };
+        yeni.levels[lId] = {
+            name: ozet.seviyeAd || OH.bag.seviyeAd || '',
+            classes: {},
+            planText: {},
+            config: { hw: [], ex: [] }
+        };
+        yeni.levels[lId].classes[cId] = {
+            name: ozet.sinifAd || OH.bag.sinifAd || '',
+            students: ogrenciler
+        };
+
+        try {
+            localStorage.setItem('schoolData', JSON.stringify(yeni));
+            if (typeof loadDataFromLocal === 'function') loadDataFromLocal();
+        } catch (e) { console.warn('OH veri kurulumu', e); }
+
+        try {
+            localStorage.setItem('logged_student', JSON.stringify({
+                lId: lId, cId: cId, sIdx: si,
+                name: ozet.ad || OH.bag.ad || 'Öğrenci',
+                role: 'student',
+                uid: OH.bag.uid,
+                bulut: true
+            }));
+        } catch (e) { }
+
+        try { if (typeof renderStudentDashboardContent === 'function') renderStudentDashboardContent(); } catch (e) { }
+        try { if (typeof ogrMesajCiz === 'function' && document.getElementById('ogrMesajGovde')) ogrMesajCiz(); } catch (e) { }
+    };
+
+    OH.ozetiDinle = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !OH.bagliMi()) return;
+        if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
+        try {
+            OH._ozetAbone = D.collection(C_OZET).doc(u.uid).onSnapshot(function (doc) {
+                if (!doc.exists) return;
+                OH.ogrenciVeriKur(doc.data());
+            }, function (e) { console.warn('OH ozet dinleyici:', e && (e.code || e.message)); });
+        } catch (e) { }
+    };
+
+    /* ================================================================ 7. OGRENCI: MESAJ KOPRUSU */
+
+    /* Ogrencinin yazdigi mesaj, ogretmenin cihazinda olmadigi icin dogrudan
+       ogretmenin verisine yazilamaz -> ogrenciMesaj koleksiyonuna dusurulur,
+       ogretmenin uygulamasi oradan alip kendi listesine ekler. */
+    OH.mesajGonder = function (metin) {
+        var u = oturum(), D = veri();
+        if (!u || !D || !OH.bagliMi()) return false;
+        var t = new Date();
+        var g = yerelOgrenci() || {};
+        try {
+            D.collection(C_MSG).add({
+                ogretmenUid: OH.bag.ogretmenUid,
+                ogrenciUid: u.uid,
+                email: u.email || '',
+                ad: g.name || OH.bag.ad || 'Öğrenci',
+                lId: OH.bag.lId, cId: OH.bag.cId, sIdx: OH.bag.sIdx,
+                metin: String(metin || '').slice(0, 1000),
+                ts: t.getTime(),
+                tarih: tarihYaz(t),
+                islendi: false
+            }).catch(function (e) { console.warn('OH mesaj gonderilemedi:', e && (e.code || e.message)); });
+        } catch (e) { return false; }
+        return true;
+    };
+
+    /* ================================================================ 8. BANNER (ILETISIM POP-UP) */
+
+    OH.bannerGuncelle = function () {
+        var b = document.getElementById('ohBanner');
+        if (!b) return;
+        if (ogretmenMi() || !OH.epostaGirisiVar() || OH.bagliMi()) { b.style.display = 'none'; return; }
+        b.style.display = 'block';
+        if (OH.bekliyorMu()) {
+            b.innerHTML =
+                '<div style="padding:11px 14px; background:#FFF1E6; border-bottom:1px solid #F3DCC9;' +
+                'color:#B34700; font-size:.86rem; line-height:1.5;">Öğretmenine gönderdiğin katılım isteği ' +
+                '<b>onay bekliyor</b>.</div>';
+            return;
+        }
+        b.innerHTML =
+            '<div style="padding:11px 14px; background:#FFF1E6; border-bottom:1px solid #F3DCC9;' +
+            'color:#6B4A38; font-size:.86rem; line-height:1.5;">Öğretmeninin verdiği kodu girerek sınıfına ' +
+            'katılabilirsin. ' +
+            '<span onclick="OH.kodModalAc()" style="cursor:pointer; color:#D84315; font-weight:700;' +
+            'text-decoration:underline;">Kodu gir</span></div>';
+    };
+
+    /* ================================================================ 9. SARMALAMALAR */
+
+    function sarmala() {
+        if (OH._kurulum) return;
+
+        /* save() -> davet + ozet yayini */
+        if (typeof window.save === 'function' && !window.save._oh) {
+            var _save = window.save;
+            var yeniSave = function () {
+                var r = _save.apply(this, arguments);
+                try { OH.kaydetSonrasi(); } catch (e) { }
+                return r;
+            };
+            yeniSave._oh = true;
+            window.save = yeniSave;
+        }
+
+        /* renderSidebar() -> "Bekleyen Istekler" tusu */
+        if (typeof window.renderSidebar === 'function' && !window.renderSidebar._oh) {
+            var _rs = window.renderSidebar;
+            var yeniRS = function () {
+                var r = _rs.apply(this, arguments);
+                try { OH.tusYerlestir(); } catch (e) { }
+                return r;
+            };
+            yeniRS._oh = true;
+            window.renderSidebar = yeniRS;
+        }
+
+        /* ogrenciYeniMesaj() -> buluta da yaz + e-posta zorunlulugu */
+        if (typeof window.ogrenciYeniMesaj === 'function' && !window.ogrenciYeniMesaj._oh) {
+            var _oym = window.ogrenciYeniMesaj;
+            var yeniOYM = function (metin) {
+                var g = yerelOgrenci();
+                /* Buluta bagli ogrenci: e-posta oturumu sart. */
+                if (g && g.bulut) {
+                    if (!OH.epostaGirisiVar() || !OH.bagliMi()) {
+                        alert('Mesaj göndermek için e-posta ile giriş yapmış ve öğretmenin tarafından onaylanmış olman gerekir.');
+                        return false;
+                    }
+                    OH.mesajGonder(metin);
+                }
+                return _oym.apply(this, arguments);
+            };
+            yeniOYM._oh = true;
+            window.ogrenciYeniMesaj = yeniOYM;
+        }
+
+        /* ogrenciCevapYaz() -> ayni koprü */
+        if (typeof window.ogrenciCevapYaz === 'function' && !window.ogrenciCevapYaz._oh) {
+            var _ocy = window.ogrenciCevapYaz;
+            var yeniOCY = function (id, metin) {
+                var g = yerelOgrenci();
+                if (g && g.bulut) {
+                    if (!OH.epostaGirisiVar() || !OH.bagliMi()) {
+                        alert('Mesaj göndermek için e-posta ile giriş yapmış ve öğretmenin tarafından onaylanmış olman gerekir.');
+                        return false;
+                    }
+                    OH.mesajGonder(metin);
+                }
+                return _ocy.apply(this, arguments);
+            };
+            yeniOCY._oh = true;
+            window.ogrenciCevapYaz = yeniOCY;
+        }
+
+        /* openMyMessages() -> banner */
+        if (typeof window.openMyMessages === 'function' && !window.openMyMessages._oh) {
+            var _omm = window.openMyMessages;
+            var yeniOMM = async function () {
+                var r = await _omm.apply(this, arguments);
+                try { OH.bannerGuncelle(); } catch (e) { }
+                return r;
+            };
+            yeniOMM._oh = true;
+            window.openMyMessages = yeniOMM;
+        }
+
+        OH._kurulum = true;
+    }
+
+    /* ================================================================ 10. ACILIS */
+
+    OH.baglantiyiYukle = function () {
+        var u = oturum(), D = veri();
+        OH.bag = null;
+        if (!u || !D) { OH.bannerGuncelle(); return Promise.resolve(null); }
+        if (ogretmenMi()) { OH.bannerGuncelle(); return Promise.resolve(null); }
+        return D.collection(C_BAG).doc(u.uid).get().then(function (doc) {
+            OH.bag = doc.exists ? doc.data() : null;
+            if (OH.bagliMi()) {
+                OH.ozetiDinle();
+            } else {
+                /* Onaysiz kullanicinin ogrenci oturumu acik kalmasin. */
+                var g = yerelOgrenci();
+                if (g && g.bulut) { try { localStorage.removeItem('logged_student'); } catch (e) { } }
+            }
+            OH.bannerGuncelle();
+            return OH.bag;
+        }).catch(function (e) {
+            console.warn('OH baglanti okunamadi:', e && (e.code || e.message));
+            OH.bannerGuncelle();
+            return null;
+        });
+    };
+
+    /* ================================================================ 8. OGRETMEN KODU (SABIT KOD) GARANTISI
+
+       Ogretmenin sabit kodu (teacher_static_code) TEK kaynaktan gelir:
+         kullanicilar/{uid}.teacherStaticCode
+       Eskiden bu alan yalnizca listelerim.js'in kendi kayit/giris ekraninda
+       yaziliyordu; auth.js uzerinden giren ogretmende ya da alanin
+       eklenmesinden onceki hesaplarda kod HIC olusmuyordu -> profilde
+       "Ogretmen Kodu" gorunmuyordu ve ogrenci davet kodlari "TCH-xxxx"
+       yerine sadece "TCH" onekiyle uretiliyordu.
+
+       Bu fonksiyon:
+         1) Buluttaki kodu okur, varsa localStorage'a AYNEN yansitir.
+         2) Yoksa uid'den TURETILMIS (deterministik) bir kod uretir,
+            {merge:true} ile yazar ve yansitir.
+       MEVCUT BIR KOD ASLA DEGISTIRILMEZ; cunku ogrenci giris kodlari
+       "${teacher_static_code}-XXXX" bicimindedir ve kod degisirse
+       daha once dagitilmis tum davetler gecersiz olurdu.                    */
+
+    function koduTuret(uid) {
+        var h = 0, s = String(uid || '');
+        for (var i = 0; i < s.length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; }
+        var n = Math.abs(h) % 9000 + 1000;      /* 1000..9999 */
+        return 'TCH-' + n;
+    }
+
+    OH.ogretmenKodu = function () {
+        try { return localStorage.getItem('teacher_static_code') || ''; } catch (e) { return ''; }
+    };
+
+    OH.ogretmenKoduSagla = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return Promise.resolve('');
+        return D.collection('kullanicilar').doc(u.uid).get().then(function (doc) {
+            var mevcut = (doc && doc.exists && doc.data() && doc.data().teacherStaticCode) || '';
+            if (mevcut) {
+                try { localStorage.setItem('teacher_static_code', mevcut); } catch (e) { }
+                OH.koduYansit(mevcut);
+                return mevcut;
+            }
+            var yeni = koduTuret(u.uid);
+            return D.collection('kullanicilar').doc(u.uid)
+                .set({ teacherStaticCode: yeni }, { merge: true })
+                .then(function () {
+                    try { localStorage.setItem('teacher_static_code', yeni); } catch (e) { }
+                    OH.koduYansit(yeni);
+                    return yeni;
+                }).catch(function (e) {
+                    console.warn('OH ogretmen kodu yazilamadi:', e && (e.code || e.message));
+                    /* Bulut yazilamasa bile yerelde kullanilabilir olsun. */
+                    try { if (!localStorage.getItem('teacher_static_code')) localStorage.setItem('teacher_static_code', yeni); } catch (e2) { }
+                    OH.koduYansit(yeni);
+                    return yeni;
+                });
+        }).catch(function (e) {
+            console.warn('OH ogretmen kodu okunamadi:', e && (e.code || e.message));
+            return OH.ogretmenKodu();
+        });
+    };
+
+    /* Kod gec geldiyse ekrandaki alanlari sessizce tazele. */
+    OH.koduYansit = function (kod) {
+        if (!kod) return;
+        try {
+            var a = document.querySelectorAll('.tk-kod, .tch-kod-deger, .tch-kod-satir');
+            for (var i = 0; i < a.length; i++) a[i].textContent = kod;
+        } catch (e) { }
+        try { if (typeof renderSidebar === 'function' && ogretmenMi()) renderSidebar(); } catch (e) { }
+    };
+
+    /* Panodaki kopyalama (profil kartindaki tus kullanir). */
+    OH.koduKopyala = function (btn) {
+        var kod = OH.ogretmenKodu();
+        if (!kod) return;
+        var bitti = function () {
+            if (!btn) return;
+            var eski = btn.textContent;
+            btn.textContent = 'Kopyalandı ✓';
+            setTimeout(function () { btn.textContent = eski; }, 1600);
+        };
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(kod).then(bitti, function () { bitti(); });
+                return;
+            }
+        } catch (e) { }
+        try {
+            var t = document.createElement('textarea');
+            t.value = kod; document.body.appendChild(t); t.select();
+            document.execCommand('copy'); document.body.removeChild(t); bitti();
+        } catch (e) { }
+    };
+
+    OH.baslat = function () {
+        sarmala();
+        var u = oturum();
+        if (!u) {
+            /* Cikis yapildi: bulut kaynakli ogrenci oturumunu temizle. */
+            var g = yerelOgrenci();
+            if (g && g.bulut) {
+                try { localStorage.removeItem('logged_student'); localStorage.removeItem('schoolData'); } catch (e) { }
+            }
+            OH.bag = null;
+            if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
+            if (OH._istekAbone) { try { OH._istekAbone(); } catch (e) { } OH._istekAbone = null; }
+            if (OH._msgAbone) { try { OH._msgAbone(); } catch (e) { } OH._msgAbone = null; }
+            return;
+        }
+        if (ogretmenMi()) {
+            /* Ayni tarayicida once ogrenci olarak girilmisse, eski ozet
+               dinleyicisi ogretmenin verisini ezmesin -> kapat. */
+            if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
+            OH.bag = null;
+            /* Ogretmen/yonetici hesabinda ARTIK yerel ogrenci oturumu olamaz;
+               kalintisi ogretmen yuzeyini kilitler -> temizle. */
+            if (yerelOgrenci()) { try { localStorage.removeItem('logged_student'); } catch (e) { } }
+            OH.istekleriDinle();
+            OH.mesajlariDinle();
+            /* Sabit ogretmen kodu YOKSA burada olusur; davetler kod hazir
+               olduktan SONRA yayinlanmali -> zincirleme calistiriyoruz. */
+            OH.ogretmenKoduSagla().then(function () {
+                setTimeout(function () { OH.davetleriYayinla(); }, 1200);
+            });
+            setTimeout(function () { OH.tusYerlestir(); }, 900);
+        } else {
+            OH.baglantiyiYukle();
+        }
+    };
+
+    /* Rol Firestore'dan geldikten SONRA baslatilmali -> basariliGiris sarmalanir. */
+    function girisSarmala() {
+        if (typeof window.basariliGiris === 'function' && !window.basariliGiris._oh) {
+            var _bg = window.basariliGiris;
+            var yeniBG = function () {
+                var r = _bg.apply(this, arguments);
+                try { setTimeout(function () { OH.baslat(); }, 300); } catch (e) { }
+                return r;
+            };
+            yeniBG._oh = true;
+            window.basariliGiris = yeniBG;
+        }
+        if (typeof window.initAppAsGuest === 'function' && !window.initAppAsGuest._oh) {
+            var _ig = window.initAppAsGuest;
+            var yeniIG = function () {
+                var r = _ig.apply(this, arguments);
+                try { OH.baslat(); } catch (e) { }
+                return r;
+            };
+            yeniIG._oh = true;
+            window.initAppAsGuest = yeniIG;
+        }
+    }
+
+    function kur() {
+        sarmala();
+        girisSarmala();
+        /* Sayfa zaten acikken (yeniden yukleme) durumu yakala. */
+        setTimeout(function () { try { OH.baslat(); } catch (e) { } }, 1800);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+
+})();
