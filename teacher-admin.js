@@ -915,6 +915,32 @@ async function removeTeacher(id) {
     }
 }
 
+/* ------------------------------------------------------------------
+   OGRETMEN KODU KARTI
+   Ogretmenin sabit kodu (teacher_static_code) ogrenci davet kodlarinin
+   onekidir: "${kod}-XXXX". Ogretmen bu kodu profilinde GORMELI, cunku
+   ogrenciler sisteme baglanirken bu koda dayali kisisel kodu girer.
+   Kod yoksa OH.ogretmenKoduSagla() buluttan getirir/uretir; karti da
+   OH.koduYansit() sessizce tazeler.
+   ------------------------------------------------------------------ */
+function teacherKodKarti() {
+    let kod = '';
+    try { kod = localStorage.getItem('teacher_static_code') || ''; } catch (e) { }
+    /* Kod henuz yoksa arka planda olustur; geldiginde karti tazeleyecek. */
+    if (!kod) { try { if (window.OH && OH.ogretmenKoduSagla) OH.ogretmenKoduSagla(); } catch (e) { } }
+    return `
+        <div class="tch-kod-karti">
+            <div class="tch-kod-sol">
+                <div class="tch-kod-etiket">ÖĞRETMEN KODUM</div>
+                <div class="tch-kod-deger" id="tchKodDeger">${kod || '…'}</div>
+            </div>
+            <div class="tch-kod-sag">
+                <button type="button" class="tch-kod-kopyala" onclick="if(window.OH&&OH.koduKopyala)OH.koduKopyala(this)">Kopyala</button>
+                <div class="tch-kod-not">Öğrencilerinin giriş kodları bu kod ile başlar.</div>
+            </div>
+        </div>`;
+}
+
 function renderTeacherPanel() {
     const teacherSection = document.getElementById('teacher-section');
     if (!teacherSection) return;
@@ -929,6 +955,7 @@ function renderTeacherPanel() {
         teacherSection.innerHTML = `
             <div class="glass-card">
                 <h2 style="margin-bottom: 20px;">🎓 Öğretmen Kontrol Paneli</h2>
+                ${teacherKodKarti()}
                 <div style="background: #FFF3CD; color: #856404; padding: 15px; border-radius: 8px;">
                     Hesabınıza bağlı bir eğitmen profili bulunamadı. Lütfen yönetici ile iletişime geçin.
                 </div>
@@ -940,7 +967,9 @@ function renderTeacherPanel() {
     teacherSection.innerHTML = `
         <div class="glass-card">
             <h2 style="margin-bottom: 20px;">🎓 Öğretmen Kontrol Paneli - ${activeTeacher.name}</h2>
-            
+
+            ${teacherKodKarti()}
+
             <div style="margin-bottom: 20px;">
                 <button class="btn btn-primary" style="background-color: #ff3b30; border-color: #ff3b30; font-size: 1.1rem; padding: 12px 24px; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);" onclick="openLiveClassRoom()">
                     <span class="live-dot" style="background-color: white;"></span> Canlı Ders Başlat
@@ -952,6 +981,7 @@ function renderTeacherPanel() {
                 <div style="margin-top: 15px; margin-bottom: 25px; padding-left: 15px; border-left: 3px solid #20C997;">
                     <p><strong>Ad Soyad:</strong> ${activeTeacher.name}</p>
                     <p><strong>E-posta:</strong> ${activeTeacher.email}</p>
+                    <p><strong>Öğretmen Kodum:</strong> <span class="tch-kod-satir">${(function(){try{return localStorage.getItem('teacher_static_code')||'…';}catch(e){return '…';}})()}</span></p>
                     <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                         <strong>Şifre:</strong>
                         <input type="password" id="teacher-profile-password" value="${activeTeacher.password}" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 200px;" disabled>
