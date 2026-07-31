@@ -356,6 +356,13 @@ function authIslemi() {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 // Yaris onleme: dokuman yazildiktan sonra dogru rolle girisi tamamla
+                /* Kayit formunda ogretmen kodu girildiyse sakla:
+                   giris tamamlaninca ogrencihesap.js otomatik istek gonderir. */
+                try {
+                    var tkEl = document.getElementById('student-teacher-code');
+                    var tkod = tkEl ? tkEl.value.trim() : '';
+                    if (regRole === 'student' && tkod) localStorage.setItem('oh_beklenen_kod', tkod);
+                } catch (e) { }
                 showCustomAlert("Kayıt başarılı!");
                 selectedRole = regRole;
                 isRegistering = false;

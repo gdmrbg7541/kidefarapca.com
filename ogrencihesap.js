@@ -719,19 +719,19 @@
         }
     };
 
-    OH.kodGonder = function () {
+    /* Cekirdek: verilen kodla ogretmene istek gonderir. ARAYUZDEN BAGIMSIZ;
+       hem kod penceresi (kodGonder) hem kayit formundan kalan bekleyen kod
+       (bekleyenKoduIsle) bunu kullanir.
+       Donen deger: { ok:true }  ya da  { ok:false, mesaj:'...' }            */
+    OH.kodIstekGonder = function (hamKod) {
         var u = oturum(), D = veri();
-        if (!u || !D) { OH.kodCiz('Ba\u011flant\u0131 kurulamad\u0131. Sayfay\u0131 yenileyip tekrar dene.', true); return; }
-        var el = document.getElementById('ohKodGiris');
-        var kod = kodDuzelt((el && el.value) || '');
-        if (!kod) { OH.kodCiz('L\u00fctfen kodunu yaz.', true); return; }
-
-        var not = document.getElementById('ohKodNot');
-        if (not) { not.style.color = '#16A085'; not.textContent = 'Kod kontrol ediliyor\u2026'; }
+        if (!u || !D) return Promise.resolve({ ok: false, mesaj: 'Ba\u011flant\u0131 kurulamad\u0131. Sayfay\u0131 yenileyip tekrar dene.' });
+        var kod = kodDuzelt(hamKod);
+        if (!kod) return Promise.resolve({ ok: false, mesaj: 'L\u00fctfen kodunu yaz.' });
 
         var ara = function (k) { return D.collection(C_DAVET).doc(k).get(); };
 
-        ara(kod).then(function (doc) {
+        return ara(kod).then(function (doc) {
             /* Kisisel kod bulunamadiysa OGRETMEN KODUNU dene: ogrenci
                "TCH-4582-X8B2" yerine yalnizca "TCH-4582" yazmis olabilir. */
             if (doc.exists) return doc;
@@ -740,10 +740,9 @@
             return doc;
         }).then(function (doc) {
             if (!doc || !doc.exists) {
-                OH.kodCiz(ogretmenKoduMu(kod)
+                return { ok: false, mesaj: ogretmenKoduMu(kod)
                     ? 'Bu \u00f6\u011fretmen kodu hen\u00fcz sistemde kay\u0131tl\u0131 de\u011fil. \u00d6\u011fretmeninin siteye bir kez giri\u015f yapmas\u0131 yeterli, sonra tekrar dene.'
-                    : 'Bu kod bulunamad\u0131. \u00d6\u011fretmeninin kodunu da yazabilirsin (\u00f6rn. TCH-4582).', true);
-                return;
+                    : 'Bu kod bulunamad\u0131. \u00d6\u011fretmeninin kodunu da yazabilirsin (\u00f6rn. TCH-4582).' };
             }
             var v = doc.data() || {};
             var gercekKod = kodDuzelt(v.kod || doc.id);
@@ -753,7 +752,7 @@
             var ogretmenKoduIle = (v.tur === 'ogretmen') || (v.lId == null);
 
             if (!ogretmenKoduIle && v.kullanildi && v.ogrenciUid && v.ogrenciUid !== u.uid) {
-                OH.kodCiz('Bu kod daha \u00f6nce ba\u015fka bir hesaba ba\u011flanm\u0131\u015f.', true); return;
+                return { ok: false, mesaj: 'Bu kod daha \u00f6nce ba\u015fka bir hesaba ba\u011flanm\u0131\u015f.' };
             }
 
             var ad = '';
@@ -785,11 +784,41 @@
                     seviyeAd: v.seviyeAd || '', sinifAd: v.sinifAd || '',
                     durum: 'bekliyor'
                 };
-                OH.kodCiz();
-                OH.bannerGuncelle();
+                return { ok: true };
             });
         }).catch(function (e) {
-            OH.kodCiz('\u0130stek g\u00f6nderilemedi: ' + (e && (e.message || e.code)), true);
+            return { ok: false, mesaj: '\u0130stek g\u00f6nderilemedi: ' + (e && (e.message || e.code)) };
+        });
+    };
+
+    /* Kod penceresindeki "Istek Gonder" tusu. */
+    OH.kodGonder = function () {
+        var el = document.getElementById('ohKodGiris');
+        var not = document.getElementById('ohKodNot');
+        if (not) { not.style.color = '#16A085'; not.textContent = 'Kod kontrol ediliyor\u2026'; }
+        OH.kodIstekGonder((el && el.value) || '').then(function (r) {
+            if (r && r.ok) { OH.kodCiz(); OH.bannerGuncelle(); }
+            else OH.kodCiz((r && r.mesaj) || '\u0130stek g\u00f6nderilemedi.', true);
+        });
+    };
+
+    /* KAYIT FORMUNDA girilen ogretmen kodu (oh_beklenen_kod):
+       giris tamamlaninca burada otomatik isleme alinir.
+       Basarili da olsa hatali da olsa kod penceresi acilip sonuc gosterilir. */
+    OH.bekleyenKoduIsle = function () {
+        var kod = '';
+        try { kod = localStorage.getItem('oh_beklenen_kod') || ''; } catch (e) { }
+        if (!kod) return;
+        if (ogretmenMi() || !OH.epostaGirisiVar()) return;
+        if (OH.bagliMi() || OH.bekliyorMu()) {
+            try { localStorage.removeItem('oh_beklenen_kod'); } catch (e) { }
+            return;
+        }
+        OH.kodIstekGonder(kod).then(function (r) {
+            try { localStorage.removeItem('oh_beklenen_kod'); } catch (e) { }
+            OH.bannerGuncelle();
+            OH.kodModalAc();
+            if (!(r && r.ok)) OH.kodCiz((r && r.mesaj) || '\u0130stek g\u00f6nderilemedi.', true);
         });
     };
 
@@ -1182,7 +1211,11 @@
             });
             setTimeout(function () { OH.tusYerlestir(); }, 900);
         } else {
-            OH.baglantiyiYukle();
+            var p = OH.baglantiyiYukle();
+            /* Baglanti durumu OGRENILDIKTEN sonra kayittan kalan kod islenir;
+               boylece zaten bagli/bekleyen hesaba ikinci istek atilmaz. */
+            if (p && p.then) p.then(function () { OH.bekleyenKoduIsle(); });
+            else OH.bekleyenKoduIsle();
         }
     };
 
