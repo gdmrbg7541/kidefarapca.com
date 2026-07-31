@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Bilgi Yarışması — Vezinler & Kelimeler</title>
+<title>Bilgi Yarışması — Vezinler &amp; Kelimeler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=56">
+<link rel="stylesheet" href="bilgiyarismasivezinler.css?v=101">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -18,6 +18,24 @@
 </head>
 <body>
 
+<!-- ==== ÖZEL SVG: tanimlar (gradyan + filtre havuzu) ==== -->
+<svg id="biySvgTanim" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
+  <defs>
+    <linearGradient id="biyGrMor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="biyGrYesil" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="biyGrTuruncu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="biyGrMavi" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+</svg>
+
 <div id="biy-app">
 
   <!-- Yükleniyor -->
@@ -26,7 +44,8 @@
     <p>Yükleniyor…</p>
   </section>
 
-  <!-- Giriş kapısı (admin değilse) -->
+  <!-- Hata ekrani: giris kapisi kaldirildi, burasi yalnizca acilis sirasinda
+       beklenmedik bir hata olursa gorunur. -->
   <section id="ekranGirisKapisi" class="biy-ekran gizli">
     <div class="biy-kart biy-orta">
       <div class="biy-logo">🏆</div>
@@ -51,12 +70,86 @@
 
     <div class="biy-konu-panel">
       <div class="biy-konu-secim">
-        <label for="konuSecim" class="biy-konu-label">Konu</label>
-        <select id="konuSecim" class="biy-konu-select" onchange="BIY.konuSec(this.value)"></select>
+        <span class="biy-sec-ikon biy-anim" aria-hidden="true">
+          <!-- Liste + tiklama: imlec yukaridan iner, ucuncu satira basar,
+               turuncu dalga yayilir, satir yesile doner ve tik cizilir. -->
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-konu">
+            <circle class="biy-hale" cx="32" cy="32" r="29" fill="url(#biyGrYesil)" opacity=".13"/>
+            <rect x="9" y="11" width="46" height="42" rx="7" fill="#fff" stroke="#DCE6F0" stroke-width="2"/>
+            <g fill="#E2E8F0">
+              <rect x="14" y="16" width="36" height="7" rx="3.5"/>
+              <rect x="14" y="25.5" width="36" height="7" rx="3.5"/>
+              <rect x="14" y="35" width="36" height="7" rx="3.5"/>
+              <rect x="14" y="44.5" width="36" height="7" rx="3.5"/>
+            </g>
+            <g class="biy-kn-vurgu">
+              <rect x="14" y="35" width="36" height="7" rx="3.5" fill="url(#biyGrYesil)"/>
+              <path class="biy-kn-tik" d="M19 38.5 l2.6 2.6 l5-5.4" fill="none" stroke="#fff"
+                    stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <circle class="biy-kn-halka" cx="41" cy="37" r="7" fill="none"
+                    stroke="url(#biyGrTuruncu)" stroke-width="2.4"/>
+            <g class="biy-kn-imlec">
+              <g class="biy-kn-bas">
+                <path d="M41 30 l0 13.5 l3.3-3.1 l2.2 4.6 l2.6-1.2 l-2.2-4.6 l4.5-0.3 Z"
+                      fill="#334155" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <div class="biy-ds" id="konuSecici">
+          <button type="button" class="biy-konu-select biy-ds-btn" id="konuSeciciBtn"
+                  aria-haspopup="listbox" aria-expanded="false" aria-label="Konu"
+                  title="Konu" onclick="BIY.konuListeAc()">
+            <span class="biy-ds-ad" id="konuSeciciAd">Konu seç…</span>
+            <svg class="biy-ds-ok" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="biy-ds-liste" id="konuSeciciListe" role="listbox" aria-label="Konu" hidden></div>
+          <select id="konuSecim" class="biy-gizli-alan" aria-hidden="true" tabindex="-1"
+                  onchange="BIY.konuSec(this.value)"></select>
+        </div>
       </div>
       <div class="biy-soru-sec-secim">
-        <span class="biy-konu-label">Soru Seç</span>
-        <button class="biy-btn biy-soru-sec-btn" id="soruSecBtn" onclick="BIY.soruSecAc()">🎯 Havuzdan seç <b id="soruSecSayi">(0)</b></button>
+        <span class="biy-sec-ikon biy-anim" aria-hidden="true">
+          <!-- Havuz: uc ayri listeden sirayla bir satir secilir ve secilen
+               soru asagidaki yesil sepete dusen renkli bir nokta olarak akar. -->
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-havuz">
+            <circle class="biy-hale" cx="32" cy="32" r="29" fill="url(#biyGrTuruncu)" opacity=".13"/>
+            <g>
+              <rect x="4" y="8" width="16" height="24" rx="4" fill="#fff" stroke="#DCE6F0" stroke-width="1.6"/>
+              <path d="M4 12 a4 4 0 0 1 4-4 h8 a4 4 0 0 1 4 4 z" fill="url(#biyGrMor)"/>
+              <rect x="7" y="16" width="10" height="2.6" rx="1.3" fill="#E2E8F0"/>
+              <rect x="7" y="20.5" width="10" height="2.6" rx="1.3" fill="#E2E8F0"/>
+              <rect class="biy-hv-sec biy-hv-s1" x="7" y="25" width="10" height="2.6" rx="1.3" fill="url(#biyGrMor)"/>
+            </g>
+            <g>
+              <rect x="24" y="8" width="16" height="24" rx="4" fill="#fff" stroke="#DCE6F0" stroke-width="1.6"/>
+              <path d="M24 12 a4 4 0 0 1 4-4 h8 a4 4 0 0 1 4 4 z" fill="url(#biyGrMavi)"/>
+              <rect x="27" y="16" width="10" height="2.6" rx="1.3" fill="#E2E8F0"/>
+              <rect x="27" y="20.5" width="10" height="2.6" rx="1.3" fill="#E2E8F0"/>
+              <rect class="biy-hv-sec biy-hv-s2" x="27" y="25" width="10" height="2.6" rx="1.3" fill="url(#biyGrMavi)"/>
+            </g>
+            <g>
+              <rect x="44" y="8" width="16" height="24" rx="4" fill="#fff" stroke="#DCE6F0" stroke-width="1.6"/>
+              <path d="M44 12 a4 4 0 0 1 4-4 h8 a4 4 0 0 1 4 4 z" fill="url(#biyGrTuruncu)"/>
+              <rect x="47" y="16" width="10" height="2.6" rx="1.3" fill="#E2E8F0"/>
+              <rect x="47" y="20.5" width="10" height="2.6" rx="1.3" fill="#E2E8F0"/>
+              <rect class="biy-hv-sec biy-hv-s3" x="47" y="25" width="10" height="2.6" rx="1.3" fill="url(#biyGrTuruncu)"/>
+            </g>
+            <circle class="biy-hv-nok biy-hv-n1" cx="12" cy="26" r="2.6" fill="url(#biyGrMor)"/>
+            <circle class="biy-hv-nok biy-hv-n2" cx="32" cy="26" r="2.6" fill="url(#biyGrMavi)"/>
+            <circle class="biy-hv-nok biy-hv-n3" cx="52" cy="26" r="2.6" fill="url(#biyGrTuruncu)"/>
+            <g class="biy-hv-sepet">
+              <rect x="15" y="42" width="34" height="15" rx="5" fill="url(#biyGrYesil)"/>
+              <rect x="13" y="39" width="38" height="5.5" rx="2.75" fill="url(#biyGrYesil)"/>
+            </g>
+          </svg>
+        </span>
+        <button class="biy-btn biy-soru-sec-btn" id="soruSecBtn" aria-label="Havuzdan seç"
+                title="Havuzdan seç" onclick="BIY.soruSecAc()">Havuzdan seç <b id="soruSecSayi" hidden>0</b></button>
       </div>
       <div class="biy-pdf-onizleme">
         <a class="biy-pdf-a4" id="pdfKart" target="_blank" rel="noopener" title="PDF'i aç">
@@ -69,36 +162,124 @@
     </div>
 
     <div class="biy-seviye-secim biy-sorusayi-secim">
-      <span class="biy-seviye-label">Soru sayısı:</span>
-      <button class="biy-sayi-btn" data-sayi="10" onclick="BIY.setSoruSayisi(10)">10</button>
-      <button class="biy-sayi-btn" data-sayi="15" onclick="BIY.setSoruSayisi(15)">15</button>
-      <button class="biy-sayi-btn" data-sayi="20" onclick="BIY.setSoruSayisi(20)">20</button>
-      <button class="biy-sayi-btn" data-sayi="25" onclick="BIY.setSoruSayisi(25)">25</button>
-      <button class="biy-sayi-btn" data-sayi="50" onclick="BIY.setSoruSayisi(50)">50</button>
-      <input id="soruSayiInput" class="biy-sayi-input" type="number" min="1" max="50" step="1" placeholder="Özel"
-             onchange="BIY.setSoruSayisiManuel(this.value)" title="Konudaki soru sayısına kadar">
+      <button type="button" class="biy-seviye-label biy-sayi-etiket biy-anim" id="soruSayiEtiket"
+              aria-expanded="false" aria-controls="sayiAkordiyon" title="Soru sayısı"
+              onclick="BIY.sayiAcKapat()">
+        <svg viewBox="0 0 64 64" class="biy-svg biy-svg-sayi" role="img" aria-label="Soru sayısı (en çok 50)">
+          <title>Soru sayısı (en çok 50)</title>
+          <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrMor)" opacity=".14"/>
+          <g class="biy-ss-yigin">
+            <rect class="biy-ss-k3" x="14" y="8"  width="30" height="40" rx="6" fill="url(#biyGrMor)" opacity=".26" transform="rotate(-13 29 28)"/>
+            <rect class="biy-ss-k2" x="15" y="9"  width="30" height="40" rx="6" fill="url(#biyGrMor)" opacity=".45" transform="rotate(-6.5 30 29)"/>
+            <rect class="biy-ss-k1" x="17" y="11" width="30" height="40" rx="6" fill="#fff" stroke="url(#biyGrMor)" stroke-width="2.4"/>
+            <rect class="biy-ss-satir biy-ss-s1" x="22" y="18" width="20" height="3.2" rx="1.6" fill="url(#biyGrMor)"/>
+            <rect class="biy-ss-satir biy-ss-s2" x="22" y="25" width="20" height="3.2" rx="1.6" fill="url(#biyGrMor)"/>
+            <rect class="biy-ss-satir biy-ss-s3" x="22" y="32" width="14" height="3.2" rx="1.6" fill="url(#biyGrMor)"/>
+          </g>
+          <g class="biy-ss-secim">
+            <circle cx="14" cy="14" r="9.5" fill="#fff"/>
+            <circle cx="14" cy="14" r="8" fill="url(#biyGrYesil)"/>
+            <path d="M10.2 14.2 l2.6 2.6 L18 11.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <g class="biy-ss-rozet-g">
+            <circle cx="45" cy="45" r="16.6" fill="#fff"/>
+            <circle class="biy-ss-rozet" cx="45" cy="45" r="15" fill="url(#biyGrTuruncu)"/>
+            <text class="biy-ss-rakam" id="soruSayiRakam" x="45" y="45" dy=".35em" text-anchor="middle" fill="#fff">0</text>
+          </g>
+        </svg>
+      </button>
+      <div class="biy-sayi-akordiyon" id="sayiAkordiyon">
+        <button class="biy-sayi-btn" data-sayi="10" onclick="BIY.setSoruSayisi(10)">10</button>
+        <button class="biy-sayi-btn" data-sayi="20" onclick="BIY.setSoruSayisi(20)">20</button>
+        <button class="biy-sayi-btn" data-sayi="25" onclick="BIY.setSoruSayisi(25)">25</button>
+        <button class="biy-sayi-btn" data-sayi="50" onclick="BIY.setSoruSayisi(50)">50</button>
+      </div>
+      <div class="biy-bicim-sec" id="bicimSec">
+        <button type="button" class="biy-bicim-btn" id="bicimSecBtn" aria-haspopup="true"
+                aria-expanded="false" title="Soru tipleri" onclick="BIY.bicimAcKapat()">
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-bicim" role="img" aria-label="Soru tipleri">
+            <title>Soru tipleri</title>
+            <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrMavi)" opacity=".14"/>
+            <g stroke="#CBD5E1" stroke-width="4.6" stroke-linecap="round">
+              <line x1="16" y1="20" x2="48" y2="20"/>
+              <line x1="16" y1="32" x2="48" y2="32"/>
+              <line x1="16" y1="44" x2="48" y2="44"/>
+            </g>
+            <circle class="biy-bf-k1" cx="26" cy="20" r="5.6" fill="url(#biyGrTuruncu)" stroke="#fff" stroke-width="2.2"/>
+            <circle class="biy-bf-k2" cx="40" cy="32" r="5.6" fill="url(#biyGrYesil)" stroke="#fff" stroke-width="2.2"/>
+            <circle class="biy-bf-k3" cx="30" cy="44" r="5.6" fill="url(#biyGrMor)" stroke="#fff" stroke-width="2.2"/>
+          </svg>
+        </button>
+        <div class="biy-bs-panel" id="bicimSecPanel" aria-label="Soru tipleri" hidden></div>
+      </div>
     </div>
 
     <div class="biy-menu">
-      <button class="biy-menu-kart" id="kartSinif" onclick="BIY.acSinif()">
-        <span class="biy-menu-emoji">🏫</span>
-        <span class="biy-menu-ad">Sınıf Modu</span>
-        <span class="biy-menu-desc">İnternetsiz · soruları sınıfça çöz, cevabı göster</span>
+      <button class="biy-menu-kart" id="kartOkul" onclick="BIY.acLobi('okul')">
+        <span class="biy-bagli-rozet gizli"></span>
+        <span class="biy-menu-emoji biy-anim" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-okul">
+            <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrTuruncu)" opacity=".14"/>
+            <path d="M12 30 32 16l20 14v20H12z" fill="url(#biyGrTuruncu)" opacity=".85"/>
+            <rect class="biy-ok-kapi" x="27" y="38" width="10" height="12" rx="1.5" fill="#fff" opacity=".9"/>
+            <g class="biy-ok-cam">
+              <rect x="17" y="34" width="7" height="7" rx="1.5" fill="#fff" opacity=".85"/>
+              <rect x="40" y="34" width="7" height="7" rx="1.5" fill="#fff" opacity=".85"/>
+            </g>
+            <g class="biy-ok-bayrak">
+              <line x1="32" y1="16" x2="32" y2="6" stroke="url(#biyGrMor)" stroke-width="2.6" stroke-linecap="round"/>
+              <path d="M32 7h10l-3 3.5 3 3.5H32z" fill="url(#biyGrMor)"/>
+            </g>
+          </svg>
+        </span>
+        <span class="biy-menu-ad">Sınıf Sistemi</span>
+        <span class="biy-menu-desc">Her sınıfa bir karekod · sınıflar yarışır</span>
       </button>
-      <button class="biy-menu-kart" id="kartDijital" onclick="BIY.acTakimlar()">
-        <span id="dijitalBagliRozet" class="biy-bagli-rozet gizli"></span>
-        <span class="biy-menu-emoji">👥</span>
-        <span class="biy-menu-ad">Dijital Yarışma</span>
-        <span class="biy-menu-desc">Takım oluştur · link &amp; karekod · lobi</span>
+      <button class="biy-menu-kart" id="kartTakim" onclick="BIY.acLobi('takim')">
+        <span class="biy-bagli-rozet gizli"></span>
+        <span class="biy-menu-emoji biy-anim" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-takim">
+            <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrMor)" opacity=".14"/>
+            <g class="biy-tk-a">
+              <circle cx="20" cy="26" r="7" fill="url(#biyGrMor)"/>
+              <path d="M8 48c0-7 5.5-11 12-11s12 4 12 11z" fill="url(#biyGrMor)" opacity=".75"/>
+            </g>
+            <g class="biy-tk-b">
+              <circle cx="44" cy="26" r="7" fill="url(#biyGrMavi)"/>
+              <path d="M32 48c0-7 5.5-11 12-11s12 4 12 11z" fill="url(#biyGrMavi)" opacity=".75"/>
+            </g>
+            <path class="biy-tk-bag" d="M24 20 Q32 12 40 20" fill="none" stroke="url(#biyGrTuruncu)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="biy-menu-ad">Takım Sistemi</span>
+        <span class="biy-menu-desc">Her takıma bir karekod · takımlar yarışır</span>
+      </button>
+      <button class="biy-menu-kart" id="kartBirey" onclick="BIY.acLobi('birey')">
+        <span class="biy-bagli-rozet gizli"></span>
+        <span class="biy-menu-emoji biy-anim" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-birey">
+            <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrYesil)" opacity=".14"/>
+            <g class="biy-br-govde">
+              <circle cx="32" cy="24" r="8" fill="url(#biyGrYesil)"/>
+              <path d="M17 50c0-8 6.7-13 15-13s15 5 15 13z" fill="url(#biyGrYesil)" opacity=".75"/>
+            </g>
+            <g class="biy-br-el">
+              <rect x="44" y="14" width="5" height="15" rx="2.5" fill="url(#biyGrTuruncu)"/>
+            </g>
+            <circle class="biy-br-nokta" cx="46.5" cy="9" r="3.2" fill="url(#biyGrTuruncu)"/>
+          </svg>
+        </span>
+        <span class="biy-menu-ad">Bireysel Sistem</span>
+        <span class="biy-menu-desc">Tek karekod · herkes adıyla katılır</span>
       </button>
     </div>
-    <p id="menuNot" class="biy-menu-not gizli">Başlamak için yukarıdan konu (ya da havuzdan soru) ve soru sayısını seçin.</p>
+    <p id="menuNot" class="biy-menu-not gizli">Başlamak için konu (ya da havuzdan soru) ve soru sayısını seçin.</p>
   </section>
 
   <!-- ADMIN — Sorular önizleme -->
   <section id="ekranSorular" class="biy-ekran gizli">
     <div class="biy-ust-bar">
-      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Üst menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
       <h2>Örnek Sorular</h2>
     </div>
     <div class="biy-sekme-bar">
@@ -109,34 +290,25 @@
     <div id="sorularListe" class="biy-sorular-liste"></div>
   </section>
 
-  <!-- ADMIN — Sınıf Modu (çevrimdışı: sorular & cevaplar sınıfta) -->
-  <section id="ekranSinif" class="biy-ekran gizli">
-    <div class="biy-ust-bar">
-      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Üst menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
-      <h2>Sınıf Modu</h2>
-      <span id="sinifKaynak" class="biy-sinif-kaynak"></span>
-    </div>
-    <div id="sinifGovde" class="biy-sinif-govde"></div>
-    <div class="biy-sinif-nav">
-      <button class="biy-btn biy-btn-mavi" onclick="BIY.sinifGit(-1)">◀ Önceki</button>
-      <span id="sinifSayac" class="biy-sinif-sayac">0 / 0</span>
-      <button class="biy-btn biy-btn-yesil" id="sinifCevapBtn" onclick="BIY.sinifCevap()">Cevabı Göster</button>
-      <button class="biy-btn biy-btn-mavi" onclick="BIY.sinifGit(1)">Sonraki ▶</button>
-    </div>
-  </section>
-
-  <!-- ADMIN — Takım oluştur + lobi -->
+  <!-- ADMIN — Takım / Sınıf oluştur + lobi -->
   <section id="ekranTakimlar" class="biy-ekran gizli">
     <div class="biy-ust-bar">
-      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Üst menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
-      <h2>Takım Oluştur &amp; Lobi</h2>
+      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <h2 id="lobiBaslik">Takım Oluştur &amp; Lobi</h2>
     </div>
 
-    <div class="biy-takim-yap">
-      <input id="takimAdiInput" type="text" placeholder="Takım / Sınıf" maxlength="24"
+    <!-- TAKIM & OKUL MODU: adları yaz, her takım/sınıf kendi karekodunu okutur -->
+    <div id="takimYapAlan" class="biy-takim-yap">
+      <input id="takimAdiInput" type="text" placeholder="Takım adı" maxlength="24"
              onkeydown="if(event.key==='Enter')BIY.takimEkle()">
-      <button class="biy-btn biy-btn-yesil" onclick="BIY.takimEkle()">+ Takım Ekle</button>
+      <button id="takimEkleBtn" class="biy-btn biy-btn-yesil" onclick="BIY.takimEkle()">+ Takım Ekle</button>
     </div>
+
+    <!-- BİREY MODU: tek karekod -->
+    <div id="lobiOdaAlan" class="biy-oda-alan gizli"></div>
+
+    <!-- BİREY MODU: onay bekleyen katılımcılar -->
+    <div id="lobiBekleyen" class="biy-bekleyen-alan gizli"></div>
 
     <div id="takimlarGrid" class="biy-takimlar-grid"></div>
 
@@ -144,6 +316,41 @@
       <button id="baslatBtn" class="biy-btn biy-btn-buyuk gizli" onclick="BIY.yarisiBaslat()">🚀 Yarışı Başlat</button>
       <p id="baslatNot" class="biy-not"></p>
     </div>
+  </section>
+
+  <!-- ÖĞRENCİ — tek karekodla katılım (yalnız birey modu) -->
+  <section id="ekranKatil" class="biy-ekran gizli">
+    <div id="katilKart" class="biy-kart biy-orta biy-katil-kart">
+      <div class="biy-logo biy-anim" aria-hidden="true">
+        <svg viewBox="0 0 64 64" class="biy-svg biy-svg-katil">
+          <circle class="biy-hale" cx="32" cy="32" r="27" fill="url(#biyGrYesil)" opacity=".14"/>
+          <g class="biy-kt-kare" fill="none" stroke="url(#biyGrYesil)" stroke-width="3" stroke-linecap="round">
+            <path d="M14 24V16a2 2 0 0 1 2-2h8"/>
+            <path d="M50 24V16a2 2 0 0 0-2-2h-8"/>
+            <path d="M14 40v8a2 2 0 0 0 2 2h8"/>
+            <path d="M50 40v8a2 2 0 0 1-2 2h-8"/>
+          </g>
+          <g fill="url(#biyGrYesil)" opacity=".85">
+            <rect x="21" y="21" width="8" height="8" rx="1.5"/>
+            <rect x="35" y="21" width="8" height="8" rx="1.5"/>
+            <rect x="21" y="35" width="8" height="8" rx="1.5"/>
+            <rect x="35" y="35" width="4" height="4" rx="1"/>
+            <rect x="39" y="39" width="4" height="4" rx="1"/>
+          </g>
+          <line class="biy-kt-tarama" x1="16" y1="32" x2="48" y2="32" stroke="url(#biyGrTuruncu)" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>Yarışmaya Katıl</h1>
+      <p class="biy-alt">Adını yaz; öğretmenin onayından sonra yarışma başlar.</p>
+      <input id="katilAdInput" class="biy-katil-input" type="text" placeholder="Adın soyadın" maxlength="18"
+             autocomplete="off" autocorrect="off" spellcheck="false"
+             onkeydown="if(event.key==='Enter')BIY.katilGonder()">
+      <p class="biy-krk-baslik">Karakterini seç</p>
+      <div id="katilKrkAlan" class="biy-krk-alan"></div>
+      <button class="biy-btn biy-btn-yesil biy-katil-btn" onclick="BIY.katilGonder()">Katıl</button>
+      <p id="katilNot" class="biy-not"></p>
+    </div>
+    <div id="katilBekle" class="biy-katil-bekle gizli"></div>
   </section>
 
   <!-- TAKIM MODU — katılım / lobi / oyun -->
@@ -155,11 +362,19 @@
   <section id="ekranOyunAdmin" class="biy-ekran gizli"></section>
 
   <!-- canlı yarışmadan çıkış (onaylı) -->
-  <button id="cikisTus" class="biy-cikis-tus gizli" onclick="BIY.yaristanCik()" title="Yarışmadan çık">✕ Çık</button>
+  <button id="cikisTus" class="biy-cikis-tus gizli" onclick="BIY.yaristanCik()"
+          title="Yarışmadan çık" aria-label="Yarışmadan çık">
+    <svg viewBox="0 0 24 24" class="biy-cikis-svg" aria-hidden="true" fill="none"
+         stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13.5 8.3V5.6a1.8 1.8 0 0 0-1.8-1.8H5.6a1.8 1.8 0 0 0-1.8 1.8v12.8a1.8 1.8 0 0 0 1.8 1.8h6.1a1.8 1.8 0 0 0 1.8-1.8v-2.7"/>
+      <circle cx="10.6" cy="12" r=".9" fill="currentColor" stroke="none"/>
+      <g class="biy-ck-ok"><path d="M13.5 12h6.9"/><path d="M17.4 8.9l3.1 3.1-3.1 3.1"/></g>
+    </svg>
+  </button>
 
 </div>
 
-<script src="bilgiyarismasivezinler.js?v=65"></script>
+<script src="bilgiyarismasivezinler.js?v=101"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
