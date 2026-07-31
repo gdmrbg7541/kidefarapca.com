@@ -1955,3 +1955,22 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 
 /* ===================== kidef uyarlaması ===================== */
 .biy-et-balon { direction: ltr; font-family: 'Marhey', sans-serif; }
+
+/* v101a — sonuç ekranı: alt SVG'ler ve Sonraki Soru düğmesi SABİT; uzun
+   liste/tablolar kendi içinde kayar, ekrandan taşmaz. */
+#ekranOyunAdmin .biy-oyun-orta.biy-sonuc-ekran {
+  box-sizing: border-box;
+  height: calc(100dvh - 8px);
+  max-height: calc(100dvh - 8px);
+  padding-bottom: 16px;
+  display: flex; flex-direction: column;
+}
+.biy-sonuc-ekran .biy-sonuc-sahne { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.biy-sonuc-ekran .biy-sahne-oge { max-height: 100%; min-height: 0; }
+.biy-sonuc-ekran .biy-sonuc-lider { display: flex; flex-direction: column; min-height: 0; max-height: 100%; }
+.biy-sonuc-ekran .biy-sonuc-lider .biy-lider-ol {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  max-height: none;   /* .biy-kaydir sınırı yerine esnek yükseklik */
+}
+.biy-sonuc-ekran .biy-reveal { min-height: 0; overflow-y: auto; max-height: 100%; }
+.biy-sonuc-ekran .biy-sonuc-nokta, .biy-sonuc-ekran .biy-oyun-kontrol { flex: 0 0 auto; }
