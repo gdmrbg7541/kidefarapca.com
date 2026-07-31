@@ -1070,9 +1070,19 @@ const BIY = {
       try { if (state.odaAboneAdmin) state.odaAboneAdmin(); if (state.cevapAbone) state.cevapAbone(); if (state.takimAbone) state.takimAbone(); } catch(e){}
       BIY._temizleKayit();
     }
-    /* kidefarapca.com: bu sayfa kaliplartablosu.html'den aciliyor; geri tusu
-       oraya doner (girise degil).                                            */
-    location.href = "kaliplartablosu.html";
+    /* kidefarapca.com: bu sayfa index.html'den YENI SEKMEDE aciliyor
+       (target="_blank" rel="opener"). Ilk sayfadaki geri tusu:
+       - yeni sekmede acildiysa index sekmesine odaklan ve BU SEKMEYI KAPAT
+       - kapatmaya izin verilmezse / dogrudan acildiysa index.html'e don      */
+    try {
+      if (window.opener && !window.opener.closed){
+        try { window.opener.focus(); } catch(e){}
+        window.close();
+        setTimeout(function(){ if (!window.closed) location.href = "index.html"; }, 250);
+        return;
+      }
+    } catch(e){}
+    location.href = "index.html";
   },
 
   /* ---------- Konu seçimi ---------- */
