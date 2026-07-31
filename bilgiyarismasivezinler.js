@@ -925,9 +925,9 @@ const BIY = {
       try { if (state.odaAboneAdmin) state.odaAboneAdmin(); if (state.cevapAbone) state.cevapAbone(); if (state.takimAbone) state.takimAbone(); } catch(e){}
       BIY._temizleKayit();
     }
-    /* Bu dosya 1. unite oyunlari klasorunde duruyor; geri tusu oyun listesine
-       (index.html) doner. Ayni klasorde oldugu icin goreli adres yeterli.     */
-    location.href = "index.html";
+    /* kidefarapca.com: bu sayfa kaliplartablosu.html'den aciliyor; geri tusu
+       oraya doner (girise degil).                                            */
+    location.href = "kaliplartablosu.html";
   },
 
   /* ---------- Konu seçimi ---------- */
