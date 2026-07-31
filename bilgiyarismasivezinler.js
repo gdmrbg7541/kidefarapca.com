@@ -745,9 +745,9 @@ function odaLinki(oda){
    birey : tek karekod, herkes kendi adını yazar, öğretmen onaylar
    okul  : tek karekod, öğrenci adını yazar + sınıfını seçer, sınıflar ORTALAMA puanla yarışır  */
 const MOD_BILGI = {
-  takim: { ad: "Takım Sistemi", emoji: "👥", kisi: "Takım", cog: "takım",      baslik: "Takım Oluştur & Lobi" },
-  birey: { ad: "Bireysel Sistem", emoji: "🙋", kisi: "Katılımcı",  cog: "katılımcı", baslik: "Katılımcılar & Lobi" },
-  okul:  { ad: "Sınıf Sistemi",  emoji: "🏫", kisi: "Sınıf", cog: "sınıf",      baslik: "Sınıf Oluştur & Lobi" }
+  takim: { ad: "Takımlar Arası Bilgi Yarışması", emoji: "👥", kisi: "Takım", cog: "takım",      baslik: "Takım Oluştur & Lobi" },
+  birey: { ad: "Öğrenciler Arası Bilgi Yarışması", emoji: "🙋", kisi: "Katılımcı",  cog: "katılımcı", baslik: "Katılımcılar & Lobi" },
+  okul:  { ad: "Sınıflar Arası Bilgi Yarışması",  emoji: "🏫", kisi: "Sınıf", cog: "sınıf",      baslik: "Sınıf Oluştur & Lobi" }
 };
 function modAl(){ return MOD_BILGI[state.oyunModu] ? state.oyunModu : "takim"; }
 function tekKarekod(){ return modAl() === "birey"; }   // yalnız birey: tek ortak karekod

@@ -1974,3 +1974,10 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 }
 .biy-sonuc-ekran .biy-reveal { min-height: 0; overflow-y: auto; max-height: 100%; }
 .biy-sonuc-ekran .biy-sonuc-nokta, .biy-sonuc-ekran .biy-oyun-kontrol { flex: 0 0 auto; }
+
+/* v103a — mod kartları: SVG üst şeride çarpmasın, uzun başlıklar sığsın */
+.biy-menu-kart { height: auto; min-height: 236px; padding: 22px 14px 16px; }
+.biy-menu-emoji { margin-top: 4px; }
+.biy-menu-ad { text-align: center; line-height: 1.25; }
+.biy-menu-desc { text-align: center; }
+@media (max-width: 640px){ .biy-menu-kart { min-height: 0; } }
