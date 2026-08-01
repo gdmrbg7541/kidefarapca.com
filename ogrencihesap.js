@@ -1227,27 +1227,61 @@
             return;
         }
         D.collection(C_BAG).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            var iyilesen = 0;
             snap.forEach(function (doc) {
                 var v = doc.data() || {};
-                if (v.durum !== 'onayli') return;
-                var bulundu = false;
+                if (v.durum !== 'onayli' && v.durum !== 'kopuk') return;
+                /* Ogrenci su an hangi sinifta? (varsa yerini de al) */
+                var yer = null;
                 try {
                     Object.keys(d.levels).forEach(function (lId) {
                         var cl = d.levels[lId].classes || {};
                         Object.keys(cl).forEach(function (cId) {
                             (cl[cId].students || []).forEach(function (st) {
-                                if (st && st.hesapUid === doc.id) bulundu = true;
+                                if (st && st.hesapUid === doc.id && !yer) {
+                                    yer = { lId: lId, cId: cId,
+                                            seviyeAd: d.levels[lId].name || lId,
+                                            sinifAd: (cl[cId].name || cId) };
+                                }
                             });
                         });
                     });
                 } catch (e) { }
-                if (bulundu) return;
-                D.collection(C_BAG).doc(doc.id).set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true }).catch(function () { });
-                D.collection(C_OZET).doc(doc.id).delete().catch(function () { });
-                if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
-                    .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true }).catch(function () { });
-                console.log('OH: "' + (v.ad || doc.id) + '" hiçbir sınıfta bulunamadı — bağı koparıldı.');
+
+                if (v.durum === 'onayli' && !yer) {
+                    /* onayli ama hicbir sinifta yok -> bagi kopar */
+                    D.collection(C_BAG).doc(doc.id).set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                    D.collection(C_OZET).doc(doc.id).delete().catch(function () { });
+                    if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
+                        .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                    console.log('OH: "' + (v.ad || doc.id) + '" hiçbir sınıfta bulunamadı — bağı koparıldı.');
+                } else if (v.durum === 'kopuk' && yer) {
+                    /* KOPUK ama ogrenci SINIFTA DURUYOR -> bagi kendiliginden ONAR
+                       (sinif yeniden olusturuldugunda ogrenciye tekrar kod
+                       girdirmeye gerek kalmaz). */
+                    iyilesen++;
+                    D.collection(C_BAG).doc(doc.id).set({
+                        durum: 'onayli',
+                        lId: yer.lId, cId: yer.cId,
+                        seviyeAd: yer.seviyeAd, sinifAd: yer.sinifAd,
+                        guncelleme: Date.now()
+                    }, { merge: true }).catch(function () { });
+                    if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
+                        .set({ kullanildi: true, ogrenciUid: doc.id, guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                    console.log('OH: "' + (v.ad || doc.id) + '" sınıfta bulundu — bağ yeniden ONARILDI (' + yer.seviyeAd + '/' + yer.sinifAd + ').');
+                } else if (v.durum === 'onayli' && yer && (v.lId !== yer.lId || v.cId !== yer.cId)) {
+                    /* sinif degismis/tasinmis -> koordinatlari tazele */
+                    D.collection(C_BAG).doc(doc.id).set({
+                        lId: yer.lId, cId: yer.cId,
+                        seviyeAd: yer.seviyeAd, sinifAd: yer.sinifAd,
+                        guncelleme: Date.now()
+                    }, { merge: true }).catch(function () { });
+                    console.log('OH: "' + (v.ad || doc.id) + '" sınıf koordinatı güncellendi.');
+                }
             });
+            /* Onarilan varsa ozet kayitlarini yeniden yaz (notlar ogrenciye aksin) */
+            if (iyilesen && typeof OH.ozetleriYaz === 'function')
+                setTimeout(function () { try { OH.ozetleriYaz(); } catch (e) { } }, 1200);
         }).catch(function (e) { console.warn('OH bağ temizliği:', e && (e.code || e.message)); });
     };
 
