@@ -451,8 +451,14 @@ function updateHeaderUI() {
     } else {
         userInfoEl.style.display = 'flex';
         const _dispName = (appState.currentUserName && appState.currentUserName !== "Öğrenci" && appState.currentUserName !== "Belirtilmedi") ? appState.currentUserName : (appState.currentUser || "");
-        /* Baslikta yalnizca AD ve SOYADIN BAS HARFLERI gorunur (orn. "Geylani Demir" -> GD).
-           Tek kelime/e-posta ise ilk iki harf alinir. Tam ad fare ipucunda kalir. */
+        /* Baslikta AD-SOYADIN BAS HARFLERI + rol emojisi gorunur:
+           yuvarlak rozette bas harfler (orn. GD), kosesinde rolu anlatan
+           kucuk emoji (yonetici 😎, ogretmen 🧑‍🏫, ogrenci 🎓 — cinsiyete gore).
+           Tek kelime/e-posta ise ilk iki harf alinir. Tam ad fare ipucunda.  */
+        var _g = appState.currentUserGender;
+        const _rolEmoji = (appState.userRole === 'admin') ? '😎'
+            : (appState.userRole === 'teacher') ? (_g === 'kadin' ? '👩‍🏫' : (_g === 'erkek' ? '👨‍🏫' : '🧑‍🏫'))
+            : (_g === 'kadin' ? '👩‍🎓' : (_g === 'erkek' ? '👨‍🎓' : '🎓'));
         var _parcalar = String(_dispName).trim().split(/\s+/).filter(Boolean);
         var _bas = '';
         if (_parcalar.length >= 2) _bas = _parcalar[0].charAt(0) + _parcalar[_parcalar.length - 1].charAt(0);
@@ -460,10 +466,12 @@ function updateHeaderUI() {
         try { _bas = _bas.toLocaleUpperCase('tr-TR'); } catch (e) { _bas = _bas.toUpperCase(); }
         userInfoEl.title = roleText + _dispName;
         userInfoEl.innerHTML =
-            '<span class="uinfo-avatar" style="display:inline-flex; align-items:center; justify-content:center;' +
+            '<span class="uinfo-avatar" style="position:relative; display:inline-flex; align-items:center; justify-content:center;' +
             ' width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2);' +
             ' border:2px solid rgba(255,255,255,0.85); color:#fff; font-weight:800; font-size:0.92rem;' +
-            ' letter-spacing:0.5px; user-select:none;">' + _bas + '</span>';
+            ' letter-spacing:0.5px; user-select:none;">' + _bas +
+            '<span style="position:absolute; right:-7px; bottom:-7px; font-size:15px; line-height:1;' +
+            ' filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35)); pointer-events:none;">' + _rolEmoji + '</span></span>';
     }
     
     document.getElementById('logout-btn').style.display = isGuest ? 'none' : 'inline-block';

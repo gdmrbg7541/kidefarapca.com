@@ -148,8 +148,14 @@ service cloud.firestore {
     // gorevkopru.js her oynayışta yazar (görevden bağımsız süreç kaydı).
     // Öğrenci yalnız kendi kaydını yazar; öğretmen yalnız kendi öğrencilerini okur.
     match /ogrenciIlerleme/{iid} {
-      allow read:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
-                                        || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      // get: kopru yazmadan once okur; ILK oyunda dokuman HENUZ YOK olur
+      // (resource == null). Yok-dokuman okumasi reddedilirse her kayit
+      // "izin hatasi" ile baslamadan biter — o yuzden acikca izinli.
+      allow get:    if isSignedIn() && (resource == null
+                       || resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow list:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
       allow create: if isSignedIn() && request.resource.data.ogrenciUid == request.auth.uid;
       allow update: if isSignedIn() && resource.data.ogrenciUid == request.auth.uid;
       allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
@@ -159,8 +165,14 @@ service cloud.firestore {
     // Öğrenci yalnız KENDİ sonucunu yazar; öğretmen yalnız KENDİ görevlerinin
     // sonuçlarını okur (sorgu ogretmenUid şartıyla gelir, kural doğrular).
     match /gorevSonuc/{sid} {
-      allow read:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
-                                        || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      // get: kopru en iyi puani korumak icin yazmadan once okur; gorev ILK
+      // bitirildiginde dokuman HENUZ YOK olur (resource == null) — izinli
+      // olmali, yoksa ilk teslim hep "izin hatasi" ile duser.
+      allow get:    if isSignedIn() && (resource == null
+                       || resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow list:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
       allow create: if isSignedIn() && request.resource.data.ogrenciUid == request.auth.uid;
       allow update: if isSignedIn() && resource.data.ogrenciUid == request.auth.uid;
       allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
