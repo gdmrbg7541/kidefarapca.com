@@ -207,17 +207,29 @@
         sonYazim = simdi;
 
         var yuzde = yuzdeHesapla(s);
+        var hatalar = [];
 
         return Promise.all([
             ilerlemeYaz(yuzde, simdi).catch(function (e) {
-                console.warn('ilerleme yazilamadi:', e && (e.code || e.message)); return null;
+                var m = (e && (e.code || e.message)) || 'bilinmeyen';
+                hatalar.push(m);
+                console.warn('ilerleme yazilamadi:', m); return null;
             }),
             gorevYaz(yuzde, s, simdi).catch(function (e) {
-                console.warn('gorev sonucu yazilamadi:', e && (e.code || e.message)); return null;
+                var m = (e && (e.code || e.message)) || 'bilinmeyen';
+                hatalar.push(m);
+                console.warn('gorev sonucu yazilamadi:', m); return null;
             })
         ]).then(function (r) {
             var il = r[0], gv = r[1];
-            if (!il && !gv) { rozet('Sonuç kaydedilemedi — internetini kontrol et', 'hata'); rozetGizle(5000); return false; }
+            if (!il && !gv) {
+                var kod = hatalar.join(', ');
+                rozet(/permission|insufficient/i.test(kod)
+                    ? 'Kaydedilemedi: izin hatası — site kuralları (firestore.rules) yayınlanmamış, öğretmenine söyle'
+                    : 'Sonuç kaydedilemedi' + (kod ? ' (' + kod + ')' : '') + ' — tekrar dene', 'hata');
+                rozetGizle(8000);
+                return false;
+            }
             if (il && il.kirildi) rozet('🎉 YENİ REKOR: %' + yuzde + (gv ? ' — görev de kaydedildi' : ''), 'rekor');
             else if (il && !il.yok) rozet('✓ Kaydedildi: %' + yuzde + ' (rekorun: %' + il.rekor + ')' + (gv ? ' — görev sayıldı' : ''));
             else if (gv) rozet('✓ Görev kaydedildi: %' + yuzde + (gv.enIyi > yuzde ? ' (en iyin: %' + gv.enIyi + ')' : ''));

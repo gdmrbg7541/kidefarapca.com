@@ -1021,6 +1021,28 @@
             yeniRp._gv = true;
             window.renderStudentProfile = yeniRp;
         }
+        /* Kenar cubugu (levelNav) her yeniden cizildiginde icerik sifirdan
+           kurulur ve tuslar SILINIR. Cizimden sonra "Görev Gönder" (ve OH'nin
+           "Bekleyen İstekler") tuslari geri yerlestirilir.                   */
+        if (typeof window.renderSidebar === 'function' && !window.renderSidebar._gv) {
+            var _rs = window.renderSidebar;
+            var yeniRs = function () {
+                var r = _rs.apply(this, arguments);
+                try {
+                    setTimeout(function () {
+                        if (ogretmenMi()) {
+                            /* once OH (kod alaninin altina), sonra GV (onun altina) —
+                               ozgun sira korunur */
+                            if (window.OH && typeof OH.tusYerlestir === 'function') OH.tusYerlestir();
+                            GV.tusYerlestir();
+                        }
+                    }, 60);
+                } catch (e) { }
+                return r;
+            };
+            yeniRs._gv = true;
+            window.renderSidebar = yeniRs;
+        }
     }
 
     function kur() {
