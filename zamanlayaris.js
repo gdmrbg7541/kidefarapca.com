@@ -935,7 +935,7 @@
             // Yıldız Mantığı
             let starHTML = '⭐'; 
             const percentage = totalWords > 0 ? (correctCount / totalWords) * 100 : 0;
-            try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: correctCount, toplam: totalWords}); }catch(e){} 
+            try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: correctCount, toplam: totalWords, zorluk: gameState.difficulty || null, mod: '1p', detay: (typeof IS_MOBILE_DEVICE !== 'undefined' && IS_MOBILE_DEVICE) ? 'cihaz:mobil' : 'cihaz:masaustu', sureSn: Math.max(0, Math.round((gameState.timeLimit || 0) - Math.max(0, timeLeft)))}); }catch(e){}
 
             if (percentage >= 99) starHTML = '⭐⭐⭐';
             else if (percentage >= 60) starHTML = '⭐⭐';

@@ -58,6 +58,20 @@
 }
 #ll-root .tab-panel{ display: none; background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 #ll-root .tab-panel.active{ display: block; }
+
+/* --- TEK LISTE MOD HAPLARI: Ogrenciler (Liste/Performans/Sinavlar/Genel
+   Sonuc) ve Sinif Araclari (Kura/Geri Sayim/Kronometre/Takim) ust seritleri.
+   Ayni liste yerinde durur, hap yalnizca gorunen sutunlari degistirir. --- */
+#ll-root .ll-mod-serit{ display: flex; gap: 9px; flex-wrap: wrap; align-items: center;
+    margin: 0 0 18px; padding-bottom: 14px; border-bottom: 2px dashed #F3E2D3; }
+#ll-root .ll-mod-hap{ padding: 11px 22px; border-radius: 999px; border: 1.5px solid #F0DACA;
+    background: #fff; color: #8B6A57; cursor: pointer; font-family: inherit; font-weight: 700;
+    font-size: 1.02rem; transition: transform .12s, box-shadow .12s; }
+#ll-root .ll-mod-hap:hover{ transform: translateY(-1px); box-shadow: 0 3px 9px rgba(216,67,21,.12); }
+#ll-root .ll-mod-hap.aktif{ background: linear-gradient(135deg,#F39C12,#D84315); color: #fff;
+    border-color: transparent; box-shadow: 0 3px 10px rgba(216,67,21,.3); }
+/* Arac panelleri tek basina tam ekran acilinca beyaz zemin korunur */
+#llAracSayim:fullscreen, #llAracKron:fullscreen{ background: #fff; padding: 24px; overflow: auto; }
 #ll-root table{ width: 100%; border-collapse: collapse; margin-top: 10px; }
 #ll-root th, #ll-root td{ border: 1px solid #ddd; padding: 10px; text-align: left; }
 #ll-root th{ background: #f8f9fa;text-align: center !important; }
@@ -2170,13 +2184,13 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
     #ll-root .tool-controls{ flex-wrap: wrap; gap: 12px !important; }
     #ll-root .tool-btn{ padding: 10px 18px; font-size: 1em; }
     /* geri sayim: dairesel +/- tuslari ve dakika rakami */
-    #ll-root #tab5 .tool-controls > div:first-child{ padding: 14px !important; gap: 12px !important; }
-    #ll-root #tab5 .tool-controls > div:first-child > button{
+    #ll-root #llAracSayim .tool-controls > div:first-child{ padding: 14px !important; gap: 12px !important; }
+    #ll-root #llAracSayim .tool-controls > div:first-child > button{
         width: 56px !important; height: 56px !important; font-size: 1.9rem !important;
     }
     #ll-root #manual-min-val{ font-size: 2.6rem !important; }
-    #ll-root #tab5 .tool-controls > div:last-child{ flex-wrap: wrap; justify-content: center; }
-    #ll-root #tab5 .tool-controls > div:last-child button{
+    #ll-root #llAracSayim .tool-controls > div:last-child{ flex-wrap: wrap; justify-content: center; }
+    #ll-root #llAracSayim .tool-controls > div:last-child button{
         padding: 11px 20px !important; font-size: 1rem !important;
     }
 
@@ -2199,12 +2213,13 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
     #ll-root .tabs{ margin: 0 -8px 12px; padding: 4px 8px 10px; }
     #ll-root .tab{ padding: 9px 13px; font-size: .88rem; }
     #ll-root .tab-panel{ padding: 12px 9px; }
+    #ll-root .ll-mod-hap{ padding: 8px 14px; font-size: .88rem; }
     #ll-root .header h2{ font-size: 1.15rem; }
     #ll-root .activity-grid{ grid-template-columns: 1fr; }
     #ll-root .team-grid{ grid-template-columns: 1fr; }
     #ll-root .tool-display{ font-size: 2.1rem !important; }
     #ll-root #manual-min-val{ font-size: 2.1rem !important; }
-    #ll-root #tab5 .tool-controls > div:first-child > button{
+    #ll-root #llAracSayim .tool-controls > div:first-child > button{
         width: 50px !important; height: 50px !important; font-size: 1.6rem !important;
     }
     #ll-root #luckyBox{ font-size: 1.3rem !important; padding: 14px !important; }
@@ -2453,6 +2468,15 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #ll-root #tab9 h3{ font-size: 1.3em !important; }
 #ll-root #tab9 input, #ll-root #tab9 select, #ll-root #tab9 textarea{ padding: 10px 12px; }
 #ll-root #tab9 .lli{ width: 1.3em; height: 1.3em; }
+/* Akordiyonlu yeni duzen: 2x taban korunur; alt satir/rozet gibi ikincil
+   yazilar oransal kuculur ki basliklarla hiyerarsi bozulmasin. */
+#ll-root #tab9 .gv-alt{ font-size: .58em !important; }
+#ll-root #tab9 .gv-rozet{ font-size: .5em !important; }
+#ll-root #tab9 #gvFiltreNot p{ font-size: .6em !important; }
+#ll-root #tab9 #gvListeSayac{ font-size: .55em !important; }
+#ll-root #tab9 .gv-ist-sayi{ font-size: 1.15em !important; }
+#ll-root #tab9 button .lli, #ll-root #tab9 .gv-rozet .lli{ width: 1.05em; height: 1.05em; }
+#ll-root #tab9 .gv-gicon .lli{ width: 1.5em; height: 1.5em; }
 
 
 /* ==========================================================================

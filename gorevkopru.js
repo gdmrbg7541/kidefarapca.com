@@ -1,5 +1,5 @@
 /* ==========================================================================
-   GOREV + ILERLEME KOPRUSU  —  gorevkopru.js  (v2)
+   GOREV + ILERLEME KOPRUSU  —  gorevkopru.js  (v4)
    --------------------------------------------------------------------------
    Oyun sayfalarina eklenen KUCUK kopru. Iki isi vardir:
 
@@ -14,10 +14,19 @@
    2) GOREV KAYDI (yalniz "?gorev=<id>" ile acilinca):
       Sonuc ayrica  gorevSonuc/{gorevId_ogrenciUid}  dokumanina yazilir.
 
-   OYUN TARAFI TEK SATIR (degismedi):
+   OYUN TARAFI TEK SATIR (eski bicim AYNEN calisir):
      try{ if(window.KidefGorev && KidefGorev.aktif)
           KidefGorev.bildir({dogru:D, toplam:T}); }catch(e){}
      // ya da yuzde hazirsa: KidefGorev.bildir({puan:P})   (P: 0-100)
+
+   v4 EK ALANLAR (hepsi ISTEGE BAGLI — oyun gonderirse kayda islenir):
+     zorluk : 'easy' | 'medium' | 'hard' (ya da oyunun kendi etiketi)
+     mod    : '1p' | '2p' | 'donut' ...   (hangi kipte oynandi)
+     detay  : serbest kisa etiket        (ders adi, dil, cihaz vb.)
+     sureSn : OYUNUN kendi olctugu gercek oynanis suresi (saniye).
+              Gonderilmezse sayfa acilisindan beri gecen sure yazilir.
+   Gorev kaydinda "zorluk" EN IYI denemenin zorlugudur; son deneme
+   ayrica sonZorluk/sonMod/sonDetay/sonSureSn alanlarina yazilir.
 
    Giris yapilmamissa / ogrenci bagli degilse kopru sessiz kalir.
    ========================================================================== */
@@ -138,8 +147,23 @@
         return Math.max(0, Math.min(100, y));
     }
 
+    /* v4: oyunun gonderdigi istege bagli etiketler — zorluk/mod/detay/sureSn.
+       Temizlenir ve sinirlanir; olmayan alan kayda null yazilir (son deneme
+       gercekten etiketsizse eski etiket yanlislikla ustunde kalmasin). */
+    function ekBilgi(s) {
+        var e = { zorluk: null, mod: null, detay: null, sureSn: null };
+        try {
+            if (s && s.zorluk != null && String(s.zorluk).length) e.zorluk = String(s.zorluk).slice(0, 24);
+            if (s && s.mod != null && String(s.mod).length) e.mod = String(s.mod).slice(0, 24);
+            if (s && s.detay != null && String(s.detay).length) e.detay = String(s.detay).slice(0, 60);
+            var sn = parseInt(s && s.sureSn);
+            if (isFinite(sn) && sn >= 0) e.sureSn = Math.min(sn, 24 * 3600);
+        } catch (er) { }
+        return e;
+    }
+
     /* ------------------------------------------------ SUREC: ogrenciIlerleme */
-    function ilerlemeYaz(yuzde, simdi) {
+    function ilerlemeYaz(yuzde, simdi, ek) {
         if (!KG.bag || !db || !user) return Promise.resolve({ rekor: yuzde, kirildi: false, yok: true });
         var ref = db.collection('ogrenciIlerleme').doc(user.uid + '_' + oyunDosya.replace(/[^a-z0-9]/g, ''));
         return ref.get().then(function (doc) {
@@ -149,7 +173,9 @@
             var kirildi = yuzde > eskiRekor;
             var gecmis = Array.isArray(eski.gecmis) ? eski.gecmis.slice() : [];
             if (kirildi) {
-                gecmis.push({ t: simdi, y: yuzde });
+                var nokta = { t: simdi, y: yuzde };
+                if (ek.zorluk) nokta.z = ek.zorluk;      /* gelisim cizgisinde zorluk izi */
+                gecmis.push(nokta);
                 while (gecmis.length > GECMIS_SINIR) gecmis.shift();
             }
             return ref.set({
@@ -162,6 +188,10 @@
                 sonYuzde: yuzde,
                 oynama: (parseInt(eski.oynama) || 0) + 1,
                 gecmis: gecmis,
+                sonZorluk: ek.zorluk,
+                sonMod: ek.mod,
+                sonDetay: ek.detay,
+                sonSureSn: ek.sureSn,
                 ilkTarih: eski.ilkTarih || simdi,
                 sonTarih: simdi
             }, { merge: true }).then(function () {
@@ -171,13 +201,14 @@
     }
 
     /* ------------------------------------------------ GOREV: gorevSonuc */
-    function gorevYaz(yuzde, s, simdi) {
+    function gorevYaz(yuzde, s, simdi, ek) {
         if (!KG.gorev || !db || !user) return Promise.resolve(null);
         var g = KG.gorev;
         var ref = db.collection('gorevSonuc').doc(gorevId + '_' + user.uid);
         return ref.get().then(function (doc) {
             var eski = (doc.exists && doc.data()) || {};
-            var enIyi = Math.max(yuzde, parseInt(eski.yuzde) || 0);
+            var eskiYuzde = parseInt(eski.yuzde) || 0;
+            var enIyi = Math.max(yuzde, eskiYuzde);
             var gec = (typeof eski.gec === 'boolean') ? eski.gec
                 : !!(g.sonTarih && simdi > g.sonTarih);
             return ref.set({
@@ -192,7 +223,14 @@
                 dogru: (s && s.dogru != null) ? (parseFloat(s.dogru) || 0) : null,
                 toplam: (s && s.toplam != null) ? (parseFloat(s.toplam) || 0) : null,
                 deneme: (parseInt(eski.deneme) || 0) + 1,
-                sureSn: Math.round((simdi - basZaman) / 1000),
+                /* zorluk = EN IYI denemenin zorlugu; bu deneme en iyiyse guncellenir */
+                zorluk: (yuzde >= eskiYuzde) ? ek.zorluk : (eski.zorluk != null ? eski.zorluk : null),
+                mod: (yuzde >= eskiYuzde) ? ek.mod : (eski.mod != null ? eski.mod : null),
+                sonZorluk: ek.zorluk,
+                sonMod: ek.mod,
+                sonDetay: ek.detay,
+                sonSureSn: ek.sureSn,
+                sureSn: (ek.sureSn != null) ? ek.sureSn : Math.round((simdi - basZaman) / 1000),
                 gec: gec,
                 bitis: simdi
             }, { merge: true }).then(function () { return { enIyi: enIyi }; });
@@ -207,15 +245,16 @@
         sonYazim = simdi;
 
         var yuzde = yuzdeHesapla(s);
+        var ek = ekBilgi(s);
         var hatalar = [];
 
         return Promise.all([
-            ilerlemeYaz(yuzde, simdi).catch(function (e) {
+            ilerlemeYaz(yuzde, simdi, ek).catch(function (e) {
                 var m = (e && (e.code || e.message)) || 'bilinmeyen';
                 hatalar.push(m);
                 console.warn('ilerleme yazilamadi:', m); return null;
             }),
-            gorevYaz(yuzde, s, simdi).catch(function (e) {
+            gorevYaz(yuzde, s, simdi, ek).catch(function (e) {
                 var m = (e && (e.code || e.message)) || 'bilinmeyen';
                 hatalar.push(m);
                 console.warn('gorev sonucu yazilamadi:', m); return null;

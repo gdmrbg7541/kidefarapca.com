@@ -368,6 +368,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
         init() { this.state.allWordsPool = App.getAllWords().map(w => w.turkish); },
         start(questions, playerMode) {
             this.stop(); this.state.playerMode = playerMode;
+            this.state.basZaman = Date.now();   /* gercek oynanis suresi icin */
             this.state.questionsPerRound = questions.length;
             this.state.p1Questions = Utils.shuffleArray([...questions]);
             this.state.p1Index = 0; this.state.p1Score = 0; this.state.p1Finished = false;
@@ -669,7 +670,7 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
                 const isWin = finalScore >= 85;
                 let nextLessonUnlocked = false;
                 if (isWin) { nextLessonUnlocked = App.unlockNextLesson(App.state.selectedLessonId); }
-                try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({puan: Math.round(finalScore)}); }catch(e){} App.showResults({ playerMode: 1, score: finalScore, totalQuestions: this.state.questionsPerRound, isWin: isWin, nextLessonUnlocked: nextLessonUnlocked });
+                try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: this.state.pointsPerQuestion > 0 ? Math.round(this.state.p1Score / this.state.pointsPerQuestion) : 0, toplam: this.state.questionsPerRound, mod: '1p', detay: 'ders:' + (App.state.selectedLessonId || '?'), sureSn: this.state.basZaman ? Math.round((Date.now() - this.state.basZaman) / 1000) : null}); }catch(e){} App.showResults({ playerMode: 1, score: finalScore, totalQuestions: this.state.questionsPerRound, isWin: isWin, nextLessonUnlocked: nextLessonUnlocked });
             } else {
                 let winner = 0; if (this.state.p1Score > this.state.p2Score) winner = 1; else if (this.state.p2Score > this.state.p1Score) winner = 2;
                 App.showResults({ playerMode: 2, score1: this.state.p1Score, score2: this.state.p2Score, totalQuestions: this.state.questionsPerRound, winner: winner });

@@ -115,6 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const uiText = {
             startTitle: "Kelimenin Serüveni",
             startSubtitle: "Seviye 1: Kökü Tanı",
+            donutFeedbackCorrect: "Doğru! 🎉",
+            donutFeedbackIncorrect: "Bu kelime bu kökten değil, tekrar dene.",
+            donutWinRound: "Harika! Bu kökün bütün kelimelerini buldun.",
             startLangP: "Oyun dilini seçin:",
             startModeP: "Oyun modunu seçin:",
             langBtnTR: "Türkçe",
@@ -585,7 +588,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function startGameMode(mode) {
             gameState.currentGameMode = mode;
-            
+            gameState.basZaman = Date.now();   /* gercek oynanis suresi */
+
             if (mode === 'donut') {
                 level1GameData_generated = generateDonutGameData(10);
                 gameState.donutTotalRounds = level1GameData_generated.length;
@@ -782,7 +786,10 @@ document.addEventListener('DOMContentLoaded', () => {
              gameState.isGameActive = false;
              
              if (isWin) {
-                 try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: gameState.donutTotalScore, toplam: gameState.donutTotalScore + gameState.donutTotalMistakes}); }catch(e){} 
+                 /* Not: bu oyunda yuzde "tiklama isabeti"dir (dogru/dogru+hata) —
+                    turu gecmek icin tum dogrulari bulmak zorunlu oldugundan
+                    beceriyi hata sayisi olcer. */
+                 try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: gameState.donutTotalScore, toplam: gameState.donutTotalScore + gameState.donutTotalMistakes, mod: 'donut', detay: 'dil:' + (gameState.currentLang || '?'), sureSn: gameState.basZaman ? Math.round((Date.now() - gameState.basZaman) / 1000) : null}); }catch(e){}
                  resultsTitle.textContent = uiText.resultsTitleDonut;
                  resultsDetails.innerHTML = `
                     ${uiText.resultsWinText}

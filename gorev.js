@@ -46,6 +46,18 @@
     }
     function rol() { try { return (typeof appState !== 'undefined' && appState.userRole) ? appState.userRole : ''; } catch (e) { return ''; } }
     function ogretmenMi() { var r = rol(); return r === 'teacher' || r === 'admin'; }
+    /* Sitenin animasyonlu SVG ikon katalogu (emoji yerine). */
+    function gIkon(ad, ek) { return (typeof window.llIcon === 'function') ? window.llIcon(ad, ek) : ''; }
+    /* Sekme cubugundaki detayli roket — tab9 basligi ayni gorseli kullanir. */
+    var G_ROKET = '<svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<g class="li-roket"><path d="M12 1.6c3.2 2.4 4.8 5.9 4.6 9.9-.1 1.7-.5 3.3-1.2 4.9H8.6c-.7-1.6-1.1-3.2-1.2-4.9-.2-4 1.4-7.5 4.6-9.9z" fill="#F4F6F7" stroke="#78909C" stroke-width="1.1" stroke-linejoin="round"/>' +
+        '<path d="M12 1.6c1.9 1.4 3.2 3.2 3.9 5.3H8.1c.7-2.1 2-3.9 3.9-5.3z" fill="#e74c3c" stroke="#B03A2E" stroke-width="1" stroke-linejoin="round"/>' +
+        '<circle cx="12" cy="10" r="2.3" fill="#5DADE2" stroke="#2C3E50" stroke-width="1"/><circle cx="12.8" cy="9.2" r="0.6" fill="#fff"/>' +
+        '<path d="M7.6 12.4 4.2 16.4l3.6-.3z" fill="#e74c3c" stroke="#B03A2E" stroke-width="1" stroke-linejoin="round"/>' +
+        '<path d="M16.4 12.4l3.4 4-3.6-.3z" fill="#e74c3c" stroke="#B03A2E" stroke-width="1" stroke-linejoin="round"/>' +
+        '<path d="M9.4 16.4h5.2l-.6 1.9h-4z" fill="#546E7A" stroke="#37474F" stroke-width="0.8" stroke-linejoin="round"/></g>' +
+        '<path class="li-alev" d="M12 18.9c1.5 1.5 2 3 0 4.9-2-1.9-1.5-3.4 0-4.9z" fill="#F39C12" stroke="#E67E22" stroke-width="0.8"/>' +
+        '<path class="li-alev" d="M12 19.4c.8.9 1.1 1.8 0 3-1.1-1.2-.8-2.1 0-3z" fill="#F7DC6F"/></svg>';
     function esc(s) {
         if (typeof behKacis === 'function') return behKacis(s);
         return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -62,6 +74,29 @@
         var d = new Date(ts), i = function (n) { return String(n).padStart(2, '0'); };
         return i(d.getDate()) + '.' + i(d.getMonth() + 1) + '.' + d.getFullYear();
     }
+    /* ---- ZORLUK / SURE etiketleri (kopru v4 alanlari) ---- */
+    GV.zorlukEtiket = function (z) {          /* saf islev: test edilebilir */
+        if (z == null || z === '') return null;
+        var e = {
+            easy: { ad: 'Kolay', renk: '#1E8449', ak: '#E8F8F0' },
+            medium: { ad: 'Orta', renk: '#B7950B', ak: '#FEF5E7' },
+            hard: { ad: 'Zor', renk: '#C0392B', ak: '#FDEDEC' }
+        }[String(z).toLowerCase()];
+        return e || { ad: String(z), renk: '#7B1FA2', ak: '#F4ECF7' };
+    };
+    function zorlukRozet(z) {
+        var e = GV.zorlukEtiket(z);
+        if (!e) return '';
+        return '<span class="gv-rozet" style="padding:3px 9px; border-radius:999px; font-weight:800;' +
+            ' font-size:.7rem; white-space:nowrap; background:' + e.ak + '; color:' + e.renk + ';">' + esc(e.ad) + '</span>';
+    }
+    GV.sureYaz = function (sn) {              /* saf islev: test edilebilir */
+        sn = parseInt(sn);
+        if (!isFinite(sn) || sn < 0) return '';
+        if (sn < 60) return sn + ' sn';
+        var dk = Math.floor(sn / 60), k = sn % 60;
+        return dk + ' dk' + (k ? ' ' + k + ' sn' : '');
+    };
     function yeniId() {
         var h = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', r = '';
         for (var i = 0; i < 6; i++) r += h.charAt(Math.floor(Math.random() * h.length));
@@ -85,14 +120,20 @@
     GV.sekmeGorevCiz = function () {
         var p = document.getElementById('tab9');
         if (!p || !ogretmenMi()) return;
+        GV._grvAcik = GV._grvAcik || {};
         p.innerHTML =
-            '<h3 style="margin:0 0 6px;">📋 Görev Gönder</h3>' +
+            '<h3 style="margin:0 0 6px; display:flex; align-items:center; gap:10px;">' + G_ROKET + ' Görev Gönder</h3>' +
             '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">Seçili sınıfa, bütün seviyeye ya da tek öğrenciye ' +
             'ölçülebilir oyunlardan görev gönder. Sonuçlar aşağıda canlı birikir; performans notu seçersen seviye ayarına ' +
             'otomatik sütun eklenir.</p>' +
-            '<div id="gvYeniKutu" style="background:#FFF8F2; border:1px solid #F3E2D3; border-radius:14px; padding:16px; margin-bottom:24px;"></div>' +
-            '<h3 style="margin:0 0 10px;">📊 Gönderilen Görevler &amp; Sonuçlar</h3>' +
-            '<div id="gvGovde" style="background:#FFF8F2; border:1px solid #F3E2D3; border-radius:14px; padding:16px;"></div>';
+            '<div id="gvIstatistik" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;"></div>' +
+            akordiyon('gvAkorYeni', '#D84315', G_ROKET + '<span>Yeni Görev Gönder</span>',
+                '<div id="gvYeniKutu"></div>', !!GV._gvYeniAcik) +
+            akordiyon('gvAkorListe', '#7B1FA2', gIkon('grafik') + '<span>Gönderilen Görevler &amp; Sonuçlar</span>' +
+                '<span id="gvListeSayac" style="display:inline-flex; align-items:center; justify-content:center;' +
+                ' min-width:22px; height:22px; padding:0 7px; border-radius:11px; background:#7B1FA2; color:#fff;' +
+                ' font-size:.76rem;">0</span>',
+                '<div id="gvFiltreNot"></div><div id="gvGorevListe"></div>', true);
         GV.yeniCiz('gvYeniKutu');
         /* Sinif baglami hazir gelsin: acik seviye/sinif onceden secili */
         try {
@@ -106,8 +147,13 @@
                 } else GV.hedefCiz();
             }
         } catch (e) { }
+        /* "Yeni Gorev" akordiyonunun acik/kapali tercihi hatirlansin */
+        try {
+            var ya = document.getElementById('gvAkorYeni');
+            if (ya) ya.addEventListener('toggle', function () { GV._gvYeniAcik = ya.open; });
+        } catch (e) { }
         GV.gorevleriDinle();
-        GV.sonucCiz();
+        GV.gorevListesiCiz();
     };
 
     /* ---------------- SEKME: ETKINLIKLER (tab11) ----------------
@@ -117,7 +163,7 @@
         var p = document.getElementById('tab11');
         if (!p || !ogretmenMi()) return;
         p.innerHTML =
-            '<h3 style="margin:0 0 6px;">🏃 Etkinlikler — Öğrenci Gelişimi</h3>' +
+            '<h3 style="margin:0 0 6px; display:flex; align-items:center; gap:10px;">' + gIkon('kosucu') + ' Etkinlikler — Öğrenci Gelişimi</h3>' +
             '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">BU SINIFA kayıtlı, hesabı bağlı öğrencilerin ' +
             'ölçülebilir oyunlardaki bütün etkinliği görevden bağımsız olarak buraya düşer: rekorlar, gelişim çizgisi, ' +
             'son oynanış ve 30 günlük ilerleme. Öğrenci oynadıkça tablo kendiliğinden güncellenir.</p>' +
@@ -201,8 +247,11 @@
                     'font-size:.86rem; color:#6B4A38;">' + esc(oyunAdi(r.oyun)) + '</span>' +
                     minigrafik(r.gecmis) +
                     '<span style="width:52px; text-align:right; font-weight:800; color:' + renk + ';">%' + (r.rekor || 0) + '</span>' +
-                    '<span style="width:150px; text-align:right; font-size:.73rem; color:#A6836E;">son: %' + (r.sonYuzde != null ? r.sonYuzde : (r.rekor || 0)) +
-                    ' · ' + trTarih(r.sonTarih) + '</span>' +
+                    (r.sonZorluk ? zorlukRozet(r.sonZorluk) : '') +
+                    '<span style="width:170px; text-align:right; font-size:.73rem; color:#A6836E;"' +
+                    (r.sonDetay ? ' title="' + esc(r.sonDetay) + '"' : '') + '>son: %' + (r.sonYuzde != null ? r.sonYuzde : (r.rekor || 0)) +
+                    ' · ' + trTarih(r.sonTarih) +
+                    (r.sonSureSn != null ? ' · ' + GV.sureYaz(r.sonSureSn) : '') + '</span>' +
                     '<span style="width:96px; text-align:right; font-size:.73rem; color:#A6836E;">' + (r.oynama || 0) + ' oyun' +
                     (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
@@ -507,7 +556,171 @@
                 GV.gorevlerim.sort(function (a, b) { return (b.olusturma || 0) - (a.olusturma || 0); });
                 var g = document.getElementById('gvGovde');
                 if (g && g.getAttribute('data-sekme') === 'sonuc') GV.sonucCiz();
+                if (document.getElementById('gvGorevListe')) GV.gorevListesiCiz();
             }, function (e) { console.warn('GV gorev dinleyici:', e && (e.code || e.message)); });
+    };
+
+    /* ---------------- SINIF SUZGECI + GOREV AKORDIYON LISTESI (tab9) ----------------
+       Acik sinif varsa YALNIZ o sinifi ilgilendiren gorevler listelenir:
+       - sinif gorevi: ayni seviye + ayni sinif
+       - seviye gorevi: ayni seviye (bu sinifi da kapsar)
+       - ogrenci gorevi: ogrenci bu sinifin listesinde (uid/uids) ya da koordinat eslesir */
+    GV.gorevSinifta = function (v, lId, cId, uidler) {   /* saf islev: test edilebilir */
+        if (!v) return false;
+        uidler = uidler || {};
+        if (v.hedefTur === 'sinif') return v.lId === lId && v.cId === cId;
+        if (v.hedefTur === 'seviye') return v.lId === lId;
+        if (v.hedefTur === 'ogrenci') {
+            if (v.ogrenciUid && uidler[v.ogrenciUid]) return true;
+            if (Array.isArray(v.uids)) {
+                for (var i = 0; i < v.uids.length; i++) if (uidler[v.uids[i]]) return true;
+            }
+            return v.lId === lId && v.cId === cId;
+        }
+        return false;
+    };
+    GV._tumGorevler = false;
+    GV.tumGorevGoster = function (ac) { GV._tumGorevler = !!ac; GV.gorevListesiCiz(); };
+
+    function sinifGorevleri() {
+        var hepsi = GV.gorevlerim || [];
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        var lId = (typeof curLId !== 'undefined') ? curLId : null;
+        var cId = (typeof curCId !== 'undefined') ? curCId : null;
+        if (GV._tumGorevler || !d || !lId || !cId || !d.levels[lId] || !d.levels[lId].classes[cId])
+            return { liste: hepsi, suzgec: false, sinifAd: '' };
+        var uidler = {};
+        ((d.levels[lId].classes[cId] || {}).students || []).forEach(function (s) {
+            if (s && s.hesapUid) uidler[s.hesapUid] = 1;
+        });
+        return {
+            liste: hepsi.filter(function (v) { return GV.gorevSinifta(v, lId, cId, uidler); }),
+            suzgec: true,
+            sinifAd: d.levels[lId].classes[cId].name || cId
+        };
+    }
+
+    /* Secili gorevin eylem tuslari (iptal / yeniden yayinla / kalici sil). */
+    function gorevEylemHtml(id, vSec) {
+        var eylemTus = 'padding:9px 15px; border:none; border-radius:9px; cursor:pointer;' +
+            ' font-family:inherit; font-weight:700; font-size:.84rem;';
+        return '<div style="display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:0 0 12px;">' +
+            ((vSec && vSec.aktif === false)
+                ? '<span style="display:inline-flex; align-items:center; gap:6px; padding:8px 13px; border-radius:9px; background:#FDEDEC; color:#C0392B;' +
+                  ' font-weight:700; font-size:.82rem;">' + gIkon('uyari') + ' İptal edildi — öğrencilere görünmüyor</span>' +
+                  '<button type="button" onclick="GV.gorevAktifEt(\'' + esc(id) + '\')" style="' + eylemTus +
+                  ' background:#27ae60; color:#fff;">' + gIkon('oynat') + ' Yeniden Yayınla</button>' +
+                  '<button type="button" onclick="GV.gorevSil(\'' + esc(id) + '\')" style="' + eylemTus +
+                  ' background:#7B241C; color:#fff;">' + gIkon('cop') + ' Kalıcı Sil</button>'
+                : '<button type="button" onclick="GV.gorevIptal(\'' + esc(id) + '\')" style="' + eylemTus +
+                  ' background:#fff; color:#C0392B; border:1px solid #F5B7B1;">' + gIkon('kapat') + ' Görevi İptal Et</button>') +
+            '</div>';
+    }
+
+    GV.gorevListesiCiz = function () {
+        var kap = document.getElementById('gvGorevListe');
+        if (!kap) return;
+        GV._grvAcik = GV._grvAcik || {};
+        var s = sinifGorevleri();
+        var sayac = document.getElementById('gvListeSayac');
+        if (sayac) sayac.textContent = s.liste.length;
+        var simdi = Date.now();
+
+        /* ust ozet kutulari — Etkinlikler sekmesindeki desenin aynisi */
+        var ist = document.getElementById('gvIstatistik');
+        if (ist) {
+            var yayinda = 0, dolan = 0, iptalN = 0;
+            s.liste.forEach(function (v) {
+                if (v.aktif === false) iptalN++;
+                else if (v.sonTarih && simdi > v.sonTarih) dolan++;
+                else yayinda++;
+            });
+            var kutu = function (deger, etiket, renk) {
+                return '<div style="flex:1; min-width:130px; background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
+                    ' padding:13px; text-align:center; box-shadow:0 2px 7px rgba(216,67,21,.05);">' +
+                    '<div class="gv-ist-sayi" style="font-weight:800; color:' + renk + ';">' + deger + '</div>' +
+                    '<div class="gv-alt" style="color:#8B6A57; margin-top:3px;">' + etiket + '</div></div>';
+            };
+            ist.innerHTML =
+                kutu(s.liste.length, s.suzgec ? 'sınıfın görevi' : 'toplam görev', '#D84315') +
+                kutu(yayinda, 'yayında', '#1E8449') +
+                kutu(dolan, 'süresi dolan', '#B7950B') +
+                kutu(iptalN, 'iptal edilen', '#C0392B');
+        }
+
+        /* suzgec bilgi seridi */
+        var notEl = document.getElementById('gvFiltreNot');
+        if (notEl) {
+            if (s.suzgec) {
+                notEl.innerHTML = '<p style="margin:0 0 12px; font-size:.82rem; color:#8B6A57; background:#F4ECF7;' +
+                    ' border:1px dashed #D2B4DE; border-radius:10px; padding:9px 13px;">' + gIkon('hedef') + ' Yalnız <b style="color:#7B1FA2;">' +
+                    esc(s.sinifAd) + '</b> sınıfını ilgilendiren görevler gösteriliyor. ' +
+                    '<a onclick="GV.tumGorevGoster(true)" style="color:#7B1FA2; font-weight:700; cursor:pointer;' +
+                    ' text-decoration:underline;">Tümünü göster</a></p>';
+            } else if (GV._tumGorevler) {
+                notEl.innerHTML = '<p style="margin:0 0 12px; font-size:.82rem; color:#8B6A57; background:#F4ECF7;' +
+                    ' border:1px dashed #D2B4DE; border-radius:10px; padding:9px 13px;">' + gIkon('kitaplar') + ' Bütün görevler gösteriliyor. ' +
+                    '<a onclick="GV.tumGorevGoster(false)" style="color:#7B1FA2; font-weight:700; cursor:pointer;' +
+                    ' text-decoration:underline;">Yalnız bu sınıf</a></p>';
+            } else notEl.innerHTML = '';
+        }
+
+        if (!GV.gorevlerim.length) {
+            kap.innerHTML = '<div style="text-align:center; padding:30px 12px; color:#8B6A57; background:#FFF8F2;' +
+                ' border:1px dashed #F0C9A6; border-radius:14px;">' +
+                '<div style="font-size:2.2em; line-height:1;">' + G_ROKET + '</div>' +
+                '<p style="margin:10px 0 0; font-size:1rem;">Henüz görev göndermedin.</p>' +
+                '<p class="gv-alt" style="margin:8px 0 0; color:#A6836E;">İlk görevini yukarıdaki "Yeni Görev Gönder" bölümünden yollayabilirsin.</p></div>';
+            return;
+        }
+        if (!s.liste.length) {
+            kap.innerHTML = '<div style="text-align:center; padding:30px 12px; color:#8B6A57; background:#FFF8F2;' +
+                ' border:1px dashed #F0C9A6; border-radius:14px;">' +
+                '<div style="font-size:2.2em; line-height:1;">' + gIkon('hedef') + '</div>' +
+                '<p style="margin:10px 0 0; font-size:1rem;">Bu sınıf için gönderilmiş görev yok.</p>' +
+                '<p class="gv-alt" style="margin:8px 0 0; color:#A6836E;">Başka sınıfların görevlerini görmek için "Tümünü göster" bağlantısını kullanabilirsin.</p></div>';
+            return;
+        }
+
+        kap.innerHTML = s.liste.map(function (v) {
+            var acik = !!GV._grvAcik[v._id];
+            var rozet = v.aktif === false
+                ? '<span class="gv-rozet" style="display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:999px; background:#FDEDEC; color:#C0392B; font-weight:800; font-size:.74rem; white-space:nowrap;">' + gIkon('kapat') + ' iptal</span>'
+                : (v.sonTarih && simdi > v.sonTarih
+                    ? '<span class="gv-rozet" style="display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:999px; background:#FEF5E7; color:#B9770E; font-weight:800; font-size:.74rem; white-space:nowrap;">' + gIkon('kumSaati') + ' süresi doldu</span>'
+                    : '<span class="gv-rozet" style="display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:999px; background:#E8F8F0; color:#1E8449; font-weight:800; font-size:.74rem; white-space:nowrap;">' + gIkon('nokta') + ' yayında</span>');
+            var basIkon = v.aktif === false ? gIkon('kapat')
+                : (v.sonTarih && simdi > v.sonTarih ? gIkon('kumSaati') : gIkon('hedef'));
+            return '<details class="profile-accordion gv-grv-akor" data-gid="' + esc(v._id) + '"' + (acik ? ' open' : '') +
+                ' style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; margin-bottom:12px;' +
+                ' box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
+                '<summary style="cursor:pointer; display:flex; align-items:center; gap:12px; padding:12px 15px; flex-wrap:wrap; list-style:none;">' +
+                '<span class="gv-gicon" style="flex:none; display:inline-flex;">' + basIkon + '</span>' +
+                '<span style="flex:1; min-width:170px;">' +
+                '<span style="display:block; font-weight:700; color:#9C3B0C; font-size:1.02rem;">' + esc(v.baslik || oyunAdi(v.oyun)) + '</span>' +
+                '<span class="gv-alt" style="display:block; font-size:.76rem; color:#A6836E; margin-top:2px;">' + esc(oyunAdi(v.oyun)) +
+                ' · ' + esc(v.hedefAd || '') + (v.sonTarih ? ' · son: ' + trTarih(v.sonTarih) : '') + '</span></span>' +
+                rozet +
+                '<span id="gvOzet_' + esc(v._id) + '" class="gv-rozet" style="font-size:.8rem; color:#8B6A57; font-weight:700;"></span>' +
+                '<span class="acc-chevron" style="color:#7B1FA2; font-size:1.1rem; transition:transform .2s;">▸</span></summary>' +
+                '<div style="padding:0 15px 14px;">' + gorevEylemHtml(v._id, v) +
+                '<div id="gvSonucListe_' + esc(v._id) + '" style="min-height:40px;">' +
+                '<p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div></div></details>';
+        }).join('');
+
+        /* acilis/kapanis: durumu hatirla + acilinca sonuclari canli getir */
+        try {
+            Array.prototype.slice.call(kap.querySelectorAll('details.gv-grv-akor')).forEach(function (dt) {
+                dt.addEventListener('toggle', function () {
+                    var gid = dt.getAttribute('data-gid');
+                    GV._grvAcik[gid] = dt.open;
+                    if (dt.open) { GV._seciliGorev = gid; GV.sonuclariGetir(gid); }
+                });
+            });
+        } catch (e) { }
+        /* yeniden cizimde acik duran gorevin sonuclarini tazele */
+        if (GV._seciliGorev && GV._grvAcik[GV._seciliGorev] &&
+            document.getElementById('gvSonucListe_' + GV._seciliGorev)) GV.sonuclariGetir(GV._seciliGorev);
     };
 
     GV.sonucCiz = function (secili) {
@@ -534,20 +747,8 @@
         /* --- secili gorevin IPTAL / YENIDEN YAYINLA / SIL tuslari --- */
         var vSec = null;
         for (var si2 = 0; si2 < GV.gorevlerim.length; si2++) if (GV.gorevlerim[si2]._id === id) vSec = GV.gorevlerim[si2];
-        var eylemTus = 'padding:9px 15px; border:none; border-radius:9px; cursor:pointer;' +
-            ' font-family:inherit; font-weight:700; font-size:.84rem;';
-        var eylem = '<div style="display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:0 0 12px;">' +
-            ((vSec && vSec.aktif === false)
-                ? '<span style="padding:8px 13px; border-radius:9px; background:#FDEDEC; color:#C0392B;' +
-                  ' font-weight:700; font-size:.82rem;">⛔ İptal edildi — öğrencilere görünmüyor</span>' +
-                  '<button type="button" onclick="GV.gorevAktifEt(\'' + esc(id) + '\')" style="' + eylemTus +
-                  ' background:#27ae60; color:#fff;">↩ Yeniden Yayınla</button>' +
-                  '<button type="button" onclick="GV.gorevSil(\'' + esc(id) + '\')" style="' + eylemTus +
-                  ' background:#7B241C; color:#fff;">🗑 Kalıcı Sil</button>'
-                : '<button type="button" onclick="GV.gorevIptal(\'' + esc(id) + '\')" style="' + eylemTus +
-                  ' background:#fff; color:#C0392B; border:1px solid #F5B7B1;">🚫 Görevi İptal Et</button>') +
-            '</div>';
-        g.innerHTML = sec + eylem + '<div id="gvSonucListe" style="min-height:60px;"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
+        g.innerHTML = sec + gorevEylemHtml(id, vSec) +
+            '<div id="gvSonucListe" style="min-height:60px;"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
         GV.sonuclariGetir(id);
     };
 
@@ -618,7 +819,7 @@
     }
 
     GV.sonucListeCiz = function (gorevId, liste) {
-        var el = document.getElementById('gvSonucListe');
+        var el = document.getElementById('gvSonucListe_' + gorevId) || document.getElementById('gvSonucListe');
         if (!el) return;
         var v = null;
         for (var i = 0; i < GV.gorevlerim.length; i++) if (GV.gorevlerim[i]._id === gorevId) v = GV.gorevlerim[i];
@@ -634,8 +835,11 @@
             if (r) yapan++;
             var durum = !s.hesapUid
                 ? '<span style="color:#A6836E; font-size:.8rem;">hesap bağlı değil</span>'
-                : (r ? '<span style="font-weight:800; color:' + (r.yuzde >= 85 ? '#1E8449' : (r.yuzde >= 50 ? '#B7950B' : '#C0392B')) + ';">%' + (r.yuzde || 0) + '</span>' +
-                    '<span style="color:#A6836E; font-size:.76rem;"> · ' + (r.deneme || 1) + ' deneme' +
+                : (r ? (r.zorluk ? zorlukRozet(r.zorluk) + ' ' : '') +
+                    '<span style="font-weight:800; color:' + (r.yuzde >= 85 ? '#1E8449' : (r.yuzde >= 50 ? '#B7950B' : '#C0392B')) + ';">%' + (r.yuzde || 0) + '</span>' +
+                    '<span style="color:#A6836E; font-size:.76rem;"' +
+                    (r.sonDetay ? ' title="' + esc(r.sonDetay) + '"' : '') + '> · ' + (r.deneme || 1) + ' deneme' +
+                    (r.sureSn != null ? ' · ' + GV.sureYaz(r.sureSn) : '') +
                     (r.gec ? ' · <b style="color:#E74C3C;">geç</b>' : '') + '</span>'
                     : '<span style="color:#B34700; font-size:.8rem;">bekleniyor</span>');
             return '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;' +
@@ -658,6 +862,9 @@
             '<span>' + oyunAdi(v.oyun) + (v.sonTarih ? ' · son tarih ' + trTarih(v.sonTarih) : '') + '</span>' +
             '<span><b>' + yapan + '</b> / ' + ogrenciler.length + ' tamamladı</span></div>' +
             (satirlar || '<p style="color:#A6836E; font-size:.85rem;">Bu hedefte öğrenci yok.</p>') + notTus;
+        /* akordiyon basligindaki kisa ozet: kac ogrenci tamamladi */
+        var oz = document.getElementById('gvOzet_' + gorevId);
+        if (oz) oz.innerHTML = yapan + '/' + ogrenciler.length + ' ' + gIkon('onay');
         GV._sonSonuclar = liste;
     };
 
@@ -1480,6 +1687,7 @@
                     '<span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
                     'font-size:.88rem; color:#6B4A38;">' + esc(oyunAdi(r.oyun)) + '</span>' +
                     minigrafik(r.gecmis) +
+                    (r.sonZorluk ? zorlukRozet(r.sonZorluk) : '') +
                     '<span style="width:50px; text-align:right; font-weight:800; color:' + renk + ';">%' + (r.rekor || 0) + '</span>' +
                     '<span style="width:56px; text-align:right; font-size:.72rem; color:#A6836E;">' + (r.oynama || 0) + ' oyun</span></div>';
             }).join('');

@@ -406,35 +406,33 @@ function switchTab(idx) {
     tabs.forEach(t => t.classList.remove('active'));
     panels.forEach(p => p.classList.remove('active'));
 
-    // 2. Tıklanan butonu aktif yap — DOM SIRASINA GORE DEGIL, tusun
-    // onclick'indeki numaraya gore: araya eklenen sekmeler (Etkinlikler)
-    // sirayi kaydirdigi icin tabs[idx] yanlis tusu vurguluyordu.
+    // 3. Panel eslemesi — SADELESTIRME: Performans/Sinavlar/Genel Sonuc artik
+    // tab0 icinde MOD, Geri Sayim/Kronometre/Takim ise tab4 icinde ARAC olarak
+    // yasar. Eski numaralar geriye donuk calissin diye moda cevrilir.
+    let panelId = "";
+    switch(idx) {
+        case 0: panelId = "tab0"; break;                       // Öğrenciler (mod haplı)
+        case 1: panelId = "tab0"; llNotModu = 'hw'; break;     // -> Performans modu
+        case 2: panelId = "tab0"; llNotModu = 'ex'; break;     // -> Sınavlar modu
+        case 3: panelId = "tab0"; llNotModu = 'res'; break;    // -> Genel Sonuç modu
+        case 4: panelId = "tab4"; break;                       // Sınıf Araçları
+        case 5: panelId = "tab9"; break;                       // Görev Gönder
+        case 6: panelId = "tab4"; llAracModu = 'sayim'; break; // -> Geri Sayım aracı
+        case 7: panelId = "tab4"; llAracModu = 'kron'; break;  // -> Kronometre aracı
+        case 8: panelId = "tab4"; llAracModu = 'takim'; break; // -> Takım aracı
+        case 9: panelId = "tab8"; break;                       // Haftalık Plan
+        case 10: panelId = "tab10"; break;                     // Veli & Durum
+        case 11: panelId = "tab11"; break;                     // Etkinlikler
+    }
+
+    // 2. Tıklanan butonu aktif yap — birlesen sekmelerde ana tus vurgulanir.
+    const gorselIdx = (idx >= 1 && idx <= 3) ? 0 : ((idx >= 6 && idx <= 8) ? 4 : idx);
     let aktifTus = null;
     tabs.forEach(t => {
         const oc = t.getAttribute('onclick') || '';
-        if (oc.indexOf('switchTab(' + idx + ')') >= 0) aktifTus = t;
+        if (oc.indexOf('switchTab(' + gorselIdx + ')') >= 0) aktifTus = t;
     });
     if (aktifTus) aktifTus.classList.add('active');
-    else if (tabs[idx]) tabs[idx].classList.add('active');
-
-    // 3. Butonun onclick içindeki ID'yi bul veya index ile eşleştir
-    // HTML'deki sıranıza göre manuel eşleştirme (Kaymayı önleyen kesin çözüm):
-    let panelId = "";
-    switch(idx) {
-        case 0: panelId = "tab0"; break; // Öğrenciler
-        case 1: panelId = "tab1"; break; // Performans
-        case 2: panelId = "tab2"; break; // Sınavlar
-        case 3: panelId = "tab3"; break; // Genel Sonuç
-        case 4: panelId = "tab4"; break; // Kurayla Seç
-        case 5: panelId = "tab9"; break; // Görev Gönder (Sıralamadaki yeri 5)
-        case 6: panelId = "tab5"; break; // Geri Sayım
-        case 7: panelId = "tab6"; break; // Kronometre
-        case 8: panelId = "tab7"; break; // Takım Oluştur
-        case 9: panelId = "tab8"; break; // Haftalık Plan
-        case 10: panelId = "tab10"; break; // Veli & Durum (tüm seviyeler)
-        case 11: panelId = "tab11"; break; // Etkinlikler (oyun/gorev gelisimi)
-        // Sınıf Mesajları sekmesi kaldırıldı -> İletişim (kulaklık) pop-up'ına taşındı
-    }
 
     const targetPanel = document.getElementById(panelId);
     if (targetPanel) {
@@ -442,11 +440,8 @@ function switchTab(idx) {
     }
 
     // 4. Veri render işlemlerini tetikle
-    if(panelId === 'tab0') renderStudents();
-    if(panelId === 'tab1') renderGrades('hw');
-    if(panelId === 'tab2') renderGrades('ex');
-    if(panelId === 'tab3') renderResults();
-    if(panelId === 'tab4') renderActivityStatus();
+    if(panelId === 'tab0') llNotModSec(llNotModu);
+    if(panelId === 'tab4') llAracSec(llAracModu);
     if(panelId === 'tab8') renderPlan();
     if(panelId === 'tab9') { /* Görev Gönder: yeni görev sistemi (gorev.js) */
         if (window.GV && GV.sekmeGorevCiz) GV.sekmeGorevCiz(); else renderMissions();
@@ -454,6 +449,45 @@ function switchTab(idx) {
     if(panelId === 'tab11' && window.GV && GV.sekmeEtkinlikCiz) GV.sekmeEtkinlikCiz();
     if(panelId === 'tab10') renderTarama();  // Veli & Durum taraması
 }
+
+/* ==========================================================================
+   TEK LISTE, MOD HAPLARI — Ogrenciler sekmesi icindeki gorunum secici.
+   Ayni ogrenci listesi yerinde durur; hap degisince yalnizca sag taraftaki
+   sutunlar (yonetim / performans / sinav / genel sonuc) degisir.
+   ========================================================================== */
+let llNotModu = 'liste';     // 'liste' | 'hw' | 'ex' | 'res'
+function llNotModSec(m) {
+    llNotModu = (m === 'hw' || m === 'ex' || m === 'res') ? m : 'liste';
+    const esle = { liste: 'llModListe', hw: 'llModPerf', ex: 'llModSinav', res: 'llModSonuc' };
+    Object.keys(esle).forEach(k => {
+        const el = document.getElementById(esle[k]);
+        if (el) el.style.display = (k === llNotModu) ? '' : 'none';
+    });
+    document.querySelectorAll('#llNotModlar .ll-mod-hap').forEach(b => {
+        b.classList.toggle('aktif', b.getAttribute('data-mod') === llNotModu);
+    });
+    if (llNotModu === 'liste') renderStudents();
+    else if (llNotModu === 'hw') renderGrades('hw');
+    else if (llNotModu === 'ex') renderGrades('ex');
+    else renderResults();
+}
+window.llNotModSec = llNotModSec;
+
+/* SINIF ARACLARI — kura / geri sayim / kronometre / takim tek sekmede. */
+let llAracModu = 'kura';     // 'kura' | 'sayim' | 'kron' | 'takim'
+function llAracSec(m) {
+    llAracModu = (m === 'sayim' || m === 'kron' || m === 'takim') ? m : 'kura';
+    const esle = { kura: 'llAracKura', sayim: 'llAracSayim', kron: 'llAracKron', takim: 'llAracTakim' };
+    Object.keys(esle).forEach(k => {
+        const el = document.getElementById(esle[k]);
+        if (el) el.style.display = (k === llAracModu) ? '' : 'none';
+    });
+    document.querySelectorAll('#llAracHaplar .ll-mod-hap').forEach(b => {
+        b.classList.toggle('aktif', b.getAttribute('data-arac') === llAracModu);
+    });
+    if (llAracModu === 'kura' && typeof renderActivityStatus === 'function') renderActivityStatus();
+}
+window.llAracSec = llAracSec;
 
 
 function selectClass(lId, cId, element) {
