@@ -1588,14 +1588,20 @@ function behAyar(lId) {
             adim: 1,                             // bir basışta verilen puan (1-3)
             arti: BEH_VARSAYILAN_ARTI.slice(),
             eksi: BEH_VARSAYILAN_EKSI.slice(),
-            ortEtki: false,                      // ödev ortalamasına yansısın mı?
+            ortEtki: true,                       // ödev ortalamasına yansısın mı? — VARSAYILAN AÇIK
             ortKat: 1                            // net puan × katsayı
         };
     }
     const b = lvl.config.beh;
     if (typeof b.aktif !== 'boolean') b.aktif = false;
     b.adim = Math.min(3, Math.max(1, parseInt(b.adim) || 1));   // en az 1, en fazla 3
-    if (typeof b.ortEtki !== 'boolean') b.ortEtki = false;
+    if (typeof b.ortEtki !== 'boolean') b.ortEtki = true;
+    /* GEÇİŞ: "ortalamaya yansısın" artık VARSAYILAN AÇIK. Öğretmen bu ayarı
+       Seviye Ayarları penceresinden hiç kaydetmediyse (ortEtkiSecildi yok),
+       eski kayıtlardaki otomatik false değeri açığa çevrilir. Öğretmen
+       kutuyu bilerek kapatıp kaydederse ortEtkiSecildi=true olur ve
+       tercihi bir daha ezilmez. */
+    if (!b.ortEtkiSecildi && !b.ortEtki) b.ortEtki = true;
     let k = parseFloat(b.ortKat);
     if (!isFinite(k) || k < 0) k = 1;
     b.ortKat = Math.min(10, Math.round(k * 100) / 100);
@@ -1909,6 +1915,7 @@ function saveLvlConfig() {
         beh.adim = behAdimOku();
         const ortKutu = document.getElementById('behOrtEtki');
         beh.ortEtki = !!(ortKutu && ortKutu.checked);
+        beh.ortEtkiSecildi = true;   // öğretmen tercihini kaydetti; varsayılan bir daha ezmez
         beh.ortKat = behOrtKatOku();
 
         let yeniArti = [], yeniEksi = [];

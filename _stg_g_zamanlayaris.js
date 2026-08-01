@@ -935,7 +935,6 @@
             // Yıldız Mantığı
             let starHTML = '⭐'; 
             const percentage = totalWords > 0 ? (correctCount / totalWords) * 100 : 0;
-            try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: correctCount, toplam: totalWords}); }catch(e){} 
 
             if (percentage >= 99) starHTML = '⭐⭐⭐';
             else if (percentage >= 60) starHTML = '⭐⭐';

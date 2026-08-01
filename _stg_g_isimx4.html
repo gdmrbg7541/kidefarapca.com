@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İsim x 4</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@300..700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="isimx4.css?v=4">
+</head>
+<body>
+
+    <div id="game-container">
+
+        <div id="selection-screen">
+            <button id="home-button" class="top-left-button" title="Geri" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="6" y2="12"/><polyline points="12 18 6 12 12 6"/></svg></button>
+
+            <div id="difficulty-selection">
+                <h1>Arapça Kelime Analizi</h1>
+                <h3>Önce Zorluk Seviyesini Seçin:</h3>
+                <div id="difficulty-buttons">
+                    <button data-time="60">Kolay</button>
+                    <button data-time="40">Orta</button>
+                    <button data-time="20">Zor</button>
+                </div>
+            </div>
+
+            <div id="player-mode-selection">
+                 <h3>Şimdi Oyuncu Modunu Seçin:</h3>
+                 <div id="player-mode-buttons">
+                     <button data-mode="1">1 Kişilik</button>
+                     <button data-mode="2">2 Kişilik</button>
+                 </div>
+             </div>
+
+             <button id="start-game-button" disabled>BAŞLA</button>
+        </div>
+
+
+        <div id="game-area" class="hidden">
+
+             <button id="back-button" class="top-left-button hidden" title="Geri" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="6" y2="12"/><polyline points="12 18 6 12 12 6"/></svg></button>
+             
+             <div id="timer-display">Süre: --s</div>
+
+             <div id="main-game-content" style="flex-grow: 1; display: flex; flex-direction: column; transition: opacity 0.3s ease;">
+                  <div id="players-container">
+                      <div id="player1-area" class="player-area">
+                          <h4 style="color:#007bff;">Oyuncu 1</h4>
+                          <div class="progress-bar-container" id="progress-bar-p1">
+                              <div class="progress-step" data-step="1">1</div>
+                              <div class="progress-line"></div>
+                              <div class="progress-step" data-step="2">2</div>
+                              <div class="progress-line"></div>
+                              <div class="progress-step" data-step="3">3</div>
+                              <div class="progress-line"></div>
+                              <div class="progress-step" data-step="4">4</div>
+                          </div>
+                          
+                          <div id="word-display-p1" class="word-display">
+                              <div id="arabic-word-p1" class="arabic-word"></div>
+                              <div id="turkish-meaning-p1" class="turkish-meaning"></div>
+                          </div>
+                          <h3 id="question-title-p1" class="question-title"></h3>
+                          <div id="options-container-p1" class="options-container"></div>
+                      </div>
+
+                      <div id="player2-area" class="player-area hidden">
+                           <h4 style="color:#dc3545;">Oyuncu 2</h4>
+                           <div class="progress-bar-container" id="progress-bar-p2">
+                              <div class="progress-step" data-step="1">1</div>
+                              <div class="progress-line"></div>
+                              <div class="progress-step" data-step="2">2</div>
+                              <div class="progress-line"></div>
+                              <div class="progress-step" data-step="3">3</div>
+                              <div class="progress-line"></div>
+                              <div class="progress-step" data-step="4">4</div>
+                          </div>
+                           
+                          <div id="word-display-p2" class="word-display">
+                              <div id="arabic-word-p2" class="arabic-word"></div>
+                              <div id="turkish-meaning-p2" class="turkish-meaning"></div>
+                          </div>
+                          <h3 id="question-title-p2" class="question-title"></h3>
+                          <div id="options-container-p2" class="options-container"></div>
+                      </div>
+                 </div>
+            </div>
+
+            <div id="proceed-container" class="hidden">
+                 <button id="proceed-button">Yeni Soru</button>
+             </div>
+
+            </div>
+    </div>
+
+
+    <script src="isimx4.js?v=4"></script>
+
+    <script src="geri.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

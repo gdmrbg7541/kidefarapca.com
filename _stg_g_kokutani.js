@@ -782,7 +782,6 @@ document.addEventListener('DOMContentLoaded', () => {
              gameState.isGameActive = false;
              
              if (isWin) {
-                 try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({dogru: gameState.donutTotalScore, toplam: gameState.donutTotalScore + gameState.donutTotalMistakes}); }catch(e){} 
                  resultsTitle.textContent = uiText.resultsTitleDonut;
                  resultsDetails.innerHTML = `
                     ${uiText.resultsWinText}

@@ -669,7 +669,7 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
                 const isWin = finalScore >= 85;
                 let nextLessonUnlocked = false;
                 if (isWin) { nextLessonUnlocked = App.unlockNextLesson(App.state.selectedLessonId); }
-                try{ if(window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({puan: Math.round(finalScore)}); }catch(e){} App.showResults({ playerMode: 1, score: finalScore, totalQuestions: this.state.questionsPerRound, isWin: isWin, nextLessonUnlocked: nextLessonUnlocked });
+                App.showResults({ playerMode: 1, score: finalScore, totalQuestions: this.state.questionsPerRound, isWin: isWin, nextLessonUnlocked: nextLessonUnlocked });
             } else {
                 let winner = 0; if (this.state.p1Score > this.state.p2Score) winner = 1; else if (this.state.p2Score > this.state.p1Score) winner = 2;
                 App.showResults({ playerMode: 2, score1: this.state.p1Score, score2: this.state.p2Score, totalQuestions: this.state.questionsPerRound, winner: winner });
