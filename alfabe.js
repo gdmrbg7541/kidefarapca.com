@@ -885,6 +885,7 @@ const memoryGame = {
 const game = {
     mode: 'multi', 
     score: {p1:0, p2:0}, cur: "", p1S: null, p2S: null, t1: 0, t2: 0, questionPool: [],
+    tekDogru: 0, tekToplam: 0,   /* GOREV: tek kisilik dogru/deneme sayaci */
     
     toggleMode: function(m) {
         playClick();
@@ -905,6 +906,7 @@ const game = {
         
         // Puanları ve arayüzü sıfırla
         this.score = {p1:0, p2:0};
+        this.tekDogru = 0; this.tekToplam = 0;
         document.getElementById('sc1').innerText = "0";
         document.getElementById('sc2').innerText = "0";
         document.getElementById('pb1').style.width = '0%';
@@ -978,6 +980,8 @@ const game = {
 
         // --- TEK KİŞİLİK MANTIK ---
         if (this.mode === 'single') {
+            this.tekToplam++;
+            if (p1Correct) this.tekDogru++;
             const z1 = document.getElementById('z1');
             if(p1Correct) {
                 z1.classList.add('zone-correct'); 
@@ -1056,6 +1060,8 @@ const game = {
             
             setTimeout(() => {
                 if (this.mode === 'single') {
+                    /* GOREV KOPRUSU: yalniz TEK KISILIK mod sonucu sayilir */
+                    try { if (window.KidefGorev) KidefGorev.bildir({ dogru: this.tekDogru, toplam: this.tekToplam }); } catch (e) { }
                     alert("HARİKA! 100 PUANLA OYUNU TAMAMLADIN! 🎉");
                 } else {
                     if(this.score.p1 === 100 && this.score.p2 === 100) alert("İNANILMAZ! BERABERE BİTTİ! 🤝");

@@ -31,7 +31,10 @@
         { d: 'testkapismasi.html', ad: 'Test Kapışması' },
         { d: 'renkler.html',       ad: 'Renkler' },
         { d: 'kokutani.html',      ad: 'Kökü Tanı' },
-        { d: 'zamanlayaris.html',  ad: 'Zamanla Yarış' }
+        { d: 'zamanlayaris.html',  ad: 'Zamanla Yarış' },
+        /* Alfabe sayfasindaki Yarisma sekmesi — puan YALNIZ tek kisilik
+           moddan gelir (iki kisilik mod sonuc gondermez). */
+        { d: 'alfabe.html',        ad: 'Alfabe Yarışması (Tek Kişilik)' }
     ];
 
     /* ---------------------------------------------------------------- yardimcilar */

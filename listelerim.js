@@ -459,6 +459,10 @@ function switchTab(idx) {
 function selectClass(lId, cId, element) {
     if (!data || !data.levels[lId]) return;
 
+    /* Sinif acilinca TAM EKRANA gec (kullanici tiklamasiyla geldiyse
+       tarayici izin verir; otomatik secimlerde sessizce atlanir). */
+    try { if (typeof llTamEkranAc === 'function') llTamEkranAc(); } catch (e) { }
+
     // 1. Önce sidebar'daki TÜM sınıflardan aktiflik sınıfını temizle
     document.querySelectorAll('.class-item').forEach(item => {
         item.classList.remove('active-class');
@@ -500,10 +504,10 @@ function selectClass(lId, cId, element) {
     /* Rozet ayni zamanda PERDE ACACAGI: tiklaninca sinif listesi iner.
        (Sayfa kaydirilip cubuk yapisinca ustteki ok cubugun altinda kalir;
        sinif degistirmek icin rozet her zaman elinin altindadir.) */
-    viewTitle.innerHTML = `<span id="active-class-title" onclick="llRozetPerdeAc()" title="Sınıf değiştir — bu kurumun listesini aç"` +
+    viewTitle.innerHTML = `<span id="active-class-title" onclick="llOkulPopupAc()" title="Sınıf değiştir — kurum haritasını aç"` +
         ` style="display:inline-flex; align-items:center; cursor:pointer;` +
-        ` font-family:'Marhey',sans-serif; font-size:1.05rem; font-weight:700; color:#fff;` +
-        ` background:linear-gradient(135deg,#D84315,#E67E22); padding:8px 16px; border-radius:10px;` +
+        ` font-family:'Marhey',sans-serif; font-size:1.38rem; font-weight:700; color:#fff;` +
+        ` background:linear-gradient(135deg,#D84315,#E67E22); padding:13px 24px; border-radius:13px;` +
         ` box-shadow:0 3px 8px rgba(216,67,21,.3); white-space:nowrap; letter-spacing:.3px;` +
         ` text-transform:none; margin:0;">${behKacis(className)}<span style="margin-left:8px; opacity:.9; font-size:.8em;">▾</span></span>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
@@ -683,7 +687,39 @@ let pools = {};
 let alertCallback = null;
 let audioCtx = null;
 
+/* Gizli bolumdeki sabit pencereyi PROFILDEyken de gosterir.
+   ONEMLI: pencere YERINDE birakilir (body'ye tasinmaz!) — tasinirsa
+   #ll-root kapsamli stiller (agirlik satirlari vb.) kopar ve tasarim
+   bozulur. Bunun yerine gizli bolum "gorunmez tasiyici" kipine alinir:
+   bolum display:block ama visibility:hidden olur, yalniz pencere gorunur. */
+function llGovdeyeAl(id) {
+    try {
+        var el = document.getElementById(id);
+        if (!el) return;
+        /* Onceki surum pencereyi body'ye tasidiysa kapsam icin GERI koy */
+        var kok = document.getElementById('ll-root');
+        if (el.parentElement === document.body && kok) kok.appendChild(el);
+        var sec = document.getElementById('listelerim-section');
+        if (!sec) return;
+        if (getComputedStyle(sec).display === 'none') sec.classList.add('ll-modal-tasiyici');
+        /* Bekci: acik pencere kalmayinca tasiyici kipini kaldirir */
+        if (!window._llTasiyiciBekci) {
+            window._llTasiyiciBekci = setInterval(function () {
+                var s = document.getElementById('listelerim-section');
+                if (!s || !s.classList.contains('ll-modal-tasiyici')) return;
+                var acikVar = ['lvlModal', 'tatilModal', 'behModal', 'skillModal', 'noteModal', 'defterModal'].some(function (mid) {
+                    var m = document.getElementById(mid);
+                    return m && m.style.display && m.style.display !== 'none';
+                });
+                if (!acikVar) s.classList.remove('ll-modal-tasiyici');
+            }, 500);
+        }
+    } catch (e) { }
+}
+window.llGovdeyeAl = llGovdeyeAl;
+
 function openTatiller() {
+    llGovdeyeAl('tatilModal');
     const modal = document.getElementById('tatilModal');
     if (modal) {
         modal.style.display = 'flex';
@@ -810,7 +846,7 @@ function llBilgi(mesaj, baslik) {
     if (!k) {
         k = document.createElement('div');
         k.id = 'llBilgiModal';
-        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10090; background:rgba(0,0,0,.55);' +
+        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:1000090; background:rgba(0,0,0,.55);' +
             'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
         k.innerHTML = `
             <div style="background:#fff; width:100%; max-width:420px; border-radius:16px; overflow:hidden; box-shadow:0 18px 46px rgba(0,0,0,.35);">
@@ -840,7 +876,7 @@ function llOnay(mesaj, evet, ayar) {
     if (!k) {
         k = document.createElement('div');
         k.id = 'llOnayModal';
-        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10090; background:rgba(0,0,0,.55);' +
+        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:1000090; background:rgba(0,0,0,.55);' +
             'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
         k.innerHTML = `
             <div style="background:#fff; width:100%; max-width:440px; border-radius:16px; overflow:hidden; box-shadow:0 18px 46px rgba(0,0,0,.35);">
@@ -988,7 +1024,7 @@ function addLevel(oncedenKurum) {
         if (!k) {
             k = document.createElement('div');
             k.id = 'llSifreModal';
-            k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10080; background:rgba(0,0,0,.55);' +
+            k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:1000080; background:rgba(0,0,0,.55);' +
                 'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
             k.innerHTML = `
                 <div style="background:#fff; width:100%; max-width:380px; border-radius:16px; overflow:hidden;">
@@ -1381,6 +1417,23 @@ function renderSidebar() {
     if (!data || !data.levels) {
         console.warn("Sidebar render edilemedi: Veri henüz hazır değil.");
         return; 
+    }
+
+    // --- 0. KIMLIK KARTI (ogrenci profilindeki gibi bas harfli avatar) ---
+    var pk = document.getElementById('llProfilKart');
+    if (pk) {
+        var pkAd = '';
+        try {
+            var pfu = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth().currentUser : null;
+            pkAd = (pfu && pfu.displayName) || (window.appState && (appState.userName || appState.userFullName)) || '';
+        } catch (e) { }
+        var pkRol = (window.appState && appState.userRole) || 'teacher';
+        var pkRolYazi = pkRol === 'student' ? '🎓 Öğrenci' : (pkRol === 'admin' ? '😎 Yönetici' : '🧑‍🏫 Öğretmen');
+        var pkBas = pkAd ? pkAd.trim().split(/\s+/).map(function (p) { return p.charAt(0); }).join('').slice(0, 2).toUpperCase() : 'Ö';
+        pk.innerHTML = '<div class="ll-profil-kart">' +
+            '<span class="ll-pk-avatar">' + behKacis(pkBas) + '</span>' +
+            '<span class="ll-pk-metin"><b>' + behKacis(pkAd || 'Öğretmen') + '</b>' +
+            '<small>' + pkRolYazi + '</small></span></div>';
     }
 
     // --- 1. ÖĞRETMEN KODU: gizli durur, TIKLANINCA görünür ---
@@ -2484,6 +2537,7 @@ function openLvlConfig(lId) {
     const lvl = data.levels[lId];
     if (!lvl) return;
 
+    llGovdeyeAl('lvlModal');   /* profilden acilinca da gorunsun (gizli bolumden cikar) */
     const modal = document.getElementById('lvlModal');
     if (!modal) return;
 
@@ -2517,7 +2571,7 @@ function openLvlConfig(lId) {
                 <div class="lvl-kart">
                     <h4>${llIcon('kitap')} Ödevler (Ağırlık %)</h4>
                     <div id="lvlHwList"></div>
-                    <button class="btn-add" onclick="addConfigRow('hw')" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
+                    <button class="btn-add" onclick="llOdevOneriAc()" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
                 </div>
                 <div class="lvl-kart">
                     <h4 style="border-bottom-color: var(--danger);">${llIcon('not')} Sınavlar (Ağırlık %)</h4>
@@ -3048,6 +3102,486 @@ function llRozetPerdeAc() {
     llPerdeAc(f);
 }
 window.llRozetPerdeAc = llRozetPerdeAc;
+
+/* ======================================================================
+   OKUL POPUP — sinif rozetine tiklaninca acilan kurum/sinif haritasi.
+   Her kurum bir OKUL BINASI olarak cizilir: catida bayrak, tabelada
+   kurum adi, her seviye bir KAT, siniflar katin KAPILARI. Cok seviyesi/
+   sinifi olan kurumun binasi BUYUR. "Genel" seviyeler gri binada.
+   ====================================================================== */
+function llOkulPopupAc() {
+    llOkulPopupKapat();
+    if (!data || !data.levels) return;
+    var kurumlar = data.kurumlar || {};
+    var levelIds = data.levelOrder || Object.keys(data.levels);
+    var gruplar = {};
+    levelIds.forEach(function (lId) {
+        var lvl = data.levels[lId]; if (!lvl) return;
+        var g = (lvl.kurumId && kurumlar[lvl.kurumId]) ? lvl.kurumId : '';
+        (gruplar[g] = gruplar[g] || []).push(lId);
+    });
+    var katYap = function (lId) {
+        var lvl = data.levels[lId];
+        var kapilar = '';
+        var cIds = lvl.classes ? Object.keys(lvl.classes) : [];
+        cIds.forEach(function (cId) {
+            var aktif = (typeof curLId !== 'undefined' && lId === curLId && typeof curCId !== 'undefined' && cId === curCId);
+            kapilar += '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
+                ' onclick="llOkulSinifSec(\'' + lId + '\',\'' + cId + '\')">' + behKacis(lvl.classes[cId].name) + '</button>';
+        });
+        if (!kapilar) kapilar = '<span class="okul-bos">sınıf yok</span>';
+        return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' + behKacis(lvl.name) + '</span>' +
+            '<span class="okul-kapilar">' + kapilar + '</span></div>';
+    };
+    var binaYap = function (ad, uyeler, genelMi) {
+        var toplamSinif = 0;
+        uyeler.forEach(function (lId) { toplamSinif += Object.keys((data.levels[lId] && data.levels[lId].classes) || {}).length; });
+        var buyuk = (uyeler.length >= 4 || toplamSinif >= 10) ? ' buyuk' : '';
+        var katlar = '';
+        uyeler.forEach(function (lId) { katlar += katYap(lId); });
+        if (!katlar) katlar = '<div class="okul-kat"><span class="okul-bos">Bu kurumda henüz seviye yok</span></div>';
+        var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
+            '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
+            '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';
+        return '<div class="okul-bina' + (genelMi ? ' genel' : '') + buyuk + '">' +
+            '<svg class="okul-bayrak" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                '<line x1="12" y1="2.4" x2="12" y2="11" stroke="#7f8c8d" stroke-width="1.6"/>' +
+                '<path class="li-bayrakcik" d="M12.6 2.8h7l-1.7 2.5 1.7 2.5h-7z" fill="#e74c3c"/></svg>' +
+            '<svg class="okul-cati" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
+                '<path d="M50 0 L98 18 H2 Z" fill="' + (genelMi ? '#78909C' : '#C0392B') + '"/>' +
+                '<path d="M50 0 L98 18 H88 L50 3.6 L12 18 H2 Z" fill="rgba(255,255,255,.14)"/></svg>' +
+            '<div class="okul-sacak"></div>' +
+            '<div class="okul-tabela"><svg class="okul-kep" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                '<path d="M2 9.4L12 4.6l10 4.8-10 4.8z" fill="#F1C40F"/>' +
+                '<path d="M6.4 12.4v3.4c0 1.5 2.6 2.8 5.6 2.8s5.6-1.3 5.6-2.8v-3.4L12 15.2z" fill="#F7DC6F"/>' +
+                '<path d="M20.6 10.2v4.6" stroke="#F1C40F" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+                '<span>' + behKacis(ad) + '</span></div>' +
+            '<div class="okul-govde">' + katlar + '</div>' +
+            '<div class="okul-giris">' + pencere +
+                '<svg class="okul-kapi-svg" viewBox="0 0 40 32" aria-hidden="true" focusable="false">' +
+                    '<path d="M3 32V13a17 13 0 0 1 34 0v19z" fill="#6B4A38"/>' +
+                    '<path d="M12.5 9.6a7.5 6 0 0 1 15 0v1.8h-15z" fill="#CFE7F5" stroke="#5D4037" stroke-width="1"/>' +
+                    '<rect x="7.6" y="13.4" width="11" height="18.6" rx="1.6" fill="#8B5E3C" stroke="#5D4037" stroke-width="1"/>' +
+                    '<rect x="21.4" y="13.4" width="11" height="18.6" rx="1.6" fill="#8B5E3C" stroke="#5D4037" stroke-width="1"/>' +
+                    '<circle cx="16.4" cy="23" r="1.2" fill="#F1C40F"/><circle cx="23.6" cy="23" r="1.2" fill="#F1C40F"/></svg>' +
+                pencere + '</div>' +
+            '<div class="okul-taban"></div>' +
+        '</div>';
+    };
+    var ic = '';
+    Object.keys(kurumlar).forEach(function (kId) { ic += binaYap(kurumlar[kId].name, gruplar[kId] || [], false); });
+    if (gruplar['']) ic += binaYap('Genel', gruplar[''], true);
+    if (!ic) ic = '<p style="text-align:center; color:#7f8c8d; font-family:inherit;">Henüz kurum/seviye eklenmemiş.</p>';
+    var k = document.createElement('div');
+    k.id = 'llOkulPopup';
+    k.innerHTML = '<div class="okul-panel">' +
+        '<div class="okul-baslik"><strong>Kurumlar &amp; Sınıflar</strong>' +
+        '<button type="button" class="okul-kapat" title="Kapat" onclick="llOkulPopupKapat()">&times;</button></div>' +
+        '<div class="okul-icerik">' + ic + '</div></div>';
+    k.addEventListener('click', function (e) { if (e.target === k) llOkulPopupKapat(); });
+    document.body.appendChild(k);
+    if (!window._llOkulEsc) {
+        window._llOkulEsc = function (e) { if (e.key === 'Escape') llOkulPopupKapat(); };
+    }
+    document.addEventListener('keydown', window._llOkulEsc);
+}
+function llOkulPopupKapat() {
+    var k = document.getElementById('llOkulPopup');
+    if (k) k.remove();
+    if (window._llOkulEsc) document.removeEventListener('keydown', window._llOkulEsc);
+}
+function llOkulSinifSec(lId, cId) {
+    llOkulPopupKapat();
+    try { selectClass(lId, cId); } catch (e) { }
+}
+window.llOkulPopupAc = llOkulPopupAc;
+window.llOkulPopupKapat = llOkulPopupKapat;
+window.llOkulSinifSec = llOkulSinifSec;
+
+/* ======================================================================
+   OGRETMEN PROFILI — ogrenci profiliyle AYNI akordiyon sistemi, yalniz
+   icerik farkli. #student-profile-section icine cizilir; profil tusuna
+   basinca router (renderStudentProfile) ogretmen rolunde buraya yonlenir.
+   Kategoriler: Kisisel Bilgilerim / Kurumlarim & Siniflarim /
+   Ogretmen Kodum / Bekleyen Istekler / Tatiller / Yonetim.
+   ====================================================================== */
+function llAkordiyon(id, renk, baslikHtml, icerik, acik) {
+    return '<details id="' + id + '" class="glass-card profile-accordion"' + (acik ? ' open' : '') +
+        ' style="margin-bottom:25px; border-bottom:4px solid ' + renk + ';">' +
+        '<summary style="cursor:pointer; display:flex; align-items:center; gap:8px; color:#16A085;' +
+        'font-weight:700; font-size:1.15rem; list-style:none;">' + baslikHtml +
+        '<span class="acc-chevron" style="margin-left:auto; color:#16A085; transition:transform 0.2s;">▸</span></summary>' +
+        '<div style="margin-top:16px; text-align:left;">' + icerik + '</div></details>';
+}
+function llRozetHtml(yazi) {
+    return '<span style="font-size:0.75rem; font-weight:600; background:#EAF7F3; color:#16A085; padding:3px 10px; border-radius:20px;">' + yazi + '</span>';
+}
+function renderTeacherProfile(deneme) {
+    var sec = document.getElementById('student-profile-section');
+    if (!sec) return;
+
+    /* --- 1. KISISEL BILGILERIM (ogrenci kartiyla ayni desen) --- */
+    var ad = (window.appState && appState.currentUserName && appState.currentUserName !== 'Belirtilmedi' && appState.currentUserName !== 'Öğrenci') ? appState.currentUserName : '';
+    var eposta = (window.appState && appState.currentUser) || '';
+    /* appState heniz dolmadiysa isim/e-posta dogrudan oturumdan alinir */
+    try {
+        var tFu = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth().currentUser : null;
+        if (!ad && tFu && tFu.displayName) ad = tFu.displayName;
+        if ((!eposta || eposta === 'Misafir Öğrenci' || eposta === 'anonim') && tFu && tFu.email) eposta = tFu.email;
+    } catch (e) { }
+    var telTam = (window.appState && appState.currentUserPhone) || '';
+    var tel = telTam.replace(/^\+90/, '').replace(/\s/g, '');
+    var cinsiyet = (window.appState && appState.currentUserGender) || '';
+    var telGecerli = /^5[0-9]{9}$/.test(tel);
+    var eksik = (!telGecerli || !cinsiyet);
+    var fLbl = 'font-size:0.75rem; font-weight:700; color:#16A085; text-transform:uppercase; letter-spacing:0.3px; display:block; margin-bottom:5px;';
+    var fBox = 'padding:11px 12px; background:#F7F9FC; border:1px solid #E9EEF5; border-radius:10px; color:#2c3e50; font-size:0.95rem; min-height:20px;';
+    var inp = 'width:100%; padding:11px 12px; border:1px solid #E9EEF5; border-radius:10px; font-family:inherit; font-size:0.95rem; box-sizing:border-box; background:#fff;';
+    var kisisel =
+        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">' +
+            '<div><label style="' + fLbl + '">Ad Soyad</label><div style="' + fBox + '">' + (ad ? behKacis(ad) : '<span style="color:#999;">Belirtilmedi</span>') + '</div></div>' +
+            '<div><label style="' + fLbl + '">E-posta</label><div style="' + fBox + '">' + behKacis(eposta) + '</div></div>' +
+            '<div><label style="' + fLbl + '">Meslek</label><input id="profile-meslek" type="text" value="Eğitmen" readonly style="' + inp + ' background:#F0F4F8; color:#16A085; font-weight:bold;"></div>' +
+            '<div><label style="' + fLbl + '">Telefon <span style="color:#EF5350;">*</span></label>' +
+                '<div style="display:flex;">' +
+                '<span style="padding:11px 12px; background:#E9EEF5; border:1px solid #E9EEF5; border-radius:10px 0 0 10px; color:#555; font-weight:bold;">+90</span>' +
+                '<input id="profile-phone" type="tel" maxlength="10" value="' + behKacis(tel) + '" placeholder="5XX XXX XX XX" style="' + inp + ' border-radius:0 10px 10px 0; border-left:none;"></div></div>' +
+            '<div><label style="' + fLbl + '">Cinsiyet <span style="color:#EF5350;">*</span></label>' +
+                '<select id="profile-gender" style="' + inp + '">' +
+                '<option value=""' + (cinsiyet === '' ? ' selected' : '') + '>Seçiniz…</option>' +
+                '<option value="erkek"' + (cinsiyet === 'erkek' ? ' selected' : '') + '>Erkek</option>' +
+                '<option value="kadin"' + (cinsiyet === 'kadin' ? ' selected' : '') + '>Kadın</option>' +
+                '</select></div>' +
+        '</div>' +
+        '<div style="display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap;">' +
+            '<button onclick="saveMyProfileInfo()" style="padding:11px 22px; border:none; border-radius:10px; background:#16A085; color:#fff; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.95rem;">Bilgilerimi Kaydet</button>' +
+            '<span id="profile-info-status" style="font-size:0.9rem; min-height:16px;"></span>' +
+        '</div>' +
+        (eksik ? '<div style="margin-top:14px; padding:11px 14px; background:#FEF3E2; border:1px solid #F39C12; border-radius:10px; color:#B9770E; font-size:0.9rem;">⚠️ Telefon ve/veya cinsiyet bilginiz eksik ya da hatalı. Lütfen güncelleyip kaydedin.</div>' : '');
+
+    /* OGRETMEN KODU + BEKLEYEN ISTEKLER artik Kisisel Bilgilerim'in ICINDE */
+    var altCizgi = 'margin:22px 0 10px; padding-top:16px; border-top:1px dashed #E9EEF5; font-weight:700; color:#16A085; font-size:1.02rem;';
+    var tKod = '';
+    try { tKod = localStorage.getItem('teacher_static_code') || ''; } catch (e) { }
+    kisisel += '<div style="' + altCizgi + '">🎫 Öğretmen Kodum</div>' +
+        (tKod
+            ? '<p style="margin:0 0 12px; color:#666; font-size:0.92rem;">Öğrencilerin bu kodla sana bağlanır (kayıt olurken ya da profillerindeki "Öğretmene Bağlan" bölümünden):</p>' +
+              '<div style="display:inline-block; padding:12px 26px; background:#FFF8F2; border:2px dashed #E67E22; border-radius:12px;' +
+              ' font-size:1.35rem; font-weight:800; letter-spacing:1.5px; color:#D84315; font-family:\'Nunito\', sans-serif;">' + behKacis(tKod) + '</div>'
+            : '<p style="margin:0; color:#999;">Kod henüz oluşmadı — sınıf listen açıldığında otomatik oluşur.</p>');
+    kisisel += '<div style="' + altCizgi + '">🔔 Bekleyen İstekler</div>' +
+        '<p style="margin:0 0 12px; color:#666; font-size:0.92rem;">Hesabını sınıfına bağlamak isteyen öğrencilerin istekleri:</p>' +
+        '<button type="button" onclick="llProfilIslem(\'istek\')" style="padding:11px 22px; border:none; border-radius:10px;' +
+        ' background:#4facfe; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">İstekleri Gör</button>';
+
+    /* HER ZAMAN KAPALI baslar (en altta) — uyari varsa acilinca gorunur */
+    var kisiselAkordiyon = llAkordiyon('tpKisisel', '#F39C12',
+        '<span>👤 Kişisel Bilgilerim</span>' + llRozetHtml('Öğretmen') +
+        (eksik ? '<span style="font-size:0.75rem; font-weight:600; background:#FEF3E2; color:#B9770E; padding:3px 10px; border-radius:20px;">⚠️ eksik bilgi</span>' : ''),
+        kisisel, false);
+
+    /* Tatil takvimi akordiyonu (dogrudan gomulu icerik) */
+    var tatilIc = llTatilIcerikHtml();
+    if (!tatilIc) {
+        tatilIc = '<button type="button" onclick="llProfilIslem(\'tatil\')" style="padding:11px 22px; border:none;' +
+            ' border-radius:10px; background:#9b59b6; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Tatilleri Aç</button>';
+    }
+    var tatilAkordiyon = llAkordiyon('tpTatil', '#9b59b6', '<span>🏖 Tatiller</span>', tatilIc, false);
+
+    var html = '';
+
+    /* --- 2. KURUMLARIM & SINIFLARIM --- */
+    /* ONEMLI: data, listelerim.js icinde "let" ile tanimli oldugundan
+       window.data YOKTUR — cipla isimle erisilmeli. Ayrica profil,
+       Listelerim hic acilmadan geldiyse bulut verisini ceken
+       initListelerim BIR KEZ tetiklenir ve profil tazelenir. */
+    if (!window._llProfilInit) {
+        window._llProfilInit = 1;
+        try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
+        setTimeout(function () {
+            try {
+                var akt = document.activeElement;
+                var s2 = document.getElementById('student-profile-section');
+                if (akt && s2 && s2.contains(akt) && (akt.tagName === 'INPUT' || akt.tagName === 'SELECT')) return;
+                renderTeacherProfile();
+            } catch (e) { }
+        }, 1600);
+    }
+    if (typeof data === 'undefined' || !data || !data.levels) {
+        deneme = deneme || 0;
+        html += llAkordiyon('tpSiniflar', '#E67E22',
+            '<span>🏫 Kurumlarım &amp; Sınıflarım</span>', 'Sınıf verileri yükleniyor…', true);
+        sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon;
+        if (deneme < 10) setTimeout(function () { renderTeacherProfile(deneme + 1); }, 700);
+        return;
+    }
+    var kurumlar = data.kurumlar || {};
+    var levelIds = data.levelOrder || Object.keys(data.levels);
+    var duzen = !!window.llProfilDuzen;   /* duzenleme modu acik mi? */
+    var gruplar = {};
+    levelIds.forEach(function (lId) {
+        var lvl = data.levels[lId]; if (!lvl) return;
+        var g = (lvl.kurumId && kurumlar[lvl.kurumId]) ? lvl.kurumId : '';
+        (gruplar[g] = gruplar[g] || []).push(lId);
+    });
+    /* kucuk islem tusu (duzenleme modunda gorunur) */
+    var mTus = function (ikon, baslik, tik, acikTema) {
+        return '<button type="button" title="' + baslik + '" onclick="' + tik + '"' +
+            ' style="border:none; cursor:pointer; padding:5px 9px; border-radius:7px; font-size:0.82rem;' +
+            ' font-family:inherit; line-height:1;' +
+            (acikTema ? ' background:rgba(255,255,255,.22); color:#fff;'
+                      : ' background:#EDF1F4; color:#546E7A;') + '">' + ikon + '</button>';
+    };
+    var sinifToplam = 0;
+    var seviyeSatir = function (lId) {
+        var lvl = data.levels[lId];
+        if (!lvl) return '';   /* bozuk/eski kimlik listeyi dusurmesin */
+        var chips = '';
+        var cIds = lvl.classes ? Object.keys(lvl.classes) : [];
+        cIds.forEach(function (cId) {
+            sinifToplam++;
+            chips += '<span style="display:inline-flex; align-items:center; gap:3px;">' +
+                '<button type="button" onclick="llProfilSinifSec(\'' + lId + '\',\'' + cId + '\')"' +
+                ' style="border:none; cursor:pointer; padding:7px 15px; border-radius:9px;' +
+                ' background:linear-gradient(135deg,#F39C12,#E67E22); color:#fff; font-family:inherit;' +
+                ' font-weight:700; font-size:0.88rem; box-shadow:0 2px 5px rgba(216,67,21,.25);">' +
+                behKacis(lvl.classes[cId].name) + '</button>' +
+                (duzen ? mTus('✏️', 'Sınıf ismini değiştir', 'editClassName(\'' + lId + '\',\'' + cId + '\')') +
+                         mTus('🗄', 'Sınıfı arşivle', 'sinifArsivle(\'' + lId + '\',\'' + cId + '\')') +
+                         mTus('🗑', 'Sınıfı sil', 'deleteClass(\'' + lId + '\',\'' + cId + '\')') : '') +
+                '</span>';
+        });
+        if (!chips) chips = '<span style="font-size:0.85rem; color:#999;">Bu seviyede henüz sınıf yok</span>';
+        var seviyeTuslar = duzen
+            ? '<span style="display:inline-flex; gap:5px; margin-left:auto;">' +
+              mTus('➕', 'Sınıf ekle', 'addClass(\'' + lId + '\')') +
+              mTus('✏️', 'Seviye ismini değiştir', 'editLevelName(\'' + lId + '\')') +
+              mTus('🗄', 'Seviyeyi arşivle', 'seviyeArsivle(\'' + lId + '\')') +
+              mTus('🗑', 'Seviyeyi sil', 'deleteLevel(\'' + lId + '\')') + '</span>'
+            : '';
+        /* UST SATIR: seviye adi + BUYUK "Seviye Ayarlari" (her zaman gorunur);
+           ALT SATIR: o seviyenin siniflari */
+        return '<div style="border:1px solid #E9EEF5; border-radius:12px; background:#F7F9FC;' +
+            ' padding:12px 14px; margin-bottom:10px;">' +
+            '<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">' +
+            '<b style="min-width:0; font-size:1.18rem; color:#5A4034;">📚 ' + behKacis(lvl.name) + '</b>' +
+            '<button type="button" title="Seviye ayarları (dersler, ağırlıklar, dönemler)" onclick="openLvlConfig(\'' + lId + '\')"' +
+            ' style="display:inline-flex; align-items:center; gap:7px; border:1px solid #BFE8DE; cursor:pointer;' +
+            ' background:#EAF7F3; color:#16A085; font-family:inherit; font-weight:700; font-size:0.98rem;' +
+            ' padding:9px 16px; border-radius:10px;">⚙️ Seviye Ayarları</button>' +
+            seviyeTuslar +
+            '</div>' +
+            '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:11px;">' + chips + '</div>' +
+            '</div>';
+    };
+    var agac = '';
+    if (duzen) {
+        agac += '<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">' +
+            '<button type="button" onclick="llProfilIslem(\'kurum\')" style="padding:9px 16px; border:1px dashed #B39DDB;' +
+            ' border-radius:9px; background:#F6F2FA; color:#8e44ad; font-family:inherit; font-weight:700; cursor:pointer; font-size:0.86rem;">🏫 Kurum Ekle</button>' +
+            '<button type="button" onclick="addLevel(' + (Object.keys(kurumlar).length ? '\'GENEL\'' : '') + ')" style="padding:9px 16px; border:1px dashed #F0C9AC;' +
+            ' border-radius:9px; background:#FFF8F2; color:#B34700; font-family:inherit; font-weight:700; cursor:pointer; font-size:0.86rem;">📁 Seviye Ekle' + (Object.keys(kurumlar).length ? ' (Genel)' : '') + '</button>' +
+            '</div>';
+    }
+    Object.keys(kurumlar).forEach(function (kId) {
+        var uyeler = gruplar[kId] || [];
+        var kurumTuslar = duzen
+            ? '<span style="display:inline-flex; gap:4px; margin-left:auto;">' +
+              mTus('➕', 'Bu kuruma seviye ekle', 'addLevel(\'' + kId + '\')', true) +
+              mTus('✏️', 'Kurum adını değiştir', 'kurumAdDegistir(\'' + kId + '\')', true) +
+              mTus('🗄', 'Tüm okulu arşivle', 'kurumArsivle(\'' + kId + '\')', true) +
+              mTus('🗑', 'Kurumu sil (seviyeler Genel\\\'e taşınır)', 'kurumSil(\'' + kId + '\')', true) + '</span>'
+            : '';
+        agac += '<div style="display:flex; align-items:center; gap:8px; margin:14px 0 8px; padding:8px 12px;' +
+            ' border-radius:9px; background:linear-gradient(90deg,#8e44ad,#6c3483); color:#fff; font-weight:700;">' +
+            '🏫 ' + behKacis(kurumlar[kId].name) +
+            ' <small style="opacity:.8;">(' + uyeler.length + ' seviye)</small>' + kurumTuslar + '</div>';
+        if (uyeler.length) uyeler.forEach(function (lId) { agac += seviyeSatir(lId); });
+        else agac += '<div style="font-size:0.82rem; color:#999; margin:0 0 8px 4px;">Bu kurumda henüz seviye yok.</div>';
+    });
+    if (gruplar['']) {
+        if (Object.keys(kurumlar).length) {
+            agac += '<div style="display:flex; align-items:center; gap:8px; margin:14px 0 8px; padding:8px 12px;' +
+                ' border-radius:9px; background:linear-gradient(90deg,#95a5a6,#7f8c8d); color:#fff; font-weight:700;">📁 Genel</div>';
+        }
+        gruplar[''].forEach(function (lId) { agac += seviyeSatir(lId); });
+    }
+    if (!agac) agac = '<p style="color:#7f8c8d;">Henüz kurum/seviye eklenmemiş. "🛠 Listeyi Düzenle" ile başlayabilirsin.</p>';
+    /* alt satir: Duzenle/Bitir + (eski Yonetim kategorisinden) Arsiv */
+    agac += '<div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;"><button type="button" onclick="llProfilDuzenle()"' +
+        (duzen
+            ? ' style="padding:10px 18px; border:none; border-radius:10px; background:#27ae60; color:#fff;' +
+              ' font-family:inherit; font-weight:700; cursor:pointer; font-size:0.9rem;">✔ Düzenlemeyi Bitir</button>'
+            : ' style="padding:10px 18px; border:1px dashed #CBD3D9; border-radius:10px; background:#F1F3F5;' +
+              ' color:#7f8c8d; font-family:inherit; font-weight:700; cursor:pointer; font-size:0.9rem;">' +
+              '🛠 Listeyi Düzenle (seviye/sınıf ekle, sil, ayarlar)</button>') +
+        '<button type="button" onclick="llProfilIslem(\'arsiv\')" style="padding:10px 18px; border:1px dashed #D5BFAE;' +
+        ' border-radius:10px; background:#FBF6F1; color:#8B6A57; font-family:inherit; font-weight:700; cursor:pointer;' +
+        ' font-size:0.9rem;">🗄 Arşiv</button></div>';
+    html += llAkordiyon('tpSiniflar', '#E67E22',
+        '<span>🏫 Kurumlarım &amp; Sınıflarım</span>' + llRozetHtml(sinifToplam + ' sınıf'), agac, true);
+
+    /* SIRALAMA: Kurumlarim & Siniflarim -> Tatiller -> Kisisel Bilgilerim (EN ALTTA) */
+    sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon;
+}
+/* Profildeki sinif kutusuna tiklaninca: Listelerim acilir + o sinif secilir. */
+function llProfilSinifSec(lId, cId) {
+    try { if (typeof window.openListelerim === 'function') window.openListelerim(); } catch (e) { }
+    setTimeout(function () { try { selectClass(lId, cId); } catch (e) { } }, 160);
+}
+/* Liste yonetimi: ESKI gorunume gitmez — profildeki agacin uzerinde
+   DUZENLEME MODUNU acar/kapatir (ekle/sil/arsiv/ayar tuslari belirir). */
+function llProfilDuzenle() {
+    window.llProfilDuzen = !window.llProfilDuzen;
+    try { renderTeacherProfile(); } catch (e) { }
+    /* duzenleme tuslari gorunsun diye kategori acik kalsin */
+    try { var d = document.getElementById('tpSiniflar'); if (d) d.setAttribute('open', ''); } catch (e) { }
+}
+function llProfilIslem(t) {
+    try {
+        if (t === 'istek' && window.OH && OH.istekPaneliAc) OH.istekPaneliAc();
+        else if (t === 'tatil' && typeof openTatiller === 'function') openTatiller();
+        else if (t === 'kurum' && typeof addKurum === 'function') addKurum();
+        else if (t === 'arsiv' && typeof arsivAc === 'function') arsivAc();
+    } catch (e) { }
+    if (t === 'kurum') setTimeout(function () { try { renderTeacherProfile(); } catch (e) { } }, 900);
+}
+/* Tatil takvimini (tatilModal'in ic paneli) akordiyona GOMMEK icin kopyalar:
+   kapat (x) tusu ve pencere kabuk stilleri soyulur; pencere baska yerlerden
+   acilmaya devam edebilsin diye TASIMAK yerine KLONLANIR. */
+function llTatilIcerikHtml() {
+    try {
+        var modal = document.getElementById('tatilModal');
+        if (!modal || !modal.firstElementChild) return '';
+        var klon = modal.firstElementChild.cloneNode(true);
+        klon.querySelectorAll('button').forEach(function (b) {
+            var oc = b.getAttribute('onclick') || '';
+            if (oc.indexOf('tatilModal') >= 0) b.remove();
+        });
+        klon.removeAttribute('style');
+        return klon.innerHTML;
+    } catch (e) { return ''; }
+}
+
+/* ======================================================================
+   ODEV EKLE ONERILERI — Seviye Ayarlari'nda "+ Odev Ekle" basilinca
+   tanimli oyun/etkinlik gorevleri (GV.OYUNLAR) oneri olarak listelenir;
+   biri secilirse odev o adla eklenir, "Bos Odev" ile eski davranis surer.
+   ====================================================================== */
+function llOdevOneriAc() {
+    var eski = document.getElementById('llOdevOneri');
+    if (eski) eski.remove();
+    var oyunlar = (window.GV && GV.OYUNLAR && GV.OYUNLAR.length) ? GV.OYUNLAR : [];
+    if (!oyunlar.length) { addConfigRow('hw'); return; }   /* katalog yoksa eski davranis */
+    var k = document.createElement('div');
+    k.id = 'llOdevOneri';
+    k.setAttribute('style', 'position:fixed; inset:0; z-index:1000001; background:rgba(0,0,0,.45);' +
+        ' backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; padding:16px;');
+    var ic = '';
+    oyunlar.forEach(function (o) {
+        ic += '<button type="button" onclick="llOdevOneriSec(\'' + String(o.ad).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\')"' +
+            ' style="display:flex; align-items:center; gap:9px; width:100%; text-align:left; margin:0 0 8px;' +
+            ' padding:11px 14px; border:1px solid #F0DACA; border-radius:10px; background:#FFF8F2; color:#B34700;' +
+            ' font-family:inherit; font-weight:700; font-size:.95rem; cursor:pointer;">🎮 ' + behKacis(o.ad) + '</button>';
+    });
+    ic += '<button type="button" onclick="llOdevOneriSec(null)"' +
+        ' style="display:flex; align-items:center; gap:9px; width:100%; text-align:left; padding:11px 14px;' +
+        ' border:1px dashed #CBD3D9; border-radius:10px; background:#F8F9FA; color:#5f6f74;' +
+        ' font-family:inherit; font-weight:700; font-size:.95rem; cursor:pointer;">✏️ Boş Ödev (ismini kendim yazayım)</button>';
+    k.innerHTML = '<div style="background:#fff; width:100%; max-width:440px; max-height:82vh; border-radius:16px;' +
+        ' overflow:hidden; display:flex; flex-direction:column; box-shadow:0 18px 46px rgba(0,0,0,.35);">' +
+        '<div style="background:linear-gradient(135deg,#F39C12 0%,#E67E22 48%,#D84315 100%); color:#fff; padding:12px 16px;' +
+        ' display:flex; justify-content:space-between; align-items:center; font-family:\'Marhey\',sans-serif;">' +
+        '<strong>Ödev Ekle</strong>' +
+        '<span onclick="document.getElementById(\'llOdevOneri\').remove()" style="cursor:pointer; font-size:24px; line-height:1;">&times;</span></div>' +
+        '<div style="padding:14px; overflow-y:auto;">' +
+        '<p style="margin:0 0 10px; font-size:.85rem; color:#7f8c8d;">Tanımlı oyun/etkinlik görevlerinden birini seç ya da boş ödev ekle:</p>' +
+        ic + '</div></div>';
+    k.addEventListener('click', function (e) { if (e.target === k) k.remove(); });
+    document.body.appendChild(k);
+}
+function llOdevOneriSec(ad) {
+    var k = document.getElementById('llOdevOneri');
+    if (k) k.remove();
+    addConfigRow('hw', ad || '', 0);
+}
+window.llOdevOneriAc = llOdevOneriAc;
+window.llOdevOneriSec = llOdevOneriSec;
+
+/* ======================================================================
+   TAM EKRAN — sinif gorunumu tam ekranda yasar.
+   Sinif acilinca otomatik girilir; ← geri tusu once tam ekrandan cikar.
+   Cubuktaki ⛶ tusu elle ac/kapa yapar.
+   ====================================================================== */
+function llTamEkranAc() {
+    try {
+        if (document.fullscreenElement || document.webkitFullscreenElement) return;
+        var el = document.documentElement;
+        if (el.requestFullscreen) { var p = el.requestFullscreen(); if (p && p.catch) p.catch(function () { }); }
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } catch (e) { }
+}
+function llTamEkranKapat() {
+    try {
+        if (document.fullscreenElement && document.exitFullscreen) { var p = document.exitFullscreen(); if (p && p.catch) p.catch(function () { }); }
+        else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+    } catch (e) { }
+}
+function llTamEkranDegistir() {
+    if (document.fullscreenElement || document.webkitFullscreenElement) llTamEkranKapat();
+    else llTamEkranAc();
+}
+window.llTamEkranAc = llTamEkranAc;
+window.llTamEkranKapat = llTamEkranKapat;
+window.llTamEkranDegistir = llTamEkranDegistir;
+
+/* GERI tusu (sekme cubugunun basindaki ←): once TAM EKRANDAN cikar,
+   sonra profildeki Kurumlarim & Siniflarim bolumune doner. */
+function llProfilDon() {
+    try { llTamEkranKapat(); } catch (e) { }
+    try { if (typeof changeView === 'function') changeView('student-profile-section'); } catch (e) { }
+    setTimeout(function () {
+        try {
+            var d = document.getElementById('tpSiniflar');
+            if (d) { d.setAttribute('open', ''); d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        } catch (e) { }
+    }, 140);
+}
+window.llProfilDon = llProfilDon;
+
+window.renderTeacherProfile = renderTeacherProfile;
+window.llProfilSinifSec = llProfilSinifSec;
+window.llProfilDuzenle = llProfilDuzenle;
+window.llProfilIslem = llProfilIslem;
+
+/* Sidebar her yeniden cizildiginde (ekleme/silme/arsiv sonrasi hep cizilir)
+   profil goruntudeyse OGRETMEN PROFILI de tazelenir — boylece profildeki
+   duzenlemelerin sonucu aninda gorunur. */
+function llProfilSidebarSar() {
+    if (typeof window.renderSidebar !== 'function' || window.renderSidebar._tp) return;
+    var _rs = window.renderSidebar;
+    var yeni = function () {
+        var r = _rs.apply(this, arguments);
+        try {
+            if (window.appState && appState.currentView === 'student-profile-section' && appState.userRole === 'teacher') {
+                clearTimeout(window._tpTazele);
+                window._tpTazele = setTimeout(function () {
+                    try {
+                        var akt = document.activeElement;
+                        var s2 = document.getElementById('student-profile-section');
+                        if (akt && s2 && s2.contains(akt) &&
+                            (akt.tagName === 'INPUT' || akt.tagName === 'SELECT' || akt.tagName === 'TEXTAREA')) return;
+                        renderTeacherProfile();
+                    } catch (e) { }
+                }, 250);
+            }
+        } catch (e) { }
+        return r;
+    };
+    yeni._tp = true;
+    window.renderSidebar = yeni;
+}
+llProfilSidebarSar();
 
 /* ======================================================================
    MOBIL CEKMECE DAVRANISI

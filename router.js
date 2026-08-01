@@ -472,6 +472,13 @@ function saveMyProfileInfo() {
 }
 
 function renderStudentProfile() {
+    /* OGRETMEN: ayni bolume, ayni akordiyon sistemiyle OGRETMEN PROFILI
+       cizilir (listelerim.js -> renderTeacherProfile). Icerik farkli:
+       kurumlar/siniflar, ogretmen kodu, bekleyen istekler, tatiller. */
+    if (appState.userRole === 'teacher' && typeof window.renderTeacherProfile === 'function') {
+        window.renderTeacherProfile();
+        return;
+    }
     if (typeof grantAdminAllPackages === 'function') grantAdminAllPackages(); // yönetici her zaman hepsine sahip
     const profileSection = document.getElementById('student-profile-section');
     if (!profileSection) return;
