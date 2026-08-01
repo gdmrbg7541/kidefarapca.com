@@ -71,25 +71,131 @@
     GV._grvAbone = null;
     GV._sncAbone = null;
 
-    GV.tusYerlestir = function () {
-        if (!ogretmenMi()) return;
-        var nav = document.getElementById('levelNav');
-        if (!nav || document.getElementById('gvTus')) return;
-        var b = document.createElement('button');
-        b.id = 'gvTus';
-        b.type = 'button';
-        b.title = 'Sınıfa, seviyeye veya tek öğrenciye oyun görevi gönder';
-        b.setAttribute('style',
-            'display:flex; align-items:center; justify-content:center; gap:8px; width:calc(100% - 10px);' +
-            'margin:0 5px 12px 5px; padding:9px 10px; border-radius:9px; cursor:pointer;' +
-            'background:linear-gradient(135deg,#F39C12,#D84315); color:#fff; border:none;' +
-            'box-shadow:0 2px 6px rgba(216,67,21,.25); font-family:inherit; font-size:.82rem; font-weight:700;');
-        b.innerHTML = '📋 <span>Görev Gönder</span>';
-        b.onclick = function () { GV.panelAc(); };
-        var ist = document.getElementById('ohIstekTus');
-        if (ist && ist.nextSibling) nav.insertBefore(b, ist.nextSibling);
-        else if (ist) nav.appendChild(b);
-        else nav.insertBefore(b, nav.firstChild);
+    /* Kenar cubugu tusu KALDIRILDI: Gorev Gonder artik sinif sekmelerinde
+       yasar (tab9 -> GV.sekmeGorevCiz). Eski surumden kalan tus temizlenir. */
+    GV.eskiTusuKaldir = function () {
+        var t = document.getElementById('gvTus');
+        if (t) t.remove();
+    };
+
+    /* ---------------- SEKME: GOREV GONDER (sinif gorunumu, tab9) ---------------- */
+    GV.sekmeGorevCiz = function () {
+        var p = document.getElementById('tab9');
+        if (!p || !ogretmenMi()) return;
+        p.innerHTML =
+            '<h3 style="margin:0 0 6px;">📋 Görev Gönder</h3>' +
+            '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">Seçili sınıfa, bütün seviyeye ya da tek öğrenciye ' +
+            'ölçülebilir oyunlardan görev gönder. Sonuçlar aşağıda canlı birikir; performans notu seçersen seviye ayarına ' +
+            'otomatik sütun eklenir.</p>' +
+            '<div id="gvYeniKutu" style="background:#FFF8F2; border:1px solid #F3E2D3; border-radius:14px; padding:16px; margin-bottom:24px;"></div>' +
+            '<h3 style="margin:0 0 10px;">📊 Gönderilen Görevler &amp; Sonuçlar</h3>' +
+            '<div id="gvGovde" style="background:#FFF8F2; border:1px solid #F3E2D3; border-radius:14px; padding:16px;"></div>';
+        GV.yeniCiz('gvYeniKutu');
+        /* Sinif baglami hazir gelsin: acik seviye/sinif onceden secili */
+        try {
+            if (typeof curLId !== 'undefined' && curLId && document.getElementById('gvSeviye')) {
+                document.getElementById('gvSeviye').value = curLId;
+                if (typeof curCId !== 'undefined' && curCId) {
+                    document.getElementById('gvHedefTur').value = 'sinif';
+                    GV.hedefCiz();
+                    if (document.getElementById('gvSinif')) document.getElementById('gvSinif').value = curCId;
+                    GV.ogrenciDoldur();
+                } else GV.hedefCiz();
+            }
+        } catch (e) { }
+        GV.gorevleriDinle();
+        GV.sonucCiz();
+    };
+
+    /* ---------------- SEKME: ETKINLIKLER (tab11) ----------------
+       Ogretmene bagli TUM ogrencilerin oynadigi olculebilir etkinliklerin
+       verisi: rekorlar, gelisim cizgileri, son durum, 30 gunluk ilerleme. */
+    GV.sekmeEtkinlikCiz = function () {
+        var p = document.getElementById('tab11');
+        if (!p || !ogretmenMi()) return;
+        p.innerHTML =
+            '<h3 style="margin:0 0 6px;">🏃 Etkinlikler — Öğrenci Gelişimi</h3>' +
+            '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">Hesabı bağlı öğrencilerin ölçülebilir oyunlardaki ' +
+            'bütün etkinliği görevden bağımsız olarak buraya düşer: rekorlar, gelişim çizgisi, son oynanış ve 30 günlük ilerleme. ' +
+            'Öğrenci oynadıkça tablo kendiliğinden güncellenir.</p>' +
+            '<div id="gvEtkOzet" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;"></div>' +
+            '<div id="gvEtkGovde"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
+        GV.ilerlemeDinle();
+        GV.etkinlikCiz();
+    };
+
+    GV.etkinlikCiz = function () {
+        var govde = document.getElementById('gvEtkGovde');
+        if (!govde) return;
+        var ozet = document.getElementById('gvEtkOzet');
+
+        if (!GV.ilerlemeler.length) {
+            if (ozet) ozet.innerHTML = '';
+            govde.innerHTML = '<div style="text-align:center; padding:30px 12px; color:#8B6A57; background:#FFF8F2;' +
+                'border:1px dashed #F0C9A6; border-radius:14px;">' +
+                '<p style="margin:0; font-size:.95rem;">Henüz etkinlik kaydı yok.</p>' +
+                '<p style="margin:8px 0 0; font-size:.83rem; color:#A6836E;">Hesabı bağlı bir öğrenci ölçülebilir oyunlardan ' +
+                'birini oynadığında verisi kendiliğinden burada görünür.</p></div>';
+            return;
+        }
+
+        /* ozet istatistikler */
+        var simdi = Date.now(), hafta = 7 * 24 * 60 * 60 * 1000;
+        var uidler = {}, toplamOyun = 0, rekorTop = 0, sonHafta = {};
+        GV.ilerlemeler.forEach(function (r) {
+            uidler[r.ogrenciUid] = 1;
+            toplamOyun += (r.oynama || 0);
+            rekorTop += (r.rekor || 0);
+            if ((r.sonTarih || 0) > simdi - hafta) sonHafta[r.ogrenciUid] = 1;
+        });
+        var kutu = function (deger, etiket, renk) {
+            return '<div style="flex:1; min-width:130px; background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
+                'padding:13px; text-align:center; box-shadow:0 2px 7px rgba(216,67,21,.05);">' +
+                '<div style="font-size:1.7rem; font-weight:800; color:' + renk + ';">' + deger + '</div>' +
+                '<div style="font-size:.76rem; color:#8B6A57; margin-top:3px;">' + etiket + '</div></div>';
+        };
+        if (ozet) ozet.innerHTML =
+            kutu(Object.keys(uidler).length, 'etkin öğrenci', '#D84315') +
+            kutu(toplamOyun, 'toplam oynama', '#B7950B') +
+            kutu('%' + Math.round(rekorTop / GV.ilerlemeler.length), 'ortalama rekor', '#16A085') +
+            kutu(Object.keys(sonHafta).length, 'son 7 günde oynayan', '#7B1FA2');
+
+        /* ogrenci kartlari */
+        var grup = {};
+        GV.ilerlemeler.forEach(function (r) {
+            if (!grup[r.ogrenciUid]) grup[r.ogrenciUid] = { ad: uidAdBul(r.ogrenciUid) || r.ad || r.email || 'Öğrenci', oyunlar: [] };
+            grup[r.ogrenciUid].oyunlar.push(r);
+        });
+        govde.innerHTML = Object.keys(grup).map(function (uid) {
+            var o = grup[uid];
+            o.oyunlar.sort(function (a, b) { return (b.sonTarih || 0) - (a.sonTarih || 0); });
+            var tOyun = 0, rTop = 0, ayTop = 0, sonT = 0;
+            var satirlar = o.oyunlar.map(function (r) {
+                tOyun += (r.oynama || 0); rTop += (r.rekor || 0);
+                if ((r.sonTarih || 0) > sonT) sonT = r.sonTarih;
+                var fark = sonAyFarki(r.gecmis, r.rekor);
+                ayTop += fark;
+                var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
+                return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px dashed #F3E2D3; flex-wrap:wrap;">' +
+                    '<span style="flex:1; min-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
+                    'font-size:.86rem; color:#6B4A38;">' + esc(oyunAdi(r.oyun)) + '</span>' +
+                    minigrafik(r.gecmis) +
+                    '<span style="width:52px; text-align:right; font-weight:800; color:' + renk + ';">%' + (r.rekor || 0) + '</span>' +
+                    '<span style="width:150px; text-align:right; font-size:.73rem; color:#A6836E;">son: %' + (r.sonYuzde != null ? r.sonYuzde : (r.rekor || 0)) +
+                    ' · ' + trTarih(r.sonTarih) + '</span>' +
+                    '<span style="width:96px; text-align:right; font-size:.73rem; color:#A6836E;">' + (r.oynama || 0) + ' oyun' +
+                    (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
+            }).join('');
+            var ortRekor = o.oyunlar.length ? Math.round(rTop / o.oyunlar.length) : 0;
+            return '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
+                'margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
+                '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px; flex-wrap:wrap;">' +
+                '<span style="font-size:1rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
+                '<span style="font-size:.75rem; color:#A6836E;">ort. rekor <b style="color:#B34700;">%' + ortRekor + '</b>' +
+                ' · ' + tOyun + ' oynama · son etkinlik ' + trTarih(sonT) +
+                (ayTop > 0 ? ' · 30 günde <b style="color:#16A085;">+' + ayTop + '</b>' : '') + '</span></div>' +
+                satirlar + '</div>';
+        }).join('');
     };
 
     function katman() {
@@ -153,8 +259,8 @@
         }).join('');
     }
 
-    GV.yeniCiz = function () {
-        var g = document.getElementById('gvGovde');
+    GV.yeniCiz = function (hedefId) {
+        var g = document.getElementById(hedefId || 'gvGovde');
         if (!g) return;
         var oyunlar = GV.OYUNLAR.map(function (o) {
             return '<option value="' + esc(o.d) + '">' + esc(o.ad) + '</option>';
@@ -499,6 +605,7 @@
                 snap.forEach(function (doc) { GV.ilerlemeler.push(doc.data() || {}); });
                 var g = document.getElementById('gvGovde');
                 if (g && g.getAttribute('data-sekme') === 'ilerleme') GV.ilerlemeCiz(true);
+                if (document.getElementById('gvEtkGovde')) GV.etkinlikCiz();
             }, function (e) { console.warn('GV ilerleme dinleyici:', e && (e.code || e.message)); });
     };
 
@@ -986,7 +1093,7 @@
     var denemeSayisi = 0;
     GV.baslat = function () {
         if (ogretmenMi()) {
-            GV.tusYerlestir();
+            GV.eskiTusuKaldir();
             var eskiTus = document.getElementById('gvOgrTus');
             if (eskiTus) eskiTus.remove();
         } else if (window.OH && OH.bagliMi && OH.bagliMi()) {
@@ -1031,10 +1138,8 @@
                 try {
                     setTimeout(function () {
                         if (ogretmenMi()) {
-                            /* once OH (kod alaninin altina), sonra GV (onun altina) —
-                               ozgun sira korunur */
                             if (window.OH && typeof OH.tusYerlestir === 'function') OH.tusYerlestir();
-                            GV.tusYerlestir();
+                            GV.eskiTusuKaldir();
                         }
                     }, 60);
                 } catch (e) { }

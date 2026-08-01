@@ -413,6 +413,7 @@ function switchTab(idx) {
         case 8: panelId = "tab7"; break; // Takım Oluştur
         case 9: panelId = "tab8"; break; // Haftalık Plan
         case 10: panelId = "tab10"; break; // Veli & Durum (tüm seviyeler)
+        case 11: panelId = "tab11"; break; // Etkinlikler (oyun/gorev gelisimi)
         // Sınıf Mesajları sekmesi kaldırıldı -> İletişim (kulaklık) pop-up'ına taşındı
     }
 
@@ -428,7 +429,10 @@ function switchTab(idx) {
     if(panelId === 'tab3') renderResults();
     if(panelId === 'tab4') renderActivityStatus();
     if(panelId === 'tab8') renderPlan();
-    if(panelId === 'tab9') renderMissions(); // Görevler listesini yükle
+    if(panelId === 'tab9') { /* Görev Gönder: yeni görev sistemi (gorev.js) */
+        if (window.GV && GV.sekmeGorevCiz) GV.sekmeGorevCiz(); else renderMissions();
+    }
+    if(panelId === 'tab11' && window.GV && GV.sekmeEtkinlikCiz) GV.sekmeEtkinlikCiz();
     if(panelId === 'tab10') renderTarama();  // Veli & Durum taraması
 }
 
