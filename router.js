@@ -217,11 +217,14 @@ function changeView(viewName, isBackAction = false) {
     // Yalnızca yönetici (veya PAKETLER_AKTIF=true) tıklayabilir. "Ders Talep Et" her zaman aktif.
     var _pkgClickable = (appState.PAKETLER_AKTIF === true) || _isAdmin;
     if (tabTeacherPanel) tabTeacherPanel.style.display = 'none';
-    // E-posta ile giris yapmis ogrenci de "Listelerim"i gorur: bagliysa kendi
-    // paneli acilir, degilse ogretmen kodunu girecegi ekran cikar. Misafir gormez.
+    // Listelerim simgesi SADECE ogretmen/yonetici icindir. E-posta ile giris
+    // yapmis ogrenci onun yerine kendi "Ogrenci Dunyam" (roket) simgesini
+    // gorur; tiklayinca profili acilir (gorev.js -> GV.profilAc).
     var _isBoundStudent = (appState.userRole === 'student')
         && appState.currentUser && appState.currentUser !== 'Misafir Öğrenci';
-    if (tabListelerim) tabListelerim.style.display = (_isTeacher || _isAdmin || _isBoundStudent) ? 'inline-block' : 'none';
+    if (tabListelerim) tabListelerim.style.display = (_isTeacher || _isAdmin) ? 'inline-block' : 'none';
+    var tabOgrenciProfil = document.getElementById('tab-ogrenciprofil');
+    if (tabOgrenciProfil) tabOgrenciProfil.style.display = _isBoundStudent ? 'inline-block' : 'none';
     if (tabBooking) tabBooking.style.display = _isTeacher ? 'none' : 'inline-block'; // Ders Talep Et her zaman aktif
     [tabPaketler, tabOnlinePackages].forEach(function(t){
         if (!t) return;
