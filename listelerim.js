@@ -384,6 +384,19 @@ function savePatch() {
     closePatchModal();
     renderMissions(); // Görünümü tazele
 }
+/* Geri Sayim / Kronometre: paneli TAM EKRAN yapar (sinif projeksiyonu icin).
+   Ayni tusa tekrar basmak ya da Esc tam ekrandan cikarir. */
+function llTamEkran(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    try {
+        if (document.fullscreenElement) { document.exitFullscreen(); return; }
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } catch (e) { }
+}
+window.llTamEkran = llTamEkran;
+
 // Eski switchTab ve showTab fonksiyonlarını SİLİP bunu yapıştırın
 function switchTab(idx) {
     // 1. Tüm butonlardan ve panellerden 'active' sınıfını kaldır
@@ -393,10 +406,16 @@ function switchTab(idx) {
     tabs.forEach(t => t.classList.remove('active'));
     panels.forEach(p => p.classList.remove('active'));
 
-    // 2. Tıklanan butonu aktif yap
-    if (tabs[idx]) {
-        tabs[idx].classList.add('active');
-    }
+    // 2. Tıklanan butonu aktif yap — DOM SIRASINA GORE DEGIL, tusun
+    // onclick'indeki numaraya gore: araya eklenen sekmeler (Etkinlikler)
+    // sirayi kaydirdigi icin tabs[idx] yanlis tusu vurguluyordu.
+    let aktifTus = null;
+    tabs.forEach(t => {
+        const oc = t.getAttribute('onclick') || '';
+        if (oc.indexOf('switchTab(' + idx + ')') >= 0) aktifTus = t;
+    });
+    if (aktifTus) aktifTus.classList.add('active');
+    else if (tabs[idx]) tabs[idx].classList.add('active');
 
     // 3. Butonun onclick içindeki ID'yi bul veya index ile eşleştir
     // HTML'deki sıranıza göre manuel eşleştirme (Kaymayı önleyen kesin çözüm):
@@ -476,7 +495,17 @@ function selectClass(lId, cId, element) {
     if (viewTitle) {
     const className = data.levels[lId].classes[cId].name;
     // Yazı boyutunu 2.5rem (yaklaşık 40px) yaparak çok daha büyük bir başlık oluşturduk
-    viewTitle.innerHTML = `<span id="active-class-title" style="font-size: 2.5rem; display: block;">${className}</span>`;
+    /* Sinif adi: sekme cubugunda kompakt rozet. Stil SATIR ICI verilir ki
+       eski css kurallari (3rem baslik vb.) onu asla ezemesin/gizleyemesin. */
+    viewTitle.innerHTML = `<span id="active-class-title" style="display:inline-flex; align-items:center;` +
+        ` font-family:'Marhey',sans-serif; font-size:1.05rem; font-weight:700; color:#fff;` +
+        ` background:linear-gradient(135deg,#D84315,#E67E22); padding:8px 16px; border-radius:10px;` +
+        ` box-shadow:0 3px 8px rgba(216,67,21,.3); white-space:nowrap; letter-spacing:.3px;` +
+        ` text-transform:none; margin:0;">${behKacis(className)}</span>`;
+    /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
+    viewTitle.style.setProperty('display', 'flex', 'important');
+    viewTitle.style.alignItems = 'center';
+    viewTitle.style.margin = '0 6px 0 0';
 }
 
     switchTab(0); 
@@ -1163,10 +1192,96 @@ function deleteStu(i) {
 }
 
 // --- NOTLAR VE SONUÇLAR ---
+
+/* ==========================================================================
+   DÖNEM SİSTEMİ — notlar dönem dönem tutulur (1. Dönem, 2. Dönem, ...)
+   --------------------------------------------------------------------------
+   - Dönem listesi seviyede saklanır: lvl.config.donemler / aktifDonem
+   - 1. Dönem notları ESKİ alanlarda kalır (s.hw / s.ex) -> geriye uyumlu.
+     Sonraki dönemler s.hwD[d] / s.exD[d] altındadır.
+   - Performans / Sınavlar / Genel Sonuç sekmelerinin üstünde dönem şeridi
+     görünür; Genel Sonuç ayrıca "Genel (Tümü)" görünümü sunar.
+   ========================================================================== */
+
+function donemler(lId) {
+    const lvl = data.levels[lId];
+    if (!lvl) return ['1. Dönem'];
+    if (!lvl.config) lvl.config = {};
+    if (!Array.isArray(lvl.config.donemler) || !lvl.config.donemler.length) lvl.config.donemler = ['1. Dönem'];
+    let a = parseInt(lvl.config.aktifDonem);
+    if (!isFinite(a) || a < 0 || a >= lvl.config.donemler.length) lvl.config.aktifDonem = 0;
+    return lvl.config.donemler;
+}
+function aktifDonem(lId) { donemler(lId); return parseInt(data.levels[lId].config.aktifDonem) || 0; }
+
+/* Ogrencinin ilgili donemdeki not dizisi (yoksa acilir). */
+function donemNotlari(s, type, di) {
+    if (!di) { if (!Array.isArray(s[type])) s[type] = []; return s[type]; }
+    const k = type + 'D';
+    if (!s[k]) s[k] = {};
+    if (!Array.isArray(s[k][di])) s[k][di] = [];
+    return s[k][di];
+}
+window.llDonemNotlari = donemNotlari;
+window.llAktifDonem = aktifDonem;
+
+var resGenelAcik = false;      /* Genel Sonuç: tek dönem mi, tümü mü */
+
+function donemSec(di) {
+    donemler(curLId);
+    data.levels[curLId].config.aktifDonem = di;
+    resGenelAcik = false;
+    save();
+    renderGrades('hw'); renderGrades('ex');
+    if (typeof renderResults === 'function') renderResults();
+}
+window.donemSec = donemSec;
+function donemGenelSec() {
+    resGenelAcik = true;
+    renderResults();
+}
+window.donemGenelSec = donemGenelSec;
+function donemEkle() {
+    const ds = donemler(curLId);
+    const ad = prompt('Yeni dönemin adı:', (ds.length + 1) + '. Dönem');
+    if (!ad || !ad.trim()) return;
+    ds.push(ad.trim());
+    donemSec(ds.length - 1);
+}
+window.donemEkle = donemEkle;
+
+/* Tablonun ustune donem seridi cizer. tip: 'hw' | 'ex' | 'res' */
+function donemSeritCiz(tableEl, tip) {
+    if (!tableEl || !tableEl.parentElement) return;
+    let kutu = document.getElementById('donemSerit_' + tip);
+    if (!kutu || kutu.parentElement !== tableEl.parentElement) {
+        if (kutu) kutu.remove();
+        kutu = document.createElement('div');
+        kutu.id = 'donemSerit_' + tip;
+        kutu.setAttribute('style', 'display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 12px;');
+        tableEl.parentElement.insertBefore(kutu, tableEl);
+    }
+    const ds = donemler(curLId);
+    const akt = (tip === 'res' && resGenelAcik) ? -1 : aktifDonem(curLId);
+    const hap = (etkin, ic, oc, baslik) =>
+        `<button type="button" onclick="${oc}" title="${baslik || ''}" style="padding:6px 16px; border-radius:999px;` +
+        `cursor:pointer; font-family:inherit; font-weight:700; font-size:.85rem; border:1px solid ` +
+        (etkin ? '#16A085; background:#16A085; color:#fff;' : '#D5E3E0; background:#fff; color:#5c7a74;') +
+        `">${ic}</button>`;
+    let h = ds.map((ad, i) => hap(akt === i, behKacis(ad), 'donemSec(' + i + ')', ad + ' notları')).join('');
+    if (tip === 'res' && ds.length > 1)
+        h += hap(akt === -1, 'Genel (Tümü)', 'donemGenelSec()', 'Bütün dönemlerin sonucu');
+    h += hap(false, '+ Dönem', 'donemEkle()', 'Yeni dönem ekle');
+    kutu.innerHTML = h;
+}
+
 function renderGrades(type) {
     let config = data.levels[curLId].config[type];
     let table = document.getElementById(type + 'Table');
     if (!table) return;
+
+    donemSeritCiz(table, type);          /* donem secici tablo ustunde */
+    const dnm = aktifDonem(curLId);      /* gosterilen donem */
 
     // Davranış puanı yalnızca Performans sekmesinde (hw) ve seviye ayarında
     // açıldıysa görünür. Kapalıysa tablo eskisi gibi kalır.
@@ -1176,17 +1291,45 @@ function renderGrades(type) {
 
     // Tablo başlıklarını oluştur
     const ortEtki = !!(behAcik && beh.ortEtki);
-    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th>Ağ. ORT</th>${ortEtki ? '<th title="Davranış puanı katılmış ortalama">Davranışlı ORT</th>' : ''}${behAcik ? '<th>Davranış</th>' : ''}</tr>`;
+    /* Ayri "Davranış" / "Davranışlı ORT" sutunu YOK: sayilar isim yanindaki
+       arti/eksi tuslarinin USTUNDE, etki dogrudan Ağ. ORT'un icindedir. */
+    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th title="${ortEtki ? 'Davranış puanı katılmış ağırlıklı ortalama' : 'Ağırlıklı ortalama'}">Ağ. ORT</th></tr>`;
 
     data.levels[curLId].classes[curCId].students.forEach((s, si) => {
         let row = table.insertRow();
-        row.insertCell().innerText = s.name;
+        const nameCell = row.insertCell();
+        if (type === 'hw' && beh) {
+            /* +/- tuslari OGRENCI ISMININ YANINDA; ustlerinde KAC ARTI /
+               KAC EKSI alindigi yazar (yatay hap bicimi). Davranis puani
+               seviyede ACIK degilse tuslar gri ve pasif gorunur. */
+            const eksiN = (s.behLog || []).filter(k => (parseInt(k.d) || 0) < 0).length;
+            const artiN = (s.behLog || []).filter(k => (parseInt(k.d) || 0) > 0).length;
+            const hapStil = 'display:inline-flex; align-items:center; justify-content:center; gap:5px;' +
+                'min-width:44px; padding:3px 11px; border-radius:999px; font-weight:800; line-height:1.25;';
+            const pasifStil = ' opacity:.35; filter:grayscale(1); cursor:default; pointer-events:none;';
+            const eksiT = behAcik
+                ? `onclick="behAc(${si},-1)" title="Eksi ver (-${beh.adim}) — şimdiye dek ${eksiN} eksi" style="${hapStil}"`
+                : `disabled title="Davranış puanı kapalı — Seviye Ayarları penceresinden açabilirsiniz" style="${hapStil}${pasifStil}"`;
+            const artiT = behAcik
+                ? `onclick="behAc(${si},1)" title="Artı ver (+${beh.adim}) — şimdiye dek ${artiN} artı" style="${hapStil}"`
+                : `disabled title="Davranış puanı kapalı — Seviye Ayarları penceresinden açabilirsiniz" style="${hapStil}${pasifStil}"`;
+            nameCell.innerHTML =
+                `<div style="display:flex; align-items:center; gap:7px;">` +
+                `<button type="button" class="beh-tus eksi" ${eksiT}>&minus;${behAcik ? `<span style="font-size:.82em;">${eksiN}</span>` : ''}</button>` +
+                `<button type="button" class="beh-tus arti" ${artiT}>+${behAcik ? `<span style="font-size:.82em;">${artiN}</span>` : ''}</button>` +
+                `<span style="flex:1;">${behKacis(s.name)}</span>` +
+                (behAcik ? `<button type="button" class="beh-gecmis-tus" onclick="behGecmis(${si})" title="Davranış geçmişi">${llIcon('saat')}</button>` : '') +
+                `</div>`;
+        } else {
+            nameCell.innerText = s.name;
+        }
 
         let weightedTotal = 0;
 
+        const notlar = donemNotlari(s, type, dnm);
         config.forEach((c, ci) => {
-            // Veri varsa al, yoksa 0 kabul et
-            let val = (s[type] && s[type][ci]) ? parseFloat(s[type][ci]) : 0;
+            // Veri varsa al, yoksa 0 kabul et (AKTIF DONEMIN notlari)
+            let val = notlar[ci] ? parseFloat(notlar[ci]) : 0;
             let weight = parseFloat(c.w || 0) / 100;
             weightedTotal += (val * weight);
 
@@ -1199,34 +1342,19 @@ function renderGrades(type) {
                        style="width:60px; text-align:center; border-radius:4px; border:1px solid #ddd;">`;
         });
 
-        // Ağırlıklı ortalamayı hücreye yaz
+        // Ağırlıklı ortalama: davranış etkisi (net × katsayı) DOĞRUDAN içinde.
+        // Artı puanlar ekler, eksi puanlar ortalamadan DÜŞER; fark rozetle görünür.
         let avgCell = row.insertCell();
         avgCell.style.fontWeight = "bold";
-        avgCell.style.color = "var(--primary)";
-        avgCell.innerText = weightedTotal.toFixed(2);
-
-        // Davranışlı ortalama sütunu (seviye ayarında "ortalamaya yansısın" açıksa)
-        if (ortEtki) {
+        if (type === 'hw' && ortEtki) {
             const r = behOrtUygula(weightedTotal, beh, s);
-            const dCell = row.insertCell();
-            dCell.style.fontWeight = "bold";
-            dCell.className = 'beh-ort-hucre ' + (r.etki > 0 ? 'arti' : (r.etki < 0 ? 'eksi' : ''));
-            dCell.innerHTML = `${r.son.toFixed(2)}<span class="beh-ort-fark">${r.etki > 0 ? '+' : ''}${r.etki ? r.etki.toFixed(2) : '0'}</span>`;
-            dCell.title = `Ağırlıklı ortalama ${weightedTotal.toFixed(2)} ${r.etki >= 0 ? '+' : '−'} ${Math.abs(r.etki).toFixed(2)} davranış = ${r.son.toFixed(2)}`;
-        }
-
-        // Davranış sütunu: eksi tuşu — net puan — artı tuşu — geçmiş
-        if (behAcik) {
-            const net = behNet(s);
-            const sinif = net > 0 ? 'arti' : (net < 0 ? 'eksi' : '');
-            const cell = row.insertCell();
-            cell.innerHTML = `
-                <div class="beh-hucre">
-                    <button class="beh-tus eksi" onclick="behAc(${si},-1)" title="Eksi ver (-${beh.adim})">&minus;</button>
-                    <span class="beh-net ${sinif}">${net > 0 ? '+' : ''}${net}</span>
-                    <button class="beh-tus arti" onclick="behAc(${si},1)" title="Artı ver (+${beh.adim})">+</button>
-                    <button class="beh-gecmis-tus" onclick="behGecmis(${si})" title="Davranış geçmişi">${llIcon('saat')}</button>
-                </div>`;
+            avgCell.className = 'beh-ort-hucre ' + (r.etki > 0 ? 'arti' : (r.etki < 0 ? 'eksi' : ''));
+            if (!r.etki) avgCell.style.color = "var(--primary)";
+            avgCell.innerHTML = `${r.son.toFixed(2)}${r.etki ? `<span class="beh-ort-fark">${r.etki > 0 ? '+' : ''}${r.etki.toFixed(2)}</span>` : ''}`;
+            avgCell.title = `Ödev ortalaması ${weightedTotal.toFixed(2)} ${r.etki >= 0 ? '+' : '−'} ${Math.abs(r.etki).toFixed(2)} davranış = ${r.son.toFixed(2)}`;
+        } else {
+            avgCell.style.color = "var(--primary)";
+            avgCell.innerText = weightedTotal.toFixed(2);
         }
     });
 }
@@ -1410,8 +1538,9 @@ function behLogKapat() {
 
     function updateGrade(t, si, ci, v) {
         let s = data.levels[curLId].classes[curCId].students[si];
-        if(!s[t]) s[t] = [];
-        s[t][ci] = v; save(); renderGrades(t);
+        /* Not, AKTIF DONEMIN dizisine yazilir (1. Donem = eski s.hw/s.ex). */
+        donemNotlari(s, t, aktifDonem(curLId))[ci] = v;
+        save(); renderGrades(t);
     }
 
 
@@ -2220,41 +2349,58 @@ window.llCekmeceKapatMobil = llCekmeceKapatMobil;
 function renderResults() {
     let table = document.getElementById('resTable');
     if (!table || !curLId || !curCId) return;
-    
+
     let lvl = data.levels[curLId];
     const rBeh = behAyar(curLId);
     const rEtki = !!(rBeh && rBeh.aktif && rBeh.ortEtki);
-    table.innerHTML = `<tr><th>Öğrenci</th><th>Ödev Ort. (%100)</th>${rEtki ? '<th title="Davranış puanı katılmış ödev ortalaması">Davranışlı Ödev ORT</th>' : ''}<th>Sınav Ort. (%100)</th></tr>`;
+    donemSeritCiz(table, 'res');
+    const ds = donemler(curLId);
 
+    /* Bir ogrencinin BIR donemdeki agirlikli odev/sinav ortalamalari.
+       Davranis etkisi odev ortalamasinin dogrudan icindedir. */
+    const donemSkoru = (s, di) => {
+        let hw = 0, ex = 0;
+        const hn = donemNotlari(s, 'hw', di), en = donemNotlari(s, 'ex', di);
+        lvl.config.hw.forEach((c, i) => { hw += (parseFloat(hn[i] || 0)) * (parseFloat(c.w || 0) / 100); });
+        lvl.config.ex.forEach((c, i) => { ex += (parseFloat(en[i] || 0)) * (parseFloat(c.w || 0) / 100); });
+        let etki = 0;
+        if (rEtki) { const r = behOrtUygula(hw, rBeh, s); etki = r.etki; hw = r.son; }
+        return { hw: hw, ex: ex, etki: etki };
+    };
+    const hwHucreYap = (p) => {
+        const sinif = p.etki > 0 ? 'arti' : (p.etki < 0 ? 'eksi' : '');
+        return `<td class="beh-ort-hucre ${sinif}" style="font-weight:bold;" title="Davranış etkisi ${p.etki >= 0 ? '+' : ''}${p.etki.toFixed(2)} dahildir">${p.hw.toFixed(2)}${p.etki ? `<span class="beh-ort-fark">${p.etki > 0 ? '+' : ''}${p.etki.toFixed(2)}</span>` : ''}</td>`;
+    };
+
+    if (resGenelAcik && ds.length > 1) {
+        /* ---- GENEL (TUM DONEMLER): donem donem + genel ortalama ---- */
+        table.innerHTML = `<tr><th>Öğrenci</th>${ds.map(ad => `<th>${behKacis(ad)} Ödev</th><th>${behKacis(ad)} Sınav</th>`).join('')}<th title="Dönem ödev ortalamalarının ortalaması">Genel Ödev</th><th title="Dönem sınav ortalamalarının ortalaması">Genel Sınav</th></tr>`;
+        lvl.classes[curCId].students.forEach(s => {
+            let hucreler = '', hwT = 0, exT = 0;
+            ds.forEach((ad, di) => {
+                const p = donemSkoru(s, di);
+                hwT += p.hw; exT += p.ex;
+                hucreler += hwHucreYap(p) + `<td style="font-weight:bold; color:var(--accent);">${p.ex.toFixed(2)}</td>`;
+            });
+            table.insertRow().innerHTML = `
+                <td>${behKacis(s.name || '')}</td>
+                ${hucreler}
+                <td style="font-weight:bold; background:#EAF7F3;">${(hwT / ds.length).toFixed(2)}</td>
+                <td style="font-weight:bold; color:var(--accent); background:#EAF7F3;">${(exT / ds.length).toFixed(2)}</td>
+            `;
+        });
+        return;
+    }
+
+    /* ---- TEK DONEM ---- */
+    const dnm = aktifDonem(curLId);
+    table.innerHTML = `<tr><th>Öğrenci</th><th>Ödev Ort. (%100)</th><th>Sınav Ort. (%100)</th></tr>`;
     lvl.classes[curCId].students.forEach(s => {
-        let hwScore = 0;
-        let exScore = 0;
-        
-        // Ödev Ağırlıklı Hesaplama
-        lvl.config.hw.forEach((c, i) => {
-            let val = parseFloat((s.hw || [])[i] || 0);
-            let weight = parseFloat(c.w || 0) / 100; // Yüzdelik ağırlık (25/100 = 0.25)
-            hwScore += (val * weight);
-        });
-        
-        // Sınav Ağırlıklı Hesaplama
-        lvl.config.ex.forEach((c, i) => {
-            let val = parseFloat((s.ex || [])[i] || 0);
-            let weight = parseFloat(c.w || 0) / 100; // Yüzdelik ağırlık (50/100 = 0.50)
-            exScore += (val * weight);
-        });
-        
-        let davHucre = '';
-        if (rEtki) {
-            const r = behOrtUygula(hwScore, rBeh, s);
-            const sinif = r.etki > 0 ? 'arti' : (r.etki < 0 ? 'eksi' : '');
-            davHucre = `<td class="beh-ort-hucre ${sinif}" style="font-weight:bold;" title="${hwScore.toFixed(2)} ${r.etki >= 0 ? '+' : '−'} ${Math.abs(r.etki).toFixed(2)} davranış">${r.son.toFixed(2)}<span class="beh-ort-fark">${r.etki > 0 ? '+' : ''}${r.etki ? r.etki.toFixed(2) : '0'}</span></td>`;
-        }
+        const p = donemSkoru(s, dnm);
         table.insertRow().innerHTML = `
             <td>${behKacis(s.name || '')}</td>
-            <td style="font-weight:bold;">${hwScore.toFixed(2)}</td>
-            ${davHucre}
-            <td style="font-weight:bold; color:var(--accent);">${exScore.toFixed(2)}</td>
+            ${hwHucreYap(p)}
+            <td style="font-weight:bold; color:var(--accent);">${p.ex.toFixed(2)}</td>
         `;
     });
 }

@@ -487,14 +487,20 @@
     font-weight: bold;
 }
 #ll-root #active-class-title{
-    color: #e74c3c !important; 
-    font-weight: 900;          
-    font-size: 3rem;           
+    /* Sinif adi rozeti: sekme cubuguyla BIRLESIK kompakt tasarim */
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 1.3rem;
     font-family: 'Marhey', sans-serif;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 15px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); 
+    display: inline-block;
+    margin: 0;
+    padding: 9px 22px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    box-shadow: 0 3px 9px rgba(216,67,21,0.3);
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+    text-shadow: none;
 }
 #ll-root 700&display=swap');
 
@@ -2198,4 +2204,46 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
     #ll-root.logged-in #sidebar,
     #ll-root.logged-in.sidebar-closed #sidebar{ width: 88vw; }
     #ll-root .lli, .lli{ width: 1.3em; height: 1.3em; }
+}
+
+
+/* ==========================================================================
+   MASAUSTU: kenar cubugu yazilari ve SVG'leri COK DAHA BUYUK
+   (dar ekranlar etkilenmez; mobil duzen ayni kalir)
+   ========================================================================== */
+@media (min-width: 1024px){
+    #ll-root #sidebar{ width: 380px; }
+    #ll-root #sidebar h2{ font-size: 1.9em; }
+    #ll-root #sidebar h2 .lli{ width: 1.5em; height: 1.5em; }
+
+    /* seviye basligi + sinif satirlari */
+    #ll-root #sidebar .level-head{ font-size: 1.35rem; padding: 12px 12px; }
+    #ll-root #sidebar .level-head .lli{ width: 1.45em; height: 1.45em; }
+    #ll-root #sidebar .class-item{ padding: 10px 12px; }
+    #ll-root #sidebar .class-link{ font-size: 1.25rem; }
+    #ll-root #sidebar .class-link .lli{ width: 1.45em; height: 1.45em; }
+    #ll-root #sidebar .class-list{ margin-left: 14px; }
+
+    /* islem tuslari (kalem, cop, + vb.) */
+    #ll-root #sidebar .level-actions button,
+    #ll-root #sidebar .class-actions button{ font-size: 1.15rem; padding: 7px 10px; }
+    #ll-root #sidebar .level-actions .lli,
+    #ll-root #sidebar .class-actions .lli{ width: 1.35em; height: 1.35em; }
+    #ll-root #sidebar .ll-sinif-ekle{ font-size: 1.1rem; }
+
+    /* ogretmen kodu karti */
+    #ll-root .teacher-code-area{ padding: 14px !important; }
+    #ll-root .teacher-code-area .tk-etiket{ font-size: 1.02rem !important; }
+    #ll-root .teacher-code-area .tk-kod{ font-size: 1.5rem !important; letter-spacing: 1px; }
+    #ll-root .teacher-code-area button{ font-size: .95rem !important; padding: 8px 12px !important; }
+    #ll-root .teacher-code-area .lli{ width: 1.4em; height: 1.4em; }
+
+    /* Bekleyen Istekler tusu (satir ici stili ezmek icin !important) */
+    #ll-root #ohIstekTus{ font-size: 1.05rem !important; padding: 13px 12px !important; }
+    #ll-root #ohIstekTus .lli{ width: 1.5em; height: 1.5em; }
+    #ll-root #ohIstekTus #ohIstekRozet{ min-width: 24px !important; height: 24px !important;
+        font-size: .85rem !important; line-height: 24px !important; }
+
+    /* alt: gorunum tuslari / genel sidebar metni */
+    #ll-root #sidebar{ font-size: 1.08rem; }
 }
