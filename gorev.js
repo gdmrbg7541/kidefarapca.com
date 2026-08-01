@@ -401,6 +401,25 @@
         }
 
         var id = yeniId();
+        /* HEDEF OGRENCILERIN UID LISTESI de kaydedilir: ogrencinin bag
+           kaydindaki sinif koordinati (lId/cId) eskimis olsa bile gorev
+           UID uzerinden eslesir — "ogrenci gorevi goremiyor" olmaz. */
+        var uids = [];
+        try {
+            if (hedef.tur === 'ogrenci') uids = [hedef.ogrenciUid];
+            else if (hedef.tur === 'sinif') {
+                (d.levels[lId].classes[cId].students || []).forEach(function (s) {
+                    if (s && s.hesapUid) uids.push(s.hesapUid);
+                });
+            } else {   /* seviye: tum siniflarin bagli ogrencileri */
+                var cls = (d.levels[lId] && d.levels[lId].classes) || {};
+                Object.keys(cls).forEach(function (ck) {
+                    (cls[ck].students || []).forEach(function (s) {
+                        if (s && s.hesapUid) uids.push(s.hesapUid);
+                    });
+                });
+            }
+        } catch (e) { }
         var kayit = {
             id: id,
             ogretmenUid: u.uid,
@@ -410,6 +429,7 @@
             lId: hedef.lId,
             cId: hedef.cId || null,
             ogrenciUid: hedef.ogrenciUid || null,
+            uids: uids,
             hedefAd: hedefAd,
             sonTarih: sonTarih,
             performans: notMu ? { agirlik: agirlik,
@@ -493,11 +513,61 @@
             'color:#6B4A38; background:#fff; margin-bottom:12px;">' +
             GV.gorevlerim.map(function (v) {
                 return '<option value="' + esc(v._id) + '"' + (v._id === id ? ' selected' : '') + '>' +
+                    (v.aktif === false ? '⛔ ' : '') +
                     esc(v.baslik || v.oyun) + ' → ' + esc(v.hedefAd || '') +
                     (v.sonTarih ? ' (son: ' + trTarih(v.sonTarih) + ')' : '') + '</option>';
             }).join('') + '</select>';
-        g.innerHTML = sec + '<div id="gvSonucListe" style="min-height:60px;"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
+        /* --- secili gorevin IPTAL / YENIDEN YAYINLA / SIL tuslari --- */
+        var vSec = null;
+        for (var si2 = 0; si2 < GV.gorevlerim.length; si2++) if (GV.gorevlerim[si2]._id === id) vSec = GV.gorevlerim[si2];
+        var eylemTus = 'padding:9px 15px; border:none; border-radius:9px; cursor:pointer;' +
+            ' font-family:inherit; font-weight:700; font-size:.84rem;';
+        var eylem = '<div style="display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:0 0 12px;">' +
+            ((vSec && vSec.aktif === false)
+                ? '<span style="padding:8px 13px; border-radius:9px; background:#FDEDEC; color:#C0392B;' +
+                  ' font-weight:700; font-size:.82rem;">⛔ İptal edildi — öğrencilere görünmüyor</span>' +
+                  '<button type="button" onclick="GV.gorevAktifEt(\'' + esc(id) + '\')" style="' + eylemTus +
+                  ' background:#27ae60; color:#fff;">↩ Yeniden Yayınla</button>' +
+                  '<button type="button" onclick="GV.gorevSil(\'' + esc(id) + '\')" style="' + eylemTus +
+                  ' background:#7B241C; color:#fff;">🗑 Kalıcı Sil</button>'
+                : '<button type="button" onclick="GV.gorevIptal(\'' + esc(id) + '\')" style="' + eylemTus +
+                  ' background:#fff; color:#C0392B; border:1px solid #F5B7B1;">🚫 Görevi İptal Et</button>') +
+            '</div>';
+        g.innerHTML = sec + eylem + '<div id="gvSonucListe" style="min-height:60px;"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
         GV.sonuclariGetir(id);
+    };
+
+    /* ---------------- GOREV IPTAL / YENIDEN YAYINLA / KALICI SIL ----------------
+       Iptal = aktif:false (ogrenciler goremez, vade dolunca not islenmez,
+       sonuclar durur, geri alinabilir). Kalici sil = gorev tanimi silinir
+       (ogrenci sonuc/rekor kayitlari YERINDE kalir). */
+    GV.gorevIptal = function (id) {
+        var D = veri(); if (!D) return;
+        var yap = function () {
+            D.collection(C_GRV).doc(id).set({ aktif: false, iptalTs: Date.now() }, { merge: true })
+                .catch(function (e) { alert('İptal edilemedi: ' + ((e && (e.message || e.code)) || '')); });
+        };
+        if (typeof window.llOnay === 'function')
+            llOnay('Bu görevi iptal etmek istiyor musun?\n\nÖğrencilerin listesinden kalkar, süresi dolsa da not işlenmez. Mevcut sonuçlar silinmez; istediğinde yeniden yayınlayabilirsin.\n\nGörev performans notuysa: Seviye Ayarları\'ndaki ödev sütununu ayrıca silmen gerekir.',
+                yap, { evet: 'İptal Et', ton: 'kirmizi', baslik: '🚫 Görevi İptal Et' });
+        else if (confirm('Görev iptal edilsin mi?')) yap();
+    };
+    GV.gorevAktifEt = function (id) {
+        var D = veri(); if (!D) return;
+        D.collection(C_GRV).doc(id).set({ aktif: true, iptalTs: null }, { merge: true })
+            .catch(function (e) { alert('Yayınlanamadı: ' + ((e && (e.message || e.code)) || '')); });
+    };
+    GV.gorevSil = function (id) {
+        var D = veri(); if (!D) return;
+        var yap = function () {
+            D.collection(C_GRV).doc(id).delete()
+                .then(function () { GV._seciliGorev = null; })
+                .catch(function (e) { alert('Silinemedi: ' + ((e && (e.message || e.code)) || '')); });
+        };
+        if (typeof window.llOnay === 'function')
+            llOnay('Görev KALICI olarak silinsin mi?\n\nGörev tanımı geri getirilemez. (Öğrencilerin sonuç ve rekor kayıtları silinmez.)',
+                yap, { evet: 'Kalıcı Sil', ton: 'kirmizi', baslik: '🗑 Görevi Sil' });
+        else if (confirm('Kalıcı silinsin mi?')) yap();
     };
 
     GV.sonuclariGetir = function (gorevId) {
@@ -954,6 +1024,18 @@
         }).catch(function (e) { console.warn('GV bildirim:', e && (e.code || e.message)); });
     };
 
+    /* Gorev ogrenciyle eslesiyor mu? (saf islev: test edilebilir)
+       1) UID listesinde varsa KESIN gorunur — bag'daki sinif koordinati
+          eskimis olsa bile ("ogrenci gorevi goremiyor" cozumu).
+       2) Yoksa eski yontem: koordinat/uid eslesmesi. */
+    GV.gorevEslesir = function (v, uid, bag) {
+        if (!v || v.aktif === false) return false;
+        if (Array.isArray(v.uids) && v.uids.indexOf(uid) >= 0) return true;
+        if (v.hedefTur === 'ogrenci') return v.ogrenciUid === uid;
+        if (v.hedefTur === 'sinif') return v.lId === (bag && bag.lId) && v.cId === (bag && bag.cId);
+        return v.lId === (bag && bag.lId);      /* seviye */
+    };
+
     GV.ogrYukle = function () {
         var u = oturum(), D = veri();
         var bag = (window.OH && OH.bag) || null;
@@ -962,12 +1044,7 @@
         D.collection(C_GRV).where('ogretmenUid', '==', bag.ogretmenUid).get().then(function (snap) {
             var hepsi = [];
             snap.forEach(function (doc) { var v = doc.data() || {}; v._id = doc.id; hepsi.push(v); });
-            GV.ogrGorevler = hepsi.filter(function (v) {
-                if (v.aktif === false) return false;
-                if (v.hedefTur === 'ogrenci') return v.ogrenciUid === u.uid;
-                if (v.hedefTur === 'sinif') return v.lId === bag.lId && v.cId === bag.cId;
-                return v.lId === bag.lId;      /* seviye */
-            });
+            GV.ogrGorevler = hepsi.filter(function (v) { return GV.gorevEslesir(v, u.uid, bag); });
             GV.ogrGorevler.sort(function (a, b) { return (b.olusturma || 0) - (a.olusturma || 0); });
             return D.collection(C_SNC).where('ogrenciUid', '==', u.uid).get();
         }).then(function (snap) {
