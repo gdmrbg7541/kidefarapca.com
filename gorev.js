@@ -115,34 +115,50 @@
         if (!p || !ogretmenMi()) return;
         p.innerHTML =
             '<h3 style="margin:0 0 6px;">🏃 Etkinlikler — Öğrenci Gelişimi</h3>' +
-            '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">Hesabı bağlı öğrencilerin ölçülebilir oyunlardaki ' +
-            'bütün etkinliği görevden bağımsız olarak buraya düşer: rekorlar, gelişim çizgisi, son oynanış ve 30 günlük ilerleme. ' +
-            'Öğrenci oynadıkça tablo kendiliğinden güncellenir.</p>' +
+            '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">BU SINIFA kayıtlı, hesabı bağlı öğrencilerin ' +
+            'ölçülebilir oyunlardaki bütün etkinliği görevden bağımsız olarak buraya düşer: rekorlar, gelişim çizgisi, ' +
+            'son oynanış ve 30 günlük ilerleme. Öğrenci oynadıkça tablo kendiliğinden güncellenir.</p>' +
             '<div id="gvEtkOzet" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;"></div>' +
             '<div id="gvEtkGovde"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
         GV.ilerlemeDinle();
         GV.etkinlikCiz();
     };
 
+    /* ACIK SINIFIN hesap bagli ogrencileri: { hesapUid: adi } */
+    function acikSinifOgrencileri() {
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        var set = {};
+        try {
+            var ogr = d.levels[curLId].classes[curCId].students || [];
+            ogr.forEach(function (s) { if (s.hesapUid) set[s.hesapUid] = s.name || ''; });
+        } catch (e) { }
+        return set;
+    }
+
     GV.etkinlikCiz = function () {
         var govde = document.getElementById('gvEtkGovde');
         if (!govde) return;
         var ozet = document.getElementById('gvEtkOzet');
 
-        if (!GV.ilerlemeler.length) {
+        /* SADECE acik siniftaki ogrencilerin kayitlari — baska siniflarin
+           verisi bu sekmede gorunmez. */
+        var sinif = acikSinifOgrencileri();
+        var kayitlar = GV.ilerlemeler.filter(function (r) { return sinif[r.ogrenciUid] != null; });
+
+        if (!kayitlar.length) {
             if (ozet) ozet.innerHTML = '';
             govde.innerHTML = '<div style="text-align:center; padding:30px 12px; color:#8B6A57; background:#FFF8F2;' +
                 'border:1px dashed #F0C9A6; border-radius:14px;">' +
-                '<p style="margin:0; font-size:.95rem;">Henüz etkinlik kaydı yok.</p>' +
-                '<p style="margin:8px 0 0; font-size:.83rem; color:#A6836E;">Hesabı bağlı bir öğrenci ölçülebilir oyunlardan ' +
-                'birini oynadığında verisi kendiliğinden burada görünür.</p></div>';
+                '<p style="margin:0; font-size:.95rem;">Bu sınıfta henüz etkinlik kaydı yok.</p>' +
+                '<p style="margin:8px 0 0; font-size:.83rem; color:#A6836E;">Bu sınıfa kayıtlı, hesabı bağlı bir öğrenci ' +
+                'ölçülebilir oyunlardan birini oynadığında verisi kendiliğinden burada görünür.</p></div>';
             return;
         }
 
         /* ozet istatistikler */
         var simdi = Date.now(), hafta = 7 * 24 * 60 * 60 * 1000;
         var uidler = {}, toplamOyun = 0, rekorTop = 0, sonHafta = {};
-        GV.ilerlemeler.forEach(function (r) {
+        kayitlar.forEach(function (r) {
             uidler[r.ogrenciUid] = 1;
             toplamOyun += (r.oynama || 0);
             rekorTop += (r.rekor || 0);
@@ -157,13 +173,13 @@
         if (ozet) ozet.innerHTML =
             kutu(Object.keys(uidler).length, 'etkin öğrenci', '#D84315') +
             kutu(toplamOyun, 'toplam oynama', '#B7950B') +
-            kutu('%' + Math.round(rekorTop / GV.ilerlemeler.length), 'ortalama rekor', '#16A085') +
+            kutu('%' + Math.round(rekorTop / kayitlar.length), 'ortalama rekor', '#16A085') +
             kutu(Object.keys(sonHafta).length, 'son 7 günde oynayan', '#7B1FA2');
 
-        /* ogrenci kartlari */
+        /* ogrenci kartlari (ad, sinif listesindeki satirdan gelir) */
         var grup = {};
-        GV.ilerlemeler.forEach(function (r) {
-            if (!grup[r.ogrenciUid]) grup[r.ogrenciUid] = { ad: uidAdBul(r.ogrenciUid) || r.ad || r.email || 'Öğrenci', oyunlar: [] };
+        kayitlar.forEach(function (r) {
+            if (!grup[r.ogrenciUid]) grup[r.ogrenciUid] = { ad: sinif[r.ogrenciUid] || uidAdBul(r.ogrenciUid) || r.ad || r.email || 'Öğrenci', oyunlar: [] };
             grup[r.ogrenciUid].oyunlar.push(r);
         });
         govde.innerHTML = Object.keys(grup).map(function (uid) {
@@ -541,7 +557,9 @@
         }).join('');
 
         var notTus = (v.performans && v.performans.agirlik)
-            ? '<button type="button" onclick="GV.notlaraIsle(\'' + esc(gorevId) + '\')" style="width:100%; margin-top:10px;' +
+            ? (v.notlandi ? '<p style="margin:10px 0 0; font-size:.8rem; color:#16A085;">✓ Süresi dolduğunda sonuçlar ' +
+                'notlara otomatik işlendi. Geç gelen sonuçları eklemek istersen tuşa tekrar basabilirsin.</p>' : '') +
+            '<button type="button" onclick="GV.notlaraIsle(\'' + esc(gorevId) + '\')" style="width:100%; margin-top:10px;' +
             'padding:12px; border:none; border-radius:11px; cursor:pointer; font-family:inherit; font-weight:700;' +
             'color:#fff; background:linear-gradient(135deg,#20C997,#16A085);">Sonuçları performans notlarına işle (%' + v.performans.agirlik + ')</button>' +
             '<p id="gvNotIsleNot" style="min-height:16px; margin:8px 0 0; font-size:.82rem; color:#16A085;"></p>'
@@ -555,22 +573,20 @@
         GV._sonSonuclar = liste;
     };
 
-    /* Sonuclari, gorevin actigi hw sutununa yazar (yuzde -> not). */
-    GV.notlaraIsle = function (gorevId) {
-        var v = null;
-        for (var i = 0; i < GV.gorevlerim.length; i++) if (GV.gorevlerim[i]._id === gorevId) v = GV.gorevlerim[i];
-        var notEl = document.getElementById('gvNotIsleNot');
-        var yaz = function (m, hata) { if (notEl) { notEl.style.color = hata ? '#E74C3C' : '#16A085'; notEl.textContent = m; } };
+    /* CEKIRDEK: gorevin sonuclarini, gorevin actigi hw sutununa yazar.
+       Donen deger: islenen ogrenci sayisi; sutun yoksa -1. Hem eldeki
+       "notlara isle" tusu hem SURESI DOLAN gorevlerin otomatik islenmesi
+       bunu kullanir. */
+    function notaIsleCekirdek(v, sonuclar) {
         var d = (typeof data !== 'undefined' && data) ? data : null;
-        if (!v || !d || !d.levels[v.lId]) { yaz('Görev ya da seviye bulunamadı.', true); return; }
-
+        if (!v || !d || !d.levels[v.lId]) return -1;
         var hw = (d.levels[v.lId].config && d.levels[v.lId].config.hw) || [];
         var ci = -1;
-        for (var j = 0; j < hw.length; j++) if (hw[j].gorevId === gorevId) ci = j;
-        if (ci < 0) { yaz('Bu görevin not sütunu bulunamadı (görev performans notu olarak gönderilmemiş olabilir).', true); return; }
+        for (var j = 0; j < hw.length; j++) if (hw[j].gorevId === v._id) ci = j;
+        if (ci < 0) return -1;
 
         var harita = {};
-        (GV._sonSonuclar || []).forEach(function (r) { harita[r.ogrenciUid] = r; });
+        (sonuclar || []).forEach(function (r) { harita[r.ogrenciUid] = r; });
 
         var say = 0;
         Object.keys(d.levels[v.lId].classes || {}).forEach(function (cId) {
@@ -583,7 +599,69 @@
         });
         if (typeof save === 'function') save();
         try { if (typeof renderGrades === 'function') renderGrades('hw'); } catch (e) { }
-        yaz('✓ ' + say + ' öğrencinin notu "' + (hw[ci].n || '') + '" sütununa işlendi.');
+        return say;
+    }
+
+    /* Sonuclari, gorevin actigi hw sutununa yazar (eldeki tus). */
+    GV.notlaraIsle = function (gorevId) {
+        var v = null;
+        for (var i = 0; i < GV.gorevlerim.length; i++) if (GV.gorevlerim[i]._id === gorevId) v = GV.gorevlerim[i];
+        var notEl = document.getElementById('gvNotIsleNot');
+        var yaz = function (m, hata) { if (notEl) { notEl.style.color = hata ? '#E74C3C' : '#16A085'; notEl.textContent = m; } };
+        if (!v) { yaz('Görev bulunamadı.', true); return; }
+        var say = notaIsleCekirdek(v, GV._sonSonuclar || []);
+        if (say < 0) { yaz('Bu görevin not sütunu bulunamadı (görev performans notu olarak gönderilmemiş olabilir).', true); return; }
+        yaz('✓ ' + say + ' öğrencinin notu işlendi.');
+        /* Elle islendiyse otomatik tarama ayni gorevi bir daha islemesin. */
+        var D = veri();
+        if (D) D.collection(C_GRV).doc(v._id).set({ notlandi: true, notlanma: Date.now(), notlanan: say }, { merge: true })
+            .catch(function () { });
+    };
+
+    /* SURESI DOLAN performans gorevleri: sonuclar OTOMATIK nota islenir.
+       Her gorev bir kez islenir (notlandi damgasi); son tarihten sonra
+       gelen gec sonuclari ogretmen isterse eldeki tusla tazeler. */
+    GV._vadeCalisiyor = false;
+    GV.vadesiGelenleriIsle = function (deneme) {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi() || GV._vadeCalisiyor) return;
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) {                   /* seviye verisi gec yuklenebilir */
+            if ((deneme || 0) < 5) setTimeout(function () { GV.vadesiGelenleriIsle((deneme || 0) + 1); }, 2500);
+            return;
+        }
+        GV._vadeCalisiyor = true;
+        var simdi = Date.now();
+        D.collection(C_GRV).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            var vadesi = [];
+            snap.forEach(function (doc) {
+                var v = doc.data() || {}; v._id = doc.id;
+                if (v.performans && v.performans.agirlik && v.sonTarih && simdi > v.sonTarih
+                    && !v.notlandi && v.aktif !== false) vadesi.push(v);
+            });
+            var sirayla = Promise.resolve();
+            vadesi.forEach(function (v) {
+                sirayla = sirayla.then(function () {
+                    return D.collection(C_SNC).where('ogretmenUid', '==', u.uid).where('gorevId', '==', v._id).get()
+                        .then(function (s2) {
+                            var liste = [];
+                            s2.forEach(function (doc) { liste.push(doc.data() || {}); });
+                            var say = notaIsleCekirdek(v, liste);
+                            if (say < 0) return null;   /* sutun yoksa damga vurma */
+                            return D.collection(C_GRV).doc(v._id)
+                                .set({ notlandi: true, notlanma: simdi, notlanan: say }, { merge: true })
+                                .then(function () {
+                                    console.log('GV: "' + (v.baslik || v.oyun) + '" süresi dolduğu için ' +
+                                        say + ' öğrencinin notu otomatik işlendi.');
+                                });
+                        })
+                        .catch(function (e) { console.warn('GV otomatik notlama:', e && (e.code || e.message)); });
+                });
+            });
+            return sirayla;
+        }).catch(function (e) {
+            console.warn('GV vade taraması:', e && (e.code || e.message));
+        }).then(function () { GV._vadeCalisiyor = false; });
     };
 
     /* -------------------------------------------------- ILERLEME SEKMESI
@@ -1096,6 +1174,7 @@
             GV.eskiTusuKaldir();
             var eskiTus = document.getElementById('gvOgrTus');
             if (eskiTus) eskiTus.remove();
+            GV.vadesiGelenleriIsle();
         } else if (window.OH && OH.bagliMi && OH.bagliMi()) {
             GV.ogrYukle();
         } else if (denemeSayisi < 20) {
