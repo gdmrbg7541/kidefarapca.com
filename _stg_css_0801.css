@@ -487,20 +487,14 @@
     font-weight: bold;
 }
 #ll-root #active-class-title{
-    /* Sinif adi rozeti: sekme cubuguyla BIRLESIK kompakt tasarim */
-    color: #fff !important;
-    font-weight: 700;
-    font-size: 1.3rem;
+    color: #e74c3c !important; 
+    font-weight: 900;          
+    font-size: 3rem;           
     font-family: 'Marhey', sans-serif;
-    display: inline-block;
-    margin: 0;
-    padding: 9px 22px;
-    border-radius: 11px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    box-shadow: 0 3px 9px rgba(216,67,21,0.3);
-    white-space: nowrap;
-    letter-spacing: 0.3px;
-    text-shadow: none;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); 
 }
 #ll-root 700&display=swap');
 
@@ -706,35 +700,9 @@
 #ll-root #sidebar{ background: linear-gradient(160deg, #FFC107 0%, #F39C12 45%, #EF5350 100%); }
 #ll-root #sidebar h2, #ll-root #sidebar #listelerim-home-ico{ color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.15); }
 
-/* sidebar ac/kapa: USTTEN SARKAN PERDE TUTAMACI (asagi ok)
-   Perde kapaliyken ekranin ust-ortasinda, basliktan sarkan yuvarlak
-   uclu bir tutamac gorunur; tiklaninca perde (sidebar) asagi iner. */
-#ll-root .ll-reopen{
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: calc(var(--header-height, 60px) - 3px);
-    z-index: 240;   /* yapisik sekme cubugunun (250) altinda kalir; rozet acar */
-    background: linear-gradient(160deg, #F39C12 0%, #E67E22 52%, #D84315 100%);
-    color: #fff;
-    border: none;
-    border-radius: 0 0 18px 18px;
-    padding: 7px 30px 9px;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(216, 67, 21, .35);
-    font-size: 1.1em;
-    transform: translateX(-50%);
-    animation: llPerdeSarkac 2.8s ease-in-out infinite;
-}
-#ll-root.sidebar-closed .ll-reopen{ display: flex; align-items: center; justify-content: center; }
-#ll-root .ll-reopen:hover{ filter: brightness(1.08); animation-play-state: paused; }
-@keyframes llPerdeSarkac{
-    0%, 100%{ transform: translateX(-50%) translateY(0); }
-    50%{ transform: translateX(-50%) translateY(4px); }
-}
-@media (prefers-reduced-motion: reduce){
-    #ll-root .ll-reopen{ animation: none; }
-}
+/* sidebar ac/kapa yeniden-ac butonu */
+#ll-root .ll-reopen{ display:none; position:fixed; left:8px; top:calc(var(--header-height,60px) + 8px); z-index:10000; background:var(--primary); color:#fff; border:none; border-radius:6px; padding:8px 12px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2); font-size:1.1em; }
+#ll-root.sidebar-closed .ll-reopen{ display:block; }
 
 /* ======================================================================
    SEVİYE AYARLARI — BÜYÜK OVERLAY (%80 x %80)
@@ -2053,9 +2021,8 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
 }
 
 /* ============================================ 12.4 <=900px TELEFON/TABLET
-   Sidebar her genislikte ustten inen PERDE oldu (bolum "IPLI PERDE",
-   dosyanin sonuna yakin). Burada yalnizca icerik/sekme/tablo gibi dar
-   ekran duzeni kaldi.                                                   */
+   Sidebar artik sayfa akisindan cikar: soldan kayan bir cekmece olur.
+   Boylece icerik (sekmeler, tablolar) tam genisligi kullanabilir.       */
 @media (max-width: 900px){
 
     #ll-root{
@@ -2064,12 +2031,58 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
         min-height: 62vh;
     }
 
+    /* --- cekmece --- */
+    #ll-root.logged-in #sidebar{
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        height: 100%;
+        width: 84vw; max-width: 330px;
+        padding: 16px;
+        z-index: 10050;
+        overflow-y: auto;
+        transform: translateX(0);
+        transition: transform .3s ease;
+        box-shadow: 6px 0 26px rgba(0,0,0,.28);
+    }
+    #ll-root.logged-in.sidebar-closed #sidebar{
+        width: 84vw; max-width: 330px;   /* eski "width:0" davranisini iptal et */
+        padding: 16px;
+        transform: translateX(-105%);
+        box-shadow: none;
+    }
     #ll-root #sidebar > div:first-child{ margin: -16px -16px 12px; padding: 16px; }
+
+    /* --- arka plan perdesi --- */
+    #ll-root.logged-in .ll-backdrop{
+        display: block;
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.45);
+        z-index: 10040;
+        opacity: 1; transition: opacity .3s ease;
+    }
+    #ll-root.logged-in.sidebar-closed .ll-backdrop{ display: none; }
+
+    /* --- hamburger: sol-ALT'ta yuvarlak yuzen tus ---
+       Ust kosede sabit dururken sinif basligi / tablo satirlari ile
+       cakisiyordu. Sol alt kose hem bos hem de basparmakla ulasilir. */
+    #ll-root .ll-reopen,
+    #ll-root.sidebar-closed .ll-reopen{
+        position: fixed;
+        left: 14px; right: auto;
+        top: auto; bottom: 18px;
+        width: 54px; height: 54px;
+        padding: 0;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 6px 20px rgba(0,0,0,.32);
+        z-index: 10060;
+    }
+    #ll-root:not(.sidebar-closed) .ll-reopen{ display: none; }
 
     /* --- icerik --- */
     #ll-root.logged-in #content{
         margin-left: 0;
-        padding: 14px 12px 24px;
+        padding: 14px 12px 90px;   /* alt bosluk: yuzen menu tusu icin */
         overflow-y: visible;
     }
     #ll-root .header{ padding: 14px; margin-bottom: 14px; }
@@ -2169,7 +2182,7 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
 
 /* ================================================ 12.5 <=480px DAR EKRAN */
 @media (max-width: 480px){
-    #ll-root.logged-in #content{ padding: 12px 8px 20px; }
+    #ll-root.logged-in #content{ padding: 12px 8px 88px; }
     #ll-root .tabs{ margin: 0 -8px 12px; padding: 4px 8px 10px; }
     #ll-root .tab{ padding: 9px 13px; font-size: .88rem; }
     #ll-root .tab-panel{ padding: 12px 9px; }
@@ -2182,220 +2195,7 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
         width: 50px !important; height: 50px !important; font-size: 1.6rem !important;
     }
     #ll-root #luckyBox{ font-size: 1.3rem !important; padding: 14px !important; }
+    #ll-root.logged-in #sidebar,
+    #ll-root.logged-in.sidebar-closed #sidebar{ width: 88vw; }
     #ll-root .lli, .lli{ width: 1.3em; height: 1.3em; }
-}
-
-
-/* ==========================================================================
-   MASAUSTU kenar cubugu dengesi:
-   - SINIF satirlari BUYUK (kolay hedef)
-   - diger basliklar/tuslar (Listelerim, Ogretmen Girisi, Tatiller,
-     Seviye Ekle, Bekleyen Istekler, ogretmen kodu) KUCUK, sol svg'li
-   ========================================================================== */
-@media (min-width: 1024px){
-    #ll-root #sidebar{ width: 360px; font-size: 1rem; }
-    #ll-root #sidebar h2{ font-size: 1.35em; }
-    #ll-root #sidebar h2 .lli{ width: 1.25em; height: 1.25em; }
-
-    /* seviye basligi kucuk; SINIF satirlari buyuk */
-    #ll-root #sidebar .level-head{ font-size: 1rem; padding: 8px 10px; }
-    #ll-root #sidebar .level-head .lli{ width: 1.2em; height: 1.2em; }
-    #ll-root #sidebar .class-item{ padding: 10px 12px; }
-    #ll-root #sidebar .class-link{ font-size: 1.25rem; }
-    #ll-root #sidebar .class-link .lli{ width: 1.4em; height: 1.4em; }
-    #ll-root #sidebar .class-list{ margin-left: 12px; }
-    #ll-root #sidebar .level-actions button,
-    #ll-root #sidebar .class-actions button{ font-size: 1rem; }
-}
-
-/* Kenar cubugu tuslari (her genislikte): kucuk, SOLDAN svg'li */
-#ll-root #sidebar > div .btn-add{
-    display: flex; align-items: center; justify-content: flex-start; gap: 9px;
-    font-size: .92rem; padding: 9px 12px; text-align: left;
-}
-#ll-root #sidebar > div .btn-add .lli{ width: 1.25em; height: 1.25em; flex: 0 0 auto; }
-
-/* Ogretmen kodu karti: kucuk */
-#ll-root .teacher-code-area{ padding: 9px 11px !important; }
-#ll-root .teacher-code-area .tk-etiket{ font-size: .78rem !important; }
-#ll-root .teacher-code-area .tk-kod{ font-size: 1.02rem !important; letter-spacing: .5px; }
-#ll-root .teacher-code-area button{ font-size: .78rem !important; padding: 5px 9px !important; }
-#ll-root .teacher-code-area .lli{ width: 1.1em; height: 1.1em; }
-
-/* Bekleyen Istekler: kucuk baslik gorunumu */
-#ll-root #ohIstekTus{ font-size: .88rem !important; padding: 9px 11px !important;
-    justify-content: flex-start !important; }
-#ll-root #ohIstekTus .lli{ width: 1.2em; height: 1.2em; }
-
-/* Ogretmen kodu: tiklaninca acilir (details) */
-#ll-root .teacher-code-area summary::-webkit-details-marker{ display: none; }
-#ll-root .teacher-code-area[open] .tk-ok{ transform: rotate(90deg); }
-#ll-root #sidebar .ll-seviye-ekle-tus{ justify-content: center; }
-
-
-/* ==========================================================================
-   IPLI PERDE SIDEBAR (HER GENISLIK)
-   Kenar cubugu ustten inen bir PERDE oldu: kapaliyken basligin altinda
-   yalniz asagi-ok tutamaci gorunur (ust-orta); tiklaninca perde ASAGI
-   iner, sinif secilince / toplama tusuna basilinca ipiyle cekilmis gibi
-   YUKARI toplanir. Ac/kapa mantigi ayni: .sidebar-closed sinifi.
-   ========================================================================== */
-#ll-root.logged-in{ display: block; height: auto; min-height: 72vh; }
-#ll-root.logged-in #sidebar,
-#ll-root.logged-in.sidebar-closed #sidebar{
-    box-sizing: border-box;        /* genislik/yukseklik sinirlari padding dahil */
-    position: fixed;
-    top: var(--header-height, 60px);
-    left: 0; right: 0; bottom: auto;   /* ayri kutu degil: BASLIGIN ASAGI UZAMASI gibi tam genislik */
-    width: auto;
-    max-width: none;
-    height: auto;
-    max-height: calc(100vh - var(--header-height, 60px) - 26px);
-    max-height: calc(100dvh - var(--header-height, 60px) - 26px); /* mobil adres cubugu payi */
-    padding: 18px;                 /* .sidebar-closed'in eski width:0/padding:0 mirasini iptal eder */
-    z-index: 10050;
-    display: flex; flex-direction: column;
-    overflow-y: auto;              /* olagan durumda #levelNav kayar; bu son emniyet */
-    overscroll-behavior: contain;
-    transform: translateY(0);
-    transition: transform .45s cubic-bezier(.22, 1.14, .32, 1);   /* iner, hafif salinip oturur */
-    box-shadow: 0 18px 44px rgba(0, 0, 0, .34);
-    border-radius: 0;                  /* kose yok: baslikla butunlesik genis serit */
-}
-#ll-root.logged-in.sidebar-closed #sidebar{
-    /* kendi boyu + baslik yuksekligi + golge payi kadar yukari: iz kalmaz */
-    transform: translateY(calc(-100% - var(--header-height, 60px) - 50px));
-    box-shadow: none;
-    transition: transform .36s cubic-bezier(.55, -.1, .5, 1);     /* ip cekilir: hizlanarak toplanir */
-}
-/* perde govdesi: baslik seridi kenarlara tam otursun ve SITE BASLIGININ
-   devami gibi gorunsun (ayni 90 derece gradyan) */
-#ll-root.logged-in #sidebar > div:first-child{
-    margin: -18px -18px 14px; padding: 15px 18px;
-    background: linear-gradient(90deg, #FFC107 0%, #F39C12 50%, #EF5350 100%);
-}
-/* seviye listesi perde icinde kayar (flex kucultmesine izin ver) */
-#ll-root.logged-in #levelNav{ min-height: 0; }
-#ll-root.logged-in .ll-backdrop{
-    display: block; position: fixed; inset: 0;
-    background: rgba(0, 0, 0, .38); z-index: 10040;
-}
-#ll-root.logged-in.sidebar-closed .ll-backdrop{ display: none; }
-#ll-root.logged-in #content{ margin-left: 0; }
-/* genis perdede seviye kutulari iki kolona otursun */
-#ll-root.logged-in #levelNav .kurum-ic,
-#ll-root.logged-in #levelNav{ column-gap: 10px; }
-
-/* --- perde etegi: alt kenarda "yukari topla" ip tutamaci --- */
-#ll-root #sidebar .ll-perde-hem{ display: none; }
-#ll-root.logged-in #sidebar .ll-perde-hem{
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    flex: 0 0 auto;
-    margin: 12px -18px -18px;      /* padding'i tasarak tam genislik serit olur */
-    padding: 9px 0 11px;
-    border: none; cursor: pointer;
-    background: linear-gradient(135deg, #F39C12 0%, #E67E22 48%, #D84315 100%);
-    color: #fff;
-    font-family: inherit; font-size: .92rem; font-weight: 700; letter-spacing: .3px;
-    box-shadow: 0 -3px 10px rgba(216, 67, 21, .18);
-}
-#ll-root.logged-in #sidebar .ll-perde-hem svg{ width: 1.4em; height: 1.4em; transition: transform .2s ease; }
-#ll-root.logged-in #sidebar .ll-perde-hem:hover svg{ transform: translateY(-2px); }
-
-/* --- MASAUSTU: perde ici 2 SUTUN ("ek header" duzeni) ---
-   SOL dar sutun: Ogretmen Girisi + Tatiller (#llKisayollar), ogretmen kodu
-   ve Bekleyen Istekler (#teacher-code-display). SAG genis sutun: kurumlar,
-   seviyeler, siniflar (#levelNav). Yukseklik icerige gore uzar
-   (ust kuralin height:auto + max-height'i gecerli). --- */
-@media (min-width: 901px){
-    #ll-root.logged-in #sidebar,
-    #ll-root.logged-in.sidebar-closed #sidebar{
-        padding: 0;
-        /* !important: satir ~474'teki "display:flex !important" login kapisini asmak icin */
-        display: grid !important;
-        /* dis 1fr'ler: icerigi ortalayan esnek bosluklar (tam genislik seritte) */
-        grid-template-columns: minmax(24px, 1fr) 244px minmax(0, 912px) minmax(24px, 1fr);
-        grid-template-rows: auto auto auto minmax(0, 1fr) auto;
-        column-gap: 20px;
-        align-content: start;
-    }
-    #ll-root.logged-in #sidebar > div:first-child{
-        grid-column: 1 / -1; grid-row: 1;
-        margin: 0 0 16px; padding: 13px 24px;
-    }
-    #ll-root.logged-in #sidebar #llKisayollar{ grid-column: 2; grid-row: 2; }
-    #ll-root.logged-in #sidebar #teacher-code-display{ grid-column: 2; grid-row: 3; }
-    #ll-root.logged-in #sidebar #levelNav{
-        grid-column: 3; grid-row: 2 / 5;
-        border-left: 1px solid #F3DCC9;
-        padding-left: 20px;
-        min-height: 0;
-    }
-    #ll-root.logged-in #sidebar .ll-perde-hem{ grid-column: 1 / -1; grid-row: 5; margin: 14px 0 0; }
-}
-
-/* --- dar ekran: tek sutun, tam genislik --- */
-@media (max-width: 900px){
-    #ll-root.logged-in #sidebar,
-    #ll-root.logged-in.sidebar-closed #sidebar{
-        padding: 16px;
-    }
-    #ll-root.logged-in #sidebar > div:first-child{ margin: -16px -16px 12px; padding: 14px 16px; }
-    #ll-root.logged-in #sidebar .ll-perde-hem{ margin: 12px -16px -16px; }
-}
-
-
-/* Seviye basligi TEK SATIR: klasor svg'si, isim ve islem tuslari ayni hizada;
-   uzun isim tasmak yerine ... ile kisalir. */
-#ll-root #sidebar .level-head{
-    display: flex; flex-direction: row; align-items: center; gap: 6px; flex-wrap: nowrap;
-}
-#ll-root #sidebar .level-head > span{
-    flex: 1 1 auto; min-width: 0;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-#ll-root #sidebar .level-head > span .lli{ vertical-align: -0.18em; }
-#ll-root #sidebar .level-actions{
-    display: flex; flex-wrap: nowrap; flex: 0 0 auto; gap: 4px; align-items: center;
-}
-#ll-root #sidebar .class-item{ flex-wrap: nowrap; }
-#ll-root #sidebar .class-link{
-    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-#ll-root #sidebar .class-actions{ display: flex; flex-wrap: nowrap; flex: 0 0 auto; gap: 4px; }
-
-
-/* ==========================================================================
-   YAPISKAN SEKME CUBUGU
-   Sinif adi + "Ogrenciler / Performans / ..." cubugu, sayfa dikey
-   kaydirilirken site basliginin hemen altinda SABIT kalir.
-   Not: #content'in eski overflow-y:auto'su kaldirildi — kaydirma belgede
-   oldugu icin sticky ancak boyle tutunabilir (icerik zaten belgede
-   kayiyordu, gorunur davranis degismez).
-   ========================================================================== */
-#ll-root.logged-in #content{ overflow-y: visible; }
-#ll-root.logged-in #content .tabs{
-    position: -webkit-sticky;
-    position: sticky;
-    top: var(--header-height, 60px);   /* basligin hemen altina yapisir */
-    z-index: 250;   /* panellerin ustunde; site basligi (300) ve perdenin (10040+) altinda */
-    margin-top: 24px;   /* dinlenirken ustteki perde okuyla cakismasin */
-}
-@media (max-width: 900px){
-    #ll-root.logged-in #content .tabs{ margin-top: 30px; }
-}
-/* Cubuk yapisikken perde oku onun ALTINDA kalir (z 240 < 250); perdeyi
-   acmak icin cubuktaki SINIF ADI rozetine tiklanir (llToggleSidebar). */
-
-
-/* ==========================================================================
-   MASAUSTU: HAFTALIK PLAN PENCEREYE YAYILSIN
-   #planTable bir <table> oldugu icin kendi icerigine buzuluyor, eski
-   #planBody izgara kurali da plani tablonun YARISINA sikistiriyordu.
-   Blok yapip tam genislige aciyoruz; iki donem kolonu pencereyi paylasir.
-   ========================================================================== */
-@media (min-width: 901px){
-    #ll-root #planTable{ display: block; width: 100%; }
-    #ll-root #planBody{ display: block; }
-    #ll-root .plan-container{ min-width: 0; }
 }

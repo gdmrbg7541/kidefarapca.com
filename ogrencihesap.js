@@ -370,10 +370,12 @@
             'min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:#E74C3C; color:#fff;' +
             'font-size:.72rem; line-height:20px;"></span>';
         b.onclick = function () { OH.istekPaneliAc(); };
-        var kod = nav.querySelector('.teacher-code-area');
-        if (kod && kod.nextSibling) nav.insertBefore(b, kod.nextSibling);
-        else if (kod) nav.appendChild(b);
-        else nav.insertBefore(b, nav.firstChild);
+        /* Yeni yeri: SOL SUTUN kabi (#teacher-code-display) — ogretmen kodunun
+           hemen altina. Kap yoksa eski davranis (levelNav) surer. */
+        var kap = document.getElementById('teacher-code-display') || nav;
+        var kod = kap.querySelector('.teacher-code-area') || nav.querySelector('.teacher-code-area');
+        if (kod && kod.parentNode) kod.parentNode.insertBefore(b, kod.nextSibling);
+        else kap.appendChild(b);
         OH.rozetGuncelle();
     };
 
@@ -562,10 +564,14 @@
     OH.istekReddet = function (uid) {
         var D = veri();
         if (!D) return;
-        if (!confirm('Bu isteği reddetmek istediğinize emin misiniz?')) return;
-        D.collection(C_BAG).doc(uid).set({ durum: 'red', onayTarih: zamanDamga() }, { merge: true })
-            .then(function () { OH.istekCiz(); })
-            .catch(function (e) { alert('İşlem yapılamadı: ' + (e && (e.message || e.code))); });
+        var devam = function () {
+            D.collection(C_BAG).doc(uid).set({ durum: 'red', onayTarih: zamanDamga() }, { merge: true })
+                .then(function () { OH.istekCiz(); })
+                .catch(function (e) { alert('İşlem yapılamadı: ' + (e && (e.message || e.code))); });
+        };
+        /* Site tasarimli onay penceresi (listelerim.js yuklu degilse ham confirm) */
+        if (typeof window.llOnay === 'function') window.llOnay('Bu isteği reddetmek istediğinize emin misiniz?', devam, { evet: 'Reddet' });
+        else if (confirm('Bu isteği reddetmek istediğinize emin misiniz?')) devam();
     };
 
     /* ================================================================ 4. OGRETMEN: UZAKTAN GELEN OGRENCI MESAJLARI */
@@ -682,6 +688,19 @@
             return;
         }
 
+        /* Sinif ARSIVDE: ogretmen geri yukleyince otomatik baglanir. */
+        if (OH.bag && OH.bag.durum === 'arsiv') {
+            g.innerHTML =
+                '<div style="text-align:center; padding:10px 0 4px; font-size:2rem;">🗄</div>' +
+                '<p style="margin:12px 0 6px; text-align:center; color:#B34700; font-size:1.05rem;">Sınıfın arşive kaldırıldı</p>' +
+                '<p style="margin:0 0 6px; text-align:center; color:#6B4A38; font-size:.9rem;">Öğretmenin ' +
+                esc(OH.bag.ogretmenAd || '') + ' sınıfını arşive aldı. Sınıf geri yüklendiğinde hesabın ' +
+                'kendiliğinden yeniden bağlanır; bir şey yapman gerekmez.</p>' +
+                '<p style="margin:14px 0 0; text-align:center; color:#A6836E; font-size:.82rem;">Kodun: ' +
+                esc(OH.bag.kod || '') + '</p>';
+            return;
+        }
+
         if (OH.bekliyorMu()) {
             g.innerHTML =
                 '<div style="text-align:center; padding:10px 0 4px;">' + ikon('bekle', 'lli-xxl') + '</div>' +
@@ -693,7 +712,15 @@
             return;
         }
 
-        g.innerHTML =
+        /* Sinif SILINMISSE: eski bag 'kopuk' — ogrenci hala ogrencidir,
+           yeni (veya ayni) kodla yeniden baglanabilir. */
+        var kopukNot = (OH.bag && OH.bag.durum === 'kopuk')
+            ? '<div style="margin:0 0 12px; padding:10px 12px; background:#FDEDEC; border:1px solid #F5B7B1;' +
+              'border-radius:10px; color:#943126; font-size:.85rem; line-height:1.5;">⚠️ Önceki sınıfın öğretmenin ' +
+              'tarafından kaldırıldı. Öğrenciliğin ve geçmiş sonuçların duruyor; öğretmenin seni yeni sınıfa ' +
+              'ekleyince aynı kodla ya da vereceği yeni kodla tekrar bağlanabilirsin.</div>'
+            : '';
+        g.innerHTML = kopukNot +
             '<p style="margin:0 0 6px; color:#6B4A38; line-height:1.6;">Öğretmeninin sana verdiği kodu buraya ' +
             '<b>bir kez</b> gir. Öğretmenin onayladıktan sonra bu kod bir daha sorulmaz; ' +
             'her zaman e-posta ile giriş yaparsın.</p>' +
@@ -1030,9 +1057,15 @@
             if (OH.bagliMi()) {
                 OH.ozetiDinle();
             } else {
-                /* Onaysiz kullanicinin ogrenci oturumu acik kalmasin. */
+                /* Onaysiz/kopuk/arsiv kullanicida ESKI SINIFTAN KALAN hicbir
+                   sey gorunmesin: yerel ogrenci oturumu, ayna okul verisi ve
+                   ozet dinleyicisi temizlenir. */
                 var g = yerelOgrenci();
-                if (g && g.bulut) { try { localStorage.removeItem('logged_student'); } catch (e) { } }
+                if (g && g.bulut) {
+                    try { localStorage.removeItem('logged_student'); } catch (e) { }
+                    try { localStorage.removeItem('schoolData'); } catch (e) { }
+                }
+                if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
             }
             OH.bannerGuncelle();
             return OH.bag;
@@ -1176,6 +1209,48 @@
         });
     };
 
+    /* ================================================================ 8b. HAYALET BAG TEMIZLIGI
+
+       Sinif GECMISTE silinmis olabilir (bu ozellik eklenmeden once) ya da
+       ogrenci listeden cikarilmistir. Ogretmen girisinde taranir:
+       ONAYLI gorunen ama artik HICBIR sinifta bulunmayan hesaplarin
+       - bagi 'kopuk' yapilir (ogrenci girisinde eski sinif gorunmez),
+       - ayna ozeti (ogrenciOzet) silinir,
+       - davet kodu yeniden kullanilabilir olur.
+       Arsivlenen siniflarin baglari (durum 'arsiv') taramaya girmez.        */
+    OH.bagTemizligi = function (deneme) {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return;
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) {
+            if ((deneme || 0) < 5) setTimeout(function () { OH.bagTemizligi((deneme || 0) + 1); }, 2500);
+            return;
+        }
+        D.collection(C_BAG).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            snap.forEach(function (doc) {
+                var v = doc.data() || {};
+                if (v.durum !== 'onayli') return;
+                var bulundu = false;
+                try {
+                    Object.keys(d.levels).forEach(function (lId) {
+                        var cl = d.levels[lId].classes || {};
+                        Object.keys(cl).forEach(function (cId) {
+                            (cl[cId].students || []).forEach(function (st) {
+                                if (st && st.hesapUid === doc.id) bulundu = true;
+                            });
+                        });
+                    });
+                } catch (e) { }
+                if (bulundu) return;
+                D.collection(C_BAG).doc(doc.id).set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                D.collection(C_OZET).doc(doc.id).delete().catch(function () { });
+                if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
+                    .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                console.log('OH: "' + (v.ad || doc.id) + '" hiçbir sınıfta bulunamadı — bağı koparıldı.');
+            });
+        }).catch(function (e) { console.warn('OH bağ temizliği:', e && (e.code || e.message)); });
+    };
+
     OH.baslat = function () {
         sarmala();
         var u = oturum();
@@ -1208,6 +1283,7 @@
                    sonra kisiye ozel ogrenci davetleri. */
                 OH.ogretmenDavetiYayinla();
                 setTimeout(function () { OH.davetleriYayinla(); }, 1200);
+                setTimeout(function () { OH.bagTemizligi(); }, 2600);
             });
             setTimeout(function () { OH.tusYerlestir(); }, 900);
         } else {

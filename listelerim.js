@@ -497,11 +497,15 @@ function selectClass(lId, cId, element) {
     // Yazı boyutunu 2.5rem (yaklaşık 40px) yaparak çok daha büyük bir başlık oluşturduk
     /* Sinif adi: sekme cubugunda kompakt rozet. Stil SATIR ICI verilir ki
        eski css kurallari (3rem baslik vb.) onu asla ezemesin/gizleyemesin. */
-    viewTitle.innerHTML = `<span id="active-class-title" style="display:inline-flex; align-items:center;` +
+    /* Rozet ayni zamanda PERDE ACACAGI: tiklaninca sinif listesi iner.
+       (Sayfa kaydirilip cubuk yapisinca ustteki ok cubugun altinda kalir;
+       sinif degistirmek icin rozet her zaman elinin altindadir.) */
+    viewTitle.innerHTML = `<span id="active-class-title" onclick="llRozetPerdeAc()" title="Sınıf değiştir — bu kurumun listesini aç"` +
+        ` style="display:inline-flex; align-items:center; cursor:pointer;` +
         ` font-family:'Marhey',sans-serif; font-size:1.05rem; font-weight:700; color:#fff;` +
         ` background:linear-gradient(135deg,#D84315,#E67E22); padding:8px 16px; border-radius:10px;` +
         ` box-shadow:0 3px 8px rgba(216,67,21,.3); white-space:nowrap; letter-spacing:.3px;` +
-        ` text-transform:none; margin:0;">${behKacis(className)}</span>`;
+        ` text-transform:none; margin:0;">${behKacis(className)}<span style="margin-left:8px; opacity:.9; font-size:.8em;">▾</span></span>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
     viewTitle.style.setProperty('display', 'flex', 'important');
     viewTitle.style.alignItems = 'center';
@@ -568,14 +572,14 @@ function updateActivityTable() {
 
             // Silme işlemi
             box.onclick = function() {
-                if (confirm(name + " kaydını silmek istiyor musunuz?")) {
+                llOnay(name + " kaydını silmek istiyor musunuz?", () => {
                     const index = activityPools[activity].indexOf(name);
                     if (index > -1) {
                         activityPools[activity].splice(index, 1);
                         if (typeof saveData === "function") saveData(); 
                         updateActivityTable(); 
                     }
-                }
+                });
             };
 
             td.appendChild(box);
@@ -736,12 +740,202 @@ function save() {
     }
 }
 
-function addLevel() {
+/* ================= KODLA OGRENCI EKLE =================
+   Sistemde KAYITLI bir ogrenci (or. baska sinifta) KODUYLA bu sinifa da
+   eklenir: kimligi (ad, kod, bagli hesap) tasinir; yeni sinifta notlari
+   sifirdan baslar. Ayni sinifa ikinci kez eklenemez.                        */
+function kodlaOgrenciEkle() {
+    if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) {
+        llBilgi('Önce soldan bir sınıf seçin.'); return;
+    }
+    const el = document.getElementById('kodlaEkleKod');
+    const kod = ((el && el.value) || '').replace(/[\s\u00A0]+/g, '').toUpperCase();
+    if (!kod) { llBilgi('Lütfen öğrencinin kodunu yazın (örn. TCH-4582-X8B2).'); return; }
+
+    /* aktif tum siniflarda ara */
+    let bulunan = null, bulunduguSinif = '';
+    Object.keys(data.levels).forEach(lId => {
+        const lvl = data.levels[lId];
+        Object.keys(lvl.classes || {}).forEach(cId => {
+            (lvl.classes[cId].students || []).forEach(st => {
+                if (((st.loginCode || '').toUpperCase() === kod) && !bulunan) {
+                    bulunan = st;
+                    bulunduguSinif = (lvl.name || lId) + ' / ' + (lvl.classes[cId].name || cId);
+                }
+            });
+        });
+    });
+
+    const hedef = data.levels[curLId].classes[curCId];
+    if (!Array.isArray(hedef.students)) hedef.students = [];
+
+    if ((hedef.students || []).some(st => (st.loginCode || '').toUpperCase() === kod)) {
+        llBilgi('Bu öğrenci zaten bu sınıfta kayıtlı.'); return;
+    }
+    if (!bulunan) {
+        /* arsivde mi? */
+        const arsivde = (data.arsiv || []).some(a =>
+            ((a.veri && a.veri.students) || []).some(st => (st.loginCode || '').toUpperCase() === kod));
+        llBilgi(arsivde
+            ? 'Bu kod arşivlenmiş bir sınıfta bulundu. Önce 🗄 Arşiv bölümünden o sınıfı geri yükleyin.'
+            : 'Bu kodla kayıtlı öğrenci bulunamadı. Kodu kontrol edin.'); 
+        return;
+    }
+
+    llOnay('"' + (bulunan.name || 'Öğrenci') + '" (' + bulunduguSinif + ') bu sınıfa da eklensin mi?\n' +
+        'Kimliği ve bağlı hesabı taşınır; bu sınıftaki notları sıfırdan başlar.', () => {
+        hedef.students.push({
+            name: bulunan.name || 'Öğrenci',
+            loginCode: bulunan.loginCode,
+            hesapUid: bulunan.hesapUid || undefined,
+            hesapEmail: bulunan.hesapEmail || undefined,
+            hw: [], ex: [], history: [], personalMissions: [],
+            skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
+            notes: '', behLog: [], noteLog: []
+        });
+        save();
+        if (typeof renderStudents === 'function') renderStudents();
+        if (el) el.value = '';
+        llBilgi('"' + (bulunan.name || 'Öğrenci') + '" bu sınıfa eklendi. ✓');
+    }, { evet: 'Sınıfa Ekle', ton: 'normal' });
+}
+window.kodlaOgrenciEkle = kodlaOgrenciEkle;
+
+/* ================= SITE TASARIMLI UYARI & ONAY PENCERELERI =================
+   Tarayicinin ham alert()/confirm() kutulari yerine site paletinde
+   pencereler. llBilgi: tek tusla kapanan bilgi/uyari. llOnay: Evet/Vazgec.
+   alert() SITE GENELINDE llBilgi'ye yonlendirilir.                          */
+function llBilgi(mesaj, baslik) {
+    let k = document.getElementById('llBilgiModal');
+    if (!k) {
+        k = document.createElement('div');
+        k.id = 'llBilgiModal';
+        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10090; background:rgba(0,0,0,.55);' +
+            'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+        k.innerHTML = `
+            <div style="background:#fff; width:100%; max-width:420px; border-radius:16px; overflow:hidden; box-shadow:0 18px 46px rgba(0,0,0,.35);">
+                <div id="llBilgiBaslik" style="background:linear-gradient(135deg,#F39C12,#D84315); color:#fff; padding:12px 16px; font-weight:700;"></div>
+                <div style="padding:18px 16px;">
+                    <p id="llBilgiMetin" style="margin:0 0 16px; color:#6B4A38; line-height:1.6; white-space:pre-line;"></p>
+                    <button type="button" id="llBilgiTamam" style="width:100%; padding:12px; border:none; border-radius:11px;
+                        cursor:pointer; font-family:inherit; font-weight:700; font-size:1rem; color:#fff;
+                        background:linear-gradient(135deg,#F39C12,#D84315);">Tamam</button>
+                </div>
+            </div>`;
+        document.body.appendChild(k);
+        k.querySelector('#llBilgiTamam').onclick = () => { k.style.display = 'none'; };
+    }
+    k.querySelector('#llBilgiBaslik').textContent = baslik || '📢 Bilgi';
+    k.querySelector('#llBilgiMetin').textContent = String(mesaj == null ? '' : mesaj);
+    k.style.display = 'flex';
+    setTimeout(() => { try { k.querySelector('#llBilgiTamam').focus(); } catch (e) { } }, 60);
+}
+window.llBilgi = llBilgi;
+/* Tum ham alert'ler site tasarimina donusur (engellemesiz). */
+window.alert = function (m) { llBilgi(m); };
+
+function llOnay(mesaj, evet, ayar) {
+    ayar = ayar || {};
+    let k = document.getElementById('llOnayModal');
+    if (!k) {
+        k = document.createElement('div');
+        k.id = 'llOnayModal';
+        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10090; background:rgba(0,0,0,.55);' +
+            'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+        k.innerHTML = `
+            <div style="background:#fff; width:100%; max-width:440px; border-radius:16px; overflow:hidden; box-shadow:0 18px 46px rgba(0,0,0,.35);">
+                <div id="llOnayBaslik" style="color:#fff; padding:12px 16px; font-weight:700;"></div>
+                <div style="padding:18px 16px;">
+                    <p id="llOnayMetin" style="margin:0 0 16px; color:#6B4A38; line-height:1.6; white-space:pre-line;"></p>
+                    <div style="display:flex; gap:9px;">
+                        <button type="button" id="llOnayEvet" style="flex:1; padding:12px; border:none; border-radius:11px;
+                            cursor:pointer; font-family:inherit; font-weight:700; font-size:1rem; color:#fff;"></button>
+                        <button type="button" id="llOnayVazgec" style="padding:12px 18px; border:1px solid #F0DACA;
+                            border-radius:11px; cursor:pointer; font-family:inherit; font-weight:700; color:#B34700;
+                            background:#fff;">Vazgeç</button>
+                    </div>
+                </div>
+            </div>`;
+        document.body.appendChild(k);
+    }
+    const tehlike = ayar.ton !== 'normal';
+    k.querySelector('#llOnayBaslik').textContent = ayar.baslik || (tehlike ? '⚠️ Emin misiniz?' : '❓ Onay');
+    k.querySelector('#llOnayBaslik').style.background = tehlike
+        ? 'linear-gradient(135deg,#E74C3C,#C0392B)' : 'linear-gradient(135deg,#F39C12,#D84315)';
+    k.querySelector('#llOnayMetin').textContent = String(mesaj == null ? '' : mesaj);
+    const ev = k.querySelector('#llOnayEvet');
+    ev.textContent = ayar.evet || 'Evet';
+    ev.style.background = tehlike
+        ? 'linear-gradient(135deg,#E74C3C,#C0392B)' : 'linear-gradient(135deg,#20C997,#16A085)';
+    ev.onclick = () => { k.style.display = 'none'; try { evet && evet(); } catch (e) { console.warn(e); } };
+    k.querySelector('#llOnayVazgec').onclick = () => { k.style.display = 'none'; };
+    k.style.display = 'flex';
+    setTimeout(() => { try { k.querySelector('#llOnayVazgec').focus(); } catch (e) { } }, 60);
+}
+window.llOnay = llOnay;
+
+/* ================= KURUM (okul/kurs) KATMANI =================
+   Kurumlar seviye+siniflari gruplar: data.kurumlar = {K..:{name}},
+   seviyede lvl.kurumId tutulur. Kurumsuz seviyeler "Genel" bolumunde. */
+function addKurum() {
+    let name = prompt("Yeni Kurum Adı (Örn: Fatih Kur'an Kursu):");
+    if (!name || !name.trim()) return;
+    if (!data.kurumlar) data.kurumlar = {};
+    data.kurumlar['K' + Date.now()] = { name: name.trim() };
+    save();
+}
+window.addKurum = addKurum;
+
+function kurumSecMenu() {
+    /* Kurum varsa yeni seviyenin hangi kuruma bağlanacağını sorar. */
+    const ks = data.kurumlar || {};
+    const idler = Object.keys(ks);
+    if (!idler.length) return null;
+    if (idler.length === 1) return idler[0];
+    let liste = idler.map((id, i) => (i + 1) + ') ' + ks[id].name).join('\n');
+    const c = prompt('Bu seviye hangi kuruma eklensin?\n' + liste + '\n(numara yazın)', '1');
+    if (c === null) return undefined;                 /* vazgecti */
+    const i = parseInt(c) - 1;
+    return idler[i] || idler[0];
+}
+
+function kurumSil(kId) {
+    islemSifresiSor(function () {
+        llOnay('Kurum silinsin mi? (Seviyeler silinmez, "Genel" bölümüne taşınır)', () => {
+            Object.values(data.levels || {}).forEach(l => { if (l && l.kurumId === kId) delete l.kurumId; });
+            if (data.kurumlar) delete data.kurumlar[kId];
+            save();
+        }, { evet: 'Kurumu Sil' });
+    });
+}
+window.kurumSil = kurumSil;
+function kurumAdDegistir(kId) {
+    const k = data.kurumlar && data.kurumlar[kId];
+    if (!k) return;
+    const n = prompt('Kurum adı:', k.name);
+    if (n && n.trim()) { k.name = n.trim(); save(); }
+}
+window.kurumAdDegistir = kurumAdDegistir;
+var _kurumKapali = {};
+function kurumAcKapa(kId) {
+    _kurumKapali[kId] = !_kurumKapali[kId];
+    renderSidebar();
+}
+window.kurumAcKapa = kurumAcKapa;
+
+function addLevel(oncedenKurum) {
     let name = prompt("Yeni Seviye Adı (Örn: 10. Sınıflar):");
     if(name) {
+        /* kurum onceden verildiyse sorma; 'GENEL' -> kurumsuz bolume ekle */
+        let kurumId;
+        if (oncedenKurum === 'GENEL') kurumId = null;
+        else if (oncedenKurum && data.kurumlar && data.kurumlar[oncedenKurum]) kurumId = oncedenKurum;
+        else kurumId = kurumSecMenu();
+        if (kurumId === undefined) return;            /* kurum seciminden vazgecti */
         let id = 'L' + Date.now();
         data.levels[id] = { 
             name: name, 
+            kurumId: kurumId || undefined,
             classes: {}, 
             planText: {},
             config: { 
@@ -774,30 +968,409 @@ function addLevel() {
         }
     }
     
+    /* Sinif silme/duzenleme icin ISLEM SIFRESI. Ilk kullanımda belirlenir,
+       veriyle birlikte kaydedilir. Giris MASKELI bir pencerede yapilir
+       (type="password") — yazilirken ekranda gorunmez. Dogrulanirsa
+       devam() calistirilir. */
+    /* Sinif silme/duzenleme onayi: KAYIT OLURKEN KULLANILAN HESAP SIFRESI
+       sorulur (maskeli). Firebase uzerinden gercekten dogrulanir
+       (reauthenticateWithCredential). Hesap oturumu yoksa (cevrimdisi/mock)
+       eski "islem sifresi" duzeni yedek olarak calisir. */
+    function islemSifresiSor(devam) {
+        const fu = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth().currentUser : null;
+        const hesapModu = !!(fu && fu.email && !fu.isAnonymous &&
+            firebase.auth.EmailAuthProvider && fu.reauthenticateWithCredential);
+
+        const kayitli = (data.ayarlar && data.ayarlar.islemSifresi) || '';
+        const kurulum = !hesapModu && !kayitli;
+
+        let k = document.getElementById('llSifreModal');
+        if (!k) {
+            k = document.createElement('div');
+            k.id = 'llSifreModal';
+            k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10080; background:rgba(0,0,0,.55);' +
+                'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+            k.innerHTML = `
+                <div style="background:#fff; width:100%; max-width:380px; border-radius:16px; overflow:hidden;">
+                    <div id="llSifreBaslik" style="background:linear-gradient(135deg,#F39C12,#D84315); color:#fff;
+                        padding:12px 16px; font-weight:700;">🔒 Şifre</div>
+                    <div style="padding:16px; display:flex; flex-direction:column; gap:10px;">
+                        <p id="llSifreAciklama" style="margin:0; font-size:.85rem; color:#6B4A38;"></p>
+                        <input type="password" id="llSifre1" autocomplete="current-password" placeholder="Şifre"
+                            style="padding:12px; border:1px solid #E8A87C; border-radius:10px; font-family:inherit; font-size:1rem;">
+                        <input type="password" id="llSifre2" autocomplete="new-password" placeholder="Şifre (tekrar)"
+                            style="display:none; padding:12px; border:1px solid #E8A87C; border-radius:10px; font-family:inherit; font-size:1rem;">
+                        <p id="llSifreNot" style="min-height:17px; margin:0; font-size:.83rem; color:#E74C3C;"></p>
+                        <div style="display:flex; gap:9px;">
+                            <button type="button" id="llSifreOnay" style="flex:1; padding:11px; border:none; border-radius:10px;
+                                cursor:pointer; font-family:inherit; font-weight:700; color:#fff;
+                                background:linear-gradient(135deg,#F39C12,#D84315);">Onayla</button>
+                            <button type="button" id="llSifreIptal" style="padding:11px 16px; border:1px solid #F0DACA;
+                                border-radius:10px; cursor:pointer; font-family:inherit; font-weight:700; color:#B34700;
+                                background:#fff;">İptal</button>
+                        </div>
+                    </div>
+                </div>`;
+            document.body.appendChild(k);
+        }
+
+        const v1 = k.querySelector('#llSifre1');
+        const v2 = k.querySelector('#llSifre2');
+        const not = k.querySelector('#llSifreNot');
+        const aciklama = k.querySelector('#llSifreAciklama');
+        const baslik = k.querySelector('#llSifreBaslik');
+        const onayTus = k.querySelector('#llSifreOnay');
+        v1.value = ''; v2.value = ''; not.textContent = '';
+        onayTus.disabled = false; onayTus.textContent = 'Onayla';
+
+        if (hesapModu) {
+            baslik.textContent = '🔒 Hesap Şifreniz';
+            aciklama.textContent = 'Bu işlem için siteye kayıt olurken belirlediğiniz hesap şifrenizi girin (' + fu.email + ').';
+            v2.style.display = 'none';
+            v1.placeholder = 'Hesap şifreniz';
+        } else {
+            baslik.textContent = kurulum ? '🔒 İşlem Şifresi Belirle (ilk kurulum)' : '🔒 İşlem Şifresi';
+            aciklama.textContent = kurulum ? 'Çevrimdışı kullanım için bir işlem şifresi belirleyin.' : '';
+            v2.style.display = kurulum ? '' : 'none';
+            v1.placeholder = kurulum ? 'Yeni şifre' : 'Şifre';
+        }
+
+        const kapat = () => { k.style.display = 'none'; };
+        const onayla = () => {
+            const a = v1.value;
+            if (hesapModu) {
+                if (!a) { not.textContent = 'Şifre boş olamaz.'; return; }
+                onayTus.disabled = true; onayTus.textContent = 'Kontrol ediliyor…';
+                const cred = firebase.auth.EmailAuthProvider.credential(fu.email, a);
+                fu.reauthenticateWithCredential(cred).then(() => {
+                    kapat(); devam();
+                }).catch((e) => {
+                    onayTus.disabled = false; onayTus.textContent = 'Onayla';
+                    const kod = (e && e.code) || '';
+                    not.textContent = /too-many/.test(kod)
+                        ? 'Çok fazla deneme — biraz bekleyip tekrar deneyin.'
+                        : (/network/.test(kod) ? 'Bağlantı hatası — internetinizi kontrol edin.' : 'Şifre yanlış.');
+                    v1.value = ''; v1.focus();
+                });
+                return;
+            }
+            const at = a.trim();
+            if (kurulum) {
+                if (!at) { not.textContent = 'Şifre boş olamaz.'; return; }
+                if (at !== v2.value.trim()) { not.textContent = 'Şifreler uyuşmuyor.'; return; }
+                if (!data.ayarlar) data.ayarlar = {};
+                data.ayarlar.islemSifresi = at;
+                save();
+                kapat(); devam();
+            } else {
+                if (at !== kayitli) { not.textContent = 'Şifre yanlış.'; v1.value = ''; v1.focus(); return; }
+                kapat(); devam();
+            }
+        };
+        onayTus.onclick = onayla;
+        k.querySelector('#llSifreIptal').onclick = kapat;
+        v1.onkeydown = v2.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); onayla(); } };
+
+        k.style.display = 'flex';
+        setTimeout(() => { try { v1.focus(); } catch (e) { } }, 60);
+    }
+    window.islemSifresiSor = islemSifresiSor;
+
     // Silme ve Düzenleme Fonksiyonları
     function editLevelName(lId) {
         let n = prompt("Yeni İsim:", data.levels[lId].name);
         if(n) { data.levels[lId].name = n; save(); }
     }
     function deleteLevel(lId) {
-        if(confirm("Seviyeyi ve tüm sınıfları silmek istiyor musunuz?")) {
+        llOnay("Seviyeyi ve TÜM sınıflarını silmek istiyor musunuz?\nBu işlem geri alınamaz.", () => {
             delete data.levels[lId];
             data.levelOrder = data.levelOrder.filter(id => id !== lId);
             if(curLId === lId) document.getElementById('content').style.display='none';
             save();
-        }
+        }, { evet: 'Seviyeyi Sil' });
     }
     function editClassName(lId, cId) {
-        let n = prompt("Yeni İsim:", data.levels[lId].classes[cId].name);
-        if(n) { data.levels[lId].classes[cId].name = n; save(); }
+        islemSifresiSor(function () {
+            let n = prompt("Yeni İsim:", data.levels[lId].classes[cId].name);
+            if(n) { data.levels[lId].classes[cId].name = n; save(); }
+        });
     }
     function deleteClass(lId, cId) {
-        if(confirm("Sınıfı silmek istiyor musunuz?")) {
+        islemSifresiSor(function () {
+        llOnay("Sınıfı silmek istiyor musunuz?\n\nİpucu: Silmek yerine ARŞİVLEYEBİLİRSİNİZ (🗄) — tüm bilgiler saklanır.", () => {
+            const kopanlar = ((data.levels[lId].classes[cId] || {}).students || []).slice();
             delete data.levels[lId].classes[cId];
             if(curCId === cId) document.getElementById('content').style.display='none';
             save();
-        }
+            bagDurumGuncelle(kopanlar, 'kopuk');
+        }, { evet: 'Sınıfı Sil' });
+        });
     }
+
+    /* Sinif silinir/arsivlenirken BAGLI ogrencilerin bulut kaydi da
+       guncellenir; boylece ogrenci girisinde "hayalet sinif" gorunmez.
+       kopuk  -> sinif silindi: ogrenci yeni kodla yeniden baglanabilir
+                 (davet kodu yeniden kullanilabilir yapilir)
+       arsiv  -> sinif arsivde: geri yuklenince otomatik tekrar baglanir   */
+    function bagDurumGuncelle(ogrenciler, durum) {
+        try {
+            if (typeof db === 'undefined' || !db) return;
+            if (typeof firebase === 'undefined' || !firebase.auth || !firebase.auth().currentUser) return;
+            (ogrenciler || []).forEach(st => {
+                if (!st || !st.hesapUid) return;
+                db.collection('ogrenciBaglari').doc(st.hesapUid)
+                    .set({ durum: durum, guncelleme: Date.now() }, { merge: true })
+                    .catch(() => { });
+                if (durum === 'kopuk' && st.loginCode) {
+                    db.collection('davetler').doc(String(st.loginCode).toUpperCase())
+                        .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true })
+                        .catch(() => { });
+                }
+            });
+        } catch (e) { }
+    }
+
+    /* ============ SINIF ARSIVI ============
+       Sene sonunda sinif SILINMEZ: tum verisiyle (ogrenciler, notlar,
+       davranis, notlar defteri...) arsive kaldirilir; istenirse geri yuklenir. */
+    function sinifArsivle(lId, cId) {
+        islemSifresiSor(function () {
+        const lvl = data.levels[lId];
+        const cls = lvl && lvl.classes && lvl.classes[cId];
+        if (!cls) return;
+        llOnay('"' + (cls.name || cId) + '" sınıfı TÜM bilgileriyle arşive kaldırılsın mı?\n(Aktif listeden çıkar, hiçbir veri silinmez; Arşiv bölümünden geri yüklenebilir.)', () => {
+        if (!Array.isArray(data.arsiv)) data.arsiv = [];
+        const d = new Date(), iki = n => String(n).padStart(2, '0');
+        data.arsiv.push({
+            id: 'A' + Date.now(),
+            ad: cls.name || cId,
+            seviyeAd: lvl.name || lId,
+            lId: lId,
+            tarih: iki(d.getDate()) + '.' + iki(d.getMonth() + 1) + '.' + d.getFullYear(),
+            ogrenciSayisi: (cls.students || []).length,
+            veri: JSON.parse(JSON.stringify(cls))
+        });
+        delete lvl.classes[cId];
+        if (curCId === cId) document.getElementById('content').style.display = 'none';
+        save();
+        bagDurumGuncelle((data.arsiv[data.arsiv.length - 1].veri || {}).students, 'arsiv');
+        alert('Sınıf arşive kaldırıldı. Kenar çubuğunun altındaki 🗄 Arşiv bölümünden ulaşabilirsiniz.');
+        }, { evet: 'Arşivle', ton: 'normal' });
+        });
+    }
+    window.sinifArsivle = sinifArsivle;
+
+    /* SEVIYE arsivle: seviye TUM siniflariyla tek kayit olarak arsive gider. */
+    function seviyeArsivle(lId) {
+        islemSifresiSor(function () {
+            const lvl = data.levels[lId];
+            if (!lvl) return;
+            const siniflar = Object.values(lvl.classes || {});
+            const ogrSay = siniflar.reduce((t, c) => t + ((c.students || []).length), 0);
+            llOnay('"' + (lvl.name || lId) + '" seviyesi TÜM sınıflarıyla (' + siniflar.length + ' sınıf, ' +
+                ogrSay + ' öğrenci) arşive kaldırılsın mı?\nHiçbir veri silinmez; Arşiv bölümünden geri yüklenir.', () => {
+                if (!Array.isArray(data.arsiv)) data.arsiv = [];
+                const d = new Date(), iki = n => String(n).padStart(2, '0');
+                data.arsiv.push({
+                    id: 'A' + Date.now(), tur: 'seviye',
+                    ad: lvl.name || lId, lId: lId,
+                    kurumAd: (lvl.kurumId && data.kurumlar && data.kurumlar[lvl.kurumId]) ? data.kurumlar[lvl.kurumId].name : '',
+                    tarih: iki(d.getDate()) + '.' + iki(d.getMonth() + 1) + '.' + d.getFullYear(),
+                    sinifSayisi: siniflar.length, ogrenciSayisi: ogrSay,
+                    veri: JSON.parse(JSON.stringify(lvl))
+                });
+                siniflar.forEach(c => bagDurumGuncelle(c.students, 'arsiv'));
+                delete data.levels[lId];
+                data.levelOrder = (data.levelOrder || []).filter(id => id !== lId);
+                if (curLId === lId) document.getElementById('content').style.display = 'none';
+                save();
+                llBilgi('Seviye tüm sınıflarıyla arşive kaldırıldı.');
+            }, { evet: 'Arşivle', ton: 'normal' });
+        });
+    }
+    window.seviyeArsivle = seviyeArsivle;
+
+    /* KURUM (tum okul) arsivle: kurum + butun seviyeleri tek kayit. */
+    function kurumArsivle(kId) {
+        islemSifresiSor(function () {
+            const kurum = data.kurumlar && data.kurumlar[kId];
+            if (!kurum) return;
+            const uyeIdler = (data.levelOrder || Object.keys(data.levels)).filter(l => data.levels[l] && data.levels[l].kurumId === kId);
+            let sinifSay = 0, ogrSay = 0;
+            uyeIdler.forEach(l => Object.values(data.levels[l].classes || {}).forEach(c => { sinifSay++; ogrSay += (c.students || []).length; }));
+            llOnay('"' + kurum.name + '" kurumu TÜM okul olarak (' + uyeIdler.length + ' seviye, ' + sinifSay +
+                ' sınıf, ' + ogrSay + ' öğrenci) arşive kaldırılsın mı?\nHiçbir veri silinmez; Arşiv bölümünden geri yüklenir.', () => {
+                if (!Array.isArray(data.arsiv)) data.arsiv = [];
+                const d = new Date(), iki = n => String(n).padStart(2, '0');
+                const seviyeler = {};
+                uyeIdler.forEach(l => { seviyeler[l] = JSON.parse(JSON.stringify(data.levels[l])); });
+                data.arsiv.push({
+                    id: 'A' + Date.now(), tur: 'kurum',
+                    ad: kurum.name, kId: kId,
+                    tarih: iki(d.getDate()) + '.' + iki(d.getMonth() + 1) + '.' + d.getFullYear(),
+                    seviyeSayisi: uyeIdler.length, sinifSayisi: sinifSay, ogrenciSayisi: ogrSay,
+                    veri: { kurum: { name: kurum.name }, levels: seviyeler, sira: uyeIdler.slice() }
+                });
+                uyeIdler.forEach(l => Object.values(data.levels[l].classes || {}).forEach(c => bagDurumGuncelle(c.students, 'arsiv')));
+                uyeIdler.forEach(l => { delete data.levels[l]; });
+                data.levelOrder = (data.levelOrder || []).filter(id => !uyeIdler.includes(id));
+                delete data.kurumlar[kId];
+                if (uyeIdler.includes(curLId)) document.getElementById('content').style.display = 'none';
+                save();
+                llBilgi('Kurum, tüm okul verisiyle arşive kaldırıldı.');
+            }, { evet: 'Okulu Arşivle', ton: 'normal' });
+        });
+    }
+    window.kurumArsivle = kurumArsivle;
+
+    /* Geri yuklemede bagli hesaplari yeni koordinatlarla ONAYLIya cevirir. */
+    function baglariOnayla(lId) {
+        try {
+            if (typeof db === 'undefined' || !db || !firebase.auth().currentUser) return;
+            const lvl = data.levels[lId];
+            if (!lvl) return;
+            Object.keys(lvl.classes || {}).forEach(cId => {
+                (lvl.classes[cId].students || []).forEach((st, ix) => {
+                    if (!st || !st.hesapUid) return;
+                    db.collection('ogrenciBaglari').doc(st.hesapUid).set({
+                        durum: 'onayli', lId: lId, cId: cId, sIdx: ix,
+                        seviyeAd: lvl.name || lId, sinifAd: lvl.classes[cId].name || cId,
+                        guncelleme: Date.now()
+                    }, { merge: true }).catch(() => { });
+                    if (st.loginCode) db.collection('davetler').doc(String(st.loginCode).toUpperCase())
+                        .set({ kullanildi: true, ogrenciUid: st.hesapUid, lId: lId, cId: cId, sIdx: ix, guncelleme: Date.now() }, { merge: true })
+                        .catch(() => { });
+                });
+            });
+        } catch (e) { }
+    }
+
+    function arsivAc() {
+        let k = document.getElementById('llArsivModal');
+        if (!k) {
+            k = document.createElement('div');
+            k.id = 'llArsivModal';
+            k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:10070; background:rgba(0,0,0,.55);' +
+                'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+            k.innerHTML = '<div style="background:#fff; width:100%; max-width:620px; max-height:84vh; border-radius:16px;' +
+                'overflow:hidden; display:flex; flex-direction:column;">' +
+                '<div style="background:linear-gradient(135deg,#8B6A57,#6B4A38); color:#fff; padding:13px 17px;' +
+                'display:flex; justify-content:space-between; align-items:center;"><strong>🗄 Sınıf Arşivi</strong>' +
+                '<span style="cursor:pointer; font-size:24px;" onclick="document.getElementById(\'llArsivModal\').style.display=\'none\'">&times;</span></div>' +
+                '<div id="llArsivGovde" style="flex:1; overflow-y:auto; padding:15px; background:#FBF6F1;"></div></div>';
+            document.body.appendChild(k);
+        }
+        arsivCiz();
+        k.style.display = 'flex';
+    }
+    window.arsivAc = arsivAc;
+
+    function arsivCiz() {
+        const g = document.getElementById('llArsivGovde');
+        if (!g) return;
+        const liste = data.arsiv || [];
+        if (!liste.length) {
+            g.innerHTML = '<p style="text-align:center; color:#8B6A57; padding:26px 10px;">Arşiv boş. Bir sınıfın yanındaki 🗄 tuşuyla, sene sonunda sınıfı tüm bilgileriyle buraya kaldırabilirsiniz.</p>';
+            return;
+        }
+        g.innerHTML = liste.slice().reverse().map(a => {
+            const tur = a.tur || 'sinif';
+            const rozet = tur === 'kurum' ? '🏫 Kurum (tüm okul)' : (tur === 'seviye' ? '📁 Seviye' : '👥 Sınıf');
+            const detay = tur === 'kurum'
+                ? `${a.seviyeSayisi} seviye · ${a.sinifSayisi} sınıf · ${a.ogrenciSayisi} öğrenci`
+                : (tur === 'seviye'
+                    ? `${a.kurumAd ? behKacis(a.kurumAd) + ' · ' : ''}${a.sinifSayisi} sınıf · ${a.ogrenciSayisi} öğrenci`
+                    : `${behKacis(a.seviyeAd || '')} · ${a.ogrenciSayisi} öğrenci`);
+            return `
+            <div style="background:#fff; border:1px solid #EADFD5; border-radius:12px; padding:12px 14px; margin-bottom:10px;
+                display:flex; align-items:center; gap:10px;">
+                <div style="flex:1; min-width:0;">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <span style="font-weight:700; color:#6B4A38;">${behKacis(a.ad)}</span>
+                        <span style="font-size:.7rem; font-weight:700; padding:2px 9px; border-radius:999px;
+                            background:${tur === 'kurum' ? '#F4ECF7; color:#8e44ad' : (tur === 'seviye' ? '#FEF5E7; color:#B9770E' : '#EAF7F3; color:#16A085')};">${rozet}</span>
+                    </div>
+                    <div style="font-size:.78rem; color:#A6836E; margin-top:3px;">${detay} · ${a.tarih} tarihinde arşivlendi</div>
+                </div>
+                <button onclick="arsivGeriYukle('${a.id}')" style="padding:8px 14px; border:none; border-radius:9px; cursor:pointer;
+                    font-family:inherit; font-weight:700; color:#fff; background:linear-gradient(135deg,#20C997,#16A085);">Geri Yükle</button>
+            </div>`;
+        }).join('');
+    }
+
+    function arsivGeriYukle(aId) {
+        islemSifresiSor(function () {
+        const i = (data.arsiv || []).findIndex(x => x.id === aId);
+        if (i < 0) return;
+        const a = data.arsiv[i];
+        const tur = a.tur || 'sinif';
+
+        /* ---- SEVIYE geri yukleme ---- */
+        if (tur === 'seviye') {
+            const hedefLId = data.levels[a.lId] ? ('L' + Date.now()) : a.lId;
+            const lvl = JSON.parse(JSON.stringify(a.veri));
+            if (lvl.kurumId && !(data.kurumlar && data.kurumlar[lvl.kurumId])) delete lvl.kurumId;
+            data.levels[hedefLId] = lvl;
+            if (!Array.isArray(data.levelOrder)) data.levelOrder = Object.keys(data.levels);
+            if (!data.levelOrder.includes(hedefLId)) data.levelOrder.push(hedefLId);
+            data.arsiv.splice(i, 1);
+            save();
+            baglariOnayla(hedefLId);
+            arsivCiz();
+            llBilgi('"' + a.ad + '" seviyesi tüm sınıflarıyla geri yüklendi.');
+            return;
+        }
+
+        /* ---- KURUM (tum okul) geri yukleme ---- */
+        if (tur === 'kurum') {
+            if (!data.kurumlar) data.kurumlar = {};
+            const hedefK = (data.kurumlar[a.kId]) ? ('K' + Date.now()) : a.kId;
+            data.kurumlar[hedefK] = { name: (a.veri.kurum && a.veri.kurum.name) || a.ad };
+            if (!Array.isArray(data.levelOrder)) data.levelOrder = Object.keys(data.levels);
+            (a.veri.sira || Object.keys(a.veri.levels || {})).forEach(eskiL => {
+                const lvl = JSON.parse(JSON.stringify(a.veri.levels[eskiL]));
+                lvl.kurumId = hedefK;
+                const hedefLId = data.levels[eskiL] ? ('L' + Date.now() + Math.floor(Math.random() * 999)) : eskiL;
+                data.levels[hedefLId] = lvl;
+                if (!data.levelOrder.includes(hedefLId)) data.levelOrder.push(hedefLId);
+                baglariOnayla(hedefLId);
+            });
+            data.arsiv.splice(i, 1);
+            save();
+            arsivCiz();
+            llBilgi('"' + a.ad + '" kurumu tüm okul verisiyle geri yüklendi.');
+            return;
+        }
+
+        /* ---- TEK SINIF (eski davranis) ---- */
+        let hedefL = data.levels[a.lId] ? a.lId : Object.keys(data.levels)[0];
+        if (!hedefL) { alert('Geri yüklemek için önce bir seviye oluşturun.'); return; }
+        const yeniC = 'C' + Date.now();
+        data.levels[hedefL].classes[yeniC] = JSON.parse(JSON.stringify(a.veri));
+        data.arsiv.splice(i, 1);
+        save();
+        /* bagli ogrencileri yeni koordinatlarla yeniden ONAYLI yap */
+        try {
+            if (typeof db !== 'undefined' && db && firebase.auth().currentUser) {
+                (data.levels[hedefL].classes[yeniC].students || []).forEach((st, ix) => {
+                    if (!st || !st.hesapUid) return;
+                    db.collection('ogrenciBaglari').doc(st.hesapUid).set({
+                        durum: 'onayli', lId: hedefL, cId: yeniC, sIdx: ix,
+                        seviyeAd: data.levels[hedefL].name || hedefL,
+                        sinifAd: data.levels[hedefL].classes[yeniC].name || yeniC,
+                        guncelleme: Date.now()
+                    }, { merge: true }).catch(() => { });
+                    if (st.loginCode) db.collection('davetler').doc(String(st.loginCode).toUpperCase())
+                        .set({ kullanildi: true, ogrenciUid: st.hesapUid, lId: hedefL, cId: yeniC, sIdx: ix, guncelleme: Date.now() }, { merge: true })
+                        .catch(() => { });
+                });
+            }
+        } catch (e) { }
+        arsivCiz();
+        alert('"' + a.ad + '" sınıfı "' + (data.levels[hedefL].name || hedefL) + '" seviyesine geri yüklendi.');
+        });
+    }
+    window.arsivGeriYukle = arsivGeriYukle;
 
 function renderSidebar() {
     const nav = document.getElementById('levelNav');
@@ -810,28 +1383,66 @@ function renderSidebar() {
         return; 
     }
 
-    // --- 1. ÖĞRETMEN KODU GÖSTERİMİ (YENİ) ---
+    // --- 1. ÖĞRETMEN KODU: gizli durur, TIKLANINCA görünür ---
+    // Artik #levelNav'a degil, SOL SUTUN kabina (#teacher-code-display) cizilir;
+    // masaustu perdesinde sol dar sutun = kisayollar + kod + bekleyen istekler.
     const staticCode = localStorage.getItem('teacher_static_code');
+    const tkKap = document.getElementById('teacher-code-display');
     if (staticCode) {
         let codeHtml = `
-        <div class="teacher-code-area" style="
-            margin: 0 5px 15px 5px;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        ">
-            <div class="tk-etiket" style="font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Öğretmen Kodu</div>
-            <div class="tk-kod" style="font-size: 1.1rem; font-family: 'Nunito', sans-serif; font-weight: 700; margin-top: 3px;">
-                ${staticCode}
-            </div>
-        </div>`;
-        nav.innerHTML += codeHtml;
+        <details class="teacher-code-area" style="margin: 0 5px 12px 5px; padding: 8px 10px; border-radius: 8px;">
+            <summary class="tk-etiket" style="cursor: pointer; list-style: none; display: flex; align-items: center; gap: 7px;
+                font-size: 0.78rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;"
+                title="Kodu görmek için tıkla">🎫 Öğretmen Kodu <span class="tk-ok" style="margin-left:auto; transition: transform .2s;">▸</span></summary>
+            <div class="tk-kod" style="font-size: 1.05rem; font-family: 'Nunito', sans-serif; font-weight: 700;
+                margin-top: 7px; text-align: center;">${staticCode}</div>
+        </details>`;
+        if (tkKap) tkKap.innerHTML = codeHtml;
+        else nav.innerHTML += codeHtml;   /* emniyet: kap yoksa eski yer */
+    } else if (tkKap) {
+        tkKap.innerHTML = '';
     }
 
-    // --- 2. SEVİYE VE SINIF LİSTESİ ---
+    // --- 1a. PERDE KURUM SUZGECI (rozetten acilinca yalniz o kurum) ---
+    let filtre = (window.llKurumFiltre === undefined) ? null : window.llKurumFiltre;
+    if (filtre !== null && filtre !== '' && !(data.kurumlar && data.kurumlar[filtre])) filtre = '';
+    const filtreAktif = (filtre !== null);
+
+    // --- 1b. KURUM EKLE (gri/sonuk) + kurum YOKSA genel Seviye Ekle ---
+    const kurumVarMi = Object.keys(data.kurumlar || {}).length > 0;
+    if (filtreAktif) {
+        const filtreAd = (filtre === '') ? 'Genel' : ((data.kurumlar[filtre] && data.kurumlar[filtre].name) || 'Kurum');
+        nav.innerHTML += `
+        <div style="display:flex; align-items:center; gap:8px; margin:0 5px 10px 5px; padding:7px 10px;
+            border-radius:9px; background:#F6EEE9; border:1px dashed #D5BFAE; font-size:.78rem; color:#6B4A38;">
+            <span style="flex:1;">Yalnız <b>${behKacis(filtreAd)}</b> görünüyor</span>
+            <button type="button" onclick="llPerdeAc(null)" style="background:#fff; border:1px solid #D5BFAE;
+                color:#6B4A38; border-radius:7px; cursor:pointer; padding:3px 9px; font-family:inherit;
+                font-size:.75rem; font-weight:700;">Tümünü göster</button>
+        </div>`;
+    } else {
+    nav.innerHTML += `
+        <button type="button" class="btn-add ll-seviye-ekle-tus" onclick="addKurum()"
+            style="width: calc(100% - 10px); margin: 0 5px 8px 5px; background:#F1F3F5;
+            color:#7f8c8d; border:1px dashed #CBD3D9; box-shadow:none;
+            font-size:.8rem; font-weight:600;">
+            <svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#95a5a6"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#d5dbdf"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#7f8c8d"/><g fill="#95a5a6"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/></g><g stroke="#7f8c8d" stroke-width="2" stroke-linecap="round"><path d="M19.6 3.2v3.6M17.8 5h3.6"/></g></svg> Kurum Ekle
+        </button>`;
+    if (!kurumVarMi) {
+        nav.innerHTML += `
+        <button type="button" class="btn-add ll-seviye-ekle-tus" onclick="addLevel()"
+            style="width: calc(100% - 10px); margin: 0 5px 12px 5px;">
+            <svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6a2 2 0 0 1 2-2h4l2 2.4h8A2 2 0 0 1 21 8.4V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#f39c12"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 10.6v6M9 13.6h6"/></g></svg> Seviye Ekle
+        </button>`;
+    }
+    }
+
+    // --- 2. KURUM GRUPLARI + SEVİYE VE SINIF LİSTESİ ---
     let levelIds = data.levelOrder || Object.keys(data.levels);
-    
-    levelIds.forEach(lId => {
+    const kurumlar = data.kurumlar || {};
+
+    /* Seviye HTML'ini ureten ic fonksiyon (kurum gruplama tekrar kullanir) */
+    const seviyeHtmlYap = (lId) => {
         let lvl = data.levels[lId];
         if(!lvl) return;
         
@@ -842,6 +1453,7 @@ function renderSidebar() {
                 <div class="level-actions">
                     <button onclick="openLvlConfig('${lId}')" title="Seviye Ayarları">${llIcon('ayar')}</button>
                     <button onclick="editLevelName('${lId}')" title="İsmi Değiştir">${llIcon('kalem')}</button>
+                    <button onclick="seviyeArsivle('${lId}')" title="Seviyeyi arşivle (tüm sınıflarıyla sakla)">🗄</button>
                     <button onclick="deleteLevel('${lId}')" title="Seviyeyi Sil">${llIcon('cop')}</button>
                     <button class="ll-sinif-ekle" onclick="addClass('${lId}')" title="Sınıf Ekle">+</button>
                 </div>
@@ -855,6 +1467,7 @@ function renderSidebar() {
                     <a class="class-link" onclick="selectClass('${lId}','${cId}')">${llIcon('klasorAcik')} ${lvl.classes[cId].name}</a>
                     <div class="class-actions">
                         <button onclick="editClassName('${lId}','${cId}')" title="İsmi Değiştir">${llIcon('kalem')}</button>
+                        <button onclick="sinifArsivle('${lId}','${cId}')" title="Sınıfı arşivle (silmeden sakla)">🗄</button>
                         <button onclick="deleteClass('${lId}','${cId}')" title="Sınıfı Sil">${llIcon('cop')}</button>
                     </div>
                 </div>`;
@@ -862,8 +1475,79 @@ function renderSidebar() {
         }
         
         html += `</div></div>`;
-        nav.innerHTML += html;
+        return html;
+    };
+
+    /* kurum kurum ciz; kurumsuzlar "Genel" altinda */
+    const gruplar = {};
+    levelIds.forEach(lId => {
+        const lvl = data.levels[lId];
+        if (!lvl) return;
+        const k = (lvl.kurumId && kurumlar[lvl.kurumId]) ? lvl.kurumId : '';
+        if (!gruplar[k]) gruplar[k] = [];
+        gruplar[k].push(lId);
     });
+    const kurumSirasi = Object.keys(kurumlar);   /* BOS kurumlar da listelenir */
+    const kurumBaslik = (kId, ad, adet) => `
+        <div class="kurum-baslik" style="display:flex; align-items:center; gap:7px; margin:2px 5px 6px 5px;
+            padding:7px 10px; border-radius:9px; background:linear-gradient(90deg,#8e44ad,#6c3483); color:#fff;
+            font-weight:700; font-size:.92rem; cursor:pointer;" onclick="kurumAcKapa('${kId}')">
+            <svg class="lli" viewBox="0 0 24 24" style="width:1.15em;height:1.15em;"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#f5eef8"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#fff" opacity=".92"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#6c3483"/></svg>
+            <span style="flex:1;">${behKacis(ad)} <small style="opacity:.75;">(${adet})</small></span>
+            <button onclick="event.stopPropagation(); kurumAdDegistir('${kId}')" title="Kurum adını değiştir" style="background:rgba(255,255,255,.18); border:none; color:#fff; border-radius:6px; cursor:pointer; padding:2px 7px;">${llIcon('kalem')}</button>
+            <button onclick="event.stopPropagation(); kurumArsivle('${kId}')" title="Tüm okulu arşivle (kurum + seviyeler + sınıflar)" style="background:rgba(255,255,255,.18); border:none; color:#fff; border-radius:6px; cursor:pointer; padding:2px 7px;">🗄</button>
+            <button onclick="event.stopPropagation(); kurumSil('${kId}')" title="Kurumu sil (seviyeler Genel'e taşınır)" style="background:rgba(255,255,255,.18); border:none; color:#fff; border-radius:6px; cursor:pointer; padding:2px 7px;">${llIcon('cop')}</button>
+            <span>${_kurumKapali[kId] ? '▸' : '▾'}</span>
+        </div>`;
+
+    /* Her kurumun altinda KENDI "Seviye Ekle" tusu (dogrudan o kuruma ekler) */
+    const kurumSeviyeEkleTus = (kId) => `
+        <button type="button" onclick="addLevel('${kId}')"
+            style="display:block; width:calc(100% - 10px); margin:2px 5px 10px 5px; padding:8px 10px;
+            border:1px dashed rgba(142,68,173,.5); border-radius:9px; background:rgba(142,68,173,.06);
+            color:#8e44ad; cursor:pointer; font-family:inherit; font-size:.82rem; font-weight:700;">+ Seviye Ekle</button>`;
+
+    (filtreAktif ? kurumSirasi.filter(k => k === filtre) : kurumSirasi).forEach(kId => {
+        const uyeler = gruplar[kId] || [];
+        nav.innerHTML += kurumBaslik(kId, kurumlar[kId].name, uyeler.length);
+        if (filtreAktif || !_kurumKapali[kId]) {
+            let ic = '';
+            uyeler.forEach(lId => { ic += seviyeHtmlYap(lId); });
+            if (!ic) {
+                ic = `<div style="margin:0 5px 4px 5px; font-size:.78rem; color:#A6836E;">Bu kurumda henüz seviye yok.</div>`;
+            }
+            ic += kurumSeviyeEkleTus(kId);
+            nav.innerHTML += `<div class="kurum-ic" style="margin-left:6px;">${ic}</div>`;
+        }
+    });
+    if (gruplar[''] && (!filtreAktif || filtre === '')) {
+        if (kurumVarMi) {
+            nav.innerHTML += `<div style="margin:6px 5px 6px 5px; font-size:.8rem; font-weight:700; color:#8B6A57;
+                display:flex; align-items:center; gap:6px;">${llIcon('klasor')} Genel</div>`;
+        }
+        let ic = '';
+        gruplar[''].forEach(lId => { ic += seviyeHtmlYap(lId); });
+        nav.innerHTML += ic;
+        if (kurumVarMi) {
+            nav.innerHTML += `
+        <button type="button" onclick="addLevel('GENEL')"
+            style="display:block; width:calc(100% - 10px); margin:2px 5px 10px 5px; padding:8px 10px;
+            border:1px dashed #D5BFAE; border-radius:9px; background:#FBF6F1;
+            color:#8B6A57; cursor:pointer; font-family:inherit; font-size:.82rem; font-weight:700;">+ Seviye Ekle (Genel)</button>`;
+        }
+    }
+
+    /* --- ARSIV girisi (en altta, kucuk; suzgec acikken gizli) --- */
+    if (filtreAktif) return;
+    const arsivAdet = (data.arsiv && data.arsiv.length) || 0;
+    nav.innerHTML += `
+        <button type="button" onclick="arsivAc()" title="Arşivlenen sınıflar"
+            style="display:flex; align-items:center; gap:8px; width:calc(100% - 10px); margin:10px 5px 6px 5px;
+            padding:8px 11px; border-radius:9px; cursor:pointer; background:#fff; color:#6B4A38;
+            border:1px dashed #D5BFAE; font-family:inherit; font-size:.85rem; font-weight:700;">
+            🗄 <span style="flex:1; text-align:left;">Arşiv</span>
+            ${arsivAdet ? `<span style="background:#8B6A57; color:#fff; border-radius:9px; padding:1px 8px; font-size:.75rem;">${arsivAdet}</span>` : ''}
+        </button>`;
 }
 // Sidebar çizildikten sonra ilk sınıfı otomatik seçen fonksiyon
 function selectFirstClassAutomatically() {
@@ -1517,17 +2201,18 @@ function behLogCiz() {
 function behKayitSil(i) {
     const s = data.levels[curLId].classes[curCId].students[behLogStu];
     if (!s || !Array.isArray(s.behLog)) return;
-    if (!confirm("Bu davranış kaydı silinsin mi? Puan da geri alınacak.")) return;
-    const silinen = s.behLog[i];
-    s.behLog.splice(i, 1);
-    // Özel Notlar defterindeki eşi de kaldırılsın.
-    if (silinen && Array.isArray(s.noteLog)) {
-        const j = s.noteLog.findIndex(n => n.tur === 'davranis' && n.ts === silinen.ts && n.sebep === silinen.sebep);
-        if (j > -1) s.noteLog.splice(j, 1);
-    }
-    save();
-    behLogCiz();
-    renderGrades('hw');
+    llOnay("Bu davranış kaydı silinsin mi? Puan da geri alınacak.", () => {
+        const silinen = s.behLog[i];
+        s.behLog.splice(i, 1);
+        // Özel Notlar defterindeki eşi de kaldırılsın.
+        if (silinen && Array.isArray(s.noteLog)) {
+            const j = s.noteLog.findIndex(n => n.tur === 'davranis' && n.ts === silinen.ts && n.sebep === silinen.sebep);
+            if (j > -1) s.noteLog.splice(j, 1);
+        }
+        save();
+        behLogCiz();
+        renderGrades('hw');
+    }, { evet: 'Kaydı Sil' });
 }
 
 function behLogKapat() {
@@ -1635,7 +2320,39 @@ function renderActivityButtons() {
         `;
         grid.appendChild(wrapper);
     });
+
+    /* + Baslik Ekle karosu: yeni kura basligi buradan eklenir; Seviye
+       Ayarlari listesi ayni config'ten okudugu icin OTOMATIK guncellenir. */
+    const ekle = document.createElement('div');
+    ekle.className = 'act-btn-wrapper';
+    ekle.style.width = "100%";
+    ekle.innerHTML = `
+        <button class="act-btn" onclick="kuraBaslikEkle()" title="Yeni kura başlığı ekle"
+            style="background:#fff; width:100%; min-height:95px; border-radius:12px; border:2px dashed #E8A87C;
+            color:#B34700; font-weight:bold; cursor:pointer; font-family:'Marhey', sans-serif; font-size:1.05rem;">+ Başlık Ekle</button>`;
+    grid.appendChild(ekle);
 }
+
+function kuraBaslikEkle() {
+    if (!curLId || !data.levels[curLId]) return;
+    const ad = prompt('Yeni kura başlığı (Örn: Ezber):');
+    if (!ad || !ad.trim()) return;
+    const lvl = data.levels[curLId];
+    if (!Array.isArray(lvl.config.kura) || !lvl.config.kura.length) {
+        lvl.config.kura = [
+            {n: 'Konuşma'}, {n: 'Yazma'}, {n: 'Okuma'},
+            {n: 'Vezin'}, {n: 'Sözlük'}, {n: 'Tercüme'}
+        ];
+    }
+    if (lvl.config.kura.some(k => (k.n || '').toLowerCase() === ad.trim().toLowerCase())) {
+        alert('Bu başlık zaten var.'); return;
+    }
+    lvl.config.kura.push({ n: ad.trim() });
+    save();
+    renderActivityButtons();
+    if (typeof renderActivityStatus === 'function') renderActivityStatus();
+}
+window.kuraBaslikEkle = kuraBaslikEkle;
 
 
 function addKuraRow(name = "") {
@@ -1644,7 +2361,7 @@ function addKuraRow(name = "") {
     div.style = "margin-bottom:8px; display:flex; gap:5px;";
     div.innerHTML = `
         <input type="text" class="kura-n" value="${name}" placeholder="Kura Başlığı" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px;">
-        <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:8px; padding:0 12px; cursor:pointer;">${llIcon('cop')}</button>
+        <span title="Kura başlıkları buradan silinemez (kura geçmişi ve havuzlar korunur)" style="display:inline-flex; align-items:center; padding:0 10px; color:#B9A08D; font-size:1rem;">🔒</span>
     `;
     container.appendChild(div);
 }
@@ -1664,17 +2381,17 @@ function addKuraRow(name = "") {
     }
 
     function delHist(si, hi) {
-        if(confirm("Silinsin mi?")) {
+        llOnay("Silinsin mi?", () => {
             data.levels[curLId].classes[curCId].students[si].history.splice(hi, 1);
             save(); renderActivityStatus();
-        }
+        });
     }
     function resetPools() {
-        if(confirm("Tüm geçmiş ve havuzlar sıfırlansın mı?")) {
+        llOnay("Tüm geçmiş ve havuzlar sıfırlansın mı?", () => {
             pools = {};
             data.levels[curLId].classes[curCId].students.forEach(s => s.history = []);
             save(); renderActivityStatus();
-        }
+        });
     }
 
     // --- SEVİYE AYARLARI ---
@@ -1978,7 +2695,7 @@ function addKuraRowWithData(name) {
     row.style = "margin-bottom:8px; display:flex; gap:5px;";
     row.innerHTML = `
         <input type="text" class="kura-n" value="${name}" placeholder="Kura Adı" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:8px;">
-        <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:8px; padding:0 12px; cursor:pointer;">${llIcon('cop')}</button>
+        <span title="Kura başlıkları buradan silinemez (kura geçmişi ve havuzlar korunur)" style="display:inline-flex; align-items:center; padding:0 10px; color:#B9A08D; font-size:1rem;">🔒</span>
     `;
     kuraList.appendChild(row);
 }
@@ -2211,12 +2928,12 @@ function loginButonTikla() {
     const user = firebase.auth().currentUser;
     if (user) {
         // Eğer kullanıcı varsa çıkış onayı iste
-        if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+        llOnay("Çıkış yapmak istediğinize emin misiniz?", () => {
             firebase.auth().signOut().then(() => {
                 alert("Başarıyla çıkış yapıldı.");
                 location.reload(); // Sayfayı yenileyerek temiz bir başlangıç yapın
             });
-        }
+        }, { evet: 'Çıkış Yap' });
     } else {
         // Kullanıcı yoksa giriş modalını aç
         modalAc(); 
@@ -2297,9 +3014,40 @@ function loginButonTikla() {
        
     });
 function llToggleSidebar() {
-    llRootEl().classList.toggle('sidebar-closed');
+    var r = llRootEl();
+    /* Ok/eski tuslarla ACILIYORSA kurum filtresi sifirlanir: tam liste gorunur. */
+    if (r.classList.contains('sidebar-closed') && window.llKurumFiltre != null) {
+        window.llKurumFiltre = null;
+        try { if (typeof renderSidebar === 'function') renderSidebar(); } catch (e) { }
+    }
+    r.classList.toggle('sidebar-closed');
     window.dispatchEvent(new Event('resize'));
 }
+
+/* Perdeyi belirli bir kurum suzgeciyle ac (null = tum liste).
+   '' (bos) = Genel (kurumsuz seviyeler). */
+window.llKurumFiltre = null;
+function llPerdeAc(kurumFiltre) {
+    window.llKurumFiltre = (kurumFiltre === undefined) ? null : kurumFiltre;
+    try { if (typeof renderSidebar === 'function') renderSidebar(); } catch (e) { }
+    llRootEl().classList.remove('sidebar-closed');
+    window.dispatchEvent(new Event('resize'));
+}
+window.llPerdeAc = llPerdeAc;
+
+/* Sekme cubugundaki SINIF ROZETINE tiklaninca: acik sinifin KURUMUYLA
+   suzulmus liste iner — yalniz o kurumun seviye ve siniflari. */
+function llRozetPerdeAc() {
+    var f = null;
+    try {
+        if (typeof curLId !== 'undefined' && curLId && data && data.levels && data.levels[curLId]) {
+            var k = data.levels[curLId].kurumId;
+            f = (k && data.kurumlar && data.kurumlar[k]) ? k : '';
+        }
+    } catch (e) { }
+    llPerdeAc(f);
+}
+window.llRozetPerdeAc = llRozetPerdeAc;
 
 /* ======================================================================
    MOBIL CEKMECE DAVRANISI
@@ -2321,14 +3069,16 @@ function llCekmeceUygula(zorla) {
         if (zorla || r.dataset.llMod !== 'mobil') r.classList.add('sidebar-closed');
         r.dataset.llMod = 'mobil';
     } else {
-        /* Masaustune donunce her zaman acik olsun. */
-        if (r.dataset.llMod === 'mobil') r.classList.remove('sidebar-closed');
+        /* Masaustunde de VARSAYILAN KAPALI: ogretmen profile/listeye girince
+           icerik tam gorunur; cekmece sol-alt menu tusuyla acilir. */
+        if (zorla || r.dataset.llMod !== 'masaustu') r.classList.add('sidebar-closed');
         r.dataset.llMod = 'masaustu';
     }
 }
 /* Sinif secilince cekmece kapansin -> icerik hemen gorunur. */
 function llCekmeceKapatMobil() {
-    if (!llMobilMi()) return;
+    /* Cekmece artik masaustunde de icerigin USTUNDE yuzer: sinif secilince
+       her genislikte kapatilir ki icerik gorunsun. */
     var r = (typeof llRootEl === 'function') ? llRootEl() : document.getElementById('ll-root');
     if (r) r.classList.add('sidebar-closed');
 }
@@ -3274,12 +4024,13 @@ function duyuruGonder() {
 }
 
 function duyuruSil(id) {
-    if (!confirm('Bu mesaj tüm öğrencilerden kaldırılsın mı?')) return;
-    const dep = duyuruDepo();
-    const i = dep.findIndex(m => m.id === id);
-    if (i > -1) dep.splice(i, 1);
-    save();
-    duyuruGecmisCiz();
+    llOnay('Bu mesaj tüm öğrencilerden kaldırılsın mı?', () => {
+        const dep = duyuruDepo();
+        const i = dep.findIndex(m => m.id === id);
+        if (i > -1) dep.splice(i, 1);
+        save();
+        duyuruGecmisCiz();
+    }, { evet: 'Kaldır' });
 }
 
 function duyuruGecmisCiz() {
@@ -3953,12 +4704,13 @@ function imTopluGonder() {
 
 function imMesajSil(id) {
     if (!imOgretmenMi()) return;
-    if (!confirm('Bu mesaj tüm öğrencilerden kaldırılsın mı?')) return;
-    const dep = duyuruDepo();
-    const i = dep.findIndex(m => m.id === id);
-    if (i > -1) dep.splice(i, 1);
-    save();
-    imCiz();
+    llOnay('Bu mesaj tüm öğrencilerden kaldırılsın mı?', () => {
+        const dep = duyuruDepo();
+        const i = dep.findIndex(m => m.id === id);
+        if (i > -1) dep.splice(i, 1);
+        save();
+        imCiz();
+    }, { evet: 'Kaldır' });
 }
 
 /* Pop-up açıldığında çağrılır. */

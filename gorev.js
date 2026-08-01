@@ -409,7 +409,8 @@
             ogrenciUid: hedef.ogrenciUid || null,
             hedefAd: hedefAd,
             sonTarih: sonTarih,
-            performans: notMu ? { agirlik: agirlik } : null,
+            performans: notMu ? { agirlik: agirlik,
+                donem: (typeof window.llAktifDonem === 'function' ? window.llAktifDonem(lId) : 0) } : null,
             aktif: true,
             olusturma: Date.now()
         };
@@ -588,12 +589,18 @@
         var harita = {};
         (sonuclar || []).forEach(function (r) { harita[r.ogrenciUid] = r; });
 
+        /* Not, gorev HANGI DONEMDE verildiyse o donemin dizisine yazilir. */
+        var dnm = (v.performans && parseInt(v.performans.donem)) || 0;
+        var diziAl = function (s) {
+            if (typeof window.llDonemNotlari === 'function') return window.llDonemNotlari(s, 'hw', dnm);
+            if (!Array.isArray(s.hw)) s.hw = [];
+            return s.hw;
+        };
         var say = 0;
         Object.keys(d.levels[v.lId].classes || {}).forEach(function (cId) {
             (d.levels[v.lId].classes[cId].students || []).forEach(function (s) {
                 if (!s.hesapUid || !harita[s.hesapUid]) return;
-                if (!Array.isArray(s.hw)) s.hw = [];
-                s.hw[ci] = harita[s.hesapUid].yuzde || 0;
+                diziAl(s)[ci] = harita[s.hesapUid].yuzde || 0;
                 say++;
             });
         });
@@ -817,7 +824,47 @@
         if (!sec) return;
         var kart = document.getElementById('gvProfilKart');
         var bagli = window.OH && OH.bagliMi && OH.bagliMi();
-        if (!bagli || ogretmenMi()) { if (kart) kart.remove(); return; }
+        if (ogretmenMi()) { if (kart) kart.remove(); return; }
+
+        /* BAGLI DEGILSE: profilde "Ogretmene Baglan / istek durumu" kategorisi
+           gorunur — kod girme penceresine buradan ulasilir. */
+        if (!bagli) {
+            if (!kart || !sec.contains(kart)) {
+                if (kart) kart.remove();
+                kart = document.createElement('div');
+                kart.id = 'gvProfilKart';
+                var hedefB = document.getElementById('prfSatinAlma');
+                if (hedefB && hedefB.parentElement === sec) sec.insertBefore(kart, hedefB);
+                else sec.appendChild(kart);
+            }
+            var bg = (window.OH && OH.bag) || null;
+            var durum = bg && bg.durum;
+            var metin, tus;
+            if (durum === 'bekliyor') {
+                metin = 'Katılım isteğin <b>' + esc((bg && bg.ogretmenAd) || 'öğretmenine') +
+                    '</b> iletildi — onay bekleniyor. Onaylanınca sınıfın burada açılır.';
+                tus = 'Durumu Gör';
+            } else if (durum === 'arsiv') {
+                metin = 'Sınıfın öğretmenin tarafından <b>arşive kaldırıldı</b>. Sınıf geri yüklendiğinde ' +
+                    'hesabın kendiliğinden yeniden bağlanır; bir şey yapman gerekmez.';
+                tus = 'Durumu Gör';
+            } else if (durum === 'kopuk') {
+                metin = 'Önceki sınıfın öğretmenin tarafından kaldırıldı. Öğrenciliğin ve geçmiş sonuçların ' +
+                    'duruyor — öğretmeninin vereceği kodla (ya da aynı kodla) <b>yeniden bağlanabilirsin</b>.';
+                tus = '🎫 Kod Gir';
+            } else {
+                metin = 'Henüz bir öğretmene bağlı değilsin. Öğretmeninin sana verdiği kodu girerek ' +
+                    'sınıfına katıl; görevler, sonuçlar ve mesajlaşma bağlandıktan sonra açılır.';
+                tus = '🎫 Kod Gir';
+            }
+            kart.innerHTML = akordiyon('prfBaglan', '#D84315', '<span>🎓 Öğretmene Bağlan</span>' +
+                (durum === 'bekliyor' ? '<span style="font-size:.72rem; font-weight:700; padding:2px 9px; border-radius:999px; background:#FEF5E7; color:#B9770E;">onay bekleniyor</span>' : ''),
+                '<p style="margin:0 0 14px; font-size:.9rem; color:#6B4A38; line-height:1.6;">' + metin + '</p>' +
+                '<button type="button" onclick="if(window.OH&&OH.kodModalAc)OH.kodModalAc()" style="width:100%; padding:13px;' +
+                'border:none; border-radius:12px; cursor:pointer; font-family:inherit; font-weight:700; font-size:1rem;' +
+                'color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);">' + tus + '</button>', true);
+            return;
+        }
         if (!kart || !sec.contains(kart)) {
             if (kart) kart.remove();
             kart = document.createElement('div');
