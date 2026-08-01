@@ -20,7 +20,24 @@
 <body>
 <div id="game-wrapper">
     <div class="screen active" id="start-screen">
-        <div class="header-navigation"><button class="back-btn" title="Geri Dön" onclick="history.back()"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg></button></div>
+        <div class="header-navigation"><button class="back-btn" title="Ana sayfaya dön" onclick="kidefGeriIndex()"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg></button></div>
+        <script>
+        /* kidefarapca.com: bu sayfa index'ten YENI SEKMEDE acilir (target="_blank"
+           rel="opener"); yeni sekmenin gecmisi olmadigi icin history.back() calismaz.
+           Ilk ekrandaki geri tusu: index sekmesine odaklan ve BU SEKMEYI KAPAT;
+           kapatmaya izin verilmezse / dogrudan acildiysa index.html'e don. */
+        function kidefGeriIndex(){
+            try{
+                if (window.opener && !window.opener.closed){
+                    try{ window.opener.focus(); }catch(e){}
+                    window.close();
+                    setTimeout(function(){ if(!window.closed) location.href='index.html'; }, 250);
+                    return;
+                }
+            }catch(e){}
+            location.href='index.html';
+        }
+        </script>
 
         <h1 class="start-title">Arapça Klavye Oyunu</h1>
         <div class="difficulty-options">
