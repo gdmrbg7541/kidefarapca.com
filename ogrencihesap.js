@@ -241,6 +241,26 @@
     /* Onayli her ogrenci icin ogrenciOzet/{uid} yazar.
        Ogrenci ogretmenin ana verisini (kullanicilar/{ogretmenUid}.userData)
        ASLA okuyamaz; yalnizca kendi dilimini gorur. */
+    /* Seviye ayarlarinin ogrenciye gerekli KADARI: not kolonlari (ad+agirlik),
+       donem listesi/aktif donem ve davranis puani ayari. Ogrenci profili
+       "Genel Sonuclarim" icindeki not ozetini bununla hesaplar. */
+    function konfigOzet(lvl) {
+        var c = (lvl && lvl.config) || {};
+        var kolon = function (dizi) {
+            return (Array.isArray(dizi) ? dizi : []).map(function (x) {
+                return { n: (x && x.n) || '', w: parseFloat(x && x.w) || 0 };
+            });
+        };
+        var beh = c.beh || null;
+        return {
+            hw: kolon(c.hw),
+            ex: kolon(c.ex),
+            donemler: (Array.isArray(c.donemler) && c.donemler.length) ? c.donemler : ['1. Dönem'],
+            aktifDonem: parseInt(c.aktifDonem) || 0,
+            beh: beh ? { aktif: !!beh.aktif, ortEtki: !!beh.ortEtki, ortKat: parseFloat(beh.ortKat) || 0 } : null
+        };
+    }
+
     OH.ozetleriYaz = function () {
         var u = oturum(), D = veri();
         if (!u || !D || !ogretmenMi()) return Promise.resolve(0);
@@ -286,6 +306,10 @@
                         sinifAd: (cls.name || cId),
                         odev: s.hw || [],
                         sinav: s.ex || [],
+                        odevD: s.hwD || {},
+                        sinavD: s.exD || {},
+                        behLog: s.behLog || [],
+                        konfig: konfigOzet(lvl),
                         beceri: s.skills || {},
                         gorevler: s.personalMissions || [],
                         mesajlar: benim,
@@ -858,6 +882,7 @@
        hicbir degisiklik olmadan calisir. */
     OH.ogrenciVeriKur = function (ozet) {
         if (!OH.bag || !ozet) return;
+        OH.sonOzet = ozet;   /* profil not ozeti (gorev.js) buradan okur */
         var lId = OH.bag.lId, cId = OH.bag.cId, si = OH.bag.sIdx;
         var ogrenciler = [];
         for (var i = 0; i < si; i++) ogrenciler.push({ name: '', loginCode: '', hw: [], ex: [], skills: {}, notes: '' });
@@ -866,6 +891,9 @@
             loginCode: OH.bag.kod || '',
             hw: ozet.odev || [],
             ex: ozet.sinav || [],
+            hwD: ozet.odevD || {},
+            exD: ozet.sinavD || {},
+            behLog: ozet.behLog || [],
             skills: ozet.beceri || {},
             personalMissions: ozet.gorevler || [],
             history: [],
@@ -878,7 +906,12 @@
             name: ozet.seviyeAd || OH.bag.seviyeAd || '',
             classes: {},
             planText: {},
-            config: { hw: [], ex: [] }
+            config: (ozet.konfig ? {
+                hw: ozet.konfig.hw || [], ex: ozet.konfig.ex || [],
+                donemler: ozet.konfig.donemler || ['1. Dönem'],
+                aktifDonem: parseInt(ozet.konfig.aktifDonem) || 0,
+                beh: ozet.konfig.beh || null
+            } : { hw: [], ex: [] })
         };
         yeni.levels[lId].classes[cId] = {
             name: ozet.sinifAd || OH.bag.sinifAd || '',
@@ -902,6 +935,8 @@
 
         try { if (typeof renderStudentDashboardContent === 'function') renderStudentDashboardContent(); } catch (e) { }
         try { if (typeof ogrMesajCiz === 'function' && document.getElementById('ogrMesajGovde')) ogrMesajCiz(); } catch (e) { }
+        /* Profil aciksa not ozeti (Genel Sonuclarim) tazelensin */
+        try { if (window.GV && GV.profilKartiGuncelle) GV.profilKartiGuncelle(); } catch (e) { }
     };
 
     OH.ozetiDinle = function () {
@@ -1318,6 +1353,9 @@
                 OH.ogretmenDavetiYayinla();
                 setTimeout(function () { OH.davetleriYayinla(); }, 1200);
                 setTimeout(function () { OH.bagTemizligi(); }, 2600);
+                /* Ayna ozetleri girişte bir kez tazele: notlar/konfig ogrenciye
+                   ogretmen hicbir sey kaydetmese de aksin. */
+                setTimeout(function () { try { OH.ozetleriYaz(); } catch (e) { } }, 4200);
             });
             setTimeout(function () { OH.tusYerlestir(); }, 900);
         } else {

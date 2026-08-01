@@ -3292,20 +3292,24 @@ function renderTeacherProfile(deneme) {
 
     /* --- BILDIRIM: ogrenci gorev tamamlayinca profilin tepesinde serit --- */
     var yb = window._gvYeniSonuc;
-    if (yb && yb.n > 0) {
+    if (yb && ((yb.n || 0) + (yb.etk || 0)) > 0) {
         var sonYazi = '';
         if (yb.son) {
             sonYazi = ' Son: <b>' + behKacis(yb.son.baslik || yb.son.oyun || 'Görev') + '</b>' +
                 (yb.son.email ? ' — ' + behKacis(yb.son.email) : '') +
                 (yb.son.yuzde != null ? ' (%' + behKacis(yb.son.yuzde) + ')' : '') + '.';
         }
-        html += '<div id="tpBildirim" class="glass-card" style="margin-bottom:25px; border-left:5px solid #E74C3C;' +
+        var parcalar = [];
+        if (yb.n) parcalar.push(yb.n + ' görev tamamlandı');
+        if (yb.etk) parcalar.push(yb.etk + ' yeni etkinlik');
+        html += '<div id="tpBildirim" class="glass-card" style="margin-bottom:25px; border-left:5px solid #27AE60;' +
             ' display:flex; align-items:center; gap:14px; flex-wrap:wrap;">' +
-            '<span style="font-size:1.6rem;">🔔</span>' +
-            '<span style="flex:1; min-width:220px; color:#5A4034;"><b>' + yb.n + ' görev tamamlandı!</b>' + sonYazi +
+            '<span style="display:inline-flex; width:40px; height:40px; border-radius:50%; background:#E8F8F0;' +
+            ' align-items:center; justify-content:center; font-size:1.35rem; flex:none;">🔔</span>' +
+            '<span style="flex:1; min-width:220px; color:#5A4034;"><b style="color:#1E8449;">' + parcalar.join(' · ') + '!</b>' + sonYazi +
             ' <small style="color:#8B6A57;">Ayrıntılar: sınıfı aç → Görev Gönder / Etkinlikler.</small></span>' +
             '<button type="button" onclick="llProfilIslem(\'sonucGoruldu\')" style="padding:10px 18px; border:none;' +
-            ' border-radius:10px; background:#E74C3C; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Gördüm</button>' +
+            ' border-radius:10px; background:#27AE60; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Gördüm</button>' +
             '</div>';
     }
 

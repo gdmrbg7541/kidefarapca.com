@@ -185,6 +185,7 @@
             if (!grup[r.ogrenciUid]) grup[r.ogrenciUid] = { ad: sinif[r.ogrenciUid] || uidAdBul(r.ogrenciUid) || r.ad || r.email || 'Öğrenci', oyunlar: [] };
             grup[r.ogrenciUid].oyunlar.push(r);
         });
+        GV._etkAcik = GV._etkAcik || {};   /* hangi ogrenci akordiyonu acik? */
         govde.innerHTML = Object.keys(grup).map(function (uid) {
             var o = grup[uid];
             o.oyunlar.sort(function (a, b) { return (b.sonTarih || 0) - (a.sonTarih || 0); });
@@ -206,15 +207,28 @@
                     (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
             var ortRekor = o.oyunlar.length ? Math.round(rTop / o.oyunlar.length) : 0;
-            return '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
-                'margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
-                '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px; flex-wrap:wrap;">' +
-                '<span style="font-size:1rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
-                '<span style="font-size:.75rem; color:#A6836E;">ort. rekor <b style="color:#B34700;">%' + ortRekor + '</b>' +
-                ' · ' + tOyun + ' oynama · son etkinlik ' + trTarih(sonT) +
-                (ayTop > 0 ? ' · 30 günde <b style="color:#16A085;">+' + ayTop + '</b>' : '') + '</span></div>' +
-                satirlar + '</div>';
+            var oRenk = ortRekor >= 85 ? '#1E8449' : (ortRekor >= 50 ? '#B7950B' : '#C0392B');
+            return '<details class="profile-accordion gv-etk-akor" data-uid="' + uid + '"' + (GV._etkAcik[uid] ? ' open' : '') +
+                ' style="background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
+                ' margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
+                '<summary style="cursor:pointer; display:flex; align-items:center; gap:12px; padding:11px 15px; flex-wrap:wrap;">' +
+                pastaHalka(ortRekor, oRenk) +
+                '<span style="flex:1; min-width:150px;">' +
+                '<span style="display:block; font-size:1.02rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
+                '<span style="display:block; font-size:.76rem; color:#A6836E; margin-top:2px;">' + o.oyunlar.length +
+                ' oyun · ' + tOyun + ' oynama · son etkinlik ' + trTarih(sonT) + '</span></span>' +
+                (ayTop > 0 ? '<span title="Son 30 günde rekor gelişimi" style="background:#E8F8F2; color:#16A085; font-weight:800;' +
+                    ' font-size:.74rem; padding:4px 9px; border-radius:20px; white-space:nowrap;">30 günde +' + ayTop + '</span>' : '') +
+                '<span class="acc-chevron" style="color:#D84315; font-size:1.1rem; transition:transform .2s;">▸</span></summary>' +
+                '<div style="padding:0 15px 13px;">' + satirlar + '</div></details>';
         }).join('');
+        /* acik/kapali durumu hatirla — canli guncelleme (onSnapshot) yeniden
+           cizdiginde acik akordiyonlar kapanmasin. */
+        try {
+            Array.prototype.slice.call(govde.querySelectorAll('details.gv-etk-akor')).forEach(function (dt) {
+                dt.addEventListener('toggle', function () { GV._etkAcik[dt.getAttribute('data-uid')] = dt.open; });
+            });
+        } catch (e) { }
     };
 
     function katman() {
@@ -785,6 +799,18 @@
         return ad;
     }
 
+    /* Kucuk pasta (halka) grafigi — kapali ogrenci akordiyonundaki ozet.
+       r=15.915 -> cevre ~100 birim: dasharray degeri dogrudan yuzde olur. */
+    function pastaHalka(yuzde, renk, etiket) {
+        var y = Math.max(0, Math.min(100, Math.round(yuzde || 0)));
+        return '<svg width="46" height="46" viewBox="0 0 36 36" style="flex:none;">' +
+            '<title>' + (etiket || 'Ortalama rekor') + ': %' + y + '</title>' +
+            '<circle cx="18" cy="18" r="15.915" fill="none" stroke="#F6E8DC" stroke-width="3.8"/>' +
+            (y > 0 ? '<circle cx="18" cy="18" r="15.915" fill="none" stroke="' + renk + '" stroke-width="3.8"' +
+                ' stroke-linecap="round" stroke-dasharray="' + y + ' ' + (100 - y) + '" transform="rotate(-90 18 18)"/>' : '') +
+            '<text x="18" y="21.7" text-anchor="middle" font-size="9.6" font-weight="800" fill="' + renk + '">%' + y + '</text></svg>';
+    }
+
     /* Mini gelisim cizgisi (rekor noktalari) — satir ici SVG. */
     function minigrafik(gecmis) {
         var g = Array.isArray(gecmis) ? gecmis : [];
@@ -890,6 +916,100 @@
             '<div style="margin-top:16px; text-align:left;">' + icerik + '</div></details>';
     }
 
+    /* ---- AVATAR YESIL NOKTA: sag ustteki profil resminde yanan bildirim
+       isigi. Ogrencide: bekleyen gorev varsa. Ogretmende: yeni tamamlanan
+       gorev / etkinlik varsa. "Gordum" ya da is kalmayinca soner. ---- */
+    GV.noktaGuncelle = function (goster) {
+        var ui = document.getElementById('user-info');
+        if (!ui) return;
+        var n = document.getElementById('llAvatarNokta');
+        if (!goster) { if (n) n.remove(); return; }
+        if (!document.getElementById('gvNoktaStil')) {
+            var st = document.createElement('style');
+            st.id = 'gvNoktaStil';
+            st.textContent = '@keyframes llNoktaNabiz{0%{box-shadow:0 0 0 0 rgba(46,204,113,.65)}' +
+                '70%{box-shadow:0 0 0 9px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}';
+            document.head.appendChild(st);
+        }
+        if (!n || !ui.contains(n)) {          /* giris cizimi innerHTML'i tazeleyebilir */
+            if (n) n.remove();
+            n = document.createElement('span');
+            n.id = 'llAvatarNokta';
+            n.setAttribute('style', 'position:absolute; top:-3px; right:-3px; width:14px; height:14px;' +
+                ' border-radius:50%; background:#2ECC71; border:2.5px solid #fff; z-index:6; pointer-events:none;' +
+                ' animation:llNoktaNabiz 1.7s infinite;');
+            ui.appendChild(n);
+        }
+    };
+
+    /* ---- NOT OZETI: sinav + performans notlari ve ANLIK genel ortalama.
+       Veri, ogretmenin yazdigi ayna kayittan (ogrenciOzet: odev/sinav +
+       konfig + behLog) gelir; hesap ogretmen tarafindaki agirlikli
+       ortalamanin birebir aynisidir (davranis etkisi dahil, 0-100 kisit). */
+    function notOzetiHTML() {
+        var oz = (window.OH && OH.sonOzet) || null;
+        if (!oz) return '';
+        var k = oz.konfig;
+        if (!k || (!(k.hw || []).length && !(k.ex || []).length))
+            return '<p style="margin:0 0 16px; font-size:.8rem; color:#A6836E; background:#FFF6EC;' +
+                ' border:1px dashed #F0C9A6; border-radius:10px; padding:10px 14px;">📊 Sınav ve performans notların, ' +
+                'öğretmenin bir sonraki kaydından sonra burada görünmeye başlayacak.</p>';
+        var di = parseInt(k.aktifDonem) || 0;
+        var dAd = (k.donemler && k.donemler[di]) || '1. Dönem';
+        var hwN = di ? ((oz.odevD || {})[di] || []) : (oz.odev || []);
+        var exN = di ? ((oz.sinavD || {})[di] || []) : (oz.sinav || []);
+        var hw = 0, ex = 0;
+        (k.hw || []).forEach(function (c, i) { hw += (parseFloat(hwN[i]) || 0) * ((parseFloat(c.w) || 0) / 100); });
+        (k.ex || []).forEach(function (c, i) { ex += (parseFloat(exN[i]) || 0) * ((parseFloat(c.w) || 0) / 100); });
+        var etki = 0;
+        if (k.beh && k.beh.aktif && k.beh.ortEtki) {
+            var net = 0;
+            (oz.behLog || []).forEach(function (l) { net += parseInt(l && l.d) || 0; });
+            var e2 = net * (parseFloat(k.beh.ortKat) || 0);
+            if (e2) { var sonr = Math.max(0, Math.min(100, hw + e2)); etki = sonr - hw; hw = sonr; }
+        }
+        var genel = (hw + ex) / 2;
+        var gRenk = genel >= 85 ? '#1E8449' : (genel >= 50 ? '#B7950B' : '#C0392B');
+        var kolon = function (cfg, notlar, bosMetin) {
+            if (!(cfg || []).length) return '<p style="margin:0; font-size:.78rem; color:#A6836E;">' + bosMetin + '</p>';
+            return (cfg || []).map(function (c, i) {
+                var v = parseFloat(notlar[i]);
+                return '<div style="display:flex; justify-content:space-between; gap:10px; padding:4px 0;' +
+                    ' border-bottom:1px dashed #F0E4D8; font-size:.84rem;">' +
+                    '<span style="color:#6B4A38; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
+                    esc(c.n || ('#' + (i + 1))) + ' <small style="color:#B9987F;">%' + (parseFloat(c.w) || 0) + '</small></span>' +
+                    '<b style="color:#9C3B0C;">' + (isFinite(v) ? v : '—') + '</b></div>';
+            }).join('');
+        };
+        var kutu = function (icerik) {
+            return '<div style="flex:1; min-width:150px; background:#fff; border:1px solid #EFE3F5;' +
+                ' border-radius:13px; padding:12px; text-align:center;">' + icerik + '</div>';
+        };
+        return '<div style="margin-bottom:20px;">' +
+            '<div style="font-weight:800; color:#7B1FA2; margin:0 0 10px; font-size:.95rem;">📊 Notlarım ' +
+            '<small style="color:#A6836E; font-weight:600;">(' + esc(dAd) + ')</small></div>' +
+            '<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:stretch; margin-bottom:12px;">' +
+            kutu('<div style="font-size:1.55rem; font-weight:800; color:#8E44AD;">' + ex.toFixed(2) + '</div>' +
+                '<div style="font-size:.75rem; color:#8B6A57; margin-top:3px;">📝 Sınav Ortalaması</div>') +
+            kutu('<div style="font-size:1.55rem; font-weight:800; color:#2471A3;">' + hw.toFixed(2) +
+                (etki ? ' <small style="font-size:.68rem; color:' + (etki > 0 ? '#16A085' : '#C0392B') + ';">' +
+                    (etki > 0 ? '+' : '') + etki.toFixed(2) + ' davranış</small>' : '') + '</div>' +
+                '<div style="font-size:.75rem; color:#8B6A57; margin-top:3px;">🎯 Performans Ortalaması</div>') +
+            '<div title="Genel ortalama = (Performans + Sınav) / 2 · Şu an: ' + genel.toFixed(2) + '"' +
+            ' style="flex:1; min-width:150px; background:#fff; border:2px solid ' + gRenk + '55; border-radius:13px;' +
+            ' padding:8px 12px; text-align:center; display:flex; flex-direction:column; align-items:center;' +
+            ' justify-content:center; gap:2px;">' +
+            pastaHalka(genel, gRenk, 'Genel ortalama') +
+            '<div style="font-size:.75rem; color:#8B6A57;">⭐ Genel Ortalama</div></div></div>' +
+            '<div style="display:flex; gap:14px; flex-wrap:wrap;">' +
+            '<div style="flex:1; min-width:210px;">' +
+            '<div style="font-size:.8rem; font-weight:800; color:#8E44AD; margin-bottom:4px;">📝 Sınav Notları</div>' +
+            kolon(k.ex, exN, 'Tanımlı sınav yok.') + '</div>' +
+            '<div style="flex:1; min-width:210px;">' +
+            '<div style="font-size:.8rem; font-weight:800; color:#2471A3; margin-bottom:4px;">🎯 Performans Notları</div>' +
+            kolon(k.hw, hwN, 'Tanımlı performans görevi yok.') + '</div></div></div>';
+    }
+
     GV.profilKartiGuncelle = function () {
         var eskiTus = document.getElementById('gvOgrTus');   /* eski surumden kalma yuzen tus */
         if (eskiTus) eskiTus.remove();
@@ -936,6 +1056,7 @@
                 '<button type="button" onclick="if(window.OH&&OH.kodModalAc)OH.kodModalAc()" style="width:100%; padding:13px;' +
                 'border:none; border-radius:12px; cursor:pointer; font-family:inherit; font-weight:700; font-size:1rem;' +
                 'color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);">' + tus + '</button>', true);
+            GV.noktaGuncelle(false);
             return;
         }
         if (!kart || !sec.contains(kart)) {
@@ -952,7 +1073,7 @@
 
         var gorevBaslik = '<span>📋 Görevlerim</span>' +
             (bekleyen ? '<span style="display:inline-flex; align-items:center; justify-content:center; min-width:22px;' +
-                'height:22px; padding:0 7px; border-radius:11px; background:#E74C3C; color:#fff; font-size:.76rem;">' +
+                'height:22px; padding:0 7px; border-radius:11px; background:#27AE60; color:#fff; font-size:.76rem;">' +
                 bekleyen + '</span>' : '');
 
         var kodIcerik =
@@ -967,23 +1088,30 @@
             'bir daha girmen gerekmez. Öğretmenin: <b style="color:#9C3B0C;">' + esc(bag.ogretmenAd || '—') + '</b>' +
             (bag.seviyeAd ? ' · ' + esc(bag.seviyeAd) + (bag.sinifAd ? ' / ' + esc(bag.sinifAd) : '') : '') + '</p>';
 
-        /* BILDIRIM SERIDI: ogretmen gorev gonderdiginde profilde one cikar */
+        /* YESIL BILDIRIM SERIDI: ogretmen gorev paylastiginda profilde yanar */
         var bildirimSeridi = bekleyen
-            ? '<div class="glass-card" style="margin-bottom:25px; border-left:5px solid #E74C3C; display:flex;' +
+            ? '<div class="glass-card" style="margin-bottom:25px; border-left:5px solid #27AE60; display:flex;' +
               ' align-items:center; gap:14px; flex-wrap:wrap; cursor:pointer;"' +
               ' onclick="var d=document.getElementById(\'prfGorevler\'); if(d){ d.setAttribute(\'open\',\'\');' +
               ' d.scrollIntoView({behavior:\'smooth\', block:\'start\'}); }">' +
-              '<span style="font-size:1.6rem;">🔔</span>' +
-              '<span style="flex:1; min-width:180px; color:#5A4034;"><b>' + bekleyen + ' bekleyen görevin var!</b> ' +
-              '<small style="color:#8B6A57;">Görmek için tıkla.</small></span></div>'
+              '<span style="display:inline-flex; width:40px; height:40px; border-radius:50%; background:#E8F8F0;' +
+              ' align-items:center; justify-content:center; font-size:1.35rem; flex:none;">🔔</span>' +
+              '<span style="flex:1; min-width:180px; color:#5A4034;"><b style="color:#1E8449;">Öğretmenin görev paylaştı</b>' +
+              ' — <b>' + bekleyen + ' bekleyen görevin var!</b> ' +
+              '<small style="color:#8B6A57;">Görmek için tıkla.</small></span>' +
+              '<span style="width:11px; height:11px; border-radius:50%; background:#2ECC71; flex:none;' +
+              ' animation:llNoktaNabiz 1.7s infinite;"></span></div>'
             : '';
         kart.innerHTML = bildirimSeridi +
             akordiyon('prfGorevler', '#D84315', gorevBaslik, ogrListeHTML(6), bekleyen > 0) +
             akordiyon('prfSonuclar', '#7B1FA2', '<span>🏆 Genel Sonuçlarım</span>',
+                notOzetiHTML() +
+                '<div style="font-weight:800; color:#7B1FA2; margin:0 0 8px; font-size:.95rem;">🎮 Etkinlik Sonuçlarım</div>' +
                 '<div id="gvPrfProfilSonuc"><p style="margin:0; font-size:.85rem; color:#A6836E;">Yükleniyor…</p></div>', false) +
             akordiyon('prfKodum', '#F39C12', '<span>🎫 Öğrenci Kodum</span>', kodIcerik, false);
 
         GV.sonuclariDoldur('gvPrfProfilSonuc');
+        GV.noktaGuncelle(bekleyen > 0);      /* avatarda yesil isik */
     };
 
     /* ---------------- OGRETMEN BILDIRIMI: yeni tamamlanan gorevler ----------------
@@ -993,7 +1121,8 @@
     GV.sonucGoruldu = function () {
         var u = oturum(); if (!u) return;
         try { localStorage.setItem('gvSonucGoruldu_' + u.uid, String(Date.now())); } catch (e) { }
-        window._gvYeniSonuc = { n: 0, son: null };
+        window._gvYeniSonuc = { n: 0, son: null, etk: 0 };
+        GV.noktaGuncelle(false);
     };
     GV.yeniSonucSay = function (sonuclar, sonGorulme) {   /* saf islev: test edilebilir */
         var n = 0, son = null;
@@ -1011,17 +1140,36 @@
         if (!u || !D || !ogretmenMi()) return;
         var sonGorulme = 0;
         try { sonGorulme = parseInt(localStorage.getItem('gvSonucGoruldu_' + u.uid)) || 0; } catch (e) { }
-        D.collection(C_SNC).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
-            var liste = [];
-            snap.forEach(function (doc) { liste.push(doc.data() || {}); });
-            window._gvYeniSonuc = GV.yeniSonucSay(liste, sonGorulme);
+        /* Iki kaynak birden sayilir: gorev sonuclari (gorevSonuc) VE gorevden
+           bagimsiz etkinlik oynanislari (ogrenciIlerleme.sonTarih). Ikisi de
+           gelince serit + avatar yesil nokta guncellenir. */
+        var sonuclar = null, etkinlik = null;
+        var bitir = function () {
+            if (sonuclar === null || etkinlik === null) return;
+            var yb = GV.yeniSonucSay(sonuclar, sonGorulme);
+            yb.etk = GV.yeniSonucSay(etkinlik.map(function (r) {
+                return { bitis: r.sonTarih, baslik: oyunAdi(r.oyun), email: r.ad || r.email,
+                         yuzde: r.sonYuzde != null ? r.sonYuzde : r.rekor };
+            }), sonGorulme).n;
+            window._gvYeniSonuc = yb;
+            GV.noktaGuncelle((yb.n + yb.etk) > 0);
             try {
                 if (window.appState && appState.currentView === 'student-profile-section' &&
                     appState.userRole === 'teacher' && typeof window.renderTeacherProfile === 'function') {
                     window.renderTeacherProfile();
                 }
             } catch (e) { }
-        }).catch(function (e) { console.warn('GV bildirim:', e && (e.code || e.message)); });
+        };
+        D.collection(C_SNC).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            sonuclar = [];
+            snap.forEach(function (doc) { sonuclar.push(doc.data() || {}); });
+            bitir();
+        }).catch(function (e) { sonuclar = []; bitir(); console.warn('GV bildirim:', e && (e.code || e.message)); });
+        D.collection('ogrenciIlerleme').where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            etkinlik = [];
+            snap.forEach(function (doc) { etkinlik.push(doc.data() || {}); });
+            bitir();
+        }).catch(function () { etkinlik = []; bitir(); });
     };
 
     /* Gorev ogrenciyle eslesiyor mu? (saf islev: test edilebilir)
