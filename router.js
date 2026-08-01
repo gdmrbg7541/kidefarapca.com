@@ -223,8 +223,7 @@ function changeView(viewName, isBackAction = false) {
     var _isBoundStudent = (appState.userRole === 'student')
         && appState.currentUser && appState.currentUser !== 'Misafir Öğrenci';
     if (tabListelerim) tabListelerim.style.display = (_isTeacher || _isAdmin) ? 'inline-block' : 'none';
-    var tabOgrenciProfil = document.getElementById('tab-ogrenciprofil');
-    if (tabOgrenciProfil) tabOgrenciProfil.style.display = _isBoundStudent ? 'inline-block' : 'none';
+    /* Ogrencinin ayri simgesi yok: profiline basliktaki BAS HARF avatarindan girer. */
     if (tabBooking) tabBooking.style.display = _isTeacher ? 'none' : 'inline-block'; // Ders Talep Et her zaman aktif
     [tabPaketler, tabOnlinePackages].forEach(function(t){
         if (!t) return;
@@ -271,7 +270,7 @@ function changeView(viewName, isBackAction = false) {
 
     // Profil butonunu (header emoji) profil goruntusundeyken vurgula
     var _uinfo = document.getElementById('user-info');
-    if (_uinfo) _uinfo.classList.toggle('profile-open', (viewName === 'student-profile-section' || viewName === 'teacher-section'));
+    if (_uinfo) _uinfo.classList.toggle('profile-open', (viewName === 'student-profile-section' || viewName === 'teacher-section' || viewName === 'listelerim-section'));
     var _brandH1 = document.querySelector('header h1');
     if (_brandH1) _brandH1.classList.toggle('home-active', (viewName === 'home-hub-section'));
 
@@ -561,7 +560,16 @@ function renderStudentProfile() {
           '</details>';
     }
 
+    // SATIN ALMA: tum detaylar tek akordiyon kategorisinde (istatistik +
+    // cevrimdisi paketler + canli dersler + onaylanmis program)
     let html = infoCardHtml + `
+        <details id="prfSatinAlma" class="glass-card profile-accordion" style="margin-bottom:25px; border-bottom:4px solid #20C997;">
+        <summary style="cursor:pointer; display:flex; align-items:center; gap:8px; color:#16A085; font-weight:700; font-size:1.15rem; list-style:none;">
+            <span>🛒 Satın Aldıklarım &amp; Derslerim</span>
+            <span style="font-size:0.75rem; font-weight:600; background:#EAF7F3; color:#16A085; padding:3px 10px; border-radius:20px;">${offlineCount + liveCount} kayıt</span>
+            <span class="acc-chevron" style="margin-left:auto; color:#16A085; transition:transform 0.2s;">▸</span>
+        </summary>
+        <div style="margin-top:16px;">
         <div style="display: flex; gap: 20px; margin-bottom: 25px; flex-wrap: wrap;">
             <div class="glass-card" style="flex: 1; min-width: 200px; text-align: center; border-bottom: 4px solid #20C997;">
                 <h3 style="color: #666; margin-bottom: 10px; font-size: 1.1rem;">Çevrimdışı Paketler</h3>
@@ -572,7 +580,7 @@ function renderStudentProfile() {
                 <div style="font-size: 2.5rem; font-weight: bold; color: #4facfe;">${liveCount}</div>
             </div>
         </div>
-        
+
         <h3 style="margin-top: 30px; margin-bottom: 15px;">Satın Aldığım Çevrimdışı Paketler</h3>
         <div class="package-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
     `;
@@ -705,6 +713,9 @@ function renderStudentProfile() {
         html += `<h3 style="margin-top: 30px; margin-bottom: 15px;">📅 Onaylanmış Ders Programım</h3>`;
         html += renderSlotsTable(_approvedItems);
     }
+
+    // Satın alma akordiyonunu kapat
+    html += `</div></details>`;
 
     profileSection.innerHTML = html;
 }

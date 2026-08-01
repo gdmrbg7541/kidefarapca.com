@@ -449,14 +449,21 @@ function updateHeaderUI() {
         userInfoEl.style.display = 'none';
         userInfoEl.innerText = '';
     } else {
-        var _g = appState.currentUserGender;
-        const icon = (appState.userRole === 'admin') ? '😎 '
-            : (appState.userRole === 'teacher') ? (_g === 'kadin' ? '👩‍🏫 ' : (_g === 'erkek' ? '👨‍🏫 ' : '🧑‍🏫 '))
-            : (_g === 'kadin' ? '👩‍🎓 ' : (_g === 'erkek' ? '👨‍🎓 ' : '🎓 '));
-        const dropdownIcon = (appState.userRole === 'student' || appState.userRole === 'admin' || appState.userRole === 'teacher') ? ' <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>' : '';
         userInfoEl.style.display = 'flex';
         const _dispName = (appState.currentUserName && appState.currentUserName !== "Öğrenci" && appState.currentUserName !== "Belirtilmedi") ? appState.currentUserName : (appState.currentUser || "");
-        userInfoEl.innerHTML = icon + '<span class="uinfo-name">' + _dispName + '</span>' + dropdownIcon;
+        /* Baslikta yalnizca AD ve SOYADIN BAS HARFLERI gorunur (orn. "Geylani Demir" -> GD).
+           Tek kelime/e-posta ise ilk iki harf alinir. Tam ad fare ipucunda kalir. */
+        var _parcalar = String(_dispName).trim().split(/\s+/).filter(Boolean);
+        var _bas = '';
+        if (_parcalar.length >= 2) _bas = _parcalar[0].charAt(0) + _parcalar[_parcalar.length - 1].charAt(0);
+        else if (_parcalar.length === 1) _bas = _parcalar[0].slice(0, 2);
+        try { _bas = _bas.toLocaleUpperCase('tr-TR'); } catch (e) { _bas = _bas.toUpperCase(); }
+        userInfoEl.title = roleText + _dispName;
+        userInfoEl.innerHTML =
+            '<span class="uinfo-avatar" style="display:inline-flex; align-items:center; justify-content:center;' +
+            ' width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2);' +
+            ' border:2px solid rgba(255,255,255,0.85); color:#fff; font-weight:800; font-size:0.92rem;' +
+            ' letter-spacing:0.5px; user-select:none;">' + _bas + '</span>';
     }
     
     document.getElementById('logout-btn').style.display = isGuest ? 'none' : 'inline-block';
