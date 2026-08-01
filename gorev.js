@@ -111,12 +111,15 @@
             '<button type="button" id="gvSekmeYeni" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
             'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:#fff; color:#D84315;">Yeni Görev</button>' +
             '<button type="button" id="gvSekmeSonuc" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
-            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">Sonuçlar</button></div>' +
+            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">Sonuçlar</button>' +
+            '<button type="button" id="gvSekmeIlerleme" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
+            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">İlerleme</button></div>' +
             '<div id="gvGovde" style="flex:1; overflow-y:auto; padding:16px; background:#FFF8F2;"></div></div>';
         document.body.appendChild(k);
         k.querySelector('#gvKapat').onclick = function () { k.style.display = 'none'; };
         k.querySelector('#gvSekmeYeni').onclick = function () { GV.sekme('yeni'); };
         k.querySelector('#gvSekmeSonuc').onclick = function () { GV.sekme('sonuc'); };
+        k.querySelector('#gvSekmeIlerleme').onclick = function () { GV.sekme('ilerleme'); };
         return k;
     }
 
@@ -127,14 +130,16 @@
         GV.gorevleriDinle();
     };
     GV.sekme = function (ad) {
-        var y = document.getElementById('gvSekmeYeni'), s = document.getElementById('gvSekmeSonuc');
-        if (y && s) {
-            y.style.background = (ad === 'yeni') ? '#fff' : 'transparent';
-            y.style.color = (ad === 'yeni') ? '#D84315' : '#8B6A57';
-            s.style.background = (ad === 'sonuc') ? '#fff' : 'transparent';
-            s.style.color = (ad === 'sonuc') ? '#D84315' : '#8B6A57';
-        }
-        if (ad === 'yeni') GV.yeniCiz(); else GV.sonucCiz();
+        var tuslar = { yeni: 'gvSekmeYeni', sonuc: 'gvSekmeSonuc', ilerleme: 'gvSekmeIlerleme' };
+        Object.keys(tuslar).forEach(function (k) {
+            var el = document.getElementById(tuslar[k]);
+            if (!el) return;
+            el.style.background = (ad === k) ? '#fff' : 'transparent';
+            el.style.color = (ad === k) ? '#D84315' : '#8B6A57';
+        });
+        if (ad === 'yeni') GV.yeniCiz();
+        else if (ad === 'ilerleme') GV.ilerlemeCiz();
+        else GV.sonucCiz();
     };
 
     /* -------------------------------------------------- YENI GOREV SEKMESI */
@@ -469,6 +474,132 @@
         if (typeof save === 'function') save();
         try { if (typeof renderGrades === 'function') renderGrades('hw'); } catch (e) { }
         yaz('✓ ' + say + ' öğrencinin notu "' + (hw[ci].n || '') + '" sütununa işlendi.');
+    };
+
+    /* -------------------------------------------------- ILERLEME SEKMESI
+
+       Kaynak: ogrenciIlerleme/{uid_oyun} — gorevkopru.js her oynayista yazar
+       (gorevden BAGIMSIZ). Ogretmen burada ogrencilerinin geldigi yeri,
+       rekor gecmisini (mini cizgi) ve son 30 gunluk gelisimi gorur.         */
+
+    GV.ilerlemeler = [];
+    GV._ilerAbone = null;
+
+    GV.ilerlemeDinle = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return;
+        if (GV._ilerAbone) { try { GV._ilerAbone(); } catch (e) { } GV._ilerAbone = null; }
+        GV._ilerAbone = D.collection('ogrenciIlerleme').where('ogretmenUid', '==', u.uid)
+            .onSnapshot(function (snap) {
+                GV.ilerlemeler = [];
+                snap.forEach(function (doc) { GV.ilerlemeler.push(doc.data() || {}); });
+                var g = document.getElementById('gvGovde');
+                if (g && g.getAttribute('data-sekme') === 'ilerleme') GV.ilerlemeCiz(true);
+            }, function (e) { console.warn('GV ilerleme dinleyici:', e && (e.code || e.message)); });
+    };
+
+    /* Ogrencinin uid'inden listedeki adini bulur (ayna: hesapUid). */
+    function uidAdBul(uid) {
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) return '';
+        var ad = '';
+        try {
+            Object.keys(d.levels).forEach(function (lId) {
+                var cl = d.levels[lId].classes || {};
+                Object.keys(cl).forEach(function (cId) {
+                    (cl[cId].students || []).forEach(function (s) {
+                        if (s.hesapUid === uid && !ad) ad = s.name || '';
+                    });
+                });
+            });
+        } catch (e) { }
+        return ad;
+    }
+
+    /* Mini gelisim cizgisi (rekor noktalari) — satir ici SVG. */
+    function minigrafik(gecmis) {
+        var g = Array.isArray(gecmis) ? gecmis : [];
+        if (g.length < 2) return '<span style="color:#D5BFAE; font-size:.72rem;">— tek nokta —</span>';
+        var W = 110, H = 26, P = 2;
+        var t0 = g[0].t, t1 = g[g.length - 1].t || (t0 + 1);
+        var ts = Math.max(1, t1 - t0);
+        var pts = g.map(function (n) {
+            var x = P + (W - 2 * P) * ((n.t - t0) / ts);
+            var y = H - P - (H - 2 * P) * (Math.max(0, Math.min(100, n.y)) / 100);
+            return x.toFixed(1) + ',' + y.toFixed(1);
+        }).join(' ');
+        return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" ' +
+            'style="vertical-align:middle;"><polyline points="' + pts + '" fill="none" ' +
+            'stroke="#D84315" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<circle cx="' + pts.split(' ').pop().split(',')[0] + '" cy="' + pts.split(' ').pop().split(',')[1] +
+            '" r="2.6" fill="#16A085"/></svg>';
+    }
+
+    /* Son 30 gunluk rekor artisi: +X puan. */
+    function sonAyFarki(gecmis, rekor) {
+        var g = Array.isArray(gecmis) ? gecmis : [];
+        if (!g.length) return 0;
+        var sinir = Date.now() - 30 * 24 * 60 * 60 * 1000;
+        var eskiRekor = null;
+        for (var i = 0; i < g.length; i++) if (g[i].t <= sinir) eskiRekor = g[i].y;
+        if (eskiRekor == null) eskiRekor = g[0].y;          /* hepsi son 30 gunde: ilk noktadan olcul */
+        return Math.max(0, (rekor || 0) - eskiRekor);
+    }
+
+    GV.ilerlemeCiz = function (icten) {
+        var g = document.getElementById('gvGovde');
+        if (!g) return;
+        g.setAttribute('data-sekme', 'ilerleme');
+        if (!icten) GV.ilerlemeDinle();
+
+        if (!GV.ilerlemeler.length) {
+            g.innerHTML = '<div style="text-align:center; padding:34px 12px; color:#8B6A57;">' +
+                '<p style="margin:0; font-size:1rem;">Henüz ilerleme kaydı yok.</p>' +
+                '<p style="margin:8px 0 0; font-size:.85rem; color:#A6836E;">Hesabı bağlı bir öğrenci ölçülebilir ' +
+                'oyunlardan birini oynadığında sonucu kendiliğinden buraya düşer — görev göndermen şart değil.</p></div>';
+            return;
+        }
+
+        /* ogrenciye gore grupla */
+        var grup = {};
+        GV.ilerlemeler.forEach(function (r) {
+            if (!grup[r.ogrenciUid]) grup[r.ogrenciUid] = { ad: uidAdBul(r.ogrenciUid) || r.ad || r.email || 'Öğrenci', oyunlar: [] };
+            grup[r.ogrenciUid].oyunlar.push(r);
+        });
+
+        var kartlar = Object.keys(grup).map(function (uid) {
+            var o = grup[uid];
+            o.oyunlar.sort(function (a, b) { return (b.sonTarih || 0) - (a.sonTarih || 0); });
+            var toplamOyun = 0, rekorToplam = 0, ayToplam = 0;
+            var satirlar = o.oyunlar.map(function (r) {
+                toplamOyun += (r.oynama || 0);
+                rekorToplam += (r.rekor || 0);
+                var fark = sonAyFarki(r.gecmis, r.rekor);
+                ayToplam += fark;
+                var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
+                return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px dashed #F3E2D3;">' +
+                    '<span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
+                    'font-size:.85rem; color:#6B4A38;">' + esc(oyunAdi(r.oyun)) + '</span>' +
+                    minigrafik(r.gecmis) +
+                    '<span style="width:52px; text-align:right; font-weight:800; color:' + renk + ';">%' + (r.rekor || 0) + '</span>' +
+                    '<span style="width:88px; text-align:right; font-size:.74rem; color:#A6836E;">' +
+                    (r.oynama || 0) + ' oyun' + (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
+            }).join('');
+            var ortRekor = o.oyunlar.length ? Math.round(rekorToplam / o.oyunlar.length) : 0;
+            return '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
+                'margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
+                '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;">' +
+                '<span style="font-size:1rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
+                '<span style="font-size:.76rem; color:#A6836E;">ort. rekor <b style="color:#B34700;">%' + ortRekor +
+                '</b> · ' + toplamOyun + ' oynama' +
+                (ayToplam > 0 ? ' · 30 günde <b style="color:#16A085;">+' + ayToplam + '</b> puan' : '') + '</span></div>' +
+                satirlar + '</div>';
+        }).join('');
+
+        g.innerHTML =
+            '<p style="margin:0 0 12px; font-size:.8rem; color:#A6836E;">Bu tablo görevden bağımsızdır: bağlı öğrencilerin ' +
+            'ölçülebilir oyunlardaki <b>rekorları</b> ve gelişim çizgileri her oynayışta kendiliğinden güncellenir. ' +
+            'Yeşil nokta son rekoru, <b style="color:#16A085;">+X</b> son 30 günlük ilerlemeyi gösterir.</p>' + kartlar;
     };
 
     /* ================================================================ OGRENCI */
