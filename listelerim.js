@@ -3290,6 +3290,25 @@ function renderTeacherProfile(deneme) {
 
     var html = '';
 
+    /* --- BILDIRIM: ogrenci gorev tamamlayinca profilin tepesinde serit --- */
+    var yb = window._gvYeniSonuc;
+    if (yb && yb.n > 0) {
+        var sonYazi = '';
+        if (yb.son) {
+            sonYazi = ' Son: <b>' + behKacis(yb.son.baslik || yb.son.oyun || 'Görev') + '</b>' +
+                (yb.son.email ? ' — ' + behKacis(yb.son.email) : '') +
+                (yb.son.yuzde != null ? ' (%' + behKacis(yb.son.yuzde) + ')' : '') + '.';
+        }
+        html += '<div id="tpBildirim" class="glass-card" style="margin-bottom:25px; border-left:5px solid #E74C3C;' +
+            ' display:flex; align-items:center; gap:14px; flex-wrap:wrap;">' +
+            '<span style="font-size:1.6rem;">🔔</span>' +
+            '<span style="flex:1; min-width:220px; color:#5A4034;"><b>' + yb.n + ' görev tamamlandı!</b>' + sonYazi +
+            ' <small style="color:#8B6A57;">Ayrıntılar: sınıfı aç → Görev Gönder / Etkinlikler.</small></span>' +
+            '<button type="button" onclick="llProfilIslem(\'sonucGoruldu\')" style="padding:10px 18px; border:none;' +
+            ' border-radius:10px; background:#E74C3C; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Gördüm</button>' +
+            '</div>';
+    }
+
     /* --- 2. KURUMLARIM & SINIFLARIM --- */
     /* ONEMLI: data, listelerim.js icinde "let" ile tanimli oldugundan
        window.data YOKTUR — cipla isimle erisilmeli. Ayrica profil,
@@ -3443,6 +3462,11 @@ function llProfilIslem(t) {
         else if (t === 'tatil' && typeof openTatiller === 'function') openTatiller();
         else if (t === 'kurum' && typeof addKurum === 'function') addKurum();
         else if (t === 'arsiv' && typeof arsivAc === 'function') arsivAc();
+        else if (t === 'sonucGoruldu') {
+            if (window.GV && GV.sonucGoruldu) GV.sonucGoruldu();
+            else window._gvYeniSonuc = { n: 0, son: null };
+            setTimeout(function () { try { renderTeacherProfile(); } catch (e) { } }, 60);
+        }
     } catch (e) { }
     if (t === 'kurum') setTimeout(function () { try { renderTeacherProfile(); } catch (e) { } }, 900);
 }

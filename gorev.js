@@ -897,13 +897,61 @@
             'bir daha girmen gerekmez. Öğretmenin: <b style="color:#9C3B0C;">' + esc(bag.ogretmenAd || '—') + '</b>' +
             (bag.seviyeAd ? ' · ' + esc(bag.seviyeAd) + (bag.sinifAd ? ' / ' + esc(bag.sinifAd) : '') : '') + '</p>';
 
-        kart.innerHTML =
+        /* BILDIRIM SERIDI: ogretmen gorev gonderdiginde profilde one cikar */
+        var bildirimSeridi = bekleyen
+            ? '<div class="glass-card" style="margin-bottom:25px; border-left:5px solid #E74C3C; display:flex;' +
+              ' align-items:center; gap:14px; flex-wrap:wrap; cursor:pointer;"' +
+              ' onclick="var d=document.getElementById(\'prfGorevler\'); if(d){ d.setAttribute(\'open\',\'\');' +
+              ' d.scrollIntoView({behavior:\'smooth\', block:\'start\'}); }">' +
+              '<span style="font-size:1.6rem;">🔔</span>' +
+              '<span style="flex:1; min-width:180px; color:#5A4034;"><b>' + bekleyen + ' bekleyen görevin var!</b> ' +
+              '<small style="color:#8B6A57;">Görmek için tıkla.</small></span></div>'
+            : '';
+        kart.innerHTML = bildirimSeridi +
             akordiyon('prfGorevler', '#D84315', gorevBaslik, ogrListeHTML(6), bekleyen > 0) +
             akordiyon('prfSonuclar', '#7B1FA2', '<span>🏆 Genel Sonuçlarım</span>',
                 '<div id="gvPrfProfilSonuc"><p style="margin:0; font-size:.85rem; color:#A6836E;">Yükleniyor…</p></div>', false) +
             akordiyon('prfKodum', '#F39C12', '<span>🎫 Öğrenci Kodum</span>', kodIcerik, false);
 
         GV.sonuclariDoldur('gvPrfProfilSonuc');
+    };
+
+    /* ---------------- OGRETMEN BILDIRIMI: yeni tamamlanan gorevler ----------------
+       Ogrenci bir gorevi bitirince (gorevSonuc kaydi), ogretmen profilinde
+       "N gorev tamamlandi" seridi cikar. "Gordum" son gorulme zamanini
+       kaydeder; ondan yeni kayitlar tekrar sayilir. */
+    GV.sonucGoruldu = function () {
+        var u = oturum(); if (!u) return;
+        try { localStorage.setItem('gvSonucGoruldu_' + u.uid, String(Date.now())); } catch (e) { }
+        window._gvYeniSonuc = { n: 0, son: null };
+    };
+    GV.yeniSonucSay = function (sonuclar, sonGorulme) {   /* saf islev: test edilebilir */
+        var n = 0, son = null;
+        (sonuclar || []).forEach(function (r) {
+            var t = parseInt(r && r.bitis) || 0;
+            if (t > sonGorulme) {
+                n++;
+                if (!son || t > (parseInt(son.bitis) || 0)) son = r;
+            }
+        });
+        return { n: n, son: son };
+    };
+    GV.ogretmenBildirimYukle = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return;
+        var sonGorulme = 0;
+        try { sonGorulme = parseInt(localStorage.getItem('gvSonucGoruldu_' + u.uid)) || 0; } catch (e) { }
+        D.collection(C_SNC).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            var liste = [];
+            snap.forEach(function (doc) { liste.push(doc.data() || {}); });
+            window._gvYeniSonuc = GV.yeniSonucSay(liste, sonGorulme);
+            try {
+                if (window.appState && appState.currentView === 'student-profile-section' &&
+                    appState.userRole === 'teacher' && typeof window.renderTeacherProfile === 'function') {
+                    window.renderTeacherProfile();
+                }
+            } catch (e) { }
+        }).catch(function (e) { console.warn('GV bildirim:', e && (e.code || e.message)); });
     };
 
     GV.ogrYukle = function () {
@@ -1225,6 +1273,7 @@
             var eskiTus = document.getElementById('gvOgrTus');
             if (eskiTus) eskiTus.remove();
             GV.vadesiGelenleriIsle();
+            setTimeout(function () { try { GV.ogretmenBildirimYukle(); } catch (e) { } }, 1800);
         } else if (window.OH && OH.bagliMi && OH.bagliMi()) {
             GV.ogrYukle();
         } else if (denemeSayisi < 20) {
