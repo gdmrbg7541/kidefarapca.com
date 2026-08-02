@@ -187,6 +187,7 @@
             score1P = 0;
             currentQuestionNumber = 0;
             waitingForNext1P = false;
+            window._haBasZaman = Date.now();   /* GOREV: gercek oynanis suresi */
             
             playerInfo1P.style.display = 'block';
             playerInfo1P.textContent = '⭐️ 0'; 
@@ -454,6 +455,12 @@
             
             if (gameMode === 1) {
                 finalScore.textContent = `${TOTAL_QUESTIONS} sorudan ${score1P} puan aldınız!`;
+                /* GOREV KOPRUSU — puan yalniz TEK KISILIK moddan bildirilir
+                   (dogru sayisi = puan/10; soru basina 10 puan verilir). */
+                try { if (window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({
+                    dogru: Math.round(score1P / 10), toplam: TOTAL_QUESTIONS, mod: '1p',
+                    sureSn: window._haBasZaman ? Math.round((Date.now() - window._haBasZaman) / 1000) : null
+                }); } catch (e) { }
             } else {
                 let winnerMessage = '';
                 if (scoreP1 > scoreP2) {

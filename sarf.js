@@ -802,12 +802,26 @@ const Game1 = {
         this.render();
     },
 
-    conjMarkup() {
+    conjMarkup(root) {
+        /* Pencerenin tepesindeki "kunye" seridi: secili kokun sira numarasi ve
+           ebced degeri. Numara sistemi veri_kok_numaralari.js'ten gelir; o dosya
+           yuklenmemisse serit hic basilmaz, pencere eskisi gibi calisir. */
+        let kunye = '';
+        if (root && typeof KokNo !== 'undefined') {
+            const rk = KokNo.rakam(root);
+            if (rk) {
+                kunye = '<div class="g1-kok-kunye" dir="rtl">'
+                      + '<span class="kk-kok">' + formatRootDisplay(root) + '</span>'
+                      + '<span class="kk-etiket" dir="ltr">K\u00d6K <b>' + rk + '</b></span>'
+                      + '<span class="kk-etiket kk-ebced" dir="ltr">EBCED <b>' + KokNo.ebced(root) + '</b></span>'
+                      + '</div>';
+            }
+        }
         return `
             <div class="g1-conj-btn" id="g1-conj-btn">
                 <span>تَصْريفُ الفِعْل</span><span class="caret">\u25BC</span>
             </div>
-            <div class="g1-conj-panel" id="g1-conj-panel">
+            <div class="g1-conj-panel" id="g1-conj-panel">${kunye}
                 <div class="g1-conj-tabs">
                     <div class="g1-conj-tab" data-t="madi">الماضي</div>
                     <div class="g1-conj-tab" data-t="mudari">المُضارِع</div>
@@ -825,7 +839,7 @@ const Game1 = {
        Pencere her seferinde sıfırdan yazıldığı için eski dinleyiciler birikmiyor. */
     setupConjugation(root) {
         const host = document.getElementById('g1-conj-host');
-        host.innerHTML = this.conjMarkup();
+        host.innerHTML = this.conjMarkup(root);
         const btn = document.getElementById('g1-conj-btn');
         const panel = document.getElementById('g1-conj-panel');
         const list = document.getElementById('g1-conj-list');
@@ -860,13 +874,27 @@ const Game1 = {
                 tab.classList.add('active');
                 hint.style.display = 'none';
                 App.playSound('click');
-                list.innerHTML = table[tab.dataset.t].map(pair =>
-                    `<div class="g1-conj-row"><span class="pron">${pair[0]}</span>` +
-                    (pair[1]
-                        ? `<span class="verb"><span class="g3-pattern-text">${formatWordVsRoot(pair[1], root)}</span></span>`
-                        : `<span class="verb none">\u2014</span>`) +
-                    `</div>`
-                ).join('');
+                /* Her satirin sonuna KOK·KALIP·SIGA adresi basiliyor:
+                   014·001·13 = kok 14 (كتب), kalip 1 (فَعَلَ), siga 13 (ben).
+                   Cekimi olmayan zamirlerde (emirde أنا/هوَ/هِيَ) adres basilmaz;
+                   numara sistemi yuklu degilse de satir eskisi gibi gorunur. */
+                const vf = (typeof VERB_FORMS !== 'undefined') ? VERB_FORMS[root] : null;
+                const zaman = tab.dataset.t;
+                list.innerHTML = table[zaman].map(pair => {
+                    let adres = '';
+                    if (pair[1] && typeof KokNo !== 'undefined') {
+                        const a = KokNo.cekimAdresi(root, vf, zaman, pair[0]);
+                        if (a.metin) {
+                            const k = KokNo.kalipBilgi(a.kalip);
+                            adres = `<span class="cekim-no" dir="ltr" title="${k.tr || ''}">${a.metin}</span>`;
+                        }
+                    }
+                    return `<div class="g1-conj-row"><span class="pron">${pair[0]}</span>` +
+                        (pair[1]
+                            ? `<span class="verb"><span class="g3-pattern-text">${formatWordVsRoot(pair[1], root)}</span></span>`
+                            : `<span class="verb none">\u2014</span>`) +
+                        adres + `</div>`;
+                }).join('');
                 list.querySelectorAll('.g1-conj-row').forEach(r => paintRootOutline(r, root));
                 void list.offsetWidth;   // animasyon her seferinde yeniden başlasın
                 list.classList.add('show');
@@ -901,7 +929,16 @@ const Game1 = {
             c.className = 'g1-root-bar-chip';
             c.dataset.index = i;
             c.dir = 'rtl';
-            c.textContent = formatRootDisplay(r.root);
+            /* Cip = kok metni + kucuk sira numarasi rozeti. Numara sistemi
+               (veri_kok_numaralari.js) yoksa cip eskisi gibi duz metin kalir. */
+            const rk = (typeof KokNo !== 'undefined') ? KokNo.rakam(r.root) : '';
+            if (rk) {
+                c.innerHTML = '<span class="kok-metin">' + formatRootDisplay(r.root) + '</span>'
+                            + '<span class="kok-no" dir="ltr">' + rk + '</span>';
+                c.title = 'K\u00f6k ' + rk + ' \u00b7 Ebced ' + KokNo.ebced(r.root);
+            } else {
+                c.textContent = formatRootDisplay(r.root);
+            }
             paintRootOutline(c, r.root);
             c.addEventListener('click', () => this.selectRoot(i));
             bar.appendChild(c);
@@ -2069,6 +2106,8 @@ const Game2 = {
     rondBitti() {
         this.state.roundIdx++;
         if (this.state.roundIdx >= GAME2_ROUNDS.length) {
+            /* NOT: Kelime Fabrikasi PUAN URETMEZ (yanlis yolu yok) — sure
+               takibi gorevkopru'nun sureTakibiBaslat() kanaliyla yapilir. */
             App.showDone('🏭', 'أَحْسَنْتَ! مِنَ الْكَلِمَةِ إِلَى الْجَذْرِ وَمِنَ الْجَذْرِ إِلَى الْكَلِمَةِ.');
             document.getElementById('done-replay').onclick = () => {
                 App.hideDone();
@@ -2559,8 +2598,14 @@ const Quiz = {
            hata verirdi; bu kontrol o durumda düzgün uyarı ekranı göstertir. */
         if (!SARF_FIREBASE_CONFIG || !SARF_FIREBASE_CONFIG.apiKey || !SARF_FIREBASE_CONFIG.projectId) return null;
         try {
-            if (!firebase.apps.length) firebase.initializeApp(SARF_FIREBASE_CONFIG);
-            this._db = firebase.firestore();
+            /* ISIMLI uygulama: sayfadaki VARSAYILAN firebase uygulamasi
+               kidefarapca'ya (gorevkopru/giris) aittir. Yarisin onune gecmek
+               icin sarf kendi projesine 'sarf' ADIYLA baglanir — iki proje
+               ayni sayfada cakismadan calisir. */
+            var sarfApp;
+            try { sarfApp = firebase.app('sarf'); }
+            catch (eYok) { sarfApp = firebase.initializeApp(SARF_FIREBASE_CONFIG, 'sarf'); }
+            this._db = sarfApp.firestore();
         } catch (e) {
             console.error('[sarf] Firebase başlatılamadı:', e);
             return null;
@@ -3448,6 +3493,8 @@ const Quiz = {
                 '<div class="qz-fb-emoji">' + (yer === 1 ? '🎉' : '🏅') + '</div>' +
                 '<h4>' + (yer === 1 ? 'Tebrikler, birinci oldun! 🥇' : yer + '. oldun') + '</h4>' +
                 '<div class="qz-durum">Toplam puanın: <b>' + puanOf(sirali[yer - 1]) + '</b></div>';
+            /* NOT: Dijital yarisma gorev sistemine BILDIRILMEZ — ogretmen
+               yarismayi sinifta canli uygular, sonuc tahtasi yeterlidir. */
         }
     },
 

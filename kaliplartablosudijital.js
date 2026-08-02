@@ -459,6 +459,7 @@
                     .map(data => `<span>${data.arapca || '?'}</span> ${data.turkce || '?'}`) 
                     .join('<br>')} </div>`;
              } else { /*...*/ }
+             gvBildir('bitis');   /* GOREV: 55 kokun tamami bitince */
              showScreen('results');
         }
         
@@ -652,18 +653,37 @@
             else if (screenName === 'results') { resultsScreen.classList.remove('hidden'); } 
             else if (screenName === 'level2') { level2Container.classList.add('active'); }
         }
+        /* GOREV: oynanan turlarin hedef toplami + baslama ani + tek bildirim kalkani */
+        let gvHedefToplam = 0, gvBasZaman = 0, gvBildirildi = false;
+        function gvTemizBaslat() {
+            /* Menuden yeniden girislerde bayat durum kalmasin: kok sirasi,
+               birikmis kelimeler ve sayaclar SIFIRDAN baslar. */
+            currentRootIndex = 0; allRoundsCompletedWords = [];
+            gvHedefToplam = 0; gvBasZaman = Date.now(); gvBildirildi = false;
+        }
+        function gvBildir(kaynak) {
+            if (gvBildirildi || gvHedefToplam <= 0) return;   /* yalniz TAMAMLANMIS tur varsa */
+            gvBildirildi = true;
+            try { if (window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({
+                dogru: allRoundsCompletedWords.length, toplam: gvHedefToplam, mod: 'tek',
+                detay: 'kok:' + currentRootIndex + '/' + allRoots.length + (kaynak ? ' · ' + kaynak : ''),
+                sureSn: gvBasZaman ? Math.round((Date.now() - gvBasZaman) / 1000) : null
+            }); } catch (e) { }
+        }
         startButtons.forEach(button => {
-            button.addEventListener('click', () => { 
+            button.addEventListener('click', () => {
                 if (audioContext.state === 'suspended') {
                     audioContext.resume().then(() => {
-                        playGenericSound('touch'); 
-                        const mode = button.dataset.mode; 
-                        setupLevel2(1, 0); 
+                        playGenericSound('touch');
+                        const mode = button.dataset.mode;
+                        gvTemizBaslat();
+                        setupLevel2(1, 0);
                     });
                 } else {
-                    playGenericSound('touch'); 
-                    const mode = button.dataset.mode; 
-                    setupLevel2(1, 0); 
+                    playGenericSound('touch');
+                    const mode = button.dataset.mode;
+                    gvTemizBaslat();
+                    setupLevel2(1, 0);
                 }
             });
         });
@@ -677,8 +697,9 @@
                     return el && el.classList.contains('done'); 
                 });
                 allRoundsCompletedWords = allRoundsCompletedWords.concat(foundWords);
+                gvHedefToplam += currentCorrectWordsData.length;   /* tamamlanan turun hedefi */
              }
-            currentRootIndex++; 
+            currentRootIndex++;
             nextButton.classList.add('hidden'); nextButton.classList.remove('pulse-on-appear'); 
             if (currentRootIndex < allRoots.length) { setupLevel2(gameState.mode, currentRootIndex); } 
             else { endGameLevel2(true); }
@@ -826,6 +847,7 @@
         gameBackButton.addEventListener('click', () => {
             playGenericSound('touch');
             gameState.isGameActive = false; // Oyunu durdur
+            gvBildir('erken');   /* GOREV: yarida birakista tamamlanan turlar bildirilir */
             showScreen('start');
         });
 
@@ -850,6 +872,7 @@
         gameBackButton.addEventListener('click', () => {
             playGenericSound('touch');
             gameState.isGameActive = false; // Oyunu durdur
+            gvBildir('erken');   /* GOREV: yarida birakista tamamlanan turlar bildirilir */
             showScreen('start');
         });
 

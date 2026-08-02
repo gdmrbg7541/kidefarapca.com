@@ -3534,6 +3534,8 @@ function llOdevOneriAc() {
     var eski = document.getElementById('llOdevOneri');
     if (eski) eski.remove();
     var oyunlar = (window.GV && GV.OYUNLAR && GV.OYUNLAR.length) ? GV.OYUNLAR : [];
+    /* SURE TAKIPLI icerikler (puan uretmez) performans odevi onerisi OLMAZ */
+    oyunlar = oyunlar.filter(function (o) { return (o.tur || 'puan') !== 'sure'; });
     if (!oyunlar.length) { addConfigRow('hw'); return; }   /* katalog yoksa eski davranis */
     var k = document.createElement('div');
     k.id = 'llOdevOneri';

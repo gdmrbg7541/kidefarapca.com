@@ -2473,7 +2473,7 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #ll-root #tab9 .gv-alt{ font-size: .58em !important; }
 #ll-root #tab9 .gv-rozet{ font-size: .5em !important; }
 #ll-root #tab9 #gvFiltreNot p{ font-size: .6em !important; }
-#ll-root #tab9 #gvListeSayac{ font-size: .55em !important; }
+#ll-root #tab9 #gvListeSayac, #ll-root #tab9 #gvOyunSayac{ font-size: .55em !important; }
 #ll-root #tab9 .gv-ist-sayi{ font-size: 1.15em !important; }
 #ll-root #tab9 button .lli, #ll-root #tab9 .gv-rozet .lli{ width: 1.05em; height: 1.05em; }
 #ll-root #tab9 .gv-gicon .lli{ width: 1.5em; height: 1.5em; }

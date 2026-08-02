@@ -34,8 +34,22 @@
         { d: 'zamanlayaris.html',  ad: 'Zamanla Yarış' },
         /* Alfabe sayfasindaki Yarisma sekmesi — puan YALNIZ tek kisilik
            moddan gelir (iki kisilik mod sonuc gondermez). */
-        { d: 'alfabe.html',        ad: 'Alfabe Yarışması (Tek Kişilik)' }
+        { d: 'alfabe.html',        ad: 'Alfabe Yarışması (Tek Kişilik)' },
+        /* Kaliplar tablosuna bagli oyunlar. (ikikidijital OLCULEMEZ:
+           tamamen iki kisilik + hakem puanli — katalog disi birakildi.
+           bilgiyarismasikacom SISTEME BAGLANMAZ: ogretmen sinifta uygular.) */
+        { d: 'harekeavcisi.html',  ad: 'Hareke Avcısı (Tek Kişilik)' },
+        { d: 'koktengovdeye.html', ad: 'Kökten Gövdeye' },
+        /* SURE TAKIPLI icerikler (Beceri • Ogretmen Ozel): puan uretmez,
+           yalniz sayfada kalinan sure + oturum sayisi raporlanir. */
+        { d: 'sarf.html',          ad: 'Sarf: Kelime Fabrikası (Konu Anlatımı)', tur: 'sure' }
     ];
+    /* Bir icerigin olcum turu: 'puan' (yuzde) | 'sure' (kalinan zaman). */
+    GV.oyunTuru = function (d) {
+        for (var i = 0; i < GV.OYUNLAR.length; i++)
+            if (GV.OYUNLAR[i].d === d) return GV.OYUNLAR[i].tur || 'puan';
+        return 'puan';
+    };
 
     /* ---------------------------------------------------------------- yardimcilar */
     function fb() { return (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) ? firebase : null; }
@@ -127,7 +141,11 @@
             'ölçülebilir oyunlardan görev gönder. Sonuçlar aşağıda canlı birikir; performans notu seçersen seviye ayarına ' +
             'otomatik sütun eklenir.</p>' +
             '<div id="gvIstatistik" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;"></div>' +
-            akordiyon('gvAkorYeni', '#D84315', G_ROKET + '<span>Yeni Görev Gönder</span>',
+            akordiyon('gvAkorYeni', '#D84315', G_ROKET + '<span>Yeni Görev Gönder</span>' +
+                '<span id="gvOyunSayac" title="Görev olarak gönderilebilecek ölçülebilir oyun sayısı"' +
+                ' style="display:inline-flex; align-items:center; justify-content:center; min-width:22px;' +
+                ' height:22px; padding:0 9px; border-radius:11px; background:#D84315; color:#fff;' +
+                ' font-size:.76rem;">' + GV.OYUNLAR.length + ' oyun</span>',
                 '<div id="gvYeniKutu"></div>', !!GV._gvYeniAcik) +
             akordiyon('gvAkorListe', '#7B1FA2', gIkon('grafik') + '<span>Gönderilen Görevler &amp; Sonuçlar</span>' +
                 '<span id="gvListeSayac" style="display:inline-flex; align-items:center; justify-content:center;' +
@@ -206,11 +224,11 @@
 
         /* ozet istatistikler */
         var simdi = Date.now(), hafta = 7 * 24 * 60 * 60 * 1000;
-        var uidler = {}, toplamOyun = 0, rekorTop = 0, sonHafta = {};
+        var uidler = {}, toplamOyun = 0, rekorTop = 0, puanN = 0, sonHafta = {};
         kayitlar.forEach(function (r) {
             uidler[r.ogrenciUid] = 1;
             toplamOyun += (r.oynama || 0);
-            rekorTop += (r.rekor || 0);
+            if (r.tur !== 'sure') { rekorTop += (r.rekor || 0); puanN++; }   /* sure kayitlari ortalamaya girmez */
             if ((r.sonTarih || 0) > simdi - hafta) sonHafta[r.ogrenciUid] = 1;
         });
         var kutu = function (deger, etiket, renk) {
@@ -222,7 +240,7 @@
         if (ozet) ozet.innerHTML =
             kutu(Object.keys(uidler).length, 'etkin öğrenci', '#D84315') +
             kutu(toplamOyun, 'toplam oynama', '#B7950B') +
-            kutu('%' + Math.round(rekorTop / kayitlar.length), 'ortalama rekor', '#16A085') +
+            kutu(puanN ? '%' + Math.round(rekorTop / puanN) : '—', 'ortalama rekor', '#16A085') +
             kutu(Object.keys(sonHafta).length, 'son 7 günde oynayan', '#7B1FA2');
 
         /* ogrenci kartlari (ad, sinif listesindeki satirdan gelir) */
@@ -235,10 +253,21 @@
         govde.innerHTML = Object.keys(grup).map(function (uid) {
             var o = grup[uid];
             o.oyunlar.sort(function (a, b) { return (b.sonTarih || 0) - (a.sonTarih || 0); });
-            var tOyun = 0, rTop = 0, ayTop = 0, sonT = 0;
+            var tOyun = 0, rTop = 0, ayTop = 0, sonT = 0, puanOyun = 0;
             var satirlar = o.oyunlar.map(function (r) {
-                tOyun += (r.oynama || 0); rTop += (r.rekor || 0);
+                tOyun += (r.oynama || 0);
                 if ((r.sonTarih || 0) > sonT) sonT = r.sonTarih;
+                if (r.tur === 'sure') {
+                    /* SURE TAKIPLI icerik satiri: yuzde/grafik yok — kalinan sure */
+                    return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px dashed #F3E2D3; flex-wrap:wrap;">' +
+                        '<span style="flex:1; min-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
+                        'font-size:.86rem; color:#6B4A38;">' + esc(oyunAdi(r.oyun)) + '</span>' +
+                        '<span style="font-weight:800; color:#2471A3; display:inline-flex; align-items:center; gap:5px;">' +
+                        gIkon('saat') + ' ' + (GV.sureYaz(r.toplamSureSn) || '0 sn') + '</span>' +
+                        '<span style="width:190px; text-align:right; font-size:.73rem; color:#A6836E;">' +
+                        (r.oynama || 0) + ' oturum · son giriş: ' + trTarih(r.sonTarih) + '</span></div>';
+                }
+                rTop += (r.rekor || 0); puanOyun++;
                 var fark = sonAyFarki(r.gecmis, r.rekor);
                 ayTop += fark;
                 var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
@@ -255,13 +284,16 @@
                     '<span style="width:96px; text-align:right; font-size:.73rem; color:#A6836E;">' + (r.oynama || 0) + ' oyun' +
                     (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
-            var ortRekor = o.oyunlar.length ? Math.round(rTop / o.oyunlar.length) : 0;
+            var ortRekor = puanOyun ? Math.round(rTop / puanOyun) : 0;
             var oRenk = ortRekor >= 85 ? '#1E8449' : (ortRekor >= 50 ? '#B7950B' : '#C0392B');
+            var ozetGorsel = puanOyun ? pastaHalka(ortRekor, oRenk)
+                : '<span style="display:inline-flex; width:46px; height:46px; align-items:center;' +
+                  ' justify-content:center; font-size:1.9rem; flex:none;" title="Yalnız süre takipli içerik">' + gIkon('saat') + '</span>';
             return '<details class="profile-accordion gv-etk-akor" data-uid="' + uid + '"' + (GV._etkAcik[uid] ? ' open' : '') +
                 ' style="background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
                 ' margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
                 '<summary style="cursor:pointer; display:flex; align-items:center; gap:12px; padding:11px 15px; flex-wrap:wrap;">' +
-                pastaHalka(ortRekor, oRenk) +
+                ozetGorsel +
                 '<span style="flex:1; min-width:150px;">' +
                 '<span style="display:block; font-size:1.02rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
                 '<span style="display:block; font-size:.76rem; color:#A6836E; margin-top:2px;">' + o.oyunlar.length +
@@ -344,15 +376,22 @@
     GV.yeniCiz = function (hedefId) {
         var g = document.getElementById(hedefId || 'gvGovde');
         if (!g) return;
-        var oyunlar = GV.OYUNLAR.map(function (o) {
-            return '<option value="' + esc(o.d) + '">' + esc(o.ad) + '</option>';
-        }).join('');
+        var secenek = function (o) { return '<option value="' + esc(o.d) + '">' + esc(o.ad) + '</option>'; };
+        var puanli = GV.OYUNLAR.filter(function (o) { return (o.tur || 'puan') !== 'sure'; });
+        var sureli = GV.OYUNLAR.filter(function (o) { return o.tur === 'sure'; });
+        var oyunlar =
+            '<optgroup label="🎮 Puanlı Oyunlar (' + puanli.length + ')">' + puanli.map(secenek).join('') + '</optgroup>' +
+            (sureli.length
+                ? '<optgroup label="⏱ Süre Takipli İçerikler — Beceri • Öğretmen Özel (' + sureli.length + ')">' +
+                  sureli.map(secenek).join('') + '</optgroup>'
+                : '');
         var kutu = 'width:100%; box-sizing:border-box; padding:11px; border:1px solid #E8A87C; border-radius:10px;' +
             'font-family:inherit; font-size:.92rem; color:#6B4A38; background:#fff;';
         var etiket = 'display:block; margin:0 0 5px; font-size:.82rem; font-weight:700; color:#9C3B0C;';
         g.innerHTML =
             '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
-            '<div style="grid-column:1/-1;"><label style="' + etiket + '">Oyun</label>' +
+            '<div style="grid-column:1/-1;"><label style="' + etiket + '">Oyun ' +
+            '<small style="font-weight:700; color:#B9987F;">(' + GV.OYUNLAR.length + ' gönderilebilir görev)</small></label>' +
             '<select id="gvOyun" style="' + kutu + '" onchange="GV.basligiDoldur()">' + oyunlar + '</select></div>' +
             '<div style="grid-column:1/-1;"><label style="' + etiket + '">Görev başlığı</label>' +
             '<input type="text" id="gvBaslik" maxlength="60" style="' + kutu + '"></div>' +
@@ -390,6 +429,19 @@
     GV.basligiDoldur = function () {
         var o = document.getElementById('gvOyun'), b = document.getElementById('gvBaslik');
         if (o && b) b.value = oyunAdi(o.value) + ' Görevi';
+        /* SURE TAKIPLI icerikte yuzde olmadigindan performans notu anlamsiz:
+           kutu gizlenir ve isareti kaldirilir. */
+        try {
+            var not = document.getElementById('gvNot');
+            var sarma = not ? not.closest('div') : null;
+            var sureli = o && GV.oyunTuru(o.value) === 'sure';
+            if (sarma) sarma.style.display = sureli ? 'none' : '';
+            if (sureli && not) {
+                not.checked = false;
+                var ayar = document.getElementById('gvNotAyar');
+                if (ayar) ayar.style.display = 'none';
+            }
+        } catch (e) { }
     };
 
     GV.hedefCiz = function () {
@@ -494,6 +546,7 @@
             ogrenciUid: hedef.ogrenciUid || null,
             uids: uids,
             hedefAd: hedefAd,
+            tur: GV.oyunTuru(oyun),
             sonTarih: sonTarih,
             performans: notMu ? { agirlik: agirlik,
                 donem: (typeof window.llAktifDonem === 'function' ? window.llAktifDonem(lId) : 0) } : null,
@@ -824,6 +877,7 @@
         var v = null;
         for (var i = 0; i < GV.gorevlerim.length; i++) if (GV.gorevlerim[i]._id === gorevId) v = GV.gorevlerim[i];
         if (!v) { el.innerHTML = ''; return; }
+        var surelimi = (v.tur === 'sure' || GV.oyunTuru(v.oyun) === 'sure');
 
         var harita = {};
         liste.forEach(function (r) { harita[r.ogrenciUid] = r; });
@@ -835,13 +889,20 @@
             if (r) yapan++;
             var durum = !s.hesapUid
                 ? '<span style="color:#A6836E; font-size:.8rem;">hesap bağlı değil</span>'
-                : (r ? (r.zorluk ? zorlukRozet(r.zorluk) + ' ' : '') +
+                : (r ? ((surelimi || r.tur === 'sure')
+                    /* SURE TAKIPLI icerik: yuzde yok — kalinan sure + oturum */
+                    ? '<span style="font-weight:800; color:#2471A3; display:inline-flex; align-items:center; gap:5px;">' +
+                      gIkon('saat') + ' ' + (GV.sureYaz(r.sureSn) || '0 sn') + '</span>' +
+                      '<span style="color:#A6836E; font-size:.76rem;"> · ' + (r.deneme || 1) + ' oturum' +
+                      ' · son: ' + trTarih(r.bitis) +
+                      (r.gec ? ' · <b style="color:#E74C3C;">geç</b>' : '') + '</span>'
+                    : (r.zorluk ? zorlukRozet(r.zorluk) + ' ' : '') +
                     '<span style="font-weight:800; color:' + (r.yuzde >= 85 ? '#1E8449' : (r.yuzde >= 50 ? '#B7950B' : '#C0392B')) + ';">%' + (r.yuzde || 0) + '</span>' +
                     '<span style="color:#A6836E; font-size:.76rem;"' +
                     (r.sonDetay ? ' title="' + esc(r.sonDetay) + '"' : '') + '> · ' + (r.deneme || 1) + ' deneme' +
                     (r.sureSn != null ? ' · ' + GV.sureYaz(r.sureSn) : '') +
-                    (r.gec ? ' · <b style="color:#E74C3C;">geç</b>' : '') + '</span>'
-                    : '<span style="color:#B34700; font-size:.8rem;">bekleniyor</span>');
+                    (r.gec ? ' · <b style="color:#E74C3C;">geç</b>' : '') + '</span>')
+                    : '<span style="color:#B34700; font-size:.8rem;">' + (surelimi ? 'henüz girmedi' : 'bekleniyor') + '</span>');
             return '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;' +
                 'background:#fff; border:1px solid #F3E2D3; border-radius:11px; padding:10px 13px; margin-bottom:8px;">' +
                 '<span style="color:#6B4A38; font-size:.9rem;">' + esc(s.name || 'Öğrenci') + '</span>' +
@@ -860,11 +921,11 @@
         el.innerHTML =
             '<div style="display:flex; justify-content:space-between; margin:0 0 10px; font-size:.83rem; color:#8B6A57;">' +
             '<span>' + oyunAdi(v.oyun) + (v.sonTarih ? ' · son tarih ' + trTarih(v.sonTarih) : '') + '</span>' +
-            '<span><b>' + yapan + '</b> / ' + ogrenciler.length + ' tamamladı</span></div>' +
+            '<span><b>' + yapan + '</b> / ' + ogrenciler.length + (surelimi ? ' girdi' : ' tamamladı') + '</span></div>' +
             (satirlar || '<p style="color:#A6836E; font-size:.85rem;">Bu hedefte öğrenci yok.</p>') + notTus;
-        /* akordiyon basligindaki kisa ozet: kac ogrenci tamamladi */
+        /* akordiyon basligindaki kisa ozet: kac ogrenci tamamladi/girdi */
         var oz = document.getElementById('gvOzet_' + gorevId);
-        if (oz) oz.innerHTML = yapan + '/' + ogrenciler.length + ' ' + gIkon('onay');
+        if (oz) oz.innerHTML = yapan + '/' + ogrenciler.length + ' ' + gIkon(surelimi ? 'saat' : 'onay');
         GV._sonSonuclar = liste;
     };
 
@@ -1682,6 +1743,15 @@
             }
             liste.sort(function (a, b) { return (b.rekor || 0) - (a.rekor || 0); });
             el.innerHTML = liste.map(function (r) {
+                if (r.tur === 'sure') {
+                    /* SURE TAKIPLI icerik: ogrenci de yalniz kalinan sureyi gorur */
+                    return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed #E8E0F5;">' +
+                        '<span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
+                        'font-size:.88rem; color:#6B4A38;">' + esc(oyunAdi(r.oyun)) + '</span>' +
+                        '<span style="font-weight:800; color:#2471A3; font-size:.82rem; display:inline-flex; align-items:center; gap:5px;">' +
+                        gIkon('saat') + ' ' + (GV.sureYaz(r.toplamSureSn) || '0 sn') + '</span>' +
+                        '<span style="width:64px; text-align:right; font-size:.72rem; color:#A6836E;">' + (r.oynama || 0) + ' oturum</span></div>';
+                }
                 var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
                 return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed #E8E0F5;">' +
                     '<span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +

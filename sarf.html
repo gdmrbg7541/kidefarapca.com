@@ -23,11 +23,12 @@
      yüklenemezse diğer üç oyun normal çalışmaya devam eder. -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <!-- ?v=NN: tarayıcı eski sarf.css/sarf.js kopyasını önbellekten sunmasın diye
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
-<link rel="stylesheet" href="sarf.css?v=117">
+<link rel="stylesheet" href="sarf.css?v=121">
 </head>
 <body>
 
@@ -99,7 +100,13 @@
      kaliplartablosu'ndaki "Günün Kökü" ile aynı kaynaktan gelir. -->
 <script src="veri_vezin_numaralari.js"></script>
 <script src="veri_kokler.js"></script>
-<script src="sarf.js?v=106"></script>
+<!-- Kok sira numaralari + ebced + KOK·KALIP·SIGA adresi.
+     sarf.js'ten ONCE yuklenmeli; yuklenmezse sayfa eskisi gibi calisir. -->
+<script src="veri_kok_numaralari.js?v=121"></script>
+<script src="gorevkopru.js?v=6"></script>
+<script>/* Sarf konu anlatimi/simulasyon sayfasidir: puan degil SURE takip edilir. */
+try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+<script src="sarf.js?v=123"></script>
 <script src="geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

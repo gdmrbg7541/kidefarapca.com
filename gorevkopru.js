@@ -97,10 +97,17 @@
         });
     }
     function sdkHazirla() {
-        if (typeof firebase !== 'undefined' && firebase.firestore) return Promise.resolve();
-        return yukle(SDK + 'firebase-app.js')
-            .then(function () { return yukle(SDK + 'firebase-auth.js'); })
-            .then(function () { return yukle(SDK + 'firebase-firestore.js'); });
+        /* Sayfa SDK'nin bir kismini kendisi yuklemis olabilir (orn. sarf.html:
+           app+firestore var, AUTH yok). Eksik parcalar tamamlanir. */
+        if (typeof firebase === 'undefined') {
+            return yukle(SDK + 'firebase-app.js')
+                .then(function () { return yukle(SDK + 'firebase-auth.js'); })
+                .then(function () { return yukle(SDK + 'firebase-firestore.js'); });
+        }
+        var p = Promise.resolve();
+        if (!firebase.auth) p = p.then(function () { return yukle(SDK + 'firebase-auth.js'); });
+        if (!firebase.firestore) p = p.then(function () { return yukle(SDK + 'firebase-firestore.js'); });
+        return p;
     }
 
     function kur() {
@@ -133,6 +140,7 @@
                 KG.aktif = !!(KG.gorev || KG.bag);
                 if (KG.aktif) KG.bildir = gonder;
                 if (KG.gorev) rozet('📋 GÖREV: ' + (KG.gorev.baslik || KG.gorev.oyun || ''));
+                sureKur();   /* sayfa sure takibi istediyse simdi kurulur */
             });
         }).catch(function (e) {
             console.warn('gorevkopru:', e && (e.code || e.message));
@@ -236,6 +244,111 @@
             }, { merge: true }).then(function () { return { enIyi: enIyi }; });
         });
     }
+
+    /* ================================================= SURE TAKIBI (v6)
+       Puan uretmeyen icerikler (konu anlatimi / simulasyon / beceri /
+       ogretmen ozel) icin: sayfa BIR KEZ KidefGorev.sureTakibiBaslat()
+       cagirir; kopru sayfada GORUNUR kalinan sureyi biriktirir ve kalp
+       atisiyla (varsayilan 60 sn) buluta isler. Sekme gizlenince /
+       kapanirken de yazilir. Kayitta YUZDE YOKTUR — ogretmen yalniz
+       "toplam sure + oturum sayisi + son giris" gorur (tur: 'sure'). */
+    var sure = { istendi: false, acik: false, bas: 0, birikenMs: 0,
+                 dokumaYazilan: 0, oturumSayildi: false, aralikMs: 60000 };
+    KG.sureTakibiBaslat = function (ayar) {
+        if (sure.istendi) return;
+        sure.istendi = true;
+        if (ayar && ayar.aralikSn) sure.aralikMs = Math.max(1, ayar.aralikSn) * 1000;
+        sureKur();
+    };
+    function sureKur() {
+        if (!sure.istendi || sure.acik || !KG.aktif || !db || !user) return;
+        sure.acik = true;
+        sure.bas = Date.now();
+        try {
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) { sureTopla(); sureYazdir(); }
+                else sure.bas = Date.now();
+            });
+        } catch (e) { }
+        try { window.addEventListener('pagehide', function () { sureTopla(); sureYazdir(); }); } catch (e) { }
+        setInterval(function () {
+            sureTopla();
+            if (!(document && document.hidden)) sure.bas = Date.now();
+            sureYazdir();
+        }, sure.aralikMs);
+        rozet('⏱ Süre takibi açık — bu sayfada kaldığın süre kaydedilir');
+        rozetGizle(4500);
+    }
+    function sureTopla() {
+        if (!sure.acik) return;
+        var simdi = Date.now();
+        if (sure.bas) { sure.birikenMs += Math.max(0, simdi - sure.bas); sure.bas = 0; }
+    }
+    function sureYazdir() {
+        var sn = Math.round(sure.birikenMs / 1000);
+        var fark = sn - sure.dokumaYazilan;
+        if (!sure.acik || !db || !user || fark <= 0) return Promise.resolve(false);
+        var simdi = Date.now(), isler = [];
+        if (KG.bag) isler.push(sureIlerlemeYaz(fark, sn, simdi).catch(function (e) {
+            console.warn('sure ilerleme yazilamadi:', e && (e.code || e.message)); return null;
+        }));
+        if (KG.gorev) isler.push(sureGorevYaz(fark, sn, simdi).catch(function (e) {
+            console.warn('sure gorev yazilamadi:', e && (e.code || e.message)); return null;
+        }));
+        if (!isler.length) return Promise.resolve(false);
+        return Promise.all(isler).then(function (r) {
+            if (r.some(function (x) { return x; })) { sure.dokumaYazilan = sn; sure.oturumSayildi = true; }
+            return true;
+        });
+    }
+    function sureIlerlemeYaz(fark, oturumSn, simdi) {
+        var ref = db.collection('ogrenciIlerleme').doc(user.uid + '_' + oyunDosya.replace(/[^a-z0-9]/g, ''));
+        return ref.get().then(function (doc) {
+            var eski = (doc.exists && doc.data()) || {};
+            return ref.set({
+                ogrenciUid: user.uid,
+                ogretmenUid: KG.bag.ogretmenUid,
+                email: user.email || '',
+                ad: KG.bag.ad || '',
+                oyun: oyunDosya,
+                tur: 'sure',
+                toplamSureSn: (parseInt(eski.toplamSureSn) || 0) + fark,
+                sonOturumSn: oturumSn,
+                oynama: (parseInt(eski.oynama) || 0) + (sure.oturumSayildi ? 0 : 1),
+                ilkTarih: eski.ilkTarih || simdi,
+                sonTarih: simdi
+            }, { merge: true }).then(function () { return true; });
+        });
+    }
+    function sureGorevYaz(fark, oturumSn, simdi) {
+        var g = KG.gorev;
+        var ref = db.collection('gorevSonuc').doc(gorevId + '_' + user.uid);
+        return ref.get().then(function (doc) {
+            var eski = (doc.exists && doc.data()) || {};
+            var gec = (typeof eski.gec === 'boolean') ? eski.gec
+                : !!(g.sonTarih && simdi > g.sonTarih);
+            return ref.set({
+                gorevId: gorevId,
+                ogretmenUid: g.ogretmenUid || '',
+                ogrenciUid: user.uid,
+                email: user.email || '',
+                oyun: g.oyun || '',
+                baslik: g.baslik || '',
+                tur: 'sure',
+                yuzde: null,
+                sonYuzde: null,
+                sureSn: (parseInt(eski.sureSn) || 0) + fark,
+                sonSureSn: oturumSn,
+                deneme: (parseInt(eski.deneme) || 0) + (sure.oturumSayildi ? 0 : 1),
+                gec: gec,
+                bitis: simdi
+            }, { merge: true }).then(function () { return true; });
+        });
+    }
+    /* test kancalari */
+    KG._sureTopla = sureTopla;
+    KG._sureYazdir = sureYazdir;
+    KG._sureKur = sureKur;
 
     /* ------------------------------------------------ ana bildirim */
     function gonder(s) {
