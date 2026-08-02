@@ -477,9 +477,9 @@ function ozellikGuncelle(p){
   odakCember.setAttribute('transform', 'rotate(' + (q*70) + ' 60 80)');
 }
 
-/* ============ 5 · DİJİTAL BİLGİ YARIŞMASI ============ */
-/* Sahne tamamen CSS animasyonlu; kaydırmayla yumuşak belirme JS'ten sürülür. */
-const yarismaIc = $('yarismaIc');
+/* ============ 5 · DİJİTAL BİLGİ YARIŞMASI + 5b · FABRİKA ============ */
+/* Sahneler tamamen CSS animasyonlu; kaydırmayla yumuşak belirme JS'ten sürülür. */
+const yarismaIc = $('yarismaIc'), fabrikaIc = $('fabrikaIc');
 
 /* ---------- tuvaller ---------- */
 function boyutlaTuvaller(){
@@ -495,10 +495,9 @@ addEventListener('mousemove', e => { hale.style.left = e.clientX+'px'; hale.styl
 
 /* =================== ANA DÖNGÜ =================== */
 const kokPerde = $('kokPerde'), oyunPerde = $('oyunPerde');
-const gizemPerde = $('gizemPerde'), finalPerde = $('finalPerde');
-const isik = $('isik'), kapiSol = $('kapiSol'), kapiSag = $('kapiSag');
+const gizemPerde = $('gizemPerde'), fabrikaPerde = $('fabrikaPerde'), finalPerde = $('finalPerde');
+const isik = $('isik');   /* kapiSol/kapiSag artık CSS'te hep açık durur */
 const dokuman = document.documentElement;
-let yonlendi = false;
 
 function dongu(zaman){
   const kayHiz = kirp(Math.abs(hedefY - sY)*.06, 0, 8);
@@ -530,22 +529,22 @@ function dongu(zaman){
     }
   }
 
+  { /* fabrika sahnesi (öğütücü + usta): kaydırdıkça belirir */
+    if (fabrikaIc){
+      const p = perdeP(fabrikaPerde);
+      const g = eV(kirp(p/.45, 0, 1));
+      fabrikaIc.style.opacity = .12 + g*.88;
+      fabrikaIc.style.transform = 'translateY(' + ((1-g)*56) + 'px) scale(' + (.93 + g*.07) + ')';
+    }
+  }
+
   { /* final: güneş doğar, en dipte site kendiliğinden açılır */
     const p = perdeP(finalPerde);
     ozellikGuncelle(p);
     isik.style.opacity = eV(kirp(p/.3, 0, 1)) * .8;
-    const e = eV(kirp((p-.62)/.36, 0, 1));   // en sonda kapanır
-    kapiSol.style.transform = 'translateX(' + ((-1+e)*104) + '%)';
-    kapiSag.style.transform = 'translateX(' + ((1-e)*104) + '%)';
-    if (!yonlendi && hedefY + vh >= dokuman.scrollHeight - 4){
-      /* SITE KILIDI: kilitliyken en dipte otomatik giris YAPILMAZ —
-         ziyaretci reklam + giris bolumunde kalir (kilit.js gozlem kipi). */
-      if (!(window.SiteKilit && !SiteKilit.izinliMi())) {
-        yonlendi = true;
-        $('gecis').classList.add('aktif');
-        setTimeout(()=>{ location.href = 'index.html'; }, 850);
-      }
-    }
+    /* KAPI KAPANISI BU BOLUMDEN ALINDI: kapilar artik yalnizca en alttaki
+       reklam bolumundeki "Siteye Gir" tusuna basilinca kapanir (indexyeni.html).
+       Otomatik dipte-yonlendirme de yok. */
   }
 
   requestAnimationFrame(dongu);

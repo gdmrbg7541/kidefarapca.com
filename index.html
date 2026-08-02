@@ -24,6 +24,16 @@
     <link rel="stylesheet" href="kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=20260731g">
+    <style>
+    /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
+       z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
+       perdenin önünde açılır — index doğrudan giriş ekranı olur. */
+    #login-modal.modal-overlay{
+        background:linear-gradient(135deg,#FFC107 0%,#F39C12 45%,#EF5350 100%);
+        backdrop-filter:none;
+        z-index:100000001;
+    }
+    </style>
     <link rel="stylesheet" href="listelerim.css?v=20260801zb">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
@@ -75,7 +85,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="kilit.js?v=6"></script>
+    <script src="kilit.js?v=8"></script>
 <style>
 /* ==== CANLI DERS: TAŞINABİLİR PENCERE (siteden bağımsız, sürüklenebilir) ==== */
 #live-class-modal.windowed {
@@ -546,11 +556,7 @@
  <section id="premium-kurslar" class="content-section premium-section" style="display: none;">
   <div class="premium-layout">
         
-    <div class="ad-banner left-ad desktop-only">
-      <img src="reklam1.jpg" alt="Kidef Kampanya Sol" class="floating-ad">
-    </div>
-
-    <div class="premium-content"> 
+    <div class="premium-content">
           
       <div class="game-grid premium-grid" style="grid-template-columns: 1fr;"> <div class="game-card premium-card combined-card" style="opacity: 0.8; cursor: not-allowed;">
           <div class="default-game-content">
@@ -569,10 +575,6 @@
         </div>
 
       </div>
-    </div>
-
-    <div class="ad-banner right-ad desktop-only">
-      <img src="reklam2.jpg" alt="Kidef Kampanya Sağ" class="floating-ad reverse-float">
     </div>
 
   </div>
