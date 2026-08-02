@@ -472,10 +472,11 @@ function saveMyProfileInfo() {
 }
 
 function renderStudentProfile() {
-    /* OGRETMEN: ayni bolume, ayni akordiyon sistemiyle OGRETMEN PROFILI
-       cizilir (listelerim.js -> renderTeacherProfile). Icerik farkli:
-       kurumlar/siniflar, ogretmen kodu, bekleyen istekler, tatiller. */
-    if (appState.userRole === 'teacher' && typeof window.renderTeacherProfile === 'function') {
+    /* OGRETMEN + YONETICI: ayni bolume, ayni akordiyon sistemiyle OGRETMEN
+       PROFILI cizilir (listelerim.js -> renderTeacherProfile). Yonetici,
+       ogretmenin ust kumesidir; ek olarak Site Erisim Kilidi panelini gorur. */
+    if ((appState.userRole === 'teacher' || appState.userRole === 'admin') &&
+        typeof window.renderTeacherProfile === 'function') {
         window.renderTeacherProfile();
         return;
     }

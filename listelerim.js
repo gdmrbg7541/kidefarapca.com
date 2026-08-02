@@ -3631,7 +3631,8 @@ function llProfilSidebarSar() {
     var yeni = function () {
         var r = _rs.apply(this, arguments);
         try {
-            if (window.appState && appState.currentView === 'student-profile-section' && appState.userRole === 'teacher') {
+            if (window.appState && appState.currentView === 'student-profile-section' &&
+                (appState.userRole === 'teacher' || appState.userRole === 'admin')) {
                 clearTimeout(window._tpTazele);
                 window._tpTazele = setTimeout(function () {
                     try {
