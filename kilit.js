@@ -58,11 +58,19 @@
     /* Giris molasi: Giris Yap'a basilinca perde gecici kalkar ki giris
        penceresi gorunebilsin. Giris olmazsa 90 sn sonra perde geri iner. */
     K.girisAc = function () {
-        K._mola = Date.now() + 90000;
+        K._mola = Date.now() + 90000;   /* ust sinir (emniyet) */
+        K._molaBas = Date.now();
         var p = document.getElementById(PERDE_ID);
         if (p) p.style.display = 'none';
         try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e) { }
     };
+    /* Giris penceresi acik mi? (kapatilinca mola derhal biter) */
+    function girisPenceresiAcik() {
+        try {
+            var lm = document.getElementById('login-modal');
+            return !!(lm && window.getComputedStyle(lm).display !== 'none');
+        } catch (e) { return false; }
+    }
 
     function kartSvg(tur) {
         if (tur === 'ogrenci') /* KUPA: parlayan kupa + yukselen rekor cubuklari */
@@ -192,11 +200,18 @@
         var k = K.karar(kilit, girisliMi(), rolOku());
         if (k.izin) { K._mola = 0; perdeKaldir(); return; }
         /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
-           perde gizli bekler; giris olmazsa sure bitince geri iner. */
+           perde gizli bekler. Pencere KAPATILIRSA (carpi) mola derhal
+           biter ve perde geri iner; ust sinir 90 sn'dir. Ilk 2.5 sn
+           pencere daha acilmamis olabilir diye kapali sayilmaz. */
         if (K._mola && Date.now() < K._mola) {
-            var p = document.getElementById(PERDE_ID);
-            if (p) p.style.display = 'none';
-            return;
+            var gecen = Date.now() - (K._molaBas || 0);
+            if (gecen > 2500 && !girisPenceresiAcik()) {
+                K._mola = 0;   /* carpiya basildi: kilit geri */
+            } else {
+                var p = document.getElementById(PERDE_ID);
+                if (p) p.style.display = 'none';
+                return;
+            }
         }
         perdeGoster(k.neden);
     }
