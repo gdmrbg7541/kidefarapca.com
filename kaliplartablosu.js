@@ -1245,7 +1245,13 @@ window.onload = function() {
             handleSwipeGesture();
         }, { passive: true });
 
+        /* Eski surumde lastWheelTime/wheelCooldown hic tanimlanmamisti:
+           her yatay tekerlek olayi sessiz ReferenceError firlatiyor ve
+           mucerred<->mezid tekerlek gecisi HIC calismiyordu. Tanimlandi. */
+        let lastWheelTime = 0;
+        const wheelCooldown = 600;
         sliderContainer.addEventListener('wheel', (e) => {
+            if (window.isAtlasMode) return;   /* atlas acikken tablo kaydirici karismasin */
             const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
             if (zoomCheckbox && zoomCheckbox.checked) return; // Büyüme açıkken sekme değiştirmeyi iptal et
             
@@ -8329,6 +8335,9 @@ window.atlasEPats = [
 ];
 
 window.openAtlasOverlay = function(stage) {
+    /* SEKME HAFIZASI: baska sekmeye gecmeden once acik sekmenin durumu
+       (secili fiil + turetilen/acilan hucreler) kaydedilir. */
+    try { if (window._atlasDurumKaydet) window._atlasDurumKaydet(); } catch (e) { }
     window.isAtlasMode = true;
     window.isAtlasFullscreen = false;
     let _sa = document.getElementById('screen-atlas');
@@ -8391,6 +8400,7 @@ window.openAtlasOverlay = function(stage) {
 
     
     
+    window._atlasAcikStage = stage;   /* kaydirma gezintisi icin acik baslik */
     window.currentStage = stage.replace('_mezid', '').toLowerCase();
     let arTitle, trTitle, desc, descBottom = "";
     let hasTable = false;
@@ -8700,10 +8710,11 @@ window.openAtlasOverlay = function(stage) {
     if(elAr) {
         elAr.innerText = arTitle;
         let isNoun = ['mastar', 'ismi_fail', 'ismi_meful', 'zaman_mekan', 'ismi_alet', 'cemi_teksir', 'ismi_tasgir', 'ismi_tafdil', 'mastar_mezid', 'ismi_fail_mezid', 'ismi_meful_mezid'].includes(stage);
-        elAr.style.color = isNoun ? '#16a34a' : '#2563eb'; // Green for Nouns, Blue for Verbs
+        elAr.style.color = isNoun ? '#2563eb' : '#16a34a'; // Isimler MAVI, fiiller YESIL (tablo ve serit ile ayni dil)
     }
 
     if(elTr) elTr.innerText = trTitle;
+    try { window._atlasKonuSeritCiz(stage); } catch (e) { }
     if(elDesc) elDesc.innerHTML = desc;
     if (elDescBottom) elDescBottom.innerHTML = descBottom;
     
@@ -8726,6 +8737,9 @@ window.openAtlasOverlay = function(stage) {
         
         let activeKeys = isMezidStage ? mezidKeys : mucerredKeys;
         let activeIcons = isMezidStage ? mezidIcons : mucerredIcons;
+        /* SEKME HAFIZASI: bu sekme daha once acildiysa o zamanki fiil secili doner */
+        let _hatira = (window._atlasDurum || {})[stage];
+        let _seciliFiil = (_hatira && activeKeys.indexOf(_hatira.fiil) >= 0) ? _hatira.fiil : activeKeys[0];
         
         activeKeys.forEach((k, idx) => {
             let icon = activeIcons[idx];
@@ -8733,7 +8747,7 @@ window.openAtlasOverlay = function(stage) {
             
             let btn = document.createElement('button');
             btn.className = 'atlas-verb-btn';
-            if (idx === 0) btn.classList.add('active');
+            if (k === _seciliFiil) btn.classList.add('active');
             
             btn.innerHTML = `<span>${icon}</span> <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 1.4rem;">${voweled}</span>`;
             
@@ -8744,7 +8758,7 @@ window.openAtlasOverlay = function(stage) {
             verbList.appendChild(btn);
         });
         
-        window.currentAtlasVerbKey = activeKeys[0];
+        window.currentAtlasVerbKey = _seciliFiil;
     }
 
     let flexContainer = document.querySelector('#screen-atlas > div:first-of-type');
@@ -8767,8 +8781,55 @@ window.openAtlasOverlay = function(stage) {
             flexContainer.style.justifyContent = 'flex-start';
             flexContainer.style.alignItems = 'center';
         }
+        /* SEKME HAFIZASI: ayni fiil geri geldiyse turetilen hucreler de geri acilir */
+        var _hatira2 = (window._atlasDurum || {})[stage];
+        if (_hatira2 && _hatira2.fiil === window.currentAtlasVerbKey &&
+            _hatira2.acilan && _hatira2.acilan.length)
+            window._atlasGeriYukle = _hatira2.acilan.slice();
         window.handleAtlasVerbChange();
     }
+
+    /* SEKME BAGIMSIZ GERI YUKLEME (her konu icin):
+       - Tam ekran YALNIZ o sekmenin kendi hafizasindan doner; baska
+         sekmede acilmis olmasi bu sekmeyi ETKILEMEZ.
+       - Kaydirma (scroll) konumu da sekmeye ozel geri gelir. */
+    var _hat3 = (window._atlasDurum || {})[stage];
+    var _cs3 = stage.replace('_mezid', '');
+    if (_hat3 && _hat3.tamEkran && !window.isAtlasFullscreen &&
+        (_cs3 === 'mazi' || _cs3 === 'muzari')) {
+        window.toggleAtlasFullscreen();
+    }
+    if (_hat3) {
+        var _kayan3 = document.querySelector('#screen-atlas > div:first-of-type');
+        if (_kayan3 && _hat3.kaydir) _kayan3.scrollTop = _hat3.kaydir;
+        var _mo3 = document.getElementById('marathon-overlay');
+        if (_mo3 && _hat3.kaydirUst) _mo3.scrollTop = _hat3.kaydirUst;
+        if (_hat3.kaydirPencere) {
+            /* icerik yerlesimini bekleyip pencereyi eski konuma getir */
+            var _hedefY = _hat3.kaydirPencere;
+            requestAnimationFrame(function () { window.scrollTo(0, _hedefY); });
+        }
+    }
+};
+
+/* Sekme basina durum: { fiil, acilan[] } — atlas acikken sekme degisiminde yazilir. */
+window._atlasDurum = {};
+window._atlasDurumKaydet = function () {
+    var k = window._atlasAcikStage;
+    if (!k || !window.isAtlasMode) return;
+    var kap = document.getElementById('atlas-table-view');
+    var acilan = [];
+    if (kap) kap.querySelectorAll('.marathon-cell').forEach(function (c, i) {
+        if (c.classList.contains('atlas-revealed')) acilan.push(i);
+    });
+    var kayan = document.querySelector('#screen-atlas > div:first-of-type');
+    var mo = document.getElementById('marathon-overlay');
+    window._atlasDurum[k] = { fiil: window.currentAtlasVerbKey, acilan: acilan,
+                              tamEkran: !!window.isAtlasFullscreen,
+                              kaydir: kayan ? kayan.scrollTop : 0,
+                              kaydirUst: mo ? mo.scrollTop : 0,
+                              /* asil kaydirici cogu duzende PENCEREdir */
+                              kaydirPencere: (document.scrollingElement || document.documentElement).scrollTop || 0 };
 };
 
 window.changeAtlasVerb = function(key, btnEl) {
@@ -8812,6 +8873,11 @@ window.handleAtlasVerbChange = function(keepState = false) {
                 window._tempRevealedIndices.push(idx);
             }
         });
+    }
+
+    if (window._atlasGeriYukle) {   /* sekme hafizasindan geri acilis */
+        window._tempRevealedIndices = window._atlasGeriYukle;
+        window._atlasGeriYukle = null;
     }
 
     container.innerHTML = '';
@@ -9793,3 +9859,288 @@ function launchTelaffuzMarathon(root, refId) {
     if (typeof prepareMarathonPlay === 'function') prepareMarathonPlay();
 }
 
+
+/* ================= ATLAS KAYDIRMA GEZINTISI =================
+   Mavi/yesil baslik detayi (atlas) ACIKKEN ekrani SOLA kaydir ->
+   ayni tablonun SIRADAKI basligi; SAGA kaydir -> onceki. Klavye sag/sol
+   ok da calisir. IKI DIZI BIRBIRINE GECMEZ:
+   - Mucerred: mazi -> ... -> ismi_tafdil (sonda durur, mezide GECMEZ)
+   - Mezid   : mazi_mezid -> ... -> ismi_meful_mezid
+   Maraton oyunu acikken (isAtlasMode false) kaydirma HIC calismaz. */
+window._atlasSiraMucerred = ['mazi', 'muzari', 'emir', 'mastar', 'ismi_fail',
+    'zaman_mekan', 'ismi_meful', 'ismi_alet', 'cemi_teksir', 'ismi_tasgir', 'ismi_tafdil'];
+window._atlasSiraMezid = ['mazi_mezid', 'muzari_mezid', 'emir_mezid',
+    'mastar_mezid', 'ismi_fail_mezid', 'ismi_meful_mezid'];
+window.atlasKomsuAc = function (adim) {
+    if (!window.isAtlasMode) return;
+    var k = window._atlasAcikStage;
+    var dizi = null;
+    if (window._atlasSiraMucerred.indexOf(k) >= 0) dizi = window._atlasSiraMucerred;
+    else if (window._atlasSiraMezid.indexOf(k) >= 0) dizi = window._atlasSiraMezid;
+    if (!dizi) return;
+    var i = dizi.indexOf(k) + adim;
+    if (i < 0 || i >= dizi.length) return;      /* uctan tasilmaz, tablolar birbirine gecmez */
+    window._atlasGecisYap(dizi[i], adim);
+};
+
+/* YONLU GECIS ANIMASYONU (Arapca sayfa cevirme duzeni):
+   - SIRADAKI yonu (adim=+1): eski icerik SAGA cikar, yeni ekran SOLDAN gelir.
+   - ONCEKI yonu (adim=-1): eski icerik SOLA cikar, yeni ekran SAGDAN gelir. */
+window._atlasGecisYap = function (hedef, adim) {
+    /* CIFT KATMANLI KESINTISIZ GECIS:
+       - SAHNE (screen-atlas) HIC oynatilmaz -> icindeki sabit carpi ve tam
+         ekran tusu yerinden kipirdamaz (transform, fixed ogenin capasini
+         degistirdigi icin eski yontem tuslari titretiyordu).
+       - Eski sayfanin goruntu kopyasi (klon) ayni yere serilir; yeni sayfa
+         hemen kurulur; IKISI AYNI ANDA kayar: eski disari suzulurken yeni
+         iceri girer. Arada bos kare / durma ani / beyaz flas olmaz. */
+    var sahne = document.getElementById('screen-atlas');
+    var sarici = document.querySelector('#screen-atlas > div:first-of-type');
+    if (!sahne || !sarici) { window.openAtlasOverlay(hedef); return; }
+    var gecisNo = (window._atlasGecisSayac = (window._atlasGecisSayac || 0) + 1);
+
+    /* onceki gecisten kalan klon varsa aninda kaldir (hizli ardisik jest) */
+    var eskiKlon = document.getElementById('atlasGecisKlon');
+    if (eskiKlon) eskiKlon.remove();
+
+    /* 1) simdiki sayfanin kopyasi tam ayni konuma serilir */
+    var klon = sarici.cloneNode(true);
+    klon.id = 'atlasGecisKlon';
+    var kayS = sarici.scrollTop;
+    klon.style.position = 'absolute';
+    klon.style.top = sarici.offsetTop + 'px';
+    klon.style.left = sarici.offsetLeft + 'px';
+    klon.style.width = sarici.clientWidth + 'px';
+    klon.style.height = sarici.clientHeight + 'px';
+    klon.style.margin = '0';
+    klon.style.overflow = 'hidden';
+    klon.style.pointerEvents = 'none';
+    klon.style.zIndex = '40';   /* icerigin ustunde, sabit tuslarin (60) altinda */
+    sahne.appendChild(klon);
+    klon.scrollTop = kayS;
+
+    /* 2) yeni sayfa hemen kurulur (sekme hafizasi + serit dahil) */
+    window.openAtlasOverlay(hedef);
+
+    /* 3) iki katman BIRLIKTE kayar — siradaki SOLDAN girer (RTL) */
+    var E = 'cubic-bezier(.25,.1,.25,1)';
+    sarici.style.transition = 'none';
+    sarici.style.transform = 'translateX(' + (adim > 0 ? '-84px' : '84px') + ')';
+    sarici.style.opacity = '0.55';
+    void sarici.offsetWidth;
+    sarici.style.transition = 'transform .3s ' + E + ', opacity .3s ' + E;
+    klon.style.transition = 'transform .3s ' + E + ', opacity .3s ' + E;
+    sarici.style.transform = 'translateX(0)';
+    sarici.style.opacity = '1';
+    klon.style.transform = 'translateX(' + (adim > 0 ? '84px' : '-84px') + ')';
+    klon.style.opacity = '0';
+
+    /* 4) temizlik — yalniz EN SON gecis yapar */
+    setTimeout(function () {
+        if (window._atlasGecisSayac !== gecisNo) { klon.remove(); return; }
+        klon.remove();
+        sarici.style.transition = '';
+        sarici.style.transform = '';
+        sarici.style.opacity = '';
+    }, 340);
+};
+
+/* KONU SERIDINDEN dogrudan gecis: hedef konum mevcut konumdan ileriyse
+   siradaki yonunde, geriyse onceki yonunde animasyonla acilir. */
+window.atlasKonuyaGit = function (k) {
+    if (!k || k === window._atlasAcikStage) return;
+    var dizi = (window._atlasSiraMucerred.indexOf(k) >= 0) ? window._atlasSiraMucerred
+             : (window._atlasSiraMezid.indexOf(k) >= 0) ? window._atlasSiraMezid : null;
+    if (!dizi) return;
+    var eski = dizi.indexOf(window._atlasAcikStage);
+    var yeniIdx = dizi.indexOf(k);
+    window._atlasGecisYap(k, (eski >= 0 && yeniIdx < eski) ? -1 : 1);
+};
+
+/* KONU SERIDI: Turkce basligin altinda YATAY kaydirmali mavi/yesil konu
+   haplari — istenen basliga tek dokunusla gidilir. Fiil konulari MAVI,
+   isim konulari YESIL (tablodaki baslik renkleriyle ayni dil). */
+window._atlasKonuAd = {
+    mazi: 'MAZİ', muzari: 'MUZARİ', emir: 'EMİR', mastar: 'MASTAR & S.MÜŞ',
+    ismi_fail: 'İSMİ FAİL', zaman_mekan: 'ZAMAN MEKAN', ismi_meful: "İSMİ MEF'UL",
+    ismi_alet: 'İSMİ ALET', cemi_teksir: 'CEMİ TEKSİR', ismi_tasgir: 'İSMİ TASGİR',
+    ismi_tafdil: 'İSMİ TAFDİL', mazi_mezid: 'MAZİ', muzari_mezid: 'MUZARİ',
+    emir_mezid: 'EMİR', mastar_mezid: 'MASTAR', ismi_fail_mezid: 'İSMİ FAİL',
+    ismi_meful_mezid: "İSMİ MEF'UL"
+};
+window._atlasKonuSeritCiz = function (stage) {
+    var baslik = document.getElementById('atlas-title-tr');
+    if (!baslik) return;
+    /* Cift baslik olmasin: renksiz gri Turkce baslik gizlenir —
+       seritteki BUYUK renkli aktif hap basligin kendisidir. */
+    baslik.style.display = 'none';
+    if (!document.getElementById('atlasKonuStil')) {
+        var st = document.createElement('style');
+        st.id = 'atlasKonuStil';
+        st.textContent =
+            /* KARUSEL: aktif hap ORTADA ve BUYUK; komsular orta boy, uzaktakiler kucuk.
+               Kenar dolgusu sayesinde ilk/son baslik da tam ortaya gelebilir. */
+            /* KAPATMA CARPISI PENCEREYE sabitlenir: normal kipte kapsayicisi
+               ekrandan genis oldugu icin sagdan tasiyordu — fixed ile hicbir
+               kipte tasamaz. Serit de ustte gereksiz bosluksuz baslar. */
+            '#screen-atlas > button[onclick="closeMarathon()"]{position:fixed !important;' +
+            ' top:14px !important; right:14px !important; z-index:60 !important;}' +
+            /* TAM EKRAN TUSU da ayni hizada: carpiyla AYNI ust cizgide (14px),
+               hemen solunda (14+45+14=73) — dikey simetri her kipte korunur. */
+            '#screen-atlas > #atlas-fs-btn{position:fixed !important; top:14px !important;' +
+            ' right:73px !important; left:auto !important; z-index:60 !important;}' +
+            '#atlasKonuSerit{display:flex; align-items:center; gap:9px; overflow-x:auto; direction:rtl;' +
+            ' -webkit-overflow-scrolling:touch; padding:6px max(16px, calc(50% - 100px)) 10px;' +
+            ' margin:8px auto 4px; max-width:100%; scrollbar-width:none; scroll-behavior:smooth;}' +
+            '#atlasKonuSerit::-webkit-scrollbar{display:none}' +
+            /* KOSELI + DOLGULU + 3D TUS: tablodaki th-3d-btn ile AYNI hissiyat —
+               alt kenar golgesi + ust ic isik; basinca 4px coker, golge yatar. */
+            '.atlas-konu-hap{flex:none; border-radius:9px; font-family:sans-serif; font-weight:700;' +
+            ' cursor:pointer; white-space:nowrap; border:none; color:#fff; user-select:none;' +
+            ' box-shadow:0 4px 0 rgba(0,0,0,.2), inset 0 2px 0 rgba(255,255,255,.4);' +
+            ' transform:translateY(0);' +
+            ' transition:font-size .2s, padding .2s, opacity .2s, transform .1s ease, box-shadow .1s ease, filter .1s;}' +
+            '.atlas-konu-hap:hover{filter:brightness(1.1)}' +
+            '.atlas-konu-hap:active{transform:translateY(4px);' +
+            ' box-shadow:0 0 0 rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.2)}' +
+            '.atlas-konu-hap.u0{font-size:1.45rem; padding:12px 26px;}' +
+            '.atlas-konu-hap.u1{font-size:1.05rem; padding:8px 16px; opacity:.9}' +
+            '.atlas-konu-hap.u2{font-size:.88rem; padding:6px 13px; opacity:.72}' +
+            '.atlas-konu-hap.fiil{background:#16a34a}' +
+            '.atlas-konu-hap.isim{background:#2563eb}' +
+            '.atlas-konu-hap.aktif{opacity:1;' +
+            ' box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 2px 0 rgba(255,255,255,.45), 0 7px 14px rgba(0,0,0,.2)}';
+        document.head.appendChild(st);
+    }
+    var serit = document.getElementById('atlasKonuSerit');
+    if (!serit) {
+        serit = document.createElement('div');
+        serit.id = 'atlasKonuSerit';
+        baslik.insertAdjacentElement('afterend', serit);
+    }
+    var dizi = (window._atlasSiraMezid.indexOf(stage) >= 0) ? window._atlasSiraMezid : window._atlasSiraMucerred;
+    var aktifIdx = dizi.indexOf(stage);
+    var html = '';
+    for (var i = 0; i < dizi.length; i++) {
+        var k = dizi[i];
+        var kok = k.replace('_mezid', '');
+        var tur = (kok === 'mazi' || kok === 'muzari' || kok === 'emir') ? 'fiil' : 'isim';
+        var uzak = Math.min(2, Math.abs(i - aktifIdx));   /* 0=aktif, 1=komsu, 2=uzak */
+        html += '<button type="button" class="atlas-konu-hap ' + tur + ' u' + uzak +
+            (k === stage ? ' aktif' : '') + '"' +
+            ' onclick="atlasKonuyaGit(\'' + k + '\')">' + (window._atlasKonuAd[k] || k) + '</button>';
+    }
+    serit.innerHTML = html;
+    /* aktif hap tam ORTAYA gelsin — YALNIZ YATAY kaydirilir (scrollIntoView
+       pencereyi dikey de oynatip sekmenin scroll hafizasini bozuyordu). */
+    var seritOrtala = function () {
+        var a2 = serit.querySelector('.atlas-konu-hap.aktif');
+        if (!a2) return;
+        var sr = serit.getBoundingClientRect(), ar = a2.getBoundingClientRect();
+        serit.scrollLeft += (ar.left + ar.width / 2) - (sr.left + sr.width / 2);
+    };
+    seritOrtala();
+    setTimeout(seritOrtala, 240);   /* boyut gecisi bitince bir kez daha */
+};
+(function () {
+    /* DIKKAT: dinleyiciler BELGE duzeyindedir. Atlas acikken dokunus/tekerlek
+       olaylari marathon-overlay'in DISINDAKI ust katmanlara (or. verb-overlay)
+       dusebiliyor; belge duzeyi hepsini yakalar. Tum yollar isAtlasMode +
+       overlay .active kontrolluyle korunur — maraton oyununa karismaz. */
+    function atlasAcikMi() {
+        if (!window.isAtlasMode) return false;
+        var o = document.getElementById('marathon-overlay');
+        return !!(o && o.classList.contains('active'));
+    }
+    /* Icinde YATAY kayabilen bir kutu (or. genis cekim tablosu) varsa
+       jest ona birakilir — baslik degistirilmez. */
+    function yatayKayanIcinde(el) {
+        while (el && el !== document.body && el.nodeType === 1) {
+            if (el.scrollWidth - el.clientWidth > 8) {
+                var ox = '';
+                try { ox = getComputedStyle(el).overflowX; } catch (e) { }
+                if (ox === 'auto' || ox === 'scroll') return true;
+            }
+            el = el.parentElement;
+        }
+        return false;
+    }
+    function atlasKaydirmaKur() {
+        if (window._atlasKaydirmaKuruldu) return;
+        window._atlasKaydirmaKuruldu = 1;
+
+        /* DOKUNMATIK: sola kaydir = siradaki, saga = onceki */
+        var dX = 0, dY = 0, dTut = false;
+        document.addEventListener('touchstart', function (e) {
+            if (!atlasAcikMi() || !e.touches || !e.touches.length) return;
+            dX = e.touches[0].clientX; dY = e.touches[0].clientY; dTut = true;
+        }, { passive: true });
+        document.addEventListener('touchend', function (e) {
+            if (!dTut || !atlasAcikMi() || !e.changedTouches || !e.changedTouches.length) return;
+            dTut = false;
+            var dx = e.changedTouches[0].clientX - dX;
+            var dy = e.changedTouches[0].clientY - dY;
+            if (Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+            if (yatayKayanIcinde(e.target)) return;
+            /* Dokunmatik mantigi: SIRADAKI sayfa SOLDA durur; parmaklar
+               SOLDAN SAGA kayinca o sayfa cekilip gelir. */
+            window.atlasKomsuAc(dx > 0 ? 1 : -1);
+        }, { passive: true });
+
+        /* KLAVYE: sag ok = siradaki, sol ok = onceki */
+        document.addEventListener('keydown', function (e) {
+            if (!atlasAcikMi()) return;
+            /* RTL sayfa duzeni: SIRADAKI sayfa SOLDA -> SOL ok siradakine,
+               SAG ok oncekine gider (animasyonla ayni yon). */
+            if (e.key === 'ArrowLeft') { e.preventDefault(); window.atlasKomsuAc(1); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); window.atlasKomsuAc(-1); }
+        });
+
+        /* TRACKPAD (wheel) JESTI — Mac atalet (momentum) uyumlu:
+           Tetikten sonra 450 ms SOGUMA: bu surede gelen tum olaylar yutulur
+           (atalet kuyrugu ust uste tetiklemesin). Sogumadan sonra kucuk
+           atalet kirintilari (|deltaX| < 8) sayilmaz; 300 ms aralik yeni
+           jest sayilip birikim sifirlanir. Boylece pes pese kac kez
+           kaydirirsan kaydir, her guclu jest TEK adim atar ve kilitlenmez. */
+        var wBirikim = 0, wSonTetik = 0, wSonOlay = 0;
+        document.addEventListener('wheel', function (e) {
+            if (!atlasAcikMi()) return;
+            if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) * 1.2) return;   /* dikey okuma */
+            if (yatayKayanIcinde(e.target)) return;
+            e.preventDefault();
+            var simdi = Date.now();
+            if (simdi - wSonOlay > 300) wBirikim = 0;      /* yeni jest basladi */
+            wSonOlay = simdi;
+            if (simdi - wSonTetik < 450) return;           /* soguma: atalet yutulur */
+            if (Math.abs(e.deltaX) < 8) return;            /* atalet kirintisi sayilmaz */
+            wBirikim += e.deltaX;
+            if (Math.abs(wBirikim) >= 110) {
+                wSonTetik = simdi;
+                /* Dogal kaydirmada parmaklar SOLDAN SAGA gidince deltaX
+                   NEGATIF gelir -> SIRADAKI (soldaki sayfa cekilir). */
+                var yon = wBirikim < 0 ? 1 : -1;
+                wBirikim = 0;
+                window.atlasKomsuAc(yon);
+            }
+        }, { passive: false });
+
+        /* FARE SURUKLEME: basili tutup 80px yatay cekmek de gecis yapar */
+        var fX = 0, fY = 0, fTut = false;
+        document.addEventListener('pointerdown', function (e) {
+            if (!atlasAcikMi() || e.pointerType !== 'mouse') return;
+            if (e.target && e.target.closest && e.target.closest('button, a, input, select, textarea')) return;
+            fX = e.clientX; fY = e.clientY; fTut = true;
+        });
+        document.addEventListener('pointerup', function (e) {
+            if (!fTut || !atlasAcikMi() || e.pointerType !== 'mouse') return;
+            fTut = false;
+            var dx = e.clientX - fX, dy = e.clientY - fY;
+            if (Math.abs(dx) < 80 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+            if (yatayKayanIcinde(e.target)) return;
+            /* Saga surukleme = SIRADAKI (soldaki sayfa cekilir) */
+            window.atlasKomsuAc(dx > 0 ? 1 : -1);
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', atlasKaydirmaKur);
+    else atlasKaydirmaKur();
+})();
