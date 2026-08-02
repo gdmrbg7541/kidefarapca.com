@@ -552,9 +552,13 @@ function dongu(zaman){
     kapiSol.style.transform = 'translateX(' + ((-1+e)*104) + '%)';
     kapiSag.style.transform = 'translateX(' + ((1-e)*104) + '%)';
     if (!yonlendi && hedefY + vh >= dokuman.scrollHeight - 4){
-      yonlendi = true;
-      $('gecis').classList.add('aktif');
-      setTimeout(()=>{ location.href = 'index.html'; }, 850);
+      /* SITE KILIDI: kilitliyken en dipte otomatik giris YAPILMAZ —
+         ziyaretci reklam + giris bolumunde kalir (kilit.js gozlem kipi). */
+      if (!(window.SiteKilit && !SiteKilit.izinliMi())) {
+        yonlendi = true;
+        $('gecis').classList.add('aktif');
+        setTimeout(()=>{ location.href = 'index.html'; }, 850);
+      }
     }
   }
 

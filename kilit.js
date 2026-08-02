@@ -26,6 +26,31 @@
     var K = window.SiteKilit = window.SiteKilit || {};
     K.durum = null;                 /* buluttan gelen guncel kilit kademesi */
 
+    /* GOZLE kipi (or. indexyeni.html): kilit durumu OKUNUR ama perde HIC
+       cizilmez — tanitim sayfasi her kademede acik kalir; sayfa yalniz
+       SiteKilit.izinliMi() ile karari sorar. */
+    var GOZLE = !!window.SITE_KILIT_GOZLE;
+
+    /* Bu betik tek basina da calisabilsin (SDK'siz sayfalar): gerekirse
+       Firebase'i kendi yukler, uygulama yoksa kendi baslatir. auth.js'teki
+       "if (!firebase.apps.length)" korumasi sayesinde cakisma olmaz. */
+    var CFG = {
+        apiKey: "AIzaSyBGIQPJ_Bjm5I3-QmrrGpLR5MqmG3S5F8w",
+        authDomain: "kidefarapca-98f9c.firebaseapp.com",
+        projectId: "kidefarapca-98f9c",
+        storageBucket: "kidefarapca-98f9c.firebasestorage.app",
+        messagingSenderId: "503317118211",
+        appId: "1:503317118211:web:a9c8cf15b854597e0b3d36"
+    };
+    var SDK = 'https://www.gstatic.com/firebasejs/8.10.1/';
+    function sdkYukle(src) {
+        return new Promise(function (res, rej) {
+            var s = document.createElement('script');
+            s.src = src; s.onload = res; s.onerror = rej;
+            (document.head || document.documentElement).appendChild(s);
+        });
+    }
+
     /* ------------------------------------------------ SAF KARAR ISLEVI
        (test edilebilir) — kilit kademesi + kullanici durumuna gore:
        { izin: bool, neden: 'giris' | 'yonetici' | null } */
@@ -38,8 +63,12 @@
 
     function rolOku() {
         /* DIKKAT: appState sayfada "let" ile tanimli -> window.appState YOKTUR;
-           ciplak isimle (typeof korumali) okunmali (data/window.data dersi). */
-        try { return (typeof appState !== 'undefined' && appState && appState.userRole) || ''; } catch (e) { return ''; }
+           ciplak isimle (typeof korumali) okunmali (data/window.data dersi).
+           appState olmayan sayfalarda (indexyeni) rol buluttan okunur. */
+        try {
+            var r = (typeof appState !== 'undefined' && appState && appState.userRole) || '';
+            return r || K._bulutRol || '';
+        } catch (e) { return K._bulutRol || ''; }
     }
     function girisliMi() {
         try {
@@ -192,11 +221,20 @@
     }
 
     /* ------------------------------------------------ DEGERLENDIRME */
-    function uygula() {
+    function sonKilit() {
         var kilit = K.durum;
         if (kilit == null) {
             try { kilit = localStorage.getItem('siteKilitSon') || VARSAYILAN; } catch (e) { kilit = VARSAYILAN; }
         }
+        return kilit;
+    }
+    /* Sayfalarin sorabilecegi tek soru: bu ziyaretci su an iceri girebilir mi? */
+    K.izinliMi = function () {
+        return K.karar(sonKilit(), girisliMi(), rolOku()).izin;
+    };
+    function uygula() {
+        if (GOZLE) return;          /* gozlem kipi: perde hic cizilmez */
+        var kilit = sonKilit();
         var k = K.karar(kilit, girisliMi(), rolOku());
         if (k.izin) { K._mola = 0; perdeKaldir(); return; }
         /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
@@ -218,9 +256,23 @@
     K.uygula = uygula;   /* test kancasi */
 
     /* ------------------------------------------------ BULUT BAGLANTISI */
+    var sdkDeneniyor = false;
     function baglan() {
-        if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length ||
-            !firebase.firestore) { setTimeout(baglan, 400); return; }
+        if (typeof firebase === 'undefined') {
+            /* SDK'siz sayfa (indexyeni gibi): Firebase'i kendimiz yukleriz */
+            if (sdkDeneniyor) return;
+            sdkDeneniyor = true;
+            sdkYukle(SDK + 'firebase-app.js')
+                .then(function () { return sdkYukle(SDK + 'firebase-auth.js'); })
+                .then(function () { return sdkYukle(SDK + 'firebase-firestore.js'); })
+                .then(function () { sdkDeneniyor = false; baglan(); })
+                .catch(function () { sdkDeneniyor = false; setTimeout(baglan, 2500); });
+            return;
+        }
+        if (!firebase.firestore || !firebase.auth) { setTimeout(baglan, 400); return; }
+        if (!firebase.apps || !firebase.apps.length) {
+            try { firebase.initializeApp(CFG); } catch (e) { setTimeout(baglan, 400); return; }
+        }
         try {
             firebase.firestore().collection('ayarlar').doc('site')
                 .onSnapshot(function (doc) {
@@ -232,6 +284,17 @@
                 }, function (e) { console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
             if (firebase.auth) firebase.auth().onAuthStateChanged(function (u) {
                 if (u) K._mola = 0;          /* giris geldi: mola biter, karar netlesir */
+                K._bulutRol = '';
+                /* appState olmayan sayfalarda rol dogrudan buluttan okunur
+                   (kendi kullanicilar dokumani — kurallar izin verir). */
+                if (u && u.email) {
+                    try {
+                        firebase.firestore().collection('kullanicilar').doc(u.uid).get().then(function (doc) {
+                            K._bulutRol = ((doc.exists && doc.data()) || {}).role || '';
+                            uygula();
+                        }).catch(function () { });
+                    } catch (e) { }
+                }
                 setTimeout(uygula, 400);
             });
         } catch (e) { console.warn('kilit:', e && e.message); }

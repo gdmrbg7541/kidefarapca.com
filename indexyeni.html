@@ -190,13 +190,45 @@
         <div class="krk-metin">Şubeler, seviyeler ve sınıflar tek çatıda: performans, sınav ve veli takibi bir arada.</div>
       </div>
     </div>
-    <a class="krk-cta" href="index.html">Siteye Gir</a>
+    <a class="krk-cta" id="krkCta" href="index.html">Siteye Gir</a>
+    <p id="krkKilitNot" style="display:none; margin:12px 0 0; color:#B9770E; font-size:.82rem;">
+      Site şu an derslere özel çalışıyor — devam etmek için hesabınla giriş yapman gerekiyor.</p>
   </div>
 </section>
 
 <footer>kidefarapca.com · Harften hikâyeye, hep birlikte.</footer>
 
-<script src="indexyeni.js"></script>
+<script>window.SITE_KILIT_GOZLE = true;</script>
+<script src="kilit.js?v=6"></script>
+<script src="indexyeni.js?v=2"></script>
+<script>
+/* SITE KILIDI ILE UYUM: tanitim sayfasi HER kademede acik kalir (gozlem kipi).
+   Ama site kilitliyken cikis kapisi (sag ustteki SVG) dogrudan siteye
+   goturmez — en alttaki reklam + giris bolumune kaydirir. */
+(function () {
+  function kilitli() {
+    try { return window.SiteKilit && !SiteKilit.izinliMi(); } catch (e) { return false; }
+  }
+  var kapi = document.getElementById('iceriKapi');
+  if (kapi) kapi.addEventListener('click', function (e) {
+    if (kilitli()) {
+      e.preventDefault(); e.stopPropagation();
+      var hedef = document.getElementById('kitlePerde');
+      if (hedef) hedef.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  /* Alt bolumdeki tus kilide gore sekil degistirir */
+  function tazele() {
+    var a = document.getElementById('krkCta');
+    var n = document.getElementById('krkKilitNot');
+    if (!a) return;
+    if (kilitli()) { a.textContent = 'Giriş Yap'; if (n) n.style.display = 'block'; }
+    else { a.textContent = 'Siteye Gir'; if (n) n.style.display = 'none'; }
+  }
+  setInterval(tazele, 1500);
+  tazele();
+})();
+</script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
