@@ -1381,7 +1381,22 @@
               '<span style="width:11px; height:11px; border-radius:50%; background:#2ECC71; flex:none;' +
               ' animation:llNoktaNabiz 1.7s infinite;"></span></div>'
             : '';
-        kart.innerHTML = bildirimSeridi +
+        /* MESAJ BILDIRIMI: ogretmenden okunmamis mesaj varsa turuncu serit —
+           tiklaninca dogrudan MESAJ KUTUSU acilir (bildirim ilgili yere goturur). */
+        var yeniMesaj = 0;
+        try { if (typeof ogrMesajOkunmamis === 'function') yeniMesaj = parseInt(ogrMesajOkunmamis()) || 0; } catch (e) { }
+        var mesajSeridi = yeniMesaj
+            ? '<div class="glass-card" style="margin-bottom:25px; border-left:5px solid #E67E22; display:flex;' +
+              ' align-items:center; gap:14px; flex-wrap:wrap; cursor:pointer;" title="Mesaj kutusunu aç"' +
+              ' onclick="try{ if (typeof ogrMesajAc === \'function\') ogrMesajAc(); }catch(e){}">' +
+              '<span style="display:inline-flex; width:40px; height:40px; border-radius:50%; background:#FFF3E0;' +
+              ' align-items:center; justify-content:center; font-size:1.35rem; flex:none;">💬</span>' +
+              '<span style="flex:1; min-width:180px; color:#5A4034;"><b style="color:#B34700;">Öğretmeninden ' +
+              yeniMesaj + ' yeni mesaj var!</b> <small style="color:#8B6A57;">Mesaj kutusunu açmak için tıkla.</small></span>' +
+              '<span style="width:11px; height:11px; border-radius:50%; background:#E67E22; flex:none;' +
+              ' animation:llNoktaNabiz 1.7s infinite;"></span></div>'
+            : '';
+        kart.innerHTML = bildirimSeridi + mesajSeridi +
             akordiyon('prfGorevler', '#D84315', gorevBaslik, ogrListeHTML(6), bekleyen > 0) +
             akordiyon('prfSonuclar', '#7B1FA2', '<span>🏆 Genel Sonuçlarım</span>',
                 notOzetiHTML() +
@@ -1390,7 +1405,7 @@
             akordiyon('prfKodum', '#F39C12', '<span>🎫 Öğrenci Kodum</span>', kodIcerik, false);
 
         GV.sonuclariDoldur('gvPrfProfilSonuc');
-        GV.noktaGuncelle(bekleyen > 0);      /* avatarda yesil isik */
+        GV.noktaGuncelle(bekleyen > 0 || yeniMesaj > 0);   /* avatarda yesil isik */
     };
 
     /* ---------------- OGRETMEN BILDIRIMI: yeni tamamlanan gorevler ----------------
@@ -1426,10 +1441,16 @@
         var bitir = function () {
             if (sonuclar === null || etkinlik === null) return;
             var yb = GV.yeniSonucSay(sonuclar, sonGorulme);
-            yb.etk = GV.yeniSonucSay(etkinlik.map(function (r) {
-                return { bitis: r.sonTarih, baslik: oyunAdi(r.oyun), email: r.ad || r.email,
+            var etkSay = GV.yeniSonucSay(etkinlik.map(function (r) {
+                return { bitis: r.sonTarih, baslik: oyunAdi(r.oyun), email: r.email,
+                         ad: r.ad, ogrenciUid: r.ogrenciUid,
                          yuzde: r.sonYuzde != null ? r.sonYuzde : r.rekor };
-            }), sonGorulme).n;
+            }), sonGorulme);
+            yb.etk = etkSay.n;
+            /* "Son" kaydi iki kaynagin EN YENISI olsun (tiklaninca dogru
+               ogrencinin sinifina gidilebilsin) */
+            if (etkSay.son && (!yb.son || (parseInt(etkSay.son.bitis) || 0) > (parseInt(yb.son.bitis) || 0)))
+                yb.son = etkSay.son;
             window._gvYeniSonuc = yb;
             GV.noktaGuncelle((yb.n + yb.etk) > 0);
             try {
