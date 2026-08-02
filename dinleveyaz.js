@@ -754,8 +754,26 @@
              playAudioButton.disabled = disabled;
         }
 
+        // TIKLAMA (Alıştırma) modunda süre bitince ŞIKLAR PASİFLEŞMEZ:
+        // sayaç kırmızıya döner ve nabız atar, ama oyun sürer — öğrenci
+        // yazmayı bitirirse normal akış (yeşil + puan) aynen işler.
+        function sureDoldu(){
+            playSound('incorrect');
+            sesIlerlemeDurdur();
+            if (!document.getElementById('dvSureStil')){
+                const st = document.createElement('style');
+                st.id = 'dvSureStil';
+                st.textContent =
+                    '@keyframes dvSureNabiz{0%,100%{filter:none}50%{filter:brightness(1.4) saturate(1.7)}}' +
+                    '.sure-doldu .sc-bar{animation:dvSureNabiz .9s ease-in-out 3;}' +
+                    '.sure-doldu .sc-progress{transform:translateY(-50%) scaleX(1) !important;}';
+                document.head.appendChild(st);
+            }
+            if (sesCizelgesiEl) sesCizelgesiEl.classList.add('sure-doldu');
+        }
         function startTimer() {
             clearInterval(timerInterval); gameActive = true;
+            if (sesCizelgesiEl) sesCizelgesiEl.classList.remove('sure-doldu');
             sesIlerlemeBaslat(remainingTime);   // kırmızı zaman ilerlemesini başlat
             timerInterval = setInterval(() => {
                 if (!gameActive) { clearInterval(timerInterval); return; }
@@ -763,7 +781,10 @@
                 if (remainingTime <= 0) {
                     clearInterval(timerInterval); setTimer(0);
                     // Otomatik yazımda süre bitince kelime düşmez; harf gösterimi tamamlar.
-                    if (!autoMode){ gameActive = false; wordActive = false; checkAnswer(true); }
+                    // SINAV modunda eski davranış: kelime düşer, sıradakine geçilir.
+                    // TIKLAMA modunda tuşlar AKTİF kalır (sureDoldu).
+                    if (examMode){ gameActive = false; wordActive = false; checkAnswer(true); }
+                    else if (!autoMode){ sureDoldu(); }
                 }
             }, 1000);
         }

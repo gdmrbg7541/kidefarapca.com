@@ -151,7 +151,7 @@
                 '<span id="gvListeSayac" style="display:inline-flex; align-items:center; justify-content:center;' +
                 ' min-width:22px; height:22px; padding:0 7px; border-radius:11px; background:#7B1FA2; color:#fff;' +
                 ' font-size:.76rem;">0</span>',
-                '<div id="gvFiltreNot"></div><div id="gvGorevListe"></div>', true);
+                '<div id="gvFiltreNot"></div><div id="gvGorevListe"></div>', !!GV._gvListeAcik);
         GV.yeniCiz('gvYeniKutu');
         /* Sinif baglami hazir gelsin: acik seviye/sinif onceden secili */
         try {
@@ -165,10 +165,13 @@
                 } else GV.hedefCiz();
             }
         } catch (e) { }
-        /* "Yeni Gorev" akordiyonunun acik/kapali tercihi hatirlansin */
+        /* Akordiyonlarin acik/kapali tercihi sekme icinde hatirlansin.
+           "Gonderilen Gorevler & Sonuclar" VARSAYILAN KAPALI acilir. */
         try {
             var ya = document.getElementById('gvAkorYeni');
             if (ya) ya.addEventListener('toggle', function () { GV._gvYeniAcik = ya.open; });
+            var la = document.getElementById('gvAkorListe');
+            if (la) la.addEventListener('toggle', function () { GV._gvListeAcik = la.open; });
         } catch (e) { }
         GV.gorevleriDinle();
         GV.gorevListesiCiz();
