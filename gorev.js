@@ -42,7 +42,15 @@
         { d: 'koktengovdeye.html', ad: 'Kökten Gövdeye' },
         /* SURE TAKIPLI icerikler (Beceri • Ogretmen Ozel): puan uretmez,
            yalniz sayfada kalinan sure + oturum sayisi raporlanir. */
-        { d: 'sarf.html',          ad: 'Sarf: Kelime Fabrikası (Konu Anlatımı)', tur: 'sure' }
+        { d: 'sarf.html',                 ad: 'Sarf: Kelime Fabrikası (Konu Anlatımı)', tur: 'sure' },
+        { d: 'kaliplartablosu.html',      ad: 'Sarf Motoru (Kalıplar Tablosu)',          tur: 'sure' },
+        { d: 'kaliplartablosumobil.html', ad: 'Sarf Motoru (Mobil)',                     tur: 'sure' },
+        { d: 'okuma.html',                ad: 'Okuma',                                   tur: 'sure' },
+        { d: 'dinleveyaz.html',           ad: 'Dinle ve Yaz',                            tur: 'sure' },
+        { d: 'sozluksimulasyonu.html',    ad: 'Sözlük Simülasyonu',                      tur: 'sure' },
+        { d: 'fiiller.html',              ad: 'Fiil Çekim Atlası',                       tur: 'sure' },
+        { d: 'yenisozlukdedektifi.html',  ad: 'Sözlük Dedektifi',                        tur: 'sure' },
+        { d: 'muhadese.html',             ad: 'Simültane Çeviri',                        tur: 'sure' }
     ];
     /* Bir icerigin olcum turu: 'puan' (yuzde) | 'sure' (kalinan zaman). */
     GV.oyunTuru = function (d) {
