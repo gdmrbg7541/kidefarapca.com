@@ -81,8 +81,10 @@
        Kilitli sitede ara kart YOKTUR: turuncu fon iner ve kayit/giris
        penceresi (login-modal) KENDILIGINDEN acilir — index dogrudan giris
        ekrani olarak acilir. Pencere carpiyla kapatilirsa bekci ~2 sn icinde
-       yeniden acar (kilitliyken site bosta gorunmez). Yalniz "girisli ama
-       yetkisiz" hesaplar kisa bir aciklama karti gorur. */
+       yeniden acar (kilitliyken site bosta gorunmez). Yalniz-yonetici
+       kilidinde ogrenci/ogretmen giris yaparsa pencere KAYBOLMAZ: icine
+       kirmizi uyari seridi iner, yonetici hesabiyla yeniden giris yapilabilir
+       (eski "yetkisi yok" cikmaz karti kaldirildi). */
     var PERDE_ID = 'siteKilitPerde';
 
     /* Giris molasi: Giris Yap'a basilinca perde gecici kalkar ki giris
@@ -103,17 +105,44 @@
     }
 
     function perdeHtml(neden) {
-        if (girisliMi()) {
-            return '<div style="max-width:440px; width:100%; text-align:center; padding:30px 26px;' +
-                ' background:#fff; border-radius:20px; box-shadow:0 24px 60px rgba(0,0,0,.35);' +
-                ' color:#B9770E; font-size:.92rem; line-height:1.6;">' +
-                'Bu hesabın bu bölüm için yetkisi yok — ders saatinde ya da yönetici izin verdiğinde açılır.</div>';
-        }
-        /* Anonim ziyaretci: perde yalniz turuncu fondur; kayit/giris
-           penceresi uygula() tarafindan dogrudan acilir. */
+        /* Perde YALNIZ turuncu fondur; aciklama ve uyari, acik tutulan
+           kayit/giris penceresinin icindeki serittedir (uyariGuncelle). */
         return '';
     }
 
+    /* UYARI SERIDI: yalniz-yonetici kilidinde pencerenin tepesine iner.
+       - Anonim ziyaretciye: on bilgi (ogrenci/ogretmen giremez).
+       - Ogrenci/ogretmen GIRIS YAPMISSA: guclu uyari — pencere KAYBOLMAZ,
+         yonetici hesabiyla yeniden giris yapilabilir. */
+    function uyariGuncelle(kilit, girisli) {
+        var lm = document.getElementById('login-modal');
+        if (!lm) return;
+        var kap = lm.querySelector('.modal-content') || lm;
+        var u = document.getElementById('kilitUyari');
+        var gerekli = (kilit === 'yonetici');
+        if (!gerekli) { if (u) u.remove(); return; }
+        if (!u) {
+            u = document.createElement('div');
+            u.id = 'kilitUyari';
+            kap.insertBefore(u, kap.firstChild);
+        }
+        var metin, renk;
+        if (girisli) {
+            metin = '⚠ Bu hesap yönetici değil. Site şu an <b>yalnızca yönetici girişine</b> açık — ' +
+                'öğrenci ve öğretmen hesapları giremez. Yönetici hesabıyla giriş yapabilirsin.';
+            renk = 'background:#FDECEA; border:1.5px solid #E53935; color:#C62828;';
+        } else {
+            metin = '🔒 Site şu an <b>yalnızca yönetici girişine</b> açık — öğrenci ve öğretmen hesapları giremez.';
+            renk = 'background:#FFF3E0; border:1.5px solid #F39C12; color:#B34700;';
+        }
+        var anahtar = (girisli ? 'g' : 'a');
+        if (u.getAttribute('data-k') !== anahtar) {
+            u.setAttribute('data-k', anahtar);
+            u.setAttribute('style', renk + ' border-radius:12px; padding:11px 14px; margin:0 0 14px;' +
+                ' font-size:.86rem; line-height:1.55; text-align:center;');
+            u.innerHTML = metin;
+        }
+    }
     /* CARPI KURALI: kilit aktifken kayit/giris penceresinin kapatma carpisi
        GIZLENIR — kapanmayan pencerede carpi gostermek yaniltici olur.
        Kilit acikken (izin varken) carpi normal gorunur. */
@@ -181,7 +210,7 @@
         if (GOZLE) return;          /* gozlem kipi: perde hic cizilmez */
         var kilit = sonKilit();
         var k = K.karar(kilit, girisliMi(), rolOku());
-        if (k.izin) { K._mola = 0; carpiKurali(false); perdeKaldir(); return; }
+        if (k.izin) { K._mola = 0; carpiKurali(false); uyariGuncelle('acik', false); perdeKaldir(); return; }
         carpiKurali(true);   /* kilit aktif: pencerede carpi gorunmez */
         /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
            perde gizli bekler. Pencere KAPATILIRSA (carpi) mola derhal
@@ -198,7 +227,12 @@
             }
         }
         perdeGoster(k.neden);
-        if (!girisliMi()) girisEkraniAc();   /* dogrudan kayit/giris ekrani */
+        /* Pencere HER kilitli ziyaretcide acik tutulur: giris yapmis ama
+           yetkisiz (ogrenci/ogretmen) hesapta da KAYBOLMAZ — uyari seridiyle
+           birlikte durur ki yonetici hesabiyla yeniden giris yapilabilsin.
+           Uyari, pencere olusturulduktan SONRA yazilir. */
+        girisEkraniAc();
+        uyariGuncelle(kilit, girisliMi());
     }
     K.uygula = uygula;   /* test kancasi */
 
