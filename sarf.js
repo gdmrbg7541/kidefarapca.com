@@ -476,10 +476,18 @@ const App = {
            mini sahne (vitrin + usta/örs + öğütücü makine). */
         const mf = document.getElementById('mfOnizleme');
         if (mf) {
+            /* Canlı vitrin: öğütücü ile usta AYNI ANDA çalışır —
+               kök külçesi huniye düşer, öğütülen harfler oluktan
+               uçarak ustanın örsüne gider, usta durmadan döver. */
             mf.innerHTML =
                 `<div class="mf-vitrin"><div class="mf-tente"></div><div class="mf-cam">✨</div></div>` +
                 `<div class="mf-usta">${G3_USTA_SVG}<div class="mf-ors">${G2_ORS2_SVG}</div></div>` +
-                `<div class="mf-makine">${G2_MAKINE_SVG}</div>`;
+                `<div class="mf-makine">${G2_MAKINE_SVG}` +
+                    `<div class="mf-kok">كتب</div>` +
+                    `<div class="mf-parca p1">ك</div>` +
+                    `<div class="mf-parca p2">ت</div>` +
+                    `<div class="mf-parca p3">ب</div>` +
+                `</div>`;
         }
 
         /* Üç oyun kartı + sağ üstteki bağlantı rozeti aynı yönlendirmeyi kullanır. */

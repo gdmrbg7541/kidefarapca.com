@@ -477,22 +477,9 @@ function ozellikGuncelle(p){
   odakCember.setAttribute('transform', 'rotate(' + (q*70) + ' 60 80)');
 }
 
-/* ============ 5 · SİS ODASI ============ */
-const gizemSahne = $('gizemSahne'), sisOrtusu = $('sisOrtusu');
-/* sisin altında klasik hatla kelimeler */
-(function(){
-  const K = [
-    ['عِلْم',8,6,2.4,'#16A085',-8], ['حِكْمَة',78,4,2.0,'#F39C12',6], ['نُور',88,22,2.6,'#16A085',10],
-    ['كِتاب',4,38,2.2,'#F39C12',-12], ['قَلَم',90,58,2.1,'#16A085',-6], ['مَعْرِفَة',6,72,2.3,'#F39C12',8],
-    ['صَبْر',80,80,2.5,'#16A085',-10], ['أَدَب',16,88,2.0,'#F39C12',5], ['فَهْم',48,7,1.9,'#16A085',12],
-    ['قِرَاءَة',38,86,2.2,'#16A085',-5], ['حَرْف',66,90,1.9,'#F39C12',9], ['دَرْس',2,55,1.9,'#16A085',7]
-  ];
-  $('sisKelimeler').innerHTML = K.map(k=>
-    '<span style="left:'+k[1]+'%;top:'+k[2]+'%;font-size:'+k[3]+'rem;color:'+k[4]+';transform:rotate('+k[5]+'deg)">'+k[0]+'</span>').join('');
-})();
-let felX = innerWidth/2, felY = innerHeight/2, felHX = felX, felHY = felY;
-gizemSahne.addEventListener('mousemove', e => { felHX = e.clientX; felHY = e.clientY; });
-gizemSahne.addEventListener('touchmove', e => { felHX = e.touches[0].clientX; felHY = e.touches[0].clientY; }, {passive:true});
+/* ============ 5 · DİJİTAL BİLGİ YARIŞMASI ============ */
+/* Sahne tamamen CSS animasyonlu; kaydırmayla yumuşak belirme JS'ten sürülür. */
+const yarismaIc = $('yarismaIc');
 
 /* ---------- tuvaller ---------- */
 function boyutlaTuvaller(){
@@ -534,14 +521,13 @@ function dongu(zaman){
     }
   }
 
-  { /* sis */
-    const p = perdeP(gizemPerde);
-    felX = ara(felX, felHX, .14); felY = ara(felY, felHY, .14);
-    sisOrtusu.style.setProperty('--x', felX + 'px');
-    sisOrtusu.style.setProperty('--y', felY + 'px');
-    const yaricap = ara(120, Math.max(innerWidth, innerHeight)*1.2, eV(kirp((p-.25)/.7, 0, 1)));
-    sisOrtusu.style.setProperty('--r', yaricap + 'px');
-    $('gizemIpucu').style.opacity = 1 - kirp(p/.3,0,1);
+  { /* bilgi yarışması sahnesi: kaydırdıkça belirir */
+    if (yarismaIc){
+      const p = perdeP(gizemPerde);
+      const g = eV(kirp(p/.45, 0, 1));
+      yarismaIc.style.opacity = .12 + g*.88;
+      yarismaIc.style.transform = 'translateY(' + ((1-g)*56) + 'px) scale(' + (.93 + g*.07) + ')';
+    }
   }
 
   { /* final: güneş doğar, en dipte site kendiliğinden açılır */

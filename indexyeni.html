@@ -77,16 +77,100 @@
   </div>
 </section>
 
-<!-- 5 · SİS ODASI -->
+<!-- 5 · DİJİTAL BİLGİ YARIŞMASI — QR ile sınıfça canlı yarışma tanıtımı -->
 <section class="perde" id="gizemPerde">
+<style>
+  #yarismaIc{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:26px; padding:0 16px; will-change:transform,opacity; }
+  #yarismaIc .yr-baslik{ font-size:clamp(1.7rem,4.6vw,3rem); color:#F39C12; font-weight:700; text-align:center; }
+  #yarismaIc .yr-alt{ color:#9fb3c8; font-size:clamp(.95rem,2vw,1.2rem); text-align:center; max-width:640px; line-height:1.6; }
+  #yarismaIc .yr-sahne{ display:flex; align-items:center; justify-content:center; gap:clamp(18px,5vw,64px); flex-wrap:wrap; }
+  #yarismaIc svg{ overflow:visible; display:block; }
+  /* telefon: yuzer + puan baloncugu */
+  @keyframes yrTel{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-9px) rotate(-4deg)}}
+  .yr-telefon{ animation:yrTel 3.2s ease-in-out infinite; }
+  @keyframes yrPuan{0%,55%{opacity:0; transform:translateY(0)}62%{opacity:1}100%{opacity:0; transform:translateY(-26px)}}
+  .yr-puan{ animation:yrPuan 3.2s ease-out infinite; }
+  /* QR: kareler dalga dalga yanar, tarama cizgisi gezer */
+  @keyframes yrModul{0%,100%{opacity:.35}50%{opacity:1}}
+  .yr-m1{ animation:yrModul 2.4s ease-in-out infinite; }
+  .yr-m2{ animation:yrModul 2.4s ease-in-out .6s infinite; }
+  .yr-m3{ animation:yrModul 2.4s ease-in-out 1.2s infinite; }
+  .yr-m4{ animation:yrModul 2.4s ease-in-out 1.8s infinite; }
+  @keyframes yrTara{0%{transform:translateY(0)}50%{transform:translateY(74px)}100%{transform:translateY(0)}}
+  .yr-tarama{ animation:yrTara 3s ease-in-out infinite; }
+  /* podyum: cubuklar nabiz gibi, kupa parlar */
+  @keyframes yrPod{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.9)}}
+  .yr-pod{ transform-box:fill-box; transform-origin:50% 100%; animation:yrPod 2.8s ease-in-out infinite; }
+  .yr-p2{ animation-delay:.4s } .yr-p3{ animation-delay:.8s }
+  @keyframes yrIsik{0%,45%,100%{opacity:.25}18%{opacity:1}}
+  .yr-isik{ animation:yrIsik 2.2s ease-in-out infinite; }
+  #yarismaIc .yr-rozet{ display:inline-flex; align-items:center; gap:9px; padding:11px 22px;
+    border:1px solid #F39C12; border-radius:999px; color:#F39C12; font-size:clamp(.85rem,1.8vw,1rem); }
+  #yarismaIc .yr-rozet b{ color:#ffd54f; }
+</style>
   <div class="sabit" id="gizemSahne">
-    <div id="sisKelimeler"></div>
-    <div id="gizemMetin">
-      <div class="ar">اُطْلُبُوا الْعِلْمَ مِنَ الْمَهْدِ إِلَى اللَّحْدِ</div>
-      <div class="tr">“Beşikten mezara kadar ilmi isteyin.”</div>
+    <div id="yarismaIc">
+      <div class="yr-baslik">Dijital Bilgi Yarışması</div>
+      <div class="yr-alt">Öğretmen odayı açar, ekrana karekod gelir — telefonlar saniyeler içinde katılır,
+        bütün sınıf <b style="color:#16A085;">canlı</b> yarışır, puanlar anında tahtada.</div>
+      <div class="yr-sahne">
+        <!-- TELEFON: takim katilir, puan ucar -->
+        <svg width="120" height="190" viewBox="0 0 120 190" aria-hidden="true"><g class="yr-telefon">
+          <rect x="18" y="10" width="84" height="160" rx="16" fill="#1d2b3a" stroke="#3d5166" stroke-width="3"/>
+          <rect x="26" y="26" width="68" height="118" rx="8" fill="#0f1b26"/>
+          <rect x="46" y="16" width="28" height="5" rx="2.5" fill="#3d5166"/>
+          <rect x="32" y="36" width="56" height="12" rx="6" fill="#16A085"/>
+          <rect x="32" y="56" width="56" height="9" rx="4.5" fill="#24405a"/>
+          <rect x="32" y="70" width="56" height="9" rx="4.5" fill="#24405a"/>
+          <rect x="32" y="84" width="56" height="9" rx="4.5" fill="#F39C12" opacity=".85"/>
+          <rect x="32" y="112" width="56" height="20" rx="10" fill="#F39C12"/>
+          <circle cx="60" cy="160" r="6" fill="#3d5166"/>
+        </g>
+        <g class="yr-puan"><rect x="70" y="0" width="46" height="22" rx="11" fill="#16A085"/>
+          <text x="93" y="15" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">+50</text></g></svg>
+        <!-- QR KARTI: stilize karekod (gercek kod degil) -->
+        <svg width="170" height="170" viewBox="0 0 170 170" aria-hidden="true">
+          <rect x="5" y="5" width="160" height="160" rx="18" fill="#f5f8fb" stroke="#F39C12" stroke-width="4"/>
+          <g fill="#1d2b3a">
+            <rect x="24" y="24" width="34" height="34" rx="5"/><rect x="31" y="31" width="20" height="20" rx="3" fill="#f5f8fb"/><rect x="37" y="37" width="8" height="8" fill="#1d2b3a"/>
+            <rect x="112" y="24" width="34" height="34" rx="5"/><rect x="119" y="31" width="20" height="20" rx="3" fill="#f5f8fb"/><rect x="125" y="37" width="8" height="8" fill="#1d2b3a"/>
+            <rect x="24" y="112" width="34" height="34" rx="5"/><rect x="31" y="119" width="20" height="20" rx="3" fill="#f5f8fb"/><rect x="37" y="125" width="8" height="8" fill="#1d2b3a"/>
+          </g>
+          <g fill="#16A085">
+            <rect class="yr-m1" x="70" y="26" width="10" height="10"/><rect class="yr-m3" x="86" y="26" width="10" height="10"/>
+            <rect class="yr-m2" x="70" y="42" width="10" height="10"/><rect class="yr-m4" x="86" y="42" width="10" height="10"/>
+            <rect class="yr-m3" x="26" y="70" width="10" height="10"/><rect class="yr-m1" x="42" y="70" width="10" height="10"/>
+            <rect class="yr-m2" x="58" y="70" width="10" height="10"/><rect class="yr-m4" x="74" y="70" width="10" height="10"/>
+            <rect class="yr-m1" x="90" y="70" width="10" height="10"/><rect class="yr-m3" x="106" y="70" width="10" height="10"/>
+            <rect class="yr-m4" x="122" y="70" width="10" height="10"/><rect class="yr-m2" x="138" y="70" width="10" height="10"/>
+            <rect class="yr-m3" x="70" y="86" width="10" height="10"/><rect class="yr-m1" x="86" y="86" width="10" height="10"/>
+            <rect class="yr-m2" x="102" y="86" width="10" height="10"/><rect class="yr-m4" x="118" y="86" width="10" height="10"/>
+            <rect class="yr-m1" x="70" y="112" width="10" height="10"/><rect class="yr-m2" x="86" y="112" width="10" height="10"/>
+            <rect class="yr-m4" x="70" y="128" width="10" height="10"/><rect class="yr-m3" x="86" y="128" width="10" height="10"/>
+            <rect class="yr-m2" x="112" y="112" width="10" height="10"/><rect class="yr-m1" x="128" y="112" width="10" height="10"/>
+            <rect class="yr-m3" x="112" y="128" width="10" height="10"/><rect class="yr-m4" x="128" y="128" width="10" height="10"/>
+          </g>
+          <rect class="yr-tarama" x="12" y="44" width="146" height="7" rx="3.5" fill="#F39C12" opacity=".55"/>
+        </svg>
+        <!-- PODYUM: kupa + siralama -->
+        <svg width="150" height="170" viewBox="0 0 150 170" aria-hidden="true">
+          <g class="yr-isik" stroke="#ffd54f" stroke-width="3" stroke-linecap="round">
+            <path d="M62 12l4 4M88 12l-4 4M75 4v6"/></g>
+          <g><path d="M60 22h30v12a15 15 0 0 1-30 0z" fill="#F1C40F" stroke="#B7950B" stroke-width="2"/>
+          <path d="M60 26h-6a8 8 0 0 0 8 10M90 26h6a8 8 0 0 1-8 10" fill="none" stroke="#B7950B" stroke-width="2.6"/>
+          <rect x="70.5" y="48" width="9" height="8" fill="#B7950B"/>
+          <rect x="64" y="56" width="22" height="6" rx="2.4" fill="#8D6E63"/></g>
+          <rect class="yr-pod"        x="52" y="86"  width="46" height="74" rx="4" fill="#F39C12"/>
+          <rect class="yr-pod yr-p2"  x="8"  y="106" width="40" height="54" rx="4" fill="#16A085"/>
+          <rect class="yr-pod yr-p3"  x="102" y="120" width="40" height="40" rx="4" fill="#8D6E63"/>
+          <text x="75" y="132" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">1</text>
+          <text x="28" y="140" text-anchor="middle" font-size="20" font-weight="800" fill="#eafff8">2</text>
+          <text x="122" y="148" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">3</text>
+        </svg>
+      </div>
+      <div class="yr-rozet">Sarf sayfasındaki <b>اِتَّصِلْ</b> tuşundan — kurulum yok, uygulama yok</div>
     </div>
-    <div id="sisOrtusu"></div>
-    <div id="gizemIpucu">sisin içinde gez… kaydırdıkça dağılır</div>
   </div>
 </section>
 
@@ -200,7 +284,7 @@
 
 <script>window.SITE_KILIT_GOZLE = true;</script>
 <script src="kilit.js?v=6"></script>
-<script src="indexyeni.js?v=2"></script>
+<script src="indexyeni.js?v=3"></script>
 <script>
 /* SITE KILIDI ILE UYUM: tanitim sayfasi HER kademede acik kalir (gozlem kipi).
    Ama site kilitliyken cikis kapisi (sag ustteki SVG) dogrudan siteye

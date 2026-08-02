@@ -1677,11 +1677,53 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
 .mf-cam { font-size: 1.6rem; opacity: .8; }
 .mf-usta { position: relative; }
 .mf-usta > svg { width: clamp(88px, 9vw, 128px); height: auto; overflow: visible; }
-.mf-usta .usta-kol { transform: rotate(38deg); transform-origin: 0 0; }
+/* Usta vitrinde de boş durmaz: çekiç sürekli iner kalkar */
+.mf-usta .usta-kol { transform: rotate(38deg); transform-origin: 0 0;
+    animation: g3UstaVur 1.15s cubic-bezier(.45,0,.55,1) infinite; }
 .mf-ors { position: absolute; right: -46px; bottom: -2px; width: clamp(58px, 6vw, 84px); }
 .mf-ors svg { width: 100%; height: auto; }
-.mf-makine { margin-left: clamp(26px, 3vw, 48px); }
+.mf-makine { margin-left: clamp(26px, 3vw, 48px); position: relative; --mfUcus: -58px; }
 .mf-makine svg { width: clamp(130px, 14vw, 190px); height: auto; }
+/* Öğütücü vitrinde ÇALIŞIR durumda: çarklar hızlı döner, bacadan duman tüter */
+.mf-makine .g2-kirici { animation-duration: 1.1s; }
+.mf-makine .g2-duman.d1 { animation: g2Duman 1.6s ease-out infinite; }
+.mf-makine .g2-duman.d2 { animation: g2Duman 1.6s ease-out .7s infinite; }
+/* Kök külçesi: sağdaki huniye düşer, makine onu yutar */
+.mf-kok {
+    position: absolute; right: -8px; top: 4%;
+    padding: 2px 9px; border-radius: 999px;
+    background: radial-gradient(circle at 35% 30%, #c08a52, #8a5a2c);
+    border: 2px solid #6f4621; color: #fffdf6;
+    font-family: 'Marhey', sans-serif; font-weight: 700;
+    font-size: clamp(.72rem, 1vw, .95rem); line-height: 1.5;
+    box-shadow: 0 3px 6px rgba(90,58,28,.35);
+    opacity: 0; animation: mfKokDus 4.2s ease-in infinite; pointer-events: none;
+}
+@keyframes mfKokDus {
+    0%   { opacity: 0; transform: translateY(-30px) rotate(-9deg); }
+    6%   { opacity: 1; }
+    20%  { opacity: 1; transform: translateY(30px) rotate(7deg); }
+    27%  { opacity: 0; transform: translateY(52px) scale(.5); }
+    100% { opacity: 0; transform: translateY(52px) scale(.5); }
+}
+/* Öğütülen harfler: sol oluktan takla ata ata ustanın örsüne uçar */
+.mf-parca {
+    position: absolute; left: -4px; bottom: 26%;
+    font-family: 'Marhey', sans-serif; font-weight: 700;
+    font-size: clamp(.95rem, 1.4vw, 1.3rem); color: #7C3AED;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0; animation: mfParcaUc 4.2s ease-in-out infinite; pointer-events: none;
+}
+.mf-parca.p2 { animation-delay: .55s; }
+.mf-parca.p3 { animation-delay: 1.1s; }
+@keyframes mfParcaUc {
+    0%, 30% { opacity: 0; transform: translate(8px, 0) scale(.6) rotate(0); }
+    34%  { opacity: 1; transform: translate(0, -4px) scale(.85) rotate(-70deg); }
+    42%  { transform: translate(calc(var(--mfUcus) * .55), -30px) scale(1) rotate(-190deg); }
+    52%  { opacity: 1; transform: translate(var(--mfUcus), 2px) scale(1) rotate(-330deg); }
+    58%  { opacity: 0; transform: translate(calc(var(--mfUcus) - 4px), 8px) scale(.8) rotate(-360deg); }
+    100% { opacity: 0; transform: translate(8px, 0) scale(.6); }
+}
 
 .menu-grid .menu-card:hover { border-color: #a78bfa; }
 .menu-connect {
@@ -1713,6 +1755,7 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     .menu-grid .menu-card { flex-direction: column; text-align: center; padding: 14px 12px; gap: 8px; }
     .mf-onizleme { gap: 10px; }
     .mf-ors { right: -30px; }
+    .mf-makine { --mfUcus: -42px; }
 }
 
 
@@ -1816,7 +1859,7 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     .mf-cam { font-size: 1.1rem; }
     .mf-usta > svg { width: clamp(54px, 16vh, 82px); }
     .mf-ors { right: -28px; bottom: -1px; width: clamp(36px, 10vh, 52px); }
-    .mf-makine { margin-left: 16px; }
+    .mf-makine { margin-left: 16px; --mfUcus: -38px; }
     .mf-makine svg { width: clamp(80px, 24vh, 120px); }
     #start-screen .menu-connect {
         width: clamp(120px, 20vw, 200px); min-height: 0;
@@ -1824,4 +1867,82 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
         font-size: clamp(1rem, 5.5vh, 1.4rem);
         flex-direction: column; gap: 8px;
     }
+}
+
+/* ==================================================================
+   KÖK VE ÇEKİM NUMARALARI            (veri_kok_numaralari.js)
+   ------------------------------------------------------------------
+   Üç yerde numara görünür:
+     1) kök şeridindeki çipte  → kökün sıra numarası      (014)
+     2) çekim penceresinin künye şeridinde → sıra no + ebced
+     3) her çekim satırının sonunda → KÖK·KALIP·SIGA      (014·001·13)
+   Numaralar rakam olduğu için hepsi dir="ltr"; Arapça metnin RTL akışı
+   içinde ters dönmesinler diye ayrıca 'unicode-bidi: isolate' veriliyor.
+   Renk olarak kökün kendi rengi (--root-solid) kullanılıyor; böylece
+   numara çipin kimliğinden kopmuyor.
+   ================================================================== */
+
+/* --- 1) Kök şeridi çipindeki sıra numarası --- */
+.g1-root-bar-chip { display: inline-flex; align-items: center; gap: .45em; }
+.g1-root-bar-chip .kok-metin { display: inline-block; }
+.g1-root-bar-chip .kok-no {
+    unicode-bidi: isolate;
+    font-family: 'Nunito', 'Markazi Text', system-ui, sans-serif;
+    font-size: .46em; letter-spacing: .06em; line-height: 1;
+    padding: .32em .5em; border-radius: 999px;
+    background: var(--root-solid, var(--secondary)); color: #fff;
+    opacity: .82; transition: opacity .2s ease, background .2s ease, color .2s ease;
+}
+.g1-root-bar-chip:hover .kok-no { opacity: 1; }
+/* Çip seçiliyken zemini dolu renk olduğu için rozet tersine dönüyor. */
+.g1-root-bar-chip.active .kok-no {
+    background: rgba(255,255,255,.92); color: var(--root-solid, var(--secondary)); opacity: 1;
+}
+
+/* --- 2) Çekim penceresinin künye şeridi --- */
+.g1-kok-kunye {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: clamp(8px, 1.6vw, 18px);
+    margin: -2px 0 10px; padding: 8px 12px; border-radius: 12px;
+    background: var(--root-tint, rgba(124,58,237,.07));
+    border: 1px dashed var(--root-line, rgba(124,58,237,.35));
+}
+.g1-kok-kunye .kk-kok {
+    font-size: clamp(1.15rem, 3.6vw, 1.9rem); line-height: 1;
+    color: var(--root-solid, var(--secondary));
+}
+.g1-kok-kunye .kk-etiket {
+    unicode-bidi: isolate;
+    font-family: 'Nunito', 'Markazi Text', system-ui, sans-serif;
+    font-size: clamp(.62rem, 1.9vw, .78rem); letter-spacing: .12em;
+    color: var(--text-main); opacity: .62;
+}
+.g1-kok-kunye .kk-etiket b {
+    display: inline-block; margin-inline-start: .35em;
+    font-size: 1.5em; letter-spacing: .04em; opacity: 1;
+    color: var(--root-solid, var(--secondary));
+}
+/* Ebced "gizli değer": biraz daha soluk dursun ki asıl kimlik sıra numarası
+   olduğu anlaşılsın (ebced benzersiz değil — 90 kök çakışıyor). */
+.g1-kok-kunye .kk-ebced { opacity: .48; }
+
+/* --- 3) Çekim satırındaki KÖK·KALIP·SIGA adresi --- */
+.g1-conj-row .cekim-no {
+    flex: 0 0 auto; unicode-bidi: isolate;
+    font-family: 'Nunito', 'Markazi Text', ui-monospace, monospace;
+    font-size: .34em; letter-spacing: .04em; line-height: 1;
+    padding: .38em .6em; border-radius: 8px; white-space: nowrap;
+    background: rgba(255,255,255,.85);
+    border: 1px solid var(--root-line, rgba(124,58,237,.3));
+    color: var(--root-solid, var(--secondary));
+    opacity: .78; cursor: help;
+    transition: opacity .2s ease, transform .2s ease;
+}
+.g1-conj-row:hover .cekim-no { opacity: 1; transform: translateY(-1px); }
+
+/* Dar ekranda adres satırı sıkıştırmasın: bir alt satıra insin. */
+@media (max-width: 560px) {
+    .g1-conj-row { flex-wrap: wrap; row-gap: 4px; }
+    .g1-conj-row .cekim-no { font-size: .3em; padding: .34em .5em; }
+    .g1-kok-kunye { gap: 10px; padding: 7px 10px; }
 }
