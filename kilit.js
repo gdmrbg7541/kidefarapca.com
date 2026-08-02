@@ -148,13 +148,19 @@
             { k: 'yonetici', ad: '🔒 Sadece Yönetici',   acikla: 'Herkese kapalı; yalnız yönetici girer. Öğrenciler de kilit ekranı görür.' }
         ];
         var simdiki = K.durum || VARSAYILAN;
+        var adBul = { acik: '🌍 Açık', girisli: '🎓 Sadece Girişliler', yonetici: '🔒 Sadece Yönetici' };
         return '<div id="tpKilitGovde">' +
-            '<p style="margin:0 0 12px; font-size:.85rem; color:#8B6A57;">Ayar anında uygulanır: açık sekmeler bile ' +
+            '<p style="margin:0 0 8px; font-size:.85rem; color:#8B6A57;">Ayar anında uygulanır: açık sekmeler bile ' +
             'seçtiğin kademeye göre o an kilitlenir ya da açılır. Not: bu bir kapı perdesidir — öğrenci verilerinin ' +
             'asıl koruması her zaman açık olan bulut kurallarındadır.</p>' +
+            '<p style="margin:0 0 12px; font-size:.8rem; color:#6B4A38; background:#FFF6EC; border:1px dashed #F0C9A6;' +
+            ' border-radius:9px; padding:7px 11px;">Buluttaki ayar: <b style="color:#D84315;">' +
+            (K.durum ? (adBul[K.durum] || K.durum) : '—') + '</b> · bağlantı: ' +
+            (K.durum !== null ? '<b style="color:#1E8449;">canlı ✓</b>'
+                : '<b style="color:#C0392B;">henüz yok</b> <small>(kurallar yayınlanmamış ya da bulut erişilemiyor olabilir)</small>') + '</p>' +
             kademe.map(function (s) {
                 var secili = s.k === simdiki;
-                return '<button type="button" onclick="kilitSec(\'' + s.k + '\')"' +
+                return '<button type="button" data-kilit-kademe="' + s.k + '" onclick="kilitSec(\'' + s.k + '\')"' +
                     ' style="display:flex; align-items:flex-start; gap:12px; width:100%; text-align:left; margin:0 0 10px;' +
                     ' padding:13px 15px; border-radius:12px; cursor:pointer; font-family:inherit;' +
                     (secili
@@ -171,9 +177,18 @@
         if (g && typeof window.kilitPanelHtml === 'function') g.outerHTML = window.kilitPanelHtml();
     }
     window.kilitSec = function (kademe) {
-        if (!window.appState || appState.userRole !== 'admin') return;
+        /* cift tetiklenme kalkani: inline onclick + yedek dinleyici ayni
+           tiklamada ikisi birden calisirsa tek yazim yapilir */
+        var simdi = Date.now();
+        if (K._sonSec && simdi - K._sonSec < 300) return;
+        K._sonSec = simdi;
         var not = document.getElementById('tpKilitNot');
         var yaz = function (m, hata) { if (not) { not.style.color = hata ? '#E74C3C' : '#16A085'; not.textContent = m; } };
+        yaz('Kaydediliyor…');   /* tiklama ulasti mi? aninda gorunur */
+        if (!window.appState || appState.userRole !== 'admin') {
+            yaz('Bu işlem yönetici hesabı ister (şu anki rol: ' + ((window.appState && appState.userRole) || 'yok') + ').', true);
+            return;
+        }
         try {
             firebase.firestore().collection('ayarlar').doc('site')
                 .set({ kilit: kademe, guncelleme: Date.now() }, { merge: true })
@@ -185,6 +200,21 @@
                 });
         } catch (e) { yaz('Kaydedilemedi.', true); }
     };
+
+    /* Yedek tiklama yolu: inline onclick herhangi bir sebeple calismazsa
+       panel tuslari data-kilit-kademe uzerinden yine islesin. */
+    try {
+        document.addEventListener('click', function (e) {
+            var t = e.target;
+            while (t && t !== document) {
+                if (t.getAttribute && t.getAttribute('data-kilit-kademe')) {
+                    window.kilitSec(t.getAttribute('data-kilit-kademe'));
+                    return;
+                }
+                t = t.parentNode;
+            }
+        }, true);
+    } catch (e) { }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { uygula(); baglan(); });
     else { uygula(); baglan(); }
