@@ -37,7 +37,9 @@
     };
 
     function rolOku() {
-        try { return (window.appState && appState.userRole) || ''; } catch (e) { return ''; }
+        /* DIKKAT: appState sayfada "let" ile tanimli -> window.appState YOKTUR;
+           ciplak isimle (typeof korumali) okunmali (data/window.data dersi). */
+        try { return (typeof appState !== 'undefined' && appState && appState.userRole) || ''; } catch (e) { return ''; }
     }
     function girisliMi() {
         try {
@@ -185,8 +187,9 @@
         var not = document.getElementById('tpKilitNot');
         var yaz = function (m, hata) { if (not) { not.style.color = hata ? '#E74C3C' : '#16A085'; not.textContent = m; } };
         yaz('Kaydediliyor…');   /* tiklama ulasti mi? aninda gorunur */
-        if (!window.appState || appState.userRole !== 'admin') {
-            yaz('Bu işlem yönetici hesabı ister (şu anki rol: ' + ((window.appState && appState.userRole) || 'yok') + ').', true);
+        var rol = rolOku();
+        if (rol !== 'admin') {
+            yaz('Bu işlem yönetici hesabı ister (şu anki rol: ' + (rol || 'yok') + ').', true);
             return;
         }
         try {
