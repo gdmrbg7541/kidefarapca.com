@@ -48,45 +48,117 @@
         } catch (e) { return false; }
     }
 
-    /* ------------------------------------------------ PERDE (tam ekran) */
+    /* ------------------------------------------------ PERDE = TANITIM EKRANI
+       Kilitli sitede ziyaretci "kilit" yazisi degil, siteyi TANITAN bir
+       vitrin gorur: ogrenciye / ogretmene / kurumlara uc reklam karti,
+       hepsi ozel animasyonlu SVG. Giris tusu perdeyi kenara cekip giris
+       penceresini acar (mola sistemi). */
     var PERDE_ID = 'siteKilitPerde';
+
+    /* Giris molasi: Giris Yap'a basilinca perde gecici kalkar ki giris
+       penceresi gorunebilsin. Giris olmazsa 90 sn sonra perde geri iner. */
+    K.girisAc = function () {
+        K._mola = Date.now() + 90000;
+        var p = document.getElementById(PERDE_ID);
+        if (p) p.style.display = 'none';
+        try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e) { }
+    };
+
+    function kartSvg(tur) {
+        if (tur === 'ogrenci') /* KUPA: parlayan kupa + yukselen rekor cubuklari */
+            return '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+                '<rect class="rk-bar rk-b1" x="8"  y="38" width="6" height="14" rx="2" fill="#E67E22"/>' +
+                '<rect class="rk-bar rk-b2" x="17" y="32" width="6" height="20" rx="2" fill="#F39C12"/>' +
+                '<rect class="rk-bar rk-b3" x="26" y="25" width="6" height="27" rx="2" fill="#27ae60"/>' +
+                '<g class="rk-kupa"><path d="M38 14h16v7a8 8 0 0 1-16 0z" fill="#F1C40F" stroke="#B7950B" stroke-width="1.6"/>' +
+                '<path d="M38 16h-3.4a4.4 4.4 0 0 0 4.4 5.6M54 16h3.4a4.4 4.4 0 0 1-4.4 5.6" fill="none" stroke="#B7950B" stroke-width="1.8"/>' +
+                '<rect x="43.6" y="28.6" width="4.8" height="5.4" fill="#B7950B"/>' +
+                '<rect x="40.4" y="33.6" width="11.2" height="3.6" rx="1.4" fill="#8D6E63"/></g>' +
+                '<g class="rk-parla" stroke="#F1C40F" stroke-width="2" stroke-linecap="round">' +
+                '<path d="M35 8l2 2M58 8l-2 2M46 4v3"/></g></svg>';
+        if (tur === 'ogretmen') /* TAHTA: cizilen onay + kalem */
+            return '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+                '<rect x="8" y="10" width="48" height="34" rx="4" fill="#2C6E49"/>' +
+                '<rect x="8" y="10" width="48" height="34" rx="4" fill="none" stroke="#8D6E63" stroke-width="3"/>' +
+                '<path class="th-tik" d="M20 28l7 7 16-16" fill="none" stroke="#FFF3E0" stroke-width="4"' +
+                ' stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="0"/>' +
+                '<path d="M14 52h22" stroke="#D5BFAE" stroke-width="3" stroke-linecap="round"/>' +
+                '<g class="th-kalem"><path d="M44 56l10-10 4 4-10 10-5.2 1.2z" fill="#F39C12" stroke="#B9770E" stroke-width="1.4"/>' +
+                '<path d="M54 46l4 4" stroke="#8D6E63" stroke-width="3" stroke-linecap="round"/></g></svg>';
+        /* KURUM: bayragi dalgalanan, pencereleri isiyan okul */
+        return '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+            '<path d="M10 26L32 12l22 14z" fill="#D84315"/>' +
+            '<rect x="14" y="26" width="36" height="26" rx="2" fill="#FFF3E0" stroke="#E8A87C" stroke-width="1.6"/>' +
+            '<rect class="ok-cam c1" x="19" y="31" width="7" height="7" rx="1.4" fill="#5DADE2"/>' +
+            '<rect class="ok-cam c2" x="38" y="31" width="7" height="7" rx="1.4" fill="#5DADE2"/>' +
+            '<rect class="ok-cam c3" x="19" y="42" width="7" height="7" rx="1.4" fill="#5DADE2"/>' +
+            '<rect class="ok-cam c4" x="38" y="42" width="7" height="7" rx="1.4" fill="#5DADE2"/>' +
+            '<path d="M28.6 52v-9a3.4 3.4 0 0 1 6.8 0v9z" fill="#8D6E63"/>' +
+            '<rect x="31" y="6" width="2.4" height="12" fill="#8D6E63"/>' +
+            '<path class="ok-bayrak" d="M33.4 7h11l-2.6 3 2.6 3h-11z" fill="#E53935"/></svg>';
+    }
+
     function perdeHtml(neden) {
-        var mesaj = neden === 'yonetici'
-            ? 'Site şu an <b>yalnız yönetici girişine</b> açık.'
-            : 'Siteye devam etmek için <b>giriş yapman</b> gerekiyor.';
-        var alt = neden === 'yonetici'
-            ? 'Ders saatinde ya da yönetici izin verdiğinde yeniden açılır.'
-            : 'Öğretmeninin sana verdiği hesapla giriş yapabilirsin.';
+        var kartlar = [
+            { s: 'ogrenci', b: 'Öğrenciysen', m: 'Oyunlarla öğren, rekorlarını kır, görevlerini tamamla — gelişimin adım adım kaydedilir.' },
+            { s: 'ogretmen', b: 'Öğretmensen', m: 'Sınıflarını yönet, tek tıkla görev gönder, notları ve gelişimi canlı panelden izle.' },
+            { s: 'kurum', b: 'Kurumsan', m: 'Şubeler, seviyeler ve sınıflar tek çatıda: performans, sınav ve veli takibi bir arada.' }
+        ].map(function (k) {
+            return '<div style="flex:1; min-width:200px; background:#FFF8F2; border:1px solid #F3E2D3;' +
+                ' border-radius:16px; padding:18px 16px; text-align:center;">' +
+                '<div style="width:74px; height:74px; margin:0 auto 10px;">' + kartSvg(k.s) + '</div>' +
+                '<div style="font-weight:800; color:#9C3B0C; font-size:1.02rem; margin-bottom:6px;">' + k.b + '</div>' +
+                '<div style="font-size:.82rem; color:#6B4A38; line-height:1.55;">' + k.m + '</div></div>';
+        }).join('');
+
+        var altSatir;
+        if (girisliMi()) {
+            altSatir = '<p style="margin:0; color:#B9770E; font-size:.82rem;">Bu hesabın bu bölüm için yetkisi yok — ' +
+                'ders saatinde ya da yönetici izin verdiğinde açılır.</p>';
+        } else if (neden === 'giris') {
+            altSatir = '<button type="button" onclick="SiteKilit.girisAc()" style="padding:14px 40px; border:none;' +
+                ' border-radius:12px; cursor:pointer; font-family:inherit; font-weight:800; font-size:1.05rem; color:#fff;' +
+                ' background:linear-gradient(135deg,#F39C12,#D84315); box-shadow:0 6px 18px rgba(216,67,21,.35);">Giriş Yap</button>' +
+                '<p style="margin:10px 0 0; color:#A6836E; font-size:.78rem;">Hesabını öğretmenin oluşturur — kodunla bağlanırsın.</p>';
+        } else {
+            altSatir = '<p style="margin:0 0 10px; color:#A6836E; font-size:.8rem;">Şu an derslere özel çalışıyoruz — ' +
+                'katılmak için öğretmeninle iletişime geç.</p>' +
+                '<a onclick="SiteKilit.girisAc()" style="color:#B34700; font-weight:700; font-size:.8rem;' +
+                ' cursor:pointer; text-decoration:underline;">Giriş</a>';
+        }
+
         return '' +
-            '<div style="max-width:420px; text-align:center; padding:34px 26px; background:#fff; border-radius:22px;' +
-            ' box-shadow:0 24px 60px rgba(0,0,0,.35);">' +
-            '<svg viewBox="0 0 64 64" style="width:86px; height:86px;" aria-hidden="true">' +
-            '<g class="kilit-govde"><rect x="14" y="27" width="36" height="27" rx="6" fill="#D84315"/>' +
-            '<rect x="14" y="27" width="36" height="9" rx="5" fill="rgba(255,255,255,.14)"/>' +
-            '<circle cx="32" cy="39" r="4.6" fill="#FFF3E0"/>' +
-            '<rect x="30.2" y="41" width="3.6" height="7.5" rx="1.8" fill="#FFF3E0"/></g>' +
-            '<path class="kilit-kulp" d="M21.5 27v-6.5a10.5 10.5 0 0 1 21 0V27" fill="none" stroke="#8D6E63"' +
-            ' stroke-width="5.4" stroke-linecap="round"/>' +
-            '<g class="kilit-parilti" stroke="#F39C12" stroke-width="2.4" stroke-linecap="round">' +
-            '<path d="M8 20l4 2.4M56 20l-4 2.4M32 6.5v4"/></g></svg>' +
+            '<div style="max-width:880px; width:100%; max-height:94vh; overflow-y:auto; text-align:center;' +
+            ' padding:30px 24px; background:#fff; border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,.35);">' +
             '<style>' +
-            '@keyframes kilitSalla{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-3.5deg)}95%{transform:rotate(3deg)}}' +
-            '.kilit-govde{transform-origin:32px 40px; animation:kilitSalla 3.2s ease-in-out infinite}' +
-            '@keyframes kilitIsik{0%,100%{opacity:.25}50%{opacity:1}}' +
-            '.kilit-parilti{animation:kilitIsik 2.2s ease-in-out infinite}' +
+            '@keyframes rkBar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.55)}}' +
+            '.rk-bar{transform-box:fill-box; transform-origin:50% 100%; animation:rkBar 2.6s ease-in-out infinite}' +
+            '.rk-b2{animation-delay:.2s}.rk-b3{animation-delay:.4s}' +
+            '@keyframes rkKupa{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.4px)}}' +
+            '.rk-kupa{animation:rkKupa 2.4s ease-in-out infinite}' +
+            '@keyframes rkParla{0%,45%,100%{opacity:.2}18%{opacity:1}}' +
+            '.rk-parla{animation:rkParla 2s ease-in-out infinite}' +
+            '@keyframes thTik{0%,12%{stroke-dashoffset:34}45%,78%{stroke-dashoffset:0}92%,100%{stroke-dashoffset:34}}' +
+            '.th-tik{animation:thTik 3.4s ease-in-out infinite}' +
+            '@keyframes thKalem{0%,100%{transform:translate(0,0)}30%{transform:translate(-2.4px,-2.4px)}60%{transform:translate(1.4px,1.4px)}}' +
+            '.th-kalem{animation:thKalem 3.4s ease-in-out infinite}' +
+            '@keyframes okBayrak{0%,100%{transform:skewY(0deg)}50%{transform:skewY(5deg)}}' +
+            '.ok-bayrak{transform-box:fill-box; transform-origin:0% 50%; animation:okBayrak 2.6s ease-in-out infinite}' +
+            '@keyframes okCam{0%,100%{fill:#5DADE2}50%{fill:#F9E79F}}' +
+            '.ok-cam{animation:okCam 3.6s ease-in-out infinite}' +
+            '.c2{animation-delay:.9s}.c3{animation-delay:1.8s}.c4{animation-delay:2.7s}' +
+            '@keyframes klLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}' +
+            '.kl-logo{animation:klLogo 2.6s ease-in-out infinite}' +
             '</style>' +
-            '<h2 style="margin:14px 0 8px; color:#9C3B0C; font-size:1.35rem;">Site Kilitli</h2>' +
-            '<p style="margin:0 0 6px; color:#5A4034; font-size:.95rem; line-height:1.6;">' + mesaj + '</p>' +
-            '<p style="margin:0 0 18px; color:#A6836E; font-size:.8rem;">' + alt + '</p>' +
-            (girisliMi()
-                ? '<p style="margin:0; color:#B9770E; font-size:.82rem;">Bu hesabın yetkisi bu kademe için yeterli değil.</p>'
-                : '<button type="button" onclick="try{ if(typeof showLoginModal===\'function\'){' +
-                  'var p=document.getElementById(\'' + PERDE_ID + '\'); if(p) p.style.pointerEvents=\'none\';' +
-                  'setTimeout(function(){ if(p) p.style.pointerEvents=\'auto\'; }, 60000); showLoginModal(); } }catch(e){}"' +
-                  ' style="padding:13px 34px; border:none; border-radius:12px; cursor:pointer; font-family:inherit;' +
-                  ' font-weight:700; font-size:1rem; color:#fff;' +
-                  ' background:linear-gradient(135deg,#F39C12,#D84315);">Giriş Yap</button>') +
-            '</div>';
+            '<svg viewBox="0 0 64 64" style="width:64px; height:64px;" aria-hidden="true" class="kl-logo">' +
+            '<path d="M10 14a4 4 0 0 1 4-4h16v40H14a4 4 0 0 0-4 4z" fill="#FFF3E0" stroke="#E8A87C" stroke-width="2"/>' +
+            '<path d="M54 14a4 4 0 0 0-4-4H34v40h16a4 4 0 0 1 4 4z" fill="#FDEBD0" stroke="#E8A87C" stroke-width="2"/>' +
+            '<text x="22" y="32" font-size="13" font-weight="800" fill="#D84315" text-anchor="middle">ك</text>' +
+            '<text x="43" y="32" font-size="13" font-weight="800" fill="#B34700" text-anchor="middle">ع</text></svg>' +
+            '<h2 style="margin:8px 0 4px; color:#9C3B0C; font-size:1.5rem;">Kidef Arapça</h2>' +
+            '<p style="margin:0 0 20px; color:#8B6A57; font-size:.92rem;">Arapçayı oyunla, görevle ve canlı takiple öğreten sınıf platformu</p>' +
+            '<div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px;">' + kartlar + '</div>' +
+            altSatir + '</div>';
     }
     function perdeGoster(neden) {
         var p = document.getElementById(PERDE_ID);
@@ -118,8 +190,15 @@
             try { kilit = localStorage.getItem('siteKilitSon') || VARSAYILAN; } catch (e) { kilit = VARSAYILAN; }
         }
         var k = K.karar(kilit, girisliMi(), rolOku());
-        if (k.izin) perdeKaldir();
-        else perdeGoster(k.neden);
+        if (k.izin) { K._mola = 0; perdeKaldir(); return; }
+        /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
+           perde gizli bekler; giris olmazsa sure bitince geri iner. */
+        if (K._mola && Date.now() < K._mola) {
+            var p = document.getElementById(PERDE_ID);
+            if (p) p.style.display = 'none';
+            return;
+        }
+        perdeGoster(k.neden);
     }
     K.uygula = uygula;   /* test kancasi */
 
@@ -136,7 +215,10 @@
                     uygula();
                     kilitPanelTazele();
                 }, function (e) { console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
-            if (firebase.auth) firebase.auth().onAuthStateChanged(function () { setTimeout(uygula, 400); });
+            if (firebase.auth) firebase.auth().onAuthStateChanged(function (u) {
+                if (u) K._mola = 0;          /* giris geldi: mola biter, karar netlesir */
+                setTimeout(uygula, 400);
+            });
         } catch (e) { console.warn('kilit:', e && e.message); }
         /* rol gec cozulur + perde elle silinirse geri gelsin: hafif bekci */
         setInterval(uygula, 1500);

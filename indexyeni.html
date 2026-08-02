@@ -32,6 +32,7 @@
   <a href="#oyunPerde" data-hedef="oyunPerde"></a>
   <a href="#gizemPerde" data-hedef="gizemPerde"></a>
   <a href="#finalPerde" data-hedef="finalPerde"></a>
+  <a href="#kitlePerde" data-hedef="kitlePerde"></a>
 </nav>
 
 <!-- 1 · HERO -->
@@ -103,6 +104,93 @@
         <div class="ozellik" id="ozOdak"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 7 · KİME NE KATAR? — kalıcı tanıtım bölümü (kilitten bağımsız, her zaman görünür).
+     Kartlar sitedeki kilit perdesiyle AYNI özel animasyonlu SVG'leri kullanır. -->
+<section id="kitlePerde">
+<style>
+  #kitlePerde{ position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:60px 18px; background:linear-gradient(135deg,#FFC107 0%,#F39C12 45%,#EF5350 100%); }
+  #kitlePerde .krk-kutu{ max-width:880px; width:100%; text-align:center; padding:34px 26px;
+    background:#fff; border-radius:24px; box-shadow:0 24px 60px rgba(0,0,0,.3); }
+  #kitlePerde h2{ margin:8px 0 4px; color:#9C3B0C; font-size:1.6rem; }
+  #kitlePerde .krk-alt{ margin:0 0 22px; color:#8B6A57; font-size:.95rem; }
+  #kitlePerde .krk-sira{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:22px; }
+  #kitlePerde .krk-kart{ flex:1; min-width:200px; background:#FFF8F2; border:1px solid #F3E2D3;
+    border-radius:16px; padding:18px 16px; text-align:center; transition:transform .18s, box-shadow .18s; }
+  #kitlePerde .krk-kart:hover{ transform:translateY(-5px); box-shadow:0 10px 24px rgba(216,67,21,.18); }
+  #kitlePerde .krk-kart svg{ width:74px; height:74px; display:block; margin:0 auto 10px; overflow:visible; }
+  #kitlePerde .krk-baslik{ font-weight:800; color:#9C3B0C; font-size:1.05rem; margin-bottom:6px; }
+  #kitlePerde .krk-metin{ font-size:.84rem; color:#6B4A38; line-height:1.55; }
+  #kitlePerde .krk-cta{ display:inline-block; padding:14px 42px; border-radius:12px; text-decoration:none;
+    font-weight:800; font-size:1.05rem; color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);
+    box-shadow:0 6px 18px rgba(216,67,21,.35); }
+  @keyframes krkBar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.55)}}
+  #kitlePerde .rk-bar{transform-box:fill-box; transform-origin:50% 100%; animation:krkBar 2.6s ease-in-out infinite}
+  #kitlePerde .rk-b2{animation-delay:.2s} #kitlePerde .rk-b3{animation-delay:.4s}
+  @keyframes krkKupa{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.4px)}}
+  #kitlePerde .rk-kupa{animation:krkKupa 2.4s ease-in-out infinite}
+  @keyframes krkParla{0%,45%,100%{opacity:.2}18%{opacity:1}}
+  #kitlePerde .rk-parla{animation:krkParla 2s ease-in-out infinite}
+  @keyframes krkTik{0%,12%{stroke-dashoffset:34}45%,78%{stroke-dashoffset:0}92%,100%{stroke-dashoffset:34}}
+  #kitlePerde .th-tik{animation:krkTik 3.4s ease-in-out infinite}
+  @keyframes krkKalem{0%,100%{transform:translate(0,0)}30%{transform:translate(-2.4px,-2.4px)}60%{transform:translate(1.4px,1.4px)}}
+  #kitlePerde .th-kalem{animation:krkKalem 3.4s ease-in-out infinite}
+  @keyframes krkBayrak{0%,100%{transform:skewY(0deg)}50%{transform:skewY(5deg)}}
+  #kitlePerde .ok-bayrak{transform-box:fill-box; transform-origin:0% 50%; animation:krkBayrak 2.6s ease-in-out infinite}
+  @keyframes krkCam{0%,100%{fill:#5DADE2}50%{fill:#F9E79F}}
+  #kitlePerde .ok-cam{animation:krkCam 3.6s ease-in-out infinite}
+  #kitlePerde .c2{animation-delay:.9s} #kitlePerde .c3{animation-delay:1.8s} #kitlePerde .c4{animation-delay:2.7s}
+</style>
+  <div class="krk-kutu">
+    <h2>Kime Ne Katar?</h2>
+    <p class="krk-alt">Arapçayı oyunla, görevle ve canlı takiple öğreten sınıf platformu</p>
+    <div class="krk-sira">
+      <div class="krk-kart">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect class="rk-bar" x="8" y="38" width="6" height="14" rx="2" fill="#E67E22"/>
+          <rect class="rk-bar rk-b2" x="17" y="32" width="6" height="20" rx="2" fill="#F39C12"/>
+          <rect class="rk-bar rk-b3" x="26" y="25" width="6" height="27" rx="2" fill="#27ae60"/>
+          <g class="rk-kupa"><path d="M38 14h16v7a8 8 0 0 1-16 0z" fill="#F1C40F" stroke="#B7950B" stroke-width="1.6"/>
+          <path d="M38 16h-3.4a4.4 4.4 0 0 0 4.4 5.6M54 16h3.4a4.4 4.4 0 0 1-4.4 5.6" fill="none" stroke="#B7950B" stroke-width="1.8"/>
+          <rect x="43.6" y="28.6" width="4.8" height="5.4" fill="#B7950B"/>
+          <rect x="40.4" y="33.6" width="11.2" height="3.6" rx="1.4" fill="#8D6E63"/></g>
+          <g class="rk-parla" stroke="#F1C40F" stroke-width="2" stroke-linecap="round"><path d="M35 8l2 2M58 8l-2 2M46 4v3"/></g>
+        </svg>
+        <div class="krk-baslik">Öğrenciysen</div>
+        <div class="krk-metin">Oyunlarla öğren, rekorlarını kır, görevlerini tamamla — gelişimin adım adım kaydedilir.</div>
+      </div>
+      <div class="krk-kart">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="8" y="10" width="48" height="34" rx="4" fill="#2C6E49"/>
+          <rect x="8" y="10" width="48" height="34" rx="4" fill="none" stroke="#8D6E63" stroke-width="3"/>
+          <path class="th-tik" d="M20 28l7 7 16-16" fill="none" stroke="#FFF3E0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="0"/>
+          <path d="M14 52h22" stroke="#D5BFAE" stroke-width="3" stroke-linecap="round"/>
+          <g class="th-kalem"><path d="M44 56l10-10 4 4-10 10-5.2 1.2z" fill="#F39C12" stroke="#B9770E" stroke-width="1.4"/>
+          <path d="M54 46l4 4" stroke="#8D6E63" stroke-width="3" stroke-linecap="round"/></g>
+        </svg>
+        <div class="krk-baslik">Öğretmensen</div>
+        <div class="krk-metin">Sınıflarını yönet, tek tıkla görev gönder, notları ve gelişimi canlı panelden izle.</div>
+      </div>
+      <div class="krk-kart">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M10 26L32 12l22 14z" fill="#D84315"/>
+          <rect x="14" y="26" width="36" height="26" rx="2" fill="#FFF3E0" stroke="#E8A87C" stroke-width="1.6"/>
+          <rect class="ok-cam" x="19" y="31" width="7" height="7" rx="1.4" fill="#5DADE2"/>
+          <rect class="ok-cam c2" x="38" y="31" width="7" height="7" rx="1.4" fill="#5DADE2"/>
+          <rect class="ok-cam c3" x="19" y="42" width="7" height="7" rx="1.4" fill="#5DADE2"/>
+          <rect class="ok-cam c4" x="38" y="42" width="7" height="7" rx="1.4" fill="#5DADE2"/>
+          <path d="M28.6 52v-9a3.4 3.4 0 0 1 6.8 0v9z" fill="#8D6E63"/>
+          <rect x="31" y="6" width="2.4" height="12" fill="#8D6E63"/>
+          <path class="ok-bayrak" d="M33.4 7h11l-2.6 3 2.6 3h-11z" fill="#E53935"/>
+        </svg>
+        <div class="krk-baslik">Kurumsan</div>
+        <div class="krk-metin">Şubeler, seviyeler ve sınıflar tek çatıda: performans, sınav ve veli takibi bir arada.</div>
+      </div>
+    </div>
+    <a class="krk-cta" href="index.html">Siteye Gir</a>
   </div>
 </section>
 
