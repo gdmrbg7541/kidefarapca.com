@@ -511,33 +511,17 @@
 </section>
 
 
-<style>
-/* GIRIS TUSU KAPANISI: "Siteye Gir"e basilinca acilis kapilari geri kapanir
-   (reklam bolumunun ustunu orter), sonra indekse gecilir. */
-body.kapiKapaniyor .acilis-kanat{ animation:kapiKapanSol 1.05s cubic-bezier(.65,.05,.25,1) forwards; }
-body.kapiKapaniyor #acilisSag.acilis-kanat{ animation-name:kapiKapanSag; }
-@keyframes kapiKapanSol{ from{ transform:translateX(-104%); } to{ transform:translateX(0); } }
-@keyframes kapiKapanSag{ from{ transform:translateX(104%); } to{ transform:translateX(0); } }
-</style>
 <script>window.SITE_KILIT_GOZLE = true;</script>
-<script src="kilit.js?v=8"></script>
+<script src="kilit.js?v=9"></script>
 <script src="indexyeni.js?v=6"></script>
 <script>
 /* SITE KILIDI ILE UYUM: tanitim sayfasi HER kademede acik kalir (gozlem kipi).
-   Ama site kilitliyken cikis kapisi (sag ustteki SVG) dogrudan siteye
-   goturmez — en alttaki reklam + giris bolumune kaydirir. */
+   Cikis kapisi (sag ustteki SVG) HER kademede DOGRUDAN index'e goturur —
+   kilitliyse index zaten dogrudan kayit/giris ekrani olarak acilir. */
 (function () {
   function kilitli() {
     try { return window.SiteKilit && !SiteKilit.izinliMi(); } catch (e) { return false; }
   }
-  var kapi = document.getElementById('iceriKapi');
-  if (kapi) kapi.addEventListener('click', function (e) {
-    if (kilitli()) {
-      e.preventDefault(); e.stopPropagation();
-      var hedef = document.getElementById('kitlePerde');
-      if (hedef) hedef.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
   /* Alt bolumdeki tus kilide gore sekil degistirir */
   function tazele() {
     var a = document.getElementById('krkCta');
@@ -548,14 +532,7 @@ body.kapiKapaniyor #acilisSag.acilis-kanat{ animation-name:kapiKapanSag; }
   }
   setInterval(tazele, 1500);
   tazele();
-  /* Giris tusu: kapilar kapanir, reklam ortulur, sonra indekse gidilir */
-  var giris = document.getElementById('krkCta');
-  if (giris) giris.addEventListener('click', function (e) {
-    e.preventDefault();
-    if (document.body.classList.contains('kapiKapaniyor')) return;
-    document.body.classList.add('kapiKapaniyor');
-    setTimeout(function () { location.href = 'index.html'; }, 1250);
-  });
+  /* "Siteye Gir" animasyonsuz DOGRUDAN index'e gider (href yeter). */
 })();
 </script>
 <script id="kidef-koruma">

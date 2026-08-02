@@ -114,6 +114,22 @@
         return '';
     }
 
+    /* CARPI KURALI: kilit aktifken kayit/giris penceresinin kapatma carpisi
+       GIZLENIR — kapanmayan pencerede carpi gostermek yaniltici olur.
+       Kilit acikken (izin varken) carpi normal gorunur. */
+    function carpiKurali(gizle) {
+        var st = document.getElementById('kilitCarpiStil');
+        if (!st) {
+            st = document.createElement('style');
+            st.id = 'kilitCarpiStil';
+            st.textContent = 'body.kilitCarpisiz #login-modal .modal-close{ display:none !important; }';
+            (document.head || document.documentElement).appendChild(st);
+        }
+        try {
+            if (document.body) document.body.classList.toggle('kilitCarpisiz', !!gizle);
+        } catch (e) { }
+    }
+
     /* Kayit/giris penceresini dogrudan ac (kapatilirsa bekci yeniden acar).
        ~2 sn kisitlama: carpi sonrasi cirpinma olmasin. */
     function girisEkraniAc() {
@@ -165,7 +181,8 @@
         if (GOZLE) return;          /* gozlem kipi: perde hic cizilmez */
         var kilit = sonKilit();
         var k = K.karar(kilit, girisliMi(), rolOku());
-        if (k.izin) { K._mola = 0; perdeKaldir(); return; }
+        if (k.izin) { K._mola = 0; carpiKurali(false); perdeKaldir(); return; }
+        carpiKurali(true);   /* kilit aktif: pencerede carpi gorunmez */
         /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
            perde gizli bekler. Pencere KAPATILIRSA (carpi) mola derhal
            biter ve perde geri iner; ust sinir 90 sn'dir. Ilk 2.5 sn
