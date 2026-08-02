@@ -82,9 +82,8 @@
        penceresi (login-modal) KENDILIGINDEN acilir — index dogrudan giris
        ekrani olarak acilir. Pencere carpiyla kapatilirsa bekci ~2 sn icinde
        yeniden acar (kilitliyken site bosta gorunmez). Yalniz-yonetici
-       kilidinde ogrenci/ogretmen giris yaparsa pencere KAYBOLMAZ: icine
-       kirmizi uyari seridi iner, yonetici hesabiyla yeniden giris yapilabilir
-       (eski "yetkisi yok" cikmaz karti kaldirildi). */
+       kilidinde pencere hic kaybolmaz; icinde notr "onarim asamasinda"
+       sahnesi gosterilir (eski "yetkisi yok" cikmaz karti kaldirildi). */
     var PERDE_ID = 'siteKilitPerde';
 
     /* Giris molasi: Giris Yap'a basilinca perde gecici kalkar ki giris
@@ -110,37 +109,77 @@
         return '';
     }
 
-    /* UYARI SERIDI: yalniz-yonetici kilidinde pencerenin tepesine iner.
-       - Anonim ziyaretciye: on bilgi (ogrenci/ogretmen giremez).
-       - Ogrenci/ogretmen GIRIS YAPMISSA: guclu uyari — pencere KAYBOLMAZ,
-         yonetici hesabiyla yeniden giris yapilabilir. */
+    /* ONARIM SAHNESI (guvenli soylem): yalniz-yonetici kilidinde ve
+       YALNIZ ogrenci/ogretmen GIRIS YAPTIGINDA pencereye "site onarim
+       asamasinda" sahnesi iner — YONETICIDEN HIC SOZ EDILMEZ. Anonim
+       ziyaretci duz kayit/giris ekrani gorur. Pencere kaybolmaz;
+       yonetici kendi hesabiyla girebilecegini zaten bilir. */
+    var ONARIM_SVG = '' +
+        '<svg viewBox="0 0 120 78" style="width:104px; height:68px; display:block; margin:0 auto;" aria-hidden="true">' +
+        '<style>' +
+        '@keyframes kmDisli{from{transform:rotate(0)}to{transform:rotate(360deg)}}' +
+        '.km-disli{transform-box:fill-box; transform-origin:50% 50%; animation:kmDisli 6s linear infinite}' +
+        '.km-disli.ters{animation-direction:reverse; animation-duration:4.2s}' +
+        '@keyframes kmAnahtar{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(14deg)}}' +
+        '.km-anahtar{transform-box:fill-box; transform-origin:30% 88%; animation:kmAnahtar 2.3s ease-in-out infinite}' +
+        '@keyframes kmKivil{0%,58%,100%{opacity:0}68%,84%{opacity:1}}' +
+        '.km-kivil{animation:kmKivil 2.3s ease-in-out infinite}' +
+        '</style>' +
+        /* buyuk disli (teal) */
+        '<g transform="translate(38,42)"><g class="km-disli">' +
+        '<rect x="-3.5" y="-21" width="7" height="8" rx="2.5" fill="#16A085"/>' +
+        '<rect x="-3.5" y="13" width="7" height="8" rx="2.5" fill="#16A085"/>' +
+        '<rect x="-21" y="-3.5" width="8" height="7" rx="2.5" fill="#16A085"/>' +
+        '<rect x="13" y="-3.5" width="8" height="7" rx="2.5" fill="#16A085"/>' +
+        '<rect x="-3.5" y="-21" width="7" height="8" rx="2.5" fill="#16A085" transform="rotate(45)"/>' +
+        '<rect x="-3.5" y="13" width="7" height="8" rx="2.5" fill="#16A085" transform="rotate(45)"/>' +
+        '<rect x="-21" y="-3.5" width="8" height="7" rx="2.5" fill="#16A085" transform="rotate(45)"/>' +
+        '<rect x="13" y="-3.5" width="8" height="7" rx="2.5" fill="#16A085" transform="rotate(45)"/>' +
+        '<circle r="16" fill="#16A085"/><circle r="6" fill="#0e7a64"/>' +
+        '</g></g>' +
+        /* kucuk disli (turuncu, ters doner) */
+        '<g transform="translate(66,24)"><g class="km-disli ters">' +
+        '<rect x="-2.6" y="-14.5" width="5.2" height="6" rx="2" fill="#F39C12"/>' +
+        '<rect x="-2.6" y="8.5" width="5.2" height="6" rx="2" fill="#F39C12"/>' +
+        '<rect x="-14.5" y="-2.6" width="6" height="5.2" rx="2" fill="#F39C12"/>' +
+        '<rect x="8.5" y="-2.6" width="6" height="5.2" rx="2" fill="#F39C12"/>' +
+        '<rect x="-2.6" y="-14.5" width="5.2" height="6" rx="2" fill="#F39C12" transform="rotate(45)"/>' +
+        '<rect x="-2.6" y="8.5" width="5.2" height="6" rx="2" fill="#F39C12" transform="rotate(45)"/>' +
+        '<rect x="-14.5" y="-2.6" width="6" height="5.2" rx="2" fill="#F39C12" transform="rotate(45)"/>' +
+        '<rect x="8.5" y="-2.6" width="6" height="5.2" rx="2" fill="#F39C12" transform="rotate(45)"/>' +
+        '<circle r="11" fill="#F39C12"/><circle r="4.2" fill="#c87f0a"/>' +
+        '</g></g>' +
+        /* ingiliz anahtari: civata ustunde sallanir */
+        '<g transform="translate(88,50)"><g class="km-anahtar">' +
+        '<circle cx="8" cy="-22" r="9" fill="none" stroke="#7f8c8d" stroke-width="7.5"' +
+        ' stroke-dasharray="31 13" stroke-dashoffset="7" stroke-linecap="round"/>' +
+        '<rect x="3" y="-16" width="10" height="36" rx="5" fill="#7f8c8d" transform="rotate(14 8 -16)"/>' +
+        '</g>' +
+        '<circle cx="8" cy="-22" r="4" fill="#5d6d7e"/></g>' +
+        /* kivilcimlar */
+        '<g class="km-kivil" stroke="#F39C12" stroke-width="2.6" stroke-linecap="round">' +
+        '<path d="M52 56l4 5M60 60l0 6M45 62l-4 4"/></g>' +
+        '</svg>';
+
     function uyariGuncelle(kilit, girisli) {
         var lm = document.getElementById('login-modal');
         if (!lm) return;
         var kap = lm.querySelector('.modal-content') || lm;
         var u = document.getElementById('kilitUyari');
-        var gerekli = (kilit === 'yonetici');
+        /* Sahne YALNIZ ogrenci/ogretmen GIRIS YAPINCA cikar; anonim
+           ziyaretci duz kayit/giris ekrani gorur (hicbir ipucu yok). */
+        var gerekli = (kilit === 'yonetici' && girisli);
         if (!gerekli) { if (u) u.remove(); return; }
         if (!u) {
             u = document.createElement('div');
             u.id = 'kilitUyari';
             kap.insertBefore(u, kap.firstChild);
-        }
-        var metin, renk;
-        if (girisli) {
-            metin = '⚠ Bu hesap yönetici değil. Site şu an <b>yalnızca yönetici girişine</b> açık — ' +
-                'öğrenci ve öğretmen hesapları giremez. Yönetici hesabıyla giriş yapabilirsin.';
-            renk = 'background:#FDECEA; border:1.5px solid #E53935; color:#C62828;';
-        } else {
-            metin = '🔒 Site şu an <b>yalnızca yönetici girişine</b> açık — öğrenci ve öğretmen hesapları giremez.';
-            renk = 'background:#FFF3E0; border:1.5px solid #F39C12; color:#B34700;';
-        }
-        var anahtar = (girisli ? 'g' : 'a');
-        if (u.getAttribute('data-k') !== anahtar) {
-            u.setAttribute('data-k', anahtar);
-            u.setAttribute('style', renk + ' border-radius:12px; padding:11px 14px; margin:0 0 14px;' +
-                ' font-size:.86rem; line-height:1.55; text-align:center;');
-            u.innerHTML = metin;
+            u.setAttribute('style', 'background:#FFF8F2; border:1.5px solid #F3E2D3;' +
+                ' border-radius:14px; padding:14px 14px 12px; margin:0 0 14px;' +
+                ' font-size:.88rem; line-height:1.6; text-align:center; color:#8B6A57;');
+            u.innerHTML = ONARIM_SVG +
+                '<div style="margin-top:8px;"><b style="color:#B34700;">Site şu an onarım aşamasında.</b><br>' +
+                'Hesabına şu an giriş alınamıyor — kısa bir süre sonra tekrar deneyebilirsin.</div>';
         }
     }
     /* CARPI KURALI: kilit aktifken kayit/giris penceresinin kapatma carpisi
