@@ -302,6 +302,16 @@ function dalgaMotif(){  // deniz motifi
   return '<g opacity=".35"><path d="M20,268 q20,-14 40,0 t40,0 t40,0 t40,0 t40,0" fill="none" stroke="#48c9b0" stroke-width="3"/>' +
     '<path d="M20,282 q20,-12 40,0 t40,0 t40,0 t40,0 t40,0" fill="none" stroke="#16A085" stroke-width="2.5" opacity=".7"/></g>';
 }
+function ayMotif(){  // hilal + yildiz simgesi — gunesin dengi (A takimi)
+  const yildiz = (x,y,r) =>
+    '<path d="M'+x+','+(y-r)+' Q'+(x+r*0.22)+','+(y-r*0.22)+' '+(x+r)+','+y+
+    ' Q'+(x+r*0.22)+','+(y+r*0.22)+' '+x+','+(y+r)+
+    ' Q'+(x-r*0.22)+','+(y+r*0.22)+' '+(x-r)+','+y+
+    ' Q'+(x-r*0.22)+','+(y-r*0.22)+' '+x+','+(y-r)+' Z" fill="#16A085" opacity=".5"/>';
+  return '<g><circle cx="215" cy="52" r="15" fill="#48c9b0" opacity=".5"/>' +
+    '<circle cx="222" cy="46" r="12" fill="#ffffff"/>' +   /* kart zemini beyaz: kesik = hilal */
+    yildiz(187,40,5) + yildiz(196,66,3.6) + yildiz(230,73,3) + '</g>';
+}
 function gunesMotif(){  // güneş motifi
   let isik='';
   for(let i=0;i<10;i++){ const a=i*Math.PI/5;
@@ -339,7 +349,7 @@ function takimSvg(sinif, renk, renk2, motif){
     tacSvg(160, 238, renk) +
     '</svg>';
 }
-$('takimA').innerHTML = takimSvg('tA','#16A085','#48c9b0', dalgaMotif());
+$('takimA').innerHTML = takimSvg('tA','#16A085','#48c9b0', dalgaMotif() + ayMotif());
 $('takimB').innerHTML = takimSvg('tB','#F39C12','#FFC107', gunesMotif());
 const svgA = $('takimA').firstChild, svgB = $('takimB').firstChild;
 const uyelerA = [...svgA.querySelectorAll('.uye-g')], uyelerB = [...svgB.querySelectorAll('.uye-g')];

@@ -82,9 +82,16 @@
 <section class="perde" id="gizemPerde">
 <style>
   #yarismaIc{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
-    justify-content:center; gap:26px; padding:0 16px; will-change:transform,opacity; }
+    justify-content:center; gap:10px; padding:0 16px; will-change:transform,opacity; }
   #yarismaIc .yr-sahne{ display:flex; align-items:center; justify-content:center; gap:clamp(22px,6vw,80px); flex-wrap:wrap; }
   #yarismaIc svg{ overflow:visible; display:block; }
+  /* MASAUSTU: QR sahnesi SVG'leri buyur, konteynirdaki dikey bosluk azalir
+     (height:auto — viewBox orani korunur) */
+  @media (min-width:1025px){
+    #yarismaIc .yr-sahne svg:nth-of-type(1){ width:180px; height:auto; }
+    #yarismaIc .yr-sahne svg:nth-of-type(2){ width:255px; height:auto; }
+    #yarismaIc .yr-sahne svg:nth-of-type(3){ width:225px; height:auto; }
+  }
   /* telefon: yuzer + puan baloncugu */
   @keyframes yrTel{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-9px) rotate(-4deg)}}
   .yr-telefon{ animation:yrTel 3.2s ease-in-out infinite; }
@@ -173,6 +180,10 @@
   #fabrikaIc{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     padding:0 12px; will-change:transform,opacity; }
   #fabrikaIc svg{ overflow:visible; display:block; width:clamp(320px,92vw,680px); height:auto; }
+  /* MASAUSTU: ogutucu + usta sahnesi buyur — dikey bosluk gorece azalir */
+  @media (min-width:1025px){
+    #fabrikaIc svg{ width:min(78vw, 940px); }
+  }
   /* usta: cekic orse DEGECEK sekilde salinir (47° vurus, geometrik hesapli) */
   #fabrikaIc .usta-kol{ transform-origin:0 0; animation:fbUstaVur 1.4s cubic-bezier(.45,0,.55,1) infinite; }
   @keyframes fbUstaVur{0%{transform:rotate(-46deg)}44%,56%{transform:rotate(47deg)}100%{transform:rotate(-46deg)}}
@@ -513,7 +524,7 @@
 
 <script>window.SITE_KILIT_GOZLE = true;</script>
 <script src="kilit.js?v=12"></script>
-<script src="indexyeni.js?v=6"></script>
+<script src="indexyeni.js?v=7"></script>
 <script>
 /* SITE KILIDI ILE UYUM: tanitim sayfasi HER kademede acik kalir (gozlem kipi).
    Cikis kapisi (sag ustteki SVG) HER kademede DOGRUDAN index'e goturur —

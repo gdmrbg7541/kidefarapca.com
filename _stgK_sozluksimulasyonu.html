@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Sözlük Simülasyonu</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;500;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="sozluksimulasyonu.css">
+</head>
+<body>
+    
+    <div id="orientation-warning">
+         <p>Bu uygulama dikey modu desteklememektedir.<br>Lütfen cihazınızı yatay konuma çeviriniz.</p>
+    </div>
+
+    <div class="aspect-ratio-wrapper">
+        <div class="game-container">
+            
+            <div class="content-wrapper">
+                <div class="header">
+                    <h1>Arapça Sözlük Alıştırması</h1>
+                    <div class="header-buttons">
+                        <a href="index.html" onclick="return kidefGeriDon(event)" id="back-btn" target="_blank">&#8592;</a> <button id="joker-btn">Joker (3)</button> <button id="hint-btn">💡 İpuçları</button>
+                    </div>
+                </div>
+
+                <div class="level-selector">
+                    <button class="level-btn active" data-level="0">Seviye 1</button>
+                    <button class="level-btn" data-level="1">Seviye 2</button>
+                    <button class="level-btn" data-level="2">Seviye 3</button>
+                    <button class="level-btn" data-level="3">Seviye 4</button>
+                    <button class="level-btn" data-level="4">Seviye 5</button> </div>
+
+                <hr> <div class="main-content-area" id="main-content-area">
+                    <div class="sentence-display-area" id="sentence-display-area">
+                        </div>
+
+                    <div class="input-area" id="input-area">
+                        
+                        <div id="start-prompt">
+                            <div id="start-rules-container">
+                                </div>
+                            <button id="start-btn" type="button">Başla</button>
+                        </div>
+
+                       <div class="prompt-container" id="prompt-container">
+    <div id="guess-prompt">
+        <p>Türkçe Cümleyi Tahmin Et</p>
+        <button id="guess-prompt-btn" type="button">✓</button>
+    </div>
+    
+    <div class="full-turkish-sentence-container" id="full-turkish-container-static"></div>
+
+    <button id="next-sentence-btn" type="button" style="display: none;"> << Devam Et  </button>
+</div>
+
+                        <div class="input-wrapper" id="input-wrapper">
+                            <button id="submit-btn" type="button">✓</button>
+                            <input type="text" id="user-input" placeholder="" readonly>
+                        </div>
+                        
+                        <div class="keyboard" id="keyboard">
+                            </div>
+                    </div>
+                </div> </div> </div> </div> <div id="hint-modal" class="modal">
+        <div class="modal-content">
+            <span id="hint-modal-close" class="close-btn">&times;</span>
+            <div class="modal-body" id="modal-body">
+                </div>
+        </div>
+    </div>
+    
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <div id="error-modal-body">
+                </div>
+            <button id="error-modal-close" type="button">Onay</button>
+        </div>
+    </div>
+
+
+    <script src="sozluksimulasyonu.js"></script>
+    <script src="geri.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="gorevkopru.js?v=7"></script>
+<script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
+   kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
+try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+</body>
+</html>
