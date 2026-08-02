@@ -3309,6 +3309,10 @@ function renderTeacherProfile(deneme) {
         ' background:#4facfe; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">İstekleri Gör</button>';
 
     /* HER ZAMAN KAPALI baslar (en altta) — uyari varsa acilinca gorunur */
+    /* SITE ERISIM KILIDI — yalniz YONETICI gorur (kilit.js saglar) */
+    var kilitAkordiyon = (appState.userRole === 'admin' && typeof window.kilitPanelHtml === 'function')
+        ? llAkordiyon('tpKilit', '#7B241C', '<span>🔐 Site Erişim Kilidi</span>', window.kilitPanelHtml(), false)
+        : '';
     var kisiselAkordiyon = llAkordiyon('tpKisisel', '#F39C12',
         '<span>👤 Kişisel Bilgilerim</span>' + llRozetHtml('Öğretmen') +
         (eksik ? '<span style="font-size:0.75rem; font-weight:600; background:#FEF3E2; color:#B9770E; padding:3px 10px; border-radius:20px;">⚠️ eksik bilgi</span>' : ''),
@@ -3368,7 +3372,7 @@ function renderTeacherProfile(deneme) {
         deneme = deneme || 0;
         html += llAkordiyon('tpSiniflar', '#E67E22',
             '<span>🏫 Kurumlarım &amp; Sınıflarım</span>', 'Sınıf verileri yükleniyor…', true);
-        sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon;
+        sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon + kilitAkordiyon;
         if (deneme < 10) setTimeout(function () { renderTeacherProfile(deneme + 1); }, 700);
         return;
     }
@@ -3479,7 +3483,7 @@ function renderTeacherProfile(deneme) {
         '<span>🏫 Kurumlarım &amp; Sınıflarım</span>' + llRozetHtml(sinifToplam + ' sınıf'), agac, true);
 
     /* SIRALAMA: Kurumlarim & Siniflarim -> Tatiller -> Kisisel Bilgilerim (EN ALTTA) */
-    sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon;
+    sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon + kilitAkordiyon;
 }
 /* Profildeki sinif kutusuna tiklaninca: Listelerim acilir + o sinif secilir. */
 function llProfilSinifSec(lId, cId) {
