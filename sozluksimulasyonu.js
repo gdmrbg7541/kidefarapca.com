@@ -120,8 +120,42 @@ yazılır.</li>
                         ],
                         turkish: [ "Onun kalemi", "yenidir" ],
                         turkishFull: "Onun kalemi yenidir."
+                    },
+                    {
+                        arabic: [
+                            { text: "الْبَابُ", root: "باب", category: "isim (ال takılı)" },
+                            { text: "مَفْتُوحٌ.", root: "مفتوح", category: "isim (sıfat)" }
+                        ],
+                        turkish: [ "Kapı", "açıktır" ],
+                        turkishFull: "Kapı açıktır."
+                    },
+                    {
+                        arabic: [
+                            { text: "الْكِتَابُ", root: "كتاب", category: "isim (ال takılı)" },
+                            { text: "عَلَى", root: "على", category: "harficer" },
+                            { text: "الطَّاوِلَةِ.", root: "طاولة", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Kitap", "üstünde", "masanın" ],
+                        turkishFull: "Kitap masanın üstünde."
+                    },
+                    {
+                        arabic: [
+                            { text: "هَذَا", root: "هذا", category: "işaret ismi" },
+                            { text: "قَلَمٌ", root: "قلم", category: "isim" },
+                            { text: "جَمِيلٌ.", root: "جميل", category: "isim (sıfat)" }
+                        ],
+                        turkish: [ "Bu", "kalem", "güzeldir" ],
+                        turkishFull: "Bu güzel bir kalemdir."
+                    },
+                    {
+                        arabic: [
+                            { text: "الْبَيْتُ", root: "بيت", category: "isim (ال takılı)" },
+                            { text: "نَظِيفٌ.", root: "نظيف", category: "isim (sıfat)" }
+                        ],
+                        turkish: [ "Ev", "temizdir" ],
+                        turkishFull: "Ev temizdir."
                     }
-                    // ... 14 more sentences ...
+                    // ... 10 more sentences ...
                 ]
             },
             // --- SEVİYE 2 ---
@@ -196,8 +230,45 @@ için <code>شرب</code> (içti) yazılır.</li>
                         ],
                         turkish: [ "Gitti", "kız", "-e", "çarşıya" ],
                         turkishFull: "Kız çarşıya gitti."
+                    },
+                    {
+                        arabic: [
+                            { text: "قَرَأَ", root: "قرأ", category: "fiil (mazi)" },
+                            { text: "الطَّالِبُ", root: "طالب", category: "isim (ال takılı)" },
+                            { text: "الْكِتَابَ.", root: "كتاب", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Okudu", "öğrenci", "kitabı" ],
+                        turkishFull: "Öğrenci kitabı okudu."
+                    },
+                    {
+                        arabic: [
+                            { text: "فَتَحَ", root: "فتح", category: "fiil (mazi)" },
+                            { text: "الْمُعَلِّمُ", root: "معلم", category: "isim (ال takılı)" },
+                            { text: "الْبَابَ.", root: "باب", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Açtı", "öğretmen", "kapıyı" ],
+                        turkishFull: "Öğretmen kapıyı açtı."
+                    },
+                    {
+                        arabic: [
+                            { text: "خَرَجَ", root: "خرج", category: "fiil (mazi)" },
+                            { text: "الرَّجُلُ", root: "رجل", category: "isim (ال takılı)" },
+                            { text: "مِنَ", root: "من", category: "harficer" },
+                            { text: "الْبَيْتِ.", root: "بيت", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Çıktı", "adam", "-den", "evden" ],
+                        turkishFull: "Adam evden çıktı."
+                    },
+                    {
+                        arabic: [
+                            { text: "يَكْتُبُ", root: "كتب", category: "fiil (muzari)" },
+                            { text: "التِّلْمِيذُ", root: "تلميذ", category: "isim (ال takılı)" },
+                            { text: "الدَّرْسَ.", root: "درس", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Yazıyor", "öğrenci", "dersi" ],
+                        turkishFull: "Öğrenci dersi yazıyor."
                     }
-                    // ... 14 more sentences ...
+                    // ... 10 more sentences ...
                 ]
             },
             // --- SEVİYE 3 ---
@@ -223,7 +294,7 @@ yazılır.</li>
                             { text: "عَلَى", root: "على", category: "harficer" }, 
                             { text: "الْكُرْسِيَّيْنِ.", root: "كرسي", category: "isim (ikil)" } 
                         ],
-                        turkish: [ "Oturtu", "iki öğrenci", "üzerine", "iki sandalyeye" ],
+                        turkish: [ "Oturdu", "iki öğrenci", "üzerine", "iki sandalyeye" ],
                         turkishFull: "İki öğrenci iki sandalyeye oturdu."
                     },
                     {
@@ -270,8 +341,35 @@ yazılır.</li>
                         ],
                         turkish: [ "Satın aldı", "Ahmet", "iki kalem" ],
                         turkishFull: "Ahmet iki kalem satın aldı."
+                    },
+                    {
+                        arabic: [
+                            { text: "كَتَبَ", root: "كتب", category: "fiil (mazi)" },
+                            { text: "الطَّالِبَانِ", root: "طالب", category: "isim (ikil)" },
+                            { text: "الدَّرْسَ.", root: "درس", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Yazdı", "iki öğrenci", "dersi" ],
+                        turkishFull: "İki öğrenci dersi yazdı."
+                    },
+                    {
+                        arabic: [
+                            { text: "فَتَحَ", root: "فتح", category: "fiil (mazi)" },
+                            { text: "الْوَلَدَانِ", root: "ولد", category: "isim (ikil)" },
+                            { text: "الْبَابَيْنِ.", root: "باب", category: "isim (ikil)" }
+                        ],
+                        turkish: [ "Açtı", "iki çocuk", "iki kapıyı" ],
+                        turkishFull: "İki çocuk iki kapıyı açtı."
+                    },
+                    {
+                        arabic: [
+                            { text: "هَذَانِ", root: "هذان", category: "işaret ismi" },
+                            { text: "كِتَابَانِ", root: "كتاب", category: "isim (ikil)" },
+                            { text: "جَدِيدَانِ.", root: "جديد", category: "isim (ikil)" }
+                        ],
+                        turkish: [ "Bu ikisi", "iki kitaptır", "yenidir" ],
+                        turkishFull: "Bunlar iki yeni kitaptır."
                     }
-                    // ... 14 more sentences ...
+                    // ... 11 more sentences ...
                 ]
             },
             // --- SEVİYE 4 ---
@@ -348,8 +446,36 @@ olduğu gibi yazılır.</li>
                         ],
                         turkish: [ "Biniyor", "yolcular", "trene" ],
                         turkishFull: "Yolcular trene biniyor."
+                    },
+                    {
+                        arabic: [
+                            { text: "يَكْتُبُ", root: "كتب", category: "fiil (muzari)" },
+                            { text: "الطُّلَّابُ", root: "طالب", category: "isim (kırık çoğul)", isIrregularPlural: true },
+                            { text: "الدُّرُوسَ.", root: "درس", category: "isim (kırık çoğul)", isIrregularPlural: true }
+                        ],
+                        turkish: [ "Yazıyor", "öğrenciler", "dersleri" ],
+                        turkishFull: "Öğrenciler dersleri yazıyor."
+                    },
+                    {
+                        arabic: [
+                            { text: "الْمُعَلِّمُونَ", root: "معلم", category: "isim (eril çoğul)" },
+                            { text: "فِي", root: "في", category: "harficer" },
+                            { text: "الْمَدْرَسَةِ.", root: "مدرسة", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Öğretmenler", "içinde", "okulun" ],
+                        turkishFull: "Öğretmenler okuldadır."
+                    },
+                    {
+                        arabic: [
+                            { text: "يَعْمَلُ", root: "عمل", category: "fiil (muzari)" },
+                            { text: "الْعُمَّالُ", root: "عامل", category: "isim (kırık çoğul)", isIrregularPlural: true },
+                            { text: "فِي", root: "في", category: "harficer" },
+                            { text: "الْمَصْنَعِ.", root: "مصنع", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Çalışıyor", "işçiler", "içinde", "fabrikada" ],
+                        turkishFull: "İşçiler fabrikada çalışıyor."
                     }
-                    // ... 14 more sentences ...
+                    // ... 11 more sentences ...
                 ]
             },
             // --- YENİ: SEVİYE 5 ---
@@ -466,8 +592,44 @@ olduğu gibi yazılır.</li>
                         ],
                         turkish: [ "Kalktım", "erkenden" ],
                         turkishFull: "Erkenden kalktım."
+                    },
+                    {
+                        arabic: [
+                            { text: "يَبِيعُ", root: "باع", category: "fiil (muzari ecvef)" },
+                            { text: "التَّاجِرُ", root: "تاجر", category: "isim (ال takılı)" },
+                            { text: "الْبِضَاعَةَ.", root: "بضاعة", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Satıyor", "tüccar", "malı" ],
+                        turkishFull: "Tüccar malı satıyor."
+                    },
+                    {
+                        arabic: [
+                            { text: "وَصَلَ", root: "وصل", category: "fiil (mazi misal)" },
+                            { text: "الضَّيْفُ", root: "ضيف", category: "isim (ال takılı)" },
+                            { text: "مُبَكِّرًا.", root: "بكر", category: "zarf" }
+                        ],
+                        turkish: [ "Vardı", "misafir", "erkenden" ],
+                        turkishFull: "Misafir erkenden vardı."
+                    },
+                    {
+                        arabic: [
+                            { text: "يَمْشِي", root: "مشى", category: "fiil (muzari nakıs)" },
+                            { text: "الرَّجُلُ", root: "رجل", category: "isim (ال takılı)" },
+                            { text: "فِي", root: "في", category: "harficer" },
+                            { text: "الْحَدِيقَةِ.", root: "حديقة", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "Yürüyor", "adam", "içinde", "bahçede" ],
+                        turkishFull: "Adam bahçede yürüyor."
+                    },
+                    {
+                        arabic: [
+                            { text: "رَدَدْتُ", root: "رد", category: "fiil (mazi mudaaf + zamir)" },
+                            { text: "السَّلَامَ.", root: "سلام", category: "isim (ال takılı)" }
+                        ],
+                        turkish: [ "İade ettim", "selamı" ],
+                        turkishFull: "Selamı iade ettim."
                     }
-                    // ... 9 more sentences ...
+                    // ... 5 more sentences ...
                 ]
             }
         ];
@@ -478,7 +640,7 @@ olduğu gibi yazılır.</li>
         const hintBtn = document.getElementById('hint-btn');
         const jokerBtn = document.getElementById('joker-btn'); // YENİ
         const headerButtons = document.querySelector('.header-buttons'); // YENİ
-        const backBtn = document.getElementById('back-btn'); // YENİ
+        const backBtn = document.getElementById('back-btn'); // TEK geri tuşu (her durumda görünür)
         const contentWrapperHr = document.querySelector('.content-wrapper > hr');
         const mainContentArea = document.getElementById('main-content-area'); 
         
@@ -514,6 +676,7 @@ olduğu gibi yazılır.</li>
         // --- OYUN DEĞİŞKENLERİ ---
         let currentLevelIndex = 0;
         let currentSentenceIndex = 0;
+        let currentWordIndex = 0; // DÜZELTİLDİ: eskiden örtük global idi (window'a sızıyordu)
         let currentSentenceData;
         let jokerCount = 3; // YENİ
 
@@ -522,7 +685,7 @@ olduğu gibi yazılır.</li>
             if (!str) return str;
             return str
                 .replace(/[\u064B-\u0652]/g, '') // 1. Harekeleri (şedde dahil) kaldır
-                .replace(/[إأآءؤئ]/g, 'ا')      // 2. GÜNCELLENDİ: Tüm Elif/Hemze varyantları -> Elif
+                .replace(/[إأآ]/g, 'ا')         // 2. TİTİZLEŞTİRİLDİ: yalnız Elif tabanlı hemze (أ إ آ) -> ا; ء ؤ ئ kendileri kalır (Seviye 5'te 'مؤمن' yerine 'مامن' gibi gevşek kabuller önlenir)
                 .replace(/ى/g, 'ي')           // 3. Elif Maksura -> Ye
                 .replace(/\./g, '');          // 4. Noktaları kaldır
         }
@@ -625,14 +788,6 @@ olduğu gibi yazılır.</li>
             keyboardEl.appendChild(specialKeysRow);
         }
         
-        // YENİ: Fisher-Yates Dizi Karıştırma Fonksiyonu
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
         // --- Sonraki Cümleye Geçme Fonksiyonu ---
         function forceNextSentence() {
             // GÜNCELLENDİ: Seviye sonu mantığı eklendi
@@ -755,14 +910,9 @@ olduğu gibi yazılır.</li>
             
             if (state === 'start') {
                 headerButtons.style.display = 'flex'; // GÜNCELLENDİ: Göster
-                backBtn.style.display = 'inline-block'; // GÜNCELLENDİ: Göster
                 jokerBtn.style.display = 'none'; // GÜNCELLENDİ: Gizle
                 hintBtn.style.display = 'none'; // GÜNCELLENDİ: Gizle
 
-                backBtn.href = "index.html";
-                backBtn.target = "_blank";
-                backBtn.onclick = kidefGeriDon;
-            
                 inputArea.style.display = 'flex';
                 startPrompt.style.display = 'flex';
                 // mainContentArea.classList.add('start-mode'); // GÜNCELLENDİ: Kaldırıldı
@@ -781,13 +931,8 @@ olduğu gibi yazılır.</li>
                 inputWrapper.style.display = 'flex';
                 keyboardEl.style.display = 'flex';
                 headerButtons.style.display = 'flex'; // YENİ: Göster
-                backBtn.style.display = 'inline-block'; // YENİ: Göster
                 jokerBtn.style.display = 'inline-block'; // YENİ: Göster
                 hintBtn.style.display = 'inline-block'; // YENİ: Göster
-                
-                backBtn.href = "#"; // GÜNCELLENDİ: Linki iptal et
-                backBtn.target = "";
-                backBtn.onclick = (e) => { e.preventDefault(); playTouchSound(); initGame(); }; // YENİ: Reset fonksiyonu ekle
 
                 letterRows.forEach(row => row.style.display = 'flex');
                 specialKeysRow.style.display = 'flex';
@@ -804,16 +949,11 @@ olduğu gibi yazılır.</li>
                 sentenceDisplayArea.style.display = 'flex';
                 inputArea.style.display = 'flex'; 
                 promptContainer.style.display = 'flex'; // YENİ
-                guessPrompt.style.display = 'flex'; 
+                guessPrompt.style.display = 'flex';
                 headerButtons.style.display = 'flex'; // YENİ: Göster
-                backBtn.style.display = 'inline-block';
                 jokerBtn.style.display = 'inline-block';
                 hintBtn.style.display = 'inline-block';
-                
-                backBtn.href = "#";
-                backBtn.target = "";
-                backBtn.onclick = (e) => { e.preventDefault(); playTouchSound(); initGame(); };
-                
+
                 if (nextButton) nextButton.disabled = true;
             } else if (state === 'reviewing') {
                 levelSelector.style.display = 'flex';
@@ -824,14 +964,9 @@ olduğu gibi yazılır.</li>
                 fullTurkishContainerStatic.style.display = 'flex'; // YENİ
                 keyboardEl.style.display = 'flex';
                 headerButtons.style.display = 'flex'; // YENİ: Göster
-                backBtn.style.display = 'inline-block';
                 jokerBtn.style.display = 'inline-block';
                 hintBtn.style.display = 'inline-block';
-                
-                backBtn.href = "#";
-                backBtn.target = "";
-                backBtn.onclick = (e) => { e.preventDefault(); playTouchSound(); initGame(); };
-                
+
                 letterRows.forEach(row => row.style.display = 'none');
                 specialKeysRow.style.display = 'flex';
                 if (nextButton) {
@@ -843,13 +978,8 @@ olduğu gibi yazılır.</li>
                 contentWrapperHr.style.display = 'block';
                 sentenceDisplayArea.style.display = 'flex';
                 headerButtons.style.display = 'flex'; // YENİ: Göster
-                backBtn.style.display = 'inline-block';
                 jokerBtn.style.display = 'inline-block';
                 hintBtn.style.display = 'inline-block';
-                
-                backBtn.href = "#";
-                backBtn.target = "";
-                backBtn.onclick = (e) => { e.preventDefault(); playTouchSound(); initGame(); };
                 // inputArea gizli kalır
             }
         }
@@ -1051,7 +1181,16 @@ olduğu gibi yazılır.</li>
         });
         
         guessPromptBtn.addEventListener('click', showFullTranslation);
-        submitBtn.addEventListener('click', checkAnswer); 
+        submitBtn.addEventListener('click', checkAnswer);
+
+        // TEK GERİ TUŞU: sayfa index'ten yeni sekmede açıldıysa sekmeyi kapatır
+        // (kişi index'te tam kaldığı yere döner); doğrudan gelindiyse index.html'e gider.
+        if (backBtn) backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            playTouchSound();
+            window.close();
+            setTimeout(() => { location.href = 'index.html'; }, 250);
+        });
         
         // YENİ: Joker Butonu Dinleyicisi
         jokerBtn.addEventListener('click', () => {

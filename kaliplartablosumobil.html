@@ -18,7 +18,13 @@
           window.location.replace("kaliplartablosu.html" + window.location.search + window.location.hash);
       }
     </script>
-    
+
+    <!-- SİTE ERİŞİM KİLİDİ: giriş/şifre gerekliliği yöneticinin site geneli
+         kilit ayarına bağlıdır (açık = serbest; girişli/yönetici = giriş
+         gerekli). Masaüstü ikizi kaliplartablosu.html ile aynı davranış;
+         mobilin kilitsiz kalıp kilidi delmemesi için burada da yüklenir. -->
+    <script src="kilit.js?v=12"></script>
+
     <!-- Base CSS (Mobile) -->
     <link rel="stylesheet" href="kaliplartablosumobil.css?v=1784300089">
     
