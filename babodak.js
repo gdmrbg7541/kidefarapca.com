@@ -41,9 +41,9 @@
         },
         "Tef'il": {
             roots: [
-                { word: 'علم', mean: ['Öğretti', 'Öğretiyor', 'Öğret', 'Eğitim', 'Öğretmen', 'Öğretilen'], derived: ["عَلَّمَ", "يُعَلِّمُ", "عَلِّمْ", "تَعْلِيمٌ", "مُعَلِّمٌ", "مُعَلَّمٌ"] },
-                { word: 'ذكر', mean: ['Hatırlattı', 'Hatırlatıyor', 'Hatırlat', 'Zikir', 'Hatırlatan', 'Hatırlatılan'], derived: ["ذَكَّرَ", "يُذَكِّرُ", "ذَكِّرْ", "تَذْكِيرٌ", "مُذَكِّرٌ", "مُذَكَّرٌ"] },
-                { word: 'قدم', mean: ['Takdim etti', 'Sunuyor', 'Sun', 'Takdim', 'Sunan', 'Sunulan'], derived: ["قَدَّمَ", "يُقَدِّمُ", "قَدِّمْ", "تَقْدِيمٌ", "مُقَدِّمٌ", "مُقَدَّمٌ"] }
+                { word: 'علم', mean: ['Öğretti', 'Öğretiyor', 'Öğret', 'Eğitim', 'Öğretmen', 'Öğretilen'], derived: ["عَلَّمَ", "يُعَلِّمُ", "عَلِّمْ", "تَعْلِيمٌ", "مُعَلِّمٌ", "مُعَلَّمٌ"] },
+                { word: 'ذكر', mean: ['Hatırlattı', 'Hatırlatıyor', 'Hatırlat', 'Zikir', 'Hatırlatan', 'Hatırlatılan'], derived: ["ذَكَّرَ", "يُذَكِّرُ", "ذَكِّرْ", "تَذْكِيرٌ", "مُذَكِّرٌ", "مُذَكَّرٌ"] },
+                { word: 'قدم', mean: ['Takdim etti', 'Sunuyor', 'Sun', 'Takdim', 'Sunan', 'Sunulan'], derived: ["قَدَّمَ", "يُقَدِّمُ", "قَدِّمْ", "تَقْدِيمٌ", "مُقَدِّمٌ", "مُقَدَّمٌ"] }
             ],
             patterns: [
                 r => `${r[0]}َ${r[1]}<span class="bo-zaid">ّ</span>َ${r[2]}َ`,
@@ -101,9 +101,9 @@
         },
         "İf'ılal": {
             roots: [
-                { word: 'حمر', mean: ['Kızardı', 'Kızarıyor', 'Kızar', 'İhmirar', 'Muhmerr', '-'], derived: ["اِحْمَرَّ", "يَحْمَرُّ", "اِحْمَرِّلْ", "اِحْمِرَارٌ", "مُحْمَرٌّ", "مُحْمَرٌّ"] },
-                { word: 'صفر', mean: ['Sarardı', 'Sararıyor', 'Sarar', 'İsfirar', 'Musferr', '-'], derived: ["اِصْفَرَّ", "يَصْفَرُّ", "اِصْفَرِّلْ", "اِصْفِرَارٌ", "مُصْفَرٌّ", "مُصْفَرٌّ"] },
-                { word: 'بيض', mean: ['Beyazladı', 'Beyazlıyor', 'Beyazla', 'İbyizaz', 'Mubyezz', '-'], derived: ["اِبْيَضَّ", "يَبْيَضُّ", "اِبْيَضِّلْ", "اِبْيِضَاضٌ", "مُبْيَضٌّ", "مُبْيَضٌّ"] }
+                { word: 'حمر', mean: ['Kızardı', 'Kızarıyor', 'Kızar', 'İhmirar', 'Muhmerr', '-'], derived: ["اِحْمَرَّ", "يَحْمَرُّ", "اِحْمَرِّلْ", "اِحْمِرَارٌ", "مُحْمَرٌّ", "مُحْمَرٌّ"] },
+                { word: 'صفر', mean: ['Sarardı', 'Sararıyor', 'Sarar', 'İsfirar', 'Musferr', '-'], derived: ["اِصْفَرَّ", "يَصْفَرُّ", "اِصْفَرِّلْ", "اِصْفِرَارٌ", "مُصْفَرٌّ", "مُصْفَرٌّ"] },
+                { word: 'بيض', mean: ['Beyazladı', 'Beyazlıyor', 'Beyazla', 'İbyizaz', 'Mubyezz', '-'], derived: ["اِبْيَضَّ", "يَبْيَضُّ", "اِبْيَضِّلْ", "اِبْيِضَاضٌ", "مُبْيَضٌّ", "مُبْيَضٌّ"] }
             ],
             patterns: [
                 r => `<span class="bo-zaid">اِ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">َّ</span>`,
@@ -116,9 +116,9 @@
         },
         "Tefe'ul": {
             roots: [
-                { word: 'علم', mean: ['Öğrendi', 'Öğreniyor', 'Öğren', 'Taallüm', 'Müteallim', '-'], derived: ["تَعَلَّمَ", "يَتَعَلَّمُ", "تَعَلَّمْ", "تَعَلُّمٌ", "مُتَعَلِّمٌ", "مُتَعَلَّمٌ"] },
-                { word: 'ذكر', mean: ['Düşündü', 'Düşünüyor', 'Düşün', 'Tezekkür', 'Mütezekkir', '-'], derived: ["تَذَكَّرَ", "يَتَذَكَّرُ", "تَذَكَّرْ", "تَذَكُّرٌ", "مُتَذَكِّرٌ", "مُتَذَكَّرٌ"] },
-                { word: 'كلم', mean: ['Konuştu', 'Konuşuyor', 'Konuş', 'Tekellüm', 'Mütekellim', '-'], derived: ["تَكَلَّمَ", "يَتَكَلَّمُ", "تَكَلَّمْ", "تَكَلُّمٌ", "مُتَكَلِّمٌ", "مُتَكَلَّمٌ"] }
+                { word: 'علم', mean: ['Öğrendi', 'Öğreniyor', 'Öğren', 'Taallüm', 'Müteallim', '-'], derived: ["تَعَلَّمَ", "يَتَعَلَّمُ", "تَعَلَّمْ", "تَعَلُّمٌ", "مُتَعَلِّمٌ", "مُتَعَلَّمٌ"] },
+                { word: 'ذكر', mean: ['Düşündü', 'Düşünüyor', 'Düşün', 'Tezekkür', 'Mütezekkir', '-'], derived: ["تَذَكَّرَ", "يَتَذَكَّرُ", "تَذَكَّرْ", "تَذَكُّرٌ", "مُتَذَكِّرٌ", "مُتَذَكَّرٌ"] },
+                { word: 'كلم', mean: ['Konuştu', 'Konuşuyor', 'Konuş', 'Tekellüm', 'Mütekellim', '-'], derived: ["تَكَلَّمَ", "يَتَكَلَّمُ", "تَكَلَّمْ", "تَكَلُّمٌ", "مُتَكَلِّمٌ", "مُتَكَلَّمٌ"] }
             ],
             patterns: [
                 r => `<span class="bo-zaid">تَ</span>${r[0]}َ${r[1]}<span class="bo-zaid">ّ</span>َ${r[2]}َ`,
@@ -409,7 +409,7 @@
 
     // Ham yerleştirme: ف/ع/ل → kök harfleri, SARF KURALI UYGULANMAZ.
     // İf'ılal (renk/kusur) bâbında illetli harf korunur, i'lal olmaz —
-    // بيض → اِبْيَضَّ (motorun ecvef kuralı بَاضَّ üretirdi, o yüzden atlanır).
+    // بيض → اِبْيَضَّ (motorun ecvef kuralı بَاضَّ üretirdi, o yüzden atlanır).
     function hamYerlestir(root, sablon) {
         return sablon
             .replace(/ف/g, '\u0001').replace(/ع/g, '\u0002').replace(/ل/g, '\u0003')

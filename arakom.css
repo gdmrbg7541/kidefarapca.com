@@ -1,0 +1,86 @@
+/* ============================================================
+   ARAKOM — SİTE GENELİ YAZI TİPİ
+   ------------------------------------------------------------
+   Bu dosya her sayfada EN SON yüklenir; böylece sayfaların
+   kendi yazı tiplerini geçersiz kılar. Tek merkezden yönetilir:
+     • Geri almak için: sayfalardaki
+       <link rel="stylesheet" href="arakom.css?v=1"> satırını sil
+       ya da bu dosyanın içini boşalt.
+     • Yazı tipini değiştirmek için: sadece burayı düzenle.
+
+   KAPSAM DIŞI (bilerek dokunulmadı):
+     • Oyunlar kategorisi — ana sayfadaki #oyunlar bölümü ve
+       hangiharf / klavyeoyunu / testkapismasi / hafizakartlari /
+       renkler / isimx4 / bilgiyarismasikacom sayfaları.
+       (Bu 7 sayfaya bağlantı hiç eklenmedi.)
+     • Font Awesome ikonları — ikonlar kendi yazı tipinde kalmalı,
+       yoksa ikon yerine kutucuk görünür.
+
+   ÖNCELİK NOTU: Aşağıdaki :not(#yok1):not(#yok2) parçaları
+   hiçbir zaman eşleşmeyen kimlik seçicilerdir. Tek görevleri
+   kuralın CSS önceliğini yükseltmek; böylece sayfaların kendi
+   "!important" yazı tipi kuralları bu kuralı ezemez. SİLMEYİN.
+   ============================================================ */
+
+/* --- Yazı tipi dosyası (sitenin kök klasöründe) --- */
+@font-face { font-family:'Arakom'; src:url('arakom.ttf') format('truetype'); font-display:swap; }
+/* GitHub Pages büyük/küçük harfe duyarlı olduğu için küçük harfli yazım da tanımlı */
+@font-face { font-family:'arakom'; src:url('arakom.ttf') format('truetype'); font-display:swap; }
+
+/* --- 1) HER ŞEY ARAKOM ---------------------------------------
+   Arakom'da bulunmayan işaretler (emoji, ▾ oku, Â Î Û gibi
+   birkaç harf) otomatik olarak zincirdeki yedeklerden gelir. */
+html:not(#yok1):not(#yok2),
+body:not(#yok1):not(#yok2),
+body *:not(#yok1):not(#yok2),
+body *:not(#yok1):not(#yok2)::before,
+body *:not(#yok1):not(#yok2)::after {
+  font-family:'Arakom','Marhey','Harmattan',sans-serif,
+              'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji' !important;
+}
+
+/* --- 2) Sayfaların yazı tipi değişkenleri --------------------
+   Bazı sayfalar font-family:var(--font-ar) gibi değişken
+   kullanıyor; hepsi Arakom'a çevriliyor. */
+:root, html, body {
+  --font-family:'Arakom','Marhey',sans-serif !important;
+  --font-ui:'Arakom','Marhey',sans-serif !important;
+  --font-tr:'Arakom','Marhey',sans-serif !important;
+  --font-poppins:'Arakom','Marhey',sans-serif !important;
+  --font-ar:'Arakom','Harmattan',sans-serif !important;
+  --font-arabic:'Arakom','Harmattan',sans-serif !important;
+  --font-family-arabic:'Arakom','Harmattan',sans-serif !important;
+  --arabic-font:'Arakom','Harmattan',sans-serif !important;
+  --font-harmattan:'Arakom','Harmattan',sans-serif !important;
+}
+
+/* --- 3) İKONLAR — Font Awesome kendi yazı tipinde kalsın ----- */
+.fa:not(#yok1):not(#yok2):not(#yok3),
+.fas:not(#yok1):not(#yok2):not(#yok3),
+.far:not(#yok1):not(#yok2):not(#yok3),
+.fal:not(#yok1):not(#yok2):not(#yok3),
+.fab:not(#yok1):not(#yok2):not(#yok3),
+.fad:not(#yok1):not(#yok2):not(#yok3),
+[class^="fa-"]:not(#yok1):not(#yok2):not(#yok3),
+[class*=" fa-"]:not(#yok1):not(#yok2):not(#yok3),
+.fa:not(#yok1):not(#yok2):not(#yok3)::before,
+.fas:not(#yok1):not(#yok2):not(#yok3)::before,
+.far:not(#yok1):not(#yok2):not(#yok3)::before,
+.fal:not(#yok1):not(#yok2):not(#yok3)::before,
+.fab:not(#yok1):not(#yok2):not(#yok3)::before,
+.fad:not(#yok1):not(#yok2):not(#yok3)::before,
+[class^="fa-"]:not(#yok1):not(#yok2):not(#yok3)::before,
+[class*=" fa-"]:not(#yok1):not(#yok2):not(#yok3)::before {
+  font-family:"Font Awesome 6 Free","Font Awesome 6 Brands",
+              "Font Awesome 5 Free","Font Awesome 5 Brands",
+              FontAwesome !important;
+}
+
+/* --- 4) OYUNLAR KATEGORİSİ — eski görünümünde kalıyor -------- */
+#oyunlar:not(#yok1):not(#yok2),
+#oyunlar *:not(#yok1):not(#yok2),
+#oyunlar *:not(#yok1):not(#yok2)::before,
+#oyunlar *:not(#yok1):not(#yok2)::after {
+  font-family:'Marhey','Harmattan',sans-serif,
+              'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji' !important;
+}

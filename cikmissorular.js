@@ -188,7 +188,7 @@ function updateInstruction() {
         "B": "كانت",
         "C": "كانوا",
         "D": "كانا",
-        "E": "كُنَّ"
+        "E": "كُنَّ"
     },
     "correct": "B",
     "explanation": "Doğru cevap B şıkkıdır. Cümlede 'etki' (أثر) kelimesi cümlenin öznesi gibi görünse de, fiil cümlenin başında yer alan ve müennes (dişil) olan 'العوامل البيئية والمناخية' (çevresel ve iklimsel faktörler) grubuna atıfta bulunmaktadır. Arapça gramer kurallarına göre akılsız çoğullar (عوامل) müfret müennes (tekil dişil) kabul edildiği için 'كانت' fiili kullanılmalıdır."
