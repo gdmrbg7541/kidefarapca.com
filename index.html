@@ -1583,7 +1583,7 @@
               url: k + '.pdf' }
           ];
           SINIF_GIRIS[s]['Planlar'] =
-            '<div class="dok-not">Bu kartta <b>ünitelendirilmiş yıllık plan</b> ve (yakında) <b>günlük ders ' +
+            '<div class="dok-not">Bu kartta <b>ünitelendirilmiş yıllık plan</b> ve <b>günlük ders ' +
             'planı</b> birlikte bulunur. Yıllık plan <b>2026-2027</b> öğretim yılı içindir: MEB 2026/68 sayılı ' +
             'Genelge’ye göre <b>37 ders haftası</b> (1. dönem 18, 2. dönem 19 hafta) üzerinden hazırlanmıştır. ' +
             'Uygulanan program: <b>' + y.prg + '</b> · ' + y.st + ' · ' + y.ek + '.</div>' +
@@ -1596,6 +1596,326 @@
             'dosyanda Arapça yazıya çevirebilirsin. Word dosyası düzenlenebilir, PDF yazdırmaya hazırdır. ' +
             'Plan bir <b>örnektir</b>; zümre kararlarına, ders kitabına ve okulunun takvimine göre uyarlanmalıdır. ' +
             'Yönerge gereği yıllık planın <b>ders yılının ilk 15 günü içinde okul müdürüne onaylatılması</b> gerekir.</div>';
+        });
+      })();
+      /* --- SINAVLAR · GÜNLÜK PLAN · ÇALIŞMA KÂĞITLARI · SINIF DOSYASI ·
+             PROJE VE PERFORMANS GÖREVLERİ (2026-2027) --------------------
+         Bu blok, dosyalar/ klasörüne yüklenen belgeleri sınıf kartlarına bağlar.
+         Sınav adlandırması: arapca-<sınıf>-<dönem>d<yazılı>y-<klasik|beceri>
+         Çalışma kâğıdı: arapca-<sınıf>-<sıra>-calisma-kagidi
+         Sınıf dosyası: sinif-dosyasi/arapca-<sınıf>-sinif-dosyasi
+         Görevler: performans-proje/<sınıf>-sinif/arapca-<sınıf>-<performans-gorevi|proje-odevi>
+         Yeni dosya eklerken yalnız aşağıdaki dizilere satır eklemek yeterlidir. */
+      (function () {
+        /* 1 — Günlük ders planları: yıllık planın altına, aynı "Planlar" kartına eklenir */
+        var GUNLUK = {
+          5: '3. Ünite — AİLEM',
+          6: '2. Ünite — HAYDİ OKULA!',
+          7: '1. Tema — MESLEKLER',
+          8: '4. Tema — DOĞA',
+          9: '3. Tema — EVDEYİM',
+          10: '3. Tema — SEYAHAT ETMEYİ SEVİYORUM'
+        };
+        Object.keys(GUNLUK).forEach(function (s) {
+          var g = 'dosyalar/gunluk-plan/arapca-' + s + '-sinif-gunluk-plan';
+          var liste = SINIF_PDF[s]['Planlar'] || (SINIF_PDF[s]['Planlar'] = []);
+          liste.push(
+            { ad: s + '. Sınıf Günlük (Ders Saati) Planı — düzenlenebilir (Word)',
+              tur: 'doc', kaynak: GUNLUK[s] + ' · iki ders saatlik örnek plan',
+              url: g + '.docx' },
+            { ad: s + '. Sınıf Günlük (Ders Saati) Planı — yazdırmaya hazır (PDF)',
+              url: g + '.pdf' }
+          );
+        });
+        /* altı sınıfın günlük planı tek dosyada */
+        SINIF_PDF[5]['Planlar'].push(
+          { ad: '5-10. Sınıf Günlük Ders Planları (altı plan tek dosyada) — Word', tur: 'doc',
+            kaynak: 'Her sınıftan bir örnek plan',
+            url: 'dosyalar/gunluk-plan/arapca-gunluk-ders-planlari-5-10.docx' },
+          { ad: '5-10. Sınıf Günlük Ders Planları (altı plan tek dosyada) — PDF',
+            url: 'dosyalar/gunluk-plan/arapca-gunluk-ders-planlari-5-10.pdf' }
+        );
+        
+        /* 2 — Yazılı sınavlar: her sınıfta 2 dönem × 2 yazılı × 2 yöntem = 8 sınav */
+        var SINAV = {
+          5: [
+            [1, 1, 'klasik', '1. Ünite — MERHABA!'],
+            [1, 1, 'beceri', '1. Ünite — MERHABA!'],
+            [1, 2, 'klasik', '2. Ünite — SINIFIM'],
+            [1, 2, 'beceri', '1-2. Ünite — MERHABA! / SINIFIM'],
+            [2, 1, 'klasik', '3. Ünite — AİLEM'],
+            [2, 1, 'beceri', '3. Ünite — AİLEM'],
+            [2, 2, 'klasik', '4. Ünite — GÜZEL EVİM'],
+            [2, 2, 'beceri', '3-4. Ünite — AİLEM / GÜZEL EVİM']
+          ],
+          6: [
+            [1, 1, 'klasik', '1. Ünite — AKRABALARIM'],
+            [1, 1, 'beceri', '1. Ünite — AKRABALARIM'],
+            [1, 2, 'klasik', '2. Ünite — HAYDİ OKULA!'],
+            [1, 2, 'beceri', '1-2. Ünite — AKRABALARIM / HAYDİ OKULA!'],
+            [2, 1, 'klasik', '3. Ünite — VÜCUDUM'],
+            [2, 1, 'beceri', '3. Ünite — VÜCUDUM'],
+            [2, 2, 'klasik', '4. Ünite — BU HAFTA HAVA NASIL?'],
+            [2, 2, 'beceri', '3-4. Üniteler — VÜCUDUM · BU HAFTA HAVA NASIL?']
+          ],
+          7: [
+            [1, 1, 'klasik', '1. Tema — MESLEKLER'],
+            [1, 1, 'beceri', '1. Tema — MESLEKLER'],
+            [1, 2, 'klasik', '2-3. Tema — ALIŞVERİŞ / HAVA DURUMU'],
+            [1, 2, 'beceri', '2-3. Tema — ALIŞVERİŞ / HAVA DURUMU'],
+            [2, 1, 'klasik', '4. Tema — VATANIM'],
+            [2, 1, 'beceri', '4. Tema — VATANIM'],
+            [2, 2, 'klasik', '5-6. Tema — İBADETLER / İLETİŞİM'],
+            [2, 2, 'beceri', '5-6. Tema — İBADETLER / İLETİŞİM']
+          ],
+          8: [
+            [1, 1, 'klasik', '1. Tema — ETKİNLİKLER'],
+            [1, 1, 'beceri', '1. Tema — ETKİNLİKLER'],
+            [1, 2, 'klasik', '2-3. Tema — KÜLTÜR VE SANAT / DEĞERLERİM'],
+            [1, 2, 'beceri', '2-3. Tema — KÜLTÜR VE SANAT / DEĞERLERİM'],
+            [2, 1, 'klasik', '4. Tema — DOĞA'],
+            [2, 1, 'beceri', '4. Tema — DOĞA'],
+            [2, 2, 'klasik', '5-6. Tema — SPOR / OKULA VEDA'],
+            [2, 2, 'beceri', '5-6. Tema — SPOR / OKULA VEDA']
+          ],
+          9: [
+            [1, 1, 'klasik', '1. Tema — HAYDİ TANIŞALIM'],
+            [1, 1, 'beceri', '1. Tema — HAYDİ TANIŞALIM'],
+            [1, 2, 'klasik', '2. Tema — OKULDAYIM'],
+            [1, 2, 'beceri', '1-2. Tema — HAYDİ TANIŞALIM / OKULDAYIM'],
+            [2, 1, 'klasik', '3. Tema — EVDEYİM'],
+            [2, 1, 'beceri', '3. Tema — EVDEYİM'],
+            [2, 2, 'klasik', '4. Tema — BİR GÜNÜM'],
+            [2, 2, 'beceri', '3-4. Tema — EVDEYİM / BİR GÜNÜM']
+          ],
+          10: [
+            [1, 1, 'klasik', '1. Tema — DEĞERLERİM'],
+            [1, 1, 'beceri', '1. Tema — DEĞERLERİM'],
+            [1, 2, 'klasik', '2. Tema — KENDİMİ KEŞFEDİYORUM'],
+            [1, 2, 'beceri', '1-2. Tema — DEĞERLERİM / KENDİMİ KEŞFEDİYORUM'],
+            [2, 1, 'klasik', '3. Tema — SEYAHAT ETMEYİ SEVİYORUM'],
+            [2, 1, 'beceri', '3. Tema — SEYAHAT ETMEYİ SEVİYORUM'],
+            [2, 2, 'klasik', '4. Tema — TATİLE HAZIRLANIYORUM'],
+            [2, 2, 'beceri', '3-4. Tema — SEYAHAT ETMEYİ SEVİYORUM / TATİLE HAZIRLANIYORUM']
+          ]
+        };
+        var YONTEM = {
+          klasik: ['Klasik', 'Kelime, çeviri, eşleştirme, boşluk doldurma, test ve yazma görevi'],
+          beceri: ['Beceri temelli', 'Okuma-anlama, dinleme, sıralama ve üretime dayalı görevler']
+        };
+        Object.keys(SINAV).forEach(function (s) {
+          var d = [];
+          d.push(
+            { ad: s + '. Sınıf Yazılı Sınavlar — sekiz sınav tek dosyada (Word)', tur: 'doc',
+              kaynak: 'Cevap anahtarları ve puanlama ölçekleri dosyanın içindedir',
+              url: 'dosyalar/sinavlar/' + s + '-sinif/arapca-' + s + '-sinif-yazili-sinavlar.docx' },
+            { ad: s + '. Sınıf Yazılı Sınavlar — sekiz sınav tek dosyada (PDF)',
+              url: 'dosyalar/sinavlar/' + s + '-sinif/arapca-' + s + '-sinif-yazili-sinavlar.pdf' }
+          );
+          SINAV[s].forEach(function (v) {
+            var kod = 'arapca-' + s + '-' + v[0] + 'd' + v[1] + 'y-' + v[2];
+            var yol = 'dosyalar/sinavlar/' + s + '-sinif/' + kod;
+            var ad  = v[0] + '. Dönem ' + v[1] + '. Yazılı — ' + YONTEM[v[2]][0];
+            d.push(
+              { ad: ad + ' (Word)', tur: 'doc', kaynak: v[3] + ' · ' + YONTEM[v[2]][1], url: yol + '.docx' },
+              { ad: ad + ' (PDF)', url: yol + '.pdf' }
+            );
+          });
+          SINIF_PDF[s]['Sınavlar'] = d;
+        });
+        
+        /* 3 — Çalışma kâğıtları: her sınıfta iki kâğıt + toplu dosya */
+        var KAGIT = {
+          5: [
+            ['5-1', 'Selamlaşıyorum ve Tanışıyorum', '1. Ünite — MERHABA!'],
+            ['5-2', 'Ailemi Tanıtıyorum', '3. Ünite — AİLEM']
+          ],
+          6: [
+            ['6-1', 'Okulumu Tanıtıyorum', '2. Ünite — HAYDİ OKULA!'],
+            ['6-2', 'Vücudumu Tanıyorum', '3. Ünite — VÜCUDUM']
+          ],
+          7: [
+            ['7-1', 'Meslekleri Tanıyorum', '1. Tema — MESLEKLER'],
+            ['7-2', 'Hava Durumunu Anlatıyorum', '3. Tema — HAVA DURUMU']
+          ],
+          8: [
+            ['8-1', 'Güzel Davranışlar', '3. Tema — DEĞERLERİM'],
+            ['8-2', 'Doğayı Koruyorum', '4. Tema — DOĞA']
+          ],
+          9: [
+            ['9-1', 'Okul Günüm', '2. Tema — OKULDAYIM'],
+            ['9-2', 'Evimi Tanıtıyorum', '3. Tema — EVDEYİM']
+          ],
+          10: [
+            ['10-1', 'Yolculuğumu Anlatıyorum', '3. Tema — SEYAHAT ETMEYİ SEVİYORUM'],
+            ['10-2', 'Akrabalarım ve Güzel Davranışlar', '1. Tema — DEĞERLERİM']
+          ]
+        };
+        Object.keys(KAGIT).forEach(function (s) {
+          var d = [];
+          d.push(
+            { ad: s + '. Sınıf Çalışma Kâğıtları — iki kâğıt tek dosyada (Word)', tur: 'doc',
+              kaynak: 'Cevap anahtarı ve öğretmen notu her kâğıdın sonundadır',
+              url: 'dosyalar/calisma-kagitlari/' + s + '-sinif/arapca-' + s + '-sinif-calisma-kagitlari.docx' },
+            { ad: s + '. Sınıf Çalışma Kâğıtları — iki kâğıt tek dosyada (PDF)',
+              url: 'dosyalar/calisma-kagitlari/' + s + '-sinif/arapca-' + s + '-sinif-calisma-kagitlari.pdf' }
+          );
+          KAGIT[s].forEach(function (c) {
+            var yol = 'dosyalar/calisma-kagitlari/' + s + '-sinif/arapca-' + c[0] + '-calisma-kagidi';
+            d.push(
+              { ad: c[1] + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: c[2], url: yol + '.docx' },
+              { ad: c[1] + ' — yazdırmaya hazır (PDF)', url: yol + '.pdf' }
+            );
+          });
+          SINIF_PDF[s]['Çalışma Kâğıtları & Etkinlikler'] = d;
+        });
+        
+        /* 3b — Sınıf dosyası: şubeye ait doldurulabilir form seti */
+        var SDOSYA = {
+          5: 13,
+          6: 13,
+          7: 13,
+          8: 13,
+          9: 13,
+          10: 13
+        };
+        Object.keys(SDOSYA).forEach(function (s) {
+          var yol = 'dosyalar/sinif-dosyasi/arapca-' + s + '-sinif-dosyasi';
+          SINIF_PDF[s]['Sınıf Dosyası'] = [
+            { ad: s + '. Sınıf Dosyası — doldurulabilir form seti (Word)', tur: 'doc',
+              kaynak: SDOSYA[s] + ' form · sınıf künyesi, öğrenci listesi, oturma planı, takip çizelgeleri',
+              url: yol + '.docx' },
+            { ad: s + '. Sınıf Dosyası — yazdırmaya hazır (PDF)',
+              url: yol + '.pdf' }
+          ];
+        });
+        SINIF_PDF[5]['Sınıf Dosyası'].push(
+          { ad: '5-10. Sınıf Dosyaları (altı sınıf tek dosyada) — Word', tur: 'doc',
+            kaynak: 'Altı sınıfın form seti art arda',
+            url: 'dosyalar/sinif-dosyasi/arapca-sinif-dosyalari-5-10.docx' },
+          { ad: '5-10. Sınıf Dosyaları (altı sınıf tek dosyada) — PDF',
+            url: 'dosyalar/sinif-dosyasi/arapca-sinif-dosyalari-5-10.pdf' }
+        );
+        
+        /* 3c — Proje ve performans görevleri: her sınıfta 1 performans + 1 proje */
+        var GOREV = {
+          5: ['SINIFIMI TANITIYORUM', '2. Ünite — SINIFIM · Bireysel · Poster ve sözlü tanıtım',
+              'AİLE ALBÜMÜM VE EVİM', '3. Ünite AİLEM  ve  4. Ünite GÜZEL EVİM · Bireysel · Albüm dosyası ve sözlü sunum'],
+          6: ['AİLE SOY AĞACIM', '1. Ünite — AKRABALARIM · Bireysel · Şema ve sözlü tanıtım',
+              'HAFTALIK HAVA DURUMU GÜNLÜĞÜM', '4. Ünite — BU HAFTA HAVA NASIL? · Bireysel · Günlük tutma ve sunum'],
+          7: ['MESLEK TANITIM KARTLARIM', '1. Tema — MESLEKLER · Bireysel · Kart seti ve sözlü tanıtım',
+              'VATANIMI ARAPÇA TANITIYORUM', '4. Tema VATANIM  ve  5. Tema İBADETLER · Bireysel ya da iki kişilik grup · Tanıtım broşürü ve sunum'],
+          8: ['DEĞERLER PANOSU', '3. Tema — DEĞERLERİM · Bireysel ya da iki kişilik grup · Pano ve sözlü sunum',
+              'ÇEVREMİ KORUYORUM — ARAPÇA BİLİNÇ BROŞÜRÜ', '4. Tema — DOĞA · İki ya da üç kişilik grup · Broşür ve sınıf sunumu'],
+          9: ['OKUL GÜNÜMÜ ANLATIYORUM', '2. Tema — OKULDAYIM · Bireysel · Yazılı metin ve sözlü anlatım',
+              'EVİMİ TANITAN SUNUM', '3. Tema — EVDEYİM · Bireysel · Dijital ya da kâğıt sunum'],
+          10: ['DEĞERLERİMİ ANLATAN KISA KONUŞMA', '1. Tema — DEĞERLERİM · Bireysel · Hazırlıklı konuşma ve yazılı metin',
+              'SEYAHAT REHBERİM', '3. Tema — SEYAHAT ETMEYİ SEVİYORUM · İki kişilik grup · Rehber kitapçık ve sunum']
+        };
+        Object.keys(GOREV).forEach(function (s) {
+          var g = GOREV[s], k = 'dosyalar/performans-proje/' + s + '-sinif/arapca-' + s;
+          SINIF_PDF[s]['Proje & Performans Görevleri'] = [
+            { ad: s + '. Sınıf Performans Görevi ve Proje Ödevi — ikisi tek dosyada (Word)',
+              tur: 'doc', kaynak: 'Öğrenci yönergesi, örnek metin, çalışma alanı ve öğretmen sayfası',
+              url: k + '-sinif-performans-proje.docx' },
+            { ad: s + '. Sınıf Performans Görevi ve Proje Ödevi — ikisi tek dosyada (PDF)',
+              url: k + '-sinif-performans-proje.pdf' },
+            { ad: '1. Dönem Performans Görevi — ' + g[0] + ' (Word)', tur: 'doc',
+              kaynak: g[1], url: k + '-performans-gorevi.docx' },
+            { ad: '1. Dönem Performans Görevi — ' + g[0] + ' (PDF)',
+              url: k + '-performans-gorevi.pdf' },
+            { ad: '2. Dönem Proje Ödevi — ' + g[2] + ' (Word)', tur: 'doc',
+              kaynak: g[3], url: k + '-proje-odevi.docx' },
+            { ad: '2. Dönem Proje Ödevi — ' + g[2] + ' (PDF)',
+              url: k + '-proje-odevi.pdf' }
+          ];
+        });
+        SINIF_PDF[5]['Proje & Performans Görevleri'].push(
+          { ad: '5-10. Sınıf Performans Görevleri ve Proje Ödevleri (on iki görev tek dosyada) — Word',
+            tur: 'doc', kaynak: 'Altı sınıfın performans görevi ve proje ödevi art arda',
+            url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.docx' },
+          { ad: '5-10. Sınıf Performans Görevleri ve Proje Ödevleri (on iki görev tek dosyada) — PDF',
+            url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.pdf' }
+        );
+        
+        /* 4 — kart açıklamaları */
+        var SINIFLAR_ = [5, 6, 7, 8, 9, 10];
+        SINIFLAR_.forEach(function (s) {
+          SINIF_GIRIS[s]['Sınavlar'] =
+            '<div class="dok-not">Her sınıf için <b>sekiz yazılı sınav</b> hazırlanmıştır: iki dönem × ' +
+            'iki yazılı, her yazılı <b>iki ayrı yöntemle</b>. <b>Klasik</b> sınav kelime, çeviri, eşleştirme, ' +
+            'boşluk doldurma, çoktan seçmeli ve yazma görevlerinden oluşur. <b>Beceri temelli</b> sınav ise ' +
+            'okuma-anlama metni, dinleme görevi, sıralama ve üretim görevleriyle kurgulanmıştır. ' +
+            'İkisi de <b>100 puan</b> üzerindendir.</div>' +
+            '<div class="dok-not">Her sınavın sonunda <b>cevap anahtarı</b>, yazma görevi için <b>dereceli ' +
+            'puanlama anahtarı</b> ve soruların hangi öğrenme çıktısını ölçtüğünü gösteren <b>soru — çıktı ' +
+            'tablosu</b> vardır. Bu tablo, öğretmen dosyasındaki soru analiz formunu doldururken doğrudan ' +
+            'kullanılabilir. Cevap anahtarı sayfası öğrenciye verilmez.</div>' +
+            '<div class="tut-ipucu"><b>Sınavı uygularken</b><ul>' +
+            '<li>Beceri temelli sınavdaki <b>dinleme metni</b> öğretmen tarafından iki kez okunur; metin cevap ' +
+            'anahtarı sayfasındadır.</li>' +
+            '<li>Ortak sınav yapılacaksa zümrede <b>hangi yöntemin</b> uygulanacağına önceden karar verin.</li>' +
+            '<li>Word dosyası düzenlenebilir: soru sayısını, puanı ve kelimeleri kendi işlediğin konuya göre ' +
+            'değiştirebilirsin.</li>' +
+            '</ul></div>' +
+            '<div class="dok-not">Sınavlar <b>örnektir</b>; okulunun ders kitabına, işlenen konulara ve zümre ' +
+            'kararlarına göre uyarlanmalıdır. Son kontrol: Ağustos 2026.</div>';
+        });
+        SINIFLAR_.forEach(function (s) {
+          SINIF_GIRIS[s]['Çalışma Kâğıtları & Etkinlikler'] =
+            '<div class="dok-not">Her sınıf için <b>iki çalışma kâğıdı</b> hazırlanmıştır. Her kâğıt <b>altı ' +
+            'görevden</b> oluşur ve yaklaşık <b>bir ders saatinde</b> uygulanacak biçimde tasarlanmıştır. ' +
+            'Görevler bilerek farklı türlerdedir: eşleştirme, boşluk doldurma, kelime havuzu, doğru-yanlış, ' +
+            'kısa okuma ve serbest yazma.</div>' +
+            '<div class="dok-not">Kâğıdın son sayfasında <b>cevap anahtarı ve öğretmen notu</b> bulunur: ' +
+            'beklenen cevaplar, açık uçlu görev için <b>dereceli puanlama anahtarı</b>, görevlerin hangi ' +
+            '<b>öğrenme çıktısını</b> ve hangi <b>beceri alanını</b> ölçtüğünü gösteren tablo ve uygulama ' +
+            'önerileri. Bu sayfa öğrenciye verilmez — çoğaltırken son sayfayı ayırman yeterlidir.</div>' +
+            '<div class="dok-not">Kâğıtlar hem <b>tek tek</b> hem de sınıfın <b>iki kâğıdı tek dosyada</b> ' +
+            'olacak biçimde verilmiştir. Word hâli düzenlenebilir, PDF hâli doğrudan çoğaltılır. ' +
+            '<b>Etkinlik örnekleri</b> bu kartın altına yakında eklenecektir.</div>';
+        });
+        SINIFLAR_.forEach(function (s) {
+          SINIF_GIRIS[s]['Sınıf Dosyası'] =
+            '<div class="dok-not">Sınıf dosyası, <b>okuttuğun her şubeye ait</b> bir dosyadır: sınıfın künyesi, ' +
+            'öğrenci listesi, oturma planı ve o şubeye ait bütün takip çizelgeleri burada toplanır. ' +
+            'Öğretmen dosyasından ayrıdır — orada <b>senin</b> mesleki belgelerin, burada <b>sınıfın</b> ' +
+            'belgeleri bulunur; iki dosya birbirini tekrar etmez.</div>' +
+            '<div class="dok-not">Dosyada <b>on üç form</b> vardır: kapak, içindekiler, sınıf künyesi, öğrenci ' +
+            'listesi, oturma planı, sınıf içi Arapça ifadeler ve kurallar, ünite takip çizelgesi, kelime hazinesi ' +
+            'takibi, beceri gözlem çizelgesi, sınav ve puan takibi, ödev takibi, veli görüşmeleri ve dönem ' +
+            'değerlendirmesi. Formlar o sınıfın <b>kendi ünitelerine ve haftalık ders saatine</b> göre ' +
+            'doldurulmuş olarak gelir; kelime takip çizelgesindeki sözcükler de sınıfın ünitelerinden seçilmiştir.</div>' +
+            '<div class="tut-ipucu"><b>Nasıl kullanılır?</b><ul>' +
+            '<li>Her şube için <b>ayrı bir çıktı</b> al; kapağa şube adını yaz.</li>' +
+            '<li>Öğrenci listesini eylül ayında bir kez doldur, yıl boyunca aynı sayfayı kullan.</li>' +
+            '<li>Kelime hazinesi ve beceri gözlem çizelgelerini <b>ünite sonlarında</b> işaretle.</li>' +
+            '<li>Word dosyası düzenlenebilir: satır sayısını mevcuduna göre artırıp azaltabilirsin.</li>' +
+            '</ul></div>' +
+            '<div class="dok-not">Arapça ifadeler formundaki cümleler <b>harekelidir</b> ve sınıf düzeyine göre ' +
+            'değişir. Dosya bir <b>örnektir</b>; okulunun istediği ek formlar varsa Word hâline ekleyebilirsin.</div>';
+        });
+        SINIFLAR_.forEach(function (s) {
+          SINIF_GIRIS[s]['Proje & Performans Görevleri'] =
+            '<div class="dok-not">Her sınıf için <b>1. dönem bir performans görevi</b>, <b>2. dönem bir proje ' +
+            'ödevi</b> hazırlanmıştır — toplam on iki görev. Görevler o sınıfın <b>işlenen ünitesine</b> ve ' +
+            'öğrenme çıktılarına bağlanmıştır; 7 ve 8. sınıflarda 2016 programının kazanımları esas alınmıştır.</div>' +
+            '<div class="dok-not">Her belge <b>beş sayfadır</b>. Birinci sayfada görev künyesi, amaç, ölçülen ' +
+            'öğrenme çıktıları, görev basamakları ve kaynaklar; ikinci sayfada <b>harekeli Arapça örnek metin</b>, ' +
+            'sözcük desteği, teslim ölçütleri ve öğrencinin dolduracağı çalışma takvimi; üçüncü sayfada ' +
+            '<b>öğrenci çalışma alanı</b> bulunur. Son iki sayfa <b>öğretmene aittir</b>: 100 puan üzerinden ' +
+            '<b>dereceli puanlama anahtarı</b> ve bütün sınıfın tek sayfada izlendiği <b>değerlendirme ' +
+            'çizelgesi</b>. Bu sayfalar öğrenciye verilmez — çoğaltırken son iki sayfayı ayırman yeterlidir.</div>' +
+            '<div class="tut-ipucu"><b>Uygularken</b><ul>' +
+            '<li>Görevi <b>dönemin başında</b> ver; teslim tarihini birinci sayfadaki künyeye yaz.</li>' +
+            '<li>Puanlama ölçütlerini görevi verirken öğrenciyle birlikte oku; ölçütleri bilmek çalışmayı ' +
+            'doğrudan iyileştirir.</li>' +
+            '<li>Değerlendirme çizelgesindeki <b>Ö1-Ö7</b> sütunları puanlama anahtarındaki ölçütlerin sırasıdır.</li>' +
+            '<li>Word dosyası düzenlenebilir: görev basamaklarını ve ölçütleri kendi işlediğin konuya göre ' +
+            'değiştirebilirsin.</li>' +
+            '</ul></div>' +
+            '<div class="dok-not">Görevler <b>örnektir</b>; ders kitabına, zümre kararlarına ve sınıfının ' +
+            'düzeyine göre uyarlanmalıdır. Son kontrol: Ağustos 2026.</div>';
         });
       })();
       /* === A4 "RESMİ EVRAK" KARTLARI ===================================
