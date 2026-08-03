@@ -107,7 +107,7 @@ const generateKalipTablosuHTML = () => {
                                     <td rowspan="6">
                                         <div style="display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center;">
                                             <div class="glass-box"><span class="ref">33</span><span class="ar">فَاعِل</span></div>
-                                            <div class="glass-box"><span class="ref">34</span><span class="ar">فَعَّال</span></div>
+                                            <div class="glass-box"><span class="ref">34</span><span class="ar">فَعَّال</span></div>
                                             <div class="glass-box"><span class="ref">35</span><span class="ar">فَعِيل</span></div>
                                         </div>
                                     </td>
@@ -158,7 +158,7 @@ const generateKalipTablosuHTML = () => {
                                     <div class="glass-box"><span class="ref">42</span><span class="ar-small">فُعُل</span></div>
                                     <div class="glass-box"><span class="ref">43</span><span class="ar-small">فُعُول</span></div>
                                     <div class="glass-box"><span class="ref">44</span><span class="ar-small">فِعَال</span></div>
-                                    <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّال</span></div>
+                                    <div class="glass-box"><span class="ref">45</span><span class="ar-small">فُعَّال</span></div>
                                     <div class="glass-box"><span class="ref">46</span><span class="ar-small">فُعَلَاء</span></div>
                                     <div class="glass-box"><span class="ref">47</span><span class="ar-small">فَعَلَة</span></div>
                                     <div class="glass-box"><span class="ref">48</span><span class="ar-small">فَعَائِل</span></div>
@@ -201,12 +201,12 @@ const generateKalipTablosuHTML = () => {
                                 </tr>
                                 <tr>
                                     <td align="center">Tef'il</td>
-                                    <td><div class="glass-box"><span class="ref">58</span><span class="ar">فَعَّلَ</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">59</span><span class="ar">يُفَعِّلُ</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">60</span><span class="ar">فَعِّلْ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">58</span><span class="ar">فَعَّلَ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">59</span><span class="ar">يُفَعِّلُ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">60</span><span class="ar">فَعِّلْ</span></div></td>
                                     <td><div class="glass-box"><span class="ref">61</span><span class="ar">تَفْعِيل</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">62</span><span class="ar">مُفَعِّل</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">63</span><span class="ar">مُفَعَّل</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">62</span><span class="ar">مُفَعِّل</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">63</span><span class="ar">مُفَعَّل</span></div></td>
                                 </tr>
                                <tr>
                                     <td align="center">Müfa'ale</td>
@@ -242,8 +242,8 @@ const generateKalipTablosuHTML = () => {
                                 </tr>
                                 <tr>
                                     <td align="center">İf'ilâl</td>
-                                    <td><div class="glass-box"><span class="ref">83</span><span class="ar">افْعَلَّ</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">84</span><span class="ar">يَفْعَلُّ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">83</span><span class="ar">افْعَلَّ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">84</span><span class="ar">يَفْعَلُّ</span></div></td>
                                     <td><div class="glass-box"><span class="ref">85</span><span class="ar">افْعَلِلْ</span></div></td>
                                     <td><div class="glass-box"><span class="ref">86</span><span class="ar">افْعِلَال</span></div></td>
                                     <td><div class="glass-box"><span class="ref">87</span><span class="ar">مُفْعَلّ</span></div></td>
@@ -251,12 +251,12 @@ const generateKalipTablosuHTML = () => {
                                 </tr>
                                 <tr>
                                     <td align="center">Tefe''ul</td>
-                                    <td><div class="glass-box"><span class="ref">88</span><span class="ar">تَفَعَّلَ</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
-                                    <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">88</span><span class="ar">تَفَعَّلَ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">89</span><span class="ar">يَتَفَعَّلُ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">90</span><span class="ar">تَفَعَّلْ</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">91</span><span class="ar">تَفَعُّل</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">92</span><span class="ar">مُتَفَعِّل</span></div></td>
+                                    <td><div class="glass-box"><span class="ref">93</span><span class="ar">مُتَفَعَّل</span></div></td>
                                 </tr>
                                 <tr>
                                     <td align="center">Tefâ'ul</td>
@@ -310,7 +310,7 @@ const popupData = {
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">için</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">لِـ</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">hakkında</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">عَنْ</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">gibi</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">كَـ</td></tr>
-            <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...e kadar</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">حَتَّى</td></tr>
+            <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...e kadar</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">حَتَّى</td></tr>
         </table>
     </div>
 
@@ -423,7 +423,7 @@ const popupData = {
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sabah / Akşam</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">صَبَاحًا / مَسَاءً</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...dığı zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">حِينَ / أَثْنَاءَ</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Asla / Ebeden</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَبَداً</td></tr>
-            <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hâlâ / Henüz</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لَمَّا</td></tr>
+            <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hâlâ / Henüz</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لَمَّا</td></tr>
         </table>
     </div>
 
@@ -435,7 +435,7 @@ const popupData = {
                 <th style="padding: 10px; text-align: center;">Arapça</th>
             </tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Veya / Yoksa</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَوْ / أَمْ</td></tr>
-            <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Çünkü</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِأَنَّ</td></tr>
+            <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Çünkü</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِأَنَّ</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">O zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">إِذَنْ</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Şayet / Eğer</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">إِذَا / لَوْ</td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sadece</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">فَقَطْ</td></tr>
@@ -463,7 +463,7 @@ const popupData = {
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">هُمْ</span><br><small>(Onlar)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">هُمَا</span><br><small>(O ikisi)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">هُوَ</span><br><small>(O)</small></td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">هُnuَّ</span><br><small>(Onlar)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">هُمَا</span><br><small>(O ikisi)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">هِيَ</span><br><small>(O)</small></td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">أَنْتُمْ</span><br><small>(Siz)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">أَنْتُمَا</span><br><small>(Siz ikiniz)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">أَنْتَ</span><br><small>(Sen)</small></td></tr>
-            <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">أَنْتُنَّ</span><br><small>(Siz)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">أَنْتُمَا</span><br><small>(Siz ikiniz)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">أَنْتِ</span><br><small>(Sen)</small></td></tr>
+            <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">أَنْتُنَّ</span><br><small>(Siz)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">أَنْتُمَا</span><br><small>(Siz ikiniz)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">أَنْتِ</span><br><small>(Sen)</small></td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">نَحْنُ</span><br><small>(Biz)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">نَحْنُ</span><br><small>(Biz ikimiz)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">أَنَا</span><br><small>(Ben)</small></td></tr>
             
         </table>
@@ -478,9 +478,9 @@ const popupData = {
                 <th style="padding: 10px;">Tekil</th>
             </tr>
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـهُمْ</span><br><small>(Onları)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـهُمَا</span><br><small>(O ikisini)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـهُ</span><br><small>(Onu)</small></td></tr>
-            <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـهُنَّ</span><br><small>(Onları)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـهُمَا</span><br><small>(O ikisini)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـهَا</span><br><small>(Onu)</small></td></tr>
+            <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـهُنَّ</span><br><small>(Onları)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـهُمَا</span><br><small>(O ikisini)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـهَا</span><br><small>(Onu)</small></td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـكُمْ</span><br><small>(Sizi)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـكُمَا</span><br><small>(Siz ikinizi)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـكَ</span><br><small>(Seni)</small></td></tr>
-            <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـكُنَّ</span><br><small>(Sizi)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـكُمَا</span><br><small>(Siz ikinizi)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـكِ</span><br><small>(Seni)</small></td></tr>
+            <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـكُنَّ</span><br><small>(Sizi)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـكُمَا</span><br><small>(Siz ikinizi)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـكِ</span><br><small>(Seni)</small></td></tr>
             <tr style="border-bottom: 1px solid #eee;"><td><span class="ar-txt" style="font-size:2.2rem;">ـنَا</span><br><small>(Bizi)</small></td><td><span class="ar-txt" style="font-size:1.8rem;">ـنَا</span><br><small>(Bizi)</small></td><td><span class="ar-txt" style="font-size:2.2rem;">ـي / نِي</span><br><small>(Beni)</small></td></tr>
             
         </table>
@@ -514,14 +514,14 @@ const popupData = {
         <th style="padding: 10px;">Tekil</th>
     </tr>
     <tr style="border-bottom: 1px solid #eee;">
-        <td><span class="ar-txt" style="font-size:2.2rem;">الَّذِينَ</span><br><small>(Onlar ki)</small></td>
-        <td><span class="ar-txt" style="font-size:2.2rem;">الَّذَانِ</span><br><small>(O ikisi ki)</small></td>
-        <td><span class="ar-txt" style="font-size:2.2rem;">الَّذِي</span><br><small>(O ki)</small></td>
+        <td><span class="ar-txt" style="font-size:2.2rem;">الَّذِينَ</span><br><small>(Onlar ki)</small></td>
+        <td><span class="ar-txt" style="font-size:2.2rem;">الَّذَانِ</span><br><small>(O ikisi ki)</small></td>
+        <td><span class="ar-txt" style="font-size:2.2rem;">الَّذِي</span><br><small>(O ki)</small></td>
     </tr>
     <tr style="border-bottom: 1px solid #eee;">
-        <td><span class="ar-txt" style="font-size:2.2rem;">اللَّاتِي</span><br><small>(Onlar ki)</small></td>
-        <td><span class="ar-txt" style="font-size:2.2rem;">اللَّتَانِ</span><br><small>(O ikisi ki)</small></td>
-        <td><span class="ar-txt" style="font-size:2.2rem;">الَّتِي</span><br><small>(O ki)</small></td>
+        <td><span class="ar-txt" style="font-size:2.2rem;">اللَّاتِي</span><br><small>(Onlar ki)</small></td>
+        <td><span class="ar-txt" style="font-size:2.2rem;">اللَّتَانِ</span><br><small>(O ikisi ki)</small></td>
+        <td><span class="ar-txt" style="font-size:2.2rem;">الَّتِي</span><br><small>(O ki)</small></td>
     </tr>
 </table>
 <div style="height: 60px;"></div>
@@ -556,7 +556,7 @@ const popupData = {
                 <td><span class="ar-txt" style="font-size:2.2rem;"> ـ ـ ـْتَ</span><br><small>(-dın)</small></td>
             </tr>
             <tr style="border-bottom: 1px solid #eee; height: 75px;">
-                <td><span class="ar-txt" style="font-size:2.2rem;"> ـ ـ ـْتُنَّ</span><br><small>(-dınız K)</small></td>
+                <td><span class="ar-txt" style="font-size:2.2rem;"> ـ ـ ـْتُنَّ</span><br><small>(-dınız K)</small></td>
                 <td><span class="ar-txt" style="font-size:2.2rem;"> ـ ـ ـْتُمَا</span><br><small>(-dınız/2 K)</small></td>
                 <td><span class="ar-txt" style="font-size:2.2rem;"> ـ ـ ـْتِ</span><br><small>(-dın K)</small></td>
             </tr>
@@ -1003,7 +1003,7 @@ sentence: [
     },
     {
         words: [
-            { tr: "Şekere", order: 2, ar: " السُّكَّر." },
+            { tr: "Şekere", order: 2, ar: " السُّكَّر." },
             { tr: "ihtiyacım var.", order: 1, ar: "أَنا بِحاجَة إِلى" }
         ]
     },
@@ -1017,7 +1017,7 @@ sentence: [
     {
         words: [
             { tr: "İki kilo", order: 2, ar: "كيلوغْرامَيْن" },
-            { tr: "şekere", order: 3, ar: "مِن السُّكَّر." },
+            { tr: "şekere", order: 3, ar: "مِن السُّكَّر." },
             { tr: "(onun) ihtiyacı var.", order: 1, ar: "هُو بِحاجَة إِلى" }
         ]
     },
@@ -1101,7 +1101,7 @@ dialog: [
     },
     {
         p1: [
-            { tr: "Elmadan", order: 4, ar: "مِن التُّفّاح؟" },
+            { tr: "Elmadan", order: 4, ar: "مِن التُّفّاح؟" },
             { tr: "kaç", order: 1, ar: "كَم" },
             { tr: "kilo", order: 2, ar: "كيلوغْرامًا" },
             { tr: "istersin?", order: 3, ar: "تُريدُ" }
@@ -1132,7 +1132,7 @@ dialog: [
         p1: [
             { tr: "Senden", order: 2, ar: "مِنْكَ" },
             { tr: "bir kilo", order: 3, ar: "كيلو" },
-            { tr: "şeker,", order: 4, ar: "سُكَّر،" },
+            { tr: "şeker,", order: 4, ar: "سُكَّر،" },
             { tr: "bir kutu", order: 5, ar: "وَعُلْبَة" },
             { tr: "tuz", order: 6, ar: "مِلْح،" },
             { tr: "ve iki kutu", order: 7, ar: "وَعُلْبَتَيْن" },
@@ -1162,7 +1162,7 @@ dialog: [
     },
     {
         p1: [
-            { tr: "Çok", order: 2, ar: "جِدًّا!" },
+            { tr: "Çok", order: 2, ar: "جِدًّا!" },
             { tr: "güzel!", order: 1, ar: "جَميل" },
             { tr: "Sende", order: 4, ar: " عِنْدَكَ" },
             { tr: "meyve(ler)", order: 5, ar: "فَواكِه" },
@@ -1194,7 +1194,7 @@ dialog: [
     },
     {
         p1: [
-            { tr: "Fakat o", order: 1, ar: "لَكِنَّها" },
+            { tr: "Fakat o", order: 1, ar: "لَكِنَّها" },
             { tr: "pahalı", order: 2, ar: "غالِيَة،" },
             { tr: "ve patatesten", order: 4, ar: "مِن البَطاطا." },
             { tr: "daha pahalı.", order: 3, ar: "وَأَغْلى" }
@@ -1204,7 +1204,7 @@ dialog: [
             { tr: "bugün", order: 3, ar: "اليَوْم،" },
             { tr: "ucuz,", order: 2, ar: "رَخيص" },
             { tr: "ve o", order: 4, ar: "وَهُو" },
-            { tr: "elmadan", order: 6, ar: "مِن التُّفّاح." },
+            { tr: "elmadan", order: 6, ar: "مِن التُّفّاح." },
             { tr: "daha ucuz.", order: 5, ar: "أَرْخَص" }
         ]
     },
@@ -1216,7 +1216,7 @@ dialog: [
         ],
         p2: [
             { tr: "Kiraz", order: 1, ar: "الكَرَز" },
-            { tr: "elmadan", order: 3, ar: "مِن التُّفّاح." },
+            { tr: "elmadan", order: 3, ar: "مِن التُّفّاح." },
             { tr: "daha pahalı.", order: 2, ar: "أَغْلى" }
         ]
     },
@@ -1227,11 +1227,11 @@ dialog: [
             { tr: "bugün", order: 2, ar: "غالٍ" },
             { tr: "pahalı,", order: 3, ar: "اليَوْم،" },
             { tr: "bir kilo", order: 5, ar: "كيلو" },
-            {tr: "elma(dan)", order: 6, ar: "مِن التُّفّاح‫.‬" },
+            {tr: "elma(dan)", order: 6, ar: "مِن التُّفّاح‫.‬" },
             { tr: "istiyorum.", order: 4, ar: "أُريدُ" }
         ],
         p2: [
-            { tr: "Buyur,", order: 1, ar: "تَفَضَّلي،" },
+            { tr: "Buyur,", order: 1, ar: "تَفَضَّلي،" },
             { tr: "başka", order: 5, ar: "آخَر؟" },
             { tr: "bir şey", order: 4, ar: "شَيْئًا" },
             { tr: "ister", order: 3, ar: "تُريدينَ" },

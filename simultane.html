@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arapça Simultane & Diyalog 10.1.1</title>
+    <title>Arapça Simultane & Diyalog</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
-<script src="simultane_10_1_1.js?v=20260731a"></script>
+<script>
+(function(){
+  var d = new URLSearchParams(location.search).get("ders") || "";
+  if(!/^[0-9]+(_[0-9]+)+$/.test(d)) d = "10_1_1";
+  document.write('<scr'+'ipt src="simultane_veri_'+d+'.js?v=2"><\/scr'+'ipt>');
+})();
+</script>
+<script src="simultane.js?v=2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;300&family=Amiri:wght@400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="simultane_10_1_1.css?v=20260731a">
+    <link rel="stylesheet" href="simultane.css?v=2">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -27,15 +34,56 @@
 <div id="entry-panel">
     <button class="entry-back-btn" onclick="window.location.href='muhadese.html'">❮</button>
     <h1 style="color:var(--pdf-red); font-size: 3rem; margin-bottom: 20px;">ARAPÇA PRATİK</h1>
+    <button class="mode-btn" onclick="startKelime()">KELİMELER</button>
     <button class="mode-btn" onclick="startMode('sentence')">CÜMLE PRATİĞİ</button>
     <button class="mode-btn" onclick="startMode('dialog')">DİYALOG PRATİĞİ</button>
+</div>
+
+<!-- KELİMELER: kart (çalışma) + hafıza oyunu — ortak tasarım (#kelime-mode altında izole) -->
+<div id="kelime-mode">
+    <div class="header">
+        <div class="controls" style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; min-height: 50px;">
+            <button class="btn" id="btn-back" onclick="kelimeGeri()" style="position: absolute; left: 10px; background: #f1f3f5; font-weight: bold; display: flex; align-items: center; gap: 5px;"><span>❮</span></button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn active" id="btn-study" onclick="kelSetMode('study')">Kartlar</button>
+                <button class="btn" id="lang-btn-main" onclick="kelToggleLang()" style="background:var(--accent); color:white;"> T ⇄ ع</button>
+                <button class="btn" id="btn-memory-start" onclick="kelSetMode('mem1')" style="background: #e9ecef;">Hafıza Oyunu</button>
+                <div id="memory-controls" style="display: none; align-items: center; gap: 8px;">
+                    <button class="btn" onclick="kelSetMode('study')" style="background:#dee2e6; font-weight: bold;">Kartlar</button>
+                    <div class="switch-wrapper" style="display: flex; align-items: center; background: white; padding: 4px 8px; border-radius: 50px; border: 2px solid #eee; gap: 5px;">
+                        <span style="font-size: 1.1rem; cursor: pointer;" onclick="kelToggleSwitch(false)">👤</span>
+                        <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                            <input type="checkbox" id="mode-toggle" onchange="kelToggleMemoryMode(this)" style="opacity:0; width:0; height:0;">
+                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--p1); transition: .4s; border-radius: 34px;"></span>
+                        </label>
+                        <span style="font-size: 1.1rem; cursor: pointer;" onclick="kelToggleSwitch(true)">👥</span>
+                    </div>
+                    <div id="pair-selection-area">
+                        <select id="pairCount" class="btn" onchange="kelInit()" style="border: 2px solid var(--primary); padding: 4px 6px;">
+                            <option value="6">6</option>
+                            <option value="9" selected>9</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-area">
+        <div id="score-board-container" class="score-board">
+            <div id="p1-box" class="player-box" style="color: var(--p1)"><span class="p-label">P1</span><span id="s1" class="p-score">0</span></div>
+            <div id="grid" class="grid"></div>
+            <div id="p2-box" class="player-box" style="color: var(--p2)"><span class="p-label">P2</span><span id="s2" class="p-score">0</span></div>
+        </div>
+    </div>
+    <audio id="snd-flip" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="snd-match" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
 </div>
 
 <nav class="navbar">
     <button class="back-btn" onclick="goHome()">❮</button>
 
     <div class="pdf-links">
-        <button class="nav-trigger" onclick="showPopup('words')">Konu Kelimeleri</button> 
         <button class="nav-trigger" onclick="showPopup('prepositions')">Harfler</button>
         <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar & Zarflar</button>
         <button class="nav-trigger" onclick="showPopup('pronouns')">Zamirler</button>

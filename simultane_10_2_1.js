@@ -73,7 +73,7 @@ words: `
 
 
 <tr>
-    <td class="ar-txt">أَيَّام<br><small style="font-size:11px; color:#666;">Günler</small></td>
+    <td class="ar-txt">أَيَّام<br><small style="font-size:11px; color:#666;">Günler</small></td>
     <td class="ar-txt">يَوْم<br><small style="font-size:11px; color:#666;">Gün</small></td>
 </tr>
 <tr>
@@ -81,11 +81,11 @@ words: `
     <td class="ar-txt">سَاعَة<br><small style="font-size:11px; color:#666;">Saat / Vakit</small></td>
 </tr>
 <tr>
-    <td class="ar-txt">أَوْقَات الصَّبَاح<br><small style="font-size:11px; color:#666;">Sabahlar</small></td>
+    <td class="ar-txt">أَوْقَات الصَّبَاح<br><small style="font-size:11px; color:#666;">Sabahlar</small></td>
     <td class="ar-txt">صَبَاح<br><small style="font-size:11px; color:#666;">Sabah</small></td>
 </tr>
 <tr>
-    <td class="ar-txt">أَوْقَات الظُّهْر<br><small style="font-size:11px; color:#666;">Öğle vakitleri</small></td>
+    <td class="ar-txt">أَوْقَات الظُّهْر<br><small style="font-size:11px; color:#666;">Öğle vakitleri</small></td>
     <td class="ar-txt">ظُهْر<br><small style="font-size:11px; color:#666;">Öğle</small></td>
 </tr>
 <tr>
@@ -168,7 +168,7 @@ words: `
     <td class="ar-txt">عَائِلَة / أُسْرَة<br><small style="font-size:11px; color:#666;">Aile</small></td>
 </tr>
 <tr>
-    <td class="ar-txt">أُمَّهَات<br><small style="font-size:11px; color:#666;">Anneler</small></td>
+    <td class="ar-txt">أُمَّهَات<br><small style="font-size:11px; color:#666;">Anneler</small></td>
     <td class="ar-txt">أُمّ<br><small style="font-size:11px; color:#666;">Anne</small></td>
 </tr>
 <tr>
@@ -210,16 +210,16 @@ words: `
 
 <tr>
     <td class="ar-txt">وُضُوء<br><small style="font-size:11px; color:#666;">Abdest Almak</small></td>
-    <td class="ar-txt">تَوَضَّأْ<br><small style="font-size:11px; color:#666;">Abdest Al</small></td>
-    <td class="ar-txt">يَتَوَضَّأُ<br><small style="font-size:11px; color:#666;">Abdest Alıyor</small></td>
-    <td class="ar-txt">تَوَضَّأَ<br><small style="font-size:11px; color:#666;">Abdest Aldı</small></td>
+    <td class="ar-txt">تَوَضَّأْ<br><small style="font-size:11px; color:#666;">Abdest Al</small></td>
+    <td class="ar-txt">يَتَوَضَّأُ<br><small style="font-size:11px; color:#666;">Abdest Alıyor</small></td>
+    <td class="ar-txt">تَوَضَّأَ<br><small style="font-size:11px; color:#666;">Abdest Aldı</small></td>
 </tr>
 
 <tr>
     <td class="ar-txt">صَلَاة<br><small style="font-size:11px; color:#666;">Namaz Kılmak</small></td>
-    <td class="ar-txt">صَلِّ<br><small style="font-size:11px; color:#666;">Namaz Kıl</small></td>
-    <td class="ar-txt">يُصَلِّي<br><small style="font-size:11px; color:#666;">Namaz Kılıyor</small></td>
-    <td class="ar-txt">صَلَّى<br><small style="font-size:11px; color:#666;">Namaz Kıldı</small></td>
+    <td class="ar-txt">صَلِّ<br><small style="font-size:11px; color:#666;">Namaz Kıl</small></td>
+    <td class="ar-txt">يُصَلِّي<br><small style="font-size:11px; color:#666;">Namaz Kılıyor</small></td>
+    <td class="ar-txt">صَلَّى<br><small style="font-size:11px; color:#666;">Namaz Kıldı</small></td>
 </tr>
 
 <tr>
@@ -273,9 +273,9 @@ words: `
 
 <tr>
     <td class="ar-txt">تَنْظِيف<br><small style="font-size:11px; color:#666;">Temizlemek</small></td>
-    <td class="ar-txt">نَظِّفْ<br><small style="font-size:11px; color:#666;">Temizle</small></td>
-    <td class="ar-txt">يُنَظِّفُ<br><small style="font-size:11px; color:#666;">Temizliyor</small></td>
-    <td class="ar-txt">نَظَّفَ<br><small style="font-size:11px; color:#666;">Temizledi</small></td>
+    <td class="ar-txt">نَظِّفْ<br><small style="font-size:11px; color:#666;">Temizle</small></td>
+    <td class="ar-txt">يُنَظِّفُ<br><small style="font-size:11px; color:#666;">Temizliyor</small></td>
+    <td class="ar-txt">نَظَّفَ<br><small style="font-size:11px; color:#666;">Temizledi</small></td>
 </tr>
 
 <tr>
@@ -308,9 +308,9 @@ words: `
 
 <tr>
     <td class="ar-txt">حُبّ<br><small style="font-size:11px; color:#666;">Sevmek</small></td>
-    <td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td>
-    <td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td>
-    <td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td>
+    <td class="ar-txt">أَحِبَّ<br><small style="font-size:11px; color:#666;">Sev</small></td>
+    <td class="ar-txt">يُحِبُّ<br><small style="font-size:11px; color:#666;">Seviyor</small></td>
+    <td class="ar-txt">أَحَبَّ<br><small style="font-size:11px; color:#666;">Sevdi</small></td>
 </tr>
 
 <tr>
@@ -349,7 +349,7 @@ words: `
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">için</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">لِـ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">hakkında</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">عَنْ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">gibi</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">كَـ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...e kadar</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">حَتَّى</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...e kadar</td><td class="ar-txt" dir="rtl" style="font-size: 2.2rem; text-align: center; color: #333;">حَتَّى</td></tr>
             </table>
         </div>
 
@@ -462,7 +462,7 @@ words: `
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sabah / Akşam</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">صَبَاحًا / مَسَاءً</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...dığı zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">حِينَ / أَثْنَاءَ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Asla / Ebeden</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَبَداً</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hâlâ / Henüz</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لَمَّا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hâlâ / Henüz</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لَمَّا</td></tr>
             </table>
         </div>
 
@@ -474,7 +474,7 @@ words: `
                     <th style="padding: 10px; text-align: center;">Arapça</th>
                 </tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Veya / Yoksa</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَوْ / أَمْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Çünkü</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِأَنَّ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Çünkü</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِأَنَّ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">O zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">إِذَنْ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Şayet / Eğer</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">إِذَا / لَوْ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sadece</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">فَقَطْ</td></tr>
@@ -801,7 +801,7 @@ const data = {
         // 3. Cümle: Öksürüğüm var.
         {
             words: [
-                { tr: "Öksürüğüm", order: 2, ar: "كُحَّة." },
+                { tr: "Öksürüğüm", order: 2, ar: "كُحَّة." },
                 { tr: "var.", order: 1, ar: "عِنْدي" }
             ]
         },
@@ -845,7 +845,7 @@ const data = {
         // 8. Cümle: İlacı alman gerekir.
         {
             words: [
-                { tr: "İlacı", order: 3, ar: "الدَّواء." },
+                { tr: "İlacı", order: 3, ar: "الدَّواء." },
                 { tr: "kullanman/tüketmen", order: 2, ar: "أَنْ تَتَناوَلَ" },
                 { tr: "gerekir.", order: 1, ar: "يَجِبُ عَلَيْكَ" }
             ]
@@ -877,7 +877,7 @@ const data = {
             words: [
                 { tr: "Sen", order: 1, ar: "أَنْتَ" },
                 { tr: "hastasın,", order: 2, ar: "مَريض،" },
-                { tr: "öksürüğün", order: 4, ar: "كُحَّة." },
+                { tr: "öksürüğün", order: 4, ar: "كُحَّة." },
                 { tr: "var.", order: 3, ar: "عِنْدَكَ" }
             ]
         },
@@ -937,12 +937,12 @@ const data = {
         // 17. Cümle: Sağlık her insan için çok önemlidir.
         {
             words: [
-                { tr: "Sağlık", order: 1, ar: "الصِّحَّة" },
+                { tr: "Sağlık", order: 1, ar: "الصِّحَّة" },
                 { tr: "her", order: 3, ar: "لِكُلّ" },
                 { tr: "insan", order: 4, ar: "إِنْسان" },
                 { tr: "için", order: 3, ar: "لِكُلّ" },
-                { tr: "çok", order: 5, ar: "جِدًّا." },
-                { tr: "önemlidir.", order: 2, ar: "مُهِمَّة" }
+                { tr: "çok", order: 5, ar: "جِدًّا." },
+                { tr: "önemlidir.", order: 2, ar: "مُهِمَّة" }
             ]
         },
 
@@ -953,7 +953,7 @@ const data = {
                 { tr: "organları", order: 1, ar: "أَعْضاء" },
                 { tr: "vardır,", order: 1, ar: "لِلْجِسْم" },
                 { tr: "mesela:", order: 3, ar: "مِثْل:" },
-                { tr: "Baş,", order: 4, ar: "الرَّأْس،" }
+                { tr: "Baş,", order: 4, ar: "الرَّأْس،" }
             ]
         },
 
@@ -963,7 +963,7 @@ const data = {
                 { tr: "Göz,", order: 1, ar: "وَالعَيْن،" },
                 { tr: "kulak,", order: 2, ar: "وَالأُذُن،" },
                 { tr: "burun,", order: 3, ar: "وَالأَنْف،" },
-                { tr: "dil,", order: 4, ar: "وَاللِّسان،" },
+                { tr: "dil,", order: 4, ar: "وَاللِّسان،" },
                 { tr: "dişler,", order: 5, ar: "وَالأَسْنان،" },
                 { tr: "ve el.", order: 6, ar: "وَاليَد." }
             ]
@@ -983,7 +983,7 @@ const data = {
         {
             words: [
                 { tr: "Burnumla", order: 2, ar: "بِأَنْفي،" },
-                { tr: "koklarım,", order: 1, ar: "وَأَشُمُّ" },
+                { tr: "koklarım,", order: 1, ar: "وَأَشُمُّ" },
                 { tr: "dilimle", order: 4, ar: "بِلِساني." },
                 { tr: "ve tadarım.", order: 3, ar: "وَأَذوقُ" }
             ]
@@ -1013,7 +1013,7 @@ const data = {
                 { tr: "hissettiğim", order: 2, ar: "أَشْعُرُ" },
                 { tr: "zaman,", order: 1, ar: "عِنْدَما" },
                 { tr: "hastaneye", order: 6, ar: "في المُسْتَشْفى." },
-                { tr: "doktora", order: 5, ar: "إِلى الطَّبيب" },
+                { tr: "doktora", order: 5, ar: "إِلى الطَّبيب" },
                 { tr: "giderim.", order: 4, ar: "أَذْهَبُ" },
             ]
         },
@@ -1021,7 +1021,7 @@ const data = {
         // 25. Cümle: Doktor beni muayene eder ve tedavi eder.
         {
             words: [
-                { tr: "Doktor", order: 1, ar: "الطَّبيب" },
+                { tr: "Doktor", order: 1, ar: "الطَّبيب" },
                 { tr: "beni muayene eder", order: 2, ar: "يَفْحَصُني" },
                 { tr: "ve tedavi eder,", order: 3, ar: "وَيُعالِجُني." }
             ]
@@ -1030,9 +1030,9 @@ const data = {
         // 26. Cümle: Sonra eczaneden ilacı alırım.
         {
             words: [
-                { tr: "Sonra", order: 1, ar: "ثُمَّ" },
-                { tr: "eczaneden", order: 4, ar: "مِن الصَّيْدَلِيَّة." },
-                { tr: "ilacı", order: 3, ar: "الدَّواء" },
+                { tr: "Sonra", order: 1, ar: "ثُمَّ" },
+                { tr: "eczaneden", order: 4, ar: "مِن الصَّيْدَلِيَّة." },
+                { tr: "ilacı", order: 3, ar: "الدَّواء" },
                 { tr: "alırım.", order: 2, ar: "آخُذُ	" }
             ]
         },
@@ -1040,10 +1040,10 @@ const data = {
         // 27. Cümle: Sağlıklı gıda almam gerekir.
         {
             words: [
-                { tr: "Sağlıklı", order: 4, ar: "الصِّحِّيّ،" },
+                { tr: "Sağlıklı", order: 4, ar: "الصِّحِّيّ،" },
                 { tr: "gıda", order: 3, ar: "الغِذاء" },
                 { tr: "almam", order: 2, ar: "أَنْ أَتَناوَلَ" },
-                { tr: "gerekir...", order: 1, ar: "يَجِبُ عَلَيَّ" }
+                { tr: "gerekir...", order: 1, ar: "يَجِبُ عَلَيَّ" }
             ]
         },
 
@@ -1059,7 +1059,7 @@ const data = {
         // 29. Cümle: Yemekten önce ve sonra ellerimi su ve sabunla yıkamam gerekir.
         {
             words: [
-                { tr: "Yemekten", order: 7, ar: "الطَّعام" },
+                { tr: "Yemekten", order: 7, ar: "الطَّعام" },
                 { tr: "önce", order: 6, ar: "قَبْلَ" },
                 { tr: "ve sonrasında", order: 8, ar: "وَبَعْدَه." },
                 { tr: "su (ile)", order: 4, ar: "بِالماء" },
@@ -1078,7 +1078,7 @@ const data = {
                 { tr: "diş", order: 5, ar: "الأَسْنان" },
                 { tr: "fırçasıyla", order: 4, ar: "بِفُرْشاة " },
                 { tr: "dişlerimi", order: 3, ar: "أَسْناني" },
-                { tr: "temizlemem", order: 2, ar: "أَنْ أُنَظِّفَ" },
+                { tr: "temizlemem", order: 2, ar: "أَنْ أُنَظِّفَ" },
                 { tr: "gerekir.", order: 1, ar: "عَلَيّ" }
             ]
         },
@@ -1086,7 +1086,7 @@ const data = {
         // 31. Cümle: Doktora giderim.
         {
             words: [
-                { tr: "Doktora", order: 2, ar: "إِلى الطَّبيب." },
+                { tr: "Doktora", order: 2, ar: "إِلى الطَّبيب." },
                 { tr: "giderim.", order: 1, ar: "أَذْهَبُ" }
             ]
         },
@@ -1094,8 +1094,8 @@ const data = {
         // 32. Cümle: Eczaneden ilaç alırım.
         {
             words: [
-                { tr: "Eczaneden", order: 3, ar: "مِن الصَّيْدَلِيّة." },
-                { tr: "ilacı", order: 2, ar: "الدَّواء" },
+                { tr: "Eczaneden", order: 3, ar: "مِن الصَّيْدَلِيّة." },
+                { tr: "ilacı", order: 2, ar: "الدَّواء" },
                 { tr: "alırım.", order: 1, ar: "آخُذُ" }
             ]
         },
@@ -1107,7 +1107,7 @@ const data = {
                 { tr: "Günde", order: 5, ar: "في اليَوْم." },
                 { tr: "üç", order: 3, ar: "ثَلاث" },
                 { tr: "kez", order: 4, ar: "مَرّات" },
-                { tr: "ilaç", order: 2, ar: "الدَّواء" },
+                { tr: "ilaç", order: 2, ar: "الدَّواء" },
                 { tr: "alıyorum.", order: 1, ar: "أَتَناوَلُ" }
             ]
         },
@@ -1137,7 +1137,7 @@ const data = {
             words: [
                 { tr: "Ben", order: 1, ar: "أَنا" },
                 { tr: "ağrı varken (ağrıda)", order: 4, ar: "عِنْد الأَلَم." },
-                { tr: "doktora", order: 3, ar: "إِلى الطَّبيب" },
+                { tr: "doktora", order: 3, ar: "إِلى الطَّبيب" },
                 { tr: "giderim.", order: 2, ar: "أَذْهَبُ" }
             ]
         },
@@ -1154,7 +1154,7 @@ const data = {
         // 40. Cümle: Zararlı içecekler içme.
         {
             words: [
-                { tr: "Zararlı", order: 3, ar: "مُضِرَّة." },
+                { tr: "Zararlı", order: 3, ar: "مُضِرَّة." },
                 { tr: "içecekler", order: 2, ar: "مَشْروبات" },
                 { tr: "içme.", order: 1, ar: "لا تَشْرَبْ" }
             ]
@@ -1164,7 +1164,7 @@ const data = {
         {
             words: [
                 { tr: "Çok", order: 3, ar: "كَثيرًا." },
-                { tr: "ağrı kesici", order: 2, ar: "مُسَكِّنًا" },
+                { tr: "ağrı kesici", order: 2, ar: "مُسَكِّنًا" },
                 { tr: "alma.", order: 1, ar: "لا تَتَناوَلْ" }
             ]
         },
@@ -1190,7 +1190,7 @@ dialog: [
             { tr: "Ben hastayım,", order: 1, ar: "أَنا مَريض،" },
             { tr: "şiddetli", order: 4, ar: "شَديد" },
             { tr: "baş ağrım", order: 3, ar: "صُداع" }, // Boşluk görseldeki kelime bankasından tamamlandı
-            { tr: "ve öksürüğüm", order: 5, ar: "وَكُحَّة." },
+            { tr: "ve öksürüğüm", order: 5, ar: "وَكُحَّة." },
             { tr: "var.", order: 2, ar: "عِنْدي" }
         ]
     },
@@ -1222,7 +1222,7 @@ dialog: [
     },
     {
         p1: [
-            { tr: "Tansiyon", order: 1, ar: "الضَّغْط" },
+            { tr: "Tansiyon", order: 1, ar: "الضَّغْط" },
             { tr: "normal,", order: 2, ar: "طَبيعي،" }, // Kelime bankasından tahmin
             { tr: "karnında", order: 6, ar: "في بَطْنِك؟" },
             { tr: "sancı", order: 5, ar: "مَغْص" },
@@ -1240,19 +1240,19 @@ dialog: [
         p1: [
             { tr: "Bu", order: 1, ar: "هذا" },
             { tr: "nezle,", order: 2, ar: "زُكام،" }, // Boşluk tamamlandı
-            { tr: "bu ilacı", order: 5, ar: "هذا الدَّواء." },
+            { tr: "bu ilacı", order: 5, ar: "هذا الدَّواء." },
             { tr: "alman", order: 4, ar: "أَنْ تَتَناوَلَ" },
             { tr: "gerekir.", order: 3, ar: "يَجِبُ عَلَيْكَ" }
         ],
         p2: [
             { tr: "Günde", order: 3, ar: "في اليَوْم؟" },
             { tr: "kaç", order: 1, ar: "كَم" },
-            { tr: "kez?", order: 2, ar: "مَرَّة" } // Boşluk tamamlandı
+            { tr: "kez?", order: 2, ar: "مَرَّة" } // Boşluk tamamlandı
         ]
     },
     {
         p1: [
-            { tr: "Yemekten", order: 4, ar: "الطَّعام،" },
+            { tr: "Yemekten", order: 4, ar: "الطَّعام،" },
             { tr: "sonra", order: 3, ar: "بَعْد" },
             { tr: "üç", order: 1, ar: "ثَلاثَة" },
             { tr: "kez,", order: 2, ar: "مَرّات" },
@@ -1273,7 +1273,7 @@ dialog: [
         ],
         p2: [
             { tr: "Baş ağrım", order: 2, ar: "صُداع" },
-            { tr: "ve öksürüğüm", order: 3, ar: "وَكُحَّة." },
+            { tr: "ve öksürüğüm", order: 3, ar: "وَكُحَّة." },
             { tr: "var.", order: 1, ar: "عِنْدي" }
         ]
     },
@@ -1296,19 +1296,19 @@ dialog: [
             { tr: "içme,", order: 1, ar: "لا تَشْرَبْ" },
             { tr: "ayrıca", order: 8, ar: "أَيْضًا." },
             { tr: "bu", order: 6, ar: "هذا" },
-            { tr: "ilacı", order: 7, ar: "الدَّواء" },
+            { tr: "ilacı", order: 7, ar: "الدَّواء" },
             { tr: "alman", order: 5, ar: "أَنْ تَتَناوَلَ" },
             { tr: "gerekir.", order: 4, ar: "وَيَجِبُ عَلَيْكَ" }
         ],
         p2: [
             { tr: "Günde", order: 3, ar: "في اليَوْم؟" },
             { tr: "kaç", order: 1, ar: "كَم" },
-            { tr: "kez?", order: 2, ar: "مَرَّة" }
+            { tr: "kez?", order: 2, ar: "مَرَّة" }
         ]
     },
     {
         p1: [
-            { tr: "İki kez.", order: 1, ar: "مَرَّتَيْن." }
+            { tr: "İki kez.", order: 1, ar: "مَرَّتَيْن." }
         ],
         p2: [
             { tr: "Teşekkürler.", order: 1, ar: "شُكْرًا." }
@@ -1421,7 +1421,7 @@ dialog: [
     {
         p1: [
             { tr: "Bu", order: 3, ar: "هذا" },
-            { tr: "ilacı", order: 4, ar: "الدَّواء." },
+            { tr: "ilacı", order: 4, ar: "الدَّواء." },
             { tr: "alman (tüketmen)", order: 2, ar: "أَنْ تَتَناوَلَ" },
             { tr: "gerekir.", order: 1, ar: "يَجِبُ عَلَيْكَ" }
         ],

@@ -133,7 +133,7 @@ yazılır.</li>
                         arabic: [
                             { text: "الْكِتَابُ", root: "كتاب", category: "isim (ال takılı)" },
                             { text: "عَلَى", root: "على", category: "harficer" },
-                            { text: "الطَّاوِلَةِ.", root: "طاولة", category: "isim (ال takılı)" }
+                            { text: "الطَّاوِلَةِ.", root: "طاولة", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "Kitap", "üstünde", "masanın" ],
                         turkishFull: "Kitap masanın üstünde."
@@ -234,7 +234,7 @@ için <code>شرب</code> (içti) yazılır.</li>
                     {
                         arabic: [
                             { text: "قَرَأَ", root: "قرأ", category: "fiil (mazi)" },
-                            { text: "الطَّالِبُ", root: "طالب", category: "isim (ال takılı)" },
+                            { text: "الطَّالِبُ", root: "طالب", category: "isim (ال takılı)" },
                             { text: "الْكِتَابَ.", root: "كتاب", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "Okudu", "öğrenci", "kitabı" ],
@@ -243,7 +243,7 @@ için <code>شرب</code> (içti) yazılır.</li>
                     {
                         arabic: [
                             { text: "فَتَحَ", root: "فتح", category: "fiil (mazi)" },
-                            { text: "الْمُعَلِّمُ", root: "معلم", category: "isim (ال takılı)" },
+                            { text: "الْمُعَلِّمُ", root: "معلم", category: "isim (ال takılı)" },
                             { text: "الْبَابَ.", root: "باب", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "Açtı", "öğretmen", "kapıyı" ],
@@ -252,7 +252,7 @@ için <code>شرب</code> (içti) yazılır.</li>
                     {
                         arabic: [
                             { text: "خَرَجَ", root: "خرج", category: "fiil (mazi)" },
-                            { text: "الرَّجُلُ", root: "رجل", category: "isim (ال takılı)" },
+                            { text: "الرَّجُلُ", root: "رجل", category: "isim (ال takılı)" },
                             { text: "مِنَ", root: "من", category: "harficer" },
                             { text: "الْبَيْتِ.", root: "بيت", category: "isim (ال takılı)" }
                         ],
@@ -262,8 +262,8 @@ için <code>شرب</code> (içti) yazılır.</li>
                     {
                         arabic: [
                             { text: "يَكْتُبُ", root: "كتب", category: "fiil (muzari)" },
-                            { text: "التِّلْمِيذُ", root: "تلميذ", category: "isim (ال takılı)" },
-                            { text: "الدَّرْسَ.", root: "درس", category: "isim (ال takılı)" }
+                            { text: "التِّلْمِيذُ", root: "تلميذ", category: "isim (ال takılı)" },
+                            { text: "الدَّرْسَ.", root: "درس", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "Yazıyor", "öğrenci", "dersi" ],
                         turkishFull: "Öğrenci dersi yazıyor."
@@ -345,8 +345,8 @@ yazılır.</li>
                     {
                         arabic: [
                             { text: "كَتَبَ", root: "كتب", category: "fiil (mazi)" },
-                            { text: "الطَّالِبَانِ", root: "طالب", category: "isim (ikil)" },
-                            { text: "الدَّرْسَ.", root: "درس", category: "isim (ال takılı)" }
+                            { text: "الطَّالِبَانِ", root: "طالب", category: "isim (ikil)" },
+                            { text: "الدَّرْسَ.", root: "درس", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "Yazdı", "iki öğrenci", "dersi" ],
                         turkishFull: "İki öğrenci dersi yazdı."
@@ -450,15 +450,15 @@ olduğu gibi yazılır.</li>
                     {
                         arabic: [
                             { text: "يَكْتُبُ", root: "كتب", category: "fiil (muzari)" },
-                            { text: "الطُّلَّابُ", root: "طالب", category: "isim (kırık çoğul)", isIrregularPlural: true },
-                            { text: "الدُّرُوسَ.", root: "درس", category: "isim (kırık çoğul)", isIrregularPlural: true }
+                            { text: "الطُّلَّابُ", root: "طالب", category: "isim (kırık çoğul)", isIrregularPlural: true },
+                            { text: "الدُّرُوسَ.", root: "درس", category: "isim (kırık çoğul)", isIrregularPlural: true }
                         ],
                         turkish: [ "Yazıyor", "öğrenciler", "dersleri" ],
                         turkishFull: "Öğrenciler dersleri yazıyor."
                     },
                     {
                         arabic: [
-                            { text: "الْمُعَلِّمُونَ", root: "معلم", category: "isim (eril çoğul)" },
+                            { text: "الْمُعَلِّمُونَ", root: "معلم", category: "isim (eril çoğul)" },
                             { text: "فِي", root: "في", category: "harficer" },
                             { text: "الْمَدْرَسَةِ.", root: "مدرسة", category: "isim (ال takılı)" }
                         ],
@@ -468,7 +468,7 @@ olduğu gibi yazılır.</li>
                     {
                         arabic: [
                             { text: "يَعْمَلُ", root: "عمل", category: "fiil (muzari)" },
-                            { text: "الْعُمَّالُ", root: "عامل", category: "isim (kırık çoğul)", isIrregularPlural: true },
+                            { text: "الْعُمَّالُ", root: "عامل", category: "isim (kırık çoğul)", isIrregularPlural: true },
                             { text: "فِي", root: "في", category: "harficer" },
                             { text: "الْمَصْنَعِ.", root: "مصنع", category: "isim (ال takılı)" }
                         ],
@@ -596,7 +596,7 @@ olduğu gibi yazılır.</li>
                     {
                         arabic: [
                             { text: "يَبِيعُ", root: "باع", category: "fiil (muzari ecvef)" },
-                            { text: "التَّاجِرُ", root: "تاجر", category: "isim (ال takılı)" },
+                            { text: "التَّاجِرُ", root: "تاجر", category: "isim (ال takılı)" },
                             { text: "الْبِضَاعَةَ.", root: "بضاعة", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "Satıyor", "tüccar", "malı" ],
@@ -605,8 +605,8 @@ olduğu gibi yazılır.</li>
                     {
                         arabic: [
                             { text: "وَصَلَ", root: "وصل", category: "fiil (mazi misal)" },
-                            { text: "الضَّيْفُ", root: "ضيف", category: "isim (ال takılı)" },
-                            { text: "مُبَكِّرًا.", root: "بكر", category: "zarf" }
+                            { text: "الضَّيْفُ", root: "ضيف", category: "isim (ال takılı)" },
+                            { text: "مُبَكِّرًا.", root: "بكر", category: "zarf" }
                         ],
                         turkish: [ "Vardı", "misafir", "erkenden" ],
                         turkishFull: "Misafir erkenden vardı."
@@ -614,7 +614,7 @@ olduğu gibi yazılır.</li>
                     {
                         arabic: [
                             { text: "يَمْشِي", root: "مشى", category: "fiil (muzari nakıs)" },
-                            { text: "الرَّجُلُ", root: "رجل", category: "isim (ال takılı)" },
+                            { text: "الرَّجُلُ", root: "رجل", category: "isim (ال takılı)" },
                             { text: "فِي", root: "في", category: "harficer" },
                             { text: "الْحَدِيقَةِ.", root: "حديقة", category: "isim (ال takılı)" }
                         ],
@@ -624,7 +624,7 @@ olduğu gibi yazılır.</li>
                     {
                         arabic: [
                             { text: "رَدَدْتُ", root: "رد", category: "fiil (mazi mudaaf + zamir)" },
-                            { text: "السَّلَامَ.", root: "سلام", category: "isim (ال takılı)" }
+                            { text: "السَّلَامَ.", root: "سلام", category: "isim (ال takılı)" }
                         ],
                         turkish: [ "İade ettim", "selamı" ],
                         turkishFull: "Selamı iade ettim."
