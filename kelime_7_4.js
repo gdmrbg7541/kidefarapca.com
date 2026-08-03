@@ -15,8 +15,8 @@ const allWords = [
     { tr: "Ünlüdür / Tanınır", ar: "تَشْتَهِرُ" },
     { tr: "Bulunur / Yer alır", ar: "تَقَعُ" },
     { tr: "Biliyorum / Tanıyorum", ar: "أَعْرِفُ" },
-    { tr: "Abdest aldım", ar: "تَوَضَّأْتُ" },
-    { tr: "Namaz kıldım", ar: "صَلَّيْتُ" },
+    { tr: "Abdest aldım", ar: "تَوَضَّأْتُ" },
+    { tr: "Namaz kıldım", ar: "صَلَّيْتُ" },
     { tr: "Kahvaltı yaptım", ar: "تَناوَلْتُ الفَطور" },
 
     // --- Saatler (Sıra Sayıları Şeklinde) ---
@@ -35,10 +35,10 @@ const allWords = [
 
     // --- Zaman ve Saat Terimleri ---
     { tr: "Saat", ar: "السّاعَة" },
-    { tr: "Buçuk / Yarım", ar: "النِّصْف" },
-    { tr: "Çeyrek", ar: "الرُّبْع" },
-    { tr: "Üçte bir (Yirmi geçe)", ar: "الثُّلُث" },
-    { tr: "Öğleden sonra", ar: "بَعْد الظُّهْر" },
+    { tr: "Buçuk / Yarım", ar: "النِّصْف" },
+    { tr: "Çeyrek", ar: "الرُّبْع" },
+    { tr: "Üçte bir (Yirmi geçe)", ar: "الثُّلُث" },
+    { tr: "Öğleden sonra", ar: "بَعْد الظُّهْر" },
     { tr: "Sabah (Vakit)", ar: "صَباحًا" },
     { tr: "Öğle (Vakit)", ar: "ظُهْرًا" },
     { tr: "Akşam (Vakit)", ar: "مَساءً" },
@@ -59,8 +59,8 @@ const allWords = [
     { tr: "Deniz", ar: "بَحْر" },
 
     // --- Mekanlar ve Turizm ---
-    { tr: "Tarihi mekanlar", ar: "أَماكِن تاريخِيَّة" },
-    { tr: "Turistik", ar: "سِياحِيَّة" },
+    { tr: "Tarihi mekanlar", ar: "أَماكِن تاريخِيَّة" },
+    { tr: "Turistik", ar: "سِياحِيَّة" },
     { tr: "Müze", ar: "مُتْحَف" },
     { tr: "Kale", ar: "قَلْعَة" },
     { tr: "Sur / Surlar", ar: "أَسْوار" },
@@ -77,7 +77,7 @@ const allWords = [
     { tr: "Daha büyük", ar: "أَكْبَر مِن" },
     { tr: "Daha küçük", ar: "أَصْغَر مِن" },
     { tr: "Harika", ar: "رائِع" },
-    { tr: "Çok", ar: "كَثير / جِدًّا" },
+    { tr: "Çok", ar: "كَثير / جِدًّا" },
     { tr: "Yeni", ar: "جَديد" },
 
     // --- Yiyecekler ---
@@ -85,7 +85,7 @@ const allWords = [
     { tr: "İskender Kebap", ar: "كَباب إِسْكَنْدَر" },
     { tr: "Cağ Kebabı", ar: "كَباب جاغ" },
     { tr: "Mantı", ar: "المانْتي" },
-    { tr: "Tantuni", ar: "التَّنْتوني" },
+    { tr: "Tantuni", ar: "التَّنْتوني" },
     { tr: "Kaymak / Krema", ar: "القِشْطَة" },
 
     // --- Zamirler ve İşaret İsimleri ---

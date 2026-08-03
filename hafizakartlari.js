@@ -5,8 +5,8 @@ const topics = {
         title: "Selamlaşma",
         icon: "👋",
         words: [
-            { tr: "Selam üzerinize olsun!", ar: "السَّلام عَلَيْكُمْ" },
-            { tr: "Selam sizin de üzerinize olsun!", ar: "وَعَلَيْكُم السَّلام" },
+            { tr: "Selam üzerinize olsun!", ar: "السَّلام عَلَيْكُمْ" },
+            { tr: "Selam sizin de üzerinize olsun!", ar: "وَعَلَيْكُم السَّلام" },
             { tr: "Hayırlı Sabahlar", ar: "صَباح الخَيْر" },
             { tr: "Günaydın", ar: "صَباح النّور" },
             { tr: "Hayırlı akşamlar", ar: "مَساء الخَيْر" },
@@ -16,8 +16,8 @@ const topics = {
             { tr: "Hoş bulduk!", ar: "أَهْلًا بِك" },
             { tr: "Nasılsın?", ar: "كَيْفَ حالُك؟" },
             { tr: "İyiyim!", ar: "أَنا بِخَيْر" },
-            { tr: "Görüşmek üzere!", ar: "إِلى اللِّقاء" },
-            { tr: "Hoşça kal", ar: "مَع السَّلامَة" },
+            { tr: "Görüşmek üzere!", ar: "إِلى اللِّقاء" },
+            { tr: "Hoşça kal", ar: "مَع السَّلامَة" },
             { tr: "Allah’a emanet ol", ar: "في أَمان الّٰلهِ" },
             { tr: "Oku!", ar: "اِقْرَأْ" },
             { tr: "Yaz!", ar: "اُكْتُبْ" },
@@ -30,7 +30,7 @@ const topics = {
         icon: "🤝",
         words: [
             { tr: "Erkek öğrenci", ar: "طالِب" },
-            { tr: "Erkek öğretmen", ar: "مُدَرِّس" },
+            { tr: "Erkek öğretmen", ar: "مُدَرِّس" },
             { tr: "Erkek arkadaş", ar: "صَديق" },
             { tr: "O (erkek)", ar: "هُوَ" },
             { tr: "O (kadın)", ar: "هِيَ" },
@@ -41,11 +41,11 @@ const topics = {
             { tr: "Nereli?", ar: "مِن أَيْن؟" },
             { tr: "Evet", ar: "نَعَم" },
             { tr: "Hayır", ar: "لا" },
-            { tr: "Konuş", ar: "تَكَلَّمْ" },
+            { tr: "Konuş", ar: "تَكَلَّمْ" },
             { tr: "Sus", ar: "اُسْكُتْ" },
             { tr: "Gel", ar: "تَعالَ" },
             { tr: "Git", ar: "اِذْهَبْ" },
-            { tr: "Tanıştığıma memnun oldum", ar: "تَشَرَّفْتُ" },
+            { tr: "Tanıştığıma memnun oldum", ar: "تَشَرَّفْتُ" },
             { tr: "Memnun oldum", ar: "فُرْصَة سَعيدَة" },
             { tr: "Teşekkür ederim", ar: "شُكْرًا" },
             { tr: "Rica ederim", ar: "عَفْوًا" }
@@ -87,7 +87,7 @@ const topics = {
             { tr: "Dışında", ar: "خارِجَ" },
             { tr: "Kitabı aç", ar: "اِفْتَح" },
             { tr: "Otur", ar: "اِجْلِسْ" },
-            { tr: "Sınıfa gir", ar: "اُدْخُلِ الصَّفَّ" }
+            { tr: "Sınıfa gir", ar: "اُدْخُلِ الصَّفَّ" }
         ]
     },
     evdeyim: {
@@ -96,7 +96,7 @@ const topics = {
         words: [
             { tr: "Ev", ar: "بَيْت" },
             { tr: "Oda", ar: "غُرْفَة" },
-            { tr: "Yatak odası", ar: "غُرْفَة النَّوْم" },
+            { tr: "Yatak odası", ar: "غُرْفَة النَّوْم" },
             { tr: "Oturma odası", ar: "غُرْفَة جُلوس" },
             { tr: "Mutfak", ar: "مَطْبَخ" },
             { tr: "Banyo", ar: "حَمّام" },
@@ -125,19 +125,19 @@ const topics = {
             { tr: "Halı", ar: "سَجّادَة" },
             { tr: "Dolap", ar: "دُولاب" },
             { tr: "Temiz", ar: "نَظيف" },
-            { tr: "Düzenli", ar: "مُرَتَّب" },
+            { tr: "Düzenli", ar: "مُرَتَّب" },
             { tr: "Kirli", ar: "وَسِخ" },
-            { tr: "Temizliyor", ar: "يُنَظِّفُ" },
-            { tr: "Düzenliyor", ar: "يُرَتِّبُ" }
+            { tr: "Temizliyor", ar: "يُنَظِّفُ" },
+            { tr: "Düzenliyor", ar: "يُرَتِّبُ" }
         ]
     },
     gunluk_rutin: {
         title: "Günlük Rutin",
         icon: "📅",
         words: [
-            { tr: "Erken uyanıyorum", ar: "أَسْتَيْقِظُ مُبَكِّرًا" },
+            { tr: "Erken uyanıyorum", ar: "أَسْتَيْقِظُ مُبَكِّرًا" },
             { tr: "Okula gidiyorum", ar: "أَذْهَبُ إِلى المَدْرَسَة" },
-            { tr: "Öğle namazı kılıyorum", ar: "أُصَلّي صَلاة الظُّهْر" },
+            { tr: "Öğle namazı kılıyorum", ar: "أُصَلّي صَلاة الظُّهْر" },
             { tr: "Ailemle öğle yemeği yiyorum", ar: "أَتَغَدّى مَع أُسْرَتي" },
             { tr: "Derslerimi okuyorum", ar: "أَقْرَأُ دروسي" },
             { tr: "Ödev yazıyorum", ar: "أَكْتُبُ واجِباتي" },
@@ -145,10 +145,10 @@ const topics = {
             { tr: "Anneme yardım ediyorum", ar: "أُساعِدُ أُمّي" },
             { tr: "Dedemi ziyaret ediyorum", ar: "أَزورُ جَدِي" },
             { tr: "Camiye gidiyorum", ar: "أَذْهَبُ إِلى المَسْجِد" },
-            { tr: "Yatağımı düzeltiyorum", ar: "أُرَتِّبُ سَريري" },
-            { tr: "Odamı temizliyorum", ar: "أُنَظِّفُ غُرْفَتي" },
+            { tr: "Yatağımı düzeltiyorum", ar: "أُرَتِّبُ سَريري" },
+            { tr: "Odamı temizliyorum", ar: "أُنَظِّفُ غُرْفَتي" },
             { tr: "Derslerimi tekrar ediyorum", ar: "أُراجِعُ دروسي" },
-            { tr: "Geç yatıyorum", ar: "أَنامُ مُتَأَخِّرًا" }
+            { tr: "Geç yatıyorum", ar: "أَنامُ مُتَأَخِّرًا" }
         ]
     },
 
@@ -162,7 +162,7 @@ const topics = {
             { tr: "Samimiyet", ar: "إِخْلاص" },
             { tr: "Yardımlaşma", ar: "تَعاوُن" },
             { tr: "Saygı", ar: "اِحْتِرام" },
-            { tr: "Sevgi", ar: "مَحَبَّة" },
+            { tr: "Sevgi", ar: "مَحَبَّة" },
             { tr: "Teşekkür", ar: "شُكْر" },
             { tr: "Özür dileme", ar: "الِاعْتِذار" },
             { tr: "Merhamet", ar: "رَحْمَة" },
@@ -170,7 +170,7 @@ const topics = {
             { tr: "Adalet", ar: "عَدْل" },
             { tr: "Alçakgönüllülük", ar: "تَواضُع" },
             { tr: "Yardım ediyor", ar: "يُساعِدُ" },
-            { tr: "Seviyor", ar: "يُحِبُّ" },
+            { tr: "Seviyor", ar: "يُحِبُّ" },
             { tr: "Gülümsüyor", ar: "يَبْتَسِمُ" }
         ]
     },
@@ -184,15 +184,15 @@ const topics = {
             { tr: "Erkek kardeş", ar: "أَخ" },
             { tr: "Kız kardeş", ar: "أُخْت" },
             { tr: "Dede", ar: "جَدّ" },
-            { tr: "Nine", ar: "جَدَّة" },
+            { tr: "Nine", ar: "جَدَّة" },
             { tr: "Amca", ar: "عَمّ" },
-            { tr: "Hala", ar: "عَمَّة" },
+            { tr: "Hala", ar: "عَمَّة" },
             { tr: "Dayı", ar: "خال" },
             { tr: "Teyze", ar: "خالَة" },
             { tr: "Akrabalar", ar: "أَقارِب" },
             { tr: "Akrabaları ziyaret ediyor", ar: "يَزورُ الأَقارِب" },
             { tr: "Büyüklere saygı gösteriyor", ar: "يَحْتَرِمُ الكِبار" },
-            { tr: "Küçüklere merhamet ediyor", ar: "يَرْحَمُ الصِّغار" }
+            { tr: "Küçüklere merhamet ediyor", ar: "يَرْحَمُ الصِّغار" }
         ]
     },
     hobilerim: {
@@ -206,7 +206,7 @@ const topics = {
             { tr: "Fotoğrafçılık", ar: "تَصْوير" },
             { tr: "Spor", ar: "رِياضَة" },
             { tr: "Futbol", ar: "كُرَة القَدَم" },
-            { tr: "Basketbol", ar: "كُرَة السَّلَّة" },
+            { tr: "Basketbol", ar: "كُرَة السَّلَّة" },
             { tr: "Seyahat", ar: "سَفَر" },
             { tr: "Doğa", ar: "طَبيعَة" },
             { tr: "Filmler", ar: "أَفْلام" },
@@ -242,7 +242,7 @@ const topics = {
         words: [
             { tr: "Doktor", ar: "طَبيب" },
             { tr: "Mühendis", ar: "مُهَنْدِس" },
-            { tr: "Öğretmen", ar: "مُعَلِّم" }, 
+            { tr: "Öğretmen", ar: "مُعَلِّم" }, 
             { tr: "Polis", ar: "شُرْطِيّ" },
             { tr: "Aşçı", ar: "طَبّاخ" },
             { tr: "Çiftçi", ar: "فَلّاح" },

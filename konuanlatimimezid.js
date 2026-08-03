@@ -234,11 +234,11 @@ const vezinData = {
         ]
     },
     "Tef'îl": {
-        labels: ["فَعَّلَ", "يُفَعِّلُ", "فَعِّلْ", "تَفْعِيل", "مُفَعِّل", "مُفَعَّل"],
+        labels: ["فَعَّلَ", "يُفَعِّلُ", "فَعِّلْ", "تَفْعِيل", "مُفَعِّل", "مُفَعَّل"],
         roots: [
-            { word: 'علم', mean: ['Öğretti', 'Öğretiyor', 'Öğret', 'Eğitim', 'Öğretmen', 'Öğretilen'], derived: ["عَلَّمَ", "يُعَلِّمُ", "عَلِّمْ", "تَعْلِيمٌ", "مُعَلِّمٌ", "مُعَلَّمٌ"] },
-            { word: 'ذكر', mean: ['Hatırlattı', 'Hatırlatıyor', 'Hatırlat', 'Zikir', 'Hatırlatan', 'Hatırlatılan'], derived: ["ذَكَّرَ", "يُذَكِّرُ", "ذَكِّرْ", "تَذْكِيرٌ", "مُذَكِّرٌ", "مُذَكَّرٌ"] },
-            { word: 'قدم', mean: ['Takdim etti', 'Sunuyor', 'Sun', 'Takdim', 'Sunan', 'Sunulan'], derived: ["قَدَّمَ", "يُقَدِّمُ", "قَدِّمْ", "تَقْدِيمٌ", "مُقَدِّمٌ", "مُقَدَّمٌ"] }
+            { word: 'علم', mean: ['Öğretti', 'Öğretiyor', 'Öğret', 'Eğitim', 'Öğretmen', 'Öğretilen'], derived: ["عَلَّمَ", "يُعَلِّمُ", "عَلِّمْ", "تَعْلِيمٌ", "مُعَلِّمٌ", "مُعَلَّمٌ"] },
+            { word: 'ذكر', mean: ['Hatırlattı', 'Hatırlatıyor', 'Hatırlat', 'Zikir', 'Hatırlatan', 'Hatırlatılan'], derived: ["ذَكَّرَ", "يُذَكِّرُ", "ذَكِّرْ", "تَذْكِيرٌ", "مُذَكِّرٌ", "مُذَكَّرٌ"] },
+            { word: 'قدم', mean: ['Takdim etti', 'Sunuyor', 'Sun', 'Takdim', 'Sunan', 'Sunulan'], derived: ["قَدَّمَ", "يُقَدِّمُ", "قَدِّمْ", "تَقْدِيمٌ", "مُقَدِّمٌ", "مُقَدَّمٌ"] }
         ],
         patterns: [
             r => `${r[0]}َ${r[1]}<span class="zaid-drop">ّ</span>َ${r[2]}َ`,
@@ -298,11 +298,11 @@ const vezinData = {
         ]
     },
     "İf'ilâl": {
-        labels: ["اِفْعَلَّ", "يَفْعَلُّ", "اِفْعَلِّلْ", "اِفْعِلَال", "مُفْعَلّ", "مُفْعَلّ"],
+        labels: ["اِفْعَلَّ", "يَفْعَلُّ", "اِفْعَلِّلْ", "اِفْعِلَال", "مُفْعَلّ", "مُفْعَلّ"],
         roots: [
-            { word: 'حمر', mean: ['Kızardı', 'Kızarıyor', 'Kızar', 'İhmirar', 'Muhmerr', '-'], derived: ["اِحْمَرَّ", "يَحْمَرُّ", "اِحْمَرِّلْ", "اِحْمِرَارٌ", "مُحْمَرٌّ", "مُحْمَرٌّ"] },
-            { word: 'صفر', mean: ['Sarardı', 'Sararıyor', 'Sarar', 'İsfirar', 'Musferr', '-'], derived: ["اِصْفَرَّ", "يَصْفَرُّ", "اِصْفَرِّلْ", "اِصْفِرَارٌ", "مُصْفَرٌّ", "مُصْفَرٌّ"] },
-            { word: 'بيض', mean: ['Beyazladı', 'Beyazlıyor', 'Beyazla', 'İbyizaz', 'Mubyezz', '-'], derived: ["اِبْيَضَّ", "يَبْيَضُّ", "اِب_يَضِّلْ", "اِبْيِضَاضٌ", "مُبْيَضٌّ", "مُب_يَضٌّ"] }
+            { word: 'حمر', mean: ['Kızardı', 'Kızarıyor', 'Kızar', 'İhmirar', 'Muhmerr', '-'], derived: ["اِحْمَرَّ", "يَحْمَرُّ", "اِحْمَرِّلْ", "اِحْمِرَارٌ", "مُحْمَرٌّ", "مُحْمَرٌّ"] },
+            { word: 'صفر', mean: ['Sarardı', 'Sararıyor', 'Sarar', 'İsfirar', 'Musferr', '-'], derived: ["اِصْفَرَّ", "يَصْفَرُّ", "اِصْفَرِّلْ", "اِصْفِرَارٌ", "مُصْفَرٌّ", "مُصْفَرٌّ"] },
+            { word: 'بيض', mean: ['Beyazladı', 'Beyazlıyor', 'Beyazla', 'İbyizaz', 'Mubyezz', '-'], derived: ["اِبْيَضَّ", "يَبْيَضُّ", "اِب_يَضِّلْ", "اِبْيِضَاضٌ", "مُبْيَضٌّ", "مُب_يَضٌّ"] }
         ],
         patterns: [
             r => `<span class="zaid-drop">اِ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="zaid-drop">َّ</span>`,
@@ -314,11 +314,11 @@ const vezinData = {
         ]
     },
     "Tefe'ul": {
-        labels: ["تَفَعَّلَ", "يَتَفَعَّلُ", "تَفَعَّلْ", "تَفَعُّل", "مُتَفَعِّل", "مُتَفَعَّل"],
+        labels: ["تَفَعَّلَ", "يَتَفَعَّلُ", "تَفَعَّلْ", "تَفَعُّل", "مُتَفَعِّل", "مُتَفَعَّل"],
         roots: [
-            { word: 'علم', mean: ['Öğrendi', 'Öğreniyor', 'Öğren', 'Taallüm', 'Müteallim', '-'], derived: ["تَعَلَّمَ", "يَتَعَلَّمُ", "تَعَلَّمْ", "تَعَلُّمٌ", "مُتَعَلِّمٌ", "مُتَعَلَّمٌ"] },
-            { word: 'ذكر', mean: ['Düşündü', 'Düşünüyor', 'Düşün', 'Tezekkür', 'Mütezekkir', '-'], derived: ["تَذَكَّرَ", "يَتَذَكَّرُ", "تَذَكَّرْ", "تَذَكُّرٌ", "مُتَذَكِّرٌ", "مُتَذَكَّرٌ"] },
-            { word: 'كلم', mean: ['Konuştu', 'Konuşuyor', 'Konuş', 'Tekellüm', 'Mütekellim', '-'], derived: ["تَكَلَّمَ", "يَتَكَلَّمُ", "تَكَلَّمْ", "تَكَلُّمٌ", "مُتَكَلِّمٌ", "مُتَكَلَّمٌ"] }
+            { word: 'علم', mean: ['Öğrendi', 'Öğreniyor', 'Öğren', 'Taallüm', 'Müteallim', '-'], derived: ["تَعَلَّمَ", "يَتَعَلَّمُ", "تَعَلَّمْ", "تَعَلُّمٌ", "مُتَعَلِّمٌ", "مُتَعَلَّمٌ"] },
+            { word: 'ذكر', mean: ['Düşündü', 'Düşünüyor', 'Düşün', 'Tezekkür', 'Mütezekkir', '-'], derived: ["تَذَكَّرَ", "يَتَذَكَّرُ", "تَذَكَّرْ", "تَذَكُّرٌ", "مُتَذَكِّرٌ", "مُتَذَكَّرٌ"] },
+            { word: 'كلم', mean: ['Konuştu', 'Konuşuyor', 'Konuş', 'Tekellüm', 'Mütekellim', '-'], derived: ["تَكَلَّمَ", "يَتَكَلَّمُ", "تَكَلَّمْ", "تَكَلُّمٌ", "مُتَكَلِّمٌ", "مُتَكَلَّمٌ"] }
         ],
         patterns: [
             r => `<span class="zaid-drop">تَ</span>${r[0]}َ${r[1]}<span class="zaid-drop">ّ</span>َ${r[2]}َ`,
@@ -540,7 +540,7 @@ const usageInfo = {
         <p>• <b>İşteşlik:</b> Ortaklık bildirir. <br>Örn: <span class="arabic-sample">اِخْتَصَمَ</span> (Tartıştı)</p>
     `, // [cite: 178, 179, 181]
     "İf'ilâl": `
-        <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
+        <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
         <p>• <b>Kusurlar:</b> Sakatlık ve noksanlık belirtir. <br>Örn: <span class="arabic-sample">اِعْرَجَّ</span> (Topalladı)</p>
     `, // [cite: 194, 196]
     "Tefe'ul": `

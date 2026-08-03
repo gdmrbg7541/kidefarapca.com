@@ -105,7 +105,7 @@ const URETEC = {
             sinif: 'h-cezim'
         };
     },
-    /* Şeddeli harf: harf iki kez okunur —  أَبَّ / إِبِّ / أُبُّ */
+    /* Şeddeli harf: harf iki kez okunur —  أَبَّ / إِبِّ / أُبُّ */
     sedde(harf, tur) {
         const iz = HAREKE_ISARET[tur];
         const bas = (tur === 'esre' ? 'إ' : 'أ') + iz;
@@ -142,12 +142,12 @@ const OK_KELIMELER = [
     { ar: 'مُسْلِمٌ',    tr: 'muslim',    anlam: 'müslüman',  kural: 'cezim' },
     { ar: 'مَدْرَسَةٌ',  tr: 'medrese',   anlam: 'okul',      kural: 'cezim' },
     { ar: 'مَسْجِدٌ',    tr: 'mescid',    anlam: 'mescit',    kural: 'cezim' },
-    { ar: 'رَبٌّ',       tr: 'rabb',      anlam: 'rab',       kural: 'sedde' },
-    { ar: 'أُمٌّ',       tr: 'umm',       anlam: 'anne',      kural: 'sedde' },
-    { ar: 'حَقٌّ',       tr: 'ḥaḳḳ',      anlam: 'hak',       kural: 'sedde' },
-    { ar: 'جَنَّةٌ',     tr: 'cennet',    anlam: 'cennet',    kural: 'sedde' },
-    { ar: 'مُعَلِّمٌ',   tr: 'muʿallim',  anlam: 'öğretmen',  kural: 'sedde' },
-    { ar: 'سَيَّارَةٌ',  tr: 'seyyâre',   anlam: 'araba',     kural: 'sedde' }
+    { ar: 'رَبٌّ',       tr: 'rabb',      anlam: 'rab',       kural: 'sedde' },
+    { ar: 'أُمٌّ',       tr: 'umm',       anlam: 'anne',      kural: 'sedde' },
+    { ar: 'حَقٌّ',       tr: 'ḥaḳḳ',      anlam: 'hak',       kural: 'sedde' },
+    { ar: 'جَنَّةٌ',     tr: 'cennet',    anlam: 'cennet',    kural: 'sedde' },
+    { ar: 'مُعَلِّمٌ',   tr: 'muʿallim',  anlam: 'öğretmen',  kural: 'sedde' },
+    { ar: 'سَيَّارَةٌ',  tr: 'seyyâre',   anlam: 'araba',     kural: 'sedde' }
 ];
 
 const KURAL_ADI = { hece: 'Hece', uzatma: 'Uzatma', cezim: 'Cezim', sedde: 'Şedde' };

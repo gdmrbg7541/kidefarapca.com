@@ -300,7 +300,7 @@ header h1 {
 .lesson-item:has(.lesson-name[style*="display:none"]) .btn-group {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
 }
 .lesson-item:has(.lesson-name:empty) .action-btn,

@@ -16,7 +16,7 @@ const allWords = [
     { tr: "Yalancı", ar: "كاذِبًا" },
     { tr: "Sabırlı", ar: "صَبورَة" },
     { tr: "Aceleci", ar: "عَجولَة" },
-    { tr: "Şaşkın", ar: "مُتَعَجِّب" },
+    { tr: "Şaşkın", ar: "مُتَعَجِّب" },
     { tr: "Endişeli", ar: "قَلِقَة" },
     { tr: "Sevinç / Neşe", ar: "فَرَح" },
     { tr: "Yardım ediyorlar", ar: "يُساعِدونَ" },

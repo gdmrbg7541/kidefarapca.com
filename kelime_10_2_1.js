@@ -2,7 +2,7 @@ const allWords = [
      // Hastalıklar ve Semptomlar
     { tr: "Ben hastayım", ar: "أَنا مَريض" },
     { tr: "Şiddetli baş ağrısı", ar: "صُداع شَديد" },
-    { tr: "Öksürük", ar: "كُحَّة" },
+    { tr: "Öksürük", ar: "كُحَّة" },
     { tr: "Ağrı / Acı", ar: "أَلَم" },
     { tr: "Yüksek ateş", ar: "حَرارَة مُرْتَفِعَة" },
     { tr: "Karın ağrısı / Sancı", ar: "مَغْص" },
@@ -25,35 +25,35 @@ const allWords = [
     // Duyular ve Eylemler
     { tr: "Görüyorum", ar: "أَرى" },
     { tr: "Duyuyorum", ar: "أَسْمَعُ" },
-    { tr: "Kokluyorum", ar: "أَشُمُّ" },
+    { tr: "Kokluyorum", ar: "أَشُمُّ" },
     { tr: "Tadıyorum", ar: "أَذوقُ" },
     { tr: "Dokunuyorum", ar: "أَلْمِسُ" },
     { tr: "Yıkıyorum", ar: "أَغْسِلُ" },
-    { tr: "Temizliyorum", ar: "أُنَظِّفُ" },
+    { tr: "Temizliyorum", ar: "أُنَظِّفُ" },
 
     // Tıbbi Terimler ve Tedavi
-    { tr: "Sağlık", ar: "الصِّحَّة" },
-    { tr: "Doktor", ar: "طَّبيب" },
+    { tr: "Sağlık", ar: "الصِّحَّة" },
+    { tr: "Doktor", ar: "طَّبيب" },
     { tr: "Hastane", ar: "مُسْتَشْفى" },
-    { tr: "İlaç", ar: "دَّواء" },
-    { tr: "Eczane", ar: "صَّيْدَلِيَّة" },
+    { tr: "İlaç", ar: "دَّواء" },
+    { tr: "Eczane", ar: "صَّيْدَلِيَّة" },
     { tr: "Muayene ediyor", ar: "يَفْحَصُ" },
     { tr: "Tedavi ediyor", ar: "يُعالِجُ" },
-    { tr: "Ağrı kesici", ar: "مُسَكِّنًا" },
+    { tr: "Ağrı kesici", ar: "مُسَكِّنًا" },
 
     // Sağlık Tavsiyeleri ve Beslenme
-    { tr: "Sağlıklı gıda", ar: "غِذاء صِحِّيّ" },
+    { tr: "Sağlıklı gıda", ar: "غِذاء صِحِّيّ" },
     { tr: "Sebze ve meyveler", ar: "الخَضْرَوات وَالفَواكِه" },
     { tr: "Hızlı yemekler (Fast food)", ar: "وَجَبات سَريعَة" },
-    { tr: "Zararlı içecekler", ar: "مَشْروبات مُضِرَّة" },
+    { tr: "Zararlı içecekler", ar: "مَشْروبات مُضِرَّة" },
     { tr: "Sabun", ar: "صابون" },
     { tr: "Diş fırçası", ar: "فُرْشاة الأَسْنان" },
 
     // Örnek Cümle Kalıpları
-    { tr: "İlaç alıyorum", ar: "أَتَناوَلُ الدَّواء" },
-    { tr: "Doktora gidiyorum", ar: "أَذْهَبُ إِلى الطَّبيب" },
+    { tr: "İlaç alıyorum", ar: "أَتَناوَلُ الدَّواء" },
+    { tr: "Doktora gidiyorum", ar: "أَذْهَبُ إِلى الطَّبيب" },
     { tr: "Ellerimi yıkıyorum", ar: "أَغْسِلُ يَدَيّ" },
-    { tr: "Dişlerimi temizliyorum", ar: "أُنَظِّفُ أَسْناني" },
+    { tr: "Dişlerimi temizliyorum", ar: "أُنَظِّفُ أَسْناني" },
     { tr: "Çok yeme", ar: "لا تَأْكُلْ كَثيرًا" }
 ];
 

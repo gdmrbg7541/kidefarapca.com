@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>كَنْزُ الْجُذُورِ — Köklerin Hazinesi</title>
+<link rel="stylesheet" href="hazine.css?v=121">
+    <link rel="stylesheet" href="arakom.css?v=1">
+</head>
+<body>
+
+<div class="hz-kum" aria-hidden="true"></div>
+
+<header class="hz-ust">
+    <div class="hz-baslik">
+        <span class="hz-ar" dir="rtl">كَنْزُ الْجُذُورِ</span>
+        <span class="hz-tr">Köklerin Hazinesi</span>
+    </div>
+    <nav class="hz-sekmeler" role="tablist">
+        <button class="hz-sek aktif" data-gorunum="macera" role="tab">Macera</button>
+        <button class="hz-sek" data-gorunum="defter" role="tab">Kök Defteri</button>
+        <button class="hz-sek" data-gorunum="kalip" role="tab">Kalıp Cetveli</button>
+        <button class="hz-sek" data-gorunum="siga" role="tab">Sîga Cetveli</button>
+    </nav>
+</header>
+
+<main class="hz-govde">
+
+    <!-- ================= MACERA ================= -->
+    <section class="hz-gorunum aktif" id="gorunum-macera">
+
+        <div class="hz-sandik-alan">
+            <div class="hz-sandik" id="hz-sandik">
+                <div class="hz-sandik-kapak"></div>
+                <div class="hz-sandik-govde">
+                    <div class="hz-kadranlar" id="hz-kadranlar"></div>
+                </div>
+                <div class="hz-kilit" id="hz-kilit">🔒</div>
+            </div>
+            <p class="hz-sandik-not" id="hz-sandik-not">Beş kapı, beş harf. Harfler yan yana gelince sandık açılır.</p>
+        </div>
+
+        <div class="hz-kapilar" id="hz-kapilar"></div>
+
+        <div class="hz-berat" id="hz-berat">
+            <h2 class="hz-berat-baslik">الْبَرَاءَة — Berat</h2>
+            <div class="hz-berat-metin" id="hz-berat-metin"></div>
+        </div>
+
+        <div class="hz-alt-arac">
+            <button class="hz-sifirla" id="hz-sifirla" type="button">Baştan başla</button>
+        </div>
+    </section>
+
+    <!-- ================= KÖK DEFTERİ ================= -->
+    <section class="hz-gorunum" id="gorunum-defter">
+        <div class="hz-arac-cubugu">
+            <input type="search" id="hz-ara" class="hz-ara" placeholder="Kök, anlam ya da numara ara…" autocomplete="off">
+            <span class="hz-sayac" id="hz-sayac"></span>
+        </div>
+        <div class="hz-tablo-sarici">
+            <table class="hz-tablo" id="hz-defter">
+                <thead>
+                    <tr><th class="s-no">No</th><th class="s-kok">Kök</th><th class="s-eb">Ebced</th><th class="s-kelime">Kelime</th><th class="s-anlam">Anlam</th></tr>
+                </thead>
+                <tbody id="hz-defter-govde"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= KALIP CETVELİ ================= -->
+    <section class="hz-gorunum" id="gorunum-kalip">
+        <div class="hz-arac-cubugu">
+            <input type="search" id="hz-ara-kalip" class="hz-ara" placeholder="Vezin, bab ya da numara ara…" autocomplete="off">
+            <span class="hz-sayac" id="hz-sayac-kalip"></span>
+        </div>
+        <div class="hz-tablo-sarici">
+            <table class="hz-tablo" id="hz-kaliplar">
+                <thead>
+                    <tr><th class="s-no">No</th><th class="s-kok">Vezin</th><th class="s-anlam">Bab / Görev</th></tr>
+                </thead>
+                <tbody id="hz-kalip-govde"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= SÎGA CETVELİ ================= -->
+    <section class="hz-gorunum" id="gorunum-siga">
+        <p class="hz-aciklama">Bir kelimenin adresi <b class="hz-adres-ornek" dir="ltr">KÖK · KALIP · SÎGA</b> biçimindedir.
+           Üçüncü sayı, çekimdeki zamiri gösterir.</p>
+        <div class="hz-tablo-sarici">
+            <table class="hz-tablo" id="hz-sigalar">
+                <thead>
+                    <tr><th class="s-no">No</th><th class="s-kok">Zamir</th><th class="s-anlam">Sîga</th></tr>
+                </thead>
+                <tbody id="hz-siga-govde"></tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<!-- Kapı bulmaca penceresi -->
+<div class="hz-perde" id="hz-perde" hidden>
+    <div class="hz-pencere" role="dialog" aria-modal="true">
+        <button class="hz-kapat" id="hz-kapat" type="button" aria-label="Kapat">×</button>
+        <div class="hz-pencere-ust">
+            <span class="hz-kapi-ar" id="hz-kapi-ar" dir="rtl"></span>
+            <span class="hz-kapi-tr" id="hz-kapi-tr"></span>
+        </div>
+        <div class="hz-sorular" id="hz-sorular"></div>
+        <div class="hz-parca" id="hz-parca" hidden></div>
+    </div>
+</div>
+
+<script src="veri_vezin_numaralari.js?v=121"></script>
+<script src="veri_kok_numaralari.js?v=121"></script>
+<script src="hazine.js?v=121"></script>
+<script src="geri.js"></script>
+</body>
+</html>

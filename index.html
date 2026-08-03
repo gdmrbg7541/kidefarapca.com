@@ -329,6 +329,7 @@
         #ll-root #viewTitle #active-class-title{ width:100%; justify-content:center; }
       }
     </style>
+    <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
 
@@ -885,6 +886,1665 @@
       <div class="game-grid mobile-scroll-grid-single" id="slayt-galerisi-container">
       </div>
     </section>
+
+    <!-- =====================================================================
+         İMAM HATİP + DÖKÜMANLAR  (Sunumlar kategorisinin altında)
+         İmam Hatip: 5-10. sınıflar tek-açılır akordiyon + her sınıf için özel
+         animasyonlu rakam SVG'si; her sınıfın altında sınıfa özel dökümanlar.
+         Dökümanlar: PDF başlıkları (öğretmen/sınıf dosyası, planlar, tutanaklar…)
+         ===================================================================== -->
+    <style>
+      /* Yazı tipi artık site genelinde arakom.css dosyasından geliyor. */
+
+      /* --- ortak akordiyon --- */
+      #imam-hatip .ih-acc, #dokumanlar .dok-acc { max-width: 980px; margin: 4px auto 0; display:flex; flex-direction:column; gap:12px; }
+      .ih-item, .dok-item { background:#fff; border:1.6px solid #eef2f6; border-radius:16px; overflow:hidden; box-shadow:0 4px 14px rgba(16,42,67,.05); transition:border-color .25s, box-shadow .25s; }
+      .ih-head, .dok-head { display:flex; align-items:center; gap:14px; width:100%; border:none; background:transparent; cursor:pointer; padding:13px 18px; font-family:inherit; text-align:left; }
+      .ih-num { flex:none; width:46px; height:46px; display:block; }
+      .ih-num svg { width:100%; height:100%; overflow:visible; display:block; }
+      .dok-ic { flex:none; width:38px; height:38px; display:block; }
+      .dok-ic svg { width:100%; height:100%; display:block; }
+      .ih-title, .dok-title { flex:1; font-size:1.14rem; font-weight:800; color:#0f2a43; letter-spacing:.2px; }
+      .dok-chip { flex:none; font-size:.66rem; font-weight:800; letter-spacing:.5px; color:#B34700; background:#FFF3E0; border:1px solid #FADFB5; border-radius:999px; padding:3px 9px; }
+      .ih-chevron, .dok-chevron { flex:none; font-size:1rem; color:#94a3b8; transition:transform .32s ease; }
+      .ih-item.acik .ih-chevron, .dok-item.acik .dok-chevron { transform:rotate(180deg); }
+      .ih-item.acik, .dok-item.acik { border-color:#F39C12; box-shadow:0 8px 24px rgba(243,156,18,.15); }
+      .ih-panel, .dok-panel { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.4,0,.2,1); }
+      .ih-panel-in, .dok-panel-in { padding:4px 20px 20px; }
+      .ih-bos, .dok-bos { margin:6px 0 0; padding:16px; border:1.6px dashed #dbe3ec; border-radius:12px; color:#6f8aa2; font-size:.94rem; text-align:center; background:#f8fafc; line-height:1.6; }
+      /* PDF bağlantısı (ileride eklenecek dosyalar için hazır stil) */
+      .dok-pdf { display:flex; align-items:center; gap:11px; text-decoration:none; padding:11px 13px; border:1.4px solid #eef2f6; border-radius:11px; margin-top:9px; background:#fff; transition:.18s; color:#0f2a43; font-weight:600; }
+      .dok-pdf:hover { border-color:#EE5253; box-shadow:0 4px 12px rgba(238,82,83,.12); transform:translateY(-1px); }
+      .dok-pdf svg { flex:none; width:26px; height:26px; }
+      .dok-pdf span.uz { margin-left:auto; font-size:.66rem; font-weight:800; color:#C0392B; background:#FDECEA; border-radius:6px; padding:2px 7px; }
+      /* dosyası henüz yüklenmemiş belge: tıklanmayan "yakında" satırı */
+      .dok-pdf.dok-bekliyor { cursor:default; opacity:.9; }
+      .dok-pdf.dok-bekliyor:hover { border-color:#eef2f6; box-shadow:none; transform:none; }
+      .dok-pdf .uz.bekliyor { color:#64748b; background:#eef2f6; }
+      /* resmi siteye giden satir: PDF degil, kurumun kendi sayfasi/dosyasi */
+      .dok-pdf.dok-dis:hover { border-color:#2563EB; box-shadow:0 4px 12px rgba(37,99,235,.14); }
+      .dok-pdf .uz.dis { color:#1D4ED8; background:#E8F0FE; }
+      /* panelin başındaki kısa açıklama notu */
+      .dok-not { margin:2px 0 4px; padding:11px 13px; border:1.4px solid #dbe7fb; border-left:4px solid #2563EB;
+                 border-radius:10px; background:#f5f9ff; color:#3a5670; font-size:.84rem; line-height:1.62; }
+      .dok-not b { color:#1D4ED8; }
+      /* indirilebilir Word satiri */
+      .dok-pdf.dok-doc:hover { border-color:#2563EB; box-shadow:0 4px 12px rgba(37,99,235,.14); }
+      .dok-pdf .uz.doc { color:#1D4ED8; background:#E8F0FE; }
+      /* --- panel ici rehber: "nasil yazilir" + ornek belge --- */
+      .tut-bas { display:flex; align-items:center; gap:7px; margin:15px 0 5px; font-size:.9rem; font-weight:800; color:#12304c; }
+      .tut-bas i { flex:none; width:5px; height:15px; border-radius:3px; background:#CA8A04; font-style:normal; }
+      .tut-liste { margin:0; padding:0; list-style:none; counter-reset:tut; }
+      .tut-liste li { position:relative; counter-increment:tut; padding:7px 0 7px 29px; font-size:.845rem;
+                      line-height:1.6; color:#3a5670; border-bottom:1px dashed #eef2f6; }
+      .tut-liste li:last-child { border-bottom:0; }
+      .tut-liste li::before { content:counter(tut); position:absolute; left:0; top:8px; width:20px; height:20px;
+                      display:flex; align-items:center; justify-content:center; border-radius:6px;
+                      background:#FEF6E0; color:#B45309; font-size:.64rem; font-weight:800; }
+      .tut-liste li b { color:#12304c; }
+      /* ornek tutanak: kucuk bir A4 sayfasi gibi */
+      .tut-kagit { margin:6px 0 2px; padding:16px 17px 14px; background:#fff; border:1.4px solid #e6edf5;
+                   border-radius:12px; box-shadow:0 6px 18px rgba(16,42,67,.06);
+                   font-size:.8rem; line-height:1.62; color:#33506b; }
+      .tut-kagit .tk-ust { margin:0 0 1px; text-align:center; font-size:.74rem; font-weight:700; color:#6f8aa2; letter-spacing:.2px; }
+      .tut-kagit .tk-ad { margin:4px 0 11px; text-align:center; font-size:.85rem; font-weight:800; color:#12304c; letter-spacing:.3px; }
+      .tut-kagit .tk-satir { display:flex; gap:8px; padding:3px 0; border-bottom:1px dashed #f1f5f9; }
+      .tut-kagit .tk-satir:last-of-type { border-bottom:0; }
+      .tut-kagit .tk-et { flex:none; min-width:132px; font-weight:700; color:#12304c; }
+      .tut-kagit h6 { margin:12px 0 4px; font-size:.76rem; font-weight:800; letter-spacing:.6px; color:#92610A; }
+      .tut-kagit ol { margin:2px 0 6px; padding-left:19px; }
+      .tut-kagit ol li { margin-bottom:3px; }
+      .tut-kagit p { margin:0 0 6px; }
+      .tut-kagit .tk-kapanis { margin-top:10px; padding-top:9px; border-top:1.2px solid #eef2f6; }
+      .tut-kagit .tk-imza { display:flex; gap:12px; margin-top:14px; }
+      .tut-kagit .tk-imza span { flex:1; padding-top:6px; border-top:1.2px solid #dbe3ec;
+                   text-align:center; font-size:.71rem; font-weight:700; color:#6f8aa2; line-height:1.45; }
+      .tut-ipucu { margin:9px 0 2px; padding:11px 13px; border:1.4px solid #FBE7B3; border-left:4px solid #CA8A04;
+                   border-radius:10px; background:#FFFBEF; color:#6b5320; font-size:.82rem; line-height:1.62; }
+      .tut-ipucu b { color:#92610A; }
+      .tut-ipucu ul { margin:5px 0 0; padding-left:17px; }
+      .tut-ipucu li { margin-bottom:4px; }
+      @media (max-width:600px){
+        .tut-kagit { padding:13px 12px 11px; font-size:.765rem }
+        .tut-kagit .tk-satir { flex-direction:column; gap:0 }
+        .tut-kagit .tk-et { min-width:0 }
+        .tut-kagit .tk-imza { flex-direction:column; gap:16px }
+        .tut-liste li { font-size:.8rem }
+      }
+      /* --- Zümre Tutanakları: üç seviye (okul / ilçe / il) × üç toplantı --- */
+      .zum-bas i { background:#7C3AED !important; }
+      .zum-ust { display:flex; flex-wrap:wrap; gap:8px; margin:11px 0 2px; }
+      .zum-ust a { display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:10px;
+                   border:1.4px solid #DDD3FE; background:#F5F3FF; color:#5B21B6; font-size:.8rem;
+                   font-weight:700; text-decoration:none; }
+      .zum-ust a:hover { border-color:#7C3AED; box-shadow:0 4px 12px rgba(124,58,237,.14); }
+      .zum-ust a svg { width:15px; height:15px; flex:none; }
+      .zum-seviye { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:7px 0 3px; }
+      .zum-kutu { padding:12px 13px 11px; border:1.4px solid #E6EDF5; border-left:4px solid #7C3AED;
+                  border-radius:11px; background:#fff; }
+      .zum-kutu h6 { margin:0 0 3px; font-size:.82rem; font-weight:800; color:#12304c; letter-spacing:.2px; }
+      .zum-kutu .zk-md { display:inline-block; margin-bottom:7px; padding:2px 7px; border-radius:20px;
+                  background:#F5F3FF; color:#5B21B6; font-size:.68rem; font-weight:800; letter-spacing:.3px; }
+      .zum-kutu dl { margin:0; font-size:.79rem; line-height:1.55; }
+      .zum-kutu dt { font-weight:800; color:#4B5A68; font-size:.7rem; letter-spacing:.3px; text-transform:uppercase; margin-top:6px; }
+      .zum-kutu dd { margin:0; color:#33465a; }
+      .zum-takvim { margin:6px 0 2px; border:1.4px solid #E6EDF5; border-radius:11px; overflow:hidden; background:#fff; }
+      .zum-satir { display:flex; gap:11px; padding:10px 13px; border-bottom:1px solid #F1F5F9; font-size:.82rem; }
+      .zum-satir:last-child { border-bottom:0; }
+      .zum-satir .zs-no { flex:none; width:23px; height:23px; border-radius:50%; background:#7C3AED; color:#fff;
+                  font-size:.72rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+      .zum-satir .zs-ad { flex:none; width:172px; font-weight:800; color:#12304c; }
+      .zum-satir .zs-ac { flex:1; color:#45596d; line-height:1.55; }
+      .zum-uyari { margin:9px 0 2px; padding:11px 13px; border:1.4px solid #DDD3FE; border-left:4px solid #7C3AED;
+                  border-radius:10px; background:#F8F6FF; color:#4C3A73; font-size:.82rem; line-height:1.62; }
+      .zum-uyari b { color:#5B21B6; }
+      .zum-uyari ul { margin:5px 0 0; padding-left:17px; }
+      .zum-uyari li { margin-bottom:4px; }
+      @media (max-width:600px){
+        .zum-seviye { grid-template-columns:1fr }
+        .zum-satir { flex-wrap:wrap; font-size:.785rem }
+        .zum-satir .zs-ad { width:auto }
+        .zum-satir .zs-ac { flex:1 0 100%; padding-left:34px }
+      }
+      /* --- Belirli Gün ve Haftalar: resmî çizelge + Arapça köşesi --- */
+      .bgh-ust { display:flex; flex-wrap:wrap; gap:8px; margin:11px 0 2px; }
+      .bgh-ust a { display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:10px;
+                   border:1.4px solid #FBCFE8; background:#FDF2F8; color:#9D174D; font-size:.8rem;
+                   font-weight:700; text-decoration:none; transition:border-color .18s, box-shadow .18s; }
+      .bgh-ust a:hover { border-color:#DB2777; box-shadow:0 4px 12px rgba(219,39,119,.14); }
+      .bgh-ust a svg { width:15px; height:15px; flex:none; }
+      /* ay ay çizelge */
+      .bgh-takvim { margin:6px 0 2px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+      .bgh-ay { border:1.4px solid #e6edf5; border-radius:12px; background:#fff; padding:11px 12px 9px;
+                box-shadow:0 5px 14px rgba(16,42,67,.05); }
+      .bgh-ay h6 { margin:0 0 6px; font-size:.7rem; font-weight:800; letter-spacing:1px; color:#9D174D;
+                   text-transform:uppercase; padding-bottom:5px; border-bottom:1.4px solid #FCE7F3; }
+      .bgh-satir { display:flex; gap:8px; padding:4px 0; font-size:.79rem; line-height:1.5;
+                   border-bottom:1px dashed #f1f5f9; }
+      .bgh-satir:last-child { border-bottom:0; }
+      .bgh-t { flex:none; min-width:104px; font-weight:700; color:#DB2777; font-size:.735rem; padding-top:1px; }
+      .bgh-a { flex:1; color:#3a5670; }
+      .bgh-satir.ar .bgh-a::after { content:"Arapça köşesi var"; margin-left:6px; display:inline-block;
+                   padding:0 6px; border-radius:5px; background:#EAF7F1; color:#0F7B62;
+                   font-size:.62rem; font-weight:800; letter-spacing:.2px; white-space:nowrap; }
+      /* Arapça köşesi kartları */
+      .bgh-kart { margin:10px 0 0; border:1.4px solid #e6edf5; border-radius:13px; background:#fff;
+                  padding:13px 14px 12px; box-shadow:0 6px 18px rgba(16,42,67,.06); }
+      .bgh-k-ust { display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; margin-bottom:8px;
+                   padding-bottom:8px; border-bottom:1.2px solid #f1f5f9; }
+      .bgh-k-ad { font-size:.88rem; font-weight:800; color:#12304c; }
+      .bgh-k-tar { font-size:.71rem; font-weight:700; color:#DB2777; background:#FDF2F8;
+                   border-radius:6px; padding:2px 8px; }
+      .bgh-k-ar { margin-left:auto; }
+      .bgh-ar { font-family:"Harmattan","Noto Naskh Arabic","Amiri","Segoe UI",serif;
+                direction:rtl; text-align:right; color:#0F7B62; line-height:1.95; }
+      .bgh-k-ar .bgh-ar { font-size:1.16rem; font-weight:700; }
+      .bgh-pano { margin:8px 0 0; padding:10px 12px 9px; border-radius:10px; background:#F6FBF9;
+                  border:1.3px solid #D8EFE7; }
+      .bgh-et { display:block; font-size:.63rem; font-weight:800; letter-spacing:.9px;
+                text-transform:uppercase; color:#0F7B62; margin-bottom:2px; }
+      .bgh-pano .bgh-ar { font-size:1.34rem; text-align:center; }
+      .bgh-cev { margin-top:4px; font-size:.775rem; line-height:1.6; color:#4a6b7f; text-align:center; }
+      .bgh-cev i { color:#0F7B62; font-style:normal; font-weight:700; }
+      .bgh-kel { display:flex; flex-wrap:wrap; gap:7px; margin:9px 0 0; }
+      .bgh-kel span { display:inline-flex; flex-direction:column; align-items:center; gap:0;
+                min-width:76px; padding:5px 10px 6px; border-radius:9px; background:#f8fafc;
+                border:1.2px solid #eef2f6; font-size:.705rem; color:#5b7590; }
+      .bgh-kel b { font-family:"Harmattan","Noto Naskh Arabic","Amiri","Segoe UI",serif; direction:rtl;
+                font-size:1.14rem; font-weight:700; color:#12304c; line-height:1.6; }
+      .bgh-etk { margin:9px 0 0; font-size:.815rem; line-height:1.65; color:#3a5670; }
+      .bgh-etk b { color:#9D174D; }
+      @media (max-width:600px){
+        .bgh-takvim { grid-template-columns:1fr }
+        .bgh-satir { flex-direction:column; gap:0 }
+        .bgh-t { min-width:0 }
+        .bgh-k-ar { margin-left:0; width:100% }
+        .bgh-k-ar .bgh-ar { text-align:left; direction:rtl }
+        .bgh-pano .bgh-ar { font-size:1.18rem }
+        .bgh-kel span { min-width:0; flex:1 1 auto }
+      }
+      /* --- rakam animasyonları --- */
+      @keyframes ihPulse { 0%,100%{ transform:scale(1); opacity:.5 } 55%{ transform:scale(1.5); opacity:0 } }
+      @keyframes ihBounce { 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-4.5px) } }
+      @keyframes ihSpark { 0%,58%,100%{ opacity:0; transform:scale(.4) } 74%{ opacity:1; transform:scale(1) } }
+      @keyframes ihDraw { 0%{ stroke-dashoffset:132 } 100%{ stroke-dashoffset:0 } }
+      .ih-pulse .ih-halo { transform-box:fill-box; transform-origin:center; animation:ihPulse 2.2s ease-out infinite; }
+      .ih-bounce .ih-badge { transform-box:fill-box; transform-origin:center; animation:ihBounce 1.9s ease-in-out infinite; }
+      .ih-spark .ih-star { transform-box:fill-box; transform-origin:center; animation:ihSpark 2.5s ease-in-out infinite; }
+      .ih-draw .ih-ring { stroke-dasharray:132; animation:ihDraw 2.8s ease-in-out infinite alternate; }
+      /* --- başlık ikonu küçük animasyon --- */
+      @keyframes ihTwinkle { 0%,100%{ opacity:.6 } 50%{ opacity:1 } }
+      #imam-hatip h2 .ih-crescent { animation:ihTwinkle 2.4s ease-in-out infinite; transform-origin:center; }
+      @keyframes dokClip { 0%,100%{ transform:translateY(0) rotate(0) } 50%{ transform:translateY(-2px) rotate(-8deg) } }
+      #dokumanlar h2 .dok-basclip { transform-box:fill-box; transform-origin:center; animation:dokClip 3s ease-in-out infinite; }
+      /* --- sınıf içi döküman akordiyonu (iç içe) --- */
+      .ihdoc-acc { display:flex; flex-direction:column; gap:9px; }
+      .ihdoc-item { background:#f8fafc; border:1.3px solid #eef2f6; border-radius:12px; overflow:hidden; transition:border-color .2s, background .2s; }
+      .ihdoc-item.acik { border-color:#F39C12; background:#fff; }
+      .ihdoc-head { display:flex; align-items:center; gap:11px; width:100%; border:none; background:transparent; cursor:pointer; padding:10px 13px; font-family:inherit; text-align:left; }
+      .ihdoc-head .dok-ic { flex:none; width:32px; height:32px; }
+      .ihdoc-head .dok-ic svg { width:100%; height:100%; display:block; }
+      .ihdoc-head .dok-title { flex:1; font-size:.98rem; font-weight:700; color:#0f2a43; }
+      .ihdoc-item.acik .dok-chevron { transform:rotate(180deg); }
+      .ihdoc-panel { max-height:0; overflow:hidden; transition:max-height .34s cubic-bezier(.4,0,.2,1); }
+      .ihdoc-panel .dok-panel-in { padding:2px 14px 14px; }
+      /* sınıf paneli içi: önce kartlar, altında dökümanlar (bölüm etiketleri) */
+      .ih-bolum-baslik { font-size:.72rem; font-weight:800; letter-spacing:.9px; text-transform:uppercase; color:#94a3b8; margin:4px 2px 9px; }
+      .ih-bolum-baslik + .ihdoc-acc { margin-top:0; }
+      .ih-kartlar { margin:0 0 18px; }
+      /* --- Muhâdese: sitenin kart diliyle bir kart; listesi kartın altında yerinde açılır.
+             Yeni kartlar aynı .game-grid içine eklenebilir. --- */
+      .ih-kartlar .game-grid { margin-top:0; }
+      button.mh-kart { width:100%; font-family:inherit; font-size:1em; color:#333; text-align:center; cursor:pointer; -webkit-appearance:none; appearance:none; }
+      button.mh-kart .default-game-content { width:100%; }
+      button.mh-kart.acik { border-color:#16A085; box-shadow:0 8px 22px rgba(22,160,133,.24); }
+      .mh-kart .status-badge.bekliyor { background:#CBD5E1; color:#334155; }
+      .mh-kart .mh-chevron { display:block; margin-top:7px; font-size:.95rem; line-height:1; color:#5f7286; transition:transform .32s ease; }
+      .mh-kart.acik .mh-chevron { transform:rotate(180deg); }
+      .mh-panel { max-height:0; overflow:hidden; transition:max-height .34s cubic-bezier(.4,0,.2,1); }
+      .mh-panel-in { padding:11px 14px 14px; border:1.4px solid #d8f0e9; border-radius:14px; background:linear-gradient(180deg,#f6fffb 0%,#fff 62%); }
+      .mh-panel-in.bos { border-color:#e6ecf3; background:linear-gradient(180deg,#f8fafc 0%,#fff 62%); }
+      .mh-unite { font-size:.71rem; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:#94a3b8; margin:13px 3px 7px; line-height:1.5; }
+      .mh-ders { display:flex; align-items:center; gap:10px; text-decoration:none; padding:10px 12px; border:1.4px solid #eef2f6; border-radius:11px; margin-top:7px; background:#fff; color:#0f2a43; font-weight:600; font-size:.95rem; line-height:1.5; transition:.18s; }
+      .mh-panel-in > :first-child { margin-top:0; }
+      .mh-ders .mh-t { flex:1; min-width:0; }
+      .mh-ders .mh-uc { flex:none; font-size:.66rem; font-weight:800; letter-spacing:.4px; color:#0E7C63; background:#E6F7F2; border-radius:6px; padding:3px 8px; }
+      a.mh-ders:hover { border-color:#16A085; box-shadow:0 4px 12px rgba(22,160,133,.13); transform:translateY(-1px); }
+      .mh-ders.pasif { opacity:.62; background:#f8fafc; cursor:default; }
+      .mh-ders.pasif .mh-uc { color:#64748b; background:#eef2f6; }
+      @media (max-width:600px){ .ih-title,.dok-title{ font-size:1rem } .ih-num{ width:40px; height:40px } .ihdoc-head .dok-title{ font-size:.9rem }
+        .mh-ders{ font-size:.88rem } .mh-panel-in{ padding:10px 11px 12px } .mh-kart .mh-chevron{ margin-top:5px } }
+      /* ============================================================
+         SINIF İÇİ DÖKÜMANLAR — A4 "RESMİ EVRAK" KARTLARI
+         ------------------------------------------------------------
+         Her kart bir A4 sayfa oranındadır (1 : 1.414). Üstündeki
+         antet çizgileri, mühür ve imza sadece görsel süstür; gerçek
+         bir kurum evrakını temsil etmez.
+         Kategori rengi kartın --a4c değişkeninden gelir; yeni kategori
+         eklemek için SINIF_TURLERI dizisine satır eklemek yeterlidir.
+         ============================================================ */
+      .ihdoc-acc { display:block; }
+      .a4-wrap { margin:0; }
+      /* okul geneli Dökümanlar bölümü aynı kart dilini kullanır.
+         Kartlar sınıf içindekilerle yakın boyutta; ızgara satıra kaç kart
+         sığıyorsa onu alır, sığmayan kartlar bir alt satırın SOLUNDAN devam
+         eder (sabit kart genişliği + justify-content:start). */
+      /* bu bölümde 980px sınırı yok: ızgara bölümün tamamını kaplar,
+         sağda solda boşluk kalmaz */
+      #dokumanlar .dok-acc { display:block; max-width:none; margin:4px 0 0; }
+      #dokumanlar .a4-wrap { max-width:none; margin:4px 0 0; }
+      @media (min-width:601px){
+        /* auto-fit: boş kalan sütunlar kapanır, kartlar satırı uçtan uca
+           doldurur; sığmayanlar alt satırın solundan devam eder */
+        #dokumanlar .a4-grid { grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                               gap:18px 16px; }
+        #dokumanlar .a4-ikon { width:48px; height:48px; margin:8px 0 5px; }
+        #dokumanlar .a4-ad { font-size:.76rem; }
+        #dokumanlar .a4-satirlar { gap:7px; margin-top:8px; }
+        #dokumanlar .a4-satirlar b:nth-child(n+6):nth-child(-n+7) { display:block; }
+      }
+      .a4-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(146px,1fr)); gap:20px 16px; }
+
+      .a4-kart { -webkit-appearance:none; appearance:none; border:0; background:transparent; padding:0 7px 7px 0; margin:0;
+                 cursor:pointer; font-family:inherit; display:block; width:100%; text-align:center; color:inherit; }
+
+      /* --- kağıdın kendisi: arkasında iki yaprak daha varmış gibi katmanlı gölge --- */
+      .a4-sheet { position:relative; display:flex; flex-direction:column; align-items:center; width:100%;
+        aspect-ratio:1 / 1.414; background:#fff; border:1px solid #e7eef6; border-radius:4px;
+        padding:8px 9px 7px; overflow:hidden;
+        box-shadow:3px 3px 0 -1px #fff, 3px 3px 0 0 #e9eff6, 6px 6px 0 -1px #fff, 6px 6px 0 0 #eef3f8,
+                   0 9px 18px rgba(16,42,67,.10);
+        transition:transform .32s cubic-bezier(.2,.7,.3,1), box-shadow .32s, border-color .25s; }
+      /* kağıt dokusu + alt gölgelenme */
+      .a4-sheet::before { content:''; position:absolute; inset:0; pointer-events:none;
+        background:linear-gradient(180deg,rgba(255,255,255,0) 55%,rgba(15,42,67,.045) 100%),
+                   linear-gradient(90deg,rgba(15,42,67,.05) 0 1px,transparent 1px);
+        background-position:0 0, 13px 0; background-repeat:no-repeat, no-repeat;
+        background-size:100% 100%, 1px 100%; }
+      .a4-kart:hover .a4-sheet, .a4-kart:focus-visible .a4-sheet {
+        transform:translateY(-7px) rotate(-.7deg);
+        box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 #e9eff6,6px 6px 0 -1px #fff,6px 6px 0 0 #eef3f8,
+                   0 20px 32px rgba(16,42,67,.17); }
+      .a4-kart.acik .a4-sheet { border-color:var(--a4c); transform:translateY(-4px);
+        box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 #e9eff6,6px 6px 0 -1px #fff,6px 6px 0 0 #eef3f8,
+                   0 16px 30px rgba(16,42,67,.20); }
+
+      /* --- üst renk şeridi + kıvrık köşe --- */
+      .a4-serit { position:absolute; top:0; left:0; right:0; height:4px; background:var(--a4c); opacity:.9; }
+      .a4-kivrim { position:absolute; top:0; right:0; width:20px; height:20px; z-index:2;
+        background:linear-gradient(225deg,#e9eff6 0 48%,#fff 48%);
+        border-left:1px solid #e0e8f1; border-bottom:1px solid #e0e8f1;
+        box-shadow:-1px 1px 3px rgba(16,42,67,.10);
+        transition:width .3s cubic-bezier(.2,.7,.3,1), height .3s cubic-bezier(.2,.7,.3,1); }
+      .a4-kart:hover .a4-kivrim, .a4-kart.acik .a4-kivrim { width:30px; height:30px; }
+
+      /* --- antet (evrak başlığı taklidi) --- */
+      .a4-antet { margin-top:6px; font-size:.5rem; font-weight:800; letter-spacing:1.1px; text-transform:uppercase;
+        color:#a7b6c6; line-height:1.2; display:flex; flex-direction:column; align-items:center; gap:3px; }
+      .a4-antet i { display:block; height:1px; background:#e3eaf2; border-radius:1px; font-style:normal; }
+      .a4-antet i.uzun { width:56px; } .a4-antet i.kisa { width:30px; }
+
+      /* --- kategori ikonu --- */
+      .a4-ikon { width:46px; height:46px; margin:7px 0 5px; display:block; flex:none; }
+      .a4-sheet .a4-ikon { position:relative; z-index:1; }
+
+      /* --- kategori adı --- */
+      .a4-ad { font-size:.74rem; font-weight:800; line-height:1.28; color:#12304c; letter-spacing:.1px;
+        padding:0 1px; position:relative; z-index:1; }
+
+      /* --- gövde metni taklidi: cetvel çizgileri --- */
+      .a4-satirlar { width:100%; margin-top:7px; display:flex; flex-direction:column; gap:4px; align-items:center;
+        position:relative; z-index:1; }
+      .a4-satirlar b { display:block; height:3px; border-radius:2px; background:#eaeff5; position:relative; overflow:hidden; }
+      .a4-satirlar b:nth-child(1){ width:78% } .a4-satirlar b:nth-child(2){ width:88% } .a4-satirlar b:nth-child(3){ width:52% }
+      .a4-satirlar b:nth-child(4){ width:84% } .a4-satirlar b:nth-child(5){ width:66% }
+      .a4-satirlar b:nth-child(6){ width:82% } .a4-satirlar b:nth-child(7){ width:70% } .a4-satirlar b:nth-child(8){ width:88% }
+      /* 6–8. satırlar yalnız büyük kartlarda (Dökümanlar bölümü) görünür */
+      .a4-satirlar b:nth-child(n+6) { display:none; }
+      .a4-satirlar b::after { content:''; position:absolute; inset:0; transform:translateX(-100%);
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent); }
+
+      /* --- alt blok: mühür + imza + sayaç --- */
+      .a4-alt { width:100%; display:flex; align-items:flex-end; justify-content:space-between; gap:4px;
+        position:relative; z-index:1; }
+      .a4-muhur { width:34px; height:34px; flex:none; }
+      .a4-imza { width:52px; height:20px; flex:none; }
+      /* sayaç: margin-top:auto ile kağıdın altına itilir, mühür/imza satırı onu izler */
+      .a4-sayac { margin:auto auto 7px; position:relative; z-index:1;
+        font-size:.53rem; font-weight:800; letter-spacing:.4px; color:var(--a4c);
+        background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:1.5px 8px; white-space:nowrap; }
+      .a4-sayac.bos { color:#8296aa; }
+
+      /* ============ ANİMASYONLAR ============ */
+      /* mühür basma: yukarıdan iner, hafifçe sekip solar */
+      @keyframes a4Muhur {
+        0%   { opacity:0; transform:scale(2.1) rotate(-24deg) }
+        7%   { opacity:.95; transform:scale(1) rotate(-9deg) }
+        11%  { transform:scale(1.09) rotate(-9deg) }
+        16%  { transform:scale(1) rotate(-9deg) }
+        86%  { opacity:.95; transform:scale(1) rotate(-9deg) }
+        100% { opacity:0; transform:scale(1) rotate(-9deg) }
+      }
+      .a4-muhur-g { transform-box:fill-box; transform-origin:center; animation:a4Muhur 7s ease-in-out infinite; }
+      /* imza: çizgi kendini çizer, sonra silinir */
+      @keyframes a4Imza { 0%{ stroke-dashoffset:210 } 34%,80%{ stroke-dashoffset:0 } 100%{ stroke-dashoffset:210 } }
+      .a4-imza-yol { stroke-dasharray:210; animation:a4Imza 7s ease-in-out infinite; }
+      /* cetvel çizgilerinde ışık süpürmesi */
+      @keyframes a4Parla { 0%{ transform:translateX(-100%) } 100%{ transform:translateX(220%) } }
+      .a4-satirlar b::after { animation:a4Parla 4.6s ease-in-out infinite; }
+      .a4-satirlar b:nth-child(2)::after { animation-delay:.28s } .a4-satirlar b:nth-child(3)::after { animation-delay:.56s }
+      .a4-satirlar b:nth-child(4)::after { animation-delay:.84s } .a4-satirlar b:nth-child(5)::after { animation-delay:1.12s }
+      /* kartların kademeli girişi (sınıf akordiyonu açılınca tetiklenir) */
+      @keyframes a4Gir { 0%{ opacity:0; transform:translateY(16px) rotate(-2.5deg) } 100%{ opacity:1; transform:none } }
+      .a4-grid.acildi .a4-kart { animation:a4Gir .5s cubic-bezier(.2,.8,.3,1) backwards; }
+      .a4-grid.acildi .a4-kart:nth-child(1){ animation-delay:.02s } .a4-grid.acildi .a4-kart:nth-child(2){ animation-delay:.09s }
+      .a4-grid.acildi .a4-kart:nth-child(3){ animation-delay:.16s } .a4-grid.acildi .a4-kart:nth-child(4){ animation-delay:.23s }
+      .a4-grid.acildi .a4-kart:nth-child(5){ animation-delay:.3s }  .a4-grid.acildi .a4-kart:nth-child(6){ animation-delay:.37s }
+      /* ikon içi hareketler */
+      @keyframes a4Kay   { 0%,12%{ opacity:0; transform:translateX(-9px) } 26%,74%{ opacity:1; transform:none } 90%,100%{ opacity:0; transform:translateX(-9px) } }
+      @keyframes a4Ciz   { 0%,10%{ stroke-dashoffset:34 } 40%,84%{ stroke-dashoffset:0 } 100%{ stroke-dashoffset:34 } }
+      @keyframes a4Bas   { 0%,10%{ opacity:0; transform:scale(2) rotate(16deg) } 24%{ opacity:1; transform:scale(1) rotate(-11deg) } 30%{ transform:scale(1.1) rotate(-11deg) } 36%,86%{ transform:scale(1) rotate(-11deg); opacity:1 } 100%{ opacity:0 } }
+      @keyframes a4Kalem { 0%,10%{ transform:translate(-11px,4px) } 46%,60%{ transform:none } 96%,100%{ transform:translate(-11px,4px) } }
+      @keyframes a4Salla { 0%,100%{ transform:rotate(-6deg) } 50%{ transform:rotate(6deg) } }
+      @keyframes a4Halka { 0%,100%{ transform:scaleY(1) } 50%{ transform:scaleY(.6) } }
+      .ik-sayfa { transform-box:fill-box; transform-origin:center; animation:a4Kay 5.4s ease-in-out infinite; }
+      .ik-halka { transform-box:fill-box; transform-origin:center; animation:a4Halka 3.4s ease-in-out infinite; }
+      .ik-tik   { stroke-dasharray:34; animation:a4Ciz 5s ease-in-out infinite; }
+      .ik-damga { transform-box:fill-box; transform-origin:center; animation:a4Bas 5.6s ease-in-out infinite; }
+      .ik-kalem { transform-box:fill-box; transform-origin:center; animation:a4Kalem 4.4s ease-in-out infinite; }
+      .ik-yazi3 { stroke-dasharray:26; animation:a4Ciz 4.4s ease-in-out infinite; }
+      .ik-rozet { transform-box:fill-box; transform-origin:50% 18%; animation:a4Salla 3.2s ease-in-out infinite; }
+
+      /* --- kartın altında açılan PDF paneli (dosya çekmecesi) --- */
+      .a4-panel { max-height:0; overflow:hidden; transition:max-height .36s cubic-bezier(.4,0,.2,1); }
+      .a4-panel-in { margin-top:16px; padding:13px 15px 15px; border:1.5px solid var(--a4c,#dbe3ec); border-radius:14px;
+        background:linear-gradient(180deg,#fbfdff 0%,#fff 60%); box-shadow:0 6px 18px rgba(16,42,67,.07); }
+      .a4-panel-bas { display:flex; align-items:center; gap:9px; margin:0 0 4px; }
+      .a4-panel-bas .a4-panel-ikon { width:26px; height:26px; flex:none; }
+      .a4-panel-bas b { font-size:1rem; font-weight:800; color:#12304c; letter-spacing:.1px; }
+      .a4-panel-bas .a4-panel-chip { margin-left:auto; font-size:.62rem; font-weight:800; letter-spacing:.4px;
+        color:var(--a4c); background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:2.5px 9px; }
+      .a4-panel-in .dok-bos { margin-top:9px; }
+
+      @media (max-width:600px){
+        /* dar ekranda 2 sütun: kart genişliği ~160px kalır, A4 oranı bozulmadan
+           uzun kategori adları da sığar */
+        .a4-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 12px; }
+        .a4-ad { font-size:.7rem } .a4-ikon { width:38px; height:38px; margin:5px 0 3px }
+        .a4-muhur { width:30px; height:30px } .a4-imza { width:46px; height:17px }
+        /* dar kağıtta 3 satır yeter; uzun kategori adı 3 satıra taşarsa taşma olmasın */
+        .a4-antet { margin-top:3px } .a4-satirlar { margin-top:4px }
+        .a4-satirlar b:nth-child(n+4) { display:none }
+        .a4-sayac { margin-bottom:5px }
+        .a4-panel-in { padding:11px 12px 13px } .a4-panel-bas b { font-size:.92rem }
+      }
+      @media (prefers-reduced-motion: reduce){
+        .a4-muhur-g, .a4-imza-yol, .a4-satirlar b::after, .a4-grid.acildi .a4-kart,
+        .ik-sayfa, .ik-halka, .ik-tik, .ik-damga, .ik-kalem, .ik-yazi3, .ik-rozet { animation:none !important }
+        .a4-imza-yol { stroke-dashoffset:0 } .ik-tik, .ik-yazi3 { stroke-dashoffset:0 }
+        .a4-muhur-g, .ik-damga { opacity:.95 }
+      }
+    </style>
+
+    <section id="imam-hatip" class="content-section">
+      <h2>
+        <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="48.5" y="16" width="3.2" height="32" rx="1.4" fill="#F39C12"/>
+          <circle cx="50.1" cy="14" r="2.6" fill="#F39C12"/>
+          <path d="M14 31 a15 15 0 0 1 30 0 Z" fill="#16A085"/>
+          <path class="ih-crescent" d="M27 6 a5.2 5.2 0 1 0 4.4 8.2 a4.1 4.1 0 1 1 -4.4 -8.2 Z" fill="#F39C12"/>
+          <rect x="12" y="31" width="34" height="21" rx="2.4" fill="#2563EB"/>
+          <path d="M23 52 v-8.5 a6 6 0 0 1 12 0 V52 Z" fill="#fff"/>
+          <rect x="27.4" y="43" width="3.2" height="9" fill="#2563EB"/>
+        </svg> İmam Hatip
+      </h2>
+      <div class="ih-acc" id="ihAccordion">
+
+        <div class="ih-item">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num ih-spin">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="21" fill="none" stroke="#16A085" stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round">
+                  <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="7s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="24" cy="24" r="15" fill="#16A085"/>
+                <text x="24" y="30.5" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="'Marhey',system-ui,sans-serif">5</text>
+              </svg>
+            </span>
+            <span class="ih-title">5. Sınıf</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ih-bolum-baslik">Etkinlikler</div>
+            <div class="ih-kartlar" data-sinif="5"></div>
+            <div class="ih-bolum-baslik">Dökümanlar</div>
+            <div class="ihdoc-acc" data-sinif="5"></div>
+          </div></div>
+        </div>
+
+        <div class="ih-item">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num ih-pulse">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="ih-halo" cx="24" cy="24" r="15.5" fill="#F39C12"/>
+                <circle cx="24" cy="24" r="15" fill="#F39C12"/>
+                <text x="24" y="30.5" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="'Marhey',system-ui,sans-serif">6</text>
+              </svg>
+            </span>
+            <span class="ih-title">6. Sınıf</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ih-bolum-baslik">Etkinlikler</div>
+            <div class="ih-kartlar" data-sinif="6"></div>
+            <div class="ih-bolum-baslik">Dökümanlar</div>
+            <div class="ihdoc-acc" data-sinif="6"></div>
+          </div></div>
+        </div>
+
+        <div class="ih-item">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="15" fill="#2563EB"/>
+                <text x="24" y="30.5" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="'Marhey',system-ui,sans-serif">7</text>
+                <g><circle cx="24" cy="5" r="3.2" fill="#93c5fd"/>
+                  <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="3.6s" repeatCount="indefinite"/></g>
+              </svg>
+            </span>
+            <span class="ih-title">7. Sınıf</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ih-bolum-baslik">Etkinlikler</div>
+            <div class="ih-kartlar" data-sinif="7"></div>
+            <div class="ih-bolum-baslik">Dökümanlar</div>
+            <div class="ihdoc-acc" data-sinif="7"></div>
+          </div></div>
+        </div>
+
+        <div class="ih-item">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num ih-bounce">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <g class="ih-badge">
+                  <circle cx="24" cy="24" r="15" fill="#7C3AED"/>
+                  <text x="24" y="30.5" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="'Marhey',system-ui,sans-serif">8</text>
+                </g>
+              </svg>
+            </span>
+            <span class="ih-title">8. Sınıf</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ih-bolum-baslik">Etkinlikler</div>
+            <div class="ih-kartlar" data-sinif="8"></div>
+            <div class="ih-bolum-baslik">Dökümanlar</div>
+            <div class="ihdoc-acc" data-sinif="8"></div>
+          </div></div>
+        </div>
+
+        <div class="ih-item">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num ih-spark">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="15" fill="#EE5253"/>
+                <text x="24" y="30.5" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="'Marhey',system-ui,sans-serif">9</text>
+                <path class="ih-star" d="M40 8 l1.7 4.3 4.3 1.7 -4.3 1.7 -1.7 4.3 -1.7 -4.3 -4.3 -1.7 4.3 -1.7 Z" fill="#ffd54f"/>
+              </svg>
+            </span>
+            <span class="ih-title">9. Sınıf</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ih-bolum-baslik">Etkinlikler</div>
+            <div class="ih-kartlar" data-sinif="9"></div>
+            <div class="ih-bolum-baslik">Dökümanlar</div>
+            <div class="ihdoc-acc" data-sinif="9"></div>
+          </div></div>
+        </div>
+
+        <div class="ih-item">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num ih-draw">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="ih-ring" cx="24" cy="24" r="21" fill="none" stroke="#0E9E86" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="24" cy="24" r="15" fill="#0E9E86"/>
+                <text x="24" y="30" text-anchor="middle" font-size="15" font-weight="800" fill="#fff" font-family="'Marhey',system-ui,sans-serif">10</text>
+              </svg>
+            </span>
+            <span class="ih-title">10. Sınıf</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ih-bolum-baslik">Etkinlikler</div>
+            <div class="ih-kartlar" data-sinif="10"></div>
+            <div class="ih-bolum-baslik">Dökümanlar</div>
+            <div class="ihdoc-acc" data-sinif="10"></div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="dokumanlar" class="content-section">
+      <h2>
+        <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="18" y="14" width="30" height="40" rx="3" fill="#e8f0fe"/>
+          <rect x="12" y="18" width="30" height="40" rx="3" fill="#fff" stroke="#2563EB" stroke-width="2.6"/>
+          <rect x="18" y="28" width="18" height="3.2" rx="1.6" fill="#F39C12"/>
+          <rect x="18" y="36" width="18" height="3.2" rx="1.6" fill="#16A085"/>
+          <rect x="18" y="44" width="12" height="3.2" rx="1.6" fill="#EE5253"/>
+          <g class="dok-basclip"><path d="M42 12 v-1 a5 5 0 0 1 10 0 v14 a3.4 3.4 0 0 1 -6.8 0 V13" fill="none" stroke="#7C3AED" stroke-width="3" stroke-linecap="round"/></g>
+        </svg> Dökümanlar
+      </h2>
+      <div class="dok-acc" id="dokAccordion"></div>
+    </section>
+
+    <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
+    <script src="muhadese.js?v=20260803f"></script>
+    <script>
+    (function () {
+      /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
+         akordiyonu) açıkken max-height:none yapılır; böylece iç akordiyon
+         açılınca üst panel kırpılmaz. --- */
+      function panelAc(panel) {
+        if (!panel) return;
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        var f = function (e) {
+          if (e.target !== panel || e.propertyName !== 'max-height') return;
+          panel.style.maxHeight = 'none';
+          panel.removeEventListener('transitionend', f);
+        };
+        panel.addEventListener('transitionend', f);
+      }
+      function panelKapat(panel) {
+        if (!panel) return;
+        if (getComputedStyle(panel).maxHeight === 'none') { panel.style.maxHeight = panel.scrollHeight + 'px'; void panel.offsetHeight; }
+        panel.style.maxHeight = '0px';
+      }
+      /* tek-açılır (yalnız DOĞRUDAN kardeşleri kapatır) */
+      function tekAcilir(btn, itemSinif, panelSinif, accSinif) {
+        var item = btn.closest('.' + itemSinif);
+        var acc = btn.closest('.' + accSinif);
+        if (!item || !acc) return;
+        var aciliyor = !item.classList.contains('acik');
+        [].forEach.call(acc.children, function (i) {
+          if (i !== item && i.classList && i.classList.contains(itemSinif) && i.classList.contains('acik')) {
+            i.classList.remove('acik'); panelKapat(i.querySelector('.' + panelSinif));
+          }
+        });
+        if (aciliyor) { item.classList.add('acik'); panelAc(item.querySelector('.' + panelSinif)); }
+        else { item.classList.remove('acik'); panelKapat(item.querySelector('.' + panelSinif)); }
+      }
+      window.ihToggle = function (btn) { tekAcilir(btn, 'ih-item', 'ih-panel', 'ih-acc'); };
+      window.dokToggle = function (btn) { tekAcilir(btn, 'dok-item', 'dok-panel', 'dok-acc'); };
+      /* iç (sınıf dökümanı) akordiyon: bağımsız aç/kapa */
+      window.ihdocToggle = function (btn) {
+        var item = btn.closest('.ihdoc-item'); if (!item) return;
+        var panel = item.querySelector('.ihdoc-panel');
+        if (item.classList.contains('acik')) { item.classList.remove('acik'); panelKapat(panel); }
+        else { item.classList.add('acik'); panelAc(panel); }
+      };
+
+      function klasorSvg(renk) {
+        return '<svg viewBox="0 0 40 40" aria-hidden="true">' +
+          '<path d="M5 11 h9 l3 3 h15 a2.4 2.4 0 0 1 2.4 2.4 v14.2 a2.4 2.4 0 0 1 -2.4 2.4 H5 a2.4 2.4 0 0 1 -2.4 -2.4 V13.4 A2.4 2.4 0 0 1 5 11 Z" fill="' + renk + '"/>' +
+          '<rect x="9" y="21" width="22" height="3" rx="1.5" fill="#fff" opacity=".7"/>' +
+          '<rect x="9" y="27" width="14" height="3" rx="1.5" fill="#fff" opacity=".5"/></svg>';
+      }
+      function pdfSvg() {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#FDECEA" stroke="#EE5253" stroke-width="1.6"/><path d="M14 2v4h4" fill="none" stroke="#EE5253" stroke-width="1.6"/><text x="12" y="17" text-anchor="middle" font-size="5.4" font-weight="800" fill="#C0392B" font-family="system-ui,sans-serif">PDF</text></svg>';
+      }
+      /* resmi siteye giden bağlantı ikonu (kutudan çıkan ok) */
+      function disSvg() {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+          '<rect x="3" y="3" width="18" height="18" rx="3.4" fill="#E8F0FE" stroke="#2563EB" stroke-width="1.6"/>' +
+          '<path d="M9.6 14.4 L15 9" fill="none" stroke="#1D4ED8" stroke-width="1.9" stroke-linecap="round"/>' +
+          '<path d="M10.6 9 H15 v4.4" fill="none" stroke="#1D4ED8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      }
+      /* düzenlenebilir Word dosyası ikonu */
+      function docSvg() {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+          '<path d="M6 2h8l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#EAF1FE" stroke="#2563EB" stroke-width="1.6"/>' +
+          '<path d="M14 2v4h4" fill="none" stroke="#2563EB" stroke-width="1.6"/>' +
+          '<path d="M7.4 12.2 8.9 18.2 10.9 13.6 12.9 18.2 14.4 12.2" fill="none" stroke="#1D4ED8" ' +
+          'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      }
+      function pdfListe(dosyalar) {
+        if (!dosyalar || !dosyalar.length)
+          return '<div class="dok-bos">Bu başlık altındaki PDF’ler yakında paylaşılacak.</div>';
+        return dosyalar.map(function (d) {
+          /* tur:'site' → dosya bizde durmuyor, kurumun resmi adresine gider */
+          if (d.url && d.tur === 'site') return '<a class="dok-pdf dok-dis" href="' + d.url + '" target="_blank" rel="noopener" ' +
+            'title="' + (d.kaynak || 'Resmî siteye gider') + '">' + disSvg() +
+            '<span>' + d.ad + '</span><span class="uz dis">resmî site</span></a>';
+          /* tur:'doc' → sitede duran, indirilip doldurulan Word şablonu */
+          if (d.url && d.tur === 'doc') return '<a class="dok-pdf dok-doc" href="' + d.url + '" download ' +
+            'title="' + (d.kaynak || 'Word şablonu — indirip doldurabilirsin') + '">' + docSvg() +
+            '<span>' + d.ad + '</span><span class="uz doc">WORD</span></a>';
+          if (d.url) return '<a class="dok-pdf" href="' + d.url + '" target="_blank" rel="noopener">' + pdfSvg() +
+            '<span>' + d.ad + '</span><span class="uz">PDF</span></a>';
+          /* URL boşsa dosya henüz yüklenmedi: kırık link yerine "yakında" satırı */
+          return '<div class="dok-pdf dok-bekliyor">' + pdfSvg() +
+            '<span>' + d.ad + '</span><span class="uz bekliyor">yakında</span></div>';
+        }).join('');
+      }
+      /* ortak başlık kartı üretici (hem Dökümanlar hem sınıf içi kullanır) */
+      function docKart(b, toggleFn, itemCls, headCls, panelCls) {
+        return '<div class="' + itemCls + '">' +
+          '<button type="button" class="' + headCls + '" onclick="' + toggleFn + '(this)">' +
+          '<span class="dok-ic">' + klasorSvg(b.renk) + '</span>' +
+          '<span class="dok-title">' + b.ad + '</span>' +
+          '<span class="dok-chip">' + ((b.dosyalar && b.dosyalar.length) ? b.dosyalar.length + ' PDF' : 'PDF') + '</span>' +
+          '<span class="dok-chevron">▾</span></button>' +
+          '<div class="' + panelCls + '"><div class="dok-panel-in">' + (b.giris || '') + pdfListe(b.dosyalar) + '</div></div>' +
+          '</div>';
+      }
+
+      /* === SINIFA ÖZEL DÖKÜMANLAR (her sınıfın 5-10 altına) — "Ders içerikli olanlar" ===
+         Bir sınıfa PDF eklemek: SINIF_PDF[sınıf][tür adı] dizisine ekle. Örn:
+         SINIF_PDF[5]['Sınavlar'] = [ { ad:'1. Yazılı', url:'dosyalar/5-sinav1.pdf' } ]; */
+      var SINIF_TURLERI = [
+        { ad: 'Sınıf Dosyası',                   renk: '#2563EB' },
+        { ad: 'Planlar',                         renk: '#EE5253' },
+        { ad: 'Sınavlar',                        renk: '#0E9E86' },
+        { ad: 'Çalışma Kâğıtları & Etkinlikler', renk: '#0EA5E9' },
+        { ad: 'Proje & Performans Görevleri',    renk: '#059669' }
+      ];
+      var SINIF_PDF = { 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {} };
+      /* Sınıf kartlarına, dosya listesinin ÜSTÜNDE görünecek açıklama metni.
+         SINIF_GIRIS[sınıf][tür adı] = HTML. Boş bırakılırsa hiçbir şey yazılmaz. */
+      var SINIF_GIRIS = { 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {} };
+
+      /* --- ÜNİTELENDİRİLMİŞ YILLIK PLANLAR (2026-2027) -------------------
+         Altı sınıfın da yıllık planı "Planlar" kartının içindedir. Planlar
+         MEB 2026/68 sayılı Genelge’nin çalışma takvimine göre 37 ders haftası
+         üzerinden (1. dönem 18, 2. dönem 19 hafta) kurgulanmıştır.
+         Arapça Maarif Modeli kademeli geçişi gereği 2026-2027’de
+         5, 6, 9 ve 10. sınıflar 2025 programını; 7 ve 8. sınıflar hâlâ
+         2016 programını uygular — planlar buna göre yazılmıştır. */
+      (function () {
+        var YP = {
+          5:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite (18+16+18+16 saat) + okul temelli planlama 4 saat' },
+          6:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite (18+16+18+16 saat) + okul temelli planlama 4 saat' },
+          7:  { prg: '2016 programı', st: '2 saat/hafta · 74 saat',  ek: '6 tema × 12 saat (Maarif Modeli 7. sınıfa 2027-2028’de gelir)' },
+          8:  { prg: '2016 programı', st: '2 saat/hafta · 74 saat',  ek: '6 tema × 12 saat (Maarif Modeli 8. sınıfa 2028-2029’da gelir)' },
+          9:  { prg: '2025 programı', st: '4 saat/hafta · 148 saat', ek: '4 tema (40+28+36+32 saat) + okul temelli planlama 8 saat' },
+          10: { prg: '2025 programı', st: '3 saat/hafta · 111 saat', ek: '4 tema (27+24+27+24 saat) + okul temelli planlama 6 saat' }
+        };
+        Object.keys(YP).forEach(function (s) {
+          var y = YP[s], k = 'dosyalar/yillik-plan/arapca-' + s + '-sinif-yillik-plan';
+          SINIF_PDF[s]['Planlar'] = [
+            { ad: s + '. Sınıf Ünitelendirilmiş Yıllık Plan (2026-2027) — düzenlenebilir (Word)',
+              tur: 'doc', kaynak: y.prg + ' · ' + y.st + ' · A4 yatay, 10 sütun',
+              url: k + '.docx' },
+            { ad: s + '. Sınıf Ünitelendirilmiş Yıllık Plan (2026-2027) — yazdırmaya hazır (PDF)',
+              url: k + '.pdf' }
+          ];
+          SINIF_GIRIS[s]['Planlar'] =
+            '<div class="dok-not">Bu kartta <b>ünitelendirilmiş yıllık plan</b> ve (yakında) <b>günlük ders ' +
+            'planı</b> birlikte bulunur. Yıllık plan <b>2026-2027</b> öğretim yılı içindir: MEB 2026/68 sayılı ' +
+            'Genelge’ye göre <b>37 ders haftası</b> (1. dönem 18, 2. dönem 19 hafta) üzerinden hazırlanmıştır. ' +
+            'Uygulanan program: <b>' + y.prg + '</b> · ' + y.st + ' · ' + y.ek + '.</div>' +
+            '<div class="dok-not">Sayfa düzeni <b>A4 yatay, 10 sütunludur</b>: ay, hafta, saat, tema/ünite, ' +
+            'öğrenme çıktıları, içerik (konu · sözcük · dil bilgisi), yöntem ve teknikler, araç-gereç, ölçme ve ' +
+            'değerlendirme, belirli gün ve haftalar. Ara tatiller, resmî tatile denk gelen kayıp günler ve ' +
+            'yazılı sınav haftaları tabloda ayrıca işaretlidir. Belgenin sonundaki <b>Açıklamalar</b> bölümü, ' +
+            'planın hangi kaynaklara dayandığını ve öğretmenin nereleri güncellemesi gerektiğini madde madde yazar.</div>' +
+            '<div class="dok-not">Hedef sözcükler belgede <b>Türkçe okunuşlarıyla</b> verilmiştir; kendi ' +
+            'dosyanda Arapça yazıya çevirebilirsin. Word dosyası düzenlenebilir, PDF yazdırmaya hazırdır. ' +
+            'Plan bir <b>örnektir</b>; zümre kararlarına, ders kitabına ve okulunun takvimine göre uyarlanmalıdır. ' +
+            'Yönerge gereği yıllık planın <b>ders yılının ilk 15 günü içinde okul müdürüne onaylatılması</b> gerekir.</div>';
+        });
+      })();
+      /* === A4 "RESMİ EVRAK" KARTLARI ===================================
+         Sınıf akordiyonlarındaki "Dökümanlar" bölümü artık akordiyon değil,
+         A4 sayfa oranında kartlardan oluşan bir ızgara. Bir karta tıklanınca
+         o kategorinin PDF listesi ızgaranın ALTINDA tam genişlikte açılır
+         (Muhâdese kartındaki davranışın aynısı).
+         NOT: Karttaki antet çizgileri, mühür ve imza tamamen dekoratiftir;
+         herhangi bir kurumun resmi evrakını temsil etmez.
+         Aynı tasarım okul geneli "Dökümanlar" bölümünde de kullanılıyor;
+         tek fark ikon takımı ("sinif" / "dok") ve antet yazısı.
+         Yeni kategori eklemek: ilgili diziye (SINIF_TURLERI ya da
+         DOK_BASLIKLAR) satır ekle ve aynı sıradaki ikonu
+         a4IkonIc() / a4IkonDok() içine yaz. ================== */
+      function a4IkonIc(set, i) {
+        if (set === 'dok') return a4IkonDok(i);
+        switch (i) {
+          /* 0 — Sınıf Dosyası: klasör, nefes alan halkalar + kayan sayfalar */
+          case 0: return '<rect x="6" y="7" width="36" height="34" rx="4" fill="#EAF1FE" stroke="#2563EB" stroke-width="2.2"/>' +
+            '<path d="M6 11 a4 4 0 0 1 4 -4 h5 v34 h-5 a4 4 0 0 1 -4 -4 Z" fill="#2563EB"/>' +
+            '<g class="ik-sayfa">' +
+            '<rect x="20" y="14" width="17" height="2.8" rx="1.4" fill="#2563EB" opacity=".55"/>' +
+            '<rect x="20" y="21" width="13" height="2.8" rx="1.4" fill="#2563EB" opacity=".42"/>' +
+            '<rect x="20" y="28" width="15" height="2.8" rx="1.4" fill="#2563EB" opacity=".3"/></g>' +
+            '<g class="ik-halka" fill="none" stroke="#BBD2F8" stroke-width="2" stroke-linecap="round">' +
+            '<path d="M10.5 15 h6"/><path d="M10.5 24 h6"/><path d="M10.5 33 h6"/></g>';
+          /* 1 — Planlar (yıllık plan + günlük ders planı): takvim + kendini çizen onay işareti */
+          case 1: return '<rect x="6" y="10" width="36" height="32" rx="4" fill="#FEF0F0" stroke="#EE5253" stroke-width="2.2"/>' +
+            '<path d="M6.6 19 h34.8" stroke="#EE5253" stroke-width="2.2"/>' +
+            '<rect x="12.6" y="5" width="3.6" height="9" rx="1.8" fill="#EE5253"/>' +
+            '<rect x="31.8" y="5" width="3.6" height="9" rx="1.8" fill="#EE5253"/>' +
+            '<rect x="12" y="24" width="7" height="5" rx="1.6" fill="#F7C4C4"/>' +
+            '<rect x="21.5" y="24" width="7" height="5" rx="1.6" fill="#F7C4C4"/>' +
+            '<rect x="12" y="33" width="7" height="5" rx="1.6" fill="#F7C4C4"/>' +
+            '<path class="ik-tik" d="M23 33.5 l4.2 4.2 l9 -9.4" fill="none" stroke="#EE5253" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>';
+          /* 2 — Sınavlar: evrak + üstüne basılan yuvarlak damga */
+          case 2: return '<path d="M11 5 h17 l9 9 v29 a2.4 2.4 0 0 1 -2.4 2.4 H11 a2.4 2.4 0 0 1 -2.4 -2.4 V7.4 A2.4 2.4 0 0 1 11 5 Z" fill="#E9F8F4" stroke="#0E9E86" stroke-width="2.2"/>' +
+            '<path d="M28 5 v9 h9" fill="none" stroke="#0E9E86" stroke-width="2.2" stroke-linejoin="round"/>' +
+            '<rect x="14" y="19" width="15" height="2.6" rx="1.3" fill="#0E9E86" opacity=".45"/>' +
+            '<rect x="14" y="25" width="10" height="2.6" rx="1.3" fill="#0E9E86" opacity=".3"/>' +
+            '<g class="ik-damga" fill="none" stroke="#EE5253" stroke-linecap="round" stroke-linejoin="round">' +
+            '<circle cx="29" cy="32" r="9.4" stroke-width="2.4"/>' +
+            '<path d="M24.6 32.2 l3.2 3.2 l6 -6.8" stroke-width="2.6"/></g>';
+          /* 3 — Çalışma Kâğıtları & Etkinlikler: yazan kalem */
+          case 3: return '<rect x="7" y="6" width="26" height="36" rx="3.6" fill="#E7F6FE" stroke="#0EA5E9" stroke-width="2.2"/>' +
+            '<rect x="12.5" y="13" width="15" height="2.6" rx="1.3" fill="#0EA5E9" opacity=".45"/>' +
+            '<rect x="12.5" y="20" width="11" height="2.6" rx="1.3" fill="#0EA5E9" opacity=".32"/>' +
+            '<path class="ik-yazi3" d="M12.5 29 h13" fill="none" stroke="#0EA5E9" stroke-width="2.6" stroke-linecap="round"/>' +
+            '<g class="ik-kalem">' +
+            '<path d="M38.6 11.4 l4.2 4.2 l-16.2 16.2 l-5.9 1.7 l1.7 -5.9 Z" fill="#FDD9A0" stroke="#E08E1C" stroke-width="2" stroke-linejoin="round"/>' +
+            '<path d="M35.2 14.8 l4.2 4.2" stroke="#E08E1C" stroke-width="1.8" stroke-linecap="round"/></g>';
+          /* 4 — Proje & Performans Görevleri: sallanan kurdeleli rozet */
+          default: return '<g class="ik-rozet">' +
+            '<path d="M17.4 26 L11.5 44 l8.2 -3.6 L24 47 Z" fill="#059669" opacity=".5"/>' +
+            '<path d="M30.6 26 L36.5 44 l-8.2 -3.6 L24 47 Z" fill="#059669" opacity=".78"/>' +
+            '<circle cx="24" cy="18" r="13" fill="#E6F7F0" stroke="#059669" stroke-width="2.4"/>' +
+            '<path d="M24 9.8 l2.7 5.5 l6 .9 l-4.35 4.25 l1.03 6 l-5.38 -2.83 l-5.38 2.83 l1.03 -6 L15.3 16.2 l6 -.9 Z" fill="#059669"/></g>';
+        }
+      }
+      /* okul geneli "Dökümanlar" bölümünün ikon takımı */
+      function a4IkonDok(i) {
+        switch (i) {
+          /* 0 — Öğretmen Dosyası: personel kartı, satırları kayarak gelir */
+          case 0: return '<rect x="5" y="10" width="38" height="29" rx="4" fill="#E9F8F4" stroke="#16A085" stroke-width="2.2"/>' +
+            '<path d="M6 17.5 h36" stroke="#16A085" stroke-width="2.2"/>' +
+            '<circle cx="16.4" cy="26" r="4.6" fill="#16A085"/>' +
+            '<path d="M9.6 35.6 a6.9 6.9 0 0 1 13.6 0 Z" fill="#16A085" opacity=".85"/>' +
+            '<g class="ik-sayfa">' +
+            '<rect x="27" y="23" width="12.5" height="2.6" rx="1.3" fill="#16A085" opacity=".5"/>' +
+            '<rect x="27" y="28.5" width="9.5" height="2.6" rx="1.3" fill="#16A085" opacity=".36"/>' +
+            '<rect x="27" y="34" width="11" height="2.6" rx="1.3" fill="#16A085" opacity=".24"/></g>';
+          /* 1 — Zümre Tutanakları: iki konuşma balonu, tutanak satırları yazılır */
+          case 1: return '<path d="M7 8 h23 a4 4 0 0 1 4 4 v10 a4 4 0 0 1 -4 4 H17 l-6.5 5.5 V26 H7 a4 4 0 0 1 -4 -4 V12 a4 4 0 0 1 4 -4 Z" fill="#F1EAFE" stroke="#7C3AED" stroke-width="2.2" stroke-linejoin="round"/>' +
+            '<g class="ik-halka" fill="#7C3AED"><circle cx="12.6" cy="17" r="2.1"/><circle cx="18.6" cy="17" r="2.1"/><circle cx="24.6" cy="17" r="2.1"/></g>' +
+            '<path d="M27 24 h14 a4 4 0 0 1 4 4 v8 a4 4 0 0 1 -4 4 v4.4 L33.6 40 H27 a4 4 0 0 1 -4 -4 v-8 a4 4 0 0 1 4 -4 Z" fill="#7C3AED" opacity=".88"/>' +
+            '<path class="ik-tik" d="M28.4 30.4 h11 M28.4 35 h7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>';
+          /* 2 — Belirli Gün ve Haftalar: dalgalanan flama + yıldız */
+          case 2: return '<g class="ik-rozet">' +
+            '<path d="M12 6 v38" fill="none" stroke="#DB2777" stroke-width="3" stroke-linecap="round"/>' +
+            '<path d="M13.5 8 h24 l-5.6 7.6 l5.6 7.6 h-24 Z" fill="#FBD0E4" stroke="#DB2777" stroke-width="2.2" stroke-linejoin="round"/>' +
+            '<path d="M22.6 11.4 l1.6 3.2 l3.5 .5 l-2.5 2.5 l.6 3.5 l-3.2 -1.7 l-3.2 1.7 l.6 -3.5 l-2.5 -2.5 l3.5 -.5 Z" fill="#DB2777"/></g>';
+          /* 3 — Veli Toplantısı: iki katılımcı + imzalanan tutanak */
+          case 3: return '<circle cx="15" cy="14" r="5.4" fill="#CA8A04"/>' +
+            '<path d="M6 30 a9 9 0 0 1 18 0 Z" fill="#CA8A04" opacity=".85"/>' +
+            '<circle cx="33" cy="14" r="5.4" fill="#EAB308" opacity=".92"/>' +
+            '<path d="M24 30 a9 9 0 0 1 18 0 Z" fill="#EAB308" opacity=".72"/>' +
+            '<rect x="9" y="33.5" width="30" height="10.5" rx="3" fill="#FEF6E0" stroke="#CA8A04" stroke-width="2"/>' +
+            '<path class="ik-tik" d="M13.4 38.8 h13" fill="none" stroke="#CA8A04" stroke-width="2.2" stroke-linecap="round"/>';
+          /* 4 — Mevzuat & Yönetmelikler: dengelenen adalet terazisi */
+          default: return '<g class="ik-rozet" fill="none" stroke="#475569" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M24 11 v29" stroke-width="2.8"/><path d="M10 15 h28" stroke-width="2.8"/>' +
+            '<path d="M16.5 41 h15" stroke-width="3"/>' +
+            '<circle cx="24" cy="9.4" r="2.9" fill="#475569" stroke="none"/>' +
+            '<path d="M4 17.5 h12 l-6 8 Z" fill="#CBD5E1" stroke-width="1.9"/>' +
+            '<path d="M32 17.5 h12 l-6 8 Z" fill="#CBD5E1" stroke-width="1.9"/></g>';
+        }
+      }
+      function a4Ikon(set, i, cls) { return '<svg class="' + cls + '" viewBox="0 0 48 48" aria-hidden="true">' + a4IkonIc(set, i) + '</svg>'; }
+      /* sayaç: yayında olan PDF varsa sayısı, yoksa başlık sayısı, o da yoksa "yakında" */
+      function a4Sayac(ds) {
+        var hazir = 0, dis = 0, doc = 0, k;
+        for (k = 0; k < ds.length; k++) if (ds[k].url) {
+          hazir++; if (ds[k].tur === 'site') dis++; if (ds[k].tur === 'doc') doc++;
+        }
+        /* dosya bizde değil de resmî siteye gidiyorsa "PDF" demek yanıltıcı olur;
+           Word + PDF karışıksa da "DOSYA" demek daha doğru */
+        if (hazir) return { yazi: hazir + (dis ? ' BAĞLANTI' : (doc ? ' DOSYA' : ' PDF')), bos: false };
+        if (ds.length) return { yazi: ds.length + ' BAŞLIK', bos: true };
+        return { yazi: 'YAKINDA', bos: true };
+      }
+      /* dekoratif mühür — kategori rengini alır */
+      function a4MuhurSvg() {
+        return '<svg class="a4-muhur" viewBox="0 0 40 40" aria-hidden="true">' +
+          '<g class="a4-muhur-g" fill="none" stroke="var(--a4c)" stroke-linecap="round" stroke-linejoin="round">' +
+          '<circle cx="20" cy="20" r="14.6" stroke-width="1.8"/>' +
+          '<circle cx="20" cy="20" r="11" stroke-width="1" stroke-dasharray="2.6 3.2"/>' +
+          '<path d="M14.6 20.4 l3.6 3.6 l7.2 -8" stroke-width="2.3"/></g></svg>';
+      }
+      /* dekoratif imza — kendini çizen çizgi */
+      function a4ImzaSvg() {
+        return '<svg class="a4-imza" viewBox="0 0 60 24" aria-hidden="true">' +
+          '<path class="a4-imza-yol" d="M4 17 c3.4 -11 7 -11 8.8 -1.6 c1.5 7.8 3.9 7.6 5.6 -1 c1.3 -6.4 3.8 -5.8 4.8 .9 c.9 5.9 3 5.9 4.9 1 c1.9 -4.9 4.7 -3.9 5.6 1.9 c.8 4.6 3 4.9 5.8 1 c2.3 -3.2 5.2 -3 7.5 .8" ' +
+          'fill="none" stroke="#94a3b8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '<path d="M3 21.4 h54" stroke="#e3eaf2" stroke-width="1.4" stroke-linecap="round"/></svg>';
+      }
+      function a4KartHtml(antet, t, set, i, ds) {
+        var sy = a4Sayac(ds);
+        return '<button type="button" class="a4-kart" style="--a4c:' + t.renk + '" onclick="a4Toggle(this)" aria-expanded="false">' +
+          '<span class="a4-sheet">' +
+            '<span class="a4-serit"></span><span class="a4-kivrim"></span>' +
+            '<span class="a4-antet"><i class="uzun"></i>' + antet + '<i class="kisa"></i></span>' +
+            a4Ikon(set, i, 'a4-ikon') +
+            '<span class="a4-ad">' + t.ad + '</span>' +
+            '<span class="a4-satirlar"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>' +
+            '<span class="a4-sayac' + (sy.bos ? ' bos' : '') + '">' + sy.yazi + '</span>' +
+            '<span class="a4-alt">' + a4MuhurSvg() + a4ImzaSvg() + '</span>' +
+          '</span></button>';
+      }
+      /* bir kart ızgarası + altında tek panel üretir (hem sınıf içi hem okul geneli) */
+      function a4IzgaraKur(mount, antet, set, liste, dosyaOf, girisOf) {
+        mount.innerHTML = '<div class="a4-wrap"><div class="a4-grid">' +
+          liste.map(function (t, i) { return a4KartHtml(antet, t, set, i, dosyaOf(t)); }).join('') +
+          '</div><div class="a4-panel"><div class="a4-panel-in"></div></div></div>';
+        [].forEach.call(mount.querySelectorAll('.a4-kart'), function (btn, i) {
+          var t = liste[i], ds = dosyaOf(t);
+          var gr = girisOf ? (girisOf(t) || '') : (t.giris || '');
+          btn._a4 = { set: set, i: i, ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + pdfListe(ds) };
+        });
+      }
+      /* karta tıklayınca: ızgaranın ALTINDAKİ tek panel o kategoriyle dolar */
+      window.a4Toggle = function (btn) {
+        var wrap = btn.closest('.a4-wrap'); if (!wrap) return;
+        var panel = wrap.querySelector('.a4-panel'), ic = wrap.querySelector('.a4-panel-in');
+        var zatenAcik = btn.classList.contains('acik');
+        var panelAcikti = getComputedStyle(panel).maxHeight === 'none';
+        [].forEach.call(wrap.querySelectorAll('.a4-kart.acik'), function (b) {
+          b.classList.remove('acik'); b.setAttribute('aria-expanded', 'false');
+        });
+        if (zatenAcik) { panelKapat(panel); return; }
+        btn.classList.add('acik'); btn.setAttribute('aria-expanded', 'true');
+        var d = btn._a4 || {};
+        wrap.style.setProperty('--a4c', d.renk || '#dbe3ec');
+        ic.innerHTML = '<div class="a4-panel-bas">' + a4Ikon(d.set || 'sinif', d.i || 0, 'a4-panel-ikon') +
+          '<b>' + (d.ad || '') + '</b>' +
+          '<span class="a4-panel-chip">' + ((d.sayac && d.sayac.yazi) || 'YAKINDA') + '</span></div>' + (d.html || '');
+        /* panel zaten açıksa yükseklik serbest kalsın (içerik değişti), değilse animasyonla aç */
+        if (panelAcikti) panel.style.maxHeight = 'none'; else panelAc(panel);
+      };
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ihdoc-acc'), function (mount) {
+        var sinif = mount.getAttribute('data-sinif');
+        a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', SINIF_TURLERI, function (t) {
+          return (SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || [];
+        }, function (t) {
+          return (SINIF_GIRIS[sinif] && SINIF_GIRIS[sinif][t.ad]) || '';
+        });
+      });
+
+      /* === SINIF KARTLARI (dökümanların ÜSTÜNDE) ===
+         Ortak dosya + kart kategorize eder: kart, ilgili sınıfa "?sinif=N" ile
+         gider (örn. muhadese.html?sinif=5 → o sınıfın konuşma modülü açılır).
+         Yeni kart eklemek: SINIF_KARTLAR[sınıf] dizisine ekle. */
+      function konusmaSvg() {
+        return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+          '<path d="M10 14 h36 a5 5 0 0 1 5 5 v16 a5 5 0 0 1 -5 5 H26 l-10 9 v-9 h-6 a5 5 0 0 1 -5 -5 V19 a5 5 0 0 1 5 -5 Z" fill="#eafaf3" stroke="#16A085" stroke-width="2.6"/>' +
+          '<circle cx="22" cy="27" r="2.6" fill="#16A085"/><circle cx="30" cy="27" r="2.6" fill="#16A085"/><circle cx="38" cy="27" r="2.6" fill="#16A085"/>' +
+          '<g class="kga-sag"><path d="M40 40 h16 a4 4 0 0 1 4 4 v10 a4 4 0 0 1 -4 4 v6 l-8 -6 h-8 a4 4 0 0 1 -4 -4 V44 a4 4 0 0 1 4 -4 Z" fill="#F39C12" opacity=".92"/></g></svg>';
+      }
+      function kartHtml(k) {
+        return '<a href="' + k.url + '" target="_blank" rel="opener" class="game-card kss-card">' +
+          '<div class="default-game-content">' +
+          '<div class="default-game-emoji">' + (k.svg || '') + '</div>' +
+          '<h3>' + k.ad + '</h3>' +
+          '<span class="game-card-description">' + (k.aciklama || '') + '</span>' +
+          '<span class="status-badge available">' + (k.rozet || 'Başla') + '</span>' +
+          '</div></a>';
+      }
+      function muhadeseKart(sinif) {
+        return { ad: 'Muhâdese', aciklama: 'Arapça Konuşma Modülü — ' + sinif + '. Sınıf',
+                 url: 'muhadese.html?sinif=' + sinif, rozet: 'Başla', svg: konusmaSvg() };
+      }
+
+      /* Muhâdese kartı = yerinde açılır liste. Tıklayınca muhadese.html'e
+         GİTMEZ; sınıfın dersleri kartın altında açılır, ders seçilince
+         doğrudan simultane.html?ders=... açılır. Ders verisi muhadese.js
+         içindeki educationData'dan okunur (tek kaynak). Verisi olmayan
+         dersler soluk/pasif satır olarak görünür. */
+      window.mhToggle = function (btn) {
+        var mount = btn.closest('.ih-kartlar'); if (!mount) return;
+        var panel = mount.querySelector('.mh-panel'); if (!panel) return;
+        var aciliyor = !btn.classList.contains('acik');
+        btn.classList.toggle('acik', aciliyor);
+        btn.setAttribute('aria-expanded', aciliyor ? 'true' : 'false');
+        if (aciliyor) panelAc(panel); else panelKapat(panel);
+      };
+
+      function mhEsc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function mhDers(ad, url, hazir) {
+        if (hazir && url) {
+          return '<a class="mh-ders" href="' + mhEsc(url) + '" target="_blank" rel="opener">' +
+                 '<span class="mh-t">' + mhEsc(ad) + '</span><span class="mh-uc">AÇ</span></a>';
+        }
+        return '<span class="mh-ders pasif"><span class="mh-t">' + mhEsc(ad) + '</span>' +
+               '<span class="mh-uc">yakında</span></span>';
+      }
+      function mhListe(sinif) {
+        var uniteler = (typeof educationData !== 'undefined' && educationData) ? educationData[sinif] : null;
+        if (!uniteler || !uniteler.length) return null;
+        var html = '', hazir = 0;
+        uniteler.forEach(function (u) {
+          var dersler = u.lessons || [];
+          if (!dersler.length) return;
+          /* ders adı boşsa (7. sınıf) ünite adının kendisi satır olur */
+          var adsiz = dersler.length === 1 && !dersler[0].name;
+          if (adsiz) {
+            if (dersler[0].aktif) hazir++;
+            html += mhDers(u.unitName, dersler[0].simultaneUrl, dersler[0].aktif);
+            return;
+          }
+          html += '<div class="mh-unite">' + mhEsc(u.unitName) + '</div>';
+          dersler.forEach(function (d) {
+            if (d.aktif) hazir++;
+            html += mhDers(d.name, d.simultaneUrl, d.aktif);
+          });
+        });
+        return html ? { html: html, hazir: hazir } : null;
+      }
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), function (mount) {
+        var sinif = mount.getAttribute('data-sinif');
+        var liste = mhListe(sinif);
+        if (!liste) { /* veri okunamazsa eski davranış: muhadese.html'e git */
+          mount.innerHTML = '<div class="game-grid mobile-scroll-grid-single">' +
+            kartHtml(muhadeseKart(sinif)) + '</div>';
+          return;
+        }
+        var rozet = liste.hazir
+          ? '<span class="status-badge available">' + liste.hazir + ' Ders Hazır</span>'
+          : '<span class="status-badge bekliyor">Yakında</span>';
+        /* Kart .game-grid içinde duruyor: ileride yanına yeni kartlar eklenebilir.
+           Açılır ders listesi ise gridin ALTINDA tam genişlikte kardeş olarak durur. */
+        mount.innerHTML =
+          '<div class="game-grid mobile-scroll-grid-single">' +
+            '<button type="button" class="game-card kss-card mh-kart" onclick="mhToggle(this)" aria-expanded="false">' +
+              '<div class="default-game-content">' +
+                '<div class="default-game-emoji">' + konusmaSvg() + '</div>' +
+                '<h3>Muhâdese</h3>' +
+                '<span class="game-card-description">Arapça Konuşma Modülü — ' + sinif + '. Sınıf</span>' +
+                rozet +
+                '<span class="mh-chevron">▾</span>' +
+              '</div>' +
+            '</button>' +
+          '</div>' +
+          '<div class="mh-panel"><div class="mh-panel-in' + (liste.hazir ? '' : ' bos') + '">' +
+            liste.html + '</div></div>';
+      });
+
+      /* === DÖKÜMANLAR — okul geneli başlıklar (sınıfa özel olanlar sınıflara taşındı) === */
+      var DOK_BASLIKLAR = [
+        { ad: 'Öğretmen Dosyası',            renk: '#16A085',
+          /* 19 doldurulabilir form. Tam set tek dosyada; ayrıca yıl içinde çoğaltılan
+             formlar dört küçük pakete ayrıldı. Formlar Arapça dersine özel yazıldı. */
+          giris:
+            '<div class="dok-not"><b>Öğretmen dosyası</b>, bir öğretmenin yıl boyunca ürettiği ve ' +
+            'kendisinden istenebilecek belgeleri tek yerde toplayan klasördür. Mevzuatta <b>tek tip bir ' +
+            'form seti yoktur</b>; aşağıdaki 19 form, Ortaöğretim Kurumları Yönetmeliği ile Okul Öncesi ' +
+            'Eğitim ve İlköğretim Kurumları Yönetmeliği’nde öğretmene verilen görevler esas alınarak ' +
+            've <b>Arapça dersine göre</b> hazırlanmıştır. Hepsi boştur; indir, kendi okuluna göre ' +
+            'düzenle. Son kontrol: Ağustos 2026.</div>' +
+
+            '<div class="tut-bas"><i></i>Dosyada ne var? — 19 form</div>' +
+            '<ol class="tut-liste">' +
+            '<li><b>Kapak:</b> okul, öğretmen, okutulan sınıflar ve öğretim yılı.</li>' +
+            '<li><b>Dosya içindekiler ve kontrol listesi:</b> 20 maddelik “var mı?” listesi; dönem başında ve sonunda işaretlersin.</li>' +
+            '<li><b>Öğretmen kişisel bilgi formu:</b> idarenin istediği temel bilgiler + Arapça yeterlilik belgeleri (YDS, YÖKDİL vb.).</li>' +
+            '<li><b>Haftalık ders programı:</b> 8 ders saati × 5 gün, altında nöbet ve ek görev satırları.</li>' +
+            '<li><b>Okutulan sınıflar ve ders saati çizelgesi:</b> şube, mevcut, kitap ve <b>yıllık plan onay tarihi</b>; ayrıca hangi sınıfın hangi öğretim programına tabi olduğunu yazdığın bölüm.</li>' +
+            '<li><b>Nöbet görev çizelgesi ve kayıt formu:</b> nöbet görevinin kapsamı + 12 satırlık nöbet kaydı.</li>' +
+            '<li><b>Sınıf/şube öğrenci listesi ve iletişim formu:</b> 22 satır; veli adı, yakınlığı, telefon ve derste dikkat edilecek kısa not.</li>' +
+            '<li><b>Ders işleme takip çizelgesi:</b> yıllık plandaki konu ile gerçekleşen arasındaki farkı ve telafiyi haftalık izlersin.</li>' +
+            '<li><b>Yazılı sınav soru – öğrenme çıktısı analiz formu:</b> her sorunun hangi <b>ARP kodunu</b> ve hangi beceri alanını ölçtüğü. Sınavdan önce doldurulur.</li>' +
+            '<li><b>Sınav sonuç analiz formu:</b> şube bazlı sonuç, puan aralığı dağılımı, beceri alanına göre başarı ve alınacak önlemler.</li>' +
+            '<li><b>Muhâdese (konuşma) performans değerlendirme ölçeği:</b> sesletim-mahreç, akıcılık, söz varlığı, dil bilgisi, etkileşim, bütünlük — 6 ölçüt, 30 puan.</li>' +
+            '<li><b>Harekeli metin okuma değerlendirme ölçeği:</b> mahreç, hareke doğruluğu, med ve şedde, kelime sonları, akıcılık, durak-vurgu, anlama — 7 ölçüt, 35 puan.</li>' +
+            '<li><b>Kelime hazinesi takip çizelgesi:</b> ünite başına hedef kelime, tekrar tarihleri, ölçme şekli ve desteklenecek öğrenciler.</li>' +
+            '<li><b>Veli görüşme kayıt formu:</b> görüşmenin konusu, Arapça dersine ilişkin gözlem, velinin talebi ve alınan kararlar.</li>' +
+            '<li><b>Veli görüşmeleri yıl boyu kayıt çizelgesi:</b> 22 satırlık özet defter.</li>' +
+            '<li><b>Ürün dosyası (portfolyo) değerlendirme formu:</b> 100 puanlık ölçüt tablosu — yazı düzeni, kelime, dil bilgisi, özgün ürün.</li>' +
+            '<li><b>Ödev / performans – proje görevi takip çizelgesi:</b> konu, veriliş-teslim tarihi, puan, açıklama.</li>' +
+            '<li><b>Mesleki çalışma ve hizmet içi eğitim kayıt formu:</b> faaliyet, süre, belge no ve <b>derse yansıması</b>.</li>' +
+            '<li><b>Zümre ve kurul toplantıları takip çizelgesi:</b> sana düşen kararın ne olduğu ve ne yaptığın.</li>' +
+            '</ol>' +
+
+            '<div class="tut-bas"><i></i>Tam set mi, küçük paket mi?</div>' +
+            '<div class="dok-not"><b>Tam set</b> 19 sayfadır; yıl başında bir kez yazdırıp klasöre koyman içindir. ' +
+            'Yıl içinde tekrar tekrar çoğaltacağın formlar ayrıca <b>dört küçük pakete</b> ayrıldı: sınıf ve ' +
+            'nöbet çizelgeleri (her şube için bir tane), sınav analiz formları (her yazılı için bir tane), ' +
+            'Arapça değerlendirme ölçekleri (muhâdese, okuma, kelime, portfolyo) ve veli görüşme formları. ' +
+            'Word hâli düzenlenebilir, PDF hâli doğrudan yazdırılır.</div>' +
+
+            '<div class="tut-ipucu"><b>Dosyayı kurarken</b>' +
+            '<ul>' +
+            '<li>Kapağı ve içindekiler listesini en öne koy; denetimde ilk bakılan yer burasıdır.</li>' +
+            '<li>Yıllık planların <b>onay tarihini</b> “Okutulan sınıflar” çizelgesine yaz; plan dosyada olsa bile onaysızsa eksik sayılır.</li>' +
+            '<li>Soru analiz formunu sınavdan <b>önce</b> doldur. Sonradan doldurulan analiz, soruların çıktı dağılımını düzeltmeye yaramaz.</li>' +
+            '<li>Öğrenci ve veli telefonlarını taşıdığı için dosyayı açıkta bırakma; formlarda kişisel veri koruma yükümlülüğün sürer.</li>' +
+            '<li>Muhâdese ve okuma ölçeklerini öğrenciye <b>önceden</b> göster; neye göre puanlandığını bilen öğrenci daha iyi hazırlanır.</li>' +
+            '</ul></div>' +
+
+            '<div class="dok-not">Bu formlar <b>genel bir örnektir</b>; okulunun kendi antedi, sıralaması ya da ' +
+            'ilave formu varsa Word hâli üzerinde değiştir. Zorunlu bir biçim değildir.</div>',
+          dosyalar: [
+            { ad: 'Öğretmen Dosyası Tam Set (19 form) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'İndir, okul adını ve formları kendine göre düzenle',
+              url: 'dosyalar/ogretmen-dosyasi/ogretmen-dosyasi-form-seti.docx' },
+            { ad: 'Öğretmen Dosyası Tam Set (19 form) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/ogretmen-dosyasi/ogretmen-dosyasi-form-seti.pdf' },
+            { ad: 'Sınıf ve Nöbet Çizelgeleri (5 form) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Ders programı, sınıf listesi, nöbet ve ders işleme takibi',
+              url: 'dosyalar/ogretmen-dosyasi/sinif-ve-nobet-cizelgeleri.docx' },
+            { ad: 'Sınıf ve Nöbet Çizelgeleri (5 form) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/ogretmen-dosyasi/sinif-ve-nobet-cizelgeleri.pdf' },
+            { ad: 'Sınav Analiz Formları (2 form) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Her yazılı için bir takım çoğalt',
+              url: 'dosyalar/ogretmen-dosyasi/sinav-analiz-formlari.docx' },
+            { ad: 'Sınav Analiz Formları (2 form) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/ogretmen-dosyasi/sinav-analiz-formlari.pdf' },
+            { ad: 'Arapça Değerlendirme Ölçekleri (4 form) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Muhâdese, harekeli metin okuma, kelime hazinesi, portfolyo',
+              url: 'dosyalar/ogretmen-dosyasi/arapca-degerlendirme-olcekleri.docx' },
+            { ad: 'Arapça Değerlendirme Ölçekleri (4 form) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/ogretmen-dosyasi/arapca-degerlendirme-olcekleri.pdf' },
+            { ad: 'Veli Görüşme Formları (2 form) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Görüşme kayıt formu + yıl boyu kayıt çizelgesi',
+              url: 'dosyalar/ogretmen-dosyasi/veli-gorusme-formlari.docx' },
+            { ad: 'Veli Görüşme Formları (2 form) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/ogretmen-dosyasi/veli-gorusme-formlari.pdf' }
+          ] },
+        /* NOT: "Yıllık Planlar" kartı buradan kaldırıldı; yıllık planlar artık
+           her sınıfın kendi akordiyonundaki "Planlar" kartının içindedir. */
+        { ad: 'Zümre Tutanakları',           renk: '#7C3AED',
+          /* Üç seviye (okul / ilçe / il) × üç toplantı (sene başı / 2. dönem / sene sonu) = 9 tutanak.
+             Gündem maddeleri yönergenin 12, 14 ve 15’inci maddelerinden birebir alınmıştır;
+             kararlar Arapça dersine özel yazılmış örneklerdir. */
+          giris:
+            '<div class="dok-not">Zümre toplantıları ve tutanakları <b>MEB Eğitim Kurulları ve Zümreleri ' +
+            'Yönergesi</b>’ne (21.01.2025) göre yürütülür. Yönergede tutanak için <b>resmî bir form yoktur</b>; ' +
+            'aşağıdaki dokuz şablon, yönergedeki gündem maddeleri esas alınarak hazırlanmıştır. Gündem maddeleri ' +
+            'yönergeden birebir alınmış, <b>kararlar ise Arapça dersine özel</b> yazılmıştır (harf ve hareke öğretimi, ' +
+            'kelime hazinesi, harekeli metin okuma, ortak sınav, muhâdese vb.). Şablonu indir, ' +
+            'kendi zümrenin durumuna göre değiştir. Son kontrol: Ağustos 2026.</div>' +
+
+            '<div class="zum-ust"><a href="https://www.meb.gov.tr/meb_iys_dosyalar/2025_01/22103224_egitim_kurullari_ve_zumreleri_yonergesi.pdf" ' +
+            'target="_blank" rel="noopener">' + disSvg() + 'Yönergenin MEB’deki resmî metni (PDF)</a></div>' +
+
+            '<div class="tut-bas zum-bas"><i></i>Üç seviye — kim toplanır, kim onaylar</div>' +
+            '<div class="zum-seviye">' +
+              '<div class="zum-kutu"><h6>Okul Zümresi</h6><span class="zk-md">Yönerge md. 12</span>' +
+              '<dl><dt>Kimler katılır</dt><dd>Eğitim kurumundaki Arapça öğretmenlerinin tamamı</dd>' +
+              '<dt>Başkan</dt><dd>Öğretmenlerin kendi aralarından seçtiği zümre başkanı (2 yıl) ve yedek başkan</dd>' +
+              '<dt>Onay</dt><dd>Okul müdürü — kararlar onaydan sonra uygulanır</dd>' +
+              '<dt>Saklama</dt><dd>Eğitim kurumu yönetimi</dd></dl></div>' +
+
+              '<div class="zum-kutu"><h6>İlçe Zümresi</h6><span class="zk-md">Yönerge md. 14</span>' +
+              '<dl><dt>Kimler katılır</dt><dd>İlçedeki eğitim kurumlarının Arapça zümre başkanları</dd>' +
+              '<dt>Koordinatör</dt><dd>İlçe MEM müdür yardımcısı / şube müdürü; gözlemci olarak kurum müdürü ' +
+              '(oylamaya katılmaz)</dd>' +
+              '<dt>Onay</dt><dd>İl/ilçe millî eğitim müdürü — kararlar eğitim kurumlarına duyurulur</dd>' +
+              '<dt>Saklama</dt><dd>İl/ilçe millî eğitim müdürlüğü</dd></dl></div>' +
+
+              '<div class="zum-kutu"><h6>İl Zümresi</h6><span class="zk-md">Yönerge md. 15</span>' +
+              '<dl><dt>Kimler katılır</dt><dd>İldeki ilçe Arapça zümre başkanları; alanında tek öğretmen bulunan ' +
+              'okulların öğretmenleri de il zümresine katılır</dd>' +
+              '<dt>Koordinatör</dt><dd>İl MEM müdür yardımcısı / şube müdürü</dd>' +
+              '<dt>Onay</dt><dd>İl millî eğitim müdürü — kararlar ilçelere duyurulur</dd>' +
+              '<dt>Saklama</dt><dd>İl millî eğitim müdürlüğü</dd></dl></div>' +
+            '</div>' +
+
+            '<div class="tut-bas zum-bas"><i></i>Yılda üç toplantı</div>' +
+            '<div class="zum-takvim">' +
+              '<div class="zum-satir"><span class="zs-no">1</span><span class="zs-ad">Ders yılı başlamadan önce</span>' +
+              '<span class="zs-ac">Başkan seçimi, yıllık plan ve uygulama birliği, ortak sınav takvimi, ' +
+              'yöntem ve materyal kararları. Yılın en kapsamlı toplantısıdır.</span></div>' +
+              '<div class="zum-satir"><span class="zs-no">2</span><span class="zs-ad">İkinci dönem başında</span>' +
+              '<span class="zs-ac">Birinci dönem sınav analizleri, planların gerçekleşme durumu, ' +
+              'ikinci dönem tedbirleri ve sınav takvimi.</span></div>' +
+              '<div class="zum-satir"><span class="zs-no">3</span><span class="zs-ad">Ders yılı sonunda</span>' +
+              '<span class="zs-ac">Yıl içinde alınan kararların gerçekleşme durumu, yıl sonu başarı ' +
+              'değerlendirmesi ve gelecek yıl için öneriler.</span></div>' +
+            '</div>' +
+            '<div class="dok-not">Toplantı zamanları <b>Zümrelerin Toplantı Takvimi</b>’nde (yönerge EK-2) ' +
+            'belirtilen zaman dilimi içinde kalmak şartıyla planlanır. Toplantı tarihini kendi kurumunun/ilinin ' +
+            'takvimine göre yazmalısın.</div>' +
+
+            '<div class="zum-uyari"><b>Şablonu doldururken</b>' +
+            '<ul>' +
+            '<li>Noktalı yerler (………) doldurulacak alanlardır: kurum adı, tarih, sayı, isim ve oran.</li>' +
+            '<li>Gündem maddelerini <b>silmeden</b> kullan; zümrenle ilgisi olmayan maddeye “bu yıl için gündeme ' +
+            'alınmamıştır” yazmak, maddeyi atmaktan daha güvenlidir.</li>' +
+            '<li>Kararlar “ne yapılacak, kim yapacak, ne zaman” belli olacak biçimde kurulmalıdır; ' +
+            '“dikkat edilecektir” gibi havada kalan cümleler denetimde dayanak olmaz.</li>' +
+            '<li>Tutanağı <b>toplantıya katılmayanlar da imzalar</b>. İmza tablosundaki fazla satırları sil.</li>' +
+            '<li>Kararlar oy çokluğuyla alınır; eşitlik hâlinde zümre başkanının katıldığı görüş kabul edilir.</li>' +
+            '<li>Alınan kararlar <b>onaydan sonra</b> uygulamaya konur; onay bölümünü boş bırakma.</li>' +
+            '</ul></div>' +
+
+            '<div class="dok-not">Şablonlar yönergedeki gündem maddeleri esas alınarak kidefarapca.com için ' +
+            'hazırlanmış <b>örneklerdir</b>; resmî bir form değildir. Kurumunun kendi antedi ve uygulaması varsa ' +
+            'onu esas al. Word dosyaları düzenlenebilir, PDF’ler yazdırmaya hazırdır.</div>',
+          dosyalar: [
+            { ad: 'Okul Zümresi — 1. Toplantı (Sene Başı) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Yönerge md. 12 — 21 gündem maddesi, Arapça dersine özel kararlar',
+              url: 'dosyalar/zumre/okul-zumre-1-sene-basi.docx' },
+            { ad: 'Okul Zümresi — 1. Toplantı (Sene Başı) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/okul-zumre-1-sene-basi.pdf' },
+            { ad: 'Okul Zümresi — 2. Toplantı (İkinci Dönem Başı) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Birinci dönem analizleri ve ikinci dönem tedbirleri',
+              url: 'dosyalar/zumre/okul-zumre-2-ikinci-donem.docx' },
+            { ad: 'Okul Zümresi — 2. Toplantı (İkinci Dönem Başı) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/okul-zumre-2-ikinci-donem.pdf' },
+            { ad: 'Okul Zümresi — 3. Toplantı (Sene Sonu) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Yıl sonu değerlendirme ve gelecek yıl önerileri',
+              url: 'dosyalar/zumre/okul-zumre-3-sene-sonu.docx' },
+            { ad: 'Okul Zümresi — 3. Toplantı (Sene Sonu) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/okul-zumre-3-sene-sonu.pdf' },
+            { ad: 'İlçe Zümresi — 1. Toplantı (Sene Başı) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Yönerge md. 14 — ilçe geneli uygulama birliği ve ortak sınav',
+              url: 'dosyalar/zumre/ilce-zumre-1-sene-basi.docx' },
+            { ad: 'İlçe Zümresi — 1. Toplantı (Sene Başı) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/ilce-zumre-1-sene-basi.pdf' },
+            { ad: 'İlçe Zümresi — 2. Toplantı (İkinci Dönem Başı) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'İlçe geneli sınav analizi ve soru komisyonu',
+              url: 'dosyalar/zumre/ilce-zumre-2-ikinci-donem.docx' },
+            { ad: 'İlçe Zümresi — 2. Toplantı (İkinci Dönem Başı) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/ilce-zumre-2-ikinci-donem.pdf' },
+            { ad: 'İlçe Zümresi — 3. Toplantı (Sene Sonu) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Yıl sonu değerlendirme ve il zümresine iletilecek hususlar',
+              url: 'dosyalar/zumre/ilce-zumre-3-sene-sonu.docx' },
+            { ad: 'İlçe Zümresi — 3. Toplantı (Sene Sonu) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/ilce-zumre-3-sene-sonu.pdf' },
+            { ad: 'İl Zümresi — 1. Toplantı (Sene Başı) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Yönerge md. 15 — konu soru dağılım tablosu ve mesleki gelişim',
+              url: 'dosyalar/zumre/il-zumre-1-sene-basi.docx' },
+            { ad: 'İl Zümresi — 1. Toplantı (Sene Başı) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/il-zumre-1-sene-basi.pdf' },
+            { ad: 'İl Zümresi — 2. Toplantı (İkinci Dönem Başı) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'İl geneli analiz ve konu soru dağılım tablosunun güncellenmesi',
+              url: 'dosyalar/zumre/il-zumre-2-ikinci-donem.docx' },
+            { ad: 'İl Zümresi — 2. Toplantı (İkinci Dönem Başı) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/il-zumre-2-ikinci-donem.pdf' },
+            { ad: 'İl Zümresi — 3. Toplantı (Sene Sonu) — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Yıl sonu değerlendirme ve gelecek yıl için öneriler',
+              url: 'dosyalar/zumre/il-zumre-3-sene-sonu.docx' },
+            { ad: 'İl Zümresi — 3. Toplantı (Sene Sonu) — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/zumre/il-zumre-3-sene-sonu.pdf' }
+          ] },
+        { ad: 'Belirli Gün ve Haftalar',     renk: '#DB2777',
+          /* Bu kart MEB’in resmî çizelgesini ay ay taşır; işaretli günler için
+             Arapça dersine uyarlanmış pano metni, kelime ve etkinlik önerisi vardır. */
+          giris:
+            '<div class="dok-not">Aşağıdaki çizelge <b>MEB’in resmî Belirli Gün ve Haftalar Çizelgesi</b>’dir ' +
+            '(meb.gov.tr’de yayımlanan, 18.01.2023 tarihli düzenlemeye dayanan liste — <b>70 madde</b>). ' +
+            'Haftaya bağlı olanların tarihi her yıl kayar; <b>bağlayıcı olan, okulunuzun kendi ' +
+            'görev dağılım çizelgesidir</b>. Yeşil etiketli satırlarda, o gün için Arapça dersine ' +
+            'uyarlanmış pano metni ve etkinlik önerisi bulacaksınız. Son kontrol: Ağustos 2026.</div>' +
+            '<div class="bgh-ust"><a href="https://www.meb.gov.tr/belirli-gun-ve-haftalar-cizelgesi/duyuru/11814" ' +
+            'target="_blank" rel="noopener">' + disSvg() + 'Çizelgenin MEB’deki resmî sayfası</a></div>' +
+            '<div class="tut-bas"><i></i>Resmî çizelge — ay ay</div>' +
+            '<div class="bgh-takvim">' +
+              '<div class="bgh-ay"><h6>EYLÜL</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">7 Eylül</span><span class="bgh-a">Uluslararası Temiz Hava Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Eylülün 2. cumartesi</span><span class="bgh-a">Dünya İlk Yardım Günü</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">Eylülün 3. haftası</span><span class="bgh-a">İlköğretim Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Haftanın son günü</span><span class="bgh-a">Öğrenciler Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">19 Eylül</span><span class="bgh-a">Gaziler Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Ders yılının 2. haftası</span><span class="bgh-a">15 Temmuz Demokrasi ve Millî Birlik Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">28 Eylül</span><span class="bgh-a">Dünya Okul Sütü Günü</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>EKİM</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">Ekimin ilk haftası</span><span class="bgh-a">Disleksi Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">O haftanın perşembesi</span><span class="bgh-a">Dünya Disleksi Günü</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">Diyanet’in belirlediği hafta</span><span class="bgh-a">Mevlid-i Nebî Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">4 Ekim</span><span class="bgh-a">Hayvanları Koruma Günü</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">8-12 Ekim</span><span class="bgh-a">Ahilik Kültürü Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">13 Ekim</span><span class="bgh-a">Dünya Afet Azaltma Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">24 Ekim</span><span class="bgh-a">Birleşmiş Milletler Günü</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">29 Ekim</span><span class="bgh-a">Cumhuriyet Bayramı</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">29 Ekim - 4 Kasım</span><span class="bgh-a">Kızılay Haftası</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>KASIM</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">2-8 Kasım</span><span class="bgh-a">Lösemili Çocuklar Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">3-9 Kasım</span><span class="bgh-a">Organ Bağışı ve Nakli Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">10-16 Kasım</span><span class="bgh-a">Atatürk Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">12 Kasım</span><span class="bgh-a">Afet Eğitimi Hazırlık Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">14 Kasım</span><span class="bgh-a">Dünya Diyabet Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">20 Kasım</span><span class="bgh-a">Dünya Felsefe Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">20 Kasım</span><span class="bgh-a">Dünya Çocuk Hakları Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">21-27 Kasım</span><span class="bgh-a">Ağız ve Diş Sağlığı Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">24 Kasım</span><span class="bgh-a">Öğretmenler Günü</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>ARALIK</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">3 Aralık</span><span class="bgh-a">Dünya Engelliler Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">4 Aralık</span><span class="bgh-a">Dünya Madenciler Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">5 Aralık</span><span class="bgh-a">Türk Kadınına Seçme ve Seçilme Hakkının Verilişi</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">7-17 Aralık</span><span class="bgh-a">Mevlana Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">10 Aralığı içine alan hafta</span><span class="bgh-a">İnsan Hakları ve Demokrasi Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">12-18 Aralık</span><span class="bgh-a">Tutum, Yatırım ve Türk Malları Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">20-27 Aralık</span><span class="bgh-a">Mehmet Âkif Ersoyu Anma Haftası</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>OCAK - ŞUBAT</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">Ocağın 2. haftası</span><span class="bgh-a">Enerji Tasarrufu Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Şubatın son haftası</span><span class="bgh-a">Vergi Haftası</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>MART</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">1 Martı içine alan hafta</span><span class="bgh-a">Yeşilay Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Martın ilk haftası</span><span class="bgh-a">Girişimcilik Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">8 Mart</span><span class="bgh-a">Dünya Kadınlar Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">8-14 Mart</span><span class="bgh-a">Bilim ve Teknoloji Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">12 Mart</span><span class="bgh-a">İstiklâl Marşının Kabulü ve Mehmet Âkif Ersoyu Anma Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">15-21 Mart</span><span class="bgh-a">Tüketiciyi Koruma Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">18 Mart</span><span class="bgh-a">Şehitler Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">18-24 Mart</span><span class="bgh-a">Yaşlılar Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">21 Mart Nevruz haftası</span><span class="bgh-a">Türk Dünyası ve Toplulukları Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">21-26 Mart</span><span class="bgh-a">Orman Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">22 Mart</span><span class="bgh-a">Dünya Su Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">27 Mart</span><span class="bgh-a">Dünya Tiyatrolar Günü</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">Martın son pazartesi haftası</span><span class="bgh-a">Kütüphaneler Haftası</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>NİSAN</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">1-7 Nisan</span><span class="bgh-a">Kanser Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">2 Nisan</span><span class="bgh-a">Dünya Otizm Farkındalık Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">7 Nisan</span><span class="bgh-a">Kişisel Verileri Koruma Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">7-13 Nisan</span><span class="bgh-a">Dünya Sağlık Günü / Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">15-22 Nisan</span><span class="bgh-a">Turizm Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">23 Nisan</span><span class="bgh-a">Ulusal Egemenlik ve Çocuk Bayramı</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">26 Nisan</span><span class="bgh-a">Dünya Fikrî Mülkiyet Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">29 Nisan</span><span class="bgh-a">Kûtül Amâre Zaferi</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>MAYIS</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">Mayısın ilk haftası</span><span class="bgh-a">Bilişim Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Mayısın ilk haftası</span><span class="bgh-a">Trafik ve İlkyardım Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">4-10 Mayıs</span><span class="bgh-a">İş Sağlığı ve Güvenliği Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Mayısın 2. haftası</span><span class="bgh-a">Vakıflar Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Mayısın 2. pazarı</span><span class="bgh-a">Anneler Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">10-16 Mayıs</span><span class="bgh-a">Engelliler Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">18-24 Mayıs</span><span class="bgh-a">Müzeler Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">19 Mayıs</span><span class="bgh-a">Atatürkü Anma, Gençlik ve Spor Bayramı</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">25 Mayıs</span><span class="bgh-a">Etik Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">29 Mayıs</span><span class="bgh-a">İstanbulun Fethi</span></div>' +
+              '</div>' +
+              '<div class="bgh-ay"><h6>HAZİRAN - AĞUSTOS</h6>' +
+              '<div class="bgh-satir"><span class="bgh-t">Haziranın ilk haftası</span><span class="bgh-a">Hayat Boyu Öğrenme Haftası</span></div>' +
+              '<div class="bgh-satir ar"><span class="bgh-t">Haziranın 2. haftası</span><span class="bgh-a">Çevre ve İklim Değişikliği Haftası</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Haziranın 3. pazarı</span><span class="bgh-a">Babalar Günü</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">30 Ağustos</span><span class="bgh-a">Zafer Bayramı</span></div>' +
+              '<div class="bgh-satir"><span class="bgh-t">Gerçekleştiği tarihlerde</span><span class="bgh-a">Mahallî Kurtuluş Günleri, Atatürk Günleri ve Tarihî Günler</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="tut-bas"><i></i>Arapça köşesi — bu 12 günü derse nasıl bağlarsınız</div>' +
+            '<div class="dok-not">Her kartta: günün <b>Arapça adı</b>, panoya asabileceğiniz <b>hazır bir cümle</b> ' +
+            've çevirisi, <b>beş anahtar kelime</b> ve <b>bir etkinlik önerisi</b> var. Kelimeler harekelidir; ' +
+            'olduğu gibi kesip pano ya da kelime kartı yapabilirsiniz.</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">İlköğretim Haftası</span>' +
+              '<span class="bgh-k-tar">Eylülün 3. haftası</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">أُسْبُوعُ التَّعْلِيمِ الِابْتِدَائِيِّ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">أَهْلًا وَسَهْلًا بِكُمْ فِي مَدْرَسَتِنَا</div>' +
+              '<div class="bgh-cev"><i>Okulumuza hoş geldiniz.</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْمَدْرَسَة</b>okul</span>' +
+              '<span><b lang="ar" dir="rtl">الصَّفّ</b>sınıf</span>' +
+              '<span><b lang="ar" dir="rtl">التِّلْمِيذ</b>öğrenci</span>' +
+              '<span><b lang="ar" dir="rtl">الْحَقِيبَة</b>çanta</span>' +
+              '<span><b lang="ar" dir="rtl">الدَّفْتَر</b>defter</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Sınıf kapısına Arapça “hoş geldiniz” panosu asın; her öğrencinin adını Arapça harflerle yazıp yaka kartı yapın; sınıftaki eşyaların (kapı, pencere, tahta, sıra) Arapça adlarını küçük etiketlerle üzerlerine yapıştırın. Yılın ilk haftasında bu, kalıcı bir kelime hazinesi bırakır.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Mevlid-i Nebî Haftası</span>' +
+              '<span class="bgh-k-tar">Diyanet’in belirlediği hafta</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">أُسْبُوعُ الْمَوْلِدِ النَّبَوِيِّ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِلْعَالَمِينَ</div>' +
+              '<div class="bgh-cev">“Biz seni ancak âlemlere rahmet olarak gönderdik.” <i>Enbiyâ sûresi, 107</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الرَّسُول</b>peygamber</span>' +
+              '<span><b lang="ar" dir="rtl">الرَّحْمَة</b>merhamet</span>' +
+              '<span><b lang="ar" dir="rtl">الْأَخْلَاق</b>ahlâk</span>' +
+              '<span><b lang="ar" dir="rtl">الصِّدْق</b>doğruluk</span>' +
+              '<span><b lang="ar" dir="rtl">الْأَمَانَة</b>emanet</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Peygamber Efendimizin güzel ahlâkını anlatan Arapça kelime kartları hazırlayın; kısa bir hadîs-i şerifi Arapça aslı ve Türkçe anlamıyla birlikte panoya yazın; öğrenciler <span class="bgh-ar" style="display:inline;font-size:1.05rem">أُحِبُّ رَسُولَ اللَّهِ</span> cümlesini yazı çalışması olarak işlesin.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Ahilik Kültürü Haftası</span>' +
+              '<span class="bgh-k-tar">8-12 Ekim</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">أُسْبُوعُ ثَقَافَةِ الْأَخِيَّةِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">الْمُؤْمِنُ لِلْمُؤْمِنِ كَالْبُنْيَانِ يَشُدُّ بَعْضُهُ بَعْضًا</div>' +
+              '<div class="bgh-cev">“Mü’min mü’mine, parçaları birbirini destekleyen bir bina gibidir.” <i>Buhârî – Müslim</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">أَخِي</b>kardeşim</span>' +
+              '<span><b lang="ar" dir="rtl">الْأُخُوَّة</b>kardeşlik</span>' +
+              '<span><b lang="ar" dir="rtl">الْحِرْفَة</b>zanaat</span>' +
+              '<span><b lang="ar" dir="rtl">الْأَمَانَة</b>dürüstlük</span>' +
+              '<span><b lang="ar" dir="rtl">التَّعَاوُن</b>yardımlaşma</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Bu hafta Arapça dersi için hazır bir hediyedir: <b>“ahi” kelimesinin kendisi Arapçadır</b> (<span class="bgh-ar" style="display:inline;font-size:1.05rem">أَخِي</span> = kardeşim). Tahtada أ-خ-و kökünü gösterip aynı kökten gelen kelimeleri türetin; ardından Türkçedeki Arapça kökenli meslek ve ahlâk kelimelerini (esnaf, sanat, emanet, hizmet, adalet) bulma yarışması yapın.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Cumhuriyet Bayramı</span>' +
+              '<span class="bgh-k-tar">29 Ekim</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">عِيدُ الْجُمْهُورِيَّةِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">عِيدُ الْجُمْهُورِيَّةِ مُبَارَكٌ — ٢٩ تِشْرِينَ الْأَوَّلِ</div>' +
+              '<div class="bgh-cev"><i>Cumhuriyet Bayramı kutlu olsun — 29 Ekim.</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْجُمْهُورِيَّة</b>cumhuriyet</span>' +
+              '<span><b lang="ar" dir="rtl">الْوَطَن</b>vatan</span>' +
+              '<span><b lang="ar" dir="rtl">الْعَلَم</b>bayrak</span>' +
+              '<span><b lang="ar" dir="rtl">الِاسْتِقْلَال</b>bağımsızlık</span>' +
+              '<span><b lang="ar" dir="rtl">الْعِيد</b>bayram</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Tarihi Arap rakamlarıyla (٢٩) yazma çalışması yapın; “vatan” temalı bir Arapça kelime bulmacası dağıtın; bayrak renkleri üzerinden renk kelimelerini (أَحْمَر، أَبْيَض) tekrar edin. Pano yazısını öğrencilere hüsn-i hat denemesi olarak yazdırabilirsiniz.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Öğretmenler Günü</span>' +
+              '<span class="bgh-k-tar">24 Kasım</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">عِيدُ الْمُعَلِّمِينَ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">قُمْ لِلْمُعَلِّمِ وَفِّهِ التَّبْجِيلَا ٭ كَادَ الْمُعَلِّمُ أَنْ يَكُونَ رَسُولَا</div>' +
+              '<div class="bgh-cev">“Öğretmen için ayağa kalk, ona saygını tam göster; öğretmen az kalsın peygamber olacaktı.” <i>Ahmed Şevkî</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْمُعَلِّم</b>öğretmen</span>' +
+              '<span><b lang="ar" dir="rtl">الْعِلْم</b>ilim</span>' +
+              '<span><b lang="ar" dir="rtl">الشُّكْر</b>teşekkür</span>' +
+              '<span><b lang="ar" dir="rtl">الْقُدْوَة</b>örnek</span>' +
+              '<span><b lang="ar" dir="rtl">التِّلْمِيذ</b>öğrenci</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Öğrenciler Arapça teşekkür kartı yazsın: <span class="bgh-ar" style="display:inline;font-size:1.05rem">شُكْرًا يَا مُعَلِّمِي</span> / <span class="bgh-ar" style="display:inline;font-size:1.05rem">أَنْتَ قُدْوَتِي</span>. Ahmed Şevkî’nin yukarıdaki meşhur beytini panoya asın — Arapça şiirle ilk tanışma için çok uygun, kısa ve akılda kalıcı bir metindir.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">İnsan Hakları ve Demokrasi Haftası</span>' +
+              '<span class="bgh-k-tar">10 Aralığı içine alan hafta</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">أُسْبُوعُ حُقُوقِ الْإِنْسَانِ وَالدِّيمُقْرَاطِيَّةِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">النَّاسُ سَوَاسِيَةٌ كَأَسْنَانِ الْمُشْطِ</div>' +
+              '<div class="bgh-cev">“İnsanlar tarağın dişleri gibi eşittir.” <i>meşhur bir söz</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْحَقّ</b>hak</span>' +
+              '<span><b lang="ar" dir="rtl">الْعَدْل</b>adalet</span>' +
+              '<span><b lang="ar" dir="rtl">الْحُرِّيَّة</b>özgürlük</span>' +
+              '<span><b lang="ar" dir="rtl">الْمُسَاوَاة</b>eşitlik</span>' +
+              '<span><b lang="ar" dir="rtl">الِاحْتِرَام</b>saygı</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Çocuk Hakları Sözleşmesinden birkaç maddeyi Arapça–Türkçe iki dilli bir panoya yazın; <span class="bgh-ar" style="display:inline;font-size:1.05rem">لِي الْحَقُّ فِي…</span> (…hakkım var) kalıbıyla her öğrenciye bir cümle kurdurun. Kalıp tekrarı sayesinde dilbilgisi de çalışılmış olur.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">İstiklâl Marşının Kabulü</span>' +
+              '<span class="bgh-k-tar">12 Mart</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">ذِكْرَى قَبُولِ النَّشِيدِ الْوَطَنِيِّ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">اَلنَّشِيدُ الْوَطَنِيُّ التُّرْكِيُّ — ١٢ آذَار</div>' +
+              '<div class="bgh-cev"><i>Türk İstiklâl Marşı — 12 Mart.</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">النَّشِيد</b>marş</span>' +
+              '<span><b lang="ar" dir="rtl">الشَّاعِر</b>şair</span>' +
+              '<span><b lang="ar" dir="rtl">الْحُرِّيَّة</b>hürriyet</span>' +
+              '<span><b lang="ar" dir="rtl">الْبُطُولَة</b>kahramanlık</span>' +
+              '<span><b lang="ar" dir="rtl">الرَّايَة</b>sancak</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Bu, yılın en verimli Arapça etkinliğidir: İstiklâl Marşının ilk iki kıtasındaki <b>Arapça kökenli kelimeleri</b> (istiklâl, hür, hilâl, ırk, ezan, şehit, hak, ebediyen) öğrencilere buldurun ve asıl Arapça biçimleriyle eşleştirin. Mehmet Âkifin Arapça bildiğini, Kur’an tercümesi üzerinde çalıştığını da hatırlatmak, dersin kıymetini öğrenciye somut olarak gösterir.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Dünya Su Günü</span>' +
+              '<span class="bgh-k-tar">22 Mart</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">الْيَوْمُ الْعَالَمِيُّ لِلْمِيَاهِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَيْءٍ حَيٍّ</div>' +
+              '<div class="bgh-cev">“Her canlı şeyi sudan yarattık.” <i>Enbiyâ sûresi, 30</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْمَاء</b>su</span>' +
+              '<span><b lang="ar" dir="rtl">الْبَحْر</b>deniz</span>' +
+              '<span><b lang="ar" dir="rtl">النَّهْر</b>nehir</span>' +
+              '<span><b lang="ar" dir="rtl">الْمَطَر</b>yağmur</span>' +
+              '<span><b lang="ar" dir="rtl">التَّوْفِير</b>tasarruf</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Okuldaki musluk başlarına <span class="bgh-ar" style="display:inline;font-size:1.05rem">لَا تُسْرِفْ فِي الْمَاءِ</span> (suyu israf etme) etiketleri asın; su döngüsünü Arapça kelimelerle etiketlenmiş bir şema hâlinde çizdirin. Emir kipinin olumsuzu bu vesileyle doğal bir bağlamda öğretilmiş olur.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Kütüphaneler Haftası</span>' +
+              '<span class="bgh-k-tar">Martın son pazartesi haftası</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">أُسْبُوعُ الْمَكْتَبَاتِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">وَخَيْرُ جَلِيسٍ فِي الزَّمَانِ كِتَابُ</div>' +
+              '<div class="bgh-cev">“Zamanın en hayırlı arkadaşı kitaptır.” <i>Mütenebbî</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْكِتَاب</b>kitap</span>' +
+              '<span><b lang="ar" dir="rtl">الْمَكْتَبَة</b>kütüphane</span>' +
+              '<span><b lang="ar" dir="rtl">الْقِرَاءَة</b>okuma</span>' +
+              '<span><b lang="ar" dir="rtl">الْقَامُوس</b>sözlük</span>' +
+              '<span><b lang="ar" dir="rtl">الْقِصَّة</b>hikâye</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Okul kütüphanesinde küçük bir “Arapça kitaplar” köşesi kurun; her öğrenci okuduğu bir hikâyeyi üç Arapça cümleyle anlatsın. <span class="bgh-ar" style="display:inline;font-size:1.05rem">اِقْرَأْ</span> yazılı bir afiş, hem ilk vahyi hatırlatır hem de emir kipi örneği olur.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Ulusal Egemenlik ve Çocuk Bayramı</span>' +
+              '<span class="bgh-k-tar">23 Nisan</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">عِيدُ السِّيَادَةِ الْوَطَنِيَّةِ وَالطِّفْلِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">مَرْحَبًا بِأَطْفَالِ الْعَالَمِ — ٢٣ نِيسَان</div>' +
+              '<div class="bgh-cev"><i>Dünya çocuklarına merhaba — 23 Nisan.</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الطِّفْل</b>çocuk</span>' +
+              '<span><b lang="ar" dir="rtl">السَّلَام</b>barış</span>' +
+              '<span><b lang="ar" dir="rtl">الصَّدِيق</b>arkadaş</span>' +
+              '<span><b lang="ar" dir="rtl">الْعَالَم</b>dünya</span>' +
+              '<span><b lang="ar" dir="rtl">الْفَرَح</b>sevinç</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> 23 Nisanın “dünya çocukları” teması Arapça dersine birebir uyar: Arap ülkelerinin adlarını Arapça yazıp bayraklarıyla eşleştirin; <span class="bgh-ar" style="display:inline;font-size:1.05rem">السَّلَامُ عَلَيْكُمْ</span> ve <span class="bgh-ar" style="display:inline;font-size:1.05rem">مَرْحَبًا</span> ile başlayan çok dilli bir selamlaşma panosu hazırlayın.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Atatürkü Anma, Gençlik ve Spor Bayramı</span>' +
+              '<span class="bgh-k-tar">19 Mayıs</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">عِيدُ الشَّبَابِ وَالرِّيَاضَةِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">اَلْعَقْلُ السَّلِيمُ فِي الْجِسْمِ السَّلِيمِ</div>' +
+              '<div class="bgh-cev">“Sağlam akıl sağlam bedendedir.” <i>meşhur bir söz</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الشَّبَاب</b>gençlik</span>' +
+              '<span><b lang="ar" dir="rtl">الرِّيَاضَة</b>spor</span>' +
+              '<span><b lang="ar" dir="rtl">الْمَلْعَب</b>saha</span>' +
+              '<span><b lang="ar" dir="rtl">الْفَرِيق</b>takım</span>' +
+              '<span><b lang="ar" dir="rtl">الصِّحَّة</b>sağlık</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Spor dallarının Arapça adlarıyla eşleştirme oyunu yapın: <span class="bgh-ar" style="display:inline;font-size:1.05rem">كُرَةُ الْقَدَمِ، كُرَةُ السَّلَّةِ، السِّبَاحَة، الْجَرْي</span>. İzâfet terkibinin (كُرَةُ الْقَدَمِ) en kolay anlatıldığı yer burasıdır.</div>' +
+            '</div>' +
+            '<div class="bgh-kart">' +
+              '<div class="bgh-k-ust"><span class="bgh-k-ad">Çevre ve İklim Değişikliği Haftası</span>' +
+              '<span class="bgh-k-tar">Haziranın 2. haftası</span>' +
+              '<span class="bgh-k-ar"><span class="bgh-ar" lang="ar" dir="rtl">أُسْبُوعُ الْبِيئَةِ وَتَغَيُّرِ الْمُنَاخِ</span></span></div>' +
+              '<div class="bgh-pano"><span class="bgh-et">Panoya yazılacak cümle</span>' +
+              '<div class="bgh-ar" lang="ar" dir="rtl">إِنَّ اللَّهَ جَمِيلٌ يُحِبُّ الْجَمَالَ</div>' +
+              '<div class="bgh-cev">“Allah güzeldir, güzelliği sever.” <i>Müslim</i></div></div>' +
+              '<div class="bgh-kel">' +
+              '<span><b lang="ar" dir="rtl">الْبِيئَة</b>çevre</span>' +
+              '<span><b lang="ar" dir="rtl">الشَّجَرَة</b>ağaç</span>' +
+              '<span><b lang="ar" dir="rtl">النَّظَافَة</b>temizlik</span>' +
+              '<span><b lang="ar" dir="rtl">التَّلَوُّث</b>kirlilik</span>' +
+              '<span><b lang="ar" dir="rtl">الْأَرْض</b>yeryüzü</span>' +
+              '</div>' +
+              '<div class="bgh-etk"><b>Etkinlik:</b> Okul bahçesindeki ağaçlara Arapça ad etiketleri asın; <span class="bgh-ar" style="display:inline;font-size:1.05rem">أَنَا أَحْمِي بِيئَتِي</span> (çevremi korurum) sloganıyla afiş çalışması yaptırın. Yıl sonuna denk geldiği için öğrendikleri fiilleri tekrar etmek için iyi bir fırsattır.</div>' +
+            '</div>' +
+            '<div class="tut-ipucu"><b>Uygulamada dikkat edilecekler</b><ul>' +
+              '<li>Haftaya bağlı günlerin tarihi her yıl değişir; eylül ayında okulun kendi çizelgesi yayımlanınca ' +
+              'yıllık planınızdaki tarihleri ona göre güncelleyin.</li>' +
+              '<li>Mevlid-i Nebî Haftası’nın tarihini Diyanet İşleri Başkanlığı belirler; hicrî takvime bağlı olduğu ' +
+              'için her yıl yaklaşık 11 gün öne kayar.</li>' +
+              '<li>Bir gün/hafta için görev size verildiyse etkinlik sonrası <b>rapor/tutanak</b> tutmayı unutmayın; ' +
+              'denetimde istenen budur. Aşağıdaki şablonu indirip kullanabilirsiniz.</li>' +
+              '<li>Panoyu yalnız Arapça bırakmayın: her cümlenin altına Türkçe anlamını da yazın; ' +
+              'okulda Arapça bilmeyen öğrenci ve veliler de okuyabilsin.</li>' +
+              '<li>Harekeleri silmeyin. Öğrenci harekesiz metni doğru okuyamaz, panodan yanlış öğrenir.</li>' +
+            '</ul></div>' +
+            '<div class="dok-not">Çizelge MEB’in resmî sayfasından alınmıştır; Arapça köşesindeki pano metinleri, ' +
+            'kelimeler ve etkinlik önerileri kidefarapca.com için hazırlanmış <b>öneri</b> niteliğindedir, ' +
+            'resmî bir zorunluluk değildir.</div>',
+          dosyalar: [
+            { ad: 'Belirli Gün ve Haftalar Görev Dağılım Çizelgesi — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'İndir, okulunun gün/hafta dağılımına göre doldur',
+              url: 'dosyalar/belirli-gun/gorev-dagilim-cizelgesi.docx' },
+            { ad: 'Belirli Gün ve Haftalar Görev Dağılım Çizelgesi — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/belirli-gun/gorev-dagilim-cizelgesi.pdf' },
+            { ad: 'Etkinlik Raporu ve Tutanağı — düzenlenebilir (Word)', tur: 'doc',
+              kaynak: 'Etkinlikten sonra doldurulacak rapor şablonu',
+              url: 'dosyalar/belirli-gun/etkinlik-raporu.docx' },
+            { ad: 'Etkinlik Raporu ve Tutanağı — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/belirli-gun/etkinlik-raporu.pdf' }
+          ] },
+        { ad: 'Veli Toplantısı Tutanakları', renk: '#CA8A04',
+          /* Bu kart bir "nasıl yazılır" rehberi + doldurulmuş örnek taşır;
+             altındaki iki satır aynı metnin Word ve PDF hâlidir. */
+          giris:
+            '<div class="dok-not">Veli toplantısı tutanağı, toplantının <b>yapıldığını ve nelerin ' +
+            'konuşulduğunu</b> belgeleyen resmî bir kayıttır; okul/sınıf dosyasında saklanır ve ' +
+            'denetimde, veli görüşmelerinde, öğrenci hakkında karar alınırken dayanak olur. ' +
+            'Aşağıda önce <b>tutanakta bulunması gerekenler</b>, sonra <b>doldurulmuş bir örnek</b> var. ' +
+            'Aynı metnin düzenlenebilir Word ve yazdırmaya hazır PDF hâlini en alttan indirebilirsin.</div>' +
+
+            '<div class="tut-bas"><i></i>Tutanakta mutlaka bulunması gerekenler</div>' +
+            '<ol class="tut-liste">' +
+            '<li><b>Antet:</b> okulun tam adı ve öğretim yılı (ör. “… Ortaokulu Müdürlüğü — 2026-2027 Eğitim-Öğretim Yılı”).</li>' +
+            '<li><b>Belgenin adı:</b> kaçıncı dönem, kaçıncı toplantı olduğu yazılır: “1. Dönem 1. Veli Toplantısı Tutanağı”.</li>' +
+            '<li><b>Sınıf / şube:</b> toplantının hangi sınıf için yapıldığı (ör. 6-A). Okul geneli ise “Genel veli toplantısı” denir.</li>' +
+            '<li><b>Yer, tarih ve saat:</b> başlama saati yazılır, kapanış saati sonda tekrar belirtilir.</li>' +
+            '<li><b>Toplantıyı yöneten:</b> sınıf/şube rehber öğretmeninin adı, soyadı ve unvanı; varsa katılan idareci ve branş öğretmenleri.</li>' +
+            '<li><b>Katılım:</b> sınıf mevcudu, davet edilen ve toplantıya katılan veli sayısı.</li>' +
+            '<li><b>Gündem:</b> toplantıdan <b>önce</b> maddeler hâlinde yazılır; toplantıda bu sıra izlenir.</li>' +
+            '<li><b>Görüşmelerin özeti:</b> her maddenin altına konuşulanlar kısa, tarafsız ve üçüncü şahıs diliyle yazılır.</li>' +
+            '<li><b>Alınan kararlar:</b> numaralandırılır; her karar “ne yapılacak, kim yapacak, ne zaman” belli olacak şekilde kurulur.</li>' +
+            '<li><b>İmzalar ve ek:</b> tutanağı düzenleyen öğretmen imzalar, okul müdürü onaylar; katılan velilerin ad-soyad ve imzasını taşıyan <b>imza sirküsü</b> tutanağın ayrılmaz ekidir.</li>' +
+            '</ol>' +
+
+            '<div class="tut-bas"><i></i>Doldurulmuş örnek</div>' +
+            '<div class="tut-kagit">' +
+            '<p class="tk-ust">… ORTAOKULU MÜDÜRLÜĞÜ<br>2026-2027 Eğitim-Öğretim Yılı</p>' +
+            '<p class="tk-ad">1. DÖNEM 1. VELİ TOPLANTISI TUTANAĞI</p>' +
+            '<div class="tk-satir"><span class="tk-et">Sınıf / Şube</span><span>6-A</span></div>' +
+            '<div class="tk-satir"><span class="tk-et">Toplantı Yeri</span><span>6-A sınıfı</span></div>' +
+            '<div class="tk-satir"><span class="tk-et">Tarih / Saat</span><span>14 Ekim 2026 Çarşamba — 17.00</span></div>' +
+            '<div class="tk-satir"><span class="tk-et">Toplantıyı Yöneten</span><span>Sınıf Rehber Öğretmeni [Ad Soyad]</span></div>' +
+            '<div class="tk-satir"><span class="tk-et">Mevcut / Katılan Veli</span><span>24 / 19</span></div>' +
+
+            '<h6>GÜNDEM</h6>' +
+            '<ol>' +
+            '<li>Açılış, yoklama ve gündemin okunması</li>' +
+            '<li>Okul işleyişinin ve sınıf kurallarının tanıtılması</li>' +
+            '<li>Öğrencilerin genel durumu; devamsızlık ve derse hazırlık</li>' +
+            '<li>Arapça dersinde izlenecek yöntem, kaynaklar ve ödev takibi</li>' +
+            '<li>Sınav takvimi ve değerlendirme ölçütleri</li>' +
+            '<li>Sınıf veli temsilcisinin seçimi</li>' +
+            '<li>Velilerin görüş ve önerileri</li>' +
+            '<li>Dilek ve temenniler, kapanış</li>' +
+            '</ol>' +
+
+            '<h6>GÖRÜŞMELER</h6>' +
+            '<p>Toplantı, sınıf rehber öğretmeni [Ad Soyad] tarafından açıldı; katılan velilere teşekkür edilerek gündem maddeleri okundu.</p>' +
+            '<p>Okula giriş-çıkış saatleri, sınıf kuralları ve devamsızlığın karneye ile sınıf geçmeye etkisi anlatıldı; e-Okul üzerinden not ve devamsızlık takibinin nasıl yapılacağı gösterildi.</p>' +
+            '<p>Arapça dersinde kullanılacak kaynaklar tanıtıldı; günlük kısa kelime tekrarının ve düzenli okuma alışkanlığının kalıcı öğrenmedeki payı vurgulandı.</p>' +
+            '<p>Birinci dönem sınav takvimi paylaşıldı; ölçme ve değerlendirmede hangi ölçütlerin esas alınacağı açıklandı.</p>' +
+            '<p>Söz alan veliler ödev yükü, ders dışı etkinlikler ve okul-veli iletişimi hakkındaki görüşlerini bildirdi. Bireysel öğrenci durumları toplantı sonrasına bırakıldı.</p>' +
+
+            '<h6>ALINAN KARARLAR</h6>' +
+            '<ol>' +
+            '<li>Velilerin e-Okul ve okul iletişim grubunu haftada en az bir kez kontrol etmesine,</li>' +
+            '<li>Devamsızlığı beş günü aşan öğrencilerin velilerinin okul yönetimince yazılı olarak bilgilendirilmesine,</li>' +
+            '<li>Arapça dersi için her hafta bir kelime tekrar kâğıdı verilmesine, velinin imzalayarak geri göndermesine,</li>' +
+            '<li>Sınıf veli temsilciliğine [Ad Soyad], yedek üyeliğe [Ad Soyad] seçilmesine,</li>' +
+            '<li>Bireysel öğrenci görüşmelerinin öğretmenin ders dışı görüşme saatinde yapılmasına,</li>' +
+            '<li>Bir sonraki veli toplantısının ikinci dönem başında yapılmasına</li>' +
+            '</ol>' +
+            '<p>katılanların oy birliğiyle karar verildi.</p>' +
+
+            '<p class="tk-kapanis">Toplantı saat 18.15’te sona ermiştir. Gündemdeki maddeler görüşülmüş, alınan kararlar katılanlara okunmuş ve işbu tutanak tarafımızca düzenlenerek imza altına alınmıştır. <b>14/10/2026</b><br>' +
+            '<b>EK:</b> Veli imza sirküsü (1 sayfa)</p>' +
+            '<div class="tk-imza"><span>[Ad Soyad]<br>Sınıf Rehber Öğretmeni</span>' +
+            '<span>[Ad Soyad]<br>Sınıf Veli Temsilcisi</span>' +
+            '<span>Uygundur<br>[Ad Soyad] — Okul Müdürü</span></div>' +
+            '</div>' +
+
+            '<div class="tut-ipucu"><b>Sık yapılan hatalar</b>' +
+            '<ul>' +
+            '<li>Tutanak toplantıdan günler sonra hatırlayarak değil, <b>toplantı sırasında</b> tutulur; kararlar kapanıştan önce katılanlara okunur.</li>' +
+            '<li>Öğrenci adı verilerek olumsuz değerlendirme <b>yazılmaz</b>; bireysel konular veliyle ayrı görüşülür. Tutanak birden çok kişinin okuyacağı bir belgedir.</li>' +
+            '<li>“Ödevlere dikkat edilecek” gibi havada kalan kararlar yerine kim, neyi, ne zaman yapacak belli olacak şekilde yazılır.</li>' +
+            '<li>İmza sirküsü boş bırakılmaz; katılmayan velinin karşısına “katılmadı” yazılır.</li>' +
+            '<li>Tutanak ıslak imzalı olarak öğretim yılı boyunca sınıf/okul dosyasında saklanır.</li>' +
+            '</ul></div>' +
+
+            '<div class="dok-not">Şablon; MEB Okul Öncesi Eğitim ve İlköğretim Kurumları Yönetmeliği ile ' +
+            'Ortaöğretim Kurumları Yönetmeliğinin veli toplantısı ve rehberlik hükümleri esas alınarak ' +
+            'hazırlanmış <b>genel bir örnektir</b>; okulunun kendi antedi ve uygulaması varsa onu esas al.</div>',
+          dosyalar: [
+            { ad: 'Veli Toplantısı Tutanağı — düzenlenebilir şablon (Word)', tur: 'doc',
+              kaynak: 'İndir, okul adını ve gündemi kendine göre düzenle',
+              url: 'dosyalar/tutanak/veli-toplantisi-tutanagi.docx' },
+            { ad: 'Veli Toplantısı Tutanağı + İmza Sirküsü — yazdırmaya hazır (PDF)',
+              url: 'dosyalar/tutanak/veli-toplantisi-tutanagi.pdf' }
+          ] },
+        { ad: 'Mevzuat & Yönetmelikler',     renk: '#475569',
+          giris: '<div class="dok-not">Bu başlıktaki belgeler sitede tutulmuyor; her satır ' +
+                 'ilgili kurumun <b>resmî adresine</b> gider. Böylece mevzuat değişince ' +
+                 'buradaki metin de kendiliğinden güncel kalır. Son kontrol: Ağustos 2026.</div>',
+          dosyalar: [
+          /* tur:'site' → dosya bizde değil, kurumun resmî adresinde.
+             Kanunların tam metni mevzuat.gov.tr'de doğrudan PDF olarak duruyor;
+             yönetmeliklerde ise güncel (konsolide) metin sayfasına bağlanıyoruz. */
+          { ad: '1739 sayılı Millî Eğitim Temel Kanunu', tur: 'site', kaynak: 'mevzuat.gov.tr — resmî tam metin (PDF)',
+            url: 'https://www.mevzuat.gov.tr/MevzuatMetin/1.5.1739.pdf' },
+          { ad: '657 sayılı Devlet Memurları Kanunu', tur: 'site', kaynak: 'mevzuat.gov.tr — resmî tam metin (PDF)',
+            url: 'https://www.mevzuat.gov.tr/MevzuatMetin/1.5.657.pdf' },
+          { ad: '7354 sayılı Öğretmenlik Meslek Kanunu', tur: 'site', kaynak: 'mevzuat.gov.tr — resmî tam metin (PDF)',
+            url: 'https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7354.pdf' },
+          { ad: '222 sayılı İlköğretim ve Eğitim Kanunu', tur: 'site', kaynak: 'mevzuat.gov.tr — resmî tam metin (PDF)',
+            url: 'https://www.mevzuat.gov.tr/MevzuatMetin/1.4.222.pdf' },
+          { ad: 'MEB Ortaöğretim Kurumları Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=18812&MevzuatTur=7&MevzuatTertip=5' },
+          { ad: 'MEB Okul Öncesi Eğitim ve İlköğretim Kurumları Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=19942&MevzuatTur=7&MevzuatTertip=5' },
+          { ad: 'MEB Eğitim Kurumları Sosyal Etkinlikler Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=23639&MevzuatTur=7&MevzuatTertip=5' },
+          { ad: 'MEB Rehberlik ve Psikolojik Danışma Hizmetleri Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=34760&MevzuatTur=7&MevzuatTertip=5' },
+          { ad: 'Okul-Aile Birliği Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=15878&MevzuatTur=7&MevzuatTertip=5' },
+          { ad: 'MEB Öğretmen Atama ve Yer Değiştirme Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20694&MevzuatTur=7&MevzuatTertip=5' },
+          { ad: 'MEB Personeli İzin Yönergesi', tur: 'site', kaynak: 'mevzuat.meb.gov.tr — Bakanlık yönergesi (PDF)',
+            url: 'https://mevzuat.meb.gov.tr/dosyalar/1627.pdf' },
+          { ad: 'Ders ve Ek Ders Saatlerine İlişkin Karar (2006/11350)', tur: 'site',
+            kaynak: 'personel.meb.gov.tr — karar + 8. dönem toplu sözleşme (PDF)',
+            url: 'https://personel.meb.gov.tr/meb_iys_dosyalar/2026_01/05170321_kararve8.donemtoplusozlesme.pdf' },
+          { ad: 'MEB Eğitim Kurumlarına Yönetici Görevlendirme Yönetmeliği', tur: 'site', kaynak: 'mevzuat.gov.tr — güncel metin',
+            url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=38297&MevzuatTur=7&MevzuatTertip=5' }
+        ] }
+      ];
+      var acc = document.getElementById('dokAccordion');
+      if (acc) a4IzgaraKur(acc, 'OKUL · BELGE', 'dok', DOK_BASLIKLAR, function (b) { return b.dosyalar || []; });
+
+      /* kartların kademeli girişi: her ızgara ilk kez göründüğünde tetiklenir.
+         (tüm ızgaralar kurulduktan SONRA çalışmalı) */
+      (function () {
+        var gridler = document.querySelectorAll('.a4-grid');
+        if (!gridler.length) return;
+        if (!('IntersectionObserver' in window)) {
+          [].forEach.call(gridler, function (g) { g.classList.add('acildi'); }); return;
+        }
+        var io = new IntersectionObserver(function (girisler) {
+          girisler.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('acildi'); io.unobserve(e.target); }
+          });
+        }, { threshold: .1 });
+        [].forEach.call(gridler, function (g) { io.observe(g); });
+      })();
+    })();
+    </script>
 
 
 

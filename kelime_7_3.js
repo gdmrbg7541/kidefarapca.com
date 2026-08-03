@@ -2,7 +2,7 @@ const allWords = [
    // --- Fiiller (Eylemler) ---
     { tr: "Yaşıyorum / Oturuyorum", ar: "أَسْكُنُ" },
     { tr: "Biniyorum", ar: "أَرْكَبُ" },
-    { tr: "Yöneliyorum", ar: "أَتَّجِهُ" },
+    { tr: "Yöneliyorum", ar: "أَتَّجِهُ" },
     { tr: "Yolculuk yapıyorum", ar: "يُسافِرُ" },
     { tr: "Gidiyor / Gidiyorum", ar: "تَذْهَبُ / أَذْهَبُ" },
     { tr: "Dönüyor / Dönüyorum", ar: "تَرْجِعُ / أَرْجِعُ" },
@@ -22,11 +22,11 @@ const allWords = [
     { tr: "Arkadaş", ar: "صَديق" },
 
     // --- Ulaşım Araçları ---
-    { tr: "Bisiklet", ar: "الدَّرّاجَة" },
+    { tr: "Bisiklet", ar: "الدَّرّاجَة" },
     { tr: "Uçak", ar: "الطّائِرَة" },
-    { tr: "Araba", ar: "السَّيّارَة" },
+    { tr: "Araba", ar: "السَّيّارَة" },
     { tr: "Tren", ar: "القِطار" },
-    { tr: "Gemi", ar: "السَّفينَة" },
+    { tr: "Gemi", ar: "السَّفينَة" },
     { tr: "Otobüs", ar: "الحافِلَة" },
     { tr: "Metro", ar: "المِتْرو" },
 
@@ -35,8 +35,8 @@ const allWords = [
     { tr: "Kütüphane", ar: "المَكْتَبَة" },
     { tr: "Çarşı / Pazar", ar: "السّوق" },
     { tr: "Durak", ar: "المَوْقِف" },
-    { tr: "İstasyon", ar: "مَحَطَّة" },
-    { tr: "Yol / Cadde", ar: "الطَّريق / الشّارِع" },
+    { tr: "İstasyon", ar: "مَحَطَّة" },
+    { tr: "Yol / Cadde", ar: "الطَّريق / الشّارِع" },
     { tr: "Adres", ar: "العُنْنوان" },
 
     // --- Yönler ve Zarflar ---
@@ -45,8 +45,8 @@ const allWords = [
     { tr: "Öne doğru", ar: "إِلى الأَمام" },
     { tr: "Yürüyerek", ar: "مَشْيًا" },
     { tr: "Deniz yoluyla", ar: "بَحْرًا" },
-    { tr: "Kara yoluyla", ar: "بَرًّا" },
-    { tr: "Hava yoluyla", ar: "جَوًّا" },
+    { tr: "Kara yoluyla", ar: "بَرًّا" },
+    { tr: "Hava yoluyla", ar: "جَوًّا" },
     { tr: "Az / Biraz", ar: "قَليلًا" },
     { tr: "Önünde", ar: "أَمام" },
 
@@ -63,10 +63,10 @@ const allWords = [
     // --- Trafik ve Diğer ---
     { tr: "Tatil", ar: "العُطْلَة" },
     { tr: "Trafik ışıkları", ar: "إِشارات المُرور" },
-    { tr: "Sarı ışık", ar: "الضَّوْء الأَصْفَر" },
-    { tr: "Kırmızı ışık", ar: "الضَّوء الأَحْمَر" },
-    { tr: "Yeşil ışık", ar: "الضَّوء الأَخْضَر" },
-    { tr: "Önemli", ar: "مُهِمَّة" }
+    { tr: "Sarı ışık", ar: "الضَّوْء الأَصْفَر" },
+    { tr: "Kırmızı ışık", ar: "الضَّوء الأَحْمَر" },
+    { tr: "Yeşil ışık", ar: "الضَّوء الأَخْضَر" },
+    { tr: "Önemli", ar: "مُهِمَّة" }
 ];
 
     const cardColors = ["#364fc7", "#63e6be", "#ff922b", "#f06595", "#845ef7", "#51cf66", "#fcc419", "#339af0"];

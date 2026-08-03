@@ -82,9 +82,9 @@ window.displayVerbsMap = {
     'شرب': 'شَرِبَ',
     'أكل': 'أَكَلَ',
     'غسل': 'غَسَلَ',
-    'علّم': 'عَلَّمَ',
+    'علّم': 'عَلَّمَ',
     'قرأ': 'قَرَأَ',
-    'ظنّ': 'ظَنَّ',
+    'ظنّ': 'ظَنَّ',
     'وجد': 'وَجَدَ',
     'قال': 'قَالَ',
     'نسي': 'نَسِيَ',
@@ -2820,10 +2820,10 @@ function updateSuffixHighlights(currentBox) {
         original = original.replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا'; 
+        if (pure === 'يا') return 'يًّا'; 
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
     }
 
@@ -2839,8 +2839,8 @@ function updateSuffixHighlights(currentBox) {
     }
 
     const possibleSuffixes = [
-        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
-        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
+        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
+        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
         'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
     ];
 
@@ -2862,17 +2862,17 @@ function updateSuffixHighlights(currentBox) {
     }
 
     const targetMap = {
-        'يَّة': ['يّ', 'ة'],
-        'يَّات': ['يّ', 'ات'],
-        'يًّا': ['يّ', 'ا'], 
-        'يَّانِ': ['يّ', 'انِ'],
-        'يَّيْنِ': ['يّ', 'يْنِ'],
-        'يُّونَ': ['يّ', 'ونَ'],
-        'يِّينَ': ['يّ', 'ينَ'],
+        'يَّة': ['يّ', 'ة'],
+        'يَّات': ['يّ', 'ات'],
+        'يًّا': ['يّ', 'ا'], 
+        'يَّانِ': ['يّ', 'انِ'],
+        'يَّيْنِ': ['يّ', 'يْنِ'],
+        'يُّونَ': ['يّ', 'ونَ'],
+        'يِّينَ': ['يّ', 'ينَ'],
         'تَانِ': ['ة', 'انِ'],
         'تَيْنِ': ['ة', 'يْنِ'],
-        'يَّتَانِ': ['يّ', 'ة', 'انِ'],
-        'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
+        'يَّتَانِ': ['يّ', 'ة', 'انِ'],
+        'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
     };
 
     let fulfilledSuffixes = [];
@@ -3166,10 +3166,10 @@ function applySuffix(rawSuffix) {
         original = original.replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه') return 'يَّة';
-        if (pure === 'يات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه') return 'يَّة';
+        if (pure === 'يات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا'; 
+        if (pure === 'يا') return 'يًّا'; 
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
     }
 
@@ -3198,8 +3198,8 @@ function applySuffix(rawSuffix) {
     }
 
     const possibleSuffixes = [
-        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
-        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
+        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
+        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
         'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
     ];
 
@@ -3227,47 +3227,47 @@ function applySuffix(rawSuffix) {
         else if (suffix === 'يْنِ') suffix = 'تَيْنِ';
     }
     else if (existingSuffix === 'يّ') {
-        if (suffix === 'ة') suffix = 'يَّة';
-        else if (suffix === 'ات') suffix = 'يَّات';
-        else if (suffix === 'انِ') suffix = 'يَّانِ';
-        else if (suffix === 'يْنِ') suffix = 'يَّيْنِ';
-        else if (suffix === 'ونَ') suffix = 'يُّونَ';
-        else if (suffix === 'ينَ') suffix = 'يِّينَ';
-        else if (suffix === 'ا') suffix = 'يًّا'; 
+        if (suffix === 'ة') suffix = 'يَّة';
+        else if (suffix === 'ات') suffix = 'يَّات';
+        else if (suffix === 'انِ') suffix = 'يَّانِ';
+        else if (suffix === 'يْنِ') suffix = 'يَّيْنِ';
+        else if (suffix === 'ونَ') suffix = 'يُّونَ';
+        else if (suffix === 'ينَ') suffix = 'يِّينَ';
+        else if (suffix === 'ا') suffix = 'يًّا'; 
     }
-    else if (existingSuffix === 'يَّة' || existingSuffix === 'يَّات') {
-        if (suffix === 'انِ') suffix = 'يَّتَانِ';
-        else if (suffix === 'يْنِ') suffix = 'يَّتَيْنِ';
-        else if (suffix === 'ونَ') suffix = 'يُّونَ';
-        else if (suffix === 'ينَ') suffix = 'يِّينَ';
-        else if (suffix === 'ة') suffix = 'يَّة';
-        else if (suffix === 'ات') suffix = 'يَّات';
+    else if (existingSuffix === 'يَّة' || existingSuffix === 'يَّات') {
+        if (suffix === 'انِ') suffix = 'يَّتَانِ';
+        else if (suffix === 'يْنِ') suffix = 'يَّتَيْنِ';
+        else if (suffix === 'ونَ') suffix = 'يُّونَ';
+        else if (suffix === 'ينَ') suffix = 'يِّينَ';
+        else if (suffix === 'ة') suffix = 'يَّة';
+        else if (suffix === 'ات') suffix = 'يَّات';
         else if (suffix === 'يّ') suffix = 'يّ';
     }
-    else if (['انِ', 'يْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 'يَّتَانِ', 'يَّتَيْنِ'].includes(existingSuffix)) {
+    else if (['انِ', 'يْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 'يَّتَانِ', 'يَّتَيْنِ'].includes(existingSuffix)) {
         if (suffix === 'انِ' || suffix === 'يْنِ') {
-            if (existingSuffix.includes('يَّتَ')) suffix = suffix === 'انِ' ? 'يَّتَانِ' : 'يَّتَيْنِ';
-            else if (existingSuffix.includes('يَّ')) suffix = suffix === 'انِ' ? 'يَّانِ' : 'يَّيْنِ';
+            if (existingSuffix.includes('يَّتَ')) suffix = suffix === 'انِ' ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else if (existingSuffix.includes('يَّ')) suffix = suffix === 'انِ' ? 'يَّانِ' : 'يَّيْنِ';
             else if (existingSuffix.includes('تَ')) suffix = suffix === 'انِ' ? 'تَانِ' : 'تَيْنِ';
         } else if (suffix === 'ة') {
-            if (existingSuffix.includes('يَّ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            if (existingSuffix.includes('يَّ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
             else suffix = existingSuffix.includes('انِ') ? 'تَانِ' : 'تَيْنِ';
         } else if (suffix === 'يّ') { 
-            if (existingSuffix.includes('تَ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
-            else suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
+            if (existingSuffix.includes('تَ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
         }
     }
-    else if (['ونَ', 'ينَ', 'يُّونَ', 'يِّينَ'].includes(existingSuffix)) {
+    else if (['ونَ', 'ينَ', 'يُّونَ', 'يِّينَ'].includes(existingSuffix)) {
         if (suffix === 'ونَ' || suffix === 'ينَ') {
-            if (existingSuffix.includes('يُّ') || existingSuffix.includes('يِّ')) {
-                suffix = suffix === 'ونَ' ? 'يُّونَ' : 'يِّينَ';
+            if (existingSuffix.includes('يُّ') || existingSuffix.includes('يِّ')) {
+                suffix = suffix === 'ونَ' ? 'يُّونَ' : 'يِّينَ';
             }
         } else if (suffix === 'يّ') {
-            suffix = existingSuffix.includes('ونَ') ? 'يُّونَ' : 'يِّينَ';
+            suffix = existingSuffix.includes('ونَ') ? 'يُّونَ' : 'يِّينَ';
         }
     }
-    else if (existingSuffix === 'يًّا') { 
-        if (suffix === 'ا') suffix = 'يًّا'; 
+    else if (existingSuffix === 'يًّا') { 
+        if (suffix === 'ا') suffix = 'يًّا'; 
     }
 
     // ===============================================================
@@ -3445,7 +3445,7 @@ function applySuffix(suffix) {
             if (suffix === 'انِ' || suffix === 'يْنِ') {
                 actualLastChar.innerHTML = actualLastChar.innerHTML.replace('ة', 'ت');
                 actualLastChar.classList.add('changed-te');
-            } else if (suffix === 'ات' || suffix === 'يَّة' || suffix === 'يَّات') {
+            } else if (suffix === 'ات' || suffix === 'يَّة' || suffix === 'يَّات') {
                 actualLastChar.style.display = 'none';
                 actualLastChar.classList.add('hidden-te');
                 actualLastChar = coreChars.length > 1 ? coreChars[coreChars.length - 2] : actualLastChar;
@@ -3529,10 +3529,10 @@ function applySuffix(suffix) {
                 let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي');
                 let pure = original.replace(/[\u0640\u064B-\u0652]/g, '');
                 if (pure === 'ا') return 'ا';
-                if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-                if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+                if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+                if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
                 if (pure === 'ي') return 'يّ';
-                if (pure === 'يا') return 'يًّا';
+                if (pure === 'يا') return 'يًّا';
                 return original.replace(/\u064E\u0651/g, '\u0651\u064E');
             };
             checkWordEasterEgg(currentBox, standardize(suffix));
@@ -3656,10 +3656,10 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
         let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, '');
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا';
+        if (pure === 'يا') return 'يًّا';
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
     };
 
@@ -3677,9 +3677,9 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     
     if (matchedKey) {
         searchKey = matchedKey;
-    } else if (activeSuffix === "يَّة" && eggObj["ة"]) {
+    } else if (activeSuffix === "يَّة" && eggObj["ة"]) {
         searchKey = "ة";
-    } else if (activeSuffix === "يَّات" && eggObj["ات"]) {
+    } else if (activeSuffix === "يَّات" && eggObj["ات"]) {
         searchKey = "ات";
     }
 
@@ -4390,7 +4390,7 @@ window.buildConjCell = function(w, tip, numBab, tableType, isColorActive, kok, w
             else if (pluralFem.includes(wordIndex)) coreWord = clean; 
             else {
                 if (/[\u0651]/.test(clean.slice(-2))) {
-                    coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E'); // Kusursuz لَمْ يَضُرَّ
+                    coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E'); // Kusursuz لَمْ يَضُرَّ
                 }
                 else if (/ُ$/.test(clean)) {
                     coreWord = clean.replace(/ُ$/, 'ْ');
@@ -4465,8 +4465,8 @@ const VerbGenerator = {
         if (rId === 2 || rId === 12) return "ُ"; // 1. ve 5. Bab Muzari -> Kesin Ötre (يَقُولُ, يَعْظُمُ)
 
         let h = "ُ"; 
-        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
-        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
+        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
+        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
 
         let foundInJson = false;
         if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kokArr.join("")]) {
@@ -4506,12 +4506,12 @@ const VerbGenerator = {
         let i_t = "تَ";
 
         if (r1 === 'و' || r1 === 'ي' || r1 === 'ث' || r1 === 'ت') {
-            i_r1 = ""; i_t = "تَّ";
+            i_r1 = ""; i_t = "تَّ";
         } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
-            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
+            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
             else { i_t = "طَ"; }
         } else if (['د', 'ذ', 'ز'].includes(r1)) {
-            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
+            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
             else { i_t = "دَ"; } 
         }
         return i_r1 + i_t + r2 + aynHareke + r3;
@@ -4599,7 +4599,7 @@ const VerbGenerator = {
                         }
                     } else if (babNo === 15 && r2 === r3) {
                         // İstif'al babı muzaaf (حقق): idğam (şedde) sakin ekli şahıslarda açılır (fekk-i idğam)
-                        let baseSeddeli = `اِسْتَ${r1}َ${r2}`;      // اِسْتَحَق -> +şeddeli ek -> اِسْتَحَقَّ
+                        let baseSeddeli = `اِسْتَ${r1}َ${r2}`;      // اِسْتَحَق -> +şeddeli ek -> اِسْتَحَقَّ
                         let baseAcik = `اِسْتَ${r1}ْ${r2}َ${r3}`;   // اِسْتَحْقَق -> +sakin ek -> اِسْتَحْقَقْتُ
                         let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"];
                         if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index];
@@ -6448,7 +6448,7 @@ function getBabInfo(rawName) {
             title: "İf'ılal", 
             harf: "اِ ـ ـ ـّ", num: 5,
             desc: `
-            <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
+            <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
             <p>• <b>Kusurlar:</b> Sakatlık ve noksanlık belirtir. <br>Örn: <span class="arabic-sample">اِعْرَجَّ</span> (Topalladı)</p>
             ` 
         },
@@ -8262,14 +8262,14 @@ window.atlasVerbsData = {
     "أراد": { trMean: { mazi: "istedi", muzari: "istiyor", emir: "iste" }, mazi: ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"], muzari: ["يُرِيدُ", "يُرِيدَانِ", "يُرِيدُونَ", "تُرِيدُ", "تُرِيدَانِ", "يُرِيدْنَ", "تُرِيدُ", "تُرِيدَانِ", "تُرِيدُونَ", "تُرِيدِينَ", "تُرِيدَانِ", "تُرِيدْنَ", "أُرِيدُ", "نُرِيدُ", "نُرِيدُ"], emir: ["أَرِدْ", "أَرِيدَا", "أَرِيدُوا", "أَرِيدِي", "أَرِيدَا", "أَرِدْنَ"] },
     "سافر": { trMean: { mazi: "seyahat etti", muzari: "seyahat ediyor", emir: "seyahat et" }, mazi: ["سَافَرَ", "سَافَرَا", "سَافَرُوا", "سَافَرَتْ", "سَافَرَتَا", "سَافَرْنَ", "سَافَرْتَ", "سَافَرْتُمَا", "سَافَرْتُمْ", "سَافَرْتِ", "سَافَرْتُمَا", "سَافَرْتُنَّ", "سَافَرْتُ", "سَافَرْنَا", "سَافَرْنَا"], muzari: ["يُسَافِرُ", "يُسَافِرَانِ", "يُسَافِرُونَ", "تُسَافِرُ", "تُسَافِرَانِ", "يُسَافِرْنَ", "تُسَافِرُ", "تُسَافِرَانِ", "تُسَافِرُونَ", "تُسَافِرِينَ", "تُسَافِرَانِ", "تُسَافِرْنَ", "أُسَافِرُ", "نُسَافِرُ", "نُسَافِرُ"], emir: ["سَافِرْ", "سَافِرَا", "سَافِرُوا", "سَافِرِي", "سَافِرَا", "سَافِرْنَ"] },
     "غسل": { trMean: { mazi: "yıkadı", muzari: "yıkıyor", emir: "yıka" }, mazi: ["غَسَلَ", "غَسَلَا", "غَسَلُوا", "غَسَلَتْ", "غَسَلَتَا", "غَسَلْنَ", "غَسَلْتَ", "غَسَلْتُمَا", "غَسَلْتُمْ", "غَسَلْتِ", "غَسَلْتُمَا", "غَسَلْتُنَّ", "غَسَلْتُ", "غَسَلْنَا", "غَسَلْنَا"], muzari: ["يَغْسِلُ", "يَغْسِلَانِ", "يَغْسِلُونَ", "تَغْسِلُ", "تَغْسِلَانِ", "يَغْسِلْنَ", "تَغْسِلُ", "تَغْسِلَانِ", "تَغْسِلُونَ", "تَغْسِلِينَ", "تَغْسِلَانِ", "تَغْسِلْنَ", "أَغْسِلُ", "نَغْسِلُ", "نَغْسِلُ"], emir: ["اِغْسِلْ", "اِغْسِلَا", "اِغْسِلُوا", "اِغْسِلِي", "اِغْسِلَا", "اِغْسِلْنَ"] },
-    "علّم": { trMean: { mazi: "öğretti", muzari: "öğretiyor", emir: "öğret" }, mazi: ["عَلَّمَ", "عَلَّمَا", "عَلَّمُوا", "عَلَّمَتْ", "عَلَّمَتَا", "عَلَّمْنَ", "عَلَّمْتَ", "عَلَّمْتُمَا", "عَلَّمْتُمْ", "عَلَّمْتِ", "عَلَّمْتُمَا", "عَلَّمْتُنَّ", "عَلَّمْتُ", "عَلَّمْنَا", "عَلَّمْنَا"], muzari: ["يُعَلِّمُ", "يُعَلِّمَانِ", "يُعَلِّمُونَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "يُعَلِّمْنَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "تُعَلِّمُونَ", "تُعَلِّمِينَ", "تُعَلِّمَانِ", "تُعَلِّمْنَ", "أُعَلِّمُ", "نُعَلِّمُ", "نُعَلِّمُ"], emir: ["عَلِّمْ", "عَلِّمَا", "عَلِّمُوا", "عَلِّمِي", "عَلِّمَا", "عَلِّمْنَ"] },
-    "قرأ": { trMean: { mazi: "okudu", muzari: "okuyor", emir: "oku" }, mazi: ["قَرَأَ", "قَرَآ", "قَرَأُوا", "قَرَأَتْ", "قَرَأَتَا", "قَرَأْنَ", "قَرَأْتَ", "قَرَأْتُمَا", "قَرَأْتُمْ", "قَرَأْتِ", "قَرَأْتُمَا", "قَرَأْتُنَّ", "قَرَأْتُ", "قَرَأْنَا", "قَرَأْنَا"], muzari: ["يَقْرَأُ", "يَقْرَآنِ", "يَقْرَأُونَ", "تَقْرَأُ", "تَقْرَآنِ", "يَقْرَأْنَ", "تَقْرَأُ", "تَقْرَآنِ", "تَقْرَأُونَ", "تَقْرَئِينَ", "تَقْرَآنِ", "تَقْرَأْنَ", "أَقْرَأُ", "نَقْرَأُ", "نَقْرَأُ"], emir: ["اِقْرَأْ", "اِقْرَآ", "اِقْرَأُوا", "اِقْرَئِي", "اِقْرَآ", "اِقْرَأْنَ"] },
-    "ظنّ": { trMean: { mazi: "sandı", muzari: "sanıyor", emir: "san" }, mazi: ["ظَنَّ", "ظَنَّا", "ظَنُّوا", "ظَنَّتْ", "ظَنَّتَا", "ظَنَنَّ", "ظَنَنْتَ", "ظَنَنْتُمَا", "ظَنَنْتُمْ", "ظَنَنْتِ", "ظَنَنْتُمَا", "ظَنَنْتُنَّ", "ظَنَنْتُ", "ظَنَنَّا", "ظَنَنَّا"], muzari: ["يَظُنُّ", "يَظُنَّانِ", "يَظُنُّونَ", "تَظُنُّ", "تَظُنَّانِ", "يَظْنُنَّ", "تَظُنُّ", "تَظُنَّانِ", "تَظُنُّونَ", "تَظُنِّينَ", "تَظُنَّانِ", "تَظْنُنَّ", "أَظُنُّ", "نَظُنُّ", "نَظُنُّ"], emir: ["ظُنَّ", "ظُنَّا", "ظُنُّوا", "ظُنِّي", "ظُنَّا", "اُظْنُنَّ"] },
-    "وجد": { trMean: { mazi: "buldu", muzari: "buluyor", emir: "bul" }, mazi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"], muzari: ["يَجِدُ", "يَجِدَانِ", "يَجِدُونَ", "تَجِدُ", "تَجِدَانِ", "يَجِدْنَ", "تَجِدُ", "تَجِدَانِ", "تَجِدُونَ", "تَجِدِينَ", "تَجِدَانِ", "تَجِدْنَ", "أَجِدُ", "نَجِدُ", "نَجِدُ"], emir: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"] },
-    "قال": { trMean: { mazi: "söyledi", muzari: "söylüyor", emir: "söyle" }, mazi: ["قَالَ", "قَالَا", "قَالُوا", "قَالَتْ", "قَالَتَا", "قُلْنَ", "قُلْتَ", "قُلْتُمَا", "قُلْتُمْ", "قُلْتِ", "قُلْتُمَا", "قُلْتُنَّ", "قُلْتُ", "قُلْنَا", "قُلْنَا"], muzari: ["يَقُولُ", "يَقُولَانِ", "يَقُولُونَ", "تَقُولُ", "تَقُولَانِ", "يَقُلْنَ", "تَقُولُ", "تَقُولَانِ", "تَقُولُونَ", "تَقُولِينَ", "تَقُولَانِ", "تَقُلْنَ", "أَقُولُ", "نَقُولُ", "نَقُولُ"], emir: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"] },
-    "نسي": { trMean: { mazi: "unuttu", muzari: "unutuyor", emir: "unut" }, mazi: ["نَسِيَ", "نَسِيَا", "نَسُوا", "نَسِيَتْ", "نَسِيَتَا", "نَسِينَ", "نَسِيتَ", "نَسِيتُمَا", "نَسِيتُمْ", "نَسِيتِ", "نَسِيتُمَا", "نَسِيتُنَّ", "نَسِيتُ", "نَسِينَا", "نَسِينَا"], muzari: ["يَنْسَى", "يَنْسَيَانِ", "يَنْسَوْنَ", "تَنْسَى", "تَنْسَيَانِ", "يَنْسَيْنَ", "تَنْسَى", "تَنْسَيَانِ", "تَنْسَوْنَ", "تَنْسَيْنَ", "تَنْسَيَانِ", "تَنْسَيْنَ", "أَنْسَى", "نَنْسَى", "نَنْسَى"], emir: ["اِنْسَ", "اِنْسَيَا", "اِنْسَوْا", "اِنْسَيْ", "اِنْسَيَا", "اِنْسَيْنَ"] },
-    "اعترف": { trMean: { mazi: "itiraf etti", muzari: "itiraf ediyor", emir: "itiraf et" }, mazi: ["اِعْتَرَفَ", "اِعْتَرَفَا", "اِعْتَرَفُوا", "اِعْتَرَفَتْ", "اِعْتَرَفَتَا", "اِعْتَرَفْنَ", "اِعْتَرَفْتَ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُمْ", "اِعْتَرَفْتِ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُنَّ", "اِعْتَرَفْتُ", "اِعْتَرَفْنَا", "اِعْتَرَفْنَا"], muzari: ["يَعْتَرِفُ", "يَعْتَرِفَانِ", "يَعْتَرِفُونَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "يَعْتَرِفْنَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "تَعْتَرِفُونَ", "تَعْتَرِفِينَ", "تَعْتَرِفَانِ", "تَعْتَرِفْنَ", "أَعْتَرِفُ", "نَعْتَرِفُ", "نَعْتَرِفُ"], emir: ["اِعْتَرِفْ", "اِعْتَرِفَا", "اِعْتَرِفُوا", "اِعْتَرِفِي", "اِعْتَرِفَا", "اِعْتَرِفْنَ"] },
-    "انقلب": { trMean: { mazi: "devrildi", muzari: "devriliyor", emir: "devril" }, mazi: ["اِنْقَلَبَ", "اِنْقَلَبَا", "اِنْقَلَبُوا", "اِنْقَلَبَتْ", "اِنْقَلَبَتَا", "اِنْقَلَبْنَ", "اِنْقَلَبْتَ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُمْ", "اِنْقَلَبْتِ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُنَّ", "اِنْقَلَبْتُ", "اِنْقَلَبْنَا", "اِنْقَلَبْنَا"], muzari: ["يَنْقَلِبُ", "يَنْقَلِبَانِ", "يَنْقَلِبُونَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "يَنْقَلِبْنَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "تَنْقَلِبُونَ", "تَنْقَلِبِينَ", "تَنْقَلِبَانِ", "تَنْقَلِبْنَ", "أَنْقَلِبُ", "نَنْقَلِبُ", "نَنْقَلِبُ"], emir: ["اِنْقَلِبْ", "اِنْقَلِبَا", "اِنْقَلِبُوا", "اِنْقَلِبِي", "اِنْقَلِبَا", "اِنْقَلِبْنَ"] }
+    "علّم": { trMean: { mazi: "öğretti", muzari: "öğretiyor", emir: "öğret" }, mazi: ["عَلَّمَ", "عَلَّمَا", "عَلَّمُوا", "عَلَّمَتْ", "عَلَّمَتَا", "عَلَّمْنَ", "عَلَّمْتَ", "عَلَّمْتُمَا", "عَلَّمْتُمْ", "عَلَّمْتِ", "عَلَّمْتُمَا", "عَلَّمْتُنَّ", "عَلَّمْتُ", "عَلَّمْنَا", "عَلَّمْنَا"], muzari: ["يُعَلِّمُ", "يُعَلِّمَانِ", "يُعَلِّمُونَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "يُعَلِّمْنَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "تُعَلِّمُونَ", "تُعَلِّمِينَ", "تُعَلِّمَانِ", "تُعَلِّمْنَ", "أُعَلِّمُ", "نُعَلِّمُ", "نُعَلِّمُ"], emir: ["عَلِّمْ", "عَلِّمَا", "عَلِّمُوا", "عَلِّمِي", "عَلِّمَا", "عَلِّمْنَ"] },
+    "قرأ": { trMean: { mazi: "okudu", muzari: "okuyor", emir: "oku" }, mazi: ["قَرَأَ", "قَرَآ", "قَرَأُوا", "قَرَأَتْ", "قَرَأَتَا", "قَرَأْنَ", "قَرَأْتَ", "قَرَأْتُمَا", "قَرَأْتُمْ", "قَرَأْتِ", "قَرَأْتُمَا", "قَرَأْتُنَّ", "قَرَأْتُ", "قَرَأْنَا", "قَرَأْنَا"], muzari: ["يَقْرَأُ", "يَقْرَآنِ", "يَقْرَأُونَ", "تَقْرَأُ", "تَقْرَآنِ", "يَقْرَأْنَ", "تَقْرَأُ", "تَقْرَآنِ", "تَقْرَأُونَ", "تَقْرَئِينَ", "تَقْرَآنِ", "تَقْرَأْنَ", "أَقْرَأُ", "نَقْرَأُ", "نَقْرَأُ"], emir: ["اِقْرَأْ", "اِقْرَآ", "اِقْرَأُوا", "اِقْرَئِي", "اِقْرَآ", "اِقْرَأْنَ"] },
+    "ظنّ": { trMean: { mazi: "sandı", muzari: "sanıyor", emir: "san" }, mazi: ["ظَنَّ", "ظَنَّا", "ظَنُّوا", "ظَنَّتْ", "ظَنَّتَا", "ظَنَنَّ", "ظَنَنْتَ", "ظَنَنْتُمَا", "ظَنَنْتُمْ", "ظَنَنْتِ", "ظَنَنْتُمَا", "ظَنَنْتُنَّ", "ظَنَنْتُ", "ظَنَنَّا", "ظَنَنَّا"], muzari: ["يَظُنُّ", "يَظُنَّانِ", "يَظُنُّونَ", "تَظُنُّ", "تَظُنَّانِ", "يَظْنُنَّ", "تَظُنُّ", "تَظُنَّانِ", "تَظُنُّونَ", "تَظُنِّينَ", "تَظُنَّانِ", "تَظْنُنَّ", "أَظُنُّ", "نَظُنُّ", "نَظُنُّ"], emir: ["ظُنَّ", "ظُنَّا", "ظُنُّوا", "ظُنِّي", "ظُنَّا", "اُظْنُنَّ"] },
+    "وجد": { trMean: { mazi: "buldu", muzari: "buluyor", emir: "bul" }, mazi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"], muzari: ["يَجِدُ", "يَجِدَانِ", "يَجِدُونَ", "تَجِدُ", "تَجِدَانِ", "يَجِدْنَ", "تَجِدُ", "تَجِدَانِ", "تَجِدُونَ", "تَجِدِينَ", "تَجِدَانِ", "تَجِدْنَ", "أَجِدُ", "نَجِدُ", "نَجِدُ"], emir: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"] },
+    "قال": { trMean: { mazi: "söyledi", muzari: "söylüyor", emir: "söyle" }, mazi: ["قَالَ", "قَالَا", "قَالُوا", "قَالَتْ", "قَالَتَا", "قُلْنَ", "قُلْتَ", "قُلْتُمَا", "قُلْتُمْ", "قُلْتِ", "قُلْتُمَا", "قُلْتُنَّ", "قُلْتُ", "قُلْنَا", "قُلْنَا"], muzari: ["يَقُولُ", "يَقُولَانِ", "يَقُولُونَ", "تَقُولُ", "تَقُولَانِ", "يَقُلْنَ", "تَقُولُ", "تَقُولَانِ", "تَقُولُونَ", "تَقُولِينَ", "تَقُولَانِ", "تَقُلْنَ", "أَقُولُ", "نَقُولُ", "نَقُولُ"], emir: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"] },
+    "نسي": { trMean: { mazi: "unuttu", muzari: "unutuyor", emir: "unut" }, mazi: ["نَسِيَ", "نَسِيَا", "نَسُوا", "نَسِيَتْ", "نَسِيَتَا", "نَسِينَ", "نَسِيتَ", "نَسِيتُمَا", "نَسِيتُمْ", "نَسِيتِ", "نَسِيتُمَا", "نَسِيتُنَّ", "نَسِيتُ", "نَسِينَا", "نَسِينَا"], muzari: ["يَنْسَى", "يَنْسَيَانِ", "يَنْسَوْنَ", "تَنْسَى", "تَنْسَيَانِ", "يَنْسَيْنَ", "تَنْسَى", "تَنْسَيَانِ", "تَنْسَوْنَ", "تَنْسَيْنَ", "تَنْسَيَانِ", "تَنْسَيْنَ", "أَنْسَى", "نَنْسَى", "نَنْسَى"], emir: ["اِنْسَ", "اِنْسَيَا", "اِنْسَوْا", "اِنْسَيْ", "اِنْسَيَا", "اِنْسَيْنَ"] },
+    "اعترف": { trMean: { mazi: "itiraf etti", muzari: "itiraf ediyor", emir: "itiraf et" }, mazi: ["اِعْتَرَفَ", "اِعْتَرَفَا", "اِعْتَرَفُوا", "اِعْتَرَفَتْ", "اِعْتَرَفَتَا", "اِعْتَرَفْنَ", "اِعْتَرَفْتَ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُمْ", "اِعْتَرَفْتِ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُنَّ", "اِعْتَرَفْتُ", "اِعْتَرَفْنَا", "اِعْتَرَفْنَا"], muzari: ["يَعْتَرِفُ", "يَعْتَرِفَانِ", "يَعْتَرِفُونَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "يَعْتَرِفْنَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "تَعْتَرِفُونَ", "تَعْتَرِفِينَ", "تَعْتَرِفَانِ", "تَعْتَرِفْنَ", "أَعْتَرِفُ", "نَعْتَرِفُ", "نَعْتَرِفُ"], emir: ["اِعْتَرِفْ", "اِعْتَرِفَا", "اِعْتَرِفُوا", "اِعْتَرِفِي", "اِعْتَرِفَا", "اِعْتَرِفْنَ"] },
+    "انقلب": { trMean: { mazi: "devrildi", muzari: "devriliyor", emir: "devril" }, mazi: ["اِنْقَلَبَ", "اِنْقَلَبَا", "اِنْقَلَبُوا", "اِنْقَلَبَتْ", "اِنْقَلَبَتَا", "اِنْقَلَبْنَ", "اِنْقَلَبْتَ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُمْ", "اِنْقَلَبْتِ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُنَّ", "اِنْقَلَبْتُ", "اِنْقَلَبْنَا", "اِنْقَلَبْنَا"], muzari: ["يَنْقَلِبُ", "يَنْقَلِبَانِ", "يَنْقَلِبُونَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "يَنْقَلِبْنَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "تَنْقَلِبُونَ", "تَنْقَلِبِينَ", "تَنْقَلِبَانِ", "تَنْقَلِبْنَ", "أَنْقَلِبُ", "نَنْقَلِبُ", "نَنْقَلِبُ"], emir: ["اِنْقَلِبْ", "اِنْقَلِبَا", "اِنْقَلِبُوا", "اِنْقَلِبِي", "اِنْقَلِبَا", "اِنْقَلِبْنَ"] }
 };
 
 window.atlasMPats = [
@@ -8371,7 +8371,7 @@ window.openAtlasOverlay = function(stage) {
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 8px;"><strong>1. Dua ve Beddua (Temenni):</strong> Mazi fiil çok sık olarak dua veya beddua bildirmek için kullanılır. "رَضِيَ اللهُ عَنْهُ" (Allah ondan razı olsun - Geçmiş zaman değil duadır). Veya "تَبَّتْ يَدَا أَبِي لَهَبٍ" (Ebu Leheb'in elleri kurusun).</li>
-                    <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللَّهِ" (Allah'ın emri geldi/gelecek).</li>
+                    <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللَّهِ" (Allah'ın emri geldi/gelecek).</li>
                     <li><strong>3. Şart (Koşul) Cümlelerinde:</strong> Şart edatlarından sonra mazi fiil gelse de anlam geleceğe dönüktür. Örn: "مَنْ دَخَلَ..." (Kim girerse...).</li>
                 </ul>
             </div>
@@ -9977,7 +9977,7 @@ function showAksamSebaGenelInfo(e) {
             <div style="font-size: 0.88rem; color: #334155; line-height: 1.85;">Kök harflerinde illet harfi (<span dir="rtl" style="font-family:'Arakom',sans-serif;">و ي ا</span>) <b>bulunmaz</b>.
                 <br><b>Salim:</b> İllet, hemze ve şedde yok — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">نَصَرَ</span>
                 <br><b>Mehmuz:</b> Kök harflerinden biri hemze — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">سَأَلَ</span>
-                <br><b>Muzaaf:</b> Son iki harfi aynı (şeddeli) — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">مَدَّ</span>
+                <br><b>Muzaaf:</b> Son iki harfi aynı (şeddeli) — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#15803d;">مَدَّ</span>
             </div>
         </div>
         <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 13px 15px;" dir="ltr">

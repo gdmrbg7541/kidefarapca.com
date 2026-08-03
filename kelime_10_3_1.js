@@ -22,7 +22,7 @@ const allWords = [
     // Fiiller (Eylemler)
     { tr: "Yaşıyorum", ar: "أَعِيشُ" },
     { tr: "Seyahat ettim", ar: "سَافَرْتُ" },
-    { tr: "Gezdim / Dolaştım", ar: "تَجَوَّلْتُ" },
+    { tr: "Gezdim / Dolaştım", ar: "تَجَوَّلْتُ" },
     { tr: "Gidiyorum", ar: "أَذْهَبُ" },
     { tr: "Dönüyorum", ar: "أَرْجِعُ" },
     { tr: "Ziyaret ettik", ar: "زُرْنَا" },
@@ -30,11 +30,11 @@ const allWords = [
     { tr: "İstiyorum", ar: "أُرِيدُ" },
 
     // Sıfatlar ve Diğer Terimler
-    { tr: "Milliyet / Uyruk", ar: "جِنْسِيَّة" },
+    { tr: "Milliyet / Uyruk", ar: "جِنْسِيَّة" },
     { tr: "Meşhurdur (Tanınır)", ar: "تَشْتَهِرُ بـ..." },
-    { tr: "Tarihi", ar: "تَارِيخِيَّة" },
-    { tr: "Turistik", ar: "سِيَاحِيَّة" },
-    { tr: "Hızlı Tren", ar: "القِطَار السَّرِيع" },
+    { tr: "Tarihi", ar: "تَارِيخِيَّة" },
+    { tr: "Turistik", ar: "سِيَاحِيَّة" },
+    { tr: "Hızlı Tren", ar: "القِطَار السَّرِيع" },
     { tr: "Bilet", ar: "تَذْكِرَة" },
     { tr: "Yolculuk", ar: "رِحْلَة" },
     { tr: "Yaklaşık", ar: "تَقْرِيبًا" }

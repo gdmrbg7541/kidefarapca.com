@@ -1,13 +1,13 @@
 const allWords = [
-     { tr: "Baba", ar: "أَب" }, { tr: "Anne", ar: "أُمّ" }, { tr: "Dede", ar: "جَدّ" }, { tr: "Nine", ar: "جَدَّة" },
-        { tr: "Amca", ar: "عَمّ" }, { tr: "Hala", ar: "عَمَّة" }, { tr: "Dayı", ar: "خَال" }, { tr: "Teyze", ar: "خَالَة" },
+     { tr: "Baba", ar: "أَب" }, { tr: "Anne", ar: "أُمّ" }, { tr: "Dede", ar: "جَدّ" }, { tr: "Nine", ar: "جَدَّة" },
+        { tr: "Amca", ar: "عَمّ" }, { tr: "Hala", ar: "عَمَّة" }, { tr: "Dayı", ar: "خَال" }, { tr: "Teyze", ar: "خَالَة" },
         { tr: "Erkek Kardeş", ar: "أَخ" }, { tr: "Kız Kardeş", ar: "أُخْت" }, { tr: "Ailem", ar: "أُسْرَتِي" },
         { tr: "Akrabalarım", ar: "أَقَارِبِي" }, { tr: "İşçi", ar: "عَامِلٌ" }, { tr: "Mühendis", ar: "مُهَنْدِسٌ" },
-        { tr: "Doktor", ar: "طَبِيبَةٌ" }, { tr: "Hemşire", ar: "مُمَرِّضَةٌ" }, { tr: "Öğretmen", ar: "مُدَرِّسٌ" },
-        { tr: "Memur", ar: "مُوَظَّفَةٌ" }, { tr: "Emekli", ar: "مُتَقَاعِدٌ" }, { tr: "Fabrika", ar: "مَصْنَعٌ" },
+        { tr: "Doktor", ar: "طَبِيبَةٌ" }, { tr: "Hemşire", ar: "مُمَرِّضَةٌ" }, { tr: "Öğretmen", ar: "مُدَرِّسٌ" },
+        { tr: "Memur", ar: "مُوَظَّفَةٌ" }, { tr: "Emekli", ar: "مُتَقَاعِدٌ" }, { tr: "Fabrika", ar: "مَصْنَعٌ" },
         { tr: "Şirket", ar: "شَرِكَةٌ" }, { tr: "Hastane", ar: "مُسْتَشْفَى" }, { tr: "Okul", ar: "مَدْرَسَةٌ" },
         { tr: "Ofis / Büro", ar: "مَكْتَبٌ" }, { tr: "Resim", ar: "صُورَةٌ" }, { tr: "Çalışıyor", ar: "يَعْمَلُ" },
-        { tr: "Seviyorum", ar: "أُحِبُّ" }, { tr: "Saygı duyuyorum", ar: "أَحْتَرِمُ" }
+        { tr: "Seviyorum", ar: "أُحِبُّ" }, { tr: "Saygı duyuyorum", ar: "أَحْتَرِمُ" }
     ];
 
     const cardColors = ["#364fc7", "#63e6be", "#ff922b", "#f06595", "#845ef7", "#51cf66", "#fcc419", "#339af0"];

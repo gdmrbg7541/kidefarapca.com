@@ -3,7 +3,7 @@
           {
             sureAdi: "Fatiha Suresi",
             ayetler: [
-              { ayetArapca: "بِسْمِ اللّٰه الرَّحْمَٰنِ الرَّحِيمِ", tamMeal: "Rahmân ve Rahîm olan Allah'ın adıyla.", kelimeler: [{ arapca: "بِسْمِ", turkce: "Adıyla" }, { arapca: "الله", turkce: "Allah'ın" }, { arapca: "الرَّحْمَٰنِ", turkce: "Rahmân" }, { arapca: "الرَّحِيمِ", turkce: "Rahîm" }] },
+              { ayetArapca: "بِسْمِ اللّٰه الرَّحْمَٰنِ الرَّحِيمِ", tamMeal: "Rahmân ve Rahîm olan Allah'ın adıyla.", kelimeler: [{ arapca: "بِسْمِ", turkce: "Adıyla" }, { arapca: "الله", turkce: "Allah'ın" }, { arapca: "الرَّحْمَٰنِ", turkce: "Rahmân" }, { arapca: "الرَّحِيمِ", turkce: "Rahîm" }] },
               { ayetArapca: "الْحَمْدُ للٰه رَبِّ الْعَالَمِينَ", tamMeal: "Hamd, Âlemlerin Rabbi Allah'a mahsustur.", kelimeler: [{ arapca: "الْحَمْدُ", turkce: "Hamd" }, { arapca: "للٰه", turkce: "Allah'a" }, { arapca: "رَبِّ", turkce: "Rabbi" }, { arapca: "الْعَالَمِينَ", turkce: "âlemlerin" }] },
               { ayetArapca: "الرَّحْمَٰنِ الرَّحِيمِ", tamMeal: "O, Rahmân'dır, Rahîm'dir.", kelimeler: [{ arapca: "الرَّحْمَٰنِ", turkce: "Rahmân" }, { arapca: "الرَّحِيمِ", turkce: "Rahîm" }] },
               { ayetArapca: "مَالِكِ يَوْمِ الدِّينِ", tamMeal: "Din gününün (hesap gününün) sahibidir.", kelimeler: [{ arapca: "مَالِكِ", turkce: "Sahibidir" }, { arapca: "يَوْمِ", turkce: "Gününün" }, { arapca: "الدِّينِ", turkce: "Din" }] },

@@ -12,27 +12,27 @@
         
         const finalList = [ 
             { html: 'مُزَارِعَاتٌ', turkish: 'Çiftçiler', answers: ['Nekra', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_8] }, 
-            { html: 'سَيَّارَتَيْنِ', turkish: 'İki Araba', answers: ['Nekra', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, 
+            { html: 'سَيَّارَتَيْنِ', turkish: 'İki Araba', answers: ['Nekra', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, 
             { html: 'مُدِيرَاتٍ', turkish: 'Müdürler', answers: ['Nekra', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_9] }, 
             { html: 'اَلْمُدِيرَتَانِ', turkish: 'İki Müdür', answers: ['Marife', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_4] }, 
-            { html: 'حَلَّاقُونَ', turkish: 'Berberler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_6] }, 
-            { html: 'اَلصَّدِيقُ', turkish: 'Arkadaş', answers: ['Marife', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_1] }, 
+            { html: 'حَلَّاقُونَ', turkish: 'Berberler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_6] }, 
+            { html: 'اَلصَّدِيقُ', turkish: 'Arkadaş', answers: ['Marife', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_1] }, 
             { html: 'اَلْخَالَةِ', turkish: 'Teyze', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] }, 
-            { html: 'اَلْفَلَّاحَانِ', turkish: 'İki Çiftçi', answers: ['Marife', 'Müzekker', 'Tesniye', Q4_ANSWERS.Q4_4] }, 
-            { html: 'اَلسَّبُّورَةِ', turkish: 'Sınıf Tahtası', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] }, 
+            { html: 'اَلْفَلَّاحَانِ', turkish: 'İki Çiftçi', answers: ['Marife', 'Müzekker', 'Tesniye', Q4_ANSWERS.Q4_4] }, 
+            { html: 'اَلسَّبُّورَةِ', turkish: 'Sınıf Tahtası', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] }, 
             { html: 'جُهَلَـاءَ', turkish: 'Cahiller', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_2] }, 
-            { html: 'عَمٍّ', turkish: 'Amca', answers: ['Nekra', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_3] }, 
-            { html: 'مُعَلِّمٌ', turkish: 'Öğretmen', answers: ['Nekra', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_1] }, 
+            { html: 'عَمٍّ', turkish: 'Amca', answers: ['Nekra', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_3] }, 
+            { html: 'مُعَلِّمٌ', turkish: 'Öğretmen', answers: ['Nekra', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_1] }, 
             { html: 'اَلْمُزَارِعَتَيْنِ', turkish: 'İki çiftçi', answers: ['Marife', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, 
-            { html: 'اَلطَّالِبَاتُ', turkish: 'Öğrenciler', answers: ['Marife', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_8] }, 
-            { html: 'اَلْمُعَلِّمُونَ', turkish: 'Öğretmenler', answers: ['Marife', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_6] }, 
+            { html: 'اَلطَّالِبَاتُ', turkish: 'Öğrenciler', answers: ['Marife', 'Müennes', 'Cem\'', Q4_ANSWERS.Q4_8] }, 
+            { html: 'اَلْمُعَلِّمُونَ', turkish: 'Öğretmenler', answers: ['Marife', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_6] }, 
             { html: 'طَالِبَةٌ', turkish: 'Öğrenci', answers: ['Nekra', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_1] }, 
             { html: 'اَلْمُهَنْدِسِينَ', turkish: 'Mühendisler', answers: ['Marife', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_7] }, 
-            { html: 'طُلَّـابًا', turkish: 'Öğrenciler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_2] }, 
-            { html: 'جُنْدِيَّتَيْنِ', turkish: 'İki asker', answers: ['Nekra', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, 
+            { html: 'طُلَّـابًا', turkish: 'Öğrenciler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_2] }, 
+            { html: 'جُنْدِيَّتَيْنِ', turkish: 'İki asker', answers: ['Nekra', 'Müennes', 'Tesniye', Q4_ANSWERS.Q4_5] }, 
             { html: 'اَلْكِتَابَ', turkish: 'Kitap', answers: ['Marife', 'Müzekker', 'Müfret', Q4_ANSWERS.Q4_2] }, 
-            { html: 'مُدَرِّسِينَ', turkish: 'Öğretmenler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_7] }, 
-            { html: 'اَلنَّافِذَةِ', turkish: 'Pencere', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] } 
+            { html: 'مُدَرِّسِينَ', turkish: 'Öğretmenler', answers: ['Nekra', 'Müzekker', 'Cem\'', Q4_ANSWERS.Q4_7] }, 
+            { html: 'اَلنَّافِذَةِ', turkish: 'Pencere', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] } 
         ];
         const questionTitles = [ "1. Tür?", "2. Cinsiyet?", "3. Sayı?", "4. İ'rab?" ];
         const questionOptions = [ ['Marife', 'Nekra'], ['Müzekker', 'Müennes'], ['Müfret', 'Tesniye', 'Cem\''], [ Q4_ANSWERS.Q4_1, Q4_ANSWERS.Q4_2, Q4_ANSWERS.Q4_3, Q4_ANSWERS.Q4_4, Q4_ANSWERS.Q4_5, Q4_ANSWERS.Q4_6, Q4_ANSWERS.Q4_7, Q4_ANSWERS.Q4_8, Q4_ANSWERS.Q4_9 ] ];

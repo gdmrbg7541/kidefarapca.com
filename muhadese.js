@@ -3,32 +3,32 @@ const educationData = {
         {
             unitName: "1. Ünite: Merhaba | مَرْحَبًا",
             lessons: [
-                { name: "1. Ders: Arap Harfleri ve Sesler | اَلْحُرُوفُ الْعَرَبِيَّة وَالصَّوَائِت", kelimeUrl: "kelime_5_1_1.html", simultaneUrl: "simultane_5_1_1.html" },
-                { name: "2. Ders: Kendini Tanıtma | عِبَارَات التَّحِيَّة وَتَّعَارُف وَالْوَدَاع", kelimeUrl: "kelime_5_1_2.html", simultaneUrl: "simultane_5_1_2.html" },
+                { name: "1. Ders: Arap Harfleri ve Sesler | اَلْحُرُوفُ الْعَرَبِيَّة وَالصَّوَائِت", simultaneUrl: "simultane.html?ders=5_1_1" },
+                { name: "2. Ders: Kendini Tanıtma | عِبَارَات التَّحِيَّة وَتَّعَارُف وَالْوَدَاع", simultaneUrl: "simultane.html?ders=5_1_2" },
             ]
         },
         {
             unitName: "2. Ünite: Sınıfım | صَفِّي",
             lessons: [
-                { name: "1. Ders: Sınıf Eşyaları | مُكَوِّنَاتُ الصَّفِّ", kelimeUrl: "kelime_5_2_1.html", simultaneUrl: "simultane_5_2_1.html" },
-                { name: "2. Ders: Kırtasiye Malzemeleri | أَدَوَات الدِّرَاسَة", kelimeUrl: "kelime_5_2_2.html", simultaneUrl: "simultane_5_2_2.html" },
+                { name: "1. Ders: Sınıf Eşyaları | مُكَوِّنَاتُ الصَّفِّ", simultaneUrl: "simultane.html?ders=5_2_1" },
+                { name: "2. Ders: Kırtasiye Malzemeleri | أَدَوَات الدِّرَاسَة", simultaneUrl: "simultane.html?ders=5_2_2" },
             ]
         },
         {
             unitName: "3. Ünite: Ailem | عَائِلَتِي",
             lessons: [
-                { name: "1. Ders: Aile Bireyleri | أَفْرَادُ العَائِلَة", kelimeUrl: "kelime_5_3_1.html", simultaneUrl: "simultane_5_3_1.html" },
-                { name: "2. Ders: Meslekler | الْمِهَن", kelimeUrl: "kelime_5_3_2.html", simultaneUrl: "simultane_5_3_2.html" },
-                { name: "3. Ders: Sıfatlar | اَلصِّفَات", kelimeUrl: "kelime_5_3_3.html", simultaneUrl: "simultane_5_3_3.html" },
+                { name: "1. Ders: Aile Bireyleri | أَفْرَادُ العَائِلَة", simultaneUrl: "simultane.html?ders=5_3_1" },
+                { name: "2. Ders: Meslekler | الْمِهَن", simultaneUrl: "simultane.html?ders=5_3_2" },
+                { name: "3. Ders: Sıfatlar | اَلصِّفَات", simultaneUrl: "simultane.html?ders=5_3_3" },
             ]
         },
         {
             unitName: "4. Ünite: Güzel Evim | بَيْتِي الجَمِيل",
             lessons: [
-                { name: "1. Ders: Evin Bölümleri | أَقْسَامُ البَيْت", kelimeUrl: "kelime_5_4_1.html", simultaneUrl: "simultane_5_4_1.html" },
-                { name: "2. Ders: Evin Eşyaları | أَدَوَات البَيْت", kelimeUrl: "kelime_5_4_2.html", simultaneUrl: "simultane_5_4_2.html" },
-                { name: "3. Ders: Sıfatlar | اَلصِّفَات", kelimeUrl: "kelime_5_4_3.html", simultaneUrl: "simultane_5_4_3.html" },
-                { name: "4. Ders: Sayılar | اَلْأَعْدَاد", kelimeUrl: "kelime_5_4_4.html", simultaneUrl: "simultane_5_4_4.html" }
+                { name: "1. Ders: Evin Bölümleri | أَقْسَامُ البَيْت", simultaneUrl: "simultane.html?ders=5_4_1" },
+                { name: "2. Ders: Evin Eşyaları | أَدَوَات البَيْت", simultaneUrl: "simultane.html?ders=5_4_2" },
+                { name: "3. Ders: Sıfatlar | اَلصِّفَات", simultaneUrl: "simultane.html?ders=5_4_3" },
+                { name: "4. Ders: Sayılar | اَلْأَعْدَاد", simultaneUrl: "simultane.html?ders=5_4_4" }
             ]
         }
     ],
@@ -36,107 +36,107 @@ const educationData = {
         {
             unitName: "1. Ünite: Okul Hayatı",
             lessons: [
-                { name: "1. Ders: Okulda Bir Gün", kelimeUrl: "kelime_6_1_1.html", simultaneUrl: "simultane_6_1_1.html" },
-                { name: "2. Ders: Kütüphane", kelimeUrl: "kelime_6_1_2.html", simultaneUrl: "simultane_6_1_2.html" },
+                { name: "1. Ders: Okulda Bir Gün", simultaneUrl: "simultane.html?ders=6_1_1" },
+                { name: "2. Ders: Kütüphane", simultaneUrl: "simultane.html?ders=6_1_2" },
             ]
         },
         {
             unitName: "2. Ünite: Beslenme ve Sağlık",
             lessons: [
-                { name: "1. Ders: Meyveler ve Sebzeler", kelimeUrl: "kelime_6_2_1.html", simultaneUrl: "simultane_6_2_1.html" },
-                { name: "2. Ders: Sağlıklı Kahvaltı", kelimeUrl: "kelime_6_2_2.html", simultaneUrl: "simultane_6_2_2.html" },
+                { name: "1. Ders: Meyveler ve Sebzeler", simultaneUrl: "simultane.html?ders=6_2_1" },
+                { name: "2. Ders: Sağlıklı Kahvaltı", simultaneUrl: "simultane.html?ders=6_2_2" },
             ]
         },
         {
             unitName: "3. Ünite: Çevremiz ve Şehir",
             lessons: [
-                { name: "1. Ders: Mahallemiz", kelimeUrl: "kelime_6_3_1.html", simultaneUrl: "simultane_6_3_1.html" },
-                { name: "2. Ders: Ulaşım Araçları", kelimeUrl: "kelime_6_3_2.html", simultaneUrl: "simultane_6_3_2.html" },
+                { name: "1. Ders: Mahallemiz", simultaneUrl: "simultane.html?ders=6_3_1" },
+                { name: "2. Ders: Ulaşım Araçları", simultaneUrl: "simultane.html?ders=6_3_2" },
             ]
         },
         {
             unitName: "4. Ünite: Tatil ve Gezi",
             lessons: [
-                { name: "1. Ders: Mevsimler", kelimeUrl: "kelime_6_4_1.html", simultaneUrl: "simultane_6_4_1.html" },
-                { name: "2. Ders: Doğa Gezisi", kelimeUrl: "kelime_6_4_2.html", simultaneUrl: "simultane_6_4_2.html" },
+                { name: "1. Ders: Mevsimler", simultaneUrl: "simultane.html?ders=6_4_1" },
+                { name: "2. Ders: Doğa Gezisi", simultaneUrl: "simultane.html?ders=6_4_2" },
             ]
         }
     ],
     "7": [
         {
             unitName: "1. Ünite: Günlük Yaşam | اَلْحَيَاةُ الْيَوْمِيَّةُ",
-            lessons: [{ name: "", kelimeUrl: "kelime_7_1.html", simultaneUrl: "simultane_7_1.html", aktif: true }]
+            lessons: [{ name: "", simultaneUrl: "simultane.html?ders=7_1", aktif: true }]
         },
         {
             unitName: "2. Ünite: Alışveriş Zamanı | وَقْتُ التَّسَوُّق",
-            lessons: [{ name: "", kelimeUrl: "kelime_7_2.html", simultaneUrl: "simultane_7_2.html", aktif: true }]
+            lessons: [{ name: "", simultaneUrl: "simultane.html?ders=7_2", aktif: true }]
         },
         {
             unitName: "3. Ünite: Nereye Yolculuk Yapıyoruz? | إِلى أَيْن نُسافِر؟",
-            lessons: [ { name: "", kelimeUrl: "kelime_7_3.html", simultaneUrl: "simultane_7_3.html", aktif: true } ]
+            lessons: [ { name: "", simultaneUrl: "simultane.html?ders=7_3", aktif: true } ]
         },
         {
             unitName: "4. Ünite: Şehrim ve Ülkem | مَدينَتى وَبَلَدي",
-            lessons: [{ name: "", kelimeUrl: "kelime_7_4.html", simultaneUrl: "simultane_7_4.html", aktif: true } ]
+            lessons: [{ name: "", simultaneUrl: "simultane.html?ders=7_4", aktif: true } ]
         }
     ],
     "8": [
         {
             unitName: "1. Ünite: Dostluk ve Sosyal Hayat",
             lessons: [
-                { name: "1. Ders: Arkadaşlık Bağları", kelimeUrl: "kelime_8_1_1.html", simultaneUrl: "simultane_8_1_1.html" },
-                { name: "2. Ders: Yardımlaşma", kelimeUrl: "kelime_8_1_2.html", simultaneUrl: "simultane_8_1_2.html" },
+                { name: "1. Ders: Arkadaşlık Bağları", simultaneUrl: "simultane.html?ders=8_1_1" },
+                { name: "2. Ders: Yardımlaşma", simultaneUrl: "simultane.html?ders=8_1_2" },
             ]
         },
         {
             unitName: "2. Ünite: Kültür ve Sanat",
             lessons: [
-                { name: "1. Ders: Geleneksel El Sanatları", kelimeUrl: "kelime_8_2_1.html", simultaneUrl: "simultane_8_2_1.html" },
-                { name: "2. Ders: Musiki", kelimeUrl: "kelime_8_2_2.html", simultaneUrl: "simultane_8_2_2.html" },
+                { name: "1. Ders: Geleneksel El Sanatları", simultaneUrl: "simultane.html?ders=8_2_1" },
+                { name: "2. Ders: Musiki", simultaneUrl: "simultane.html?ders=8_2_2" },
             ]
         },
         {
             unitName: "3. Ünite: Bilim ve Teknoloji",
             lessons: [
-                { name: "1. Ders: İnternet Dünyası", kelimeUrl: "kelime_8_3_1.html", simultaneUrl: "simultane_8_3_1.html" },
-                { name: "2. Ders: İcatlar", kelimeUrl: "kelime_8_3_2.html", simultaneUrl: "simultane_8_3_2.html" },
+                { name: "1. Ders: İnternet Dünyası", simultaneUrl: "simultane.html?ders=8_3_1" },
+                { name: "2. Ders: İcatlar", simultaneUrl: "simultane.html?ders=8_3_2" },
             ]
         },
         {
             unitName: "4. Ünite: Gelecek Planları",
             lessons: [
-                { name: "1. Ders: Hedeflerim", kelimeUrl: "kelime_8_4_1.html", simultaneUrl: "simultane_8_4_1.html" },
-                { name: "2. Ders: Tercihler", kelimeUrl: "kelime_8_4_2.html", simultaneUrl: "simultane_8_4_2.html" },
+                { name: "1. Ders: Hedeflerim", simultaneUrl: "simultane.html?ders=8_4_1" },
+                { name: "2. Ders: Tercihler", simultaneUrl: "simultane.html?ders=8_4_2" },
             ]
         }
     ],
     "9": [
         {
-            unitName: "1. Ünite: Haydi Tanışalım! | هَيّا نَتَعارَفْ",
+            unitName: "1. Ünite: Selamlaşma ve Tanışma | التَّحِيَّة والتَّعارُف",
             lessons: [
-                { name: "1. Ders: Selamlaşma | التَّحِيَّة", kelimeUrl: "kelime_9_1_1.html", simultaneUrl: "simultane_9_1_1.html" },
-                { name: "2. Ders: Tanışma | التَّعارُف", kelimeUrl: "kelime_9_1_2.html", simultaneUrl: "simultane_9_1_2.html" },
+                { name: "1. Ders: Selamlaşma | التَّحِيَّة", simultaneUrl: "simultane.html?ders=9_1_1", aktif: true },
+                { name: "2. Ders: Tanışma | التَّعارُف", simultaneUrl: "simultane.html?ders=9_1_2", aktif: true },
             ]
         },
         {
-            unitName: "2. Ünite: Okuldayım | أَنا في المَدْرَسَة",
+            unitName: "2. Ünite: Okul ve Meslekler | المَدْرَسَة والمِهَن",
             lessons: [
-                { name: "1. Ders: Sınıfım | صَفّي", kelimeUrl: "kelime_9_2_1.html", simultaneUrl: "simultane_9_2_1.html" },
-                { name: "2. Ders: Okulum | مَدْرَسَتي", kelimeUrl: "kelime_9_2_2.html", simultaneUrl: "simultane_9_2_2.html" },
+                { name: "1. Ders: Okuldayım | في المَدْرَسَة", simultaneUrl: "simultane.html?ders=9_2_1", aktif: true },
+                { name: "2. Ders: Meslekler ve Ailem | المِهَن والأُسْرَة", simultaneUrl: "simultane.html?ders=9_2_2", aktif: true },
             ]
         },
         {
-            unitName: "3. Ünite: Evdeyim | أَنا في البَيْت",
+            unitName: "3. Ünite: Evdeyim | في البَيْت",
             lessons: [
-                { name: "1. Ders: Ailem | أُسْرَتي", kelimeUrl: "kelime_9_3_1.html", simultaneUrl: "simultane_9_3_1.html" },
-                { name: "2. Ders: Evim | بَيْتي", kelimeUrl: "kelime_9_3_2.html", simultaneUrl: "simultane_9_3_2.html" },
+                { name: "1. Ders: Evdeyim | في البَيْت", simultaneUrl: "simultane.html?ders=9_3_1", aktif: true },
+                { name: "2. Ders: Odamda | في غُرْفَتي", simultaneUrl: "simultane.html?ders=9_3_2", aktif: true },
             ]
         },
         {
-            unitName: "4. Ünite: Hayatımdan Bir Gün | يَوْم مِنْ حَياتي",
+            unitName: "4. Ünite: Günlük Hayat | الحَياة اليَوْمِيَّة",
             lessons: [
-                { name: "1. Ders: Bugün Ne Yaptım? | ماذا فَعَلْتُ اليَوْم؟", kelimeUrl: "kelime_9_4_1.html", simultaneUrl: "simultane_9_4_1.html" },
-                { name: "2. Ders: Bugün Ne Yedim? | ماذا تَناوَلْتُ اليَوْم؟", kelimeUrl: "kelime_9_4_2.html", simultaneUrl: "simultane_9_4_2.html" },
+                { name: "1. Ders: Bir Günüm | يَوْمي", simultaneUrl: "simultane.html?ders=9_4_1", aktif: true },
+                { name: "2. Ders: Günlük Rutin | النِّظام اليَوْمِيّ", simultaneUrl: "simultane.html?ders=9_4_2", aktif: true },
             ]
         }
     ],
@@ -144,29 +144,29 @@ const educationData = {
         {
             unitName: "1. Ünite: Değerlerim | قِيَمي",
             lessons: [
-                { name: "1. Ders: Akrabalarım | أَقارِبي", kelimeUrl: "kelime_10_1_1.html", simultaneUrl: "simultane_10_1_1.html", aktif: true },
-                { name: "2. Ders: Güzel Davranışlarım | مُعامَلاتي الحَسَنَة", kelimeUrl: "kelime_10_1_2.html", simultaneUrl: "simultane_10_1_2.html", aktif: true },
+                { name: "1. Ders: Akrabalarım | أَقارِبي", simultaneUrl: "simultane.html?ders=10_1_1", aktif: true },
+                { name: "2. Ders: Güzel Davranışlarım | مُعامَلاتي الحَسَنَة", simultaneUrl: "simultane.html?ders=10_1_2", aktif: true },
             ]
         },
         {
             unitName: "2. Ünite: Kendimi Keşfediyorum | أَكْتَشِفُ نَفْسي",
             lessons: [
-                { name: "1. Ders: Sağlığım | صِحَّتي", kelimeUrl: "kelime_10_2_1.html", simultaneUrl: "simultane_10_2_1.html", aktif: true },
-                { name: "2. Ders: Hobilerim | هِواياتي", kelimeUrl: "kelime_10_2_2.html", simultaneUrl: "simultane_10_2_2.html", aktif: true },
+                { name: "1. Ders: Sağlığım | صِحَّتي", simultaneUrl: "simultane.html?ders=10_2_1", aktif: true },
+                { name: "2. Ders: Hobilerim | هِواياتي", simultaneUrl: "simultane.html?ders=10_2_2", aktif: true },
             ]
         },
         {
             unitName: "3. Ünite: Seyahat Etmeyi Seviyorum | أُحِبُّ السِّياحَة",
             lessons: [
-                { name: "1. Ders: Tarihi ve Turistik Mekanlar | الأَماكِن التّاريخِيَّة والسِّياحِيَّة", kelimeUrl: "kelime_10_3_1.html", simultaneUrl: "simultane_10_3_1.html", aktif: true },
-                { name: "2. Ders: Ulaşım Araçları | المُواصَلات", kelimeUrl: "kelime_10_3_2.html", simultaneUrl: "simultane_10_3_2.html", aktif: true },
+                { name: "1. Ders: Tarihi ve Turistik Mekanlar | الأَماكِن التّاريخِيَّة والسِّياحِيَّة", simultaneUrl: "simultane.html?ders=10_3_1", aktif: true },
+                { name: "2. Ders: Ulaşım Araçları | المُواصَلات", simultaneUrl: "simultane.html?ders=10_3_2", aktif: true },
             ]
         },
         {
             unitName: "4. Ünite: Tatile Hazırlanıyorum | أَسْتَعِدُّ لِلْعُطْلَة",
             lessons: [
-                { name: "1. Ders: Mevsimlere Göre Elbiselerim | مَلابِسي حَسَب الفُصول ", kelimeUrl: "kelime_10_4_1.html", simultaneUrl: "simultane_10_4_1.html" },
-                { name: "2. Ders: Alışveriş Yapıyorum | أَتَسَوَّقُ", kelimeUrl: "kelime_10_4_2.html", simultaneUrl: "simultane_10_4_2.html" },
+                { name: "1. Ders: Mevsimlere Göre Elbiselerim | مَلابِسي حَسَب الفُصول ", simultaneUrl: "simultane.html?ders=10_4_1" },
+                { name: "2. Ders: Alışveriş Yapıyorum | أَتَسَوَّقُ", simultaneUrl: "simultane.html?ders=10_4_2" },
             ]
         }
     ]
@@ -175,7 +175,14 @@ const educationData = {
 // Sınıf Butonlarını Oluşturma
     function renderClassButtons() {
         const btnContainer = document.getElementById('class-buttons');
-        const lastClass = localStorage.getItem('lastSelectedClass') || "10"; 
+        /* Bu dosya index.html'de yalnızca VERİ kaynağı (educationData) olarak da
+           yükleniyor; orada #class-buttons yoktur, sessizce çıkılır. */
+        if (!btnContainer) return;
+        /* İmam Hatip kartlarından "?sinif=N" ile gelince o sınıf açılsın
+           (ortak dosya, kart kategorize eder). Geçersizse eski davranış. */
+        var _sinifParam = new URLSearchParams(location.search).get('sinif');
+        const lastClass = (_sinifParam && educationData[_sinifParam])
+            ? _sinifParam : (localStorage.getItem('lastSelectedClass') || "10");
         
         Object.keys(educationData).forEach(classLevel => {
             const btn = document.createElement('button');
@@ -183,7 +190,7 @@ const educationData = {
             btn.innerText = classLevel + ". Sınıf";
             
             // 10. Sınıf butonu yeşil
-           if (classLevel === "10" || classLevel === "7") {
+           if (classLevel === "10" || classLevel === "9" || classLevel === "7") {
                 btn.classList.add('hazir-sinif');
             }
 
@@ -225,7 +232,6 @@ let lessonsHTML = unit.lessons.map(lesson => {
             ${nameSpan}
         </div>
         <div class="btn-group">
-            <a href="${lesson.kelimeUrl}" class="action-btn btn-kelime ${statusClass}">📚 KELİMELER</a>
             <a href="${lesson.simultaneUrl}" class="action-btn btn-simultane ${statusClass}">🎧 SİMÜLTANE</a>
         </div>
     </div>

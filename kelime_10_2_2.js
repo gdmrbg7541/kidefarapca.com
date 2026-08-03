@@ -1,24 +1,24 @@
 const allWords = [
     // Hobiler ve Sporlar
     { tr: "Futbol", ar: "كُرَة القَدَم" },
-    { tr: "Basketbol", ar: "كُرَة السَّلَّة" },
-    { tr: "Yüzme", ar: "السِّباحَة" },
-    { tr: "Atıcılık / Okçuluk", ar: "الرِّمايَة" },
-    { tr: "Resim çizme", ar: "الرَّسْم" },
+    { tr: "Basketbol", ar: "كُرَة السَّلَّة" },
+    { tr: "Yüzme", ar: "السِّباحَة" },
+    { tr: "Atıcılık / Okçuluk", ar: "الرِّمايَة" },
+    { tr: "Resim çizme", ar: "الرَّسْم" },
     { tr: "Okuma", ar: "قِراءَة" },
     { tr: "Müzik", ar: "الموسيقى" },
     { tr: "Tiyatro", ar: "المَسْرَح" },
     { tr: "Sinema", ar: "السّينَما" },
-    { tr: "Gezinti / Yürüyüş", ar: "التَّنَزُّه" },
-    { tr: "Seyahat", ar: "السَّفَر" },
+    { tr: "Gezinti / Yürüyüş", ar: "التَّنَزُّه" },
+    { tr: "Seyahat", ar: "السَّفَر" },
     { tr: "Hobi", ar: "هِوايَة" },
     { tr: "Spor", ar: "رِياضَة" },
 
     // Sık Kullanılan Fiiller (Şimdiki Zaman - Ben)
     { tr: "Oynuyorum", ar: "أَلْعَبُ" },
-    { tr: "Seviyorum", ar: "أُحِبُّ" },
+    { tr: "Seviyorum", ar: "أُحِبُّ" },
     { tr: "Dinliyorum", ar: "أَسْتَمِعُ" },
-    { tr: "Tercih ediyorum", ar: "أُفَضِّلُ" },
+    { tr: "Tercih ediyorum", ar: "أُفَضِّلُ" },
     { tr: "İzliyorum", ar: "أُشاهِدُ" },
     { tr: "Uyguluyorum / Yapıyorum", ar: "أُمارِسُ" },
     { tr: "Vakit geçiriyorum", ar: "أَقْضي" },
@@ -35,8 +35,8 @@ const allWords = [
     { tr: "Bazen", ar: "أَحْيانًا" },
     { tr: "Çoğunlukla", ar: "غالِبًا" },
     { tr: "Genellikle", ar: "عادَةً" },
-    { tr: "Bir kez", ar: "مَرَّة" },
-    { tr: "İki kez", ar: "مَرَّتَيْن" },
+    { tr: "Bir kez", ar: "مَرَّة" },
+    { tr: "İki kez", ar: "مَرَّتَيْن" },
 
     // İnsanlar, Mekanlar ve Diğer İsimler
     { tr: "Aile", ar: "عائِلَة / أُسْرَة" },
@@ -44,7 +44,7 @@ const allWords = [
     { tr: "Bahçe / Park", ar: "حَديقَة" },
     { tr: "Ormanlar", ar: "غابات" },
     { tr: "Kitaplar", ar: "كُتُب" },
-    { tr: "Sağlık", ar: "الصِّحَّة" },
+    { tr: "Sağlık", ar: "الصِّحَّة" },
     { tr: "Beden / Vücut", ar: "جَسَد" },
     { tr: "Ruh", ar: "رّوح" },
 

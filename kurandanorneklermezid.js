@@ -2,9 +2,9 @@
     let currentIdx = 0;
 const definitions = {
     "İfal": "Mazisi (أَفْعَلَ) kalıbındadır. Genelde geçişsiz fiili geçişli yapar.",
-    "Tefil": "Mazisi (فَعَّلَ) kalıbındadır. Çokluk veya tedricilik bildirir.",
+    "Tefil": "Mazisi (فَعَّلَ) kalıbındadır. Çokluk veya tedricilik bildirir.",
     "Müfaale": "Mazisi (فَاعَلَ) kalıbındadır. Genelde işteşlik bildirir.",
-    "Tefeul": "Mazisi (تَفَعَّلَ) kalıbındadır. Dönüşlülük veya tekellüf bildirir.",
+    "Tefeul": "Mazisi (تَفَعَّلَ) kalıbındadır. Dönüşlülük veya tekellüf bildirir.",
     "Tefaul": "Mazisi (تَفَاعَلَ) kalıbındadır. Genelde ortaklık veya yapmacıklık bildirir.",
     "İftial": "Mazisi (اِفْتَعَلَ) kalıbındadır. Dönüşlülük ve çaba bildirir.",
     "İnfial": "Mazisi (اِنْفَعَلَ) kalıbındadır. Mutavaat (edilgenlik/dönüşlülük) bildirir.",
@@ -13,7 +13,7 @@ const definitions = {
 
 const questions = [
   {
-    verse: "إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ",
+    verse: "إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ",
     target: "أَنْزَلْنَاهُ",
     tr_target: "onu indirdik",
     translation: "Şüphesiz, biz onu (Kur'an'ı) Kadir gecesinde indirdik.",
@@ -37,7 +37,7 @@ const questions = [
     conjugation: { mazi: "أَطْعَمَ", muzari: "يُطْعِمُ", emir: "أَطْعِمْ", mastar: "إِطْعَامٌ" }
   },
   {
-    verse: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",
+    verse: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",
     target: "أَعْطَيْنَاكَ",
     tr_target: "sana verdik",
     translation: "Şüphesiz biz sana Kevser'i verdik.",
@@ -45,7 +45,7 @@ const questions = [
     conjugation: { mazi: "أَعْطَى", muzari: "يُعْطِي", emir: "أَعْطِ", mastar: "إِعْطَاءٌ" }
   },
   {
-    verse: "وَ أَقِيمُوا الصَّلَاةَ",
+    verse: "وَ أَقِيمُوا الصَّلَاةَ",
     target: "أَقِيمُوا",
     tr_target: "namazı kılın",
     translation: "Namazı kılın.",
@@ -53,44 +53,44 @@ const questions = [
     conjugation: { mazi: "أَقَامَ", muzari: "يُقِيمُ", emir: "أَقِمْ", mastar: "إِقَامَةٌ" }
   },
   {
-    verse: "الَّذِي عَلَّمَ بِالْقَلَمِ",
-    target: "عَلَّمَ",
+    verse: "الَّذِي عَلَّمَ بِالْقَلَمِ",
+    target: "عَلَّمَ",
     tr_target: "öğretti",
     translation: "O, kalemle yazmayı öğretendir.",
     correct: "Tefil",
-    conjugation: { mazi: "عَلَّمَ", muzari: "يُعَلِّمُ", emir: "عَلِّمْ", mastar: "تَعْلِيمٌ" }
+    conjugation: { mazi: "عَلَّمَ", muzari: "يُعَلِّمُ", emir: "عَلِّمْ", mastar: "تَعْلِيمٌ" }
   },
   {
-    verse: "فَ سَبِّحْ بِحَمْدِ رَبِّكَ",
-    target: "سَبِّحْ",
+    verse: "فَ سَبِّحْ بِحَمْدِ رَبِّكَ",
+    target: "سَبِّحْ",
     tr_target: "tesbih et",
     translation: "Rabbini hamd ile tesbih et.",
     correct: "Tefil",
-    conjugation: { mazi: "سَبَّحَ", muzari: "يُسَبِّحُ", emir: "سَبِّحْ", mastar: "تَسْبِيحٌ" }
+    conjugation: { mazi: "سَبَّحَ", muzari: "يُسَبِّحُ", emir: "سَبِّحْ", mastar: "تَسْبِيحٌ" }
   },
   {
-    verse: "وَ صَدَّقَ بِالْحُسْنَى",
-    target: "صَدَّقَ",
+    verse: "وَ صَدَّقَ بِالْحُسْنَى",
+    target: "صَدَّقَ",
     tr_target: "tasdik etti",
     translation: "Ve en güzel olanı (tevhidi) tasdik ederse.",
     correct: "Tefil",
-    conjugation: { mazi: "صَدَّقَ", muzari: "يُصَدِّقُ", emir: "صَدِّقْ", mastar: "تَصْدِيقٌ" }
+    conjugation: { mazi: "صَدَّقَ", muzari: "يُصَدِّقُ", emir: "صَدِّقْ", mastar: "تَصْدِيقٌ" }
   },
   {
-    verse: "فَ ذَكِّرْ إِنَّمَا أَنْتَ مُذَكِّرٌ",
-    target: "ذَكِّرْ",
+    verse: "فَ ذَكِّرْ إِنَّمَا أَنْتَ مُذَكِّرٌ",
+    target: "ذَكِّرْ",
     tr_target: "öğüt ver",
     translation: "Artık sen öğüt ver! Sen ancak bir öğüt vericisin.",
     correct: "Tefil",
-    conjugation: { mazi: "ذَكَّرَ", muzari: "يُذَكِّرُ", emir: "ذَكِّرْ", mastar: "تَذْكِيرٌ" }
+    conjugation: { mazi: "ذَكَّرَ", muzari: "يُذَكِّرُ", emir: "ذَكِّرْ", mastar: "تَذْكِيرٌ" }
   },
   {
-    verse: "نَزَّلَ عَلَيْكَ الْكِتَابَ",
-    target: "نَزَّلَ",
+    verse: "نَزَّلَ عَلَيْكَ الْكِتَابَ",
+    target: "نَزَّلَ",
     tr_target: "indirdi",
     translation: "Sana kitabı indirdi.",
     correct: "Tefil",
-    conjugation: { mazi: "نَزَّلَ", muzari: "يُنَزِّلُ", emir: "نَزِّلْ", mastar: "تَنْزِيلٌ" }
+    conjugation: { mazi: "نَزَّلَ", muzari: "يُنَزِّلُ", emir: "نَزِّلْ", mastar: "تَنْزِيلٌ" }
   },
   {
     verse: "وَلَا تُقَاتِلُوهُمْ عِنْدَ الْمَسْجِدِ الْحَرَامِ",
@@ -101,7 +101,7 @@ const questions = [
     conjugation: { mazi: "قَاتَلَ", muzari: "يُقَاتِلُ", emir: "قَاتِلْ", mastar: "مُقَاتَلَةٌ / قِتَالٌ" }
   },
   {
-    verse: "فَ نَادَى رَبَّهُ أَنِّي مَغْلُوبٌ",
+    verse: "فَ نَادَى رَبَّهُ أَنِّي مَغْلُوبٌ",
     target: "نَادَى",
     tr_target: "nida etti / seslendi",
     translation: "Rabbine: 'Ben yenik düştüm' diye nida etti.",
@@ -109,7 +109,7 @@ const questions = [
     conjugation: { mazi: "نَادَى", muzari: "يُنَادِي", emir: "نَادِ", mastar: "مُنَادَاةٌ / نِدَاءٌ" }
   },
   {
-    verse: "وَمَا يُخَادِعُونَ إِلَّا أَنْفُسَهُمْ",
+    verse: "وَمَا يُخَادِعُونَ إِلَّا أَنْفُسَهُمْ",
     target: "يُخَادِعُونَ",
     tr_target: "aldatırlar",
     translation: "Onlar ancak kendilerini aldatırlar.",
@@ -117,7 +117,7 @@ const questions = [
     conjugation: { mazi: "خَادَعَ", muzari: "يُخَادِعُ", emir: "خَادِعْ", mastar: "مُخَادَعَةٌ / خِدَاعٌ" }
   },
   {
-    verse: "وَ جَاهِدُوا فِي اللَّهِ حَقَّ جِهَادِهِ",
+    verse: "وَ جَاهِدُوا فِي اللَّهِ حَقَّ جِهَادِهِ",
     target: "جَاهِدُوا",
     tr_target: "cihad edin",
     translation: "Allah yolunda hakkıyla cihad edin.",
@@ -125,7 +125,7 @@ const questions = [
     conjugation: { mazi: "جَاهَدَ", muzari: "يُجَاهِدُ", emir: "جَاهِدْ", mastar: "مُجَاهَدَةٌ / جِهَادٌ" }
   },
   {
-    verse: "إِنَّما يُبَايِعُونَ اللَّهَ",
+    verse: "إِنَّما يُبَايِعُونَ اللَّهَ",
     target: "يُبَايِعُونَ",
     tr_target: "biat ediyorlar",
     translation: "Onlar ancak Allah'a biat etmektedirler.",
@@ -133,47 +133,47 @@ const questions = [
     conjugation: { mazi: "بَايَعَ", muzari: "يُبَايِعُ", emir: "بَايِعْ", mastar: "مُبَايَعَةٌ" }
   },
   {
-    verse: "لَعَلَّكُمْ تَتَفَكَّرُونَ",
-    target: "تَتَفَكَّرُونَ",
+    verse: "لَعَلَّكُمْ تَتَفَكَّرُونَ",
+    target: "تَتَفَكَّرُونَ",
     tr_target: "düşünürsünüz",
     translation: "Umulur ki düşünürsünüz.",
     correct: "Tefeul",
-    conjugation: { mazi: "تَفَكَّرَ", muzari: "يَتَفَكَّرُ", emir: "تَفَكَّرْ", mastar: "تَفَكُّرٌ" }
+    conjugation: { mazi: "تَفَكَّرَ", muzari: "يَتَفَكَّرُ", emir: "تَفَكَّرْ", mastar: "تَفَكُّرٌ" }
   },
   {
-    verse: "فَأَمَّا مَنْ تَزَكَّى",
-    target: "تَزَكَّى",
+    verse: "فَأَمَّا مَنْ تَزَكَّى",
+    target: "تَزَكَّى",
     tr_target: "temizlendi",
     translation: "Temizlenen (iman eden) kimseye gelince.",
     correct: "Tefeul",
-    conjugation: { mazi: "تَزَكَّى", muzari: "يَتَزَكَّى", emir: "تَزَكَّ", mastar: "تَزَكٍّ" }
+    conjugation: { mazi: "تَزَكَّى", muzari: "يَتَزَكَّى", emir: "تَزَكَّ", mastar: "تَزَكٍّ" }
   },
   {
-    verse: "تَنَزَّلُ الْمَلَائِكَةُ",
-    target: "تَنَزَّلُ",
+    verse: "تَنَزَّلُ الْمَلَائِكَةُ",
+    target: "تَنَزَّلُ",
     tr_target: "inerler",
     translation: "Melekler inerler.",
     correct: "Tefeul",
-    conjugation: { mazi: "تَنَزَّلَ", muzari: "يَتَنَزَّلُ", emir: "تَنَزَّلْ", mastar: "تَنَزُّلٌ" }
+    conjugation: { mazi: "تَنَزَّلَ", muzari: "يَتَنَزَّلُ", emir: "تَنَزَّلْ", mastar: "تَنَزُّلٌ" }
   },
   {
-    verse: "فَ تَبَسَّمَ ضَاحِكًا",
-    target: "تَبَسَّمَ",
+    verse: "فَ تَبَسَّمَ ضَاحِكًا",
+    target: "تَبَسَّمَ",
     tr_target: "gülümsedi",
     translation: "Gülümseyerek tebessüm etti.",
     correct: "Tefeul",
-    conjugation: { mazi: "تَبَسَّمَ", muzari: "يَتَبَسَّمُ", emir: "تَبَسَّمْ", mastar: "تَبَسُّمٌ" }
+    conjugation: { mazi: "تَبَسَّمَ", muzari: "يَتَبَسَّمُ", emir: "تَبَسَّمْ", mastar: "تَبَسُّمٌ" }
   },
   {
-    verse: "فَ تَقَبَّلَهَا رَبُّهَا",
-    target: "تَقَبَّلَهَا",
+    verse: "فَ تَقَبَّلَهَا رَبُّهَا",
+    target: "تَقَبَّلَهَا",
     tr_target: "onu kabul etti",
     translation: "Rabbi onu kabul buyurdu.",
     correct: "Tefeul",
-    conjugation: { mazi: "تَقَبَّلَ", muzari: "يَتَقَبَّلُ", emir: "تَقَبَّلْ", mastar: "تَقَبُّلٌ" }
+    conjugation: { mazi: "تَقَبَّلَ", muzari: "يَتَقَبَّلُ", emir: "تَقَبَّلْ", mastar: "تَقَبُّلٌ" }
   },
   {
-    verse: "وَ تَعَاوَنُوا عَلَى الْبِرِّ",
+    verse: "وَ تَعَاوَنُوا عَلَى الْبِرِّ",
     target: "تَعَاوَنُوا",
     tr_target: "yardımlaşın",
     translation: "İyilik üzerinde yardımlaşın.",
@@ -181,15 +181,15 @@ const questions = [
     conjugation: { mazi: "تَعَاوَنَ", muzari: "يَتَعَاوَنُ", emir: "تَعَاوَنُ", mastar: "تَعَاوُنٌ" }
   },
   {
-    verse: "أَلْهَاكُمُ التَّكَاثُرُ",
-    target: "التَّكَاثُرُ",
+    verse: "أَلْهَاكُمُ التَّكَاثُرُ",
+    target: "التَّكَاثُرُ",
     tr_target: "çokluk yarışı",
     translation: "Çokluk yarışı (övünmesi) sizi oyaladı.",
     correct: "Tefaul",
     conjugation: { mazi: "تَكَاثَرَ", muzari: "يَتَكَاثَرُ", emir: "تَكَاثَرْ", mastar: "تَكَاثُرٌ" }
   },
   {
-    verse: "وَ تَوَاصَوْا بِالصَّبْرِ",
+    verse: "وَ تَوَاصَوْا بِالصَّبْرِ",
     target: "تَوَاصَوْا",
     tr_target: "tavsiyeleştiler",
     translation: "Sabrı tavsiye ettiler.",
@@ -197,7 +197,7 @@ const questions = [
     conjugation: { mazi: "تَوَاصَى", muzari: "يَتَوَاصَى", emir: "تَوَاصَ", mastar: "تَوَاصٍ" }
   },
   {
-    verse: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ",
+    verse: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ",
     target: "تَبَارَكَ",
     tr_target: "yücedir",
     translation: "Hükümranlık elinde olan Allah ne yücedir.",
@@ -213,7 +213,7 @@ const questions = [
     conjugation: { mazi: "تَسَاءَلَ", muzari: "يَتَسَاءَلُ", emir: "تَسَاءَلْ", mastar: "تَسَاؤُلٌ" }
   },
   {
-    verse: "وَ اعْتَصِمُوا بِحَبْلِ اللَّهِ",
+    verse: "وَ اعْتَصِمُوا بِحَبْلِ اللَّهِ",
     target: "اعْتَصِمُوا",
     tr_target: "sımsıkı sarılın",
     translation: "Allah'ın ipine sımsıkı sarılın.",
@@ -245,7 +245,7 @@ const questions = [
     conjugation: { mazi: "اِنْتَقَمَ", muzari: "يَنْتَقِمُ", emir: "اِنْتَقَمْ", mastar: "اِنْتِقَامٌ" }
   },
   {
-    verse: "وَ انْتَظِرُوا إِنَّا مُنْتَظِرُونَ",
+    verse: "وَ انْتَظِرُوا إِنَّا مُنْتَظِرُونَ",
     target: "انْتَظِرُوا",
     tr_target: "bekleyin",
     translation: "Bekleyin, biz de beklemekteyiz.",
@@ -253,7 +253,7 @@ const questions = [
     conjugation: { mazi: "اِنْتَظَرَ", muzari: "يَنْتَظِرُ", emir: "اِنْتَظِرْ", mastar: "اِنْتِظَارٌ" }
   },
   {
-    verse: "إِذَا السَّمَاءُ انْفَطَرَتْ",
+    verse: "إِذَا السَّمَاءُ انْفَطَرَتْ",
     target: "انْفَطَرَتْ",
     tr_target: "yarıldı",
     translation: "Gök yarıldığı zaman.",
@@ -261,12 +261,12 @@ const questions = [
     conjugation: { mazi: "اِنْفَطَرَ", muzari: "يَنْفَطِرُ", emir: "اِنْفَطِرْ", mastar: "اِنْفِطَارٌ" }
   },
   {
-    verse: "إِذَا السَّمَاءُ انْشَقَّتْ",
-    target: "انْشَقَّتْ",
+    verse: "إِذَا السَّمَاءُ انْشَقَّتْ",
+    target: "انْشَقَّتْ",
     tr_target: "yarıldı",
     translation: "Gök yarıldığı zaman.",
     correct: "İnfial",
-    conjugation: { mazi: "اِنْشَقَّ", muzari: "يَنْشَقُّ", emir: "اِنْشَقَّ", mastar: "اِنْشِقَاقٌ" }
+    conjugation: { mazi: "اِنْشَقَّ", muzari: "يَنْشَقُّ", emir: "اِنْشَقَّ", mastar: "اِنْشِقَاقٌ" }
   },
   {
     verse: "فَ انْفَجَرَتْ مِنْهُ عَيْنًا",
@@ -277,23 +277,23 @@ const questions = [
     conjugation: { mazi: "اِنْفَجَرَ", muzari: "يَنْفَجِرُ", emir: "اِنْفَجِرْ", mastar: "اِنْفِجَارٌ" }
   },
   {
-    verse: "إِذَا انْفَضُّوا إِلَيْهَا",
-    target: "انْفَضُّوا",
+    verse: "إِذَا انْفَضُّوا إِلَيْهَا",
+    target: "انْفَضُّوا",
     tr_target: "dağıldılar",
     translation: "Oraya dağıldıkları zaman.",
     correct: "İnfial",
-    conjugation: { mazi: "اِنْفَضَّ", muzari: "يَنْفَضُّ", emir: "اِنْفَضَّ", mastar: "اِنْفِضَاضٌ" }
+    conjugation: { mazi: "اِنْفَضَّ", muzari: "يَنْفَضُّ", emir: "اِنْفَضَّ", mastar: "اِنْفِضَاضٌ" }
   },
   {
-    verse: "فَ انْكَبَّتْ وُجُوهُهُمْ",
-    target: "انْكَبَّتْ",
+    verse: "فَ انْكَبَّتْ وُجُوهُهُمْ",
+    target: "انْكَبَّتْ",
     tr_target: "yüzüstü kapandı",
     translation: "Yüzüstü kapandılar.",
     correct: "İnfial",
-    conjugation: { mazi: "اِنْكَبَّ", muzari: "يَنْكَبُّ", emir: "اِنْكَبَّ", mastar: "اِنْكِبَابٌ" }
+    conjugation: { mazi: "اِنْكَبَّ", muzari: "يَنْكَبُّ", emir: "اِنْكَبَّ", mastar: "اِنْكِبَابٌ" }
   },
   {
-    verse: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+    verse: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
     target: "نَسْتَعِينُ",
     tr_target: "yardım dileriz",
     translation: "Yalnız Senden yardım dileriz.",
@@ -301,7 +301,7 @@ const questions = [
     conjugation: { mazi: "اِسْتَعَانَ", muzari: "يَسْتَعِينُ", emir: "اِسْتَعِنْ", mastar: "اِسْتِعَانَةٌ" }
   },
   {
-    verse: "وَ اسْتَغْفِرْهُ إِنَّهُ كَانَ تَوَّابًا",
+    verse: "وَ اسْتَغْفِرْهُ إِنَّهُ كَانَ تَوَّابًا",
     target: "اسْتَغْفِرْهُ",
     tr_target: "bağışlanma dile",
     translation: "Ondan bağışlanma dile.",
@@ -309,7 +309,7 @@ const questions = [
     conjugation: { mazi: "اِسْتَغْفَرَ", muzari: "يَسْتَغْفِرُ", emir: "اِسْتَغْفِرْ", mastar: "اِسْتِغْفَارٌ" }
   },
   {
-    verse: "فَ اسْتَجَابَ لَهُمْ رَبُّهُمْ",
+    verse: "فَ اسْتَجَابَ لَهُمْ رَبُّهُمْ",
     target: "اسْتَجَابَ",
     tr_target: "cevap verdi / icabet etti",
     translation: "Rableri onlara icabet etti.",
@@ -325,7 +325,7 @@ const questions = [
     conjugation: { mazi: "اِسْتَكْبَرَ", muzari: "يَسْتَكْبِرُ", emir: "اِسْتَكْبِرْ", mastar: "اِسْتِكْبَارٌ" }
   },
   {
-    verse: "لَا تَسْتَفْتِحُوا عَلَى اللَّهِ",
+    verse: "لَا تَسْتَفْتِحُوا عَلَى اللَّهِ",
     target: "تَسْتَفْتِحُوا",
     tr_target: "fetih istemeyin",
     translation: "Allah'tan fetih (başarı) istemeyin.",

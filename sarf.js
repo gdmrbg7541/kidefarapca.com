@@ -1,7 +1,7 @@
 /* =========================================================
    FIREBASE AYAR BLOĞU — DOLU, DEĞİŞTİRMENE GEREK YOK
    ---------------------------------------------------------
-   Sağ üstteki "اِتَّصِلْ" rozeti (Dijital Yarışma) Firestore
+   Sağ üstteki "اِتَّصِلْ" rozeti (Dijital Yarışma) Firestore
    üzerinden çalışır. Aşağıdaki değerler senin kendi Firebase
    projenden alındı:
 
@@ -50,7 +50,7 @@ const ROOTS_GAME1 = [
     {
         root: "د ر س",
         targets: [
-            { emoji:"👨‍🏫", word:"مُدَرِّس" },
+            { emoji:"👨‍🏫", word:"مُدَرِّس" },
             { emoji:"🏫",  word:"مَدْرَسَة" },
             { emoji:"📖",  word:"دَرْس" },
             { emoji:"📚",  word:"دُروس" }
@@ -59,7 +59,7 @@ const ROOTS_GAME1 = [
     {
         root: "ع ل م",
         targets: [
-            { emoji:"🧑‍🏫", word:"مُعَلِّم" },
+            { emoji:"🧑‍🏫", word:"مُعَلِّم" },
             { emoji:"🎓",  word:"عالِم" },
             { emoji:"📘",  word:"عِلْم" },
             { emoji:"✅",  word:"مَعْلوم" }
@@ -89,7 +89,7 @@ const ROOTS_GAME1 = [
         targets: [
             { emoji:"🧠",  word:"فِكْر" },
             { emoji:"💡",  word:"فِكْرَة" },
-            { emoji:"🧘",  word:"تَفَكُّر" },
+            { emoji:"🧘",  word:"تَفَكُّر" },
             { emoji:"💭",  word:"أَفْكار" }
         ]
     },
@@ -111,14 +111,14 @@ const ROOTS_GAME1 = [
 /* ---------- FİİL ÇEKİMİ (yalnızca oyun 1'deki kökler için) ----------
    Her kök, öğretmenin istediği bab'dan çekiliyor:
      I. bab  (sülâsî mücerred, فَعَلَ)  → د ر س , ك ت ب
-     II. bab (فَعَّلَ, şeddeli)          → س ل م , ف ك ر , ع ر ف
-     V. bab  (تَفَعَّلَ, başta zaid تَ)   → ع ل م
+     II. bab (فَعَّلَ, şeddeli)          → س ل م , ف ك ر , ع ر ف
+     V. bab  (تَفَعَّلَ, başta zaid تَ)   → ع ل م
    60 kelimeyi tek tek yazmak yerine her bab için mâzî/muzâri gövdesi,
    muzâri ön ekinin harekesi ve emirdeki vasıl hemzesi tarif ediliyor;
    gerisini buildConjugation üretiyor. Sülâsîde emir hemzesi muzâri
    harekesine göre damme (يَكْتُبُ → اُكْتُبْ) ya da kesre (يَعْلَمُ → اِعْلَمْ)
    alır; II. ve V. babda gövde zaten harekeli başladığı için vasıl
-   hemzesi YOKTUR (سَلِّمْ , تَعَلَّمْ). */
+   hemzesi YOKTUR (سَلِّمْ , تَعَلَّمْ). */
 const FATHA = '\u064E', DAMMA = '\u064F', KASRA = '\u0650', SUKUN = '\u0652';
 const SHADDA = '\u0651';
 const HARAKA = { a: FATHA, u: DAMMA, i: KASRA };
@@ -126,10 +126,10 @@ const HARAKA = { a: FATHA, u: DAMMA, i: KASRA };
 const VERB_FORMS = {
     "د ر س": { bab: 'I',  past: 'a', pres: 'u' },  // دَرَسَ  – يَدْرُسُ   – اُدْرُسْ
     "ك ت ب": { bab: 'I',  past: 'a', pres: 'u' },  // كَتَبَ  – يَكْتُبُ   – اُكْتُبْ
-    "ع ل م": { bab: 'V' },                          // تَعَلَّمَ – يَتَعَلَّمُ – تَعَلَّمْ
-    "س ل م": { bab: 'II' },                         // سَلَّمَ  – يُسَلِّمُ  – سَلِّمْ
-    "ف ك ر": { bab: 'II' },                         // فَكَّرَ  – يُفَكِّرُ  – فَكِّرْ
-    "ع ر ف": { bab: 'II' }                          // عَرَّفَ  – يُعَرِّفُ  – عَرِّفْ
+    "ع ل م": { bab: 'V' },                          // تَعَلَّمَ – يَتَعَلَّمُ – تَعَلَّمْ
+    "س ل م": { bab: 'II' },                         // سَلَّمَ  – يُسَلِّمُ  – سَلِّمْ
+    "ف ك ر": { bab: 'II' },                         // فَكَّرَ  – يُفَكِّرُ  – فَكِّرْ
+    "ع ر ف": { bab: 'II' }                          // عَرَّفَ  – يُعَرِّفُ  – عَرِّفْ
 };
 
 function buildConjugation(root) {
@@ -144,15 +144,15 @@ function buildConjugation(root) {
        wasl  : emirde başa gelen vasıl hemzesi ('' ise hiç gelmez). */
     let madiStem, mudStem, onEk, wasl;
     if (v.bab === 'II') {
-        madiStem = f + FATHA + a + SHADDA + FATHA;                 // سَلَّ
-        mudStem  = f + FATHA + a + SHADDA + KASRA;                 // سَلِّ
-        onEk     = DAMMA;                                          // يُسَلِّمُ
-        wasl     = '';                                             // سَلِّمْ
+        madiStem = f + FATHA + a + SHADDA + FATHA;                 // سَلَّ
+        mudStem  = f + FATHA + a + SHADDA + KASRA;                 // سَلِّ
+        onEk     = DAMMA;                                          // يُسَلِّمُ
+        wasl     = '';                                             // سَلِّمْ
     } else if (v.bab === 'V') {
-        madiStem = 'ت' + FATHA + f + FATHA + a + SHADDA + FATHA;   // تَعَلَّ
-        mudStem  = madiStem;                                       // يَتَعَلَّمُ
+        madiStem = 'ت' + FATHA + f + FATHA + a + SHADDA + FATHA;   // تَعَلَّ
+        mudStem  = madiStem;                                       // يَتَعَلَّمُ
         onEk     = FATHA;
-        wasl     = '';                                             // تَعَلَّمْ
+        wasl     = '';                                             // تَعَلَّمْ
     } else {
         madiStem = f + FATHA + a + HARAKA[v.past];                 // كَتَ
         mudStem  = f + SUKUN + a + HARAKA[v.pres];                 // كْتُ
@@ -202,7 +202,7 @@ const GAME2_ROUNDS = [
         { word:"مُقْتَدِر",  root:"ق د ر" },
         { word:"سَلام",     root:"س ل م" },
         { word:"عالَم",     root:"ع ل م" },
-        { word:"مُحَمَّد",   root:"ح م د" },
+        { word:"مُحَمَّد",   root:"ح م د" },
         { word:"كِتاب",     root:"ك ت ب" }
     ],
     [
@@ -265,7 +265,7 @@ const G3_USTA_SVG = `
    Kelime çıkış kutusunda kelimenin üzerinde büyükçe gösterilir. */
 const GAME3_EMOJI = {
     "عالِم":"🎓", "كاتِب":"✍️", "سالِم":"🙋", "حامِد":"🙏", "قادِر":"💪",
-    "مُدَرِّس":"👨‍🏫", "مُعَلِّم":"🧑‍🏫",
+    "مُدَرِّس":"👨‍🏫", "مُعَلِّم":"🧑‍🏫",
     "مَعْلوم":"✅", "مَكْتوب":"✉️", "مَحْمود":"👏", "مَحْروم":"😔",
     "مَدْروس":"📖", "مَقْدور":"🏋️",
     "تَسْليم":"🤝", "تَدْريس":"📚", "تَقْدير":"🏅",
@@ -281,9 +281,9 @@ const GAME3_PATTERNS = [
         map: { "ع ل م":"عالِم", "ك ت ب":"كاتِب", "س ل م":"سالِم", "ح م د":"حامِد", "ق د ر":"قادِر" }
     },
     {
-        name: "مُفَعِّل",
+        name: "مُفَعِّل",
         zaid: [0], // م
-        map: { "د ر س":"مُدَرِّس", "ع ل م":"مُعَلِّم" }
+        map: { "د ر س":"مُدَرِّس", "ع ل م":"مُعَلِّم" }
     },
     {
         name: "مَفْعول",
@@ -836,7 +836,7 @@ const Game1 = {
                     <div class="g1-conj-tab" data-t="amr">الأَمْر</div>
                 </div>
                 <div class="g1-conj-list" id="g1-conj-list"></div>
-                <div class="g1-conj-hint" id="g1-conj-hint">اِخْتَرْ زَمَنًا لِتَرى التَّصْريف</div>
+                <div class="g1-conj-hint" id="g1-conj-hint">اِخْتَرْ زَمَنًا لِتَرى التَّصْريف</div>
             </div>`;
     },
 
@@ -918,7 +918,7 @@ const Game1 = {
             <div class="back-btn" id="g1-back">${BACK_SVG}</div>
             <div class="progress-pill" id="g1-pill">0 / ${ROOTS_GAME1.length}</div>
             <div class="g1-wrap">
-                <div class="g1-title" dir="rtl">اُسْحَبِ الْجَذْرَ إِلَى الصُّورَةِ الْمُنَاسِبَةِ.</div>
+                <div class="g1-title" dir="rtl">اُسْحَبِ الْجَذْرَ إِلَى الصُّورَةِ الْمُنَاسِبَةِ.</div>
                 <div class="g1-root-bar" id="g1-root-bar" dir="rtl">
                     <div class="g1-conj-host" id="g1-conj-host"></div>
                 </div>
@@ -1057,7 +1057,7 @@ const Game1 = {
         this.updatePill();
 
         if (this.state.done.length >= ROOTS_GAME1.length) {
-            App.showDone('🎉', 'أَحْسَنْتَ! لَقَدْ أَتْمَمْتَ كُلَّ الْجُذُورِ.');
+            App.showDone('🎉', 'أَحْسَنْتَ! لَقَدْ أَتْمَمْتَ كُلَّ الْجُذُورِ.');
             document.getElementById('done-replay').onclick = () => {
                 App.hideDone();
                 this.start();
@@ -1465,7 +1465,7 @@ const Game2 = {
             this.yonergeGoster(
                 'اِضْغَطْ عَلَى الْكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَهَا.' +
                 '<br>' +
-                'اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَدِيدَةً.',
+                'اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَدِيدَةً.',
                 true, 5200);
         }
         document.getElementById('g2-kapIc').innerHTML = '';
@@ -2261,7 +2261,7 @@ const Game3 = {
                 document.getElementById('g3-progress').textContent = `${this.state.doneSet.size} / ${this.totalValid()}`;
                 if (this.state.doneSet.size === this.totalValid()) {
                     setTimeout(() => {
-                        App.showDone('🏆', 'أَحْسَنْتَ! لَقَدِ اكْتَشَفْتَ كُلَّ الِاشْتِقَاقَاتِ.');
+                        App.showDone('🏆', 'أَحْسَنْتَ! لَقَدِ اكْتَشَفْتَ كُلَّ الِاشْتِقَاقَاتِ.');
                         document.getElementById('done-replay').onclick = () => {
                             App.hideDone();
                             this.start();
@@ -2358,7 +2358,7 @@ const Game3 = {
 
 
 /* =========================================================
-   OYUN 4: DİJİTAL YARIŞMA — "اِتَّصِلْ"
+   OYUN 4: DİJİTAL YARIŞMA — "اِتَّصِلْ"
    ---------------------------------------------------------
    Öğretmen bir oda kurar (4 harfli kod + karekod + link),
    öğrenciler telefonlarından takım adıyla katılır, sorular
@@ -2458,7 +2458,7 @@ function quizSorulariUret() {
             const disHavuz = M.filter(y => y.root !== r).map(y => y.word);
             const k = qzSoruYap(dogru, disHavuz);
             S.push({ ar: formatRootDisplay(r),
-                s: 'أَيُّ كَلِمَةٍ مُشْتَقَّةٌ مِنْ هٰذا الجَذْر؟', tr: 'Bu kökten türeyen kelime hangisidir?',
+                s: 'أَيُّ كَلِمَةٍ مُشْتَقَّةٌ مِنْ هٰذا الجَذْر؟', tr: 'Bu kökten türeyen kelime hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2476,7 +2476,7 @@ function quizSorulariUret() {
             const havuz = qzKaristir(aynikok).concat(qzKaristir(tumKelimeler.filter(w => w !== x.word)));
             const k = qzSoruYap(x.word, havuz);
             S.push({ ar: formatRootDisplay(x.root),
-                s: 'أَيُّ كَلِمَةٍ عَلى وَزْنِ «' + x.vezinAr + '» مِنْ هٰذا الجَذْر؟',
+                s: 'أَيُّ كَلِمَةٍ عَلى وَزْنِ «' + x.vezinAr + '» مِنْ هٰذا الجَذْر؟',
                 tr: '«' + x.vezinAr + '» vezninde bu kökten gelen kelime hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
@@ -2496,7 +2496,7 @@ function quizSorulariUret() {
             const disKelime = anlamli.filter(y => y.root !== x.root).map(y => y.word);
             const k = qzSoruYap(x.word, disKelime);
             S.push({ ar: '«' + x.tr + '»',
-                s: 'أَيُّ كَلِمَةٍ تَحْمِلُ هٰذا المَعْنى؟', tr: 'Bu anlamı taşıyan kelime hangisidir?',
+                s: 'أَيُّ كَلِمَةٍ تَحْمِلُ هٰذا المَعْنى؟', tr: 'Bu anlamı taşıyan kelime hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2521,7 +2521,7 @@ function quizSorulariUret() {
             const yabanci = kokKelimeleri[digerKok][Math.floor(Math.random() * kokKelimeleri[digerKok].length)].word;
             const secenekler = qzKaristir(ucu.concat([yabanci]));
             S.push({ ar: '',
-                s: 'أَيُّ كَلِمَةٍ مِنْ جَذْرٍ مُخْتَلِف؟', tr: 'Hangi kelime diğerlerinden FARKLI bir kökten gelir?',
+                s: 'أَيُّ كَلِمَةٍ مِنْ جَذْرٍ مُخْتَلِف؟', tr: 'Hangi kelime diğerlerinden FARKLI bir kökten gelir?',
                 secenekler: secenekler, dogru: secenekler.indexOf(yabanci) });
         });
 
@@ -2545,7 +2545,7 @@ function quizSorulariUret() {
         ornekle(zaidli, 18).forEach(x => {
             const secenekler = qzKaristir([x.dogru].concat(x.rootHarf));
             S.push({ ar: x.word,
-                s: 'أَيُّ حَرْفٍ زائِدٌ في هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimedeki zâid (kökten olmayan) harf hangisidir?',
+                s: 'أَيُّ حَرْفٍ زائِدٌ في هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimedeki zâid (kökten olmayan) harf hangisidir?',
                 secenekler: secenekler, dogru: secenekler.indexOf(x.dogru) });
         });
     }
@@ -2594,7 +2594,7 @@ const Quiz = {
     _db: null,
     _gorunum: null,
     /* Geri tuşuyla ekrandan ayrılınca oda KAPANMAZ; buraya alınır ve
-       "اِتَّصِلْ" rozetine tekrar basılınca kaldığı yerden devam eder. */
+       "اِتَّصِلْ" rozetine tekrar basılınca kaldığı yerden devam eder. */
     _saklanan: null,
     state: {},
 
@@ -2740,7 +2740,7 @@ const Quiz = {
         if (b) b.addEventListener('click', () => { App.playSound('click'); this.geriBas(); });
     },
     baslikHtml() {
-        return '<div class="qz-baslik" dir="rtl">اِتَّصِلْ · المُسابَقَة الرَّقَمِيَّة</div>';
+        return '<div class="qz-baslik" dir="rtl">اِتَّصِلْ · المُسابَقَة الرَّقَمِيَّة</div>';
     },
 
     uyariCiz() {
@@ -3009,7 +3009,7 @@ const Quiz = {
                     '</div>' +
                     '<div class="qz-durum" id="qz-lobi-durum" style="margin-top:10px"></div>' +
                     '<div class="qz-kod-not" style="margin-top:8px">Geri (←) tuşu odayı kapatmaz: ' +
-                    'menüye dönersin, katılanlar odada kalır ve “اِتَّصِلْ” rozetine basınca ' +
+                    'menüye dönersin, katılanlar odada kalır ve “اِتَّصِلْ” rozetine basınca ' +
                     'her şey kaldığı yerden devam eder.</div>' +
                   '</div>'
                 : '<div class="qz-kart">' +
@@ -3135,7 +3135,7 @@ const Quiz = {
                   '</div>' +
                   '<div class="qz-kod-not" style="margin-top:8px">Yarışmayı iptal etmek için ' +
                   '“Oyundan Çık” tuşunu kullan. Geri (←) tuşu yarışmayı bitirmez; sadece menüye ' +
-                  'dönersin, “اِتَّصِلْ” rozetiyle aynı soruya geri gelirsin.</div>'
+                  'dönersin, “اِتَّصِلْ” rozetiyle aynı soruya geri gelirsin.</div>'
                 : '') +
             '</div>'
         );
