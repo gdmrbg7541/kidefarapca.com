@@ -1,10 +1,10 @@
 const allWords = [
         { ar: "بَيْت", tr: "Ev" }, { ar: "غُرْفَة", tr: "Oda" }, { ar: "بَاب", tr: "Kapı" },
-        { ar: "نَافِذَة", tr: "Pencere" }, { ar: "مَطْبَخ", tr: "Mutfak" }, { ar: "حَمَّام", tr: "Banyo" },
+        { ar: "نَافِذَة", tr: "Pencere" }, { ar: "مَطْبَخ", tr: "Mutfak" }, { ar: "حَمَّام", tr: "Banyo" },
         { ar: "حَدِيقَة", tr: "Bahçe" }, { ar: "سَطْح", tr: "Çatı" }, { ar: "دَرَج", tr: "Merdiven" },
         { ar: "مِصْعَد", tr: "Asansör" }, { ar: "سَرِير", tr: "Yatak" }, { ar: "خِزَانَة", tr: "Dolap" },
         { ar: "طَاوِلَة", tr: "Masa" }, { ar: "كُرْسِيّ", tr: "Sandalye" }, { ar: "أَرِيكَة", tr: "Koltuk" },
-        { ar: "سِجَّادَة", tr: "Halı" }, { ar: "رَفّ", tr: "Raf" }, { ar: "مَكْتَب", tr: "Masa" },
+        { ar: "سِجَّادَة", tr: "Halı" }, { ar: "رَفّ", tr: "Raf" }, { ar: "مَكْتَب", tr: "Masa" },
         { ar: "وِسَادَة", tr: "Yastık" }, { ar: "سِتَارَة", tr: "Perde" }
     ];
 

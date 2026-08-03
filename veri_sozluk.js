@@ -1,30 +1,30 @@
 const kategoriTanimlari = {
-        "olumsuz": { title: "Olumsuzluk Edatları", arTitle: "أَدَوات النَّفْي", icon: "🚫", items: [] },
-    "sart": { title: "Şart Edatları", arTitle: "أَدَوات الشَّرْط", icon: "⚖️", items: [] },
+        "olumsuz": { title: "Olumsuzluk Edatları", arTitle: "أَدَوات النَّفْي", icon: "🚫", items: [] },
+    "sart": { title: "Şart Edatları", arTitle: "أَدَوات الشَّرْط", icon: "⚖️", items: [] },
     "harficer": { title: "Harf-i Cerler", arTitle: "حُروف الجَرّ", icon: "🔤", items: [] },
     "baglac": { title: "Bağlaçlar", arTitle: "حُروف العَطْف", icon: "🔗", items: [] },
     "soru": { title: "Soru Edatları", arTitle: "أَدَوات الاسْتِفْهام", icon: "❓", items: [] },
-    "zaman": { title: "Zaman İfadeleri", arTitle: "ظُروف الزَّمان", icon: "⏱️", items: [] },
+    "zaman": { title: "Zaman İfadeleri", arTitle: "ظُروف الزَّمان", icon: "⏱️", items: [] },
     "zarf": { title: "Mekân Zarfları", arTitle: "ظُروف المَكان", icon: "📍", items: [] },
-    "zamir": { title: "Kişi Zamirleri", arTitle: "الضَّمائِر", icon: "👤", items: [] },
+    "zamir": { title: "Kişi Zamirleri", arTitle: "الضَّمائِر", icon: "👤", items: [] },
     "isaret": { title: "İşaret Zamirleri", arTitle: "أَسْماء الإِشارَة", icon: "👇", items: [] },
     "mevsul": { title: "İsmi Mevsuller", arTitle: "الأَسْماء المَوْصولَة", icon: "🔗", items: [] },
     "renk": { title: "Renkler", arTitle: "الأَلْوان", icon: "🎨", items: [] },
     "sayi": { title: "Sayılar", arTitle: "الأَرْقام وَالأَعْداد", icon: "🔢", items: [] },
-    "sirasayi": { title: "Sıra Sayıları", arTitle: "الأَعْداد التَّرْتيبِيَّة", icon: "📊", items: [] },
+    "sirasayi": { title: "Sıra Sayıları", arTitle: "الأَعْداد التَّرْتيبِيَّة", icon: "📊", items: [] },
     "gun": { title: "Haftanın Günleri", arTitle: "أَيّام الأُسْبوع", icon: "📅", items: [] },
-    "tasgir": { title: "İsm-i Tasgir", arTitle: "التَّصْغير", icon: "🔍", items: [] },
-    "tafdil": { title: "İsm-i Tafdil", arTitle: "التَّفْضيل", icon: "🏆", items: [] },
+    "tasgir": { title: "İsm-i Tasgir", arTitle: "التَّصْغير", icon: "🔍", items: [] },
+    "tafdil": { title: "İsm-i Tafdil", arTitle: "التَّفْضيل", icon: "🏆", items: [] },
     "meyve": { title: "Meyveler", arTitle: "الفَواكِه", icon: "🍎", items: [] },
     "sebze": { title: "Sebzeler", arTitle: "الخُضْرَوات", icon: "🥦", items: [] },
     "hayvan": { title: "Hayvanlar", arTitle: "الحَيَوانات", icon: "🐾", items: [] },
     "yiyecek": { title: "Yiyecekler", arTitle: "الأَطْعِمَة", icon: "🍔", items: [] },
     "icecek": { title: "İçecekler", arTitle: "المَشْروبات", icon: "☕", items: [] },
-    "ulasim": { title: "Ulaşım Araçları", arTitle: "وَسائِل النَّقْل", icon: "🚗", items: [] },
+    "ulasim": { title: "Ulaşım Araçları", arTitle: "وَسائِل النَّقْل", icon: "🚗", items: [] },
     "meslek": { title: "Meslekler", arTitle: "المِهَن", icon: "💼", items: [] },
     "aile": { title: "Aile Bireyleri", arTitle: "أَفْراد الأُسْرَة", icon: "👨‍👩‍👧‍👦", items: [] },
     "hayvan": { title: "Hayvanlar", arTitle: "الحَيَوانات", icon: "🐪", items: [] },
-    "sifat": { title: "Sıfatlar", arTitle: "الصِّفات", icon: "✨", items: [] },
+    "sifat": { title: "Sıfatlar", arTitle: "الصِّفات", icon: "✨", items: [] },
     "isim": { title: "Genel İsimler", arTitle: "الأَسْماء", icon: "🏷️", items: [] },
     "kalip": { title: "Kalıplar ve İfadeler", arTitle: "التَّعْبيرات وَالقَوالِب", icon: "💬", items: [] }
 };
@@ -52,8 +52,8 @@ const sozlukVerileri = {
 
     "رود": {
         "1": {
-            "base": { "emoji": "🚶", "arText": "رَادَ", "trText": "Yavaşça dolaştı / Keşfetti.", "ornek": { "ar": "رَادَ الرَّجُلُ", "tr": "Adam yavaşça dolaştı/aradı." } },
-            "cekimi": ["رَادَ", "رَادَا", "رَادُوا", "رَادَتْ", "رَادَتَا", "رُدْنَ", "رُدْتَ", "رُدْتُمَا", "رُدْتُمْ", "رُدْتِ", "رُدْتُمَا", "رُدْتُنَّ", "رُدْتُ", "رُدْنَا", "رُدْنَا"]
+            "base": { "emoji": "🚶", "arText": "رَادَ", "trText": "Yavaşça dolaştı / Keşfetti.", "ornek": { "ar": "رَادَ الرَّجُلُ", "tr": "Adam yavaşça dolaştı/aradı." } },
+            "cekimi": ["رَادَ", "رَادَا", "رَادُوا", "رَادَتْ", "رَادَتَا", "رُدْنَ", "رُدْتَ", "رُدْتُمَا", "رُدْتُمْ", "رُدْتِ", "رُدْتُمَا", "رُدْتُنَّ", "رُدْتُ", "رُدْنَا", "رُدْنَا"]
         },
         "2": {
             "base": { "emoji": "🔄", "arText": "يَرُودُ", "trText": "Dolaşır / Arar.", "ornek": { "ar": "يَرُودُ فِي الْأَرْضِ", "tr": "Yeryüzünde dolaşır/arar." } },
@@ -86,15 +86,15 @@ const sozlukVerileri = {
             }
         },
         "52": {
-            "base": { "emoji": "💭", "arText": "أَرَادَ", "trText": "İstedi / Diledi / İrade etti.", "ornek": { "ar": "أَرَادَ أَنْ يَتَعَلَّمَ الْعَرَبِيَّةَ", "tr": "Arapça öğrenmek istedi." } },
-            "cekimi": ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"]
+            "base": { "emoji": "💭", "arText": "أَرَادَ", "trText": "İstedi / Diledi / İrade etti.", "ornek": { "ar": "أَرَادَ أَنْ يَتَعَلَّمَ الْعَرَبِيَّةَ", "tr": "Arapça öğrenmek istedi." } },
+            "cekimi": ["أَرَادَ", "أَرَادَا", "أَرَادُوا", "أَرَادَتْ", "أَرَادَتَا", "أَرَدْنَ", "أَرَدْتَ", "أَرَدْتُمَا", "أَرَدْتُمْ", "أَرَدْتِ", "أَرَدْتُمَا", "أَرَدْتُنَّ", "أَرَدْتُ", "أَرَدْنَا", "أَرَدْنَا"]
         },
         "53": {
-            "base": { "emoji": "🔄", "arText": "يُرِيدُ", "trText": "İstiyor / İster / Diler.", "ornek": { "ar": "مَاذَا تُرِيدُ مِنِّي؟", "tr": "Benden ne istiyorsun?" } },
+            "base": { "emoji": "🔄", "arText": "يُرِيدُ", "trText": "İstiyor / İster / Diler.", "ornek": { "ar": "مَاذَا تُرِيدُ مِنِّي؟", "tr": "Benden ne istiyorsun?" } },
             "cekimi": ["يُرِيدُ", "يُرِيدَانِ", "يُرِيدُونَ", "تُرِيدُ", "تُرِيدَانِ", "يُرِدْنَ", "تُرِيدُ", "تُرِيدَانِ", "تُرِيدُونَ", "تُرِيدِينَ", "تُرِيدَانِ", "تُرِدْنَ", "أُرِيدُ", "نُرِيدُ", "نُرِيدُ"]
         },
         "54": {
-            "base": { "emoji": "🎯", "arText": "أَرِدْ", "trText": "İste / İrade et!", "ornek": { "ar": "أَرِدِ الْخَيْرَ لِلنَّاسِ", "tr": "İnsanlar için iyilik iste." } },
+            "base": { "emoji": "🎯", "arText": "أَرِدْ", "trText": "İste / İrade et!", "ornek": { "ar": "أَرِدِ الْخَيْرَ لِلنَّاسِ", "tr": "İnsanlar için iyilik iste." } },
             "cekimi": ["أَرِدْ", "أَرِيدَا", "أَرِيدُوا", "أَرِيدِي", "أَرِيدَا", "أَرِدْنَ"]
         },
         "55": {
@@ -103,7 +103,7 @@ const sozlukVerileri = {
                 "arText": "إِرَادَة", 
                 "trText": "İsteme / Dileme / İrade.", 
                 "ornek": [
-                    { "ar": "قُوَّةُ الْإِرَادَةِ", "tr": "İrade gücü." },
+                    { "ar": "قُوَّةُ الْإِرَادَةِ", "tr": "İrade gücü." },
                     { "ar": "💡 مَعْلُومَة دَلَالِيَّة", "tr": "Semantik Not: 'Aramak ve keşfe çıkmak' eyleminin zihne (İf'al babına) taşınmış halidir. İrade, aslında zihnin bir şeyi 'araması ve ona yönelmesidir'." }
                 ] 
             }
@@ -114,7 +114,7 @@ const sozlukVerileri = {
                 "arText": "مُرِيد", 
                 "trText": "İsteyen / Arzulayan (Mürit).", 
                 "ornek": [
-                    { "ar": "هُوَ مُرِيدٌ لِلْحَقِّ", "tr": "O, hakkı arzulayan (biri)dir." },
+                    { "ar": "هُوَ مُرِيدٌ لِلْحَقِّ", "tr": "O, hakkı arzulayan (biri)dir." },
                     { "ar": "💡 مَعْلُومَة دَلَالِيَّة", "tr": "Semantik Not: Tasavvufta 'Mürit', hakkı ve hakikati sürekli arayan, manevi bir arayış içinde olan talebeye denir." }
                 ] 
             }
@@ -136,7 +136,7 @@ const sozlukVerileri = {
                 "arText": "رَاوَدَ", 
                 "trText": "İkna etmeye çalıştı / Aklını çelmeye çalıştı.", 
                 "ornek": [
-                    { "ar": "وَرَاوَدَتْهُ الَّتِي هُوَ فِي بَيْتِهَا عَنْ نَفْسِهِ", "tr": "Evinde bulunduğu kadın onun nefsinden murat almak (aklını çelmek) istedi. (Yusuf Suresi, 23)" },
+                    { "ar": "وَرَاوَدَتْهُ الَّتِي هُوَ فِي بَيْتِهَا عَنْ نَفْسِهِ", "tr": "Evinde bulunduğu kadın onun nefsinden murat almak (aklını çelmek) istedi. (Yusuf Suresi, 23)" },
                     { "ar": "💡 مَعْلُومَة دَلَالِيَّة", "tr": "Semantik Not: Bu bab (Mufâ'ale), işteşlik ve mücadele bildirir. Dolayısıyla 'Râvede', birinin aklını kendi hedefine (isteğine) doğru yavaş yavaş ve zorlayarak çelmeye çalışmak demektir." }
                 ] 
             }
@@ -152,7 +152,7 @@ const sozlukVerileri = {
             },
             "not": "الْوَزْن: فَعْلَاء (Sıfat-ı Müşebbehe / Müennes)",
             "ornek": {
-                "ar": "الشَّيْمَاءُ أُخْتُ النَّبِيِّ فِي الرَّضَاعَةِ.",
+                "ar": "الشَّيْمَاءُ أُخْتُ النَّبِيِّ فِي الرَّضَاعَةِ.",
                 "tr": "Şeymâ, Peygamberimizin (s.a.v) süt kardeşidir."
             },
             "isDictOnly": true
@@ -240,7 +240,7 @@ const sozlukVerileri = {
     "Kalıp: İhtiyacım Var": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🤲", arText: "أَنا بِحاجَة إِلى", trText: "İhtiyacım var", ornek: { ar: "أَنَا بِحَاجَةٍ إِلَى مُسَاعَدَتِكَ.", tr: "Senin yardımına ihtiyacım var." } } } },
     "Kalıp: Hoşgeldiniz": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🤝", arText: "أَهْلًا وَسَهْلًا", trText: "Hoş geldiniz", ornek: { ar: "أَهْلًا وَسَهْلًا بِكُمْ فِي بَيْتِنَا.", tr: "Evimize hoş geldiniz." } } } },
     "Kalıp: Hoşbulduk": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🙏", arText: "أَهْلًا بِكَ", trText: "Hoş bulduk (Sana da hoş geldin)", ornek: { ar: "أَهْلًا بِكَ يَا صَدِيقِي.", tr: "Sana da hoş geldin dostum." } } } },
-    "Kalıp: Yardımcı Olayım": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "💁‍♂️", arText: "أَيّ خِدْمَة يا سَيِّدي؟", trText: "Nasıl yardımcı olabilirim efendim?", ornek: { ar: "أَيُّ خِدْمَةٍ يَا سَيِّدِي؟ أَنَا تَحْتَ أَمْرِكَ.", tr: "Nasıl yardımcı olabilirim efendim? Emrinizdeyim." } } } },
+    "Kalıp: Yardımcı Olayım": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "💁‍♂️", arText: "أَيّ خِدْمَة يا سَيِّدي؟", trText: "Nasıl yardımcı olabilirim efendim?", ornek: { ar: "أَيُّ خِدْمَةٍ يَا سَيِّدِي؟ أَنَا تَحْتَ أَمْرِكَ.", tr: "Nasıl yardımcı olabilirim efendim? Emrinizdeyim." } } } },
     "Kalıp: Yeterli": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "✋", arText: "هَذا كافٍ", trText: "Bu kadarı yeterli", ornek: { ar: "شُكْرًا، هَذَا كَافٍ جِدًّا.", tr: "Teşekkürler, bu kadarı gayet yeterli." } } } },
 
 
@@ -293,7 +293,7 @@ const sozlukVerileri = {
     "Soru: Nasıl": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🤷", arText: "كَيْفَ", trText: "Nasıl?" } } },
     "Edat: Men": { isDictOnly: true, tip: ["soru", "mevsul", "sart"], tekil: { base: { emoji: "👤", arText: "مَنْ", trText: "Kim? / O kimse ki / Kim ... yaparsa (Şart)" } } },
     "Soru: Neden": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🤔", arText: "لِمَاذَا", trText: "Neden? / Niçin?" } } },
-    "Soru: Hangi": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🔀", arText: "أَيُّ", trText: "Hangi?" } } },
+    "Soru: Hangi": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🔀", arText: "أَيُّ", trText: "Hangi?" } } },
     "Soru: Kaç": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "🔢", arText: "كَمْ", trText: "Kaç? / Ne Kadar?" } } },
     "Soru: Mi 1": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "❔", arText: "هَلْ", trText: "Mı? / Mi? (Soru edatı)" } } },
     "Soru: Mi 2": { isDictOnly: true, tip: "soru", tekil: { base: { emoji: "❔", arText: "أَ", trText: "Mı? / Mi? (Soru harfi)" } } },
@@ -332,12 +332,12 @@ const sozlukVerileri = {
     "Zamir: Sen (D)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👩", arText: "أَنْتِ", trText: "Sen (Dişil)" } } },
     "Zamir: Siz İkiniz": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "🧑‍🤝‍🧑", arText: "أَنْتُمَا", trText: "Siz İkiniz" } } },
     "Zamir: Sizler (E)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👨‍👨‍👦", arText: "أَنْتُمْ", trText: "Sizler (Eril)" } } },
-    "Zamir: Sizler (D)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👩‍👩‍👧", arText: "أَنْتُنَّ", trText: "Sizler (Dişil)" } } },
+    "Zamir: Sizler (D)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👩‍👩‍👧", arText: "أَنْتُنَّ", trText: "Sizler (Dişil)" } } },
     "Zamir: O (E)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👉👨", arText: "هُوَ", trText: "O (Eril)" } } },
     "Zamir: O (D)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👉👩", arText: "هِيَ", trText: "O (Dişil)" } } },
     "Zamir: O İkisi": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👉🧑‍🤝‍🧑", arText: "هُمَا", trText: "O İkisi" } } },
     "Zamir: Onlar (E)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👉👨‍👨‍👦", arText: "هُمْ", trText: "Onlar (Eril)" } } },
-    "Zamir: Onlar (D)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👉👩‍👩‍👧", arText: "هُنَّ", trText: "Onlar (Dişil)" } } },
+    "Zamir: Onlar (D)": { isDictOnly: true, tip: "zamir", tekil: { base: { emoji: "👉👩‍👩‍👧", arText: "هُنَّ", trText: "Onlar (Dişil)" } } },
 
     // --- İşaret Zamirleri ---
     "İşaret: Bu (E)": { isDictOnly: true, tip: "isaret", tekil: { base: { emoji: "👇", arText: "هَذَا", trText: "Bu (Eril)" } } },
@@ -350,12 +350,12 @@ const sozlukVerileri = {
     "İşaret: Şunlar/Onlar": { isDictOnly: true, tip: "isaret", tekil: { base: { emoji: "👉👉👉", arText: "أُولَئِكَ", trText: "Şunlar / Onlar (Ortak)" } } },
 
     // --- İsmi Mevsuller (Bağlaç Zamirleri) ---
-    "Mevsul: O Kimse ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗", arText: "اَلَّذِي", trText: "O kimse ki (Eril / Tekil)" } } },
-    "Mevsul: O Kimse ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗", arText: "اَلَّتِي", trText: "O kimse ki (Dişil / Tekil)" } } },
-    "Mevsul: O İki Kimse ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗🔗", arText: "اَللَّذَانِ", trText: "O iki kimse ki (Eril / İkil)" } } },
-    "Mevsul: O İki Kimse ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗🔗", arText: "اَللَّتَانِ", trText: "O iki kimse ki (Dişil / İkil)" } } },
-    "Mevsul: O Kimseler ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَلَّذِينَ", trText: "O kimseler ki (Eril / Çoğul)" } } },
-    "Mevsul: O Kimseler ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَللَّاتِي / اَللَّوَاتِي", trText: "O kimseler ki (Dişil / Çoğul)" } } },
+    "Mevsul: O Kimse ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗", arText: "اَلَّذِي", trText: "O kimse ki (Eril / Tekil)" } } },
+    "Mevsul: O Kimse ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗", arText: "اَلَّتِي", trText: "O kimse ki (Dişil / Tekil)" } } },
+    "Mevsul: O İki Kimse ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗🔗", arText: "اَللَّذَانِ", trText: "O iki kimse ki (Eril / İkil)" } } },
+    "Mevsul: O İki Kimse ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗🔗", arText: "اَللَّتَانِ", trText: "O iki kimse ki (Dişil / İkil)" } } },
+    "Mevsul: O Kimseler ki (E)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَلَّذِينَ", trText: "O kimseler ki (Eril / Çoğul)" } } },
+    "Mevsul: O Kimseler ki (D)": { isDictOnly: true, tip: "mevsul", tekil: { base: { emoji: "🔗👥", arText: "اَللَّاتِي / اَللَّوَاتِي", trText: "O kimseler ki (Dişil / Çoğul)" } } },
 
     // Büyük sözlük veritabanını buraya dahil ediyoruz
 
@@ -1664,7 +1664,7 @@ const sozlukVerileri = {
     "Sayı: 13": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "ثَلَاثَةَ عَشَرَ ١٣", "trText": "On Üç - 13", "muennes": "ثَلَاثَ عَشْرَةَ" } } },
     "Sayı: 14": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "أَرْبَعَةَ عَشَرَ ١٤", "trText": "On Dört - 14", "muennes": "أَرْبَعَ عَشْرَةَ" } } },
     "Sayı: 15": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "خَمْسَةَ عَشَرَ ١٥", "trText": "On Beş - 15", "muennes": "خَمْسَ عَشْرَةَ" } } },
-    "Sayı: 16": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "سِتَّةَ عَشَرَ ١٦", "trText": "On Altı - 16", "muennes": "سِتَّ عَشْرَةَ" } } },
+    "Sayı: 16": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "سِتَّةَ عَشَرَ ١٦", "trText": "On Altı - 16", "muennes": "سِتَّ عَشْرَةَ" } } },
     "Sayı: 17": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "سَبْعَةَ عَشَرَ ١٧", "trText": "On Yedi - 17", "muennes": "سَبْعَ عَشْرَةَ" } } },
     "Sayı: 18": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "ثَمَانِيَةَ عَشَرَ ١٨", "trText": "On Sekiz - 18", "muennes": "ثَمَانِيَ عَشْرَةَ" } } },
     "Sayı: 19": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "تِسْعَةَ عَشَرَ ١٩", "trText": "On Dokuz - 19", "muennes": "تِسْعَ عَشْرَةَ" } } },
@@ -1672,7 +1672,7 @@ const sozlukVerileri = {
     "Sayı: 30": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "ثَلَاثُونَ ٣٠", "trText": "Otuz - 30" } } },
     "Sayı: 40": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "أَرْبَعُونَ ٤٠", "trText": "Kırk - 40" } } },
     "Sayı: 50": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "خَمْسُونَ ٥٠", "trText": "Elli - 50" } } },
-    "Sayı: 60": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "سِتُّونَ ٦٠", "trText": "Altmış - 60" } } },
+    "Sayı: 60": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "سِتُّونَ ٦٠", "trText": "Altmış - 60" } } },
     "Sayı: 70": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "سَبْعُونَ ٧٠", "trText": "Yetmiş - 70" } } },
     "Sayı: 80": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "ثَمَانُونَ ٨٠", "trText": "Seksen - 80" } } },
     "Sayı: 90": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "تِسْعُونَ ٩٠", "trText": "Doksan - 90" } } },
@@ -1683,29 +1683,29 @@ const sozlukVerileri = {
     "Sayı: 1000000": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "مِلْيُون ١٠٠٠٠٠٠", "trText": "Bir Milyon - 1.000.000" } } },
     "Sayı: 1000000000": { "isDictOnly": true, "tip": "sayi", "tekil": { "base": { "emoji": "🔢", "arText": "مِلْيَار ١٠٠٠٠٠٠٠٠٠", "trText": "Bir Milyar - 1.000.000.000" } } },
     
-    "Sıra: 1.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْأَوَّل", "trText": "1. Birinci", "muennes": "الْأُولَى" } } },
+    "Sıra: 1.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْأَوَّل", "trText": "1. Birinci", "muennes": "الْأُولَى" } } },
 
 
 
 
-    "Sıra: 2.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّانِي", "trText": "2. İkinci", "muennes": "الثَّانِيَة" } } },
-    "Sıra: 3.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّالِث", "trText": "3. Üçüncü", "muennes": "الثَّالِثَة" } } },
-    "Sıra: 4.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الرَّابِع", "trText": "4. Dördüncü", "muennes": "الرَّابِعَة" } } },
+    "Sıra: 2.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّانِي", "trText": "2. İkinci", "muennes": "الثَّانِيَة" } } },
+    "Sıra: 3.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّالِث", "trText": "3. Üçüncü", "muennes": "الثَّالِثَة" } } },
+    "Sıra: 4.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الرَّابِع", "trText": "4. Dördüncü", "muennes": "الرَّابِعَة" } } },
     "Sıra: 5.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْخَامِس", "trText": "5. Beşinci", "muennes": "الْخَامِسَة" } } },
-    "Sıra: 6.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّادِس", "trText": "6. Altıncı", "muennes": "السَّادِسَة" } } },
-    "Sıra: 7.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّابِع", "trText": "7. Yedinci", "muennes": "السَّابِعَة" } } },
-    "Sıra: 8.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّامِن", "trText": "8. Sekizinci", "muennes": "الثَّامِنَة" } } },
-    "Sıra: 9.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "التَّاسِع", "trText": "9. Dokuzuncu", "muennes": "التَّاسِعَة" } } },
+    "Sıra: 6.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّادِس", "trText": "6. Altıncı", "muennes": "السَّادِسَة" } } },
+    "Sıra: 7.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّابِع", "trText": "7. Yedinci", "muennes": "السَّابِعَة" } } },
+    "Sıra: 8.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّامِن", "trText": "8. Sekizinci", "muennes": "الثَّامِنَة" } } },
+    "Sıra: 9.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "التَّاسِع", "trText": "9. Dokuzuncu", "muennes": "التَّاسِعَة" } } },
     "Sıra: 10.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْعَاشِر", "trText": "10. Onuncu", "muennes": "الْعَاشِرَة" } } },
     "Sıra: 11.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْحَادِيَ عَشَرَ", "trText": "11. On Birinci", "muennes": "الْحَادِيَةَ عَشْرَةَ" } } },
-    "Sıra: 12.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّانِيَ عَشَرَ", "trText": "12. On İkinci", "muennes": "الثَّانِيَةَ عَشْرَةَ" } } },
-    "Sıra: 13.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّالِثَ عَشَرَ", "trText": "13. On Üçüncü", "muennes": "الثَّالِثَةَ عَشْرَةَ" } } },
-    "Sıra: 14.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الرَّابِعَ عَشَرَ", "trText": "14. On Dördüncü", "muennes": "الرَّابِعَةَ عَشْرَةَ" } } },
+    "Sıra: 12.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّانِيَ عَشَرَ", "trText": "12. On İkinci", "muennes": "الثَّانِيَةَ عَشْرَةَ" } } },
+    "Sıra: 13.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّالِثَ عَشَرَ", "trText": "13. On Üçüncü", "muennes": "الثَّالِثَةَ عَشْرَةَ" } } },
+    "Sıra: 14.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الرَّابِعَ عَشَرَ", "trText": "14. On Dördüncü", "muennes": "الرَّابِعَةَ عَشْرَةَ" } } },
     "Sıra: 15.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْخَامِسَ عَشَرَ", "trText": "15. On Beşinci", "muennes": "الْخَامِسَةَ عَشْرَةَ" } } },
-    "Sıra: 16.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّادِسَ عَشَرَ", "trText": "16. On Altıncı", "muennes": "السَّادِسَةَ عَشْرَةَ" } } },
-    "Sıra: 17.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّابِعَ عَشَرَ", "trText": "17. On Yedinci", "muennes": "السَّابِعَةَ عَشْرَةَ" } } },
-    "Sıra: 18.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّامِنَ عَشَرَ", "trText": "18. On Sekizinci", "muennes": "الثَّامِنَةَ عَشْرَةَ" } } },
-    "Sıra: 19.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "التَّاسِعَ عَشَرَ", "trText": "19. On Dokuzuncu", "muennes": "التَّاسِعَةَ عَشْرَةَ" } } },
+    "Sıra: 16.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّادِسَ عَشَرَ", "trText": "16. On Altıncı", "muennes": "السَّادِسَةَ عَشْرَةَ" } } },
+    "Sıra: 17.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "السَّابِعَ عَشَرَ", "trText": "17. On Yedinci", "muennes": "السَّابِعَةَ عَشْرَةَ" } } },
+    "Sıra: 18.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الثَّامِنَ عَشَرَ", "trText": "18. On Sekizinci", "muennes": "الثَّامِنَةَ عَشْرَةَ" } } },
+    "Sıra: 19.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "التَّاسِعَ عَشَرَ", "trText": "19. On Dokuzuncu", "muennes": "التَّاسِعَةَ عَشْرَةَ" } } },
     "Sıra: 20.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْعِشْرُونَ", "trText": "20. Yirminci" } } },
 
     "Renk: Kırmızı": {
@@ -1765,7 +1765,7 @@ const sozlukVerileri = {
     "سبت": {
         "isDictOnly": true,
         "tip": "gun",
-        "tekil": { base: { emoji: "🛑", arText: "السَّبْت", trText: "Cumartesi (Dinlenme/Tatil günü)." } }
+        "tekil": { base: { emoji: "🛑", arText: "السَّبْت", trText: "Cumartesi (Dinlenme/Tatil günü)." } }
     },
 
     // ==================================================================
@@ -1784,8 +1784,8 @@ const sozlukVerileri = {
     "كتيب": {
         "isDictOnly": true,
         "tip": "tasgir",
-        "tekil": { base: { emoji: "📓", arText: "كُتَيِّب", trText: "Kitapçık (İsm-i Tasgir)." } },
-        "cogul": { base: { emoji: "📚", arText: "كُتَيِّبَات", trText: "Kitapçıklar." } }
+        "tekil": { base: { emoji: "📓", arText: "كُتَيِّب", trText: "Kitapçık (İsm-i Tasgir)." } },
+        "cogul": { base: { emoji: "📚", arText: "كُتَيِّبَات", trText: "Kitapçıklar." } }
     },
     "رجيل": {
         "isDictOnly": true,
@@ -1820,9 +1820,9 @@ const sozlukVerileri = {
     "Sebze: Marul": { isDictOnly: true, tip: "sebze", tekil: { base: { emoji: "🥬", arText: "خَسّ", trText: "Marul" } } },
 
     "Meslek: Mühendis": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "👷", arText: "مُهَنْدِس", trText: "Mühendis" } }, cogul: { base: { emoji: "👷‍♂️", arText: "مُهَنْدِسُونَ", trText: "Mühendisler" } } },
-    "Meslek: Kasap": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🥩", arText: "جَزَّار", trText: "Kasap" } }, cogul: { base: { emoji: "🥩", arText: "جَزَّارُونَ", trText: "Kasaplar" } } },
-    "Meslek: Bakkal": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🏪", arText: "بَقَّال", trText: "Bakkal" } }, cogul: { base: { emoji: "🏪", arText: "بَقَّالُونَ", trText: "Bakkallar" } } },
-    "Meslek: Terzi": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🧵", arText: "خَيَّاط", trText: "Terzi" } }, cogul: { base: { emoji: "🧵", arText: "خَيَّاطُونَ", trText: "Terziler" } } },
+    "Meslek: Kasap": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🥩", arText: "جَزَّار", trText: "Kasap" } }, cogul: { base: { emoji: "🥩", arText: "جَزَّارُونَ", trText: "Kasaplar" } } },
+    "Meslek: Bakkal": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🏪", arText: "بَقَّال", trText: "Bakkal" } }, cogul: { base: { emoji: "🏪", arText: "بَقَّالُونَ", trText: "Bakkallar" } } },
+    "Meslek: Terzi": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🧵", arText: "خَيَّاط", trText: "Terzi" } }, cogul: { base: { emoji: "🧵", arText: "خَيَّاطُونَ", trText: "Terziler" } } },
     "Sebze: Mısır": { isDictOnly: true, tip: "sebze", tekil: { base: { emoji: "🌽", arText: "ذُرَة", trText: "Mısır" } } },
 
 
@@ -1886,14 +1886,14 @@ const sozlukVerileri = {
     "Vapur": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "⛴️", arText: "عَبَّارَة", trText: "Vapur" } } }
 ,
     "Aile: Baba": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👨", "arText": "أَب", "trText": "Baba" } }, "cogul": { "base": { "emoji": "👨", "arText": "آبَاء", "trText": "Babalar" } } },
-    "Aile: Anne": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👩", "arText": "أُمّ", "trText": "Anne" } }, "cogul": { "base": { "emoji": "👩", "arText": "أُمَّهَات", "trText": "Anneler" } } },
+    "Aile: Anne": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👩", "arText": "أُمّ", "trText": "Anne" } }, "cogul": { "base": { "emoji": "👩", "arText": "أُمَّهَات", "trText": "Anneler" } } },
     "Aile: Erkek Kardeş": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👦", "arText": "أَخ", "trText": "Erkek Kardeş" } }, "cogul": { "base": { "emoji": "👦", "arText": "إِخْوَة", "trText": "Kardeşler (Erkek)" } } },
     "Aile: Kız Kardeş": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👧", "arText": "أُخْت", "trText": "Kız Kardeş" } }, "cogul": { "base": { "emoji": "👧", "arText": "أَخَوَات", "trText": "Kız Kardeşler" } } },
     "Aile: Oğul": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👱‍♂️", "arText": "اِبْن", "trText": "Oğul" } }, "cogul": { "base": { "emoji": "👱‍♂️", "arText": "أَبْنَاء", "trText": "Oğullar" } } },
     "Aile: Kız Çocuk": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👱‍♀️", "arText": "بِنْت", "trText": "Kız Çocuk" } }, "cogul": { "base": { "emoji": "👱‍♀️", "arText": "بَنَات", "trText": "Kızlar" } } },
-    "Aile: Nine": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👵", "arText": "جَدَّة", "trText": "Nine / Büyükanne" } }, "cogul": { "base": { "emoji": "👵", "arText": "جَدَّات", "trText": "Nineler" } } },
+    "Aile: Nine": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👵", "arText": "جَدَّة", "trText": "Nine / Büyükanne" } }, "cogul": { "base": { "emoji": "👵", "arText": "جَدَّات", "trText": "Nineler" } } },
     "Aile: Amca": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "🧔", "arText": "عَمّ", "trText": "Amca (Babanın Kardeşi)" } }, "cogul": { "base": { "emoji": "🧔", "arText": "أَعْمَام", "trText": "Amcalar" } } },
-    "Aile: Hala": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "🧕", "arText": "عَمَّة", "trText": "Hala" } }, "cogul": { "base": { "emoji": "🧕", "arText": "عَمَّات", "trText": "Halalar" } } },
+    "Aile: Hala": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "🧕", "arText": "عَمَّة", "trText": "Hala" } }, "cogul": { "base": { "emoji": "🧕", "arText": "عَمَّات", "trText": "Halalar" } } },
     "Aile: Dayı": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👨‍🦰", "arText": "خَال", "trText": "Dayı (Annenin Kardeşi)" } }, "cogul": { "base": { "emoji": "👨‍🦰", "arText": "أَخْوَال", "trText": "Dayılar" } } },
     "Aile: Teyze": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "👩‍🦰", "arText": "خَالَة", "trText": "Teyze" } }, "cogul": { "base": { "emoji": "👩‍🦰", "arText": "خَالَات", "trText": "Teyzeler" } } },
     "Aile: Koca": { "isDictOnly": true, "tip": "aile", "tekil": { "base": { "emoji": "🤵", "arText": "زَوْج", "trText": "Eş (Koca)" } }, "cogul": { "base": { "emoji": "🤵", "arText": "أَزْوَاج", "trText": "Eşler (Kocalar)" } } },

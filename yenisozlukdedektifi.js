@@ -56,8 +56,8 @@ const VerbGenerator = {
         if (rId === 2 || rId === 12) return "ُ"; // 1. ve 5. Bab Muzari -> Kesin Ötre (يَقُولُ, يَعْظُمُ)
 
         let h = "ُ"; 
-        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
-        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
+        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
+        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
 
         let foundInJson = false;
         if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kokArr.join("")]) {
@@ -97,12 +97,12 @@ const VerbGenerator = {
         let i_t = "تَ";
 
         if (r1 === 'و' || r1 === 'ي' || r1 === 'ث' || r1 === 'ت') {
-            i_r1 = ""; i_t = "تَّ";
+            i_r1 = ""; i_t = "تَّ";
         } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
-            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
+            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
             else { i_t = "طَ"; }
         } else if (['د', 'ذ', 'ز'].includes(r1)) {
-            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
+            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
             else { i_t = "دَ"; } 
         }
         return i_r1 + i_t + r2 + aynHareke + r3;
@@ -267,7 +267,7 @@ const VerbGenerator = {
                     callOptions.forceMaziFetha = true;
                 }
 
-                // (OYUN YAMASI) Hareke-şedde sırasını normalle (كِّ -> كّ + kasra):
+                // (OYUN YAMASI) Hareke-şedde sırasını normalle (كِّ -> كّ + kasra):
                 // şablonlardaki "ِّ" dizilimi nakıs kurallarının $-desenlerini bozuyordu.
                 cekilmisKelime = cekilmisKelime.replace(/([ً-ِْ])(ّ)/g, "$2$1");
                 if (typeof SarfEngine !== 'undefined') cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kokArr, callOptions);
@@ -322,7 +322,7 @@ const SarfEngine = {
         // 1.5. İNFİ'AL BABI VE MUTEMASİLEYN (EKLER) ÇARPIŞMASI
         // (OYUN YAMASI: Ecvef + lâm harfi ن olan köklerde (كون gibi) نْن birleşmesi
         // ERTELENIR; önce ecvef i'lal kuralları çalışır (يَكْوُنْنَ -> يَكُنْنَ),
-        // birleşme en sonda yapılır (-> يَكُنَّ). Aksi halde يَكْوُنَّ hatası doğar.)
+        // birleşme en sonda yapılır (-> يَكُنَّ). Aksi halde يَكْوُنَّ hatası doğar.)
         const deferNunMerge = ((r2 === 'و' || r2 === 'ي') && r3 === 'ن');
         if (!deferNunMerge) {
             if (r1 === 'ن') {
@@ -357,7 +357,7 @@ const SarfEngine = {
         }
 
        // 4. ECVEF FİİLLER
-        // (OYUN YAMASI: İf'ilal (12. bab) i'lal görmez -> اِبْيَضَّ korunur)
+        // (OYUN YAMASI: İf'ilal (12. bab) i'lal görmez -> اِبْيَضَّ korunur)
         if ((r2 === 'و' || r2 === 'ي') && (r3 !== 'و' && r3 !== 'ي') && Number(options.numBab) !== 12) {
             let ayn = r2;
             let maziHareke = (ayn === 'و') ? 'ُ' : 'ِ';
@@ -587,7 +587,7 @@ const SarfEngine = {
             // -------------------------------------------
         }
 
-        // (OYUN YAMASI: Ertelenen نْن birleşmesi en sonda uygulanır: يَكُنْنَ -> يَكُنَّ)
+        // (OYUN YAMASI: Ertelenen نْن birleşmesi en sonda uygulanır: يَكُنْنَ -> يَكُنَّ)
         if (deferNunMerge) {
             res = res.replace(/نْن/g, "نّ");
         }
@@ -601,7 +601,7 @@ const SarfEngine = {
 // ============================================================================
 function sarfTemizle(w) {
     if (!w) return w;
-    let res = w.replace(/([ً-ِْ])(ّ)/g, "$2$1");      // hareke-şedde sırası (كَِّ -> كِّ)
+    let res = w.replace(/([ً-ِْ])(ّ)/g, "$2$1");      // hareke-şedde sırası (كَِّ -> كِّ)
     res = res.replace(/([ً-ْ])\1+/g, "$1");             // yinelenen aynı hareke (دَعََا -> دَعَا)
     res = res.replace(/أَا/g, "آ");                      // medde birleşimi (أَا -> آ)
     res = res.replace(/ُوْ/g, "ُو");                     // uzun u'daki gereksiz sükun (يَدْعُوْنَ)

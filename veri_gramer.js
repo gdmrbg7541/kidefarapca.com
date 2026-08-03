@@ -152,6 +152,61 @@ const GramerVerileri = {
     }
 };
 
+/* ================= KAYDIRMA GEZINTISI =================
+   Konu anlatimi ACIKKEN ekrani SOLA kaydir -> ayni tablonun SIRADAKI
+   basligi acilir; SAGA kaydir -> onceki. Klavyede sag/sol ok da calisir,
+   ustte ‹ › tuslari da vardir. IKI DIZI BIRBIRINE GECMEZ:
+   - Mucerred: mazi -> ... -> ismi_tafdil (sonda durur, mezide GECMEZ)
+   - Mezid   : mazi_mezid -> ... -> ismi_meful_mezid                    */
+var GRAMER_SIRA_MUCERRED = ['mazi', 'muzari', 'emir', 'mastar', 'ismi_fail',
+    'zaman_mekan', 'ismi_meful', 'ismi_alet', 'cemi_teksir', 'ismi_tasgir', 'ismi_tafdil'];
+var GRAMER_SIRA_MEZID = ['mazi_mezid', 'muzari_mezid', 'emir_mezid',
+    'mastar_mezid', 'ismi_fail_mezid', 'ismi_meful_mezid'];
+var _gramerAcikKey = null;
+
+function gramerDizisi(k) {
+    if (GRAMER_SIRA_MUCERRED.indexOf(k) >= 0) return GRAMER_SIRA_MUCERRED;
+    if (GRAMER_SIRA_MEZID.indexOf(k) >= 0) return GRAMER_SIRA_MEZID;
+    return null;
+}
+function gramerKomsuAc(adim) {
+    var k = _gramerAcikKey;
+    var dizi = k && gramerDizisi(k);
+    if (!dizi) return;
+    var i = dizi.indexOf(k) + adim;
+    if (i < 0 || i >= dizi.length) return;      /* uctan tasilmaz, tablo degistirilmez */
+    var overlay = document.getElementById('grammar-overlay');
+    var cd = overlay && overlay.querySelector('.grammar-content-container');
+    var hedef = dizi[i];
+    if (!cd) { openGrammarOverlay(hedef); return; }
+    /* kucuk kayma animasyonu: icerik gittigi yone suzulur */
+    cd.style.transition = 'transform .16s ease, opacity .16s ease';
+    cd.style.transform = 'translateX(' + (adim > 0 ? '-42px' : '42px') + ')';
+    cd.style.opacity = '0';
+    setTimeout(function () {
+        openGrammarOverlay(hedef);
+        cd.style.transition = 'none';
+        cd.style.transform = 'translateX(' + (adim > 0 ? '42px' : '-42px') + ')';
+        void cd.offsetWidth;
+        cd.style.transition = 'transform .16s ease, opacity .16s ease';
+        cd.style.transform = 'translateX(0)';
+        cd.style.opacity = '1';
+    }, 160);
+}
+function gramerOkGuncelle() {
+    var overlay = document.getElementById('grammar-overlay');
+    if (!overlay) return;
+    var geri = overlay.querySelector('.grammar-nav-prev');
+    var ileri = overlay.querySelector('.grammar-nav-next');
+    if (!geri || !ileri) return;
+    var dizi = _gramerAcikKey && gramerDizisi(_gramerAcikKey);
+    if (!dizi) { geri.style.display = 'none'; ileri.style.display = 'none'; return; }
+    var i = dizi.indexOf(_gramerAcikKey);
+    geri.style.display = 'flex'; ileri.style.display = 'flex';
+    geri.style.opacity = (i <= 0) ? '.25' : '1';
+    ileri.style.opacity = (i >= dizi.length - 1) ? '.25' : '1';
+}
+
 function openGrammarOverlay(topicKey) {
     if (!topicKey) return;
     
@@ -179,9 +234,11 @@ function openGrammarOverlay(topicKey) {
         
         overlay.innerHTML = `
             <div class="grammar-modal" style="width: 100%; height: 100%; transform: translateY(100vh); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; overflow: hidden; background-color: #fafafa; direction: ltr; text-align: left;">
-                <div style="background: #2c3e50; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 2;">
-                    <h2 class="grammar-title" style="margin: 0; font-size: 38px; font-weight: normal; color: #ecf0f1; font-family: 'Inter', sans-serif;">Gramer Detayı</h2>
-                    <button class="grammar-close-btn" onclick="closeGrammarOverlay()" style="background: rgba(255,255,255,0.15); border: none; font-size: 48px; color: #ecf0f1; cursor: pointer; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.2s;">&times;</button>
+                <div style="background: #2c3e50; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 2; gap: 14px;">
+                    <h2 class="grammar-title" style="margin: 0; font-size: 38px; font-weight: normal; color: #ecf0f1; font-family: 'Inter', sans-serif; flex: 1; min-width: 0;">Gramer Detayı</h2>
+                    <button class="grammar-nav-prev" onclick="gramerKomsuAc(-1)" title="Önceki başlık (sağa kaydır)" style="background: rgba(255,255,255,0.15); border: none; font-size: 34px; color: #ecf0f1; cursor: pointer; width: 54px; height: 54px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.2s; flex: none;">&lsaquo;</button>
+                    <button class="grammar-nav-next" onclick="gramerKomsuAc(1)" title="Sıradaki başlık (sola kaydır)" style="background: rgba(255,255,255,0.15); border: none; font-size: 34px; color: #ecf0f1; cursor: pointer; width: 54px; height: 54px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.2s; flex: none;">&rsaquo;</button>
+                    <button class="grammar-close-btn" onclick="closeGrammarOverlay()" style="background: rgba(255,255,255,0.15); border: none; font-size: 48px; color: #ecf0f1; cursor: pointer; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.2s; flex: none;">&times;</button>
                 </div>
                 <div class="grammar-content-container" style="padding: 50px; overflow-y: auto; flex-grow: 1; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;">
                 </div>
@@ -194,6 +251,34 @@ function openGrammarOverlay(topicKey) {
                 closeGrammarOverlay();
             }
         });
+
+        /* DOKUNMATIK KAYDIRMA: sola kaydir = siradaki, saga = onceki.
+           Dikey kaydirma (icerik okuma) yanlislikla tetiklemesin diye
+           yatay fark hem 60px'i gecmeli hem dikey farktan belirgin buyuk olmali. */
+        var dokX = 0, dokY = 0, dokVar = false;
+        overlay.addEventListener('touchstart', function (e) {
+            if (!e.touches || !e.touches.length) return;
+            dokX = e.touches[0].clientX; dokY = e.touches[0].clientY; dokVar = true;
+        }, { passive: true });
+        overlay.addEventListener('touchend', function (e) {
+            if (!dokVar || !e.changedTouches || !e.changedTouches.length) return;
+            dokVar = false;
+            var dx = e.changedTouches[0].clientX - dokX;
+            var dy = e.changedTouches[0].clientY - dokY;
+            if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+            gramerKomsuAc(dx < 0 ? 1 : -1);
+        }, { passive: true });
+
+        /* KLAVYE: overlay acikken sag ok = siradaki, sol ok = onceki */
+        if (!window._gramerOkDinleyici) {
+            window._gramerOkDinleyici = 1;
+            document.addEventListener('keydown', function (e) {
+                var o = document.getElementById('grammar-overlay');
+                if (!o || o.style.display !== 'flex') return;
+                if (e.key === 'ArrowRight') { e.preventDefault(); gramerKomsuAc(1); }
+                else if (e.key === 'ArrowLeft') { e.preventDefault(); gramerKomsuAc(-1); }
+            });
+        }
     }
 
     const contentDiv = overlay.querySelector('.grammar-content-container');
@@ -202,7 +287,10 @@ function openGrammarOverlay(topicKey) {
     if (contentDiv) {
         titleDiv.innerHTML = data.title;
         contentDiv.innerHTML = data.content;
+        contentDiv.scrollTop = 0;   /* yeni konu hep bastan basliyor */
     }
+    _gramerAcikKey = key;
+    gramerOkGuncelle();
 
     overlay.style.display = 'flex';
     // Animation
@@ -375,7 +463,7 @@ GramerVerileri["ismi_alet"] = {
 };
 
 GramerVerileri["cemi_teksir"] = {
-    "title": "Cem'i Teksir (Kırık Çoğul) - جَمْع التَّكْسير",
+    "title": "Cem'i Teksir (Kırık Çoğul) - جَمْع التَّكْسير",
     "content": `
         <div style="font-family: 'Inter', sans-serif; line-height: 1.8; color: #333; font-size: 24px;">
             <p><strong>Cem'i Teksir</strong> (Kırık Çoğul), kelimenin tekil (müfred) yapısının "kırılarak" (harf eklenip çıkarılarak veya harekeleri değiştirilerek) elde edilen çoğul türüdür.</p>
@@ -388,7 +476,7 @@ GramerVerileri["cemi_teksir"] = {
 };
 
 GramerVerileri["ismi_tasgir"] = {
-    "title": "İsm-i Tasğîr (Küçültme İsmi) - اِسْم التَّصْغير",
+    "title": "İsm-i Tasğîr (Küçültme İsmi) - اِسْم التَّصْغير",
     "content": `
         <div style="font-family: 'Inter', sans-serif; line-height: 1.8; color: #333; font-size: 24px;">
             <p>Bir ismin ifade ettiği varlığın <strong>küçük olduğunu</strong>, <strong>sevimliliğini</strong> veya <strong>acınacak halde olduğunu</strong> belirtmek için kullanılan küçültme kalıbıdır. Türkçedeki <em>-cık, -cik, -ceğiz</em> eklerine karşılık gelir.</p>
@@ -402,7 +490,7 @@ GramerVerileri["ismi_tasgir"] = {
 };
 
 GramerVerileri["ismi_tafdil"] = {
-    "title": "İsm-i Tafdîl (Üstünlük İsmi) - اِسْم التَّفْضيل",
+    "title": "İsm-i Tafdîl (Üstünlük İsmi) - اِسْم التَّفْضيل",
     "content": `
         <div style="font-family: 'Inter', sans-serif; line-height: 1.8; color: #333; font-size: 24px;">
             <p>Bir sıfatın bir varlıkta diğerlerinden <strong>daha fazla</strong> (mukayese) veya <strong>en fazla</strong> (üstünlük) bulunduğunu gösteren isimdir. Türkçedeki <em>daha...</em> veya <em>en...</em> kelimelerini karşılar.</p>

@@ -21,12 +21,12 @@ const sounds = {
 
 const rawData = [
     { q: "'اِقْتِـرَان' kelimesi hangi kalıptandır?", a: "İfti’âl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
-    { q: "'يَصْفَرُّ' kelimesi hangi kalıptandır?", a: "İf’ilâl", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "İf’ilâl", "Tefâul"] },
-    { q: "'تَفَضَّلْ' kelimesi hangi kalıptandır?", a: "Tefe’ul", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "Tefe’ul", "Tefâul"] },
+    { q: "'يَصْفَرُّ' kelimesi hangi kalıptandır?", a: "İf’ilâl", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "İf’ilâl", "Tefâul"] },
+    { q: "'تَفَضَّلْ' kelimesi hangi kalıptandır?", a: "Tefe’ul", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "Tefe’ul", "Tefâul"] },
     { q: "'مُتَشَائِم' kelimesi hangi kalıptandır?", a: "Tefâul", options: ["Müfâ’ale", "İfti’âl", "Tefe’ul", "Tefâul", "İstif’âl"] },
     { q: "'اِسْتِـرْحَام' kelimesi hangi kalıptandır?", a: "İstif’âl", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "İf’ilâl", "İstif’âl"] },
     { q: "'يُدْرِكُ' kelimesi hangi kalıptandır?", a: "İf’âl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
-    { q: "'مُدَرِّس' kelimesi hangi kalıptandır?", a: "Tef’îl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
+    { q: "'مُدَرِّس' kelimesi hangi kalıptandır?", a: "Tef’îl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'مُحَاسَبَة' kelimesi hangi kalıptandır?", a: "Müfâ’ale", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'يَرْتَبِطُ' kelimesi hangi kalıptandır?", a: "İfti’âl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "Sadece şedde ( ّ ) alarak türeyen kelimeler hangi kalıptadır?", a: "Tef’îl", options: ["Tef’îl", "Müfâ’ale", "İfti’âl", "Tefe’ul", "Tefâul"] },
@@ -36,20 +36,20 @@ const rawData = [
     { q: "'حَافَظَ' kelimesi hangi kalıptandır?", a: "Müfâ’ale", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'مُنْحَرِف' kelimesi hangi kalıptandır?", a: "İnfi’âl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'اِحْتَمَلَ' kelimesi hangi kalıptandır?", a: "İfti’âl", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "İf’ilâl", "İstif’âl"] },
-    { q: "'اِحْمَـرَّ' kelimesi hangi kalıptandır?", a: "İf’ilâl", options: ["İf’âl", "İnfi’âl", "İfti’âl", "İf’ilâl", "İstif’âl"] },
-    { q: "'تَحَكُّم' kelimesi hangi kalıptandır?", a: "Tefe’ul", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "Tefe’ul", "Tefâul"] },
+    { q: "'اِحْمَـرَّ' kelimesi hangi kalıptandır?", a: "İf’ilâl", options: ["İf’âl", "İnfi’âl", "İfti’âl", "İf’ilâl", "İstif’âl"] },
+    { q: "'تَحَكُّم' kelimesi hangi kalıptandır?", a: "Tefe’ul", options: ["Müfâ’ale", "İnfi’âl", "İfti’âl", "Tefe’ul", "Tefâul"] },
     { q: "'يَتَمَايَلُ' kelimesi hangi kalıptandır?", a: "Tefâul", options: ["Müfâ’ale", "İfti’âl", "Tefe’ul", "Tefâul", "İstif’âl"] },
     { q: "'اِسْتَخْبَـرَ' kelimesi hangi kalıptandır?", a: "İstif’âl", options: ["İnfi’âl", "İfti’âl", "Tefe’ul", "İf’âl", "İstif’âl"] },
     { q: "'إِقْنَاع' kelimesi hangi kalıptandır?", a: "İf’âl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'تَثْبِـيت' kelimesi hangi kalıptandır?", a: "Tef’îl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'يُمَارِسُ' kelimesi hangi kalıptandır?", a: "Müfâ’ale", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
     { q: "'اِنْحِصَار' kelimesi hangi kalıptandır?", a: "İnfi’âl", options: ["İf’âl", "Tef’îl", "Müfâ’ale", "İnfi’âl", "İfti’âl"] },
-    { q: "'مُتَفَكِّر' kelimesi hangi kalıptandır?", a: "Tefe’ul", options: ["Müfâ’ale", "İfti’âl", "Tefe’ul", "Tefâul", "İstif’âl"] },
+    { q: "'مُتَفَكِّر' kelimesi hangi kalıptandır?", a: "Tefe’ul", options: ["Müfâ’ale", "İfti’âl", "Tefe’ul", "Tefâul", "İstif’âl"] },
     { q: "Hemze ( ا ) ve te harfi ( تـ ) alarak türeyen kelimeler hangi kalıptadır?", a: "İfti’âl", options: ["İf’âl", "İfti’âl", "İf’ilâl", "İnfi’âl", "İstif’âl"] },
     { q: "Hemze ( ا ) ve şedde ( ّ ) alarak türeyen bir fiil hangi kalıptandır?", a: "İf’ilâl", options: ["İf’âl", "İfti’âl", "İf’ilâl", "İnfi’âl", "İstif’âl"] },
     { q: "Hemze ( ا ), sin ( ـسـ ) ve t ( ـتـ ) alarak türeyen bir fiil hangi kalıptandır?", a: "İstif’âl", options: ["İf’âl", "İfti’âl", "İf’ilâl", "İnfi’âl", "İstif’âl"] },
     { q: "'نَسْتَقْبِلُ' kelimesini sözlükte nasıl aramalıyız?", a: "اِسْتَقْبَلَ", options: ["اِسْتَقْبِلُ", "يَسْتَقْبِلُ", "أَسْتَقْبِلُ", "مُسْتَقْبَلٌ", "اِسْتَقْبَلَ"] },
-    { q: "'تَمَتَّعْتُمْ' kelimesini sözlükte nasıl aramalıyız?", a: "تَمَتَّعَ", options: ["تَعْتُمْ", "تَمَتَّعَ", "مَتَعَ", "مَتَّعْتُ", "يَتَمَتَّعُ"] }
+    { q: "'تَمَتَّعْتُمْ' kelimesini sözlükte nasıl aramalıyız?", a: "تَمَتَّعَ", options: ["تَعْتُمْ", "تَمَتَّعَ", "مَتَعَ", "مَتَّعْتُ", "يَتَمَتَّعُ"] }
 ];
 
 let questions = [...rawData].sort(() => Math.random() - 0.5);

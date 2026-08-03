@@ -132,7 +132,7 @@ const KALIP_DATA = {
         "tr": "İsm-i Fâil"
     },
     "34": {
-        "ar": "فَعَّال",
+        "ar": "فَعَّال",
         "tr": "Mübalağalı İsm-i Fâil"
     },
     "35": {
@@ -176,7 +176,7 @@ const KALIP_DATA = {
         "tr": "Cemi Teksir"
     },
     "45": {
-        "ar": "فُعَّال",
+        "ar": "فُعَّال",
         "tr": "Cemi Teksir"
     },
     "46": {
@@ -228,15 +228,15 @@ const KALIP_DATA = {
         "tr": "İf'âl Babı İsm-i Mef'ûl"
     },
     "58": {
-        "ar": "فَعَّلَ",
+        "ar": "فَعَّلَ",
         "tr": "Tef'îl Babı Mazi"
     },
     "59": {
-        "ar": "يُفَعِّلُ",
+        "ar": "يُفَعِّلُ",
         "tr": "Tef'îl Babı Muzari"
     },
     "60": {
-        "ar": "فَعِّلْ",
+        "ar": "فَعِّلْ",
         "tr": "Tef'îl Babı Emir"
     },
     "61": {
@@ -244,11 +244,11 @@ const KALIP_DATA = {
         "tr": "Tef'îl Babı Masdar"
     },
     "62": {
-        "ar": "مُفَعِّل",
+        "ar": "مُفَعِّل",
         "tr": "Tef'îl Babı İsm-i Fâil"
     },
     "63": {
-        "ar": "مُفَعَّل",
+        "ar": "مُفَعَّل",
         "tr": "Tef'îl Babı İsm-i Mef'ûl"
     },
     "64": {
@@ -328,11 +328,11 @@ const KALIP_DATA = {
         "tr": "İftî'âl Babı İsm-i Mef'ûl"
     },
     "83": {
-        "ar": "اِفْعَلَّ",
+        "ar": "اِفْعَلَّ",
         "tr": "İf'ilâl Babı Mazi"
     },
     "84": {
-        "ar": "يَفْعَلُّ",
+        "ar": "يَفْعَلُّ",
         "tr": "İf'ilâl Babı Muzari"
     },
     "85": {
@@ -348,27 +348,27 @@ const KALIP_DATA = {
         "tr": "İf'ilâl Babı İsm-i Fâil/Mef'ûl"
     },
     "88": {
-        "ar": "تَفَعَّلَ",
+        "ar": "تَفَعَّلَ",
         "tr": "Tefac'ul Babı Mazi"
     },
     "89": {
-        "ar": "يَتَفَعَّلُ",
+        "ar": "يَتَفَعَّلُ",
         "tr": "Tefac'ul Babı Muzari"
     },
     "90": {
-        "ar": "تَفَعَّلْ",
+        "ar": "تَفَعَّلْ",
         "tr": "Tefac'ul Babı Emir"
     },
     "91": {
-        "ar": "تَفَعُّل",
+        "ar": "تَفَعُّل",
         "tr": "Tefac'ul Babı Masdar"
     },
     "92": {
-        "ar": "مُتَفَعِّل",
+        "ar": "مُتَفَعِّل",
         "tr": "Tefac'ul Babı İsm-i Fâil"
     },
     "93": {
-        "ar": "مُتَفَعَّل",
+        "ar": "مُتَفَعَّل",
         "tr": "Tefac'ul Babı İsm-i Mef'ûl"
     },
     "94": {

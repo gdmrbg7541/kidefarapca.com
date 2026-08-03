@@ -22,12 +22,12 @@ const ORNEK_KOK_EKLEME_VERIKALIPLAR = {
         // --- Mazi Fiil (Kalıp 1, 52, 58 vb.) ---
         1: { 
             // Mazi fiil çekimi: 15 elemanlı olmalıdır. (Huve'den Nahnu'ya)
-            cekimi: ["تَجَرَ", "تَجَرَا", "تَجَرُوا", "تَجَرَتْ", "تَجَرَتَا", "تَجَرْنَ", "تَجَرْتَ", "تَجَرْتُمَا", "تَجَرْتُمْ", "تَجَرْتِ", "تَجَرْتُمَا", "تَجَرْتُنَّ", "تَجَرْتُ", "تَجَرْنَا", "تَجَرْنَا"],
+            cekimi: ["تَجَرَ", "تَجَرَا", "تَجَرُوا", "تَجَرَتْ", "تَجَرَتَا", "تَجَرْنَ", "تَجَرْتَ", "تَجَرْتُمَا", "تَجَرْتُمْ", "تَجَرْتِ", "تَجَرْتُمَا", "تَجَرْتُنَّ", "تَجَرْتُ", "تَجَرْنَا", "تَجَرْنَا"],
             base: { 
                 emoji: "🤝", 
                 arText: "تَجَرَ", 
                 trText: "Ticaret yaptı.",
-                ornek: { ar: "تَاجَرَ فِي السُّوقِ", tr: "Çarşıda ticaret yaptı." }
+                ornek: { ar: "تَاجَرَ فِي السُّوقِ", tr: "Çarşıda ticaret yaptı." }
             }
         },
 
@@ -85,7 +85,7 @@ const ORNEK_KOK_EKLEME_VERIKALIPLAR = {
         45: {
             base: {
                 emoji: "👥",
-                arText: "تُجَّار",
+                arText: "تُجَّار",
                 trText: "Tüccarlar."
             }
         }
@@ -128,7 +128,7 @@ const ORNEK_SOZLUK_TEMATIK_KELIME = {
                 emoji: "🐈",
                 arText: "قِطّ",
                 trText: "Kedi",
-                ornek: { ar: "اَلْقِطُّ نَائِمٌ", tr: "Kedi uyuyor." }
+                ornek: { ar: "اَلْقِطُّ نَائِمٌ", tr: "Kedi uyuyor." }
             }
         },
         
