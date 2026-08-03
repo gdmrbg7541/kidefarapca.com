@@ -2414,6 +2414,14 @@
   function handleAnyLoginClick(e, url){
     var isMobile = window.innerWidth<=768 || /Mobi|Android/i.test(navigator.userAgent);
     if(isMobile) return true;
+    /* YÖNETİCİ SİTE AYARINA BAK: site AÇIK ise (ya da bu ziyaretçinin izni
+       varsa) şifre ekranı AÇILMADAN, diğer html dosyalar gibi doğrudan açılır.
+       Yalnız site 🎓 girişli / 🔒 yönetici kilidindeyken ve ziyaretçinin izni
+       yoksa giriş istenir. (Liste oluşturma / öğretmen kaydı şartı bu
+       fonksiyondan bağımsızdır, aynen kalır.) */
+    try {
+      if (window.SiteKilit && typeof SiteKilit.izinliMi === 'function' && SiteKilit.izinliMi()) return true;
+    } catch(_){}
     var loggedIn = (typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser);
     if(!loggedIn){ if(e&&e.preventDefault) e.preventDefault(); if(typeof showLoginModal==='function') showLoginModal(); return false; }
     return true;
