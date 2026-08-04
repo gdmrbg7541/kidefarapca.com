@@ -10,6 +10,127 @@
        gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i silmen yeterli. */
     try{ if(!sessionStorage.getItem('kidefVitrin')) location.replace('indeks.html'); }catch(e){}
     </script>
+
+    <script id="guc-algilayici">
+    /* ================= CİHAZ GÜCÜ ALGILAYICI =================
+       Zayıf/yavaş cihazlarda yalnızca SÜSLEME amaçlı SVG animasyonları durur
+       (<html> etiketine "dusuk-guc" sınıfı eklenir). Yükleme çarkı, akordiyon
+       açılışı, renk geçişi gibi İŞLEVSEL hareketler her cihazda çalışmaya devam eder.
+       Tamamen otomatiktir; ekranda hiçbir düğme göstermez.
+       Karar 30 gün localStorage'da saklanır, sonraki ziyarette anında uygulanır. */
+    (function(){
+      var H = document.documentElement, ANAHTAR = 'kidefGuc', SURE = 2592000000; /* 30 gün */
+      var nav = navigator, baglanti = nav.connection || nav.mozConnection || nav.webkitConnection || null;
+
+      function yaz(karar, neden){
+        try{ localStorage.setItem(ANAHTAR, JSON.stringify({s:1, k:karar, n:neden, t:Date.now()})); }catch(e){}
+      }
+      /* CSS ile durdurulamayan SMIL (<animateTransform>) animasyonlarını dondurur */
+      function smilDondur(){
+        try{
+          var l = document.querySelectorAll('animate,animateTransform,animateMotion');
+          for (var i=0;i<l.length;i++){
+            var kok = l[i].ownerSVGElement;
+            if (kok && kok.pauseAnimations) kok.pauseAnimations();
+          }
+        }catch(e){}
+      }
+      function kapat(neden, kaydet){
+        if (!H.classList.contains('dusuk-guc')) H.classList.add('dusuk-guc');
+        if (kaydet !== false) yaz('dusuk', neden);
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', smilDondur, {once:true});
+        else smilDondur();
+      }
+
+      /* 1) Önceki ziyaretin kararı — anında uygulanır, hiç titreme olmaz */
+      var kayit = null;
+      try{ kayit = JSON.parse(localStorage.getItem(ANAHTAR) || 'null'); }catch(e){}
+      if (kayit && kayit.s === 1 && (Date.now() - kayit.t) < SURE){
+        if (kayit.k === 'dusuk') kapat(kayit.n || 'kayit', false);
+        return;
+      }
+
+      /* 2) Kesin işaretler — ölçüme hiç gerek yok */
+      try{
+        if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return kapat('tercih');
+      }catch(e){}
+      if (nav.deviceMemory && nav.deviceMemory <= 2) return kapat('bellek');
+      if (nav.hardwareConcurrency && nav.hardwareConcurrency <= 2) return kapat('cekirdek');
+      if (baglanti && baglanti.saveData === true) return kapat('veritasarrufu');
+
+      /* 3) Zayıf işaretler — ikisi birden varsa yeter */
+      var puan = 0;
+      if (nav.deviceMemory && nav.deviceMemory <= 4) puan++;
+      if (nav.hardwareConcurrency && nav.hardwareConcurrency <= 4) puan++;
+      if (baglanti && /^(slow-2g|2g|3g)$/.test(baglanti.effectiveType || '')) puan++;
+      if (puan >= 2) return kapat('isaret');
+
+      /* 4) Gerçek ölçüm: sayfa yerleştikten sonra kare hızına bakılır.
+            Arka plan sekmesinde rAF kısıldığı için ölçüm yapılmaz. */
+      function olc(bitir){
+        var bas = 0, kare = 0, pencere = 0, kotu = 0;
+        function tik(t){
+          if (document.hidden) return;                 /* sekme arkada → karar verme */
+          if (!bas){ bas = t; kare = 0; return requestAnimationFrame(tik); }
+          kare++;
+          var gecen = t - bas;
+          if (gecen < 600) return requestAnimationFrame(tik);
+          var fps = kare * 1000 / gecen;
+          pencere++;
+          if (fps >= 48) return bitir(false);                    /* tek iyi pencere yeter: güçlü */
+          if (fps < 40) kotu++;
+          if (pencere >= 3) return bitir(kotu >= 2);             /* 3 pencerenin 2'si kötüyse zayıf */
+          bas = 0; kare = 0; requestAnimationFrame(tik);
+        }
+        requestAnimationFrame(tik);
+      }
+      function basla(){
+        if (document.hidden) return;
+        /* sayfa tam yerleşsin: yükleme anındaki düşük kare hızı yanıltmasın */
+        setTimeout(function(){
+          if (document.hidden) return;
+          olc(function(zayif){ zayif ? kapat('olcum') : yaz('guclu', 'olcum'); });
+        }, 1800);
+      }
+      if (document.readyState === 'complete') basla();
+      else window.addEventListener('load', basla, {once:true});
+    })();
+    </script>
+    <style id="dusuk-guc-stil">
+    /* ================= DÜŞÜK GÜÇ MODU =================
+       html.dusuk-guc → süsleme animasyonları durur; şekiller bozulmadan,
+       tamamlanmış hâlleriyle sabit kalır. İşlevsel hareketler etkilenmez. */
+    html.dusuk-guc [class^="kga-"],
+    html.dusuk-guc [class*=" kga-"],
+    html.dusuk-guc [class^="kb-"],
+    html.dusuk-guc [class*=" kb-"],
+    html.dusuk-guc .kb-motor-cark g,
+    html.dusuk-guc .feedback-fab svg,
+    html.dusuk-guc .ih-pulse .ih-halo,
+    html.dusuk-guc .ih-bounce .ih-badge,
+    html.dusuk-guc .ih-spark .ih-star,
+    html.dusuk-guc .ih-draw .ih-ring,
+    html.dusuk-guc #imam-hatip h2 .ih-crescent,
+    html.dusuk-guc .ih-genel-dok .ihsec-ic .dok-basclip,
+    html.dusuk-guc .a4-muhur-g,
+    html.dusuk-guc .a4-imza-yol,
+    html.dusuk-guc .a4-satirlar b::after,
+    html.dusuk-guc .a4-grid.acildi .a4-kart,
+    html.dusuk-guc .ik-sayfa,  html.dusuk-guc .ik-halka, html.dusuk-guc .ik-tik,
+    html.dusuk-guc .ik-damga,  html.dusuk-guc .ik-kalem, html.dusuk-guc .ik-yazi3,
+    html.dusuk-guc .ik-rozet { animation: none !important; }
+    /* duruş hâli: çizilen yollar tam görünsün */
+    html.dusuk-guc .a4-imza-yol,
+    html.dusuk-guc .ik-tik,
+    html.dusuk-guc .ik-yazi3,
+    html.dusuk-guc .kga-rota,
+    html.dusuk-guc .ih-draw .ih-ring { stroke-dashoffset: 0 !important; }
+    /* iki yüzü sırayla gösteren kartlarda arka yüz gizlensin (üst üste binmesin) */
+    html.dusuk-guc .kga-yuzB, html.dusuk-guc .kga-hyuzB { opacity: 0 !important; }
+    /* kayan parıltı şeridi dursun değil, hiç görünmesin */
+    html.dusuk-guc .a4-satirlar b::after { opacity: 0 !important; }
+    html.dusuk-guc .a4-muhur-g, html.dusuk-guc .ik-damga { opacity: .95 !important; }
+    </style>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
     <script>
