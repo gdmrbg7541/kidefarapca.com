@@ -4,12 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Dosya Yolu Kontrolü — kidefarapca.com</title>
+<title>Dosya Yolu Kontrolü v2 — kidefarapca.com</title>
 <style>
+  /* arakom.css ile aynı tanım — bu sayfa yazı tipini kendi başına yükleyip dener */
+  @font-face { font-family:'Arakom'; src:url('arakom.ttf') format('truetype'); font-display:swap; }
   :root { --ok:#128a5a; --yok:#c62828; --bek:#8a94a6; }
   body { margin:0; padding:22px 16px 60px; background:#f4f7fb; color:#12304c;
          font-family:'Arakom','Marhey',system-ui,sans-serif; }
-  .kutu { max-width:820px; margin:0 auto; background:#fff; border:1px solid #e3eaf3;
+  .kutu { max-width:860px; margin:0 auto; background:#fff; border:1px solid #e3eaf3;
           border-radius:16px; padding:22px 20px 26px; box-shadow:0 6px 22px rgba(18,48,76,.06); }
   h1 { font-size:1.3rem; margin:0 0 4px; }
   p.alt { margin:0 0 18px; color:#5b6b80; font-size:.92rem; line-height:1.5; }
@@ -18,24 +20,37 @@
            border:1px solid #e3eaf3; background:#f7fafd; }
   .rozet.iyi { color:var(--ok); border-color:#bde5d3; background:#eef9f4; }
   .rozet.kotu { color:var(--yok); border-color:#f2c9c9; background:#fdefef; }
-  table { width:100%; border-collapse:collapse; font-size:.92rem; }
-  td { padding:7px 6px; border-bottom:1px solid #eef2f7; vertical-align:middle; }
-  td.d { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.86rem; word-break:break-all; }
+  .sonuc { margin:0 0 18px; padding:14px 16px; border-radius:12px; font-weight:800;
+           border:1px solid #e3eaf3; background:#f7fafd; line-height:1.6; font-size:.95rem; }
+  .sonuc b { display:block; font-size:1.05rem; margin-bottom:6px; }
+  .klasor { margin:16px 0 4px; font-size:1rem; font-weight:900; display:flex;
+            align-items:center; gap:10px; }
+  .durum { font-size:.78rem; font-weight:800; border-radius:999px; padding:3px 10px; }
+  .durum.iyi { color:var(--ok); background:#eef9f4; border:1px solid #bde5d3; }
+  .durum.kotu { color:var(--yok); background:#fdefef; border:1px solid #f2c9c9; }
+  .durum.bek { color:var(--bek); background:#f4f7fb; border:1px solid #e3eaf3; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin-bottom:2px; }
+  td { padding:6px; border-bottom:1px solid #eef2f7; vertical-align:middle; }
+  td.d { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.84rem; word-break:break-all; }
   td.s { text-align:right; white-space:nowrap; font-weight:800; width:120px; }
   .ok { color:var(--ok); } .yok { color:var(--yok); } .bek { color:var(--bek); }
-  .font { margin:18px 0 0; padding:14px 16px; border:1px solid #e3eaf3; border-radius:12px;
+  .font { margin:20px 0 0; padding:14px 16px; border:1px solid #e3eaf3; border-radius:12px;
           background:#f7fafd; font-size:.95rem; line-height:1.6; }
   .ornek { font-size:1.35rem; margin-top:6px; }
   .not { margin-top:18px; font-size:.86rem; color:#5b6b80; line-height:1.55; }
+  .kopya { margin-top:14px; }
+  .kopya button { font:inherit; font-weight:800; padding:9px 16px; border-radius:10px;
+                  border:1px solid #cfe0f0; background:#eaf3fc; color:#12304c; cursor:pointer; }
+  .kopya textarea { width:100%; min-height:110px; margin-top:10px; font-family:ui-monospace,monospace;
+                    font-size:.82rem; border:1px solid #e3eaf3; border-radius:10px; padding:10px; }
 </style>
 </head>
 <body>
 <div class="kutu">
-  <h1>Dosya Yolu Kontrolü</h1>
-  <p class="alt">Bu sayfa, <b>index.html</b>’in ihtiyaç duyduğu bütün yerel dosyaları tek tek çağırır.
-     Kırmızı görünen satırlar sunucuda <b>yok</b> demektir; tasarımın bozulmasının sebebi odur.
-     Bu dosyayı sitenin kök klasörüne yükleyip
-     <code>kidefarapca.com/_yolkontrol.html</code> adresinden aç.</p>
+  <h1>Dosya Yolu Kontrolü <span style="font-size:.8rem;color:#8a94a6">v2 — bütün klasörler</span></h1>
+  <p class="alt">Bu sayfa sitedeki <b>her klasörden</b> birer örnek dosya çağırır.
+     Bir klasörün satırları kırmızıysa <b>o klasör sunucuya hiç yüklenmemiş</b> demektir.
+     En alttaki kutudan eksik klasör listesini kopyalayıp bana gönderebilirsin.</p>
 
   <div class="ozet">
     <span class="rozet" id="rz-top">— dosya denendi</span>
@@ -43,7 +58,9 @@
     <span class="rozet kotu" id="rz-yok">— eksik</span>
   </div>
 
-  <table id="tablo"></table>
+  <div class="sonuc" id="sonuc"><b>Kontrol sürüyor…</b>Bütün satırlar yeşil/kırmızı olana kadar bekle.</div>
+
+  <div id="govde"></div>
 
   <div class="font">
     <b>Yazı tipi denemesi:</b> aşağıdaki satır Arakom ile görünüyorsa yazı tipi yüklenmiştir.
@@ -53,55 +70,152 @@
     <div id="fontdurum" style="margin-top:8px;font-weight:800">kontrol ediliyor…</div>
   </div>
 
+  <div class="kopya">
+    <button type="button" id="btn">Sonucu kopyala</button>
+    <textarea id="metin" readonly placeholder="kontrol bitince burada özet çıkar"></textarea>
+  </div>
+
   <p class="not">Not: Bu dosyanın adı alt çizgi ile başladığı için site içi sayaçlara ve
-     taramalara dahil olmaz. Kontrol bitince silebilirsin.</p>
+     taramalara dahil olmaz. Kontrol bitince Finder'dan silebilirsin.</p>
 </div>
 
 <script>
-  var DOSYALAR = [
-    "arakom.css","arakom.ttf","index.css","index.js",
-    "hesap/auth.js","hesap/checkout.js","hesap/course-content.js","hesap/kurslar.css",
-    "hesap/listelerim.css","hesap/listelerim.js","hesap/live-lesson.js",
-    "hesap/offline-packages.js","hesap/ogrencihesap.js","hesap/ogretmen.js",
-    "hesap/online-packages.js","hesap/paketler.js","hesap/teacher-admin.js",
-    "muhadese/muhadese.js","sistem/alarm.js","sistem/geri.js","sistem/gorev.js",
-    "sistem/kilit.js","sistem/router.js","sistem/state.js"
+  /* klasör adı -> o klasörden temsili dosyalar */
+  var GRUPLAR = [
+    ["kök (klasörsüz)", ["arakom.css","arakom.ttf","index.css","index.js"]],
+    ["hesap",           ["hesap/auth.js","hesap/kurslar.css","hesap/listelerim.css","hesap/paketler.js"]],
+    ["sistem",          ["sistem/router.js","sistem/state.js","sistem/kilit.js","sistem/geri.js"]],
+    ["muhadese",        ["muhadese/muhadese.js","muhadese/kelime/kelime_7_1.js"]],
+    ["alfabe",          ["alfabe/okuma.js"]],
+    ["alfabe github",   ["alfabe github/alfabe.js"]],
+    ["degerler",        ["degerler/kssi.js","degerler/kssi.css"]],
+    ["dilbilgisi",      ["dilbilgisi/Dilbilgisi Konuları.js","dilbilgisi/Dilbilgisi Konuları.css"]],
+    ["dosyalar",        ["dosyalar/calisma-kagitlari/8-sinif/arapca-8-1-calisma-kagidi.pdf"]],
+    ["files",           ["files/yzReader/templates/Slide/js/app-theme.js"]],
+    ["flipbooks",       ["flipbooks/pratiksayfalar/pratiksayfalar.png"]],
+    ["javascript",      ["javascript/config.js","javascript/LoadingJS.js"]],
+    ["kitap",           ["kitap/flipbookkidef.js","kitap/flipbookkidef.css"]],
+    ["oyunlar",         ["oyunlar/renkler.js","oyunlar/renkler.css"]],
+    ["sarf",            ["sarf/sarf.js","sarf/sarf.css"]],
+    ["slide_javascript",["slide_javascript/slideJS.js"]],
+    ["sozluk",          ["sozluk/sozluksimulasyon.js","sozluk/sozluksimulasyon.css"]],
+    ["style",           ["style/style.css"]],
+    ["sunum",           ["sunum/sunum.js","sunum/sunum.css"]],
+    ["veri",            ["veri/veri_gramer.js","veri/veri_kokler.js"]],
+    ["ydt",             ["ydt/hizlioku.js","ydt/hizlioku.css"]],
+    ["Gizem Sandığı",   ["Gizem Sandığı/Avatar.html"]]
   ];
 
-  var tablo = document.getElementById('tablo');
-  var iyi = 0, kotu = 0;
+  var govde = document.getElementById('govde');
+  var iyi = 0, kotu = 0, toplam = 0, biten = 0;
+  var klasorDurum = {};
 
-  function yaz() {
-    document.getElementById('rz-top').textContent = DOSYALAR.length + ' dosya denendi';
+  GRUPLAR.forEach(function (g) { toplam += g[1].length; });
+
+  function ozetle() {
+    document.getElementById('rz-top').textContent = toplam + ' dosya denendi';
     document.getElementById('rz-ok').textContent = iyi + ' bulundu';
     document.getElementById('rz-yok').textContent = kotu + ' eksik';
+    if (biten < toplam) return;
+
+    var eksikTam = [], eksikKismi = [];
+    GRUPLAR.forEach(function (g) {
+      var d = klasorDurum[g[0]];
+      if (d.yok === 0) return;
+      (d.var === 0 ? eksikTam : eksikKismi).push(g[0]);
+    });
+
+    var s = document.getElementById('sonuc');
+    if (!eksikTam.length && !eksikKismi.length) {
+      s.style.color = '#128a5a';
+      s.innerHTML = '<b>✓ Her şey yerinde</b>Denenen ' + toplam + ' dosyanın hepsi sunucuda var.';
+    } else {
+      s.style.color = '#c62828';
+      s.innerHTML = '<b>Eksik klasörler bulundu</b>' +
+        (eksikTam.length ? 'Tamamen eksik (hiç yüklenmemiş): <u>' + eksikTam.join(' · ') + '</u><br>' : '') +
+        (eksikKismi.length ? 'Kısmen eksik (bazı dosyaları yok): <u>' + eksikKismi.join(' · ') + '</u>' : '');
+    }
+
+    document.getElementById('metin').value =
+      'KİDEF yol kontrolü — ' + iyi + ' var / ' + kotu + ' yok\n' +
+      'Tamamen eksik klasörler: ' + (eksikTam.join(', ') || 'yok') + '\n' +
+      'Kısmen eksik klasörler: ' + (eksikKismi.join(', ') || 'yok') + '\n' +
+      'Arakom: ' + (document.getElementById('fontdurum').textContent || '?');
   }
 
-  DOSYALAR.forEach(function (d) {
-    var tr = document.createElement('tr');
-    tr.innerHTML = '<td class="d">' + d + '</td><td class="s bek">bekliyor…</td>';
-    tablo.appendChild(tr);
-    var hucre = tr.lastElementChild;
+  GRUPLAR.forEach(function (g) {
+    var ad = g[0], liste = g[1];
+    klasorDurum[ad] = { var: 0, yok: 0 };
 
-    fetch(d + '?kontrol=' + Date.now(), { cache: 'no-store' }).then(function (r) {
-      if (r.ok) { iyi++; hucre.className = 's ok'; hucre.textContent = 'var (' + r.status + ')'; }
-      else { kotu++; hucre.className = 's yok'; hucre.textContent = 'YOK (' + r.status + ')'; }
-      yaz();
-    }).catch(function () {
-      kotu++; hucre.className = 's yok'; hucre.textContent = 'ULAŞILAMADI'; yaz();
+    var bas = document.createElement('div');
+    bas.className = 'klasor';
+    bas.innerHTML = '<span>' + ad + '/</span><span class="durum bek">kontrol ediliyor…</span>';
+    govde.appendChild(bas);
+    var rozet = bas.lastElementChild;
+
+    var tablo = document.createElement('table');
+    govde.appendChild(tablo);
+
+    liste.forEach(function (d) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td class="d"></td><td class="s bek">bekliyor…</td>';
+      tr.firstElementChild.textContent = d;
+      tablo.appendChild(tr);
+      var hucre = tr.lastElementChild;
+
+      function bitir(varMi, etiket) {
+        biten++;
+        if (varMi) { iyi++; klasorDurum[ad]["var"]++; hucre.className = 's ok'; }
+        else { kotu++; klasorDurum[ad].yok++; hucre.className = 's yok'; }
+        hucre.textContent = etiket;
+        var d2 = klasorDurum[ad];
+        if (d2["var"] + d2.yok === liste.length) {
+          if (d2.yok === 0) { rozet.className = 'durum iyi'; rozet.textContent = 'tamam'; }
+          else if (d2["var"] === 0) { rozet.className = 'durum kotu'; rozet.textContent = 'KLASÖR YOK'; }
+          else { rozet.className = 'durum kotu'; rozet.textContent = 'eksik dosya var'; }
+        }
+        ozetle();
+      }
+
+      fetch(encodeURI(d) + '?kontrol=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { bitir(r.ok, r.ok ? 'var (' + r.status + ')' : 'YOK (' + r.status + ')'); })
+        .catch(function () { bitir(false, 'ULAŞILAMADI'); });
     });
   });
-  yaz();
+
+  ozetle();
 
   (function () {
     var c = document.getElementById('fontdurum');
-    if (!document.fonts) { c.textContent = 'tarayıcı font durumunu bildirmiyor'; return; }
-    document.fonts.ready.then(function () {
-      var v = document.fonts.check('16px Arakom');
-      c.textContent = v ? '✓ Arakom yüklendi' : '✗ Arakom YÜKLENMEDİ — arakom.css veya arakom.ttf eksik';
+    /* gerçek ölçüm: aynı metni 'Arakom' ve var olmayan bir aile ile çizip
+       genişlikleri karşılaştırıyoruz. Eşitse Arakom devreye girmemiş demektir. */
+    function genislik(aile) {
+      var s = document.createElement('span');
+      s.textContent = 'Arapça Dersi 0123456789 mimimimimi';
+      s.style.cssText = 'position:absolute;left:-9999px;top:0;white-space:pre;font-size:48px;font-family:' + aile;
+      document.body.appendChild(s);
+      var w = s.getBoundingClientRect().width;
+      s.remove();
+      return w;
+    }
+    function bitir() {
+      var a = genislik("'Arakom',serif");
+      var y = genislik("'ZzYokBoyleFont123',serif");
+      var v = Math.abs(a - y) > 1;
+      c.textContent = v ? '✓ Arakom yüklendi ve uygulanıyor'
+                        : '✗ Arakom YÜKLENMEDİ — arakom.css veya arakom.ttf sunucuda okunmuyor';
       c.style.color = v ? '#128a5a' : '#c62828';
-    });
+      ozetle();   /* kopyalanacak metne font sonucu da işlensin */
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(bitir, 250); });
+    else setTimeout(bitir, 800);
   })();
+
+  document.getElementById('btn').addEventListener('click', function () {
+    var t = document.getElementById('metin');
+    t.select();
+    try { document.execCommand('copy'); this.textContent = 'kopyalandı ✓'; } catch (e) {}
+  });
 </script>
 </body>
 </html>
