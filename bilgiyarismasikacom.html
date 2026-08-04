@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=108">
+<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=113">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -54,15 +54,128 @@
     <p>Yükleniyor…</p>
   </section>
 
-  <!-- Hata ekrani: giris kapisi kaldirildi, burasi yalnizca acilis sirasinda
-       beklenmedik bir hata olursa gorunur. -->
+  <!-- Hata / giris ekrani: yarismayi yonetmek icin ogretmen hesabi gerekir. -->
   <section id="ekranGirisKapisi" class="biy-ekran gizli">
-    <div class="biy-kart biy-orta">
-      <div class="biy-logo">🏆</div>
-      <h1>Bilgi Yarışması</h1>
-      <p class="biy-alt">Yarışmayı yönetmek için önce <b>öğretmen/yönetici</b> hesabıyla giriş yapmalısın.</p>
-      <a class="biy-btn biy-btn-mavi" href="index.html">Girişe git</a>
-      <p id="girisRolNot" class="biy-not"></p>
+    <button type="button" class="biy-giris-geri" onclick="biyGeriDon(event)" title="Geri dön">
+      <svg class="biy-gg-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="biy-gg-ok" d="M19 12H5"/><path class="biy-gg-ok" d="M12 19l-7-7 7-7"/></svg>
+      <span>Geri dön</span>
+    </button>
+    <div class="biy-kart biy-orta biy-giris-kart">
+      <div class="biy-giris-ust">
+      <div class="biy-giris-anim" aria-hidden="true">
+        <svg class="biy-giris-svg" viewBox="0 0 260 158" role="presentation">
+          <!-- ogretmen ekrani -->
+          <rect class="bg-ekran" x="86" y="18" width="88" height="60" rx="9" fill="url(#biyGrMavi)"/>
+          <rect x="94" y="26" width="72" height="44" rx="5" fill="#ffffff" opacity=".92"/>
+          <rect class="bg-satir s1" x="102" y="34" width="40" height="5" rx="2.5" fill="#94a3b8"/>
+          <rect class="bg-satir s2" x="102" y="45" width="54" height="5" rx="2.5" fill="#cbd5e1"/>
+          <rect class="bg-pin" x="102" y="56" width="34" height="9" rx="4" fill="url(#biyGrTuruncu)"/>
+          <path d="M112 78 h36 l8 10 h-52 z" fill="#93a3b8"/>
+          <rect x="98" y="88" width="64" height="5" rx="2.5" fill="#7d8ea1"/>
+          <!-- kilit -->
+          <g class="bg-kilit">
+            <path class="bg-kilit-kol" d="M42 62 v-9 a9 9 0 0 1 18 0 v9" fill="none" stroke="url(#biyGrMor)" stroke-width="5" stroke-linecap="round"/>
+            <rect x="34" y="62" width="34" height="26" rx="6" fill="url(#biyGrMor)"/>
+            <circle cx="51" cy="73" r="3.4" fill="#fff"/>
+            <rect x="49.4" y="74" width="3.2" height="7" rx="1.6" fill="#fff"/>
+          </g>
+          <!-- baglanti yolu -->
+          <path class="bg-yol" d="M70 76 C 86 104, 108 116, 130 116 C 152 116, 174 104, 190 76" fill="none" stroke="#cbd5e1" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="5 7"/>
+          <!-- katilan ogrenciler -->
+          <g class="bg-ogr o1"><circle cx="96" cy="118" r="10" fill="url(#biyGrYesil)"/><circle cx="96" cy="115" r="3.4" fill="#fff"/><path d="M90 124 a6 6 0 0 1 12 0z" fill="#fff"/></g>
+          <g class="bg-ogr o2"><circle cx="130" cy="123" r="10" fill="url(#biyGrTuruncu)"/><circle cx="130" cy="120" r="3.4" fill="#fff"/><path d="M124 129 a6 6 0 0 1 12 0z" fill="#fff"/></g>
+          <g class="bg-ogr o3"><circle cx="164" cy="118" r="10" fill="url(#biyGrMavi)"/><circle cx="164" cy="115" r="3.4" fill="#fff"/><path d="M158 124 a6 6 0 0 1 12 0z" fill="#fff"/></g>
+          <!-- kupa -->
+          <g class="bg-kupa">
+            <path d="M206 30 h30 v13 a15 15 0 0 1 -30 0z" fill="url(#biyGrTuruncu)"/>
+            <path d="M206 32 h-7 a7 7 0 0 0 7 12" fill="none" stroke="url(#biyGrTuruncu)" stroke-width="3.4"/>
+            <path d="M236 32 h7 a7 7 0 0 1 -7 12" fill="none" stroke="url(#biyGrTuruncu)" stroke-width="3.4"/>
+            <rect x="217" y="57" width="8" height="9" fill="#e0a021"/>
+            <rect x="209" y="65" width="24" height="6" rx="2.4" fill="#e0a021"/>
+          </g>
+          <!-- karekod karti + tarama cizgisi: ogrenciler odaya karekodla katilir -->
+          <g class="bg-qr">
+            <rect x="4" y="100" width="56" height="56" rx="9" fill="#F7FAFD" stroke="url(#biyGrTuruncu)" stroke-width="2.6"/>
+            <g fill="#1d2b3a">
+              <rect x="10" y="106" width="13" height="13" rx="2.4"/><rect x="13" y="109" width="7" height="7" rx="1.2" fill="#F7FAFD"/>
+              <rect x="41" y="106" width="13" height="13" rx="2.4"/><rect x="44" y="109" width="7" height="7" rx="1.2" fill="#F7FAFD"/>
+              <rect x="10" y="137" width="13" height="13" rx="2.4"/><rect x="13" y="140" width="7" height="7" rx="1.2" fill="#F7FAFD"/>
+            </g>
+            <g fill="#16A085">
+              <rect class="bg-qm q1" x="28" y="106" width="4.6" height="4.6"/><rect class="bg-qm q3" x="35" y="106" width="4.6" height="4.6"/>
+              <rect class="bg-qm q2" x="28" y="113" width="4.6" height="4.6"/><rect class="bg-qm q4" x="35" y="113" width="4.6" height="4.6"/>
+              <rect class="bg-qm q3" x="10" y="124" width="4.6" height="4.6"/><rect class="bg-qm q1" x="17" y="124" width="4.6" height="4.6"/>
+              <rect class="bg-qm q2" x="24" y="124" width="4.6" height="4.6"/><rect class="bg-qm q4" x="31" y="124" width="4.6" height="4.6"/>
+              <rect class="bg-qm q1" x="38" y="124" width="4.6" height="4.6"/><rect class="bg-qm q3" x="45" y="124" width="4.6" height="4.6"/>
+              <rect class="bg-qm q2" x="52" y="124" width="4.6" height="4.6"/>
+              <rect class="bg-qm q4" x="28" y="131" width="4.6" height="4.6"/><rect class="bg-qm q2" x="35" y="131" width="4.6" height="4.6"/>
+              <rect class="bg-qm q1" x="42" y="131" width="4.6" height="4.6"/><rect class="bg-qm q3" x="49" y="131" width="4.6" height="4.6"/>
+              <rect class="bg-qm q3" x="28" y="140" width="4.6" height="4.6"/><rect class="bg-qm q1" x="35" y="140" width="4.6" height="4.6"/>
+              <rect class="bg-qm q4" x="42" y="140" width="4.6" height="4.6"/><rect class="bg-qm q2" x="49" y="140" width="4.6" height="4.6"/>
+              <rect class="bg-qm q2" x="28" y="147" width="4.6" height="4.6"/><rect class="bg-qm q4" x="42" y="147" width="4.6" height="4.6"/>
+            </g>
+            <rect class="bg-tarama" x="8" y="104" width="48" height="4.4" rx="2.2" fill="#F39C12" opacity=".6"/>
+          </g>
+          <!-- karekoddan odaya giden isin -->
+          <path class="bg-qr-isin" d="M62 128 H 84" fill="none" stroke="#F39C12" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="4 6"/>
+          <g class="bg-parilti">
+            <circle cx="196" cy="22" r="3" fill="#fbbf24"/>
+            <circle cx="247" cy="52" r="2.4" fill="#fbbf24"/>
+            <circle cx="200" cy="74" r="2" fill="#fbbf24"/>
+          </g>
+        </svg>
+      </div>
+        <div class="biy-giris-ust-metin">
+        <h1>Bilgi Yarışması</h1>
+        <p class="biy-alt">Yarışmayı yönetmek için <b>öğretmen/yönetici</b> hesabıyla giriş yapmalısın.</p>
+        <a class="biy-btn biy-btn-mavi biy-btn-giris" href="index.html?giris=1">Girişe git</a>
+        <p id="girisRolNot" class="biy-not"></p>
+      </div>
+      </div>
+      <div class="biy-giris-bilgi">
+        <h2 class="biy-giris-bilgi-bas">Neden giriş yapmak gerekiyor?</h2>
+        <p class="biy-giris-bilgi-metin">Öğrenciler kendi telefonundan katılır; odayı açıp yöneten bir <b>öğretmen hesabı</b> gerekir.</p>
+        <ul class="biy-giris-neden">
+          <li><span class="biy-neden-ik" aria-hidden="true"><svg class="biy-nik" viewBox="0 0 40 40" fill="none">
+            <rect x="3" y="3" width="34" height="34" rx="7" fill="#FFF6E8" stroke="#F39C12" stroke-width="2"/>
+            <g fill="#2c3e50">
+              <rect x="8" y="8" width="8" height="8" rx="1.6"/><rect x="10" y="10" width="4" height="4" rx=".8" fill="#FFF6E8"/>
+              <rect x="24" y="8" width="8" height="8" rx="1.6"/><rect x="26" y="10" width="4" height="4" rx=".8" fill="#FFF6E8"/>
+              <rect x="8" y="24" width="8" height="8" rx="1.6"/><rect x="10" y="26" width="4" height="4" rx=".8" fill="#FFF6E8"/>
+            </g>
+            <g fill="#16A085">
+              <rect class="nik-qm a" x="18" y="8" width="3.4" height="3.4"/><rect class="nik-qm b" x="18" y="13" width="3.4" height="3.4"/>
+              <rect class="nik-qm c" x="18" y="19" width="3.4" height="3.4"/><rect class="nik-qm d" x="24" y="19" width="3.4" height="3.4"/>
+              <rect class="nik-qm b" x="29" y="19" width="3.4" height="3.4"/><rect class="nik-qm a" x="8" y="19" width="3.4" height="3.4"/>
+              <rect class="nik-qm c" x="13" y="19" width="3.4" height="3.4"/><rect class="nik-qm d" x="24" y="25" width="3.4" height="3.4"/>
+              <rect class="nik-qm a" x="29" y="29" width="3.4" height="3.4"/><rect class="nik-qm b" x="24" y="31" width="3.4" height="3.4"/>
+            </g>
+            <rect class="nik-tara" x="6" y="7" width="28" height="2.6" rx="1.3" fill="#F39C12" opacity=".65"/>
+          </svg></span><span><b>Oda ve karekod:</b> Odayı öğretmen açar, öğrenciler PIN veya karekodla katılır.</span></li>
+          <li><span class="biy-neden-ik" aria-hidden="true"><svg class="biy-nik" viewBox="0 0 40 40" fill="none">
+            <rect x="3" y="6" width="34" height="28" rx="6" fill="#EAF4FD" stroke="#3498DB" stroke-width="2"/>
+            <circle class="nik-oynat" cx="13" cy="20" r="7" fill="#3498DB"/>
+            <path class="nik-oynat" d="M11 16.6 L17 20 L11 23.4 Z" fill="#fff"/>
+            <rect x="23" y="12" width="10" height="3.4" rx="1.7" fill="#8FC6EC"/>
+            <rect class="nik-cizgi" x="23" y="18.3" width="10" height="3.4" rx="1.7" fill="#16A085"/>
+            <rect x="23" y="24.6" width="10" height="3.4" rx="1.7" fill="#8FC6EC"/>
+          </svg></span><span><b>Yönetim:</b> Soruyu başlatma, süre ve cevap kontrolü sende olur.</span></li>
+          <li><span class="biy-neden-ik" aria-hidden="true"><svg class="biy-nik" viewBox="0 0 40 40" fill="none">
+            <rect class="nik-kart k3" x="7" y="7" width="26" height="20" rx="4" fill="#E9F7F3" stroke="#16A085" stroke-width="1.8"/>
+            <rect class="nik-kart k2" x="7" y="12" width="26" height="20" rx="4" fill="#F2FBF8" stroke="#16A085" stroke-width="1.8"/>
+            <rect class="nik-kart k1" x="7" y="17" width="26" height="16" rx="4" fill="#fff" stroke="#16A085" stroke-width="2"/>
+            <path class="nik-tik" d="M13 25 l4 4 l7 -8" stroke="#16A085" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg></span><span><b>Kendi soruların:</b> Hazırladığın setler hesabına kaydedilir.</span></li>
+          <li><span class="biy-neden-ik" aria-hidden="true"><svg class="biy-nik" viewBox="0 0 40 40" fill="none">
+            <rect x="3" y="4" width="34" height="32" rx="6" fill="#FBF4FD" stroke="#9B59B6" stroke-width="2"/>
+            <rect class="nik-cub c1" x="9"  y="14" width="5.6" height="16" rx="2.4" fill="#9B59B6"/>
+            <rect class="nik-cub c2" x="17" y="10" width="5.6" height="20" rx="2.4" fill="#16A085"/>
+            <rect class="nik-cub c3" x="25" y="18" width="5.6" height="12" rx="2.4" fill="#F39C12"/>
+            <rect x="7" y="31.4" width="26" height="2.2" rx="1.1" fill="#D9C2E4"/>
+          </svg></span><span><b>Sonuçlar:</b> Sınıf ortalaması ve karneler hesabında saklanır.</span></li>
+        </ul>
+        <p class="biy-giris-bilgi-not">Hesabın yoksa aynı pencereden hızlıca <b>kayıt</b> olabilirsin. Öğrenciler hesap açmaz, sadece PIN girer.</p>
+      </div>
     </div>
   </section>
 
@@ -384,6 +497,15 @@
 
 </div>
 
+<script src="sistem/geri.js"></script>
+<script>
+/* Ev (anasayfa) tusunun otomatik eklenmemesi icin onclick icinde "kidefGeriDon" gecmiyor. */
+function biyGeriDon(e){
+  if (typeof kidefGeriDon === "function") return kidefGeriDon(e);
+  if (e) e.preventDefault();
+  if (history.length > 1) history.back(); else location.href = "index.html";
+}
+</script>
 <script src="oyunlar/bilgiyarismasikacom.js?v=108"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

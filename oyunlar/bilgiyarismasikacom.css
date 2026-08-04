@@ -2002,3 +2002,279 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 .biy-ds-sinifroz.genel { background: #F1F5F9; color: #64748B; }
 .biy-ds-say { background: #E9FBF4; color: #0E9E86; }
 .biy-ds-oge[hidden] { display: none; }
+
+/* ==========================================================
+   GIRIS KAPISI — animasyonlu sahne + bilgilendirme
+   ========================================================== */
+#ekranGirisKapisi { padding: 66px 0 40px; }   /* ust: sabit geri tusuna yer */
+.biy-giris-kart { max-width: 620px; text-align: center; }
+
+.biy-giris-anim { margin: -6px 0 6px; }
+.biy-giris-svg { width: 100%; max-width: 320px; height: auto; overflow: visible; }
+
+.bg-ekran { transform-box: fill-box; transform-origin: 50% 100%;
+  animation: biyGirisEkran 3.6s ease-in-out infinite; }
+.bg-satir { transform-box: fill-box; transform-origin: 0% 50%;
+  animation: biyGirisSatir 3.6s ease-in-out infinite; }
+.bg-satir.s2 { animation-delay: .25s; }
+.bg-pin { transform-box: fill-box; transform-origin: 0% 50%;
+  animation: biyGirisPin 3.6s ease-in-out infinite; animation-delay: .5s; }
+.bg-kilit { transform-box: fill-box; transform-origin: 50% 80%;
+  animation: biyGirisKilit 3.6s ease-in-out infinite; }
+.bg-kilit-kol { transform-box: fill-box; transform-origin: 100% 100%;
+  animation: biyGirisKol 3.6s ease-in-out infinite; }
+.bg-yol { stroke-dashoffset: 0; animation: biyGirisYol 1.6s linear infinite; }
+.bg-ogr { transform-box: fill-box; transform-origin: 50% 50%; opacity: 0;
+  animation: biyGirisOgr 3.6s ease-out infinite; }
+.bg-ogr.o1 { animation-delay: 1.05s; }
+.bg-ogr.o2 { animation-delay: 1.35s; }
+.bg-ogr.o3 { animation-delay: 1.65s; }
+.bg-kupa { transform-box: fill-box; transform-origin: 50% 100%;
+  animation: biyGirisKupa 3.6s ease-in-out infinite; }
+.bg-parilti { animation: biyGirisParilti 3.6s ease-in-out infinite; animation-delay: 2.1s; }
+
+@keyframes biyGirisEkran {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@keyframes biyGirisSatir {
+  0%, 14%   { transform: scaleX(.1); opacity: .35; }
+  30%, 100% { transform: scaleX(1);  opacity: 1; }
+}
+@keyframes biyGirisPin {
+  0%, 18%   { transform: scaleX(.1); opacity: 0; }
+  34%       { transform: scaleX(1.06); opacity: 1; }
+  40%, 100% { transform: scaleX(1); opacity: 1; }
+}
+@keyframes biyGirisKilit {
+  0%, 8%    { transform: translateY(0) rotate(0deg); }
+  16%       { transform: translateY(-4px) rotate(-6deg); }
+  26%, 100% { transform: translateY(0) rotate(0deg); }
+}
+@keyframes biyGirisKol {
+  0%, 12%   { transform: rotate(0deg) translateY(0); }
+  24%       { transform: rotate(-26deg) translateY(-2px); }
+  92%       { transform: rotate(-26deg) translateY(-2px); }
+  100%      { transform: rotate(0deg) translateY(0); }
+}
+@keyframes biyGirisYol { to { stroke-dashoffset: -24; } }
+@keyframes biyGirisOgr {
+  0%        { opacity: 0; transform: translateY(14px) scale(.4); }
+  14%       { opacity: 1; transform: translateY(-3px) scale(1.12); }
+  22%, 88%  { opacity: 1; transform: translateY(0) scale(1); }
+  100%      { opacity: 0; transform: translateY(0) scale(1); }
+}
+@keyframes biyGirisKupa {
+  0%, 52%   { transform: translateY(6px) scale(.86); opacity: .45; }
+  66%       { transform: translateY(-4px) scale(1.08); opacity: 1; }
+  76%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes biyGirisParilti {
+  0%, 55%   { opacity: 0; transform: scale(.5); }
+  68%       { opacity: 1; transform: scale(1.15); }
+  84%, 100% { opacity: 0; transform: scale(.7); }
+}
+
+.biy-btn-giris { animation: biyGirisTus 2.6s ease-in-out infinite; }
+@keyframes biyGirisTus {
+  0%, 100% { box-shadow: 0 4px 10px rgba(52,152,219,.28); }
+  50%      { box-shadow: 0 6px 20px rgba(52,152,219,.62); }
+}
+
+/* ---- sahnedeki karekod karti + tarama cizgisi ---- */
+.bg-qr { opacity: 0; animation: biyQrGir 3.6s ease-out infinite; animation-delay: .8s; }
+.bg-qm { animation: biyQrModul 2.4s ease-in-out infinite; }
+.bg-qm.q2 { animation-delay: .6s; }
+.bg-qm.q3 { animation-delay: 1.2s; }
+.bg-qm.q4 { animation-delay: 1.8s; }
+.bg-tarama { animation: biyQrTara 2.6s ease-in-out infinite; }
+.bg-qr-isin { stroke-dasharray: 4 6; animation: biyQrIsin 1.4s linear infinite; }
+@keyframes biyQrGir {
+  0%      { opacity: 0; transform: translateY(6px) scale(.92); }
+  16%,88% { opacity: 1; transform: translateY(0) scale(1); }
+  100%    { opacity: 0; transform: translateY(0) scale(1); }
+}
+@keyframes biyQrModul { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes biyQrTara  { 0% { transform: translateY(0); } 50% { transform: translateY(43px); } 100% { transform: translateY(0); } }
+@keyframes biyQrIsin  { to { stroke-dashoffset: -20; } }
+
+/* ---- bilgilendirme kutusu ---- */
+.biy-giris-bilgi {
+  margin-top: 18px; padding-top: 16px; border-top: 1px dashed #dbe3ee; text-align: left;
+}
+.biy-giris-bilgi-bas {
+  font-size: 1.06rem; color: #16A085; font-weight: 700; margin: 0 0 8px; text-align: center;
+}
+.biy-giris-bilgi-metin, .biy-giris-bilgi-not {
+  color: #64748b; font-size: .95rem; line-height: 1.52; margin: 0; text-align: left;
+}
+.biy-giris-bilgi-not {
+  margin-top: 10px; font-size: .88rem; color: #94a3b8;
+  background: #F6F9FC; border-radius: 12px; padding: 10px 14px;
+}
+.biy-giris-neden { list-style: none; margin: 10px 0 0; padding: 0; text-align: left; }
+.biy-giris-neden li {
+  display: flex; align-items: flex-start; gap: 10px;
+  color: #4b5b6e; font-size: .93rem; line-height: 1.48;
+  padding: 8px 12px; margin-bottom: 6px;
+  background: #F8FAFD; border: 1px solid #EDF2F8; border-radius: 12px;
+  opacity: 0; transform: translateY(8px);
+  animation: biyNedenGir .5s ease-out forwards;
+}
+.biy-giris-neden li:nth-child(1) { animation-delay: .10s; }
+.biy-giris-neden li:nth-child(2) { animation-delay: .22s; }
+.biy-giris-neden li:nth-child(3) { animation-delay: .34s; }
+.biy-giris-neden li:nth-child(4) { animation-delay: .46s; }
+.biy-giris-neden li b { color: #2c3e50; }
+.biy-neden-ik { flex: none; font-size: 1.18rem; line-height: 1.35; display: inline-flex; align-items: center; }
+.biy-nik { width: 1.62em; height: 1.62em; display: block; overflow: visible; }
+/* karekod ikonu */
+.nik-qm { animation: biyQrModul 2.4s ease-in-out infinite; }
+.nik-qm.b { animation-delay: .6s; }
+.nik-qm.c { animation-delay: 1.2s; }
+.nik-qm.d { animation-delay: 1.8s; }
+.nik-tara { animation: biyNikTara 2.8s ease-in-out infinite; }
+@keyframes biyNikTara { 0% { transform: translateY(0); } 50% { transform: translateY(24px); } 100% { transform: translateY(0); } }
+/* yonetim ikonu */
+.nik-oynat { transform-box: fill-box; transform-origin: 50% 50%; animation: biyNikNabiz 2.2s ease-in-out infinite; }
+@keyframes biyNikNabiz { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.nik-cizgi { transform-box: fill-box; transform-origin: 0 50%; animation: biyNikCizgi 2.6s ease-in-out infinite; }
+@keyframes biyNikCizgi { 0%, 100% { transform: scaleX(.45); } 50% { transform: scaleX(1); } }
+/* kayit ikonu */
+.nik-kart { transform-box: fill-box; transform-origin: 50% 100%; }
+.nik-kart.k3 { animation: biyNikKart 3s ease-in-out infinite; }
+.nik-kart.k2 { animation: biyNikKart 3s ease-in-out .18s infinite; }
+@keyframes biyNikKart { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.6px); } }
+.nik-tik { stroke-dasharray: 22; stroke-dashoffset: 22; animation: biyNikTik 3s ease-out infinite; }
+@keyframes biyNikTik { 0%, 22% { stroke-dashoffset: 22; } 46%, 88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 22; } }
+/* sonuc ikonu */
+.nik-cub { transform-box: fill-box; transform-origin: 50% 100%; animation: biyNikCubuk 2.6s ease-in-out infinite; }
+.nik-cub.c2 { animation-delay: .25s; }
+.nik-cub.c3 { animation-delay: .5s; }
+@keyframes biyNikCubuk { 0%, 100% { transform: scaleY(.72); } 50% { transform: scaleY(1); } }
+@keyframes biyNedenGir { to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 560px) {
+  .biy-giris-kart { padding: 26px 18px; }
+  .biy-giris-svg { max-width: 240px; }
+  .biy-giris-bilgi-metin { font-size: .9rem; }
+  .biy-giris-neden li { font-size: .88rem; padding: 8px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-ekran, .bg-satir, .bg-pin, .bg-kilit, .bg-kilit-kol,
+  .bg-yol, .bg-ogr, .bg-kupa, .bg-parilti,
+  .bg-qr, .bg-qm, .bg-tarama, .bg-qr-isin,
+  .nik-qm, .nik-tara, .nik-oynat, .nik-cizgi, .nik-kart, .nik-tik, .nik-cub,
+  .biy-btn-giris, .biy-giris-neden li, .biy-gg-ok { animation: none !important; }
+  .bg-ogr, .bg-kupa, .bg-pin, .bg-qr, .bg-qm, .nik-qm { opacity: 1; transform: none; }
+  .nik-tik { stroke-dashoffset: 0; }
+  .nik-cizgi, .nik-cub, .nik-oynat { transform: none; }
+  .biy-giris-neden li { opacity: 1; transform: none; }
+}
+
+/* ---- giris kapisi: ust blok (animasyon + metin) ---- */
+.biy-giris-ust { display: flex; flex-direction: column; align-items: center; }
+.biy-giris-ust-metin { width: 100%; }
+
+/* ---- sabit (ustte duran) geri tusu ---- */
+.biy-giris-geri {
+  position: fixed; top: 14px; left: 14px; z-index: 45;
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  font-family: 'Marhey', sans-serif; font-weight: 700; font-size: .98rem;
+  color: #16A085; background: rgba(255,255,255,.94); border: 2px solid #B9E6DA;
+  border-radius: 999px; padding: 9px 18px;
+  box-shadow: 0 4px 12px rgba(22,160,133,.18);
+  backdrop-filter: blur(4px);
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .12s ease;
+}
+.biy-giris-geri:hover { background: #16A085; color: #fff; border-color: #16A085; transform: translateY(-2px); }
+.biy-giris-geri:active { transform: translateY(0); }
+.biy-gg-svg { width: 1.15em; height: 1.15em; flex: none; display: block; }
+.biy-gg-ok { animation: biyGgOk 1.9s ease-in-out infinite; }
+@keyframes biyGgOk {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-2.6px); }
+}
+@media (max-width: 560px) {
+  .biy-giris-geri { top: 10px; left: 10px; font-size: .86rem; padding: 7px 14px; gap: 6px; }
+}
+
+/* ==========================================================
+   MASAUSTU / YATAY EKRAN — tek ekrana sigan genis yerlesim
+   Olculer vh tabanli clamp() ile verildi ki dusuk yukseklikli
+   ekranlarda da kaydirma cikmasin.
+   ========================================================== */
+@media (min-width: 900px) {
+  #ekranGirisKapisi { padding: 0; }
+  #ekranGirisKapisi:not(.gizli) {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100dvh; box-sizing: border-box;
+    padding: clamp(76px, 9vh, 96px) 0 clamp(14px, 2.2vh, 24px);
+  }
+  .biy-giris-kart {
+    max-width: 1180px; width: 94%;
+    padding: clamp(18px, 3.2vh, 42px) clamp(28px, 3.4vw, 54px) clamp(16px, 2.9vh, 38px);
+    border-radius: 24px; margin: 0;
+  }
+  .biy-giris-ust {
+    flex-direction: row; align-items: center;
+    gap: clamp(22px, 3vw, 44px); text-align: left;
+  }
+  .biy-giris-anim { flex: 0 0 clamp(210px, 29%, 380px); margin: 0; }
+  .biy-giris-svg { max-width: 100%; width: 100%; }
+  .biy-giris-ust-metin { flex: 1 1 0; min-width: 0; text-align: left; }
+  #ekranGirisKapisi .biy-giris-ust-metin h1 {
+    font-size: clamp(1.95rem, 4.9vh, 3.3rem); margin: 0 0 clamp(6px, 1.3vh, 15px);
+  }
+  .biy-giris-ust-metin .biy-alt {
+    font-size: clamp(1.04rem, 2.6vh, 1.68rem); line-height: 1.42;
+    margin: 0 0 clamp(11px, 2.3vh, 26px);
+  }
+  .biy-btn-giris {
+    font-size: clamp(1.04rem, 2.7vh, 1.56rem);
+    padding: clamp(10px, 2vh, 20px) clamp(30px, 3.2vw, 50px);
+    border-radius: 14px;
+  }
+  .biy-giris-ust-metin .biy-not { font-size: clamp(.95rem, 2.15vh, 1.22rem); margin-top: clamp(8px, 1.8vh, 18px); }
+
+  .biy-giris-bilgi { margin-top: clamp(11px, 2.2vh, 26px); padding-top: clamp(9px, 1.9vh, 22px); }
+  .biy-giris-bilgi-bas {
+    font-size: clamp(1.22rem, 3.2vh, 2.2rem); margin: 0 0 clamp(6px, 1.3vh, 13px);
+  }
+  .biy-giris-bilgi-metin {
+    font-size: clamp(1.06rem, 2.65vh, 1.5rem); line-height: 1.45;
+    text-align: center; max-width: 62em; margin: 0 auto;
+  }
+  .biy-giris-neden {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(7px, 1.3vh, 13px); margin-top: clamp(9px, 1.8vh, 17px);
+  }
+  .biy-giris-neden li {
+    font-size: clamp(.98rem, 2.38vh, 1.42rem); line-height: 1.34;
+    padding: clamp(8px, 1.5vh, 16px) clamp(14px, 1.5vw, 22px);
+    margin: 0; gap: clamp(9px, 1vw, 14px); border-radius: 14px;
+  }
+  .biy-neden-ik { font-size: clamp(1.3rem, 3.4vh, 2.2rem); line-height: 1.08; }
+  .biy-giris-bilgi-not {
+    font-size: clamp(.94rem, 2vh, 1.24rem); margin-top: clamp(7px, 1.5vh, 14px);
+    padding: clamp(8px, 1.45vh, 15px) clamp(16px, 1.6vw, 24px); text-align: center;
+  }
+  .biy-giris-geri {
+    top: clamp(12px, 2vh, 22px); left: clamp(14px, 1.6vw, 28px);
+    font-size: clamp(1rem, 2.05vh, 1.32rem);
+    padding: clamp(9px, 1.6vh, 15px) clamp(20px, 1.9vw, 34px); gap: 10px;
+  }
+}
+
+@media (min-width: 1400px) and (min-height: 950px) {
+  .biy-giris-kart { max-width: 1360px; }
+  #ekranGirisKapisi .biy-giris-ust-metin h1 { font-size: clamp(2.4rem, 5.3vh, 3.9rem); }
+  .biy-giris-ust-metin .biy-alt { font-size: clamp(1.2rem, 2.85vh, 1.95rem); }
+  .biy-btn-giris { font-size: clamp(1.15rem, 2.7vh, 1.74rem); }
+  .biy-giris-bilgi-bas { font-size: clamp(1.4rem, 3.45vh, 2.5rem); }
+  .biy-giris-bilgi-metin { font-size: clamp(1.15rem, 2.65vh, 1.7rem); }
+  .biy-giris-neden li { font-size: clamp(1.1rem, 2.55vh, 1.6rem); }
+  .biy-neden-ik { font-size: clamp(1.4rem, 3.4vh, 2.45rem); }
+  .biy-giris-bilgi-not { font-size: clamp(1.02rem, 2.15vh, 1.4rem); }
+}
