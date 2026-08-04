@@ -170,6 +170,21 @@
       html { overflow-y: scroll; }
       body { overflow-x: clip !important; }
       header { position: sticky !important; top: 0 !important; z-index: 300 !important; }
+      /* === AKILLI HEADER: asagi inince kayip gider, yukari cikinca geri gelir === */
+      header { transition: transform .34s cubic-bezier(.4,0,.2,1), box-shadow .28s ease; will-change: transform; }
+      body.hdr-gizli header { transform: translateY(-102%); box-shadow: none !important; }
+      body.hdr-golge header { box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+      /* header gizlenince yapiskan kategori basligi da en yukari cikar */
+      :root { --hdr-ofset: var(--header-height, 70px); }
+      body.hdr-gizli { --hdr-ofset: 0px; }
+      .content-section h2 {
+        top: calc(var(--hdr-ofset) + 8px);
+        transition: top .34s cubic-bezier(.4,0,.2,1);
+      }
+      @media (prefers-reduced-motion: reduce){
+        header { transition: none !important; }
+        .content-section h2 { transition: none !important; }
+      }
       /* birlesik ust bosluk: header ile ilk kategori arasini azalt */
       .container { margin-top: 8px !important; }
       #home-hub-section > .content-section { margin-top: 12px; }
@@ -1275,17 +1290,26 @@
       @keyframes dokClip { 0%,100%{ transform:translateY(0) rotate(0) } 50%{ transform:translateY(-2px) rotate(-8deg) } }
       .ih-genel-dok .ihsec-ic .dok-basclip { transform-box:fill-box; transform-origin:center; animation:dokClip 3s ease-in-out infinite; }
       /* --- sınıf paneli içi: Etkinlikler / Dökümanlar iki kapalı akordiyon --- */
-      /* --- sınıf paneli içi: Etkinlikler / Dökümanlar — hep açık alt liste --- */
       .ihsec-acc { display:flex; flex-direction:column; gap:14px; }
       .ihsec-item { background:#fbfdff; border:1.5px solid #e8eef5; border-radius:14px; overflow:hidden; }
       .ihsec-head { display:flex; align-items:center; gap:11px; width:100%; padding:11px 14px;
-                    background:linear-gradient(180deg,#f7fafd,#f1f6fb); border-bottom:1.5px solid #e8eef5; }
+                    background:linear-gradient(180deg,#f7fafd,#f1f6fb);
+                    border:none; border-bottom:1.5px solid #e8eef5;
+                    font-family:inherit; text-align:left; cursor:pointer;
+                    -webkit-appearance:none; appearance:none; }
+      .ihsec-head:hover { filter:brightness(.98); }
+      .ihsec-head:focus-visible { outline:3px solid #2563EB; outline-offset:-3px; }
+      .ihsec-chevron { flex:none; margin-left:auto; font-size:1rem; color:#94a3b8; transition:transform .32s ease; }
+      .ihsec-item.acik > .ihsec-head .ihsec-chevron { transform:rotate(180deg); }
+      .ihsec-item:not(.acik) > .ihsec-head { border-bottom-color:transparent; }
+      #imam-hatip .ihsec-item:not(.acik) > .ihsec-head { border-bottom-color:transparent; }
+      #imam-hatip .ih-panel .ihsec-chevron { color:var(--ihc); }
       .ihsec-head .ihsec-ic { flex:none; width:30px; height:30px; }
       .ihsec-head .ihsec-ic svg { width:100%; height:100%; display:block; }
       .ihsec-bilgi { display:flex; flex-direction:column; gap:1px; min-width:0; }
       .ihsec-title { font-size:1rem; font-weight:800; letter-spacing:.2px; color:#0f2a43; }
       .ihsec-alt { font-size:.76rem; font-weight:600; color:#7c8b99; }
-      .ihsec-panel { max-height:none; overflow:visible; }
+      .ihsec-panel { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.4,0,.2,1); }
       .ihsec-panel-in { padding:13px 14px 16px; }
       .ihsec-panel-in > .ih-kartlar { margin:0; }
       .ihsec-panel-in > .dok-acc { margin:0; }
@@ -1364,6 +1388,51 @@
         #imam-hatip .ih-genel-dok .a4-satirlar { gap:7px; margin-top:9px; }
         #imam-hatip .ih-genel-dok .a4-satirlar b:nth-child(n+6):nth-child(-n+7) { display:block; }
       }
+      /* ===== İMAM HATİP: kagit KUCUK, animasyonlu SVG BUYUK =====
+         Amac: acilan bolum kisa kalsin, 5-10 rakamlari ekrandan kaybolmasin.
+         Kagit daralti ldi ve suslemeleri (cetvel cizgileri, muhur, imza,
+         antet) sadelestirildi; kazanilan yerin tamami kategori ikonuna
+         verildi. Artik kagidin ana ogesi animasyonlu SVG'dir. */
+      #imam-hatip .a4-grid,
+      #imam-hatip .ih-genel-dok .a4-grid {
+        grid-template-columns:repeat(auto-fit,minmax(0,152px));
+        justify-content:center; gap:14px 12px; }
+      #imam-hatip .a4-kart { padding:0 5px 5px 0; }
+      #imam-hatip .a4-sheet { padding:6px 7px 5px; }
+      #imam-hatip .a4-antet { margin-top:3px; font-size:.52rem; letter-spacing:.6px; gap:2px; }
+      #imam-hatip .a4-antet i.uzun { width:44px; }
+      #imam-hatip .a4-antet i.kisa { width:24px; }
+      #imam-hatip .a4-ikon,
+      #imam-hatip .ih-genel-dok .a4-ikon { width:64px; height:64px; margin:4px 0 3px; }
+      #imam-hatip .a4-ad,
+      #imam-hatip .ih-genel-dok .a4-ad { font-size:.84rem; line-height:1.18; }
+      #imam-hatip .a4-satirlar,
+      #imam-hatip .ih-genel-dok .a4-satirlar { display:none; }
+      #imam-hatip .a4-muhur { width:26px; height:26px; }
+      #imam-hatip .a4-imza { width:38px; height:15px; }
+      #imam-hatip .a4-sayac { font-size:.58rem; padding:2px 8px; margin-bottom:4px; }
+      #imam-hatip .a4-kivrim { width:15px; height:15px; }
+      #imam-hatip .a4-kart:hover .a4-kivrim,
+      #imam-hatip .a4-kart.acik .a4-kivrim { width:23px; height:23px; }
+      @media (max-width:600px){
+        #imam-hatip .a4-grid,
+        #imam-hatip .ih-genel-dok .a4-grid {
+          grid-template-columns:repeat(auto-fit,minmax(0,140px)); gap:12px 10px; }
+        #imam-hatip .a4-ikon,
+        #imam-hatip .ih-genel-dok .a4-ikon { width:56px; height:56px; margin:3px 0 3px; }
+        #imam-hatip .a4-ad,
+        #imam-hatip .ih-genel-dok .a4-ad { font-size:.78rem; }
+        #imam-hatip .a4-muhur { width:23px; height:23px; }
+        #imam-hatip .a4-imza { width:34px; height:14px; }
+        #imam-hatip .a4-sayac { font-size:.55rem; padding:2px 7px; }
+      }
+      /* ===== Bir bolum acikken "İmam Hatip" basligi YAPISKANLIGINI birakir =====
+         Baslik SILINMEZ, kucultulmez; sadece yapiskanligi kalkar, sayfayla
+         birlikte yukari kayar ve ekranin disinda kalir. Boylece sinif
+         rakamlari en tepeye tirmanir. Kullanici yukari kaydirinca ya da
+         baska bir kategoriye gecince baslik normal (yapiskan) haline doner. */
+      #imam-hatip.ih-odak > h2 { position:static; }
+
       .a4-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:20px 16px; }
 
       .a4-kart { -webkit-appearance:none; appearance:none; border:0; background:transparent; padding:0 7px 7px 0; margin:0;
@@ -1549,26 +1618,28 @@
             <div class="ihsec-acc">
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3.4" fill="#E6F7F2" stroke="#16A085" stroke-width="1.6"/><path d="M8.4 12h3.2M10 10.4v3.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.6" cy="10.8" r="1.25" fill="#16A085"/><circle cx="17.6" cy="13.8" r="1.25" fill="#16A085"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">5. Sınıf Etkinlikleri</span>
                     <span class="ihsec-alt">Sınıfta uygulanacak etkinlik kartları</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ih-kartlar" data-sinif="5"></div>
                 </div></div>
               </div>
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.4h6l1.9 2h10.1a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H3a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6z" fill="#FDF1DE" stroke="#E08A00" stroke-width="1.5"/><rect x="5.6" y="11.9" width="9.4" height="1.8" rx=".9" fill="#E08A00" opacity=".55"/><rect x="5.6" y="15.1" width="6" height="1.8" rx=".9" fill="#E08A00" opacity=".38"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">5. Sınıf Dökümanları</span>
                     <span class="ihsec-alt">Plan, sınav, çalışma kâğıdı ve görev belgeleri</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ihdoc-acc" data-sinif="5"></div>
                 </div></div>
@@ -1594,26 +1665,28 @@
             <div class="ihsec-acc">
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3.4" fill="#E6F7F2" stroke="#16A085" stroke-width="1.6"/><path d="M8.4 12h3.2M10 10.4v3.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.6" cy="10.8" r="1.25" fill="#16A085"/><circle cx="17.6" cy="13.8" r="1.25" fill="#16A085"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">6. Sınıf Etkinlikleri</span>
                     <span class="ihsec-alt">Sınıfta uygulanacak etkinlik kartları</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ih-kartlar" data-sinif="6"></div>
                 </div></div>
               </div>
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.4h6l1.9 2h10.1a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H3a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6z" fill="#FDF1DE" stroke="#E08A00" stroke-width="1.5"/><rect x="5.6" y="11.9" width="9.4" height="1.8" rx=".9" fill="#E08A00" opacity=".55"/><rect x="5.6" y="15.1" width="6" height="1.8" rx=".9" fill="#E08A00" opacity=".38"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">6. Sınıf Dökümanları</span>
                     <span class="ihsec-alt">Plan, sınav, çalışma kâğıdı ve görev belgeleri</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ihdoc-acc" data-sinif="6"></div>
                 </div></div>
@@ -1640,26 +1713,28 @@
             <div class="ihsec-acc">
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3.4" fill="#E6F7F2" stroke="#16A085" stroke-width="1.6"/><path d="M8.4 12h3.2M10 10.4v3.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.6" cy="10.8" r="1.25" fill="#16A085"/><circle cx="17.6" cy="13.8" r="1.25" fill="#16A085"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">7. Sınıf Etkinlikleri</span>
                     <span class="ihsec-alt">Sınıfta uygulanacak etkinlik kartları</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ih-kartlar" data-sinif="7"></div>
                 </div></div>
               </div>
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.4h6l1.9 2h10.1a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H3a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6z" fill="#FDF1DE" stroke="#E08A00" stroke-width="1.5"/><rect x="5.6" y="11.9" width="9.4" height="1.8" rx=".9" fill="#E08A00" opacity=".55"/><rect x="5.6" y="15.1" width="6" height="1.8" rx=".9" fill="#E08A00" opacity=".38"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">7. Sınıf Dökümanları</span>
                     <span class="ihsec-alt">Plan, sınav, çalışma kâğıdı ve görev belgeleri</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ihdoc-acc" data-sinif="7"></div>
                 </div></div>
@@ -1686,26 +1761,28 @@
             <div class="ihsec-acc">
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3.4" fill="#E6F7F2" stroke="#16A085" stroke-width="1.6"/><path d="M8.4 12h3.2M10 10.4v3.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.6" cy="10.8" r="1.25" fill="#16A085"/><circle cx="17.6" cy="13.8" r="1.25" fill="#16A085"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">8. Sınıf Etkinlikleri</span>
                     <span class="ihsec-alt">Sınıfta uygulanacak etkinlik kartları</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ih-kartlar" data-sinif="8"></div>
                 </div></div>
               </div>
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.4h6l1.9 2h10.1a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H3a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6z" fill="#FDF1DE" stroke="#E08A00" stroke-width="1.5"/><rect x="5.6" y="11.9" width="9.4" height="1.8" rx=".9" fill="#E08A00" opacity=".55"/><rect x="5.6" y="15.1" width="6" height="1.8" rx=".9" fill="#E08A00" opacity=".38"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">8. Sınıf Dökümanları</span>
                     <span class="ihsec-alt">Plan, sınav, çalışma kâğıdı ve görev belgeleri</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ihdoc-acc" data-sinif="8"></div>
                 </div></div>
@@ -1731,26 +1808,28 @@
             <div class="ihsec-acc">
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3.4" fill="#E6F7F2" stroke="#16A085" stroke-width="1.6"/><path d="M8.4 12h3.2M10 10.4v3.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.6" cy="10.8" r="1.25" fill="#16A085"/><circle cx="17.6" cy="13.8" r="1.25" fill="#16A085"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">9. Sınıf Etkinlikleri</span>
                     <span class="ihsec-alt">Sınıfta uygulanacak etkinlik kartları</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ih-kartlar" data-sinif="9"></div>
                 </div></div>
               </div>
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.4h6l1.9 2h10.1a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H3a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6z" fill="#FDF1DE" stroke="#E08A00" stroke-width="1.5"/><rect x="5.6" y="11.9" width="9.4" height="1.8" rx=".9" fill="#E08A00" opacity=".55"/><rect x="5.6" y="15.1" width="6" height="1.8" rx=".9" fill="#E08A00" opacity=".38"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">9. Sınıf Dökümanları</span>
                     <span class="ihsec-alt">Plan, sınav, çalışma kâğıdı ve görev belgeleri</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ihdoc-acc" data-sinif="9"></div>
                 </div></div>
@@ -1776,26 +1855,28 @@
             <div class="ihsec-acc">
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3.4" fill="#E6F7F2" stroke="#16A085" stroke-width="1.6"/><path d="M8.4 12h3.2M10 10.4v3.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.6" cy="10.8" r="1.25" fill="#16A085"/><circle cx="17.6" cy="13.8" r="1.25" fill="#16A085"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">10. Sınıf Etkinlikleri</span>
                     <span class="ihsec-alt">Sınıfta uygulanacak etkinlik kartları</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ih-kartlar" data-sinif="10"></div>
                 </div></div>
               </div>
 
               <div class="ihsec-item">
-                <div class="ihsec-head">
+                <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
                   <span class="ihsec-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.4h6l1.9 2h10.1a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H3a1.6 1.6 0 0 1-1.6-1.6V7a1.6 1.6 0 0 1 1.6-1.6z" fill="#FDF1DE" stroke="#E08A00" stroke-width="1.5"/><rect x="5.6" y="11.9" width="9.4" height="1.8" rx=".9" fill="#E08A00" opacity=".55"/><rect x="5.6" y="15.1" width="6" height="1.8" rx=".9" fill="#E08A00" opacity=".38"/></svg></span>
                   <span class="ihsec-bilgi">
                     <span class="ihsec-title">10. Sınıf Dökümanları</span>
                     <span class="ihsec-alt">Plan, sınav, çalışma kâğıdı ve görev belgeleri</span>
                   </span>
-                </div>
+                  <span class="ihsec-chevron">▾</span>
+                </button>
                 <div class="ihsec-panel"><div class="ihsec-panel-in">
                   <div class="ihdoc-acc" data-sinif="10"></div>
                 </div></div>
@@ -1810,7 +1891,7 @@
       <!-- Öğretmen belgeleri: İmam Hatip bölümünün hep açık alt listesi -->
       <div class="ihsec-acc ih-genel-dok">
         <div class="ihsec-item">
-          <div class="ihsec-head">
+          <button type="button" class="ihsec-head" onclick="ihsecToggle(this)">
             <span class="ihsec-ic">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="6.4" y="4.6" width="12.2" height="15.4" rx="2.2" fill="#EEE7FB" stroke="#7C3AED" stroke-width="1.4"/>
@@ -1825,7 +1906,8 @@
               <span class="ihsec-title">Öğretmen Dökümanları</span>
               <span class="ihsec-alt">Öğretmen dosyası, zümre tutanakları ve mevzuat — okul geneli belgeler</span>
             </span>
-          </div>
+            <span class="ihsec-chevron">▾</span>
+          </button>
           <div class="ihsec-panel"><div class="ihsec-panel-in">
             <div class="dok-acc" id="dokAccordion"></div>
           </div></div>
@@ -1870,15 +1952,214 @@
         if (aciliyor) { item.classList.add('acik'); panelAc(item.querySelector('.' + panelSinif)); }
         else { item.classList.remove('acik'); panelKapat(item.querySelector('.' + panelSinif)); }
       }
-      window.ihToggle = function (btn) { tekAcilir(btn, 'ih-item', 'ih-panel', 'ih-acc'); };
-      window.dokToggle = function (btn) { tekAcilir(btn, 'dok-item', 'dok-panel', 'dok-acc'); };
+      /* Sinif rakamina basilinca bolumun tamami ekranin en ustune kayar;
+         boylece acilan akordiyonun icerigi ilk bakista gorulur. */
+      /* Verilen ogeyi ekranin en tepesine tasir. Header YUKARI KACAR ve
+         kaydirma bitene kadar dondurulur; boylece acilan icerige azami
+         dikey alan kalir. */
+      function ogeyiYukariKaydir(hedefOge, pay) {
+        if (!hedefOge) return;
+        document.body.classList.add('hdr-gizli');
+        window.__hdrKilit = true;
+        var y = (window.pageYOffset || 0) + hedefOge.getBoundingClientRect().top - (pay == null ? 4 : pay);
+        if (y < 0) y = 0;
+        try { window.scrollTo({ top: y, behavior: 'smooth' }); }
+        catch (e) { window.scrollTo(0, y); }
+        setTimeout(function () {
+          window.__hdrKilit = false;
+          window.__hdrSonY = window.pageYOffset;   /* yon sayaci sifirlansin */
+        }, 900);
+      }
+      function bolumuYukariKaydir(el) {
+        var bolum = el.closest ? el.closest('.content-section') : null;
+        if (!bolum) return;
+        /* Sinif rakamina basilinca header YUKARI KACAR ve sinif rozetleri
+           ekranin en tepesine tirmanir; kategori basligi (h2) silinmez,
+           sadece rozetlerin uzerinde kalarak ekran disina kayar. */
+        var hedef = bolum.classList.contains('ih-odak')
+          ? (bolum.querySelector(':scope > .ih-acc') || bolum) : bolum;
+        ogeyiYukariKaydir(hedef, 4);
+      }
+      /* Bir A4 belge kartina basilinca, kartin bagli oldugu bolum basligi
+         ("6. Sinif Dokumanlari", "Ogretmen Dokumanlari" ...) ekranin en
+         ustune tirmanir; boylece acilan belge listesi tam gorunur. */
+      function kartBolumunuYukariKaydir(btn) {
+        if (!btn || !btn.closest) return;
+        var kap = btn.closest('.ihsec-item') || btn.closest('.dok-item');
+        if (!kap) return;
+        var bas = kap.querySelector('.ihsec-head, .dok-head') || kap;
+        ogeyiYukariKaydir(bas, 2);
+      }
+      /* Kart KAPANINCA sayfa geri toplanir: sinif rakamlari yeniden
+         ekranin tepesinde gorunur, boylece baska bir sinifa gecmek icin
+         elle yukari kaydirmak gerekmez. */
+      function kartKapaninca(btn) {
+        if (!btn || !btn.closest) return;
+        if (!btn.closest('.ihsec-item') && !btn.closest('.dok-item')) return;
+        bolumuYukariKaydir(btn);
+      }
+      /* Bir panelin ic akordiyonlari acilinca ustteki panel numerik bir
+         max-height'te kalmissin diye kirpilmasin. */
+      function ustPanelSerbest(el) {
+        var p = el.parentNode;
+        while (p && p.nodeType === 1) {
+          if (p.classList && (p.classList.contains('ih-panel') || p.classList.contains('ihsec-panel'))) {
+            var m = p.style.maxHeight;
+            if (m && m !== 'none' && m !== '0px') p.style.maxHeight = 'none';
+          }
+          p = p.parentNode;
+        }
+      }
+      /* Bir sinif panelindeki tum ic akordiyonlari animasyonsuz kapatir;
+         boylece sinif her acildiginda ici DERLI TOPLU (kapali) gelir. */
+      function icleriKapat(kok) {
+        if (!kok) return;
+        [].forEach.call(kok.querySelectorAll('.ihsec-item.acik, .ihdoc-item.acik, .dok-item.acik'), function (i) {
+          i.classList.remove('acik');
+          var p = i.querySelector('.ihsec-panel, .ihdoc-panel, .dok-panel');
+          if (!p) return;
+          var g = p.style.transition;
+          p.style.transition = 'none';
+          p.style.maxHeight = '0px';
+          void p.offsetHeight;
+          p.style.transition = g;
+        });
+      }
+      /* TEK BOLUM KURALI: "Sinif Etkinlikleri", "Sinif Dokumanlari" ve
+         "Ogretmen Dokumanlari" bolumlerinden ayni anda yalnizca BIRI acik
+         kalabilir; biri acilinca digerleri animasyonla kapanir. */
+      function bolumleriKapat(haric) {
+        var kok = document.getElementById('imam-hatip'); if (!kok) return;
+        [].forEach.call(kok.querySelectorAll('.ihsec-item.acik'), function (d) {
+          if (d === haric) return;
+          d.classList.remove('acik');
+          panelKapat(d.querySelector('.ihsec-panel'));
+        });
+      }
+      /* Bolum acikken "Imam Hatip" basligi toplanir, rakamlar yukari cikar. */
+      function odakGuncelle() {
+        var kok = document.getElementById('imam-hatip'); if (!kok) return;
+        var acik = kok.querySelector('.ih-item.acik, .ihsec-item.acik');
+        if (acik) kok.classList.add('ih-odak'); else kok.classList.remove('ih-odak');
+      }
+      window.ihsecToggle = function (btn) {
+        var item = btn.closest('.ihsec-item'); if (!item) return;
+        var panel = item.querySelector('.ihsec-panel');
+        var aciliyor = !item.classList.contains('acik');
+        bolumleriKapat(item);
+        if (aciliyor) { item.classList.add('acik'); ustPanelSerbest(item); panelAc(panel); }
+        else { item.classList.remove('acik'); panelKapat(panel); }
+        odakGuncelle();
+        if (aciliyor) bolumuYukariKaydir(btn);
+      };
+      window.ihToggle = function (btn) {
+        var hedefItem = btn.closest('.ih-item');
+        if (hedefItem && !hedefItem.classList.contains('acik')) icleriKapat(hedefItem);
+        bolumleriKapat(hedefItem);            /* Ogretmen Dokumanlari da kapanir */
+        tekAcilir(btn, 'ih-item', 'ih-panel', 'ih-acc');
+        /* kapanan (veya kapali kalan) tum siniflarin ici sifirlansin */
+        [].forEach.call(document.querySelectorAll('#imam-hatip .ih-item'), function (i) {
+          if (!i.classList.contains('acik')) icleriKapat(i);
+        });
+        odakGuncelle();
+        var item = btn.closest('.ih-item');
+        if (item && item.classList.contains('acik')) bolumuYukariKaydir(btn);
+      };
+      window.dokToggle = function (btn) {
+        tekAcilir(btn, 'dok-item', 'dok-panel', 'dok-acc');
+        var item = btn.closest('.dok-item');
+        if (item && item.classList.contains('acik')) ustPanelSerbest(item);
+      };
       /* iç (sınıf dökümanı) akordiyon: bağımsız aç/kapa */
       window.ihdocToggle = function (btn) {
         var item = btn.closest('.ihdoc-item'); if (!item) return;
         var panel = item.querySelector('.ihdoc-panel');
         if (item.classList.contains('acik')) { item.classList.remove('acik'); panelKapat(panel); }
-        else { item.classList.add('acik'); panelAc(panel); }
+        else { item.classList.add('acik'); ustPanelSerbest(item); panelAc(panel); }
       };
+
+      /* ==========================================================
+         OTOMATIK KAPANMA
+         Bir sinif akordiyonu (or. "8. Sinif") acikken kullanici sayfada
+         gezinip BASKA bir kategoriye gecerse akordiyon kendiliginden
+         kapanir. Ayni kategori icinde dolasmak kapatmaz.
+         Kapanma ekran disinda oldugu icin animasyonsuz yapilir ve
+         sayfanin ziplamamasi icin kaydirma farki telafi edilir.
+         ========================================================== */
+      var PAY = 140;          /* bolum bu kadar disari cikmadan kapatma */
+      var BEKLE = 700;        /* acildiktan hemen sonra kapanmasin (ms) */
+      var sonAcilis = 0;
+
+      function gorunenBolum() {
+        var en = null, enAlan = 0;
+        [].forEach.call(document.querySelectorAll('.content-section'), function (s) {
+          if (!s.offsetParent) return;                       /* gizli bolum */
+          var r = s.getBoundingClientRect();
+          var alan = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+          if (alan > enAlan) { enAlan = alan; en = s; }
+        });
+        return enAlan > 0 ? en : null;
+      }
+
+      function sessizKapat(item, panelSinif) {
+        var panel = item.querySelector('.' + panelSinif);
+        var ref = gorunenBolum();
+        var t0 = ref ? ref.getBoundingClientRect().top : null;
+        if (panel) {
+          var eskiGecis = panel.style.transition;
+          panel.style.transition = 'none';
+          item.classList.remove('acik');
+          panel.style.maxHeight = '0px';
+          void panel.offsetHeight;                           /* yeniden akis */
+          panel.style.transition = eskiGecis;
+        } else {
+          item.classList.remove('acik');
+        }
+        /* tarayici kendi kaydirma capasini uygulamis olabilir; fark varsa duzelt */
+        if (ref) {
+          var t1 = ref.getBoundingClientRect().top;
+          if (Math.abs(t1 - t0) > 1) {
+            window.scrollBy(0, t1 - t0);
+            /* akilli header bu telafiyi "yukari kaydirma" sanmasin */
+            window.__hdrSonY = window.pageYOffset;
+          }
+        }
+        icleriKapat(item);
+        odakGuncelle();
+      }
+
+      function otoKapatKontrol() {
+        if (Date.now() - sonAcilis < BEKLE) return;
+        var acik = document.querySelectorAll('.ih-acc > .ih-item.acik, .dok-acc > .dok-item.acik');
+        if (!acik.length) return;
+        var gorunen = gorunenBolum();
+        [].forEach.call(acik, function (item) {
+          /* İMAM HATİP: otomatik kapanma YOK. Baslik artik ekran disina
+             kaydigi ve bolumler tek-acilir hale geldigi icin sinif secimi
+             baska kategoriye gidilse bile korunur; kullanici geri dondugunde
+             kaldigi yerden devam eder. */
+          if (item.closest('#imam-hatip')) return;
+          var bolum = item.closest('.content-section');
+          if (!bolum) return;
+          if (gorunen === bolum) return;                     /* hala bu kategorideyiz */
+          var r = bolum.getBoundingClientRect();
+          /* bolumun kendisi hala ekranda gorunuyorsa dokunma */
+          if (r.bottom > PAY && r.top < window.innerHeight - PAY) return;
+          sessizKapat(item, item.classList.contains('ih-item') ? 'ih-panel' : 'dok-panel');
+        });
+      }
+
+      var bekliyor = false;
+      window.addEventListener('scroll', function () {
+        if (bekliyor) return;
+        bekliyor = true;
+        requestAnimationFrame(function () { bekliyor = false; otoKapatKontrol(); });
+      }, { passive: true });
+
+      /* acilis anini isaretle: hemen ardindan gelen kaydirma kapatmasin */
+      document.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.ih-head, .dok-head, .ihsec-head, .ihdoc-head, .a4-kart')) sonAcilis = Date.now();
+      }, true);
 
       function klasorSvg(renk) {
         return '<svg viewBox="0 0 40 40" aria-hidden="true">' +
@@ -2528,7 +2809,7 @@
         [].forEach.call(wrap.querySelectorAll('.a4-kart.acik'), function (b) {
           b.classList.remove('acik'); b.setAttribute('aria-expanded', 'false');
         });
-        if (zatenAcik) { panelKapat(panel); return; }
+        if (zatenAcik) { panelKapat(panel); kartKapaninca(btn); return; }
         btn.classList.add('acik'); btn.setAttribute('aria-expanded', 'true');
         var d = btn._a4 || {};
         wrap.style.setProperty('--a4c', d.renk || '#dbe3ec');
@@ -2537,6 +2818,8 @@
           '<span class="a4-panel-chip">' + ((d.sayac && d.sayac.yazi) || 'YAKINDA') + '</span></div>' + (d.html || '');
         /* panel zaten açıksa yükseklik serbest kalsın (içerik değişti), değilse animasyonla aç */
         if (panelAcikti) panel.style.maxHeight = 'none'; else panelAc(panel);
+        ustPanelSerbest(btn);
+        kartBolumunuYukariKaydir(btn);
       };
       [].forEach.call(document.querySelectorAll('#imam-hatip .ihdoc-acc'), function (mount) {
         var sinif = mount.getAttribute('data-sinif');
@@ -4395,6 +4678,83 @@
   window.addEventListener('load', setHeaderH);
   window.addEventListener('resize', setHeaderH);
   setTimeout(setHeaderH, 300); setTimeout(setHeaderH, 1000);
+})();
+</script>
+
+<script>
+/* ============================================================
+   AKILLI HEADER
+   Sayfada asagi inildikce header yukari kayar ve kaybolur;
+   yukari cikilinca aninda tam olarak geri gelir.
+   - En ustteyken header her zaman gorunur (golgesiz).
+   - Cok kucuk kaydirmalar titremesin diye esik kullanilir.
+   - Modal/profil menusu acikken ya da klavyeyle header'a
+     odaklanildiginda gizlenmez.
+   ============================================================ */
+(function () {
+  var govde = document.body;
+  var baslik = document.querySelector('header');
+  if (!baslik) return;
+
+  var ESIK = 8;        /* yon degistirmek icin gereken en az piksel */
+  var BASLA = 90;      /* bu kadar inmeden gizleme */
+  var sonY = window.pageYOffset || 0;
+  var birikim = 0;
+  var bekliyor = false;
+
+  function kilitliMi() {
+    /* acik modal / panel varken header sabit kalsin */
+    if (govde.classList.contains('modal-open') || govde.classList.contains('admin-dock-open')) return true;
+    var pr = document.getElementById('user-info');
+    if (pr && pr.classList.contains('profile-open')) return true;
+    if (baslik.contains(document.activeElement)) return true;
+    var m = document.querySelector('.modal-overlay.active, .modal-overlay.acik, .modal-overlay[style*="display: flex"], .modal-overlay[style*="display:flex"]');
+    if (m) return true;
+    return false;
+  }
+
+  function goster() { govde.classList.remove('hdr-gizli'); }
+  function gizle()  { govde.classList.add('hdr-gizli'); }
+
+  function olc() {
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if (y < 0) y = 0;
+    /* akordiyon otomatik kapanirken yapilan kaydirma telafisi sayilmasin */
+    if (window.__hdrSonY != null) { sonY = window.__hdrSonY; birikim = 0; window.__hdrSonY = null; }
+    var fark = y - sonY;
+
+    /* golge: sadece sayfa kaydirilmisken */
+    if (y > 4) govde.classList.add('hdr-golge'); else govde.classList.remove('hdr-golge');
+
+    /* programli kaydirma surerken header DONDURULUR: mevcut durumu korur */
+    if (window.__hdrKilit) { birikim = 0; sonY = y; return; }
+
+    /* en ustte her zaman gorunur */
+    if (y <= BASLA) { birikim = 0; sonY = y; goster(); return; }
+
+    if (kilitliMi()) { sonY = y; goster(); return; }
+
+    /* yon degisince birikimi sifirla */
+    if ((fark > 0 && birikim < 0) || (fark < 0 && birikim > 0)) birikim = 0;
+    birikim += fark;
+
+    if (birikim > ESIK) { gizle(); birikim = 0; }
+    else if (birikim < -ESIK) { goster(); birikim = 0; }
+
+    sonY = y;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (bekliyor) return;
+    bekliyor = true;
+    requestAnimationFrame(function () { bekliyor = false; olc(); });
+  }, { passive: true });
+
+  /* klavyeyle header'a gelince (Tab) mutlaka goster */
+  baslik.addEventListener('focusin', goster);
+  /* bolum baglantisi/anasayfa gecisi gibi durumlarda da goster */
+  window.addEventListener('hashchange', goster);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') goster(); });
 })();
 </script>
 
