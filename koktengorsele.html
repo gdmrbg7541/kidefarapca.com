@@ -22,7 +22,7 @@
      data-tek-oyun="game1" işareti menüyü atlatır, doğrudan
      "Kökten Görsele" (مِنَ الْجَذْرِ إِلَى الصُّورَةِ) oyununu açar.
      Firebase gerekmez; yarışma yalnız sarf.html üzerindedir. -->
-<link rel="stylesheet" href="sarf.css?v=121">
+<link rel="stylesheet" href="sarf/sarf.css?v=121">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body data-tek-oyun="game1">
@@ -56,13 +56,13 @@
 </div>
 
 <!-- Kök verisi merkezî dosyalardan gelir (sarf.html ile aynı). -->
-<script src="veri_vezin_numaralari.js"></script>
-<script src="veri_kokler.js"></script>
+<script src="veri/veri_vezin_numaralari.js"></script>
+<script src="veri/veri_kokler.js"></script>
 <!-- Kok sira numaralari + ebced + KOK·KALIP·SIGA adresi.
      sarf.js'ten ONCE yuklenmeli; yuklenmezse sayfa eskisi gibi calisir. -->
-<script src="veri_kok_numaralari.js?v=121"></script>
-<script src="sarf.js?v=121"></script>
-<script src="geri.js"></script>
+<script src="veri/veri_kok_numaralari.js?v=121"></script>
+<script src="sarf/sarf.js?v=121"></script>
+<script src="sistem/geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
