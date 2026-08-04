@@ -12,15 +12,73 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&family=Harmattan:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="muhadese.css?v=20260803e">
-    <link rel="stylesheet" href="arakom.css?v=1">
+<script>
+/* TEK KAPI — bu dosya iki isi birden gorur:
+   .  muhadese.html                 -> LISTE modu (sekmeler / basliklar / dersler)
+   .  muhadese.html?ders=10_1_1     -> OYNATICI modu (okul dersi)
+   .  muhadese.html?ders=kalip_selam-> OYNATICI modu (kalip ifade basligi)
+   .  muhadese.html?ders=alan_saglik-> OYNATICI modu (alan konusu)
+   Ilgili CSS/JS yalnizca o moda gore yuklenir; iki tasarim birbirine karismaz.
+   Ek parametreler:  kaynak=liste|index  (geri tusu nereye donecek)
+                     kat=okul|kalip|alan (liste moduna donerken acilacak sekme)
+                     konu=<anahtar>      (liste moduna donerken acilacak baslik)
+                     sinif=N             (eski baglantilar icin; kat=okul demek)
+                     yer=<id>            (index'e donerken gidilecek bolum)
+   TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
+(function(){
+  var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
+  var S   = '?v=20260804d';        /* onbellek surumu */
+  var p = new URLSearchParams(location.search);
+  var d = p.get('ders') || '';
+  /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
+  if (!/^([0-9]+(_[0-9]+)+|(kalip|alan)_[a-z0-9]+)$/.test(d)) d = '';
+  window.KIDEF_DERS = d;
+  document.documentElement.className += (d ? ' kd-oyun' : ' kd-liste');
+
+  /* Hangi veri dosyasi yuklenecek? */
+  var veri = '';
+  if (d){
+    var t = /^(kalip|alan)_/.exec(d);
+    veri = KOK + 'veri/' + (t ? t[1] : d) + '.js';
+  }
+
+  var y = [];
+  if (d){
+    document.title = 'Arapça Simultane & Diyalog';
+    y.push('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;300&family=Amiri:wght@400&display=swap" rel="stylesheet">');
+    y.push('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">');
+    /* Site arayuz yazi tipi: Turkce kabuk yazilari Marhey ile gosterilsin.
+       Arapca metinler Arakom'da kalir (bkz. simultane.css). */
+    y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">');
+    y.push('<link rel="stylesheet" href="' + KOK + 'simultane.css' + S + '">');
+  } else {
+    y.push('<link rel="preconnect" href="https://fonts.googleapis.com">');
+    y.push('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
+    y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&family=Harmattan:wght@400;700&display=swap" rel="stylesheet">');
+    y.push('<link rel="stylesheet" href="' + KOK + 'muhadese.css' + S + '">');
+  }
+  y.push('<link rel="stylesheet" href="arakom.css?v=1">');
+  if (d){
+    y.push('<scr'+'ipt src="' + veri + S + '"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="' + KOK + 'simultane.js' + S + '"><\/scr'+'ipt>');
+  } else {
+    /* Liste modu: kalip ve alan basliklarini da bu iki dosyadan okur */
+    y.push('<scr'+'ipt src="' + KOK + 'veri/kalip.js' + S + '"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="' + KOK + 'veri/alan.js'  + S + '"><\/scr'+'ipt>');
+  }
+  document.write(y.join(''));
+})();
+</script>
+<style>
+  /* Kullanilmayan modun isaretlenmis parcalari hic gorunmesin (CSS yuklenmeden de). */
+  html.kd-liste .kd-oyn { display: none !important; }
+  html.kd-oyun  .kd-lis { display: none !important; }
+</style>
 </head>
 <body>
 
-<header>
+<!-- ==================== LİSTE MODU ==================== -->
+<header class="kd-lis">
     <a href="index.html" onclick="return kidefGeriDon(event)" class="home-btn" title="Ana sayfa" aria-label="Ana sayfa">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -30,18 +88,190 @@
     </a>
 
     <h1>Arapça Konuşma Modülü (Beta)</h1>
-    <span class="header-note">Yeşil olanları kullanabilirsiniz</span>
+    <span class="header-note">Turkuaz olanları kullanabilirsiniz</span>
 </header>
 
-<div class="class-selector" id="class-buttons">
+<!-- Üç kategori sekmesi: Okul | Kalıp İfadeler | Alan Konuları -->
+<div class="kat-sekme kd-lis" id="kat-sekme" role="tablist" aria-label="Kategoriler">
     </div>
 
-<div class="container" id="unit-container">
+<div class="class-selector kd-lis" id="class-buttons">
     </div>
 
-<script src="muhadese.js?v=20260803f"></script>
+<div class="container kd-lis" id="unit-container">
+    </div>
 
-    <script src="geri.js"></script>
+<!-- ==================== OYNATICI MODU ==================== -->
+<div id="popup-overlay" class="overlay kd-oyn" onclick="closePopup(event)">
+    <div class="popup" onclick="event.stopPropagation()">
+        <div class="popup-header">
+            <h2 id="popup-title">Bilgi Paneli</h2>
+            <button class="close-popup" onclick="togglePopup(false)">×</button>
+        </div>
+        <div id="popup-content" class="popup-body">
+            </div>
+    </div>
+</div>
+
+<div id="entry-panel" class="kd-oyn">
+    <button class="entry-back-btn" onclick="return muhGeri(event)">❮</button>
+    <h1 style="color:var(--pdf-red); font-size: 3rem; margin-bottom: 20px;">ARAPÇA PRATİK</h1>
+    <button class="mode-btn" onclick="startKelime()">KELİMELER</button>
+    <button class="mode-btn" onclick="startMode('sentence')">CÜMLE PRATİĞİ</button>
+    <button class="mode-btn" onclick="startMode('dialog')">DİYALOG PRATİĞİ</button>
+</div>
+
+<!-- KELİMELER: kart (çalışma) + hafıza oyunu — ortak tasarım (#kelime-mode altında izole) -->
+<div id="kelime-mode" class="kd-oyn">
+    <div class="header">
+        <div class="controls" style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; min-height: 50px;">
+            <button class="btn" id="btn-back" onclick="kelimeGeri()" style="position: absolute; left: 10px; background: #F0F4F8; font-weight: bold; display: flex; align-items: center; gap: 5px;"><span>❮</span></button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn active" id="btn-study" onclick="kelSetMode('study')">Kartlar</button>
+                <button class="btn" id="lang-btn-main" onclick="kelToggleLang()" style="background:var(--accent); color:white;"> T ⇄ ع</button>
+                <button class="btn" id="btn-memory-start" onclick="kelSetMode('mem1')" style="background: #E9EEF5;">Hafıza Oyunu</button>
+                <div id="memory-controls" style="display: none; align-items: center; gap: 8px;">
+                    <button class="btn" onclick="kelSetMode('study')" style="background:#E9EEF5; font-weight: bold;">Kartlar</button>
+                    <div class="switch-wrapper" style="display: flex; align-items: center; background: white; padding: 4px 8px; border-radius: 50px; border: 2px solid #E9EEF5; gap: 5px;">
+                        <span class="kel-kisi" title="Tek kişilik" onclick="kelToggleSwitch(false)"><svg class="ik ik-kisi1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.6"/><path d="M4.9 19.8c0-3.6 3.2-5.7 7.1-5.7s7.1 2.1 7.1 5.7"/></svg></span>
+                        <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                            <input type="checkbox" id="mode-toggle" onchange="kelToggleMemoryMode(this)" style="opacity:0; width:0; height:0;">
+                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--p1); transition: .4s; border-radius: 34px;"></span>
+                        </label>
+                        <span class="kel-kisi" title="İki kişilik" onclick="kelToggleSwitch(true)"><svg class="ik ik-kisi2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8.8" cy="8.4" r="3.1"/><path d="M2.6 19.8c0-3.2 2.8-5.1 6.2-5.1 1.3 0 2.5.28 3.5.8"/><g class="ik-p2"><circle cx="16.9" cy="10" r="2.6"/><path d="M12.4 19.8c0-2.6 2-4.3 4.5-4.3s4.5 1.7 4.5 4.3"/></g></svg></span>
+                    </div>
+                    <div id="pair-selection-area">
+                        <select id="pairCount" class="btn" onchange="kelInit()" style="border: 2px solid var(--primary); padding: 4px 6px;">
+                            <option value="6">6</option>
+                            <option value="9" selected>9</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-area">
+        <div id="score-board-container" class="score-board">
+            <div id="p1-box" class="player-box" style="color: var(--p1)"><span class="p-label">P1</span><span id="s1" class="p-score">0</span></div>
+            <div id="grid" class="grid"></div>
+            <div id="p2-box" class="player-box" style="color: var(--p2)"><span class="p-label">P2</span><span id="s2" class="p-score">0</span></div>
+        </div>
+    </div>
+    <audio id="snd-flip" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="snd-match" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+</div>
+
+<nav class="navbar kd-oyn">
+    <button class="back-btn" onclick="goHome()">❮</button>
+
+    <div class="pdf-links">
+        <button class="nav-trigger" onclick="showPopup('prepositions')">Harfler</button>
+        <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar &amp; Zarflar</button>
+        <button class="nav-trigger" onclick="showPopup('pronouns')">Zamirler</button>
+        <button class="nav-trigger" onclick="showPopup('suffix')">Fiil Kipleri</button>
+        <button class="nav-trigger" onclick="showPopup('tamlamalar')">Tamlamalar</button>
+        <!-- Sarf Motoru: kaliplartablosu.html'i ayrı sekmede açar. Simge emoji değil,
+             satır içi SVG'dir; iki çark birbirine ters yönde döner (bkz. simultane.css). -->
+        <a class="nav-trigger sarf-motoru" href="kaliplartablosu.html" target="_blank" rel="noopener" title="Sarf Motoru — Kalıplar Tablosu (yeni sekmede açılır)"><svg class="ik ik-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="ik-cark1" stroke-width="1.6"><circle cx="9" cy="9" r="4"/><circle cx="9" cy="9" r="1.4"/><path d="M13.2 9h1.7M11.97 6.03l1.2-1.2M9 4.8V3.1M6.03 6.03l-1.2-1.2M4.8 9H3.1M6.03 11.97l-1.2 1.2M9 13.2v1.7M11.97 11.97l1.2 1.2"/></g><g class="ik-cark2" stroke-width="1.4"><circle cx="17.6" cy="17.2" r="2.5"/><path d="M20.3 17.2h1.3M18.95 14.86l.65-1.12M16.25 14.86l-.65-1.12M14.9 17.2h-1.3M16.25 19.54l-.65 1.12M18.95 19.54l.65 1.12"/></g></svg><span class="sm-yazi">Sarf Motoru</span></a>
+    </div>
+
+    <div class="switch-wrapper">
+        <span class="switch-text active-lang" id="lang-tr">TR</span>
+        <label class="switch">
+            <input type="checkbox" id="direction-toggle" onchange="toggleDirection()">
+            <span class="slider"></span>
+        </label>
+        <span class="switch-text" id="lang-ar">AR</span>
+    </div>
+</nav>
+
+<main class="workspace kd-oyn">
+    <div id="sentence-mode">
+        <div id="s-tr" class="tr-container"></div>
+        <div id="s-ar" class="ar-output"></div>
+    </div>
+    <div id="dialog-mode">
+        <div class="dialog-row p1-row" id="p1-area">
+            <div id="p1-tr" class="tr-container"></div>
+            <div id="p1-ar" class="ar-output"></div>
+        </div>
+        <div class="dialog-row p2-row" id="p2-area">
+            <div id="p2-tr" class="tr-container"></div>
+            <div id="p2-ar" class="ar-output"></div>
+        </div>
+    </div>
+</main>
+
+<div class="controls kd-oyn">
+    <button class="nav-btn" onclick="changeSentence(-1)">
+        <span>❮</span> Geri
+    </button>
+    <button id="next-btn" class="nav-btn" onclick="changeSentence(1)">
+        İleri <span>❯</span>
+    </button>
+</div>
+
+<script>
+/* GERİ TUŞU — nereden gelindiyse oraya döner.
+   kaynak=liste  -> muhadese.html liste moduna (o sınıf açık)
+   kaynak=index  -> index.html'de geldiği bölüme (yeni sekmede açıldıysa sekme kapanır,
+                    index sekmesi zaten ilgili kartta açık kalır) */
+function muhGeri(e){
+  if (e && e.preventDefault) e.preventDefault();
+  var p = new URLSearchParams(location.search);
+  var kaynak = p.get('kaynak') || '';
+  var sinif  = p.get('sinif')  || '';
+
+  if (kaynak === 'liste'){
+    /* Listeye dön: hangi sekme ve hangi başlık açıksa oraya.
+       'sinif' eski (okul) bağlantılarla uyum için korunuyor. */
+    var kat  = (p.get('kat')  || '').replace(/[^a-z]/g, '');
+    var konu = (p.get('konu') || '').replace(/[^A-Za-z0-9_-]/g, '');
+    var sor  = [];
+    if (kat)   sor.push('kat='  + encodeURIComponent(kat));
+    if (konu)  sor.push('konu=' + encodeURIComponent(konu));
+    if (sinif) sor.push('sinif='+ encodeURIComponent(sinif));
+    window.location.href = 'muhadese.html' + (sor.length ? ('?' + sor.join('&')) : '');
+    return false;
+  }
+
+  var yer = (p.get('yer') || '').replace(/[^A-Za-z0-9_-]/g, '');
+  var hedef = 'index.html' + (yer ? ('#' + yer) : '');
+
+  /* index.html'in "vitrin kapısı" bizi indeks.html'e atmasın: dersten çıkan
+     kullanıcı zaten site içindedir, doğrudan ilgili bölüme dönmelidir. */
+  try { sessionStorage.setItem('kidefVitrin', '1'); } catch (_) {}
+
+  try {
+    if (window.opener && !window.opener.closed){        /* index'ten yeni sekmede açıldı */
+      window.close();
+      setTimeout(function(){ if (!window.closed) window.location.href = hedef; }, 250);
+      return false;
+    }
+  } catch (_) {}
+
+  /* eski bağlantılar için emniyet: listeden gelinmişse geri git */
+  if (!kaynak && document.referrer && document.referrer.indexOf('muhadese.html') !== -1
+      && window.history.length > 1){
+    window.history.back();
+    return false;
+  }
+  window.location.href = hedef;
+  return false;
+}
+window.muhGeri = muhGeri;
+</script>
+
+<script>
+/* Liste modunun betikleri (oynatıcı modunda gereksiz, yüklenmez). */
+(function(){
+  if (window.KIDEF_DERS) return;
+  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260804d"><\/scr'+'ipt>');
+  document.write('<scr'+'ipt src="sistem/geri.js"><\/scr'+'ipt>');
+  document.write('<scr'+'ipt src="sistem/gorevkopru.js?v=7"><\/scr'+'ipt>');
+})();
+</script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
@@ -53,9 +283,8 @@
   },false);
 })();
 </script>
-<script src="gorevkopru.js?v=7"></script>
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
-try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+try { if (!window.KIDEF_DERS && window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
 </body>
 </html>

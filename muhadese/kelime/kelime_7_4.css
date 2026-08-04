@@ -1,0 +1,211 @@
+@font-face {
+            font-family: 'arakom';
+            src: url('../../arakom.ttf') format('truetype');
+            font-weight: normal; font-style: normal;
+        }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%);
+            --primary: #5c7cfa;
+            --accent: #ff922b;
+            --p1: #4dabf7;
+            --p2: #ff8787;
+            --shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'arakom', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .header {
+            padding: 10px;
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        h1 { margin: 0 0 5px 0; color: #4b2cc5; font-size: 1.5rem; font-weight: normal; }
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .btn {
+            border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+            font-family: 'arakom'; background: white; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .btn.active { background: var(--primary); color: white; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .game-area { flex-grow: 1; padding: 15px; display: flex; justify-content: center; align-items: stretch; }
+
+        .score-board {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; /* Kutuların boyunu uzatır */
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%; /* 4K'da tam yayılma için */
+    height: 85vh; /* Header dışında kalan alanın çoğu */
+    margin: 0 auto;
+}
+
+.player-box {
+    flex: 0 0 80px; /* Kutuların genişliğini sabitledik */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 5px solid transparent;
+    margin: 10px 0; /* Animasyon ve nefes alma payı */
+}
+
+/* Aktif oyuncu animasyonu */
+.active-p { 
+    background: #fff; 
+    border-color: currentColor; 
+    transform: scale(1.05); /* Hafif büyüme animasyonu */
+    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+}
+
+        .p-label { font-size: 1.1rem; font-weight: bold; opacity: 0.6; }
+        .p-score { font-size: 2.5rem; font-weight: 900; margin-top: 5px; }
+
+        
+.grid { 
+    display: grid; 
+    gap: 15px; 
+    flex-grow: 1; /* Sağ ve sol kutu arasındaki tüm boşluğu doldurur */
+    width: 100%;
+    height: 100%;
+} .grid { display: grid; gap: 10px; flex-grow: 1; width: 100%; }
+
+        .grid:not(.memory-mode) {
+    grid-template-columns: repeat(5, 1fr) !important;
+    /* Sabit 180px yerine, ekran yüksekliğinin %80'ini 4 satıra bölüyoruz */
+    grid-auto-rows: 1fr;
+    gap: 15px;
+    width: 100%;
+}
+
+.grid.memory-mode {
+    display: grid;
+    gap: 10px;
+    flex-grow: 1;
+    height: 100%; /* Kutu yüksekliğini sona kadar zorlar */
+    /* Satırları içeriğe göre değil, mevcut boşluğa göre eşit paylaştırır */
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr)); 
+    align-content: stretch;
+}
+        .grid.memory-mode[data-total="12"] { grid-template-columns: repeat(4, 1fr); }
+        .grid.memory-mode[data-total="18"] { grid-template-columns: repeat(6, 1fr); }
+        .grid.memory-mode[data-total="20"] { grid-template-columns: repeat(5, 1fr); }
+        .grid.memory-mode[data-total="24"] { grid-template-columns: repeat(6, 1fr); }
+
+        .card { perspective: 1000px; cursor: pointer; width: 100%; height: 100%; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+        .card-face {
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    backface-visibility: hidden; 
+    border-radius: 15px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    /* clamp ile minimum 1.5rem, ekran genişliğine göre 5vw ve max 4rem arası dinamik boyut */
+    font-size: clamp(1.5rem, 4vw, 3rem); 
+    box-shadow: var(--shadow); 
+    border: 4px solid white; 
+    box-sizing: border-box; 
+    text-align: center; 
+    padding: 10px;
+    word-break: break-word; /* Uzun kelimelerin taşmasını önler */
+}
+        .card-front { color: white; }
+        .card-back { transform: rotateY(180deg); background: #ffffff; color: #333; }
+        .memory-mode .card-front::after { content: "؟"; font-size: 2rem; opacity: 0.3; }
+        .matched { opacity: 0; pointer-events: none; transition: 0.6s; transform: scale(0.8); }
+
+        /* Switch Tasarımı */
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--p2) !important; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        @media (max-width: 768px) {
+            .score-board { flex-direction: column; align-items: center; }
+            .player-box { flex-direction: row; flex: none; width: 90%; height: 45px; gap: 15px; margin: 5px 0; }
+            .p-score { font-size: 1.4rem; margin-top: 0; }
+            .p-label { font-size: 0.8rem; }
+            .grid:not(.memory-mode) { grid-template-columns: repeat(3, 1fr) !important; grid-auto-rows: 110px; }
+
+            @media (orientation: portrait) {
+                #pair-selection-area { display: none !important; }
+                .grid.memory-mode { grid-template-columns: repeat(3, 1fr) !important; grid-auto-rows: minmax(75px, 1fr) !important; gap: 5px !important; }
+                .card-face { font-size: 0.9rem !important; border-width: 2px !important; padding: 4px !important; }
+                .memory-mode .card-front::after { font-size: 1.2rem; }
+            }
+        }
+   /* --- MOBİL ÖZEL AYARLARI --- */
+@media (max-width: 768px) {
+    
+    /* 1. ÇALIŞMA MODU KART BOYUTLARI */
+    /* Sütun sayısını 3 yerine 2 yaparsan kelimeler çok daha geniş bir alana yayılır ve taşma yapmaz */
+    .grid:not(.memory-mode) {
+        grid-template-columns: repeat(3, 1fr) !important; 
+        grid-auto-rows: 120px !important; /* Yazı büyüyeceği için yüksekliği biraz artırdık */
+        gap: 10px !important;
+    }
+
+    /* 2. HAFIZA OYUNU KART BOYUTLARI */
+    @media (orientation: portrait) {
+        .grid.memory-mode {
+            grid-template-columns: repeat(3, 1fr) !important;
+            grid-auto-rows: minmax(90px, 1fr) !important;
+            gap: 6px !important;
+        }
+    }
+
+    /* 3. ARAPÇA KELİME BOYUTLARI (Tüm Modlar) */
+    .lang-ar {
+        font-family: 'arakom', sans-serif !important;
+        /* Arapça karakterlerin detayları (harekeler) için 2.2rem oldukça büyük ve okunaklıdır */
+        font-size: 1.8rem !important; 
+        color: #000 !important;
+        line-height: 1.1 !important;
+        /* Uzun kelimelerin sığması için harf arası daraltma (isteğe bağlı) */
+        letter-spacing: -0.5px;
+    }
+
+    /* 4. TÜRKÇE KELİME BOYUTLARI (Tüm Modlar) */
+    .lang-tr {
+        font-family: 'arakom', sans-serif !important;
+        font-size: 1.2rem !important; /* Türkçe kelimeler Arapçaya göre daha küçük kalarak hiyerarşi sağlar */
+        font-weight: normal !important;
+        color: #333 !important;
+        line-height: 1.2;
+    }
+
+    /* 5. KART İÇİ DOLGU VE HİZALAMA */
+    .card-face {
+        padding: 5px !important;
+        /* Kelime çok uzunsa kelimeyi bölerek kutudan taşmasını engeller */
+        word-break: break-word !important;
+        overflow: hidden;
+    }
+}
