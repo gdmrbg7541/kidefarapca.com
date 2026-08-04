@@ -1,0 +1,931 @@
+/* ===== ARAKOM YAZI TIPI =====
+   Site genelinde kullanilan Arakom fontu. Buyuk/kucuk harf duyarli
+   sunuculara karsi dosya adi kucuk harfle yazildi: arakom.ttf
+   Hem 'Arakom' hem 'arakom' adiyla tanimlandi ki eski kurallar da calissin. */
+@font-face {
+    font-family: 'Arakom';
+    src: url('../arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'arakom';
+    src: url('../arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Sayfadaki her yazi (Turkce + Arapca) Arakom ile gosterilir. */
+* {
+    font-family: 'Arakom', sans-serif !important;
+    font-weight: normal !important;
+}
+
+:root {
+            --font-tr: 'Arakom', sans-serif;
+            --font-ar: 'Arakom', serif;
+            
+            --primary-color: #0073e6; 
+            --success-color: #28a745; 
+            --error-color: #dc3545;
+            --bonus-color: #ffc107; 
+            
+            --player1-bg-color: rgba(0, 123, 255, 0.15);
+            --player1-border-color: rgba(0, 123, 255, 0.3);
+            --player2-bg-color: rgba(220, 53, 69, 0.15);
+            --player2-border-color: rgba(220, 53, 69, 0.3);
+
+            --background-color: #f8f9fa; 
+            --panel-background: #f8f9fa; 
+            --text-color: #343a40; 
+            --light-text-color: #adb5bd;
+            
+            --shadow-light: -8px -8px 16px rgba(255, 255, 255, 1);
+            --shadow-dark: 8px 8px 16px rgba(0, 0, 0, 0.15);
+            --shadow-inset: inset -6px -6px 12px rgba(255, 255, 255, 1), inset 6px 6px 12px rgba(0, 0, 0, 0.12);
+
+            --container-width: 90%; 
+            
+            --font-size-sm: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
+            --font-size-md: clamp(1.1rem, 2vw + 0.5rem, 1.5rem);
+            --font-size-lg: clamp(1.4rem, 2.5vw + 0.5rem, 2.0rem);
+            --font-size-xl: clamp(1.6rem, 4vw + 0.5rem, 2.8rem);
+            --font-size-xxl: clamp(2.0rem, 5vw + 1rem, 3.5rem);
+        }
+
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            overscroll-behavior: none;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        body {
+            font-family: var(--font-tr);
+            background-color: var(--background-color); 
+            color: var(--text-color);
+            background-image: linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.02) 75%),
+                              linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.02) 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh;
+            padding: 5px; box-sizing: border-box;
+            direction: ltr; 
+            font-size: 16px;
+        }
+        
+        #game-container {
+             width: var(--container-width); 
+             position: relative;
+             margin: auto; 
+        }
+
+        .main-game-panel {
+            width: 100%; 
+            margin: 0 auto;
+            padding: 25px; 
+            background-color: var(--panel-background);
+            border-radius: 20px;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            text-align: center;
+            max-height: 98vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto; 
+            box-sizing: border-box;
+            position: relative;
+            direction: ltr; 
+        }
+
+        .back-button {
+            position: fixed; /* 'absolute' değerini 'fixed' olarak değiştirdik */
+            top: 20px;
+            left: 20px; 
+            z-index: 1001; /* Diğer her şeyin (overlay'ler dahil) üzerinde olmasını sağlar */
+            padding: 8px 16px; 
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            line-height: 1;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: none !important; 
+            direction: ltr !important; 
+        }
+        .back-button:hover {
+            box-shadow: var(--shadow-inset);
+        }
+        
+        .is-arabic {
+            font-family: var(--font-ar) !important;
+            direction: rtl;
+            letter-spacing: normal !important;
+        }
+        .is-turkish-root {
+             font-family: var(--font-tr) !important;
+             direction: ltr;
+             letter-spacing: clamp(1px, 0.5vw, 3px) !important;
+        }
+
+        /* --- Donut Modu (1 Kişilik) Stilleri --- */
+        
+        #l1-main-instruction {
+            display: block; 
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            flex-shrink: 0;
+            line-height: 1.2;
+            /* padding-top: 30px; SİLİNDİ - Geri tuşu dışarı taşındı */
+            box-sizing: border-box;
+        }
+
+        #l1-root-display-mobile {
+            font-size: var(--font-size-xl);
+            font-weight: bold; line-height: 1; 
+            background-color: var(--background-color); 
+            color: var(--primary-color);
+            border-radius: 15px; 
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            user-select: none; 
+            flex-shrink: 0;
+            display: none;
+            align-items: center; gap: 15px; 
+            padding: 12px 24px; 
+            margin: 5px auto 5px auto;
+        }
+        
+        .l1-static-root-card-pc {
+            display: none; 
+            align-items: center; 
+            justify-content: center;
+            font-weight: bold; 
+            line-height: 1; 
+            background-color: var(--background-color); 
+            color: var(--primary-color);
+            border-radius: 15px; 
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            user-select: none; 
+            flex-shrink: 0;
+            font-family: var(--font-tr) !important;
+            direction: ltr;
+            
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        
+        .l1-static-root-card-pc .instruction-text {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.2;
+            text-align: center;
+        }
+        .l1-static-root-card-pc .root-text {
+            font-size: var(--font-size-xl);
+            font-weight: bold;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        .l1-static-root-card-pc .root-text.is-turkish-root {
+             letter-spacing: clamp(1px, 0.5vw, 3px) !important;
+        }
+
+        #l1-choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 20px;
+            width: 90%; 
+            margin-left: auto; 
+            margin-right: auto; 
+            flex-grow: 1;
+            align-content: center;
+        }
+        
+        .l1-choice-box {
+            background-color: var(--background-color);
+            border: none; 
+            border-radius: 15px;
+            padding: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: calc(var(--font-size-lg) * 2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.3;
+            text-align: center;
+        }
+        .l1-choice-box.is-arabic {
+            font-size: calc(var(--font-size-lg) * 1.25);
+        }
+
+        .l1-choice-box:not(.selected):hover { box-shadow: var(--shadow-inset); }
+        .l1-choice-box.selected { cursor: default; box-shadow: var(--shadow-inset); }
+        .l1-choice-box.correct { background-color: var(--success-color); color: white; box-shadow: none; animation: pulse-correct 0.4s ease; }
+        .l1-choice-box.incorrect { background-color: var(--error-color); color: white; box-shadow: none; animation: shake 0.5s; }
+        
+        #l1-feedback-area { 
+            margin-top: 5px;
+            font-size: var(--font-size-md);
+            font-weight: 500; 
+            min-height: 1.5em;
+            flex-shrink: 0;
+        }
+         #l1-bottom-area {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-top: 5px; 
+            padding-top: 0px;
+            flex-shrink: 0;
+            justify-content: flex-end; 
+        }
+
+        #next-button {
+            display: block;
+            margin: 0;
+            padding: 12px 28px;
+            font-size: var(--font-size-md);
+            font-weight: bold;
+            color: white;
+            background-color: var(--success-color); 
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+        }
+        #next-button.pulse-on-appear { animation: pulse-appear 0.6s ease-out; }
+        #next-button:hover { background-color: #218838; transform: translateY(-2px); box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1); }
+        #next-button:active { box-shadow: var(--shadow-inset); transform: translateY(1px); }
+        .hidden { display: none !important; }
+
+        /* --- Versus Modu (2 Kişilik) Stilleri --- */
+        #level1-versus-container {
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+            justify-content: flex-start; 
+        }
+        #versus-player-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .player-screen {
+            width: 100%;
+            min-height: calc(50vh - 60px); 
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            box-shadow: var(--shadow-inset); 
+            position: relative; 
+            overflow: hidden; 
+            transition: background-color 0.3s ease;
+        }
+        
+        #player1-screen {
+            border-bottom: 2px dashed var(--light-text-color);
+            background-color: var(--player1-bg-color);
+            border: 2px solid var(--player1-border-color);
+        }
+        #player2-screen {
+            background-color: var(--player2-bg-color);
+            border: 2px solid var(--player2-border-color);
+        }
+        
+        .player-score {
+            position: absolute;
+            top: 10px;
+            right: 15px; 
+            direction: ltr;
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            color: var(--primary-color);
+            background-color: rgba(255,255,255,0.5);
+            padding: 5px 10px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-inset);
+            z-index: 10;
+        }
+
+        .player-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: -5px;
+        }
+        .p1-icon { fill: var(--primary-color); }
+        .p2-icon { fill: var(--error-color); }
+
+
+        .question-area-vs {
+            flex-shrink: 0;
+            margin-bottom: 15px;
+            /* padding-top: 30px; SİLİNDİ - Geri tuşu dışarı taşındı */
+            margin-right: 70px; 
+            text-align: center;
+        }
+
+        .question-area-vs h3 {
+            margin: 0 0 5px 0;
+            font-size: var(--font-size-md);
+            color: var(--primary-color);
+            text-align: center;
+            height: 40px;
+        }
+        
+        .question-area-vs .root-display-vs {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .question-area-vs .question-text-vs {
+            font-size: var(--font-size-lg);
+            color: var(--text-color);
+            min-height: 2.5em;
+            text-align: center;
+        }
+        .question-area-vs .question-text-vs span {
+             font-family: 'Arakom', sans-serif !important;
+             font-weight: normal;
+             margin-right: 10px;
+        }
+
+        .options-area-vs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        
+        .option-button-vs {
+            background-color: var(--background-color);
+            border: none; 
+            border-radius: 10px;
+            padding: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+        
+        .start-options-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            direction: ltr; 
+            transition: opacity 0.3s ease;
+        }
+
+        .selection-group-disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
+        .option-button-vs:hover:not(.disabled) { box-shadow: var(--shadow-inset); }
+        
+        .option-button-vs.selected {
+             box-shadow: var(--shadow-inset) !important; 
+             background-color: var(--panel-background);
+        }
+        .option-button-vs.correct { background-color: var(--success-color) !important; color: white !important; box-shadow: none !important; }
+        .option-button-vs.incorrect { background-color: var(--error-color) !important; color: white !important; box-shadow: none !important; }
+        .option-button-vs.disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+        .option-button-vs.disabled.correct,
+        .option-button-vs.disabled.incorrect {
+            opacity: 1;
+        }
+        .option-button-vs.disabled.selected.incorrect {
+             opacity: 0.5;
+        }
+        
+        #vs-feedback-area {
+            font-size: var(--font-size-md);
+            font-weight: 700;
+            margin: 15px 0;
+            min-height: 1.5em;
+            flex-shrink: 0;
+            display: none; 
+        }
+        
+        .score-animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .score-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            box-shadow: var(--shadow-dark);
+            animation: fly-up-and-fade 1.5s ease-out forwards;
+        }
+        .score-popup.base-score {
+            background-color: var(--success-color);
+            color: white;
+        }
+        .score-popup.bonus-score {
+            background-color: var(--bonus-color);
+            color: var(--text-color);
+            font-size: var(--font-size-md);
+        }
+        
+        @keyframes fly-up-and-fade {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+            100% { transform: translate(-50%, -250%) scale(1.2); opacity: 0; }
+        }
+
+        /* --- Overlay (Başlangıç/Bitiş) Stilleri --- */
+        .overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(248, 249, 250, 0.97); 
+            display: flex; justify-content: center; align-items: center; text-align: center; 
+            z-index: 1000;
+            transition: opacity 0.3s, visibility 0.3s; 
+            padding: 15px; box-sizing: border-box; 
+            direction: ltr;
+        }
+
+        .overlay.hidden { opacity: 0; visibility: hidden; }
+        .overlay-content { 
+            background: var(--panel-background); 
+            padding: 15px 15px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-light), var(--shadow-dark); 
+            max-width: 90%; margin: auto; text-align: center; 
+            /* YENİ: Başlangıç ekranı geri tuşu için */
+            position: relative;
+        }
+        .overlay h1, .overlay h2, .overlay p { 
+            color: var(--text-color); margin-top: 0;
+        }
+        .overlay h1 { font-size: var(--font-size-xxl); }
+        .overlay h2 { font-size: var(--font-size-xl); }
+        .overlay p { font-size: var(--font-size-lg); }
+        
+        .start-options-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            direction: ltr;
+        }
+        .selection-button {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: none;
+            padding: 12px 20px;
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            width: 40%;
+            min-width: 140px;
+        }
+        .selection-button:hover {
+             box-shadow: -5px -5px 10px rgba(255, 255, 255, 1), 5px 5px 10px rgba(0, 0, 0, 0.1);
+             transform: translateY(-1px);
+        }
+        .selection-button:active {
+            transform: translateY(1px);
+        }
+        .selection-button.selected {
+            background-color: var(--primary-color);
+            color: white;
+            transform: none;
+        }
+
+        #start-game-button {
+            background-color: var(--success-color);
+            color: white;
+            font-size: var(--font-size-xl);
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            margin-top: 25px;
+            width: 60%;
+            max-width: 450px;
+            
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        #start-game-button:hover:not(:disabled) {
+            box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* --- BAŞLA BUTONU GÜNCELLEMESİ (Zamanlayıcı Kaldırıldı) --- */
+        #start-button-text {
+            position: relative;
+            z-index: 2;
+            display: block;
+            padding: 15px 30px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+        #start-button-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--success-color);
+            transform: translateX(-100%);
+            transition: transform 0.2s ease;
+            z-index: 1;
+        }
+        #start-game-button:disabled {
+            background-color: var(--light-text-color);
+            color: #f8f9fa;
+            opacity: 0.7;
+            cursor: not-allowed;
+            box-shadow: var(--shadow-inset);
+            transform: none;
+        }
+        #start-game-button:disabled #start-button-text {
+            color: #f8f9fa;
+        }
+        #start-game-button:not(:disabled) #start-button-fill {
+             transform: translateX(0%);
+        }
+        #start-game-button:not(:disabled) #start-button-text {
+             color: white;
+        }
+        /* --- BİTİŞ --- */
+
+
+        #results-details { margin: 20px 0; text-align: center; min-width: auto; }
+        #results-details p { font-size: var(--font-size-md); }
+        #results-details div { font-size: var(--font-size-lg) !important; color: var(--primary-color); line-height: 1.8; }
+        .results-player-score {
+            font-size: var(--font-size-lg) !important;
+            color: var(--text-color) !important;
+        }
+        .results-player-stats {
+            font-size: var(--font-size-sm) !important;
+            color: var(--text-color) !important;
+            margin-top: -10px;
+        }
+
+        #play-again-button { 
+            background-color: var(--primary-color); 
+            color: white; border: none; padding: 12px 25px; 
+            font-size: var(--font-size-xl); font-weight: bold; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; 
+            box-shadow: var(--shadow-light), var(--shadow-dark);
+            margin-top: 15px;
+        }
+        #play-again-button:hover {
+            background-color: #0056b3; transform: translateY(-2px); 
+            box-shadow: -8px -8px 16px rgba(255, 255, 255, 1), 8px 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        #orientation-warning {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            z-index: 1001; 
+            display: none; 
+        }
+
+        /* Animasyonlar */
+        @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+        @keyframes pulse-appear { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-correct { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        
+        /* *
+         * --- MOBİL İYİLEŞTİRME BAŞLANGIÇ ---
+         *
+         */
+        @media (max-width: 768px) {
+            :root { 
+                --shadow-light: -5px -5px 10px rgba(255, 255, 255, 1);
+                --shadow-dark: 5px 5px 10px rgba(0, 0, 0, 0.1);
+                --shadow-inset: inset -3px -3px 6px rgba(255, 255, 255, 1), inset 3px 3px 6px rgba(0, 0, 0, 0.1);
+            }
+            #game-container { width: 95%; } 
+            .overlay-content { padding: 20px 15px; }
+            .back-button { top: 15px; padding: 8px 12px; left: 15px;}
+            
+            /* Donut Mobil - GÜNCELLENDİ */
+            #l1-choices-grid { 
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+                gap: 20px; /* 30px'dan düşürüldü */
+                width: 100%;
+                padding-top: 0;
+                border-top: none;
+            }
+            
+            /* YENİ: Donut mobil için küçültme */
+            .l1-choice-box {
+                font-size: var(--font-size-md); /* lg'den md'ye düşürüldü */
+                padding: 6px; 
+                min-height: calc(var(--font-size-md) * 2);
+            }
+            .l1-choice-box.is-arabic {
+                font-size: calc(var(--font-size-md) * 1.25);
+            }
+            /* YENİ: Boşluk azaltma */
+            #l1-feedback-area {
+                margin-top: 2px;
+            }
+            /* BİTİŞ: YENİ */
+
+            #l1-root-display-mobile { 
+                display: inline-flex; 
+            }
+            
+            #level1-donut-container { padding: 15px 10px; } 
+
+            /* GÜNCELLENDİ: 'İleri' tuşu için */
+            #l1-bottom-area { 
+                justify-content: center; 
+                padding-top: 0; /* 5px'ten düşürüldü */
+                margin-top: 5px; 
+            }
+            #next-button { 
+                padding: 10px 20px; 
+                width: 75%; /* 80%'den düşürüldü */
+            }
+            
+            /* Versus Mobil - GÜNCELLENDİ */
+            .question-area-vs { 
+                /* padding-top: 35px; SİLİNDİ */
+                margin-right: 50px;
+            }
+        }
+        /* *
+         * --- MOBİL İYİLEŞTİRME BİTİŞ ---
+         *
+         */
+
+        
+        /* PC Uyum */
+        @media (min-width: 769px) {
+            .start-options-group {
+                flex-direction: row;
+
+            }
+
+           /* === YENİ: Masaüstü Tek Kişilik Arapça Font Büyütme === */
+            .l1-choice-box.is-arabic {
+                /* Mevcut 1.25'lik oranı 1.6'ya çıkar */
+                font-size: calc(var(--font-size-lg) * 1.6);
+            } 
+
+             /* === YENİ: Masaüstü L1 Merkezi Arapça Soru Büyütme === */
+            .l1-static-root-card-pc .instruction-text.is-arabic {
+                font-size: calc(var(--font-size-lg) * 1.6); /* Fontu büyüt */
+                line-height: 1.3; /* Satır yüksekliğini ayarla */
+            }
+
+            .selection-button {
+                width: 250px;
+            }
+            
+            /* --- YENİ MASAÜSTÜ DONUT STİLLERİ ("Ferah" görünüm) --- */
+            #level1-donut-container {
+                min-height: 85vh; /* Panele dikey alan ver */
+            }
+
+            #l1-choices-grid {
+                /* Satırların dikey alanı doldurmasını sağla */
+                grid-template-rows: repeat(4, 1fr);
+                /* Kutular arası boşluğu artır */
+                gap: 35px;
+                /* 'align-content: center' kuralını geçersiz kıl */
+                align-content: stretch; 
+            }
+            /* --- Bitiş: "Ferah" görünüm --- */
+            
+            
+            /* GÜNCELLENDİ: "Ada" tasarımı için */
+            #l1-main-instruction {
+                display: none; /* Orijinal soruyu gizle */
+            }
+            .l1-static-root-card-pc {
+                display: inline-flex; /* "Adayı" göster */
+                grid-row: 2 / 4;
+                grid-column: 2 / 3;
+                align-self: center;
+                justify-self: center;
+            }
+            /* --- Bitiş: "Ada" tasarımı --- */
+            
+            /* Versus PC */
+            #level1-versus-container {
+                height: 90vh;
+                padding: 20px;
+                gap: 10px;
+                justify-content: flex-start; 
+            }
+            #versus-player-wrapper {
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+                width: 100%;
+                height: 98%; 
+            }
+            .player-screen {
+                width: 50%;
+                height: 100%;
+                padding: 20px;
+                min-height: 500px;
+            }
+            #player1-screen {
+                border-bottom: none;
+                border-right: 2px dashed var(--light-text-color);
+            }
+            
+            .options-area-vs {
+                grid-template-columns: 1fr;
+            }
+            
+            .option-button-vs {
+                min-height: 70px;
+            }
+        }
+
+        /* Yatay mod uyarısı SİLİNDİ */
+        
+        /* YENİ: 2 Kişilik Mod için Mobil Yatay Desteği */
+        @media (max-width: 768px) and (orientation: landscape) {
+            
+            #level1-versus-container {
+                padding: 10px;
+                height: 95vh;
+            }
+
+            #versus-player-wrapper {
+                flex-direction: row;
+                gap: 15px;
+                height: 98%;
+            }
+            .player-screen {
+                width: 50%;
+                height: 100%;
+                min-height: initial;
+                padding: 10px;
+            }
+            #player1-screen {
+                border-bottom: none;
+                border-right: 2px dashed var(--light-text-color);
+            }
+            .question-area-vs {
+                 /* padding-top: 30px; SİLİNDİ */
+                 margin-right: 50px;
+            }
+        }
+        
+/* --- BAŞLANGIÇ EKRANI ÖZELLEŞTİRMESİ --- */
+#start-screen .overlay-content { 
+    background: none; 
+    padding: 10px;
+    border-radius: 0; 
+    box-shadow: none; 
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#start-screen h1 {
+    font-size: var(--font-size-xl);
+}
+#start-screen h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: 15px;
+}
+#start-screen p {
+    font-size: var(--font-size-md);
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+#start-screen .selection-button {
+    font-size: var(--font-size-md);
+}
+#start-game-button {
+    font-size: var(--font-size-lg);
+}
+/* --- TÜM BUTONLARIN FONTUNU MARHEY'E ZORLA --- */
+.selection-button,
+#start-game-button,
+#play-again-button,
+#next-button,
+.back-button,
+.option-button-vs:not(.is-arabic) {
+    font-family: var(--font-tr);
+}
+/* --- Versus Modu İlerleme Çubuğu --- */
+#versus-progress-bar-container {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    margin: 5px auto 15px auto;
+    gap: 4px;
+    height: 10px;
+    box-sizing: border-box;
+}
+.progress-segment {
+    flex: 1;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: var(--shadow-inset);
+    transition: background-color 0.4s ease;
+}
+.progress-segment.completed {
+    background-color: var(--success-color);
+    box-shadow: none;
+}
+.progress-segment.current {
+    background-color: var(--bonus-color);
+    box-shadow: var(--shadow-light);
+}
+/* --- İKİ KİŞİLİK MOD FONT BÜYÜTME --- */
+.question-area-vs .root-display-vs {
+    font-size: calc(var(--font-size-xl) * 1.15);
+}
+.question-area-vs .question-text-vs {
+    font-size: calc(var(--font-size-lg) * 1.2);
+}
+.option-button-vs {
+    font-size: calc(var(--font-size-lg) * 1.2);
+}
+body.lang-ar .option-button-vs.is-arabic {
+    font-size: calc(var(--font-size-lg) * 1.45); 
+    font-family: var(--font-ar) !important;
+}
+/* --- İki Kişilik Mod: Gereksiz Kök Gösterimini Gizle --- */
+.question-area-vs .root-display-vs {
+    display: none;
+}
+.question-area-vs .question-text-vs {
+    font-weight: 700;
+}
+.arabic-root-highlight {
+    color: var(--error-color);
+    font-weight: 700;
+}
+.question-text-vs.is-arabic {
+    font-size: calc(var(--font-size-lg) * 1.4);
+}

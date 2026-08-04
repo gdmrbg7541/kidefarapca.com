@@ -1,0 +1,203 @@
+:root {
+            --primary-dark: #1a2a3a;
+            --arabic-gold: #c5a059;
+            --bg-paper: #fdfaf5;
+            --correct: #27ae60;
+            --wrong: #c0392b;
+            --font-base: 16px;
+        }
+
+        /* Temel Reset ve Esnek Yapı */
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Naskh Arabic';
+            background-color: var(--bg-paper);
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Sabit Çıkış Butonu */
+        .fixed-back-nav {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1rem;
+            z-index: 1000;
+            border: 1px solid var(--arabic-gold);
+        }
+
+        #quiz-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            justify-content: space-between;
+        }
+
+        /* Durum Çubuğu */
+        .status-bar {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--arabic-gold);
+            padding-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* Soru Metni Ölçeklendirme */
+        .question-text {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            text-align: center;
+            padding: 10px;
+            line-height: 1.3;
+        }
+
+        .arabic-word {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 2.8rem;
+            color: var(--primary-dark);
+            margin: 10px 0;
+            padding: 5px 15px;
+            background: rgba(197, 160, 89, 0.1);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* Şıklar - Esnek Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobilde tek sütun */
+            gap: 12px;
+            padding: 10px 0;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .option-btn {
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        /* 5. Şık Ortalama */
+        .option-btn:nth-child(5) {
+            grid-column: 1;
+            width: 100%;
+        }
+
+        /* Geri-İleri Butonları */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding-top: 10px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #next-btn { background: var(--primary-dark); color: white; }
+        #next-btn:disabled { background: #ccc; }
+        #prev-btn { background: #e0e0e0; color: #555; }
+
+        /* --- 10 FARKLI EKRAN SENARYOSU (MEDIA QUERIES) --- */
+
+        /* 1. Küçük Mobil (320px) */
+        @media (min-width: 320px) {
+            .question-text { font-size: 1.4rem; }
+            .arabic-word { font-size: 2.2rem; }
+            .option-btn { padding: 12px; font-size: 1rem; }
+        }
+
+        /* 2. Orta Boy Mobil (375px) */
+        @media (min-width: 375px) {
+            .question-text { font-size: 1.6rem; }
+            .option-btn { padding: 14px; }
+        }
+
+        /* 3. Büyük Mobil / iPhone Plus (414px) */
+        @media (min-width: 414px) {
+            .question-text { font-size: 1.8rem; }
+            .arabic-word { font-size: 2.5rem; }
+        }
+
+        /* 4. Küçük Tablet / Portre (600px) */
+        @media (min-width: 600px) {
+            .options-grid { grid-template-columns: 1fr 1fr; } /* İki sütuna geçiş */
+            .option-btn:nth-child(5) { grid-column: 1 / span 2; width: 60%; justify-self: center; }
+            .question-text { font-size: 2.2rem; }
+        }
+
+        /* 5. Standart Tablet (768px) */
+        @media (min-width: 768px) {
+            #quiz-container { padding: 40px; }
+            .question-text { font-size: 2.6rem; }
+            .arabic-word { font-size: 3.5rem; }
+            .nav-btn { font-size: 1.5rem; }
+        }
+
+        /* 6. Düşük Çözünürlüklü Laptop (1024px) */
+        @media (min-width: 1024px) {
+            .question-text { font-size: 3rem; }
+            .option-btn { padding: 10px; font-size: 3rem; }
+        }
+
+        /* 7. Standart Masaüstü (1280px) */
+        @media (min-width: 1280px) {
+            .question-text { font-size: 3.2rem; }
+            .arabic-word { font-size: 4.5rem; }
+        }
+
+        /* 8. Full HD Ekran / Projeksiyon (1920px) */
+        @media (min-width: 1920px) {
+            .question-text { font-size: 4rem; }
+            .arabic-word { font-size: 6rem; }
+            .option-btn { padding: 10px; font-size: 3.5rem; }
+        }
+
+        /* 9. 2K Ekran (2560px) */
+        @media (min-width: 2560px) {
+            .question-text { font-size: 5rem; }
+            .arabic-word { font-size: 8rem; }
+        }
+
+        /* 10. Yatay (Landscape) Mobil Modu */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .question-text { font-size: 1.2rem; flex-direction: row; }
+            .arabic-word { font-size: 1.8rem; margin: 0 10px; }
+            .options-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+            .option-btn { padding: 8px; font-size: 0.9rem; }
+            .status-bar { padding-top: 10px; font-size: 1rem; }
+        }
+
+        /* Doğru/Yanlış Efektleri */
+        .correct { background-color: var(--correct) !important; color: white !important; }
+        .wrong { background-color: var(--wrong) !important; color: white !important; animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }

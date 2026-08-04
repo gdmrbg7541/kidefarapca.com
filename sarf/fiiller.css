@@ -1,0 +1,185 @@
+    @font-face {
+        font-family: 'AraKom';
+        src: url('../arakom.ttf') format('truetype');
+    }
+
+    :root {
+        --bg: #f8f9fa;
+        --primary: #2563eb;
+        --mazi-color: #ea580c;
+        --success: #16a34a;
+        --cell-height: 6.5rem;
+        
+        /* Satır Renkleri */
+        --muzekker-row: #e0f2fe; /* Açık Mavi */
+        --muennes-row: #fce7f3;  /* Açık Pembe */
+        --ortak-row: #f1f5f9;   /* Mütekellim için Nötr */
+    }
+
+    body { 
+        font-family: 'AraKom', sans-serif; 
+        background-color: var(--bg); 
+        margin: 0; padding: 0;
+        display: flex; flex-direction: column; align-items: center;
+        width: 100vw; height: 100vh; overflow-x: hidden;
+        font-weight: normal;
+    }
+
+    .arabic { font-family: 'AraKom', serif; direction: rtl; line-height: 1; font-weight: normal; }
+
+    header {
+        width: 100%; background: white; padding: 1rem 0;
+        box-shadow: 0 0.125rem 0.625rem rgba(0,0,0,0.05);
+        display: flex; justify-content: center;
+        position: relative; /* Ana sayfa butonu için eklendi */
+    }
+
+    /* --- ANA SAYFA BUTONU STİLLERİ --- */
+    .home-btn {
+        position: absolute;
+        left: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2.5rem;
+        height: 2.5rem;
+        color: var(--primary);
+        background: #e2e8f0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 0.6rem;
+    }
+
+    .home-btn:hover {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .home-btn svg {
+        width: 100%;
+        height: 100%;
+    }
+    /* --------------------------------- */
+
+    .selector-container { 
+        width: 95%; display: flex; gap: 1rem; align-items: center; justify-content: center;
+    }
+    
+    select { 
+        font-family: 'AraKom', sans-serif;
+        width: 60%; padding: 0.8rem; font-size: 2.2rem; border: 0.15rem solid #e2e8f0;
+        border-radius: 1rem; outline: none; cursor: pointer; text-align: center;
+        text-align-last: center;
+        font-weight: normal;
+    }
+
+    .tabs-nav {
+        display: flex; width: 98%; margin: 1rem 0;
+        background: #e2e8f0; padding: 0.4rem; border-radius: 1rem;
+    }
+
+    .tab-link {
+        font-family: 'AraKom', sans-serif;
+        flex: 1; padding: 1.2rem; border: none; background: transparent;
+        font-size: 1.4rem; font-weight: normal; cursor: pointer; border-radius: 0.8rem;
+        transition: 0.3s; color: #64748b;
+    }
+
+    .tab-link.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+    main { 
+        width: 98%; 
+        flex-grow: 1; 
+        display: flex; 
+        flex-direction: column; 
+        overflow: hidden; 
+        margin-bottom: 1rem; 
+    }
+
+    .tab-panel { 
+        display: none; 
+        width: 100%; 
+        height: 100%; 
+    }
+
+    .tab-panel.active { 
+        display: flex; 
+        flex-direction: column; 
+    }
+
+    .table-card {
+        background: white; 
+        border-radius: 1rem; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        width: 100%;
+        flex-grow: 1; 
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto; 
+    }
+
+    table { 
+        width: 100%; 
+        height: 100%; 
+        border-collapse: collapse; 
+        direction: rtl; 
+        table-layout: fixed; 
+        font-weight: normal; 
+    }
+
+    /* Cinsiyete Göre Satır Renklendirmeleri */
+    .row-muzekker { background-color: var(--muzekker-row); }
+    .row-muennes { background-color: var(--muennes-row); }
+    .row-ortak { background-color: var(--ortak-row); }
+
+    td { 
+        text-align: center; 
+        vertical-align: middle; 
+        border: 1px solid #cbd5e1;
+        cursor: pointer; 
+        transition: 0.2s;
+        font-weight: normal;
+    }
+
+    .pattern { 
+        display: block; 
+        font-size: 3.5rem; 
+        color: var(--mazi-color); 
+        letter-spacing: -2px; 
+        margin: 0.5rem 0; 
+        font-weight: normal;
+    }
+
+    .full { 
+        display: none; 
+        font-size: 4rem; 
+        color: var(--success); 
+        margin: 0.5rem 0; 
+        font-weight: normal; 
+    }
+    
+    .meaning { 
+        display: block; font-size: 1.2rem; color: #475569; font-weight: normal;
+    }
+
+    .active-cell .pattern { display: none; }
+    .active-cell .full { display: block; }
+
+    @media (max-width: 768px) {
+        select { width: 75%; font-size: 1.5rem; } /* Seçici genişliği ikon için hafif daraltıldı */
+        .pattern { font-size: 2.2rem; }
+        .full { font-size: 2.5rem; }
+        .meaning { font-size: 0.9rem; }
+        :root { --cell-height: 5rem; }
+        
+        .home-btn {
+            left: 0.5rem;
+            width: 2rem;
+            height: 2rem;
+            padding: 0.4rem;
+        }
+    }
