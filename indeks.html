@@ -34,6 +34,7 @@
   <a href="#gizemPerde" data-hedef="gizemPerde"></a>
   <a href="#fabrikaPerde" data-hedef="fabrikaPerde"></a>
   <a href="#finalPerde" data-hedef="finalPerde"></a>
+  <a href="#kodPerde" data-hedef="kodPerde"></a>
   <a href="#kitlePerde" data-hedef="kitlePerde"></a>
 </nav>
 
@@ -345,6 +346,186 @@
   </div>
 </section>
 
+<!-- 6b · RAKAMLARLA KOD — sitenin o anki toplam satır sayısı.
+     GÜNCELLEME: sayılar aşağıdaki data-hedef / metin alanlarında durur.
+     Sayım komutu (proje kökünde):
+       find . -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' \) \
+         -not -path './.git/*' -not -path '*/node_modules/*' -not -path '*/_to_delete/*' \
+         -not -path '*/_cop_sil/*' -not -path './taze/*' -not -name '_*' -print0 | xargs -0 wc -l | tail -1 -->
+<section id="kodPerde">
+<style>
+  #kodPerde{ position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:70px 18px; overflow:hidden;
+    background:linear-gradient(180deg, var(--zemin) 0%, var(--nane) 52%, #FFF3DC 100%); }
+
+  /* arka planda usulca süzülen kod işaretleri */
+  #kodPerde .kod-fon{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+  #kodPerde .kod-fon span{ position:absolute; font-family:'Courier New', monospace; font-weight:700;
+    color:rgba(22,160,133,.09); user-select:none; }
+  @keyframes kodSuz{ 0%,100%{ transform:translateY(0) rotate(0deg) } 50%{ transform:translateY(-18px) rotate(4deg) } }
+  #kodPerde .kf1{ top:10%;  left:5%;   font-size:clamp(58px,9vw,140px); animation:kodSuz 9s  ease-in-out infinite; }
+  #kodPerde .kf2{ top:64%;  left:9%;   font-size:clamp(40px,6vw,92px);  animation:kodSuz 11s ease-in-out infinite .8s; }
+  #kodPerde .kf3{ top:16%;  right:7%;  font-size:clamp(46px,7vw,110px); animation:kodSuz 10s ease-in-out infinite .4s; }
+  #kodPerde .kf4{ top:72%;  right:11%; font-size:clamp(38px,5vw,78px);  animation:kodSuz 12s ease-in-out infinite 1.2s; }
+
+  /* arka plan: kendi kendini çizen bağlantı ağı */
+  #kodPerde .kod-ag{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  @keyframes agCiz{ 0%{ stroke-dashoffset:620 } 55%{ stroke-dashoffset:0 } 100%{ stroke-dashoffset:-620 } }
+  #kodPerde .ag-yol{ fill:none; stroke:rgba(22,160,133,.20); stroke-width:1.6; stroke-linecap:round;
+    stroke-dasharray:620; animation:agCiz 13s linear infinite; }
+  #kodPerde .ag-yol.y2{ stroke:rgba(243,156,18,.18); animation-duration:16s; animation-delay:-4s; }
+  #kodPerde .ag-yol.y3{ animation-duration:19s; animation-delay:-9s; }
+  @keyframes agNabiz{ 0%,100%{ transform:scale(1); opacity:.28 } 50%{ transform:scale(1.7); opacity:.6 } }
+  #kodPerde .ag-nokta{ fill:var(--deniz2); transform-box:fill-box; transform-origin:center;
+    animation:agNabiz 4.4s ease-in-out infinite; }
+  #kodPerde .ag-nokta.g2{ fill:var(--amber2); animation-delay:1.1s; }
+  #kodPerde .ag-nokta.g3{ animation-delay:2.2s; }
+  #kodPerde .ag-nokta.g4{ fill:var(--amber2); animation-delay:3.3s; }
+
+  /* pencerenin ardında usulca dönen halkalar */
+  @keyframes halkaDon{ to{ transform:translate(-50%,-50%) rotate(360deg) } }
+  @keyframes halkaDonTers{ to{ transform:translate(-50%,-50%) rotate(-360deg) } }
+  #kodPerde .kod-halka{ position:absolute; left:50%; top:50%; width:min(720px,92vw); aspect-ratio:1;
+    transform:translate(-50%,-50%); pointer-events:none; animation:halkaDon 54s linear infinite; }
+  #kodPerde .kod-halka2{ width:min(540px,74vw); animation:halkaDonTers 38s linear infinite; }
+
+  #kodPerde .kod-kutu{ position:relative; z-index:2; width:100%; max-width:760px; }
+
+  /* kod penceresi */
+  #kodPerde .kod-pencere{ position:relative; background:#fff;
+    border:1px solid var(--zemin3); border-radius:22px;
+    box-shadow:0 28px 68px rgba(44,62,80,.18); overflow:hidden; }
+  #kodPerde .kod-bar{ display:flex; align-items:center; gap:7px; padding:13px 18px;
+    background:var(--zemin2); border-bottom:1px solid var(--zemin3); }
+  #kodPerde .kod-nokta{ width:11px; height:11px; border-radius:50%; display:block; }
+  #kodPerde .n1{ background:#EF5350; } #kodPerde .n2{ background:#F39C12; } #kodPerde .n3{ background:#27AE60; }
+  #kodPerde .kod-yol{ margin-left:10px; color:var(--sis); font-size:.84rem;
+    font-family:'Courier New', monospace; letter-spacing:.5px; }
+  #kodPerde .kod-govde{ padding:64px 28px 56px; }
+
+  #kodPerde .kod-sayi{ display:flex; align-items:center; justify-content:center; gap:5px;
+    font-family:'Courier New', monospace; font-weight:700; letter-spacing:-2px;
+    font-size:clamp(3.2rem,12vw,6.6rem); line-height:1; color:var(--deniz); }
+  @keyframes kodImlec{ 0%,45%{ opacity:1 } 50%,95%{ opacity:0 } 100%{ opacity:1 } }
+  #kodPerde .kod-imlec{ display:inline-block; width:.08em; height:.86em; background:var(--amber);
+    border-radius:3px; animation:kodImlec 1.1s steps(1,end) infinite; }
+  #kodPerde .kod-birim{ text-align:center; margin-top:12px; color:var(--sis);
+    font-size:clamp(.95rem,2vw,1.15rem); letter-spacing:4px; text-transform:uppercase; }
+
+  /* durmadan yazılan kod satırları */
+  #kodPerde .kod-yazi{ display:block; width:100%; max-width:430px; margin:34px auto 0; }
+  @keyframes kodYaz{ 0%{ transform:scaleX(0); opacity:.18 } 14%{ opacity:1 }
+    52%{ transform:scaleX(1); opacity:1 } 86%{ transform:scaleX(1); opacity:.18 }
+    100%{ transform:scaleX(0); opacity:.18 } }
+  #kodPerde .kod-yazi rect{ transform-box:fill-box; transform-origin:left center;
+    animation:kodYaz 5.6s ease-in-out infinite; }
+  #kodPerde .kod-yazi rect:nth-of-type(2){ animation-delay:.24s; }
+  #kodPerde .kod-yazi rect:nth-of-type(3){ animation-delay:.48s; }
+  #kodPerde .kod-yazi rect:nth-of-type(4){ animation-delay:.72s; }
+  #kodPerde .kod-yazi rect:nth-of-type(5){ animation-delay:.96s; }
+
+  @media (max-width:640px){
+    #kodPerde{ padding:54px 14px; }
+    #kodPerde .kod-fon, #kodPerde .kod-halka{ display:none; }
+    #kodPerde .kod-govde{ padding:44px 16px 38px; }
+    #kodPerde .kod-yazi{ margin-top:26px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #kodPerde .kod-fon span, #kodPerde .ag-yol, #kodPerde .ag-nokta,
+    #kodPerde .kod-halka, #kodPerde .kod-imlec, #kodPerde .kod-yazi rect{ animation:none; }
+    #kodPerde .ag-yol{ stroke-dasharray:none; }
+  }
+</style>
+  <div class="kod-fon" aria-hidden="true">
+    <span class="kf1">&lt;/&gt;</span><span class="kf2">{ }</span><span class="kf3">&lt;/&gt;</span><span class="kf4">;</span>
+  </div>
+
+  <svg class="kod-ag" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path class="ag-yol"    d="M40 160 L300 74 L560 196 L840 96 L1160 214"/>
+    <path class="ag-yol y2" d="M30 648 L282 726 L580 604 L862 702 L1170 586"/>
+    <path class="ag-yol y3" d="M148 44 L118 300 L262 528 L182 776"/>
+    <path class="ag-yol y2" d="M1054 32 L1092 302 L958 526 L1032 780"/>
+    <circle class="ag-nokta"    cx="300"  cy="74"  r="5"/>
+    <circle class="ag-nokta g2" cx="840"  cy="96"  r="5"/>
+    <circle class="ag-nokta g3" cx="580"  cy="604" r="5"/>
+    <circle class="ag-nokta g4" cx="262"  cy="528" r="5"/>
+    <circle class="ag-nokta g2" cx="1092" cy="302" r="5"/>
+    <circle class="ag-nokta g3" cx="118"  cy="300" r="5"/>
+  </svg>
+
+  <svg class="kod-halka" viewBox="0 0 400 400" aria-hidden="true">
+    <circle cx="200" cy="200" r="192" fill="none" stroke="rgba(22,160,133,.16)" stroke-width="1.4" stroke-dasharray="7 15"/>
+  </svg>
+  <svg class="kod-halka kod-halka2" viewBox="0 0 400 400" aria-hidden="true">
+    <circle cx="200" cy="200" r="192" fill="none" stroke="rgba(243,156,18,.16)" stroke-width="1.4" stroke-dasharray="2 13"/>
+  </svg>
+
+  <div class="kod-kutu">
+    <div class="kod-pencere">
+      <div class="kod-bar">
+        <span class="kod-nokta n1"></span><span class="kod-nokta n2"></span><span class="kod-nokta n3"></span>
+        <span class="kod-yol">kidefarapca.com — toplam kod</span>
+      </div>
+      <div class="kod-govde">
+        <div class="kod-sayi"><span id="kodSayac" data-hedef="232089">0</span><span class="kod-imlec"></span></div>
+        <div class="kod-birim">satır kod</div>
+
+        <svg class="kod-yazi" viewBox="0 0 430 94" aria-hidden="true">
+          <rect x="0"  y="4"  width="250" height="9" rx="4.5" fill="#48c9b0" opacity=".55"/>
+          <rect x="22" y="24" width="330" height="9" rx="4.5" fill="#FFC107" opacity=".55"/>
+          <rect x="22" y="44" width="186" height="9" rx="4.5" fill="#48c9b0" opacity=".40"/>
+          <rect x="44" y="64" width="286" height="9" rx="4.5" fill="#7a8ca0" opacity=".32"/>
+          <rect x="0"  y="84" width="120" height="9" rx="4.5" fill="#16A085" opacity=".45"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* Sayaç: bölüm ekrana girince rakam 0'dan toplam satır sayısına kadar sayılır.
+   Hareket azaltma tercihi açıksa doğrudan son değer yazılır. */
+(function(){
+  var kutu = document.getElementById('kodPerde');
+  if (!kutu) return;
+  var az = false;
+  try { az = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
+
+  function bic(n){ try { return n.toLocaleString('tr-TR'); } catch(e){ return String(n); } }
+
+  function say(el, sure){
+    var hedef = parseInt(el.getAttribute('data-hedef'), 10) || 0;
+    if (az){ el.textContent = bic(hedef); return; }
+    var bas = null;
+    function adim(t){
+      if (bas === null) bas = t;
+      var o = Math.min((t - bas) / sure, 1);
+      var y = 1 - Math.pow(1 - o, 3);                 /* yumuşak yavaşlama */
+      el.textContent = bic(Math.round(hedef * y));
+      if (o < 1) requestAnimationFrame(adim);
+    }
+    requestAnimationFrame(adim);
+  }
+
+  var calisti = false;
+  function basla(){
+    if (calisti) return; calisti = true;
+    say(document.getElementById('kodSayac'), 1900);
+  }
+
+  if ('IntersectionObserver' in window){
+    var g = new IntersectionObserver(function(kayitlar){
+      for (var i = 0; i < kayitlar.length; i++){
+        if (kayitlar[i].isIntersecting){ basla(); g.disconnect(); }
+      }
+    }, { threshold: .28 });
+    g.observe(kutu);
+  } else {
+    basla();
+  }
+})();
+</script>
+</section>
+
 <!-- 7 · KİME NE KATAR? — kalıcı tanıtım bölümü (kilitten bağımsız, her zaman görünür).
      Kartlar sitedeki kilit perdesiyle AYNI özel animasyonlu SVG'leri kullanır. -->
 <section id="kitlePerde">
@@ -383,8 +564,6 @@
   #kitlePerde .th-tik{animation:krkTik 3.4s ease-in-out infinite}
   @keyframes krkKalem{0%,100%{transform:translate(0,0)}30%{transform:translate(-2.4px,-2.4px)}60%{transform:translate(1.4px,1.4px)}}
   #kitlePerde .th-kalem{animation:krkKalem 3.4s ease-in-out infinite}
-  @keyframes krkBayrak{0%,100%{transform:skewY(0deg)}50%{transform:skewY(5deg)}}
-  #kitlePerde .ok-bayrak{transform-box:fill-box; transform-origin:0% 50%; animation:krkBayrak 2.6s ease-in-out infinite}
   @keyframes krkCam{0%,100%{fill:#5DADE2}50%{fill:#F9E79F}}
   #kitlePerde .ok-cam{animation:krkCam 3.6s ease-in-out infinite}
   #kitlePerde .c2{animation-delay:.9s} #kitlePerde .c3{animation-delay:1.8s} #kitlePerde .c4{animation-delay:2.7s}
@@ -480,33 +659,17 @@
               <path class="ki-tik t3" d="M8 24.5l2.4 2.4 4-4.4" fill="none" stroke="#27ae60" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12" stroke-dashoffset="0"/>
               <rect x="17" y="23.5" width="8" height="2.2" rx="1.1" fill="#D5BFAE"/></svg>
             <span><b>Pratik öğrenci takibi</b> — görevler ve canlı panelle gelişim tek bakışta</span></li>
-        </ul>
-      </div>
-      <div class="krk-kart">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M10 26L32 12l22 14z" fill="#D84315"/>
-          <rect x="14" y="26" width="36" height="26" rx="2" fill="#FFF3E0" stroke="#E8A87C" stroke-width="1.6"/>
-          <rect class="ok-cam" x="19" y="31" width="7" height="7" rx="1.4" fill="#5DADE2"/>
-          <rect class="ok-cam c2" x="38" y="31" width="7" height="7" rx="1.4" fill="#5DADE2"/>
-          <rect class="ok-cam c3" x="19" y="42" width="7" height="7" rx="1.4" fill="#5DADE2"/>
-          <rect class="ok-cam c4" x="38" y="42" width="7" height="7" rx="1.4" fill="#5DADE2"/>
-          <path d="M28.6 52v-9a3.4 3.4 0 0 1 6.8 0v9z" fill="#8D6E63"/>
-          <rect x="31" y="6" width="2.4" height="12" fill="#8D6E63"/>
-          <path class="ok-bayrak" d="M33.4 7h11l-2.6 3 2.6 3h-11z" fill="#E53935"/>
-        </svg>
-        <div class="krk-baslik">Kurumsan</div>
-        <ul class="krk-liste">
           <li><svg viewBox="0 0 32 32" aria-hidden="true">
               <path d="M4 14 16 4l12 10" fill="none" stroke="#D84315" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
               <rect x="8" y="14" width="16" height="13" rx="1.6" fill="#FFF3E0" stroke="#E8A87C" stroke-width="1.6"/>
               <rect class="ok-cam" x="11" y="17" width="4.4" height="4.4" rx="1" fill="#5DADE2"/>
               <rect class="ok-cam c3" x="17" y="17" width="4.4" height="4.4" rx="1" fill="#5DADE2"/></svg>
-            <span><b>Tek çatı</b> — şubeler, seviyeler ve sınıflar bir arada</span></li>
+            <span><b>Tek çatı</b> — bütün seviyeler ve sınıfların tek yerde</span></li>
           <li><svg viewBox="0 0 32 32" aria-hidden="true">
               <rect class="rk-bar" x="6" y="17" width="5" height="11" rx="1.6" fill="#E67E22"/>
               <rect class="rk-bar rk-b2" x="13.5" y="12" width="5" height="16" rx="1.6" fill="#F39C12"/>
               <rect class="rk-bar rk-b3" x="21" y="7" width="5" height="21" rx="1.6" fill="#27ae60"/></svg>
-            <span><b>Bütün tablo</b> — performans ve sınav takibi tek panelde</span></li>
+            <span><b>Bütün tablo</b> — sınav ve performans sonuçları tek panelde</span></li>
           <li><svg viewBox="0 0 32 32" aria-hidden="true">
               <path d="M4 5h24v15H14l-7 7v-7H4z" fill="#4ECDC4"/>
               <circle class="ki-nokta" cx="10.5" cy="12.5" r="2" fill="#fff"/>
