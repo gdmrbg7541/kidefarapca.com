@@ -121,9 +121,13 @@
     html.dusuk-guc .kaliplar-tablosu-btn,
     html.dusuk-guc .kaliplar-tablosu-btn::before,
     html.dusuk-guc .kb-motor-parilti::after,
-    html.dusuk-guc .kb-motor-cark2 g,
+    html.dusuk-guc .kb-og-kirici,
+    html.dusuk-guc .kb-og-duman,
+    html.dusuk-guc .kb-og-harf,
+    html.dusuk-guc .kb-og-kok,
     html.dusuk-guc .kb-motor-yildiz,
     html.dusuk-guc .ik-rozet { animation: none !important; }
+    html.dusuk-guc .kb-og-kok { opacity: 1; transform: none; }
     /* duruş hâli: çizilen yollar tam görünsün */
     html.dusuk-guc .a4-imza-yol,
     html.dusuk-guc .ik-tik,
@@ -4289,6 +4293,37 @@
     </script>
     <script src="index.js?v=20260727"></script>
     <script src="sistem/geri.js"></script>
+    <script>
+    /* Baska sayfalardan "Girise git" ile gelindiginde giris-kayit penceresini ac.
+       Kullanim: index.html?giris=1  ya da  index.html#giris  */
+    (function kidefGirisKapisi() {
+      function istendiMi() {
+        try {
+          var pr = new URLSearchParams(location.search);
+          if (pr.get('giris') === '1' || pr.get('giris') === 'kayit') return pr.get('giris');
+        } catch (e) {}
+        if (location.hash === '#giris') return '1';
+        return null;
+      }
+      function ac(mod, kalan) {
+        if (typeof showLoginModal === 'function') {
+          showLoginModal();
+          if (mod === 'kayit' && typeof moduDegistir === 'function') {
+            try { if (typeof isLoginMode === 'undefined' || isLoginMode) moduDegistir(); } catch (e) {}
+          }
+          /* adres cubugunu temizle ki yenilemede tekrar acilmasin */
+          try { history.replaceState(null, '', location.pathname); } catch (e) {}
+          return;
+        }
+        if (kalan > 0) setTimeout(function () { ac(mod, kalan - 1); }, 250);
+      }
+      var mod = istendiMi();
+      if (!mod) return;
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { ac(mod, 24); });
+      } else { ac(mod, 24); }
+    })();
+    </script>
 
 <!-- ORTAK SEPET (Paketler + Canlı Ders + Ders Talep) -->
 <style>
@@ -4363,7 +4398,7 @@
 })();
 </script>
 
-<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')"><span class="kb-motor-parilti" aria-hidden="true"></span><span class="kb-motor-yazi">Sarf Motoru</span><span class="kb-motor-carkkutu" aria-hidden="true"><svg class="kb-motor-cark" viewBox="0 0 64 64"><g><circle cx="32" cy="32" r="12" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="6" fill="#0E9E86"/></g></svg><svg class="kb-motor-cark2" viewBox="0 0 64 64"><g><circle cx="32" cy="32" r="13" fill="#FFF3D6"/><rect x="28" y="10" width="8" height="10" rx="3.2" fill="#FFF3D6"/><rect x="28" y="44" width="8" height="10" rx="3.2" fill="#FFF3D6"/><rect x="10" y="28" width="10" height="8" rx="3.2" fill="#FFF3D6"/><rect x="44" y="28" width="10" height="8" rx="3.2" fill="#FFF3D6"/><rect x="28" y="10" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(60 32 32)"/><rect x="28" y="44" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(60 32 32)"/><rect x="28" y="10" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(-60 32 32)"/><rect x="28" y="44" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(-60 32 32)"/><circle cx="32" cy="32" r="6.5" fill="#F39C12"/></g></svg></span><span class="kb-motor-yildizlar" aria-hidden="true"><svg class="kb-motor-yildiz y1" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg><svg class="kb-motor-yildiz y2" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg><svg class="kb-motor-yildiz y3" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg></span></a>
+<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')"><span class="kb-motor-parilti" aria-hidden="true"></span><span class="kb-motor-ic"><span class="kb-motor-yazi">Sarf Motoru</span><span class="kb-motor-satir"><span class="kb-motor-carkkutu" aria-hidden="true"><svg class="kb-motor-cark" viewBox="0 0 64 64"><g><circle cx="32" cy="32" r="12" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="6" fill="#0E9E86"/></g></svg></span><svg class="kb-motor-ogutucu" viewBox="0 -30 220 190" aria-hidden="true"><defs><linearGradient id="kbOgMetal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f9fc"/><stop offset="1" stop-color="#c3cad4"/></linearGradient></defs><circle class="kb-og-duman d1" cx="60" cy="-12" r="7" fill="#fff"/><circle class="kb-og-duman d2" cx="68" cy="-17" r="9" fill="#fff"/><rect x="50" y="-6" width="20" height="32" rx="5" fill="#8f9aa8" stroke="#5f6a76" stroke-width="3"/><path d="M138,-24 L212,-24 L188,26 L162,26 Z" fill="#8f9aa8" stroke="#5f6a76" stroke-width="3" stroke-linejoin="round"/><g class="kb-og-kok" aria-hidden="true"><text class="kb-og-kh" x="196" y="-22">ك</text><text class="kb-og-kh" x="175" y="-22">ت</text><text class="kb-og-kh" x="154" y="-22">ب</text></g><path d="M26,116 L0,130 L0,150 L26,138 Z" fill="#8f9aa8" stroke="#5f6a76" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="26" width="170" height="126" rx="15" fill="url(#kbOgMetal)" stroke="#5f6a76" stroke-width="4"/><path d="M41,26 h140 a15,15 0 0 1 15,15 v3 H26 v-3 a15,15 0 0 1 15,-15 z" fill="#2c3e50"/><circle cx="41" cy="139" r="3.4" fill="#93a0af"/><circle cx="181" cy="139" r="3.4" fill="#93a0af"/><circle cx="111" cy="100" r="40" fill="#2c3e50"/><circle cx="111" cy="100" r="33" fill="#34495e"/><g transform="translate(111,100) scale(1.62)"><g class="kb-og-kirici"><circle r="11" fill="#95a5a6"/><rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#95a5a6"/><rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#95a5a6"/><rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6"/><rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6"/><rect x="-2.4" y="-16" width="4.8" height="6" rx="2" fill="#95a5a6" transform="rotate(45)"/><rect x="-2.4" y="10" width="4.8" height="6" rx="2" fill="#95a5a6" transform="rotate(45)"/><rect x="-16" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6" transform="rotate(45)"/><rect x="10" y="-2.4" width="6" height="4.8" rx="2" fill="#95a5a6" transform="rotate(45)"/><circle r="3.6" fill="#5d6d7e"/></g></g><text class="kb-og-harf h1" x="8" y="146" aria-hidden="true">ك</text><text class="kb-og-harf h2" x="8" y="146" aria-hidden="true">ت</text><text class="kb-og-harf h3" x="8" y="146" aria-hidden="true">ب</text></svg></span></span><span class="kb-motor-yildizlar" aria-hidden="true"><svg class="kb-motor-yildiz y1" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg><svg class="kb-motor-yildiz y2" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg><svg class="kb-motor-yildiz y3" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg></span></a>
 
 <!-- Öneri / İletişim butonu (Sarf Motoru'nun üstünde) -->
 <button id="feedbackFab" onclick="openMyMessages()" title="Mesajlar & İletişim" aria-label="Mesajlar ve iletişim" class="feedback-fab">

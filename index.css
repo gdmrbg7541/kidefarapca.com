@@ -585,8 +585,8 @@ body{
   background: linear-gradient(135deg, #F5A623 0%, #F39C12 55%, #E98B0B 100%);
   /* GUNCELLENDI: masaustunde belirgin sekilde buyutuldu */
   font-size: 1.9em;
-  padding: 20px 40px;
-  border-radius: 50px;
+  padding: 14px 34px;
+  border-radius: 44px;
   letter-spacing: .2px;
   line-height: 1.1;
   display: inline-flex;
@@ -629,37 +629,101 @@ body{
   transform: rotate(14deg);
   animation: kbMotorParilti 4.2s ease-in-out infinite;
 }
-.kb-motor-yazi { position: relative; z-index: 1; }
-/* ciftli cark: buyuk saat yonunde, kucuk ters yonde */
+/* ic duzen: yazi UST SATIRDA ve SOLDA, makineler alt satirda */
+.kb-motor-ic {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: .06em;
+  min-width: 0;
+}
+.kb-motor-yazi {
+  align-self: flex-start;
+  font-size: .72em;
+  letter-spacing: .3px;
+  line-height: 1.05;
+}
+.kb-motor-satir {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: .34em;
+}
+/* tek cark: alt satirin solunda */
 .kb-motor-carkkutu {
   position: relative;
   z-index: 1;
   display: inline-flex;
   align-items: center;
-  width: 1.95em;
-  height: 1.3em;
+  flex: none;
+  width: 1.62em;
+  height: 1.62em;
 }
 .floating-tool-button.kaliplar-tablosu-btn .kb-motor-cark {
-  width: 1.25em;
-  height: 1.25em;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  margin-top: -.625em;
+  width: 1.62em;
+  height: 1.62em;
+  display: block;
+  overflow: visible;
   vertical-align: baseline;
 }
-.kb-motor-cark2 {
-  width: .8em;
-  height: .8em;
-  position: absolute;
-  left: 1.1em;
-  top: -.1em;
+/* mini ogutucu: indeks.html'deki Kelime Fabrikasi makinesinin kucuk hali,
+   alt satirin saginda. Kirici carki doner, bacadan duman cikar. */
+.kb-motor-ogutucu {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 2.06em;
+  height: 1.78em;
   overflow: visible;
+  filter: drop-shadow(0 1px 1.5px rgba(102,52,0,.4));
 }
-.kb-motor-cark2 g {
+/* Arapca harfler: HER BIRI TEK KARAKTERLIK ayri <text>. Boylece iki yonlu
+   (bidi) siralama devreye girmez ve harfler hicbir tarayicida ters donmez.
+   Yazi tipini de acikca sabitliyoruz; sitenin Arakom fontu Arapca'yi
+   dogru siralamayabiliyor. */
+.kb-og-kh,
+.kb-og-harf {
+  font-family: 'Harmattan', 'Noto Naskh Arabic', 'Amiri', serif !important;
+  font-size: 34px;
+  font-weight: 700;
+  fill: #fff;
+  text-anchor: middle;
+  direction: rtl;
+  unicode-bidi: isolate;
+  paint-order: stroke;
+  stroke: rgba(95,106,118,.55);
+  stroke-width: 1.2;
+}
+/* ogutulmus harfler sol oluktan TEK TEK cikar */
+.kb-og-harf {
   transform-box: fill-box;
   transform-origin: 50% 50%;
-  animation: kbMotorTers 2.6s linear infinite;
+  opacity: 0;
+  animation: kbOgutucuHarf 2.4s ease-out infinite;
+}
+.kb-og-harf.h1 { animation-delay: .55s; }
+.kb-og-harf.h2 { animation-delay: 1.15s; }
+.kb-og-harf.h3 { animation-delay: 1.75s; }
+.kb-og-kirici {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: kbOgutucuCark 2.4s linear infinite;
+}
+.kb-og-duman {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  animation: kbOgutucuDuman 2.6s ease-out infinite;
+}
+.kb-og-duman.d2 { animation-delay: 1.3s; }
+/* beyaz harfli minik kok (ك ت ب): huniden ogutucuye duser */
+.kb-og-kok {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  animation: kbOgutucuKok 2.4s ease-in infinite;
 }
 /* parildayan yildizlar */
 .kb-motor-yildizlar { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
@@ -691,7 +755,26 @@ body{
   0%, 62%  { left: -70%; }
   92%, 100%{ left: 130%; }
 }
-@keyframes kbMotorTers { to { transform: rotate(-360deg); } }
+@keyframes kbOgutucuCark { to { transform: rotate(360deg); } }
+/* oluktan cikan harf: once agizda belirir, sonra sola-asagi savrulur */
+@keyframes kbOgutucuHarf {
+  0%        { opacity: 0; transform: translate(10px,-4px) scale(.35) rotate(0deg); }
+  12%       { opacity: 1; transform: translate(4px,0)     scale(1)   rotate(-6deg); }
+  46%       { opacity: 1; transform: translate(-10px,10px) scale(1)  rotate(-16deg); }
+  70%, 100% { opacity: 0; transform: translate(-24px,24px) scale(.8) rotate(-26deg); }
+}
+@keyframes kbOgutucuDuman {
+  0%   { opacity: 0;   transform: translateY(0)    scale(.45); }
+  22%  { opacity: .9;  transform: translateY(-3px) scale(.8); }
+  100% { opacity: 0;   transform: translateY(-13px) scale(1.35); }
+}
+@keyframes kbOgutucuKok {
+  0%        { opacity: 0; transform: translateY(-36px) scale(1); }
+  10%       { opacity: 1; transform: translateY(-27px) scale(1); }
+  38%       { opacity: 1; transform: translateY(4px)   scale(.88); }
+  52%       { opacity: 0; transform: translateY(22px)  scale(.5); }
+  100%      { opacity: 0; transform: translateY(22px)  scale(.5); }
+}
 @keyframes kbMotorYildiz {
   0%, 72%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); }
   80%           { opacity: 1; transform: scale(1) rotate(35deg); }
@@ -702,7 +785,10 @@ body{
   box-shadow: 0 12px 30px rgba(230,126,34,.55);
 }
 .floating-tool-button.kaliplar-tablosu-btn:hover .kb-motor-cark g { animation-duration: 1.1s; }
-.floating-tool-button.kaliplar-tablosu-btn:hover .kb-motor-cark2 g { animation-duration: .85s; }
+.floating-tool-button.kaliplar-tablosu-btn:hover .kb-og-kirici { animation-duration: .9s; }
+.floating-tool-button.kaliplar-tablosu-btn:hover .kb-og-duman  { animation-duration: 1.5s; }
+.floating-tool-button.kaliplar-tablosu-btn:hover .kb-og-kok    { animation-duration: 1.4s; }
+.floating-tool-button.kaliplar-tablosu-btn:hover .kb-og-harf   { animation-duration: 1.4s; }
 
 @media (max-width: 1200px) {
   .floating-tool-button.kaliplar-tablosu-btn { font-size: 1.55em; padding: 17px 32px; }
@@ -718,8 +804,15 @@ body{
   .floating-tool-button.kaliplar-tablosu-btn,
   .floating-tool-button.kaliplar-tablosu-btn::before,
   .kb-motor-parilti::after,
-  .kb-motor-cark2 g,
+  .kb-motor-cark g,
+  .kb-og-kirici,
+  .kb-og-duman,
+  .kb-og-harf,
+  .kb-og-kok,
   .kb-motor-yildiz { animation: none !important; }
+  /* animasyon kapaliyken kok huninin agzinda duruyor gorunsun */
+  .kb-og-kok { opacity: 1; transform: none; }
+  .kb-og-harf.h1 { opacity: 1; transform: translate(-6px,6px); }
 }
 
 /* ==========================================================================
