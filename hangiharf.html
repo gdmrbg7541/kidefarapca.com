@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="hangiharf.css?v=5">
+    <link rel="stylesheet" href="oyunlar/hangiharf.css?v=5">
 </head>
 
 <body>
@@ -52,11 +52,11 @@
         <div id="player-1" class="w-full md:w-1/2 player-screen"> <div class="w-full flex justify-center player-icon-wrapper"> <div class="flex gap-2 md:gap-3"> <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="32" cy="19" r="11" fill="#f6c89f"/><path d="M21 19 a11 11 0 0 1 22 0 q-4 -6 -11 -6 t-11 6 Z" fill="#6b4f3a"/><circle cx="27.5" cy="20" r="1.7" fill="#334155"/><circle cx="36.5" cy="20" r="1.7" fill="#334155"/><path d="M28 25 q4 3 8 0" stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M32 32 q-15 3 -15 24 h30 q0 -21 -15 -24 Z" fill="#2563EB"/><path d="M24.5 36 l7.5 5 7.5 -5" stroke="rgba(255,255,255,.55)" stroke-width="2" fill="none" stroke-linecap="round"/></svg> <h1 class="font-bold" style="color: #2563EB;">2</h1> </div> </div> <div id="top-progress-bar"></div><div id="progress-1"></div> <div class="question-container"><div id="word-1" class="word" lang="ar">...</div><div id="options-1" class="options" lang="ar"></div></div> <div class="status-bar"> <div id="p1-score-wrapper" class="flex items-center gap-1 md:gap-2 text-xl md:text-2xl"> <span class="text-2xl md:text-3xl">⭐</span><span id="score-1">0</span> </div> <div id="p1-timer" class="hidden items-center gap-1 md:gap-2 text-xl md:text-2xl"> <span class="text-2xl md:text-3xl">⏱️</span><span id="p1-timer-value"></span> </div> </div> </div> <div id="player-2" class="w-full md:w-1/2 player-screen"> <div class="w-full flex justify-center player-icon-wrapper"> <div class="flex gap-2 md:gap-3"> <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="32" cy="19" r="11" fill="#f6c89f"/><path d="M21 19 a11 11 0 0 1 22 0 q-4 -6 -11 -6 t-11 6 Z" fill="#6b4f3a"/><circle cx="27.5" cy="20" r="1.7" fill="#334155"/><circle cx="36.5" cy="20" r="1.7" fill="#334155"/><path d="M28 25 q4 3 8 0" stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M32 32 q-15 3 -15 24 h30 q0 -21 -15 -24 Z" fill="#F39C12"/><path d="M24.5 36 l7.5 5 7.5 -5" stroke="rgba(255,255,255,.55)" stroke-width="2" fill="none" stroke-linecap="round"/></svg> <h1 class="font-bold" style="color: #F39C12;">1</h1> </div> </div> <div id="progress-2"></div> <div class="question-container"><div id="word-2" class="word" lang="ar">...</div><div id="options-2" class="options" lang="ar"></div></div> <div class="status-bar"><div class="flex items-center gap-1 md:gap-2 text-xl md:text-2xl"><span class="text-2xl md:text-3xl">⭐</span><span id="score-2">0</span></div></div> </div> </div>
     <div id="modal" class="items-center justify-center"> <div class="absolute inset-0 bg-black bg-opacity-60" style="backdrop-filter: blur(4px);"></div> <div class="modal-content relative"> <div id="results-wrapper"> <h2 id="winner-text" class="text-2xl md:text-3xl font-bold mb-4"></h2> <div id="results-container"> <div class="results-grid"> <div id="result-column-1" class="result-column" style="background-color: #EDF3FF;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 2</h3><div id="player-1-results" class="flex flex-col items-start" lang="ar"></div></div> <div id="result-column-2" class="result-column" style="background-color: #FFF6E9;"><h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-center" lang="tr">Oyuncu 1</h3><div id="player-2-results" class="flex flex-col items-start" lang="ar"></div></div> </div> </div> </div> <div class="modal-btn-row"> <button id="replay-btn" class="modal-primary-btn">🔄 Tekrar Oyna</button> <button id="menu-btn" class="modal-secondary-btn">↩ Menü</button> </div> </div> </div>
 
-    <script src="gorevkopru.js?v=6"></script>
-    <script src="hangiharf.js?v=7"></script>
+    <script src="sistem/gorevkopru.js?v=7"></script>
+    <script src="oyunlar/hangiharf.js?v=7"></script>
     
     
-    <script src="geri.js"></script>
+    <script src="sistem/geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */

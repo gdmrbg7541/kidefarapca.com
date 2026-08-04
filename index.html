@@ -118,6 +118,11 @@
     html.dusuk-guc .a4-grid.acildi .a4-kart,
     html.dusuk-guc .ik-sayfa,  html.dusuk-guc .ik-halka, html.dusuk-guc .ik-tik,
     html.dusuk-guc .ik-damga,  html.dusuk-guc .ik-kalem, html.dusuk-guc .ik-yazi3,
+    html.dusuk-guc .kaliplar-tablosu-btn,
+    html.dusuk-guc .kaliplar-tablosu-btn::before,
+    html.dusuk-guc .kb-motor-parilti::after,
+    html.dusuk-guc .kb-motor-cark2 g,
+    html.dusuk-guc .kb-motor-yildiz,
     html.dusuk-guc .ik-rozet { animation: none !important; }
     /* duruş hâli: çizilen yollar tam görünsün */
     html.dusuk-guc .a4-imza-yol,
@@ -142,7 +147,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2320C997' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>">
     <!-- Tekil CSS Dosyası -->
-    <link rel="stylesheet" href="kurslar.css">
+    <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=20260731g">
     <style>
@@ -155,7 +160,7 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="listelerim.css?v=20260801zb">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=20260801zb">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -206,7 +211,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="kilit.js?v=12"></script>
+    <script src="sistem/kilit.js?v=12"></script>
 <style>
 /* ==== CANLI DERS: TAŞINABİLİR PENCERE (siteden bağımsız, sürüklenebilir) ==== */
 #live-class-modal.windowed {
@@ -1038,7 +1043,7 @@
                             column-gap:8px; row-gap:14px; max-width:100%; margin:10px auto 0; }
       /* geniş panelde belge kartları boş sütun bırakmadan yayılsın */
       @media (min-width:821px) {
-        #imam-hatip .a4-grid { grid-template-columns:repeat(auto-fit,minmax(158px,196px)); justify-content:center; }
+        #imam-hatip .a4-grid { grid-template-columns:repeat(auto-fit,minmax(178px,214px)); justify-content:center; }
       }
       #imam-hatip .ih-item { display:contents; }
       #imam-hatip .ih-head { grid-row:1; flex-direction:column; justify-content:flex-start; align-items:center;
@@ -1348,14 +1353,14 @@
       @media (min-width:601px){
         /* auto-fit: boş kalan sütunlar kapanır, kartlar satırı uçtan uca
            doldurur; sığmayanlar alt satırın solundan devam eder */
-        #imam-hatip .ih-genel-dok .a4-grid { grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+        #imam-hatip .ih-genel-dok .a4-grid { grid-template-columns:repeat(auto-fit,minmax(196px,1fr));
                                gap:18px 16px; justify-content:stretch; }
-        #imam-hatip .ih-genel-dok .a4-ikon { width:48px; height:48px; margin:8px 0 5px; }
-        #imam-hatip .ih-genel-dok .a4-ad { font-size:.76rem; }
-        #imam-hatip .ih-genel-dok .a4-satirlar { gap:7px; margin-top:8px; }
+        #imam-hatip .ih-genel-dok .a4-ikon { width:68px; height:68px; margin:9px 0 6px; }
+        #imam-hatip .ih-genel-dok .a4-ad { font-size:.98rem; }
+        #imam-hatip .ih-genel-dok .a4-satirlar { gap:7px; margin-top:9px; }
         #imam-hatip .ih-genel-dok .a4-satirlar b:nth-child(n+6):nth-child(-n+7) { display:block; }
       }
-      .a4-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(146px,1fr)); gap:20px 16px; }
+      .a4-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:20px 16px; }
 
       .a4-kart { -webkit-appearance:none; appearance:none; border:0; background:transparent; padding:0 7px 7px 0; margin:0;
                  cursor:pointer; font-family:inherit; display:block; width:100%; text-align:center; color:inherit; }
@@ -1391,23 +1396,26 @@
       .a4-kart:hover .a4-kivrim, .a4-kart.acik .a4-kivrim { width:30px; height:30px; }
 
       /* --- antet (evrak başlığı taklidi) --- */
-      .a4-antet { margin-top:6px; font-size:.5rem; font-weight:800; letter-spacing:1.1px; text-transform:uppercase;
+      .a4-antet { margin-top:7px; font-size:.6rem; font-weight:800; letter-spacing:.9px; text-transform:uppercase;
         color:#a7b6c6; line-height:1.2; display:flex; flex-direction:column; align-items:center; gap:3px; }
       .a4-antet i { display:block; height:1px; background:#e3eaf2; border-radius:1px; font-style:normal; }
-      .a4-antet i.uzun { width:56px; } .a4-antet i.kisa { width:30px; }
+      .a4-antet i.uzun { width:66px; } .a4-antet i.kisa { width:36px; }
 
       /* --- kategori ikonu --- */
-      .a4-ikon { width:46px; height:46px; margin:7px 0 5px; display:block; flex:none; }
+      .a4-ikon { width:66px; height:66px; margin:9px 0 7px; display:block; flex:none; }
       .a4-sheet .a4-ikon { position:relative; z-index:1; }
 
       /* --- kategori adı --- */
-      .a4-ad { font-size:.74rem; font-weight:800; line-height:1.28; color:#12304c; letter-spacing:.1px;
+      .a4-ad { font-size:.95rem; font-weight:800; line-height:1.26; color:#12304c; letter-spacing:.1px;
         padding:0 1px; position:relative; z-index:1; }
 
       /* --- gövde metni taklidi: cetvel çizgileri --- */
-      .a4-satirlar { width:100%; margin-top:7px; display:flex; flex-direction:column; gap:4px; align-items:center;
-        position:relative; z-index:1; }
-      .a4-satirlar b { display:block; height:3px; border-radius:2px; background:#eaeff5; position:relative; overflow:hidden; }
+      .a4-satirlar { width:100%; margin-top:8px; display:flex; flex-direction:column; gap:5px; align-items:center;
+        position:relative; z-index:1;
+        /* min-height:0 + overflow:hidden => bu blok esneyip kisalabilir.
+           Ikon ve yazi buyudugunde kagit tasmaz, sadece sus cizgileri kirpilir. */
+        flex:0 1 auto; min-height:0; overflow:hidden; }
+      .a4-satirlar b { display:block; height:3.5px; border-radius:2px; background:#eaeff5; position:relative; overflow:hidden; }
       .a4-satirlar b:nth-child(1){ width:78% } .a4-satirlar b:nth-child(2){ width:88% } .a4-satirlar b:nth-child(3){ width:52% }
       .a4-satirlar b:nth-child(4){ width:84% } .a4-satirlar b:nth-child(5){ width:66% }
       .a4-satirlar b:nth-child(6){ width:82% } .a4-satirlar b:nth-child(7){ width:70% } .a4-satirlar b:nth-child(8){ width:88% }
@@ -1419,12 +1427,12 @@
       /* --- alt blok: mühür + imza + sayaç --- */
       .a4-alt { width:100%; display:flex; align-items:flex-end; justify-content:space-between; gap:4px;
         position:relative; z-index:1; }
-      .a4-muhur { width:34px; height:34px; flex:none; }
-      .a4-imza { width:52px; height:20px; flex:none; }
+      .a4-muhur { width:42px; height:42px; flex:none; }
+      .a4-imza { width:62px; height:24px; flex:none; }
       /* sayaç: margin-top:auto ile kağıdın altına itilir, mühür/imza satırı onu izler */
       .a4-sayac { margin:auto auto 7px; position:relative; z-index:1;
-        font-size:.53rem; font-weight:800; letter-spacing:.4px; color:var(--a4c);
-        background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:1.5px 8px; white-space:nowrap; }
+        font-size:.66rem; font-weight:800; letter-spacing:.4px; color:var(--a4c);
+        background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:2.5px 10px; white-space:nowrap; }
       .a4-sayac.bos { color:#8296aa; }
 
       /* ============ ANİMASYONLAR ============ */
@@ -1472,23 +1480,30 @@
       .a4-panel-in { margin-top:16px; padding:13px 15px 15px; border:1.5px solid var(--a4c,#dbe3ec); border-radius:14px;
         background:linear-gradient(180deg,#fbfdff 0%,#fff 60%); box-shadow:0 6px 18px rgba(16,42,67,.07); }
       .a4-panel-bas { display:flex; align-items:center; gap:9px; margin:0 0 4px; }
-      .a4-panel-bas .a4-panel-ikon { width:26px; height:26px; flex:none; }
-      .a4-panel-bas b { font-size:1rem; font-weight:800; color:#12304c; letter-spacing:.1px; }
-      .a4-panel-bas .a4-panel-chip { margin-left:auto; font-size:.62rem; font-weight:800; letter-spacing:.4px;
-        color:var(--a4c); background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:2.5px 9px; }
+      .a4-panel-bas .a4-panel-ikon { width:34px; height:34px; flex:none; }
+      .a4-panel-bas b { font-size:1.12rem; font-weight:800; color:#12304c; letter-spacing:.1px; }
+      .a4-panel-bas .a4-panel-chip { margin-left:auto; font-size:.7rem; font-weight:800; letter-spacing:.4px;
+        color:var(--a4c); background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:3px 11px; }
       .a4-panel-in .dok-bos { margin-top:9px; }
 
       @media (max-width:600px){
         /* dar ekranda 2 sütun: kart genişliği ~160px kalır, A4 oranı bozulmadan
            uzun kategori adları da sığar */
-        .a4-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 12px; }
-        .a4-ad { font-size:.7rem } .a4-ikon { width:38px; height:38px; margin:5px 0 3px }
-        .a4-muhur { width:30px; height:30px } .a4-imza { width:46px; height:17px }
+        .a4-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 10px; }
+        /* dar ekranda gercek A4 orani korunuyor; dekoratif cetvel cizgileri
+           kaldirilarak kazanilan yer ikon ve yaziya verildi */
+        .a4-sheet { padding:7px 7px 6px }
+        .a4-kart { padding:0 5px 6px 0 }
+        .a4-ad { font-size:.84rem; line-height:1.2 } .a4-ikon { width:56px; height:56px; margin:4px 0 3px }
+        .a4-muhur { width:36px; height:36px } .a4-imza { width:54px; height:20px }
         /* dar kağıtta 3 satır yeter; uzun kategori adı 3 satıra taşarsa taşma olmasın */
-        .a4-antet { margin-top:3px } .a4-satirlar { margin-top:4px }
-        .a4-satirlar b:nth-child(n+4) { display:none }
-        .a4-sayac { margin-bottom:5px }
-        .a4-panel-in { padding:11px 12px 13px } .a4-panel-bas b { font-size:.92rem }
+        .a4-antet { margin-top:2px; font-size:.54rem; letter-spacing:.7px; gap:2px }
+        .a4-antet i.uzun { width:52px } .a4-antet i.kisa { width:28px }
+        .a4-satirlar { display:none }
+        .a4-sayac { font-size:.62rem; padding:2px 9px }
+        .a4-sayac { margin-bottom:3px }
+        .a4-panel-in { padding:11px 12px 13px } .a4-panel-bas b { font-size:1.02rem }
+        .a4-panel-bas .a4-panel-ikon { width:30px; height:30px }
       }
       @media (prefers-reduced-motion: reduce){
         .a4-muhur-g, .a4-imza-yol, .a4-satirlar b::after, .a4-grid.acildi .a4-kart,
@@ -1816,7 +1831,7 @@
     </section>
 
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
-    <script src="muhadese.js?v=20260803f"></script>
+    <script src="muhadese/muhadese.js?v=20260804d"></script>
     <script>
     (function () {
       /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
@@ -2554,7 +2569,7 @@
 
       /* Muhâdese kartı = yerinde açılır liste. Tıklayınca muhadese.html'e
          GİTMEZ; sınıfın dersleri kartın altında açılır, ders seçilince
-         doğrudan simultane.html?ders=... açılır. Ders verisi muhadese.js
+         doğrudan muhadese.html?ders=... açılır. Ders verisi muhadese.js
          içindeki educationData'dan okunur (tek kaynak). Verisi olmayan
          dersler soluk/pasif satır olarak görünür. */
       window.mhToggle = function (btn) {
@@ -2570,6 +2585,12 @@
         return String(s == null ? '' : s)
           .replace(/&/g, '&amp;').replace(/</g, '&lt;')
           .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      /* Ders index'ten açılıyor: birleşik muhadese.html'e "index'ten geldim"
+         bilgisini taşı ki çıkışta buraya (İmam Hatip bölümüne) dönsün. */
+      function mhUrl(url, sinif) {
+        if (!url) return url;
+        return url + '&kaynak=index&sinif=' + encodeURIComponent(sinif) + '&yer=imam-hatip';
       }
       function mhDers(ad, url, hazir) {
         if (hazir && url) {
@@ -2590,13 +2611,13 @@
           var adsiz = dersler.length === 1 && !dersler[0].name;
           if (adsiz) {
             if (dersler[0].aktif) hazir++;
-            html += mhDers(u.unitName, dersler[0].simultaneUrl, dersler[0].aktif);
+            html += mhDers(u.unitName, mhUrl(dersler[0].simultaneUrl, sinif), dersler[0].aktif);
             return;
           }
           html += '<div class="mh-unite">' + mhEsc(u.unitName) + '</div>';
           dersler.forEach(function (d) {
             if (d.aktif) hazir++;
-            html += mhDers(d.name, d.simultaneUrl, d.aktif);
+            html += mhDers(d.name, mhUrl(d.simultaneUrl, sinif), d.aktif);
           });
         });
         return html ? { html: html, hazir: hazir } : null;
@@ -4158,21 +4179,21 @@
 
 
     <!-- TEKİL JS DOSYASI -->
-        <script src="ogretmen.js"></script>
-        <script src="paketler.js"></script>
-        <script src="state.js"></script>
-    <script src="auth.js?v=20260801b"></script>
-    <script src="router.js?v=20260801e"></script>
-    <script src="offline-packages.js"></script>
-    <script src="online-packages.js"></script>
-    <script src="checkout.js"></script>
-    <script src="course-content.js"></script>
-    <script src="teacher-admin.js?v=20260731g"></script>
-    <script src="alarm.js"></script>
-    <script src="live-lesson.js?v=20260722c"></script>
-    <script src="listelerim.js?v=20260802a"></script>
-    <script src="ogrencihesap.js?v=20260801f"></script>
-    <script src="gorev.js?v=27"></script>
+        <script src="hesap/ogretmen.js"></script>
+        <script src="hesap/paketler.js"></script>
+        <script src="sistem/state.js"></script>
+    <script src="hesap/auth.js?v=20260801b"></script>
+    <script src="sistem/router.js?v=20260801e"></script>
+    <script src="hesap/offline-packages.js"></script>
+    <script src="hesap/online-packages.js"></script>
+    <script src="hesap/checkout.js"></script>
+    <script src="hesap/course-content.js"></script>
+    <script src="hesap/teacher-admin.js?v=20260731g"></script>
+    <script src="sistem/alarm.js"></script>
+    <script src="hesap/live-lesson.js?v=20260722c"></script>
+    <script src="hesap/listelerim.js?v=20260802a"></script>
+    <script src="hesap/ogrencihesap.js?v=20260801f"></script>
+    <script src="sistem/gorev.js?v=27"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
     <script>
@@ -4267,7 +4288,7 @@
         }
     </script>
     <script src="index.js?v=20260727"></script>
-    <script src="geri.js"></script>
+    <script src="sistem/geri.js"></script>
 
 <!-- ORTAK SEPET (Paketler + Canlı Ders + Ders Talep) -->
 <style>
@@ -4342,7 +4363,7 @@
 })();
 </script>
 
-<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')">Sarf Motoru <svg class="kb-motor-cark" viewBox="0 0 64 64" aria-hidden="true"><g><circle cx="32" cy="32" r="12" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="6" fill="#0E9E86"/></g></svg></a>
+<a href="kaliplartablosu.html" target="_blank" class="floating-tool-button kaliplar-tablosu-btn" onclick="return handleAnyLoginClick(event, 'kaliplartablosu.html')"><span class="kb-motor-parilti" aria-hidden="true"></span><span class="kb-motor-yazi">Sarf Motoru</span><span class="kb-motor-carkkutu" aria-hidden="true"><svg class="kb-motor-cark" viewBox="0 0 64 64"><g><circle cx="32" cy="32" r="12" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff"/><rect x="28.6" y="12" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="28.6" y="43" width="6.8" height="9" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="12" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><rect x="43" y="28.6" width="9" height="6.8" rx="3" fill="#fff" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="6" fill="#0E9E86"/></g></svg><svg class="kb-motor-cark2" viewBox="0 0 64 64"><g><circle cx="32" cy="32" r="13" fill="#FFF3D6"/><rect x="28" y="10" width="8" height="10" rx="3.2" fill="#FFF3D6"/><rect x="28" y="44" width="8" height="10" rx="3.2" fill="#FFF3D6"/><rect x="10" y="28" width="10" height="8" rx="3.2" fill="#FFF3D6"/><rect x="44" y="28" width="10" height="8" rx="3.2" fill="#FFF3D6"/><rect x="28" y="10" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(60 32 32)"/><rect x="28" y="44" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(60 32 32)"/><rect x="28" y="10" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(-60 32 32)"/><rect x="28" y="44" width="8" height="10" rx="3.2" fill="#FFF3D6" transform="rotate(-60 32 32)"/><circle cx="32" cy="32" r="6.5" fill="#F39C12"/></g></svg></span><span class="kb-motor-yildizlar" aria-hidden="true"><svg class="kb-motor-yildiz y1" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg><svg class="kb-motor-yildiz y2" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg><svg class="kb-motor-yildiz y3" viewBox="0 0 24 24"><path d="M12 0l2.3 7.7L22 12l-7.7 2.3L12 24l-2.3-9.7L2 12l7.7-4.3z" fill="#fff"/></svg></span></a>
 
 <!-- Öneri / İletişim butonu (Sarf Motoru'nun üstünde) -->
 <button id="feedbackFab" onclick="openMyMessages()" title="Mesajlar & İletişim" aria-label="Mesajlar ve iletişim" class="feedback-fab">

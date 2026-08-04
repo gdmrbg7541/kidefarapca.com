@@ -574,12 +574,152 @@ body{
   to {transform: scale(1); opacity: 1;}
 }
 
+/* ==========================================================================
+   SARF MOTORU YUZEN BUTONU — sitenin en kapsamli calismasina acilan kapi.
+   Buyutuldu + canlandirildi: nefes alan isik, donen ciftli cark, kayan
+   parilti seridi, disari acilan halka ve parildayan yildizlar.
+   Dusuk guc modunda (html.dusuk-guc) hepsi index.html icinde durduruluyor.
+   ========================================================================== */
 .floating-tool-button.kaliplar-tablosu-btn {
-  bottom: 25px; 
-  background: #F39C12; 
+  bottom: 25px;
+  background: linear-gradient(135deg, #F5A623 0%, #F39C12 55%, #E98B0B 100%);
+  /* GUNCELLENDI: masaustunde belirgin sekilde buyutuldu */
+  font-size: 1.9em;
+  padding: 20px 40px;
+  border-radius: 50px;
+  letter-spacing: .2px;
+  line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+  gap: .45em;
+  position: fixed;
+  overflow: visible;
+  isolation: isolate;
+  box-shadow: 0 8px 22px rgba(243,156,18,.42);
+  animation: kbMotorIsik 2.8s ease-in-out infinite;
+}
+/* disari acilan halka */
+.floating-tool-button.kaliplar-tablosu-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgba(243,156,18,.85);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  animation: kbMotorHalka 2.8s ease-out infinite;
+}
+/* kayan parilti seridi (butonun icine kirpilir) */
+.kb-motor-parilti {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.kb-motor-parilti::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -70%;
+  width: 40%;
+  height: 220%;
+  background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+  transform: rotate(14deg);
+  animation: kbMotorParilti 4.2s ease-in-out infinite;
+}
+.kb-motor-yazi { position: relative; z-index: 1; }
+/* ciftli cark: buyuk saat yonunde, kucuk ters yonde */
+.kb-motor-carkkutu {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  width: 1.95em;
+  height: 1.3em;
+}
+.floating-tool-button.kaliplar-tablosu-btn .kb-motor-cark {
+  width: 1.25em;
+  height: 1.25em;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -.625em;
+  vertical-align: baseline;
+}
+.kb-motor-cark2 {
+  width: .8em;
+  height: .8em;
+  position: absolute;
+  left: 1.1em;
+  top: -.1em;
+  overflow: visible;
+}
+.kb-motor-cark2 g {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: kbMotorTers 2.6s linear infinite;
+}
+/* parildayan yildizlar */
+.kb-motor-yildizlar { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.kb-motor-yildiz {
+  position: absolute;
+  width: .55em;
+  height: .55em;
+  opacity: 0;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,.9));
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: kbMotorYildiz 3.4s ease-in-out infinite;
+}
+/* yildizlar turuncu zeminin UZERINDE durur; beyaz sayfada kaybolmasin */
+.kb-motor-yildiz.y1 { left: .42em;   top: .3em;     animation-delay: 0s; }
+.kb-motor-yildiz.y2 { right: .38em;  bottom: .32em; animation-delay: 1.15s; }
+.kb-motor-yildiz.y3 { left: 42%;     top: .16em;    animation-delay: 2.2s; }
+
+@keyframes kbMotorIsik {
+  0%, 100% { box-shadow: 0 8px 22px rgba(243,156,18,.42); }
+  50%      { box-shadow: 0 10px 30px rgba(243,156,18,.72); }
+}
+@keyframes kbMotorHalka {
+  0%   { transform: scale(1);    opacity: .75; }
+  70%  { transform: scale(1.18); opacity: 0; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+@keyframes kbMotorParilti {
+  0%, 62%  { left: -70%; }
+  92%, 100%{ left: 130%; }
+}
+@keyframes kbMotorTers { to { transform: rotate(-360deg); } }
+@keyframes kbMotorYildiz {
+  0%, 72%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); }
+  80%           { opacity: 1; transform: scale(1) rotate(35deg); }
+  88%           { opacity: 0; transform: scale(.5) rotate(70deg); }
 }
 .floating-tool-button.kaliplar-tablosu-btn:hover {
-  background: #E67E22;
+  background: linear-gradient(135deg, #F0A03A 0%, #E67E22 60%, #D9741A 100%);
+  box-shadow: 0 12px 30px rgba(230,126,34,.55);
+}
+.floating-tool-button.kaliplar-tablosu-btn:hover .kb-motor-cark g { animation-duration: 1.1s; }
+.floating-tool-button.kaliplar-tablosu-btn:hover .kb-motor-cark2 g { animation-duration: .85s; }
+
+@media (max-width: 1200px) {
+  .floating-tool-button.kaliplar-tablosu-btn { font-size: 1.55em; padding: 17px 32px; }
+}
+@media (max-width: 768px) {
+  .floating-tool-button.kaliplar-tablosu-btn {
+    font-size: 1.15em;
+    padding: 13px 22px;
+    right: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-tool-button.kaliplar-tablosu-btn,
+  .floating-tool-button.kaliplar-tablosu-btn::before,
+  .kb-motor-parilti::after,
+  .kb-motor-cark2 g,
+  .kb-motor-yildiz { animation: none !important; }
 }
 
 /* ==========================================================================

@@ -245,16 +245,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const slaytContainer = document.getElementById('slayt-galerisi-container');
     if (!slaytContainer) return;
 
-    // Gösterilecek PDF dosyalarının listesi
+    // Gösterilecek PDF dosyalarının listesi.
+    // Dosyalar sunum/ klasöründedir; klasörü sunum.js kendisi ekler.
     const pdfListesi = [
-        "🧐 Harf-i Tarîf.pdf",
-        "🛠️ Kalıpları Pekiştir.pdf",
-        "🤔 Arapçada Kelime.pdf",
-        "🤔 İsmin 4 Özelliği.pdf",
-        "🧐 Müfred, Tesniye, Cem İsimler.pdf",
+        "🧐 Harf-i Tarîf.pdf",
+        "🛠️ Kalıpları Pekiştir.pdf",
+        "🤔 Arapçada Kelime.pdf",
+        "🤔 İsmin 4 Özelliği.pdf",
+        "🧐 Müfred, Tesniye, Cem İsimler.pdf",
         "🧐 Mazi Fiil.pdf",
         "⚔️ Kim Daha Hızlı.pdf",
-        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
+        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
         "🧐 Muzari Fiil.pdf",
         "🧐 Emir Fiil.pdf",
         "🧐 Aksam-ı Seb'a.pdf"
