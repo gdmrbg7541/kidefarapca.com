@@ -1,0 +1,136 @@
+@font-face {
+            font-family: 'Arakom';
+            src: url('../arakom.ttf') format('truetype');
+        }
+        :root {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --primary: #FF3B30;
+            --primary-hover: #e6352b;
+            --text: #333333;
+            --text-muted: #666666;
+            --border: #e2e8f0;
+            --success: #34C759;
+            --info: #3498db;
+            --warning: #f39c12;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arakom', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; font-family: 'Arakom', sans-serif; }
+        .container { max-width: 1200px; margin: auto; }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); font-size: 2.5rem; }
+        .header p { color: var(--text-muted); }
+        
+        /* Master Input Area */
+        .master-panel {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 2px solid var(--border);
+            margin-bottom: 30px;
+        }
+        .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 250px; display: flex; flex-direction: column; }
+        label { margin-bottom: 8px; color: var(--text-muted); font-weight: normal; font-size: 0.9rem; }
+        input {
+            padding: 12px 15px; background: #f1f5f9; border: 2px solid var(--border);
+            color: #333; border-radius: 8px; font-size: 1.1rem; transition: all 0.3s;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(255,59,48,0.1); }
+        
+        
+        /* Autocomplete List */
+        .autocomplete-container {
+            position: relative;
+            flex: 1;
+        }
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 2px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            font-family: 'Arakom', sans-serif;
+            font-size: 1.5rem;
+            direction: rtl;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+            color: #000;
+        }
+        .autocomplete-item:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Add Kalıp Bar */
+        .add-kalip-bar {
+            display: flex; gap: 15px; align-items: center; background: #e2e8f0; padding: 20px; border-radius: 12px; margin-top: 20px;
+        }
+        .add-kalip-bar label { margin: 0; font-size: 1.3rem; color: #333; white-space: nowrap; }
+        .add-kalip-bar input { flex: 1; min-width: 150px; text-align: center; font-weight: normal; font-size: 1.5rem; padding: 15px; border-radius: 10px; }
+        .add-kalip-bar button {
+            background: var(--success); color: white; border: none; padding: 15px 40px;
+            border-radius: 10px; font-size: 1.4rem; font-weight: normal; cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .add-kalip-bar button:hover { background: #2ebd4d; transform: scale(1.02); }
+
+        /* Dynamic Cards */
+        .kalip-list { display: flex; flex-direction: column; gap: 40px; margin-bottom: 30px; }
+        #kalip-container { max-height: 850px; overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 40px; }
+        .kalip-card {
+            background: var(--surface); border: 2px solid var(--info); border-radius: 16px;
+            padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative;
+        }
+        .kalip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px dashed #e2e8f0; padding-bottom: 10px; }
+        .kalip-title { font-size: 1.2rem; font-weight: normal; color: var(--info); }
+        .kalip-ar-title { font-family: 'Arakom', sans-serif; font-size: 1.8rem; margin-left: 10px; color: #000; }
+        .delete-btn { background: var(--primary); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: normal; }
+        
+        .entry-grid { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px; }
+        .entry-grid input.ar-input { flex: 2; font-family: 'Arakom', sans-serif !important; font-size: 2rem; direction: rtl; text-align: center; }
+        .entry-grid input.tr-input { flex: 3; }
+        .entry-grid input.em-input { flex: 0.5; text-align: center; font-size: 1.5rem; cursor: pointer; }
+        
+        .ornek-row { display: flex; gap: 10px; margin-top: 10px; padding: 10px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a; }
+        .ornek-row input.or-ar { flex: 1; direction: rtl; font-family: 'Arakom', sans-serif !important; font-size: 1.5rem; }
+        .ornek-row input.or-tr { flex: 1; }
+        
+        /* Suffix section */
+        .suffix-list { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #e2e8f0; }
+        .suffix-card { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; margin-bottom: 10px; position: relative; }
+        .suffix-title { font-weight: normal; color: var(--primary); margin-bottom: 10px; font-family: 'Arakom', sans-serif; font-size: 1.5rem; }
+        
+        .card-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .action-btn { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: normal; }
+        .action-btn:hover { background: #e2e8f0; }
+        
+        /* Main Action Area */
+        .generate-btn {
+            display: block; width: 100%; padding: 20px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-size: 1.5rem; font-weight: normal; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); margin-bottom: 20px;
+        }
+        .generate-btn:hover { background: var(--primary-hover); transform: translateY(-3px); }
+        
+        #code-container { display: none; position: relative; }
+        textarea { width: 100%; height: 400px; background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', monospace; font-size: 14px; padding: 20px; border-radius: 12px; border: 2px solid var(--border); resize: vertical; }
+        .copy-btn { position: absolute; top: 10px; right: 20px; background: var(--success); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: normal; }
+
+@keyframes spin-loader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
