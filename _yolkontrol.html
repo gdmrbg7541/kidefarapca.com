@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dosya Yolu Kontrolü — kidefarapca.com</title>
+<style>
+  :root { --ok:#128a5a; --yok:#c62828; --bek:#8a94a6; }
+  body { margin:0; padding:22px 16px 60px; background:#f4f7fb; color:#12304c;
+         font-family:'Arakom','Marhey',system-ui,sans-serif; }
+  .kutu { max-width:820px; margin:0 auto; background:#fff; border:1px solid #e3eaf3;
+          border-radius:16px; padding:22px 20px 26px; box-shadow:0 6px 22px rgba(18,48,76,.06); }
+  h1 { font-size:1.3rem; margin:0 0 4px; }
+  p.alt { margin:0 0 18px; color:#5b6b80; font-size:.92rem; line-height:1.5; }
+  .ozet { display:flex; gap:10px; flex-wrap:wrap; margin:0 0 16px; }
+  .rozet { font-size:.85rem; font-weight:800; border-radius:999px; padding:6px 14px;
+           border:1px solid #e3eaf3; background:#f7fafd; }
+  .rozet.iyi { color:var(--ok); border-color:#bde5d3; background:#eef9f4; }
+  .rozet.kotu { color:var(--yok); border-color:#f2c9c9; background:#fdefef; }
+  table { width:100%; border-collapse:collapse; font-size:.92rem; }
+  td { padding:7px 6px; border-bottom:1px solid #eef2f7; vertical-align:middle; }
+  td.d { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.86rem; word-break:break-all; }
+  td.s { text-align:right; white-space:nowrap; font-weight:800; width:120px; }
+  .ok { color:var(--ok); } .yok { color:var(--yok); } .bek { color:var(--bek); }
+  .font { margin:18px 0 0; padding:14px 16px; border:1px solid #e3eaf3; border-radius:12px;
+          background:#f7fafd; font-size:.95rem; line-height:1.6; }
+  .ornek { font-size:1.35rem; margin-top:6px; }
+  .not { margin-top:18px; font-size:.86rem; color:#5b6b80; line-height:1.55; }
+</style>
+</head>
+<body>
+<div class="kutu">
+  <h1>Dosya Yolu Kontrolü</h1>
+  <p class="alt">Bu sayfa, <b>index.html</b>’in ihtiyaç duyduğu bütün yerel dosyaları tek tek çağırır.
+     Kırmızı görünen satırlar sunucuda <b>yok</b> demektir; tasarımın bozulmasının sebebi odur.
+     Bu dosyayı sitenin kök klasörüne yükleyip
+     <code>kidefarapca.com/_yolkontrol.html</code> adresinden aç.</p>
+
+  <div class="ozet">
+    <span class="rozet" id="rz-top">— dosya denendi</span>
+    <span class="rozet iyi" id="rz-ok">— bulundu</span>
+    <span class="rozet kotu" id="rz-yok">— eksik</span>
+  </div>
+
+  <table id="tablo"></table>
+
+  <div class="font">
+    <b>Yazı tipi denemesi:</b> aşağıdaki satır Arakom ile görünüyorsa yazı tipi yüklenmiştir.
+    <div class="ornek" id="ornek" style="font-family:'Arakom',serif">
+      Arakom yazı tipi — Sınıf Dosyası · Zümre Tutanakları · 0123456789
+    </div>
+    <div id="fontdurum" style="margin-top:8px;font-weight:800">kontrol ediliyor…</div>
+  </div>
+
+  <p class="not">Not: Bu dosyanın adı alt çizgi ile başladığı için site içi sayaçlara ve
+     taramalara dahil olmaz. Kontrol bitince silebilirsin.</p>
+</div>
+
+<script>
+  var DOSYALAR = [
+    "arakom.css","arakom.ttf","index.css","index.js",
+    "hesap/auth.js","hesap/checkout.js","hesap/course-content.js","hesap/kurslar.css",
+    "hesap/listelerim.css","hesap/listelerim.js","hesap/live-lesson.js",
+    "hesap/offline-packages.js","hesap/ogrencihesap.js","hesap/ogretmen.js",
+    "hesap/online-packages.js","hesap/paketler.js","hesap/teacher-admin.js",
+    "muhadese/muhadese.js","sistem/alarm.js","sistem/geri.js","sistem/gorev.js",
+    "sistem/kilit.js","sistem/router.js","sistem/state.js"
+  ];
+
+  var tablo = document.getElementById('tablo');
+  var iyi = 0, kotu = 0;
+
+  function yaz() {
+    document.getElementById('rz-top').textContent = DOSYALAR.length + ' dosya denendi';
+    document.getElementById('rz-ok').textContent = iyi + ' bulundu';
+    document.getElementById('rz-yok').textContent = kotu + ' eksik';
+  }
+
+  DOSYALAR.forEach(function (d) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td class="d">' + d + '</td><td class="s bek">bekliyor…</td>';
+    tablo.appendChild(tr);
+    var hucre = tr.lastElementChild;
+
+    fetch(d + '?kontrol=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+      if (r.ok) { iyi++; hucre.className = 's ok'; hucre.textContent = 'var (' + r.status + ')'; }
+      else { kotu++; hucre.className = 's yok'; hucre.textContent = 'YOK (' + r.status + ')'; }
+      yaz();
+    }).catch(function () {
+      kotu++; hucre.className = 's yok'; hucre.textContent = 'ULAŞILAMADI'; yaz();
+    });
+  });
+  yaz();
+
+  (function () {
+    var c = document.getElementById('fontdurum');
+    if (!document.fonts) { c.textContent = 'tarayıcı font durumunu bildirmiyor'; return; }
+    document.fonts.ready.then(function () {
+      var v = document.fonts.check('16px Arakom');
+      c.textContent = v ? '✓ Arakom yüklendi' : '✗ Arakom YÜKLENMEDİ — arakom.css veya arakom.ttf eksik';
+      c.style.color = v ? '#128a5a' : '#c62828';
+    });
+  })();
+</script>
+</body>
+</html>
