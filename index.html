@@ -1918,6 +1918,10 @@
 
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
     <script src="muhadese/muhadese.js?v=20260804d"></script>
+    <!-- Sınıf modül altyapısı: hangi sınıfta hangi modülün verisi var (tek kaynak)
+         + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı. -->
+    <script src="sistem/sinifveri.js?v=20260805a"></script>
+    <script src="sistem/sinifmodul.js?v=20260805a"></script>
     <script>
     (function () {
       /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
@@ -2854,6 +2858,15 @@
                  url: 'muhadese.html?sinif=' + sinif, rozet: 'Başla', svg: konusmaSvg() };
       }
 
+      /* Kayıtlı sınıf modüllerinin kartları (Bilgi Yarışması vb.) Muhâdese
+         kartının yanına eklenir. Yeni kart eklemek için YALNIZ
+         sistem/sinifmodul.js düzenlenir; burası değişmez. */
+      function modulKartlari(mount, sinif) {
+        try {
+          if (window.KidefSinifModul) window.KidefSinifModul.yerlestir(mount, sinif);
+        } catch (e) { }
+      }
+
       /* Muhâdese kartı = yerinde açılır liste. Tıklayınca muhadese.html'e
          GİTMEZ; sınıfın dersleri kartın altında açılır, ders seçilince
          doğrudan muhadese.html?ders=... açılır. Ders verisi muhadese.js
@@ -2915,6 +2928,7 @@
         if (!liste) { /* veri okunamazsa eski davranış: muhadese.html'e git */
           mount.innerHTML = '<div class="game-grid mobile-scroll-grid-single">' +
             kartHtml(muhadeseKart(sinif)) + '</div>';
+          modulKartlari(mount, sinif);
           return;
         }
         var rozet = liste.hazir
@@ -2936,6 +2950,7 @@
           '</div>' +
           '<div class="mh-panel"><div class="mh-panel-in' + (liste.hazir ? '' : ' bos') + '">' +
             liste.html + '</div></div>';
+        modulKartlari(mount, sinif);
       });
 
       /* === DÖKÜMANLAR — okul geneli başlıklar (sınıfa özel olanlar sınıflara taşındı) === */
@@ -4480,6 +4495,7 @@
     <script src="hesap/live-lesson.js?v=20260722c"></script>
     <script src="hesap/listelerim.js?v=20260802a"></script>
     <script src="hesap/ogrencihesap.js?v=20260801f"></script>
+    <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=27"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
