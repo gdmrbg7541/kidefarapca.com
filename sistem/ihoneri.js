@@ -379,7 +379,7 @@
   function tara() {
     if (_calisiyor) return;
     _calisiyor = true;
-    try { taraKenar(); taraProfil(); } catch (e) { try { console.warn('ihoneri:', e); } catch (e2) { } }
+    try { taraKenar(); taraProfil(); bitirUygula(); } catch (e) { try { console.warn('ihoneri:', e); } catch (e2) { } }
     /* kendi eklediklerimiz gozlemciyi tetiklemesin diye bir tik bekle */
     setTimeout(function () { _calisiyor = false; }, 0);
   }
@@ -453,12 +453,102 @@
     }, 9000);
   }
 
+  /* =======================================================================
+     8b) "✔ Düzenlemeyi Bitir" TUSUNU VURGULA
+     --------------------------------------------------------------------
+     Listeye seviye/sinif eklenince (ya da adi degisince) degisiklik ancak
+     bu tusa basilinca tam olarak yerine oturuyor. Kullanici tusu gozden
+     kacirmasin diye: ekleme algilanir algilanmaz tus nabiz gibi atar ve
+     altina kisa bir ipucu satiri dusulur.
+     Vurgu KENDILIGINDEN biter:  a) tusa basilinca,
+                                 b) duzenleme modu kapaninca
+                                    (tus yazisi "Listeyi Düzenle"ye donunce).
+     listelerim.js'e DOKUNULMAZ: tus, onclick'indeki llProfilDuzenle
+     cagrisindan bulunur (tusun id'si/class'i yok).
+     ===================================================================== */
+  var _bitirBekler = false;   /* bekleyen bir ekleme var mi */
+  var _bitirCizildi = false;  /* vurgu en az bir kez uygulandi mi */
+  var _bitirZaman = 0;        /* bekleme cok eskiyse kendiliginden dus */
+  var BITIR_OMUR = 300000;    /* 5 dk */
+  var BITIR_SEC = 'button[onclick*="llProfilDuzenle"]';
+
+  /* Listenin o anki gorunumu — ekleme gercekten oldu mu diye karsilastirilir
+     (prompt iptal edilirse bosuna vurgu yapilmasin) */
+  function listeImza() {
+    var nav = document.getElementById('levelNav');
+    if (!nav) return '';
+    var p = [];
+    [].forEach.call(nav.querySelectorAll('.level-head > span, .class-link'), function (e) {
+      p.push((e.textContent || '').replace(/\s+/g, ' ').trim());
+    });
+    return p.join('|');
+  }
+
+  function bitirTemizle() {
+    _bitirBekler = false; _bitirCizildi = false; _bitirZaman = 0;
+    [].forEach.call(document.querySelectorAll('.iho-bitir-vur'), function (t) {
+      t.classList.remove('iho-bitir-vur');
+    });
+    [].forEach.call(document.querySelectorAll('.iho-bitir-ipucu'), function (t) {
+      if (t.parentNode) t.parentNode.removeChild(t);
+    });
+  }
+
+  function bitirIste() {
+    _bitirBekler = true; _bitirCizildi = false;
+    _bitirZaman = +new Date();
+    bitirUygula();
+  }
+
+  function bitirUygula() {
+    if (!_bitirBekler) return;
+    if (_bitirZaman && (+new Date() - _bitirZaman) > BITIR_OMUR) { bitirTemizle(); return; }
+    var kok = document.getElementById('student-profile-section') || document;
+    var tuslar = [].slice.call(kok.querySelectorAll(BITIR_SEC));
+    if (!tuslar.length) return;              /* profil karti henuz cizilmedi */
+    var bulundu = false;
+    tuslar.forEach(function (t) {
+      if (!/Bitir/.test(t.textContent || '')) return;   /* duzenleme modu kapali */
+      bulundu = true;
+      if (!t.classList.contains('iho-bitir-vur')) t.classList.add('iho-bitir-vur');
+      var satir = t.parentNode;
+      if (satir && !satir.querySelector('.iho-bitir-ipucu')) {
+        var ip = document.createElement('span');
+        ip.className = 'iho-bitir-ipucu';
+        ip.setAttribute('data-iho', '1');
+        ip.innerHTML = '<i>↑</i><span></span>';
+        ip.lastChild.textContent =
+          'Liste güncellendi — değişikliğin her yere işlemesi için bu tuşa bas.';
+        satir.appendChild(ip);
+      }
+    });
+    /* Vurgu bir kez cizildikten sonra tus kaybolduysa duzenleme modu
+       kapanmis demektir → vurgu biter. Hic cizilmediyse (or. ekleme kenar
+       cubugundan yapildi) profil duzenleme moduna girene kadar beklenir. */
+    if (bulundu) _bitirCizildi = true;
+    else if (_bitirCizildi) bitirTemizle();
+  }
+
+  /* Tusa basilinca vurgu biter (yakalama evresi: inline onclick'ten once) */
+  document.addEventListener('click', function (e) {
+    var h = e.target;
+    if (!h || !h.closest) return;
+    if (h.closest(BITIR_SEC)) setTimeout(bitirTemizle, 0);
+  }, true);
+
   function sarmala(ad) {
     var esk = window[ad];
     if (typeof esk !== 'function' || esk._iho) return false;
     var yeni = function () {
+      var onc = listeImza();
       var sonuc = esk.apply(this, arguments);
-      setTimeout(function () { tara(); yeniSinifKontrol(); }, 80);
+      setTimeout(function () {
+        var son = listeImza();
+        /* imza degistiyse gercekten ekleme/degisiklik oldu; kenar cubugu
+           hic yoksa (imza bos) yine de vurgula */
+        if (son !== onc || (!son && !onc)) bitirIste();
+        tara(); yeniSinifKontrol();
+      }, 80);
       return sonuc;
     };
     yeni._iho = true;
@@ -541,6 +631,26 @@
       '.iho-mujde-metin small{font-size:.78rem;color:#8B6A57;}',
       '.iho-mujde-kapat{flex:none;border:none;background:#F1F3F5;color:#6B4A38;width:28px;height:28px;',
       '  border-radius:50%;cursor:pointer;font-family:inherit;line-height:1;}',
+      /* ---- "Düzenlemeyi Bitir" vurgusu ---- */
+      '.iho-bitir-vur{position:relative;z-index:1;',
+      '  animation:ihoBitirNabiz 1.5s ease-in-out infinite;}',
+      '.iho-bitir-vur::after{content:"";position:absolute;inset:-5px;border-radius:15px;',
+      '  border:2px solid #27ae60;pointer-events:none;',
+      '  animation:ihoBitirHalka 1.5s ease-out infinite;}',
+      '@keyframes ihoBitirNabiz{0%,100%{transform:translateY(0);',
+      '    box-shadow:0 2px 6px rgba(39,174,96,.30);}',
+      '  50%{transform:translateY(-2px);box-shadow:0 8px 20px rgba(39,174,96,.45);}}',
+      '@keyframes ihoBitirHalka{0%{transform:scale(.97);opacity:.65;}',
+      '  70%{transform:scale(1.13);opacity:0;}100%{opacity:0;}}',
+      '.iho-bitir-ipucu{flex:0 0 100%;display:flex;align-items:flex-start;gap:7px;',
+      '  margin:2px 0 0;font-size:.79rem;font-weight:700;color:#1E8449;line-height:1.35;}',
+      '.iho-bitir-ipucu i{flex:none;font-style:normal;font-size:1rem;line-height:1;',
+      '  animation:ihoBitirOk 1.1s ease-in-out infinite;}',
+      '@keyframes ihoBitirOk{0%,100%{transform:translateY(2px);}50%{transform:translateY(-3px);}}',
+      'html.dusuk-guc .iho-bitir-vur,html.dusuk-guc .iho-bitir-vur::after,',
+      'html.dusuk-guc .iho-bitir-ipucu i{animation:none;}',
+      'html.dusuk-guc .iho-bitir-vur{box-shadow:0 0 0 3px rgba(39,174,96,.38);}',
+
       '@media (max-width:600px){',
       '  .iho-etiket{display:none;}',
       '  #ihoPop .iho-buyuk{width:62px;height:62px;}',

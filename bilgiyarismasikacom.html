@@ -127,8 +127,9 @@
         <div class="biy-giris-ust-metin">
         <h1>Bilgi Yarışması</h1>
         <p class="biy-alt">Yarışmayı yönetmek için <b>öğretmen/yönetici</b> hesabıyla giriş yapmalısın.</p>
-        <a class="biy-btn biy-btn-mavi biy-btn-giris" href="index.html?giris=1">Girişe git</a>
+        <a class="biy-btn biy-btn-mavi biy-btn-giris" href="index.html?giris=1&amp;rol=ogretmen">Girişe git</a>
         <p id="girisRolNot" class="biy-not"></p>
+        <p id="girisRolAyrinti" class="biy-not biy-rol-ayrinti" style="display:none;"></p>
       </div>
       </div>
       <div class="biy-giris-bilgi">
@@ -509,7 +510,8 @@ function biyGeriDon(e){
      index.html de aynı dosyayı okur; bu yüzden bilgi yarışmasının
      TEK html dosyası kalır, veriler sınıfa göre değişir. -->
 <script src="sistem/sinifveri.js?v=20260805a"></script>
-<script src="oyunlar/bilgiyarismasikacom.js?v=109"></script>
+<script src="sistem/rol.js?v=20260805a"></script>
+<script src="oyunlar/bilgiyarismasikacom.js?v=110"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */

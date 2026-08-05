@@ -3139,9 +3139,29 @@ window.addEventListener("beforeunload", function(e){
   /* Tek karekodlu modlarda (birey/okul) baglanti yalnizca ?oda= tasir; ogrenci
      kendi adini yazar ve ogretmen onayini bekler. Takim modunda ise her takimin
      kendi karekodu vardir, bu yuzden ?takim= de bulunur.                     */
+  /* Katılım için oturum: VARSA mevcut oturum korunur, yoksa anonim açılır.
+     (Eskiden koşulsuz signInAnonymously çağrılıyordu; öğretmen kendi
+      karekodunu aynı tarayıcıda denediğinde öğretmen oturumu siliniyor,
+      sonra yarışma sayfası onu "misafir" sayıp girişe yönlendiriyordu.) */
+  function biyOturumSagla(){
+    return new Promise(function (coz) {
+      try {
+        var bitti = false, kes = null;
+        kes = firebase.auth().onAuthStateChanged(function (u) {
+          if (bitti) return; bitti = true;
+          try { if (kes) kes(); } catch (e) {}
+          if (u) { coz(u); return; }
+          firebase.auth().signInAnonymously()
+            .then(function (c) { coz(c && c.user || null); })
+            .catch(function () { coz(null); });
+        });
+      } catch (e) { coz(null); }
+    });
+  }
+
   if (oda && !takim){
     state.mod = "takim";
-    try { firebase.auth().signInAnonymously().catch(function(){}); } catch(e){}
+    biyOturumSagla();
     BIY.katilimAkisi(oda);
     return;
   }
@@ -3153,33 +3173,74 @@ window.addEventListener("beforeunload", function(e){
     db.collection(KOLEKSIYON).doc(oda).collection("takimlar").onSnapshot(snap => {
       state.takimListe = []; snap.forEach(d => { const t = d.data(); state.takimListe.push({ id: d.id, ad: t.ad, puan: t.puan||0, bagli: !!t.bagli }); });
     }, () => {});
-    // kidef kuralları için anonim oturum; ardından takım bağlanır.
-    try { firebase.auth().signInAnonymously().catch(function(){}); } catch(e){}
+    // kidef kuralları için oturum (varsa korunur); ardından takım bağlanır.
+    biyOturumSagla();
     BIY.takimBagla(oda, takim);
     return;
   }
 
   /* Sade adres (?oda= yok) ile açan kişi öğretmendir: kidefarapca.com'daki
-     hesap/rol denetimi AYNEN korunur (index girişindeki teacher/admin). */
+     hesap/rol denetimi AYNEN korunur (index girişindeki teacher/admin).
+
+     ⚠️ ROL DENETİMİ ARTIK ORTAK: sistem/rol.js (KidefRol).
+     Eskiden burada "role alanı yoksa öğrenci say" deniyordu; bu yüzden
+     role alanı hiç yazılmamış öğretmen hesapları girişe yönlendiriliyor ve
+     "bu hesabın rolü öğrenci" diyordu. KidefRol; role alanına, öğretmen
+     izlerine (teacherStaticCode / sınıf listesi) ve bulut okunamazsa
+     önbelleğe bakar; eksik role alanını da kendiliğinden onarır. */
   state.mod = "admin";
   ekranGoster("ekranYukleniyor");
   firebase.auth().onAuthStateChanged(user => {
+    /* Ortak çözücü yoksa (dosya yüklenmediyse) eski davranışa dön */
+    if (!window.KidefRol){
+      biyEskiRolDenetimi(user); return;
+    }
+    if (!user){ biyGirisKapisiAc({ kaynak: "yok", misafir: true, rol: "misafir", ogretmen: false }); return; }
+    state.uid = user.uid;
+    window.KidefRol.coz(user, db).then(o => {
+      if (!o.ogretmen){ biyGirisKapisiAc(o); return; }
+      const isim = o.isim || user.email || "Yönetici";
+      const adEl = $("adminAd");
+      if (adEl) adEl.textContent = (o.rol === "admin" ? "Yönetici: " : "Öğretmen: ") + isim;
+      BIY._girisSonrasi();
+    }).catch(err => { console.error("Rol:", err); biyGirisKapisiAc({ hata: String(err && err.message || err) }); });
+  });
+
+  /* Giriş kapısı + "neden" açıklaması (kullanıcı ne yapacağını bilsin) */
+  function biyGirisKapisiAc(o){
+    const not = $("girisRolNot");
+    if (not) not.textContent = (window.KidefRol && o) ? window.KidefRol.aciklama(o) : "";
+    /* Ayrıntı satırı: sorun yaşayan öğretmen ne olduğunu görebilsin */
+    const ay = $("girisRolAyrinti");
+    if (ay && o && o.uid){
+      ay.textContent = "Hesap: " + (o.isim || o.uid.slice(0, 6)) +
+        " · rol alanı: " + (o.rolAlani || "(yok)") +
+        (o.iz ? " · öğretmen izi: " + o.iz : "") +
+        " · kaynak: " + (o.kaynak || "-") + (o.hata ? " · " + o.hata : "");
+      ay.style.display = "";
+    } else if (ay){ ay.style.display = "none"; }
+    ekranGoster("ekranGirisKapisi");
+  }
+
+  /* Eski (yedek) denetim — sistem/rol.js bulunamazsa */
+  function biyEskiRolDenetimi(user){
     if (!user || user.isAnonymous){
       $("girisRolNot").textContent = user && user.isAnonymous ? "Misafir olarak giriş yapılmış; yönetim için öğretmen/yönetici hesabı gerekli." : "";
       ekranGoster("ekranGirisKapisi"); return;
     }
     state.uid = user.uid;
     db.collection("kullanicilar").doc(user.uid).get().then(doc => {
-      const rol = (doc.exists && doc.data().role) ? doc.data().role : "student";
+      const v = doc.exists ? (doc.data() || {}) : {};
+      const rol = v.role || (v.teacherStaticCode || v.userData ? "teacher" : "student");
       if (!(rol === "teacher" || rol === "admin")){
         $("girisRolNot").textContent = "Bu hesabın rolü öğrenci. Yarışmayı yalnızca öğretmen/yönetici yönetebilir.";
         ekranGoster("ekranGirisKapisi"); return;
       }
-      const isim = (doc.data().name && doc.data().name !== "Belirtilmedi") ? doc.data().name : (user.email || "Yönetici");
+      const isim = (v.name && v.name !== "Belirtilmedi") ? v.name : (user.email || "Yönetici");
       const adEl = $("adminAd"); if (adEl) adEl.textContent = (rol === "admin" ? "Yönetici: " : "Öğretmen: ") + isim;
       BIY._girisSonrasi();
     }).catch(err => { console.error("Rol:", err); ekranGoster("ekranGirisKapisi"); });
-  });
+  }
 })();
 function biyGirisSonrasiTanimla(){}
 BIY._girisSonrasi = function(){

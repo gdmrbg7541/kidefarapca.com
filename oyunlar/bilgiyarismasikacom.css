@@ -2009,6 +2009,13 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 #ekranGirisKapisi { padding: 66px 0 40px; }   /* ust: sabit geri tusuna yer */
 .biy-giris-kart { max-width: 620px; text-align: center; }
 
+/* Rol ayrinti satiri: giris reddedilince NEDEN reddedildigi tek bakista
+   gorunsun (hesap, rol alani, ogretmen izi, veri kaynagi).               */
+.biy-rol-ayrinti {
+  margin-top: 6px; font-size: .74rem; color: #b0bac6; min-height: 0;
+  line-height: 1.45; word-break: break-word;
+}
+
 .biy-giris-anim { margin: -6px 0 6px; }
 .biy-giris-svg { width: 100%; max-width: 320px; height: auto; overflow: visible; }
 

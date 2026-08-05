@@ -4484,7 +4484,8 @@
         <script src="hesap/ogretmen.js"></script>
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
-    <script src="hesap/auth.js?v=20260801b"></script>
+    <script src="sistem/rol.js?v=20260805a"></script>
+    <script src="hesap/auth.js?v=20260805a"></script>
     <script src="sistem/router.js?v=20260801e"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
@@ -4536,8 +4537,18 @@
             }
 
             localStorage.setItem('savedEmail', email);
-            localStorage.setItem('activeSessionRole', 'student');
-            selectedRole = 'student';
+            /* Satin alma formu ogrenci akisidir; ancak oturumu acik bir
+               OGRETMENIN rolunu asagi cekmemeli (eskiden kosulsuz 'student'
+               yaziliyordu; ogretmen sepetten giris yapinca basliktaki rozet
+               ogrenciye donuyordu).                                        */
+            try {
+              var _mevcutRol = (typeof appState !== 'undefined' && appState.userRole) ? appState.userRole : '';
+              var _ogretmenOturum = (_mevcutRol === 'teacher' || _mevcutRol === 'admin');
+              if (!_ogretmenOturum) {
+                localStorage.setItem('activeSessionRole', 'student');
+                selectedRole = 'student';
+              }
+            } catch (e) { localStorage.setItem('activeSessionRole', 'student'); selectedRole = 'student'; }
 
             if (!isFirebaseReady) {
                 let users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
@@ -4594,7 +4605,13 @@
     <script src="sistem/geri.js"></script>
     <script>
     /* Baska sayfalardan "Girise git" ile gelindiginde giris-kayit penceresini ac.
-       Kullanim: index.html?giris=1  ya da  index.html#giris  */
+       Kullanim: index.html?giris=1  ya da  index.html#giris
+                 index.html?giris=1&rol=ogretmen  -> ogretmen sekmesi secili gelir
+
+       ⚠️ ZATEN GIRIS YAPILMISSA giris penceresi ACILMAZ. Eskiden bilgi
+       yarismasindaki "Girise git" tusu, oturumu acik ogretmeni bile bos bir
+       giris penceresine dusuruyor ve pencere varsayilan "Ogrenci" sekmesiyle
+       acildigi icin kullanici kendini ogrenci gibi goruyordu.               */
     (function kidefGirisKapisi() {
       function istendiMi() {
         try {
@@ -4604,23 +4621,71 @@
         if (location.hash === '#giris') return '1';
         return null;
       }
-      function ac(mod, kalan) {
+      function rolIstegi() {
+        try {
+          var r = (new URLSearchParams(location.search)).get('rol') || '';
+          if (/ogretmen|teacher/i.test(r)) return 'teacher';
+          if (/ogrenci|student/i.test(r)) return 'student';
+        } catch (e) {}
+        return null;
+      }
+      function adresTemizle() {
+        try { history.replaceState(null, '', location.pathname); } catch (e) {}
+      }
+      /* Oturum acikken: pencere yerine kisa bir bilgi balonu goster */
+      function zatenGirisli(rol) {
+        adresTemizle();
+        if (typeof showCustomAlert === 'function') {
+          showCustomAlert(rol === 'teacher' || rol === 'admin'
+            ? 'Zaten öğretmen hesabıyla giriş yapılmış. Bilgi Yarışması sekmesini yenilemen yeterli.'
+            : 'Bu tarayıcıda zaten giriş yapılmış. Yarışmayı yönetmek için öğretmen/yönetici hesabı gerekir.');
+        }
+      }
+      function ac(mod, rol, kalan) {
         if (typeof showLoginModal === 'function') {
           showLoginModal();
+          if (rol && typeof setRole === 'function') { try { setRole(rol); } catch (e) {} }
           if (mod === 'kayit' && typeof moduDegistir === 'function') {
             try { if (typeof isLoginMode === 'undefined' || isLoginMode) moduDegistir(); } catch (e) {}
           }
           /* adres cubugunu temizle ki yenilemede tekrar acilmasin */
-          try { history.replaceState(null, '', location.pathname); } catch (e) {}
+          adresTemizle();
           return;
         }
-        if (kalan > 0) setTimeout(function () { ac(mod, kalan - 1); }, 250);
+        if (kalan > 0) setTimeout(function () { ac(mod, rol, kalan - 1); }, 250);
+      }
+      /* Firebase oturumu asenkron cozulur: once bir kez bekleyip bakariz */
+      function basla(mod, rol) {
+        var karar = false;
+        function karara_bagla(user) {
+          if (karar) return; karar = true;
+          if (user && !user.isAnonymous) {
+            var r = (window.KidefRol && typeof appState !== 'undefined' && appState.userRole)
+              ? appState.userRole : null;
+            zatenGirisli(r);
+            return;
+          }
+          ac(mod, rol, 24);
+        }
+        try {
+          if (typeof firebase !== 'undefined' && firebase.auth) {
+            var kes = firebase.auth().onAuthStateChanged(function (u) {
+              try { if (kes) kes(); } catch (e) {}
+              karara_bagla(u);
+            });
+            /* auth hic cevap vermezse giris penceresini yine de ac */
+            setTimeout(function () { karara_bagla(null); }, 3500);
+            return;
+          }
+        } catch (e) {}
+        karara_bagla(null);
       }
       var mod = istendiMi();
       if (!mod) return;
+      var rol = rolIstegi();
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { ac(mod, 24); });
-      } else { ac(mod, 24); }
+        document.addEventListener('DOMContentLoaded', function () { basla(mod, rol); });
+      } else { basla(mod, rol); }
     })();
     </script>
 

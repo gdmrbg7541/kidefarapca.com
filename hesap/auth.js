@@ -73,8 +73,26 @@ if (typeof firebase !== 'undefined' && isFirebaseReady) {
             if (isRegistering) return; // kayit akisi rolu kendisi ayarlar
             db.collection('kullanicilar').doc(user.uid).get().then(doc => {
                 const data = doc.exists ? doc.data() : { role: 'student', packages: [], phone: '', name: '' };
-                // Rol tamamen Firestore'dan gelir (ogrenci/ogretmen aninda, yonetici rol ile)
-                selectedRole = data.role || 'student';
+                /* Rol tamamen Firestore'dan gelir (ogrenci/ogretmen aninda, yonetici rol ile).
+                   ⚠️ ORTAK COZUCU: sistem/rol.js. "role" alani hic yazilmamis eski
+                   ogretmen hesaplarinda eskiden 'student'e dusuluyordu; bu yuzden
+                   basliktaki rozet ogrenci gorunuyor ve bilgi yarismasi girise
+                   yonlendiriyordu. KidefRol ogretmen izlerine de bakar ve eksik
+                   "role" alanini kullanicinin KENDI belgesinde onarir. */
+                if (window.KidefRol) {
+                    selectedRole = KidefRol.rolCoz(data);
+                    try {
+                        KidefRol.onbellekYaz(user.uid, {
+                            rol: selectedRole,
+                            ogretmen: (selectedRole === 'teacher' || selectedRole === 'admin'),
+                            isim: KidefRol.isimCoz(data, user),
+                            iz: data.role ? '' : KidefRol.ogretmenIzi(data)
+                        });
+                        if (!user.isAnonymous) KidefRol.onar(user, db, data);
+                    } catch (e) { }
+                } else {
+                    selectedRole = data.role || 'student';
+                }
                 appState.currentUserGender = data.cinsiyet || '';
                 appState.currentUserMeslek = data.meslek || data.profession || '';
 
