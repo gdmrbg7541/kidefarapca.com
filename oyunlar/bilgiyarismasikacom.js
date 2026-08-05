@@ -127,8 +127,14 @@ function cevapDogruMu(s, secilen){
   if (b === "eslestir")
     return Array.isArray(secilen) && Array.isArray(s.ciftler) &&
            secilen.length === s.ciftler.length && s.ciftler.every((c, i) => secilen[i] === c[1]);
-  if (b === "yazma")
-    return String(secilen).replace(/\s+/g, "") === String(s.cevapYazi || "").replace(/\s+/g, "");
+  if (b === "yazma"){
+    // Yazmada baştaki elif-lâm (ال) İSTEĞE BAĞLI: öğrenci «ليل» yazsa da
+    // «الليل» yazsa da doğru sayılır. Yalnız harf-i tarif anlamı değiştiren
+    // kelimeler için soruya elifLamSart:true konursa ال yine zorunlu olur.
+    const sad = x => String(x == null ? "" : x).replace(/\s+/g, "");
+    const kok = x => s.elifLamSart ? sad(x) : sad(x).replace(/^ال/, "");
+    return kok(secilen) === kok(s.cevapYazi);
+  }
   return secilen === s.dogru;
 }
 // Doğru cevabın okunabilir metni (önizleme kartları, sınıf modu, soru havuzu).
@@ -747,6 +753,33 @@ function sikKartHtml(s, dogruGoster){
   return '<div class="biy-secenek'+(dogruGoster?' dogru':'')+' biy-arapca-secenek biy-bicim-kutu">' +
          '<span class="biy-sik">'+bb.emoji+'</span><span class="biy-secenek-metin">'+kacis(govde)+'</span></div>';
 }
+/* Yazma sorusunun DOĞRU cevabında kelimeyi oluşturan her harfi hem yalın
+   hâliyle hem de kelimedeki BİTİŞİK (bağlı) biçimiyle gösterir. Öğrenci hangi
+   harfin başta/ortada/sonda nasıl şekil değiştirdiğini görsün diye.
+   Bitişik biçim, harfi ZWJ (U+200D) ile sararak taklit edilir; ekstra font
+   gerekmez. Harekeler ve tatvil, bağlanma hesabında saydam kabul edilir. */
+const _AR_HAREKE = /[ً-ٰٕـ]/g;   // hareke/tenvin/sedde/sukun + ust elif + tatvil
+const _AR_SOLA_BAGLANMAZ = "اأإآٱدذرزوؤةءى"; // sola baglanmaz: a e i vs.
+function _arHarfMi(ch){ return /[ء-يٱ]/.test(ch); }
+function _arBaglanirSonraki(ch){ return _arHarfMi(ch) && _AR_SOLA_BAGLANMAZ.indexOf(ch) < 0; }
+function arapcaBirlesikHtml(kelime){
+  const ZWJ = "‍";
+  const harfler = String(kelime || "").replace(_AR_HAREKE, "").split("").filter(_arHarfMi);
+  if (harfler.length < 2) return "";
+  const hucreler = harfler.map((ch, i) => {
+    const oncekiBaglar = i > 0 && _arBaglanirSonraki(harfler[i - 1]);
+    const buBaglar     = _arBaglanirSonraki(ch) && i < harfler.length - 1;
+    let bic, konum;
+    if (oncekiBaglar && buBaglar){ bic = ZWJ + ch + ZWJ; konum = "Ortada"; }
+    else if (oncekiBaglar)       { bic = ZWJ + ch;       konum = "Sonda"; }
+    else if (buBaglar)           { bic = ch + ZWJ;        konum = "Başta"; }
+    else                         { bic = ch;              konum = "Yalın"; }
+    return '<span class="biy-yh-hucre" title="'+konum+'">' +
+      '<b class="biy-yh-bic">'+bic+'</b>' +
+      '<i class="biy-yh-yalin">'+ch+'</i></span>';
+  }).join("");
+  return '<div class="biy-yazi-harfler" dir="rtl" aria-label="Harflerin bitişik biçimleri">'+hucreler+'</div>';
+}
 // Yansıtılan admin tahtasındaki soru gövdesi (cevap fazı ve sonuç ekranı).
 function tahtaIcerikHtml(soru, sonucMu){
   const b = bicimAl(soru);
@@ -783,7 +816,7 @@ function tahtaIcerikHtml(soru, sonucMu){
   if (b === "yazma"){
     const tus = soru.tusKarisik || soru.tuslar || [];
     return '<div class="biy-a-tuslar">'+tus.map(t => '<span class="biy-a-tus">'+kacis(t)+'</span>').join("")+'</div>' +
-      (sonucMu ? '<div class="biy-a-cevapcubuk">✓ '+kacis(soru.cevapYazi||"")+'</div>' : '');
+      (sonucMu ? '<div class="biy-a-cevapcubuk">✓ '+kacis(soru.cevapYazi||"")+'</div>' + arapcaBirlesikHtml(soru.cevapYazi) : '');
   }
   return "";
 }
@@ -811,6 +844,8 @@ const state = {
   soruSayiMax: 50,           // seçili konu+seviyedeki mevcut soruya göre üst sınır
   secilenSet: null,          // elle seçilen soru anahtarları (Set) — havuzdan
   soruSecArama: "",          // soru havuzu arama metni
+  hsSuzgec: {},              // havuz süzgeci { konuId: {tip:[], bicim:[], zor:[]} } — boş dizi = süzgeç yok
+  hsSuzgecKapali: {},        // süzgeç paneli katlı mı { konuId: true/false }
   otoSonucIndex: -1,         // tüm takımlar cevaplayınca otomatik sonuç kilidi
   odaId: null,               // admin: oda kodu
   odaTakim: null,            // takım: {oda, takim}
@@ -1275,6 +1310,8 @@ const BIY = {
     if ($("soruSecBtn") && $("soruSecBtn").disabled) return;
     const eski = $("biySoruSec"); if (eski) eski.remove();
     state.soruSecArama = "";
+    state.hsSuzgec = {};        // pencere her açılışta süzgeçsiz gelir
+    state.hsSuzgecKapali = {};   // süzgeç panelleri açık başlar
     // Panelin ustundeki havuz SVG'sini basliga kucultulmus olarak klonla
     const hvIkon = (function(){ const e = document.querySelector(".biy-svg-havuz");
                                 return e ? e.outerHTML : "\u{1F3AF}"; })();
@@ -1316,20 +1353,192 @@ const BIY = {
         '<button class="biy-hs-tumu" title="Tümünü seç" aria-label="Tümünü seç" onclick="event.stopPropagation();BIY.soruSecTumu(\''+k.id+'\')">' +
           '<svg viewBox="0 0 24 24" class="biy-hs-tumu-svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
           '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.5"/><path class="biy-ea-ciz" d="M7.4 12.6l3 3 6.2-7.2"/></svg></button></div>' +
-        '<div class="biy-hs-govde">';
+        '<div class="biy-hs-govde">' +
+        BIY._hsSuzgecHtml(k, sorular);
       sorular.forEach(q => {
         const key = k.id + "#" + q.id; const sec = set.has(key);
         const dogruSik = dogruCevapMetni(q);
-        html += '<label class="biy-hs-satir'+(sec?' secili':'')+'" data-key="'+key+'">' +
+        html += '<label class="biy-hs-satir'+(sec?' secili':'')+'" data-key="'+key+'"' +
+            ' data-b="'+bicimAl(q)+'" data-z="'+(+q.zorluk || 0)+'" data-t="'+kacis(q.tip || "")+'">' +
           '<input type="checkbox" '+(sec?'checked':'')+' onchange="BIY.soruSecTik(\''+key+'\', this)">' +
+          BIY._hsRozetHtml(q) +
           '<span class="biy-hs-metin">'+soruHtml(q)+(q.arapca?' <i>'+kacis(q.arapca)+'</i>':'')+
             ' <b class="biy-hs-dogru">✓ '+kacis(dogruSik)+'</b></span>' +
         '</label>';
       });
+      html += '<p class="biy-hs-sz-bos" hidden>Bu süzgece uyan soru yok.</p>';
       html += '</div></div>';
     });
     kap.innerHTML = html || '<p class="biy-alt" style="text-align:center">Sonuç yok.</p>';
+    BIY._hsSuzgecHepsi();
     BIY._soruSecSayilar();
+  },
+
+  /* =====================================================================
+     HAVUZ SÜZGECİ — soru tipi (biçim) + zorluk (1–3 yıldız) + tür ikonları
+     ---------------------------------------------------------------------
+     Her açılabilir konu başlığının ALTINDA, gövdenin en üstünde durur.
+     Başlık kapalıyken gövde zaten display:none olduğu için süzgeç de
+     görünmez; yani tasarım kapalı hâlde birebir eskisi gibi kalır.
+
+     · İkonlar soru kartlarındaki ETIKET_BICIM / ETIKET_ZORLUK / ETIKET_TIP
+       SVG'lerinin ta kendisi → aynı dil, yeni bir sembol seti yok.
+     · Her ikonun yanında o konuda kaç soru olduğu yazar.
+     · Sayı 0 ise düğme gri + disabled ("pasif").
+     · Seçim YOKSA süzgeç yok demektir (hepsi görünür). Aynı satırdan
+       birden çok ikon seçilebilir (VEYA); satırlar arasında VE geçerli.
+     · Sayılar süzgeçten BAĞIMSIZ hesaplanır (yalnız arama kutusuna göre)
+       → ikonlar tıkladıkça yerinden oynamaz.
+  ===================================================================== */
+  _hsSuzgecAl(konuId){
+    if (!state.hsSuzgec) state.hsSuzgec = {};
+    if (!state.hsSuzgec[konuId]) state.hsSuzgec[konuId] = { tip: [], bicim: [], zor: [] };
+    return state.hsSuzgec[konuId];
+  },
+  _hsSuzgecVarMi(sz){ return !!(sz.tip.length || sz.bicim.length || sz.zor.length); },
+  // satır başındaki küçük rozetler (hangi tip/zorluk olduğu bir bakışta görünsün)
+  _hsRozetHtml(q){
+    const b = bicimAl(q), z = +q.zorluk || 0;
+    const bb = BICIM_BILGI[b] || { ad: b };
+    return '<span class="biy-hs-roz" aria-hidden="true">' +
+      '<i class="biy-hs-roz-b" title="'+kacis(bb.ad)+'">'+(ETIKET_BICIM[b] || ETIKET_TIP.varsayilan)+'</i>' +
+      (ETIKET_ZORLUK[z] ? '<i class="biy-hs-roz-z z'+z+'" title="'+kacis(ZORLUK_AD[z] || "")+'">'+ETIKET_ZORLUK[z]+'</i>' : '') +
+    '</span>';
+  },
+  _hsCip(konuId, boyut, deger, ikon, ad, say){
+    const sz = BIY._hsSuzgecAl(konuId);
+    const dizi = sz[boyut] || [];
+    const on = dizi.indexOf(boyut === "zor" ? +deger : deger) >= 0;
+    const pasif = (say === 0);
+    return '<button type="button" class="biy-hs-sz-cip'+(on ? ' secili' : '')+(pasif ? ' pasif' : '')+'"' +
+      ' data-boyut="'+boyut+'" data-deger="'+kacis(String(deger))+'"' +
+      ' title="'+kacis(ad)+' · '+say+' soru" aria-label="'+kacis(ad)+' ('+say+' soru)"' +
+      ' aria-pressed="'+(on ? 'true' : 'false')+'"'+(pasif ? ' disabled' : '') +
+      ' onclick="BIY.hsSuzgecTikla(this)">' +
+      '<span class="biy-hs-sz-ikon">'+ikon+'</span>' +
+      '<span class="biy-hs-sz-ad">'+kacis(ad)+'</span>' +
+      '<span class="biy-hs-sz-say">'+say+'</span>' +
+    '</button>';
+  },
+  _hsSuzgecHtml(k, sorular){
+    const konuId = k.id;
+    const sz = BIY._hsSuzgecAl(konuId);
+    const sayB = {}, sayZ = {}, sayT = {};
+    sorular.forEach(q => {
+      const b = bicimAl(q), z = +q.zorluk || 0, t = q.tip || "";
+      sayB[b] = (sayB[b] || 0) + 1;
+      sayZ[z] = (sayZ[z] || 0) + 1;
+      if (t) sayT[t] = (sayT[t] || 0) + 1;
+    });
+    // TÜR sütunu yalnızca konu birden çok tür barındırıyorsa çıkar
+    // (kelime + cümle birleştirilmiş sınıf konuları için asıl kazanç burada).
+    const turler = Object.keys(sayT);
+    const sutunSayi = (turler.length > 1) ? 3 : 2;
+    // Her kategori kendi SÜTUNUnda: üstte başlık, altında ikon + AÇIKLAMA + adet
+    // çipleri. Böylece her SVG'nin ne demek olduğu yanındaki yazıdan okunur.
+    const sutun = (baslik, cipler) =>
+      '<div class="biy-hs-sz-sutun"><span class="biy-hs-sz-bas">'+baslik+'</span>' +
+      '<div class="biy-hs-sz-cipler">'+cipler+'</div></div>';
+    let sutunlar = "";
+    if (turler.length > 1){
+      sutunlar += sutun('Tür', Object.keys(TIP_BILGI).filter(t => sayT[t]).map(t =>
+        BIY._hsCip(konuId, "tip", t, ETIKET_TIP[t] || ETIKET_TIP.varsayilan, (TIP_BILGI[t] || {}).ad || t, sayT[t] || 0)
+      ).join(""));
+    }
+    sutunlar += sutun('Soru tipi', Object.keys(BICIM_BILGI).map(b =>
+      BIY._hsCip(konuId, "bicim", b, ETIKET_BICIM[b] || ETIKET_TIP.varsayilan, BICIM_BILGI[b].ad, sayB[b] || 0)
+    ).join(""));
+    sutunlar += sutun('Zorluk', [1, 2, 3].map(z =>
+      BIY._hsCip(konuId, "zor", z, ETIKET_ZORLUK[z], ZORLUK_AD[z] || ("Zorluk " + z), sayZ[z] || 0)
+    ).join(""));
+    const varMi = BIY._hsSuzgecVarMi(sz);
+    // Süzgeç kendisi de AKORDİYON: başlığa basınca 3 sütunlu gövde katlanır,
+    // böylece süzme bitince panel kapanıp ekranın tamamı sorulara kalır.
+    const kapali = !!(state.hsSuzgecKapali && state.hsSuzgecKapali[konuId]);
+    const huni = '<svg viewBox="0 0 24 24" class="biy-hs-sz-huni-svg" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5h17l-6.6 7.6v5.4l-3.8-2v-3.4z"/></svg>';
+    return '<div class="biy-hs-suzgec'+(kapali ? ' kapali' : '')+'" role="group" aria-label="Soru süzgeci">' +
+      '<button type="button" class="biy-hs-sz-baslik" aria-expanded="'+(kapali ? 'false' : 'true')+'"' +
+        ' onclick="BIY.hsSuzgecAcKapa(\''+konuId+'\')" title="Süzgeci aç / kapat">' +
+        '<span class="biy-hs-sz-huni">'+huni+'</span>' +
+        '<b>Süzgeç</b>' +
+        '<span class="biy-hs-sz-ozet"'+(varMi ? '' : ' hidden')+'></span>' +
+        '<span class="biy-hs-sz-ok" aria-hidden="true">▾</span>' +
+      '</button>' +
+      '<div class="biy-hs-sz-govde">' +
+        '<div class="biy-hs-sz-izgara" style="--sut:'+sutunSayi+'">'+sutunlar+'</div>' +
+        '<div class="biy-hs-sz-alt"'+(varMi ? '' : ' hidden')+'>' +
+          '<span class="biy-hs-sz-bilgi"'+(varMi ? '' : ' hidden')+'></span>' +
+          '<button type="button" class="biy-hs-sz-sifirla"'+(varMi ? '' : ' hidden')+
+            ' onclick="BIY.hsSuzgecSifirla(\''+konuId+'\')">Süzgeci temizle</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  },
+  // süzgeç panelini aç/kapat (akordiyon) — durum konu bazında saklanır
+  hsSuzgecAcKapa(konuId){
+    if (!state.hsSuzgecKapali) state.hsSuzgecKapali = {};
+    state.hsSuzgecKapali[konuId] = !state.hsSuzgecKapali[konuId];
+    const s = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"] .biy-hs-suzgec');
+    if (s){
+      const k = !!state.hsSuzgecKapali[konuId];
+      s.classList.toggle("kapali", k);
+      const bas = s.querySelector(".biy-hs-sz-baslik");
+      if (bas) bas.setAttribute("aria-expanded", k ? "false" : "true");
+    }
+  },
+  hsSuzgecTikla(el){
+    if (!el || el.disabled) return;
+    const g = el.closest(".biy-hs-grup"); if (!g) return;
+    const konuId = g.getAttribute("data-konu");
+    const boyut = el.getAttribute("data-boyut");
+    const ham = el.getAttribute("data-deger");
+    const deger = (boyut === "zor") ? +ham : ham;
+    const dizi = BIY._hsSuzgecAl(konuId)[boyut];
+    const i = dizi.indexOf(deger);
+    if (i >= 0) dizi.splice(i, 1); else dizi.push(deger);
+    BIY._hsSuzgecUygula(konuId);
+  },
+  hsSuzgecSifirla(konuId){
+    const sz = BIY._hsSuzgecAl(konuId);
+    sz.tip = []; sz.bicim = []; sz.zor = [];
+    BIY._hsSuzgecUygula(konuId);
+  },
+  // süzgeci satırları YENİDEN ÇİZMEDEN uygula → kaydırma ve seçimler korunur
+  _hsSuzgecUygula(konuId){
+    const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]'); if (!g) return;
+    const sz = BIY._hsSuzgecAl(konuId);
+    g.querySelectorAll(".biy-hs-sz-cip").forEach(c => {
+      const boyut = c.getAttribute("data-boyut");
+      const ham = c.getAttribute("data-deger");
+      const on = (sz[boyut] || []).indexOf(boyut === "zor" ? +ham : ham) >= 0;
+      c.classList.toggle("secili", on);
+      c.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    let gorunen = 0;
+    g.querySelectorAll(".biy-hs-satir").forEach(r => {
+      const uy = (!sz.bicim.length || sz.bicim.indexOf(r.getAttribute("data-b")) >= 0) &&
+                 (!sz.zor.length   || sz.zor.indexOf(+r.getAttribute("data-z")) >= 0) &&
+                 (!sz.tip.length   || sz.tip.indexOf(r.getAttribute("data-t")) >= 0);
+      r.hidden = !uy; if (uy) gorunen++;
+    });
+    const varMi = BIY._hsSuzgecVarMi(sz);
+    const alt = g.querySelector(".biy-hs-sz-alt"); if (alt) alt.hidden = !varMi;
+    const bilgi = g.querySelector(".biy-hs-sz-bilgi");
+    if (bilgi){ bilgi.hidden = !varMi; bilgi.innerHTML = '<b>'+gorunen+'</b> soru eşleşti'; }
+    const sf = g.querySelector(".biy-hs-sz-sifirla"); if (sf) sf.hidden = !varMi;
+    // süzgeç kapalıyken başlıkta etkin süzgecin kaç soru bıraktığı görünsün
+    const ozet = g.querySelector(".biy-hs-sz-ozet");
+    if (ozet){ ozet.hidden = !varMi; ozet.textContent = varMi ? (gorunen + " soru") : ""; }
+    const bos = g.querySelector(".biy-hs-sz-bos"); if (bos) bos.hidden = (gorunen > 0);
+    const tb = g.querySelector(".biy-hs-tumu");
+    if (tb){
+      tb.classList.toggle("suzgecli", varMi);
+      tb.title = varMi ? "Süzgeçten geçen soruları seç" : "Tümünü seç";
+      tb.setAttribute("aria-label", tb.title);
+    }
+  },
+  _hsSuzgecHepsi(){
+    document.querySelectorAll(".biy-hs-grup").forEach(g => BIY._hsSuzgecUygula(g.getAttribute("data-konu")));
   },
   // sayaçları (grup başlıkları + toplam + buton) satırları yeniden çizmeden güncelle
   _soruSecSayilar(){
@@ -1343,9 +1552,16 @@ const BIY = {
         sp.classList.toggle("dolu", sec > 0);
         sp.classList.toggle("tam", sec === k.sorular.length);
       }
-      // tümünü-seç: grup tam seçiliyse animasyon durur, tik yeşil kalır
+      // tümünü-seç: grup tam seçiliyse animasyon durur, tik yeşil kalır.
+      // Süzgeç açıkken ölçüt EKRANDA GÖRÜNEN satırlardır (düğme de onlara işler).
       const tb = g.querySelector(".biy-hs-tumu");
-      if (tb) tb.classList.toggle("tam", sec === k.sorular.length);
+      if (tb){
+        const gorunen = [].slice.call(g.querySelectorAll(".biy-hs-satir")).filter(r => !r.hidden);
+        const tam = gorunen.length
+          ? gorunen.every(r => set.has(r.getAttribute("data-key")))
+          : (sec === k.sorular.length);
+        tb.classList.toggle("tam", tam);
+      }
     });
     const say = $("soruSecSecili"); if (say) say.innerHTML = 'Seçili <b class="biy-say-rozet">' + set.size + '</b>';
     BIY._soruSecSayiGuncelle();
@@ -1364,12 +1580,32 @@ const BIY = {
     const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]');
     if (g) g.classList.toggle("acik", !!state.soruSecAcik[konuId]);
   },
+  /* "Tümünü seç" artık EKRANDA GÖRÜNEN sorulara uygulanır: arama + süzgeç
+     neyi bıraktıysa o seçilir. Süzgeç yokken davranış eskisiyle aynı.
+     Satırlar yeniden çizilmez → kaydırma yerinde kalır. */
   soruSecTumu(konuId){
     const set = BIY._secSet();
     const k = KONULAR.find(x => x.id === konuId); if (!k) return;
-    const hepsiSecili = k.sorular.every(q => set.has(konuId + "#" + q.id));
-    k.sorular.forEach(q => { const key = konuId + "#" + q.id; if (hepsiSecili) set.delete(key); else set.add(key); });
-    BIY._soruSecRender();
+    const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]');
+    let satirlar = g ? [].slice.call(g.querySelectorAll(".biy-hs-satir")).filter(r => !r.hidden) : [];
+    let anahtarlar = satirlar.map(r => r.getAttribute("data-key"));
+    // Grup ekranda yoksa (hiç çizilmemişse) konunun tamamına düş; ama grup
+    // ÇİZİLMİŞ ve süzgeç hiçbir soru bırakmamışsa hiçbir şey yapma —
+    // yoksa "eşleşme yok" hâlinde tuş bütün konuyu seçerdi.
+    if (!anahtarlar.length){
+      if (g) return;
+      anahtarlar = k.sorular.map(q => konuId + "#" + q.id); satirlar = [];
+    }
+    const hepsiSecili = anahtarlar.every(a => set.has(a));
+    anahtarlar.forEach(a => { if (hepsiSecili) set.delete(a); else set.add(a); });
+    if (satirlar.length){
+      satirlar.forEach(r => {
+        const s = set.has(r.getAttribute("data-key"));
+        r.classList.toggle("secili", s);
+        const cb = r.querySelector("input"); if (cb) cb.checked = s;
+      });
+      BIY._soruSecSayilar();
+    } else BIY._soruSecRender();
   },
   soruSecTemizle(){ BIY._secSet().clear(); BIY._soruSecRender(); BIY._soruSecSayiGuncelle(); },
   soruSecKapat(){ const ov = $("biySoruSec"); if (ov) ov.remove(); BIY._soruSecSayiGuncelle(); },
@@ -2204,11 +2440,12 @@ const BIY = {
     const krkOf = id => { const t = state.takimListe.find(x => x.id === id) || {}; return t.krk || ""; };
     // sonuç tablosunun ilk sütun başlığı moda göre
     const basSutun = modAl() === "birey" ? "Katılımcı" : (modAl() === "okul" ? "Sınıf" : "Takım");
-    const lider = newOrder.map(id => {
+    const lider = newOrder.map((id, i) => {
       const ns = newR[id] || ids.length, ps = prevR[id] || ids.length, delta = ps - ns;
       const ok = delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit"></span>');
       const cls = delta > 0 ? ' biy-lider-yukari' : (delta < 0 ? ' biy-lider-asagi' : '');
-      return '<li class="biy-lider-satir'+cls+'"><span class="biy-lider-sira">'+ns+'</span>'+ok+'<span class="biy-lider-ad">'+krkSvg(krkOf(id), "biy-krk-mini")+kacis(adOf(id))+'</span><b>'+(newP[id]||0)+'</b></li>';
+      // --i: görsel sıra (0=birinci). Merdiven kaydırması CSS'te bundan hesaplanır.
+      return '<li class="biy-lider-satir'+cls+'" style="--i:'+i+'"><span class="biy-lider-sira">'+ns+'</span>'+ok+'<span class="biy-lider-ad">'+krkSvg(krkOf(id), "biy-krk-mini")+kacis(adOf(id))+'</span><b>'+(newP[id]||0)+'</b></li>';
     }).join("");
     const degisti = ids.some(id => (prevR[id]||ids.length) !== (newR[id]||ids.length));
     const son = ber ? true : (idx + 1 >= toplam);
@@ -2251,16 +2488,20 @@ const BIY = {
           '<div class="biy-sonuc-lider"><h4>🏆 Puan Durumu</h4><ol class="biy-lider-ol'+(newOrder.length>10?' biy-kaydir':'')+'">'+lider+'</ol></div>' +
         '</div>' +
       '</div>' +
-      // aşağıda üç ilerleme çizgisi — tıklayınca ilgili sayfaya geçer
-      '<div class="biy-sonuc-nokta">' +
-        '<button class="biy-nokta" data-adim="0" onclick="BIY.sonucAdim(0)" title="Soru & doğru cevap"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.4l2.6 2.6 5-5.8"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
-        '<button class="biy-nokta" data-adim="1" onclick="BIY.sonucAdim(1)" title="Katılımcı cevapları"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.6" cy="6" r="1.5"/><path d="M10 6h8.4"/><circle cx="5.6" cy="12" r="1.5"/><path d="M10 12h8.4"/><circle cx="5.6" cy="18" r="1.5"/><path d="M10 18h8.4"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
-        '<button class="biy-nokta" data-adim="2" onclick="BIY.sonucAdim(2)" title="Puan durumu"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="4.6" height="7.4" rx="1.2"/><rect x="9.7" y="8.4" width="4.6" height="12" rx="1.2"/><rect x="15.4" y="15" width="4.6" height="5.4" rx="1.2"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+      /* ALT BAR: üç ilerleme çizgisi ORTADA, "Sonraki Soru" düğmesi aynı
+         satırın SAĞINDA. Düğme ayrı bir satır kaplamayınca sonuç ekranı
+         dikeyde daha çok nefes alıyor (tablo/liste için daha çok yükseklik). */
+      '<div class="biy-sonuc-altbar">' +
+        '<div class="biy-sonuc-nokta">' +
+          '<button class="biy-nokta" data-adim="0" onclick="BIY.sonucAdim(0)" title="Soru & doğru cevap"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.4l2.6 2.6 5-5.8"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+          '<button class="biy-nokta" data-adim="1" onclick="BIY.sonucAdim(1)" title="Katılımcı cevapları"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.6" cy="6" r="1.5"/><path d="M10 6h8.4"/><circle cx="5.6" cy="12" r="1.5"/><path d="M10 12h8.4"/><circle cx="5.6" cy="18" r="1.5"/><path d="M10 18h8.4"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+          '<button class="biy-nokta" data-adim="2" onclick="BIY.sonucAdim(2)" title="Puan durumu"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="4.6" height="7.4" rx="1.2"/><rect x="9.7" y="8.4" width="4.6" height="12" rx="1.2"/><rect x="15.4" y="15" width="4.6" height="5.4" rx="1.2"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+        '</div>' +
+        '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+
+          (ber ? ((BIY._beraberlikCozuldu() || state.berNo >= state.yedekSorular.length) ? '🏁 Sıralamayı Kesinleştir' : 'Sonraki Yedek Soru ›')
+               : (son ? '🏁 Yarışmayı Bitir' : 'Sonraki Soru ›')) +
+        '</button></div>' +
       '</div>' +
-      '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+
-        (ber ? ((BIY._beraberlikCozuldu() || state.berNo >= state.yedekSorular.length) ? '🏁 Sıralamayı Kesinleştir' : 'Sonraki Yedek Soru ›')
-             : (son ? '🏁 Yarışmayı Bitir' : 'Sonraki Soru ›')) +
-      '</button></div>' +
     '</div>';
   },
   // ilerleme çizgisine basınca ilgili sonuç sayfasına geç (otomatik akışı durdur)

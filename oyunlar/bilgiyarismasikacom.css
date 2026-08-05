@@ -245,8 +245,10 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-onay-evet:hover { filter: brightness(1.06); }
 
 /* soru havuzu penceresi */
-.biy-soru-sec-ov { align-items: flex-start; justify-content: center; padding: calc(6vh + 30px) 0 6vh; }
-.biy-soru-sec-kutu { background: #fff; border-radius: 18px; width: 90vw; max-width: 90vw; margin: 0 auto; height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.28); overflow: hidden; }
+/* Soru Havuzu artık YÜZEN pencere değil TAM EKRAN: ekranın tamamı sorulara
+   ayrılsın diye kenar boşlukları, köşe yuvarlaması ve gölge kaldırıldı. */
+.biy-soru-sec-ov { align-items: stretch; justify-content: stretch; padding: 0; }
+.biy-soru-sec-kutu { background: #fff; border-radius: 0; width: 100%; max-width: 100%; margin: 0; height: 100%; display: flex; flex-direction: column; box-shadow: none; overflow: hidden; }
 .biy-soru-sec-bas { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #EDF2F7; }
 .biy-soru-sec-bas h3 { margin: 0; color: #16A085; font-size: 1.4rem; }
 .biy-soru-sec-say { margin-left: auto; color: #16A085; font-weight: 800; font-size: 1.05rem; }
@@ -1794,7 +1796,8 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 /* v77b — test dışı biçimler (eşleştir/sırala/yaz) .biy-a-optlar ızgarasının
    tek sütununa sıkışıyordu; tam satıra yayılıp ortalanırlar. */
 .biy-a-optlar > .biy-a-cift, .biy-a-optlar > .biy-a-dizi,
-.biy-a-optlar > .biy-a-tuslar, .biy-a-optlar > .biy-a-cevapcubuk { grid-column: 1 / -1; }
+.biy-a-optlar > .biy-a-tuslar, .biy-a-optlar > .biy-a-cevapcubuk,
+.biy-a-optlar > .biy-yazi-harfler { grid-column: 1 / -1; }
 /* soru cümlesindeki «Türkçe» bölümler soldan sağa okunur */
 .biy-ltr-ic { direction: ltr; unicode-bidi: isolate; }
 /* masaüstü: etiketler tahtada büyük; eşleştirme/sıralama ortalı ve çok daha büyük */
@@ -2736,4 +2739,277 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   .biy-rap-kisi > summary { padding: 9px 10px; gap: 8px; }
   .biy-rap-schip { min-width: 30px; height: 27px; font-size: .78rem; }
   .biy-rap-aciklama { font-size: .78rem; }
+}
+
+/* =====================================================================
+   v118 — SORU HAVUZU SÜZGECİ (soru tipi + zorluk ikonlarıyla)
+   ---------------------------------------------------------------------
+   "Havuzdan seç" penceresinde açılabilir bir konu başlığına basıldığında,
+   gövdenin en üstünde üç satırlık bir ikon süzgeci belirir:
+
+     Tür       → yalnızca konu birden çok tür barındırıyorsa (kelime+cümle
+                 birleştirilmiş sınıf konuları); ETIKET_TIP ikonları
+     Soru tipi → çoktan seçmeli / sıralama / eşleştirme / yazma
+                 (ETIKET_BICIM ikonları, DAİMA dördü birden)
+     Zorluk    → 1, 2, 3 yıldız (ETIKET_ZORLUK ikonları, DAİMA üçü birden)
+
+   Her ikonun yanında o konuda kaç soru olduğu yazar. Sayı 0 ise düğme
+   GRİ + disabled olur ("pasif"), tıklanamaz.
+
+   TASARIMI BOZMAMA: süzgeç .biy-hs-govde'nin içindedir; başlık kapalıyken
+   gövde zaten display:none olduğu için kapalı liste birebir eski hâlinde
+   kalır. Başlık çubuğuna, satır düzenine, "tümünü seç" düğmesine ve
+   pencerenin geometrisine dokunulmaz.
+
+   RENK SÖZLEŞMESİ (sitenin mevcut etiket paletinden):
+     tür = #16A085 (.biy-et-tip), soru tipi = #6366F1 (.biy-et-bicim),
+     zorluk = #27AE60 / #F39C12 / #EF5350 (.biy-et-zorluk z1/z2/z3)
+   ===================================================================== */
+
+/* [hidden] tek başına yetmez: .biy-hs-satir'ın display:flex kuralı yazar
+   sayfasından geldiği için tarayıcının [hidden]{display:none} kuralını
+   ezer. Süzgeç gizlemeyi bu yüzden açıkça yazıyoruz. */
+.biy-hs-satir[hidden],
+.biy-hs-sz-alt[hidden],
+.biy-hs-sz-bilgi[hidden],
+.biy-hs-sz-sifirla[hidden],
+.biy-hs-sz-bos[hidden] { display: none !important; }
+
+/* ---------- süzgeç kutusu ---------- */
+.biy-hs-suzgec {
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 0 0 14px; padding: 12px 14px;
+  border: 1px dashed #CBD5E1; border-radius: 12px; background: #F8FAFC;
+}
+/* süzgeç akordiyon başlığı — tıklayınca gövde katlanır */
+.biy-hs-sz-baslik {
+  display: flex; align-items: center; gap: 9px; width: 100%; cursor: pointer;
+  background: none; border: none; padding: 2px 2px; color: #475569;
+  font-family: 'Marhey',sans-serif; font-weight: 800; font-size: .92rem; text-align: left;
+}
+.biy-hs-sz-baslik > b { font-weight: 800; }
+.biy-hs-sz-huni { display: inline-flex; flex: 0 0 auto; color: #6366F1; }
+.biy-hs-sz-huni-svg { width: 20px; height: 20px; display: block; }
+.biy-hs-sz-ozet {
+  margin-inline-start: 6px; font-size: .8rem; font-weight: 700; color: #6366F1;
+  background: #EEF2FF; border-radius: 999px; padding: 2px 10px;
+}
+.biy-hs-sz-ok { margin-inline-start: auto; flex: 0 0 auto; color: #94a3b8; font-size: .9rem; transition: transform .18s ease; }
+.biy-hs-suzgec.kapali .biy-hs-sz-ok { transform: rotate(-90deg); }
+.biy-hs-suzgec.kapali { gap: 0; }
+.biy-hs-suzgec.kapali .biy-hs-sz-govde { display: none; }
+.biy-hs-sz-govde { display: flex; flex-direction: column; gap: 12px; }
+/* Tür · Soru tipi · Zorluk yan yana 3 SÜTUN (--sut ile 2 ya da 3) */
+.biy-hs-sz-izgara { display: grid; grid-template-columns: repeat(var(--sut, 2), minmax(0, 1fr)); gap: 12px; align-items: start; }
+.biy-hs-sz-sutun { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.biy-hs-sz-bas {
+  font-family: 'Marhey',sans-serif; font-weight: 800; font-size: .84rem;
+  color: #64748b; letter-spacing: .01em; text-transform: uppercase;
+  padding: 0 2px 5px; border-bottom: 2px solid #E6ECF3; margin-bottom: 2px;
+}
+
+/* ---------- çip: ikon + AÇIKLAMA + adet, sütun içinde tam genişlik ---------- */
+.biy-hs-sz-cip {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 7px 12px 7px 9px; border-radius: 12px; cursor: pointer; text-align: left;
+  border: 1px solid #E1E8F0; background: #fff; color: #64748b;
+  font-family: 'Marhey',sans-serif; font-weight: 800; line-height: 1.1;
+  transition: background .18s ease, color .18s ease, border-color .18s ease, transform .15s ease;
+}
+.biy-hs-sz-ikon { display: inline-flex; flex: 0 0 auto; }
+.biy-hs-sz-ikon svg { width: 24px; height: 24px; display: block; }
+.biy-hs-sz-ad { flex: 1 1 auto; min-width: 0; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.biy-hs-sz-say { flex: 0 0 auto; margin-inline-start: auto; font-size: .84rem; min-width: 20px; text-align: center;
+  background: #EEF2F7; color: #475569; border-radius: 999px; padding: 2px 8px; }
+.biy-hs-sz-cip:hover { border-color: #A7E8CF; background: #F2FCF9; color: #0E9E86; transform: translateY(-1px); }
+.biy-hs-sz-cip.secili .biy-hs-sz-say { background: rgba(255,255,255,.28); color: #fff; }
+
+/* seçili — boyuta göre renk */
+.biy-hs-sz-cip.secili { color: #fff; border-color: transparent; }
+.biy-hs-sz-cip[data-boyut="tip"].secili   { background: #16A085; }
+.biy-hs-sz-cip[data-boyut="bicim"].secili { background: #6366F1; }
+.biy-hs-sz-cip[data-boyut="zor"][data-deger="1"].secili { background: #27AE60; }
+.biy-hs-sz-cip[data-boyut="zor"][data-deger="2"].secili { background: #F39C12; }
+.biy-hs-sz-cip[data-boyut="zor"][data-deger="3"].secili { background: #EF5350; }
+.biy-hs-sz-cip.secili:hover { transform: translateY(-1px); color: #fff; border-color: transparent; filter: brightness(.94); }
+
+/* pasif — o tipten hiç soru yok */
+.biy-hs-sz-cip.pasif,
+.biy-hs-sz-cip:disabled {
+  cursor: not-allowed; background: #F1F5F9; border-color: #E9EEF5;
+  color: #cbd5e1; opacity: .75;
+}
+.biy-hs-sz-cip.pasif:hover { transform: none; background: #F1F5F9; border-color: #E9EEF5; color: #cbd5e1; }
+.biy-hs-sz-cip.pasif .biy-ea-ciz,
+.biy-hs-sz-cip.pasif .biy-ea-kay,
+.biy-hs-sz-cip.pasif .biy-ea-zip,
+.biy-hs-sz-cip.pasif .biy-ea-parla,
+.biy-hs-sz-cip.pasif .biy-ea-puls,
+.biy-hs-sz-cip.pasif .biy-ea-y1,
+.biy-hs-sz-cip.pasif .biy-ea-y2,
+.biy-hs-sz-cip.pasif .biy-ea-y3 { animation: none; }
+
+/* ---------- alt şerit: eşleşme bilgisi + temizle (3 sütunun altında) ---------- */
+.biy-hs-sz-alt {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding-top: 10px; border-top: 1px dashed #DCE4EC;
+}
+.biy-hs-sz-bilgi {
+  font-size: .82rem; font-weight: 700; color: #64748b;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.biy-hs-sz-bilgi b { color: #16A085; font-size: 1.05em; }
+.biy-hs-sz-sifirla {
+  flex: 0 0 auto; margin-inline-start: auto; padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid #F5C6C4; background: #FFF5F5; color: #EF5350;
+  font-family: 'Marhey',sans-serif; font-weight: 700; font-size: .78rem; line-height: 1;
+  transition: background .18s ease, color .18s ease;
+}
+.biy-hs-sz-sifirla:hover { background: #EF5350; border-color: #EF5350; color: #fff; }
+.biy-hs-sz-bos { margin: 4px 0 10px; text-align: center; color: #94a3b8; font-weight: 700; }
+
+/* süzgeç açıkken "tümünü seç" artık yalnız görünen soruları seçer */
+.biy-hs-tumu.suzgecli { background: #EEF2FF; color: #6366F1; }
+
+/* ---------- satır başındaki küçük tip/zorluk rozetleri ---------- */
+.biy-hs-roz { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; }
+.biy-hs-roz i {
+  width: 30px; height: 30px; border-radius: 9px; color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,.12);
+}
+.biy-hs-roz i svg { width: 19px; height: 19px; display: block; }
+.biy-hs-roz-b { background: #6366F1; }
+.biy-hs-roz-z.z1 { background: #27AE60; }
+.biy-hs-roz-z.z2 { background: #F39C12; }
+.biy-hs-roz-z.z3 { background: #EF5350; }
+
+/* ---------- masaüstü / projeksiyon: pencere zaten büyük yazılı ---------- */
+@media (min-width: 900px) {
+  #biySoruSec .biy-hs-suzgec { gap: 14px; padding: 16px 18px; margin-bottom: 16px; }
+  #biySoruSec .biy-hs-sz-baslik { font-size: 1.32rem; gap: 12px; }
+  #biySoruSec .biy-hs-sz-huni-svg { width: 28px; height: 28px; }
+  #biySoruSec .biy-hs-sz-ozet { font-size: 1.05rem; padding: 3px 14px; }
+  #biySoruSec .biy-hs-sz-ok { font-size: 1.2rem; }
+  #biySoruSec .biy-hs-sz-izgara { gap: 18px; }
+  #biySoruSec .biy-hs-sz-bas { font-size: 1.18rem; padding-bottom: 8px; }
+  #biySoruSec .biy-hs-sz-cip { padding: 10px 16px 10px 12px; gap: 10px; border-radius: 14px; }
+  #biySoruSec .biy-hs-sz-ikon svg { width: 32px; height: 32px; }
+  #biySoruSec .biy-hs-sz-ad { font-size: 1.24rem; }
+  #biySoruSec .biy-hs-sz-say { font-size: 1.08rem; min-width: 26px; padding: 3px 11px; }
+  #biySoruSec .biy-hs-sz-bilgi { font-size: 1.08rem; }
+  #biySoruSec .biy-hs-sz-sifirla { font-size: 1rem; padding: 7px 16px; }
+  #biySoruSec .biy-hs-sz-bos { font-size: 1.3rem; }
+  #biySoruSec .biy-hs-roz i { width: 42px; height: 42px; border-radius: 12px; }
+  #biySoruSec .biy-hs-roz i svg { width: 27px; height: 27px; }
+}
+
+/* ---------- telefon: 3 sütun tek sütuna iner (etiketler tam okunsun) ---------- */
+@media (max-width: 620px) {
+  .biy-hs-suzgec { padding: 10px 11px; gap: 10px; margin-bottom: 10px; }
+  .biy-hs-sz-izgara { grid-template-columns: 1fr; gap: 12px; }
+  .biy-hs-sz-bas { font-size: .8rem; }
+  .biy-hs-sz-cip { padding: 6px 11px 6px 8px; gap: 7px; }
+  .biy-hs-sz-ikon svg { width: 20px; height: 20px; }
+  .biy-hs-sz-ad { font-size: .84rem; }
+  .biy-hs-sz-say { font-size: .74rem; }
+  .biy-hs-sz-bilgi { font-size: .74rem; }
+  .biy-hs-sz-sifirla { font-size: .72rem; padding: 4px 10px; }
+  .biy-hs-roz i { width: 26px; height: 26px; border-radius: 8px; }
+  .biy-hs-roz i svg { width: 16px; height: 16px; }
+  #biySoruSec .biy-hs-satir { gap: 10px; padding: 12px 12px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Dar ekranda başlık taşması: konu adı esneyemediği için "tümünü seç" düğmesi
+   listenin sağından 4-5 px dışarı çıkıyordu. Ad artık daralıp satır kırabilir;
+   sayaç ve düğme sabit kalır. (Süzgeçle ilgisi yok, aynı başlık çubuğu.)
+--------------------------------------------------------------------------- */
+@media (max-width: 620px) {
+  .biy-hs-baslik { gap: 8px; padding-inline: 14px; }
+  .biy-hs-baslik > b { min-width: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
+  .biy-hs-baslik .biy-hs-say,
+  .biy-hs-baslik .biy-hs-ok,
+  .biy-hs-tumu { flex: 0 0 auto; }
+}
+
+/* Soru metni artık satırda rozetlerle yer paylaşıyor: esneyip taşabilsin diye
+   min-width sıfırlanır, kırılamayan uzun Arapça/latin dizgiler de sarılır. */
+.biy-hs-metin { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------------------
+   Telefonda havuz satırı: 37 px'lik metin 143 px'lik sütuna sığmıyor, kelimeler
+   tek tek alt alta düşüyordu (rozetler eklenmeden önce de dardı). Dar ekranda
+   onay kutusu + rozetler üst satırda kalır, soru metni ALTTA tam genişlik alır
+   ve punto okunur bir ölçüye iner. Geniş ekran hiç etkilenmez.
+--------------------------------------------------------------------------- */
+@media (max-width: 620px) {
+  #biySoruSec .biy-hs-satir { flex-wrap: wrap; row-gap: 6px; align-items: center; }
+  #biySoruSec .biy-hs-metin { flex: 1 1 100%; font-size: 1.42rem; line-height: 1.45; }
+  #biySoruSec .biy-hs-satir input { margin-inline-end: 2px; }
+}
+
+/* =====================================================================
+   v123 — Sonuç ekranı düzenlemeleri (istek: Geylani)
+   1) Alt bar: 3 ilerleme SVG'si ortada, "Sonraki Soru" düğmesi aynı satırın
+      sağında → sonuç ekranı dikeyde daha çok yer bulur.
+   2) Yazma doğru cevabında harflerin YALIN + BİTİŞİK biçimleri, büyük.
+   3) Puan durumu: MERDİVEN dizilim (1. en sağda-üstte, alttakiler biraz sola),
+      konteynır geniş, sıra-isim-puan simetrik.
+   ===================================================================== */
+
+/* --- 1) ALT BAR: noktalar ortada, buton sağda, tek satır --- */
+.biy-sonuc-altbar { position: relative; display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; margin-top: 20px; }
+.biy-sonuc-ekran .biy-sonuc-altbar { flex: 0 0 auto; }
+.biy-sonuc-altbar .biy-sonuc-nokta { grid-column: 2; margin: 0; }
+.biy-sonuc-altbar .biy-oyun-kontrol { grid-column: 3; justify-self: end; margin: 0; text-align: right; }
+/* buton yalnız son sahnede belirir (mevcut kural) — grid hücresinde de aynı */
+@media (max-width: 640px) {
+  .biy-sonuc-altbar { grid-template-columns: 1fr; row-gap: 12px; justify-items: center; }
+  .biy-sonuc-altbar .biy-sonuc-nokta { grid-column: 1; }
+  .biy-sonuc-altbar .biy-oyun-kontrol { grid-column: 1; justify-self: center; text-align: center; }
+}
+
+/* --- 2) YAZMA: harflerin yalın + bitişik biçimleri --- */
+.biy-yazi-harfler { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  margin: 16px auto 0; max-width: 900px; }
+.biy-yh-hucre { display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: #F0FCF6; border: 2px solid #A7E8CF; border-radius: 16px; padding: 12px 16px 9px;
+  min-width: 66px; box-shadow: 0 3px 8px rgba(14,124,102,.08); }
+.biy-yh-bic { font-family: 'Harmattan','Traditional Arabic',serif; font-size: 3rem; line-height: 1;
+  color: #0E7C66; font-weight: 700; }
+.biy-yh-yalin { font-family: 'Harmattan','Traditional Arabic',serif; font-style: normal;
+  font-size: 1.5rem; line-height: 1; color: #64748b; padding-top: 5px; border-top: 1px dashed #C7EBDD; }
+@media (min-width: 900px) {
+  #ekranOyunAdmin .biy-yazi-harfler { gap: clamp(12px,1.8vh,22px); margin-top: clamp(14px,2.4vh,26px); max-width: 1100px; }
+  #ekranOyunAdmin .biy-yh-hucre { min-width: clamp(72px,9vh,120px); padding: clamp(12px,1.8vh,22px) clamp(14px,2vh,26px) clamp(9px,1.4vh,16px); border-radius: 20px; }
+  #ekranOyunAdmin .biy-yh-bic { font-size: clamp(3rem,7vh,5.4rem); }
+  #ekranOyunAdmin .biy-yh-yalin { font-size: clamp(1.5rem,3vh,2.4rem); }
+}
+@media (max-width: 620px) {
+  .biy-yazi-harfler { gap: 8px; }
+  .biy-yh-hucre { min-width: 52px; padding: 9px 11px 7px; }
+  .biy-yh-bic { font-size: 2.3rem; } .biy-yh-yalin { font-size: 1.2rem; }
+}
+
+/* --- 3) PUAN DURUMU: merdiven + geniş + simetrik --- */
+/* isim satırın merkezinde; sıra solda, puan sağda → simetrik boşluk */
+.biy-sonuc-lider .biy-lider-ad { flex: 1; text-align: center; justify-content: center; }
+.biy-sonuc-lider li b { margin-left: 0; }
+@media (min-width: 900px) {
+  /* geniş konteynır */
+  #ekranOyunAdmin .biy-sonuc-lider,
+  #ekranOyunAdmin .biy-sonuc-lider .biy-lider-ol { max-width: 1180px; }
+  /* merdiven: liste sağa yaslı sütun; her kutu bir öncekinden biraz daha solda.
+     width:100% şart — flex sütununa dönünce ol içeriğe göre büzülüyordu. */
+  #ekranOyunAdmin .biy-sonuc-lider .biy-lider-ol { display: flex; flex-direction: column; align-items: flex-end; width: 100%; }
+  #ekranOyunAdmin .biy-sonuc-lider .biy-lider-satir {
+    width: min(100%, 780px);
+    margin-right: calc(min(var(--i, 0), 6) * clamp(20px, 2.4%, 40px));
+    transition: margin-right .5s cubic-bezier(.22,1,.36,1);
+  }
+  /* sıra ve puan kutuları eşit genişlikte → isim gerçek merkezde */
+  #ekranOyunAdmin .biy-lider-sira { min-width: 84px; }
+  #ekranOyunAdmin .biy-sonuc-lider li b { min-width: 84px; text-align: center; }
 }
