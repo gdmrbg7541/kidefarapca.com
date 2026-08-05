@@ -48,28 +48,37 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-btn-buyuk { background: linear-gradient(90deg, #F39C12, #EF5350); padding: 22px 60px; font-size: 1.6rem; border-radius: 16px; }
 
 /* ---- header ---- */
+/* HEADER — index.html başlığıyla aynı dil: aynı gradyan, Marhey marka yazısı,
+   gradyan üstünde BEYAZ ikonlar (index'teki 'header svg{stroke:white}' gibi). */
 .biy-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 22px; color: #fff;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  padding: 15px 20px; color: #fff;
   background: linear-gradient(90deg, #FFC107 0%, #F39C12 50%, #EF5350 100%);
   border-bottom: 2px solid #E53935; box-shadow: 0 4px 8px rgba(0,0,0,.1);
   position: sticky; top: 0; z-index: 100;
 }
-.biy-header-sol { display: flex; align-items: center; gap: 12px; }
-.biy-baslik { font-weight: 700; font-size: 1.5rem; }
+.biy-header-sol { display: flex; align-items: center; gap: 14px; }
+.biy-baslik { font-family: 'Marhey', sans-serif; font-weight: 700; font-size: 2.2rem; line-height: 1.05; color: #fff; white-space: nowrap; }
 .biy-baslik small { color: rgba(255,255,255,.9); font-weight: 600; font-size: .78rem; font-family: 'Nunito',sans-serif; }
 .biy-header-sag { display: flex; align-items: center; gap: 14px; }
-.biy-admin-ad { color: rgba(255,255,255,.95); font-size: .92rem; font-weight: 600; }
+.biy-admin-ad { color: rgba(255,255,255,.95); font-size: 1rem; font-weight: 700; font-family: 'Marhey', sans-serif; }
+/* index'teki gibi baslik Marhey olsun; #biy-app * Arakom !important kuralini yenmek icin
+   daha yuksek ozgulluk (#biy-app .sinif) + !important gerekiyor. */
+#biy-app .biy-baslik, #biy-app .biy-admin-ad { font-family: 'Marhey', sans-serif !important; }
+/* Asagi kaydirinca header gizlenir (soruya daha cok alan), yukari kaydirinca geri gelir. */
+.biy-header { transition: transform .28s ease; will-change: transform; }
+.biy-header.biy-header--gizli { transform: translateY(-100%); }
 
-/* geri tuşu — kaliplartablosu .back-link ile aynı görünüm */
+/* geri tuşu — gradyan üstünde beyaz hayalet düğme (index beyaz ikon dili) */
 .biy-geri-tus {
   display: flex; align-items: center; justify-content: center;
   width: 46px; height: 46px; box-sizing: border-box; cursor: pointer; padding: 0;
-  background-color: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 12px;
-  color: #000000; text-decoration: none;
+  background-color: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.55); border-radius: 12px;
+  color: #fff; text-decoration: none;
   transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .12s ease;
 }
-.biy-geri-tus:hover { background: #e2e8f0; border-color: #cbd5e1; color: #FF3B30; }
+.biy-geri-tus svg { filter: drop-shadow(0 2px 4px rgba(0,0,0,.28)); }
+.biy-geri-tus:hover { background: rgba(255,255,255,.32); border-color: #fff; color: #fff; }
 .biy-geri-tus:active { transform: translateY(1px); }
 
 /* ---- konu seçimi + PDF önizleme (tek bütün kart) ---- */
@@ -195,8 +204,8 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
   .biy-menu { flex-direction: column; padding: 24px 16px; }
   .biy-menu-kart { width: 100%; max-width: 340px; height: 180px; }
   .biy-secenekler { grid-template-columns: 1fr; }
-  .biy-header { padding: 8px 14px; }
-  .biy-baslik { font-size: 1.15rem; }
+  .biy-header { padding: 11px 14px; }
+  .biy-baslik { font-size: 1.4rem; }
   .biy-takim-yap { flex-direction: column; }
 }
 

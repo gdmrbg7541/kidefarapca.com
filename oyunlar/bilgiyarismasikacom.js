@@ -1021,7 +1021,30 @@ function ekranGoster(id){
   const el = $(id); if (el) el.classList.remove("gizli");
   // çıkış tuşu yalnızca canlı oyun ekranında görünür
   const cik = $("cikisTus"); if (cik) cik.classList.toggle("gizli", id !== "ekranOyunAdmin");
+  // ekran değişince header her zaman görünür başlasın
+  if (el){ const h = el.querySelector(".biy-header"); if (h) h.classList.remove("biy-header--gizli"); }
+  _headerKaydirSifirla();
 }
+/* Aşağı kaydırınca header gizlenir, yukarı kaydırınca geri gelir — soruya daha çok alan. */
+let _hkSonY = 0, _hkBekliyor = false;
+function _headerKaydirSifirla(){ _hkSonY = window.scrollY || document.documentElement.scrollTop || 0; }
+function _headerKaydirGuncelle(){
+  _hkBekliyor = false;
+  const h = document.querySelector(".biy-ekran:not(.gizli) .biy-header");
+  const y = window.scrollY || document.documentElement.scrollTop || 0;
+  if (!h){ _hkSonY = y; return; }
+  const fark = y - _hkSonY;
+  if (y <= 4){ h.classList.remove("biy-header--gizli"); _hkSonY = y; return; }
+  if (Math.abs(fark) < 6){ _hkSonY = y; return; }
+  if (fark > 0 && y > h.offsetHeight) h.classList.add("biy-header--gizli");
+  else if (fark < 0) h.classList.remove("biy-header--gizli");
+  _hkSonY = y;
+}
+window.addEventListener("scroll", () => {
+  if (_hkBekliyor) return;
+  _hkBekliyor = true;
+  requestAnimationFrame(_headerKaydirGuncelle);
+}, { passive: true });
 function kacis(t){ const d = document.createElement("div"); d.textContent = t == null ? "" : String(t); return d.innerHTML; }
 function rastgeleKod(uzunluk){
   const harf = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -1709,6 +1732,15 @@ const BIY = {
     state.soruSecAcik[konuId] = !state.soruSecAcik[konuId];
     const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]');
     if (g) g.classList.toggle("acik", !!state.soruSecAcik[konuId]);
+    // AÇILINCA: o listenin başlığı en yukarı kadar tırmansın (index'te kategori
+    // açılınca başlığın yukarı çıkması gibi) → açılan sorular hemen görünür.
+    if (g && state.soruSecAcik[konuId]){
+      const liste = document.getElementById("soruSecListe");
+      if (liste){
+        const delta = g.getBoundingClientRect().top - liste.getBoundingClientRect().top;
+        liste.scrollTo({ top: Math.max(0, liste.scrollTop + delta), behavior: "smooth" });
+      }
+    }
   },
   /* "Tümünü seç" artık EKRANDA GÖRÜNEN sorulara uygulanır: arama + süzgeç
      neyi bıraktıysa o seçilir. Süzgeç yokken davranış eskisiyle aynı.
