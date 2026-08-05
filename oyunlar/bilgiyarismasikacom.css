@@ -2285,3 +2285,455 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   .biy-neden-ik { font-size: clamp(1.4rem, 3.4vh, 2.45rem); }
   .biy-giris-bilgi-not { font-size: clamp(1.02rem, 2.15vh, 1.4rem); }
 }
+
+
+/* =====================================================================
+   v115 — SINIF ACILIS NOTU KALDIRILDI + SINIF BASLIGI
+   ---------------------------------------------------------------------
+   (1) v111'deki ".biy-acilis-not / .biy-acilis-tum" kurallari SILINDI.
+       Sinif kartindan gelindiginde artik hicbir aciklama cumlesi
+       basilmiyor; konu dogrudan SECILI geliyor. Ilgili JS metodu
+       (_acilisNotu) da kaldirildi, bu kurallar olu koddu.
+   (2) Sinif konularinda kelime/cumle ayrimi kalkti; her sinif TEK konu.
+       Bu konular seviye basliklarinin altina girmiyor, konu listesinin
+       en ustunde kendi baslik satirini paylasiyorlar.
+   ===================================================================== */
+
+.biy-ds-seviye.biy-ds-sinifbas {
+  margin-top: 4px;
+  color: #0E7C68;
+}
+.biy-ds-seviye.biy-ds-sinifbas i {
+  color: #16A085;
+  letter-spacing: 0;
+  font-size: .95rem;
+}
+
+
+/* =====================================================================
+   v112 — TAKIM AMBLEMLERI MASAUSTUNDE BUYUK
+   Amblem secme izgarasi telefon olculeriyle tasarlanmisti; genis
+   ekranda kucucuk kaliyordu. Masaustunde hucreler, SVG'ler, isimler
+   ve secili amblem rozeti belirgin sekilde buyutuldu.
+   ===================================================================== */
+
+/* Amblem secme ekraninin kolonu — telefonda .biy-orta ile ayni,
+   masaustunde izgaraya yer acmak icin genisler. */
+.biy-krk-orta { max-width: 480px; }
+
+@media (min-width: 900px) {
+  .biy-krk-orta { max-width: 980px; width: 94%; }
+  .biy-krk-kart { max-width: 980px; padding: 40px 34px; }
+  .biy-krk-kart h1 { font-size: 2rem; }
+  .biy-krk-kart .biy-alt { font-size: 1.15rem; }
+  .biy-krk-baslik { font-size: 1.3rem; margin: 20px 0 12px; }
+
+  .biy-krk-izgara {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px; max-height: 56vh; padding: 12px; border-radius: 20px;
+  }
+  .biy-krk-btn { gap: 9px; padding: 14px 8px 11px; border-radius: 20px; border-width: 3px; }
+  .biy-krk-btn .biy-krk-resim { width: 96px; height: 96px; }
+  .biy-krk-ad { font-size: 1.02rem; }
+  .biy-krk-tik, .biy-krk-kilit { width: 28px; height: 28px; font-size: 1.05rem; top: 6px; inset-inline-end: 6px; }
+
+  .biy-krk-benim { gap: 10px; margin: 20px 0 6px; }
+  .biy-krk-benim span { font-size: 1.45rem; }
+  .biy-krk-buyuk { width: 148px; height: 148px; }
+  .biy-krk-kart-ikon { width: 56px; height: 56px; }
+}
+
+@media (min-width: 1280px) {
+  .biy-krk-orta { max-width: 1180px; }
+  .biy-krk-kart { max-width: 1180px; }
+  .biy-krk-izgara { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 20px; }
+  .biy-krk-btn .biy-krk-resim { width: 122px; height: 122px; }
+  .biy-krk-ad { font-size: 1.12rem; }
+  .biy-krk-buyuk { width: 184px; height: 184px; }
+  .biy-krk-kart-ikon { width: 64px; height: 64px; }
+}
+
+/* =====================================================================
+   v113 — KATILIM KARTINDAKI AMBLEMLER DE MASAUSTUNDE BUYUK
+   Ayni .biy-krk-* izgarasi ogrenci "Yarismaya Katil" ekraninda da
+   kullaniliyor; o kart 440 px'e sabitlendigi icin buyuyen hucreler
+   dar kolona sikisiyordu. Masaustunde kart da olculu sekilde genisler.
+   ===================================================================== */
+@media (min-width: 900px) {
+  .biy-katil-kart { max-width: 760px; padding: 34px 30px; }
+  .biy-katil-kart .biy-katil-input { font-size: 1.15rem; }
+}
+@media (min-width: 1280px) {
+  .biy-katil-kart { max-width: 880px; }
+}
+
+/* =====================================================================
+   v114 — SONUC EKRANI: 5. SIK KESILMESIN
+   .biy-sonuc-sahne overflow:hidden idi; "soru + dogru cevap" sahnesi
+   (oge-dogru) uzun oldugunda son satir sessizce kirpiliyordu. 5 sikli
+   sorularda izgara 3 satira ciktigi icin E sikki hic gorunmuyordu.
+   Cozum: sahne kendi icinde kuculur, siklar yukseklige gore olcekli,
+   5-6 sikta daha sikisik; yine de sigmazsa izgara kayabilir.
+   ===================================================================== */
+.biy-sonuc-ekran .oge-dogru {
+  min-height: 0; max-height: 100%;
+  justify-content: flex-start; overflow: hidden;
+}
+.biy-sonuc-ekran .oge-dogru > .biy-a-optlar {
+  flex: 0 1 auto; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin; padding-bottom: 2px;
+}
+/* Etiket / soru cumlesi / Arapca satiri sabit rem yerine yukseklige duyarli */
+.biy-sonuc-ekran .oge-dogru > .biy-etiketler,
+.biy-sonuc-ekran .oge-dogru > .biy-sonuc-soru-cumle,
+.biy-sonuc-ekran .oge-dogru > .biy-oyun-arapca { flex: 0 0 auto; }
+
+@media (min-width: 900px) {
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-sonuc-soru-cumle {
+    font-size: clamp(1.35rem, 3.1vh, 2.8rem);
+    margin: clamp(2px,.8vh,8px) 0 clamp(8px,2vh,22px);
+  }
+  #ekranOyunAdmin .biy-sonuc-ekran .oge-dogru > .biy-oyun-arapca {
+    font-size: clamp(2rem, 6.4vh, 5rem);
+    margin: clamp(2px,.8vh,10px) 0 clamp(8px,2vh,22px);
+  }
+  /* 5-6 sik: satirlar daha ince, yazi biraz kucuk — ucu de ekrana sigsin */
+  #ekranOyunAdmin .biy-a-optlar[data-n="5"],
+  #ekranOyunAdmin .biy-a-optlar[data-n="6"] { gap: clamp(6px,1.1vh,14px); }
+  #ekranOyunAdmin .biy-a-optlar[data-n="5"] .biy-a-opt,
+  #ekranOyunAdmin .biy-a-optlar[data-n="6"] .biy-a-opt {
+    font-size: clamp(1rem,2.1vh,1.6rem); padding: clamp(6px,1.4vh,16px) 22px;
+  }
+  #ekranOyunAdmin .biy-a-optlar[data-n="5"] .biy-a-opt.ar .biy-a-metin,
+  #ekranOyunAdmin .biy-a-optlar[data-n="6"] .biy-a-opt.ar .biy-a-metin {
+    font-size: clamp(1.3rem,2.8vh,2.2rem);
+  }
+  #ekranOyunAdmin .biy-a-optlar[data-n="5"] .biy-a-harf,
+  #ekranOyunAdmin .biy-a-optlar[data-n="6"] .biy-a-harf {
+    width: clamp(28px,3.6vh,42px); height: clamp(28px,3.6vh,42px);
+    flex-basis: clamp(28px,3.6vh,42px); font-size: clamp(.95rem,2.1vh,1.35rem);
+  }
+}
+
+/* Kisa masaustu ekranlarda (1366x768 gibi) 4 sik bile tasiyordu */
+@media (min-width: 900px) and (max-height: 820px) {
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-sonuc-baslik { font-size: 1.7rem; margin-bottom: 2px; }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-sonuc-sahne { margin-top: 8px; min-height: 0; }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-opt { padding: clamp(5px,1.2vh,14px) 20px; }
+}
+
+/* =====================================================================
+   v116 — SONUC TABLOSU: AD + DURUM YAN YANA, VERILEN CEVAP SAGDA
+   ---------------------------------------------------------------------
+   ESKI SIRA:  Takim | Cevap | Durum
+   Takimin dogru mu yanlis mi cevapladigi, araya giren cevap sutunu
+   yuzunden adindan uzak kaliyordu. Cevap sutununun genisligi de degisken
+   (Arapca metin, eslestirme ciftleri) oldugu icin "durum" sutunu her
+   soruda baska bir yere kayiyordu.
+
+   YENI SIRA:  Takim | Durum | Cevap
+     • Ad ve durum sola yaslanip yan yana durur → "5-A  ✅ Dogru".
+     • Verilen cevap kalan genisligi alir ve saga yaslanir. Bosluk hep
+       cevap sutununun ICINDE olustugu icin ad/durum ciftinin yeri
+       sorudan soruya kaymaz.
+     • Tablo, puan durumu listesiyle ayni genislikte tutulur ki dev
+       ekranda ad/durum ile cevap arasinda kocaman bir bosluk kalmasin.
+
+   SUTUN GENISLIGI: bosluğu cevap sutununa yikmak icin ona width:100%
+   verilir (tablo auto-layout'unda klasik "son sutun artani yutar"
+   yontemi). Ad ve durum sutunlari ise width:1% + nowrap ile metin
+   kadar daralir.
+
+   ⚠️ NEDEN AD SUTUNUNDA DA nowrap: cevap sutunu width:100% isteyince
+   auto-layout, oteki sutunlari MIN-CONTENT genisligine indiriyor. Ad
+   sutunu serbest birakilinca "5-A" tire yerinden kirilip "5-" / "A"
+   diye iki satira, "Ahmet Yilmaz" ise harf harf parcalara ayriliyordu.
+   nowrap min-content'i "metnin tam genisligi" yaptigi icin bu kirilma
+   ortadan kalkar. Telefonda kural gevsetilir (asagiya bkz).
+
+   NOT: Daha once yazilmis "hepsi ortali" (td:first-child / .biy-rev-sik)
+   ve [dir=rtl] kurallari bu blokla gecersiz kilinir; secici ozgullugu
+   esit oldugu ve dosyada en sonda geldigi icin bu blok kazanir.
+   ===================================================================== */
+
+/* tablo genisligi — puan durumu listesiyle ayni olcu */
+.biy-sonuc-ekran .biy-reveal-tablo { max-width: 720px; margin-inline: auto; }
+
+/* ad + durum: ikisi de metin kadar yer kaplar, yan yana dururlar */
+.biy-reveal-tablo th.biy-rev-adbas,
+.biy-reveal-tablo td.biy-rev-ad,
+.biy-reveal-tablo th.biy-rev-durumbas,
+.biy-reveal-tablo td.biy-rev-durum { width: 1%; white-space: nowrap; }
+
+.biy-reveal-tablo th.biy-rev-adbas,
+.biy-reveal-tablo td.biy-rev-ad,
+.biy-reveal-tablo td:first-child,
+[dir="rtl"] .biy-reveal-tablo td.biy-rev-ad,
+[dir="rtl"] .biy-reveal-tablo td:first-child { text-align: start; font-weight: 700; }
+
+.biy-reveal-tablo th.biy-rev-durumbas,
+.biy-reveal-tablo td.biy-rev-durum,
+[dir="rtl"] .biy-reveal-tablo td.biy-rev-durum { text-align: start; font-weight: 800; }
+
+/* verilen cevap: artan genisligi yutar, saga yaslanir
+   white-space:normal → cevabin min-content genisligi "en uzun tek kelime"
+   olur. nowrap kalsaydi uzun bir cumle cevabi (surukle biciminde 4-5
+   Arapca kelime) tabloyu max-width'in otesine itiyor, tablo ortali
+   oldugu icin ad/durum ciftini birkac piksel sola kaydiriyordu; boylece
+   sutunlar sorudan soruya oynamaz. */
+.biy-reveal-tablo th.biy-rev-cevapbas,
+.biy-reveal-tablo td.biy-rev-sik,
+[dir="rtl"] .biy-reveal-tablo th.biy-rev-cevapbas,
+[dir="rtl"] .biy-reveal-tablo td.biy-rev-sik { width: 100%; text-align: end; white-space: normal; }
+
+/* eslestirme cevabi cok satirli — saga yaslanmis blok olarak dizilir */
+.biy-reveal-tablo td.biy-rev-sik .biy-rev-cift {
+  display: inline-flex; flex-direction: column; align-items: flex-end; gap: 2px;
+}
+
+@media (min-width: 900px) {
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-reveal-tablo { max-width: 960px; }
+}
+
+/* --- v116 · telefon: uc sutun da ekrana sigsin ---------------------
+   .biy-reveal-tablo'nun temel olculeri projeksiyon icin buyuk secilmis
+   (th 1.5rem / td 1.7rem). Telefonda bu, en sagdaki sutunun ekran
+   disinda kalmasina yol aciyordu: once "Durum", sutun sirasi degisince
+   "Cevap" kirpiliyordu. Dar ekranda tabloyu kucultup ucunu de sigdiriyoruz;
+   yine de tasarsa yatay kaydirma acik. */
+@media (max-width: 620px) {
+  .biy-sonuc-ekran .biy-reveal { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .biy-sonuc-ekran .biy-reveal-tablo th { font-size: 1rem; padding: 9px 7px; }
+  .biy-sonuc-ekran .biy-reveal-tablo td { font-size: 1.06rem; padding: 11px 7px; }
+  .biy-sonuc-ekran .biy-reveal-tablo td.biy-rev-durum { font-size: .96rem; }
+  .biy-sonuc-ekran .biy-reveal-tablo .biy-krk-mini { width: 18px; height: 18px; margin-inline-end: 4px; vertical-align: -3px; }
+  .biy-sonuc-ekran .biy-reveal-tablo .biy-rev-harf { min-width: 1.5em; height: 1.5em; border-radius: 6px; }
+  .biy-sonuc-ekran .biy-reveal-tablo .biy-rev-cift { font-size: .92rem; }
+  /* Uzun katilimci adi ("Mustafa Demirbag") dar ekranda yatay kaydirma
+     yaratmasin diye sarmasina izin verilir. min-width, auto-layout'un
+     sutunu min-content'e ezmesini engeller: 7em'in altina inmedigi icin
+     "5-A" gibi kisa adlar yine tek satirda kalir, yalnizca gercekten
+     uzun adlar bosluktan kirilir. overflow-wrap ise bosluksuz asiri
+     uzun bir ada karsi son emniyet supabidir. */
+  .biy-sonuc-ekran .biy-reveal-tablo td.biy-rev-ad {
+    white-space: normal; min-width: 7em; overflow-wrap: anywhere;
+  }
+}
+
+/* =====================================================================
+   v117 — SORU / CEVAP IPTALI + DETAYLI RAPOR AKORDIYONU
+   ---------------------------------------------------------------------
+   IKI YENI ISLEV:
+     1) IPTAL — kopya yakalandiginda tek katilimcinin o sorudaki cevabi,
+        soru hatali cikarsa sorunun tamami iptal edilebilir; ayni dugmeye
+        yeniden basmak iptali geri alir.
+     2) RAPOR — yarisma bitince "kim hangi soruya ne cevap verdi, kac puan
+        aldi, bunun ne kadari hizdan geldi" dokumu. Kapali <details>.
+
+   TASARIMI BOZMAMA SOZU (kullanicinin acik sarti) su uc kuralla tutulur:
+
+   a) IPTAL MODU KAPALIYKEN SONUC TABLOSU BIREBIR v116 HALINDE. Islem
+      sutunu HTML'e hic basilmaz; asagidaki .biy-rev-islem kurallari da
+      bu yuzden ancak mod acikken bir seye denk gelir. v116'nin sutun
+      geometrisine (ad/durum width:1% nowrap, cevap width:100%) HIC
+      dokunulmaz — yeni sutun da width:1% + nowrap oldugu icin artan
+      bosluk yine cevap sutununda toplanir, ad/durum cifti yerinden
+      oynamaz.
+
+   b) AC/KAPA DUGMESI BASLIK CUBUGUNDA. Alt kontrol satiri
+      (.biy-sonuc-ekran .biy-oyun-kontrol) 3. sahneye kadar
+      opacity:0 + pointer-events:none; iptale ise tam da cevaplar
+      sahnesinde ihtiyac var. Bu yuzden dugme, ayni isi goren mevcut
+      .biy-gizle-svg goz dugmesinin izinden gidip basliga yerlesti:
+      satir ici, kucuk, basligin ortalanmasini bozmayan bir hap.
+
+   c) RAPOR KAPALI ACILIR. Final ekrani, akordiyon kapaliyken tek
+      satirlik bir ozet cubugu disinda eskisiyle ayni; podyum
+      animasyonlari ve dugmeler yerinde kalir.
+
+   RENK SOZLESMESI: iptal = kirmizi (#EF5350), geri alma = teal (#16A085),
+   hiz bonusu = turuncu (#F39C12) — sitenin mevcut paletinden.
+   ===================================================================== */
+
+/* ---------- (1) sonuc ekrani: ac/kapa hapi ---------- */
+.biy-iptal-ac {
+  margin-inline-start: 12px; vertical-align: middle;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid #E1E8F0; background: #F6F9FC; color: #94a3b8;
+  font-family: 'Marhey',sans-serif; font-weight: 700; font-size: .8rem;
+  line-height: 1; transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+}
+.biy-iptal-ac:hover { border-color: #F5C6C4; background: #FFF5F5; color: #EF5350; transform: translateY(-1px); }
+.biy-iptal-ac.acik { border-color: #16A085; background: #16A085; color: #fff; }
+.biy-iptal-ac.acik:hover { background: #12907A; border-color: #12907A; color: #fff; }
+
+/* sorunun tamami iptalliyken sinifa yansiyan uyari */
+.biy-iptal-uyari {
+  max-width: 720px; margin: 0 auto 8px; padding: 8px 14px;
+  border: 1px solid #F5C6C4; border-radius: 12px; background: #FFF5F5;
+  color: #C0392B; font-weight: 700; font-size: .95rem; text-align: center;
+}
+
+/* satirlarin ustundeki aciklama + "tum soruyu iptal et" dugmesi */
+.biy-iptal-panel {
+  max-width: 720px; margin: 0 auto 12px; padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  border: 1px dashed #CBD5E1; border-radius: 12px; background: #F8FAFC;
+}
+.biy-iptal-not { flex: 1 1 260px; text-align: start; font-size: .85rem; font-weight: 600; color: #64748b; line-height: 1.45; }
+.biy-iptal-tum { background: #EF5350; }
+.biy-iptal-tum:hover { background: #D94441; }
+.biy-iptal-tum.geri { background: #16A085; }
+.biy-iptal-tum.geri:hover { background: #12907A; }
+
+/* ---------- (2) sonuc tablosunun "Islem" sutunu ---------- */
+/* v116 geometrisi korunur: yeni sutun da metni kadar yer kaplar,
+   artan genislik yine .biy-rev-sik'te toplanir. */
+.biy-reveal-tablo th.biy-rev-islembas,
+.biy-reveal-tablo td.biy-rev-islem { width: 1%; white-space: nowrap; text-align: center; padding-inline: 8px; }
+.biy-rev-islem-bos { color: #cbd5e1; font-weight: 600; }
+
+.biy-mini-iptal {
+  width: 34px; height: 34px; padding: 0; border-radius: 10px; cursor: pointer;
+  border: 1px solid #F5C6C4; background: #FFF5F5; color: #EF5350;
+  font-size: 1rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
+  transition: background .2s ease, border-color .2s ease, transform .15s ease;
+}
+.biy-mini-iptal:hover { background: #FFE3E3; transform: translateY(-1px); }
+.biy-mini-iptal.geri { border-color: #BFE7DA; background: #EAF9F4; color: #16A085; }
+.biy-mini-iptal.geri:hover { background: #D5F2E9; }
+
+/* ---------- (3) iptal edilmis satirin gorunusu ----------
+   Satir hem "iptal" hem "dogru/yanlis" sinifini birlikte tasiyabilir;
+   bu kurallar dosyanin sonunda geldigi icin (esit ozgullukte) kazanir. */
+.biy-reveal-tablo tr.iptal td,
+.biy-rap-tablo tr.iptal td { background: #FAFBFC; color: #94a3b8; }
+.biy-reveal-tablo tr.iptal td.biy-rev-sik,
+.biy-rap-tablo tr.iptal td.biy-rap-cevap { text-decoration: line-through; opacity: .7; }
+.biy-reveal-tablo tr.iptal td.biy-rev-durum,
+.biy-rap-tablo tr.iptal td.biy-rap-durum { color: #EF5350; font-weight: 800; }
+
+/* ---------- (4) final ekrani: detayli rapor akordiyonu ---------- */
+.biy-rapor {
+  max-width: 720px; margin: 26px auto 0; text-align: start;
+  background: #fff; border: 1px solid #E9EEF5; border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05); overflow: hidden;
+}
+.biy-rapor > summary,
+.biy-rap-kisi > summary { list-style: none; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 10px; }
+.biy-rapor > summary::-webkit-details-marker,
+.biy-rap-kisi > summary::-webkit-details-marker { display: none; }
+.biy-rapor > summary::after,
+.biy-rap-kisi > summary::after { content: '▾'; color: #94a3b8; transition: transform .25s ease; flex: 0 0 auto; }
+.biy-rapor[open] > summary::after,
+.biy-rap-kisi[open] > summary::after { transform: rotate(180deg); }
+
+.biy-rapor > summary {
+  padding: 14px 18px; font-family: 'Marhey',sans-serif; font-weight: 700;
+  font-size: 1.05rem; color: #16A085;
+}
+.biy-rapor > summary::after { margin-inline-start: auto; }
+.biy-rapor > summary:hover { background: #F4FBF9; }
+.biy-rapor-govde { padding: 2px 14px 16px; border-top: 1px solid #E9EEF5; }
+
+/* hatali soruyu tumuyle iptal eden numara cipleri */
+.biy-rap-sorular { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0 6px; }
+.biy-rap-sorular-not { width: 100%; font-size: .82rem; font-weight: 700; color: #94a3b8; }
+.biy-rap-schip {
+  min-width: 34px; height: 30px; padding: 0 8px; border-radius: 9px; cursor: pointer;
+  border: 1px solid #E1E8F0; background: #F6F9FC; color: #475569;
+  font-weight: 800; font-size: .85rem; transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+.biy-rap-schip:hover { border-color: #F5C6C4; background: #FFF5F5; color: #EF5350; }
+.biy-rap-schip.kesik { border-color: #EF5350; background: #EF5350; color: #fff; text-decoration: line-through; }
+.biy-rap-aciklama { font-size: .84rem; color: #64748b; margin: 4px 0 12px; line-height: 1.5; }
+
+/* kisi/takim satiri */
+.biy-rap-kisi { border: 1px solid #E9EEF5; border-radius: 12px; margin-bottom: 8px; background: #FCFDFE; overflow: hidden; }
+.biy-rap-kisi > summary { padding: 10px 12px; font-weight: 700; }
+.biy-rap-kisi > summary:hover { background: #F3F8FC; }
+.biy-rap-kisi[open] { background: #fff; border-color: #CFE7E1; }
+.biy-rap-sira {
+  flex: 0 0 auto; min-width: 26px; height: 26px; border-radius: 8px;
+  background: #EEF3F8; color: #64748b; display: inline-flex; align-items: center;
+  justify-content: center; font-weight: 800; font-size: .85rem;
+}
+.biy-rap-ad { flex: 1; font-weight: 800; font-size: 1.02rem; overflow-wrap: anywhere; }
+.biy-rap-kisi > summary b { flex: 0 0 auto; color: #16A085; font-size: 1.1rem; }
+.biy-rap-kisi > summary .biy-krk-mini { flex: 0 0 auto; width: 22px; height: 22px; }
+
+/* soru soru dokum tablosu */
+.biy-rap-kaydir { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0 10px 12px; }
+.biy-rap-tablo { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.biy-rap-tablo th {
+  background: #F1F6FA; color: #64748b; font-family: 'Marhey',sans-serif;
+  font-weight: 700; font-size: .76rem; padding: 7px 8px; text-align: center; white-space: nowrap;
+}
+.biy-rap-tablo td { padding: 8px; border-top: 1px solid #EEF2F7; text-align: center; font-weight: 600; }
+.biy-rap-tablo tr.dogru td { background: #F2FCF9; }
+.biy-rap-tablo tr.yanlis td { background: #FFF7F7; }
+.biy-rap-tablo tr.yok td { color: #94a3b8; }
+.biy-rap-tablo .biy-rev-metin.ar { font-family: 'Harmattan','Traditional Arabic',serif; font-size: 1.08rem; }
+.biy-rap-tablo .biy-mini-iptal { width: 28px; height: 28px; border-radius: 8px; font-size: .82rem; }
+
+/* td. onekleri sart: ".biy-rap-tablo td" (0,1,1) ozgullugu sinif-tek
+   seciciyi ezerdi ve hizalamalar tutmazdi. */
+.biy-rap-tablo td.biy-rap-no { width: 1%; white-space: nowrap; font-weight: 800; color: #16A085; }
+/* cevap artan genisligi yutar ve SAGA yaslanir → v116'daki gibi durum
+   sutununa yapisir, genis ekranda ortada asili kalmaz */
+.biy-rap-tablo td.biy-rap-cevap { width: 100%; text-align: end; }
+.biy-rap-tablo td.biy-rap-durum { width: 1%; white-space: nowrap; text-align: start; }
+.biy-rap-tablo td.biy-rap-taban { width: 1%; white-space: nowrap; color: #64748b; }
+.biy-rap-tablo td.biy-rap-hiz { width: 1%; white-space: nowrap; line-height: 1.25; }
+.biy-rap-tablo td.biy-rap-hiz small { display: block; font-size: .68rem; font-weight: 600; color: #94a3b8; }
+.biy-rap-bonus { color: #F39C12; font-size: .95rem; }
+.biy-rap-tablo td.biy-rap-puan { width: 1%; white-space: nowrap; font-weight: 800; color: #16A085; }
+.biy-rap-tablo td.biy-rap-puan s { color: #cbd5e1; font-weight: 600; margin-inline-end: 2px; }
+.biy-rap-tablo td.biy-rap-islem { width: 1%; white-space: nowrap; }
+
+/* ---------- (5) masaustu / projeksiyon ---------- */
+@media (min-width: 900px) {
+  #ekranOyunAdmin .biy-iptal-ac { font-size: 1rem; padding: 7px 16px; }
+  #ekranOyunAdmin .biy-iptal-uyari,
+  #ekranOyunAdmin .biy-iptal-panel { max-width: 960px; font-size: 1.05rem; }
+  #ekranOyunAdmin .biy-mini-iptal { width: 46px; height: 46px; border-radius: 12px; font-size: 1.35rem; }
+  /* rapor bir inceleme araci; projeksiyon olculerine buyutulmez, yalnizca
+     biraz genisletilir ki uzun cevaplar tek satirda kalsin */
+  #ekranOyunAdmin .biy-rapor { max-width: 1000px; }
+  #ekranOyunAdmin .biy-rap-tablo { font-size: 1rem; }
+  #ekranOyunAdmin .biy-rap-tablo th { font-size: .86rem; }
+  #ekranOyunAdmin .biy-rap-ad { font-size: 1.2rem; }
+  #ekranOyunAdmin .biy-rap-kisi > summary b { font-size: 1.3rem; }
+  #ekranOyunAdmin .biy-rapor > summary { font-size: 1.25rem; }
+  #ekranOyunAdmin .biy-rap-tablo .biy-mini-iptal { width: 32px; height: 32px; font-size: .95rem; }
+}
+
+/* ---------- (6) telefon ---------- */
+@media (max-width: 620px) {
+  .biy-iptal-ac { margin-inline-start: 8px; padding: 4px 10px; font-size: .72rem; }
+  .biy-iptal-uyari { font-size: .85rem; padding: 7px 10px; }
+  .biy-iptal-panel { padding: 9px 10px; gap: 8px; }
+  .biy-iptal-not { font-size: .78rem; flex-basis: 100%; }
+  .biy-iptal-panel .biy-btn { width: 100%; }
+  .biy-sonuc-ekran .biy-reveal-tablo td.biy-rev-islem { padding-inline: 4px; }
+  .biy-mini-iptal { width: 30px; height: 30px; border-radius: 8px; font-size: .9rem; }
+
+  .biy-rapor { margin-top: 20px; border-radius: 14px; }
+  .biy-rapor > summary { padding: 12px 12px; font-size: .95rem; }
+  .biy-rapor-govde { padding: 2px 8px 12px; }
+  .biy-rap-kaydir { padding: 0 6px 10px; }
+  .biy-rap-tablo { font-size: .82rem; }
+  .biy-rap-tablo th { font-size: .68rem; padding: 6px 5px; }
+  .biy-rap-tablo td { padding: 7px 5px; }
+  /* Telefonda "Taban" sutunu gizlenir: degeri zaten herkes icin ayni ve
+     ustteki aciklama satirinda yaziyor; yerini iptal dugmesine birakir. */
+  .biy-rap-tablo th:nth-child(4), .biy-rap-tablo td:nth-child(4) { display: none; }
+  .biy-rap-hiz small { font-size: .62rem; }
+  .biy-rap-ad { font-size: .95rem; }
+  .biy-rap-kisi > summary { padding: 9px 10px; gap: 8px; }
+  .biy-rap-schip { min-width: 30px; height: 27px; font-size: .78rem; }
+  .biy-rap-aciklama { font-size: .78rem; }
+}

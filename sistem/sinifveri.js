@@ -24,20 +24,37 @@
      1) BİLGİ YARIŞMASI — konu sınıflandırması
         anahtar : oyunlar/bilgiyarismasikacom.js içindeki KONULAR[].id
         sinif   : 5..10  ·  0 = Genel (her sınıfta görünür, karta sebep olmaz)
-        seviye  : 1 Temel · 2 Orta · 3 İleri
+        seviye  : 1 Temel · 2 Orta · 3 İleri  (yalnız GENEL konuları sıralar)
         sira    : seviye içindeki sıra (basitten zora dizilim)
+        soru    : YALNIZ index.html'deki kartın rozetinde yazan sayı. Asıl
+                  sorular bilgiyarismasikacom.js'tedir; buradaki sayı ondan
+                  kopyadır, uyuşmazlığı test yakalar (bkz. t_smod.js).
+
+     ⚠️ BİR SINIF = BİR KONU. Sınıfın kelime ve cümle soruları ayrı konu
+        değildir; hepsi "sinifN" konusunun içindedir. Yeni sınıf eklerken
+        buraya tek satır eklenir.
      ------------------------------------------------------------------ */
   var BIY_KONU = {
-    yedi:        { sinif: 7,  seviye: 1, sira: 1 },
-    dokuz:       { sinif: 9,  seviye: 1, sira: 2 },
-    kelimeler:   { sinif: 0,  seviye: 1, sira: 3 },
-    cumle7:      { sinif: 7,  seviye: 2, sira: 1 },
-    cumle10:     { sinif: 10, seviye: 2, sira: 2 },
-    edatlar:     { sinif: 0,  seviye: 2, sira: 3 },
-    vezinler:    { sinif: 0,  seviye: 3, sira: 1 },
-    dilbilgisi1: { sinif: 0,  seviye: 3, sira: 2 },
-    dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3 }
+    /* sınıf konuları — kelime + cümle birlikte */
+    sinif7:      { sinif: 7,  seviye: 1, sira: 1, soru: 106 },
+    sinif9:      { sinif: 9,  seviye: 1, sira: 2, soru: 60 },
+    sinif10:     { sinif: 10, seviye: 2, sira: 3, soru: 45 },
+    /* genel konular — her sınıfta görünür */
+    kelimeler:   { sinif: 0,  seviye: 1, sira: 3, soru: 59 },
+    edatlar:     { sinif: 0,  seviye: 2, sira: 3, soru: 25 },
+    vezinler:    { sinif: 0,  seviye: 3, sira: 1, soru: 53 },
+    dilbilgisi1: { sinif: 0,  seviye: 3, sira: 2, soru: 20 },
+    dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3, soru: 18 }
   };
+
+  /* Kelime/cümle ayrımı kaldırılmadan önce paylaşılmış bağlantılar
+     ("?konu=yedi" gibi) çalışmaya devam etsin diye eski id eşlemesi. */
+  var ESKI_ID = {
+    yedi: 'sinif7', cumle7: 'sinif7',
+    dokuz: 'sinif9',
+    cumle10: 'sinif10'
+  };
+  function konuGoc(id) { return (id && ESKI_ID[id]) || id || null; }
 
   function sayi(s) { var n = parseInt(s, 10); return isFinite(n) ? n : 0; }
 
@@ -77,6 +94,7 @@
     biyKonu:     BIY_KONU,
     biyKonulari: biyKonulari,
     biySiniflar: biySiniflar,
-    biyIlkKonu:  biyIlkKonu
+    biyIlkKonu:  biyIlkKonu,
+    biyKonuGoc:  konuGoc
   };
 })();

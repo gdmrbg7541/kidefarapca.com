@@ -187,7 +187,11 @@
       if (!v || !v.biyKonulari) return null;
       var k = v.biyKonulari(s);
       if (!k.length) return null;
-      return { rozet: k.length + (k.length > 1 ? ' Konu Hazır' : ' Konu Hazır'), konular: k };
+      /* Artık sınıf başına TEK konu var (kelime + cümle birlikte), bu yüzden
+         "1 Konu Hazır" demek anlamsız; rozette soru sayısı yazar. */
+      var n = 0;
+      for (var i = 0; i < k.length; i++) n += (v.biyKonu[k[i]] && v.biyKonu[k[i]].soru) || 0;
+      return { rozet: n ? n + ' Soru Hazır' : 'Sorular Hazır', konular: k };
     },
     url: function (s) {
       var v = window.KidefSinifVeri;
