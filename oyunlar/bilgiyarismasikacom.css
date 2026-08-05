@@ -2177,27 +2177,28 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 .biy-giris-ust { display: flex; flex-direction: column; align-items: center; }
 .biy-giris-ust-metin { width: 100%; }
 
-/* ---- sabit (ustte duran) geri tusu ---- */
+/* ---- sabit (ustte duran) geri tusu: yazisiz, sadece svg ---- */
 .biy-giris-geri {
   position: fixed; top: 14px; left: 14px; z-index: 45;
-  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-  font-family: 'Marhey', sans-serif; font-weight: 700; font-size: .98rem;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  font-size: 1.32rem; line-height: 1;
+  width: 2.4em; height: 2.4em; padding: 0;
   color: #16A085; background: rgba(255,255,255,.94); border: 2px solid #B9E6DA;
-  border-radius: 999px; padding: 9px 18px;
+  border-radius: 50%;
   box-shadow: 0 4px 12px rgba(22,160,133,.18);
   backdrop-filter: blur(4px);
   transition: background .15s ease, color .15s ease, border-color .15s ease, transform .12s ease;
 }
 .biy-giris-geri:hover { background: #16A085; color: #fff; border-color: #16A085; transform: translateY(-2px); }
 .biy-giris-geri:active { transform: translateY(0); }
-.biy-gg-svg { width: 1.15em; height: 1.15em; flex: none; display: block; }
+.biy-gg-svg { width: 1.2em; height: 1.2em; flex: none; display: block; }
 .biy-gg-ok { animation: biyGgOk 1.9s ease-in-out infinite; }
 @keyframes biyGgOk {
   0%, 100% { transform: translateX(0); }
   50%      { transform: translateX(-2.6px); }
 }
 @media (max-width: 560px) {
-  .biy-giris-geri { top: 10px; left: 10px; font-size: .86rem; padding: 7px 14px; gap: 6px; }
+  .biy-giris-geri { top: 10px; left: 10px; font-size: 1.14rem; }
 }
 
 /* ==========================================================
@@ -2262,8 +2263,7 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   }
   .biy-giris-geri {
     top: clamp(12px, 2vh, 22px); left: clamp(14px, 1.6vw, 28px);
-    font-size: clamp(1rem, 2.05vh, 1.32rem);
-    padding: clamp(9px, 1.6vh, 15px) clamp(20px, 1.9vw, 34px); gap: 10px;
+    font-size: clamp(1.2rem, 2.5vh, 1.8rem);
   }
 }
 

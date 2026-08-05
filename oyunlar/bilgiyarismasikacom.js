@@ -688,21 +688,20 @@ const SEVIYE_ZORLUK = { kolay: 1, orta: 2, zor: 3 };
    NOT: Soru id'leri aynı konu içinde benzersiz olmalıdır (birleşik konu da dâhil).      */
 /* (eski KONULAR tanimi kaldirildi — veri yukarida) */
 /* ---- Konu siniflandirmasi ----
-   sinif: 7/9/10, 0 = Genel (tum siniflar) · seviye: 1 Temel, 2 Orta, 3 İleri
-   Liste ve havuz BASITTEN ZORA bu bilgiyle dizilir. */
-const KONU_BILGI = {
-  yedi:        { sinif: 7,  seviye: 1, sira: 1 },
-  dokuz:       { sinif: 9,  seviye: 1, sira: 2 },
-  kelimeler:   { sinif: 0,  seviye: 1, sira: 3 },
-  cumle7:      { sinif: 7,  seviye: 2, sira: 1 },
-  cumle10:     { sinif: 10, seviye: 2, sira: 2 },
-  edatlar:     { sinif: 0,  seviye: 2, sira: 3 },
-  vezinler:    { sinif: 0,  seviye: 3, sira: 1 },
-  dilbilgisi1: { sinif: 0,  seviye: 3, sira: 2 },
-  dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3 }
-};
+   sinif: 5..10, 0 = Genel (tum siniflar) · seviye: 1 Temel, 2 Orta, 3 İleri
+   Liste ve havuz BASITTEN ZORA bu bilgiyle dizilir.
+   ⚠️ TEK KAYNAK: harita artik sistem/sinifveri.js icinde durur; index.html
+   de ayni dosyayi okuyup "bu sinifta bilgi yarismasi var mi?" diye sorar.
+   Boylece yeni sinif eklerken tek dosya degisir. */
+const KONU_BILGI = (window.KidefSinifVeri && window.KidefSinifVeri.biyKonu) || {};
 KONULAR.forEach(k => Object.assign(k, KONU_BILGI[k.id] || { sinif: 0, seviye: 2, sira: 9 }));
 KONULAR.sort((a, b) => (a.seviye - b.seviye) || (a.sira - b.sira));
+/* Suzgec cipleri: elle liste yok, veride hangi sinif varsa o cikar */
+const BIY_SINIFLAR = (function () {
+  const g = {}, c = [];
+  KONULAR.forEach(k => { const n = +k.sinif || 0; if (n > 0 && !g[n]) { g[n] = 1; c.push(n); } });
+  return c.sort((a, b) => a - b);
+})();
 const SEVIYE_BASLIK = { 1: "Temel · Kelimeler", 2: "Orta · Cümleler ve Kalıplar", 3: "İleri · Sarf ve Dilbilgisi" };
 
 
@@ -778,6 +777,9 @@ const state = {
   atildiMi: false,           // öğretmen bu cihazı yarışmadan çıkardı mı (kalıcı bayrak)
   takimNabiz: null,          // öğrenci tarafı: "hâlâ buradayım" zamanlayıcısı
   konuId: null,              // seçili konu (açılışta seçili değil)
+  acilisSinif: 0,            // index'teki sınıf kartından "?sinif=N" ile gelindiyse
+  acilisKonu: null,          // "?konu=id" ile gelindiyse
+  acilisUygulandi: false,    // açılış seçimi bir kez uygulanır
   seviye: null,              // kolay | orta | zor  (başta seçili değil)
   sorularZ: 1,               // Sorular önizleme sekmesi (zorluk)
   soruGizli: true,           // admin ekranında soruyu gizle/göster (açılışta gizli)
@@ -1136,7 +1138,7 @@ const BIY = {
       // konular basitten zora dizilir
       let h = '<div class="biy-ds-siniflar" role="group" aria-label="Sınıf süzgeci">' +
         '<button type="button" class="biy-ds-sinif secili" data-sinif="0">Hepsi</button>' +
-        [7, 9, 10].map(n => '<button type="button" class="biy-ds-sinif" data-sinif="'+n+'">'+n+'</button>').join("") +
+        BIY_SINIFLAR.map(n => '<button type="button" class="biy-ds-sinif" data-sinif="'+n+'">'+n+'</button>').join("") +
       '</div>';
       let seviye = 0, sira = 0;
       KONULAR.forEach(k => {
@@ -1178,9 +1180,74 @@ const BIY = {
         });
       }
     }
+    BIY._acilisUygula();
     BIY._konuVurgu();
     BIY._pdfOnizleGuncelle();
   },
+
+  /* ---------- Açılış: "?sinif=N&konu=id" ----------
+     index.html'deki İmam Hatip sınıf kartından gelindiyse sınıf süzgecini
+     o sınıfa alır ve sınıfın konusunu SEÇİLİ getirir. Böylece bilgi
+     yarışmasının TEK html'i, sınıfa göre farklı açılır. */
+  _acilisUygula(){
+    if (state.acilisUygulandi) return;
+    const n = +state.acilisSinif || 0, istenen = state.acilisKonu;
+    if (!n && !istenen) { state.acilisUygulandi = true; return; }
+    state.acilisUygulandi = true;
+
+    /* 1) sınıf süzgeci çipi */
+    const liste = $("konuSeciciListe");
+    if (n && liste){
+      const cip = liste.querySelector('.biy-ds-sinif[data-sinif="'+n+'"]');
+      if (cip){
+        liste.querySelectorAll(".biy-ds-sinif").forEach(c => c.classList.toggle("secili", c === cip));
+        liste.querySelectorAll(".biy-ds-oge").forEach(o => {
+          const ks = +o.getAttribute("data-sinif");
+          o.hidden = (ks !== n && ks !== 0);          // Genel konular her sınıfta kalır
+        });
+      }
+    }
+
+    /* 2) konu seçimi — önce istenen id, olmazsa sınıfın ilk konusu */
+    const uygun = k => k && !k.pasif && (k.sorular || []).length > 0;
+    let hedef = istenen ? KONULAR.find(k => k.id === istenen && uygun(k)) : null;
+    if (!hedef && n) hedef = KONULAR.find(k => (+k.sinif === n) && uygun(k));
+    if (hedef) BIY.konuSec(hedef.id);
+
+    /* 3) nereden gelindiği bilgisi */
+    BIY._acilisNotu(n, hedef);
+  },
+
+  _acilisNotu(n, konu){
+    const yuva = $("konuSecici"); if (!yuva || !yuva.parentNode) return;
+    let not = $("biyAcilisNot");
+    if (!not){
+      not = document.createElement("div");
+      not.id = "biyAcilisNot";
+      not.style.cssText = "flex:1 1 100%;order:99;margin:6px 0 0;padding:7px 11px;border-radius:10px;" +
+        "background:rgba(22,160,133,.10);border:1px solid rgba(22,160,133,.30);color:#0E7C68;" +
+        "font-size:.86rem;line-height:1.35;display:flex;align-items:center;gap:8px;flex-wrap:wrap;";
+      yuva.parentNode.appendChild(not);
+    }
+    const rakam = n ? '<b style="display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;'
+      + 'border-radius:50%;background:#16A085;color:#fff;font-size:.8rem;">' + n + '</b>' : '';
+    not.innerHTML = rakam + '<span>' +
+      (n ? n + '. sınıf için açıldı — ' : '') +
+      (konu ? 'konu <b>' + kacis(konu.ad) + '</b> seçildi.'
+            : 'bu sınıfa özel konu bulunamadı, genel konulardan seçebilirsin.') +
+      '</span>' +
+      '<button type="button" id="biyAcilisTum" style="margin-left:auto;border:0;background:transparent;' +
+      'color:#0E7C68;text-decoration:underline;cursor:pointer;font:inherit;">tüm konular</button>';
+    const t = $("biyAcilisTum");
+    if (t) t.onclick = function(){
+      const l = $("konuSeciciListe"); if (!l) return;
+      const hep = l.querySelector('.biy-ds-sinif[data-sinif="0"]');
+      l.querySelectorAll(".biy-ds-sinif").forEach(c => c.classList.toggle("secili", c === hep));
+      l.querySelectorAll(".biy-ds-oge").forEach(o => { o.hidden = false; });
+      not.remove();
+    };
+  },
+
   konuSec(id){
     state.konuId = id || null;
     if (state.konuId){
@@ -3063,6 +3130,11 @@ window.addEventListener("beforeunload", function(e){
 (function baslat(){
   const p = new URLSearchParams(location.search);
   const oda = p.get("oda"), takim = p.get("takim");
+
+  /* index.html'deki İmam Hatip sınıf kartı "?sinif=N&konu=id" ile açar.
+     Tek html, veriler sınıfa göre: seçim _acilisUygula() içinde yapılır. */
+  state.acilisSinif = Math.max(0, parseInt(p.get("sinif"), 10) || 0);
+  state.acilisKonu  = p.get("konu") || null;
 
   /* Tek karekodlu modlarda (birey/okul) baglanti yalnizca ?oda= tasir; ogrenci
      kendi adini yazar ve ogretmen onayini bekler. Takim modunda ise her takimin
