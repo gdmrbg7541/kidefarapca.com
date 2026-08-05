@@ -307,7 +307,9 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-a-harf { width: 34px; height: 34px; flex: 0 0 34px; background: rgba(255,255,255,.28); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
 .biy-a-metin { flex: 1; }
 .biy-a-tik { font-size: 1.4rem; }
-.biy-a-opt.dogru { box-shadow: 0 0 0 4px #fff, 0 0 0 8px #27AE60, 0 6px 16px rgba(0,0,0,.2); }
+/* Doğru şık çerçevesi İÇE çizilir (inset) → kaydırmalı/dar kaplarda kırpılmaz,
+   tam görünür. Beyaz ayraç + kalın yeşil halka içeride durur. */
+.biy-a-opt.dogru { box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 7px #27AE60, 0 6px 16px rgba(0,0,0,.22); }
 
 .biy-cevap-durum { text-align: center; font-family: 'Marhey',sans-serif; font-weight: 700; color: #16A085; margin: 16px 0 8px; font-size: 1.1rem; }
 .biy-cipler { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -2856,9 +2858,15 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 }
 .biy-hs-sz-bilgi {
   font-size: .82rem; font-weight: 700; color: #64748b;
-  display: inline-flex; align-items: center; gap: 4px;
+  display: inline-flex; align-items: center; gap: 8px;
 }
-.biy-hs-sz-bilgi b { color: #16A085; font-size: 1.05em; }
+/* eşleşen soru sayısı BELİRGİN: yeşil hap içinde büyük rakam */
+.biy-hs-sz-bilgi b {
+  background: #16A085; color: #fff; border-radius: 999px;
+  min-width: 30px; padding: 3px 12px; text-align: center;
+  font-size: 1.2rem; font-weight: 800; line-height: 1.15;
+}
+.biy-hs-sz-bilgi span { color: #64748b; }
 .biy-hs-sz-sifirla {
   flex: 0 0 auto; margin-inline-start: auto; padding: 5px 12px; border-radius: 999px; cursor: pointer;
   border: 1px solid #F5C6C4; background: #FFF5F5; color: #EF5350;
@@ -3012,4 +3020,82 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   /* sıra ve puan kutuları eşit genişlikte → isim gerçek merkezde */
   #ekranOyunAdmin .biy-lider-sira { min-width: 84px; }
   #ekranOyunAdmin .biy-sonuc-lider li b { min-width: 84px; text-align: center; }
+}
+
+/* =====================================================================
+   v126 — Sonuç ekranı doğru cevap alanı (istek: Geylani)
+   1) Doğru cevap konteynırı masaüstünde çok geniş (yatay sınırsıza yakın),
+      yazılar çok büyük ve okunur.
+   2) Yazma: kelime hâli devasa; harf kutuları YALIN (normal) harflerle,
+      büyük — başta/ortada/sonda bitişik biçim yok.
+   3) Son soruda "Yarışmayı Bitir" düğmesi animasyonu beklemeden tıklanır.
+   ===================================================================== */
+
+/* --- 3) Son soru: bitir düğmesi hemen etkin --- */
+.biy-sonuc-ekran[data-son="1"] .biy-oyun-kontrol {
+  opacity: 1 !important; transform: none !important; pointer-events: auto !important;
+}
+
+/* --- 2) Yazma harf kutuları: tek yalın harf, büyük --- */
+.biy-yh-hucre { flex-direction: row; gap: 0; padding: 10px 14px; }
+.biy-yh-yalin { display: none; }                     /* küçük alt-harf artık yok */
+.biy-yh-bic { border-top: none; padding-top: 0; }
+
+@media (min-width: 900px) {
+  /* 1) doğru cevap konteynırı geniş + büyük yazı */
+  #ekranOyunAdmin .biy-oyun-orta.biy-sonuc-ekran { max-width: min(1720px, 96vw); }
+  #ekranOyunAdmin .biy-sonuc-ekran .oge-dogru > .biy-a-optlar { max-width: none; padding: 12px 14px; }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-opt { font-size: clamp(1.5rem, 3.4vh, 3rem); padding: clamp(12px,2.6vh,30px) 34px; }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-opt.ar .biy-a-metin { font-size: clamp(2rem, 4.6vh, 3.8rem); }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-harf { width: clamp(42px,5.6vh,60px); height: clamp(42px,5.6vh,60px); flex-basis: clamp(42px,5.6vh,60px); font-size: clamp(1.4rem,3.2vh,2rem); }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-tik { font-size: clamp(1.6rem,3.4vh,2.4rem); }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-sonuc-soru-cumle { font-size: clamp(1.6rem,3.6vh,3.2rem); }
+
+  /* 5-6 şıkta bile büyük kalsın (eski küçülten kural sonuç ekranında ezilir) */
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-optlar[data-n="5"] .biy-a-opt,
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-optlar[data-n="6"] .biy-a-opt { font-size: clamp(1.3rem,2.8vh,2.4rem); padding: clamp(9px,2vh,22px) 28px; }
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-optlar[data-n="5"] .biy-a-opt.ar .biy-a-metin,
+  #ekranOyunAdmin .biy-sonuc-ekran .biy-a-optlar[data-n="6"] .biy-a-opt.ar .biy-a-metin { font-size: clamp(1.7rem,3.8vh,3rem); }
+
+  /* 2) Yazma: kelime hâli devasa, harf kutuları büyük */
+  #ekranOyunAdmin .biy-a-cevapcubuk { font-size: clamp(3.2rem, 8vh, 6.5rem); max-width: none; padding: clamp(14px,2.4vh,26px) clamp(20px,3vh,40px); }
+  #ekranOyunAdmin .biy-yazi-harfler { max-width: none; gap: clamp(12px,2vh,26px); }
+  #ekranOyunAdmin .biy-yh-hucre { padding: clamp(12px,2vh,24px) clamp(16px,2.4vh,30px); min-width: clamp(72px,9.5vh,130px); }
+  #ekranOyunAdmin .biy-yh-bic { font-size: clamp(3.2rem, 8vh, 6.2rem); }
+}
+
+/* =====================================================================
+   v127 — Süzgeç akıllandırma + alt bar SEPETİ (istek: Geylani)
+   · Eşleşen soru sayısı belirgin (yeşil hap).
+   · Alt barda (Tümünü temizle · Bitti) canlı SEPET: hangi listeden
+     seçilirse seçilsin toplam burada güncellenir.
+   · Çipler faceted: kendi boyutu hariç diğer süzgeçlere göre 0 kalırsa pasif.
+   ===================================================================== */
+.biy-soru-sec-alt { align-items: center; flex-wrap: wrap; }
+.biy-soru-sec-sepet {
+  display: inline-flex; align-items: center; gap: 9px; margin: 0 auto;
+  background: #EAFBF4; color: #0E7C66; border: 1.5px solid #A7E8CF;
+  border-radius: 999px; padding: 8px 18px;
+  font-family: 'Marhey', sans-serif; font-weight: 800; font-size: 1rem;
+  transition: background .2s ease, border-color .2s ease, transform .15s ease;
+}
+.biy-soru-sec-sepet .biy-sepet-svg { width: 22px; height: 22px; flex: 0 0 auto; }
+.biy-soru-sec-sepet b {
+  background: #16A085; color: #fff; border-radius: 999px;
+  min-width: 26px; padding: 2px 11px; text-align: center; font-size: 1.12rem; font-weight: 900;
+}
+.biy-soru-sec-sepet.dolu { background: #16A085; color: #fff; border-color: #16A085; }
+.biy-soru-sec-sepet.dolu b { background: rgba(255,255,255,.25); color: #fff; }
+.biy-soru-sec-sepet:not(.dolu) { opacity: .82; }
+
+@media (min-width: 900px) {
+  #biySoruSec .biy-soru-sec-sepet { font-size: 1.5rem; padding: 11px 26px; gap: 12px; }
+  #biySoruSec .biy-soru-sec-sepet .biy-sepet-svg { width: 32px; height: 32px; }
+  #biySoruSec .biy-soru-sec-sepet b { font-size: 1.7rem; min-width: 40px; padding: 3px 16px; }
+  #biySoruSec .biy-hs-sz-bilgi b { font-size: 1.55rem; min-width: 42px; padding: 4px 16px; }
+}
+@media (max-width: 620px) {
+  .biy-soru-sec-sepet { font-size: .82rem; padding: 6px 12px; margin: 0; order: -1; width: 100%; justify-content: center; }
+  .biy-soru-sec-sepet .biy-sepet-svg { width: 18px; height: 18px; }
+  .biy-soru-sec-sepet b { font-size: .95rem; min-width: 22px; padding: 1px 8px; }
 }

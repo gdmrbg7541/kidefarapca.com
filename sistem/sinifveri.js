@@ -36,7 +36,7 @@
      ------------------------------------------------------------------ */
   var BIY_KONU = {
     /* sınıf konuları — kelime + cümle birlikte */
-    sinif7:      { sinif: 7,  seviye: 1, sira: 1, soru: 129 },
+    sinif7:      { sinif: 7,  seviye: 1, sira: 1, soru: 125 },
     sinif9:      { sinif: 9,  seviye: 1, sira: 2, soru: 72 },
     sinif10:     { sinif: 10, seviye: 2, sira: 3, soru: 64 },
     /* genel konular — her sınıfta görünür */

@@ -318,12 +318,12 @@ const KONULAR = [
     /* -- cümleler -- */
     {"id":20001,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Kahvaltıda süt içiyorum.»","parcalar":["أَشْرَبُ","الحَليب","في الفَطور."]},
     {"id":20002,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Akşam yemeğinde meyve suyu içiyorum.","Saat sekiz.","Evde anneme yardım ederim.","Sen öğleyin eve dönüyorsun."],"dogru":0,"arapca":"أَشْرَبُ العَصير في العَشاء."},
-    {"id":20003,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ إِلى البَيْت ظُهْرًا.» (Öğleyin eve dönerim.)","secenekler":["أَرْجِعُ","اللَّحْم","أَنامُ","مَع عائِلَتي."],"dogru":0,"arSecenek":true},
+    {"id":20003,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ إِلى البَيْت ظُهْرًا.»","secenekler":["أَرْجِعُ","اللَّحْم","أَنامُ","مَع عائِلَتي."],"dogru":0,"arSecenek":true},
     {"id":20004,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«O dişlerini temizliyor.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"آكُلُ العَسَل وَالزُّبْدَة في الفَطور."},
     {"id":20005,"tip":"cumle","zorluk":2,"soru":"«O dişlerini temizliyor.» cümlesinin Arapçası hangisi?","secenekler":["هِي تُـنَظِّفُ أَسْنانَها.","أَشْرَبُ الحَليب في الفَطور.","هُو يُـنَظِّفُ أَسْنانَهُ.","أُساعِدُ أُمّي في البَيْت."],"dogru":0,"arSecenek":true},
     {"id":20006,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Akşam derslerimi çalışırım.»","parcalar":["أَدْرُسُ","دُروسي","مَساءً."]},
     {"id":20007,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["O erken uyanıyor.","Sen akşam dersleri çalışıyorsun.","Saat sekizde okula giderim.","Sabah erken uyanırım."],"dogru":0,"arapca":"هِي تَـسْتَيْقِظُ مُبَكِّرًا."},
-    {"id":20008,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «أَتَناوَلُ اللَّحْم ____ في الغَداء.» (Öğle yemeğinde et ve pirinç yiyorum.)","secenekler":["وَالأُرْز","أَتَناوَلُ","أَنْتِ","أُصَلّي"],"dogru":0,"arSecenek":true},
+    {"id":20008,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «أَتَناوَلُ اللَّحْم ____ في الغَداء.»","secenekler":["وَالأُرْز","أَتَناوَلُ","أَنْتِ","أُصَلّي"],"dogru":0,"arSecenek":true},
     {"id":20009,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Saat sekizde okula giderim.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"أَنْتِ تَـرْجِعينَ إِلى البَيْت ظُهْرًا."},
     {"id":20010,"tip":"cumle","zorluk":2,"soru":"«Sabah erken uyanırım.» cümlesinin Arapçası hangisi?","secenekler":["أَسْتَيْقِظُ في الصَّباح مُبَكِّرًا.","أَتَوَضَّأُ، ثُمَّ أُصَلّي الفَجْر.","أَنْتَ تَـرْجِعُ إِلى البَيْت ظُهْرًا.","السّاعَة الثّامِنَة"],"dogru":0,"arSecenek":true},
     {"id":20011,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «O sabah namazı kılıyor.»","parcalar":["هُو","يُـصَلّي","الفَجْر."]},
@@ -333,7 +333,7 @@ const KONULAR = [
     {"id":20015,"tip":"cumle","zorluk":2,"soru":"«Sen gece uyuyorsun.» cümlesinin Arapçası hangisi?","secenekler":["أَنْتَ تَـنامُ لَيْلًا.","أَتَناوَلُ اللَّحْم وَالأُرْز في الغَداء.","أَنْتَ تُـساعِدُ أُمَّكَ.","آكُلُ العَسَل وَالزُّبْدَة في الفَطور."],"dogru":0,"arSecenek":true},
     {"id":20016,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Öğle yemeğinden sonra kahve içiyorum.»","parcalar":["أَشْرَبُ","القَهْوَة","بَعْد","الغَداء."]},
     {"id":20017,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Saat altı.","Akşam yemeğinde tavuk ve pirinç yerim.","Elbiselerimi giyerim.","Sen öğleyin eve dönüyorsun."],"dogru":0,"arapca":"السّاعَة السّادِسَة"},
-    {"id":20018,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ الفَطور مَع عائِلَتي.» (Ailemle kahvaltı yaparım.)","secenekler":["أَتَناوَلُ","أَلْبَسُ","أَرْجِعُ","في الصَّباح"],"dogru":0,"arSecenek":true},
+    {"id":20018,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ الفَطور مَع عائِلَتي.»","secenekler":["أَتَناوَلُ","أَلْبَسُ","أَرْجِعُ","في الصَّباح"],"dogru":0,"arSecenek":true},
     {"id":20019,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Sen akşam dersleri çalışıyorsun.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"أَذْهَبُ إِلى مدْرَسَة في السّاعَة الثّامِنَة."},
     {"id":20020,"tip":"cumle","zorluk":2,"soru":"«Sen akşam dersleri çalışıyorsun.» cümlesinin Arapçası hangisi?","secenekler":["أَنْتَ تَـدْرُسُ الدُّروس مَساءً.","أَشْرَبُ الحَليب في الفَطور.","هُو يُـنَظِّفُ أَسْنانَهُ.","أَنْتِ تُـساعِدينَ أُمَّكِ."],"dogru":0,"arSecenek":true},
     {"id":20021,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Sen akşam dersleri çalışıyorsun.»","parcalar":["أَنْتِ","تَـدْرُسينَ","الدُّروس","مَساءً."]},
@@ -343,7 +343,7 @@ const KONULAR = [
     {"id":20025,"tip":"cumle","zorluk":2,"soru":"«Sen gece uyuyorsun.» cümlesinin Arapçası hangisi?","secenekler":["أَنْتِ تَـنامينَ لَيْلًا.","السّاعَة الواحِدَة","أَتَوَضَّأُ، ثُمَّ أُصَلّي الفَجْر.","أَنْتِ تُـساعِدينَ أُمَّكِ."],"dogru":0,"arSecenek":true},
     {"id":20026,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Sabah saat yedide kahvaltı yaparım.»","parcalar":["أَتَناوَلُ","الفَطور","في السّاعَة","السّابِعَة","صَباحًا."]},
     {"id":20027,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["O sabah namazı kılıyor.","Kahvaltıda süt içiyorum.","O dişlerini temizliyor.","Gece saat on birde uyurum."],"dogru":0,"arapca":"هِي تُـصَلّي الفَجْر."},
-    {"id":20028,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُو يَـتَناوَلُ ____» (O kahvaltı yapıyor.)","secenekler":["الفَطور.","مَلابِسي.","يَـسْتَيْقِظُ","أَنْتَ"],"dogru":0,"arSecenek":true},
+    {"id":20028,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُو يَـتَناوَلُ ____»","secenekler":["الفَطور.","مَلابِسي.","يَـسْتَيْقِظُ","أَنْتَ"],"dogru":0,"arSecenek":true},
     {"id":20029,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Sen öğleyin eve dönüyorsun.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"أَنْتَ تَـرْجِعُ إِلى البَيْت ظُهْرًا."},
     {"id":20030,"tip":"cumle","zorluk":2,"soru":"«O kahvaltı yapıyor.» cümlesinin Arapçası hangisi?","secenekler":["هِي تَـتَناوَلُ الفَطور.","أَدْرُسُ دُروسي مَساءً.","أَنامُ لَيْلًا.","أَنْتَ تَـدْرُسُ الدُّروس مَساءً."],"dogru":0,"arSecenek":true},
     {"id":20031,"tip":"cumle","zorluk":2,"soru":"«Saat bir.» cümlesinin Arapçası hangisi?","secenekler":["السّاعَة الواحِدَة","أَنامُ لَيْلًا.","أَرْجِعُ إِلى البَيْت ظُهْرًا.","أَشْرَبُ العَصير في العَشاء."],"dogru":0,"arSecenek":true},
@@ -353,12 +353,12 @@ const KONULAR = [
     {"id":20035,"tip":"cumle","zorluk":2,"soru":"«Akşam yemeğinde tavuk ve pirinç yerim.» cümlesinin Arapçası hangisi?","secenekler":["آكُلُ الدَّجاج وَالأُرْز في العَشاء.","أَنامُ لَيْلًا.","أَذْهَبُ إِلى المَدْرَسَة.","أَنْتِ تَـرْجِعينَ إِلى البَيْت ظُهْرًا."],"dogru":0,"arSecenek":true},
     {"id":20036,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Kahvaltıda zeytin ve peynir yiyorum.»","parcalar":["أَتَناوَلُ","الزَّيْتون","وَالجُبْن","في الفَطور."]},
     {"id":20037,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Abdest alırım, sonra sabah namazını kılarım.","Sen akşam dersleri çalışıyorsun.","Sen öğleyin eve dönüyorsun.","O sabah namazı kılıyor."],"dogru":0,"arapca":"أَتَوَضَّأُ، ثُمَّ أُصَلّي الفَجْر."},
-    {"id":20038,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُو ____ مُبَكِّرًا.» (O erken uyanıyor.)","secenekler":["يَـسْتَيْقِظُ","في الصَّباح","العَسَل","مَلابِسي."],"dogru":0,"arSecenek":true},
+    {"id":20038,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُو ____ مُبَكِّرًا.»","secenekler":["يَـسْتَيْقِظُ","في الصَّباح","العَسَل","مَلابِسي."],"dogru":0,"arSecenek":true},
     {"id":20039,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Gece saat on birde uyurum.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"أَنامُ في السّاعَة الحادِيَة عَشْرَة لَيْلًا."},
     {"id":20040,"tip":"cumle","zorluk":2,"soru":"«Sen annene yardım ediyorsun.» cümlesinin Arapçası hangisi?","secenekler":["أَنْتَ تُـساعِدُ أُمَّكَ.","أَلْبَسُ مَلابِسي.","أَنْتَ تَـنامُ لَيْلًا.","هِي تَـسْتَيْقِظُ مُبَكِّرًا."],"dogru":0,"arSecenek":true},
     {"id":20041,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Evde anneme yardım ederim.»","parcalar":["أُساعِدُ","أُمّي","في البَيْت."]},
     {"id":20042,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Saat dört.","Sen akşam dersleri çalışıyorsun.","Sen öğleyin eve dönüyorsun.","Kahvaltıda zeytin ve peynir yiyorum."],"dogru":0,"arapca":"السّاعَة الرّابِعَة"},
-    {"id":20043,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُو ____ أَسْنانَهُ.» (O dişlerini temizliyor.)","secenekler":["يُـنَظِّفُ","الثّامِنَة","السّاعَة","يَـسْتَيْقِظُ"],"dogru":0,"arSecenek":true},
+    {"id":20043,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُو ____ أَسْنانَهُ.»","secenekler":["يُـنَظِّفُ","الثّامِنَة","السّاعَة","يَـسْتَيْقِظُ"],"dogru":0,"arSecenek":true},
     {"id":20044,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Gece uyurum.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"أَنامُ لَيْلًا."},
     {"id":20045,"tip":"cumle","zorluk":2,"soru":"«Saat yedi.» cümlesinin Arapçası hangisi?","secenekler":["السّاعَة السّابِعَة","أَشْرَبُ الحَليب في الفَطور.","السّاعَة الثّامِنَة","أَلْبَسُ مَلابِسي."],"dogru":0,"arSecenek":true}
   ] },
@@ -429,42 +429,42 @@ const KONULAR = [
     /* -- cümleler -- */
     {"id":21001,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Daima dürüst olman gerekir.»","parcalar":["يَجِبُ عَلَيْكَ","أَنْ تَكونَ","صادِقًا","دائِمًا‫.‬"]},
     {"id":21002,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Ben şoförüm, ticari/ücretli taksi sürüyorum.","Aceleci olmaman gerekir.","Ve birbirlerine şöyle derler: Bayramınız kutlu olsun.","Bende şiddetli baş ağrısı var."],"dogru":0,"arapca":"أَنا سائِق، أَسوقُ سَيّارَة أُجْرَة."},
-    {"id":21003,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «أَنا مَريضَة، عِنْدي ____ في أُذُني.» (Ben hastayım, kulağımda ağrı var.)","secenekler":["أَلَم","أَلّا تَكونَ","مُوَظَّفَة،","هُم"],"dogru":0,"arSecenek":true},
+    {"id":21003,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «أَنا مَريضَة، عِنْدي ____ في أُذُني.»","secenekler":["أَلَم","أَلّا تَكونَ","مُوَظَّفَة،","هُم"],"dogru":0,"arSecenek":true},
     {"id":21004,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Müslümanlar komşularına daima yardım ederler.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"والِدَتي رَبَّة البَيْت، وَهِيَ تَهْتَمُّ بِعائِلَتِنا."},
     {"id":21005,"tip":"cumle","zorluk":2,"soru":"«Bayramlarda Müslümanlar yemekten önce bayram namazı kılarlar.» cümlesinin Arapçası hangisi?","secenekler":["في الأَعْياد المُسْلِمون يُصَلّونَ قَبْل الطَّعام صَلاة العيد‫.‬","في الإِسْلام عيدان، هُما عيد الفِطْر وَعيد الأَضْحى‫.‬","بَعْد الطَّعام يَزُورونَ أَقارِبَهُم وَجيرانَهُم‫.‬","يَجِبُ عَلَيْكَ أَنْ تَكونَ صادِقًا دائِمًا‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21006,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Sabırlı olman gerekir.»","parcalar":["يَجِبُ عَلَيْكِ","أَنْ تَكوني","صَبورَة‫.‬"]},
     {"id":21007,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Sen emeklisin.","Onlar küçükleri severler.","Sabırlı olman gerekir.","Aceleci olmaman gerekir."],"dogru":0,"arapca":"أَنْتَ مُتَقاعِد."},
-    {"id":21008,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «يَزْدادُ التَّعاوُن وَالمُساعَدَة بَيْن المُسْلِمين أَكْثَر ____» (Bayramlarda Müslümanlar arasında dayanışma ve yardımlaşma daha çok artar.)","secenekler":["في الأَعْياد‫.‬","كاذِبًا","مَريضَة،","الصِّغار‫.‬"],"dogru":0,"arSecenek":true},
+    {"id":21008,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «يَزْدادُ التَّعاوُن وَالمُساعَدَة بَيْن المُسْلِمين أَكْثَر ____»","secenekler":["في الأَعْياد‫.‬","كاذِبًا","مَريضَة،","الصِّغار‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21009,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Bende şiddetli baş ağrısı var.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"يَحْتَفِلُ المُسْلِمون بِالأَعْياد بِفَرَح كَبير‫.‬"},
     {"id":21010,"tip":"cumle","zorluk":2,"soru":"«Asla yalancı olmaman gerekir.» cümlesinin Arapçası hangisi?","secenekler":["يَجِبُ عَلَيْكَ أَلّا تَكونَ كاذِبًا أَبَدًا‫.‬","عِنْدي حَرارَة مُرْتَفِعَة.","أَنْتِ مَريضَة، عِنْدَكِ أَلَم في رَأْسِكِ.","يَجِبُ عَلى المُسْلِم أَنْ يَكونَ مُبْتَسِمًا‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21011,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Babam ve kardeşim mühendistirler, ve onlar şirkette çalışıyorlar»","parcalar":["أَبي","وَأَخي","مُهَنْدِسان،","وَهُما","يَعْمَلانِ","في الشَّرِكَة."]},
     {"id":21012,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Sonra aileyle birlikte bayram yemeği yerler.","Ben hastayım.","Güler yüzlü ol.","Annem ev hanımıdır ve o ailemizle ilgilenir."],"dogru":0,"arapca":"ثُمَّ يَتَناوَلونَ طَعام العيد مَع العائِلَة‫.‬"},
-    {"id":21013,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «ما عِنْدي ____ في بَطْني.» (Karnımda sancı yok.)","secenekler":["مَغْص","في رَأْسِكِ.","مُتَقاعِد.","رَبَّة"],"dogru":0,"arSecenek":true},
+    {"id":21013,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «ما عِنْدي ____ في بَطْني.»","secenekler":["مَغْص","في رَأْسِكِ.","مُتَقاعِد.","رَبَّة"],"dogru":0,"arSecenek":true},
     {"id":21014,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Teyzem memurdur ve o ofiste çalışıyor.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"خالَتي مُوَظَّفَة، وَهِي تَعْمَلُ في المَكْتَب."},
     {"id":21015,"tip":"cumle","zorluk":2,"soru":"«Ben hastayım.» cümlesinin Arapçası hangisi?","secenekler":["أَنا مَريض.","يَزْدادُ التَّعاوُن وَالمُساعَدَة بَيْن المُسْلِمين أَكْثَر في الأَعْياد‫.‬","هُو مُتَعَجِّب‫.‬","المُسْلِمون يُساعِدونَ المُحْتاجين وَالمُسِنّين دائِمًا."],"dogru":0,"arSecenek":true},
     {"id":21016,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Boğazımda ağrı hissediyorum.»","parcalar":["أَشْعُرُ","بِأَلَم","في حَلْقي."]},
     {"id":21017,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Müslümanlar muhtaçlara ve yaşlılara daima yardım ederler.","Ben hastayım, baş ağrım var.","Asla yalancı olmaman gerekir.","Bende şiddetli baş ağrısı var."],"dogru":0,"arapca":"المُسْلِمون يُساعِدونَ المُحْتاجين وَالمُسِنّين دائِمًا."},
-    {"id":21018,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ يَزُورونَ أَقارِبَهُم وَجيرانَهُم‫.‬» (Yemekten sonra akrabalarını ve komşularını ziyaret ederler.)","secenekler":["بَعْد الطَّعام","في رَأْسِكِ.","صُداع.","جيرانَهُم"],"dogru":0,"arSecenek":true},
+    {"id":21018,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ يَزُورونَ أَقارِبَهُم وَجيرانَهُم‫.‬»","secenekler":["بَعْد الطَّعام","في رَأْسِكِ.","صُداع.","جيرانَهُم"],"dogru":0,"arSecenek":true},
     {"id":21019,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Ben şoförüm, ticari/ücretli taksi sürüyorum.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"كُنْ مَبْسوطًا‫.‬"},
     {"id":21020,"tip":"cumle","zorluk":2,"soru":"«Bende şiddetli baş ağrısı var.» cümlesinin Arapçası hangisi?","secenekler":["عِنْدي عِنْدي صُداع شَديد.","أَنا مَريض.","أَشْعُرُ بِأَلَم في أُذُني.","أَنا عامِل، أَعْمَلُ في المَصْنَع."],"dogru":0,"arSecenek":true},
     {"id":21021,"tip":"cumle","zorluk":2,"soru":"«Öksürüğüm var.» cümlesinin Arapçası hangisi?","secenekler":["عِنْدي كُحَّة.","عِنْدي حَرارَة مُرْتَفِعَة.","أَشْعُرُ بِأَلَم في حَلْقي.","في الإِسْلام عيدان، هُما عيد الفِطْر وَعيد الأَضْحى‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21022,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Müslümanın öfkeli olmaması gerekir.","Müslümanın güler yüzlü olması gerekir.","Ben hastayım, baş ağrım var.","Mutlu ol."],"dogru":0,"arapca":"يَجِبُ عَلى  المُسْلِم أَلّا يَكونَ غَضْبان‫.‬"},
-    {"id":21023,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «أَنْتِ مَريضَة، عِنْدَكِ أَلَم ____» (Sen hastasın, başında ağrı var.)","secenekler":["في رَأْسِكِ.","مُدَرِّس،","المُحْتاجين","سائِق،"],"dogru":0,"arSecenek":true},
+    {"id":21023,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «أَنْتِ مَريضَة، عِنْدَكِ أَلَم ____»","secenekler":["في رَأْسِكِ.","مُدَرِّس،","المُحْتاجين","سائِق،"],"dogru":0,"arSecenek":true},
     {"id":21024,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Annem doktordur ve kız kardeşim hemşiredir, onlar hastanede çalışıyorlar.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"أُمّي طَبيبَة وَأُخْتي مُمَرِّضَة، وَهُما تَعْمَلانِ فِي المُسْتَشْفى."},
     {"id":21025,"tip":"cumle","zorluk":2,"soru":"«Ve birbirlerine şöyle derler: Bayramınız kutlu olsun.» cümlesinin Arapçası hangisi?","secenekler":["وَيَقولُ  بَعْضُهُم لِبَعْض: كُلّ عام وَأَنْتُم بِخَيْر‫.‬","يَحْتَفِلُ المُسْلِمون بِالأَعْياد بِفَرَح كَبير‫.‬","هُم يُحِبّونَ الصِّغار‫.‬","لا تَكوني حَزينَة‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21026,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Müslümanın güler yüzlü olması gerekir.»","parcalar":["يَجِبُ عَلى","المُسْلِم","أَنْ يَكونَ","مُبْتَسِمًا‫.‬"]},
     {"id":21027,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["İslam'da iki bayram vardır, onlar: Ramazan Bayramı ve Kurban Bayramıdır.","Boğazımda ağrı hissediyorum.","Dayım öğretmendir ve o okulda ders veriyor.","Müslümanlar bayramları büyük bir sevinçle kutlarlar."],"dogru":0,"arapca":"في الإِسْلام عيدان، هُما عيد الفِطْر وَعيد الأَضْحى‫.‬"},
-    {"id":21028,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُم ____ الكِبار‫.‬» (Onlar büyüklere saygı duyarlar.)","secenekler":["يَحْتَرِمونَ","يُدافِعُ","مُوَظَّفَة،","هِي"],"dogru":0,"arSecenek":true},
+    {"id":21028,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «هُم ____ الكِبار‫.‬»","secenekler":["يَحْتَرِمونَ","يُدافِعُ","مُوَظَّفَة،","هِي"],"dogru":0,"arSecenek":true},
     {"id":21029,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Bayramlarda Müslümanlar arasında dayanışma ve yardımlaşma daha çok artar.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"أَشْعُرُ بِأَلَم في أُذُني."},
     {"id":21030,"tip":"cumle","zorluk":2,"soru":"«Yüksek ateşim var.» cümlesinin Arapçası hangisi?","secenekler":["عِنْدي حَرارَة مُرْتَفِعَة.","بَعْد الطَّعام يَزُورونَ أَقارِبَهُم وَجيرانَهُم‫.‬","هِي قَلِقَة‫.‬","أَنا مَريضَة، عِنْدي أَلَم في أُذُني."],"dogru":0,"arSecenek":true},
     {"id":21031,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Onlar küçükleri severler.»","parcalar":["هُم","يُحِبّونَ","الصِّغار‫.‬"]},
     {"id":21032,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["O şaşkındır.","Ben işçiyim, fabrikada çalışıyorum.","Karnımda sancı yok.","Annem doktordur ve kız kardeşim hemşiredir, onlar hastanede çalışıyorlar."],"dogru":0,"arapca":"هُو مُتَعَجِّب‫.‬"},
-    {"id":21033,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «خالي مُدَرِّس، وَهُو ____ في المَدْرَسَة.» (Dayım öğretmendir ve o okulda ders veriyor.)","secenekler":["يُدَرِّسُ","أُمّي","بِأَلَم","في الأَعْياد‫.‬"],"dogru":0,"arSecenek":true},
+    {"id":21033,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «خالي مُدَرِّس، وَهُو ____ في المَدْرَسَة.»","secenekler":["يُدَرِّسُ","أُمّي","بِأَلَم","في الأَعْياد‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21034,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Onlar küçükleri severler.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"لا تَكُنْ غاضِبًا‫.‬"},
     {"id":21035,"tip":"cumle","zorluk":2,"soru":"«Ben işçiyim, fabrikada çalışıyorum.» cümlesinin Arapçası hangisi?","secenekler":["أَنا عامِل، أَعْمَلُ في المَصْنَع.","والِدي مُحامٍ، وَهُوَ يُدافِعُ عَنِ العَدالَة.","ثُمَّ يَتَناوَلونَ طَعام العيد مَع العائِلَة‫.‬","يَحْتَفِلُ المُسْلِمون بِالأَعْياد بِفَرَح كَبير‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21036,"tip":"cumle","bicim":"cumlesira","zorluk":2,"soru":"Kelimeleri sırala: «Ben hastayım, baş ağrım var.»","parcalar":["أَنا","مَريض،","عِنْدي","صُداع."]},
     {"id":21037,"tip":"cumle","zorluk":2,"soru":"Bu cümlenin anlamı nedir?","secenekler":["Müslümanlar komşularına daima yardım ederler.","Müslümanlar bayramları büyük bir sevinçle kutlarlar.","Yemekten sonra akrabalarını ve komşularını ziyaret ederler.","Ben şoförüm, ticari/ücretli taksi sürüyorum."],"dogru":0,"arapca":"المُسْلِمون يُساعِدونَ جيرانَهُم دائِمًا."},
-    {"id":21038,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ مَريض، عِنْدَكَ كُحَّة.» (Sen hastasın, öksürüğün var.)","secenekler":["أَنْتَ","كُحَّة.","يَحْتَرِمونَ","ما عِنْدي"],"dogru":0,"arSecenek":true},
+    {"id":21038,"bicim":"bosluk","tip":"cumle","zorluk":3,"soru":"Boşluğa gelecek kelimeyi seç: «____ مَريض، عِنْدَكَ كُحَّة.»","secenekler":["أَنْتَ","كُحَّة.","يَحْتَرِمونَ","ما عِنْدي"],"dogru":0,"arSecenek":true},
     {"id":21039,"bicim":"dogruyanlis","tip":"cumle","zorluk":1,"soru":"«Aceleci olmaman gerekir.» çevirisi doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"يَجِبُ عَلَيْكِ أَلّا تَكوني عَجولَة‫.‬"},
     {"id":21040,"tip":"cumle","zorluk":2,"soru":"«Onlar misafirlerine ikram ederler.» cümlesinin Arapçası hangisi?","secenekler":["هُم يُكْرِمونَ ضُيوفَهُم‫.‬","لا تَكوني حَزينَة‫.‬","عِنْدي كُحَّة.","يَجِبُ عَلَيْكِ أَنْ تَكوني صَبورَة‫.‬"],"dogru":0,"arSecenek":true},
     {"id":21041,"tip":"cumle","zorluk":2,"soru":"«Güler yüzlü ol.» cümlesinin Arapçası hangisi?","secenekler":["كوني مُبْتَسِمَة‫.‬","يَجِبُ عَلَيْكَ أَلّا تَكونَ كاذِبًا أَبَدًا‫.‬","المُسْلِمون يُساعِدونَ المُحْتاجين وَالمُسِنّين دائِمًا.","أَنْتَ مُتَقاعِد."],"dogru":0,"arSecenek":true},
@@ -631,14 +631,10 @@ const EK_SORULAR = {
     {"id":80009,"tip":"anlam","bicim":"dogruyanlis","zorluk":1,"soru":"Bu kelime «Kahvaltı» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"الدَّرّاجَة"},
     {"id":80010,"tip":"anlam","bicim":"dogruyanlis","zorluk":2,"soru":"Bu kelime «Saat üç.» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"السّاعَة الثّالِثَة"},
     {"id":80011,"tip":"anlam","bicim":"dogruyanlis","zorluk":1,"soru":"Bu kelime «Kahvaltı» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"المِلْح"},
-    {"id":80012,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَشْرَبُ الحَليب ____» (Kahvaltıda süt içiyorum.)","secenekler":["صَباحًا.","في الفَطور.","أَدْرُسُ","أَنْتِ"],"dogru":1,"arSecenek":true},
-    {"id":80013,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَدْرُسُ دُروسي ____» (Akşam derslerimi çalışırım.)","secenekler":["في الفَطور.","مَساءً.","أَنْتِ","وَالجُبْن"],"dogru":1,"arSecenek":true},
-    {"id":80014,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «هُو يُـصَلّي ____» (O sabah namazı kılıyor.)","secenekler":["في الفَطور.","الفَجْر.","أَنْتِ","وَالجُبْن"],"dogru":1,"arSecenek":true},
-    {"id":80015,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَشْرَبُ القَهْوَة بَعْد ____» (Öğle yemeğinden sonra kahve içiyorum.)","secenekler":["أَتَناوَلُ","أُساعِدُ","الغَداء.","أَدْرُسُ"],"dogru":2,"arSecenek":true},
-    {"id":80016,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَنْتِ تَـدْرُسينَ الدُّروس ____» (Sen akşam dersleri çalışıyorsun.)","secenekler":["دُروسي","أَتَناوَلُ","مَساءً.","أُساعِدُ"],"dogru":2,"arSecenek":true},
-    {"id":80017,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَتَناوَلُ الفَطور في السّاعَة السّابِعَة ____» (Sabah saat yedide kahvaltı yaparım.)","secenekler":["دُروسي","الغَداء.","صَباحًا.","أُمّي"],"dogru":2,"arSecenek":true},
-    {"id":80018,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَتَناوَلُ الزَّيْتون وَالجُبْن ____» (Kahvaltıda zeytin ve peynir yiyorum.)","secenekler":["الدُّروس","في البَيْت.","في الفَطور.","مَساءً."],"dogru":2,"arSecenek":true},
-    {"id":80019,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أُساعِدُ أُمّي ____» (Evde anneme yardım ederim.)","secenekler":["الزَّيْتون","هُو","تَـدْرُسينَ","في البَيْت."],"dogru":3,"arSecenek":true},
+    {"id":80015,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَشْرَبُ القَهْوَة بَعْد ____»","secenekler":["أَتَناوَلُ","أُساعِدُ","الغَداء.","أَدْرُسُ"],"dogru":2,"arSecenek":true},
+    {"id":80016,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَنْتِ تَـدْرُسينَ الدُّروس ____»","secenekler":["دُروسي","أَتَناوَلُ","مَساءً.","أُساعِدُ"],"dogru":2,"arSecenek":true},
+    {"id":80017,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَتَناوَلُ الفَطور في السّاعَة السّابِعَة ____»","secenekler":["دُروسي","الغَداء.","صَباحًا.","أُمّي"],"dogru":2,"arSecenek":true},
+    {"id":80019,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أُساعِدُ أُمّي ____»","secenekler":["الزَّيْتون","هُو","تَـدْرُسينَ","في البَيْت."],"dogru":3,"arSecenek":true},
     {"id":80020,"tip":"cumle","bicim":"test","zorluk":3,"soru":"Aşağıdaki kelimelerden hangisi «Akşam derslerimi çalışırım.» cümlesine ait DEĞİLDİR (anlamı bozar)?","secenekler":["أُخْت","أَدْرُسُ","دُروسي","مَساءً."],"dogru":0,"arSecenek":true},
     {"id":80021,"tip":"cumle","bicim":"test","zorluk":3,"soru":"Aşağıdaki kelimelerden hangisi «O sabah namazı kılıyor.» cümlesine ait DEĞİLDİR (anlamı bozar)?","secenekler":["ثَمَانِيَة","هُو","يُـصَلّي","الفَجْر."],"dogru":0,"arSecenek":true},
     {"id":80022,"tip":"cumle","bicim":"test","zorluk":3,"soru":"Aşağıdaki kelimelerden hangisi «Öğle yemeğinden sonra kahve içiyorum.» cümlesine ait DEĞİLDİR (anlamı bozar)?","secenekler":["سِتَّة","أَشْرَبُ","الغَداء.","بَعْد"],"dogru":0,"arSecenek":true}
@@ -669,13 +665,13 @@ const EK_SORULAR = {
     {"id":80043,"tip":"anlam","bicim":"dogruyanlis","zorluk":2,"soru":"Bu kelime «Bayramlarda Müslümanlar yemekten önce bayram namazı kılarlar.» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"أَنا عامِل، أَعْمَلُ في المَصْنَع."},
     {"id":80044,"tip":"anlam","bicim":"dogruyanlis","zorluk":2,"soru":"Bu kelime «Ve birbirlerine şöyle derler: Bayramınız kutlu olsun.» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":0,"arapca":"وَيَقولُ بَعْضُهُم لِبَعْض: كُلّ عام وَأَنْتُم بِخَيْر‫.‬"},
     {"id":80045,"tip":"anlam","bicim":"dogruyanlis","zorluk":2,"soru":"Bu kelime «Bayramlarda Müslümanlar yemekten önce bayram namazı kılarlar.» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"عِنْدي عِنْدي صُداع شَديد."},
-    {"id":80046,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «يَجِبُ عَلَيْكَ أَنْ تَكونَ صادِقًا ____» (Daima dürüst olman gerekir.)","secenekler":["هُم","دائِمًا‫.‬","يَجِبُ عَلَيْكِ","أَشْعُرُ"],"dogru":1,"arSecenek":true},
-    {"id":80047,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «يَجِبُ عَلَيْكِ أَنْ تَكوني ____» (Sabırlı olman gerekir.)","secenekler":["صادِقًا","صَبورَة‫.‬","في الشَّرِكَة.","يُحِبّونَ"],"dogru":1,"arSecenek":true},
-    {"id":80048,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَبي وَأَخي مُهَنْدِسان، وَهُما يَعْمَلانِ ____» (Babam ve kardeşim mühendistirler, ve onlar şirkette çalışıyorlar)","secenekler":["صادِقًا","في الشَّرِكَة.","في حَلْقي.","مَريض،"],"dogru":1,"arSecenek":true},
-    {"id":80049,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَشْعُرُ بِأَلَم ____» (Boğazımda ağrı hissediyorum.)","secenekler":["يَعْمَلانِ","يُحِبّونَ","في حَلْقي.","صادِقًا"],"dogru":2,"arSecenek":true},
-    {"id":80050,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «يَجِبُ عَلى المُسْلِم أَنْ يَكونَ ____» (Müslümanın güler yüzlü olması gerekir.)","secenekler":["يَجِبُ عَلَيْكِ","يَعْمَلانِ","مُبْتَسِمًا‫.‬","الصِّغار‫.‬"],"dogru":2,"arSecenek":true},
-    {"id":80051,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «هُم يُحِبّونَ ____» (Onlar küçükleri severler.)","secenekler":["أَنا","يَجِبُ عَلَيْكِ","الصِّغار‫.‬","يَعْمَلانِ"],"dogru":2,"arSecenek":true},
-    {"id":80052,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَنا مَريض، عِنْدي ____» (Ben hastayım, baş ağrım var.)","secenekler":["أَشْعُرُ","هُم","صُداع.","يَجِبُ عَلَيْكِ"],"dogru":2,"arSecenek":true},
+    {"id":80046,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «يَجِبُ عَلَيْكَ أَنْ تَكونَ صادِقًا ____»","secenekler":["هُم","دائِمًا‫.‬","يَجِبُ عَلَيْكِ","أَشْعُرُ"],"dogru":1,"arSecenek":true},
+    {"id":80047,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «يَجِبُ عَلَيْكِ أَنْ تَكوني ____»","secenekler":["صادِقًا","صَبورَة‫.‬","في الشَّرِكَة.","يُحِبّونَ"],"dogru":1,"arSecenek":true},
+    {"id":80048,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَبي وَأَخي مُهَنْدِسان، وَهُما يَعْمَلانِ ____»","secenekler":["صادِقًا","في الشَّرِكَة.","في حَلْقي.","مَريض،"],"dogru":1,"arSecenek":true},
+    {"id":80049,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَشْعُرُ بِأَلَم ____»","secenekler":["يَعْمَلانِ","يُحِبّونَ","في حَلْقي.","صادِقًا"],"dogru":2,"arSecenek":true},
+    {"id":80050,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «يَجِبُ عَلى المُسْلِم أَنْ يَكونَ ____»","secenekler":["يَجِبُ عَلَيْكِ","يَعْمَلانِ","مُبْتَسِمًا‫.‬","الصِّغار‫.‬"],"dogru":2,"arSecenek":true},
+    {"id":80051,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «هُم يُحِبّونَ ____»","secenekler":["أَنا","يَجِبُ عَلَيْكِ","الصِّغار‫.‬","يَعْمَلانِ"],"dogru":2,"arSecenek":true},
+    {"id":80052,"tip":"cumle","bicim":"bosluk","zorluk":2,"soru":"Boşluğa gelecek kelimeyi seç: «أَنا مَريض، عِنْدي ____»","secenekler":["أَشْعُرُ","هُم","صُداع.","يَجِبُ عَلَيْكِ"],"dogru":2,"arSecenek":true},
     {"id":80053,"tip":"cumle","bicim":"test","zorluk":3,"soru":"Aşağıdaki kelimelerden hangisi «Babam ve kardeşim mühendistirler, ve onlar şirkette çalışıyorlar» cümlesine ait DEĞİLDİR (anlamı bozar)?","secenekler":["هُنَاكَ","مُهَنْدِسان،","أَبي","يَعْمَلانِ"],"dogru":0,"arSecenek":true}
   ],
   "kelimeler": [
@@ -863,22 +859,15 @@ const _AR_SOLA_BAGLANMAZ = "اأإآٱدذرزوؤةءى"; // sola baglanmaz: a 
 function _arHarfMi(ch){ return /[ء-يٱ]/.test(ch); }
 function _arBaglanirSonraki(ch){ return _arHarfMi(ch) && _AR_SOLA_BAGLANMAZ.indexOf(ch) < 0; }
 function arapcaBirlesikHtml(kelime){
-  const ZWJ = "‍";
+  // Kelimeyi oluşturan harfler kutularda YALIN (normal) hâlleriyle gösterilir —
+  // başta/ortada/sonda bitişik biçimler DEĞİL. Kelimenin bütün (bitişik) hâli
+  // ayrıca büyük punto ile cevap çubuğunda zaten görünür.
   const harfler = String(kelime || "").replace(_AR_HAREKE, "").split("").filter(_arHarfMi);
   if (harfler.length < 2) return "";
-  const hucreler = harfler.map((ch, i) => {
-    const oncekiBaglar = i > 0 && _arBaglanirSonraki(harfler[i - 1]);
-    const buBaglar     = _arBaglanirSonraki(ch) && i < harfler.length - 1;
-    let bic, konum;
-    if (oncekiBaglar && buBaglar){ bic = ZWJ + ch + ZWJ; konum = "Ortada"; }
-    else if (oncekiBaglar)       { bic = ZWJ + ch;       konum = "Sonda"; }
-    else if (buBaglar)           { bic = ch + ZWJ;        konum = "Başta"; }
-    else                         { bic = ch;              konum = "Yalın"; }
-    return '<span class="biy-yh-hucre" title="'+konum+'">' +
-      '<b class="biy-yh-bic">'+bic+'</b>' +
-      '<i class="biy-yh-yalin">'+ch+'</i></span>';
-  }).join("");
-  return '<div class="biy-yazi-harfler" dir="rtl" aria-label="Harflerin bitişik biçimleri">'+hucreler+'</div>';
+  const hucreler = harfler.map(ch =>
+    '<span class="biy-yh-hucre"><b class="biy-yh-bic">'+ch+'</b></span>'
+  ).join("");
+  return '<div class="biy-yazi-harfler" dir="rtl" aria-label="Kelimenin harfleri (yalın)">'+hucreler+'</div>';
 }
 // Yansıtılan admin tahtasındaki soru gövdesi (cevap fazı ve sonuç ekranı).
 function tahtaIcerikHtml(soru, sonucMu){
@@ -1426,6 +1415,7 @@ const BIY = {
         '<div class="biy-soru-sec-liste" id="soruSecListe"></div>' +
         '<div class="biy-soru-sec-alt">' +
           '<button class="biy-btn biy-onay-hayir" onclick="BIY.soruSecTemizle()">Tümünü temizle</button>' +
+          '<span class="biy-soru-sec-sepet" id="soruSecSepet" aria-live="polite"></span>' +
           '<button class="biy-btn biy-btn-yesil" onclick="BIY.soruSecKapat()">Bitti</button>' +
         '</div>' +
       '</div>';
@@ -1487,8 +1477,9 @@ const BIY = {
      · Sayı 0 ise düğme gri + disabled ("pasif").
      · Seçim YOKSA süzgeç yok demektir (hepsi görünür). Aynı satırdan
        birden çok ikon seçilebilir (VEYA); satırlar arasında VE geçerli.
-     · Sayılar süzgeçten BAĞIMSIZ hesaplanır (yalnız arama kutusuna göre)
-       → ikonlar tıkladıkça yerinden oynamaz.
+     · AKILLI: Sayılar, çipin KENDİ boyutu hariç diğer süzgeçlere göre
+       yeniden hesaplanır; 0 kalan (ve seçili olmayan) çip pasifleşir. Kolon
+       düzeni sabit olduğundan sayı değişse de ikon yerinden oynamaz.
   ===================================================================== */
   _hsSuzgecAl(konuId){
     if (!state.hsSuzgec) state.hsSuzgec = {};
@@ -1530,17 +1521,20 @@ const BIY = {
       sayZ[z] = (sayZ[z] || 0) + 1;
       if (t) sayT[t] = (sayT[t] || 0) + 1;
     });
-    // TÜR sütunu yalnızca konu birden çok tür barındırıyorsa çıkar
-    // (kelime + cümle birleştirilmiş sınıf konuları için asıl kazanç burada).
+    // TÜR sütunu yalnızca konu birden çok tür barındırıyorsa çıkardı; ANCAK
+    // sınıf konuları (7/10. sınıf gibi) kelime + cümle BİRLEŞTİRİLMİŞ tek konu
+    // olduğundan, bunları filtrede yeniden "Anlam / Cümle" diye bölmek anlamsız.
+    // Bu yüzden id'si "sinif" ile başlayan konularda Tür satırı gösterilmez.
     const turler = Object.keys(sayT);
-    const sutunSayi = (turler.length > 1) ? 3 : 2;
+    const turGoster = turler.length > 1 && !/^sinif/.test(konuId);
+    const sutunSayi = turGoster ? 3 : 2;
     // Her kategori kendi SÜTUNUnda: üstte başlık, altında ikon + AÇIKLAMA + adet
     // çipleri. Böylece her SVG'nin ne demek olduğu yanındaki yazıdan okunur.
     const sutun = (baslik, cipler) =>
       '<div class="biy-hs-sz-sutun"><span class="biy-hs-sz-bas">'+baslik+'</span>' +
       '<div class="biy-hs-sz-cipler">'+cipler+'</div></div>';
     let sutunlar = "";
-    if (turler.length > 1){
+    if (turGoster){
       sutunlar += sutun('Tür', Object.keys(TIP_BILGI).filter(t => sayT[t]).map(t =>
         BIY._hsCip(konuId, "tip", t, ETIKET_TIP[t] || ETIKET_TIP.varsayilan, (TIP_BILGI[t] || {}).ad || t, sayT[t] || 0)
       ).join(""));
@@ -1607,12 +1601,40 @@ const BIY = {
   _hsSuzgecUygula(konuId){
     const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]'); if (!g) return;
     const sz = BIY._hsSuzgecAl(konuId);
+    // satırların boyut değerleri (arama süzgecinden geçmiş sorular)
+    const satirlar = [].slice.call(g.querySelectorAll(".biy-hs-satir")).map(r => ({
+      b: r.getAttribute("data-b"), z: +r.getAttribute("data-z"), t: r.getAttribute("data-t")
+    }));
+    const gecB = row => !sz.bicim.length || sz.bicim.indexOf(row.b) >= 0;
+    const gecZ = row => !sz.zor.length   || sz.zor.indexOf(row.z) >= 0;
+    const gecT = row => !sz.tip.length   || sz.tip.indexOf(row.t) >= 0;
+    /* AKILLI ÇİPLER: her çip, KENDİ boyutu HARİÇ diğer boyutların süzgecine göre
+       kaç soru bırakacağını gösterir; sayı 0 ise (ve çip seçili değilse) griye
+       döner ve tıklanamaz. Böylece bir süzgeç seçilince başka süzgeçte artık
+       seçenek kalmıyorsa o seçenekler kendiliğinden pasifleşir. */
     g.querySelectorAll(".biy-hs-sz-cip").forEach(c => {
       const boyut = c.getAttribute("data-boyut");
       const ham = c.getAttribute("data-deger");
-      const on = (sz[boyut] || []).indexOf(boyut === "zor" ? +ham : ham) >= 0;
+      const deg = (boyut === "zor") ? +ham : ham;
+      const on = (sz[boyut] || []).indexOf(deg) >= 0;
       c.classList.toggle("secili", on);
       c.setAttribute("aria-pressed", on ? "true" : "false");
+      let say = 0;
+      for (let i = 0; i < satirlar.length; i++){
+        const row = satirlar[i];
+        const buDeger = (boyut === "bicim") ? row.b : (boyut === "zor") ? row.z : row.t;
+        if (buDeger !== deg) continue;
+        const digerGecer = (boyut === "bicim" || gecB(row)) &&
+                           (boyut === "zor"   || gecZ(row)) &&
+                           (boyut === "tip"   || gecT(row));
+        if (digerGecer) say++;
+      }
+      const sayEl = c.querySelector(".biy-hs-sz-say"); if (sayEl) sayEl.textContent = say;
+      const pasif = (say === 0) && !on;
+      c.classList.toggle("pasif", pasif);
+      c.disabled = pasif;
+      const ad = (c.querySelector(".biy-hs-sz-ad") || {}).textContent || "";
+      c.title = ad + ' · ' + say + ' soru'; c.setAttribute("aria-label", ad + ' (' + say + ' soru)');
     });
     let gorunen = 0;
     g.querySelectorAll(".biy-hs-satir").forEach(r => {
@@ -1624,7 +1646,7 @@ const BIY = {
     const varMi = BIY._hsSuzgecVarMi(sz);
     const alt = g.querySelector(".biy-hs-sz-alt"); if (alt) alt.hidden = !varMi;
     const bilgi = g.querySelector(".biy-hs-sz-bilgi");
-    if (bilgi){ bilgi.hidden = !varMi; bilgi.innerHTML = '<b>'+gorunen+'</b> soru eşleşti'; }
+    if (bilgi){ bilgi.hidden = !varMi; bilgi.innerHTML = '<b>'+gorunen+'</b><span>soru eşleşti</span>'; }
     const sf = g.querySelector(".biy-hs-sz-sifirla"); if (sf) sf.hidden = !varMi;
     // süzgeç kapalıyken başlıkta etkin süzgecin kaç soru bıraktığı görünsün
     const ozet = g.querySelector(".biy-hs-sz-ozet");
@@ -1664,6 +1686,14 @@ const BIY = {
       }
     });
     const say = $("soruSecSecili"); if (say) say.innerHTML = 'Seçili <b class="biy-say-rozet">' + set.size + '</b>';
+    // Alt bardaki SEPET: hangi listeden seçilirse seçilsin toplam burada güncellenir
+    const sepet = $("soruSecSepet");
+    if (sepet){
+      const n = set.size;
+      sepet.classList.toggle("dolu", n > 0);
+      sepet.innerHTML = '<svg viewBox="0 0 24 24" class="biy-sepet-svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7h15l-1.3 9.2a2.2 2.2 0 0 1-2.2 1.9H8a2.2 2.2 0 0 1-2.2-1.9z"/><path d="M4.5 7 3.4 3.6H1.4"/><circle cx="9" cy="20.4" r="1.3"/><circle cx="16" cy="20.4" r="1.3"/><path d="M9 11.2h6"/></svg>' +
+        '<b>' + n + '</b> soru seçildi';
+    }
     BIY._soruSecSayiGuncelle();
   },
   // tek satır: yeniden çizmeden aç/kapa (kaydırma korunur)
@@ -2570,7 +2600,10 @@ const BIY = {
             (soruIptalli ? '↩ Soruyu Geri Al' : '🚫 Tüm Soruyu İptal Et')+'</button>' +
         '</div>'
       : '';
-    return '<div class="biy-oyun-orta biy-sonuc-ekran'+(iptalAcik?' biy-iptal-acik':'')+'" data-degisti="'+(degisti?1:0)+'" data-step="'+step+'">' +
+    // Son soruda (veya beraberlik kesinleşince) "Yarışmayı Bitir" düğmesi
+    // animasyonu beklemeden HEMEN tıklanabilsin — tüm takımlar cevaplayınca
+    // sonuç ekranı açılır açılmaz yarışma bitirilebilir.
+    return '<div class="biy-oyun-orta biy-sonuc-ekran'+(iptalAcik?' biy-iptal-acik':'')+'"'+(son?' data-son="1"':'')+' data-degisti="'+(degisti?1:0)+'" data-step="'+step+'">' +
       '<div class="biy-sonuc-baslik'+(ber?' biy-ber':'')+'">'+baslik+iptalDugme+'</div>' + iptalUyari +
       '<div class="biy-sonuc-sahne">' +
         // SAHNE 1: soru cümlesi + şıklar + vurgulu doğru şık
