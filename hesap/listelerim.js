@@ -2606,6 +2606,7 @@ function openLvlConfig(lId) {
                     <h4>${llIcon('kitap')} Ödevler (Ağırlık %)</h4>
                     <div id="lvlHwList"></div>
                     <button class="btn-add" onclick="llOdevOneriAc()" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
+                    <div id="lvlHwToplam" style="margin-top:10px; padding:8px 12px; border-radius:9px; border:1px solid #A7E8CF; background:#EAFBF4; color:#0E7C66; font-weight:700; font-size:.84rem; text-align:center; line-height:1.35;"></div>
                 </div>
                 <div class="lvl-kart">
                     <h4 style="border-bottom-color: var(--danger);">${llIcon('not')} Sınavlar (Ağırlık %)</h4>
@@ -2682,6 +2683,7 @@ function openLvlConfig(lId) {
 
     // 2. Ödevleri yükle
     lvl.config.hw.forEach(item => addConfigRowWithData('hw', item.n, item.w));
+    llHwToplamGuncelle();   // ağırlık toplamı göstergesini kur (tek ödev → otomatik 100)
 
     // 3. Sınavları yükle
     lvl.config.ex.forEach(item => addConfigRowWithData('ex', item.n, item.w));
@@ -2796,22 +2798,57 @@ function addKuraRow() {
 // 2. Yeni Satır Ekleme (Manuel + butonu için)
 function addConfigRow(t) {
     addConfigRowWithData(t, '', 0);
+    if (t === 'hw') llHwToplamGuncelle();
 }
 
 // 3. Veriyle Satır Oluşturma (Sistemin ihtiyaç duyduğu asıl parça)
 function addConfigRowWithData(t, name, weight) {
     const container = document.getElementById(t === 'hw' ? 'lvlHwList' : 'lvlExList');
     if (!container) return;
-    
+
+    // Ödev (hw) ağırlıkları 0-100 arası; her değişiklikte toplam göstergesi güncellenir.
+    const wEk = (t === 'hw') ? ' min="0" max="100" oninput="llHwToplamGuncelle()"' : '';
+    const sil = (t === 'hw') ? 'this.parentElement.remove(); llHwToplamGuncelle();' : 'this.parentElement.remove()';
     const div = document.createElement('div');
     div.style = "margin-bottom:8px; display:flex; gap:5px; align-items:center;";
     div.innerHTML = `
         <input type="text" class="${t}-n" value="${name}" placeholder="Ad" style="flex:2; padding:5px; border:1px solid #ddd; border-radius:4px;">
-        <input type="number" class="${t}-w" value="${weight}" placeholder="%" style="flex:1; padding:5px; border:1px solid #ddd; border-radius:4px;">
-        <button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; border:none; border-radius:4px; padding:5px 8px; cursor:pointer;">${llIcon('kapat')}</button>
+        <input type="number" class="${t}-w" value="${weight}"${wEk} placeholder="%" style="flex:1; padding:5px; border:1px solid #ddd; border-radius:4px;">
+        <button onclick="${sil}" style="background:var(--danger); color:white; border:none; border-radius:4px; padding:5px 8px; cursor:pointer;">${llIcon('kapat')}</button>
     `;
     container.appendChild(div);
 }
+
+/* ÖDEV AĞIRLIK GÖSTERGESİ — canlı toplam + tek ödev otomatik 100.
+   · 1 ödev  → ağırlık otomatik 100, alan kilitli.
+   · 2+ ödev → toplam tam 100 olmalı ve hiçbir ödev 0 kalmamalı; aksi hâlde
+     gösterge kırmızıya döner (kaydetme sırasında da engellenir).                */
+function llHwToplamGuncelle() {
+    const kutu = document.getElementById('lvlHwToplam');
+    if (!kutu) return;
+    const wIn = Array.prototype.slice.call(document.querySelectorAll('#lvlHwList .hw-w'));
+    const yesil = () => { kutu.style.background = '#EAFBF4'; kutu.style.color = '#0E7C66'; kutu.style.borderColor = '#A7E8CF'; };
+    const kirmizi = () => { kutu.style.background = '#FDECEA'; kutu.style.color = '#B4231E'; kutu.style.borderColor = '#F5B7B1'; };
+    if (wIn.length === 0) { kutu.style.display = 'none'; return; }
+    kutu.style.display = 'block';
+    if (wIn.length === 1) {
+        wIn[0].value = 100; wIn[0].readOnly = true; wIn[0].style.background = '#EAFBF4';
+        yesil(); kutu.innerHTML = '✓ Tek ödev — ağırlık otomatik <b>100</b>';
+        return;
+    }
+    let toplam = 0, sifir = 0;
+    wIn.forEach(el => { el.readOnly = false; el.style.background = '';
+        let v = parseInt(el.value, 10); if (!isFinite(v)) v = 0;
+        toplam += v; if (v <= 0) sifir++; });
+    if (toplam === 100 && sifir === 0) { yesil(); kutu.innerHTML = '✓ Toplam ağırlık: <b>100</b> / 100'; }
+    else {
+        kirmizi();
+        kutu.innerHTML = (toplam !== 100)
+            ? '⚠️ Toplam ağırlık: <b>' + toplam + '</b> / 100 — tam <b>100</b> olmalı'
+            : '⚠️ Ağırlığı 0 olan ödev var — yeni ödevi ekleyince ağırlıkları 100 olacak şekilde yeniden dağıtın';
+    }
+}
+window.llHwToplamGuncelle = llHwToplamGuncelle;
 
 // 4. Kaydetme Fonksiyonu
 function saveLvlConfig() {
@@ -2826,6 +2863,24 @@ function saveLvlConfig() {
             newHw.push({ n: el.value.trim(), w: parseInt(w) || 0 });
         }
     });
+
+    // 1b. ÖDEV AĞIRLIK DENETİMİ — toplam tam 100 olmalı (ne fazla ne az).
+    //     Tek ödev otomatik 100; 2+ ödevde toplam 100 değilse ya da ağırlığı 0
+    //     kalan ödev varsa site tasarımlı uyarı gösterilir ve KAYIT ENGELLENİR
+    //     (pencere açık kalır, öğretmen ağırlıkları düzeltir).
+    if (newHw.length === 1) {
+        newHw[0].w = 100;
+    } else if (newHw.length >= 2) {
+        let hwTop = 0, hwSifir = 0;
+        newHw.forEach(x => { const v = parseInt(x.w, 10) || 0; hwTop += v; if (v <= 0) hwSifir++; });
+        if (hwTop !== 100 || hwSifir > 0) {
+            const mesaj = (hwTop !== 100)
+                ? ('Ödev ağırlıklarının toplamı tam 100 olmalı — ne fazla ne az.\n\nŞu anki toplam: ' + hwTop + '. Lütfen ağırlıkları 100 olacak şekilde düzeltin.')
+                : ('Her ödevin bir ağırlığı olmalı; ağırlığı 0 olan ödev var.\n\nYeni bir ödev eklediyseniz ağırlıkları 100 olacak şekilde yeniden dağıtın.');
+            llBilgi(mesaj, '⚠️ Ödev ağırlığı geçersiz');
+            return;
+        }
+    }
 
     // 2. Sınavları topla (Sadece .ex-n ve .ex-w sınıfından alır)
     let newEx = [];
@@ -3576,7 +3631,8 @@ function llOdevOneriAc() {
 function llOdevOneriSec(ad) {
     var k = document.getElementById('llOdevOneri');
     if (k) k.remove();
-    addConfigRow('hw', ad || '', 0);
+    addConfigRowWithData('hw', ad || '', 0);   // seçilen ödev adı korunur
+    llHwToplamGuncelle();                        // yeni ödevle toplam 100'ü aşıyor/eksiliyor → uyar
 }
 window.llOdevOneriAc = llOdevOneriAc;
 window.llOdevOneriSec = llOdevOneriSec;
