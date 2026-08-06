@@ -292,13 +292,18 @@ function kcArBicim(harfler) {              /* harekesiz kısayol */
    iki adım: tek sayı = yalnız Arapça türedi (harekeli), çift sayı =
    Türkçesi de türedi. Toplam 2N+1 durum, çark gibi döner. */
 /* birlesik: kelimenin hem Arapçası hem Türkçesi ekrana geldikten sonra
-   açılan OKUMA KARESİ. Boş gözler kapanır, harfler yan yana gelir ve
-   kelime bütün hâliyle okunur; bir sonraki ileri basışı yeni kelimeye
-   geçer. bTok, geciken birleştirme zamanlayıcısının biletidir: kullanıcı
-   birleşme olgunlaşmadan tuşa basarsa bilet değişir, eski zamanlayıcı
-   artık geçersiz duruma dokunamaz. */
+   açılan SÖZ KARESİ. Tekerler usulca söner ve yerlerinde, her sayfanın
+   ortasında YUVARLAK bir söz madalyonu belirir: kelime tek parça,
+   doğal bağlı yazımıyla okunur. bTok, geciken birleştirme
+   zamanlayıcısının biletidir: kullanıcı birleşme olgunlaşmadan tuşa
+   basarsa bilet değişir, eski zamanlayıcı artık geçersiz duruma
+   dokunamaz. */
 var S = { kok: 0, adim: 0, kilit: false, kurulu: false, son: null, bekleyen: 0,
           birlesik: false, bTok: 0 };
+
+/* Kelime birleşince madalyonun yanında beliren balon. Emoji kelimeye
+   göre değişir ki her vezin ayrı bir sürpriz gibi dursun. */
+var KC_BALON = ['🎈', '✨', '🌟', '🎉', '🪄', '💫', '🎊', '🌈', '📚', '🍯'];
 
 function kcSes() { try { App.playSound('click'); } catch (e) { } }
 
@@ -380,7 +385,7 @@ function kcOlcHesap(nT, nA, dar, isk) {
     return { t: t, a: a, toplam: toplam };
 }
 
-function kcSutunOlc(arHedef, trHedef, isk, birlesik) {
+function kcSutunOlc(arHedef, trHedef, isk) {
     var kitap = document.querySelector('.kc-kitap');
     var arS = document.getElementById('kcArTeker');
     var trS = document.getElementById('kcTrTeker');
@@ -420,20 +425,11 @@ function kcSutunOlc(arHedef, trHedef, isk, birlesik) {
     }
     if (!(punto > 0)) return;
 
-    /* BİRLEŞİK OKUMA KARESİ: punto YUKARIDA bulunmuş hâliyle kalır —
-       harfler ne büyür ne küçülür, yalnız aralarındaki boşluk erir.
-       Boş gözlerin eni sıfırlanır, dolu gözler harfin tam eni kadar
-       olur (yan nefes payı KC_YAN da kalkar) ki bağlı Arapça biçimler
-       birbirine değip kelimeyi tek parça yazsın. Bu karede sütun
-       simetrisi aranmaz: amaç kökü hizalamak değil, kelimenin bütün
-       hâlini göstermektir; hiza karesi bir sonraki basışta geri gelir. */
-    if (birlesik) {
-        for (j = 0; j <= N; j++) {
-            o.t[j] = nT[j] > 0 ? nT[j] : 0;
-            o.a[j] = nA[j] > 0 ? nA[j] : 0;
-        }
-    }
-
+    /* NOT: Söz karesinde (kelime birleşince) sütunlara HİÇ dokunulmaz.
+       Eskiden boş gözlerin eni sıfırlanıp harfler birbirine itiliyordu;
+       ortaya köşeli, kutulu bir şerit çıkıyordu. Artık tekerler olduğu
+       gibi durup söner, kelime ayrı bir YUVARLAK madalyonda belirir —
+       hem çark tasarımına yakışır hem de kaşideye (ـ) gerek kalmaz. */
     var boy = KC_BOY * punto;
     kitap.style.setProperty('--kc-punto', punto.toFixed(2) + 'px');
     kitap.style.setProperty('--kc-cift', String(KC_CIFT_ORAN));   /* CSS ile JS aynı oranı kullansın */
@@ -450,7 +446,11 @@ function kcSutunOlc(arHedef, trHedef, isk, birlesik) {
 }
 
 /* Ekran döndüğünde / yazı tipi geç yüklendiğinde son duruma göre tazele */
-function kcOlcTazele() { if (S.son) kcSutunOlc(S.son.ar, S.son.tr, S.son.isk, S.birlesik); }
+function kcOlcTazele() {
+    if (!S.son) return;
+    kcSutunOlc(S.son.ar, S.son.tr, S.son.isk);
+    kcSozSigdir();
+}
 var kcOlcZaman = null;
 window.addEventListener('resize', function () {
     clearTimeout(kcOlcZaman);
@@ -532,12 +532,22 @@ function kcKur() {
         '    <div class="kc-kitap">' +
         '      <span class="kc-olcu" id="kcOlcu" aria-hidden="true"></span>' +
         '      <div class="kc-sayfalar">' +
+        /* SÖZ MADALYONU: kelime tamamlanınca tekerler söner ve her
+           sayfanın ortasında yuvarlak bir madalyon belirir; kelime
+           orada TEK PARÇA, doğal bağlı yazımıyla (kaşidesiz) durur.
+           Türkçe madalyonun yanına anlamı taşıyan balon gelir. */
         '        <section class="kc-sayfa kc-arapca">' +
         '          <div class="kc-yol"><div class="kc-tekerler kc-rtl" id="kcArTeker">' + tekerler + '</div>' +
+        '          <div class="kc-soz kc-rtl" id="kcArSoz" aria-hidden="true"><span class="kc-soz-sar">' +
+        '            <span class="kc-soz-olcek"><span class="kc-soz-ic"></span></span></span></div>' +
         '          <div class="kc-zemin"></div></div>' +
         '        </section>' +
         '        <section class="kc-sayfa kc-turkce">' +
         '          <div class="kc-yol"><div class="kc-tekerler" id="kcTrTeker">' + tekerler + '</div>' +
+        '          <div class="kc-soz" id="kcTrSoz" aria-hidden="true"><span class="kc-soz-sar">' +
+        '            <span class="kc-soz-olcek"><span class="kc-soz-ic"></span>' +
+        '            <span class="kc-balon" id="kcBalon"><b id="kcBalonEmoji">🎈</b><i id="kcBalonYazi"></i></span>' +
+        '            </span></span></div>' +
         '          <div class="kc-zemin"></div></div>' +
         '        </section>' +
         '      </div>' +
@@ -625,26 +635,69 @@ function kcDurumCoz() {
    Arapça kelime türeyince HAREKELİ yazım (tam) tekerlere biner —
    kök tekerlerine de harekeleri gelir. ilk=true (kök yeni seçildi)
    ise kök tekerleri de yuvarlanarak yerine oturur. */
-/* Birleşik kareyi KAPATIR ve bekleyen zamanlayıcının biletini yakar.
+/* SÖZ MADALYONUNU DOLDUR: her sayfanın kelimesi tek parça, doğal
+   yazımıyla yazılır. Harfler ayrı <span>'lardadır ki ÜÇ RENK
+   (siyah kök · kırmızı zâid · mor sertleşen) korunsun; tarayıcı
+   Arapça bağlamayı span sınırları boyunca sürdürür, bu yüzden
+   tekerlerdeki gibi kaşide (ـ) eklemeye GEREK YOKTUR. */
+function kcSozYaz(arHtml, trHtml, emoji, anlam) {
+    var a = document.getElementById('kcArSoz'), t = document.getElementById('kcTrSoz');
+    if (a) a.querySelector('.kc-soz-ic').innerHTML = arHtml || '';
+    if (t) t.querySelector('.kc-soz-ic').innerHTML = trHtml || '';
+    var e = document.getElementById('kcBalonEmoji'), y = document.getElementById('kcBalonYazi');
+    if (e) e.textContent = emoji || '🎈';
+    if (y) y.textContent = anlam || '';
+    var b = document.getElementById('kcBalon');
+    if (b) b.style.display = anlam ? '' : 'none';
+}
+
+/* Madalyon + balon şeride sığmıyorsa hepsi birlikte küçültülür.
+   Ölçek transition'sız bir katmandadır (.kc-soz-olcek), böylece
+   ölçüm anında animasyonun ara değerine takılmaz. */
+function kcSozSigdir() {
+    var ids = ['kcArSoz', 'kcTrSoz'], i;
+    for (i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (!el) continue;
+        var ol = el.querySelector('.kc-soz-olcek');
+        if (!ol) continue;
+        var alan = el.clientWidth - 6;
+        /* offsetWidth YERLEŞİM enidir: üstündeki scale() onu değiştirmez,
+           dolayısıyla ölçmeden önce ölçeği 1'e çekmeye gerek kalmaz ve
+           fazladan bir yerleşim hesabı yapılmaz. */
+        var w = ol.offsetWidth;
+        /* Balon akıştan çıkarıldı; madalyon ortada durur, balon yalnız
+           bir yana taşar. Ortalama bozulmasın diye taşan payı İKİ yana
+           birden sayarız: gereken kutu = kelime + 2 × (balon + boşluk). */
+        var bal = ol.querySelector('.kc-balon'), pay = 0;
+        if (bal && bal.style.display !== 'none' && bal.offsetWidth) {
+            pay = bal.offsetWidth + (parseFloat(getComputedStyle(bal).marginLeft) || 0);
+        }
+        var gerek = w + 2 * pay;
+        var k = (gerek > 0 && alan > 0 && gerek > alan) ? alan / gerek : 1;
+        ol.style.setProperty('--kc-soz-k', k.toFixed(3));
+    }
+}
+
+/* Söz karesini KAPATIR ve bekleyen zamanlayıcının biletini yakar.
    Her adım değişiminde ilk iş budur: kullanıcı ileri/geri bastığında
-   ekran önce hizalı karesine dönsün, sonra yeni harfler yuvarlansın. */
+   ekran önce teker karesine dönsün, sonra yeni harfler yuvarlansın. */
 function kcBirlesikKapat() {
     S.bTok++;
     if (!S.birlesik) return;
     S.birlesik = false;
     var kitap = document.querySelector('.kc-kitap');
     if (kitap) kitap.classList.remove('kc-birlesik');
-    if (S.son) kcSutunOlc(S.son.ar, S.son.tr, S.son.isk, false);
 }
 
 /* Harfler yerine oturduktan sonra çağrılır. Bilet hâlâ geçerliyse
-   (arada tuşa basılmadıysa) boşlukları kapatıp kelimeyi birleştirir. */
+   (arada tuşa basılmadıysa) tekerler söner, söz madalyonu belirir. */
 function kcBirlestir(bilet) {
-    if (bilet !== S.bTok || !S.son) return;
+    if (bilet !== S.bTok || !S.son || !S.son.arSoz) return;
     S.birlesik = true;
+    kcSozSigdir();
     var kitap = document.querySelector('.kc-kitap');
     if (kitap) kitap.classList.add('kc-birlesik');
-    kcSutunOlc(S.son.ar, S.son.tr, S.son.isk, true);
 }
 
 function kcGuncelle(ilk, yon) {
@@ -681,9 +734,33 @@ function kcGuncelle(ilk, yon) {
         var kb = kcArBicim(kok.arKok);
         arHedef[P[0]] = kb[0]; arHedef[P[1]] = kb[1]; arHedef[P[2]] = kb[2];
     }
+    /* SÖZ MADALYONU İÇERİĞİ: yalnız kelimenin hem Arapçası hem
+       Türkçesi ekrandayken (çift adım) anlamlıdır. Harfler kelimenin
+       kendi sırasındadır; kök / zâid / sertleşen ayrımı tekerlerdeki
+       renklerin birebir aynısıdır. Arapça yüz "tam" (harekeli, doğal)
+       yazımdan gelir: tarayıcı harfleri kendisi bağlar, kaşide yok. */
+    var arSoz = '', trSoz = '', anlam = '', emoji = '';
+    if (d.ar && d.tr && arYer && trYer) {
+        var arKokIdx = [arYer[P[0]], arYer[P[1]], arYer[P[2]]];
+        arSoz = seg.map(function (s, idx) {
+            return '<span class="kc-sz' + (arKokIdx.indexOf(idx) >= 0 ? ' kok' : '') +
+                   '">' + s.b + s.m + '</span>';
+        }).join('');
+        var trKokIdx = [trYer[P[0]], trYer[P[1]], trYer[P[2]]];
+        trSoz = trH.map(function (h, idx) {
+            var kk = trKokIdx.indexOf(idx);
+            return '<span class="kc-sz' +
+                   (kk < 0 ? '' : (trO && trO.sert[kk] ? ' kok sert' : ' kok')) +
+                   '">' + h + '</span>';
+        }).join('');
+        anlam = d.ar.anlam || '';
+        emoji = KC_BALON[(Math.ceil(S.adim / 2) - 1 + S.kok) % KC_BALON.length];
+    }
+    kcSozYaz(arSoz, trSoz, emoji, anlam);
+
     /* Harfler yazılmadan ÖNCE sütun enleri ayarlanır: kutu genişliği ile
        harf puntosu aynı karede değişsin, iki aşamalı zıplama olmasın. */
-    S.son = { ar: arHedef, tr: trHedef, isk: isk };
+    S.son = { ar: arHedef, tr: trHedef, isk: isk, arSoz: arSoz };
     kcSutunOlc(arHedef, trHedef, isk);
     var trT = document.getElementById('kcTrTeker').children;
     var arT = document.getElementById('kcArTeker').children;

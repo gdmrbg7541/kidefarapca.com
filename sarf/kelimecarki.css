@@ -344,43 +344,99 @@
 /* boş teker: sönük yedek rulo */
 .kc-teker.kc-bos { opacity: .3; filter: saturate(.5); }
 
-/* ---------------- BİRLEŞİK OKUMA KARESİ ----------------
+/* ---------------- SÖZ MADALYONU (birleşik okuma karesi) ----------------
    Kelimenin hem Arapçası hem Türkçesi türedikten sonra çark bir an
-   durur ve boşluklar kapanır: öğrenci harf harf dizilmiş kelimeyi bu
-   kez BÜTÜN hâliyle görür. Kutu enlerini kelimecarki.js sıfırlar
-   (bkz. kcSutunOlc'un "birlesik" dalı); burada yalnız kutular arası
-   nefes ve kutu kenarları kaldırılır ki iki harf arasında çizgi
-   kalmasın, bağlı Arapça biçimler gerçekten birleşsin.
-   Genişlik geçişi .kc-teker'in transition'ında zaten var: boşluklar
-   ANİDEN değil, akarak kapanır. Bir sonraki ileri/geri basışında
-   .kc-birlesik kalkar, hizalı kare geri gelir. */
-.kc-kitap.kc-birlesik { --kc-g: 0px; }
-.kc-kitap.kc-birlesik .kc-teker {
-    /* harf kutusuna tam sığdığı için kırpılmasın: uçlardaki kaşide
-       ve bağlantı kuyrukları görünür kalsın */
-    overflow: visible;
-    border-radius: 0;
-    /* Yan kenarlıklar KALKAR (renk değil, EN olarak): box-sizing
-       border-box olduğu için 1px'lik kenar, eni 0 yazılmış gözü bile
-       2px genişletiyordu — yedi boş gözde bu 14px'lik hayalet boşluk
-       demek. Sıfırlanınca harfler gerçekten yan yana gelir. */
-    border-left-width: 0; border-right-width: 0;
-    box-shadow: inset 0 12px 16px -10px rgba(96, 68, 30, .5), inset 0 -12px 16px -10px rgba(96, 68, 30, .5);
+   durur: TEKERLER USULCA SÖNER ve her sayfanın tam ortasında yuvarlak
+   bir madalyon belirir. Kelime orada TEK PARÇA durur.
+
+   NEDEN BÖYLE? Önceki çözüm kutuları sıfırlayıp harfleri birbirine
+   itiyordu; ortaya köşeli, dikdörtgen bir şerit çıkıyordu — oysa bu
+   sayfanın tasarım dili TEKERLEK/ÇARK, yani yuvarlak. Ayrıca her göz
+   kendi harfini bağlı biçimde yazsın diye uçlarına kaşide (ـ)
+   ekleniyordu; harfler yan yana gelince bu kaşideler kelimenin altında
+   fazladan bir çizgiye dönüşüyordu.
+   Madalyonda kelime, verideki "tam" (harekeli, doğal) yazımdan tek bir
+   metin akışı olarak yazılır: bağlamayı tarayıcı yapar, kaşideye gerek
+   kalmaz, çizgi de oluşmaz. Üç renk (siyah kök · kırmızı zâid · mor
+   sertleşen) harf harf <span>'larla korunur.
+   Bir sonraki ileri/geri basışında .kc-birlesik kalkar, tekerler geri
+   gelir ve çark kaldığı yerden döner. */
+.kc-yol { position: relative; }
+.kc-soz {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 6px;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; opacity: 0; visibility: hidden;
+    transition: opacity .34s ease, visibility .34s;
 }
-.kc-kitap.kc-birlesik .kc-teker::after { opacity: 0; }   /* yan uç gölgeleri: kelimeyi bölerdi */
-/* Birleşik karede kök tekerinin koyu ahşabı da açılır: yan yana gelen
-   koyu/açık gözler kelimeyi dilim dilim gösteriyordu. Kök ile zâid
-   ayrımı bu karede zaten HARF RENGİNDEN okunuyor (siyah = kök,
-   kırmızı = zâid, mor = sesi sertleşen kök), o yüzden zemin tek parça
-   kalabilir; göz kelimeyi bölünmemiş görür. Hizalı kareye dönüldüğünde
-   koyu ahşap geri gelir. */
-.kc-kitap.kc-birlesik .kc-teker.kok {
-    background: linear-gradient(180deg, #b7a37e 0%, #dbc9a6 7%, #f4e9d2 22%, #fffaf0 50%, #f4e9d2 78%, #dbc9a6 93%, #b7a37e 100%);
-    border-color: rgba(120, 92, 48, .35);
+.kc-soz.kc-rtl { direction: rtl; }
+.kc-kitap.kc-birlesik .kc-soz { opacity: 1; visibility: visible; }
+/* Geliş hareketi bu katmanda (aşağıdan süzülerek yerine oturur) */
+.kc-soz-sar {
+    display: inline-flex; align-items: center;
+    transform: translateY(10px); opacity: 0;
+    transition: transform .42s cubic-bezier(.2, .9, .3, 1.2), opacity .34s ease;
 }
-.kc-kitap.kc-birlesik .kc-teker.kc-bos {
-    opacity: 0; border-width: 0; box-shadow: none;
+.kc-kitap.kc-birlesik .kc-soz-sar { transform: none; opacity: 1; }
+/* Ölçek bu katmanda ve GEÇİŞSİZDİR: kelimecarki.js sığdırma oranını
+   (--kc-soz-k) burada ölçüp yazar, animasyonun ara değerine takılmaz. */
+.kc-soz-olcek {
+    position: relative;
+    display: inline-flex; align-items: center;
+    transform: scale(var(--kc-soz-k, 1));
 }
+/* MADALYON: tekerin ahşap fildişi rengi, ama tamamen yuvarlak uçlu —
+   çarkın "yuvarlak" dilini kelimenin bütününe taşır. */
+.kc-soz-ic {
+    display: inline-block; white-space: nowrap; direction: inherit;
+    font-family: var(--font-ar); font-size: var(--kc-punto, 6rem); line-height: 1.26;
+    padding: .04em .36em .1em; border-radius: 999px;
+    background: linear-gradient(180deg, #fffdf6 0%, #fdf6e6 44%, #f2e4c6 100%);
+    border: 2px solid rgba(150, 116, 60, .32);
+    box-shadow: 0 16px 34px rgba(96, 68, 30, .26),
+                inset 0 2px 0 rgba(255, 255, 255, .9),
+                inset 0 -7px 16px rgba(150, 116, 60, .16);
+}
+/* Üç renk tekerlerdekiyle birebir aynı: zâid kırmızı, kök siyah,
+   sesi sertleşen kök mor. */
+.kc-sz { color: #d63031; }
+.kc-sz.kok { color: #1b2430; }
+.kc-sz.kok.sert { color: #7C3AED; }
+/* BALON: kelime birleşince yanında zıplayarak beliren anlam balonu.
+   Kuyruğu (sol alt köşe) madalyona bakar. Akıştan ÇIKARILDI (absolute):
+   böylece Türkçe madalyon da tıpkı Arapça madalyon gibi tam ortada
+   durur, balon yalnız yanına iliştirilir — iki satır simetrik kalır.
+   top/bottom:0 + margin:auto ikilisi balonu dikeyde ortalar; böylece
+   transform'a dokunulmaz ve zıplama animasyonu bozulmaz. */
+.kc-balon {
+    position: absolute; left: 100%; top: 0; bottom: 0;
+    margin: auto 0 auto clamp(8px, 1.3vw, 20px); height: -moz-fit-content; height: fit-content;
+    display: inline-flex; align-items: center; gap: .5em;
+    padding: .34em .85em .38em; border-radius: 999px 999px 999px 8px;
+    background: linear-gradient(180deg, #ffffff, #f3f0ff);
+    border: 2px solid #e3daff; color: #4b5563; direction: ltr;
+    font-size: clamp(.72rem, 1.5vw, 1.12rem); line-height: 1.2; white-space: nowrap;
+    box-shadow: 0 10px 24px rgba(90, 58, 28, .22);
+    opacity: 0; transform: translateY(14px) scale(.7);
+}
+.kc-balon b { font-weight: 400; font-size: 1.75em; line-height: 1; }
+.kc-balon i { font-style: normal; }
+.kc-kitap.kc-birlesik .kc-balon {
+    animation: kcBalonGel .52s cubic-bezier(.2, .9, .3, 1.5) .28s forwards,
+               kcBalonSuz 3.2s ease-in-out 1.1s infinite;
+}
+@keyframes kcBalonGel {
+    0%   { opacity: 0; transform: translateY(14px) scale(.7); }
+    62%  { opacity: 1; transform: translateY(-5px) scale(1.07); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes kcBalonSuz {
+    0%, 100% { opacity: 1; transform: translateY(0) scale(1); }
+    50%      { opacity: 1; transform: translateY(-5px) scale(1.01); }
+}
+/* Madalyon öne çıkarken tekerler geri çekilir: aynı yerde iki katman,
+   göz kelimeyi bölünmemiş görür. */
+.kc-tekerler { transition: opacity .3s ease, transform .34s ease; }
+.kc-kitap.kc-birlesik .kc-tekerler { opacity: 0; transform: scale(.96); }
 /* zemin: yol şeridi DEĞİL — kitaba yakışan sade ahşap raf çubuğu
    (kesik çizgili asfalt görünümü kaldırıldı) */
 .kc-zemin {
@@ -424,6 +480,56 @@
         gap: 8px; padding: 6px 4px;
     }
     .kc-ok { width: 40px; height: 40px; }
+}
+
+/* ---------------- MOBİL DİKEY ----------------
+   Telefon dikeyken en kıt şey GENİŞLİK, en bol şey YÜKSEKLİK.
+   Bu yüzden dizilim baştan aşağı kurulur:
+     1. satır → kök tuşları,  2. satır → vezin tuşu,
+     sonra kitap, en altta da ok çifti (biri SOLDA biri SAĞDA).
+   Oklar aşağı indiği için akıllı tahtadaki "ekranın önünü kapatma"
+   kaygısı burada geçerli değil; parmak zaten telefonun altındadır.
+   Ok simgeleri yukarı/aşağı çizilmiştir; yana dönerek sol/sağ okunur. */
+@media (max-width: 940px) and (orientation: portrait) {
+    /* İKİ SATIR: kökler üstte, vezin tuşu altta tam genişlikte */
+    .kc-ustsatir { flex-direction: column; align-items: stretch; gap: 6px; }
+    .kc-kokler { padding: 2px 2px 4px; }
+    .kc-vezinkutu {
+        align-self: stretch; width: 100%; min-width: 0; min-height: 0;
+        flex-direction: row; align-items: baseline; justify-content: center;
+        gap: 10px; padding: 5px 12px 6px; border-radius: 12px;
+    }
+    .kc-vezinkutu b { font-size: clamp(1.05rem, 4.6vw, 1.6rem); }
+    .kc-vezinkutu i { font-size: clamp(.68rem, 2.6vw, .86rem); }
+    .kc-vezinkutu::before { width: 24px; height: 24px; }
+    .kc-vk-ipucu { margin-top: 0; font-size: clamp(.5rem, 2vw, .62rem); }
+
+    /* Kitap üstte, oklar EN ALTTA yatay şerit. Telefonda boy bol,
+       en dar; o yüzden harf gözleri dikeyde biraz daha büyütülür. */
+    .kc-govde { flex-direction: column; align-items: stretch; gap: 8px; }
+    .kc-kitap { order: 1; --kc-hb: min(14rem, 34vw, 21vh); }
+    /* Oklar şeridinin beyaz hapı kalkar: iki mor düğme doğrudan
+       sayfanın sağ ve sol alt köşesinde durur, arada boşluk kalır. */
+    .kc-oklar {
+        order: 2; position: static; transform: none;
+        flex-direction: row; justify-content: space-between; align-items: center;
+        width: 100%; gap: 0;
+        background: none; border: none; box-shadow: none;
+        padding: clamp(5px, 1vh, 9px) clamp(12px, 6vw, 40px);
+    }
+    .kc-ok { width: clamp(46px, 13vw, 60px); height: clamp(46px, 13vw, 60px); }
+    /* yukarı → SOL, aşağı → SAĞ */
+    .kc-oklar .kc-ok svg { transform: rotate(-90deg); }
+
+    /* Söz madalyonu ve balon dar ekranda daha sıkı dursun */
+    .kc-soz-ic { padding: .04em .3em .09em; border-width: 1px; }
+    .kc-balon { margin-left: 6px; padding: .28em .6em .32em; gap: .35em; border-width: 1px; }
+}
+
+/* Hareket duyarlılığı: balon süzülmesin, madalyon kaymadan belirsin. */
+@media (prefers-reduced-motion: reduce) {
+    .kc-soz-sar { transition: opacity .2s ease; transform: none; }
+    .kc-kitap.kc-birlesik .kc-balon { animation: none; opacity: 1; transform: none; }
 }
 
 /* ============================================================
@@ -632,7 +738,14 @@
     /* --kcv-ar: kartın TEK Arapça puntosu (vezin = kök = kelime = uçan harf) */
     --kcv-ar: clamp(1.7rem, min(6.5vw, 8vh), 5.6rem);
     position: relative; flex: 1 1 auto; min-width: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center;
+    /* BAŞLIK YUKARIDAN TAŞMASIN: içerik göze sığmadığında düz "center"
+       taşmayı İKİ UCA birden dağıtır ve ilk satır (vezin başlığı) kartın
+       üst kenarının dışına çıkardı. "safe center" taşma olduğunda
+       hizalamayı başa çeker, yani taşma yalnız aşağı doğru olur; kalanı
+       da overflow:hidden kırpar. Böylece her kartın adı hep okunur. */
+    justify-content: center; justify-content: safe center;
+    overflow: hidden;
     min-height: 0; gap: clamp(1px, .4vh, 6px);
     padding: clamp(6px, 1vh, 12px) 6px clamp(6px, 1vh, 12px);
     border-radius: 16px; border: 1px solid var(--kcv-tur-cizgi);
@@ -659,6 +772,9 @@
    akıllı tahtanın arkasından okunacak kadar irileşir. */
 .kcv-kart.buyuk {
     --kcv-ar: clamp(3rem, min(13vw, 19vh), 11rem);
+    /* Büyük kartta uçan harfler kartın kenarına yaklaşabilir; burada
+       kırpma yok. Yer bol olduğu için başlık zaten taşmaz. */
+    overflow: visible;
     position: fixed; left: 50%; top: 50%; z-index: 12;
     width: min(1040px, 92vw); height: min(680px, 84vh);
     padding: clamp(14px, 2.4vh, 30px) clamp(14px, 2vw, 34px);
