@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>عَجَلَةُ الْكَلِمَاتِ - Kelime Çarkı</title>
+<meta name="description" content="Kelime Çarkı: aynı kökten vezin değiştikçe yeni kelimelerin nasıl türediğini gösteren Arapça sarf simülasyonu.">
+
+<!-- Sitenin geri kalaniyla ayni Google Analytics etiketi. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Kelime Çarkı'nın TEK ADRESİ burasıdır. sarf.html'deki eski kopya
+     (menü kartı + #carki bağlantısı) kaldırıldı; orası artık doğrudan
+     Kelime Fabrikası olarak açılıyor. Bu sayfa sarf.css'i de kullanır,
+     tasarım tek kaynaktan gelir.
+     ?v=NN: tarayıcı eski kopyayı önbellekten sunmasın diye sürüm etiketi. -->
+<link rel="stylesheet" href="sarf/sarf.css?v=122">
+<link rel="stylesheet" href="sarf/kelimecarki.css?v=15">
+<link rel="stylesheet" href="arakom.css?v=1">
+</head>
+<body>
+
+<div class="floating-emojis">
+    <span class="fe-1">📖</span>
+    <span class="fe-2">✍️</span>
+    <span class="fe-3">⚙️</span>
+    <span class="fe-4">🕌</span>
+    <span class="fe-5">📚</span>
+    <span class="fe-6">🎓</span>
+</div>
+
+<!-- ================= KELİME ÇARKI: vezin simülasyonu =================
+     Ekran "active" doğar: menü yok, sayfa açılır açılmaz çark kurulur.
+     İçeriği (başlık, geri tuşu, kök şeridi, oklar, tekerler) tamamen
+     sarf/kelimecarki.js doldurur. -->
+<main class="screen active" id="kc-screen"></main>
+
+<script>
+/* Tek başına sayfa köprüsü: kelimecarki.js sarf.html içinde çalışmak
+   üzere yazıldı ve App'in iki işlevini kullanır. Burada App yok, o
+   yüzden minik bir karşılık koyuyoruz:
+     playSound  → sessiz (sarf.html'deki ses motoru burada yüklü değil)
+     showScreen → geri tuşu: menü ekranı olmadığı için siteye/önceki
+                  sayfaya döner (geri.js'teki kidefGeri).
+   Böylece kelimecarki.js'e HİÇ dokunmadan iki yerde de çalışır. */
+/* Geri tuşunun ok simgesi normalde sarf.js'te tanımlıdır (BACK_SVG).
+   Bu sayfa sarf.js'i YÜKLEMEZ (oradaki dört oyun, Firebase ve kök veri
+   dosyaları burada gereksiz), o yüzden aynı simgeyi burada tanımlıyoruz.
+   var kullanılır: kelimecarki.js'teki çıplak BACK_SVG bu şekilde görür. */
+var BACK_SVG = '<svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>';
+
+window.App = window.App || {
+    playSound: function () { },
+    showScreen: function () {
+        if (typeof kidefGeri === 'function') return kidefGeri();
+        if (typeof kidefGeriDon === 'function') return kidefGeriDon();
+        window.location.href = 'index.html';
+    }
+};
+</script>
+
+<script src="sistem/gorevkopru.js?v=7"></script>
+<script>/* Konu anlatimi/simulasyon sayfasidir: puan degil SURE takip edilir. */
+try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+<script src="sarf/kelimecarki.js?v=14"></script>
+<script src="sistem/geri.js"></script>
+<script>
+/* Sayfa açılır açılmaz çarkı kur ve ilk kökü seç. kelimecarki.js kendi
+   DOMContentLoaded'ında yalnız menü kartını bağlar (burada kart yok),
+   ekranı biz açıyoruz. */
+document.addEventListener('DOMContentLoaded', function () {
+    try { if (window.KelimeCarki) window.KelimeCarki.ac(); } catch (e) { }
+});
+</script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

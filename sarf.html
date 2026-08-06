@@ -18,9 +18,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- 4. oyun (dijital yarışma) için Firebase 8.10.1 compat SDK + karekod üreticisi.
-     Bu üç dosya sadece "اِتَّصِلْ" kartı için gereklidir; internet yoksa ya da
-     yüklenemezse diğer üç oyun normal çalışmaya devam eder. -->
+<!-- Firebase 8.10.1 compat SDK + karekod üreticisi: görev köprüsü ve
+     ?oda=KOD bağlantısıyla gelen eski dijital yarışma oturumları için.
+     İnternet yoksa ya da yüklenemezse oyun normal çalışmaya devam eder. -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -31,7 +31,12 @@
 <link rel="stylesheet" href="sarf/sarf.css?v=122">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
-<body>
+<!-- Bu sayfa artık "tek oyun" kipindedir: data-tek-oyun="game2" menüyü
+     tamamen atlatır, sayfa açılır açılmaz Kelime Fabrikası'nın kendisi
+     (kelimeler + öğütücü + usta atölyesi) gelir. Menü kartı ve onun
+     önizleme animasyonu kalktığı için ekranda ara adım kalmadı.
+     KELİME ÇARKI ARTIK BURADA DEĞİL: kendi sayfasında → kelimecarki.html -->
+<body data-tek-oyun="game2">
 
 <div class="floating-emojis">
     <span class="fe-1">📖</span>
@@ -42,47 +47,22 @@
     <span class="fe-6">🎓</span>
 </div>
 
-<!-- ================= GİRİŞ EKRANI ================= -->
-<main class="screen active" id="start-screen">
-    <!-- Siteye donus. data-kidef-done="1" sayesinde geri.js ayrica
-         "Anasayfa" (ev) tusu EKLEMEZ; tek geri tusu yeterli. -->
-    <a href="index.html" class="back-btn kidef-siteye" id="start-back-button"
-       data-kidef-done="1" onclick="return kidefGeriDon(event)" title="Geri" aria-label="Geri">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-    </a>
-    <div class="menu-wrap">
-        <div class="menu-grid">
-            <!-- "Kökten görsele" oyunu artık ayrı sayfada: koktengorsele.html.
-                 Burada tek kart var: birleşik Kelime Fabrikası. -->
-            <!-- Birleşik "Kelime Fabrikası": öğütücü + usta atölyesi tek oyunda.
-                 İkon: çark pencereli makine, üstünde çekiç, altında altın külçe. -->
-            <div class="menu-card" data-goto="game2-screen">
-                <!-- Önizleme sahnesi sarf.js tarafından doldurulur:
-                     mini vitrin + usta/örs + öğütücü makine (oyunun kendi SVG'leri). -->
-                <div class="mf-onizleme" id="mfOnizleme"></div>
-                <h2>مَصْنَعُ الْكَلِمَاتِ</h2>
-            </div>
-            <!-- Dijital yarışma (Firebase) girişi: kartla aynı genişlikte,
-                 yarı yükseklikte mor bar. "اِتَّصِلْ" = bağlan -->
-            <button type="button" class="menu-connect" data-goto="quiz-screen">
-                <span class="mc-nokta"></span>
-                <span class="mc-ar">اِتَّصِلْ</span>
-                <span class="mc-ikon">🏆</span>
-            </button>
-        </div>
-    </div>
-</main>
+<!-- Menü YOK: sayfa doğrudan Kelime Fabrikası ile açılır (sarf.js, body
+     üzerindeki data-tek-oyun="game2" işaretini görür). Boş start-screen
+     yalnız sarf.js'in ekran listesiyle uyum için duruyor; ?oda= ile gelen
+     yarışma askıya alındığında da fabrikaya geri dönülür. -->
+<main class="screen" id="start-screen"></main>
 
 <!-- ================= OYUN 1: KÖKTEN KALIBA (root-to-emoji) ================= -->
 <main class="screen" id="game1-screen"></main>
 
-<!-- ================= OYUN 2: KELİMEYİ KÖKÜNE AYIR (word-to-gear) ================= -->
+<!-- ============ KELİME FABRİKASI: öğütücü + usta atölyesi (ana ekran) ============ -->
 <main class="screen" id="game2-screen"></main>
 
 <!-- ================= OYUN 3: ÇOKLU KÖK AYNI KALIBA (roots-to-pattern) ================= -->
 <main class="screen" id="game3-screen"></main>
 
-<!-- ================= OYUN 4: DİJİTAL YARIŞMA (Firebase) ================= -->
+<!-- ================= OYUN 4: DİJİTAL YARIŞMA (Firebase, ?oda= bağlantısıyla) ================= -->
 <main class="screen" id="quiz-screen"></main>
 
 <div class="done-overlay" id="done-overlay">
@@ -107,8 +87,11 @@
 <script src="sistem/gorevkopru.js?v=7"></script>
 <script>/* Sarf konu anlatimi/simulasyon sayfasidir: puan degil SURE takip edilir. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
-<script src="sarf/sarf.js?v=124"></script>
+<script src="sarf/sarf.js?v=125"></script>
 <script src="sistem/geri.js"></script>
+<!-- Eski derin bağlantı betiği kalktı: sayfa zaten doğrudan fabrikayı
+     açtığı için sarf.html#fabrika kendiliğinden doğru yere düşer.
+     sarf.html#carki artık kelimecarki.html'e taşındı. -->
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */

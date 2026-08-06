@@ -525,15 +525,22 @@ const App = {
         try { odaKod = new URLSearchParams(location.search).get('oda'); } catch (e) {}
         if (odaKod) { Quiz.katilimlaBasla(odaKod.trim().toUpperCase()); return; }
 
-        /* Tek oyun kipi (örn. koktengorsele.html): menü atlanır, sayfa
-           doğrudan kendi oyununu açar; geri tuşları da siteye döner. */
-        if (document.body.dataset.tekOyun === 'game1') {
-            Game1.start();
-            this.showScreen('game1-screen');
-            return;
-        }
+        /* Tek oyun kipi (koktengorsele.html → game1, sarf.html → game2):
+           menü ekranı hiç gösterilmez, sayfa açılır açılmaz kendi oyununu
+           kurar; geri tuşları da menüye değil siteye döner. */
+        const tek = document.body.dataset.tekOyun;
+        if (tek) { this.tekOyunBaslat(tek); this.showScreen(tek + '-screen'); return; }
 
         this.showScreen('start-screen');
+    },
+
+    /* Tek oyun kipindeki sayfanın oyununu kurar (menüdeki kart tıklamasının
+       karşılığı). Ses yönergesi burada ÇALINMAZ: sayfa yüklenirken çalan
+       sesi tarayıcılar zaten engeller, oyun ilk dokunuşta kendi çalar. */
+    tekOyunBaslat(tek) {
+        if (tek === 'game1') Game1.start();
+        else if (tek === 'game2') Game2.start();
+        else if (tek === 'game3') Game3.start();
     },
 
     /* Tek oyun kipinde "menüye dön" anlamı yoktur: siteye dönülür. */
@@ -545,6 +552,16 @@ const App = {
     },
 
     showScreen(id) {
+        /* Tek oyun kipinde "menü" diye bir ekran yoktur (sayfadaki
+           start-screen boştur). Menüye dönmek isteyen her yol — örneğin
+           yarışma askıya alınınca — sayfanın kendi oyununa döner; oyun
+           henüz kurulmadıysa (?oda= ile girilmişse) burada kurulur. */
+        const tek = document.body.dataset.tekOyun;
+        if (id === 'start-screen' && tek) {
+            id = tek + '-screen';
+            const e = document.getElementById(id);
+            if (e && !e.innerHTML.trim()) this.tekOyunBaslat(tek);
+        }
         this.dom.screens.forEach(s => s.classList.remove('active'));
         const t = document.getElementById(id);
         if (t) t.classList.add('active');
@@ -1322,6 +1339,7 @@ const Game2 = {
         `;
         document.getElementById('g2-back').addEventListener('click', () => {
             App.playSound('click');
+            if (App.tekOyunCikis()) return;      /* sarf.html: menü yok → siteye dön */
             App.showScreen('start-screen');
         });
         // Forklift: kök varken tıklanırsa o anki külçeler ustaya gider
@@ -2181,6 +2199,7 @@ const Game3 = {
         `;
         document.getElementById('g3-back').addEventListener('click', () => {
             App.playSound('click');
+            if (App.tekOyunCikis()) return;
             App.showScreen('start-screen');
         });
         document.getElementById('g3-prev').addEventListener('click', () => {
