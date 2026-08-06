@@ -68,6 +68,16 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 /* Asagi kaydirinca header gizlenir (soruya daha cok alan), yukari kaydirinca geri gelir. */
 .biy-header { transition: transform .28s ease; will-change: transform; }
 .biy-header.biy-header--gizli { transform: translateY(-100%); }
+/* Soru havuzu tam ekran; kendi basligi kendi kaydirma alanina (#soruSecListe) gore
+   gizlenir. Akista yer kapladigi icin transform degil, yuksekligi daraltarak gizliyoruz;
+   boylece bosalan yer listeye kaliyor. */
+   Baslik AKISTAN CIKARILIP listenin uzerine bindiriliyor: boylece gizlenince listenin
+   yuksekligi degismiyor (degisseydi scrollTop kirpilir, ters yon algilanir ve baslik
+   kendini geri acardi). Listeye baslik yuksekligi kadar padding-top JS ile veriliyor. */
+.biy-soru-sec-kutu { position: relative; }
+.biy-soru-sec-bas { position: absolute; top: 0; left: 0; right: 0; z-index: 6; background: #fff;
+  transition: transform .28s ease; will-change: transform; }
+.biy-soru-sec-bas.biy-header--gizli { transform: translateY(-100%); }
 
 /* geri tuşu — gradyan üstünde beyaz hayalet düğme (index beyaz ikon dili) */
 .biy-geri-tus {

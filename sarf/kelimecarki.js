@@ -524,10 +524,16 @@ function kcTuslariBagla() {
         if (!ekr || !ekr.classList.contains('active')) return;
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         var k = e.key;
-        /* Vezin tablosu penceresi açıkken tuşlar ARKADAKİ çarkı çevirmesin;
-           orada tek iş Escape ile kapatmaktır. */
+        /* Vezin tablosu penceresi açıkken tuşlar ARKADAKİ çarkı çevirmesin.
+           Escape iki kademelidir: önce büyüyen kartı küçültür, kart yoksa
+           pencereyi kapatır — öğrenci yanlışlıkla tabloyu kaybetmesin. */
         if (kcVezinPopAcik()) {
-            if (k === 'Escape' || k === 'Esc') { e.preventDefault(); kcVezinPopKapat(); }
+            if (k === 'Escape' || k === 'Esc') {
+                e.preventDefault();
+                var pv = document.getElementById('kcVezinPop');
+                if (pv && pv.querySelector('.kcv-kart.buyuk')) kcvKucult(pv);
+                else kcVezinPopKapat();
+            }
             return;
         }
         var yon = 0;
@@ -594,123 +600,124 @@ function kcOnizlemeKur() {
 }
 
 /* ================= VEZİN TABLOSU PENCERESİ =================
-   Kök satırındaki VEZİN KUTUSUNA dokununca açılır. Amaç: çarkta tek tek
-   görülen vezinleri bir arada, "hangi harf nereden geliyor" sorusunun
-   cevabıyla göstermek.
+   Kök satırındaki VEZİN KUTUSUNA dokununca açılır. Tek amacı vardır:
+   ZÂİD HARFLERİN KÖKE EKLENİŞİNİ gözle göstermek. Onun için kart
+   sade tutuldu ve yalnız dört basamak bırakıldı:
 
-   Her kart dikey okunur — yukarıdan aşağı:
-       1) vezin başlığı (İsm-i Fâil…) + o örnekteki KÖK
-       2) ARAPÇA VEZİN  (فَاعِل)  — zâid harfler altın renkte
-       3) iniş şeridi   — zâid harf tam kendi sütununda aşağı süzülür
-       4) KÖK + inen zâid harfler = kelime  (كَ ا تِ ب → كَاتِب)
-       5) Türkçe okunuş ve anlam
+       1) vezin başlığı            İsm-i Fâil
+       2) veznin Arapçası          فَاعِل      (zâid harfler KIRMIZI)
+       3) kök                      كـ ـتـ ـب   (bağlanma yüzleriyle)
+       4) zâid harfler köke iner → kök KELİMEYE dönüşür → Türkçesi çıkar
 
-   Vezin satırı ile kelime satırı AYNI SÜTUN GENİŞLİĞİNİ kullanır; böylece
-   yukarıdaki ا ile aşağıya inen ا tam alt alta gelir, öğrenci harfin
-   yolunu gözüyle takip eder.
+   Vezin ve kelime BİTİŞİK yazılır (harfler sütunlara ayrılmaz); zâid
+   harf kırmızıyla ayırt edilir. Arapçanın üç satırı (vezin, kök,
+   kelime) TEK PUNTODADIR: --kcv-ar. Türkçe karşılık ancak Arapça
+   animasyon bittikten sonra belirir — öğrenci önce harflerin yolunu
+   izlesin, sonucu sonra okusun.
 
-   slot: her sütun bir harf.  v = vezindeki harf, w = kelimedeki karşılığı,
-   z = 1 ise ZÂİD (kökte olmayan, vezinden gelen harf). */
+   AKIŞ TIKLAMAYA BAĞLIDIR: ızgarada kartlar durur, bir vezne dokununca
+   o kartın konteynırı büyür ve animasyon BİR KEZ oynar. Zâid harf
+   düz aşağı düşmez; vezindeki yerinden kopar ve KELİMEDE ekleneceği
+   noktaya uçar. Uçuşun başlangıç/bitiş noktası JS'te ölçülür
+   (kcvUcur), CSS'e --dx/--dy olarak verilir.
+
+   slot: her harf bir kayıt.  v = vezindeki harf, w = kelimedeki
+   karşılığı, z = 1 ise ZÂİD (kökte yoktur, vezinden gelir). */
 var KC_VEZIN_TABLO = [
-    { baslik: 'TÜREMİŞ İSİM VEZİNLERİ', arBaslik: 'أَوْزَانُ الْأَسْمَاءِ الْمُشْتَقَّةِ',
-      not: 'kim yapar · neye yapılır · nerede · hangi aletle · küçültme',
-      kartlar: [
-        { ad: 'İsm-i Fâil', vezinTr: 'fâʿil', soru: 'işi YAPAN',
-          kok: ['ك','ت','ب'], okunus: 'kâtip', anlam: 'yazan kişi · yazar',
-          slot: [ {v:'فَ', w:'كَ'}, {v:'ا', w:'ا', z:1}, {v:'عِ', w:'تِ'}, {v:'ل', w:'ب'} ] },
-        { ad: 'İsm-i Mefʿûl', vezinTr: 'mefʿûl', soru: 'işi YAPILAN',
-          kok: ['ك','ت','ب'], okunus: 'mektup', anlam: 'yazılmış olan şey',
-          slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عُ', w:'تُ'}, {v:'و', w:'و', z:1}, {v:'ل', w:'ب'} ] },
-        { ad: 'İsm-i Mekân', vezinTr: 'mefʿal', soru: 'işin YAPILDIĞI YER',
-          kok: ['ك','ت','ب'], okunus: 'mektep', anlam: 'yazı yeri · okul',
-          slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عَ', w:'تَ'}, {v:'ل', w:'ب'} ] },
-        { ad: 'İsm-i Âlet', vezinTr: 'mifʿâl', soru: 'işin YAPILDIĞI ALET',
-          kok: ['ف','ت','ح'], okunus: 'miftâh', anlam: 'açma aleti · anahtar',
-          slot: [ {v:'مِ', w:'مِ', z:1}, {v:'فْ', w:'فْ'}, {v:'عَ', w:'تَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'ح'} ] },
-        { ad: 'İsm-i Tasgîr', vezinTr: 'fuʿayl', soru: 'KÜÇÜLTME · sevgi',
-          kok: ['ح','س','ن'], okunus: 'Hüseyin', anlam: 'küçük güzel · güzelcik',
-          slot: [ {v:'فُ', w:'حُ'}, {v:'عَ', w:'سَ'}, {v:'يْ', w:'يْ', z:1}, {v:'ل', w:'ن'} ] }
-      ] },
-    { baslik: 'SIFAT · ÇOĞUL · MASDAR VEZİNLERİ', arBaslik: 'أَوْزَانُ التَّفْضِيلِ وَالْجَمْعِ وَالْمَصْدَرِ',
-      not: 'üstünlük (eril · dişil) · çokluk · iş adı',
-      kartlar: [
-        { ad: 'İsm-i Tafdîl (eril)', vezinTr: 'efʿal', soru: 'EN / DAHA — erkek',
-          kok: ['ك','ب','ر'], okunus: 'ekber', anlam: 'en büyük',
-          slot: [ {v:'أَ', w:'أَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عَ', w:'بَ'}, {v:'ل', w:'ر'} ] },
-        { ad: 'İsm-i Tafdîl (dişil)', vezinTr: 'fuʿlâ', soru: 'EN / DAHA — dişi',
-          kok: ['ك','ب','ر'], okunus: 'kübrâ', anlam: 'en büyük (dişil)',
-          slot: [ {v:'فُ', w:'كُ'}, {v:'عْ', w:'بْ'}, {v:'لَ', w:'رَ'}, {v:'ى', w:'ى', z:1} ] },
-        { ad: 'Çoğul (cemi teksîr)', vezinTr: 'efʿâl', soru: 'ÇOKLUK',
-          kok: ['و','ل','د'], okunus: 'evlât', anlam: 'çocuklar · evlatlar',
-          slot: [ {v:'أَ', w:'أَ', z:1}, {v:'فْ', w:'وْ'}, {v:'عَ', w:'لَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'د'} ] },
-        { ad: 'İfʿâl (masdar)', vezinTr: 'ifʿâl', soru: 'İŞİN ADI — 4. bab',
-          kok: ['س','ل','م'], okunus: 'islâm', anlam: 'teslim oluş · esenliğe girme',
-          slot: [ {v:'إِ', w:'إِ', z:1}, {v:'فْ', w:'سْ'}, {v:'عَ', w:'لَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'م'} ] },
-        { ad: 'Tefʿîl (masdar)', vezinTr: 'tefʿîl', soru: 'İŞİN ADI — 2. bab',
-          kok: ['س','ل','م'], okunus: 'teslîm', anlam: 'emanet etme · sağ salim verme',
-          slot: [ {v:'تَ', w:'تَ', z:1}, {v:'فْ', w:'سْ'}, {v:'عِ', w:'لِ'}, {v:'ي', w:'ي', z:1}, {v:'ل', w:'م'} ] }
-      ] }
+    { ad: 'İsm-i Fâil', kok: ['ك','ت','ب'], okunus: 'kâtip', anlam: 'yazan',
+      slot: [ {v:'فَ', w:'كَ'}, {v:'ا', w:'ا', z:1}, {v:'عِ', w:'تِ'}, {v:'ل', w:'ب'} ] },
+    { ad: 'İsm-i Mefʿûl', kok: ['ك','ت','ب'], okunus: 'mektûb', anlam: 'yazılmış olan',
+      slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عُ', w:'تُ'}, {v:'و', w:'و', z:1}, {v:'ل', w:'ب'} ] },
+    { ad: 'İsm-i Mekân', kok: ['ك','ت','ب'], okunus: 'mekteb', anlam: 'yazı yeri, okul',
+      slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عَ', w:'تَ'}, {v:'ل', w:'ب'} ] },
+    { ad: 'İsm-i Âlet', kok: ['ف','ت','ح'], okunus: 'miftâh', anlam: 'açma aleti, anahtar',
+      slot: [ {v:'مِ', w:'مِ', z:1}, {v:'فْ', w:'فْ'}, {v:'عَ', w:'تَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'ح'} ] },
+    { ad: 'İsm-i Tasgîr', kok: ['ح','س','ن'], okunus: 'Hüseyin', anlam: 'güzelcik',
+      slot: [ {v:'فُ', w:'حُ'}, {v:'عَ', w:'سَ'}, {v:'يْ', w:'يْ', z:1}, {v:'ل', w:'ن'} ] },
+    { ad: 'İsm-i Tafdîl', kok: ['ك','ب','ر'], okunus: 'ekber', anlam: 'en büyük',
+      slot: [ {v:'أَ', w:'أَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عَ', w:'بَ'}, {v:'ل', w:'ر'} ] },
+    { ad: 'İsm-i Tafdîl (dişil)', kok: ['ك','ب','ر'], okunus: 'kübrâ', anlam: 'en büyük',
+      slot: [ {v:'فُ', w:'كُ'}, {v:'عْ', w:'بْ'}, {v:'لَ', w:'رَ'}, {v:'ى', w:'ى', z:1} ] },
+    { ad: 'Çoğul', kok: ['و','ل','د'], okunus: 'evlâd', anlam: 'çocuklar',
+      slot: [ {v:'أَ', w:'أَ', z:1}, {v:'فْ', w:'وْ'}, {v:'عَ', w:'لَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'د'} ] },
+    { ad: 'İfʿâl', kok: ['س','ل','م'], okunus: 'islâm', anlam: 'teslim oluş',
+      slot: [ {v:'إِ', w:'إِ', z:1}, {v:'فْ', w:'سْ'}, {v:'عَ', w:'لَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'م'} ] },
+    { ad: 'Tefʿîl', kok: ['س','ل','م'], okunus: 'teslîm', anlam: 'emanet etme',
+      slot: [ {v:'تَ', w:'تَ', z:1}, {v:'فْ', w:'سْ'}, {v:'عِ', w:'لِ'}, {v:'ي', w:'ي', z:1}, {v:'ل', w:'م'} ] }
 ];
 
 var KC_VP_KURULU = false;
+var KC_VP_ZAM = 0;              /* büyüme bitince uçuşu başlatan zamanlayıcı */
+
+/* Hareket duyarlılığı: animasyon yerine sonucu doğrudan gösteririz. */
+function kcvAzHareket() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
 
 /* Pencereyi bir kez kurar (sonraki açılışlarda hazır DOM kullanılır). */
 function kcVezinPopKur() {
     if (document.getElementById('kcVezinPop')) return;
 
-    var kartHtml = function (k, sira) {
-        var vezinSat = '', inisSat = '', kelimeSat = '', vezinAr = '', tamKelime = '';
-        for (var i = 0; i < k.slot.length; i++) {
-            var s = k.slot[i], zaid = s.z ? ' kcv-zaid' : '';
-            vezinAr += s.v;
-            tamKelime += s.w;
-            vezinSat  += '<span class="kcv-h kcv-hv' + zaid + '">' + s.v + '</span>';
-            /* iniş şeridi: yalnız zâid sütunlarda ok var, kök sütunları boş
-               kalır — "bu harf yukarıdan geldi" bilgisi gözle okunur. */
-            inisSat   += s.z
-                ? '<span class="kcv-h kcv-ok" style="animation-delay:' + (i * .18).toFixed(2) + 's">↓</span>'
-                : '<span class="kcv-h kcv-oksuz"></span>';
-            kelimeSat += '<span class="kcv-h kcv-hk' + zaid + '"' +
-                (s.z ? ' style="animation-delay:' + (i * .18).toFixed(2) + 's"' : '') +
-                '>' + s.w + '</span>';
+    /* Harf dizisini BİTİŞİK metne çevirir; zâid harfleri kırmızı kutuya alır.
+       <b> etiketi Arapça bitiştirmeyi bozmaz: harfler yine kelime gibi
+       birleşir, yalnız rengi değişir. Vezindeki i. zâid harf ile kelimedeki
+       i. zâid harf AYNI SIRADADIR — uçuşun hedefi buradan bulunur. */
+    var birlestir = function (dizi, alan) {
+        var m = '';
+        for (var i = 0; i < dizi.length; i++) {
+            var s = dizi[i], h = s[alan];
+            m += s.z ? '<b class="kcv-z">' + h + '</b>' : h;
         }
-        return '' +
-        '<article class="kcv-kart" style="animation-delay:' + (sira * .09).toFixed(2) + 's">' +
-        '  <header class="kcv-ust">' +
-        '    <span class="kcv-ad">' + k.ad + '</span>' +
-        '    <span class="kcv-kok" dir="rtl" title="kök">' + k.kok.join(' ') + '</span>' +
-        '  </header>' +
-        '  <div class="kcv-soru">' + k.soru + '</div>' +
-        '  <div class="kcv-satir kcv-vezin" dir="rtl" aria-label="vezin ' + k.vezinTr + '">' + vezinSat + '</div>' +
-        '  <div class="kcv-satir kcv-inis" dir="rtl" aria-hidden="true">' + inisSat + '</div>' +
-        '  <div class="kcv-satir kcv-kelime" dir="rtl">' + kelimeSat + '</div>' +
-        '  <footer class="kcv-alt">' +
-        /* Yukarıdaki satırda harfler sütun sütun ayrıdır (hizalama için);
-           burada kelimenin BİTİŞİK yazılışı da bir kez görünsün. */
-        '    <span class="kcv-tam" dir="rtl">' + tamKelime + '</span>' +
-        '    <b>' + k.okunus + '</b><i>' + k.anlam + '</i>' +
-        '    <span class="kcv-vtr">' + k.vezinTr + ' · ' + vezinAr + '</span>' +
-        '  </footer>' +
-        '</article>';
+        return m;
     };
 
-    var tablolar = '', n = 0;
-    for (var t = 0; t < KC_VEZIN_TABLO.length; t++) {
-        var g = KC_VEZIN_TABLO[t], kartlar = '';
-        for (var c = 0; c < g.kartlar.length; c++) kartlar += kartHtml(g.kartlar[c], n++);
-        /* İKİ TABLO ALT ALTA: ikisi de 5 sütunlu, aynı başlık şeridi ve
-           aynı ölçülerle — simetrik dursunlar; aralarındaki boşluğu
-           .kcv-tablolar'ın gap'i verir. */
-        tablolar +=
-        '<section class="kcv-tablo">' +
-        '  <div class="kcv-tbaslik">' +
-        '    <span class="kcv-tb-tr">' + g.baslik + '</span>' +
-        '    <span class="kcv-tb-ar" dir="rtl">' + g.arBaslik + '</span>' +
-        '    <span class="kcv-tb-not">' + g.not + '</span>' +
-        '  </div>' +
-        '  <div class="kcv-govde">' + kartlar + '</div>' +
-        '</section>';
-    }
+    /* Kökü BAĞLANMA BİÇİMİYLE yazar: harf kelimede hangi yüzüyle
+       duracaksa o yüzü gösterilir — كـ ـتـ ـب, و لـ ـد, فـ ـتـ ـح.
+       Kural tek: bazı harfler kendinden SONRAKİNE bağlanmaz
+       (ا د ذ ر ز و ة ى ء ve hemzeli biçimleri). Bir harfin sağına
+       tatvîl (ـ) konur ancak ÖNCEKİ harf bağlanıyorsa; soluna konur
+       ancak kendisi bağlanıyorsa ve son harf değilse. */
+    var KCV_BAGLANMAZ = 'اأإآدذرزوؤةىءٱ';
+    var kcvKokYaz = function (dizi) {
+        var cik = [], i;
+        for (i = 0; i < dizi.length; i++) {
+            var h = dizi[i];
+            var oncekiBaglar = i > 0 && KCV_BAGLANMAZ.indexOf(dizi[i - 1]) < 0;
+            var kendiBaglar  = i < dizi.length - 1 && KCV_BAGLANMAZ.indexOf(h) < 0;
+            cik.push((oncekiBaglar ? 'ـ' : '') + h + (kendiBaglar ? 'ـ' : ''));
+        }
+        return cik.join(' ');
+    };
+
+    var kartHtml = function (k, sira) {
+        /* Uçan harfler: kartın üstüne serilen mutlak katmanda dururlar.
+           Başlangıç noktaları da, --dx/--dy hedefleri de JS'te ölçülür
+           (kcvUcur); burada yalnız harfin kendisi yazılır. */
+        var ucus = '', i;
+        for (i = 0; i < k.slot.length; i++) {
+            if (!k.slot[i].z) continue;
+            ucus += '<span class="kcv-dus">' + k.slot[i].v + '</span>';
+        }
+        return '' +
+        '<div class="kcv-yuva">' +
+        '<button type="button" class="kcv-kart" data-sira="' + sira + '"' +
+        ' style="--gel:' + (sira * .06).toFixed(2) + 's">' +
+        '  <span class="kcv-ad">' + k.ad + '</span>' +
+        '  <span class="kcv-vezin" dir="rtl">' + birlestir(k.slot, 'v') + '</span>' +
+        '  <span class="kcv-sahne">' +
+        '    <span class="kcv-yigin">' +
+        '      <span class="kcv-kok" dir="rtl">' + kcvKokYaz(k.kok) + '</span>' +
+        '      <span class="kcv-kelime" dir="rtl">' + birlestir(k.slot, 'w') + '</span>' +
+        '    </span>' +
+        '  </span>' +
+        '  <span class="kcv-tr"><b>' + k.okunus + '</b> · ' + k.anlam + '</span>' +
+        '  <span class="kcv-ucus" aria-hidden="true">' + ucus + '</span>' +
+        '</button>' +
+        '</div>';
+    };
+
+    var kartlar = '';
+    for (var c = 0; c < KC_VEZIN_TABLO.length; c++) kartlar += kartHtml(KC_VEZIN_TABLO[c], c);
 
     var per = document.createElement('div');
     per.className = 'kcv-perde';
@@ -724,15 +731,101 @@ function kcVezinPopKur() {
         '  <div class="kcv-basrol">' +
         '    <span class="kcv-basrol-ar" dir="rtl">أَشْهَرُ الْأَوْزَانِ</span>' +
         '    <span class="kcv-basrol-tr">En Çok Kullanılan Vezinler</span>' +
-        '    <span class="kcv-basrol-not">Altın harfler ZÂİDDİR: kökte yoktur, vezinden iner.</span>' +
+        '    <span class="kcv-basrol-not">Kırmızı harfler ZÂİDDİR: kökte yoktur, vezinden gelir — bir vezne dokun, harfler yerine insin.</span>' +
         '  </div>' +
-        '  <div class="kcv-tablolar">' + tablolar + '</div>' +
+        '  <div class="kcv-govde">' + kartlar + '</div>' +
         '</div>';
     document.body.appendChild(per);
 
     document.getElementById('kcVpKapat').addEventListener('click', kcVezinPopKapat);
+    /* Perdenin boşluğu → pencereyi kapat. Pencerenin boşluğu → yalnız
+       büyüyen kartı küçült (tablo açık kalsın). */
     per.addEventListener('click', function (e) { if (e.target === per) kcVezinPopKapat(); });
+    var pen = per.querySelector('.kcv-pencere');
+    if (pen) pen.addEventListener('click', function (e) {
+        var k = kcvKartBul(e.target);
+        if (k) { kcvKartAc(k); return; }
+        if (per.querySelector('.kcv-kart.buyuk')) kcvKucult(per);
+    });
     KC_VP_KURULU = true;
+}
+
+/* Tıklanan düğümden yukarı çıkarak kartı bulur (closest'siz, ES5 güvenli). */
+function kcvKartBul(dugum) {
+    while (dugum && dugum.nodeType === 1) {
+        if (dugum.className && ('' + dugum.className).indexOf('kcv-kart') >= 0) return dugum;
+        dugum = dugum.parentNode;
+    }
+    return null;
+}
+
+/* Bir vezne dokunuldu: kartın konteynırı büyür, sonra animasyon BİR KEZ oynar. */
+function kcvKartAc(kart) {
+    var per = document.getElementById('kcVezinPop');
+    if (!per || !kart) return;
+    var pen = per.querySelector('.kcv-pencere');
+    var eski = per.querySelector('.kcv-kart.buyuk');
+    if (eski && eski !== kart) { eski.classList.remove('buyuk'); eski.classList.remove('oynat'); }
+    kcSes();
+    clearTimeout(KC_VP_ZAM);
+
+    if (!kart.classList.contains('buyuk')) {
+        kart.classList.add('buyuk');
+        if (pen) pen.classList.add('odak');
+        /* Büyüme geçişi bitmeden ölçüm alınırsa harfler eski yerine uçar;
+           onun için uçuş, kart son boyutuna oturduktan sonra başlatılır. */
+        KC_VP_ZAM = setTimeout(function () { kcvUcur(kart); }, 360);
+    } else {
+        kcvUcur(kart);              /* büyük karta yeniden dokunmak = tekrar oynat */
+    }
+}
+
+/* Büyüyen kartı ızgaradaki yerine geri gönderir. */
+function kcvKucult(per) {
+    per = per || document.getElementById('kcVezinPop');
+    if (!per) return;
+    clearTimeout(KC_VP_ZAM);
+    var b = per.querySelectorAll('.kcv-kart.buyuk');
+    for (var i = 0; i < b.length; i++) { b[i].classList.remove('buyuk'); b[i].classList.remove('oynat'); }
+    var pen = per.querySelector('.kcv-pencere');
+    if (pen) pen.classList.remove('odak');
+}
+
+/* UÇUŞ ÖLÇÜMÜ — işin özü.
+   Zâid harf düz aşağı düşmez: vezindeki yerinden kopar ve KELİMEDE
+   duracağı noktaya gider. Kelime satırı o an saydamdır ama yerleşimi
+   yapılmıştır, dolayısıyla hedef harfin kutusu ölçülebilir.
+   Kaynak merkezi → uçan harfin left/top'u, iki merkez farkı → --dx/--dy. */
+function kcvUcur(kart) {
+    if (!kart) return;
+    var ucus = kart.querySelector('.kcv-ucus');
+    if (!ucus) return;
+    var vz  = kart.querySelectorAll('.kcv-vezin .kcv-z');
+    var kz  = kart.querySelectorAll('.kcv-kelime .kcv-z');
+    var dus = ucus.querySelectorAll('.kcv-dus');
+    var kr  = kart.getBoundingClientRect();
+    var n = Math.min(vz.length, kz.length, dus.length), i;
+
+    for (i = 0; i < n; i++) {
+        var a = vz[i].getBoundingClientRect();      /* kaynak: vezindeki harf */
+        var h = kz[i].getBoundingClientRect();      /* hedef : kelimedeki yeri */
+        var d = dus[i];
+        d.style.left = (a.left - kr.left + a.width  / 2).toFixed(1) + 'px';
+        d.style.top  = (a.top  - kr.top  + a.height / 2).toFixed(1) + 'px';
+        d.style.setProperty('--dx', ((h.left + h.width  / 2) - (a.left + a.width  / 2)).toFixed(1) + 'px');
+        d.style.setProperty('--dy', ((h.top  + h.height / 2) - (a.top  + a.height / 2)).toFixed(1) + 'px');
+        d.style.setProperty('--gec', (i * .42).toFixed(2) + 's');
+        vz[i].style.setProperty('--gec', (i * .42).toFixed(2) + 's');
+    }
+    /* t1: son harf yerine oturduğu an (kök çekilir, kelime belirir)
+       t2: Arapça bittikten sonra Türkçesi çıkar */
+    var t1 = (n ? (n - 1) * .42 : 0) + 1.22;
+    kart.style.setProperty('--t1', t1.toFixed(2) + 's');
+    kart.style.setProperty('--t2', (t1 + .55).toFixed(2) + 's');
+
+    kart.classList.remove('oynat');
+    void kart.offsetWidth;                          /* akışı sıfırla */
+    kart.classList.add('oynat');
 }
 
 function kcVezinPopAcik() {
@@ -745,8 +838,9 @@ function kcVezinPopAc() {
     var p = document.getElementById('kcVezinPop');
     if (!p) return;
     kcSes();
+    kcvKucult(p);
     p.classList.add('acik');
-    /* animasyonlar baştan başlasın: sınıfı söküp takmak akışı sıfırlar */
+    /* kart giriş animasyonu baştan oynasın */
     var g = p.querySelectorAll('.kcv-govde');
     for (var i = 0; i < g.length; i++) { g[i].style.animation = 'none'; void g[i].offsetWidth; g[i].style.animation = ''; }
     var k = document.getElementById('kcVpKapat');
@@ -756,6 +850,7 @@ function kcVezinPopAc() {
 function kcVezinPopKapat() {
     var p = document.getElementById('kcVezinPop');
     if (!p) return;
+    kcvKucult(p);
     p.classList.remove('acik');
     var kutu = document.getElementById('kcVezinKutu');
     if (kutu) kutu.focus();

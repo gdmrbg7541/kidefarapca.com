@@ -1045,6 +1045,33 @@ window.addEventListener("scroll", () => {
   _hkBekliyor = true;
   requestAnimationFrame(_headerKaydirGuncelle);
 }, { passive: true });
+
+/* Soru havuzu (tam ekran) kendi kaydırma alanına sahip: liste aşağı kaydırılınca
+   havuz başlığı daralarak gizlenir, yukarı kaydırılınca geri açılır. */
+function _havuzBaslikKaydir(ov){
+  const liste = ov.querySelector("#soruSecListe");
+  const bas   = ov.querySelector(".biy-soru-sec-bas");
+  if (!liste || !bas) return;
+  // Başlık akıştan çıkarıldığı için listeye onun yüksekliği kadar üst boşluk ver.
+  const payVer = () => { liste.style.paddingTop = Math.round(bas.getBoundingClientRect().height) + "px"; };
+  payVer();
+  if (window.ResizeObserver){ try { new ResizeObserver(payVer).observe(bas); } catch(e){} }
+  let sonY = 0, bekliyor = false;
+  const guncelle = () => {
+    bekliyor = false;
+    const y = liste.scrollTop, fark = y - sonY;
+    if (y <= 4){ bas.classList.remove("biy-header--gizli"); sonY = y; return; }
+    if (Math.abs(fark) < 6){ sonY = y; return; }
+    if (fark > 0) bas.classList.add("biy-header--gizli");
+    else bas.classList.remove("biy-header--gizli");
+    sonY = y;
+  };
+  liste.addEventListener("scroll", () => {
+    if (bekliyor) return;
+    bekliyor = true;
+    requestAnimationFrame(guncelle);
+  }, { passive: true });
+}
 function kacis(t){ const d = document.createElement("div"); d.textContent = t == null ? "" : String(t); return d.innerHTML; }
 function rastgeleKod(uzunluk){
   const harf = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -1444,6 +1471,7 @@ const BIY = {
       '</div>';
     document.body.appendChild(ov);
     ov.addEventListener("click", e => { if (e.target === ov) BIY.soruSecKapat(); });
+    _havuzBaslikKaydir(ov);
     BIY._soruSecRender();
   },
   soruSecAra(v){ state.soruSecArama = (v||"").toLowerCase(); BIY._soruSecRender(); },
