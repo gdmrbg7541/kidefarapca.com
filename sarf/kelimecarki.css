@@ -248,18 +248,20 @@
     gap: var(--kc-g); align-items: flex-end; padding: 0 2px;
 }
 .kc-tekerler.kc-rtl { flex-direction: row-reverse; }   /* Arapça: 1. teker sağ uçta */
-/* HİZA PAYI: Arapça şeridin SOLUNA (10. tekerin dış yanına), Türkçe
-   şeridin SAĞINA bir sütunluk boşluk eklenir. İki şerit de 11 sütunluk
-   olup ortalanınca, sağdan sayılan 4-6-8 ile soldan sayılan 4-6-8 aynı
-   düşey sütunlara denk gelir: kökler HİZALIDIR.
+/* HİZA PAYI: Arapça şeridin SOLUNA (son tekerin dış yanına), Türkçe
+   şeridin SAĞINA bir sütunluk boşluk eklenir. İki şerit de N+1 sütunluk
+   olup ortalanınca, sağdan sayılan kök tekerleri ile soldan sayılanlar
+   aynı düşey sütunlara denk gelir: kökler HİZALIDIR.
+   TEKER SAYISI (N) KÖKE GÖRE DEĞİŞİR — bu yüzden pay, sabit bir poz
+   numarasına değil SON tekere (.kc-son) bağlanır.
    SÜTUN MODELİ (genişlikler artık değişken): j. sütunda ÜSTTE Arapça
-   (12-j). poz, ALTTA Türkçe j. poz durur — Arapça şerit ters yönde
-   dizildiği için. 1. sütunun üstü ve 11. sütunun altı hiza payıdır.
+   (N-j). poz, ALTTA Türkçe j. poz durur — Arapça şerit ters yönde
+   dizildiği için. İlk sütunun üstü ve son sütunun altı hiza payıdır.
    Bir sütunun eni iki taraftaki harflerin GENİŞ OLANINA göre belirlenir;
    böylece geniş bir Arapça kök harfinin ALTINDAKİ Türkçe kutu da aynı
    enle büyür. Payların eni de sütun eniyle aynıdır (--kc-pay). */
-.kc-tekerler.kc-rtl .kc-teker[data-poz="10"] { margin-left: calc(var(--kc-pay, var(--kc-w)) + var(--kc-g)); }
-.kc-tekerler:not(.kc-rtl) .kc-teker[data-poz="10"] { margin-right: calc(var(--kc-pay, var(--kc-w)) + var(--kc-g)); }
+.kc-tekerler.kc-rtl .kc-teker.kc-son { margin-left: calc(var(--kc-pay, var(--kc-w)) + var(--kc-g)); }
+.kc-tekerler:not(.kc-rtl) .kc-teker.kc-son { margin-right: calc(var(--kc-pay, var(--kc-w)) + var(--kc-g)); }
 /* Teker eni/boyu ARTIK DEĞİŞKENDİR: kelimecarki.js her adımda sütunu
    ölçüp inline width/height yazar (dolu sütun harf kadar geniş, boş
    sütun dar). Aşağıdaki sabit ölçüler yalnız JS çalışmadan önceki
@@ -313,6 +315,25 @@
     text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
 }
 .kc-teker.kok .kc-harf { color: #1b2430; }
+/* ÇİFT HARFLİ KUTU: tek Arap harfine iki Türkçe harf düştüğünde
+   (şedde "rr"/"mm", zâid ت + yardımcı ünlü "ti"/"te") ikisi TEK
+   tekerde durur — Arapçada da tek harf olduğu için. İki harf sığsın
+   diye punto --kc-cift oranıyla küçülür; aynı oran kelimecarki.js'te
+   sütun eni ölçülürken de kullanılır (KC_CIFT_ORAN), yoksa sütun
+   boşuna genişler. Harfler birbirine hafif yaklaştırılır ki tek bir
+   ses gibi okunsunlar. */
+.kc-harf.kc-cift {
+    font-size: calc(var(--kc-punto, 6rem) * var(--kc-cift, .58));
+    letter-spacing: -.02em;
+}
+/* SERTLEŞEN KÖK HARFİ: kök yerli yerindedir ama Türkçede sesi
+   değişmiştir (كتاب'ın be'si p okunur, مقدار'ın dâl'ı t). Harf MOR
+   yanar — kırmızı ZÂİD harflere, siyah da değişmemiş kök harfine
+   ayrılmıştır; üç renk üç ayrı olayı anlatır. */
+.kc-teker.kok.kc-sert .kc-harf {
+    color: #7C3AED;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+}
 /* GİZLİ ÖLÇÜ KALIBI: harflerin gerçek enini --kc-hb puntosunda ölçer.
    Mutlak konumlu ve görünmezdir; sayfa akışında hiç yer kaplamaz. */
 .kc-olcu {
@@ -322,6 +343,44 @@
 }
 /* boş teker: sönük yedek rulo */
 .kc-teker.kc-bos { opacity: .3; filter: saturate(.5); }
+
+/* ---------------- BİRLEŞİK OKUMA KARESİ ----------------
+   Kelimenin hem Arapçası hem Türkçesi türedikten sonra çark bir an
+   durur ve boşluklar kapanır: öğrenci harf harf dizilmiş kelimeyi bu
+   kez BÜTÜN hâliyle görür. Kutu enlerini kelimecarki.js sıfırlar
+   (bkz. kcSutunOlc'un "birlesik" dalı); burada yalnız kutular arası
+   nefes ve kutu kenarları kaldırılır ki iki harf arasında çizgi
+   kalmasın, bağlı Arapça biçimler gerçekten birleşsin.
+   Genişlik geçişi .kc-teker'in transition'ında zaten var: boşluklar
+   ANİDEN değil, akarak kapanır. Bir sonraki ileri/geri basışında
+   .kc-birlesik kalkar, hizalı kare geri gelir. */
+.kc-kitap.kc-birlesik { --kc-g: 0px; }
+.kc-kitap.kc-birlesik .kc-teker {
+    /* harf kutusuna tam sığdığı için kırpılmasın: uçlardaki kaşide
+       ve bağlantı kuyrukları görünür kalsın */
+    overflow: visible;
+    border-radius: 0;
+    /* Yan kenarlıklar KALKAR (renk değil, EN olarak): box-sizing
+       border-box olduğu için 1px'lik kenar, eni 0 yazılmış gözü bile
+       2px genişletiyordu — yedi boş gözde bu 14px'lik hayalet boşluk
+       demek. Sıfırlanınca harfler gerçekten yan yana gelir. */
+    border-left-width: 0; border-right-width: 0;
+    box-shadow: inset 0 12px 16px -10px rgba(96, 68, 30, .5), inset 0 -12px 16px -10px rgba(96, 68, 30, .5);
+}
+.kc-kitap.kc-birlesik .kc-teker::after { opacity: 0; }   /* yan uç gölgeleri: kelimeyi bölerdi */
+/* Birleşik karede kök tekerinin koyu ahşabı da açılır: yan yana gelen
+   koyu/açık gözler kelimeyi dilim dilim gösteriyordu. Kök ile zâid
+   ayrımı bu karede zaten HARF RENGİNDEN okunuyor (siyah = kök,
+   kırmızı = zâid, mor = sesi sertleşen kök), o yüzden zemin tek parça
+   kalabilir; göz kelimeyi bölünmemiş görür. Hizalı kareye dönüldüğünde
+   koyu ahşap geri gelir. */
+.kc-kitap.kc-birlesik .kc-teker.kok {
+    background: linear-gradient(180deg, #b7a37e 0%, #dbc9a6 7%, #f4e9d2 22%, #fffaf0 50%, #f4e9d2 78%, #dbc9a6 93%, #b7a37e 100%);
+    border-color: rgba(120, 92, 48, .35);
+}
+.kc-kitap.kc-birlesik .kc-teker.kc-bos {
+    opacity: 0; border-width: 0; box-shadow: none;
+}
 /* zemin: yol şeridi DEĞİL — kitaba yakışan sade ahşap raf çubuğu
    (kesik çizgili asfalt görünümü kaldırıldı) */
 .kc-zemin {
@@ -481,19 +540,92 @@
     font-size: clamp(.62rem, 1.2vw, .78rem); color: var(--kcv-sis); }
 .kcv-basrol-not::before { content: '●'; color: var(--kcv-kirmizi); margin-inline-end: 6px; font-size: .7em; }
 
+/* ---------------- SUNUM KUMANDASI ----------------
+   Başlığın altında durur: ileri/geri tek tek yürütür, ortadaki tuş
+   bütün vezinleri sırayla oynatır. Sunum kumandasının PageUp/PageDown
+   tuşları da aynı işi yapar (JS'te bağlıdır). */
+/* KUMANDA ÇUBUĞU — bir vezin büyüyünce kart position:fixed olup
+   z-index 12'ye, karartma da 10'a çıkar. Çubuk normal akışta kaldığı
+   için ikisinin de ALTINDA kalır ve tıklanamaz hâle gelirdi; oysa
+   öğretmen tam da vezin AÇIKKEN ileri basacak. Bu yüzden çubuğu
+   kendi katmanına (16) alıyoruz: karartmanın da, büyüyen kartın da
+   üstünde durur, uzaktan kumanda gibi hep erişilebilir kalır. */
+.kcv-kumanda {
+    position: relative; z-index: 16;
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(6px, .9vw, 12px); margin-top: clamp(5px, 1vh, 10px);
+    padding: 4px clamp(6px, .8vw, 12px); border-radius: 999px;
+    width: max-content; margin-inline: auto;
+    background: rgba(255, 255, 255, .82);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: bottom .28s ease, box-shadow .28s ease;
+}
+/* KART BÜYÜYÜNCE KUMANDA EKRANIN ALTINA İNER.
+   Çubuk, başlığın hemen altındaki akışta duruyordu; kart büyüyüp
+   ekranın ortasına oturunca (position:fixed) çubuk daha üst katmanda
+   (16 > 12) olduğu için tam da kartın ADININ üstüne biniyor, vezin
+   başlığı görünmez oluyordu. Kart büyükken çubuğu ekranın en altına
+   sabitliyoruz: hem başlık açığa çıkıyor, hem de tuşlar akıllı
+   tahtada elin doğal yerinde — aşağıda — kalıyor. */
+.kcv-pencere.odak .kcv-kumanda {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: clamp(6px, 1.4vh, 16px); margin-top: 0;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 10px 30px rgba(44, 62, 80, .22);
+}
+.kcv-tus {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    min-width: 44px; height: clamp(34px, 4.4vh, 44px); padding: 0 clamp(10px, 1.2vw, 16px);
+    border: 1px solid rgba(44, 62, 80, .12); border-radius: 999px;
+    background: #fff; color: var(--kcv-koyu); cursor: pointer;
+    font: inherit; font-weight: 700; font-size: clamp(.74rem, 1.3vw, .95rem);
+    box-shadow: 0 3px 12px rgba(44, 62, 80, .10);
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .12s ease;
+}
+.kcv-tus:hover { border-color: var(--kcv-deniz); color: var(--kcv-deniz); }
+.kcv-tus:active { transform: scale(.95); }
+.kcv-tus:focus-visible { outline: 3px solid var(--kcv-deniz); outline-offset: 2px; }
+/* Simgeler artık SVG (bkz. kelimecarki.js → KC_SVG_*). Yazı tipine
+   bağlı olmadıkları için her tarayıcıda aynı boyda çıkarlar; yön de
+   çizimin içinde olduğundan eskiden gereken scaleX(-1) hilesi kalktı. */
+.kcv-tus .kcv-ikon { display: inline-flex; line-height: 0; }
+.kcv-svg {
+    width: clamp(17px, 2.1vh, 22px); height: clamp(17px, 2.1vh, 22px);
+    display: block; fill: currentColor;
+}
+.kcv-tus-oynat {
+    background: linear-gradient(180deg, var(--kcv-deniz), #12907a); color: #fff;
+    border-color: transparent; box-shadow: 0 5px 16px rgba(22, 160, 133, .30);
+}
+.kcv-tus-oynat:hover { color: #fff; border-color: transparent; filter: brightness(1.06); }
+.kcv-tus-oynat.acik {
+    background: linear-gradient(180deg, var(--kcv-amber2), var(--kcv-amber));
+    box-shadow: 0 5px 16px rgba(243, 156, 18, .32);
+}
+.kcv-sayac {
+    min-width: 52px; text-align: center; font-weight: 700;
+    font-size: clamp(.7rem, 1.2vw, .9rem); color: var(--kcv-sis); font-variant-numeric: tabular-nums;
+}
+
 /* ---------------- TEK ızgara: gruplama yok ---------------- */
 /* Izgara boyu boşluğu YUTAR: iki satır da kalan yüksekliği paylaşır,
    böylece akıllı tahtada kartlar ekranı doldurur, harfler uzaktan okunur. */
+/* SAĞDAN SOLA: Arapça okuma yönü. İlk vezin (İsm-i Fâil) SAĞ ÜSTTE
+   başlar, satır sola doğru akar — tahtadaki Arapça metinle aynı yön.
+   Yalnız ızgaranın DİZİLİŞİ ters; kartın içi ltr'ye geri döner ki
+   Türkçe satırlar ve sayılar doğru yazılsın. */
 .kcv-govde {
     flex: 1 1 auto; min-height: 0; align-content: stretch;
     display: grid; grid-template-columns: repeat(5, 1fr);
     grid-auto-rows: 1fr;
     gap: clamp(8px, 1.2vw, 16px);
+    direction: rtl;
 }
 /* YUVA: ızgara gözünü kart büyüyünce de dolu tutar. Kart .buyuk olunca
    akıştan çıkar (position: fixed); yuva yerinde kaldığı için ızgara
    yeniden dizilmez, arkadaki tablo oynamaz. */
-.kcv-yuva { display: flex; min-height: 0; min-width: 0; }
+.kcv-yuva { display: flex; min-height: 0; min-width: 0; direction: ltr; }
 
 /* ---------------- tek vezin kartı ---------------- */
 .kcv-kart {
