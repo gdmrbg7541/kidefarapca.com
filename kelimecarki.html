@@ -25,8 +25,38 @@
      tasarım tek kaynaktan gelir.
      ?v=NN: tarayıcı eski kopyayı önbellekten sunmasın diye sürüm etiketi. -->
 <link rel="stylesheet" href="sarf/sarf.css?v=122">
-<link rel="stylesheet" href="sarf/kelimecarki.css?v=24">
+<link rel="stylesheet" href="sarf/kelimecarki.css?v=29">
 <link rel="stylesheet" href="arakom.css?v=1">
+
+<script>
+/* ===== GÖRÜNÜM SEÇİMİ — İLK BOYAMADAN ÖNCE =====
+   Sayfanın iki görünümü var: ŞIK (tam tasarım) ve SADE (güçsüz
+   cihazlar için yalın çizim; gölge, gradient damar ve döngülü
+   animasyon yok). Seçim <html> üzerindeki "kc-sade" sınıfıyla
+   taşınır ve localStorage'da saklanır.
+
+   NİÇİN BURADA, <head> İÇİNDE? kelimecarki.js sayfanın sonunda
+   yükleniyor; sınıfı orada eklemek ilk kareden sonraya kalırdı ve
+   ekran bir an şık görünümü çizip sonra sadeye atlardı. Bu üç satır
+   ilk boyamadan önce çalışır, zıplama olmaz.
+
+   HİÇ SEÇİM YOKSA: cihaz zayıf görünüyorsa (çekirdek ≤ 4 ya da
+   bellek ≤ 4 GB) veya kullanıcı işletim sisteminde "hareketi azalt"
+   demişse SADE, aksi hâlde ŞIK. Otomatik karar SAKLANMAZ; kalıcı
+   olan yalnız kullanıcının anahtardan yaptığı seçimdir. */
+(function () {
+  try {
+    var m = localStorage.getItem('kidefKcGorunum');
+    if (m !== 'sade' && m !== 'sik') {
+      var cek = navigator.hardwareConcurrency || 8;
+      var bel = navigator.deviceMemory || 8;
+      var az = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      m = (cek <= 4 || bel <= 4 || az) ? 'sade' : 'sik';
+    }
+    if (m === 'sade') document.documentElement.className += ' kc-sade';
+  } catch (e) { }
+})();
+</script>
 </head>
 <body>
 
@@ -72,7 +102,7 @@ window.App = window.App || {
 <script src="sistem/gorevkopru.js?v=7"></script>
 <script>/* Konu anlatimi/simulasyon sayfasidir: puan degil SURE takip edilir. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
-<script src="sarf/kelimecarki.js?v=23"></script>
+<script src="sarf/kelimecarki.js?v=29"></script>
 <script src="sistem/geri.js"></script>
 <script>
 /* Sayfa açılır açılmaz çarkı kur ve ilk kökü seç. kelimecarki.js kendi

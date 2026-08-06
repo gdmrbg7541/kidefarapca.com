@@ -266,35 +266,49 @@
    ölçüp inline width/height yazar (dolu sütun harf kadar geniş, boş
    sütun dar). Aşağıdaki sabit ölçüler yalnız JS çalışmadan önceki
    ilk karedir. Genişlik değişimi yumuşasın diye geçişe eklendi. */
+/* AHŞAP KAPLAMA ::before'DADIR, tekerin kendi background'ında DEĞİL.
+   Sebebi kaynaşmadır: harfler birleşik kelimedeki yerlerine yürürken
+   kutuların erimesi gerekir, ama iki gradient arasında geçiş yapılamaz
+   — bir sözde-katmanın opacity'si ise pürüzsüz erir. Kenarlık ve gölge
+   tekerde kalır; ikisi de saydama doğru animasyon yapabilir. */
 .kc-teker {
     position: relative; flex: 0 0 auto; width: var(--kc-w); aspect-ratio: 3 / 4;
     overflow: hidden; border-radius: 12px;
-    background: linear-gradient(180deg, #b7a37e 0%, #dbc9a6 7%, #f4e9d2 22%, #fffaf0 50%, #f4e9d2 78%, #dbc9a6 93%, #b7a37e 100%);
+    background: transparent;
     border: 1px solid rgba(120, 92, 48, .35);
     box-shadow: inset 0 12px 16px -10px rgba(96, 68, 30, .5), inset 0 -12px 16px -10px rgba(96, 68, 30, .5),
         0 4px 9px rgba(96, 68, 30, .24);
     transition: opacity .3s ease, filter .3s ease, transform .3s ease,
                 width .3s ease, height .3s ease;
 }
-/* kök silindiri: cilalı koyu bal ahşap (boy EK tekerlerle aynı;
-   ayrım yalnız renkte ve harf renginde) */
-.kc-teker.kok {
-    background: linear-gradient(180deg, #9b7c4e 0%, #c2a06c 7%, #e9cf9f 22%, #f9e9c6 50%, #e9cf9f 78%, #c2a06c 93%, #9b7c4e 100%);
-    border-color: rgba(96, 66, 24, .5);
-}
-/* yüzey damarı: dönerken harfle AYNI yönde akar (yapışıklık hissi) */
+/* yüzey damarı (üstte) + ahşap silindir (altta). Damar dönerken harfle
+   AYNI yönde akar (yapışıklık hissi); akan YALNIZ damardır, alttaki
+   ahşap gradient yerinde durur — bu yüzden konum katman katman yazılır. */
 .kc-teker::before {
     content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(180deg, rgba(110, 80, 40, .08) 0 3px, transparent 3px 11px);
+    background:
+        repeating-linear-gradient(180deg, rgba(110, 80, 40, .08) 0 3px, transparent 3px 11px),
+        linear-gradient(180deg, #b7a37e 0%, #dbc9a6 7%, #f4e9d2 22%, #fffaf0 50%, #f4e9d2 78%, #dbc9a6 93%, #b7a37e 100%);
+    background-position: 0 0, 0 0;
+    transition: opacity .45s ease .25s;
+}
+/* kök silindiri: cilalı koyu bal ahşap (boy EK tekerlerle aynı;
+   ayrım yalnız renkte ve harf renginde) */
+.kc-teker.kok { border-color: rgba(96, 66, 24, .5); }
+.kc-teker.kok::before {
+    background:
+        repeating-linear-gradient(180deg, rgba(110, 80, 40, .08) 0 3px, transparent 3px 11px),
+        linear-gradient(180deg, #9b7c4e 0%, #c2a06c 7%, #e9cf9f 22%, #f9e9c6 50%, #e9cf9f 78%, #c2a06c 93%, #9b7c4e 100%);
 }
 /* silindirin düz yan uçları hafif gölgeli (derinlik) */
 .kc-teker::after {
     content: ''; position: absolute; inset: 0; pointer-events: none;
     background: linear-gradient(90deg, rgba(96, 68, 30, .15), transparent 18%, transparent 82%, rgba(96, 68, 30, .15));
+    transition: opacity .45s ease .25s;
 }
 .kc-teker.kc-donuyor::before { animation: kcYuzeyAk .5s linear infinite; }
 .kc-teker.kc-ters.kc-donuyor::before { animation-direction: reverse; }
-@keyframes kcYuzeyAk { to { background-position-y: -22px; } }
+@keyframes kcYuzeyAk { to { background-position: 0 -22px, 0 0; } }
 .kc-teker.kc-donuyor { transform: translateY(1px); }
 /* temas yüzü: kutu YOK — harf doğrudan malzemenin üstünde, silindire
    yapışık döner (perspective altında rotateX ile kıvrılır). scaleY:
@@ -362,21 +376,31 @@
    Bir sonraki ileri/geri basışında .kc-birlesik kalkar, tekerler geri
    gelir ve çark kaldığı yerden döner. */
 .kc-yol { position: relative; }
+/* SÜRE: birleşme artık DOKUNUŞLA başladığı için ağırdan alınır.
+   Öğretmen "şimdi bakın" dedikten sonra tekerlerin sönüşü ve
+   madalyonun süzülüşü sınıfın gözüyle takip edilebilecek kadar
+   yavaştır (yaklaşık bir saniye). */
 .kc-soz {
     position: absolute; left: 0; right: 0; top: 0; bottom: 6px;
     display: flex; align-items: center; justify-content: center;
     pointer-events: none; opacity: 0; visibility: hidden;
-    transition: opacity .34s ease, visibility .34s;
+    /* ÇÖZÜLÜŞ (sınıf kalkarken): söz katmanı çabuk çekilir ki harfler
+       geri yürürken ortada iki kelime birden durmasın. */
+    transition: opacity .3s ease, visibility .3s;
 }
 .kc-soz.kc-rtl { direction: rtl; }
-.kc-kitap.kc-birlesik .kc-soz { opacity: 1; visibility: visible; }
-/* Geliş hareketi bu katmanda (aşağıdan süzülerek yerine oturur) */
-.kc-soz-sar {
-    display: inline-flex; align-items: center;
-    transform: translateY(10px); opacity: 0;
-    transition: transform .42s cubic-bezier(.2, .9, .3, 1.2), opacity .34s ease;
+/* KAYNAŞMA (sınıf gelirken): söz katmanı GEÇ belirir. Önce harfler
+   yerlerine yürür (.85s), sonra çapraz geçiş olur. Böylece hiçbir anda
+   "yeni bir şey açılıyor" izlenimi doğmaz; ekranda hep aynı harfler
+   vardır, yalnız yerleri ve bağlanışları değişir. */
+.kc-kitap.kc-birlesik .kc-soz {
+    opacity: 1; visibility: visible;
+    transition: opacity .42s ease .66s, visibility 0s;
 }
-.kc-kitap.kc-birlesik .kc-soz-sar { transform: none; opacity: 1; }
+/* Sarmalayıcıda ARTIK HAREKET YOK: aşağıdan süzülme kaldırıldı, çünkü
+   süzülen katman "açılan yeni bir pencere" gibi okunuyordu. Katman
+   olduğu yerde durur; hareketi harflerin kendisi yapar. */
+.kc-soz-sar { display: inline-flex; align-items: center; }
 /* Ölçek bu katmanda ve GEÇİŞSİZDİR: kelimecarki.js sığdırma oranını
    (--kc-soz-k) burada ölçüp yazar, animasyonun ara değerine takılmaz. */
 .kc-soz-olcek {
@@ -384,21 +408,20 @@
     display: inline-flex; align-items: center;
     transform: scale(var(--kc-soz-k, 1));
 }
-/* MADALYON: tekerin ahşap fildişi rengi, ama tamamen yuvarlak uçlu —
-   çarkın "yuvarlak" dilini kelimenin bütününe taşır. */
+/* KUTU YOK. Kelime zaten tekerlerin içinden çıkıp geliyor; altına
+   ayrıca bir madalyon/hap çizmek "harfler bir kutuya taşındı" demek
+   olurdu. Burada yalnız YAZI vardır: aynı yazı tipi, aynı punto, aynı
+   üç renk, sayfanın kendi fildişi zemini üstünde. */
 .kc-soz-ic {
     display: inline-block; white-space: nowrap; direction: inherit;
     font-family: var(--font-ar); font-size: var(--kc-punto, 6rem); line-height: 1.26;
-    padding: .04em .36em .1em; border-radius: 999px;
-    background: linear-gradient(180deg, #fffdf6 0%, #fdf6e6 44%, #f2e4c6 100%);
-    border: 2px solid rgba(150, 116, 60, .32);
-    box-shadow: 0 16px 34px rgba(96, 68, 30, .26),
-                inset 0 2px 0 rgba(255, 255, 255, .9),
-                inset 0 -7px 16px rgba(150, 116, 60, .16);
+    padding: .04em .12em .1em;
+    background: none; border: 0; box-shadow: none;
 }
 /* Üç renk tekerlerdekiyle birebir aynı: zâid kırmızı, kök siyah,
-   sesi sertleşen kök mor. */
-.kc-sz { color: #d63031; }
+   sesi sertleşen kök mor. Kabartma da tekerdeki harfle aynı olsun ki
+   çapraz geçişte gölge oynaması fark edilmesin. */
+.kc-sz { color: #d63031; text-shadow: 0 1px 0 rgba(255, 255, 255, .5); }
 .kc-sz.kok { color: #1b2430; }
 .kc-sz.kok.sert { color: #7C3AED; }
 /* BALON: kelime birleşince yanında zıplayarak beliren anlam balonu.
@@ -418,11 +441,14 @@
     box-shadow: 0 10px 24px rgba(90, 58, 28, .22);
     opacity: 0; transform: translateY(14px) scale(.7);
 }
-.kc-balon b { font-weight: 400; font-size: 1.75em; line-height: 1; }
+/* EMOJİ: balonun asıl konuşan parçası odur — sınıfın arkasından da
+   görünsün diye yazının üç katı büyüklükte. Kendi satırında değil,
+   yazının solunda durur; balonun yüksekliğini emoji belirler. */
+.kc-balon b { font-weight: 400; font-size: 3em; line-height: .95; }
 .kc-balon i { font-style: normal; }
 .kc-kitap.kc-birlesik .kc-balon {
-    animation: kcBalonGel .52s cubic-bezier(.2, .9, .3, 1.5) .28s forwards,
-               kcBalonSuz 3.2s ease-in-out 1.1s infinite;
+    animation: kcBalonGel .9s cubic-bezier(.2, .9, .3, 1.5) .85s forwards,
+               kcBalonSuz 3.2s ease-in-out 1.9s infinite;
 }
 @keyframes kcBalonGel {
     0%   { opacity: 0; transform: translateY(14px) scale(.7); }
@@ -433,10 +459,48 @@
     0%, 100% { opacity: 1; transform: translateY(0) scale(1); }
     50%      { opacity: 1; transform: translateY(-5px) scale(1.01); }
 }
-/* Madalyon öne çıkarken tekerler geri çekilir: aynı yerde iki katman,
-   göz kelimeyi bölünmemiş görür. */
-.kc-tekerler { transition: opacity .3s ease, transform .34s ease; }
-.kc-kitap.kc-birlesik .kc-tekerler { opacity: 0; transform: scale(.96); }
+/* ---------------- KAYNAŞMA: HARFLERİN KENDİSİ YÜRÜR ----------------
+   Şerit bir bütün olarak SÖNMEZ ve KÜÇÜLMEZ (eski davranış buydu ve
+   "kelime kayboldu, yerine yeni bir pano açıldı" gibi duruyordu).
+   Artık her teker kendi harfini alıp birleşik kelimedeki yerine
+   taşır — konumları kelimecarki.js ölçüp inline transform olarak
+   yazar. Yol boyunca kutu kaplaması erir, geriye harfin kendisi kalır;
+   harfler yerlerine varınca teker yazısı sönüp söz katmanı yanar.
+   Göz tek bir olay görür: harfler birbirine yürüyüp kaynaştı.
+
+   .kc-kaynas SINIFI NİÇİN AYRI? Uzun geçiş süresi yalnız bu yolculuk
+   için gerekir; teker normalde 3 salisede dönen bir silindirdir.
+   Sınıf birleşmede takılır, çözülme yolu da bittikten sonra sökülür —
+   erken sökülürse harfler yerine yürümez, ZIPLAR. */
+.kc-kitap.kc-kaynas .kc-teker {
+    transition: transform .85s cubic-bezier(.32, .86, .28, 1),
+                opacity .45s ease, border-color .5s ease, box-shadow .5s ease,
+                filter .3s ease, width .3s ease, height .3s ease;
+}
+/* Kutu kaplaması erir: ahşap ve yan gölge saydamlaşır, kenarlık ve
+   dış gölge saydam renge iner (yapı aynı kalır ki animasyon edilebilsin). */
+.kc-kitap.kc-birlesik .kc-teker::before,
+.kc-kitap.kc-birlesik .kc-teker::after { opacity: 0; transition: opacity .5s ease; }
+.kc-kitap.kc-birlesik .kc-teker {
+    border-color: transparent;
+    box-shadow: inset 0 12px 16px -10px rgba(96, 68, 30, 0), inset 0 -12px 16px -10px rgba(96, 68, 30, 0),
+        0 4px 9px rgba(96, 68, 30, 0);
+}
+/* Kelimeye harfi düşmeyen boş tekerler yolculuğa katılmaz, silinir. */
+.kc-teker.kc-bosal { opacity: 0 !important; }
+/* Teker harfi yolun SONUNDA söner; söz katmanı da tam o anda yanar.
+   İki katman aynı yerde, aynı puntoda olduğu için geçiş göze
+   çarpmaz — harf "bağlandı" gibi görünür. Dönüşte önce harf geri
+   gelir (gecikmeli), söz katmanı çoktan çekilmiştir. */
+.kc-kitap .kc-harf { transition: opacity .35s ease .16s; }
+.kc-kitap.kc-birlesik .kc-harf { opacity: 0; transition: opacity .4s ease .62s; }
+
+/* ---------------- DOKUNUŞ İPUCU (KALDIRILDI) ----------------
+   Kaynaşma artık çarkın dördüncü evresi olduğu için "dokun · kelimeyi
+   birleştir / harflere dön" hapına gerek kalmadı: her kelimede sıra
+   kendiliğinden ona geliyor. Kitaba dokunma kısayolu duruyor, sadece
+   ekranda yazı yok — bu yüzden imleç işareti korundu. */
+.kc-kitap.kc-hazir { cursor: pointer; }
 /* zemin: yol şeridi DEĞİL — kitaba yakışan sade ahşap raf çubuğu
    (kesik çizgili asfalt görünümü kaldırıldı) */
 .kc-zemin {
@@ -521,14 +585,18 @@
     /* yukarı → SOL, aşağı → SAĞ */
     .kc-oklar .kc-ok svg { transform: rotate(-90deg); }
 
-    /* Söz madalyonu ve balon dar ekranda daha sıkı dursun */
-    .kc-soz-ic { padding: .04em .3em .09em; border-width: 1px; }
-    .kc-balon { margin-left: 6px; padding: .28em .6em .32em; gap: .35em; border-width: 1px; }
+    /* Kaynaşan kelime ve balon dar ekranda daha sıkı dursun. Emoji
+       telefonda da yazının belirgin biçimde üstünde kalır. */
+    .kc-soz-ic { padding: .04em .1em .09em; }
+    .kc-balon { margin-left: 6px; padding: .24em .55em .28em; gap: .3em; border-width: 1px; }
+    .kc-balon b { font-size: 2.5em; }
 }
 
-/* Hareket duyarlılığı: balon süzülmesin, madalyon kaymadan belirsin. */
+/* Hareket duyarlılığı: balon süzülmesin, harfler yürümeden yerine geçsin. */
 @media (prefers-reduced-motion: reduce) {
-    .kc-soz-sar { transition: opacity .2s ease; transform: none; }
+    .kc-kitap.kc-kaynas .kc-teker { transition: opacity .2s ease; }
+    .kc-kitap.kc-birlesik .kc-soz { transition: opacity .2s ease .1s, visibility 0s; }
+    .kc-kitap .kc-harf, .kc-kitap.kc-birlesik .kc-harf { transition: opacity .2s ease; }
     .kc-kitap.kc-birlesik .kc-balon { animation: none; opacity: 1; transform: none; }
 }
 
@@ -837,6 +905,24 @@
 .kcv-kart.buyuk .kcv-tr { margin-top: 4px; font-size: clamp(.9rem, min(2vw, 2.6vh), 1.6rem); }
 .kcv-kart.buyuk::before { height: 5px; left: 30%; right: 30%; }
 
+/* GERİ SAYIM ŞERİDİ — sunum akarken (oynat) büyüyen veznin üst kenarında
+   ince kırmızı bir çizgi 10 saniyede soldan sağa eriyip biter. Öğrenci de
+   öğretmen de sıradaki vezne ne kadar kaldığını tek bakışta görür.
+   İleri tuşuna basılırsa JS sınıfı söküp yeniden takar, çizgi baştan dolar. */
+.kcv-sure {
+    position: absolute; left: 8px; right: 8px; top: 7px; height: 5px;
+    border-radius: 999px; pointer-events: none;
+    background: linear-gradient(90deg, #ff8787, #d63031);
+    box-shadow: 0 1px 4px rgba(214, 48, 49, .35);
+    transform-origin: left center; transform: scaleX(1);
+    opacity: 0;
+}
+.kcv-kart.buyuk.sayac .kcv-sure {
+    opacity: 1;
+    animation: kcvErit var(--kcv-sure, 10s) linear forwards;
+}
+@keyframes kcvErit { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
 /* ---------------- TEK SEFERLİK AKIŞ (.oynat) ---------------- */
 /* Sıralama JS'ten gelen değişkenlerle kurulur; hiçbiri infinite değildir. */
 .kcv-kart.oynat .kcv-dus {
@@ -887,6 +973,7 @@
     .kcv-kart.buyuk { --kcv-ar: clamp(2.6rem, min(22vw, 11.5vh), 6.6rem);
         width: 94vw; height: 76vh; padding: 14px 12px; border-radius: 20px; }
     .kcv-tr { margin-top: 0; }
+    .kcv-sure { left: 6px; right: 6px; top: 5px; height: 4px; }
 }
 @media (max-width: 380px)  { .kcv-govde { grid-template-columns: 1fr; } }
 
@@ -904,3 +991,168 @@
     .kcv-kart.oynat .kcv-kok, .kcv-kart.oynat .kcv-kelime, .kcv-kart.oynat .kcv-tr { animation: none; }
     .kcv-pencere.odak::after { animation: none; }
 }
+
+/* ============================================================
+   GÖRÜNÜM ANAHTARI + SADE GÖRÜNÜM
+   ============================================================
+   Sayfanın İKİ görünümü vardır ve ikisi de kalıcıdır:
+
+     ŞIK  (öntanımlı)  — bugüne kadarki tasarım. Hiçbir şeyi eksilmedi:
+                         ahşap damarlı silindirler, iç/dış gölgeler,
+                         harflerde kabartma, dönerken kıvrılan harf,
+                         süzülen balon, buğulu pencere perdesi.
+
+     SADE (html.kc-sade) — AYNI DÜZEN, AYNI ÖLÇÜ, AYNI ÜÇ RENK. Yalnız
+                         PAHALI çizim işleri kapanır:
+                           · çok katmanlı gradient'ler → düz renk
+                           · box-shadow / text-shadow  → yok
+                           · filter / backdrop-filter  → yok
+                           · perspective + rotateX     → yok
+                           · döngülü (infinite) animasyonlar → yok
+                           · uzun geçişler kısaltılır (.85s → .22s)
+                         Ders akışı değişmez: kelime yine dört evrede
+                         türer, kökler yine hizada, harfler yine kocaman.
+
+   NEDEN GEREKLİ? Bu sayfada harfler 12rem'e (192px) kadar büyüyor ve
+   ekranda aynı anda 14-20 kutu var. Her kutuda iki katmanlı gradient +
+   üç gölge olunca eski tabletler ve bazı akıllı tahtalar her karede
+   yeniden boyamak zorunda kalıp takılıyor. Sade görünümde boyama
+   maliyeti düz renge iner, GPU'ya iş kalmaz.
+
+   Seçim <html> üzerindeki sınıfla taşınır; sayfanın <head>'inde ilk
+   boyamadan ÖNCE karar verilir (localStorage), böylece ekran zıplamaz.
+   ------------------------------------------------------------ */
+
+/* ---- anahtar: geri tuşunun tam karşısı (sağ üst) ---- */
+.kc-gorunum {
+    position: fixed; top: 16px; right: 16px; z-index: 500;
+    display: flex; gap: 2px; padding: 3px;
+    background: rgba(255, 255, 255, .92);
+    border: 2px solid #e3e8ef; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+}
+.kc-gr {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: 0; border-radius: 999px; cursor: pointer;
+    background: transparent; color: #7a8ca0;
+    padding: 5px clamp(8px, 1.2vw, 13px);
+    font-family: inherit; font-size: clamp(.68rem, 1.5vw, .84rem);
+    line-height: 1; letter-spacing: .2px;
+    transition: background .18s ease, color .18s ease;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.kc-gr svg { width: 1.05em; height: 1.05em; fill: currentColor; flex: 0 0 auto; }
+.kc-gr:hover { color: var(--secondary); }
+.kc-gr.secili { background: var(--secondary); color: #fff; }
+.kc-gr:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
+@media (min-width: 901px) {
+    .kc-gorunum { top: 24px; right: 24px; }
+}
+/* Telefonda yazılar kalkar, iki simge kalır — başlıkla çakışmasın. */
+@media (max-width: 560px) {
+    .kc-gr span { display: none; }
+    .kc-gr { padding: 6px 9px; }
+}
+
+/* ---- SADE: arka plan süsleri ---- */
+html.kc-sade .floating-emojis { display: none; }
+
+/* ---- SADE: kitap ve sayfalar ---- */
+html.kc-sade .kc-kitap {
+    background: #8b5e3c;
+    box-shadow: none;
+}
+html.kc-sade .kc-sayfalar { background: #fbf6ea; box-shadow: none; }
+html.kc-sade .kc-arapca { box-shadow: none; }
+html.kc-sade .kc-turkce { box-shadow: none; border-top: 1px solid rgba(120, 84, 44, .3); }
+html.kc-sade .kc-zemin { background: #b08f60; box-shadow: none; }
+
+/* ---- SADE: tekerler ---- */
+/* Damar katmanı düz renge iner (gradient yok, akış animasyonu yok).
+   ::before yerinde bırakılır çünkü kaynaşmada opacity ile eritiliyor. */
+html.kc-sade .kc-teker {
+    box-shadow: none;
+    background: transparent;
+    border-color: rgba(120, 92, 48, .45);
+}
+html.kc-sade .kc-teker::before {
+    background: #f7efdc;
+    animation: none !important;
+}
+html.kc-sade .kc-teker.kok::before { background: #efdcb4; }
+html.kc-sade .kc-teker::after { display: none; }
+html.kc-sade .kc-teker.kc-donuyor { transform: none; }
+html.kc-sade .kc-teker.kc-bos { opacity: .35; filter: none; }
+/* Harf: kabartma yok, kıvrılma yok, GPU katmanı istenmiyor. */
+html.kc-sade .kc-yuz { perspective: none; }
+html.kc-sade .kc-harf { text-shadow: none; will-change: auto; }
+html.kc-sade .kc-teker.kok.kc-sert .kc-harf { text-shadow: none; }
+html.kc-sade .kc-sz { text-shadow: none; }
+
+/* ---- SADE: kaynaşma daha kısa sürer ---- */
+/* Harfler yine yürür (ders için anlamlı hareket odur) ama yol .85s
+   yerine .28s'de biter; kutu erimesi ve söz geçişi de kısalır. */
+html.kc-sade .kc-kitap.kc-kaynas .kc-teker {
+    transition: transform .28s ease, opacity .2s ease, width .2s ease, height .2s ease;
+}
+html.kc-sade .kc-kitap.kc-birlesik .kc-teker::before,
+html.kc-sade .kc-kitap.kc-birlesik .kc-teker::after { transition: opacity .2s ease; }
+html.kc-sade .kc-kitap.kc-birlesik .kc-teker { box-shadow: none; }
+html.kc-sade .kc-kitap .kc-harf { transition: opacity .18s ease .06s; }
+html.kc-sade .kc-kitap.kc-birlesik .kc-harf { transition: opacity .18s ease .24s; }
+html.kc-sade .kc-kitap.kc-birlesik .kc-soz { transition: opacity .22s ease .3s, visibility 0s; }
+html.kc-sade .kc-teker { transition: opacity .2s ease, width .2s ease, height .2s ease; }
+
+/* ---- SADE: balon süzülmez, bir kez belirir ---- */
+html.kc-sade .kc-kitap.kc-birlesik .kc-balon {
+    animation: none; opacity: 1; transform: none;
+    transition: opacity .2s ease .3s;
+}
+html.kc-sade .kc-balon { background: #fbfaff; box-shadow: none; }
+
+/* ---- SADE: üst satır, oklar, kök tuşları ---- */
+html.kc-sade .kc-kok { transition: border-color .15s ease; }
+html.kc-sade .kc-kok:hover { transform: none; }
+html.kc-sade .kc-kok.secili { box-shadow: none; background: #f6f0ff; }
+html.kc-sade .kc-vezinkutu { background: #1b2a3c; box-shadow: none; }
+html.kc-sade .kc-vezinkutu::before { display: none; }
+html.kc-sade .kc-vezinkutu b { text-shadow: none; }
+html.kc-sade .kc-vk-ipucu { animation: none; opacity: .7; }
+html.kc-sade .kc-oklar { box-shadow: none; }
+html.kc-sade .kc-ok { background: var(--secondary); box-shadow: none; transition: none; }
+html.kc-sade .kc-ok:hover { transform: none; box-shadow: none; }
+html.kc-sade .kc-gorunum { box-shadow: none; }
+
+/* ---- SADE: vezinler penceresi ---- */
+/* Buğu (backdrop-filter) en pahalı efekttir: tam ekran bir katmanın
+   arkasını her karede yeniden bulanıklaştırır. Sade'de düz zemin. */
+html.kc-sade .kcv-perde,
+html.kc-sade .kcv-pencere {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: #eef2f7;
+}
+/* DİKKAT: .kcv-perde kapalıyken opacity:0 + visibility:hidden'dır;
+   burada opacity'ye DOKUNULMAZ, yalnız geçiş kısaltılır. */
+html.kc-sade .kcv-perde { transition: opacity .14s ease, visibility .14s; }
+html.kc-sade .kcv-pencere { transition: opacity .14s ease; transform: none; }
+html.kc-sade .kcv-perde.acik .kcv-pencere { transform: none; }
+html.kc-sade .kcv-pencere.odak::after {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: rgba(233, 238, 245, .86); animation: none; opacity: 1;
+}
+html.kc-sade .kcv-pencere::before { background: var(--kcv-deniz); }
+html.kc-sade .kcv-kart:hover { box-shadow: none; }
+html.kc-sade .kcv-kart {
+    opacity: 1; animation: none;
+    box-shadow: none; transition: border-color .15s ease;
+}
+html.kc-sade .kcv-kart.buyuk {
+    animation: none; transform: translate(-50%, -50%);
+    box-shadow: none;
+}
+html.kc-sade .kcv-kumanda { backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+html.kc-sade .kcv-tus { transition: background .15s ease, color .15s ease; }
+html.kc-sade .kcv-tus-oynat:hover { filter: none; }
+/* Zâid harflerin uçuşu DERSİN KENDİSİDİR — sade'de de kalır, yalnız
+   yolu kısalır ve iz bırakan solgunlaştırma sadeleşir. */
+html.kc-sade .kcv-kart.oynat .kcv-dus { animation-duration: .72s; }

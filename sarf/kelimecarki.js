@@ -134,6 +134,72 @@ var KC_BITISMEZ = 'اأإآدذرزوؤةىء';
 var KC_OK_YUKARI = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.6l7.4 8.5h-4.5v6.3H9.1v-6.3H4.6z"/></svg>';
 var KC_OK_ASAGI  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19.4L4.6 10.9h4.5V4.6h5.8v6.3h4.5z"/></svg>';
 
+/* ================= GÖRÜNÜM SEÇENEĞİ: ŞIK / SADE =================
+   Bazı okul tahtaları ve eski tabletler bu sayfayı zorlanarak çiziyor:
+   her tekerde ahşap damar (iki katmanlı gradient), iç/dış gölge,
+   harflerde kabartma, dönerken de perspektif altında kıvrılan harf
+   var. Bunların hepsi doğru çalışan ama PAHALI işlerdir.
+
+   Bu yüzden sayfanın İKİ GÖRÜNÜMÜ vardır ve ikisi de kalıcıdır:
+     · ŞIK  — bugüne kadarki tasarım, hiçbir şeyi eksilmedi.
+     · SADE — aynı düzen, aynı ölçüler, aynı üç renk; ama gölgeler,
+              gradient damarlar, kabartmalar ve döngülü animasyonlar
+              kapalı. Harfler yuvarlanmak yerine yerinde tazelenir.
+   Seçim tarayıcıda saklanır (localStorage), bir daha sorulmaz.
+   HİÇ SEÇİM YAPILMAMIŞSA: cihaz zayıf görünüyorsa (çekirdek ≤ 4 ya da
+   bellek ≤ 4 GB) ya da kullanıcı "hareketi azalt" demişse SADE, aksi
+   hâlde ŞIK açılır. Aynı karar sayfanın <head>'inde de bir kez
+   verilir — ilk boyamadan ÖNCE, ki ekran zıplamasın. */
+var KC_GORUNUM_ANAHTAR = 'kidefKcGorunum';
+
+function kcSadeMi() {
+    return document.documentElement.classList.contains('kc-sade');
+}
+
+function kcGorunumYaz(mod, kaydet) {
+    var sade = mod === 'sade';
+    document.documentElement.classList.toggle('kc-sade', sade);
+    if (kaydet !== false) {
+        try { localStorage.setItem(KC_GORUNUM_ANAHTAR, sade ? 'sade' : 'sik'); } catch (e) { }
+    }
+    var tuslar = document.querySelectorAll('.kc-gorunum .kc-gr');
+    for (var i = 0; i < tuslar.length; i++) {
+        var secili = (tuslar[i].dataset.mod === 'sade') === sade;
+        tuslar[i].classList.toggle('secili', secili);
+        tuslar[i].setAttribute('aria-pressed', secili ? 'true' : 'false');
+    }
+    return sade ? 'sade' : 'sik';
+}
+
+/* <head>'deki erken betikle AYNI karar. İkisi ayrı yerde durur çünkü
+   biri boyamadan önce (sayfa içinde), öteki dosya yüklendikten sonra
+   çalışır; mantık tek satırlık olduğu için kopya maliyeti yok. */
+function kcGorunumSec() {
+    var m = null;
+    try { m = localStorage.getItem(KC_GORUNUM_ANAHTAR); } catch (e) { }
+    if (m !== 'sade' && m !== 'sik') {
+        var cek = navigator.hardwareConcurrency || 8;
+        var bel = navigator.deviceMemory || 8;
+        var az = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        m = (cek <= 4 || bel <= 4 || az) ? 'sade' : 'sik';
+        return kcGorunumYaz(m, false);      /* otomatik karar SAKLANMAZ */
+    }
+    return kcGorunumYaz(m, false);
+}
+
+var KC_SIK_SVG  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l1.9 5.1 5.1 1.9-5.1 1.9L12 16.6l-1.9-5.1L5 9.6l5.1-1.9zM18.5 15l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9zM5.2 15.4l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>';
+var KC_SADE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.3 2L5 13.4h5.1L9.6 22 18 10.6h-5.1z"/></svg>';
+
+function kcGorunumTusuHtml() {
+    return '<div class="kc-gorunum" id="kcGorunum" role="group" aria-label="Görünüm seçimi">' +
+        '<button type="button" class="kc-gr" data-mod="sik" aria-pressed="true"' +
+        ' title="Şık görünüm: ahşap damar, gölge ve dönen harfler">' +
+        KC_SIK_SVG + '<span>Şık</span></button>' +
+        '<button type="button" class="kc-gr" data-mod="sade" aria-pressed="false"' +
+        ' title="Sade görünüm: güçsüz cihazlarda kasmayan yalın çizim">' +
+        KC_SADE_SVG + '<span>Sade</span></button></div>';
+}
+
 function kcHarfler(s) { return Array.from(s); }
 
 /* Kelimenin TÜRKÇE kutuları. Kural olarak her harf kendi kutusunda
@@ -206,36 +272,56 @@ function kcOlcu(harfler, kok) {
 
 /* Bir KÖKÜN İSKELETİ: o kökün bütün kelimelerini (hem Arapça hem
    Türkçe yazımıyla) taşıyabilecek EN DAR teker düzeni.
-     on  → kökten önceki boş yuva sayısı
-     ara → iki kök harfi arasındaki yuva sayısı (ikisinde de aynı)
-     son → kökten sonraki yuva sayısı
-     n   → toplam teker
-     kokPoz → kök tekerlerinin sırası (0 tabanlı)
-   İKİ ZORUNLU KURAL — kökler iki şeritte de aynı sütunlara düşsün diye:
-     · on = son + 1        (kök sütunları N'e göre simetrik olsun)
-     · iki ara EŞİT olsun  (orta kök tam ortada dursun)
-   Arapça şerit ters dizildiği için kök sütunları {p, n/2, n-p}
-   kümesidir; küme ters çevrilince değişmediğinden hiza kendiliğinden
-   tutar. Sonuç kökün üstünde saklanır (bir kez hesaplanır). */
+     ara    → iki kök harfi arasındaki yuva sayısı (İKİ ŞERİTTE DE AYNI)
+     on/son → Türkçe şeritte kökten önceki / sonraki yuva sayısı
+     arOn/arSon → Arapça şeritte kökten önceki / sonraki yuva sayısı
+     kokPoz → Türkçe kök tekerlerinin sırası (0 tabanlı)
+     arPoz  → Arapça kök tekerlerinin sırası (0 tabanlı)
+     n      → toplam teker (iki şeritte de aynı; sütunlar hizalansın)
+
+   ROUND V — ŞERİT BAŞINA ÖLÇÜ:
+   Eskiden tek bir "on" vardı ve simetri uğruna on = son + 1 diye
+   şişiriliyordu; böylece Arapça şeridin kök harfinden önce boşuna 3 boş
+   kutu duruyordu (KDR, HRM). Artık her şerit KENDİ gerçek en küçük
+   ölçüsünü alır: KDR/HRM'de Arapça 1, Türkçe 2 boş kutu; KML/KTB'de
+   Arapça 1, Türkçe 2. Toplam teker sayısı yine ortaktır — kısa kalan
+   şeridin ARTAN yuvası kelimenin SONUNA (yani ekranın dış kenarına)
+   eklenir, kök harfleri öne kaymasın diye.
+
+   HİZA NOTU: kökler iki şeritte de aynı sütunlara ancak
+   arOn = son + 1 ve on = arSon + 1 iken düşer. KTB, KML, HBR bu şartı
+   kendiliğinden sağlar (hiza tam). KDR, HRM, HKM, SLM'de Türkçenin
+   sonundaki iki yuva bunu imkânsız kılar: kök sütunları bir adım
+   kayar, üç kök sütununun ikisi yine çakışır. Öğretmenin istediği
+   "kökten önce tek boş kutu" bu bedele değer; kutular azaldıkça
+   harfler de büyür. */
 function kcIskelet(kok) {
     if (kok._isk) return kok._isk;
-    var onG = 0, araG = 0, sonG = 0;
+    var trOn = 0, trSon = 0, arOn = 0, arSon = 0, araG = 0;
     kok.kelimeler.forEach(function (kel) {
         var trH = kcTrKutular(kel);
         var seg = kcArParcala(kel.tam);
         var arH = seg.map(function (s) { return s.b; });
         if (arH.join('') !== kel.ar) arH = kcHarfler(kel.ar);
-        [kcOlcu(trH, kel.trKok || kok.trKok), kcOlcu(arH, kok.arKok)]
-            .forEach(function (o) {
-                if (!o) return;
-                onG = Math.max(onG, o.on);
-                araG = Math.max(araG, o.a1, o.a2);
-                sonG = Math.max(sonG, o.son);
-            });
+        var to = kcOlcu(trH, kel.trKok || kok.trKok);
+        var ao = kcOlcu(arH, kok.arKok);
+        if (to) {
+            trOn = Math.max(trOn, to.on); trSon = Math.max(trSon, to.son);
+            araG = Math.max(araG, to.a1, to.a2);
+        }
+        if (ao) {
+            arOn = Math.max(arOn, ao.on); arSon = Math.max(arSon, ao.son);
+            araG = Math.max(araG, ao.a1, ao.a2);
+        }
     });
-    var on = Math.max(onG, sonG + 1), son = on - 1, ara = araG;
-    var p0 = on, p1 = on + 1 + ara, p2 = p1 + 1 + ara;
-    kok._isk = { on: on, ara: ara, son: son, n: p2 + 1 + son, kokPoz: [p0, p1, p2] };
+    /* İki şerit aynı sayıda teker taşısın: kısa olanın açığı SONA gider. */
+    var yan = Math.max(trOn + trSon, arOn + arSon);
+    trSon = yan - trOn; arSon = yan - arOn;
+    var ara = araG, adim = ara + 1, n = yan + 3 + 2 * ara;
+    var poz = function (on) { return [on, on + adim, on + 2 * adim]; };
+    kok._isk = { n: n, ara: ara,
+                 on: trOn, son: trSon, kokPoz: poz(trOn),
+                 arOn: arOn, arSon: arSon, arPoz: poz(arOn) };
     return kok._isk;
 }
 
@@ -243,20 +329,27 @@ function kcIskelet(kok) {
    kokPoz'a, kökten öncekiler sağa yaslı, aralar ortalanmadan soldan,
    kökten sonrakiler sırayla. Dönen dizi: teker → harf sırası (yoksa
    -1). Sığmayan kelime null döner (veri hatasına karşı sigorta). */
-function kcYerles(harfler, kok, isk) {
+function kcYerles(harfler, kok, isk, arapca) {
     var o = kcOlcu(harfler, kok);
     if (!o) return null;
-    if (!isk) isk = { on: 3, ara: 1, son: 2, kokPoz: [3, 5, 7], n: 10 };
-    if (o.on > isk.on || o.a1 > isk.ara || o.a2 > isk.ara || o.son > isk.son) return null;
+    if (!isk) isk = { on: 3, ara: 1, son: 2, kokPoz: [3, 5, 7],
+                      arOn: 3, arSon: 2, arPoz: [3, 5, 7], n: 10 };
+    /* ROUND V: iki şeridin ölçüsü ayrıdır; hangisini yerleştirdiğimizi
+       "arapca" bayrağı söyler. Eski üç argümanlı çağrılar (sınama
+       betikleri) Türkçe ölçüsünü alır — davranış değişmez. */
+    var on = arapca && isk.arOn != null ? isk.arOn : isk.on;
+    var son = arapca && isk.arSon != null ? isk.arSon : isk.son;
+    var P = arapca && isk.arPoz ? isk.arPoz : isk.kokPoz;
+    if (o.on > on || o.a1 > isk.ara || o.a2 > isk.ara || o.son > son) return null;
     var d = [], i;
     for (i = 0; i < isk.n; i++) d.push(-1);
-    for (i = 0; i < o.on; i++) d[isk.kokPoz[0] - o.on + i] = i;
-    d[isk.kokPoz[0]] = o.ki[0];
-    for (i = 0; i < o.a1; i++) d[isk.kokPoz[0] + 1 + i] = o.ki[0] + 1 + i;
-    d[isk.kokPoz[1]] = o.ki[1];
-    for (i = 0; i < o.a2; i++) d[isk.kokPoz[1] + 1 + i] = o.ki[1] + 1 + i;
-    d[isk.kokPoz[2]] = o.ki[2];
-    for (i = 0; i < o.son; i++) d[isk.kokPoz[2] + 1 + i] = o.ki[2] + 1 + i;
+    for (i = 0; i < o.on; i++) d[P[0] - o.on + i] = i;
+    d[P[0]] = o.ki[0];
+    for (i = 0; i < o.a1; i++) d[P[0] + 1 + i] = o.ki[0] + 1 + i;
+    d[P[1]] = o.ki[1];
+    for (i = 0; i < o.a2; i++) d[P[1] + 1 + i] = o.ki[1] + 1 + i;
+    d[P[2]] = o.ki[2];
+    for (i = 0; i < o.son; i++) d[P[2] + 1 + i] = o.ki[2] + 1 + i;
     return d;
 }
 
@@ -288,18 +381,26 @@ function kcArBicim(harfler) {              /* harekesiz kısayol */
     return kcArBicimli(harfler.map(function (h) { return { b: h, m: '' }; }));
 }
 
-/* adim: 0 = iki tarafta yalnız KÖK (harekesiz). Sonra kelime başına
-   iki adım: tek sayı = yalnız Arapça türedi (harekeli), çift sayı =
-   Türkçesi de türedi. Toplam 2N+1 durum, çark gibi döner. */
+/* adim: HER KELİME DÖRT EVRELİDİR ve her yeni kelime yine KÖKTEN başlar.
+     evre 0 → iki tarafta yalnız çıplak kök (harekesiz)
+     evre 1 → Arapça kelime türedi (harekeli)
+     evre 2 → Türkçesi de türedi
+     evre 3 → harfler kaynaşıp kelime tek parça okundu
+   Beşinci basış sıradaki kelimenin 0. evresidir: öğrenci her kelimeye
+   aynı yerden, kökten girer. Toplam 4N durum, çark gibi döner.
+   i = adim/4 (kelime sırası), f = adim%4 (evre). */
 /* birlesik: kelimenin hem Arapçası hem Türkçesi ekrana geldikten sonra
    açılan SÖZ KARESİ. Tekerler usulca söner ve yerlerinde, her sayfanın
    ortasında YUVARLAK bir söz madalyonu belirir: kelime tek parça,
    doğal bağlı yazımıyla okunur. bTok, geciken birleştirme
    zamanlayıcısının biletidir: kullanıcı birleşme olgunlaşmadan tuşa
    basarsa bilet değişir, eski zamanlayıcı artık geçersiz duruma
-   dokunamaz. */
+   dokunamaz.
+   hazir: kelime tamamlandı, artık BİRLEŞTİRİLEBİLİR. Birleşme
+   kendiliğinden olmaz; kitaba dokunmak (ya da boşluk/Enter) gerekir —
+   "şimdi bakın, kelime bütünleşiyor" ânı öğretmenin elinde kalsın. */
 var S = { kok: 0, adim: 0, kilit: false, kurulu: false, son: null, bekleyen: 0,
-          birlesik: false, bTok: 0 };
+          birlesik: false, bTok: 0, hazir: false };
 
 /* Kelime birleşince madalyonun yanında beliren balon. Emoji kelimeye
    göre değişir ki her vezin ayrı bir sürpriz gibi dursun. */
@@ -357,29 +458,45 @@ function kcEn(metin) {
     return w;
 }
 
-/* Verilen "boş göz eni" (dar) için iki şeridin 11 gözünü de hesaplar.
-   Dönüş: { t: [11], a: [11], toplam } — hepsi punto=1 birimindedir.
-     t[j] → Türkçe şeritte j. sütun (j=0..9 rulo, j=10 görünmez pay)
-     a[j] → Arapça şeritte j. sütun (j=0 görünmez pay, j=1..10 rulo)
-   Kural: 3..7 (yani 4-8. sütun) çiftler halinde eşitlenir; 0..2 ve
-   8..10 blokları serbesttir, yalnız blok toplamları eşitlenir. */
+/* Verilen "boş göz eni" (dar) için iki şeridin bütün gözlerini
+   hesaplar. Dönüş: { t: [n+1], a: [n+1], toplam } — punto=1 birimiyle.
+     t[j] → Türkçe şeritte j. sütun (son sütun görünmez paydır)
+     a[j] → Arapça şeritte j. sütun (ilk sütun görünmez paydır)
+
+   ROUND V: kök sütunları artık iki şeritte aynı yerde olmayabilir.
+   Türkçe kökler kokPoz sütunlarında, Arapça şerit ters dizildiği için
+   Arapça kökler (n - arPoz) sütunlarındadır. Genişlik eşitlemesi bu iki
+   kuşağın ÇAKIŞAN bölümünde göz göze yapılır (kök harfi geniş yazılmışsa
+   alt/üst kutusu da genişler); dışarıda kalan sol ve sağ bloklarda
+   yalnız blok TOPLAMI eşitlenir, artan pay dış kenardaki göze yazılır.
+   Böylece iki şerit aynı toplam eni tutar ama boş kutular boşuna
+   şişmez. Çakışma hiç yoksa (veri değişirse) tek blok gibi davranılır. */
 function kcOlcHesap(nT, nA, dar, isk) {
-    var S1 = isk.n + 1, p0 = isk.kokPoz[0], p2 = isk.kokPoz[2];
-    var t = [], a = [], j, tt, at, h;
+    var S1 = isk.n + 1, N = isk.n;
+    var t = [], a = [], j, h;
     for (j = 0; j < S1; j++) {
         t.push(nT[j] > 0 ? nT[j] + 2 * KC_YAN : dar);
         a.push(nA[j] > 0 ? nA[j] + 2 * KC_YAN : dar);
     }
-    /* ORTA KUŞAK: kök sütunları (p0..p2) — simetri burada zorunlu */
-    for (j = p0; j <= p2; j++) { h = Math.max(t[j], a[j]); t[j] = a[j] = h; }
-    /* SOL blok (0..p0-1): yalnız toplam eşitlenir, fazlalık en soldaki göze */
-    tt = at = 0;
-    for (j = 0; j < p0; j++) { tt += t[j]; at += a[j]; }
-    h = Math.max(tt, at); t[0] += h - tt; a[0] += h - at;
-    /* SAĞ blok (p2+1..n): yalnız toplam eşitlenir, fazlalık en sağdaki göze */
-    tt = at = 0;
-    for (j = p2 + 1; j < S1; j++) { tt += t[j]; at += a[j]; }
-    h = Math.max(tt, at); t[S1 - 1] += h - tt; a[S1 - 1] += h - at;
+    /* blok: [b..s] arasında yalnız toplamı eşitle; fark "kenar" gözüne. */
+    function blok(b, s, kenar) {
+        if (s < b) return;
+        var i, tt = 0, at = 0;
+        for (i = b; i <= s; i++) { tt += t[i]; at += a[i]; }
+        var h = Math.max(tt, at);
+        t[kenar] += h - tt; a[kenar] += h - at;
+    }
+    var aP = isk.arPoz || isk.kokPoz;
+    var tS = isk.kokPoz[0], tE = isk.kokPoz[2];
+    var aS = N - aP[2], aE = N - aP[0];
+    var L = Math.max(tS, aS), R = Math.min(tE, aE);
+    if (L <= R) {
+        for (j = L; j <= R; j++) { h = Math.max(t[j], a[j]); t[j] = a[j] = h; }
+        blok(0, L - 1, 0);
+        blok(R + 1, S1 - 1, S1 - 1);
+    } else {
+        blok(0, S1 - 1, 0);
+    }
     var toplam = 0;
     for (j = 0; j < S1; j++) toplam += t[j];
     return { t: t, a: a, toplam: toplam };
@@ -450,6 +567,8 @@ function kcOlcTazele() {
     if (!S.son) return;
     kcSutunOlc(S.son.ar, S.son.tr, S.son.isk);
     kcSozSigdir();
+    /* Ekran döndüyse kaynaşmış harflerin hedefi de kaymıştır */
+    if (S.birlesik) kcKaynastir();
 }
 var kcOlcZaman = null;
 window.addEventListener('resize', function () {
@@ -465,10 +584,11 @@ try {
    Teker şeridinin HTML'i iskeletten üretilir; kök değişip iskelet
    değişince şerit yeniden kurulur (kcTekerKur). Kök tekerleri
    iskeletin kokPoz'undadır, gerisi "ek" tekeridir. */
-function kcTekerHtml(isk) {
+function kcTekerHtml(isk, arapca) {
     var s = '', p;
+    var P = arapca && isk.arPoz ? isk.arPoz : isk.kokPoz;
     for (p = 0; p < isk.n; p++) {
-        var kokMu = isk.kokPoz.indexOf(p) >= 0;
+        var kokMu = P.indexOf(p) >= 0;
         s += '<div class="kc-teker ' + (kokMu ? 'kok' : 'ek') +
              (p === isk.n - 1 ? ' kc-son' : '') + ' kc-bos" data-poz="' + (p + 1) + '">' +
              '<div class="kc-yuz"><span class="kc-harf" data-h=""></span></div></div>';
@@ -486,9 +606,10 @@ function kcTekerKur(isk) {
     if (!arS || !trS) return false;
     if (kcSonIsk === isk && arS.children.length === isk.n) return false;
     kcSonIsk = isk;
-    var html = kcTekerHtml(isk);
-    arS.innerHTML = html;
-    trS.innerHTML = html;
+    /* ROUND V: iki şeridin kök sütunları farklı olabilir, tek HTML
+       yetmez — her şerit kendi iskelet ölçüsüyle kurulur. */
+    arS.innerHTML = kcTekerHtml(isk, true);
+    trS.innerHTML = kcTekerHtml(isk, false);
     return true;
 }
 
@@ -504,13 +625,17 @@ function kcKur() {
             '<span class="kc-kok-tr">' + k.trKok.join(' · ').toUpperCase() + '</span></button>';
     }).join('');
     kcSonIsk = kcIskelet(KC_VERI[S.kok || 0]);
-    var tekerler = kcTekerHtml(kcSonIsk);
+    var arTekerler = kcTekerHtml(kcSonIsk, true);
+    var trTekerler = kcTekerHtml(kcSonIsk, false);
     /* Başlık AKIŞ DIŞINDA, geri tuşuyla aynı üst hizada durur. Kök
        satırı: solda kayan kök tuşları + sağda KOYU MÜREKKEP tasarımlı
        vezin kutusu. Gövde: SOLDA tek ok çifti (teker kabının dışında),
        sağda kitap. Kelime etiketi yok — kelime tekerlerde kocamandır. */
     ekran.innerHTML =
         '<div class="back-btn" id="kc-back">' + BACK_SVG + '</div>' +
+        /* Görünüm anahtarı geri tuşunun tam karşısında (sağ üst) durur;
+           kök satırının yerleşimine hiç karışmaz. */
+        kcGorunumTusuHtml() +
         '<div class="kc-baslik"><span class="kc-baslik-ar">عَجَلَةُ الْكَلِمَاتِ</span>' +
         '<span class="kc-baslik-tr">Kelime Çarkı</span></div>' +
         '<div class="kc-kap">' +
@@ -537,13 +662,13 @@ function kcKur() {
            orada TEK PARÇA, doğal bağlı yazımıyla (kaşidesiz) durur.
            Türkçe madalyonun yanına anlamı taşıyan balon gelir. */
         '        <section class="kc-sayfa kc-arapca">' +
-        '          <div class="kc-yol"><div class="kc-tekerler kc-rtl" id="kcArTeker">' + tekerler + '</div>' +
+        '          <div class="kc-yol"><div class="kc-tekerler kc-rtl" id="kcArTeker">' + arTekerler + '</div>' +
         '          <div class="kc-soz kc-rtl" id="kcArSoz" aria-hidden="true"><span class="kc-soz-sar">' +
         '            <span class="kc-soz-olcek"><span class="kc-soz-ic"></span></span></span></div>' +
         '          <div class="kc-zemin"></div></div>' +
         '        </section>' +
         '        <section class="kc-sayfa kc-turkce">' +
-        '          <div class="kc-yol"><div class="kc-tekerler" id="kcTrTeker">' + tekerler + '</div>' +
+        '          <div class="kc-yol"><div class="kc-tekerler" id="kcTrTeker">' + trTekerler + '</div>' +
         '          <div class="kc-soz" id="kcTrSoz" aria-hidden="true"><span class="kc-soz-sar">' +
         '            <span class="kc-soz-olcek"><span class="kc-soz-ic"></span>' +
         '            <span class="kc-balon" id="kcBalon"><b id="kcBalonEmoji">🎈</b><i id="kcBalonYazi"></i></span>' +
@@ -551,6 +676,11 @@ function kcKur() {
         '          <div class="kc-zemin"></div></div>' +
         '        </section>' +
         '      </div>' +
+        /* NOT: Eskiden burada "dokun · kelimeyi birleştir / harflere dön"
+           yazan bir ipucu hapı dururdu. Kaynaşma artık çarkın olağan
+           dördüncü evresi olduğu ve HER kelimede kendiliğinden sıraya
+           geldiği için o uyarı gereksizdi; kaldırıldı. Kitaba dokunma
+           kısayolu yerinde duruyor, yalnızca yazısı yok. */
         '    </div>' +
         '  </div>' +
         '</div>';
@@ -567,6 +697,23 @@ function kcKur() {
         if (t) kcKokSec(parseInt(t.dataset.i, 10));
     });
     document.getElementById('kcVezinKutu').addEventListener('click', kcVezinPopAc);
+    /* Görünüm anahtarı: iki tuş, tek seçim. Seçim anında uygulanır ve
+       tarayıcıda saklanır; sayfa bir daha açıldığında aynı görünüm gelir. */
+    var grKap = document.getElementById('kcGorunum');
+    if (grKap) grKap.addEventListener('click', function (e) {
+        var t = e.target.closest('.kc-gr');
+        if (!t) return;
+        kcSes();
+        kcGorunumYaz(t.dataset.mod, true);
+        /* Sade'ye geçince kutu ölçüleri değişmez ama gölge/damar
+           kalktığı için yeniden ölçmek zararsızdır; şerit tazelensin. */
+        try { kcSozSigdir(); } catch (e2) { }
+    });
+    kcGorunumSec();
+    /* Kitabın her yeri birleştirme düğmesidir: akıllı tahtada öğretmen
+       küçük bir hedefi aramasın, kelimenin kendisine dokunsun yeter. */
+    var kitapTus = ekran.querySelector('.kc-kitap');
+    if (kitapTus) kitapTus.addEventListener('click', kcSozDegis);
     S.kurulu = true;
 }
 
@@ -577,6 +724,17 @@ function kcKur() {
    Aynı anda yüzey damarı da (CSS ::before) aynı yönde akar. Kök
    tekerlerinde harf DÖNMEZ; yalnız bağlı biçim değişirse yumuşak
    geçişle tazelenir. */
+/* Devir bittikten sonra harfin üstündeki satır-içi biçimler silinir.
+   Silinmezse satır-içi opacity, kaynaşma kuralını (.kc-birlesik .kc-harf)
+   ezer ve teker harfleri birleşen kelimenin üstünde asılı kalır. */
+function kcHarfSerbest(harfEl, gec) {
+    setTimeout(function () {
+        harfEl.style.transition = '';
+        harfEl.style.transform = '';
+        harfEl.style.opacity = '';
+    }, gec);
+}
+
 function kcTekerYaz(el, yeni, yon, gecikme, yuvarlan, sert) {
     var harfEl = el.querySelector('.kc-harf');
     var eski = harfEl.dataset.h || '';
@@ -593,10 +751,14 @@ function kcTekerYaz(el, yeni, yon, gecikme, yuvarlan, sert) {
         el.classList.toggle('kc-sert', sert);   /* renk harfle aynı karede değişsin */
     };
     setTimeout(function () {
-        if (!yuvarlan) {                     /* kök: sadece biçim tazelenir */
+        /* SADE GÖRÜNÜM: harf silindirin yüzeyinde kıvrılarak dönmez.
+           rotateX + perspective + akan damar üçlüsü zayıf cihazlarda
+           kare düşürüyor; burada harf yalnızca yerinde tazelenir.
+           Ders akışı aynıdır — kelime yine adım adım türer. */
+        if (!yuvarlan || kcSadeMi()) {       /* kök: sadece biçim tazelenir */
             harfEl.style.transition = 'opacity .14s ease';
             harfEl.style.opacity = '0.25';
-            setTimeout(function () { koy(); harfEl.style.opacity = '1'; }, 150);
+            setTimeout(function () { koy(); harfEl.style.opacity = '1'; kcHarfSerbest(harfEl, 220); }, 150);
             return;
         }
         el.classList.toggle('kc-ters', yon < 0);   /* damar akışı da yön değiştirsin */
@@ -613,21 +775,20 @@ function kcTekerYaz(el, yeni, yon, gecikme, yuvarlan, sert) {
             harfEl.style.transform = 'translateY(0) rotateX(0)';
             harfEl.style.opacity = yeni ? '1' : '0';
             setTimeout(function () { el.classList.remove('kc-donuyor'); }, 250);
+            kcHarfSerbest(harfEl, 300);
         }, 180);
     }, gecikme);
     return true;
 }
 
-/* Adımın hangi tarafta hangi kelimeyi gösterdiğini çözer:
-   adim 0 → iki taraf da çıplak kök; tek sayı → yalnız Arapça kelime;
-   çift sayı → aynı kelimenin Türkçesi de türemiş. */
+/* Adımın hangi tarafta hangi kelimeyi gösterdiğini çözer. Dört evreli
+   model: 0 çıplak kök · 1 Arapça · 2 Arapça+Türkçe · 3 kaynaşmış. */
 function kcDurumCoz() {
-    var kok = KC_VERI[S.kok], arKel = null, trKel = null;
-    if (S.adim > 0) {
-        arKel = kok.kelimeler[Math.ceil(S.adim / 2) - 1];
-        if (S.adim % 2 === 0) trKel = arKel;
-    }
-    return { kok: kok, ar: arKel, tr: trKel };
+    var kok = KC_VERI[S.kok];
+    var i = Math.floor(S.adim / 4), f = S.adim % 4;
+    var kel = kok.kelimeler[i] || null;
+    return { kok: kok, ar: f >= 1 ? kel : null, tr: f >= 2 ? kel : null,
+             bir: f === 3, sira: i, evre: f };
 }
 
 /* Seçili adımı 20 tekere uygular. Kelime türememiş taraf yalnız kök
@@ -679,38 +840,122 @@ function kcSozSigdir() {
     }
 }
 
+/* ---------------- KAYNAŞMA (harflerin yer değiştirmesi) ----------------
+   Birleşme YENİ BİR KATMANIN AÇILMASI DEĞİLDİR. Ekranda hâlihazırda
+   duran harflerin kendisi yürür: her tekerdeki harf, birleşik kelimede
+   kendisine düşen harfin TAM ÜSTÜNE kayar. Kutu kaplaması (ahşap zemin,
+   kenarlık, gölge) bu yolculuk sırasında erir; harfler hedefe varınca
+   iki katman üst üste bindiği için çapraz geçiş göze "harfler kaynaştı"
+   diye görünür — hiçbir yerden bir pencere açılmaz.
+
+   EŞLEME NEDEN BİREBİRDİR? Arapça sözde her <span class="kc-sz"> bir
+   "seg" (harf + hareke) parçasıdır; Arapça tekerlere de aynı parçalar
+   binmiştir. Türkçede de her span bir KUTU'dur (şeddeli "rr" gibi çift
+   harfli kutular dâhil). S.son.arYer / S.son.trYer dizileri teker
+   pozisyonundan harf sırasına gider; ters yönde dizilen Arapça şeridi
+   ayrıca sıralamaya gerek kalmaz. */
+function kcKaynastir() {
+    if (!S.son) return;
+    var takim = [['kcArTeker', 'kcArSoz', S.son.arYer], ['kcTrTeker', 'kcTrSoz', S.son.trYer]], q;
+    for (q = 0; q < takim.length; q++) {
+        var serit = document.getElementById(takim[q][0]);
+        var soz = document.getElementById(takim[q][1]);
+        var yer = takim[q][2];
+        if (!serit || !soz || !yer) continue;
+        /* visibility:hidden katman da YERLEŞİR: madalyon henüz görünmezken
+           harflerinin gerçek yeri ölçülebilir. */
+        var hedef = soz.querySelectorAll('.kc-sz'), i, olcum = [];
+        for (i = 0; i < serit.children.length; i++) {
+            var t = serit.children[i], h = t.querySelector('.kc-harf');
+            var j = yer[i], hd = (j >= 0 && hedef[j]) ? hedef[j] : null;
+            if (!hd || !h || !h.textContent) { olcum.push(null); continue; }
+            var a = h.getBoundingClientRect(), b = hd.getBoundingClientRect();
+            if (!a.width || !b.width) { olcum.push(null); continue; }
+            olcum.push({ t: t,
+                         dx: (b.left + b.width / 2) - (a.left + a.width / 2),
+                         dy: (b.top + b.height / 2) - (a.top + a.height / 2) });
+        }
+        for (i = 0; i < olcum.length; i++) {
+            var o = olcum[i];
+            if (!o) { serit.children[i].classList.add('kc-bosal'); serit.children[i].style.transform = ''; continue; }
+            o.t.classList.remove('kc-bosal');
+            o.t.style.transform = 'translate(' + o.dx.toFixed(2) + 'px,' + o.dy.toFixed(2) + 'px)';
+        }
+    }
+}
+
+/* Kaynaşma bittikten sonra tekerleri ilk hâllerine bırakır. */
+function kcKaynasCoz() {
+    var ids = ['kcArTeker', 'kcTrTeker'], q, i;
+    for (q = 0; q < ids.length; q++) {
+        var serit = document.getElementById(ids[q]);
+        if (!serit) continue;
+        for (i = 0; i < serit.children.length; i++) {
+            serit.children[i].style.transform = '';
+            serit.children[i].classList.remove('kc-bosal');
+        }
+    }
+}
+
 /* Söz karesini KAPATIR ve bekleyen zamanlayıcının biletini yakar.
    Her adım değişiminde ilk iş budur: kullanıcı ileri/geri bastığında
-   ekran önce teker karesine dönsün, sonra yeni harfler yuvarlansın. */
+   harfler önce yerlerine dönsün, sonra yeni harfler yuvarlansın.
+   .kc-kaynas sınıfı (uzun geçiş süresi) dönüş yolu bitene kadar
+   üzerinde kalır; erken sökülürse harfler yerine ZIPLAR. */
 function kcBirlesikKapat() {
     S.bTok++;
     if (!S.birlesik) return;
     S.birlesik = false;
     var kitap = document.querySelector('.kc-kitap');
     if (kitap) kitap.classList.remove('kc-birlesik');
+    kcKaynasCoz();
+    var bilet = S.bTok;
+    setTimeout(function () {
+        if (bilet !== S.bTok || S.birlesik) return;
+        var k = document.querySelector('.kc-kitap');
+        if (k) k.classList.remove('kc-kaynas');
+    }, 980);
 }
 
 /* Harfler yerine oturduktan sonra çağrılır. Bilet hâlâ geçerliyse
-   (arada tuşa basılmadıysa) tekerler söner, söz madalyonu belirir. */
+   (arada tuşa basılmadıysa) harfler birleşik kelimedeki yerlerine
+   yürür, kutular erir, söz katmanı üstlerinde belirir. */
 function kcBirlestir(bilet) {
     if (bilet !== S.bTok || !S.son || !S.son.arSoz) return;
     S.birlesik = true;
     kcSozSigdir();
     var kitap = document.querySelector('.kc-kitap');
-    if (kitap) kitap.classList.add('kc-birlesik');
+    /* Önce uzun geçiş süresi (.kc-kaynas) ve erime (.kc-birlesik)
+       yazılır, HEMEN ardından yeni konumlar. İkisi aynı iş parçasında
+       olduğu için tarayıcı tek stil hesabında görür: harfler yeni
+       süreyle yumuşakça yürür. */
+    if (kitap) { kitap.classList.add('kc-kaynas'); kitap.classList.add('kc-birlesik'); }
+    kcKaynastir();
+}
+
+/* KİTABA DOKUNUŞ = 4. evreye geç / 3. evreye dön.
+   Dokunuş artık ayrı bir durum tutmaz; doğrudan çarkın bir adımıdır,
+   böylece ok tuşlarıyla dokunuş aynı sayacı paylaşır ve sunum
+   kumandasıyla dokunmatik tahta asla farklı yerlere düşmez. */
+function kcSozDegis() {
+    var f = S.adim % 4;
+    if (f === 2) kcDondur(1);
+    else if (f === 3) kcDondur(-1);
 }
 
 function kcGuncelle(ilk, yon) {
     kcBirlesikKapat();
     var d = kcDurumCoz(), kok = d.kok;
-    var isk = kcIskelet(kok), P = isk.kokPoz;
+    /* ROUND V: P = Türkçe kök sütunları, PA = Arapça kök sütunları.
+       İki şerit artık ayrı ölçüdedir, hepsinde ayrımı korumak gerekir. */
+    var isk = kcIskelet(kok), P = isk.kokPoz, PA = isk.arPoz || isk.kokPoz;
     if (kcTekerKur(isk)) ilk = true;      /* şerit yenilendiyse hepsi yuvarlansın */
     var trHedef = [], arHedef = [], trSert = [], i;
     for (i = 0; i < isk.n; i++) { trHedef.push(''); arHedef.push(''); trSert.push(false); }
     if (d.tr) {
         var trK = d.tr.trKok || kok.trKok;
         var trH = kcTrKutular(d.tr);
-        var trYer = kcYerles(trH, trK, isk);
+        var trYer = kcYerles(trH, trK, isk, false);
         if (!trYer) return;                                  /* veri sigortası */
         for (i = 0; i < isk.n; i++) if (trYer[i] >= 0) trHedef[i] = trH[trYer[i]];
         /* Sertleşen kök harfini işaretle: kökün d'si kelimede t olmuşsa
@@ -726,13 +971,13 @@ function kcGuncelle(ilk, yon) {
         var bazlar = seg.map(function (s) { return s.b; });
         if (bazlar.join('') !== d.ar.ar)                     /* hareke sigortası */
             seg = kcHarfler(d.ar.ar).map(function (h) { return { b: h, m: '' }; });
-        var arYer = kcYerles(seg.map(function (s) { return s.b; }), kok.arKok, isk);
+        var arYer = kcYerles(seg.map(function (s) { return s.b; }), kok.arKok, isk, true);
         if (!arYer) return;                                  /* veri sigortası */
         var arB = kcArBicimli(seg);
         for (i = 0; i < isk.n; i++) if (arYer[i] >= 0) arHedef[i] = arB[arYer[i]];
     } else {
         var kb = kcArBicim(kok.arKok);
-        arHedef[P[0]] = kb[0]; arHedef[P[1]] = kb[1]; arHedef[P[2]] = kb[2];
+        arHedef[PA[0]] = kb[0]; arHedef[PA[1]] = kb[1]; arHedef[PA[2]] = kb[2];
     }
     /* SÖZ MADALYONU İÇERİĞİ: yalnız kelimenin hem Arapçası hem
        Türkçesi ekrandayken (çift adım) anlamlıdır. Harfler kelimenin
@@ -741,7 +986,7 @@ function kcGuncelle(ilk, yon) {
        yazımdan gelir: tarayıcı harfleri kendisi bağlar, kaşide yok. */
     var arSoz = '', trSoz = '', anlam = '', emoji = '';
     if (d.ar && d.tr && arYer && trYer) {
-        var arKokIdx = [arYer[P[0]], arYer[P[1]], arYer[P[2]]];
+        var arKokIdx = [arYer[PA[0]], arYer[PA[1]], arYer[PA[2]]];
         arSoz = seg.map(function (s, idx) {
             return '<span class="kc-sz' + (arKokIdx.indexOf(idx) >= 0 ? ' kok' : '') +
                    '">' + s.b + s.m + '</span>';
@@ -754,30 +999,43 @@ function kcGuncelle(ilk, yon) {
                    '">' + h + '</span>';
         }).join('');
         anlam = d.ar.anlam || '';
-        emoji = KC_BALON[(Math.ceil(S.adim / 2) - 1 + S.kok) % KC_BALON.length];
+        emoji = KC_BALON[(d.sira + S.kok) % KC_BALON.length];
     }
     kcSozYaz(arSoz, trSoz, emoji, anlam);
 
     /* Harfler yazılmadan ÖNCE sütun enleri ayarlanır: kutu genişliği ile
        harf puntosu aynı karede değişsin, iki aşamalı zıplama olmasın. */
-    S.son = { ar: arHedef, tr: trHedef, isk: isk, arSoz: arSoz };
+    /* arYer/trYer: teker pozisyonu → harf sırası. Kaynaşma bunlarla
+       her tekeri birleşik kelimedeki kendi harfine eşler. */
+    S.son = { ar: arHedef, tr: trHedef, isk: isk, arSoz: arSoz,
+              arYer: arYer || null, trYer: trYer || null };
     kcSutunOlc(arHedef, trHedef, isk);
     var trT = document.getElementById('kcTrTeker').children;
     var arT = document.getElementById('kcArTeker').children;
-    var g = 0, kokMu;
+    var g = 0;
     for (i = 0; i < isk.n; i++) {
-        kokMu = P.indexOf(i) >= 0;
-        if (kcTekerYaz(trT[i], trHedef[i], yon, g * 26, ilk || !kokMu, trSert[i])) g++;
-        if (kcTekerYaz(arT[i], arHedef[i], yon, g * 26, ilk || !kokMu)) g++;
+        /* Kök tekerleri yerinde durur (yuvarlanmaz); bu ayrım her şeritte
+           KENDİ kök sütunlarına göre yapılır. */
+        if (kcTekerYaz(trT[i], trHedef[i], yon, g * 26, ilk || P.indexOf(i) < 0, trSert[i])) g++;
+        if (kcTekerYaz(arT[i], arHedef[i], yon, g * 26, ilk || PA.indexOf(i) < 0)) g++;
     }
-    /* HEM ARAPÇASI HEM TÜRKÇESİ ekrandaysa kelime tamamlanmıştır:
-       tekerler durduktan hemen sonra boşluklar kapanır, kelime birleşik
-       hâliyle okunur. Bekleme, en geç dönen tekerin duruşuna göre
-       hesaplanır (g*26 gecikme + kcTekerYaz'ın 180+250'lik dönüşü).
-       Bilet (S.bTok) sayesinde arada tuşa basılırsa bu kare hiç açılmaz. */
-    if (d.ar && d.tr) {
-        var bilet = S.bTok;
-        setTimeout(function () { kcBirlestir(bilet); }, g * 26 + 620);
+    /* HEM ARAPÇASI HEM TÜRKÇESİ ekrandaysa kelime tamamlanmıştır ve
+       artık BİRLEŞTİRİLEBİLİR. Eskiden bu kare kendiliğinden açılırdı;
+       artık açılmıyor: kitap "hazır" damgasını alır, üstünde ipucu
+       yanıp söner ve birleşmeyi DOKUNUŞ başlatır (bkz. kcSozDegis).
+       Böylece öğretmen önce harfleri gösterip sonra "şimdi birleşiyor"
+       diyebilir; ekran onun önünden kaçmaz. */
+    S.hazir = !!(d.ar && d.tr && arSoz);
+    var kitapEl = document.querySelector('.kc-kitap');
+    if (kitapEl) kitapEl.classList.toggle('kc-hazir', S.hazir);
+    /* 4. EVREYE DIŞARIDAN GİRİŞ: geri tuşuyla sıradaki kelimenin
+       kökünden bu kelimenin kaynaşmış hâline dönülürse (ya da çark
+       başa sararsa) tekerler yeniden kurulur; harfler yuvarlanıp
+       yerine oturmadan ölçüm alınamaz, bu yüzden kaynaşma geciktirilir.
+       Bilet arada tuşa basılırsa yanar, eski zamanlayıcı iş yapmaz. */
+    if (d.bir && S.hazir) {
+        var bBilet = S.bTok;
+        setTimeout(function () { kcBirlestir(bBilet); }, 660);
     }
     /* vezin kutusu (kök satırında): kelime yokken çıplak kökü söyler */
     setTimeout(function () {
@@ -812,8 +1070,20 @@ function kcDondur(yon) {
     }
     S.kilit = true;
     kcSes();
-    var n = KC_VERI[S.kok].kelimeler.length * 2 + 1;
-    S.adim = (S.adim + yon + n) % n;
+    var n = KC_VERI[S.kok].kelimeler.length * 4;
+    var yeni = (S.adim + yon + n) % n;
+    var eskiF = S.adim % 4, yeniF = yeni % 4;
+    var ayni = Math.floor(S.adim / 4) === Math.floor(yeni / 4);
+    S.adim = yeni;
+    /* 3. ↔ 4. EVRE: harfler zaten ekranda ve DEĞİŞMİYOR. Tekerleri
+       yeniden yuvarlamak "her şey baştan kuruldu" hissi verirdi; oysa
+       istenen, var olan harflerin dönüşerek kaynaşmasıdır. Bu yüzden
+       bu geçişte kcGuncelle'ye hiç uğranmaz, yalnız kaynaşma oynatılır. */
+    if (ayni && eskiF + yeniF === 5) {
+        if (yeniF === 3) kcBirlestir(S.bTok); else kcBirlesikKapat();
+        setTimeout(kcKilitAc, 780);       /* kaynaşma yolu daha uzun sürer */
+        return;
+    }
     kcGuncelle(false, yon);
     setTimeout(kcKilitAc, 620);
 }
@@ -874,6 +1144,8 @@ function kcTuslariBagla() {
             /* Odakta bir tuş varsa tarayıcı onu zaten tıklar: çift adım olmasın */
             var a = document.activeElement;
             if (a && (a.tagName === 'BUTTON' || a.tagName === 'A')) return;
+            /* Kaynaşma artık çarkın 4. evresidir; boşluk için ayrı bir
+               kural gerekmez, sıradaki adım zaten birleşmedir. */
             yon = e.shiftKey ? -1 : 1;
         }
         if (!yon) return;
@@ -959,8 +1231,11 @@ var KC_VEZIN_TABLO = [
       slot: [ {v:'فَ', w:'كَ'}, {v:'ا', w:'ا', z:1}, {v:'عِ', w:'تِ'}, {v:'ل', w:'ب'} ] },
     { ad: 'İsm-i Mefʿûl', kok: ['ك','ت','ب'], okunus: 'mektûb', anlam: 'yazılmış olan',
       slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عُ', w:'تُ'}, {v:'و', w:'و', z:1}, {v:'ل', w:'ب'} ] },
-    { ad: 'İsm-i Mekân', kok: ['ك','ت','ب'], okunus: 'mekteb', anlam: 'yazı yeri, okul',
-      slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'كْ'}, {v:'عَ', w:'تَ'}, {v:'ل', w:'ب'} ] },
+    /* İsm-i Mekân örneği MECLİS'tir: kök ج ل س (oturmak), vezin مَفْعِل.
+       Türkçede yaşayan bir kelime olduğu için "yerin adı" fikri
+       öğrenciye ilk bakışta oturur. */
+    { ad: 'İsm-i Mekân', kok: ['ج','ل','س'], okunus: 'meclis', anlam: 'oturma yeri, toplantı yeri',
+      slot: [ {v:'مَ', w:'مَ', z:1}, {v:'فْ', w:'جْ'}, {v:'عِ', w:'لِ'}, {v:'ل', w:'س'} ] },
     { ad: 'İsm-i Âlet', kok: ['ف','ت','ح'], okunus: 'miftâh', anlam: 'açma aleti, anahtar',
       slot: [ {v:'مِ', w:'مِ', z:1}, {v:'فْ', w:'فْ'}, {v:'عَ', w:'تَ'}, {v:'ا', w:'ا', z:1}, {v:'ل', w:'ح'} ] },
     { ad: 'İsm-i Tasgîr', kok: ['ح','س','ن'], okunus: 'Hüseyin', anlam: 'güzelcik',
@@ -982,6 +1257,13 @@ var KC_VP_ZAM = 0;              /* büyüme bitince uçuşu başlatan zamanlayı
 var KC_VP_ZINCIR = 0;           /* sunumda sıradaki vezne geçiren zamanlayıcı */
 var KC_VP_SIRA = -1;            /* o an açık olan veznin sırası (-1 = yok) */
 var KC_VP_OYNAT = false;        /* sunum kendiliğinden akıyor mu */
+/* Sunumda BİR VEZNİN EKRANDA KALMA SÜRESİ. Eskiden animasyonun kendi
+   uzunluğuna bağlıydı ve sınıfta çok hızlı akıyordu; artık sabit 10
+   saniye: öğrenci harflerin uçuşunu izleyip kelimeyi okuyacak vakti
+   bulsun. "Sonraki" tuşuna basılırsa beklenmez, hemen geçilir ve bu
+   10 saniye yeni vezin için baştan başlar. */
+var KC_VP_SURE = 10000;
+var KC_VP_KAPAN = 460;          /* kart küçülüp sıradaki açılana dek geçen pay */
 
 /* Hareket duyarlılığı: animasyon yerine sonucu doğrudan gösteririz. */
 function kcvAzHareket() {
@@ -1072,6 +1354,9 @@ function kcVezinPopKur() {
         '  </span>' +
         '  <span class="kcv-tr"><b>' + k.okunus + '</b> · ' + k.anlam + '</span>' +
         '  <span class="kcv-ucus" aria-hidden="true">' + ucus + '</span>' +
+        /* Geri sayım şeridi: yalnız sunum akarken görünür, kartın üst
+           kenarında 10 saniye boyunca eriyerek biter. */
+        '  <span class="kcv-sure" aria-hidden="true"></span>' +
         '</button>' +
         '</div>';
     };
@@ -1156,11 +1441,28 @@ function kcvKartAc(kart, oto) {
         if (pen) pen.classList.add('odak');
         /* Büyüme geçişi bitmeden ölçüm alınırsa harfler eski yerine uçar;
            onun için uçuş, kart son boyutuna oturduktan sonra başlatılır. */
-        KC_VP_ZAM = setTimeout(function () { var s = kcvUcur(kart); if (oto) kcvZincir(s); }, 360);
+        KC_VP_ZAM = setTimeout(function () { kcvUcur(kart); }, 360);
     } else {
-        var s = kcvUcur(kart);      /* büyük karta yeniden dokunmak = tekrar oynat */
-        if (oto) kcvZincir(s);
+        kcvUcur(kart);              /* büyük karta yeniden dokunmak = tekrar oynat */
     }
+    /* Geri sayım ve zincir, kartın AÇILDIĞI andan başlar; böylece her
+       veznin ekranda kalma süresi animasyon uzunluğundan bağımsız
+       olarak tam 10 saniyedir. */
+    kcvGeriSayim(kart, !!oto);
+    if (oto) kcvZincir();
+}
+
+/* GERİ SAYIM ŞERİDİ — büyüyen kartın üst kenarındaki ince kırmızı çizgi
+   10 saniye boyunca eriyerek sıradaki vezne ne kadar kaldığını söyler.
+   Her açılışta sınıf önce silinir ve akış sıfırlanır (offsetWidth):
+   "sonraki"ye basıldığında çizgi baştan dolsun, yarım kalmasın. */
+function kcvGeriSayim(kart, ac) {
+    var hepsi = kcvKartlar(), i;
+    for (i = 0; i < hepsi.length; i++) hepsi[i].classList.remove('sayac');
+    if (!ac || !kart) return;
+    kart.style.setProperty('--kcv-sure', (KC_VP_SURE / 1000).toFixed(2) + 's');
+    void kart.offsetWidth;
+    kart.classList.add('sayac');
 }
 
 /* Büyüyen kartı ızgaradaki yerine geri gönderir. */
@@ -1169,7 +1471,9 @@ function kcvKucult(per) {
     if (!per) return;
     clearTimeout(KC_VP_ZAM);
     var b = per.querySelectorAll('.kcv-kart.buyuk');
-    for (var i = 0; i < b.length; i++) { b[i].classList.remove('buyuk'); b[i].classList.remove('oynat'); }
+    for (var i = 0; i < b.length; i++) {
+        b[i].classList.remove('buyuk'); b[i].classList.remove('oynat'); b[i].classList.remove('sayac');
+    }
     var pen = per.querySelector('.kcv-pencere');
     if (pen) pen.classList.remove('odak');
 }
@@ -1202,17 +1506,24 @@ function kcvGit(n, oto) {
     kcvKartAc(k[n], oto);
 }
 
-/* İleri/geri tuşu: elle yürütme otomatiği durdurur. */
+/* İleri/geri tuşu.
+   SUNUM AKARKEN sunumu DURDURMAZ: istenen vezne hemen atlar ve o vezin
+   için 10 saniyelik geri sayım baştan başlar — öğretmen "burayı anladık,
+   geç" diyebilsin, ritim de bozulmasın. Sunum kapalıyken eskisi gibi
+   tek tek elle yürütür. */
 function kcvAdim(yon) {
-    kcvOynatDur();
-    kcvGit((KC_VP_SIRA < 0 ? (yon > 0 ? -1 : 0) : KC_VP_SIRA) + yon, false);
+    var oto = KC_VP_OYNAT;
+    if (!oto) kcvOynatDur();
+    kcvGit((KC_VP_SIRA < 0 ? (yon > 0 ? -1 : 0) : KC_VP_SIRA) + yon, oto);
 }
 
-/* Animasyon bitince kartı kapat, bir nefes bekle, sıradakine geç. */
-function kcvZincir(sure) {
+/* Vezin 10 saniye ekranda kalır, sonra kart kapanır ve sıradakine
+   geçilir. Süre animasyonun uzunluğundan bağımsızdır: kısa vezinde de
+   uzun vezinde de öğrenci aynı süre bakar. */
+function kcvZincir() {
     clearTimeout(KC_VP_ZINCIR);
     if (!KC_VP_OYNAT) return;
-    var bekle = kcvAzHareket() ? 2200 : Math.round((sure + 1.9) * 1000);
+    var bekle = Math.max(1200, KC_VP_SURE - KC_VP_KAPAN);
     KC_VP_ZINCIR = setTimeout(function () {
         if (!KC_VP_OYNAT) return;
         kcvKucult();                                   /* vezin kapanır */
@@ -1220,7 +1531,7 @@ function kcvZincir(sure) {
             if (!KC_VP_OYNAT) return;
             if (KC_VP_SIRA + 1 >= KC_VEZIN_TABLO.length) { kcvOynatDur(); return; }
             kcvGit(KC_VP_SIRA + 1, true);              /* sıradaki vezin */
-        }, 460);
+        }, KC_VP_KAPAN);
     }, bekle);
 }
 
@@ -1233,6 +1544,7 @@ function kcvOynatBasla() {
 function kcvOynatDur() {
     KC_VP_OYNAT = false;
     clearTimeout(KC_VP_ZINCIR);
+    kcvGeriSayim(null, false);      /* geri sayım çizgisi de sönsün */
     kcvOynatTusu();
 }
 
@@ -1333,5 +1645,12 @@ window.KelimeCarki = { ac: kcAc, veri: KC_VERI, yerles: kcYerles, iskelet: kcIsk
                        /* kutular: bir kelimenin Türkçe KUTULARI (harf ≠ kutu;
                           bkz. trKutu). Testler de buradan okusun ki iskelet ile
                           denetim aynı kutulamayı görsün. */
-                       kutular: kcTrKutular };
+                       kutular: kcTrKutular,
+                       /* gorunum(): görünümü dışarıdan da değiştirilebilsin
+                          ('sik' | 'sade'); argümansız çağrılırsa yürürlükteki
+                          görünümü döndürür. Sınavlar da bunu kullanır. */
+                       gorunum: function (m) {
+                           if (m === 'sik' || m === 'sade') return kcGorunumYaz(m, true);
+                           return kcSadeMi() ? 'sade' : 'sik';
+                       } };
 })();
