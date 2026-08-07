@@ -599,7 +599,14 @@ const ui = {
     tab: (e, id) => {
         if (e) e.preventDefault(); 
         playClick(); 
-        
+        /* AÇIK SEKMEYE TEKRAR BASMAK ŞERİDİ KATLAR: öğretmen zaten
+           bulunduğu sekmenin başlığına basınca "tamam, ekranı bana bırak"
+           demiş oluyor. Karar tıklamadan ÖNCE alınır, çünkü aşağıda
+           active sınıfları yeniden dağıtılıyor. */
+        const ayniSekme = !!(e && e.currentTarget &&
+                             e.currentTarget.classList &&
+                             e.currentTarget.classList.contains('active'));
+
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-trigger').forEach(t => t.classList.remove('active'));
         
@@ -609,13 +616,18 @@ const ui = {
         if(e && e.currentTarget) e.currentTarget.classList.add('active');
         /* Odak modu yalnız harf tablosu içindir: başka sekmeye geçilirse kapanır */
         if (id !== 'p1' && typeof tamEkran !== 'undefined' && tamEkran.acik) tamEkran.kapat();
+        /* Hafıza sekmesi her açıldığında İKİ KİŞİLİK gelir. */
+        if (id === 'p3' && typeof memoryGame !== 'undefined') memoryGame.ikiKisilik();
         const gs = document.getElementById('p1-switch');
         if (gs) gs.classList.toggle('gizli', id !== 'p1');
         /* Switch gizliyken mobilde sağdaki rezerv boşluk da kalksın */
         const nv = document.querySelector('.nav-tabs');
         if (nv) nv.classList.toggle('sw-yok', id !== 'p1');
-        /* Tam ekran: sekme seçilince şerit küçük simgeye dönüşür. */
-        if (typeof navKapat === 'function') { try { navKapat(); } catch (h) { } }
+        /* Başka bir sekmeye geçmek şeridi KAPATMAZ (art arda gezilebilsin);
+           yalnız kumandadaki aktif sekme adı tazelenir. Ama AYNI sekmeye
+           tekrar basıldıysa şerit katlanır. */
+        if (ayniSekme && typeof navKapat === 'function') { try { navKapat(); } catch (h) { } }
+        else if (typeof navAdYaz === 'function') { try { navAdYaz(); } catch (h) { } }
     },
     init: () => {
         const g1 = document.getElementById('g1');
@@ -670,17 +682,108 @@ const ui = {
         /* Yazılış animasyonu düğmesinin durumu tablo yeniden çizilse de korunur */
         if (typeof yazimAnim !== 'undefined') yazimAnim.uygula();
 
-        const g2 = document.getElementById('g2');
-        g2.innerHTML = "";
-        harfler.forEach(i => {
-            const nc = i.nobind ? 'nobind' : '';
-            g2.innerHTML += `<div class="flip-box ${nc}" onclick="handleFlipBox(this)"><div class="flip-inner"><div class="face">${i.h}</div><div class="face face-back">${i.tr}</div></div></div>`;
-        });
+        kartMod.ciz();
         
         if(typeof memoryGame !== 'undefined') memoryGame.init();
         if(typeof syncModeIcons === 'function') syncModeIcons();
     }
 };
+
+/* ================= KARTLAR: İKİ MOD =================
+   ad  : kartın önünde harf, arkasında adı  (ا / Elif)
+   yer : kartın önünde BAĞLI biçim, arkasında yeri  (ـك / Sonda)
+   Bağlanmayan harflerin (ا د ر و ...) başta ve ortada ayrı bir
+   yazılışı yoktur; onlar için yalnız "Sonda" kartı üretilir.
+   ==================================================== */
+const kartMod = {
+    mod: 'ad',
+    tur: 0,
+    SAYFA: 28,          /* bir turda 7x4 = 28 kart; ızgara tam bu ölçüde */
+    YER: [
+        { alan: 'b', ad: 'Başta',  sinif: 'ab-c-yesil' },
+        { alan: 'o', ad: 'Ortada', sinif: 'ab-c-mavi'  },
+        { alan: 's', ad: 'Sonda',  sinif: 'ab-c-mor'   }
+    ],
+    sec(m) {
+        this.mod = (m === 'yer') ? 'yer' : 'ad';
+        this.tur = 0;
+        document.querySelectorAll('#kartMod .km-hap').forEach(b => {
+            b.classList.toggle('aktif', b.getAttribute('data-km') === this.mod);
+        });
+        this.ciz();
+        if (typeof playClick === 'function') { try { playClick(); } catch (e) { } }
+    },
+    /* Geçerli moddaki BÜTÜN kartların listesi (tura bölünmeden önce). */
+    liste() {
+        const l = [];
+        if (this.mod === 'ad') {
+            harfler.forEach(i => l.push({
+                on: i.h, arka: i.tr, sinif: i.nobind ? 'nobind' : '', yer: false
+            }));
+        } else {
+            harfler.forEach(i => {
+                /* bağlanmayan harfin başta/ortada ayrı yazılışı yoktur */
+                const alt = i.nobind ? this.YER.filter(y => y.alan === 's') : this.YER;
+                alt.forEach(y => l.push({
+                    on: i[y.alan] || i.h, arka: y.ad, alt: i.tr,
+                    sinif: i.nobind ? 'nobind' : '', renk: y.sinif, yer: true
+                }));
+            });
+        }
+        return l;
+    },
+    /* Turlar EŞİT bölünür: 72 kart 28+28+16 değil 24+24+24 olur, böylece
+       hiçbir tur yarım kalmaz. Tur boyu 4'ün katına yuvarlanır ki ızgara
+       (4 satır) tam dolsun. */
+    turBoyu() {
+        const t = this.liste().length;
+        const n = Math.max(1, Math.ceil(t / this.SAYFA));
+        return Math.max(4, Math.ceil(Math.ceil(t / n) / 4) * 4);
+    },
+    turSayisi() { return Math.max(1, Math.ceil(this.liste().length / this.turBoyu())); },
+    turGit(yon) {
+        const n = this.turSayisi();
+        this.tur = (this.tur + yon + n) % n;      /* başa/sona sarar */
+        this.ciz();
+        if (typeof playClick === 'function') { try { playClick(); } catch (e) { } }
+    },
+    ciz() {
+        const g2 = document.getElementById('g2');
+        if (!g2) return;
+        const tum = this.liste(), n = this.turSayisi();
+        if (this.tur >= n) this.tur = 0;
+        const boy = this.turBoyu();
+        const dilim = tum.slice(this.tur * boy, (this.tur + 1) * boy);
+        /* IZGARA TAM DOLSUN: geniş ekranda 4 satır sabit, sütun sayısı kart
+           adedinden çıkar (24 kart → 6x4); dar ekranda 4 sütun sabit, satır
+           sayısı çıkar (24 kart → 4x6). Böylece alt sırada boş kutu kalmaz
+           ve kartlar dikeyde ezilmez. */
+        const dar = window.matchMedia('(max-width: 768px)').matches;
+        const kenar = Math.max(1, Math.ceil(dilim.length / 4));
+        g2.style.gridTemplateColumns = 'repeat(' + (dar ? 4 : kenar) + ', 1fr)';
+        g2.style.gridTemplateRows = 'repeat(' + (dar ? kenar : 4) + ', 1fr)';
+        g2.innerHTML = dilim.map(k => k.yer
+            ? `<div class="flip-box ${k.sinif}" onclick="handleFlipBox(this)"><div class="flip-inner">` +
+              `<div class="face face-yer ${k.renk}">${k.on}</div>` +
+              `<div class="face face-back face-yer-arka"><b>${k.arka}</b><span>${k.alt}</span></div>` +
+              `</div></div>`
+            : `<div class="flip-box ${k.sinif}" onclick="handleFlipBox(this)"><div class="flip-inner">` +
+              `<div class="face">${k.on}</div><div class="face face-back">${k.arka}</div>` +
+              `</div></div>`
+        ).join('');
+        /* tur şeridi: tek tur varsa oklara gerek yok */
+        const kutu = document.getElementById('kmTur');
+        const yazi = document.getElementById('kmTurYazi');
+        if (yazi) yazi.textContent = 'Tur ' + (this.tur + 1) + ' / ' + n;
+        if (kutu) kutu.style.display = (n > 1) ? 'inline-flex' : 'none';
+    }
+};
+/* Ekran dar/geniş sınırını geçince ızgara yeniden kurulur. */
+try {
+    window.matchMedia('(max-width: 768px)').addEventListener('change', function () {
+        if (document.getElementById('g2')) kartMod.ciz();
+    });
+} catch (e) { }
 
 /* Mod ikonları: her switch-wrapper içindeki checkbox durumuna göre
    hangi SVG'nin canlı (animasyonlu) olacağını belirler. */
@@ -766,13 +869,28 @@ const MEM_ORNAMENT = '<svg class="mem-orn" viewBox="0 0 100 100" aria-hidden="tr
     + '</svg>';
 
 const memoryGame = {
-    mode: 'single', turn: 1, opened: [], matchedCount: 0, targetPairs: 9, scores: { p1: 0, p2: 0 },
+    /* VARSAYILAN İKİ KİŞİLİK: hafıza sınıfta ikili oynanıyor, sekme
+       açılır açılmaz iki oyunculu kurulum hazır gelsin (bkz. ikiKisilik). */
+    mode: 'multi', turn: 1, opened: [], matchedCount: 0, targetPairs: 9, scores: { p1: 0, p2: 0 },
 
     toggleSwitch: function(isMulti) {
         document.getElementById('mem-toggle').checked = isMulti;
         playClick();
         this.mode = isMulti ? 'multi' : 'single';
         syncModeIcons();
+        this.init();
+    },
+
+    /* Hafıza sekmesine her girişte çağrılır. ZATEN iki kişilikse hiçbir şey
+       yapmaz — böylece sekmeler arasında gezerken yarım kalan oyun bozulmaz.
+       Kullanıcı tek kişiliğe geçtiyse, sekmeden çıkıp döndüğünde yine iki
+       kişilik açılır. */
+    ikiKisilik: function () {
+        const t = document.getElementById('mem-toggle');
+        if (t) t.checked = true;
+        if (typeof syncModeIcons === 'function') syncModeIcons();
+        if (this.mode === 'multi') { this.updateTurnUI(); return; }
+        this.mode = 'multi';
         this.init();
     },
 
@@ -885,7 +1003,41 @@ const memoryGame = {
 };
 
 const game = {
-    mode: 'multi', 
+    mode: 'multi',
+    /* İKİ SORU TİPİ
+         ad  : harf gösterilir, adı sorulur      (ش  →  Şın)
+         yer : ad ve yer sorulur, dört yazılıştan doğrusu seçilir
+               "Şın harfinin baştaki yazılışı hangisidir?"  ش ـش شـ ـشـ  */
+    soruTipi: 'ad',
+    bicimler: ['h', 'b', 'o', 's'],
+    bicimAd: { h: 'yalın', b: 'baştaki', o: 'ortadaki', s: 'sondaki' },
+    tipSec: function (t) {
+        this.soruTipi = (t === 'yer') ? 'yer' : 'ad';
+        document.querySelectorAll('.ys-bicim .ys-cip[data-t]').forEach(d => {
+            d.classList.toggle('acik', d.getAttribute('data-t') === this.soruTipi);
+        });
+        const k = document.getElementById('ysYerKutu');
+        if (k) k.hidden = (this.soruTipi !== 'yer');
+        this.questionPool = [];
+        playClick();
+    },
+    bicimSec: function (b) {
+        const i = this.bicimler.indexOf(b);
+        if (i >= 0) { if (this.bicimler.length > 1) this.bicimler.splice(i, 1); }
+        else this.bicimler.push(b);
+        document.querySelectorAll('#ysCipler .ys-cip').forEach(d => {
+            d.classList.toggle('acik', this.bicimler.indexOf(d.getAttribute('data-b')) >= 0);
+        });
+        playClick();
+    },
+    /* "Yazılış yeri" sorusu ancak DÖRT yazılışı da birbirinden farklı olan
+       harflerle kurulabilir; ا د ر و gibi bağlanmayanlarda şıklar tekrar
+       ederdi, onlar bu tipte havuza girmez. */
+    yerHavuzu: function () {
+        return harfler.filter(h => !h.nobind &&
+            new Set([h.h, h.b, h.o, h.s]).size === 4);
+    },
+    
     score: {p1:0, p2:0}, cur: "", p1S: null, p2S: null, t1: 0, t2: 0, questionPool: [],
     tekDogru: 0, tekToplam: 0, tekBas: 0,   /* GOREV: tek kisilik dogru/deneme sayaci + baslama ani */
     
@@ -915,7 +1067,10 @@ const game = {
         document.getElementById('pb2').style.width = '0%';
     },
 
-    fillPool: function() { this.questionPool = [...harfler].sort(() => Math.random() - 0.5); },
+    fillPool: function() {
+        const kaynak = (this.soruTipi === 'yer') ? this.yerHavuzu() : harfler;
+        this.questionPool = [...kaynak].sort(() => Math.random() - 0.5);
+    },
     
     start: function() {
         playClick(); 
@@ -945,22 +1100,36 @@ const game = {
         this.p1S = this.p2S = null;
         if(this.questionPool.length === 0) this.fillPool();
         const target = this.questionPool.pop(); 
-        this.cur = target.tr;
-        
         let activePlayers = this.mode === 'single' ? ['1'] : ['1', '2'];
+        let soru, opts, harfSik;
+
+        if (this.soruTipi === 'yer') {
+            /* "Şın harfinin baştaki yazılışı hangisidir?"  şıklar: dört yazılış */
+            const alan = this.bicimler[Math.floor(Math.random() * this.bicimler.length)];
+            this.cur = target[alan];
+            soru = target.tr + ' harfinin ' + this.bicimAd[alan] + ' yazılışı hangisidir?';
+            opts = [target.h, target.b, target.o, target.s];
+            harfSik = true;
+        } else {
+            this.cur = target.tr;
+            soru = target.h;
+            opts = [this.cur];
+            while (opts.length < 4) {
+                const r = harfler[Math.floor(Math.random() * harfler.length)].tr;
+                if (opts.indexOf(r) < 0) opts.push(r);
+            }
+            harfSik = false;
+        }
+        opts = opts.sort(() => Math.random() - 0.5);
 
         activePlayers.forEach(p => {
-            document.getElementById(`dq${p}`).innerText = target.h;
+            const q = document.getElementById(`dq${p}`);
+            q.innerText = soru;
+            q.classList.toggle('q-cumle', harfSik);      /* cümle ise punto küçülür */
             const grid = document.getElementById(`ag${p}`); 
-            grid.innerHTML = "";
-            let opts = [this.cur]; 
-            while(opts.length < 4) { 
-                let r = harfler[Math.floor(Math.random()*harfler.length)].tr; 
-                if(!opts.includes(r)) opts.push(r); 
-            }
-            opts.sort(() => Math.random() - 0.5).forEach(o => { 
-                grid.innerHTML += `<button class="btn-ans" onclick="game.select('${p}',this,'${o}')">${o}</button>`; 
-            });
+            grid.innerHTML = opts.map(o =>
+                `<button class="btn-ans${harfSik ? ' btn-harf' : ''}" onclick="game.select('${p}',this,'${o}')">${o}</button>`
+            ).join('');
         });
     },
     

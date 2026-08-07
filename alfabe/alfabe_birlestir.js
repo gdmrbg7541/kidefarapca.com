@@ -3,15 +3,21 @@
    ------------------------------------------------------------
    NE İŞE YARAR: Öğrencinin elindeki PDF'in CEVAP SLAYTI'dır.
    Tahtaya yansıtılır, öğretmen adım adım ilerletir, çocuk kendi
-   kâğıdına yazar. Bu yüzden ekranda yazma alanı, yazdırma tuşu
-   ya da toplu ilerletme YOKTUR — burası sade bir sunum ekranıdır.
+   kâğıdına yazar. Ekranda yazma alanı ya da yazdırma tuşu YOKTUR.
 
-   OKUNURLUK KURALI (öğretmenin isteği)
-     Ekranda AYNI ANDA EN FAZLA 4 örnek durur. 5. örneğe geçilince
-     1. örnek yukarı doğru kayıp gider, 6. örneğe geçilince 2.
-     örnek çıkar... Böylece GEÇ YAZAN öğrenci bir önceki soruları
-     hâlâ görür ve kâğıdını tamamlayabilir. Geride kalan örnekler
-     ÇÖZÜLMÜŞ (birleşik) hâlde bekler; cevap ekranda kalır.
+   EKRAN İKİYE BÖLÜNÜR
+     SOLDA  : 4 sütunlu HARF TABLOSU. Sütunlar sağdan sola
+              başta(yeşil) · ortada(mavi) · sonda(mor) · yalın(siyah).
+              Kendinden sonrakiyle birleşmeyen harfler (ا د ذ ر ز و …)
+              KIRMIZI yazılır. Tablo dikey kaydırılır; bir harfe
+              dokunulunca Harf Tanıtımı'ndaki büyüteç açılır ve harfin
+              nasıl yazıldığı animasyonla gösterilir (harfDetay).
+              Başlığa basılınca tablo katlanır, liste tüm genişliği alır.
+     SAĞDA  : soruların TAMAMI bir liste hâlinde. Her satırda solda
+              adım tahtası (kelime burada kurulur), ortada harflerin
+              AYRIK hâli, SAĞDA sıra numarası. İki alanda da harfler
+              AYNI ve BÜYÜK puntodadır ve YAZI ÇİZGİSİ üstünde durur;
+              "İleri" bastıkça harfler çizginin üstünde belirir.
 
    RENK ANAHTARI (öğretmenin istediği kural)
      YEŞİL   → BAŞTA yazılan biçim: yeni bir bağlantı kümesi
@@ -70,7 +76,6 @@
        (Bunlar sadece sağdan bağlanır; soldan bağlanmaz.) */
     var BIRLESMEZ = 'اأإآٱدذرزوؤةىء';
     var TATVIL    = 'ـ';                 /* uzatma çizgisi U+0640 */
-    var PENCERE   = 4;                   /* ekranda aynı anda duran örnek sayısı */
 
     var aktif = 0;                       /* şu an işlenen örnek (0 tabanlı) */
 
@@ -128,7 +133,7 @@
     }
 
     function adimHtml(parcalar) {
-        if (!parcalar.length) return '<span class="ab-bos">•</span>';
+        if (!parcalar.length) return '<span class="ab-dizi ab-bos-dizi"></span>';
         var bitisik = parcalar[0].bitisik, i, cik = [];
         for (i = 0; i < parcalar.length; i++) {
             cik.push('<span class="ab-p ab-c-' + parcalar[i].r +
@@ -143,7 +148,9 @@
                cik.join('') + '</span>';
     }
 
-    /* Bir örnek satırı. Yazma alanı YOK: burası cevap slaytı. */
+    /* Bir örnek satırı.
+       DİZİLİM (soldan sağa): [adım tahtası] [ayrık harfler] [sıra no]
+       İki alan da YAZI ÇİZGİSİ üstünde ve AYNI puntoda. */
     function satirHtml(sira) {
         var s   = SATIRLAR[sira];
         var c   = coz(s.h);
@@ -151,19 +158,136 @@
             return '<span class="ab-kh ab-c-' + x.renk + '">' + kacis(x.harf) + '</span>';
         }).join('');
         var top = adimlar(c).length - 1;
-        /* DİZİLİM: solda sıra numarası, ortada birleşen kelime,
-           SAĞDA harflerin birleşmemiş (ayrı) hâli. */
         return '' +
         '<div class="ab-satir" data-sira="' + sira + '" data-adim="0" data-top="' + top + '">' +
-        '  <span class="ab-no">' + (sira + 1) + '</span>' +
-        '  <div class="ab-govde">' +
-        '    <div class="ab-adim" data-rol="adim" title="Dokun → bir adım ilerle">' +
+        '  <div class="ab-tahta ab-cizgili" data-rol="adim" title="Dokun → bir adım ilerle">' +
                  adimHtml([]) +
-        '    </div>' +
-        '    <div class="ab-anlam">' + kacis(s.anlam) + '</div>' +
         '  </div>' +
-        '  <span class="ab-kaynak" title="Harflerin birleşmemiş hâli">' + kay + '</span>' +
+        '  <div class="ab-kaynak ab-cizgili" title="Harflerin birleşmemiş hâli">' + kay + '</div>' +
+        '  <div class="ab-sag">' +
+        '    <span class="ab-no">' + (sira + 1) + '</span>' +
+        '    <span class="ab-anlam">' + kacis(s.anlam) + '</span>' +
+        '  </div>' +
         '</div>';
+    }
+
+    /* --- 3b) SOLDAKİ 4 SÜTUNLU HARF TABLOSU ---------------------
+       Sütunlar SAĞDAN SOLA: başta(yeşil) · ortada(mavi) · sonda(mor)
+       · yalın(siyah). Kendinden sonrakiyle birleşmeyen harfler tüm
+       biçimlerinde KIRMIZI gösterilir. Bir satıra dokununca Harf
+       Tanıtımı'ndaki büyüteç açılır: harfin büyük hâli ve yazılış
+       animasyonu (harfDetay.open). */
+    function tabloHtml() {
+        if (typeof harfler === 'undefined' || !harfler.length) return '';
+        var sut = [
+            { a: 'n', ad: 'Yalın',  renk: 'siyah' },
+            { a: 's', ad: 'Sonda',  renk: 'mor'   },
+            { a: 'o', ad: 'Ortada', renk: 'mavi'  },
+            { a: 'b', ad: 'Başta',  renk: 'yesil' }
+        ];
+        var bas = '<div class="ab-tb-baslik">' +
+                  '<span class="ab-tb-ad-bas"></span>' +
+                  sut.map(function (x) {
+                      return '<span class="ab-tb-bs ab-c-' + x.renk + '">' + x.ad + '</span>';
+                  }).join('') + '</div>';
+
+        var govde = harfler.map(function (h, i) {
+            var kirmizi = !!h.nobind;                 /* sonrakiyle birleşmez */
+            var hucre = sut.map(function (x) {
+                var yazi = (x.a === 'n') ? h.h : h[x.a];
+                var r = kirmizi ? 'kirmizi' : x.renk;
+                return '<span class="ab-tb-h ab-c-' + r + '">' + kacis(yazi) + '</span>';
+            }).join('');
+            return '<button type="button" class="ab-tb-satir' + (kirmizi ? ' ab-tb-kirmizi' : '') +
+                   '" data-idx="' + i + '" title="' + kacis(h.tr) +
+                   ' — büyük hâli ve yazılış animasyonu için dokun">' +
+                   '<span class="ab-tb-ad"><b>' + (i + 1) + '</b>' + kacis(h.tr) + '</span>' +
+                   hucre + '</button>';
+        }).join('');
+
+        return '' +
+        '<aside class="ab-tablo">' +
+        '  <button type="button" class="ab-tb-ust" data-rol="tb-kapa"' +
+        '          title="Harf tablosunu aç / kapat" aria-expanded="true">' +
+        '    <span class="ab-tb-ust-yazi">Harf Tablosu' +
+        '      <span class="ab-tb-ipucu">harfe dokun → nasıl yazıldığını izle</span>' +
+        '    </span>' +
+        '    <span class="ab-tb-ok" aria-hidden="true"></span>' +
+        '  </button>' +
+        '  <div class="ab-tb-ic">' + bas +
+        '    <div class="ab-tb-kaydir"><div class="ab-tb-govde">' + govde + '</div></div>' +
+        '  </div>' +
+        '</aside>';
+    }
+
+    /* --- 3c) ETKİN KELİMENİN HARFLERİNİ TABLONUN ÜSTÜNE TAŞI --------
+       Sıra hangi kelimedeyse o kelimenin harfleri soldaki tablonun EN
+       ÜSTÜNE süzülür; sonraki soruya geçilince bu sefer onun harfleri
+       yukarı gelir. Böylece çocuk aradığı harfi tablonun içinde
+       aramıyor, hazır önünde buluyor.
+
+       ANİMASYON: kaliplartablosu.html'deki bâb odağıyla (babodak.js)
+       AYNI teknik — FLIP. Önce satırların ekrandaki ESKİ konumu
+       ölçülür, DOM'da sıra değiştirilir, aradaki fark translateY ile
+       geri uygulanır ve 1 saniyede sıfıra süzülür. Satırlar yerlerine
+       kayarak gider, zıplamaz. */
+
+    /* Kelimelerde geçen hemzeli/eş biçimler tablodaki temel harfe eşlenir. */
+    var ESLE = { 'أ':'ا', 'إ':'ا', 'آ':'ا', 'ٱ':'ا', 'ى':'ي', 'ئ':'ي', 'ة':'ه', 'ؤ':'و' };
+    function temel(h) { return ESLE[h] || h; }
+
+    var sonKelime = null;
+
+    function tabloSirala(kap, harfDizi, animasyonlu) {
+        var govde = kap.querySelector('.ab-tb-govde');
+        var kaydir = kap.querySelector('.ab-tb-kaydir');
+        if (!govde || typeof harfler === 'undefined') return;
+
+        var istenen = harfDizi.map(temel);
+        var anahtar = istenen.join('');
+        if (anahtar === sonKelime) return;         /* aynı kelime → boşuna oynatma */
+        sonKelime = anahtar;
+
+        var satirlar = [].slice.call(govde.children);
+        /* FLIP 1: eski konumlar */
+        var eski = satirlar.map(function (r) { return r.getBoundingClientRect().top; });
+
+        /* Yeni sıra: önce kelimenin harfleri (kelimedeki sırayla),
+           sonra kalanlar alfabe sırasında. */
+        var once = [], sonra = [];
+        satirlar.forEach(function (r) {
+            var h = harfler[+r.getAttribute('data-idx')];
+            var y = istenen.indexOf(h ? h.h : '');
+            r.classList.toggle('ab-tb-odak', y >= 0);
+            if (y >= 0) once.push({ r: r, y: y }); else sonra.push(r);
+        });
+        once.sort(function (a, b) { return a.y - b.y; });
+
+        var yeniSira = once.map(function (x) { return x.r; }).concat(sonra);
+        yeniSira.forEach(function (r) { govde.appendChild(r); });
+        if (kaydir) kaydir.scrollTop = 0;          /* üste taşınanlar görünsün */
+
+        if (!animasyonlu || (window.matchMedia &&
+            matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+
+        /* FLIP 2: yeni konumlar, farkı geri uygula, sonra sıfıra süz */
+        govde.classList.add('ab-tb-kayiyor');
+        satirlar.forEach(function (r, i) {
+            var fark = eski[i] - r.getBoundingClientRect().top;
+            if (!fark) return;
+            r.style.transition = 'none';
+            r.style.transform = 'translateY(' + fark + 'px)';
+        });
+        void govde.offsetHeight;                   /* reflow */
+        satirlar.forEach(function (r) {
+            if (!r.style.transform) return;
+            r.style.transition = 'transform 1s cubic-bezier(.22,1,.36,1)';
+            r.style.transform = '';
+        });
+        setTimeout(function () {
+            satirlar.forEach(function (r) { r.style.transition = ''; r.style.transform = ''; });
+            govde.classList.remove('ab-tb-kayiyor');
+        }, 1050);
     }
 
     /* Renk anahtarı: rengin ADINI yazmak yerine o renkte İÇİ DOLU bir
@@ -201,8 +325,8 @@
         '</div>';
     }
 
-    /* Kelimeler BÜYÜTÜLMÜŞ bir A4 sayfası gibi SABİT ölçüdedir; ekrana
-       sığmazsa küçülmez, sayfa içinde gezilir (ab-kagitlik kaydırır). */
+    /* Soruların TAMAMI listede durur; etkin satır vurgulanır ve
+       görünüre çekilir. Liste kendi içinde dikey kaydırılır. */
     function listeHtml() {
         var cik = '', i;
         for (i = 0; i < SATIRLAR.length; i++) cik += satirHtml(i);
@@ -222,17 +346,17 @@
         satir.classList.toggle('ab-bitti', adim === top);
     }
 
-    /* Görünür pencereyi çiz: [aktif-3 ... aktif] aralığı.
-       Bu yüzden 5. örneğe geçince 1. örnek ekrandan çıkar. */
-    function pencereYaz(kap) {
-        var l = kap.querySelectorAll('.ab-satir');
-        var bas = Math.max(0, aktif - (PENCERE - 1)), i;
+    /* Artık satır gizlenmiyor: hepsi listede. Yalnız etkin satır
+       işaretlenir ve görünüre kaydırılır. */
+    function pencereYaz(kap, animasyonlu) {
+        var l = kap.querySelectorAll('.ab-satir'), i;
         for (i = 0; i < l.length; i++) {
-            l[i].classList.toggle('ab-gorunur', i >= bas && i <= aktif);
             l[i].classList.toggle('ab-aktif', i === aktif);
+            l[i].classList.toggle('ab-gecmis', i < aktif);
         }
-        /* Kâğıt ekrandan taşabildiği için etkin örneği görünüre çek. */
         try { if (l[aktif]) l[aktif].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+        /* Sırası gelen kelimenin harfleri tablonun üstüne süzülsün */
+        tabloSirala(kap, SATIRLAR[aktif].h, animasyonlu !== false);
     }
 
     function durumYaz(kap) {
@@ -283,13 +407,11 @@
         ses();
     }
 
-    /* Yeni örnek aşağıdan yukarı kayarak gelir; üstteki örnek
-       bu sırada ekrandan çıkmış olur — istenen "yukarı kayma" hissi. */
+    /* Etkin satıra geçerken kısa bir belirme: göz nereye bakacağını bulsun. */
     function girAnimasyon(satir) {
         if (!satir) return;
         satir.classList.remove('ab-gir');
-        /* sınıfı yeniden tetiklemek için bir kare bekle */
-        void satir.offsetWidth;
+        void satir.offsetWidth;                 /* sınıfı yeniden tetikle */
         satir.classList.add('ab-gir');
         setTimeout(function () { satir.classList.remove('ab-gir'); }, 460);
     }
@@ -302,16 +424,34 @@
         if (!kap || kuruldu) return;
         kuruldu = true;
 
-        kap.innerHTML = anahtarHtml() + listeHtml() + seritHtml();
+        kap.innerHTML =
+            tabloHtml() +
+            '<div class="ab-ana">' + anahtarHtml() + listeHtml() + seritHtml() + '</div>';
 
         var satirlar = kap.querySelectorAll('.ab-satir'), i;
         for (i = 0; i < satirlar.length; i++) adimYaz(satirlar[i]);
         aktif = 0;
-        pencereYaz(kap);
+        pencereYaz(kap, false);        /* ilk kurulumda animasyonsuz */
         durumYaz(kap);
 
         kap.addEventListener('click', function (e) {
             var t = e.target;
+            /* Tabloyu katla / aç: kapalıyken liste tüm genişliği alır */
+            var kapa = t.closest ? t.closest('[data-rol="tb-kapa"]') : null;
+            if (kapa) {
+                var kapali = kap.classList.toggle('ab-tablo-kapali');
+                kapa.setAttribute('aria-expanded', kapali ? 'false' : 'true');
+                ses();
+                return;
+            }
+            /* Harf tablosu: büyüteç + yazılış animasyonu */
+            var tb = t.closest ? t.closest('.ab-tb-satir') : null;
+            if (tb) {
+                if (typeof harfDetay !== 'undefined' && harfDetay.open) {
+                    harfDetay.open(+tb.getAttribute('data-idx'));
+                }
+                return;
+            }
             var nav = t.closest ? t.closest('.ab-nav') : null;
             if (nav) { if (!nav.disabled) ilerle(kap, +nav.getAttribute('data-yon')); return; }
             /* Yalnız ETKİN örneğin tahtasına dokunmak ilerletir;
@@ -323,10 +463,13 @@
             }
         });
 
-        /* Klavye/sunum kumandası — yalnız bu sekme açıkken. */
+        /* Klavye/sunum kumandası — yalnız bu sekme açıkken ve
+           büyüteç kapalıyken. */
         document.addEventListener('keydown', function (e) {
             var p5 = document.getElementById('p5');
             if (!p5 || !p5.classList.contains('active')) return;
+            var ov = document.getElementById('hd-overlay');
+            if (ov && ov.style.display === 'flex') return;   /* büyüteç açıkken karışma */
             var hedef = e.target;
             if (hedef && /^(INPUT|TEXTAREA|SELECT)$/.test(hedef.tagName || '')) return;
             var k = e.key;
