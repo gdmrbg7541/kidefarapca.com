@@ -71,14 +71,16 @@ var KC_VERI = [
       kelimeler: [
         { tr: 'hüküm',   ar: 'حكم',    tam: 'حُكْم',     vezinAr: 'فُعْل',    vezinTr: 'fuʿl',    anlam: 'karar' },
         { tr: 'hâkim',   ar: 'حاكم',   tam: 'حَاكِم',    vezinAr: 'فَاعِل',   vezinTr: 'fâil',    anlam: 'hükmeden kişi' },
-        { tr: 'hikmet',  ar: 'حكمة',   tam: 'حِكْمَة',   vezinAr: 'فِعْلَة',  vezinTr: 'fiʿle',   anlam: 'derin kavrayış' },
+        { tr: 'hikmet',  ar: 'حكمة',   tam: 'حِكْمَة',   vezinAr: 'فِعْلَة',  vezinTr: 'fiʿle',   anlam: 'derin kavrayış',
+          trKutu: ['h', 'i', 'k', 'm', 'et'] },
         { tr: 'mahkeme', ar: 'محكمة',  tam: 'مَحْكَمَة', vezinAr: 'مَفْعَلَة', vezinTr: 'mefʿale', anlam: 'hüküm yeri' } ] },
     { arKok: ['س', 'ل', 'م'], trKok: ['s', 'l', 'm'], arGoster: 'سـ ـلـ ـم', anlam: 'esen olmak',
       kelimeler: [
         { tr: 'selam',   ar: 'سلام',   tam: 'سَلَام',    vezinAr: 'فَعَال',   vezinTr: 'feʿâl',   anlam: 'esenlik dileği' },
         { tr: 'islam',   ar: 'إسلام',  tam: 'إِسْلَام',  vezinAr: 'إِفْعَال', vezinTr: 'ifʿâl',   anlam: 'teslim oluş' },
         { tr: 'teslim',  ar: 'تسليم',  tam: 'تَسْلِيم',  vezinAr: 'تَفْعِيل', vezinTr: 'tefʿîl',  anlam: 'emanet etme' },
-        { tr: 'selamet', ar: 'سلامة',  tam: 'سَلَامَة',  vezinAr: 'فَعَالَة', vezinTr: 'feʿâle',  anlam: 'kurtuluş' } ] },
+        { tr: 'selamet', ar: 'سلامة',  tam: 'سَلَامَة',  vezinAr: 'فَعَالَة', vezinTr: 'feʿâle',  anlam: 'kurtuluş',
+          trKutu: ['s', 'e', 'l', 'a', 'm', 'et'] } ] },
     { arKok: ['خ', 'ب', 'ر'], trKok: ['h', 'b', 'r'], arGoster: 'خـ ـبـ ـر', anlam: 'haber vermek',
       kelimeler: [
         { tr: 'haber',      ar: 'خبر',        tam: 'خَبَر',           vezinAr: 'فَعَل',          vezinTr: 'feʿal',      anlam: 'bildirilen şey' },
@@ -93,7 +95,10 @@ var KC_VERI = [
       kelimeler: [
         { tr: 'kader',    ar: 'قدر',    tam: 'قَدَر',      vezinAr: 'فَعَل',        vezinTr: 'feʿal',    anlam: 'ilahi ölçü · yazgı' },
         { tr: 'kadir',    ar: 'قادر',   tam: 'قَادِر',     vezinAr: 'فَاعِل',       vezinTr: 'fâil',     anlam: 'gücü yeten' },
-        { tr: 'kudret',   ar: 'قدرة',   tam: 'قُدْرَة',    vezinAr: 'فُعْلَة',      vezinTr: 'fuʿle',    anlam: 'güç · yetenek' },
+        /* Arapçada kök ر'sından sonra TEK harf (ة) var; Türkçedeki "et"
+           de tek kutuda dursun ki iki şerit alt alta hizalanabilsin. */
+        { tr: 'kudret',   ar: 'قدرة',   tam: 'قُدْرَة',    vezinAr: 'فُعْلَة',      vezinTr: 'fuʿle',    anlam: 'güç · yetenek',
+          trKutu: ['k', 'u', 'd', 'r', 'et'] },
         /* Kök yine k · d · r'dir; Türkçede dâl sertleşip t okunur, o
            harf çarkta mor çıkar (kök değişmez, yalnız sesi değişir). */
         { tr: 'miktar',   ar: 'مقدار',  tam: 'مِقْدَار',   vezinAr: 'مِفْعَال',     vezinTr: 'mifʿâl',   anlam: 'ölçü · nicelik' },
@@ -108,7 +113,8 @@ var KC_VERI = [
       kelimeler: [
         { tr: 'harem',    ar: 'حرم',    tam: 'حَرَم',      vezinAr: 'فَعَل',     vezinTr: 'feʿal',    anlam: 'dokunulmaz alan' },
         { tr: 'haram',    ar: 'حرام',   tam: 'حَرَام',     vezinAr: 'فَعَال',    vezinTr: 'feʿâl',    anlam: 'yasak kılınan' },
-        { tr: 'hürmet',   ar: 'حرمة',   tam: 'حُرْمَة',    vezinAr: 'فُعْلَة',   vezinTr: 'fuʿle',    anlam: 'saygı · dokunulmazlık' },
+        { tr: 'hürmet',   ar: 'حرمة',   tam: 'حُرْمَة',    vezinAr: 'فُعْلَة',   vezinTr: 'fuʿle',    anlam: 'saygı · dokunulmazlık',
+          trKutu: ['h', 'ü', 'r', 'm', 'et'] },
         { tr: 'mahrem',   ar: 'محرم',   tam: 'مَحْرَم',    vezinAr: 'مَفْعَل',   vezinTr: 'mefʿal',   anlam: 'gizli · yakın akraba' },
         { tr: 'mahrum',   ar: 'محروم',  tam: 'مَحْرُوم',   vezinAr: 'مَفْعُول',  vezinTr: 'mefʿûl',   anlam: 'yoksun bırakılmış' },
         { tr: 'ihram',    ar: 'إحرام',  tam: 'إِحْرَام',   vezinAr: 'إِفْعَال',  vezinTr: 'ifʿâl',    anlam: 'hacda yasaklara girme' },
@@ -209,6 +215,18 @@ function kcHarfler(s) { return Array.from(s); }
    ile çizim asla farklı kutulama görmesin. */
 function kcTrKutular(kel) { return kel.trKutu || kcHarfler(kel.tr); }
 
+/* ROUND X — Türkçe kelimenin İLK KUTUSU büyük harfle yazılır. Yalnız
+   GÖSTERİM içindir: ölçüm, kök bulma ve sertleşme hep küçük harfli
+   dizi üstünden yürür, yoksa "Kader"in K'si kök k ile eşleşmez.
+   Türkçe kurallı büyütme: "islam" → "İslam", "ihbar" → "İhbar". */
+function kcTrBas(h) {
+    if (!h) return h;
+    var ilk = h.charAt(0), b;
+    try { b = ilk.toLocaleUpperCase('tr'); } catch (e) { b = ilk.toUpperCase(); }
+    if (ilk === 'i' && b !== 'İ') b = 'İ';        /* eski motor sigortası */
+    return b + h.slice(1);
+}
+
 /* Çift harfli kutu YALNIZ Türkçe şeritte olur ("rr", "mm", "ti", "te").
    Arapça yüzlerde bağlı biçim + hareke yüzünden metin uzunluğu da 2
    olabildiği için uzunluğa değil, iki LATİN harfi olmasına bakıyoruz. */
@@ -288,13 +306,18 @@ function kcOlcu(harfler, kok) {
    şeridin ARTAN yuvası kelimenin SONUNA (yani ekranın dış kenarına)
    eklenir, kök harfleri öne kaymasın diye.
 
-   HİZA NOTU: kökler iki şeritte de aynı sütunlara ancak
-   arOn = son + 1 ve on = arSon + 1 iken düşer. KTB, KML, HBR bu şartı
-   kendiliğinden sağlar (hiza tam). KDR, HRM, HKM, SLM'de Türkçenin
-   sonundaki iki yuva bunu imkânsız kılar: kök sütunları bir adım
-   kayar, üç kök sütununun ikisi yine çakışır. Öğretmenin istediği
-   "kökten önce tek boş kutu" bu bedele değer; kutular azaldıkça
-   harfler de büyür. */
+   HİZA KURALI (ROUND X): iki şerit N+1 sütunluk ORTAK bir ızgaraya
+   oturur — Türkçe teker k → sütun k, Arapça teker k → sütun N-k
+   (bkz. kcSutunOlc; Arapçanın payı ilk, Türkçenin payı son sütundur).
+   Üç kök sütununun da çakışması için tek şart vardır:
+       trOn + arOn = yan + 1,  yani  arOn = trSon + 1  ve  trOn = arSon + 1.
+   Eskiden ön paylar serbest bırakılıyordu; KDR, HRM, HKM ve SLM'de
+   kök sütunları bir adım kayıyordu (öğretmenin bildirdiği kusur).
+   Artık her şeridin ön payı KARŞI şeridin son payına göre belirlenir;
+   formül kendi içinde tutarlıdır, çünkü
+       trOn + trSon = (arSon+1) + (arOn-1) = arOn + arSon.
+   KDR/HRM/HKM/SLM'de ة'li kelimeler tek kutuya alındığı için toplam
+   teker 9'dan 8'e düştü: hem hiza tam, hem harfler daha büyük. */
 function kcIskelet(kok) {
     if (kok._isk) return kok._isk;
     var trOn = 0, trSon = 0, arOn = 0, arSon = 0, araG = 0;
@@ -314,9 +337,11 @@ function kcIskelet(kok) {
             araG = Math.max(araG, ao.a1, ao.a2);
         }
     });
-    /* İki şerit aynı sayıda teker taşısın: kısa olanın açığı SONA gider. */
-    var yan = Math.max(trOn + trSon, arOn + arSon);
-    trSon = yan - trOn; arSon = yan - arOn;
+    /* İki şerit aynı sayıda teker taşır VE kök sütunları çakışır. */
+    var trOnEn = trOn, trSonEn = trSon, arOnEn = arOn, arSonEn = arSon;
+    arOn = Math.max(arOnEn, trSonEn + 1); trSon = arOn - 1;
+    trOn = Math.max(trOnEn, arSonEn + 1); arSon = trOn - 1;
+    var yan = trOn + trSon;
     var ara = araG, adim = ara + 1, n = yan + 3 + 2 * ara;
     var poz = function (on) { return [on, on + adim, on + 2 * adim]; };
     kok._isk = { n: n, ara: ara,
@@ -957,7 +982,10 @@ function kcGuncelle(ilk, yon) {
         var trH = kcTrKutular(d.tr);
         var trYer = kcYerles(trH, trK, isk, false);
         if (!trYer) return;                                  /* veri sigortası */
-        for (i = 0; i < isk.n; i++) if (trYer[i] >= 0) trHedef[i] = trH[trYer[i]];
+        /* Ekrana çıkan dizi: ilk kutusu büyük harfli KOPYA (kcTrBas).
+           Ölçüm/kök bulma aşağıda hâlâ küçük harfli trH ile yapılır. */
+        var trG = trH.slice(); trG[0] = kcTrBas(trG[0]);
+        for (i = 0; i < isk.n; i++) if (trYer[i] >= 0) trHedef[i] = trG[trYer[i]];
         /* Sertleşen kök harfini işaretle: kökün d'si kelimede t olmuşsa
            (miktar) o teker mor yansın — kök yerinde, ses değişmiş. */
         var trO = kcOlcu(trH, trK);
@@ -992,7 +1020,7 @@ function kcGuncelle(ilk, yon) {
                    '">' + s.b + s.m + '</span>';
         }).join('');
         var trKokIdx = [trYer[P[0]], trYer[P[1]], trYer[P[2]]];
-        trSoz = trH.map(function (h, idx) {
+        trSoz = trG.map(function (h, idx) {
             var kk = trKokIdx.indexOf(idx);
             return '<span class="kc-sz' +
                    (kk < 0 ? '' : (trO && trO.sert[kk] ? ' kok sert' : ' kok')) +
@@ -1326,7 +1354,10 @@ function kcVezinPopKur() {
             var h = dizi[i];
             var oncekiBaglar = i > 0 && KCV_BAGLANMAZ.indexOf(dizi[i - 1]) < 0;
             var kendiBaglar  = i < dizi.length - 1 && KCV_BAGLANMAZ.indexOf(h) < 0;
-            cik.push((oncekiBaglar ? 'ـ' : '') + h + (kendiBaglar ? 'ـ' : ''));
+            /* ROUND X: her kök harfi kendi kutusunda — zâid harfin
+               ineceği nokta KÖKÜN harflerine göre ölçülecek (kcvUcur). */
+            cik.push('<i class="kcv-kh">' +
+                     (oncekiBaglar ? 'ـ' : '') + h + (kendiBaglar ? 'ـ' : '') + '</i>');
         }
         return cik.join(' ');
     };
@@ -1352,7 +1383,7 @@ function kcVezinPopKur() {
         '      <span class="kcv-kelime" dir="rtl">' + birlestir(k.slot, 'w') + '</span>' +
         '    </span>' +
         '  </span>' +
-        '  <span class="kcv-tr"><b>' + k.okunus + '</b> · ' + k.anlam + '</span>' +
+        '  <span class="kcv-tr"><b>' + kcTrBas(k.okunus) + '</b> · ' + k.anlam + '</span>' +
         '  <span class="kcv-ucus" aria-hidden="true">' + ucus + '</span>' +
         /* Geri sayım şeridi: yalnız sunum akarken görünür, kartın üst
            kenarında 10 saniye boyunca eriyerek biter. */
@@ -1569,24 +1600,65 @@ function kcvOynatTusu() {
    Kaynak merkezi → uçan harfin left/top'u, iki merkez farkı → --dx/--dy.
    DÖNÜŞ: animasyonun toplam süresi (saniye) — sunum akışı sıradaki
    vezne ne zaman geçeceğini buradan bilir. */
+function kcvBosluklar(tab) {
+    /* Her zâid harfin ÖNÜNDE kaç kök harfi var (Arapça okuma sırası).
+       0 → kelimenin tam başı, kök boyu → tam sonu, arası → ilgili ara. */
+    var b = [], sayac = 0, i;
+    if (!tab) return b;
+    for (i = 0; i < tab.slot.length; i++) {
+        if (tab.slot[i].z) b.push(sayac); else sayac++;
+    }
+    return b;
+}
+
+/* Zâid harfin İNECEĞİ NOKTA — ekranda O AN duran KÖKE göre ölçülür.
+   Eskiden hedef, henüz görünmeyen kelimedeki yerdi; kelime kökten dar
+   olduğu için harf kökün başına değil ortalarına bir yere iniyordu.
+   Artık: baştaki zâid ilk kök harfinin SAĞINA (Arapçada başı sağdadır),
+   sondaki son kök harfinin SOLUNA, ortadaki iki kök harfinin TAM
+   ARASINA iner. Kök ölçülemezse eski davranışa düşülür. */
+function kcvInis(kh, g, en, yedek) {
+    var n = kh.length, r, sag, sol;
+    if (!n) {
+        r = yedek ? yedek.getBoundingClientRect() : null;
+        return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null;
+    }
+    if (g <= 0) {
+        r = kh[0].getBoundingClientRect();
+        return { x: r.right + en / 2, y: r.top + r.height / 2 };
+    }
+    if (g >= n) {
+        r = kh[n - 1].getBoundingClientRect();
+        return { x: r.left - en / 2, y: r.top + r.height / 2 };
+    }
+    sag = kh[g - 1].getBoundingClientRect();        /* RTL: önceki harf SAĞDA */
+    sol = kh[g].getBoundingClientRect();
+    return { x: (sag.left + sol.right) / 2,
+             y: (sag.top + sag.height / 2 + sol.top + sol.height / 2) / 2 };
+}
+
 function kcvUcur(kart) {
     if (!kart) return 0;
     var ucus = kart.querySelector('.kcv-ucus');
     if (!ucus) return 0;
     var vz  = kart.querySelectorAll('.kcv-vezin .kcv-z');
     var kz  = kart.querySelectorAll('.kcv-kelime .kcv-z');
+    var kh  = kart.querySelectorAll('.kcv-kok .kcv-kh');
     var dus = ucus.querySelectorAll('.kcv-dus');
     var kr  = kart.getBoundingClientRect();
+    var bos = kcvBosluklar(KC_VEZIN_TABLO[+(kart.getAttribute('data-sira') || 0)]);
     var n = Math.min(vz.length, kz.length, dus.length), i;
 
     for (i = 0; i < n; i++) {
         var a = vz[i].getBoundingClientRect();      /* kaynak: vezindeki harf */
-        var h = kz[i].getBoundingClientRect();      /* hedef : kelimedeki yeri */
         var d = dus[i];
+        var dr = d.getBoundingClientRect();
+        var h = kcvInis(kh, i < bos.length ? bos[i] : 0, dr.width || a.width, kz[i]);
+        if (!h) continue;
         d.style.left = (a.left - kr.left + a.width  / 2).toFixed(1) + 'px';
         d.style.top  = (a.top  - kr.top  + a.height / 2).toFixed(1) + 'px';
-        d.style.setProperty('--dx', ((h.left + h.width  / 2) - (a.left + a.width  / 2)).toFixed(1) + 'px');
-        d.style.setProperty('--dy', ((h.top  + h.height / 2) - (a.top  + a.height / 2)).toFixed(1) + 'px');
+        d.style.setProperty('--dx', (h.x - (a.left + a.width  / 2)).toFixed(1) + 'px');
+        d.style.setProperty('--dy', (h.y - (a.top  + a.height / 2)).toFixed(1) + 'px');
         d.style.setProperty('--gec', (i * .42).toFixed(2) + 's');
         vz[i].style.setProperty('--gec', (i * .42).toFixed(2) + 's');
     }

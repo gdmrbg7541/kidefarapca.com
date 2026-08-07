@@ -869,8 +869,10 @@
     display: block; font-family: var(--font-ar); line-height: 1.45;
     font-size: var(--kcv-ar); color: var(--kcv-koyu);
 }
-/* ZÂİD HARF: kökte yok, vezinden geliyor → KIRMIZI */
-.kcv-z { color: var(--kcv-kirmizi); font-weight: inherit; }
+/* ZÂİD HARF: kökte yok, vezinden geliyor → KIRMIZI.
+   ROUND X: harf uçarken vezindeki aslı ARTIK SOLMAZ; tahtada
+   kırmızılar baştan sona aynı canlılıkta okunsun. */
+.kcv-z { color: var(--kcv-kirmizi); font-weight: inherit; opacity: 1; }
 
 /* 3-4) sahne: kök ⇄ kelime aynı gözde üst üste durur */
 .kcv-sahne { width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -882,7 +884,12 @@
 /* Kök: harfler kelimedeki bağlanma yüzleriyle yazılır (كـ ـتـ ـب),
    aralarındaki boşluk korunur — öğrenci hangi harfin nereye
    tutunacağını daha kök halindeyken görür. */
-.kcv-kok    { color: var(--kcv-sis); letter-spacing: .02em; }
+/* ROUND X: kök artık SİYAH — öğretmen "kökü göster" dediğinde
+   soluk gri değil, kelimenin kendisi kadar net dursun. */
+.kcv-kok    { color: var(--kcv-koyu); letter-spacing: .02em; }
+/* Kökün her harfi kendi kutusunda: zâid harfin ineceği noktayı JS
+   buradan ölçer (kcvInis). Görünüşe hiç karışmaz. */
+.kcv-kh     { font-style: normal; font-weight: inherit; color: inherit; }
 .kcv-kelime { color: var(--kcv-koyu); opacity: 0; }
 
 /* UÇAN HARFLER: kartın üstüne serilen mutlak katman.
@@ -928,9 +935,6 @@
 .kcv-kart.oynat .kcv-dus {
     animation: kcvUcus 1.22s cubic-bezier(.34, .12, .3, 1) var(--gec, 0s) forwards;
 }
-.kcv-kart.oynat .kcv-vezin .kcv-z {
-    animation: kcvSolgun .5s ease var(--gec, 0s) forwards;
-}
 .kcv-kart.oynat .kcv-kok    { animation: kcvKokGit .42s ease var(--t1, 1.2s) forwards; }
 .kcv-kart.oynat .kcv-kelime { animation: kcvKelGel .48s cubic-bezier(.2, .9, .3, 1) var(--t1, 1.2s) forwards; }
 .kcv-kart.oynat .kcv-tr     { animation: kcvTrGel  .45s ease var(--t2, 1.8s) forwards; }
@@ -947,8 +951,6 @@
     100% { opacity: 0;
            transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) scale(.92); }
 }
-/* vezindeki zâid harf, kopyası uçarken sönükleşir: "yerinden ayrıldı" */
-@keyframes kcvSolgun { to { opacity: .26; } }
 /* kök: harfler yerine oturunca yerini kelimeye bırakır */
 @keyframes kcvKokGit { to { opacity: 0; } }
 /* kelime: kökün ta kendisi, zâid harfler eklenmiş hâli */
@@ -987,8 +989,8 @@
     .kcv-yigin > * { grid-area: auto; }
     .kcv-kart { opacity: 1; animation: none; }
     .kcv-kart.buyuk { animation: none; transform: translate(-50%, -50%); }
-    .kcv-kart.oynat .kcv-dus, .kcv-kart.oynat .kcv-vezin .kcv-z,
-    .kcv-kart.oynat .kcv-kok, .kcv-kart.oynat .kcv-kelime, .kcv-kart.oynat .kcv-tr { animation: none; }
+    .kcv-kart.oynat .kcv-dus, .kcv-kart.oynat .kcv-kok,
+    .kcv-kart.oynat .kcv-kelime, .kcv-kart.oynat .kcv-tr { animation: none; }
     .kcv-pencere.odak::after { animation: none; }
 }
 
