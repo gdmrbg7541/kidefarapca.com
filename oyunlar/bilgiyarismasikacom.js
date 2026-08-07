@@ -74,6 +74,7 @@ function arMi(t){ return /[؀-ۿ]/.test(String(t == null ? "" : t)); }
    ayri satirda durur. Renk ve animasyon CSS'te (biy-ea-*). */
 const _EA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">';
 const ETIKET_TIP = {
+  "harf":  _EA+'<path d="M3.2 18.2h17.6"/><path class="biy-ea-ciz" d="M6.4 15.4V8.2a2.1 2.1 0 0 1 4.2 0v7.2M6.4 12.2h4.2"/><path class="biy-ea-parla" d="M14.6 15.4V5.4M14.6 15.4h3.8"/></svg>',
   "kok":   _EA+'<path d="M12 21v-8"/><path d="M12 13c0-3.2-2.4-5.6-6-5.6 0 3.6 2.4 5.6 6 5.6z"/><path class="biy-ea-parla" d="M12 11c0-3.6 2.6-6.2 6.4-6.2 0 4-2.8 6.2-6.4 6.2z"/></svg>',
   "vezin": _EA+'<g class="biy-ea-zip"><path d="M4.2 7h15.6"/><path d="M6.8 7l-2.7 5a3.1 3.1 0 0 0 5.4 0z"/><path d="M17.2 7l-2.7 5a3.1 3.1 0 0 0 5.4 0z"/></g><path d="M12 4.4v13.2M8.6 20.4h6.8"/><circle cx="12" cy="4.2" r="1.1"/></svg>',
   "anlam": _EA+'<path d="M9.8 17.5h4.4M10.6 20.5h2.8"/><path d="M12 3.2a5.6 5.6 0 0 1 3.2 10.2c-.7.5-1 1.1-1 1.9h-4.4c0-.8-.3-1.4-1-1.9A5.6 5.6 0 0 1 12 3.2z"/><g class="biy-ea-parla"><path d="M3.6 5.4l1.5.9M20.4 5.4l-1.5.9M12 .9v1.5"/></g></svg>',
@@ -474,6 +475,151 @@ const KONULAR = [
     {"id":21045,"tip":"cumle","zorluk":2,"soru":"«İlacı kullanman/tüketmen gerekir.» cümlesinin Arapçası hangisi?","secenekler":["يَجِبُ عَلَيْكَ أَنْ تَتَناوَلَ الدَّواء.","هُم يُحِبّونَ الصِّغار‫.‬","يَجِبُ عَلى المُسْلِم أَنْ يَكونَ مُبْتَسِمًا‫.‬","خالي مُدَرِّس، وَهُو يُدَرِّسُ في المَدْرَسَة."],"dogru":0,"arSecenek":true}
   ] },
   /* ---- GENEL KONULAR (her sinifta gorunur) ---- */
+  /* ------------------------------------------------------------------
+     ALFABE — harflerin okunusu, yazilisi (bastaki/ortadaki/sondaki),
+     birlesme kurallari ve bosluk doldurma. Tum siniflarda gorunur.
+     tip: "harf" · id araligi 1..999 (konu icinde benzersiz).
+     ------------------------------------------------------------------ */
+  { id: "alfabe", ad: "Alfabe", pdf: "", sorular: [
+    {"id":1,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ح","secenekler":["Ha","Ya","Kef","Dad"],"dogru":0},
+    {"id":2,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ه","secenekler":["He","Ayn","Ba","Ğayn"],"dogru":0},
+    {"id":3,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"و","secenekler":["Vav","Ta","Sa","Fa"],"dogru":0},
+    {"id":4,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ب","secenekler":["Ba","Sin","Ğayn","Zı"],"dogru":0},
+    {"id":5,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"س","secenekler":["Sin","Ğayn","Şın","Ta"],"dogru":0},
+    {"id":6,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"د","secenekler":["Dal","Ta","Nun","Fa"],"dogru":0},
+    {"id":7,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ك","secenekler":["Kef","Dal","Kaf","Dad"],"dogru":0},
+    {"id":8,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ز","secenekler":["Ze","Cim","Nun","Lam"],"dogru":0},
+    {"id":9,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"خ","secenekler":["Hı","Dal","Nun","Tı"],"dogru":0},
+    {"id":10,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ص","secenekler":["Sad","Dad","Zı","Kaf"],"dogru":0},
+    {"id":11,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"ل","secenekler":["Lam","Ğayn","Sa","Vav"],"dogru":0},
+    {"id":12,"tip":"harf","bicim":"test","zorluk":1,"soru":"Bu harfin adı nedir?","arapca":"غ","secenekler":["Ğayn","Ze","Ra","Ta"],"dogru":0},
+    {"id":13,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Şın» harfidir?","secenekler":["ش","ظ","ج","ت"],"dogru":0,"arSecenek":true},
+    {"id":14,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Dad» harfidir?","secenekler":["ض","ت","ي","ط"],"dogru":0,"arSecenek":true},
+    {"id":15,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Sa» harfidir?","secenekler":["ث","ق","د","غ"],"dogru":0,"arSecenek":true},
+    {"id":16,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Zel» harfidir?","secenekler":["ذ","و","ي","ه"],"dogru":0,"arSecenek":true},
+    {"id":17,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Cim» harfidir?","secenekler":["ج","د","م","ذ"],"dogru":0,"arSecenek":true},
+    {"id":18,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Ra» harfidir?","secenekler":["ر","ن","ف","ح"],"dogru":0,"arSecenek":true},
+    {"id":19,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Nun» harfidir?","secenekler":["ن","ك","ز","س"],"dogru":0,"arSecenek":true},
+    {"id":20,"tip":"harf","bicim":"test","zorluk":1,"soru":"Hangisi «Mim» harfidir?","secenekler":["م","ز","د","ع"],"dogru":0,"arSecenek":true},
+    {"id":21,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["ن — ل","د — ض","ك — ق","ه — ح"],"dogru":0,"arSecenek":true},
+    {"id":22,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["ع — ك","ث — ص","ذ — ز","ح — خ"],"dogru":0,"arSecenek":true},
+    {"id":23,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["ق — ظ","س — ص","ا — ع","ت — ط"],"dogru":0,"arSecenek":true},
+    {"id":24,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["و — ع","ث — س","ه — خ","ذ — ظ"],"dogru":0,"arSecenek":true},
+    {"id":25,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["ح — د","ج — خ","ص — ض","ع — غ"],"dogru":0,"arSecenek":true},
+    {"id":26,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["و — ط","ج — ح","ب — ث","ف — ق"],"dogru":0,"arSecenek":true},
+    {"id":27,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["غ — ض","ط — ظ","ب — ت","ر — ز"],"dogru":0,"arSecenek":true},
+    {"id":28,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden yanlış verilen şıkkı bulunuz.","secenekler":["ض — ر","س — ش","د — ذ","ح — خ"],"dogru":0,"arSecenek":true},
+    {"id":29,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ك — ق","ب — خ","ر — ض","ت — و"],"dogru":0,"arSecenek":true},
+    {"id":30,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ذ — ظ","ص — ي","ب — س","ج — ض"],"dogru":0,"arSecenek":true},
+    {"id":31,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ث — ص","ج — ه","س — ا","ت — م"],"dogru":0,"arSecenek":true},
+    {"id":32,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["س — ص","ع — ن","ب — ز","ذ — م"],"dogru":0,"arSecenek":true},
+    {"id":33,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["د — ض","ي — ح","ط — ر","ف — ص"],"dogru":0,"arSecenek":true},
+    {"id":34,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ح — خ","ط — ل","ا — د","ت — ج"],"dogru":0,"arSecenek":true},
+    {"id":35,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ذ — ز","س — د","ق — ه","ك — ا"],"dogru":0,"arSecenek":true},
+    {"id":36,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda okunuşları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ا — ع","غ — ض","ت — ش","ي — ك"],"dogru":0,"arSecenek":true},
+    {"id":37,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ف — ق","ع — ي","غ — م","ا — ث"],"dogru":0,"arSecenek":true},
+    {"id":38,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ص — ض","ا — ي","ن — ك","ق — ت"],"dogru":0,"arSecenek":true},
+    {"id":39,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ج — ح","ل — ز","و — غ","م — ظ"],"dogru":0,"arSecenek":true},
+    {"id":40,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ب — ت","ه — د","ر — ح","ف — ص"],"dogru":0,"arSecenek":true},
+    {"id":41,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ت — ث","ح — ك","ن — ض","ي — د"],"dogru":0,"arSecenek":true},
+    {"id":42,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ع — غ","ذ — و","ص — م","ب — ح"],"dogru":0,"arSecenek":true},
+    {"id":43,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["ر — ز","ك — د","ث — ا","ض — ج"],"dogru":0,"arSecenek":true},
+    {"id":44,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıda yazılışları benzer olan harflerden doğru verilen şıkkı bulunuz.","secenekler":["س — ش","غ — ت","م — ر","ص — خ"],"dogru":0,"arSecenek":true},
+    {"id":45,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["ـكـ ـكـ ـك","تـ ـتـ ـت","ضـ ـضـ ـض","طـ ـطـ ـط"],"dogru":0,"arSecenek":true},
+    {"id":46,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["ـبـ ـبـ ـب","نـ ـنـ ـن","سـ ـسـ ـس","ضـ ـضـ ـض"],"dogru":0,"arSecenek":true},
+    {"id":47,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["ص ـصـ ـص","غـ ـغـ ـغ","كـ ـكـ ـك","ظـ ـظـ ـظ"],"dogru":0,"arSecenek":true},
+    {"id":48,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["صـ صـ ـص","مـ ـمـ ـم","قـ ـقـ ـق","ثـ ـثـ ـث"],"dogru":0,"arSecenek":true},
+    {"id":49,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["ـبـ ـبـ ـب","عـ ـعـ ـع","صـ ـصـ ـص","يـ ـيـ ـي"],"dogru":0,"arSecenek":true},
+    {"id":50,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["مـ ـمـ ـمـ","طـ ـطـ ـط","غـ ـغـ ـغ","ظـ ـظـ ـظ"],"dogru":0,"arSecenek":true},
+    {"id":51,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["ظـ ـظـ ـظـ","كـ ـكـ ـك","غـ ـغـ ـغ","ضـ ـضـ ـض"],"dogru":0,"arSecenek":true},
+    {"id":52,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden yanlış yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["بـ ـب ـب","طـ ـطـ ـط","مـ ـمـ ـم","هـ ـهـ ـه"],"dogru":0,"arSecenek":true},
+    {"id":53,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["هـ ـهـ ـه","عـ ـع ـع","غـ ـغـ غـ","ـخـ ـخـ ـخ"],"dogru":0,"arSecenek":true},
+    {"id":54,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["مـ ـمـ ـم","يـ ـي ـي","ظ ـظـ ـظ","بـ ـب ـب"],"dogru":0,"arSecenek":true},
+    {"id":55,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["غـ ـغـ ـغ","تـ ـت ـت","ظـ ـظـ ـظـ","ـمـ ـمـ ـم"],"dogru":0,"arSecenek":true},
+    {"id":56,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["سـ ـسـ ـس","شـ ـشـ شـ","طـ ـطـ ـطـ","ظ ـظـ ـظ"],"dogru":0,"arSecenek":true},
+    {"id":57,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["لـ ـلـ ـل","هـ هـ ـه","شـ ـشـ شـ","عـ ـعـ ـعـ"],"dogru":0,"arSecenek":true},
+    {"id":58,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["ثـ ـثـ ـث","طـ طـ ـط","هـ ـهـ ـهـ","عـ عـ ـع"],"dogru":0,"arSecenek":true},
+    {"id":59,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["نـ ـنـ ـن","خـ ـخ ـخ","ـحـ ـحـ ـح","هـ هـ ـه"],"dogru":0,"arSecenek":true},
+    {"id":60,"tip":"harf","bicim":"test","zorluk":3,"soru":"Aşağıda çizgideki yazılışları verilen harflerden doğru yazılmış olan harfi bulunuz. (Sırasıyla: baştaki — ortadaki — sondaki yazılışı)","secenekler":["طـ ـطـ ـط","قـ ـقـ ـقـ","ـشـ ـشـ ـش","ـيـ ـيـ ـي"],"dogru":0,"arSecenek":true},
+    {"id":61,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Okunuşları benzer olan harfleri eşleştiriniz.","ciftler":[["ط","ت"],["ظ","ز"],["ح","ه"],["ع","ا"]]},
+    {"id":62,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Okunuşları benzer olan harfleri eşleştiriniz.","ciftler":[["ح","خ"],["ت","ط"],["ق","ك"],["ع","ا"]]},
+    {"id":63,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Okunuşları benzer olan harfleri eşleştiriniz.","ciftler":[["ض","د"],["س","ص"],["ذ","ز"],["ع","ا"]]},
+    {"id":64,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Okunuşları benzer olan harfleri eşleştiriniz.","ciftler":[["ط","ت"],["ك","ق"],["خ","ه"],["ذ","ظ"]]},
+    {"id":65,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Yazılışları benzer olan harfleri eşleştiriniz.","ciftler":[["ق","ف"],["ذ","د"],["ت","ث"],["ص","ض"]]},
+    {"id":66,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Yazılışları benzer olan harfleri eşleştiriniz.","ciftler":[["غ","ع"],["ح","خ"],["ذ","د"],["ق","ف"]]},
+    {"id":67,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Yazılışları benzer olan harfleri eşleştiriniz.","ciftler":[["غ","ع"],["ق","ف"],["ط","ظ"],["د","ذ"]]},
+    {"id":68,"tip":"harf","bicim":"eslestir","zorluk":2,"soru":"Yazılışları benzer olan harfleri eşleştiriniz.","ciftler":[["ط","ظ"],["ض","ص"],["ف","ق"],["ش","س"]]},
+    {"id":69,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «yazdı»)","arapca":"كـ ـ ـ ـب","secenekler":["ـتـ","ت","تـ","ـت"],"dogru":0,"arSecenek":true},
+    {"id":70,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «yetişti»)","arapca":"لـ ـ ـ ـق","secenekler":["ـحـ","ح","حـ","ـح"],"dogru":0,"arSecenek":true},
+    {"id":71,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «deve»)","arapca":"جـ ـ ـ ـل","secenekler":["ـمـ","م","مـ","ـم"],"dogru":0,"arSecenek":true},
+    {"id":72,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «eyer»)","arapca":"ـ ـ ـر ج","secenekler":["سـ","س","ـسـ","ـس"],"dogru":0,"arSecenek":true},
+    {"id":73,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «taşıdı»)","arapca":"حـ ـمـ ـ ـ","secenekler":["ـل","ل","لـ","ـلـ"],"dogru":0,"arSecenek":true},
+    {"id":74,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «yabani hayvan»)","arapca":"و ـ ـ ـش","secenekler":["حـ","ح","ـحـ","ـح"],"dogru":0,"arSecenek":true},
+    {"id":75,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «beş»)","arapca":"خـ ـمـ ـ ـ","secenekler":["ـس","س","سـ","ـسـ"],"dogru":0,"arSecenek":true},
+    {"id":76,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «kopya»)","arapca":"ـ ـ ـسـ ـخ","secenekler":["نـ","ن","ـنـ","ـن"],"dogru":0,"arSecenek":true},
+    {"id":77,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «sayfalar»)","arapca":"صـ ـ ـ ـف","secenekler":["ـحـ","ح","حـ","ـح"],"dogru":0,"arSecenek":true},
+    {"id":78,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «elde etti»)","arapca":"حـ ـ ـ ـل","secenekler":["ـصـ","ص","صـ","ـص"],"dogru":0,"arSecenek":true},
+    {"id":79,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «makas»)","arapca":"مـ ـ ـ ـص","secenekler":["ـقـ","ق","قـ","ـق"],"dogru":0,"arSecenek":true},
+    {"id":80,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «kaburga»)","arapca":"ضـ ـ ـ ـع","secenekler":["ـلـ","ل","لـ","ـل"],"dogru":0,"arSecenek":true},
+    {"id":81,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «geçti»)","arapca":"مـ ـ ـ ـى","secenekler":["ـضـ","ض","ضـ","ـض"],"dogru":0,"arSecenek":true},
+    {"id":82,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «bazı»)","arapca":"بـ ـعـ ـ ـ","secenekler":["ـض","ض","ضـ","ـضـ"],"dogru":0,"arSecenek":true},
+    {"id":83,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «çoğaldı»)","arapca":"كـ ـ ـ ـر","secenekler":["ـثـ","ث","ثـ","ـث"],"dogru":0,"arSecenek":true},
+    {"id":84,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «tekmeledi»)","arapca":"ر ـ ـ ـل","secenekler":["كـ","ك","ـكـ","ـك"],"dogru":0,"arSecenek":true},
+    {"id":85,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «balık»)","arapca":"سـ ـمـ ـ ـ","secenekler":["ـك","ك","كـ","ـكـ"],"dogru":0,"arSecenek":true},
+    {"id":86,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «et»)","arapca":"لـ ـحـ ـ ـ","secenekler":["ـم","م","مـ","ـمـ"],"dogru":0,"arSecenek":true},
+    {"id":87,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «süt sağdı»)","arapca":"حـ ـ ـ ـب","secenekler":["ـلـ","ل","لـ","ـل"],"dogru":0,"arSecenek":true},
+    {"id":88,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «yedi»)","arapca":"أ ـ ـ ـل","secenekler":["كـ","ك","ـكـ","ـك"],"dogru":0,"arSecenek":true},
+    {"id":89,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «uyku»)","arapca":"نـ ـو ـ ـ","secenekler":["م","مـ","ـمـ","ـم"],"dogru":0,"arSecenek":true},
+    {"id":90,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «işitti»)","arapca":"ـ ـ ـمـ ـع","secenekler":["سـ","س","ـسـ","ـس"],"dogru":0,"arSecenek":true},
+    {"id":91,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «açtı»)","arapca":"فـ ـ ـ ـح","secenekler":["ـتـ","ت","تـ","ـت"],"dogru":0,"arSecenek":true},
+    {"id":92,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «bildi»)","arapca":"عـ ـ ـ ـم","secenekler":["ـلـ","ل","لـ","ـل"],"dogru":0,"arSecenek":true},
+    {"id":93,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «kalem»)","arapca":"قـ ـلـ ـ ـ","secenekler":["ـم","م","مـ","ـمـ"],"dogru":0,"arSecenek":true},
+    {"id":94,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «ders»)","arapca":"د ر ـ ـ","secenekler":["س","سـ","ـسـ","ـس"],"dogru":0,"arSecenek":true},
+    {"id":95,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «ev»)","arapca":"بـ ـ ـ ـت","secenekler":["ـيـ","ي","يـ","ـي"],"dogru":0,"arSecenek":true},
+    {"id":96,"tip":"harf","bicim":"bosluk","zorluk":2,"soru":"Aşağıdaki kelimede boş bırakılan yere hangi harf gelmelidir? (Kelime: «güneş»)","arapca":"شـ ـ ـ ـس","secenekler":["ـمـ","م","مـ","ـم"],"dogru":0,"arSecenek":true},
+    {"id":97,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Ra» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ر","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":98,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Ze» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ز","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":99,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Dal» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"د","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":100,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Zel» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ذ","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":101,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Vav» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"و","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":102,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Elif» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ا","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":103,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Ba» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ب","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":104,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Sin» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"س","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":105,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Kef» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ك","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":106,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Ayn» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ع","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":107,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Fa» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"ف","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":108,"tip":"harf","bicim":"dogruyanlis","zorluk":1,"soru":"«Mim» harfi kendinden sonraki harfe bağlanır. Doğru mu?","arapca":"م","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":109,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Nun» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"نـ ـنـ ـن","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":110,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Dad» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"ض ـضـ ـض","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":111,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«He» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"هـ ـهـ ـه","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":112,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Sin» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"ـسـ ـسـ ـس","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":113,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Kaf» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"قـ ـقـ ـق","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":114,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Ğayn» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"غـ ـغ ـغ","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":115,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Kef» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"كـ ـكـ ـك","secenekler":["Doğru","Yanlış"],"dogru":0},
+    {"id":116,"tip":"harf","bicim":"dogruyanlis","zorluk":2,"soru":"«Şın» harfinin baştaki, ortadaki ve sondaki yazılışı doğru verilmiştir. Doğru mu?","arapca":"شـ ـشـ شـ","secenekler":["Doğru","Yanlış"],"dogru":1},
+    {"id":117,"tip":"harf","bicim":"test","zorluk":1,"soru":"Arap alfabesinde kaç harf vardır?","secenekler":["28","26","29","32"],"dogru":0},
+    {"id":118,"tip":"harf","bicim":"test","zorluk":1,"soru":"Arapça hangi yönde yazılır?","secenekler":["Sağdan sola","Soldan sağa","Yukarıdan aşağıya","Aşağıdan yukarıya"],"dogru":0},
+    {"id":119,"tip":"harf","bicim":"test","zorluk":2,"soru":"Kendinden sonraki harfe bağlanmayan harfler kaç tanedir? (ا د ذ ر ز و)","secenekler":["6","4","8","10"],"dogru":0},
+    {"id":120,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıdakilerden hangisi kendinden sonraki harfe bağlanmaz?","secenekler":["د","ب","س","ن"],"dogru":0,"arSecenek":true},
+    {"id":121,"tip":"harf","bicim":"test","zorluk":2,"soru":"Aşağıdakilerden hangisi kendinden sonraki harfe bağlanır?","secenekler":["ل","ر","و","ز"],"dogru":0,"arSecenek":true},
+    {"id":122,"tip":"harf","bicim":"test","zorluk":2,"soru":"Bir harfin ortadaki yazılışında iki yandan çizgi almasının sebebi nedir?","secenekler":["Hem önceki hem sonraki harfe bağlanması","Sadece önceki harfe bağlanması","Sadece sonraki harfe bağlanması","Hiçbir harfe bağlanmaması"],"dogru":0},
+    {"id":123,"tip":"harf","bicim":"test","zorluk":3,"soru":"Bir harf, kendinden önceki harf sonrakine bağlanmıyorsa nasıl yazılır?","secenekler":["Baştaki (yalın başlangıç) yazılışıyla","Ortadaki yazılışıyla","Sondaki yazılışıyla","Hiç yazılmaz"],"dogru":0},
+    {"id":124,"tip":"harf","bicim":"test","zorluk":3,"soru":"«جرس» kelimesinde ر harfinden sonra gelen س harfi neden baştaki yazılışıyla yazılır?","secenekler":["ر harfi kendinden sonrakine bağlanmadığı için","س harfi hiçbir harfe bağlanmadığı için","Kelime üç harfli olduğu için","س harfi son harf olduğu için"],"dogru":0},
+    {"id":125,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «yazdı»","parcalar":["ك","ت","ب"]},
+    {"id":126,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «kalem»","parcalar":["ق","ل","م"]},
+    {"id":127,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «ders»","parcalar":["د","ر","س"]},
+    {"id":128,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «balık»","parcalar":["س","م","ك"]},
+    {"id":129,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «güneş»","parcalar":["ش","م","س"]},
+    {"id":130,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «ev»","parcalar":["ب","ي","ت"]},
+    {"id":131,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «uyku»","parcalar":["ن","و","م"]},
+    {"id":132,"tip":"harf","bicim":"surukle","zorluk":2,"soru":"Harfleri sırala: «et»","parcalar":["ل","ح","م"]},
+    {"id":133,"tip":"harf","bicim":"yazma","zorluk":3,"soru":"«yazdı» kelimesinin Arapçasını harflerle yaz.","cevapYazi":"كتب","tuslar":["ض","ظ","ك","و","ب","ت","خ","ذ","ن","ش"]},
+    {"id":134,"tip":"harf","bicim":"yazma","zorluk":3,"soru":"«kalem» kelimesinin Arapçasını harflerle yaz.","cevapYazi":"قلم","tuslar":["ي","ج","ه","س","ط","ث","م","ل","ق","ح"]},
+    {"id":135,"tip":"harf","bicim":"yazma","zorluk":3,"soru":"«güneş» kelimesinin Arapçasını harflerle yaz.","cevapYazi":"شمس","tuslar":["ا","ن","ط","ج","ش","م","ح","ق","س","ض"]},
+    {"id":136,"tip":"harf","bicim":"yazma","zorluk":3,"soru":"«ev» kelimesinin Arapçasını harflerle yaz.","cevapYazi":"بيت","tuslar":["ب","ي","ث","ض","ن","ك","ت","ح","ط","ج"]},
+    {"id":137,"tip":"harf","bicim":"yazma","zorluk":3,"soru":"«ders» kelimesinin Arapçasını harflerle yaz.","cevapYazi":"درس","tuslar":["ف","خ","ش","ر","ب","ق","س","د","ص","ل"]},
+    {"id":138,"tip":"harf","bicim":"yazma","zorluk":3,"soru":"«balık» kelimesinin Arapçasını harflerle yaz.","cevapYazi":"سمك","tuslar":["ض","ع","ه","ك","م","ر","ي","ل","ا","س"]}
+  ] },
   { id: "edatlar", ad: "Edatlar & Kalıplar", pdf: "", sorular: [
     {"id":22001,"tip":"edat","zorluk":2,"soru":"«أَنْتُنَّ» ne anlama gelir?","secenekler":["Sizler (Dişil)","Neden? / Niçin?","Tuz","Tavuskuşu"],"dogru":0,"arapca":"أَنْتُنَّ"},
     {"id":22002,"tip":"edat","zorluk":2,"soru":"«بَعوضَة» ne anlama gelir?","secenekler":["Sivrisinek","Gün","At Arabası","O kimseler ki (Dişil / Çoğul)"],"dogru":0,"arapca":"بَعوضَة"},
@@ -692,6 +838,7 @@ const EK_SORULAR = {
 KONULAR.forEach(k => { if (EK_SORULAR[k.id] && Array.isArray(k.sorular)) k.sorular = k.sorular.concat(EK_SORULAR[k.id]); });
 
 const TIP_BILGI = {
+  "harf":        { ad: "Alfabe / Harfler", emoji: "🔠" },
   "bosluk":      { ad: "Boşluk Doldurma", emoji: "⬜" },
   "dogruyanlis": { ad: "Doğru / Yanlış",  emoji: "✅" },
   "edat":        { ad: "Edatlar",         emoji: "🔗" },
@@ -824,9 +971,16 @@ const BIY_SINIFLAR = (function () {
   KONULAR.forEach(k => { const n = +k.sinif || 0; if (n > 0 && !g[n]) { g[n] = 1; c.push(n); } });
   return c.sort((a, b) => a - b);
 })();
-const SEVIYE_BASLIK = { 1: "Temel · Kelimeler", 2: "Orta · Cümleler ve Kalıplar", 3: "İleri · Sarf ve Dilbilgisi" };
+const SEVIYE_BASLIK = { 1: "Temel · Alfabe ve Kelimeler", 2: "Orta · Cümleler ve Kalıplar", 3: "İleri · Sarf ve Dilbilgisi" };
 /* Sinif konulari tek baslik altinda toplanir (kelime + cumle ayrimi yok) */
 const SINIF_BASLIK = "Sınıflar · kelime ve cümleler bir arada";
+/* ---------------------------------------------------------------------
+   "HEPSİ" — konu listesinin en ustundeki SANAL baslik.
+   Gercek bir KONULAR kaydi degildir; secilince butun konularin sorulari
+   tek liste gibi davranir. Eskiden listenin tepesinde duran sabit
+   «Hepsi 7 9 10» sinif cipleri kaldirildi; yerini bu satir aldi.
+   --------------------------------------------------------------------- */
+const HEPSI_ID = "__hepsi";
 
 
 /* ---------------- Biçime göre HTML üreticileri ---------------- */
@@ -1286,7 +1440,23 @@ const BIY = {
   },
 
   /* ---------- Konu seçimi ---------- */
-  _aktifKonu(){ return state.konuId ? (KONULAR.find(k => k.id === state.konuId) || null) : null; },
+  _aktifKonu(){
+    if (state.konuId === HEPSI_ID) return BIY._hepsiKonu();
+    return state.konuId ? (KONULAR.find(k => k.id === state.konuId) || null) : null;
+  },
+  /* "Hepsi" secilince butun (pasif olmayan) konularin sorulari tek liste
+     olur. Bir kez kurulur, sonra onbellekten doner. */
+  _hepsiKonu(){
+    if (!state.hepsiKonu){
+      const t = [];
+      KONULAR.forEach(k => { if (!k.pasif && Array.isArray(k.sorular)) k.sorular.forEach(q => t.push(q)); });
+      state.hepsiKonu = { id: HEPSI_ID, ad: "Hepsi", pdf: "", sorular: t, sanal: true };
+    }
+    return state.hepsiKonu;
+  },
+  /* Havuzu (Sorulari Sec!) sinirlayan GERCEK konu; "Hepsi" ve bos secim
+     null doner -> havuzda butun listeler gorunur. */
+  _sinirKonuId(){ return (state.konuId && state.konuId !== HEPSI_ID) ? state.konuId : null; },
   _aktifSorular(){ const k = BIY._aktifKonu(); return (k && k.sorular) || []; },
   _konuVurgu(){
     const sel = $("konuSecim"); if (sel){ sel.classList.toggle("secili", !!state.konuId); sel.value = state.konuId || ""; }
@@ -1328,17 +1498,26 @@ const BIY = {
   _konulariHazirla(){
     const sel = $("konuSecim"); if (!sel) return;
     sel.innerHTML = '<option value=""'+(state.konuId?'':' selected')+' disabled hidden>Konu seçin…</option>' +
+      '<option value="'+HEPSI_ID+'"'+(state.konuId===HEPSI_ID?' selected':'')+'>Hepsi</option>' +
       KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · yakında':'')+'</option>').join("");
     if (!state.konuId) sel.value = "";
     const liste = $("konuSeciciListe");
     if (liste){
-      // en ustte SABIT sinif cipleri (yalniz rakam); altta seviye basliklariyla
-      // konular basitten zora dizilir
-      let h = '<div class="biy-ds-siniflar" role="group" aria-label="Sınıf süzgeci">' +
-        '<button type="button" class="biy-ds-sinif secili" data-sinif="0">Hepsi</button>' +
-        BIY_SINIFLAR.map(n => '<button type="button" class="biy-ds-sinif" data-sinif="'+n+'">'+n+'</button>').join("") +
-      '</div>';
-      let grup = "", sira = 0;
+      /* En ustte "HEPSİ" satiri (butun konularin sorulari); altta seviye
+         basliklariyla konular basitten zora dizilir.
+         NOT: sabit «Hepsi 7 9 10» sinif cipleri KALDIRILDI. */
+      const hepsiSay = KONULAR.reduce((t, k) => t + (k.pasif ? 0 : (k.sorular || []).length), 0);
+      let h = '<button type="button" role="option" style="--i:0" data-konu="'+HEPSI_ID+'" data-sinif="0"'
+        + ' class="biy-ds-oge biy-ds-hepsi" title="Bütün listelerin soruları">'
+        + '<span class="biy-ds-nokta" aria-hidden="true"></span>'
+        + '<span class="biy-ds-ad2">Hepsi</span>'
+        + '<span class="biy-ds-rozet biy-ds-sinifroz genel">Tümü</span>'
+        + '<span class="biy-ds-rozet biy-ds-say">'+hepsiSay+'</span>'
+        + '<svg class="biy-ds-tik" viewBox="0 0 24 24" aria-hidden="true" fill="none"'
+        + ' stroke="currentColor" stroke-width="3.4" stroke-linecap="round"'
+        + ' stroke-linejoin="round"><polyline points="4 12.5 9.5 18 20 6.5"/></svg>'
+        + '</button>';
+      let grup = "", sira = 1;
       KONULAR.forEach(k => {
         const g = k.sinif ? "sinif" : ("seviye" + k.seviye);
         if (g !== grup){
@@ -1364,16 +1543,6 @@ const BIY = {
       if (!liste.dataset.baglandi){
         liste.dataset.baglandi = "1";
         liste.addEventListener("click", (e) => {
-          const cip = e.target.closest(".biy-ds-sinif");
-          if (cip){
-            const n = +cip.getAttribute("data-sinif");
-            liste.querySelectorAll(".biy-ds-sinif").forEach(c => c.classList.toggle("secili", c === cip));
-            liste.querySelectorAll(".biy-ds-oge").forEach(o => {
-              const ks = +o.getAttribute("data-sinif");
-              o.hidden = (n !== 0 && ks !== n && ks !== 0);   // Genel konular her sinifta gorunur
-            });
-            return;                                            // liste acik kalir
-          }
           const o = e.target.closest(".biy-ds-oge");
           if (!o || o.disabled) return;
           BIY.konuSec(o.getAttribute("data-konu"));
@@ -1396,18 +1565,10 @@ const BIY = {
     if (!n && !istenen) { state.acilisUygulandi = true; return; }
     state.acilisUygulandi = true;
 
-    /* 1) sınıf süzgeci çipi */
-    const liste = $("konuSeciciListe");
-    if (n && liste){
-      const cip = liste.querySelector('.biy-ds-sinif[data-sinif="'+n+'"]');
-      if (cip){
-        liste.querySelectorAll(".biy-ds-sinif").forEach(c => c.classList.toggle("secili", c === cip));
-        liste.querySelectorAll(".biy-ds-oge").forEach(o => {
-          const ks = +o.getAttribute("data-sinif");
-          o.hidden = (ks !== n && ks !== 0);          // Genel konular her sınıfta kalır
-        });
-      }
-    }
+    /* 1) sınıf süzgeci — sabit çipler kaldırıldığı için doğrudan satırlara
+       uygulanır: yalnız o sınıfın (ve Genel) konuları görünür. "Hepsi"
+       satırı her zaman kalır; öğretmen oradan tüm konulara döner. */
+    if (n) BIY._konuListeSuz(n);
 
     /* 2) konu seçimi — önce istenen id, olmazsa sınıfın ilk konusu */
     const uygun = k => k && !k.pasif && (k.sorular || []).length > 0;
@@ -1419,25 +1580,53 @@ const BIY = {
        Eskiden burada "N. sınıf için açıldı — konu X seçildi · tüm konular"
        notu basiliyordu. Kullanici istegi: hicbir cumle cikmasin, konu
        sadece SECILI gelsin. "Tum konular"a donmek isteyen, konu
-       listesinin basindaki "Hepsi" cipine basar. */
+       listesinin basindaki "Hepsi" satirina basar. */
+  },
+  /* ?sinif=N ile gelindiginde konu listesini suz. Bos kalan seviye
+     basliklari da gizlenir; "Hepsi" satiri her zaman gorunur. */
+  _konuListeSuz(n){
+    const liste = $("konuSeciciListe"); if (!liste) return;
+    let bas = null, basDolu = false;
+    [].slice.call(liste.children).forEach(el => {
+      if (el.classList.contains("biy-ds-seviye")){
+        if (bas) bas.hidden = !basDolu;
+        bas = el; basDolu = false; return;
+      }
+      if (!el.classList.contains("biy-ds-oge")) return;
+      if (el.getAttribute("data-konu") === HEPSI_ID){ el.hidden = false; return; }
+      const ks = +el.getAttribute("data-sinif");
+      const gizle = !!(n && ks !== n && ks !== 0);     // Genel konular her sınıfta kalır
+      el.hidden = gizle;
+      if (!gizle) basDolu = true;
+    });
+    if (bas) bas.hidden = !basDolu;
   },
 
+  /* Konu secimi ile "Sorulari Sec!" ARTIK BIRLIKTE CALISIR (biri digerini
+     silmez). Tek kural: gercek bir liste seciliyse havuzda YALNIZ o
+     listenin sorulari kalabilir; baska listelerden kalan secimler sessizce
+     dusurulur. "Hepsi" secilirse hicbiri dusmez. */
   konuSec(id){
     state.konuId = id || null;
-    if (state.konuId){
-      const set = BIY._secSet();
-      if (set.size){ set.clear(); state.soruSayisi = null; }   // havuzdan vazgeçildi → seçimi + soru sayısını sıfırla
-    }
+    BIY._havuzuKonuyaKirp();
     BIY._konuVurgu();
     BIY._soruSecSayiGuncelle();   // havuz tuşu/sayaç + pdf + sınır + menü hepsini günceller
+  },
+  _havuzuKonuyaKirp(){
+    const kid = BIY._sinirKonuId(); if (!kid) return 0;
+    const set = BIY._secSet(); let n = 0;
+    [].slice.call(set).forEach(key => {
+      if (key.slice(0, key.indexOf("#")) !== kid){ set.delete(key); n++; }
+    });
+    return n;
   },
 
   /* ---------- Soru Havuzu (elle seçim) ---------- */
   _secSet(){ if (!state.secilenSet) state.secilenSet = new Set(); return state.secilenSet; },
   _soruSecSayiGuncelle(){
     const n = BIY._secSet().size;
-    // havuzdan soru seçildiyse konu seçimi kalkar (tek kaynak: havuz ya da konu)
-    if (n > 0 && state.konuId){ state.konuId = null; const sel = $("konuSecim"); if (sel) sel.value = ""; BIY._konuVurgu(); }
+    /* ESKIDEN: havuzdan soru secilince konu secimi kalkardi (tek kaynak
+       kurali). ARTIK KALKMIYOR — konu secimi havuzu SINIRLAR, silmez. */
     const b = $("soruSecSayi");
     if (b){ b.textContent = n; b.hidden = (n === 0); }   // sifirken rozet hic cikmasin
     const btn = $("soruSecBtn"); if (btn) btn.classList.toggle("biy-secili-var", n > 0);
@@ -1454,13 +1643,25 @@ const BIY = {
     // Panelin ustundeki havuz SVG'sini basliga kucultulmus olarak klonla
     const hvIkon = (function(){ const e = document.querySelector(".biy-svg-havuz");
                                 return e ? e.outerHTML : "\u{1F3AF}"; })();
+    /* Secili GERCEK liste varsa pencere yalniz onu gosterir (C-1) ve o
+       listenin akordiyonu acik gelir. "Hepsi" / secim yoksa hepsi gorunur. */
+    const kSinir = BIY._sinirKonuId() ? BIY._aktifKonu() : null;
+    if (kSinir){ if (!state.soruSecAcik) state.soruSecAcik = {}; state.soruSecAcik[kSinir.id] = true; }
     const ov = document.createElement("div"); ov.id = "biySoruSec"; ov.className = "biy-onay-ov biy-soru-sec-ov";
     ov.innerHTML =
       '<div class="biy-soru-sec-kutu">' +
         '<div class="biy-soru-sec-bas">' +
-          '<h3><span class="biy-hs-bas-ikon biy-anim">' + hvIkon + '</span> Soru Havuzu</h3>' +
+          '<h3><span class="biy-hs-bas-ikon biy-anim">' + hvIkon + '</span> Soruları Seç!' +
+            (kSinir ? '<span class="biy-hs-konu-rozet" title="Seçili liste: ' + kacis(kSinir.ad) +
+                      ' — başka listeden soru seçilemez">' + kacis(kSinir.ad) + '</span>' : '') +
+          '</h3>' +
+          '<span class="biy-soru-sec-tavan" id="soruSecTavan" hidden></span>' +
           '<span class="biy-soru-sec-say" id="soruSecSecili"></span>' +
           '<button class="biy-soru-sec-kapat" onclick="BIY.soruSecKapat()">✕</button>' +
+          /* Uyari cubugu BASLIGIN ICINDE ikinci satir olarak durur. Disarida
+             birakilinca, baslik "akistan cikarilmis" (position:absolute)
+             oldugu icin uyari basligin ALTINDA kaliyor ve gorunmuyordu. */
+          '<div class="biy-hs-uyari" id="soruSecUyari" role="alert" hidden></div>' +
         '</div>' +
         '<div class="biy-soru-sec-liste" id="soruSecListe"></div>' +
         '<div class="biy-soru-sec-alt">' +
@@ -1480,8 +1681,11 @@ const BIY = {
     const set = BIY._secSet();
     const ara = state.soruSecArama;
     const zorAd = { 1:"Kolay", 2:"Orta", 3:"Zor" };
+    /* C-1: konu secildiyse havuzda YALNIZ o listenin sorulari cikar. */
+    const kid = BIY._sinirKonuId();
+    const listeler = kid ? KONULAR.filter(k => k.id === kid) : KONULAR;
     let html = "";
-    KONULAR.forEach(k => {
+    listeler.forEach(k => {
       if (!Array.isArray(k.sorular) || !k.sorular.length) return;
       const sorular = k.sorular.filter(q => !ara || (q.soru + " " + (q.arapca||"") + " " + aramaMetni(q)).toLowerCase().indexOf(ara) >= 0);
       if (!sorular.length) return;
@@ -1510,7 +1714,8 @@ const BIY = {
       html += '<p class="biy-hs-sz-bos" hidden>Bu süzgece uyan soru yok.</p>';
       html += '</div></div>';
     });
-    kap.innerHTML = html || '<p class="biy-alt" style="text-align:center">Sonuç yok.</p>';
+    kap.innerHTML = html || '<p class="biy-alt" style="text-align:center">' +
+      (kid ? 'Bu listede gösterilecek soru yok.' : 'Sonuç yok.') + '</p>';
     BIY._hsSuzgecHepsi();
     BIY._soruSecSayilar();
   },
@@ -1737,6 +1942,16 @@ const BIY = {
       }
     });
     const say = $("soruSecSecili"); if (say) say.innerHTML = 'Seçili <b class="biy-say-rozet">' + set.size + '</b>';
+    /* Asagidan soru sayisi secildiyse tavani her zaman goster (asilirsa kirmizi) */
+    const tv = $("soruSecTavan"), tavan = BIY._hsTavan();
+    if (tv){
+      tv.hidden = !tavan;
+      if (tavan){
+        tv.innerHTML = 'En çok <b>' + tavan + '</b>';
+        tv.classList.toggle("asildi", set.size > tavan);
+        tv.title = "Aşağıdan " + tavan + " soru seçtin; havuzdan en çok o kadar soru işaretlenebilir.";
+      }
+    }
     // Alt bardaki SEPET: hangi listeden seçilirse seçilsin toplam burada güncellenir
     const sepet = $("soruSecSepet");
     if (sepet){
@@ -1747,10 +1962,55 @@ const BIY = {
     }
     BIY._soruSecSayiGuncelle();
   },
+  /* =====================================================================
+     SORU SAYISI TAVANI (C-5)
+     Ogretmen asagidaki rakamlardan bir sayi sectiyse (yani sayi havuzdan
+     gelmediyse) o sayi TAVANDIR. Havuzda tavandan fazlasina basilirsa
+     secim alinmaz ve listenin ustunde bir uyari cubugu belirir; cubuktaki
+     "Sinirli kaldir" tusu sayiyi birakir, boylece havuz yine serbest olur.
+     Modal kullanilmadi: her fazla tiklamada pencere acilmasi is akisini
+     keserdi; cubuk yerinde durur, 4 saniye sonra kendiliginden kapanir.
+  ===================================================================== */
+  _hsTavan(){ return (state.soruSayisi != null && !state.soruSayiHavuzdan) ? state.soruSayisi : 0; },
+  _soruSecUyar(metin){
+    const u = $("soruSecUyari"); if (!u) return;
+    u.innerHTML =
+      '<svg class="biy-hs-uyari-ikon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"' +
+      ' stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M12 3.6 22 20.4H2z"/><path d="M12 9.6v4.6"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg>' +
+      '<span class="biy-hs-uyari-metin">' + kacis(metin) + '</span>' +
+      '<button type="button" class="biy-hs-uyari-btn" onclick="BIY.soruSecSinirKaldir()">Sınırı kaldır</button>';
+    u.hidden = false;
+    /* liste asagi kaydirilmissa baslik gizlenmis olabilir; uyari gorunsun diye geri ac */
+    const bas = document.querySelector("#biySoruSec .biy-soru-sec-bas");
+    if (bas) bas.classList.remove("biy-header--gizli");
+    u.classList.remove("carp"); void u.offsetWidth; u.classList.add("carp");
+    if (state.hsUyariZmn) clearTimeout(state.hsUyariZmn);
+    state.hsUyariZmn = setTimeout(() => {
+      const e = $("soruSecUyari"); if (e) e.hidden = true;
+      state.hsUyariZmn = null;
+    }, 4200);
+  },
+  /* tavani birak: soru sayisi yeniden havuzdan belirlenir */
+  soruSecSinirKaldir(){
+    state.soruSayisi = null; state.soruSayiHavuzdan = false;
+    if (state.hsUyariZmn){ clearTimeout(state.hsUyariZmn); state.hsUyariZmn = null; }
+    const u = $("soruSecUyari"); if (u) u.hidden = true;
+    BIY._soruSecSayilar();
+  },
   // tek satır: yeniden çizmeden aç/kapa (kaydırma korunur)
   soruSecTik(key, cb){
     const set = BIY._secSet();
-    if (set.has(key)) set.delete(key); else set.add(key);
+    if (set.has(key)) set.delete(key);
+    else {
+      const tavan = BIY._hsTavan();
+      if (tavan && set.size >= tavan){
+        if (cb) cb.checked = false;                      // isaret geri alinir
+        BIY._soruSecUyar("Aşağıdan " + tavan + " soru seçtin; daha fazlasını işaretleyemezsin.");
+        return;
+      }
+      set.add(key);
+    }
     if (cb){ const row = cb.closest(".biy-hs-satir"); if (row) row.classList.toggle("secili", cb.checked); }
     BIY._soruSecSayilar();
   },
@@ -1787,7 +2047,21 @@ const BIY = {
       anahtarlar = k.sorular.map(q => konuId + "#" + q.id); satirlar = [];
     }
     const hepsiSecili = anahtarlar.every(a => set.has(a));
-    anahtarlar.forEach(a => { if (hepsiSecili) set.delete(a); else set.add(a); });
+    if (hepsiSecili) anahtarlar.forEach(a => set.delete(a));
+    else {
+      let eklenecek = anahtarlar.filter(a => !set.has(a));
+      const tavan = BIY._hsTavan();
+      if (tavan){
+        const yer = Math.max(0, tavan - set.size);
+        if (eklenecek.length > yer){
+          eklenecek = eklenecek.slice(0, yer);
+          BIY._soruSecUyar(yer
+            ? "Aşağıdan " + tavan + " soru seçtin; yalnız " + yer + " soru eklenebildi."
+            : "Aşağıdan seçtiğin " + tavan + " sorunun tamamı dolu; yeni soru eklenmedi.");
+        }
+      }
+      eklenecek.forEach(a => set.add(a));
+    }
     if (satirlar.length){
       satirlar.forEach(r => {
         const s = set.has(r.getAttribute("data-key"));
@@ -1849,11 +2123,36 @@ const BIY = {
     const set = BIY._secSet(); if (!set.size) return [];
     return BIY._soruHavuzu().filter(h => set.has(h.key)).map(h => h.soru);
   },
-  // seçili konu+seviyedeki mevcut soruya göre soru sayısı üst sınırını ayarla
+  /* Soru sayisi ust siniri.
+     · Ogretmen asagidan bir sayi sectiyse (soruSayiHavuzdan=false) O SAYI
+       KORUNUR; havuz onu ezmez, rakam tuslari acik kalir. Havuzda tavani
+       asmaya calisirsa soruSecTik/soruSecTumu uyari verir.
+     · Asagidan sayi secilmemisse eski davranis surer: havuzdaki soru adedi
+       dogrudan soru sayisi olur. */
   _soruSayiSinir(){
     const havuz = BIY._secSet().size;
     const inp = $("soruSayiInput");
     const lbl = document.querySelector(".biy-sorusayi-secim .biy-seviye-label");
+    const tavan = BIY._hsTavan();
+    // HAVUZ var + elle secilmis tavan var → tavan korunur, rakamlar acik kalir
+    if (havuz > 0 && tavan){
+      const kaynak = state.konuId ? BIY._bicimliSorular().length : 50;
+      const mx = Math.max(1, Math.min(50, Math.max(kaynak, havuz, tavan)));
+      state.soruSayiMax = mx;
+      document.querySelectorAll(".biy-sayi-btn").forEach(b => {
+        const v = +b.getAttribute("data-sayi"); const dis = v > mx;
+        b.disabled = dis; b.classList.toggle("biy-pasif", dis);
+        b.classList.toggle("secili", !dis && v === tavan);
+      });
+      if (inp){
+        inp.disabled = false; inp.readOnly = false; inp.classList.remove("biy-secili");
+        inp.max = mx; inp.min = 1;
+        inp.value = (SORU_SAYI_SECENEK.indexOf(tavan) >= 0) ? "" : tavan;
+      }
+      BIY._sayiDonDur();
+      if (lbl) BIY._sayiEtiket(tavan, "secili");
+      return;
+    }
     // HAVUZ seçili → soru sayısı = seçilen soru sayısı (sabit); hazır rakamlar pasif, manuel alanda o sayı yazılı
     if (havuz > 0){
       state.soruSayiMax = havuz;
@@ -2313,6 +2612,9 @@ const BIY = {
       // MANUEL: yalnızca öğretmenin görüp seçtiği sorular sorulur
       let hv = elle.slice();
       for (let i = hv.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = hv[i]; hv[i] = hv[j]; hv[j] = g; }
+      /* asagidan secilen sayi tavandir: havuz daha kalabalik kaldiysa kirp */
+      const tavanB = BIY._hsTavan();
+      if (tavanB && hv.length > tavanB) hv = hv.slice(0, tavanB);
       secilen = hv.map(soruHazirla);
       yedek = [];   // görülmemiş yedek sorulmaz
     } else {

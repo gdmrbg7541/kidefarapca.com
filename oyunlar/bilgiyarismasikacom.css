@@ -69,11 +69,18 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 .biy-header { transition: transform .28s ease; will-change: transform; }
 .biy-header.biy-header--gizli { transform: translateY(-100%); }
 /* Soru havuzu tam ekran; kendi basligi kendi kaydirma alanina (#soruSecListe) gore
-   gizlenir. Akista yer kapladigi icin transform degil, yuksekligi daraltarak gizliyoruz;
-   boylece bosalan yer listeye kaliyor. */
-   Baslik AKISTAN CIKARILIP listenin uzerine bindiriliyor: boylece gizlenince listenin
-   yuksekligi degismiyor (degisseydi scrollTop kirpilir, ters yon algilanir ve baslik
-   kendini geri acardi). Listeye baslik yuksekligi kadar padding-top JS ile veriliyor. */
+   gizlenir. Akista yer kapladigi icin transform degil, yuksekligi daraltarak
+   gizliyoruz; boylece bosalan yer listeye kaliyor.
+   Baslik AKISTAN CIKARILIP listenin uzerine bindiriliyor: boylece gizlenince
+   listenin yuksekligi degismiyor (degisseydi scrollTop kirpilir, ters yon
+   algilanir ve baslik kendini geri acardi). Listeye baslik yuksekligi kadar
+   padding-top JS ile veriliyor.
+   ONARIM (v127): yukaridaki aciklamanin ortasinda fazladan bir yorum-kapatma
+   isareti vardi; yorum erken kapaninca alt satirlar gecersiz bir secici
+   sayiliyor ve ".biy-soru-sec-kutu{position:relative}" KURALI DUSUYORDU. Bu yuzden
+   pencerenin kendi baslik cubugu (baslik + sayaclar + kapat tusu) kutunun degil
+   EKRANIN tepesine yapisiyor, site basliginin altinda kaliyor ve "Sorulari Sec!"
+   yazisi ile X tusu gorunmez/tiklanamaz oluyordu. */
 .biy-soru-sec-kutu { position: relative; }
 .biy-soru-sec-bas { position: absolute; top: 0; left: 0; right: 0; z-index: 6; background: #fff;
   transition: transform .28s ease; will-change: transform; }
@@ -266,7 +273,9 @@ h1 { font-size: 2rem; margin: 6px 0 10px; color: #16A085; font-weight: 700; }
 /* soru havuzu penceresi */
 /* Soru Havuzu artık YÜZEN pencere değil TAM EKRAN: ekranın tamamı sorulara
    ayrılsın diye kenar boşlukları, köşe yuvarlaması ve gölge kaldırıldı. */
-.biy-soru-sec-ov { align-items: stretch; justify-content: stretch; padding: 0; }
+/* Tam ekran acilir; site basligi (.biy-header, z-index:100) uzerini
+   ortmesin diye katman ondan yukarida durur. */
+.biy-soru-sec-ov { align-items: stretch; justify-content: stretch; padding: 0; z-index: 140; }
 .biy-soru-sec-kutu { background: #fff; border-radius: 0; width: 100%; max-width: 100%; margin: 0; height: 100%; display: flex; flex-direction: column; box-shadow: none; overflow: hidden; }
 .biy-soru-sec-bas { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #EDF2F7; }
 .biy-soru-sec-bas h3 { margin: 0; color: #16A085; font-size: 1.4rem; }
@@ -2007,14 +2016,16 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 @media (max-width: 640px){ .biy-menu-kart { min-height: 0; } }
 
 /* ===================== v107 — profesyonel konu listesi ===================== */
-/* en üstte sabit sınıf çipleri (yalnız rakam) */
-.biy-ds-siniflar { position: sticky; top: -10px; z-index: 3; display: flex; gap: 8px;
-  background: #fff; margin: -10px -10px 6px; padding: 12px 12px 10px; border-bottom: 1px solid #EEF2F7; }
-.biy-ds-sinif { min-width: 52px; padding: 8px 12px; border-radius: 11px; border: 2px solid #E2E8F0;
-  background: #F8FAFC; font-family: 'Marhey', sans-serif; font-weight: 800; font-size: 1.02rem;
-  color: #64748B; cursor: pointer; transition: all .15s; }
-.biy-ds-sinif:hover { border-color: #CBD5E1; }
-.biy-ds-sinif.secili { background: #16A085; border-color: #16A085; color: #fff; }
+/* En üstteki "HEPSİ" satırı — eski sabit «Hepsi 7 9 10» çiplerinin yerine.
+   Liste kaydırılsa da tepede yapışık durur; oradan tüm konulara dönülür. */
+.biy-ds-hepsi { position: sticky; top: -10px; z-index: 3; background: #fff;
+  margin: -10px -4px 4px; box-shadow: 0 8px 12px -12px rgba(15,23,42,.55); }
+.biy-ds-hepsi:hover:not(:disabled) { background: #F1F5F9; }
+.biy-ds-hepsi.secili { background: #E9FBF4; color: #0E9E86; }
+.biy-ds-hepsi .biy-ds-nokta {
+  background: conic-gradient(#A78BFA, #38BDF8, #FBBF24, #34D399, #F472B6, #A78BFA);
+}
+.biy-ds-hepsi .biy-ds-ad2 { letter-spacing: .4px; }
 /* seviye başlıkları */
 .biy-ds-seviye { display: flex; align-items: center; gap: 8px; margin: 14px 8px 4px;
   color: #94A3B8; font-weight: 800; font-size: .98rem; }
@@ -3117,4 +3128,75 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   .biy-soru-sec-sepet { font-size: .82rem; padding: 6px 12px; margin: 0; order: -1; width: 100%; justify-content: center; }
   .biy-soru-sec-sepet .biy-sepet-svg { width: 18px; height: 18px; }
   .biy-soru-sec-sepet b { font-size: .95rem; min-width: 22px; padding: 1px 8px; }
+}
+
+
+/* ==========================================================
+   v127 — "Soruları Seç!" penceresi: liste kilidi + sayı tavanı
+   ----------------------------------------------------------
+   · Konu seçiliyken pencere yalnız o listeyi gösterir; başlıktaki
+     yeşil rozet hangi listede olduğunu söyler.
+   · Aşağıdan soru sayısı seçildiyse sağ üstte "En çok N" durur;
+     tavan aşılırsa kırmızıya döner ve listenin üstünde uyarı çubuğu
+     belirir (modal değil — iş akışını kesmesin diye).
+   ========================================================== */
+.biy-hs-konu-rozet {
+  margin-inline-start: 10px; padding: 4px 13px; border-radius: 999px;
+  background: #E9FBF4; color: #0E9E86; font-size: .58em; font-weight: 800;
+  letter-spacing: .2px; white-space: nowrap; max-width: 42vw;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.biy-soru-sec-tavan {
+  margin-inline-start: auto; padding: 5px 13px; border-radius: 999px;
+  background: #F1F5F9; color: #64748B; font-size: .95rem; font-weight: 800;
+  white-space: nowrap; transition: background .2s ease, color .2s ease;
+}
+.biy-soru-sec-tavan b { color: #0F172A; }
+.biy-soru-sec-tavan.asildi { background: #FEE2E2; color: #B91C1C; }
+.biy-soru-sec-tavan.asildi b { color: #B91C1C; }
+/* tavan rozeti sag-uste gecince "Secili" sayaci artik itilmesin */
+.biy-soru-sec-bas .biy-soru-sec-tavan + .biy-soru-sec-say { margin-inline-start: 12px; }
+
+.biy-hs-uyari {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 20px 10px; padding: 10px 14px; border-radius: 13px;
+  background: #FFF7ED; border: 2px solid #FDBA74; color: #9A3412;
+  font-family: 'Marhey', sans-serif; font-weight: 700; font-size: .95rem;
+}
+.biy-hs-uyari[hidden] { display: none; }
+/* Uyari cubugu baslik cubugunun ICINDE ikinci satir olarak akar; bu yuzden
+   baslik sarmali olmali ve cubuk tam genislik kaplamali. */
+.biy-soru-sec-bas { flex-wrap: wrap; }
+.biy-soru-sec-bas .biy-hs-uyari { flex: 0 0 100%; width: 100%; margin: 0; }
+.biy-hs-uyari-ikon { width: 22px; height: 22px; flex: 0 0 auto; color: #EA580C; }
+.biy-hs-uyari-metin { flex: 1 1 auto; line-height: 1.4; }
+.biy-hs-uyari-btn {
+  flex: 0 0 auto; border: 0; border-radius: 999px; cursor: pointer;
+  padding: 7px 15px; background: #EA580C; color: #fff;
+  font-family: inherit; font-weight: 800; font-size: .88rem;
+  transition: background .16s ease, transform .16s ease;
+}
+.biy-hs-uyari-btn:hover { background: #C2410C; transform: translateY(-1px); }
+.biy-hs-uyari.carp { animation: biyHsUyariCarp .42s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes biyHsUyariCarp {
+  0%, 100% { transform: translateX(0); }
+  18% { transform: translateX(-7px); }
+  38% { transform: translateX(6px); }
+  58% { transform: translateX(-4px); }
+  78% { transform: translateX(2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .biy-hs-uyari.carp { animation: none; }
+}
+@media (min-width: 900px) {
+  #biySoruSec .biy-soru-sec-tavan { font-size: 1.3rem; padding: 7px 18px; }
+  #biySoruSec .biy-hs-uyari { font-size: 1.22rem; padding: 13px 18px; }
+  #biySoruSec .biy-hs-uyari-ikon { width: 28px; height: 28px; }
+  #biySoruSec .biy-hs-uyari-btn { font-size: 1.1rem; padding: 9px 20px; }
+}
+@media (max-width: 620px) {
+  .biy-hs-konu-rozet { max-width: 34vw; }
+  .biy-soru-sec-tavan { font-size: .8rem; padding: 4px 10px; }
+  .biy-hs-uyari { margin: 0 12px 8px; font-size: .84rem; flex-wrap: wrap; }
+  .biy-hs-uyari-btn { width: 100%; }
 }
