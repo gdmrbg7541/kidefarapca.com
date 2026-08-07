@@ -36,6 +36,9 @@
    Yani her harf için İKİ adım vardır: önce harf yalın gelir,
    sonra bulunduğu yere göre biçimini alır. En sonda hepsi
    birleşip gerçek kelime çıkar.
+   İSTİSNA: harf bulunduğu yerde ZATEN yalın yazılıyorsa (kaşide
+   almıyorsa) ikinci adım aynı şeyi tekrar edeceği için atlanır —
+   bir kez belirmesi yeter.
 
    KUMANDA: tek bir "İleri" her şeyi sürer. Etkin örneğin adımları
    biter bitmez bir sonraki örneğe geçilir. Klavyede → / boşluk
@@ -111,7 +114,15 @@
     }
 
     /* Adım listesi: her harf için "yalın" ve "biçimli" iki adım,
-       en sonda da birleşik kelime. 3 harf → 8 adım (0..7). */
+       en sonda da birleşik kelime. 3 harf → 8 adım (0..7).
+
+       İSTİSNA — NORMAL (YALIN) YAZILAN HARF:
+       Harfin bulunduğu yerdeki biçimi yalın hâlinin AYNISIYSA (yani ne
+       sağdan ne soldan bağlantı çizgisi/kaşide almıyorsa) ikinci adım
+       birebir aynı şeyi gösteriyordu: harf bir kez beliriyor, sonra
+       "değişiyormuş" gibi yeniden beliriyordu. Böyle harflerde TEK adım
+       yeter — çizgili bir hâle dönüşmüyorlar.
+       Örnek: و ح ش → و zaten yalın yazılır, tek adımda gelir. */
     function adimlar(coz) {
         var n = coz.length, liste = [[]], i, j, a, b;
         for (i = 0; i < n; i++) {
@@ -119,6 +130,7 @@
             for (j = 0; j < i; j++) a.push({ t: coz[j].bicim, r: coz[j].renk });
             a.push({ t: coz[i].harf, r: coz[i].renk, yeni: true });
             liste.push(a);
+            if (coz[i].bicim === coz[i].harf) continue;   /* yalın kalıyor → 2. adım gereksiz */
             b = [];
             for (j = 0; j <= i; j++) b.push({ t: coz[j].bicim, r: coz[j].renk, yeni: j === i });
             liste.push(b);

@@ -1436,7 +1436,10 @@
         .ab-tb-satir { font-size: var(--ab-punto); }
         .ab-tb-h {
             font-family: 'ArapcaKom', 'Traditional Arabic', 'arakom', serif;
-            font-size: 1em; line-height: 1.5; font-weight: 700; text-align: center;
+            font-size: 1em; line-height: 1.5; font-weight: 400; text-align: center;
+            /* sentetik kalınlaştırma kapalı — bkz. .ab-p açıklaması */
+            font-synthesis: none; -webkit-font-synthesis: none;
+            font-synthesis-weight: none; -webkit-text-stroke: 0;
         }
         /* YAZI ÇİZGİSİ TAM TABAN ÇİZGİSİNDE.
            Ölçüm: bu yazı tipinde taban çizgisi, harf kutusunun altından
@@ -1544,7 +1547,9 @@
             content: ""; position: absolute; left: .06em; right: .06em; bottom: .50em;
             height: 3px; background: rgba(15, 23, 42, .3); border-radius: 2px;
         }
-        .ab-tahta { justify-content: flex-start; flex: 1 1 auto; min-width: 0; border-radius: 10px; }
+        /* Kelime tahtanın ORTASINDA kurulur: sağa yaslı dururken sayfa
+           dengesiz görünüyordu. */
+        .ab-tahta { justify-content: center; flex: 1 1 auto; min-width: 0; border-radius: 10px; }
         .ab-satir.ab-aktif .ab-tahta { cursor: pointer; }
         .ab-kaynak { justify-content: flex-end; gap: .2em; flex: none; }
         .ab-kaynak::before { background: rgba(15, 23, 42, .14); }
@@ -1556,10 +1561,19 @@
         .ab-dizi.ab-bitisik { gap: 0; display: block; white-space: nowrap; line-height: 1; }
         .ab-bos-dizi { min-height: 1em; }
         /* AYNI PUNTO: ayrık harfler de birleşen kelime de bu ölçüde */
-        /* AYNI PUNTO: harfler kabın ölçüsünü aynen alır (1em) */
+        /* AYNI PUNTO: harfler kabın ölçüsünü aynen alır (1em)
+           KALINLIK: 700 isteniyordu ama Arapça yazı tipinin gerçek bir
+           "bold" kesimi yok; tarayıcı SENTETİK kalınlaştırma (faux bold)
+           uygulayıp harfleri bazı cihazlarda hamurlaştırıyordu. Ağırlık
+           normale çekildi ve font-synthesis kapatıldı: tarayıcı kendiliğinden
+           kalınlaştıramaz, harf her cihazda tipin kendi çizgisiyle çıkar. */
         .ab-p, .ab-kh {
-            display: inline-block; line-height: 1; font-weight: 700;
+            display: inline-block; line-height: 1; font-weight: 400;
             font-size: 1em;
+            font-synthesis: none; -webkit-font-synthesis: none;
+            font-synthesis-weight: none;
+            -webkit-text-stroke: 0;
+            paint-order: stroke fill;
         }
         /* Birleşik adımda parçalar SATIR İÇİ kalır ki tarayıcı harfleri
            gerçek kelime gibi birbirine bağlasın. */
