@@ -58,6 +58,21 @@
         'أ': 'Hemzeli elif', 'ة': 'Ta-i merbûta'
     };
 
+    /* --- TUR SİSTEMİ ------------------------------------------------
+       Sınav artık "kaç soru / hangi tip" seçtirmez: her TUR sabittir.
+         TUR_SORU  : bir turdaki soru sayısı
+         SORU_PUAN : her doğrunun puanı  (20 x 5 = 100 puan)
+       Dokuz tipin HEPSİ her turda çıkar, sıraları karışıktır.
+       ---------------------------------------------------------------- */
+    var TUR_SORU  = 20;
+    var SORU_PUAN = 5;
+
+    /* Sonuç YALNIZ kendi sayfasından (alfabesinav.html) rapor edilir.
+       alfabe.html içindeki sekme sınıf içi alıştırma olarak kalır; yoksa
+       iki ayrı etkinlik (Yarışma ve Sınav) aynı dosya adına yazardı. */
+    var RAPOR = false;
+    try { RAPOR = /alfabesinav\.html$/i.test(location.pathname); } catch (e) { }
+
     /* Kendinden sonraki harfe BAĞLANMAYAN harfler. */
     var BIRLESMEZ = 'اأإآٱدذرزوؤةىء';
     var TATVIL    = 'ـ';
@@ -408,11 +423,43 @@
         return liste;
     }
 
+    /* BİR TURUN SORULARI — 20 soru, HER TİPTEN en az ikişer tane,
+       sırası karışık. 9 tipin ikişerlisi 18 eder; kalan 2 soru rastgele
+       tiplerden tamamlanır. Böylece "her tür soru çıksın" ve "sorular
+       karışık olsun" kuralları aynı anda tutar. */
+    function turHavuzu() {
+        var tipler = [1, 2, 3, 4, 5, 6, 7, 8, 9], sira = [], i, t, s, dene;
+        sira = sira.concat(tipler).concat(tipler);              /* her tipten ikişer */
+        while (sira.length < TUR_SORU) sira.push(tipler[Math.floor(Math.random() * tipler.length)]);
+        sira = karistir(sira).slice(0, TUR_SORU);
+
+        var kelimeler = karistir(BOSLUK_KELIME.slice()), ki = 0, liste = [];
+        for (i = 0; i < sira.length; i++) {
+            t = sira[i]; s = null; dene = 0;
+            while (dene++ < 60) {
+                s = (t === 9) ? boslukSoru(kelimeler[ki % kelimeler.length]) : uret(t);
+                if (denetle(s) === '') break;
+                s = null;
+            }
+            if (t === 9) ki++;
+            if (s) liste.push(s);
+        }
+        /* Üretilemeyen olduysa (pratikte olmaz) karışık tiplerle tamamla. */
+        dene = 0;
+        while (liste.length < TUR_SORU && dene++ < TUR_SORU * 60) {
+            t = tipler[Math.floor(Math.random() * tipler.length)];
+            s = (t === 9) ? boslukSoru(kelimeler[ki++ % kelimeler.length]) : uret(t);
+            if (denetle(s) === '') liste.push(s);
+        }
+        return liste.slice(0, TUR_SORU);
+    }
+
     /* ------------------------------------------------------------
        5. ARAYÜZ
        ------------------------------------------------------------ */
 
-    var durum = { tip: 0, adet: 10, havuz: [], i: 0, dogru: 0, cevapli: false, secim: null };
+    var durum = { tur: 0, havuz: [], i: 0, dogru: 0, cevapli: false, secim: null,
+                  bas: 0, bildirildi: false };
 
     function kelimeHtml(s, dolu, bitisik) {
         var c = s.cozum, i, p = [], t;
@@ -517,28 +564,56 @@
         }, 900);
     }
 
+    /* SONUÇ — her tur 100 puan üzerinden. Cevaplanmayan soru 0 sayılır,
+       yani turu yarıda bırakmak puanı düşürür. */
     function sonucHtml() {
-        var y = durum.havuz.length, d = durum.dogru;
-        var yuzde = y ? Math.round(d / y * 100) : 0;
-        var soz = yuzde >= 90 ? 'Harikasın! Alfabeyi çok iyi tanıyorsun.'
-                : yuzde >= 70 ? 'Güzel iş! Birkaç harfi tekrar edelim.'
-                : yuzde >= 50 ? 'Fena değil; renkleri hatırlayarak tekrar dene.'
+        var d = durum.dogru, puan = d * SORU_PUAN;
+        var soz = puan >= 90 ? 'Harikasın! Alfabeyi çok iyi tanıyorsun.'
+                : puan >= 70 ? 'Güzel iş! Birkaç harfi tekrar edelim.'
+                : puan >= 50 ? 'Fena değil; renkleri hatırlayarak yeni bir tur dene.'
                 : 'Harf Birleştirme sekmesinden biraz çalışıp tekrar gel.';
         return '<div class="as-sonkart">' +
-               '  <div class="as-sonbas">Sınav bitti</div>' +
-               '  <div class="as-halka" style="--p:' + yuzde + '"><span>' + yuzde + '%</span></div>' +
-               '  <div class="as-sonsay">' + d + ' doğru / ' + y + ' soru</div>' +
+               '  <div class="as-sonbas">' + durum.tur + '. Tur bitti</div>' +
+               '  <div class="as-halka" style="--p:' + puan + '"><span>' + puan + '</span></div>' +
+               '  <div class="as-sonsay"><b>' + puan + ' / 100 puan</b> · ' + d + ' doğru / ' + TUR_SORU + ' soru</div>' +
                '  <div class="as-sonsoz">' + soz + '</div>' +
                '  <div class="as-alt">' +
-               '    <button type="button" class="as-t as-basla" data-rol="yeniden">Tekrar dene</button>' +
-               '    <button type="button" class="as-t as-bitir" data-rol="ayarlar">Ayarlara dön</button>' +
+               '    <button type="button" class="as-t as-basla" data-rol="yeniden">' + (durum.tur + 1) + '. Tura geç</button>' +
+               '    <button type="button" class="as-t as-bitir" data-rol="ayarlar">Kapağa dön</button>' +
                '  </div>' +
                '</div>';
     }
 
+    /* Turu kapat: sonucu çiz ve (kendi sayfasındaysak) BİR KEZ rapor et. */
+    function turuBitir(kap) {
+        if (!durum.bildirildi) {
+            durum.bildirildi = true;
+            if (RAPOR) {
+                try {
+                    if (window.KidefGorev && KidefGorev.aktif) {
+                        KidefGorev.bildir({
+                            dogru: durum.dogru, toplam: TUR_SORU,
+                            mod: 'tur', detay: durum.tur + '. tur',
+                            sureSn: durum.bas ? Math.round((Date.now() - durum.bas) / 1000) : null
+                        });
+                    }
+                } catch (e) { }
+            }
+        }
+        kap.innerHTML = sonucHtml();
+    }
+
+    function turBaslat(kap) {
+        durum.tur++;
+        durum.havuz = turHavuzu();
+        durum.i = 0; durum.dogru = 0; durum.esHata = 0;
+        durum.bas = Date.now(); durum.bildirildi = false;
+        soruGoster(kap);
+    }
+
     function soruGoster(kap) {
         var s = durum.havuz[durum.i];
-        if (!s) { kap.innerHTML = sonucHtml(); return; }
+        if (!s) { turuBitir(kap); return; }
         durum.cevapli = false; durum.secim = null;
         durum.esSol = null; durum.esDogru = 0; durum.esHata = 0;
         kap.innerHTML = soruHtml(s, durum.i + 1, durum.havuz.length);
@@ -606,28 +681,20 @@
         }
     }
 
+    /* KAPAK — soru tipi/sayısı seçtirmez: tur düzeni sabittir. */
     function baslatEkrani() {
         var g = '';
         g += '<div class="as-kapak">';
         g += '  <h2 class="as-bas">Alfabe Sınavı</h2>';
-        g += '  <p class="as-alt-bas">Dokuz ayrı soru tipi; her testte dört şık. Sorular her seferinde yeniden üretilir.</p>';
-        g += '  <div class="as-secim-bas">Soru tipi</div>';
-        g += '  <div class="as-cipler" data-rol="tipler">';
-        g += '    <button type="button" class="as-cip' + (durum.tip === 0 ? ' as-acik' : '') + '" data-tip="0">Karışık</button>';
-        for (var t = 1; t <= 9; t++) {
-            g += '<button type="button" class="as-cip' + (durum.tip === t ? ' as-acik' : '') +
-                 '" data-tip="' + t + '" title="' + TIP_AD[t] + '">' + t + '</button>';
-        }
-        g += '  </div>';
-        g += '  <div class="as-tipnot" data-rol="tipnot">' +
-             (durum.tip ? TIP_AD[durum.tip] : 'Dokuz tipten karışık sorular gelir.') + '</div>';
-        g += '  <div class="as-secim-bas">Soru sayısı</div>';
-        g += '  <div class="as-cipler" data-rol="adetler">';
-        [10, 20, 30].forEach(function (n) {
-            g += '<button type="button" class="as-cip' + (durum.adet === n ? ' as-acik' : '') + '" data-adet="' + n + '">' + n + '</button>';
-        });
-        g += '  </div>';
-        g += '  <button type="button" class="as-t as-basla" data-rol="basla">Sınavı başlat</button>';
+        g += '  <p class="as-alt-bas">Her tur <b>' + TUR_SORU + ' soru</b>, her doğru <b>' + SORU_PUAN +
+             ' puan</b> — tur sonunda <b>100 puan</b> üzerinden değerlendirilir.</p>';
+        g += '  <div class="as-turnot">Dokuz soru tipinin <b>hepsi</b> her turda çıkar ve sıraları karışıktır. ' +
+             'Sorular her turda yeniden üretilir, aynı tur bir daha aynı gelmez.</div>';
+        g += '  <ol class="as-turliste">';
+        for (var t = 1; t <= 9; t++) g += '<li>' + TIP_AD[t] + '</li>';
+        g += '  </ol>';
+        g += '  <button type="button" class="as-t as-basla" data-rol="basla">' +
+             (durum.tur ? (durum.tur + 1) + '. Tura başla' : 'Tura başla') + '</button>';
         g += '</div>';
         return g;
     }
@@ -641,28 +708,10 @@
         kap.addEventListener('click', function (e) {
             var d;
             /* --- kapak --- */
-            d = e.target.closest ? e.target.closest('.as-cip') : null;
-            if (d && kap.contains(d)) {
-                var kutu = d.parentNode, l = kutu.querySelectorAll('.as-cip'), i;
-                for (i = 0; i < l.length; i++) l[i].classList.remove('as-acik');
-                d.classList.add('as-acik');
-                if (d.hasAttribute('data-tip')) {
-                    durum.tip = +d.getAttribute('data-tip');
-                    var n = kap.querySelector('[data-rol="tipnot"]');
-                    if (n) n.textContent = durum.tip ? TIP_AD[durum.tip] : 'Dokuz tipten karışık sorular gelir.';
-                } else {
-                    durum.adet = +d.getAttribute('data-adet');
-                }
-                tik(); return;
-            }
             d = e.target.closest ? e.target.closest('[data-rol="ayarlar"]') : null;
             if (d && kap.contains(d)) { kap.innerHTML = baslatEkrani(); tik(); return; }
             d = e.target.closest ? e.target.closest('[data-rol="basla"],[data-rol="yeniden"]') : null;
-            if (d && kap.contains(d)) {
-                durum.havuz = havuzKur(durum.tip, durum.adet);
-                durum.i = 0; durum.dogru = 0; durum.esHata = 0;
-                soruGoster(kap); tik(); return;
-            }
+            if (d && kap.contains(d)) { turBaslat(kap); tik(); return; }
             var s = durum.havuz[durum.i];
             if (!s) return;
             /* --- test şıkları --- */
@@ -688,10 +737,7 @@
             }
             /* --- bitir --- */
             d = e.target.closest ? e.target.closest('[data-rol="bitir"]') : null;
-            if (d && kap.contains(d)) {
-                durum.havuz = durum.havuz.slice(0, durum.i + (durum.cevapli ? 1 : 0));
-                kap.innerHTML = sonucHtml(); tik(); return;
-            }
+            if (d && kap.contains(d)) { turuBitir(kap); tik(); return; }
         });
     }
 
@@ -700,7 +746,8 @@
     } else { kur(); }
 
     window.AlfabeSinav = {
-        kur: kur, uret: uret, denetle: denetle, havuzKur: havuzKur,
+        kur: kur, uret: uret, denetle: denetle, havuzKur: havuzKur, turHavuzu: turHavuzu,
+        ayar: { turSoru: TUR_SORU, soruPuan: SORU_PUAN, rapor: RAPOR },
         coz: coz, dortBicim: dortBicim,
         gruplar: { ses: SES_GRUP, yazi: YAZI_GRUP },
         haritalar: { ses: SES_HARITA, yazi: YAZI_HARITA },

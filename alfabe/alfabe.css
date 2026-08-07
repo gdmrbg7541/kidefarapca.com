@@ -1160,144 +1160,129 @@
 /* ============================================================
    HARF BİRLEŞTİRME SEKMESİ (p5)  —  alfabe_birlestir.js
    ------------------------------------------------------------
-   Ekranda "pdf çıktısı" hissi: gri zemin üstünde beyaz kâğıtlar,
-   dikey scroll, her kâğıtta en fazla 4 kelime satırı. Her satırın
-   sağında ve solunda öğrencinin yazacağı çizgili alan var.
+   Bu sekme bir CEVAP SLAYTI'dır: öğrencinin PDF'ini tamamlaması
+   için tahtaya yansıtılır. Yazma alanı, yazdırma ve toplu
+   ilerletme yoktur; ekranda AYNI ANDA EN FAZLA 4 örnek durur.
+   Satırlar eşit payla yüksekliği paylaşır (flex: 1 1 0), punto
+   vh ile ölçülür — sınıfın arkasından okunsun diye.
    ============================================================ */
         #p5 { height: 100%; }
         .ab-sar {
-            height: 100%; overflow-y: auto; overflow-x: hidden;
-            padding: 10px 8px 26px;
+            height: 100%; overflow: hidden;
+            display: flex; flex-direction: column; gap: 1vh;
+            padding: 1.1vh 12px 1.4vh;
             background: linear-gradient(180deg, #eef2f6, #e2e8f0);
             border-radius: 12px;
-            -webkit-overflow-scrolling: touch;
         }
 
-        /* --- üst araç şeridi (yazdırırken görünmez) --- */
-        .ab-arac {
-            max-width: 940px; margin: 0 auto 8px; display: flex; flex-wrap: wrap;
-            align-items: center; gap: 7px;
-            background: var(--bg-glass); border: 1px solid #cbd5e1;
-            border-radius: 10px; padding: 8px 10px; box-shadow: var(--shadow-sm);
-        }
-        .ab-ar {
-            font-family: inherit; font-size: .95rem; cursor: pointer;
-            border: 1px solid #cbd5e1; background: #fff; color: var(--primary);
-            border-radius: 8px; padding: 6px 11px; transition: .18s;
-        }
-        .ab-ar:hover { background: #16A085; color: #fff; border-color: #16A085; transform: translateY(-1px); }
-        .ab-ipucu { font-size: .8rem; color: #64748b; margin-inline-start: auto; }
-
-        /* --- renk anahtarı --- */
+        /* --- renk anahtarı (üstte, ince) --- */
         .ab-anahtar {
-            max-width: 940px; margin: 0 auto 12px; display: flex; flex-wrap: wrap;
-            align-items: center; gap: 6px 12px; font-size: .84rem;
-            background: #fff; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 7px 11px;
+            flex: none; margin: 0 auto; display: flex; flex-wrap: wrap;
+            align-items: center; justify-content: center; gap: 4px 14px;
+            font-size: clamp(.72rem, 1.5vh, .92rem);
+            background: #fff; border: 1px dashed #cbd5e1; border-radius: 10px;
+            padding: .6vh 12px;
         }
         .ab-et { font-weight: 700; }
 
-        /* --- kâğıt --- */
-        .ab-kagit {
-            max-width: 940px; margin: 0 auto 18px; background: #fff;
-            border: 1px solid #d7dee6; border-radius: 10px;
-            box-shadow: 0 8px 22px rgba(15, 23, 42, .13);
-            padding: 12px 14px 8px;
+        /* --- örnek yığını: dört satır yüksekliği eşit paylaşır --- */
+        .ab-liste {
+            flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;
+            gap: 1vh; justify-content: stretch;
         }
-        .ab-kbas {
-            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-            border-bottom: 2px solid #16A085; padding-bottom: 6px; margin-bottom: 8px;
-        }
-        .ab-kad  { font-weight: 800; color: #117A65; font-size: 1.02rem; }
-        .ab-kbos { font-size: .82rem; color: #64748b; }
-        .ab-ksay { margin-inline-start: auto; font-size: .8rem; color: #94a3b8; }
-        .ab-kalt { text-align: center; font-size: .72rem; color: #b6c2cf; padding-top: 4px; }
 
-        /* --- kelime satırı: [sol yazı alanı] [orta] [sağ yazı alanı] --- */
-        .ab-satir {
-            display: grid; align-items: stretch;
-            grid-template-columns: minmax(78px, 1fr) minmax(232px, 1.7fr) minmax(78px, 1fr);
-            gap: 8px; padding: 8px 2px;
-            border-bottom: 1px dashed #e2e8f0;
+        /* Satır varsayılan olarak GİZLİ; yalnız pencereye girenler çizilir.
+           Böylece 5. örneğe geçilince 1. örnek ekrandan çıkar. */
+        .ab-satir { display: none; }
+        .ab-satir.ab-gorunur {
+            display: grid; align-items: center;
+            grid-template-columns: minmax(96px, auto) minmax(0, 1fr);
+            gap: 0 16px;
+            flex: 1 1 0; min-height: 0;
+            background: #fff; border: 1.5px solid #dbe3ea; border-radius: 14px;
+            padding: .6vh 14px; box-shadow: 0 4px 12px rgba(15, 23, 42, .07);
+            transition: border-color .25s, box-shadow .25s, background .25s;
         }
-        .ab-satir:last-of-type { border-bottom: 0; }
+        /* etkin örnek öne çıkar */
+        .ab-satir.ab-aktif {
+            border-color: #16A085; background: linear-gradient(180deg, #ffffff, #f4fbf9);
+            box-shadow: 0 6px 20px rgba(22, 160, 133, .20);
+        }
+        /* yeni örnek aşağıdan yukarı kayarak gelir */
+        .ab-satir.ab-gir { animation: abKay .42s cubic-bezier(.22,.9,.3,1) both; }
+        @keyframes abKay {
+            from { opacity: 0; transform: translateY(26px); }
+            to   { opacity: 1; transform: none; }
+        }
 
-        /* öğrencinin yazacağı çizgili alan */
-        .ab-alan {
-            position: relative; min-height: 104px; border: 1.5px dashed #b6c2cf;
-            border-radius: 8px; background-color: #fcfdfe;
-            background-image: linear-gradient(180deg,
-                transparent 0 69%, #dde5ec 69% calc(69% + 1.5px), transparent calc(69% + 1.5px));
-            overflow: hidden;
-        }
-        .ab-cz { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
-        .ab-yaz-kapali .ab-cz { touch-action: pan-y; }
-        .ab-sil {
-            position: absolute; top: 3px; inset-inline-start: 3px; z-index: 2;
-            width: 22px; height: 22px; line-height: 1; padding: 0; cursor: pointer;
-            border: 1px solid #dbe2ea; border-radius: 6px; background: #fff;
-            color: #94a3b8; font-size: .78rem; opacity: .55; transition: .16s;
-        }
-        .ab-sil:hover { opacity: 1; color: var(--danger); border-color: var(--danger); }
-
-        /* orta sütun */
-        .ab-orta { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-        .ab-ust  { display: flex; align-items: center; gap: 10px; }
+        /* sol bilgi sütunu: sıra numarası + kaynak harfler */
+        .ab-bilgi { display: flex; align-items: center; gap: 10px; }
         .ab-no {
-            width: 25px; height: 25px; flex: none; border-radius: 50%;
-            background: #16A085; color: #fff; font-size: .82rem; font-weight: 700;
+            width: clamp(26px, 4.2vh, 40px); height: clamp(26px, 4.2vh, 40px); flex: none;
+            border-radius: 50%; background: #16A085; color: #fff; font-weight: 700;
+            font-size: clamp(.8rem, 1.9vh, 1.1rem);
             display: flex; align-items: center; justify-content: center;
         }
-        .ab-kaynak { direction: rtl; display: flex; gap: 13px; align-items: center; }
-        .ab-kh { font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.1; font-weight: 700; }
+        .ab-satir.ab-aktif .ab-no { background: #0E6655; box-shadow: 0 0 0 4px rgba(22, 160, 133, .18); }
+        .ab-kaynak { direction: rtl; display: flex; gap: 12px; align-items: center; }
+        .ab-kh { font-size: clamp(1.4rem, 4.2vh, 3rem); line-height: 1.1; font-weight: 700; }
 
         /* adım tahtası */
+        .ab-govde { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9vh; }
         .ab-adim {
-            direction: rtl; width: 100%; min-height: 74px; cursor: pointer;
+            direction: rtl; width: 100%; flex: 1 1 auto; min-height: 0;
             display: flex; align-items: center; justify-content: center;
-            border: 1.5px solid #e2e8f0; border-radius: 10px;
-            background: linear-gradient(180deg, #ffffff, #f7fafc);
-            padding: 4px 8px; transition: border-color .2s, box-shadow .2s;
+            border-radius: 10px; padding: 0 8px;
         }
-        .ab-adim:hover { border-color: #16A085; box-shadow: 0 0 0 3px rgba(22, 160, 133, .10); }
+        .ab-satir.ab-aktif .ab-adim { cursor: pointer; }
         .ab-dizi { display: flex; align-items: center; gap: 14px; direction: rtl; }
         .ab-dizi.ab-bitisik { gap: 0; display: block; white-space: nowrap; }
         .ab-p {
-            display: inline-block; font-size: clamp(2rem, 4.4vw, 3.1rem); line-height: 1.15;
-            font-weight: 700;
+            display: inline-block; line-height: 1.32; font-weight: 700;
+            font-size: clamp(1.7rem, 6.8vh, 4.4rem);
         }
         /* Birleşik adımda parçalar SATIR İÇİ kalır ki tarayıcı harfleri
            gerçek kelime gibi birbirine bağlasın. */
         .ab-bitisik .ab-p { display: inline; }
-        .ab-bos { color: #cbd5e1; font-size: 1.6rem; }
+        .ab-bos { color: #cbd5e1; font-size: clamp(1.2rem, 3vh, 1.9rem); }
         .ab-yeni { animation: abGel .34s ease-out both; }
         @keyframes abGel {
             from { opacity: 0; transform: translateY(-9px) scale(.72); }
             to   { opacity: 1; transform: none; }
         }
-        .ab-satir.ab-bitti .ab-adim {
-            border-color: #16A085; background: linear-gradient(180deg, #f2fbf8, #e8f7f2);
-        }
 
-        .ab-anlam { font-size: .78rem; color: #94a3b8; min-height: 1em; opacity: 0; transition: opacity .3s; }
-        .ab-satir.ab-bitti .ab-anlam { opacity: 1; color: #117A65; }
-
-        .ab-tus { display: flex; align-items: center; gap: 8px; }
-        .ab-t {
-            font-family: inherit; font-size: .92rem; cursor: pointer; color: #fff;
-            border: 0; border-radius: 8px; padding: 6px 13px; background: #16A085;
-            box-shadow: 0 2px 6px rgba(22, 160, 133, .32); transition: .16s;
+        .ab-anlam {
+            font-size: clamp(.78rem, 2.1vh, 1.25rem); color: #94a3b8; min-height: 1em;
+            line-height: 1.2; opacity: 0; transition: opacity .3s;
         }
-        .ab-t:hover:not(:disabled) { background: #117A65; transform: translateY(-1px); }
-        .ab-t.ab-geri { background: #94a3b8; box-shadow: none; padding: 6px 11px; }
+        .ab-satir.ab-bitti .ab-anlam { opacity: 1; color: #117A65; font-weight: 700; }
+
+        /* --- alt kumanda şeridi --- */
+        .ab-serit {
+            flex: none; display: flex; align-items: center; justify-content: center; gap: 14px;
+            background: var(--bg-glass); border: 1px solid #cbd5e1; border-radius: 12px;
+            padding: .7vh 14px; box-shadow: var(--shadow-sm);
+        }
+        .ab-nav {
+            font-family: inherit; font-size: clamp(.85rem, 1.9vh, 1.05rem); cursor: pointer;
+            color: #fff; border: 0; border-radius: 10px; padding: .7vh 18px; background: #16A085;
+            box-shadow: 0 2px 8px rgba(22, 160, 133, .32); transition: .16s;
+        }
+        .ab-nav:hover:not(:disabled) { background: #117A65; transform: translateY(-1px); }
+        .ab-nav.ab-geri { background: #94a3b8; box-shadow: none; }
+        .ab-nav:disabled { opacity: .35; cursor: default; transform: none; }
+        .ab-durum {
+            display: flex; flex-direction: column; align-items: center; line-height: 1.25;
+            min-width: 108px; color: #475569;
+        }
+        .ab-d-ornek { font-size: clamp(.95rem, 2.2vh, 1.25rem); color: #0E6655; }
+        .ab-d-adim  { font-size: clamp(.68rem, 1.5vh, .85rem); color: #94a3b8; }
+
         /* Oklar CSS ile çizilir: ▶ karakteri bazı cihazlarda emoji
            olarak çıkıp düğmenin rengini bozuyordu. */
         .ab-ok { display: inline-block; width: 0; height: 0; border-style: solid; vertical-align: middle; }
         .ab-ok-sag { border-width: 6px 0 6px 9px; border-color: transparent transparent transparent currentColor; }
         .ab-ok-sol { border-width: 6px 9px 6px 0; border-color: transparent currentColor transparent transparent; }
-        .ab-ar .ab-ok { border-left-color: #16A085; }
-        .ab-ar:hover .ab-ok { border-left-color: #fff; }
-        .ab-t:disabled { opacity: .35; cursor: default; transform: none; }
-        .ab-say { font-size: .8rem; color: #64748b; min-width: 44px; text-align: center; }
 
         /* --- 5 RENK: harfin nasıl yazılacağını çocuğa renk söyler --- */
         .ab-c-yesil   { color: #16a34a; }
@@ -1306,48 +1291,20 @@
         .ab-c-siyah   { color: #111827; }
         .ab-c-kirmizi { color: #dc2626; }
 
-        /* --- dar ekran: yazı alanları kelimenin altına iner --- */
+        /* --- dar ekran: kaynak harfler kelimenin üstüne çıkar --- */
         @media (max-width: 720px) {
-            .ab-satir { grid-template-columns: 1fr 1fr; grid-template-areas: "orta orta" "sag sol"; }
-            .ab-orta  { grid-area: orta; }
-            .ab-sag   { grid-area: sag; }
-            .ab-sol   { grid-area: sol; }
-            .ab-alan  { min-height: 82px; }
-            .ab-ipucu { display: none; }
+            .ab-satir.ab-gorunur { grid-template-columns: 1fr; gap: .2vh; padding: .5vh 10px; }
+            .ab-bilgi { justify-content: center; }
+            .ab-anahtar { gap: 2px 9px; }
         }
 
-        /* --- YAZDIRMA: gerçek bir çalışma kâğıdı çıktısı --- */
+        /* --- YAZDIRMA: bu sekme slayttır, kâğıda basılmaz --- */
         @media print {
-            body {
-                height: auto !important; width: auto !important; overflow: visible !important;
-                display: block !important; background: #fff !important;
-            }
-            .main-app {
-                height: auto !important; width: auto !important; background: #fff !important;
-                box-shadow: none !important; backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important; display: block !important;
-            }
-            .nav-tabs, .kidef-geri, .geri-btn, .home-link { display: none !important; }
-            .content-area { overflow: visible !important; height: auto !important; padding: 0 !important; }
-            .panel { display: none !important; }
-            #p5.panel.active { display: block !important; height: auto !important; }
-            .ab-sar {
-                height: auto !important; overflow: visible !important;
-                background: #fff !important; padding: 0 !important;
-            }
-            .ab-arac { display: none !important; }
-            .ab-anahtar { border-style: solid; page-break-inside: avoid; break-inside: avoid; }
-            .ab-kagit {
-                box-shadow: none !important; border: 0; margin: 0 0 6mm; padding: 0;
-                page-break-after: always; break-after: page;
-                page-break-inside: avoid; break-inside: avoid;
-            }
-            .ab-kagit:last-of-type { page-break-after: auto; break-after: auto; }
-            .ab-alan { min-height: 26mm; border-color: #94a3b8; }
-            .ab-adim { min-height: 22mm; }
-            .ab-t, .ab-sil, .ab-say { display: none !important; }
+            .ab-serit { display: none !important; }
+            .ab-satir { display: grid !important; }   /* çıktı alınırsa hepsi görünsün */
             .ab-anlam { opacity: 1 !important; color: #64748b !important; }
         }
+
 
         /* ==========================================================
            SINAV SEKMESİ (p6)
@@ -1374,25 +1331,20 @@
             margin: 0 0 6px; font-size: 1.5rem; color: #117A65; font-weight: 800;
         }
         .as-alt-bas { margin: 0 0 16px; color: #64748b; font-size: .92rem; line-height: 1.5; }
-        .as-secim-bas {
-            margin: 14px 0 8px; font-size: .82rem; font-weight: 700;
-            color: #94a3b8; letter-spacing: .06em; text-transform: uppercase;
+        /* Soru tipi / soru sayısı seçicileri KALDIRILDI: sınav artık sabit
+           tur düzeninde ilerliyor (20 soru x 5 puan = 100). Kapakta yalnız
+           kuralı anlatan not ve tipler listesi var. */
+        .as-turnot {
+            margin: 4px 0 14px; padding: 11px 14px; border-radius: 12px;
+            background: #F2FBF8; border: 1px dashed #A9DFD3; color: #117A65;
+            font-size: .88rem; line-height: 1.5;
         }
-        .as-cipler { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
-        .as-cip {
-            min-width: 38px; padding: 8px 13px; border-radius: 11px; cursor: pointer;
-            border: 1.5px solid #cfd8e3; background: #fff; color: #475569;
-            font-size: .95rem; font-weight: 700; font-family: inherit;
-            transition: background .16s, color .16s, border-color .16s, transform .12s;
+        .as-turliste {
+            margin: 0 0 18px; padding: 0 0 0 22px; text-align: start;
+            columns: 2; column-gap: 20px; color: #64748b; font-size: .84rem; line-height: 1.75;
         }
-        .as-cip:hover { border-color: #16A085; color: #117A65; transform: translateY(-1px); }
-        .as-cip.as-acik {
-            background: #16A085; border-color: #16A085; color: #fff;
-            box-shadow: 0 4px 12px rgba(22, 160, 133, .3);
-        }
-        .as-tipnot {
-            margin: 9px 0 2px; min-height: 18px; font-size: .86rem; color: #117A65;
-        }
+        .as-turliste li { break-inside: avoid; }
+        @media (max-width: 560px) { .as-turliste { columns: 1; } }
         .as-t {
             padding: 10px 20px; border-radius: 12px; cursor: pointer; font-family: inherit;
             font-size: .98rem; font-weight: 700; border: 1.5px solid #16A085;

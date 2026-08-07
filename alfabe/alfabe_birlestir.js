@@ -1,9 +1,17 @@
 /* ============================================================
    HARF BİRLEŞTİRME  —  alfabe.html  "p5" sekmesi
    ------------------------------------------------------------
-   AMAÇ: Çocuk üç ayrı harfi görüp bunların tek kelime hâlinde
-   nasıl birleştiğini ADIM ADIM izlesin; harfin RENGİ ona o
-   harfin nasıl yazılacağını söylesin.
+   NE İŞE YARAR: Öğrencinin elindeki PDF'in CEVAP SLAYTI'dır.
+   Tahtaya yansıtılır, öğretmen adım adım ilerletir, çocuk kendi
+   kâğıdına yazar. Bu yüzden ekranda yazma alanı, yazdırma tuşu
+   ya da toplu ilerletme YOKTUR — burası sade bir sunum ekranıdır.
+
+   OKUNURLUK KURALI (öğretmenin isteği)
+     Ekranda AYNI ANDA EN FAZLA 4 örnek durur. 5. örneğe geçilince
+     1. örnek yukarı doğru kayıp gider, 6. örneğe geçilince 2.
+     örnek çıkar... Böylece GEÇ YAZAN öğrenci bir önceki soruları
+     hâlâ görür ve kâğıdını tamamlayabilir. Geride kalan örnekler
+     ÇÖZÜLMÜŞ (birleşik) hâlde bekler; cevap ekranda kalır.
 
    RENK ANAHTARI (öğretmenin istediği kural)
      YEŞİL   → kelimenin BAŞINDA yazılan biçim      (لـ)
@@ -20,11 +28,10 @@
    sonra bulunduğu yere göre biçimini alır. En sonda hepsi
    birleşip gerçek kelime çıkar.
 
-   SAYFA DÜZENİ: pdf çıktısı gibi beyaz kâğıtlar, her kâğıtta
-   EN FAZLA 4 kelime satırı, dikey scroll. Her satırın SAĞINDA
-   ve SOLUNDA öğrencinin kendi elyazısıyla birleştirip yazacağı
-   çizgili alan var (ekranda parmak/kalem/fare ile yazılabilir,
-   yazdırıldığında boş kutu olarak çıkar).
+   KUMANDA: tek bir "İleri" her şeyi sürer. Etkin örneğin adımları
+   biter bitmez bir sonraki örneğe geçilir. Klavyede → / boşluk
+   ileri, ← geri. Uzaktan kumandalı sunum tıklayıcıları da bu iki
+   tuşu gönderdiği için tahtada kumandayla da çalışır.
    ============================================================ */
 (function () {
     'use strict';
@@ -60,7 +67,9 @@
        (Bunlar sadece sağdan bağlanır; soldan bağlanmaz.) */
     var BIRLESMEZ = 'اأإآٱدذرزوؤةىء';
     var TATVIL    = 'ـ';                 /* uzatma çizgisi U+0640 */
-    var SAYFA_SATIR = 4;                 /* bir kâğıtta en fazla 4 kelime */
+    var PENCERE   = 4;                   /* ekranda aynı anda duran örnek sayısı */
+
+    var aktif = 0;                       /* şu an işlenen örnek (0 tabanlı) */
 
     /* --- 2) RENK ve BİÇİM MOTORU -------------------------------- */
     function bagliMi(harf) { return BIRLESMEZ.indexOf(harf) < 0; }
@@ -122,6 +131,7 @@
                cik.join('') + '</span>';
     }
 
+    /* Bir örnek satırı. Yazma alanı YOK: burası cevap slaytı. */
     function satirHtml(sira) {
         var s   = SATIRLAR[sira];
         var c   = coz(s.h);
@@ -131,30 +141,15 @@
         var top = adimlar(c).length - 1;
         return '' +
         '<div class="ab-satir" data-sira="' + sira + '" data-adim="0" data-top="' + top + '">' +
-        '  <div class="ab-alan ab-sol">' +
-        '    <canvas class="ab-cz"></canvas>' +
-        '    <button type="button" class="ab-sil" data-sil="1" title="Bu alanı temizle">⌫</button>' +
+        '  <div class="ab-bilgi">' +
+        '    <span class="ab-no">' + (sira + 1) + '</span>' +
+        '    <span class="ab-kaynak">' + kay + '</span>' +
         '  </div>' +
-        '  <div class="ab-orta">' +
-        '    <div class="ab-ust">' +
-        '      <span class="ab-no">' + (sira + 1) + '</span>' +
-        '      <span class="ab-kaynak">' + kay + '</span>' +
-        '    </div>' +
+        '  <div class="ab-govde">' +
         '    <div class="ab-adim" data-rol="adim" title="Dokun → bir adım ilerle">' +
                  adimHtml([]) +
         '    </div>' +
         '    <div class="ab-anlam">' + kacis(s.anlam) + '</div>' +
-        '    <div class="ab-tus">' +
-        '      <button type="button" class="ab-t ab-geri" data-yon="-1" title="Geri">' +
-        '        <i class="ab-ok ab-ok-sol"></i></button>' +
-        '      <span class="ab-say">0 / ' + top + '</span>' +
-        '      <button type="button" class="ab-t ab-ileri" data-yon="1" title="İleri">' +
-        '        İleri <i class="ab-ok ab-ok-sag"></i></button>' +
-        '    </div>' +
-        '  </div>' +
-        '  <div class="ab-alan ab-sag">' +
-        '    <canvas class="ab-cz"></canvas>' +
-        '    <button type="button" class="ab-sil" data-sil="1" title="Bu alanı temizle">⌫</button>' +
         '  </div>' +
         '</div>';
     }
@@ -171,35 +166,25 @@
         '</div>';
     }
 
-    function aracHtml() {
+    /* Alt kumanda şeridi: slaytı süren TEK yer. */
+    function seritHtml() {
         return '' +
-        '<div class="ab-arac">' +
-        '  <button type="button" class="ab-ar" data-is="tumu">Hepsini ilerlet <i class="ab-ok ab-ok-sag"></i></button>' +
-        '  <button type="button" class="ab-ar" data-is="sifirla">↺ Adımları sıfırla</button>' +
-        '  <button type="button" class="ab-ar" data-is="temizle">🧽 Yazıları sil</button>' +
-        '  <button type="button" class="ab-ar ab-yaz-tus" data-is="yazma">✍️ Yazma: açık</button>' +
-        '  <button type="button" class="ab-ar" data-is="yazdir">🖨️ Yazdır</button>' +
-        '  <span class="ab-ipucu">Boş çalışma kâğıdı için önce <b>sıfırla</b>, sonra <b>yazdır</b>.</span>' +
+        '<div class="ab-serit">' +
+        '  <button type="button" class="ab-nav ab-geri" data-yon="-1" title="Geri (← tuşu)">' +
+        '    <i class="ab-ok ab-ok-sol"></i> Geri</button>' +
+        '  <span class="ab-durum">' +
+        '    <b class="ab-d-ornek">1 / ' + SATIRLAR.length + '</b>' +
+        '    <span class="ab-d-adim">adım 0 / 0</span>' +
+        '  </span>' +
+        '  <button type="button" class="ab-nav ab-ileri" data-yon="1" title="İleri (→ ya da boşluk)">' +
+        '    İleri <i class="ab-ok ab-ok-sag"></i></button>' +
         '</div>';
     }
 
-    function kagitlarHtml() {
-        var toplam = Math.ceil(SATIRLAR.length / SAYFA_SATIR), cik = '', s, i;
-        for (s = 0; s < toplam; s++) {
-            cik += '<section class="ab-kagit">' +
-                   '  <header class="ab-kbas">' +
-                   '    <span class="ab-kad">Harf Birleştirme</span>' +
-                   '    <span class="ab-kbos">Adı Soyadı: ..............................' +
-                   '      &nbsp;&nbsp; Sınıf: ..............</span>' +
-                   '    <span class="ab-ksay">' + (s + 1) + ' / ' + toplam + '</span>' +
-                   '  </header>';
-            for (i = s * SAYFA_SATIR; i < Math.min((s + 1) * SAYFA_SATIR, SATIRLAR.length); i++) {
-                cik += satirHtml(i);
-            }
-            cik += '  <footer class="ab-kalt">kidefarapca.com</footer>' +
-                   '</section>';
-        }
-        return cik;
+    function listeHtml() {
+        var cik = '', i;
+        for (i = 0; i < SATIRLAR.length; i++) cik += satirHtml(i);
+        return '<div class="ab-liste">' + cik + '</div>';
     }
 
     /* --- 4) ADIM MAKİNESİ --------------------------------------- */
@@ -212,84 +197,80 @@
         if (adim > top) adim = top;
         satir.setAttribute('data-adim', adim);
         satir.querySelector('[data-rol="adim"]').innerHTML = adimHtml(liste[adim]);
-        satir.querySelector('.ab-say').textContent = adim + ' / ' + top;
         satir.classList.toggle('ab-bitti', adim === top);
-        satir.querySelector('.ab-geri').disabled  = (adim === 0);
-        satir.querySelector('.ab-ileri').disabled = (adim === top);
     }
 
-    function ilerlet(satir, yon) {
-        satir.setAttribute('data-adim', (+satir.getAttribute('data-adim') || 0) + yon);
-        adimYaz(satir);
+    /* Görünür pencereyi çiz: [aktif-3 ... aktif] aralığı.
+       Bu yüzden 5. örneğe geçince 1. örnek ekrandan çıkar. */
+    function pencereYaz(kap) {
+        var l = kap.querySelectorAll('.ab-satir');
+        var bas = Math.max(0, aktif - (PENCERE - 1)), i;
+        for (i = 0; i < l.length; i++) {
+            l[i].classList.toggle('ab-gorunur', i >= bas && i <= aktif);
+            l[i].classList.toggle('ab-aktif', i === aktif);
+        }
+    }
+
+    function durumYaz(kap) {
+        var l = kap.querySelectorAll('.ab-satir');
+        var s = l[aktif];
+        var adim = +s.getAttribute('data-adim'), top = +s.getAttribute('data-top');
+        var o = kap.querySelector('.ab-d-ornek'); if (o) o.textContent = (aktif + 1) + ' / ' + l.length;
+        var a = kap.querySelector('.ab-d-adim');  if (a) a.textContent = 'adım ' + adim + ' / ' + top;
+        var g = kap.querySelector('.ab-geri');    if (g) g.disabled = (aktif === 0 && adim === 0);
+        var il = kap.querySelector('.ab-ileri');
+        if (il) il.disabled = (aktif === l.length - 1 && adim === top);
+    }
+
+    function ses() {
         if (typeof window.playClick === 'function') { try { window.playClick(); } catch (e) {} }
     }
 
-    /* --- 5) YAZI ALANLARI (parmak / kalem / fare) ---------------- */
-    var yazmaAcik = true;
+    /* Tek kumanda: adımlar biterse KENDİLİĞİNDEN sonraki örneğe geçer. */
+    function ilerle(kap, yon) {
+        var l = kap.querySelectorAll('.ab-satir');
+        if (!l.length) return;
+        var s = l[aktif];
+        var adim = +s.getAttribute('data-adim'), top = +s.getAttribute('data-top');
 
-    function olcuAyarla(cv) {
-        var kutu = cv.parentNode, r = kutu.getBoundingClientRect();
-        if (!r.width || !r.height) return false;
-        var o = Math.min(window.devicePixelRatio || 1, 2);
-        var w = Math.round(r.width * o), h = Math.round(r.height * o);
-        if (cv.width === w && cv.height === h) return true;
-        var eski = null;
-        if (cv.width > 1 && cv.height > 1) {
-            eski = document.createElement('canvas');
-            eski.width = cv.width; eski.height = cv.height;
-            eski.getContext('2d').drawImage(cv, 0, 0);
+        if (yon > 0) {
+            if (adim < top) {
+                s.setAttribute('data-adim', adim + 1); adimYaz(s);
+            } else if (aktif < l.length - 1) {
+                /* Geride kalan örnek ÇÖZÜLMÜŞ hâlde bekler: geç yazan
+                   öğrenci cevabı ekranda bulmaya devam etsin. */
+                s.setAttribute('data-adim', top); adimYaz(s);
+                aktif++;
+                l[aktif].setAttribute('data-adim', 0); adimYaz(l[aktif]);
+                pencereYaz(kap);
+                girAnimasyon(l[aktif]);
+            } else { return; }
+        } else {
+            if (adim > 0) {
+                s.setAttribute('data-adim', adim - 1); adimYaz(s);
+            } else if (aktif > 0) {
+                aktif--;
+                l[aktif].setAttribute('data-adim', +l[aktif].getAttribute('data-top'));
+                adimYaz(l[aktif]);
+                pencereYaz(kap);
+            } else { return; }
         }
-        cv.width = w; cv.height = h;
-        var c = cv.getContext('2d');
-        c.setTransform(o, 0, 0, o, 0, 0);
-        c.lineWidth = 3; c.lineCap = 'round'; c.lineJoin = 'round';
-        c.strokeStyle = '#1e293b'; c.fillStyle = '#1e293b';
-        if (eski) c.drawImage(eski, 0, 0, r.width, r.height);
-        return true;
+        durumYaz(kap);
+        ses();
     }
 
-    function tumOlcu() {
-        var l = document.querySelectorAll('#p5 .ab-cz'), i;
-        for (i = 0; i < l.length; i++) olcuAyarla(l[i]);
+    /* Yeni örnek aşağıdan yukarı kayarak gelir; üstteki örnek
+       bu sırada ekrandan çıkmış olur — istenen "yukarı kayma" hissi. */
+    function girAnimasyon(satir) {
+        if (!satir) return;
+        satir.classList.remove('ab-gir');
+        /* sınıfı yeniden tetiklemek için bir kare bekle */
+        void satir.offsetWidth;
+        satir.classList.add('ab-gir');
+        setTimeout(function () { satir.classList.remove('ab-gir'); }, 460);
     }
 
-    function cizKur(cv) {
-        var ciz = false, sx = 0, sy = 0;
-        function yer(e) {
-            var r = cv.getBoundingClientRect();
-            return { x: e.clientX - r.left, y: e.clientY - r.top };
-        }
-        cv.addEventListener('pointerdown', function (e) {
-            /* Parmakla sayfayı kaydırmak isteyen çocuğu engellemeyelim:
-               dokunmatikte yalnız "yazma modu" açıkken çizeriz. */
-            if (e.pointerType === 'touch' && !yazmaAcik) return;
-            olcuAyarla(cv);
-            var c = cv.getContext('2d'), p = yer(e);
-            ciz = true; sx = p.x; sy = p.y;
-            try { cv.setPointerCapture(e.pointerId); } catch (h) {}
-            c.beginPath(); c.arc(p.x, p.y, c.lineWidth / 2, 0, 6.2832); c.fill();
-            e.preventDefault();
-        });
-        cv.addEventListener('pointermove', function (e) {
-            if (!ciz) return;
-            var c = cv.getContext('2d'), p = yer(e);
-            c.beginPath(); c.moveTo(sx, sy); c.lineTo(p.x, p.y); c.stroke();
-            sx = p.x; sy = p.y;
-            e.preventDefault();
-        });
-        function bitir() { ciz = false; }
-        cv.addEventListener('pointerup', bitir);
-        cv.addEventListener('pointercancel', bitir);
-        cv.addEventListener('pointerleave', bitir);
-    }
-
-    function alanSil(cv) {
-        var c = cv.getContext('2d');
-        c.save(); c.setTransform(1, 0, 0, 1, 0, 0);
-        c.clearRect(0, 0, cv.width, cv.height); c.restore();
-    }
-
-    /* --- 6) KURULUM --------------------------------------------- */
+    /* --- 5) KURULUM --------------------------------------------- */
     var kuruldu = false;
 
     function kur() {
@@ -297,76 +278,40 @@
         if (!kap || kuruldu) return;
         kuruldu = true;
 
-        kap.innerHTML = aracHtml() + anahtarHtml() + kagitlarHtml();
+        kap.innerHTML = anahtarHtml() + listeHtml() + seritHtml();
 
         var satirlar = kap.querySelectorAll('.ab-satir'), i;
         for (i = 0; i < satirlar.length; i++) adimYaz(satirlar[i]);
-
-        var tuvaller = kap.querySelectorAll('.ab-cz');
-        for (i = 0; i < tuvaller.length; i++) cizKur(tuvaller[i]);
-
-        /* Dokunmatik cihazda yazma modu kapalı başlar ki sayfa
-           parmakla rahat kaydırılsın; fare/kalem her hâlükârda yazar. */
-        try {
-            if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) yazmaAcik = false;
-        } catch (e) {}
-        yazmaGuncelle(kap);
+        aktif = 0;
+        pencereYaz(kap);
+        durumYaz(kap);
 
         kap.addEventListener('click', function (e) {
             var t = e.target;
-            var ar = t.closest ? t.closest('.ab-ar') : null;
-            if (ar) { arac(kap, ar.getAttribute('data-is')); return; }
-            var sil = t.closest ? t.closest('.ab-sil') : null;
-            if (sil) { alanSil(sil.parentNode.querySelector('.ab-cz')); return; }
-            var tus = t.closest ? t.closest('.ab-t') : null;
-            if (tus) { ilerlet(tus.closest('.ab-satir'), +tus.getAttribute('data-yon')); return; }
+            var nav = t.closest ? t.closest('.ab-nav') : null;
+            if (nav) { if (!nav.disabled) ilerle(kap, +nav.getAttribute('data-yon')); return; }
+            /* Yalnız ETKİN örneğin tahtasına dokunmak ilerletir;
+               geride kalan çözülmüş örnekler yerinde durur. */
             var ad = t.closest ? t.closest('[data-rol="adim"]') : null;
             if (ad) {
                 var sr = ad.closest('.ab-satir');
-                var son = (+sr.getAttribute('data-adim') === +sr.getAttribute('data-top'));
-                ilerlet(sr, son ? -(+sr.getAttribute('data-top')) : 1);   /* sondaysa başa dön */
+                if (sr && sr.classList.contains('ab-aktif')) ilerle(kap, 1);
             }
         });
 
-        if (window.MutationObserver) {
+        /* Klavye/sunum kumandası — yalnız bu sekme açıkken. */
+        document.addEventListener('keydown', function (e) {
             var p5 = document.getElementById('p5');
-            if (p5) new MutationObserver(function () {
-                if (p5.classList.contains('active')) setTimeout(tumOlcu, 80);
-            }).observe(p5, { attributes: true, attributeFilter: ['class'] });
-        }
-        var zaman = null;
-        window.addEventListener('resize', function () {
-            clearTimeout(zaman); zaman = setTimeout(tumOlcu, 220);
-        });
-        setTimeout(tumOlcu, 120);
-    }
-
-    function yazmaGuncelle(kap) {
-        kap.classList.toggle('ab-yaz-kapali', !yazmaAcik);
-        var b = kap.querySelector('.ab-yaz-tus');
-        if (b) b.textContent = '✍️ Yazma: ' + (yazmaAcik ? 'açık' : 'kapalı');
-    }
-
-    function arac(kap, is) {
-        var l, i;
-        if (is === 'tumu') {
-            l = kap.querySelectorAll('.ab-satir');
-            for (i = 0; i < l.length; i++) {
-                l[i].setAttribute('data-adim', (+l[i].getAttribute('data-adim') || 0) + 1);
-                adimYaz(l[i]);
+            if (!p5 || !p5.classList.contains('active')) return;
+            var hedef = e.target;
+            if (hedef && /^(INPUT|TEXTAREA|SELECT)$/.test(hedef.tagName || '')) return;
+            var k = e.key;
+            if (k === 'ArrowRight' || k === ' ' || k === 'Spacebar' || k === 'PageDown' || k === 'Enter') {
+                ilerle(kap, 1); e.preventDefault();
+            } else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') {
+                ilerle(kap, -1); e.preventDefault();
             }
-        } else if (is === 'sifirla') {
-            l = kap.querySelectorAll('.ab-satir');
-            for (i = 0; i < l.length; i++) { l[i].setAttribute('data-adim', 0); adimYaz(l[i]); }
-        } else if (is === 'temizle') {
-            l = kap.querySelectorAll('.ab-cz');
-            for (i = 0; i < l.length; i++) alanSil(l[i]);
-        } else if (is === 'yazma') {
-            yazmaAcik = !yazmaAcik; yazmaGuncelle(kap);
-        } else if (is === 'yazdir') {
-            tumOlcu(); window.print(); return;
-        }
-        if (typeof window.playClick === 'function') { try { window.playClick(); } catch (e) {} }
+        });
     }
 
     /* Sayfa hazır olunca kurulsun (sekme açılmasa da hafif bir iştir). */
@@ -374,5 +319,9 @@
         document.addEventListener('DOMContentLoaded', kur);
     } else { kur(); }
 
-    window.AlfabeBirlestir = { kur: kur, coz: coz, adimlar: adimlar, veri: SATIRLAR, olc: tumOlcu };
+    /* olc(): eski sürümde tuval ölçüsünü ayarlardı. Yazma alanları
+       kaldırıldı; dışarıdan çağrılırsa hata vermesin diye duruyor. */
+    window.AlfabeBirlestir = {
+        kur: kur, coz: coz, adimlar: adimlar, veri: SATIRLAR, olc: function () {}
+    };
 })();
