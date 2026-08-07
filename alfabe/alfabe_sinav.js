@@ -126,13 +126,16 @@
     /* Soru cümleleri TAHTAYA yansıtılacak kadar büyük yazıldığı için
        KISA tutulur: uzun cümle 8rem puntoda beş satıra taşıp şıklara yer
        bırakmıyordu. Anlam aynı, cümle kısa. */
+    /* SORU CÜMLELERİ — hepsi YÜKLEMLİ tam cümledir ("... hangisidir?").
+       Vurgulanan kelime BÜYÜK HARFLE değil, kalın ve turuncu yazılır;
+       tamamı büyük yazı bağırıyormuş gibi duruyordu ve okuması yorucuydu. */
     var TIP_SORU = {
-        1: 'Okunuşu benzer harflerden <b>YANLIŞ</b> olan?',
-        2: 'Yazılışı benzer harflerden <b>YANLIŞ</b> olan?',
-        3: 'Okunuşu benzer harflerden <b>DOĞRU</b> olan?',
-        4: 'Yazılışı benzer harflerden <b>DOĞRU</b> olan?',
-        5: 'Çizgideki yazılışlardan <b>YANLIŞ</b> olan?',
-        6: 'Çizgideki yazılışlardan <b>DOĞRU</b> olan?',
+        1: 'Okunuşu benzer harflerden <b>yanlış</b> olan hangisidir?',
+        2: 'Yazılışı benzer harflerden <b>yanlış</b> olan hangisidir?',
+        3: 'Okunuşu benzer harflerden <b>doğru</b> olan hangisidir?',
+        4: 'Yazılışı benzer harflerden <b>doğru</b> olan hangisidir?',
+        5: 'Çizgideki yazılışlardan <b>yanlış</b> olan hangisidir?',
+        6: 'Çizgideki yazılışlardan <b>doğru</b> olan hangisidir?',
         7: 'Okunuşu benzer harfleri <b>eşleştir</b>.',
         8: 'Yazılışı benzer harfleri <b>eşleştir</b>.',
         9: 'Boşluğa hangi harf gelir?'

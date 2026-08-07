@@ -132,7 +132,11 @@
             liste.push(a);
             if (coz[i].bicim === coz[i].harf) continue;   /* yalın kalıyor → 2. adım gereksiz */
             b = [];
-            for (j = 0; j <= i; j++) b.push({ t: coz[j].bicim, r: coz[j].renk, yeni: j === i });
+            /* DİKKAT: burada "yeni" değil "donusum" işaretlenir. Harf zaten
+               ekranda; yalnız biçim değiştiriyor (س → سـ). "yeni" olsaydı
+               belirme animasyonu tekrar oynar, harf kaybolup yeniden
+               görünürdü — süreklilik bozuluyordu. */
+            for (j = 0; j <= i; j++) b.push({ t: coz[j].bicim, r: coz[j].renk, donusum: j === i });
             liste.push(b);
         }
         liste.push(coz.map(function (c) { return { t: c.harf, r: c.renk, bitisik: true }; }));
@@ -149,7 +153,8 @@
         var bitisik = parcalar[0].bitisik, i, cik = [];
         for (i = 0; i < parcalar.length; i++) {
             cik.push('<span class="ab-p ab-c-' + parcalar[i].r +
-                     (parcalar[i].yeni ? ' ab-yeni' : '') + '">' +
+                     (parcalar[i].yeni ? ' ab-yeni' : '') +
+                     (parcalar[i].donusum ? ' ab-donusum' : '') + '">' +
                      kacis(parcalar[i].t) + '</span>');
         }
         /* BİTİŞİK adımda parçalar arasında BOŞLUK YOK: tarayıcı
@@ -197,11 +202,40 @@
             { a: 'o', ad: 'Ortada', renk: 'mavi'  },
             { a: 'b', ad: 'Başta',  renk: 'yesil' }
         ];
-        var bas = '<div class="ab-tb-baslik">' +
-                  '<span class="ab-tb-ad-bas"></span>' +
-                  sut.map(function (x) {
-                      return '<span class="ab-tb-bs ab-c-' + x.renk + '">' + x.ad + '</span>';
-                  }).join('') + '</div>';
+
+        /* Aç/kapa düğmesinde YAZI YOK: büyük, canlı bir simge var. Simge
+           küçük bir harf tablosudur — dört sütun, yazı çizgisi ve dört
+           renkte ش biçimleri sırayla belirir. */
+        var simge =
+        '<svg class="ab-tb-svg" viewBox="0 0 60 48" aria-hidden="true" focusable="false">' +
+        '  <rect x="2" y="3" width="56" height="42" rx="6" fill="#F7FAFC" stroke="#0E6655" stroke-width="2.2"/>' +
+        '  <path d="M2 13h56" stroke="#0E6655" stroke-width="1.8"/>' +
+        '  <path d="M16 13v32M30 13v32M44 13v32" stroke="#D6E4EC" stroke-width="1.4"/>' +
+        '  <path d="M5 34h50" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/>' +
+        '  <circle cx="8"  cy="8" r="1.7" fill="#111827"/>' +
+        '  <circle cx="23" cy="8" r="1.7" fill="#9333ea"/>' +
+        '  <circle cx="37" cy="8" r="1.7" fill="#2563eb"/>' +
+        '  <circle cx="51" cy="8" r="1.7" fill="#16a34a"/>' +
+        '  <g class="tbs-h tbs-1"><text x="9"  y="34" fill="#111827">ش</text></g>' +
+        '  <g class="tbs-h tbs-2"><text x="23" y="34" fill="#9333ea">ـش</text></g>' +
+        '  <g class="tbs-h tbs-3"><text x="37" y="34" fill="#2563eb">ـشـ</text></g>' +
+        '  <g class="tbs-h tbs-4"><text x="51" y="34" fill="#16a34a">شـ</text></g>' +
+        '</svg>';
+
+        /* BAŞLIK SATIRI: simge düğmesi ve dört sütun başlığı AYNI SATIRDA
+           ve gövdeyle AYNI ızgarada — başlıklar sütunlarının tam üstünde
+           durur. Tablo katlanınca başlıklar gizlenir, yalnız simge kalır. */
+        var bas =
+        '<div class="ab-tb-baslik">' +
+        '  <button type="button" class="ab-tb-ust" data-rol="tb-kapa"' +
+        '          title="Harf tablosu — aç / kapat" aria-label="Harf tablosu — aç / kapat"' +
+        '          aria-expanded="true">' + simge +
+        '    <span class="ab-tb-ok" aria-hidden="true"></span>' +
+        '  </button>' +
+        sut.map(function (x) {
+            return '<span class="ab-tb-bs ab-c-' + x.renk + '">' + x.ad + '</span>';
+        }).join('') +
+        '</div>';
 
         var govde = harfler.map(function (h, i) {
             var kirmizi = !!h.nobind;                 /* sonrakiyle birleşmez */
@@ -218,15 +252,8 @@
         }).join('');
 
         return '' +
-        '<aside class="ab-tablo">' +
-        '  <button type="button" class="ab-tb-ust" data-rol="tb-kapa"' +
-        '          title="Harf tablosunu aç / kapat" aria-expanded="true">' +
-        '    <span class="ab-tb-ust-yazi">Harf Tablosu' +
-        '      <span class="ab-tb-ipucu">harfe dokun → nasıl yazıldığını izle</span>' +
-        '    </span>' +
-        '    <span class="ab-tb-ok" aria-hidden="true"></span>' +
-        '  </button>' +
-        '  <div class="ab-tb-ic">' + bas +
+        '<aside class="ab-tablo">' + bas +
+        '  <div class="ab-tb-ic">' +
         '    <div class="ab-tb-kaydir"><div class="ab-tb-govde">' + govde + '</div></div>' +
         '  </div>' +
         '</aside>';
@@ -346,6 +373,11 @@
     }
 
     /* --- 4) ADIM MAKİNESİ --------------------------------------- */
+    /* PÜRÜZSÜZ GEÇİŞ: harf sayısı değişmiyorsa mevcut kutucuklar
+       YERİNDE güncellenir. Böylece harfin DOM ögesi yaşamaya devam eder;
+       س → سـ dönüşümünde öge silinip yeniden kurulmadığı için kaybolma /
+       yeniden belirme olmaz. Yalnız adet ya da dizilim (bitişik) değişince
+       kutu baştan çizilir. */
     function adimYaz(satir) {
         var sira = +satir.getAttribute('data-sira');
         var adim = +satir.getAttribute('data-adim');
@@ -354,7 +386,27 @@
         if (adim < 0) adim = 0;
         if (adim > top) adim = top;
         satir.setAttribute('data-adim', adim);
-        satir.querySelector('[data-rol="adim"]').innerHTML = adimHtml(liste[adim]);
+
+        var kutu = satir.querySelector('[data-rol="adim"]');
+        var parca = liste[adim];
+        var dizi  = kutu.querySelector('.ab-dizi');
+        var eski  = dizi ? dizi.querySelectorAll('.ab-p') : [];
+        var bitisik = !!(parca.length && parca[0].bitisik);
+        var yerinde = dizi && parca.length && eski.length === parca.length &&
+                      dizi.classList.contains('ab-bitisik') === bitisik;
+
+        if (yerinde) {
+            for (var i = 0; i < parca.length; i++) {
+                var el = eski[i], p = parca[i];
+                var taban = 'ab-p ab-c-' + p.r;
+                var ek = p.yeni ? ' ab-yeni' : (p.donusum ? ' ab-donusum' : '');
+                el.className = taban;                       /* eski animasyonu sil */
+                if (el.textContent !== p.t) el.textContent = p.t;
+                if (ek) { void el.offsetWidth; el.className = taban + ek; }  /* yeniden tetikle */
+            }
+        } else {
+            kutu.innerHTML = adimHtml(parca);
+        }
         satir.classList.toggle('ab-bitti', adim === top);
     }
 
@@ -366,9 +418,32 @@
             l[i].classList.toggle('ab-aktif', i === aktif);
             l[i].classList.toggle('ab-gecmis', i < aktif);
         }
-        try { if (l[aktif]) l[aktif].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+        etkinGoster(kap);
         /* Sırası gelen kelimenin harfleri tablonun üstüne süzülsün */
         tabloSirala(kap, SATIRLAR[aktif].h, animasyonlu !== false);
+    }
+
+    /* ETKİN KELİMEYİ GÖRÜNÜRDE TUT.
+       Öğretmen listeyi elle kaydırmış olabilir; "İleri"ye bastığında
+       üzerinde çalışılan satır ekrandan çıkmışsa onu EKRANIN ORTASINA
+       getiririz. Zaten tamamen görünüyorsa hiç oynatmayız — durduk yere
+       kayan bir liste rahatsız ediyor. */
+    function etkinGoster(kap) {
+        var l = kap.querySelectorAll('.ab-satir');
+        var s = l[aktif];
+        var kagit = kap.querySelector('.ab-kagitlik');
+        if (!s || !kagit) return;
+        var kr = kagit.getBoundingClientRect(), sr = s.getBoundingClientRect();
+        /* 4 piksel pay: kenara teğet duran satır "çıkmış" sayılmasın */
+        if (sr.top >= kr.top - 4 && sr.bottom <= kr.bottom + 4) return;
+        var hedef = kagit.scrollTop + (sr.top - kr.top);
+        /* Satır kaba sığıyorsa ORTALA, sığmıyorsa üstünü hizala. */
+        if (sr.height < kagit.clientHeight) hedef -= (kagit.clientHeight - sr.height) / 2;
+        hedef = Math.max(0, Math.min(hedef, kagit.scrollHeight - kagit.clientHeight));
+        var yumusak = !(window.matchMedia &&
+                        matchMedia('(prefers-reduced-motion: reduce)').matches);
+        try { kagit.scrollTo({ top: hedef, behavior: yumusak ? 'smooth' : 'auto' }); }
+        catch (e) { kagit.scrollTop = hedef; }
     }
 
     function durumYaz(kap) {
@@ -416,6 +491,7 @@
             } else { return; }
         }
         durumYaz(kap);
+        etkinGoster(kap);      /* adım ilerlese de satır gözden çıkmasın */
         ses();
     }
 
@@ -430,6 +506,37 @@
 
     /* --- 5) KURULUM --------------------------------------------- */
     var kuruldu = false;
+    var tanitimZaman = 0, tanitimYapildi = false;
+
+    /* TABLO TANITIMI: sekme İLK açıldığında tablo açık gelir, birkaç saniye
+       sonra kendiliğinden katlanır. Amaç "burada bir harf tablosu var"
+       demek; sonra ekranı listeye bırakmak. Kullanıcı bu arada düğmeye
+       basarsa tanıtım iptal olur, karar onundur. */
+    function tabloTanit(kap) {
+        if (tanitimYapildi) return;
+        tanitimYapildi = true;
+        var dugme = kap.querySelector('[data-rol="tb-kapa"]');
+        kap.classList.remove('ab-tablo-kapali');
+        if (dugme) dugme.setAttribute('aria-expanded', 'true');
+        tanitimZaman = setTimeout(function () {
+            tanitimZaman = 0;
+            kap.classList.add('ab-tablo-kapali');
+            if (dugme) dugme.setAttribute('aria-expanded', 'false');
+        }, 2600);
+    }
+
+    /* p5 paneli ilk kez "active" olduğunda tanıtımı başlat. */
+    function tanitimBekle(kap) {
+        var p5 = document.getElementById('p5');
+        if (!p5) return;
+        if (p5.classList.contains('active')) { tabloTanit(kap); return; }
+        try {
+            var izle = new MutationObserver(function () {
+                if (p5.classList.contains('active')) { izle.disconnect(); tabloTanit(kap); }
+            });
+            izle.observe(p5, { attributes: true, attributeFilter: ['class'] });
+        } catch (e) { tabloTanit(kap); }
+    }
 
     function kur() {
         var kap = document.getElementById('abSar');
@@ -445,12 +552,14 @@
         aktif = 0;
         pencereYaz(kap, false);        /* ilk kurulumda animasyonsuz */
         durumYaz(kap);
+        tanitimBekle(kap);             /* tablo açık gelsin, sonra katlansın */
 
         kap.addEventListener('click', function (e) {
             var t = e.target;
             /* Tabloyu katla / aç: kapalıyken liste tüm genişliği alır */
             var kapa = t.closest ? t.closest('[data-rol="tb-kapa"]') : null;
             if (kapa) {
+                if (tanitimZaman) { clearTimeout(tanitimZaman); tanitimZaman = 0; }  /* kullanıcı devraldı */
                 var kapali = kap.classList.toggle('ab-tablo-kapali');
                 kapa.setAttribute('aria-expanded', kapali ? 'false' : 'true');
                 ses();
