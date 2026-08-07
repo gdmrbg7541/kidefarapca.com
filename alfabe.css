@@ -1,6 +1,6 @@
 @font-face {
             font-family: 'arakom';
-            src: url('arakom.ttf') format('truetype');
+            src: url('../arakom.ttf') format('truetype');
             font-weight: normal; font-style: normal;
         }
 
@@ -21,13 +21,14 @@
         body { 
             font-family: 'arakom', sans-serif; 
             height: 100vh; width: 100vw;
-            background: url('arakom.jpg') center/cover fixed no-repeat, linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
         }
 
         /* Dış çerçeve kaldırıldı: uygulama ekranı tamamen kaplıyor. */
         .main-app {
+            position: relative;
             width: 100vw; height: 100vh;
             background: var(--bg-glass);
             backdrop-filter: blur(16px);
@@ -76,18 +77,217 @@
 
 
         /* Sekmeler */
-        .nav-tabs { 
-            display: flex; background: linear-gradient(135deg, #16A085 0%, #117A65 100%); padding: 8px 12px 0; gap: 8px; 
-            direction: rtl; justify-content: center; border-radius: 0;
-            position: relative; /* Butonu sabitlemek için eklendi */
+        /* --- SEKME ŞERİDİ: artık YÜZEN KUMANDANIN İÇİNDE ve DİKEY ---------
+           Sayfanın üstüne yapışmıyor; kumandayla birlikte sürüklenip ekranda
+           istenen yere konuyor. Açıkken de kapalıyken de yüzer. */
+        .nav-tabs {
+            display: flex; flex-direction: column; direction: ltr;
+            background: transparent; padding: 2px 0 0; gap: 8px;
+            border-radius: 12px; position: relative;
+            max-height: min(62vh, 560px); overflow-y: auto; overflow-x: hidden;
+            scrollbar-width: thin;
         }
-        .tab-trigger { 
-            padding: 12px 30px; border: none; background: rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.88); cursor: pointer; font-family: 'arakom'; font-size: 1.2rem;
-            border-radius: 12px 12px 0 0; transition: all 0.3s ease;
+        .nav-tabs::-webkit-scrollbar { width: 6px; }
+        .nav-tabs::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .3); border-radius: 3px; }
+
+        /* --- BÖLÜMLER: "Alfabe" ve "Ölçme & Etkinlik" alt alta --- */
+        .tab-grup { display: flex; flex-direction: column; align-items: stretch; gap: 3px; padding: 0; }
+        .tab-grup + .tab-grup {
+            border-top: 1px dashed rgba(255, 255, 255, .32); padding-top: 7px; margin-top: 3px;
         }
-        .tab-trigger:hover { background: rgba(255,255,255,0.15); color: white; }
-        .tab-trigger.active { background: var(--bg-glass); color: #117A65; font-weight: bold; }
+        .tab-grup-ad {
+            font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+            color: rgba(255, 255, 255, .6); font-family: 'arakom', inherit; white-space: nowrap;
+            padding: 0 4px 1px;
+        }
+        .tab-grup-sira { display: flex; flex-direction: column; gap: 3px; }
+        /* --- SEKMELER: normalde YALNIZ SİMGE, seçili olanda isim de açılır ---
+           Şerit böylece az yer kaplar; öğretmen hangi sekmede olduğunu yazıdan,
+           diğerlerini simgeden görür (isim ayrıca title ile de çıkar).
+           Şerit rtl olduğu için düğme içi ltr yapılır: simge solda, isim sağda. */
+        /* Dikey listede sekme: solda simge, sağda başlığı — tek satır. */
+        .tab-trigger {
+            direction: ltr; display: flex; flex-direction: row; align-items: center; gap: 11px;
+            /* Zemin AÇIK değil KOYU translucent: kumandanın kendisi yarı
+               saydam olduğu için açık gri hap beyaz yazıyı okunmaz hâle
+               getiriyordu. Koyu hap kontrastı 4.6:1'e çıkarıyor, arkası
+               yine görünüyor. */
+            padding: 6px 14px 6px 8px; border: none; background: rgba(6, 62, 51, .62);
+            color: #fff; cursor: pointer; font-family: 'arakom'; font-size: 1.05rem;
+            border-radius: 12px; width: 100%; text-align: left;
+            transition: background .2s, color .2s, transform .14s;
+        }
+        .tab-ikon {
+            width: 38px; height: 38px; flex: none; display: block;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .22));
+        }
+        .tab-ad { font-size: 1rem; line-height: 1.1; white-space: nowrap; }
+        .tab-trigger:hover { background: rgba(6, 62, 51, .82); color: #fff; }
+
+        /* --- ŞERİT GİZLİ KİPİ: tam ekran ---------------------------------
+           Sekme seçilince .main-app'e "nav-gizli" eklenir: şerit kalkar,
+           yerine sol üstte küçük bir simge kalır. İçerik alanı büyür. */
+        .main-app.nav-gizli .nav-tabs { display: none; }
+        /* Şerit kumandanın içinde: sayfanın tepesinde hiç yer kaplamıyor. */
+        .nav-mini .nav-tabs { width: 100%; }
+        /* Simge KÜÇÜK ve SÖNÜK durur ki altındaki içeriği rahatsız etmesin;
+           üstüne gelince belirginleşir ve hangi sekmede olduğumuzu yazar. */
+        /* --- KUMANDA: HER AÇILIŞTA SOL ÜST KÖŞE --------------------------
+           Üstte tutamaç + aktif sekmenin adı, ortada Ana Sayfa ile şerit
+           aç/kapa, altta Harf Tanıtımı araç şeridi. İstenirse sürüklenip
+           taşınır ama yeri kaydedilmez: her açılışta yine sol üstte. */
+        /* ŞERİT AÇIKKEN DE ARKASI GÖRÜNÜR — GERÇEKTEN SAYDAM.
+           Pano neredeyse cam gibi (%32) ve arkası BULANIKLAŞTIRILMIYOR;
+           blur, saydamlığı görünmez kılıyordu. Okunurluk panodan değil,
+           yazıyı taşıyan koyu haplardan geliyor: her sekme, tutamaç ve
+           bölüm başlığı kendi koyu-yeşil hapının üstünde durur, böylece
+           arkada ne olursa olsun beyaz yazı net kalır (>=4.5:1).
+           NOT: saydamlık opacity ile DEĞİL zemin alfasıyla veriliyor;
+           opacity yazıyı da soldururdu. */
+        .nav-mini {
+            display: inline-flex; flex-direction: column; align-items: stretch;
+            /* Sol üst KÖŞEDE değil, biraz aşağıda: gömülü sayfaların
+               (örn. Dinle ve Yaz) kendi düğmeleri köşede olabiliyor. */
+            position: absolute; top: 100px; left: 10px; z-index: 60;
+            gap: 5px; padding: 5px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(22, 160, 133, .32) 0%, rgba(17, 122, 101, .32) 100%);
+            border: 1px solid rgba(255, 255, 255, .3);
+            color: #fff; font-family: 'arakom', inherit; font-size: .95rem;
+            box-shadow: 0 6px 18px rgba(17, 122, 101, .22);
+            user-select: none; -webkit-user-select: none;
+        }
+        /* Yazılar saydam zeminde de net dursun */
+        .nav-mini .tab-ad,
+        .nav-mini .tab-grup-ad,
+        .nav-mini .nav-mini-ad { text-shadow: 0 1px 3px rgba(0, 0, 0, .55); }
+        .nav-mini .tab-trigger.active .tab-ad { text-shadow: none; }
+        /* Bölüm başlığı da kendi hapının üstünde: cam panoda beyaz yazı
+           tek başına okunmuyordu. */
+        .nav-mini .tab-grup-ad {
+            color: #fff; align-self: flex-start;
+            background: rgba(6, 62, 51, .58); padding: 2px 9px; border-radius: 7px;
+        }
+        /* Tutamaç ve simge düğmeleri de koyu hap olur (ikonlar beyaz). */
+        .nav-mini .nav-mini-tut { background: rgba(6, 62, 51, .55); }
+        .nav-mini.nm-tasiniyor .nav-mini-tut { background: rgba(6, 62, 51, .85); }
+        .nav-mini.nm-tasiniyor { box-shadow: 0 14px 34px rgba(17, 122, 101, .5); }
+        .nav-mini .nav-mini-t { background: rgba(6, 62, 51, .5); }
+        .nav-mini .nav-mini-t:hover { background: rgba(6, 62, 51, .8); }
+        .nav-mini .nav-mini-ayirac { background: rgba(255, 255, 255, .5); }
+
+        /* --- ŞERİT KAPALIYKEN KUMANDA SAYDAM ---------------------------
+           Küçülen kumanda içeriğin üstünde durduğu için arkasını kapatıyordu.
+           Kapalıyken yarı saydam olur, altındaki harf/kart görünür; üstüne
+           gelince, dokununca ya da klavye odağı geldiğinde tam görünür.
+           ("Cin" uçuşu ve ona bağlı parlama kaldırıldı; yön okunu ekledik.) */
+        /* SOLMA KUMANDANIN TAMAMINA DEĞİL, PARÇALARINA UYGULANIR.
+           Ana kaba opacity verilseydi Harf Tanıtımı araç şeridi (animasyon ·
+           gruplama · ses · tam ekran) da solar, beyaz zemini kaybolurdu —
+           oysa orası kapalıyken de sık kullanılıyor. Bu yüzden kabın kendi
+           zemini kaldırılır, yalnız tutamaç ve simge sırası soldurulur;
+           araç şeridi tam görünür kalır. */
+        .main-app.nav-gizli .nav-mini {
+            background: none; border-color: transparent; box-shadow: none;
+        }
+        .main-app.nav-gizli .nav-mini > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini > .nav-mini-sira {
+            opacity: .18; transition: opacity .22s ease;
+        }
+        .main-app.nav-gizli .nav-mini:hover > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini:hover > .nav-mini-sira,
+        .main-app.nav-gizli .nav-mini:focus-within > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini:focus-within > .nav-mini-sira,
+        .main-app.nav-gizli .nav-mini.nm-tasiniyor > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini.nm-tasiniyor > .nav-mini-sira { opacity: 1; }
+        /* KATLANIR KATLANMAZ SAYDAM: kapatma düğmesine basıldığında imleç
+           hâlâ kumandanın üstünde olduğu için :hover onu opak tutuyordu,
+           saydamlaşması için fareyi başka yere götürmek gerekiyordu.
+           navKapat() bu sınıfı ekler, imleç ilk oynatıldığında kalkar. */
+        .main-app.nav-gizli .nav-mini.nm-donuk > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini.nm-donuk > .nav-mini-sira,
+        .main-app.nav-gizli .nav-mini.nm-donuk:hover > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini.nm-donuk:hover > .nav-mini-sira,
+        .main-app.nav-gizli .nav-mini.nm-donuk:focus-within > .nav-mini-tut,
+        .main-app.nav-gizli .nav-mini.nm-donuk:focus-within > .nav-mini-sira { opacity: .18; }
+        @media (hover: none) {
+            /* Dokunmatikte hover yok: parmakla bulunabilsin diye biraz daha
+               belirgin, basılı tutunca tamamen açılır. */
+            .main-app.nav-gizli .nav-mini > .nav-mini-tut,
+            .main-app.nav-gizli .nav-mini > .nav-mini-sira { opacity: .3; }
+            .main-app.nav-gizli .nav-mini:active > .nav-mini-tut,
+            .main-app.nav-gizli .nav-mini:active > .nav-mini-sira { opacity: 1; }
+            .main-app.nav-gizli .nav-mini.nm-donuk > .nav-mini-tut,
+            .main-app.nav-gizli .nav-mini.nm-donuk > .nav-mini-sira,
+            .main-app.nav-gizli .nav-mini.nm-donuk:hover > .nav-mini-tut,
+            .main-app.nav-gizli .nav-mini.nm-donuk:hover > .nav-mini-sira { opacity: .3; }
+        }
+
+        /* --- LİSTE DÜĞMESİ: YÖN OKU ------------------------------------
+           Kalıcı bir vurgu (beyaz hap / nabız) YOK — dikkat dağıtıyordu.
+           Onun yerine liste simgesinin yanındaki ok durumu anlatıyor:
+           şerit AÇIKKEN yukarı (katla), KAPALIYKEN aşağı (aç).
+           DİKKAT: .nav-mini-t bu bloktan SONRA tanımlı; eşit özgüllükte
+           kalırsa onun kuralları bunları eziyor. Seçiciler bu yüzden
+           .nav-mini ile bir basamak yukarıda. */
+        .nav-mini .nm-menu { gap: 3px; padding: 7px 9px; }
+        .nav-mini .nm-yon {
+            width: 15px; height: 15px; opacity: .95;
+            transform: rotate(-90deg);        /* açık: yukarı ok */
+            transition: transform .2s;
+        }
+        .main-app.nav-gizli .nav-mini .nm-yon { transform: rotate(90deg); }  /* kapalı: aşağı */
+        @media (prefers-reduced-motion: reduce) {
+            .nav-mini .nm-yon { transition: none; }
+            .main-app.nav-gizli .nav-mini > .nav-mini-tut,
+            .main-app.nav-gizli .nav-mini > .nav-mini-sira { transition: none; }
+        }
+
+        /* tutamaç: buradan tutulup sürüklenir (yeri kaydedilmez) */
+        .nav-mini-tut {
+            display: flex; align-items: center; gap: 6px;
+            padding: 4px 10px 4px 4px; border-radius: 11px;
+            background: rgba(255, 255, 255, .16);
+            cursor: grab; touch-action: none;
+        }
+        .nav-mini.nm-tasiniyor .nav-mini-tut { cursor: grabbing; }
+        .nm-tutamac { width: 20px; height: 20px; flex: none; fill: rgba(255, 255, 255, .85); }
+        .nav-mini-ad {
+            font-weight: 700; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; max-width: 220px;
+        }
+
+        .nav-mini-sira { display: flex; align-items: center; justify-content: center; gap: 3px; }
+        .nav-mini-t {
+            display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+            border: 0; background: transparent; color: inherit; text-decoration: none;
+            padding: 7px 12px; border-radius: 10px; font-family: inherit; font-size: inherit;
+            transition: background .16s;
+        }
+        .nav-mini-t:hover { background: rgba(255, 255, 255, .24); }
+        .nav-mini-t svg { width: 21px; height: 21px; flex: none; }
+        .nav-mini-ayirac { width: 1px; height: 20px; background: rgba(255, 255, 255, .35); }
+
+        /* Harf Tanıtımı araç şeridi kumandanın İÇİNDE, en altta durur. */
+        /* Araç şeridi (animasyon · gruplama · ses · tam ekran) SAYDAM DEĞİL:
+           kumandanın cam zemini bu düğmeleri de soluklaştırıyordu, oysa
+           burası sık kullanılan bir alan. Kendi opak zeminini taşır. */
+        .nav-mini .hdr-switch {
+            position: static !important; inset: auto !important;
+            margin: 0; align-self: center;
+            background: #fff !important;
+            border: 1px solid rgba(255, 255, 255, .9) !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .22) !important;
+        }
+        /* Şerit kapalıyken içerik kenardan biraz daha yaklaşsın */
+        .main-app.nav-gizli .content-area { padding: 6px; }
+        /* Sınav'ın soru sayacı sol üstte durduğu için orada yer bırakılır.
+           Harf Tanıtımı'nda pay YOK: yüzen kumanda sürüklenebiliyor ve
+           tablo üstünde gereksiz boşluk kalmasın. */
+        .main-app.nav-gizli #p6 .as-sar { padding-top: 46px; }
+        /* Etkin sekme neredeyse opak: koyu yazısının okunurluğu buna bağlı. */
+        .tab-trigger.active { background: rgba(255, 255, 255, .94); color: #0E6655; font-weight: bold; box-shadow: 0 3px 10px rgba(0, 0, 0, .18); }
+        .tab-trigger:hover:not(.active) { background: rgba(6, 62, 51, .82); transform: translateX(2px); }
 
         /* Yeni Anasayfa Butonu Tasarımı */
         .home-link { 
@@ -113,8 +313,9 @@
 
         /* Dar masaüstü/tablet: sekmeler ortada kalsın ama switch'e değmesin */
         @media (min-width: 769px) and (max-width: 1080px) {
-            .nav-tabs { padding-left: 170px; padding-right: 170px; }
-            .tab-trigger { padding: 11px 16px; font-size: 1.05rem; }
+            /* eski yatay şerit dolgusu geçersiz (şerit dikey) */
+            .tab-ikon { width: 42px; height: 42px; }
+            .tab-ad { font-size: 1.06rem; }
         }
 
         .content-area { flex: 1; padding: 8px; overflow: hidden; background: transparent; position: relative; }
@@ -734,10 +935,9 @@
         @keyframes miSpark { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(90deg); } }
 
         /* --- HARF TANITIMI: gruplama switch'i (header) --- */
-        .hdr-switch {
-            position: absolute; right: 15px; bottom: 8px; z-index: 10;
-            padding: 4px 11px; gap: 7px;
-        }
+        /* Araç şeridi artık YÜZEN KUMANDANIN içinde (en altta) yaşıyor:
+           kendi konumunu belirlemez, kumandayla birlikte taşınır. */
+        .hdr-switch { position: static; padding: 4px 11px; gap: 7px; }
         .hdr-switch.gizli { display: none; }
         .grp-ico { width: 34px; height: 34px; padding: 3px; }
         .grp-ico--yazi:hover { background: rgba(22,160,133,.10); }
@@ -1033,16 +1233,8 @@
 
         /* Mobil Optimizasyon */
         @media (max-width: 768px) {
-            .nav-tabs { 
-                /* Şeffaf kenarlar: zemin gradyanı altta görünür, kayan sekmeler
-                   soldaki ana sayfa butonunun ve sağdaki switch'in altına girmez. */
-                border-left: 54px solid transparent;   /* sol: ana sayfa butonu */
-                border-right: 192px solid transparent; /* sağ: gruplama switch'i + odak düğmesi */
-                border-top: 0; border-bottom: 0;
-                padding-left: 0 !important; padding-right: 0 !important;
-                justify-content: flex-start !important; 
-                overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: none; 
-            }
+            /* Şerit artık kumandanın içinde DİKEY; eski yatay kaydırma
+               kuralları geçersiz kaldı. */
 
              .home-link {
                 position: fixed !important; /* Sekme şeridi kayarken buton sol üstte sabit kalır */
@@ -1052,7 +1244,22 @@
             .home-link svg { width: 19px; height: 19px; } 
             .nav-tabs.sw-yok { border-right-width: 12px; } /* switch yoksa rezerv boşluk gerekmez */
             .nav-tabs::-webkit-scrollbar { display: none; }
-            .tab-trigger { padding: 10px 15px; flex-shrink: 0; }
+            .tab-grup-ad { font-size: .62rem; letter-spacing: .06em; }
+            .km-hap { padding: 7px 15px; font-size: .88rem; }
+            .ys-cip { min-width: 62px; padding: 6px 10px; }
+            .ys-cip b { font-size: 1.5rem; }
+            .tab-trigger { padding: 5px 12px 5px 6px; gap: 8px; }
+            .tab-ikon { width: 32px; height: 32px; }
+            .tab-ad { font-size: .9rem; }
+            .nav-tabs { max-height: min(56vh, 420px); }
+            /* Mobilde simge daha küçük ve yalnız ikon */
+            .nav-mini { top: 100px; left: 7px; padding: 4px; gap: 4px; }
+            .nav-mini-t { padding: 6px 10px; }
+            .nav-mini-ad { max-width: 150px; font-size: .85rem; }
+            .nav-mini-ad { display: none; }
+            .nav-mini .nm-menu { padding: 6px 8px; gap: 2px; }
+            .nav-mini .nm-menu svg:first-child { width: 18px; height: 18px; }
+            .nav-mini .nm-yon { width: 13px; height: 13px; }
             .hdr-switch {
                 position: fixed !important; /* Sekme şeridi kayarken switch sağ üstte sabit kalır */
                 top: 7px; right: 8px; bottom: auto; z-index: 30;
@@ -1130,6 +1337,12 @@
             .duel-stage { flex-direction: column; }
             .q-display { font-size: 5rem !important; }
             .btn-ans { font-size: 1.4rem !important; }
+            /* cümlelik soru ve harf şıkları yukarıdaki !important'ları aşar */
+            .q-display.q-cumle { font-size: clamp(1.05rem, 4.2vw, 1.6rem) !important; }
+            .btn-ans.btn-harf { font-size: 2.3rem !important; }
+            /* NOT: kart modu şeridinin dar ekran kuralları dosyanın SONUNDA;
+               .kart-mod / .km-* tanımları buradan SONRA geldiği için burada
+               yazılsalar eziliyorlardı. */
         }
 
 /* Diziliş düğmesi eklenince başlıktaki switch dörde çıktı; dar ekranlarda
@@ -1157,3 +1370,896 @@
         .switch-large .slider { border-radius: 40px !important; }
         .switch-large .slider:before { height: 32px !important; width: 32px !important; left: 4px !important; bottom: 4px !important; }
         .switch-large input:checked + .slider:before { transform: translateX(40px) !important; }
+/* ============================================================
+   HARF BİRLEŞTİRME SEKMESİ (p5)  —  alfabe_birlestir.js
+   ------------------------------------------------------------
+   Bu sekme bir CEVAP SLAYTI'dır: öğrencinin PDF'ini tamamlaması
+   için tahtaya yansıtılır. Yazma alanı, yazdırma ve toplu
+   ilerletme yoktur; ekranda AYNI ANDA EN FAZLA 4 örnek durur.
+
+   ÖLÇÜ KURALI: kelimeler BÜYÜTÜLMÜŞ bir A4 sayfası gibi SABİT
+   puntodadır — ekrana sığsın diye küçülmez. Sığmazsa kâğıt
+   kaydırılır (.ab-kagitlik). Böylece sınıfın arkasından da,
+   ekranın boyu ne olursa olsun, aynı büyüklükte okunur.
+
+   SATIR DİZİLİMİ: [sıra no] [birleşen kelime] [ayrı harfler SAĞDA]
+   ============================================================ */
+        #p5 { height: 100%; }
+        /* SAR: solda harf tablosu, sağda soru listesi */
+        .ab-sar {
+            /* TEK PUNTO KAYNAĞI: hem soldaki tablo hem sağdaki liste bunu
+               kullanır, böylece harfler iki tarafta da AYNI büyüklükte. */
+            --ab-punto: 5.8rem;
+            height: 100%; overflow: hidden;
+            display: flex; flex-direction: row; align-items: stretch; gap: 10px;
+            padding: 10px 12px 12px;
+            background: linear-gradient(180deg, #eef2f6, #e2e8f0);
+            border-radius: 12px;
+        }
+        .ab-ana {
+            flex: 1 1 auto; min-width: 0; min-height: 0;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+/* ---- SOLDAKİ 4 SÜTUNLU HARF TABLOSU -------------------------------
+   Sütunlar SAĞDAN SOLA: başta(yeşil) · ortada(mavi) · sonda(mor) ·
+   yalın(siyah). Bunu direction:rtl değil, DOM sırası yapıyor: hücreler
+   n,s,o,b sırasında yazılır, yani soldan sağa yalın→başta.
+   Kendinden sonrakiyle birleşmeyen harflerin bütün hücreleri KIRMIZI.
+   Tablo dikey kaydırılır; satıra dokununca harfDetay büyüteci açılır. */
+        .ab-tablo {
+            flex: 0 0 50%; min-width: 0; min-height: 0;   /* yatayın YARISI */
+            display: flex; flex-direction: column;
+            background: #fff; border: 1px solid #d7dee6; border-radius: 14px;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, .12); overflow: hidden;
+        }
+        /* SİMGE DÜĞMESİ + SÜTUN BAŞLIKLARI AYNI SATIRDA.
+           Düğme, ızgaranın ilk hücresinde (harf adı sütunu) durur; dört
+           başlık kendi sütunlarının tam üstünde kalır. */
+        .ab-tb-ust {
+            cursor: pointer; display: flex; align-items: center; gap: 4px;
+            padding: 2px 4px; color: #0E6655; font-family: inherit;
+            background: transparent; border: 0; border-radius: 10px;
+            transition: background .15s;
+        }
+        .ab-tb-ust:hover { background: #e6f7f1; }
+        .ab-tb-svg { width: 76px; height: 61px; flex: none; display: block; }
+        /* Simgedeki harfler: dört renk sırayla belirir — "burada harflerin
+           dört yazılışını gösteren bir tablo var" der. */
+        .ab-tb-svg text {
+            font-family: 'ArapcaKom', 'Traditional Arabic', 'arakom', serif;
+            font-size: 15px; text-anchor: middle; font-synthesis: none;
+        }
+        .ab-tb-svg .tbs-h {
+            transform-box: fill-box; transform-origin: center bottom;
+            animation: tbsGel 4s ease-in-out infinite;
+        }
+        .ab-tb-svg .tbs-1 { animation-delay: 0s; }
+        .ab-tb-svg .tbs-2 { animation-delay: .28s; }
+        .ab-tb-svg .tbs-3 { animation-delay: .56s; }
+        .ab-tb-svg .tbs-4 { animation-delay: .84s; }
+        @keyframes tbsGel {
+            0%, 6%    { opacity: .12; transform: translateY(4px) scale(.8); }
+            16%, 66%  { opacity: 1;   transform: none; }
+            80%, 100% { opacity: .12; transform: translateY(4px) scale(.8); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ab-tb-svg .tbs-h { animation: none; opacity: 1; }
+        }
+        .ab-tb-ok {
+            flex: none; width: 0; height: 0; border-style: solid;
+            border-width: 8px 6px 0 6px; border-color: #16A085 transparent transparent transparent;
+            transition: transform .2s;
+        }
+        .ab-tb-ic { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
+        /* KAPALI: aside ince bir şeride iner, liste tüm genişliği alır */
+        /* Kapalıyken yalnız başlık düğmesi kadar yer kaplar: boyu da
+           içeriğe iner, uzun boş beyaz şerit kalmaz. */
+        /* KAPALI: yalnız simge kalır, başlıklar gizlenir */
+        .ab-sar.ab-tablo-kapali .ab-tablo { flex: 0 0 auto; align-self: flex-start; }
+        .ab-sar.ab-tablo-kapali .ab-tb-ic { display: none; }
+        .ab-sar.ab-tablo-kapali .ab-tb-bs { display: none; }
+
+        /* KATLANMA GEÇİŞİ — tablo birden kaybolmasın, kayarak kapansın.
+           Ölçüler JS'te ölçülüp inline veriliyor (bkz. alfabe_birlestir.js
+           → tabloKatla); burada yalnız geçiş sırasında geçerli kurallar
+           var. Geçiş boyunca içerik BİR AN DAHA çizili kalır ve açık
+           ölçüsüne sabitlenir: kutu daralırken içerik ezilmez, kırpılır.
+           Böylece panel gerçekten kayarak kapanmış gibi görünür. */
+        .ab-sar.ab-katlaniyor .ab-tablo { overflow: hidden; pointer-events: none; }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-ic { display: flex; }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-bs { display: block; }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+            grid-template-columns: 96px repeat(4, minmax(0, 1fr));
+            padding: 4px 8px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+        }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-ok { transform: none; }
+        .ab-sar.ab-tablo-kapali .ab-tb-baslik {
+            grid-template-columns: auto; padding: 4px; background: #fff; border-bottom: 0;
+        }
+        .ab-sar.ab-tablo-kapali .ab-tb-ok { transform: rotate(-90deg); }
+        .ab-tb-baslik, .ab-tb-satir {
+            display: grid; grid-template-columns: 96px repeat(4, minmax(0, 1fr));
+            align-items: center; gap: 2px;
+        }
+        .ab-tb-baslik {
+            flex: none; padding: 4px 8px; background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            /* BAŞLIKLAR ÇOK DAHA BÜYÜK: tahtadan da okunsun */
+            font-size: 1.45rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: .03em; text-align: center; line-height: 1.15;
+        }
+        .ab-tb-kaydir {
+            flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+        .ab-tb-kaydir::-webkit-scrollbar { width: 8px; }
+        .ab-tb-kaydir::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .ab-tb-satir {
+            width: 100%; border: 0; background: transparent; cursor: pointer;
+            font-family: inherit; padding: 3px 8px;
+            border-bottom: 1px solid #f1f5f9; transition: background .14s;
+        }
+        .ab-tb-satir:hover { background: #eefaf6; }
+        .ab-tb-satir:active { background: #d7f2ea; }
+        .ab-tb-ad {
+            display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;
+            font-size: 1.55rem; font-weight: 700; color: #64748b; text-align: left;
+        }
+        .ab-tb-ad b { font-size: 1.3rem; color: #b6c2cf; }
+        /* SATIRIN font ölçüsü = harf ölçüsü. Çizgi konumu em ile
+           yazıldığı için (aşağıya bak) bu şart. */
+        .ab-tb-satir { font-size: var(--ab-punto); }
+        /* YAZILIŞ ANİMASYONU KATMANI (tablo açılınca kelimenin harfleri).
+           Hizalama: kalem verisinin viewBox'ı [0 0 G 730] ve harfin taban
+           çizgisi orada y=410'dur → taban, kutunun altından 320/730 =
+           .4384 yukarıdadır. Satır çizgisi de hücrenin altından .47em
+           yukarıda (bkz. .ab-tb-satir::after). İkisi çakışsın diye:
+           bottom = .47em − .4384 × yükseklik. Yükseklik 1.27em seçildi;
+           böylece 730 birimlik kutu, metin harfiyle aynı boyda çıkar.
+           width:auto — en/boy oranı viewBox'tan gelir, harf ezilmez. */
+        .ab-tb-h { position: relative; }
+        .ab-tb-yaz {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            height: 1.27em; width: auto; bottom: -.087em;
+            overflow: visible; pointer-events: none;
+        }
+        .ab-tb-yaz .hd-satir { display: none; }   /* satırın kendi çizgisi zaten var */
+        .ab-tb-h.ab-yaziliyor { color: transparent; }   /* metin harfi çizime yer açar */
+        .ab-tb-h {
+            font-family: 'ArapcaKom', 'Traditional Arabic', 'arakom', serif;
+            font-size: 1em; line-height: 1.5; font-weight: 400; text-align: center;
+            /* sentetik kalınlaştırma kapalı — bkz. .ab-p açıklaması */
+            font-synthesis: none; -webkit-font-synthesis: none;
+            font-synthesis-weight: none; -webkit-text-stroke: 0;
+        }
+        /* YAZI ÇİZGİSİ TAM TABAN ÇİZGİSİNDE.
+           Ölçüm: bu yazı tipinde taban çizgisi, harf kutusunun altından
+           .266em yukarıda; line-height 1.5 olduğu için kutunun altında
+           .25em yarım satır boşluğu var. Yani taban = alt kenardan
+           (.25 + .266) = .516em. Çizgiyi biraz DAHA AŞAĞIYA, .47em'e
+           koyuyoruz ki harfin gövdesi çizgiye otursun ve KUYRUĞU
+           çizginin altında açıkça görünsün (en derin kuyruk .44em). */
+        .ab-tb-satir { position: relative; }
+        .ab-tb-satir::after {
+            content: ""; position: absolute; left: 102px; right: 10px;
+            bottom: calc(3px + .47em);
+            height: 2px; background: rgba(15, 23, 42, .16); pointer-events: none;
+        }
+        .ab-tb-satir.ab-tb-kirmizi::after { background: rgba(220, 38, 38, .26); }
+
+        /* ETKİN KELİMENİN HARFLERİ — tablonun en üstünde, vurgulu.
+           Sıralama animasyonu FLIP ile JS'te yapılıyor (bkz.
+           alfabe_birlestir.js → tabloSirala); burada yalnız görünüm var. */
+        .ab-tb-satir.ab-tb-odak {
+            background: #eefaf6;
+            box-shadow: inset 4px 0 0 #16A085;
+        }
+        .ab-tb-satir.ab-tb-odak .ab-tb-ad { color: #0E6655; }
+        .ab-tb-satir.ab-tb-odak .ab-tb-ad b { color: #16A085; }
+        /* Satırlar kayarken üstteki satırın altındakini örtmesi için */
+        .ab-tb-govde.ab-tb-kayiyor { pointer-events: none; }
+        .ab-tb-govde.ab-tb-kayiyor .ab-tb-satir { position: relative; z-index: 1; }
+        .ab-tb-govde.ab-tb-kayiyor .ab-tb-satir.ab-tb-odak { z-index: 2; background: #e6f7f1; }
+
+        /* --- renk anahtarı: renk ADI değil, o renkte İÇİ DOLU daire --- */
+        .ab-anahtar {
+            flex: none; margin: 0 auto; display: flex; flex-wrap: wrap;
+            /* "Sonrakiyle Birleşmeyen" uzun bir etiket: 22px boşlukla
+               anahtar kabına ancak 2px payla sığıyordu. 16px'e indirildi,
+               pay 32px oldu — tablo katlıyken (olağan durum) anahtar
+               1280'den 1600'e kadar TEK satırda kalır. Tablo açıkken
+               sağdaki sütun yarıya indiği için iki satıra sarar. */
+            align-items: center; justify-content: center; gap: 6px 16px;
+            font-size: 1.35rem; font-weight: 700;
+            background: #fff; border: 1px solid #dbe3ea; border-radius: 12px;
+            padding: 9px 16px; box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
+        }
+        .ab-anahtar > b { color: #475569; font-weight: 800; }
+        .ab-et { display: inline-flex; align-items: center; gap: 7px; }
+        /* daire currentColor ile boyanır: ab-c-* sınıfı yetiyor */
+        .ab-daire {
+            width: 1.05em; height: 1.05em; flex: none; border-radius: 50%;
+            background: currentColor; box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+        }
+        .ab-et-yazi { color: #475569; font-weight: 700; }
+
+        /* --- kâğıtlık: soruların TAMAMI burada, dikey kaydırılır --- */
+        .ab-kagitlik {
+            flex: 1 1 auto; min-height: 0; overflow: auto;
+            -webkit-overflow-scrolling: touch; padding: 4px 0 8px;
+        }
+        .ab-liste {
+            width: 100%; margin: 0 auto;
+            background: #fff; border: 1px solid #d7dee6; border-radius: 14px;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, .13);
+            padding: 6px 18px 14px;
+        }
+
+        /* SATIR: [adım tahtası] [ayrık harfler] [sıra no] — numara SAĞDA */
+        .ab-satir {
+            display: grid; align-items: stretch;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            gap: 0 18px; min-height: 132px; padding: 8px 0;
+            border-bottom: 2px dashed #eef2f6;
+            transition: background .25s;
+        }
+        .ab-satir:last-child { border-bottom: 0; }
+        .ab-satir.ab-aktif { background: linear-gradient(180deg, #f6fdfb, #eefaf6); border-radius: 12px; }
+        .ab-satir.ab-gecmis { opacity: .72; }
+        .ab-satir.ab-gir { animation: abKay .42s cubic-bezier(.22,.9,.3,1) both; }
+        @keyframes abKay {
+            from { opacity: 0; transform: translateY(26px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* sıra numarası + anlam — SAĞDA */
+        .ab-sag {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 6px; padding-left: 16px; border-left: 2px dashed #e2e8f0; min-width: 96px;
+        }
+        .ab-no {
+            width: 44px; height: 44px; flex: none; border-radius: 50%;
+            background: #16A085; color: #fff; font-weight: 800; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ab-satir.ab-aktif .ab-no { background: #0E6655; box-shadow: 0 0 0 5px rgba(22, 160, 133, .18); }
+
+        /* İKİ ALAN DA YAZI ÇİZGİSİ ÜSTÜNDE ve AYNI PUNTODA.
+           Harfler çizginin üstüne oturur (align-items: flex-end),
+           "İleri" bastıkça yenisi çizginin üstünde belirir. */
+        /* İKİ ALAN DA aynı ölçüde: kabın font ölçüsü = harf ölçüsü, böylece
+           çizgi em ile taban çizgisine oturtulabiliyor.
+           Taban çizgisi harf kutusunun altından .266em yukarıda; kutunun
+           altında .30em iç boşluk var → taban, kabın altından .566em.
+           Çizgiyi .50em'e, yani tabanın biraz ALTINA koyuyoruz: gövde
+           çizgiye oturur, KUYRUK (en derini .44em) çizginin altında
+           tamamen görünür. */
+        .ab-cizgili {
+            position: relative; direction: rtl; font-size: var(--ab-punto);
+            display: flex; align-items: flex-end; min-height: 1.52em;
+            padding: 0 .12em .30em;
+        }
+        .ab-cizgili::before {
+            content: ""; position: absolute; left: .06em; right: .06em; bottom: .50em;
+            height: 3px; background: rgba(15, 23, 42, .3); border-radius: 2px;
+        }
+        /* Kelime tahtanın ORTASINDA kurulur: sağa yaslı dururken sayfa
+           dengesiz görünüyordu. */
+        .ab-tahta { justify-content: center; flex: 1 1 auto; min-width: 0; border-radius: 10px; }
+        .ab-satir.ab-aktif .ab-tahta { cursor: pointer; }
+        .ab-kaynak { justify-content: flex-end; gap: .2em; flex: none; }
+        .ab-kaynak::before { background: rgba(15, 23, 42, .14); }
+
+        /* line-height:1 ŞART: son adımda dizi blok akışına geçiyor ve
+           kalıtılan satır yüksekliği kutuyu büyütüp ÇİZGİYİ KAYDIRIYORDU.
+           1 yapınca iki adımda da kutu tam 1em kalıyor, çizgi sabit. */
+        .ab-dizi { display: flex; align-items: flex-end; gap: .2em; direction: rtl; line-height: 1; }
+        .ab-dizi.ab-bitisik { gap: 0; display: block; white-space: nowrap; line-height: 1; }
+        .ab-bos-dizi { min-height: 1em; }
+        /* AYNI PUNTO: ayrık harfler de birleşen kelime de bu ölçüde */
+        /* AYNI PUNTO: harfler kabın ölçüsünü aynen alır (1em)
+           KALINLIK: 700 isteniyordu ama Arapça yazı tipinin gerçek bir
+           "bold" kesimi yok; tarayıcı SENTETİK kalınlaştırma (faux bold)
+           uygulayıp harfleri bazı cihazlarda hamurlaştırıyordu. Ağırlık
+           normale çekildi ve font-synthesis kapatıldı: tarayıcı kendiliğinden
+           kalınlaştıramaz, harf her cihazda tipin kendi çizgisiyle çıkar. */
+        .ab-p, .ab-kh {
+            display: inline-block; line-height: 1; font-weight: 400;
+            font-size: 1em;
+            font-synthesis: none; -webkit-font-synthesis: none;
+            font-synthesis-weight: none;
+            -webkit-text-stroke: 0;
+            paint-order: stroke fill;
+        }
+        /* Birleşik adımda parçalar SATIR İÇİ kalır ki tarayıcı harfleri
+           gerçek kelime gibi birbirine bağlasın. */
+        .ab-bitisik .ab-p { display: inline; }
+        /* İLK BELİRME: harf ekrana yeni geliyor → yumuşakça belirir. */
+        .ab-yeni { animation: abGel .34s ease-out both; }
+        @keyframes abGel {
+            from { opacity: 0; transform: translateY(-9px) scale(.72); }
+            to   { opacity: 1; transform: none; }
+        }
+        /* BİÇİM DEĞİŞİMİ (س → سـ): harf zaten ekranda, KAYBOLMAZ.
+           Opaklığa hiç dokunulmaz; yalnız kısa bir esneme ile "değiştim"
+           der. Böylece göz harfi takip etmeye devam eder. */
+        .ab-donusum { animation: abDonus .3s cubic-bezier(.34, 1.42, .5, 1) both; }
+        @keyframes abDonus {
+            0%   { transform: scale(1); }
+            42%  { transform: scale(1.11); }
+            100% { transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ab-yeni, .ab-donusum { animation: none; }
+        }
+
+        /* .ab-anlam kaldırıldı: kelime tamamlanınca Türkçe anlamı artık
+           gösterilmiyor (bkz. alfabe_birlestir.js → satirHtml). */
+
+        /* --- alt kumanda şeridi --- */
+        /* KUMANDA EN SAĞDA: öğretmen tahtanın başındayken slaytı sağ alt
+           köşeden çevirir; ekranın ortasına uzanmak zorunda kalmaz. İleri
+           düğmesi en dışta durur, yani en kolay ulaşılan yerde. Sayaç
+           düğmelerin solunda kalır. */
+        .ab-serit {
+            flex: none; display: flex; align-items: center; justify-content: flex-end; gap: 14px;
+            background: var(--bg-glass); border: 1px solid #cbd5e1; border-radius: 12px;
+            padding: 8px 14px; box-shadow: var(--shadow-sm);
+        }
+        .ab-nav {
+            font-family: inherit; font-size: 1.02rem; cursor: pointer;
+            color: #fff; border: 0; border-radius: 10px; padding: 9px 20px; background: #16A085;
+            box-shadow: 0 2px 8px rgba(22, 160, 133, .32); transition: .16s;
+        }
+        .ab-nav:hover:not(:disabled) { background: #117A65; transform: translateY(-1px); }
+        .ab-nav.ab-geri { background: #94a3b8; box-shadow: none; }
+        .ab-nav:disabled { opacity: .35; cursor: default; transform: none; }
+        .ab-durum {
+            display: flex; flex-direction: column; align-items: center; line-height: 1.25;
+            min-width: 112px; color: #475569;
+        }
+        .ab-d-ornek { font-size: 1.2rem; color: #0E6655; }
+        .ab-d-adim  { font-size: .82rem; color: #94a3b8; }
+
+        /* Oklar CSS ile çizilir: ▶ karakteri bazı cihazlarda emoji
+           olarak çıkıp düğmenin rengini bozuyordu. */
+        .ab-ok { display: inline-block; width: 0; height: 0; border-style: solid; vertical-align: middle; }
+        .ab-ok-sag { border-width: 6px 0 6px 9px; border-color: transparent transparent transparent currentColor; }
+        .ab-ok-sol { border-width: 6px 9px 6px 0; border-color: transparent currentColor transparent transparent; }
+
+        /* --- 5 RENK: harfin nasıl yazılacağını çocuğa renk söyler --- */
+        .ab-c-yesil   { color: #16a34a; }
+        .ab-c-mavi    { color: #2563eb; }
+        .ab-c-mor     { color: #9333ea; }
+        .ab-c-siyah   { color: #111827; }
+        .ab-c-kirmizi { color: #dc2626; }
+
+        /* --- orta ekran: punto biraz iner --- */
+        @media (max-width: 1400px) {
+            .ab-sar { --ab-punto: 4.3rem; }
+            .ab-satir { min-height: 116px; gap: 0 12px; }
+        }
+        @media (max-width: 1100px) {
+            .ab-sar { --ab-punto: 3.3rem; }
+            .ab-satir { min-height: 98px; }
+            .ab-liste { padding: 6px 12px; }
+            .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 70px repeat(4, minmax(0, 1fr)); }
+            .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+                grid-template-columns: 70px repeat(4, minmax(0, 1fr));
+            }
+            .ab-tb-satir::after { left: 76px; }
+            .ab-tb-ad { font-size: 1.15rem; }
+            .ab-tb-ad b { font-size: 1rem; }
+            .ab-tb-baslik { font-size: 1.05rem; }
+            .ab-tb-svg { width: 60px; height: 48px; }
+        }
+        /* --- dar ekran: tablo üstte yatay bir şeride iner --- */
+        @media (max-width: 860px) {
+            .ab-sar { flex-direction: column; padding: 8px 8px 10px; }
+            .ab-tablo { flex: 0 0 auto; max-height: 38vh; }
+            .ab-tb-svg { width: 58px; height: 46px; }
+            .ab-anahtar { font-size: 1rem; gap: 4px 12px; padding: 7px 10px; }
+            .ab-liste { padding: 4px 10px; }
+            .ab-satir {
+                grid-template-columns: minmax(0, 1fr) auto;
+                grid-template-areas: "tahta sag" "kaynak sag";
+                min-height: 120px; gap: 4px 10px;
+            }
+            .ab-tahta  { grid-area: tahta; }
+            .ab-kaynak { grid-area: kaynak; justify-content: flex-end; gap: 10px; }
+            .ab-sag    { grid-area: sag; min-width: 62px; padding-left: 8px; }
+            .ab-no { width: 34px; height: 34px; font-size: 1rem; }
+            .ab-sar { --ab-punto: 2.55rem; }
+            .ab-nav { font-size: .9rem; padding: 8px 14px; }
+        }
+
+        /* --- YAZDIRMA: bu sekme slayttır, kâğıda basılmaz --- */
+        @media print {
+            .ab-serit, .ab-tablo { display: none !important; }
+            .ab-satir { display: grid !important; }   /* çıktı alınırsa hepsi görünsün */
+        }
+
+
+
+/* ============================================================
+   DİNLE VE YAZ SEKMESİ (p7)
+   ------------------------------------------------------------
+   Oyun kendi sayfasında (dinleveyaz.html) yaşar, burada yalnız
+   çerçevelenir. Ayrı belge olduğu için iki sayfanın CSS'i
+   birbirine hiç karışmaz; oyun tek yerden bakılıp güncellenir.
+   ============================================================ */
+        #p7 { height: 100%; }
+        .dvy-cerceve {
+            display: block; width: 100%; height: 100%; border: 0;
+            border-radius: 12px; background: #fff;
+        }
+
+/* ============================================================
+   KARTLAR SEKMESİ (p2) — iki mod
+   ------------------------------------------------------------
+   "Harf adı": önde harf, arkada adı.  "Yazılış yeri": önde ـك
+   gibi bağlı biçim, arkada "Sonda" ve harfin adı. Renkler Harf
+   Birleştirme'yle ORTAK: yeşil başta, mavi ortada, mor sonda.
+   ============================================================ */
+        /* DİKKAT: kimlik seçicisi .panel'den güçlüdür; burada display
+           verilirse sekme kapalıyken de görünür. O yüzden YALNIZ .active
+           durumunda tanımlanır. */
+        #p2.active { display: flex; flex-direction: column; }
+        /* .grid-flip'in height:100%'ü mod şeridini hesaba katmadığı için
+           ızgara panelden taşıyor, alt sıra kırpılmış/ezilmiş görünüyordu.
+           Burada kalan alanı kadar uzuyor. */
+        #p2.active > .grid-flip { flex: 1 1 auto; height: auto; min-height: 0; }
+        .kart-mod {
+            flex: none; display: flex; justify-content: center; gap: 9px;
+            flex-wrap: wrap; align-items: center;
+            padding: 6px 0 10px;
+        }
+        .km-hap {
+            padding: 9px 22px; border-radius: 999px; cursor: pointer;
+            border: 1.5px solid #cfd8e3; background: #fff; color: #475569;
+            font-family: inherit; font-weight: 700; font-size: 1rem;
+            transition: background .16s, color .16s, border-color .16s, transform .12s;
+        }
+        .km-hap:hover { border-color: #16A085; color: #117A65; transform: translateY(-1px); }
+        .km-hap.aktif {
+            background: linear-gradient(135deg, #20C997, #16A085); color: #fff;
+            border-color: transparent; box-shadow: 0 4px 12px rgba(22, 160, 133, .32);
+        }
+        /* TURLAR — "Yazılış yeri" modunda 72 kart çıkıyor; hepsi tek
+           ızgaraya basılırsa satırlar dikeyde eziliyordu. Kartlar artık
+           tura bölünüp oklarla geziliyor; tek tur varsa şerit gizli
+           (JS inline display ile açar/kapar). */
+        .km-tur {
+            display: none; align-items: center; gap: 5px; margin-inline-start: 8px;
+            background: #fff; border: 1.5px solid #cfd8e3; border-radius: 999px;
+            padding: 3px 7px; box-shadow: 0 3px 9px rgba(23, 43, 77, .07);
+        }
+        .km-ok {
+            width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+            background: #EAF6F2; color: #117A65; font-size: 1.3rem; font-weight: 900;
+            line-height: 1; display: flex; align-items: center; justify-content: center;
+            font-family: inherit; transition: background .15s, color .15s, transform .1s;
+        }
+        .km-ok:hover { background: #20C997; color: #fff; }
+        .km-ok:active { transform: scale(.9); }
+        .km-tur-yazi {
+            font-size: .86rem; font-weight: 800; color: #475569;
+            min-width: 76px; text-align: center; letter-spacing: .02em;
+        }
+
+        /* yazılış kartı: ön yüz bağlı biçim, arka yüz yer + harf adı */
+        .face-yer { font-family: 'ArapcaKom', 'Traditional Arabic', serif; }
+        .face-yer-arka { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.15; }
+        .face-yer-arka b { font-size: 1em; }
+        .face-yer-arka span { font-size: .52em; opacity: .78; font-weight: 600; }
+
+/* ============================================================
+   YARIŞMA (p4) — soruda gösterilecek yazılış seçimi
+   ============================================================ */
+        .ys-bicim {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid #E9EEF5; border-radius: 18px;
+            padding: 12px 20px; box-shadow: 0 6px 16px rgba(23, 43, 77, .07);
+        }
+        .ys-bas { font-size: .82rem; font-weight: 800; letter-spacing: .05em;
+                  text-transform: uppercase; color: #94a3b8; }
+        .ys-cipler { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; }
+        .ys-cip {
+            display: flex; flex-direction: column; align-items: center; gap: 1px;
+            min-width: 76px; padding: 8px 14px; border-radius: 13px; cursor: pointer;
+            border: 1.5px solid #cfd8e3; background: #fff; color: #475569;
+            font-family: inherit; transition: .16s;
+        }
+        .ys-cip b { font-family: 'ArapcaKom', 'Traditional Arabic', serif; font-size: 1.9rem; line-height: 1.1; }
+        .ys-cip span { font-size: .78rem; font-weight: 700; }
+        .ys-cip:hover { border-color: #16A085; transform: translateY(-1px); }
+        .ys-cip.acik {
+            background: linear-gradient(135deg, #20C997, #16A085); color: #fff;
+            border-color: transparent; box-shadow: 0 4px 12px rgba(22, 160, 133, .3);
+        }
+        /* "Yazılış yeri" seçilince açılan alt kutu. [hidden] display:flex'i
+           yenemediği için ayrıca yazılıyor. */
+        .ys-yer {
+            display: flex; flex-direction: column; align-items: center; gap: 7px;
+            width: 100%; margin-top: 3px; padding-top: 10px;
+            border-top: 1px dashed #E2E8F0;
+        }
+        .ys-yer[hidden] { display: none; }
+
+        /* Soru bir CÜMLE olduğunda (Şın harfinin baştaki yazılışı hangisidir?)
+           9rem'lik harf puntosu taşar; cümle puntosu ekrana göre küçülür.
+           Şıklar ise harf olduğu için TAM TERSİ: büyür. */
+        .q-display.q-cumle {
+            font-size: clamp(1.25rem, 2.4vw, 2.4rem); line-height: 1.28;
+            font-weight: 800; max-width: 94%; text-align: center;
+            text-shadow: none; word-break: break-word;
+        }
+        .btn-ans.btn-harf {
+            font-family: 'ArapcaKom', 'Traditional Arabic', 'arakom', serif;
+            font-size: clamp(2.4rem, 4.6vw, 4.4rem); line-height: 1.1;
+            direction: rtl; padding: 4px 8px;
+        }
+
+        /* ==========================================================
+           SINAV SEKMESİ (p6)
+           ----------------------------------------------------------
+           Dokuz soru tipi tek bir kart içinde döner: testler
+           (.as-siklar), eşleştirme (.as-esalan) ve boşluk doldurma
+           (.as-kelimekutu + uçan harf .as-ucan).
+           Renk sınıfları (ab-c-yesil vb.) Harf Birleştirme
+           sekmesiyle ORTAKTIR; çocuk iki sekmede aynı rengi görsün.
+           ========================================================== */
+        /* SINIF TAHTASI ÖLÇÜSÜ: soru kartı 720 px'e sıkışmıyor, ekranın
+           tamamını kullanıyor. Genişlik tek yerden: --as-en. */
+        #p6 { height: 100%; }
+        .as-sar {
+            --as-en: min(1560px, 96vw);
+            height: 100%; overflow-y: auto; overflow-x: hidden;
+            padding: 12px 10px 20px; box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+            display: flex; flex-direction: column;
+        }
+
+        /* --- açılış kapağı --- */
+        .as-kapak {
+            max-width: 620px; margin: 8px auto; padding: 22px 20px 24px;
+            background: #fff; border: 1px solid #E9EEF5; border-radius: 18px;
+            box-shadow: 0 10px 26px rgba(23, 43, 77, .09); text-align: center;
+        }
+        .as-bas {
+            margin: 0 0 6px; font-size: 1.5rem; color: #117A65; font-weight: 800;
+        }
+        .as-alt-bas { margin: 0 0 16px; color: #64748b; font-size: .92rem; line-height: 1.5; }
+        /* Soru tipi / soru sayısı seçicileri KALDIRILDI: sınav artık sabit
+           tur düzeninde ilerliyor (20 soru x 5 puan = 100). Kapakta yalnız
+           kuralı anlatan not ve tipler listesi var. */
+        .as-turnot {
+            margin: 4px 0 14px; padding: 11px 14px; border-radius: 12px;
+            background: #F2FBF8; border: 1px dashed #A9DFD3; color: #117A65;
+            font-size: .88rem; line-height: 1.5;
+        }
+        .as-turliste {
+            margin: 0 0 18px; padding: 0 0 0 22px; text-align: start;
+            columns: 2; column-gap: 20px; color: #64748b; font-size: .84rem; line-height: 1.75;
+        }
+        .as-turliste li { break-inside: avoid; }
+        @media (max-width: 560px) { .as-turliste { columns: 1; } }
+        .as-t {
+            padding: 10px 20px; border-radius: 12px; cursor: pointer; font-family: inherit;
+            font-size: .98rem; font-weight: 700; border: 1.5px solid #16A085;
+            background: #fff; color: #117A65;
+            transition: background .16s, color .16s, transform .12s;
+        }
+        .as-t:hover { background: #16A085; color: #fff; transform: translateY(-1px); }
+        .as-basla {
+            margin-top: 20px; padding: 12px 34px; font-size: 1.05rem;
+            background: #16A085; color: #fff;
+            box-shadow: 0 6px 16px rgba(22, 160, 133, .3);
+        }
+        .as-basla:hover { background: #117A65; border-color: #117A65; }
+
+        /* --- soru kartı --- */
+        .as-bar {
+            width: var(--as-en); margin: 0 auto 12px; height: 9px; border-radius: 99px;
+            background: #E9EEF5; overflow: hidden;
+        }
+        .as-bar i {
+            display: block; height: 100%; border-radius: 99px;
+            background: linear-gradient(90deg, #16A085, #E67E22);
+            transition: width .35s ease;
+        }
+        .as-ust {
+            width: var(--as-en); margin: 0 auto 8px; display: flex;
+            align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .as-no { font-size: 1.3rem; font-weight: 800; color: #117A65; }
+        .as-tipad {
+            font-size: 1.05rem; color: #64748b; background: #EDF2F8;
+            padding: 5px 14px; border-radius: 99px;
+        }
+        /* SORU CÜMLESİ — sınıfın en arkasından okunacak punto (~8rem).
+           Cümleler bu yüzden alfabe_sinav.js'te KISA yazılmıştır. */
+        .as-metin {
+            width: var(--as-en); margin: 0 auto 14px; padding: 14px 22px;
+            background: #fff; border: 1px solid #E9EEF5; border-radius: 18px;
+            color: #1f2937; font-size: min(8rem, 6.4vw, 15vh); line-height: 1.14; font-weight: 700;
+            text-align: center;
+        }
+        .as-metin b { color: #E67E22; }
+        .as-ipucu {
+            width: var(--as-en); margin: 0 auto 10px; font-size: 1.1rem;
+            color: #64748b; text-align: center;
+        }
+        .as-ipucu b { color: #117A65; }
+
+        /* --- 9. tip: kelime kutusu --- */
+        .as-kelimekutu {
+            position: relative; width: var(--as-en); margin: 0 auto 12px;
+            padding: 14px 14px 10px; text-align: center;
+            background: #E6FAF5; border: 1.5px dashed #16A085; border-radius: 16px;
+        }
+        .as-kelime {
+            display: inline-block; direction: rtl; unicode-bidi: isolate;
+            font-family: 'ArapcaKom', 'Traditional Arabic', serif;
+            font-size: 6rem; line-height: 1.45;
+        }
+        .as-kelime .as-kp { display: inline-block; margin: 0 .06em; }
+        .as-bitisik .as-kp { display: inline; margin: 0; }
+        .as-kp-yeni { animation: asGel .5s ease; }
+        @keyframes asGel {
+            from { transform: scale(.5); opacity: 0; }
+            to   { transform: scale(1);  opacity: 1; }
+        }
+        /* Boşluk: harfin oturacagi yer. Icindeki tatvil sadece genislik
+           versin diye saydam birakilir; kutunun boyu sabittir. */
+        .as-bosluk {
+            display: inline-block; width: 1.05em; height: .58em;
+            margin: 0 .05em; vertical-align: -.02em; overflow: hidden;
+            color: transparent; line-height: 0;
+            background: rgba(230, 126, 34, .13);
+            border: 2px dashed #E67E22; border-radius: 8px;
+            animation: asYanip 1.6s ease-in-out infinite;
+        }
+        @keyframes asYanip {
+            0%, 100% { background: rgba(230, 126, 34, .13); }
+            50%      { background: rgba(230, 126, 34, .28); }
+        }
+        .as-anlam {
+            display: block; margin-top: 6px; direction: ltr;
+            font-family: inherit; font-size: 1.2rem; color: #64748b;
+        }
+        .as-ucan {
+            position: absolute; z-index: 5; pointer-events: none;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'ArapcaKom', 'Traditional Arabic', serif;
+            font-size: 4.6rem; opacity: .95;
+            transition: transform .9s cubic-bezier(.34, 1.3, .5, 1), opacity .3s ease;
+        }
+
+        /* --- test şıkları --- */
+        .as-siklar {
+            width: var(--as-en); margin: 0 auto; display: grid; gap: 14px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            flex: 1 1 auto; align-content: center;
+        }
+        .as-sik {
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            padding: 10px 18px; min-height: 118px; text-align: right;
+            background: #fff; border: 1.5px solid #cfd8e3; border-radius: 14px;
+            font-family: inherit; transition: border-color .16s, background .16s, transform .12s;
+        }
+        .as-sik:hover:not(:disabled) { border-color: #16A085; transform: translateY(-2px); }
+        .as-sik:disabled { cursor: default; }
+        .as-mark {
+            flex: 0 0 auto; width: 46px; height: 46px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: #EDF2F8; color: #64748b; font-size: 1.4rem; font-weight: 800;
+        }
+        .as-ic {
+            flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
+            flex-wrap: wrap; gap: 4px; direction: rtl;
+        }
+        .as-h {
+            font-family: 'ArapcaKom', 'Traditional Arabic', serif;
+            font-size: 4.6rem; line-height: 1.2; color: #1f2937;
+        }
+        .as-ayrac { color: #A9B7C3; font-family: inherit; font-size: 1.7rem; margin: 0 10px; }
+        /* ÇİZGİDEKİ YAZILIŞLAR — çizgi ARTIK HER HARFİN ALTINDA DEĞİL,
+           üçünün altından geçen TEK bir yazı çizgisi ve TAM TABAN
+           ÇİZGİSİNDE. Eskiden çizgi kutu altındaydı; ج ح م gibi kuyruklu
+           harflerde kuyruk çizginin altında kalmıyor, yazılış yanlış
+           görünüyordu. Ölçüm (bkz. .ab-cizgili): taban, kutu altından
+           .266em yukarıda; .30em iç boşlukla kabın altından .566em eder.
+           Çizgi .50em'e, tabanın biraz altına konur → gövde çizgiye
+           oturur, kuyruk çizginin ALTINDA görünür. */
+        .as-uclu {
+            position: relative; display: flex; gap: .18em; direction: rtl;
+            align-items: flex-end; font-size: 3.8rem; line-height: 1;
+            padding: 0 .12em .30em;
+        }
+        .as-uclu::before {
+            content: ""; position: absolute; left: .04em; right: .04em; bottom: .50em;
+            height: 3px; background: #cbd5e1; border-radius: 2px;
+        }
+        .as-bic {
+            font-family: 'ArapcaKom', 'Traditional Arabic', serif;
+            font-size: 3.8rem; line-height: 1.3; color: #1f2937;
+            padding: 0 6px;
+        }
+        .as-uclu .as-bic {
+            font-size: 1em; line-height: 1; padding: 0 .05em; display: inline-block;
+        }
+        /* ÇELDİRİCİ = ÇİZGİYE GÖRE KONUM HATASI. Harfin kendi çizimi
+           doğrudur; yanlış olan çizgiye göre DURDUĞU YER. transform
+           kullanılır: kutu yerinde kalır, satır düzeni bozulmaz.
+           Yanlış şıkta ÜÇ biçim de aynı miktarda kayar (bkz.
+           alfabe_sinav.js → KONUM_HATA); üçü birden kaydığı için işaret
+           güçlüdür ve kaydırma az tutulur — harf çizginin aşırı altına
+           ya da üstüne düşmez, yalnız çizgiye oturmadığı görülür. */
+        .as-uclu .as-bic.as-havada { transform: translateY(-.17em); }  /* kuyruk çizgiye inmemiş */
+        .as-uclu .as-bic.as-batik  { transform: translateY(.14em); }   /* gövde çizginin altında */
+        .as-bic-b { font-size: 4.8rem; }
+        /* SINAVDAKİ HARFLER KALIN DEĞİL. Arapça yazı tipinin gerçek bir
+           kalın kesimi olmadığı için tarayıcı sentetik kalınlaştırma
+           yapabiliyor ve harfler bazı cihazlarda hamurlaşıyordu; hem
+           ağırlık normale sabitlendi hem sentez kapatıldı. */
+        .as-h, .as-bic, .as-kelime, .as-es, .as-ucan, .as-harf, .as-kesik {
+            font-weight: 400;
+            font-synthesis: none; -webkit-font-synthesis: none;
+            font-synthesis-weight: none; -webkit-text-stroke: 0;
+        }
+
+        .as-etiket {
+            display: block; width: 100%; direction: ltr; text-align: center;
+            font-family: inherit; font-size: 1.05rem; color: #94a3b8; margin-top: 2px;
+        }
+        .as-sik.as-dogru { border-color: #16A085; background: #E6FAF5; }
+        .as-sik.as-dogru .as-mark { background: #16A085; color: #fff; }
+        .as-sik.as-yanlis { border-color: #EF5350; background: #FDECEA; }
+        .as-sik.as-yanlis .as-mark { background: #EF5350; color: #fff; }
+
+        /* --- eşleştirme --- */
+        .as-esalan {
+            width: min(900px, 92vw); margin: 0 auto; display: grid; gap: 12px 44px;
+            grid-template-columns: 1fr 1fr; flex: 1 1 auto; align-content: center;
+        }
+        .as-sutun { display: grid; gap: 10px; }
+        .as-es {
+            padding: 4px; cursor: pointer; background: #fff; min-height: 0;
+            border: 1.5px solid #cfd8e3; border-radius: 14px;
+            font-family: 'ArapcaKom', 'Traditional Arabic', serif;
+            font-size: 4.4rem; line-height: 1.2; color: #1f2937;
+            transition: border-color .16s, background .16s, transform .12s;
+        }
+        .as-es:hover { border-color: #16A085; transform: translateY(-2px); }
+        .as-es.as-secili {
+            border-color: #E67E22; background: #FFF3E0;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, .18);
+        }
+        .as-es.as-dogru { border-color: #16A085; background: #E6FAF5; color: #117A65; }
+        .as-es.as-kilit { cursor: default; pointer-events: none; }
+        /* Eslesen ikiliye ayni numara ve ayni ton verilir ki cocuk
+           hangisinin hangisiyle eslestigini sonradan da gorebilsin. */
+        .as-es[data-cift] { position: relative; }
+        .as-es[data-cift]::after {
+            content: attr(data-cift); position: absolute; top: 4px; inset-inline-start: 6px;
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: inherit; font-size: .68rem; font-weight: 800; color: #fff;
+        }
+        .as-es[data-cift="1"] { background: #E6FAF5; border-color: #16A085; color: #117A65; }
+        .as-es[data-cift="1"]::after { background: #16A085; }
+        .as-es[data-cift="2"] { background: #EEF2FF; border-color: #6366F1; color: #4338CA; }
+        .as-es[data-cift="2"]::after { background: #6366F1; }
+        .as-es[data-cift="3"] { background: #FFF3E0; border-color: #E67E22; color: #B35309; }
+        .as-es[data-cift="3"]::after { background: #E67E22; }
+        .as-es[data-cift="4"] { background: #FDF2FA; border-color: #C026D3; color: #86198F; }
+        .as-es[data-cift="4"]::after { background: #C026D3; }
+        .as-es.as-titre { animation: asTitre .4s ease; border-color: #EF5350; background: #FDECEA; }
+        @keyframes asTitre {
+            0%, 100% { transform: translateX(0); }
+            25%      { transform: translateX(-6px); }
+            75%      { transform: translateX(6px); }
+        }
+
+        /* --- geri bildirim + alt düğmeler --- */
+        .as-geri-bildirim {
+            max-width: 720px; margin: 12px auto 0; min-height: 0;
+            font-size: .92rem; line-height: 1.5; border-radius: 12px;
+        }
+        .as-geri-bildirim.as-iyi {
+            padding: 10px 13px; background: #E6FAF5; color: #117A65;
+            border: 1px solid #16A085;
+        }
+        .as-geri-bildirim.as-kotu {
+            padding: 10px 13px; background: #FDECEA; color: #B03A2E;
+            border: 1px solid #EF5350;
+        }
+        .as-geri-bildirim.as-orta {
+            padding: 10px 13px; background: #FFF3E0; color: #B35309;
+            border: 1px solid #E67E22;
+        }
+        .as-alt {
+            max-width: 720px; margin: 14px auto 0; display: flex;
+            gap: 10px; justify-content: center; flex-wrap: wrap;
+        }
+        .as-ileri { background: #E67E22; border-color: #E67E22; color: #fff; }
+        .as-ileri:hover { background: #D35400; border-color: #D35400; }
+        .as-ileri .ab-ok { border-left-color: #fff; }
+        .as-sonraki { background: #16A085; border-color: #16A085; color: #fff; }
+        .as-sonraki:hover { background: #117A65; border-color: #117A65; }
+        .as-bitir { border-color: #cfd8e3; color: #94a3b8; }
+        .as-bitir:hover { background: #94a3b8; border-color: #94a3b8; color: #fff; }
+
+        /* --- sonuç kartı --- */
+        .as-sonkart {
+            max-width: 480px; margin: 18px auto; padding: 26px 20px 24px;
+            background: #fff; border: 1px solid #E9EEF5; border-radius: 18px;
+            box-shadow: 0 10px 26px rgba(23, 43, 77, .09); text-align: center;
+        }
+        .as-sonbas { font-size: 1.3rem; font-weight: 800; color: #117A65; margin-bottom: 16px; }
+        .as-halka {
+            width: 132px; height: 132px; margin: 0 auto 14px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: conic-gradient(#16A085 calc(var(--p) * 1%), #E9EEF5 0);
+        }
+        .as-halka span {
+            width: 102px; height: 102px; border-radius: 50%; background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 800; color: #117A65;
+        }
+        .as-sonsay { font-size: 1rem; font-weight: 700; color: #475569; }
+        .as-sonsoz { margin-top: 8px; font-size: .9rem; color: #64748b; line-height: 1.55; }
+
+        /* --- orta ekran: punto kademeli iner, düzen bozulmaz --- */
+        @media (max-width: 1400px) {
+            .as-metin { font-size: min(6rem, 5.7vw, 12.5vh); padding: 10px 16px; margin-bottom: 10px; }
+            .as-h  { font-size: 3.6rem; }
+            .as-uclu { font-size: 3rem; }
+            .as-bic-b { font-size: 3.7rem; }
+            .as-es { font-size: 3.2rem; }
+            .as-kelime { font-size: 4.4rem; line-height: 1.35; }
+            .as-kelimekutu { padding: 10px 12px 8px; margin-bottom: 10px; }
+            .as-sik { min-height: 92px; }
+            .as-esalan { gap: 9px 34px; }
+        }
+        @media (max-width: 1050px) {
+            .as-metin { font-size: min(4rem, 7vw, 13vh); }
+            .as-h  { font-size: 3rem; }
+            .as-uclu { font-size: 2.5rem; }
+            .as-bic-b { font-size: 3.1rem; }
+            .as-es { font-size: 2.9rem; }
+            .as-kelime { font-size: 4rem; }
+            .as-sik { min-height: 86px; }
+        }
+
+        /* --- küçük ekran --- */
+        @media (max-width: 640px) {
+            .as-metin { font-size: 2.4rem; padding: 10px 14px; }
+            .as-siklar { grid-template-columns: 1fr; }
+            .as-kelime { font-size: 2.6rem; }
+            .as-h { font-size: 2rem; }
+            .as-bic { font-size: 1.7rem; }
+            .as-bic-b { font-size: 2.1rem; }
+            .as-es { font-size: 1.9rem; }
+            .as-esalan { gap: 16px; }
+            .as-kapak { padding: 18px 14px 20px; }
+        }
+
+/* ============================================================
+   KART MODU ŞERİDİ — DAR EKRAN
+   Bu blok DOSYANIN SONUNDA duruyor: .kart-mod / .km-* temel
+   tanımları yukarıdaki 768px medya bloğundan SONRA geldiği için
+   orada yazılan kurallar eziliyordu (medya sorgusu özgüllük
+   eklemez, sırayı değiştirmez).
+   ============================================================ */
+        @media (max-width: 768px) {
+            /* Yüzen kumanda varsayılan olarak sol üstte durur; "Harf adı"
+               hapı onun altında kalıyordu. Şerit sağa kayar, sığmazsa
+               alt satıra iner. */
+            .kart-mod { padding-left: 104px; row-gap: 7px; }
+            .km-tur { margin-inline-start: 0; padding: 2px 5px; }
+            .km-ok { width: 26px; height: 26px; font-size: 1.1rem; }
+            .km-tur-yazi { font-size: .74rem; min-width: 58px; }
+        }
