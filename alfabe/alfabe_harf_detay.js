@@ -224,13 +224,17 @@ const harfDetay = {
     },
 
     // Kalem darbelerini sırayla, kalem ucu eşliğinde oynat
-    playForm: function(anim, solo) {
+    /* tekSefer: döngüye girmeden bir kez yazar ve anim.bitince'yi çağırır.
+       Harf Birleştirme'deki tablo bunu kullanır — orada sürekli oynayan
+       12 animasyon dersi dağıtırdı. anim.hiz: darbe süresi bölücüsü. */
+    playForm: function(anim, solo, tekSefer) {
         if (!anim) return;
         if (solo && typeof playClick === 'function') playClick();
+        const hz = anim.hiz || 1;
         const items = anim.strokes.map(s => {
             const len = s.el.getTotalLength();
             return { el: s.el, len, tap: s.tap,
-                     dur: s.tap ? 260 : Math.max(1100, Math.min(3600, len * 3.4)) };
+                     dur: (s.tap ? 260 : Math.max(1100, Math.min(3600, len * 3.4))) / hz };
         });
         // başlangıç: hepsi gizli
         items.forEach(it => {
@@ -246,6 +250,7 @@ const harfDetay = {
         const step = (now) => {
             if (i >= items.length) {
                 nib.style.visibility = 'hidden'; anim.raf = null;
+                if (tekSefer) { if (anim.bitince) anim.bitince(); return; }
                 // Yazım bitti: kısa bir beklemeden sonra baştan başlat (döngü)
                 anim.loopT = setTimeout(() => {
                     anim.loopT = null;

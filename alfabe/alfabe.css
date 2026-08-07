@@ -1389,7 +1389,7 @@
         .ab-sar {
             /* TEK PUNTO KAYNAĞI: hem soldaki tablo hem sağdaki liste bunu
                kullanır, böylece harfler iki tarafta da AYNI büyüklükte. */
-            --ab-punto: 6.2rem;
+            --ab-punto: 5.8rem;
             height: 100%; overflow: hidden;
             display: flex; flex-direction: row; align-items: stretch; gap: 10px;
             padding: 10px 12px 12px;
@@ -1489,12 +1489,28 @@
         .ab-tb-satir:active { background: #d7f2ea; }
         .ab-tb-ad {
             display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;
-            font-size: .8rem; font-weight: 700; color: #64748b; text-align: left;
+            font-size: 1rem; font-weight: 700; color: #64748b; text-align: left;
         }
-        .ab-tb-ad b { font-size: .72rem; color: #b6c2cf; }
+        .ab-tb-ad b { font-size: .92rem; color: #b6c2cf; }
         /* SATIRIN font ölçüsü = harf ölçüsü. Çizgi konumu em ile
            yazıldığı için (aşağıya bak) bu şart. */
         .ab-tb-satir { font-size: var(--ab-punto); }
+        /* YAZILIŞ ANİMASYONU KATMANI (tablo açılınca kelimenin harfleri).
+           Hizalama: kalem verisinin viewBox'ı [0 0 G 730] ve harfin taban
+           çizgisi orada y=410'dur → taban, kutunun altından 320/730 =
+           .4384 yukarıdadır. Satır çizgisi de hücrenin altından .47em
+           yukarıda (bkz. .ab-tb-satir::after). İkisi çakışsın diye:
+           bottom = .47em − .4384 × yükseklik. Yükseklik 1.27em seçildi;
+           böylece 730 birimlik kutu, metin harfiyle aynı boyda çıkar.
+           width:auto — en/boy oranı viewBox'tan gelir, harf ezilmez. */
+        .ab-tb-h { position: relative; }
+        .ab-tb-yaz {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            height: 1.27em; width: auto; bottom: -.087em;
+            overflow: visible; pointer-events: none;
+        }
+        .ab-tb-yaz .hd-satir { display: none; }   /* satırın kendi çizgisi zaten var */
+        .ab-tb-h.ab-yaziliyor { color: transparent; }   /* metin harfi çizime yer açar */
         .ab-tb-h {
             font-family: 'ArapcaKom', 'Traditional Arabic', 'arakom', serif;
             font-size: 1em; line-height: 1.5; font-weight: 400; text-align: center;
@@ -1700,16 +1716,17 @@
 
         /* --- orta ekran: punto biraz iner --- */
         @media (max-width: 1400px) {
-            .ab-sar { --ab-punto: 4.6rem; }
+            .ab-sar { --ab-punto: 4.3rem; }
             .ab-satir { min-height: 116px; gap: 0 12px; }
         }
         @media (max-width: 1100px) {
-            .ab-sar { --ab-punto: 3.5rem; }
+            .ab-sar { --ab-punto: 3.3rem; }
             .ab-satir { min-height: 98px; }
             .ab-liste { padding: 6px 12px; }
             .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 70px repeat(4, minmax(0, 1fr)); }
             .ab-tb-satir::after { left: 76px; }
-            .ab-tb-ad { font-size: .7rem; }
+            .ab-tb-ad { font-size: .88rem; }
+            .ab-tb-ad b { font-size: .8rem; }
             .ab-tb-baslik { font-size: 1.05rem; }
             .ab-tb-svg { width: 60px; height: 48px; }
         }
@@ -1729,7 +1746,7 @@
             .ab-kaynak { grid-area: kaynak; justify-content: flex-end; gap: 10px; }
             .ab-sag    { grid-area: sag; min-width: 62px; padding-left: 8px; }
             .ab-no { width: 34px; height: 34px; font-size: 1rem; }
-            .ab-sar { --ab-punto: 2.7rem; }
+            .ab-sar { --ab-punto: 2.55rem; }
             .ab-anlam { font-size: .82rem; }
             .ab-nav { font-size: .9rem; padding: 8px 14px; }
         }
@@ -2051,6 +2068,12 @@
         .as-uclu .as-bic {
             font-size: 1em; line-height: 1; padding: 0 .05em; display: inline-block;
         }
+        /* ÇELDİRİCİ = ÇİZGİYE GÖRE KONUM HATASI. Harfin kendi çizimi
+           doğrudur; yanlış olan çizgiye göre DURDUĞU YER. transform
+           kullanılır: kutu yerinde kalır, üçlünün hizası bozulmaz.
+           (bkz. alfabe_sinav.js → KONUM_HATA) */
+        .as-uclu .as-bic.as-havada { transform: translateY(-.27em); }  /* kuyruk çizgiye inmemiş */
+        .as-uclu .as-bic.as-batik  { transform: translateY(.21em); }   /* gövde çizginin altında */
         .as-bic-b { font-size: 4.8rem; }
         /* SINAVDAKİ HARFLER KALIN DEĞİL. Arapça yazı tipinin gerçek bir
            kalın kesimi olmadığı için tarayıcı sentetik kalınlaştırma

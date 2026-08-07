@@ -274,25 +274,43 @@
         return [h, TATVIL + h, TATVIL + h];
     }
 
-    /* Harfin YANLIŞ üçlüsü + neden yanlış olduğunun Türkçe açıklaması. */
+    /* Harfin YANLIŞ üçlüsü + neden yanlış olduğunun Türkçe açıklaması.
+
+       NEDEN KONUM HATASI: Eski çeldiriciler yalnız bağlantı (tatvil)
+       çizgisini eksiltiyordu; ش ile شـ arasındaki fark o kadar küçük ki
+       dört şık da doğru görünüyordu, soru gözle çözülemiyordu. Sorunun
+       kendisi "ÇİZGİDEKİ yazılış" olduğuna göre hata da çizgiye göre
+       KONUM hatası olmalı: harf çizginin üstünde asılı kalsın, çizginin
+       altına gömülsün ya da üç biçim aynı çizgide durmasın. Böylece
+       yanlış şık, harfin kuyruğunun ve üst kısmının çizgiye göre yerine
+       bakılarak bulunur. Kaydırma transform ile yapılır; kutu yerinde
+       kaldığı için satır düzeni bozulmaz. */
+    var KONUM_HATA = [
+        { s: 'as-havada', n: ' harfi çizginin üstünde asılı kalmış; kuyruğu çizginin altına inmeliydi.' },
+        { s: 'as-batik',  n: ' harfi çizginin altına gömülmüş; gövdesi çizginin üstünde oturmalıydı.' },
+        { s: 'as-yamuk',  n: ' harfinin biçimleri aynı çizgide durmuyor; biri yukarıda, biri aşağıda yazılmış.' }
+    ];
+
     function yanlisUclu(h) {
-        var d = dogruUclu(h), y = d.slice(), aciklama;
-        if (!bagliMi(h)) {
-            /* Klasik hata: bağlanmayan harfe ileri çizgi eklemek. */
-            y = [h + TATVIL, TATVIL + h + TATVIL, TATVIL + h];
-            aciklama = ad(h) + ' kendinden sonraki harfe bağlanmaz; ileri çizgi almaz.';
+        var d = dogruUclu(h);
+        var k = KONUM_HATA[Math.floor(Math.random() * KONUM_HATA.length)];
+        var kaydir = [null, null, null], a, b;
+        if (k.s === 'as-yamuk') {
+            a = Math.floor(Math.random() * 3);
+            b = (a + 1 + Math.floor(Math.random() * 2)) % 3;
+            kaydir[a] = 'as-havada'; kaydir[b] = 'as-batik';
         } else {
-            var n = Math.floor(Math.random() * 3);
-            if (n === 0) { y[0] = h; aciklama = ad(h) + ' harfi kelimenin başında sonraki harfe bağlanır, ileri çizgisi olmalıydı.'; }
-            else if (n === 1) { y[1] = h + TATVIL; aciklama = ad(h) + ' harfi ortada iki yandan bağlanır, önündeki bağlantı çizgisi eksik.'; }
-            else { y[2] = h; aciklama = ad(h) + ' harfi sonda kendinden öncekine bağlanır, geri çizgisi eksik.'; }
+            kaydir[Math.floor(Math.random() * 3)] = k.s;
         }
-        return { u: y, not: aciklama };
+        return { u: d, kaydir: kaydir, not: ad(h) + k.n };
     }
 
-    function ucluHtml(u) {
-        var i, c = [];
-        for (i = 0; i < u.length; i++) c.push('<span class="as-bic">' + kacis(u[i]) + '</span>');
+    function ucluHtml(u, kaydir) {
+        var i, c = [], ek;
+        for (i = 0; i < u.length; i++) {
+            ek = (kaydir && kaydir[i]) ? ' ' + kaydir[i] : '';
+            c.push('<span class="as-bic' + ek + '">' + kacis(u[i]) + '</span>');
+        }
         return '<span class="as-uclu">' + c.join('') + '</span>';
     }
 
@@ -315,7 +333,7 @@
             } else {
                 y = yanlisUclu(harfler[i]);
                 siklar.push({
-                    html: ucluHtml(y.u) +
+                    html: ucluHtml(y.u, y.kaydir) +
                           '<span class="as-etiket">' + ad(harfler[i]) + '</span>',
                     dogru: !dogruAra,
                     not: y.not
