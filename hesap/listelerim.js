@@ -69,6 +69,14 @@ kalp: '<path class="li-kalp" d="M12 21c-1-1-8.4-5.4-8.4-11A5 5 0 0 1 12 6.6 5 5 
 takvimGun: '<rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g>',
 });
 
+/* SINIF (derslik) ikonu — tahta + sira + iki ogrenci.
+   Kurallar (Kurumlarim & Siniflarim): bu ANIMASYONLU ikon yalniz
+   SEVIYE (kat) basliginda durur; tek tek sinif satirlarinda/kapilarinda
+   ikon YOKTUR. Boylece liste sakin kalir, goz basliga gider. */
+Object.assign(LL_IKONLAR, {
+sinif: '<rect x="2.4" y="2.6" width="19.2" height="11.4" rx="1.4" fill="#6d4c41"/><rect x="3.6" y="3.8" width="16.8" height="9" rx=".8" fill="#2f6f52"/><g class="li-tebesir" stroke="#fff" stroke-width="1.15" stroke-linecap="round" fill="none" opacity=".92"><path d="M5.6 6.6h8.2"/><path d="M5.6 9.4h10.6"/></g><circle class="li-ogrenci1" cx="7" cy="16.6" r="1.8" fill="#3498db"/><circle class="li-ogrenci2" cx="17" cy="16.6" r="1.8" fill="#e67e22"/><g fill="#c8a165"><rect x="2.6" y="18.2" width="8.6" height="1.7" rx=".7"/><rect x="12.8" y="18.2" width="8.6" height="1.7" rx=".7"/></g><g stroke="#a1793f" stroke-width="1.3" stroke-linecap="round"><path d="M4.2 19.8v1.8M9.6 19.8v1.8M14.4 19.8v1.8M19.8 19.8v1.8"/></g>',
+});
+
 /* ikon uretici: llIcon('klasor')  /  llIcon('klasor','ek-sinif') */
 function llIcon(ad, ek) {
     const ic = LL_IKONLAR[ad];
@@ -411,22 +419,28 @@ function switchTab(idx) {
     // yasar. Eski numaralar geriye donuk calissin diye moda cevrilir.
     let panelId = "";
     switch(idx) {
-        case 0: panelId = "tab0"; break;                       // Öğrenciler (mod haplı)
+        /* Üstteki "Öğrenciler" tuşu artık HER ZAMAN liste moduna döner; eskiden
+           son seçili hapta kalıp hiçbir şey yapmıyormuş gibi görünüyordu. */
+        case 0: panelId = "tab0"; llNotModu = 'liste'; break;  // Öğrenciler (mod haplı)
         case 1: panelId = "tab0"; llNotModu = 'hw'; break;     // -> Performans modu
         case 2: panelId = "tab0"; llNotModu = 'ex'; break;     // -> Sınavlar modu
         case 3: panelId = "tab0"; llNotModu = 'res'; break;    // -> Genel Sonuç modu
         case 4: panelId = "tab4"; break;                       // Sınıf Araçları
-        case 5: panelId = "tab9"; break;                       // Görev Gönder
+        case 5: panelId = "tab0"; llNotModu = 'gorev'; break;   // -> Görev Gönder modu
         case 6: panelId = "tab4"; llAracModu = 'sayim'; break; // -> Geri Sayım aracı
         case 7: panelId = "tab4"; llAracModu = 'kron'; break;  // -> Kronometre aracı
         case 8: panelId = "tab4"; llAracModu = 'takim'; break; // -> Takım aracı
         case 9: panelId = "tab8"; break;                       // Haftalık Plan
         case 10: panelId = "tab10"; break;                     // Veli & Durum
-        case 11: panelId = "tab11"; break;                     // Etkinlikler
+        case 11: panelId = "tab0"; llNotModu = 'etkinlik'; break; // -> Etkinlikler modu
     }
 
     // 2. Tıklanan butonu aktif yap — birlesen sekmelerde ana tus vurgulanir.
-    const gorselIdx = (idx >= 1 && idx <= 3) ? 0 : ((idx >= 6 && idx <= 8) ? 4 : idx);
+    /* 1-3 (Performans/Sınavlar/Genel Sonuç) ile 5 (Görev Gönder) ve 11
+       (Etkinlikler) artık Öğrenciler sekmesinin MODLARI: hepsi 0 numaralı
+       tuşu yakar. 6-8 ise Sınıf Araçları'nın araçlarıdır. */
+    const gorselIdx = ((idx >= 1 && idx <= 3) || idx === 5 || idx === 11) ? 0
+                    : ((idx >= 6 && idx <= 8) ? 4 : idx);
     let aktifTus = null;
     tabs.forEach(t => {
         const oc = t.getAttribute('onclick') || '';
@@ -443,10 +457,7 @@ function switchTab(idx) {
     if(panelId === 'tab0') llNotModSec(llNotModu);
     if(panelId === 'tab4') llAracSec(llAracModu);
     if(panelId === 'tab8') renderPlan();
-    if(panelId === 'tab9') { /* Görev Gönder: yeni görev sistemi (gorev.js) */
-        if (window.GV && GV.sekmeGorevCiz) GV.sekmeGorevCiz(); else renderMissions();
-    }
-    if(panelId === 'tab11' && window.GV && GV.sekmeEtkinlikCiz) GV.sekmeEtkinlikCiz();
+    /* Görev Gönder ve Etkinlikler tetiklemesi llNotModSec içine taşındı. */
     if(panelId === 'tab10') renderTarama();  // Veli & Durum taraması
 }
 
@@ -455,10 +466,16 @@ function switchTab(idx) {
    Ayni ogrenci listesi yerinde durur; hap degisince yalnizca sag taraftaki
    sutunlar (yonetim / performans / sinav / genel sonuc) degisir.
    ========================================================================== */
-let llNotModu = 'liste';     // 'liste' | 'hw' | 'ex' | 'res'
+let llNotModu = 'liste';     // 'liste' | 'hw' | 'ex' | 'res' | 'gorev' | 'etkinlik'
+/* GOREV GONDER ve ETKINLIKLER de burada yasar: eskiden ust seritte ayri
+   sekmelerdi (tab9 / tab11), artik Performans/Sinavlar/Genel Sonuc ile ayni
+   hap seridinde. Govdeleri hala #tab9 ve #tab11 kimlikli kutular oldugu icin
+   gorev.js'e HIC dokunulmadi; yalnizca yerleri ve gorunurlukleri degisti. */
+const LL_MODLAR = ['hw', 'ex', 'res', 'gorev', 'etkinlik'];
 function llNotModSec(m) {
-    llNotModu = (m === 'hw' || m === 'ex' || m === 'res') ? m : 'liste';
-    const esle = { liste: 'llModListe', hw: 'llModPerf', ex: 'llModSinav', res: 'llModSonuc' };
+    llNotModu = (LL_MODLAR.indexOf(m) >= 0) ? m : 'liste';
+    const esle = { liste: 'llModListe', hw: 'llModPerf', ex: 'llModSinav', res: 'llModSonuc',
+                   gorev: 'tab9', etkinlik: 'tab11' };
     Object.keys(esle).forEach(k => {
         const el = document.getElementById(esle[k]);
         if (el) el.style.display = (k === llNotModu) ? '' : 'none';
@@ -469,7 +486,14 @@ function llNotModSec(m) {
     if (llNotModu === 'liste') renderStudents();
     else if (llNotModu === 'hw') renderGrades('hw');
     else if (llNotModu === 'ex') renderGrades('ex');
-    else renderResults();
+    else if (llNotModu === 'res') renderResults();
+    else if (llNotModu === 'gorev') {
+        if (window.GV && GV.sekmeGorevCiz) GV.sekmeGorevCiz();
+        else if (typeof renderMissions === 'function') renderMissions();
+    }
+    else if (llNotModu === 'etkinlik') {
+        if (window.GV && GV.sekmeEtkinlikCiz) GV.sekmeEtkinlikCiz();
+    }
 }
 window.llNotModSec = llNotModSec;
 
@@ -1161,13 +1185,26 @@ function addLevel(oncedenKurum) {
         let n = prompt("Yeni İsim:", data.levels[lId].name);
         if(n) { data.levels[lId].name = n; save(); }
     }
+    /* Seviye silme de sinif/kurum silme gibi ONCE SIFRE ister.
+       Sira: sifre modali (z-index 1000080) -> onay modali (1000090). */
     function deleteLevel(lId) {
+        islemSifresiSor(function () {
         llOnay("Seviyeyi ve TÜM sınıflarını silmek istiyor musunuz?\nBu işlem geri alınamaz.", () => {
+            /* seviyedeki tum siniflarin ogrencilerinin bulut bagi da kopar */
+            const kopanlar = [];
+            try {
+                const cls = (data.levels[lId] || {}).classes || {};
+                Object.keys(cls).forEach(cId => {
+                    ((cls[cId] || {}).students || []).forEach(st => kopanlar.push(st));
+                });
+            } catch (e) { }
             delete data.levels[lId];
             data.levelOrder = data.levelOrder.filter(id => id !== lId);
             if(curLId === lId) document.getElementById('content').style.display='none';
             save();
+            bagDurumGuncelle(kopanlar, 'kopuk');
         }, { evet: 'Seviyeyi Sil' });
+        });
     }
     function editClassName(lId, cId) {
         islemSifresiSor(function () {
@@ -1546,7 +1583,7 @@ function renderSidebar() {
         let html = `
         <div class="level-container" draggable="true" data-id="${lId}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
             <div class="level-head">
-                <span onclick="handleLevelNameClick('${lId}', this)" title="Tek tik: ac/kapa · Cift tik: ismi degistir" style="cursor:pointer; flex:1; font-weight:bold;">${llIcon('klasor')} ${lvl.name}</span>
+                <span onclick="handleLevelNameClick('${lId}', this)" title="Tek tik: ac/kapa · Cift tik: ismi degistir" style="cursor:pointer; flex:1; font-weight:bold;">${llIcon('sinif')} ${lvl.name}</span>
                 <div class="level-actions">
                     <button onclick="openLvlConfig('${lId}')" title="Seviye Ayarları">${llIcon('ayar')}</button>
                     <button onclick="editLevelName('${lId}')" title="İsmi Değiştir">${llIcon('kalem')}</button>
@@ -1561,7 +1598,7 @@ function renderSidebar() {
             for(let cId in lvl.classes) {
                 html += `
                 <div class="class-item">
-                    <a class="class-link" onclick="selectClass('${lId}','${cId}')">${llIcon('klasorAcik')} ${lvl.classes[cId].name}</a>
+                    <a class="class-link" onclick="selectClass('${lId}','${cId}')">${lvl.classes[cId].name}</a>
                     <div class="class-actions">
                         <button onclick="editClassName('${lId}','${cId}')" title="İsmi Değiştir">${llIcon('kalem')}</button>
                         <button onclick="sinifArsivle('${lId}','${cId}')" title="Sınıfı arşivle (silmeden sakla)">🗄</button>
@@ -1964,12 +2001,16 @@ function updateStudentName(i, val) {
     }
 }
 
+/* Ogrenci silme de sifre ister (kurum/seviye/sinif silme ile ayni kural). */
 function deleteStu(i) {
-    showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", llIcon('cop','lli-xl'), () => {
-        data.levels[curLId].classes[curCId].students.splice(i, 1);
-        save(); 
-        renderStudents();
-    });
+    const devam = function () {
+        showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", llIcon('cop','lli-xl'), () => {
+            data.levels[curLId].classes[curCId].students.splice(i, 1);
+            save();
+            renderStudents();
+        });
+    };
+    if (typeof islemSifresiSor === 'function') islemSifresiSor(devam); else devam();
 }
 
 // --- NOTLAR VE SONUÇLAR ---
@@ -3229,7 +3270,9 @@ function llOkulPopupAc() {
                 ' onclick="llOkulSinifSec(\'' + lId + '\',\'' + cId + '\')">' + behKacis(lvl.classes[cId].name) + '</button>';
         });
         if (!kapilar) kapilar = '<span class="okul-bos">sınıf yok</span>';
-        return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' + behKacis(lvl.name) + '</span>' +
+        /* animasyonlu SINIF ikonu SADECE kat (seviye) basliginda; kapilarda ikon yok */
+        return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
+            llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
             '<span class="okul-kapilar">' + kapilar + '</span></div>';
     };
     var binaYap = function (ad, uyeler, genelMi) {
@@ -3498,15 +3541,21 @@ function renderTeacherProfile(deneme) {
               mTus('🗑', 'Seviyeyi sil', 'deleteLevel(\'' + lId + '\'); tpTazele();') + '</span>'
             : '';
         /* animasyonlu ikon SADECE burada — seviye (kat) basliginda */
-        return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
-            llIcon('kitaplar') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
-            '<span class="okul-kapilar">' + kapilar + '</span>' + tuslar + '</div>';
+        /* SIRA: [seviye ismi] [seviye ayarlari vb. tuslar] [sinif kapilari]
+           Tuslar eskiden satirin en sagindaydi (kapilardan sonra); ayarlarin
+           hangi seviyeye ait oldugu uzak kaliyordu. Artik ismin hemen yaninda.
+           duzen sinifi: duzenleme modunda isim sutunu icerigi kadar daralir,
+           tuslar isme yapisir. */
+        return '<div class="okul-kat' + (duzen ? ' duzen' : '') + '"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
+            llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
+            tuslar +
+            '<span class="okul-kapilar">' + kapilar + '</span></div>';
     };
 
     /* --- taslak kat: "Seviye Ekle" basilinca binaya eklenen bos kat --- */
     var taslakKat = function (kId) {
         return '<div class="okul-kat okul-kat-yeni">' +
-            '<span class="okul-kat-ad">' + llIcon('kitaplar') +
+            '<span class="okul-kat-ad">' + llIcon('sinif') +
             '<input type="text" id="tpKatAd" class="okul-kat-input" placeholder="Seviye adı (örn. 10. Sınıflar)"' +
             ' onkeydown="if(event.key===\'Enter\'){event.preventDefault();tpKatOnayla(\'' + kId + '\');}' +
             'else if(event.key===\'Escape\'){tpKatIptal();}"></span>' +
@@ -4412,7 +4461,7 @@ function inlineRenameLevel(lId, spanEl){
   inp.onclick=function(e){ e.stopPropagation(); };
   spanEl.appendChild(inp); inp.focus(); inp.select();
   var done=false;
-  function finish(sv){ if(done) return; done=true; var v=(inp.value||'').trim(); var name=(sv&&v)?v:cur; if(sv&&v&&v!==cur){ data.levels[lId].name=v; if(typeof save==='function') save(); } spanEl.innerHTML=llIcon('klasor')+' '+behKacis(name); }
+  function finish(sv){ if(done) return; done=true; var v=(inp.value||'').trim(); var name=(sv&&v)?v:cur; if(sv&&v&&v!==cur){ data.levels[lId].name=v; if(typeof save==='function') save(); } spanEl.innerHTML=llIcon('sinif')+' '+behKacis(name); }
   inp.onblur=function(){ finish(true); };
   inp.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); finish(true); inp.blur(); } else if(e.key==='Escape'){ finish(false); } };
 }
