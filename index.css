@@ -283,7 +283,37 @@ body{
     min-height: 45px !important;
   }
 }
- 
+
+/* --- ÖĞRETMEN ÖZEL KATEGORİSİ: MASAÜSTÜNDE İKİ SATIR, KAYDIRMA YOK ---
+   Bu kategori dersin omurgası; öğretmen tahtada kartı ararken yatay
+   kaydırmakla uğraşmasın, on kartın hepsi tek bakışta görünsün.
+   5 sütun × 2 satır = 10 kart. Yalnız masaüstü; mobil blok (768px ve
+   altı) hiç dokunulmadı, orada kaydırma aynen kalır. */
+@media (min-width: 769px) {
+  #temel-beceriler .mobile-scroll-grid-single {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-auto-rows: minmax(0, 1fr);
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+    padding-bottom: 0 !important;
+    gap: 1rem !important;
+  }
+
+  /* Kart artık esnek şerit parçası değil, ızgara gözü: sabit 165px
+     genişliği bırakıp gözü doldursun. */
+  #temel-beceriler .mobile-scroll-grid-single .game-card {
+    flex: initial !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    scroll-snap-align: none;
+  }
+  #temel-beceriler .game-grid .kss-card {
+    min-height: 190px;
+  }
+}
+
 @media (max-width:768px){
   /* Mobil Kaydırma Stilleri */
   .mobile-scroll-grid-single {
