@@ -34,7 +34,7 @@
 body {
     font-family: 'arakom', sans-serif;
     height: 100vh; width: 100vw;
-    background: url('../arakom.jpg') center/cover fixed no-repeat, linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
 }
