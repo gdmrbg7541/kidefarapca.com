@@ -487,15 +487,53 @@ function llNotModSec(m) {
     else if (llNotModu === 'hw') renderGrades('hw');
     else if (llNotModu === 'ex') renderGrades('ex');
     else if (llNotModu === 'res') renderResults();
-    else if (llNotModu === 'gorev') {
-        if (window.GV && GV.sekmeGorevCiz) GV.sekmeGorevCiz();
-        else if (typeof renderMissions === 'function') renderMissions();
-    }
-    else if (llNotModu === 'etkinlik') {
-        if (window.GV && GV.sekmeEtkinlikCiz) GV.sekmeEtkinlikCiz();
-    }
+    else if (llNotModu === 'gorev')    llGvPanel('tab9',  'sekmeGorevCiz',    'Görev Gönder', 0);
+    else if (llNotModu === 'etkinlik') llGvPanel('tab11', 'sekmeEtkinlikCiz', 'Etkinlikler',  0);
 }
 window.llNotModSec = llNotModSec;
+
+/* --------------------------------------------------------------------
+   GÖREV GÖNDER / ETKİNLİKLER gövdesini çizer.
+   Bu iki panelin içeriğini sistem/gorev.js (GV) yazar. GV, index.html'in
+   EN SONUNDA yüklendiği ve öğretmen rolü Firebase'den GEÇ geldiği için
+   hapa erken basıldığında panel bomboş kalıp "tuş çalışmıyor" gibi
+   görünebiliyordu. Burada üç durum da açıkça karşılanır:
+     1) GV hazır + öğretmen  -> normal çizim
+     2) GV hazır + rol gelmemiş / öğrenci -> açıklayıcı not
+     3) GV henüz yok -> "Yükleniyor" + kısa aralıklarla 3 sn tekrar dener
+   -------------------------------------------------------------------- */
+function llGvNot(baslik, mesaj) {
+    return '<h3 style="margin:0 0 6px; color:#9C3B0C;">' + baslik + '</h3>' +
+           '<div style="text-align:center; padding:26px 12px; color:#8B6A57; background:#FFF8F2;' +
+           ' border:1px dashed #F0C9A6; border-radius:14px; font-size:.9rem;">' + mesaj + '</div>';
+}
+function llGvPanel(kutuId, islev, baslik, deneme) {
+    const el = document.getElementById(kutuId);
+    if (!el) return;
+    const beklenenMod = (kutuId === 'tab9') ? 'gorev' : 'etkinlik';
+    if (window.GV && typeof GV[islev] === 'function') {
+        try { GV[islev](); } catch (e) { }
+        /* sekmeGorevCiz/sekmeEtkinlikCiz öğretmen değilse hiç yazmadan döner */
+        if (!el.innerHTML.trim()) {
+            el.innerHTML = llGvNot(baslik,
+                'Bu bölüm yalnızca <b>öğretmen</b> ve <b>yönetici</b> hesaplarında görünür. ' +
+                'Öğretmen olarak giriş yaptıysanız sayfayı bir kez yenileyin.');
+        }
+        return;
+    }
+    deneme = deneme || 0;
+    if (deneme < 20) {
+        if (!el.innerHTML.trim()) el.innerHTML = llGvNot(baslik, 'Yükleniyor…');
+        setTimeout(function () {
+            if (llNotModu === beklenenMod) llGvPanel(kutuId, islev, baslik, deneme + 1);
+        }, 150);
+    } else {
+        el.innerHTML = llGvNot(baslik,
+            'Görev sistemi (<code>sistem/gorev.js</code>) yüklenemedi. ' +
+            'Sayfayı <b>Ctrl/⌘ + Shift + R</b> ile yenilemeyi deneyin.');
+    }
+}
+window.llGvPanel = llGvPanel;
 
 /* SINIF ARACLARI — kura / geri sayim / kronometre / takim tek sekmede. */
 let llAracModu = 'kura';     // 'kura' | 'sayim' | 'kron' | 'takim'
