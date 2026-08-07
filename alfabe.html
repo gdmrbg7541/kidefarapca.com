@@ -12,7 +12,7 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe/alfabe.css?v=66">
+    <link rel="stylesheet" href="alfabe/alfabe.css?v=70">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -40,8 +40,8 @@
         <div class="nav-mini-sira">
             <!-- data-kidef-home: sistem/geri.js sayfada anasayfa tuşu bulamazsa
                  kendisi bir tane enjekte ediyor; bu işaret "zaten var" der. -->
-            <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank"
-               data-kidef-home="1" class="nav-mini-t" title="Ana Sayfa" aria-label="Ana Sayfa">
+            <a href="index.html" onclick="return navAnaSayfa(event)" target="_blank"
+               data-kidef-home="1" id="navEv" class="nav-mini-t" title="Ana Sayfa" aria-label="Ana Sayfa">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none"
                           stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -54,7 +54,7 @@
                  Liste simgesinin yanındaki ok yön gösterir: şerit açıkken
                  YUKARI (katla), kapalıyken AŞAĞI (aç). Yazıya ve ayrıca bir
                  vurguya gerek kalmıyor; ok tek başına anlatıyor. -->
-            <button type="button" class="nav-mini-t nm-menu" onclick="navAc()"
+            <button type="button" class="nav-mini-t nm-menu" onclick="navAc(event)"
                     aria-expanded="true"
                     title="Sekme şeridini aç / kapat" aria-label="Sekme şeridini aç / kapat">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -407,15 +407,47 @@ function navKapat() {
     var k = document.querySelector('.main-app');
     if (!k) return;
     k.classList.add('nav-gizli');
+    /* HEMEN SAYDAM: kapatma düğmesine basıldığında imleç hâlâ kumandanın
+       üstünde kalıyor ve :hover kuralı onu opak tutuyordu; saydamlaşması
+       için fareyi başka yere götürmek gerekiyordu. "nm-donuk" hover'ı
+       geçici olarak devre dışı bırakır, imleç kumandadan AYRILINCA kalkar
+       (o andan sonra üstüne gelmek yine tam görünür yapar). */
+    var m = document.getElementById('navMini');
+    if (m) {
+        m.classList.add('nm-donuk');
+        /* İşaret, kullanıcı imleci İLK KEZ oynattığında kalkar. Böylece
+           hem "düğmenin üstünde kalan imleç" hâli çözülür, hem de sonradan
+           bilerek üstüne gelindiğinde kumanda yine tam görünür olur.
+           (Yalnız pointerleave'e bağlansaydı, imleç hiç kumandanın üstünde
+           değilken kapatılan durumlarda işaret takılı kalırdı.) */
+        var birak = function () {
+            m.classList.remove('nm-donuk');
+            document.removeEventListener('pointermove', birak, true);
+            document.removeEventListener('mousemove', birak, true);
+        };
+        document.addEventListener('pointermove', birak, true);
+        document.addEventListener('mousemove', birak, true);
+    }
     navAdYaz();
 }
-function navAc() {
+function navAc(e) {
     var k = document.querySelector('.main-app');
     if (!k) return;
-    if (k.classList.contains('nav-gizli')) k.classList.remove('nav-gizli');
-    else navKapat();
+    var m = document.getElementById('navMini');
+    if (k.classList.contains('nav-gizli')) {
+        k.classList.remove('nav-gizli');
+        if (m) m.classList.remove('nm-donuk');
+    } else {
+        navKapat();
+        /* Fare tıklamasıysa odağı bırak: :focus-within de kumandayı opak
+           tutuyor. Klavyeyle (Enter/Boşluk) gelindiyse odak korunur. */
+        if (e && e.detail > 0 && document.activeElement &&
+            m && m.contains(document.activeElement)) {
+            try { document.activeElement.blur(); } catch (h) { }
+        }
+    }
     navAdYaz();
-    if (typeof playClick === 'function') { try { playClick(); } catch (e) { } }
+    if (typeof playClick === 'function') { try { playClick(); } catch (h) { } }
 }
 
 /* NOT: Şerit kapanırken çalışan "cin" uçuşu (şeridin kopyasının büzülüp
@@ -423,6 +455,39 @@ function navAc() {
    nereye gittiğini göstermekti; artık liste simgesinin yanındaki
    yukarı/aşağı ok bunu anlatıyor, kumanda da kapalıyken saydamlaşarak
    arkasını gösteriyor. Ölçeklenme animasyonuna gerek kalmadı. */
+
+/* ---- ANA SAYFA DÜĞMESİ: KAPALIYKEN İKİ AŞAMALI --------------------
+   Kumanda katlıyken çok saydam durduğu için ana sayfa simgesine yanlışlıkla
+   dokunmak sayfadan çıkarıyordu. Artık kapalıyken İLK dokunuş yalnız
+   kumandayı açar; kullanıcı ne yaptığını görür. Kumanda AÇIKKEN aynı
+   simgeye basmak ana sayfaya götürür. */
+function navAnaSayfa(e) {
+    var k = document.querySelector('.main-app');
+    if (k && k.classList.contains('nav-gizli')) {
+        if (e && e.preventDefault) e.preventDefault();
+        navAc(e);                     /* kapalıydı → açar */
+        return false;
+    }
+    return kidefGeriDon(e);           /* açıktı → ana sayfaya */
+}
+
+/* geri.js, YAKALAMA evresinde document'a bir dinleyici koyar ve href'i
+   index.html olan bütün bağlantıları keser (sayfa yeni sekmede açıldıysa
+   sekmeyi kapatmak için). O dinleyici bizim onclick'imizden ÖNCE çalıştığı
+   için "kumanda kapalıyken önce aç" kuralı devreye giremiyordu — fare
+   hover'la kumanda tam görünür olsa bile ilk tıklama sayfadan çıkarıyordu.
+   Bu dinleyici geri.js'ten ÖNCE kaydedildiğinden ondan da önce çalışır:
+   kumanda kapalıysa olayı tamamen durdurur ve yalnız kumandayı açar. */
+document.addEventListener('click', function (e) {
+    var a = (e.target && e.target.closest) ? e.target.closest('#navEv') : null;
+    if (!a) return;
+    var k = document.querySelector('.main-app');
+    if (!k || !k.classList.contains('nav-gizli')) return;   /* açıkken normal davranış */
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    navAc(e);
+}, true);
 
 function navAdYaz() {
     var ad = document.getElementById('navMiniAd');
@@ -434,7 +499,15 @@ function navAdYaz() {
     /* Ekran okuyucu için durum: ok görsel olarak zaten yön gösteriyor. */
     var k = document.querySelector('.main-app');
     var t = document.querySelector('#navMini .nm-menu');
-    if (k && t) t.setAttribute('aria-expanded', k.classList.contains('nav-gizli') ? 'false' : 'true');
+    var gizli = !!(k && k.classList.contains('nav-gizli'));
+    if (k && t) t.setAttribute('aria-expanded', gizli ? 'false' : 'true');
+    /* Ana sayfa simgesinin ipucu duruma göre: kapalıyken önce kumandayı açar */
+    var ev = document.getElementById('navEv');
+    if (ev) {
+        var ip = gizli ? 'Önce kumandayı açar (tekrar dokun → Ana Sayfa)' : 'Ana Sayfa';
+        ev.setAttribute('title', ip);
+        ev.setAttribute('aria-label', ip);
+    }
 }
 
 /* ---- KUMANDAYI SÜRÜKLE ---------------------------------------------
@@ -537,8 +610,8 @@ function dvyAc() {
 <script src="alfabe/alfabe_harf_detay.js?v=22"></script>
 <script src="sistem/gorevkopru.js?v=7"></script>
 <script src="alfabe/alfabe.js?v=33"></script>
-<script src="alfabe/alfabe_birlestir.js?v=9"></script>
-<script src="alfabe/alfabe_sinav.js?v=4"></script>
+<script src="alfabe/alfabe_birlestir.js?v=13"></script>
+<script src="alfabe/alfabe_sinav.js?v=5"></script>
     <script src="sistem/geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
