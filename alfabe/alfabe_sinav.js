@@ -123,16 +123,19 @@
         9: 'Boşluğa gelecek harf'
     };
 
+    /* Soru cümleleri TAHTAYA yansıtılacak kadar büyük yazıldığı için
+       KISA tutulur: uzun cümle 8rem puntoda beş satıra taşıp şıklara yer
+       bırakmıyordu. Anlam aynı, cümle kısa. */
     var TIP_SORU = {
-        1: 'Aşağıda okunuşları benzer olan harflerden <b>yanlış</b> verilen şıkkı bulunuz.',
-        2: 'Aşağıda yazılışları benzer olan harflerden <b>yanlış</b> verilen şıkkı bulunuz.',
-        3: 'Aşağıda okunuşları benzer olan harflerden <b>doğru</b> verilen şıkkı bulunuz.',
-        4: 'Aşağıda yazılışları benzer olan harflerden <b>doğru</b> verilen şıkkı bulunuz.',
-        5: 'Aşağıda çizgideki yazılışları verilen harflerden <b>yanlış</b> yazılmış olan harfi bulunuz.',
-        6: 'Aşağıda çizgideki yazılışları verilen harflerden <b>doğru</b> yazılmış olan harfi bulunuz.',
-        7: 'Okunuşları benzer olan harfleri eşleştiriniz.',
-        8: 'Yazılışları benzer olan harfleri eşleştiriniz.',
-        9: 'Yukarıdaki Arapça kelimede boş bırakılan yere aşağıdaki harflerden hangisi gelmelidir?'
+        1: 'Okunuşu benzer harflerden <b>YANLIŞ</b> olan?',
+        2: 'Yazılışı benzer harflerden <b>YANLIŞ</b> olan?',
+        3: 'Okunuşu benzer harflerden <b>DOĞRU</b> olan?',
+        4: 'Yazılışı benzer harflerden <b>DOĞRU</b> olan?',
+        5: 'Çizgideki yazılışlardan <b>YANLIŞ</b> olan?',
+        6: 'Çizgideki yazılışlardan <b>DOĞRU</b> olan?',
+        7: 'Okunuşu benzer harfleri <b>eşleştir</b>.',
+        8: 'Yazılışı benzer harfleri <b>eşleştir</b>.',
+        9: 'Boşluğa hangi harf gelir?'
     };
 
     /* ------------------------------------------------------------
@@ -172,11 +175,14 @@
         for (i = 0; i < n; i++) {
             ileri = (i < n - 1) && bagliMi(harfler[i]);
             geri  = (i > 0) && bagliMi(harfler[i - 1]);
-            if (!ileri && i < n - 1) r = 'kirmizi';
-            else if (i === 0)        r = 'yesil';
-            else if (!geri)          r = 'siyah';
-            else if (i === n - 1)    r = 'mor';
-            else                     r = 'mavi';
+            /* Kural alfabe_birlestir.js ile BİREBİR aynıdır (bkz. oradaki
+               açıklama): bağlanmayan bir harften sonra gelen harf, kendisi
+               sonrakine bağlanıyorsa YEŞİL'dir (baştaki biçim), siyah değil. */
+            if (!ileri && i < n - 1)     r = 'kirmizi';
+            else if (!geri && !ileri)    r = 'siyah';
+            else if (!geri)              r = 'yesil';
+            else if (i === n - 1)        r = 'mor';
+            else                         r = 'mavi';
             cik.push({
                 harf: harfler[i],
                 bicim: (geri ? TATVIL : '') + harfler[i] + (ileri ? TATVIL : ''),

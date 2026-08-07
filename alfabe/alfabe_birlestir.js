@@ -14,12 +14,15 @@
      ÇÖZÜLMÜŞ (birleşik) hâlde bekler; cevap ekranda kalır.
 
    RENK ANAHTARI (öğretmenin istediği kural)
-     YEŞİL   → kelimenin BAŞINDA yazılan biçim      (لـ)
+     YEŞİL   → BAŞTA yazılan biçim: yeni bir bağlantı kümesi
+               başlatır (لـ). Kelimenin ilk harfi olmak ZORUNDA
+               DEĞİLDİR — bağlanmayan bir harften sonra gelip
+               kendisi sonrakine bağlanıyorsa o da yeşildir:
+               و ح ش  →  و kırmızı, حـ YEŞİL, ـش mor
      MAVİ    → ORTADA yazılan biçim, iki yana bağlı (ـحـ)
-     MOR     → SONDA yazılan biçim                  (ـق)
+     MOR     → SONDA yazılan biçim, öncekinden bağlı (ـق)
      KIRMIZI → kendinden SONRAKİ harfe BAĞLANMAZ    (ر و د ...)
-     SİYAH   → bağlanmayan bir harften SONRA gelir,
-               bu yüzden yalnız/başlangıç biçiminde yazılır (ج)
+     SİYAH   → iki yandan da bağlanmaz, YALNIZ yazılır (ج)
 
    ADIM DÜZENİ (öğretmenin ل ح ق örneği birebir uygulanır)
      0) boş        1) ل        2) لـ        3) لـ ح
@@ -83,11 +86,20 @@
             var geriBag  = (i > 0) && bagliMi(harfler[i - 1]); /* öncekinden bağlı gelir mi */
             var bicim    = (geriBag ? TATVIL : '') + h + (ileriBag ? TATVIL : '');
             var renk;
-            if (!ileriBag && i < n - 1)  renk = 'kirmizi';  /* sonrakiyle birleşmiyor */
-            else if (i === 0)            renk = 'yesil';    /* kelimenin başı */
-            else if (!geriBag)           renk = 'siyah';    /* bağlanmayan harften sonra */
-            else if (i === n - 1)        renk = 'mor';      /* kelimenin sonu */
-            else                         renk = 'mavi';     /* iki yana bağlı orta */
+            /* RENK KURALI — harfin GERÇEKTEN hangi biçimde yazıldığına bakar:
+                 kirmizi : kendinden sonrakine BAĞLANMAZ (son harf değilse)
+                 siyah   : iki yandan da bağlanmaz, YALNIZ yazılır
+                 yesil   : yeni bir bağlantı kümesi BAŞLATIR (baştaki biçim).
+                           Bu, kelimenin ilk harfi olabileceği gibi, bağlanmayan
+                           bir harften SONRA gelip kendisi sonrakine bağlanan
+                           harf de olabilir: و ح ش → و kırmızı, ح YEŞİL, ش mor.
+                 mor     : kümenin SONUNDA, öncekinden bağlı
+                 mavi    : iki yana da bağlı ORTA harf                       */
+            if (!ileriBag && i < n - 1)        renk = 'kirmizi';
+            else if (!geriBag && !ileriBag)    renk = 'siyah';
+            else if (!geriBag)                 renk = 'yesil';
+            else if (i === n - 1)              renk = 'mor';
+            else                               renk = 'mavi';
             cikti.push({ harf: h, bicim: bicim, renk: renk, ileriBag: ileriBag, geriBag: geriBag });
         }
         return cikti;
@@ -139,31 +151,39 @@
             return '<span class="ab-kh ab-c-' + x.renk + '">' + kacis(x.harf) + '</span>';
         }).join('');
         var top = adimlar(c).length - 1;
+        /* DİZİLİM: solda sıra numarası, ortada birleşen kelime,
+           SAĞDA harflerin birleşmemiş (ayrı) hâli. */
         return '' +
         '<div class="ab-satir" data-sira="' + sira + '" data-adim="0" data-top="' + top + '">' +
-        '  <div class="ab-bilgi">' +
-        '    <span class="ab-no">' + (sira + 1) + '</span>' +
-        '    <span class="ab-kaynak">' + kay + '</span>' +
-        '  </div>' +
+        '  <span class="ab-no">' + (sira + 1) + '</span>' +
         '  <div class="ab-govde">' +
         '    <div class="ab-adim" data-rol="adim" title="Dokun → bir adım ilerle">' +
                  adimHtml([]) +
         '    </div>' +
         '    <div class="ab-anlam">' + kacis(s.anlam) + '</div>' +
         '  </div>' +
+        '  <span class="ab-kaynak" title="Harflerin birleşmemiş hâli">' + kay + '</span>' +
         '</div>';
     }
 
+    /* Renk anahtarı: rengin ADINI yazmak yerine o renkte İÇİ DOLU bir
+       daire konur — çocuk rengi okuyup çevirmeden doğrudan görür.
+       Daire currentColor ile boyanır, yani ab-c-* sınıfı yetiyor. */
     function anahtarHtml() {
-        return '' +
-        '<div class="ab-anahtar">' +
-        '  <b>Renk anahtarı:</b>' +
-        '  <span class="ab-et ab-c-yesil">yeşil = başta yazılış</span>' +
-        '  <span class="ab-et ab-c-mavi">mavi = ortada yazılış</span>' +
-        '  <span class="ab-et ab-c-mor">mor = sonda yazılış</span>' +
-        '  <span class="ab-et ab-c-kirmizi">kırmızı = sonrakine bağlanmaz</span>' +
-        '  <span class="ab-et ab-c-siyah">siyah = bağlanmayan harften sonra</span>' +
-        '</div>';
+        var satirlar = [
+            ['yesil',   'başta yazılış'],
+            ['mavi',    'ortada yazılış'],
+            ['mor',     'sonda yazılış'],
+            ['kirmizi', 'sonrakine bağlanmaz'],
+            ['siyah',   'yalnız yazılır']
+        ];
+        var g = '<div class="ab-anahtar"><b>Renk anahtarı:</b>';
+        for (var i = 0; i < satirlar.length; i++) {
+            g += '<span class="ab-et ab-c-' + satirlar[i][0] + '">' +
+                 '<i class="ab-daire" aria-hidden="true"></i>' +
+                 '<span class="ab-et-yazi">' + satirlar[i][1] + '</span></span>';
+        }
+        return g + '</div>';
     }
 
     /* Alt kumanda şeridi: slaytı süren TEK yer. */
@@ -181,10 +201,12 @@
         '</div>';
     }
 
+    /* Kelimeler BÜYÜTÜLMÜŞ bir A4 sayfası gibi SABİT ölçüdedir; ekrana
+       sığmazsa küçülmez, sayfa içinde gezilir (ab-kagitlik kaydırır). */
     function listeHtml() {
         var cik = '', i;
         for (i = 0; i < SATIRLAR.length; i++) cik += satirHtml(i);
-        return '<div class="ab-liste">' + cik + '</div>';
+        return '<div class="ab-kagitlik"><div class="ab-liste">' + cik + '</div></div>';
     }
 
     /* --- 4) ADIM MAKİNESİ --------------------------------------- */
@@ -209,6 +231,8 @@
             l[i].classList.toggle('ab-gorunur', i >= bas && i <= aktif);
             l[i].classList.toggle('ab-aktif', i === aktif);
         }
+        /* Kâğıt ekrandan taşabildiği için etkin örneği görünüre çek. */
+        try { if (l[aktif]) l[aktif].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
     }
 
     function durumYaz(kap) {

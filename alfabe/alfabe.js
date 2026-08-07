@@ -614,6 +614,8 @@ const ui = {
         /* Switch gizliyken mobilde sağdaki rezerv boşluk da kalksın */
         const nv = document.querySelector('.nav-tabs');
         if (nv) nv.classList.toggle('sw-yok', id !== 'p1');
+        /* Tam ekran: sekme seçilince şerit küçük simgeye dönüşür. */
+        if (typeof navKapat === 'function') { try { navKapat(); } catch (h) { } }
     },
     init: () => {
         const g1 = document.getElementById('g1');
