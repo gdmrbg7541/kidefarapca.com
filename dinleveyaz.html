@@ -20,13 +20,25 @@
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
+<script>
+/* GÖMÜLÜ KİP — "?gomulu=1" ile açılınca (alfabe.html'deki Dinle ve Yaz
+   sekmesi bu şekilde çağırır) sayfa gömülü olduğunu bilir; süre köprüsü
+   burada çalışmaz, çünkü süreyi alfabe.html adına sekme işliyor.
+   NOT: sayfanın kendi "geri" tuşu TAMAMEN KALDIRILDI — oyun artık
+   alfabe.html'in bir sekmesi; ana sayfaya dönüş kumandadaki Ana Sayfa
+   düğmesiyle yapılıyor, ikinci bir çıkış tuşu kafa karıştırıyordu. */
+(function () {
+  try {
+    if (new URLSearchParams(location.search).get('gomulu') === '1') {
+      document.documentElement.className += ' dvy-gomulu';
+    }
+  } catch (e) { }
+})();
+</script>
 
     <div id="gameWrapper">
 
         <div id="homeScreen" class="screen active">
-             <a href="index.html" id="geriCikis" title="Geri" aria-label="Geri" style="position:fixed; top:14px; left:14px; z-index:50; width:4.4rem; height:4.4rem; display:flex; align-items:center; justify-content:center; background:var(--color-surface); color:var(--color-text-secondary); border-radius:50%; box-shadow:4px 4px 8px var(--color-shadow-dark, rgba(0,0,0,0.15)), -4px -4px 8px var(--color-shadow-light, rgba(255,255,255,0.7)); text-decoration:none;">
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width:2.3rem; height:2.3rem; fill:currentColor;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-             </a>
              <div class="title-container">
                 <div class="title-text">
                     <h1>Dinle Ve Yaz!</h1>
@@ -152,21 +164,6 @@
     </div>
 
     <script src="alfabe/dinleveyaz.js?v=2"></script>
-<script>
-/* GERİ ÇIKIŞ: sayfa index'ten yeni sekmede açılır (target=_blank). Geri'ye
-   basılınca SEKME KAPANIR — kişi index'te tam kaldığı yere döner (index kendi
-   sekmesinde hiç bozulmadan bekler). Sayfaya doğrudan gelenlerde sekme
-   kapatılamazsa emniyet olarak index'e gidilir. */
-(function () {
-    var g = document.getElementById('geriCikis');
-    if (!g) return;
-    g.addEventListener('click', function (e) {
-        e.preventDefault();
-        window.close();
-        setTimeout(function () { location.href = 'index.html'; }, 300);
-    });
-})();
-</script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
@@ -181,6 +178,12 @@
 <script src="sistem/gorevkopru.js?v=7"></script>
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
-try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+/* Gömülü kipte süre YAZILMAZ: sayfa alfabe.html içinde açılmıştır ve
+   süre orada zaten işleniyor; iki kez sayılmasın. */
+try {
+  var gomulu = false;
+  try { gomulu = new URLSearchParams(location.search).get('gomulu') === '1'; } catch (e) { }
+  if (!gomulu && window.KidefGorev) KidefGorev.sureTakibiBaslat();
+} catch (e) { }</script>
 </body>
 </html>
