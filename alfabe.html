@@ -12,7 +12,7 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe/alfabe.css?v=47">
+    <link rel="stylesheet" href="alfabe/alfabe.css?v=49">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -21,22 +21,41 @@
     <!-- ŞERİT GİZLİYKEN görünen küçük düğme. Amaç tam ekran: bir sekme
          seçilince üstteki şerit kapanır, yerine bu simge kalır. Simgeye
          basınca şerit geri gelir. Yanında hangi sekmede olduğumuz yazar. -->
-    <button type="button" id="navMini" class="nav-mini" onclick="navAc()"
-            title="Sekmeleri göster" aria-label="Sekmeleri göster">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
-                  stroke-width="2.4" stroke-linecap="round"/>
-        </svg>
-        <span id="navMiniAd" class="nav-mini-ad"></span>
-    </button>
-    <nav class="nav-tabs">
-        <!-- Harf Tanıtımı sekmesi için gruplama switch'i: yazılışı benzeyenler / okunuşu benzeyenler -->
-        <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank" class="home-link" title="Ana Sayfa">
-            <svg viewBox="0 0 24 24">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    <!-- YÜZEN KUMANDA — ekranda istenen yere SÜRÜKLENİR.
+         Üstte tutamaç ve hangi sekmede olduğumuz (hep açık),
+         ortada Ana Sayfa + sekme şeridini aç/kapa,
+         altta Harf Tanıtımı araç şeridi (yalnız o sekmede görünür).
+         Yeri localStorage'da saklanır, sayfayı kapatınca kaybolmaz. -->
+    <div id="navMini" class="nav-mini">
+        <div class="nav-mini-tut" id="navMiniTut" title="Tutup sürükleyerek taşıyın">
+            <svg class="nm-tutamac" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/>
+                <circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/>
+                <circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/>
             </svg>
-        </a>
+            <span id="navMiniAd" class="nav-mini-ad">Harf Tanıtımı</span>
+        </div>
+        <div class="nav-mini-sira">
+            <!-- data-kidef-home: sistem/geri.js sayfada anasayfa tuşu bulamazsa
+                 kendisi bir tane enjekte ediyor; bu işaret "zaten var" der. -->
+            <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank"
+               data-kidef-home="1" class="nav-mini-t" title="Ana Sayfa" aria-label="Ana Sayfa">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <polyline points="9 22 9 12 15 12 15 22" fill="none"
+                              stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+            </a>
+            <span class="nav-mini-ayirac" aria-hidden="true"></span>
+            <button type="button" class="nav-mini-t" onclick="navAc()"
+                    title="Sekme şeridini aç / kapat" aria-label="Sekme şeridini aç / kapat">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
+                          stroke-width="2.4" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
         <div class="switch-wrapper hdr-switch" id="p1-switch">
             <!-- KALEM ikonu: yazılışları benzeyen harfler modu.
                  Kalem kendini çizer, sonra alt satırı yazarken sağa doğru kayar. -->
@@ -131,6 +150,10 @@
                 </svg>
             </span>
         </div>
+    </div>
+    <nav class="nav-tabs">
+        <!-- Harf Tanıtımı sekmesi için gruplama switch'i: yazılışı benzeyenler / okunuşu benzeyenler -->
+        <!-- Ana Sayfa düğmesi yüzen kumandaya taşındı. -->
         <button class="tab-trigger active" onclick="ui.tab(event, 'p1')" title="Harf Tanıtımı" aria-label="Harf Tanıtımı"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.4" y="3.6" width="19.2" height="16.8" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="4.4" y="5.6" width="4.6" height="4.2" rx="1" fill="#2ecc71"/><rect x="9.7" y="5.6" width="4.6" height="4.2" rx="1" fill="#3498db"/><rect x="15" y="5.6" width="4.6" height="4.2" rx="1" fill="#9b59b6"/><rect x="4.4" y="10.5" width="4.6" height="4.2" rx="1" fill="#F1C40F"/><rect x="9.7" y="10.5" width="4.6" height="4.2" rx="1" fill="#e74c3c"/><rect x="15" y="10.5" width="4.6" height="4.2" rx="1" fill="#1ABC9C"/><rect x="4.4" y="15.4" width="15.2" height="3.1" rx="1" fill="#D6E4EC"/></svg><span class="tab-ad">Harf Tanıtımı</span></button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p2')" title="Kartlar" aria-label="Kartlar"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6.4" width="12.6" height="14.2" rx="2.2" fill="#3498db" transform="rotate(-9 9.3 13.5)"/><rect x="8.6" y="4.2" width="12.6" height="15.6" rx="2.2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path d="M12.2 15.6c1.5-1.4 4.4-3 4.4-5.2a2.2 2.2 0 0 0-4.4-.6 2.2 2.2 0 0 0-4.4.6" fill="none"/><circle cx="14.9" cy="9.4" r="2.2" fill="#e74c3c"/><rect x="11.2" y="13.4" width="7.4" height="1.7" rx=".85" fill="#CBD5E1"/><rect x="11.2" y="16.1" width="4.8" height="1.7" rx=".85" fill="#CBD5E1"/></svg><span class="tab-ad">Kartlar</span></button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p3')" title="Hafıza" aria-label="Hafıza"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.2" y="4.4" width="8.9" height="15.2" rx="2" fill="#9b59b6"/><path d="M5.1 9.6a1.6 1.6 0 0 1 3.1.5c0 1.1-1.5 1.3-1.5 2.4" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.65" cy="15.2" r=".95" fill="#fff"/><rect x="12.9" y="4.4" width="8.9" height="15.2" rx="2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path class="li-parilti2" d="M17.35 8.2l1.15 2.5 2.5.3-1.9 1.7.55 2.6-2.3-1.35-2.3 1.35.55-2.6-1.9-1.7 2.5-.3z" fill="#F1C40F"/></svg><span class="tab-ad">Hafıza</span></button>
@@ -315,15 +338,77 @@
 function navKapat() {
     var k = document.querySelector('.main-app');
     if (k) k.classList.add('nav-gizli');
-    var ad = document.getElementById('navMiniAd');
-    var a = document.querySelector('.tab-trigger.active');
-    if (ad) ad.textContent = a ? a.textContent.trim() : '';
+    navAdYaz();
 }
 function navAc() {
     var k = document.querySelector('.main-app');
-    if (k) k.classList.remove('nav-gizli');
+    if (k) k.classList.toggle('nav-gizli');
+    navAdYaz();
     if (typeof playClick === 'function') { try { playClick(); } catch (e) { } }
 }
+function navAdYaz() {
+    var ad = document.getElementById('navMiniAd');
+    var a = document.querySelector('.tab-trigger.active');
+    if (ad && a) {
+        var y = a.querySelector('.tab-ad');
+        ad.textContent = (y ? y.textContent : a.textContent).trim();
+    }
+}
+
+/* ---- YÜZEN KUMANDAYI SÜRÜKLE --------------------------------------
+   Tutamaçtan (üstteki noktalı şerit) tutulup ekranda istenen yere
+   taşınır; köşeden taşmaz ve bırakılan yer hatırlanır. */
+(function () {
+    function kur() {
+        var kap = document.getElementById('navMini');
+        var tut = document.getElementById('navMiniTut');
+        if (!kap || !tut) return;
+        var sx = 0, sy = 0, bx = 0, by = 0, suruk = false;
+
+        function yerle(x, y) {
+            var g = kap.getBoundingClientRect();
+            var enB = window.innerWidth - g.width - 4;
+            var boyB = window.innerHeight - g.height - 4;
+            x = Math.max(4, Math.min(x, Math.max(4, enB)));
+            y = Math.max(4, Math.min(y, Math.max(4, boyB)));
+            kap.style.left = x + 'px'; kap.style.top = y + 'px';
+            kap.style.right = 'auto'; kap.style.bottom = 'auto';
+            return [x, y];
+        }
+        tut.addEventListener('pointerdown', function (e) {
+            var g = kap.getBoundingClientRect();
+            suruk = true; sx = e.clientX; sy = e.clientY; bx = g.left; by = g.top;
+            kap.classList.add('nm-tasiniyor');
+            try { tut.setPointerCapture(e.pointerId); } catch (h) { }
+            e.preventDefault();
+        });
+        tut.addEventListener('pointermove', function (e) {
+            if (!suruk) return;
+            yerle(bx + (e.clientX - sx), by + (e.clientY - sy));
+            e.preventDefault();
+        });
+        function bit() {
+            if (!suruk) return;
+            suruk = false; kap.classList.remove('nm-tasiniyor');
+            var g = kap.getBoundingClientRect();
+            try { localStorage.setItem('kidefAlfabeKumanda', Math.round(g.left) + ',' + Math.round(g.top)); } catch (h) { }
+        }
+        tut.addEventListener('pointerup', bit);
+        tut.addEventListener('pointercancel', bit);
+        tut.addEventListener('lostpointercapture', bit);
+
+        try {
+            var k = (localStorage.getItem('kidefAlfabeKumanda') || '').split(',');
+            if (k.length === 2 && k[0] !== '' && !isNaN(+k[0])) yerle(+k[0], +k[1]);
+        } catch (e) { }
+        window.addEventListener('resize', function () {
+            var g = kap.getBoundingClientRect(); yerle(g.left, g.top);
+        });
+        navAdYaz();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+})();
 /* Escape: şerit kapalıysa geri getirir. */
 document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
