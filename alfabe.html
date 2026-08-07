@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alfabeyi Pekiştir</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2320C997' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -11,7 +12,7 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe/alfabe.css?v=40">
+    <link rel="stylesheet" href="alfabe/alfabe.css?v=41">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -123,6 +124,8 @@
         <button class="tab-trigger" onclick="ui.tab(event, 'p2')">Kartlar</button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p3')">Hafıza</button>
         <button class="tab-trigger" onclick="ui.tab(event, 'p4')">Yarışma</button>
+        <button class="tab-trigger" onclick="ui.tab(event, 'p5')">Harf Birleştirme</button>
+        <button class="tab-trigger" onclick="ui.tab(event, 'p6')">Sınav</button>
     </nav>
 
     <main class="content-area">
@@ -271,12 +274,21 @@
                 <button onclick="game.start()" style="padding:20px 60px; font-family:'arakom'; font-size:2.2rem; cursor:pointer; background:var(--accent); color:white; border:none; border-radius:20px; box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4); transition: transform 0.2s;">BAŞLA</button>
             </div>
         </section>
+
+        <!-- HARF BİRLEŞTİRME: pdf çıktısı gibi çalışma kâğıtları.
+             İçeriği alfabe/alfabe_birlestir.js kurar. -->
+        <section id="p5" class="panel"><div class="ab-sar" id="abSar"></div></section>
+
+        <!-- SINAV: 9 ayrı soru tipi. İçeriği alfabe/alfabe_sinav.js kurar. -->
+        <section id="p6" class="panel"><div class="as-sar" id="asSar"></div></section>
     </main>
 </div>
 
 <script src="alfabe/alfabe_harf_detay.js?v=22"></script>
 <script src="sistem/gorevkopru.js?v=7"></script>
-<script src="alfabe/alfabe.js?v=26"></script>
+<script src="alfabe/alfabe.js?v=27"></script>
+<script src="alfabe/alfabe_birlestir.js?v=1"></script>
+<script src="alfabe/alfabe_sinav.js?v=1"></script>
     <script src="sistem/geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

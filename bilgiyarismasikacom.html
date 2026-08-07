@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=130">
+<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=132">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -271,8 +271,8 @@
             </g>
           </svg>
         </span>
-        <button class="biy-btn biy-soru-sec-btn" id="soruSecBtn" aria-label="Havuzdan seç"
-                title="Havuzdan seç" onclick="BIY.soruSecAc()">Havuzdan seç <b id="soruSecSayi" hidden>0</b></button>
+        <button class="biy-btn biy-soru-sec-btn" id="soruSecBtn" aria-label="Soruları Seç!"
+                title="Soruları Seç!" onclick="BIY.soruSecAc()">Soruları Seç! <b id="soruSecSayi" hidden>0</b></button>
       </div>
       <div class="biy-pdf-onizleme">
         <a class="biy-pdf-a4" id="pdfKart" target="_blank" rel="noopener" title="PDF'i aç">
@@ -396,7 +396,7 @@
         <span class="biy-menu-desc">Tek karekod · herkes adıyla katılır</span>
       </button>
     </div>
-    <p id="menuNot" class="biy-menu-not gizli">Başlamak için konu (ya da havuzdan soru) ve soru sayısını seçin.</p>
+    <p id="menuNot" class="biy-menu-not gizli">Başlamak için bir konu (ya da «Soruları Seç!» ile tek tek sorular) ve soru sayısını seçin.</p>
   </section>
 
   <!-- ADMIN — Sorular önizleme -->
@@ -509,9 +509,9 @@ function biyGeriDon(e){
 <!-- Sınıf veri kaydı (tek kaynak): hangi konu hangi sınıfa ait.
      index.html de aynı dosyayı okur; bu yüzden bilgi yarışmasının
      TEK html dosyası kalır, veriler sınıfa göre değişir. -->
-<script src="sistem/sinifveri.js?v=20260805d"></script>
+<script src="sistem/sinifveri.js?v=20260806a"></script>
 <script src="sistem/rol.js?v=20260805a"></script>
-<script src="oyunlar/bilgiyarismasikacom.js?v=126"></script>
+<script src="oyunlar/bilgiyarismasikacom.js?v=128"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
