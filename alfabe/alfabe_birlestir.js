@@ -182,8 +182,10 @@
         '  </div>' +
         '  <div class="ab-kaynak ab-cizgili" title="Harflerin birleşmemiş hâli">' + kay + '</div>' +
         '  <div class="ab-sag">' +
+        /* Kelime tamamlanınca Türkçe anlamı GÖSTERİLMEZ: bu sekmenin
+           konusu harflerin birleşmesi, kelimenin anlamı değil. Anlam
+           verisi (s.anlam) listede duruyor ama ekrana yazılmıyor. */
         '    <span class="ab-no">' + (sira + 1) + '</span>' +
-        '    <span class="ab-anlam">' + kacis(s.anlam) + '</span>' +
         '  </div>' +
         '</div>';
     }
@@ -282,11 +284,13 @@
     function tabloSirala(kap, harfDizi, animasyonlu) {
         var govde = kap.querySelector('.ab-tb-govde');
         var kaydir = kap.querySelector('.ab-tb-kaydir');
-        if (!govde || typeof harfler === 'undefined') return;
+        /* Dönen değer: tablo GERÇEKTEN yeniden sıralandı mı. Çağıran buna
+           bakarak yeni kelimenin harflerini yazdırır. */
+        if (!govde || typeof harfler === 'undefined') return false;
 
         var istenen = harfDizi.map(temel);
         var anahtar = istenen.join('');
-        if (anahtar === sonKelime) return;         /* aynı kelime → boşuna oynatma */
+        if (anahtar === sonKelime) return false;   /* aynı kelime → boşuna oynatma */
         sonKelime = anahtar;
 
         var satirlar = [].slice.call(govde.children);
@@ -309,7 +313,7 @@
         if (kaydir) kaydir.scrollTop = 0;          /* üste taşınanlar görünsün */
 
         if (!animasyonlu || (window.matchMedia &&
-            matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+            matchMedia('(prefers-reduced-motion: reduce)').matches)) return true;
 
         /* FLIP 2: yeni konumlar, farkı geri uygula, sonra sıfıra süz */
         govde.classList.add('ab-tb-kayiyor');
@@ -329,6 +333,7 @@
             satirlar.forEach(function (r) { r.style.transition = ''; r.style.transform = ''; });
             govde.classList.remove('ab-tb-kayiyor');
         }, 1050);
+        return true;
     }
 
     /* Renk anahtarı: rengin ADINI yazmak yerine o renkte İÇİ DOLU bir
@@ -426,7 +431,31 @@
         }
         etkinGoster(kap);
         /* Sırası gelen kelimenin harfleri tablonun üstüne süzülsün */
-        tabloSirala(kap, SATIRLAR[aktif].h, animasyonlu !== false);
+        var degisti = tabloSirala(kap, SATIRLAR[aktif].h, animasyonlu !== false);
+        /* ...ve yeni kelimenin harfleri yeniden yazılsın. Yalnız gerçek
+           geçişlerde: ilk kurulumda (animasyonlu === false) tanıtım zaten
+           yazdırıyor, iki kez başlatmanın anlamı yok. */
+        if (degisti && animasyonlu !== false) kelimeYaz(kap);
+    }
+
+    /* YENİ KELİMEYE GEÇİNCE HARFLERİ YENİDEN YAZ.
+       Tablo açıkken sıradaki kelimenin harfleri yukarı süzülür; o harflerin
+       nasıl yazıldığı da her örnekte yeniden gösterilir — animasyon yalnız
+       tablo ilk açıldığında oynasaydı 2. örnekten sonra hiç görünmezdi.
+       Süzülme (FLIP) 1 sn sürüyor ama eğrisi güçlü bir yavaşlama olduğu
+       için satırlar ~450 ms'de yerlerine yaklaşıyor; yazı orada başlar,
+       böylece ne kayan satır üstüne yazılır ne de boş bir bekleme olur. */
+    var kelimeZaman = 0;
+
+    function kelimeYaz(kap) {
+        if (kelimeZaman) { clearTimeout(kelimeZaman); kelimeZaman = 0; }
+        if (kap.classList.contains('ab-tablo-kapali')) return;   /* tablo kapalı: görünmez */
+        tabloYazDur(kap);                       /* önceki kelimenin yazısı sürüyorsa dursun */
+        kelimeZaman = setTimeout(function () {
+            kelimeZaman = 0;
+            if (kap.classList.contains('ab-tablo-kapali')) return;
+            tabloYaz(kap);
+        }, 450);
     }
 
     /* ETKİN KELİMEYİ GÖRÜNÜRDE TUT.
@@ -514,19 +543,26 @@
        Tablo her açıldığında en üstteki satırlar — yani FLIP ile yukarı
        süzülmüş, sıradaki kelimeyi oluşturan harfler — dört biçimiyle
        birlikte kalem darbeleriyle yeniden yazılır. Çocuk kelimeye
-       başlamadan önce o harflerin nasıl yazıldığını bir kez görür.
+       başlamadan önce o harflerin nasıl yazıldığını görür.
 
        Kalem verisi ve çizim motoru Harf Tanıtımı'ndaki büyüteçle AYNI
        (harfDetay.buildSvg / playForm) — iki yerde iki ayrı yazılış
        öğretilmesin diye tek kaynak kullanılır.
 
-       BİR KEZ oynar, sonra normal görünüşe döner: sürekli oynayan bir
-       tablo dersi dağıtırdı. "Hareketi azalt" açıksa hiç oynamaz. */
+       SÜREKLİ DÖNGÜ: yazı bir kez oynayıp durmaz, harf tamamlandıktan
+       kısa bir süre sonra baştan yazılır ve bu tablo açık kaldığı sürece
+       sürer. Sınıfta o anda başka yere bakan çocuk bir sonraki turda
+       yakalar. Döngü yalnız tablo kapanınca, sekmeden çıkılınca ya da
+       yeni kelimeye geçilince durur. "Hareketi azalt" açıksa hiç
+       oynamaz — orada duran metin harfleri görünür kalır. */
     var yazSira = 0;          /* her çalıştırma yeni kimlik alır: eskisi iptal olur */
     var yazCanli = [];        /* iptal edilebilmesi için oynayan animasyonlar */
 
     function tabloYazDur(kap) {
         yazSira++;
+        /* Yeni kelime için beklemede olan yazı da iptal olsun: tablo
+           kapandıysa ya da sekmeden çıkıldıysa 450 ms sonra başlamasın. */
+        if (kelimeZaman) { clearTimeout(kelimeZaman); kelimeZaman = 0; }
         if (typeof harfDetay !== 'undefined' && harfDetay.cancelForm) {
             yazCanli.forEach(function (a) { try { harfDetay.cancelForm(a); } catch (e) {} });
         }
@@ -544,7 +580,7 @@
         var veri = h ? HARF_YAZIM[h.h] : null;
         if (!veri) return 0;
         var hucreler = satir.querySelectorAll('.ab-tb-h');
-        var kalan = 0, enUzun = 0;
+        var enUzun = 0;
 
         [].forEach.call(hucreler, function (hc) {
             var d = veri[hc.getAttribute('data-b')];
@@ -552,23 +588,21 @@
             var anim = harfDetay.buildSvg(d, getComputedStyle(hc).color);
             anim.hiz = 1.9;                     /* tablodaki mini yazı daha çevik */
             anim.svg.setAttribute('class', 'hd-yaz-svg ab-tb-yaz');
+            anim.svg.setAttribute('data-tur', benim);   /* hangi çalıştırmaya ait */
             hc.classList.add('ab-yaziliyor');   /* metin harfi saklan, yerini çizime bırak */
             hc.appendChild(anim.svg);
             yazCanli.push(anim);
-            kalan++;
             var sure = 0;
             d.strokes.forEach(function (s) { sure += 1100 / anim.hiz + 190; });
             (d.taps || []).forEach(function () { sure += 260 / anim.hiz + 90; });
             if (sure > enUzun) enUzun = sure;
-            anim.bitince = function () {
-                if (benim !== yazSira) return;   /* araya yeni bir çalıştırma girdi */
-                if (--kalan > 0) return;
-                [].forEach.call(hucreler, function (x) {
-                    x.classList.remove('ab-yaziliyor');
-                    var sv = x.querySelector('.ab-tb-yaz'); if (sv) sv.remove();
-                });
-            };
-            harfDetay.playForm(anim, false, true);   /* tek sefer, döngüsüz */
+            /* SÜREKLİ DÖNGÜ: yazı bir kez oynayıp durmaz, harf tamamlanınca
+               kısa bir bekleyişin ardından baştan yazılır. Sınıfta tahtaya
+               bakan çocuk animasyonu kaçırırsa bir sonraki turda yakalar;
+               öğretmenin bir şeye basıp tekrar oynatmasına gerek kalmaz.
+               Döngü ancak tablo kapanınca, sekmeden çıkılınca ya da yeni
+               kelimeye geçilince durur (bkz. tabloYazDur). */
+            harfDetay.playForm(anim, false);
         });
         return enUzun;
     }

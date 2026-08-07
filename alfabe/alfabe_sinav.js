@@ -367,8 +367,68 @@
     }
 
     /* --- Tip 9: kelimede boşluk + uçan harf --- */
+    /* BOŞLUK ADAYLARI — biçimlere göre kovalanmış.
+       Sorun: liste her kelime için TEK bir boşluk yeri tutuyordu ve bu
+       yerlerin yarısından çoğu kelimenin ortasıydı; sonuçta "Boşluğa
+       hangi harf gelir?" sorularının %54'ü ORTADAKİ yazılışı soruyordu,
+       yalın ancak %6'sında çıkıyordu.
+       Çözüm yeni kelime eklemeden: aynı kelimenin HER harfi boşaltılabilir
+       ve her biri farklı bir yazılış sorar (ك_ب ortadaki, _تب baştaki,
+       كت_ sondaki). 28 kelimeden 84 aday çıkar; dört ayrı biçim
+       üretemeyenler (bağlanmayan harfler) elenir, kalanlar biçimlerine
+       göre kovalara ayrılır. */
+    var BOSLUK_KOVA = null;
+    var BOSLUK_TUR = ['b', 'o', 's', 'n'];
+
+    function boslukKovalari() {
+        if (BOSLUK_KOVA) return BOSLUK_KOVA;
+        var kova = { b: [], o: [], s: [], n: [] }, i, j, k, c, t, aday;
+        for (i = 0; i < BOSLUK_KELIME.length; i++) {
+            k = BOSLUK_KELIME[i];
+            c = coz(k.h);
+            for (j = 0; j < k.h.length; j++) {
+                aday = { h: k.h, b: j, anlam: k.anlam };
+                if (!boslukSoru(aday)) continue;     /* dört ayrı biçim çıkmıyorsa ele */
+                t = c[j].geriBag ? (c[j].ileriBag ? 'o' : 's') : (c[j].ileriBag ? 'b' : 'n');
+                kova[t].push(aday);
+            }
+        }
+        BOSLUK_KOVA = kova;
+        return kova;
+    }
+
+    function doluTurler() {
+        var kova = boslukKovalari();
+        return BOSLUK_TUR.filter(function (t) { return kova[t].length; });
+    }
+
+    /* Bir turluk boşluk kelimeleri: biçimler SIRAYLA dolaşılır, böylece
+       art arda gelen boşluk soruları farklı yazılışları sorar. */
+    function boslukSirasi(n) {
+        var kova = boslukKovalari(), turler = doluTurler();
+        if (!turler.length) return karistir(BOSLUK_KELIME.slice());
+        var havuz = {}, dizi = [], sira = karistir(turler.slice()), i = 0, t;
+        turler.forEach(function (x) { havuz[x] = karistir(kova[x].slice()); });
+        while (dizi.length < n) {
+            if (i && i % sira.length === 0) sira = karistir(turler.slice());
+            t = sira[i % sira.length];
+            if (!havuz[t].length) havuz[t] = karistir(kova[t].slice());
+            dizi.push(havuz[t].pop());
+            i++;
+        }
+        return dizi;
+    }
+
+    /* Tek soru istendiğinde de biçim önce seçilir: rastgele kelime
+       seçmek yine ortadaki yazılışa doğru kayardı. */
+    function boslukSec() {
+        var kova = boslukKovalari(), turler = doluTurler();
+        if (!turler.length) return sec(BOSLUK_KELIME);
+        return sec(kova[sec(turler)]);
+    }
+
     function boslukSoru(kaynak) {
-        var k = kaynak || sec(BOSLUK_KELIME);
+        var k = kaynak || boslukSec();
         var c = coz(k.h);
         var h = k.h[k.b];
         var dogruBicim = c[k.b].bicim;
@@ -459,7 +519,9 @@
         while (sira.length < TUR_SORU) sira.push(tipler[Math.floor(Math.random() * tipler.length)]);
         sira = karistir(sira).slice(0, TUR_SORU);
 
-        var kelimeler = karistir(BOSLUK_KELIME.slice()), ki = 0, liste = [];
+        /* Boşluk kelimeleri biçim sırasıyla gelsin (bkz. boslukSirasi):
+           bir turdaki boşluk sorularının hepsi ortadaki yazılışı sormasın. */
+        var kelimeler = boslukSirasi(TUR_SORU), ki = 0, liste = [];
         for (i = 0; i < sira.length; i++) {
             t = sira[i]; s = null; dene = 0;
             while (dene++ < 60) {

@@ -1694,15 +1694,16 @@
             .ab-yeni, .ab-donusum { animation: none; }
         }
 
-        .ab-anlam {
-            font-size: .98rem; color: #94a3b8; min-height: 1em; text-align: center;
-            line-height: 1.2; opacity: 0; transition: opacity .3s;
-        }
-        .ab-satir.ab-bitti .ab-anlam { opacity: 1; color: #117A65; font-weight: 700; }
+        /* .ab-anlam kaldırıldı: kelime tamamlanınca Türkçe anlamı artık
+           gösterilmiyor (bkz. alfabe_birlestir.js → satirHtml). */
 
         /* --- alt kumanda şeridi --- */
+        /* KUMANDA EN SAĞDA: öğretmen tahtanın başındayken slaytı sağ alt
+           köşeden çevirir; ekranın ortasına uzanmak zorunda kalmaz. İleri
+           düğmesi en dışta durur, yani en kolay ulaşılan yerde. Sayaç
+           düğmelerin solunda kalır. */
         .ab-serit {
-            flex: none; display: flex; align-items: center; justify-content: center; gap: 14px;
+            flex: none; display: flex; align-items: center; justify-content: flex-end; gap: 14px;
             background: var(--bg-glass); border: 1px solid #cbd5e1; border-radius: 12px;
             padding: 8px 14px; box-shadow: var(--shadow-sm);
         }
@@ -1770,7 +1771,6 @@
             .ab-sag    { grid-area: sag; min-width: 62px; padding-left: 8px; }
             .ab-no { width: 34px; height: 34px; font-size: 1rem; }
             .ab-sar { --ab-punto: 2.55rem; }
-            .ab-anlam { font-size: .82rem; }
             .ab-nav { font-size: .9rem; padding: 8px 14px; }
         }
 
@@ -1778,7 +1778,6 @@
         @media print {
             .ab-serit, .ab-tablo { display: none !important; }
             .ab-satir { display: grid !important; }   /* çıktı alınırsa hepsi görünsün */
-            .ab-anlam { opacity: 1 !important; color: #64748b !important; }
         }
 
 
