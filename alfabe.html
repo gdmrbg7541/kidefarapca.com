@@ -12,20 +12,22 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe/alfabe.css?v=49">
+    <link rel="stylesheet" href="alfabe/alfabe.css?v=64">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
 
 <div class="main-app">
-    <!-- ŞERİT GİZLİYKEN görünen küçük düğme. Amaç tam ekran: bir sekme
-         seçilince üstteki şerit kapanır, yerine bu simge kalır. Simgeye
-         basınca şerit geri gelir. Yanında hangi sekmede olduğumuz yazar. -->
-    <!-- YÜZEN KUMANDA — ekranda istenen yere SÜRÜKLENİR.
-         Üstte tutamaç ve hangi sekmede olduğumuz (hep açık),
-         ortada Ana Sayfa + sekme şeridini aç/kapa,
-         altta Harf Tanıtımı araç şeridi (yalnız o sekmede görünür).
-         Yeri localStorage'da saklanır, sayfayı kapatınca kaybolmaz. -->
+    <!-- ŞERİT GİZLİYKEN görünen küçük düğme. Amaç tam ekran: LİSTE
+         simgesine basınca şerit katlanır, yerine bu kumanda kalır; aynı
+         simgeye tekrar basınca geri açılır. Sekme seçmek şeridi kapatmaz.
+         Yanında hangi sekmede olduğumuz yazar. -->
+    <!-- KUMANDA — HER ZAMAN SOL ÜST KÖŞEDE AÇILIR, sonra istenirse
+         sürüklenip taşınabilir (yeri kaydedilmez; sayfa yenilenince
+         yine sol üste döner). Üstte hangi sekmede olduğumuz, ortada
+         Ana Sayfa + şerit aç/kapa, altta Harf Tanıtımı araç şeridi.
+         Şerit açıkken sayfanın başka bir yerine dokunulursa kendiliğinden
+         katlanır. -->
     <div id="navMini" class="nav-mini">
         <div class="nav-mini-tut" id="navMiniTut" title="Tutup sürükleyerek taşıyın">
             <svg class="nm-tutamac" viewBox="0 0 24 24" aria-hidden="true">
@@ -48,14 +50,47 @@
                 </svg>
             </a>
             <span class="nav-mini-ayirac" aria-hidden="true"></span>
-            <button type="button" class="nav-mini-t" onclick="navAc()"
+            <!-- ŞERİDİN AÇMA/KAPAMA DÜĞMESİ.
+                 Liste simgesinin yanındaki ok yön gösterir: şerit açıkken
+                 YUKARI (katla), kapalıyken AŞAĞI (aç). Yazıya ve ayrıca bir
+                 vurguya gerek kalmıyor; ok tek başına anlatıyor. -->
+            <button type="button" class="nav-mini-t nm-menu" onclick="navAc()"
+                    aria-expanded="true"
                     title="Sekme şeridini aç / kapat" aria-label="Sekme şeridini aç / kapat">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
                           stroke-width="2.4" stroke-linecap="round"/>
                 </svg>
+                <svg class="nm-yon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor"
+                          stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </button>
         </div>
+        <!-- SEKME ŞERİDİ KUMANDANIN İÇİNDE: dikey liste hâlinde,
+             sol üstten aşağı doğru açılır ve içeriğin üstünde yüzer. -->
+        <nav class="nav-tabs">
+            <!-- İKİ BÖLÜM: şerit direction:rtl olduğu için DOM'da ÖNCE yazılan
+                 bölüm EKRANDA SAĞDA çıkar. Sağdaki bölüm alfabenin kendisi,
+                 soldaki bölüm ölçme-değerlendirme ve etkinliklerdir. -->
+            <div class="tab-grup">
+                <span class="tab-grup-ad">Alfabe</span>
+                <div class="tab-grup-sira">
+                    <button class="tab-trigger active" onclick="ui.tab(event, 'p1')" title="Harf Tanıtımı" aria-label="Harf Tanıtımı"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.4" y="3.6" width="19.2" height="16.8" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="4.4" y="5.6" width="4.6" height="4.2" rx="1" fill="#2ecc71"/><rect x="9.7" y="5.6" width="4.6" height="4.2" rx="1" fill="#3498db"/><rect x="15" y="5.6" width="4.6" height="4.2" rx="1" fill="#9b59b6"/><rect x="4.4" y="10.5" width="4.6" height="4.2" rx="1" fill="#F1C40F"/><rect x="9.7" y="10.5" width="4.6" height="4.2" rx="1" fill="#e74c3c"/><rect x="15" y="10.5" width="4.6" height="4.2" rx="1" fill="#1ABC9C"/><rect x="4.4" y="15.4" width="15.2" height="3.1" rx="1" fill="#D6E4EC"/></svg><span class="tab-ad">Harf Tanıtımı</span></button>
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p5')" title="Harf Birleştirme" aria-label="Harf Birleştirme"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 15.5h18" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><path d="M4.6 15.2V9.6a2.4 2.4 0 0 1 4.8 0v5.6" fill="none" stroke="#2ecc71" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.4 15.2v-2.6a2.3 2.3 0 0 1 4.6 0v2.6" fill="none" stroke="#3498db" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 15.2V7.4" fill="none" stroke="#9b59b6" stroke-width="2.3" stroke-linecap="round"/><path d="M17.2 15.2c1.9 0 2.9-1.2 2.9-2.8" fill="none" stroke="#e74c3c" stroke-width="2.3" stroke-linecap="round"/><circle cx="20.1" cy="10.9" r="1.15" fill="#e74c3c"/></svg><span class="tab-ad">Harf Birleştirme</span></button>
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p7'); dvyAc()" title="Dinle ve Yaz" aria-label="Dinle ve Yaz"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.4h3.1L11 6.1v11.8L7.1 14.6H4z" fill="#3498db"/><path class="li-alev" d="M13.4 9.1a4.2 4.2 0 0 1 0 5.8" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path class="li-alev" d="M15.8 7a7.4 7.4 0 0 1 0 10" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path d="M17.4 19.9l-2.6.7.7-2.6 4.6-4.6 1.9 1.9z" fill="#e74c3c"/><path d="M20.1 13.4l1.9 1.9" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg><span class="tab-ad">Dinle ve Yaz</span></button>
+                </div>
+            </div>
+            <div class="tab-grup">
+                <span class="tab-grup-ad">Ölçme &amp; Etkinlik</span>
+                <div class="tab-grup-sira">
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p2')" title="Kartlar" aria-label="Kartlar"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6.4" width="12.6" height="14.2" rx="2.2" fill="#3498db" transform="rotate(-9 9.3 13.5)"/><rect x="8.6" y="4.2" width="12.6" height="15.6" rx="2.2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path d="M12.2 15.6c1.5-1.4 4.4-3 4.4-5.2a2.2 2.2 0 0 0-4.4-.6 2.2 2.2 0 0 0-4.4.6" fill="none"/><circle cx="14.9" cy="9.4" r="2.2" fill="#e74c3c"/><rect x="11.2" y="13.4" width="7.4" height="1.7" rx=".85" fill="#CBD5E1"/><rect x="11.2" y="16.1" width="4.8" height="1.7" rx=".85" fill="#CBD5E1"/></svg><span class="tab-ad">Kartlar</span></button>
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p3')" title="Hafıza" aria-label="Hafıza"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.2" y="4.4" width="8.9" height="15.2" rx="2" fill="#9b59b6"/><path d="M5.1 9.6a1.6 1.6 0 0 1 3.1.5c0 1.1-1.5 1.3-1.5 2.4" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.65" cy="15.2" r=".95" fill="#fff"/><rect x="12.9" y="4.4" width="8.9" height="15.2" rx="2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path class="li-parilti2" d="M17.35 8.2l1.15 2.5 2.5.3-1.9 1.7.55 2.6-2.3-1.35-2.3 1.35.55-2.6-1.9-1.7 2.5-.3z" fill="#F1C40F"/></svg><span class="tab-ad">Hafıza</span></button>
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p6')" title="Sınav" aria-label="Sınav"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="3.6" width="16" height="17.2" rx="2.4" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="8.4" y="2" width="7.2" height="3.5" rx="1.4" fill="#0E6655"/><path d="M7.6 10.6h5.2M7.6 14h5.2M7.6 17.2h3.4" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><circle class="li-halka" cx="16.6" cy="16.2" r="4.3" fill="#2ecc71"/><path d="M14.7 16.3l1.4 1.4 2.6-2.8" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-ad">Sınav</span></button>
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p4')" title="Yarışma" aria-label="Yarışma"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.4h10.8v5.2a5.4 5.4 0 0 1-10.8 0z" fill="#F1C40F"/><path d="M6.6 5h-2a2.6 2.6 0 0 0 2.6 3.6M17.4 5h2a2.6 2.6 0 0 1-2.6 3.6" fill="none" stroke="#D68910" stroke-width="1.5" stroke-linecap="round"/><path d="M10.4 13.6h3.2l.5 3.2h-4.2z" fill="#D68910"/><rect x="7.4" y="16.6" width="9.2" height="2.6" rx="1.1" fill="#e74c3c"/><rect x="6" y="19.2" width="12" height="2.4" rx="1.1" fill="#c0392b"/><path class="li-parilti2" d="M12 4.9l.8 1.7 1.8.2-1.35 1.2.4 1.8L12 8.85 10.35 9.8l.4-1.8L9.4 6.8l1.8-.2z" fill="#fff"/></svg><span class="tab-ad">Yarışma</span></button>
+                </div>
+            </div>
+        </nav>
         <div class="switch-wrapper hdr-switch" id="p1-switch">
             <!-- KALEM ikonu: yazılışları benzeyen harfler modu.
                  Kalem kendini çizer, sonra alt satırı yazarken sağa doğru kayar. -->
@@ -151,22 +186,6 @@
             </span>
         </div>
     </div>
-    <nav class="nav-tabs">
-        <!-- Harf Tanıtımı sekmesi için gruplama switch'i: yazılışı benzeyenler / okunuşu benzeyenler -->
-        <!-- Ana Sayfa düğmesi yüzen kumandaya taşındı. -->
-        <button class="tab-trigger active" onclick="ui.tab(event, 'p1')" title="Harf Tanıtımı" aria-label="Harf Tanıtımı"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.4" y="3.6" width="19.2" height="16.8" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="4.4" y="5.6" width="4.6" height="4.2" rx="1" fill="#2ecc71"/><rect x="9.7" y="5.6" width="4.6" height="4.2" rx="1" fill="#3498db"/><rect x="15" y="5.6" width="4.6" height="4.2" rx="1" fill="#9b59b6"/><rect x="4.4" y="10.5" width="4.6" height="4.2" rx="1" fill="#F1C40F"/><rect x="9.7" y="10.5" width="4.6" height="4.2" rx="1" fill="#e74c3c"/><rect x="15" y="10.5" width="4.6" height="4.2" rx="1" fill="#1ABC9C"/><rect x="4.4" y="15.4" width="15.2" height="3.1" rx="1" fill="#D6E4EC"/></svg><span class="tab-ad">Harf Tanıtımı</span></button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p2')" title="Kartlar" aria-label="Kartlar"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6.4" width="12.6" height="14.2" rx="2.2" fill="#3498db" transform="rotate(-9 9.3 13.5)"/><rect x="8.6" y="4.2" width="12.6" height="15.6" rx="2.2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path d="M12.2 15.6c1.5-1.4 4.4-3 4.4-5.2a2.2 2.2 0 0 0-4.4-.6 2.2 2.2 0 0 0-4.4.6" fill="none"/><circle cx="14.9" cy="9.4" r="2.2" fill="#e74c3c"/><rect x="11.2" y="13.4" width="7.4" height="1.7" rx=".85" fill="#CBD5E1"/><rect x="11.2" y="16.1" width="4.8" height="1.7" rx=".85" fill="#CBD5E1"/></svg><span class="tab-ad">Kartlar</span></button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p3')" title="Hafıza" aria-label="Hafıza"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.2" y="4.4" width="8.9" height="15.2" rx="2" fill="#9b59b6"/><path d="M5.1 9.6a1.6 1.6 0 0 1 3.1.5c0 1.1-1.5 1.3-1.5 2.4" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.65" cy="15.2" r=".95" fill="#fff"/><rect x="12.9" y="4.4" width="8.9" height="15.2" rx="2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path class="li-parilti2" d="M17.35 8.2l1.15 2.5 2.5.3-1.9 1.7.55 2.6-2.3-1.35-2.3 1.35.55-2.6-1.9-1.7 2.5-.3z" fill="#F1C40F"/></svg><span class="tab-ad">Hafıza</span></button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p5')" title="Harf Birleştirme" aria-label="Harf Birleştirme"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 15.5h18" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><path d="M4.6 15.2V9.6a2.4 2.4 0 0 1 4.8 0v5.6" fill="none" stroke="#2ecc71" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.4 15.2v-2.6a2.3 2.3 0 0 1 4.6 0v2.6" fill="none" stroke="#3498db" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 15.2V7.4" fill="none" stroke="#9b59b6" stroke-width="2.3" stroke-linecap="round"/><path d="M17.2 15.2c1.9 0 2.9-1.2 2.9-2.8" fill="none" stroke="#e74c3c" stroke-width="2.3" stroke-linecap="round"/><circle cx="20.1" cy="10.9" r="1.15" fill="#e74c3c"/></svg><span class="tab-ad">Harf Birleştirme</span></button>
-        <!-- Dinle ve Yaz kendi başına da çalışan bir oyundur; burada ÇERÇEVE
-             içinde açılır. Böylece iki sayfanın CSS'i birbirine karışmaz ve
-             oyun tek yerden bakılır. Çerçeve ilk tıklamada yüklenir. -->
-        <button class="tab-trigger" onclick="ui.tab(event, 'p7'); dvyAc()" title="Dinle ve Yaz" aria-label="Dinle ve Yaz"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.4h3.1L11 6.1v11.8L7.1 14.6H4z" fill="#3498db"/><path class="li-alev" d="M13.4 9.1a4.2 4.2 0 0 1 0 5.8" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path class="li-alev" d="M15.8 7a7.4 7.4 0 0 1 0 10" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path d="M17.4 19.9l-2.6.7.7-2.6 4.6-4.6 1.9 1.9z" fill="#e74c3c"/><path d="M20.1 13.4l1.9 1.9" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg><span class="tab-ad">Dinle ve Yaz</span></button>
-        <!-- Şerit direction:rtl olduğu için DOM'da SONDAKİ sekme EKRANDA EN SOLDA
-             görünür. Yarışma ve Sınav en sola istendiği için en sona alındı. -->
-        <button class="tab-trigger" onclick="ui.tab(event, 'p6')" title="Sınav" aria-label="Sınav"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="3.6" width="16" height="17.2" rx="2.4" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="8.4" y="2" width="7.2" height="3.5" rx="1.4" fill="#0E6655"/><path d="M7.6 10.6h5.2M7.6 14h5.2M7.6 17.2h3.4" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><circle class="li-halka" cx="16.6" cy="16.2" r="4.3" fill="#2ecc71"/><path d="M14.7 16.3l1.4 1.4 2.6-2.8" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-ad">Sınav</span></button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p4')" title="Yarışma" aria-label="Yarışma"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.4h10.8v5.2a5.4 5.4 0 0 1-10.8 0z" fill="#F1C40F"/><path d="M6.6 5h-2a2.6 2.6 0 0 0 2.6 3.6M17.4 5h2a2.6 2.6 0 0 1-2.6 3.6" fill="none" stroke="#D68910" stroke-width="1.5" stroke-linecap="round"/><path d="M10.4 13.6h3.2l.5 3.2h-4.2z" fill="#D68910"/><rect x="7.4" y="16.6" width="9.2" height="2.6" rx="1.1" fill="#e74c3c"/><rect x="6" y="19.2" width="12" height="2.4" rx="1.1" fill="#c0392b"/><path class="li-parilti2" d="M12 4.9l.8 1.7 1.8.2-1.35 1.2.4 1.8L12 8.85 10.35 9.8l.4-1.8L9.4 6.8l1.8-.2z" fill="#fff"/></svg><span class="tab-ad">Yarışma</span></button>
-    </nav>
 
     <main class="content-area">
         <section id="p1" class="panel active">
@@ -179,12 +198,30 @@
             </div>
         </section>
         
-        <section id="p2" class="panel"><div class="grid-flip" id="g2"></div></section>
+        <section id="p2" class="panel">
+            <!-- İki kart modu: harfin ADI ya da harfin YAZILIŞ YERİ.
+                 Yazılış yerinde kartın önünde ـك gibi bağlı biçim durur,
+                 arkasında "Sonda" yazar. -->
+            <div class="kart-mod" id="kartMod">
+                <button type="button" class="km-hap aktif" data-km="ad" onclick="kartMod.sec('ad')">Harf adı</button>
+                <button type="button" class="km-hap" data-km="yer" onclick="kartMod.sec('yer')">Yazılış yeri</button>
+                <!-- TURLAR: bir ekrana 28 kart sığıyor; fazlası turlara bölünür
+                     ve oklarla gezilir. Böylece kartlar dikeyde sıkışmaz. -->
+                <span class="km-tur" id="kmTur">
+                    <button type="button" class="km-ok" onclick="kartMod.turGit(-1)" title="Önceki tur">‹</button>
+                    <span class="km-tur-yazi" id="kmTurYazi">Tur 1 / 1</span>
+                    <button type="button" class="km-ok" onclick="kartMod.turGit(1)" title="Sonraki tur">›</button>
+                </span>
+            </div>
+            <div class="grid-flip" id="g2"></div>
+        </section>
         
         <section id="p3" class="panel">
             <div class="memory-controls">
+                <!-- Hafıza VARSAYILAN OLARAK İKİ KİŞİLİK açılır: anahtar
+                     işaretli, canlı simge de "İki Oyuncu" olanı. -->
                 <div class="switch-wrapper">
-                    <span class="mode-ico mode-ico--single on" title="Tek Oyuncu" onclick="memoryGame.toggleSwitch(false)">
+                    <span class="mode-ico mode-ico--single" title="Tek Oyuncu" onclick="memoryGame.toggleSwitch(false)">
                         <svg viewBox="0 0 48 48" aria-hidden="true">
                             <circle class="mi-ring" cx="24" cy="24" r="21"/>
                             <g class="mi-body">
@@ -194,10 +231,10 @@
                         </svg>
                     </span>
                     <label class="switch">
-                        <input type="checkbox" id="mem-toggle" onchange="memoryGame.toggleSwitch(this.checked)">
+                        <input type="checkbox" id="mem-toggle" checked onchange="memoryGame.toggleSwitch(this.checked)">
                         <span class="slider"></span>
                     </label>
-                    <span class="mode-ico mode-ico--multi" title="İki Oyuncu" onclick="memoryGame.toggleSwitch(true)">
+                    <span class="mode-ico mode-ico--multi on" title="İki Oyuncu" onclick="memoryGame.toggleSwitch(true)">
                         <svg viewBox="0 0 48 48" aria-hidden="true">
                             <g class="mi-p mi-p1">
                                 <circle cx="16" cy="20" r="5.8"/>
@@ -279,6 +316,35 @@
             
             <div id="startInfo" style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; gap: 30px;">
                 <h2 style="color: var(--primary); font-size: 2.5rem; margin-bottom: -10px;">OYUN MODU</h2>
+
+                <!-- Soruda harfin HANGİ yazılışının gösterileceği. Birden çok
+                     seçilebilir; en az biri açık kalır. Seçilenler arasından
+                     her soruda rastgele biri kullanılır. -->
+                <div class="ys-bicim">
+                    <span class="ys-bas">Soru tipi</span>
+                    <div class="ys-cipler">
+                        <button type="button" class="ys-cip acik" data-t="ad" onclick="game.tipSec('ad')">
+                            <b>ش</b><span>Harf adı</span></button>
+                        <button type="button" class="ys-cip" data-t="yer" onclick="game.tipSec('yer')">
+                            <b>شـ</b><span>Yazılış yeri</span></button>
+                    </div>
+                    <!-- "Yazılış yeri" seçilince: hangi yazılışların sorulacağı.
+                         Soru "Şın harfinin baştaki yazılışı hangisidir?" olur ve
+                         şıklar harfin dört yazılışıdır. -->
+                    <div class="ys-yer" id="ysYerKutu" hidden>
+                        <span class="ys-bas">Sorulacak yazılışlar</span>
+                        <div class="ys-cipler" id="ysCipler">
+                            <button type="button" class="ys-cip acik" data-b="h" onclick="game.bicimSec('h')">
+                                <b>ب</b><span>Yalın</span></button>
+                            <button type="button" class="ys-cip acik" data-b="b" onclick="game.bicimSec('b')">
+                                <b>بـ</b><span>Başta</span></button>
+                            <button type="button" class="ys-cip acik" data-b="o" onclick="game.bicimSec('o')">
+                                <b>ـبـ</b><span>Ortada</span></button>
+                            <button type="button" class="ys-cip acik" data-b="s" onclick="game.bicimSec('s')">
+                                <b>ـب</b><span>Sonda</span></button>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="switch-wrapper" style="padding: 15px 30px; border-radius: 50px; background: white; box-shadow: 0 6px 12px rgba(0,0,0,0.08); border: 1px solid #E9EEF5; gap: 20px;">
                     <span class="mode-ico mode-ico--lg mode-ico--single" title="Tek Oyuncu" onclick="game.toggleMode('single')">
@@ -332,20 +398,32 @@
 
 <script>
 /* ---- SEKME ŞERİDİ AÇ/KAPA ------------------------------------------
-   Sınıfta tam ekran kullanabilmek için: bir sekme seçilince üstteki
-   şerit kapanır ve sol üstte küçük bir simge kalır. Simgeye basınca
-   şerit geri gelir. Şerit kapalıyken içerik alanı o kadar büyür. */
+   Sınıfta tam ekran kullanabilmek için şerit katlanabiliyor: kumandadaki
+   LİSTE simgesine basınca şerit kapanır ve yalnız küçük kumanda kalır,
+   tekrar basınca geri gelir. Şerit kapalıyken içerik alanı o kadar büyür.
+   Sekme seçmek şeridi KAPATMAZ; art arda sekme gezilebilsin diye açık
+   kalır. Kapatma kararı hep kullanıcınındır. */
 function navKapat() {
     var k = document.querySelector('.main-app');
-    if (k) k.classList.add('nav-gizli');
+    if (!k) return;
+    k.classList.add('nav-gizli');
     navAdYaz();
 }
 function navAc() {
     var k = document.querySelector('.main-app');
-    if (k) k.classList.toggle('nav-gizli');
+    if (!k) return;
+    if (k.classList.contains('nav-gizli')) k.classList.remove('nav-gizli');
+    else navKapat();
     navAdYaz();
     if (typeof playClick === 'function') { try { playClick(); } catch (e) { } }
 }
+
+/* NOT: Şerit kapanırken çalışan "cin" uçuşu (şeridin kopyasının büzülüp
+   liste simgesine akması) KALDIRILDI. O animasyonun tek amacı şeridin
+   nereye gittiğini göstermekti; artık liste simgesinin yanındaki
+   yukarı/aşağı ok bunu anlatıyor, kumanda da kapalıyken saydamlaşarak
+   arkasını gösteriyor. Ölçeklenme animasyonuna gerek kalmadı. */
+
 function navAdYaz() {
     var ad = document.getElementById('navMiniAd');
     var a = document.querySelector('.tab-trigger.active');
@@ -353,11 +431,17 @@ function navAdYaz() {
         var y = a.querySelector('.tab-ad');
         ad.textContent = (y ? y.textContent : a.textContent).trim();
     }
+    /* Ekran okuyucu için durum: ok görsel olarak zaten yön gösteriyor. */
+    var k = document.querySelector('.main-app');
+    var t = document.querySelector('#navMini .nm-menu');
+    if (k && t) t.setAttribute('aria-expanded', k.classList.contains('nav-gizli') ? 'false' : 'true');
 }
 
-/* ---- YÜZEN KUMANDAYI SÜRÜKLE --------------------------------------
-   Tutamaçtan (üstteki noktalı şerit) tutulup ekranda istenen yere
-   taşınır; köşeden taşmaz ve bırakılan yer hatırlanır. */
+/* ---- KUMANDAYI SÜRÜKLE ---------------------------------------------
+   Kumanda HER AÇILIŞTA SOL ÜST köşede başlar; kullanıcı isterse
+   tutamaçtan tutup ekranda istediği yere taşır. Bırakılan yer BİLEREK
+   kaydedilmiyor: sayfa yenilendiğinde ya da başka bir sekmeden
+   dönüldüğünde kumanda hep aynı, beklenen yerde bulunsun diye. */
 (function () {
     function kur() {
         var kap = document.getElementById('navMini');
@@ -390,17 +474,17 @@ function navAdYaz() {
         function bit() {
             if (!suruk) return;
             suruk = false; kap.classList.remove('nm-tasiniyor');
-            var g = kap.getBoundingClientRect();
-            try { localStorage.setItem('kidefAlfabeKumanda', Math.round(g.left) + ',' + Math.round(g.top)); } catch (h) { }
         }
         tut.addEventListener('pointerup', bit);
         tut.addEventListener('pointercancel', bit);
         tut.addEventListener('lostpointercapture', bit);
+        /* Emniyet: pointerup tutamaca ulaşmazsa (odak kaybı, dokunma iptali)
+           sürükleme durumu takılı kalmasın. */
+        window.addEventListener('pointerup', bit);
+        window.addEventListener('pointercancel', bit);
 
-        try {
-            var k = (localStorage.getItem('kidefAlfabeKumanda') || '').split(',');
-            if (k.length === 2 && k[0] !== '' && !isNaN(+k[0])) yerle(+k[0], +k[1]);
-        } catch (e) { }
+        /* Eski sürümlerden kalan kayıtlı konum varsa temizlenir. */
+        try { localStorage.removeItem('kidefAlfabeKumanda'); } catch (e) { }
         window.addEventListener('resize', function () {
             var g = kap.getBoundingClientRect(); yerle(g.left, g.top);
         });
@@ -409,9 +493,37 @@ function navAdYaz() {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
     else kur();
 })();
-/* Escape: şerit kapalıysa geri getirir. */
+
+/* ---- DIŞARIYA DOKUNUNCA ŞERİT KAPANIR ------------------------------
+   Şerit açıkken sayfanın herhangi bir yerine (harf kartı, oyun, düğme)
+   dokunulduğunda şerit kendiliğinden katlanır ve çalışma alanı serbest
+   kalır. Kumandanın KENDİ içine yapılan dokunuşlar sayılmaz: sekme
+   seçmek şeridi kapatmaz, art arda sekme gezilebilir.
+   Yakalama evresinde dinlenir ki sayfadaki bir öge olayı durdursa bile
+   çalışsın. */
+document.addEventListener('pointerdown', function (e) {
+    var k = document.querySelector('.main-app');
+    if (!k || k.classList.contains('nav-gizli')) return;
+    var m = document.getElementById('navMini');
+    if (m && e.target && (e.target === m || m.contains(e.target))) return;
+    navKapat();
+}, true);
+/* Gömülü çerçevedeki (Dinle ve Yaz) tıklamalar üst sayfaya ulaşmaz;
+   odak çerçeveye geçtiğinde de şeridi kapatırız. */
+window.addEventListener('blur', function () {
+    setTimeout(function () {
+        var a = document.activeElement;
+        if (a && a.tagName === 'IFRAME') navKapat();
+    }, 0);
+});
+
+/* Escape: şerit kapalıysa geri getirir.
+   AMA harf büyüteci (harfDetay) açıksa Escape önce onu kapatır; aynı
+   tuşla şeridin de açılması şaşırtıcı oluyordu. */
 document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
+    var ov = document.getElementById('hd-overlay');
+    if (ov && getComputedStyle(ov).display !== 'none') return;   /* büyüteç açık */
     var k = document.querySelector('.main-app');
     if (k && k.classList.contains('nav-gizli')) { navAc(); e.preventDefault(); }
 });
@@ -424,8 +536,8 @@ function dvyAc() {
 </script>
 <script src="alfabe/alfabe_harf_detay.js?v=22"></script>
 <script src="sistem/gorevkopru.js?v=7"></script>
-<script src="alfabe/alfabe.js?v=28"></script>
-<script src="alfabe/alfabe_birlestir.js?v=5"></script>
+<script src="alfabe/alfabe.js?v=33"></script>
+<script src="alfabe/alfabe_birlestir.js?v=8"></script>
 <script src="alfabe/alfabe_sinav.js?v=4"></script>
     <script src="sistem/geri.js"></script>
 <script id="kidef-koruma">
