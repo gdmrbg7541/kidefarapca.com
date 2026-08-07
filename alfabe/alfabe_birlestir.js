@@ -242,7 +242,9 @@
             var hucre = sut.map(function (x) {
                 var yazi = (x.a === 'n') ? h.h : h[x.a];
                 var r = kirmizi ? 'kirmizi' : x.renk;
-                return '<span class="ab-tb-h ab-c-' + r + '">' + kacis(yazi) + '</span>';
+                /* data-b: biçim anahtarı (b/o/s/n) — yazılış animasyonu
+                   hangi kalem verisini oynatacağını buradan bilir. */
+                return '<span class="ab-tb-h ab-c-' + r + '" data-b="' + x.a + '">' + kacis(yazi) + '</span>';
             }).join('');
             return '<button type="button" class="ab-tb-satir' + (kirmizi ? ' ab-tb-kirmizi' : '') +
                    '" data-idx="' + i + '" title="' + kacis(h.tr) +
@@ -333,12 +335,16 @@
        daire konur — çocuk rengi okuyup çevirmeden doğrudan görür.
        Daire currentColor ile boyanır, yani ab-c-* sınıfı yetiyor. */
     function anahtarHtml() {
+        /* Etiketler kısa ve baş harfleri büyük: tablonun sütun başlıkları
+           da (BAŞTA · ORTADA · SONDA · YALIN) aynı sözcükler olsun,
+           çocuk anahtarla başlığı bir arada okusun. "yazılış" sözcüğü
+           her satırda tekrarlanıyordu, çıkarıldı. */
         var satirlar = [
-            ['yesil',   'başta yazılış'],
-            ['mavi',    'ortada yazılış'],
-            ['mor',     'sonda yazılış'],
-            ['kirmizi', 'sonrakine bağlanmaz'],
-            ['siyah',   'yalnız yazılır']
+            ['yesil',   'Başta'],
+            ['mavi',    'Ortada'],
+            ['mor',     'Sonda'],
+            ['kirmizi', 'Sonrakiyle Birleşmeyen'],
+            ['siyah',   'Yalın']
         ];
         var g = '<div class="ab-anahtar"><b>Renk anahtarı:</b>';
         for (var i = 0; i < satirlar.length; i++) {
@@ -504,6 +510,92 @@
         setTimeout(function () { satir.classList.remove('ab-gir'); }, 460);
     }
 
+    /* --- 4b) TABLO AÇILINCA KELİMENİN HARFLERİ YAZILSIN ------------
+       Tablo her açıldığında en üstteki satırlar — yani FLIP ile yukarı
+       süzülmüş, sıradaki kelimeyi oluşturan harfler — dört biçimiyle
+       birlikte kalem darbeleriyle yeniden yazılır. Çocuk kelimeye
+       başlamadan önce o harflerin nasıl yazıldığını bir kez görür.
+
+       Kalem verisi ve çizim motoru Harf Tanıtımı'ndaki büyüteçle AYNI
+       (harfDetay.buildSvg / playForm) — iki yerde iki ayrı yazılış
+       öğretilmesin diye tek kaynak kullanılır.
+
+       BİR KEZ oynar, sonra normal görünüşe döner: sürekli oynayan bir
+       tablo dersi dağıtırdı. "Hareketi azalt" açıksa hiç oynamaz. */
+    var yazSira = 0;          /* her çalıştırma yeni kimlik alır: eskisi iptal olur */
+    var yazCanli = [];        /* iptal edilebilmesi için oynayan animasyonlar */
+
+    function tabloYazDur(kap) {
+        yazSira++;
+        if (typeof harfDetay !== 'undefined' && harfDetay.cancelForm) {
+            yazCanli.forEach(function (a) { try { harfDetay.cancelForm(a); } catch (e) {} });
+        }
+        yazCanli = [];
+        var i, s = kap.querySelectorAll('.ab-tb-yaz');
+        for (i = 0; i < s.length; i++) s[i].remove();
+        var g = kap.querySelectorAll('.ab-tb-h.ab-yaziliyor');
+        for (i = 0; i < g.length; i++) g[i].classList.remove('ab-yaziliyor');
+    }
+
+    /* Bir satırın dört biçimini birlikte yazar; hepsi bitince satırı
+       normal görünüşüne döndürür. Dönen değer: tahmini süre (ms). */
+    function satirYaz(satir, benim) {
+        var h = harfler[+satir.getAttribute('data-idx')];
+        var veri = h ? HARF_YAZIM[h.h] : null;
+        if (!veri) return 0;
+        var hucreler = satir.querySelectorAll('.ab-tb-h');
+        var kalan = 0, enUzun = 0;
+
+        [].forEach.call(hucreler, function (hc) {
+            var d = veri[hc.getAttribute('data-b')];
+            if (!d) return;
+            var anim = harfDetay.buildSvg(d, getComputedStyle(hc).color);
+            anim.hiz = 1.9;                     /* tablodaki mini yazı daha çevik */
+            anim.svg.setAttribute('class', 'hd-yaz-svg ab-tb-yaz');
+            hc.classList.add('ab-yaziliyor');   /* metin harfi saklan, yerini çizime bırak */
+            hc.appendChild(anim.svg);
+            yazCanli.push(anim);
+            kalan++;
+            var sure = 0;
+            d.strokes.forEach(function (s) { sure += 1100 / anim.hiz + 190; });
+            (d.taps || []).forEach(function () { sure += 260 / anim.hiz + 90; });
+            if (sure > enUzun) enUzun = sure;
+            anim.bitince = function () {
+                if (benim !== yazSira) return;   /* araya yeni bir çalıştırma girdi */
+                if (--kalan > 0) return;
+                [].forEach.call(hucreler, function (x) {
+                    x.classList.remove('ab-yaziliyor');
+                    var sv = x.querySelector('.ab-tb-yaz'); if (sv) sv.remove();
+                });
+            };
+            harfDetay.playForm(anim, false, true);   /* tek sefer, döngüsüz */
+        });
+        return enUzun;
+    }
+
+    /* Oynatmayı başlatır; tahmini toplam süreyi (ms) döndürür ki tanıtım
+       tabloyu animasyon bitmeden katlamasın. */
+    function tabloYaz(kap) {
+        if (typeof harfDetay === 'undefined' || !harfDetay.buildSvg) return 0;
+        if (typeof HARF_YAZIM === 'undefined' || typeof harfler === 'undefined') return 0;
+        tabloYazDur(kap);
+        if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
+        var benim = yazSira;
+        var satirlar = [].slice.call(kap.querySelectorAll('.ab-tb-satir.ab-tb-odak')).slice(0, 4);
+        if (!satirlar.length) return 0;
+        var ARA = 420, toplam = 0;
+        satirlar.forEach(function (satir, i) {
+            setTimeout(function () {
+                if (benim !== yazSira) return;
+                if (kap.classList.contains('ab-tablo-kapali')) return;   /* tablo kapandıysa vazgeç */
+                satirYaz(satir, benim);
+            }, i * ARA);
+        });
+        /* kaba tahmin: son satırın başlama gecikmesi + tek satırın süresi */
+        toplam = (satirlar.length - 1) * ARA + 2400;
+        return toplam;
+    }
+
     /* --- 5) KURULUM --------------------------------------------- */
     var kuruldu = false;
     var tanitimZaman = 0, tanitimYapildi = false;
@@ -518,11 +610,90 @@
         var dugme = kap.querySelector('[data-rol="tb-kapa"]');
         kap.classList.remove('ab-tablo-kapali');
         if (dugme) dugme.setAttribute('aria-expanded', 'true');
+        /* Tablo kelimenin harfleri yazılırken açık kalmalı: katlanma
+           süresi animasyonun bitişine göre uzatılır (en az 2600 ms). */
+        var sure = Math.max(2600, tabloYaz(kap) + 900);
         tanitimZaman = setTimeout(function () {
             tanitimZaman = 0;
-            kap.classList.add('ab-tablo-kapali');
+            tabloYazDur(kap);
+            tabloKatla(kap, true);             /* kayarak katlansın */
             if (dugme) dugme.setAttribute('aria-expanded', 'false');
-        }, 2600);
+        }, sure);
+    }
+
+    /* TABLO YUMUŞAK KATLANIR/AÇILIR ---------------------------------
+       Eskiden sınıf değişince tablo bir karede yok oluyor, liste birden
+       genişliyordu. Şimdi: son durum sınıfı uygulanır, hedef ölçü
+       ÖLÇÜLÜR, sonra kutu eski ölçüsünden hedefe geçişle yürütülür.
+       Geçiş boyunca .ab-katlaniyor sınıfı içeriği çizili tutar ve
+       .ab-tb-ic açık genişliğine sabitlenir; kutu daralırken içerik
+       ezilmez, kırpılır. Bitince bütün inline biçimler silinir ki
+       ölçüler yine CSS'ten gelsin (ekran döndürme, punto değişimi). */
+    var katlaZaman = 0, katlaBitir = null;
+
+    function tabloKatla(kap, kapali) {
+        var tablo = kap.querySelector('.ab-tablo');
+        var ic = kap.querySelector('.ab-tb-ic');
+        if (!tablo) { kap.classList.toggle('ab-tablo-kapali', kapali); return; }
+        if (katlaBitir) katlaBitir();          /* yarım kalan geçiş varsa kapat */
+
+        var azalt = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (azalt) { kap.classList.toggle('ab-tablo-kapali', kapali); return; }
+
+        /* ÖLÇÜM SIRASI ÖNEMLİ: hedef ölçü, .ab-katlaniyor EKLENMEDEN
+           okunur. O sınıf içeriği geçici olarak geri gösterdiği için
+           birlikte ölçülürse "kapalı" genişlik de açık genişlik çıkar
+           ve kapanış animasyonu hiç oynamaz. */
+        var bas = tablo.getBoundingClientRect();
+        var icEn = ic ? ic.getBoundingClientRect().width : 0;
+        kap.classList.toggle('ab-tablo-kapali', kapali);
+        var son = tablo.getBoundingClientRect();
+        kap.classList.add('ab-katlaniyor');
+        if (ic && icEn) { ic.style.width = icEn + 'px'; ic.style.flex = '0 0 ' + icEn + 'px'; }
+
+        katlaBitir = function () {
+            if (katlaZaman) { clearTimeout(katlaZaman); katlaZaman = 0; }
+            katlaBitir = null;
+            tablo.style.transition = ''; tablo.style.flex = '';
+            tablo.style.width = ''; tablo.style.height = '';
+            if (ic) { ic.style.width = ''; ic.style.flex = ''; }
+            kap.classList.remove('ab-katlaniyor');
+        };
+
+        if (Math.abs(bas.width - son.width) < 2 && Math.abs(bas.height - son.height) < 2) {
+            katlaBitir(); return;
+        }
+        tablo.style.transition = 'none';
+        tablo.style.flex = '0 0 auto';
+        tablo.style.width = bas.width + 'px';
+        tablo.style.height = bas.height + 'px';
+        void tablo.offsetWidth;                /* başlangıç ölçüsü otursun */
+        tablo.style.transition = 'width .42s cubic-bezier(.4, 0, .2, 1), height .42s cubic-bezier(.4, 0, .2, 1)';
+        tablo.style.width = son.width + 'px';
+        tablo.style.height = son.height + 'px';
+        katlaZaman = setTimeout(function () { if (katlaBitir) katlaBitir(); }, 460);
+    }
+
+    /* SEKME DEĞİŞİNCE DE DURSUN: tablo aç/kapa düğmesiyle ya da tanıtımın
+       katlanmasıyla kapandığında yazı zaten duruyor; ama başka bir sekmeye
+       geçilince tablo ekrandan kalktığı hâlde animasyon görünmeden çalışmaya
+       devam ediyordu — hem boşuna işlemci yakıyor hem geri dönüldüğünde
+       harfler yarım çizilmiş kalıyordu. p5 paneli "active" sınıfını
+       kaybettiği anda yazı durdurulur.
+
+       Sekmeye geri dönüldüğünde tablo açıksa yazı baştan oynar: tablo
+       yeniden görünür olduğuna göre kural aynı kalsın, yarım çizimle
+       karşılaşılmasın. (İlk açılışı tanıtım yürüttüğü için orada
+       tekrarlanmaz.) */
+    function sekmeIzle(kap) {
+        var p5 = document.getElementById('p5');
+        if (!p5 || typeof MutationObserver === 'undefined') return;
+        try {
+            new MutationObserver(function () {
+                if (!p5.classList.contains('active')) { tabloYazDur(kap); return; }
+                if (tanitimYapildi && !kap.classList.contains('ab-tablo-kapali')) tabloYaz(kap);
+            }).observe(p5, { attributes: true, attributeFilter: ['class'] });
+        } catch (e) {}
     }
 
     /* p5 paneli ilk kez "active" olduğunda tanıtımı başlat. */
@@ -553,6 +724,7 @@
         pencereYaz(kap, false);        /* ilk kurulumda animasyonsuz */
         durumYaz(kap);
         tanitimBekle(kap);             /* tablo açık gelsin, sonra katlansın */
+        sekmeIzle(kap);                /* sekmeden çıkılınca yazı dursun */
 
         kap.addEventListener('click', function (e) {
             var t = e.target;
@@ -560,8 +732,12 @@
             var kapa = t.closest ? t.closest('[data-rol="tb-kapa"]') : null;
             if (kapa) {
                 if (tanitimZaman) { clearTimeout(tanitimZaman); tanitimZaman = 0; }  /* kullanıcı devraldı */
-                var kapali = kap.classList.toggle('ab-tablo-kapali');
+                var kapali = !kap.classList.contains('ab-tablo-kapali');
+                tabloKatla(kap, kapali);
                 kapa.setAttribute('aria-expanded', kapali ? 'false' : 'true');
+                /* Her AÇILIŞTA kelimenin harfleri yeniden yazılır;
+                   kapanışta oynayan varsa temizlenir. */
+                if (kapali) tabloYazDur(kap); else tabloYaz(kap);
                 ses();
                 return;
             }

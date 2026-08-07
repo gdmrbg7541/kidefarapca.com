@@ -1459,6 +1459,21 @@
         .ab-sar.ab-tablo-kapali .ab-tablo { flex: 0 0 auto; align-self: flex-start; }
         .ab-sar.ab-tablo-kapali .ab-tb-ic { display: none; }
         .ab-sar.ab-tablo-kapali .ab-tb-bs { display: none; }
+
+        /* KATLANMA GEÇİŞİ — tablo birden kaybolmasın, kayarak kapansın.
+           Ölçüler JS'te ölçülüp inline veriliyor (bkz. alfabe_birlestir.js
+           → tabloKatla); burada yalnız geçiş sırasında geçerli kurallar
+           var. Geçiş boyunca içerik BİR AN DAHA çizili kalır ve açık
+           ölçüsüne sabitlenir: kutu daralırken içerik ezilmez, kırpılır.
+           Böylece panel gerçekten kayarak kapanmış gibi görünür. */
+        .ab-sar.ab-katlaniyor .ab-tablo { overflow: hidden; pointer-events: none; }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-ic { display: flex; }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-bs { display: block; }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+            grid-template-columns: 96px repeat(4, minmax(0, 1fr));
+            padding: 4px 8px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+        }
+        .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-ok { transform: none; }
         .ab-sar.ab-tablo-kapali .ab-tb-baslik {
             grid-template-columns: auto; padding: 4px; background: #fff; border-bottom: 0;
         }
@@ -1489,9 +1504,9 @@
         .ab-tb-satir:active { background: #d7f2ea; }
         .ab-tb-ad {
             display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;
-            font-size: 1rem; font-weight: 700; color: #64748b; text-align: left;
+            font-size: 1.55rem; font-weight: 700; color: #64748b; text-align: left;
         }
-        .ab-tb-ad b { font-size: .92rem; color: #b6c2cf; }
+        .ab-tb-ad b { font-size: 1.3rem; color: #b6c2cf; }
         /* SATIRIN font ölçüsü = harf ölçüsü. Çizgi konumu em ile
            yazıldığı için (aşağıya bak) bu şart. */
         .ab-tb-satir { font-size: var(--ab-punto); }
@@ -1550,7 +1565,12 @@
         /* --- renk anahtarı: renk ADI değil, o renkte İÇİ DOLU daire --- */
         .ab-anahtar {
             flex: none; margin: 0 auto; display: flex; flex-wrap: wrap;
-            align-items: center; justify-content: center; gap: 6px 22px;
+            /* "Sonrakiyle Birleşmeyen" uzun bir etiket: 22px boşlukla
+               anahtar kabına ancak 2px payla sığıyordu. 16px'e indirildi,
+               pay 32px oldu — tablo katlıyken (olağan durum) anahtar
+               1280'den 1600'e kadar TEK satırda kalır. Tablo açıkken
+               sağdaki sütun yarıya indiği için iki satıra sarar. */
+            align-items: center; justify-content: center; gap: 6px 16px;
             font-size: 1.35rem; font-weight: 700;
             background: #fff; border: 1px solid #dbe3ea; border-radius: 12px;
             padding: 9px 16px; box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
@@ -1724,9 +1744,12 @@
             .ab-satir { min-height: 98px; }
             .ab-liste { padding: 6px 12px; }
             .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 70px repeat(4, minmax(0, 1fr)); }
+            .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+                grid-template-columns: 70px repeat(4, minmax(0, 1fr));
+            }
             .ab-tb-satir::after { left: 76px; }
-            .ab-tb-ad { font-size: .88rem; }
-            .ab-tb-ad b { font-size: .8rem; }
+            .ab-tb-ad { font-size: 1.15rem; }
+            .ab-tb-ad b { font-size: 1rem; }
             .ab-tb-baslik { font-size: 1.05rem; }
             .ab-tb-svg { width: 60px; height: 48px; }
         }
@@ -2070,10 +2093,13 @@
         }
         /* ÇELDİRİCİ = ÇİZGİYE GÖRE KONUM HATASI. Harfin kendi çizimi
            doğrudur; yanlış olan çizgiye göre DURDUĞU YER. transform
-           kullanılır: kutu yerinde kalır, üçlünün hizası bozulmaz.
-           (bkz. alfabe_sinav.js → KONUM_HATA) */
-        .as-uclu .as-bic.as-havada { transform: translateY(-.27em); }  /* kuyruk çizgiye inmemiş */
-        .as-uclu .as-bic.as-batik  { transform: translateY(.21em); }   /* gövde çizginin altında */
+           kullanılır: kutu yerinde kalır, satır düzeni bozulmaz.
+           Yanlış şıkta ÜÇ biçim de aynı miktarda kayar (bkz.
+           alfabe_sinav.js → KONUM_HATA); üçü birden kaydığı için işaret
+           güçlüdür ve kaydırma az tutulur — harf çizginin aşırı altına
+           ya da üstüne düşmez, yalnız çizgiye oturmadığı görülür. */
+        .as-uclu .as-bic.as-havada { transform: translateY(-.17em); }  /* kuyruk çizgiye inmemiş */
+        .as-uclu .as-bic.as-batik  { transform: translateY(.14em); }   /* gövde çizginin altında */
         .as-bic-b { font-size: 4.8rem; }
         /* SINAVDAKİ HARFLER KALIN DEĞİL. Arapça yazı tipinin gerçek bir
            kalın kesimi olmadığı için tarayıcı sentetik kalınlaştırma

@@ -284,25 +284,24 @@
        altına gömülsün ya da üç biçim aynı çizgide durmasın. Böylece
        yanlış şık, harfin kuyruğunun ve üst kısmının çizgiye göre yerine
        bakılarak bulunur. Kaydırma transform ile yapılır; kutu yerinde
-       kaldığı için satır düzeni bozulmaz. */
+       kaldığı için satır düzeni bozulmaz.
+
+       ÜÇÜ DE AYNI HİZADA: önce üç biçimden yalnız biri kaydırılıyordu;
+       o zaman soru çizgiye bakmadan çözülüyordu — diğer ikisiyle
+       kıyaslayınca tek başına farklı duran biçim hemen göze çarpıyordu.
+       Artık üç biçim de birlikte kayar, yani şıkkın kendi içinde ipucu
+       kalmaz; ölçü ancak ÇİZGİYLE kıyaslanarak anlaşılır. Üç harf birden
+       kaydığı için işaret zaten güçlü, bu yüzden kaydırma miktarı da
+       küçültüldü — harf çizginin aşırı altına/üstüne düşmez. */
     var KONUM_HATA = [
-        { s: 'as-havada', n: ' harfi çizginin üstünde asılı kalmış; kuyruğu çizginin altına inmeliydi.' },
-        { s: 'as-batik',  n: ' harfi çizginin altına gömülmüş; gövdesi çizginin üstünde oturmalıydı.' },
-        { s: 'as-yamuk',  n: ' harfinin biçimleri aynı çizgide durmuyor; biri yukarıda, biri aşağıda yazılmış.' }
+        { s: 'as-havada', n: ' harfinin yazılışları çizginin üstünde asılı kalmış; kuyrukları çizginin altına inmeliydi.' },
+        { s: 'as-batik',  n: ' harfinin yazılışları çizginin altına gömülmüş; gövdeleri çizginin üstünde oturmalıydı.' }
     ];
 
     function yanlisUclu(h) {
         var d = dogruUclu(h);
         var k = KONUM_HATA[Math.floor(Math.random() * KONUM_HATA.length)];
-        var kaydir = [null, null, null], a, b;
-        if (k.s === 'as-yamuk') {
-            a = Math.floor(Math.random() * 3);
-            b = (a + 1 + Math.floor(Math.random() * 2)) % 3;
-            kaydir[a] = 'as-havada'; kaydir[b] = 'as-batik';
-        } else {
-            kaydir[Math.floor(Math.random() * 3)] = k.s;
-        }
-        return { u: d, kaydir: kaydir, not: ad(h) + k.n };
+        return { u: d, kaydir: [k.s, k.s, k.s], not: ad(h) + k.n };
     }
 
     function ucluHtml(u, kaydir) {
