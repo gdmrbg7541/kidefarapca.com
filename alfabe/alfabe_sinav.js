@@ -217,7 +217,6 @@
         var gruplar  = ses ? SES_GRUP : YAZI_GRUP;
         var hrt      = ses ? SES_HARITA : YAZI_HARITA;
         var dogruAra = (tip === 3 || tip === 4);   /* doğru eşi arıyoruz */
-        var olcut    = ses ? 'okunuş' : 'yazılış';
 
         var ayniCift = function () {
             var g = sec(gruplar.filter(function (x) { return x.h.length > 1; }));
@@ -252,10 +251,7 @@
                 html: '<span class="as-h">' + kacis(x.a) + '</span>' +
                       '<span class="as-ayrac">—</span>' +
                       '<span class="as-h">' + kacis(x.b) + '</span>',
-                dogru: cevap,
-                not: x.ayni
-                    ? ad(x.a) + ' ile ' + ad(x.b) + ' harflerinin ' + olcut + 'ları birbirine benzer.'
-                    : ad(x.a) + ' ile ' + ad(x.b) + ' harflerinin ' + olcut + 'ları birbirine benzemez.'
+                dogru: cevap
             };
         });
 
@@ -293,15 +289,11 @@
        kalmaz; ölçü ancak ÇİZGİYLE kıyaslanarak anlaşılır. Üç harf birden
        kaydığı için işaret zaten güçlü, bu yüzden kaydırma miktarı da
        küçültüldü — harf çizginin aşırı altına/üstüne düşmez. */
-    var KONUM_HATA = [
-        { s: 'as-havada', n: ' harfinin yazılışları çizginin üstünde asılı kalmış; kuyrukları çizginin altına inmeliydi.' },
-        { s: 'as-batik',  n: ' harfinin yazılışları çizginin altına gömülmüş; gövdeleri çizginin üstünde oturmalıydı.' }
-    ];
+    var KONUM_HATA = ['as-havada', 'as-batik'];
 
     function yanlisUclu(h) {
-        var d = dogruUclu(h);
         var k = KONUM_HATA[Math.floor(Math.random() * KONUM_HATA.length)];
-        return { u: d, kaydir: [k.s, k.s, k.s], not: ad(h) + k.n };
+        return { u: dogruUclu(h), kaydir: [k, k, k] };
     }
 
     function ucluHtml(u, kaydir) {
@@ -326,16 +318,14 @@
                 siklar.push({
                     html: ucluHtml(dogruUclu(harfler[i])) +
                           '<span class="as-etiket">' + ad(harfler[i]) + '</span>',
-                    dogru: dogruAra,
-                    not: ad(harfler[i]) + ' harfinin çizgideki yazılışı doğru verilmiş.'
+                    dogru: dogruAra
                 });
             } else {
                 y = yanlisUclu(harfler[i]);
                 siklar.push({
                     html: ucluHtml(y.u, y.kaydir) +
                           '<span class="as-etiket">' + ad(harfler[i]) + '</span>',
-                    dogru: !dogruAra,
-                    not: y.not
+                    dogru: !dogruAra
                 });
             }
         }
@@ -443,11 +433,7 @@
             return {
                 html: '<span class="as-bic as-bic-b">' + kacis(b) + '</span>',
                 deger: b,
-                dogru: b === dogruBicim,
-                not: (b === dogruBicim)
-                    ? ad(h) + ' burada ' + (c[k.b].geriBag ? (c[k.b].ileriBag ? 'iki yandan bağlanır' : 'önceki harfe bağlanır')
-                                                          : (c[k.b].ileriBag ? 'sonraki harfe bağlanır' : 'yalnız yazılır')) + '.'
-                    : 'Bu biçim buraya uymaz.'
+                dogru: b === dogruBicim
             };
         });
         return {
@@ -608,14 +594,17 @@
     function tik() { if (typeof window.playClick === 'function') { try { window.playClick(); } catch (e) {} } }
 
     /* hal: 'iyi' | 'kotu' | 'orta' */
+    /* yazi isteğe bağlıdır: test sorularında yalnız hüküm yazılır.
+       Eşleştirmede puan durumu (kaç hatalı deneme oldu, soru puan getirdi
+       mi) yalnız cümleyle anlatılabildiği için orada kullanılır. */
     function bildir(kap, hal, yazi) {
         if (hal === true)  hal = 'iyi';
         if (hal === false) hal = 'kotu';
         var b = kap.querySelector('[data-rol="bildirim"]');
         if (!b) return;
-        var bas = hal === 'iyi' ? '✔ Doğru. ' : (hal === 'orta' ? '◐ Tamamlandı. ' : '✘ Yanlış. ');
+        var bas = hal === 'iyi' ? '✔ Doğru.' : (hal === 'orta' ? '◐ Tamamlandı.' : '✘ Yanlış.');
         b.className = 'as-geri-bildirim as-' + hal;
-        b.innerHTML = bas + yazi;
+        b.innerHTML = yazi ? (bas + ' ' + yazi) : bas;
     }
 
     /* Doğru harfi şıktan alıp boşluğa uçurur, sonra kelimeyi birleştirir. */
@@ -719,8 +708,10 @@
         }
         if (!secilen.dogru) dugme.classList.add('as-yanlis');
         if (secilen.dogru) durum.dogru++;
-        var dogruSik = s.siklar.filter(function (x) { return x.dogru; })[0];
-        bildir(kap, secilen.dogru, dogruSik ? dogruSik.not : '');
+        /* Yalnız DOĞRU/YANLIŞ bildirilir; ders anlatan açıklama cümlesi
+           yazılmaz. Doğru şık zaten yeşile, işaretlenen yanlış şık
+           kırmızıya boyanıyor — bilgi orada, cümleye gerek yok. */
+        bildir(kap, secilen.dogru);
         if (s.tip === 9) {
             kap.querySelector('[data-rol="ileri"]').hidden = false;
         } else {
