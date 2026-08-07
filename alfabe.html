@@ -12,12 +12,23 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="alfabe/alfabe.css?v=41">
+    <link rel="stylesheet" href="alfabe/alfabe.css?v=47">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
 
 <div class="main-app">
+    <!-- ŞERİT GİZLİYKEN görünen küçük düğme. Amaç tam ekran: bir sekme
+         seçilince üstteki şerit kapanır, yerine bu simge kalır. Simgeye
+         basınca şerit geri gelir. Yanında hangi sekmede olduğumuz yazar. -->
+    <button type="button" id="navMini" class="nav-mini" onclick="navAc()"
+            title="Sekmeleri göster" aria-label="Sekmeleri göster">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
+                  stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+        <span id="navMiniAd" class="nav-mini-ad"></span>
+    </button>
     <nav class="nav-tabs">
         <!-- Harf Tanıtımı sekmesi için gruplama switch'i: yazılışı benzeyenler / okunuşu benzeyenler -->
         <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank" class="home-link" title="Ana Sayfa">
@@ -120,12 +131,18 @@
                 </svg>
             </span>
         </div>
-        <button class="tab-trigger active" onclick="ui.tab(event, 'p1')">Harf Tanıtımı</button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p2')">Kartlar</button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p3')">Hafıza</button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p4')">Yarışma</button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p5')">Harf Birleştirme</button>
-        <button class="tab-trigger" onclick="ui.tab(event, 'p6')">Sınav</button>
+        <button class="tab-trigger active" onclick="ui.tab(event, 'p1')" title="Harf Tanıtımı" aria-label="Harf Tanıtımı"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.4" y="3.6" width="19.2" height="16.8" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="4.4" y="5.6" width="4.6" height="4.2" rx="1" fill="#2ecc71"/><rect x="9.7" y="5.6" width="4.6" height="4.2" rx="1" fill="#3498db"/><rect x="15" y="5.6" width="4.6" height="4.2" rx="1" fill="#9b59b6"/><rect x="4.4" y="10.5" width="4.6" height="4.2" rx="1" fill="#F1C40F"/><rect x="9.7" y="10.5" width="4.6" height="4.2" rx="1" fill="#e74c3c"/><rect x="15" y="10.5" width="4.6" height="4.2" rx="1" fill="#1ABC9C"/><rect x="4.4" y="15.4" width="15.2" height="3.1" rx="1" fill="#D6E4EC"/></svg><span class="tab-ad">Harf Tanıtımı</span></button>
+        <button class="tab-trigger" onclick="ui.tab(event, 'p2')" title="Kartlar" aria-label="Kartlar"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6.4" width="12.6" height="14.2" rx="2.2" fill="#3498db" transform="rotate(-9 9.3 13.5)"/><rect x="8.6" y="4.2" width="12.6" height="15.6" rx="2.2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path d="M12.2 15.6c1.5-1.4 4.4-3 4.4-5.2a2.2 2.2 0 0 0-4.4-.6 2.2 2.2 0 0 0-4.4.6" fill="none"/><circle cx="14.9" cy="9.4" r="2.2" fill="#e74c3c"/><rect x="11.2" y="13.4" width="7.4" height="1.7" rx=".85" fill="#CBD5E1"/><rect x="11.2" y="16.1" width="4.8" height="1.7" rx=".85" fill="#CBD5E1"/></svg><span class="tab-ad">Kartlar</span></button>
+        <button class="tab-trigger" onclick="ui.tab(event, 'p3')" title="Hafıza" aria-label="Hafıza"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.2" y="4.4" width="8.9" height="15.2" rx="2" fill="#9b59b6"/><path d="M5.1 9.6a1.6 1.6 0 0 1 3.1.5c0 1.1-1.5 1.3-1.5 2.4" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.65" cy="15.2" r=".95" fill="#fff"/><rect x="12.9" y="4.4" width="8.9" height="15.2" rx="2" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path class="li-parilti2" d="M17.35 8.2l1.15 2.5 2.5.3-1.9 1.7.55 2.6-2.3-1.35-2.3 1.35.55-2.6-1.9-1.7 2.5-.3z" fill="#F1C40F"/></svg><span class="tab-ad">Hafıza</span></button>
+        <button class="tab-trigger" onclick="ui.tab(event, 'p5')" title="Harf Birleştirme" aria-label="Harf Birleştirme"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 15.5h18" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><path d="M4.6 15.2V9.6a2.4 2.4 0 0 1 4.8 0v5.6" fill="none" stroke="#2ecc71" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.4 15.2v-2.6a2.3 2.3 0 0 1 4.6 0v2.6" fill="none" stroke="#3498db" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 15.2V7.4" fill="none" stroke="#9b59b6" stroke-width="2.3" stroke-linecap="round"/><path d="M17.2 15.2c1.9 0 2.9-1.2 2.9-2.8" fill="none" stroke="#e74c3c" stroke-width="2.3" stroke-linecap="round"/><circle cx="20.1" cy="10.9" r="1.15" fill="#e74c3c"/></svg><span class="tab-ad">Harf Birleştirme</span></button>
+        <!-- Dinle ve Yaz kendi başına da çalışan bir oyundur; burada ÇERÇEVE
+             içinde açılır. Böylece iki sayfanın CSS'i birbirine karışmaz ve
+             oyun tek yerden bakılır. Çerçeve ilk tıklamada yüklenir. -->
+        <button class="tab-trigger" onclick="ui.tab(event, 'p7'); dvyAc()" title="Dinle ve Yaz" aria-label="Dinle ve Yaz"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.4h3.1L11 6.1v11.8L7.1 14.6H4z" fill="#3498db"/><path class="li-alev" d="M13.4 9.1a4.2 4.2 0 0 1 0 5.8" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path class="li-alev" d="M15.8 7a7.4 7.4 0 0 1 0 10" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path d="M17.4 19.9l-2.6.7.7-2.6 4.6-4.6 1.9 1.9z" fill="#e74c3c"/><path d="M20.1 13.4l1.9 1.9" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg><span class="tab-ad">Dinle ve Yaz</span></button>
+        <!-- Şerit direction:rtl olduğu için DOM'da SONDAKİ sekme EKRANDA EN SOLDA
+             görünür. Yarışma ve Sınav en sola istendiği için en sona alındı. -->
+        <button class="tab-trigger" onclick="ui.tab(event, 'p6')" title="Sınav" aria-label="Sınav"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="3.6" width="16" height="17.2" rx="2.4" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="8.4" y="2" width="7.2" height="3.5" rx="1.4" fill="#0E6655"/><path d="M7.6 10.6h5.2M7.6 14h5.2M7.6 17.2h3.4" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><circle class="li-halka" cx="16.6" cy="16.2" r="4.3" fill="#2ecc71"/><path d="M14.7 16.3l1.4 1.4 2.6-2.8" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-ad">Sınav</span></button>
+        <button class="tab-trigger" onclick="ui.tab(event, 'p4')" title="Yarışma" aria-label="Yarışma"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 3.4h10.8v5.2a5.4 5.4 0 0 1-10.8 0z" fill="#F1C40F"/><path d="M6.6 5h-2a2.6 2.6 0 0 0 2.6 3.6M17.4 5h2a2.6 2.6 0 0 1-2.6 3.6" fill="none" stroke="#D68910" stroke-width="1.5" stroke-linecap="round"/><path d="M10.4 13.6h3.2l.5 3.2h-4.2z" fill="#D68910"/><rect x="7.4" y="16.6" width="9.2" height="2.6" rx="1.1" fill="#e74c3c"/><rect x="6" y="19.2" width="12" height="2.4" rx="1.1" fill="#c0392b"/><path class="li-parilti2" d="M12 4.9l.8 1.7 1.8.2-1.35 1.2.4 1.8L12 8.85 10.35 9.8l.4-1.8L9.4 6.8l1.8-.2z" fill="#fff"/></svg><span class="tab-ad">Yarışma</span></button>
     </nav>
 
     <main class="content-area">
@@ -281,14 +298,50 @@
 
         <!-- SINAV: 9 ayrı soru tipi. İçeriği alfabe/alfabe_sinav.js kurar. -->
         <section id="p6" class="panel"><div class="as-sar" id="asSar"></div></section>
+
+        <!-- DİNLE VE YAZ: dinleveyaz.html çerçeve içinde. gomulu=1 çerçevede
+             olduğunu söyler: oyunun kendi geri tuşu ve süre köprüsü kapanır
+             (süre bu sekmede alfabe.html adına zaten işleniyor). -->
+        <section id="p7" class="panel"><iframe id="dvyCerceve" class="dvy-cerceve"
+            title="Dinle ve Yaz" allow="autoplay"></iframe></section>
     </main>
 </div>
 
+<script>
+/* ---- SEKME ŞERİDİ AÇ/KAPA ------------------------------------------
+   Sınıfta tam ekran kullanabilmek için: bir sekme seçilince üstteki
+   şerit kapanır ve sol üstte küçük bir simge kalır. Simgeye basınca
+   şerit geri gelir. Şerit kapalıyken içerik alanı o kadar büyür. */
+function navKapat() {
+    var k = document.querySelector('.main-app');
+    if (k) k.classList.add('nav-gizli');
+    var ad = document.getElementById('navMiniAd');
+    var a = document.querySelector('.tab-trigger.active');
+    if (ad) ad.textContent = a ? a.textContent.trim() : '';
+}
+function navAc() {
+    var k = document.querySelector('.main-app');
+    if (k) k.classList.remove('nav-gizli');
+    if (typeof playClick === 'function') { try { playClick(); } catch (e) { } }
+}
+/* Escape: şerit kapalıysa geri getirir. */
+document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var k = document.querySelector('.main-app');
+    if (k && k.classList.contains('nav-gizli')) { navAc(); e.preventDefault(); }
+});
+
+/* Çerçeveyi ilk açılışta yükler; sekmeye hiç girilmezse boşuna yüklenmez. */
+function dvyAc() {
+    var f = document.getElementById('dvyCerceve');
+    if (f && !f.getAttribute('src')) f.setAttribute('src', 'dinleveyaz.html?gomulu=1');
+}
+</script>
 <script src="alfabe/alfabe_harf_detay.js?v=22"></script>
 <script src="sistem/gorevkopru.js?v=7"></script>
-<script src="alfabe/alfabe.js?v=27"></script>
-<script src="alfabe/alfabe_birlestir.js?v=1"></script>
-<script src="alfabe/alfabe_sinav.js?v=1"></script>
+<script src="alfabe/alfabe.js?v=28"></script>
+<script src="alfabe/alfabe_birlestir.js?v=5"></script>
+<script src="alfabe/alfabe_sinav.js?v=4"></script>
     <script src="sistem/geri.js"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
