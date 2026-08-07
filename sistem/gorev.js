@@ -39,12 +39,17 @@
            tamamen iki kisilik + hakem puanli — katalog disi birakildi.
            bilgiyarismasikacom SISTEME BAGLANMAZ: ogretmen sinifta uygular.) */
         { d: 'harekeavcisi.html',  ad: 'Hareke Avcısı (Tek Kişilik)' },
+        /* Alfabe Sinavi KENDI sayfasindadir (alfabesinav.html): alfabe.html
+           zaten "Yarisma" puanini raporluyor, ikisi ayri olcusun diye.
+           Her tur 20 soru x 5 puan = 100 puan. */
+        { d: 'alfabesinav.html',   ad: 'Alfabe Sınavı (20 soruluk tur)' },
         { d: 'koktengovdeye.html', ad: 'Kökten Gövdeye' },
         /* SURE TAKIPLI icerikler (Beceri • Ogretmen Ozel): puan uretmez,
            yalniz sayfada kalinan sure + oturum sayisi raporlanir. */
         { d: 'sarf.html',                 ad: 'Sarf: Kelime Fabrikası (Konu Anlatımı)', tur: 'sure' },
         { d: 'kaliplartablosu.html',      ad: 'Sarf Motoru (Kalıplar Tablosu)',          tur: 'sure' },
         { d: 'kaliplartablosumobil.html', ad: 'Sarf Motoru (Mobil)',                     tur: 'sure' },
+        { d: 'kelimecarki.html',          ad: 'Kelime Çarkı (Vezin Simülasyonu)',        tur: 'sure' },
         { d: 'okuma.html',                ad: 'Okuma',                                   tur: 'sure' },
         { d: 'dinleveyaz.html',           ad: 'Dinle ve Yaz',                            tur: 'sure' },
         { d: 'sozluksimulasyonu.html',    ad: 'Sözlük Simülasyonu',                      tur: 'sure' },
