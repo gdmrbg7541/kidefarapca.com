@@ -40,6 +40,7 @@
     sinif9:      { sinif: 9,  seviye: 1, sira: 2, soru: 72 },
     sinif10:     { sinif: 10, seviye: 2, sira: 3, soru: 64 },
     /* genel konular — her sınıfta görünür */
+    alfabe:      { sinif: 0,  seviye: 1, sira: 1, soru: 138 },
     kelimeler:   { sinif: 0,  seviye: 1, sira: 3, soru: 71 },
     edatlar:     { sinif: 0,  seviye: 2, sira: 3, soru: 25 },
     vezinler:    { sinif: 0,  seviye: 3, sira: 1, soru: 53 },

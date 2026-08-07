@@ -52,6 +52,22 @@
         { d: 'yenisozlukdedektifi.html',  ad: 'Sözlük Dedektifi',                        tur: 'sure' },
         { d: 'muhadese.html',             ad: 'Simültane Çeviri',                        tur: 'sure' }
     ];
+    /* ============ BASARI YUZDESININ PAYDASI ============
+       Ogrencinin basari yuzdesi, SADECE actigi dosyalara gore degil,
+       SISTEMDE PUAN URETEN TUM dosyalara gore hesaplanir.
+       Ornek: 9 puanli dosya var, ogrenci yalniz birinden %80 aldi ->
+       genel basari %80 degil, (80 / 9) = %9'dur. Hic girilmeyen dosya
+       0 sayilir; boylece "bir oyundan yuksek alip genel ortalamayi
+       sisirme" durumu ortadan kalkar.
+       Not: 'sure' turundeki icerikler (konu anlatimi/simulasyon) puan
+       uretmez, bu yuzden paydaya GIRMEZ. */
+    GV.puanliSayisi = function () {
+        var n = 0;
+        for (var i = 0; i < GV.OYUNLAR.length; i++)
+            if ((GV.OYUNLAR[i].tur || 'puan') !== 'sure') n++;
+        return n;
+    };
+
     /* Bir icerigin olcum turu: 'puan' (yuzde) | 'sure' (kalinan zaman). */
     GV.oyunTuru = function (d) {
         for (var i = 0; i < GV.OYUNLAR.length; i++)
@@ -213,6 +229,29 @@
         return set;
     }
 
+    /* HIC ACILMAMIS dosya icin YER TUTUCU kayit.
+       Ogretmen "neyi yapmamis" listesini de gormek ister: ogrenci bir oyunu
+       hic acmadiysa Firestore'da kaydi olmaz, dolayisiyla eskiden satir hic
+       cizilmezdi. Burada katalogdaki her dosya icin sifir degerli sahte bir
+       kayit uretiyoruz; puanli dosya %0, sure takipli dosya 0 sn gorunur.
+       _hicAcilmadi bayragi satiri sonuk cizmek ve ISTATISTIKLERE KATMAMAK
+       icin kullanilir (bkz. puanOyun sayaci). */
+    function bosKayit(uid, o) {
+        return {
+            ogrenciUid: uid, oyun: o.d, tur: (o.tur || 'puan'),
+            rekor: 0, oynama: 0, sonTarih: 0, gecmis: [], toplamSureSn: 0,
+            _hicAcilmadi: true
+        };
+    }
+    /* Ogrencinin gercek kayitlarini TUM oyun katalogu ile birlestirir. */
+    function katalogTamamla(uid, mevcut) {
+        var bulunan = {};
+        mevcut.forEach(function (r) { bulunan[r.oyun] = 1; });
+        var tam = mevcut.slice();
+        GV.OYUNLAR.forEach(function (o) { if (!bulunan[o.d]) tam.push(bosKayit(uid, o)); });
+        return tam;
+    }
+
     GV.etkinlikCiz = function () {
         var govde = document.getElementById('gvEtkGovde');
         if (!govde) return;
@@ -222,14 +261,17 @@
            verisi bu sekmede gorunmez. */
         var sinif = acikSinifOgrencileri();
         var kayitlar = GV.ilerlemeler.filter(function (r) { return sinif[r.ogrenciUid] != null; });
+        var sinifUidler = Object.keys(sinif);
 
-        if (!kayitlar.length) {
+        /* Bos durum ARTIK "kayit yok" degil, "hesabi bagli ogrenci yok"tur:
+           ogrenci varsa hic oynamamis olsa bile tum dosyalar %0 listelenir. */
+        if (!sinifUidler.length) {
             if (ozet) ozet.innerHTML = '';
             govde.innerHTML = '<div style="text-align:center; padding:30px 12px; color:#8B6A57; background:#FFF8F2;' +
                 'border:1px dashed #F0C9A6; border-radius:14px;">' +
-                '<p style="margin:0; font-size:.95rem;">Bu sınıfta henüz etkinlik kaydı yok.</p>' +
-                '<p style="margin:8px 0 0; font-size:.83rem; color:#A6836E;">Bu sınıfa kayıtlı, hesabı bağlı bir öğrenci ' +
-                'ölçülebilir oyunlardan birini oynadığında verisi kendiliğinden burada görünür.</p></div>';
+                '<p style="margin:0; font-size:.95rem;">Bu sınıfta hesabı bağlı öğrenci yok.</p>' +
+                '<p style="margin:8px 0 0; font-size:.83rem; color:#A6836E;">Bir öğrenci sınıf listesinden hesabını ' +
+                'bağladığında bütün oyun ve etkinlikler burada %0 olarak listelenir, oynadıkça kendiliğinden dolar.</p></div>';
             return;
         }
 
@@ -248,27 +290,64 @@
                 '<div style="font-size:1.7rem; font-weight:800; color:' + renk + ';">' + deger + '</div>' +
                 '<div style="font-size:.76rem; color:#8B6A57; margin-top:3px;">' + etiket + '</div></div>';
         };
+        /* Payda: sinifta kaydi olan ogrenci sayisi x sistemdeki puanli dosya
+           sayisi. Boylece sinif ortalamasi da "acilan dosya" degil "tum
+           dosyalar" uzerinden cikar. */
+        var puanliTum = GV.puanliSayisi(), ogrN = Object.keys(uidler).length;
+        var sinifN = sinifUidler.length;   /* hic oynamamis ogrenci de paydadadir */
         if (ozet) ozet.innerHTML =
-            kutu(Object.keys(uidler).length, 'etkin öğrenci', '#D84315') +
+            kutu(ogrN + '/' + sinifN, 'etkin öğrenci', '#D84315') +
             kutu(toplamOyun, 'toplam oynama', '#B7950B') +
-            kutu(puanN ? '%' + Math.round(rekorTop / puanN) : '—', 'ortalama rekor', '#16A085') +
+            kutu(sinifN && puanliTum ? '%' + Math.round(rekorTop / (sinifN * puanliTum)) : '—',
+                 'genel başarı (' + puanliTum + ' dosya üzerinden)', '#16A085') +
             kutu(Object.keys(sonHafta).length, 'son 7 günde oynayan', '#7B1FA2');
 
         /* ogrenci kartlari (ad, sinif listesindeki satirdan gelir) */
         var grup = {};
+        /* Once SINIFIN TUM ogrencileri: hic kaydi olmayan ogrenci de kartini alir. */
+        sinifUidler.forEach(function (uid) {
+            grup[uid] = { ad: sinif[uid] || uidAdBul(uid) || 'Öğrenci', oyunlar: [] };
+        });
         kayitlar.forEach(function (r) {
             if (!grup[r.ogrenciUid]) grup[r.ogrenciUid] = { ad: sinif[r.ogrenciUid] || uidAdBul(r.ogrenciUid) || r.ad || r.email || 'Öğrenci', oyunlar: [] };
             grup[r.ogrenciUid].oyunlar.push(r);
         });
+        /* Sonra HER ogrencinin listesini tum katalogla tamamla: acmadigi
+           oyun/etkinlik de %0 (veya 0 sn) satiri olarak gorunsun. */
+        Object.keys(grup).forEach(function (uid) {
+            grup[uid].oyunlar = katalogTamamla(uid, grup[uid].oyunlar);
+        });
         GV._etkAcik = GV._etkAcik || {};   /* hangi ogrenci akordiyonu acik? */
         govde.innerHTML = Object.keys(grup).map(function (uid) {
             var o = grup[uid];
-            o.oyunlar.sort(function (a, b) { return (b.sonTarih || 0) - (a.sonTarih || 0); });
-            var tOyun = 0, rTop = 0, ayTop = 0, sonT = 0, puanOyun = 0;
+            /* ONCE oynananlar (en yeni ustte), SONRA hic acilmamislar (katalog sirasi) */
+            o.oyunlar.sort(function (a, b) {
+                var fa = a._hicAcilmadi ? 1 : 0, fb = b._hicAcilmadi ? 1 : 0;
+                if (fa !== fb) return fa - fb;
+                return (b.sonTarih || 0) - (a.sonTarih || 0);
+            });
+            var tOyun = 0, rTop = 0, ayTop = 0, sonT = 0, puanOyun = 0, sureGercek = 0;
             var satirlar = o.oyunlar.map(function (r) {
                 tOyun += (r.oynama || 0);
                 if ((r.sonTarih || 0) > sonT) sonT = r.sonTarih;
+                /* HIC ACILMAMIS satir: sonuk, %0 / 0 sn — istatistige katilmaz */
+                if (r._hicAcilmadi) {
+                    var sureMi = (r.tur === 'sure');
+                    return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px dashed #F3E2D3;' +
+                        ' flex-wrap:wrap; opacity:.62;" title="Bu öğrenci bu dosyayı hiç açmadı.">' +
+                        '<span style="flex:1; min-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
+                        'font-size:.86rem; color:#8B6A57;">' + esc(oyunAdi(r.oyun)) + '</span>' +
+                        (sureMi
+                            ? '<span style="font-weight:800; color:#95A5A6; display:inline-flex; align-items:center; gap:5px;">' +
+                              gIkon('saat') + ' 0 sn</span>'
+                            : '<span style="width:52px; text-align:right; font-weight:800; color:#95A5A6;">%0</span>') +
+                        '<span style="width:' + (sureMi ? '190' : '170') + 'px; text-align:right; font-size:.73rem; color:#B9987F;">' +
+                        'hiç açılmadı</span>' +
+                        (sureMi ? '' : '<span style="width:96px; text-align:right; font-size:.73rem; color:#B9987F;">0 oyun</span>') +
+                        '</div>';
+                }
                 if (r.tur === 'sure') {
+                    sureGercek++;
                     /* SURE TAKIPLI icerik satiri: yuzde/grafik yok — kalinan sure */
                     return '<div style="display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px dashed #F3E2D3; flex-wrap:wrap;">' +
                         '<span style="flex:1; min-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' +
@@ -295,9 +374,13 @@
                     '<span style="width:96px; text-align:right; font-size:.73rem; color:#A6836E;">' + (r.oynama || 0) + ' oyun' +
                     (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
-            var ortRekor = puanOyun ? Math.round(rTop / puanOyun) : 0;
+            /* payda = sistemdeki TUM puanli dosyalar (girilmeyenler 0 sayilir) */
+            var puanliTumO = GV.puanliSayisi();
+            var ortRekor = puanliTumO ? Math.round(rTop / puanliTumO) : 0;
             var oRenk = ortRekor >= 85 ? '#1E8449' : (ortRekor >= 50 ? '#B7950B' : '#C0392B');
-            var ozetGorsel = puanOyun ? pastaHalka(ortRekor, oRenk)
+            /* Saat ikonu SADECE gercekten yalniz sure takipli kaydi olan
+               ogrenci icindir. Hic kaydi olmayan ogrenci %0 halkasi gorur. */
+            var ozetGorsel = (puanOyun || !sureGercek) ? pastaHalka(ortRekor, oRenk)
                 : '<span style="display:inline-flex; width:46px; height:46px; align-items:center;' +
                   ' justify-content:center; font-size:1.9rem; flex:none;" title="Yalnız süre takipli içerik">' + gIkon('saat') + '</span>';
             return '<details class="profile-accordion gv-etk-akor" data-uid="' + uid + '"' + (GV._etkAcik[uid] ? ' open' : '') +
@@ -307,8 +390,10 @@
                 ozetGorsel +
                 '<span style="flex:1; min-width:150px;">' +
                 '<span style="display:block; font-size:1.02rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
-                '<span style="display:block; font-size:.76rem; color:#A6836E; margin-top:2px;">' + o.oyunlar.length +
-                ' oyun · ' + tOyun + ' oynama · son etkinlik ' + trTarih(sonT) + '</span></span>' +
+                '<span style="display:block; font-size:.76rem; color:#A6836E; margin-top:2px;" ' +
+                'title="Başarı yüzdesi sistemdeki ' + puanliTumO + ' puanlı dosyanın tamamı üzerinden hesaplanır; ' +
+                'girilmeyen dosya 0 sayılır.">' + puanOyun + '/' + puanliTumO + ' puanlı dosya · ' +
+                tOyun + ' oynama · son etkinlik ' + trTarih(sonT) + '</span></span>' +
                 (ayTop > 0 ? '<span title="Son 30 günde rekor gelişimi" style="background:#E8F8F2; color:#16A085; font-weight:800;' +
                     ' font-size:.74rem; padding:4px 9px; border-radius:20px; white-space:nowrap;">30 günde +' + ayTop + '</span>' : '') +
                 '<span class="acc-chevron" style="color:#D84315; font-size:1.1rem; transition:transform .2s;">▸</span></summary>' +
@@ -1147,7 +1232,7 @@
             var toplamOyun = 0, rekorToplam = 0, ayToplam = 0;
             var satirlar = o.oyunlar.map(function (r) {
                 toplamOyun += (r.oynama || 0);
-                rekorToplam += (r.rekor || 0);
+                if ((r.tur || 'puan') !== 'sure') rekorToplam += (r.rekor || 0);
                 var fark = sonAyFarki(r.gecmis, r.rekor);
                 ayToplam += fark;
                 var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
@@ -1159,12 +1244,16 @@
                     '<span style="width:88px; text-align:right; font-size:.74rem; color:#A6836E;">' +
                     (r.oynama || 0) + ' oyun' + (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
-            var ortRekor = o.oyunlar.length ? Math.round(rekorToplam / o.oyunlar.length) : 0;
+            /* payda = sistemdeki TUM puanli dosyalar (bkz. GV.puanliSayisi) */
+            var puanliTumI = GV.puanliSayisi();
+            var ortRekor = puanliTumI ? Math.round(rekorToplam / puanliTumI) : 0;
             return '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
                 'margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
                 '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;">' +
                 '<span style="font-size:1rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
-                '<span style="font-size:.76rem; color:#A6836E;">ort. rekor <b style="color:#B34700;">%' + ortRekor +
+                '<span style="font-size:.76rem; color:#A6836E;" title="' + puanliTumI +
+                ' puanlı dosyanın tamamı üzerinden; girilmeyen dosya 0 sayılır.">genel başarı ' +
+                '<b style="color:#B34700;">%' + ortRekor +
                 '</b> · ' + toplamOyun + ' oynama' +
                 (ayToplam > 0 ? ' · 30 günde <b style="color:#16A085;">+' + ayToplam + '</b> puan' : '') + '</span></div>' +
                 satirlar + '</div>';
