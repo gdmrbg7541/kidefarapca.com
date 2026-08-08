@@ -44,6 +44,10 @@
            Her tur 20 soru x 5 puan = 100 puan. */
         { d: 'alfabesinav.html',   ad: 'Alfabe Sınavı (20 soruluk tur)' },
         { d: 'koktengovdeye.html', ad: 'Kökten Gövdeye' },
+        /* Tamlama ve Cumleler sayfasindaki TEST paneli. Sayfanin kendisi
+           anlatim/zoom ekranidir; puani YALNIZ "Test" turundan gelir.
+           Her tur 10 soru x 10 puan = 100 puan. */
+        { d: 'tamlamavecumleler.html', ad: 'Tamlama ve Cümleler Testi (10 soruluk tur)' },
         /* SURE TAKIPLI icerikler (Beceri • Ogretmen Ozel): puan uretmez,
            yalniz sayfada kalinan sure + oturum sayisi raporlanir. */
         { d: 'sarf.html',                 ad: 'Sarf: Kelime Fabrikası (Konu Anlatımı)', tur: 'sure' },

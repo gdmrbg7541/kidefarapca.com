@@ -72,7 +72,46 @@ window.kidefGeriDon = kidefGeri;         // geriye donuk uyum: eski cagrilar art
 
 // --- Her sayfaya "Anasayfa" (ev) tusunu otomatik ekle ---
 (function () {
-    var HOME_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.35em;height:1.35em;vertical-align:middle;pointer-events:none;" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>';
+    /* İkonlar dolu (filled) glif değil, ÇİZGİ (stroke) — sitenin geri
+       kalanındaki simgelerle aynı dil. Renk currentColor'dan gelir,
+       böylece hangi düğmeye konursa onun rengini alır.
+         EV  : yuvarlatılmış çatı + kapı; klasik dolu ev glifi kaba duruyordu.
+         GERİ: gövdeli sol ok; tek başına "❮" çentiği zayıf kalıyordu. */
+    var HOME_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:1.3em;height:1.3em;vertical-align:middle;pointer-events:none;overflow:visible;" aria-hidden="true"><path d="M3.4 10.5 12 3.5l8.6 7"></path><path d="M5.4 9.4V19a1.5 1.5 0 0 0 1.5 1.5h10.2a1.5 1.5 0 0 0 1.5-1.5V9.4"></path><path d="M9.6 20.5v-5a1.3 1.3 0 0 1 1.3-1.3h2.2a1.3 1.3 0 0 1 1.3 1.3v5"></path></svg>';
+    var GERI_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:1.15em;height:1.15em;vertical-align:middle;pointer-events:none;overflow:visible;" aria-hidden="true"><path d="M20 12H5.4"></path><path d="M11.8 5.6 5 12l6.8 6.4"></path></svg>';
+
+    /* Sayfalardaki geri düğmelerinde çıplak "❮ ‹ < ⟨" karakteri varsa
+       onu çizgi okla değiştir. YALNIZ metni tek bir çentik olan
+       düğmelere dokunulur; yazılı düğmeler ("❮ Geri") olduğu gibi kalır. */
+    var CENTIK = /^[\s]*[\u276E\u2039\u003C\u27E8\u25C0\u2190\u00AB]{1,2}[\s]*$/;
+    function geriIkonuYenile() {
+        var sec = '.back-btn,.back-button,.back-link,#back-btn,#back-button,#start-back-button,' +
+                  '.entry-back-btn,#btn-back,.tc-geri,' +
+                  '[aria-label="Geri"],[title="Geri"],' +
+                  '[onclick*="kidefGeriDon"],[onclick*="kidefGeri"],' +
+                  '[onclick*="goHome"],[onclick*="kelimeGeri"],[onclick*="muhGeri"]';
+        var list;
+        try { list = document.querySelectorAll(sec); } catch (_) { return; }
+        for (var i = 0; i < list.length; i++) {
+            var el = list[i];
+            if (el.getAttribute('data-kidef-home')) continue;      /* ev tuşuna dokunma */
+            if (el.getAttribute('data-kidef-ok')) continue;
+            /* Zaten yeni ok konmuşsa geç. Eski simge SVG de olsa değişir:
+               kullanıcı "geri svg'si çirkin" dedi, mesele tam olarak o.
+               Yazılı düğmelere ("❮ Geri") dokunulmaz. */
+            if (el.querySelector && el.querySelector('path[d="M20 12H5.4"]')) continue;
+            var yazi = (el.textContent || '').trim();
+            var yalnizSimge = (yazi === '') && el.querySelector && !!el.querySelector('svg');
+            if (!yalnizSimge && !CENTIK.test(yazi)) continue;
+            el.setAttribute('data-kidef-ok', '1');
+            el.innerHTML = GERI_SVG;
+            var cs = window.getComputedStyle(el);
+            if ((parseFloat(cs.fontSize) || 0) < 12) el.style.fontSize = '1.25rem';
+            el.style.display = cs.display === 'inline' ? 'inline-flex' : cs.display;
+            el.style.alignItems = 'center';
+            el.style.justifyContent = 'center';
+        }
+    }
 
     function ensureStyle() {
         if (document.getElementById('kidef-home-style')) return;
@@ -145,6 +184,10 @@ window.kidefGeriDon = kidefGeri;         // geriye donuk uyum: eski cagrilar art
         for (var j = 0; j < hedef.length; j++) { yerlestir(hedef[j], evYap(hedef[j])); }
     }
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ekle);
-    else ekle();
+    function hepsi() { ekle(); geriIkonuYenile(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hepsi);
+    else hepsi();
+    /* Bazı sayfalar geri düğmesini sonradan basıyor; bir tur daha bak. */
+    setTimeout(hepsi, 700);
+    window.kidefIkonYenile = hepsi;
 })();
