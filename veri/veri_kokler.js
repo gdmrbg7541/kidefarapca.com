@@ -6266,17 +6266,18 @@ const wordEasterEggs = {
 
         // --- 42 Numaralı Kalıp (فُعُل + ة) ---
         42: { 
-            base: { arText: "جُمُع" },
-            suggestsPlus: true,
-            "ة": {
+            /* Kelime doğrudan "جُمُعَة" olarak veriliyor: eskiden gövde
+               "جُمُع" idi, tâ-i merbûta "+ ة" eki olarak ayrı gösteriliyordu.
+               Öğrenci kelimeyi bütün hâliyle görsün diye ek kaldırıldı. */
+            base: { 
                 emoji: "🕋", 
                 arText: "جُمُعَة", 
                 trText: "Cuma / Toplanma günü.",
                 ornek: { 
-                    ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِنْ يَوْمِ الْجُمُعَةِ...", 
+                    ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِنْ يَوْمِ الْجُمُعَةِ...", 
                     tr: "Ey iman edenler! Cuma günü namaz için çağrı yapıldığında... (Cuma Suresi, 9)" 
                 }
-            } 
+            }
         },
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - İfti'âl Babı Mazi) ---
