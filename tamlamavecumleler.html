@@ -211,8 +211,10 @@ body{
 /* Halka bir İŞARETTİR, içerik değil: ölçekle birlikte şişmesin diye
    kalınlığı geçerli yakınlık oranına bölünür. */
 .tc-tablo td.tc-secili{
-  outline:calc(3px / var(--z,1)) solid var(--satir-renk);
-  outline-offset:calc(-3px / var(--z,1));
+  /* outline-width'in 1px alt sınırı var: 3px/3.59 = 0.84px yukarı
+     yuvarlanıp 1px oluyor, ekranda 3px yerine ölçek kadar (2.7-3.6px)
+     çiziliyordu. box-shadow inset'te böyle bir alt sınır yok. */
+  box-shadow:inset 0 0 0 calc(3px / var(--z,1)) var(--satir-renk);
   background:#FBFDFF;
 }
 .tc-tablo{
@@ -251,16 +253,50 @@ body{
 }
 .tc-kum-uzak:hover{ filter:brightness(1.12); transform:translateY(-1px); }
 .tc-kum-ikon{ font-size:1.1em; line-height:1; display:inline-block; transform:rotate(90deg); }
-.tc-kum-bilgi{ display:flex; align-items:center; gap:8px; min-width:0; }
-.tc-kum-tur{
-  background:var(--odak-renk,#999); color:#fff; font-weight:700;
-  padding:4px 11px; border-radius:8px; font-size:clamp(.72rem,1.75vh,.98rem); white-space:nowrap;
-}
-.tc-kum-alan{
-  color:var(--kirmizi); font-weight:700; white-space:nowrap;
-  font-size:clamp(.74rem,1.8vh,1.02rem); overflow:hidden; text-overflow:ellipsis; max-width:34vw;
-}
 .tc-kum-sayac{ color:#8A94A3; font-weight:700; font-size:clamp(.7rem,1.6vh,.9rem); white-space:nowrap; }
+
+/* --- BÜYÜTME BAŞLIKLARI: kutunun üstünde sütun, solunda satır adı ---
+   Konum JS'ten translate ile veriliyor (sol/üst 0'da duruyorlar), böylece
+   tablonun kendi geçişiyle aynı eğride kayıyorlar. Üst başlık gerçek
+   <th> gibi, sol başlık satırın renk şeridi gibi görünsün diye
+   kasıtlı olarak farklı biçimlendirildi. */
+.tc-bas{
+  position:fixed; left:0; top:0; z-index:54; pointer-events:none;
+  opacity:0; white-space:nowrap; font-weight:700;
+  transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .22s ease-out;
+  will-change:transform;
+}
+.tc-bas.tc-anisiz{ transition:opacity .22s ease-out; }
+body.tc-yakin .tc-bas{ opacity:1; }
+.tc-bas-ust{
+  background:#EFF2F6; color:var(--kirmizi);
+  border:2px solid var(--cerceve); border-radius:10px;
+  padding:6px 16px; font-size:clamp(.8rem,2vh,1.25rem);
+  box-shadow:0 6px 18px rgba(15,23,42,.14);
+}
+.tc-bas-sol{
+  background:var(--odak-renk,#16A085); color:#fff;
+  border-radius:10px; padding:18px 9px;
+  box-shadow:0 6px 18px rgba(15,23,42,.2);
+  /* Yükseklik JS'ten kutunun boyuna eşitleniyor; genişlik ise BURADAN
+     açıkça veriliyor. Genişliği içeriğe bırakırsak dikey yazının satır
+     kutusu kadar (~33px) kalıyor ve şerit incecik görünüyordu. Açık
+     genişlik ayrıca yazı tipi değişse de şeridi aynı bırakır. */
+  width:clamp(54px,6.8vh,78px);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .22s ease-out,
+             background-color .25s ease-out;
+}
+/* Aşağıdan yukarı okunan dikey yazı.
+   DİKKAT — line-height burada satırın GENİŞLİĞİdir (dikey yazıda
+   satır kutusu yana doğru açılır). Arakom'un latin harfleri punto
+   başına ~1.5 kat yer kaplıyor; 1.1 gibi bir değer satır kutusunu
+   harflerden dar yapıp yazıyı kırpıyordu. Payı bol bırakıyoruz. */
+.tc-bas-dik{
+  display:block; writing-mode:vertical-rl; transform:rotate(180deg);
+  font-size:clamp(.78rem,1.9vh,1.15rem); line-height:1.85; letter-spacing:.02em;
+  overflow:visible;
+}
 .tc-kum-nav{ display:flex; gap:7px; }
 .tc-nav{
   border:0; border-radius:999px; cursor:pointer; font-family:inherit; font-weight:700;
@@ -274,7 +310,6 @@ body{
 @media (max-width:620px){
   .tc-kum{ left:8px; right:8px; bottom:8px; transform:translate(0,140%); justify-content:center; }
   .tc-kum.gor{ transform:translate(0,0); }
-  .tc-kum-alan{ max-width:52vw; }
 }
 
 /* --- ÖRNEK hücresi yakınken: çeşit gezintisi hücrenin İÇİNDE --- */
@@ -775,6 +810,11 @@ td.tc-secili .tc-cesit-not{ display:block; }
   .tc-turad, .tc-ceviri{ font-size:1rem; }
   .tc-w-tur, .tc-w-ne, .tc-w-oge, .tc-w-uyum, .tc-w-dikkat, .tc-w-ornek{ width:auto; }
   .tc-irab{ min-width:560px; }
+  /* Dar ekranda sütun adı zaten kutunun içinde yazıyor (td::before),
+     üstte ikinci kez göstermek gereksiz tekrar olur. Sol başlık kalır;
+     seçili kutuya ona yer açacak kadar iç boşluk verilir. */
+  .tc-bas-ust{ display:none; }
+  .tc-yakin .tc-tablo td.tc-secili{ padding-left:52px; transition:padding-left .3s ease-out; }
 }
 </style>
 </head>
@@ -783,7 +823,8 @@ td.tc-secili .tc-cesit-not{ display:block; }
 <header class="tc-ust">
   <a href="index.html" class="tc-geri" id="tcGeri" title="Geri" aria-label="Geri">&#10094;</a>
   <h1 class="tc-ustad"><span class="tc-emoji">🦾</span> Pekiştirelim – Tamlama ve Cümleler</h1>
-  <button type="button" class="tc-irab-ac" id="tcSunum" title="Kutuları sırayla büyüterek anlat (→ tuşu)">▶ Anlatım</button>
+  <!-- "Anlatım" düğmesi kaldırıldı: büyütme artık düğmeyle değil,
+       doğrudan kutuya dokunarak başlıyor. -->
   <button type="button" class="tc-irab-ac" id="tcIrabAc">📐 İ'rab</button>
 </header>
 
@@ -1000,16 +1041,25 @@ td.tc-secili .tc-cesit-not{ display:block; }
   <button type="button" class="tc-kum-uzak" id="tcUzak" title="Uzaklaş (Esc)">
     <span class="tc-kum-ikon">⤢</span> Uzaklaş
   </button>
-  <span class="tc-kum-bilgi">
-    <span class="tc-kum-tur" id="tcOdakTur">İsim Tamlaması</span>
-    <span class="tc-kum-alan" id="tcOdakAlan">Ne işe yarar?</span>
-  </span>
+  <!-- Satır/sütun adı artık burada değil, büyütülen kutunun kenarında
+       duruyor (bkz. #tcBasUst / #tcBasSol) — şeritte tekrar etmesin. -->
   <span class="tc-kum-sayac" id="tcOdakSayac">1 / 20</span>
   <span class="tc-kum-nav">
     <button type="button" class="tc-nav tc-nav-geri" id="tcOnceki">&#10094; Geri</button>
     <button type="button" class="tc-nav" id="tcSonraki">İleri &#10095;</button>
   </span>
 </div>
+
+<!-- ============ BÜYÜTME BAŞLIKLARI ============
+     Bir kutu büyütülünce hangi satır–sütun kesişiminde olduğu
+     görünsün diye kutunun ÜSTÜNE sütun adı, SOLUNA satır adı
+     konur. Soldaki yazı aşağıdan yukarı okunur (kitap sırtı gibi).
+     Örnek: "İsim Cümlesi" satırındaki "Uyum" kutusuna dokununca
+     solda İsim Cümlesi, üstte Uyum yazar.
+     Dar ekranda sütun adı zaten kutunun içinde (td::before) yazdığı
+     için orada yalnız SOL başlık gösterilir. -->
+<div class="tc-bas tc-bas-ust" id="tcBasUst" aria-hidden="true"></div>
+<div class="tc-bas tc-bas-sol" id="tcBasSol" aria-hidden="true"><span class="tc-bas-dik" id="tcBasSolYazi"></span></div>
 
 <!-- ============ TERİM BİLGİ BALONU ============ -->
 <div class="tc-bp-perde" id="tcBpPerde" aria-hidden="true">
@@ -2058,13 +2108,13 @@ td.tc-secili .tc-cesit-not{ display:block; }
   var sahne  = document.querySelector('.tc-sar');
   var tablo  = document.querySelector('.tc-tablo');
   var kum    = document.getElementById('tcKum');
-  var turEl  = document.getElementById('tcOdakTur');
-  var alanEl = document.getElementById('tcOdakAlan');
   var sayacEl= document.getElementById('tcOdakSayac');
+  var basUst = document.getElementById('tcBasUst');
+  var basSol = document.getElementById('tcBasSol');
+  var basSolYazi = document.getElementById('tcBasSolYazi');
   var uzak   = document.getElementById('tcUzak');
   var ileri  = document.getElementById('tcSonraki');
   var geri   = document.getElementById('tcOnceki');
-  var sunum  = document.getElementById('tcSunum');
 
   var satirlar = [].slice.call(document.querySelectorAll('.tc-satir'));
   if (!satirlar.length || !sahne || !tablo) return;
@@ -2130,6 +2180,13 @@ td.tc-secili .tc-cesit-not{ display:block; }
   var BOSLUK = 26;   /* hücrenin kenarında bırakılan pay (px) */
   var ALT    = 86;   /* altta kumanda şeridine ayrılan yer (px) */
 
+  /* Başlık ile kutu çizgisi arasındaki pay. Sol rozet dolu renkli bir
+     blok olduğu için aynı payda çizgiye yapışmış gibi duruyor; ona bir
+     tık daha yer veriliyor ki iki başlık da çizgiden ayrı okunsun. */
+  var ARA = 18;
+  var ARA_SOL = 26;
+  var darZaman = 0;  /* dar ekranda kaydırma bitişini bekleyen sayaç */
+
   function darMi() { return window.innerWidth <= 900; }
   function azaltMi() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function renk(tr) { return getComputedStyle(tr).getPropertyValue('--satir-renk').trim(); }
@@ -2145,6 +2202,10 @@ td.tc-secili .tc-cesit-not{ display:block; }
       tablo.style.transform = '';
       tablo.style.removeProperty('--z');
       adimlar[n].td.scrollIntoView({ behavior: azaltMi() ? 'auto' : 'smooth', block:'center' });
+      /* kaydırma bitince başlığı kutunun yeni yerine taşı */
+      etiketleriTazele(true);
+      if (darZaman) clearTimeout(darZaman);
+      darZaman = setTimeout(function () { darZaman = 0; etiketleriTazele(true); }, 420);
       return;
     }
     var td = adimlar[n].td;
@@ -2172,26 +2233,88 @@ td.tc-secili .tc-cesit-not{ display:block; }
     if (!kw || !kh) { tablo.classList.remove('tc-anisiz'); return; }
 
     /* Çerçeve altta kumanda şeridine yer bırakır; hücre onun ÜSTÜNDE
-       ortalanır, yoksa örnek kutusunun alt oku şeridin altında kalıyor. */
-    var enG = sh.width - 2 * BOSLUK;
-    var enY = sh.height - BOSLUK - ALT;
+       ortalanır, yoksa örnek kutusunun alt oku şeridin altında kalıyor.
+       Ayrıca ÜSTTE sütun başlığına, SOLDA satır başlığına pay ayrılır —
+       yoksa büyüyen kutu ekranı doldurup başlıkların altına giriyor.
+       Paylar başlıkların o anki gerçek ölçüsünden okunuyor. */
+    var UST_PAY = (basUst && getComputedStyle(basUst).display !== 'none')
+                  ? basUst.offsetHeight + ARA + 6 : 0;
+    var SOL_PAY = basSol ? basSol.offsetWidth + ARA_SOL + 6 : 0;
+
+    var enG = sh.width - 2 * BOSLUK - SOL_PAY;
+    var enY = sh.height - BOSLUK - ALT - UST_PAY;
     var o = Math.min(enG / kw, enY / kh);
     o = Math.max(1, Math.min(EN_COK, o));
 
     var hx = (x1 + x2) / 2 - t.left, hy = (y1 + y2) / 2 - t.top;
-    var mx = sh.left + sh.width / 2;
-    var my = sh.top + BOSLUK + enY / 2;
+    var mx = sh.left + sh.width / 2 + SOL_PAY / 2;
+    var my = sh.top + BOSLUK + UST_PAY + enY / 2;
     var dx = mx - t.left - o * hx;
     var dy = my - t.top  - o * hy;
 
     tablo.style.setProperty('--z', o);
     tablo.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + o + ')';
     if (anisiz || azaltMi()) { void tablo.offsetWidth; tablo.classList.remove('tc-anisiz'); }
+
+    /* Başlıklar kutunun VARACAĞI yere şimdiden konur. transform-origin
+       0 0 olduğu için son köşeler doğrudan hesaplanabiliyor; böylece
+       başlıklar tabloyla aynı geçişte, aynı anda kayıyor. */
+    etiketleriKoy(
+      t.left + dx + o * (x1 - t.left),
+      t.top  + dy + o * (y1 - t.top),
+      t.left + dx + o * (x2 - t.left),
+      t.top  + dy + o * (y2 - t.top),
+      anisiz || azaltMi()
+    );
   }
 
   function kameraGeri() {
     tablo.style.transform = '';
     tablo.style.removeProperty('--z');
+  }
+
+  /* ---- BÜYÜTME BAŞLIKLARI ----
+     Kutunun EKRANDAKİ son köşeleri veriliyor; üst başlık kutunun
+     üstüne yatayda ortalı, sol başlık soluna dikeyde ortalı konur.
+     İkisi de sahnenin dışına taşmayacak şekilde kırpılır — büyütülen
+     kutu ekranı neredeyse doldurduğu için bu sınır sık devreye girer. */
+  function etiketleriKoy(x1, y1, x2, y2, anisiz) {
+    if (!basUst || !basSol) return;
+    basUst.classList.toggle('tc-anisiz', !!anisiz);
+    basSol.classList.toggle('tc-anisiz', !!anisiz);
+    var sh = sahne.getBoundingClientRect();
+    var ust = sh.top;
+    var bar = document.querySelector('.tc-ust');
+    if (bar) ust = Math.max(ust, bar.getBoundingClientRect().bottom);
+
+    if (getComputedStyle(basUst).display !== 'none') {
+      var uw = basUst.offsetWidth, uh = basUst.offsetHeight;
+      var ux = (x1 + x2) / 2 - uw / 2;
+      ux = Math.max(sh.left + 6, Math.min(ux, sh.right - uw - 6));
+      var uy = Math.max(ust + 4, y1 - uh - ARA);
+      basUst.style.transform = 'translate(' + Math.round(ux) + 'px,' + Math.round(uy) + 'px)';
+    }
+
+    /* Sol rozet, etiketlediği KUTUNUN BOYUNDA bir şerit olsun.
+       İçeriğe göre boyutlanınca satır adı uzunluğuna göre kısalıp
+       uzuyor ("dolgu daralıyor"); kutuya eşitlenince hep aynı şeyi
+       kaplıyor ve yazı ortasında duruyor. Ekrandan taşmasın diye
+       sahne sınırlarına kırpılır. */
+    var enUst = ust + 4, enAlt = sh.bottom - 4;
+    var sYuk = Math.min(y2 - y1, enAlt - enUst);
+    basSol.style.height = Math.round(sYuk) + 'px';
+    var sw = basSol.offsetWidth;
+    var sx = Math.max(sh.left + 4, x1 - sw - ARA_SOL);
+    var sy = (y1 + y2) / 2 - sYuk / 2;
+    sy = Math.max(enUst, Math.min(sy, enAlt - sYuk));
+    basSol.style.transform = 'translate(' + Math.round(sx) + 'px,' + Math.round(sy) + 'px)';
+  }
+
+  /* Dar ekranda ölçekleme yok; kutunun gerçek yerinden okunur. */
+  function etiketleriTazele(anisiz) {
+    var a = adimlar[i]; if (!a) return;
+    var r = a.td.getBoundingClientRect();
+    etiketleriKoy(r.left, r.top, r.right, r.bottom, anisiz);
   }
 
   /* ---- örnek çeşidi: hücrenin İÇİNE yazılır ---- */
@@ -2230,9 +2353,12 @@ td.tc-secili .tc-cesit-not{ display:block; }
 
     var r = renk(a.tr);
     kum.style.setProperty('--odak-renk', r);
-    turEl.textContent = turAdi(a.tr);
-    alanEl.textContent = a.td.getAttribute('data-bas');
     sayacEl.textContent = (i + 1) + ' / ' + adimlar.length;
+
+    /* Üstte sütun (kutunun kendi başlığı), solda satır (tamlama türü). */
+    if (basUst) basUst.textContent = a.td.getAttribute('data-bas') || '';
+    if (basSolYazi) basSolYazi.textContent = turAdi(a.tr);
+    if (basSol) basSol.style.setProperty('--odak-renk', r);
 
     /* Son sütun ÖRNEK: hücrenin içeriği çeşitle değiştirilir. */
     var ornekMi = a.asil.indexOf('tc-ornek') >= 0;
@@ -2286,7 +2412,6 @@ td.tc-secili .tc-cesit-not{ display:block; }
     if (ok) { e.stopPropagation(); cesitGit(+ok.getAttribute('data-yon')); }
   });
 
-  sunum.addEventListener('click', function () { git(i < 0 ? 0 : i); });
   ileri.addEventListener('click', function () { git(i + 1); });
   geri.addEventListener('click', function () { git(i - 1); });
   uzak.addEventListener('click', uzaklas);
@@ -2299,6 +2424,11 @@ td.tc-secili .tc-cesit-not{ display:block; }
       if (i >= 0) kamera(i, true);
     }, 160);
   });
+
+  /* Dar ekranda sayfa kaydıkça başlık kutuyla birlikte yürüsün. */
+  function kaymaTazele() { if (i >= 0 && darMi()) etiketleriTazele(true); }
+  window.addEventListener('scroll', kaymaTazele, { passive: true });
+  sahne.addEventListener('scroll', kaymaTazele, { passive: true });
 
   document.addEventListener('keydown', function (e) {
     /* İ'rab paneli açıksa klavye ona ait; burası karışmaz. */
