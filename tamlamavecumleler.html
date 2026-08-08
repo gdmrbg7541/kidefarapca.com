@@ -52,6 +52,7 @@
   --c-sifattam:#8B1A1A;
   --c-isimcum:#7C8794;
   --c-fiilcum:#9C0F9C;
+  --tc-sure:1.5s;            /* yakınlaşma süresi — tablo ve başlıklar aynı ritmi tutsun */
 }
 
 *{ box-sizing:border-box; }
@@ -210,6 +211,7 @@ body{
 .tc-satir td[data-bas]{ cursor:zoom-in; }
 /* Halka bir İŞARETTİR, içerik değil: ölçekle birlikte şişmesin diye
    kalınlığı geçerli yakınlık oranına bölünür. */
+.tc-tablo td{ transition:box-shadow var(--tc-sure,1s) ease-out; }
 .tc-tablo td.tc-secili{
   /* outline-width'in 1px alt sınırı var: 3px/3.59 = 0.84px yukarı
      yuvarlanıp 1px oluyor, ekranda 3px yerine ölçek kadar (2.7-3.6px)
@@ -219,18 +221,40 @@ body{
 }
 .tc-tablo{
   transform-origin:0 0;
-  transition:transform .42s cubic-bezier(.22,1,.36,1);
-  will-change:transform;
+  transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1);
 }
+/* NETLİK: will-change:transform tabloyu kalıcı bir GPU katmanına alıyor;
+   katman 1x'te taranıp sonra büyütüldüğü için yazılar bulanık kalıyordu.
+   Katmanı yalnız hareket SÜRESİNCE açıyoruz — hareket bitince sınıf
+   kalkıyor, tarayıcı tabloyu son ölçeğinde yeniden tarıyor ve yazı
+   net çıkıyor. */
+.tc-tablo.tc-hareket{ will-change:transform; }
 .tc-tablo.tc-anisiz{ transition:none; }
 /* Yakınken çevredeki hücreler soluklaşsın ki göz odağı kaybetmesin. */
-.tc-yakin .tc-tablo td{ transition:opacity .3s ease-out, filter .3s ease-out; }
-.tc-yakin .tc-tablo td:not(.tc-secili){ opacity:.34; filter:saturate(.55); }
-.tc-yakin .tc-tablo thead{ opacity:.34; transition:opacity .3s ease-out; }
+/* Kutudan kutuya geçişte solma/renk değişimi de tablonun hareketiyle
+   aynı sürede olsun; yoksa vurgu 0.3sn'de atlayıp kamera 1sn kayıyor
+   ve geçiş iki parçaya bölünmüş gibi duruyordu. */
+.tc-yakin .tc-tablo td{ transition:opacity var(--tc-sure,1s) ease-out,
+                        filter var(--tc-sure,1s) ease-out,
+                        box-shadow var(--tc-sure,1s) ease-out; }
+/* ODAK NETLİĞİ: çevredeki kutular .34 opaklıkta hâlâ okunuyordu ve
+   büyütülen kutunun kenarından sızıp gözü dağıtıyordu. Çok daha
+   silik bırakılıyor — tablonun düzeni seçiliyor ama yazılar
+   okunmuyor, odak tek kutuda kalıyor. */
+.tc-yakin .tc-tablo td:not(.tc-secili){ opacity:.13; filter:saturate(.3); }
+/* Yakınken tablo başlık satırı tamamen sönsün: sütun adı zaten üstte
+   rozet olarak duruyor, soluk hâli özellikle ilk satırda büyütülen
+   kutunun arkasından sızıp okunuyordu. display:none DEĞİL — tablonun
+   geometrisi değişirse kamera hesabı kayar. */
+.tc-yakin .tc-tablo thead{ opacity:0; transition:opacity var(--tc-sure,1s) ease-out; }
 .tc-yakin .tc-satir td[data-bas]{ cursor:zoom-out; }
 /* Yakınken hücre kendi kabuğunu doldursun: satır/sütun oranı bozulmasın
    diye içerik dikeyde ortalanır. */
 .tc-tablo td.tc-secili{ position:relative; z-index:2; }
+/* Büyütülen kutunun yazısı ölçeklenirken keskin dursun. */
+.tc-yakin .tc-tablo td.tc-secili{
+  -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision;
+}
 
 /* --- yakınlaşma kumandası (yalnız yakınken görünür) --- */
 .tc-kum{
@@ -263,29 +287,29 @@ body{
 .tc-bas{
   position:fixed; left:0; top:0; z-index:54; pointer-events:none;
   opacity:0; white-space:nowrap; font-weight:700;
-  transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .22s ease-out;
-  will-change:transform;
+  transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1), opacity var(--tc-sure,1s) ease-out;
 }
 .tc-bas.tc-anisiz{ transition:opacity .22s ease-out; }
 body.tc-yakin .tc-bas{ opacity:1; }
 .tc-bas-ust{
   background:#EFF2F6; color:var(--kirmizi);
   border:2px solid var(--cerceve); border-radius:10px;
-  padding:6px 16px; font-size:clamp(.8rem,2vh,1.25rem);
+  padding:12px 27px; font-size:clamp(1.3rem,3.7vh,2.45rem);
   box-shadow:0 6px 18px rgba(15,23,42,.14);
 }
 .tc-bas-sol{
   background:var(--odak-renk,#16A085); color:#fff;
-  border-radius:10px; padding:18px 9px;
+  border-radius:12px; padding:22px 11px;
   box-shadow:0 6px 18px rgba(15,23,42,.2);
   /* Yükseklik JS'ten kutunun boyuna eşitleniyor; genişlik ise BURADAN
      açıkça veriliyor. Genişliği içeriğe bırakırsak dikey yazının satır
      kutusu kadar (~33px) kalıyor ve şerit incecik görünüyordu. Açık
      genişlik ayrıca yazı tipi değişse de şeridi aynı bırakır. */
-  width:clamp(54px,6.8vh,78px);
+  width:clamp(84px,11.2vh,132px);
   display:flex; align-items:center; justify-content:center;
-  transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .22s ease-out,
-             background-color .25s ease-out;
+  transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1),
+             opacity var(--tc-sure,1s) ease-out,
+             background-color var(--tc-sure,1s) ease-out;
 }
 /* Aşağıdan yukarı okunan dikey yazı.
    DİKKAT — line-height burada satırın GENİŞLİĞİdir (dikey yazıda
@@ -294,7 +318,7 @@ body.tc-yakin .tc-bas{ opacity:1; }
    harflerden dar yapıp yazıyı kırpıyordu. Payı bol bırakıyoruz. */
 .tc-bas-dik{
   display:block; writing-mode:vertical-rl; transform:rotate(180deg);
-  font-size:clamp(.78rem,1.9vh,1.15rem); line-height:1.85; letter-spacing:.02em;
+  font-size:clamp(1.2rem,3.3vh,2.1rem); line-height:1.85; letter-spacing:.02em;
   overflow:visible;
 }
 .tc-kum-nav{ display:flex; gap:7px; }
@@ -2175,6 +2199,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
   ];
 
   var i = -1;        /* geçerli adım */
+  var bekleyen = -1; /* satır sonu durağında sıradaki adım (-1: durak yok) */
   var ci = 0;        /* geçerli örnek çeşidi */
   var EN_COK = 4.2;  /* ölçek tavanı — okunaklılık bozulmasın */
   var BOSLUK = 26;   /* hücrenin kenarında bırakılan pay (px) */
@@ -2183,6 +2208,25 @@ td.tc-secili .tc-cesit-not{ display:block; }
   /* Başlık ile kutu çizgisi arasındaki pay. Sol rozet dolu renkli bir
      blok olduğu için aynı payda çizgiye yapışmış gibi duruyor; ona bir
      tık daha yer veriliyor ki iki başlık da çizgiden ayrı okunsun. */
+  /* Hareket süresi CSS'teki --tc-sure ile aynı olmalı; oradan okunuyor
+     ki iki yerde ayrı ayrı güncellemek gerekmesin. */
+  function sure() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--tc-sure').trim();
+    var n = parseFloat(v) || .75;
+    return /ms$/.test(v) ? n : n * 1000;
+  }
+  var katmanZaman = 0;
+  /* Tabloyu yalnız hareket boyunca GPU katmanına al; bitince bırak ki
+     tarayıcı son ölçekte yeniden tarasın (yakınken yazı netleşir). */
+  function katmanAc() {
+    tablo.classList.add('tc-hareket');
+    if (katmanZaman) clearTimeout(katmanZaman);
+    katmanZaman = setTimeout(function () {
+      katmanZaman = 0;
+      tablo.classList.remove('tc-hareket');
+    }, sure() + 90);
+  }
+
   var ARA = 18;
   var ARA_SOL = 26;
   var darZaman = 0;  /* dar ekranda kaydırma bitişini bekleyen sayaç */
@@ -2205,7 +2249,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
       /* kaydırma bitince başlığı kutunun yeni yerine taşı */
       etiketleriTazele(true);
       if (darZaman) clearTimeout(darZaman);
-      darZaman = setTimeout(function () { darZaman = 0; etiketleriTazele(true); }, 420);
+      darZaman = setTimeout(function () { darZaman = 0; etiketleriTazele(true); }, sure());
       return;
     }
     var td = adimlar[n].td;
@@ -2253,6 +2297,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
     var dy = my - t.top  - o * hy;
 
     tablo.style.setProperty('--z', o);
+    katmanAc();
     tablo.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + o + ')';
     if (anisiz || azaltMi()) { void tablo.offsetWidth; tablo.classList.remove('tc-anisiz'); }
 
@@ -2264,11 +2309,14 @@ td.tc-secili .tc-cesit-not{ display:block; }
       t.top  + dy + o * (y1 - t.top),
       t.left + dx + o * (x2 - t.left),
       t.top  + dy + o * (y2 - t.top),
-      anisiz || azaltMi()
+      anisiz || azaltMi(),
+      t.top + dy + o * (r.top    - t.top),      /* şerit boyu: kutunun kendi */
+      t.top + dy + o * (r.bottom - t.top)
     );
   }
 
   function kameraGeri() {
+    katmanAc();
     tablo.style.transform = '';
     tablo.style.removeProperty('--z');
   }
@@ -2278,7 +2326,11 @@ td.tc-secili .tc-cesit-not{ display:block; }
      üstüne yatayda ortalı, sol başlık soluna dikeyde ortalı konur.
      İkisi de sahnenin dışına taşmayacak şekilde kırpılır — büyütülen
      kutu ekranı neredeyse doldurduğu için bu sınır sık devreye girer. */
-  function etiketleriKoy(x1, y1, x2, y2, anisiz) {
+  /* x1..y2 = kutunun TAŞAN ÇOCUKLARI dahil sınırları (başlıklar onlara
+     da çarpmasın diye). kY1/kY2 verilirse şeridin BOYU bunlardan değil,
+     kutunun kendi çerçevesinden alınır — göz neyi görüyorsa o. */
+  function etiketleriKoy(x1, y1, x2, y2, anisiz, kY1, kY2) {
+    if (kY1 == null) { kY1 = y1; kY2 = y2; }
     if (!basUst || !basSol) return;
     basUst.classList.toggle('tc-anisiz', !!anisiz);
     basSol.classList.toggle('tc-anisiz', !!anisiz);
@@ -2301,11 +2353,11 @@ td.tc-secili .tc-cesit-not{ display:block; }
        kaplıyor ve yazı ortasında duruyor. Ekrandan taşmasın diye
        sahne sınırlarına kırpılır. */
     var enUst = ust + 4, enAlt = sh.bottom - 4;
-    var sYuk = Math.min(y2 - y1, enAlt - enUst);
+    var sYuk = Math.min(kY2 - kY1, enAlt - enUst);
     basSol.style.height = Math.round(sYuk) + 'px';
     var sw = basSol.offsetWidth;
     var sx = Math.max(sh.left + 4, x1 - sw - ARA_SOL);
-    var sy = (y1 + y2) / 2 - sYuk / 2;
+    var sy = (kY1 + kY2) / 2 - sYuk / 2;
     sy = Math.max(enUst, Math.min(sy, enAlt - sYuk));
     basSol.style.transform = 'translate(' + Math.round(sx) + 'px,' + Math.round(sy) + 'px)';
   }
@@ -2366,8 +2418,9 @@ td.tc-secili .tc-cesit-not{ display:block; }
     if (ornekMi) a.td.innerHTML = cesitHtml(a.satir);
     else if (a.td.innerHTML !== a.asil) a.td.innerHTML = a.asil;
 
-    geri.disabled = (i === 0);
-    ileri.disabled = (i === adimlar.length - 1);
+    /* Uçlarda da etkin: ilk kutuda Geri, son kutuda İleri küçültme yapar. */
+    geri.disabled = false;
+    ileri.disabled = false;
     document.body.classList.add('tc-yakin');
     kum.classList.add('gor');
     kum.setAttribute('aria-hidden', 'false');
@@ -2376,13 +2429,40 @@ td.tc-secili .tc-cesit-not{ display:block; }
 
   function git(n) {
     if (n < 0 || n >= adimlar.length) return;
+    /* SATIR SONU DURAĞI — bir satırın son sütunundayken İleri önce
+       uzaklaştırır; öğrenci tabloyu bütün olarak yeniden görür. İkinci
+       dokunuşta sonraki satırın ilk sütunu büyür. Sütun sayısına değil,
+       adımın satırının değişmesine bakıyoruz. */
+    if (i >= 0 && n === i + 1 && adimlar[n].satir !== adimlar[i].satir) {
+      araVer(n);
+      return;
+    }
+    bekleyen = -1;
     if (i !== n) ci = 0;          /* yeni hücrede çeşit başa döner */
     i = n;
     ciz(false);
   }
 
+  /* Satır sonu durağı: yakınlık kalkar ama KUMANDA açık kalır, yoksa
+     İleri'ye ikinci kez basılamaz. Sıradaki adım "bekleyen"de tutulur. */
+  function araVer(n) {
+    bekleyen = n;
+    kameraGeri();
+    document.body.classList.remove('tc-yakin');
+    document.querySelectorAll('.tc-tablo td.tc-secili').forEach(function (t) { t.classList.remove('tc-secili'); });
+    asillariGeriKoy(null);
+    i = -1; ci = 0;
+    kum.classList.add('gor');
+    kum.setAttribute('aria-hidden', 'false');
+    kum.style.setProperty('--odak-renk', renk(adimlar[n].tr));
+    sayacEl.textContent = (n + 1) + ' / ' + adimlar.length;
+    geri.disabled = false;
+    ileri.disabled = false;
+  }
+
   function uzaklas() {
-    if (i < 0) return;
+    if (i < 0 && bekleyen < 0) return;
+    bekleyen = -1;
     kameraGeri();
     document.body.classList.remove('tc-yakin');
     kum.classList.remove('gor');
@@ -2390,6 +2470,20 @@ td.tc-secili .tc-cesit-not{ display:block; }
     document.querySelectorAll('.tc-tablo td.tc-secili').forEach(function (t) { t.classList.remove('tc-secili'); });
     asillariGeriKoy(null);
     i = -1; ci = 0;
+  }
+
+  /* Duraktayken İleri sıradaki satırı açar, Geri bırakılan hücreye döner.
+     UÇLAR: ilk kutunun öncesinde, son kutunun sonrasında başka kutu yok —
+     oralarda düğme devre dışı kalmak yerine ekranı küçültür. */
+  function ileriGit() {
+    if (bekleyen >= 0) { var n = bekleyen; bekleyen = -1; git(n); return; }
+    if (i === adimlar.length - 1) { uzaklas(); return; }
+    git(i < 0 ? 0 : i + 1);
+  }
+  function geriGit() {
+    if (bekleyen >= 0) { var n = bekleyen; bekleyen = -1; git(n - 1); return; }
+    if (i === 0) { uzaklas(); return; }
+    git(i - 1);
   }
 
   function cesitGit(y) {
@@ -2412,8 +2506,8 @@ td.tc-secili .tc-cesit-not{ display:block; }
     if (ok) { e.stopPropagation(); cesitGit(+ok.getAttribute('data-yon')); }
   });
 
-  ileri.addEventListener('click', function () { git(i + 1); });
-  geri.addEventListener('click', function () { git(i - 1); });
+  ileri.addEventListener('click', function () { ileriGit(); });
+  geri.addEventListener('click', function () { geriGit(); });
   uzak.addEventListener('click', uzaklas);
 
   var boyZaman = 0;
@@ -2433,12 +2527,12 @@ td.tc-secili .tc-cesit-not{ display:block; }
   document.addEventListener('keydown', function (e) {
     /* İ'rab paneli açıksa klavye ona ait; burası karışmaz. */
     if (document.getElementById('tcPerde').classList.contains('acik')) return;
-    var acik = (i >= 0);
+    var acik = (i >= 0 || bekleyen >= 0);
     if (e.key === 'Escape' && acik) { uzaklas(); e.preventDefault(); return; }
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-      git(acik ? i + 1 : 0); e.preventDefault();
+      ileriGit(); e.preventDefault();
     } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-      if (acik) { git(i - 1); e.preventDefault(); }
+      if (acik) { geriGit(); e.preventDefault(); }
     } else if (acik && (e.key === 'ArrowDown')) { cesitGit(1); e.preventDefault(); }
     else if (acik && (e.key === 'ArrowUp')) { cesitGit(-1); e.preventDefault(); }
   });
