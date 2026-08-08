@@ -314,6 +314,32 @@ body{
   }
 }
 
+/* --- OYUNLAR KATEGORİSİ: MASAÜSTÜNDE KAYDIRMA YOK ---
+   Beceriler kategorisiyle aynı mantık: oyunlar da tahtada tek bakışta
+   görünsün, öğretmen şeridi yana kaydırmakla uğraşmasın. Kart sayısı
+   değişebildiği için sabit sütun yerine auto-fill kullanıldı; ekran
+   daraldıkça sütun azalır ama hep SARAR, hiç kaydırmaz.
+   Mobil (768px ve altı) blok aynen kaldı: orada kaydırma sürüyor. */
+@media (min-width: 769px) {
+  #oyunlar .mobile-scroll-grid-single {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)) !important;
+    grid-auto-rows: minmax(0, 1fr);
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+    padding-bottom: 0 !important;
+    gap: 1rem !important;
+  }
+  #oyunlar .mobile-scroll-grid-single .game-card {
+    flex: initial !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    scroll-snap-align: none;
+  }
+  #oyunlar .game-grid .kss-card { min-height: 190px; }
+}
+
 @media (max-width:768px){
   /* Mobil Kaydırma Stilleri */
   .mobile-scroll-grid-single {
