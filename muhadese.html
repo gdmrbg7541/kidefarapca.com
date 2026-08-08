@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260807b';        /* onbellek surumu */
+  var S   = '?v=20260808b';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -170,10 +170,16 @@
         <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar &amp; Zarflar</button>
         <button class="nav-trigger" onclick="showPopup('pronouns')">Zamirler</button>
         <button class="nav-trigger" onclick="showPopup('suffix')">Fiil Kipleri</button>
-        <button class="nav-trigger" onclick="showPopup('tamlamalar')">Tamlamalar</button>
+        <!-- Tamlama ve Cümle: eskiden tamlamalar.pdf'i popup'ta açan sekmeydi.
+             Artık kendi sayfasını (tamlamavecumleler.html) Sarf Motoru gibi
+             AYRI SEKMEDE açıyor; ders anlatılırken muhadese sekmesi kapanmasın
+             diye. rel="opener" ŞART: sistem/geri.js "yeni sekmede miyim?" sorusunu
+             window.opener'a bakarak cevaplıyor; noopener olsaydı açılan sayfadaki
+             Geri tuşu sekmeyi kapatamazdı. Simge sayfanın dört renkli satırı ve üstünde gezen büyüteçtir. -->
+        <a class="nav-trigger tamlama-cumle" href="tamlamavecumleler.html" target="_blank" rel="opener" title="Tamlama ve Cümle (yeni sekmede açılır)"><svg class="ik ik-tc" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.6" y="4" width="20.8" height="16.4" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><g fill="currentColor"><rect x="3.4" y="6" width="2" height="3" rx="1" opacity=".95"/><rect x="3.4" y="10.4" width="2" height="3" rx="1" opacity=".75"/><rect x="3.4" y="14.8" width="2" height="3" rx="1" opacity=".55"/><rect x="6.6" y="7" width="6.4" height="1.1" rx=".55" opacity=".55"/><rect x="6.6" y="11.4" width="8.4" height="1.1" rx=".55" opacity=".55"/><rect x="6.6" y="15.8" width="5.4" height="1.1" rx=".55" opacity=".55"/></g><g class="ik-tc-mercek"><circle cx="16.4" cy="8.2" r="4.1" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="19.4" y1="11.2" x2="21.4" y2="13.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g></svg><span class="sm-yazi">Tamlama ve Cümle</span></a>
         <!-- Sarf Motoru: kaliplartablosu.html'i ayrı sekmede açar. Simge emoji değil,
              satır içi SVG'dir; iki çark birbirine ters yönde döner (bkz. simultane.css). -->
-        <a class="nav-trigger sarf-motoru" href="kaliplartablosu.html" target="_blank" rel="noopener" title="Sarf Motoru — Kalıplar Tablosu (yeni sekmede açılır)"><svg class="ik ik-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="ik-cark1" stroke-width="1.6"><circle cx="9" cy="9" r="4"/><circle cx="9" cy="9" r="1.4"/><path d="M13.2 9h1.7M11.97 6.03l1.2-1.2M9 4.8V3.1M6.03 6.03l-1.2-1.2M4.8 9H3.1M6.03 11.97l-1.2 1.2M9 13.2v1.7M11.97 11.97l1.2 1.2"/></g><g class="ik-cark2" stroke-width="1.4"><circle cx="17.6" cy="17.2" r="2.5"/><path d="M20.3 17.2h1.3M18.95 14.86l.65-1.12M16.25 14.86l-.65-1.12M14.9 17.2h-1.3M16.25 19.54l-.65 1.12M18.95 19.54l.65 1.12"/></g></svg><span class="sm-yazi">Sarf Motoru</span></a>
+        <a class="nav-trigger sarf-motoru" href="kaliplartablosu.html" target="_blank" rel="opener" title="Sarf Motoru — Kalıplar Tablosu (yeni sekmede açılır)"><svg class="ik ik-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="ik-cark1" stroke-width="1.6"><circle cx="9" cy="9" r="4"/><circle cx="9" cy="9" r="1.4"/><path d="M13.2 9h1.7M11.97 6.03l1.2-1.2M9 4.8V3.1M6.03 6.03l-1.2-1.2M4.8 9H3.1M6.03 11.97l-1.2 1.2M9 13.2v1.7M11.97 11.97l1.2 1.2"/></g><g class="ik-cark2" stroke-width="1.4"><circle cx="17.6" cy="17.2" r="2.5"/><path d="M20.3 17.2h1.3M18.95 14.86l.65-1.12M16.25 14.86l-.65-1.12M14.9 17.2h-1.3M16.25 19.54l-.65 1.12M18.95 19.54l.65 1.12"/></g></svg><span class="sm-yazi">Sarf Motoru</span></a>
     </div>
 
     <div class="switch-wrapper">
