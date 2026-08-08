@@ -1307,3 +1307,21 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
     min-height: 86px;
   }
 }
+
+/* ======================================================================
+   MASAÜSTÜNDE KATEGORİ KUTULARI EKRANIN %97'Sİ
+   ----------------------------------------------------------------------
+   Kategoriler (.content-section) .container'ın içinde durur; kutunun
+   genişliği = container'ın iç genişliği. Eski 1280px sınırı geniş
+   ekranlarda iki yanda kocaman boşluk bırakıyordu.
+   max-width kalkıp yan boşluk %1.5'e çekilince kutu tam %97 oluyor
+   (100 - 1.5 - 1.5). Başlık şeridi de aynı container'ı kullandığı için
+   kutularla hizalı kalır. Mobil (768px ve altı) bloklara dokunulmadı.
+   ====================================================================== */
+@media (min-width: 769px) {
+  .container {
+    max-width: none;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+  }
+}
