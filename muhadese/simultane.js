@@ -626,12 +626,73 @@ document.addEventListener('keydown', function (e) {
 });
 
 function setActiveButton(type) {
+    if (type && window.sekmeleriAc) sekmeleriAc(true);   /* panel açıldıysa şerit görünsün */
+    var ad = null;
     document.querySelectorAll('.nav-trigger').forEach(function (btn) {
         btn.style.border = '';
         btn.style.boxShadow = '';
-        btn.classList.toggle('aktif', !!type && btn.getAttribute('data-panel') === type);
+        var s2 = !!type && btn.getAttribute('data-panel') === type;
+        btn.classList.toggle('aktif', s2);
+        if (s2) ad = btn.textContent.replace(/\s+/g, ' ').trim();
+    });
+    /* (Sekmeler doğrudan şeritte; ayrı bir gösterge düğmesi yok.) */
+}
+
+/* ============================================================
+   ŞERİT ÖLÇÜSÜ
+   Bilgi panelleri şeridin ALTINDAN başlasın diye yükseklik
+   ölçülüp --nav-yuk'e yazılır (akordiyon kalktı, ölçüm kaldı).
+   ============================================================ */
+function kaynakOlcuYaz() {
+    var nav = document.querySelector('.navbar');
+    if (!nav) return;
+    var h = Math.round(nav.getBoundingClientRect().height);
+    if (h > 0) document.documentElement.style.setProperty('--nav-yuk', h + 'px');
+}
+function kaynakAc() { /* akordiyon kaldırıldı; eski çağrılar sessizce geçer */ }
+window.addEventListener('resize', kaynakOlcuYaz);
+window.kaynakAc = kaynakAc;
+
+/* Bilgi sekmeleri başta kapalı; şeritteki ok tuşuyla açılıp kapanır. */
+function sekmeleriAc(zorla) {
+    var kap = document.getElementById('bilgiSekmeleri');
+    var tus = document.getElementById('sekmeAc');
+    if (!kap || !tus) return;
+    var ac = (typeof zorla === 'boolean') ? zorla : kap.classList.contains('kapali');
+    kap.classList.toggle('kapali', !ac);
+    tus.setAttribute('aria-expanded', ac ? 'true' : 'false');
+    tus.setAttribute('title', ac ? 'Bilgi sekmelerini gizle' : 'Bilgi sekmelerini göster');
+    tus.setAttribute('aria-label', tus.getAttribute('title'));
+    if (typeof kaynakOlcuYaz === 'function') kaynakOlcuYaz();
+}
+window.sekmeleriAc = sekmeleriAc;
+
+/* Akordiyondaki çalışma modu düğmeleri */
+function modIsaretle(m) {
+    document.querySelectorAll('.mod-trigger').forEach(function (b2) {
+        b2.classList.toggle('aktif', b2.getAttribute('data-mod') === m);
     });
 }
+function kaynakMod(m) {
+    if (typeof togglePopup === 'function') togglePopup(false);
+    if (m === 'kelime') { if (window.startKelime) window.startKelime(); }
+    else if (typeof startMode === 'function') startMode(m);
+    modIsaretle(m);
+}
+/* Verisi olmayan mod akordiyonda da gizlenir (giriş ekranındaki kuralın aynısı). */
+function modGorunurluk() {
+    var d = window.data || {};
+    var bos = function (a) { return !a || !a.length; };
+    var esle = { kelime: bos(d.words), sentence: bos(d.sentence), dialog: bos(d.dialog) };
+    document.querySelectorAll('.mod-trigger').forEach(function (b2) {
+        var m = b2.getAttribute('data-mod');
+        if (esle[m]) b2.setAttribute('hidden', ''); else b2.removeAttribute('hidden');
+    });
+}
+document.addEventListener('DOMContentLoaded', modGorunurluk);
+setTimeout(modGorunurluk, 900);
+window.kaynakMod = kaynakMod;
+window.modIsaretle = modIsaretle;
 var data = (window.data && window.data.sentence) ? window.data : { sentence: [], dialog: [] };
 
 // --- 1. GLOBAL DEĞİŞKENLER ---
@@ -664,33 +725,49 @@ function startMode(m) {
         (m === 'dialog' && (!data.dialog || !data.dialog.length))) return;
     if (typeof togglePopup === "function") togglePopup(false);
     mode = m;
-    document.getElementById('entry-panel').style.display = 'none';
     document.querySelector('.navbar').style.display = 'flex';
     document.getElementById('sentence-mode').style.display = (m === 'sentence' ? 'flex' : 'none');
     document.getElementById('dialog-mode').style.display = (m === 'dialog' ? 'flex' : 'none');
+    var km = document.getElementById('kelime-mode');
+    if (km) km.style.display = 'none';         /* kelime kipinden çıkılıyor */
+    if (window.modIsaretle) modIsaretle(m);
     render();
 }
 
 function goHome() {
-    document.getElementById('entry-panel').style.display = 'flex';
-    document.querySelector('.navbar').style.display = 'none';
+    /* Ara seçim ekranı kalktı; şeritteki geri tuşu artık doğrudan
+       geldiğimiz listeye/indekse döner. */
     currentIdx = 0;
+    if (typeof muhGeri === 'function') { muhGeri(); return; }
+    location.href = 'muhadese.html';
+}
+
+/* DİL ANAHTARI — .switch-wrapper sayfada İKİ TANE: biri kelime
+   kipindeki hafıza oyunu (tek/iki kişilik), biri şeritteki TR/AR.
+   querySelector ilkini bulduğu için ateş simgesi yanlış anahtarın
+   üstünde çıkıyordu. Artık doğrudan TR/AR anahtarı seçiliyor. */
+function dilAnahtari() {
+    return document.getElementById('dilSwitch') ||
+           document.querySelector('.navbar .switch-wrapper');
 }
 
 window.onload = function() {
-    const wrapper = document.querySelector('.switch-wrapper');
+    const wrapper = dilAnahtari();
     const toggle = document.getElementById('direction-toggle');
-    if (toggle && !toggle.checked) {
+    if (wrapper && toggle && !toggle.checked) {
         wrapper.classList.add('fire-mode');
     }
 };
 
 function toggleDirection() {
     const toggle = document.getElementById('direction-toggle');
-    const wrapper = document.querySelector('.switch-wrapper');
+    const wrapper = dilAnahtari();
     const langTr = document.getElementById('lang-tr');
     const langAr = document.getElementById('lang-ar');
 
+    document.querySelectorAll('.switch-wrapper.fire-mode').forEach(function (w) {
+        if (w !== wrapper) w.classList.remove('fire-mode');   /* yanlış anahtarda kalmasın */
+    });
     if (!toggle.checked) {
         currentDirection = 'tr-to-ar';
         wrapper.classList.add('fire-mode');
@@ -966,15 +1043,21 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
 
 /* ==== KELİMELER (kart + hafıza oyunu) — ortak modül, window.data.words kullanır ==== */
 (function(){
+  /* ============================================================
+     KELİMELER — iki kip
+       liste : bütün kelimeler tek ekranda (hızlı gözden geçirme)
+       study : kartlar; basınca çevrilir, 3 sn sonra kendiliğinden kapanır
+     Hafıza oyunu (eşleştirme, skor, iki kişilik) kaldırıldı.
+     ============================================================ */
   var allWords = [];
-
 
     /* Kart yuzu renkleri: site paletinden. */
     const cardColors = ["#16A085", "#3498DB", "#F39C12", "#EF5350", "#7C3AED", "#27AE60", "#E67E22", "#20C997"];
-    let mode = 'study', isAr = true, scores = [0, 0], currentPlayer = 1, activeFlipped = [];
+    let mode = 'liste', isAr = true, sutun = 3;   /* sutun: listenin sütun sayısı (1|2|3) */
 
     function playSound(id) {
         const s = document.getElementById(id);
+        if (!s) return;
         s.volume = 0.15; s.currentTime = 0;
         s.play().catch(() => {});
     }
@@ -984,218 +1067,159 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
         init();
     }
 
-function init() {
-    allWords = (window.data && window.data.words) || [];
-    const isPortrait = window.innerHeight > window.innerWidth;
-    const isMobile = window.innerWidth <= 768;
-    
-    // Mobilde dikey modda otomatik 9 çifti ayarla
-    if (isMobile && isPortrait && mode !== 'study') {
-        document.getElementById('pairCount').value = "9";
+    function init() {
+        allWords = (window.data && window.data.words) || [];
+        const liste = document.getElementById('kel-liste');
+        const grid  = document.getElementById('grid');
+        const sayi  = document.getElementById('kelSayi');
+        if (!liste || !grid) return;
+
+        if (sayi) sayi.textContent = allWords.length ? allWords.length + ' kelime' : '';
+
+        if (mode === 'liste') { grid.style.display = 'none'; liste.style.display = 'block'; listeCiz(liste); }
+        else { liste.style.display = 'none'; grid.style.display = 'grid'; kartCiz(grid); }
     }
 
-    const grid = document.getElementById('grid');
-    const p1Box = document.getElementById('p1-box');
-    const p2Box = document.getElementById('p2-box');
-    const pairCount = parseInt(document.getElementById('pairCount').value);
-    grid.innerHTML = '';
-    
-    const isStudy = mode === 'study';
-    const isMem2 = mode === 'mem2';
-
-    // İki kişilik modda kutuları göster, değilse gizle
-    p1Box.style.display = isMem2 ? 'flex' : 'none';
-    p2Box.style.display = isMem2 ? 'flex' : 'none';
-
-    grid.className = `grid ${isStudy ? '' : 'memory-mode'}`;
-
-    let selectedWords = isStudy ? allWords : allWords.slice(0, pairCount);
-    let displayList = [];
-
-    if (isStudy) {
-        displayList = selectedWords;
-        // ÇALIŞMA MODU: Aşağı doğru doğal uzayan yapı
-        grid.style.height = "auto"; 
-        grid.style.gridTemplateColumns = "repeat(5, 1fr)";
-        grid.style.gridAutoRows = "minmax(180px, auto)"; 
-        grid.style.gridTemplateRows = "none"; 
-    } else {
-        selectedWords.forEach(w => {
-            displayList.push({ text: w.ar, pairId: w.ar, lang: 'ar' });
-            displayList.push({ text: w.tr, pairId: w.ar, lang: 'tr' });
-        });
-        displayList.sort(() => Math.random() - 0.5);
-        
-        // OYUN MODU: Ekranı tam kaplayan yapı
-        let colCount = (displayList.length <= 12) ? 4 : 6;
-        let rowCount = Math.ceil(displayList.length / colCount);
-        
-        grid.style.height = "100%"; 
-        grid.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
-        grid.style.gridTemplateRows = `repeat(${rowCount}, 1fr)`; 
-        grid.style.gridAutoRows = "none";
+    /* ---------- LİSTE: hızlı gözden geçirme ---------- */
+    function listeCiz(kap) {
+        if (!allWords.length) { kap.innerHTML = '<p class="kel-bos">Bu derste kelime listesi yok.</p>'; return; }
+        /* Çizgili defter yaprağı: .kl-defter zemindeki çizgileri taşır,
+           satırlar saydam durur. Sıra soldan sağa: numara · TÜRKÇE ·
+           noktalı bağ · ARAPÇA. Arapça en sağda duruyor, böylece göz
+           sağ sütunda tek hizada aşağı iniyor. */
+        kap.innerHTML = '<div class="kl-defter sutun-' + sutun + '"><ol class="kl-izgara">' + allWords.map(function (w, i) {
+            return '<li class="kl-satir">' +
+                     '<span class="kl-no">' + (i + 1) + '</span>' +
+                     '<span class="kl-tr">' + (w.tr || '') + '</span>' +
+                     '<i class="kl-nokta" aria-hidden="true"></i>' +
+                     '<span class="kl-ar" dir="rtl">' + (w.ar || '') + '</span>' +
+                   '</li>';
+        }).join('') + '</ol></div>';
     }
 
-    grid.setAttribute('data-total', displayList.length);
+    /* ---------- KARTLAR: kendini deneme ---------- */
+    function kartCiz(grid) {
+        grid.innerHTML = '';
+        grid.className = 'grid';
+        grid.style.height = 'auto';
+        grid.style.gridTemplateColumns = '';
+        grid.style.gridAutoRows = '';
+        grid.style.gridTemplateRows = '';
+        if (!allWords.length) { grid.innerHTML = '<p class="kel-bos">Bu derste kelime listesi yok.</p>'; return; }
+        grid.setAttribute('data-total', allWords.length);
 
- displayList.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.id = isStudy ? item.ar : item.pairId;
-        
-        // Kart metinlerini belirle
-        const frontText = isStudy ? (isAr ? item.ar : item.tr) : "";
-        const backText = isStudy ? (isAr ? item.tr : item.ar) : item.text;
-        
-        // Dil sınıflarını ve font boyutlarını belirle
-        let frontLangClass = "";
-        let backLangClass = "";
-        
-        const isFrontAr = isStudy && isAr;
-        const isBackAr = isStudy ? !isAr : (item.lang === 'ar');
-
-        if (isStudy) {
-            frontLangClass = isAr ? "lang-ar" : "lang-tr";
-            backLangClass = isAr ? "lang-tr" : "lang-ar";
-        } else {
-            // Hafıza modunda ön yüz boş, arka yüz dile göre sınıf alır
-            backLangClass = item.lang === 'ar' ? "lang-ar" : "lang-tr";
-        }
-
-        // Dinamik font boyutları (JS üzerinden kontrol devam ediyor)
         const baseFontSize = "clamp(1.2rem, 2.3vw, 2.2rem)";
         const arabicFontSize = "clamp(1.5rem, 4.5vw, 3.5rem)";
 
-        const color = isStudy ? cardColors[index % cardColors.length] : "#16A085";
+        allWords.forEach(function (item, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.id = item.ar;
 
-        card.innerHTML = `
-            <div class="card-inner">
-                <div class="card-face card-front ${frontLangClass}" 
-                     style="background-color: ${color}; font-size: ${isFrontAr ? arabicFontSize : baseFontSize}">
-                    <span>${frontText}</span>
-                </div>
-                <div class="card-face card-back ${backLangClass}" 
-                     style="font-size: ${isBackAr ? arabicFontSize : baseFontSize}">
-                    <span>${backText}</span>
-                </div>
-            </div>`;
-        
-        card.onclick = () => handleFlip(card);
-        grid.appendChild(card);
-    });
+            const frontText = isAr ? item.ar : item.tr;
+            const backText  = isAr ? item.tr : item.ar;
+            const frontLangClass = isAr ? 'lang-ar' : 'lang-tr';
+            const backLangClass  = isAr ? 'lang-tr' : 'lang-ar';
+            const color = cardColors[index % cardColors.length];
 
-    updateUI();
-}
+            /* Arapça yüz rtl olmalı: kelime listesindeki girdilerin beşte biri
+               tek kelime değil ("في المَصْنَع." gibi). LTR'de sıralama ve
+               özellikle sondaki nokta yanlış tarafa düşüyordu. */
+            const frontDir = isAr ? 'rtl' : 'ltr';
+            const backDir  = isAr ? 'ltr' : 'rtl';
+
+            card.innerHTML =
+                '<div class="card-inner">' +
+                  '<div class="card-face card-front ' + frontLangClass + '" dir="' + frontDir +
+                    '" style="background-color:' + color +
+                    '; font-size:' + (isAr ? arabicFontSize : baseFontSize) + '"><span>' + frontText + '</span></div>' +
+                  '<div class="card-face card-back ' + backLangClass + '" dir="' + backDir +
+                    '" style="font-size:' + (isAr ? baseFontSize : arabicFontSize) + '"><span>' + backText + '</span></div>' +
+                '</div>';
+
+            card.onclick = function () { handleFlip(card); };
+            grid.appendChild(card);
+        });
+    }
 
     function handleFlip(card) {
-        if (card.classList.contains('matched') || (mode !== 'study' && activeFlipped.length >= 2)) return;
-
-        if (mode === 'study') {
-            if (card.classList.contains('flipped')) {
-                clearTimeout(card.studyTimer);
-                card.classList.remove('flipped');
-            } else {
-                playSound('snd-flip');
-                card.classList.add('flipped');
-                card.studyTimer = setTimeout(() => card.classList.remove('flipped'), 3000);
-            }
+        if (card.classList.contains('flipped')) {
+            clearTimeout(card.studyTimer);
+            card.classList.remove('flipped');
             return;
         }
-
-        if (card.classList.contains('flipped')) return;
-
         playSound('snd-flip');
         card.classList.add('flipped');
-        activeFlipped.push(card);
-        
-        if (activeFlipped.length === 2) checkMatch();
-    }
-
-    function checkMatch() {
-        const [a, b] = activeFlipped;
-        const isMatch = a.dataset.id === b.dataset.id;
-
-        setTimeout(() => {
-            if (isMatch) {
-                playSound('snd-match');
-                a.classList.add('matched');
-                b.classList.add('matched');
-                if (mode === 'mem2') scores[currentPlayer - 1]++;
-            } else {
-                a.classList.remove('flipped');
-                b.classList.remove('flipped');
-                if (mode === 'mem2') currentPlayer = (currentPlayer === 1) ? 2 : 1;
-            }
-            activeFlipped = [];
-            updateUI();
-        }, 800);
-    }
-
-    function updateUI() {
-        document.getElementById('s1').innerText = scores[0];
-        document.getElementById('s2').innerText = scores[1];
-        document.getElementById('p1-box').classList.toggle('active-p', currentPlayer === 1);
-        document.getElementById('p2-box').classList.toggle('active-p', currentPlayer === 2);
+        card.studyTimer = setTimeout(function () { card.classList.remove('flipped'); }, 3000);
     }
 
     function setMode(m) {
-        mode = m; scores = [0, 0]; currentPlayer = 1; activeFlipped = [];
-        
-        const studyBtn = document.getElementById('btn-study');
-        const mainLangBtn = document.getElementById('lang-btn-main');
-        const memStartBtn = document.getElementById('btn-memory-start');
-        const memControls = document.getElementById('memory-controls');
-        const toggle = document.getElementById('mode-toggle');
-
-        if (m === 'study') {
-            studyBtn.style.display = 'inline-block';
-            studyBtn.classList.add('active');
-            mainLangBtn.style.display = 'inline-block';
-            memStartBtn.style.display = 'inline-block';
-            memControls.style.display = 'none';
-        } else {
-            studyBtn.style.display = 'none';
-            mainLangBtn.style.display = 'none';
-            memStartBtn.style.display = 'none';
-            memControls.style.display = 'flex';
-            if (toggle) toggle.checked = (m === 'mem2');
-        }
+        mode = (m === 'study') ? 'study' : 'liste';
+        const lt = document.getElementById('btn-liste');
+        const st = document.getElementById('btn-study');
+        const yon = document.getElementById('lang-btn-main');
+        const sut = document.getElementById('kelSutun');
+        if (lt) { lt.classList.toggle('aktif', mode === 'liste'); lt.setAttribute('aria-selected', mode === 'liste'); }
+        if (st) { st.classList.toggle('aktif', mode === 'study'); st.setAttribute('aria-selected', mode === 'study'); }
+        /* Ön yüz seçimi yalnız kart kipinde anlamlı; listede iki dil de görünüyor. */
+        if (yon) yon.style.display = (mode === 'study') ? 'inline-flex' : 'none';
+        /* Sütun seçici de tersi: yalnız liste kipinde. */
+        if (sut) sut.style.display = (mode === 'liste') ? 'inline-flex' : 'none';
         init();
     }
 
-    function toggleSwitch(isCheck) {
-        const toggle = document.getElementById('mode-toggle');
-        toggle.checked = isCheck;
-        toggleMemoryMode(toggle);
+    /* Sütun sayısı yalnız bir sınıf değiştiriyor (.sutun-1/2/3); asıl
+       ölçüler CSS'te, çünkü satır yüksekliği ile defter çizgisinin adımı
+       aynı değişkenden beslenmek zorunda. Tek sütunda yazılar büyüyor. */
+    function setSutun(n) {
+        sutun = (n === 1 || n === 2) ? n : 3;
+        [].forEach.call(document.querySelectorAll('.kel-sutun-t'), function (b) {
+            const secili = Number(b.dataset.sutun) === sutun;
+            b.classList.toggle('aktif', secili);
+            b.setAttribute('aria-pressed', secili ? 'true' : 'false');
+        });
+        const d = document.querySelector('.kl-defter');
+        if (d) d.className = 'kl-defter sutun-' + sutun;
     }
 
-    function toggleMemoryMode(checkbox) {
-        const newMode = checkbox.checked ? 'mem2' : 'mem1';
-        setMode(newMode);
-    }
-
-    
   window.kelInit = init;
   window.kelSetMode = setMode;
+  window.kelSetSutun = setSutun;
   window.kelToggleLang = toggleLang;
-  window.kelToggleSwitch = toggleSwitch;
-  window.kelToggleMemoryMode = toggleMemoryMode;
-  window.startKelime = function(){ document.getElementById('entry-panel').style.display='none'; var n=document.querySelector('.navbar'); if(n) n.style.display='none'; document.getElementById('kelime-mode').style.display='flex'; setMode('study'); };
-  window.kelimeGeri = function(){ document.getElementById('kelime-mode').style.display='none'; document.getElementById('entry-panel').style.display='flex'; };
-  document.addEventListener('DOMContentLoaded', function(){ try{ if(new URLSearchParams(location.search).get('mod')==='kelime') window.startKelime(); }catch(e){} });
+  window.startKelime = function(){
+    /* Ara seçim ekranı yok; şerit hep açık kalır. */
+    var n = document.querySelector('.navbar'); if (n) n.style.display = 'flex';
+    var sm = document.getElementById('sentence-mode'); if (sm) sm.style.display = 'none';
+    var dm = document.getElementById('dialog-mode');   if (dm) dm.style.display = 'none';
+    document.getElementById('kelime-mode').style.display = 'flex';
+    setMode('liste');            /* varsayılan: hızlı gözden geçirme */
+    if (window.modIsaretle) modIsaretle('kelime');
+  };
+  /* kelimeGeri kaldırıldı: dönülecek ara ekran yok. Eski çağrılar için
+     zararsız bir karşılık bırakıldı — şeritteki geri tuşuna yönlenir. */
+  window.kelimeGeri = function(){ if (typeof goHome === 'function') goHome(); };
+  /* Ders açılınca ara seçim ekranı (KELİMELER / CÜMLE / DİYALOG)
+     gösterilmez: modlar zaten şeritte duruyor. Doğrudan KELİMELER
+     kipi başlar; o dersin kelime verisi yoksa sırayla cümle, sonra
+     diyalog denenir. */
+  function ilkKipiAc() {
+    try {
+      var d2 = window.data || {};
+      var dolu = function (a) { return !!(a && a.length); };
+      if (dolu(d2.words)) { window.startKelime(); return; }
+      if (dolu(d2.sentence)) { startMode('sentence'); return; }
+      if (dolu(d2.dialog)) { startMode('dialog'); return; }
+    } catch (e) {}
+  }
+  window.ilkKipiAc = ilkKipiAc;
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      if (!window.KIDEF_DERS) return;                 /* liste kipinde dokunma */
+      setTimeout(ilkKipiAc, 60);                      /* veri yüklensin */
+    } catch(e){}
+  });
 })();
 
-/* ==== GİRİŞ EKRANI UYARLAMA: verisi olmayan modun butonu gizlenir ====
-   (örn. yalnız kelime verisi olan 9. sınıf derslerinde CÜMLE/DİYALOG gizli) */
-document.addEventListener('DOMContentLoaded', function () {
-  try {
-    var d = window.data || {};
-    var bos = function (a) { return !a || !a.length; };
-    document.querySelectorAll('#entry-panel .mode-btn').forEach(function (b) {
-      var oc = b.getAttribute('onclick') || '';
-      if (/startMode\('sentence'\)/.test(oc) && bos(d.sentence)) b.style.display = 'none';
-      if (/startMode\('dialog'\)/.test(oc) && bos(d.dialog)) b.style.display = 'none';
-      if (/startKelime/.test(oc) && bos(d.words)) b.style.display = 'none';
-    });
-  } catch (e) { }
-});
+/* Giriş ekranı kaldırıldı; verisi olmayan modun ŞERİTTEKİ simgesi
+   modGorunurluk() ile gizleniyor (aşağıda). */
+

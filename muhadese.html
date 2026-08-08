@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260808c';        /* onbellek surumu */
+  var S   = '?v=20260808u';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -79,16 +79,16 @@
 
 <!-- ==================== LİSTE MODU ==================== -->
 <header class="kd-lis">
-    <a href="index.html" onclick="return kidefGeriDon(event)" class="home-btn" title="Ana sayfa" aria-label="Ana sayfa">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    <!-- Başlıkta yalnız GERİ tuşu ve sayfa adı kalsın; bilgi şeridi
+         ("Turkuaz olanları kullanabilirsiniz") kaldırıldı. -->
+    <a href="index.html" onclick="return kidefGeriDon(event)" class="home-btn" title="Geri" aria-label="Geri">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 10.5 12 3l9 7.5"></path>
-            <path d="M5 9.6V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.6"></path>
+            <path d="M20 12H5.4"></path><path d="M11.8 5.6 5 12l6.8 6.4"></path>
         </svg>
     </a>
 
     <h1>Arapça Konuşma Modülü (Beta)</h1>
-    <span class="header-note">Turkuaz olanları kullanabilirsiniz</span>
 </header>
 
 <!-- Üç kategori sekmesi: Okul | Kalıp İfadeler | Alan Konuları -->
@@ -113,76 +113,87 @@
     </div>
 </div>
 
-<div id="entry-panel" class="kd-oyn">
-    <button class="entry-back-btn" onclick="return muhGeri(event)">❮</button>
-    <h1 style="color:var(--pdf-red); font-size: 3rem; margin-bottom: 20px;">ARAPÇA PRATİK</h1>
-    <button class="mode-btn" onclick="startKelime()">KELİMELER</button>
-    <button class="mode-btn" onclick="startMode('sentence')">CÜMLE PRATİĞİ</button>
-    <button class="mode-btn" onclick="startMode('dialog')">DİYALOG PRATİĞİ</button>
-</div>
+<!-- ARA SEÇİM EKRANI (entry-panel) KALDIRILDI.
+     "ARAPÇA PRATİK · KELİMELER / CÜMLE / DİYALOG" ekranı artık yok;
+     üç mod üst şeritte simge olarak duruyor ve konu açılınca doğrudan
+     Kelimeler başlıyor. -->
 
-<!-- KELİMELER: kart (çalışma) + hafıza oyunu — ortak tasarım (#kelime-mode altında izole) -->
+<!-- KELİMELER — İKİ KİP
+     LİSTE : bütün kelimeler tek ekranda, hızlı gözden geçirme.
+     KARTLAR: kendini deneme; karta basınca çevrilir, 3 sn sonra kapanır.
+     Hafıza oyunu kaldırıldı (skor tahtası, çift sayısı, iki kişilik
+     anahtar dahil); yerini LİSTE aldı. -->
 <div id="kelime-mode" class="kd-oyn">
     <div class="header">
-        <div class="controls" style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; min-height: 50px;">
-            <button class="btn" id="btn-back" onclick="kelimeGeri()" style="position: absolute; left: 10px; background: #F0F4F8; font-weight: bold; display: flex; align-items: center; gap: 5px;"><span>❮</span></button>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <button class="btn active" id="btn-study" onclick="kelSetMode('study')">Kartlar</button>
-                <button class="btn" id="lang-btn-main" onclick="kelToggleLang()" style="background:var(--accent); color:white;"> T ⇄ ع</button>
-                <button class="btn" id="btn-memory-start" onclick="kelSetMode('mem1')" style="background: #E9EEF5;">Hafıza Oyunu</button>
-                <div id="memory-controls" style="display: none; align-items: center; gap: 8px;">
-                    <button class="btn" onclick="kelSetMode('study')" style="background:#E9EEF5; font-weight: bold;">Kartlar</button>
-                    <div class="switch-wrapper" style="display: flex; align-items: center; background: white; padding: 4px 8px; border-radius: 50px; border: 2px solid #E9EEF5; gap: 5px;">
-                        <span class="kel-kisi" title="Tek kişilik" onclick="kelToggleSwitch(false)"><svg class="ik ik-kisi1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.6"/><path d="M4.9 19.8c0-3.6 3.2-5.7 7.1-5.7s7.1 2.1 7.1 5.7"/></svg></span>
-                        <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 22px;">
-                            <input type="checkbox" id="mode-toggle" onchange="kelToggleMemoryMode(this)" style="opacity:0; width:0; height:0;">
-                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--p1); transition: .4s; border-radius: 34px;"></span>
-                        </label>
-                        <span class="kel-kisi" title="İki kişilik" onclick="kelToggleSwitch(true)"><svg class="ik ik-kisi2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8.8" cy="8.4" r="3.1"/><path d="M2.6 19.8c0-3.2 2.8-5.1 6.2-5.1 1.3 0 2.5.28 3.5.8"/><g class="ik-p2"><circle cx="16.9" cy="10" r="2.6"/><path d="M12.4 19.8c0-2.6 2-4.3 4.5-4.3s4.5 1.7 4.5 4.3"/></g></svg></span>
-                    </div>
-                    <div id="pair-selection-area">
-                        <select id="pairCount" class="btn" onchange="kelInit()" style="border: 2px solid var(--primary); padding: 4px 6px;">
-                            <option value="6">6</option>
-                            <option value="9" selected>9</option>
-                            <option value="12">12</option>
-                        </select>
-                    </div>
-                </div>
+        <div class="controls kel-kumanda">
+            <!-- Sütun seçici: yalnız LİSTE kipinde görünür, masaüstünde anlamlı
+                 (dar ekranda liste zaten tek sütun olduğu için gizleniyor). -->
+            <div class="kel-sutun" id="kelSutun" role="group" aria-label="Sütun sayısı">
+                <button class="kel-sutun-t" data-sutun="1" onclick="kelSetSutun(1)" title="Tek sütun — büyük yazı" aria-label="Tek sütun" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/></svg></button>
+                <button class="kel-sutun-t" data-sutun="2" onclick="kelSetSutun(2)" title="İki sütun" aria-label="İki sütun" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="7.4" height="15" rx="1.8"/><rect x="13.1" y="4.5" width="7.4" height="15" rx="1.8"/></svg></button>
+                <button class="kel-sutun-t aktif" data-sutun="3" onclick="kelSetSutun(3)" title="Üç sütun" aria-label="Üç sütun" aria-pressed="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="9.85" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="16.2" y="4.5" width="4.3" height="15" rx="1.5"/></svg></button>
             </div>
+            <div class="kel-kip" role="tablist" aria-label="Kelime kipi">
+                <button class="kel-kip-t aktif" id="btn-liste" role="tab" aria-selected="true" onclick="kelSetMode('liste')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 6.5h12M8.5 12h12M8.5 17.5h12"/><circle cx="4" cy="6.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="17.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                    Liste</button>
+                <button class="kel-kip-t" id="btn-study" role="tab" aria-selected="false" onclick="kelSetMode('study')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="6.4" width="13" height="12.2" rx="2.4"/><path d="M7.2 4.2h11a2.4 2.4 0 0 1 2.4 2.4v9.1"/></svg>
+                    Kartlar</button>
+            </div>
+            <button class="btn kel-yon" id="lang-btn-main" onclick="kelToggleLang()" title="Ön yüzü değiştir">T ⇄ ع</button>
+            <span class="kel-sayi" id="kelSayi"></span>
         </div>
     </div>
     <div class="game-area">
-        <div id="score-board-container" class="score-board">
-            <div id="p1-box" class="player-box" style="color: var(--p1)"><span class="p-label">P1</span><span id="s1" class="p-score">0</span></div>
-            <div id="grid" class="grid"></div>
-            <div id="p2-box" class="player-box" style="color: var(--p2)"><span class="p-label">P2</span><span id="s2" class="p-score">0</span></div>
-        </div>
+        <div id="kel-liste" class="kel-liste"></div>
+        <div id="grid" class="grid"></div>
     </div>
     <audio id="snd-flip" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-    <audio id="snd-match" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
 </div>
 
+<!-- ÜST ŞERİT — TEK SATIR, akordiyon yok
+     Solda çalışma modları (yalnız simge: kelime · cümle · diyalog),
+     ayırıcıdan sonra bilgi sekmeleri, sağda dil anahtarı.
+     Ders açılınca doğrudan KELİMELER kipi başlar; ara seçim ekranı
+     (entry-panel) artık gösterilmiyor. -->
 <nav class="navbar kd-oyn">
-    <button class="back-btn" onclick="goHome()">❮</button>
+    <button class="back-btn" onclick="goHome()" title="Geri" aria-label="Geri"><svg class="ik ik-geri" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg></button>
 
-    <div class="pdf-links">
-        <button class="nav-trigger" data-panel="prepositions" onclick="showPopup('prepositions')">Harfler</button>
-        <button class="nav-trigger" data-panel="soruedatlari" onclick="showPopup('soruedatlari')">Edatlar &amp; Zarflar</button>
-        <button class="nav-trigger" data-panel="pronouns" onclick="showPopup('pronouns')">Zamirler</button>
-        <button class="nav-trigger" data-panel="suffix" onclick="showPopup('suffix')">Fiil Kipleri</button>
+    <div class="serit">
+        <div class="mod-links">
+            <button type="button" class="mod-trigger mod-ikon" data-mod="kelime" onclick="kaynakMod('kelime')" title="Kelimeler" aria-label="Kelimeler"><svg class="ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="8" height="7" rx="2"/><rect x="13" y="4.5" width="8" height="7" rx="2"/><rect x="3" y="13.5" width="8" height="6" rx="2"/><rect x="13" y="13.5" width="8" height="6" rx="2"/></svg></button>
+            <button type="button" class="mod-trigger mod-ikon" data-mod="sentence" onclick="kaynakMod('sentence')" title="Cümle Pratiği" aria-label="Cümle Pratiği"><svg class="ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.4a7.6 7.6 0 0 1-8.2 7.5l-5.6 2 1.3-4.2a7.5 7.5 0 1 1 12.5-5.3Z"/><path d="M8.6 11.6h6.8M8.6 14.6h4.2"/></svg></button>
+            <button type="button" class="mod-trigger mod-ikon" data-mod="dialog" onclick="kaynakMod('dialog')" title="Diyalog Pratiği" aria-label="Diyalog Pratiği"><svg class="ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 9.4a5.4 5.4 0 0 1 5.4-5.4h3.9a5.4 5.4 0 0 1 0 10.8H8.9l-4 2.6.9-3.1a5.4 5.4 0 0 1-2.6-4.9Z"/><path d="M15.6 11.4a5 5 0 0 1 5.2 4.9 4.9 4.9 0 0 1-2.3 4.1l.8 2.4-3.4-1.9h-2.2"/></svg></button>
+        </div>
+        <button type="button" class="sekme-ac" id="sekmeAc" onclick="sekmeleriAc()"
+                aria-expanded="false" aria-controls="bilgiSekmeleri"
+                title="Bilgi sekmelerini göster" aria-label="Bilgi sekmelerini göster">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg>
+        </button>
+        <span class="serit-ayirac" aria-hidden="true"></span>
+        <div class="pdf-links kapali" id="bilgiSekmeleri">
+            <button class="nav-trigger" data-panel="prepositions" onclick="showPopup('prepositions')">Harfler</button>
+            <button class="nav-trigger" data-panel="soruedatlari" onclick="showPopup('soruedatlari')">Edatlar &amp; Zarflar</button>
+            <button class="nav-trigger" data-panel="pronouns" onclick="showPopup('pronouns')">Zamirler</button>
+            <button class="nav-trigger" data-panel="suffix" onclick="showPopup('suffix')">Fiil Kipleri</button>
         <!-- Tamlama ve Cümle: eskiden tamlamalar.pdf'i popup'ta açan sekmeydi.
              Artık kendi sayfasını (tamlamavecumleler.html) Sarf Motoru gibi
              AYRI SEKMEDE açıyor; ders anlatılırken muhadese sekmesi kapanmasın
              diye. rel="opener" ŞART: sistem/geri.js "yeni sekmede miyim?" sorusunu
              window.opener'a bakarak cevaplıyor; noopener olsaydı açılan sayfadaki
              Geri tuşu sekmeyi kapatamazdı. Simge sayfanın dört renkli satırı ve üstünde gezen büyüteçtir. -->
-        <a class="nav-trigger tamlama-cumle" href="tamlamavecumleler.html" target="_blank" rel="opener" title="Tamlama ve Cümle (yeni sekmede açılır)"><svg class="ik ik-tc" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.6" y="4" width="20.8" height="16.4" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><g fill="currentColor"><rect x="3.4" y="6" width="2" height="3" rx="1" opacity=".95"/><rect x="3.4" y="10.4" width="2" height="3" rx="1" opacity=".75"/><rect x="3.4" y="14.8" width="2" height="3" rx="1" opacity=".55"/><rect x="6.6" y="7" width="6.4" height="1.1" rx=".55" opacity=".55"/><rect x="6.6" y="11.4" width="8.4" height="1.1" rx=".55" opacity=".55"/><rect x="6.6" y="15.8" width="5.4" height="1.1" rx=".55" opacity=".55"/></g><g class="ik-tc-mercek"><circle cx="16.4" cy="8.2" r="4.1" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="19.4" y1="11.2" x2="21.4" y2="13.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g></svg><span class="sm-yazi">Tamlama ve Cümle</span></a>
+            <a class="nav-trigger tamlama-cumle" href="tamlamavecumleler.html" target="_blank" rel="opener" title="Tamlama ve Cümle (yeni sekmede açılır)"><svg class="ik ik-tc" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.6" y="4" width="20.8" height="16.4" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><g fill="currentColor"><rect x="3.4" y="6" width="2" height="3" rx="1" opacity=".95"/><rect x="3.4" y="10.4" width="2" height="3" rx="1" opacity=".75"/><rect x="3.4" y="14.8" width="2" height="3" rx="1" opacity=".55"/><rect x="6.6" y="7" width="6.4" height="1.1" rx=".55" opacity=".55"/><rect x="6.6" y="11.4" width="8.4" height="1.1" rx=".55" opacity=".55"/><rect x="6.6" y="15.8" width="5.4" height="1.1" rx=".55" opacity=".55"/></g><g class="ik-tc-mercek"><circle cx="16.4" cy="8.2" r="4.1" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="19.4" y1="11.2" x2="21.4" y2="13.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></g></svg><span class="sm-yazi">Tamlama ve Cümle</span></a>
         <!-- Sarf Motoru: kaliplartablosu.html'i ayrı sekmede açar. Simge emoji değil,
              satır içi SVG'dir; iki çark birbirine ters yönde döner (bkz. simultane.css). -->
-        <a class="nav-trigger sarf-motoru" href="kaliplartablosu.html" target="_blank" rel="opener" title="Sarf Motoru — Kalıplar Tablosu (yeni sekmede açılır)"><svg class="ik ik-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="ik-cark1" stroke-width="1.6"><circle cx="9" cy="9" r="4"/><circle cx="9" cy="9" r="1.4"/><path d="M13.2 9h1.7M11.97 6.03l1.2-1.2M9 4.8V3.1M6.03 6.03l-1.2-1.2M4.8 9H3.1M6.03 11.97l-1.2 1.2M9 13.2v1.7M11.97 11.97l1.2 1.2"/></g><g class="ik-cark2" stroke-width="1.4"><circle cx="17.6" cy="17.2" r="2.5"/><path d="M20.3 17.2h1.3M18.95 14.86l.65-1.12M16.25 14.86l-.65-1.12M14.9 17.2h-1.3M16.25 19.54l-.65 1.12M18.95 19.54l.65 1.12"/></g></svg><span class="sm-yazi">Sarf Motoru</span></a>
+            <a class="nav-trigger sarf-motoru" href="kaliplartablosu.html" target="_blank" rel="opener" title="Sarf Motoru — Kalıplar Tablosu (yeni sekmede açılır)"><svg class="ik ik-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g class="ik-cark1" stroke-width="1.6"><circle cx="9" cy="9" r="4"/><circle cx="9" cy="9" r="1.4"/><path d="M13.2 9h1.7M11.97 6.03l1.2-1.2M9 4.8V3.1M6.03 6.03l-1.2-1.2M4.8 9H3.1M6.03 11.97l-1.2 1.2M9 13.2v1.7M11.97 11.97l1.2 1.2"/></g><g class="ik-cark2" stroke-width="1.4"><circle cx="17.6" cy="17.2" r="2.5"/><path d="M20.3 17.2h1.3M18.95 14.86l.65-1.12M16.25 14.86l-.65-1.12M14.9 17.2h-1.3M16.25 19.54l-.65 1.12M18.95 19.54l.65 1.12"/></g></svg><span class="sm-yazi">Sarf Motoru</span></a>
+        </div>
     </div>
 
-    <div class="switch-wrapper">
+    <div class="switch-wrapper" id="dilSwitch">
         <span class="switch-text active-lang" id="lang-tr">TR</span>
         <label class="switch">
             <input type="checkbox" id="direction-toggle" onchange="toggleDirection()">

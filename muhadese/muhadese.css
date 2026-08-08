@@ -46,12 +46,16 @@ body {
 }
 
 /* ===================== ÜST BAŞLIK ===================== */
+/* Başlıkta yalnız geri tuşu ve sayfa adı var; bilgi şeridi kalktığı
+   için alt boşluk da küçültüldü. Kategori sekmeleri eskiden negatif
+   marjla başlığın ÜSTÜNE biniyordu; artık bitişik değil, altında
+   nefes payıyla duruyor. */
 header {
     position: relative;
     background: linear-gradient(90deg, var(--sari) 0%, var(--turuncu) 50%, var(--kirmizi) 100%);
     border-bottom: 2px solid var(--kirmizi-koyu);
     color: #fff;
-    padding: 30px 20px 46px;
+    padding: 20px 20px 22px;
     text-align: center;
     box-shadow: 0 6px 20px rgba(216, 67, 21, 0.18);
 }
@@ -65,34 +69,11 @@ header h1 {
     max-width: 900px;
 }
 
-/* "(Turkuaz olanları kullanabilirsiniz)" bilgi şeridi */
-.header-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-    padding: 6px 16px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 400;
-}
-.header-note::before {
-    content: "";
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #9FE6D5;
-    box-shadow: 0 0 0 3px rgba(165, 243, 180, .35);
-}
-
 /* ===================== GERİ / ANA SAYFA TUŞU ===================== */
 .home-btn {
     position: absolute;
     left: 15px;
-    bottom: 8px;
+    top: 50%; transform: translateY(-50%);
     width: 42px;
     height: 42px;
     display: flex;
@@ -114,13 +95,13 @@ header h1 {
 }
 .home-btn:hover,
 .home-btn:focus-visible {
-    transform: translateY(-3px);
+    transform: translateY(-50%) scale(1.06);
     background: var(--turuncu);
     color: #fff;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     outline: none;
 }
-.home-btn:active { transform: translateY(-1px); }
+.home-btn:active { transform: translateY(-50%) scale(.94); }
 
 /* ===================== KATEGORİ SEKMELERİ ===================== */
 .kat-sekme {
@@ -130,7 +111,7 @@ header h1 {
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin: -26px auto 0;
+    margin: 26px auto 0;      /* eskiden -26px: başlığa yapışıktı */
     padding: 0 15px;
     max-width: 1040px;
 }
@@ -678,7 +659,6 @@ html.dusuk-guc .ik-balon .ik-nokta { opacity: 1; }
 @media (max-width: 680px) {
     header { padding: 22px 16px 26px; }
     header h1 { font-size: 1.28rem; padding: 0 46px; }
-    .header-note { font-size: .9rem; padding: 5px 13px; }
 
     .home-btn {
         position: fixed;
@@ -754,7 +734,6 @@ html.dusuk-guc .ik-balon .ik-nokta { opacity: 1; }
    cihazlar bu bloğu okumaz. */
 @media (min-width: 1024px) {
     header h1 { font-size: clamp(1.95rem, 2.6vw, 2.75rem); }
-    .header-note { font-size: 1.12rem; padding: 7px 18px; }
 
     .kat-btn { padding: 12px 22px; gap: 12px; }
     .kat-btn .kat-ikon { width: 32px; height: 32px; }
