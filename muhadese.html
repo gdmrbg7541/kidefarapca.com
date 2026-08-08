@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260808b';        /* onbellek surumu */
+  var S   = '?v=20260808c';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -166,10 +166,10 @@
     <button class="back-btn" onclick="goHome()">❮</button>
 
     <div class="pdf-links">
-        <button class="nav-trigger" onclick="showPopup('prepositions')">Harfler</button>
-        <button class="nav-trigger" onclick="showPopup('soruedatlari')">Edatlar &amp; Zarflar</button>
-        <button class="nav-trigger" onclick="showPopup('pronouns')">Zamirler</button>
-        <button class="nav-trigger" onclick="showPopup('suffix')">Fiil Kipleri</button>
+        <button class="nav-trigger" data-panel="prepositions" onclick="showPopup('prepositions')">Harfler</button>
+        <button class="nav-trigger" data-panel="soruedatlari" onclick="showPopup('soruedatlari')">Edatlar &amp; Zarflar</button>
+        <button class="nav-trigger" data-panel="pronouns" onclick="showPopup('pronouns')">Zamirler</button>
+        <button class="nav-trigger" data-panel="suffix" onclick="showPopup('suffix')">Fiil Kipleri</button>
         <!-- Tamlama ve Cümle: eskiden tamlamalar.pdf'i popup'ta açan sekmeydi.
              Artık kendi sayfasını (tamlamavecumleler.html) Sarf Motoru gibi
              AYRI SEKMEDE açıyor; ders anlatılırken muhadese sekmesi kapanmasın

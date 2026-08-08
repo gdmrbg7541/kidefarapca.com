@@ -435,46 +435,46 @@ words: `
   <section class="mp-blok" style="--mpc:#16A085">
     <h3 class="mp-alt"><span class="mp-no">1</span> Munfasıl (Ayrı)<span class="mp-alt-ar" dir="rtl">ضَمِير مُنْفَصِل</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">O (E)</td><td><div class="mp-ar" dir="rtl">هُمْ</div><div class="mp-tr">Onlar</div></td><td><div class="mp-ar" dir="rtl">هُمَا</div><div class="mp-tr">O ikisi</div></td><td><div class="mp-ar" dir="rtl">هُوَ</div><div class="mp-tr">O</div></td></tr>
-        <tr><td class="mp-etiket">O (K)</td><td><div class="mp-ar" dir="rtl">هُنَّ</div><div class="mp-tr">Onlar</div></td><td><div class="mp-ar" dir="rtl">هُمَا</div><div class="mp-tr">O ikisi</div></td><td><div class="mp-ar" dir="rtl">هِيَ</div><div class="mp-tr">O</div></td></tr>
-        <tr><td class="mp-etiket">Sen (E)</td><td><div class="mp-ar" dir="rtl">أَنْتُمْ</div><div class="mp-tr">Siz</div></td><td><div class="mp-ar" dir="rtl">أَنْتُمَا</div><div class="mp-tr">Siz ikiniz</div></td><td><div class="mp-ar" dir="rtl">أَنْتَ</div><div class="mp-tr">Sen</div></td></tr>
-        <tr><td class="mp-etiket">Sen (K)</td><td><div class="mp-ar" dir="rtl">أَنْتُنَّ</div><div class="mp-tr">Siz</div></td><td><div class="mp-ar" dir="rtl">أَنْتُمَا</div><div class="mp-tr">Siz ikiniz</div></td><td><div class="mp-ar" dir="rtl">أَنْتِ</div><div class="mp-tr">Sen</div></td></tr>
-        <tr><td class="mp-etiket">Ben / Biz</td><td><div class="mp-ar" dir="rtl">نَحْنُ</div><div class="mp-tr">Biz</div></td><td><div class="mp-ar" dir="rtl">نَحْنُ</div><div class="mp-tr">Biz ikimiz</div></td><td><div class="mp-ar" dir="rtl">أَنَا</div><div class="mp-tr">Ben</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">هُمْ</div><div class="mp-tr">Onlar</div></td><td><div class="mp-ar" dir="rtl">هُمَا</div><div class="mp-tr">O ikisi</div></td><td><div class="mp-ar" dir="rtl">هُوَ</div><div class="mp-tr">O</div></td><td class="mp-etiket">O (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">هُنَّ</div><div class="mp-tr">Onlar</div></td><td><div class="mp-ar" dir="rtl">هُمَا</div><div class="mp-tr">O ikisi</div></td><td><div class="mp-ar" dir="rtl">هِيَ</div><div class="mp-tr">O</div></td><td class="mp-etiket">O (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">أَنْتُمْ</div><div class="mp-tr">Siz</div></td><td><div class="mp-ar" dir="rtl">أَنْتُمَا</div><div class="mp-tr">Siz ikiniz</div></td><td><div class="mp-ar" dir="rtl">أَنْتَ</div><div class="mp-tr">Sen</div></td><td class="mp-etiket">Sen (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">أَنْتُنَّ</div><div class="mp-tr">Siz</div></td><td><div class="mp-ar" dir="rtl">أَنْتُمَا</div><div class="mp-tr">Siz ikiniz</div></td><td><div class="mp-ar" dir="rtl">أَنْتِ</div><div class="mp-tr">Sen</div></td><td class="mp-etiket">Sen (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">نَحْنُ</div><div class="mp-tr">Biz</div></td><td><div class="mp-ar" dir="rtl">نَحْنُ</div><div class="mp-tr">Biz ikimiz</div></td><td><div class="mp-ar" dir="rtl">أَنَا</div><div class="mp-tr">Ben</div></td><td class="mp-etiket">Ben / Biz</td></tr>
       </tbody>
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#F39C12">
     <h3 class="mp-alt"><span class="mp-no">2</span> Muttasıl (Bitişik)<span class="mp-alt-ar" dir="rtl">ضَمِير مُتَّصِل</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">Onu (E)</td><td><div class="mp-ar" dir="rtl">ـهُمْ</div><div class="mp-tr">Onları</div></td><td><div class="mp-ar" dir="rtl">ـهُمَا</div><div class="mp-tr">O ikisini</div></td><td><div class="mp-ar" dir="rtl">ـهُ</div><div class="mp-tr">Onu</div></td></tr>
-        <tr><td class="mp-etiket">Onu (K)</td><td><div class="mp-ar" dir="rtl">ـهُنَّ</div><div class="mp-tr">Onları</div></td><td><div class="mp-ar" dir="rtl">ـهُمَا</div><div class="mp-tr">O ikisini</div></td><td><div class="mp-ar" dir="rtl">ـهَا</div><div class="mp-tr">Onu</div></td></tr>
-        <tr><td class="mp-etiket">Seni (E)</td><td><div class="mp-ar" dir="rtl">ـكُمْ</div><div class="mp-tr">Sizi</div></td><td><div class="mp-ar" dir="rtl">ـكُمَا</div><div class="mp-tr">Siz ikinizi</div></td><td><div class="mp-ar" dir="rtl">ـكَ</div><div class="mp-tr">Seni</div></td></tr>
-        <tr><td class="mp-etiket">Seni (K)</td><td><div class="mp-ar" dir="rtl">ـكُنَّ</div><div class="mp-tr">Sizi</div></td><td><div class="mp-ar" dir="rtl">ـكُمَا</div><div class="mp-tr">Siz ikinizi</div></td><td><div class="mp-ar" dir="rtl">ـكِ</div><div class="mp-tr">Seni</div></td></tr>
-        <tr><td class="mp-etiket">Beni / Bizi</td><td><div class="mp-ar" dir="rtl">ـنَا</div><div class="mp-tr">Bizi</div></td><td><div class="mp-ar" dir="rtl">ـنَا</div><div class="mp-tr">Bizi</div></td><td><div class="mp-ar" dir="rtl">ـي / نِي</div><div class="mp-tr">Beni</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـهُمْ</div><div class="mp-tr">Onları</div></td><td><div class="mp-ar" dir="rtl">ـهُمَا</div><div class="mp-tr">O ikisini</div></td><td><div class="mp-ar" dir="rtl">ـهُ</div><div class="mp-tr">Onu</div></td><td class="mp-etiket">Onu (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـهُنَّ</div><div class="mp-tr">Onları</div></td><td><div class="mp-ar" dir="rtl">ـهُمَا</div><div class="mp-tr">O ikisini</div></td><td><div class="mp-ar" dir="rtl">ـهَا</div><div class="mp-tr">Onu</div></td><td class="mp-etiket">Onu (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـكُمْ</div><div class="mp-tr">Sizi</div></td><td><div class="mp-ar" dir="rtl">ـكُمَا</div><div class="mp-tr">Siz ikinizi</div></td><td><div class="mp-ar" dir="rtl">ـكَ</div><div class="mp-tr">Seni</div></td><td class="mp-etiket">Seni (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـكُنَّ</div><div class="mp-tr">Sizi</div></td><td><div class="mp-ar" dir="rtl">ـكُمَا</div><div class="mp-tr">Siz ikinizi</div></td><td><div class="mp-ar" dir="rtl">ـكِ</div><div class="mp-tr">Seni</div></td><td class="mp-etiket">Seni (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـنَا</div><div class="mp-tr">Bizi</div></td><td><div class="mp-ar" dir="rtl">ـنَا</div><div class="mp-tr">Bizi</div></td><td><div class="mp-ar" dir="rtl">ـي / نِي</div><div class="mp-tr">Beni</div></td><td class="mp-etiket">Beni / Bizi</td></tr>
       </tbody>
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#EE5253">
     <h3 class="mp-alt"><span class="mp-no">3</span> İşaret Zamirleri (Bu / Şu-O)<span class="mp-alt-ar" dir="rtl">اِسْم الإِشَارَة</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">Erkek</td><td><div class="mp-ar" dir="rtl">هٰؤُلَاءِ / أُولٰئِكَ</div><div class="mp-tr">Bunlar/Şunlar</div></td><td><div class="mp-ar" dir="rtl">هٰذَانِ / ذَانِكَ</div><div class="mp-tr">Bu/O ikisi</div></td><td><div class="mp-ar" dir="rtl">هٰذَا / ذٰلِكَ</div><div class="mp-tr">Bu/O</div></td></tr>
-        <tr><td class="mp-etiket">Kadın</td><td><div class="mp-ar" dir="rtl">هٰؤُلَاءِ / أُولٰئِكَ</div><div class="mp-tr">Bunlar/Şunlar</div></td><td><div class="mp-ar" dir="rtl">هٰتَانِ / تَانكَ</div><div class="mp-tr">Bu/O ikisi</div></td><td><div class="mp-ar" dir="rtl">هٰذِهِ / تِلْكَ</div><div class="mp-tr">Bu/O</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">هٰؤُلَاءِ / أُولٰئِكَ</div><div class="mp-tr">Bunlar/Şunlar</div></td><td><div class="mp-ar" dir="rtl">هٰذَانِ / ذَانِكَ</div><div class="mp-tr">Bu/O ikisi</div></td><td><div class="mp-ar" dir="rtl">هٰذَا / ذٰلِكَ</div><div class="mp-tr">Bu/O</div></td><td class="mp-etiket">Erkek</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">هٰؤُلَاءِ / أُولٰئِكَ</div><div class="mp-tr">Bunlar/Şunlar</div></td><td><div class="mp-ar" dir="rtl">هٰتَانِ / تَانكَ</div><div class="mp-tr">Bu/O ikisi</div></td><td><div class="mp-ar" dir="rtl">هٰذِهِ / تِلْكَ</div><div class="mp-tr">Bu/O</div></td><td class="mp-etiket">Kadın</td></tr>
       </tbody>
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#7C3AED">
     <h3 class="mp-alt"><span class="mp-no">4</span> İsm-i Mevsuller (Ki O)<span class="mp-alt-ar" dir="rtl">اِسْم الْمَوْصُول</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">Erkek</td><td><div class="mp-ar" dir="rtl">الَّذِينَ</div><div class="mp-tr">Onlar ki</div></td><td><div class="mp-ar" dir="rtl">الَّذَانِ</div><div class="mp-tr">O ikisi ki</div></td><td><div class="mp-ar" dir="rtl">الَّذِي</div><div class="mp-tr">O ki</div></td></tr>
-        <tr><td class="mp-etiket">Kadın</td><td><div class="mp-ar" dir="rtl">اللَّاتِي</div><div class="mp-tr">Onlar ki</div></td><td><div class="mp-ar" dir="rtl">اللَّتَانِ</div><div class="mp-tr">O ikisi ki</div></td><td><div class="mp-ar" dir="rtl">الَّتِي</div><div class="mp-tr">O ki</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">الَّذِينَ</div><div class="mp-tr">Onlar ki</div></td><td><div class="mp-ar" dir="rtl">الَّذَانِ</div><div class="mp-tr">O ikisi ki</div></td><td><div class="mp-ar" dir="rtl">الَّذِي</div><div class="mp-tr">O ki</div></td><td class="mp-etiket">Erkek</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">اللَّاتِي</div><div class="mp-tr">Onlar ki</div></td><td><div class="mp-ar" dir="rtl">اللَّتَانِ</div><div class="mp-tr">O ikisi ki</div></td><td><div class="mp-ar" dir="rtl">الَّتِي</div><div class="mp-tr">O ki</div></td><td class="mp-etiket">Kadın</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -485,36 +485,36 @@ words: `
   <section class="mp-blok" style="--mpc:#16A085">
     <h3 class="mp-alt"><span class="mp-no">1</span> Mazi Fiil (-dı)<span class="mp-alt-ar" dir="rtl">اَلْمَاضِي</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">O (E)</td><td><div class="mp-ar" dir="rtl">ـ ـ ـُوا</div><div class="mp-tr">-dılar</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَا</div><div class="mp-tr">-dılar/2</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَ</div><div class="mp-tr">-dı</div></td></tr>
-        <tr><td class="mp-etiket">O (K)</td><td><div class="mp-ar" dir="rtl">ـ ـ ـْنَ</div><div class="mp-tr">-dılar K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَتَا</div><div class="mp-tr">-dılar/2 K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَتْ</div><div class="mp-tr">-dı K</div></td></tr>
-        <tr><td class="mp-etiket">Sen (E)</td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُمْ</div><div class="mp-tr">-dınız</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُمَا</div><div class="mp-tr">-dınız/2</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتَ</div><div class="mp-tr">-dın</div></td></tr>
-        <tr><td class="mp-etiket">Sen (K)</td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُنَّ</div><div class="mp-tr">-dınız K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُمَا</div><div class="mp-tr">-dınız/2 K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتِ</div><div class="mp-tr">-dın K</div></td></tr>
-        <tr><td class="mp-etiket">Ben / Biz</td><td><div class="mp-ar" dir="rtl">ـ ـ ـْنَا</div><div class="mp-tr">-dık</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْنَا</div><div class="mp-tr">-dık</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُ</div><div class="mp-tr">-dım</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـ ـ ـُوا</div><div class="mp-tr">-dılar</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَا</div><div class="mp-tr">-dılar/2</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَ</div><div class="mp-tr">-dı</div></td><td class="mp-etiket">O (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـ ـ ـْنَ</div><div class="mp-tr">-dılar K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَتَا</div><div class="mp-tr">-dılar/2 K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـَتْ</div><div class="mp-tr">-dı K</div></td><td class="mp-etiket">O (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُمْ</div><div class="mp-tr">-dınız</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُمَا</div><div class="mp-tr">-dınız/2</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتَ</div><div class="mp-tr">-dın</div></td><td class="mp-etiket">Sen (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُنَّ</div><div class="mp-tr">-dınız K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُمَا</div><div class="mp-tr">-dınız/2 K</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتِ</div><div class="mp-tr">-dın K</div></td><td class="mp-etiket">Sen (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـ ـ ـْنَا</div><div class="mp-tr">-dık</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْنَا</div><div class="mp-tr">-dık</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْتُ</div><div class="mp-tr">-dım</div></td><td class="mp-etiket">Ben / Biz</td></tr>
       </tbody>
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#F39C12">
     <h3 class="mp-alt"><span class="mp-no">2</span> Muzari Fiil (-yor)<span class="mp-alt-ar" dir="rtl">اَلْمُضَارِع</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">O (E)</td><td><div class="mp-ar" dir="rtl">يَـ ـ ـ ـُونَ</div><div class="mp-tr">-yorlar</div></td><td><div class="mp-ar" dir="rtl">يَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorlar/2</div></td><td><div class="mp-ar" dir="rtl">يَـ‫ ـ ـ ‬</div><div class="mp-tr">-yor</div></td></tr>
-        <tr><td class="mp-etiket">O (K)</td><td><div class="mp-ar" dir="rtl">يَـ ـ ـ ـْنَ</div><div class="mp-tr">-yorlar K</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorlar/2 K</div></td><td><div class="mp-ar" dir="rtl">تَـ‫ ـ ـ ‬</div><div class="mp-tr">-yor K</div></td></tr>
-        <tr><td class="mp-etiket">Sen (E)</td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـُونَ</div><div class="mp-tr">-yorsunuz</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorsunuz/2</div></td><td><div class="mp-ar" dir="rtl">تَـ‫ ـ ـ ‬</div><div class="mp-tr">-yorsun</div></td></tr>
-        <tr><td class="mp-etiket">Sen (K)</td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـْنَ</div><div class="mp-tr">-yorsunuz K</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorsunuz/2 K</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـــِــينَ</div><div class="mp-tr">-yorsun K</div></td></tr>
-        <tr><td class="mp-etiket">Ben / Biz</td><td><div class="mp-ar" dir="rtl">نَـ‫ ـ ـ ‬</div><div class="mp-tr">-yoruz</div></td><td><div class="mp-ar" dir="rtl">نَـ‫ ـ ـ ‬</div><div class="mp-tr">-yoruz</div></td><td><div class="mp-ar" dir="rtl">أَ‫ ـ ـ ‬</div><div class="mp-tr">-yorum</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">يَـ ـ ـ ـُونَ</div><div class="mp-tr">-yorlar</div></td><td><div class="mp-ar" dir="rtl">يَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorlar/2</div></td><td><div class="mp-ar" dir="rtl">يَـ‫ ـ ـ ‬</div><div class="mp-tr">-yor</div></td><td class="mp-etiket">O (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">يَـ ـ ـ ـْنَ</div><div class="mp-tr">-yorlar K</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorlar/2 K</div></td><td><div class="mp-ar" dir="rtl">تَـ‫ ـ ـ ‬</div><div class="mp-tr">-yor K</div></td><td class="mp-etiket">O (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـُونَ</div><div class="mp-tr">-yorsunuz</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorsunuz/2</div></td><td><div class="mp-ar" dir="rtl">تَـ‫ ـ ـ ‬</div><div class="mp-tr">-yorsun</div></td><td class="mp-etiket">Sen (E)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـْنَ</div><div class="mp-tr">-yorsunuz K</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـَانِ</div><div class="mp-tr">-yorsunuz/2 K</div></td><td><div class="mp-ar" dir="rtl">تَـ ـ ـ ـــِــينَ</div><div class="mp-tr">-yorsun K</div></td><td class="mp-etiket">Sen (K)</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">نَـ‫ ـ ـ ‬</div><div class="mp-tr">-yoruz</div></td><td><div class="mp-ar" dir="rtl">نَـ‫ ـ ـ ‬</div><div class="mp-tr">-yoruz</div></td><td><div class="mp-ar" dir="rtl">أَ‫ ـ ـ ‬</div><div class="mp-tr">-yorum</div></td><td class="mp-etiket">Ben / Biz</td></tr>
       </tbody>
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#EE5253">
     <h3 class="mp-alt"><span class="mp-no">3</span> Emir Ekleri (! / -sın)<span class="mp-alt-ar" dir="rtl">اَلأَمْر</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
-      <thead><tr><th class="mp-kose"></th><th>Çoğul</th><th>İkil</th><th>Tekil</th></tr></thead>
+      <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
-        <tr><td class="mp-etiket">Erkek</td><td><div class="mp-ar" dir="rtl">ـُوا</div><div class="mp-tr">Yapın!</div></td><td><div class="mp-ar" dir="rtl">ـَا</div><div class="mp-tr">İkiniz yapın!</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْ</div><div class="mp-tr">Yap!</div></td></tr>
-        <tr><td class="mp-etiket">Kadın</td><td><div class="mp-ar" dir="rtl">ـْنَ</div><div class="mp-tr">Yapın! K</div></td><td><div class="mp-ar" dir="rtl">ـَا</div><div class="mp-tr">İkiniz yapın! K</div></td><td><div class="mp-ar" dir="rtl">ـــِي</div><div class="mp-tr">Yap! K</div></td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـُوا</div><div class="mp-tr">Yapın!</div></td><td><div class="mp-ar" dir="rtl">ـَا</div><div class="mp-tr">İkiniz yapın!</div></td><td><div class="mp-ar" dir="rtl">ـ ـ ـْ</div><div class="mp-tr">Yap!</div></td><td class="mp-etiket">Erkek</td></tr>
+        <tr><td><div class="mp-ar" dir="rtl">ـْنَ</div><div class="mp-tr">Yapın! K</div></td><td><div class="mp-ar" dir="rtl">ـَا</div><div class="mp-tr">İkiniz yapın! K</div></td><td><div class="mp-ar" dir="rtl">ـــِي</div><div class="mp-tr">Yap! K</div></td><td class="mp-etiket">Kadın</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -527,19 +527,10 @@ tamlamalar: `<iframe src="tamlamalar.pdf#view=Fit&toolbar=1" style="width:100%; 
 
    
 // 2. SEÇİLİ BUTONU VURGULAMA FONKSİYONU
-    function setActiveButton(type) {
-        // Tüm nav-trigger butonlarından beyaz kenarlığı kaldır
-        const buttons = document.querySelectorAll('.nav-trigger');
-        buttons.forEach(btn => {
-            btn.style.border = "none";
-            btn.style.boxShadow = "none";
-        });
-
-        // Tıklanan butona beyaz kenarlık ve parlama ekle
-        const activeBtn = event.currentTarget;
-        activeBtn.style.border = "2px solid white";
-        activeBtn.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
-    }
+    /* Eski sürüm global 'event'e bakıyordu; klavyeyle ya da koddan
+       açılınca yanlış düğmeyi işaretliyordu. Artık AÇILAN PANELİN
+       türüne bakılıyor, vurgu da .aktif sınıfıyla veriliyor. */
+    function setActiveButton(type) { window.setActiveButton(type); }
 
 // --- BİRLEŞTİRİLMİŞ POPUP YÖNETİMİ ---
 
@@ -583,7 +574,16 @@ function showPopup(type) {
 function togglePopup(show) {
     const overlay = document.getElementById('popup-overlay');
     const controls = document.querySelector('.controls');
-    
+
+    /* Panel şeridin ALTINDAN başlasın: navbar yüksekliği sabit değil
+       (punto ve sekme sayısı değişiyor), o yüzden ölçüp yazıyoruz. */
+    const nav = document.querySelector('.navbar');
+    if (nav) {
+        const h = Math.round(nav.getBoundingClientRect().height);
+        if (h > 0) document.documentElement.style.setProperty('--nav-yuk', h + 'px');
+    }
+    if (!show) setActiveButton(null);          /* kapanınca sekme vurgusu sönsün */
+
     // Popup'ı göster/gizle
     overlay.style.display = show ? 'flex' : 'none';
     
@@ -626,17 +626,11 @@ document.addEventListener('keydown', function (e) {
 });
 
 function setActiveButton(type) {
-    // Tüm butonların stilini sıfırla
-    document.querySelectorAll('.nav-trigger').forEach(btn => {
-        btn.style.border = "none";
-        btn.style.boxShadow = "none";
+    document.querySelectorAll('.nav-trigger').forEach(function (btn) {
+        btn.style.border = '';
+        btn.style.boxShadow = '';
+        btn.classList.toggle('aktif', !!type && btn.getAttribute('data-panel') === type);
     });
-    
-    // Eğer tetikleyici bir event varsa ilgili butonu vurgula
-    if (event && event.currentTarget && event.currentTarget.classList.contains('nav-trigger')) {
-        event.currentTarget.style.border = "2px solid white";
-        event.currentTarget.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)";
-    }
 }
 var data = (window.data && window.data.sentence) ? window.data : { sentence: [], dialog: [] };
 

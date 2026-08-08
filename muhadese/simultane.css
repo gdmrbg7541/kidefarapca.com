@@ -103,7 +103,10 @@
        /* Paneli ekranın ortasına değil, navbar'ın hemen altına sabitliyoruz */
 .overlay { 
     position: fixed; 
-    top: 60px; /* Navbar yüksekliği kadar üstten boşluk */
+    /* Sabit 60px'ti; navbar punto büyüyünce 82px'e çıktı ve panelin üstü
+       şeridin ALTINA giriyordu. Yükseklik artık JS ile ölçülüp
+       --nav-yuk'e yazılıyor (bkz. togglePopup). */
+    top: var(--nav-yuk, 82px);
     left: 0;
     right: 0;
     bottom: 0;
@@ -660,6 +663,25 @@ html.dusuk-guc .switch-wrapper .ik-kisi2 .ik-p2 { opacity: 1; }
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
+/* AÇIK OLAN SEKME — eskiden satır içi 2px beyaz kenarlıktı, gradyan
+   şeridin üstünde fark edilmiyordu. Artık ters kontrast: zemin beyaz,
+   yazı kırmızı; altında da küçük bir gösterge üçgeni var. */
+.nav-trigger.aktif{
+    background: #fff !important;
+    color: var(--pdf-red, #C0392B) !important;
+    border-color: #fff !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,.28), 0 0 0 3px rgba(255,255,255,.45) !important;
+    transform: translateY(-2px);
+    font-weight: 800;
+}
+.nav-trigger.aktif::after{
+    content: ""; position: absolute; left: 50%; bottom: -9px;
+    width: 12px; height: 12px; background: #fff; border-radius: 2px;
+    transform: translateX(-50%) rotate(45deg);
+}
+.pdf-links .nav-trigger{ position: relative; }
+.nav-trigger.aktif .ik, .nav-trigger.aktif .sm-yazi{ color: var(--pdf-red, #C0392B); }
+
 /* Butonun Üzerine Gelince (Hover) */
 .nav-trigger:hover {
     background-color: white !important; /* Arka plan beyaza döner */
@@ -937,7 +959,7 @@ html.dusuk-guc .switch-wrapper .ik-kisi2 .ik-p2 { opacity: 1; }
    Punto tamamen vh'ye bağlı clamp(): ekran büyüdükçe yazı da büyür,
    projeksiyonda arka sıradan okunur.
    ============================================================ */
-.mp{ padding: 0 4px 26px; }
+.mp{ padding: 6px 4px 26px; }
 .mp-bas{
     display: flex; align-items: center; gap: 12px;
     font-family: 'Marhey', sans-serif; font-weight: 700; color: #16A085;
@@ -1004,9 +1026,12 @@ html.dusuk-guc .switch-wrapper .ik-kisi2 .ik-p2 { opacity: 1; }
     font-family: 'Marhey', sans-serif; font-weight: 700;
     font-size: clamp(.86rem, 2.1vh, 1.25rem); white-space: nowrap;
 }
-/* Sol üst köşe boş: renkli başlık bandı gibi görünmesin. */
+/* Kişi etiketi sütunu SAĞ UÇTA: Arapça sağdan sola okunduğu için
+   "O (E) / Sen (K)" gibi satır adları da okumanın başladığı yerde
+   dursun. Köşe hücresi boş, renkli banda dahil değil. */
 .mp-tablo th.mp-kose{ background: transparent !important; width: 130px; }
 .mp-tablo th:first-child{ border-radius: 10px 0 0 10px; }
+.mp-tablo th:nth-last-child(2){ border-radius: 0 10px 10px 0; }
 .mp-tablo th:last-child{ border-radius: 0 10px 10px 0; }
 .mp-tablo td{
     background: #fff; border: 2px solid #E9EEF5; padding: 6px 6px 9px;
@@ -1022,7 +1047,7 @@ html.dusuk-guc .switch-wrapper .ik-kisi2 .ik-p2 { opacity: 1; }
     width: 130px;
     background: #F0F4F8; color: #64748B; font-family: 'Marhey', sans-serif;
     font-weight: 700; font-size: clamp(.7rem, 1.7vh, .98rem); white-space: nowrap;
-    border-radius: 12px 0 0 12px; border: 2px solid #E9EEF5; border-right: 0;
+    border: 2px solid #E9EEF5; border-left: 0; border-radius: 0 12px 12px 0;
 }
 
 @media (max-width: 768px){
