@@ -1012,6 +1012,16 @@ function llOnay(mesaj, evet, ayar) {
     ev.onclick = () => { k.style.display = 'none'; try { evet && evet(); } catch (e) { console.warn(e); } };
     k.querySelector('#llOnayVazgec').onclick = () => { k.style.display = 'none'; };
     k.style.display = 'flex';
+    /* Esc = VAZGEÇ. Kaçış tuşu hiçbir zaman onaylamaz; yanlışlıkla silme/
+       çıkış olmasın diye evet yalnız düğmeyle verilir. Perdeye tıklamak da
+       kapatır. Dinleyici tek sefer bağlanır (k._llKacis işareti). */
+    if (!k._llKacis) {
+        k._llKacis = true;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && k.style.display !== 'none') { k.style.display = 'none'; e.preventDefault(); }
+        });
+        k.addEventListener('click', (e) => { if (e.target === k) k.style.display = 'none'; });
+    }
     setTimeout(() => { try { k.querySelector('#llOnayVazgec').focus(); } catch (e) { } }, 60);
 }
 window.llOnay = llOnay;

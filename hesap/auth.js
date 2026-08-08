@@ -446,6 +446,44 @@ function basariliGiris(userEmail, userPhone = "", userName = "") {
     }
 }
 
+/* ======================================================================
+   ÇIKIŞ ONAYI  —  başlıktaki çıkış tuşu buraya bağlıdır.
+   ----------------------------------------------------------------------
+   Öğrenci/öğretmen/yönetici tek dokunuşla oturumunu kaybetmesin diye
+   önce "emin misiniz?" sorulur. Onay penceresi sitenin kendi llOnay
+   modalıdır (listelerim.js); o yüklenmemişse tarayıcının confirm'ine
+   düşülür — hiçbir durumda sorulmadan çıkılmaz.
+
+   DİKKAT: cikisYap() SORMADAN çıkar; router.js canlı derse davetle
+   girilince öğretmeni programla düşürmek için onu çağırıyor. Soru
+   yalnız KULLANICI tuşa bastığında sorulmalı, o yüzden ayrı fonksiyon.
+   ====================================================================== */
+function cikisOnayla() {
+    var misafir = false;
+    try { misafir = (typeof appState !== 'undefined' && appState.currentUser === "Misafir Öğrenci"); } catch (e) { }
+    if (misafir) { cikisYap(); return; }   /* misafirin kaybedecek oturumu yok */
+
+    var rol = '';
+    try { rol = (typeof appState !== 'undefined' && appState.userRole) || ''; } catch (e) { }
+    var rolAdi = rol === 'admin' ? 'Yönetici' : (rol === 'teacher' ? 'Öğretmen' : 'Öğrenci');
+    var kisi = '';
+    try {
+        var a = (typeof appState !== 'undefined') ? appState : {};
+        kisi = (a.currentUserName && a.currentUserName !== 'Öğrenci' && a.currentUserName !== 'Belirtilmedi')
+            ? a.currentUserName : (a.currentUser || '');
+    } catch (e) { }
+
+    var mesaj = rolAdi + ' oturumunu kapatıyorsunuz' + (kisi ? ' (' + kisi + ')' : '') + '.\n' +
+        'Çıkınca misafir görünümüne dönersiniz; kayıtlı bilgileriniz silinmez.\n\n' +
+        'Çıkış yapmak istediğinize emin misiniz?';
+
+    if (typeof window.llOnay === 'function') {
+        window.llOnay(mesaj, cikisYap, { baslik: '⚠️ Emin misiniz?', evet: 'Çıkış Yap' });
+        return;
+    }
+    if (window.confirm(mesaj)) cikisYap();
+}
+
 function cikisYap() {
     window._llLoadedUid = null; // Listelerim'i yeni oturumda tazele
     localStorage.removeItem('mockSession');

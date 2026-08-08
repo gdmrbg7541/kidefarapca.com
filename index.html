@@ -151,7 +151,7 @@
     <!-- Tekil CSS Dosyası -->
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=20260807a">
+    <link rel="stylesheet" href="index.css?v=20260808a">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -502,7 +502,7 @@
         <div class="user-controls" style="display:flex; align-items:center; gap:12px;">
             <div id="user-info" class="user-profile-btn" style="display:none; position:relative; cursor:pointer;" onclick="if(typeof toggleStudentProfile==='function') toggleStudentProfile();"></div>
             <button id="header-login-btn" class="btn btn-secondary" onclick="showLoginModal()" title="Giriş Yap / Kayıt" aria-label="Giriş Yap / Kayıt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></button>
-            <button id="logout-btn" class="btn btn-danger" style="display:none; align-items:center; justify-content:center; gap:5px;" onclick="cikisYap()" title="Çıkış Yap" aria-label="Çıkış Yap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+            <button id="logout-btn" class="btn btn-danger" style="display:none; align-items:center; justify-content:center; gap:5px;" onclick="cikisOnayla()" title="Çıkış Yap" aria-label="Çıkış Yap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
         </div>
     </header>
 
@@ -1292,9 +1292,13 @@
         .oyun-card{ border:none; color:#fff; overflow:hidden; }
         .oyun-card::after{ content:''; position:absolute; top:-30px; right:-30px; width:110px; height:110px;
           border-radius:50%; background:rgba(255,255,255,.12); pointer-events:none; }
-        .oyun-ikon{ width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.2);
-          display:flex; align-items:center; justify-content:center; margin-bottom:8px;
-          font-size:1.9em; line-height:1;
+        /* İkon halkası: içindeki svg 1.6em (bkz. ".default-game-emoji svg,
+           .oyun-ikon svg"). 54px/1.9em ≈ 49px svg kartın yanında küçük
+           kalıyordu; halka 78px'e, svg ≈61px'e büyütüldü. Beceri/Öğretmen
+           Özel kategorisi bilerek bundan da iri (≈87px). */
+        .oyun-ikon{ width:78px; height:78px; border-radius:50%; background:rgba(255,255,255,.2);
+          display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+          font-size:2.4em; line-height:1;
           box-shadow:inset 0 0 0 2px rgba(255,255,255,.35); }
         .oyun-card h3{ color:#fff !important; text-shadow:0 1px 3px rgba(0,0,0,.25); }
         .oyun-card .game-card-description{ color:rgba(255,255,255,.94) !important; }
@@ -1916,17 +1920,41 @@
       #imam-hatip .a4-kivrim { width:15px; height:15px; }
       #imam-hatip .a4-kart:hover .a4-kivrim,
       #imam-hatip .a4-kart.acik .a4-kivrim { width:23px; height:23px; }
+      /* MOBİLDE KAĞITLAR BELİRGİN KÜÇÜK — 140px kart telefonda ekranın
+         yarısını kaplıyor, bir sınıfın belgelerini görmek uzun uzun
+         kaydırmak demekti. Kart 96px'e indi: satıra 2 yerine 3 kağıt
+         giriyor, bölüm yaklaşık yarı yarıya kısalıyor. Süsler (antet,
+         mühür, imza, kıvrım) da aynı oranda küçüldü ki kart hâlâ
+         "evrak" gibi dursun. */
       @media (max-width:600px){
+        /* SÜTUN SAYISI ÜST SINIRA GÖRE HESAPLANIR: auto-fit, minmax'in
+           belirli olan ÜST değerini kullanır. Sınıf paneli dar (360px
+           ekranda ızgara ≈260px), satıra 3 kağıt girsin diye üst sınır
+           82px: 3x82 + 2x6 = 258 ≤ 260. Daha geniş bloklarda satır
+           kendiliğinden daha çok kağıt alır, kağıt yine 82px'i aşmaz. */
         #imam-hatip .a4-grid,
         #imam-hatip .ih-genel-dok .a4-grid {
-          grid-template-columns:repeat(auto-fit,minmax(0,140px)); gap:12px 10px; }
+          grid-template-columns:repeat(auto-fit,minmax(70px,82px));
+          justify-content:center; gap:8px 6px; }
+        #imam-hatip .a4-kart { padding:0 3px 3px 0; }
+        #imam-hatip .a4-sheet { padding:3px 3px 3px; border-radius:3px; }
+        /* Kağıt 82x115'e indiği için ölçüler EN UZUN ada göre seçildi:
+           "Proje & Performans Görevleri" üç satır sürüyor ve yine de
+           mühür/imza satırının üstünde kalmalı. */
         #imam-hatip .a4-ikon,
-        #imam-hatip .ih-genel-dok .a4-ikon { width:56px; height:56px; margin:3px 0 3px; }
+        #imam-hatip .ih-genel-dok .a4-ikon { width:32px; height:32px; margin:2px 0 1px; }
         #imam-hatip .a4-ad,
-        #imam-hatip .ih-genel-dok .a4-ad { font-size:.78rem; }
-        #imam-hatip .a4-muhur { width:23px; height:23px; }
-        #imam-hatip .a4-imza { width:34px; height:14px; }
-        #imam-hatip .a4-sayac { font-size:.55rem; padding:2px 7px; }
+        #imam-hatip .ih-genel-dok .a4-ad { font-size:.54rem; line-height:1.1; letter-spacing:0; }
+        #imam-hatip .a4-antet { margin-top:1px; font-size:.34rem; letter-spacing:.3px; gap:1px; }
+        #imam-hatip .a4-antet i.uzun { width:28px; }
+        #imam-hatip .a4-antet i.kisa { width:15px; }
+        #imam-hatip .a4-muhur { width:16px; height:16px; }
+        #imam-hatip .a4-imza { width:24px; height:10px; }
+        #imam-hatip .a4-sayac { font-size:.42rem; padding:1px 4px; margin-bottom:1px; }
+        #imam-hatip .a4-serit { height:3px; }
+        #imam-hatip .a4-kivrim { width:10px; height:10px; }
+        #imam-hatip .a4-kart:hover .a4-kivrim,
+        #imam-hatip .a4-kart.acik .a4-kivrim { width:15px; height:15px; }
       }
       /* ===== Bir bolum acikken "İmam Hatip" basligi YAPISKANLIGINI birakir =====
          Baslik SILINMEZ, kucultulmez; sadece yapiskanligi kalkar, sayfayla
@@ -4621,8 +4649,8 @@
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
-    <script src="hesap/auth.js?v=20260805a"></script>
-    <script src="sistem/router.js?v=20260801e"></script>
+    <script src="hesap/auth.js?v=20260808a"></script>
+    <script src="sistem/router.js?v=20260802a"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
@@ -4630,10 +4658,10 @@
     <script src="hesap/teacher-admin.js?v=20260731g"></script>
     <script src="sistem/alarm.js"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260807b"></script>
+    <script src="hesap/listelerim.js?v=20260808a"></script>
     <script src="hesap/ogrencihesap.js?v=20260801f"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
-    <script src="sistem/gorev.js?v=31"></script>
+    <script src="sistem/gorev.js?v=32"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
     <script>
@@ -4737,8 +4765,8 @@
             }
         }
     </script>
-    <script src="index.js?v=20260727"></script>
-    <script src="sistem/geri.js"></script>
+    <script src="index.js?v=20260804a"></script>
+    <script src="sistem/geri.js?v=20260808a"></script>
     <script>
     /* Baska sayfalardan "Girise git" ile gelindiginde giris-kayit penceresini ac.
        Kullanim: index.html?giris=1  ya da  index.html#giris
