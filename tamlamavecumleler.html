@@ -180,6 +180,11 @@ body{
   font-size:clamp(.55rem,1.45vh,.95rem); color:var(--soluk); font-weight:600;
 }
 .tc-el{ color:#E11D2E; }
+/* Tesniye/cem ekleri: ال'den ayrı bir renk, ikisi karışmasın.
+   DİKKAT — ekin başındaki elif bir lâm'dan sonra geliyorsa (جَميلان)
+   renk sınırı lâm-elif bağını ortadan böler ve harf bozuk çizilir.
+   O yüzden oralarda lâm'a tatvil eklenip لـا biçiminde yazılıyor. */
+.tc-son{ color:#0E8074; }
 /* ÜSTÜ ÇİZİLİ ال: sonraki kelimeye BİTİŞMEMELİ. Arapça biçimlendirici
    öge sınırını tanımadığı için araya ZWNJ (U+200C) konur; yoksa "ال"
    kelimeyle birleşiyor ve çizgi kelimenin içinden geçiyordu. */
@@ -367,7 +372,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
 .tc-perde{
   position:fixed; inset:0; z-index:60;
   background:rgba(31,41,55,.45);
-  display:none; align-items:center; justify-content:center; padding:16px;
+  display:none; align-items:center; justify-content:center; padding:2.5vh 0;
 }
 .tc-perde.acik{ display:flex; }
 /* Panel: başlık sabit kalır, GÖVDE kaydırılır. Başlık mutlak konumlu
@@ -375,7 +380,9 @@ td.tc-secili .tc-cesit-not{ display:block; }
 .tc-pop{
   position:relative; background:#fff; border-radius:16px;
   box-shadow:0 18px 50px rgba(15,23,42,.3);
-  max-width:1240px; width:100%; max-height:92dvh;
+  /* Panel ekranın %95'ini kaplasın: i'rab tabloları geniş, tahtadan
+     okunacak. Üst sınır yok — büyük ekranda da genişler. */
+  width:95vw; max-width:95vw; max-height:92dvh;
   display:flex; flex-direction:column; overflow:hidden;
 }
 .tc-pop-bas{
@@ -407,33 +414,33 @@ td.tc-secili .tc-cesit-not{ display:block; }
    etiketleri renkli, "Hareke / Harf" alt yazısı gri bir kutuda. */
 .tc-irab th{
   background:#7A1FA0; color:#fff; border:1px solid #66188A;
-  padding:6px 6px 7px; text-align:center; line-height:1.25;
+  padding:10px 8px 11px; text-align:center; line-height:1.3;
   font-family:'Marhey',system-ui,sans-serif;
 }
 .tc-irab th .tc-ib-ar{
   display:block; direction:rtl; font-family:'Arakom','Traditional Arabic',serif;
-  font-size:clamp(1rem,2.5vh,1.5rem); line-height:1.4;
+  font-size:clamp(1.25rem,3.2vh,2rem); line-height:1.4;
 }
-.tc-irab th .tc-ib-ad{ display:block; font-size:clamp(.78rem,1.85vh,1.05rem); font-weight:700; }
+.tc-irab th .tc-ib-ad{ display:block; font-size:clamp(.95rem,2.35vh,1.4rem); font-weight:700; }
 .tc-irab th .tc-ib-alt{
   display:inline-block; margin-top:3px; padding:1px 10px; border-radius:6px;
   background:#EDEFF3; color:#7C8794;
-  font-size:clamp(.64rem,1.45vh,.84rem); font-weight:700;
+  font-size:clamp(.8rem,1.85vh,1.1rem); font-weight:700;
 }
 .tc-irab th .tc-ib-alt b{ color:#9AA5B1; font-weight:700; }
 .tc-ib-hareke{ color:#D6199B; }
 .tc-ib-harf{ color:#1D6FD0; }
 .tc-irab td{
   background:#fff; border:1px solid var(--cerceve);
-  padding:10px 6px; text-align:center;
+  padding:14px 10px; text-align:center;
   font-family:'Arakom','Traditional Arabic',serif;
   /* Sonlar tahtadan okunacak: punto ÇOK büyük tutuldu. Panel artık
      kaydırıldığı için yükseklik sıkıntısı yok. */
-  font-size:clamp(1.7rem,5.4vh,3.4rem); white-space:nowrap; line-height:1.5;
+  font-size:clamp(2.1rem,6.6vh,4.4rem); white-space:nowrap; line-height:1.5;
 }
 .tc-irab .tc-hal{
   font-family:'Marhey',system-ui,sans-serif; font-weight:700;
-  font-size:clamp(.8rem,1.9vh,1.1rem); color:#fff; white-space:nowrap;
+  font-size:clamp(1rem,2.4vh,1.45rem); color:#fff; white-space:nowrap;
 }
 .tc-h-merfu  .tc-hal{ background:#12A05F; }
 .tc-h-mansub .tc-hal{ background:#2C7BE5; }
@@ -455,7 +462,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
    gövdesi yana kayıyordu — metinler de kayıyordu. Artık YALNIZ tablo
    kendi kutusunda kayar; açıklamalar yerinde durur. */
 .tc-irab-kutu{ overflow-x:auto; overflow-y:hidden; padding-bottom:2px; }
-.tc-not{ margin:10px 2px 0; font-size:clamp(.7rem,1.6vh,.94rem); color:#5C6672; line-height:1.5; }
+.tc-not{ margin:12px 2px 0; font-size:clamp(.86rem,1.95vh,1.18rem); color:#5C6672; line-height:1.55; }
 
 /* ============================================================
    PANEL BÖLÜMLERİ — üst sekmeler, terim şeridi, filtre
@@ -612,7 +619,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
 /* ---- terim bilgi balonu ---- */
 .tc-bp-perde{
   position:fixed; inset:0; z-index:70; background:rgba(31,41,55,.5);
-  display:none; align-items:center; justify-content:center; padding:16px;
+  display:none; align-items:center; justify-content:center; padding:2.5vh 0;
 }
 .tc-bp-perde.acik{ display:flex; }
 .tc-bp{
@@ -840,6 +847,98 @@ td.tc-secili .tc-cesit-not{ display:block; }
   .tc-bas-ust{ display:none; }
   .tc-yakin .tc-tablo td.tc-secili{ padding-left:52px; transition:padding-left .3s ease-out; }
 }
+
+/* ================= TEST PANELİ ================= */
+/* TEST TAM EKRAN: sınıfta projeksiyona yansıtılıp topluca çözülebilsin
+   diye panel bütün ekranı kaplar ve yazılar iri tutulur. Ölçüler vh'ye
+   bağlı — küçük ekranda da büyük ekranda da ekranı doldurur. */
+.tc-perde.sv-perde{ padding:0; }
+.tc-sinav-pop{
+  max-width:none; width:100vw; height:100dvh; max-height:100dvh; border-radius:0;
+}
+.tc-sinav-pop .tc-pop-bas{ font-size:clamp(1rem,2.6vh,1.7rem); padding:10px 18px; }
+.sv-govde{
+  padding:clamp(14px,3vh,34px) clamp(16px,4vw,64px) clamp(18px,3.5vh,40px);
+  display:flex; flex-direction:column; justify-content:center;
+}
+.sv-ekran{ width:100%; max-width:1500px; margin:0 auto; }
+.sv-ekran[hidden]{ display:none; }
+.sv-aciklama{ margin:0 0 clamp(16px,3vh,30px); color:#4B5563; line-height:1.65; font-size:clamp(1.05rem,2.9vh,1.7rem); text-align:center; }
+.sv-havuz{ margin:0 0 clamp(16px,3vh,28px); color:#8A94A3; text-align:center; font-size:clamp(.95rem,2.2vh,1.3rem); }
+.sv-basla, .sv-sonraki, .sv-ikincil{
+  cursor:pointer; border:0; border-radius:999px; font-family:inherit; font-weight:700;
+  padding:clamp(13px,2.2vh,22px) clamp(30px,5vw,60px); font-size:clamp(1.05rem,2.8vh,1.7rem);
+  background:#16A085; color:#fff; transition:filter .15s, transform .15s;
+}
+.sv-basla:hover:not(:disabled), .sv-sonraki:hover, .sv-ikincil:hover{ filter:brightness(1.1); transform:translateY(-1px); }
+.sv-basla:disabled{ opacity:.45; cursor:default; }
+.sv-ikincil{ background:#94A3B8; }
+
+/* --- soru ekranı --- */
+.sv-ust{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.sv-adim, .sv-puan{ font-weight:700; color:#64748B; white-space:nowrap; font-size:clamp(1rem,2.5vh,1.55rem); }
+.sv-puan{ color:#16A085; }
+.sv-cubuk{ flex:1 1 auto; height:clamp(9px,1.5vh,15px); border-radius:999px; background:#E7ECF2; overflow:hidden; }
+.sv-cubuk i{ display:block; height:100%; width:0; border-radius:999px; background:#16A085; transition:width .35s ease-out; }
+.sv-yonerge{ margin:0 0 clamp(10px,1.8vh,18px); color:var(--kirmizi); font-weight:700; text-align:center; font-size:clamp(1.1rem,3vh,1.9rem); }
+.sv-soru{
+  background:#F6F9FC; border:2px solid var(--cerceve); border-radius:14px;
+  padding:clamp(20px,4vh,46px) 18px; text-align:center; margin-bottom:clamp(16px,3vh,32px);
+  font-size:clamp(2.2rem,8.5vh,5.6rem); line-height:1.4; color:#1E2A38;
+}
+.sv-soru.sv-ar{ direction:rtl; }
+/* Tablo sorularında metin yapının adıdır: latin, biraz daha küçük. */
+.sv-soru.sv-tr{ font-size:clamp(1.7rem,5.6vh,3.6rem); font-weight:700; color:var(--kirmizi); }
+/* Öge sorusunda hangi kelimenin sorulduğu belli olsun. */
+.sv-isaret{
+  background:#FFF3C4; border-bottom:3px solid var(--kirmizi);
+  border-radius:8px 8px 0 0; padding:0 .12em;
+}
+.sv-siklar{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(10px,1.8vh,18px); }
+.sv-sik{
+  display:flex; align-items:center; gap:12px; text-align:start;
+  cursor:pointer; border:2px solid var(--cerceve); background:#fff; color:#1E2A38;
+  font-family:inherit; border-radius:14px; padding:clamp(12px,2.1vh,22px) clamp(15px,2vw,26px);
+  font-size:clamp(1.15rem,3.2vh,2.05rem); line-height:1.3;
+  transition:border-color .15s, background .15s;
+}
+.sv-sik:hover:not(:disabled){ border-color:#16A085; background:#F2FBF8; }
+.sv-sik:disabled{ cursor:default; }
+.sv-sik .sv-harf{
+  flex:none; width:clamp(32px,5vh,54px); height:clamp(32px,5vh,54px); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:#EEF2F7; color:#64748B; font-weight:700; font-size:clamp(.9rem,2.2vh,1.4rem);
+}
+.sv-sik .sv-yazi{ flex:1 1 auto; min-width:0; }
+.sv-sik.sv-ar .sv-yazi{ direction:rtl; text-align:right; font-size:1.35em; }
+.sv-sik.dogru{ border-color:#16A085; background:#E8F8F3; }
+.sv-sik.dogru .sv-harf{ background:#16A085; color:#fff; }
+.sv-sik.yanlis{ border-color:var(--kirmizi); background:#FDECEC; }
+.sv-sik.yanlis .sv-harf{ background:var(--kirmizi); color:#fff; }
+.sv-sonraki{ display:block; margin:18px auto 0; }
+
+/* --- sonuç --- */
+.sv-sonuc{ text-align:center; }
+.sv-halka{
+  width:clamp(180px,34vh,330px); height:clamp(180px,34vh,330px); margin:6px auto clamp(18px,3vh,32px);
+  border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:conic-gradient(#16A085 calc(var(--yuzde,0) * 1%), #E7ECF2 0);
+  position:relative;
+}
+.sv-halka::after{
+  content:''; position:absolute; inset:14px; border-radius:50%; background:#fff;
+}
+.sv-halka b, .sv-halka small{ position:relative; z-index:1; }
+.sv-halka b{ font-size:clamp(3rem,11vh,6rem); color:#16A085; line-height:1; }
+.sv-halka small{ color:#8A94A3; font-weight:700; font-size:clamp(1rem,2.4vh,1.5rem); }
+.sv-mesaj{ margin:0 0 10px; font-weight:700; color:#1E2A38; font-size:clamp(1.4rem,4vh,2.6rem); }
+.sv-ozet{ margin:0 0 clamp(20px,3.4vh,36px); color:#64748B; font-size:clamp(1rem,2.5vh,1.55rem); }
+.sv-alt{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+@media (max-width:620px){
+  .sv-govde{ padding:16px 14px 22px; }
+  .sv-siklar{ grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
@@ -849,6 +948,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
   <h1 class="tc-ustad"><span class="tc-emoji">🦾</span> Pekiştirelim – Tamlama ve Cümleler</h1>
   <!-- "Anlatım" düğmesi kaldırıldı: büyütme artık düğmeyle değil,
        doğrudan kutuya dokunarak başlıyor. -->
+  <button type="button" class="tc-irab-ac" id="tcTestAc">📝 Test</button>
   <button type="button" class="tc-irab-ac" id="tcIrabAc">📐 İ'rab</button>
 </header>
 
@@ -1084,6 +1184,55 @@ td.tc-secili .tc-cesit-not{ display:block; }
      için orada yalnız SOL başlık gösterilir. -->
 <div class="tc-bas tc-bas-ust" id="tcBasUst" aria-hidden="true"></div>
 <div class="tc-bas tc-bas-sol" id="tcBasSol" aria-hidden="true"><span class="tc-bas-dik" id="tcBasSolYazi"></span></div>
+
+
+<!-- ============ TEST (10 SORULUK TUR) ============
+     Sorular 5/7/9/10. sınıf ders kelimelerinden (muhadese/veri) üretilen
+     tek dosyalık havuzdan geliyor; havuz ilk açılışta yükleniyor.
+     Her tur 10 soru, her doğru 10 puan → 100 üzerinden. -->
+<div class="tc-perde sv-perde" id="tcSinavPerde" aria-hidden="true">
+  <div class="tc-pop tc-sinav-pop" role="dialog" aria-modal="true" aria-label="Test">
+    <div class="tc-pop-bas">
+      <span>📝 Test – 10 Soruluk Tur</span>
+      <button type="button" class="tc-kapat" id="tcSinavKapat" title="Kapat" aria-label="Kapat">&times;</button>
+    </div>
+    <div class="tc-pop-govde sv-govde">
+
+      <div class="sv-ekran" id="svAcilis">
+        <p class="sv-aciklama">Her tur <b>10 soru</b>, her doğru cevap <b>10 puan</b>.
+           Sorular doğrudan yukarıdaki tablodan gelir: <b>ne işe yarar</b>,
+           <b>ögeleri nelerdir</b>, <b>uyum</b> ve <b>dikkat edilmesi gerekenler</b>.
+           Ayrıca örnek üzerinde ögenin adı sorulur
+           (Muzâf, Muzâfun ileyh, Mevsûf, Sıfat, Mübteda, Haber, Fiil, Fâil, Mef’ûl).</p>
+        <p class="sv-havuz" id="svHavuz">Soru havuzu yükleniyor…</p>
+        <button type="button" class="sv-basla" id="svBasla" disabled>Teste Başla</button>
+      </div>
+
+      <div class="sv-ekran" id="svSoru" hidden>
+        <div class="sv-ust">
+          <span class="sv-adim" id="svAdim">Soru 1 / 10</span>
+          <span class="sv-cubuk"><i id="svDolu"></i></span>
+          <span class="sv-puan" id="svPuan">0 puan</span>
+        </div>
+        <p class="sv-yonerge" id="svYonerge"></p>
+        <div class="sv-soru" id="svMetin"></div>
+        <div class="sv-siklar" id="svSiklar"></div>
+        <button type="button" class="sv-sonraki" id="svSonraki" hidden>Sonraki &#10095;</button>
+      </div>
+
+      <div class="sv-ekran sv-sonuc" id="svSonuc" hidden>
+        <div class="sv-halka" id="svHalka"><b id="svSkor">0</b><small>/ 100</small></div>
+        <p class="sv-mesaj" id="svMesaj"></p>
+        <p class="sv-ozet" id="svOzet"></p>
+        <div class="sv-alt">
+          <button type="button" class="sv-basla" id="svTekrar">Yeni Tur</button>
+          <button type="button" class="sv-ikincil" id="svBitir">Kapat</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- ============ TERİM BİLGİ BALONU ============ -->
 <div class="tc-bp-perde" id="tcBpPerde" aria-hidden="true">
@@ -1864,7 +2013,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
               'bu yüzden üç hâlin alâmeti de açıkça görünür. Küçük yazı, marifesiz (nekra) biçimdir.',
           sutun:[ {ad:'Tekil', alt:HAREKE}, {ad:'İkil', alt:HARF}, {ad:'Düzensiz Çoğul', alt:HAREKE} ],
           satir:[
-            [ ['الْقَلَمُ','قَلَمٌ'],  ['الْقَلَمَانِ','قَلَمَانِ'],  ['الْأَقْلَامُ','أَقْلَامٌ'] ],
+            [ ['الْقَلَمُ','قَلَمٌ'],  ['الْقَلَمَانِ','قَلَمَانِ'],  ['الْأَقْلَـامُ','أَقْلَامٌ'] ],
             [ ['الْقَلَمَ','قَلَمًا'], ['الْقَلَمَيْنِ','قَلَمَيْنِ'], ['الْأَقْلَامَ','أَقْلَامًا'] ],
             [ ['الْقَلَمِ','قَلَمٍ'],  ['الْقَلَمَيْنِ','قَلَمَيْنِ'], ['الْأَقْلَامِ','أَقْلَامٍ'] ]
           ],
@@ -2153,46 +2302,46 @@ td.tc-secili .tc-cesit-not{ display:block; }
 
   var CESIT = [
     [ /* 1 · İsim Tamlaması */
-      { ad:'Tekil', k:[['قَلَمُ','Muzaf'],['الْمُعَلِّمِ','Muzafun ileyh']],
-        tr:'Öğretmenin kalemi',
+      { ad:'Tekil', k:[['<span class="tc-el-yok">ال</span>&zwnj;قَلَمُ','Muzaf'],['الْمُعَلِّمِ','Muzafun ileyh']],
+        tr:'Öğretmen<span class="tc-ek">in</span> kalem<span class="tc-ek">i</span>',
         not:'Muzâf <b>ötre</b> ile merfu, muzâfun ileyh <b>esre</b> ile mecrur.' },
-      { ad:'İkil', k:[['قَلَمَا','Muzaf'],['الْمُعَلِّمِ','Muzafun ileyh']],
-        tr:'Öğretmenin iki kalemi',
+      { ad:'İkil', k:[['<span class="tc-el-yok">ال</span>&zwnj;قَلَمَ<span class="tc-son">ا</span>','Muzaf'],['الْمُعَلِّمِ','Muzafun ileyh']],
+        tr:'Öğretmen<span class="tc-ek">in</span> iki kalem<span class="tc-ek">i</span>',
         not:'Muzâf ikil: <b>elif</b> ile merfu. Dikkat — izâfet yüzünden ikilin <b>nûnu düştü</b> (قَلَمَانِ → قَلَمَا).' },
-      { ad:'Çoğul', k:[['أَقْلَامُ','Muzaf'],['الْمُعَلِّمِينَ','Muzafun ileyh']],
-        tr:'Öğretmenlerin kalemleri',
+      { ad:'Çoğul', k:[['<span class="tc-el-yok">ال</span>&zwnj;أَقْلَـامُ','Muzaf'],['الْمُعَلِّمِ<span class="tc-son">ينَ</span>','Muzafun ileyh']],
+        tr:'Öğretmen<span class="tc-ek">lerin</span> kalem<span class="tc-ek">leri</span>',
         not:'Muzâfun ileyh cem-i müzekker sâlim: esre değil <b>ya</b> ile mecrur.' }
     ],
     [ /* 2 · Sıfat Tamlaması */
-      { ad:'Tekil', k:[['اَلْقَلَمُ','Mevsuf'],['الْجَمِيلُ','Sıfat']],
+      { ad:'Tekil', k:[['<span class="tc-el">اَلْ</span>قَلَمُ','Mevsuf'],['<span class="tc-el">الْ</span>جَمِيلُ','Sıfat']],
         tr:'Güzel kalem',
         not:'Sıfat mevsûfa uyar: ikisi de marife, ikisi de <b>ötre</b> ile merfu.' },
-      { ad:'İkil', k:[['اَلْقَلَمَانِ','Mevsuf'],['الْجَمِيلَانِ','Sıfat']],
+      { ad:'İkil', k:[['<span class="tc-el">اَلْ</span>قَلَمَ<span class="tc-son">انِ</span>','Mevsuf'],['<span class="tc-el">الْ</span>جَمِيلَـ<span class="tc-son">انِ</span>','Sıfat']],
         tr:'İki güzel kalem',
         not:'İkilde ikisi de <b>elif</b> alır; uyum sayıda da sürer.' },
-      { ad:'Çoğul', k:[['اَلْأَقْلَامُ','Mevsuf'],['الْجَمِيلَةُ','Sıfat']],
+      { ad:'Çoğul', k:[['<span class="tc-el">اَلْ</span>أَقْلَـامُ','Mevsuf'],['<span class="tc-el">الْ</span>جَمِيلَةُ','Sıfat']],
         tr:'Güzel kalemler',
         not:'<b>İstisna:</b> kalem akılsız (gayr-i âkil). Akılsızların çoğulu <b>müfred müennes</b> sayılır, sıfatı da öyle gelir.' }
     ],
     [ /* 3 · İsim Cümlesi */
-      { ad:'Tekil', k:[['اَلْكِتَابُ','Mübteda'],['مُفِيدٌ.','Haber']],
+      { ad:'Tekil', k:[['<span class="tc-el">اَلْ</span>كِتَابُ','Mübteda'],['<span class="tc-el-yok">ال</span>&zwnj;مُفِيدٌ.','Haber']],
         tr:'Kitap faydalıdır.',
         not:'Mübteda marife, haber nekra; ikisi de <b>ötre</b> ile merfu.' },
-      { ad:'İkil', k:[['اَلْكِتَابَانِ','Mübteda'],['مُفِيدَانِ.','Haber']],
+      { ad:'İkil', k:[['<span class="tc-el">اَلْ</span>كِتَابَ<span class="tc-son">انِ</span>','Mübteda'],['<span class="tc-el-yok">ال</span>&zwnj;مُفِيدَ<span class="tc-son">انِ</span>.','Haber']],
         tr:'İki kitap faydalıdır.',
         not:'İkilde ikisi de <b>elif</b> ile merfu olur.' },
-      { ad:'Çoğul', k:[['اَلْكُتُبُ','Mübteda'],['مُفِيدَةٌ.','Haber']],
+      { ad:'Çoğul', k:[['<span class="tc-el">اَلْ</span>كُتُبُ','Mübteda'],['<span class="tc-el-yok">ال</span>&zwnj;مُفِيدَةٌ.','Haber']],
         tr:'Kitaplar faydalıdır.',
         not:'<b>İstisna:</b> kitap akılsız; çoğulunun haberi <b>müfred müennes</b> gelir.' }
     ],
     [ /* 4 · Fiil Cümlesi */
-      { ad:'Tekil', k:[['كَتَبَ','Fiil'],['الْمُعَلِّمُ','Fail'],['الدَّرْسَ.','Mef\'ul']],
+      { ad:'Tekil', k:[['<span class="tc-el">كَتَبَ</span>','Fiil'],['الْمُعَلِّمُ','Fail'],['الدَّرْسَ.','Mef\'ul']],
         tr:'Öğretmen dersi yazdı.',
         not:'Fâil <b>ötre</b> ile merfu, mef\'ul <b>üstün</b> ile mansub.' },
-      { ad:'İkil', k:[['كَتَبَ','Fiil'],['الْمُعَلِّمَانِ','Fail'],['الدَّرْسَ.','Mef\'ul']],
+      { ad:'İkil', k:[['<span class="tc-el">كَتَبَ</span>','Fiil'],['الْمُعَلِّمَ<span class="tc-son">انِ</span>','Fail'],['الدَّرْسَ.','Mef\'ul']],
         tr:'İki öğretmen dersi yazdı.',
         not:'Fâil ikil (<b>elif</b> ile merfu) ama fiil <b>yine tekil</b> kaldı.' },
-      { ad:'Çoğul', k:[['كَتَبَ','Fiil'],['الْمُعَلِّمُونَ','Fail'],['الدَّرْسَ.','Mef\'ul']],
+      { ad:'Çoğul', k:[['<span class="tc-el">كَتَبَ</span>','Fiil'],['الْمُعَلِّمُ<span class="tc-son">ونَ</span>','Fail'],['الدَّرْسَ.','Mef\'ul']],
         tr:'Öğretmenler dersi yazdı.',
         not:'Fâil cem-i müzekker sâlim: <b>vav</b> ile merfu. Fiil başta olduğu için <b>yine tekil</b>.' }
     ]
@@ -2498,7 +2647,12 @@ td.tc-secili .tc-cesit-not{ display:block; }
   adimlar.forEach(function (a, n) {
     a.td.addEventListener('click', function (e) {
       if (e.target.closest && e.target.closest('.tc-ok')) return;
-      if (i === n) uzaklas(); else git(n);
+      if (i !== n) { git(n); return; }
+      /* Odaktaki kutuya tekrar dokunmak KÜÇÜLTÜR ama gezintiyi bitirmez:
+         satır sonundaki gibi bir DURAĞA geçilir. Böylece İleri baştan
+         başlamak yerine kalınan yerden devam eder, Geri de bırakılan
+         kutuyu geri açar. Son kutuda devam edecek adım yok, tamamen çıkılır. */
+      if (n >= adimlar.length - 1) uzaklas(); else araVer(n + 1);
     });
   });
   tablo.addEventListener('click', function (e) {
@@ -2539,6 +2693,352 @@ td.tc-secili .tc-cesit-not{ display:block; }
 
   window.tcYakinlas = git;
   window.tcUzaklas = uzaklas;
+})();
+</script>
+<script>
+/* ============================================================
+   TEST — 10 SORULUK TUR, 100 PUAN ÜZERİNDEN
+   ------------------------------------------------------------
+   Havuz: muhadese/veri/sinav.js — bu sayfanın öğrettiği dört yapı
+   (isim tamlaması, sıfat tamlaması, isim cümlesi, fiil cümlesi).
+   İçindeki örnekler kalip.js üzerinden 5-10. sınıf ders verilerine
+   dayanıyor; sınav için ayrıca Arapça yazılmadı.
+
+   İki soru tipi:
+     ANLAM : öbeğin/cümlenin Türkçe karşılığı nedir?
+     ÖGE   : işaretli kelime hangi ögedir? (Muzâf, Sıfat, Fâil …)
+
+   Çeldiriciler AYNI TÜRDEN seçilir; öge sorularında ise gerçekten
+   karışabilecek öge adları verilir, yoksa soru kendini ele veriyor.
+   Havuz ilk "Test" dokunuşunda yükleniyor.
+   ============================================================ */
+(function () {
+  var HAVUZ_YOL = 'muhadese/veri/sinav.js?v=2';
+  var SORU = 10, PUAN = 10;
+
+  var ac      = document.getElementById('tcTestAc');
+  var perde   = document.getElementById('tcSinavPerde');
+  if (!ac || !perde) return;
+  var kapat   = document.getElementById('tcSinavKapat');
+  var eAcilis = document.getElementById('svAcilis');
+  var eSoru   = document.getElementById('svSoru');
+  var eSonuc  = document.getElementById('svSonuc');
+  var elHavuz = document.getElementById('svHavuz');
+  var elBasla = document.getElementById('svBasla');
+  var elAdim  = document.getElementById('svAdim');
+  var elDolu  = document.getElementById('svDolu');
+  var elPuan  = document.getElementById('svPuan');
+  var elYon   = document.getElementById('svYonerge');
+  var elMetin = document.getElementById('svMetin');
+  var elSik   = document.getElementById('svSiklar');
+  var elSon   = document.getElementById('svSonraki');
+  var elHalka = document.getElementById('svHalka');
+  var elSkor  = document.getElementById('svSkor');
+  var elMesaj = document.getElementById('svMesaj');
+  var elOzet  = document.getElementById('svOzet');
+
+  var havuz = null, yukleniyor = false;
+  var sorular = [], adim = 0, dogru = 0, cevapVerildi = false;
+  var HARF = ['A', 'B', 'C', 'D', 'E'];
+
+  /* Aynı yapıda birlikte geçen, yani gerçekten karışabilecek öge adları. */
+  var YAKIN = {
+    'Muzâf':         ['Muzâfun ileyh', 'Mevsûf', 'Sıfat', 'Mübteda'],
+    'Muzâfun ileyh': ['Muzâf', 'Sıfat', 'Mevsûf', 'Haber'],
+    'Mevsûf':        ['Sıfat', 'Muzâf', 'Muzâfun ileyh', 'Mübteda'],
+    'Sıfat':         ['Mevsûf', 'Muzâfun ileyh', 'Muzâf', 'Haber'],
+    'Mübteda':       ['Haber', 'Fâil', 'Mevsûf', 'Muzâf'],
+    'Haber':         ['Mübteda', 'Sıfat', 'Mef’ûl', 'Fâil'],
+    'Fiil':          ['Fâil', 'Mef’ûl', 'Mübteda', 'Haber'],
+    'Fâil':          ['Mef’ûl', 'Fiil', 'Mübteda', 'Haber'],
+    'Mef’ûl':        ['Fâil', 'Fiil', 'Haber', 'Muzâfun ileyh']
+  };
+
+  function karistir(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function havuzYaz() {
+    if (!havuz) { elHavuz.textContent = 'Soru havuzu yükleniyor…'; elBasla.disabled = true; return; }
+    if (!tablo) tablo = tabloyuOku();
+    var t = tablo.reduce(function (n, k) { return n + k.maddeler.length; }, 0);
+    var o = havuz.maddeler.reduce(function (n, x) { return n + x.oge.length; }, 0);
+    elHavuz.textContent = t + ' tablo · ' + o + ' öge sorusu havuzda';
+    elBasla.disabled = (t + o < SORU);
+  }
+  function havuzYukle() {
+    if (havuz || yukleniyor) { havuzYaz(); return; }
+    yukleniyor = true;
+    var sc = document.createElement('script');
+    sc.src = HAVUZ_YOL;
+    sc.onload = function () {
+      yukleniyor = false;
+      var h = window.KIDEF_SINAV;
+      havuz = (h && h.maddeler && h.maddeler.length) ? h : null;
+      havuzYaz();
+    };
+    sc.onerror = function () {
+      yukleniyor = false;
+      elHavuz.textContent = 'Soru havuzu yüklenemedi.';
+      elBasla.disabled = true;
+    };
+    document.head.appendChild(sc);
+  }
+
+  /* ---- soru üretimi ---- */
+  /* ---- TABLO SORULARI ----
+     Sorular sayfanın KENDİ tablosundan okunuyor: "Ne işe yarar", "Ögeleri
+     nelerdir", "Uyum", "Dikkat edilmesi gerekenler" sütunlarının hücreleri.
+     Böylece tablo değişince sorular da kendiliğinden güncellenir; ayrı bir
+     soru dosyası tutup ikisini elde eşitlemek gerekmez.
+     Çeldiriciler AYNI SÜTUNUN öteki satırlarından gelir — yani "İsim
+     Cümlesi"nin uyumu sorulduğunda şıklarda "Fiil Cümlesi"nin uyumu da
+     bulunur. En çok karışan şey tam olarak budur. */
+  var tablo = null;
+  function tabloyuOku() {
+    var satirlar = [].slice.call(document.querySelectorAll('.tc-satir'));
+    var kayit = [];
+    satirlar.forEach(function (tr) {
+      var adEl = tr.querySelector('.tc-turad');
+      if (!adEl) return;
+      var ad = adEl.innerText.replace(/\s+/g, ' ').trim();
+      [].slice.call(tr.querySelectorAll('td[data-bas]')).forEach(function (td) {
+        if (td.querySelector('.tc-ornek')) return;        /* Örnek sütunu öge sorularının işi */
+        var mad = [].slice.call(td.querySelectorAll('li'))
+          .map(function (li) { return li.innerText.replace(/\s+/g, ' ').trim(); })
+          .filter(function (x) { return x.length > 3; });
+        if (mad.length) kayit.push({ ad: ad, sutun: td.getAttribute('data-bas'), maddeler: mad });
+      });
+    });
+    return kayit;
+  }
+  function tabloSorusu(h) {
+    /* aynı sütun, başka satır → en güçlü çeldirici */
+    var ayniSutun = [];
+    tablo.forEach(function (k) {
+      if (k.sutun === h.sutun && k.ad !== h.ad) ayniSutun = ayniSutun.concat(k.maddeler);
+    });
+    var digerleri = [];
+    tablo.forEach(function (k) {
+      if (k.sutun !== h.sutun) digerleri = digerleri.concat(k.maddeler);
+    });
+    var aday = karistir(ayniSutun).concat(karistir(digerleri));
+    /* Aynı hücrenin ÖTEKİ maddeleri çeldirici olamaz: onlar da o yapı için
+       doğrudur, sorunun iki doğru cevabı olurdu. Başka satırda birebir aynı
+       metin geçiyorsa o da elenir. */
+    var secili = [], gor = {};
+    h.tumMaddeler.forEach(function (x) { gor[x] = 1; });
+    for (var i = 0; i < aday.length && secili.length < 4; i++) {
+      if (gor[aday[i]]) continue;
+      gor[aday[i]] = 1; secili.push(aday[i]);
+    }
+    return {
+      tip: 'tablo',
+      yonerge: h.sutun,
+      metin: h.ad, arapca: false, isaret: null,
+      dogru: h.madde,
+      siklar: karistir(secili.concat([h.madde]))
+    };
+  }
+
+  function ogeSorusu(m, o) {
+    var kelime = o[0], rol = o[1];
+    /* En güçlü çeldirici, AYNI örnekte geçen öteki ögedir: "الضَّوْء الأَحْمَر"
+       sorulurken Mevsûf ile Sıfat gerçekten karışır. Sonra o role yakın
+       öge adları, en sonda havuzun kalanı gelir. */
+    var ayniOrnek = m.oge.map(function (x) { return x[1]; }).filter(function (x) { return x !== rol; });
+    var aday = ayniOrnek
+      .concat(karistir((YAKIN[rol] || []).slice()))
+      .concat(karistir(havuz.ogeler.filter(function (x) { return x !== rol; })));
+    var secili = [], gor = {};
+    for (var i = 0; i < aday.length && secili.length < 4; i++) {
+      if (gor[aday[i]] || aday[i] === rol) continue;
+      gor[aday[i]] = 1; secili.push(aday[i]);
+    }
+    return {
+      tip: 'oge',
+      yonerge: 'İşaretli kelime hangi ögedir?',
+      metin: m.ar, arapca: true, isaret: kelime,
+      dogru: rol,
+      siklar: karistir(secili.concat([rol]))
+    };
+  }
+  function turKur() {
+    if (!tablo) tablo = tabloyuOku();
+    /* TABLO havuzu: her satır-sütun-madde üçlüsü bir soru */
+    var tabloHavuz = [];
+    tablo.forEach(function (k) {
+      k.maddeler.forEach(function (m) {
+        tabloHavuz.push({ ad: k.ad, sutun: k.sutun, madde: m, tumMaddeler: k.maddeler });
+      });
+    });
+    /* ÖGE havuzu: örneklerin ögeleri */
+    var ogeHavuz = [];
+    havuz.maddeler.forEach(function (m) {
+      m.oge.forEach(function (o) { ogeHavuz.push({ m: m, o: o }); });
+    });
+    karistir(tabloHavuz); karistir(ogeHavuz);
+
+    var kacTablo = Math.min(Math.round(SORU / 2), tabloHavuz.length);
+    var secilen = [], kul = {};
+    function doldur(kaynak, adet, anahtar) {
+      for (var i = 0; i < kaynak.length && adet > 0; i++) {
+        var k = anahtar(kaynak[i]);
+        if (kul[k]) continue;
+        kul[k] = 1; secilen.push(kaynak[i]); adet--;
+      }
+    }
+    doldur(tabloHavuz, kacTablo, function (x) { return 'T|' + x.ad + '|' + x.sutun; });
+    doldur(ogeHavuz, SORU - secilen.length, function (x) { return 'O|' + x.m.ar; });
+    doldur(tabloHavuz, SORU - secilen.length, function (x) { return 'T2|' + x.madde; });
+
+    sorular = karistir(secilen).map(function (x) {
+      return x.madde ? tabloSorusu(x) : ogeSorusu(x.m, x.o);
+    });
+    adim = 0; dogru = 0;
+  }
+
+  function ekran(hangi) {
+    eAcilis.hidden = (hangi !== 'acilis');
+    eSoru.hidden   = (hangi !== 'soru');
+    eSonuc.hidden  = (hangi !== 'sonuc');
+  }
+
+  /* İşaret ÇOK KELİMELİ olabilir: "كُرَة القَدَم" gibi bir mef'ûl kendi
+     içinde tamlamadır. Bu yüzden tek tek kelime değil, ardışık kelime
+     dizisi eşleştiriliyor; yoksa öge sorusu işaretsiz kalıyordu. */
+  function metinYaz(q) {
+    var ar = !!q.arapca;
+    elMetin.className = 'sv-soru' + (ar ? ' sv-ar' : ' sv-tr');
+    elMetin.setAttribute('dir', ar ? 'rtl' : 'ltr');
+    elMetin.innerHTML = '';
+    if (!ar) { elMetin.textContent = q.metin; return; }
+    var kelime = q.metin.split(' ');
+    var im = q.isaret ? q.isaret.split(' ') : [];
+    var kok = function (x) { return x.replace(/[.،؟!]+$/, ''); };
+    var basla = -1;
+    if (im.length) {
+      for (var i = 0; i + im.length <= kelime.length; i++) {
+        var uyar = true;
+        for (var j = 0; j < im.length; j++) if (kok(kelime[i + j]) !== kok(im[j])) { uyar = false; break; }
+        if (uyar) { basla = i; break; }
+      }
+    }
+    kelime.forEach(function (k, n) {
+      if (n) elMetin.appendChild(document.createTextNode(' '));
+      var e = document.createElement('span');
+      if (basla >= 0 && n >= basla && n < basla + im.length) e.className = 'sv-isaret';
+      e.textContent = k;
+      elMetin.appendChild(e);
+    });
+  }
+
+  function soruCiz() {
+    var q = sorular[adim];
+    cevapVerildi = false;
+    elAdim.textContent = 'Soru ' + (adim + 1) + ' / ' + SORU;
+    elDolu.style.width = (adim / SORU * 100) + '%';
+    elPuan.textContent = (dogru * PUAN) + ' puan';
+    elYon.textContent = q.yonerge;
+    metinYaz(q);
+
+    elSik.innerHTML = '';
+    q.siklar.forEach(function (metin, n) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sv-sik';
+      b.innerHTML = '<span class="sv-harf">' + HARF[n] + '</span><span class="sv-yazi"></span>';
+      b.querySelector('.sv-yazi').textContent = metin;
+      b.addEventListener('click', function () { cevapla(b, metin); });
+      elSik.appendChild(b);
+    });
+    elSon.hidden = true;
+    elSon.textContent = (adim === SORU - 1) ? 'Sonucu Gör' : 'Sonraki ❯';
+  }
+
+  function cevapla(dugme, metin) {
+    if (cevapVerildi) return;
+    cevapVerildi = true;
+    var q = sorular[adim];
+    if (metin === q.dogru) dogru++;
+    [].forEach.call(elSik.children, function (b) {
+      b.disabled = true;
+      var y = b.querySelector('.sv-yazi').textContent;
+      if (y === q.dogru) b.classList.add('dogru');
+      else if (b === dugme) b.classList.add('yanlis');
+    });
+    elPuan.textContent = (dogru * PUAN) + ' puan';
+    elDolu.style.width = ((adim + 1) / SORU * 100) + '%';
+    elSon.hidden = false;
+    elSon.focus();
+  }
+
+  function sonraki() {
+    if (!cevapVerildi) return;
+    if (adim < SORU - 1) { adim++; soruCiz(); return; }
+    sonucCiz();
+  }
+
+  function sonucCiz() {
+    var puan = dogru * PUAN;
+    elSkor.textContent = puan;
+    elHalka.style.setProperty('--yuzde', puan);
+    elMesaj.textContent =
+      puan === 100 ? 'Tam isabet! 🎯' :
+      puan >= 80  ? 'Çok iyi!' :
+      puan >= 60  ? 'İyi gidiyorsun.' :
+      puan >= 40  ? 'Biraz daha tekrar iyi olur.' :
+                    'Yapıları bir kez daha gözden geçirelim.';
+    var ogeSay = sorular.filter(function (q) { return q.tip === 'oge'; }).length;
+    elOzet.textContent = SORU + ' sorudan ' + dogru + ' doğru · ' +
+      ogeSay + ' öge, ' + (SORU - ogeSay) + ' tablo sorusu';
+    ekran('sonuc');
+  }
+
+  function basla() {
+    if (elBasla.disabled || !havuz) return;
+    turKur();
+    if (!sorular.length) return;
+    ekran('soru');
+    soruCiz();
+  }
+
+  /* ---- olaylar ---- */
+  ac.addEventListener('click', function () {
+    perde.classList.add('acik');
+    perde.setAttribute('aria-hidden', 'false');
+    ekran('acilis');
+    havuzYukle();
+  });
+  function kapatt() {
+    perde.classList.remove('acik');
+    perde.setAttribute('aria-hidden', 'true');
+  }
+  kapat.addEventListener('click', kapatt);
+  document.getElementById('svBitir').addEventListener('click', kapatt);
+  perde.addEventListener('click', function (e) { if (e.target === perde) kapatt(); });
+  elBasla.addEventListener('click', basla);
+  document.getElementById('svTekrar').addEventListener('click', function () {
+    ekran('acilis'); havuzYaz();
+  });
+  elSon.addEventListener('click', sonraki);
+
+  document.addEventListener('keydown', function (e) {
+    if (!perde.classList.contains('acik')) return;
+    if (e.key === 'Escape') { kapatt(); e.preventDefault(); return; }
+    if (eSoru.hidden) return;
+    if (!cevapVerildi && /^[1-5]$/.test(e.key)) {
+      var b = elSik.children[+e.key - 1];
+      if (b) { b.click(); e.preventDefault(); }
+    } else if (cevapVerildi && (e.key === 'Enter' || e.key === ' ')) {
+      sonraki(); e.preventDefault();
+    }
+  });
+
+  window.tcTestAc = function () { ac.click(); };
 })();
 </script>
 <script src="sistem/geri.js"></script>
