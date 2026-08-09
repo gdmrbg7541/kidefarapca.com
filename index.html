@@ -162,7 +162,7 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="hesap/listelerim.css?v=20260809d">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=20260809g">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -4155,7 +4155,8 @@
     <!-- "Ogrenciler" sekmesi KALDIRILDI: sinif adi rozetinin kendisi o sekme
          (bkz. listelerim.js -> #active-class-title, onclick=switchTab(0)). -->
     <button class="tab" title="Haftalık Plan" aria-label="Haftalık Plan" onclick="switchTab(9)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/></svg><span>Haftalık Plan</span></button>
-    <button class="tab" title="Veli &amp; Durum" aria-label="Veli &amp; Durum" onclick="switchTab(10)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.6" cy="7" r="3.2" fill="#e74c3c"/><path d="M2.4 19.6a5.2 5.2 0 0 1 10.4 0z" fill="#c0392b"/><circle cx="16.6" cy="7" r="3.2" fill="#3498db"/><path d="M11.4 19.6a5.2 5.2 0 0 1 10.4 0z" fill="#2980b9"/><path class="li-kalp" d="M12 14.6c-1.2-1.4-3.2-.6-3.2 1 0 1.4 1.8 2.6 3.2 3.6 1.4-1 3.2-2.2 3.2-3.6 0-1.6-2-2.4-3.2-1" fill="#f39c12"/></svg><span>Veli &amp; Durum</span></button>
+    <!-- "Veli & Durum" sekmesi buradan KALDIRILDI: artik ogretmen profilinde,
+         "Kisisel Bilgilerim"in hemen altindaki akordiyonda yasiyor. -->
     <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
 </div>
 
@@ -4265,15 +4266,99 @@
 
 <div id="llAracTakim" style="display:none;">
     <h3><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.4 11.4l4-3.6 4.6 2.6-2 2z" fill="#f5b041"/><path d="M21.6 11.4l-4-3.6-4.6 2.6 2 2z" fill="#e59866"/><path d="M8.6 10.6l3.4-1.4 3.4 1.4 3.6 4a1.6 1.6 0 0 1-2.2 2.2l-1-.9a1.5 1.5 0 0 1-2.2 1.6 1.5 1.5 0 0 1-2.4 1.2 1.5 1.5 0 0 1-2.6-1.1z" fill="#f8c471"/><g class="li-parilti2" stroke="#f1c40f" stroke-width="1.4" stroke-linecap="round"><path d="M12 5.4v-2.4M8.4 6.2L7 4.2M15.6 6.2L17 4.2"/></g></svg> Takım Oluşturucu</h3>
-    <p>Sınıftaki öğrencileri rastgele takımlara ayırır.</p>
-    <div class="tool-controls">
-        <button class="tool-btn btn-start" onclick="createTeams(2)">2'li Takımlar</button>
-        <button class="tool-btn btn-start" onclick="createTeams(3)">3'lü Takımlar</button>
-        <button class="tool-btn btn-start" onclick="createTeams(4)">4'lü Takımlar</button>
-        <button class="tool-btn btn-start" onclick="createTeams(5)">5'li Takımlar</button>
-        <button class="tool-btn btn-start" onclick="createTeams(6)">6'lı Takımlar</button>
-        <button class="tool-btn btn-reset" onclick="clearTeams()">Temizle</button>
+    <p>Öğrencileri <b>isimle</b>, <b>sıra numarasıyla</b> ya da <b>okul numarasıyla</b> hızlıca takımlara ayır. Listede olmayan (mailyle giriş yapmamış) oyuncuları da misafir olarak oynatabilirsin.</p>
+
+    <!-- AKORDIYON: ayni anda tek bolum acik kalir, panel kisa durur.
+         Basliga tekrar basilinca o bolum de kapanir. -->
+    <div class="tk-blok" data-tkblok="1">
+        <button type="button" class="tk-baslik" onclick="llTakimKatla('1')" aria-expanded="false" aria-controls="llTakimGovde1">
+            <span class="tk-adim">1</span>
+            <span class="tk-ad2">Numaralandırma</span>
+            <span class="tk-ozet" id="llTakimOzet1"></span>
+            <svg class="tk-ok" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="tk-govde" id="llTakimGovde1">
+            <div class="tk-satir">
+                <button type="button" class="tk-mod aktif" data-tkmod="isim" onclick="llTakimEtiketSec('isim')">İsim</button>
+                <button type="button" class="tk-mod" data-tkmod="sira" onclick="llTakimEtiketSec('sira')">Sıra No</button>
+                <button type="button" class="tk-mod" data-tkmod="okul" onclick="llTakimEtiketSec('okul')">Okul No</button>
+                <span class="tk-ipucu">Kartlarda görünecek ve hızlı girişte aranacak numarayı seçer.</span>
+            </div>
+        </div>
     </div>
+
+    <div class="tk-blok" data-tkblok="2">
+        <button type="button" class="tk-baslik" onclick="llTakimKatla('2')" aria-expanded="false" aria-controls="llTakimGovde2">
+            <span class="tk-adim">2</span>
+            <span class="tk-ad2">Katılımcılar</span>
+            <span class="tk-ozet" id="llTakimSayac"></span>
+            <svg class="tk-ok" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="tk-govde" id="llTakimGovde2">
+            <div id="llTakimKatilim" class="tk-cipler"></div>
+            <div class="tk-satir">
+                <input type="text" id="llTakimMisafirAd" class="tk-giris" maxlength="120"
+                       placeholder="Misafir oyuncu adı — virgülle birden fazla"
+                       onkeydown="if(event.key==='Enter'){event.preventDefault();llTakimMisafirEkle();}">
+                <button type="button" class="tool-btn btn-start tk-kucuk" onclick="llTakimMisafirEkle()">+ Misafir Ekle</button>
+                <button type="button" class="tool-btn tk-kucuk tk-sade" onclick="llTakimHepsi(true)">Tümü Katılsın</button>
+                <button type="button" class="tool-btn tk-kucuk tk-sade" onclick="llTakimHepsi(false)">Hiçbiri</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tk-blok" data-tkblok="3">
+        <button type="button" class="tk-baslik" onclick="llTakimKatla('3')" aria-expanded="false" aria-controls="llTakimGovde3">
+            <span class="tk-adim">3</span>
+            <span class="tk-ad2">Rastgele dağıt</span>
+            <span class="tk-ozet">büyüklüğe ya da takım sayısına göre</span>
+            <svg class="tk-ok" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="tk-govde" id="llTakimGovde3">
+            <div class="tk-satir">
+                <span class="tk-etiket">Takım büyüklüğü</span>
+                <button class="tool-btn btn-start tk-kucuk" onclick="createTeams(2)">2'li</button>
+                <button class="tool-btn btn-start tk-kucuk" onclick="createTeams(3)">3'lü</button>
+                <button class="tool-btn btn-start tk-kucuk" onclick="createTeams(4)">4'lü</button>
+                <button class="tool-btn btn-start tk-kucuk" onclick="createTeams(5)">5'li</button>
+                <button class="tool-btn btn-start tk-kucuk" onclick="createTeams(6)">6'lı</button>
+            </div>
+            <div class="tk-satir">
+                <span class="tk-etiket">Takım sayısı</span>
+                <button class="tool-btn tk-kucuk tk-sade" onclick="llTakimSayiIle(2)">2 takım</button>
+                <button class="tool-btn tk-kucuk tk-sade" onclick="llTakimSayiIle(3)">3 takım</button>
+                <button class="tool-btn tk-kucuk tk-sade" onclick="llTakimSayiIle(4)">4 takım</button>
+                <button class="tool-btn tk-kucuk tk-sade" onclick="llTakimSayiIle(5)">5 takım</button>
+                <button class="tool-btn tk-kucuk tk-sade" onclick="llTakimSayiIle(6)">6 takım</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tk-blok" data-tkblok="4">
+        <button type="button" class="tk-baslik" onclick="llTakimKatla('4')" aria-expanded="false" aria-controls="llTakimGovde4">
+            <span class="tk-adim">4</span>
+            <span class="tk-ad2">Elle kur (hızlı giriş)</span>
+            <span class="tk-ozet">1 3 5 | 2 4 6</span>
+            <svg class="tk-ok" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="tk-govde" id="llTakimGovde4">
+            <textarea id="llTakimHizli" class="tk-alan" rows="4" spellcheck="false"
+                      placeholder="Her satır bir takım — aynı satırda | ile de bölebilirsin.&#10;1 3 5 | 2 4 6&#10;Aslanlar: 7, 12, Ahmet Yılmaz&#10;1-6"></textarea>
+            <div class="tk-satir">
+                <button class="tool-btn btn-start tk-kucuk" onclick="llTakimElle()">Takımları Kur</button>
+                <span class="tk-ipucu">Numaralar seçili numaralandırmaya göre eşleşir; <b>1-6</b> aralık demektir; tanınmayan isimler misafir oyuncu olur.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="llTakimUyari" class="tk-uyari" style="display:none;"></div>
+
+    <div id="llTakimArac" class="tk-satir tk-arac" style="display:none;">
+        <button class="tool-btn btn-start tk-kucuk" onclick="llTakimKaristir()">Yeniden Karıştır</button>
+        <button class="tool-btn tk-kucuk tk-sade" onclick="llTakimKopyala()">Kopyala</button>
+        <button class="tool-btn btn-reset tk-kucuk" onclick="clearTeams()">Temizle</button>
+    </div>
+
     <div id="teamContainer" class="team-grid"></div>
 </div>
     </div>
@@ -4301,18 +4386,9 @@
 </div>
 
 
-    <!-- ================= VELİ & DURUM (tüm seviye ve sınıflar) ================= -->
-
-    <div id="tab10" class="tab-panel">
-        <div class="tarama-bas">
-            <h3><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.6" cy="10.6" r="6.6" fill="none" stroke="#34495e" stroke-width="2.1"/><path d="M15.6 15.6l5.2 5.2" stroke="#34495e" stroke-width="2.4" stroke-linecap="round"/><line class="li-mercek" x1="5.4" y1="10.6" x2="15.8" y2="10.6" stroke="#3498db" stroke-width="1.8" stroke-linecap="round"/></svg> Veli &amp; Durum Taraması</h3>
-            <p class="tarama-aciklama">Tüm seviyelerdeki bütün sınıflar taranır. Bir ölçüt seçin; uyan öğrenciler liste hâlinde çıkar.</p>
-            <input type="search" class="tarama-arama" placeholder="İsim, sınıf, seviye veya meslek ara…" oninput="taramaAramaDegisti(this)">
-        </div>
-        <div id="taramaCipler" class="tarama-cipler"></div>
-        <div id="taramaOzet" class="tarama-ozet"></div>
-        <div id="taramaSonuc"></div>
-    </div>
+    <!-- VELİ & DURUM TARAMASI buradan tasindi: artik ogretmen profilinde,
+         "Kisisel Bilgilerim"in altindaki #tpTarama akordiyonunda cizilir
+         (hesap/listelerim.js -> renderTeacherProfile / renderTarama). -->
 
     <div id="customAlertModal">
     <div class="alert-box">
@@ -4689,7 +4765,7 @@
     <script src="hesap/teacher-admin.js?v=20260731g"></script>
     <script src="sistem/alarm.js"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260809e"></script>
+    <script src="hesap/listelerim.js?v=20260809h"></script>
     <script src="hesap/ogrencihesap.js?v=20260801f"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=32"></script>

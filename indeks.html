@@ -6,7 +6,7 @@
 <title>Kidef Arapça — Harften Hikâyeye</title>
 <meta name="description" content="Arapçayı hissederek öğren.">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="indeks.css">
+<link rel="stylesheet" href="indeks.css?v=2">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -178,7 +178,10 @@
 <!-- 5b · ÖĞÜTÜCÜ + USTA — tek sahne: kök öğütülür, harfler tam örse iner, çekiç örse değer -->
 <section class="perde" id="fabrikaPerde">
 <style>
-  #fabrikaPerde{ height:170vh; }
+  /* Sahne, kaydirma yolu boyunca surulur: yol kisa olunca animasyon
+     tek tekerlek tikinda bitip "cok hizli" gorunuyordu. */
+  #fabrikaPerde{ height:280vh; }                                  /* yol 70vh -> 180vh */
+  @media (max-width:640px){ #fabrikaPerde{ height:220vh; } }      /* yol 70vh -> 120vh */
   #fabrikaIc{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     padding:0 12px; will-change:transform,opacity; }
   #fabrikaIc svg{ overflow:visible; display:block; width:clamp(320px,92vw,680px); height:auto; }
@@ -467,7 +470,7 @@
         <span class="kod-yol">kidefarapca.com — toplam kod</span>
       </div>
       <div class="kod-govde">
-        <div class="kod-sayi"><span id="kodSayac" data-hedef="221480">0</span><span class="kod-imlec"></span></div>
+        <div class="kod-sayi"><span id="kodSayac" data-hedef="222298">0</span><span class="kod-imlec"></span></div>
         <div class="kod-birim">satır kod</div>
 
         <svg class="kod-yazi" viewBox="0 0 430 94" aria-hidden="true">
@@ -688,7 +691,7 @@
 
 <script>window.SITE_KILIT_GOZLE = true;</script>
 <script src="sistem/kilit.js?v=12"></script>
-<script src="indeks.js?v=7"></script>
+<script src="indeks.js?v=8"></script>
 <script>
 /* SITE KILIDI ILE UYUM: tanitim sayfasi HER kademede acik kalir (gozlem kipi).
    Cikis kapisi (sag ustteki SVG) HER kademede DOGRUDAN index'e goturur —

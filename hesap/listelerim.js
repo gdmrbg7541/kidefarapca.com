@@ -431,7 +431,10 @@ function switchTab(idx) {
         case 7: panelId = "tab4"; llAracModu = 'kron'; break;  // -> Kronometre aracı
         case 8: panelId = "tab4"; llAracModu = 'takim'; break; // -> Takım aracı
         case 9: panelId = "tab8"; break;                       // Haftalık Plan
-        case 10: panelId = "tab10"; break;                     // Veli & Durum
+        /* 10 = Veli & Durum: ARTIK SEKME DEGIL. Ogretmen profilinde,
+           "Kisisel Bilgilerim"in altindaki akordiyonda yasiyor. Eski
+           cagrilar (kisayol, gecmis bag) bosa dusmesin diye oraya yollanir. */
+        case 10: if (typeof llTaramaAc === 'function') llTaramaAc(); return;
         case 11: panelId = "tab0"; llNotModu = 'etkinlik'; break; // -> Etkinlikler modu
     }
 
@@ -463,8 +466,8 @@ function switchTab(idx) {
     if(panelId === 'tab0') llNotModSec(llNotModu);
     if(panelId === 'tab4') llAracSec(llAracModu);
     if(panelId === 'tab8') renderPlan();
-    /* Görev Gönder ve Etkinlikler tetiklemesi llNotModSec içine taşındı. */
-    if(panelId === 'tab10') renderTarama();  // Veli & Durum taraması
+    /* Görev Gönder ve Etkinlikler tetiklemesi llNotModSec içine taşındı.
+       Veli & Durum taraması artık profildeki #tpTarama akordiyonunda. */
 }
 
 /* ==========================================================================
@@ -554,6 +557,7 @@ function llAracSec(m) {
         b.classList.toggle('aktif', b.getAttribute('data-arac') === llAracModu);
     });
     if (llAracModu === 'kura' && typeof renderActivityStatus === 'function') renderActivityStatus();
+    if (llAracModu === 'takim' && typeof llTakimCiz === 'function') llTakimCiz();
 }
 window.llAracSec = llAracSec;
 
@@ -1947,6 +1951,7 @@ function renderStudents() {
             <tr>
                 <th width="50">#</th>
                 <th style="text-align:left; padding-left:15px;">Öğrenci Adı</th>
+                <th width="90" style="text-align:center;" title="Okuldaki numarası — takım kurarken kullanılır">Okul No</th>
                 <th width="140" style="text-align:center;">Giriş Kodu</th>
                 <th width="210" style="text-align:center;">İşlemler</th>
                 <th width="80" style="text-align:center;">Sil</th>
@@ -1979,6 +1984,12 @@ function renderStudents() {
                        placeholder="Öğrenci Adı">
             </td>
             <td style="text-align:center;">
+                <input type="text" value="${behKacis(s.numara == null ? '' : String(s.numara))}"
+                       onchange="updateStudentNo(${i}, this.value)"
+                       class="student-no-input" placeholder="—" inputmode="numeric" maxlength="6"
+                       title="Okul numarası (isteğe bağlı) — takım kurarken numarayla çağırabilirsin">
+            </td>
+            <td style="text-align:center;">
                 <code class="secure-code" 
                       onclick="this.classList.toggle('revealed')" 
                       title="Görmek için tıklayın"
@@ -2000,6 +2011,9 @@ function renderStudents() {
             </td>
         `;
     });
+
+    /* Takim araci acikken liste degisirse katilimci seridi de tazelensin. */
+    if (typeof llTakimCiz === 'function') llTakimCiz();
 }
 
 function addSingleStudent() {
@@ -2050,11 +2064,26 @@ function addSingleStudent() {
 }
 
 function updateStudentName(i, val) {
-    if (val.trim()) { 
-        data.levels[curLId].classes[curCId].students[i].name = val.trim(); 
-        save(); 
+    if (val.trim()) {
+        data.levels[curLId].classes[curCId].students[i].name = val.trim();
+        save();
     }
 }
+
+/* Okul numarasi (istege bagli). Bos birakilirsa alan tamamen silinir.
+   Sadece rakam kabul edilir; takim kurarken numarayla cagirmak icin kullanilir. */
+function updateStudentNo(i, val) {
+    try {
+        var ogr = data.levels[curLId].classes[curCId].students[i];
+        if (!ogr) return;
+        var temiz = String(val == null ? '' : val).replace(/[^0-9]/g, '').replace(/^0+(?=\d)/, '').slice(0, 6);
+        if (!temiz) { delete ogr.numara; }
+        else { ogr.numara = temiz; }
+        save();
+        if (typeof llTakimCiz === 'function') llTakimCiz();
+    } catch (e) { console.warn('updateStudentNo', e); }
+}
+window.updateStudentNo = updateStudentNo;
 
 /* Ogrenci silme de sifre ister (kurum/seviye/sinif silme ile ayni kural). */
 function deleteStu(i) {
@@ -3201,48 +3230,485 @@ function loginButonTikla() {
         }
     }
 
-    // --- TAKIM OLUŞTURMA ---
-    function createTeams(size) {
-        if(typeof curLId === 'undefined' || curLId === null) return alert("Lütfen önce bir sınıf seçin!");
-        let students = data.levels[curLId].classes[curCId].students;
-        if(!students || students.length === 0) return alert("Sınıfta öğrenci yok!");
+/* ==================== TAKIM OLUSTURUCU ====================
+   Amac: ogrencileri ISIM, SIRA NO veya OKUL NO ile hizlica takimlara ayirmak.
+   - Listede olmayan (mail ile giris yapmamis) oyuncular "misafir" olarak eklenir.
+   - Katilmayan ogrenciler tek tikla disarida birakilir.
+   - Misafirler ve katilim durumu cihazda (localStorage) sinif bazinda saklanir;
+     bulut verisine (data / Firestore) hicbir sey yazilmaz.
+========================================================== */
+var LL_TAKIM = window.LL_TAKIM || {
+    etiket: 'isim',      // 'isim' | 'sira' | 'okul'
+    misafir: [],         // ['Ali', 'Veli']
+    disarida: [],        // normalize edilmis adlar
+    sinifAnahtar: '',
+    son: null,           // {boyut:n} | {sayi:n} | {elle:'metin'}
+    sonTakim: null,
+    sonAd: null
+};
+window.LL_TAKIM = LL_TAKIM;
 
-        let names = students.map(s => s.name);
-        names.sort(() => Math.random() - 0.5);
+function llTakimAnahtar() {
+    var l = (typeof curLId !== 'undefined' && curLId) ? curLId : '0';
+    var c = (typeof curCId !== 'undefined' && curCId) ? curCId : '0';
+    return 'kidef_takim_' + l + '_' + c;
+}
 
-        let teams = [];
-        while(names.length) {
-            teams.push(names.splice(0, size));
+function llTakimYukle() {
+    var a = llTakimAnahtar();
+    if (LL_TAKIM.sinifAnahtar === a) return;
+    LL_TAKIM.sinifAnahtar = a;
+    LL_TAKIM.misafir = [];
+    LL_TAKIM.disarida = [];
+    LL_TAKIM.sonTakim = null;
+    try {
+        var ham = localStorage.getItem(a);
+        if (ham) {
+            var o = JSON.parse(ham) || {};
+            if (Array.isArray(o.misafir)) LL_TAKIM.misafir = o.misafir.slice(0, 80);
+            if (Array.isArray(o.disarida)) LL_TAKIM.disarida = o.disarida.slice(0, 300);
+            if (o.etiket === 'isim' || o.etiket === 'sira' || o.etiket === 'okul') LL_TAKIM.etiket = o.etiket;
         }
+    } catch (e) { }
+}
 
-        if(teams.length > 1 && teams[teams.length-1].length < size) {
-            let leftovers = teams.pop();
-            let i = 0;
-            while(leftovers.length) {
-                teams[i].push(leftovers.pop());
-                i = (i + 1) % teams.length;
+function llTakimKaydet() {
+    try {
+        localStorage.setItem(LL_TAKIM.sinifAnahtar || llTakimAnahtar(), JSON.stringify({
+            misafir: LL_TAKIM.misafir, disarida: LL_TAKIM.disarida, etiket: LL_TAKIM.etiket
+        }));
+    } catch (e) { }
+}
+
+/* Turkce duyarli sadelestirme — "İSMAİL" ile "ismail" eslessin. */
+function llTakimNorm(s) {
+    return String(s == null ? '' : s)
+        .replace(/[İIı]/g, 'i')
+        .toLowerCase()
+        .replace(/ş/g, 's').replace(/ğ/g, 'g').replace(/ü/g, 'u')
+        .replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/â/g, 'a').replace(/î/g, 'i').replace(/û/g, 'u')
+        .replace(/\s+/g, ' ').trim();
+}
+
+/* Sinifin ogrencileri + misafirler. */
+function llTakimListe() {
+    var liste = [];
+    try {
+        var st = (data && data.levels && data.levels[curLId] && data.levels[curLId].classes[curCId])
+            ? (data.levels[curLId].classes[curCId].students || []) : [];
+        st.forEach(function (s, i) {
+            var no = (s.numara == null || s.numara === '') ? null : String(s.numara).trim();
+            liste.push({ ad: (s.name || ('Öğrenci ' + (i + 1))), sira: i + 1, okul: no || null, misafir: false });
+        });
+    } catch (e) { }
+    LL_TAKIM.misafir.forEach(function (ad) {
+        liste.push({ ad: ad, sira: null, okul: null, misafir: true });
+    });
+    return liste;
+}
+
+function llTakimDisMi(ad) { return LL_TAKIM.disarida.indexOf(llTakimNorm(ad)) >= 0; }
+
+function llTakimAktif() {
+    return llTakimListe().filter(function (k) { return !llTakimDisMi(k.ad); });
+}
+
+/* Kartlarda numara rozetinde ne yazacak? */
+function llTakimNoMetin(k) {
+    if (LL_TAKIM.etiket === 'sira' && k.sira) return String(k.sira);
+    if (LL_TAKIM.etiket === 'okul' && k.okul) return String(k.okul);
+    return '';
+}
+
+/* --- Akordiyon: ayni anda tek bolum acik. Secim cihazda saklanir,
+       sinif degistirince sifirlanmaz (sinif bazli degil, kullanici tercihi). --- */
+function llTakimAcikOku() {
+    try { var v = localStorage.getItem('kidef_takim_acik'); if (v !== null) return v; } catch (e) { }
+    return '2';   // varsayilan: Katilimcilar acik gelsin
+}
+function llTakimKatlaUygula() {
+    var yeni = String(LL_TAKIM.acik == null ? '' : LL_TAKIM.acik);
+    document.querySelectorAll('#llAracTakim .tk-blok').forEach(function (b) {
+        var ac = (b.getAttribute('data-tkblok') === yeni);
+        b.classList.toggle('acik', ac);
+        var tus = b.querySelector('.tk-baslik');
+        if (tus) tus.setAttribute('aria-expanded', ac ? 'true' : 'false');
+    });
+}
+function llTakimKatla(no) {
+    var hedef = String(no);
+    LL_TAKIM.acik = (String(LL_TAKIM.acik) === hedef) ? '' : hedef;   // ayni basliga tekrar basinca kapanir
+    llTakimKatlaUygula();
+    try { localStorage.setItem('kidef_takim_acik', LL_TAKIM.acik); } catch (e) { }
+}
+/* Bir bolumu ZORLA acar (icerideki bir uyari o bolumu isaret ediyorsa). */
+function llTakimAc(no) {
+    if (String(LL_TAKIM.acik) === String(no)) return;
+    LL_TAKIM.acik = String(no);
+    llTakimKatlaUygula();
+    try { localStorage.setItem('kidef_takim_acik', LL_TAKIM.acik); } catch (e) { }
+}
+
+function llTakimUyar(mesaj, iyi) {
+    var el = document.getElementById('llTakimUyari');
+    if (!el) { if (mesaj) console.warn(mesaj); return; }
+    if (!mesaj) { el.style.display = 'none'; el.textContent = ''; return; }
+    el.className = 'tk-uyari' + (iyi ? ' iyi' : '');
+    el.textContent = mesaj;
+    el.style.display = 'block';
+}
+
+/* --- Katilimci seridi --- */
+function llTakimCiz() {
+    var kap = document.getElementById('llTakimKatilim');
+    if (!kap) return;
+    llTakimYukle();
+
+    if (LL_TAKIM.acik === undefined) LL_TAKIM.acik = llTakimAcikOku();
+    llTakimKatlaUygula();
+
+    document.querySelectorAll('#llAracTakim .tk-mod').forEach(function (b) {
+        b.classList.toggle('aktif', b.getAttribute('data-tkmod') === LL_TAKIM.etiket);
+    });
+    var ozet1 = document.getElementById('llTakimOzet1');
+    if (ozet1) ozet1.textContent = { isim: 'İsim', sira: 'Sıra No', okul: 'Okul No' }[LL_TAKIM.etiket] || 'İsim';
+
+    var liste = llTakimListe();
+    var h = '';
+    liste.forEach(function (k) {
+        var dis = llTakimDisMi(k.ad);
+        var no = llTakimNoMetin(k);
+        h += '<span class="tk-cip' + (dis ? ' yok' : '') + (k.misafir ? ' misafir' : '') + '"' +
+            ' data-tkad="' + behKacis(k.ad) + '" role="button" tabindex="0"' +
+            ' title="' + (dis ? 'Katılmıyor — eklemek için tıkla' : 'Katılıyor — çıkarmak için tıkla') + '">' +
+            (no ? '<b class="tk-no">' + behKacis(no) + '</b>' : '') +
+            '<span class="tk-ad">' + behKacis(k.ad) + '</span>' +
+            (k.misafir ? '<i class="tk-sil" data-tksil="' + behKacis(k.ad) + '" title="Misafiri kaldır">×</i>' : '') +
+            '</span>';
+    });
+    kap.innerHTML = h || '<div class="tk-bos">Bu sınıfta öğrenci yok. Aşağıdan misafir oyuncu ekleyerek de takım kurabilirsin.</div>';
+
+    if (!kap._tkBagli) {
+        kap._tkBagli = true;
+        kap.addEventListener('click', function (e) {
+            var sil = e.target.closest ? e.target.closest('[data-tksil]') : null;
+            if (sil) { e.stopPropagation(); llTakimMisafirSil(sil.getAttribute('data-tksil')); return; }
+            var cip = e.target.closest ? e.target.closest('[data-tkad]') : null;
+            if (cip) llTakimKatilimDegis(cip.getAttribute('data-tkad'));
+        });
+        kap.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            var cip = e.target.closest ? e.target.closest('[data-tkad]') : null;
+            if (cip) { e.preventDefault(); llTakimKatilimDegis(cip.getAttribute('data-tkad')); }
+        });
+    }
+
+    var sayac = document.getElementById('llTakimSayac');
+    if (sayac) {
+        var akt = llTakimAktif();
+        var mis = akt.filter(function (k) { return k.misafir; }).length;
+        var ogr = akt.length - mis;
+        sayac.textContent = akt.length + ' katılımcı' + (mis ? ' · ' + ogr + ' öğrenci + ' + mis + ' misafir' : '');
+    }
+}
+
+function llTakimKatilimDegis(ad) {
+    var n = llTakimNorm(ad);
+    var i = LL_TAKIM.disarida.indexOf(n);
+    if (i >= 0) LL_TAKIM.disarida.splice(i, 1); else LL_TAKIM.disarida.push(n);
+    llTakimKaydet(); llTakimCiz(); llTakimUyar('');
+}
+function llTakimHepsi(katil) {
+    if (katil) LL_TAKIM.disarida = [];
+    else LL_TAKIM.disarida = llTakimListe().map(function (k) { return llTakimNorm(k.ad); });
+    llTakimKaydet(); llTakimCiz(); llTakimUyar('');
+}
+function llTakimEtiketSec(t) {
+    LL_TAKIM.etiket = (t === 'sira' || t === 'okul') ? t : 'isim';
+    llTakimKaydet(); llTakimCiz();
+    if (LL_TAKIM.sonTakim) llTakimYaz(LL_TAKIM.sonTakim, LL_TAKIM.sonAd);
+    if (LL_TAKIM.etiket === 'okul') {
+        var eksik = llTakimListe().filter(function (k) { return !k.misafir && !k.okul; }).length;
+        if (eksik) { llTakimUyar(eksik + ' öğrencinin okul numarası boş. Öğrenciler sekmesindeki "Okul No" sütunundan girebilirsin.'); return; }
+    }
+    llTakimUyar('');
+}
+
+/* --- Misafir oyuncular --- */
+function llTakimMisafirEkle() {
+    var g = document.getElementById('llTakimMisafirAd');
+    if (!g) return;
+    var ham = String(g.value || '').trim();
+    if (!ham) { llTakimUyar('Önce misafir oyuncunun adını yaz.'); g.focus(); return; }
+    var eklendi = llTakimMisafirKat(ham.split(/[,;\n]/));
+    g.value = '';
+    llTakimCiz();
+    llTakimUyar(eklendi.length ? (eklendi.length + ' misafir oyuncu eklendi: ' + eklendi.join(', ')) : 'Bu isim(ler) zaten listede.', !!eklendi.length);
+    g.focus();
+}
+/* Dizi halinde misafir ekler, gercekten eklenenleri dondurur. */
+function llTakimMisafirKat(adlar) {
+    var eklendi = [];
+    var varOlan = llTakimListe().map(function (k) { return llTakimNorm(k.ad); });
+    (adlar || []).forEach(function (a) {
+        a = String(a || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+        if (!a) return;
+        var n = llTakimNorm(a);
+        if (!n || varOlan.indexOf(n) >= 0) return;
+        varOlan.push(n);
+        LL_TAKIM.misafir.push(a);
+        eklendi.push(a);
+        var d = LL_TAKIM.disarida.indexOf(n);
+        if (d >= 0) LL_TAKIM.disarida.splice(d, 1);
+    });
+    if (eklendi.length) llTakimKaydet();
+    return eklendi;
+}
+function llTakimMisafirSil(ad) {
+    var n = llTakimNorm(ad);
+    LL_TAKIM.misafir = LL_TAKIM.misafir.filter(function (a) { return llTakimNorm(a) !== n; });
+    var d = LL_TAKIM.disarida.indexOf(n);
+    if (d >= 0) LL_TAKIM.disarida.splice(d, 1);
+    llTakimKaydet(); llTakimCiz(); llTakimUyar('');
+}
+
+/* --- Eslestirme: jeton -> katilimci --- */
+function llTakimEslestir(jeton, liste) {
+    var s = String(jeton || '').trim();
+    if (!s) return null;
+
+    if (/^\d+$/.test(s)) {
+        var n = parseInt(s, 10);
+        var oncelik = (LL_TAKIM.etiket === 'okul') ? ['okul', 'sira'] : ['sira', 'okul'];
+        for (var a = 0; a < oncelik.length; a++) {
+            for (var i = 0; i < liste.length; i++) {
+                var k = liste[i];
+                if (oncelik[a] === 'okul' && k.okul != null && parseInt(k.okul, 10) === n) return k;
+                if (oncelik[a] === 'sira' && k.sira != null && k.sira === n) return k;
             }
         }
+        return null;
+    }
 
-        let container = document.getElementById('teamContainer');
-        if(container) {
-            container.innerHTML = '';
-            teams.forEach((team, i) => {
-                let card = document.createElement('div');
-                card.className = 'team-card';
-                card.innerHTML = `<div class="team-title">Takım ${i+1}</div>`;
-                team.forEach(member => {
-                    card.innerHTML += `<div class="team-member">${member}</div>`;
-                });
-                container.appendChild(card);
+    var nn = llTakimNorm(s);
+    if (!nn) return null;
+    var tam = null, bas = null, ic = null;
+    liste.forEach(function (k) {
+        var kn = llTakimNorm(k.ad);
+        if (kn === nn) { if (!tam) tam = k; return; }
+        if (kn.indexOf(nn) === 0) { if (!bas) bas = k; return; }
+        if (kn.indexOf(nn) >= 0) { if (!ic) ic = k; return; }
+        var pr = kn.split(' '), qr = nn.split(' ');
+        var uyar = qr.length > 0 && qr.every(function (q, qi) { return pr[qi] && pr[qi].indexOf(q) === 0; });
+        if (uyar && !bas) bas = k;
+    });
+    return tam || bas || ic || null;
+}
+
+/* --- Rastgele dagitim (round-robin: takimlar en fazla 1 kisi farkeder) --- */
+function llTakimRastgele(secim) {
+    llTakimYukle();
+    var akt = llTakimAktif();
+    if (!akt.length) {
+        llTakimUyar('Katılımcı yok. Sınıfa öğrenci ekle ya da aşağıdan misafir oyuncu tanımla.');
+        llTakimYaz([], null); return;
+    }
+    var havuz = akt.slice();
+    for (var i = havuz.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = havuz[i]; havuz[i] = havuz[j]; havuz[j] = t;
+    }
+    var adet = secim.sayi
+        ? Math.max(1, Math.min(secim.sayi, havuz.length))
+        : Math.max(1, Math.ceil(havuz.length / Math.max(1, secim.boyut)));
+    var takimlar = [];
+    for (var k = 0; k < adet; k++) takimlar.push([]);
+    havuz.forEach(function (u, idx) { takimlar[idx % adet].push(u); });
+    LL_TAKIM.son = secim;
+    llTakimUyar('');
+    llTakimYaz(takimlar, null, true);
+}
+
+/* Eski imza korundu: takim BUYUKLUGUNE gore rastgele dagitim. */
+function createTeams(size) { llTakimRastgele({ boyut: parseInt(size, 10) || 2 }); }
+/* Takim SAYISINA gore rastgele dagitim. */
+function llTakimSayiIle(n) { llTakimRastgele({ sayi: parseInt(n, 10) || 2 }); }
+
+function llTakimKaristir() {
+    if (LL_TAKIM.son && LL_TAKIM.son.elle) { llTakimElle(); return; }
+    if (LL_TAKIM.son) { llTakimRastgele(LL_TAKIM.son); return; }
+    llTakimRastgele({ boyut: 2 });
+}
+
+/* --- Elle / hizli takim: her satir bir takim; "|" ayni satirda boler --- */
+function llTakimElleCozumle(metin) {
+    var liste = llTakimListe();
+    var takimlar = [], adlar = [], yeniMisafir = [], bulunmayanNo = [];
+
+    var parcalar = [];
+    String(metin || '').split(/\r?\n/).forEach(function (satir) {
+        satir.split('|').forEach(function (p) { if (p.trim()) parcalar.push(p.trim()); });
+    });
+
+    parcalar.forEach(function (p) {
+        var takimAdi = '';
+        var iki = p.match(/^([^:]{1,28}):([\s\S]*)$/);
+        if (iki && !/^[\s\d.,;-]+$/.test(iki[1])) { takimAdi = iki[1].trim(); p = iki[2]; }
+
+        var jeton = (/[,;]/.test(p)) ? p.split(/[,;]/) : p.trim().split(/\s+/);
+
+        var uyeler = [];
+        jeton.forEach(function (j) {
+            j = String(j || '').trim();
+            if (!j) return;
+            var ara = j.match(/^(\d+)\s*[-–]\s*(\d+)$/);   // 1-6 araligi
+            var jetonlar = [j];
+            if (ara) {
+                jetonlar = [];
+                var b = parseInt(ara[1], 10), s = parseInt(ara[2], 10), yon = (b <= s) ? 1 : -1;
+                for (var v = b; (yon > 0 ? v <= s : v >= s) && jetonlar.length < 200; v += yon) jetonlar.push(String(v));
+            }
+            jetonlar.forEach(function (jj) {
+                var bul = llTakimEslestir(jj, liste);
+                if (!bul) {
+                    if (/^\d+$/.test(jj)) { if (bulunmayanNo.indexOf(jj) < 0) bulunmayanNo.push(jj); return; }
+                    bul = { ad: jj.slice(0, 40), sira: null, okul: null, misafir: true };
+                    liste.push(bul);
+                    if (yeniMisafir.indexOf(bul.ad) < 0) yeniMisafir.push(bul.ad);
+                }
+                if (uyeler.indexOf(bul) < 0) uyeler.push(bul);
             });
+        });
+        if (uyeler.length) { takimlar.push(uyeler); adlar.push(takimAdi); }
+    });
+
+    return { takimlar: takimlar, adlar: adlar, yeniMisafir: yeniMisafir, bulunmayanNo: bulunmayanNo };
+}
+
+function llTakimElle() {
+    llTakimYukle();
+    var kutu = document.getElementById('llTakimHizli');
+    var metin = kutu ? String(kutu.value || '') : '';
+    if (!metin.trim()) {
+        llTakimUyar('Kutuya takımları yaz. Örnek: "1 3 5 | 2 4 6" ya da her satıra bir takım.');
+        if (kutu) kutu.focus();
+        return;
+    }
+    var c = llTakimElleCozumle(metin);
+    if (!c.takimlar.length) { llTakimUyar('Hiçbir takım okunamadı. Numaraları boşluk/virgülle ayır.'); return; }
+
+    if (c.yeniMisafir.length) llTakimMisafirKat(c.yeniMisafir);
+
+    /* Kurulan takimlarda yer alan herkes otomatik olarak katilimci sayilir. */
+    c.takimlar.forEach(function (t) {
+        t.forEach(function (u) {
+            var d = LL_TAKIM.disarida.indexOf(llTakimNorm(u.ad));
+            if (d >= 0) LL_TAKIM.disarida.splice(d, 1);
+        });
+    });
+    llTakimKaydet();
+
+    LL_TAKIM.son = { elle: metin };
+    llTakimCiz();
+    llTakimYaz(c.takimlar, c.adlar, true);
+
+    var notlar = [];
+    if (c.yeniMisafir.length) notlar.push('Listede olmayan ' + c.yeniMisafir.length + ' oyuncu misafir olarak eklendi: ' + c.yeniMisafir.join(', '));
+    if (c.bulunmayanNo.length) notlar.push('Karşılığı bulunmayan numara: ' + c.bulunmayanNo.join(', '));
+    llTakimUyar(notlar.join(' · '), !c.bulunmayanNo.length);
+}
+
+/* --- Sonuc kartlari --- */
+function llTakimYaz(takimlar, adlar, kaydir) {
+    var kap = document.getElementById('teamContainer');
+    if (!kap) return;
+    var arac = document.getElementById('llTakimArac');
+    if (!takimlar || !takimlar.length) {
+        kap.innerHTML = '';
+        if (arac) arac.style.display = 'none';
+        LL_TAKIM.sonTakim = null; LL_TAKIM.sonAd = null;
+        return;
+    }
+    var h = '';
+    takimlar.forEach(function (t, i) {
+        var baslik = (adlar && adlar[i]) ? adlar[i] : ('Takım ' + (i + 1));
+        h += '<div class="team-card"><div class="team-title">' + behKacis(baslik) +
+            ' <em class="tm-adet">' + t.length + '</em></div>';
+        t.forEach(function (u) {
+            var no = llTakimNoMetin(u);
+            h += '<div class="team-member">' +
+                (no ? '<b class="tm-no">' + behKacis(no) + '</b>' : '') +
+                '<span>' + behKacis(u.ad) + '</span>' +
+                (u.misafir ? '<i class="tm-misafir" title="Listede olmayan oyuncu">misafir</i>' : '') +
+                '</div>';
+        });
+        h += '</div>';
+    });
+    kap.innerHTML = h;
+    LL_TAKIM.sonTakim = takimlar;
+    LL_TAKIM.sonAd = adlar || null;
+    if (arac) arac.style.display = '';
+
+    /* Akordiyon acikken kartlar ekranin altinda kalabiliyor: gerekiyorsa getir. */
+    if (kaydir) {
+        try {
+            var r = kap.getBoundingClientRect();
+            if (r.top > window.innerHeight - 90) kap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (e) { }
+    }
+}
+
+function llTakimMetin() {
+    if (!LL_TAKIM.sonTakim) return '';
+    return LL_TAKIM.sonTakim.map(function (t, i) {
+        var baslik = (LL_TAKIM.sonAd && LL_TAKIM.sonAd[i]) ? LL_TAKIM.sonAd[i] : ('Takım ' + (i + 1));
+        return baslik + '\n' + t.map(function (u) {
+            var no = llTakimNoMetin(u);
+            return '  - ' + (no ? no + '. ' : '') + u.ad + (u.misafir ? ' (misafir)' : '');
+        }).join('\n');
+    }).join('\n\n');
+}
+
+function llTakimKopyala() {
+    var metin = llTakimMetin();
+    if (!metin) { llTakimUyar('Önce takımları kur.'); return; }
+    var bitir = function (ok) { llTakimUyar(ok ? 'Takımlar panoya kopyalandı.' : 'Kopyalanamadı — metni elle seçebilirsin.', ok); };
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(metin).then(function () { bitir(true); }, function () { bitir(false); });
+            return;
         }
-    }
-    
-    function clearTeams() {
-        const container = document.getElementById('teamContainer');
-        if(container) container.innerHTML = '';
-    }
+    } catch (e) { }
+    try {
+        var ta = document.createElement('textarea');
+        ta.value = metin; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        bitir(ok);
+    } catch (e2) { bitir(false); }
+}
+
+function clearTeams() {
+    LL_TAKIM.son = null;
+    llTakimYaz([], null);
+    llTakimUyar('');
+}
+
+window.llTakimCiz = llTakimCiz;
+window.llTakimKatla = llTakimKatla;
+window.llTakimAc = llTakimAc;
+window.llTakimEtiketSec = llTakimEtiketSec;
+window.llTakimKatilimDegis = llTakimKatilimDegis;
+window.llTakimHepsi = llTakimHepsi;
+window.llTakimMisafirEkle = llTakimMisafirEkle;
+window.llTakimMisafirSil = llTakimMisafirSil;
+window.llTakimSayiIle = llTakimSayiIle;
+window.llTakimKaristir = llTakimKaristir;
+window.llTakimElle = llTakimElle;
+window.llTakimKopyala = llTakimKopyala;
+window.createTeams = createTeams;
+window.clearTeams = clearTeams;
 
     // --- YARDIMCI FONKSİYONLAR ---
     function formatMs(ms) {
@@ -3569,6 +4035,26 @@ function renderTeacherProfile(deneme) {
         (eksik ? '<span style="font-size:0.75rem; font-weight:600; background:#FEF3E2; color:#B9770E; padding:3px 10px; border-radius:20px;">⚠️ eksik bilgi</span>' : ''),
         kisisel, false);
 
+    /* --- VELI & DURUM TARAMASI ---
+       Eskiden sinif seridinde ayri bir sekmeydi (#tab10). Artik profilde,
+       "Kisisel Bilgilerim"in hemen ALTINDA. Icerik akordiyon ilk acildiginda
+       renderTarama() ile doldurulur (tembel cizim: kapaliyken tablo kurulmaz). */
+    var taramaIc =
+        '<div id="tpTaramaKutu">' +
+            '<p class="tarama-aciklama">Tüm seviyelerdeki bütün sınıflar taranır. Bir ölçüt seçin; uyan öğrenciler liste hâlinde çıkar.</p>' +
+            '<input type="search" class="tarama-arama" placeholder="İsim, sınıf, seviye veya meslek ara…"' +
+            ' value="' + behKacis(window.taramaAramaHam || '') + '" oninput="taramaAramaDegisti(this)">' +
+            '<div id="taramaCipler" class="tarama-cipler"></div>' +
+            '<div id="taramaOzet" class="tarama-ozet"></div>' +
+            '<div id="taramaSonuc"></div>' +
+        '</div>';
+    /* Profil arada bir kendini yeniden cizer (tpTazele / veri yenilenmesi).
+       Tarama acikken bu, akordiyonu kapatip sonuclari silmesin. */
+    var taramaAcikti = false;
+    try { var _tv = document.getElementById('tpTarama'); taramaAcikti = !!(_tv && _tv.open); } catch (e) { }
+    var taramaAkordiyon = llAkordiyon('tpTarama', '#34495e',
+        '<span>🔎 Veli &amp; Durum Taraması</span>' + llRozetHtml('tüm sınıflar'), taramaIc, taramaAcikti);
+
     /* Tatil takvimi akordiyonu (dogrudan gomulu icerik) */
     var tatilIc = llTatilIcerikHtml();
     if (!tatilIc) {
@@ -3782,9 +4268,40 @@ function renderTeacherProfile(deneme) {
     html += llAkordiyon('tpSiniflar', '#E67E22',
         '<span>🏫 Kurumlarım &amp; Sınıflarım</span>' + llRozetHtml(sinifToplam + ' sınıf'), agac, true);
 
-    /* SIRALAMA: Kurumlarim & Siniflarim -> Tatiller -> Kisisel Bilgilerim (EN ALTTA) */
-    sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon + kilitAkordiyon;
+    /* SIRALAMA: Kurumlarim & Siniflarim -> Tatiller -> Kisisel Bilgilerim ->
+       Veli & Durum Taramasi (Kisisel Bilgilerim'in ALTINDA) -> Yonetim kilidi */
+    sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon + taramaAkordiyon + kilitAkordiyon;
+
+    /* Tarama tablosu ancak akordiyon acilinca cizilir (yuzlerce ogrencide
+       kapali dururken bosuna DOM kurmasin). */
+    try {
+        var _td = document.getElementById('tpTarama');
+        if (_td) {
+            _td.addEventListener('toggle', function () { if (_td.open) renderTarama(); });
+            if (_td.open) renderTarama();
+        }
+    } catch (e) { }
 }
+
+/* Veli & Durum taramasini dogrudan acar: profile gecer, akordiyonu acar,
+   ekrani oraya kaydirir. Eski switchTab(10) cagrilari da buraya duser. */
+function llTaramaAc() {
+    try {
+        if (typeof changeView === 'function' &&
+            !(window.appState && appState.currentView === 'student-profile-section')) {
+            changeView('student-profile-section');
+        }
+    } catch (e) { }
+    setTimeout(function () {
+        var d = document.getElementById('tpTarama');
+        if (!d) { try { renderTeacherProfile(); } catch (e) { } d = document.getElementById('tpTarama'); }
+        if (!d) return;
+        d.setAttribute('open', '');
+        try { renderTarama(); } catch (e) { }
+        try { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { }
+    }, 240);
+}
+window.llTaramaAc = llTaramaAc;
 /* ======================================================================
    PROFIL OKUL BINASI — YARDIMCI ISLEVLER
    tpTazele      : bir islemden sonra profili yeniden cizer (prompt/onay
@@ -4785,15 +5302,23 @@ function taramaSuzgecSec(id) {
 }
 
 function taramaAramaDegisti(el) {
+    /* Ham metin de saklanir: profil yeniden cizilince kutuya geri yazilir. */
+    window.taramaAramaHam = el.value || '';
     taramaArama = (el.value || '').toLocaleLowerCase('tr');
     renderTarama();
 }
 
+/* Tarama artik PROFILDE oldugu icin once Listelerim gorunumune gecilir,
+   sonra sinif secilir ve veli penceresi acilir. */
 function taramaAc(lId, cId, si) {
     curLId = lId; curCId = cId;
-    if (typeof selectClass === 'function') { try { selectClass(lId, cId); } catch (e) {} }
-    switchTab(0);
-    setTimeout(() => openVeliModal(si), 60);
+    try { if (typeof changeView === 'function') changeView('listelerim-section'); } catch (e) { }
+    try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
+    setTimeout(function () {
+        if (typeof selectClass === 'function') { try { selectClass(lId, cId); } catch (e) { } }
+        try { switchTab(0); } catch (e) { }
+        setTimeout(function () { try { openVeliModal(si); } catch (e) { } }, 90);
+    }, 180);
 }
 
 function renderTarama() {

@@ -1405,79 +1405,79 @@
 }
 
 /* --- 6) Veli & Durum taraması --- */
-#ll-root .tarama-bas h3, #ll-root .duyuru-bas h3{
+#ll-root .tarama-bas h3, #tpTaramaKutu .tarama-bas h3, #ll-root .duyuru-bas h3{
     margin: 0 0 6px; color: #D84315; font-size: 1.5rem;
     display: flex; align-items: center; gap: 9px;
     font-family: 'Marhey', 'Segoe UI', sans-serif;
 }
-#ll-root .tarama-aciklama{
+#ll-root .tarama-aciklama, #tpTaramaKutu .tarama-aciklama{
     margin: 0 0 14px; color: #7f8c8d; font-size: 0.92rem; line-height: 1.55; max-width: 900px;
 }
-#ll-root .tarama-arama{
+#ll-root .tarama-arama, #tpTaramaKutu .tarama-arama{
     width: 100%; max-width: 460px; padding: 11px 16px; font-size: 0.98rem;
     border: 2px solid #e4e7e9; border-radius: 30px; background: #fff; color: #2c3e50;
 }
-#ll-root .tarama-arama:focus{ border-color: #F39C12; outline: none; }
-#ll-root .tarama-cipler{ display: flex; flex-wrap: wrap; gap: 9px; margin: 16px 0 14px; }
-#ll-root .tarama-cip{
+#ll-root .tarama-arama:focus, #tpTaramaKutu .tarama-arama:focus{ border-color: #F39C12; outline: none; }
+#ll-root .tarama-cipler, #tpTaramaKutu .tarama-cipler{ display: flex; flex-wrap: wrap; gap: 9px; margin: 16px 0 14px; }
+#ll-root .tarama-cip, #tpTaramaKutu .tarama-cip{
     display: inline-flex; align-items: center; gap: 7px;
     padding: 9px 15px; border: 2px solid #e4e7e9; border-radius: 30px;
     background: #fff; color: #566573; font-size: 0.9rem; font-weight: bold;
     cursor: pointer; transition: 0.2s;
 }
-#ll-root .tarama-cip:hover{ border-color: #F39C12; transform: translateY(-1px); }
-#ll-root .tarama-cip b{
+#ll-root .tarama-cip:hover, #tpTaramaKutu .tarama-cip:hover{ border-color: #F39C12; transform: translateY(-1px); }
+#ll-root .tarama-cip b, #tpTaramaKutu .tarama-cip b{
     min-width: 22px; padding: 1px 7px; border-radius: 20px;
     background: #f0f2f5; color: #2c3e50; font-size: 0.82rem;
 }
-#ll-root .tarama-cip.secili{
+#ll-root .tarama-cip.secili, #tpTaramaKutu .tarama-cip.secili{
     background: linear-gradient(90deg, #D84315, #E67E22); border-color: #D84315; color: #fff;
 }
-#ll-root .tarama-cip.secili b{ background: rgba(255,255,255,0.28); color: #fff; }
-#ll-root .tarama-ozet{
+#ll-root .tarama-cip.secili b, #tpTaramaKutu .tarama-cip.secili b{ background: rgba(255,255,255,0.28); color: #fff; }
+#ll-root .tarama-ozet, #tpTaramaKutu .tarama-ozet{
     display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
     padding: 12px 16px; margin-bottom: 14px; border-radius: 10px;
     background: #fdf6ec; border-left: 5px solid #F39C12; color: #2c3e50; font-size: 0.95rem;
 }
-#ll-root .tarama-toplam{ color: #95a5a6; font-size: 0.85rem; }
-#ll-root .tarama-bos{
+#ll-root .tarama-toplam, #tpTaramaKutu .tarama-toplam{ color: #95a5a6; font-size: 0.85rem; }
+#ll-root .tarama-bos, #tpTaramaKutu .tarama-bos{
     padding: 34px 20px; text-align: center; color: #95a5a6;
     background: #fafafa; border-radius: 12px; font-size: 0.98rem;
     display: flex; align-items: center; justify-content: center; gap: 9px;
 }
-#ll-root .tarama-tablo{
+#ll-root .tarama-tablo, #tpTaramaKutu .tarama-tablo{
     width: 100%; border-collapse: collapse; background: #fff;
     border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
-#ll-root .tarama-tablo th{
+#ll-root .tarama-tablo th, #tpTaramaKutu .tarama-tablo th{
     background: var(--primary); color: #fff; padding: 12px 10px;
     font-size: 0.88rem; text-align: left; white-space: nowrap;
 }
-#ll-root .tarama-tablo td{
+#ll-root .tarama-tablo td, #tpTaramaKutu .tarama-tablo td{
     padding: 10px; border-bottom: 1px solid #eef1f2; font-size: 0.9rem;
     color: #2c3e50; vertical-align: top;
 }
-#ll-root .tarama-tablo tr:hover td{ background: #fffaf3; }
-#ll-root .tarama-tablo small{ color: #95a5a6; font-size: 0.78rem; }
-#ll-root .tarama-ad{ font-weight: bold; }
-#ll-root .tarama-vefat{ color: #c0392b; font-weight: bold; display: inline-flex; align-items: center; gap: 3px; }
-#ll-root .tarama-maddi{
+#ll-root .tarama-tablo tr:hover td, #tpTaramaKutu .tarama-tablo tr:hover td{ background: #fffaf3; }
+#ll-root .tarama-tablo small, #tpTaramaKutu .tarama-tablo small{ color: #95a5a6; font-size: 0.78rem; }
+#ll-root .tarama-ad, #tpTaramaKutu .tarama-ad{ font-weight: bold; }
+#ll-root .tarama-vefat, #tpTaramaKutu .tarama-vefat{ color: #c0392b; font-weight: bold; display: inline-flex; align-items: center; gap: 3px; }
+#ll-root .tarama-maddi, #tpTaramaKutu .tarama-maddi{
     display: inline-block; padding: 3px 10px; border-radius: 20px;
     font-size: 0.8rem; font-weight: bold; background: #f0f2f5; color: #566573; white-space: nowrap;
 }
-#ll-root .tarama-maddi.m-İyi{ background: rgba(39,174,96,0.14); color: #1e8449; }
-#ll-root .tarama-maddi.m-Orta{ background: rgba(243,156,18,0.16); color: #b9770e; }
-#ll-root .tarama-maddi.m-Kötü{ background: rgba(231,76,60,0.14); color: #c0392b; }
-#ll-root .tarama-maddi.m-Çokkötü{ background: #c0392b; color: #fff; }
-#ll-root .tarama-eksik{ color: #e74c3c; font-style: italic; font-size: 0.84rem; }
-#ll-root .tarama-not{ max-width: 260px; color: #566573; font-size: 0.84rem; line-height: 1.45; }
-#ll-root .tarama-git{
+#ll-root .tarama-maddi.m-İyi, #tpTaramaKutu .tarama-maddi.m-İyi{ background: rgba(39,174,96,0.14); color: #1e8449; }
+#ll-root .tarama-maddi.m-Orta, #tpTaramaKutu .tarama-maddi.m-Orta{ background: rgba(243,156,18,0.16); color: #b9770e; }
+#ll-root .tarama-maddi.m-Kötü, #tpTaramaKutu .tarama-maddi.m-Kötü{ background: rgba(231,76,60,0.14); color: #c0392b; }
+#ll-root .tarama-maddi.m-Çokkötü, #tpTaramaKutu .tarama-maddi.m-Çokkötü{ background: #c0392b; color: #fff; }
+#ll-root .tarama-eksik, #tpTaramaKutu .tarama-eksik{ color: #e74c3c; font-style: italic; font-size: 0.84rem; }
+#ll-root .tarama-not, #tpTaramaKutu .tarama-not{ max-width: 260px; color: #566573; font-size: 0.84rem; line-height: 1.45; }
+#ll-root .tarama-git, #tpTaramaKutu .tarama-git{
     border: 1px solid #e4e7e9; background: #fff; border-radius: 9px;
     width: 40px; height: 40px; cursor: pointer; transition: 0.2s;
     display: flex; align-items: center; justify-content: center; color: #8e44ad;
 }
-#ll-root .tarama-git:hover{ background: #f6f0fb; transform: scale(1.08); }
-#ll-root .tarama-git .lli{ width: 22px; height: 22px; }
+#ll-root .tarama-git:hover, #tpTaramaKutu .tarama-git:hover{ background: #f6f0fb; transform: scale(1.08); }
+#ll-root .tarama-git .lli, #tpTaramaKutu .tarama-git .lli{ width: 22px; height: 22px; }
 
 /* --- 7) Sınıf Mesajları --- */
 #ll-root .duyuru-izgara{
@@ -1629,7 +1629,7 @@
     #ll-root .veli-modal-kutu{ max-height: 96vh; }
     #ll-root .veli-modal-govde{ padding: 16px; }
     #ll-root .veli-izgara{ grid-template-columns: 1fr; }
-    #ll-root .tarama-tablo{ display: block; overflow-x: auto; }
+    #ll-root .tarama-tablo{ display: block; overflow-x: auto; }   /* profil surumu kendi kutusunda kayar */
     #ll-root .veli-modal-alt{ padding: 12px 16px; }
     #ll-root .veli-vazgec, #ll-root .veli-kaydet{ flex: 1; padding: 13px 10px; }
 }
@@ -2937,4 +2937,208 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
         background: #fff; color: var(--primary);
         box-shadow: inset 0 0 0 2.5px var(--primary), 0 3px 10px rgba(216, 67, 21, .22);
     }
+}
+
+/* ================= OKUL NUMARASI SUTUNU (Ogrenciler tablosu) ================= */
+#ll-root .student-no-input{
+    border: 1px solid transparent;
+    background: #f6f7f9;
+    border-radius: 8px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #4a5b6a;
+    width: 68px;
+    max-width: 100%;
+    padding: 7px 6px;
+    text-align: center;
+    font-family: inherit;
+    letter-spacing: .5px;
+}
+#ll-root .student-no-input::placeholder{ color: #b9c2cb; font-weight: 500; }
+#ll-root .student-no-input:focus{
+    background: #fff;
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(52,152,219,.15);
+}
+
+/* ====================== TAKIM OLUSTURUCU ====================== */
+/* --- Akordiyon: her adim tek satirlik bir baslik; yalniz acik olanin govdesi
+       gorunur. Baslik <button> oldugu icin klavye/erisilebilirlik bedava gelir. --- */
+#ll-root #llAracTakim .tk-blok{
+    background: #fbfbfc;
+    border: 1px solid #e6e9ed;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow .18s, border-color .18s;
+}
+#ll-root #llAracTakim .tk-blok.acik{
+    background: #fff;
+    border-color: #dbe1e7;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+#ll-root #llAracTakim .tk-baslik{
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; box-sizing: border-box;
+    margin: 0; padding: 12px 15px;
+    background: none; border: 0; border-radius: 14px;
+    font: inherit; font-weight: 800; color: #4a3a30; font-size: 1.06rem;
+    text-align: left; cursor: pointer; transition: background .16s;
+}
+#ll-root #llAracTakim .tk-baslik:hover{ background: rgba(216,67,21,.05); }
+#ll-root #llAracTakim .tk-baslik:focus-visible{ outline: 3px solid rgba(216,67,21,.45); outline-offset: -3px; }
+#ll-root #llAracTakim .tk-ad2{ flex: 0 0 auto; }
+#ll-root #llAracTakim .tk-adim{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--primary); color: #fff; font-size: .92rem; font-weight: 800; flex: 0 0 auto;
+}
+/* Kapaliyken bile ne secili oldugunu gosteren ozet */
+#ll-root #llAracTakim .tk-ozet{
+    margin-left: auto; min-width: 0;
+    font-weight: 600; font-size: .92rem; color: #8b98a4;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#ll-root #llAracTakim .tk-ok{
+    width: 20px; height: 20px; flex: 0 0 auto; color: #9aa6b1;
+    transition: transform .22s ease;
+}
+#ll-root #llAracTakim .tk-blok.acik .tk-ok{ transform: rotate(180deg); color: var(--primary); }
+#ll-root #llAracTakim .tk-govde{ padding: 2px 15px 14px; }
+#ll-root #llAracTakim .tk-blok:not(.acik) .tk-govde{ display: none; }
+#ll-root #llAracTakim .tk-satir{
+    display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 9px;
+}
+#ll-root #teamContainer{ scroll-margin-top: 96px; }
+#ll-root #llAracTakim .tk-etiket{ font-weight: 700; color: #6b7a88; font-size: .95rem; min-width: 120px; }
+#ll-root #llAracTakim .tk-ipucu{ color: #8b98a4; font-size: .88rem; line-height: 1.45; flex: 1 1 220px; }
+
+/* Numaralandirma secici */
+#ll-root #llAracTakim .tk-mod{
+    border: 2px solid #dfe4e9; background: #fff; color: #62707c;
+    font: inherit; font-weight: 700; font-size: 1rem;
+    padding: 9px 20px; border-radius: 999px; cursor: pointer;
+    transition: background .18s, color .18s, border-color .18s, box-shadow .18s;
+}
+#ll-root #llAracTakim .tk-mod:hover{ border-color: #c3ccd4; }
+#ll-root #llAracTakim .tk-mod.aktif{
+    background: #fff; color: #B03A10; border-color: var(--primary);
+    box-shadow: inset 0 0 0 1.5px var(--primary), 0 3px 10px rgba(216,67,21,.18);
+}
+
+/* Katilimci cipleri */
+#ll-root #llAracTakim .tk-cipler{ display: flex; flex-wrap: wrap; gap: 8px; }
+#ll-root #llAracTakim .tk-bos{ color: #8b98a4; font-size: .95rem; padding: 6px 2px; }
+#ll-root #llAracTakim .tk-cip{
+    display: inline-flex; align-items: center; gap: 7px;
+    background: #fff; border: 1.5px solid #dbe1e7; border-radius: 999px;
+    padding: 6px 13px 6px 7px; cursor: pointer; user-select: none;
+    font-size: .98rem; font-weight: 600; color: #3d4a55;
+    transition: opacity .16s, border-color .16s, background .16s;
+}
+#ll-root #llAracTakim .tk-cip:hover{ border-color: #b6c0c9; }
+#ll-root #llAracTakim .tk-cip .tk-no{
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px;
+    background: #eef2f6; color: #55636f; font-size: .85rem; font-weight: 800;
+}
+#ll-root #llAracTakim .tk-cip.misafir{ border-style: dashed; border-color: #b48ead; background: #faf6fa; }
+#ll-root #llAracTakim .tk-cip.misafir .tk-no{ background: #f0e3ef; color: #7d5f7a; }
+#ll-root #llAracTakim .tk-cip.yok{ opacity: .42; background: #f2f4f6; text-decoration: line-through; }
+#ll-root #llAracTakim .tk-cip .tk-sil{
+    font-style: normal; font-weight: 800; color: #a86f9f; font-size: 1.05rem;
+    line-height: 1; padding: 0 2px; cursor: pointer;
+}
+#ll-root #llAracTakim .tk-cip .tk-sil:hover{ color: #c0392b; }
+
+/* Girisler */
+#ll-root #llAracTakim .tk-giris{
+    flex: 1 1 260px; min-width: 180px;
+    border: 1.5px solid #dbe1e7; border-radius: 10px;
+    padding: 10px 13px; font: inherit; font-size: 1rem; background: #fff;
+}
+#ll-root #llAracTakim .tk-giris:focus{
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(52,152,219,.14);
+}
+#ll-root #llAracTakim .tk-alan{
+    width: 100%; box-sizing: border-box; resize: vertical;
+    border: 1.5px solid #dbe1e7; border-radius: 10px; background: #fff;
+    padding: 11px 13px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 1rem; line-height: 1.6; color: #37424c;
+}
+#ll-root #llAracTakim .tk-alan:focus{
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(52,152,219,.14);
+}
+#ll-root #llAracTakim .tool-btn.tk-kucuk{ padding: 10px 18px; font-size: 1rem; }
+#ll-root #llAracTakim .tool-btn.tk-sade{ background: #6b7a88; }
+
+/* Uyari / bilgi seridi */
+#ll-root #llAracTakim .tk-uyari{
+    border-radius: 12px; padding: 11px 15px; margin: 4px 0 14px;
+    font-size: .96rem; line-height: 1.55;
+    background: #fff6e6; border: 1px solid #f0d49a; color: #7a5510;
+}
+#ll-root #llAracTakim .tk-uyari.iyi{ background: #eaf7ee; border-color: #a9d9ba; color: #256b3c; }
+#ll-root #llAracTakim .tk-arac{ margin: 0 0 8px; }
+
+/* Sonuc kartlari */
+#ll-root #llAracTakim .team-title{ display: flex; align-items: center; gap: 8px; }
+#ll-root #llAracTakim .team-title .tm-adet{
+    margin-left: auto; font-style: normal; font-size: .82rem; font-weight: 700;
+    background: #eef2f6; color: #6b7a88; border-radius: 999px; padding: 2px 9px;
+}
+#ll-root #llAracTakim .team-member{ display: flex; align-items: center; gap: 8px; }
+#ll-root #llAracTakim .team-member .tm-no{
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 26px; height: 26px; padding: 0 6px; border-radius: 8px;
+    background: var(--primary); color: #fff; font-size: .86rem; font-weight: 800; flex: 0 0 auto;
+}
+#ll-root #llAracTakim .team-member .tm-misafir{
+    margin-left: auto; font-style: normal; font-size: .74rem; font-weight: 700;
+    background: #f3e6f1; color: #7d5f7a; border-radius: 999px; padding: 2px 8px; white-space: nowrap;
+}
+
+@media (max-width: 768px){
+    #ll-root #llAracTakim .tk-baslik{ padding: 11px 12px; font-size: 1rem; gap: 8px; }
+    #ll-root #llAracTakim .tk-govde{ padding: 2px 12px 12px; }
+    #ll-root #llAracTakim .tk-ozet{ font-size: .82rem; }
+    #ll-root #llAracTakim .tk-etiket{ min-width: 100%; }
+    #ll-root #llAracTakim .tk-ipucu{ flex-basis: 100%; }
+    #ll-root #llAracTakim .tool-btn.tk-kucuk{ padding: 9px 14px; font-size: .95rem; }
+    #ll-root #llAracTakim .tk-mod{ padding: 8px 15px; font-size: .95rem; }
+    #ll-root .student-no-input{ width: 56px; font-size: 1rem; padding: 6px 4px; }
+}
+
+/* ============ VELİ & DURUM TARAMASI — PROFİL SÜRÜMÜ ============
+   Tarama sinif seridindeki sekmeden ogretmen profiline tasindi
+   (#student-profile-section, #ll-root'un DISINDA). Renk degiskenleri
+   #ll-root'ta tanimli oldugu icin kutuya kendi degiskenleri veriliyor;
+   ustteki .tarama-* kurallari zaten #tpTaramaKutu icin de yaziliyor. */
+#tpTaramaKutu{
+    --primary: #D84315; --secondary: #E67E22; --accent: #F39C12;
+    --success: #27ae60; --danger: #e74c3c;
+    font-family: 'Segoe UI', sans-serif;
+    color: #2c3e50;
+}
+/* Profil sutunu sinif panelinden dar: genis tablo kutunun icinde kaysin,
+   sayfayi yatay tasirmasin. */
+#tpTaramaKutu #taramaSonuc{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+}
+#tpTaramaKutu .tarama-tablo{ min-width: 720px; }
+#tpTaramaKutu .tarama-aciklama{ margin-top: 0; }
+#tpTaramaKutu .tarama-ozet{ flex-wrap: wrap; }
+
+@media (max-width: 760px){
+    #tpTaramaKutu .tarama-tablo{ min-width: 620px; }
+    #tpTaramaKutu .tarama-not{ max-width: 200px; }
+    /* Dar ekranda 10 olcut alt alta cok yer kapliyordu: cipler kucultuldu. */
+    #tpTaramaKutu .tarama-cipler{ gap: 7px; }
+    #tpTaramaKutu .tarama-cip{ padding: 7px 11px; font-size: 0.82rem; gap: 5px; }
+    #tpTaramaKutu .tarama-cip b{ min-width: 18px; padding: 1px 6px; font-size: 0.75rem; }
+    #tpTaramaKutu .tarama-cip .lli{ width: 16px; height: 16px; }
+    #tpTaramaKutu .tarama-arama{ padding: 10px 14px; font-size: 0.92rem; }
 }

@@ -6,14 +6,21 @@ const kirp = (v,a,b) => Math.max(a, Math.min(b, v));
 const ara = (a,b,t) => a + (b-a)*t;
 const eV = t => t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
 
-let sY = 0, hedefY = 0, vh = innerHeight;
+let sY = scrollY, hedefY = scrollY, vh = innerHeight;
 addEventListener('scroll', ()=>{ hedefY = scrollY; }, {passive:true});
 addEventListener('resize', ()=>{ vh = innerHeight; boyutlaTuvaller(); etiketYerlestir(); });
 
+/* Perde ilerlemesi (0→1).
+   ONEMLI: konum HAM scrollY'den degil, yumusatilmis sY'den okunur. Eskiden
+   getBoundingClientRect().top dogrudan kullaniliyordu; boylece tek tekerlek
+   tiki sahneyi ayni karede zipsatiyor, animasyonlar "cok hizli" gorunuyordu.
+   sY, dongude hedefe dogru suzulur (bkz. ara(...)), yani sahne kaydirmayi
+   yumusak takip eder; kaydirma durunca tam degerine oturur. */
 function perdeP(el){
-  const r = el.getBoundingClientRect();
   const toplam = el.offsetHeight - vh;
-  return toplam <= 0 ? 0 : kirp(-r.top / toplam, 0, 1);
+  if (toplam <= 0) return 0;
+  const ust = el.getBoundingClientRect().top + window.scrollY;   /* belgedeki ust konum */
+  return kirp((sY - ust) / toplam, 0, 1);
 }
 
 const okCubuk = $('okCubuk');
@@ -511,7 +518,10 @@ const dokuman = document.documentElement;
 
 function dongu(zaman){
   const kayHiz = kirp(Math.abs(hedefY - sY)*.06, 0, 8);
-  sY = ara(sY, hedefY, .12);
+  /* Yumusatma: her karede hedefin %11'i kadar yaklas. Hareket azaltma
+     tercihi acikken suzme yok — sahne dogrudan kaydirmayi izler. */
+  sY = azHareket ? hedefY : ara(sY, hedefY, .11);
+  if (Math.abs(hedefY - sY) < .5) sY = hedefY;      /* sonda tam otur */
 
   okCubuk.style.width = (hedefY / (dokuman.scrollHeight - vh) * 100) + '%';
   let aktifIdx = 0;
