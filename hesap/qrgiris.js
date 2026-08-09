@@ -25,6 +25,7 @@
     var SORMA_ARALIK = 2000;           // tahta kaç ms'de bir sorsun
     var qrDurum = null;                // { oturumId, gizli, dogrulama, bitis, sayacId, sormaId }
     var qrBeklemedekiOnay = null;      // giriş yapılmadan gelen ?qr= değeri
+    var QR_KANAL = 'kidef_qr_giris';   // sekmeler arası haber anahtarı
 
     /* Dışa açılan adlar EN BAŞTA verilir: aşağıdaki kurulum satırlarından
        biri hata verirse bile tuş çalışsın (eskiden en sondaydı; kurulum
@@ -79,6 +80,10 @@
     function hataMetni(e) {
         var k = (e && (e.code || e.message)) || '';
         if (/functions-yok|firebase-yok/.test(k)) return 'Karekodla giriş için gereken bileşen yüklenmemiş. Sayfayı yenileyip tekrar deneyin.';
+        /* Sunucu kendi Türkçe açıklamasını gönderdiyse onu göster — genel
+           "etkin değil" metni gerçek nedeni gizliyordu. */
+        var m = (e && e.message) ? String(e.message) : '';
+        if (m.length > 25 && !/^(INTERNAL|NOT_FOUND|internal|unavailable)$/.test(m)) return m;
         if (/not-found|internal|NOT_FOUND/i.test(k)) return 'Karekodla giriş sunucuda henüz etkin değil. (Cloud Functions yayınlanmamış olabilir.)';
         if (/unavailable|deadline/i.test(k)) return 'Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.';
         if (/resource-exhausted/i.test(k)) return 'Çok fazla deneme yapıldı. Bir dakika sonra tekrar dene.';
@@ -290,15 +295,32 @@
         f({ oturumId: qrDurum.oturumId, gizli: qrDurum.gizli }).then(function (c) {
             var d = c.data || {};
             if (!qrDurum) return;
+            qrDurum.hataSayisi = 0;
             if (d.durum === 'onayli' && d.jeton) {
                 clearInterval(qrDurum.sayacId); clearInterval(qrDurum.sormaId);
                 durumYaz('onayli', 'Onaylandı, giriş yapılıyor…');
                 firebase.auth().signInWithCustomToken(d.jeton).then(function () {
-                    durumYaz('onayli', (d.ad || d.eposta || 'Hoş geldin') + ' — giriş yapıldı.');
+                    durumYaz('onayli', (d.ad || d.eposta || 'Hoş geldin') + ' — giriş yapıldı, sayfa yenileniyor…');
+                    /* Aynı tarayıcının ÖTEKİ sekmelerine haber ver: Firebase
+                       oturumu köken (origin) genelinde ortaktır, yani eski
+                       hesap zaten düştü — ama o sekmeler eski ekranı
+                       göstermeye devam ediyordu. Haberi alan sekme kendini
+                       yeniler, böylece hepsi yeni hesaba geçer. */
+                    try { localStorage.setItem(QR_KANAL, String(new Date().getTime())); } catch (e) { }
+                    /* BU sekme de yenilenir. Sebebi: sayfa "misafir" durumdayken
+                       açılmıştı; rol, oturum kurulduktan SONRA Firestore'daki
+                       hesap belgesinden çözülüyor ve bu yarışta varsayılan
+                       "öğrenci" ekranda kalabiliyordu (öğretmen hesabı öğrenci
+                       gibi görünüyordu). Yenileme, tahtayı normal bir girişten
+                       farksız hale getirir: rol, paketler, menü — hepsi
+                       sıfırdan ve doğru kurulur. */
                     setTimeout(function () {
-                        qrGirisKapat();
-                        try { if (typeof closeLoginModal === 'function') closeLoginModal(); } catch (e) { }
-                    }, 900);
+                        try { location.reload(); }
+                        catch (e) {
+                            qrGirisKapat();
+                            try { if (typeof closeLoginModal === 'function') closeLoginModal(); } catch (e2) { }
+                        }
+                    }, 1000);
                 }).catch(function (e) {
                     durumYaz('hata', 'Giriş tamamlanamadı: ' + hataMetni(e));
                 });
@@ -314,9 +336,14 @@
                 durumYaz('suredoldu', 'Karekod geçersiz. "Yeni karekod" ile tekrar dene.');
             }
         }).catch(function (e) {
-            /* Ağ dalgalanmasında sormaya devam; kalıcı hatada durdur. */
+            if (!qrDurum) return;
             var k = (e && e.code) || '';
-            if (/permission-denied|failed-precondition/.test(k)) {
+            /* Kalıcı hatalarda hemen dur. Ötekilerde bir kez daha dene ama
+               ikinci kez de olursa NEDENİ YAZ — eskiden sessizce sormaya
+               devam ediyordu, tahta sonsuza kadar "onay bekleniyor"da
+               kalıyor, kullanıcı hiçbir şey olmadı sanıyordu. */
+            qrDurum.hataSayisi = (qrDurum.hataSayisi || 0) + 1;
+            if (/permission-denied|failed-precondition/.test(k) || qrDurum.hataSayisi >= 2) {
                 clearInterval(qrDurum.sayacId); clearInterval(qrDurum.sormaId);
                 durumYaz('hata', hataMetni(e));
             }
@@ -424,8 +451,19 @@
         setTimeout(function () { qrOnayAc(id); }, 400);
     }
 
+    /* Öteki sekmelerden gelen "karekodla giriş yapıldı" haberi.
+       storage olayı yalnız DİĞER sekmelerde tetiklenir; giriş yapan
+       sekme kendini yenilemez. */
+    function sekmeDinle() {
+        window.addEventListener('storage', function (e) {
+            if (e.key !== QR_KANAL || !e.newValue) return;
+            try { location.reload(); } catch (x) { }
+        });
+    }
+
     /* ------------------------------------------------------------ kurulum */
     function kur() {
+        sekmeDinle();
         try {
             if (typeof firebase !== 'undefined' && firebase.auth) {
                 firebase.auth().onAuthStateChanged(function (u) {
