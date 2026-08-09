@@ -540,6 +540,17 @@ function updateHeaderUI() {
         if (_okulBtn) {
             var _ogrMi = !isGuest && (appState.userRole === 'teacher' || appState.userRole === 'admin');
             _okulBtn.classList.toggle('gor', !!_ogrMi);
+            /* SINIF VERISINI ONDEN ISIT: ogretmen giris yapar yapmaz sinif
+               listeleri arka planda yuklenir. Eskiden veri yalnizca
+               Listelerim'e (ya da profile) ugraninca geliyordu; bu yuzden
+               basliktaki okul tusuna ILK basista pencere bos aciliyor,
+               ogretmen "once profile girmem lazim" saniyordu. */
+            if (_ogrMi && !window._llVeriIsindi) {
+                window._llVeriIsindi = true;
+                setTimeout(function () {
+                    try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
+                }, 400);
+            }
         }
     } catch (e) { }
     

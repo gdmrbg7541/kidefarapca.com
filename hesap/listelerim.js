@@ -480,11 +480,13 @@ let llNotModu = 'liste';     // 'liste' | 'hw' | 'ex' | 'res' | 'gorev' | 'etkin
    sekmelerdi (tab9 / tab11), artik Performans/Sinavlar/Genel Sonuc ile ayni
    hap seridinde. Govdeleri hala #tab9 ve #tab11 kimlikli kutular oldugu icin
    gorev.js'e HIC dokunulmadi; yalnizca yerleri ve gorunurlukleri degisti. */
-const LL_MODLAR = ['hw', 'ex', 'res', 'gorev', 'etkinlik'];
+/* 'kura' de bir mod: Kurayla Sec, Sinif Araclari sekmesinden buraya tasindi.
+   Serit sirasi: Liste - Kura - Performans - Sinavlar - Gorev - Etkinlik - Genel Sonuc. */
+const LL_MODLAR = ['kura', 'hw', 'ex', 'res', 'gorev', 'etkinlik'];
 function llNotModSec(m) {
     llNotModu = (LL_MODLAR.indexOf(m) >= 0) ? m : 'liste';
-    const esle = { liste: 'llModListe', hw: 'llModPerf', ex: 'llModSinav', res: 'llModSonuc',
-                   gorev: 'tab9', etkinlik: 'tab11' };
+    const esle = { liste: 'llModListe', kura: 'llAracKura', hw: 'llModPerf', ex: 'llModSinav',
+                   res: 'llModSonuc', gorev: 'tab9', etkinlik: 'tab11' };
     Object.keys(esle).forEach(k => {
         const el = document.getElementById(esle[k]);
         if (el) el.style.display = (k === llNotModu) ? '' : 'none';
@@ -493,6 +495,10 @@ function llNotModSec(m) {
         b.classList.toggle('aktif', b.getAttribute('data-mod') === llNotModu);
     });
     if (llNotModu === 'liste') renderStudents();
+    else if (llNotModu === 'kura') {
+        if (typeof renderActivityButtons === 'function') renderActivityButtons();
+        if (typeof renderActivityStatus === 'function') renderActivityStatus();
+    }
     else if (llNotModu === 'hw') renderGrades('hw');
     else if (llNotModu === 'ex') renderGrades('ex');
     else if (llNotModu === 'res') renderResults();
@@ -545,10 +551,13 @@ function llGvPanel(kutuId, islev, baslik, deneme) {
 window.llGvPanel = llGvPanel;
 
 /* SINIF ARACLARI — kura / geri sayim / kronometre / takim tek sekmede. */
-let llAracModu = 'kura';     // 'kura' | 'sayim' | 'kron' | 'takim'
+/* KURAYLA SEC BURADAN CIKTI: artik Ogrenciler seridinde bir mod
+   (llNotModSec -> 'kura'). Araclar seridinde geri sayim, kronometre ve
+   takim kaldi; varsayilan geri sayim. */
+let llAracModu = 'sayim';   // 'sayim' | 'kron' | 'takim'
 function llAracSec(m) {
-    llAracModu = (m === 'sayim' || m === 'kron' || m === 'takim') ? m : 'kura';
-    const esle = { kura: 'llAracKura', sayim: 'llAracSayim', kron: 'llAracKron', takim: 'llAracTakim' };
+    llAracModu = (m === 'kron' || m === 'takim') ? m : 'sayim';
+    const esle = { sayim: 'llAracSayim', kron: 'llAracKron', takim: 'llAracTakim' };
     Object.keys(esle).forEach(k => {
         const el = document.getElementById(esle[k]);
         if (el) el.style.display = (k === llAracModu) ? '' : 'none';
@@ -556,7 +565,6 @@ function llAracSec(m) {
     document.querySelectorAll('#llAracHaplar .ll-mod-hap').forEach(b => {
         b.classList.toggle('aktif', b.getAttribute('data-arac') === llAracModu);
     });
-    if (llAracModu === 'kura' && typeof renderActivityStatus === 'function') renderActivityStatus();
     if (llAracModu === 'takim' && typeof llTakimCiz === 'function') llTakimCiz();
 }
 window.llAracSec = llAracSec;
@@ -3793,13 +3801,21 @@ function llOkulPopupAc() {
             if (_u && typeof initListelerim === 'function') {
                 window._llOkulTazeleniyor = true;
                 initListelerim();
-                setTimeout(function () {
-                    window._llOkulTazeleniyor = false;
-                    /* pencere hala acik ve bu arada veri geldiyse yeniden ciz */
-                    if (document.getElementById('llOkulPopup') &&
-                        data && (Object.keys(data.levels || {}).length || Object.keys(data.kurumlar || {}).length))
-                        llOkulPopupAc();
-                }, 1200);
+                /* SABIT 1200 ms YETMIYORDU: bulut okumasi bazen daha uzun
+                   suruyor, o zaman pencere bos kaliyor ve ogretmen "once
+                   profile girmem gerekiyor" saniyordu. Artik veri gelene
+                   kadar kisa araliklarla BEKLENIR (en cok ~8 sn). */
+                var _dene = 0;
+                var _bekle = setInterval(function () {
+                    _dene++;
+                    var geldi = data && (Object.keys(data.levels || {}).length || Object.keys(data.kurumlar || {}).length);
+                    var acik = !!document.getElementById('llOkulPopup');
+                    if (!acik || geldi || _dene > 26) {
+                        clearInterval(_bekle);
+                        window._llOkulTazeleniyor = false;
+                        if (acik && geldi) llOkulPopupAc();
+                    }
+                }, 300);
             }
         } catch (e) { }
     }

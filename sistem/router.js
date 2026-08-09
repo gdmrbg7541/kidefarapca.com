@@ -111,8 +111,21 @@ function initApp() {
                 appState.currentUserName = name;
                 
                 try {
-                    if (firebase.auth().currentUser === null) {
-                        await firebase.auth().signInAnonymously();
+                    /* ANONIM (misafir) GIRIS KALDIRILDI.
+                       Eskiden burada signInAnonymously cagriliyor, kimliksiz
+                       bir Firebase oturumu aciliyordu. Artik Firebase'e
+                       dayanan hicbir ozellik kimliksiz kullanilmiyor: siteyi
+                       herkes gezebilir ama canli ders, listeler, bilgi
+                       yarismasi gibi bulut ozellikleri gercek hesap ister. */
+                    if (!firebase.auth().currentUser) {
+                        if (btnElement) {
+                            btnElement.innerHTML = "Odaya Gir";
+                            btnElement.style.opacity = "1";
+                            btnElement.disabled = false;
+                        }
+                        showCustomAlert("Canlı derse katılmak için hesabınla giriş yapmalısın. Misafir katılımı kapatıldı.");
+                        try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e) { }
+                        return;
                     }
                     const prompt = document.getElementById('guest-name-prompt');
                     if (prompt) prompt.remove();

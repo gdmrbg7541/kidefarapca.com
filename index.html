@@ -158,7 +158,7 @@
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=20260809c">
-    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260809c">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260809e">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -169,7 +169,7 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="hesap/listelerim.css?v=20260809g">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=20260809h">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -545,7 +545,14 @@
         <div class="modal-content glass-card" style="box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
             <div class="modal-close" onclick="closeLoginModal()">✖</div>
             <h2 id="auth-title" style="color:#16A085; margin-top:0;">Sisteme Giriş Yap</h2>
-            
+
+            <!-- KAREKOD ALANI — giriş penceresi ilk açıldığında BURASI görünür;
+                 e-posta/şifre formu gizlidir. İçeriği hesap/qrgiris.js doldurur.
+                 "E-posta ve şifreyle gir" tuşu ikisi arasında geçiş yaptırır. -->
+            <div id="qr-modal-alan" style="display:none;"></div>
+
+            <!-- Klasik giriş/kayıt formu. Karekod kipinde tamamen gizlenir. -->
+            <div id="giris-form-alani">
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button onclick="setRole('student')" id="btn-student" class="role-btn active-role">Öğrenci</button>
                 <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn">Öğretmen</button>
@@ -630,6 +637,7 @@
                 <span id="auth-switch-text">Hesabınız yok mu?</span> 
                 <span class="auth-toggle-text" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</span>
             </div>
+            </div><!-- /giris-form-alani -->
         </div>
     </div>
 
@@ -4182,14 +4190,16 @@
 
     <div id="tab0" class="tab-panel active">
         <div id="llNotModlar" class="ll-mod-serit">
-            <button type="button" class="ll-mod-hap aktif" data-mod="liste" onclick="llNotModSec('liste')">👥 Liste</button>
-            <button type="button" class="ll-mod-hap" data-mod="hw" onclick="llNotModSec('hw')">📊 Performans</button>
-            <button type="button" class="ll-mod-hap" data-mod="ex" onclick="llNotModSec('ex')">📝 Sınavlar</button>
-            <button type="button" class="ll-mod-hap" data-mod="res" onclick="llNotModSec('res')">🏆 Genel Sonuç</button>
-            <!-- Gorev Gonder ve Etkinlikler artik AYRI SEKME degil, Ogrenciler
-                 sekmesinin modlari: Performans/Sinavlar/Genel Sonuc ile ayni serit. -->
-            <button type="button" class="ll-mod-hap" data-mod="gorev" onclick="llNotModSec('gorev')">🚀 Görev Gönder</button>
-            <button type="button" class="ll-mod-hap" data-mod="etkinlik" onclick="llNotModSec('etkinlik')">🏃 Etkinlikler</button>
+            <!-- SIRA: Liste → Kurayla Seç → Performans → Sınavlar → Görev Gönder
+                 → Etkinlikler → Genel Sonuç (en sonda, çünkü yılın özeti).
+                 Emojiler animasyonlu SVG'lerle değiştirildi. -->
+            <button type="button" class="ll-mod-hap aktif" data-mod="liste" onclick="llNotModSec('liste')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.4" cy="7.4" r="3.1" fill="#3498db"/><path d="M2.8 20a5.6 5.6 0 0 1 11.2 0z" fill="#2980b9"/><circle class="hi-arka" cx="16.6" cy="8.4" r="2.5" fill="#95a5a6"/><path class="hi-arka" d="M12.4 19.4a4.4 4.4 0 0 1 8.8 0z" fill="#7f8c8d"/></svg><span>Liste</span></button>
+            <button type="button" class="ll-mod-hap" data-mod="kura" onclick="llNotModSec('kura')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><g class="hi-zar"><rect x="3.4" y="3.4" width="17.2" height="17.2" rx="4" fill="#fff" stroke="#c0392b" stroke-width="1.9"/><circle cx="8.4" cy="8.4" r="1.7" fill="#e74c3c"/><circle cx="15.6" cy="8.4" r="1.7" fill="#e74c3c"/><circle cx="12" cy="12" r="1.7" fill="#e74c3c"/><circle cx="8.4" cy="15.6" r="1.7" fill="#e74c3c"/><circle cx="15.6" cy="15.6" r="1.7" fill="#e74c3c"/></g></svg><span>Kurayla Seç</span></button>
+            <button type="button" class="ll-mod-hap" data-mod="hw" onclick="llNotModSec('hw')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="3.2" width="18.8" height="17.6" rx="2.6" fill="#fff" stroke="#8e44ad" stroke-width="1.6"/><rect class="hi-sut1" x="6" y="12" width="3" height="6" rx="1" fill="#9b59b6"/><rect class="hi-sut2" x="10.5" y="9" width="3" height="9" rx="1" fill="#3498db"/><rect class="hi-sut3" x="15" y="6.4" width="3" height="11.6" rx="1" fill="#27ae60"/></svg><span>Performans</span></button>
+            <button type="button" class="ll-mod-hap" data-mod="ex" onclick="llNotModSec('ex')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2.6h9.6L19.4 7v14.4H5z" fill="#fff" stroke="#e67e22" stroke-width="1.6"/><path d="M14.6 2.6V7h4.8" fill="none" stroke="#e67e22" stroke-width="1.6"/><rect x="7.6" y="10.4" width="8.8" height="1.5" rx=".75" fill="#f0b27a"/><rect x="7.6" y="13.8" width="6" height="1.5" rx=".75" fill="#f0b27a"/><path class="hi-tik" d="M8.4 17.4l2 2 4.4-4.4" fill="none" stroke="#27ae60" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Sınavlar</span></button>
+            <button type="button" class="ll-mod-hap" data-mod="gorev" onclick="llNotModSec('gorev')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><g class="hi-roket"><path d="M12 1.8c3.2 2.4 4.8 6 4.8 9.6l-1.9 3.4H9.1L7.2 11.4c0-3.6 1.6-7.2 4.8-9.6" fill="#ecf0f1" stroke="#95a5a6" stroke-width="1.1"/><circle cx="12" cy="9" r="2.1" fill="#3498db"/><path d="M7.2 11.6l-2.6 3.2 3 .4zM16.8 11.6l2.6 3.2-3 .4z" fill="#e74c3c"/></g><path class="hi-alev" d="M10.4 16.4h3.2l-1.6 4.8z" fill="#f39c12"/></svg><span>Görev Gönder</span></button>
+            <button type="button" class="ll-mod-hap" data-mod="etkinlik" onclick="llNotModSec('etkinlik')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="14.6" cy="4.4" r="2.4" fill="#e67e22"/><g class="hi-kosucu"><path d="M13.4 8.2l-3.6 2.6 2 2.8-1.6 5.4" fill="none" stroke="#d35400" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.8 13.6l4 1.2 1.6 4.2" fill="none" stroke="#d35400" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></g><path class="hi-iz" d="M3 9.4h4M2 13h3.4" stroke="#f0b27a" stroke-width="1.8" stroke-linecap="round"/></svg><span>Etkinlikler</span></button>
+            <button type="button" class="ll-mod-hap" data-mod="res" onclick="llNotModSec('res')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 3h9.2v6.2a4.6 4.6 0 0 1-9.2 0z" fill="#f1c40f" stroke="#d4ac0d" stroke-width="1.1"/><path d="M7.4 4.4H4.8v1.8a3 3 0 0 0 2.6 3M16.6 4.4h2.6v1.8a3 3 0 0 1-2.6 3" fill="none" stroke="#d4ac0d" stroke-width="1.5"/><rect x="10.6" y="13.6" width="2.8" height="4" fill="#d4ac0d"/><rect x="7.6" y="17.4" width="8.8" height="2.6" rx="1" fill="#e67e22"/><g class="hi-parla"><path d="M12 5.4l.7 1.5 1.6.2-1.2 1.1.3 1.6L12 9l-1.4.8.3-1.6-1.2-1.1 1.6-.2z" fill="#fff" opacity=".85"/></g></svg><span>Genel Sonuç</span></button>
         </div>
         <div id="llModListe">
         <h3>Öğrenci Yönetimi</h3>
@@ -4206,23 +4216,10 @@
         </div>
         <table id="stuTable"></table>
         </div>
-        <div id="llModPerf" style="display:none;"><div id="behBilgi"></div><table id="hwTable"></table></div>
-        <div id="llModSinav" style="display:none;"><table id="exTable"></table></div>
-        <div id="llModSonuc" style="display:none;"><table id="resTable"></table></div>
-        <!-- GÖREV GÖNDER gövdesi: içeriği tamamen sistem/gorev.js yazar
-             (GV.sekmeGorevCiz). Eski elle yazılmış görev paneli kaldırıldı;
-             zaten her açılışta üzerine yazılıyordu. -->
-        <div id="tab9" style="display:none;"></div>
-    <div id="tab11" style="display:none;"></div>
-    </div>
-    <div id="tab4" class="tab-panel">
-        <div id="llAracHaplar" class="ll-mod-serit">
-            <button type="button" class="ll-mod-hap aktif" data-arac="kura" onclick="llAracSec('kura')">🎲 Kurayla Seç</button>
-            <button type="button" class="ll-mod-hap" data-arac="sayim" onclick="llAracSec('sayim')">⏳ Geri Sayım</button>
-            <button type="button" class="ll-mod-hap" data-arac="kron" onclick="llAracSec('kron')">⏱️ Kronometre</button>
-            <button type="button" class="ll-mod-hap" data-arac="takim" onclick="llAracSec('takim')">👫 Takım Oluştur</button>
-        </div>
-        <div id="llAracKura">
+        <!-- KURAYLA SEÇ — artık Sınıf Araçları'nda değil, Öğrenciler şeridinde
+             bir mod. Öğretmen listeyle kura arasında sekme değiştirmeden
+             geçebilsin diye buraya taşındı (llNotModSec -> "kura"). -->
+        <div id="llAracKura" style="display:none;">
         <div id="luckyBox" style="text-align:center; padding:30px; background:#fff; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px;">
             <div id="luckyStudent" style="font-size:2.5em; font-weight:bold; color:var(--primary); min-height:1.5em;">Öğrenci Seçin</div>
             <div id="activityType" style="font-size:1.2em; color:var(--accent); margin-top:10px; font-weight:bold;"></div>
@@ -4237,6 +4234,24 @@
         </div>
         <div style="margin-top:30px;"><table id="activityStatusTable"></table></div>
         <button onclick="resetPools()" style="margin-top:20px; padding:10px; cursor:pointer;">Havuzları Sıfırla</button>
+        </div>
+        <div id="llModPerf" style="display:none;"><div id="behBilgi"></div><table id="hwTable"></table></div>
+        <div id="llModSinav" style="display:none;"><table id="exTable"></table></div>
+        <div id="llModSonuc" style="display:none;"><table id="resTable"></table></div>
+        <!-- GÖREV GÖNDER gövdesi: içeriği tamamen sistem/gorev.js yazar
+             (GV.sekmeGorevCiz). Eski elle yazılmış görev paneli kaldırıldı;
+             zaten her açılışta üzerine yazılıyordu. -->
+        <div id="tab9" style="display:none;"></div>
+    <div id="tab11" style="display:none;"></div>
+    </div>
+    <div id="tab4" class="tab-panel">
+        <div id="llAracHaplar" class="ll-mod-serit">
+            <!-- Emojiler yerine kendi animasyonlu SVG'lerimiz: emoji her cihazda
+                 başka türlü çiziliyordu ve sitenin ikon diliyle uyuşmuyordu.
+                 "Kurayla Seç" buradan Öğrenciler şeridine taşındı. -->
+            <button type="button" class="ll-mod-hap aktif" data-arac="sayim" onclick="llAracSec('sayim')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.4h12v2.2H6zM6 19.4h12v2.2H6z" fill="#8d6e63"/><path d="M7.6 4.6h8.8v2.3L12 12l4.4 5.1v2.3H7.6v-2.3L12 12 7.6 6.9z" fill="#ecf0f1" opacity=".75" stroke="#95a5a6" stroke-width="1"/><path class="hi-kum-ust" d="M9 5.8h6l-3 3.9z" fill="#f39c12"/><path class="hi-kum-alt" d="M9.7 18.2h4.6L12 14.3z" fill="#f39c12"/><circle class="hi-tane" cx="12" cy="11.4" r=".7" fill="#f39c12"/></svg><span>Geri Sayım</span></button>
+            <button type="button" class="ll-mod-hap" data-arac="kron" onclick="llAracSec('kron')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><rect x="10.4" y="1.6" width="3.2" height="2.4" rx=".8" fill="#455a64"/><circle cx="12" cy="13.6" r="8.2" fill="#eceff1" stroke="#607d8b" stroke-width="1.7"/><circle cx="12" cy="13.6" r="6.4" fill="#fff"/><path d="M18.6 6.4l1.9-1.9" stroke="#455a64" stroke-width="1.8" stroke-linecap="round"/><g class="hi-ibre"><rect x="11.4" y="8.2" width="1.2" height="5.9" rx=".6" fill="#e74c3c"/></g><circle cx="12" cy="13.6" r="1.1" fill="#455a64"/></svg><span>Kronometre</span></button>
+            <button type="button" class="ll-mod-hap" data-arac="takim" onclick="llAracSec('takim')"><svg class="hap-ikon" viewBox="0 0 24 24" aria-hidden="true"><g class="hi-kisi-sol"><circle cx="7.4" cy="7.6" r="3" fill="#3498db"/><path d="M2.6 20.2a4.8 4.8 0 0 1 9.6 0z" fill="#2980b9"/></g><g class="hi-kisi-sag"><circle cx="16.6" cy="7.6" r="3" fill="#e67e22"/><path d="M11.8 20.2a4.8 4.8 0 0 1 9.6 0z" fill="#d35400"/></g><path class="hi-kalp" d="M12 12.6c-1.1-1.3-3-.6-3 .9 0 1.3 1.7 2.4 3 3.3 1.3-.9 3-2 3-3.3 0-1.5-1.9-2.2-3-.9" fill="#f1c40f"/></svg><span>Takım Oluştur</span></button>
         </div>
 
 <div id="llAracSayim" style="display:none;">
@@ -4776,19 +4791,21 @@
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
-    <script src="hesap/auth.js?v=20260809a"></script>
+    <script src="hesap/auth.js?v=20260809b"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
-    <script src="hesap/qrgiris.js?v=20260809e"></script>
+    <script src="hesap/qrgiris.js?v=20260809g"></script>
     <script>
     /* Emniyet: hesap/qrgiris.js yüklenmediyse (dosya siteye konmamışsa)
        tuşa basınca hiçbir şey olmuyordu. Artık nedenini söyler. */
     window.qrGirisTusu = function () {
+        /* Formdan karekoda dönüş: doğrudan üretme, seçim ekranını göster. */
+        if (typeof window.qrSecimEkrani === 'function' && document.getElementById('qr-modal-alan')) { window.qrSecimEkrani(); return; }
         if (typeof window.qrGirisAc === 'function') { window.qrGirisAc(); return; }
         alert('Karekodla giriş dosyası yüklenemedi.\n\n' +
               'Sitede "hesap/qrgiris.js" ve "hesap/qrgiris.css" dosyalarının bulunduğundan emin olun.');
     };
     </script>
-    <script src="sistem/router.js?v=20260809a"></script>
+    <script src="sistem/router.js?v=20260809b"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
@@ -4796,7 +4813,7 @@
     <script src="hesap/teacher-admin.js?v=20260731g"></script>
     <script src="sistem/alarm.js"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260809h"></script>
+    <script src="hesap/listelerim.js?v=20260809i"></script>
     <script src="hesap/ogrencihesap.js?v=20260801f"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=32"></script>

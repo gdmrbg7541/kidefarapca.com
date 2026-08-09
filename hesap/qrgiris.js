@@ -26,6 +26,7 @@
     var qrDurum = null;                // { oturumId, gizli, dogrulama, bitis, sayacId, sormaId }
     var qrBeklemedekiOnay = null;      // giriş yapılmadan gelen ?qr= değeri
     var QR_KANAL = 'kidef_qr_giris';   // sekmeler arası haber anahtarı
+    var qrHedef = 'pencere';           // 'modal' (giriş penceresi içinde) | 'pencere' (ayrı katman)
 
     /* Dışa açılan adlar EN BAŞTA verilir: aşağıdaki kurulum satırlarından
        biri hata verirse bile tuş çalışsın (eskiden en sondaydı; kurulum
@@ -35,6 +36,9 @@
     window.qrGirisKapat = qrGirisKapat;
     window.qrOnayKontrol = qrOnayKontrol;
     window.qrOnayAc = qrOnayAc;
+    window.qrElleGirisAc = qrElleGirisAc;
+    window.qrModAc = qrModAc;
+    window.qrSecimEkrani = qrSecimEkrani;
     window.QR_KURULDU = true;
 
     /* ---------------------------------------------------------------------
@@ -177,12 +181,102 @@
         if (g) g.innerHTML = html;
     }
 
+    /* ---------------------------------------------------------------------
+       GİRİŞ PENCERESİ İÇİNDE KAREKOD KİPİ
+       Karekod artık ayrı bir katmanda değil, giriş penceresinin İÇİNDE
+       açılır ve e-posta/şifre formunun YERİNİ alır. Pencere ilk açıldığında
+       varsayılan kip budur; isteyen "E-posta ve şifreyle gir" ile klasik
+       forma geçer.
+       --------------------------------------------------------------------- */
+    function modalAlan() { return document.getElementById('qr-modal-alan'); }
+    function formAlan() { return document.getElementById('giris-form-alani'); }
+
+    function qrIcerikYaz(baslikHtml, govdeHtml) {
+        var alan = modalAlan();
+        if (!alan) return false;
+        alan.innerHTML =
+            '<div class="qr-ic">' +
+            '<div class="qr-bas">' + baslikHtml + '</div>' +
+            '<div class="qr-govde" id="qrGovde">' + govdeHtml + '</div>' +
+            '<button type="button" class="qr-elle-tus" onclick="qrElleGirisAc()">E-posta ve şifreyle gir</button>' +
+            '</div>';
+        return true;
+    }
+    /* Karekod kipine geç (form gizlenir). */
+    function qrModAc() {
+        var alan = modalAlan();
+        if (!alan) return false;
+        var f = formAlan();
+        if (f) f.style.display = 'none';
+        alan.style.display = 'block';
+        qrHedef = 'modal';
+        return true;
+    }
+
+    /* SEÇİM EKRANI — giriş penceresi açılınca gelen ilk görünüm.
+       Karekod HEMEN üretilmez: büyük karekod kartı durur, tıklanınca
+       üretilir. Böylece pencereyi her açan kişi için sunucuda boşuna
+       oturum açılmaz; e-postayla girecek olan da beklemez. */
+    function qrSecimEkrani() {
+        var alan = modalAlan();
+        if (!alan) return false;
+        qrDurdur();
+        qrModAc();
+        alan.innerHTML =
+            '<div class="qr-sec">' +
+            '<button type="button" class="qr-kart" onclick="qrGirisAc()" title="Karekod üret">' +
+            '<span class="qr-kart-ikon">' + buyukKarekodSvg() + '</span>' +
+            '<span class="qr-kart-yazi"><b>Karekodla Giriş</b>' +
+            '<small>Telefonundan onayla — şifre yazmana gerek yok</small></span>' +
+            '<span class="qr-kart-ok" aria-hidden="true">›</span>' +
+            '</button>' +
+            '<button type="button" class="qr-elle-tus" onclick="qrElleGirisAc()">' +
+            '<span class="qr-elle-ikon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.6" y="5.2" width="18.8" height="13.6" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.4 7l8.6 6 8.6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</span>E-posta ve şifreyle gir</button>' +
+            '</div>';
+        return true;
+    }
+
+    /* Kartta duran büyük karekod çizimi (dekoratif). */
+    function buyukKarekodSvg() {
+        return '<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+            '<rect x="3" y="3" width="24" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>' +
+            '<rect x="37" y="3" width="24" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>' +
+            '<rect x="3" y="37" width="24" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>' +
+            '<rect x="11" y="11" width="8" height="8" rx="1.6" fill="currentColor"/>' +
+            '<rect x="45" y="11" width="8" height="8" rx="1.6" fill="currentColor"/>' +
+            '<rect x="11" y="45" width="8" height="8" rx="1.6" fill="currentColor"/>' +
+            '<g opacity=".8"><rect x="37" y="37" width="9" height="9" rx="1.6" fill="currentColor"/>' +
+            '<rect x="52" y="37" width="9" height="9" rx="1.6" fill="currentColor"/>' +
+            '<rect x="37" y="52" width="9" height="9" rx="1.6" fill="currentColor"/>' +
+            '<rect x="52" y="52" width="9" height="9" rx="1.6" fill="currentColor"/></g>' +
+            '<rect class="qr-tarama" x="0" y="30" width="64" height="3.4" rx="1.7" fill="currentColor" opacity=".55"/>' +
+            '</svg>';
+    }
+    /* Klasik forma dön (karekod durur). */
+    function qrElleGirisAc() {
+        qrDurdur();
+        var alan = modalAlan();
+        if (alan) { alan.style.display = 'none'; alan.innerHTML = ''; }
+        var f = formAlan();
+        if (f) f.style.display = '';
+        qrHedef = 'pencere';
+    }
+    function girisPenceresiAcikMi() {
+        var m = document.getElementById('login-modal');
+        return !!m && getComputedStyle(m).display !== 'none';
+    }
+    /* Sayaç/sorgu döngülerini durdurur (kip değişince ya da kapanışta). */
+    function qrDurdur() {
+        if (!qrDurum) return;
+        clearInterval(qrDurum.sayacId);
+        clearInterval(qrDurum.sormaId);
+        qrDurum = null;
+    }
+
     function qrGirisKapat() {
-        if (qrDurum) {
-            clearInterval(qrDurum.sayacId);
-            clearInterval(qrDurum.sormaId);
-            qrDurum = null;
-        }
+        qrDurdur();
         var k = document.getElementById('qrGirisPencere');
         if (k) k.style.display = 'none';
     }
@@ -191,10 +285,18 @@
        A) TAHTA TARAFI
        ================================================================ */
     function qrGirisAc() {
-        pencere(
-            svgKarekod() + '<span>Karekodla Giriş</span>',
-            '<div class="qr-yukleniyor">Karekod hazırlanıyor…</div>'
-        );
+        qrDurdur();
+        var basSvg = svgKarekod() + '<span>Karekodla Giriş</span>';
+        var yukleniyor = '<div class="qr-yukleniyor">Karekod hazırlanıyor…</div>';
+        /* Giriş penceresi açıksa karekod ONUN İÇİNDE, formun yerine çizilir;
+           değilse (ör. doğrudan çağrıldıysa) eski ayrı katman kullanılır. */
+        if (modalAlan() && girisPenceresiAcikMi()) {
+            qrModAc();
+            qrIcerikYaz(basSvg, yukleniyor);
+        } else {
+            qrHedef = 'pencere';
+            pencere(basSvg, yukleniyor);
+        }
 
         var baslat;
         try { baslat = cagir('qrOturumBaslat'); }
@@ -461,9 +563,38 @@
         });
     }
 
+    /* Giriş penceresi her açıldığında KAREKOD kipiyle başlasın.
+       showLoginModal auth.js'te tanımlı; dosyaya dokunmadan sarmalıyoruz. */
+    function girisPenceresiniSarmala() {
+        if (typeof window.showLoginModal !== 'function' || window._qrSarmalandi) return;
+        window._qrSarmalandi = true;
+        var eski = window.showLoginModal;
+        window.showLoginModal = function () {
+            var sonuc = eski.apply(this, arguments);
+            try {
+                if (modalAlan()) {
+                    /* Onay ekranı beklerken (telefon tarafı) araya girme.
+                       Karekod ÜRETİLMEZ; yalnız seçim ekranı gösterilir. */
+                    if (!qrBeklemedekiOnay) setTimeout(function () { qrSecimEkrani(); }, 30);
+                }
+            } catch (e) { }
+            return sonuc;
+        };
+        /* Pencere kapanınca sayaç/sorgu boşuna dönmesin. */
+        if (typeof window.closeLoginModal === 'function' && !window._qrKapatSarmali) {
+            window._qrKapatSarmali = true;
+            var eskiKapat = window.closeLoginModal;
+            window.closeLoginModal = function () {
+                try { if (qrHedef === 'modal') qrDurdur(); } catch (e) { }
+                return eskiKapat.apply(this, arguments);
+            };
+        }
+    }
+
     /* ------------------------------------------------------------ kurulum */
     function kur() {
         sekmeDinle();
+        girisPenceresiniSarmala();
         try {
             if (typeof firebase !== 'undefined' && firebase.auth) {
                 firebase.auth().onAuthStateChanged(function (u) {

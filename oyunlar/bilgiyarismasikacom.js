@@ -4280,10 +4280,10 @@ window.addEventListener("beforeunload", function(e){
   /* Tek karekodlu modlarda (birey/okul) baglanti yalnizca ?oda= tasir; ogrenci
      kendi adini yazar ve ogretmen onayini bekler. Takim modunda ise her takimin
      kendi karekodu vardir, bu yuzden ?takim= de bulunur.                     */
-  /* Katılım için oturum: VARSA mevcut oturum korunur, yoksa anonim açılır.
-     (Eskiden koşulsuz signInAnonymously çağrılıyordu; öğretmen kendi
-      karekodunu aynı tarayıcıda denediğinde öğretmen oturumu siliniyor,
-      sonra yarışma sayfası onu "misafir" sayıp girişe yönlendiriyordu.) */
+  /* Katılım için oturum. ANONİM GİRİŞ KALDIRILDI: eskiden oturumu olmayan
+     ziyaretçi için signInAnonymously çağrılıyordu. Artık Firebase'e dayanan
+     hiçbir özellik kimliksiz kullanılmıyor — yarışmaya katılmak da gerçek
+     hesap ister. Oturum yoksa null döner ve çağıran taraf uyarı gösterir. */
   function biyOturumSagla(){
     return new Promise(function (coz) {
       try {
@@ -4291,19 +4291,38 @@ window.addEventListener("beforeunload", function(e){
         kes = firebase.auth().onAuthStateChanged(function (u) {
           if (bitti) return; bitti = true;
           try { if (kes) kes(); } catch (e) {}
-          if (u) { coz(u); return; }
-          firebase.auth().signInAnonymously()
-            .then(function (c) { coz(c && c.user || null); })
-            .catch(function () { coz(null); });
+          coz(u || null);
         });
       } catch (e) { coz(null); }
     });
   }
 
+  /* Oturumsuz katılım denemesinde tam ekran, anlaşılır bir uyarı. */
+  function biyGirisGerek(){
+    var d = document.createElement('div');
+    d.id = 'biyGirisGerek';
+    d.style.cssText = 'position:fixed; inset:0; z-index:999999; background:rgba(15,42,67,.94);' +
+      'display:flex; align-items:center; justify-content:center; padding:20px;' +
+      "font-family:'Nunito','Segoe UI',sans-serif; color:#fff; text-align:center;";
+    d.innerHTML =
+      '<div style="max-width:420px; background:#fff; color:#2c3e50; border-radius:20px; padding:28px 24px;">' +
+      '<div style="font-size:2.4rem; line-height:1; margin-bottom:10px;">🔒</div>' +
+      '<h2 style="margin:0 0 10px; font-size:1.25rem; color:#16A085;">Giriş gerekiyor</h2>' +
+      '<p style="margin:0 0 18px; font-size:.96rem; line-height:1.55; color:#5c6b78;">' +
+      'Bilgi yarışmasına katılmak için kendi hesabınla giriş yapmalısın. ' +
+      'Misafir katılımı kapatıldı.</p>' +
+      '<a href="../index.html" style="display:inline-block; padding:13px 26px; border-radius:12px;' +
+      ' background:#16A085; color:#fff; font-weight:800; text-decoration:none;">Giriş Yap</a>' +
+      '</div>';
+    document.body.appendChild(d);
+  }
+
   if (oda && !takim){
     state.mod = "takim";
-    biyOturumSagla();
-    BIY.katilimAkisi(oda);
+    biyOturumSagla().then(function (u) {
+      if (!u) { biyGirisGerek(); return; }
+      BIY.katilimAkisi(oda);
+    });
     return;
   }
 
@@ -4314,9 +4333,11 @@ window.addEventListener("beforeunload", function(e){
     db.collection(KOLEKSIYON).doc(oda).collection("takimlar").onSnapshot(snap => {
       state.takimListe = []; snap.forEach(d => { const t = d.data(); state.takimListe.push({ id: d.id, ad: t.ad, puan: t.puan||0, bagli: !!t.bagli }); });
     }, () => {});
-    // kidef kuralları için oturum (varsa korunur); ardından takım bağlanır.
-    biyOturumSagla();
-    BIY.takimBagla(oda, takim);
+    // kidef kuralları için oturum; hesap yoksa katılım yok (anonim kaldırıldı).
+    biyOturumSagla().then(function (u) {
+      if (!u) { biyGirisGerek(); return; }
+      BIY.takimBagla(oda, takim);
+    });
     return;
   }
 
