@@ -7,8 +7,14 @@
     <script>
     /* Vitrin kapısı: siteye her yeni girişte önce indeks.html (vitrin) açılır.
        Vitrin açılınca oturum işareti bırakır; aynı oturumda index'e dönüş ve site içi
-       gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i silmen yeterli. */
-    try{ if(!sessionStorage.getItem('kidefVitrin')) location.replace('indeks.html'); }catch(e){}
+       gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i silmen yeterli.
+       İSTİSNA: karekod onay bağlantısı (?qr=...) telefonun kamerasından YENİ bir
+       sekmede açılır, o sekmede vitrin işareti yoktur. Yönlendirilirse onay
+       parametresi kaybolurdu; bu yüzden ?qr= varsa kapı açılır. */
+    try{
+      if(/[?&]qr=/.test(location.search)) sessionStorage.setItem('kidefVitrin','1');
+      if(!sessionStorage.getItem('kidefVitrin')) location.replace('indeks.html');
+    }catch(e){}
     </script>
 
     <script id="guc-algilayici">
@@ -151,7 +157,8 @@
     <!-- Tekil CSS Dosyası -->
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=20260808a">
+    <link rel="stylesheet" href="index.css?v=20260809c">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260809a">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -242,6 +249,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- Karekodla giriş: callable Cloud Functions için functions bileşeni + karekod çizici -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="sistem/kilit.js?v=12"></script>
 <style>
 /* ==== CANLI DERS: TAŞINABİLİR PENCERE (siteden bağımsız, sürüklenebilir) ==== */
@@ -604,6 +614,16 @@
             </div>
             
             <button id="auth-action-btn" class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="authIslemi()">Giriş Yap</button>
+
+            <!-- KAREKODLA GİRİŞ — akıllı tahtada şifre yazmamak için.
+                 Öğretmen kendi telefonundan okutup onaylar; bu ekran onun
+                 hesabıyla açılır. Sunucu tarafı: functions/index.js -->
+            <div id="qr-giris-satir">
+                <button type="button" class="qr-giris-tus" onclick="qrGirisAc()" title="Telefonundan onaylayarak şifresiz gir">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="22" height="22"><rect x="2.6" y="2.6" width="7.4" height="7.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="14" y="2.6" width="7.4" height="7.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="2.6" y="14" width="7.4" height="7.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="5.2" y="5.2" width="2.2" height="2.2" fill="currentColor"/><rect x="16.6" y="5.2" width="2.2" height="2.2" fill="currentColor"/><rect x="5.2" y="16.6" width="2.2" height="2.2" fill="currentColor"/><path d="M14 14h3v3h-3zM18.4 14h3v3h-3zM14 18.4h3v3h-3zM18.4 18.4h3v3h-3z" fill="currentColor" opacity=".75"/></svg>
+                    <span>Karekodla Giriş<small>Telefonundan onayla — şifre yazma</small></span>
+                </button>
+            </div>
             <p id="hata-mesaji" style="color:#ff6b6b; font-size:13px; min-height:15px; margin: 10px 0;"></p>
             
             <div style="text-align:center; font-size:14px;" id="auth-switch-container">
@@ -4757,6 +4777,8 @@
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
     <script src="hesap/auth.js?v=20260809a"></script>
+    <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
+    <script src="hesap/qrgiris.js?v=20260809a"></script>
     <script src="sistem/router.js?v=20260809a"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
