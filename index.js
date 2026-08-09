@@ -238,68 +238,9 @@ window.onclick = function(event) {
     }
 }
 
-// ==========================================
-// KART ÜRETİCİ YAMASI (index.html için)
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-    const slaytContainer = document.getElementById('slayt-galerisi-container');
-    if (!slaytContainer) return;
-
-    /* Gösterilecek sunumlar. Dosyalar sunum/ klasöründedir; klasörü
-       sunum.js kendisi ekler.
-
-       ⚠️ DOSYA ADI ile EKRANDA GÖRÜNEN AD artık ayrı:
-       Dosya adları eskiden emoji, boşluk, Türkçe harf ve kesme işareti
-       içeriyordu ("🧐 Aksam-ı Seb'a.pdf"). Bunlar adrese girince yüzde
-       kodlamasıyla devasa bağlantılara dönüşüyor; sunucudan sunucuya
-       (Vercel, CDN, önbellek) farklı çözülebiliyor ve paylaşılan bağlantı
-       kırılıyor. Dosyalar sade ASCII adlara çevrildi; başlıktaki emoji ve
-       Türkçe yazım "ad" alanında yaşamaya devam ediyor. */
-    const pdfListesi = [
-        { dosya: "harf-i-tarif.pdf",                      ad: "🧐 Harf-i Tarîf" },
-        { dosya: "kaliplari-pekistir.pdf",                ad: "🛠️ Kalıpları Pekiştir" },
-        { dosya: "arapcada-kelime.pdf",                   ad: "🤔 Arapçada Kelime" },
-        { dosya: "ismin-4-ozelligi.pdf",                  ad: "🤔 İsmin 4 Özelliği" },
-        { dosya: "mufred-tesniye-cem-isimler.pdf",        ad: "🧐 Müfred, Tesniye, Cem İsimler" },
-        { dosya: "mazi-fiil.pdf",                         ad: "🧐 Mazi Fiil" },
-        { dosya: "kim-daha-hizli.pdf",                    ad: "⚔️ Kim Daha Hızlı" },
-        { dosya: "cogul-isimler-merfu-mansub-mecrur.pdf", ad: "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri" },
-        { dosya: "muzari-fiil.pdf",                       ad: "🧐 Muzari Fiil" },
-        { dosya: "emir-fiil.pdf",                         ad: "🧐 Emir Fiil" },
-        { dosya: "aksam-i-seba.pdf",                      ad: "🧐 Aksam-ı Seb'a" }
-    ];
-
-    pdfListesi.forEach(kayit => {
-        const dosyaAdi = (typeof kayit === 'string') ? kayit : kayit.dosya;
-        const gorunenIsim = (typeof kayit === 'string')
-            ? kayit.replace('.pdf', '').replace(/_/g, ' ')
-            : kayit.ad;
-
-        const card = document.createElement('a');
-        // Tıklanınca sunum.html dosyasını yeni sekmede ve parametreyle aç
-        card.href = `sunum.html?dosya=${encodeURIComponent(dosyaAdi)}`; 
-        card.target = "_blank"; // Yeni sekmede açılma garantisi
-        card.className = 'game-card kss-card';
-        
-        card.innerHTML = `
-            <div class="default-game-content">
-                <div class="default-game-emoji"><svg viewBox="0 0 64 64" aria-hidden="true" style="width:1.6em;height:1.6em;display:block;overflow:visible">
-                    <line x1="6" y1="8" x2="58" y2="8" stroke="#64748b" stroke-width="4.5" stroke-linecap="round"/>
-                    <rect x="12" y="10" width="40" height="31" rx="3" fill="#fff" stroke="#b9c3d4" stroke-width="2.2"/>
-                    <rect x="17" y="15" width="19" height="5" rx="2.2" fill="#7C3AED"/>
-                    <line class="kga-madde" x1="17" y1="27" x2="46" y2="27" stroke="#94a3b8" stroke-width="3.2" stroke-linecap="round"/>
-                    <line class="kga-madde m2x" x1="17" y1="34" x2="40" y2="34" stroke="#cbd5e1" stroke-width="3.2" stroke-linecap="round"/>
-                    <circle class="kga-imlec" cx="47" cy="33" r="3" fill="#EE5253"/>
-                    <path d="M32 41 v6 m0 0 a3 3 0 1 0 .1 0" fill="none" stroke="#94a3b8" stroke-width="2.4"/>
-                </svg></div>
-                <h3 style="min-height: 2.6em; font-size: 1.1em; display:flex; align-items:center; justify-content:center; text-align:center;">
-                    ${gorunenIsim}
-                </h3>
-                <span class="game-card-description">Etkileşimli Slayt</span>
-                <span class="status-badge available">Sunumu Aç</span>
-            </div>
-        `;
-
-        slaytContainer.appendChild(card);
-    });
-});
+/* SUNUM KART ÜRETİCİSİ KALDIRILDI.
+   "Sunumlar" bölümü siteden çıkarıldı: PDF slaytlar (sunum/ klasörü,
+   ~128 MB) yayınlanamıyordu ve Vercel Hobby planındaki 100 MB statik
+   dosya sınırını aşıyordu. Kartları basan blok burada duruyordu;
+   bölümle birlikte silindi. Geri istenirse index.html'deki
+   #slayt-galerisi-container bölümüyle beraber geri konur. */
