@@ -48,7 +48,7 @@
         var s = document.createElement('style');
         s.id = 'qrKritikStil';
         s.textContent =
-            '#qrGirisPencere{position:fixed;inset:0;z-index:1000000;background:rgba(15,42,67,.62);' +
+            '#qrGirisPencere{position:fixed;inset:0;z-index:100000050;background:rgba(15,42,67,.62);' +
             'align-items:center;justify-content:center;padding:18px;font-family:' +
             "'Nunito','Segoe UI',sans-serif;}" +
             '#qrGirisPencere .qr-panel{position:relative;background:#fff;width:100%;max-width:420px;' +
@@ -127,7 +127,7 @@
         k.style.display = 'flex';
         k.style.position = 'fixed';
         k.style.left = '0'; k.style.top = '0'; k.style.right = '0'; k.style.bottom = '0';
-        k.style.zIndex = '1000000';
+        k.style.zIndex = '100000050';   /* #login-modal 100000001 — üstünde kalmalı */
         k.style.alignItems = 'center';
         k.style.justifyContent = 'center';
         return k;

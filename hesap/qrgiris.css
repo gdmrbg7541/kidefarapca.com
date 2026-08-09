@@ -7,7 +7,10 @@
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 1000000;
+    /* Giriş penceresi (#login-modal) 100000001'de duruyor — site kilidi
+       perdesinin üstünde olsun diye. Karekod penceresi ONUN da üstünde
+       olmalı, yoksa giriş ekranının ARKASINDA açılıyor. */
+    z-index: 100000050;
     background: rgba(15, 42, 67, .62);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
