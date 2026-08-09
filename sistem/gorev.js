@@ -59,7 +59,7 @@
         { d: 'sozluksimulasyonu.html',    ad: 'Sözlük Simülasyonu',                      tur: 'sure' },
         { d: 'fiiller.html',              ad: 'Fiil Çekim Atlası',                       tur: 'sure' },
         { d: 'yenisozlukdedektifi.html',  ad: 'Sözlük Dedektifi',                        tur: 'sure' },
-        { d: 'muhadese.html',             ad: 'Simültane Çeviri',                        tur: 'sure' }
+        { d: 'muhadese.html',             ad: 'Muhadese',                                tur: 'sure' }
     ];
     /* ============ BASARI YUZDESININ PAYDASI ============
        Ogrencinin basari yuzdesi, SADECE actigi dosyalara gore degil,

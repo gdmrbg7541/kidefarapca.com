@@ -555,9 +555,10 @@ window.llAracSec = llAracSec;
 function selectClass(lId, cId, element) {
     if (!data || !data.levels[lId]) return;
 
-    /* Sinif acilinca TAM EKRANA gec (kullanici tiklamasiyla geldiyse
-       tarayici izin verir; otomatik secimlerde sessizce atlanir). */
-    try { if (typeof llTamEkranAc === 'function') llTamEkranAc(); } catch (e) { }
+    /* TAM EKRAN KALDIRILDI: sinif acilinca tarayici tam ekrana geciyordu.
+       Ogretmen sekmeler/adres cubugu kaybolunca sitenin geri kalanina
+       ulasamiyordu. Tam ekran artik yalnizca ISTEGE BAGLI: llTamEkranDegistir()
+       tusuyla acilir/kapanir (window.llTamEkranAc duruyor). */
 
     // 1. Önce sidebar'daki TÜM sınıflardan aktiflik sınıfını temizle
     document.querySelectorAll('.class-item').forEach(item => {

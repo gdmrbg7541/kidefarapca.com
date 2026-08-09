@@ -285,10 +285,19 @@ body{
 .tc-bas{
   position:fixed; left:0; top:0; z-index:54; pointer-events:none;
   opacity:0; white-space:nowrap; font-weight:700;
+  /* UZAKLAŞMA YÖNÜ. Geçişin süresi, elemanın VARDIĞI durumdan okunur;
+     buradaki kısa süre "opacity 0"a gidişi, yani uzaklaşmayı yönetir.
+     Eskiden burası da 1.5 sn'ydi ve tablo küçüldükten sonra başlıklar
+     ekranda asılı kalıyordu. Artık anında siliniyorlar; yakınlaşma
+     yönü aşağıda, eski yumuşaklığıyla duruyor. */
+  transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1), opacity .12s ease-out;
+}
+.tc-bas.tc-anisiz{ transition:opacity .12s ease-out; }
+body.tc-yakin .tc-bas{
+  opacity:1;
+  /* YAKINLAŞMA YÖNÜ: başlıklar tabloyla birlikte yumuşakça belirsin. */
   transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1), opacity var(--tc-sure,1s) ease-out;
 }
-.tc-bas.tc-anisiz{ transition:opacity .22s ease-out; }
-body.tc-yakin .tc-bas{ opacity:1; }
 .tc-bas-ust{
   background:#EFF2F6; color:var(--kirmizi);
   border:2px solid var(--cerceve); border-radius:10px;
@@ -305,6 +314,15 @@ body.tc-yakin .tc-bas{ opacity:1; }
      genişlik ayrıca yazı tipi değişse de şeridi aynı bırakır. */
   width:clamp(84px,11.2vh,132px);
   display:flex; align-items:center; justify-content:center;
+  /* Bu kural .tc-bas'takini eziyordu; uzaklaşırken sol şerit 1.5 sn
+     boyunca ekranda kalıyordu. Burada da UZAKLAŞMA yönü kısa; yakınlaşma
+     yönü aşağıdaki body.tc-yakin kuralında uzun. Renk geçişi ise satırdan
+     satıra yumuşak olsun diye tam sürede bırakıldı. */
+  transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1),
+             opacity .12s ease-out,
+             background-color var(--tc-sure,1s) ease-out;
+}
+body.tc-yakin .tc-bas-sol{
   transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1),
              opacity var(--tc-sure,1s) ease-out,
              background-color var(--tc-sure,1s) ease-out;
@@ -328,7 +346,17 @@ body.tc-yakin .tc-bas{ opacity:1; }
 }
 .tc-nav:hover:not(:disabled){ filter:brightness(1.1); transform:translateY(-1px); }
 .tc-nav:disabled{ opacity:.35; cursor:default; }
-.tc-nav.tc-nav-geri{ background:#94A3B8; }
+/* GERİ ikincil tuştur ama PASİF DEĞİLDİR. Gri dolgu "bu tuşa basılmaz"
+   izlenimi veriyordu; çerçeveli biçim ikincilliği korur, tıklanabilirliği
+   belli eder. Gerçek pasiflik yalnız :disabled ile (opacity .35) görünür.
+   Çerçeve border yerine inset box-shadow: tuşun ölçüsü İleri ile aynı kalsın. */
+.tc-nav.tc-nav-geri{
+  background:#fff; color:var(--odak-renk,#16A085);
+  box-shadow:inset 0 0 0 2px var(--odak-renk,#16A085);
+}
+.tc-nav.tc-nav-geri:hover:not(:disabled){
+  background:var(--odak-renk,#16A085); color:#fff;
+}
 @media (max-width:620px){
   .tc-kum{ left:8px; right:8px; bottom:8px; transform:translate(0,140%); justify-content:center; }
   .tc-kum.gor{ transform:translate(0,0); }

@@ -45,7 +45,9 @@
     edatlar:     { sinif: 0,  seviye: 2, sira: 3, soru: 25 },
     vezinler:    { sinif: 0,  seviye: 3, sira: 1, soru: 53 },
     dilbilgisi1: { sinif: 0,  seviye: 3, sira: 2, soru: 20 },
-    dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3, soru: 18 }
+    dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3, soru: 18 },
+    /* tamlamavecumleler.html testinin soruları — aynı havuz burada da sorulur */
+    tamlamacumle:{ sinif: 0,  seviye: 3, sira: 4, soru: 156 }
   };
 
   /* Kelime/cümle ayrımı kaldırılmadan önce paylaşılmış bağlantılar

@@ -407,11 +407,22 @@ function goBack() {
 }
 
 function toggleStudentProfile() {
-    if (appState.currentView === 'student-profile-section') {
-        goBack();
-    } else {
+    if (appState.currentView !== 'student-profile-section') {
         changeView('student-profile-section');
+        return;
     }
+    /* PROFIL TUSUNA IKINCI KEZ BASMAK: profili kapatir.
+       Eskiden goBack() cagriliyordu; ogretmen "Listelerim"den gelmisse
+       gecmiste o vardi ve tus profille sinif listesi arasinda gidip
+       geliyordu. Ikinci dokunus artik her zaman ANASAYFAYA doner;
+       sinif listesine gitmek isteyen kendi tusunu kullanir.
+       Gecmisten de temizlenir ki normal Geri tusu profile geri dusmesin. */
+    try {
+        var h = appState.viewHistory || [];
+        while (h.length && h[h.length - 1] === 'student-profile-section') h.pop();
+    } catch (e) { }
+    var anaSayfa = document.getElementById('home-hub-section') ? 'home-hub-section' : 'dashboard-section';
+    changeView(anaSayfa, true);
 }
 
 // Ders ekranından çık: oynayan ders medyasını durdur ve PROFİL bölümüne dön.

@@ -2443,8 +2443,17 @@ textarea.im-metin{ resize: vertical; min-height: 110px; line-height: 1.55; }
 #ll-root.logged-in #content .tabs{
     position: -webkit-sticky;
     position: sticky;
-    top: var(--header-height, 60px);   /* basligin hemen altina yapisir */
+    /* Site basligi kaydirinca gizleniyor; cubuk da onunla birlikte YUKARI
+       CIKSIN, yoksa basligin bosalttigi yerde bos bir bant kaliyordu.
+       --hdr-ofset index.html'de tanimli: normalde header yuksekligi,
+       body.hdr-gizli iken 0. Anasayfadaki kategori basliklari da ayni
+       degiskeni kullaniyor, boylece iki yerde ayni ritim olur. */
+    top: var(--hdr-ofset, var(--header-height, 60px));
+    transition: top .34s cubic-bezier(.4,0,.2,1);
     z-index: 250;   /* panellerin ustunde; site basligi (300) altinda */
+}
+@media (prefers-reduced-motion: reduce){
+    #ll-root.logged-in #content .tabs{ transition: none; }
 }
 
 /* TAM EKRANDAYKEN site basligi gizlenir; sekme cubugu tepeye yapisir */
