@@ -158,7 +158,7 @@
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=20260809c">
-    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260809a">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260809b">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -619,7 +619,7 @@
                  Öğretmen kendi telefonundan okutup onaylar; bu ekran onun
                  hesabıyla açılır. Sunucu tarafı: functions/index.js -->
             <div id="qr-giris-satir">
-                <button type="button" class="qr-giris-tus" onclick="qrGirisAc()" title="Telefonundan onaylayarak şifresiz gir">
+                <button type="button" class="qr-giris-tus" onclick="qrGirisTusu()" title="Telefonundan onaylayarak şifresiz gir">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="22" height="22"><rect x="2.6" y="2.6" width="7.4" height="7.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="14" y="2.6" width="7.4" height="7.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="2.6" y="14" width="7.4" height="7.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="5.2" y="5.2" width="2.2" height="2.2" fill="currentColor"/><rect x="16.6" y="5.2" width="2.2" height="2.2" fill="currentColor"/><rect x="5.2" y="16.6" width="2.2" height="2.2" fill="currentColor"/><path d="M14 14h3v3h-3zM18.4 14h3v3h-3zM14 18.4h3v3h-3zM18.4 18.4h3v3h-3z" fill="currentColor" opacity=".75"/></svg>
                     <span>Karekodla Giriş<small>Telefonundan onayla — şifre yazma</small></span>
                 </button>
@@ -4778,7 +4778,16 @@
     <script src="sistem/rol.js?v=20260805a"></script>
     <script src="hesap/auth.js?v=20260809a"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
-    <script src="hesap/qrgiris.js?v=20260809a"></script>
+    <script src="hesap/qrgiris.js?v=20260809b"></script>
+    <script>
+    /* Emniyet: hesap/qrgiris.js yüklenmediyse (dosya siteye konmamışsa)
+       tuşa basınca hiçbir şey olmuyordu. Artık nedenini söyler. */
+    window.qrGirisTusu = function () {
+        if (typeof window.qrGirisAc === 'function') { window.qrGirisAc(); return; }
+        alert('Karekodla giriş dosyası yüklenemedi.\n\n' +
+              'Sitede "hesap/qrgiris.js" ve "hesap/qrgiris.css" dosyalarının bulunduğundan emin olun.');
+    };
+    </script>
     <script src="sistem/router.js?v=20260809a"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>

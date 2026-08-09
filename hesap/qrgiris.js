@@ -26,6 +26,42 @@
     var qrDurum = null;                // { oturumId, gizli, dogrulama, bitis, sayacId, sormaId }
     var qrBeklemedekiOnay = null;      // giriş yapılmadan gelen ?qr= değeri
 
+    /* Dışa açılan adlar EN BAŞTA verilir: aşağıdaki kurulum satırlarından
+       biri hata verirse bile tuş çalışsın (eskiden en sondaydı; kurulum
+       patlayınca qrGirisAc tanımsız kalıyor, tuşa basınca hiçbir şey
+       olmuyordu). Fonksiyon bildirimleri yukarı çekildiği için sorun yok. */
+    window.qrGirisAc = qrGirisAc;
+    window.qrGirisKapat = qrGirisKapat;
+    window.qrOnayKontrol = qrOnayKontrol;
+    window.qrOnayAc = qrOnayAc;
+    window.QR_KURULDU = true;
+
+    /* ---------------------------------------------------------------------
+       ZORUNLU BİÇİM — hesap/qrgiris.css yüklenmemiş olsa bile pencere
+       ekranın ortasında görünsün. Dosya yüklenmediğinde pencere biçimsiz
+       kalıp sayfanın EN ALTINA düşüyor, kullanıcı "karekod çıkmıyor"
+       sanıyordu. Bu kurallar <head>'in BAŞINA konur; asıl stil dosyası
+       daha sonra geldiği için onu ezmez, yalnız yedek olur.
+       --------------------------------------------------------------------- */
+    function kritikStil() {
+        if (document.getElementById('qrKritikStil')) return;
+        var s = document.createElement('style');
+        s.id = 'qrKritikStil';
+        s.textContent =
+            '#qrGirisPencere{position:fixed;inset:0;z-index:1000000;background:rgba(15,42,67,.62);' +
+            'align-items:center;justify-content:center;padding:18px;font-family:' +
+            "'Nunito','Segoe UI',sans-serif;}" +
+            '#qrGirisPencere .qr-panel{position:relative;background:#fff;width:100%;max-width:420px;' +
+            'max-height:92vh;overflow-y:auto;border-radius:20px;padding:22px;text-align:center;color:#2c3e50;' +
+            'box-shadow:0 24px 70px rgba(0,0,0,.35);}' +
+            '#qrGirisPencere .qr-kapat{position:absolute;top:10px;right:12px;border:none;background:#f1f3f5;' +
+            'width:34px;height:34px;border-radius:50%;font-size:1.4rem;line-height:1;cursor:pointer;}' +
+            '#qrGirisPencere .qr-kutu{min-height:120px;display:flex;align-items:center;justify-content:center;' +
+            'padding:12px;border:2px solid #E9EEF5;border-radius:16px;margin:0 auto 12px;width:max-content;max-width:100%;}';
+        var h = document.head || document.documentElement;
+        if (h.firstChild) h.insertBefore(s, h.firstChild); else h.appendChild(s);
+    }
+
     /* ------------------------------------------------------------ ortak */
     function kacis(s) {
         return String(s == null ? '' : s)
@@ -66,6 +102,7 @@
 
     /* Pencere iskeleti — iki taraf da aynı kabı kullanır. */
     function pencere(baslikHtml, govdeHtml) {
+        kritikStil();
         var k = document.getElementById('qrGirisPencere');
         if (!k) {
             k = document.createElement('div');
@@ -86,8 +123,49 @@
             '<div class="qr-bas">' + baslikHtml + '</div>' +
             '<div class="qr-govde" id="qrGovde">' + govdeHtml + '</div>' +
             '</div>';
+        /* Biçim dosyası gelmese bile pencere ortada dursun. */
         k.style.display = 'flex';
+        k.style.position = 'fixed';
+        k.style.left = '0'; k.style.top = '0'; k.style.right = '0'; k.style.bottom = '0';
+        k.style.zIndex = '1000000';
+        k.style.alignItems = 'center';
+        k.style.justifyContent = 'center';
         return k;
+    }
+
+    /* ---------------------------------------------------------------------
+       TEŞHİS — "karekod çıkmıyor" dendiğinde nedenin ekranda görünmesi için.
+       Eksik olan neyse onu işaretler; her madde tek bir dosyaya/adıma bakar.
+       --------------------------------------------------------------------- */
+    function tanilama(sunucuHatasi) {
+        var maddeler = [
+            ['hesap/qrgiris.js yüklendi', true, 'Bu satırı görüyorsan bu dosya zaten yüklü.'],
+            ['hesap/qrgiris.css yüklendi', bicimVarMi(), 'Bu dosyayı da GitHub’a yüklemen gerekiyor.'],
+            ['Karekod çizici (qrcode.min.js)', !!window.QRCode, 'index.html’deki cdnjs betiği yüklenememiş; ağ engeli olabilir.'],
+            ['Firebase “functions” bileşeni', fonksiyonVarMi(), 'index.html’e firebase-functions.js satırı eklenmemiş olabilir.'],
+            ['Sunucu işlevleri yayında', !sunucuHatasi, 'functions/KAREKOD-KURULUM.md → “firebase deploy --only functions”.']
+        ];
+        var h = '<div class="qr-tani"><b>Ne eksik?</b><ul>';
+        maddeler.forEach(function (m) {
+            h += '<li class="' + (m[1] ? 'var' : 'yok') + '"><span>' + (m[1] ? '✓' : '✗') + '</span>' +
+                '<div><b>' + kacis(m[0]) + '</b>' + (m[1] ? '' : '<small>' + kacis(m[2]) + '</small>') + '</div></li>';
+        });
+        return h + '</ul></div>';
+    }
+    function bicimVarMi() {
+        try {
+            var d = document.createElement('div');
+            d.className = 'qr-giris-tus';
+            d.style.position = 'absolute'; d.style.visibility = 'hidden';
+            document.body.appendChild(d);
+            var yuvarlak = getComputedStyle(d).borderRadius;
+            document.body.removeChild(d);
+            return /12px/.test(yuvarlak || '');
+        } catch (e) { return false; }
+    }
+    function fonksiyonVarMi() {
+        try { return typeof firebase !== 'undefined' && !!firebase.app && typeof firebase.app().functions === 'function'; }
+        catch (e) { return false; }
     }
     function govdeYaz(html) {
         var g = document.getElementById('qrGovde');
@@ -115,7 +193,7 @@
 
         var baslat;
         try { baslat = cagir('qrOturumBaslat'); }
-        catch (e) { govdeYaz(uyariHtml(hataMetni(e))); return; }
+        catch (e) { govdeYaz(uyariHtml(hataMetni(e), true)); return; }
 
         baslat({}).then(function (c) {
             var d = c.data || {};
@@ -129,7 +207,7 @@
             };
             karekoduCiz();
         }).catch(function (e) {
-            govdeYaz(uyariHtml(hataMetni(e)));
+            govdeYaz(uyariHtml(hataMetni(e), true));
         });
     }
 
@@ -245,8 +323,9 @@
         });
     }
 
-    function uyariHtml(mesaj) {
+    function uyariHtml(mesaj, sunucuHatasi) {
         return '<div class="qr-uyari">' + kacis(mesaj) + '</div>' +
+            tanilama(!!sunucuHatasi) +
             '<div class="qr-alt"><button type="button" class="qr-yenile" onclick="qrGirisAc()">Tekrar dene</button></div>';
     }
 
@@ -356,11 +435,9 @@
         } catch (e) { }
         qrOnayKontrol();
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
-    else kur();
+    try {
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+        else kur();
+    } catch (e) { console.warn('qrgiris kurulum', e); }
 
-    window.qrGirisAc = qrGirisAc;
-    window.qrGirisKapat = qrGirisKapat;
-    window.qrOnayKontrol = qrOnayKontrol;
-    window.qrOnayAc = qrOnayAc;
 })();

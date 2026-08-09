@@ -258,3 +258,36 @@
     #qrGirisPencere .qr-kutu { min-height: 0; padding: 8px; }
     .qr-giris-tus { padding: 9px 12px; font-size: .86rem; }
 }
+
+/* --- teşhis listesi: "karekod çıkmıyor" dendiğinde nedenini gösterir --- */
+#qrGirisPencere .qr-tani {
+    text-align: left;
+    background: #F7F9FC;
+    border: 1px solid #E9EEF5;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: .88rem;
+}
+#qrGirisPencere .qr-tani > b { display: block; margin-bottom: 8px; color: #2c3e50; }
+#qrGirisPencere .qr-tani ul { list-style: none; margin: 0; padding: 0; }
+#qrGirisPencere .qr-tani li {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 5px 0;
+    border-top: 1px dashed #E9EEF5;
+}
+#qrGirisPencere .qr-tani li:first-child { border-top: none; }
+#qrGirisPencere .qr-tani li > span { flex: 0 0 auto; font-weight: 900; line-height: 1.4; }
+#qrGirisPencere .qr-tani li.var > span { color: #27AE60; }
+#qrGirisPencere .qr-tani li.yok > span { color: #C0392B; }
+#qrGirisPencere .qr-tani li.var b { color: #6b7a88; font-weight: 600; }
+#qrGirisPencere .qr-tani li.yok b { color: #C0392B; }
+#qrGirisPencere .qr-tani small {
+    display: block;
+    margin-top: 2px;
+    color: #8b98a4;
+    font-size: .78rem;
+    line-height: 1.4;
+}
