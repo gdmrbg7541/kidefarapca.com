@@ -531,6 +531,17 @@ function updateHeaderUI() {
     }
     
     document.getElementById('logout-btn').style.display = isGuest ? 'none' : 'inline-block';
+
+    /* Basliktaki OKUL tusu: yalniz ogretmen/yonetici gorur. Sitenin her
+       yerinden ayni pencereyi acar (llOkulPopupAc) — sinif adi rozeti ve
+       sekme cubugundaki tusla birebir ayni icerik. */
+    try {
+        var _okulBtn = document.getElementById('header-okul-btn');
+        if (_okulBtn) {
+            var _ogrMi = !isGuest && (appState.userRole === 'teacher' || appState.userRole === 'admin');
+            _okulBtn.classList.toggle('gor', !!_ogrMi);
+        }
+    } catch (e) { }
     
     // Eğer Header'da giriş butonu koymak isterseniz
     const headerLoginBtn = document.getElementById('header-login-btn');

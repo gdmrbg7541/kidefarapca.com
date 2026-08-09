@@ -523,22 +523,12 @@
     color: white !important; 
     font-weight: bold;
 }
-#ll-root #active-class-title{
-    /* Sinif adi rozeti: sekme cubuguyla BIRLESIK kompakt tasarim */
-    color: #fff !important;
-    font-weight: 700;
-    font-size: 1.3rem;
-    font-family: 'Marhey', sans-serif;
-    display: inline-block;
-    margin: 0;
-    padding: 9px 22px;
-    border-radius: 11px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    box-shadow: 0 3px 9px rgba(216,67,21,0.3);
-    white-space: nowrap;
-    letter-spacing: 0.3px;
-    text-shadow: none;
-}
+/* ESKI ROZET KURALI KALDIRILDI.
+   Burada 'color:#fff !important' vardi; rozet artik bir SEKME oldugu ve
+   pasifken koyu yaziyla acik zeminde durmasi gerektigi icin bu kural
+   yaziyi gorunmez yapiyordu (beyaz uzerine acik gri, karsitlik 1.1).
+   Rozetin butun bicimi tek yerde: '#ll-root #content .tabs #active-class-title'
+   (dosyanin sonunda). */
 #ll-root 700&display=swap');
 
 
@@ -2812,3 +2802,139 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #tpSinifPopup .tps-tus.ars{ border-color: #FFE0B2; background: #FFF6E9; }
 #tpSinifPopup .tps-tus.sil{ border-color: #FFCDD2; background: #FEF0F0; }
 #tpSinifPopup .tps-tus.sil b{ color: #C0392B; }
+
+
+/* ==========================================================================
+   SEKME CUBUGU: YALNIZ SIMGE
+   --------------------------------------------------------------------------
+   Sinif adi rozetinin yanindaki sekmeler (Ogrenciler, Haftalik Plan, Veli &
+   Durum, Sinif Araclari) ve OKUL tusu artik yazisiz duruyor: dar ekranda
+   yazilar simgelerin altina kayip cubugu iki satira cikariyordu. Anlam
+   kaybolmasin diye her tusta title + aria-label var (fare ile bekleyince
+   yazi cikar, ekran okuyucu okur). Simgeler yaziya ayrilan yeri alip
+   buyudu, dokunma hedefi de genisledi.
+   ========================================================================== */
+/* Yazi tamamen kaldirilir (gizli metin degil): cubuk gercekten simge
+   seridi olsun. Anlam title + aria-label'da duruyor. */
+#ll-root #content .tabs .tab > span{ display: none; }
+#ll-root #content .tabs .tab{
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 0; padding: 9px 13px;
+}
+#ll-root #content .tabs .tab .tab-ikon{
+    width: 27px; height: 27px; margin: 0;
+}
+/* OKUL tusu: cubugun basinda, sinif adindan once; hafif ayrilsin */
+#ll-root #content .tabs .ll-okul-tus{ margin-right: 4px; }
+@media (max-width: 620px){
+    #ll-root #content .tabs .tab{ padding: 8px 10px; }
+    #ll-root #content .tabs .tab .tab-ikon{ width: 24px; height: 24px; }
+}
+
+/* Okul penceresindeki seviye-ayari dislisi (tpOkullar'daki tuslarin esi) */
+#llOkulPopup .okul-kat-tus{ display: inline-flex; gap: 5px; flex: 0 0 auto; margin: 0 6px 0 2px; }
+#llOkulPopup .okul-mtus{
+    background: rgba(0, 0, 0, .06); border: 0; border-radius: 8px; cursor: pointer;
+    padding: 4px 7px; line-height: 0; display: inline-flex; align-items: center;
+    transition: background .15s, transform .15s;
+}
+#llOkulPopup .okul-mtus .lli{ width: 20px; height: 20px; }
+#llOkulPopup .okul-mtus:hover{ background: rgba(0, 0, 0, .12); transform: translateY(-1px); }
+
+/* Okul penceresi basligindaki "+ Kurum" tusu ve bos durum daveti */
+#llOkulPopup .okul-baslik-tus{ display: inline-flex; align-items: center; gap: 8px; }
+#llOkulPopup .okul-ekle-kucuk{
+    background: rgba(255, 255, 255, .22); color: #fff; border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 9px; padding: 5px 12px; cursor: pointer;
+    font-family: inherit; font-weight: 700; font-size: .86rem; white-space: nowrap;
+    transition: background .15s, transform .15s;
+}
+#llOkulPopup .okul-ekle-kucuk:hover{ background: rgba(255, 255, 255, .36); transform: translateY(-1px); }
+#llOkulPopup .okul-bosluk{
+    text-align: center; padding: 34px 18px; display: flex; flex-direction: column;
+    align-items: center; gap: 12px; font-family: inherit;
+}
+#llOkulPopup .okul-bosluk p{ margin: 0; color: #6B4A38; font-weight: 700; font-size: 1.05rem; }
+#llOkulPopup .okul-bosluk small{ color: #9A7B68; font-size: .85rem; }
+#llOkulPopup .okul-ekle-buyuk{
+    background: linear-gradient(135deg, #F39C12, #D84315); color: #fff; border: 0;
+    border-radius: 12px; padding: 12px 26px; cursor: pointer;
+    font-family: inherit; font-weight: 800; font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(216, 67, 21, .28);
+    transition: filter .15s, transform .15s;
+}
+#llOkulPopup .okul-ekle-buyuk:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+
+/* ==========================================================================
+   SINIF ADI ROZETI = "OGRENCILER" SEKMESI
+   --------------------------------------------------------------------------
+   Rozet artik ayri bir dugme degil, sekme cubugunun bir sekmesi. Bu yuzden
+   oteki sekmelerle ayni mantikla davranir: normalde sakin, YALNIZ kendi
+   sekmesi acikken turuncu. Eskiden her zaman turuncuydu ve Haftalik Plan
+   acikken bile "burasi secili" gibi duruyordu.
+   ========================================================================== */
+#ll-root #content .tabs #active-class-title{
+    display: inline-flex; align-items: center; cursor: pointer;
+    font-family: 'Marhey', sans-serif; font-size: 1.24rem; font-weight: 700;
+    padding: 11px 20px; border-radius: 13px; margin: 0;
+    white-space: nowrap; letter-spacing: .3px; text-transform: none;
+    background: #f1f3f5; color: #6B4A38;
+    border: 1px solid #E6D6C8; box-shadow: none;
+    transition: background .18s, color .18s, box-shadow .18s, transform .15s;
+}
+#ll-root #content .tabs #active-class-title:hover{
+    background: #e9ecef; color: var(--accent); transform: translateY(-1px);
+}
+#ll-root #content .tabs #active-class-title.aktif{
+    background: linear-gradient(135deg, #D84315, #E67E22);
+    color: #fff; border-color: transparent;
+    box-shadow: 0 3px 8px rgba(216, 67, 21, .3);
+}
+#ll-root #content .tabs #active-class-title:focus-visible{
+    outline: 3px solid #F39C12; outline-offset: 2px;
+}
+@media (max-width: 620px){
+    #ll-root #content .tabs #active-class-title{ font-size: 1.05rem; padding: 9px 14px; }
+}
+
+/* ==========================================================================
+   SEKME VURGUSU: SIMGELER HER ZAMAN ACIK ZEMINDE
+   --------------------------------------------------------------------------
+   Etkin sekme dolu turuncuydu; simgeler cok renkli oldugu icin (turuncu
+   canta, kirmizi takvim…) turuncu zeminde birbirine giriyor, pasif hallerine
+   gore kotu duruyordu. Artik etkin sekme BEYAZ kart + turuncu halka +
+   yumusak golge: simge her iki durumda da acik zeminde, yalnizca cerceve
+   ve derinlik degisiyor. Secili oldugu yine net belli.
+   ========================================================================== */
+#ll-root #content .tabs .tab.active{
+    background: #fff;
+    color: var(--primary);
+    border-bottom-color: transparent;
+    box-shadow: inset 0 0 0 2.5px var(--primary), 0 4px 12px rgba(216, 67, 21, .22);
+}
+#ll-root #content .tabs .tab.active .tab-ikon{ transform: scale(1.06); }
+#ll-root #content .tabs .tab{ transition: box-shadow .18s, background .18s, transform .15s; }
+#ll-root #content .tabs .tab:hover:not(.active){ background: #e9ecef; transform: translateY(-1px); }
+#ll-root #content .tabs .tab:focus-visible{ outline: 3px solid #F39C12; outline-offset: 2px; }
+
+/* Sinif adi rozeti de ayni dili konussun: etkinken beyaz zemin + turuncu
+   halka + turuncu yazi. Boylece cubuktaki butun etkin ogeler ayni gorunur. */
+#ll-root #content .tabs #active-class-title.aktif{
+    background: #fff;
+    /* --primary (#D84315) beyaz uzerinde 4.44 karsitlik veriyor; WCAG AA icin
+       4.5 gerek. Halka o rengi kullaniyor (buyuk oge, sorun degil), YAZI ise
+       bir tik koyu tonda: 5.3 karsitlik. */
+    color: #B03A10;
+    border-color: transparent;
+    box-shadow: inset 0 0 0 2.5px var(--primary), 0 4px 12px rgba(216, 67, 21, .22);
+}
+/* Pasif rozet: koyu yazi, acik zemin (eskiden beyaz yaziydi, okunmuyordu) */
+#ll-root #content .tabs #active-class-title{ color: #6B4A38; }
+
+/* Dar ekranda da ayni: dolu turuncu yerine beyaz kart + halka */
+@media (max-width: 768px){
+    #ll-root #content .tabs .tab.active{
+        background: #fff; color: var(--primary);
+        box-shadow: inset 0 0 0 2.5px var(--primary), 0 3px 10px rgba(216, 67, 21, .22);
+    }
+}

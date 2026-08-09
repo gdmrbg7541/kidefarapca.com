@@ -29,7 +29,7 @@ kupa: '<path d="M7.4 3.6h9.2v6a4.6 4.6 0 1 1-9.2 0z" fill="#f1c40f"/><path d="M7
 };
 
 Object.assign(LL_IKONLAR, {
-takvim: '<rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/>',
+takvim: '<rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/>',
 yenile: '<g class="li-donen"><path d="M12 4.2A7.8 7.8 0 0 1 19.6 14" fill="none" stroke="#3498db" stroke-width="2.2" stroke-linecap="round"/><path d="M12 4.2A7.8 7.8 0 0 0 4.4 14" fill="none" stroke="#2980b9" stroke-width="2.2" stroke-linecap="round" opacity=".45"/><path d="M19.9 15.4l-2.5-3.4h5z" fill="#3498db"/><path d="M4.1 12.6l2.5 3.4h-5z" fill="#2980b9" opacity=".45"/></g>',
 menu: '<g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line class="li-cizgi1" x1="4" y1="7" x2="20" y2="7"/><line class="li-cizgi2" x1="4" y1="12" x2="20" y2="12"/><line class="li-cizgi3" x1="4" y1="17" x2="20" y2="17"/></g>',
 anahtar: '<g class="li-salla"><circle cx="8" cy="8" r="4.6" fill="none" stroke="#f1c40f" stroke-width="2.4"/><path d="M11.2 11.2l9 9" stroke="#f1c40f" stroke-width="2.4" stroke-linecap="round"/><path d="M17 17l2 2M15 19l2 2" stroke="#f39c12" stroke-width="2.2" stroke-linecap="round"/></g>',
@@ -43,7 +43,7 @@ elSikisma: '<path d="M2.4 11.4l4-3.6 4.6 2.6-2 2z" fill="#f5b041"/><path d="M21.
 konum: '<path class="li-zipla" d="M12 2.2a7 7 0 0 0-7 7c0 5.2 7 12.6 7 12.6s7-7.4 7-12.6a7 7 0 0 0-7-7" fill="#e74c3c"/><circle cx="12" cy="9.2" r="2.8" fill="#fff"/>',
 kisi: '<circle cx="12" cy="7.6" r="4.2" fill="#3498db"/><path class="li-govde" d="M3.8 21.4a8.2 8.2 0 0 1 16.4 0z" fill="#2980b9"/>',
 uyari: '<path d="M12 2.6l10.4 18H1.6z" fill="#f39c12"/><g class="li-unlem"><rect x="10.9" y="8.4" width="2.2" height="6.6" rx="1.1" fill="#fff"/><circle cx="12" cy="17.6" r="1.4" fill="#fff"/></g>',
-okul: '<path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g>',
+okul: '<path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g>',
 bayrakTr: '<line x1="4" y1="3" x2="4" y2="21.4" stroke="#7f8c8d" stroke-width="1.8" stroke-linecap="round"/><g class="li-kumas"><rect x="4.8" y="4" width="15" height="10" rx="1" fill="#e30a17"/><circle cx="10.4" cy="9" r="3.1" fill="#fff"/><circle cx="11.5" cy="9" r="2.5" fill="#e30a17"/><path d="M14.4 9l-2.2.7 1.4-1.8v2.2l1.4-1.8z" fill="#fff"/></g>',
 yaprak: '<path class="li-suzul" d="M19.4 4.6c-8 0-14 4-14 10.4 0 1.8.6 3.4 1.6 4.6C9.6 16.4 13 13.8 17 12.6c-3 1.8-5.6 4.4-7.4 7.8 1 .5 2.2.8 3.4.8 5.2 0 8-5.6 6.4-16.6" fill="#e67e22"/>',
 agac: '<path d="M12 2.4l4 6h-2.4l3 4.6h-2.4l3.4 5.2H6.4l3.4-5.2H7.4l3-4.6H8z" fill="#27ae60"/><rect x="10.8" y="18.2" width="2.4" height="3.4" fill="#8d6e63"/><g class="li-susu"><circle cx="10" cy="9.4" r="1" fill="#e74c3c"/><circle cx="14" cy="13" r="1" fill="#f1c40f"/><circle cx="9.4" cy="15.6" r="1" fill="#3498db"/></g>',
@@ -66,7 +66,7 @@ meslek: '<rect x="2.6" y="7.4" width="18.8" height="12.4" rx="2" fill="#8d6e63"/
 vefat: '<rect x="7" y="4.4" width="10" height="17" rx="4.6" fill="#95a5a6"/><path d="M12 8v8M9 11h6" stroke="#ecf0f1" stroke-width="1.9" stroke-linecap="round"/><path class="li-cim" d="M3.4 21.4h17.2" stroke="#27ae60" stroke-width="2.2" stroke-linecap="round"/>',
 para: '<circle class="li-nabiz" cx="12" cy="12" r="9" fill="#f1c40f"/><circle cx="12" cy="12" r="7" fill="none" stroke="#e67e22" stroke-width="1.2"/><path d="M12 6.6v10.8" stroke="#b9770e" stroke-width="1.6" stroke-linecap="round"/><path d="M14.8 9.4a3 3 0 0 0-2.8-1.4c-1.8 0-3 1-3 2.2 0 3 6 1.6 6 4.6 0 1.4-1.4 2.4-3.2 2.4a3.4 3.4 0 0 1-3-1.6" fill="none" stroke="#b9770e" stroke-width="1.7" stroke-linecap="round"/>',
 kalp: '<path class="li-kalp" d="M12 21c-1-1-8.4-5.4-8.4-11A5 5 0 0 1 12 6.6 5 5 0 0 1 20.4 10c0 5.6-7.4 10-8.4 11" fill="#e74c3c"/>',
-takvimGun: '<rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g>',
+takvimGun: '<rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g>',
 });
 
 /* SINIF (derslik) ikonu — tahta + sira + iki ogrenci.
@@ -447,6 +447,12 @@ function switchTab(idx) {
         if (oc.indexOf('switchTab(' + gorselIdx + ')') >= 0) aktifTus = t;
     });
     if (aktifTus) aktifTus.classList.add('active');
+    /* Sinif adi rozeti = Ogrenciler sekmesi. Turuncu vurgu YALNIZ o sekme
+       acikken; Haftalik Plan gibi baska bir sekmeye gecince soner. */
+    try {
+        var _rozet = document.getElementById('active-class-title');
+        if (_rozet) _rozet.classList.toggle('aktif', gorselIdx === 0);
+    } catch (e) { }
 
     const targetPanel = document.getElementById(panelId);
     if (targetPanel) {
@@ -596,17 +602,17 @@ function selectClass(lId, cId, element) {
     if (viewTitle) {
     const className = data.levels[lId].classes[cId].name;
     // Yazı boyutunu 2.5rem (yaklaşık 40px) yaparak çok daha büyük bir başlık oluşturduk
-    /* Sinif adi: sekme cubugunda kompakt rozet. Stil SATIR ICI verilir ki
-       eski css kurallari (3rem baslik vb.) onu asla ezemesin/gizleyemesin. */
-    /* Rozet ayni zamanda PERDE ACACAGI: tiklaninca sinif listesi iner.
-       (Sayfa kaydirilip cubuk yapisinca ustteki ok cubugun altinda kalir;
-       sinif degistirmek icin rozet her zaman elinin altindadir.) */
-    viewTitle.innerHTML = `<span id="active-class-title" onclick="llOkulPopupAc()" title="Sınıf değiştir — kurum haritasını aç"` +
-        ` style="display:inline-flex; align-items:center; cursor:pointer;` +
-        ` font-family:'Marhey',sans-serif; font-size:1.38rem; font-weight:700; color:#fff;` +
-        ` background:linear-gradient(135deg,#D84315,#E67E22); padding:13px 24px; border-radius:13px;` +
-        ` box-shadow:0 3px 8px rgba(216,67,21,.3); white-space:nowrap; letter-spacing:.3px;` +
-        ` text-transform:none; margin:0;">${behKacis(className)}<span style="margin-left:8px; opacity:.9; font-size:.8em;">▾</span></span>`;
+    /* SINIF ADI = "OGRENCILER" SEKMESI.
+       Eskiden ayri bir ogrenci simgesi vardi ve rozet okul penceresini
+       aciyordu; ikisi de ayni yeri gosterdigi icin kafa karistiriyordu.
+       Artik rozetin kendisi listeyi acan sekmedir (switchTab(0)); sinif
+       DEGISTIRMEK icin cubuktaki OKUL tusu var.
+       Bicim satir ici degil CSS'te (#ll-root #content .tabs #active-class-title):
+       rozet oteki sekmeler gibi ancak KENDI sekmesi acikken vurgulanmali,
+       bu da satir ici stille yapilamiyordu. */
+    viewTitle.innerHTML = `<span id="active-class-title" class="ll-sinif-rozet"` +
+        ` onclick="switchTab(0)" title="Öğrenciler — ${behKacis(className)} sınıf listesi"` +
+        ` role="button" tabindex="0">${behKacis(className)}</span>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
     viewTitle.style.setProperty('display', 'flex', 'important');
     viewTitle.style.alignItems = 'center';
@@ -3300,7 +3306,37 @@ window.llRozetPerdeAc = llRozetPerdeAc;
    ====================================================================== */
 function llOkulPopupAc() {
     llOkulPopupKapat();
-    if (!data || !data.levels) return;
+    /* VERI HENUZ YUKLENMEMIS OLABILIR. Basliktaki okul tusuna, siteye yeni
+       girilip Listelerim'e hic ugranmadan basilirsa "data" bos oluyordu ve
+       pencere sessizce hic acilmiyordu. Artik:
+         1) once yerel kopya denenir,
+         2) yoksa bos bir yapiyla pencere YINE DE acilir (kullanici en
+            azindan "+ Kurum Ekle" gorur),
+         3) girisli kullanici icin bulut yuklemesi tetiklenir; veri gelince
+            pencere hala aciksa kendini tazeler.
+       Boylece tus her durumda bir sey yapar. */
+    if (typeof data === 'undefined' || !data) {
+        try { if (typeof loadDataFromLocal === 'function') loadDataFromLocal(); } catch (e) { }
+    }
+    if (typeof data === 'undefined' || !data) data = { levels: {}, levelOrder: [], kurumlar: {} };
+    if (!data.levels) data.levels = {};
+    var _bosMu = !Object.keys(data.levels).length && !Object.keys(data.kurumlar || {}).length;
+    if (_bosMu && !window._llOkulTazeleniyor) {
+        try {
+            var _u = (window.firebase && firebase.auth && firebase.auth().currentUser) || null;
+            if (_u && typeof initListelerim === 'function') {
+                window._llOkulTazeleniyor = true;
+                initListelerim();
+                setTimeout(function () {
+                    window._llOkulTazeleniyor = false;
+                    /* pencere hala acik ve bu arada veri geldiyse yeniden ciz */
+                    if (document.getElementById('llOkulPopup') &&
+                        data && (Object.keys(data.levels || {}).length || Object.keys(data.kurumlar || {}).length))
+                        llOkulPopupAc();
+                }, 1200);
+            }
+        } catch (e) { }
+    }
     var kurumlar = data.kurumlar || {};
     var levelIds = data.levelOrder || Object.keys(data.levels);
     var gruplar = {};
@@ -3319,9 +3355,18 @@ function llOkulPopupAc() {
                 ' onclick="llOkulSinifSec(\'' + lId + '\',\'' + cId + '\')">' + behKacis(lvl.classes[cId].name) + '</button>';
         });
         if (!kapilar) kapilar = '<span class="okul-bos">sınıf yok</span>';
+        /* SEVIYE AYARLARI: bu pencere eskiden yalniz sinif secmeye yariyordu;
+           ayarlara ulasmak icin profildeki okul haritasina gitmek gerekiyordu.
+           Artik her seviyenin isminin yaninda dislisi var — hem sinif adi
+           rozetinden hem sekme cubugundaki OKUL tusundan ayni yere ulasilir.
+           Pencere once kapanir ki ayar penceresi ustte kalsin. */
+        var ayarTus = '<span class="okul-kat-tus">' +
+            '<button type="button" class="okul-mtus" title="Seviye ayarları (dersler, ağırlıklar, dönemler)"' +
+            ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('ayar') + '</button></span>';
         /* animasyonlu SINIF ikonu SADECE kat (seviye) basliginda; kapilarda ikon yok */
         return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
             llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
+            ayarTus +
             '<span class="okul-kapilar">' + kapilar + '</span></div>';
     };
     var binaYap = function (ad, uyeler, genelMi) {
@@ -3362,12 +3407,22 @@ function llOkulPopupAc() {
     var ic = '';
     Object.keys(kurumlar).forEach(function (kId) { ic += binaYap(kurumlar[kId].name, gruplar[kId] || [], false); });
     if (gruplar['']) ic += binaYap('Genel', gruplar[''], true);
-    if (!ic) ic = '<p style="text-align:center; color:#7f8c8d; font-family:inherit;">Henüz kurum/seviye eklenmemiş.</p>';
+    /* HIC KURUM YOKSA: bos bir cumle yerine dogrudan kurulum daveti.
+       Ogretmen ilk girisinde bu pencereden isini kurabilsin. */
+    if (!ic) ic = '<div class="okul-bosluk">' +
+        '<p>Henüz kurum eklenmemiş.</p>' +
+        '<button type="button" class="okul-ekle-buyuk" onclick="llOkulKurumEkle()">' +
+        '+ Kurum Ekle</button>' +
+        '<small>Kurumu ekledikten sonra içine seviye ve sınıf açabilirsin.</small></div>';
     var k = document.createElement('div');
     k.id = 'llOkulPopup';
     k.innerHTML = '<div class="okul-panel">' +
         '<div class="okul-baslik"><strong>Kurumlar &amp; Sınıflar</strong>' +
-        '<button type="button" class="okul-kapat" title="Kapat" onclick="llOkulPopupKapat()">&times;</button></div>' +
+        '<span class="okul-baslik-tus">' +
+        '<button type="button" class="okul-ekle-kucuk" title="Yeni kurum ekle"' +
+        ' onclick="llOkulKurumEkle()">+ Kurum</button>' +
+        '<button type="button" class="okul-kapat" title="Kapat" onclick="llOkulPopupKapat()">&times;</button>' +
+        '</span></div>' +
         '<div class="okul-icerik">' + ic + '</div></div>';
     k.addEventListener('click', function (e) { if (e.target === k) llOkulPopupKapat(); });
     document.body.appendChild(k);
@@ -3383,11 +3438,50 @@ function llOkulPopupKapat() {
 }
 function llOkulSinifSec(lId, cId) {
     llOkulPopupKapat();
-    try { selectClass(lId, cId); } catch (e) { }
+    /* Pencere artik sitenin HER YERINDEN acilabiliyor (baslikta okul tusu).
+       Listelerim gorunumu acik degilse once oraya gecilmeli; yoksa sinif
+       seciliyor ama ekranda hicbir sey degismiyor — "siniflar acilmiyor"
+       sikayetinin sebebi buydu. */
+    try {
+        if (typeof appState !== 'undefined' && appState.currentView !== 'listelerim-section' &&
+            typeof changeView === 'function') {
+            changeView('listelerim-section');
+            try { initListelerim(); } catch (e) { }
+        }
+    } catch (e) { }
+    setTimeout(function () { try { selectClass(lId, cId); } catch (e) { console.warn('sınıf açılamadı:', e && e.message); } }, 0);
+}
+/* Pencereden yeni kurum ekle; eklendikten sonra pencere yeniden cizilir ki
+   yeni kurum aninda gorunsun (bos durumdan cikis da boyle olur). */
+function llOkulKurumEkle() {
+    try { addKurum(); } catch (e) { console.warn('kurum eklenemedi:', e && e.message); return; }
+    llOkulPopupKapat();
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+
+/* Okul penceresinden seviye ayarlarini ac: once pencere kapanir, sonra
+   ayar penceresi acilir (ikisi ust uste binmesin). */
+function llOkulSeviyeAyar(lId) {
+    llOkulPopupKapat();
+    /* Ayar penceresi Listelerim bolumunun icinde yasiyor; baska bir
+       gorunumdeyken acilirsa gorunmez kalir. Once oraya gecilir. */
+    try {
+        if (typeof appState !== 'undefined' && appState.currentView !== 'listelerim-section' &&
+            typeof changeView === 'function') {
+            changeView('listelerim-section');
+            try { initListelerim(); } catch (e) { }
+        }
+    } catch (e) { }
+    setTimeout(function () {
+        try { openLvlConfig(lId); }
+        catch (e) { console.warn('seviye ayarları açılamadı:', e && e.message); }
+    }, 0);
 }
 window.llOkulPopupAc = llOkulPopupAc;
 window.llOkulPopupKapat = llOkulPopupKapat;
 window.llOkulSinifSec = llOkulSinifSec;
+window.llOkulSeviyeAyar = llOkulSeviyeAyar;
+window.llOkulKurumEkle = llOkulKurumEkle;
 
 /* ======================================================================
    OGRETMEN PROFILI — ogrenci profiliyle AYNI akordiyon sistemi, yalniz

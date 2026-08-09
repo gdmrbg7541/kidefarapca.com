@@ -162,7 +162,7 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="hesap/listelerim.css?v=20260809a">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=20260809d">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -170,6 +170,20 @@
       header { position: sticky !important; top: 0 !important; z-index: 300 !important; }
       /* === AKILLI HEADER: asagi inince kayip gider, yukari cikinca geri gelir === */
       header { transition: transform .34s cubic-bezier(.4,0,.2,1), box-shadow .28s ease; will-change: transform; }
+      /* Basliktaki OKUL tusu: sade cerceve, yazi yok, dokunma hedefi bol. */
+      #header-okul-btn{
+        display:none; align-items:center; justify-content:center; flex:none;
+        width:40px; height:40px; padding:0; cursor:pointer;
+        background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.42);
+        border-radius:11px; transition:background .15s, transform .15s;
+      }
+      #header-okul-btn svg{ width:26px; height:26px; display:block; }
+      #header-okul-btn:hover{ background:rgba(255,255,255,.3); transform:translateY(-1px); }
+      #header-okul-btn.gor{ display:inline-flex; }
+      @media (max-width:768px){
+        #header-okul-btn{ width:34px; height:34px; border-radius:9px; }
+        #header-okul-btn svg{ width:22px; height:22px; }
+      }
       body.hdr-gizli header { transform: translateY(-102%); box-shadow: none !important; }
       body.hdr-golge header { box-shadow: 0 6px 18px rgba(0,0,0,.18); }
       /* header gizlenince yapiskan kategori basligi da en yukari cikar */
@@ -489,6 +503,16 @@
     <header>
         <div style="display:flex; align-items:center; gap: 15px;">
             <h1 onclick="changeView('home-hub-section')" style="cursor:pointer; margin:0; white-space:nowrap;"><span id="brand-name">kidefarapca.com</span></h1>
+            <!-- OKUL: yalniz ogretmen/yonetici gorur. Sitenin her yerinden ayni
+                 pencereyi acar (kurumlar, seviyeler, siniflar + seviye ayarlari).
+                 Ayni pencere sinif adi rozetinden ve sekme cubugundaki okul
+                 tusundan da acilir; ucu de llOkulPopupAc() cagirir. -->
+            <!-- display SATIR ICI VERILMEZ: satir ici stil, .gor sinifini ezer.
+                 Varsayilan gizlilik CSS'te (#header-okul-btn{display:none}). -->
+            <button type="button" id="header-okul-btn"
+                    title="Okul — kurumlar, seviyeler, sınıflar ve seviye ayarları"
+                    aria-label="Okul — kurumlar, seviyeler, sınıflar ve seviye ayarları"
+                    onclick="if(typeof llOkulPopupAc==='function') llOkulPopupAc();"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg></button>
             <div id="header-live-dot" class="live-dot" style="display: none; position: absolute; top: -5px; right: -5px;" title="Canlı yayınınız başlıyor!"></div>
             <nav id="header-nav-tabs" style="display:flex; gap: 15px; margin-left: 20px;">
                 <a href="#" id="tab-paketler" onclick="changeView('offline-list'); event.preventDefault();" title="Paketler" aria-label="Paketler" style="color: rgba(255,255,255,0.8); text-decoration: none; display:inline-flex; align-items:center; justify-content:center; padding: 5px 9px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color=(this.style.borderBottom.includes('white') ? 'white' : 'rgba(255,255,255,0.8)')"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></a>
@@ -4070,14 +4094,14 @@
 </div>
 
 <div id="sidebar">
-    <div style="position:relative; display:flex; align-items:center; justify-content:center; min-height:1.8em; margin-bottom:0;"><h2 style="margin:0; text-align:center;"><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg> Listelerim</h2><button onclick="llToggleSidebar()" title="Perdeyi yukarı topla" style="position:absolute; right:0; background:none; border:none; color:#fff; cursor:pointer; font-size:1.2em; line-height:1; padding:0 4px;"><svg viewBox="0 0 24 24" width="1.2em" height="1.2em" aria-hidden="true" focusable="false"><path d="M5 15.5l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+    <div style="position:relative; display:flex; align-items:center; justify-content:center; min-height:1.8em; margin-bottom:0;"><h2 style="margin:0; text-align:center;"><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg> Listelerim</h2><button onclick="llToggleSidebar()" title="Perdeyi yukarı topla" style="position:absolute; right:0; background:none; border:none; color:#fff; cursor:pointer; font-size:1.2em; line-height:1; padding:0 4px;"><svg viewBox="0 0 24 24" width="1.2em" height="1.2em" aria-hidden="true" focusable="false"><path d="M5 15.5l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
     <!-- Ogretmen kimlik karti (ogrenci profilindeki gibi) — renderSidebar doldurur -->
     <div id="llProfilKart"></div>
     <div id="llKisayollar" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
       <button class="btn-add" id="login-nav-btn" onclick="loginButonTikla()" style="background: #34495e; color: white; margin-bottom: 8px;">
     <svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="li-salla"><circle cx="8" cy="8" r="4.6" fill="none" stroke="#f1c40f" stroke-width="2.4"/><path d="M11.2 11.2l9 9" stroke="#f1c40f" stroke-width="2.4" stroke-linecap="round"/><path d="M17 17l2 2M15 19l2 2" stroke="#f39c12" stroke-width="2.2" stroke-linecap="round"/></g></svg> Öğretmen Girişi
 </button>
-   <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;"><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g></svg> Tatiller</button>
+   <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;"><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g></svg> Tatiller</button>
         <!-- Seviye Ekle tusu seviyeler bolumunun icine tasindi (renderSidebar cizer) -->
 
     </div>
@@ -4122,11 +4146,17 @@
 
 <div class="tabs">
     <button type="button" class="ll-geri" onclick="llProfilDon()" title="Kurumlarım &amp; Sınıflarım'a dön (tam ekrandan çıkar)"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <!-- OKUL: butun seviyeler ve siniflar tek pencerede; seviye ayarlarina
+         da buradan ulasilir. Ayni pencere sinif adi rozetinden de acilir. -->
+    <button type="button" class="tab ll-okul-tus" title="Okul — seviyeler, sınıflar ve seviye ayarları"
+            aria-label="Okul — seviyeler, sınıflar ve seviye ayarları"
+            onclick="if(typeof llOkulPopupAc==='function') llOkulPopupAc();"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg></button>
     <div id="viewTitle" style="display:flex; align-items:center; margin:0 6px 0 0;"></div>
-    <button class="tab" onclick="switchTab(0)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2" fill="#f5cba7"/><path d="M4.6 21a7.4 7.4 0 0 1 14.8 0z" fill="#3498db"/><path d="M6.6 6.2L12 3.4l5.4 2.8L12 9z" fill="#2c3e50"/><g class="li-parilti2" stroke="#f1c40f" stroke-width="1.3" stroke-linecap="round"><path d="M20 4.6v2M19 5.6h2M4.4 11v1.6M3.6 11.8h1.6"/></g></svg><span>Öğrenciler</span></button>
-    <button class="tab" onclick="switchTab(9)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/></svg><span>Haftalık Plan</span></button>
-    <button class="tab" onclick="switchTab(10)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.6" cy="7" r="3.2" fill="#e74c3c"/><path d="M2.4 19.6a5.2 5.2 0 0 1 10.4 0z" fill="#c0392b"/><circle cx="16.6" cy="7" r="3.2" fill="#3498db"/><path d="M11.4 19.6a5.2 5.2 0 0 1 10.4 0z" fill="#2980b9"/><path class="li-kalp" d="M12 14.6c-1.2-1.4-3.2-.6-3.2 1 0 1.4 1.8 2.6 3.2 3.6 1.4-1 3.2-2.2 3.2-3.6 0-1.6-2-2.4-3.2-1" fill="#f39c12"/></svg><span>Veli &amp; Durum</span></button>
-    <button class="tab" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
+    <!-- "Ogrenciler" sekmesi KALDIRILDI: sinif adi rozetinin kendisi o sekme
+         (bkz. listelerim.js -> #active-class-title, onclick=switchTab(0)). -->
+    <button class="tab" title="Haftalık Plan" aria-label="Haftalık Plan" onclick="switchTab(9)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/></svg><span>Haftalık Plan</span></button>
+    <button class="tab" title="Veli &amp; Durum" aria-label="Veli &amp; Durum" onclick="switchTab(10)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.6" cy="7" r="3.2" fill="#e74c3c"/><path d="M2.4 19.6a5.2 5.2 0 0 1 10.4 0z" fill="#c0392b"/><circle cx="16.6" cy="7" r="3.2" fill="#3498db"/><path d="M11.4 19.6a5.2 5.2 0 0 1 10.4 0z" fill="#2980b9"/><path class="li-kalp" d="M12 14.6c-1.2-1.4-3.2-.6-3.2 1 0 1.4 1.8 2.6 3.2 3.6 1.4-1 3.2-2.2 3.2-3.6 0-1.6-2-2.4-3.2-1" fill="#f39c12"/></svg><span>Veli &amp; Durum</span></button>
+    <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
 </div>
 
     <div id="tab0" class="tab-panel active">
@@ -4254,7 +4284,7 @@
             <input type="text" id="stayedPoint" placeholder="Örn: 5. Ünite, Sayfa 42'de kaldık..." onchange="updateStayedPoint(this.value)" style="width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/></svg> Haftalık Kazanım Takibi</h3>
+            <h3><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/></svg> Haftalık Kazanım Takibi</h3>
             
         </div>
 <table id="planTable">
@@ -4431,7 +4461,7 @@
 <div id="tatilModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(6px);">
     <div style="background:white; width:95%; max-width:600px; max-height: 85vh; padding:25px; border-radius:20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); overflow-y: auto; scrollbar-width: thin;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h2 style="color:var(--primary); margin:0;"><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g></svg> 2026-2027 Akademik Takvim</h2>
+            <h2 style="color:var(--primary); margin:0;"><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#8e44ad"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#6c3483"/><g class="li-gun2"><rect x="9.4" y="11.6" width="5.2" height="5.2" rx="1" fill="#9b59b6"/></g></svg> 2026-2027 Akademik Takvim</h2>
             <button onclick="document.getElementById('tatilModal').style.display='none'" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;">&times;</button>
         </div>
         <hr style="opacity: 0.2; margin-bottom: 15px;">
@@ -4444,7 +4474,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="border-bottom: 1px solid #eee;"><td><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg> Okulların Açılması</td><td>14 Eylül 2026</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg> Okulların Açılması</td><td>14 Eylül 2026</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="4" y1="3" x2="4" y2="21.4" stroke="#7f8c8d" stroke-width="1.8" stroke-linecap="round"/><g class="li-kumas"><rect x="4.8" y="4" width="15" height="10" rx="1" fill="#e30a17"/><circle cx="10.4" cy="9" r="3.1" fill="#fff"/><circle cx="11.5" cy="9" r="2.5" fill="#e30a17"/><path d="M14.4 9l-2.2.7 1.4-1.8v2.2l1.4-1.8z" fill="#fff"/></g></svg> Cumhuriyet Bayramı</td><td>29 Ekim 2026</td></tr>
                 <tr style="border-bottom: 1px solid #eee; background:#fff9db;"><td><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="li-suzul" d="M19.4 4.6c-8 0-14 4-14 10.4 0 1.8.6 3.4 1.6 4.6C9.6 16.4 13 13.8 17 12.6c-3 1.8-5.6 4.4-7.4 7.8 1 .5 2.2.8 3.4.8 5.2 0 8-5.6 6.4-16.6" fill="#e67e22"/></svg> 1. Dönem Ara Tatil</td><td>16 - 20 Kasım 2026</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.4l4 6h-2.4l3 4.6h-2.4l3.4 5.2H6.4l3.4-5.2H7.4l3-4.6H8z" fill="#27ae60"/><rect x="10.8" y="18.2" width="2.4" height="3.4" fill="#8d6e63"/><g class="li-susu"><circle cx="10" cy="9.4" r="1" fill="#e74c3c"/><circle cx="14" cy="13" r="1" fill="#f1c40f"/><circle cx="9.4" cy="15.6" r="1" fill="#3498db"/></g></svg> Yılbaşı Tatili</td><td>01 Ocak 2027</td></tr>
@@ -4650,7 +4680,7 @@
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
-    <script src="hesap/auth.js?v=20260808a"></script>
+    <script src="hesap/auth.js?v=20260809a"></script>
     <script src="sistem/router.js?v=20260809a"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
@@ -4659,7 +4689,7 @@
     <script src="hesap/teacher-admin.js?v=20260731g"></script>
     <script src="sistem/alarm.js"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260809a"></script>
+    <script src="hesap/listelerim.js?v=20260809e"></script>
     <script src="hesap/ogrencihesap.js?v=20260801f"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=32"></script>
