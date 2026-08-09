@@ -927,17 +927,21 @@ html.dusuk-guc .smp-arka { backdrop-filter: none; -webkit-backdrop-filter: none;
 
 /* Dilbilgisi'ndeki Vezinler Tablosu KARTININ ikonu: ayni gezinme, 3x3 */
 .kga-vez-vurgu { animation: kgaVezGez 8.1s ease-in-out infinite; }
+/* Vurgu tabloyu ARAPÇA gibi okur: her satır SAĞDAN SOLA, satır bitince
+   bir alt satırın SAĞ başına döner. (Eskiden soldan sağa yılan gibi
+   gidiyordu; Arapça bir vezin tablosunda ters okunuyordu.)
+   Kutu x=7'de duruyor; translate(36px) onu en sağdaki sütuna taşır. */
 @keyframes kgaVezGez {
-  0%, 8%    { transform: translate(0, 0); }
+  0%, 8%    { transform: translate(36px, 0); }
   11%, 19%  { transform: translate(18px, 0); }
-  22%, 30%  { transform: translate(36px, 0); }
+  22%, 30%  { transform: translate(0, 0); }
   33%, 41%  { transform: translate(36px, 12px); }
   44%, 52%  { transform: translate(18px, 12px); }
   55%, 63%  { transform: translate(0, 12px); }
-  66%, 74%  { transform: translate(0, 24px); }
+  66%, 74%  { transform: translate(36px, 24px); }
   77%, 85%  { transform: translate(18px, 24px); }
-  88%, 96%  { transform: translate(36px, 24px); }
-  100%      { transform: translate(0, 0); }
+  88%, 96%  { transform: translate(0, 24px); }
+  100%      { transform: translate(36px, 0); }
 }
 
 /* Dilbilgisi'ndeki Kelime Carki KARTININ ikonu: kok harfler (siyah)
@@ -1323,5 +1327,40 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
     max-width: none;
     padding-left: 1.5%;
     padding-right: 1.5%;
+  }
+}
+
+/* ======================================================================
+   İKİLİ SÜTUN — Etkileşimli Kitaplar (sol) + Sınıfiçi Materyaller (sağ)
+   ----------------------------------------------------------------------
+   İkisi de az kartlı kategoriler; tek başlarına tam genişlik kaplayınca
+   sayfa gereksiz uzuyordu. Masaüstünde yan yana, aralarında boşlukla
+   dururlar. Kutuların üst boşluğu ızgara boşluğuna devredilir ki iki
+   kutu tepeden hizalı başlasın. Mobilde kural yok: alt alta inerler.
+   ====================================================================== */
+@media (min-width: 769px) {
+  .ikili-bolum {
+    display: grid;
+    /* minmax(0,…): ızgara gözü içeriğinden daha dar olabilsin. Düz 1fr'de
+       yatay kayan kart şeridi gözü şişirip sütunları eşitsiz bırakıyordu. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 15px 26px;          /* satır arası · SÜTUN ARASI boşluk */
+    align-items: stretch;    /* iki kutu AYNI BOYDA olsun (simetri) */
+    margin-top: 15px;
+  }
+  /* TAM SİMETRİ — subgrid.
+     Kutuları eşit boya getirmek yetmiyordu: iki başlıktan biri (Etkileşimli
+     Kitaplar | Akademi) dar sütunda iki satıra iniyor, o yüzden kart şeritleri
+     farklı yükseklikte başlıyordu. Kutular dış ızgaranın SATIRLARINI ödünç
+     alınca başlıklar tek satırda, kart şeritleri de tek satırda hizalanıyor;
+     iki taraftaki kartlar birebir aynı boyda oluyor.
+     subgrid desteklenmezse kural yok sayılır, kutular yine eşit boyda kalır. */
+  .ikili-bolum { grid-template-rows: auto 1fr; }
+  .ikili-bolum > .content-section {
+    margin-top: 0;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    align-content: stretch;
   }
 }
