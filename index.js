@@ -245,24 +245,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const slaytContainer = document.getElementById('slayt-galerisi-container');
     if (!slaytContainer) return;
 
-    // Gösterilecek PDF dosyalarının listesi.
-    // Dosyalar sunum/ klasöründedir; klasörü sunum.js kendisi ekler.
+    /* Gösterilecek sunumlar. Dosyalar sunum/ klasöründedir; klasörü
+       sunum.js kendisi ekler.
+
+       ⚠️ DOSYA ADI ile EKRANDA GÖRÜNEN AD artık ayrı:
+       Dosya adları eskiden emoji, boşluk, Türkçe harf ve kesme işareti
+       içeriyordu ("🧐 Aksam-ı Seb'a.pdf"). Bunlar adrese girince yüzde
+       kodlamasıyla devasa bağlantılara dönüşüyor; sunucudan sunucuya
+       (Vercel, CDN, önbellek) farklı çözülebiliyor ve paylaşılan bağlantı
+       kırılıyor. Dosyalar sade ASCII adlara çevrildi; başlıktaki emoji ve
+       Türkçe yazım "ad" alanında yaşamaya devam ediyor. */
     const pdfListesi = [
-        "🧐 Harf-i Tarîf.pdf",
-        "🛠️ Kalıpları Pekiştir.pdf",
-        "🤔 Arapçada Kelime.pdf",
-        "🤔 İsmin 4 Özelliği.pdf",
-        "🧐 Müfred, Tesniye, Cem İsimler.pdf",
-        "🧐 Mazi Fiil.pdf",
-        "⚔️ Kim Daha Hızlı.pdf",
-        "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri.pdf",
-        "🧐 Muzari Fiil.pdf",
-        "🧐 Emir Fiil.pdf",
-        "🧐 Aksam-ı Seb'a.pdf"
+        { dosya: "harf-i-tarif.pdf",                      ad: "🧐 Harf-i Tarîf" },
+        { dosya: "kaliplari-pekistir.pdf",                ad: "🛠️ Kalıpları Pekiştir" },
+        { dosya: "arapcada-kelime.pdf",                   ad: "🤔 Arapçada Kelime" },
+        { dosya: "ismin-4-ozelligi.pdf",                  ad: "🤔 İsmin 4 Özelliği" },
+        { dosya: "mufred-tesniye-cem-isimler.pdf",        ad: "🧐 Müfred, Tesniye, Cem İsimler" },
+        { dosya: "mazi-fiil.pdf",                         ad: "🧐 Mazi Fiil" },
+        { dosya: "kim-daha-hizli.pdf",                    ad: "⚔️ Kim Daha Hızlı" },
+        { dosya: "cogul-isimler-merfu-mansub-mecrur.pdf", ad: "🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri" },
+        { dosya: "muzari-fiil.pdf",                       ad: "🧐 Muzari Fiil" },
+        { dosya: "emir-fiil.pdf",                         ad: "🧐 Emir Fiil" },
+        { dosya: "aksam-i-seba.pdf",                      ad: "🧐 Aksam-ı Seb'a" }
     ];
 
-    pdfListesi.forEach(dosyaAdi => {
-        let gorunenIsim = dosyaAdi.replace('.pdf', '').replace(/_/g, ' ');
+    pdfListesi.forEach(kayit => {
+        const dosyaAdi = (typeof kayit === 'string') ? kayit : kayit.dosya;
+        const gorunenIsim = (typeof kayit === 'string')
+            ? kayit.replace('.pdf', '').replace(/_/g, ' ')
+            : kayit.ad;
 
         const card = document.createElement('a');
         // Tıklanınca sunum.html dosyasını yeni sekmede ve parametreyle aç
