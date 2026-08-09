@@ -3163,8 +3163,21 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     display: block;
     overflow: visible;
 }
-/* Etkin hapta zemin turuncu; ikonun beyaz konturu okunurluğu korur */
-#ll-root .ll-mod-hap.aktif .hap-ikon{ filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+/* ETKİN HAPTA BEYAZ ALTLIK.
+   Hap seçilince zemin turuncu gradyan oluyordu; roket (kırmızı kanat +
+   turuncu alev), koşucu (turuncu baş, koyu turuncu gövde) ve kupa (altın
+   sarısı + turuncu kaide) bu zeminde eriyip kayboluyordu. Tek tek renk
+   değiştirmek yerine ikonun ARKASINA beyaz bir altlık kondu: bütün
+   ikonlar kendi renklerini korur, hangisi olursa olsun kontrast garanti
+   olur ve ileride eklenecek ikonlar için de kural baştan doğrudur.
+   Daire yerine yuvarlatılmış kare: zarın köşeleri daireden taşıyordu. */
+#ll-root .ll-mod-hap.aktif .hap-ikon{
+    background: #fff;
+    border-radius: 9px;
+    padding: 3px;
+    box-sizing: content-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+}
 
 @media (prefers-reduced-motion: reduce){
     #ll-root .ll-mod-hap .hap-ikon *{ animation: none !important; }
