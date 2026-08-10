@@ -2070,48 +2070,59 @@
       { govde:'يَكْتُبُ', son:{merfu:'ونَ', mansub:'وا', meczum:'وا'}, tur:'harf',   zamir:'هُمْ',      zamirTr:'Onlar',      trK:'onlar' }
     ]},
     { ad:'Gâibe', alt:'o (dişil)', hucre:[
-      { govde:'تَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'هِيَ',      zamirTr:'O',          trK:'o' },
-      { govde:'تَكْتُبَ', son:{merfu:'انِ', mansub:'ا', meczum:'ا'},   tur:'harf',   zamir:'هُمَا',     zamirTr:'O ikisi',    trK:'onlar' },
+      /* تَكْتُبُ gâibe ile muhâtabda birdir → iki satırı kaplayan tek kutu. */
+      { govde:'تَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'أَنْتَ',    zamirTr:'Sen',        trK:'sen',
+        kapsar:2, adOzel:'Gâibe · Muhâtab', altOzel:'tekil — ikisinde aynı' },
+      /* تَكْتُبَانِ üç kişide birdir (gâibe · muhâtab · muhâtaba ikilleri);
+         üç kutu yerine TEK kutu (rowspan) — böylece nûn taşıyan kutu
+         sayısı beşe iner ve "beş fiil" adıyla örtüşür. */
+      { govde:'تَكْتُبَ', son:{merfu:'انِ', mansub:'ا', meczum:'ا'},   tur:'harf',   zamir:'أَنْتُمَا', zamirTr:'Siz ikiniz', trK:'siz',
+        kapsar:3, adOzel:'Gâibe · Muhâtab · Muhâtaba', altOzel:'ikil — üçünde aynı' },
       { govde:'يَكْتُبْ', son:{merfu:'نَ', mansub:'نَ', meczum:'نَ'},   tur:'mebni',  zamir:'هُنَّ',     zamirTr:'Onlar',      trK:'onlar' }
     ]},
     { ad:'Muhâtab', alt:'sen (eril)', hucre:[
-      { govde:'تَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'أَنْتَ',    zamirTr:'Sen',        trK:'sen' },
-      { govde:'تَكْتُبَ', son:{merfu:'انِ', mansub:'ا', meczum:'ا'},   tur:'harf',   zamir:'أَنْتُمَا', zamirTr:'Siz ikiniz', trK:'siz' },
+      { atla:true },
+      { atla:true },
       { govde:'تَكْتُبُ', son:{merfu:'ونَ', mansub:'وا', meczum:'وا'}, tur:'harf',   zamir:'أَنْتُمْ',  zamirTr:'Siz',        trK:'siz' }
     ]},
     { ad:'Muhâtaba', alt:'sen (dişil)', hucre:[
       { govde:'تَكْتُبِ', son:{merfu:'ينَ', mansub:'ي', meczum:'ي'},   tur:'harf',   zamir:'أَنْتِ',    zamirTr:'Sen',        trK:'sen' },
-      { govde:'تَكْتُبَ', son:{merfu:'انِ', mansub:'ا', meczum:'ا'},   tur:'harf',   zamir:'أَنْتُمَا', zamirTr:'Siz ikiniz', trK:'siz' },
+      { atla:true },
       { govde:'تَكْتُبْ', son:{merfu:'نَ', mansub:'نَ', meczum:'نَ'},   tur:'mebni',  zamir:'أَنْتُنَّ', zamirTr:'Siz',        trK:'siz' }
     ]},
     { ad:'Mütekellim', alt:'ben / biz', hucre:[
       { govde:'أَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'أَنَا',     zamirTr:'Ben',        trK:'ben' },
-      { govde:'نَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'نَحْنُ',    zamirTr:'Biz',        trK:'biz' },
-      { govde:'نَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'نَحْنُ',    zamirTr:'Biz',        trK:'biz' }
+      /* نَكْتُبُ ikil ile çoğulda birdir → iki sütunu kaplayan tek kutu. */
+      { govde:'نَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'نَحْنُ',    zamirTr:'Biz',        trK:'biz',
+        yatayKapsar:2, altOzel:'ikil · çoğul — aynı' },
+      { atla:true }
     ]}
   ];
   var SAYI_AD = ['Tekil', 'İkil', 'Çoğul'];
   /* Yan tablolar — ikisi de MEBNÎ, hâl/edat onlara işlemez.
      Emir yalnız muhâtab ve muhâtabada çekilir; kalan 9 kutu — (tire). */
+  /* Yan tablolar — ikisi de MEBNÎ. Aynı formlar ORTAK kutuda:
+     rs = rowspan (alt satırı da kaplar), cs = colspan (yan sütunu da),
+     atla = kaplanan yer, t = tire (çekimi olmayan kişi). */
   var MAZI_TABLO = [
-    ['كَتَبَ',    'كَتَبَا',     'كَتَبُوا'],
-    ['كَتَبَتْ',  'كَتَبَتَا',   'كَتَبْنَ'],
-    ['كَتَبْتَ',  'كَتَبْتُمَا', 'كَتَبْتُمْ'],
-    ['كَتَبْتِ',  'كَتَبْتُمَا', 'كَتَبْتُنَّ'],
-    ['كَتَبْتُ',  'كَتَبْنَا',   'كَتَبْنَا']
+    [{m:'كَتَبَ'},   {m:'كَتَبَا'},           {m:'كَتَبُوا'}],
+    [{m:'كَتَبَتْ'}, {m:'كَتَبَتَا'},         {m:'كَتَبْنَ'}],
+    [{m:'كَتَبْتَ'}, {m:'كَتَبْتُمَا', rs:2}, {m:'كَتَبْتُمْ'}],
+    [{m:'كَتَبْتِ'}, {atla:true},            {m:'كَتَبْتُنَّ'}],
+    [{m:'كَتَبْتُ'}, {m:'كَتَبْنَا', cs:2},   {atla:true}]
   ];
   var EMIR_TABLO = [
-    [null, null, null],
-    [null, null, null],
-    ['اُكْتُبْ',  'اُكْتُبَا', 'اُكْتُبُوا'],
-    ['اُكْتُبِي', 'اُكْتُبَا', 'اُكْتُبْنَ'],
-    [null, null, null]
+    [{t:1}, {t:1}, {t:1}],
+    [{t:1}, {t:1}, {t:1}],
+    [{m:'اُكْتُبْ'},  {m:'اُكْتُبَا', rs:2}, {m:'اُكْتُبُوا'}],
+    [{m:'اُكْتُبِي'}, {atla:true},          {m:'اُكْتُبْنَ'}],
+    [{t:1}, {t:1}, {t:1}]
   ];
-  /* Gezinti için 15 kutunun düz listesi. */
   var KUTU = [];
   SATIR.forEach(function (sr, si) {
     sr.hucre.forEach(function (h, hi) {
-      KUTU.push({ h:h, si:si, hi:hi, ad:sr.ad, alt:SAYI_AD[hi] });
+      if (h.atla) return;   /* birleşik kutunun kapladığı yerler */
+      KUTU.push({ h:h, si:si, hi:hi, ad:h.adOzel || sr.ad, alt:h.altOzel || SAYI_AD[hi] });
     });
   });
 
@@ -2174,23 +2185,25 @@
   function harfMi(x) { return /^[\u0621-\u064A\u0671-\u06D3]/.test(x); }
 
   /* İlk açılışta seçili kutu tablonun İLK fiili: Gâib · Tekil يَكْتُبُ */
-  var hal = 'merfu', edatNo = 0, kutuNo = 0, oncekiHal = null;
+  var hal = 'merfu', edatNo = 0, kutuNo = 0, oncekiHal = null, fiilSecili = 'muzari';
+  var edatBekleniyor = false;   /* mansub/meczumda dönüşüm, EDAT seçilince başlar */
 
   function edatSimdi() { return EDAT[hal][edatNo] || EDAT[hal][0]; }
 
   /* ---------- tablo ----------
-     HÂL DEĞİŞİM AKIŞI (kullanıcı tarifi): kutular TEK TEK, sırayla işlenir.
-     Önce sıradaki fiilin önüne edat gelir (merfuya dönüşte: gider), SONRA
-     o fiilin sonu değişir; ikisinin toplamı 1 saniyedir ve ancak bitince
-     sıra bir sonraki fiile geçer: يَكْتُبُ → يَكْتُبَانِ → يَكْتُبُونَ …
-     Yalnız EDAT değişirken (hâl aynıyken) tek tek bekletmek öğretmez;
-     orada kutular kısa arayla hızlı bir dalga hâlinde yenilenir.
-     Animasyon sürerken aynı hâl kutusuna tekrar basmak ya da tablodaki
-     bir fiile dokunmak akışı keser ve son durumu hemen gösterir. */
-  var KUTU_SURE  = 2000; /* her fiilin edat+hareke payı — sakin tempo: 2 sn */
-  var EDAT_ANIM  = 900;  /* edatın geliş/gidiş süresi */
-  var SON_GECIS  = 1000; /* son, edat yerleştikten sonra değişmeye başlar */
-  var HIZLI_ADIM = 140;  /* edat dalgasında kutular arası kayma */
+     ETKİLEŞİMLİ AKIŞ: hâl değişince yalnız İLK fiil kendiliğinden
+     dönüşür (merfuya dönüşte: SON fiil). Kalanlar eski hâlleriyle
+     bekler ve DOKUNULDUKÇA tek tek dönüşür — öğrenci animasyonu kutu
+     kutu kendi eliyle yaşar. İlk dönüşüm bitince bekleyen kutular
+     altın bir nabızla "bana dokun" der. Bütün kutular dönüşünce nûn
+     taşıyan beş fiil mavi bir parıltıyla vurgulanır: sonunda HARF
+     değişenler bunlardı. Aynı hâl kutusuna ikinci basış her şeyi
+     bitirir; edat seçimi de tabloyu tamamlar. */
+  var EDAT_SURE = 1300;  /* edatın gelişi */
+  var CIK_SURE  = 800;   /* edatın gidişi */
+  var SON_BAS   = 1500;  /* son, edat yerleştikten sonra değişmeye başlar */
+  var SON_SURE  = 1900;  /* eski düşer, yeni oturur */
+  var HIZLI_ADIM = 160;  /* edat dalgasında kutular arası kayma */
   var zamanlar = [];
   function zamanTemizle() {
     zamanlar.forEach(function (z) { window.clearTimeout(z); });
@@ -2198,13 +2211,13 @@
   }
   function bekle(fn, ms) { zamanlar.push(window.setTimeout(fn, ms)); }
 
+  var bekleyenler = null;  /* {kutuNo:true} — hâl değişiminde dokunulmayı bekleyenler */
+  var akisEski = null;     /* bekleyen kutuların ekrandaki eski hâli {hal, edat} */
+
   /* Kelimeyi yaz. eskiSon verilirse iki parçalı (animasyonlu) yazım;
      verilmezse tek metin düğümü — harfler doğal olarak bitişir.
-     HAREKE SONLARI: yalın hareke kendi başına çizilemez; harfin
-     üstündeki yerinden kopup kelimenin yanında YENİDEN belirmiş gibi
-     görünüyordu. Bu yüzden hareke sonlu kutularda SON HARF de
-     animasyona katılır: بُ düşer, بَ yerine oturur — hareke hep
-     harfinin üstünde kalır. */
+     HAREKE SONLARI: yalın hareke çizilemez; son harf de animasyona
+     katılır: بُ düşer, بَ oturur — hareke hep harfinin üstünde kalır. */
   function kelimeYaz(el, h, halX, eskiSon) {
     var yeniSon = h.son[halX];
     if (!eskiSon) { el.textContent = h.govde + yeniSon; return; }
@@ -2225,22 +2238,16 @@
   }
 
   function edatYaz(el, e, durum) {
-    /* Aralık artık CSS'te (padding): kuyruk boşluğu satır sonunda
-       kırpılıyordu, güvenilir değildi. Emir lâmı bitişik yazıldığı
-       için o aralıktan muaftır — efh-bitisik sınıfı bunu işaretler. */
     var b = (e && e.ar && e.bitisik) ? ' efh-bitisik' : '';
     el.className = 'efh-edat-ek' + b + (durum ? ' ' + durum : '');
     el.textContent = (e && e.ar) ? (e.bitisik ? 'لِ' : e.ar) : '';
   }
 
+  function hucreTd(a) {
+    return elGovde.querySelector('.efh-hucre[data-si="' + a.si + '"][data-hi="' + a.hi + '"]');
+  }
   function hucreGez(fn) {
-    var trs = elGovde.querySelectorAll('tr');
-    var n = 0;
-    SATIR.forEach(function (sr, si) {
-      sr.hucre.forEach(function (h, hi) {
-        fn(trs[si].querySelectorAll('.efh-hucre')[hi], h, n++);
-      });
-    });
+    KUTU.forEach(function (a, n) { fn(hucreTd(a), a.h, n); });
   }
 
   function lejantYaz() {
@@ -2249,27 +2256,30 @@
       'Seçili kutu: <b>' + k.ad + ' · ' + k.alt + '</b> — alâmeti <b>' + ALAMET[k.h.tur][hal] + '</b>';
   }
 
+  function secimGuncelle() {
+    [].forEach.call(elGovde.querySelectorAll('.efh-hucre.efh-secili'), function (x) {
+      x.classList.remove('efh-secili');
+    });
+    var td = hucreTd(KUTU[kutuNo]);
+    if (td) td.classList.add('efh-secili');
+    lejantYaz();
+  }
+
   /* Duruş çizimi: verilen hâlin sonları + verilen edatla, tek parça. */
   function tabloCiz(gosterHal, edatObj) {
     elGovde.innerHTML = '';
     SATIR.forEach(function (sr, si) {
       var tr = document.createElement('tr');
       var html = '<td class="efh-satirbas">' + sr.ad + '<span>' + sr.alt + '</span></td>';
-      MAZI_TABLO[si].forEach(function (m) {
-        html += '<td class="efh-yan">' + m + '</td>';
-      });
       sr.hucre.forEach(function (h, hi) {
+        if (h.atla) return;   /* birleşik kutunun kapladığı yer */
         var secili = (KUTU[kutuNo].si === si && KUTU[kutuNo].hi === hi);
         html += '<td class="efh-hucre efh-t-' + h.tur + (secili ? ' efh-secili' : '') + '"' +
+                (h.kapsar ? ' rowspan="' + h.kapsar + '"' : '') +
+                (h.yatayKapsar ? ' colspan="' + h.yatayKapsar + '"' : '') +
                 ' data-si="' + si + '" data-hi="' + hi + '"' +
-                ' title="' + sr.ad + ' · ' + SAYI_AD[hi] + ' — ' + ALAMET[h.tur][hal] + '">' +
-                /* .efh-ic iki bölmeli raf: sağda SABİT edat yuvası (boşken de
-                   yer tutar), solunda fiil. Böylece edat gelip giderken sütun
-                   genişliği ve fiilin yeri hiç oynamaz. */
+                ' title="' + (h.adOzel || sr.ad) + ' · ' + (h.altOzel || SAYI_AD[hi]) + '">' +
                 '<span class="efh-ic"><span class="efh-edat-ek"></span><span class="efh-kelime"></span></span></td>';
-      });
-      EMIR_TABLO[si].forEach(function (m) {
-        html += '<td class="efh-yan">' + (m || '<span class="efh-tire">—</span>') + '</td>';
       });
       tr.innerHTML = html;
       elGovde.appendChild(tr);
@@ -2281,52 +2291,105 @@
     lejantYaz();
   }
 
-  /* Akışı kes, bugünkü hâli göster. */
-  function sonDurum() { zamanTemizle(); tabloCiz(hal, edatSimdi()); }
+  /* Bütün kutular dönüşünce: sonunda HARF değişen beş fiil parıldar. */
+  function parlat() {
+    bekle(function () {
+      hucreGez(function (td, h) {
+        if (h.tur === 'harf' && td) {
+          td.classList.remove('efh-parla');
+          void td.offsetWidth;
+          td.classList.add('efh-parla');
+        }
+      });
+    }, 80);
+  }
 
-  /* Hâl değişimi: kutu kutu, her kutu 1 saniye.
-     YÖN: merfudan çıkarken baştan sona (edatlar sırayla GELİR);
-     merfuya dönerken SONDAN BAŞA (edatlar ve harekeler sondan
-     başlayarak kaybolur/değişir) — geri sarma hissi verir. */
-  function halAkis(eskiHal, eskiEdat) {
-    zamanTemizle();
-    var e = edatSimdi();
-    tabloCiz(eskiHal, eskiEdat);                 /* başlangıç: eski görünüm */
-    var geriyeMi = (hal === 'merfu');
+  /* Bekleyen kutulara "bana dokun" nabzı. */
+  function davetVer() {
+    var k = 0;
     hucreGez(function (td, h, n) {
-      var t0 = (geriyeMi ? (KUTU.length - 1 - n) : n) * KUTU_SURE;
-      var edatEl = td.querySelector('.efh-edat-ek');
-      var kelEl  = td.querySelector('.efh-kelime');
-      var eskiSon = h.son[eskiHal], yeniSon = h.son[hal];
-      var eskiAr = eskiEdat && eskiEdat.ar, yeniAr = e.ar;
-
-      if (!eskiAr && yeniAr) {                        /* merfu → : edat gelir */
-        bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, t0);
-      } else if (eskiAr && !yeniAr) {                 /* → merfu : edat gider */
-        bekle(function () { edatEl.classList.add('efh-cik'); }, t0);
-        bekle(function () { edatYaz(edatEl, null, ''); }, t0 + EDAT_ANIM);
-      } else if (eskiAr && yeniAr && eskiAr !== yeniAr) {   /* mansub ↔ meczum */
-        bekle(function () { edatEl.classList.add('efh-cik'); }, t0);
-        bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, t0 + 600);
+      if (bekleyenler && bekleyenler[n] && td) {
+        td.style.setProperty('--dv', k++);
+        td.classList.add('efh-davet');
       }
-      if (eskiSon !== yeniSon) {
-        bekle(function () { kelimeYaz(kelEl, h, hal, eskiSon); }, t0 + SON_GECIS);
-        bekle(function () { kelimeYaz(kelEl, h, hal, ''); }, t0 + KUTU_SURE + 300);
-      }
-      if (n === kutuNo) bekle(function () { ornekCiz(true); }, t0 + KUTU_SURE);
     });
   }
 
-  /* Yalnız edat değişimi: hızlı dalga (eski çıkar, yeni girer). */
+  /* Akışı kes, bugünkü hâli göster. Bekleyen varken kesildiyse
+     tamamlanma vurgusu (beş fiil parıltısı) yine verilir. */
+  function sonDurum() {
+    zamanTemizle();
+    var yarim = !!bekleyenler;
+    bekleyenler = null; akisEski = null; edatBekleniyor = false;
+    tabloCiz(hal, edatSimdi());
+    if (yarim) parlat();
+  }
+
+  /* TEK kutunun dönüşümü: edat gelir/gider, sonra son değişir. */
+  function hucreAnimasyon(n, ilkMi) {
+    if (!bekleyenler || !bekleyenler[n] || !akisEski) return;
+    delete bekleyenler[n];
+    var a = KUTU[n], td = hucreTd(a);
+    if (!td) return;
+    td.classList.remove('efh-davet');
+    var edatEl = td.querySelector('.efh-edat-ek');
+    var kelEl  = td.querySelector('.efh-kelime');
+    var e = edatSimdi();
+    var eskiSon = a.h.son[akisEski.hal], yeniSon = a.h.son[hal];
+    var eskiAr = akisEski.edat && akisEski.edat.ar, yeniAr = e.ar;
+
+    if (!eskiAr && yeniAr) {                          /* merfu → : edat gelir */
+      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, 0);
+    } else if (eskiAr && !yeniAr) {                   /* → merfu : edat gider */
+      bekle(function () { edatEl.classList.add('efh-cik'); }, 0);
+      bekle(function () { edatYaz(edatEl, null, ''); }, CIK_SURE);
+    } else if (eskiAr && yeniAr && eskiAr !== yeniAr) {    /* mansub ↔ meczum */
+      bekle(function () { edatEl.classList.add('efh-cik'); }, 0);
+      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, CIK_SURE);
+    }
+    var sonDegisir = (eskiSon !== yeniSon);
+    if (sonDegisir) {
+      bekle(function () { kelimeYaz(kelEl, a.h, hal, eskiSon); }, SON_BAS);
+      bekle(function () { kelimeYaz(kelEl, a.h, hal, ''); }, SON_BAS + SON_SURE);
+    }
+    var bitis = sonDegisir ? (SON_BAS + SON_SURE) : (EDAT_SURE + 200);
+    bekle(function () {
+      if (n === kutuNo || ilkMi) ornekCiz(true);
+      if (ilkMi) davetVer();
+      if (bekleyenler && !Object.keys(bekleyenler).length) {
+        bekleyenler = null; akisEski = null;
+        parlat();
+      }
+    }, bitis + 80);
+  }
+
+  /* Hâl değişimi: İLK fiil kendiliğinden (merfuya dönüşte SON fiil),
+     kalanlar dokunuldukça. */
+  function halAkis(eskiHal, eskiEdat) {
+    zamanTemizle();
+    edatBekleniyor = false;
+    tabloCiz(eskiHal, eskiEdat);
+    bekleyenler = {};
+    KUTU.forEach(function (x, n) { bekleyenler[n] = true; });
+    akisEski = { hal: eskiHal, edat: eskiEdat };
+    if (hal === 'merfu') { hucreAnimasyon(KUTU.length - 1, true); return; }
+    /* Mansub/Meczum: hiçbir şey kendiliğinden başlamaz — önce EDAT
+       seçilir; ilk dönüşüm, öğrencinin seçtiği edatla başlar. */
+    edatBekleniyor = true;
+    edatCiz();
+  }
+
+  /* Yalnız edat değişimi: tablo tamamlanır, edat hızlı dalgayla yenilenir. */
   function edatAkis(eskiEdat) {
     zamanTemizle();
+    bekleyenler = null; akisEski = null; edatBekleniyor = false;
     var e = edatSimdi();
     tabloCiz(hal, eskiEdat);
     hucreGez(function (td, h, n) {
       var t0 = n * HIZLI_ADIM;
       var edatEl = td.querySelector('.efh-edat-ek');
       bekle(function () { edatEl.classList.add('efh-cik'); }, t0);
-      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, t0 + 520);
+      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, t0 + 700);
     });
     ornekCiz(true);
   }
@@ -2357,22 +2420,26 @@
   function edatCiz() {
     var liste = EDAT[hal];
     var cok = liste.length > 1;
-    elEdat.hidden = !cok;
+    elEdat.hidden = !cok || fiilSecili !== 'muzari';
     elEdatAd.textContent = hal === 'mansub' ? 'Nasb edatları' : 'Cezm edatları';
     if (cok) {
+      elEdatListe.classList.toggle('efh-sec-bekle', edatBekleniyor);
       elEdatListe.innerHTML = '';
       liste.forEach(function (e2, k) {
         var d = document.createElement('button');
         d.type = 'button';
-        d.className = 'efh-edat-sec' + (k === edatNo ? ' aktif' : '');
+        var aktif = !edatBekleniyor && k === edatNo;
+        d.className = 'efh-edat-sec' + (aktif ? ' aktif' : '');
         d.setAttribute('data-edat-no', k);
         d.setAttribute('role', 'tab');
-        d.setAttribute('aria-selected', k === edatNo ? 'true' : 'false');
+        d.setAttribute('aria-selected', aktif ? 'true' : 'false');
         d.innerHTML = '<b dir="rtl">' + e2.ar + '</b><small>' + e2.tr + '</small>';
         elEdatListe.appendChild(d);
       });
     }
-    elNot.innerHTML = edatSimdi().not;
+    elNot.innerHTML = edatBekleniyor
+      ? 'Önce bir <b>edat seç</b> — dönüşüm, seçtiğin edatla <b>ilk fiilde</b> başlar; kalan fiillere sen dokunursun.'
+      : edatSimdi().not;
   }
 
   function ciz(mod, eskiHal, eskiEdat) {
@@ -2404,6 +2471,14 @@
     if (!d) return;
     if (d.hasAttribute('data-edat-no')) {
       var no = parseInt(d.getAttribute('data-edat-no'), 10);
+      if (edatBekleniyor) {
+        /* İlk seçim: animasyonu bu edat başlatır. */
+        edatNo = no;
+        edatBekleniyor = false;
+        edatCiz();
+        hucreAnimasyon(0, true);
+        return;
+      }
       if (no === edatNo) return;
       var eskiEdatDeger2 = edatSimdi();
       edatNo = no;
@@ -2412,13 +2487,15 @@
     }
     if (d.hasAttribute('data-ornek')) {
       kutuNo = (kutuNo + parseInt(d.getAttribute('data-ornek'), 10) + KUTU.length) % KUTU.length;
-      sonDurum();
-      ornekCiz(true);
+      secimGuncelle();
+      if (edatBekleniyor) return;
+      if (bekleyenler && bekleyenler[kutuNo]) hucreAnimasyon(kutuNo, false);
+      else ornekCiz(true);
     }
   });
 
-  /* Kutuya doğrudan dokunmak da örneği oraya taşısın: 15 kutuda ok ok
-     gezmek yerine öğretmen istediği çekime tek dokunuşla gider. */
+  /* Kutuya dokunmak: bekleyen kutuysa DÖNÜŞÜMÜNÜ başlatır (animasyon
+     dokunarak yaşanır), dönüşmüş kutuysa yalnız örneği oraya taşır. */
   elGovde.addEventListener('click', function (ev) {
     var td = ev.target.closest ? ev.target.closest('.efh-hucre') : null;
     if (!td) return;
@@ -2426,16 +2503,65 @@
     for (var i = 0; i < KUTU.length; i++) {
       if (KUTU[i].si === si && KUTU[i].hi === hi) { kutuNo = i; break; }
     }
-    sonDurum();
-    ornekCiz(true);
+    secimGuncelle();
+    if (edatBekleniyor) return;          /* önce edat: kutular edat seçilince açılır */
+    if (bekleyenler && bekleyenler[kutuNo]) hucreAnimasyon(kutuNo, false);
+    else ornekCiz(true);
+  });
+
+  /* Yan tablolar bir kez kurulur: aynı veriden (MAZI_TABLO / EMIR_TABLO),
+     muzariyle aynı boy puntoda. */
+  (function yanTablolariKur() {
+    var m = document.getElementById('efhMaziGovde');
+    var em = document.getElementById('efhEmirGovde');
+    SATIR.forEach(function (sr, si) {
+      var bas = '<td class="efh-satirbas">' + sr.ad + '<span>' + sr.alt + '</span></td>';
+      function yanHtml(h) {
+        if (h.atla) return '';
+        return '<td class="efh-b"' + (h.rs ? ' rowspan="' + h.rs + '"' : '') +
+               (h.cs ? ' colspan="' + h.cs + '"' : '') + '>' +
+               (h.t ? '<span class="efh-tire">—</span>' : h.m) + '</td>';
+      }
+      var r1 = bas, r2 = bas;
+      MAZI_TABLO[si].forEach(function (x) { r1 += yanHtml(x); });
+      EMIR_TABLO[si].forEach(function (x) { r2 += yanHtml(x); });
+      m.insertAdjacentHTML('beforeend', '<tr>' + r1 + '</tr>');
+      em.insertAdjacentHTML('beforeend', '<tr>' + r2 + '</tr>');
+    });
+  })();
+
+  /* Fiil tablosu sekmeleri: üçü birden değil, seçilen TEK ve BÜYÜK. */
+  var elFiiller = document.getElementById('efhFiiller');
+  function fiilTabloSec(ad) {
+    fiilSecili = ad;
+    [].forEach.call(elFiiller.querySelectorAll('.efh-f'), function (x) {
+      var sec = x.getAttribute('data-fiil') === ad;
+      x.classList.toggle('aktif', sec);
+      x.setAttribute('aria-selected', sec ? 'true' : 'false');
+    });
+    document.getElementById('efhTabloMuzari').hidden = ad !== 'muzari';
+    document.getElementById('efhTabloMazi').hidden  = ad !== 'mazi';
+    document.getElementById('efhTabloEmir').hidden  = ad !== 'emir';
+    /* Hâl, edat, örnek ve ayrıntılar muzariye aittir; mebnî tablolarda
+       anlamları yok — kafa karıştırmasınlar. */
+    elHal.hidden = ad !== 'muzari';
+    document.getElementById('efhOrnekBlok').hidden = ad !== 'muzari';
+    document.getElementById('efhDetay').hidden = ad !== 'muzari';
+    edatCiz();
+  }
+  elFiiller.addEventListener('click', function (ev) {
+    var d = ev.target.closest ? ev.target.closest('.efh-f') : null;
+    if (d) fiilTabloSec(d.getAttribute('data-fiil'));
   });
 
   ciz();
+  fiilTabloSec('muzari');
   window.tcHamse = {
     halSec: function (h) {
       var d = elHal.querySelector('.efh-h[data-hal="' + h + '"]');
       if (d) d.click();
     },
-    durum: function () { return { hal: hal, edat: edatSimdi().ar, kutu: KUTU[kutuNo].ad + ' ' + KUTU[kutuNo].alt }; }
+    durum: function () { return { hal: hal, edat: edatSimdi().ar, fiil: fiilSecili, kutu: KUTU[kutuNo].ad + ' ' + KUTU[kutuNo].alt }; },
+    fiilSec: fiilTabloSec
   };
 })();

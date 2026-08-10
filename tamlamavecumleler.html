@@ -502,6 +502,13 @@
            şey değişmez. -->
       <div class="tc-tablo-panel" data-panel="hamse" hidden>
         <div class="efh-kumanda">
+          <!-- Üç fiil AYNI ANDA görünmez: seçilen tablo tek başına ve BÜYÜK
+               gelir. Muzari canlı tablodur; mâzi ile emir mebnî başvuru. -->
+          <div class="efh-fiiller" id="efhFiiller" role="tablist" aria-label="Fiil tablosu">
+            <button type="button" class="efh-f" data-fiil="mazi" role="tab" aria-selected="false">Mâzi</button>
+            <button type="button" class="efh-f aktif" data-fiil="muzari" role="tab" aria-selected="true">Muzari</button>
+            <button type="button" class="efh-f" data-fiil="emir" role="tab" aria-selected="false">Emir</button>
+          </div>
           <div class="efh-hal" id="efhHal" role="tablist" aria-label="İ'rab hâli">
             <button type="button" class="efh-h aktif" data-hal="merfu"  role="tab" aria-selected="true">Merfu</button>
             <button type="button" class="efh-h" data-hal="mansub" role="tab" aria-selected="false">Mansub</button>
@@ -520,30 +527,45 @@
              Kutuların içinde YALNIZ fiil var; kişi ve sayı adları kenarda
              başlık olarak duruyor. Tablo sağdan sola: satır adı sağda,
              tekil ondan sonra, çoğul en solda. -->
-        <div class="tc-irab-kutu">
+        <div class="tc-irab-kutu" id="efhTabloMuzari">
           <table class="tc-irab efh-tablo">
-            <!-- Üç tablo tek çatıda, kişi sütunu ortak. RTL sırayla:
-                 sağda MÂZİ (mebnî), ortada MUZARİ (mu'reb — canlı tablo),
-                 solda EMİR (mebnî; yalnız muhâtab ve muhâtaba çekilir).
-                 Ders şu karşıtlıkta: edat gelince yalnız ORTA değişir. -->
             <thead>
               <tr>
-                <th class="efh-kose" rowspan="2"></th>
-                <th colspan="3" class="efh-grup efh-grup-mazi">Mâzi <small>mebnî — değişmez</small></th>
-                <th colspan="3" class="efh-grup efh-grup-muzari">Muzari <small>mu'reb — i'rab alır</small></th>
-                <th colspan="3" class="efh-grup efh-grup-emir">Emir <small>mebnî — değişmez</small></th>
-              </tr>
-              <tr>
-                <th>Tekil</th><th>İkil</th><th>Çoğul</th>
-                <th>Tekil</th><th>İkil</th><th>Çoğul</th>
-                <th>Tekil</th><th>İkil</th><th>Çoğul</th>
+                <th class="efh-kose"></th>
+                <th>Tekil</th>
+                <th>İkil</th>
+                <th>Çoğul</th>
               </tr>
             </thead>
             <tbody id="efhGovde"></tbody>
           </table>
         </div>
 
-        <div class="efh-ornek">
+        <div class="efh-tek" id="efhTabloMazi" hidden>
+          <div class="tc-irab-kutu">
+            <table class="tc-irab efh-tablo efh-tablo-yan">
+              <thead><tr><th class="efh-kose"></th><th>Tekil</th><th>İkil</th><th>Çoğul</th></tr></thead>
+              <tbody id="efhMaziGovde"></tbody>
+            </table>
+          </div>
+          <p class="efh-yan-not">Mâzi fiil <b>mebnî</b>dir: cümledeki görevi ne olursa olsun sonu
+            değişmez, nasb ve cezm edatları da işlemez. İ'rab yalnız muzaride —
+            kıyaslamak için <b>Muzari</b> sekmesine dön.</p>
+        </div>
+
+        <div class="efh-tek" id="efhTabloEmir" hidden>
+          <div class="tc-irab-kutu">
+            <table class="tc-irab efh-tablo efh-tablo-yan">
+              <thead><tr><th class="efh-kose"></th><th>Tekil</th><th>İkil</th><th>Çoğul</th></tr></thead>
+              <tbody id="efhEmirGovde"></tbody>
+            </table>
+          </div>
+          <p class="efh-yan-not">Emir yalnız <b>muhâtab</b> ve <b>muhâtaba</b>da çekilir; mebnîdir,
+            sonu değişmez. Öteki kişilere emir, lâm ile muzariden kurulur —
+            Muzari sekmesinde Meczum'u açıp <span dir="rtl">لِـ</span> edatını seçerek dene.</p>
+        </div>
+
+        <div class="efh-ornek" id="efhOrnekBlok">
           <div class="efh-ornek-bas">Örnek cümle
             <span class="efh-ornek-kisi" id="efhOrnekKisi"></span>
           </div>
@@ -561,7 +583,7 @@
 
         <!-- Ayrıntılar bilerek EN ALTTA: tablo ile örnek cümle kaydırmadan
              görünsün, açıklamalar merak edilince aşağıda bulunsun. -->
-        <div class="efh-detay">
+        <div class="efh-detay" id="efhDetay">
           <p class="efh-not" id="efhNot"></p>
           <div class="efh-lejant">
             <span class="efh-lj efh-lj-harf">Beş fiil — nûn ile</span>
@@ -572,7 +594,7 @@
           <p class="efh-giris">Efâl-i hamse (beş fiil) harekeyle değil <b>nûn</b> ile i'rab alır:
             <span dir="rtl" class="tc-ar-ic">ـَانِ · ـُونَ · ـِينَ</span> —
             merfuda <b>nûn durur</b>, mansub ve meczumda <b>düşer</b>.
-            Hâl kutularına, edat listesine ve tablodaki fiillere basarak dene. Mâzi ile emir mebnîdir: edat gelse de sonları değişmez — üçü yan yana dursun ki fark görünsün.</p>
+            Mansub ya da Meczum'a basınca önce <b>edat seçilir</b>; dönüşüm, seçtiğin edatla ilk fiilde başlar, kalanlar <b>dokunuldukça</b> dönüşür — altın nabız sıranın sende olduğunu söyler. Hâl kutusuna ikinci basış tümünü bitirir; sonunda <b>harf değişen beş fiil</b>, sen başka yere geçinceye kadar mavi nabızla vurgulu kalır. Mâzi ve Emir kendi sekmelerinde tam boy durur — ikisi de mebnîdir, edat işlemez.</p>
         </div>
       </div>
 
