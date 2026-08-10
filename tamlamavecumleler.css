@@ -647,33 +647,34 @@ td.tc-secili .tc-cesit-not{ display:block; }
   display:none; align-items:center; justify-content:center; padding:2.5vh 0;
 }
 .tc-bp-perde.acik{ display:flex; }
+/* Balon tahtadan okunacak: hem kutu hem yazı belirgin biçimde büyütüldü. */
 .tc-bp{
-  background:#fff; border-radius:16px; max-width:620px; width:100%;
-  max-height:86dvh; overflow-y:auto; padding:16px 20px 20px;
-  box-shadow:0 18px 50px rgba(15,23,42,.32);
-  border-top:8px solid var(--bp-renk,#5B6B7B);
+  background:#fff; border-radius:20px; max-width:1080px; width:94vw;
+  max-height:92dvh; overflow-y:auto; padding:22px 30px 28px;
+  box-shadow:0 22px 60px rgba(15,23,42,.34);
+  border-top:11px solid var(--bp-renk,#5B6B7B);
 }
 .tc-bp-bas{
-  display:flex; align-items:center; gap:10px; margin:0 0 8px;
-  color:var(--bp-renk,#1F2937); font-weight:700; font-size:clamp(1.05rem,2.6vh,1.5rem);
+  display:flex; align-items:center; gap:14px; margin:0 0 14px;
+  color:var(--bp-renk,#1F2937); font-weight:700; font-size:clamp(1.5rem,4vh,2.4rem);
 }
 .tc-bp-bas span{ flex:1 1 auto; }
 .tc-bp-ar{
   direction:rtl; font-family:'Arakom','Traditional Arabic',serif;
   font-size:1.25em; line-height:1.4; color:var(--bp-renk,#1F2937);
 }
-.tc-bp p{ margin:0 0 9px; color:#41505F; line-height:1.6; font-size:clamp(.82rem,1.85vh,1.05rem); }
+.tc-bp p{ margin:0 0 13px; color:#41505F; line-height:1.6; font-size:clamp(1.15rem,2.9vh,1.65rem); }
 .tc-bp p b{ color:#1F2937; }
 .tc-bp-etiket{
   display:inline-block; background:var(--bp-renk,#5B6B7B); color:#fff;
-  border-radius:6px; padding:1px 9px; font-weight:700; margin-bottom:3px;
-  font-size:clamp(.68rem,1.55vh,.86rem);
+  border-radius:8px; padding:3px 14px; font-weight:700; margin-bottom:5px;
+  font-size:clamp(.95rem,2.3vh,1.3rem);
 }
 .tc-bp-ornek{
   direction:rtl; text-align:center; font-family:'Arakom','Traditional Arabic',serif;
-  font-size:clamp(1.5rem,4.2vh,2.5rem); line-height:1.7; color:#1F2937;
-  background:var(--zemin); border:1px solid var(--cerceve); border-radius:10px;
-  padding:8px 10px; margin:2px 0 9px;
+  font-size:clamp(2rem,5.6vh,3.4rem); line-height:1.7; color:#1F2937;
+  background:var(--zemin); border:1px solid var(--cerceve); border-radius:12px;
+  padding:12px 14px; margin:4px 0 13px;
 }
 .tc-bp [dir="rtl"].tc-ic{ font-family:'Arakom','Traditional Arabic',serif; font-size:1.3em; line-height:1; }
 
@@ -1820,10 +1821,29 @@ td.tc-secili .tc-cesit-not{ display:block; }
 .th-ust{ margin:0 0 12px; color:var(--soluk); font-weight:700; font-size:clamp(.95rem,2.5vh,1.4rem); }
 .th-sayac{ margin-inline-start:8px; padding:3px 12px; border-radius:999px;
   background:#F1F4F8; color:#5B6675; font-size:.85em; }
+/* Arapça cümle ve Türkçesi TEK kutuda: karşılıklı kelimeler aynı rengi
+   alıyor, göz ikisini tek bakışta eşleştiriyor (sunumun 17. slaydındaki
+   renk eşlemesinin işleyen hâli). */
+/* --olcek: cümle uzadıkça punto küçülür. Sabit puntoda uzun cümle
+   sayfayı taşırıyordu; kısa cümleler ise iri kalabilsin diye ölçek
+   kelime sayısına bağlandı (bkz. basla). */
 .th-cumle{
-  display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:center; gap:6px 10px;
-  border:2px solid var(--cerceve); border-radius:16px; padding:16px 18px 10px; background:#FBFCFE;
+  --olcek:1;
+  border:2px solid var(--cerceve); border-radius:16px; padding:14px 18px 12px; background:#FBFCFE;
 }
+.th-ar-satir{
+  display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:center; gap:6px 10px;
+}
+/* Türkçe cümle de tahtadan okunacak: Arapçanın hemen altında ve iri.
+   Arapçadan bir tık küçük kalıyor — asıl bakılacak şey yukarısı. */
+.th-tr-satir{
+  margin-top:10px; padding-top:12px; border-top:1px dashed var(--cerceve);
+  text-align:center; color:#4B5563; font-weight:700; line-height:1.55;
+  font-size:calc(clamp(1.85rem,6.1vh,3.9rem) * var(--olcek,1));
+}
+.th-tr-p{ --kat:#5B6675; transition:color .2s; }
+.th-tr-p.th-on{ color:var(--kat); }
+.th-tr-p.th-secili{ color:var(--kat); font-weight:800; }
 .th-kelime{
   cursor:pointer; font-family:inherit; background:none; border:2px solid transparent;
   border-radius:12px; padding:4px 10px 2px; display:flex; flex-direction:column;
@@ -1834,27 +1854,37 @@ td.tc-secili .tc-cesit-not{ display:block; }
 .th-kelime:focus-visible{ outline:3px solid var(--kirmizi); outline-offset:2px; }
 .th-ar{
   font-family:'Amiri','Traditional Arabic',serif; direction:rtl;
-  font-size:clamp(1.7rem,5.6vh,3.4rem); line-height:1.7; color:#1E2A38;
+  font-size:calc(clamp(2.3rem,8vh,5.2rem) * var(--olcek,1)); line-height:1.6; color:#1E2A38;
 }
 .th-etiket{
   font-size:clamp(.6rem,1.5vh,.85rem); font-weight:800; letter-spacing:.02em;
   color:var(--kat); min-height:1em;
 }
+/* Renkler açılıştan itibaren TAM: soluk hâl kalktı. Çözülmüş kelimeyi
+   ayıran şey renk değil, çerçeve + zemin + altındaki etiket. */
+.th-kelime.th-on .th-ar{ color:var(--kat); }
 .th-kelime.th-secili{ background:color-mix(in srgb, var(--kat) 10%, #fff); border-color:var(--kat); }
 .th-kelime.th-secili .th-ar{ color:var(--kat); }
 @keyframes thSalla{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
 .th-kelime.th-yanlis{ animation:thSalla .3s ease; background:#FCF3F3; }
-.th-tr{ margin:10px 2px 18px; color:#5B6675; font-weight:600;
-  font-size:clamp(.95rem,2.4vh,1.4rem); text-align:center; }
-.th-govde{ display:grid; grid-template-columns:minmax(260px,.9fr) 1.4fr; gap:22px; align-items:start; }
-.th-liste{ list-style:none; margin:0; padding:0; display:grid; gap:5px; }
-.th-oge{
-  display:flex; align-items:flex-start; gap:10px; padding:7px 12px; border-radius:10px;
-  border:2px solid transparent; color:#26313F; font-weight:700;
-  font-size:clamp(.82rem,2vh,1.1rem); --kat:#8A94A3;
+.th-govde{ margin-top:18px; }
+/* Liste iki sütun ve İRİ: sekiz soru tahtadan okunacak. */
+.th-liste{
+  margin:22px 0 0; padding:18px 0 0; border-top:1px solid var(--cerceve);
+  display:grid; grid-template-columns:1fr 1fr; gap:6px 26px;
 }
+/* Her öge artık bir DÜĞME: dokununca kendi hâl/alâmet künyesini açıyor. */
+.th-oge{
+  width:100%; text-align:start; font-family:inherit; cursor:pointer; background:none;
+  display:flex; align-items:flex-start; gap:12px; padding:9px 14px; border-radius:12px;
+  border:2px solid transparent; color:#26313F; font-weight:700;
+  font-size:clamp(1.3rem,2.5vh,1.75rem); --kat:#8A94A3;
+  transition:background .15s, border-color .15s;
+}
+.th-oge:hover{ border-color:var(--kat); }
+.th-oge:focus-visible{ outline:3px solid var(--kat); outline-offset:2px; }
 .th-no{
-  flex:none; width:1.85em; height:1.85em; border-radius:50%; display:flex;
+  flex:none; width:1.5em; height:1.5em; border-radius:50%; display:flex;
   align-items:center; justify-content:center; background:var(--kat); color:#fff;
   font-weight:800; font-size:.9em;
 }
@@ -1862,9 +1892,15 @@ td.tc-secili .tc-cesit-not{ display:block; }
 .th-ad{ display:block; }
 /* Sorulmayan kategorinin gerekçesi ögenin ALTINDA: soru akışının arasına
    sıkıştırılsaydı sırası gelmeyenin notu hiç görünmezdi. */
-.th-aciklama{ font-weight:600; color:#6B7280; line-height:1.45; font-size:.78em; }
-.th-durum{ flex:none; color:var(--kat); font-weight:800; font-size:.9em; line-height:1.85; }
-.th-oge.simdi{ border-color:var(--kat); background:color-mix(in srgb, var(--kat) 9%, #fff); }
+.th-aciklama{ font-weight:600; color:#6B7280; line-height:1.4; font-size:.68em; }
+.th-durum{ flex:none; color:var(--kat); font-weight:800; font-size:.8em; line-height:1.7; }
+/* SORULAN öge tereddüde yer bırakmasın: kendi rengiyle dolu, yazısı ak. */
+.th-oge.simdi{
+  border-color:var(--kat); background:var(--kat); color:#fff;
+  box-shadow:0 5px 16px color-mix(in srgb, var(--kat) 42%, transparent);
+}
+.th-oge.simdi .th-no{ background:#fff; color:var(--kat); }
+.th-oge.simdi .th-aciklama, .th-oge.simdi .th-durum{ color:rgba(255,255,255,.88); }
 .th-oge.tamam .th-ad{ color:#7A8494; }
 .th-oge.yok, .th-oge.gizli{ opacity:.42; }
 .th-oge.yok .th-no, .th-oge.gizli .th-no{ background:#C3CAD3; }
@@ -1884,6 +1920,14 @@ td.tc-secili .tc-cesit-not{ display:block; }
 }
 .th-not[hidden]{ display:none !important; }
 .th-dogru{ background:#EAF8F1; border-color:#BEE6D3; color:#14503A; }
+/* Bulunanlar tek satırda, her biri kendi renginde. */
+.th-bulunan{
+  margin:10px 0 0; display:flex; flex-wrap:wrap; gap:4px 20px; line-height:1.5;
+}
+.th-bulunan[hidden]{ display:none !important; }
+.th-bul{ --kat:#5B6675; color:var(--kat); font-weight:600;
+  font-size:clamp(.95rem,2.4vh,1.35rem); }
+.th-bul b{ font-weight:800; }
 /* İpucu ceza değil yol gösterici: sarı, uyarı kırmızısı değil. */
 .th-ipucu{ background:#FFF8E8; border-color:#F3DCA6; color:#6B5115; }
 .th-bilgi{ background:#EEF3FB; border-color:#C9D9F0; color:#24456F; }
@@ -1904,13 +1948,18 @@ td.tc-secili .tc-cesit-not{ display:block; }
 .th-ikincil:hover{ border-color:var(--kirmizi); color:var(--kirmizi); background:#FFF6F6; }
 .th-dugme[hidden], .th-ikincil[hidden]{ display:none !important; }
 @media (max-width:900px){
-  .th-govde{ grid-template-columns:1fr; gap:16px; }
-  .th-liste{ grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
+  .th-oge{ font-size:clamp(1.05rem,2.2vh,1.4rem); }
 }
 @media (max-width:620px){
-  .th-cumle{ padding:12px 10px 8px; gap:4px 6px; }
+  .th-liste{ grid-template-columns:1fr; gap:4px; margin-top:16px; padding-top:14px; }
+  .th-oge{ font-size:1rem; padding:7px 10px; }
+}
+@media (max-width:620px){
+  .th-cumle{ padding:11px 10px 10px; }
+  .th-ar-satir{ gap:4px 6px; }
+  .th-tr-satir{ font-size:clamp(1.25rem,3.8vh,2rem); }
   .th-ar{ font-size:clamp(1.45rem,4.6vh,2.4rem); }
-  .th-oge{ padding:6px 9px; font-size:.85rem; }
+
 }
 
 /* ==========================================================================
@@ -1920,7 +1969,11 @@ td.tc-secili .tc-cesit-not{ display:block; }
    de kurar.
    ========================================================================== */
 .esm-kutu{ overflow-x:auto; border-radius:14px; }
-.esm-tablo{ width:100%; border-collapse:separate; border-spacing:0; }
+/* Sütun sırası SAĞDAN SOLA: İsim en sağda, sonra merfu · mansub · mecrur.
+   Arapçanın kendi yönüyle aynı; kelime hangi hâlde nasıl bittiğini
+   okurken göz sağdan sola gidiyor. Hücre içleri ortalı olduğu için
+   yön değişimi metin hizasını bozmuyor. */
+.esm-tablo{ width:100%; border-collapse:separate; border-spacing:0; direction:rtl; }
 .esm-tablo th, .esm-tablo td{ border:1px solid var(--cerceve); }
 .esm-tablo thead th{
   padding:10px 8px; color:#fff; text-align:center; line-height:1.25;
@@ -1991,4 +2044,28 @@ td.tc-secili .tc-cesit-not{ display:block; }
   .esm-tablo thead .esm-bas{ width:70px; }
   .esm-b{ padding:8px 6px; }
   .esm-ar{ font-size:clamp(1.05rem,3.2vh,1.6rem); }
+}
+
+/* Kategori künyesi balonda: hâl · alâmet · örnek üçlüsü satır satır. */
+.th-kunye-no{
+  display:inline-flex; width:1.6em; height:1.6em; border-radius:50%; color:#fff;
+  align-items:center; justify-content:center; font-weight:800; font-size:.8em;
+  vertical-align:.1em; margin-inline-end:4px;
+}
+.th-kunye{ display:grid; gap:9px; margin:14px 0 6px; }
+.th-kunye-s{
+  display:grid; grid-template-columns:1.15fr .9fr 1.1fr; gap:14px; align-items:baseline;
+  padding:12px 18px; border-radius:12px; background:#F4F6F9;
+  font-size:clamp(1.1rem,2.8vh,1.6rem);
+}
+.th-kunye-a{ font-weight:700; color:#26313F; }
+.th-kunye-h{ font-weight:800; color:var(--bp-renk, #4B5563); }
+.th-kunye-o{
+  font-family:'Amiri','Traditional Arabic',serif; direction:rtl; text-align:end;
+  font-size:clamp(1.5rem,3.8vh,2.2rem); line-height:1.6; color:#1E2A38;
+}
+.th-kunye-dip{ color:#4B5563; }
+@media (max-width:620px){
+  .th-kunye-s{ grid-template-columns:1fr; gap:2px; }
+  .th-kunye-o{ text-align:start; }
 }

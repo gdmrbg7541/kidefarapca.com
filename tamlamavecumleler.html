@@ -715,12 +715,20 @@
          şeyi öğretiyor: mecrur yapan şey o harftir. -->
     <section class="tc-bolum" data-bolum="tahlil" hidden>
       <p class="th-ust" id="thUst"></p>
-      <div class="th-cumle" id="thCumle" dir="rtl"></div>
-      <p class="th-tr" id="thTr"></p>
+      <!-- Arapça cümle ve Türkçesi AYNI kutuda: karşılıklı kelimeler aynı
+           rengi alınca göz ikisini tek bakışta eşleştiriyor. Ayrı kutularda
+           dursalardı renk eşlemesi kurulmuş olmazdı. -->
+      <div class="th-cumle" id="thCumle">
+        <div class="th-ar-satir" id="thArSatir" dir="rtl"></div>
+        <div class="th-tr-satir" id="thTrSatir" dir="ltr"></div>
+      </div>
       <div class="th-govde">
-        <ol class="th-liste" id="thListe"></ol>
         <div class="th-sag">
           <p class="th-soru" id="thSoru"></p>
+          <!-- Bulunanlar TEK SATIRDA birikiyor: "Olay — gitti · Özne — öğretmen".
+               Her doğru cevapta koca bir yeşil kutu açmak, ekranın yarısını
+               tek bir onay için harcıyordu. -->
+          <p class="th-bulunan" id="thBulunan" hidden></p>
           <div class="th-not" id="thNot" hidden></div>
           <div class="th-alt">
             <button type="button" class="th-dugme" id="thHal" hidden>Hâlleri göster &#10095;</button>
@@ -728,6 +736,9 @@
             <button type="button" class="th-ikincil" id="thBastan" hidden>Baştan</button>
           </div>
         </div>
+        <!-- Sekiz soruluk liste EN ALTTA ve İKİ SÜTUN: yöntemin tamamı
+             tek bakışta görünsün ama cümlenin yerini daraltmasın. -->
+        <div class="th-liste" id="thListe" role="list"></div>
       </div>
     </section>
 
