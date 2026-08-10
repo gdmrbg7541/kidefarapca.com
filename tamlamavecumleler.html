@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tamlama ve Cümleler</title>
+<!-- Sekme ikonu: dâd harfi — i'rab ikonunun küçük hâli. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='12' y='17.5' text-anchor='middle' font-size='16' font-weight='bold' fill='%23C00000'>%D8%B6%D9%8F</text></svg>">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -13,17 +15,44 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="arakom.css?v=1">
-<link rel="stylesheet" href="tamlamavecumleler.css?v=1">
+<link rel="stylesheet" href="tamlamavecumleler.css?v=20260810a">
 </head>
 <body>
 
 <header class="tc-ust">
   <a href="index.html" class="tc-geri" id="tcGeri" title="Geri" aria-label="Geri">&#10094;</a>
-  <h1 class="tc-ustad"><span class="tc-emoji">🦾</span> Pekiştirelim – Tamlama ve Cümleler</h1>
+  <h1 class="tc-ustad">
+    <!-- Emoji yerine kendi SVG'miz: her işletim sisteminde aynı çizilir,
+         satır yüksekliğiyle oynamaz ve hafifçe canlanır. -->
+    <svg class="tc-ikon tc-ik-guc" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g class="tci-halter">
+        <rect x="9.2" y="10.7" width="5.6" height="2.6" rx="1.3" fill="#C00000"/>
+        <rect x="5.7" y="8.1" width="2.7" height="7.8" rx="1.3" fill="#E4572E"/>
+        <rect x="15.6" y="8.1" width="2.7" height="7.8" rx="1.3" fill="#E4572E"/>
+        <rect x="3.2" y="9.7" width="2" height="4.6" rx="1" fill="#C00000"/>
+        <rect x="18.8" y="9.7" width="2" height="4.6" rx="1" fill="#C00000"/>
+      </g>
+      <path class="tci-kivilcim" fill="#F1A208"
+            d="M19.6 2.2l.72 1.62 1.62.72-1.62.72-.72 1.62-.72-1.62-1.62-.72 1.62-.72z"/>
+    </svg>
+    <span>Pekiştirelim – Tamlama ve Cümleler</span>
+  </h1>
   <!-- "Anlatım" düğmesi kaldırıldı: büyütme artık düğmeyle değil,
        doğrudan kutuya dokunarak başlıyor. -->
-  <button type="button" class="tc-irab-ac" id="tcTestAc">📝 Test</button>
-  <button type="button" class="tc-irab-ac" id="tcIrabAc">📐 İ'rab</button>
+  <button type="button" class="tc-irab-ac" id="tcTestAc">
+    <svg class="tc-ikon tc-ik-test" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+         fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 3.3h8.2l4 4V19a1.8 1.8 0 0 1-1.8 1.8H6A1.8 1.8 0 0 1 4.2 19V5.1A1.8 1.8 0 0 1 6 3.3z"/>
+      <path d="M14.1 3.5v3.9h4"/>
+      <path class="tci-satir tci-s1" pathLength="1" d="M7.7 11.2h5"/>
+      <path class="tci-satir tci-s2" pathLength="1" d="M7.7 14.3h6.6"/>
+      <path class="tci-tik" pathLength="1" d="M7.7 17.4l1.7 1.7 3.3-3.5"/>
+    </svg><span>Test</span></button>
+  <button type="button" class="tc-irab-ac" id="tcIrabAc">
+    <!-- İ'rab ikonu: DÂD harfi (Arapça "dâd dili"dir). Hareke tek başına
+         yazılsa noktalı daire çıkardı; bu yüzden harf, harekesiyle birlikte
+         üç kopya yazılıp çapraz geçişle döndürülüyor: ضُ → ضَ → ضِ -->
+    <svg class="tc-ikon tc-ik-irab" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><text class="tci-dad tci-hrk tci-otre" x="11.5" y="16.5">ضُ</text><text class="tci-dad tci-hrk tci-ustun" x="11.5" y="16.5">ضَ</text><text class="tci-dad tci-hrk tci-esre" x="11.5" y="16.5">ضِ</text></svg><span>İ'rab</span></button>
 </header>
 
 <main class="tc-sar">
@@ -267,7 +296,15 @@
 <div class="tc-perde sv-perde" id="tcSinavPerde" aria-hidden="true">
   <div class="tc-pop tc-sinav-pop" role="dialog" aria-modal="true" aria-label="Test">
     <div class="tc-pop-bas">
-      <span>📝 Test – 10 Soruluk Tur</span>
+      <svg class="tc-ikon tc-ik-test tc-ik-canli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+           fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3.3h8.2l4 4V19a1.8 1.8 0 0 1-1.8 1.8H6A1.8 1.8 0 0 1 4.2 19V5.1A1.8 1.8 0 0 1 6 3.3z"/>
+        <path d="M14.1 3.5v3.9h4"/>
+        <path class="tci-satir tci-s1" pathLength="1" d="M7.7 11.2h5"/>
+        <path class="tci-satir tci-s2" pathLength="1" d="M7.7 14.3h6.6"/>
+        <path class="tci-tik" pathLength="1" d="M7.7 17.4l1.7 1.7 3.3-3.5"/>
+      </svg>
+      <span>Test – 10 Soruluk Tur</span>
       <button type="button" class="tc-kapat" id="tcSinavKapat" title="Kapat" aria-label="Kapat">&times;</button>
     </div>
     <div class="tc-pop-govde sv-govde">
@@ -322,26 +359,31 @@
 <div class="tc-perde" id="tcPerde" aria-hidden="true">
   <div class="tc-pop" role="dialog" aria-modal="true" aria-label="İ'rab">
     <div class="tc-pop-bas">
-      <span>📐 İ'rab – Sonlar ve Özet</span>
+      <svg class="tc-ikon tc-ik-irab tc-ik-canli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><text class="tci-dad tci-hrk tci-otre" x="11.5" y="16.5">ضُ</text><text class="tci-dad tci-hrk tci-ustun" x="11.5" y="16.5">ضَ</text><text class="tci-dad tci-hrk tci-esre" x="11.5" y="16.5">ضِ</text></svg>
+      <span>İ'rab – Sonlar, Örnekler ve Test</span>
+      <!-- Bölüm sekmeleri gövdeden BAŞLIK satırına alındı: panel tam ekran
+           olduğu için sekmeler hep göz hizasında kalsın, içerik kaydırılırken
+           yukarı kaçmasın. -->
+      <div class="tc-ust-sek" id="tcUstSek" role="tablist" aria-label="İ'rab bölümleri">
+        <button type="button" class="tc-us aktif" data-bolum="tablolar" role="tab" aria-selected="true">Tablolar</button>
+        <button type="button" class="tc-us" data-bolum="havuz" role="tab" aria-selected="false">Örnekler</button>
+        <button type="button" class="tc-us" data-bolum="ozet" role="tab" aria-selected="false">Özet</button>
+        <button type="button" class="tc-us tc-us-test" data-bolum="test" role="tab" aria-selected="false">Test</button>
+      </div>
       <button type="button" class="tc-kapat" id="tcKapat" title="Kapat" aria-label="Kapat">&times;</button>
     </div>
     <div class="tc-pop-govde">
 
     <!-- Üç bölüm yeter: tablolar · örnekler · özet. Terimlerin ⓘ
          tuşları ayrı bir şeritte durmuyor; geçtikleri yere gömüldü. -->
-    <div class="tc-ust-sek" id="tcUstSek" role="tablist" aria-label="İ'rab bölümleri">
-      <button type="button" class="tc-us aktif" data-bolum="tablolar" role="tab" aria-selected="true">Tablolar</button>
-      <button type="button" class="tc-us" data-bolum="havuz" role="tab" aria-selected="false">Örnekler</button>
-      <button type="button" class="tc-us" data-bolum="ozet" role="tab" aria-selected="false">Özet</button>
-    </div>
 
     <!-- ================= 1 · TABLOLAR ================= -->
     <section class="tc-bolum" data-bolum="tablolar">
       <div class="tc-alt-sek" id="tcTabloSek" role="tablist" aria-label="Tablo türü">
-        <button type="button" class="tc-asd aktif" data-panel="isim" role="tab" aria-selected="true">
-          <span dir="rtl">اِسْم</span> İsim</button>
-        <button type="button" class="tc-asd" data-panel="fiil" role="tab" aria-selected="false">
-          <span dir="rtl">فِعْل</span> Fiil</button>
+        <!-- Başlıklar Arapçasız: tek satırda kalsınlar, panel yüksek başlamasın. -->
+        <button type="button" class="tc-asd aktif" data-panel="isim" role="tab" aria-selected="true">İsim</button>
+        <button type="button" class="tc-asd" data-panel="fiil" role="tab" aria-selected="false">Fiil</button>
+        <button type="button" class="tc-asd tc-asd-h" data-panel="hamse" role="tab" aria-selected="false">Efâl-i hamse</button>
         <span class="tc-asd-ayrac">bir kelime üzerinde</span>
         <button type="button" class="tc-asd tc-asd-k" data-panel="kelime" data-sev="lafzen" role="tab" aria-selected="false">
           Lafzen <span class="tc-i" data-terim="lafzen" title="Lafzen nedir?">i</span></button>
@@ -446,6 +488,92 @@
           Son sütun üç satırda da aynı: <span dir="rtl" class="tc-ar-ic">نَ</span> alan fiil <b>mebnî</b> olur,
           hâli <b>mahallen</b> okunur.
         </p>
+      </div>
+
+      <!-- ================= EFÂL-İ HAMSE — CANLI TABLO =================
+           Beş fiil, anlatılarak değil ÇEVRİLEREK öğreniliyor: öğrenci
+           üstteki Merfu / Mansub / Meczum kutusuna basar, tablodaki yedi
+           fiilin sonu gözünün önünde değişir. Mansub ve meczumda seçilen
+           edat her fiilin başına eklenir; nûn düşerken aşağı kayıp
+           söner, yeni son yerine oturur.
+           Alttaki tek satırlık örnek, oklarla kişiler arasında gezer ve
+           tabloda o kişinin satırını vurgular — tablo ile cümle arasındaki
+           bağ hep görünür kalsın diye. Her şey elle: kendiliğinden hiçbir
+           şey değişmez. -->
+      <div class="tc-tablo-panel" data-panel="hamse" hidden>
+        <div class="efh-kumanda">
+          <div class="efh-hal" id="efhHal" role="tablist" aria-label="İ'rab hâli">
+            <button type="button" class="efh-h aktif" data-hal="merfu"  role="tab" aria-selected="true">Merfu</button>
+            <button type="button" class="efh-h" data-hal="mansub" role="tab" aria-selected="false">Mansub</button>
+            <button type="button" class="efh-h" data-hal="meczum" role="tab" aria-selected="false">Meczum</button>
+          </div>
+
+          <div class="efh-edat" id="efhEdat" hidden>
+            <span class="efh-edat-ad" id="efhEdatAd">Nasb edatları</span>
+            <!-- Edatlar LİSTE hâlinde: dördü birden görünür, istenen doğrudan
+                 seçilir. Ok döngüsü kalktı — göz karşılaştırabilsin diye. -->
+            <div class="efh-edat-liste" id="efhEdatListe" role="tablist" aria-label="Edatlar"></div>
+          </div>
+        </div>
+
+        <!-- 5 satır (gâib → mütekellim) × 3 sütun (tekil/ikil/çoğul) = 15 kutu.
+             Kutuların içinde YALNIZ fiil var; kişi ve sayı adları kenarda
+             başlık olarak duruyor. Tablo sağdan sola: satır adı sağda,
+             tekil ondan sonra, çoğul en solda. -->
+        <div class="tc-irab-kutu">
+          <table class="tc-irab efh-tablo">
+            <!-- Üç tablo tek çatıda, kişi sütunu ortak. RTL sırayla:
+                 sağda MÂZİ (mebnî), ortada MUZARİ (mu'reb — canlı tablo),
+                 solda EMİR (mebnî; yalnız muhâtab ve muhâtaba çekilir).
+                 Ders şu karşıtlıkta: edat gelince yalnız ORTA değişir. -->
+            <thead>
+              <tr>
+                <th class="efh-kose" rowspan="2"></th>
+                <th colspan="3" class="efh-grup efh-grup-mazi">Mâzi <small>mebnî — değişmez</small></th>
+                <th colspan="3" class="efh-grup efh-grup-muzari">Muzari <small>mu'reb — i'rab alır</small></th>
+                <th colspan="3" class="efh-grup efh-grup-emir">Emir <small>mebnî — değişmez</small></th>
+              </tr>
+              <tr>
+                <th>Tekil</th><th>İkil</th><th>Çoğul</th>
+                <th>Tekil</th><th>İkil</th><th>Çoğul</th>
+                <th>Tekil</th><th>İkil</th><th>Çoğul</th>
+              </tr>
+            </thead>
+            <tbody id="efhGovde"></tbody>
+          </table>
+        </div>
+
+        <div class="efh-ornek">
+          <div class="efh-ornek-bas">Örnek cümle
+            <span class="efh-ornek-kisi" id="efhOrnekKisi"></span>
+          </div>
+          <div class="efh-ornek-sat">
+            <div class="efh-oklar">
+              <button type="button" class="efh-ok" data-ornek="-1" title="Önceki kişi" aria-label="Önceki kişi">&#9650;</button>
+              <button type="button" class="efh-ok" data-ornek="1" title="Sonraki kişi" aria-label="Sonraki kişi">&#9660;</button>
+            </div>
+            <div class="efh-ornek-ic">
+              <div class="efh-ornek-ar" id="efhOrnekAr" dir="rtl"></div>
+              <div class="efh-ornek-tr" id="efhOrnekTr"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ayrıntılar bilerek EN ALTTA: tablo ile örnek cümle kaydırmadan
+             görünsün, açıklamalar merak edilince aşağıda bulunsun. -->
+        <div class="efh-detay">
+          <p class="efh-not" id="efhNot"></p>
+          <div class="efh-lejant">
+            <span class="efh-lj efh-lj-harf">Beş fiil — nûn ile</span>
+            <span class="efh-lj efh-lj-hareke">Hareke ile</span>
+            <span class="efh-lj efh-lj-mebni">Mebnî — değişmez</span>
+            <span class="efh-lj-not" id="efhLejantNot"></span>
+          </div>
+          <p class="efh-giris">Efâl-i hamse (beş fiil) harekeyle değil <b>nûn</b> ile i'rab alır:
+            <span dir="rtl" class="tc-ar-ic">ـَانِ · ـُونَ · ـِينَ</span> —
+            merfuda <b>nûn durur</b>, mansub ve meczumda <b>düşer</b>.
+            Hâl kutularına, edat listesine ve tablodaki fiillere basarak dene. Mâzi ile emir mebnîdir: edat gelse de sonları değişmez — üçü yan yana dursun ki fark görünsün.</p>
+        </div>
       </div>
 
       <div class="tc-tablo-panel" data-panel="kelime" hidden>
@@ -613,12 +741,77 @@
     </section>
     </section>
 
+    <!-- ================= 5 · İ'RAB TESTİ =================
+         Sorular ayrı bir havuzdan gelmiyor: yukarıdaki ÖRNEK HAVUZU'nun
+         kendisinden üretiliyor. Böylece test ile örnekler hiçbir zaman
+         birbirinden ayrı düşmez — havuza bir örnek eklendiğinde soru da
+         kendiliğinden oluşur. Dört soru tipi, havuzun dört etiketine
+         karşılık gelir: hâl · basamak · alâmet · görev.
+         Cevaptan sonra havuzdaki i'rab cümlesi açıklama olarak gösterilir;
+         yanlış cevap da öğretsin diye. -->
+    <section class="tc-bolum" data-bolum="test" hidden>
+
+      <div class="ti-ekran" id="tiAcilis">
+        <h3 class="tc-oz-bas ti-bas">
+          <svg class="tc-ikon tc-ik-hedef tc-ik-canli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+               fill="none" stroke="currentColor" stroke-width="1.9">
+            <circle class="tci-halka tci-h1" cx="12" cy="12" r="8.4"/>
+            <circle class="tci-halka tci-h2" cx="12" cy="12" r="4.8"/>
+            <circle class="tci-merkez" cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/>
+          </svg>
+          İ'rab Testi
+        </h3>
+        <p class="tc-oz-gir">
+          Sorular yukarıdaki <b>örnek havuzundan</b> üretilir. Her tur <b>10 soru</b>,
+          her doğru <b>10 puan</b>. Cevabı işaretleyince o örneğin <b>i'rab açıklaması</b> açılır —
+          yanlış yaptığın soru da sana bir şey öğretsin diye.
+        </p>
+
+        <div class="ti-secim" id="tiSecim" role="group" aria-label="Soru tipi">
+          <span class="tc-fl-ad">Ne sorulsun?</span>
+          <button type="button" class="ti-sec aktif" data-kip="hepsi">Karışık</button>
+          <button type="button" class="ti-sec" data-kip="hal">Hâl</button>
+          <button type="button" class="ti-sec" data-kip="basamak">Nasıl görünüyor?</button>
+          <button type="button" class="ti-sec" data-kip="alamet">Alâmet</button>
+          <button type="button" class="ti-sec" data-kip="gorev">Görev</button>
+        </div>
+
+        <p class="ti-havuz" id="tiHavuz"></p>
+        <button type="button" class="ti-basla" id="tiBasla">Teste Başla</button>
+      </div>
+
+      <div class="ti-ekran" id="tiSoru" hidden>
+        <div class="ti-ust">
+          <span class="ti-adim" id="tiAdim">Soru 1 / 10</span>
+          <span class="ti-cubuk"><i id="tiDolu"></i></span>
+          <span class="ti-puan" id="tiPuan">0 puan</span>
+        </div>
+        <p class="ti-yonerge" id="tiYonerge"></p>
+        <div class="ti-sahne" id="tiSahne"></div>
+        <div class="ti-siklar" id="tiSiklar"></div>
+        <div class="ti-aciklama" id="tiAciklama" hidden></div>
+        <button type="button" class="ti-sonraki" id="tiSonraki" hidden>Sonraki &#10095;</button>
+      </div>
+
+      <div class="ti-ekran ti-sonuc" id="tiSonuc" hidden>
+        <div class="ti-halka" id="tiHalka"><b id="tiSkor">0</b><small>/ 100</small></div>
+        <p class="ti-mesaj" id="tiMesaj"></p>
+        <p class="ti-ozet" id="tiOzet"></p>
+        <div class="ti-yanlislar" id="tiYanlislar"></div>
+        <div class="ti-alt">
+          <button type="button" class="ti-basla" id="tiTekrar">Yeni Tur</button>
+          <button type="button" class="ti-ikincil" id="tiOrnek">Örneklere dön</button>
+        </div>
+      </div>
+
+    </section>
+
     </div>
   </div>
 </div>
 
 <!-- Sayfanın bütün betiği tek dosyada: büyütme motoru + test paneli. -->
-<script src="tamlamavecumleler.js?v=2"></script>
+<script src="tamlamavecumleler.js?v=20260810a"></script>
 <script src="sistem/geri.js?v=20260808a"></script>
 <!-- Görev/ilerleme köprüsü: Test turu bitince 0-100 puan buluta yazılır. -->
 <script src="sistem/gorevkopru.js?v=7"></script>
