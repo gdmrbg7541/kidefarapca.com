@@ -413,7 +413,11 @@ td.tc-secili .tc-cesit-not{ display:block; }
   color:var(--kirmizi); font-weight:700;
   font-size:clamp(1rem,2.6vh,1.5rem);
 }
-.tc-pop-bas span{ flex:1 1 auto; }
+/* Başlık satırı: ikon + ad + ŞERİT + kapat. Yalnız DOĞRUDAN çocuk span
+   hedeflenir — şeridin içindeki span'ler (pil yazıları, alt grup kabı) de
+   kapsansaydı düğmeler dağılırdı. Ad esnemez; kalan bütün genişlik şeridin. */
+.tc-pop-bas > span{ flex:0 0 auto; }
+.tc-bas-ad{ white-space:nowrap; }
 .tc-pop-govde{
   flex:1 1 auto; min-height:0; overflow-y:auto;
   padding:14px 18px 18px; scroll-behavior:smooth;
@@ -1343,6 +1347,12 @@ td.tc-secili .tc-cesit-not{ display:block; }
 @media (max-width:760px){
   .tc-pop-bas .tc-ust-sek{ order:3; flex:1 0 100%; }
 }
+/* İ'rab başlığı TEK SATIR: esneyen tek öge şerittir, ad değil. Yukarıdaki
+   iki kural sınav penceresi için doğru (orada başlık genişleyip kapat
+   düğmesini sağa iter), i'rab penceresinde ise şeridi ortaya itiyordu —
+   bu yüzden burada kimlikle geçersiz kılınıyor. */
+#tcPerde .tc-pop-bas{ flex-wrap:nowrap; }
+#tcPerde .tc-pop-bas > span{ flex:0 0 auto; min-width:0; }
 
 /* Tam ekranda Arapça çok daha iri: tahtadan arka sıradan okunsun. */
 /* Tahtadan arka sıradan okunacak kadar iri; ama örnek cümle satırı da
@@ -1559,4 +1569,426 @@ td.tc-secili .tc-cesit-not{ display:block; }
 #efhHal[hidden], #efhEdat[hidden], #efhDetay[hidden], #efhOrnekBlok[hidden],
 #efhTabloMuzari[hidden], #efhTabloMazi[hidden], #efhTabloEmir[hidden]{
   display:none !important;
+}
+
+/* ==========================================================================
+   YAN TABLO İ'RAB KARTI — mâzi / emir kutusuna dokununca
+   --------------------------------------------------------------------------
+   Mebnî fiilde "i'rabı nedir?" sorusunun cevabı üç parçadır: neyin üzerine
+   mebnî, fâili kim, cümlede mahalli ne. Kart bu üçünü yan yana koyar.
+   ========================================================================== */
+.efh-b-tik{ cursor:pointer; transition:box-shadow .14s, background .14s; }
+.efh-b-tik:hover{ box-shadow:inset 0 0 0 3px rgba(91,35,116,.35); background:#F0EAF6; }
+.efh-b-tik:focus-visible{ outline:3px solid #5B2374; outline-offset:-3px; }
+.efh-b-tik.efh-b-secili{ box-shadow:inset 0 0 0 3px #5B2374; background:#F3ECF9; }
+
+.efh-ik{
+  margin-top:12px; border:2px solid #E3D7EE; border-radius:16px;
+  background:#FBF8FD; padding:14px 18px;
+  animation:tiAc .3s ease-out both;
+}
+.efh-ik[hidden]{ display:none !important; }
+.efh-ik-bas{ display:flex; align-items:center; gap:16px; margin-bottom:10px; }
+.efh-ik-fiil{
+  font-size:clamp(1.7rem,5vh,3rem); font-weight:700; color:#3D1B52; line-height:1.5;
+}
+.efh-ik-kisi{ font-weight:700; color:#5B2374; font-size:clamp(.85rem,2vh,1.1rem); line-height:1.3; }
+.efh-ik-kisi small{ display:block; color:var(--soluk); font-weight:600; font-size:.82em; }
+.efh-ik-sat{
+  display:grid; grid-template-columns:74px 1fr; gap:12px; align-items:start;
+  padding:6px 0; border-top:1px dashed #E3D7EE;
+  font-size:clamp(.78rem,1.9vh,1.02rem); line-height:1.6; color:#3D4754;
+}
+.efh-ik-et{ color:var(--soluk); font-weight:700; }
+.efh-ik-ar{ color:#5B2374; font-weight:700; font-size:1.25em; }
+.efh-ik-neden{ color:#6B7280; }
+.efh-ik-cumle{ display:block; font-size:clamp(1.15rem,3.2vh,1.85rem); line-height:1.7; color:#1E2A38; }
+.efh-ik-cumle b{ color:var(--kirmizi); }
+.efh-ik-tr{ display:block; color:#6B7280; }
+.efh-ik-son{
+  margin:10px 0 0; padding-top:9px; border-top:1px dashed #E3D7EE;
+  color:#4B5563; font-size:clamp(.75rem,1.8vh,.98rem); line-height:1.6;
+}
+
+/* ==========================================================================
+   BÜYÜK TABLO · TÜRKÇE · İNEN ELİF · NÛN-U NİSVE SALLANMASI
+   ========================================================================== */
+/* Ekranı tablo doldursun: fiiller çok daha iri. Örnek cümle ile ayrıntılar
+   bilerek aşağıda kalır; kaydırınca görünürler. */
+.efh-tablo .efh-hucre{ font-size:clamp(2rem,7.6vh,4.8rem); line-height:1.34; }
+.efh-tablo-yan td.efh-b{ font-size:clamp(2rem,7.6vh,4.8rem); line-height:1.34; }
+.efh-hucre .efh-edat-ek{ font-size:.8em; }
+.efh-tablo td{ padding:6px 10px; }
+
+/* Fiilin Türkçesi — hâle ve edata göre değişir. */
+.efh-tr, .efh-b-tr{
+  display:block; direction:ltr; text-align:center; margin-top:2px;
+  color:#6B7280; font-weight:700; line-height:1.35;
+  font-size:clamp(.82rem,2.05vh,1.25rem);
+}
+.efh-hucre.efh-secili .efh-tr{ color:#8A6412; }
+
+/* Nûn düştükten SONRA yukarıdan inen elif (ونَ → وا). */
+.efh-yeni.efh-in{ display:inline-block; animation:efhIn 1.05s 2s cubic-bezier(.22,.9,.3,1) both; }
+@keyframes efhIn{
+  0%  { opacity:0; transform:translateY(-42px) scale(.75); color:#12A05F; }
+  62% { opacity:1; transform:translateY(4px) scale(1.08); color:#12A05F; }
+  100%{ opacity:1; transform:none; }
+}
+
+/* Nûn-u nisve: nûn FÂİLDİR, düşmez — kutu "bana işlemez" der gibi sallanır. */
+.efh-hucre.efh-salla{ animation:efhSalla .95s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes efhSalla{
+  0%, 100%{ transform:translateX(0); }
+  12%{ transform:translateX(-7px); } 26%{ transform:translateX(6px); }
+  40%{ transform:translateX(-5px); } 54%{ transform:translateX(4px); }
+  68%{ transform:translateX(-3px); } 82%{ transform:translateX(2px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .efh-hucre.efh-salla, .efh-yeni.efh-in{ animation:none; }
+}
+
+/* ==========================================================================
+   YATAY BAŞLIK ŞERİDİ — akordiyonlu, BAŞLIK SATIRINDA
+   Ayrı bir satır kaplamaz: panel adının yanında, kalan genişliği alır ve
+   yana kaydırılır. Seçilenin alt ögeleri yanında açılınca öbürleri büzülür.
+   min-width:0 şart — esnek kutu, taşan içeriği yüzünden büyümesin ki
+   kaydırma gerçekten şeridin içinde olsun.
+   ========================================================================== */
+.tc-serit{ flex:1 1 auto; min-width:0; }
+.tc-serit[hidden]{ display:none !important; }
+.tc-serit-ray{
+  display:flex; align-items:center; gap:8px;
+  overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none; scroll-behavior:smooth; padding:2px 0;
+}
+.tc-serit-ray::-webkit-scrollbar{ display:none; }
+.tc-sr{
+  flex:0 0 auto; cursor:pointer; font-family:inherit; font-weight:700;
+  white-space:nowrap; border:2px solid var(--cerceve); background:#fff; color:#4B5563;
+  border-radius:999px; padding:7px 16px; font-size:clamp(.78rem,1.9vh,1rem);
+  transition:border-color .15s, color .15s, background .15s,
+             padding .2s ease, max-width .2s ease, opacity .2s ease;
+}
+.tc-sr:hover{ border-color:var(--kirmizi); color:var(--kirmizi); }
+.tc-sr:focus-visible{ outline:3px solid var(--kirmizi); outline-offset:2px; }
+.tc-sr.aktif{ border-color:var(--kirmizi); background:var(--kirmizi); color:#fff; }
+/* AKORDİYON: bir başlığın altı açıkken öbürleri kapanır — daralır,
+   soluklaşır ve uzun adlar kısa karşılığına düşer (kırpılmaz). */
+.tc-sr-kis{ display:none; }
+.tc-serit.acilmis .tc-sr:not(.aktif){ padding:7px 11px; opacity:.58; }
+.tc-serit.acilmis .tc-sr:not(.aktif) .tc-sr-tam{ display:none; }
+.tc-serit.acilmis .tc-sr:not(.aktif) .tc-sr-kis{ display:inline; }
+.tc-serit-alt{
+  flex:0 0 auto; display:flex; align-items:center; gap:5px;
+  padding:4px 7px; border-radius:999px; background:#F2F4F8;
+}
+.tc-serit-alt[hidden]{ display:none !important; }
+.tc-sra{
+  flex:0 0 auto; cursor:pointer; font-family:inherit; font-weight:700; white-space:nowrap;
+  border:0; background:none; color:#55606D; border-radius:999px;
+  padding:5px 12px; font-size:clamp(.72rem,1.75vh,.92rem);
+  transition:background .15s, color .15s;
+}
+.tc-sra:hover{ color:var(--kirmizi); }
+.tc-sra.aktif{ background:#fff; color:#1E2A38; box-shadow:0 1px 3px rgba(15,23,42,.16); }
+/* Girişte biten adım: küçük bir tik, nerede kalındığı bir bakışta görünsün. */
+.tc-sra.tamam::after{ content:' ✓'; color:#12A05F; font-weight:900; }
+.tc-sra:focus-visible{ outline:2px solid var(--kirmizi); outline-offset:1px; }
+/* Dar ekranda "İ'rab" yazısı yer kaplamasın: dâd ikonu zaten paneli
+   adlandırıyor, kalan bütün genişlik başlıkların olsun. */
+@media (max-width:620px){
+  .tc-bas-ad{ display:none; }
+  .tc-serit-ray{ gap:6px; }
+  .tc-sr{ padding:6px 13px; }
+  .tc-serit.acilmis .tc-sr:not(.aktif){ padding:6px 10px; }
+}
+
+#tcUstSek[hidden], #tcTabloSek[hidden]{ display:none !important; }
+
+/* ==========================================================================
+   GİRİŞ (KEŞİF) — tümevarım basamağı
+   Kendi sekmesinde, tam ekranda: veri de soru da şıklar da TAHTADAN
+   OKUNACAK kadar iri. Ölçüler yüksekliğe (vh) bağlı — projeksiyonda
+   ekran ne kadar büyükse yazı da o kadar büyüyor.
+   ========================================================================== */
+.tc-kesif{ max-width:1180px; margin:0 auto; padding:2px 0 10px; }
+.tc-kesif[hidden]{ display:none !important; }
+.tc-kesif-ust{
+  margin:0 0 14px; color:var(--soluk); font-weight:700;
+  font-size:clamp(1rem,2.7vh,1.6rem);
+}
+.tc-kesif-sayac{
+  margin-inline-start:10px; padding:3px 12px; border-radius:999px;
+  background:#F1F4F8; color:#5B6675; font-size:.85em;
+}
+/* Kanıt: öğrencinin üzerinde düşüneceği şey bu — en iri o olsun. */
+.tc-kesif-veri{
+  display:flex; flex-direction:column; gap:8px;
+  border:2px solid var(--cerceve); border-radius:16px;
+  padding:18px 26px; background:#FBFCFE;
+}
+.tc-kesif-cumle{ display:flex; align-items:baseline; justify-content:space-between; gap:22px; }
+.tc-kesif-ar{
+  font-family:'Amiri','Traditional Arabic',serif; direction:rtl;
+  font-size:clamp(2rem,7vh,4.4rem); line-height:1.75; color:#1E2A38;
+}
+.tc-kesif-tr{
+  direction:ltr; color:#7A8494; font-weight:600; white-space:nowrap;
+  font-size:clamp(.95rem,2.4vh,1.5rem);
+}
+.tc-kesif-soru{
+  margin:20px 0 14px; color:#1E2A38; font-weight:700;
+  font-size:clamp(1.2rem,3.4vh,2.05rem); line-height:1.45;
+}
+.tc-kesif-siklar{ display:grid; gap:10px; }
+.tc-kesif-siklar[hidden]{ display:none !important; }
+.tc-kesif-soru[hidden]{ display:none !important; }
+.tc-kesif-sik{
+  text-align:start; cursor:pointer; font-family:inherit; font-weight:600;
+  border:2px solid var(--cerceve); border-radius:14px; background:#fff; color:#26313F;
+  padding:15px 22px; font-size:clamp(1.05rem,2.9vh,1.65rem); line-height:1.4;
+  transition:border-color .15s, background .15s, color .15s;
+}
+/* Vurgu YALNIZ dokunulmamış şıkta: cevaplanmış şıkkın yeşil/kırmızı
+   durumu, üzerinde fare durduğu için kaybolmasın. */
+.tc-kesif-sik:hover:not(:disabled):not(.dogru):not(.yanlis){
+  border-color:var(--kirmizi); color:var(--kirmizi);
+}
+.tc-kesif-sik:focus-visible{ outline:3px solid var(--kirmizi); outline-offset:2px; }
+.tc-kesif-sik:disabled{ cursor:default; }
+.tc-kesif-sik.dogru{ border-color:#12A05F; background:#EAF8F1; color:#0B6B3F; }
+.tc-kesif-sik.yanlis{ border-color:#E3B7B7; background:#FCF3F3; color:#9B5050; opacity:.85; }
+.tc-kesif-not{
+  margin-top:16px; border-radius:14px; padding:16px 22px; line-height:1.6;
+  background:#EAF8F1; border:2px solid #BEE6D3; color:#14503A;
+  font-size:clamp(1rem,2.6vh,1.5rem);
+}
+.tc-kesif-not[hidden]{ display:none !important; }
+/* İpucu, "yanlış" damgası değil yol gösterici: sarı, uyarı kırmızısı değil. */
+.tc-kesif-ipucu{ background:#FFF8E8; border-color:#F3DCA6; color:#6B5115; }
+.tc-kesif-kapanis{ background:#F4F0FB; border-color:#D8CBEE; color:#42256B; }
+.tc-kesif-alt{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:16px; }
+.tc-kesif-devam{
+  cursor:pointer; font-family:inherit; font-weight:700;
+  border:0; border-radius:999px; background:var(--kirmizi); color:#fff;
+  padding:13px 30px; font-size:clamp(1rem,2.7vh,1.5rem);
+}
+.tc-kesif-devam:hover{ filter:brightness(1.08); }
+/* Tabloya geçiş ikincil: keşfin ödülü ama akışın kendisi değil. */
+.tc-kesif-tablo{
+  cursor:pointer; font-family:inherit; font-weight:700;
+  border:2px solid var(--cerceve); border-radius:999px; background:#fff; color:#4B5563;
+  padding:11px 24px; font-size:clamp(.92rem,2.4vh,1.35rem);
+}
+.tc-kesif-tablo:hover{ border-color:var(--kirmizi); color:var(--kirmizi); background:#FFF6F6; }
+.tc-kesif-devam[hidden], .tc-kesif-tablo[hidden]{ display:none !important; }
+@media (max-width:620px){
+  .tc-kesif-veri{ padding:13px 15px; }
+  .tc-kesif-cumle{ flex-direction:column; align-items:flex-start; gap:0; }
+  .tc-kesif-tr{ white-space:normal; }
+  .tc-kesif-ar{ font-size:clamp(1.7rem,5.4vh,3rem); }
+  .tc-kesif-sik{ padding:12px 16px; }
+}
+/* Doğru cevaptan sonra açılan vurgu: gözü tam değişen yere götürür.
+   Son harf harekesiyle birlikte sarılıyor; <b> satır içi olduğu için
+   Arapça bitişmesi bozulmaz (inline-block bozardı). */
+.tc-kesif-son{ color:var(--kirmizi); font-weight:inherit; }
+
+/* ==========================================================================
+   TAHLİL — sekiz soruluk ayrıştırma
+   Cümle en üstte ve iri: dokunulacak şey o. Sekiz soruluk liste solda
+   sabit durur; sorulmayan kategoriler "yok"/"gizli" diye orada kalır ki
+   yöntemin tamamı hep göz önünde olsun.
+   ========================================================================== */
+/* --- Emir lâmı: fiile YAPIŞIK ama rengiyle ayrı okunur ---
+   Lâm, kelimenin metnine giriyor (ayrı kutuda dursa bitişme kurulmazdı).
+   <b> satır içi olduğu için harf bağı bozulmaz; ama satır içi öğede
+   transform işlemez — bu yüzden giriş/çıkış yalnız SAYDAMLIKLA yapılıyor. */
+.efh-lam{ color:#B7791F; font-weight:inherit; }
+@keyframes efhLamGir{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes efhLamCik{ from{ opacity:1 } to{ opacity:0 } }
+.efh-lam.efh-gir{ animation:efhLamGir .7s ease both; }
+.efh-lam.efh-cik{ animation:efhLamCik .5s ease both; }
+/* Bitişik edatta ayrı kutuya yer ayrılmaz: harf zaten kelimenin içinde. */
+.efh-hucre .efh-edat-ek.efh-bitisik{ flex:0 0 0; padding:0; }
+@media (prefers-reduced-motion: reduce){
+  .efh-lam.efh-gir, .efh-lam.efh-cik{ animation:none; }
+}
+
+.tc-bolum[data-bolum="tahlil"]{ max-width:1180px; margin:0 auto; }
+.th-ust{ margin:0 0 12px; color:var(--soluk); font-weight:700; font-size:clamp(.95rem,2.5vh,1.4rem); }
+.th-sayac{ margin-inline-start:8px; padding:3px 12px; border-radius:999px;
+  background:#F1F4F8; color:#5B6675; font-size:.85em; }
+.th-cumle{
+  display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:center; gap:6px 10px;
+  border:2px solid var(--cerceve); border-radius:16px; padding:16px 18px 10px; background:#FBFCFE;
+}
+.th-kelime{
+  cursor:pointer; font-family:inherit; background:none; border:2px solid transparent;
+  border-radius:12px; padding:4px 10px 2px; display:flex; flex-direction:column;
+  align-items:center; gap:1px; transition:background .15s, border-color .15s;
+  --kat:#8A94A3;
+}
+.th-kelime:hover{ background:#EEF2F7; }
+.th-kelime:focus-visible{ outline:3px solid var(--kirmizi); outline-offset:2px; }
+.th-ar{
+  font-family:'Amiri','Traditional Arabic',serif; direction:rtl;
+  font-size:clamp(1.7rem,5.6vh,3.4rem); line-height:1.7; color:#1E2A38;
+}
+.th-etiket{
+  font-size:clamp(.6rem,1.5vh,.85rem); font-weight:800; letter-spacing:.02em;
+  color:var(--kat); min-height:1em;
+}
+.th-kelime.th-secili{ background:color-mix(in srgb, var(--kat) 10%, #fff); border-color:var(--kat); }
+.th-kelime.th-secili .th-ar{ color:var(--kat); }
+@keyframes thSalla{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+.th-kelime.th-yanlis{ animation:thSalla .3s ease; background:#FCF3F3; }
+.th-tr{ margin:10px 2px 18px; color:#5B6675; font-weight:600;
+  font-size:clamp(.95rem,2.4vh,1.4rem); text-align:center; }
+.th-govde{ display:grid; grid-template-columns:minmax(260px,.9fr) 1.4fr; gap:22px; align-items:start; }
+.th-liste{ list-style:none; margin:0; padding:0; display:grid; gap:5px; }
+.th-oge{
+  display:flex; align-items:flex-start; gap:10px; padding:7px 12px; border-radius:10px;
+  border:2px solid transparent; color:#26313F; font-weight:700;
+  font-size:clamp(.82rem,2vh,1.1rem); --kat:#8A94A3;
+}
+.th-no{
+  flex:none; width:1.85em; height:1.85em; border-radius:50%; display:flex;
+  align-items:center; justify-content:center; background:var(--kat); color:#fff;
+  font-weight:800; font-size:.9em;
+}
+.th-govde-ad{ flex:1 1 auto; display:flex; flex-direction:column; gap:2px; }
+.th-ad{ display:block; }
+/* Sorulmayan kategorinin gerekçesi ögenin ALTINDA: soru akışının arasına
+   sıkıştırılsaydı sırası gelmeyenin notu hiç görünmezdi. */
+.th-aciklama{ font-weight:600; color:#6B7280; line-height:1.45; font-size:.78em; }
+.th-durum{ flex:none; color:var(--kat); font-weight:800; font-size:.9em; line-height:1.85; }
+.th-oge.simdi{ border-color:var(--kat); background:color-mix(in srgb, var(--kat) 9%, #fff); }
+.th-oge.tamam .th-ad{ color:#7A8494; }
+.th-oge.yok, .th-oge.gizli{ opacity:.42; }
+.th-oge.yok .th-no, .th-oge.gizli .th-no{ background:#C3CAD3; }
+.th-oge.gizli{ opacity:.62; }
+.th-oge.gizli .th-durum{ color:#8A6D3B; }
+.th-soru{ margin:0 0 12px; color:#1E2A38; font-weight:700;
+  font-size:clamp(1.05rem,2.9vh,1.65rem); line-height:1.45; }
+.th-soru-no{
+  display:inline-flex; width:1.7em; height:1.7em; border-radius:50%; color:#fff;
+  align-items:center; justify-content:center; font-weight:800; font-size:.86em;
+  vertical-align:.06em;
+}
+.th-ipuc{ color:#9AA3AF; font-weight:600; font-size:.8em; }
+.th-not{
+  border-radius:12px; padding:13px 18px; line-height:1.6; border:2px solid;
+  font-size:clamp(.9rem,2.3vh,1.25rem);
+}
+.th-not[hidden]{ display:none !important; }
+.th-dogru{ background:#EAF8F1; border-color:#BEE6D3; color:#14503A; }
+/* İpucu ceza değil yol gösterici: sarı, uyarı kırmızısı değil. */
+.th-ipucu{ background:#FFF8E8; border-color:#F3DCA6; color:#6B5115; }
+.th-bilgi{ background:#EEF3FB; border-color:#C9D9F0; color:#24456F; }
+.th-kapanis{ background:#F4F0FB; border-color:#D8CBEE; color:#42256B; }
+.th-ek{ opacity:.8; font-weight:600; font-size:.9em; }
+.th-alt{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.th-dugme{
+  cursor:pointer; font-family:inherit; font-weight:700; border:0; border-radius:999px;
+  background:var(--kirmizi); color:#fff; padding:12px 26px;
+  font-size:clamp(.95rem,2.5vh,1.35rem);
+}
+.th-dugme:hover{ filter:brightness(1.08); }
+.th-ikincil{
+  cursor:pointer; font-family:inherit; font-weight:700; border:2px solid var(--cerceve);
+  border-radius:999px; background:#fff; color:#4B5563; padding:10px 22px;
+  font-size:clamp(.88rem,2.2vh,1.2rem);
+}
+.th-ikincil:hover{ border-color:var(--kirmizi); color:var(--kirmizi); background:#FFF6F6; }
+.th-dugme[hidden], .th-ikincil[hidden]{ display:none !important; }
+@media (max-width:900px){
+  .th-govde{ grid-template-columns:1fr; gap:16px; }
+  .th-liste{ grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
+}
+@media (max-width:620px){
+  .th-cumle{ padding:12px 10px 8px; gap:4px 6px; }
+  .th-ar{ font-size:clamp(1.45rem,4.6vh,2.4rem); }
+  .th-oge{ padding:6px 9px; font-size:.85rem; }
+}
+
+/* ==========================================================================
+   ESMÂ-İ HAMSE — beş isim
+   Efâl-i hamsenin isimdeki karşılığı. Üç hâl üç SÜTUN; her sütunun rengi
+   i'rab hâlinin rengi, böylece tabloya bakan "vâv merfudur" bağını renkten
+   de kurar.
+   ========================================================================== */
+.esm-kutu{ overflow-x:auto; border-radius:14px; }
+.esm-tablo{ width:100%; border-collapse:separate; border-spacing:0; }
+.esm-tablo th, .esm-tablo td{ border:1px solid var(--cerceve); }
+.esm-tablo thead th{
+  padding:10px 8px; color:#fff; text-align:center; line-height:1.25;
+}
+.esm-tablo thead .esm-bas{ background:#5B6675; border-color:#5B6675; width:120px; }
+.esm-s-merfu  { --esm:#12A05F; }
+.esm-s-mansub { --esm:#2C7BE5; }
+.esm-s-mecrur { --esm:#8E44AD; }
+.esm-tablo thead .esm-s-merfu, .esm-tablo thead .esm-s-mansub,
+.esm-tablo thead .esm-s-mecrur{ background:var(--esm); border-color:var(--esm); }
+.esm-harf{
+  display:block; font-family:'Amiri','Traditional Arabic',serif; direction:rtl;
+  font-size:clamp(1.15rem,3vh,1.9rem); line-height:1.3;
+}
+.esm-ad{ display:block; font-weight:800; font-size:clamp(.72rem,1.8vh,1rem); }
+.esm-satirbas{
+  background:#F3F5F8; padding:8px 10px; text-align:center; vertical-align:middle;
+}
+.esm-kok{
+  display:block; font-family:'Amiri','Traditional Arabic',serif; direction:rtl;
+  font-size:clamp(1.1rem,3vh,1.8rem); color:#1E2A38; line-height:1.5;
+}
+.esm-kok-tr{ display:block; color:#6B7280; font-weight:700; font-size:clamp(.66rem,1.6vh,.88rem); }
+.esm-hucre{ padding:0; background:#fff; }
+.esm-b{
+  width:100%; cursor:pointer; font-family:inherit; border:0; background:none;
+  padding:10px 12px; display:flex; flex-direction:column; align-items:center; gap:2px;
+  transition:background .15s;
+}
+.esm-b:hover{ background:color-mix(in srgb, var(--esm) 10%, #fff); }
+.esm-b:focus-visible{ outline:3px solid var(--esm); outline-offset:-3px; }
+.esm-b.secili{ background:color-mix(in srgb, var(--esm) 15%, #fff); }
+.esm-ar{
+  font-family:'Amiri','Traditional Arabic',serif; direction:rtl; color:var(--esm);
+  font-size:clamp(1.3rem,4vh,2.5rem); line-height:1.6; white-space:nowrap;
+}
+.esm-tr{ color:#6B7280; font-weight:600; font-size:clamp(.66rem,1.6vh,.92rem); }
+.esm-ik{
+  margin-top:14px; border:2px solid var(--esm); border-radius:14px; padding:14px 18px;
+  background:color-mix(in srgb, var(--esm) 7%, #fff); line-height:1.6;
+  font-size:clamp(.85rem,2.1vh,1.15rem);
+}
+.esm-ik[hidden]{ display:none !important; }
+.esm-ik p{ margin:8px 0 0; }
+.esm-ik-bas{ display:flex; flex-wrap:wrap; align-items:baseline; gap:12px; }
+.esm-ik-ar{
+  font-family:'Amiri','Traditional Arabic',serif; direction:rtl; color:var(--esm);
+  font-size:clamp(1.4rem,4.2vh,2.6rem); line-height:1.5;
+}
+.esm-ik-hal{
+  padding:3px 14px; border-radius:999px; background:var(--esm); color:#fff;
+  font-weight:800; font-size:clamp(.7rem,1.8vh,.95rem); text-transform:capitalize;
+}
+.esm-ik-alt{ color:#4B5563; font-size:.92em; }
+.esm-sart{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); }
+.esm-kart{
+  border:2px solid var(--cerceve); border-radius:14px; padding:13px 16px; background:#fff;
+}
+.esm-kart b{ color:var(--kirmizi); font-size:clamp(.85rem,2.1vh,1.1rem); }
+.esm-kart p{ margin:6px 0 8px; color:#4B5563; font-weight:600; line-height:1.55;
+  font-size:clamp(.78rem,1.9vh,1rem); }
+.esm-ornek{
+  display:block; font-family:'Amiri','Traditional Arabic',serif; direction:rtl;
+  color:#1E2A38; font-size:clamp(1rem,2.8vh,1.6rem); line-height:1.7;
+}
+.esm-dip{ margin-top:14px; }
+@media (max-width:620px){
+  .esm-tablo thead .esm-bas{ width:70px; }
+  .esm-b{ padding:8px 6px; }
+  .esm-ar{ font-size:clamp(1.05rem,3.2vh,1.6rem); }
 }

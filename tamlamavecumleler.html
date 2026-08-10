@@ -360,28 +360,66 @@
   <div class="tc-pop" role="dialog" aria-modal="true" aria-label="İ'rab">
     <div class="tc-pop-bas">
       <svg class="tc-ikon tc-ik-irab tc-ik-canli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><text class="tci-dad tci-hrk tci-otre" x="11.5" y="16.5">ضُ</text><text class="tci-dad tci-hrk tci-ustun" x="11.5" y="16.5">ضَ</text><text class="tci-dad tci-hrk tci-esre" x="11.5" y="16.5">ضِ</text></svg>
-      <span>İ'rab – Sonlar, Örnekler ve Test</span>
-      <!-- Bölüm sekmeleri gövdeden BAŞLIK satırına alındı: panel tam ekran
-           olduğu için sekmeler hep göz hizasında kalsın, içerik kaydırılırken
-           yukarı kaçmasın. -->
-      <div class="tc-ust-sek" id="tcUstSek" role="tablist" aria-label="İ'rab bölümleri">
+      <span class="tc-bas-ad">İ'rab</span>
+
+      <!-- YATAY BAŞLIK ŞERİDİ — panelin TEK gezinme aracı, BAŞLIK SATIRINDA.
+           Ayrı bir satır kaplamıyor: adın hemen yanında, kalan bütün genişliği
+           alıyor ve yana kaydırılabiliyor. Seçilen başlığın alt sekmesi ya da
+           alt başlığı varsa hemen yanında açılır; öbür başlıklar akordiyon
+           gibi büzülüp ona yer verir.
+           Düğmeleri betik kurar (bkz. seritKur) — sıra ve alt öge listesi
+           tek yerde dursun diye. -->
+      <div class="tc-serit" id="tcSerit">
+        <div class="tc-serit-ray" id="tcSeritRay" role="tablist" aria-label="İ'rab başlıkları"></div>
+      </div>
+
+      <!-- Eskiden burada iki kat sekme (4 + 7 düğme) vardı, tablodan önce
+           göze giriyordu. İkisi de DOM'da duruyor ama gizli; bölüm/panel
+           değiştirme mantığı (tcBolumAc, tcPanelAc, tcBasamakAc) hâlâ
+           onlar üzerinden çalışıyor. -->
+      <div class="tc-ust-sek" id="tcUstSek" role="tablist" aria-label="İ'rab bölümleri" hidden>
         <button type="button" class="tc-us aktif" data-bolum="tablolar" role="tab" aria-selected="true">Tablolar</button>
         <button type="button" class="tc-us" data-bolum="havuz" role="tab" aria-selected="false">Örnekler</button>
         <button type="button" class="tc-us" data-bolum="ozet" role="tab" aria-selected="false">Özet</button>
         <button type="button" class="tc-us tc-us-test" data-bolum="test" role="tab" aria-selected="false">Test</button>
       </div>
+      <!-- Menü ekranı kalktığı için düğmenin tek işi kaldı: kapatmak.
+           Gezinme şeritte; "bir üst basamak" diye bir yer artık yok. -->
       <button type="button" class="tc-kapat" id="tcKapat" title="Kapat" aria-label="Kapat">&times;</button>
     </div>
+
     <div class="tc-pop-govde">
 
-    <!-- Üç bölüm yeter: tablolar · örnekler · özet. Terimlerin ⓘ
-         tuşları ayrı bir şeritte durmuyor; geçtikleri yere gömüldü. -->
+    <!-- ================= 0 · GİRİŞ (KEŞİF) =================
+         Tümevarım basamağı. Tablo dersin başlangıcı değil SONUCU olsun
+         diye: üstte veri (harekeli cümleler, iri — tahtadan okunacak),
+         altta tek soru. Öğrenci kuralı kendi kurar, sonunda o adımın
+         tablosuna geçer.
+         Dört adım şeritteki sırayla zincirdir: İsim çekirdek karşıtlığı
+         kurar → Fiil aynı ilkeyi başka takıma taşır → Efâl-i hamse
+         tahmin ettirip canlı tabloda doğrulatır → Kelime kuralı kırar.
+         Soru metinleri betikte (KESIF): sıra ve çeldirici de öğrettiği
+         için elle yazıldı, havuzdan üretilmiyor. -->
+    <section class="tc-bolum" data-bolum="giris" hidden>
+      <div class="tc-kesif" id="tcKesif">
+        <p class="tc-kesif-ust" id="tcKesifUst"></p>
+        <div class="tc-kesif-veri" id="tcKesifVeri" dir="rtl"></div>
+        <p class="tc-kesif-soru" id="tcKesifSoru"></p>
+        <div class="tc-kesif-siklar" id="tcKesifSiklar"></div>
+        <div class="tc-kesif-not" id="tcKesifNot" hidden></div>
+        <div class="tc-kesif-alt">
+          <button type="button" class="tc-kesif-devam" id="tcKesifDevam" hidden></button>
+          <button type="button" class="tc-kesif-tablo" id="tcKesifTablo" hidden></button>
+        </div>
+      </div>
+    </section>
 
     <!-- ================= 1 · TABLOLAR ================= -->
     <section class="tc-bolum" data-bolum="tablolar">
-      <div class="tc-alt-sek" id="tcTabloSek" role="tablist" aria-label="Tablo türü">
+      <div class="tc-alt-sek" id="tcTabloSek" role="tablist" aria-label="Tablo türü" hidden>
         <!-- Başlıklar Arapçasız: tek satırda kalsınlar, panel yüksek başlamasın. -->
         <button type="button" class="tc-asd aktif" data-panel="isim" role="tab" aria-selected="true">İsim</button>
+        <button type="button" class="tc-asd tc-asd-h" data-panel="esma" role="tab" aria-selected="false">Esmâ-i hamse</button>
         <button type="button" class="tc-asd" data-panel="fiil" role="tab" aria-selected="false">Fiil</button>
         <button type="button" class="tc-asd tc-asd-h" data-panel="hamse" role="tab" aria-selected="false">Efâl-i hamse</button>
         <span class="tc-asd-ayrac">bir kelime üzerinde</span>
@@ -441,6 +479,64 @@
           <span class="tc-ib-hareke"><b>Pembe</b></span> olanlar <b>hareke</b> ile,
           <span class="tc-ib-harf"><b>mavi</b></span> olanlar <b>harf</b> ile değişir.
         </p>
+      </div>
+
+      <!-- ================= ESMÂ-İ HAMSE =================
+           Efâl-i hamsenin isimdeki karşılığı: alâmet hareke değil HARF.
+           Aynı kök üç hâlde üç ayrı harf alıyor — kural tek satırla
+           anlatılabildiği için tablo betikten üretiliyor:
+             merfu = kök + ُو · mansub = kök + َا · mecrur = kök + ِي
+           Beş ismin beşinde de aynı işliyor; tabloyu elle yazmak bu
+           düzenliliği gizlerdi. -->
+      <div class="tc-tablo-panel" data-panel="esma" hidden>
+        <h3 class="tc-oz-bas">Esmâ-i hamse — beş isim</h3>
+        <p class="tc-oz-gir">Bu beş isimde alâmet <b>hareke değil harftir</b>:
+          merfuda <b>vâv</b>, mansubda <b>elif</b>, mecrurda <b>yâ</b>.
+          Efâl-i hamsede nûn ne yapıyorsa, burada bu üç harf onu yapar.</p>
+        <div class="esm-kutu">
+          <table class="esm-tablo">
+            <thead>
+              <tr>
+                <th class="esm-bas">İsim</th>
+                <th class="esm-s-merfu"><span class="esm-harf" dir="rtl">ـُو</span><span class="esm-ad">Merfu</span></th>
+                <th class="esm-s-mansub"><span class="esm-harf" dir="rtl">ـَا</span><span class="esm-ad">Mansub</span></th>
+                <th class="esm-s-mecrur"><span class="esm-harf" dir="rtl">ـِي</span><span class="esm-ad">Mecrur</span></th>
+              </tr>
+            </thead>
+            <tbody id="esmGovde"></tbody>
+          </table>
+        </div>
+        <div class="esm-ik" id="esmIk" hidden></div>
+
+        <h3 class="tc-oz-bas" style="margin-top:22px">Dört şart</h3>
+        <p class="tc-oz-gir">Şartlardan biri bozulursa bu isimler <b>sıradan isim gibi hareke alır</b>.</p>
+        <div class="esm-sart">
+          <div class="esm-kart">
+            <b>1 · Muzâf olmalı</b>
+            <p>Tek başına dururken harf almaz, hareke alır.</p>
+            <span class="esm-ornek" dir="rtl">هَذَا أَبٌ &nbsp;·&nbsp; رَأَيْتُ أَبًا &nbsp;·&nbsp; مَرَرْتُ بِأَبٍ</span>
+          </div>
+          <div class="esm-kart">
+            <b>2 · Mütekellim yâsına muzâf olmamalı</b>
+            <p>“…ım/…im” yâsına eklenince üç hâlde de aynı yazılır; hâl <b>takdiren</b> okunur.</p>
+            <span class="esm-ornek" dir="rtl">جَاءَ أَبِي &nbsp;·&nbsp; رَأَيْتُ أَبِي &nbsp;·&nbsp; مَرَرْتُ بِأَبِي</span>
+          </div>
+          <div class="esm-kart">
+            <b>3 · Müfred olmalı</b>
+            <p>İkil ve çoğulda kendi kuralına döner: ikil elif/yâ, kırık çoğul hareke.</p>
+            <span class="esm-ornek" dir="rtl">أَبَوَانِ · أَبَوَيْنِ &nbsp;·&nbsp; آبَاءٌ · آبَاءً</span>
+          </div>
+          <div class="esm-kart">
+            <b>4 · Mükebber olmalı</b>
+            <p>Küçültme (tasgîr) hâlinde harf değil hareke alır.</p>
+            <span class="esm-ornek" dir="rtl">جَاءَ أُبَيٌّ &nbsp;·&nbsp; رَأَيْتُ أُبَيًّا</span>
+          </div>
+        </div>
+        <p class="tc-oz-gir esm-dip">İki ayrı not: <span dir="rtl" class="tc-ar-ic">فَمٌ</span>
+          bu gruba ancak <b>mîm düşerse</b> girer
+          (<span dir="rtl" class="tc-ar-ic">فُو الطِّفْلِ</span>);
+          <span dir="rtl" class="tc-ar-ic">ذُو</span> ise <b>yalnız açık isme</b> muzâf olur,
+          zamire eklenmez ve “sahip” anlamındadır.</p>
       </div>
 
       <div class="tc-tablo-panel" data-panel="fiil" hidden>
@@ -548,7 +644,8 @@
               <tbody id="efhMaziGovde"></tbody>
             </table>
           </div>
-          <p class="efh-yan-not">Mâzi fiil <b>mebnî</b>dir: cümledeki görevi ne olursa olsun sonu
+          <div class="efh-ik" id="efhMaziIrab" hidden></div>
+          <p class="efh-yan-not"><b>Bir fiile dokun</b> — i'rabı burada açılır. Mâzi fiil <b>mebnî</b>dir: cümledeki görevi ne olursa olsun sonu
             değişmez, nasb ve cezm edatları da işlemez. İ'rab yalnız muzaride —
             kıyaslamak için <b>Muzari</b> sekmesine dön.</p>
         </div>
@@ -560,7 +657,8 @@
               <tbody id="efhEmirGovde"></tbody>
             </table>
           </div>
-          <p class="efh-yan-not">Emir yalnız <b>muhâtab</b> ve <b>muhâtaba</b>da çekilir; mebnîdir,
+          <div class="efh-ik" id="efhEmirIrab" hidden></div>
+          <p class="efh-yan-not"><b>Bir fiile dokun</b> — i'rabı burada açılır. Emir yalnız <b>muhâtab</b> ve <b>muhâtaba</b>da çekilir; mebnîdir,
             sonu değişmez. Öteki kişilere emir, lâm ile muzariden kurulur —
             Muzari sekmesinde Meczum'u açıp <span dir="rtl">لِـ</span> edatını seçerek dene.</p>
         </div>
@@ -606,6 +704,33 @@
       </div>
     </section>
 
+    <!-- ================= 2b · TAHLİL =================
+         Sekiz soruluk ayrıştırma yöntemi. Tablolar kuralı GÖSTERİR;
+         burası kuralı İŞLETİR: öğrenci sekiz soruyu sırayla cümlenin
+         üstünde çalıştırır, her doğru dokunuşta kelime kendi rengini
+         alır, sonunda hâller açılır.
+         Sekizinci soru ("ek almış bir isim") burada CER HARFİNİN kendisi
+         soruluyor: sunumdaki hâliyle 2/3/7 ile çakışıyordu — harfi
+         sordurmak hem tek doğru cevap bırakıyor hem de asıl öğretilecek
+         şeyi öğretiyor: mecrur yapan şey o harftir. -->
+    <section class="tc-bolum" data-bolum="tahlil" hidden>
+      <p class="th-ust" id="thUst"></p>
+      <div class="th-cumle" id="thCumle" dir="rtl"></div>
+      <p class="th-tr" id="thTr"></p>
+      <div class="th-govde">
+        <ol class="th-liste" id="thListe"></ol>
+        <div class="th-sag">
+          <p class="th-soru" id="thSoru"></p>
+          <div class="th-not" id="thNot" hidden></div>
+          <div class="th-alt">
+            <button type="button" class="th-dugme" id="thHal" hidden>Hâlleri göster &#10095;</button>
+            <button type="button" class="th-dugme" id="thSonraki" hidden>Sıradaki cümle &#10095;</button>
+            <button type="button" class="th-ikincil" id="thBastan" hidden>Baştan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= 2 · KELİME ÜZERİNDE ================= -->
     <!-- ================= 3 · ÖRNEK HAVUZU (FİLTRE) ================= -->
     <section class="tc-bolum" data-bolum="havuz" hidden>
@@ -646,7 +771,7 @@
     <section class="tc-bolum" data-bolum="ozet" hidden>
     <!-- ================= İ'RAB ÖZETİ ================= -->
     <section class="tc-ozet">
-      <h3 class="tc-oz-bas">İ'rab kısaca nedir?</h3>
+      <h3 class="tc-oz-bas" id="tcOzNedir" data-kisa="Nedir?">İ'rab kısaca nedir?</h3>
       <p class="tc-oz-gir">
         Kelimenin cümledeki <b>görevine</b> göre sonunun değişmesine i'rab denir.
         Zincir hep aynıdır: kelimenin bir görevi vardır, görev bir <b>hâl</b> gerektirir,
@@ -661,7 +786,7 @@
         <span class="tc-zin"><b>Alâmet</b><small>ötre · üstün · esre · vav · elif · ya · nûn</small></span>
       </div>
 
-      <h3 class="tc-oz-bas">Kim hangi hâli alır?</h3>
+      <h3 class="tc-oz-bas" id="tcOzKim" data-kisa="Kim ne alır?">Kim hangi hâli alır?</h3>
       <p class="tc-oz-gir">
         <b>Mecrur yalnız isimde</b>, <b>meczum yalnız muzari fiilde</b> olur; merfu ile mansub ikisinde de vardır.
         Sonu değişene <b>mu'reb</b> <span class="tc-i" data-terim="mureb" role="button" tabindex="0" title="Mu'reb nedir?">i</span>,
@@ -678,7 +803,7 @@
         </tbody>
       </table>
 
-      <h3 class="tc-oz-bas">Alâmet kaç şekilde görünür?</h3>
+      <h3 class="tc-oz-bas" id="tcOzAlamet" data-kisa="Alâmet">Alâmet kaç şekilde görünür?</h3>
       <p class="tc-oz-gir">
         Üç şekilde. Yanındaki ⓘ her birini örneğiyle anlatır; adına basınca
         <b>Tablolar</b> bölümünde o basamağın kelime tablosu açılır.
@@ -692,7 +817,7 @@
           <span class="tc-i" data-terim="mahallen" title="Mahallen nedir?">i</span></button>
       </div>
 
-      <h3 class="tc-oz-bas" style="margin-top:20px">Her zaman geçerli kurallar</h3>
+      <h3 class="tc-oz-bas" id="tcOzKural" data-kisa="Kurallar" style="margin-top:20px">Her zaman geçerli kurallar</h3>
       <div class="tc-kural">
         <div class="tc-kr">
           <div class="tc-kr-bas">Merfu olanlar</div>
@@ -726,7 +851,7 @@
         </div>
       </div>
 
-      <h3 class="tc-oz-bas" style="margin-top:20px">Kuralı bozan istisnalar</h3>
+      <h3 class="tc-oz-bas" id="tcOzIstisna" data-kisa="İstisnalar" style="margin-top:20px">Kuralı bozan istisnalar</h3>
       <div class="tc-kural tc-istisna">
         <div class="tc-kr">
           <div class="tc-kr-bas">Gayr-i âkil çoğul</div>
