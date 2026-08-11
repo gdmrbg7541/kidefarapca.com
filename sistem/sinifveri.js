@@ -47,7 +47,10 @@
     dilbilgisi1: { sinif: 0,  seviye: 3, sira: 2, soru: 20 },
     dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3, soru: 18 },
     /* tamlamavecumleler.html testinin soruları — aynı havuz burada da sorulur */
-    tamlamacumle:{ sinif: 0,  seviye: 3, sira: 4, soru: 156 }
+    tamlamacumle:{ sinif: 0,  seviye: 3, sira: 4, soru: 156 },
+    /* tamlamavecumleler.html İ'RAB TESTİ — örnek havuzundan üretilen
+       159 soru (hâl · görev · alâmet · lafzen/takdiren/mahallen) */
+    irab:        { sinif: 0,  seviye: 3, sira: 5, soru: 159 }
   };
 
   /* Kelime/cümle ayrımı kaldırılmadan önce paylaşılmış bağlantılar

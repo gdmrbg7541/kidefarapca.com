@@ -34,6 +34,7 @@
   <a href="#gizemPerde" data-hedef="gizemPerde"></a>
   <a href="#fabrikaPerde" data-hedef="fabrikaPerde"></a>
   <a href="#finalPerde" data-hedef="finalPerde"></a>
+  <a href="#analizPerde" data-hedef="analizPerde"></a>
   <a href="#kodPerde" data-hedef="kodPerde"></a>
   <a href="#kitlePerde" data-hedef="kitlePerde"></a>
 </nav>
@@ -349,6 +350,183 @@
   </div>
 </section>
 
+<!-- 6a · ETKİLEŞİM ANALİZİ — sitenin İÇERİĞİ sayılarla.
+     Kod bölümü "ne kadar yazıldığını" söylüyor; burası "nasıl öğrettiğini".
+     SAYILAR KAYNAK KODDAN ÖLÇÜLÜR, elle yazılmaz. Ölçüm: her HTML sayfası,
+     kendi script/css dosyalarıyla birlikte taranır (iç sayfalar hariç:
+     indeks, index kabuğu, veri girişi, yol/süre kontrol; 67 sayfa).
+       ETKİLEŞİMLİ  : öğrenciye iş düşüyor — düğme+2·girdi+sürükleme+dokunma
+                      +ses ≥ 2 ya da tıklama dinleyicisi ≥ 3 (koruma
+                      betiğinin dinleyicileri sayılmaz).
+       GÖRSEL DESTEK: svg+canvas+img+video ≥ 2 ya da @keyframes ≥ 3 ya da
+                      transform ≥ 10 — anlatım yalnız düz metin değil.
+       ÇOK KİŞİLİ   : iki kişilik mod / takım / sunum kumandası / sınıfça
+                      uygulama kodda doğrulanan sayfalar; pay, etkileşimli
+                      sayfa sayısına oranlanır.
+     Site değişince güncelle: sayfaları yeniden tara, data-hedef ve
+     data-yuzde değerlerini yaz. Son ölçüm: 67 sayfa · 63 etkileşimli ·
+     49 görsel destekli · 28 çok kişili/sınıfça. -->
+<section id="analizPerde">
+<style>
+  #analizPerde{ position:relative; min-height:100vh; display:flex; align-items:center;
+    justify-content:center; padding:70px 18px; overflow:hidden;
+    background:linear-gradient(180deg, #FFF3DC 0%, var(--nane) 46%, var(--zemin) 100%); }
+
+  #analizPerde .anz-kutu{ position:relative; z-index:2; width:100%; max-width:880px; }
+  #analizPerde .anz-pencere{ position:relative; background:#fff;
+    border:1px solid var(--zemin3); border-radius:22px;
+    box-shadow:0 28px 68px rgba(44,62,80,.18); overflow:hidden; }
+  #analizPerde .anz-bar{ display:flex; align-items:center; gap:7px; padding:13px 18px;
+    background:var(--zemin2); border-bottom:1px solid var(--zemin3); }
+  #analizPerde .anz-nokta{ width:11px; height:11px; border-radius:50%; display:block; }
+  #analizPerde .a1{ background:#EF5350; } #analizPerde .a2{ background:#F39C12; }
+  #analizPerde .a3{ background:#27AE60; }
+  #analizPerde .anz-yol{ margin-left:10px; color:var(--sis); font-size:.84rem;
+    font-family:'Courier New', monospace; letter-spacing:.5px; }
+  #analizPerde .anz-govde{ display:flex; align-items:center; gap:clamp(22px,5vw,54px);
+    padding:52px 34px 26px; }
+
+  /* HALKA — etkileşimli içerik yüzdesi */
+  #analizPerde .anz-halka{ flex:0 0 auto; position:relative;
+    width:clamp(180px,30vw,240px); aspect-ratio:1; }
+  #analizPerde .anz-halka svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  #analizPerde .anz-iz{ fill:none; stroke:var(--zemin3); stroke-width:11; }
+  #analizPerde .anz-dolum{ fill:none; stroke:var(--deniz); stroke-width:11;
+    stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:100;
+    transition:stroke-dashoffset 1.8s cubic-bezier(.22,.9,.3,1); }
+  #analizPerde .anz-orta{ position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; gap:2px; }
+  #analizPerde .anz-orta b{ font-family:'Courier New', monospace; font-weight:700;
+    font-size:clamp(2.6rem,7vw,3.7rem); line-height:1; color:var(--deniz); letter-spacing:-2px; }
+  #analizPerde .anz-orta small{ color:var(--sis); font-size:.78rem; letter-spacing:2.5px;
+    text-transform:uppercase; max-width:12ch; line-height:1.35; }
+
+  /* ÇUBUKLAR — görsel destek · çok kişili */
+  #analizPerde .anz-cubuklar{ flex:1 1 auto; min-width:0; display:flex;
+    flex-direction:column; gap:26px; }
+  #analizPerde .anz-c label{ display:flex; justify-content:space-between; align-items:baseline;
+    gap:12px; margin-bottom:8px; color:var(--murekkep,#2C3E50); font-weight:700;
+    font-size:clamp(.95rem,2.1vw,1.12rem); }
+  #analizPerde .anz-c label b{ font-family:'Courier New', monospace; color:var(--deniz);
+    font-size:1.25em; letter-spacing:-1px; }
+  #analizPerde .anz-ray{ height:12px; border-radius:999px; background:var(--zemin3); overflow:hidden; }
+  #analizPerde .anz-dolu{ display:block; height:100%; width:0; border-radius:999px;
+    background:linear-gradient(90deg, var(--deniz), var(--deniz2));
+    transition:width 1.5s cubic-bezier(.22,.9,.3,1); }
+  #analizPerde .anz-c.c2 .anz-dolu{ background:linear-gradient(90deg, var(--amber), #f7b955); }
+  #analizPerde .anz-c.c2 label b{ color:var(--amber); }
+  #analizPerde .anz-c p{ margin:7px 0 0; color:var(--sis); font-size:.86rem; line-height:1.5; }
+
+  /* alt satır: küçük sayaçlar */
+  #analizPerde .anz-dip{ display:flex; flex-wrap:wrap; gap:6px 34px; justify-content:center;
+    padding:20px 24px 30px; border-top:1px dashed var(--zemin3); margin:26px 0 0; }
+  #analizPerde .anz-dip div{ text-align:center; }
+  #analizPerde .anz-dip b{ display:block; font-family:'Courier New', monospace;
+    font-size:clamp(1.25rem,3vw,1.7rem); color:var(--murekkep,#2C3E50); letter-spacing:-1px; }
+  #analizPerde .anz-dip span{ color:var(--sis); font-size:.74rem; letter-spacing:1.6px;
+    text-transform:uppercase; }
+
+  @media (max-width:700px){
+    #analizPerde{ padding:54px 14px; }
+    #analizPerde .anz-govde{ flex-direction:column; padding:38px 20px 8px; }
+    #analizPerde .anz-dip{ gap:14px 22px; padding-bottom:24px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #analizPerde .anz-dolum{ transition:none; }
+    #analizPerde .anz-dolu{ transition:none; }
+  }
+</style>
+  <div class="anz-kutu">
+    <div class="anz-pencere">
+      <div class="anz-bar">
+        <span class="anz-nokta a1"></span><span class="anz-nokta a2"></span><span class="anz-nokta a3"></span>
+        <span class="anz-yol">kidefarapca.com — etkileşim analizi</span>
+      </div>
+      <div class="anz-govde">
+        <div class="anz-halka">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="anz-iz"    cx="60" cy="60" r="52" pathLength="100"/>
+            <circle class="anz-dolum" cx="60" cy="60" r="52" pathLength="100" id="anzHalka"/>
+          </svg>
+          <div class="anz-orta">
+            <b><span id="anzEtk" data-hedef="94">0</span>%</b>
+            <small>etkileşimli içerik</small>
+          </div>
+        </div>
+        <div class="anz-cubuklar">
+          <div class="anz-c" data-yuzde="73">
+            <label>Görsel destekli anlatım <b><span id="anzGorsel" data-hedef="73">0</span>%</b></label>
+            <div class="anz-ray"><i class="anz-dolu"></i></div>
+            <p>Konular yalnız yazıyla değil; çizim, tablo canlandırması ve animasyonla anlatılıyor.</p>
+          </div>
+          <div class="anz-c c2" data-yuzde="44">
+            <label>Çok kişili · sınıfça etkileşim <b><span id="anzCok" data-hedef="44">0</span>%</b></label>
+            <div class="anz-ray"><i class="anz-dolu"></i></div>
+            <p>Etkileşimli içeriğin bu kadarı iki kişilik, takımlı ya da tüm sınıfça oynanıyor.</p>
+          </div>
+        </div>
+      </div>
+      <div class="anz-dip">
+        <div><b><span data-hedef="67">0</span></b><span>sayfa tarandı</span></div>
+        <div><b><span data-hedef="2278">0</span></b><span>etkileşim noktası</span></div>
+        <div><b><span data-hedef="719">0</span></b><span>svg / tuval çizimi</span></div>
+        <div><b><span data-hedef="559">0</span></b><span>animasyon</span></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* Bölüm ekrana girince: halka dolar, sayılar 0'dan hedefe sayılır,
+   çubuklar yüzdesine kadar uzar. Hareket azaltma açıksa doğrudan yazılır. */
+(function(){
+  var kutu = document.getElementById('analizPerde');
+  if (!kutu) return;
+  var az = false;
+  try { az = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){}
+
+  function bic(n){ try { return n.toLocaleString('tr-TR'); } catch(e){ return String(n); } }
+  function say(el, sure){
+    var hedef = parseInt(el.getAttribute('data-hedef'), 10) || 0;
+    if (az){ el.textContent = bic(hedef); return; }
+    var bas = null;
+    function adim(t){
+      if (bas === null) bas = t;
+      var o = Math.min((t - bas) / sure, 1);
+      el.textContent = bic(Math.round(hedef * (1 - Math.pow(1 - o, 3))));
+      if (o < 1) requestAnimationFrame(adim);
+    }
+    requestAnimationFrame(adim);
+  }
+
+  var calisti = false;
+  function basla(){
+    if (calisti) return; calisti = true;
+    var halka = document.getElementById('anzHalka');
+    var etk = parseInt(document.getElementById('anzEtk').getAttribute('data-hedef'), 10) || 0;
+    halka.style.strokeDashoffset = az ? (100 - etk) : (100 - etk);
+    if (az) halka.style.transition = 'none';
+    [].forEach.call(kutu.querySelectorAll('[data-hedef]'), function(el){
+      if (el.tagName === 'SPAN') say(el, 1700);
+    });
+    [].forEach.call(kutu.querySelectorAll('.anz-c'), function(c, i){
+      var dolu = c.querySelector('.anz-dolu');
+      var y = parseInt(c.getAttribute('data-yuzde'), 10) || 0;
+      setTimeout(function(){ dolu.style.width = y + '%'; }, az ? 0 : 260 + i * 220);
+    });
+  }
+
+  if ('IntersectionObserver' in window){
+    var g = new IntersectionObserver(function(kayitlar){
+      for (var i = 0; i < kayitlar.length; i++){
+        if (kayitlar[i].isIntersecting){ basla(); g.disconnect(); }
+      }
+    }, { threshold: .28 });
+    g.observe(kutu);
+  } else { basla(); }
+})();
+</script>
+</section>
+
 <!-- 6b · RAKAMLARLA KOD — sitenin o anki toplam satır sayısı.
      GÜNCELLEME: sayılar aşağıdaki data-hedef / metin alanlarında durur.
      Sayım komutu (proje kökünde):
@@ -470,7 +648,7 @@
         <span class="kod-yol">kidefarapca.com — toplam kod</span>
       </div>
       <div class="kod-govde">
-        <div class="kod-sayi"><span id="kodSayac" data-hedef="228813">0</span><span class="kod-imlec"></span></div>
+        <div class="kod-sayi"><span id="kodSayac" data-hedef="229219">0</span><span class="kod-imlec"></span></div>
         <div class="kod-birim">satır kod</div>
 
         <svg class="kod-yazi" viewBox="0 0 430 94" aria-hidden="true">

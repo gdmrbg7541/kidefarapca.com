@@ -323,6 +323,13 @@
   /* Şeritte hangi pilin yanacağını tutar: bir kod başka bir pilin altında
      yaşıyor olabilir (esmâ → isim). */
   var aktifKod = 'isim';
+  /* Şeritte o an yanan pil; her başlığın KENDİ katlanma durumu ve
+     KENDİ son alt ögesi. Alt grup kendiliğinden kapanmaz (kapatan tek
+     şey aynı başlığa ikinci dokunuş) ve başka başlığa uğrayıp dönmek
+     hiçbir şeyi sıfırlamaz: hangi alt ögedeysen oraya dönersin. */
+  var seritKod = null;
+  var acik = {};     /* başlık → alt grubu AÇIK mı (birden çoğu açık kalabilir) */
+  var sonAlt = {};   /* başlık → en son açtığın alt öge */
   /* ---------- YATAY BAŞLIK ŞERİDİ (akordiyonlu) ----------
      Yedi başlık tek satırda, yana kaydırılabilir hâlde hep yukarıda
      durur: bir bölümden başka bir bölüme geçmek tek dokunuş.
@@ -422,7 +429,7 @@
     if (ALT[kod] && ALT[kod].tip === 'git') return aktifKod;
     return null;
   }
-  function altDoldur(yuva, kod) {
+  function altDoldur(yuva, kod, buradayiz) {
     var ler = altOgeler(kod);
     if (!ler) return false;
     if (yuva.getAttribute('data-dolu') !== kod) {
@@ -437,7 +444,7 @@
       });
       yuva.setAttribute('data-dolu', kod);
     }
-    var simdi = altSecili(kod);
+    var simdi = buradayiz ? altSecili(kod) : null;
     [].forEach.call(yuva.children, function (b) {
       var v = b.getAttribute('data-deger');
       b.classList.toggle('aktif', !!simdi && v === simdi);
@@ -466,6 +473,7 @@
   }
   function seritTazele(kod) {
     if (!seritRay) return;
+    seritKod = kod;
     var acilmis = false;
     [].forEach.call(seritRay.children, function (el) {
       if (el.classList.contains('tc-sr')) {
@@ -475,9 +483,15 @@
         return;
       }
       var k = el.getAttribute('data-alt');
-      var goster = (k === kod) && altDoldur(el, k);
+      /* AÇIK KALAN GRUPLAR: başka bir başlığa geçmek öncekini KAPATMAZ.
+         Şerit uzarsa yatay kayar (bkz. .tc-serit-ray overflow-x). Tabloya
+         dönüldüğünde (kod null) hepsi gizlenir ama hangileri açıktı
+         unutulmaz. */
+      var goster = (kod !== null) && !!acik[k] && altDoldur(el, k, k === kod);
       el.hidden = !goster;
       if (goster) acilmis = true;
+      var pil = el.previousElementSibling;
+      if (pil && ALT[k]) pil.setAttribute('aria-expanded', goster ? 'true' : 'false');
     });
     if (serit) serit.classList.toggle('acilmis', acilmis);
     seritKaydir(seritRay.querySelector('.tc-sr.aktif'));
@@ -498,6 +512,7 @@
           if (window.tcTahlil) window.tcTahlil.basla(+v);
           seritTazele('tahlil');
         } else if (ALT[k] && ALT[k].tip === 'git') {
+          sonAlt[k] = v;   /* bu başlığa dönünce gene buraya gelinsin */
           menuGit(v);
         } else {
           var h = document.getElementById(v);
@@ -512,7 +527,27 @@
         return;
       }
       var p = e.target.closest ? e.target.closest('.tc-sr') : null;
-      if (p) menuGit(p.getAttribute('data-git'));
+      if (!p) return;
+      var kod = p.getAttribute('data-git');
+      /* AYNI BAŞLIĞA İKİNCİ BASIŞ: alt ögeler katlanır, üçüncüde açılır.
+         "Başlığın kendisinde miyiz" diye bakılıyor: Özet açıkken Kelime
+         üzerindeysen ilk basış seni özete geri getirir (eski davranış),
+         katlama ancak oradayken ikinci basışla olur. */
+      if (kod === seritKod) {
+        /* Zaten bu başlıktayız. Alt ögedeysen ilk basış üst başlığa
+           götürür; başlığın kendisindeysen basış grubu kapatır/açar. */
+        var kendinde = (kod === 'test') || (aktifKod === kod);
+        if (kendinde && ALT[kod]) { acik[kod] = !acik[kod]; seritTazele(kod); return; }
+        sonAlt[kod] = kod;   /* üst başlığa döndük: hatırlanan yer de burası */
+        menuGit(kod);
+        return;
+      }
+      /* Başka başlıktan geliyoruz: grubu açılır, ÖNCEKİLER KAPANMAZ,
+         ve bıraktığın alt öge geri gelir. Daha önce elinle kapattıysan
+         kapalı kalır — kapatma da bir tercihtir. */
+      if (ALT[kod] && acik[kod] === undefined) acik[kod] = true;
+      var git = (ALT[kod] && ALT[kod].tip === 'git' && sonAlt[kod]) ? sonAlt[kod] : kod;
+      menuGit(git);
     });
     /* Ekran döndüğünde/daraldığında aktif başlık gene göz önüne gelsin. */
     var srZaman = 0;
@@ -542,16 +577,25 @@
       if (d) panelAc(d);
     }
     if (sessiz) { seritTazele(null); return; }
+    /* Bir başlığa ilk kez uğrayan (dışarıdan gelen bağlantılar dâhil)
+       o başlığın alt ögelerini açık bulsun. */
+    var pil = pilKodu(kod);
+    if (ALT[pil] && acik[pil] === undefined) acik[pil] = true;
     /* Şeritten bir başlığa basmak, o bölümü sayfada AÇAR. */
     if (window.tcIrabGoster) window.tcIrabGoster(true);
-    seritTazele(pilKodu(kod));
+    seritTazele(pil);
   }
   window.tcMenuGit = menuGit;
   window.tcSeritTazele = seritTazele;
   /* Gövde açılıp kapandıkça şeridin yanan pili: açıkken kalınan başlık,
      kapalıyken hiçbiri (tablodayken hiçbir i'rab başlığı seçili değil). */
   window.tcPilTazele = function (g) {
-    seritTazele(g === 'test' ? 'test' : (g === 'irab' ? pilKodu(aktifKod) : null));
+    var kod = (g === 'test') ? 'test' : (g === 'irab' ? pilKodu(aktifKod) : null);
+    /* Gövde bir başlığa basmadan geri çağrıldıysa (Escape sonrası, dış
+       bağlantı, sınavdan dönüş) o başlığın alt ögeleri ilk kez açık
+       gelsin — "üstündeyim ama altı boş" hâli olmasın. */
+    if (kod && ALT[kod] && acik[kod] === undefined) acik[kod] = true;
+    seritTazele(kod);
   };
   /* Açılış: SAYFA TABLOYLA açılır — asıl iş orada. Şerit hazır durur;
      ilk kez gelen için Giriş, daha önce başlamış olan için İsim
@@ -3004,22 +3048,8 @@
     edatCiz();
   }
 
-  /* Yalnız edat değişimi: tablo tamamlanır, edat hızlı dalgayla yenilenir. */
-  function edatAkis(eskiEdat) {
-    zamanTemizle();
-    bekleyenler = null; akisEski = null; edatBekleniyor = false;
-    var e = edatSimdi();
-    tabloCiz(hal, eskiEdat);
-    hucreGez(function (td, h, n) {
-      var t0 = n * HIZLI_ADIM;
-      var edatEl = td.querySelector('.efh-edat-ek');
-      var trEl = td.querySelector('.efh-tr');
-      bekle(function () { edatEl.classList.add('efh-cik'); }, t0);
-      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, t0 + 700);
-      bekle(function () { trYaz(trEl, h, e); }, t0 + 700);
-    });
-    ornekCiz(true);
-  }
+  /* "Yalnız edat değişimi" diye ayrı bir hızlı dalga yok artık:
+     edat değişimi de tam sıfırlamadır (yukarıdaki tıklama yöneticisi). */
 
   /* ---------- örnek satırı ---------- */
   function ornekCiz(tazele) {
@@ -3072,7 +3102,6 @@
   function ciz(mod, eskiHal, eskiEdat) {
     edatCiz();
     if (mod === 'hal') halAkis(eskiHal, eskiEdat);
-    else if (mod === 'edat') edatAkis(eskiEdat);
     else { sonDurum(); ornekCiz(false); }
     oncekiHal = hal;
   }
@@ -3087,8 +3116,18 @@
       x.classList.toggle('aktif', s);
       x.setAttribute('aria-selected', s ? 'true' : 'false');
     });
-    if (yeni === hal) { ciz(); return; }   /* aynı hâle ikinci basış: akışı keser */
-    var eskiHalDeger = hal, eskiEdatDeger = edatSimdi();
+    /* HER BASIŞ TABLOYU SIFIRLAR.
+       Eskiden aynı hâle ikinci basış akışı KESİYOR (her şeyi bitmiş
+       gösteriyor), mansub↔meczum geçişi de tabloyu dönüşmüş hâliyle
+       çiziyordu; gösteriyi baştan oynatmak için başka bir hâle uğrayıp
+       dönmek gerekiyordu — "iki kere basmak" bundandı.
+       Artık mansub ya da meczuma her basışta tablo TEMEL (merfu) hâline
+       döner ve edat seçimini yeniden bekler: dönüşüm hep baştan
+       yaşanır. Merfuya basışta ise gösterilecek olan zaten geri
+       dönüşümdür, o yüzden çıkış noktası bulunduğun hâldir. */
+    var temele = (yeni !== 'merfu');
+    var eskiHalDeger  = temele ? 'merfu' : hal;
+    var eskiEdatDeger = temele ? EDAT.merfu[0] : edatSimdi();
     hal = yeni; edatNo = 0;
     ciz('hal', eskiHalDeger, eskiEdatDeger);
   });
@@ -3107,9 +3146,20 @@
         return;
       }
       if (no === edatNo) return;
-      var eskiEdatDeger2 = edatSimdi();
+      /* EDAT DEĞİŞİMİ DE SIFIRLAR (hâl tuşları gibi): tablo temel hâle
+         döner ve dönüşüm YENİ edatla baştan yaşanır. Eskiden hızlı bir
+         dalgayla yalnız edat yazıları değişiyordu; dönüşümün kendisi
+         görünmüyordu. Seçim bu dokunuşla zaten yapıldığı için beklenmez:
+         ilk kutu hemen yeni edatla dönüşür, kalanlar dokunuşla. */
+      zamanTemizle();
       edatNo = no;
-      ciz('edat', null, eskiEdatDeger2);
+      edatBekleniyor = false;
+      tabloCiz('merfu', EDAT.merfu[0]);
+      bekleyenler = {};
+      KUTU.forEach(function (x, i2) { bekleyenler[i2] = true; });
+      akisEski = { hal: 'merfu', edat: EDAT.merfu[0] };
+      edatCiz();
+      hucreAnimasyon(0, true);
       return;
     }
     if (d.hasAttribute('data-ornek')) {
