@@ -95,18 +95,10 @@ body{
 .tc-ustad-don:hover .tc-ustad-yazi{ text-decoration:underline; }
 .tc-ustad-don:focus-visible{ outline:3px solid var(--kirmizi); outline-offset:2px; }
 .tc-ustad-yazi{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-/* İpucu yalnız i'rab gövdesi açıkken. Soldaki yuvarlak ok siteye döner;
-   bu ise tabloya — ikisi karışmasın diye biri ok, öbürü yazı. */
-.tc-don-ip{
-  display:none; flex:none; font-size:.62em; font-weight:700;
-  color:#8A94A3; border:1px solid var(--cerceve); border-radius:999px;
-  padding:2px 9px; white-space:nowrap;
-}
-body.tc-irabta .tc-don-ip{ display:inline-block; }
-body.tc-irabta .tc-ustad-yazi{ text-decoration:underline dotted; text-underline-offset:3px; }
-.tc-ustad-don:hover .tc-don-ip{ color:var(--kirmizi); border-color:var(--kirmizi); }
+/* Ayrı bir "tabloya dön" etiketi YOK: başlığın kendisi zaten o tuş.
+   Yazılı ipucu satırı kalabalıklaştırıyordu; üzerine gelince beliren
+   alt çizgi ve zemin, tıklanabilirliği söylemeye yetiyor. */
 @media (max-width:760px){
-  .tc-don-ip{ display:none !important; }
   /* Sarmalı satırda kırılma noktası, esneme değil, TEMEL genişliğe göre
      hesaplanır: başlığa küçük bir temel verilmezse uzun adı yüzünden
      kendi satırına iniyor ve başlık dört sıra oluyordu. */
@@ -117,14 +109,6 @@ body.tc-irabta .tc-ustad-yazi{ text-decoration:underline dotted; text-underline-
   .tc-ustad-yazi{ white-space:normal; overflow:visible; line-height:1.18; }
   .tc-ustad-don{ padding:2px 4px; gap:6px; }
 }
-.tc-irab-ac{
-  flex:none; cursor:pointer; border:2px solid var(--kirmizi);
-  background:#fff; color:var(--kirmizi); font-family:inherit; font-weight:700;
-  border-radius:9px; padding:5px 12px; white-space:nowrap;
-  font-size:clamp(.72rem,1.8vh,1rem);
-  transition:background .15s, color .15s;
-}
-.tc-irab-ac:hover{ background:var(--kirmizi); color:#fff; }
 
 /* ============================================================
    KARŞILAŞTIRMA TABLOSU — kalan yüksekliği paylaşır
@@ -434,7 +418,7 @@ td.tc-secili .tc-cesit-not{ display:block; }
    Test penceresi hâlâ üstte açılan bir pencere (kısa iş, sonra kapanır);
    i'rab bölümleri ise dersin kendisi — tablonun yerine geçer, sayfa
    başlığı üstte kalır. Bu yüzden #tcPerde akışa alınıyor. */
-#tcPerde{
+#tcPerde, #tcSinavPerde{
   position:static; inset:auto; z-index:auto; background:none;
   padding:0; display:none; flex:1 1 auto; min-height:0;
   /* Ortalama DEĞİL geriye yaslama: perdeyken içerik ekranın ortasında
@@ -442,9 +426,9 @@ td.tc-secili .tc-cesit-not{ display:block; }
      başlığın altına sokuyordu (giriş ekranının ilk satırı kayboluyordu). */
   align-items:stretch; justify-content:flex-start;
 }
-#tcPerde.acik{ display:flex; }
-#tcPerde .tc-pop{
-  width:100%; max-width:none; max-height:none;
+#tcPerde.acik, #tcSinavPerde.acik{ display:flex; }
+#tcPerde .tc-pop, #tcSinavPerde .tc-pop{
+  width:100%; max-width:none; max-height:none; height:auto;
   flex:1 1 auto; min-height:0;
   border-radius:0; box-shadow:none; background:none;
 }
@@ -931,15 +915,12 @@ main.tc-sar[hidden]{ display:none !important; }
   .tc-yakin .tc-tablo td.tc-secili{ padding-left:52px; transition:padding-left .3s ease-out; }
 }
 
-/* ================= TEST PANELİ ================= */
-/* TEST TAM EKRAN: sınıfta projeksiyona yansıtılıp topluca çözülebilsin
-   diye panel bütün ekranı kaplar ve yazılar iri tutulur. Ölçüler vh'ye
-   bağlı — küçük ekranda da büyük ekranda da ekranı doldurur. */
+/* ================= TEST GÖVDESİ ================= */
+/* Sınıfta projeksiyona yansıtılıp topluca çözülebilsin diye yazılar iri
+   tutulur; ölçüler vh'ye bağlı. Pencere DEĞİL: i'rab bölümleri gibi,
+   başlık satırının altındaki alanın tamamı. */
 .tc-perde.sv-perde{ padding:0; }
-.tc-sinav-pop{
-  max-width:none; width:100vw; height:100dvh; max-height:100dvh; border-radius:0;
-}
-.tc-sinav-pop .tc-pop-bas{ font-size:clamp(1rem,2.6vh,1.7rem); padding:10px 18px; }
+.tc-sinav-pop{ max-width:none; border-radius:0; }
 /* Kip şeridi HEP en üstte durur; ortalanan şey onun altındaki ekrandır.
    Ortalama "safe": içerik pencereye sığmadığında ortalama kapanır, yoksa
    taşan üst kısım kaydırmayla bile erişilemez hâle geliyordu (telefonda
@@ -1045,9 +1026,7 @@ main.tc-sar[hidden]{ display:none !important; }
   width:1.18em; height:1.18em; flex:none; display:block; overflow:visible;
 }
 .tc-ustad .tc-ikon{ width:1.3em; height:1.3em; }
-.tc-ik-irab{ width:1.32em; height:1.32em; }
 .tc-ustad > span{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.tc-irab-ac{ display:inline-flex; align-items:center; gap:7px; }
 .tc-pop-bas .tc-ikon{ width:1.15em; height:1.15em; }
 
 /* --- 1) Halter: yavaşça kalkar, kıvılcım parlar --- */
@@ -1069,34 +1048,13 @@ main.tc-sar[hidden]{ display:none !important; }
 .tci-s1 { animation:tciCiz 4s ease-in-out infinite; }
 .tci-s2 { animation:tciCiz 4s ease-in-out .35s infinite; }
 .tci-tik{ animation:tciCiz 4s ease-in-out .7s infinite; }
-/* Üzerine gelince ritim hızlanır — düğmenin tıklanabilir olduğu belli olsun. */
-.tc-irab-ac:hover .tci-s1,  .tc-irab-ac:focus-visible .tci-s1 { animation-duration:1.8s; }
-.tc-irab-ac:hover .tci-s2,  .tc-irab-ac:focus-visible .tci-s2 { animation-duration:1.8s; animation-delay:.16s; }
-.tc-irab-ac:hover .tci-tik, .tc-irab-ac:focus-visible .tci-tik{ animation-duration:1.8s; animation-delay:.32s; }
 @keyframes tciCiz{
   0%       { stroke-dashoffset:1; }
   22%, 78% { stroke-dashoffset:0; }
   96%,100% { stroke-dashoffset:1; }
 }
 
-/* --- 3) İ'rab: dâd harfi, harekesi ötre → üstün → esre döner ---
-   Hareke tek başına <text> olsaydı noktalı daire (◌) çıkardı; bu yüzden
-   harf HAREKESİYLE BİRLİKTE üç kopya yazılıp çapraz geçiriliyor. */
-.tci-dad{
-  font-family:'Arakom','Traditional Arabic',serif;
-  font-size:15.5px; font-weight:700; fill:currentColor; text-anchor:middle;
-}
-.tci-hrk{ opacity:0; }
-.tci-otre { animation:tciHrk 4.2s linear infinite; }
-.tci-ustun{ animation:tciHrk 4.2s linear 1.4s infinite; }
-.tci-esre { animation:tciHrk 4.2s linear 2.8s infinite; }
-/* Üç kopya %33,3 arayla döner; görünürlük pencereleri ÜST ÜSTE biner ki
-   biri sönerken öteki çoktan belirmiş olsun — dâd hiç kaybolmaz. */
-@keyframes tciHrk{
-  0%          { opacity:0; }
-  9%, 29%     { opacity:1; }
-  38%, 100%   { opacity:0; }
-}
+/* (3) Dâd ikonu kaldırıldı: başlıkta artık ikon değil, doğrudan başlıklar var. */
 
 /* --- 4) Hedef: halkalar merkezden dışa doğru atar --- */
 .tci-halka{ transform-origin:12px 12px; }
@@ -1113,8 +1071,6 @@ main.tc-sar[hidden]{ display:none !important; }
 @media (prefers-reduced-motion: reduce){
   .tc-ikon *{ animation:none !important; }
   .tci-satir, .tci-tik{ stroke-dashoffset:0; }
-  .tci-hrk{ opacity:0; }
-  .tci-hrk.tci-otre{ opacity:1; }
 }
 
 /* ==========================================================================
@@ -2154,7 +2110,6 @@ main.tc-sar[hidden]{ display:none !important; }
   display:flex; align-items:center; gap:8px;
   flex:1 1 240px; min-width:0; padding:2px 0;
 }
-.tc-gez-ikon{ flex:none; width:1.5em; height:1.5em; color:var(--kirmizi); }
 @media (max-width:900px){ .tc-gez{ flex:1 0 100%; } }
 
 /* Kelime tablosunun kendi basamak şeridi */
@@ -2169,6 +2124,7 @@ main.tc-sar[hidden]{ display:none !important; }
 
 /* Test penceresinde iki kip */
 .sv-kip{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px; flex:none; }
+.sv-kip[hidden]{ display:none !important; }
 .sv-kip-ekran{
   flex:1 1 auto; min-height:0; display:flex; flex-direction:column;
   justify-content:center; justify-content:safe center;

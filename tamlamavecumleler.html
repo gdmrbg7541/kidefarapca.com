@@ -43,35 +43,16 @@
             d="M19.6 2.2l.72 1.62 1.62.72-1.62.72-.72 1.62-.72-1.62-1.62-.72 1.62-.72z"/>
     </svg>
     <span class="tc-ustad-yazi">Pekiştirelim – Tamlama ve Cümleler</span>
-    <!-- İpucu yalnız i'rab bölümlerindeyken görünür: tablodayken dönecek
-         bir yer yok. Soldaki yuvarlak ok siteye döner, bu ise tabloya. -->
-    <span class="tc-don-ip" aria-hidden="true">tabloya dön</span>
    </button>
   </h1>
-  <!-- "Anlatım" düğmesi kaldırıldı: büyütme artık düğmeyle değil,
-       doğrudan kutuya dokunarak başlıyor. -->
-  <button type="button" class="tc-irab-ac" id="tcTestAc">
-    <svg class="tc-ikon tc-ik-test" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
-         fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M6 3.3h8.2l4 4V19a1.8 1.8 0 0 1-1.8 1.8H6A1.8 1.8 0 0 1 4.2 19V5.1A1.8 1.8 0 0 1 6 3.3z"/>
-      <path d="M14.1 3.5v3.9h4"/>
-      <path class="tci-satir tci-s1" pathLength="1" d="M7.7 11.2h5"/>
-      <path class="tci-satir tci-s2" pathLength="1" d="M7.7 14.3h6.6"/>
-      <path class="tci-tik" pathLength="1" d="M7.7 17.4l1.7 1.7 3.3-3.5"/>
-    </svg><span>Test</span></button>
-  <!-- İ'RAB ŞERİDİ SAYFA BAŞLIĞINDA — SAYFANIN TEK GEZİNME ARACI.
-       Eskiden iki kat vardı: başlıkta beş sekme, panelin içinde bir şerit
-       daha. Aynı adları iki yerde göstermek "ayrı bir arayüz" hissi
-       veriyordu; ikisi burada birleşti. Bir başlığın alt ögesi varsa
-       (Sonlar/Esmâ-i hamse gibi) hemen yanında açılır, öbürleri akordiyon
-       gibi büzülür. Düğmeleri betik kurar (bkz. seritKur). -->
-  <nav class="tc-gez" id="tcGez" aria-label="İ'rab bölümleri">
-    <!-- İ'rab ikonu: DÂD harfi (Arapça "dâd dili"dir). Hareke tek başına
-         yazılsa noktalı daire çıkardı; bu yüzden harf, harekesiyle birlikte
-         üç kopya yazılıp çapraz geçişle döndürülüyor: ضُ → ضَ → ضِ -->
-    <svg class="tc-ikon tc-ik-irab tc-gez-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><text class="tci-dad tci-hrk tci-otre" x="11.5" y="16.5">ضُ</text><text class="tci-dad tci-hrk tci-ustun" x="11.5" y="16.5">ضَ</text><text class="tci-dad tci-hrk tci-esre" x="11.5" y="16.5">ضِ</text></svg>
+  <!-- İ'RAB VE TEST TEK ŞERİTTE — SAYFANIN TEK GEZİNME ARACI.
+       Ayrı bir "Test" düğmesi yok: test de bir başlık, hepsinin sonunda.
+       Bir başlığın alt ögesi varsa (Sonlar/Esmâ-i hamse, Tamlama/İ'rab
+       testi gibi) hemen yanında açılır, öbürleri akordiyon gibi büzülür.
+       Düğmeleri betik kurar (bkz. seritKur). -->
+  <nav class="tc-gez" id="tcGez" aria-label="Bölümler">
     <div class="tc-serit" id="tcSerit">
-      <div class="tc-serit-ray" id="tcSeritRay" role="tablist" aria-label="İ'rab başlıkları"></div>
+      <div class="tc-serit-ray" id="tcSeritRay" role="tablist" aria-label="Bölüm başlıkları"></div>
     </div>
   </nav>
 </header>
@@ -314,25 +295,18 @@
      Sorular 5/7/9/10. sınıf ders kelimelerinden (muhadese/veri) üretilen
      tek dosyalık havuzdan geliyor; havuz ilk açılışta yükleniyor.
      Her tur 10 soru, her doğru 10 puan → 100 üzerinden. -->
+<!-- ============ TEST — SAYFANIN İÇİNDE ============
+     İ'rab bölümleri gibi: pencere değil, tablonun yerine geçen gövde.
+     Başlık satırı üstte kalır; "Test" onun da bir başlığıdır. -->
 <div class="tc-perde sv-perde" id="tcSinavPerde" aria-hidden="true">
-  <div class="tc-pop tc-sinav-pop" role="dialog" aria-modal="true" aria-label="Test">
-    <div class="tc-pop-bas">
-      <svg class="tc-ikon tc-ik-test tc-ik-canli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
-           fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 3.3h8.2l4 4V19a1.8 1.8 0 0 1-1.8 1.8H6A1.8 1.8 0 0 1 4.2 19V5.1A1.8 1.8 0 0 1 6 3.3z"/>
-        <path d="M14.1 3.5v3.9h4"/>
-        <path class="tci-satir tci-s1" pathLength="1" d="M7.7 11.2h5"/>
-        <path class="tci-satir tci-s2" pathLength="1" d="M7.7 14.3h6.6"/>
-        <path class="tci-tik" pathLength="1" d="M7.7 17.4l1.7 1.7 3.3-3.5"/>
-      </svg>
-      <span>Test – 10 Soruluk Tur</span>
-      <button type="button" class="tc-kapat" id="tcSinavKapat" title="Kapat" aria-label="Kapat">&times;</button>
-    </div>
+  <div class="tc-pop tc-sinav-pop" role="region" aria-label="Test">
     <div class="tc-pop-govde sv-govde">
 
-      <!-- İKİ TEST TEK PENCEREDE: tamlama/cümle testi ile i'rab testi
-           artık ayrı yerlerde değil, aynı pencerenin iki kipi. -->
-      <div class="sv-kip" id="svKip" role="tablist" aria-label="Test türü">
+      <!-- İKİ TEST TEK BAŞLIKTA: tamlama/cümle testi ile i'rab testi,
+           "Test" başlığının alt ögeleri. Bu şerit DOM'da duruyor ama
+           gizli; kip değiştirme mantığı (tcTestKip) hâlâ onun üzerinden
+           çalışıyor — göz için olan yukarıdaki tek şerit. -->
+      <div class="sv-kip" id="svKip" role="tablist" aria-label="Test türü" hidden>
         <button type="button" class="sv-k aktif" data-kip="tamlama" role="tab" aria-selected="true">Tamlama ve cümleler</button>
         <button type="button" class="sv-k" data-kip="irab" role="tab" aria-selected="false">İ'rab</button>
       </div>
