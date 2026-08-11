@@ -3303,57 +3303,64 @@
      kalıyor, bilgi aranınca geliyor. */
   var KUNYE = {
     1: { ozet:'Fiilin hâli türüne göre değişir.', satir:[
-      ['Mâzi', 'mebnî — hâl almaz', 'كَتَبَ'],
-      ['Emir', 'mebnî — hâl almaz', 'اُكْتُبْ'],
-      ['Muzari', 'merfu (asıl hâli)', 'يَكْتُبُ'],
-      ['Muzari + nasb edatı', 'mansub', 'لَنْ يَكْتُبَ'],
-      ['Muzari + cezm edatı', 'meczum', 'لَمْ يَكْتُبْ'] ],
+      ['Mâzi', 'mebnî — hâl almaz', '{كَتَبَ}'],
+      ['Emir', 'mebnî — hâl almaz', '{اُكْتُبْ}'],
+      ['Muzari', 'merfu (asıl hâli)', '{يَكْتُبُ}'],
+      ['Muzari + nasb edatı', 'mansub', 'لَنْ {يَكْتُبَ}'],
+      ['Muzari + cezm edatı', 'meczum', 'لَمْ {يَكْتُبْ}'] ],
       dip:'Efâl-i hamsede alâmet hareke değil <b>nûn</b>dur: merfuda durur, mansub ve meczumda düşer.' },
     2: { ozet:'Mekân kelimesinin hâlini <b>cer harfi</b> belirler.', satir:[
-      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'ذَهَبْتُ الْمَقْصِفَ'],
-      ['Cer harfi <b>var</b>', 'mecrur', 'فِي الْبَيْتِ'],
-      ['Cer harfi <b>var</b>', 'mecrur', 'خَرَجْتُ مِنَ الْمَدِينَةِ'] ],
+      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'ذَهَبْتُ {الْمَقْصِفَ}'],
+      ['Cer harfi <b>var</b>', 'mecrur', 'فِي {الْبَيْتِ}'],
+      ['Cer harfi <b>var</b>', 'mecrur', 'خَرَجْتُ مِنَ {الْمَدِينَةِ}'] ],
       dip:'Kategori kelimenin ne olduğunu söyler; hâli belirleyen şey cümledeki bağıdır.' },
     3: { ozet:'Zaman kelimesinin hâlini de <b>cer harfi</b> belirler.', satir:[
-      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'مَسَاءً'],
-      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'اِسْتَيْقَظْتُ صَبَاحًا'],
-      ['Cer harfi <b>var</b>', 'mecrur', 'فِي السَّاعَةِ'] ],
+      ['Cer harfi <b>yok</b>', 'mansub — zarf', '{مَسَاءً}'],
+      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'اِسْتَيْقَظْتُ {صَبَاحًا}'],
+      ['Cer harfi <b>var</b>', 'mecrur', 'فِي {السَّاعَةِ}'] ],
       dip:'Aynı cümlede ikisi birden olabilir: <span dir="rtl" class="tc-ic">فِي السَّاعَةِ</span> mecrur, ' +
           '<span dir="rtl" class="tc-ic">مَسَاءً</span> mansub.' },
     4: { ozet:'Nesne (mef\'ûl) <b>daima mansub</b>tur; değişen yalnız alâmeti.', satir:[
-      ['Müfred', 'fetha', 'رَأَيْتُ الْكِتَابَ'],
-      ['İkil', 'yâ', 'رَأَيْتُ الْكِتَابَيْنِ'],
-      ['Cem-i müzekker sâlim', 'yâ', 'رَأَيْتُ الْمُعَلِّمِينَ'],
-      ['Cem-i müennes sâlim', '<b>kesra</b>', 'رَأَيْتُ الْمُعَلِّمَاتِ'] ],
+      ['Müfred', 'fetha', 'رَأَيْتُ {الْكِتَابَ}'],
+      ['İkil', 'yâ', 'رَأَيْتُ {الْكِتَابَيْنِ}'],
+      ['Cem-i müzekker sâlim', 'yâ', 'رَأَيْتُ {الْمُعَلِّمِينَ}'],
+      ['Cem-i müennes sâlim', '<b>kesra</b>', 'رَأَيْتُ {الْمُعَلِّمَاتِ}'] ],
       dip:'Dikkat: cem-i müennes sâlim mansub olunca fetha değil <b>kesra</b> alır.' },
     5: { ozet:'Özne (fâil ya da mübteda) <b>daima merfu</b>dur.', satir:[
-      ['Müfred', 'damme', 'جَاءَ الْمُعَلِّمُ'],
-      ['İkil', 'elif', 'جَاءَ الْمُعَلِّمَانِ'],
-      ['Cem-i müzekker sâlim', 'vâv', 'جَاءَ الْمُعَلِّمُونَ'],
-      ['Cem-i müennes sâlim', 'damme', 'جَاءَتِ الْمُعَلِّمَاتُ'] ],
+      ['Müfred', 'damme', 'جَاءَ {الْمُعَلِّمُ}'],
+      ['İkil', 'elif', 'جَاءَ {الْمُعَلِّمَانِ}'],
+      ['Cem-i müzekker sâlim', 'vâv', 'جَاءَ {الْمُعَلِّمُونَ}'],
+      ['Cem-i müennes sâlim', 'damme', 'جَاءَتِ {الْمُعَلِّمَاتُ}'] ],
       dip:'Özne ayrı bir kelime olmayabilir: fiilin içindeki zamir de fâildir — o zaman <b>mahallen merfu</b>.' },
     6: { ozet:'Durum (hâl) <b>daima mansub</b>tur.', satir:[
-      ['Nekra hâl', 'fetha / tenvin fetha', 'جَاءَ مَسْرُورًا'],
-      ['Nekra hâl', 'fetha / tenvin fetha', 'رَجَعَ رَاكِبًا'] ],
+      ['Nekra hâl', 'fetha / tenvin fetha', 'جَاءَ {مَسْرُورًا}'],
+      ['Nekra hâl', 'fetha / tenvin fetha', 'رَجَعَ {رَاكِبًا}'] ],
       dip:'Hâlin sahibi (zül-hâl) genellikle <b>marife</b>, hâlin kendisi <b>nekra</b>dır.' },
     7: { ozet:'Tamlayan (muzâfun ileyh) <b>daima mecrur</b>dur — hem de cer harfi olmadan.', satir:[
-      ['Müfred', 'kesra', 'بَابُ الْبَيْتِ'],
-      ['İkil', 'yâ', 'كِتَابُ الْمُعَلِّمَيْنِ'],
-      ['Cem-i müzekker sâlim', 'yâ', 'كِتَابُ الْمُعَلِّمِينَ'] ],
+      ['Müfred', 'kesra', 'بَابُ {الْبَيْتِ}'],
+      ['İkil', 'yâ', 'كِتَابُ {الْمُعَلِّمَيْنِ}'],
+      ['Cem-i müzekker sâlim', 'yâ', 'كِتَابُ {الْمُعَلِّمِينَ}'] ],
       dip:'Mecrurun iki yolu var: <b>cer harfi</b> ve <b>tamlama</b>. Bu ikincisidir.' },
     8: { ozet:'Cer harfinin kendisi <b>mebnî</b>dir, hâli yoktur; ama ardındaki ismi <b>mecrur</b> yapar.', satir:[
-      ['<span dir="rtl" class="tc-ic">مِنْ · إِلَى · عَنْ</span>', 'sonraki isim mecrur', 'مِنَ الْبَيْتِ'],
-      ['<span dir="rtl" class="tc-ic">عَلَى · فِي</span>', 'sonraki isim mecrur', 'فِي الصَّفِّ'],
-      ['<span dir="rtl" class="tc-ic">بِ · لِ · كَ</span>', 'sonraki isim mecrur', 'بِالْقَلَمِ'] ],
+      ['<span dir="rtl" class="tc-ic">مِنْ · إِلَى · عَنْ</span>', 'sonraki isim mecrur', '{مِنَ} الْبَيْتِ'],
+      ['<span dir="rtl" class="tc-ic">عَلَى · فِي</span>', 'sonraki isim mecrur', '{فِي} الصَّفِّ'],
+      ['<span dir="rtl" class="tc-ic">بِ · لِ · كَ</span>', 'sonraki isim mecrur', '{بِ}الْقَلَمِ'] ],
       dip:'Bir kelime mekân ya da zaman bildirse bile, önünde cer harfi varsa <b>mecrur</b> olur.' }
   };
+  /* Örnekteki kategoriye AİT kelime {süslü parantez} içinde yazılıyor;
+     burada kategorinin rengine boyanıyor. Vurgu satır içi <b> ile
+     yapılıyor — inline-block olsaydı Arapça bitişmesi kırılırdı. */
+  function orasi(metin) {
+    return metin.replace(/\{([^}]*)\}/g, '<b class="th-kunye-vur">$1</b>');
+  }
   function kunyeAc(n) {
     var k = KUNYE[n]; if (!k || !window.tcBaloncukAc) return;
     var govde = '<p>' + k.ozet + '</p><div class="th-kunye">' +
       k.satir.map(function (r) {
-        return '<div class="th-kunye-s"><span class="th-kunye-a">' + r[0] + '</span>' +
-               '<span class="th-kunye-h">' + r[1] + '</span>' +
-               '<span class="th-kunye-o" dir="rtl">' + r[2] + '</span></div>';
+        return '<div class="th-kunye-s">' +
+               '<span class="th-kunye-o" dir="rtl">' + orasi(r[2]) + '</span>' +
+               '<span class="th-kunye-sol"><span class="th-kunye-a">' + r[0] + '</span>' +
+               '<span class="th-kunye-h">' + r[1] + '</span></span></div>';
       }).join('') + '</div>' +
       (k.dip ? '<p class="th-kunye-dip">' + k.dip + '</p>' : '');
     window.tcBaloncukAc(KAT[n].renk,

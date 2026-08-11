@@ -565,25 +565,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
         
         /* GERİ TUŞU (ana menü)
-           Bu sayfa kalıplar tablosundan yeni sekmede (target="_blank") açıldığı için
-           tarayıcı geçmişi boştur; history.back() hiçbir şey yapmaz. Bu yüzden
-           doğrudan kalıplar tablosuna gidiyoruz. Hangi sürüme döneceğimizi önce
-           geldiğimiz sayfadan (referrer), o yoksa ekran genişliğinden anlıyoruz. */
+           Bu oyun İKİ yerden açılıyor: index'teki Oyunlar kategorisi ve
+           kalıplar tablosunun oyun paneli. Geri tuşu HANGİSİNDEN gelindiyse
+           oraya dönmeli.
+
+           Her iki giriş de target="_blank" rel="opener" kullanıyor; yani
+           bizi açan sekme window.opener'da duruyor. En doğrusu kendi
+           sekmemizi kapatmak: tarayıcı odağı açan sekmeye geri verir,
+           kullanıcı bıraktığı yerde devam eder. Tarayıcı kapatmaya izin
+           vermezse (ya da sayfa aynı sekmede açıldıysa) referrer'a bakıp
+           doğru sayfaya gidiyoruz. */
         function kokuGeriHedefi() {
             var ref = '';
             try { ref = (document.referrer || '').toLowerCase(); } catch (e) { ref = ''; }
 
             if (ref.indexOf('kaliplartablosumobil') !== -1) return 'kaliplartablosumobil.html';
             if (ref.indexOf('kaliplartablosu') !== -1) return 'kaliplartablosu.html';
+            /* index'ten (Oyunlar kategorisi) gelinmişse ana sayfaya dön */
+            if (/(^|\/)(index|indeks)\.html/.test(ref) || /kidefarapca\.com\/?($|[?#])/.test(ref)) return 'index.html';
 
             var mobil = (window.innerWidth || 0) <= 820 ||
                         /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
             return mobil ? 'kaliplartablosumobil.html' : 'kaliplartablosu.html';
         }
 
+        function kokuGeriDon() {
+            var yeniSekme = false;
+            try { yeniSekme = !!(window.opener && !window.opener.closed); } catch (e) { yeniSekme = false; }
+            if (yeniSekme) {
+                try { window.close(); } catch (e) {}
+                setTimeout(function () {
+                    if (!window.closed) window.location.href = kokuGeriHedefi();
+                }, 250);
+                return;
+            }
+            window.location.href = kokuGeriHedefi();
+        }
+
         backButtonStart.addEventListener('click', () => {
             playGenericSound('touch');
-            window.location.href = kokuGeriHedefi();
+            kokuGeriDon();
         });
 
         function startGameMode(mode) {

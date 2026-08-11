@@ -65,7 +65,7 @@ var KC_VERI = [
       kelimeler: [
         { tr: 'kitap',   ar: 'كتاب',   tam: 'كِتَاب',    vezinAr: 'فِعَال',   vezinTr: 'fiâl',    anlam: 'yazılan şey' },
         { tr: 'kâtip',   ar: 'كاتب',   tam: 'كَاتِب',    vezinAr: 'فَاعِل',   vezinTr: 'fâil',    anlam: 'yazan kişi' },
-        { tr: 'mektep',  ar: 'مكتب',   tam: 'مَكْتَب',   vezinAr: 'مَفْعَل',  vezinTr: 'mefʿal',  anlam: 'yazı yeri · okul' },
+        { tr: 'mektep',  ar: 'مكتب',   tam: 'مَكْتَب',   vezinAr: 'مَفْعَل',  vezinTr: 'mefʿal',  anlam: 'yazı yeri · büro, çalışma masası' },
         { tr: 'mektup',  ar: 'مكتوب',  tam: 'مَكْتُوب',  vezinAr: 'مَفْعُول', vezinTr: 'mefʿûl',  anlam: 'yazılmış şey' } ] },
     { arKok: ['ح', 'ك', 'م'], trKok: ['h', 'k', 'm'], arGoster: 'حـ ـكـ ـم', anlam: 'hükmetmek',
       kelimeler: [
@@ -1096,9 +1096,24 @@ function kcDondur(yon) {
         S.bekleyen = Math.max(-2, Math.min(2, (S.bekleyen || 0) + yon));
         return;
     }
+    var n = KC_VERI[S.kok].kelimeler.length * 4;
+    /* KÖK BİTİNCE KENDİLİĞİNDEN SIRADAKİ KÖKE.
+       Eskiden bir kökün son kelimesinden sonra ileri tuşu aynı kökün
+       başına sarıyordu; ders akışında öğretmen o noktada zaten kök
+       şeridine uzanıp elle geçiyordu. Artık ileri tuşu tek başına
+       yetiyor: son örnek bitince sıradaki kök baştan açılır. Geri tuşu
+       da simetriktir — ilk adımdan geriye basmak önceki kökün SON
+       örneğine götürür, yoksa "ileri gidiyor ama geri gitmiyor" olurdu.
+       Son kökten sonra baştaki köke dönülür: çark kapanmaz. */
+    var ham = S.adim + yon;
+    if (KC_VERI.length > 1 && (ham >= n || ham < 0)) {
+        var ileri = (ham >= n);
+        kcKokSec((S.kok + (ileri ? 1 : -1) + KC_VERI.length) % KC_VERI.length,
+                 ileri ? 'bas' : 'son');
+        return;
+    }
     S.kilit = true;
     kcSes();
-    var n = KC_VERI[S.kok].kelimeler.length * 4;
     var yeni = (S.adim + yon + n) % n;
     var eskiF = S.adim % 4, yeniF = yeni % 4;
     var ayni = Math.floor(S.adim / 4) === Math.floor(yeni / 4);
@@ -1182,16 +1197,26 @@ function kcTuslariBagla() {
     }, false);
 }
 
-function kcKokSec(i) {
+/* nere: 'bas' (ya da boş) → kökün ilk adımı; 'son' → son adımı.
+   Kök şeridinden seçmek hep baştan başlatır; çarkın kendiliğinden
+   geçtiği durumda yön korunur — ileri giderken baştan, geri giderken
+   sondan devam edilir. */
+function kcKokSec(i, nere) {
     if (S.kilit || !KC_VERI[i]) return;
     S.kilit = true;
     S.bekleyen = 0;          /* yeni kök = temiz sayfa; eski basışlar taşınmaz */
     kcSes();
     S.kok = i;
-    S.adim = 0;
+    S.adim = (nere === 'son') ? (KC_VERI[i].kelimeler.length * 4 - 1) : 0;
     var tus = document.querySelectorAll('#kcKokler .kc-kok');
     for (var j = 0; j < tus.length; j++) tus[j].classList.toggle('secili', j === i);
-    kcGuncelle(true, 1);
+    /* Kök şeridi yatay kayabiliyor: kendiliğinden geçilen kök şeridin
+       dışında kalırsa öğretmen hangi kökte olduğunu göremezdi. */
+    if (tus[i] && tus[i].scrollIntoView) {
+        try { tus[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); }
+        catch (e) { tus[i].scrollIntoView(); }
+    }
+    kcGuncelle(true, (nere === 'son') ? -1 : 1);
     setTimeout(kcKilitAc, 820);   /* kök kurulurken basılan oklar da işlensin */
 }
 
@@ -1713,6 +1738,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 window.KelimeCarki = { ac: kcAc, veri: KC_VERI, yerles: kcYerles, iskelet: kcIskelet,
+                       /* durum: canlı durum nesnesi (kok, adim, kilit...).
+                          Sınavlar çarkın nerede olduğunu buradan okur. */
+                       durum: S,
                        olcu: kcOlcu, sert: KC_SERT, bicim: kcArBicim, parcala: kcArParcala,
                        /* kutular: bir kelimenin Türkçe KUTULARI (harf ≠ kutu;
                           bkz. trKutu). Testler de buradan okusun ki iskelet ile
