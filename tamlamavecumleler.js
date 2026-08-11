@@ -14,18 +14,26 @@
    ============================================================ */
 (function () {
   var perde = document.getElementById('tcPerde');
-  var ac = document.getElementById('tcIrabAc');
-  var kapat = document.getElementById('tcKapat');
+  var sar = document.querySelector('main.tc-sar');
+  var don = document.getElementById('tcTabloDon');
+  /* İ'rab bölümleri artık tablonun ÜSTÜNE kapanan bir perde değil,
+     tablonun YERİNE geçen bir gövde. Sayfa başlığı hiçbir zaman
+     kaybolmuyor; ondan dolayı da "başka bir arayüze girdim" hissi yok:
+     üstteki satır aynı satır, altı değişiyor. */
   function goster(a) {
+    if (a && window.tcUzaklas) window.tcUzaklas();   /* açarken yakınlaşma kapansın */
     perde.classList.toggle('acik', a);
     perde.setAttribute('aria-hidden', a ? 'false' : 'true');
+    if (sar) sar.hidden = a;
+    document.body.classList.toggle('tc-irabta', a);
+    /* Tabloya dönünce şeritte hiçbir başlık yanmasın: yandığı hâlde
+       tablonun durması, "seçili ama görünmüyor" gibi okunuyordu. */
+    if (window.tcPilTazele) window.tcPilTazele(a);
   }
-  /* Ayrı bir menü ekranı YOK: gezinme başlığın altındaki yatay şerittedir.
-     Panel, kaldığın başlıkla açılır — ders ortasında kapatıp açınca yerini
-     kaybetmeyesin diye. İlk açılışta İsim tablosu gelir. */
-  ac.addEventListener('click', function () { goster(true); });
-  kapat.addEventListener('click', function () { goster(false); });
-  perde.addEventListener('click', function (e) { if (e.target === perde) goster(false); });
+  /* BAŞLIK = ÇIKIŞ. Ayrı bir çarpı yok: sayfanın adı zaten hep orada
+     duruyor ve ona dokunmak dokunmatik büyütmesi çalışan asıl tabloya
+     döndürüyor. */
+  if (don) don.addEventListener('click', function () { goster(false); });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && perde.classList.contains('acik')) goster(false);
   });
@@ -58,7 +66,7 @@
       d.setAttribute('aria-selected', s ? 'true' : 'false');
     });
     if (ad === 'giris') kesifGiris();
-    seritTazele(kodBul(ad));
+    seritTazele(pilKodu(aktifKod));
     if (govde) govde.scrollTop = 0;
   }
   ustSek.addEventListener('click', function (e) {
@@ -82,7 +90,7 @@
     });
     var sv = d.getAttribute('data-sev');
     if (sv && window.tcSeviyeSec) window.tcSeviyeSec(sv, 0);
-    seritTazele(kodBul('tablolar'));
+    seritTazele(pilKodu(aktifKod));
   }
   if (tabloSek) {
     tabloSek.addEventListener('click', function (e) {
@@ -332,20 +340,26 @@
   window.tcKesifSifirla = function () { kesifGecti = {}; kesifYaz(); kesifBasla(KESIF_SIRA[0]); };
   window.tcKesifGit = kesifBasla;
 
+  /* Tablonun kopyasını tutan "tamlama" sekmesi kaldırıldı: kopya durağandı,
+     dokununca yakınlaşmıyordu. Asıl tablo artık bir dokunuş ötede — sayfa
+     başlığına basmak yetiyor. */
+
   /* ---------- MENÜ ----------
      Her kart doğrudan hedefe gider; başlıkta o hedefin adı yazar. */
   var MENU = {
     giris:  { bolum:'giris', ad:'Giriş' },
     tahlil: { bolum:'tahlil', ad:'Tahlil' },
     isim:   { bolum:'tablolar', panel:'isim',   ad:'İsmin sonları' },
-    esma:   { bolum:'tablolar', panel:'esma',   ad:'Esmâ-i hamse' },
+    esma:   { bolum:'tablolar', panel:'esma',   ad:'Esmâ-i hamse', pil:'isim' },
     fiil:   { bolum:'tablolar', panel:'fiil',   ad:'Fiilin sonları' },
-    hamse:  { bolum:'tablolar', panel:'hamse',  ad:'Efâl-i hamse' },
-    kelime: { bolum:'tablolar', panel:'kelime', sev:'lafzen', ad:'Kelime üzerinde' },
-    havuz:  { bolum:'havuz',  ad:'Örnekler' },
-    ozet:   { bolum:'ozet',   ad:'Özet' },
-    test:   { bolum:'test',   ad:'İ\'rab Testi' }
+    hamse:  { bolum:'tablolar', panel:'hamse',  ad:'Efâl-i hamse', pil:'fiil' },
+    kelime: { bolum:'tablolar', panel:'kelime', sev:'lafzen', ad:'Kelime üzerinde', pil:'ozet' },
+    havuz:  { bolum:'havuz',  ad:'Örnekler', pil:'ozet' },
+    ozet:   { bolum:'ozet',   ad:'Özet' }
   };
+  /* Şeritte hangi pilin yanacağını tutar: bir kod başka bir pilin altında
+     yaşıyor olabilir (esmâ → isim). */
+  var aktifKod = 'isim';
   /* ---------- YATAY BAŞLIK ŞERİDİ (akordiyonlu) ----------
      Yedi başlık tek satırda, yana kaydırılabilir hâlde hep yukarıda
      durur: bir bölümden başka bir bölüme geçmek tek dokunuş.
@@ -355,28 +369,34 @@
      Alt öge iki türlü olabilir:
        sev    → aynı panelde basamağı değiştirir (Lafzen/Takdiren/Mahallen)
        kaydir → bölümün içindeki başlığa kaydırır (Özet'in beş başlığı) */
-  var SERIT_SIRA = ['giris', 'tahlil', 'isim', 'esma', 'fiil', 'hamse', 'kelime',
-                    'havuz', 'ozet', 'test'];
+  /* ON BİRDEN BEŞE. Esmâ-i hamse İsim'in, efâl-i hamse Fiil'in içine;
+     kelime ve örnekler Özet'in altına girdi; test Test penceresine taşındı;
+     tamlama tablosunun kopyası ise büsbütün kalktı — asıl tablo sayfa
+     başlığına basınca geliyor. Bu beşi SAYFA BAŞLIĞINDA duruyor: şerit
+     panelin değil, sayfanın gezinme aracı. */
+  var SERIT_SIRA = ['giris', 'tahlil', 'isim', 'fiil', 'ozet'];
   var SERIT_AD = {
-    giris:'Giriş', tahlil:'Tahlil', isim:'İsim', esma:'Esmâ-i hamse',
-    fiil:'Fiil', hamse:'Efâl-i hamse', kelime:'Kelime',
-    havuz:'Örnekler', ozet:'Özet', test:'Test'
+    giris:'Giriş', tahlil:'Tahlil', isim:'İsim', fiil:'Fiil', ozet:'Özet'
   };
-  /* Büzülünce kırpma yerine KISA ad: "Efâl-i …" diye yarım kalmasın. */
-  var SERIT_KISA = { esma:'Esmâ', hamse:'Efâl', havuz:'Örnek' };
+  var SERIT_KISA = {};
   var ALT = {
-    /* Adımlar NUMARALI: şeritte hemen yanlarında aynı adı taşıyan tablo
-       pilleri de duruyor, karışmasın. Bitenlere ✓ ekleniyor (CSS). */
+    /* Adımlar NUMARALI: aynı adı taşıyan pillerle karışmasın; bitenlere ✓. */
     giris: { tip:'kesif', ogeler:[
       { deger:'isim',   ad:'1 · İsim' },
       { deger:'fiil',   ad:'2 · Fiil' },
       { deger:'hamse',  ad:'3 · Hamse' },
       { deger:'kelime', ad:'4 · Kelime' } ] },
-    kelime: { tip:'sev', ogeler:[
-      { deger:'lafzen', ad:'Lafzen' },
-      { deger:'takdiren', ad:'Takdiren' },
-      { deger:'mahallen', ad:'Mahallen' } ] },
-    ozet: { tip:'kaydir', kaynak:'ozet' },
+    /* Birleşen başlıklar artık alt öge olarak yaşıyor. */
+    isim: { tip:'git', ogeler:[
+      { deger:'isim', ad:'Sonlar' },
+      { deger:'esma', ad:'Esmâ-i hamse' } ] },
+    fiil: { tip:'git', ogeler:[
+      { deger:'fiil',  ad:'Sonlar' },
+      { deger:'hamse', ad:'Efâl-i hamse' } ] },
+    ozet: { tip:'git', ogeler:[
+      { deger:'ozet',   ad:'Özet' },
+      { deger:'kelime', ad:'Kelime üzerinde' },
+      { deger:'havuz',  ad:'Örnekler' } ] },
     /* Tahlil cümleleri: hangi cümlede olduğun görünsün, atlanabilsin. */
     tahlil: { tip:'cumle' }
   };
@@ -392,7 +412,7 @@
       for (var i = 0; i < window.tcTahlil.sayi; i++) l.push({ deger:String(i), ad:String(i + 1) });
       return l;
     }
-    if (a.tip !== 'kaydir') return a.ogeler;
+    return a.ogeler;
     var b = document.querySelector('.tc-bolum[data-bolum="' + a.kaynak + '"]');
     if (!b) return null;
     var basliklar = [].slice.call(b.querySelectorAll('h3.tc-oz-bas[id]'));
@@ -403,10 +423,10 @@
   }
   /* Hangi başlık açık? Bölüm adı yetmez: "tablolar" dört başlığın ortak
      kabıdır, o yüzden alt sekmedeki aktif panele bakılıyor. */
-  function kodBul(bolumAdi) {
-    if (bolumAdi !== 'tablolar') return bolumAdi;
-    var a = tabloSek && tabloSek.querySelector('.tc-asd.aktif');
-    return a ? a.getAttribute('data-panel') : 'isim';
+  /* Şeritte hangi pil yanacak: kod bir alt öge olabilir (esmâ → isim). */
+  function pilKodu(kod) {
+    var m = MENU[kod];
+    return (m && m.pil) ? m.pil : kod;
   }
   function seritKur() {
     if (!seritRay || seritRay.children.length) return;
@@ -432,9 +452,8 @@
   function altSecili(kod) {
     if (kod === 'tahlil') return window.tcTahlil ? String(window.tcTahlil.hangi()) : null;
     if (kod === 'giris') return kAd;
-    if (kod !== 'kelime') return null;
-    var a = tabloSek && tabloSek.querySelector('.tc-asd.aktif[data-sev]');
-    return a ? a.getAttribute('data-sev') : null;
+    if (ALT[kod] && ALT[kod].tip === 'git') return aktifKod;
+    return null;
   }
   function altDoldur(yuva, kod) {
     var ler = altOgeler(kod);
@@ -507,10 +526,8 @@
         } else if (k === 'tahlil') {
           if (window.tcTahlil) window.tcTahlil.basla(+v);
           seritTazele('tahlil');
-        } else if (k === 'kelime') {
-          var d = tabloSek &&
-            tabloSek.querySelector('.tc-asd[data-panel="kelime"][data-sev="' + v + '"]');
-          if (d) panelAc(d);
+        } else if (ALT[k] && ALT[k].tip === 'git') {
+          menuGit(v);
         } else {
           var h = document.getElementById(v);
           if (h && govde) {
@@ -536,27 +553,51 @@
       }, 140);
     });
   }
-  function menuGit(kod) {
+  /* sessiz: yalnızca durumu kurar, i'rab gövdesini AÇMAZ. Sayfa ilk
+     yüklendiğinde tablonun karşımıza çıkması için gerekli. */
+  function menuGit(kod, sessiz) {
     var m = MENU[kod];
     if (!m) return;
+    aktifKod = kod;
     bolumAc(m.bolum);
     if (m.panel) {
       var d = tabloSek && tabloSek.querySelector('.tc-asd[data-panel="' + m.panel + '"]' +
               (m.sev ? '[data-sev="' + m.sev + '"]' : ''));
       if (d) panelAc(d);
     }
+    if (sessiz) { seritTazele(null); return; }
+    /* Şeritten bir başlığa basmak, o bölümü sayfada AÇAR. */
+    if (window.tcIrabGoster) window.tcIrabGoster(true);
+    seritTazele(pilKodu(kod));
   }
   window.tcMenuGit = menuGit;
   window.tcSeritTazele = seritTazele;
-  /* Açılış: sayfayı ilk kez açan GİRİŞ'ten başlar — tümevarım basamağını
-     hiç görmeden tabloya düşmesin. Bir kez başlamış olan için panel
-     doğrudan İsim tablosuyla açılır; ders ortasında tabloya bakmak
-     isteyen öğretmen her seferinde girişe takılmasın. */
-  menuGit(kesifBaslanmis() ? 'isim' : 'giris');
+  /* Gövde açılıp kapandıkça şeridin yanan pili: açıkken kalınan başlık,
+     kapalıyken hiçbiri (tablodayken hiçbir i'rab başlığı seçili değil). */
+  window.tcPilTazele = function (acik) { seritTazele(acik ? pilKodu(aktifKod) : null); };
+  /* Açılış: SAYFA TABLOYLA açılır — asıl iş orada. Şerit hazır durur;
+     ilk kez gelen için Giriş, daha önce başlamış olan için İsim
+     "kalınan yer" sayılır ama hiçbiri kendiliğinden açılmaz. */
+  menuGit(kesifBaslanmis() ? 'isim' : 'giris', true);
+  /* Kelime tablosunun kendi basamak şeridi: üç basamak, birleşmelerden
+     sonra şeride sığmıyordu; kontrolü ait olduğu tablonun başına aldık. */
+  var klSev = document.getElementById('klSev');
+  if (klSev) klSev.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.kl-s') : null;
+    if (!b) return;
+    [].forEach.call(klSev.children, function (x) {
+      var sec = (x === b);
+      x.classList.toggle('aktif', sec);
+      x.setAttribute('aria-selected', sec ? 'true' : 'false');
+    });
+    if (window.tcSeviyeSec) window.tcSeviyeSec(b.getAttribute('data-sev'), 0);
+  });
   window.tcBasamakAc = function (sv) {
+    aktifKod = 'kelime';
     bolumAc('tablolar');
     var d = tabloSek && tabloSek.querySelector('.tc-asd[data-sev="' + sv + '"]');
     if (d) panelAc(d);
+    if (window.tcIrabGoster) window.tcIrabGoster(true);
   };
 
   /* ---------- (2) terim balonu ----------
@@ -595,6 +636,7 @@
   var bpGovde = document.getElementById('tcBpGovde');
   function terimAc(kod) {
     var t = TERIM[kod]; if (!t) return;
+    document.getElementById('tcBp').className = 'tc-bp';
     document.getElementById('tcBp').style.setProperty('--bp-renk', t.renk);
     bpBas.querySelector('span').innerHTML =
       t.ad + ' &nbsp;<span class="tc-bp-ar" dir="rtl">' + t.ar + '</span>';
@@ -624,8 +666,11 @@
   /* Balon dışarıdan da kullanılabilsin: Tahlil'deki sekiz kategori kendi
      hâl/alâmet künyesini bu aynı pencerede açıyor — sayfada tek balon
      biçimi olsun diye ikinci bir pencere yazılmadı. */
-  window.tcBaloncukAc = function (renk, baslikHtml, govdeHtml) {
-    document.getElementById('tcBp').style.setProperty('--bp-renk', renk);
+  window.tcBaloncukAc = function (renk, baslikHtml, govdeHtml, sinif) {
+    var bp = document.getElementById('tcBp');
+    /* sinif: balonun kendi punto ölçeğini seçer (bkz. .tc-bp.th-balon). */
+    bp.className = 'tc-bp' + (sinif ? ' ' + sinif : '');
+    bp.style.setProperty('--bp-renk', renk);
     bpBas.querySelector('span').innerHTML = baslikHtml;
     bpGovde.innerHTML = govdeHtml;
     bpPerde.classList.add('acik');
@@ -2153,7 +2198,8 @@
    tek tek listelenir.
    ============================================================ */
 (function () {
-  var bolum = document.querySelector('.tc-bolum[data-bolum="test"]');
+  /* Test artık i'rab panelinde değil, Test penceresinin ikinci kipinde. */
+  var bolum = document.getElementById('svKipIrab');
   if (!bolum) return;
 
   var elAcilis = document.getElementById('tiAcilis');
@@ -2461,9 +2507,13 @@
   elSonraki.addEventListener('click', sonraki);
   elOrnek.addEventListener('click', function () {
     ekran('acilis');
-    /* menuGit: bölümü açmakla kalmaz, başlıktaki yolu da tazeler. */
+    /* Test artık Test penceresinde yaşıyor: örneklere dönmek için önce
+       o pencere kapanır, sonra i'rab paneli Örnekler'de açılır. */
+    var kapa = document.getElementById('tcSinavKapat');
+    if (kapa) kapa.click();
     if (window.tcMenuGit) window.tcMenuGit('havuz');
     else if (window.tcBolumAc) window.tcBolumAc('havuz');
+    if (window.tcIrabGoster) window.tcIrabGoster(true);
   });
 
   havuzYaz();
@@ -3334,7 +3384,7 @@
       (k.dip ? '<p class="th-kunye-dip">' + k.dip + '</p>' : '');
     window.tcBaloncukAc(KAT[n].renk,
       '<span class="th-kunye-no" style="background:' + KAT[n].renk + '">' + n + '</span> ' +
-      KAT[n].kisa, govde);
+      KAT[n].kisa, govde, 'th-balon');
   }
 
   /* k: kategori · h: hâl · n: hâl açılınca yazılan not · 0 = sorulmaz */
@@ -3699,4 +3749,33 @@
   });
 
   window.tcEsma = { sayi: ESMA.length };
+})();
+
+/* ==================== 7) TEST PENCERESİ — İKİ KİP ==================== */
+/* ============================================================
+   Tamlama/cümle testi ile i'rab testi artık aynı pencerede.
+   Her ikisi de kendi motoruyla çalışıyor; burada yalnız hangi
+   ekranın görüneceği seçiliyor.
+   ============================================================ */
+(function () {
+  var kip = document.getElementById('svKip');
+  if (!kip) return;
+  var ekran = { tamlama: document.getElementById('svKipTamlama'),
+                irab:    document.getElementById('svKipIrab') };
+  function kipSec(ad) {
+    if (!ekran[ad]) return;
+    Object.keys(ekran).forEach(function (k) { ekran[k].hidden = (k !== ad); });
+    [].forEach.call(kip.children, function (b) {
+      var s = b.getAttribute('data-kip') === ad;
+      b.classList.toggle('aktif', s);
+      b.setAttribute('aria-selected', s ? 'true' : 'false');
+    });
+    var g = document.querySelector('#tcSinavPerde .tc-pop-govde');
+    if (g) g.scrollTop = 0;
+  }
+  kip.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.sv-k') : null;
+    if (b) kipSec(b.getAttribute('data-kip'));
+  });
+  window.tcTestKip = kipSec;
 })();
