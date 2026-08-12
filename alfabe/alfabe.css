@@ -983,10 +983,17 @@
         @keyframes gtKapa3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(1.3px, 1.3px); } }
         @keyframes gtKapa4 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-1.3px, 1.3px); } }
 
-        /* --- ODAK MODU: sayfada sadece harf tablosu (+ switch) kalır --- */
+        /* --- ODAK MODU: sayfada sadece harf tablosu (+ kumanda) kalır ---
+           SEKME DÜĞMELERİ ARTIK ODAKTA DA DURUYOR. Önce gizleniyorlardı;
+           o zaman şerit açık kalsa bile yalnız "Alfabe" ve "Ölçme &
+           Etkinlik" başlıkları görünüyor, altları boş kalıyordu. Oysa
+           odaktan çıkıp menüyü bulup başka etkinliğe geçmek sınıfta üç
+           işlem demek. Şimdi yedi sekme de yerinde: birine dokunmak odağı
+           kendiliğinden kapatıp o etkinliğe götürüyor (bkz. ui.tab).
+           Şerit yer kaplasın istemeyen, kumandadaki liste düğmesiyle
+           katlar; harfe dokunmak da katlıyor (dışarı dokunma kuralı). */
         body.harf-tam .site-header,
         body.harf-tam .home-link,
-        body.harf-tam .tab-trigger,
         body.harf-tam #g1yan,
         body.harf-tam #g1alt { display: none !important; }
         body.harf-tam .nav-tabs {

@@ -614,8 +614,12 @@ const ui = {
         if(target) target.classList.add('active');
         
         if(e && e.currentTarget) e.currentTarget.classList.add('active');
-        /* Odak modu yalnız harf tablosu içindir: başka sekmeye geçilirse kapanır */
-        if (id !== 'p1' && typeof tamEkran !== 'undefined' && tamEkran.acik) tamEkran.kapat();
+        /* ODAKTAN KENDİLİĞİNDEN ÇIKIŞ: şerit artık odak modunda da açık
+           durduğu için sekmeye dokunmak tek başına yetmeli — önce tam
+           ekrandan çık, sonra o etkinliği göster. Harf Tanıtımı'nın
+           kendisine dokunmak da odağı kapatır: öğretmen "bu sekmeye
+           dön" derken zaten normal görünümü kastediyor. */
+        if (typeof tamEkran !== 'undefined' && tamEkran.acik) tamEkran.kapat();
         /* Hafıza sekmesi her açıldığında İKİ KİŞİLİK gelir. */
         if (id === 'p3' && typeof memoryGame !== 'undefined') memoryGame.ikiKisilik();
         const gs = document.getElementById('p1-switch');
