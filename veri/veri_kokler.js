@@ -16525,6 +16525,31 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             }
         },
 
+        /* --- 28 Numaralı Kalıp (فَعْلَان) --- 
+           HAYAVÂN: حَيِيَ mastarı, kök ح-ي-ي; lâm harfi (ي) vâva dönüşür
+           (حَيَاة → حَيَوَان). Vezni فَعَلَان'dır ve bu tabloda aynı biçimdeki
+           جَرَيَان (جري) ile دَوَرَان (دور) da 28. kalıba yazılmıştır —
+           mu'tel köklerde bu sıra izleniyor.
+           Kur'an'da bir kez geçer (Ankebût 64) ve 'asıl, kesintisiz
+           hayat' demektir; bugünkü kullanımda 'canlı, hayvan'. */
+        28: {
+            base: {
+                emoji: "🦌",
+                arText: "حَيَوَان",
+                trText: "Hayavân / Asıl ve kesintisiz hayat; canlı, hayvan.",
+                ornek: [
+                    {
+                        ar: "وَإِنَّ الدَّارَ الْآخِرَةَ لَهِيَ الْحَيَوَانُ",
+                        tr: "Âhiret yurdu, işte asıl hayat odur. (Ankebût, 64)"
+                    },
+                    {
+                        ar: "عِلْمُ الْحَيَوَان",
+                        tr: "Zooloji (hayvan bilimi)."
+                    }
+                ]
+            }
+        },
+
         // --- 52 Numaralı Kalıp (أَفْعَلَ - İf'âl Babı Mazi - Can Vermek) ---
         52: { 
             base: { 

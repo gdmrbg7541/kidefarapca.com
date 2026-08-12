@@ -263,6 +263,21 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
     border-radius:10px; margin:4px 2px 8px; padding:20px 26px; font-family:'Inter','Segoe UI',sans-serif; }
 .bo-dilbilgisi .arabic-sample{ font-family:'Arakom',sans-serif; color:#3498db; font-weight:700;
     font-size:1.3em; direction:rtl; display:inline-block; }
+/* İLERİ: odaktayken bâb adının altında duran adım düğmesi. Her basış
+   köke tıklama işlevi görür (bir hücre dolar); satırlar bitince
+   dilbilgisini gösterir, bir sonraki basış odağı kapatır. Ok SOLA
+   bakıyor: RTL tabloda doldurma maziden ism-i mef'ûle, sağdan sola. */
+.bo-ileri{ display:inline-flex; align-items:center; gap:6px; margin:8px auto 2px;
+    padding:6px 12px; border:none; border-radius:10px; cursor:pointer;
+    background:linear-gradient(135deg,#3498db,#2f89c5); color:#fff; font-weight:800;
+    font-size:.95rem; font-family:'Inter','Segoe UI',sans-serif; direction:ltr;
+    box-shadow:0 4px 10px rgba(52,152,219,.35); }
+.bo-ileri:hover{ filter:brightness(1.08); }
+.bo-ileri:active{ transform:translateY(1px); }
+.bo-ileri svg{ width:14px; height:14px; display:block; }
+@keyframes boBilgiVurgu{ 0%{ box-shadow:0 0 0 0 rgba(243,156,18,.6); }
+    100%{ box-shadow:0 0 0 18px rgba(243,156,18,0); } }
+.bo-dilbilgisi.bo-vurgu{ animation:boBilgiVurgu 1.1s ease 2; }
 .bo-satir td{ vertical-align:middle; }
 /* Odak satırları nth-child şerit renklerinden ETKİLENMESİN — nötr zemin.
    (id + sınıf özgüllüğü, sayfanın !important'lı nth-child kurallarını ezer) */
@@ -596,6 +611,23 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
         // Odaktayken bu bâbın kalıp yazıları büyük görünsün (2.5rem)
         babRow.classList.add('bo-odak-kalip');
 
+        /* İLERİ düğmesi: bâb adı hücresinin altına. Bâb başına bir kez
+           kurulur, kapanışta kaldırılır (durumu st üstünde yaşar). */
+        if (!st.ileriBtn) {
+            const ib = document.createElement('button');
+            ib.type = 'button';
+            ib.className = 'bo-ileri';
+            ib.title = 'Sıradaki adım: kökler sırayla vezinlere yerleşir';
+            ib.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+                'stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                '<path d="M15 18l-6-6 6-6"/></svg><span>İleri</span>';
+            ib.addEventListener('click', (e) => { e.stopPropagation(); ileriAdim(title); });
+            st.ileriBtn = ib;
+        }
+        const adHucre = babRow.children[0];
+        if (adHucre && st.ileriBtn.parentElement !== adHucre) adHucre.appendChild(st.ileriBtn);
+        st.ileriBilgi = false;
+
         // Odak satırlarını bâb satırının hemen altına yerleştir / geri göster
         let ref = babRow;
         st.rows.forEach(r => {
@@ -618,6 +650,7 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
         });
 
         aktifBab = title;
+        ustKilit();
         // NOT: scrollIntoView KULLANMA — RTL düzende yatay kaydırma yapıp tabloyu
         // görünümden kaçırıyor. Kullanıcı zaten bu satıra tıkladı; satır görünürde.
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
@@ -633,6 +666,7 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
             // Tabloda gizli satır bırakmıyoruz: yoksa nth-child şerit renkleri
             // kayıp bâb satırları grileşiyordu.
             st.rows.forEach(r => { r.classList.remove('bo-belir'); r.remove(); });
+            if (st.ileriBtn) st.ileriBtn.remove();
             const tbody = st.babRow && st.babRow.parentElement;
             if (tbody) {
                 // Bâb satırını orijinal konumuna geri koy
@@ -655,8 +689,59 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
             }
         }
         aktifBab = null;
+        ustKilit();
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
     }
+
+    /* ---- İLERİ ADIMI ----
+       Sıra: 1. kökün 6 hücresi → 2. kök → 3. kök → dilbilgisi → kapat.
+       Her basış birebir KÖKE TIKLAMA işlevidir (startAnim'in kendi
+       kilidi ve sırası neyse o); hangi satırın sırada olduğu filled
+       sayacından okunur — durum bâbla birlikte saklandığı için odak
+       kapatılıp açılsa da kaldığı yerden sürer. */
+    function ileriAdim(title) {
+        title = title || aktifBab;
+        const st = title && babRows[title];
+        if (!st) return;
+        const r = st.filled.findIndex(n => n < 6);
+        if (r >= 0) {
+            const kok = st.rows[r] && st.rows[r].querySelector('.bo-kok');
+            if (kok) kok.click();               /* köke tıklama işlevi */
+            return;
+        }
+        /* Üç satır da dolu → önce EN ALTTAKİ dilbilgisi öne gelsin */
+        if (!st.ileriBilgi) {
+            st.ileriBilgi = true;
+            const kutu = st.rows[3] && st.rows[3].querySelector('.bo-dilbilgisi');
+            if (kutu) {
+                const rec = kutu.getBoundingClientRect();
+                /* scrollIntoView DEĞİL: RTL tabloda yatay kaydırıp görünümü
+                   kaçırıyor (openOdak'taki not) — yalnız dikey kaydırılır. */
+                if (rec.bottom > window.innerHeight - 12) {
+                    window.scrollBy({ top: rec.bottom - window.innerHeight + 28, behavior: 'smooth' });
+                }
+                kutu.classList.remove('bo-vurgu');
+                void kutu.offsetWidth;
+                kutu.classList.add('bo-vurgu');
+            }
+            if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+            return;
+        }
+        /* Bilgi de gösterildi → ⓘ'ye yeniden basılmış gibi kapat */
+        closeOdak();
+    }
+
+    /* ---- ÜST ÇUBUK KİLİDİ ----
+       Bâb odağı YA DA kalıp odağı (vezin örnekleri) açıkken üstteki
+       kök/kronometre/kitap dalga vurguları durur, arama çalışmaz
+       (CSS: body.ust-kilit). İki sistemin durumu birlikte okunur;
+       kalıp odağı kendi tarafını window.KalipOdak ile bildirir. */
+    function ustKilit() {
+        const aktif = !!aktifBab ||
+            !!(window.KalipOdak && window.KalipOdak.aktif && window.KalipOdak.aktif());
+        document.body.classList.toggle('ust-kilit', aktif);
+    }
+    window.kidefUstKilit = ustKilit;
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aktifBab) closeOdak();
@@ -737,7 +822,8 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
        (Escape'i perde ve kalıp odağı da dinliyor, yarış çıkardı). */
     window.BabOdak = {
         kapat: closeOdak,
-        aktif: function () { return aktifBab; }
+        aktif: function () { return aktifBab; },
+        ileri: function () { ileriAdim(aktifBab); }
     };
 
     const origShowBabInfo = window.showBabInfo;

@@ -820,9 +820,18 @@
         var trHtml = (g.tr && g.tr.trim())
             ? '<span class="kl-tr">' + g.tr + '</span>'
             : '<span class="kl-tr kl-tr-yok" title="Türkçesi girilmemiş">—</span>';
+        /* ZÂİD HARFLER BURADA DA KIRMIZI. Kural yeniden yazılmıyor:
+           kelime, KÖKÜNÜN harfleriyle sayfanın kendi ColorEngine'inden
+           geçiyor — kök siyah, ziyade kırmızı (#E53935), tablodaki
+           kutularla aynı dil. Renklendirilemezse düz kalır. */
+        var arHtml = g.ar;
+        try {
+            if (typeof ColorEngine !== 'undefined' && ColorEngine.colorize)
+                arHtml = ColorEngine.colorize(g.ar, g.kok.split(''));
+        } catch (e) { arHtml = g.ar; }
         d.innerHTML =
             '<span class="kl-emoji" aria-hidden="true">' + (g.emoji || '') + '</span>' +
-            '<span class="kl-ar" dir="rtl">' + g.ar + '</span>' + trHtml +
+            '<span class="kl-ar" dir="rtl">' + arHtml + '</span>' + trHtml +
             '<span class="kl-kok" dir="rtl" title="kök">' + g.kok + '</span>' + ornek;
         /* İSİM KALIPLARININ LİSTESİ ÇIKMAZ SOKAK OLMASIN.
            Matris görünümlerinde kökün altında iki kısayol var; tekil
@@ -1230,9 +1239,10 @@
            tam genişlikte yan yana sığıyor — ölçüldü, 990px'e sığmıyorlar),
            bâb bilgisi ikisinin ALTINDA ortalı, kapat düğmesi sağ üst
            köşede sabit. */
+        /* KAPATMA DÜĞMESİ YOK: liste, açan veznin üstüne ikinci kez
+           dokununca kapanıyor (bâb ⓘ'siyle aynı dil). Escape de
+           kapatır. Şeritte ayrıca bir çarpı, kalabalık yapıyordu. */
         f.innerHTML = '<td colspan="' + sutunSayi + '"><div class="ko-serit-sar"><div class="ko-serit">' +
-            '<button type="button" class="ko-kapat" aria-label="Örnekleri kapat" ' +
-            'title="Örnekleri kapat">&times;</button>' +
             SUZGEC_HTML +
             '<span class="ko-ad" id="klAd"></span>' +
             '</div></div></td>';
@@ -1268,11 +1278,9 @@
         satir.classList.add('ko-odak-satir');
         kutu.classList.add('ko-sec');
         govde2.closest('table').classList.add('ko-acik');
+        if (typeof window.kidefUstKilit === 'function') window.kidefUstKilit();
 
         suzgecBagla(f);
-        f.querySelector('.ko-kapat').addEventListener('click', function (e) {
-            e.preventDefault(); e.stopPropagation(); odakKapat();
-        });
 
         suzgecCiz();
         /* Bâb bilgisi FAZ 1'de yazılıyor: FAZ 2'ye bırakılsaydı şerit
@@ -1372,6 +1380,7 @@
             }
             kaydirTr(st.satir, eskiTop);
         }
+        if (typeof window.kidefUstKilit === 'function') window.kidefUstKilit();
         if (!sessiz && typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
     }
 
@@ -1480,4 +1489,7 @@
 
     window.KalipListe = { ac: ac, kapat: kapat, gorunum: gorunum, indeks: indeks,
                           tazele: indeksiTazele, BAB: BAB, MEZID: MEZID };
+    /* Üst çubuk kilidi için: örnek listesi (kapanış animasyonu dahil)
+       açık mı? babodak'taki ustKilit iki odağı birlikte okuyor. */
+    window.KalipOdak = { aktif: function () { return !!(odak || kapanan); } };
 })();

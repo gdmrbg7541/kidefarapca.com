@@ -63,7 +63,11 @@ body:has(.glass-box.matrix-opened) .back-link {
 }
 
 #root-display-box {
-    width: 380px;
+    /* 380px'ti: üst çubuğa OYUN ikonu eklenince içerik ~415px'e çıktı,
+       ARAMA sağdan taşıyordu. Kutu genişledi; mücerred/mezid sekmesi
+       flex:1 olduğu için aynı miktarda kendiliğinden KISALIYOR. */
+    width: 450px;
+    flex: 0 0 450px;
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
@@ -4594,7 +4598,11 @@ body.kl-kilit { overflow: hidden; }
     display: flex; align-items: center; justify-content: center;
     gap: clamp(12px, 1.6vw, 26px); flex-wrap: wrap;
 }
-.kl-pullar[data-kip="ikisi"] > .kl-pul-bolum { flex: 0 0 auto; }
+/* Her panel ŞERİDİN YARISINI alır ve kendi yarısında ortalanır; yoksa
+   ikisi de ortaya yanaşıp kenarlarda geniş boşluk bırakıyordu. */
+.kl-pullar[data-kip="ikisi"] > .kl-pul-bolum {
+    flex: 1 1 0; min-width: 0; display: flex; justify-content: center;
+}
 .ko-serit .kl-suzgec { flex: 1 1 auto; }
 .ko-serit .kl-sekmeler { justify-content: center; }
 
@@ -4616,7 +4624,37 @@ body.kl-kilit { overflow: hidden; }
 #tab1 .container, #tab2 .container {
     border: none !important;
     box-shadow: 0 2px 10px rgba(0,0,0,.05);
-    padding: 6px 8px !important;
+    padding: 6px 2px !important;
+}
+/* TABLO KABI YATAYDA %98.
+   Genişliği asıl belirleyen body'nin 20px'lik YAN DOLGUSUYDU: 1500px
+   ekranda pencere 1460px (%97,3) kalıyordu ve dikey kaydırma çubuğu
+   açılınca daralma buradan hissediliyordu. Yan dolgu 1vw'ye indi →
+   pencere tam %98. (Pencereyi transform'la dolgudan çıkarmayı denedim,
+   satır ekranın dışına kaçıyor — dolguyu değiştirmek doğru yer.) */
+body { padding-left: 1vw !important; padding-right: 1vw !important; }
+
+/* ODAK AÇIKKEN ÜST ÇUBUK SAKİN (body.ust-kilit — sarf/babodak.js yazar).
+   Bâb ⓘ odağı ya da vezin örnek listesi açıkken üstteki kök / kronometre
+   / kitap-liste ikonlarının DALGA vurgusu durur (dikkat listede kalsın),
+   ARAMA hiç çalışmaz — örneklerin kendi kök kısayolları (⏱ ▦) zaten var.
+   Kapanınca hepsi kendiliğinden geri gelir. */
+body.ust-kilit .sitemap-wave-hint,
+body.ust-kilit .svg-wave-active,
+body.ust-kilit .svg-wave-green,
+body.ust-kilit .svg-wave-red { animation: none !important; box-shadow: none !important; }
+body.ust-kilit i.fa-search.root-icon {
+    pointer-events: none; opacity: .35; cursor: default;
+}
+
+/* ÖRNEKLER AÇIKKEN SÜTUN BAŞLIKLARI PASİF.
+   Mazi · Muzari · Emir · Mastar … başlıkları tam odaktaki satırın
+   üstünde duruyor; dokunmak tam ekran dilbilgisi perdesini açıyor ve
+   odağı bölüyordu. Odak kapanınca kendiliğinden geri geliyor.
+   (Bâb adındaki ⓘ pasif DEĞİL: o, örnekleri kapatıp bâb odağına
+   geçiyor — istenen davranış bu.) */
+#tab2 table.ko-acik thead th.th-3d-btn {
+    pointer-events: none; cursor: default; opacity: .62; filter: saturate(.75);
 }
 
 /* --- ODAKTAKİ SATIR --- */
