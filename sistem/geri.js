@@ -58,6 +58,13 @@ function kidefGeri(e) {
         if (!_kidefYeniSekme()) return;
         var a = (ev.target && ev.target.closest) ? ev.target.closest('a[href]') : null;
         if (!a) return;
+        // KENDI onclick'i OLAN geri tusuna dokunma. Bu dinleyici YAKALAMA
+        // (capture) asamasinda calisiyor, yani sayfanin kendi onclick'inden
+        // ONCE. Ikiki gibi cok ekranli sayfalarda geri tusu once oyun
+        // ekranindan menuye donuyordu; burasi araya girip sekmeyi ilk
+        // basista kapatiyordu. Zaten o onclick'ler kidefGeri/kidefAnasayfa'ya
+        // gidiyor, onlar da yeni sekmeyi kendileri kapatiyor.
+        if (a.getAttribute('onclick')) return;
         var href = a.getAttribute('href') || '';
         if (/(^|\/)index\.html([?#].*)?$/i.test(href)) {
             ev.preventDefault();

@@ -8707,19 +8707,13 @@ const wordEasterEggs = {
         },
 
         // --- 22 Numaralı Kalıp (فَعَال) ---
-        22: { 
-            base: { 
-                emoji: "👑", 
-                arText: "كَرَام", 
-                trText: "Değer / Yücelik (Yalın).", ornek: { ar: "هَذَا صَاحِبُ كَرَامٍ", tr: "Bu değer sahibidir." } 
-            },
-            suggestsPlus: true,
-            "ة": {
-                emoji: "🌟", 
-                arText: "كَرَامَة", 
+        22: {
+            base: {
+                emoji: "🌟",
+                arText: "كَرَامَة",
                 trText: "Keramet / Onur / Saygınlık.",
                 ornek: { ar: "كَرَامَةُ الْإِنْسَانِ فَوْقَ كُلِّ شَيْءٍ", tr: "İnsan onuru (kerameti) her şeyin üstündedir." }
-            } 
+            }
         },
 
         // --- 35 Numaralı Kalıp (فَعِيل) ---
@@ -15901,15 +15895,13 @@ const wordEasterEggs = {
     },
     "ثقف": {
         // --- 22 Numaralı Kalıp (فَعَال ve + ة ile Kültür) ---
-        22: { 
-            base: { arText: "ثَقَاف" }, // Yalın hali sessiz
-            suggestsPlus: true,
-            "ة": { 
-                emoji: "🏛️", 
-                arText: "ثَقَافَة", 
+        22: {
+            base: {
+                emoji: "🏛️",
+                arText: "ثَقَافَة",
                 trText: "Sakafa / Kültür, eğitim, birikim.",
                 ornek: { ar: "ثَقَافَةٌ عَامَّةٌ", tr: "Genel kültür." }
-            } 
+            }
         },
 
         // --- 63 Numaralı Kalıp (مُفَعِّل - Tef'îl İsm-i Fâili) ---

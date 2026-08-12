@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>İkiki - İnteraktif Kelime Oyunu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="sarf/oyun/ikikidijital.css?v=2">
+    <link rel="stylesheet" href="sarf/oyun/ikikidijital.css?v=5">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -84,7 +84,65 @@
                 <span>Mavi Kartlar</span>
             </div>
         </div>
-        <div></div> 
+
+        <!-- GÖSTERİM ANAHTARLARI — KARAR OYUNA GİRMEDEN BURADA VERİLİR.
+             Vezin, vezin numarası ve ipucu cümlesi kartta çıksın mı?
+             Eskiden bunlar yalnız arena ekranında, kart kart üstlerine
+             dokunarak bulanıklaştırılabiliyordu; öğretmen zorluğu
+             baştan ayarlayamıyordu. Üçü de AÇIK gelir (eski davranış),
+             seçim tarayıcıda hatırlanır.
+
+             ÜÇÜ BİRDEN KAPANAMAZ: en az bir ipucu açık kalmak zorunda,
+             yoksa kartta kökten başka bir şey kalmaz ve soru sorulamaz.
+             Son açık anahtar kilitlenir — dokununca sallanır ve uyarı
+             çıkar. (Oyun içindeki "dokun-bulanıklaştır" da aynı mantığı
+             taşıyor: vezinle numara asla birlikte gizlenmiyordu.)
+
+             Anahtarlar YALNIZ bu ekranda çevrilir; oyun başladıktan
+             sonra karar değişmez. Oyun içinde alanlara dokunarak
+             bulanıklaştırma eski hâliyle duruyor.
+
+             ÖNİZLEME: yanda duran küçük kart, oyun ekranındaki soru
+             kartının birebir küçüğüdür. Anahtar çevrilir çevrilmez
+             değişir — öğrenci hangi ipucunun kalkacağını görerek
+             anlar. -->
+        <div class="setup-row" id="setup-row">
+            <div class="setup-anahtarlar">
+                <span class="setup-label">Kartta görünsün</span>
+                <button type="button" class="setup-toggle" data-alan="pattern"
+                        onclick="gosterimCevir('pattern')" aria-pressed="true" title="Veznin kendisi">
+                    <span class="setup-sim" dir="rtl">فَعَلَ</span>
+                    <span class="setup-ad">Vezin</span>
+                    <span class="setup-anahtar" aria-hidden="true"><span class="setup-topuz"></span></span>
+                </button>
+                <button type="button" class="setup-toggle" data-alan="num"
+                        onclick="gosterimCevir('num')" aria-pressed="true" title="Vezin numarası">
+                    <span class="setup-sim setup-sim-no">17</span>
+                    <span class="setup-ad">Numara</span>
+                    <span class="setup-anahtar" aria-hidden="true"><span class="setup-topuz"></span></span>
+                </button>
+                <button type="button" class="setup-toggle" data-alan="hint"
+                        onclick="gosterimCevir('hint')" aria-pressed="true" title="İpucu cümlesi">
+                    <span class="setup-sim">👉🏼</span>
+                    <span class="setup-ad">İpucu</span>
+                    <span class="setup-anahtar" aria-hidden="true"><span class="setup-topuz"></span></span>
+                </button>
+            </div>
+
+            <div class="setup-onizleme">
+                <span class="onz-etiket">Kart böyle görünecek</span>
+                <div class="onz-kart" id="onz-kart">
+                    <div class="onz-vezin" id="onz-pattern" dir="rtl">فَعَلَ</div>
+                    <div class="onz-satir">
+                        <span class="onz-kok" dir="rtl">حـ ـكـ ـم</span>
+                        <span class="onz-no" id="onz-num">17</span>
+                    </div>
+                    <div class="onz-ipucu" id="onz-hint">👉🏼 Maçı yönetir</div>
+                </div>
+            </div>
+
+            <span class="setup-uyari" id="setup-uyari" role="status">En az bir ipucu açık kalmalı</span>
+        </div>
     </div>
 
     <div class="screen" id="screen-arena">
@@ -138,8 +196,8 @@
         </div>
     </div>
 
-    <script src="sarf/oyun/ikikidijital.js?v=2"></script>
-    <script src="sistem/geri.js?v=20260808a"></script>
+    <script src="sarf/oyun/ikikidijital.js?v=5"></script>
+    <script src="sistem/geri.js?v=20260812a"></script>
     <script>
       // Geri butonu: oyun ekranındaysa menüye (intro) dön; menüdeyse index'e (yoksa siteye)
       function ikikiGeri(e){
