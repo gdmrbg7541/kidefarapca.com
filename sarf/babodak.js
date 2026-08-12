@@ -721,6 +721,16 @@
         };
     }
 
+    /* DIŞA AÇILAN KAPI: kalıp odağı (sarf/kalipliste.js) ile bâb odağı
+       aynı satırları taşıyıp gizlediği için ikisi AYNI ANDA açık olamaz.
+       Öbürünün kapanabilmesi için buradan küçük bir kapı veriyoruz —
+       Escape olayı taklit etmek yerine doğrudan kendi kapanışını çağırsın
+       (Escape'i perde ve kalıp odağı da dinliyor, yarış çıkardı). */
+    window.BabOdak = {
+        kapat: closeOdak,
+        aktif: function () { return aktifBab; }
+    };
+
     const origShowBabInfo = window.showBabInfo;
     window.showBabInfo = function (rawName) {
         let info = null;

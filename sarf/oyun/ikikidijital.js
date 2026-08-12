@@ -163,6 +163,115 @@ let gameState = 0;
 // BLUR HAFIZASI
 let blurStates = { num: false, pattern: false, hint: false };
 
+/* GÖSTERİM SEÇENEKLERİ (ilk sayfadaki anahtarlar)
+   Hangi ipucu alanı kartta ÇIKSIN? Blur'dan farkı: burada kapatılan
+   alan hiç görünmez, oyun sırasında dokunarak da açılmaz. Üçü de açık
+   gelir — eski davranış. Seçim tarayıcıda saklanır ki öğretmen her
+   derste yeniden ayarlamasın. */
+const GOSTERIM_ANAHTAR = 'kidefIkikiGosterim';
+const GOSTERIM_ID = { pattern: 'display-pattern-name', num: 'display-pattern-num', hint: 'display-hint' };
+/* Önizlemedeki karşılıkları: küçük kart oyun ekranındaki soru kartının
+   birebir küçüğü, anahtarla aynı anda değişiyor. */
+const GOSTERIM_ONZ = { pattern: 'onz-pattern', num: 'onz-num', hint: 'onz-hint' };
+const GOSTERIM_ALAN = ['pattern', 'num', 'hint'];
+let gosterim = { pattern: true, num: true, hint: true };
+
+function gosterimAcikSayi() { return GOSTERIM_ALAN.filter(a => gosterim[a]).length; }
+/* Bir alan KAPATILABİLİR Mİ? İki kural var:
+     1) En az bir ipucu açık kalmalı — hepsi kapanırsa kartta kökten
+        başka bir şey kalmaz, soru sorulamaz.
+     2) VEZİN ile NUMARA aynı anda kapalı olamaz. İkisi de veznin
+        kimliğini söyler; ikisi birden yokken elde yalnız kök kalıyor,
+        soru cevaplanamaz hâle geliyordu. (Oyun içindeki "dokun-
+        bulanıklaştır" da bu kuralı taşıyor: smartToggleBlur birini
+        gizlerken öbürünü açıyor.)
+   Kapatılamayan anahtar KİLİTLİ gösterilir. */
+const GOSTERIM_ESI = { pattern: 'num', num: 'pattern' };
+function gosterimKapanabilir(alan) {
+    if (!gosterim[alan]) return true;                 /* zaten kapalı */
+    if (gosterimAcikSayi() === 1) return false;       /* 1. kural */
+    const es = GOSTERIM_ESI[alan];
+    if (es && !gosterim[es]) return false;            /* 2. kural */
+    return true;
+}
+function gosterimUyariMetni(alan) {
+    const es = GOSTERIM_ESI[alan];
+    return (es && gosterim[alan] && !gosterim[es] && gosterimAcikSayi() > 1)
+        ? 'Vezin ile numaradan biri açık kalmalı'
+        : 'En az bir ipucu açık kalmalı';
+}
+/* Anahtarlar YALNIZ ilk ekranda çevrilir: oyun başladıktan sonra karar
+   değişmez (oyun içi bulanıklaştırma ayrı bir şey, o duruyor). */
+function ilkEkranda() {
+    const s = document.getElementById('screen-intro');
+    return !!s && s.classList.contains('active');
+}
+
+function gosterimOku() {
+    try {
+        const k = JSON.parse(localStorage.getItem(GOSTERIM_ANAHTAR) || 'null');
+        if (k && typeof k === 'object') {
+            GOSTERIM_ALAN.forEach(a => { if (typeof k[a] === 'boolean') gosterim[a] = k[a]; });
+        }
+    } catch (e) { }
+    /* Eski kayıtta vezin+numara birlikte (hatta üçü birden) kapalı
+       kalmış olabilir — o hâl artık geçersizdi, kartta cevaplanabilir
+       bir soru bırakmıyordu. Vezni geri açarak düzelt. */
+    if (!gosterim.pattern && !gosterim.num) gosterim.pattern = true;
+    if (!gosterimAcikSayi()) gosterim.pattern = true;
+}
+function gosterimYaz() {
+    document.querySelectorAll('.setup-toggle').forEach(b => {
+        const a = b.getAttribute('data-alan');
+        const acik = !!gosterim[a];
+        const kilit = acik && !gosterimKapanabilir(a);
+        if (!b.dataset.baslik) b.dataset.baslik = b.getAttribute('title') || '';
+        b.classList.toggle('kapali', !acik);
+        b.classList.toggle('kilitli', kilit);
+        b.setAttribute('aria-pressed', acik ? 'true' : 'false');
+        b.setAttribute('aria-disabled', kilit ? 'true' : 'false');
+        b.setAttribute('title', kilit ? gosterimUyariMetni(a) : b.dataset.baslik);
+    });
+    GOSTERIM_ALAN.forEach(a => {
+        const e = document.getElementById(GOSTERIM_ONZ[a]);
+        if (e) e.classList.toggle('onz-kapali', !gosterim[a]);
+    });
+    try { localStorage.setItem(GOSTERIM_ANAHTAR, JSON.stringify(gosterim)); } catch (e) { }
+}
+/* Kapatılamayan anahtar: sallanır, üstünde kısa bir uyarı belirir. */
+function gosterimUyar(dugme, metin) {
+    if (dugme) {
+        dugme.classList.remove('sallan');
+        void dugme.offsetWidth;               /* animasyon yeniden başlasın */
+        dugme.classList.add('sallan');
+    }
+    const r = document.getElementById('setup-row');
+    if (!r) return;
+    const u = document.getElementById('setup-uyari');
+    if (u && metin) u.textContent = metin;    /* hangi kural çiğnendiyse onu söyle */
+    r.classList.add('uyari');
+    clearTimeout(gosterimUyar._zaman);
+    gosterimUyar._zaman = setTimeout(() => r.classList.remove('uyari'), 2400);
+}
+function gosterimCevir(alan) {
+    if (!(alan in gosterim)) return;
+    if (!ilkEkranda()) return;
+    const dugme = document.querySelector('.setup-toggle[data-alan="' + alan + '"]');
+    if (!gosterimKapanabilir(alan)) { gosterimUyar(dugme, gosterimUyariMetni(alan)); return; }
+    gosterim[alan] = !gosterim[alan];
+    gosterimYaz();
+    /* Önizleme değiştiğini belli etsin — göz oraya gitsin */
+    const k = document.getElementById('onz-kart');
+    if (k) {
+        k.classList.remove('onz-degisti');
+        void k.offsetWidth;
+        k.classList.add('onz-degisti');
+        clearTimeout(gosterimCevir._zaman);
+        gosterimCevir._zaman = setTimeout(() => k.classList.remove('onz-degisti'), 620);
+    }
+}
+document.addEventListener('DOMContentLoaded', function () { gosterimOku(); gosterimYaz(); });
+
 // Rastgele Karıştırma (Shuffle)
 function shuffleArray(array) {
     let cur = array.length, rnd;
@@ -307,14 +416,12 @@ function triggerAction() {
         setTimeout(() => { document.getElementById('timer-bar').style.width = '100%'; }, 100);
 
         setTimeout(() => {
-            document.getElementById('display-pattern-num').style.display = 'block';
-            document.getElementById('display-pattern-name').style.display = 'block';
-            document.getElementById('display-hint').style.display = 'block';
-            
+            /* İlk sayfada kapatılan alan hiç açılmaz */
+            const acilacak = Object.keys(GOSTERIM_ID).filter(a => gosterim[a]);
+            acilacak.forEach(a => { document.getElementById(GOSTERIM_ID[a]).style.display = 'block'; });
+
             setTimeout(() => {
-                document.getElementById('display-pattern-num').classList.add('active');
-                document.getElementById('display-pattern-name').classList.add('active');
-                document.getElementById('display-hint').classList.add('active');
+                acilacak.forEach(a => { document.getElementById(GOSTERIM_ID[a]).classList.add('active'); });
             }, 50);
             
             btn.innerText = "CEVABI GÖSTER"; btn.style.display = 'block';

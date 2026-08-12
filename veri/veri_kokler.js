@@ -6083,16 +6083,13 @@ const wordEasterEggs = {
             } 
         },
         
-        22: { 
-            base: { emoji: "🛡️", arText: "أَمَان", trText: "Güvenlik / Aman.", ornek: { ar: "يَعِيشُ فِي أَمَانٍ", tr: "Güvenlik içinde yaşıyor." } },
-            ornek: { ar: "الْأَمَانُ وَالصِّحَّةُ نِعْمَتَانِ", tr: "Aman (güvenlik) ve sağlık iki büyük nimettir." },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "📦", 
-                arText: "أَمَانَة", 
+        22: {
+            base: {
+                emoji: "📦",
+                arText: "أَمَانَة",
                 trText: "Emanet.",
-                ornek: { ar: "الأَمَانَةُ تَجْلِبُ الرِّزْقَ", tr: "Emaneti korumak (güvenilir olmak) rızık getirir." } 
-            } 
+                ornek: { ar: "الأَمَانَةُ تَجْلِبُ الرِّزْقَ", tr: "Emaneti korumak (güvenilir olmak) rızık getirir." }
+            }
         },
         
         35: { 
