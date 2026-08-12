@@ -77,7 +77,7 @@ const sozlukVerileri = {
         "49": {
             "base": { 
                 "emoji": "🐌", 
-                "arText": "رُوَيْد", 
+                "arText": "رُوَيْدَة", 
                 "trText": "Biraz yavaş / Aheste (Rüveyda).", 
                 "ornek": [
                     { "ar": "رُوَيْدَكَ يَا أَخِي", "tr": "Biraz yavaş ol, acele etme kardeşim!" },

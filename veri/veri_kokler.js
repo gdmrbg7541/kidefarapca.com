@@ -2189,15 +2189,15 @@ const wordEasterEggs = {
             } 
         },
         // --- 37 Numaralı Kalıp (مَفْعِل) ---
-        37: { 
-            base: { emoji: "💡", arText: "مَعْرِف", trText: "Bilgi kaynağı (Yalın).", ornek: { ar: "هَذَا مَعْرِفٌ مُهِمٌّ", tr: "Bu önemli bir bilgi kaynağıdır." } },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "💡", 
-                arText: "مَعْرِفَة", 
+        // Kelime doğrudan مَعْرِفَة olarak duruyor: eskiden kutuda مَعْرِف
+        // görünüyor, asıl kelimeye ancak + ة ekiyle varılıyordu.
+        37: {
+            base: {
+                emoji: "💡",
+                arText: "مَعْرِفَة",
                 trText: "Bilgi / Marifet.",
-                ornek: { ar: "الْمَعْرِفَةُ قُوَّةٌ", tr: "Bilgi (marifet) güçtür." } 
-            } 
+                ornek: { ar: "الْمَعْرِفَةُ قُوَّةٌ", tr: "Bilgi (marifet) güçtür." }
+            }
         },
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
         58: { 
@@ -18427,25 +18427,21 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         },
 
         // --- 37 Numaralı Kalıp (مَفْعِل) ---
-        37: { 
-            base: { 
-                emoji: "🛡️", 
-                arText: "مَغْفِر", 
-                trText: "" 
-            },
-            suggestsPlus: true,
-            "ة": {
-                emoji: "✨", 
-                arText: "مَغْفِرَة", 
+        // Kelime doğrudan مَغْفِرَة olarak duruyor: eskiden kutuda anlamsız
+        // "مَغْفِر" görünüyor, gerçek kelimeye ancak + ة ekiyle varılıyordu.
+        37: {
+            base: {
+                emoji: "✨",
+                arText: "مَغْفِرَة",
                 trText: "Mağfiret / Bağışlama, günahları örtme.",
                 ornek: [
-                    { 
-                        ar: "نَرْجُو مَغْفِرَةَ اللهِ", 
-                        tr: "Allah'ın mağfiretini (bağışlamasını) umarız." 
+                    {
+                        ar: "نَرْجُو مَغْفِرَةَ اللهِ",
+                        tr: "Allah'ın mağfiretini (bağışlamasını) umarız."
                     },
-                    { 
-                        ar: "💬 مَوْضُوعٌ لِلْمُطَالَعَةِ: الْغُفْرَانُ فِي اللُّغَةِ يَعْنِي التَّغْطِيَةَ. مَا هُوَ الْفَرْقُ بَيْنَ مَحْوِ الذَّنْبِ وَتَغْطِيَتِهِ (مَغْفِرَتِهِ)؟", 
-                        tr: "Mütalaa Konusu: 'Gufran/Mağfiret' kelimesinin sözlük anlamı 'örtmek'tir. Bir günahın tamamen silinmesi (mahvedilmesi) ile örtülmesi (mağfiret edilmesi) arasındaki manevi ve psikolojik fark nedir?" 
+                    {
+                        ar: "💬 مَوْضُوعٌ لِلْمُطَالَعَةِ: الْغُفْرَانُ فِي اللُّغَةِ يَعْنِي التَّغْطِيَةَ. مَا هُوَ الْفَرْقُ بَيْنَ مَحْوِ الذَّنْبِ وَتَغْطِيَتِهِ (مَغْفِرَتِهِ)؟",
+                        tr: "Mütalaa Konusu: 'Gufran/Mağfiret' kelimesinin sözlük anlamı 'örtmek'tir. Bir günahın tamamen silinmesi (mahvedilmesi) ile örtülmesi (mağfiret edilmesi) arasındaki manevi ve psikolojik fark nedir?"
                     }
                 ]
             }
