@@ -53,6 +53,16 @@
   <nav class="tc-gez" id="tcGez" aria-label="Bölümler">
     <div class="tc-serit" id="tcSerit">
       <div class="tc-serit-ray" id="tcSeritRay" role="tablist" aria-label="Bölüm başlıkları"></div>
+      <!-- OYUN ÇEKMECESİNİN TUTAMACI — en sağda, Test'in ardından.
+           Rayın DIŞINDA durur: başlıklar kaysa da hep göz önündedir. -->
+      <button type="button" class="tc-oyun-ac" id="tcOyunAc" aria-haspopup="dialog" aria-expanded="false">
+        <svg class="tc-ikon tc-ik-kol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+             fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7.6 6.6h8.8a5.4 5.4 0 0 1 5.3 6.5l-.7 3.4a2.9 2.9 0 0 1-5.1 1.2l-1.5-1.9h-4.8l-1.5 1.9a2.9 2.9 0 0 1-5.1-1.2l-.7-3.4a5.4 5.4 0 0 1 5.3-6.5z"/>
+          <path class="tci-kol-yon" d="M8.3 10v3.4M6.6 11.7H10"/>
+          <circle class="tci-kol-a" cx="15.6" cy="10.6" r=".65" fill="currentColor" stroke="none"/>
+          <circle class="tci-kol-b" cx="17.8" cy="12.8" r=".65" fill="currentColor" stroke="none"/>
+        </svg><span>Oyun</span></button>
     </div>
   </nav>
 </header>
@@ -445,21 +455,22 @@
     <div class="tc-pop-govde">
 
     <!-- ================= 0 · GİRİŞ (KEŞİF) =================
-         Tümevarım basamağı. Tablo dersin başlangıcı değil SONUCU olsun
-         diye: üstte veri (harekeli cümleler, iri — tahtadan okunacak),
-         altta tek soru. Öğrenci kuralı kendi kurar, sonunda o adımın
-         tablosuna geçer.
-         Dört adım şeritteki sırayla zincirdir: İsim çekirdek karşıtlığı
-         kurar → Fiil aynı ilkeyi başka takıma taşır → Efâl-i hamse
-         tahmin ettirip canlı tabloda doğrulatır → Kelime kuralı kırar.
-         Soru metinleri betikte (KESIF): sıra ve çeldirici de öğrettiği
-         için elle yazıldı, havuzdan üretilmiyor. -->
+         Gösterim basamağı — SORU YOK: sınama işi şeritteki Test
+         penceresinin, giriş yalnız gösterir. Üstte veri (harekeli
+         cümleler, iri — tahtadan okunacak; değişen SON hâl renginde,
+         yanında anlamı canlandıran sahne), altında aynı kelimenin üç
+         yazılışını döndüren geçit, en altta kuralın tek cümlelik hâli.
+         İki adım şeritteki sırayla: İsim çekirdek karşıtlığı kurar →
+         Fiil aynı ilkeyi başka takıma taşır.
+         Metinler betikte (KESIF): sırası da öğrettiği için elle
+         yazıldı, havuzdan üretilmiyor. -->
     <section class="tc-bolum" data-bolum="giris" hidden>
       <div class="tc-kesif" id="tcKesif">
         <p class="tc-kesif-ust" id="tcKesifUst"></p>
         <div class="tc-kesif-veri" id="tcKesifVeri" dir="rtl"></div>
-        <p class="tc-kesif-soru" id="tcKesifSoru"></p>
-        <div class="tc-kesif-siklar" id="tcKesifSiklar"></div>
+        <!-- AYNI kelime, ÜÇ yazılış. Üç kopya üst üste durur, çapraz
+             geçişle döner (dâd ikonundaki teknik). -->
+        <div class="tc-kesif-gecit" id="tcKesifGecit" hidden></div>
         <div class="tc-kesif-not" id="tcKesifNot" hidden></div>
         <div class="tc-kesif-alt">
           <button type="button" class="tc-kesif-devam" id="tcKesifDevam" hidden></button>
@@ -970,6 +981,49 @@
 </div>
 
 <!-- Sayfanın bütün betiği tek dosyada: büyütme motoru + test paneli. -->
+<!-- ============ OYUN ÇEKMECESİ ============
+     Sayfanın oyun rafı: çekmece SAĞDAN kayarak açılır, içinde oyun
+     KARTI durur. Karta tıklamak oyunu YENİ SEKMEDE açar — ders sayfası
+     olduğu gibi kalır, oyundan dönünce kaldığın yerdesin. -->
+<div class="oyn-ort" id="tcOyunOrt" hidden></div>
+<aside class="oyn-cekmece" id="tcOyunCek" role="dialog" aria-modal="true"
+       aria-label="Oyunlar" aria-hidden="true">
+  <div class="oyn-bas">
+    <span class="oyn-ad">Oyun</span>
+    <span class="oyn-not">yeni sekmede açılır</span>
+    <button type="button" class="oyn-kapat" id="tcOyunKapat" title="Kapat" aria-label="Kapat">&times;</button>
+  </div>
+  <div class="oyn-govde">
+    <!-- rel="opener" BİLEREK: geri.js, opener'ı olan sayfada çıkışı
+         "sekmeyi kapat"a çevirir (index'in oyun bağlantılarıyla aynı
+         düzen). Oyundan çıkan, açık duran ders sayfasına düşer. -->
+    <a class="oyn-kart" id="tcOyunKart" href="isimx4.html" target="_blank" rel="opener">
+      <span class="oyn-kart-gorsel" aria-hidden="true">
+        <!-- Oyunun kendi kimliği: 4 adımlık çözümleme çubuğu.
+             Halkalar sırayla dolar — oyundaki ilerleme çubuğunun minyatürü. -->
+        <svg viewBox="0 0 132 44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M24 22h18M52 22h18M80 22h18M108 22h0"/>
+          <circle class="oyk-h oyk-1" cx="17" cy="22" r="9"/>
+          <circle class="oyk-h oyk-2" cx="45" cy="22" r="9"/>
+          <circle class="oyk-h oyk-3" cx="73" cy="22" r="9"/>
+          <circle class="oyk-h oyk-4" cx="101" cy="22" r="9"/>
+          <text class="oyk-s" x="17" y="26.5">1</text>
+          <text class="oyk-s" x="45" y="26.5">2</text>
+          <text class="oyk-s" x="73" y="26.5">3</text>
+          <text class="oyk-s" x="101" y="26.5">4</text>
+          <path class="oyk-ok" d="M113 22h12M120 16.5l5.5 5.5-5.5 5.5"/>
+        </svg>
+      </span>
+      <span class="oyn-kart-metin">
+        <b>İsim x 4</b>
+        <span>Bir ismi dört soruda çözümle: tür · sayı · cinsiyet · hâl.
+              Süreye karşı, 1 ya da 2 kişilik.</span>
+        <i class="oyn-kart-ip">Oynamak için dokun — yeni sekmede açılır</i>
+      </span>
+    </a>
+  </div>
+</aside>
+
 <script src="tamlamavecumleler.js?v=20260810a"></script>
 <script src="sistem/geri.js?v=20260808a"></script>
 <!-- Görev/ilerleme köprüsü: Test turu bitince 0-100 puan buluta yazılır. -->
