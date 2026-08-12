@@ -267,6 +267,59 @@
     function maratonVar(kok) {
         return (typeof hasVerbsToRead === 'function') ? !!hasVerbsToRead(kok) : true;
     }
+
+    /* ---------- MARATON: GİT VE GERİ DÖN ----------
+       ⏱ düğmesi kökü TABLOYA TAŞIMAZ. Önce selectReadyVerb çağrılıyordu;
+       o tabloyu sıfırlayıp kökü yerleştirdiği için maratondan çıkınca
+       öğrenci listeye değil, ▦ düğmesine basmış gibi kökün tablosuna
+       düşüyordu. Artık:
+         · perde yalnızca GİZLENİR (durumu — kalıp, süzgeç, seçim — durur),
+         · maratonun ihtiyaç duyduğu iki değişken (currentRoot ve
+           activeConfirmedRoot) geçici olarak bu köke ayarlanır,
+         · maraton kapanınca ikisi de eski hâline döner ve perde en son
+           bakılan kalıpla, aynı süzgeçle yeniden açılır.
+       Kapanışı yakalamak için sayfanın closeMarathon'u bir kez sarılıyor;
+       yalnız BİZ açtıysak (maratonDonus dolu) geri dönüş çalışır. */
+    var maratonDonus = null;
+    var kapatSarildi = false;
+
+    function maratonKapanisiniYakala() {
+        if (kapatSarildi || typeof window.closeMarathon !== 'function') return;
+        kapatSarildi = true;
+        var eski = window.closeMarathon;
+        window.closeMarathon = function () {
+            var d = maratonDonus; maratonDonus = null;
+            var s = eski.apply(this, arguments);
+            if (d) setTimeout(function () { maratondanDon(d); }, 60);
+            return s;
+        };
+    }
+    function maratondanDon(d) {
+        /* Kök maratondan önceki hâline döner: perde "kök seçili değilken"
+           çalışıyor, kök üstünde kalırsa kalıba dokunmak listeyi açmaz. */
+        try { currentRoot = d.kokOnce; } catch (e) {}
+        window.activeConfirmedRoot = d.onayOnce;
+        if (!isFinite(d.no)) return;
+        ac(d.no);
+        suzgec = d.suzgec;                       /* aynı sekme, aynı seçim */
+        suzgecCiz(); govdeCiz();
+    }
+    function maratonAc(kok) {
+        maratonKapanisiniYakala();
+        maratonDonus = {
+            no: acikNo,
+            suzgec: { tur: suzgec.tur, deger: suzgec.deger, acik: suzgec.acik },
+            kokOnce: (typeof currentRoot !== 'undefined') ? currentRoot : '',
+            onayOnce: window.activeConfirmedRoot || ''
+        };
+        kapat();                                  /* durumu bozmadan gizle */
+        try { currentRoot = kok; } catch (e) {}
+        window.activeConfirmedRoot = kok;
+        /* Perdenin kapanış geçişi bitsin, maraton yarım kareye denk gelmesin */
+        setTimeout(function () {
+            if (typeof window.openMarathon === 'function') window.openMarathon();
+        }, 60);
+    }
     function kokDugmesi(sinif, svg, baslik) {
         var b = document.createElement('button');
         b.type = 'button';
@@ -298,12 +351,7 @@
         } else {
             m.addEventListener('click', function (e) {
                 e.preventDefault(); e.stopPropagation();
-                if (!kokSec(kok)) return;
-                /* selectReadyVerb tabloyu yeniden çiziyor; maratonu aynı
-                   karede açmak yarım çizilmiş DOM'a denk gelebiliyor. */
-                setTimeout(function () {
-                    if (typeof window.openMarathon === 'function') window.openMarathon();
-                }, 60);
+                maratonAc(kok);
             });
         }
         sira.appendChild(m);
@@ -319,12 +367,13 @@
         return p;
     }
 
-    /* ---------- 3d) SÜZGEÇ: ALFABE ve AKSÂM-I SEB'A ----------
+    /* ---------- 3d) SÜZGEÇ: KÖK ARA ve AKSÂM-I SEB'A ----------
        Liste uzun (33'te 130+ kelime, İf'âl'de 64 kök); öğrenci aradığını
        bulabilsin diye iki süzgeç var ve İKİSİ AYNI ANDA DEĞİL, sıra
        birindedir:
-         ALFABE  — açılışta bu açıktır. Kelimeler her hâlükârda kökün
-                   BAŞ HARFİNE göre dizilir; bir harfe basılırsa yalnız
+         KÖK ARA (içeride 'alfabe') — açılışta seçili olan budur; küçük
+                   arama klavyesini açar. Kelimeler her hâlükârda kökün
+                   BAŞ HARFİNE göre dizilir; bir tuşa basılırsa yalnız
                    o harfle başlayan kökler kalır.
          AKSÂM-I SEB'A — kökün yapısına göre yedi kısım. Bir kısma
                    basılınca yalnız o kısmın örnekleri kalır, sıralama
@@ -645,7 +694,9 @@
                 '<div class="kl-suzgec" id="klSuzgec" data-acik="0">' +
                   '<div class="kl-sekmeler" role="tablist">' +
                     '<button type="button" class="kl-sekme" data-tur="alfabe" role="tab">' +
-                      '<span>Alfabe</span><b class="kl-sekme-rozet"></b></button>' +
+                      /* Başlık "Alfabe" değil "Kök Ara": açılan şey bir klavye,
+                         öğrenci de harfe göre süzmüyor, kökü arıyor. */
+                      '<span>Kök Ara</span><b class="kl-sekme-rozet"></b></button>' +
                     '<button type="button" class="kl-sekme" data-tur="aksam" role="tab">' +
                       '<span>Aksâm-ı Seb\'a</span><b class="kl-sekme-rozet"></b></button>' +
                     '<button type="button" class="kl-kucult" id="klKucult" title="Süzgeci küçült" ' +
@@ -785,6 +836,23 @@
         return sat.length;
     }
 
+    /* BAŞLIKTAKİ VEZİNDE ZÂİD HARFLER KIRMIZI.
+       Kuralı burada yeniden yazmıyoruz: sayfanın kendi ColorEngine'i
+       zaten kök harflerini siyah, ziyade (zâid) harfleri kırmızı
+       boyuyor (#E53935) ve vezinde kök harfleri ف ع ل olduğu için
+       kendiliğinden doğru sonucu veriyor — مَفْعُول'de م ve و kırmızı,
+       ف ع ل siyah. Harfler ZWJ ile bağlandığından kelime kopmuyor.
+       Sütun başlıklarına uygulanmadı: onlar yeşil/mavi pilin üstünde
+       BEYAZ yazılıyor, siyah kök harfleri orada okunmaz. */
+    function vezinBoya(el, ar) {
+        if (!el) return;
+        if (ar && typeof ColorEngine !== 'undefined' && ColorEngine.colorize) {
+            el.innerHTML = ColorEngine.colorize(ar);
+        } else {
+            el.textContent = ar || '';
+        }
+    }
+
     /* Satırın/kartların rengi tablodan okunur (bkz. 3b). Gövde her
        süzgeç değişiminde yeniden çizildiği için ton yazımı da burada. */
     function tonYaz() {
@@ -841,7 +909,7 @@
         tumler = (acikGor.kip === 'tekil') ? (indeks()[no] || []).slice() : satirlar(acikGor);
         tumler.sort(function (a, b) { return kokKarsilastir(a.kok, b.kok); });
         document.getElementById('klNo').textContent = no;
-        document.getElementById('klVezin').textContent = bilgi.ar || '';
+        vezinBoya(document.getElementById('klVezin'), bilgi.ar);
         p.setAttribute('data-kip', acikGor.kip);
         suzgecCiz();
         govdeCiz();

@@ -1843,25 +1843,20 @@ const wordEasterEggs = {
             } 
         },
         
-        // --- 38 Numaralı Kalıp (مَفْعَل) ---
-        38: { 
-            base: {
-                emoji: "📍",
-                arText: "مَمْلَك",
-                trText: "Hüküm sürülen yer.",
-                ornek: { ar: "هَذَا الْمَمْلَكُ كَبِيرٌ", tr: "Bu hüküm sürülen yer büyüktür." }
-            },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "🏰", 
-                arText: "مَمْلَكَة", 
-                trText: "Krallık / Memleket.",
-                ornek: {
-                    ar: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ",
-                    tr: "Suudi Arabistan Krallığı (Arapçada krallık, Türkçede yurt/memleket)."
+            // --- 38 Numaralı Kalıp (مَفْعَل) ---
+            // Kelime doğrudan مَمْلَكَة olarak duruyor: eskiden kutuda مَمْلَك
+            // görünüyor, asıl kelimeye ancak + ة ekiyle varılıyordu.
+            38: {
+                base: {
+                    emoji: "🏰",
+                    arText: "مَمْلَكَة",
+                    trText: "Krallık / Memleket.",
+                    ornek: {
+                        ar: "الْمَمْلَكَةُ الْعَرَبِيَّةُ السُّعُودِيَّةُ",
+                        tr: "Suudi Arabistan Krallığı (Arapçada krallık, Türkçede yurt/memleket)."
+                    }
                 }
-            } 
-        },
+            },
         
         // --- 41 Numaralı Kalıp (أَفْعَال) ---
         41: { 
@@ -1996,17 +1991,15 @@ const wordEasterEggs = {
         },
         
         // --- 25 Numaralı Kalıp (فُعُول) ---
-        25: { 
-            base: { emoji: "🏛️", arText: "حُكُوم", trText: "Hükümet (Yalın).",
-                ornek: { ar: "يَعْمَلُ فِي قِطَاعِ الْحُكُومِ", tr: "Hükümet sektöründe çalışıyor." }
-            },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "🏛️", 
-                arText: "حُكُومَة", 
+        // Kelime doğrudan حُكُومَة olarak duruyor: eskiden kutuda حُكُوم
+        // görünüyor, asıl kelimeye ancak + ة ekiyle varılıyordu.
+        25: {
+            base: {
+                emoji: "🏛️",
+                arText: "حُكُومَة",
                 trText: "Hükümet.",
-                ornek: { ar: "رَئِيسُ الْحُكُومَةِ", tr: "Hükümet başkanı." } 
-            } 
+                ornek: { ar: "رَئِيسُ الْحُكُومَةِ", tr: "Hükümet başkanı." }
+            }
         },
         
         // --- 33 Numaralı Kalıp (فَاعِل) ---
@@ -2040,17 +2033,15 @@ const wordEasterEggs = {
         },
         
         // --- 38 Numaralı Kalıp (مَفْعَل) ---
-        38: { 
+        // Kelime tek kayıtta: arText zaten مَحْكَمَة idi, anlamı ve örneği
+        // + ة kaydında duruyordu — ikisi birleştirildi, + tanımı kalktı.
+        38: {
             base: {
+                emoji: "⚖️",
                 arText: "مَحْكَمَة",
- emoji: "⚖️" },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "⚖️", 
-                arText: "مَحْكَمَة", 
                 trText: "Mahkeme.",
-                ornek: { ar: "قَرَارُ الْمَحْكَمَةِ الْعُلْيَا", tr: "Yüksek mahkemenin kararı." } 
-            } 
+                ornek: { ar: "قَرَارُ الْمَحْكَمَةِ الْعُلْيَا", tr: "Yüksek mahkemenin kararı." }
+            }
         },
 
         // --- 41 Numaralı Kalıp (أَفْعَال - Cem-i Mükesser / Kırık Çoğul) ---
@@ -2383,17 +2374,17 @@ const wordEasterEggs = {
             } 
         },
         
-        // --- 38 Numaralı Kalıp (مَفْعَل) ---
-        38: { 
-            base: { emoji: "🤝", arText: "مَرْحَم", trText: "Merhamet yeri (Yalın).", ornek: { ar: "الْقَلْبُ مَرْحَمٌ", tr: "Kalp merhamet yeridir." } },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "🤝", 
-                arText: "مَرْحَمَة", 
-                trText: "Merhamet.",
-                ornek: { ar: "وَتَوَاصَوْا بِالصَّبْرِ وَتَوَاصَوْا بِالْمَرْحَمَةِ", tr: "Birbirlerine sabrı ve merhameti tavsiye edenler... (Beled Suresi, 17)" } 
-            } 
-        },
+            // --- 38 Numaralı Kalıp (مَفْعَل) ---
+            // Kelime doğrudan مَرْحَمَة olarak duruyor: eskiden kutuda مَرْحَم
+            // görünüyor, asıl kelimeye ancak + ة ekiyle varılıyordu.
+            38: {
+                base: {
+                    emoji: "🤝",
+                    arText: "مَرْحَمَة",
+                    trText: "Merhamet.",
+                    ornek: { ar: "وَتَوَاصَوْا بِالصَّبْرِ وَتَوَاصَوْا بِالْمَرْحَمَةِ", tr: "Birbirlerine sabrı ve merhameti tavsiye edenler... (Beled Suresi, 17)" }
+                }
+            },
 
         // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - Mazi / İsti'fal Babı) ---
         100: { 
@@ -5974,6 +5965,40 @@ const wordEasterEggs = {
             } 
         }, 
         
+        // --- 52-54 Numaralı Kalıplar (İf'âl Bâbı: mazi · muzari · emir) ---
+        // Bâbın mastarı (55 إِرْشَاد) ve ism-i fâili (56 مُرْشِد) zaten vardı,
+        // fiilleri eksikti: öğrenci "mürşit" ile "irşad"ı görüyor ama onları
+        // doğuran أَرْشَدَ'yi göremiyordu.
+        52: {
+            base: {
+                emoji: "🧭",
+                arText: "أَرْشَدَ",
+                trText: "İrşat etti / Doğru yolu gösterdi, rehberlik etti.",
+                ornek: [
+                    { ar: "أَرْشَدَنِي الشُّرْطِيُّ إِلَى الطَّرِيقِ الصَّحِيحِ", tr: "Polis bana doğru yolu gösterdi." },
+                    { ar: "💡 مَعْلُومَة صَرْفِيَّة", tr: "Sarf Notu: Kök 'رُشْد' (doğru yolda olmak) hâlini anlatır; İf'âl bâbı bu hâli BAŞKASINA GEÇİRİR — أَرْشَدَ, birini doğru yola iletmek demektir. Bâbın mastarı إِرْشَاد (55), fâili de مُرْشِد (56) buradan gelir." }
+                ]
+            }
+        },
+
+        53: {
+            base: {
+                emoji: "🧭",
+                arText: "يُرْشِدُ",
+                trText: "İrşat eder / Yol gösterir, rehberlik eder.",
+                ornek: { ar: "الْمُرْشِدُ يُرْشِدُ السُّيَّاحَ فِي الْمَدِينَةِ", tr: "Rehber (mürşit), turistlere şehirde yol gösterir." }
+            }
+        },
+
+        54: {
+            base: {
+                emoji: "👉",
+                arText: "أَرْشِدْ",
+                trText: "İrşat et! / Yol göster!",
+                ornek: { ar: "أَرْشِدْنِي إِلَى أَقْرَبِ مَكْتَبَةٍ", tr: "Beni en yakın kütüphaneye yönlendir." }
+            }
+        },
+
         // --- 55 Numaralı Kalıp (إِفْعَال) ---
         55: { 
             base: { 

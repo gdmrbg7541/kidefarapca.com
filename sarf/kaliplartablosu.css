@@ -3875,7 +3875,7 @@ body.has-fullscreen-accordion .thematic-words-content {
    buna karşılık koyulaştırıldı ki perde yine öne çıksın. */
 .kl-perde {
     position: fixed; inset: 0; z-index: 1000000;
-    background: rgba(15, 23, 42, 0.34);
+    background: rgba(15, 23, 42, 0.20);
     display: none; align-items: center; justify-content: center;
     opacity: 0; transition: opacity .28s ease;
     direction: ltr;
@@ -3893,7 +3893,7 @@ body.kl-kilit { overflow: hidden; }
 .kl-pencere {
     background: transparent; box-shadow: none;
     border-radius: 28px; position: relative;
-    width: 95%; max-width: 1380px; height: 97vh; max-height: 97vh;
+    width: 97%; max-width: 97vw; height: 97vh; max-height: 97vh;
     /* ÜST BOŞLUK KISILDI: vezin levhası, klavye ve kapat düğmesi ekranın
        en tepesinden başlasın — kazanılan yer listeye gidiyor. */
     padding: 6px 26px 14px;
@@ -4092,7 +4092,11 @@ body.kl-kilit { overflow: hidden; }
 }
 .kl-sema-sahih .kl-sema-baslik { background: #20C997; }
 .kl-sema-mutel .kl-sema-baslik { background: #F39C12; }
-.kl-sema-izgara { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; width: 100%; flex: 1 1 auto; }
+/* Kartlar SAĞDAN SOLA: Sâlim sağda Mehmûz solda, Misâl sağda Ecvef solda,
+   Nâkıs sağda Lefîf solda — kavram şemasındaki sıranın aynısı.
+   Kartın içi LTR kalır ki Türkçe tanımdaki nokta/virgül başa atlamasın. */
+.kl-sema-izgara { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; width: 100%; flex: 1 1 auto; direction: rtl; }
+.kl-sema-kart { direction: ltr; }
 .kl-sema-kart {
     -webkit-appearance: none; appearance: none; cursor: pointer; font: inherit;
     position: relative; background: #fdfdfd;
@@ -4274,7 +4278,7 @@ body.kl-kilit { overflow: hidden; }
 /* Başlık pilleri yan yana YAPIŞMASIN: saydam yan kenar aralık açar,
    table-layout:fixed olduğu için sütun genişliğini bozmaz. */
 .kl-tablo th.kl-th {
-    color: #fff !important; box-shadow: 0 3px 8px rgba(0,0,0,.18);
+    color: #0f172a !important; box-shadow: 0 2px 6px rgba(0,0,0,.10);
     border-left: 6px solid transparent !important;
     border-right: 6px solid transparent !important;
     /* !important şart: .baslik-fiil/.baslik-isim "background" KISA
@@ -4283,9 +4287,24 @@ body.kl-kilit { overflow: hidden; }
        yapışık görünüyordu. */
     background-clip: padding-box !important;
 }
-.kl-tablo th.kl-th .kl-th-ad { color: #fff; }
-.kl-tablo th.kl-th .kl-th-vezin { color: #fff; }
-.kl-tablo th.kl-th .kl-th-no { color: rgba(255,255,255,.75); }
+/* PASTEL BAŞLIKLAR: perdedeki kutular tablodakinden çok daha büyük
+   olduğu için sayfanın doygun yeşil/mavisi burada göze batıyordu.
+   Zemin açıldı, yazı koyulaştı — okunurluk düşmedi (yeşilde ~6:1,
+   mavide ~6.5:1). Tablo sayfasının kendi .baslik-fiil/.baslik-isim
+   renkleri DEĞİŞMEDİ; bu ezme yalnız perdenin içinde geçerli. */
+/* background KISA YAZIMI kullanılmıyor: o, background-clip'i de
+   border-box'a sıfırlar ve piller yan yana yapışırdı (aynı tuzağa
+   daha önce düşülmüştü). Yalnız görüntü katmanı eziliyor. */
+.kl-tablo th.kl-th.baslik-fiil { background-image: linear-gradient(135deg, #a7f3d0, #6ee7b7) !important; }
+.kl-tablo th.kl-th.baslik-isim { background-image: linear-gradient(135deg, #dbeafe, #93c5fd) !important; }
+.kl-tablo th.kl-th .kl-th-ad,
+.kl-tablo th.kl-th .kl-th-vezin { color: #0f172a; text-shadow: none; }
+.kl-tablo th.kl-th.baslik-fiil .kl-th-ad,
+.kl-tablo th.kl-th.baslik-fiil .kl-th-vezin { color: #065f46; }
+.kl-tablo th.kl-th.baslik-isim .kl-th-ad,
+.kl-tablo th.kl-th.baslik-isim .kl-th-vezin { color: #1e3a8a; }
+.kl-tablo th.kl-th.baslik-fiil .kl-th-no { color: rgba(6,95,70,.6); }
+.kl-tablo th.kl-th.baslik-isim .kl-th-no { color: rgba(30,58,138,.6); }
 .kl-tablo thead tr { }
 .kl-kok-bas {
     color: #475569 !important; font-weight: 800; font-size: 1.05rem;
@@ -4371,7 +4390,7 @@ body.kl-kilit { overflow: hidden; }
     transform: translateY(-2px);
 }
 .kl-tablo th.kl-th.kl-sec .kl-th-no {
-    color: #fff; font-weight: 800; letter-spacing: .12em;
+    color: #C0392B; font-weight: 800; letter-spacing: .12em;
 }
 .kl-tablo td.kl-sec .kl-kart {
     border-color: #FF3B30; border-bottom-color: #FF3B30;
