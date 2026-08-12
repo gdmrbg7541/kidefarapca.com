@@ -1421,15 +1421,17 @@
         }, sar ? A + 30 : 0));
     }
 
-    /* Bâb ⓘ'sine basılırsa örnekler kapanır (ve tersi — odakAc başta
-       bâb odağını kapatıyor). babodak.js bizden ÖNCE yükleniyor, bu
-       yüzden showBabInfo'yu ikinci kez sarmalıyoruz. */
+    /* ÖRNEKLER AÇIKKEN BÂB ⓘ'Sİ HİÇ ÇALIŞMAZ (Geylani'nin isteği) —
+       eskiden örnekleri kapatıp bâb odağına geçiyordu. Gerçek tıklamayı
+       CSS kapatıyor (pointer-events); bu sarmal da programatik çağrıyı
+       yutuyor. Ters yön duruyor: bâb odağı açıkken vezne basmak odağı
+       kapatıp örnekleri açar (odakAc → babOdagiKapat).
+       babodak.js bizden ÖNCE yüklendiği için showBabInfo ikinci kez
+       sarmalanıyor. */
     (function () {
         var onceki = window.showBabInfo;
         window.showBabInfo = function () {
-            /* Bâb odağı hemen açılacak; kapanış animasyonunu beklemeyiz */
-            if (odak) odakKapat(true);
-            if (kapanan) { (kapanan.zaman || []).forEach(clearTimeout); odakSonlandir(kapanan, true); }
+            if (odak || kapanan) return;       /* örnek listesi açık → yut */
             if (typeof onceki === 'function') return onceki.apply(this, arguments);
         };
     })();

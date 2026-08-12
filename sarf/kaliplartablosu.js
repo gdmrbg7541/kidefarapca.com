@@ -2730,6 +2730,13 @@ document.addEventListener('keydown', function(e) {
 
 function resetTableOnly(isSilent = false) {
     if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes(); // Ekran sıfırlanırken tüm zoomları ve overlayi kapatır
+    // MEZİD SEKMESİNİN ALTINDAKİ KIRMIZI ÇİZGİ (heartbeat-active) DA SİLİNİR.
+    // Kök seçilince "bu kökün mezidde de örneği var" diye beliriyordu;
+    // animasyonu 4 sn'de bir tekrarlayan sonsuz bir süpürme olduğu için
+    // sıfırlamadan SONRA da aralıklarla yeniden görünüyordu — sınıf
+    // burada temizlenmediği sürece çizgi ölmüyordu.
+    const mezidCizgi = document.querySelector('.mezid-btn.heartbeat-active');
+    if (mezidCizgi) mezidCizgi.classList.remove('heartbeat-active');
     if (typeof clearDraggableRoots === 'function') {
         clearDraggableRoots();
     }
@@ -6198,23 +6205,13 @@ function prevEasterEgg() {
     activateBoxByRef(refs[currentEggIndex], true); 
 }
 
-// --- KLAVYE VE SUNUM KUMANDASI DİNLEYİCİSİ ---
-document.addEventListener('keydown', function(e) {
-    // Ekranda kök girmek için açılan siyah sanal klavye aktifse kumanda tuşlarını yoksay
-    const kbOverlay = document.getElementById('keyboard-overlay');
-    if (kbOverlay && (kbOverlay.style.display === 'flex' || kbOverlay.style.display === 'block')) {
-        return;
-    }
-
-    // Sunum kumandaları donanımsal olarak genelde PageDown/PageUp veya Yön Tuşları gibi davranır
-    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
-        e.preventDefault(); // Boşluk (Space) tuşunun sayfayı aşağı kaydırmasını engeller
-        nextEasterEgg();
-    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        prevEasterEgg();
-    }
-});
+// --- KLAVYE VE SUNUM KUMANDASI DİNLEYİCİSİ — İPTAL ---
+// Eskiden ileri/geri tuşları veri_kokler'den rastgele kök gezdiriyordu
+// (günün kökü kapatılınca kumandanın ilk basışı beklenmedik bir kök
+// açıyordu). Özellik kaldırıldı: kumandanın İLERİ tuşu artık yalnız
+// BÂB ODAĞI açıkken iş görüyor — sarf/babodak.js dinliyor, her basış
+// odaktaki köke tıklama sayılıyor. (nextEasterEgg/prevEasterEgg
+// fonksiyonları duruyor; başka çağıran yok.)
 
 
 // İkinci parametre olarak 'isBackward' eklendi

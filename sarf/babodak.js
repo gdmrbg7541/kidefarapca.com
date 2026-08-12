@@ -263,18 +263,6 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
     border-radius:10px; margin:4px 2px 8px; padding:20px 26px; font-family:'Inter','Segoe UI',sans-serif; }
 .bo-dilbilgisi .arabic-sample{ font-family:'Arakom',sans-serif; color:#3498db; font-weight:700;
     font-size:1.3em; direction:rtl; display:inline-block; }
-/* İLERİ: odaktayken bâb adının altında duran adım düğmesi. Her basış
-   köke tıklama işlevi görür (bir hücre dolar); satırlar bitince
-   dilbilgisini gösterir, bir sonraki basış odağı kapatır. Ok SOLA
-   bakıyor: RTL tabloda doldurma maziden ism-i mef'ûle, sağdan sola. */
-.bo-ileri{ display:inline-flex; align-items:center; gap:6px; margin:8px auto 2px;
-    padding:6px 12px; border:none; border-radius:10px; cursor:pointer;
-    background:linear-gradient(135deg,#3498db,#2f89c5); color:#fff; font-weight:800;
-    font-size:.95rem; font-family:'Inter','Segoe UI',sans-serif; direction:ltr;
-    box-shadow:0 4px 10px rgba(52,152,219,.35); }
-.bo-ileri:hover{ filter:brightness(1.08); }
-.bo-ileri:active{ transform:translateY(1px); }
-.bo-ileri svg{ width:14px; height:14px; display:block; }
 @keyframes boBilgiVurgu{ 0%{ box-shadow:0 0 0 0 rgba(243,156,18,.6); }
     100%{ box-shadow:0 0 0 18px rgba(243,156,18,0); } }
 .bo-dilbilgisi.bo-vurgu{ animation:boBilgiVurgu 1.1s ease 2; }
@@ -611,21 +599,9 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
         // Odaktayken bu bâbın kalıp yazıları büyük görünsün (2.5rem)
         babRow.classList.add('bo-odak-kalip');
 
-        /* İLERİ düğmesi: bâb adı hücresinin altına. Bâb başına bir kez
-           kurulur, kapanışta kaldırılır (durumu st üstünde yaşar). */
-        if (!st.ileriBtn) {
-            const ib = document.createElement('button');
-            ib.type = 'button';
-            ib.className = 'bo-ileri';
-            ib.title = 'Sıradaki adım: kökler sırayla vezinlere yerleşir';
-            ib.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-                'stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-                '<path d="M15 18l-6-6 6-6"/></svg><span>İleri</span>';
-            ib.addEventListener('click', (e) => { e.stopPropagation(); ileriAdim(title); });
-            st.ileriBtn = ib;
-        }
-        const adHucre = babRow.children[0];
-        if (adHucre && st.ileriBtn.parentElement !== adHucre) adHucre.appendChild(st.ileriBtn);
+        /* Ekranda İLERİ düğmesi YOK (köke dokunmak zaten kolay) —
+           ilerletme SUNUM KUMANDASININ ileri tuşundan geliyor, aşağıdaki
+           keydown dinleyicisine bak. Bilgi adımı her açılışta sıfırlanır. */
         st.ileriBilgi = false;
 
         // Odak satırlarını bâb satırının hemen altına yerleştir / geri göster
@@ -666,7 +642,6 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
             // Tabloda gizli satır bırakmıyoruz: yoksa nth-child şerit renkleri
             // kayıp bâb satırları grileşiyordu.
             st.rows.forEach(r => { r.classList.remove('bo-belir'); r.remove(); });
-            if (st.ileriBtn) st.ileriBtn.remove();
             const tbody = st.babRow && st.babRow.parentElement;
             if (tbody) {
                 // Bâb satırını orijinal konumuna geri koy
@@ -746,6 +721,25 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aktifBab) closeOdak();
     });
+
+    /* SUNUM KUMANDASININ İLERİ TUŞU = KÖKE TIKLAMA.
+       Kumandalar donanımsal olarak PageDown / sağ ok / boşluk gönderir
+       (sayfanın eski kök-gezdirme dinleyicisiyle aynı tuş takımı — o
+       özellik kaldırıldı, tuşlar buraya geçti). YALNIZ bâb odağı
+       açıkken çalışır; sanal klavye açıkken ya da bir yazı alanı
+       odaktayken karışmaz. Yakalama evresinde dinlenir ki sayfanın
+       kaydırması ve öteki dinleyiciler araya girmesin. */
+    document.addEventListener('keydown', (e) => {
+        if (!aktifBab) return;
+        if (e.key !== 'ArrowRight' && e.key !== 'PageDown' && e.key !== ' ') return;
+        const kb = document.getElementById('keyboard-overlay');
+        if (kb && (kb.style.display === 'flex' || kb.style.display === 'block')) return;
+        const aktifEl = document.activeElement;
+        if (aktifEl && (aktifEl.tagName === 'INPUT' || aktifEl.tagName === 'TEXTAREA')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        ileriAdim(aktifBab);
+    }, true);
 
     /* ------------------------------------------------------------------
        7) showBabInfo'YU DEVRAL — bilinen bâb ise tablo-içi odak, değilse eski ekran

@@ -4482,7 +4482,7 @@ body.kl-kilit { overflow: hidden; }
    Sayfanın genel `td` kuralı (gri zemin + 4px beyaz kenarlık) bu iki
    satırda geçerli olmamalı — yoksa şerit ve liste tablo hücresi gibi
    kutulanıyor. ==================================================== */
-.ko-satir > td {
+#tab2 .ko-satir > td {
     background-color: transparent !important;
     border: none !important;
     padding: 0 !important;
@@ -4569,7 +4569,13 @@ body.kl-kilit { overflow: hidden; }
 /* Sütun genişlikleri colgroup'tan (üstteki satırdan ölçülüyor); th
    üzerinden gelen sabit genişlikler burada devre dışı kalmalı. */
 .kl-tablo.kl-tablo-bassiz { table-layout: fixed; }
-.ko-kaydir .kl-tablo td {
+/* ID'li seçici ŞART: sayfanın bâb şerit kuralları
+   (#tab2 tbody tr:nth-child(N) td { background !important }) İÇTEKİ
+   örnek matrisinin satırlarını da yakalıyordu — ilk 9-11 örnek satırı
+   9 bâbın renklerine boyanıyor, sonrası tek renge düşüyordu. Bu kural
+   hem daha özgül hem daha sonra: hücre saydam kalır, rengi SATIR verir
+   (--kl-ton = tıklanan bâbın kendi tonu) — bütün örnekler aynı renk. */
+#tab2 .ko-kaydir .kl-tablo td {
     background-color: transparent !important;
     border: none !important;
     padding: 2px 3px !important;
@@ -4643,18 +4649,29 @@ body.ust-kilit .sitemap-wave-hint,
 body.ust-kilit .svg-wave-active,
 body.ust-kilit .svg-wave-green,
 body.ust-kilit .svg-wave-red { animation: none !important; box-shadow: none !important; }
-body.ust-kilit i.fa-search.root-icon {
+body.ust-kilit i.fa-search.root-icon,
+/* Oyun · kronometre · kitap · kök · yenileme de pasif: örneklere
+   bakarken tabloyu altından değiştiren ya da üstüne pencere açan
+   kısayollar çalışmasın. Odak kapanınca hepsi geri gelir. */
+body.ust-kilit #static-oyun-btn,
+body.ust-kilit #static-timer-btn,
+body.ust-kilit i.fa-book.root-icon,
+body.ust-kilit #root-text-display,
+body.ust-kilit i.fa-sync-alt.root-icon {
     pointer-events: none; opacity: .35; cursor: default;
 }
 
-/* ÖRNEKLER AÇIKKEN SÜTUN BAŞLIKLARI PASİF.
+/* ÖRNEKLER AÇIKKEN SÜTUN BAŞLIKLARI ve BÂB ⓘ'LERİ PASİF.
    Mazi · Muzari · Emir · Mastar … başlıkları tam odaktaki satırın
    üstünde duruyor; dokunmak tam ekran dilbilgisi perdesini açıyor ve
-   odağı bölüyordu. Odak kapanınca kendiliğinden geri geliyor.
-   (Bâb adındaki ⓘ pasif DEĞİL: o, örnekleri kapatıp bâb odağına
-   geçiyor — istenen davranış bu.) */
-#tab2 table.ko-acik thead th.th-3d-btn {
-    pointer-events: none; cursor: default; opacity: .62; filter: saturate(.75);
+   odağı bölüyordu. Bâb adındaki ⓘ da aynı: örnek listesi açıkken hiç
+   çalışmaz (eskiden örnekleri kapatıp bâb odağına geçiyordu). Odak
+   kapanınca ikisi de kendiliğinden geri gelir. */
+#tab2 table.ko-acik thead th.th-3d-btn,
+#tab2 table.ko-acik .info-icon {
+    /* Yalnız TIKLAMA kapalı; renk olduğu gibi durur (soluklaştırma
+       "başlıklar bozuldu" gibi görünüyordu). */
+    pointer-events: none; cursor: default;
 }
 
 /* --- ODAKTAKİ SATIR --- */
