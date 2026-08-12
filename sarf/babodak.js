@@ -15,6 +15,9 @@
    Bağımlılıklar (kaliplartablosu.js): ColorEngine, getBabInfo, showBabInfo.
    Bu dosya kaliplartablosu.js'den SONRA yüklenmelidir.
    ============================================================================ */
+/* Satır süzülme süresi: kalıp odağı da bunu okuyor ki iki odağın
+   hareketi birebir aynı olsun. */
+window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
 (function () {
     'use strict';
 
@@ -225,7 +228,13 @@
 .bo-kayan{ position:relative; z-index:50; }
 /* ODAKTAYKEN kalıp yazıları BÜYÜK (2.5rem); kapanınca sınıf kalkar, eskiye döner.
    (#tab2 id'si şart: sayfanın "#tab2 .ar {2.2rem !important}" kuralını ezmek için) */
-#tab2 tr.bo-odak-kalip .glass-box .ar{ font-size:3.5rem !important; }
+/* ODAKTAKİ SATIRIN VEZİNLERİ — TEK KURAL, İKİ YOL.
+   ⓘ ile açılan bâb odağı (bo-odak-kalip) ve bir vezne basınca açılan
+   kalıp odağı (ko-odak-satir, sarf/kalipliste.js) aynı ölçüyü kullanır;
+   iki ayrı yerde yazılsaydı biri değişince öbürü sessizce ayrışırdı.
+   3.5rem'den 3rem'e indirildi: 3.5 fazla büyük duruyordu. */
+#tab2 tr.bo-odak-kalip .glass-box .ar,
+#tab2 tr.ko-odak-satir .glass-box .ar{ font-size:3rem !important; }
 
 /* Uçan kök */
 .bo-ucus{ position:fixed; z-index:9999999; pointer-events:none; color:#3498db; font-weight:700;
@@ -539,7 +548,7 @@
         row.style.transition = 'none';
         row.style.transform = 'translateY(' + delta + 'px)';
         void row.offsetHeight;                                  // reflow
-        row.style.transition = 'transform 1s cubic-bezier(.22,1,.36,1)';
+        row.style.transition = 'transform ' + window.BO_SURE;
         row.style.transform = '';
         const bitis = () => {
             row.style.transition = '';

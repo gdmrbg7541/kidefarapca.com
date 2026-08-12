@@ -495,9 +495,9 @@
                 /* Sil tuşunun yerine "Hepsi": süzgeci kaldıran tuşun
                    klavyede en beklenen yeri orası. */
                 if (h === 'BACKSPACE') {
-                    var t = tus('kl-tus-hepsi' + (suzgec.deger ? '' : ' kl-tus-secili'),
+                    var t = tus('kl-tus-hepsi' + (suzgec.deger ? '' : ' kl-tus-secili'),   /* Hepsi = hiç süzgeç yok */
                                 'Hepsi', tumler.length, 'Süzgeci kaldır');
-                    t.addEventListener('click', function () { sec(null); });
+                    t.addEventListener('click', function () { sec(null, 'alfabe'); });
                     s.appendChild(t);
                     return;
                 }
@@ -516,9 +516,9 @@
                     s.appendChild(t2);
                     return;
                 }
-                var t3 = tus(suzgec.deger === h ? 'kl-tus-secili' : '', yazi, n,
+                var t3 = tus((suzgec.tur === 'alfabe' && suzgec.deger === h) ? 'kl-tus-secili' : '', yazi, n,
                              h + ' ile başlayan ' + n + ' kök');
-                t3.addEventListener('click', function () { sec(h); });
+                t3.addEventListener('click', function () { sec(h, 'alfabe'); });
                 s.appendChild(t3);
             });
             kb.appendChild(s);
@@ -537,7 +537,7 @@
         b.type = 'button';
         b.className = 'kl-sema-kart kl-sk-' + a.grup +
                       (ortala ? ' kl-sk-orta' : '') +
-                      (suzgec.deger === a.k ? ' kl-sema-secili' : '') +
+                      ((suzgec.tur === 'aksam' && suzgec.deger === a.k) ? ' kl-sema-secili' : '') +
                       (n ? '' : ' kl-sema-bos');
         b.title = n ? a.ip : ('Bu kalıpta ' + a.ad.toLocaleLowerCase('tr') + ' kök yok');
         b.innerHTML =
@@ -546,7 +546,7 @@
             '<span class="kl-sk-tanim">' + a.kisa + '</span>' +
             '<span class="kl-sk-ornek" dir="rtl">' + a.ornek + '</span>';
         if (!n) b.disabled = true;
-        else b.addEventListener('click', function () { sec(a.k); });
+        else b.addEventListener('click', function () { sec(a.k, 'aksam'); });
         return b;
     }
     function aksamCiz(say) {
@@ -558,7 +558,7 @@
         kok.className = 'kl-sema-kok' + (suzgec.deger ? '' : ' kl-sema-secili');
         kok.title = 'Süzgeci kaldır';
         kok.innerHTML = '<span>Hepsi</span><b>' + tumler.length + '</b>';
-        kok.addEventListener('click', function () { sec(null); });
+        kok.addEventListener('click', function () { sec(null, 'aksam'); });
         kap.appendChild(kok);
 
         var dallar = document.createElement('div');
@@ -615,9 +615,11 @@
         kap.querySelectorAll('.kl-sekme').forEach(function (s) {
             var bu = s.getAttribute('data-tur');
             /* Vurgu yalnız AÇIKKEN: kapalıyken iki başlık da eşit durur */
-            s.classList.toggle('kl-sekme-acik', suzgec.acik && bu === suzgec.tur);
-            s.setAttribute('aria-selected', suzgec.acik && bu === suzgec.tur);
-            s.setAttribute('aria-expanded', suzgec.acik && bu === suzgec.tur);
+            /* Odakta iki panel de açık: iki başlık da açık görünür. */
+            var acik = suzgec.acik && (odak || bu === suzgec.tur);
+            s.classList.toggle('kl-sekme-acik', acik);
+            s.setAttribute('aria-selected', acik);
+            s.setAttribute('aria-expanded', acik);
             /* Süzgeç kapalıyken de "hangi süzgeç açık" görünsün: seçili
                harf/kısım başlığın yanında küçük bir rozette durur. */
             var r = s.querySelector('.kl-sekme-rozet');
@@ -634,6 +636,23 @@
         yuva.setAttribute('data-kip', suzgec.tur);
         var say = sayim(suzgec.tur);
 
+        /* TABLO İÇİ ODAK: yatay yer bol, ikisi YAN YANA durur — sekme
+           değiştirmeye gerek yok. Perdede yer dar olduğu için orada
+           sekme düzeni sürüyor. */
+        if (odak) {
+            yuva.setAttribute('data-kip', 'ikisi');
+            yuva.removeAttribute('dir');
+            var b1 = document.createElement('div');
+            b1.className = 'kl-pul-bolum kl-pul-alfabe';
+            b1.setAttribute('dir', 'rtl');
+            b1.appendChild(klavyeCiz(sayim('alfabe')));
+            var b2 = document.createElement('div');
+            b2.className = 'kl-pul-bolum kl-pul-aksam';
+            b2.appendChild(aksamCiz(sayim('aksam')));
+            yuva.appendChild(b1);
+            yuva.appendChild(b2);
+            return;
+        }
         if (suzgec.tur === 'alfabe') {
             /* Harf süzgeci = küçültülmüş arama klavyesi. "Hepsi" tuşu
                klavyenin içinde (sil tuşunun yerinde) durduğu için ayrıca
@@ -645,12 +664,27 @@
             yuva.appendChild(aksamCiz(say));
         }
     }
-    function sec(deger) {
-        suzgec.deger = (suzgec.deger === deger) ? null : deger;   /* aynısına basmak kaldırır */
+    /* İki panel (klavye + şema) YAN YANA durduğunda hangi panelden
+       seçildiği belli olmalı: süzgeç türü de tıklamayla birlikte geliyor.
+       İki süzgeç aynı `deger` yuvasını paylaşıyor, biri seçilince öteki
+       kendiliğinden kalkıyor — ikisi birden uygulanmıyor. */
+    function sec(deger, tur) {
+        if (tur && suzgec.tur !== tur) { suzgec.tur = tur; suzgec.deger = deger; }
+        else suzgec.deger = (suzgec.deger === deger) ? null : deger;   /* aynısına basmak kaldırır */
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         suzgecCiz(); govdeCiz();
     }
     function sekmeSec(tur) {
+        /* Odakta iki panel birden duruyor; başlıklar sekme değil, aç/kapa.
+           katlaCevir'e devretmiyoruz: o da kapalıyken sekmeSec'i çağırıp
+           sonsuz döngü kuruyordu. */
+        if (odak) {
+            if (suzgec.acik) { kucult(); return; }
+            suzgec.acik = true;
+            if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+            seritYumusat(suzgecCiz);
+            return;
+        }
         /* Kapalıysa dokunulan başlıkla AÇILIR; açıkken başka başlığa
            dokunmak o süzgece geçirir (seçim sıfırlanır); AÇIK OLAN
            başlığa ikinci kez dokunmak katlar — başlığın kendisi de
@@ -670,7 +704,32 @@
         if (!suzgec.acik) return;
         suzgec.acik = false;
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
-        suzgecCiz();
+        seritYumusat(suzgecCiz);
+    }
+    /* SÜZGEÇ AÇILIP KAPANIRKEN YUMUŞAK GEÇİŞ.
+       Klavye ve şema display:none/flex ile tek karede beliriyordu; şerit
+       birden 90px'ten 400px'e sıçrayınca göz yoruyordu. Şeridin
+       yüksekliği eski hâlden yenisine süzülüyor, overflow:hidden olduğu
+       için içerik de perde açılır gibi ortaya çıkıyor. Perdede eski
+       davranış duruyor (orada şerit yok). */
+    var SURE_SUZGEC = '.85s cubic-bezier(.33,1,.68,1)';
+    function seritYumusat(ciz) {
+        var sar = odak && odak.suzgecTr && odak.suzgecTr.querySelector('.ko-serit-sar');
+        if (!sar) { ciz(); return; }
+        var basla = sar.getBoundingClientRect().height;
+        sar.style.transition = 'none';
+        sar.style.height = '';
+        ciz();
+        var bitis = sar.getBoundingClientRect().height;
+        if (Math.abs(basla - bitis) < 1) { sar.style.transition = ''; return; }
+        sar.style.height = basla + 'px';
+        void sar.offsetHeight;
+        sar.style.transition = 'height ' + SURE_SUZGEC;
+        sar.style.height = bitis + 'px';
+        clearTimeout(seritYumusat._z);
+        seritYumusat._z = setTimeout(function () {
+            sar.style.transition = ''; sar.style.height = '';
+        }, 900);
     }
     /* Ok İKİ YÖNLÜ: açıkken yukarı bakar (katla), kapalıyken aşağı
        (aç). Kapalıyken en son kullanılan süzgeçle açılır — öğretmen
@@ -853,6 +912,11 @@
             govdeCiz();
         });
         var g = document.createElement('tbody');
+        /* Tablo içi odakta ilk satırlar SIRAYLA beliriyor: hepsi bir
+           karede gelince liste "patlıyor", göz nereye bakacağını
+           bilemiyordu. Yalnız ilk ekranda görünen kadarı gecikmeli —
+           119 satırın hepsi sıralansa dakikalar sürerdi. */
+        var kademe = odak ? 12 : 0;
         sat.forEach(function (r) {
             var tr = document.createElement('tr');
             var td0 = document.createElement('td');
@@ -873,6 +937,10 @@
                 else h.forEach(function (x) { td.appendChild(kelimeKarti(x, 'kl-mini')); });
                 tr.appendChild(td);
             });
+            if (kademe && g.children.length < kademe) {
+                tr.classList.add('ko-satir-belir');
+                tr.style.animationDelay = (g.children.length * 55) + 'ms';
+            }
             g.appendChild(tr);
         });
         t.appendChild(g);
@@ -979,6 +1047,9 @@
 
     function kapat() {
         if (odak) { odakKapat(); return; }
+        /* Kapanış animasyonu sürerken ikinci kez kapatmak istenirse
+           bekletme: doğrudan son hâle geç. */
+        if (kapanan) { (kapanan.zaman || []).forEach(clearTimeout); odakSonlandir(kapanan, true); return; }
         if (!perde) return;
         perde.classList.remove('acik');
         document.body.classList.remove('kl-kilit');
@@ -1047,9 +1118,22 @@
         var eski = t.querySelector('colgroup');
         if (eski) eski.remove();
         var cg = document.createElement('colgroup');
-        hucre.forEach(function (td) {
+        var en = hucre.map(function (td) { return td.getBoundingClientRect().width; });
+        /* DİKEY ÇUBUK YATAY KAYDIRMA DOĞURMASIN. Sütun toplamı üstteki
+           satırın tam genişliği; kabın iç genişliği kaydırma çubuğu
+           kadar dar kalınca matris taşıp yatay çubuk çıkarıyordu.
+           Farkı ÇUBUĞUN BULUNDUĞU UÇTAKİ sütundan düşüyoruz (kap RTL,
+           çubuk solda → son sütun); böylece öteki altı sütunun hizası
+           kılı kılına yerinde kalıyor. */
+        var kap = odak.govdeTr.querySelector('.ko-kaydir');
+        if (kap) {
+            var toplam = en.reduce(function (a, b) { return a + b; }, 0);
+            var fazla = toplam - kap.clientWidth;
+            if (fazla > 0.5) en[en.length - 1] = Math.max(24, en[en.length - 1] - fazla);
+        }
+        en.forEach(function (w) {
             var c = document.createElement('col');
-            c.style.width = td.getBoundingClientRect().width + 'px';
+            c.style.width = w + 'px';
             cg.appendChild(c);
         });
         t.insertBefore(cg, t.firstChild);
@@ -1084,6 +1168,9 @@
         var govde2 = tab2Govde();
         if (!kutu || !satir || !govde2) return false;
         babOdagiKapat();                       /* iki odak birlikte duramaz */
+        /* Kapanış animasyonu sürüyorsa hemen tamamla: yarısında yeni bir
+           odak açılırsa iki animasyon aynı satırlar üstünde çakışıyor. */
+        if (kapanan) { (kapanan.zaman || []).forEach(clearTimeout); odakSonlandir(kapanan, true); }
         /* AYNI SATIRDA başka bir vezne geçiş: satırı yerinden oynatma,
            yalnız vurguyu ve listeyi tazele — ekran boşuna zıplamasın. */
         if (odak && odak.satir === satir) {
@@ -1091,6 +1178,7 @@
             odak.no = no; odak.kutu = kutu;
             kutu.classList.add('ko-sec');
             odakVeriKur(no);
+            faz2();                           /* animasyon yarım kaldıysa tamamla */
             suzgecCiz(); govdeCiz();
             if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
             return true;
@@ -1110,21 +1198,53 @@
         var tdRenk = Array.prototype.slice.call(satir.children)
             .map(function (td) { return getComputedStyle(td).backgroundColor; });
 
+        /* SÜTUN GENİŞLİKLERİNİ ÖNCEDEN SABİTLE.
+           Tablo `table-layout: fixed`; bu düzende sütun ölçüleri TABLONUN
+           İLK SATIRINDAN okunuyor. Süzgeç şeridini thead'in ilk satırı
+           yaptığımız için ölçü artık tek bir colspan=7 hücreden alınıyor
+           ve bütün sütunlar eşitleniyordu (ölçüldü: 266·187·187·187·219·
+           187·187 → hepsi 203). En çok Mufâ'ale'de göze batıyordu: bâb
+           adı 266'dan 203'e inince "Müfa'ale" ve ⓘ hücreden taşıyordu.
+           colgroup sabit düzende ilk satırdan ÖNCE gelir — ölçüyü artık
+           oradan veriyoruz. */
+        var tablo = govde2.parentElement;
+        var basSatir = Array.prototype.slice.call(tablo.querySelectorAll('thead tr'))
+            .filter(function (tr) { return !tr.classList.contains('ko-satir'); })[0];
+        var olcuSatir = basSatir || satir;
+        var sutunEn = Array.prototype.slice.call(olcuSatir.children)
+            .map(function (h) { return h.getBoundingClientRect().width; });
+        var eskiCg = tablo.querySelector('colgroup.ko-sutun');
+        if (eskiCg) eskiCg.remove();
+        var cg = document.createElement('colgroup');
+        cg.className = 'ko-sutun';
+        sutunEn.forEach(function (w) {
+            var c = document.createElement('col');
+            c.style.width = w + 'px';
+            cg.appendChild(c);
+        });
+        tablo.insertBefore(cg, tablo.firstChild);
+
         var f = document.createElement('tr');
         f.className = 'ko-satir ko-suzgec-satir';
-        f.innerHTML = '<td colspan="' + sutunSayi + '"><div class="ko-serit">' +
-            SUZGEC_HTML +
-            '<span class="ko-ad" id="klAd"></span>' +
+        /* Şeridin düzeni: SÜZGECİN TAMAMI üstte (klavye ile şema ancak
+           tam genişlikte yan yana sığıyor — ölçüldü, 990px'e sığmıyorlar),
+           bâb bilgisi ikisinin ALTINDA ortalı, kapat düğmesi sağ üst
+           köşede sabit. */
+        f.innerHTML = '<td colspan="' + sutunSayi + '"><div class="ko-serit-sar"><div class="ko-serit">' +
             '<button type="button" class="ko-kapat" aria-label="Örnekleri kapat" ' +
             'title="Örnekleri kapat">&times;</button>' +
-            '</div></td>';
+            SUZGEC_HTML +
+            '<span class="ko-ad" id="klAd"></span>' +
+            '</div></div></td>';
         var g = document.createElement('tr');
         g.className = 'ko-satir ko-govde-satir';
         g.innerHTML = '<td colspan="' + sutunSayi + '">' +
             '<div class="ko-kaydir"><div class="kl-govde ko-govde" id="klGovde"></div></div></td>';
 
-        /* Öteki satırları gizle (ayırıcı şeritler dahil) ve bâb satırını
-           en üste taşı. Kapatınca yerine koymak için sonrasını sakla. */
+        /* Bâb satırını en üste taşı. Kapatınca yerine koymak için
+           sonrasını sakla. ÖTEKİ SATIRLAR HEMEN GİZLENİYOR: yerlerinde
+           dursalardı satır onların arasından süzülüyor, hareket pürüzlü
+           görünüyordu. */
         var n = satir.nextElementSibling;
         while (n && n.classList.contains('ko-satir')) n = n.nextElementSibling;
         Array.prototype.slice.call(govde2.children).forEach(function (tr) {
@@ -1142,9 +1262,9 @@
         var bas = govde2.parentElement.querySelector('thead');
         if (bas) bas.insertBefore(f, bas.firstElementChild);
         else govde2.insertBefore(f, satir);
-        govde2.insertBefore(g, satir.nextSibling);
 
-        odak = { no: no, satir: satir, suzgecTr: f, govdeTr: g, kutu: kutu, origNext: n };
+        odak = { no: no, satir: satir, suzgecTr: f, govdeTr: null, govdeHazir: g,
+                 kutu: kutu, origNext: n, zaman: [] };
         satir.classList.add('ko-odak-satir');
         kutu.classList.add('ko-sec');
         govde2.closest('table').classList.add('ko-acik');
@@ -1155,24 +1275,82 @@
         });
 
         suzgecCiz();
-        govdeCiz();
-        kaydirTr(satir, eskiTop);
-        [f, g].forEach(function (tr, i) {
-            tr.style.animationDelay = (350 + i * 90) + 'ms';
-            tr.classList.add('ko-belir');
-        });
+        /* Bâb bilgisi FAZ 1'de yazılıyor: FAZ 2'ye bırakılsaydı şerit
+           ölçüsü eksik alınıyor, yazı gelince şerit 30px daha büyüyüp
+           tabloyu geç bir sıçramayla aşağı itiyordu (ölçüldü). */
+        adYaz(0);
+
+        /* ---- FAZ 1: satır yukarı süzülür, başlık aşağı kayar ----
+           İkisi TEK hareket: şeridin yüksekliği 0'dan açılırken başlık
+           satırı (Mazi … İsm-i Mef'ûl) aşağı iniyor; aynı sürede bâb
+           satırı eski yerinden yukarı süzülüyor. Satırın başlangıç
+           konumu şerit KAPALIYKENki yerine göre hesaplanıyor, yoksa
+           şerit açılırken satır ikinci kez aşağı kayıyordu. */
+        var sar = f.querySelector('.ko-serit-sar');
+        var seritYuk = sar.getBoundingClientRect().height;
+        var sonTop = satir.getBoundingClientRect().top;
+        sar.style.height = '0px';
+        satir.style.transition = 'none';
+        satir.style.transform = 'translateY(' + (eskiTop - (sonTop - seritYuk)) + 'px)';
+        void satir.offsetHeight;
+        /* Süre ve eğri bâb odağından okunuyor (window.BO_SURE) —
+           ⓘ'ye basınca satır nasıl süzülüyorsa burada da öyle. */
+        var SURE = (typeof window.BO_SURE === 'string') ? window.BO_SURE : '1s cubic-bezier(.22,1,.36,1)';
+        sar.style.transition = 'height ' + SURE;
+        sar.style.height = seritYuk + 'px';
+        satir.style.transition = 'transform ' + SURE;
+        satir.style.transform = '';
+        f.classList.add('ko-belir');
+        odak.zaman.push(setTimeout(function () {
+            sar.style.transition = ''; sar.style.height = '';
+            satir.style.transition = ''; satir.style.transform = '';
+        }, 1040));
+
+        /* ---- FAZ 2: veznin altı boşalır, sonra örnekler belirir ---- */
+        odak.zaman.push(setTimeout(function () { faz2(); }, 1020));
+
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
     }
 
-    function odakKapat(sessiz) {
-        if (!odak) return;
-        var st = odak;
-        odak = null;
+    /* FAZ 2: satır yukarı süzülüp yerine oturduktan SONRA örnekler
+       beliriyor. Yarım kalmışsa doğrudan çağrılabilir (hızlı ikinci
+       tıklamada liste eksik kalmasın). */
+    function faz2() {
+        if (!odak || odak.govdeTr) return;
+        var st = odak, govde2 = st.satir.parentElement;
+        if (!govde2) return;
+        govde2.insertBefore(st.govdeHazir, st.satir.nextSibling);
+        st.govdeTr = st.govdeHazir;
+        govdeCiz();
+        /* Liste YÜKSEKLİKLE açılıyor: aşağı doğru yumuşakça iniyor,
+           satırlar da sırayla beliriyor. Eski .ko-belir tek karede
+           yukarıdan düşürüyordu. */
+        var kap = st.govdeTr.querySelector('.ko-kaydir');
+        if (!kap) return;
+        var hedef = kap.getBoundingClientRect().height;
+        kap.style.overflow = 'hidden';
+        kap.style.height = '0px';
+        void kap.offsetHeight;
+        kap.style.transition = 'height .8s cubic-bezier(.33,1,.68,1)';
+        kap.style.height = hedef + 'px';
+        st.zaman.push(setTimeout(function () {
+            kap.style.transition = ''; kap.style.height = ''; kap.style.overflow = '';
+        }, 860));
+    }
+
+    /* Kapanışın SON adımı: DOM eski hâline döner. Animasyonun sonunda ya
+       da (sessiz kapanışta) doğrudan çağrılır. Bir kez çalışır. */
+    var kapanan = null;
+    function odakSonlandir(st, sessiz) {
+        if (st.bitti) return;
+        st.bitti = true;
+        if (kapanan === st) kapanan = null;
         var govde2 = st.satir.parentElement;
         var eskiTop = st.satir.getBoundingClientRect().top;
+        st.satir.style.transition = ''; st.satir.style.transform = '';
         st.suzgecTr.remove();
-        st.govdeTr.remove();
+        if (st.govdeTr) st.govdeTr.remove();
         st.satir.classList.remove('ko-odak-satir');
         if (st.kutu) st.kutu.classList.remove('ko-sec');
         if (govde2) {
@@ -1183,13 +1361,55 @@
                 td.style.removeProperty('background-color');
             });
             Array.prototype.slice.call(govde2.children).forEach(function (tr) {
+                tr.classList.remove('ko-sonuyor');
                 if (tr.dataset.koGizli) { tr.style.display = ''; delete tr.dataset.koGizli; }
             });
             var tablo = govde2.closest('table');
-            if (tablo) tablo.classList.remove('ko-acik');
+            if (tablo) {
+                tablo.classList.remove('ko-acik');
+                var cg = tablo.querySelector('colgroup.ko-sutun');
+                if (cg) cg.remove();
+            }
             kaydirTr(st.satir, eskiTop);
         }
         if (!sessiz && typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
+    }
+
+    /* KAPANIŞ, AÇILIŞIN AYNASI DEĞİL — Geylani'nin istediği sıra:
+         1) önce klavye + aksâm şeridi YUKARIDAN kapanır (.5sn)
+         2) sonra örnekler yavaşça kapanır (.6sn)
+         3) en son satır eski yerine süzülür (bâb odağının süresiyle)
+       sessiz=true → animasyonsuz, doğrudan son hâl (başka bir vezne
+       geçerken ya da ⓘ'ye basılırken ekran bekletilmesin). */
+    function odakKapat(sessiz) {
+        if (!odak) return;
+        var st = odak;
+        odak = null;
+        (st.zaman || []).forEach(clearTimeout);   /* yarım kalan açılış */
+        st.zaman = [];
+        if (sessiz) { odakSonlandir(st, true); return; }
+        kapanan = st;
+        var sar = st.suzgecTr.querySelector('.ko-serit-sar');
+        var kap = st.govdeTr && st.govdeTr.querySelector('.ko-kaydir');
+        var EGRI = 'cubic-bezier(.33,1,.68,1)';
+        var A = 500, B = 600;
+        if (sar) {
+            sar.style.height = sar.getBoundingClientRect().height + 'px';
+            void sar.offsetHeight;
+            sar.style.transition = 'height .5s ' + EGRI;
+            sar.style.height = '0px';
+        }
+        st.zaman.push(setTimeout(function () {
+            if (st.bitti) return;
+            if (kap) {
+                kap.style.overflow = 'hidden';
+                kap.style.height = kap.getBoundingClientRect().height + 'px';
+                void kap.offsetHeight;
+                kap.style.transition = 'height .6s ' + EGRI;
+                kap.style.height = '0px';
+            }
+            st.zaman.push(setTimeout(function () { odakSonlandir(st, false); }, kap ? B + 40 : 0));
+        }, sar ? A + 30 : 0));
     }
 
     /* Bâb ⓘ'sine basılırsa örnekler kapanır (ve tersi — odakAc başta
@@ -1198,7 +1418,9 @@
     (function () {
         var onceki = window.showBabInfo;
         window.showBabInfo = function () {
-            if (odak) odakKapat();
+            /* Bâb odağı hemen açılacak; kapanış animasyonunu beklemeyiz */
+            if (odak) odakKapat(true);
+            if (kapanan) { (kapanan.zaman || []).forEach(clearTimeout); odakSonlandir(kapanan, true); }
             if (typeof onceki === 'function') return onceki.apply(this, arguments);
         };
     })();

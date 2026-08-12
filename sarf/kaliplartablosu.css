@@ -4493,6 +4493,23 @@ body.kl-kilit { overflow: hidden; }
 }
 .ko-satir.ko-belir > td { animation: koBelir .45s cubic-bezier(.22,1,.36,1) both; }
 .ko-satir.ko-belir { animation-name: none; }
+/* ---- AÇILIŞ KOREOGRAFİSİ ----
+   FAZ 1: şerit 0'dan açılır → başlık satırı (Mazi … İsm-i Mef'ûl) yavaşça
+          aşağı iner; aynı sürede bâb satırı yukarı süzülür.
+   FAZ 2: veznin altındaki bâb satırları söner ve kalkar, yerlerine
+          örnekler belirir. */
+.ko-serit-sar { overflow: hidden; }
+/* Örnek satırları sırayla beliriyor (ilk 12'si; gerisi zaten kaydırma
+   alanının dışında). */
+@keyframes koSatirBelir {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+.ko-kaydir .kl-tablo tbody tr.ko-satir-belir {
+    animation: koSatirBelir .6s cubic-bezier(.33,1,.68,1) both;
+}
+.ko-sonuyor { opacity: 0; transition: opacity .3s ease; }
+.ko-sonuyor td { border-color: transparent !important; }
 
 /* --- ÜST ŞERİT: süzgeç + bâb adı + kapat --- */
 .ko-serit {
@@ -4500,8 +4517,8 @@ body.kl-kilit { overflow: hidden; }
        sırayla aynı olsun: süzgeç SOLDA (perdedeki gibi), bâb adı ortada,
        kapat sağda. RTL bırakılınca süzgeç sağ üstteki sürüklenebilir kök
        levhasının altında kalıyordu. */
-    direction: ltr;
-    display: flex; align-items: flex-start; gap: 14px;
+    direction: ltr; position: relative;
+    display: flex; flex-direction: column; gap: 6px;
     padding: 8px 10px 10px;
     background: rgba(255,255,255,.72);
     border: 1px solid rgba(15,23,42,.06);
@@ -4511,15 +4528,20 @@ body.kl-kilit { overflow: hidden; }
 }
 /* Süzgeç burada daha GENİŞ bir yatay alanda: perdede yan sütundaydı,
    tabloda satırın tamamı onun. */
-.ko-serit .kl-suzgec { margin: 0; flex: 0 0 auto; }
+/* Süzgeç ŞERİDİN TAMAMINI kullanır: klavye ile şema ancak böyle yan
+   yana sığıyor. */
+/* box-sizing ŞART: .kl-suzgec'in 14px'lik yan dolgusu content-box'ta
+   %100'ün ÜSTÜNE ekleniyor, kutu şeritten 28px taşıyordu (ölçüldü:
+   1428 > 1400). */
+.ko-serit .kl-suzgec { margin: 0; width: 100%; box-sizing: border-box; }
+/* Bâb bilgisi klavyenin ve şemanın ALTINDA, ortalı */
 .ko-ad {
-    /* Süzgeç açılınca şerit uzuyor; bâb adı ortada aşağı kaymasın,
-       sekmelerle aynı hizada kalsın. */
-    flex: 1 1 auto; align-self: flex-start; padding-top: 7px; text-align: center;
+    align-self: center; text-align: center; padding: 2px 46px 0;
     font-weight: 800; color: #0f172a; font-size: clamp(1rem, 2.1vh, 1.35rem);
 }
 .ko-kapat {
-    flex: 0 0 auto; width: 36px; height: 36px; line-height: 1;
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    width: 36px; height: 36px; line-height: 1; padding: 0;
     font-size: 26px; color: #64748b;
     background: #fff; border: 1px solid rgba(15,23,42,.10);
     border-radius: 10px; cursor: pointer;
@@ -4530,7 +4552,11 @@ body.kl-kilit { overflow: hidden; }
 /* --- ÖRNEK ALANI: kendi içinde kaydırılır ---
    Ölçüldü: 102 kalıbın 23'ünde 50'den fazla kelime var (en kalabalığı
    133). Doğrudan sayfa akışına dökülseydi tablo metrelerce uzardı. */
-.ko-kaydir { max-height: min(58vh, 640px); overflow: auto; padding: 2px 2px 6px; }
+/* Dolgu YOK: 2px'lik yan dolgu bile matrisi kabın dışına taşırıp yatay
+   kaydırma çubuğu çıkarıyordu (ölçüldü: scrollWidth 1442 > client 1440).
+   Kaydırma çubuğuna yer, sütun genişliklerinden ayrılıyor (kalipliste.js
+   sutunlariHizala). */
+.ko-kaydir { max-height: min(58vh, 640px); overflow-y: auto; overflow-x: hidden; padding: 0 0 6px; }
 .ko-govde { overflow: visible; padding: 0; }
 /* Satır tonu (bâbın kendi rengi) perdede olduğu gibi burada da */
 .ko-govde-satir[data-tonlu="1"] .kl-tablo tbody tr { background: var(--kl-ton); }
@@ -4544,9 +4570,61 @@ body.kl-kilit { overflow: hidden; }
     border: none !important;
     padding: 2px 3px !important;
 }
+/* ÖRNEKLERDEKİ ARAPÇA DAHA KÜÇÜK.
+   Perdede sütun ~226px'ti, tabloda 187px: aynı 55px'lik yazı kartı
+   (181px) doldurup Türkçesini üç satıra kırıyor, sütunlar yatayda
+   sıkışmış görünüyordu. Üstteki vezin 48px; örnek ondan küçük olmalı
+   ki göz önce vezni okusun. */
+.ko-kaydir .kl-kart .kl-ar { font-size: clamp(1.9rem, 4.1vh, 2.6rem); }
+.ko-kaydir .kl-kart .kl-tr { font-size: clamp(.78rem, 1.75vh, 1.05rem); }
+.ko-kaydir .kl-kart .kl-ornek span { font-size: clamp(1rem, 2.1vh, 1.3rem); }
+
+/* --- SÜZGEÇ: KÖK ARA ve AKSÂM-I SEB'A YAN YANA ---
+   Perdede yer dar olduğu için ikisi sekmeydi; tabloda satırın tamamı
+   süzgecin olduğundan ikisi birden duruyor, sekme değiştirmeye gerek
+   kalmıyor. Sıra başlıklardaki sırayla aynı: solda Kök Ara, sağda
+   Aksâm-ı Seb'a. */
+.kl-pullar[data-kip="ikisi"] {
+    /* Perdedeki max-width:min(760px,52vw) burada geçerli değil — o ölçü
+       dar sütun içindi. Tabloda şeridin tamamı süzgecin, ikisi ancak
+       böyle yan yana sığıyor (klavye ~580 + şema ~560 + boşluk). */
+    max-width: none; width: 100%;
+    /* Şema klavyeden uzun; ikisi DİKEYDE ORTALANIR ki klavye kendi
+       kutusunda tepede asılı kalmasın. */
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(12px, 1.6vw, 26px); flex-wrap: wrap;
+}
+.kl-pullar[data-kip="ikisi"] > .kl-pul-bolum { flex: 0 0 auto; }
+.ko-serit .kl-suzgec { flex: 1 1 auto; }
+.ko-serit .kl-sekmeler { justify-content: center; }
+
+/* Odak açıkken TABLO GERİLMESİN.
+   `.tab-content .container` bir DİKEY flex kabı (min-height: 100vh-120px)
+   ve `.container > table { flex: 1 }` tabloyu 796px'e kadar uzatıyor.
+   Öteki bâb satırları gizlenince geriye tek satır kaldığı için o satır
+   82px yerine 657px'e açılıyor, süzülürken boyu her karede değişiyordu —
+   hareket "genişleyerek gidiyor" gibi görünüyordu
+   (ölçüldü: 734 → 697 → 657 → 640 → 632 → 81).
+   Odakta tablo içeriği kadar yüksek olsun; genişlik değişmiyor (dikey
+   flex'te genişliği align-items: stretch veriyor). */
+#tab2 .container > table.ko-acik { flex: 0 0 auto; }
+
+/* MÜCERRED ve MEZİD TABLOSUNDA SİYAH ÇERÇEVE YOK.
+   .container'ın 2px siyah kenarlığı ile 15px dolgusu, örnek listesinin
+   dikey kaydırma çubuğuna yer bırakmayıp yatay kaydırma doğuruyordu.
+   Kenarlık kalktı, dolgu inceldi — kazanılan yer çubuğa gidiyor. */
+#tab1 .container, #tab2 .container {
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    padding: 6px 8px !important;
+}
 
 /* --- ODAKTAKİ SATIR --- */
-#tab2 tr.ko-odak-satir .glass-box .ar { font-size: 2.6rem; transition: font-size .5s; }
+/* Vezin puntosu BURADA YAZILMIYOR: ⓘ odağıyla ortak tek kural
+   sarf/babodak.js'te (#tab2 tr.bo-odak-kalip, #tab2 tr.ko-odak-satir).
+   Burada yalnız geçiş var. */
+#tab2 tr.ko-odak-satir .glass-box .ar { transition: font-size .5s; }
+#tab2 tr.ko-odak-satir .glass-box { transition: min-height .5s; }
 /* Tıklanan vezin: tablonun kendi kırmızı dili (.current-active-red) */
 #tab2 .glass-box.ko-sec {
     border-color: #FF3B30 !important;
