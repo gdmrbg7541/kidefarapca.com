@@ -3592,8 +3592,8 @@ const wordEasterEggs = {
             base: { emoji: "❗", arText: "رُعْ", trText: "Hayran bırak! / Korkut!", ornek: { ar: "رُعْ أَعْدَاءَكَ", tr: "Düşmanlarını korkut." } } 
         },
         
-        // --- 18 Numaralı Kalıp (فَعْل) ---
-        18: {
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: {
             base: { 
                 emoji: "😨", 
                 arText: "رَوْع", trText: "Korku / Dehşet.", ornek: { ar: "أَصَابَهُ رَوْعٌ شَدِيدٌ", tr: "Ona şiddetli bir korku isabet etti." } 
@@ -22501,7 +22501,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         8: { base: { emoji: "😒", arText: "أَنِفَ", trText: "Burun kıvırdı / Gurur yaptı / Tenezzül etmedi.", ornek: { ar: "أَنِفَ مِنَ الْعَمَلِ الدُّونِ", tr: "Aşağı işi yapmayı küçümsedi (burun kıvırdı)." } } },
         9: { base: { emoji: "😒", arText: "يَأْنَفُ", trText: "Burun kıvırır / Küçümser.", ornek: { ar: "يَأْنَفُ عَنِ قَبُولِ الْمُسَاعَدَةِ", tr: "Yardım kabul etmekten gurur yapar (burun kıvırır)." } } },
         10: { base: { emoji: "😒", arText: "اِئْنَفْ", trText: "Burun kıvır! / Gurur yap!", ornek: { ar: "لَا تائْنَفْ عَنِ قَبُولِ الْحَقِّ", tr: "Hakikati kabul etmeye karşı burun kıvırma (kibirlenme)." } } },
-        20: { 
+        17: { 
             base: { 
                 emoji: "😤", 
                 arText: "أَنَفَة", 

@@ -2594,34 +2594,28 @@ function toggleKB(show) {
 
 // --- ANA KLAVYEYİ KAPATMA VE SİLME ---
 function closeKeyboard() {
-    // Yazılanları silmiyoruz, sadece kapatıyoruz.
     const overlay = document.getElementById('keyboard-overlay');
     if (overlay) overlay.style.display = 'none';
     if (typeof toggleKB === 'function') toggleKB(false);
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
     if (typeof toggleRootHint === 'function') toggleRootHint(true);
-    return;
 
-    if (typeof currentRoot !== 'undefined' && currentRoot.length > 0) {
+    // ONAYLANMAMIŞ HARFLER BIRAKILMAZ.
+    // Klavyede yazılan her harf currentRoot'a ekleniyor, ama kök ancak bir
+    // tahmine/köke dokununca ONAYLANIYOR (window.activeConfirmedRoot).
+    // Çarpıyla (ya da Esc ile) çıkınca yarım kalan harfler currentRoot'ta
+    // asılı kalıyordu: sonra herhangi bir kalıba dokunmak o üç harfi kök
+    // sanıp kutulara yerleştiriyor, kalıp listesi perdesi de "kök seçili"
+    // diye açılmıyordu. Kullanıcı hiçbir kök seçmemişti — vazgeçmişti.
+    // Onaylı kökle aynıysa dokunmuyoruz (hızlı sözlük gibi akışlar bozulmasın).
+    var onayliKok = (typeof window.activeConfirmedRoot === 'string')
+        ? window.activeConfirmedRoot.trim() : "";
+    if (typeof currentRoot !== 'undefined' && currentRoot && currentRoot !== onayliKok) {
         currentRoot = "";
         const tempDisp = document.getElementById('temp-root-display');
         if (tempDisp) tempDisp.innerText = "";
-        
         if (typeof updateTempDisplay === 'function') updateTempDisplay();
-        if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(""); 
-        if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        if (typeof toggleRootHint === 'function') toggleRootHint(true);
-    } else {
-        if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
-        if (typeof toggleKB === 'function') {
-            toggleKB(false);
-        } else {
-            const overlay = document.getElementById('keyboard-overlay');
-            if (overlay) overlay.style.display = 'none';
-        }
-        
-        // EKSİKTİ: Ana klavyeyi hiçbir şey yazmadan kapatırsa da ışığı geri yak!
-        if (typeof toggleRootHint === 'function') toggleRootHint(true);
+        if (typeof updateMainKeyboardPredictions === 'function') updateMainKeyboardPredictions();
     }
 }
 
@@ -9042,9 +9036,13 @@ function openFastDictionaryMode() {
     if (!currentRoot || !sozlukVerileri[currentRoot]) return;
     
     // YENİ KLAVYEYİ KESİN OLARAK KAPAT
+    // closeKeyboard artık ONAYLANMAMIŞ harfleri siliyor; buraya zaten
+    // geçerli bir kökle geliniyor, o yüzden kapatmadan ÖNCE onaylıyoruz
+    // ki kök elimizden gitmesin (aşağıdaki confirmRoot yine çalışır).
+    if (typeof confirmRoot === 'function') confirmRoot();
     if (typeof closeKeyboard === 'function') closeKeyboard();
     const popup = document.getElementById('integrated-keyboard-popup');
-    const backdrop = document.getElementById('keyboard-backdrop'); 
+    const backdrop = document.getElementById('keyboard-backdrop');
     if (popup) popup.classList.remove('active');
     if (backdrop) backdrop.classList.remove('active');
     document.body.classList.remove("keyboard-active");

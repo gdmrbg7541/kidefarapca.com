@@ -355,15 +355,28 @@
 
     /* Anahtarlar getAksamIseba'nın döndürdükleriyle birebir; gösterilen
        ad ise sınıfta kullanılan yazımıyla (sahih-SÂLİM). */
+    /* Kısa tanım ve örnek fiil, sayfanın KAVRAM ŞEMASI'ndan birebir
+       alındı (kaliplartablosu.html → #aksam-sema-panel). Öğrenci orada
+       ezberlediği cümleyi burada da aynı sözcüklerle görsün; iki ekran
+       farklı şey öğretmesin. Gruplar da oradaki gibi: sahih üç, mu'tel dört. */
     var AKSAM = [
-        { k: 'Sahih',  ad: 'Sâlim',  ip: 'Kök harflerinin üçü de sahih: ne illet harfi ne hemze (كَتَبَ)' },
-        { k: 'Mehmuz', ad: 'Mehmûz', ip: 'Kök harflerinden biri hemze (أَكَلَ · سَأَلَ · قَرَأَ)' },
-        { k: 'Muzaaf', ad: 'Muzâaf', ip: 'İkinci ve üçüncü harf aynı, şeddeli okunur (مَدَّ)' },
-        { k: 'Misal',  ad: 'Misâl',  ip: 'İlk harfi illetli (وَعَدَ)' },
-        { k: 'Ecvef',  ad: 'Ecvef',  ip: 'Ortadaki harfi illetli (قَالَ)' },
-        { k: 'Nakıs',  ad: 'Nâkıs',  ip: 'Son harfi illetli (رَمَى)' },
-        { k: 'Lefif',  ad: 'Lefîf',  ip: 'İki harfi birden illetli (طَوَى · وَقَى)' }
+        { k: 'Sahih',  ad: 'Sâlim',  grup: 'sahih', kisa: 'İllet, hemze yok.',  ornek: 'كَتَبَ',
+          ip: 'Kök harflerinin üçü de sahih: ne illet harfi ne hemze (كَتَبَ)' },
+        { k: 'Mehmuz', ad: 'Mehmûz', grup: 'sahih', kisa: 'Hemze (ء) var.',     ornek: 'أَكَلَ',
+          ip: 'Kök harflerinden biri hemze (أَكَلَ · سَأَلَ · قَرَأَ)' },
+        { k: 'Muzaaf', ad: 'Muzâaf', grup: 'sahih', kisa: 'Şeddeli fiil.',      ornek: 'مَدَّ',
+          ip: 'İkinci ve üçüncü harf aynı, şeddeli okunur (مَدَّ)' },
+        { k: 'Misal',  ad: 'Misâl',  grup: 'mutel', kisa: 'İLK harf illetli.',  ornek: 'وَجَدَ',
+          ip: 'İlk harfi illetli (وَعَدَ)' },
+        { k: 'Ecvef',  ad: 'Ecvef',  grup: 'mutel', kisa: 'ORTA harf illetli.', ornek: 'قَالَ',
+          ip: 'Ortadaki harfi illetli (قَالَ)' },
+        { k: 'Nakıs',  ad: 'Nâkıs',  grup: 'mutel', kisa: 'SON harf illetli.',  ornek: 'رَمَى',
+          ip: 'Son harfi illetli (رَمَى)' },
+        { k: 'Lefif',  ad: 'Lefîf',  grup: 'mutel', kisa: 'İKİ illetli.',       ornek: 'طَوَى',
+          ip: 'İki harfi birden illetli (طَوَى · وَقَى)' }
     ];
+    /* Şemadaki yerleşim: SOLDA mu'tel (4), SAĞDA sahih (3). */
+    var SEMA_SIRA = [{ g: 'mutel', ad: 'MU\'TEL' }, { g: 'sahih', ad: 'SAHİH' }];
     var _aksamBellek = {};
     function aksamlar(kok) {
         if (_aksamBellek[kok]) return _aksamBellek[kok];
@@ -378,7 +391,7 @@
 
     /* Açık perdenin hâli: hangi kalıp, hangi görünüm, süzülmemiş liste */
     var acikNo = null, acikGor = null, tumler = [];
-    var suzgec = { tur: 'alfabe', deger: null };
+    var suzgec = { tur: 'alfabe', deger: null, acik: false };
 
     function suz(ler) {
         if (!suzgec.deger) return ler.slice();
@@ -394,6 +407,128 @@
         });
         return m;
     }
+    /* KLAVYE DİZİLİŞİ — sayfanın kendi arama klavyesiyle AYNI KAYNAK:
+       universalKeyboardLayout (kaliplartablosu.js). Öğrenci kök ararken
+       hangi tuşa basıyorsa harf süzgecinde de aynı yerde bulur; Geylani
+       yerleşimi değiştirirse ikisi birden değişir. Sayfa yüklenmemişse
+       diye birebir kopyası yedekte durur. */
+    var KLAVYE = (typeof universalKeyboardLayout !== 'undefined' && universalKeyboardLayout.length)
+        ? universalKeyboardLayout
+        : [['ذ','ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+           ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+           ['ئ','ء','ؤ','ر','ى','ة','و','ز','ظ','BACKSPACE']];
+
+    function tus(sinif, ic, sayi, baslik) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'kl-tus ' + sinif;
+        b.title = baslik;
+        b.setAttribute('aria-label', baslik);
+        b.innerHTML = '<span class="kl-tus-harf">' + ic + '</span>' +
+                      (sayi === null ? '' : '<span class="kl-tus-sayi">' + sayi + '</span>');
+        return b;
+    }
+    function klavyeCiz(say) {
+        var kb = document.createElement('div');
+        kb.className = 'kl-klavye';
+        KLAVYE.forEach(function (satir) {
+            var s = document.createElement('div');
+            s.className = 'kl-kb-satir';
+            satir.forEach(function (h) {
+                /* Sil tuşunun yerine "Hepsi": süzgeci kaldıran tuşun
+                   klavyede en beklenen yeri orası. */
+                if (h === 'BACKSPACE') {
+                    var t = tus('kl-tus-hepsi' + (suzgec.deger ? '' : ' kl-tus-secili'),
+                                'Hepsi', tumler.length, 'Süzgeci kaldır');
+                    t.addEventListener('click', function () { sec(null); });
+                    s.appendChild(t);
+                    return;
+                }
+                var n = say[h] || 0;
+                var yazi = (h === 'ه') ? 'هـ' : h;          /* klavyedeki gösterimin aynısı */
+                if (!n) {
+                    /* Klavyenin şekli bozulmasın diye tuş yerinde durur ama
+                       sönüktür. Hemzeli biçimler (ء ئ ؤ) ve ى · ة kök başında
+                       hiç geçmez — onlar elif/ye tuşunda toplanıyor, ipucu
+                       bunu söyler ki öğrenci "bozuk" sanmasın. */
+                    var nere = HEMZE[h];
+                    var t2 = tus('kl-tus-olu', yazi, null,
+                        nere ? ('Bu harf ' + nere + ' tuşunda toplanıyor')
+                             : ('Bu kalıpta ' + h + ' ile başlayan kök yok'));
+                    t2.disabled = true;
+                    s.appendChild(t2);
+                    return;
+                }
+                var t3 = tus(suzgec.deger === h ? 'kl-tus-secili' : '', yazi, n,
+                             h + ' ile başlayan ' + n + ' kök');
+                t3.addEventListener('click', function () { sec(h); });
+                s.appendChild(t3);
+            });
+            kb.appendChild(s);
+        });
+        return kb;
+    }
+
+    /* AKSÂM SEKMESİ = KAVRAM ŞEMASININ KÜÇÜĞÜ
+       Sayfanın kendi şeması (kalıplar tablosundaki "Kavram Şeması"
+       düğmesi) iki dala ayrılır: solda MU'TEL dördü, sağda SAHİH üçü;
+       her kart ad · tanım · örnek fiil taşır. Süzgeci de aynı şekle
+       soktuk — öğrenci hangi ekranda olursa olsun aynı haritayı görür.
+       Şemadaki kök başlığının yerinde "Hepsi" duruyor: süzgeci kaldırır. */
+    function aksamKarti(a, n, ortala) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'kl-sema-kart kl-sk-' + a.grup +
+                      (ortala ? ' kl-sk-orta' : '') +
+                      (suzgec.deger === a.k ? ' kl-sema-secili' : '') +
+                      (n ? '' : ' kl-sema-bos');
+        b.title = n ? a.ip : ('Bu kalıpta ' + a.ad.toLocaleLowerCase('tr') + ' kök yok');
+        b.innerHTML =
+            '<span class="kl-sk-sayi">' + n + '</span>' +
+            '<span class="kl-sk-ad">' + a.ad + '</span>' +
+            '<span class="kl-sk-tanim">' + a.kisa + '</span>' +
+            '<span class="kl-sk-ornek" dir="rtl">' + a.ornek + '</span>';
+        if (!n) b.disabled = true;
+        else b.addEventListener('click', function () { sec(a.k); });
+        return b;
+    }
+    function aksamCiz(say) {
+        var kap = document.createElement('div');
+        kap.className = 'kl-sema';
+
+        var kok = document.createElement('button');
+        kok.type = 'button';
+        kok.className = 'kl-sema-kok' + (suzgec.deger ? '' : ' kl-sema-secili');
+        kok.title = 'Süzgeci kaldır';
+        kok.innerHTML = '<span>Hepsi</span><b>' + tumler.length + '</b>';
+        kok.addEventListener('click', function () { sec(null); });
+        kap.appendChild(kok);
+
+        var dallar = document.createElement('div');
+        dallar.className = 'kl-sema-dallar';
+        SEMA_SIRA.forEach(function (g) {
+            var sut = document.createElement('div');
+            sut.className = 'kl-sema-sutun kl-sema-' + g.g;
+            var bas = document.createElement('div');
+            bas.className = 'kl-sema-baslik';
+            bas.textContent = g.ad;
+            sut.appendChild(bas);
+            var iz = document.createElement('div');
+            iz.className = 'kl-sema-izgara';
+            var uyeler = AKSAM.filter(function (a) { return a.grup === g.g; });
+            uyeler.forEach(function (a, i) {
+                /* Tek sayıda kart varsa sonuncusu ortalanır (şemadaki
+                   MUDAAF kartı gibi) — sütun tek başına asimetrik durmasın. */
+                iz.appendChild(aksamKarti(a, say[a.k] || 0,
+                    uyeler.length % 2 === 1 && i === uyeler.length - 1));
+            });
+            sut.appendChild(iz);
+            dallar.appendChild(sut);
+        });
+        kap.appendChild(dallar);
+        return kap;
+    }
+
     function pul(sinif, etiket, sayi, secili, baslik) {
         var b = document.createElement('button');
         b.type = 'button';
@@ -406,43 +541,51 @@
     function suzgecCiz() {
         var kap = document.getElementById('klSuzgec');
         if (!kap) return;
-        /* Tek kelimelik listede süzgeç gürültüdür */
-        kap.style.display = (tumler.length < 4) ? 'none' : '';
+        /* Tek kelimelik listede süzgeç gürültüdür. Süzgeç yokken kalıp
+           levhası üst sırada tek başına kalır, ortalanır. */
+        var yalin = (tumler.length < 4);
+        kap.style.display = yalin ? 'none' : '';
+        var ust = document.getElementById('klUst');
+        if (ust) ust.classList.toggle('kl-ust-yalin', yalin);
+        kap.setAttribute('data-acik', suzgec.acik ? '1' : '0');
+        var ok = document.getElementById('klKucult');
+        if (ok) {
+            var ipucu = suzgec.acik ? 'Süzgeci küçült' : 'Süzgeci aç';
+            ok.title = ipucu;
+            ok.setAttribute('aria-label', ipucu);
+            ok.setAttribute('aria-expanded', suzgec.acik ? 'true' : 'false');
+        }
         kap.querySelectorAll('.kl-sekme').forEach(function (s) {
-            s.classList.toggle('kl-sekme-acik', s.getAttribute('data-tur') === suzgec.tur);
-            s.setAttribute('aria-selected', s.getAttribute('data-tur') === suzgec.tur);
+            var bu = s.getAttribute('data-tur');
+            /* Vurgu yalnız AÇIKKEN: kapalıyken iki başlık da eşit durur */
+            s.classList.toggle('kl-sekme-acik', suzgec.acik && bu === suzgec.tur);
+            s.setAttribute('aria-selected', suzgec.acik && bu === suzgec.tur);
+            s.setAttribute('aria-expanded', suzgec.acik && bu === suzgec.tur);
+            /* Süzgeç kapalıyken de "hangi süzgeç açık" görünsün: seçili
+               harf/kısım başlığın yanında küçük bir rozette durur. */
+            var r = s.querySelector('.kl-sekme-rozet');
+            var etkin = !!suzgec.deger && bu === suzgec.tur;
+            r.textContent = etkin ? (suzgec.tur === 'alfabe' ? suzgec.deger : aksamAdi(suzgec.deger)) : '';
+            s.classList.toggle('kl-sekme-suzgecli', etkin);
         });
         var yuva = document.getElementById('klPullar');
         yuva.innerHTML = '';
+        /* Kapalıyken içerik hiç çizilmez: bir önceki kalıbın klavyesi/şeması
+           gizli de olsa DOM'da bayat sayılarla asılı kalmasın. */
+        if (!suzgec.acik) return;
         yuva.setAttribute('dir', suzgec.tur === 'alfabe' ? 'rtl' : 'ltr');
+        yuva.setAttribute('data-kip', suzgec.tur);
         var say = sayim(suzgec.tur);
 
-        var hepsi = pul('kl-pul-hepsi', 'Hepsi', tumler.length, !suzgec.deger, 'Süzgeci kaldır');
-        hepsi.addEventListener('click', function () { sec(null); });
-        yuva.appendChild(hepsi);
-
         if (suzgec.tur === 'alfabe') {
-            /* Listede geçmeyen harfi hiç göstermiyoruz: 28 kutucuğun
-               yirmisi ölü olursa süzgeç okunmuyor. */
-            ALFABE.forEach(function (h) {
-                if (!say[h]) return;
-                var b = pul('kl-pul-harf', h, say[h], suzgec.deger === h,
-                            h + ' ile başlayan kökler');
-                b.querySelector('.kl-pul-ad').setAttribute('dir', 'rtl');
-                b.addEventListener('click', function () { sec(h); });
-                yuva.appendChild(b);
-            });
+            /* Harf süzgeci = küçültülmüş arama klavyesi. "Hepsi" tuşu
+               klavyenin içinde (sil tuşunun yerinde) durduğu için ayrıca
+               kutucuk koymuyoruz. */
+            yuva.appendChild(klavyeCiz(say));
         } else {
             /* Yedi kısmın hepsi durur: "bu kalıpta lefîf yok" da bilgidir.
                Boş olanlar sönük ve tıklanmaz. */
-            AKSAM.forEach(function (a) {
-                var n = say[a.k] || 0;
-                var b = pul('kl-pul-aksam kl-aksam-' + a.k.toLowerCase(), a.ad, n,
-                            suzgec.deger === a.k, a.ip);
-                if (!n) { b.classList.add('kl-pul-pasif'); b.disabled = true; }
-                else b.addEventListener('click', function () { sec(a.k); });
-                yuva.appendChild(b);
-            });
+            yuva.appendChild(aksamCiz(say));
         }
     }
     function sec(deger) {
@@ -451,10 +594,33 @@
         suzgecCiz(); govdeCiz();
     }
     function sekmeSec(tur) {
-        if (suzgec.tur === tur) return;
-        suzgec = { tur: tur, deger: null };
+        /* Kapalıysa dokunulan başlıkla AÇILIR; açıkken başka başlığa
+           dokunmak o süzgece geçirir (seçim sıfırlanır); AÇIK OLAN
+           başlığa ikinci kez dokunmak katlar — başlığın kendisi de
+           aç/kapa düğmesi, ok için elini uzatmaya gerek yok. */
+        if (suzgec.acik && suzgec.tur === tur) { kucult(); return; }
+        var degisti = false;
+        if (!suzgec.acik) { suzgec.acik = true; degisti = true; }
+        if (suzgec.tur !== tur) { suzgec.tur = tur; suzgec.deger = null; degisti = true; }
+        if (!degisti) return;
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         suzgecCiz(); govdeCiz();
+    }
+    /* Küçültme: seçili süzgeç KORUNUR (öğretmen listeye yer açmak için
+       katlıyor, seçimini iptal etmek için değil) — hangi süzgecin açık
+       olduğu başlığın yanındaki rozetten okunur. */
+    function kucult() {
+        if (!suzgec.acik) return;
+        suzgec.acik = false;
+        if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
+        suzgecCiz();
+    }
+    /* Ok İKİ YÖNLÜ: açıkken yukarı bakar (katla), kapalıyken aşağı
+       (aç). Kapalıyken en son kullanılan süzgeçle açılır — öğretmen
+       hangi başlığa basacağını yeniden düşünmesin. */
+    function katlaCevir() {
+        if (suzgec.acik) kucult();
+        else sekmeSec(suzgec.tur);
     }
 
     /* ---------- 4) PERDE ---------- */
@@ -470,17 +636,31 @@
         perde.innerHTML =
             '<div class="kl-pencere" role="document">' +
               '<button type="button" class="kl-kapat" aria-label="Kapat">&times;</button>' +
-              '<div class="kl-bas">' +
-                '<span class="kl-no" id="klNo"></span>' +
-                '<span class="kl-vezin" id="klVezin" dir="rtl"></span>' +
-                '<span class="kl-ad" id="klAd"></span>' +
-              '</div>' +
-              '<div class="kl-suzgec" id="klSuzgec">' +
-                '<div class="kl-sekmeler" role="tablist">' +
-                  '<button type="button" class="kl-sekme" data-tur="alfabe" role="tab">Alfabe</button>' +
-                  '<button type="button" class="kl-sekme" data-tur="aksam" role="tab">Aksâm-ı Seb\'a</button>' +
+              /* ÜST SIRA: solda süzgeç, sağda kalıbın kendi levhası.
+                 Perde ltr olduğu için DOM sırası ekrandaki sırayla aynı. */
+              '<div class="kl-ust" id="klUst">' +
+                /* Süzgeç KAPALI açılır: perdenin ilk görüntüsü kelimelerin
+                   kendisi olsun, iki başlık kenarda dursun. Başlığa
+                   dokunmak açar, yanındaki ok küçültür. */
+                '<div class="kl-suzgec" id="klSuzgec" data-acik="0">' +
+                  '<div class="kl-sekmeler" role="tablist">' +
+                    '<button type="button" class="kl-sekme" data-tur="alfabe" role="tab">' +
+                      '<span>Alfabe</span><b class="kl-sekme-rozet"></b></button>' +
+                    '<button type="button" class="kl-sekme" data-tur="aksam" role="tab">' +
+                      '<span>Aksâm-ı Seb\'a</span><b class="kl-sekme-rozet"></b></button>' +
+                    '<button type="button" class="kl-kucult" id="klKucult" title="Süzgeci küçült" ' +
+                      'aria-label="Süzgeci küçült">' +
+                      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" ' +
+                      'stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                      '<path d="M6 15l6-6 6 6"></path></svg></button>' +
+                  '</div>' +
+                  '<div class="kl-pullar" id="klPullar"></div>' +
                 '</div>' +
-                '<div class="kl-pullar" id="klPullar"></div>' +
+                '<div class="kl-bas">' +
+                  '<span class="kl-no" id="klNo"></span>' +
+                  '<span class="kl-vezin" id="klVezin" dir="rtl"></span>' +
+                  '<span class="kl-ad" id="klAd"></span>' +
+                '</div>' +
               '</div>' +
               '<div class="kl-govde" id="klGovde"></div>' +
             '</div>';
@@ -488,6 +668,7 @@
         perde.querySelectorAll('.kl-sekme').forEach(function (s) {
             s.addEventListener('click', function () { sekmeSec(s.getAttribute('data-tur')); });
         });
+        perde.querySelector('.kl-kucult').addEventListener('click', katlaCevir);
         perde.querySelector('.kl-kapat').addEventListener('click', kapat);
         /* Dışarı dokunmak kapatır; pencere içi dokunuş kapatmaz. */
         perde.addEventListener('click', function (e) { if (e.target === perde) kapat(); });
@@ -514,6 +695,26 @@
             '<span class="kl-emoji" aria-hidden="true">' + (g.emoji || '') + '</span>' +
             '<span class="kl-ar" dir="rtl">' + g.ar + '</span>' + trHtml +
             '<span class="kl-kok" dir="rtl" title="kök">' + g.kok + '</span>' + ornek;
+        /* İSİM KALIPLARININ LİSTESİ ÇIKMAZ SOKAK OLMASIN.
+           Matris görünümlerinde kökün altında iki kısayol var; tekil
+           ızgarada (mastar, ism-i fâil, ism-i mef'ûl, ism-i mekân,
+           ism-i âlet, zaman-mekân, cem-i teksir, ism-i tasğîr, ism-i
+           tafdil…) kök sütunu yok, dolayısıyla kısayol da yoktu.
+           Her kartın SAĞ ÜST köşesine — kök rozetinin karşısına, onunla
+           aynı sessiz gride — bir tablo simgesi koyuyoruz: dokununca
+           perde kapanır ve o kök tabloda açılır. Maraton simgesi burada
+           yok; bunlar isim kalıpları, çekilecek fiil ekranı değil. */
+        var tb = document.createElement('button');
+        tb.type = 'button';
+        tb.className = 'kl-kart-tablo';
+        tb.title = g.kok + ' — kökü tabloda aç';
+        tb.setAttribute('aria-label', tb.title);
+        tb.innerHTML = SVG_TABLO;
+        tb.addEventListener('click', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            kokSec(g.kok);
+        });
+        d.appendChild(tb);
         if (ornek) {
             /* Örnek gizli durur; karta dokunmak açar — liste kalabalıklaşmasın. */
             d.classList.add('kl-ornekli');
@@ -636,7 +837,7 @@
         acikGor = gorunum(no);
         var bilgi = kalipBilgi(no);
         /* Her açılış alfabeyle başlar (Geylani'nin isteği) */
-        suzgec = { tur: 'alfabe', deger: null };
+        suzgec = { tur: 'alfabe', deger: null, acik: false };
         tumler = (acikGor.kip === 'tekil') ? (indeks()[no] || []).slice() : satirlar(acikGor);
         tumler.sort(function (a, b) { return kokKarsilastir(a.kok, b.kok); });
         document.getElementById('klNo').textContent = no;
