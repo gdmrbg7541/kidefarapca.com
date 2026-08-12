@@ -92,6 +92,27 @@
             </div>
         </nav>
         <div class="switch-wrapper hdr-switch" id="p1-switch">
+            <!-- İKİ İKONUN YERİ: ses SOLDA, kalem SAĞDA.
+                 Sebep tasarım değil, düğmenin kendisi: #p1-switch'in topuzu
+                 kapalıyken SAĞDA durur (yazı), açılınca SOLA kayar (ses).
+                 Kalem solda dururken topuz yazı modunda hoparlörü, ses
+                 modunda kalemi gösteriyordu — yani hep yanlış ikonu
+                 işaret ediyordu. Yer değişince topuz artık hangi mod
+                 açıksa onun ikonunun yanında duruyor. -->
+            <!-- SES ikonu: okunuşları benzeyen harfler modu.
+                 Hoparlörden üç dalga sırayla yayılır. -->
+            <span class="mode-ico grp-ico grp-ico--ses" title="Okunuşları benzeyen harfleri renklendir" onclick="harfGrup.sec('ses')">
+                <svg viewBox="0 0 48 48">
+                    <path class="gs-hoparlor" d="M6 19H14L25 10V38L14 29H6Z"></path>
+                    <path class="gs-dalga gs-d1" d="M30 19.5a8 8 0 0 1 0 9"></path>
+                    <path class="gs-dalga gs-d2" d="M35 14.5a15 15 0 0 1 0 19"></path>
+                    <path class="gs-dalga gs-d3" d="M40 9.5a22 22 0 0 1 0 29"></path>
+                </svg>
+            </span>
+            <label class="switch">
+                <input type="checkbox" id="grup-toggle" onchange="harfGrup.sec(this.checked ? 'ses' : 'yazi')">
+                <span class="slider"></span>
+            </label>
             <!-- KALEM ikonu: yazılışları benzeyen harfler modu.
                  Kalem kendini çizer, sonra alt satırı yazarken sağa doğru kayar. -->
             <span class="mode-ico grp-ico grp-ico--yazi on" title="Yazılışları benzeyen harfleri renklendir" onclick="harfGrup.sec('yazi')">
@@ -103,20 +124,6 @@
                     </g>
                     <path class="gk-cizgi gk-c1" d="M6 44H24"></path>
                     <path class="gk-cizgi gk-c2" d="M27 44H42"></path>
-                </svg>
-            </span>
-            <label class="switch">
-                <input type="checkbox" id="grup-toggle" onchange="harfGrup.sec(this.checked ? 'ses' : 'yazi')">
-                <span class="slider"></span>
-            </label>
-            <!-- SES ikonu: okunuşları benzeyen harfler modu.
-                 Hoparlörden üç dalga sırayla yayılır. -->
-            <span class="mode-ico grp-ico grp-ico--ses" title="Okunuşları benzeyen harfleri renklendir" onclick="harfGrup.sec('ses')">
-                <svg viewBox="0 0 48 48">
-                    <path class="gs-hoparlor" d="M6 19H14L25 10V38L14 29H6Z"></path>
-                    <path class="gs-dalga gs-d1" d="M30 19.5a8 8 0 0 1 0 9"></path>
-                    <path class="gs-dalga gs-d2" d="M35 14.5a15 15 0 0 1 0 19"></path>
-                    <path class="gs-dalga gs-d3" d="M40 9.5a22 22 0 0 1 0 29"></path>
                 </svg>
             </span>
             <!-- ODAK (tam ekran): sadece harf tablosu kalsın.

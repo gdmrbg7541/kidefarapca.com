@@ -53,8 +53,10 @@
         // --- GÜNCELLENDİ: OYUN VERİLERİ (DETAYLANDIRILDI VE DÜZELTİLDİ) ---
         
        // --- GÜNCELLENDİ: OYUN VERİLERİ (DETAYLANDIRILDI VE DÜZELTİLDİ) ---
-const nextSentenceBtn = document.getElementById('next-sentence-btn');       
-const gameData = [
+const nextSentenceBtn = document.getElementById('next-sentence-btn');
+/* let (const değil): sayfa ?sinif=N ile açıldığında oyunun verisi
+   aşağıda O SINIFIN ders cümleleriyle değiştirilir (bkz. SINIF KİPİ). */
+let gameData = [
             // --- SEVİYE 1 ---
             {
                 level: 1,
@@ -633,6 +635,26 @@ olduğu gibi yazılır.</li>
                 ]
             }
         ];
+
+        /* =====================================================================
+           SINIF KİPİ — ?sinif=5|7|9|10
+           ---------------------------------------------------------------------
+           Kart (sistem/sinifmodul.js) sayfayı sınıf numarasıyla açar; HTML
+           o sınıfın veri dosyasını ana betikten önce yüklemiştir. Burada
+           yalnızca oyunun verisi devralınır ve şerit o sınıfın seviye
+           SAYISINA göre kısaltılır — sınıfta karşılığı olmayan seviye
+           düğmesi ekranda durmasın.
+           Genel oyun (parametresiz açılış) hiç değişmez.
+           ===================================================================== */
+        const SINIF_KIP = (function () {
+            try {
+                const s = (new URLSearchParams(location.search).get('sinif') || '').trim();
+                const v = window.SOZLUK_SINIF && window.SOZLUK_SINIF[s];
+                if (!v || !Array.isArray(v.seviyeler) || !v.seviyeler.length) return null;
+                gameData = v.seviyeler;
+                return { sinif: s, cumle: v.cumle, kelime: v.kelime, seviye: v.seviyeler.length };
+            } catch (e) { return null; }
+        })();
 
         // --- DOM ELEMENTLERİ ---
         const levelSelector = document.querySelector('.level-selector');
@@ -1251,6 +1273,25 @@ olduğu gibi yazılır.</li>
             };
             document.body.addEventListener('click', unlockAudio, { once: true });
             document.body.addEventListener('touchend', unlockAudio, { once: true });
+
+            /* Sınıf kipinde başlık, künye ve seviye şeridi o sınıfa göre
+               düzeltilir: ders adı görünsün, olmayan seviye durmasın. */
+            if (SINIF_KIP) {
+                const h1 = document.querySelector('.header h1');
+                if (h1) h1.textContent = SINIF_KIP.sinif + '. Sınıf Sözlük Alıştırması';
+                document.title = SINIF_KIP.sinif + '. Sınıf · Sözlük Simülasyonu';
+                const kunye = document.getElementById('sinif-kunye');
+                if (kunye) {
+                    kunye.textContent = SINIF_KIP.sinif + '. sınıf muhâdese cümleleri · ' +
+                        SINIF_KIP.cumle + ' cümle · ' + SINIF_KIP.kelime + ' kelime';
+                    kunye.hidden = false;
+                }
+                levelButtons.forEach((b, i) => {
+                    const v = i < gameData.length;
+                    b.hidden = !v;
+                    if (v) b.textContent = 'Seviye ' + (i + 1);
+                });
+            }
 
             createKeyboard();
             setKeyboardState('start'); // GÜNCELLENDİ: Oyunu 'start' ekranı ile başlat

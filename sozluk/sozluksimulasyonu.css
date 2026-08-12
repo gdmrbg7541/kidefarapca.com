@@ -921,3 +921,44 @@
     transform: translateY(0.2vmin);
     box-shadow: 0 0.2vmin #1e7e34;
 }
+/* ==========================================================================
+   SINIF KİPİ — sayfa ?sinif=N ile açıldığında
+   Şeritte o sınıfta karşılığı olmayan seviye düğmesi gizlenir; altına
+   hangi dersten geldiğini söyleyen küçük bir künye düşer.
+   ========================================================================== */
+.level-selector button[hidden] { display: none !important; }
+.sinif-kunye {
+    margin: 0.4vmin 0 0; text-align: center;
+    color: #6b7280; font-size: 1.5vmin; letter-spacing: .02em;
+}
+.sinif-kunye[hidden] { display: none !important; }
+/* --------------------------------------------------------------------------
+   İPUCU KUTUSU — YÖN
+   Kutunun kendisi rtl (#start-rules-container: direction:rtl) ve satırlar
+   tek tek ltr'ye çevriliyor. Başlık bu çevrimin dışında kalmıştı: içinde
+   "ال" geçince bidi sırayı bozup "…ve yalın isim · Seviye 1 ال" gibi
+   okutuyordu. Başlık ve paragraflar da açıkça LTR yapılıyor; Arapça
+   parçalar üretilen HTML'de <bdi> ile yalıtılı (bkz. sozluk/veri/*).
+   -------------------------------------------------------------------------- */
+#start-rules-container,
+#start-rules-container h3,
+#start-rules-container p,
+#start-rules-container ul,
+.modal-body,
+.modal-body h3,
+.modal-body p,
+.modal-body ul {
+    direction: ltr; text-align: left;
+}
+/* Sayfa başlığı ve künye de karışık metin: "5. Sınıf …" başındaki
+   sayı, rtl kapta cümlenin sonuna atlıyordu. */
+.header h1, .sinif-kunye { direction: ltr; unicode-bidi: isolate; }
+.sinif-kunye { text-align: center; }
+/* İpucu kutusundaki sınıf satırı ve örnek listesi */
+.modal-body .ip-sinif, #start-rules-container .ip-sinif {
+    margin: -0.6vmin 0 1vmin; color: #6b7280; font-style: italic;
+}
+.modal-body .ip-bas, #start-rules-container .ip-bas { margin: 1vmin 0 0.3vmin; font-weight: 700; }
+.modal-body .ip-ornek li, #start-rules-container .ip-ornek li { line-height: 1.9; }
+/* Arapça parça: yalıtılmış ada (bdi zaten isolate eder, yön açıkça rtl) */
+.ip-ar { font-family: 'Harmattan', 'arakom', serif; font-size: 1.45em; direction: rtl; }

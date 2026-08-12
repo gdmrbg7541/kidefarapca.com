@@ -107,7 +107,14 @@ window.kidefGeriDon = kidefGeri;         // geriye donuk uyum: eski cagrilar art
             el.innerHTML = GERI_SVG;
             var cs = window.getComputedStyle(el);
             if ((parseFloat(cs.fontSize) || 0) < 12) el.style.fontSize = '1.25rem';
-            el.style.display = cs.display === 'inline' ? 'inline-flex' : cs.display;
+            /* GİZLİ düğmenin görünürlüğü SATIR İÇİNE DONDURULMAZ.
+               isimx4'ün oyun içi geri tuşu açılışta .hidden ile gizliydi;
+               buradaki satır display:none'ı style'a yazınca sınıf kalksa
+               da tuş bir daha görünmüyordu — "oyun başlayınca geri tuşu
+               kayboluyor"un sebebi buydu. Gizliyken display'e dokunma;
+               gösterme/gizleme sınıfların işi olarak kalsın. */
+            if (cs.display !== 'none')
+                el.style.display = cs.display === 'inline' ? 'inline-flex' : cs.display;
             el.style.alignItems = 'center';
             el.style.justifyContent = 'center';
         }

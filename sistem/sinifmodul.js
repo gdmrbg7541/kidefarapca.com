@@ -136,7 +136,20 @@
       '.sm-kart{position:relative;}' +
       '.sm-kart .status-badge{white-space:nowrap;}' +
       '.sm-kart[style*="--smrenk"] .status-badge.available{background:var(--smrenk);border-color:var(--smrenk);}' +
-      '.sm-kart .kg{width:100%;height:100%;display:block;overflow:visible;}';
+      '.sm-kart .kg{width:100%;height:100%;display:block;overflow:visible;}' +
+      /* Sözlük kartı: satırlar sırayla beliriyor, mercek kökün üstünde
+         geziniyor. Kartların öbür canlandırmaları index.html'de; bu
+         modülün kendi kartı kendi stilini getirsin diye burada. */
+      '.sm-kart .kga-satir{animation:smSatir 3.2s ease-in-out infinite;}' +
+      '.sm-kart .kga-satir.s2x{animation-delay:.35s;}' +
+      '.sm-kart .kga-satir.s3x{animation-delay:.7s;}' +
+      '@keyframes smSatir{0%,100%{opacity:.2}45%,65%{opacity:1}}' +
+      '.sm-kart .kga-mercek{transform-origin:50% 50%;animation:smMercek 3.2s ease-in-out infinite;}' +
+      '@keyframes smMercek{0%,100%{transform:translate(0,0)}35%{transform:translate(-13px,-9px)}' +
+      '60%{transform:translate(-13px,-9px)}}' +
+      '@media (prefers-reduced-motion: reduce){' +
+      '.sm-kart .kga-satir,.sm-kart .kga-mercek{animation:none;}' +
+      '.sm-kart .kga-satir{opacity:1;}}';
     (document.head || document.documentElement).appendChild(s);
   }
 
@@ -198,6 +211,53 @@
       var ilk = (v && v.biyIlkKonu) ? v.biyIlkKonu(s) : null;
       return 'bilgiyarismasikacom.html?sinif=' + encodeURIComponent(s) +
              (ilk ? '&konu=' + encodeURIComponent(ilk) : '') +
+             '&kaynak=index&yer=imam-hatip';
+    }
+  });
+
+  /* ---- 2) SÖZLÜK SİMÜLASYONU ----
+     Verisi: sozluk/veri/sozluk_N.js (muhadese ders cümlelerinden üretildi)
+             → sistem/sinifveri.js → KidefSinifVeri.sozlukSinif(N)
+     Hedef : sozluksimulasyonu.html?sinif=N
+             (sayfa açılışta o sınıfın verisini ve seviyelerini kendi kurar)
+     Kart, verisi OLMAYAN sınıfta hiç basılmaz — 6 ve 8'de muhâdese
+     cümlesi bulunmadığı için orada görünmez. */
+  function sozSvg() {
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      /* Açık sözlük: iki sayfa, ortada sırt */
+      '<path d="M32 18c-5-3.6-11-4.8-17-3.4v30c6-1.4 12-.2 17 3.4" fill="#fff" stroke="#7C3AED" stroke-width="2.6" stroke-linejoin="round"/>' +
+      '<path d="M32 18c5-3.6 11-4.8 17-3.4v30c-6-1.4-12-.2-17 3.4" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2.6" stroke-linejoin="round"/>' +
+      '<path d="M32 18v30" stroke="#7C3AED" stroke-width="2.2"/>' +
+      /* Satırlar sırayla beliriyor: "madde aranıyor" duygusu */
+      '<g stroke="#A78BFA" stroke-width="2" stroke-linecap="round">' +
+        '<path class="kga-satir" d="M21 25h7"/>' +
+        '<path class="kga-satir s2x" d="M21 31h9"/>' +
+        '<path class="kga-satir s3x" d="M36 25h7"/>' +
+      '</g>' +
+      /* Mercek: kökü bulan göz */
+      '<g class="kga-mercek">' +
+        '<circle cx="40" cy="38" r="9" fill="rgba(255,255,255,.9)" stroke="#5B21B6" stroke-width="2.8"/>' +
+        '<path d="M46.6 44.6 53 51" stroke="#5B21B6" stroke-width="3.2" stroke-linecap="round"/>' +
+      '</g>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'sozluk',
+    ad: 'Sözlük Simülasyonu',
+    sira: 30,
+    renk: '#7C3AED',
+    svg: sozSvg,
+    aciklama: function (s) { return 'Kelimenin yalın hâlini bul — ' + s + '. Sınıf cümleleri'; },
+    veriVar: function (s) {
+      var v = window.KidefSinifVeri;
+      if (!v || !v.sozlukSinif) return null;
+      var d = v.sozlukSinif(s);
+      if (!d) return null;
+      return { rozet: d.cumle + ' Cümle Hazır', seviye: d.seviye };
+    },
+    url: function (s) {
+      return 'sozluksimulasyonu.html?sinif=' + encodeURIComponent(s) +
              '&kaynak=index&yer=imam-hatip';
     }
   });

@@ -784,8 +784,16 @@
 
 <script src="veri/veri_sozluk.js?v=110"></script>
 <script src="veri/veri_gramer.js?v=111"></script>
+<!-- KALIP_DATA: numara → vezin adı (1-105). Kalıp listesi perdesinin
+     başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
+     buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
+<script src="veri/veri_vezin_numaralari.js?v=1"></script>
 <script src="sarf/kaliplartablosu.js?v=141"></script>
 <script src="sarf/babodak.js?v=1"></script>
+<!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
+     listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
+     evresinde devraldığı için eski davranışa karışmaz. -->
+<script src="sarf/kalipliste.js?v=1"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">

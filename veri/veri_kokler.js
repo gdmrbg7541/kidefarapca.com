@@ -17290,7 +17290,26 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                         tr: "Kelime Bilgisi: Mabet kelimesi genel bir terimdir ve her dinin tapınağını kapsar. Cami, Kilise veya Havra birer 'Mabet'tir."
                     }
                 ]
-            } 
+            }
+        },
+
+        // --- 49 Numaralı Kalıp (فُعَيْل - İsm-i Tasğîr / Küçültme İsmi) ---
+        49: {
+            base: {
+                emoji: "🧒",
+                arText: "عُبَيْد",
+                trText: "Ubeyd / Kulcağız, küçük kul.",
+                ornek: [
+                    {
+                        ar: "عُبَيْدُ اللهِ",
+                        tr: "Ubeydullah (Allah'ın âciz kulcağızı) — tevazu bildiren bir isim."
+                    },
+                    {
+                        ar: "اَلْعَبْدُ الصَّغِيرُ يُقَالُ لَهُ عُبَيْدٌ",
+                        tr: "Küçük kula «ubeyd» denir (فَعْل → فُعَيْل: küçültme)."
+                    }
+                ]
+            }
         },
 
         // --- 100 Numaralı Kalıp (اِسْتَفْعَلَ - İstif'âl Babı Mazi - İstek / Dönüşüm) ---

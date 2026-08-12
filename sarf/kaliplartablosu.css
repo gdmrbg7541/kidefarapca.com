@@ -3859,3 +3859,357 @@ body.has-fullscreen-accordion .thematic-words-content {
    boylece kutunun kalibi (numarasi) asla baska popuplarin ustune cikmaz.
    Yukseklik yalnizca .conjugation-inline-container'a (popup) verilir. */
 .glass-box.matrix-opened { z-index: auto !important; }
+
+/* ==========================================================================
+   KALIP LİSTESİ PERDESİ  (sarf/kalipliste.js)
+   --------------------------------------------------------------------------
+   Kök seçili DEĞİLKEN bir kalıba dokununca açılır: o kalıptan sözlükte
+   kayıtlı bütün kelimeler. Üç görünüm — data-kip özniteliğiyle ayrılır:
+     tekil : isim kalıbı, 4 sütun kart ızgarası
+     bab   : sülâsî mücerret bâbı, 3 sütun (mazi · muzari · emir)
+     mezid : mezid satırı, en çok 6 sütun
+   Görsel dil .bab-info-overlay'den alındı; ölçüler tabloyla aynı ailede.
+   ========================================================================== */
+/* Perde ARKASI GÖRÜNSÜN: koyuluk 0.72 -> 0.34. Tablo silik de olsa
+   seçiliyor, öğrenci nereden geldiğini kaybetmiyor. Panel gölgesi
+   buna karşılık koyulaştırıldı ki perde yine öne çıksın. */
+.kl-perde {
+    position: fixed; inset: 0; z-index: 1000000;
+    background: rgba(15, 23, 42, 0.34);
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .28s ease;
+    direction: ltr;
+}
+.kl-perde.acik { display: flex; opacity: 1; }
+body.kl-kilit { overflow: hidden; }
+
+/* PANEL SAYDAM: beyaz bir levha yok. Dolgu yalnız KELİME KUTULARINDA;
+   aralarda arkadaki mücerret/mezid tablosu görünür. */
+.kl-pencere {
+    background: transparent; box-shadow: none;
+    border-radius: 28px; position: relative;
+    width: 95%; max-width: 1380px; max-height: 93vh;
+    padding: 18px 26px 20px;
+    display: flex; flex-direction: column;
+    transform: translateY(18px) scale(.96);
+    transition: transform .35s cubic-bezier(.175,.885,.32,1.275);
+}
+.kl-perde.acik .kl-pencere { transform: translateY(0) scale(1); }
+
+.kl-kapat {
+    position: absolute; top: 18px; right: 18px;
+    width: 44px; height: 44px; border: none; border-radius: 50%;
+    background: #ef4444; color: #fff; font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(239,68,68,.4);
+    transition: transform .3s ease, background-color .3s ease;
+}
+.kl-kapat:hover { transform: rotate(90deg) scale(1.12); background: #dc2626; }
+
+/* Başlık: numara · vezin (iri, ortada) · adı */
+/* Başlık kendi levhasında: saydam panelde tablonun üstünde okunsun */
+.kl-bas {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    align-self: center; padding: 10px 30px 12px; margin-bottom: 14px;
+    background: rgba(255,255,255,.94); border-radius: 20px;
+    border-bottom: 4px solid var(--kl-vurgu, #9ca3af);
+    box-shadow: 0 6px 18px rgba(0,0,0,.14);
+}
+.kl-no {
+    font-weight: 800; font-size: .95rem; color: #fff; background: #C00000;
+    border-radius: 999px; padding: 2px 14px; letter-spacing: .04em;
+}
+.kl-vezin {
+    font-family: 'Harmattan', 'arakom', serif;
+    font-size: clamp(3.4rem, 8vh, 5.4rem); line-height: 1.2; color: #0f172a;
+}
+.kl-ad { font-weight: 700; color: #64748b; font-size: clamp(1.05rem, 2.6vh, 1.4rem); }
+
+/* ---- SÜZGEÇ ÇUBUĞU: alfabe · aksâm-ı seb'a ----
+   Başlıkla listenin arasında kendi levhasında durur. Üstte iki sekme,
+   altında o sekmenin kutucukları. Kutucuk dili tablodaki kutuların
+   dili: 1px kenar + 3B alt kenar; seçili olan kırmızı (.current-active-red). */
+.kl-suzgec {
+    align-self: center; max-width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 9px 14px 11px; margin-bottom: 12px;
+    background: rgba(255,255,255,.94); border-radius: 16px;
+    border-bottom: 4px solid var(--kl-vurgu, #9ca3af);
+    box-shadow: 0 4px 14px rgba(0,0,0,.12);
+}
+.kl-sekmeler { display: flex; gap: 6px; }
+.kl-sekme {
+    -webkit-appearance: none; appearance: none; cursor: pointer;
+    font: inherit; font-weight: 700; font-size: clamp(.9rem, 1.9vh, 1.05rem);
+    color: #64748b; background: #f1f5f9; border: 1px solid #e2e8f0;
+    border-radius: 999px; padding: 5px 18px; letter-spacing: .01em;
+    transition: color .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.kl-sekme:hover { color: #0f172a; background: #e2e8f0; }
+.kl-sekme-acik, .kl-sekme-acik:hover {
+    color: #fff; background: #0f172a; border-color: #0f172a;
+    box-shadow: 0 3px 8px rgba(15,23,42,.28);
+}
+.kl-pullar {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+    max-width: min(1180px, 92vw);
+}
+.kl-pul {
+    -webkit-appearance: none; appearance: none; cursor: pointer; font: inherit;
+    display: inline-flex; align-items: baseline; gap: 5px;
+    background: #f8f9fa; color: #334155;
+    border: 1px solid #d1d5db; border-bottom: 3px solid var(--kl-vurgu, #9ca3af);
+    border-radius: 8px; padding: 4px 10px 3px; line-height: 1.25;
+    transition: transform .12s ease, background-color .12s ease,
+                color .12s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.kl-pul:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.kl-pul:active { transform: translateY(0); box-shadow: none; }
+.kl-pul:focus-visible { outline: 3px solid #FF3B30; outline-offset: 2px; }
+.kl-pul-ad { font-weight: 700; font-size: clamp(.92rem, 1.95vh, 1.06rem); }
+.kl-pul-sayi {
+    font-size: .74rem; font-weight: 800; color: #94a3b8;
+    direction: ltr; unicode-bidi: isolate;
+}
+/* Harf kutucuğu: Arapça harf iri ve okunur dursun */
+.kl-pul-harf .kl-pul-ad {
+    font-family: 'Harmattan', 'arakom', serif; font-size: 1.7rem; line-height: 1;
+    color: #0f172a;
+}
+/* Seçili kutucuk: sayfadaki "seçili = kırmızı" diliyle aynı */
+.kl-pul-secili, .kl-pul-secili:hover {
+    background: #fffaf9; color: #FF3B30;
+    border-color: #FF3B30; border-bottom-color: #FF3B30;
+    box-shadow: inset 0 3px 8px rgba(255,59,48,.15), 0 2px 6px rgba(255,59,48,.18);
+}
+.kl-pul-secili .kl-pul-ad { color: #FF3B30; }
+.kl-pul-secili .kl-pul-sayi { color: #fca5a1; }
+/* Bu kalıpta örneği olmayan kısım: bilgi olarak durur ama tıklanmaz */
+.kl-pul-pasif, .kl-pul-pasif:hover {
+    opacity: .38; cursor: default; transform: none; box-shadow: none;
+    background: #f1f5f9; color: #94a3b8;
+}
+.kl-pul-hepsi .kl-pul-ad { letter-spacing: .02em; }
+
+.kl-govde { overflow: auto; flex: 1 1 auto; min-height: 0; padding: 4px 2px 2px; }
+.kl-bos {
+    text-align: center; color: #475569; font-weight: 700; padding: 26px 20px;
+    background: rgba(255,255,255,.92); border-radius: 14px;
+    border-bottom: 4px solid #9ca3af;
+}
+
+/* ---- TEKİL: 4 sütunlu kart ızgarası ----
+   AKIŞ SAĞDAN SOLA: liste Arapça, ilk kart SAĞ ÜSTTE başlar ve
+   satırlar sağdan sola dolar. */
+.kl-izgara { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; direction: rtl; }
+
+/* KELİME KUTUSU — tablodaki .glass-box'ın birebir dili:
+   1px açık gri üst/yan kenar + 4px koyu ALT kenar (yükseltilmiş tuş
+   hissi) + 8px köşe. Alt kenarın rengi o bâbın rengidir (--kl-vurgu);
+   mücerrette tablodaki gibi nötr gri kalır. */
+.kl-kart {
+    background: #fff;
+    border-top: 1px solid #d1d5db; border-left: 1px solid #d1d5db;
+    border-right: 1px solid #d1d5db;
+    border-bottom: 4px solid var(--kl-vurgu, #9ca3af);
+    border-radius: 8px;
+    padding: 14px 12px 10px; text-align: center; position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.06);
+    transition: transform .12s ease, box-shadow .12s ease, border-bottom-width .12s ease;
+}
+.kl-kart.kl-ornekli { cursor: pointer; }
+/* Tablodaki :active hissi — kutu basılıp oturuyor */
+.kl-kart.kl-ornekli:hover { box-shadow: 0 6px 14px rgba(0,0,0,.12); transform: translateY(-2px); }
+.kl-kart.kl-ornekli:active { transform: translateY(2px); border-bottom-width: 1px; box-shadow: none; }
+.kl-emoji { font-size: 1.7rem; line-height: 1; }
+.kl-ar {
+    font-family: 'Harmattan', 'arakom', serif;
+    font-size: clamp(2.9rem, 6.4vh, 4.4rem); line-height: 1.3; color: #0f172a;
+}
+/* Türkçe satır LTR: ızgara rtl olduğu için nokta ve parantezler
+   cümlenin başına atlıyordu (".Yiyen, Obur (İsm-i Fail)"). */
+.kl-tr {
+    color: #475569; font-size: clamp(.98rem, 2.1vh, 1.28rem); line-height: 1.4;
+    direction: ltr; unicode-bidi: isolate;
+}
+/* Türkçesi girilmemiş kayıt: kart yarım görünmesin, eksik belli olsun */
+.kl-tr-yok { color: #cbd5e1; letter-spacing: .1em; }
+.kl-kok {
+    position: absolute; top: 7px; left: 10px;
+    font-family: 'Harmattan', 'arakom', serif; font-size: 1.25rem;
+    color: #cbd5e1; letter-spacing: .06em;
+}
+/* Örnek cümle: kart açılınca görünür */
+.kl-ornek { display: none; margin-top: 6px; border-top: 1px dashed #e2e8f0; padding-top: 6px; }
+.kl-kart.kl-acik .kl-ornek { display: block; }
+.kl-ornek span {
+    display: block; font-family: 'Harmattan', 'arakom', serif;
+    font-size: 1.85rem; color: #0f172a; line-height: 1.5;
+}
+.kl-ornek i {
+    display: block; color: #64748b; font-size: .95rem; font-style: italic;
+    direction: ltr; unicode-bidi: isolate;
+}
+
+/* ---- MATRİS: bâb (3 sütun) ve mezid (en çok 6 sütun) ----
+   SAĞDAN SOLA: fiil kökleri SAĞDA, mazi sağda, emir (ve mezidde son
+   türev) solda — Arapça okuma yönü. dir=rtl sütun sırasını çevirir,
+   HTML'deki sıra (kök, mazi, muzari, emir…) olduğu gibi kalır.
+   table-layout:fixed ŞART: kök sütunu dar kalsın, kalıp sütunları eşit
+   bölüşsün. Otomatik düzende kök sütunu bütün artan yeri yutuyordu. */
+.kl-tablo {
+    width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0 8px;
+    direction: rtl;
+}
+/* Türkçe sütun adları ve numaralar LTR kalır (rtl kapta "İsm-i Mef'ûl"
+   ve "67 · 68" gibi karışık metinler ters okunuyordu). */
+.kl-th-ad, .kl-th-no { direction: ltr; unicode-bidi: isolate; }
+/* Sayfanın genel th kuralı (color:#fff !important, beyaz kenarlık)
+   burada geçerli olmamalı: "Kök" başlığı beyaz-üstüne-beyaz kalıyor,
+   hücreler beyaz çerçeveyle kutulanıyordu. */
+/* Sütun başlıkları tablodaki gibi RENKLİ PİL: fiil yeşil, isim mavi
+   (.baslik-fiil / .baslik-isim sayfanın kendi sınıfları). */
+.kl-tablo th {
+    padding: 8px 6px 9px; vertical-align: middle;
+    border: none !important; white-space: nowrap;
+    border-radius: 10px; background-clip: padding-box;
+}
+/* Başlık pilleri yan yana YAPIŞMASIN: saydam yan kenar aralık açar,
+   table-layout:fixed olduğu için sütun genişliğini bozmaz. */
+.kl-tablo th.kl-th {
+    color: #fff !important; box-shadow: 0 3px 8px rgba(0,0,0,.18);
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+    /* !important şart: .baslik-fiil/.baslik-isim "background" KISA
+       yazımını !important ile veriyor, o da background-clip'i
+       border-box'a sıfırlıyor — gradyan saydam kenara taşıp piller
+       yapışık görünüyordu. */
+    background-clip: padding-box !important;
+}
+.kl-tablo th.kl-th .kl-th-ad { color: #fff; }
+.kl-tablo th.kl-th .kl-th-vezin { color: #fff; }
+.kl-tablo th.kl-th .kl-th-no { color: rgba(255,255,255,.75); }
+.kl-tablo thead tr { }
+.kl-kok-bas {
+    color: #475569 !important; font-weight: 800; font-size: 1.05rem;
+    letter-spacing: .04em; background: rgba(255,255,255,.8);
+}
+.kl-th-ad { display: block; font-weight: 800; color: #0f172a; font-size: clamp(1.05rem, 2.3vh, 1.35rem); }
+/* Başlıktaki vezin, hücredeki örnek kelimeyle AYNI PUNTODA olsun:
+   ölçü tek yerden gelsin diye .kl-mini .kl-ar ile birebir aynı clamp. */
+.kl-th-vezin {
+    display: block; font-family: 'Harmattan', 'arakom', serif;
+    font-size: clamp(2.7rem, 5.8vh, 4rem); color: #C00000; line-height: 1.25;
+}
+.kl-th-no { display: block; color: #94a3b8; font-size: .82rem; letter-spacing: .06em; }
+/* Sütun genişlikleri AÇIKÇA veriliyor: yalnız table-layout:fixed
+   yetmedi, kök sütunu artan yerin tamamını yutuyordu. kl-sN sınıfı
+   kalıp sütunu sayısını taşır (3 · 5 · 6). */
+.kl-kok-bas { width: 112px !important; }
+.kl-tablo.kl-s3 th:not(.kl-kok-bas) { width: calc((100% - 112px) / 3); }
+.kl-tablo.kl-s5 th:not(.kl-kok-bas) { width: calc((100% - 112px) / 5); }
+.kl-tablo.kl-s6 th:not(.kl-kok-bas) { width: calc((100% - 112px) / 6); }
+/* Hücreler SAYDAM: dolgu yalnız kelime kutusunda. Satır, bâbın
+   rengiyle çok hafif tonlanır (mezid tablosundaki satır tonunun aynısı,
+   çalışma anında oradan okunuyor) — mücerrette ton yok. */
+.kl-tablo td {
+    background: transparent; border: none;
+    padding: 5px 6px; text-align: center; vertical-align: middle;
+}
+.kl-perde[data-tonlu="1"] .kl-tablo tbody tr { background: var(--kl-ton); }
+.kl-tablo tbody tr { border-radius: 12px; }
+.kl-tablo tbody td:first-child { border-radius: 0 12px 12px 0; }
+.kl-tablo tbody td:last-child  { border-radius: 12px 0 0 12px; }
+/* Kök levhası kendi köşesini korur (satır ucu yuvarlaması onu ezmesin) */
+.kl-tablo tbody td.kl-kok-hucre { border-radius: 8px; }
+/* Kök hücresi BEYAZ levha: mücerret satırlarında ton olmadığı için
+   kök yazısı arkadaki tablonun üstüne düşüyor ve okunmuyordu.
+   Kutu diliyle aynı: 1px kenar + 4px 3B alt kenar. */
+/* Seçici .kl-tablo td'den DAHA ÖZGÜL olmalı: o kural hücreleri
+   saydam yapıyor ve tek sınıflı seçiciyi eziyordu. */
+.kl-tablo td.kl-kok-hucre {
+    font-family: 'Harmattan', 'arakom', serif; font-size: clamp(2.2rem, 4.8vh, 3.2rem);
+    color: #FF3B30; font-weight: 700; letter-spacing: .05em;   /* tablodaki bâb sütunu rengi */
+    background: #fff;
+    border-top: 1px solid #d1d5db; border-left: 1px solid #d1d5db;
+    border-right: 1px solid #d1d5db;
+    border-bottom: 4px solid var(--kl-vurgu, #9ca3af);
+    border-radius: 8px; padding: 8px 4px 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.06);
+}
+.kl-yok { color: #cbd5e1; font-size: 1.8rem; }
+
+/* ---- KÖK LEVHASININ İÇİ: KÖK + İKİ KISAYOL ----
+   Üstte kök yazısı, altında iki düğme: ⏱ maraton (fiil çekim tablosu)
+   ve ▦ tablo (kökü sayfada aç). Düğme dili kutuların diliyle aynı:
+   1px kenar + 3B alt kenar, alt kenar rengi satırın tonundan. */
+.kl-kok-plaka { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.kl-kok-ad { display: block; line-height: 1.1; }
+.kl-kok-dugmeler { display: flex; gap: 6px; justify-content: center; }
+.kl-kd {
+    -webkit-appearance: none; appearance: none;
+    width: 32px; height: 32px; padding: 0; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8f9fa; color: #475569; cursor: pointer;
+    border: 1px solid #d1d5db;
+    border-bottom: 3px solid var(--kl-vurgu, #9ca3af);
+    border-radius: 8px;
+    transition: transform .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.kl-kd:hover { background: #fff; color: #FF3B30; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.14); }
+.kl-kd:active { transform: translateY(0); box-shadow: none; }
+.kl-kd:focus-visible { outline: 3px solid #FF3B30; outline-offset: 2px; }
+.kl-kd svg { display: block; pointer-events: none; }   /* tık hep düğmeye gelsin */
+.kl-kd-pasif, .kl-kd-pasif:hover {
+    opacity: .32; cursor: default; transform: none; box-shadow: none;
+    background: #f1f5f9; color: #94a3b8;
+}
+
+/* ---- TIKLANAN SÜTUN ----
+   Bütün satır listelendiği için hangi kalıba basıldığı kaybolmasın:
+   o sütunun başlığı öne çıkar, hücreleri kırmızı çerçeveli olur.
+   Renk dili tablodaki .current-active-red ile aynı (#FF3B30). */
+.kl-tablo th.kl-th.kl-sec {
+    box-shadow: 0 0 0 3px #FF3B30, 0 6px 16px rgba(255,59,48,.35);
+    transform: translateY(-2px);
+}
+.kl-tablo th.kl-th.kl-sec .kl-th-no {
+    color: #fff; font-weight: 800; letter-spacing: .12em;
+}
+.kl-tablo td.kl-sec .kl-kart {
+    border-color: #FF3B30; border-bottom-color: #FF3B30;
+    background-color: #fffaf9;
+    box-shadow: inset 0 3px 8px rgba(255,59,48,.15), 0 1px 2px rgba(255,59,48,.1);
+}
+.kl-tablo td.kl-sec.kl-yok { color: #fca5a1; }
+/* Matris içindeki kart da tablodaki kutunun aynısı — yalnız daha dar */
+.kl-kart.kl-mini { padding: 8px 6px 6px; gap: 0; }
+.kl-kart.kl-mini .kl-kok, .kl-kart.kl-mini .kl-emoji { display: none; }
+.kl-kart.kl-mini .kl-ar { font-size: clamp(2.7rem, 5.8vh, 4rem); }
+.kl-kart.kl-mini .kl-tr { font-size: clamp(1rem, 2.1vh, 1.28rem); color: #64748b; }
+.kl-kart.kl-mini.kl-ornekli:hover { transform: none; box-shadow: none; }
+.kl-kart.kl-mini.kl-ornekli:hover .kl-ar { color: #C00000; }
+.kl-kart.kl-mini .kl-ornek span { font-size: 1.5rem; }
+
+/* Mufâ'ale'nin iki mastarı aynı hücrede yan yana durur */
+.kl-tablo td > .kl-kart.kl-mini + .kl-kart.kl-mini { border-top: 1px dashed #eef2f7; margin-top: 4px; }
+
+@media (max-width: 1000px) {
+    .kl-izgara { grid-template-columns: repeat(3, 1fr); }
+    .kl-pencere { padding: 28px 16px 18px; }
+    .kl-th-vezin { font-size: clamp(2.1rem, 4.6vh, 2.8rem); }
+    .kl-ar { font-size: clamp(2.3rem, 5.4vh, 3.2rem); }
+}
+@media (max-width: 700px) {
+    .kl-izgara { grid-template-columns: repeat(2, 1fr); }
+    .kl-govde { overflow: auto; }
+    .kl-tablo { min-width: 720px; }          /* dar ekranda yatay kaydır */
+    .kl-kok-bas { width: 74px !important; }
+    .kl-kd { width: 27px; height: 27px; border-radius: 7px; }
+    .kl-kd svg { width: 16px; height: 16px; }
+    .kl-kok-dugmeler { gap: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .kl-perde, .kl-pencere, .kl-kart, .kl-kapat { transition: none; }
+}

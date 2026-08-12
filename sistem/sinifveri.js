@@ -96,11 +96,45 @@
     return k.length ? k[0] : null;
   }
 
+  /* ------------------------------------------------------------------
+     2) SÖZLÜK SİMÜLASYONU — sınıf verisi
+        Kaynak : sozluk/veri/sozluk_N.js (muhadese ders cümlelerinden
+                 üretildi; üretici /tmp/s_uret.js, kural motoru
+                 dosyanın başındaki yorumda anlatılıyor)
+        cumle  : oyuna giren cümle sayısı — kart rozetinde yazar
+        kelime : o cümlelerdeki toplam kelime (sorulacak parça) sayısı
+        seviye : o sınıfta AÇILAN seviye sayısı; sınıfta karşılığı
+                 olmayan olgu için seviye açılmaz (5'te ikil/çoğul
+                 seviyesi yok, 10'da beşi de var).
+        ⚠️ Sayılar veri dosyalarından KOPYADIR; uyuşmazlığı test
+        yakalar (bkz. t_sozsinif.js). Ders verisi değişip veri yeniden
+        üretilirse bu satırlar da güncellenmeli.
+     ------------------------------------------------------------------ */
+  var SOZLUK_SINIF = {
+    5:  { cumle: 60,  kelime: 134, seviye: 3 },
+    7:  { cumle: 118, kelime: 349, seviye: 3 },
+    9:  { cumle: 58,  kelime: 146, seviye: 4 },
+    10: { cumle: 83,  kelime: 267, seviye: 5 }
+  };
+  function sozlukSinif(sinif) {
+    var n = sayi(sinif);
+    return (n && SOZLUK_SINIF[n]) ? SOZLUK_SINIF[n] : null;
+  }
+  function sozlukSiniflari() {
+    var c = [];
+    for (var n in SOZLUK_SINIF)
+      if (Object.prototype.hasOwnProperty.call(SOZLUK_SINIF, n)) c.push(+n);
+    return c.sort(function (a, b) { return a - b; });
+  }
+
   window.KidefSinifVeri = {
     biyKonu:     BIY_KONU,
     biyKonulari: biyKonulari,
     biySiniflar: biySiniflar,
     biyIlkKonu:  biyIlkKonu,
-    biyKonuGoc:  konuGoc
+    biyKonuGoc:  konuGoc,
+    sozlukVeri:      SOZLUK_SINIF,
+    sozlukSinif:     sozlukSinif,
+    sozlukSiniflari: sozlukSiniflari
   };
 })();
