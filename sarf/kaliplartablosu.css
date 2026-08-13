@@ -4812,8 +4812,12 @@ body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead tr:not(.ko-satir) th {
 }
 #tab1 .muc-levha {
     display: flex; align-items: center; justify-content: center;
+    gap: clamp(14px, 2vw, 30px);       /* bâb üçlüsünde kutular arası nefes */
     padding: 10px 0 12px;
 }
+/* ALTTAKİ CEMİ TEKSİR · TASĞİR · TAFDİL BÖLÜMÜ odak açılırken artık
+   CSS ile BİRDEN gizlenmiyor: kalipliste.js satırlarla birlikte yarım
+   saniyede SOLDURUP akıştan çıkarıyor (beyaz ekran çakması olmasın). */
 #tab1 .glass-box.muc-buyuk {
     min-width: 250px;
     padding: 10px 26px 14px;
@@ -4848,6 +4852,14 @@ body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab1 table.ko-acik .muc-levha-sa
 body.ko-stor.ko-stor-sakla #tab1 table.ko-acik .muc-levha-satir > td {
     transition: top .65s cubic-bezier(.33, 0, .18, 1);
 }
+/* Levha artık boyasız (zemin tablodan akıyor) — yapışıp yüzerken
+   altından geçen kartları örtsün diye buzlu maske alır. Ev zemini
+   RENKLİ vezinlerde satır içi !important boya bunu zaten ezer. */
+body.ko-stor.ko-stor-yuzer #tab1 table.ko-acik .muc-levha-satir > td {
+    background-color: rgba(255, 255, 255, .93) !important;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
 
 /* Mücerred odağı açıkken MEZİD sekmesi ve bandın boş sol yarısı
    akışta durmasın: kaydırıcı bandı %200 genişlikte olduğundan sol
@@ -4862,3 +4874,160 @@ body.muc-odak #mainSliderBandi {
 /* Sekmeler normalde bandın yarısı (%50) genişliğinde; band daralınca
    mücerred sekmesi tam genişliğe açılır. */
 body.muc-odak #tab1.tab-content { width: 100% !important; }
+
+/* ============ BÂB LEVHASI: MATRİSLE AYNI İZLER ============
+   Fiil odaklarında levha 4 izli bir grid: sağda kök izi (boş — altta
+   matrisin kök sütunu var), sonra mazi · muzari · emir kutuları.
+   İz ölçülerini kalipliste.js yazar (matrisin colgroup'uyla birebir);
+   böylece örnek sütunları üç uçan kutunun TAM altına düşer. */
+#tab1 .muc-levha.muc-levha-bab {
+    display: grid;
+    direction: rtl;
+    justify-items: center;
+    align-items: center;
+    gap: 0;
+}
+#tab1 .muc-levha-kok-izi { display: block; }
+
+/* DİLBİLGİSİ BAŞLIK KUTULARI (kapalı hâl) BİRAZ YUVARLAK:
+   köşeli dikdörtgen, dilbilgisi ekranındaki hapların diline uymuyordu. */
+.th-3d-btn { border-radius: 12px !important; }
+.block-title { border-radius: 12px !important; }
+
+/* ============ MÜCERREDDE YAZILAR ÇOK DAHA BÜYÜK ============
+   (Geylani: "yeterince yer var") Levhadaki vezinler 4rem'e, örnek
+   kartları ve kök plakaları da birlikte büyüdü; kök yazısı ile
+   kısayol SVG'lerinin arası açıldı. Mezid ölçüleri değişmedi. */
+#tab1 tr.ko-odak-satir .glass-box .ar,
+#tab1 tr.ko-odak-satir .glass-box .ar-small {
+    font-size: 4rem !important;
+    line-height: 1.35;
+}
+#tab1 .ko-kaydir .kl-kart .kl-ar { font-size: clamp(2.6rem, 5.8vh, 3.7rem); }
+#tab1 .ko-kaydir .kl-kart .kl-tr { font-size: clamp(1rem, 2.2vh, 1.4rem); }
+#tab1 .ko-kaydir .kl-kart .kl-ornek span { font-size: clamp(1.2rem, 2.5vh, 1.6rem); }
+#tab1 .ko-kaydir .kl-kok-hucre { font-size: 3.6rem; }
+#tab1 .ko-kaydir .kl-kok-plaka { gap: 16px; }
+#tab1 .ko-kaydir .kl-kok-dugmeler { gap: 10px; }
+
+/* ============ DİLBİLGİSİ EKRANI YARI SAYDAM ============
+   Atlas kipinde arkadaki kalıplar tablosu hafifçe görünsün; maraton
+   OYUNU aynı katmanı kullanır ama bu sınıfı almaz, opak kalır. */
+#marathon-overlay.atlas-modu {
+    background-color: rgba(241, 242, 246, 0.55);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+}
+#marathon-overlay.atlas-modu #game-wrapper {
+    background: rgba(255, 255, 255, 0.72);
+}
+
+/* ============ VEZİN TAKIMLARI (tafdil 50+51 · teksir 41-48) ============
+   Takım üyelerinden birine basılınca TÜM üye kutular birlikte levhaya
+   uçar; örnekler üye başına birer panelde, --takim-sutun kadar sütunda
+   dizilir. Her panelin gövdesi BAĞIMSIZ dikey kaydırma alanıdır. */
+#tab1 .muc-levha.muc-levha-takim {
+    display: grid;
+    grid-template-columns: repeat(var(--takim-sutun, 2), 1fr);
+    direction: rtl;
+    justify-items: center;
+    align-items: center;
+    gap: 10px 0;
+}
+/* Teksir kutuları (üst levhada da ara levhada da) biraz küçük: sekizli
+   takım ekrana ancak böyle sığıyor */
+#tab1 .muc-levha-teksir .glass-box.muc-buyuk,
+#tab1 .muc-ara-levha .glass-box.muc-buyuk { min-width: 170px; padding: 8px 10px; margin: 0; }
+#tab1 tr.ko-odak-satir .muc-levha-teksir .glass-box .ar,
+#tab1 tr.ko-odak-satir .muc-levha-teksir .glass-box .ar-small,
+#tab1 .muc-ara-levha .glass-box .ar,
+#tab1 .muc-ara-levha .glass-box .ar-small { font-size: 3rem !important; line-height: 1.4; }
+/* ARA LEVHA: teksirin ikinci dörtlüsü örneklerin ORTASINA iner —
+   vezinlerin yarısı üstte yarısı ortada, her vezin sırasının hemen
+   altında kendi örnek bandı. Kutular süzülüp gelmeden yer ayrılır. */
+.muc-ara-levha {
+    display: grid;
+    grid-template-columns: repeat(var(--takim-sutun, 4), 1fr);
+    direction: rtl;
+    justify-items: center;
+    align-items: center;
+    gap: 8px 0;
+    min-height: 104px;
+    margin: 8px 4px 6px;               /* bantlar ayrışsın ama pay DAR dursun */
+}
+.ko-govde-satir[data-tonlu="1"] .muc-ara-levha { background: var(--kl-ton); border-radius: 12px; padding: 6px; }
+/* ============ TEKSİRDE DİKEY SIKILIK + KISA KART ============
+   Sekiz vezin bir arada: her dikey pay kısılır, kartlar küçülür,
+   TÜRKÇELERİ GİZLİ durur — kelimeye dokununca açılır (örnekli kartta
+   örneğiyle birlikte). Tafdil ve öteki görünümler eski ölçüsünde. */
+#tab1 tr.muc-satir-teksir > td { padding: 3px 0 5px !important; }
+#tab1 .muc-levha.muc-levha-teksir { padding: 2px 0 4px; gap: 8px 0; }
+.kl-takim-teksir { gap: 8px 12px; }
+.ko-govde-satir[data-tonlu="1"] .kl-takim-teksir { padding: 6px; }
+.kl-takim-teksir .kl-takim-panel { padding: 3px 4px 5px; }
+.kl-takim-teksir .kl-panel-bas { padding: 0 4px 3px; margin-bottom: 4px; font-size: 1.25rem; }
+.kl-takim-teksir .kl-izgara { gap: 8px; }
+.kl-kart.kl-kisa { cursor: pointer; padding: 7px 6px 5px; gap: 1px; }
+.kl-kart.kl-kisa .kl-emoji { font-size: 1.1rem; }
+.kl-kart.kl-kisa .kl-kok { font-size: 1rem; top: 4px; left: 7px; }
+#tab1 .ko-kaydir .kl-kart.kl-kisa .kl-ar { font-size: clamp(1.9rem, 4.2vh, 2.7rem); }
+#tab1 .ko-kaydir .kl-kart.kl-kisa .kl-tr { font-size: clamp(.85rem, 1.8vh, 1.05rem); }
+#tab1 .ko-kaydir .kl-kart.kl-kisa .kl-ornek span { font-size: clamp(1rem, 2vh, 1.3rem); }
+.kl-kart.kl-kisa .kl-tr { display: none; }
+.kl-kart.kl-kisa.kl-acik .kl-tr { display: block; }
+.kl-kart.kl-kisa:hover { box-shadow: 0 6px 14px rgba(0,0,0,.12); transform: translateY(-2px); }
+.kl-kart.kl-kisa:active { transform: translateY(2px); border-bottom-width: 1px; box-shadow: none; }
+.kl-takim {
+    display: grid;
+    grid-template-columns: repeat(var(--takim-sutun, 2), 1fr);
+    direction: rtl;
+    align-items: start;
+    gap: 12px 14px;
+    padding: 0 4px;
+}
+.kl-takim-panel {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, .55);
+    border: 1px solid rgba(37, 99, 235, .18);
+    border-radius: 12px;
+    padding: 6px 6px 8px;
+}
+.kl-takim-panel.kl-takim-secili { border-color: rgba(37, 99, 235, .45); background: rgba(255, 255, 255, .78); }
+.kl-panel-bas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 2px 4px 6px;
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: #1e3a8a;
+    border-bottom: 1px dashed rgba(37, 99, 235, .25);
+    margin-bottom: 6px;
+}
+.kl-panel-no {
+    font-family: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #64748b;
+    background: rgba(100, 116, 139, .12);
+    border-radius: 8px;
+    padding: 1px 7px;
+}
+.kl-panel-govde {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+}
+.kl-takim-tafdil .kl-panel-govde { max-height: clamp(300px, 56vh, 760px); }
+.kl-takim-teksir .kl-panel-govde { max-height: clamp(210px, 26vh, 380px); }
+.kl-takim .kl-izgara { grid-template-columns: repeat(2, 1fr); }
+.kl-takim-teksir .kl-izgara { grid-template-columns: 1fr; }
+.kl-takim .kl-bos { text-align: center; padding: 30px 8px; }
+/* Ton takım KABUĞUNA yazılır; panel içindeki ızgaralar çıplak kalır
+   (yoksa beyaz panelin içinde ikinci bir tonlu kutu belirirdi). */
+.ko-govde-satir[data-tonlu="1"] .kl-takim { background: var(--kl-ton); border-radius: 12px; padding: 10px; }
+.ko-govde-satir[data-tonlu="1"] .kl-takim .kl-izgara { background: transparent; border-radius: 0; padding: 0; }

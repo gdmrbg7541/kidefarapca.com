@@ -7036,6 +7036,7 @@ window.closeMarathon = function() {
     clearInterval(window.mCountdownInterval);
     window.mRaceMode = false;
     document.getElementById('marathon-overlay').classList.remove('active');
+    document.getElementById('marathon-overlay').classList.remove('atlas-modu');
     
     // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
     hideMarathonHeaders();
@@ -8282,11 +8283,57 @@ function startGameAndFullscreen(key) {
 
 
 window.openGrammarOverlay = function(stage) {
+    var kaynak = null;
     if (window.event) {
         window.event.preventDefault();
         window.event.stopPropagation();
+        var t = window.event.target;
+        kaynak = (t && t.closest) ? t.closest('.th-3d-btn, .block-title') : null;
     }
+    var r0 = kaynak ? kaynak.getBoundingClientRect() : null;
     window.openAtlasOverlay(stage);
+    if (r0 && r0.width) window._atlasBaslikMorf(r0);
+};
+
+/* BASLIK MORFU: tablodaki baslik (MAZI ... TAFDIL, CEMI TEKSIR ...)
+   yerinden kalkip dilbilgisi seridindeki AKTIF hapa DONUSEREK ucar;
+   ekran da yumusak belirir. "Mazi yazisi birden kaybolup birden
+   belirmesin" (Geylani). Hap ucus bitene dek gizli tutulur. */
+window._atlasBaslikMorf = function (r0) {
+    var overlay = document.getElementById('marathon-overlay');
+    var hedef = document.querySelector('#atlasKonuSerit .atlas-konu-hap.aktif');
+    if (!overlay) return;
+    /* Ekran yumusak belirir (beyaz caka yok) */
+    overlay.style.transition = 'none';
+    overlay.style.opacity = '0';
+    void overlay.offsetHeight;
+    overlay.style.transition = 'opacity .38s ease';
+    overlay.style.opacity = '1';
+    setTimeout(function () { overlay.style.transition = ''; overlay.style.opacity = ''; }, 470);
+    if (!hedef) return;
+    var r1 = hedef.getBoundingClientRect();
+    if (!r1.width) return;
+    var cs = getComputedStyle(hedef);
+    var klon = document.createElement('div');
+    klon.textContent = hedef.textContent;
+    klon.style.cssText =
+        'position:fixed; z-index:2147483647; display:flex; align-items:center; justify-content:center;' +
+        ' left:' + r1.left + 'px; top:' + r1.top + 'px; width:' + r1.width + 'px; height:' + r1.height + 'px;' +
+        ' background:' + cs.backgroundColor + '; color:#fff; font-weight:700; font-family:sans-serif;' +
+        ' font-size:' + cs.fontSize + '; border-radius:' + cs.borderRadius + ';' +
+        ' box-shadow:0 4px 0 rgba(0,0,0,.2), inset 0 2px 0 rgba(255,255,255,.4);' +
+        ' pointer-events:none; transform-origin:0 0; white-space:nowrap;';
+    klon.style.transform = 'translate(' + (r0.left - r1.left) + 'px,' + (r0.top - r1.top) + 'px)' +
+        ' scale(' + (r0.width / r1.width) + ',' + (r0.height / r1.height) + ')';
+    document.body.appendChild(klon);
+    hedef.style.visibility = 'hidden';
+    void klon.offsetHeight;
+    klon.style.transition = 'transform .55s cubic-bezier(.22,1,.36,1)';
+    klon.style.transform = '';
+    setTimeout(function () {
+        hedef.style.visibility = '';
+        klon.remove();
+    }, 600);
 };
 
 // ===== ATLAS DATA =====
@@ -8369,6 +8416,9 @@ window.openAtlasOverlay = function(stage) {
 
     let mOverlay = document.getElementById('marathon-overlay');
     mOverlay.classList.add('active');
+    /* Atlas kipi YARI SAYDAM: arkadaki tablo hafif gorunur (CSS .atlas-modu).
+       Maraton oyunu bu sinifi almaz, opak kalir. */
+    mOverlay.classList.add('atlas-modu');
     mOverlay.scrollTop = 0;
     let _t = document.getElementById('timer-display'); if(_t) _t.style.display = 'none';
     let _l = document.getElementById('live-total-score'); if(_l) _l.style.display = 'none';
@@ -10092,13 +10142,24 @@ window._atlasKonuSeritCiz = function (stage) {
                hemen solunda (14+45+14=73) — dikey simetri her kipte korunur. */
             '#screen-atlas > #atlas-fs-btn{position:fixed !important; top:14px !important;' +
             ' right:73px !important; left:auto !important; z-index:60 !important;}' +
-            '#atlasKonuSerit{display:flex; align-items:center; gap:9px; overflow-x:auto; direction:rtl;' +
-            ' -webkit-overflow-scrolling:touch; padding:6px max(16px, calc(50% - 100px)) 10px;' +
-            ' margin:8px auto 4px; max-width:100%; scrollbar-width:none; scroll-behavior:smooth;}' +
+            /* SABIT YATAY SERIT: kaymaz (sticky), basliklar ekrana dagilir,
+               yalniz ACIK olan buyuktur. Sagdaki sabit carpi/tam ekran
+               tuslarina carpmasin diye sagdan pay birakilir. */
+            '#atlasKonuSerit{position:sticky; top:0; z-index:55; flex:none; display:flex; align-items:center;' +
+            /* TEK SATIR + SAGA YASLI: 11 baslik dar ekranda sigmazsa satir
+               kirilmaz, YATAY kaydirilir (cubuk gizli, tekerlek/parmak isler).
+               RTL'de flex-start = sag kenar; sagdaki sabit carpi/tam ekran
+               tuslari icin 128px pay birakilir. */
+            ' justify-content:flex-start; flex-wrap:nowrap; gap:8px 6px; direction:rtl;' +
+            ' overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;' +
+            /* Dikey ferahlik: buyuk aktif hap ve 3D alt golge kirpilmasin */
+            ' padding:14px 128px 20px 14px; margin:0 0 6px; width:100%; box-sizing:border-box;' +
+            ' background:rgba(241,242,246,.95); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);' +
+            ' border-radius:0 0 16px 16px;}' +
             '#atlasKonuSerit::-webkit-scrollbar{display:none}' +
             /* KOSELI + DOLGULU + 3D TUS: tablodaki th-3d-btn ile AYNI hissiyat —
                alt kenar golgesi + ust ic isik; basinca 4px coker, golge yatar. */
-            '.atlas-konu-hap{flex:none; border-radius:9px; font-family:sans-serif; font-weight:700;' +
+            '.atlas-konu-hap{flex:none; border-radius:12px; font-family:sans-serif; font-weight:700;' +
             ' cursor:pointer; white-space:nowrap; border:none; color:#fff; user-select:none;' +
             ' box-shadow:0 4px 0 rgba(0,0,0,.2), inset 0 2px 0 rgba(255,255,255,.4);' +
             ' transform:translateY(0);' +
@@ -10106,9 +10167,8 @@ window._atlasKonuSeritCiz = function (stage) {
             '.atlas-konu-hap:hover{filter:brightness(1.1)}' +
             '.atlas-konu-hap:active{transform:translateY(4px);' +
             ' box-shadow:0 0 0 rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.2)}' +
-            '.atlas-konu-hap.u0{font-size:1.45rem; padding:12px 26px;}' +
-            '.atlas-konu-hap.u1{font-size:1.05rem; padding:8px 16px; opacity:.9}' +
-            '.atlas-konu-hap.u2{font-size:.88rem; padding:6px 13px; opacity:.72}' +
+            '.atlas-konu-hap.u0{font-size:1.4rem; padding:12px 24px;}' +
+            '.atlas-konu-hap.u1{font-size:.95rem; padding:7px 13px; opacity:.92}' +
             '.atlas-konu-hap.fiil{background:#16a34a}' +
             '.atlas-konu-hap.isim{background:#2563eb}' +
             '.atlas-konu-hap.aktif{opacity:1;' +
@@ -10119,8 +10179,11 @@ window._atlasKonuSeritCiz = function (stage) {
     if (!serit) {
         serit = document.createElement('div');
         serit.id = 'atlasKonuSerit';
-        baslik.insertAdjacentElement('afterend', serit);
     }
+    /* SERIT HEP EN USTTE VE YAPISKAN: icerik dikey kayarken basliklar
+       yerinde durur (Geylani: "basliklar scroll olmasin, sabit olsun"). */
+    var sarici = document.querySelector('#screen-atlas > div:first-of-type');
+    if (sarici && sarici.firstChild !== serit) sarici.insertBefore(serit, sarici.firstChild);
     var dizi = (window._atlasSiraMezid.indexOf(stage) >= 0) ? window._atlasSiraMezid : window._atlasSiraMucerred;
     var aktifIdx = dizi.indexOf(stage);
     var html = '';
@@ -10128,22 +10191,94 @@ window._atlasKonuSeritCiz = function (stage) {
         var k = dizi[i];
         var kok = k.replace('_mezid', '');
         var tur = (kok === 'mazi' || kok === 'muzari' || kok === 'emir') ? 'fiil' : 'isim';
-        var uzak = Math.min(2, Math.abs(i - aktifIdx));   /* 0=aktif, 1=komsu, 2=uzak */
+        /* Karusel yok: yalniz ACIK baslik buyuk (u0), digerleri tek boy. */
+        var uzak = (i === aktifIdx) ? 0 : 1;
+        var tik = (k === stage)
+            ? 'atlasBasliklaKapat()'
+            : "atlasKonuyaGit('" + k + "')";
+        var ipucu = (k === stage) ? ' title="Kapat — tabloya d\u00f6n"' : '';
         html += '<button type="button" class="atlas-konu-hap ' + tur + ' u' + uzak +
-            (k === stage ? ' aktif' : '') + '"' +
-            ' onclick="atlasKonuyaGit(\'' + k + '\')">' + (window._atlasKonuAd[k] || k) + '</button>';
+            (k === stage ? ' aktif' : '') + '"' + ipucu +
+            ' onclick="' + tik + '">' + (window._atlasKonuAd[k] || k) + '</button>';
     }
     serit.innerHTML = html;
-    /* aktif hap tam ORTAYA gelsin — YALNIZ YATAY kaydirilir (scrollIntoView
-       pencereyi dikey de oynatip sekmenin scroll hafizasini bozuyordu). */
-    var seritOrtala = function () {
+    /* CARPI DA AYNI KAPANIS MORFUNDAN gecsin: ozelligi degil yolu
+       degistiriyoruz — closeMarathon yine cagrilir, once hap ucar. */
+    var carpi = document.querySelector('#screen-atlas > button[onclick="closeMarathon()"]');
+    if (carpi) carpi.onclick = function (e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        window.atlasBasliklaKapat();
+    };
+    /* Tek satir kaydirilabilir oldugundan AKTIF hap gorunur kalmali:
+       gorunum disindaysa yalniz YATAY kaydirilir (dikey oynatilmaz). */
+    var aktifGoster = function () {
         var a2 = serit.querySelector('.atlas-konu-hap.aktif');
         if (!a2) return;
         var sr = serit.getBoundingClientRect(), ar = a2.getBoundingClientRect();
-        serit.scrollLeft += (ar.left + ar.width / 2) - (sr.left + sr.width / 2);
+        if (ar.left < sr.left + 8) serit.scrollLeft += ar.left - sr.left - 24;
+        else if (ar.right > sr.right - 8) serit.scrollLeft += ar.right - sr.right + 24;
     };
-    seritOrtala();
-    setTimeout(seritOrtala, 240);   /* boyut gecisi bitince bir kez daha */
+    aktifGoster();
+    setTimeout(aktifGoster, 240);
+};
+/* ACIK BASLIGA IKINCI BASIS = KAPAT: acilistaki morfun AYNASI —
+   aktif hap tablodaki basligina DONUSEREK ucar, ekran ardinda soner.
+   (Geylani: "basliklar acik ve kapali halde ayni, degismemeli".)
+   Carpi da ayni yoldan gecirilir (serit cizilirken baglanir). */
+window.atlasBasliklaKapat = function () {
+    var overlay = document.getElementById('marathon-overlay');
+    var hap = document.querySelector('#atlasKonuSerit .atlas-konu-hap.aktif');
+    var stage = window._atlasAcikStage;
+    var hedef = null;
+    if (stage) {
+        var kap = (stage.indexOf('_mezid') >= 0) ? '#tab2' : '#tab1';
+        hedef = document.querySelector(kap + " [onclick*=\"openGrammarOverlay('" + stage + "')\"]");
+    }
+    /* Tablo, sabit katmanin ALTINDA oldugu gibi duruyor: hedefin
+       dikdortgeni kapanmadan once de olculebilir. */
+    var r1 = hedef ? hedef.getBoundingClientRect() : null;
+    var r0 = hap ? hap.getBoundingClientRect() : null;
+    var klon = null;
+    if (hap && r0 && r0.width && r1 && r1.width) {
+        var cs = getComputedStyle(hap);
+        klon = document.createElement('div');
+        klon.textContent = hap.textContent;
+        klon.style.cssText =
+            'position:fixed; z-index:2147483647; display:flex; align-items:center; justify-content:center;' +
+            ' left:' + r0.left + 'px; top:' + r0.top + 'px; width:' + r0.width + 'px; height:' + r0.height + 'px;' +
+            ' background:' + cs.backgroundColor + '; color:#fff; font-weight:700; font-family:sans-serif;' +
+            ' font-size:' + cs.fontSize + '; border-radius:' + cs.borderRadius + ';' +
+            ' box-shadow:0 4px 0 rgba(0,0,0,.2), inset 0 2px 0 rgba(255,255,255,.4);' +
+            ' pointer-events:none; transform-origin:0 0; white-space:nowrap;';
+        document.body.appendChild(klon);
+        hap.style.visibility = 'hidden';
+    }
+    /* Ekran yumusakca soner, hap ayni anda basligina dogru suzulur */
+    if (overlay) {
+        overlay.style.transition = 'opacity .32s ease';
+        overlay.style.opacity = '0';
+    }
+    if (klon) {
+        /* TEKDUZE OLCEK: hap, basligin dikdortgenine yayilarak degil,
+           MERKEZINE dogru orantili kuculerek gider — yoksa yatayda
+           esneyip harfler sisiyordu (Geylani'nin uyarisi). */
+        klon.style.transformOrigin = '50% 50%';
+        var oran = Math.max(0.5, Math.min(1.4, r1.height / r0.height));
+        var dx = (r1.left + r1.width / 2) - (r0.left + r0.width / 2);
+        var dy = (r1.top + r1.height / 2) - (r0.top + r0.height / 2);
+        void klon.offsetHeight;
+        klon.style.transition = 'transform .55s cubic-bezier(.22,1,.36,1), opacity .25s ease .34s';
+        klon.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + oran + ')';
+        klon.style.opacity = '0';
+    }
+    setTimeout(function () {
+        if (typeof window.closeMarathon === 'function') window.closeMarathon();
+        if (overlay) { overlay.style.transition = ''; overlay.style.opacity = ''; }
+    }, 330);
+    setTimeout(function () {
+        if (klon) klon.remove();
+        if (hap) hap.style.visibility = '';
+    }, 640);
 };
 (function () {
     /* DIKKAT: dinleyiciler BELGE duzeyindedir. Atlas acikken dokunus/tekerlek

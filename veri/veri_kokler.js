@@ -699,8 +699,8 @@ const wordEasterEggs = {
             "ة": { emoji: "🥈", arText: "الثَّانِيَة", trText: "2. İkinci (Müennes) / Saniye.", ornek: { ar: "اِنْتَظِرْ ثَانِيَةً", tr: "Bir saniye bekle." } }
         },
         
-        // --- 34 Numaralı Kalıp (İsm-i Mef'ûl) ---
-        34: { base: { emoji: "📦", arText: "مَثْنِيّ", trText: "Bükülmüş / İkiye katlanmış.", ornek: { ar: "وَرَقَةٌ مَثْنِيَّةٌ", tr: "Bükülmüş (katlanmış) kağıt." } } },
+        // --- 36 Numaralı Kalıp (İsm-i Mef'ûl) ---
+        36: { base: { emoji: "📦", arText: "مَثْنِيّ", trText: "Bükülmüş / İkiye katlanmış.", ornek: { ar: "وَرَقَةٌ مَثْنِيَّةٌ", tr: "Bükülmüş (katlanmış) kağıt." } } },
 
         // --- 58-63 Numaralı Kalıplar (Tef'il Babı - İkilemek / Tesniye) ---
         58: { base: { emoji: "✌️", arText: "ثَنَّى", trText: "İkiledi / (Kelimeyi) Tesniye yaptı.", ornek: { ar: "ثَنَّى الكَلِمَةَ", tr: "Kelimeyi ikil yaptı." } } },
@@ -9795,8 +9795,8 @@ const wordEasterEggs = {
             } 
         },
 
-        // --- 34 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
-        34: { 
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { 
             base: { 
                 emoji: "🕵️", 
                 arText: "بَاحِث", 
@@ -14247,8 +14247,8 @@ const wordEasterEggs = {
             } 
         },
 
-        // --- 85 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı - Edilgenlik/Süreklilik) ---
-        85: { 
+        // --- 80 Numaralı Kalıp (اِفْتِعَال - İfti'âl Babı Masdarı - Edilgenlik/Süreklilik) ---
+        80: { 
             base: { 
                 emoji: "🕰️", 
                 arText: "اِعْتِيَاد", 
@@ -19154,10 +19154,6 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                         tr: "1. Kırık Çoğul Kalıbı: 'Ef'âl' vezninde (Azfâr)." 
                     },
                     { 
-                        ar: "٢. وَزْن أَفَاعِيل ⬅️ أَظَافِير", 
-                        tr: "2. Kırık Çoğul Kalıbı: 'Efâ'îl' vezninde (Ezâfîr)." 
-                    },
-                    { 
                         ar: "أَظْفَارُ النَّسْرِ حَادَّةٌ", 
                         tr: "Kartalın pençeleri keskindir." 
                     }
@@ -19865,6 +19861,19 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             } 
         },
 
+        // --- 35 Numaralı Kalıp (فَعِيل - Sıfat-ı Müşebbehe / İsim) ---
+        35: {
+            base: {
+                emoji: "🧳",
+                arText: "غَرِيب",
+                trText: "Garip / Yabancı, gurbette olan; tuhaf, alışılmadık.",
+                ornek: {
+                    ar: "بَدَأَ الْإِسْلَامُ غَرِيبًا وَسَيَعُودُ كَمَا بَدَأَ غَرِيبًا",
+                    tr: "İslam garip olarak başladı, başladığı gibi yine garip hâle dönecektir. (Hadis-i Şerif, Müslim)"
+                }
+            }
+        },
+
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
         19: { 
             base: { 
@@ -19895,7 +19904,21 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                     }
                 ]
             } 
+        },
+
+        // --- 46 Numaralı Kalıp (فُعَلَاء - Cem-i Mükesser / Kırık Çoğul) ---
+        46: {
+            base: {
+                emoji: "👥",
+                arText: "غُرَبَاء",
+                trText: "Gurabâ / Garipler, yabancılar. (غَرِيب kelimesinin çoğulu).",
+                ornek: {
+                    ar: "فَطُوبَى لِلْغُرَبَاءِ",
+                    tr: "Ne mutlu o gariplere! (Hadis-i Şerif'in devamı, Müslim)"
+                }
+            }
         }
+
     },
     "قلب": {
         // --- 1 Numaralı Kalıp (Mücerret 2. Bab Mazi) ---
