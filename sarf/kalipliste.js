@@ -864,21 +864,45 @@
         return d;
     }
 
+    /* KARTLAR PARTİ PARTİ KURULUR. 218 kartlık bir listeyi tek karede
+       kurmak 205 ms'lik bir donma yapıyordu (ölçüldü) — uçuşun tam
+       bittiği yere denk geliyor, göz takılmayı oradan yakalıyor.
+       İlk parti anında basılır (ekran boş kalmasın), kalanı sonraki
+       karelere yayılır. Yeni bir çizim başlarsa jeton değişir ve
+       bekleyen partiler sessizce iptal olur. */
+    var cizimJetonu = 0;
+    function kartlariDok(hedef, ler, kademe, ilkParti, hazirla) {
+        var i = 0, jeton = cizimJetonu, PARTI = 30;
+        function bas(n) {
+            var son = Math.min(ler.length, i + n);
+            for (; i < son; i++) {
+                var kart = kelimeKarti(ler[i]);
+                if (kademe && i < kademe) {
+                    kart.classList.add('ko-kart-belir');
+                    kart.style.animationDelay = (i * 55) + 'ms';
+                }
+                if (hazirla) hazirla(kart, i);
+                hedef.appendChild(kart);
+            }
+        }
+        bas(ilkParti || PARTI);
+        (function devam() {
+            if (i >= ler.length || jeton !== cizimJetonu) return;
+            requestAnimationFrame(function () {
+                if (jeton !== cizimJetonu || !hedef.isConnected) return;
+                bas(PARTI);
+                devam();
+            });
+        })();
+    }
     function tekilCiz(yuva, ler) {
         var g = document.createElement('div');
         g.className = 'kl-izgara';                      /* 4 sütun (CSS) */
         /* Tablo içi odakta ilk kartlar SIRAYLA belirir (matristeki
            kademeli girişin ızgara karşılığı) */
         var kademe = odak ? 12 : 0;
-        ler.forEach(function (x, i) {
-            var kart = kelimeKarti(x);
-            if (kademe && i < kademe) {
-                kart.classList.add('ko-kart-belir');
-                kart.style.animationDelay = (i * 55) + 'ms';
-            }
-            g.appendChild(kart);
-        });
         yuva.appendChild(g);
+        kartlariDok(g, ler, kademe, 24);
         return ler.length;
     }
 
@@ -940,27 +964,19 @@
                 } else {
                     var g = document.createElement('div');
                     g.className = 'kl-izgara kl-izgara-takim';
-                    var kademe = odak ? 6 : 0;
-                    kelimeler.forEach(function (x, i) {
-                        var kart = kelimeKarti(x);
-                        if (tk.kisa) {
-                            /* KISA KART: Türkçesi gizli; örneksiz kartta da
-                               dokunuş açsın (örnekli zaten kl-acik ile açılıyor) */
-                            kart.classList.add('kl-kisa');
-                            if (!kart.classList.contains('kl-ornekli')) {
-                                kart.addEventListener('click', function () {
-                                    kart.classList.toggle('kl-acik');
-                                    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
-                                });
-                            }
-                        }
-                        if (kademe && i < kademe) {
-                            kart.classList.add('ko-kart-belir');
-                            kart.style.animationDelay = (i * 55) + 'ms';
-                        }
-                        g.appendChild(kart);
-                    });
                     gv.appendChild(g);
+                    kartlariDok(g, kelimeler, odak ? 6 : 0, 12, function (kart) {
+                        if (!tk.kisa) return;
+                        /* KISA KART: Türkçesi gizli; örneksiz kartta da
+                           dokunuş açsın (örnekli zaten kl-acik ile açılıyor) */
+                        kart.classList.add('kl-kisa');
+                        if (!kart.classList.contains('kl-ornekli')) {
+                            kart.addEventListener('click', function () {
+                                kart.classList.toggle('kl-acik');
+                                if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+                            });
+                        }
+                    });
                 }
                 panel.appendChild(gv);
                 kap.appendChild(panel);
@@ -1142,6 +1158,7 @@
     function govdeCiz() {
         var yuva = document.getElementById('klGovde');
         if (!yuva) return 0;
+        cizimJetonu++;                 /* önceki çizimin bekleyen partileri iptal */
         yuva.innerHTML = '';
         tonYaz();
         var ler = suz(tumler);
@@ -1163,9 +1180,66 @@
         return n;
     }
 
+    /* ---------- 4a) TAM EKRAN ----------
+       Vezne basınca örnek listesiyle BİRLİKTE sayfa tam ekrana geçer —
+       gizli bir tam ekran düğmesine basılmış gibi; liste kapanınca
+       çıkar. İki koruma var:
+         · Yalnız BİZİM açtığımız tam ekrandan çıkılır. Öğrenci zaten
+           tam ekrandaysa listeyi kapatmak onu dışarı atmaz.
+         · Çıkış bir tık GECİKMELİ: vezinden vezne geçerken (kapat-aç)
+           ekran bir yanıp sönmesin — yeni liste açılırsa çıkış iptal.
+       Tarayıcı izin vermezse (eski Safari, iframe, jestsiz programatik
+       çağrı) sessizce vazgeçilir; hiçbir şey bozulmaz. */
+    var tamEkranBiz = false, tamEkranZaman = null;
+    function tamEkranMi() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+    function tamEkranAc() {
+        clearTimeout(tamEkranZaman);
+        if (tamEkranMi()) return;
+        var el = document.documentElement;
+        var f = el.requestFullscreen || el.webkitRequestFullscreen;
+        if (!f) return;
+        try {
+            var s = f.call(el, { navigationUI: 'hide' });
+            if (s && s.then) s.then(function () { tamEkranBiz = true; }, function () { tamEkranBiz = false; });
+            else tamEkranBiz = true;
+        } catch (e) { tamEkranBiz = false; }
+    }
+    function tamEkranKapat() {
+        if (!tamEkranBiz) return;
+        tamEkranBiz = false;
+        if (!tamEkranMi()) return;
+        var f = document.exitFullscreen || document.webkitExitFullscreen;
+        if (!f) return;
+        try { var s = f.call(document); if (s && s['catch']) s['catch'](function () { }); } catch (e) { }
+    }
+    function tamEkranKapatGecikmeli() {
+        clearTimeout(tamEkranZaman);
+        tamEkranZaman = setTimeout(function () {
+            /* `kapanan`a BAKILMAZ: kapanış animasyonu ~1sn sürüyor, ona
+               takılsak tam ekrandan hiç çıkmazdık. Vezinden vezne geçişi
+               zaten tamEkranAc()'ın clearTimeout'u iptal ediyor. */
+            if (odak) return;                             /* yeni liste açıldı */
+            if (perde && perde.classList.contains('acik')) return;
+            tamEkranKapat();
+        }, 80);
+    }
+    function tamEkranIzle() { if (!tamEkranMi()) tamEkranBiz = false; }
+    document.addEventListener('fullscreenchange', tamEkranIzle);
+    document.addEventListener('webkitfullscreenchange', tamEkranIzle);
+    /* Tam ekrana girip çıkarken pencere boyu değişir: açık listenin
+       sütun hizaları ve stor ölçüleri tazelensin. */
+    window.addEventListener('resize', function () {
+        if (!odak) return;
+        storOlc();
+        if (odak.muc) mucHizala(); else sutunlariHizala();
+    });
+
     function ac(no) {
         no = parseInt(no, 10);
         if (!isFinite(no)) return false;
+        tamEkranAc();                      /* tıklamanın kendi jesti geçerliyken */
         /* PERDE ARTIK YALNIZ YEDEK: mezid (52-105) tablonun içinde,
            mücerred (1-51) de tablonun içinde açılıyor. Perde ancak kutu
            sayfada bulunamazsa (tablo dışı numara) devreye girer. */
@@ -1195,6 +1269,7 @@
 
     function kapat() {
         if (odak) { odakKapat(); return; }
+        tamEkranKapatGecikmeli();
         /* Kapanış animasyonu sürerken ikinci kez kapatmak istenirse
            bekletme: doğrudan son hâle geç. */
         if (kapanan) { (kapanan.zaman || []).forEach(clearTimeout); odakSonlandir(kapanan, true); return; }
@@ -1559,6 +1634,7 @@
        geçerken ya da ⓘ'ye basılırken ekran bekletilmesin). */
     function odakKapat(sessiz) {
         if (!odak) return;
+        tamEkranKapatGecikmeli();          /* yeni liste açılırsa iptal olur */
         var st = odak;
         odak = null;
         (st.zaman || []).forEach(clearTimeout);   /* yarım kalan açılış */
@@ -1651,6 +1727,48 @@
         }
         return false;
     }
+    /* ÇOK BANTLI TAKIMDA (cem-i teksir: 8 vezin, iki sıra) ŞERİT AKIŞTAN
+       ÇIKAR. Sebebi dikey alan: şerit 120px yer kaplıyor (klavye çipleri
+       56 + "Cemi Teksir · 57 kelime" satırı 32 + paylar) ve ekran
+       kaydırılınca yerinde boşluk bırakıyordu — vezinler tepeye
+       oturamıyordu. Şeritsiz hâlde teksir görünümü 920px'e iniyor,
+       yani ekrana sığıyor: kaydırma da bitiyor, boşluk da.
+       Tek bantlı takımlarda (tafdil · fâil · zaman-mekân · âlet) ve
+       tekil kalıplarda şerit aynen duruyor. */
+    function seritGizle(takim) {
+        var bantli = !!(takim && takim.uyeler.length > takim.sutun);
+        document.body.classList.toggle('muc-serit-yok', bantli);
+        /* Üst çubuk da çekilir; her açılışta kapalı başlar */
+        if (!bantli) document.body.classList.remove('muc-bar-acik');
+    }
+    /* ÜST ÇUBUĞU EKRANI AŞAĞI ÇEKİNCE GERİ GETİR. Bu görünümde sayfa
+       kaymadığı için stor perdesi tetiklenmiyor — jesti kendimiz
+       dinliyoruz: tekerlek yukarı / parmak aşağı = çubuk iner, ters
+       yön = yine çekilir. Panel içi kaydırma ÖNCELİKLİ: panelin daha
+       kayacak yeri varsa jest ona bırakılır. */
+    function panelPayiVar(hedef, yon) {
+        var g = (hedef && hedef.closest) ? hedef.closest('.kl-panel-govde') : null;
+        if (!g) return false;
+        return (yon < 0) ? (g.scrollTop > 1)
+                         : (g.scrollTop + g.clientHeight < g.scrollHeight - 1);
+    }
+    function barAc(ac) { document.body.classList.toggle('muc-bar-acik', !!ac); }
+    function barKipi() { return document.body.classList.contains('muc-serit-yok'); }
+    document.addEventListener('wheel', function (e) {
+        if (!barKipi()) return;
+        if (e.deltaY < -4) { if (!panelPayiVar(e.target, -1)) barAc(true); }
+        else if (e.deltaY > 4) { if (!panelPayiVar(e.target, 1)) barAc(false); }
+    }, { passive: true });
+    var dokunY = null;
+    document.addEventListener('touchstart', function (e) {
+        dokunY = (e.touches && e.touches[0]) ? e.touches[0].clientY : null;
+    }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+        if (!barKipi() || dokunY === null || !e.touches || !e.touches[0]) return;
+        var dy = e.touches[0].clientY - dokunY;
+        if (dy > 26) { if (!panelPayiVar(e.target, -1)) { barAc(true); dokunY = e.touches[0].clientY; } }
+        else if (dy < -26) { if (!panelPayiVar(e.target, 1)) { barAc(false); dokunY = e.touches[0].clientY; } }
+    }, { passive: true });
     function mucLevhaBoya() {
         if (!odak || !odak.muc || !odak.satir) return;
         var td = odak.satir.querySelector('td');
@@ -1818,7 +1936,8 @@
         if (takim) {
             yuva.classList.add('muc-levha-takim', 'muc-levha-' + takim.ad);
             yuva.style.setProperty('--takim-sutun', takim.sutun);
-            lv.classList.add('muc-satir-' + takim.ad);   /* satır payı takıma göre */
+            lv.classList.add('muc-satir-takim', 'muc-satir-' + takim.ad);
+            seritGizle(takim);
         }
         var evler = kutular.map(function (k) {
             return { kutu: k, par: k.parentNode, next: k.nextSibling };
@@ -1912,6 +2031,7 @@
            eşit izler, tekilde ortalanmış tek kutu. */
         yuva.classList.toggle('muc-levha-bab', !!trio);
         yuva.classList.remove('muc-levha-takim');
+        st.satir.classList.remove('muc-satir-takim');
         TAKIMLAR.forEach(function (tk) {
             yuva.classList.remove('muc-levha-' + tk.ad);
             st.satir.classList.remove('muc-satir-' + tk.ad);
@@ -1919,10 +2039,11 @@
         if (takim) {
             yuva.classList.add('muc-levha-takim', 'muc-levha-' + takim.ad);
             yuva.style.setProperty('--takim-sutun', takim.sutun);
-            st.satir.classList.add('muc-satir-' + takim.ad);
+            st.satir.classList.add('muc-satir-takim', 'muc-satir-' + takim.ad);
         } else {
             yuva.style.removeProperty('--takim-sutun');
         }
+        seritGizle(takim);
         var izi = yuva.querySelector('.muc-levha-kok-izi');
         if (trio && !izi) {
             izi = document.createElement('span');
@@ -1965,7 +2086,7 @@
     /* Mücerred kapanışının son adımı: kutu FLIP ile evine döner, satırlar
        geri gelir. odakSonlandir'dan dallanır. */
     function mucSonlandir(st, sessiz) {
-        document.body.classList.remove('muc-odak');
+        document.body.classList.remove('muc-odak', 'muc-serit-yok', 'muc-bar-acik');
         var govde1 = st.satir.parentElement;
         var evler = st.evler || [];
         var r0lar = evler.map(function (ev) { return ev.kutu.getBoundingClientRect(); });
@@ -2043,6 +2164,23 @@
         window.showBabInfo = function () {
             if (odak || kapanan) return;       /* örnek listesi açık → yut */
             if (typeof onceki === 'function') return onceki.apply(this, arguments);
+        };
+    })();
+
+    /* SEKME DEĞİŞİNCE ÖRNEK LİSTESİ KENDİLİĞİNDEN KAPANIR (Geylani'nin
+       isteği): mücerred ↔ mezid arasında gezerken açık liste öteki
+       sekmede asılı kalıyor, geri dönünce yarım bir düzen karşılıyordu.
+       Kapanış SESSİZ: sekme geçişi animasyon beklemesin. setTab hem
+       düğmelerden hem kaydırma/tekerlek jestlerinden çağrılıyor;
+       sarmalayınca hepsi kapsanıyor. */
+    (function () {
+        var onceki = window.setTab;
+        if (typeof onceki !== 'function') return;
+        window.setTab = function () {
+            if (odak) odakKapat(true);
+            else if (kapanan) { (kapanan.zaman || []).forEach(clearTimeout); odakSonlandir(kapanan, true); }
+            else if (perde && perde.classList.contains('acik')) kapat();
+            return onceki.apply(this, arguments);
         };
     })();
     document.addEventListener('keydown', function (e) {

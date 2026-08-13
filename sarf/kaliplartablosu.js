@@ -7037,6 +7037,8 @@ window.closeMarathon = function() {
     window.mRaceMode = false;
     document.getElementById('marathon-overlay').classList.remove('active');
     document.getElementById('marathon-overlay').classList.remove('atlas-modu');
+    clearTimeout(window._atlasUcusZaman);
+    document.getElementById('marathon-overlay').classList.remove('atlas-ucus');
     
     // Ekranda "MAZİ" veya süre yazısı asılı kalmasın diye temizlik
     hideMarathonHeaders();
@@ -8419,6 +8421,15 @@ window.openAtlasOverlay = function(stage) {
     /* Atlas kipi YARI SAYDAM: arkadaki tablo hafif gorunur (CSS .atlas-modu).
        Maraton oyunu bu sinifi almaz, opak kalir. */
     mOverlay.classList.add('atlas-modu');
+    /* AKICILIK: buzlu cam (backdrop-filter) UCUS BOYUNCA KAPALI. Olculdu:
+       blur acikken acilis 1.6 sn'de 30 kare (~20 fps, 28 takilan), kapaliyken
+       94 kare (60 fps, 3 takilan) — tarayici her karede tum ekrani yeniden
+       bulaniklastiriyor. Ekran oturunca blur geri gelir, gorunum degismez. */
+    mOverlay.classList.add('atlas-ucus');
+    clearTimeout(window._atlasUcusZaman);
+    window._atlasUcusZaman = setTimeout(function () {
+        mOverlay.classList.remove('atlas-ucus');
+    }, 660);
     mOverlay.scrollTop = 0;
     let _t = document.getElementById('timer-display'); if(_t) _t.style.display = 'none';
     let _l = document.getElementById('live-total-score'); if(_l) _l.style.display = 'none';
@@ -10227,6 +10238,9 @@ window._atlasKonuSeritCiz = function (stage) {
    Carpi da ayni yoldan gecirilir (serit cizilirken baglanir). */
 window.atlasBasliklaKapat = function () {
     var overlay = document.getElementById('marathon-overlay');
+    /* Kapanis ucusunda da blur kapali (bkz. openAtlasOverlay notu) */
+    clearTimeout(window._atlasUcusZaman);
+    if (overlay) overlay.classList.add('atlas-ucus');
     var hap = document.querySelector('#atlasKonuSerit .atlas-konu-hap.aktif');
     var stage = window._atlasAcikStage;
     var hedef = null;

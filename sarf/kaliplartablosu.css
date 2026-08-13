@@ -4497,7 +4497,12 @@ body.kl-kilit { overflow: hidden; }
     from { opacity: 0; transform: translateY(-10px); }
     to   { opacity: 1; transform: none; }
 }
-.ko-satir.ko-belir > td { animation: koBelir .45s cubic-bezier(.22,1,.36,1) both; }
+/* fill: BOTH DEĞİL, BACKWARDS. "both" bitince son kareyi (transform:none)
+   kalıcı olarak dayatıyordu; animasyonlar normal bildirimleri ezdiği için
+   stor perdesinin transform'u şeride hiç işlemiyordu (şerit derinde ekran
+   dışına çekilemiyordu). "backwards" yalnız başlangıç karesini önden
+   uygular — açılışta çakma yok, bitince eleman kendi kurallarına döner. */
+.ko-satir.ko-belir > td { animation: koBelir .45s cubic-bezier(.22,1,.36,1) backwards; }
 .ko-satir.ko-belir { animation-name: none; }
 /* ---- AÇILIŞ KOREOGRAFİSİ ----
    FAZ 1: şerit 0'dan açılır → başlık satırı (Mazi … İsm-i Mef'ûl) yavaşça
@@ -4745,11 +4750,19 @@ body.ko-stor.ko-stor-yuzer .top-bar {
 /* Katlar inmişken (asılı: ko-stor-yuzer, gizli değil) yapışkan vezin
    başlıkları bar + şeridin hemen ALTINA kayar; katlar çekilince yine
    en tepeye yapışırlar. Geçiş, barın iniş animasyonuyla aynı sürede. */
+/* HAREKET TRANSFORM İLE (top ile değil): `top` her karede yeniden
+   yerleşim istiyor — ölçüldü, geri kaydırmada 7 takılan kare. transform
+   ekran kartında çalışır: aynı yolda 1 takılan kare kaldı.
+   Yapışma eşiği (top) ARTIK SON HÂLİ: bar+şerit inmişken oturacağı yer.
+   Derine inildiğinde (sakla) kutu translateY ile tepeye çekilir — o anda
+   başlık kesin yapışmış durumdadır, kayma sayfanın başında olmaz. */
 body.ko-stor #tab2 table.ko-acik thead tr:not(.ko-satir) th {
-    transition: top .35s ease;
-}
-body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab2 table.ko-acik thead tr:not(.ko-satir) th {
     top: var(--ko-bas-kayma, 120px);
+    transition: transform .35s ease;
+    will-change: transform;
+}
+body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead tr:not(.ko-satir) th {
+    transform: translateY(calc(-1 * var(--ko-bas-kayma, 120px)));
 }
 
 /* ŞERİT (Kök Ara klavyesi + Aksâm-ı Seb'a) DE STOR PERDEYE KATILIR:
@@ -4760,9 +4773,16 @@ body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab2 table.ko-acik thead tr:not(
 body.ko-stor #tab1 table.ko-acik thead .ko-suzgec-satir > td,
 body.ko-stor #tab2 table.ko-acik thead .ko-suzgec-satir > td {
     position: sticky;
-    top: calc(0px - var(--ko-serit-yuk, 420px));
+    top: var(--ko-bar-yuk, 62px);   /* yapışma eşiği: barın hemen altı */
     z-index: 1260;                /* bar 1290'ın altında, başlıklar 1200'ün üstünde */
-    transition: top .35s ease, background-color .3s ease, box-shadow .3s ease;
+    transition: transform .35s ease, background-color .3s ease, box-shadow .3s ease;
+    will-change: transform;
+}
+/* Derinde şerit görüş alanının ÜSTÜNE çekilir (görünmez); hareket
+   transform, bar ile aynı dil. */
+body.ko-stor.ko-stor-sakla #tab1 table.ko-acik thead .ko-suzgec-satir > td,
+body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead .ko-suzgec-satir > td {
+    transform: translateY(calc(-1 * (var(--ko-bar-yuk, 62px) + var(--ko-serit-yuk, 420px))));
 }
 /* Buzlu zemin, sakla sırasında da kalır: şerit yukarı çekilirken
    arkasındaki satırlar içinden görünmesin. */
@@ -4774,10 +4794,6 @@ body.ko-stor.ko-stor-yuzer #tab2 table.ko-acik thead .ko-suzgec-satir > td {
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
     border-radius: 0 0 16px 16px;
 }
-body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab1 table.ko-acik thead .ko-suzgec-satir > td,
-body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab2 table.ko-acik thead .ko-suzgec-satir > td {
-    top: var(--ko-bar-yuk, 62px);
-}
 
 /* ============ KAYBOLMA DAHA PÜRÜZSÜZ ============
    Katlar yukarı ÇEKİLİRKEN (sakla) daha uzun süre + yumuşak eğri:
@@ -4788,10 +4804,10 @@ body.ko-stor.ko-stor-sakla .top-bar {
 }
 body.ko-stor.ko-stor-sakla #tab1 table.ko-acik thead .ko-suzgec-satir > td,
 body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead .ko-suzgec-satir > td {
-    transition: top .65s cubic-bezier(.33, 0, .18, 1), background-color .3s ease, box-shadow .3s ease;
+    transition: transform .65s cubic-bezier(.33, 0, .18, 1), background-color .3s ease, box-shadow .3s ease;
 }
 body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead tr:not(.ko-satir) th {
-    transition: top .65s cubic-bezier(.33, 0, .18, 1);
+    transition: transform .65s cubic-bezier(.33, 0, .18, 1);
 }
 
 /* ================== MÜCERRED TABLO İÇİ ODAK ==================
@@ -4843,14 +4859,60 @@ body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead tr:not(.ko-satir) th {
    VEZİN LEVHASI — derinde en tepede kalır, katlar inince onların
    altına kayar; kayboluşu da katlarla aynı yumuşak eğride. */
 body.ko-stor #tab1 table.ko-acik .muc-levha-satir > td {
-    position: sticky; top: 0; z-index: 1200;
-    transition: top .35s ease;
+    position: sticky;
+    top: var(--ko-bas-kayma, 120px);   /* eşik: bar + şerit inmişkenki yeri */
+    z-index: 1200;
+    transition: transform .35s ease;
+    will-change: transform;
 }
-body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab1 table.ko-acik .muc-levha-satir > td {
-    top: var(--ko-bas-kayma, 120px);
-}
+/* Derinde levha en tepeye çıkar — transform ile (bkz. şerit notu) */
 body.ko-stor.ko-stor-sakla #tab1 table.ko-acik .muc-levha-satir > td {
-    transition: top .65s cubic-bezier(.33, 0, .18, 1);
+    transform: translateY(calc(-1 * var(--ko-bas-kayma, 120px)));
+    transition: transform .65s cubic-bezier(.33, 0, .18, 1);
+}
+/* TAKIM GÖRÜNÜMLERİNDE LEVHA YAPIŞMAZ. Takımda örnekler panel panel
+   KENDİ İÇİNDE kaydığı için sayfanın kendisi neredeyse hiç kaymıyor
+   (teksirde toplam 94px); yapışan levha o birkaç pikselde bandından
+   KOPUP arada kocaman boşluk bırakıyordu — ölçüldü: vezin ile örnek
+   kutusu arası 9px iken 117px'e çıkıyordu. Vezinler kendi bantlarıyla
+   birlikte hareket etsin. */
+body.ko-stor #tab1 table.ko-acik .muc-levha-satir.muc-satir-takim > td {
+    position: static;
+    transform: none !important;
+}
+/* ÇOK BANTLI TAKIMDA (cem-i teksir) ŞERİT HİÇ YOK: 8 vezin + iki örnek
+   bandı için 120px'lik klavye/başlık şeridi lüks kalıyordu. Kaldırınca
+   görünüm ekrana sığıyor — kaydırma da, tepedeki boşluk da bitiyor,
+   vezinler üst çubuğun hemen altında duruyor. (kalipliste.js
+   seritGizle() bu sınıfı yönetir.) */
+body.muc-serit-yok #tab1 table.ko-acik > thead > tr.ko-suzgec-satir { display: none; }
+/* ÜST ÇUBUK (sekmeler) DA ÇEKİLİR — hem kendisi hem YERİ: negatif pay
+   olmasa 56px'lik boşluğu kalırdı, vezinler tepeye oturamazdı. Ekranı
+   aşağı çekince (tekerlek yukarı / parmak aşağı) geri iner; yukarı
+   çekince yine kalkar. Jesti kalipliste.js dinler (muc-bar-acik). */
+body.muc-serit-yok .top-bar {
+    transform: translateY(-140%);
+    margin-bottom: calc(-1 * var(--ko-bar-yuk, 48px));
+    transition: transform .42s cubic-bezier(.33, 0, .18, 1),
+                margin-bottom .42s cubic-bezier(.33, 0, .18, 1),
+                background-color .3s ease, box-shadow .3s ease;
+}
+/* Sürüklenebilir kök levhası (فعل) belge koordinatlarına çakılı duruyor;
+   içerik yukarı kayınca 41'in kutusunun üstüne biniyordu. Bu görünümde
+   tablo zaten gizli, levhanın işi yok — sönük dursun. */
+body.muc-serit-yok .draggable-root-clone {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+}
+body.muc-serit-yok.muc-bar-acik .top-bar {
+    transform: none;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.10);
+    border-radius: 0 0 16px 16px;
 }
 /* Levha yüzerken BEYAZ MASKE YOK: zemini kalipliste.js tablonun kendi
    gradyanından kopyalıyor (mucZeminKopyala) — kaydırırken renk
@@ -4913,6 +4975,14 @@ body.muc-odak #tab1.tab-content { width: 100% !important; }
     -webkit-backdrop-filter: blur(7px);
     backdrop-filter: blur(7px);
 }
+/* AÇILIŞ/KAPANIŞ UÇUŞU BOYUNCA BUZLU CAM KAPALI (kalıplartablosu.js
+   .atlas-ucus sınıfını takar/çıkarır): tarayıcı her karede tüm ekranı
+   yeniden bulanıklaştırdığı için morf 20 fps'e düşüyordu; kapalıyken
+   60 fps. Ekran oturur oturmaz blur geri gelir, görünüm değişmez. */
+#marathon-overlay.atlas-modu.atlas-ucus {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
 #marathon-overlay.atlas-modu #game-wrapper {
     background: rgba(255, 255, 255, 0.72);
 }
@@ -4948,7 +5018,7 @@ body.muc-odak #tab1.tab-content { width: 100% !important; }
     align-items: center;
     gap: 8px 0;
     min-height: 104px;
-    margin: 8px 4px 6px;               /* bantlar ayrışsın ama pay DAR dursun */
+    margin: 8px 4px 2px;               /* alt pay üst bandınkiyle eşit dursun */
 }
 .ko-govde-satir[data-tonlu="1"] .muc-ara-levha { background: var(--kl-ton); border-radius: 12px; padding: 6px; }
 /* ============ TEKSİRDE DİKEY SIKILIK + KISA KART ============
@@ -4957,7 +5027,14 @@ body.muc-odak #tab1.tab-content { width: 100% !important; }
    örneğiyle birlikte). Tafdil ve öteki görünümler eski ölçüsünde. */
 #tab1 tr.muc-satir-teksir > td { padding: 3px 0 5px !important; }
 #tab1 .muc-levha.muc-levha-teksir { padding: 2px 0 4px; gap: 8px 0; }
-.kl-takim-teksir { gap: 8px 12px; }
+/* İKİ BANDIN KUTULARI DİKEYDE BİREBİR AYNI: paneller içeriği kadar
+   değil, bandın en uzunu kadar yükselir (stretch) — üstteki dörtlü ile
+   alttaki dörtlü aynı boyda durur, kısa listeli vezinlerde kutu küçülüp
+   sıra bozulmaz. */
+/* İki sınıflı seçici bilerek: genel .kl-takim kuralı bu bloktan SONRA
+   geliyor, eşit özgüllükte olsa onu ezerdi. */
+.kl-takim.kl-takim-teksir { gap: 8px 12px; align-items: stretch; }
+.kl-takim-teksir .kl-panel-govde { flex: 1 1 auto; }
 .ko-govde-satir[data-tonlu="1"] .kl-takim-teksir { padding: 6px; }
 .kl-takim-teksir .kl-takim-panel { padding: 3px 4px 5px; }
 .kl-takim-teksir .kl-panel-bas { padding: 0 4px 3px; margin-bottom: 4px; font-size: 1.25rem; }
@@ -5022,6 +5099,18 @@ body.muc-odak #tab1.tab-content { width: 100% !important; }
    içinde kayar; teksirde iki sıra olduğu için tavan alçaktır. */
 .kl-takim .kl-panel-govde { max-height: clamp(300px, 56vh, 760px); }
 .kl-takim-teksir .kl-panel-govde { max-height: clamp(210px, 26vh, 380px); }
+/* ŞERİTSİZ (8 vezinli) GÖRÜNÜMDE EKRAN DİKEYDE %100 KULLANILIR: iki
+   panel bandı, ekrandan sabit paylar (üst/alt 2px, levha 102, ara levha
+   114, panel başlıkları ve dolgular ~2×46, kaydırıcı payı 6) düşüldükten
+   sonra kalanı PAYLAŞIR. Formül: her gövde = 50vh − 165px. Küçük
+   ekranlarda 150px'in altına inmesin diye taban var. */
+body.muc-serit-yok .kl-takim-teksir .kl-panel-govde {
+    max-height: max(150px, calc(50vh - 159px));
+}
+body.muc-serit-yok { padding-top: 2px !important; padding-bottom: 2px !important; }
+/* .container'ın dikey dolgusu !important ile geliyor (bkz. yukarısı) */
+body.muc-serit-yok #tab1 .container { padding-top: 2px !important; padding-bottom: 0 !important; }
+body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 /* Kart sütunu panelin genişliğine göre kendiliğinden: 2 sütunlu
    takımda panel geniş (2-3 kart), 3 sütunluda dar (1-2 kart). */
 .kl-takim .kl-izgara { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
