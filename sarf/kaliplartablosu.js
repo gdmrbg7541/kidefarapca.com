@@ -4996,9 +4996,31 @@ const ColorEngine = {
 
     if (char1 === char2) return true;
     if (hamzas.includes(char1) && hamzas.includes(char2)) return true;
-    if (weaks.includes(char1) && weaks.includes(char2)) return true; 
+    if (weaks.includes(char1) && weaks.includes(char2)) return true;
     return false;
 },
+
+    // YENİ (مَأْمُور DÜZELTMESİ): charsOnly[start] konumundan itibaren
+    // rootArray[rStart..2] kök harfleri SIRAYLA hâlâ bulunabiliyor mu?
+    // Aşağıdaki "zayıf kök harfi düşmüş" kestirmesi ancak kök ileride
+    // gerçekten TAMAMLANAMIYORSA doğrudur. Bu kontrol olmadan مَأْمُور'da
+    // baştaki zâid م kök م sanılıyor (أ zayıf sayılıp "düştü" varsayılıyor),
+    // gerçek kök harfleri (أمر) kırmızı, zâidler siyah kalıyordu.
+    kokSiraylaBulunur: function(charsOnly, start, rootArray, rStart) {
+        let p = start;
+        for (let k = rStart; k < 3; k++) {
+            let bulundu = false;
+            for (let j = p; j < charsOnly.length; j++) {
+                if (this.isEquivalent(charsOnly[j].char, rootArray[k], k)) {
+                    p = j + 1;
+                    bulundu = true;
+                    break;
+                }
+            }
+            if (!bulundu) return false;
+        }
+        return true;
+    },
 
     colorize: function(finalWord, rootArray = ['ف', 'ع', 'ل']) {
         // Harfleri temizle
@@ -5086,7 +5108,14 @@ const ColorEngine = {
                     rIndex++;
                 }
             } 
-            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1], rIndex + 1) && this.isWeak(rootArray[rIndex])) {
+            else if (rIndex + 1 < 3 && this.isEquivalent(c, rootArray[rIndex + 1], rIndex + 1) && this.isWeak(rootArray[rIndex])
+                     && !(rIndex === 0 && this.kokSiraylaBulunur(charsOnly, i, rootArray, 0))) {
+                // Zayıf kök harfi kelimede gerçekten yoksa (عِدْ، قُلْ gibi) bu
+                // harf bir SONRAKİ kök harfidir. Ama daha HİÇ kök harfi
+                // bulunmamışken (rIndex===0) kökün tamamı ileride sırayla
+                // mevcutsa (مَأْمُور: أ,م,ر duruyor) buraya GİRME — bu harf
+                // zâid bir ön ektir. Not: rIndex>0 durumlarına dokunmuyoruz;
+                // orada bu kestirme تَعَاوَنُونَ gibi çekimlerde gerekli.
                 charsOnly[i].isRoot = true;
                 rIndex += 2;
             }
@@ -9027,10 +9056,16 @@ function openFastDictionaryMode() {
         return;
     }
     
-    // Animasyon durumunu sıfırla, böylece her açılışta liste sırayla açılsın
-    fdmAnimated = { mucerred: false, mezid: false };
-    
     if (!currentRoot || !sozlukVerileri[currentRoot]) return;
+
+    // AÇILIŞ ANİMASYONU YALNIZ YENİ KÖKTE OYNAR. Aynı kökün listesi
+    // kapatılıp yeniden açıldığında HAZIR gelir: ders akışında liste →
+    // tabloda kalıbın yeri → listeye dönüş sık yapılıyor; her dönüşte
+    // listenin 3 saniyede teker teker yeniden kurulması dersi bölüyordu.
+    if (fdmSonKok !== currentRoot) {
+        fdmAnimated = { mucerred: false, mezid: false };
+    }
+    fdmSonKok = currentRoot;
     
     // YENİ KLAVYEYİ KESİN OLARAK KAPAT
     // closeKeyboard artık ONAYLANMAMIŞ harfleri siliyor; buraya zaten
@@ -9248,6 +9283,7 @@ function closeFastDictionaryMode() {
 
 let fdmTimeouts = [];
 let fdmAnimated = { mucerred: false, mezid: false };
+let fdmSonKok = null;      /* liste en son hangi kök için kuruldu */
 function triggerFDMTab(tabType) {
     fdmTimeouts.forEach(clearTimeout);
     fdmTimeouts = [];
@@ -9305,6 +9341,11 @@ function triggerFDMTab(tabType) {
             row.style.transform = 'translateY(0)';
             row.style.opacity = '1';
         });
+        // YENİ: Liste hazır (animasyonsuz) açıldığında MEZİD sütunu da hazır
+        // gelsin; mezid sekmesine ayrıca basmak gerekmesin. Mücerred
+        // satırları nasıl açıksa mezid satırları da aynı şekilde görünür.
+        if (isMucerred) fdmMezidiHazirla();
+        fdmSekmeleriGuncelle();   /* her şey açıksa iki sekme de kırmızı */
         return;
     }
     
@@ -9329,12 +9370,19 @@ function triggerFDMTab(tabType) {
     if (count === 0) {
         if (isMucerred) {
             triggerFDMTab('mezid');
+        } else {
+            fdmSekmeleriGuncelle();   /* mezid boşsa da "hepsi açık" sayılır */
         }
         return;
     }
     
     const delayStep = totalDuration / count;
-    
+
+    // Animasyon bitince sekme vurgularını tazele: iki liste de tamamsa
+    // (mücerred + mezid) iki sekme başlığı birden kırmızı olur.
+    let tSekme = setTimeout(fdmSekmeleriGuncelle, totalDuration + 450);
+    fdmTimeouts.push(tSekme);
+
     // Force reflow
     void activeTabEl.offsetWidth;
     
@@ -9369,6 +9417,50 @@ function triggerFDMTab(tabType) {
             triggerFDMTab('mezid');
         }, totalDuration + 200); // Mücerred animasyonu bittikten hemen sonra
         fdmTimeouts.push(autoMezidTimer);
+    }
+}
+
+/* Mücerred hazır (animasyonsuz) açıldığında mezid sütununu da sekmeye
+   basmaya gerek bırakmadan görünür yapar. Sekme stillerine ve arka plan
+   tablosuna DOKUNMAZ: aktif görünüm mücerredde kalır, mezid satırları
+   yalnızca görünür hâle getirilir. Mezid animasyonu daha önce hiç
+   oynamadıysa (liste, mücerred bitmeden kapatılmıştı) ilk açılıştaki
+   akış sürer: kısa gecikmeyle otomatik mezid animasyonu başlar. */
+function fdmMezidiHazirla() {
+    if (fdmAnimated.mezid) {
+        document.querySelectorAll('#tab2 .glass-box.sari-vurgu').forEach(box => {
+            box.style.transition = 'all 0.4s ease';
+            box.style.transform = 'scale(1)';
+            box.style.opacity = '1';
+            box.style.zIndex = '30'; box.style.position = 'relative';
+        });
+        document.querySelectorAll('#fdm-mezid-list .fdm-list-row').forEach(row => {
+            row.style.transition = 'all 0.4s ease';
+            row.style.transform = 'translateY(0)';
+            row.style.opacity = '1';
+        });
+    } else if (document.querySelector('#fdm-mezid-list .fdm-list-row')) {
+        let t = setTimeout(() => triggerFDMTab('mezid'), 250);
+        fdmTimeouts.push(t);
+    }
+}
+
+/* KULLANICI İSTEĞİ: hızlı listede TÜM kelimeler açılınca iki sekme de
+   kırmızı vurgulu olsun. Bir liste, bütün satırları görünür kılındıysa
+   tamamlanmıştır (boş liste de "tamam" sayılır); İKİSİ de tamamsa iki
+   sekme başlığı birden kırmızıya döner. Animasyon sürerken normal
+   aktif/pasif görünüm korunur. */
+function fdmSekmeleriGuncelle() {
+    const tam = sel => [...document.querySelectorAll(sel + ' .fdm-list-row')]
+        .every(r => r.style.opacity === '1');
+    if (tam('#fdm-mucerred-list') && tam('#fdm-mezid-list')) {
+        [document.getElementById('fdm-mucerred-tab'),
+         document.getElementById('fdm-mezid-tab')].forEach(tab => {
+            if (!tab) return;
+            tab.style.background = '#FF3B30';
+            tab.style.color = '#ffffff';
+            tab.style.boxShadow = '0 4px 10px rgba(255, 59, 48, 0.4)';
+        });
     }
 }
 

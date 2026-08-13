@@ -4482,6 +4482,7 @@ body.kl-kilit { overflow: hidden; }
    Sayfanın genel `td` kuralı (gri zemin + 4px beyaz kenarlık) bu iki
    satırda geçerli olmamalı — yoksa şerit ve liste tablo hücresi gibi
    kutulanıyor. ==================================================== */
+#tab1 .ko-satir > td,
 #tab2 .ko-satir > td {
     background-color: transparent !important;
     border: none !important;
@@ -4490,6 +4491,7 @@ body.kl-kilit { overflow: hidden; }
 }
 /* Şerit thead'in ilk satırı: sayfanın th kuralları (renkli pil, beyaz
    yazı) buraya sızmasın. */
+#tab1 thead tr.ko-satir > td,
 #tab2 thead tr.ko-satir > td { color: inherit; }
 @keyframes koBelir {
     from { opacity: 0; transform: translateY(-10px); }
@@ -4556,11 +4558,33 @@ body.kl-kilit { overflow: hidden; }
 /* --- ÖRNEK ALANI: kendi içinde kaydırılır ---
    Ölçüldü: 102 kalıbın 23'ünde 50'den fazla kelime var (en kalabalığı
    133). Doğrudan sayfa akışına dökülseydi tablo metrelerce uzardı. */
-/* Dolgu YOK: 2px'lik yan dolgu bile matrisi kabın dışına taşırıp yatay
-   kaydırma çubuğu çıkarıyordu (ölçüldü: scrollWidth 1442 > client 1440).
-   Kaydırma çubuğuna yer, sütun genişliklerinden ayrılıyor (kalipliste.js
-   sutunlariHizala). */
-.ko-kaydir { max-height: min(58vh, 640px); overflow-y: auto; overflow-x: hidden; padding: 0 0 6px; }
+/* STOR PERDE: örnekler artık KENDİ içinde değil, SAYFAYLA kayar.
+   Aşağı indikçe üst çubuk, sekmeler ve süzgeç şeridi yukarı sıyrılır;
+   yeşil/mavi başlık satırı (Mazi … İsm-i Mef'ûl) ekranın tepesine
+   dayanınca YAPIŞIR (aşağıdaki sticky kuralı) — liste bütün yüksekliği
+   kullanır. Yukarı kaydırınca sekmeler ve diğer kısımlar stor perde
+   gibi geri iner. (Eski iç kaydırma 58vh'ydi; dikey alanı boşa
+   bırakıyordu.) */
+.ko-kaydir { overflow: visible; padding: 0 0 6px; }
+#tab2 table.ko-acik thead tr:not(.ko-satir) th {
+    position: sticky; top: 0;
+    /* Kutuların z-index'i 1000 (.glass-box) — başlık üstlerinden akmalı */
+    z-index: 1200;
+}
+/* Sticky'nin çalışması için başlıkla GÖRÜNÜM PENCERESİ arasında kaydırma
+   kapsayıcısı olmamalı. Oysa .window-pencere overflow:hidden (öteki
+   sekmeyi gizliyor), sekmeler overflow-x:auto (setTab satır içi yazıyor)
+   ve body overflow-x:hidden — üçü de sticky'yi kendine bağlayıp
+   koparıyordu (ölçüldü: başlık -697'ye kadar aktı). Stor açıkken
+   (body.ko-stor — babodak.js yazar) üçü serbest bırakılır; öteki
+   sekmenin ekran dışına taşan yarısını body'nin overflow-x:clip'i
+   kırpar — clip, hidden'dan farklı olarak kaydırma kapsayıcısı
+   OLUŞTURMAZ, sticky bozulmaz. */
+body.ko-stor { overflow-x: clip; }
+/* !important ŞART: sayfada .window-pencere { overflow:hidden !important }
+   (satır ~2041) var — onsuz bu kural eziliyordu. */
+body.ko-stor .window-pencere { overflow: visible !important; }
+body.ko-stor .tab-content { overflow-x: visible !important; }
 .ko-govde { overflow: visible; padding: 0; }
 /* Satır tonu (bâbın kendi rengi) perdede olduğu gibi burada da */
 .ko-govde-satir[data-tonlu="1"] .kl-tablo tbody tr { background: var(--kl-ton); }
@@ -4575,6 +4599,7 @@ body.kl-kilit { overflow: hidden; }
    9 bâbın renklerine boyanıyor, sonrası tek renge düşüyordu. Bu kural
    hem daha özgül hem daha sonra: hücre saydam kalır, rengi SATIR verir
    (--kl-ton = tıklanan bâbın kendi tonu) — bütün örnekler aynı renk. */
+#tab1 .ko-kaydir .kl-tablo td,
 #tab2 .ko-kaydir .kl-tablo td {
     background-color: transparent !important;
     border: none !important;
@@ -4621,6 +4646,7 @@ body.kl-kilit { overflow: hidden; }
    (ölçüldü: 734 → 697 → 657 → 640 → 632 → 81).
    Odakta tablo içeriği kadar yüksek olsun; genişlik değişmiyor (dikey
    flex'te genişliği align-items: stretch veriyor). */
+#tab1 .container > table.ko-acik,
 #tab2 .container > table.ko-acik { flex: 0 0 auto; }
 
 /* MÜCERRED ve MEZİD TABLOSUNDA SİYAH ÇERÇEVE YOK.
@@ -4678,12 +4704,161 @@ body.ust-kilit i.fa-sync-alt.root-icon {
 /* Vezin puntosu BURADA YAZILMIYOR: ⓘ odağıyla ortak tek kural
    sarf/babodak.js'te (#tab2 tr.bo-odak-kalip, #tab2 tr.ko-odak-satir).
    Burada yalnız geçiş var. */
+#tab1 tr.ko-odak-satir .glass-box .ar,
+#tab1 tr.ko-odak-satir .glass-box .ar-small,
 #tab2 tr.ko-odak-satir .glass-box .ar { transition: font-size .5s; }
+#tab1 tr.ko-odak-satir .glass-box,
 #tab2 tr.ko-odak-satir .glass-box { transition: min-height .5s; }
 /* Tıklanan vezin: tablonun kendi kırmızı dili (.current-active-red) */
+#tab1 .glass-box.ko-sec,
 #tab2 .glass-box.ko-sec {
     border-color: #FF3B30 !important;
     background-color: #fffaf9 !important;
     box-shadow: inset 0 3px 8px rgba(255,59,48,.15), 0 0 0 3px rgba(255,59,48,.35) !important;
     z-index: 100;
 }
+
+/* ================== STOR PERDE GERİ DÖNÜŞÜ ==================
+   Kalıp odağı (örnek listesi) açıkken üst çubuk YAPIŞKANDIR:
+   derine inerken yukarı süzülüp kaybolur (ko-stor-sakla), geri
+   kaydırma başlar başlamaz listenin başı beklenmeden iner.
+   ko-stor-yuzer: bar asılıyken buzlu zemin + gölge (satırların
+   üstünde okunaklı kalması için); sayfanın başında şeffaftır. */
+body.ko-stor .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1290;              /* yapışkan vezin başlıkları (1200) üstünde */
+    transition: transform .35s ease, background-color .25s ease, box-shadow .25s ease;
+    will-change: transform;
+}
+body.ko-stor.ko-stor-sakla .top-bar {
+    transform: translateY(-140%);   /* gölgesiyle birlikte tamamen dışarı */
+}
+body.ko-stor.ko-stor-yuzer .top-bar {
+    background-color: rgba(255, 255, 255, 0.90);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.10);
+    border-radius: 0 0 16px 16px;
+}
+
+/* Katlar inmişken (asılı: ko-stor-yuzer, gizli değil) yapışkan vezin
+   başlıkları bar + şeridin hemen ALTINA kayar; katlar çekilince yine
+   en tepeye yapışırlar. Geçiş, barın iniş animasyonuyla aynı sürede. */
+body.ko-stor #tab2 table.ko-acik thead tr:not(.ko-satir) th {
+    transition: top .35s ease;
+}
+body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab2 table.ko-acik thead tr:not(.ko-satir) th {
+    top: var(--ko-bas-kayma, 120px);
+}
+
+/* ŞERİT (Kök Ara klavyesi + Aksâm-ı Seb'a) DE STOR PERDEYE KATILIR:
+   derindeyken negatif top ile görüş alanının üstünde asılı durur
+   (görünmez, tıklama da almaz — tamamen ekran dışındadır); geri
+   kaydırmada barın hemen altına iner, başlıklar da onun altına kayar.
+   Sayfanın başındayken doğal akışındadır, hiçbir şey değişmez. */
+body.ko-stor #tab1 table.ko-acik thead .ko-suzgec-satir > td,
+body.ko-stor #tab2 table.ko-acik thead .ko-suzgec-satir > td {
+    position: sticky;
+    top: calc(0px - var(--ko-serit-yuk, 420px));
+    z-index: 1260;                /* bar 1290'ın altında, başlıklar 1200'ün üstünde */
+    transition: top .35s ease, background-color .3s ease, box-shadow .3s ease;
+}
+/* Buzlu zemin, sakla sırasında da kalır: şerit yukarı çekilirken
+   arkasındaki satırlar içinden görünmesin. */
+body.ko-stor.ko-stor-yuzer #tab1 table.ko-acik thead .ko-suzgec-satir > td,
+body.ko-stor.ko-stor-yuzer #tab2 table.ko-acik thead .ko-suzgec-satir > td {
+    background-color: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
+    border-radius: 0 0 16px 16px;
+}
+body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab1 table.ko-acik thead .ko-suzgec-satir > td,
+body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab2 table.ko-acik thead .ko-suzgec-satir > td {
+    top: var(--ko-bar-yuk, 62px);
+}
+
+/* ============ KAYBOLMA DAHA PÜRÜZSÜZ ============
+   Katlar yukarı ÇEKİLİRKEN (sakla) daha uzun süre + yumuşak eğri:
+   iniş çevik kalır (.35s), kayboluş süzülerek olur. Eğri başta
+   yavaş ivmelenir, sonda yumuşak durur — stor perdenin sarılışı. */
+body.ko-stor.ko-stor-sakla .top-bar {
+    transition: transform .65s cubic-bezier(.33, 0, .18, 1), background-color .3s ease, box-shadow .3s ease;
+}
+body.ko-stor.ko-stor-sakla #tab1 table.ko-acik thead .ko-suzgec-satir > td,
+body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead .ko-suzgec-satir > td {
+    transition: top .65s cubic-bezier(.33, 0, .18, 1), background-color .3s ease, box-shadow .3s ease;
+}
+body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead tr:not(.ko-satir) th {
+    transition: top .65s cubic-bezier(.33, 0, .18, 1);
+}
+
+/* ================== MÜCERRED TABLO İÇİ ODAK ==================
+   1-51: perde yerine liste tablonun içinde. Tıklanan kutu tablonun
+   tepesindeki sentetik "vezin levhası" satırına FLIP ile taşınıp
+   büyür (muc-buyuk); satırlar gizlenir, başlık satırının (BABLAR ·
+   Mazi … Zaman Mekan) tek levhalı görünümde anlamı olmadığından o da
+   gizlidir. Renk dili hızlı listedeki lejantla aynı: FİİL yeşil,
+   İSİM mavi (tonu kalipliste.js yazar). */
+/* Yalnız ANA tablonun başlık satırı: torun seçici kullanılsaydı
+   içerideki örnek matrisinin (kl-tablo) başlığını da yutuyordu. */
+#tab1 table.ko-acik > thead > tr:not(.ko-satir) { display: none; }
+#tab1 .muc-levha-satir > td {
+    border: none !important;
+    padding: 8px 0 10px !important;
+    text-align: center;
+    border-radius: 12px;
+}
+#tab1 .muc-levha {
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px 0 12px;
+}
+#tab1 .glass-box.muc-buyuk {
+    min-width: 250px;
+    padding: 10px 26px 14px;
+    margin: 0;
+}
+#tab1 tr.ko-odak-satir .glass-box .ar,
+#tab1 tr.ko-odak-satir .glass-box .ar-small {
+    font-size: 3rem !important;
+    line-height: 1.4;
+}
+/* Tekil ızgarada (isim kalıpları) kartlar da sırayla belirir */
+.ko-kaydir .kl-izgara .kl-kart.ko-kart-belir {
+    animation: koSatirBelir .6s cubic-bezier(.33,1,.68,1) both;
+}
+/* Tekil ızgaranın zemini kalıbın tonu (fiil yeşili / isim mavisi);
+   kartlar beyaz kalır — mezidde satır tonuyla aynı dil. */
+.ko-govde-satir[data-tonlu="1"] .kl-izgara {
+    background: var(--kl-ton);
+    border-radius: 12px;
+    padding: 10px;
+}
+/* STOR PERDE: mücerredde yapışan şey başlıklar değil (gizliler),
+   VEZİN LEVHASI — derinde en tepede kalır, katlar inince onların
+   altına kayar; kayboluşu da katlarla aynı yumuşak eğride. */
+body.ko-stor #tab1 table.ko-acik .muc-levha-satir > td {
+    position: sticky; top: 0; z-index: 1200;
+    transition: top .35s ease;
+}
+body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab1 table.ko-acik .muc-levha-satir > td {
+    top: var(--ko-bas-kayma, 120px);
+}
+body.ko-stor.ko-stor-sakla #tab1 table.ko-acik .muc-levha-satir > td {
+    transition: top .65s cubic-bezier(.33, 0, .18, 1);
+}
+
+/* Mücerred odağı açıkken MEZİD sekmesi ve bandın boş sol yarısı
+   akışta durmasın: kaydırıcı bandı %200 genişlikte olduğundan sol
+   yarısı görüş alanının soluna (-1455px) uzanıyor; SOLA taşan içerik
+   RTL sayfada boyama uzayının orijinini kaydırıyor (ekran görüntüsü
+   ölçümüyle bulundu). Odak kapanınca ikisi de eski hâline döner. */
+body.muc-odak #tab2.tab-content { display: none !important; }
+body.muc-odak #mainSliderBandi {
+    width: 100% !important;
+    transform: none !important;
+}
+/* Sekmeler normalde bandın yarısı (%50) genişliğinde; band daralınca
+   mücerred sekmesi tam genişliğe açılır. */
+body.muc-odak #tab1.tab-content { width: 100% !important; }

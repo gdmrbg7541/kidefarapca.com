@@ -712,9 +712,12 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
        (CSS: body.ust-kilit). İki sistemin durumu birlikte okunur;
        kalıp odağı kendi tarafını window.KalipOdak ile bildirir. */
     function ustKilit() {
-        const aktif = !!aktifBab ||
-            !!(window.KalipOdak && window.KalipOdak.aktif && window.KalipOdak.aktif());
+        const kalip = !!(window.KalipOdak && window.KalipOdak.aktif && window.KalipOdak.aktif());
+        const aktif = !!aktifBab || kalip;
         document.body.classList.toggle('ust-kilit', aktif);
+        /* STOR PERDE yalnız örnek listesinde: sayfa kayar, başlık yapışır
+           (CSS: body.ko-stor). Bâb ⓘ odağında gerek yok. */
+        document.body.classList.toggle('ko-stor', kalip);
     }
     window.kidefUstKilit = ustKilit;
 
