@@ -4852,14 +4852,9 @@ body.ko-stor.ko-stor-yuzer:not(.ko-stor-sakla) #tab1 table.ko-acik .muc-levha-sa
 body.ko-stor.ko-stor-sakla #tab1 table.ko-acik .muc-levha-satir > td {
     transition: top .65s cubic-bezier(.33, 0, .18, 1);
 }
-/* Levha artık boyasız (zemin tablodan akıyor) — yapışıp yüzerken
-   altından geçen kartları örtsün diye buzlu maske alır. Ev zemini
-   RENKLİ vezinlerde satır içi !important boya bunu zaten ezer. */
-body.ko-stor.ko-stor-yuzer #tab1 table.ko-acik .muc-levha-satir > td {
-    background-color: rgba(255, 255, 255, .93) !important;
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-}
+/* Levha yüzerken BEYAZ MASKE YOK: zemini kalipliste.js tablonun kendi
+   gradyanından kopyalıyor (mucZeminKopyala) — kaydırırken renk
+   değişmiyor, altındaki kartlar da görünmüyor. */
 
 /* Mücerred odağı açıkken MEZİD sekmesi ve bandın boş sol yarısı
    akışta durmasın: kaydırıcı bandı %200 genişlikte olduğundan sol
@@ -5022,9 +5017,14 @@ body.muc-odak #tab1.tab-content { width: 100% !important; }
     min-height: 0;
     -webkit-overflow-scrolling: touch;
 }
-.kl-takim-tafdil .kl-panel-govde { max-height: clamp(300px, 56vh, 760px); }
+/* Tek sıralı takımlarda (fâil · zaman-mekân · âlet · tafdil) panel
+   gövdesi ekranın yarısından biraz fazlasına kadar uzar, sonra kendi
+   içinde kayar; teksirde iki sıra olduğu için tavan alçaktır. */
+.kl-takim .kl-panel-govde { max-height: clamp(300px, 56vh, 760px); }
 .kl-takim-teksir .kl-panel-govde { max-height: clamp(210px, 26vh, 380px); }
-.kl-takim .kl-izgara { grid-template-columns: repeat(2, 1fr); }
+/* Kart sütunu panelin genişliğine göre kendiliğinden: 2 sütunlu
+   takımda panel geniş (2-3 kart), 3 sütunluda dar (1-2 kart). */
+.kl-takim .kl-izgara { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
 .kl-takim-teksir .kl-izgara { grid-template-columns: 1fr; }
 .kl-takim .kl-bos { text-align: center; padding: 30px 8px; }
 /* Ton takım KABUĞUNA yazılır; panel içindeki ızgaralar çıplak kalır

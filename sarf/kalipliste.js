@@ -1158,7 +1158,7 @@
         yuva.scrollTop = 0;
         /* Tablo içi odakta örnek sütunları ÜSTTEKİ vezin satırıyla /
            levhayla hizalanır — ölçü her çizimde yeniden alınır. */
-        if (odak) { if (odak.muc) mucHizala(); else sutunlariHizala(); }
+        if (odak) { if (odak.muc) { mucHizala(); mucLevhaBoya(); } else sutunlariHizala(); }
         adYaz(n);
         return n;
     }
@@ -1607,11 +1607,19 @@
        (aynı `odak` nesnesi; `odak.muc` bayrağı ayırır). */
     /* KALIP TAKIMLARI: birine basılınca ÜYELERİN HEPSİ birlikte uçar,
        örnekler sütunlu panellere ayrışır; her panel KENDİ İÇİNDE kayar.
+         · İsm-i fâil (33-35):   3 sütun tek sıra
+         · Zaman-mekân (37+38):  2 sütun tek sıra
+         · İsm-i âlet (39+40):   2 sütun tek sıra
          · İsm-i tafdil (50+51): 2 sütun tek sıra — sağda 50, solda 51
-         · Cem-i teksir (41-48): 4 sütun × 2 sıra, panel başlıklı */
-    /* kisa: sekizli görünüm ekrana sığsın diye kartlar SIKI dizilir,
+         · Cem-i teksir (41-48): 4 sütun × 2 sıra, panel başlıklı
+       Üye sayısı sütunu aşarsa (yalnız teksir) ikinci sıra ARA LEVHA
+       olarak örneklerin ortasına iner; başlık orada zorunlu.
+       kisa: sekizli görünüm ekrana sığsın diye kartlar SIKI dizilir,
        Türkçeleri gizli durur — kelimeye dokununca açılır. */
     var TAKIMLAR = [
+        { ad: 'fail', uyeler: [33, 34, 35], sutun: 3, panelBas: false },
+        { ad: 'zamanmekan', uyeler: [37, 38], sutun: 2, panelBas: false },
+        { ad: 'alet', uyeler: [39, 40], sutun: 2, panelBas: false },
         { ad: 'tafdil', uyeler: [50, 51], sutun: 2, panelBas: false },
         { ad: 'teksir', uyeler: [41, 42, 43, 44, 45, 46, 47, 48], sutun: 4, panelBas: true, kisa: true }
     ];
@@ -1620,17 +1628,41 @@
             if (TAKIMLAR[i].uyeler.indexOf(no) >= 0) return TAKIMLAR[i];
         return null;
     }
+    /* LEVHANIN ZEMİNİ TABLONUN KENDİ ZEMİNİDİR. Levha yapışıp yüzerken
+       altından kartlar akıyor; saydam kalamaz, ama BEYAZA DA DÖNMEZ
+       (Geylani: "yukarı kaydırınca vezninin arkası beyazlaşmasın").
+       Çözüm: tablonun pastel gradyanının TAM O NOKTADAKİ DİLİMİ hücreye
+       kopyalanır — dururken dikişsiz, yüzerken de aynı renk. */
+    function mucZeminKopyala(td) {
+        var kap = td.parentElement;
+        while (kap && kap !== document.body) {
+            var cs = getComputedStyle(kap);
+            if (cs.backgroundImage && cs.backgroundImage !== 'none') {
+                var rk = kap.getBoundingClientRect(), rt = td.getBoundingClientRect();
+                if (!rk.width || !rt.width) return false;
+                td.style.setProperty('background-image', cs.backgroundImage, 'important');
+                td.style.setProperty('background-size',
+                    Math.round(rk.width) + 'px ' + Math.round(rk.height) + 'px', 'important');
+                td.style.setProperty('background-position',
+                    Math.round(rk.left - rt.left) + 'px ' + Math.round(rk.top - rt.top) + 'px', 'important');
+                return true;
+            }
+            kap = kap.parentElement;
+        }
+        return false;
+    }
     function mucLevhaBoya() {
         if (!odak || !odak.muc || !odak.satir) return;
         var td = odak.satir.querySelector('td');
         if (!td) return;
-        /* Ev zemini RENKLİYSE levha o renge boyanır; değilse hiç
-           boyanmaz — tablonun kendi zemini (pastel gradyan) akmaya devam
-           eder. Stor derinde yapışan levhanın altını örtmesi CSS'teki
-           buzlu maskeyle çözülür (ko-stor-yuzer). */
         var zem = odak.evTonlar && odak.evTonlar[odak.no];
-        if (zem) td.style.setProperty('background-color', zem, 'important');
-        else td.style.removeProperty('background-color');
+        if (zem) {                            /* ev zemini renkliyse o renk */
+            td.style.removeProperty('background-image');
+            td.style.setProperty('background-color', zem, 'important');
+            return;
+        }
+        td.style.removeProperty('background-color');
+        mucZeminKopyala(td);
     }
     /* BÂB ODAĞINDA SİMETRİ: örnek sütunları levhadaki ÜÇ kutunun tam
        altına gelir. Matrise colgroup, levhaya aynı ölçülerde grid izleri
@@ -1834,6 +1866,7 @@
         }, 570));
         odak.zaman.push(setTimeout(function () {
             sar.style.transition = ''; sar.style.height = '';
+            mucLevhaBoya();               /* şerit oturdu: zemin dilimi tazelensin */
         }, 1420));
 
         /* ---- FAZ 2: kutular yerine oturduktan sonra örnekler belirir ---- */
@@ -1878,8 +1911,11 @@
         /* Levha biçimi yeni kümeye göre: bâbda grid + kök izi, takımda
            eşit izler, tekilde ortalanmış tek kutu. */
         yuva.classList.toggle('muc-levha-bab', !!trio);
-        yuva.classList.remove('muc-levha-takim', 'muc-levha-tafdil', 'muc-levha-teksir');
-        st.satir.classList.remove('muc-satir-tafdil', 'muc-satir-teksir');
+        yuva.classList.remove('muc-levha-takim');
+        TAKIMLAR.forEach(function (tk) {
+            yuva.classList.remove('muc-levha-' + tk.ad);
+            st.satir.classList.remove('muc-satir-' + tk.ad);
+        });
         if (takim) {
             yuva.classList.add('muc-levha-takim', 'muc-levha-' + takim.ad);
             yuva.style.setProperty('--takim-sutun', takim.sutun);
