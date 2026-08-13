@@ -1279,28 +1279,55 @@
         <!-- VEZİNLER TABLOSU (kategorinin EN SAĞI): Sarf Motoru'nun tablo sayfası
              artık Dilbilgisi'nde kart olarak da var. İkon: altın vurgunun hücre
              hücre gezdiği animasyonlu vezin tablosu (kga-vez-vurgu, index.css).
-             Mobilde _fixSarfMobil bağlantıyı kaliplartablosumobil.html yapar. -->
+             Mobilde _fixSarfMobil bağlantıyı kaliplartablosumobil.html yapar.
+             İKON, AÇILACAK SAYFANIN KENDİSİNİ ANLATIR — kaliplartablosu.html'in
+             iki tablosu birebir aynı renk diliyle küçültüldü:
+               · üstte iki sekme: kırmızı SÜLASİ MÜCERRED, sönük SÜLASİ MEZİD
+               · sütun başlıkları sayfadaki gibi: fiil YEŞİL (.baslik-fiil
+                 #22c55e), isim MAVİ (.baslik-isim #3b82f6)
+               · ilk satır mücerret (tonsuz, soluk kutular), altındaki iki satır
+                 mezid — her bâbın kendi pastel satır tonuyla (İf'âl pembesi,
+                 Tef'îl şeftalisi) ve tonun üstünde beyaz kelime kutularıyla
+               · vezinler uydurma değil: fَعَلَ · يَفْعُلُ · فَاعِل (mücerret),
+                 أَفْعَلَ · يُفْعِلُ · إِفْعَال (İf'âl), فَعَّلَ · يُفَعِّلُ · تَفْعِيل (Tef'îl)
+             Hücre ızgarası (x 7·25·43, y 23·35·47) DEĞİŞMEDİ: altın vurgunun
+             kgaVezGez animasyonu aynı adımlarla yürümeye devam ediyor. -->
         <a href="kaliplartablosu.html" target="_blank" rel="opener" class="game-card kss-card" id="vezinKart"
            onclick="return handleAnyLoginClick(event, this.getAttribute('href'))">
           <div class="default-game-content">
             <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
-              <rect x="5" y="7" width="54" height="50" rx="7" fill="#fff" stroke="#16A085" stroke-width="2.8"/>
-              <path d="M5,14 a7,7 0 0 1 7,-7 h40 a7,7 0 0 1 7,7 v7 H5 Z" fill="#16A085"/>
-              <text x="32" y="17.5" font-size="9" fill="#fff" text-anchor="middle">اَلْأَوْزَان</text>
-              <line x1="23" y1="21" x2="23" y2="57" stroke="#d6ece7" stroke-width="2"/>
-              <line x1="41" y1="21" x2="41" y2="57" stroke="#d6ece7" stroke-width="2"/>
-              <line x1="5" y1="33" x2="59" y2="33" stroke="#d6ece7" stroke-width="2"/>
-              <line x1="5" y1="45" x2="59" y2="45" stroke="#d6ece7" stroke-width="2"/>
+              <rect x="4" y="4" width="56" height="56" rx="7" fill="#fff" stroke="#16A085" stroke-width="2.6"/>
+              <!-- iki tablo sekmesi: kırmızı MÜCERRED açık, MEZİD sönük -->
+              <rect x="6.6" y="6.4" width="25" height="6.6" rx="2.6" fill="#C0392B"/>
+              <rect x="33.4" y="6.4" width="24" height="6.6" rx="2.6" fill="#EDF2F7" stroke="#DCE4EC" stroke-width=".8"/>
+              <!-- sütun başlıkları: sağda fiil (yeşil), solda isim (mavi) -->
+              <rect x="43" y="15.4" width="14" height="6" rx="2.4" fill="#22c55e"/>
+              <rect x="25" y="15.4" width="14" height="6" rx="2.4" fill="#1FB255"/>
+              <rect x="7"  y="15.4" width="14" height="6" rx="2.4" fill="#3b82f6"/>
+              <!-- mezid satır tonları: her bâbın kendi rengi -->
+              <rect x="5.6" y="33.6" width="52.8" height="11" rx="2.6" fill="#FBE4E9"/>
+              <rect x="5.6" y="45.6" width="52.8" height="11" rx="2.6" fill="#FCEFE0"/>
+              <!-- 1. satır MÜCERRET: tonsuz, kutular soluk (fiil yeşilimsi, isim grimsi) -->
+              <rect x="43" y="23" width="14" height="8" rx="2.6" fill="#E9F7EF" stroke="#D6EADF" stroke-width=".9"/>
+              <rect x="25" y="23" width="14" height="8" rx="2.6" fill="#E9F7EF" stroke="#D6EADF" stroke-width=".9"/>
+              <rect x="7"  y="23" width="14" height="8" rx="2.6" fill="#EDF2F7" stroke="#DCE4EC" stroke-width=".9"/>
+              <!-- 2-3. satır MEZİD: tonun üstünde beyaz kelime kutuları -->
+              <rect x="43" y="35" width="14" height="8" rx="2.6" fill="#fff" stroke="#F0D3DA" stroke-width=".9"/>
+              <rect x="25" y="35" width="14" height="8" rx="2.6" fill="#fff" stroke="#F0D3DA" stroke-width=".9"/>
+              <rect x="7"  y="35" width="14" height="8" rx="2.6" fill="#fff" stroke="#F0D3DA" stroke-width=".9"/>
+              <rect x="43" y="47" width="14" height="8" rx="2.6" fill="#fff" stroke="#F2DEC6" stroke-width=".9"/>
+              <rect x="25" y="47" width="14" height="8" rx="2.6" fill="#fff" stroke="#F2DEC6" stroke-width=".9"/>
+              <rect x="7"  y="47" width="14" height="8" rx="2.6" fill="#fff" stroke="#F2DEC6" stroke-width=".9"/>
               <rect class="kga-vez-vurgu" x="7" y="23" width="14" height="8" rx="3" fill="rgba(243,156,18,.32)" stroke="#F39C12" stroke-width="1.8"/>
-              <text x="14" y="30" font-size="6.5" text-anchor="middle" fill="#2c3e50">فَعَلَ</text>
-              <text x="32" y="30" font-size="6.5" text-anchor="middle" fill="#2c3e50">فَاعِل</text>
-              <text x="50" y="30" font-size="6.5" text-anchor="middle" fill="#2c3e50">مَفْعُول</text>
-              <text x="14" y="42" font-size="6.5" text-anchor="middle" fill="#2c3e50">فَعِيل</text>
-              <text x="32" y="42" font-size="6.5" text-anchor="middle" fill="#2c3e50">مَفْعَل</text>
-              <text x="50" y="42" font-size="6.5" text-anchor="middle" fill="#2c3e50">فِعَال</text>
-              <text x="14" y="54" font-size="6.5" text-anchor="middle" fill="#2c3e50">فَعَّال</text>
-              <text x="32" y="54" font-size="6.5" text-anchor="middle" fill="#2c3e50">تَفْعِيل</text>
-              <text x="50" y="54" font-size="6.5" text-anchor="middle" fill="#2c3e50">مِفْعَال</text>
+              <text x="50" y="29.6" font-size="6" text-anchor="middle" fill="#2c3e50">فَعَلَ</text>
+              <text x="32" y="29.6" font-size="6" text-anchor="middle" fill="#2c3e50">يَفْعُلُ</text>
+              <text x="14" y="29.6" font-size="6" text-anchor="middle" fill="#2c3e50">فَاعِل</text>
+              <text x="50" y="41.6" font-size="6" text-anchor="middle" fill="#2c3e50">أَفْعَلَ</text>
+              <text x="32" y="41.6" font-size="6" text-anchor="middle" fill="#2c3e50">يُفْعِلُ</text>
+              <text x="14" y="41.6" font-size="6" text-anchor="middle" fill="#2c3e50">إِفْعَال</text>
+              <text x="50" y="53.6" font-size="6" text-anchor="middle" fill="#2c3e50">فَعَّلَ</text>
+              <text x="32" y="53.6" font-size="6" text-anchor="middle" fill="#2c3e50">يُفَعِّلُ</text>
+              <text x="14" y="53.6" font-size="6" text-anchor="middle" fill="#2c3e50">تَفْعِيل</text>
             </svg></div>
             <h3>Vezinler Tablosu</h3>
             <span class="game-card-description">Bütün vezinler tek tabloda!</span>
