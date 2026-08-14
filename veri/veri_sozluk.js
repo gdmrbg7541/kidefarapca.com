@@ -22,8 +22,13 @@ const kategoriTanimlari = {
     "icecek": { title: "İçecekler", arTitle: "المَشْروبات", icon: "☕", items: [] },
     "ulasim": { title: "Ulaşım Araçları", arTitle: "وَسائِل النَّقْل", icon: "🚗", items: [] },
     "meslek": { title: "Meslekler", arTitle: "المِهَن", icon: "💼", items: [] },
+    "sehir": { title: "Şehirler", arTitle: "الْمُدُن", icon: "🏙️", items: [] },
+    "ulke": { title: "Ülkeler", arTitle: "الْبُلْدان", icon: "🌍", items: [] },
+    "kita": { title: "Kıtalar", arTitle: "الْقارّات", icon: "🌐", items: [] },
+    "mevsim": { title: "Mevsimler", arTitle: "الْفُصُول", icon: "🍂", items: [] },
+    "kiyafet": { title: "Giysiler", arTitle: "الْمَلابِس", icon: "👕", items: [] },
+    "saglik": { title: "Sağlık", arTitle: "الصِّحَّة", icon: "🩺", items: [] },
     "aile": { title: "Aile Bireyleri", arTitle: "أَفْراد الأُسْرَة", icon: "👨‍👩‍👧‍👦", items: [] },
-    "hayvan": { title: "Hayvanlar", arTitle: "الحَيَوانات", icon: "🐪", items: [] },
     "sifat": { title: "Sıfatlar", arTitle: "الصِّفات", icon: "✨", items: [] },
     "isim": { title: "Genel İsimler", arTitle: "الأَسْماء", icon: "🏷️", items: [] },
     "kalip": { title: "Kalıplar ve İfadeler", arTitle: "التَّعْبيرات وَالقَوالِب", icon: "💬", items: [] }
@@ -118,7 +123,6 @@ const sozlukVerileri = {
 
     // =================================================================================================
     // YENİ EKLENEN KELİMELER (TEKİL / ÇOĞUL EŞLEŞTİRMELİ)
-    "İsim: Diş": { isDictOnly: true, tekil: { base: { emoji: "🦷", arText: "سِنّ", trText: "Diş" } }, cogul: "أَسْنان", cogulTr: "Dişler" },
     "İsim: Lira": { isDictOnly: true, tekil: { base: { emoji: "₺", arText: "ليرَة", trText: "Lira" } }, cogul: "ليرات", cogulTr: "Liralar" },
     "İsim: Yumurta": { isDictOnly: true, tip: "yiyecek", tekil: { base: { emoji: "🥚", arText: "بَيْضَة", trText: "Yumurta" } }, cogul: "بَيْض", cogulTr: "Yumurtalar (Cins)" },
     "İsim: Kiraz": { isDictOnly: true, tip: "meyve", tekil: { base: { emoji: "🍒", arText: "كَرَزَة", trText: "Kiraz" } }, cogul: "كَرَز", cogulTr: "Kirazlar (Cins)" },
@@ -1615,37 +1619,6 @@ const sozlukVerileri = {
     "Sıra: 19.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "التَّاسِعَ عَشَرَ", "trText": "19. On Dokuzuncu", "muennes": "التَّاسِعَةَ عَشْرَةَ" } } },
     "Sıra: 20.": { "isDictOnly": true, "tip": "sirasayi", "tekil": { "base": { "emoji": "🔢", "arText": "الْعِشْرُونَ", "trText": "20. Yirminci" } } },
 
-    "Renk: Kırmızı": {
-        isDictOnly: true,
-        tip: "renk",
-        tekil: { base: { emoji: "🔴", arText: "أَحْمَر", trText: "Kırmızı", muennes: "حَمْرَاء" } }
-    },
-    "Renk: Siyah": {
-        isDictOnly: true,
-        tip: "renk",
-        tekil: { base: { emoji: "⚫", arText: "أَسْوَد", trText: "Siyah", muennes: "سَوْدَاء" } }
-    },
-    "Renk: Beyaz": {
-        isDictOnly: true,
-        tip: "renk",
-        tekil: { base: { emoji: "⚪", arText: "أَبْيَض", trText: "Beyaz", muennes: "بَيْضَاء" } }
-    },
-    "Renk: Yeşil": {
-        isDictOnly: true,
-        tip: "renk",
-        tekil: { base: { emoji: "🟢", arText: "أَخْضَر", trText: "Yeşil", muennes: "خَضْرَاء" } }
-    },
-    "Renk: Mavi": {
-        isDictOnly: true,
-        tip: "renk",
-        tekil: { base: { emoji: "🔵", arText: "أَزْرَق", trText: "Mavi", muennes: "زَرْقَاء" } }
-    },
-    "Renk: Sarı": {
-        isDictOnly: true,
-        tip: "renk",
-        tekil: { base: { emoji: "🟡", arText: "أَصْفَر", trText: "Sarı", muennes: "صَفْرَاء" } }
-    },
-
     // AI_PROMPT: HAFTANIN GÜNLERİ, SAYILAR, İSM-İ TASGİR, İSM-İ TAFDİL İÇİN YÖNERGE
     // Haftanın günleri için: tip: "gun" (Örn: "Pazartesi": { isDictOnly: true, tip: "gun", tekil: { ... } })
     // Sayılar için: tip: "sayi" (Örn: "Sayı 1": { isDictOnly: true, tip: "sayi", tekil: { ... } })
@@ -1835,7 +1808,995 @@ const sozlukVerileri = {
     "Bağlaç: Bel": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "🔙", arText: "بَلْ", trText: "Aksine / Bilakis" } } },
     "Bağlaç: Li-enne": { isDictOnly: true, tip: "baglac", hasZamirCekimi: true, tekil: { base: { emoji: "💡", arText: "لِأَنَّ", trText: "Çünkü / -dığı için" } } },
     "Bağlaç: Lakin": { isDictOnly: true, tip: "baglac", hasZamirCekimi: true, zamirBase: "لَكِنَّ", tekil: { base: { emoji: "✋", arText: "لَكِنْ", trText: "Fakat / Ancak" } } },
-        "Bağlaç: Hatta": { isDictOnly: true, tip: ["baglac", "harficer"], tekil: { base: { emoji: "🏁", arText: "حَتَّى", trText: "Hatta (Bağlaç) / -e kadar (Harf-i Cer)" } } }
+        "Bağlaç: Hatta": { isDictOnly: true, tip: ["baglac", "harficer"], tekil: { base: { emoji: "🏁", arText: "حَتَّى", trText: "Hatta (Bağlaç) / -e kadar (Harf-i Cer)" } } },
+
+    /* ====================================================================
+       5. SINIF — KÖK KÖKENLİ OLMAYAN (câmid) İSİMLER
+       muhadese/veri/5_*.js müfredatından. Çoğulu olanlar tekil+çoğul
+       çifti hâlinde, ilgili liste id'siyle (tip) tanımlandı.
+       ==================================================================== */
+    "İsim: Masa": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🪑",
+                arText: "طاوِلَة",
+                trText: "Masa",
+                ornek: { ar: "اَلْكُرْسِيُّ بِجانِبِ الطّاوِلَةِ", tr: "Sandalye masanın yanındadır." }
+            }
+        },
+        cogul: "طاوِلات",
+        cogulTr: "Masalar"
+    },
+
+    "İsim: Salon": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🛋️",
+                arText: "صالَة",
+                trText: "Salon",
+                ornek: { ar: "اَلصّالَةُ واسِعَةٌ وَنَظيفَةٌ", tr: "Salon geniş ve temizdir." }
+            }
+        },
+        cogul: "صالات",
+        cogulTr: "Salonlar"
+    },
+
+    "İsim: Fırın": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🔥",
+                arText: "فُرْن",
+                trText: "Fırın",
+                ornek: { ar: "في الْمَطْبَخِ فُرْنٌ جَديدٌ", tr: "Mutfakta yeni bir fırın var." }
+            }
+        },
+        cogul: "أَفْران",
+        cogulTr: "Fırınlar"
+    },
+
+    "İsim: Televizyon": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "📺",
+                arText: "تِلْفاز",
+                trText: "Televizyon",
+                ornek: { ar: "اَلتِّلْفازُ في الصّالَةِ", tr: "Televizyon salondadır." }
+            }
+        },
+        cogul: "تِلْفازات",
+        cogulTr: "Televizyonlar"
+    },
+
+    "İsim: Koltuk": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🛋️",
+                arText: "أَريكَة",
+                trText: "Koltuk, kanepe",
+                ornek: { ar: "جَلَسْنا عَلَى الْأَريكَةِ", tr: "Koltuğa oturduk." }
+            }
+        },
+        cogul: "أَرائِك",
+        cogulTr: "Koltuklar"
+    },
+
+    "İsim: Tahta": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🖍️",
+                arText: "سَبّورَة",
+                trText: "Tahta (yazı tahtası)",
+                ornek: { ar: "اَلسَّبّورَةُ أَمامَ الطُّلّابِ", tr: "Tahta öğrencilerin önündedir." }
+            }
+        },
+        cogul: "سَبّورات",
+        cogulTr: "Tahtalar"
+    },
+
+    "İsim: Silgi": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🧽",
+                arText: "مِمْحاة",
+                trText: "Silgi",
+                ornek: { ar: "هَذِهِ مِمْحاتي وَتِلْكَ مِمْحاتُكَ", tr: "Bu benim silgim, şu da senin silgin." }
+            }
+        },
+        cogul: "مَماحٍ",
+        cogulTr: "Silgiler"
+    },
+
+    "İsim: Yatak": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🛏️",
+                arText: "سَرير",
+                trText: "Yatak, karyola",
+                ornek: { ar: "في غُرْفَتي سَريرانِ", tr: "Odamda iki yatak var." }
+            }
+        },
+        cogul: "أَسِرَّة",
+        cogulTr: "Yataklar"
+    },
+
+    "İsim: Hastane": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🏥",
+                arText: "مُسْتَشْفَى",
+                trText: "Hastane",
+                ornek: { ar: "أُمّي طَبيبَةٌ في الْمُسْتَشْفَى", tr: "Annem hastanede doktordur." }
+            }
+        },
+        cogul: "مُسْتَشْفَيات",
+        cogulTr: "Hastaneler"
+    },
+
+    "İsim: Aile": {
+        isDictOnly: true,
+        tip: "aile",
+        tekil: {
+            base: {
+                emoji: "👨‍👩‍👧‍👦",
+                arText: "عائِلَة",
+                trText: "Aile",
+                ornek: { ar: "هَذِهِ عائِلَتي وَهِيَ كَبيرَةٌ", tr: "Bu benim ailem ve kalabalıktır." }
+            }
+        },
+        cogul: "عائِلات",
+        cogulTr: "Aileler"
+    },
+
+    "İsim: Ev Hanımı": {
+        isDictOnly: true,
+        tip: "meslek",
+        tekil: {
+            base: {
+                emoji: "🏡",
+                arText: "رَبَّة بَيْت",
+                trText: "Ev hanımı",
+                ornek: { ar: "أُمّي رَبَّةُ بَيْتٍ", tr: "Annem ev hanımıdır." }
+            }
+        },
+        cogul: "رَبّات بُيوت",
+        cogulTr: "Ev hanımları"
+    },
+
+    "İsim: Ağız": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "👄",
+                arText: "فَم",
+                trText: "Ağız",
+                ornek: { ar: "اِفْتَحْ فَمَكَ يا وَلَدي", tr: "Ağzını aç yavrum." }
+            }
+        },
+        cogul: "أَفْواه",
+        cogulTr: "Ağızlar"
+    },
+
+    "İsim: Misafir": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🫂",
+                arText: "ضَيْف",
+                trText: "Misafir, konuk",
+                ornek: { ar: "اَلضَّيْفُ ضَيْفُ اللهِ", tr: "Misafir Allah'ın misafiridir." }
+            }
+        },
+        cogul: "ضُيوف",
+        cogulTr: "Misafirler"
+    },
+
+    "İsim: Elbise": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "👕",
+                arText: "ثَوْب",
+                trText: "Elbise, giysi",
+                ornek: { ar: "ثَوْبي نَظيفٌ وَجَميلٌ", tr: "Elbisem temiz ve güzeldir." }
+            }
+        },
+        cogul: "ثِياب",
+        cogulTr: "Elbiseler"
+    },
+
+    "İsim: Yağ": {
+        isDictOnly: true,
+        tip: "yiyecek",
+        tekil: {
+            base: {
+                emoji: "🫒",
+                arText: "زَيْت",
+                trText: "Yağ (sıvı yağ)",
+                ornek: { ar: "زَيْتُ الزَّيْتونِ مُفيدٌ لِلصِّحَّةِ", tr: "Zeytinyağı sağlığa faydalıdır." }
+            }
+        },
+        cogul: "زُيوت",
+        cogulTr: "Yağlar"
+    },
+
+    "İsim: Gölge": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🌳",
+                arText: "ظِلّ",
+                trText: "Gölge",
+                ornek: { ar: "جَلَسْنا في ظِلِّ الشَّجَرَةِ", tr: "Ağacın gölgesinde oturduk." }
+            }
+        },
+        cogul: "ظِلال",
+        cogulTr: "Gölgeler"
+    },
+
+    "Zaman: Gece (leyl)": {
+        isDictOnly: true,
+        tip: "zaman",
+        tekil: {
+            base: {
+                emoji: "🌙",
+                arText: "لَيْل",
+                trText: "Gece",
+                ornek: { ar: "اَللَّيْلُ لِلرّاحَةِ وَالنَّهارُ لِلْعَمَلِ", tr: "Gece dinlenmek, gündüz çalışmak içindir." }
+            }
+        },
+        cogul: "لَيالٍ",
+        cogulTr: "Geceler"
+    },
+
+    "Zaman: Gündüz": {
+        isDictOnly: true,
+        tip: "zaman",
+        tekil: {
+            base: {
+                emoji: "☀️",
+                arText: "نَهار",
+                trText: "Gündüz",
+                ornek: { ar: "أَدْرُسُ في النَّهارِ وَأَنامُ في اللَّيْلِ", tr: "Gündüz ders çalışır, gece uyurum." }
+            }
+        },
+        cogul: "نُهُر",
+        cogulTr: "Gündüzler"
+    },
+
+    "Hayvan: İbibik": {
+        isDictOnly: true,
+        tip: "hayvan",
+        tekil: {
+            base: {
+                emoji: "🐦",
+                arText: "هُدْهُد",
+                trText: "İbibik kuşu (hüthüt)",
+                ornek: { ar: "وَتَفَقَّدَ الطَّيْرَ فَقالَ ما لِيَ لا أَرَى الْهُدْهُدَ", tr: "Kuşları denetledi ve «Hüthüdü niçin göremiyorum?» dedi." }
+            }
+        },
+        cogul: "هَداهِد",
+        cogulTr: "İbibik kuşları"
+    },
+
+    /* ====================================================================
+       7. SINIF — câmid isimler: Türkiye şehirleri, yöresel yemekler ve
+       günlük eşya. Şehirler yeni "sehir" listesine bağlandı.
+       ==================================================================== */
+    "Şehir: İstanbul": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "🕌",
+                arText: "إِسْطَنْبُول",
+                trText: "İstanbul",
+                ornek: { ar: "أَعيشُ في إِسْطَنْبُول", tr: "İstanbul'da yaşıyorum." }
+            }
+        }
+    },
+
+    "Şehir: Ankara": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "🏛️",
+                arText: "أَنْقَرَة",
+                trText: "Ankara (başkent)",
+                ornek: { ar: "أَنْقَرَةُ عاصِمَةُ تُرْكِيا", tr: "Ankara Türkiye'nin başkentidir." }
+            }
+        }
+    },
+
+    "Şehir: İzmir": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "⛵",
+                arText: "إِزْمير",
+                trText: "İzmir",
+                ornek: { ar: "أُسافِرُ إِلَى إِزْمير بَحْرًا", tr: "İzmir'e deniz yoluyla gidiyorum." }
+            }
+        }
+    },
+
+    "Şehir: Bursa": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "🌳",
+                arText: "بورْصَة",
+                trText: "Bursa",
+                ornek: { ar: "بورْصَةُ مَشْهورَةٌ بِجِبالِها", tr: "Bursa dağlarıyla meşhurdur." }
+            }
+        }
+    },
+
+    "Şehir: Kayseri": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "⛰️",
+                arText: "قَيْصَري",
+                trText: "Kayseri",
+                ornek: { ar: "تُسافِرُ عائِشَةُ إِلَى قَيْصَري", tr: "Ayşe Kayseri'ye gidiyor." }
+            }
+        }
+    },
+
+    "Şehir: Antalya": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "🏖️",
+                arText: "أَنْطالِيا",
+                trText: "Antalya",
+                ornek: { ar: "يَتَّجِهُ السّائِحونَ إِلَى أَنْطالِيا", tr: "Turistler Antalya'ya yöneliyor." }
+            }
+        }
+    },
+
+    "Şehir: Mardin": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "🏜️",
+                arText: "مارْدين",
+                trText: "Mardin",
+                ornek: { ar: "مارْدينُ مَدينَةٌ تاريخِيَّةٌ", tr: "Mardin tarihî bir şehirdir." }
+            }
+        }
+    },
+
+    "Şehir: Sivas": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: {
+            base: {
+                emoji: "🌉",
+                arText: "سيواس",
+                trText: "Sivas",
+                ornek: { ar: "أَنا مِنْ سيواس", tr: "Ben Sivaslıyım." }
+            }
+        }
+    },
+
+    "Yiyecek: İskender": {
+        isDictOnly: true,
+        tip: "yiyecek",
+        tekil: {
+            base: {
+                emoji: "🍢",
+                arText: "إِسْكَنْدَر كَباب",
+                trText: "İskender kebap",
+                ornek: { ar: "إِسْكَنْدَر كَباب أَكْلَةٌ بورْصِيَّةٌ", tr: "İskender kebap Bursa yemeğidir." }
+            }
+        }
+    },
+
+    "Yiyecek: Cağ Kebabı": {
+        isDictOnly: true,
+        tip: "yiyecek",
+        tekil: {
+            base: {
+                emoji: "🔥",
+                arText: "كَباب جاغ",
+                trText: "Cağ kebabı",
+                ornek: { ar: "كَبابُ جاغ مَشْهورٌ في أَرْضَروم", tr: "Cağ kebabı Erzurum'da meşhurdur." }
+            }
+        }
+    },
+
+    "Yiyecek: Tantuni": {
+        isDictOnly: true,
+        tip: "yiyecek",
+        tekil: {
+            base: {
+                emoji: "🌯",
+                arText: "التَّنْتوني",
+                trText: "Tantuni",
+                ornek: { ar: "التَّنْتوني أَكْلَةٌ لَذيذَةٌ مِنْ مَرْسين", tr: "Tantuni Mersin'in lezzetli bir yemeğidir." }
+            }
+        }
+    },
+
+    "İsim: Poşet": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🛍️",
+                arText: "كيس",
+                trText: "Poşet, torba, kese",
+                ornek: { ar: "أَعْطِني كيسًا مِنْ فَضْلِكَ", tr: "Lütfen bana bir poşet ver." }
+            }
+        },
+        cogul: "أَكْياس",
+        cogulTr: "Poşetler"
+    },
+
+    "İsim: Hava (cev)": {
+        isDictOnly: true,
+        tip: "zaman",
+        tekil: {
+            base: {
+                emoji: "🌤️",
+                arText: "جَوّ",
+                trText: "Hava, atmosfer",
+                ornek: { ar: "الجَوُّ جَميلٌ الْيَوْمَ", tr: "Hava bugün güzel." }
+            }
+        },
+        cogul: "أَجْواء",
+        cogulTr: "Havalar"
+    },
+
+    "İsim: Durak": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🚏",
+                arText: "مَحَطَّة",
+                trText: "Durak, istasyon",
+                ornek: { ar: "مَحَطَّةُ الْحافِلَةِ قَريبَةٌ", tr: "Otobüs durağı yakındır." }
+            }
+        },
+        cogul: "مَحَطّات",
+        cogulTr: "Duraklar"
+    },
+
+    /* ====================================================================
+       9. SINIF — câmid isimler ve zarflar. "Ülkeler" listesi açıldı.
+       ==================================================================== */
+    "Ülke: Türkiye": {
+        isDictOnly: true,
+        tip: "ulke",
+        tekil: {
+            base: {
+                emoji: "🇹🇷",
+                arText: "تُرْكِيا",
+                trText: "Türkiye",
+                ornek: { ar: "أَعيشُ في تُرْكِيا", tr: "Türkiye'de yaşıyorum." }
+            }
+        }
+    },
+
+    "İsim: Dolap (dûlâb)": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🚪",
+                arText: "دولاب",
+                trText: "Dolap, gardırop",
+                ornek: { ar: "أَضَعُ مَلابِسي في الدّولابِ", tr: "Elbiselerimi dolaba koyarım." }
+            }
+        },
+        cogul: "دَواليب",
+        cogulTr: "Dolaplar"
+    },
+
+    "İsim: Ayna": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🪞",
+                arText: "مِرْآة",
+                trText: "Ayna",
+                ornek: { ar: "اَلْمِرْآةُ عَلَى الْحائِطِ", tr: "Ayna duvardadır." }
+            }
+        },
+        cogul: "مَرايا",
+        cogulTr: "Aynalar"
+    },
+
+    "İsim: Tuvalet": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🚻",
+                arText: "مِرْحاض",
+                trText: "Tuvalet, lavabo",
+                ornek: { ar: "اَلْمِرْحاضُ نَظيفٌ", tr: "Tuvalet temizdir." }
+            }
+        },
+        cogul: "مَراحيض",
+        cogulTr: "Tuvaletler"
+    },
+
+    "İsim: Futbol": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "⚽",
+                arText: "كُرَة الْقَدَم",
+                trText: "Futbol",
+                ornek: { ar: "أُحِبُّ كُرَةَ الْقَدَمِ", tr: "Futbolu severim." }
+            }
+        }
+    },
+
+    "Zarf: Daima": {
+        isDictOnly: true,
+        tip: "zarf",
+        tekil: {
+            base: {
+                emoji: "♾️",
+                arText: "دائِمًا",
+                trText: "Daima, her zaman",
+                ornek: { ar: "أَسْتَيْقِظُ دائِمًا مُبَكِّرًا", tr: "Daima erken kalkarım." }
+            }
+        }
+    },
+
+    /* ====================================================================
+       10. SINIF · 1. PARTİ — sağlık, giysi ve hava. Yeni listeler:
+       "saglik" (Sağlık) ve "kiyafet" (Giysiler).
+       ==================================================================== */
+    "Sağlık: Eczane": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "💊",
+                arText: "صَيْدَلِيَّة",
+                trText: "Eczane",
+                ornek: { ar: "آخُذُ الدَّواءَ مِنَ الصَّيْدَلِيَّةِ", tr: "İlacı eczaneden alırım." }
+            }
+        },
+        cogul: "صَيْدَلِيّات",
+        cogulTr: "Eczaneler"
+    },
+
+    "Sağlık: İlaç": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "💉",
+                arText: "دَواء",
+                trText: "İlaç",
+                ornek: { ar: "تَتَناوَلُ الدَّواءَ ثَلاثَ مَرّاتٍ", tr: "İlacı günde üç kez alırsın." }
+            }
+        },
+        cogul: "أَدْوِيَة",
+        cogulTr: "İlaçlar"
+    },
+
+    "Sağlık: Ateş": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "🌡️",
+                arText: "حَرارَة",
+                trText: "Ateş, sıcaklık (vücut)",
+                ornek: { ar: "حَرارَتُها مُرْتَفِعَةٌ", tr: "Onun ateşi yüksek." }
+            }
+        }
+    },
+
+    "Sağlık: Öksürük": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "🤧",
+                arText: "كُحَّة",
+                trText: "Öksürük",
+                ornek: { ar: "عِنْدي كُحَّةٌ وَزُكامٌ", tr: "Öksürüğüm ve nezlem var." }
+            }
+        }
+    },
+
+    "Sağlık: Nezle": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "🤒",
+                arText: "زُكام",
+                trText: "Nezle, soğuk algınlığı",
+                ornek: { ar: "عِنْدَهُ زُكامٌ خَفيفٌ", tr: "Onun hafif bir nezlesi var." }
+            }
+        }
+    },
+
+    "Sağlık: Sancı": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "😖",
+                arText: "مَغْص",
+                trText: "Sancı, karın ağrısı",
+                ornek: { ar: "أَشْعُرُ بِمَغْصٍ في بَطْني", tr: "Karnımda sancı hissediyorum." }
+            }
+        }
+    },
+
+    "Sağlık: Organ": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "🫁",
+                arText: "عُضْو",
+                trText: "Organ, uzuv; üye",
+                ornek: { ar: "لِلْجِسْمِ أَعْضاءٌ كَثيرَةٌ", tr: "Vücudun birçok organı vardır." }
+            }
+        },
+        cogul: "أَعْضاء",
+        cogulTr: "Organlar"
+    },
+
+    "Sağlık: Gıda": {
+        isDictOnly: true,
+        tip: "saglik",
+        tekil: {
+            base: {
+                emoji: "🥗",
+                arText: "غِذاء",
+                trText: "Gıda, besin",
+                ornek: { ar: "الغِذاءُ الصِّحِّيُّ مُهِمٌّ", tr: "Sağlıklı gıda önemlidir." }
+            }
+        },
+        cogul: "أَغْذِيَة",
+        cogulTr: "Gıdalar"
+    },
+
+    "Giysi: Palto": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "🧥",
+                arText: "مِعْطَف",
+                trText: "Palto, manto",
+                ornek: { ar: "اِلْبَسْ مِعْطَفًا فَالْجَوُّ بارِدٌ", tr: "Palto giy, hava soğuk." }
+            }
+        },
+        cogul: "مَعاطِف",
+        cogulTr: "Paltolar"
+    },
+
+    "Giysi: Gömlek": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "👔",
+                arText: "قَميص",
+                trText: "Gömlek",
+                ornek: { ar: "هَذا الْقَميصُ جَميلٌ", tr: "Bu gömlek güzel." }
+            }
+        },
+        cogul: "قُمْصان",
+        cogulTr: "Gömlekler"
+    },
+
+    "Giysi: Şapka": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "🧢",
+                arText: "قُبَّعَة",
+                trText: "Şapka",
+                ornek: { ar: "لَبِسَ قُبَّعَةً في الشَّمْسِ", tr: "Güneşte şapka taktı." }
+            }
+        },
+        cogul: "قُبَّعات",
+        cogulTr: "Şapkalar"
+    },
+
+    "Giysi: Atkı": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "🧣",
+                arText: "وِشاح",
+                trText: "Atkı, şal",
+                ornek: { ar: "وِشاحُها أَحْمَرُ", tr: "Onun atkısı kırmızı." }
+            }
+        },
+        cogul: "أَوْشِحَة",
+        cogulTr: "Atkılar"
+    },
+
+    "Giysi: Eldiven": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "🧤",
+                arText: "قُفّاز",
+                trText: "Eldiven",
+                ornek: { ar: "أَلْبَسُ قُفّازَيْنِ في الشِّتاءِ", tr: "Kışın eldiven giyerim." }
+            }
+        },
+        cogul: "قَفافيز",
+        cogulTr: "Eldivenler"
+    },
+
+    "Giysi: Pantolon": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "👖",
+                arText: "بَنْطَلون",
+                trText: "Pantolon",
+                ornek: { ar: "بَنْطَلونُهُ أَزْرَقُ", tr: "Onun pantolonu mavi." }
+            }
+        },
+        cogul: "بَناطيل",
+        cogulTr: "Pantolonlar"
+    },
+
+    "İsim: Şemsiye": {
+        isDictOnly: true,
+        tip: "kiyafet",
+        tekil: {
+            base: {
+                emoji: "☂️",
+                arText: "مِظَلَّة",
+                trText: "Şemsiye",
+                ornek: { ar: "آخُذُ مِظَلَّةً عِنْدَما تُمْطِرُ", tr: "Yağmur yağınca şemsiye alırım." }
+            }
+        },
+        cogul: "مِظَلّات",
+        cogulTr: "Şemsiyeler"
+    },
+
+    "İsim: Çevre": {
+        isDictOnly: true,
+        tip: "isim",
+        tekil: {
+            base: {
+                emoji: "🌍",
+                arText: "بيئَة",
+                trText: "Çevre, ortam",
+                ornek: { ar: "أُحافِظُ عَلَى الْبيئَةِ", tr: "Çevreyi korurum." }
+            }
+        },
+        cogul: "بيئات",
+        cogulTr: "Çevreler"
+    },
+
+    "Zaman: Bulut": {
+        isDictOnly: true,
+        tip: "zaman",
+        tekil: {
+            base: {
+                emoji: "☁️",
+                arText: "سَحاب",
+                trText: "Bulut",
+                ornek: { ar: "السَّحابُ يُغَطّي السَّماءَ", tr: "Bulut gökyüzünü kaplıyor." }
+            }
+        },
+        cogul: "سُحُب",
+        cogulTr: "Bulutlar"
+    },
+
+    "Zaman: Rüzgâr": {
+        isDictOnly: true,
+        tip: "zaman",
+        tekil: {
+            base: {
+                emoji: "🌬️",
+                arText: "ريح",
+                trText: "Rüzgâr",
+                ornek: { ar: "الرّيحُ قَوِيَّةٌ الْيَوْمَ", tr: "Rüzgâr bugün kuvvetli." }
+            }
+        },
+        cogul: "رِياح",
+        cogulTr: "Rüzgârlar"
+    },
+
+    /* ====================================================================
+       10. SINIF · 3. ÜNİTE — ülke, şehir ve seyahat: câmid özel isimler.
+       Şehirler "sehir", ülkeler "ulke", kıtalar yeni "kita" listesine bağlı.
+       ==================================================================== */
+    "Şehir: Konya": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🕌", arText: "قُونْيَا", trText: "Konya", ornek: { ar: "تَشْتَهِرُ قُونْيَا بِمَوْلَانَا", tr: "Konya Mevlânâ ile meşhurdur." } } }
+    },
+
+    "Şehir: Erzurum": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "❄️", arText: "أَرْضُرُوم", trText: "Erzurum", ornek: { ar: "الْمَدْرَسَةُ الْيَاقُوتِيَّةُ فِي أَرْضُرُومَ", tr: "Yakutiye Medresesi Erzurum'dadır." } } }
+    },
+
+    "Şehir: Trabzon": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🌧️", arText: "طَرَابْزُون", trText: "Trabzon", ornek: { ar: "سَافَرْتُ إِلَى أُوزُونْغُولَ فِي طَرَابْزُونَ", tr: "Trabzon'daki Uzungöl'e seyahat ettim." } } }
+    },
+
+    "Şehir: Urfa": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🐟", arText: "أُورْفَة", trText: "Urfa (Şanlıurfa)", ornek: { ar: "بُحَيْرَةُ الْأَسْمَاكِ فِي أُورْفَةَ", tr: "Balıklıgöl Urfa'dadır." } } }
+    },
+
+    "Şehir: Mersin": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🍋", arText: "مَرْسِين", trText: "Mersin", ornek: { ar: "مَرْسِينُ مَدِينَةٌ سَاحِلِيَّةٌ", tr: "Mersin bir sahil şehridir." } } }
+    },
+
+    "Şehir: Mekke": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🕋", arText: "مَكَّة", trText: "Mekke", ornek: { ar: "سَنُسَافِرُ إِلَى مَكَّةَ لِلْعُمْرَةِ", tr: "Umre için Mekke'ye gideceğiz." } } }
+    },
+
+    "Şehir: Taif": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🌹", arText: "الطَّائِف", trText: "Taif (Mekke yakınında serin bir şehir)", ornek: { ar: "الطَّائِفُ مَشْهُورَةٌ بِالْوَرْدِ", tr: "Taif gülleriyle meşhurdur." } } }
+    },
+
+    "Şehir: Şam": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🏯", arText: "دِمَشْق", trText: "Şam (Dımaşk)", ornek: { ar: "دِمَشْقُ عَاصِمَةُ سُورِيَا", tr: "Şam, Suriye'nin başkentidir." } } }
+    },
+
+    "Şehir: Kahire": {
+        isDictOnly: true,
+        tip: "sehir",
+        tekil: { base: { emoji: "🐫", arText: "الْقَاهِرَة", trText: "Kahire", ornek: { ar: "الْقَاهِرَةُ عَاصِمَةُ مِصْرَ", tr: "Kahire, Mısır'ın başkentidir." } } }
+    },
+
+    "Ülke: Mısır": {
+        isDictOnly: true,
+        tip: "ulke",
+        tekil: { base: { emoji: "🇪🇬", arText: "مِصْر", trText: "Mısır", ornek: { ar: "أَنَا مِنْ مِصْرَ", tr: "Ben Mısır'lıyım." } } }
+    },
+
+    "Ülke: Suriye": {
+        isDictOnly: true,
+        tip: "ulke",
+        tekil: { base: { emoji: "🇸🇾", arText: "سُورِيَا", trText: "Suriye", ornek: { ar: "تَقَعُ سُورِيَا جَنُوبَ تُرْكِيَا", tr: "Suriye, Türkiye'nin güneyinde bulunur." } } }
+    },
+
+    "Ülke: İspanya": {
+        isDictOnly: true,
+        tip: "ulke",
+        tekil: { base: { emoji: "🇪🇸", arText: "إِسْبَانْيَا", trText: "İspanya", ornek: { ar: "ذَهَبَ سَعِيدٌ إِلَى إِسْبَانْيَا بِالسَّفِينَةِ", tr: "Said İspanya'ya gemiyle gitti." } } }
+    },
+
+    "Kıta: Asya": {
+        isDictOnly: true,
+        tip: "kita",
+        tekil: { base: { emoji: "🌏", arText: "آسْيَا", trText: "Asya", ornek: { ar: "تَقَعُ تُرْكِيَا بَيْنَ آسْيَا وَأُورُوبَّا", tr: "Türkiye Asya ile Avrupa arasında bulunur." } } }
+    },
+
+    "Kıta: Avrupa": {
+        isDictOnly: true,
+        tip: "kita",
+        tekil: { base: { emoji: "🌍", arText: "أُورُوبَّا", trText: "Avrupa", ornek: { ar: "سَافَرْنَا إِلَى أُورُوبَّا بِالطَّائِرَةِ", tr: "Avrupa'ya uçakla seyahat ettik." } } }
+    },
+
+    "Kıta: Afrika": {
+        isDictOnly: true,
+        tip: "kita",
+        tekil: { base: { emoji: "🌍", arText: "إِفْرِيقْيَا", trText: "Afrika", ornek: { ar: "مِصْرُ فِي شَمَالِ إِفْرِيقْيَا", tr: "Mısır, Afrika'nın kuzeyindedir." } } }
+    },
+
+    "İsim: Ayasofya": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🕌", arText: "آيَا صُوفْيَا", trText: "Ayasofya", ornek: { ar: "زُرْتُ آيَا صُوفْيَا وَقَصْرَ طُوبْكَابِي", tr: "Ayasofya'yı ve Topkapı Sarayı'nı ziyaret ettim." } } }
+    },
+
+    "İsim: Uzungöl": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🏞️", arText: "أُوزُونْغُول", trText: "Uzungöl (Trabzon'da bir göl)", ornek: { ar: "أُوزُونْغُولُ جَمِيلَةٌ بِطَبِيعَتِهَا", tr: "Uzungöl doğasıyla güzeldir." } } }
+    },
+
+    "İsim: Otel": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🏨", arText: "فُنْدُق", trText: "Otel", ornek: { ar: "سَأُقِيمُ فِي الْفُنْدُقِ ثَلَاثَةَ أَيَّامٍ", tr: "Otelde üç gün kalacağım." } } },
+        cogul: "فَنَادِق",
+        cogulTr: "Oteller"
+    },
+
+    "İsim: Turist": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🎒", arText: "سَائِح", trText: "Turist, gezgin", ornek: { ar: "يَزُورُ السُّيَّاحُ الْمَدِينَةَ الْقَدِيمَةَ", tr: "Turistler eski şehri ziyaret ediyor." } } },
+        cogul: "سُيَّاح",
+        cogulTr: "Turistler"
+    },
+
+    "İsim: Pasaport": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🛂", arText: "جَوَاز سَفَر", trText: "Pasaport", ornek: { ar: "جَوَازُ سَفَرِي جَاهِزٌ", tr: "Pasaportum hazır." } } },
+        cogul: "جَوَازَات سَفَر",
+        cogulTr: "Pasaportlar"
+    },
+
+    "İsim: Bilet": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🎫", arText: "تَذْكِرَة", trText: "Bilet; hatırlatma", ornek: { ar: "اِشْتَرَيْتُ تَذْكِرَةَ الطَّائِرَةِ", tr: "Uçak biletini satın aldım." } } },
+        cogul: "تَذَاكِر",
+        cogulTr: "Biletler"
+    },
+
+    "İsim: Havalimanı": {
+        isDictOnly: true,
+        tip: "ulasim",
+        tekil: { base: { emoji: "🛫", arText: "مَطَار", trText: "Havalimanı", ornek: { ar: "وَصَلْنَا إِلَى الْمَطَارِ مُبَكِّرًا", tr: "Havalimanına erken vardık." } } },
+        cogul: "مَطَارَات",
+        cogulTr: "Havalimanları"
+    },
+
+    "İsim: Gemi": {
+        isDictOnly: true,
+        tip: "ulasim",
+        tekil: { base: { emoji: "🚢", arText: "سَفِينَة", trText: "Gemi", ornek: { ar: "تَسِيرُ السَّفِينَةُ فِي بَحْرِ مَرْمَرَةَ", tr: "Gemi Marmara Denizi'nde ilerliyor." } } },
+        cogul: "سُفُن",
+        cogulTr: "Gemiler"
+    },
+
+    "İsim: Marmara": {
+        isDictOnly: true,
+        tekil: { base: { emoji: "🌊", arText: "بَحْر مَرْمَرَة", trText: "Marmara Denizi", ornek: { ar: "بَحْرُ مَرْمَرَةَ بَيْنَ الْبَحْرِ الْأَسْوَدِ وَبَحْرِ إِيجَة", tr: "Marmara Denizi, Karadeniz ile Ege arasındadır." } } }
+    }
 };
 
 // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir
