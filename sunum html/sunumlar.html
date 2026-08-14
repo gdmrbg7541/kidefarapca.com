@@ -861,19 +861,21 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
    ========================================================== */
 #liste{position:absolute;inset:0;z-index:70;background:
   radial-gradient(1200px 700px at 50% -10%, #FFF3DF 0%, rgba(255,243,223,0) 60%), var(--zemin);
-  display:none;flex-direction:column;padding:26px 44px 20px;overflow:auto}
+  display:none;flex-direction:column;padding:18px 44px 18px;overflow:auto}
 #liste.acik{display:flex;animation:gir .32s ease both}
 #liste .lizgara{align-content:start}
-#liste .lbas{display:flex;align-items:flex-start;gap:20px;flex-direction:row-reverse;justify-content:flex-end}
+/* Başlık satırı: dönüş tuşu · başlık · Liste/Harita anahtarı — hepsi tek satır */
+#liste .lbas{display:flex;align-items:center;gap:18px;margin-bottom:12px}
+#liste .lbast{min-width:0}
 .lsite{display:inline-flex;align-items:center;justify-content:center;font-family:inherit;
   color:#fff;background:var(--kahve);border:0;border-radius:14px;width:56px;height:56px;padding:0;cursor:pointer;
   box-shadow:var(--golge);transition:.16s}
 .lsite:hover{filter:brightness(1.08);transform:translateY(-2px)}
 .lsite svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-#liste h2{font-size:30px;font-weight:900;color:var(--kahve);margin-bottom:6px}
-#liste .lalt{font-size:16px;color:#9A7C55;margin-bottom:14px}
-/* --- Liste / Harita görünüm anahtarı --- */
-.lsekme{display:flex;gap:8px;margin:0 0 14px}
+#liste h2{font-size:30px;font-weight:900;color:var(--kahve);margin-bottom:2px}
+#liste .lalt{font-size:16px;color:#9A7C55;margin-bottom:0}
+/* --- Liste / Harita görünüm anahtarı (başlık satırının sağ ucunda) --- */
+.lsekme{display:flex;gap:8px;margin:0;margin-inline-start:auto;flex:0 0 auto}
 .lsek{font-family:inherit;font-size:16px;font-weight:900;color:#8A6412;background:#fff;
   border:1px solid #EFE3D2;border-radius:999px;padding:8px 18px;cursor:pointer;
   display:inline-flex;align-items:center;gap:8px;transition:.16s}
@@ -886,7 +888,7 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
 #liste.harita{overflow:hidden}
 #liste.harita .lizgara{display:none}
 #liste:not(.harita) .lharita{display:none}
-#liste.harita .lalt{margin-bottom:10px}
+#liste.harita .lalt{margin-bottom:0}
 
 /* --- Harita üzerindeki "Sunum" düğmesi --- */
 .hxsun{font-family:inherit;display:inline-flex;align-items:center;gap:5px;margin-inline-start:auto;
@@ -916,6 +918,34 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
   padding-top:12px;border-top:1px dashed #E3E7ED}
 .lkart .ladet{font-size:13px;font-weight:800;color:#AEB6C0}
 .lkart .lac{font-size:15px;color:#fff;background:var(--kahve);border-radius:10px;padding:7px 14px}
+
+/* ==========================================================
+   SİTE DOKUNUŞLARI — kidefarapca.com'un rengi ve dili
+   Sunum listesi artık siteyle aynı görünür:
+     · zemin  : #F7F9FC + sitenin ince mavi ızgara deseni
+     · başlık : sitenin sarı→turuncu→kırmızı şeridi, altında #E53935
+     · tuşlar : şeridin üstünde saydam beyaz, seçili olan dolu beyaz
+   Slaytların kendi renk kodu (şemsî mavi · kamerî kırmızı · marife
+   yeşil) DEĞİŞMEZ — burada yalnız kabuk siteye benzetildi.
+   ========================================================== */
+#liste{background:#F7F9FC;background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%234D96FF" fill-opacity="0.05"%3E%3Cpath opacity=".5" d="M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z"/%3E%3Cpath d="M6 5V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6V5z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')}
+#liste .lbas{
+  background:linear-gradient(90deg,#FFC107 0%,#F39C12 50%,#EF5350 100%);
+  border-bottom:3px solid #E53935;border-radius:18px;
+  padding:11px 14px 11px 12px;box-shadow:0 6px 18px rgba(229,57,53,.20);
+}
+#liste h2{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.12)}
+#liste .lalt{color:rgba(255,255,255,.93)}
+.lsite{background:rgba(255,255,255,.22);box-shadow:none;width:48px;height:48px;border-radius:13px}
+.lsite:hover{background:rgba(255,255,255,.40);filter:none}
+.lsite svg{width:26px;height:26px}
+.lsek{background:rgba(255,255,255,.20);border-color:rgba(255,255,255,.45);color:#fff}
+.lsek:hover{background:rgba(255,255,255,.34)}
+.lsek.etkin{background:#fff;border-color:#fff;color:#D84315}
+/* Kartlardaki "Aç" tuşu da sitenin şeridinden renk alsın */
+.lkart .lac{background:linear-gradient(90deg,#F39C12,#EF5350);box-shadow:0 4px 12px rgba(239,83,80,.28)}
+.lkart:hover .lac{filter:brightness(1.06)}
+.lkart:hover .lp-ekran{stroke:#F39C12}
 
 /* Çıkış düğmesi ve onay penceresi */
 /* Çıkış kumandanın içinde değil: tam ekranın SAĞ kenarında, kumandayla aynı
@@ -1071,26 +1101,29 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   
   <!-- ================= SUNUM LİSTESİ ================= -->
   <div id="liste">
+    <!-- TEK SATIRLIK BAŞLIK: dönüş tuşu · başlık · görünüm anahtarı.
+         Liste/Harita tuşları eskiden ayrı bir satırdaydı; buraya alınınca
+         haritaya ve kartlara ~65 px daha dikey yer kaldı. -->
     <div class="lbas">
-      <div>
-        <h2>Ders Sunumları</h2>
-        <div class="lalt">Tahtaya yansıt, ileri tuşuyla adım adım anlat</div>
-      </div>
       <!-- Sunum listesinden siteye dönüş (öğretmen kategorisinden gelindiğinde
            çıkış buraya bırakıyor; buradan da ana sayfaya dönülebilsin). -->
       <button class="lsite" id="dSite" title="Siteye dön" aria-label="Siteye dön">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-    </div>
-    <!-- İki görünüm: kart listesi ya da gezilebilir konu haritası.
-         Haritada sunumu olan başlıkta yeşil "Sunum" düğmesi çıkar. -->
-    <div class="lsekme">
-      <button class="lsek etkin" data-gor="liste">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Liste
-      </button>
-      <button class="lsek" data-gor="harita">
-        <svg viewBox="0 0 24 24"><path d="M9 4L3.5 6.4v13.2L9 17.2l6 2.4 5.5-2.4V4L15 6.4z"/><path d="M9 4v13.2M15 6.4v13.2"/></svg> Harita
-      </button>
+      <div class="lbast">
+        <h2>Ders Sunumları</h2>
+        <div class="lalt">Tahtaya yansıt, ileri tuşuyla adım adım anlat</div>
+      </div>
+      <!-- İki görünüm: kart listesi ya da gezilebilir konu haritası.
+           Haritada sunumu olan başlıkta yeşil "Sunum" düğmesi çıkar. -->
+      <div class="lsekme">
+        <button class="lsek etkin" data-gor="liste">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Liste
+        </button>
+        <button class="lsek" data-gor="harita">
+          <svg viewBox="0 0 24 24"><path d="M9 4L3.5 6.4v13.2L9 17.2l6 2.4 5.5-2.4V4L15 6.4z"/><path d="M9 4v13.2M15 6.4v13.2"/></svg> Harita
+        </button>
+      </div>
     </div>
     <div class="lharita"><div class="hx" data-isaret="" data-sunumlu="1"></div></div>
     <div class="lizgara">
