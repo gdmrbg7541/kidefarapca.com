@@ -220,7 +220,10 @@ function updateAuthUI() {
         document.getElementById('auth-action-btn').innerText = "Kayıt Ol";
         document.getElementById('auth-switch-text').innerText = "Zaten hesabınız var mı?";
         document.getElementById('auth-switch-link').innerText = "Giriş Yap";
-        setD('re-password-group','flex'); setD('phone-group','block'); setD('student-extra-group','flex');
+        /* 'flex' YAPILMAZ: form-group flex satirina donunce "Sifreyi Onayla"
+           yazisi kutunun yanina geciyordu. Blok kalsin ki etiket ustte,
+           kutu altta dursun — ilk sifre alani gibi. */
+        setD('re-password-group','block'); setD('phone-group','block'); setD('student-extra-group','flex');
         setD('teacher-cv-group','none'); setD('teacher-file-group','none');
         if (mc) { mc.style.maxWidth = "450px"; mc.style.width = "90%"; }
 

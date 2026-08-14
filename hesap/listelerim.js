@@ -3836,6 +3836,19 @@ window.llRozetPerdeAc = llRozetPerdeAc;
    ====================================================================== */
 function llOkulPopupAc() {
     llOkulPopupKapat();
+    /* BASLIKTAKI OKUL TUSU = LISTEYE DON. Ogretmen anasayfaya gidip bir
+       kart actiktan sonra bu tusa basinca yalnizca pencere aciliyor, arkada
+       sinif listesi kapali kaliyordu. Artik once Listelerim gorunumune
+       donulur ve en son acik olan sinif geri acilir; pencere onun ustune
+       gelir, kapatilinca liste acik durur. */
+    try {
+        if (typeof appState !== 'undefined' && appState.currentView !== 'listelerim-section' &&
+            typeof changeView === 'function') {
+            changeView('listelerim-section');
+            try { initListelerim(); } catch (e) { }
+        }
+        setTimeout(function () { try { llSonSinifAc(); } catch (e) { } }, 120);
+    } catch (e) { }
     /* VERI HENUZ YUKLENMEMIS OLABILIR. Basliktaki okul tusuna, siteye yeni
        girilip Listelerim'e hic ugranmadan basilirsa "data" bos oluyordu ve
        pencere sessizce hic acilmiyordu. Artik:
