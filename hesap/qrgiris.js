@@ -25,6 +25,7 @@
     var SORMA_ARALIK = 2000;           // tahta kaç ms'de bir sorsun
     var qrDurum = null;                // { oturumId, gizli, dogrulama, bitis, sayacId, sormaId }
     var qrBeklemedekiOnay = null;      // giriş yapılmadan gelen ?qr= değeri
+    var qrBeklemedekiAmac = '';        // ?amac= ('onay' → güvenlik doğrulaması)
     var QR_KANAL = 'kidef_qr_giris';   // sekmeler arası haber anahtarı
     var qrHedef = 'pencere';           // 'modal' (giriş penceresi içinde) | 'pencere' (ayrı katman)
 
@@ -473,10 +474,11 @@
        B) TELEFON TARAFI — onay ekranı
        ================================================================ */
     function qrOnayKontrol() {
-        var id = '';
+        var id = '', amac = '';
         try {
             var p = new URLSearchParams(location.search);
             id = p.get('qr') || '';
+            amac = p.get('amac') || '';
         } catch (e) { return; }
         if (!id) return;
 
@@ -486,17 +488,23 @@
 
         if (!girisliMi()) {
             qrBeklemedekiOnay = id;
+            qrBeklemedekiAmac = amac;
             pencere(svgKarekod() + '<span>Karekod onayı</span>',
                 '<p class="qr-anlat">Bu isteği onaylamak için önce <b>kendi hesabınla</b> giriş yapmalısın. ' +
                 'Giriş yaptıktan sonra onay ekranı kendiliğinden açılacak.</p>' +
                 '<div class="qr-alt"><button type="button" class="qr-yenile" onclick="qrGirisKapat(); if(typeof showLoginModal===\'function\') showLoginModal();">Giriş Yap</button></div>');
             return;
         }
-        qrOnayAc(id);
+        qrOnayAc(id, amac);
     }
 
-    function qrOnayAc(id) {
-        pencere(svgKarekod() + '<span>Karekod onayı</span>', '<div class="qr-yukleniyor">İstek kontrol ediliyor…</div>');
+    /* amac='onay' → TAHTADAKİ OTURUMUN GÜVENLİK DOĞRULAMASI (yeni giriş DEĞİL).
+       Sınıfta PIN yazmamak için: tahta karekodu gösterir, öğretmen kendi
+       telefonunda onaylar, tahtadaki duyarlı işlem açılır. */
+    function qrOnayAc(id, amac) {
+        var onayKipi = (amac === 'onay');
+        pencere(svgKarekod() + '<span>' + (onayKipi ? 'Güvenlik onayı' : 'Karekod onayı') + '</span>',
+            '<div class="qr-yukleniyor">İstek kontrol ediliyor…</div>');
         var f;
         try { f = cagir('qrOturumBilgi'); } catch (e) { govdeYaz(uyariHtml(hataMetni(e))); return; }
 
@@ -509,9 +517,12 @@
             var kim = '';
             try { var u = firebase.auth().currentUser; kim = (u && (u.displayName || u.email)) || ''; } catch (e) { }
             govdeYaz(
-                '<p class="qr-anlat">Bir cihaz senin hesabınla giriş yapmak istiyor.</p>' +
+                (onayKipi
+                    ? '<p class="qr-anlat">Tahtadaki cihaz <b>not girişi / öğrenci verisi</b> için senden onay istiyor. ' +
+                      'Onaylarsan o cihazda 15 dakika boyunca yeniden sorulmaz. <b>Yeni bir giriş açılmaz.</b></p>'
+                    : '<p class="qr-anlat">Bir cihaz senin hesabınla giriş yapmak istiyor.</p>') +
                 '<div class="qr-bilgi"><span>İstekte bulunan cihaz</span><b>' + kacis(d.cihaz || 'Bilinmiyor') + '</b></div>' +
-                '<div class="qr-bilgi"><span>Giriş yapılacak hesap</span><b>' + kacis(kim || '—') + '</b></div>' +
+                '<div class="qr-bilgi"><span>' + (onayKipi ? 'Onayı veren hesap' : 'Giriş yapılacak hesap') + '</span><b>' + kacis(kim || '—') + '</b></div>' +
                 '<div class="qr-kod-satir buyuk">Doğrulama kodu <b>' + kacis(d.dogrulama) + '</b>' +
                 '<small>Bu kod karekodun altındakiyle <b>aynı değilse onaylama.</b></small></div>' +
                 '<div class="qr-sayac" id="qrSayac">Geçerlilik: ' + (d.kalanSn || 0) + ' sn</div>' +
@@ -540,7 +551,8 @@
                 g({ oturumId: id, karar: secim }).then(function () {
                     clearInterval(sy);
                     govdeYaz(secim === 'onay'
-                        ? '<div class="qr-bitti iyi">✓ Onaylandı. Diğer cihazda giriş birkaç saniye içinde tamamlanır.</div>'
+                        ? '<div class="qr-bitti iyi">✓ Onaylandı. ' +
+                          (onayKipi ? 'Tahtadaki işlem birkaç saniye içinde açılır.' : 'Diğer cihazda giriş birkaç saniye içinde tamamlanır.') + '</div>'
                         : '<div class="qr-bitti">İstek reddedildi.</div>');
                 }).catch(function (e) {
                     durumYaz('hata', hataMetni(e));
@@ -559,9 +571,9 @@
     /* Giriş yapılmadan gelindiyse: oturum açılınca onay ekranını getir. */
     function bekleyeniAc() {
         if (!qrBeklemedekiOnay) return;
-        var id = qrBeklemedekiOnay;
-        qrBeklemedekiOnay = null;
-        setTimeout(function () { qrOnayAc(id); }, 400);
+        var id = qrBeklemedekiOnay, amac = qrBeklemedekiAmac;
+        qrBeklemedekiOnay = null; qrBeklemedekiAmac = '';
+        setTimeout(function () { qrOnayAc(id, amac); }, 400);
     }
 
     /* Öteki sekmelerden gelen "karekodla giriş yapıldı" haberi.

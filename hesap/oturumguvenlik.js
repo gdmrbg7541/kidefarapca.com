@@ -10,13 +10,30 @@
       olayı): index'ten yeni sekmede kart açan öğretmen atılmaz.
       Oynayan video/ses de hareket sayılır.
 
-   2) DUYARLI İŞLEMDE PIN
+   2) DUYARLI İŞLEMDE DOĞRULAMA — ÖNCE TELEFON, YEDEK PIN
       Not girişi ve öğrenci verisi, son doğrulamanın üstünden 15 dakika
-      geçtiyse ya da masadan 3 dakika uzaklaşıldıysa PIN ister. PIN
-      cihazda ÖZETLENMİŞ (SHA-256) saklanır, düz metin hiçbir yere
-      yazılmaz. 3 yanlış denemede oturum kapanır. PIN yoksa ilk duyarlı
-      işlemde belirlenir; unutan "PIN'i unuttum" ile çıkıp şifresiyle
-      girer.
+      geçtiyse ya da masadan 3 dakika uzaklaşıldıysa yeniden doğrulama
+      ister.
+
+      ASIL YOL — TELEFONDAN ONAY (karekod):
+      Tahtada HİÇBİR SIR GÖSTERİLMEZ. Tahta bir karekod çizer, öğretmen
+      kendi telefonuyla okutur, telefonda (zaten kendi hesabıyla girişli)
+      "Onayla" der; tahta 15 dakikalığına doğrulanmış sayılır. Sınıfta
+      şifre/PIN seyreden öğrenci diye bir sorun kalmaz. Karekodu
+      fotoğraflayan öğrencinin de işine yaramaz: onay ancak AYNI hesapla
+      girişli bir cihazdan verilebilir, üstelik tahta dönen onayın
+      e-postasını kendi hesabıyla karşılaştırır. Sunucudan gelen giriş
+      jetonu KULLANILMAZ — oturum yeniden açılmaz, yalnız "onaylayan
+      gerçekten bu öğretmen mi" bilgisi alınır.
+
+      YEDEK — PIN: telefon yanında değilse ya da karekod sunucusu
+      kapalıysa. PIN cihazda ÖZETLENMİŞ (SHA-256) saklanır, düz metin
+      hiçbir yere yazılmaz. 3 yanlış denemede oturum kapanır. Ekranda
+      "tahta yansıtılıyorsa PIN yazma" uyarısı çıkar.
+
+      TAM GİRİŞ (e-posta + şifre) İSTENMEZ: tahtada şifre yazmak
+      PIN'den de tehlikelidir — şifre hem daha uzun süre seyredilir
+      hem de her şeyi açar.
 
    Bu dosya kendi başına yeter: stilini de kendi yazar, sitedeki hiçbir
    fonksiyonun içine dokunmaz — yalnız switchTab ve behKaydet'i sarar.
@@ -127,7 +144,18 @@
             '.kg-hata{color:#D81E05;font-size:.88rem;font-weight:700;min-height:20px;margin:0 0 8px}',
             '.kg-bag{background:none;border:0;color:#8A94A3;font:inherit;font-size:.85rem;text-decoration:underline;',
             'cursor:pointer;margin-top:12px}',
-            '.kg-bag:hover{color:#425061}'
+            '.kg-bag:hover{color:#425061}',
+            /* telefon onayı (karekod) */
+            '.kg-qr{width:188px;min-height:188px;margin:2px auto 10px;padding:9px;border:2px solid #E9EEF5;',
+            'border-radius:16px;background:#fff;display:grid;place-items:center;overflow:hidden}',
+            '.kg-qr img,.kg-qr canvas{display:block;width:168px;height:168px}',
+            '.kg-qrbekle{font-size:.86rem;color:#8A94A3}',
+            '.kg-adres{font-size:.78rem;color:#16A085;word-break:break-all;text-decoration:underline;padding:6px}',
+            '.kg-kod{font-size:.9rem;color:#425061;margin:0 0 8px}',
+            '.kg-kod b{font-size:1.3rem;letter-spacing:.18em;color:#1F2430;margin-inline-start:6px}',
+            '.kg-kod small{display:block;font-size:.77rem;color:#8A94A3;margin-top:3px}',
+            '.kg-not{font-size:.8rem;color:#9A6A00;background:#FFF6E5;border:1px solid #FBE3B4;border-radius:10px;',
+            'padding:8px 10px;margin:0 0 12px;line-height:1.45;text-align:start}'
         ].join('');
         document.head.appendChild(st);
     }
@@ -146,6 +174,7 @@
     }
     var SAAT_IKON = '<span class="kg-ikon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.4 2"/></svg></span>';
     var KILIT_IKON = '<span class="kg-ikon"><svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.6"/><path d="M8.2 10.5V7.6a3.8 3.8 0 0 1 7.6 0v2.9"/><circle cx="12" cy="15.6" r="1.4"/></svg></span>';
+    var TELEFON_IKON = '<span class="kg-ikon"><svg viewBox="0 0 24 24"><rect x="6.6" y="2.5" width="10.8" height="19" rx="2.6"/><path d="M10.4 5.4h3.2"/><circle cx="12" cy="18" r="1.15"/></svg></span>';
 
     /* ---------------- 1) boşta kalma uyarısı ---------------- */
     function uyariAc() {
@@ -264,18 +293,24 @@
         ciz();
     }
 
-    /* PIN sorma */
+    /* PIN sorma — YEDEK yol (asıl yol telefon onayı) */
     function pinIste(tamam) {
+        qrDur();
         if (!pinVarMi()) { pinKur(tamam); return; }
         perdeAc(
             KILIT_IKON +
             '<p class="kg-bas">PIN gerekli</p>' +
             '<p class="kg-alt">Not girişi ve öğrenci verisi için güvenlik PIN’ini gir.</p>' +
+            '<p class="kg-not">⚠️ Ekran tahtaya yansıyorsa PIN’i sınıf görebilir. ' +
+            'Mümkünse <b>telefonla onayla</b> — tahtada hiçbir şey yazmazsın.</p>' +
             haneler('kgPinKap') +
             '<p class="kg-hata" id="kgHata"></p>' +
-            '<div class="kg-tus"><button class="kg-ikincil" id="kgVazgec">Vazgeç</button></div>' +
+            '<div class="kg-tus">' +
+            '<button class="kg-ana" id="kgTelefonGec">Telefonla onayla</button>' +
+            '<button class="kg-ikincil" id="kgVazgec">Vazgeç</button></div>' +
             '<button class="kg-bag" id="kgUnuttum">PIN’i unuttum — çıkış yap</button>'
         );
+        document.getElementById('kgTelefonGec').onclick = function () { telefonKapali = false; telefonOnay(tamam); };
         var k = haneleriBagla(document.getElementById('kgPinKap'), function (v) {
             pinDogru(v).then(function (ok) {
                 if (ok) { perdeKapat(); sonDogrulama = suan(); yanlis = 0; hareketYaz(); if (tamam) tamam(); return; }
@@ -294,6 +329,145 @@
         document.getElementById('kgUnuttum').onclick = function () { cik(); };
     }
 
+    /* ---------------- 2b) TELEFONDAN ONAY (karekod) ----------------
+       Tahtada sır yazılmaz. Akış:
+         tahta  → qrOturumBaslat  → karekod + doğrulama kodu
+         telefon→ index.html?qr=…&amac=onay → "Onayla"
+         tahta  → qrOturumSor (2 sn'de bir) → onaylı + e-posta
+       Dönen e-posta tahtadaki hesapla aynı değilse işlem AÇILMAZ.
+       Sunucudan gelen giriş jetonu bilerek kullanılmaz: oturum yeniden
+       açılmaz, sınıf listesi/sekme durumu bozulmaz.               */
+    var QR_BOLGE = 'europe-west1';          /* functions/index.js ile aynı */
+    var qrSorma = null;
+    var telefonKapali = false;              /* sunucu kapalıysa doğrudan PIN'e geç */
+    try { telefonKapali = sessionStorage.getItem('kg_tel_kapali') === '1'; } catch (e) { }
+
+    function qrDur() { if (qrSorma) { clearInterval(qrSorma); qrSorma = null; } }
+    function islev(ad) {
+        if (!window.firebase || !firebase.app) throw new Error('firebase yok');
+        var u = firebase.app();
+        if (!u.functions) throw new Error('functions yok');
+        return u.functions(QR_BOLGE).httpsCallable(ad);
+    }
+    function epostam() { var u = kullanici(); return String((u && u.email) || '').toLowerCase(); }
+
+    function telefonOnay(tamam) {
+        qrDur();
+        perdeAc(
+            TELEFON_IKON +
+            '<p class="kg-bas">Telefonunla onayla</p>' +
+            '<p class="kg-alt">Karekodu <b>kendi telefonunla</b> okut, açılan sayfada “Onayla”ya bas. ' +
+            'Tahtada şifre ya da PIN yazmana gerek yok; sınıfın görmesinin bir zararı olmaz.</p>' +
+            '<div class="kg-qr" id="kgQr"><div class="kg-qrbekle">Karekod hazırlanıyor…</div></div>' +
+            '<p class="kg-kod" id="kgKod"></p>' +
+            '<p class="kg-hata" id="kgHata"></p>' +
+            '<div class="kg-tus" id="kgTuslar"><button class="kg-ikincil" id="kgVazgec">Vazgeç</button></div>' +
+            '<button class="kg-bag" id="kgPinGec">Telefonum yanımda değil — PIN ile onayla</button>'
+        );
+        document.getElementById('kgVazgec').onclick = function () { qrDur(); perdeKapat(); };
+        document.getElementById('kgPinGec').onclick = function () { qrDur(); pinIste(tamam); };
+
+        var baslat;
+        try { baslat = islev('qrOturumBaslat'); }
+        catch (e) { qrKapandi('Telefon onayı bu cihazda açılamadı.', tamam); return; }
+
+        baslat({}).then(function (c) {
+            var d = (c && c.data) || {};
+            if (!d.oturumId || !d.gizli) { qrKapandi('Sunucudan karekod alınamadı.', tamam); return; }
+            qrCiz(d);
+            qrIzle(d, tamam);
+        }).catch(function () {
+            qrKapandi('Telefon onayı şu an çalışmıyor (karekod sunucusu kapalı olabilir).', tamam);
+        });
+    }
+
+    function qrCiz(d) {
+        var kutu = document.getElementById('kgQr'); if (!kutu) return;
+        var kok = location.origin + location.pathname.replace(/[^/]*$/, '');
+        var adres = kok + 'index.html?qr=' + encodeURIComponent(d.oturumId) + '&amac=onay';
+        kutu.innerHTML = '';
+        var yedek = function () {
+            kutu.innerHTML = '<a class="kg-adres" href="' + adres + '" target="_blank" rel="noopener">Bağlantıyı telefonda aç</a>';
+        };
+        if (window.QRCode) {
+            try {
+                new window.QRCode(kutu, {
+                    text: adres, width: 168, height: 168,
+                    correctLevel: window.QRCode.CorrectLevel ? window.QRCode.CorrectLevel.M : undefined
+                });
+            } catch (e) { yedek(); }
+        } else yedek();
+        var k = document.getElementById('kgKod');
+        if (k) k.innerHTML = 'Doğrulama kodu <b>' + String(d.dogrulama || '').replace(/[<>&]/g, '') + '</b>' +
+            '<small>Telefonunda da bu kod yazmalı; yazmıyorsa onaylama.</small>';
+    }
+
+    function qrIzle(d, tamam) {
+        var bitis = Date.now() + ((d.omurSn || 120) * 1000);
+        var sor;
+        try { sor = islev('qrOturumSor'); } catch (e) { qrKapandi('Sunucuya ulaşılamadı.', tamam); return; }
+        var mesgul = false;
+        qrSorma = setInterval(function () {
+            if (mesgul) return;
+            if (Date.now() > bitis) { qrKapandi('Karekodun süresi doldu.', tamam, true); return; }
+            mesgul = true;
+            sor({ oturumId: d.oturumId, gizli: d.gizli }).then(function (c) {
+                mesgul = false;
+                var v = (c && c.data) || {};
+                if (v.durum === 'onayli') {
+                    /* Jeton KULLANILMAZ — yalnız kimlik karşılaştırılır. */
+                    var gelen = String(v.eposta || '').toLowerCase(), benim = epostam();
+                    if (benim && gelen && gelen !== benim) {
+                        qrKapandi('Bu onay başka bir hesaptan geldi — işlem açılmadı.', tamam, true);
+                        return;
+                    }
+                    qrDur(); perdeKapat();
+                    sonDogrulama = suan(); yanlis = 0; hareketYaz();
+                    if (tamam) tamam();
+                    return;
+                }
+                if (v.durum === 'reddedildi') { qrKapandi('İstek telefondan reddedildi.', tamam, true); }
+                else if (v.durum === 'suredoldu' || v.durum === 'yok' || v.durum === 'kullanildi') {
+                    qrKapandi('Karekod geçersiz.', tamam, true);
+                }
+            }).catch(function () { mesgul = false; });
+        }, 2000);
+    }
+
+    /* Telefon yolu tıkandı: nedeni yaz, PIN'i öne çıkar. */
+    function qrKapandi(mesaj, tamam, tekrarVer) {
+        qrDur();
+        var h = document.getElementById('kgHata');
+        if (!h) return;                                   /* pencere kapanmış */
+        h.textContent = mesaj;
+        if (!tekrarVer) {                                 /* sunucu sorunu: bu oturumda bir daha deneme */
+            telefonKapali = true;
+            try { sessionStorage.setItem('kg_tel_kapali', '1'); } catch (e) { }
+        }
+        var kutu = document.getElementById('kgQr');
+        if (kutu) kutu.innerHTML = '<div class="kg-qrbekle">—</div>';
+        var kod = document.getElementById('kgKod'); if (kod) kod.textContent = '';
+        var t = document.getElementById('kgTuslar');
+        if (t && !document.getElementById('kgPinAna')) {
+            var b = document.createElement('button');
+            b.className = 'kg-ana'; b.id = 'kgPinAna'; b.textContent = 'PIN ile onayla';
+            b.onclick = function () { pinIste(tamam); };
+            t.insertBefore(b, t.firstChild);
+        }
+        if (t && tekrarVer && !document.getElementById('kgQrYeni')) {
+            var y = document.createElement('button');
+            y.className = 'kg-ikincil'; y.id = 'kgQrYeni'; y.textContent = 'Yeni karekod';
+            y.onclick = function () { telefonOnay(tamam); };
+            t.appendChild(y);
+        }
+    }
+
+    /* Duyarlı işlemin kapısı: önce telefon, olmazsa PIN. */
+    function dogrulaIste(tamam) {
+        if (telefonKapali) { pinIste(tamam); return; }
+        telefonOnay(tamam);
+    }
+
     /* Doğrulama hâlâ geçerli mi?
        – Son doğrulamanın üstünden PIN_TAZE_DK geçmemiş olmalı,
        – ve masadan PIN_BOSTA_DK'dan uzun ayrılınmamış olmalı. */
@@ -306,7 +480,7 @@
     }
     function koru(calistir) {
         if (taze()) { calistir(); return true; }
-        pinIste(calistir);
+        dogrulaIste(calistir);
         return false;
     }
 
@@ -328,7 +502,7 @@
             var yeniSekme = function (idx) {
                 var self = this, arg = arguments;
                 if (DUYARLI_SEKME.indexOf(parseInt(idx, 10)) >= 0 && !taze()) {
-                    pinIste(function () { eskiSekme.apply(self, arg); });
+                    dogrulaIste(function () { eskiSekme.apply(self, arg); });
                     return;
                 }
                 return eskiSekme.apply(self, arg);
@@ -340,7 +514,7 @@
             var eskiNot = window.behKaydet;
             var yeniNot = function () {
                 var self = this, arg = arguments;
-                if (!taze()) { pinIste(function () { eskiNot.apply(self, arg); }); return; }
+                if (!taze()) { dogrulaIste(function () { eskiNot.apply(self, arg); }); return; }
                 return eskiNot.apply(self, arg);
             };
             yeniNot.__kg = 1;
@@ -368,6 +542,8 @@
     window.KidefGuvenlik = {
         koru: koru,            /* KidefGuvenlik.koru(function(){ ...duyarlı iş... }) */
         taze: taze,
+        dogrula: dogrulaIste,  /* asıl kapı: telefon onayı, yedeği PIN */
+        telefonOnay: telefonOnay,
         pinIste: pinIste,
         pinKur: pinKur,
         pinVarMi: pinVarMi,
