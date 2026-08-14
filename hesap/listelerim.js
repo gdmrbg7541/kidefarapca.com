@@ -893,20 +893,52 @@ function openTatiller() {
     }
 }
 
-    // --- SES SİSTEMİ ---
+    /* --- SES SİSTEMİ (yumuşak) ---
+       Eski sesler ham osilatördü: aniden başlayıp aniden kesiliyor, bu da
+       sınıfta tiz bir "bip" ve baş/son çıtırtısı olarak duyuluyordu. Artık
+       her ses YUMUŞAK GİRİŞ–SÖNÜM zarfından (attack/release) ve alçak geçiren
+       süzgeçten geçer; ses düzeyi de düşürüldü. Kura sonucu tek tiz bip
+       yerine iki notalı sakin bir çan sesidir. */
     function initAudio() {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-    function playBeep(freq = 523, dur = 200) {
-        initAudio();
-        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.frequency.value = freq;
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        setTimeout(() => osc.stop(), dur);
+    /* Tek yumuşak nota: f = frekans, sure = saniye, gecikme = saniye, tepe = ses düzeyi */
+    function llTon(f, sure, gecikme, tepe) {
+        try {
+            initAudio();
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            sure = sure || 0.5; gecikme = gecikme || 0; tepe = tepe || 0.085;
+            var t0 = audioCtx.currentTime + gecikme;
+            var osc = audioCtx.createOscillator();
+            var suz = audioCtx.createBiquadFilter();
+            var kaz = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, t0);
+            suz.type = 'lowpass';
+            suz.frequency.setValueAtTime(1600, t0);
+            suz.Q.value = 0.7;
+            kaz.gain.setValueAtTime(0.0001, t0);
+            kaz.gain.exponentialRampToValueAtTime(tepe, t0 + 0.045);   /* yumuşak giriş */
+            kaz.gain.exponentialRampToValueAtTime(0.0001, t0 + sure);  /* yumuşak sönüm */
+            osc.connect(suz); suz.connect(kaz); kaz.connect(audioCtx.destination);
+            osc.start(t0);
+            osc.stop(t0 + sure + 0.06);
+        } catch (e) { }
+    }
+    /* Eski çağrılar bozulmasın: playBeep artık yumuşak tona yönlenir. */
+    function playBeep(freq, dur) {
+        llTon(freq || 523, Math.max(0.32, ((dur || 200) / 1000) * 2), 0, 0.08);
+    }
+    /* Kura sonucu: iki notalı sakin çan (Do → Sol) */
+    function llKuraSesi() {
+        llTon(523.25, 0.60, 0,    0.080);
+        llTon(783.99, 0.85, 0.11, 0.065);
+    }
+    /* Artı / eksi puan: kısa ve yumuşak */
+    function llPuanSesi(arti) {
+        if (arti) { llTon(659.25, 0.45, 0, 0.070); llTon(880.00, 0.50, 0.08, 0.055); }
+        else      { llTon(392.00, 0.55, 0, 0.065); }
     }
 
     // --- UYARI SİSTEMİ ---
@@ -2439,7 +2471,7 @@ function behKaydet() {
         ts: kayit.ts
     });
 
-    if (typeof playBeep === 'function') playBeep(behSecim.yon > 0 ? 880 : 320, 140);
+    if (typeof llPuanSesi === 'function') llPuanSesi(behSecim.yon > 0);
     save();
     behKapat();
     renderGrades('hw');
@@ -2571,7 +2603,7 @@ function behLogKapat() {
                 document.getElementById('activityType').innerHTML = llIcon('hedef') + " " + behKacis(type || '');
                 if(!stu.history) stu.history = [];
                 stu.history.push(color);
-                playBeep(880, 150);
+                llKuraSesi();
                 save(); renderActivityStatus();
             }
         }, 80);

@@ -980,15 +980,23 @@ function playJoinSound() {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
+        /* Yumuşak katılım sesi: tiz 880→1760 kaydırma yerine sakin bir
+           Mi→La çıkışı, yumuşak giriş–sönüm ve alçak geçiren süzgeç. */
+        const suzgec = audioCtx.createBiquadFilter();
+        suzgec.type = 'lowpass';
+        suzgec.frequency.setValueAtTime(1600, audioCtx.currentTime);
+        suzgec.Q.value = 0.7;
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
-        oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); // A6
-        gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        oscillator.connect(gainNode);
+        oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime);            // E5
+        oscillator.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.16); // A5
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.075, audioCtx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.55);
+        oscillator.connect(suzgec);
+        suzgec.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.3);
+        oscillator.stop(audioCtx.currentTime + 0.6);
     } catch(e) {
         console.log("AudioContext not supported or blocked");
     }

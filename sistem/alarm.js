@@ -9,7 +9,7 @@ function playSineWaveAlarm() {
         const gainNode = audioCtx.createGain();
         
         oscillator.type = 'sine';
-        oscillator2.type = 'triangle';
+        oscillator2.type = 'sine';        /* triangle tizdi: sinüs daha yumuşak */
         
         oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
         oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2); // E5
@@ -19,18 +19,25 @@ function playSineWaveAlarm() {
         oscillator2.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2);
         oscillator2.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.4);
 
-        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+        /* Yumuşak giriş ve uzun sönüm + alçak geçiren süzgeç: alarm
+           sınıfta irkiltmeden duyulsun (eski hâli 0.5 kazançla sertti). */
+        const suzgec = audioCtx.createBiquadFilter();
+        suzgec.type = 'lowpass';
+        suzgec.frequency.setValueAtTime(1500, audioCtx.currentTime);
+        suzgec.Q.value = 0.7;
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.16, audioCtx.currentTime + 0.12);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
         
-        oscillator.connect(gainNode);
-        oscillator2.connect(gainNode);
+        oscillator.connect(suzgec);
+        oscillator2.connect(suzgec);
+        suzgec.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         
         oscillator.start();
         oscillator2.start();
-        oscillator.stop(audioCtx.currentTime + 1.5);
-        oscillator2.stop(audioCtx.currentTime + 1.5);
+        oscillator.stop(audioCtx.currentTime + 1.85);
+        oscillator2.stop(audioCtx.currentTime + 1.85);
     } catch(e) {
         console.warn("Ses çalınamadı:", e);
     }

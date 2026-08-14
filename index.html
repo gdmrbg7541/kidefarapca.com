@@ -1518,7 +1518,8 @@
 
           <!-- GENİŞ HARİTA KARTI: konu haritasını açar. Haritada gezip sunumu
                olan başlıktaki yeşil tuşla doğrudan derse girilir. -->
-          <a class="sk-harita" href="sunum html/sunumlar.html?gorunum=harita&amp;don=liste" target="_blank" rel="opener">
+          <a class="sk-harita" href="sunum html/sunumlar.html?gorunum=harita&amp;don=liste" target="_blank" rel="opener"
+             onclick="window.open(this.href, '_blank'); return false;">
             <div class="skh-yazi">
               <span class="sk-rozet">🗺️ Konu Haritası</span>
               <h4>Arapçanın haritasında gez, sunuma oradan gir</h4>
@@ -1566,8 +1567,12 @@
             </svg></span>
           </a>
 
-          <!-- SUNUM SERİSİ: bütün sunumların kart listesi -->
-          <a class="sk-kart" href="sunum html/sunumlar.html?don=liste" target="_blank" rel="opener">
+          <!-- SUNUM SERİSİ: bütün sunumların kart listesi.
+               onclick ile window.open: sekme BETİKLE açılırsa sunumdan
+               çıkarken window.close() çalışabiliyor; düz bağlantıyla
+               açılan sekmeyi tarayıcı kapattırmıyor. -->
+          <a class="sk-kart" href="sunum html/sunumlar.html?don=liste" target="_blank" rel="opener"
+             onclick="window.open(this.href, '_blank'); return false;">
             <span class="sk-rozet">🎬 Sunum serisi</span>
             <span class="sk-on" aria-hidden="true"><svg viewBox="0 0 200 120">
               <rect class="skp-golge" x="18" y="10" width="164" height="86" rx="8"/>
@@ -1587,7 +1592,7 @@
             </svg></span>
             <h4>Ders Sunumları</h4>
             <p>Bütün sunumlar tek listede; tahtaya yansıt, adım adım anlat.</p>
-            <div class="sk-alt"><span class="sk-adet">2 sunum · 28 slayt</span><span class="sk-ac">Listeyi aç ›</span></div>
+            <div class="sk-alt"><span class="sk-adet">2 sunum · 26 slayt</span><span class="sk-ac">Listeyi aç ›</span></div>
           </a>
 
         </div>
@@ -5065,15 +5070,15 @@
               'Sitede "hesap/qrgiris.js" ve "hesap/qrgiris.css" dosyalarının bulunduğundan emin olun.');
     };
     </script>
-    <script src="sistem/router.js?v=20260814b"></script>
+    <script src="sistem/router.js?v=20260814c"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
     <script src="hesap/course-content.js"></script>
     <script src="hesap/teacher-admin.js?v=20260731g"></script>
-    <script src="sistem/alarm.js"></script>
+    <script src="sistem/alarm.js?v=20260814c"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260814b"></script>
+    <script src="hesap/listelerim.js?v=20260814c"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260814a"></script>
