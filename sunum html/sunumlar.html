@@ -3002,23 +3002,23 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   var listedenCikis = false;      /* onay penceresi hangi çıkış için açıldı */
   function cikisSor(){
     listedenCikis = !aktif;
+    /* Sunumdan çıkış SEKMEYİ KAPATMAZ: son kullanılan görünüme
+       (liste ya da harita) dönülür — öğretmen hemen başka bir sunuma
+       geçebilsin. Sekme yalnız listedeki "siteye dön" tuşuyla kapanır. */
     document.getElementById('onayNere').textContent = listedenCikis
-      ? 'siteye' : ((donus === 'site') ? 'siteye' : 'sunum listesine');
+      ? 'siteye' : (listeGor === 'harita' ? 'konu haritasına' : 'sunum listesine');
     onayEl.classList.add('acik');
   }
   document.getElementById('oVaz').addEventListener('click', function(){ onayEl.classList.remove('acik'); });
   document.getElementById('oCik').addEventListener('click', function(){
     onayEl.classList.remove('acik');
-    /* SEKMEYİ KAPAT: sunumlar siteden yeni sekmede açılıyor; çıkışta o
-       sekme kapansın, öğretmen doğrudan sitedeki sekmesine dönsün.
-       Tarayıcı izin vermezse (adres çubuğundan elle açılmış sekme gibi)
-       eski davranışa düşülür: siteye ya da sunum listesine gidilir. */
-    var yedek = function(){
-      if(listedenCikis || donus === 'site'){ location.href = '../index.html'; }
-      else { listeGoster(); }
-    };
-    try { window.close(); } catch(e){}
-    setTimeout(function(){ if(!window.closed) yedek(); }, 180);
+    icKapat();
+    /* Listeden çıkış = siteye dönüş; o zaman sekme kapanır (sunumlar
+       siteden yeni sekmede açılıyor, ikinci bir index sekmesi doğmasın).
+       Sunumdan çıkışta ise sekme AÇIK kalır, sunum listesi/haritası gelir. */
+    if(listedenCikis){ siteyeDon(); return; }
+    tamEkranCik();
+    listeGoster();
   });
 
   /* ---------- ölçekleme ---------- */
@@ -3074,6 +3074,13 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       if(!f) return;
       var p = f.call(d);
       if(p && p.catch) p.catch(function(){});
+    }catch(e){}
+  }
+  /* Sunumdan listeye dönünce tam ekrandan da çıkılır: sunum bitti. */
+  function tamEkranCik(){
+    try{
+      if(!document.fullscreenElement && !document.webkitFullscreenElement) return;
+      (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
     }catch(e){}
   }
   /* Tam ekranda mıyız? — çıkış tuşunun yeri ve görünürlüğü buna bağlı */
