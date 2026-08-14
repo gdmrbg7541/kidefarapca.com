@@ -887,8 +887,20 @@ function renderVerbMenu() {
     const rootsByLetter = {};
     arapcaHarfler.forEach(h => rootsByLetter[h] = []);
     let totalRootsCount = 0;
+    /* SÖZLÜK-ONLY KÖKLER SAYILMAZ.
+       isDictOnly bayrağı iki yerde durabiliyor: kökün KENDİSİNDE ya da
+       kökün her bir kalıp girdisinde. İkincisi eskiden gözden kaçıyordu:
+       bütün girdileri isDictOnly olan "شيم" gibi bir kök, tam kök gibi
+       sayılıyor ve "sistemdeki kök sayısı" rozeti veri_kokler.js'teki
+       gerçek sayıdan fazla gösteriyordu. Artık iki hâl de eleniyor. */
+    const _yalnizSozluk = (v) => {
+        if (!v || typeof v !== 'object') return false;
+        if (v.isDictOnly) return true;
+        const girdi = Object.keys(v).filter(a => v[a] && typeof v[a] === 'object' && (v[a].base || v[a].tekil));
+        return girdi.length > 0 && girdi.every(a => v[a].isDictOnly);
+    };
     allRoots.forEach(root => {
-        if (sozlukVerileri[root] && sozlukVerileri[root].isDictOnly) return;
+        if (_yalnizSozluk(sozlukVerileri[root])) return;
         const firstLetter = root.charAt(0);
         if(rootsByLetter[firstLetter]) {
             rootsByLetter[firstLetter].push(root);
