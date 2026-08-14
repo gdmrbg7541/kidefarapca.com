@@ -527,7 +527,11 @@ function updateHeaderUI() {
         if (_parcalar.length >= 2) _bas = _parcalar[0].charAt(0) + _parcalar[_parcalar.length - 1].charAt(0);
         else if (_parcalar.length === 1) _bas = _parcalar[0].slice(0, 2);
         try { _bas = _bas.toLocaleUpperCase('tr-TR'); } catch (e) { _bas = _bas.toUpperCase(); }
-        userInfoEl.title = roleText + _dispName;
+        /* Ogretmen/yoneticide bu tus once SINIF LISTESINE goturur (ikinci
+           basis profili acar); ipucu da bunu soylesin ki tus aranmasin. */
+        userInfoEl.title = (appState.userRole === 'teacher' || appState.userRole === 'admin')
+            ? (roleText + _dispName + ' — Listelerim (tekrar bas: profilim)')
+            : (roleText + _dispName);
         userInfoEl.innerHTML =
             '<span class="uinfo-avatar" style="position:relative; display:inline-flex; align-items:center; justify-content:center;' +
             ' width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.2);' +

@@ -420,35 +420,47 @@ function goBack() {
 }
 
 function toggleStudentProfile() {
+    /* ÖĞRETMEN / YÖNETİCİ — BAŞLIKTAKİ AVATAR ÖNCE SINIF LİSTESİNE GÖTÜRÜR.
+       Öğretmenin günlük işi sınıf listesi; profil ikinci sırada. Eskiden
+       ilk basış profili açıyordu, yani öğretmen anasayfadan listeye dönmek
+       için tuşa İKİ KEZ basmak zorundaydı — "basınca liste kapanıyor"
+       şikâyeti bundandı. Artık tuş şöyle çalışır:
+         listede değilsen → LİSTE (en son açık sınıf da geri açılır)
+         listedeysen      → PROFİL
+         profildeysen     → yine LİSTE
+       Öğrencide davranış aynen eskisi gibi kalır. */
+    try {
+        var _rol = (appState && appState.userRole) || '';
+        if ((_rol === 'teacher' || _rol === 'admin') && document.getElementById('listelerim-section')) {
+            if (appState.currentView !== 'listelerim-section') {
+                try {
+                    var h0 = appState.viewHistory || [];
+                    while (h0.length && h0[h0.length - 1] === 'student-profile-section') h0.pop();
+                } catch (e) { }
+                changeView('listelerim-section', true);
+                try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
+                try {
+                    if (typeof window.llSonSinifAcBekle === 'function') window.llSonSinifAcBekle();
+                    else if (typeof window.llSonSinifAc === 'function') setTimeout(window.llSonSinifAc, 120);
+                } catch (e) { }
+                return;
+            }
+            changeView('student-profile-section');
+            return;
+        }
+    } catch (e) { }
+
     if (appState.currentView !== 'student-profile-section') {
         changeView('student-profile-section');
         return;
     }
-    /* PROFIL TUSUNA IKINCI KEZ BASMAK: profili kapatir.
-       Eskiden goBack() cagriliyordu; ogretmen "Listelerim"den gelmisse
-       gecmiste o vardi ve tus profille sinif listesi arasinda gidip
-       geliyordu. Ikinci dokunus artik her zaman ANASAYFAYA doner;
-       sinif listesine gitmek isteyen kendi tusunu kullanir.
-       Gecmisten de temizlenir ki normal Geri tusu profile geri dusmesin. */
+    /* ÖĞRENCİ — profil tuşuna ikinci basış profili kapatır ve ANASAYFAYA
+       döner. Geçmişten de temizlenir ki normal Geri tuşu profile düşmesin.
+       (Öğretmen/yönetici bu satırlara hiç gelmez: yukarıdaki blok
+       liste ⇄ profil geçişini kendi yapıp döner.) */
     try {
         var h = appState.viewHistory || [];
         while (h.length && h[h.length - 1] === 'student-profile-section') h.pop();
-    } catch (e) { }
-    /* OGRETMEN/YONETICI: profil tusuna ikinci basis ANASAYFAYA degil,
-       ACIK SINIF LISTESINE dondurur. Ogretmen anasayfaya gidip kart actiktan
-       sonra listeye donmek icin bu tusu kullaniyor; en son acik olan sinif
-       da geri acilir. Kayitli sinif yoksa eski davranis (anasayfa) surer. */
-    try {
-        var rol = (appState && appState.userRole) || '';
-        var sinifVar = (typeof window.llSonSinifAc === 'function') &&
-                       (function () { try { return !!JSON.parse(localStorage.getItem('ll_son_sinif') || 'null'); } catch (e) { return false; } })();
-        if ((rol === 'teacher' || rol === 'admin') && sinifVar &&
-            document.getElementById('listelerim-section')) {
-            changeView('listelerim-section', true);
-            try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
-            setTimeout(function () { try { window.llSonSinifAc(); } catch (e) { } }, 120);
-            return;
-        }
     } catch (e) { }
     var anaSayfa = document.getElementById('home-hub-section') ? 'home-hub-section' : 'dashboard-section';
     changeView(anaSayfa, true);

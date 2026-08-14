@@ -88,7 +88,7 @@ window.llIcon = llIcon;
 
 // ===== listelerim.js (index'e birlestirildi, tek firebase) =====
 function llRootEl(){ return document.getElementById('ll-root') || document.body; }
-function initListelerim(){ try{ var b=document.getElementById('login-nav-btn'); if(b) b.style.display='none'; var u=(window.firebase&&firebase.auth&&firebase.auth().currentUser); if(u && typeof verileriGetir==='function' && window._llLoadedUid !== u.uid){ window._llLoadedUid = u.uid; verileriGetir(u.uid); } setTimeout(function(){ if(typeof syncLevelActions==='function') syncLevelActions(); }, 900); setTimeout(function(){ try{ llSonSinifAc(); }catch(e){} }, 300); }catch(e){console.error('initListelerim',e);} }
+function initListelerim(){ try{ var b=document.getElementById('login-nav-btn'); if(b) b.style.display='none'; var u=(window.firebase&&firebase.auth&&firebase.auth().currentUser); if(u && typeof verileriGetir==='function' && window._llLoadedUid !== u.uid){ window._llLoadedUid = u.uid; verileriGetir(u.uid); } setTimeout(function(){ if(typeof syncLevelActions==='function') syncLevelActions(); }, 900); setTimeout(function(){ try{ llSonSinifAcBekle(); }catch(e){} }, 300); }catch(e){console.error('initListelerim',e);} }
 window.initListelerim=initListelerim;
 
 const mufredatVerisi = {
@@ -618,6 +618,54 @@ function llSonSinifAc() {
     } catch (e) { return false; }
 }
 window.llSonSinifAc = llSonSinifAc;
+
+/* SINIF LISTESINI GERI AC — VERIYI BEKLEYEREK.
+   llSonSinifAc() tek seferliktir: "data" henuz buluttan gelmediyse
+   sessizce vazgecer. Ogretmen anasayfaya gidip geri donunce (ya da
+   sayfa yenilenince) veri 1-2 saniye sonra geliyor, bu yuzden liste
+   kapali kaliyordu. Burada veri gelene kadar kisa araliklarla denenir.
+   Kayitli sinif yoksa hic beklenmez. */
+/* Sinif paneli GERCEKTEN acik mi? curCId dolu olsa bile veri tazelenince
+   panel "sinif secin" yer tutucusuna donebiliyor; o hâlde acik sayilmaz. */
+function llSinifGorunurMu() {
+    try {
+        if (typeof curCId === 'undefined' || !curCId) return false;
+        var h = document.getElementById('ll-select-hint');
+        if (h && getComputedStyle(h).display !== 'none') return false;
+        return true;
+    } catch (e) { return false; }
+}
+function llSonSinifAcBekle(sureMs) {
+    function dur() {
+        if (window._llBeklemeId) { clearInterval(window._llBeklemeId); window._llBeklemeId = 0; }
+    }
+    dur();
+    if (llSinifGorunurMu()) return true;                    /* zaten ekranda */
+    try { if (!llSonSinifOku() && !(typeof curCId !== 'undefined' && curCId)) return false; }
+    catch (e) { return false; }                             /* açılacak sınıf yok */
+
+    var bitis = Date.now() + (sureMs || 8000);
+    function dene() {
+        /* 1) curCId dolu ama panel yer tutucuda kalmış → aynı sınıfı yeniden seç */
+        try {
+            if (typeof curCId !== 'undefined' && curCId && typeof curLId !== 'undefined' && curLId &&
+                typeof selectClass === 'function' && typeof data !== 'undefined' && data && data.levels &&
+                data.levels[curLId] && data.levels[curLId].classes &&
+                data.levels[curLId].classes[curCId]) {
+                selectClass(curLId, curCId);
+            }
+        } catch (e) { }
+        /* 2) hiç sınıf seçili değilse kayıttaki sınıfı aç */
+        try { llSonSinifAc(); } catch (e) { }
+        if (llSinifGorunurMu() || Date.now() > bitis) { dur(); return true; }
+        return false;
+    }
+    if (dene()) return true;
+    window._llBeklemeId = setInterval(dene, 200);
+    return false;
+}
+window.llSinifGorunurMu = llSinifGorunurMu;
+window.llSonSinifAcBekle = llSonSinifAcBekle;
 
 function selectClass(lId, cId, element) {
     if (!data || !data.levels[lId]) return;
@@ -3879,7 +3927,7 @@ function llOkulPopupAc() {
             changeView('listelerim-section');
             try { initListelerim(); } catch (e) { }
         }
-        setTimeout(function () { try { llSonSinifAc(); } catch (e) { } }, 120);
+        setTimeout(function () { try { llSonSinifAcBekle(); } catch (e) { } }, 120);
     } catch (e) { }
     /* VERI HENUZ YUKLENMEMIS OLABILIR. Basliktaki okul tusuna, siteye yeni
        girilip Listelerim'e hic ugranmadan basilirsa "data" bos oluyordu ve
