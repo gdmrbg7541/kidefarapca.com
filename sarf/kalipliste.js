@@ -429,8 +429,8 @@
           ip: 'Ortadaki harfi illetli (قَالَ)' },
         { k: 'Nakıs',  ad: 'Nâkıs',  grup: 'mutel', kisa: 'SON harf illetli.',  ornek: 'رَمَى',
           ip: 'Son harfi illetli (رَمَى)' },
-        { k: 'Lefif',  ad: 'Lefîf',  grup: 'mutel', kisa: 'İKİ illetli.',       ornek: 'طَوَى',
-          ip: 'İki harfi birden illetli (طَوَى · وَقَى)' }
+        { k: 'Lefif',  ad: 'Lefîf',  grup: 'mutel', kisa: 'İKİ illetli.',       ornek: 'نَوَى',
+          ip: 'İki harfi birden illetli (نَوَى · وَقَى)' }
     ];
     /* Şemadaki yerleşim: SOLDA mu'tel (4), SAĞDA sahih (3). */
     var SEMA_SIRA = [{ g: 'mutel', ad: 'MU\'TEL' }, { g: 'sahih', ad: 'SAHİH' }];
@@ -887,7 +887,8 @@
                 var kart = kelimeKarti(ler[i]);
                 if (kademe && i < kademe) {
                     kart.classList.add('ko-kart-belir');
-                    kart.style.animationDelay = (i * 55) + 'ms';
+                    /* Perde yalnız başına açılsın, kart şelalesi sonra */
+                    kart.style.animationDelay = (KL_SELALE_BAS + i * 55) + 'ms';
                 }
                 if (hazirla) hazirla(kart, i);
                 hedef.appendChild(kart);
@@ -1072,7 +1073,9 @@
             });
             if (kademe && g.children.length < kademe) {
                 tr.classList.add('ko-satir-belir');
-                tr.style.animationDelay = (g.children.length * 55) + 'ms';
+                /* Perdenin yüksekliği YALNIZ BAŞINA açılsın: satır şelalesi
+                   ondan sonra başlar (KL_SELALE_BAS gecikmesiyle). */
+                tr.style.animationDelay = (KL_SELALE_BAS + g.children.length * 55) + 'ms';
             }
             g.appendChild(tr);
         });
@@ -1213,7 +1216,22 @@
     var KL_SATIR_GERI = 1300; /* satırın eski yerine dönüşü       */
     /* Tam ekran oturduktan sonra, açılış animasyonundan önceki nefes payı:
        tarayıcının tam ekran bildirimi geçsin, ekran tamamen dursun. */
-    var KL_TAM_EKRAN_PAY = 500;
+    var KL_SERIT_MS = 450;    /* şeridin içinin belirişi (koBelir)  */
+    var KL_SERIT_AC = 780;    /* süzgecin sekme altından inişi          */
+    var KL_SELALE_BAS = 260;  /* perde açıldıktan sonra satır şelalesi */
+    var KL_CUBUK_MS = 240;    /* üst çubuğun sönümlenmesi, satırdan önce */
+    /* Bütün listeler tamamen açılana kadar geçen süre: perdenin inişi +
+       satır şelalesinin son satırı. Süzgeç şeridi ancak bundan sonra
+       görünür (Geylani: "filtre kısmı tüm listeler açıldıktan sonra"). */
+    var KL_LISTE_TAM = KL_LISTE_MS + KL_SELALE_BAS + 11 * 55 + 620;
+    /* MÜCERRED daha ağır: kutular tek tek değil hep birlikte uçuyor,
+       göz üçünü birden izleyebilsin. */
+    var KL_MUC_MS = 2100;
+    /* Tam ekran oturduktan sonra ASIL HAREKETİN (satır/vezin) başlamasına
+       kadar geçen süre yarım saniye olsun isteniyor. Arada iki iş var:
+       odağın DOM kurulumu (~180 ms) ve sayfanın sönümlenme vuruşu
+       (KL_CUBUK_MS). Bu pay onlardan ARTA KALANDIR. */
+    var KL_TAM_EKRAN_PAY = 120;
     function kln() {
         return (window.performance && performance.now) ? performance.now() : +new Date();
     }
@@ -1659,12 +1677,15 @@
                  kutu: kutu, origNext: n, zaman: [] };
         satir.classList.add('ko-odak-satir');
         kutu.classList.add('ko-sec');
-        kapatXKur(kutu);
+        /* Çarpı EN SONDA gelir (bkz. 4. vuruş) — satır uçarken pat diye
+           belirmesin. */
         govde2.closest('table').classList.add('ko-acik');
         /* Öteki sekme (mücerred) akıştan çıkar: stor perde pencerenin
            kırpmasını kaldırdığı için bandın sağ yarısı ekranın son
            şeridinde görünüyordu. Kapanışta sınıf kalkar. */
         document.body.classList.add('mezid-odak');
+        /* Üst çubuğun sönümlenmesi satırla AYNI ANDA başlamasın: bir
+           soluk önce yapılır, satır uçarken ekranda tek hareket kalır. */
         if (typeof window.kidefUstKilit === 'function') window.kidefUstKilit();
 
         suzgecBagla(f);
@@ -1681,30 +1702,61 @@
            satırı eski yerinden yukarı süzülüyor. Satırın başlangıç
            konumu şerit KAPALIYKENki yerine göre hesaplanıyor, yoksa
            şerit açılırken satır ikinci kez aşağı kayıyordu. */
+        /* ================= AÇILIŞ KOREOGRAFİSİ: DÖRT AYRI VURUŞ =========
+           Aynı anda iki hareket başlamaz. Sıra:
+             1) SATIR yukarı süzülür            (KL_AC_MS)
+             2) ŞERİDİN İÇİ belirir             (KL_SERIT_MS)
+             3) ÖRNEKLER açılır                 (KL_LISTE_MS)
+             4) ÇARPI belirir
+           Şeridin YÜKSEKLİĞİ en baştan son ölçüsüne kuruluyor ama içi
+           saklı duruyor: böylece satırın varacağı yer en baştan doğru,
+           yine de ekranda tek bir hareket görünüyor. Eskiden şerit
+           yüksekliği ile satır aynı anda hareket ediyordu. */
         var sar = f.querySelector('.ko-serit-sar');
         var seritYuk = sar.getBoundingClientRect().height;
-        var sonTop = satir.getBoundingClientRect().top;
+        /* ŞERİT KAPALI BAŞLAR (yüksekliği 0). Böylece başlıklar (Mazi …
+           İsm-i Mef'ûl) en yukarıda kalır, vezin onların hemen altına
+           oturur, örnekler de altına dizilir. Süzgeç en sonda sekmenin
+           altından AÇILARAK iner ve başlık+vezin bloğunu aşağı iter —
+           tek ve pürüzsüz bir hareket. */
         sar.style.height = '0px';
+        var sonTop = satir.getBoundingClientRect().top;
         satir.style.transition = 'none';
-        satir.style.transform = 'translateY(' + (eskiTop - (sonTop - seritYuk)) + 'px)';
+        satir.style.transform = 'translateY(' + (eskiTop - sonTop) + 'px)';
         void satir.offsetHeight;
-        /* Süre ve eğri bâb odağından okunuyor (window.BO_SURE) —
-           ⓘ'ye basınca satır nasıl süzülüyorsa burada da öyle. */
-        var SURE = klSn(KL_AC_MS) + ' ' + KL_EGRI_AC;
-        sar.style.transition = 'height ' + SURE;
-        sar.style.height = seritYuk + 'px';
-        satir.style.transition = 'transform ' + SURE;
-        satir.style.transform = '';
-        f.classList.add('ko-belir');
-        odak.zaman.push(setTimeout(function () {
-            sar.style.transition = ''; sar.style.height = '';
-            satir.style.transition = ''; satir.style.transform = '';
-        }, KL_AC_MS + 60));
 
-        /* ---- FAZ 2: ÖNCE VEZİN YERİNE OTURUR, SONRA ÖRNEKLER AÇILIR ----
-           Bekleme KL_AC_MS'in bir tık ÜSTÜNDE: satır süzülüşü tamamen
-           bitsin, örnekler onun üstüne binmesin. */
-        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS + 40));
+        /* 1. VURUŞ — yalnız satır. Üst çubuğun sönümlenmesi bitsin diye
+           bir soluk (KL_CUBUK_MS) bekletilir; yoksa ikisi bir arada
+           başlıyordu. */
+        var SURE = klSn(KL_AC_MS) + ' ' + KL_EGRI_AC;
+        odak.zaman.push(setTimeout(function () {
+            if (!odak) return;
+            satir.style.transition = 'transform ' + SURE;
+            satir.style.transform = '';
+        }, KL_CUBUK_MS));
+        odak.zaman.push(setTimeout(function () {
+            satir.style.transition = ''; satir.style.transform = '';
+        }, KL_CUBUK_MS + KL_AC_MS + 60));
+
+        /* 2. VURUŞ — satır oturunca ÖRNEKLER açılır */
+        odak.zaman.push(setTimeout(function () { faz2(); }, KL_CUBUK_MS + KL_AC_MS + 120));
+
+        /* 3. VURUŞ — BÜTÜN LİSTELER AÇILDIKTAN SONRA süzgeç iner.
+           Şerit thead'in ilk satırı olduğu için yüksekliği açılırken
+           başlık satırını, vezni ve örnekleri birlikte aşağı iter. */
+        odak.zaman.push(setTimeout(function () {
+            if (!odak) return;
+            sar.style.transition = 'height ' + klSn(KL_SERIT_AC) + ' ' + KL_EGRI_AC;
+            sar.style.height = seritYuk + 'px';
+            odak.zaman.push(setTimeout(function () {
+                sar.style.transition = ''; sar.style.height = '';
+            }, KL_SERIT_AC + 60));
+        }, KL_CUBUK_MS + KL_AC_MS + KL_LISTE_TAM + 120));
+
+        /* 4. VURUŞ — en son, kapatma çarpısı */
+        odak.zaman.push(setTimeout(function () {
+            if (odak && odak.kutu) kapatXKur(odak.kutu);
+        }, KL_CUBUK_MS + KL_AC_MS + KL_LISTE_TAM + KL_SERIT_AC + 200));
 
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
@@ -1759,7 +1811,7 @@
             /* Mücerredde tepeye çıkan bir SATIR yok; kutular kendi
                yerlerine süzülür (kutuSuzul, KL_AC_MS süresiyle). Tam
                ekrandan çıkış o süzülüş bitince istenir. */
-            if (sessiz) haber(); else setTimeout(haber, KL_AC_MS + 80);
+            if (sessiz) haber(); else setTimeout(haber, KL_MUC_MS + 80);
             return;
         }
         document.body.classList.remove('mezid-odak');
@@ -1807,7 +1859,13 @@
         st.zaman = [];
         /* SESSİZ kapanış (başka vezne geçiş, ⓘ): animasyon yok, çıkış
            hemen istenebilir — yeni liste açılırsa zaten iptal olur. */
-        if (sessiz) { odakSonlandir(st, true); tamEkranKapatGecikmeli(); return; }
+        kapatXSil();                 /* çarpı ilk anda gider: şeritle aynı anda oynamasın */
+        /* Odak kalkarken sayfanın kendi bekleme animasyonları (kalıp
+           numarası nabzı, sürpriz kutu parıltısı, ipucu rozeti, üst
+           çubuk simgeleri) hep birlikte yeniden başlıyordu — üstelik tam
+           satır kendi yerine dönerken. Satır oturana kadar susturuluyor. */
+        document.body.classList.add('ko-sakin');
+        if (sessiz) { odakSonlandir(st, true); document.body.classList.remove('ko-sakin'); tamEkranKapatGecikmeli(); return; }
         kapanan = st;
         /* Ara levhadaki kutular (teksirin orta dörtlüsü) kapanmadan önce
            ÜST levhaya geri süzülür — açılışın aynası; yoksa gövde perdesi
@@ -1849,7 +1907,10 @@
                    kendiliğinden iptal olur (tamEkranKapatGecikmeli
                    "odak" varsa durur). */
                 odakSonlandir(st, false, function () {
-                    setTimeout(tamEkranKapatGecikmeli, 120);   /* satır otursun, göz alışsın */
+                    /* Satır yerine oturdu: önce sayfa kendi nabzına dönsün,
+                       sonra tam ekrandan çıkılsın — ikisi bir arada olmasın. */
+                    setTimeout(function () { document.body.classList.remove('ko-sakin'); }, 60);
+                    setTimeout(tamEkranKapatGecikmeli, 380);
                 });
             }, kap ? B + 40 : 0));
         }, sar ? A + 30 : 0));
@@ -2016,7 +2077,7 @@
     }
     /* Mücerred açılış uçuşu bilerek daha ağır: üç kutu süzülürken göz
        izleyebilsin (Geylani: "o animasyon yavaş olsun"). */
-    var SURE_MUC = klSn(KL_AC_MS) + ' ' + KL_EGRI_AC;   /* mücerred de aynı hızda */
+    var SURE_MUC = klSn(KL_MUC_MS) + ' ' + KL_EGRI_AC;  /* mücerred DAHA AĞIR: kutular birlikte uçuyor */
     function mucOdakAc(no) {
         var kutu = tab1Kutu(no);
         var govde1 = document.querySelector('#tab1 table tbody');
@@ -2129,7 +2190,7 @@
             k.classList.add('muc-buyuk');
         });
         kutu.classList.add('ko-sec');
-        kapatXKur(kutu);
+        /* Çarpı en sonda gelir (bkz. 4. vuruş) */
 
         odak = { no: no, muc: true, satir: lv, suzgecTr: f, govdeTr: null,
                  govdeHazir: g, kutu: kutu, kutular: kutular, evler: evler,
@@ -2148,31 +2209,56 @@
         adYaz(0);
         mucLevhaBoya();
 
-        /* ---- FAZ 1: şerit 0'dan açılır, kutu eski yerinden levhaya
-           süzülüp büyür. Kutunun başlangıcı şerit KAPALIYKENki yerine
-           göre; şerit açılırken levha aşağı iner, kutu da onunla oturur. */
+        /* ============ AÇILIŞ KOREOGRAFİSİ (MÜCERRED) ============
+           Mezidle aynı dil, dört ayrı vuruş — ama daha AĞIR (KL_MUC_MS):
+             1) KUTULAR levhaya süzülüp büyür     (KL_MUC_MS)
+             2) ÖRNEKLER açılır
+             3) SÜZGEÇ ŞERİDİ belirir (listelerden sonra)
+             4) ÇARPI belirir
+           Şeridin yeri en baştan ayrılır ama içi saklıdır: kutular
+           uçarken ekranda tek hareket kalsın diye. */
         var sar = f.querySelector('.ko-serit-sar');
         var seritYuk = sar.getBoundingClientRect().height;
+        /* Mezidle aynı: şerit KAPALI başlar; başlıklar yukarıda kalır,
+           levha onların altına oturur, örnekler altta dizilir. Süzgeç
+           en sonda açılarak iner ve hepsini birlikte aşağı iter. */
         sar.style.height = '0px';
-        void sar.offsetHeight;
-        kutular.forEach(function (k, i) { kutuSuzul(k, r0lar[i], SURE_MUC); });
-        sar.style.transition = 'height ' + SURE_MUC;
-        sar.style.height = seritYuk + 'px';
-        f.classList.add('ko-belir');
+        var SUREM = klSn(KL_MUC_MS) + ' ' + KL_EGRI_AC;
+
+        /* 1. VURUŞ — üst çubuk sönsün, sonra kutular uçsun */
+        odak.zaman.push(setTimeout(function () {
+            if (!odak) return;
+            kutular.forEach(function (k, i) { kutuSuzul(k, r0lar[i], SUREM); });
+        }, KL_CUBUK_MS));
         /* Solan satırlar uçuşun ortasında akıştan çıkar (yer kaplamasınlar) */
         odak.zaman.push(setTimeout(function () {
             solacaklar.forEach(function (tr) {
                 if (tr.dataset.koGizli) tr.style.display = 'none';
             });
             if (footerEl) footerEl.style.display = 'none';
-        }, 570));
+        }, KL_CUBUK_MS + Math.round(KL_MUC_MS * 0.38)));
         odak.zaman.push(setTimeout(function () {
-            sar.style.transition = ''; sar.style.height = '';
-            mucLevhaBoya();               /* şerit oturdu: zemin dilimi tazelensin */
-        }, KL_AC_MS + 70));
+            mucLevhaBoya();               /* kutular oturdu: zemin dilimi tazelensin */
+        }, KL_CUBUK_MS + KL_MUC_MS + 70));
 
-        /* ---- FAZ 2: kutular yerine oturduktan sonra örnekler belirir ---- */
-        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS + 40));
+        /* 2. VURUŞ — kutular oturunca örnekler açılır */
+        odak.zaman.push(setTimeout(function () { faz2(); }, KL_CUBUK_MS + KL_MUC_MS + 120));
+
+        /* 3. VURUŞ — bütün listeler açıldıktan sonra süzgeç iner */
+        odak.zaman.push(setTimeout(function () {
+            if (!odak) return;
+            sar.style.transition = 'height ' + klSn(KL_SERIT_AC) + ' ' + KL_EGRI_AC;
+            sar.style.height = seritYuk + 'px';
+            odak.zaman.push(setTimeout(function () {
+                sar.style.transition = ''; sar.style.height = '';
+                mucLevhaBoya();
+            }, KL_SERIT_AC + 60));
+        }, KL_CUBUK_MS + KL_MUC_MS + KL_LISTE_TAM + 120));
+
+        /* 4. VURUŞ — en son, kapatma çarpısı */
+        odak.zaman.push(setTimeout(function () {
+            if (odak && odak.kutu) kapatXKur(odak.kutu);
+        }, KL_CUBUK_MS + KL_MUC_MS + KL_LISTE_TAM + KL_SERIT_AC + 200));
 
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;

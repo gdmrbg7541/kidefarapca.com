@@ -10458,7 +10458,7 @@ function showAksamSebaGenelInfo(e) {
                 <br><b>Misal:</b> İlk harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">وَجَدَ</span>
                 <br><b>Ecvef:</b> Orta harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">قَالَ</span>
                 <br><b>Nakıs:</b> Son harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">رَمَى</span>
-                <br><b>Lefif:</b> İki harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">طَوَى</span>
+                <br><b>Lefif:</b> İki harfi illetli — <span dir="rtl" style="font-family:'Arakom',sans-serif;font-size:1.25rem;color:#b91c1c;">نَوَى</span>
             </div>
         </div>
     </div>

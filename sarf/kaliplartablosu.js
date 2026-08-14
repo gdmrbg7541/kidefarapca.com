@@ -10557,7 +10557,7 @@ window.MARATON_AKSAM = [
     { k: 'Misal',  ad: 'Misâl',  grup: 'mutel', kisa: 'İLK harf illetli.',  ornek: 'وَجَدَ' },
     { k: 'Ecvef',  ad: 'Ecvef',  grup: 'mutel', kisa: 'ORTA harf illetli.', ornek: 'قَالَ' },
     { k: 'Nakıs',  ad: 'Nâkıs',  grup: 'mutel', kisa: 'SON harf illetli.',  ornek: 'رَمَى' },
-    { k: 'Lefif',  ad: 'Lefîf',  grup: 'mutel', kisa: 'İki harfi illetli.', ornek: 'طَوَى' }
+    { k: 'Lefif',  ad: 'Lefîf',  grup: 'mutel', kisa: 'İki harfi illetli.', ornek: 'نَوَى' }
 ];
 
 /* Süzgeç sayıları: her aksâm ve her harf sayısı için kaç MARATON FİİLİ var.

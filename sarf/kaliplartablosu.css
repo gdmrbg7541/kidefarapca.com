@@ -5636,3 +5636,13 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 .muc-buyuk .ko-kapat-x { bottom: 7px; left: 7px; width: 30px; height: 30px; }
 .muc-buyuk .ko-kapat-x svg { width: 15px; height: 15px; }
 @media (prefers-reduced-motion: reduce) { .ko-kapat-x { animation: none; } }
+
+/* KAPANIRKEN SAYFA SUSAR: odak kalkarken sayfanın bekleme animasyonları
+   (kalıp numarası nabzı, sürpriz kutu parıltısı, ipucu rozeti, üst çubuk
+   simgeleri) hep birlikte yeniden başlıyordu — üstelik satır tam kendi
+   yerine dönerken. Satır oturana kadar hepsi susturulur. */
+body.ko-sakin .ref,
+body.ko-sakin .easter-egg-trigger,
+body.ko-sakin .plus-hint-badge,
+body.ko-sakin .root-icon,
+body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none !important; }
