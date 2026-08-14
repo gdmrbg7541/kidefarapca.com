@@ -167,10 +167,21 @@ h1,h2,h3,h4,p{margin:0}
    Dersin konusu 📍 ile işaretlidir; öğretmen istediği dala basıp
    başka nelerin olduğunu gezebilir.
    ========================================================== */
-/* Harita slaydın kenar boşluğunu aşar: yatayda ekranın ~%98'i kullanılır */
-.hxKutu{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;gap:6px;margin-inline:-33px}
+/* Harita yalnız slaytın kenar boşluğunu değil, tuvalin dışına taşarak EKRANIN
+   TAMAMINI kullanır: 16:9'dan geniş ekranlarda yanlarda kalan boşluklar da
+   haritaya katılır (--hxTas JS'ten ölçülür). */
+.hxKutu{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;gap:6px;
+  margin-inline:calc(-46px - var(--hxTas, 0px))}
+#tuval.tasmali{overflow:visible}
+/* Taşan alanın zemini de sürsün: geniş ekranda kenarlarda koyu bant kalmasın */
+#tuval.tasmali::before{content:'';position:absolute;top:0;bottom:0;z-index:0;
+  left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px));background:var(--zemin)}
+#tuval.tasmali #ustSerit{left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px))}
+#liste.harita{left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px))}
 .hxadim{display:none}
-.hx{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;position:relative}
+/* min-width:0 şart: satır yönlü esnek kapsayıcıda (sunum listesindeki harita)
+   .hx içeriğine göre büyüyüp kaydırma yerine kutuyu şişiriyordu. */
+.hx{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;min-width:0;position:relative}
 
 /* --- üst şerit: başlık + kumanda --- */
 /* Tuşlar akışta değil: haritanın SOL ALT köşesinde durur; üst kenar tamamen
@@ -184,7 +195,7 @@ h1,h2,h3,h4,p{margin:0}
 .hx-tus.gizli{display:none}
 
 /* --- kamera penceresi --- */
-.hx-pencere{position:relative;flex:1 1 auto;min-height:0;overflow:auto;cursor:grab;
+.hx-pencere{position:relative;flex:1 1 auto;min-height:0;min-width:0;overflow:auto;cursor:grab;
   overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#E0D5C2 #F6F2EA;
   touch-action:none;-webkit-user-select:none;user-select:none}
 .hx-pencere.suruklu{cursor:grabbing}
@@ -788,7 +799,7 @@ h1,h2,h3,h4,p{margin:0}
 .lsek.etkin{background:var(--kahve);border-color:var(--kahve);color:#fff}
 .lsek svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.3;
   stroke-linecap:round;stroke-linejoin:round}
-.lharita{flex:1 1 auto;min-height:0;display:flex;margin:0 -30px -8px}
+.lharita{flex:1 1 auto;min-height:0;min-width:0;display:flex;margin:0 -44px -8px}
 .lharita .hx{flex:1 1 auto}
 #liste.harita{overflow:hidden}
 #liste.harita .lizgara{display:none}
@@ -2625,7 +2636,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       var o = oran(), r = pen.getBoundingClientRect();
       var mx = (e.clientX - r.left) / o, my = (e.clientY - r.top) / o;
       var kEski = el._k || 1;
-      var kYeni = Math.max(hxTemel(el) * 0.85, Math.min(3, kEski * Math.pow(0.995, e.deltaY)));
+      var kYeni = Math.max(hxTemel(el) * 0.85, Math.min(3, kEski * Math.pow(0.998, e.deltaY)));
       var hx = (pen.scrollLeft + mx) / kEski, hy = (pen.scrollTop + my) / kEski;
       hxHam(el, kYeni, hx * kYeni - mx, hy * kYeni - my);
       el.classList.remove('yakin');
@@ -2637,6 +2648,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   }
   function hxYenile(kok){
     if(!kok) return;
+    hxTasmaOlc(!!kok.querySelector('.hx'));
     [].forEach.call(kok.querySelectorAll('.hx'), function(el){
       if (!el.getAttribute('data-kuruldu')){
         el.setAttribute('data-kuruldu','1');
@@ -2664,6 +2676,27 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
             var mini = (m && m.getAttribute('data-id')) ? m : null;
             var dugum = (mini || b).closest('.hxn');
             if (!dugum) return;
+            /* ALT BAŞLIĞA basılınca DOĞRUDAN oraya yaklaşılır — kendi alt
+               konuları olan her kutu böyle. Yalnız yaprak kutularda (altında
+               konu yok) kademeli yol izlenir: önce kapsayan başlık, sonra
+               boyut kutusu, sonra kendisi. */
+            var dnd = HXA[dugum.getAttribute('data-id')];
+            if (dnd && dnd.g && dnd.g.length){
+              if (el._odakEl === dugum && !(mini && !mini.classList.contains('sec')))
+                hxUzaklas(el);
+              else
+                hxOdakla(el, dugum, mini, (mini && mini.getAttribute('data-id')) || dugum.getAttribute('data-id'));
+              return;
+            }
+            /* ALT BAŞLIĞA basılınca DOĞRUDAN oraya yaklaşılır (altında konusu
+               olan her kutu böyle). Yalnız yaprak kutularda kademeli yol
+               izlenir: önce kapsayan başlık, sonra boyut kutusu, sonra kendisi. */
+            var dnd = HXA[dugum.getAttribute('data-id')];
+            if (dnd && dnd.g && dnd.g.length){
+              if (el._odakEl === dugum && !(mini && !mini.classList.contains('sec'))) hxUzaklas(el);
+              else hxOdakla(el, dugum, mini, (mini && mini.getAttribute('data-id')) || dugum.getAttribute('data-id'));
+              return;
+            }
             var z = hxZincir(dugum, tuv);
             var su = el._odakEl, i = z.indexOf(su);
             if (i < 0) hxOdakla(el, z[0], null, z[0].getAttribute('data-id'));
@@ -2680,6 +2713,16 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         hxOlcuAl(el);
       }
     });
+  }
+  /* Tuvalin dışında kalan yan boşlukları ölç: geniş ekranda harita oraya da uzansın. */
+  function hxTasmaOlc(acik){
+    var t = document.getElementById('tuval'); if(!t) return;
+    if (!acik){ t.classList.remove('tasmali'); return; }
+    var r = t.getBoundingClientRect();
+    var k = (r.width / (t.offsetWidth || 1)) || 1;
+    var artan = Math.max(0, (window.innerWidth / k - t.offsetWidth) / 2);
+    t.style.setProperty('--hxTas', Math.round(artan) + 'px');
+    t.classList.add('tasmali');
   }
   function hxOlcuAl(el){
     var tuv = el.querySelector('.hx-tuval'); if(!tuv) return;
@@ -2731,7 +2774,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     [].forEach.call(listeEl.querySelectorAll('.lsek'), function(b){
       b.classList.toggle('etkin', b.getAttribute('data-gor') === listeGor);
     });
-    if (listeGor === 'harita') hxYenile(listeEl);
+    if (listeGor === 'harita') hxYenile(listeEl); else hxTasmaOlc(false);
   }
   function listeGoster(g){
     sunumlar.forEach(function(x){ x.style.display = 'none'; });
