@@ -2310,7 +2310,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     mucerred:{ad:'Sülâsî mücerred',ik:'mucerred',ar:'فَعَلَ',not:'Üç harfli yalın kök; altı bâbı vardır.',
       bag:'../kaliplartablosu.html',bagAd:'Vezinler Tablosu'},
     mezid:{ad:'Mezîd',ik:'mezid',ar:'أَفْعَلَ',not:'Köke harf eklenerek anlamı değişen bâblar.',
-      bag:'../mezidfiiller.html',bagAd:'Mezid Fiiller'},
+      bag:'../kaliplartablosu.html',bagAd:'Vezinler Tablosu'},
     malum:{ad:'Malum',ik:'goz',ar:'مَعْلُوم',not:'Fâili bilinen etken çatı.'},
     mechul:{ad:'Meçhul',ik:'gozkapali',ar:'مَجْهُول',not:'Fâili söylenmeyen edilgen çatı: فُعِلَ'},
     sahih:{ad:'Sahih',ik:'saglam',ar:'صَحِيح',not:'Kökünde illet harfi (ا و ي) bulunmaz.'},
@@ -2841,9 +2841,17 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   document.getElementById('oVaz').addEventListener('click', function(){ onayEl.classList.remove('acik'); });
   document.getElementById('oCik').addEventListener('click', function(){
     onayEl.classList.remove('acik');
-    if(listedenCikis){ location.href = '../index.html'; }
-    else if(donus === 'site'){ location.href = '../index.html'; }
-    else { listeGoster(); }
+    /* SEKMEYİ KAPAT: sunumlar siteden yeni sekmede açılıyor; çıkışta o
+       sekme kapansın, öğretmen doğrudan sitedeki sekmesine dönsün.
+       Tarayıcı izin vermezse (adres çubuğundan elle açılmış sekme gibi)
+       eski davranışa düşülür: siteye ya da sunum listesine gidilir. */
+    var yedek = function(){
+      if(listedenCikis){ location.href = '../index.html'; }
+      else if(donus === 'site'){ location.href = '../index.html'; }
+      else { listeGoster(); }
+    };
+    try { window.close(); } catch(e){}
+    setTimeout(function(){ if(!window.closed) yedek(); }, 180);
   });
 
   /* ---------- ölçekleme ---------- */

@@ -434,6 +434,22 @@ function toggleStudentProfile() {
         var h = appState.viewHistory || [];
         while (h.length && h[h.length - 1] === 'student-profile-section') h.pop();
     } catch (e) { }
+    /* OGRETMEN/YONETICI: profil tusuna ikinci basis ANASAYFAYA degil,
+       ACIK SINIF LISTESINE dondurur. Ogretmen anasayfaya gidip kart actiktan
+       sonra listeye donmek icin bu tusu kullaniyor; en son acik olan sinif
+       da geri acilir. Kayitli sinif yoksa eski davranis (anasayfa) surer. */
+    try {
+        var rol = (appState && appState.userRole) || '';
+        var sinifVar = (typeof window.llSonSinifAc === 'function') &&
+                       (function () { try { return !!JSON.parse(localStorage.getItem('ll_son_sinif') || 'null'); } catch (e) { return false; } })();
+        if ((rol === 'teacher' || rol === 'admin') && sinifVar &&
+            document.getElementById('listelerim-section')) {
+            changeView('listelerim-section', true);
+            try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
+            setTimeout(function () { try { window.llSonSinifAc(); } catch (e) { } }, 120);
+            return;
+        }
+    } catch (e) { }
     var anaSayfa = document.getElementById('home-hub-section') ? 'home-hub-section' : 'dashboard-section';
     changeView(anaSayfa, true);
 }

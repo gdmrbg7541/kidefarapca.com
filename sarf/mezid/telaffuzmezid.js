@@ -471,7 +471,7 @@ function goBack() {
     } else if (active === 'screen-fiil') {
         showScreen('screen-bap');
     } else {
-        window.location.href = "mezidfiiller.html";
+        window.location.href = "kaliplartablosu.html";
     }
 }
 

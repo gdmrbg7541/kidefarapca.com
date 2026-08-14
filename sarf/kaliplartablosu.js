@@ -10156,24 +10156,46 @@ window._atlasKonuSeritCiz = function (stage) {
             /* SABIT YATAY SERIT: kaymaz (sticky), basliklar ekrana dagilir,
                yalniz ACIK olan buyuktur. Sagdaki sabit carpi/tam ekran
                tuslarina carpmasin diye sagdan pay birakilir. */
-            '#atlasKonuSerit{position:sticky; top:0; z-index:55; flex:none; display:flex; align-items:center;' +
+            /* SERIT KAPSAYICISI: yapiskan olan bu. Sarici kutunun 20px
+               dolgusunu negatif kenarla asar, boylece serit ekranin tam
+               ustune yapisir, yanlarda ve ustte bosluk kalmaz. z-index
+               yuksek (1200): mazi/muzari/emir tablolarindaki .marathon-cell
+               kartlari z-index:1000 tasidigi icin kaydirirken seridin
+               ustune cikiyordu. */
+            /* top:-20px — sarici kutunun 20px ust dolgusu yapiskan durakta da
+   kapansin; yoksa serit ile ekranin tepesi arasinda o kadarlik bir
+   bosluk kaliyor ve icerik oradan gorunuyordu. */
+            '#atlasSeritKap{position:sticky; top:-20px; z-index:1200; flex:none; display:flex;' +
+            ' align-items:center; width:calc(100% + 40px); margin:-20px -20px 6px; box-sizing:border-box;' +
+            ' background:rgba(241,242,246,.97); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);' +
+            ' border-radius:0 0 16px 16px; box-shadow:0 6px 18px rgba(15,23,42,.10);}' +
+            /* Iki uctaki oklar: basliklar arasinda yatay gecis oldugunu anlatir */
+            '.atlas-serit-ok{flex:none; width:34px; height:34px; margin:0 5px; border:0; cursor:pointer;' +
+            ' border-radius:50%; display:grid; place-items:center; background:#fff; color:#334155;' +
+            ' box-shadow:0 2px 6px rgba(15,23,42,.16); font-size:21px; line-height:1; font-weight:900;' +
+            ' font-family:sans-serif; transition:opacity .2s, transform .15s; z-index:2}' +
+            '.atlas-serit-ok:hover{transform:translateY(-1px); color:#0f172a}' +
+            '.atlas-serit-ok.pasif{opacity:.22; pointer-events:none}' +
+            '#atlasKonuSerit{position:relative; z-index:1; flex:1 1 auto; display:flex; align-items:center;' +
             /* TEK SATIR + SAGA YASLI: 11 baslik dar ekranda sigmazsa satir
                kirilmaz, YATAY kaydirilir (cubuk gizli, tekerlek/parmak isler).
                RTL'de flex-start = sag kenar; sagdaki sabit carpi/tam ekran
                tuslari icin 128px pay birakilir. */
-            ' justify-content:flex-start; flex-wrap:nowrap; gap:8px 6px; direction:rtl;' +
-            ' overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;' +
-            /* Dikey ferahlik: buyuk aktif hap ve 3D alt golge kirpilmasin */
-            ' padding:14px 128px 20px 14px; margin:0 0 6px; width:100%; box-sizing:border-box;' +
-            ' background:rgba(241,242,246,.95); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);' +
-            ' border-radius:0 0 16px 16px;}' +
+            ' flex-wrap:nowrap; direction:rtl; overflow-x:auto; -webkit-overflow-scrolling:touch;' +
+            ' scrollbar-width:none; padding:12px 0 14px; margin:0; min-width:0; box-sizing:border-box;' +
+            ' background:transparent;}' +
+            /* IC SIRA: sigdiginda ORTALANIR, tasarsa kaydirilir. margin:auto
+               hilesi kullanildi; justify-content:center tasan icerikte bas
+               kismi ulasilmaz yapiyor. Sagda sabit carpi/tam ekran payi. */
+            '#atlasSeritIc{display:flex; align-items:center; gap:8px 6px; flex-wrap:nowrap;' +
+            ' margin:0 auto; padding:0 122px 0 6px;}' +
             '#atlasKonuSerit::-webkit-scrollbar{display:none}' +
             /* TAM EKRANDA BASLIK SERIDI YOK: tam ekranin amaci butun cekim
                tablosunu ayni anda gormek. Konular arasinda zaten ekrani
                saga-sola kaydirarak geciliyor, serit yeri bosa yiyordu.
                Ustteki aciklama blogu da (Turkce+Arapca baslik ve paragraf)
                tam ekranda gizlenir; alt aciklama zaten gizleniyordu. */
-            '#screen-atlas.atlas-fullscreen #atlasKonuSerit{display:none !important}' +
+            '#screen-atlas.atlas-fullscreen #atlasSeritKap{display:none !important}' +
             '#screen-atlas.atlas-fullscreen #atlas-explanation{display:none !important}' +
             /* KOSELI + DOLGULU + 3D TUS: tablodaki th-3d-btn ile AYNI hissiyat —
                alt kenar golgesi + ust ic isik; basinca 4px coker, golge yatar. */
@@ -10193,15 +10215,42 @@ window._atlasKonuSeritCiz = function (stage) {
             ' box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 2px 0 rgba(255,255,255,.45), 0 7px 14px rgba(0,0,0,.2)}';
         document.head.appendChild(st);
     }
+    var kap = document.getElementById('atlasSeritKap');
     var serit = document.getElementById('atlasKonuSerit');
-    if (!serit) {
-        serit = document.createElement('div');
-        serit.id = 'atlasKonuSerit';
+    var ic = document.getElementById('atlasSeritIc');
+    if (!kap) {
+        kap = document.createElement('div');
+        kap.id = 'atlasSeritKap';
+        kap.innerHTML =
+            '<button type="button" class="atlas-serit-ok sol" aria-label="Onceki basliklar">\u2039</button>' +
+            '<div id="atlasKonuSerit"><div id="atlasSeritIc"></div></div>' +
+            '<button type="button" class="atlas-serit-ok sag" aria-label="Sonraki basliklar">\u203A</button>';
+        serit = kap.querySelector('#atlasKonuSerit');
+        ic = kap.querySelector('#atlasSeritIc');
+        var solOk = kap.querySelector('.atlas-serit-ok.sol');
+        var sagOk = kap.querySelector('.atlas-serit-ok.sag');
+        var kaydir = function (yon) {
+            var adim = Math.max(160, serit.clientWidth * 0.6);
+            try { serit.scrollBy({ left: yon * adim, behavior: 'smooth' }); }
+            catch (e) { serit.scrollLeft += yon * adim; }
+        };
+        solOk.onclick = function () { kaydir(-1); };
+        sagOk.onclick = function () { kaydir(1); };
+        var oklariTazele = function () {
+            var en = serit.scrollWidth - serit.clientWidth;
+            if (en <= 4) { solOk.classList.add('pasif'); sagOk.classList.add('pasif'); return; }
+            var x = serit.scrollLeft;              /* RTL: 0 (sag uc) .. -en (sol uc) */
+            solOk.classList.toggle('pasif', x <= -en + 4);
+            sagOk.classList.toggle('pasif', x >= -4);
+        };
+        serit.addEventListener('scroll', oklariTazele, { passive: true });
+        window.addEventListener('resize', oklariTazele);
+        kap._oklariTazele = oklariTazele;
     }
     /* SERIT HEP EN USTTE VE YAPISKAN: icerik dikey kayarken basliklar
        yerinde durur (Geylani: "basliklar scroll olmasin, sabit olsun"). */
     var sarici = document.querySelector('#screen-atlas > div:first-of-type');
-    if (sarici && sarici.firstChild !== serit) sarici.insertBefore(serit, sarici.firstChild);
+    if (sarici && sarici.firstChild !== kap) sarici.insertBefore(kap, sarici.firstChild);
     var dizi = (window._atlasSiraMezid.indexOf(stage) >= 0) ? window._atlasSiraMezid : window._atlasSiraMucerred;
     var aktifIdx = dizi.indexOf(stage);
     var html = '';
@@ -10219,7 +10268,8 @@ window._atlasKonuSeritCiz = function (stage) {
             (k === stage ? ' aktif' : '') + '"' + ipucu +
             ' onclick="' + tik + '">' + (window._atlasKonuAd[k] || k) + '</button>';
     }
-    serit.innerHTML = html;
+    (ic || serit).innerHTML = html;
+    if (kap && kap._oklariTazele) setTimeout(kap._oklariTazele, 60);
     /* CARPI DA AYNI KAPANIS MORFUNDAN gecsin: ozelligi degil yolu
        degistiriyoruz — closeMarathon yine cagrilir, once hap ucar. */
     var carpi = document.querySelector('#screen-atlas > button[onclick="closeMarathon()"]');
@@ -10229,12 +10279,15 @@ window._atlasKonuSeritCiz = function (stage) {
     };
     /* Tek satir kaydirilabilir oldugundan AKTIF hap gorunur kalmali:
        gorunum disindaysa yalniz YATAY kaydirilir (dikey oynatilmaz). */
+    /* Aktif baslik ORTAYA alinir: basliklar sigmadiginda "ortali dursun"
+       istegi ancak boyle karsilanir; sigdiginda zaten margin:auto ortalar. */
     var aktifGoster = function () {
         var a2 = serit.querySelector('.atlas-konu-hap.aktif');
         if (!a2) return;
         var sr = serit.getBoundingClientRect(), ar = a2.getBoundingClientRect();
-        if (ar.left < sr.left + 8) serit.scrollLeft += ar.left - sr.left - 24;
-        else if (ar.right > sr.right - 8) serit.scrollLeft += ar.right - sr.right + 24;
+        var fark = (ar.left + ar.width / 2) - (sr.left + sr.width / 2);
+        if (Math.abs(fark) > 4) serit.scrollLeft += fark;
+        if (kap && kap._oklariTazele) kap._oklariTazele();
     };
     aktifGoster();
     setTimeout(aktifGoster, 240);
