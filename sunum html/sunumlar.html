@@ -864,31 +864,31 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
   display:none;flex-direction:column;padding:18px 44px 18px;overflow:auto}
 #liste.acik{display:flex;animation:gir .32s ease both}
 #liste .lizgara{align-content:start}
-/* Başlık satırı: dönüş tuşu · başlık · Liste/Harita anahtarı — hepsi tek satır */
-#liste .lbas{display:flex;align-items:center;gap:18px;margin-bottom:12px}
-#liste .lbast{min-width:0}
+/* Başlık satırı: dönüş tuşu · başlık · Liste/Harita anahtarı — hepsi tek satır.
+   DİKEY OLARAK İNCE: başlık ile alt yazı yan yana durur, şerit ancak bir
+   satır boyunda kalır; kartlara ve haritaya kalan yer bir o kadar artar. */
+#liste .lbas{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+#liste .lbast{min-width:0;display:flex;align-items:center}
 .lsite{display:inline-flex;align-items:center;justify-content:center;font-family:inherit;
   color:#fff;background:var(--kahve);border:0;border-radius:14px;width:56px;height:56px;padding:0;cursor:pointer;
   box-shadow:var(--golge);transition:.16s}
 .lsite:hover{filter:brightness(1.08);transform:translateY(-2px)}
 .lsite svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-#liste h2{font-size:30px;font-weight:900;color:var(--kahve);margin-bottom:2px}
-#liste .lalt{font-size:16px;color:#9A7C55;margin-bottom:0}
+#liste h2{font-size:24px;font-weight:900;color:var(--kahve);margin:0;line-height:1.25;white-space:nowrap}
 /* --- Liste / Harita görünüm anahtarı (başlık satırının sağ ucunda) --- */
 .lsekme{display:flex;gap:8px;margin:0;margin-inline-start:auto;flex:0 0 auto}
-.lsek{font-family:inherit;font-size:16px;font-weight:900;color:#8A6412;background:#fff;
-  border:1px solid #EFE3D2;border-radius:999px;padding:8px 18px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:8px;transition:.16s}
+.lsek{font-family:inherit;font-size:15px;font-weight:900;color:#8A6412;background:#fff;
+  border:1px solid #EFE3D2;border-radius:999px;padding:6px 15px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px;transition:.16s}
 .lsek:hover{background:#FFF6E6;transform:translateY(-1px)}
 .lsek.etkin{background:var(--kahve);border-color:var(--kahve);color:#fff}
-.lsek svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.3;
+.lsek svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.3;
   stroke-linecap:round;stroke-linejoin:round}
 .lharita{flex:1 1 auto;min-height:0;min-width:0;display:flex;margin:0 -44px -8px}
 .lharita .hx{flex:1 1 auto}
 #liste.harita{overflow:hidden}
 #liste.harita .lizgara{display:none}
 #liste:not(.harita) .lharita{display:none}
-#liste.harita .lalt{margin-bottom:0}
 
 /* --- Harita üzerindeki "Sunum" düğmesi --- */
 .hxsun{font-family:inherit;display:inline-flex;align-items:center;gap:5px;margin-inline-start:auto;
@@ -931,14 +931,13 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
 #liste{background:#F7F9FC;background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%234D96FF" fill-opacity="0.05"%3E%3Cpath opacity=".5" d="M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z"/%3E%3Cpath d="M6 5V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6V5z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')}
 #liste .lbas{
   background:linear-gradient(90deg,#FFC107 0%,#F39C12 50%,#EF5350 100%);
-  border-bottom:3px solid #E53935;border-radius:18px;
-  padding:11px 14px 11px 12px;box-shadow:0 6px 18px rgba(229,57,53,.20);
+  border-bottom:2px solid #E53935;border-radius:14px;
+  padding:6px 12px 6px 7px;box-shadow:0 5px 14px rgba(229,57,53,.18);
 }
 #liste h2{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.12)}
-#liste .lalt{color:rgba(255,255,255,.93)}
-.lsite{background:rgba(255,255,255,.22);box-shadow:none;width:48px;height:48px;border-radius:13px}
+.lsite{background:rgba(255,255,255,.22);box-shadow:none;width:38px;height:38px;border-radius:11px}
 .lsite:hover{background:rgba(255,255,255,.40);filter:none}
-.lsite svg{width:26px;height:26px}
+.lsite svg{width:22px;height:22px}
 .lsek{background:rgba(255,255,255,.20);border-color:rgba(255,255,255,.45);color:#fff}
 .lsek:hover{background:rgba(255,255,255,.34)}
 .lsek.etkin{background:#fff;border-color:#fff;color:#D84315}
@@ -1000,6 +999,47 @@ body.tamekran #dCikis.gorunur,body.tamekran #dCikis:hover{opacity:1;pointer-even
 .onizAd b{display:inline-block;min-width:26px;color:#FFD9A0}
 .icOge.simdi .onizAd{color:#1F2430}
 @media (max-width:1100px){ #icListe{grid-template-columns:repeat(2,1fr)} .onizKutu .slayt{transform:scale(.36)} }
+
+/* ==========================================================
+   SUNUM KABUĞUNA DA SİTE RENGİ
+   Slaytın İÇİ değişmez (şemsî mavi · kamerî kırmızı · marife
+   yeşil · nekra turuncu kodu aynen durur); yalnız çevresindeki
+   kumanda takımı kidefarapca.com'un dilini konuşur:
+     · ilerleme çubuğu sitenin sarı→turuncu→kırmızı şeridi
+     · kumandadaki her tuşun kendi rengi (siteki renkli SVG'ler gibi)
+     · çıkış kırmızı, içindekiler mavi, tam ekran yeşil
+   ========================================================== */
+#ustSerit{background:rgba(31,36,48,.07);height:6px}
+#ilerleme{
+  background:linear-gradient(90deg,#FFC107 0%,#F39C12 38%,#EF5350 72%,#E53935 100%);
+  box-shadow:0 0 10px rgba(239,83,80,.45);
+  transition:width .45s cubic-bezier(.33,1,.68,1);
+}
+#kumanda{border:1px solid rgba(255,255,255,.6);box-shadow:0 10px 26px rgba(31,36,48,.18)}
+/* Her tuş kendi renginde — sitedeki renkli simge dili */
+.kdug{color:#5A6472}
+#dOnce{color:#F39C12} #dOnce:hover{background:#FFF3DC;color:#D9820A}
+#dSonra{color:#EF5350} #dSonra:hover{background:#FFECEB;color:#D8342F}
+#dIcindekiler{color:#2E86DE} #dIcindekiler:hover{background:#E7F1FD;color:#1B6FC4}
+#dTam{color:#16A085} #dTam:hover{background:#E4F6F2;color:#0E7D67}
+#sayac{
+  color:#8A4B12;background:linear-gradient(90deg,#FFF3DC,#FFE7E5);
+  border-radius:999px;padding:4px 12px;margin:0 3px;font-weight:800;
+}
+/* Çıkış: sitenin kırmızısı */
+#dCikis{color:#E53935}
+#dCikis:hover{background:#FFEBEE;color:#C62828}
+/* Onay penceresindeki tuşlar da site şeridinden */
+#onay .cik{background:linear-gradient(90deg,#F39C12,#EF5350)}
+#onay .cik:hover{filter:brightness(1.06)}
+/* Yardım ipucu ve içindekiler başlığı */
+#yardim{background:rgba(255,255,255,.9);color:#7A5A2E;box-shadow:0 4px 12px rgba(31,36,48,.10)}
+#yardim b{color:#EF5350}
+#icindekiler h3{color:#FFD9A0}
+.onizAd b{color:#FFC107}
+.icOge.simdi{background:#fff;color:#1F2430;border-color:#F39C12;box-shadow:0 0 0 2px rgba(243,156,18,.55)}
+.icOge.simdi .onizAd b{color:#EF5350}
+#icindekiler.serit .icOge.simdi{box-shadow:0 0 0 2px rgba(243,156,18,.75)}
 
 /* --- ESC → SLAYT ŞERİDİ: sayfalar altta yatay dizilir ---
    Esc'e basınca içindekiler ekranı kaplamaz; slaytlar küçük küçük
@@ -1112,7 +1152,6 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       </button>
       <div class="lbast">
         <h2>Ders Sunumları</h2>
-        <div class="lalt">Tahtaya yansıt, ileri tuşuyla adım adım anlat</div>
       </div>
       <!-- İki görünüm: kart listesi ya da gezilebilir konu haritası.
            Haritada sunumu olan başlıkta yeşil "Sunum" düğmesi çıkar. -->

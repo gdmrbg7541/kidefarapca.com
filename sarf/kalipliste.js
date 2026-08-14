@@ -1190,6 +1190,21 @@
            ekran bir yanıp sönmesin — yeni liste açılırsa çıkış iptal.
        Tarayıcı izin vermezse (eski Safari, iframe, jestsiz programatik
        çağrı) sessizce vazgeçilir; hiçbir şey bozulmaz. */
+    /* ---------- ANİMASYON SÜRELERİ — TEK YERDEN ----------
+       Geylani: "animasyonlar daha yavaş ve pürüzsüz olsun".
+       Açılış easeOutQuint (sonu yumuşak), kapanış easeInOutQuart
+       (hem başı hem sonu yumuşak) — kapanışta artık ekran birden
+       durmuyor. TAM EKRANDAN ÇIKIŞ da bu sürelerin SONUNDA yapılır:
+       ekran ölçüsü animasyonun ortasında değişip hareketi kırmasın. */
+    var KL_EGRI_AC = 'cubic-bezier(.22,1,.36,1)';
+    var KL_EGRI_KAP = 'cubic-bezier(.45,0,.25,1)';
+    var KL_AC_MS = 1350;      /* satır süzülüşü + şeridin açılışı */
+    var KL_LISTE_MS = 1050;   /* örneklerin aşağı inişi           */
+    var KL_KAP_SERIT = 700;   /* şeridin yukarı kapanışı          */
+    var KL_KAP_LISTE = 850;   /* örneklerin kapanışı              */
+    var KL_SATIR_GERI = 1300; /* satırın eski yerine dönüşü       */
+    function klSn(ms) { return (ms / 1000) + 's'; }
+
     var tamEkranBiz = false, tamEkranZaman = null;
     function tamEkranMi() {
         return !!(document.fullscreenElement || document.webkitFullscreenElement);
@@ -1218,7 +1233,11 @@
             document.removeEventListener('fullscreenchange', calis);
             document.removeEventListener('webkitfullscreenchange', calis);
             clearTimeout(zaman);
-            requestAnimationFrame(function () { requestAnimationFrame(is); });
+            /* İki kare + kısa bir soluklanma: tam ekran yerleşirken
+               tarayıcı bir kare daha ölçü değiştirebiliyor. */
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () { setTimeout(is, 60); });
+            });
         }
         document.addEventListener('fullscreenchange', calis);
         document.addEventListener('webkitfullscreenchange', calis);
@@ -1352,7 +1371,7 @@
         row.style.transition = 'none';
         row.style.transform = 'translateY(' + delta + 'px)';
         void row.offsetHeight;
-        row.style.transition = 'transform 1s cubic-bezier(.22,1,.36,1)';
+        row.style.transition = 'transform ' + klSn(KL_SATIR_GERI) + ' ' + KL_EGRI_AC;
         row.style.transform = '';
         var bitis = function () {
             row.style.transition = ''; row.style.transform = '';
@@ -1561,7 +1580,7 @@
         void satir.offsetHeight;
         /* Süre ve eğri bâb odağından okunuyor (window.BO_SURE) —
            ⓘ'ye basınca satır nasıl süzülüyorsa burada da öyle. */
-        var SURE = (typeof window.BO_SURE === 'string') ? window.BO_SURE : '1s cubic-bezier(.22,1,.36,1)';
+        var SURE = klSn(KL_AC_MS) + ' ' + KL_EGRI_AC;
         sar.style.transition = 'height ' + SURE;
         sar.style.height = seritYuk + 'px';
         satir.style.transition = 'transform ' + SURE;
@@ -1570,10 +1589,10 @@
         odak.zaman.push(setTimeout(function () {
             sar.style.transition = ''; sar.style.height = '';
             satir.style.transition = ''; satir.style.transform = '';
-        }, 1040));
+        }, KL_AC_MS + 60));
 
         /* ---- FAZ 2: veznin altı boşalır, sonra örnekler belirir ---- */
-        odak.zaman.push(setTimeout(function () { faz2(); }, 1020));
+        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS - 30));
 
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
@@ -1606,11 +1625,11 @@
         kap.style.overflow = 'hidden';
         kap.style.height = '0px';
         void kap.offsetHeight;
-        kap.style.transition = 'height .8s cubic-bezier(.33,1,.68,1)';
+        kap.style.transition = 'height ' + klSn(KL_LISTE_MS) + ' ' + KL_EGRI_AC;
         kap.style.height = hedef + 'px';
         st.zaman.push(setTimeout(function () {
             kap.style.transition = ''; kap.style.height = ''; kap.style.overflow = '';
-        }, 860));
+        }, KL_LISTE_MS + 60));
     }
 
     /* Kapanışın SON adımı: DOM eski hâline döner. Animasyonun sonunda ya
@@ -1661,12 +1680,13 @@
        geçerken ya da ⓘ'ye basılırken ekran bekletilmesin). */
     function odakKapat(sessiz) {
         if (!odak) return;
-        tamEkranKapatGecikmeli();          /* yeni liste açılırsa iptal olur */
         var st = odak;
         odak = null;
         (st.zaman || []).forEach(clearTimeout);   /* yarım kalan açılış */
         st.zaman = [];
-        if (sessiz) { odakSonlandir(st, true); return; }
+        /* SESSİZ kapanış (başka vezne geçiş, ⓘ): animasyon yok, çıkış
+           hemen istenebilir — yeni liste açılırsa zaten iptal olur. */
+        if (sessiz) { odakSonlandir(st, true); tamEkranKapatGecikmeli(); return; }
         kapanan = st;
         /* Ara levhadaki kutular (teksirin orta dörtlüsü) kapanmadan önce
            ÜST levhaya geri süzülür — açılışın aynası; yoksa gövde perdesi
@@ -1677,12 +1697,12 @@
         try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
         var sar = st.suzgecTr.querySelector('.ko-serit-sar');
         var kap = st.govdeTr && st.govdeTr.querySelector('.ko-kaydir');
-        var EGRI = 'cubic-bezier(.33,1,.68,1)';
-        var A = 500, B = 600;
+        var EGRI = KL_EGRI_KAP;
+        var A = KL_KAP_SERIT, B = KL_KAP_LISTE;
         if (sar) {
             sar.style.height = sar.getBoundingClientRect().height + 'px';
             void sar.offsetHeight;
-            sar.style.transition = 'height .5s ' + EGRI;
+            sar.style.transition = 'height ' + klSn(A) + ' ' + EGRI;
             sar.style.height = '0px';
         }
         st.zaman.push(setTimeout(function () {
@@ -1693,10 +1713,18 @@
                    son karede "pat" diye kapanmış görünüyordu */
                 kap.style.height = Math.min(kap.getBoundingClientRect().height, window.innerHeight) + 'px';
                 void kap.offsetHeight;
-                kap.style.transition = 'height .6s ' + EGRI;
+                kap.style.transition = 'height ' + klSn(B) + ' ' + EGRI;
                 kap.style.height = '0px';
             }
-            st.zaman.push(setTimeout(function () { odakSonlandir(st, false); }, kap ? B + 40 : 0));
+            st.zaman.push(setTimeout(function () {
+                odakSonlandir(st, false);
+                /* TAM EKRANDAN ÇIKIŞ EN SONDA: şerit kapandı, örnekler
+                   kapandı, satır da eski yerine oturdu — ancak o zaman.
+                   Ortada çıksaydı ekran yeniden ölçülüp hareket kırılıyordu.
+                   Bu arada yeni bir vezin açılırsa çıkış kendiliğinden
+                   iptal olur (tamEkranKapatGecikmeli "odak" varsa durur). */
+                setTimeout(tamEkranKapatGecikmeli, KL_SATIR_GERI + 60);
+            }, kap ? B + 40 : 0));
         }, sar ? A + 30 : 0));
     }
 
@@ -1851,7 +1879,7 @@
         kutu.style.transform = 'translate(' + (r0.left - r1.left) + 'px,' + (r0.top - r1.top) + 'px)' +
             ' scale(' + (r0.width / r1.width) + ',' + (r0.height / r1.height) + ')';
         void kutu.offsetHeight;
-        var SURE = sure || ((typeof window.BO_SURE === 'string') ? window.BO_SURE : '1s cubic-bezier(.22,1,.36,1)');
+        var SURE = sure || (klSn(KL_AC_MS) + ' ' + KL_EGRI_AC);
         var ms = (parseFloat(SURE) || 1) * 1000 + 60;
         kutu.style.transition = 'transform ' + SURE;
         kutu.style.transform = '';
@@ -1861,7 +1889,7 @@
     }
     /* Mücerred açılış uçuşu bilerek daha ağır: üç kutu süzülürken göz
        izleyebilsin (Geylani: "o animasyon yavaş olsun"). */
-    var SURE_MUC = '1.35s cubic-bezier(.22,1,.36,1)';
+    var SURE_MUC = klSn(KL_AC_MS) + ' ' + KL_EGRI_AC;   /* mücerred de aynı hızda */
     function mucOdakAc(no) {
         var kutu = tab1Kutu(no);
         var govde1 = document.querySelector('#tab1 table tbody');
@@ -2013,10 +2041,10 @@
         odak.zaman.push(setTimeout(function () {
             sar.style.transition = ''; sar.style.height = '';
             mucLevhaBoya();               /* şerit oturdu: zemin dilimi tazelensin */
-        }, 1420));
+        }, KL_AC_MS + 70));
 
         /* ---- FAZ 2: kutular yerine oturduktan sonra örnekler belirir ---- */
-        odak.zaman.push(setTimeout(function () { faz2(); }, 1380));
+        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS + 30));
 
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
