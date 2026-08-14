@@ -177,7 +177,9 @@ h1,h2,h3,h4,p{margin:0}
 #tuval.tasmali::before{content:'';position:absolute;top:0;bottom:0;z-index:0;
   left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px));background:var(--zemin)}
 #tuval.tasmali #ustSerit{left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px))}
-#liste.harita{left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px))}
+/* Sunum listesi de (harita gorunumu de liste gorunumu de) tuvalin
+   disina tasar: 4K / ultra genis ekranda sagda solda koyu bant kalmaz. */
+#liste.acik{left:calc(-1 * var(--hxTas, 0px));right:calc(-1 * var(--hxTas, 0px))}
 .hxadim{display:none}
 /* min-width:0 şart: satır yönlü esnek kapsayıcıda (sunum listesindeki harita)
    .hx içeriğine göre büyüyüp kaydırma yerine kutuyu şişiriyordu. */
@@ -974,7 +976,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         </svg></span>
         <h3>Harf-i Ta'rîf «ال» — Elif-Lâm takısı</h3>
         <p>Şemsî ve kamerî harfler, şedde ve cezim, tenvinin tek harekeye dönüşü, marife–nekra ayrımı.</p>
-        <div class="lalt2"><span class="ladet">11 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
+        <div class="lalt2"><span class="ladet">10 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
       </button>
       <button class="lkart" data-git="cogulirab">
         <div class="lust"><span class="lrozet">🔬 İ'râb</span></div>
@@ -999,7 +1001,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         </svg></span>
         <h3>Çoğul İsimlerin Merfu · Mansub · Mecrur Hâlleri</h3>
         <p>Düzenli eril/dişil ve kırık çoğulda hareke ve harf değişimi, üç hâlin özet tablosu.</p>
-        <div class="lalt2"><span class="ladet">17 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
+        <div class="lalt2"><span class="ladet">16 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
       </button>
     </div>
   </div>
@@ -1029,21 +1031,6 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       <div class="basla">Başlamak için → tuşuna bas</div>
     </div>
     <div class="imza">Kidef Arapça</div>
-  </section>
-
-  <!-- ================= 2. KONU HARİTASI (ORTAK ŞEMA) ================= -->
-  <section class="slayt" data-ad="Konu haritası — buradayız">
-    <!-- Bu slaytta başlık ve yönerge yok: ekran tamamen keşfe ayrıldı. -->
-    <!-- Canlı konu haritası: gezilebilir şema (hx modülü, alttaki script).
-         data-bas = açılışta odaklanılan başlık · data-isaret = bu dersin yeri -->
-    <div class="hxKutu adim" data-g="1">
-      <div class="hx" data-isaret="tarif"></div>
-      <!-- İlerleme adımları: her ileri basışında haritada bir kademe daha yaklaşılır -->
-      <i class="adim hxadim" data-g="2" data-hedef="kelime"></i>
-      <i class="adim hxadim" data-g="3" data-hedef="isim"></i>
-      <i class="adim hxadim" data-g="4" data-hedef="marife"></i>
-      <i class="adim hxadim" data-g="5" data-hedef="tarif"></i>
-    </div>
   </section>
 
   <!-- ================= 3. TANIM (orijinal slayt 4) ================= -->
@@ -1529,20 +1516,6 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       <div class="basla">Başlamak için → tuşuna bas</div>
     </div>
     <div class="imza">Kidef Arapça · kidefarapca.com</div>
-  </section>
-
-  <!-- ================= 2. KONU HARİTASI ================= -->
-  <section class="slayt" data-ad="Konu haritası — buradayız">
-    <!-- Bu slaytta başlık ve yönerge yok: ekran tamamen keşfe ayrıldı. -->
-    <!-- Canlı konu haritası: gezilebilir şema (hx modülü, alttaki script).
-         data-bas = açılışta odaklanılan başlık · data-isaret = bu dersin yeri -->
-    <div class="hxKutu adim" data-g="1">
-      <div class="hx" data-isaret="cogul"></div>
-      <!-- İlerleme adımları: her ileri basışında haritada bir kademe daha yaklaşılır -->
-      <i class="adim hxadim" data-g="2" data-hedef="kelime"></i>
-      <i class="adim hxadim" data-g="3" data-hedef="isim"></i>
-      <i class="adim hxadim" data-g="4" data-hedef="cogul"></i>
-    </div>
   </section>
 
   <!-- ================= 3. HATIRLAYALIM ================= -->
@@ -2774,7 +2747,11 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     [].forEach.call(listeEl.querySelectorAll('.lsek'), function(b){
       b.classList.toggle('etkin', b.getAttribute('data-gor') === listeGor);
     });
-    if (listeGor === 'harita') hxYenile(listeEl); else hxTasmaOlc(false);
+    /* Liste gorunumunde de tasma acik kalir: 4K ekranda sagda solda
+       koyu bant olmasin. Sunum acilinca (slaytta harita yok) hxYenile
+       tasmayi kendiliginden kapatir. */
+    hxTasmaOlc(true);
+    if (listeGor === 'harita') hxYenile(listeEl);
   }
   function listeGoster(g){
     sunumlar.forEach(function(x){ x.style.display = 'none'; });
