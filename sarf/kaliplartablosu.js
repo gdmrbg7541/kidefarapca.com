@@ -577,6 +577,21 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             if (kalipKeyStr === "tekil" || kalipKeyStr === "cogul") {
                 itemTekil = rootData["tekil"];
                 itemCogul = rootData["cogul"];
+                /* SÖZLÜKTE İKİ YAZIM VAR: uzun yazımda çoğul bir nesnedir
+                   (cogul: { base: {...} }), kısa yazımda doğrudan metindir
+                   (cogul: "خُدُود", cogulTr: "Yanaklar"). Kısa yazımda gelen
+                   metni burada nesneye çeviriyoruz; yoksa aşağıda .base
+                   okunurken patlıyor ve perdede ERROR yazıyordu (خَدّ). */
+                if (typeof itemTekil === 'string') {
+                    itemTekil = { base: { emoji: rootData.emoji || "", arText: itemTekil, trText: rootData.tekilTr || "" } };
+                }
+                if (typeof itemCogul === 'string') {
+                    itemCogul = { base: {
+                        emoji: (itemTekil && itemTekil.base && itemTekil.base.emoji) || rootData.emoji || "",
+                        arText: itemCogul,
+                        trText: rootData.cogulTr || ""
+                    } };
+                }
             } else if (itemClicked && itemClicked.kuralliCogul) {
                 itemTekil = itemClicked;
                 let type = itemClicked.kuralliCogul;
@@ -688,10 +703,12 @@ function _showWordDetailsImpl(rootKey, kalipKeyStr, exactArText, exactTrText) {
             htmlContent += `<div style="position:relative; width:100%;">`;
             htmlContent += muhurHtml;
             htmlContent += `<div style="display:flex; justify-content:center; align-items:center; width:100%; text-align:center;">`;
-            let tekilAr = itemTekil ? itemTekil.base.arText : '';
-            let cogulAr = itemCogul ? itemCogul.base.arText : '';
-            let tekilTr = (itemTekil && itemTekil.base.trText) ? itemTekil.base.trText : '';
-            let cogulTr = (itemCogul && itemCogul.base.trText) ? itemCogul.base.trText : '';
+            /* Kalkan: veri hangi biçimde gelirse gelsin perde ERROR yazmasın,
+               olmayan alan boş geçilsin. */
+            let tekilAr = (itemTekil && itemTekil.base) ? (itemTekil.base.arText || '') : '';
+            let cogulAr = (itemCogul && itemCogul.base) ? (itemCogul.base.arText || '') : '';
+            let tekilTr = (itemTekil && itemTekil.base && itemTekil.base.trText) ? itemTekil.base.trText : '';
+            let cogulTr = (itemCogul && itemCogul.base && itemCogul.base.trText) ? itemCogul.base.trText : '';
             let allOrnekler = [];
             if (itemTekil && itemTekil.base && itemTekil.base.ornek) {
                 allOrnekler = allOrnekler.concat(Array.isArray(itemTekil.base.ornek) ? itemTekil.base.ornek : [itemTekil.base.ornek]);
@@ -1315,8 +1332,39 @@ function handleSwipeGesture() {
 // ==================================================================
 // 1. TABLO GEÇİŞİ (Sağa Kayma ve Boşluk Hatasının Çözümü)
 // ==================================================================
+
+/* =========================================================================
+   SEKME BANDI YALNIZ GERÇEK SEKME DEĞİŞİMİNDE KAYAR
+   -------------------------------------------------------------------------
+   Bant iki tabloyu yan yana tutar ve MEZİD'de translateX(50%) ile durur.
+   Geçiş her zaman açık olduğu için, transform'u DEĞİŞTİREN her şey 1,5
+   saniyelik yatay bir kayma başlatıyordu — sekme değişimi olmasa bile:
+     · pencere eni değişince (tam ekrana girip çıkma),
+     · body.mezid-odak sınıfı eklenip kalkınca (o sınıf bandı
+       `transform:none`a çekiyor; vezin kapanırken sınıf kalkınca bant
+       eski yerine KAYARAK dönüyordu — ekranda satırın aşağı inmesi
+       yerine sayfanın sola geçmesi olarak görülüyordu).
+   Çözüm: geçiş varsayılan olarak KAPALI; yalnız setTab çağrıldığında,
+   kayma süresi boyunca açılıyor. Başka hiçbir düzen değişikliği bandı
+   oynatamaz.
+   ========================================================================= */
+var _bandiZaman = null;
+function bandiKaydir() {
+    var band = document.getElementById('mainSliderBandi');
+    var sw = document.getElementById('tabSwitch');
+    if (band) band.classList.add('bandi-kayar');
+    if (sw) sw.classList.add('bandi-kayar');
+    clearTimeout(_bandiZaman);
+    _bandiZaman = setTimeout(function () {
+        if (band) band.classList.remove('bandi-kayar');
+        if (sw) sw.classList.remove('bandi-kayar');
+        _bandiZaman = null;
+    }, 1700);
+}
+
 function setTab(tabIndex, noSound = false) {
     if (!noSound && typeof SoundEngine !== "undefined") SoundEngine.playClick(); 
+    bandiKaydir();                 /* geçişi yalnız bu kayma için aç */
     const band = document.getElementById('mainSliderBandi');
     const switcher = document.getElementById('tabSwitch');
     
@@ -3026,6 +3074,486 @@ function updateSuffixHighlights(currentBox) {
 // ===============================================================
 // 2. MENÜYÜ AÇAN MOTOR (4K Netlik Yaması ve Sola Yaslama)
 // ===============================================================
+
+
+/* =========================================================================
+   ŞEMA SORUSU ("SOR") — aksâm-ı seb'a şemasını kendi kendini yoklama
+   tahtasına çevirir. Kavram şemasındaki eski SOR düğmesinin aynısı, ama
+   artık ŞEMANIN HER KOPYASINDA çalışıyor: maraton süzgecinde de, vezin
+   örnek listelerindeki süzgeçte de. Bir parça ("Grup?", "Fiil?", "Tanım?",
+   "Örnek?") gizlenir; öğrenci cevabı söyleyip kutuya dokununca açılır.
+   ========================================================================= */
+window.SEMA_SORU_ETIKET = {
+    'kl-sema-baslik': 'Grup?',
+    'kl-sk-ad':       'Hangi fiil?',
+    'kl-sk-tanim':    'Tanımı?',
+    'kl-sk-ornek':    'Örnek?'
+};
+
+/* =========================================================================
+   ODAK KİPİ — şemayı büyütüp öne alır
+   -------------------------------------------------------------------------
+   Süzgeçteki şema küçüktür; hatırlatma için yetmez. SOR'a basınca ya da
+   başlıktaki büyüteç düğmesine dokununca şema olduğu yerden alınıp tam
+   ekran bir levhaya taşınır, kartlar büyür. Öğrenci hatırlayıp küçültünce
+   şema kendi yerine geri döner ve yine süzgeç olarak çalışır.
+   Odakta kartlar SÜZMEZ: burası ara verme yeri, süzme yeri değil.
+   ========================================================================= */
+window._semaOdak = { sema: null, ebeveyn: null, komsu: null };
+
+function semaOdakPerde() {
+    var p = document.getElementById('sema-odak-perde');
+    if (p) return p;
+    p = document.createElement('div');
+    p.id = 'sema-odak-perde';
+    p.innerHTML =
+        '<div class="so-levha" role="dialog" aria-label="Aksâm-ı Seb\'a hatırlatma">' +
+          '<div class="so-tepe">' +
+            '<span class="so-baslik">AKSÂM-I SEB\'A</span>' +
+            '<span class="so-ip">Kısa bir hatırlatma — bitince küçültüp süzmeye devam et</span>' +
+            '<button type="button" class="so-kucult" onclick="semaOdakKapat()" title="Küçült ve süzgece dön">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+                '<path d="M9 3v6H3M15 21v-6h6M3 15h6v6M21 9h-6V3"/></svg>Küçült' +
+            '</button>' +
+          '</div>' +
+          '<div class="so-govde"></div>' +
+        '</div>';
+    p.addEventListener('click', function (e) { if (e.target === p) window.semaOdakKapat(); });
+    document.body.appendChild(p);
+    return p;
+}
+
+window.semaOdakAc = function (sema) {
+    if (!sema || window._semaOdak.sema) return;
+    var perde = semaOdakPerde();
+    window._semaOdak.sema = sema;
+    window._semaOdak.ebeveyn = sema.parentNode;
+    window._semaOdak.komsu = sema.nextSibling;
+    perde.querySelector('.so-govde').appendChild(sema);
+    sema.classList.add('kl-sema-odak');
+    perde.style.display = 'flex';
+    requestAnimationFrame(function () { perde.classList.add('so-acik'); });
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+window.semaOdakKapat = function () {
+    var o = window._semaOdak;
+    if (!o.sema) return;
+    var perde = document.getElementById('sema-odak-perde');
+    o.sema.classList.remove('kl-sema-odak');
+    /* Açıkta kalan soru varsa geri getir: süzgeçte yarım soru durmasın. */
+    o.sema.querySelectorAll('.kl-gizli').forEach(function (e) {
+        e.classList.remove('kl-gizli'); e.removeAttribute('data-soru');
+    });
+    if (o.ebeveyn) o.ebeveyn.insertBefore(o.sema, o.komsu || null);
+    window._semaOdak = { sema: null, ebeveyn: null, komsu: null };
+    if (perde) {
+        perde.classList.remove('so-acik');
+        setTimeout(function () { perde.style.display = 'none'; }, 200);
+    }
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
+};
+
+/* Odakta kart tıklaması süzgeci çalıştırmasın — yalnız gizli cevap açılır. */
+document.addEventListener('click', function (e) {
+    if (!window._semaOdak.sema) return;
+    if (!e.target || !e.target.closest) return;
+    if (e.target.closest('.kl-gizli')) return;           /* cevap açma serbest */
+    if (e.target.closest('.kl-sor-serit, .so-tepe')) return;  /* düğmeler serbest */
+    if (e.target.closest('.kl-sema-odak .kl-sema-kart')) {
+        e.preventDefault(); e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    }
+}, true);
+
+/* Başlığın yanındaki büyüteç: soru sormadan yalnız büyütür. */
+window.semaBuyut = function (dugme) {
+    var sema = semaBul(dugme);
+    if (!sema) return;
+    if (window._semaOdak.sema) { window.semaOdakKapat(); return; }
+    window.semaOdakAc(sema);
+};
+
+function semaBul(dugme) {
+    if (!dugme || !dugme.closest) return null;
+    var sema = dugme.closest('.kl-sema');
+    if (sema) return sema;
+    var kap = dugme.closest('.mt-kol-sema, .kl-suzgec, .mt-govde, .kl-pullar');
+    sema = kap ? kap.querySelector('.kl-sema') : null;
+    if (sema) return sema;
+    /* Zaten odaktaysa oradan bul. */
+    return window._semaOdak.sema || document.querySelector('.kl-sema');
+}
+
+/* Başlık yanına giren büyüteç düğmesi (maraton başlığı, şema başlığı). */
+window.semaBuyutecBtn = function () {
+    return '<button type="button" class="kl-buyutec" onclick="event.stopPropagation(); semaBuyut(this)" ' +
+             'title="Şemayı büyüt — aksâm-ı seb\'ayı hatırla" aria-label="Şemayı büyüt">' +
+             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+               '<path d="M3 9V3h6M21 15v6h-6M15 3h6v6M9 21H3v-6"/></svg></button>';
+};
+
+window.semaSor = function (dugme) {
+    var sema = semaBul(dugme);
+    if (!sema) return;
+    /* SOR önce büyütür: küçük şemada hatırlatma iş görmüyor. */
+    if (!window._semaOdak.sema) window.semaOdakAc(sema);
+
+    /* Önce açıkta olanı geri getir: her seferinde tek soru sorulur. */
+    sema.querySelectorAll('.kl-gizli').forEach(function (e) {
+        e.classList.remove('kl-gizli'); e.removeAttribute('data-soru');
+    });
+
+    /* Boş (o kalıpta örneği olmayan) kartlar soru olmaz — cevabı yok. */
+    var adaylar = [];
+    sema.querySelectorAll('.kl-sema-baslik').forEach(function (e) { adaylar.push(e); });
+    sema.querySelectorAll('.kl-sema-kart').forEach(function (k) {
+        if (k.classList.contains('kl-sema-bos') || k.disabled) return;
+        ['kl-sk-ad', 'kl-sk-tanim', 'kl-sk-ornek'].forEach(function (s) {
+            var e = k.querySelector('.' + s);
+            if (e && e.textContent.trim()) adaylar.push(e);
+        });
+    });
+    if (!adaylar.length) return;
+
+    var sec = adaylar[Math.floor(Math.random() * adaylar.length)];
+    var sinif = ['kl-sema-baslik', 'kl-sk-ad', 'kl-sk-tanim', 'kl-sk-ornek']
+        .find(function (s) { return sec.classList.contains(s); });
+    sec.setAttribute('data-soru', window.SEMA_SORU_ETIKET[sinif] || '?');
+    sec.classList.add('kl-gizli');
+
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+/* Gizli parçaya dokunmak cevabı açar. Yakalama evresinde dinliyoruz:
+   şema kartları aynı zamanda süzgeç düğmesi olduğu için, cevabı açan
+   tıklama süzgeci ÇALIŞTIRMAMALI. */
+document.addEventListener('click', function (e) {
+    var g = e.target && e.target.closest ? e.target.closest('.kl-gizli') : null;
+    if (!g) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    g.classList.remove('kl-gizli');
+    g.removeAttribute('data-soru');
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+}, true);
+
+/* Şemanın altına giren SOR şeridinin ortak markup'ı. */
+window.semaSorSerit = function () {
+    return '<div class="kl-sor-serit">' +
+             '<button type="button" class="kl-sor-btn" onclick="semaSor(this)">' +
+               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                 '<circle cx="12" cy="12" r="9"/><path d="M9.4 9.2a2.7 2.7 0 1 1 3.4 2.6c-.5.2-.8.7-.8 1.2v.5"/>' +
+                 '<circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/>' +
+               '</svg>SOR' +
+             '</button>' +
+             '<span class="kl-sor-ip">Bir kutu gizlenir — cevabı söyle, sonra dokunup aç</span>' +
+           '</div>';
+};
+
+/* =========================================================================
+   EK BİLGİ PERDELERİ — "+" düğmesi, kök seçilmemişken bir öğretmen olur
+   -------------------------------------------------------------------------
+   Tabloda bir kutu seçiliyken "+" menüsündeki bir ek o kelimeye eklenir.
+   Hiçbir kutu seçili DEĞİLKEN aynı eke basmak, o ekin ne işe yaradığını
+   anlatan küçük bir perde açar: büyük harf, tek cümlelik tanım, canlı
+   şema (yalın ➜ ekli), iki örnek ve bir "dikkat" satırı. Fazlası yok;
+   amaç öğrenciyi boğmadan çekirdek bilgiyi vermek.
+   ========================================================================= */
+window.EK_BILGI = {
+    /* ---------------- ÖN EKLER ---------------- */
+    "ال": {
+        tur: "on", ad: "Harf-i Ta'rîf", altAd: "belirlilik takısı", renk: "#2980B9",
+        ozet: "Belirsiz ismi belirli yapar: «bir kitap» ➜ «o kitap».",
+        sema: { once: "كِتَابٌ", onceTr: "bir kitap", ek: "الْ", govde: "كِتَاب", sonra: "الْكِتَابُ", sonraTr: "kitap" },
+        ornekler: [
+            { yalin: "بَيْتٌ", ekli: "الْبَيْتُ", tr: "bir ev ➜ ev" },
+            { yalin: "شَمْسٌ", ekli: "الشَّمْسُ", tr: "bir güneş ➜ güneş" }
+        ],
+        dikkat: "الْ gelince TENVİN gider. Ay harflerinde لْ okunur (الْقَمَر), güneş harflerinde okunmaz, sonraki harf şeddelenir (الشَّمْس).",
+        ikon: "belirli"
+    },
+    "وَ": {
+        tur: "on", ad: "Atıf Vâv'ı", altAd: "«ve»", renk: "#20C997",
+        ozet: "İki kelimeyi ya da iki cümleyi birbirine bağlar; sırası önemli değildir.",
+        sema: { once: "قَلَمٌ", onceTr: "kalem", ek: "وَ", govde: "قَلَم", sonra: "وَقَلَمٌ", sonraTr: "ve kalem" },
+        ornekler: [
+            { yalin: "الْكِتَابُ", ekli: "الْكِتَابُ وَالْقَلَمُ", tr: "kitap ve kalem" },
+            { yalin: "جَاءَ", ekli: "جَاءَ وَجَلَسَ", tr: "geldi ve oturdu" }
+        ],
+        dikkat: "Bağladığı kelime, öncekiyle AYNI hâli (i'râbı) alır: مَرَرْتُ بِزَيْدٍ وَعَمْرٍو.",
+        ikon: "baglac"
+    },
+    "لِ": {
+        tur: "on", ad: "Lâm-ı Cer", altAd: "«için, -e ait»", renk: "#F39C12",
+        ozet: "Aitlik ve amaç bildirir; kendinden sonraki ismi ESRELİ (mecrûr) yapar.",
+        sema: { once: "الْمُعَلِّمُ", onceTr: "öğretmen", ek: "لِ", govde: "لْمُعَلِّم", sonra: "لِلْمُعَلِّمِ", sonraTr: "öğretmen için" },
+        ornekler: [
+            { yalin: "اللهُ", ekli: "لِلَّهِ", tr: "Allah'a ait" },
+            { yalin: "وَلَدٌ", ekli: "لِوَلَدٍ", tr: "bir çocuk için" }
+        ],
+        dikkat: "الْ ile birleşince ELİF DÜŞER: لِ + الْبَيْت ➜ لِلْبَيْتِ.",
+        ikon: "cer"
+    },
+    "فَ": {
+        tur: "on", ad: "Atıf Fâ'sı", altAd: "«ve hemen ardından»", renk: "#20C997",
+        ozet: "وَ gibi bağlar, ama SIRA ve SEBEP bildirir: önce o oldu, hemen ardından bu.",
+        sema: { once: "جَلَسَ", onceTr: "oturdu", ek: "فَ", govde: "جَلَسَ", sonra: "فَجَلَسَ", sonraTr: "ve hemen oturdu" },
+        ornekler: [
+            { yalin: "جَاءَ", ekli: "جَاءَ فَجَلَسَ", tr: "geldi ve hemen oturdu" },
+            { yalin: "قَرَأَ", ekli: "قَرَأَ فَفَهِمَ", tr: "okudu, böylece anladı" }
+        ],
+        dikkat: "وَ ile farkı: وَ sadece bağlar, فَ «arada boşluk yok, hemen ardından» der.",
+        ikon: "baglac"
+    },
+    "كَ": {
+        tur: "on", ad: "Kâf-ı Teşbîh", altAd: "«gibi»", renk: "#A78BFA",
+        ozet: "Benzetme yapar; harf-i cerdir, sonraki ismi ESRELİ yapar.",
+        sema: { once: "الْأَسَدُ", onceTr: "aslan", ek: "كَ", govde: "لْأَسَد", sonra: "كَالْأَسَدِ", sonraTr: "aslan gibi" },
+        ornekler: [
+            { yalin: "الْقَمَرُ", ekli: "كَالْقَمَرِ", tr: "ay gibi" },
+            { yalin: "الثَّلْجُ", ekli: "كَالثَّلْجِ", tr: "kar gibi" }
+        ],
+        dikkat: "Fiile bitişmez, yalnız İSMİN başına gelir.",
+        ikon: "cer"
+    },
+    "بِ": {
+        tur: "on", ad: "Bâ-i Cer", altAd: "«ile, -de»", renk: "#F39C12",
+        ozet: "Çoğunlukla ALET/VASITA bildirir: neyle yapıldı? Sonraki ismi ESRELİ yapar.",
+        sema: { once: "الْقَلَمُ", onceTr: "kalem", ek: "بِ", govde: "لْقَلَم", sonra: "بِالْقَلَمِ", sonraTr: "kalemle" },
+        ornekler: [
+            { yalin: "اسْمُ", ekli: "بِسْمِ اللهِ", tr: "Allah'ın adıyla" },
+            { yalin: "الْمِفْتَاحُ", ekli: "بِالْمِفْتَاحِ", tr: "anahtarla" }
+        ],
+        dikkat: "Harf-i cerler ismi ESRELİ yapar; fiilin başına gelmez.",
+        ikon: "cer"
+    },
+
+    /* ---------------- SON EKLER ---------------- */
+    "ا": {
+        tur: "son", ad: "Tenvîn-i Nasb", altAd: "«ـًا»", renk: "#E53935",
+        ozet: "Kelimeyi mef'ûl, hâl ya da zarf yapar; sonuna iki üstün + elif gelir.",
+        sema: { once: "شُكْرٌ", onceTr: "teşekkür", ek: "ـًا", govde: "شُكْر", sonra: "شُكْرًا", sonraTr: "teşekkürler" },
+        ornekler: [
+            { yalin: "كَثِيرٌ", ekli: "كَثِيرًا", tr: "çokça" },
+            { yalin: "أَهْلٌ", ekli: "أَهْلًا وَسَهْلًا", tr: "hoş geldin" }
+        ],
+        dikkat: "Kelimenin sonu ة veya ء ise ELİF YAZILMAZ: مَدْرَسَةً, مَاءً.",
+        ikon: "tenvin"
+    },
+    "ة": {
+        tur: "son", ad: "Te'nîs Tâ'sı", altAd: "dişillik", renk: "#EF5350",
+        ozet: "Eril kelimeyi dişil yapar; ayrıca bir cinsin TEK tanesini gösterir.",
+        sema: { once: "مُعَلِّمٌ", onceTr: "öğretmen (erkek)", ek: "ة", govde: "مُعَلِّم", sonra: "مُعَلِّمَةٌ", sonraTr: "öğretmen (kadın)" },
+        ornekler: [
+            { yalin: "طَالِبٌ", ekli: "طَالِبَةٌ", tr: "öğrenci ➜ kız öğrenci" },
+            { yalin: "شَجَرٌ", ekli: "شَجَرَةٌ", tr: "ağaçlar ➜ bir ağaç" }
+        ],
+        dikkat: "Durunca «h» okunur (مُعَلِّمَهْ), devam edilince «t» okunur (مُعَلِّمَتُنَا).",
+        ikon: "disil"
+    },
+    "يّ": {
+        tur: "son", ad: "Nisbet Yâ'sı", altAd: "aidiyet", renk: "#7C3AED",
+        ozet: "«O yere, o soya, o şeye ait» anlamı verir; sıfat yapar.",
+        sema: { once: "تُرْكِيَا", onceTr: "Türkiye", ek: "ـيّ", govde: "تُرْك", sonra: "تُرْكِيٌّ", sonraTr: "Türk" },
+        ornekler: [
+            { yalin: "الْعَرَب", ekli: "عَرَبِيٌّ", tr: "Araplar ➜ Arap (olan)" },
+            { yalin: "مَكَّة", ekli: "مَكِّيٌّ", tr: "Mekke ➜ Mekkeli" }
+        ],
+        dikkat: "Sondaki ة ve uzatma harfleri DÜŞER: مَكَّة ➜ مَكِّيّ.",
+        ikon: "nisbet"
+    },
+    "يّة": {
+        tur: "son", ad: "Nisbet + Te'nîs", altAd: "«ـيَّة»", renk: "#7C3AED",
+        ozet: "Nisbetin dişili; ayrıca SOYUT İSİM (kavram adı) yapar.",
+        sema: { once: "حُرّ", onceTr: "hür", ek: "ـيَّة", govde: "حُرّ", sonra: "حُرِّيَّةٌ", sonraTr: "hürriyet" },
+        ornekler: [
+            { yalin: "تُرْكِيٌّ", ekli: "تُرْكِيَّةٌ", tr: "Türk ➜ Türk (kadın)" },
+            { yalin: "إِنْسَان", ekli: "إِنْسَانِيَّةٌ", tr: "insan ➜ insanlık" }
+        ],
+        dikkat: "Kavram adı yaptığında artık sıfat değil, İSİMDİR: حُرِّيَّة «hürriyet».",
+        ikon: "nisbet"
+    },
+    "انِ": {
+        tur: "son", ad: "Tesniye (İkil)", altAd: "merfû hâli", renk: "#16A085",
+        ozet: "Arapçada «iki tane» için ayrı bir sayı vardır: ne tekil ne çoğul.",
+        sema: { once: "كِتَابٌ", onceTr: "bir kitap", ek: "ـانِ", govde: "كِتَاب", sonra: "كِتَابَانِ", sonraTr: "iki kitap" },
+        ornekler: [
+            { yalin: "مُسْلِمٌ", ekli: "مُسْلِمَانِ", tr: "iki müslüman" },
+            { yalin: "مُعَلِّمَةٌ", ekli: "مُعَلِّمَتَانِ", tr: "iki kadın öğretmen" }
+        ],
+        dikkat: "Bu ek ÖZNE olduğunda kullanılır (merfû). Nesne/mecrur olunca ـَيْنِ olur.",
+        ikon: "ikil"
+    },
+    "يْنِ": {
+        tur: "son", ad: "Tesniye (İkil)", altAd: "mansûb / mecrûr hâli", renk: "#16A085",
+        ozet: "İkilin nesne ve harf-i cerden sonraki hâli.",
+        sema: { once: "كِتَابَانِ", onceTr: "iki kitap (özne)", ek: "ـَيْنِ", govde: "كِتَاب", sonra: "كِتَابَيْنِ", sonraTr: "iki kitabı" },
+        ornekler: [
+            { yalin: "قَرَأْتُ", ekli: "قَرَأْتُ كِتَابَيْنِ", tr: "iki kitap okudum" },
+            { yalin: "فِي", ekli: "فِي يَدَيْنِ", tr: "iki elde" }
+        ],
+        dikkat: "ـانِ ➜ ـَيْنِ değişimi, tekildeki ötre ➜ üstün/esre değişiminin ikildeki karşılığıdır.",
+        ikon: "ikil"
+    },
+    "ونَ": {
+        tur: "son", ad: "Cem'-i Müzekker Sâlim", altAd: "merfû hâli", renk: "#2980B9",
+        ozet: "Akıllı ERKEKLER için düzenli çoğul; kelimenin yapısı bozulmaz, sona ek gelir.",
+        sema: { once: "مُسْلِمٌ", onceTr: "bir müslüman", ek: "ـونَ", govde: "مُسْلِم", sonra: "مُسْلِمُونَ", sonraTr: "müslümanlar" },
+        ornekler: [
+            { yalin: "مُعَلِّمٌ", ekli: "مُعَلِّمُونَ", tr: "öğretmenler" },
+            { yalin: "مُؤْمِنٌ", ekli: "الْمُؤْمِنُونَ", tr: "mü'minler" }
+        ],
+        dikkat: "Yalnız AKILLI VARLIKLARIN erkekleri için kullanılır. Özne olunca ـُونَ, değilse ـِينَ.",
+        ikon: "cogul"
+    },
+    "ينَ": {
+        tur: "son", ad: "Cem'-i Müzekker Sâlim", altAd: "mansûb / mecrûr hâli", renk: "#2980B9",
+        ozet: "Düzenli eril çoğulun nesne ve harf-i cerden sonraki hâli.",
+        sema: { once: "مُسْلِمُونَ", onceTr: "müslümanlar (özne)", ek: "ـينَ", govde: "مُسْلِم", sonra: "مُسْلِمِينَ", sonraTr: "müslümanları" },
+        ornekler: [
+            { yalin: "رَأَيْتُ", ekli: "رَأَيْتُ الْمُعَلِّمِينَ", tr: "öğretmenleri gördüm" },
+            { yalin: "مَعَ", ekli: "مَعَ الصَّادِقِينَ", tr: "sadıklarla beraber" }
+        ],
+        dikkat: "ونَ ➜ ينَ değişimi cümledeki GÖREV değişikliğini gösterir, anlamı değiştirmez.",
+        ikon: "cogul"
+    },
+    "ات": {
+        tur: "son", ad: "Cem'-i Müennes Sâlim", altAd: "düzenli dişil çoğul", renk: "#EF5350",
+        ozet: "Dişil kelimeler için düzenli çoğul; ة düşer, yerine ـَات gelir.",
+        sema: { once: "مُعَلِّمَةٌ", onceTr: "bir kadın öğretmen", ek: "ـَات", govde: "مُعَلِّم", sonra: "مُعَلِّمَاتٌ", sonraTr: "kadın öğretmenler" },
+        ornekler: [
+            { yalin: "طَالِبَةٌ", ekli: "طَالِبَاتٌ", tr: "kız öğrenciler" },
+            { yalin: "سَاعَةٌ", ekli: "سَاعَاتٌ", tr: "saatler" }
+        ],
+        dikkat: "Önce ة ATILIR, sonra ـَات eklenir: مُعَلِّمَة ➜ مُعَلِّم ➜ مُعَلِّمَات.",
+        ikon: "cogul"
+    },
+    "يَّات": {
+        tur: "son", ad: "Nisbet + Dişil Çoğul", altAd: "«ـيَّات»", renk: "#7C3AED",
+        ozet: "Nisbet ekli dişil kelimelerin çoğulu; soyut isimleri de çoğullar.",
+        sema: { once: "حُرِّيَّةٌ", onceTr: "hürriyet", ek: "ـيَّات", govde: "حُرّ", sonra: "حُرِّيَّاتٌ", sonraTr: "hürriyetler" },
+        ornekler: [
+            { yalin: "عَرَبِيَّةٌ", ekli: "عَرَبِيَّاتٌ", tr: "Arap kadınlar" },
+            { yalin: "شَخْصِيَّةٌ", ekli: "شَخْصِيَّاتٌ", tr: "şahsiyetler" }
+        ],
+        dikkat: "ـيَّة ➜ ـيَّات: ة atılır, ـَات gelir. Kural ـَات ekiyle aynıdır.",
+        ikon: "cogul"
+    }
+};
+
+/* Her ek ailesinin küçük şematik simgesi — hepsi tek stroke diliyle çizildi. */
+window.EK_IKON = {
+    belirli: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>',
+    baglac:  '<path d="M4 12h5a3 3 0 0 0 3-3V8"/><path d="M20 12h-5a3 3 0 0 1-3-3V8"/><circle cx="12" cy="17" r="2.4"/>',
+    cer:     '<path d="M5 8v8"/><path d="M19 8v8"/><path d="M5 12h14"/><path d="M16 9l3 3-3 3"/>',
+    tenvin:  '<path d="M6 15h12"/><circle cx="9" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.4" fill="currentColor" stroke="none"/>',
+    disil:   '<circle cx="12" cy="9" r="4.5"/><path d="M12 13.5V20"/><path d="M9 17.5h6"/>',
+    nisbet:  '<path d="M12 4v6"/><circle cx="12" cy="13" r="3"/><path d="M7 20c1.6-2.2 8.4-2.2 10 0"/>',
+    ikil:    '<rect x="3.5" y="7" width="7" height="10" rx="2"/><rect x="13.5" y="7" width="7" height="10" rx="2"/>',
+    cogul:   '<rect x="2.5" y="8" width="5.5" height="8" rx="1.6"/><rect x="9.2" y="8" width="5.5" height="8" rx="1.6"/><rect x="16" y="8" width="5.5" height="8" rx="1.6"/>'
+};
+
+/* Perdeyi kurar ve doldurur. tur bilgisi ok yönünü belirler:
+   ön ek Arapçada kelimenin SAĞINA, son ek SOLUNA yapışır. */
+/* Türkçe cümlenin içindeki Arapça parçaları yalıtır: yalıtılmazsa
+   iki yönlü (bidi) metin karışıyor, cümle sonundaki nokta ve parantez
+   yer değiştiriyor. */
+window.ekbArYalit = function (metin) {
+    return String(metin || '').replace(
+        /([\u0621-\u064A][\u0621-\u065F\u0670\u06D6-\u06ED\u0640 ]*)/g,
+        function (m) {
+            var son = m.match(/[ ]+$/);
+            var oz = son ? m.slice(0, -son[0].length) : m;
+            return '<i class="ekb-ar" dir="rtl">' + oz + '</i>' + (son ? son[0] : '');
+        }
+    );
+};
+
+window.ekBilgiAc = function (ek) {
+    var d = window.EK_BILGI[ek];
+    if (!d) return false;
+    var perde = document.getElementById('ek-bilgi-perde');
+    if (!perde) return false;
+
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+
+    var ikon = window.EK_IKON[d.ikon] || window.EK_IKON.belirli;
+    var ornekHtml = d.ornekler.map(function (o) {
+        return '<div class="ekb-ornek">' +
+               '<span class="ekb-o-yalin" dir="rtl">' + o.yalin + '</span>' +
+               '<span class="ekb-o-ok">➜</span>' +
+               '<span class="ekb-o-ekli" dir="rtl">' + o.ekli + '</span>' +
+               '<span class="ekb-o-tr">' + o.tr + '</span></div>';
+    }).join('');
+
+    /* ŞEMA: solda yalın hâl, ortada uçup gelen ek, sağda sonuç.
+       Ok RTL yönünde akar; ek kutusu her turda yerine oturur. */
+    var semaHtml =
+        '<div class="ekb-sema" dir="rtl">' +
+          '<div class="ekb-adim">' +
+            '<div class="ekb-kutu ekb-yalin" dir="rtl">' + d.sema.once + '</div>' +
+            '<small>yalın hâl</small>' +
+          '</div>' +
+          '<div class="ekb-gecis">' +
+            '<div class="ekb-ucan" dir="rtl">' + d.sema.ek + '</div>' +
+            '<svg class="ekb-ok-svg" viewBox="0 0 72 18" aria-hidden="true">' +
+              '<path class="ekb-ok-yol" d="M68 9 H10"/>' +
+              '<path class="ekb-ok-uc" d="M16 4 L8 9 L16 14"/>' +
+            '</svg>' +
+            '<small>' + (d.tur === 'on' ? 'başa gelir' : 'sona gelir') + '</small>' +
+          '</div>' +
+          '<div class="ekb-adim">' +
+            '<div class="ekb-kutu ekb-ekli" dir="rtl">' + d.sema.sonra + '</div>' +
+            '<small>ekli hâl</small>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ekb-sema-tr"><span>' + d.sema.onceTr + '</span><b>➜</b><span>' + d.sema.sonraTr + '</span></div>';
+
+    perde.querySelector('.ekb-kart').style.setProperty('--ekb-renk', d.renk);
+    perde.querySelector('.ekb-govde').innerHTML =
+        '<div class="ekb-tepe">' +
+          '<div class="ekb-harf" dir="rtl">' + (d.tur === 'on' ? ek + 'ـ' : 'ـ' + ek) + '</div>' +
+          '<div class="ekb-kimlik">' +
+            '<div class="ekb-rozet">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ikon + '</svg>' +
+              (d.tur === 'on' ? 'ÖN EK' : 'SON EK') +
+            '</div>' +
+            '<h3>' + d.ad + '</h3>' +
+            '<p class="ekb-alt">' + d.altAd + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<p class="ekb-ozet">' + ekbArYalit(d.ozet) + '</p>' +
+        semaHtml +
+        '<div class="ekb-ornekler">' + ornekHtml + '</div>' +
+        '<div class="ekb-dikkat"><b>Dikkat</b><span>' + ekbArYalit(d.dikkat) + '</span></div>';
+
+    /* Kapanış animasyonu sürerken yeni bir ek açılırsa, eski kapanışın
+       zamanlayıcısı yeni perdeyi gizlemesin diye iptal edilir. */
+    if (window._ekbKapatZaman) { clearTimeout(window._ekbKapatZaman); window._ekbKapatZaman = null; }
+    perde.style.display = 'flex';
+    requestAnimationFrame(function () { perde.classList.add('ekb-acik'); });
+    return true;
+};
+
+window.ekBilgiKapat = function () {
+    var perde = document.getElementById('ek-bilgi-perde');
+    if (!perde) return;
+    perde.classList.remove('ekb-acik');
+    if (window._ekbKapatZaman) clearTimeout(window._ekbKapatZaman);
+    window._ekbKapatZaman = setTimeout(function () {
+        perde.style.display = 'none'; window._ekbKapatZaman = null;
+    }, 200);
+};
+
+/* Escape ile de kapansın */
+document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var perde = document.getElementById('ek-bilgi-perde');
+    if (perde && perde.style.display === 'flex') window.ekBilgiKapat();
+});
+
 function toggleSuffixMenu(e) {
     if (e) {
         e.stopPropagation();
@@ -3090,7 +3618,12 @@ function toggleSuffixMenu(e) {
 // 3. ÖN EK MOTORU (Tetikleyicileri ve Örnek Cümle (!) Butonu Eklenmiş)
 // ===============================================================
 function applyPrefix(prefix) {
-    if (!lastClickedBoxTextSpan) return;
+    /* Hiçbir kutu seçili değilken "+" menüsündeki ek, kelimeye eklenecek
+       bir parça değil; öğrenilecek bir konudur. Ek bilgi perdesini açar. */
+    if (!lastClickedBoxTextSpan) {
+        if (typeof ekBilgiAc === 'function' && ekBilgiAc(prefix)) return;
+        return;
+    }
 
     const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
 
@@ -3255,6 +3788,7 @@ function applyPrefix(prefix) {
 // ===============================================================
 function applySuffix(rawSuffix) {
     if (!lastClickedBoxTextSpan) {
+        if (typeof ekBilgiAc === 'function' && ekBilgiAc(rawSuffix)) return;
         if(typeof SoundEngine !== "undefined") SoundEngine.playClose();
         return; 
     }
@@ -3467,7 +4001,11 @@ function applySuffix(rawSuffix) {
 // 4. SON EK (SUFFIX) MOTORU (Bağlanmayan Harflerde Doğru Form Zekası)
 // ===============================================================
 function applySuffix(suffix) {
-    if (!lastClickedBoxTextSpan) return;
+    /* Kutu seçili değilse ekin kendisini anlatan perdeyi aç. */
+    if (!lastClickedBoxTextSpan) {
+        if (typeof ekBilgiAc === 'function' && ekBilgiAc(suffix)) return;
+        return;
+    }
     const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
 
     // FİİL ZIRHI
@@ -5127,6 +5665,12 @@ const SarfEngine = {
         res = res.replace(/ُ(ّ?)وْ/g, "ُ$1و");
         res = res.replace(/ِ(ّ?)يْ/g, "ِ$1ي");
         res = res.replace(/َاْ/g, "َا");
+
+        // 7a-2. İ'LÂL Bİ'L-KALB: KESRADAN SONRAKİ SÂKİN وَاو YÂ'YA DÖNER.
+        // Arapçada esreli harften sonra cezimli و duramaz, ي olur:
+        // مِوْزَان ⬅️ مِيزَان · مِوْرَاث ⬅️ مِيرَاث · جِوْرَان ⬅️ جِيرَان · إِوْمَان ⬅️ إِيمَان
+        // (Şeddeli و bu kuralın dışındadır: o zaten harekelidir.)
+        res = res.replace(/ِوْ/g, "ِي");
 
         // 7b. HEMZE KÜRSÜSÜ (şedde araya girse de çalışan tamamlayıcılar)
         // Kendi harekesi ötre/esre olan hemze, önünde uzatma elifi YOKSA
@@ -9978,7 +10522,7 @@ function showRootOfDay() {
         if(ended){ flip(c); return; }
         if(flip(c)){ var rem=curRemaining()-20000; remaining=Math.max(0,rem); if(remaining<=0){ endGame(); } else { startDrain(); } }
       }); });
-      function reposition(){ if(svg && panel && rect){ svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px'; var w=panel.offsetWidth,h=panel.offsetHeight,sw=6; svg.setAttribute('width',w); svg.setAttribute('height',h); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); } }
+      function reposition(){ if(svg && panel && rect){ var w=panel.offsetWidth,h=panel.offsetHeight,sw=6; /* Perde kapanmışsa ölçü sıfırdır: negatif <rect> yazmayalım. */ if(!panel.isConnected || w<=sw || h<=sw) return; svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px'; svg.setAttribute('width',w); svg.setAttribute('height',h); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); } }
       window.addEventListener('resize', reposition);
       setTimeout(function(){ buildTimer(); startDrain(); }, 550);
     })();
@@ -10145,10 +10689,12 @@ function maratonSuzgecCiz() {
           '<div class="mt-kol mt-kol-sema">' +
             '<div class="mt-kol-baslik mt-b-aksam">AKSÂM-I SEB\'A' +
               '<i class="fas fa-info-circle mt-bilgi" title="Aksâm-ı Seb\'a nedir?" onclick="showAksamSebaGenelInfo(event)"></i>' +
+              semaBuyutecBtn() +
             '</div>' +
+            /* SOLDA mu'tel, SAĞDA sahih dursun diye mu'tel önce yazılır. */
             '<div class="mt-sema-alan"><div class="kl-sema"><div class="kl-sema-dallar">' +
-               sutun('SAHİH', 'sahih') + sutun("MU\'TEL", 'mutel') +
-            '</div></div></div>' +
+               sutun("MU\'TEL", 'mutel') + sutun('SAHİH', 'sahih') +
+            '</div>' + semaSorSerit() + '</div></div>' +
           '</div>' +
           '<div class="mt-kol mt-rakam-sutun">' +
             '<div class="mt-kol-baslik mt-b-rakam">HARF</div>' +

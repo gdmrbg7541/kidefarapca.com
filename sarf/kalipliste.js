@@ -553,13 +553,14 @@
         var kap = document.createElement('div');
         kap.className = 'kl-sema';
 
-        var kok = document.createElement('button');
-        kok.type = 'button';
-        kok.className = 'kl-sema-kok' + (suzgec.deger ? '' : ' kl-sema-secili');
-        kok.title = 'Süzgeci kaldır';
-        kok.innerHTML = '<span>Hepsi</span><b>' + tumler.length + '</b>';
-        kok.addEventListener('click', function () { sec(null, 'aksam'); });
-        kap.appendChild(kok);
+        /* Şemanın üstünde artık "Hepsi" düğmesi yok: seçili karta ikinci
+           kez basmak süzgeci zaten kaldırıyor. Yerinde ince bir başlık ve
+           yanında şemayı büyüten düğme duruyor. */
+        var bas = document.createElement('div');
+        bas.className = 'kl-sema-tepe';
+        bas.innerHTML = '<span>AKSÂM-I SEB\'A</span>' +
+                        (typeof semaBuyutecBtn === 'function' ? semaBuyutecBtn() : '');
+        kap.appendChild(bas);
 
         var dallar = document.createElement('div');
         dallar.className = 'kl-sema-dallar';
@@ -583,6 +584,13 @@
             dallar.appendChild(sut);
         });
         kap.appendChild(dallar);
+        /* SOR şeridi: şemayı kendi kendini yoklama tahtasına çevirir.
+           Markup ve mantık ana betikte (semaSorSerit / semaSor). */
+        if (typeof semaSorSerit === 'function') {
+            var sor = document.createElement('div');
+            sor.innerHTML = semaSorSerit();
+            kap.appendChild(sor.firstChild);
+        }
         return kap;
     }
 
@@ -1198,11 +1206,17 @@
        ekran ölçüsü animasyonun ortasında değişip hareketi kırmasın. */
     var KL_EGRI_AC = 'cubic-bezier(.22,1,.36,1)';
     var KL_EGRI_KAP = 'cubic-bezier(.45,0,.25,1)';
-    var KL_AC_MS = 1350;      /* satır süzülüşü + şeridin açılışı */
+    var KL_AC_MS = 1500;      /* veznin hareketi: satır süzülüşü + şeridin açılışı */
     var KL_LISTE_MS = 1050;   /* örneklerin aşağı inişi           */
     var KL_KAP_SERIT = 700;   /* şeridin yukarı kapanışı          */
     var KL_KAP_LISTE = 850;   /* örneklerin kapanışı              */
     var KL_SATIR_GERI = 1300; /* satırın eski yerine dönüşü       */
+    /* Tam ekran oturduktan sonra, açılış animasyonundan önceki nefes payı:
+       tarayıcının tam ekran bildirimi geçsin, ekran tamamen dursun. */
+    var KL_TAM_EKRAN_PAY = 500;
+    function kln() {
+        return (window.performance && performance.now) ? performance.now() : +new Date();
+    }
     function klSn(ms) { return (ms / 1000) + 's'; }
 
     var tamEkranBiz = false, tamEkranZaman = null;
@@ -1227,21 +1241,60 @@
        yerleştikten SONRA (fullscreenchange + iki kare) başlatılır; olay
        hiç gelmezse 700 ms sonra yine de başlar. */
     function tamEkranBekle(is) {
-        var bitti = false, zaman;
-        function calis() {
+        var bitti = false, degisti = false, tavan, ilkTavan;
+        var sonEn = window.innerWidth, sonBoy = window.innerHeight, sabit = 0;
+        var fsAn = 0;   /* tam ekranın açıldığı an */
+
+        function bitir() {
             if (bitti) return; bitti = true;
-            document.removeEventListener('fullscreenchange', calis);
-            document.removeEventListener('webkitfullscreenchange', calis);
-            clearTimeout(zaman);
-            /* İki kare + kısa bir soluklanma: tam ekran yerleşirken
-               tarayıcı bir kare daha ölçü değiştirebiliyor. */
+            document.removeEventListener('fullscreenchange', olay);
+            document.removeEventListener('webkitfullscreenchange', olay);
+            clearTimeout(tavan); clearTimeout(ilkTavan);
+            /* ÖLÇÜ DURULDU ≠ GEÇİŞ BİTTİ. macOS'ta pencere ölçüsü tam
+               ekrana geçerken tek hamlede son değerine atlar, ama ekranda
+               görülen kayma (ve tarayıcının "Çıkmak için Esc" bildirimi)
+               yarım saniye daha sürer. Ölçü durduktan sonra bu kadar daha
+               bekliyoruz ki vezin animasyonu bomboş, oturmuş bir ekranda
+               başlasın. */
+            /* Bekleme TAM EKRANIN AÇILDIĞI ANDAN sayılır; ölçü durulması
+               için harcanan kareler bu yarım saniyenin İÇİNDEDİR. Böylece
+               animasyon, tam ekrandan tam olarak KL_TAM_EKRAN_PAY kadar
+               sonra başlar — makinenin hızına göre kaymaz. */
+            var pay = 0;
+            if (degisti) {
+                var gecen = fsAn ? (kln() - fsAn) : 0;
+                pay = Math.max(0, KL_TAM_EKRAN_PAY - gecen);
+            }
             requestAnimationFrame(function () {
-                requestAnimationFrame(function () { setTimeout(is, 60); });
+                requestAnimationFrame(function () { setTimeout(is, pay); });
             });
         }
-        document.addEventListener('fullscreenchange', calis);
-        document.addEventListener('webkitfullscreenchange', calis);
-        zaman = setTimeout(calis, 700);
+        function olay() { degisti = true; if (!fsAn) fsAn = kln(); }
+        document.addEventListener('fullscreenchange', olay);
+        document.addEventListener('webkitfullscreenchange', olay);
+
+        /* NEDEN OLAYA DEĞİL ÖLÇÜYE BAKIYORUZ:
+           fullscreenchange olayı tam ekran geçişinin SONUNDA değil
+           BAŞINDA gelir. macOS'ta bu geçiş yaklaşık bir saniyelik bir
+           sistem animasyonudur; olayı bekleyip hemen başlarsak kalıbın
+           açılış animasyonu ekran hâlâ büyürken oynuyor ve kekliyor.
+           Bunun yerine PENCERE ÖLÇÜSÜNÜN DURULMASINI bekliyoruz: ölçü
+           üst üste 8 kare değişmediyse geçiş oturmuştur. */
+        function bak() {
+            if (bitti) return;
+            var e = window.innerWidth, b = window.innerHeight;
+            if (e !== sonEn || b !== sonBoy) { degisti = true; if (!fsAn) fsAn = kln(); sabit = 0; sonEn = e; sonBoy = b; }
+            else sabit++;
+            if (degisti && sabit >= 8) { bitir(); return; }
+            requestAnimationFrame(bak);
+        }
+        requestAnimationFrame(bak);
+
+        /* Tam ekran hiç açılmadıysa (tarayıcı reddetti, izin yok) ölçü
+           de değişmez: 600 ms sonra beklemeden başla. */
+        ilkTavan = setTimeout(function () { if (!degisti) bitir(); }, 600);
+        /* Geçiş uzarsa yine de sonsuza kadar bekleme. */
+        tavan = setTimeout(bitir, 2400);
     }
     function tamEkranKapat() {
         if (!tamEkranBiz) return;
@@ -1273,12 +1326,32 @@
         if (odak.muc) mucHizala(); else sutunlariHizala();
     });
 
+    /* Tam ekran geçişi sürerken hangi veznin beklediği. */
+    var bekleyenNo = null;
+    function bekleyenVarMi() { return bekleyenNo !== null; }
+
     function ac(no) {
         no = parseInt(no, 10);
         if (!isFinite(no)) return false;
+
+        /* ZATEN TAM EKRANDAYSA beklenecek bir şey yok. */
+        if (tamEkranMi()) return acGovde(no);
+
         var istendi = tamEkranAc();        /* tıklamanın kendi jesti geçerliyken */
-        if (istendi) { tamEkranBekle(function () { acGovde(no); }); return true; }
-        return acGovde(no);
+        if (!istendi) return acGovde(no);  /* tam ekran yok ya da reddedildi */
+
+        /* İLK DOKUNUŞ YALNIZ TAM EKRANA GEÇİRİR.
+           Vezin açılmaz, hiçbir animasyon başlamaz. Tam ekran oturup
+           tarayıcının bildirimi geçtikten sonra, sanki vezne İKİNCİ KEZ
+           dokunulmuş gibi liste açılır. Bekleme sırasında başka bir vezne
+           dokunulursa hedef güncellenir, iki liste birden açılmaz. */
+        bekleyenNo = no;
+        tamEkranBekle(function () {
+            var n = bekleyenNo;
+            bekleyenNo = null;
+            if (n !== null) acGovde(n);
+        });
+        return true;
     }
     function acGovde(no) {
         /* PERDE ARTIK YALNIZ YEDEK: mezid (52-105) tablonun içinde,
@@ -1365,19 +1438,54 @@
     }
     /* FLIP: satır eski yerinden yenisine süzülür. Dil babodak.js:535
        ile aynı — iki odak arasında hareket farkı olmasın. */
-    function kaydirTr(row, eskiTop) {
+
+    /* ---------- AÇIK VEZNİN KÖŞESİNDEKİ ÇARPI ----------
+       Kırmızı vurgulu kutu "açık olan" demek, ama nereden kapatılacağı
+       ilk bakışta belli olmuyordu. Kutunun köşesine küçük bir çarpı
+       konuyor; ona ya da veznin kendisine dokunmak kapatıyor. */
+    function kapatXKur(kutu) {
+        kapatXSil();
+        if (!kutu) return;
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ko-kapat-x';
+        b.title = 'Bu vezni kapat';
+        b.setAttribute('aria-label', 'Bu vezni kapat');
+        b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+                      'stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+        b.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+            odakKapat();
+        }, true);
+        kutu.appendChild(b);
+    }
+    function kapatXSil() {
+        var eski = document.querySelectorAll('.ko-kapat-x');
+        Array.prototype.slice.call(eski).forEach(function (e) { e.remove(); });
+    }
+
+    function kaydirTr(row, eskiTop, bittiCb) {
+        var cagrildi = false;
+        function haber() { if (cagrildi) return; cagrildi = true; if (bittiCb) bittiCb(); }
         var delta = eskiTop - row.getBoundingClientRect().top;
-        if (!delta) return;
+        if (!delta) { haber(); return; }
         row.style.transition = 'none';
         row.style.transform = 'translateY(' + delta + 'px)';
         void row.offsetHeight;
         row.style.transition = 'transform ' + klSn(KL_SATIR_GERI) + ' ' + KL_EGRI_AC;
         row.style.transform = '';
+        var yedek;
         var bitis = function () {
             row.style.transition = ''; row.style.transform = '';
             row.removeEventListener('transitionend', bitis);
+            clearTimeout(yedek);
+            haber();
         };
         row.addEventListener('transitionend', bitis);
+        /* Geçiş olayı hiç gelmezse (satır gizlendi, kesildi) yine de haber ver */
+        yedek = setTimeout(bitis, KL_SATIR_GERI + 220);
     }
     /* Örnek matrisinin sütunları ÜSTTEKİ satırdan ölçülür. Elle genişlik
        yazsaydık tablo yeniden düzenlendiğinde hizalama sessizce kayardı. */
@@ -1458,6 +1566,7 @@
             if (odak.kutu) odak.kutu.classList.remove('ko-sec');
             odak.no = no; odak.kutu = kutu;
             kutu.classList.add('ko-sec');
+            kapatXKur(kutu);
             odakVeriKur(no);
             faz2();                           /* animasyon yarım kaldıysa tamamla */
             suzgecCiz(); govdeCiz();
@@ -1550,6 +1659,7 @@
                  kutu: kutu, origNext: n, zaman: [] };
         satir.classList.add('ko-odak-satir');
         kutu.classList.add('ko-sec');
+        kapatXKur(kutu);
         govde2.closest('table').classList.add('ko-acik');
         /* Öteki sekme (mücerred) akıştan çıkar: stor perde pencerenin
            kırpmasını kaldırdığı için bandın sağ yarısı ekranın son
@@ -1591,8 +1701,10 @@
             satir.style.transition = ''; satir.style.transform = '';
         }, KL_AC_MS + 60));
 
-        /* ---- FAZ 2: veznin altı boşalır, sonra örnekler belirir ---- */
-        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS - 30));
+        /* ---- FAZ 2: ÖNCE VEZİN YERİNE OTURUR, SONRA ÖRNEKLER AÇILIR ----
+           Bekleme KL_AC_MS'in bir tık ÜSTÜNDE: satır süzülüşü tamamen
+           bitsin, örnekler onun üstüne binmesin. */
+        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS + 40));
 
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
@@ -1635,12 +1747,21 @@
     /* Kapanışın SON adımı: DOM eski hâline döner. Animasyonun sonunda ya
        da (sessiz kapanışta) doğrudan çağrılır. Bir kez çalışır. */
     var kapanan = null;
-    function odakSonlandir(st, sessiz) {
-        if (st.bitti) return;
+    function odakSonlandir(st, sessiz, bittiCb) {
+        function haber() { if (bittiCb) { var f = bittiCb; bittiCb = null; f(); } }
+        if (st.bitti) { haber(); return; }
         st.bitti = true;
         if (kapanan === st) kapanan = null;
         storSifirla();                        /* üst çubuk sınıfları temizlensin */
-        if (st.muc) { mucSonlandir(st, sessiz); return; }   /* mücerred kendi yolundan */
+        kapatXSil();
+        if (st.muc) {                          /* mücerred kendi yolundan */
+            mucSonlandir(st, sessiz);
+            /* Mücerredde tepeye çıkan bir SATIR yok; kutular kendi
+               yerlerine süzülür (kutuSuzul, KL_AC_MS süresiyle). Tam
+               ekrandan çıkış o süzülüş bitince istenir. */
+            if (sessiz) haber(); else setTimeout(haber, KL_AC_MS + 80);
+            return;
+        }
         document.body.classList.remove('mezid-odak');
         var govde2 = st.satir.parentElement;
         var eskiTop = st.satir.getBoundingClientRect().top;
@@ -1666,8 +1787,8 @@
                 var cg = tablo.querySelector('colgroup.ko-sutun');
                 if (cg) cg.remove();
             }
-            kaydirTr(st.satir, eskiTop);
-        }
+            kaydirTr(st.satir, eskiTop, haber);
+        } else haber();
         if (typeof window.kidefUstKilit === 'function') window.kidefUstKilit();
         if (!sessiz && typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
     }
@@ -1717,13 +1838,19 @@
                 kap.style.height = '0px';
             }
             st.zaman.push(setTimeout(function () {
-                odakSonlandir(st, false);
-                /* TAM EKRANDAN ÇIKIŞ EN SONDA: şerit kapandı, örnekler
-                   kapandı, satır da eski yerine oturdu — ancak o zaman.
-                   Ortada çıksaydı ekran yeniden ölçülüp hareket kırılıyordu.
-                   Bu arada yeni bir vezin açılırsa çıkış kendiliğinden
-                   iptal olur (tamEkranKapatGecikmeli "odak" varsa durur). */
-                setTimeout(tamEkranKapatGecikmeli, KL_SATIR_GERI + 60);
+                /* TAM EKRANDAN ÇIKIŞ EN SONDA — ve artık SAATE DEĞİL,
+                   SATIRIN KENDİSİNE bakarak. Mezidde alttaki bir satır
+                   tıklandığında o satır tepeye çıkıyor; kapanışta aynı
+                   yolu geri iniyor. macOS'ta tam ekrandan çıkış sağdan
+                   gelen siyah bir perdeyle başlıyor; satır hâlâ yoldayken
+                   çıkılırsa tablo başka bir yerden geliyormuş gibi
+                   görünüyordu. Şimdi satırın dönüş geçişi BİTTİKTEN sonra
+                   çıkılıyor. Bu arada yeni bir vezin açılırsa çıkış
+                   kendiliğinden iptal olur (tamEkranKapatGecikmeli
+                   "odak" varsa durur). */
+                odakSonlandir(st, false, function () {
+                    setTimeout(tamEkranKapatGecikmeli, 120);   /* satır otursun, göz alışsın */
+                });
             }, kap ? B + 40 : 0));
         }, sar ? A + 30 : 0));
     }
@@ -2002,6 +2129,7 @@
             k.classList.add('muc-buyuk');
         });
         kutu.classList.add('ko-sec');
+        kapatXKur(kutu);
 
         odak = { no: no, muc: true, satir: lv, suzgecTr: f, govdeTr: null,
                  govdeHazir: g, kutu: kutu, kutular: kutular, evler: evler,
@@ -2044,7 +2172,7 @@
         }, KL_AC_MS + 70));
 
         /* ---- FAZ 2: kutular yerine oturduktan sonra örnekler belirir ---- */
-        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS + 30));
+        odak.zaman.push(setTimeout(function () { faz2(); }, KL_AC_MS + 40));
 
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
@@ -2067,6 +2195,7 @@
             if (st.kutu) st.kutu.classList.remove('ko-sec');
             st.no = no; acikNo = no; st.kutu = yeniKutu;
             yeniKutu.classList.add('ko-sec');
+            kapatXKur(yeniKutu);
             faz2();
             govdeCiz();
             if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
@@ -2119,6 +2248,7 @@
         st.kutular = kutular; st.levhaNolar = yeniNolar;
         st.no = no; st.kutu = yeniKutu;
         yeniKutu.classList.add('ko-sec');
+        kapatXKur(yeniKutu);
         odakVeriKur(no);
         mucLevhaBoya();
         faz2();                               /* animasyon yarım kaldıysa tamamla */
@@ -2141,6 +2271,7 @@
     /* Mücerred kapanışının son adımı: kutu FLIP ile evine döner, satırlar
        geri gelir. odakSonlandir'dan dallanır. */
     function mucSonlandir(st, sessiz) {
+        kapatXSil();
         document.body.classList.remove('muc-odak', 'muc-serit-yok', 'muc-bar-acik');
         var govde1 = st.satir.parentElement;
         var evler = st.evler || [];
@@ -2290,6 +2421,10 @@
         if (no === null) return;
         e.preventDefault();
         e.stopPropagation();
+        /* TAM EKRAN GEÇİŞİ SÜRÜYORSA: dokunuş yalnız hedefi değiştirir.
+           Kullanıcı beklerken sabırsızlanıp bir daha dokunursa aynı vezin
+           iki kez açılmasın; başka bir vezne dokunursa o açılsın. */
+        if (bekleyenVarMi()) { bekleyenNo = no; return; }
         /* AÇIK OLAN VEZNE İKİNCİ DOKUNUŞ KAPATIR — bâb ⓘ'siyle aynı dil */
         if (odak && odak.no === no) { odakKapat(); return; }
         ac(no);

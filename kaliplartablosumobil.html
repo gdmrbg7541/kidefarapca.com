@@ -20,7 +20,7 @@
     </script>
 
     <!-- Base CSS (Mobile) -->
-    <link rel="stylesheet" href="sarf/kaliplartablosumobil.css?v=1784300089">
+    <link rel="stylesheet" href="sarf/kaliplartablosumobil.css?v=1784300097">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -347,6 +347,17 @@
     </div>
 </div>
 
+<!-- EK BİLGİ PERDESİ: "+" menüsünde bir eke, hiçbir kutu seçili değilken
+     basılırsa açılır. İçini ekBilgiAc() doldurur (sarf/kaliplartablosumobil.js). -->
+<div id="ek-bilgi-perde" onclick="if(event.target===this) ekBilgiKapat()">
+    <div class="ekb-kart" role="dialog" aria-label="Ek bilgisi">
+        <button class="ekb-kapat" onclick="ekBilgiKapat()" aria-label="Kapat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <div class="ekb-govde"></div>
+    </div>
+</div>
+
 <div class="window-pencere">
     <div id="mainSliderBandi" class="slider-bandi">
         
@@ -603,11 +614,11 @@
 
     </div>
 </div>
-<script src="veri/veri_kokler.js?v=130"></script>
-<script src="veri/veri_sozluk.js?v=118"></script>
+<script src="veri/veri_kokler.js?v=133"></script>
+<script src="veri/veri_sozluk.js?v=121"></script>
 <script src="veri/veri_gramer.js"></script>
 <script src="sistem/geri.js?v=20260808a"></script>
-<script src="sarf/kaliplartablosumobil.js?v=1786714900"></script>
+<script src="sarf/kaliplartablosumobil.js?v=1786714904"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">

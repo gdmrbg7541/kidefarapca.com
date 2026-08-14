@@ -22,7 +22,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=161">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=171">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -221,6 +221,17 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- EK BİLGİ PERDESİ: "+" menüsünde bir eke, hiçbir kutu seçili değilken
+     basılırsa açılır. İçini ekBilgiAc() doldurur (sarf/kaliplartablosu.js). -->
+<div id="ek-bilgi-perde" onclick="if(event.target===this) ekBilgiKapat()">
+    <div class="ekb-kart" role="dialog" aria-label="Ek bilgisi">
+        <button class="ekb-kapat" onclick="ekBilgiKapat()" aria-label="Kapat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <div class="ekb-govde"></div>
     </div>
 </div>
 
@@ -483,7 +494,7 @@
 
     </div>
 </div>
-    <script src="veri/veri_kokler.js?v=132"></script>
+    <script src="veri/veri_kokler.js?v=133"></script>
     </div>
     
     <!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
@@ -704,7 +715,7 @@
             <!-- Filtreler: kalıp listesi perdesindeki süzgeç tasarımının aynısı
                  (klavye yerine harf sayısı 4-6, yanında aksâm-ı seb'a şeması).
                  Markup JS'te üretilir: sayılar canlı, tasarım .kl-* sınıflarından. -->
-            <div id="maraton-suzgec-yuva" style="display:flex; justify-content:center; width:100%;"></div>
+            <div id="maraton-suzgec-yuva"></div>
 
             <!-- Sonuç Listesi -->
             <div id="telaffuz-results" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding-bottom: 40px; width: 100%; box-sizing: border-box;" dir="rtl">
@@ -719,12 +730,12 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=164"></script>
+<script src="sarf/kaliplartablosu.js?v=172"></script>
 <script src="sarf/babodak.js?v=6"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
-<script src="sarf/kalipliste.js?v=35"></script>
+<script src="sarf/kalipliste.js?v=41"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
