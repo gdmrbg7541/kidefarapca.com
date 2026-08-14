@@ -4932,6 +4932,18 @@ body.muc-odak #mainSliderBandi {
    mücerred sekmesi tam genişliğe açılır. */
 body.muc-odak #tab1.tab-content { width: 100% !important; }
 
+/* MEZİDDE DE AYNISI. Sebebi burada görünürdü: liste açılınca stor perde
+   `.window-pencere`nin `overflow: hidden`ını KALDIRIYOR (yapışkan
+   başlıklar bir kırpıcı ata içinde çalışmaz) — kırpma kalkınca bandın
+   hemen sağındaki MÜCERRED sekmesi ekranın son ~15px'inde görünüyordu.
+   Öteki sekmeyi akıştan çıkarınca kırpacak bir taşma da kalmıyor. */
+body.mezid-odak #tab1.tab-content { display: none !important; }
+body.mezid-odak #mainSliderBandi {
+    width: 100% !important;
+    transform: none !important;
+}
+body.mezid-odak #tab2.tab-content { width: 100% !important; }
+
 /* ============ BÂB LEVHASI: MATRİSLE AYNI İZLER ============
    Fiil odaklarında levha 4 izli bir grid: sağda kök izi (boş — altta
    matrisin kök sütunu var), sonra mazi · muzari · emir kutuları.

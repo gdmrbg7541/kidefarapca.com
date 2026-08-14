@@ -158,7 +158,7 @@
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=20260809c">
-    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260809e">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260814a">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -575,7 +575,7 @@
                         <option value="kadin">Kadın</option>
                     </select>
                 </div>
-                <div class="form-group" style="flex: 1 1 100%; min-width: 200px;">
+                <div class="form-group" id="ogr-kod-grup" style="flex: 1 1 100%; min-width: 200px;">
                     <label>Öğretmen Kodu <span style="color:#A6836E; font-weight:400;">(varsa — örn. TCH-4582)</span></label>
                     <input type="text" id="student-teacher-code" placeholder="Öğretmenin verdiyse buraya yaz" autocomplete="off" style="text-transform:uppercase; letter-spacing:1px;">
                     <small style="display:block; margin-top:4px; color:#A6836E;">Kodu girersen kayıttan hemen sonra öğretmenine bağlanma isteğin otomatik gönderilir. Boş bırakabilirsin.</small>
@@ -5051,9 +5051,9 @@
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
-    <script src="hesap/auth.js?v=20260809b"></script>
+    <script src="hesap/auth.js?v=20260814a"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
-    <script src="hesap/qrgiris.js?v=20260809g"></script>
+    <script src="hesap/qrgiris.js?v=20260814a"></script>
     <script>
     /* Emniyet: hesap/qrgiris.js yüklenmediyse (dosya siteye konmamışsa)
        tuşa basınca hiçbir şey olmuyordu. Artık nedenini söyler. */
@@ -5073,7 +5073,10 @@
     <script src="hesap/teacher-admin.js?v=20260731g"></script>
     <script src="sistem/alarm.js"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260809i"></script>
+    <script src="hesap/listelerim.js?v=20260814a"></script>
+    <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
+         listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
+    <script src="hesap/oturumguvenlik.js?v=20260814a"></script>
     <script src="hesap/ogrencihesap.js?v=20260801f"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=32"></script>

@@ -224,6 +224,10 @@ function updateAuthUI() {
         setD('teacher-cv-group','none'); setD('teacher-file-group','none');
         if (mc) { mc.style.maxWidth = "450px"; mc.style.width = "90%"; }
 
+        /* ÖĞRETMEN KODU yalnız ÖĞRENCİ kaydında sorulur; öğretmen kendi
+           kaydında kendi kodunu girmez. */
+        setD('ogr-kod-grup', selectedRole === 'teacher' ? 'none' : 'block');
+
         // Öğretmen kaydında meslek otomatik "Eğitmen" (değiştirilemez)
         const profInput = document.getElementById('student-profession');
         if (profInput) {

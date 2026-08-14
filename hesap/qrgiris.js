@@ -37,6 +37,7 @@
     window.qrOnayKontrol = qrOnayKontrol;
     window.qrOnayAc = qrOnayAc;
     window.qrElleGirisAc = qrElleGirisAc;
+    window.qrKayitAc = qrKayitAc;
     window.qrModAc = qrModAc;
     window.qrSecimEkrani = qrSecimEkrani;
     window.QR_KURULDU = true;
@@ -234,6 +235,8 @@
             '<span class="qr-elle-ikon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.6" y="5.2" width="18.8" height="13.6" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.4 7l8.6 6 8.6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
             '</span>E-posta ve şifreyle gir</button>' +
+            '<div class="qr-kayit">Hesabın yok mu? ' +
+            '<button type="button" class="qr-kayit-tus" onclick="qrKayitAc()">Kayıt ol</button></div>' +
             '</div>';
         return true;
     }
@@ -255,6 +258,14 @@
             '</svg>';
     }
     /* Klasik forma dön (karekod durur). */
+    /* Seçim ekranındaki "Kayıt ol": klasik formu açar ve KAYIT kipine geçer. */
+    function qrKayitAc() {
+        qrElleGirisAc();
+        try {
+            if (typeof isLoginMode !== 'undefined' && isLoginMode && typeof moduDegistir === 'function') moduDegistir();
+        } catch (e) { }
+    }
+
     function qrElleGirisAc() {
         qrDurdur();
         var alan = modalAlan();

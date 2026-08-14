@@ -327,6 +327,14 @@
 }
 .qr-elle-tus:hover { background: #EEF3F9; border-color: #D8E2EC; color: #2c3e50; }
 
+/* Seçim ekranının altındaki kayıt satırı */
+.qr-kayit { margin-top: 12px; text-align: center; font-size: .9rem; color: #6B7A8C; }
+.qr-kayit-tus {
+    background: none; border: 0; padding: 0 2px; font: inherit; font-weight: 800;
+    color: #16A085; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.qr-kayit-tus:hover { color: #0E8074; }
+
 @media (max-width: 480px) {
     #qr-modal-alan .qr-bas { font-size: 1.02rem; }
     #qr-modal-alan .qr-anlat { font-size: .85rem; }

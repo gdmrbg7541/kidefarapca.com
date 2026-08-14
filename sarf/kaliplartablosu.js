@@ -10168,6 +10168,13 @@ window._atlasKonuSeritCiz = function (stage) {
             ' background:rgba(241,242,246,.95); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);' +
             ' border-radius:0 0 16px 16px;}' +
             '#atlasKonuSerit::-webkit-scrollbar{display:none}' +
+            /* TAM EKRANDA BASLIK SERIDI YOK: tam ekranin amaci butun cekim
+               tablosunu ayni anda gormek. Konular arasinda zaten ekrani
+               saga-sola kaydirarak geciliyor, serit yeri bosa yiyordu.
+               Ustteki aciklama blogu da (Turkce+Arapca baslik ve paragraf)
+               tam ekranda gizlenir; alt aciklama zaten gizleniyordu. */
+            '#screen-atlas.atlas-fullscreen #atlasKonuSerit{display:none !important}' +
+            '#screen-atlas.atlas-fullscreen #atlas-explanation{display:none !important}' +
             /* KOSELI + DOLGULU + 3D TUS: tablodaki th-3d-btn ile AYNI hissiyat —
                alt kenar golgesi + ust ic isik; basinca 4px coker, golge yatar. */
             '.atlas-konu-hap{flex:none; border-radius:12px; font-family:sans-serif; font-weight:700;' +

@@ -1196,15 +1196,33 @@
     }
     function tamEkranAc() {
         clearTimeout(tamEkranZaman);
-        if (tamEkranMi()) return;
+        if (tamEkranMi()) return false;
         var el = document.documentElement;
         var f = el.requestFullscreen || el.webkitRequestFullscreen;
-        if (!f) return;
+        if (!f) return false;
         try {
             var s = f.call(el, { navigationUI: 'hide' });
             if (s && s.then) s.then(function () { tamEkranBiz = true; }, function () { tamEkranBiz = false; });
             else tamEkranBiz = true;
-        } catch (e) { tamEkranBiz = false; }
+            return true;                    /* istek yapıldı: geçişi beklemeye değer */
+        } catch (e) { tamEkranBiz = false; return false; }
+    }
+    /* Tam ekrana geçiş sırasında ekran ölçüsü değişiyor; örnek kartlarının
+       açılış animasyonu bu sırada başlarsa kekliyordu. İş, tam ekran
+       yerleştikten SONRA (fullscreenchange + iki kare) başlatılır; olay
+       hiç gelmezse 700 ms sonra yine de başlar. */
+    function tamEkranBekle(is) {
+        var bitti = false, zaman;
+        function calis() {
+            if (bitti) return; bitti = true;
+            document.removeEventListener('fullscreenchange', calis);
+            document.removeEventListener('webkitfullscreenchange', calis);
+            clearTimeout(zaman);
+            requestAnimationFrame(function () { requestAnimationFrame(is); });
+        }
+        document.addEventListener('fullscreenchange', calis);
+        document.addEventListener('webkitfullscreenchange', calis);
+        zaman = setTimeout(calis, 700);
     }
     function tamEkranKapat() {
         if (!tamEkranBiz) return;
@@ -1239,7 +1257,11 @@
     function ac(no) {
         no = parseInt(no, 10);
         if (!isFinite(no)) return false;
-        tamEkranAc();                      /* tıklamanın kendi jesti geçerliyken */
+        var istendi = tamEkranAc();        /* tıklamanın kendi jesti geçerliyken */
+        if (istendi) { tamEkranBekle(function () { acGovde(no); }); return true; }
+        return acGovde(no);
+    }
+    function acGovde(no) {
         /* PERDE ARTIK YALNIZ YEDEK: mezid (52-105) tablonun içinde,
            mücerred (1-51) de tablonun içinde açılıyor. Perde ancak kutu
            sayfada bulunamazsa (tablo dışı numara) devreye girer. */
@@ -1510,6 +1532,10 @@
         satir.classList.add('ko-odak-satir');
         kutu.classList.add('ko-sec');
         govde2.closest('table').classList.add('ko-acik');
+        /* Öteki sekme (mücerred) akıştan çıkar: stor perde pencerenin
+           kırpmasını kaldırdığı için bandın sağ yarısı ekranın son
+           şeridinde görünüyordu. Kapanışta sınıf kalkar. */
+        document.body.classList.add('mezid-odak');
         if (typeof window.kidefUstKilit === 'function') window.kidefUstKilit();
 
         suzgecBagla(f);
@@ -1596,6 +1622,7 @@
         if (kapanan === st) kapanan = null;
         storSifirla();                        /* üst çubuk sınıfları temizlensin */
         if (st.muc) { mucSonlandir(st, sessiz); return; }   /* mücerred kendi yolundan */
+        document.body.classList.remove('mezid-odak');
         var govde2 = st.satir.parentElement;
         var eskiTop = st.satir.getBoundingClientRect().top;
         st.satir.style.transition = ''; st.satir.style.transform = '';

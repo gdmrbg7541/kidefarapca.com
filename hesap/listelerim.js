@@ -88,7 +88,7 @@ window.llIcon = llIcon;
 
 // ===== listelerim.js (index'e birlestirildi, tek firebase) =====
 function llRootEl(){ return document.getElementById('ll-root') || document.body; }
-function initListelerim(){ try{ var b=document.getElementById('login-nav-btn'); if(b) b.style.display='none'; var u=(window.firebase&&firebase.auth&&firebase.auth().currentUser); if(u && typeof verileriGetir==='function' && window._llLoadedUid !== u.uid){ window._llLoadedUid = u.uid; verileriGetir(u.uid); } setTimeout(function(){ if(typeof syncLevelActions==='function') syncLevelActions(); }, 900); }catch(e){console.error('initListelerim',e);} }
+function initListelerim(){ try{ var b=document.getElementById('login-nav-btn'); if(b) b.style.display='none'; var u=(window.firebase&&firebase.auth&&firebase.auth().currentUser); if(u && typeof verileriGetir==='function' && window._llLoadedUid !== u.uid){ window._llLoadedUid = u.uid; verileriGetir(u.uid); } setTimeout(function(){ if(typeof syncLevelActions==='function') syncLevelActions(); }, 900); setTimeout(function(){ try{ llSonSinifAc(); }catch(e){} }, 300); }catch(e){console.error('initListelerim',e);} }
 window.initListelerim=initListelerim;
 
 const mufredatVerisi = {
@@ -570,6 +570,55 @@ function llAracSec(m) {
 window.llAracSec = llAracSec;
 
 
+/* ---------------------------------------------------------------
+   AÇIK SINIFI HATIRLA
+   Öğretmen sınıf listesini açıp siteyi gezdiğinde (anasayfa, bir kart,
+   profil, okul penceresi...) Listelerim'e döndüğünde liste kapalı
+   geliyordu: veri yeniden yüklenirken curLId/curCId sıfırlanıyor ve
+   hiçbir sınıf seçili kalmıyordu. Artık son açılan sınıf kullanıcı
+   kimliğiyle birlikte cihazda saklanıyor; Listelerim yeniden açıldığında
+   o sınıf kendiliğinden geri açılıyor.
+   --------------------------------------------------------------- */
+var LL_SON_ANAHTAR = 'll_son_sinif';
+function llKimlik() {
+    try {
+        var u = (window.firebase && firebase.auth && firebase.auth().currentUser) || null;
+        return u ? u.uid : '';
+    } catch (e) { return ''; }
+}
+function llSonSinifYaz(lId, cId) {
+    try { localStorage.setItem(LL_SON_ANAHTAR, JSON.stringify({ u: llKimlik(), l: lId, c: cId })); } catch (e) { }
+}
+function llSonSinifOku() {
+    try {
+        var k = JSON.parse(localStorage.getItem(LL_SON_ANAHTAR) || 'null');
+        if (!k || !k.l || !k.c) return null;
+        var u = llKimlik();
+        if (u && k.u && k.u !== u) return null;          /* başka hesabın sınıfı açılmasın */
+        return k;
+    } catch (e) { return null; }
+}
+/* Listelerim açıldığında son sınıfı geri aç (zaten bir sınıf açıksa dokunma). */
+function llSonSinifAc() {
+    try {
+        if (typeof curCId !== 'undefined' && curCId) return false;
+        if (typeof data === 'undefined' || !data || !data.levels) return false;
+        var k = llSonSinifOku(); if (!k) return false;
+        var lvl = data.levels[k.l];
+        if (!lvl || !lvl.classes || !lvl.classes[k.c]) return false;
+        selectClass(k.l, k.c);
+        /* İçerik bölmesi kesin görünsün: veri yüklendikten sonra çalışan
+           "sınıf seçin" yer tutucusu paneli gizlemiş olabiliyor. */
+        try {
+            var c = document.getElementById('content'); if (c) c.style.display = 'block';
+            var h = document.getElementById('ll-select-hint'); if (h) h.style.display = 'none';
+            var t = document.querySelector('#content .tabs'); if (t) t.style.display = '';
+        } catch (e) { }
+        return true;
+    } catch (e) { return false; }
+}
+window.llSonSinifAc = llSonSinifAc;
+
 function selectClass(lId, cId, element) {
     if (!data || !data.levels[lId]) return;
 
@@ -610,6 +659,7 @@ function selectClass(lId, cId, element) {
 
     curLId = lId; 
     curCId = cId;
+    llSonSinifYaz(lId, cId);        /* siteyi gezip dönünce liste açık kalsın */
     
     if (viewTitle) {
     const className = data.levels[lId].classes[cId].name;
@@ -1559,6 +1609,12 @@ function addLevel(oncedenKurum) {
 function renderSidebar() {
     const nav = document.getElementById('levelNav');
     if (!nav) return; // Nav elementi yoksa çık
+    /* Çizim bitince son açık sınıfı geri aç (kendi içinde "zaten açıksa
+       dokunma" kontrolü var; sonsuz döngü olmaması için işaretle). */
+    if (!window._llGeriAcmaBekliyor) {
+        window._llGeriAcmaBekliyor = 1;
+        setTimeout(function () { window._llGeriAcmaBekliyor = 0; try { llSonSinifAc(); } catch (e) { } }, 60);
+    }
     nav.innerHTML = '';
 
     // KRİTİK HATA KORUMASI: data veya data.levels tanımsızsa fonksiyonu durdur
