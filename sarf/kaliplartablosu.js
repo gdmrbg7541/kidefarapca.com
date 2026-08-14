@@ -7781,7 +7781,39 @@ function renderThematicLists() {
     }
 
     thematicCategoriesData = categories;
-    let html = "";
+
+    /* ÜST ŞERİT: sözlükte kaç kelime var? veri_sozluk.js'teki câmid girdiler
+       (isDictOnly) ile köklerden listelere bağlanan kelimeler ayrı ayrı
+       sayılır; toplam ikisinin toplamıdır. Öğrenci dağarcığın büyüdüğünü
+       görsün diye listelerin en üstünde durur. */
+    var _sozlukSayisi = 0, _kokSayisi = 0, _cogulSayisi = 0;
+    try {
+        for (var _k in sozlukVerileri) {
+            var _v = sozlukVerileri[_k];
+            if (!_v || !_v.isDictOnly) continue;
+            _sozlukSayisi++;
+            /* Çoğulu ayrı bir kelimedir: kitap/kitaplar iki kelime sayılır. */
+            if (_v.cogul || (_v.tekil && _v.tekil.base && _v.tekil.base.cogul)) _cogulSayisi++;
+        }
+        var _gorulen = {};
+        for (var _c in categories) {
+            (categories[_c].items || []).forEach(function (it) {
+                if (it.kalipId) _gorulen[it.rootKey + '/' + it.kalipId] = 1;
+            });
+        }
+        _kokSayisi = Object.keys(_gorulen).length;
+    } catch (e) {}
+    var _toplamKelime = _sozlukSayisi + _cogulSayisi + _kokSayisi;
+    var _sayacSerit = '<div class="kl-sayac-serit" dir="ltr">' +
+        '<span class="kls-sayi">' + _toplamKelime.toLocaleString('tr-TR') + '</span>' +
+        '<span class="kls-etiket">kelime</span>' +
+        '<span class="kls-ayrac"></span>' +
+        '<span class="kls-alt">' + _sozlukSayisi.toLocaleString('tr-TR') + ' tekil · ' +
+        _cogulSayisi.toLocaleString('tr-TR') + ' çoğul · ' +
+        _kokSayisi.toLocaleString('tr-TR') + ' kökten · ' +
+        Object.keys(categories).filter(function (k) { return (categories[k].items || []).length; }).length +
+        ' liste</span></div>';
+    let html = _sayacSerit;
 
     
     // Kategorileri önem sırasına göre (kategoriTanimlari'ndaki tanımlanma sırasıyla) diz
@@ -7806,14 +7838,23 @@ function renderThematicLists() {
         if(r + 2*rows < L) reorderedKeys.push(sortedKeys[r + 2*rows]); // Sol Sütun
     }
 
-    html = "";
+    html = _sayacSerit;   /* sıfırlama sayacı silmesin */
     
     var colorIndex = 0;
     // Satır Satır DOM oluşturuyoruz
     for(let r = 0; r < rows; r++) {
         
     // Pastel colors for accordion items
-    const pastelColors = ['#e6e2d8', '#d8dfd6', '#e8dadb', '#d4dbe0', '#ded9e3', '#e6dacb', '#d3dfdf', '#dadfda', '#e8e4d3', '#dfd7df'];
+    /* SİTE PALETİ: index.html'deki amber → turuncu → kırmızı ekseni,
+       arada yeşil/mavi vurgular. Pastel gri tonlar kaldırıldı. */
+    const siteColors = [
+        'linear-gradient(135deg,#FFC107 0%,#F39C12 100%)',
+        'linear-gradient(135deg,#EF5350 0%,#E53935 100%)',
+        'linear-gradient(135deg,#20C997 0%,#16A085 100%)',
+        'linear-gradient(135deg,#5DADE2 0%,#2980B9 100%)',
+        'linear-gradient(135deg,#F39C12 0%,#EF5350 100%)',
+        'linear-gradient(135deg,#A78BFA 0%,#7C3AED 100%)'
+    ];
     let rowKeys = [];
 
         if(r < L) rowKeys.push(sortedKeys[r]);
@@ -7840,7 +7881,7 @@ function renderThematicLists() {
             };
             
             html += `
-                <div class="thematic-accordion-item" style="background: ${pastelColors[colorIndex++ % pastelColors.length]}; color: #000;" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
+                <div class="thematic-accordion-item site-renk" style="background: ${siteColors[colorIndex++ % siteColors.length]}; color: #fff;" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
                     <div class="thematic-accordion-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <i class="fas fa-chevron-down thematic-accordion-icon" id="icon-${key}"></i>
@@ -7848,7 +7889,7 @@ function renderThematicLists() {
                                 ${cat.icon} 
                                 <div style="display:flex; flex-direction:column; align-items:flex-start;">
                                     <span>${cat.title}</span>
-                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:#000; line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
+                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:rgba(255,255,255,.92); line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
                                 </div>
                             </h3>
                         </div>
@@ -9908,6 +9949,9 @@ function showRootOfDay() {
       function curRemaining(){ return Math.max(0, remaining - (Date.now()-drainStart)); }
       function buildTimer(){
         var w=panel.offsetWidth, h=panel.offsetHeight, r=26, sw=6;
+        /* Perde 550 ms dolmadan kapatılmışsa panelin ölçüsü sıfırdır;
+           w-sw negatife düşer ve tarayıcı <rect> için hata basar. */
+        if(!panel.isConnected || w<=sw || h<=sw) return;
         svg=document.createElementNS(NS,'svg'); svg.style.position='absolute'; svg.style.pointerEvents='none'; svg.style.zIndex='6';
         rect=document.createElementNS(NS,'rect'); rect.setAttribute('fill','none'); rect.setAttribute('stroke','#FF3B30'); rect.setAttribute('stroke-width',sw); rect.setAttribute('stroke-linecap','round'); rect.style.filter='drop-shadow(0 0 5px rgba(255,59,48,.5))'; rect.style.willChange='stroke-dashoffset';
         svg.appendChild(rect); modalOverlay.appendChild(svg);
@@ -9953,14 +9997,193 @@ window.closeRootOfDay = function() {
     }
 }
 
+
+/* ============================================================================
+   MARATON SÜZGECİ — kalıp listesi perdesindeki (kalipliste.js) süzgeç
+   tasarımının aynısı. Tek fark: harf klavyesinin yerinde HARF SAYISI
+   tuşları (4 · 5 · 6) duruyor, çünkü maratonda süzülen şey kökün baş harfi
+   değil fiilin kaç harfli olduğudur. Aksâm-ı seb'a şeması birebir aynı:
+   solda sahih üçü yeşil, sağda mu'tel dördü turuncu, her kart ad · tanım ·
+   örnek fiil taşır. Sayılar canlıdır: o an kaç fiil düştüğünü gösterir.
+   ========================================================================= */
+window.MARATON_AKSAM = [
+    { k: 'Sahih',  ad: 'Sâlim',  grup: 'sahih', kisa: 'Hepsi sağlam harf.', ornek: 'كَتَبَ' },
+    { k: 'Mehmuz', ad: 'Mehmûz', grup: 'sahih', kisa: 'Bir harfi hemze.',   ornek: 'أَكَلَ' },
+    { k: 'Muzaaf', ad: 'Muzâaf', grup: 'sahih', kisa: 'Son iki harf aynı.', ornek: 'مَدَّ'  },
+    { k: 'Misal',  ad: 'Misâl',  grup: 'mutel', kisa: 'İLK harf illetli.',  ornek: 'وَجَدَ' },
+    { k: 'Ecvef',  ad: 'Ecvef',  grup: 'mutel', kisa: 'ORTA harf illetli.', ornek: 'قَالَ' },
+    { k: 'Nakıs',  ad: 'Nâkıs',  grup: 'mutel', kisa: 'SON harf illetli.',  ornek: 'رَمَى' },
+    { k: 'Lefif',  ad: 'Lefîf',  grup: 'mutel', kisa: 'İki harfi illetli.', ornek: 'طَوَى' }
+];
+
+/* Süzgeç sayıları: her aksâm ve her harf sayısı için kaç MARATON FİİLİ var.
+   applyTelaffuzFilter ile aynı kaynaktan (wordEasterEggs + getAvailableMaziVerbs)
+   sayar ki rozetteki sayı ile listedeki fiil sayısı birbirini tutsun. */
+/* Kök başındaki hemze biçimleri ve ى · ة klavyede kendi tuşlarında
+   toplanmaz; kalıp listesi perdesindekiyle aynı eşleme kullanılır ki
+   öğrenci iki ekranda aynı tuşa bassın. */
+window.MARATON_HEMZE = { 'أ': 'ا', 'إ': 'ا', 'آ': 'ا', 'ٱ': 'ا', 'ء': 'ا', 'ؤ': 'ا', 'ئ': 'ا', 'ى': 'ي', 'ة': 'ه' };
+function maratonBasHarf(kok) {
+    var h = String(kok || '').charAt(0);
+    return window.MARATON_HEMZE[h] || h;
+}
+
+function maratonSayim() {
+    var say = { aksam: {}, harf: {}, bas: {}, toplam: 0 };
+    var kaynak = (typeof wordEasterEggs !== 'undefined') ? wordEasterEggs : {};
+    Object.keys(kaynak).forEach(function (kok) {
+        var aksamList = getAksamIseba(kok);
+        var bh = maratonBasHarf(kok);
+        var fiiller = (typeof getAvailableMaziVerbs === 'function') ? getAvailableMaziVerbs(kok) : [];
+        fiiller.forEach(function (v) {
+            var n = getLetterCountFromRefId(v.refId);
+            /* Toplam ve aksâm sayıları BÜTÜN fiilleri kapsar (3 harfliler dâhil);
+               süzgeçte yalnız harf sayısı tuşları 4-6 ile sınırlıdır. Böylece
+               "Hepsi" rozetiyle listedeki fiil sayısı birbirini tutar. */
+            say.toplam++;
+            aksamList.forEach(function (a) { say.aksam[a] = (say.aksam[a] || 0) + 1; });
+            say.bas[bh] = (say.bas[bh] || 0) + 1;
+            if (n >= 4 && n <= 6) say.harf[n] = (say.harf[n] || 0) + 1;
+        });
+    });
+    return say;
+}
+
+function maratonSuzgecCiz() {
+    var yuva = document.getElementById('maraton-suzgec-yuva');
+    if (!yuva) return;
+    var say = maratonSayim();
+    var f = window.telaffuzFilters || { letter: [], aksam: [], bas: [] };
+    var secHarf  = (f.letter && f.letter.length) ? f.letter[0] : null;
+    var secAksam = (f.aksam  && f.aksam.length)  ? f.aksam[0]  : null;
+    var secBas   = (f.bas    && f.bas.length)    ? f.bas[0]    : null;
+    var bosSuzgec = (!secHarf && !secAksam && !secBas);
+
+    /* --- KLAVYE: kalıp perdesindekiyle aynı yerleşim (universalKeyboardLayout).
+       Öğrenci kök ararken hangi tuşa basıyorsa burada da aynı yerde bulur.
+       Sil tuşunun yerinde "Hepsi" durur: bütün süzgeçleri kaldırır. --- */
+    var KLAVYE = (typeof universalKeyboardLayout !== 'undefined' && universalKeyboardLayout.length)
+        ? universalKeyboardLayout
+        : [['ذ','ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+           ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+           ['ئ','ء','ؤ','ر','ى','ة','و','ز','ظ','BACKSPACE']];
+    var klavye = '';
+    KLAVYE.forEach(function (satir) {
+        klavye += '<div class="kl-kb-satir">';
+        satir.forEach(function (h) {
+            if (h === 'BACKSPACE') {
+                klavye += '<button type="button" class="kl-tus kl-tus-hepsi' + (bosSuzgec ? ' kl-tus-secili' : '') +
+                          '" title="Bütün süzgeçleri kaldır" onclick="maratonSec(null, null)">' +
+                          '<span class="kl-tus-harf">Hepsi</span>' +
+                          '<span class="kl-tus-sayi">' + say.toplam + '</span></button>';
+                return;
+            }
+            var n = say.bas[h] || 0;
+            var yazi = (h === 'ه') ? 'هـ' : h;
+            if (!n) {
+                var nere = window.MARATON_HEMZE[h];
+                klavye += '<button type="button" class="kl-tus kl-tus-olu" disabled title="' +
+                          (nere ? ('Bu harf ' + nere + ' tuşunda toplanıyor')
+                                : ('Bu harfle başlayan maraton fiili yok')) + '">' +
+                          '<span class="kl-tus-harf">' + yazi + '</span></button>';
+                return;
+            }
+            klavye += '<button type="button" class="kl-tus' + (secBas === h ? ' kl-tus-secili' : '') +
+                      '" title="' + h + ' ile başlayan ' + n + ' fiil"' +
+                      ' onclick="maratonSec(\'bas\', \'' + h + '\')">' +
+                      '<span class="kl-tus-harf">' + yazi + '</span>' +
+                      '<span class="kl-tus-sayi">' + n + '</span></button>';
+        });
+        klavye += '</div>';
+    });
+
+    /* --- HARF SAYISI: en sağdaki dikey sütun (4 · 5 · 6) --- */
+    var rakam = '';
+    [4, 5, 6].forEach(function (n) {
+        var adet = say.harf[n] || 0;
+        var sinif = 'kl-tus mt-tus' + (secHarf === n ? ' kl-tus-secili' : '') + (adet ? '' : ' kl-tus-olu');
+        rakam += '<button type="button" class="' + sinif + '"' + (adet ? '' : ' disabled') +
+                 ' title="' + n + ' harfli fiiller (' + adet + ')"' +
+                 ' onclick="maratonSec(\'letter\', ' + n + ')">' +
+                 '<span class="kl-tus-harf">' + n + '</span>' +
+                 '<span class="kl-tus-sayi">' + adet + '</span></button>';
+    });
+
+    /* --- AKSÂM-I SEB'A ŞEMASI: kalıp perdesindeki şemanın aynısı --- */
+    function sutun(grupAd, grup) {
+        var uyeler = window.MARATON_AKSAM.filter(function (a) { return a.grup === grup; });
+        var iz = '';
+        uyeler.forEach(function (a, i) {
+            var adet = say.aksam[a.k] || 0;
+            var orta = (uyeler.length % 2 === 1 && i === uyeler.length - 1) ? ' kl-sk-orta' : '';
+            var sinif = 'kl-sema-kart kl-sk-' + a.grup + orta +
+                        (secAksam === a.k ? ' kl-sema-secili' : '') + (adet ? '' : ' kl-sema-bos');
+            iz += '<button type="button" class="' + sinif + '"' + (adet ? '' : ' disabled') +
+                  ' title="' + a.ad + ' — ' + adet + ' fiil"' +
+                  ' onclick="maratonSec(\'aksam\', \'' + a.k + '\')">' +
+                  '<span class="kl-sk-sayi">' + adet + '</span>' +
+                  '<span class="kl-sk-ad">' + a.ad + '</span>' +
+                  '<span class="kl-sk-tanim">' + a.kisa + '</span>' +
+                  '<span class="kl-sk-ornek" dir="rtl">' + a.ornek + '</span></button>';
+        });
+        return '<div class="kl-sema-sutun kl-sema-' + grup + '">' +
+               '<div class="kl-sema-baslik">' + grupAd + '</div>' +
+               '<div class="kl-sema-izgara">' + iz + '</div></div>';
+    }
+
+    /* YERLEŞİM: üç soru, üç AYRI levha, yan yana —
+       SOLDA klavye (hangi harfle başlıyor?), ORTADA aksâm-ı seb'a şeması
+       (hangi cinsten?), EN SAĞDA harf sayısı (kaç harfli?). Her levha
+       kendi başlığını ve kendi alt kenar rengini taşır; renkler sitenin
+       renk dilinden: mavi · turuncu · kırmızı. */
+    yuva.innerHTML =
+        '<div class="mt-govde">' +
+          '<div class="mt-kol mt-kol-klavye">' +
+            '<div class="mt-kol-baslik mt-b-harf">KÖK HARFİ</div>' +
+            '<div class="mt-klavye-sira" dir="rtl"><div class="kl-klavye">' + klavye + '</div></div>' +
+          '</div>' +
+          '<div class="mt-kol mt-kol-sema">' +
+            '<div class="mt-kol-baslik mt-b-aksam">AKSÂM-I SEB\'A' +
+              '<i class="fas fa-info-circle mt-bilgi" title="Aksâm-ı Seb\'a nedir?" onclick="showAksamSebaGenelInfo(event)"></i>' +
+            '</div>' +
+            '<div class="mt-sema-alan"><div class="kl-sema"><div class="kl-sema-dallar">' +
+               sutun('SAHİH', 'sahih') + sutun("MU\'TEL", 'mutel') +
+            '</div></div></div>' +
+          '</div>' +
+          '<div class="mt-kol mt-rakam-sutun">' +
+            '<div class="mt-kol-baslik mt-b-rakam">HARF</div>' +
+            '<div class="mt-rakam-tuslar">' + rakam + '</div>' +
+          '</div>' +
+        '</div>';
+}
+
+/* Tek seçim: harf ile aksâm aynı anda uygulanabilir; aynısına ikinci kez
+   basmak o süzgeci kaldırır. Hepsi = ikisini birden temizler. */
+function maratonSec(tur, deger) {
+    if (!window.telaffuzFilters) window.telaffuzFilters = { letter: [], aksam: [], bas: [] };
+    if (!window.telaffuzFilters.bas) window.telaffuzFilters.bas = [];
+    if (tur === null) {
+        window.telaffuzFilters.letter = []; window.telaffuzFilters.aksam = []; window.telaffuzFilters.bas = [];
+    }
+    else {
+        var mevcut = window.telaffuzFilters[tur];
+        window.telaffuzFilters[tur] = (mevcut && mevcut.length && mevcut[0] === deger) ? [] : [deger];
+    }
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+    maratonSuzgecCiz();
+    applyTelaffuzFilter();
+}
+
 // --- TELAFFUZ FILTRESI VE MARATON ARAMA ---
 window.telaffuzFilters = {
-    letter: [],
-    aksam: []
+    letter: [],   /* fiilin harf sayısı: 4 · 5 · 6 */
+    aksam:  [],   /* aksâm-ı seb'a */
+    bas:    []    /* kökün baş harfi (klavye) */
 };
 
 function openTelaffuz() {
     document.getElementById('telaffuz-overlay').style.display = 'flex';
+    if (typeof maratonSuzgecCiz === 'function') maratonSuzgecCiz();
     applyTelaffuzFilter();
 }
 
@@ -10091,16 +10314,21 @@ function applyTelaffuzFilter() {
         let results = [];
         const requiredAksam = window.telaffuzFilters.aksam;
         const requiredLetters = window.telaffuzFilters.letter;
+        const requiredBas = window.telaffuzFilters.bas || [];
         
-        if (requiredAksam.length === 0 && requiredLetters.length === 0) {
-            resContainer.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; color:#e74c3c; font-size: 1.4rem; font-weight: 500;" dir="ltr">Lütfen en az bir filtre seçin.</div>';
-            return;
-        }
+        /* Süzgeç boşken artık uyarı yok: klavyedeki "Hepsi" tuşu ne
+           söylüyorsa onu gösterir, yani bütün maraton fiillerini. */
 
         const sourceObj = typeof wordEasterEggs !== 'undefined' ? wordEasterEggs : {};
         const allRoots = Object.keys(sourceObj);
         allRoots.forEach(root => {
             const aksamList = getAksamIseba(root);
+            
+            /* Kök baş harfi süzgeci (klavye): hemze biçimleri elif tuşunda,
+               ى ye tuşunda, ة he tuşunda toplanır. */
+            if (requiredBas.length > 0) {
+                if (typeof maratonBasHarf === 'function' && !requiredBas.includes(maratonBasHarf(root))) return;
+            }
             
             if (requiredAksam.length > 0) {
                 const matchAksam = requiredAksam.some(a => aksamList.includes(a));
@@ -10133,12 +10361,19 @@ function applyTelaffuzFilter() {
             let _mhtml = ''; // PERFORMANS: tek string, tek innerHTML
             results.forEach(r => {
                 const escapedRoot = r.root.replace(/"/g, "&quot;").replace(/'/g, "\\'");
+                /* MARATON KARTI — site renk dili (amber → turuncu → kırmızı).
+                   Kartın tamamı düğmedir: üstüne gelince kalkar ve alt kenarı
+                   kırmızıya döner, tıklayınca maraton başlar. Ayrı bir
+                   oynatma simgesi yok, fiilin kendisi öne çıksın diye. */
                 _mhtml += `
-                    <div class="t-result-item" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})" style="padding: 20px; border-radius: 16px;" dir="rtl">
-                        <div style="display:flex; flex-direction:column; text-align: right;">
-                            <span class="t-result-ar" style="font-size: 4rem; line-height: 1.3;">${r.verb}</span>
-                        </div>
-                        <i class="fas fa-play-circle" style="font-size: 3rem; color: #2ecc71;"></i>
+                    <div class="mt-kart" onclick="launchTelaffuzMarathon('${escapedRoot}', ${r.refId})"
+                         title="${r.verb} — maratonu başlat" dir="rtl">
+                        <span class="mt-kart-fiil">${r.verb}</span>
+                        <span class="mt-kart-alt">
+                            <span class="mt-kart-kok" dir="rtl">${r.root}</span>
+                            <span class="mt-kart-aksam">${r.aksam}</span>
+                            <span class="mt-kart-harf">${r.letters} harf</span>
+                        </span>
                     </div>
                 `;
             });

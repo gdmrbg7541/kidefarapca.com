@@ -22,7 +22,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=156">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=161">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -483,7 +483,7 @@
 
     </div>
 </div>
-    <script src="veri/veri_kokler.js?v=130"></script>
+    <script src="veri/veri_kokler.js?v=132"></script>
     </div>
     
     <!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
@@ -701,92 +701,11 @@
         
         <div style="flex: 1; overflow-y: scroll; padding: 30px 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 30px;" dir="ltr">
             
-            <!-- Filtreler -->
-            <div style="display: flex; justify-content: center; background: rgba(255,255,255,0.9); padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); gap: 30px;" dir="rtl">
-                
-                <!-- Harf Sayısı (En Sağda, Sütun halinde) -->
-                <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;" id="telaffuz-letter-filters">
-                    <div class="t-filter-chip desktop-chip" onclick="toggleTFilter(this, 'letter', 3)" style="padding: 10px 20px; font-size: 1.5rem; height: auto;">3</div>
-                    <div class="t-filter-chip desktop-chip" onclick="toggleTFilter(this, 'letter', 4)" style="padding: 10px 20px; font-size: 1.5rem; height: auto;">4</div>
-                    <div class="t-filter-chip desktop-chip" onclick="toggleTFilter(this, 'letter', 5)" style="padding: 10px 20px; font-size: 1.5rem; height: auto;">5</div>
-                    <div class="t-filter-chip desktop-chip" onclick="toggleTFilter(this, 'letter', 6)" style="padding: 10px 20px; font-size: 1.5rem; height: auto;">6</div>
-                </div>
-                
-                <div style="width: 2px; background: #e2e8f0; margin: 10px 0;"></div>
-                
-                <!-- Aksam-ı Seb'a -->
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; flex: 1;">
-                    <div style="font-weight: 700; color: #2c3e50; font-size: 1.8rem; text-align: center; display: flex; align-items: center; justify-content: center;" dir="ltr">Aksam-ı Seb'a <i class="fas fa-info-circle" style="color: #3498db; cursor: pointer; margin-left: 15px; font-size: 1.4rem; transition: color 0.2s;" onmouseover="this.style.color='#2980b9'" onmouseout="this.style.color='#3498db'" onclick="showAksamSebaGenelInfo(event)"></i><span title="Kavram Şeması" style="color: #16A085; cursor: pointer; margin-left: 12px; display: inline-flex; align-items: center; transition: color 0.2s;" onmouseover="this.style.color='#117A65'" onmouseout="this.style.color='#16A085'" onclick="openAksamSema(event)"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="2.5" width="7" height="5.5" rx="1.2"/><path d="M12 8v3.5M6.5 11.5h11M6.5 11.5V15M17.5 11.5V15"/><rect x="3" y="15" width="7" height="5.5" rx="1.2"/><rect x="14" y="15" width="7" height="5.5" rx="1.2"/></svg></span></div>
-                    <div style="display: flex; gap: 30px; justify-content: center; flex-wrap: nowrap; width: 100%;" id="telaffuz-aksam-filters">
-                        <!-- Sahih Fiiller Grubu -->
-                        <div style="display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 300px;">
-                            <div style="display: inline-flex; flex-direction: column; align-items: stretch;">
-                                <div style="text-align: center; font-weight: 700; color: #7f8c8d; font-size: 1.3rem; border-bottom: 4px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;">Sahih Fiiller</div>
-                                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: nowrap;">
-                                <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Sahih')">
-                                    <div class="aksam-name">Salim</div>
-                                    <div class="aksam-visual" style="text-decoration: line-through; opacity: 0.8; font-size: 1.7rem; margin-bottom: 2px; font-family: 'Arakom', sans-serif;">ا و ي ء ـّـ</div>
-                                </div>
-                                <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Mehmuz')">
-                                    <div class="aksam-name"><span style="color:#e74c3c">Me</span>hm<span style="color:#e74c3c">u</span>z</div>
-                                    <div class="aksam-visual" style="opacity: 0.9; font-size: 2.2rem; margin-bottom: 2px; font-family: 'Arakom', sans-serif;">أ إ ئ ؤ</div>
-                                </div>
-                                <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Muzaaf')">
-                                    <div class="aksam-name">Muz<span style="color:#e74c3c">aa</span>f</div>
-                                    <div class="aksam-visual" style="opacity: 0.9; font-size: 2.6rem; transform: translateY(-15px); line-height: 0; font-family: 'Arakom', sans-serif;">ـّـ</div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
+            <!-- Filtreler: kalıp listesi perdesindeki süzgeç tasarımının aynısı
+                 (klavye yerine harf sayısı 4-6, yanında aksâm-ı seb'a şeması).
+                 Markup JS'te üretilir: sayılar canlı, tasarım .kl-* sınıflarından. -->
+            <div id="maraton-suzgec-yuva" style="display:flex; justify-content:center; width:100%;"></div>
 
-                        <!-- Mu'tel Fiiller Grubu -->
-                        <div style="display: flex; flex-direction: column; align-items: center; flex: 1.5; min-width: 400px;">
-                            <div style="display: inline-flex; flex-direction: column; align-items: stretch;">
-                                <div style="text-align: center; font-weight: 700; color: #7f8c8d; font-size: 1.3rem; border-bottom: 4px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;">Mu'tel Fiiller (Elif, Vav, Ye alanlar)</div>
-                                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: nowrap;">
-                        <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Misal')">
-                            <div class="aksam-name"><span style="color:#e74c3c">M</span>isal</div>
-                            <div class="aksam-visual" style="opacity: 0.9; font-size: 2.2rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
-                                <div>و ــ ــ</div>
-                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
-                                <div>يـ ــ ــ</div>
-                            </div>
-                        </div>
-                        <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Ecvef')">
-                            <div class="aksam-name">Ec<span style="color:#e74c3c">v</span>ef</div>
-                            <div class="aksam-visual" style="opacity: 0.9; font-size: 2.2rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
-                                <div>ـ ـ ـا ـ ـ ـ</div>
-                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
-                                <div>ـ ـ ـو ـ ـ ـ</div>
-                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
-                                <div>ـ ـ ـيـ ـ ـ</div>
-                            </div>
-                        </div>
-                        <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Nakıs')">
-                            <div class="aksam-name">Nakı<span style="color:#e74c3c">s</span></div>
-                            <div class="aksam-visual" style="opacity: 0.9; font-size: 2.2rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
-                                <div>ـ ـ ـ ـا</div>
-                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
-                                <div>ـ ـ ـ ـي</div>
-                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
-                                <div>ـ ـ ـ ـو</div>
-                            </div>
-                        </div>
-                        <div class="t-filter-chip desktop-chip aksam-chip" onclick="toggleTFilter(this, 'aksam', 'Lefif')">
-                            <div class="aksam-name">Lefif</div>
-                            <div class="aksam-visual" style="opacity: 0.9; font-size: 2.2rem; margin-bottom: 2px; line-height: 1.2; font-family: 'Arakom', sans-serif;">
-                                <div>ــ و ي</div>
-                                <div style="height: 2px; background: rgba(0,0,0,0.4); margin: 6px 5px;"></div>
-                                <div>ــ و ا</div>
-                            </div>
-                        </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-            
             <!-- Sonuç Listesi -->
             <div id="telaffuz-results" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding-bottom: 40px; width: 100%; box-sizing: border-box;" dir="rtl">
                 <!-- Dinamik olarak fiiller gelecek -->
@@ -794,13 +713,13 @@
         </div>
     </div>
 
-<script src="veri/veri_sozluk.js?v=118"></script>
+<script src="veri/veri_sozluk.js?v=121"></script>
 <script src="veri/veri_gramer.js?v=111"></script>
 <!-- KALIP_DATA: numara → vezin adı (1-105). Kalıp listesi perdesinin
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=159"></script>
+<script src="sarf/kaliplartablosu.js?v=164"></script>
 <script src="sarf/babodak.js?v=6"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama

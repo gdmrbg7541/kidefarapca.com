@@ -5132,3 +5132,123 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
    (yoksa beyaz panelin içinde ikinci bir tonlu kutu belirirdi). */
 .ko-govde-satir[data-tonlu="1"] .kl-takim { background: var(--kl-ton); border-radius: 12px; padding: 10px; }
 .ko-govde-satir[data-tonlu="1"] .kl-takim .kl-izgara { background: transparent; border-radius: 0; padding: 0; }
+
+/* ============================================================================
+   MARATON SÜZGECİ VE KARTLARI — site renk dili
+   Süzgeç, kalıp listesi perdesindeki .kl-* tasarımını olduğu gibi kullanır;
+   burada yalnız maratona özgü küçük farklar tanımlıdır.
+   ========================================================================= */
+/* Süzgeç levhası maratonda daha geniş: üstte klavye, altta şema + rakamlar */
+/* SOLDA klavye · ORTADA aksâm şeması · SAĞDA harf sayısı.
+   Üçü tek levhanın içinde değil, HER BİRİ KENDİ LEVHASINDA durur. */
+.mt-govde {
+    display: flex; align-items: stretch; justify-content: center;
+    gap: 14px; width: 100%; max-width: 1340px; margin: 0 auto;
+    box-sizing: border-box;
+}
+/* Her sütun ayrı bir levha: kalıp perdesindeki süzgeç levhasıyla aynı
+   dil (beyaz zemin · yuvarlak köşe · 4px renkli alt kenar), yalnız alt
+   kenarın rengi o sütunun sorusunun rengi. */
+.mt-kol {
+    display: flex; flex-direction: column; align-items: center; min-width: 0;
+    padding: 10px 12px 12px; box-sizing: border-box;
+    background: rgba(255,255,255,.94); border-radius: 16px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.12);
+    border-bottom: 4px solid #9ca3af;
+}
+.mt-kol-klavye { flex: 0 0 auto; border-bottom-color: #2980B9; }
+.mt-kol-sema   { flex: 1 1 auto; border-bottom-color: #F39C12; }
+.mt-rakam-sutun{ flex: 0 0 auto; border-bottom-color: #E53935; }
+/* Levha başlıkları: her biri kendi sorusunu sorar, renkler siteden */
+.mt-kol-baslik {
+    width: 100%; padding: 5px 12px; border-radius: 8px; margin-bottom: 9px;
+    color: #fff; font-weight: 800; font-size: .78rem; letter-spacing: .08em;
+    text-align: center; direction: ltr; white-space: nowrap;
+}
+.mt-b-harf  { background: #2980B9; }
+.mt-b-aksam { background: #F39C12; }
+.mt-b-rakam { background: #E53935; }
+/* Klavye artık sol sütun: üç sıra kendi doğal eninde, dikeyde ortalı */
+.mt-klavye-sira { display: flex; align-items: center; justify-content: center; flex: 1 1 auto; }
+.mt-klavye-sira .kl-tus { width: 41px; height: 41px; }
+.mt-klavye-sira .kl-tus-harf { font-size: 21px; }
+.mt-klavye-sira .kl-tus-hepsi { width: auto; min-width: 80px; }
+.mt-klavye-sira .kl-klavye { gap: 4px; }
+.mt-klavye-sira .kl-kb-satir { gap: 4px; }
+/* Aksâm şeması ortada, artan bütün yeri o alır */
+.mt-sema-alan { flex: 1 1 auto; width: 100%; min-width: 0; display: flex; justify-content: center; }
+.mt-sema-alan .kl-sema { width: 100%; max-width: 100%; }
+.mt-sema-alan .kl-sema-kart { padding: 9px 6px; }
+.mt-sema-alan .kl-sk-ad { font-size: .93rem; }
+.mt-sema-alan .kl-sk-tanim { font-size: .69rem; }
+.mt-sema-alan .kl-sk-ornek { font-size: 1.45rem; }
+.mt-sema-alan .kl-sema-dallar { gap: 9px; }
+.mt-sema-alan .kl-sema-izgara { gap: 6px; }
+/* Dar ekranda klavye biraz küçülür, kazandığı yeri şemaya bırakır */
+@media (max-width: 1400px) {
+    .mt-klavye-sira .kl-tus { width: 38px; height: 39px; }
+    .mt-klavye-sira .kl-tus-harf { font-size: 20px; }
+    .mt-klavye-sira .kl-tus-hepsi { min-width: 72px; }
+}
+/* Üç tuş levhanın boyunu paylaşır: yanındaki şema ne kadar uzarsa
+   tuşlar da o kadar uzar, sütunda boşluk kalmaz. */
+.mt-rakam-tuslar {
+    flex: 1 1 auto; width: 100%; display: flex; flex-direction: column;
+    align-items: stretch; justify-content: stretch; gap: 9px;
+}
+.mt-tus { width: 60px; height: auto; flex: 1 1 0; min-height: 48px; }
+.mt-tus .kl-tus-harf { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800; }
+.mt-tus .kl-tus-sayi { font-size: .64rem; }
+.mt-bilgi {
+    margin-left: 9px; color: #FFC107; cursor: pointer; font-size: .95rem;
+    transition: color .15s ease, transform .12s ease;
+}
+.mt-bilgi:hover { color: #fff; transform: scale(1.15); }
+
+/* ---- SONUÇ KARTI ---- */
+#telaffuz-results { gap: 16px !important; }
+.mt-kart {
+    position: relative; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    min-width: 210px; padding: 16px 20px 14px;
+    background: #fff; border-radius: 18px;
+    border: 1px solid #F3E7CF; border-bottom: 5px solid #F39C12;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+    transition: transform .16s cubic-bezier(.22,1,.36,1), box-shadow .16s ease, border-color .16s ease;
+}
+.mt-kart:hover {
+    transform: translateY(-4px);
+    border-bottom-color: #E53935;
+    box-shadow: 0 10px 24px rgba(229,57,53,.18);
+}
+.mt-kart:active { transform: translateY(-1px); }
+.mt-kart-fiil {
+    font-family: 'Arakom', 'Harmattan', serif; font-size: 3.4rem; line-height: 1.15; color: #1d1d1f;
+}
+.mt-kart-alt { display: flex; align-items: center; gap: 7px; direction: rtl; }
+.mt-kart-kok {
+    font-family: 'Arakom', serif; font-size: 1.15rem; color: #E53935;
+    background: rgba(229,57,53,.08); border-radius: 999px; padding: 1px 10px;
+}
+.mt-kart-aksam, .mt-kart-harf {
+    font-family: 'Inter', sans-serif; font-size: .7rem; font-weight: 700; letter-spacing: .02em;
+    color: #9a7b3a; background: rgba(255,193,7,.16); border-radius: 999px; padding: 2px 9px;
+    direction: ltr; unicode-bidi: isolate;
+}
+
+/* ---- KELİME LİSTELERİ: toplam kelime sayacı ---- */
+.kl-sayac-serit {
+    grid-column: 1 / -1;                 /* ızgarada tam genişlik: bir sütunu kapatmasın */
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin: 0 0 18px; padding: 12px 26px; border-radius: 999px;
+    background: linear-gradient(90deg, #FFC107 0%, #F39C12 38%, #EF5350 72%, #E53935 100%);
+    box-shadow: 0 6px 18px rgba(243,156,18,.28);
+    color: #fff; font-family: 'Inter', sans-serif; direction: ltr;
+}
+.kl-sayac-serit .kls-sayi {
+    font-size: 2rem; font-weight: 900; letter-spacing: .02em;
+    text-shadow: 0 2px 6px rgba(0,0,0,.18);
+}
+.kl-sayac-serit .kls-etiket { font-size: .95rem; font-weight: 700; opacity: .95; }
+.kl-sayac-serit .kls-ayrac { width: 1px; height: 26px; background: rgba(255,255,255,.45); }
+.kl-sayac-serit .kls-alt { font-size: .8rem; font-weight: 600; opacity: .9; }
