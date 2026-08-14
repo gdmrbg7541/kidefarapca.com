@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🔬 Çoğul İsimlerin Merfu, Mansub ve Mecrur Halleri</title>
+<meta name="description" content="Sayfa 95 — Çoğul isimlerin merfu, mansub ve mecrur halleri. Etkileşimli sunum.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B6034' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 18h8'/><path d='M3 22h18'/><path d='M14 22a7 7 0 1 0 0-14h-1'/><path d='M9 14h2'/><path d='M8 6h4'/><path d='M13 6h1a3 3 0 0 1 0 6h-1'/><path d='M10 2v4'/></svg>">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+
+<style>
+/* ==========================================================
+   YAZI TİPİ — ARAKOM (sitenin kök klasöründeki arakom.ttf)
+   Sunumlar bir ALT KLASÖRDE durduğu için yol "../arakom.ttf".
+   Buradaki @font-face, dosya tek başına açıldığında da (dış
+   arakom.css yüklenmese bile) yazı tipinin gelmesini sağlar.
+   GitHub Pages büyük/küçük harfe duyarlı: iki yazım da tanımlı.
+   ========================================================== */
+@font-face{ font-family:'Arakom'; src:url('../arakom.ttf') format('truetype'); font-display:swap; }
+@font-face{ font-family:'arakom'; src:url('../arakom.ttf') format('truetype'); font-display:swap; }
+
+/* ==========================================================
+   SAYFA 95 — ÇOĞUL İSİMLERİN MERFU, MANSUB VE MECRUR HALLERİ
+   Etkileşimli HTML sunum. Tek dosya; dış bağımlılık yok.
+   Renk kodu:  Merfu = yeşil · Mansub = mavi · Mecrur = pembe
+   ========================================================== */
+
+:root{
+  --merfu:#00A651;
+  --mansub:#0070C0;
+  --mecrur:#E5007D;
+  --kirmizi:#D81E05;
+  --kahve:#8B6034;
+  --mor:#6B3FA0;
+  --murekkep:#1F2430;
+  --gri:#6B7280;
+  --acikgri:#EEF1F5;
+  --zemin:#FAF7F2;
+  --kart:#FFFFFF;
+  --golge:0 10px 30px rgba(31,36,48,.10), 0 2px 6px rgba(31,36,48,.06);
+  --golge2:0 18px 46px rgba(31,36,48,.16);
+  --r:22px;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;padding:0}
+body{
+  background:#20242E;
+  color:var(--murekkep);
+  font-family:'Arakom','Segoe UI',system-ui,sans-serif;
+  overflow:hidden;
+}
+
+/* ---------- Sahne: 16:9 alanı ekrana sığdır ---------- */
+#sahne{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#tuval{
+  width:1280px;height:720px;position:relative;
+  flex:0 0 auto;                 /* dar ekranlarda flex daraltmasın; ölçek JS ile veriliyor */
+  transform-origin:center center;
+  background:var(--zemin);
+  border-radius:6px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  overflow:hidden;
+}
+
+/* ---------- Slayt ---------- */
+.slayt{
+  position:absolute;inset:0;
+  padding:34px 46px 60px;
+  display:none;
+  flex-direction:column;
+  background:var(--zemin);
+}
+.slayt.aktif{display:flex;animation:gir .38s cubic-bezier(.22,.9,.3,1) both}
+@keyframes gir{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+.slayt.geri.aktif{animation:girGeri .38s cubic-bezier(.22,.9,.3,1) both}
+@keyframes girGeri{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+
+/* ---------- Adımlar (orijinal sunumdaki animasyonların karşılığı) ---------- */
+.adim{opacity:0;transform:translateY(14px) scale(.985);transition:opacity .38s ease, transform .38s cubic-bezier(.22,.9,.3,1)}
+.adim.gor{opacity:1;transform:none}
+
+/* ---------- Başlıklar ---------- */
+h1,h2,h3,h4,p{margin:0}
+.uzatma{letter-spacing:.5px}
+.sbaslik{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:16px;flex:0 0 auto;
+}
+.sbaslik .rozet{
+  width:44px;height:44px;flex:0 0 44px;border-radius:14px;
+  display:grid;place-items:center;font-size:23px;
+  background:#fff;box-shadow:var(--golge);
+}
+.sbaslik h2{font-size:31px;font-weight:800;line-height:1.36;color:var(--murekkep)}
+.sbaslik .alt{font-size:15px;color:var(--gri);font-weight:600;margin-top:2px}
+
+/* ---------- Arapça ---------- */
+.ar{direction:rtl;unicode-bidi:isolate;font-weight:700;line-height:1.65}
+.ar.buyuk{font-size:44px}
+.ar.orta{font-size:34px}
+.ar.kucuk{font-size:26px}
+.ek{direction:rtl;unicode-bidi:isolate;font-weight:800;letter-spacing:1px;line-height:1.5}
+
+.yesil{color:var(--merfu)}
+.mavi{color:var(--mansub)}
+.pembe{color:var(--mecrur)}
+.kirmizi{color:var(--kirmizi)}
+.grirenk{color:var(--gri)}
+
+/* ---------- Genel kart ---------- */
+.kart{background:var(--kart);border-radius:var(--r);box-shadow:var(--golge);padding:18px 20px}
+.kutu{background:var(--kart);border-radius:18px;box-shadow:var(--golge);padding:14px 16px}
+
+/* ==========================================================
+   1 — KAPAK
+   ========================================================== */
+#s1{
+  padding:0;align-items:center;justify-content:center;
+  background:
+    radial-gradient(1100px 620px at 50% 118%, #F0E2CE 0%, rgba(240,226,206,0) 62%),
+    repeating-linear-gradient(135deg,#C79A62 0 3px,#BE8E52 3px 6px);
+}
+#s1 .kapakKart{
+  background:#fff;border-radius:78px;padding:52px 78px;text-align:center;
+  box-shadow:0 26px 60px rgba(90,60,25,.30);max-width:1030px;
+}
+#s1 h1{font-size:60px;line-height:1.16;font-weight:900;color:var(--kahve)}
+#s1 .mikro{font-size:52px;vertical-align:-6px;margin-left:10px}
+#s1 .altbaslik{margin-top:20px;font-size:22px;color:#9A7C55;font-weight:700}
+#s1 .rozetler{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#s1 .rz{padding:9px 20px;border-radius:999px;font-size:17px;font-weight:800;background:#F6EEE2;color:#8B6034}
+#s1 .imza{position:absolute;bottom:22px;left:30px;color:#fff;font-weight:800;font-size:16px;opacity:.92;letter-spacing:.6px}
+#s1 .basla{margin-top:30px;font-size:16px;color:#B08A5D;font-weight:700}
+
+/* ==========================================================
+   2 — HATIRLAYALIM
+   ========================================================== */
+.ikili{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1 1 auto;min-height:0;align-content:center}
+.sutunBaslik{
+  display:inline-flex;align-items:center;gap:9px;font-size:19px;font-weight:900;
+  padding:8px 16px;border-radius:999px;color:#fff;margin-bottom:12px;
+}
+.sutunBaslik.a{background:var(--mansub)}
+.sutunBaslik.b{background:var(--mecrur)}
+.esatir{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 4px;border-bottom:1px dashed #E3E7ED}
+.esatir:last-child{border-bottom:0}
+.esatir .tr{font-size:17px;font-weight:700;color:var(--gri)}
+.notKutu{margin-top:12px;background:#FFF6F5;border-radius:14px;padding:11px 14px;font-size:16px;font-weight:700;color:#9B2C20}
+.kalipRozet{display:inline-block;background:#FDF1D9;color:#8A6412;border-radius:12px;padding:6px 16px;font-weight:900;font-size:26px;direction:rtl}
+
+/* ==========================================================
+   KONU HARİTASI
+   ========================================================== */
+/* Seçili dal her satırda 1. sütunda; bağlantı okları da 1. sütunun altında —
+   böylece "yol" gerçekten izlenen dalları birleştirir. */
+.harita{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.hkat,.hok{display:grid;grid-template-columns:repeat(3,172px);gap:14px}
+.hok{justify-items:center;color:#C3CBD5;font-size:15px;line-height:1;padding:5px 0}
+.hkok{
+  background:var(--murekkep);color:#fff;border-radius:14px;padding:11px 10px;
+  font-size:20px;font-weight:900;box-shadow:var(--golge);text-align:center;
+}
+.hdal{
+  background:#fff;color:#5A6472;border-radius:14px;padding:10px 12px;
+  font-size:19px;font-weight:800;box-shadow:0 3px 10px rgba(31,36,48,.07);text-align:center;
+}
+.hdal.secili{background:var(--kahve);color:#fff;box-shadow:var(--golge)}
+.hdal.son{color:#fff}
+.hdal.son.yesil2{background:var(--merfu)} .hdal.son.mavi2{background:var(--mansub)} .hdal.son.pembe2{background:var(--mecrur)}
+.hburada{
+  margin-top:16px;background:#FFF1D6;color:#8A6412;border-radius:999px;
+  padding:7px 20px;font-size:16px;font-weight:900;
+}
+
+/* ==========================================================
+   3 — İKİ TÜR DEĞİŞİM (köprü slayt)
+   ========================================================== */
+.kopru{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1 1 auto;align-content:center}
+.kopruKart{border-radius:26px;padding:28px 30px;color:#fff;box-shadow:var(--golge2)}
+.kopruKart.h{background:linear-gradient(150deg,#0A8F4D,#00A651)}
+.kopruKart.f{background:linear-gradient(150deg,#4B2E86,#6B3FA0)}
+.kopruKart h3{font-size:30px;font-weight:900;margin-bottom:10px}
+.kopruKart p{font-size:18px;opacity:.95;font-weight:600;line-height:1.5}
+.kopruKart .liste{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.kopruKart .liste > span{background:rgba(255,255,255,.18);border-radius:12px;padding:8px 14px;font-size:18px;font-weight:800;display:block}
+.kopruKart .liste > span .ek{background:transparent;padding:0;font-size:21px;opacity:.95}
+
+/* ==========================================================
+   4/5 — HAREKE & HARF TABLOLARI
+   ========================================================== */
+.uclu{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1 1 auto;min-height:0;align-content:center}
+.tur{background:#fff;border-radius:20px;box-shadow:var(--golge);display:flex;flex-direction:column;overflow:hidden}
+.tur .tbas{padding:11px 14px;font-size:18px;font-weight:900;color:#fff;text-align:center;line-height:1.25}
+.tur .tbas small{display:block;font-size:15px;opacity:.92;font-weight:700;direction:rtl}
+.tur.t1 .tbas{background:#54606F}
+.tur.t2 .tbas{background:var(--mecrur)}
+.tur.t3 .tbas{background:#E08600}
+.tur.t4 .tbas{background:var(--mansub)}
+.tur .gov{padding:7px 9px 9px;display:flex;flex-direction:column;gap:5px;flex:1 1 auto;justify-content:center}
+.hsat{display:grid;grid-template-columns:74px 1fr;align-items:center;gap:8px;padding:6px 8px;border-radius:13px;background:#F7F9FC}
+.hsat .et{font-size:14px;font-weight:900;letter-spacing:.3px}
+.hsat.m1{background:rgba(0,166,81,.09)}   .hsat.m1 .et{color:var(--merfu)}
+.hsat.m2{background:rgba(0,112,192,.09)}  .hsat.m2 .et{color:var(--mansub)}
+.hsat.m3{background:rgba(229,0,125,.09)}  .hsat.m3 .et{color:var(--mecrur)}
+.ornekler{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.ornekler .ek{font-size:19px}
+.ornekler .kelime{font-size:22px;font-weight:800;direction:rtl;line-height:1.5}
+.yanlisSatir{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.yanlis{text-decoration:line-through;text-decoration-color:#D81E05;text-decoration-thickness:3px;color:#B9C0CA}
+.carpi{color:#D81E05;font-weight:900;font-size:12.5px;letter-spacing:.2px}
+
+/* ==========================================================
+   6 — ANA TABLO
+   ========================================================== */
+.anatablo{width:100%;border-collapse:separate;border-spacing:7px;flex:1 1 auto}
+.anatablo th{font-size:20px;font-weight:900;color:#fff;padding:8px 6px;border-radius:14px;line-height:1.35}
+.anatablo th.bos{background:transparent}
+.anatablo th.h1{background:var(--merfu)} .anatablo th.h2{background:var(--mansub)} .anatablo th.h3{background:var(--mecrur)}
+.anatablo td.satirbas{
+  background:#EDF1F6;border-radius:16px;padding:8px 12px;width:214px;
+  font-size:17px;font-weight:900;color:#38414F;line-height:1.3;text-align:center;
+}
+.anatablo td.satirbas small{display:block;font-size:19px;font-weight:800;color:var(--gri);direction:rtl;margin-top:3px;line-height:1.5}
+.anatablo td.hucre{background:#fff;border-radius:16px;padding:7px 9px;text-align:center;box-shadow:0 3px 10px rgba(31,36,48,.06)}
+.anatablo td.hucre .ek{font-size:21px;display:block;margin-bottom:2px}
+.anatablo td.hucre .kelime{font-size:24px;font-weight:800;direction:rtl;display:block;line-height:1.5}
+.anatablo td.hucre .kelime.bel{opacity:.95}
+.tanim{text-align:center;font-size:20px;font-weight:800;color:#38414F;margin-bottom:12px}
+.tanim u{text-decoration-color:var(--kirmizi);text-decoration-thickness:3px}
+
+/* ==========================================================
+   7/8/9 — HANGİ ÖGELER ... OLUR?
+   ========================================================== */
+.ogeDuzen{display:grid;grid-template-columns:340px 1fr;gap:24px;flex:1 1 auto;min-height:0;align-content:center}
+.ogeSol{border-radius:24px;padding:24px;color:#fff;display:flex;flex-direction:column;justify-content:center;box-shadow:var(--golge2)}
+.ogeSol.g1{background:linear-gradient(155deg,#0A8F4D,#00A651)}
+.ogeSol.g2{background:linear-gradient(155deg,#0059A6,#0070C0)}
+.ogeSol.g3{background:linear-gradient(155deg,#B80063,#E5007D)}
+.ogeSol h3{font-size:27px;font-weight:900;line-height:1.25;margin-bottom:16px}
+.ogeSol ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.ogeSol li{background:rgba(255,255,255,.19);border-radius:14px;padding:11px 15px;font-size:19px;font-weight:800}
+.cumleler{display:flex;flex-direction:column;gap:11px;justify-content:center}
+.cumle{background:#fff;border-radius:18px;box-shadow:var(--golge);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.cumle .ar{font-size:35px}
+.cumle .tr{font-size:17px;font-weight:700;color:var(--gri);white-space:nowrap}
+.cumle .son{padding:0 2px;border-radius:6px}
+
+/* ==========================================================
+   10/11/12 — ALIŞTIRMALAR
+   ========================================================== */
+.alistirmaUst{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.yonerge{font-size:20px;font-weight:800;color:#38414F}
+.yonerge b{color:var(--kirmizi)}
+.dugmeler{display:flex;gap:9px}
+.mdug{
+  border:0;cursor:pointer;font-family:inherit;font-weight:800;font-size:15px;
+  padding:9px 17px;border-radius:999px;background:#E9EDF3;color:#414B59;transition:.16s;
+}
+.mdug:hover{background:#DCE2EA;transform:translateY(-1px)}
+.mdug.ana{background:var(--murekkep);color:#fff}
+.mdug.ana:hover{background:#000}
+
+.izgara{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:1 1 auto;align-content:center}
+.izgara.dort{grid-template-columns:repeat(4,1fr)}
+.soru{
+  background:#fff;border-radius:20px;box-shadow:var(--golge);padding:14px 14px 12px;
+  cursor:pointer;position:relative;transition:transform .18s, box-shadow .18s;
+  display:flex;flex-direction:column;gap:8px;min-height:196px;
+}
+.soru:hover{transform:translateY(-3px);box-shadow:var(--golge2)}
+.soru .no{
+  position:absolute;top:11px;left:12px;width:28px;height:28px;border-radius:9px;
+  background:#EDF1F6;color:#5A6472;font-weight:900;font-size:15px;display:grid;place-items:center;
+  direction:rtl;
+}
+.soru .verilen{text-align:center;font-size:33px;font-weight:800;direction:rtl;padding-top:16px;line-height:1.45}
+.soru .ipucu{text-align:center;font-size:13px;font-weight:800;color:#AEB6C0}
+.soru .cevapAlan{
+  border-top:1px dashed #E3E7ED;padding-top:9px;margin-top:auto;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  max-height:0;opacity:0;overflow:hidden;transition:max-height .32s ease,opacity .26s ease,padding .3s;
+}
+.soru.acik .cevapAlan{max-height:200px;opacity:1}
+.soru.acik .ipucu{visibility:hidden}
+.soru .cevap{font-size:33px;font-weight:900;direction:rtl;line-height:1.5}
+.soru .turet{font-size:13.5px;font-weight:700;color:var(--gri);direction:rtl;text-align:center}
+.soru .turet .kal{background:#FDF1D9;color:#8A6412;border-radius:8px;padding:1px 8px;font-weight:900;margin-inline-start:6px}
+.soru .turetTr{font-size:12.5px;font-weight:700;color:#AEB6C0}
+.soru.m1 .cevap{color:var(--merfu)} .soru.m1 .no{background:rgba(0,166,81,.12);color:var(--merfu)}
+.soru.m2 .cevap{color:var(--mansub)} .soru.m2 .no{background:rgba(0,112,192,.12);color:var(--mansub)}
+.soru.m3 .cevap{color:var(--mecrur)} .soru.m3 .no{background:rgba(229,0,125,.12);color:var(--mecrur)}
+
+.hatirlatmaSerit{
+  margin-top:14px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;
+  background:#fff;border-radius:16px;box-shadow:var(--golge);padding:10px 14px;
+}
+.hatirlatmaSerit .par{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:800;color:#4B5563}
+.hatirlatmaSerit .par .ek{font-size:21px}
+.hatirlatmaSerit .ayrac{width:1px;height:22px;background:#E3E7ED}
+
+/* ==========================================================
+   13 — KARŞILAŞTIRMA
+   ========================================================== */
+.karsi{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:1 1 auto;align-content:center}
+.kkart{background:#fff;border-radius:24px;box-shadow:var(--golge);overflow:hidden;display:flex;flex-direction:column}
+.kkart .kb{padding:13px;text-align:center;color:#fff;font-size:21px;font-weight:900}
+.kkart.k1 .kb{background:#54606F} .kkart.k2 .kb{background:var(--mor)} .kkart.k3 .kb{background:var(--kirmizi)}
+.kkart .rozet2{margin:12px auto 4px;padding:6px 16px;border-radius:999px;font-size:15px;font-weight:900;background:#F2F5F9;color:#4B5563}
+.kkart.k3 .rozet2{background:#FFE9E6;color:#B3271A}
+.kkart .gov2{padding:6px 16px 18px;display:flex;flex-direction:column;gap:7px;align-items:center;flex:1 1 auto;justify-content:center}
+.donusum{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:800;direction:rtl}
+.donusum .ok{color:#C3CBD5;font-size:19px;direction:ltr}
+.notSerit{
+  margin-top:13px;background:#FFF8E7;border-radius:16px;padding:11px 18px;
+  font-size:17px;font-weight:700;color:#7A5A12;text-align:center;line-height:1.5;
+}
+
+/* ==========================================================
+   14/15 — TEKİL & İKİL HATIRLATMA
+   ========================================================== */
+.halKart{display:grid;grid-template-columns:182px 1fr 236px;gap:14px;align-items:center;background:#fff;border-radius:20px;box-shadow:var(--golge);padding:13px 18px}
+.halKart .etiket{font-size:20px;font-weight:900;text-align:center;padding:9px 6px;border-radius:14px;color:#fff;white-space:nowrap}
+.halKart.h1 .etiket{background:var(--merfu)} .halKart.h2 .etiket{background:var(--mansub)} .halKart.h3 .etiket{background:var(--mecrur)}
+.halKart .aciklama{font-size:16.5px;font-weight:700;color:#4B5563;line-height:1.55}
+.halKart .aciklama .ek{font-size:22px;margin:0 4px;vertical-align:-3px}
+.halKart .ornek{display:flex;gap:16px;justify-content:flex-end;align-items:center;direction:rtl}
+.halKart .ornek span{font-size:30px;font-weight:800}
+.halListe{display:flex;flex-direction:column;gap:12px;flex:1 1 auto;justify-content:center}
+
+/* ==========================================================
+   16 — KAPANIŞ
+   ========================================================== */
+#sSon{
+  align-items:center;justify-content:center;
+  background:radial-gradient(900px 520px at 50% 0%,#FFF3DF 0%,rgba(255,243,223,0) 60%),var(--zemin);
+}
+#sSon .sukran{font-size:104px;font-weight:900;color:var(--kahve);direction:rtl;line-height:1.5}
+#sSon .emoji{font-size:44px;margin-top:6px}
+#sSon .marka{margin-top:22px;font-size:26px;font-weight:900;color:#9A7C55}
+#sSon .site{margin-top:4px;font-size:18px;font-weight:700;color:#B9A182}
+
+/* ==========================================================
+   ARAYÜZ — üst şerit, alt kumanda, içindekiler
+   ========================================================== */
+#ustSerit{
+  position:absolute;top:0;left:0;right:0;height:5px;background:rgba(0,0,0,.06);z-index:40;
+}
+#ilerleme{height:100%;width:0;background:linear-gradient(90deg,var(--merfu),var(--mansub),var(--mecrur));transition:width .3s ease}
+
+#kumanda{
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;z-index:45;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(9px);
+  border-radius:999px;padding:6px 8px;box-shadow:var(--golge);
+  opacity:.30;transition:opacity .22s;
+}
+#kumanda:hover,#kumanda.gorunur{opacity:1}
+.kdug{
+  border:0;background:transparent;cursor:pointer;width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;color:#4B5563;transition:.15s;font-family:inherit;
+}
+.kdug:hover{background:#EDF1F6;color:#111}
+.kdug svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+#sayac{font-size:13px;font-weight:800;color:#4B5563;padding:0 9px;min-width:56px;text-align:center;letter-spacing:.3px}
+
+#icindekiler{
+  position:absolute;inset:0;z-index:60;background:rgba(24,28,36,.93);
+  display:none;padding:38px 46px;overflow:auto;
+}
+#icindekiler.acik{display:block;animation:gir .25s ease both}
+#icindekiler h3{color:#fff;font-size:24px;font-weight:900;margin-bottom:18px}
+#icListe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.icOge{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);
+  border-radius:15px;padding:13px 15px;color:#E7EAF0;cursor:pointer;transition:.16s;
+  font-size:15px;font-weight:700;line-height:1.35;text-align:left;font-family:inherit;
+}
+.icOge:hover{background:rgba(255,255,255,.16);transform:translateY(-2px)}
+.icOge.simdi{background:#fff;color:#1F2430;border-color:#fff}
+.icOge .icNo{display:block;font-size:12px;font-weight:900;opacity:.6;margin-bottom:3px}
+
+#yardim{
+  position:absolute;top:14px;right:16px;z-index:44;
+  background:rgba(255,255,255,.8);border-radius:12px;padding:6px 12px;
+  font-size:12.5px;font-weight:700;color:#6B7280;opacity:0;transition:opacity .3s;pointer-events:none;
+}
+#yardim.gor{opacity:1}
+
+/* ---------- Yazdırma ---------- */
+@media print{
+  @page{size:landscape;margin:0}
+  body{background:#fff;overflow:visible}
+  #sahne{position:static;display:block}
+  #tuval{transform:none!important;width:100%;height:auto;box-shadow:none}
+  .slayt{display:flex!important;position:relative;height:720px;page-break-after:always;box-shadow:none}
+  .adim{opacity:1!important;transform:none!important}
+  .soru .cevapAlan{max-height:none!important;opacity:1!important}
+  .soru .ipucu{visibility:hidden}
+  #kumanda,#icindekiler,#yardim,#ustSerit,.dugmeler{display:none!important}
+}
+
+/* ==========================================================
+   KALIN YAZI YOK (Geylani)
+   Bütün metin normal ağırlıkta; ayrıca font-synthesis:none ile
+   tarayıcının kendi "sahte kalın"ını üretmesi de engellendi
+   (Arakom'un kalın kesimi olmadığında tarayıcı harfleri kendi
+   şişiriyordu — bu satır onu kapatır).
+   ========================================================== */
+html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
+#kumanda, #kumanda *, #icindekiler, #icindekiler *, b, strong, h1, h2, h3, h4, th {
+  font-weight: 400 !important;
+  font-synthesis: none !important;
+  -webkit-font-synthesis: none !important;
+  font-synthesis-weight: none !important;
+}
+</style>
+</head>
+<body>
+
+<div id="sahne">
+<div id="tuval">
+
+  <div id="ustSerit"><div id="ilerleme"></div></div>
+  <div id="yardim">← → gezin · <b>O</b> içindekiler · <b>F</b> tam ekran</div>
+
+  <!-- ================= 1. KAPAK ================= -->
+  <section class="slayt" id="s1" data-ad="Kapak">
+    <div class="kapakKart adim" data-g="1">
+      <h1><span class="mikro">🔬</span> Çoğul İsimlerin;<br>Merfu, Mansub ve Mecrur Halleri</h1>
+      <div class="altbaslik">Sayfa 95 · Arapça Dil Bilgisi</div>
+      <div class="rozetler">
+        <span class="rz">Düzenli Eril Çoğul</span>
+        <span class="rz">Düzenli Dişil Çoğul</span>
+        <span class="rz">Düzensiz (Teksir) Çoğul</span>
+      </div>
+      <div class="basla">Başlamak için → tuşuna bas</div>
+    </div>
+    <div class="imza">Kidef Arapça · kidefarapca.com</div>
+  </section>
+
+  <!-- ================= 2. KONU HARİTASI ================= -->
+  <section class="slayt" data-ad="Konu haritası — buradayız">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🗺️</div>
+      <div>
+        <h2>Temel Arapça — <span class="kirmizi">konunun yeri</span></h2>
+        <div class="alt">Bu ders, isimlerin çoğul hâllerinin i'râbını anlatır</div>
+      </div>
+    </div>
+
+    <div class="harita">
+      <div class="hkat adim" data-g="2"><span class="hkok">Temel Arapça</span></div>
+      <div class="hok adim" data-g="2"><span>▼</span><span></span><span></span></div>
+      <div class="hkat adim" data-g="2">
+        <span class="hdal secili">Kelime</span><span class="hdal">Tamlama</span><span class="hdal">Cümle</span>
+      </div>
+      <div class="hok adim" data-g="3"><span>▼</span><span></span><span></span></div>
+      <div class="hkat adim" data-g="3">
+        <span class="hdal secili">İsim</span><span class="hdal">Fiil</span><span class="hdal">Harf</span>
+      </div>
+      <div class="hok adim" data-g="4"><span>▼</span><span></span><span></span></div>
+      <div class="hkat adim" data-g="4">
+        <span class="hdal secili">Çoğul</span><span class="hdal">Tekil</span><span class="hdal">İkil</span>
+      </div>
+      <div class="hok adim" data-g="5"><span>▼</span><span>▼</span><span>▼</span></div>
+      <div class="hkat adim" data-g="5">
+        <span class="hdal son yesil2">Merfu</span><span class="hdal son mavi2">Mansub</span><span class="hdal son pembe2">Mecrur</span>
+      </div>
+      <div class="hburada adim" data-g="5">📍 Buradayız</div>
+    </div>
+  </section>
+
+  <!-- ================= 3. HATIRLAYALIM ================= -->
+  <section class="slayt" data-ad="Hatırlayalım — Çoğul İsimler">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">📚</div>
+      <div>
+        <h2>Hatırlayalım: <span class="kirmizi">Cem' (Çoğul) İsimler</span></h2>
+        <div class="alt">Çoğullar iki yolla yapılır</div>
+      </div>
+    </div>
+
+    <div class="ikili">
+      <div class="kart adim" data-g="2">
+        <div class="sutunBaslik a">1 · Düzenli (Salim) Çoğullar</div>
+        <p style="font-size:16.5px;font-weight:700;color:#4B5563;margin-bottom:8px">Bazı <b class="mavi">eklerle</b> oluşturulur.</p>
+        <div class="esatir"><span class="tr">Öğretmenler (eril, merfu)</span><span class="ar orta">مُعَلِّمٌ ‹ <b class="mavi">مُعَلِّمُونَ</b></span></div>
+        <div class="esatir"><span class="tr">Öğretmenler (eril, mansub/mecrur)</span><span class="ar orta">مُعَلِّمٍ ‹ <b class="mavi">مُعَلِّمِيـنَ</b></span></div>
+        <div class="esatir"><span class="tr">Öğretmenler (dişil)</span><span class="ar orta">مُعَلِّمَة ‹ <b class="pembe">مُعَلِّمَات</b></span></div>
+      </div>
+
+      <div class="kart adim" data-g="3">
+        <div class="sutunBaslik b">2 · Düzensiz (Teksir) Çoğullar</div>
+        <p style="font-size:16.5px;font-weight:700;color:#4B5563;margin-bottom:10px">Bazı <b class="pembe">kalıplarla</b> oluşturulur.</p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:22px;margin:6px 0 10px">
+          <span class="kalipRozet">فُعُل</span>
+          <div style="text-align:center">
+            <div class="ar buyuk"><b class="kirmizi">كُتُب</b></div>
+            <div class="tr" style="font-size:15px;color:#6B7280;font-weight:700">Kitaplar</div>
+          </div>
+          <span style="font-size:22px;color:#C3CBD5">←</span>
+          <div style="text-align:center">
+            <div class="ar buyuk">كِتَاب</div>
+            <div class="tr" style="font-size:15px;color:#6B7280;font-weight:700">Kitap</div>
+          </div>
+        </div>
+        <div class="notKutu">Düzensiz olan çoğul kelimeleri <b>ezberlememiz</b> gerekir.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. İKİ TÜR DEĞİŞİM ================= -->
+  <section class="slayt" data-ad="İki tür değişim: hareke / harf">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🧭</div>
+      <div>
+        <h2>Arapçada cümlenin ögeleri yapı bakımından <span class="kirmizi">iki şekilde</span> ayırt edilir</h2>
+        <div class="alt">İsmin sonu ya harekeyle ya da harfle değişir</div>
+      </div>
+    </div>
+
+    <div class="kopru">
+      <div class="kopruKart h adim" data-g="2">
+        <h3>1 · Kelime sonundaki <u>HAREKE</u> değişir</h3>
+        <p>Kelimenin son harfinin harekesi ötre / üstün / esre olur.</p>
+        <div class="liste">
+          <span>Tekil isimler</span>
+          <span>Düzenli Dişil Çoğul &nbsp;<span class="ek">ـ ـ ـَات</span></span>
+          <span>Düzensiz (Teksir) Çoğul</span>
+        </div>
+      </div>
+      <div class="kopruKart f adim" data-g="3">
+        <h3>2 · Kelime sonundaki <u>HARF</u> değişir</h3>
+        <p>Kelimenin sonundaki ek harf değişir; hareke değil.</p>
+        <div class="liste">
+          <span>İkil isimler &nbsp;<span class="ek">ـَانِ / ـَيْنِ</span></span>
+          <span>Düzenli Eril Çoğul &nbsp;<span class="ek">ـُونَ / ـِينَ</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. HAREKE DEĞİŞENLER ================= -->
+  <section class="slayt" data-ad="Hareke değişenler">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🎯</div>
+      <div>
+        <h2>Kelime sonundaki <span class="kirmizi">hareke</span> değişir</h2>
+        <div class="alt">Tekil · Düzenli Dişil Çoğul · Düzensiz Çoğul</div>
+      </div>
+    </div>
+
+    <div class="uclu">
+      <!-- Tekil -->
+      <div class="tur t1 adim" data-g="2">
+        <div class="tbas">Tekil<small>مُعَلِّم</small></div>
+        <div class="gov">
+          <div class="hsat m1"><span class="et">Merfu</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــٌــ &nbsp;|&nbsp; ـ ـ ـ ــُ</span>
+              <span class="kelime yesil">مُعَلِّمٌ &nbsp;·&nbsp; اَلْمُعَلِّمُ</span></div></div>
+          <div class="hsat m2"><span class="et">Mansub</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــًا &nbsp;|&nbsp; ـ ـ ـ ــَـ</span>
+              <span class="kelime mavi">مُعَلِّمًا &nbsp;·&nbsp; اَلْمُعَلِّمَ</span></div></div>
+          <div class="hsat m3"><span class="et">Mecrur</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــٍــ &nbsp;|&nbsp; ـ ـ ـ ــِـ</span>
+              <span class="kelime pembe">مُعَلِّمٍ &nbsp;·&nbsp; اَلْمُعَلِّمِ</span></div></div>
+        </div>
+      </div>
+
+      <!-- Düzenli dişil çoğul -->
+      <div class="tur t2 adim" data-g="3">
+        <div class="tbas">Düzenli Dişil Çoğul<small>ـ ـ ـ ـَات</small></div>
+        <div class="gov">
+          <div class="hsat m1"><span class="et">Merfu</span>
+            <div class="ornekler"><span class="ek">ـ ـَاتٌ &nbsp;|&nbsp; ـ ـَاتُ</span>
+              <span class="kelime yesil">مُعَلِّمَاتٌ &nbsp;·&nbsp; اَلْمُعَلِّمَاتُ</span></div></div>
+          <div class="hsat m2"><span class="et">Mansub</span>
+            <div class="ornekler">
+              <span class="yanlisSatir"><span class="ek yanlis">ـ ـَاتًا</span><span class="carpi">✕ üstün değil</span>
+                <span class="ek">ـ ـَاتٍ | ـ ـَاتِ</span></span>
+              <span class="kelime mavi">مُعَلِّمَاتٍ &nbsp;·&nbsp; اَلْمُعَلِّمَاتِ</span></div></div>
+          <div class="hsat m3"><span class="et">Mecrur</span>
+            <div class="ornekler"><span class="ek">ـ ـَاتٍ &nbsp;|&nbsp; ـ ـَاتِ</span>
+              <span class="kelime pembe">مُعَلِّمَاتٍ &nbsp;·&nbsp; اَلْمُعَلِّمَاتِ</span></div></div>
+        </div>
+      </div>
+
+      <!-- Düzensiz çoğul -->
+      <div class="tur t3 adim" data-g="4">
+        <div class="tbas">Düzensiz (Teksir) Çoğul<small>طُلَّـاب</small></div>
+        <div class="gov">
+          <div class="hsat m1"><span class="et">Merfu</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــٌــ &nbsp;|&nbsp; ـ ـ ـ ــُ</span>
+              <span class="kelime yesil">طُلَّـابٌ &nbsp;·&nbsp; اَلطُّلَّـابُ</span></div></div>
+          <div class="hsat m2"><span class="et">Mansub</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــًا &nbsp;|&nbsp; ـ ـ ـ ــَـ</span>
+              <span class="kelime mavi">طُلَّـابًا &nbsp;·&nbsp; اَلطُّلَّـابَ</span></div></div>
+          <div class="hsat m3"><span class="et">Mecrur</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــٍــ &nbsp;|&nbsp; ـ ـ ـ ــِـ</span>
+              <span class="kelime pembe">طُلَّـابٍ &nbsp;·&nbsp; اَلطُّلَّـابِ</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notSerit adim" data-g="5">
+      <b>Not:</b> Düzenli dişil çoğulların <b>mansub</b> halinde üstün değil <b class="kirmizi">esre</b> kullanılır;
+      böylece mansub hâli ile mecrur hâli <b>aynı</b> olur.
+    </div>
+  </section>
+
+  <!-- ================= 5. HARF DEĞİŞENLER ================= -->
+  <section class="slayt" data-ad="Harf değişenler">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🔤</div>
+      <div>
+        <h2>Kelime sonundaki eklerde <span class="kirmizi">harfler</span> değişir</h2>
+        <div class="alt">İkil · Düzenli Eril Çoğul</div>
+      </div>
+    </div>
+
+    <div class="uclu" style="grid-template-columns:1fr 1fr;max-width:960px;margin:0 auto;width:100%">
+      <div class="tur t4 adim" data-g="2">
+        <div class="tbas">Düzenli Eril Çoğul<small>مُعَلِّمُونَ</small></div>
+        <div class="gov">
+          <div class="hsat m1"><span class="et">Merfu</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــُونَ</span>
+              <span class="kelime yesil">مُعَلِّمُونَ &nbsp;·&nbsp; اَلْمُعَلِّمُونَ</span></div></div>
+          <div class="hsat m2"><span class="et">Mansub</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــِيـنَ</span>
+              <span class="kelime mavi">مُعَلِّمِيـنَ &nbsp;·&nbsp; اَلْمُعَلِّمِيـنَ</span></div></div>
+          <div class="hsat m3"><span class="et">Mecrur</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــِيـنَ</span>
+              <span class="kelime pembe">مُعَلِّمِيـنَ &nbsp;·&nbsp; اَلْمُعَلِّمِيـنَ</span></div></div>
+        </div>
+      </div>
+
+      <div class="tur t2 adim" data-g="3">
+        <div class="tbas">İkil<small>مُعَلِّمَانِ</small></div>
+        <div class="gov">
+          <div class="hsat m1"><span class="et">Merfu</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــَانِ</span>
+              <span class="kelime yesil">مُعَلِّمَانِ &nbsp;·&nbsp; اَلْمُعَلِّمَانِ</span></div></div>
+          <div class="hsat m2"><span class="et">Mansub</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــَيْـنِ</span>
+              <span class="kelime mavi">مُعَلِّمَيْـنِ &nbsp;·&nbsp; اَلْمُعَلِّمَيْـنِ</span></div></div>
+          <div class="hsat m3"><span class="et">Mecrur</span>
+            <div class="ornekler"><span class="ek">ـ ـ ـ ــَيْـنِ</span>
+              <span class="kelime pembe">مُعَلِّمَيْـنِ &nbsp;·&nbsp; اَلْمُعَلِّمَيْـنِ</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notSerit adim" data-g="4">
+      Bu iki grupta <b>hareke değil, ek harf</b> değişir: <span class="ek yesil">ـُونَ</span> → <span class="ek mavi">ـِيـنَ</span> &nbsp;·&nbsp;
+      <span class="ek yesil">ـَانِ</span> → <span class="ek mavi">ـَيْـنِ</span>
+    </div>
+  </section>
+
+  <!-- ================= 6. ANA TABLO ================= -->
+  <section class="slayt" data-ad="Özet tablo (3 × 3)">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">📋</div>
+      <div>
+        <h2>Çoğul İsimlerin <span class="yesil">Merfu</span> · <span class="mavi">Mansub</span> · <span class="pembe">Mecrur</span> Halleri</h2>
+        <div class="alt">İsmin sonundaki bazı <u>hareke veya harf</u> değişimleridir</div>
+      </div>
+    </div>
+
+    <table class="anatablo">
+      <tr class="adim" data-g="2">
+        <th class="bos"></th>
+        <th class="h1">Merfu</th>
+        <th class="h2">Mansub</th>
+        <th class="h3">Mecrur</th>
+      </tr>
+      <tr class="adim" data-g="3">
+        <td class="satirbas">Düzenli Eril Çoğul<small>ـ ـ ـ ــُونَ | ـ ـ ـ ــِيـنَ</small></td>
+        <td class="hucre"><span class="ek yesil">ـ ـ ـ ــُونَ</span><span class="kelime yesil">اَلْمُعَلِّمُونَ</span></td>
+        <td class="hucre"><span class="ek mavi">ـ ـ ـ ــِيـنَ</span><span class="kelime mavi">اَلْمُعَلِّمِيـنَ</span></td>
+        <td class="hucre"><span class="ek pembe">ـ ـ ـ ــِيـنَ</span><span class="kelime pembe">اَلْمُعَلِّمِيـنَ</span></td>
+      </tr>
+      <tr class="adim" data-g="4">
+        <td class="satirbas">Düzenli Dişil Çoğul<small>ـ ـ ـ ــَات</small></td>
+        <td class="hucre"><span class="ek yesil">ـ ـَاتٌ | ـ ـَاتُ</span><span class="kelime yesil">مُعَلِّمَاتٌ · اَلْمُعَلِّمَاتُ</span></td>
+        <td class="hucre"><span class="ek mavi">ـ ـَاتٍ | ـ ـَاتِ</span><span class="kelime mavi">مُعَلِّمَاتٍ · اَلْمُعَلِّمَاتِ</span></td>
+        <td class="hucre"><span class="ek pembe">ـ ـَاتٍ | ـ ـَاتِ</span><span class="kelime pembe">مُعَلِّمَاتٍ · اَلْمُعَلِّمَاتِ</span></td>
+      </tr>
+      <tr class="adim" data-g="5">
+        <td class="satirbas">Düzensiz (Teksir) Çoğul<small>Hareke</small></td>
+        <td class="hucre"><span class="ek yesil">ـ ـ ــٌــ | ـ ـ ــُ</span><span class="kelime yesil">طُلَّـابٌ · اَلطُّلَّـابُ</span></td>
+        <td class="hucre"><span class="ek mavi">ـ ـ ــًا | ـ ـ ــَـ</span><span class="kelime mavi">طُلَّـابًا · اَلطُّلَّـابَ</span></td>
+        <td class="hucre"><span class="ek pembe">ـ ـ ــٍــ | ـ ـ ــِـ</span><span class="kelime pembe">طُلَّـابٍ · اَلطُّلَّـابِ</span></td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ================= 7. MERFU ÖGELER ================= -->
+  <section class="slayt" data-ad="Hangi ögeler Merfu olur?">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🟢</div>
+      <div><h2>Hangi ögeler <span class="yesil">Merfu</span> olur?</h2>
+      <div class="alt">Cümlenin öznesi merfu okunur</div></div>
+    </div>
+    <div class="ogeDuzen">
+      <div class="ogeSol g1 adim" data-g="2">
+        <h3>Merfu olan ögeler</h3>
+        <ul><li>Özneler <span style="opacity:.85">(Fâil veya Mübtedâ)</span></li></ul>
+        <p style="margin-top:16px;font-size:16px;font-weight:700;opacity:.92;line-height:1.5">
+          Cümlede <b>işi yapan</b> ya da hakkında <b>hüküm verilen</b> isim merfu olur.
+        </p>
+      </div>
+      <div class="cumleler">
+        <div class="cumle adim" data-g="3"><span class="ar">ذَهَبَ <b class="yesil">الْمُعَلِّمُونَ</b></span><span class="tr">Öğretmenler gitti.</span></div>
+        <div class="cumle adim" data-g="4"><span class="ar">ذَهَبَتْ <b class="yesil">اَلْمُعَلِّمَاتُ</b></span><span class="tr">(Bayan) öğretmenler gitti.</span></div>
+        <div class="cumle adim" data-g="5"><span class="ar">ذَهَبَ <b class="yesil">الطُّلَّـابُ</b></span><span class="tr">Öğrenciler gitti.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 8. MANSUB ÖGELER ================= -->
+  <section class="slayt" data-ad="Hangi ögeler Mansub olur?">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🔵</div>
+      <div><h2>Hangi ögeler <span class="mavi">Mansub</span> olur?</h2>
+      <div class="alt">Nesne, zaman ve mekân bildirenler</div></div>
+    </div>
+    <div class="ogeDuzen">
+      <div class="ogeSol g2 adim" data-g="2">
+        <h3>Mansub olan ögeler</h3>
+        <ul>
+          <li>Nesneler</li>
+          <li>Zamanla ilgili kelimeler</li>
+          <li>Mekânla ilgili kelimeler</li>
+        </ul>
+      </div>
+      <div class="cumleler">
+        <div class="cumle adim" data-g="3"><span class="ar">رَأَيْتُ <b class="mavi">الْمُعَلِّمِيـنَ</b></span><span class="tr">Öğretmenleri gördüm.</span></div>
+        <div class="cumle adim" data-g="4"><span class="ar">رَأَيْتُ <b class="mavi">الْمُعَلِّمَاتِ</b></span><span class="tr">(Bayan) öğretmenleri gördüm.</span></div>
+        <div class="cumle adim" data-g="5"><span class="ar">رَأَيْتُ <b class="mavi">الطُّلَّـابَ</b></span><span class="tr">Öğrencileri gördüm.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 9. MECRUR ÖGELER ================= -->
+  <section class="slayt" data-ad="Hangi ögeler Mecrur olur?">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🟣</div>
+      <div><h2>Hangi ögeler <span class="pembe">Mecrur</span> olur?</h2>
+      <div class="alt">Cer harfi alanlar ve tamlayanlar</div></div>
+    </div>
+    <div class="ogeDuzen">
+      <div class="ogeSol g3 adim" data-g="2">
+        <h3>Mecrur olan ögeler</h3>
+        <ul>
+          <li>Cer harfi (ek) almış kelimeler</li>
+          <li>Tamlayan <span style="opacity:.85">(muzâfun ileyh)</span></li>
+        </ul>
+      </div>
+      <div class="cumleler">
+        <div class="cumle adim" data-g="3"><span class="ar">سَلَّمْتُ عَلَى <b class="pembe">الْمُعَلِّمِيـنَ</b></span><span class="tr">Öğretmenlere selam verdim.</span></div>
+        <div class="cumle adim" data-g="4"><span class="ar">سَلَّمْتُ عَلَى <b class="pembe">الْمُعَلِّمَاتِ</b></span><span class="tr">(Bayan) öğretmenlere selam verdim.</span></div>
+        <div class="cumle adim" data-g="5"><span class="ar">سَلَّمْتُ عَلَى <b class="pembe">الطُّلَّـابِ</b></span><span class="tr">Öğrencilere selam verdim.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 10. ALIŞTIRMA — MERFU ================= -->
+  <section class="slayt" data-ad="Alıştırma 1 — çoğul + merfu">
+    <div class="alistirmaUst adim" data-g="1">
+      <div class="yonerge">Aşağıda verilen kelimeleri; <b>çoğul</b> ve <b class="yesil">merfu</b> olarak tekrar yazalım.</div>
+      <div class="dugmeler">
+        <button class="mdug" data-is="kapat">Gizle</button>
+        <button class="mdug ana" data-is="ac">Hepsini göster</button>
+      </div>
+    </div>
+
+    <div class="izgara adim" data-g="2">
+      <div class="soru m1"><span class="no">۱</span><div class="verilen">وَرَقَةٍ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">أَوْرَاقٌ</div>
+          <div class="turet">وَرَق ‹ أَوْرَاق<span class="kal">٢. أَفْعَال</span></div>
+          <div class="turetTr">Kağıt → Kağıtlar</div></div></div>
+
+      <div class="soru m1"><span class="no">۲</span><div class="verilen">اَلْمُعَلِّمِيـنَ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">اَلْمُعَلِّمُونَ</div>
+          <div class="turet">Düzenli eril çoğul<span class="kal">ـُونَ</span></div>
+          <div class="turetTr">Öğretmenler</div></div></div>
+
+      <div class="soru m1"><span class="no">۳</span><div class="verilen">مُهَنْدِسَةً</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">مُهَنْدِسَاتٌ</div>
+          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٌ</span></div>
+          <div class="turetTr">Mühendisler</div></div></div>
+
+      <div class="soru m1"><span class="no">٤</span><div class="verilen">اَلشَّخْصِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">اَلْأَشْخَاصُ</div>
+          <div class="turet">شَخْص ‹ أَشْخَاص<span class="kal">٢. أَفْعَال</span></div>
+          <div class="turetTr">Şahıs → Şahıslar</div></div></div>
+
+      <div class="soru m1"><span class="no">٥</span><div class="verilen">مُمَرِّضَتَـيْـنِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">مُمَرِّضَاتٌ</div>
+          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٌ</span></div>
+          <div class="turetTr">Hemşireler</div></div></div>
+
+      <div class="soru m1"><span class="no">٦</span><div class="verilen">اَلْحَارِسِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">اَلْحُرَّاسُ</div>
+          <div class="turet">حَارِس ‹ حُرَّاس<span class="kal">٤. فُعَّال</span></div>
+          <div class="turetTr">Bekçi → Bekçiler</div></div></div>
+
+      <div class="soru m1"><span class="no">٧</span><div class="verilen">مُدَرِّسًا</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">مُدَرِّسُونَ</div>
+          <div class="turet">Düzenli eril çoğul<span class="kal">ـُونَ</span></div>
+          <div class="turetTr">Öğretmenler</div></div></div>
+
+      <div class="soru m1"><span class="no">٨</span><div class="verilen">طَالِبٍ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">طُلَّـابٌ</div>
+          <div class="turet">طَالِب ‹ طُلَّـاب<span class="kal">٤. فُعَّال</span></div>
+          <div class="turetTr">Öğrenci → Öğrenciler</div></div></div>
+    </div>
+
+    <div class="hatirlatmaSerit adim" data-g="3">
+      <span class="par">Merfu ekleri:</span>
+      <span class="par yesil"><span class="ek">ـ ـ ــُونَ</span> eril</span><span class="ayrac"></span>
+      <span class="par yesil"><span class="ek">ـ ـَاتٌ / ـَاتُ</span> dişil</span><span class="ayrac"></span>
+      <span class="par yesil"><span class="ek">ـ ـ ــٌــ / ـ ـ ــُ</span> düzensiz</span>
+    </div>
+  </section>
+
+  <!-- ================= 11. ALIŞTIRMA — MANSUB ================= -->
+  <section class="slayt" data-ad="Alıştırma 2 — çoğul + mansub">
+    <div class="alistirmaUst adim" data-g="1">
+      <div class="yonerge">Aşağıda verilen kelimeleri; <b>çoğul</b> ve <b class="mavi">mansub</b> olarak tekrar yazalım.</div>
+      <div class="dugmeler">
+        <button class="mdug" data-is="kapat">Gizle</button>
+        <button class="mdug ana" data-is="ac">Hepsini göster</button>
+      </div>
+    </div>
+
+    <div class="izgara dort adim" data-g="2">
+      <div class="soru m2"><span class="no">۱</span><div class="verilen">اَلطَّالِبَتَانِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">اَلطَّالِبَاتِ</div>
+          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتِ</span></div>
+          <div class="turetTr">Öğrenciler (kız) — mansubda esre</div></div></div>
+
+      <div class="soru m2"><span class="no">۲</span><div class="verilen">قَلَمٍ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">أَقْلَـامًا</div>
+          <div class="turet">قَلَم ‹ أَقْلَـام<span class="kal">٢. أَفْعَال</span></div>
+          <div class="turetTr">Kalem → Kalemler</div></div></div>
+
+      <div class="soru m2"><span class="no">۳</span><div class="verilen">مُدِيرَتَـيْـنِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">مُدِيرَاتٍ</div>
+          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٍ</span></div>
+          <div class="turetTr">Müdireler</div></div></div>
+
+      <div class="soru m2"><span class="no">٤</span><div class="verilen">اَلْكِتَابِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">اَلْكُتُبَ</div>
+          <div class="turet">كِتَاب ‹ كُتُب<span class="kal">١. فُعُل</span></div>
+          <div class="turetTr">Kitap → Kitaplar</div></div></div>
+    </div>
+
+    <div class="hatirlatmaSerit adim" data-g="3">
+      <span class="par">Mansub ekleri:</span>
+      <span class="par mavi"><span class="ek">ـ ـ ــِيـنَ</span> eril</span><span class="ayrac"></span>
+      <span class="par mavi"><span class="ek">ـ ـَاتٍ / ـَاتِ</span> dişil</span><span class="ayrac"></span>
+      <span class="par mavi"><span class="ek">ـ ـ ــًا / ـ ـ ــَـ</span> düzensiz</span>
+    </div>
+  </section>
+
+  <!-- ================= 12. ALIŞTIRMA — MECRUR ================= -->
+  <section class="slayt" data-ad="Alıştırma 3 — çoğul + mecrur">
+    <div class="alistirmaUst adim" data-g="1">
+      <div class="yonerge">Aşağıda verilen kelimeleri; <b>çoğul</b> ve <b class="pembe">mecrur</b> olarak tekrar yazalım.</div>
+      <div class="dugmeler">
+        <button class="mdug" data-is="kapat">Gizle</button>
+        <button class="mdug ana" data-is="ac">Hepsini göster</button>
+      </div>
+    </div>
+
+    <div class="izgara dort adim" data-g="2">
+      <div class="soru m3"><span class="no">٥</span><div class="verilen">مُهَنْدِسَانِ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">مُهَنْدِسِيـنَ</div>
+          <div class="turet">Düzenli eril çoğul<span class="kal">ـِيـنَ</span></div>
+          <div class="turetTr">Mühendisler</div></div></div>
+
+      <div class="soru m3"><span class="no">٦</span><div class="verilen">اَلْفَقِيـرُ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">اَلْفُقَرَاءِ</div>
+          <div class="turet">فَقِيـر ‹ فُقَرَاء<span class="kal">٦. فُعَلَـاء</span></div>
+          <div class="turetTr">Fakir → Fakirler</div></div></div>
+
+      <div class="soru m3"><span class="no">٧</span><div class="verilen">مُدَرِّسَةً</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">مُدَرِّسَاتٍ</div>
+          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٍ</span></div>
+          <div class="turetTr">Öğretmenler (bayan)</div></div></div>
+
+      <div class="soru m3"><span class="no">٨</span><div class="verilen">تَاجِرٌ</div><div class="ipucu">cevabı görmek için tıkla</div>
+        <div class="cevapAlan"><div class="cevap">تُجَّارٍ</div>
+          <div class="turet">تَاجِر ‹ تُجَّار<span class="kal">٤. فُعَّال</span></div>
+          <div class="turetTr">Tacir → Tacirler</div></div></div>
+    </div>
+
+    <div class="hatirlatmaSerit adim" data-g="3">
+      <span class="par">Mecrur ekleri:</span>
+      <span class="par pembe"><span class="ek">ـ ـ ــِيـنَ</span> eril</span><span class="ayrac"></span>
+      <span class="par pembe"><span class="ek">ـ ـَاتٍ / ـَاتِ</span> dişil</span><span class="ayrac"></span>
+      <span class="par pembe"><span class="ek">ـ ـ ــٍــ / ـ ـ ــِـ</span> düzensiz</span>
+    </div>
+  </section>
+
+  <!-- ================= 13. KARŞILAŞTIRMA ================= -->
+  <section class="slayt" data-ad="Tekil · İkil · Çoğul karşılaştırması">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">⚖️</div>
+      <div><h2>Tekil · İkil · Çoğul — <span class="kirmizi">ne değişiyor?</span></h2>
+      <div class="alt">Sonu değiştiren şey hareke mi, harf mi?</div></div>
+    </div>
+
+    <div class="karsi">
+      <div class="kkart k1 adim" data-g="2">
+        <div class="kb">Tekil İsimlerde</div>
+        <div class="rozet2">Sadece hareke</div>
+        <div class="gov2">
+          <div class="donusum"><span class="yesil">مُعَلِّمٌ</span><span class="ok">→</span><span class="pembe">مُعَلِّمٍ</span></div>
+        </div>
+      </div>
+      <div class="kkart k2 adim" data-g="3">
+        <div class="kb">İkil İsimlerde</div>
+        <div class="rozet2">Sadece harf</div>
+        <div class="gov2">
+          <div class="donusum"><span class="yesil">اَلطَّالِبَانِ</span><span class="ok">→</span><span class="pembe">اَلطَّالِبَيْـنِ</span></div>
+        </div>
+      </div>
+      <div class="kkart k3 adim" data-g="4">
+        <div class="kb">Çoğul İsimlerde</div>
+        <div class="rozet2">Hem hareke hem harf</div>
+        <div class="gov2">
+          <div class="donusum"><span class="yesil">مُعَلِّمُونَ</span><span class="ok">→</span><span class="pembe">مُعَلِّمِيـنَ</span></div>
+          <div class="donusum"><span class="yesil">اَلْمُعَلِّمَاتُ</span><span class="ok">→</span><span class="pembe">اَلْمُعَلِّمَاتِ</span></div>
+          <div class="donusum"><span class="yesil">اَلطُّلَّـابُ</span><span class="ok">→</span><span class="pembe">اَلطُّلَّـابَ</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notSerit adim" data-g="5">
+      <b>Not:</b> Çoğullar; tekil ve ikillerden farklı olarak cümledeki yerine veya öncelerine eklenen eklere göre
+      <b class="kirmizi">hem hareke hem harf</b> açısından sonları değişebilir.
+    </div>
+  </section>
+
+  <!-- ================= 14. TEKİL HATIRLATMA ================= -->
+  <section class="slayt" data-ad="Hatırlatma — Tekil isimler">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🔬</div>
+      <div><h2>Tekil İsimlerin Ref, Nasb ve Cer Halleri</h2>
+      <div class="alt">İsmin sonundaki bazı <u>hareke</u> değişimleridir</div></div>
+    </div>
+    <div class="halListe">
+      <div class="halKart h1 adim" data-g="2">
+        <div class="etiket">Ref' — Merfu</div>
+        <div class="aciklama">Ötre veya iki ötreye <b>ref alameti</b> denir. <span class="ek yesil">ــــُ</span> · <span class="ek yesil">ــــٌ</span><br>
+          Sonu ötre veya iki ötre ile biten kelimeye <b>Merfu</b> denir.</div>
+        <div class="ornek"><span class="yesil">طَالِبٌ</span><span class="yesil">اَلطَّالِبُ</span></div>
+      </div>
+      <div class="halKart h2 adim" data-g="3">
+        <div class="etiket">Nasb — Mansub</div>
+        <div class="aciklama">Üstün veya iki üstüne <b>nasb alameti</b> denir. <span class="ek mavi">ــــَ</span> · <span class="ek mavi">ــــًا</span><br>
+          Sonu üstün veya iki üstünle biten kelimeye <b>Mansub</b> denir.</div>
+        <div class="ornek"><span class="mavi">طَالِبًا</span><span class="mavi">اَلطَّالِبَ</span></div>
+      </div>
+      <div class="halKart h3 adim" data-g="4">
+        <div class="etiket">Cer — Mecrur</div>
+        <div class="aciklama">Esre veya iki esreye <b>cer alameti</b> denir. <span class="ek pembe">ــــِ</span> · <span class="ek pembe">ــــٍ</span><br>
+          Sonu esre veya iki esre ile biten kelimeye <b>Mecrur</b> denir.</div>
+        <div class="ornek"><span class="pembe">طَالِبٍ</span><span class="pembe">اَلطَّالِبِ</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 15. İKİL HATIRLATMA ================= -->
+  <section class="slayt" data-ad="Hatırlatma — İkil isimler">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🔬</div>
+      <div><h2>İkil İsimlerin Ref, Nasb ve Cer Halleri</h2>
+      <div class="alt">İsmin sonundaki bazı <u>harf</u> değişimleridir</div></div>
+    </div>
+    <div class="halListe">
+      <div class="halKart h1 adim" data-g="2">
+        <div class="etiket">Merfu</div>
+        <div class="aciklama">Sonu <span class="ek yesil">ـ ـ ـ ــَانِ</span> ile biten ikil kelime <b>Merfu</b> olur.</div>
+        <div class="ornek"><span class="yesil">طَالِبَانِ</span><span class="yesil">اَلطَّالِبَـانِ</span></div>
+      </div>
+      <div class="halKart h2 adim" data-g="3">
+        <div class="etiket">Mansub</div>
+        <div class="aciklama">Sonu <span class="ek mavi">ـ ـ ـ ــَيْـنِ</span> ile biten ikil kelime <b>Mansub</b> olur.</div>
+        <div class="ornek"><span class="mavi">طَالِبَـيْـنِ</span><span class="mavi">اَلطَّالِبَـيْـنِ</span></div>
+      </div>
+      <div class="halKart h3 adim" data-g="4">
+        <div class="etiket">Mecrur</div>
+        <div class="aciklama">Sonu <span class="ek pembe">ـ ـ ـ ــَيْـنِ</span> ile biten kelime <b>Mecrur</b> olur.</div>
+        <div class="ornek"><span class="pembe">طَالِبَـيْـنِ</span><span class="pembe">اَلطَّالِبَـيْـنِ</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 16. KAPANIŞ ================= -->
+  <section class="slayt" id="sSon" data-ad="Kapanış">
+    <div style="text-align:center">
+      <div class="sukran adim" data-g="1">شُكْرًا</div>
+      <div class="emoji adim" data-g="2">👌 👍 😎</div>
+      <div class="marka adim" data-g="3">Kidef Arapça</div>
+      <div class="site adim" data-g="3">kidefarapca.com</div>
+    </div>
+  </section>
+
+  <!-- ================= KUMANDA ================= -->
+  <div id="kumanda">
+    <button class="kdug" id="dOnce" title="Önceki (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <span id="sayac">1 / 16</span>
+    <button class="kdug" id="dSonra" title="Sonraki (→)"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="kdug" id="dIcindekiler" title="İçindekiler (O)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <button class="kdug" id="dTam" title="Tam ekran (F)"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  </div>
+
+  <!-- ================= İÇİNDEKİLER ================= -->
+  <div id="icindekiler">
+    <h3>İçindekiler</h3>
+    <div id="icListe"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var tuval    = document.getElementById('tuval');
+  var slaytlar = Array.prototype.slice.call(document.querySelectorAll('.slayt'));
+  var sayacEl  = document.getElementById('sayac');
+  var ilerleme = document.getElementById('ilerleme');
+  var icPanel  = document.getElementById('icindekiler');
+  var icListe  = document.getElementById('icListe');
+  var kumanda  = document.getElementById('kumanda');
+  var yardim   = document.getElementById('yardim');
+
+  var s = 0;      // aktif slayt
+  var a = 0;      // aktif adım (o slayttaki görünen grup sayısı)
+
+  /* ---------- adım grupları ---------- */
+  function gruplar(slayt){
+    var g = [], gor = {};
+    Array.prototype.forEach.call(slayt.querySelectorAll('.adim'), function(el){
+      var k = el.getAttribute('data-g') || '0';
+      if(!gor[k]){ gor[k] = []; g.push(gor[k]); gor[k].anahtar = k; }
+      gor[k].push(el);
+    });
+    return g;
+  }
+
+  function adimUygula(){
+    var g = gruplar(slaytlar[s]);
+    g.forEach(function(grup, i){
+      grup.forEach(function(el){ el.classList.toggle('gor', i < a); });
+    });
+  }
+
+  function goster(yeni, geri, sonAdim){
+    if(yeni < 0 || yeni >= slaytlar.length) return;
+    slaytlar.forEach(function(sl){ sl.classList.remove('aktif','geri'); });
+    s = yeni;
+    var sl = slaytlar[s];
+    if(geri) sl.classList.add('geri');
+    sl.classList.add('aktif');
+    // Slayt görünür olduktan sonra düzeni bir kez zorla hesapla; böylece ilk grup
+    // "gizli" başlangıç durumundan geçiş yaparak yumuşak açılır (anlık belirmez).
+    a = 0; adimUygula(); void sl.offsetWidth;
+    // İlk grup her zaman doğrudan açılır — böylece ileri/geri basış sayısı
+    // basma hızından bağımsız ve öngörülebilir olur.
+    a = sonAdim ? gruplar(sl).length : 1;
+    adimUygula();
+    guncelle();
+  }
+
+  function guncelle(){
+    sayacEl.textContent = (s+1) + ' / ' + slaytlar.length;
+    ilerleme.style.width = ((s+1)/slaytlar.length*100) + '%';
+    Array.prototype.forEach.call(icListe.children, function(d,i){ d.classList.toggle('simdi', i === s); });
+    // replaceState kullanıyoruz: her slayt için tarayıcı geçmişine kayıt düşmesin
+    try{ history.replaceState(null, '', '#slayt-' + (s+1)); }catch(e){}
+  }
+
+  // adres çubuğundan / dış bağlantıdan gelen değişiklik
+  window.addEventListener('hashchange', function(){
+    var m = (location.hash || '').match(/slayt-(\d+)/);
+    if(!m) return;
+    var hedef = Math.min(slaytlar.length, Math.max(1, parseInt(m[1],10))) - 1;
+    if(hedef !== s) goster(hedef, hedef < s, false);
+  });
+
+  function ileri(){
+    var n = gruplar(slaytlar[s]).length;
+    if(a < n){ a++; adimUygula(); }
+    else if(s < slaytlar.length-1){ goster(s+1,false,false); }
+  }
+  function geriGit(){
+    if(a > 1){ a--; adimUygula(); }
+    else if(s > 0){ goster(s-1,true,true); }
+  }
+
+  /* ---------- içindekiler ---------- */
+  slaytlar.forEach(function(sl,i){
+    var b = document.createElement('button');
+    b.className = 'icOge';
+    b.innerHTML = '<span class="icNo">' + (i+1) + '</span>' + (sl.getAttribute('data-ad') || ('Slayt ' + (i+1)));
+    b.addEventListener('click', function(){ icPanel.classList.remove('acik'); goster(i,false,false); });
+    icListe.appendChild(b);
+  });
+
+  /* ---------- ölçekleme ---------- */
+  function olcekle(){
+    var g = window.innerWidth, y = window.innerHeight;
+    var k = Math.min(g/1280, y/720);
+    tuval.style.transform = 'scale(' + k + ')';
+  }
+  window.addEventListener('resize', olcekle);
+  olcekle();
+
+  /* ---------- klavye ---------- */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); ileri(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); geriGit(); }
+    else if(e.key === 'Home'){ e.preventDefault(); goster(0,false,false); }
+    else if(e.key === 'End'){ e.preventDefault(); goster(slaytlar.length-1,false,true); }
+    else if(e.key === 'o' || e.key === 'O'){ icPanel.classList.toggle('acik'); }
+    else if(e.key === 'f' || e.key === 'F'){ tamEkran(); }
+    else if(e.key === 'Escape'){ icPanel.classList.remove('acik'); }
+  });
+
+  /* ---------- kumanda ---------- */
+  document.getElementById('dOnce').addEventListener('click', geriGit);
+  document.getElementById('dSonra').addEventListener('click', ileri);
+  document.getElementById('dIcindekiler').addEventListener('click', function(){ icPanel.classList.toggle('acik'); });
+  document.getElementById('dTam').addEventListener('click', tamEkran);
+
+  function tamEkran(){
+    var d = document.documentElement;
+    if(!document.fullscreenElement){ (d.requestFullscreen || d.webkitRequestFullscreen || function(){}).call(d); }
+    else{ (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document); }
+  }
+
+  /* ---------- fare hareketiyle kumandayı göster ---------- */
+  var zaman;
+  document.addEventListener('mousemove', function(){
+    kumanda.classList.add('gorunur');
+    yardim.classList.add('gor');
+    clearTimeout(zaman);
+    zaman = setTimeout(function(){ kumanda.classList.remove('gorunur'); yardim.classList.remove('gor'); }, 2200);
+  });
+
+  /* ---------- dokunmatik kaydırma ---------- */
+  var bx = 0, by = 0;
+  tuval.addEventListener('touchstart', function(e){ bx = e.changedTouches[0].clientX; by = e.changedTouches[0].clientY; }, {passive:true});
+  tuval.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - bx, dy = e.changedTouches[0].clientY - by;
+    if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)){ dx < 0 ? ileri() : geriGit(); }
+  }, {passive:true});
+
+  /* ---------- alıştırma kartları ---------- */
+  document.addEventListener('click', function(e){
+    var kart = e.target.closest ? e.target.closest('.soru') : null;
+    if(kart){ kart.classList.toggle('acik'); return; }
+    var dug = e.target.closest ? e.target.closest('.mdug') : null;
+    if(dug){
+      var slayt = dug.closest('.slayt');
+      var ac = dug.getAttribute('data-is') === 'ac';
+      Array.prototype.forEach.call(slayt.querySelectorAll('.soru'), function(k){ k.classList.toggle('acik', ac); });
+    }
+  });
+
+  /* ---------- açılış ---------- */
+  var h = (location.hash || '').match(/slayt-(\d+)/);
+  goster(h ? Math.min(slaytlar.length, Math.max(1, parseInt(h[1],10))) - 1 : 0, false, false);
+  yardim.classList.add('gor');
+  setTimeout(function(){ yardim.classList.remove('gor'); }, 4200);
+})();
+</script>
+
+<link rel="stylesheet" href="../arakom.css?v=1">
+</body>
+</html>

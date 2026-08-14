@@ -1361,6 +1361,238 @@
         </a>
 
       </div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SUNUM KATEGORİSİ — "Öğretmen Özel"in İKİNCİ SATIRI.
+     Kategori artık iki parçadan oluşur: üstte normal kartlar ızgarası,
+     altta bu şerit. Şeritte her KONU SUNUMU ayrı bir karttır ve doğrudan
+     o sunumu açar; "don=index" olduğu için sunumdan çıkınca ana sayfaya
+     (bu kategoriye) döner. Izgaradaki tek "Sunumlar" kartı ise listeyi
+     açar ve oradan çıkış listeye döner.
+     Yatay şerit: masaüstünde tam 4 sunum görünür, 5. ve 6. sunum sağa
+     kaydırınca gelir — yeni sunum eklemek için aşağıya bir <a class="sk-kart">
+     kopyalaman yeterli, düzeni bozmaz.
+     ══════════════════════════════════════════════════════════════════════ -->
+      <div class="sunKat" id="sunumSatir">
+      <style>
+        #sunumSatir{ margin-top:26px; }
+        #sunumSatir .sk-antet{ display:flex; align-items:center; gap:12px; margin:0 0 12px; padding:0 2px; }
+        #sunumSatir .sk-ikon{ flex:0 0 auto; width:46px; height:46px; border-radius:15px; display:grid;
+          place-items:center; background:linear-gradient(150deg,#FFF4DE,#FFE2B4);
+          box-shadow:0 7px 18px rgba(243,156,18,.20); }
+        #sunumSatir .sk-ikon svg{ width:28px; height:28px; display:block; overflow:visible; }
+        #sunumSatir .sk-yazi{ flex:1 1 auto; min-width:0; }
+        #sunumSatir .sk-yazi h3{ font-family:'Marhey',sans-serif; color:#E08A00; font-size:1.2em;
+          margin:0; line-height:1.25; }
+        #sunumSatir .sk-yazi p{ margin:2px 0 0; font-size:.86em; color:#7C8794; line-height:1.4; }
+        #sunumSatir .sk-tum{ flex:0 0 auto; font-size:.82em; font-weight:800; color:#E08A00;
+          background:#FFF6E6; border:1px solid #FBE2B8; border-radius:999px; padding:7px 15px;
+          text-decoration:none; white-space:nowrap; transition:background .18s, transform .18s; }
+        #sunumSatir .sk-tum:hover{ background:#FFEBC8; transform:translateY(-2px); }
+        @keyframes skKay{ 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
+        #sunumSatir .sk-ok{ display:inline-block; animation:skKay 1.8s ease-in-out infinite; }
+
+        /* Şerit iki karttan oluşur: geniş HARİTA + sunum serisi */
+        #sunumSatir .sk-sira{ display:flex; gap:16px; align-items:stretch;
+          padding:3px 3px 12px; overflow-x:auto; overflow-y:hidden; scrollbar-width:thin;
+          scrollbar-color:#F0D8AE #F6F2EA; -webkit-overflow-scrolling:touch; }
+        #sunumSatir .sk-sira::-webkit-scrollbar{ height:9px; }
+        #sunumSatir .sk-sira::-webkit-scrollbar-thumb{ background:#F0D8AE; border-radius:9px; }
+        #sunumSatir .sk-sira::-webkit-scrollbar-track{ background:#F6F2EA; border-radius:9px; }
+        #sunumSatir .sk-kart{ flex:0 0 296px; background:#fff;
+          border:1px solid #EEF2F7; border-radius:18px; padding:12px 14px 13px; text-decoration:none;
+          color:inherit; display:flex; flex-direction:column; gap:7px;
+          box-shadow:0 8px 20px rgba(44,62,80,.07);
+          transition:transform .18s, box-shadow .18s, border-color .18s; }
+        #sunumSatir .sk-kart:hover{ transform:translateY(-5px);
+          box-shadow:0 16px 34px rgba(224,138,0,.18); border-color:#F6DFB4; }
+        #sunumSatir .sk-rozet{ align-self:flex-start; font-size:.72em; font-weight:800; color:#8A6412;
+          background:#FDF1D9; border-radius:999px; padding:5px 10px; }
+        #sunumSatir .sk-kart h4{ font-family:'Marhey',sans-serif; margin:0; font-size:1em; color:#27AE60;
+          line-height:1.3; }
+        #sunumSatir .sk-kart p{ margin:0; font-size:.8em; color:#7C8794; line-height:1.45; }
+        #sunumSatir .sk-alt{ margin-top:auto; padding-top:9px; border-top:1px dashed #EDF1F6;
+          display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        #sunumSatir .sk-adet{ font-size:.72em; font-weight:700; color:#AEB6C0; }
+        #sunumSatir .sk-ac{ font-size:.76em; font-weight:800; color:#fff;
+          background:linear-gradient(135deg,#F5B841,#E08A00); border-radius:9px; padding:6px 12px;
+          white-space:nowrap; box-shadow:0 5px 12px rgba(224,138,0,.28); }
+
+        /* Kartın içindeki ANİMASYONLU sunum önizlemesi (projeksiyon) */
+        #sunumSatir .sk-on{ display:block; margin:1px 0 2px; }
+        #sunumSatir .sk-on svg{ width:76%; height:auto; display:block; margin:0 auto; overflow:visible; }
+        #sunumSatir .skp-golge{ fill:rgba(31,36,48,.10); transform:translate(0,4px); }
+        #sunumSatir .skp-ekran{ fill:#fff; stroke:#D9E1EA; stroke-width:2; transition:stroke .18s; }
+        #sunumSatir .sk-kart:hover .skp-ekran{ stroke:#E08A00; }
+        #sunumSatir .skp-ayak,#sunumSatir .skp-taban{ fill:#C9D3DE; }
+        #sunumSatir .skp-ar{ font-family:'Harmattan','Noto Naskh Arabic','Amiri',serif; font-size:26px;
+          text-anchor:end; direction:rtl; }
+        #sunumSatir .skp-ar2{ font-family:'Harmattan','Noto Naskh Arabic','Amiri',serif; font-size:17px;
+          text-anchor:middle; direction:rtl; }
+        #sunumSatir .skp-slayt{ opacity:0; }
+        #sunumSatir .skp-slayt.s1{ animation:skpS1 6s ease-in-out infinite; }
+        #sunumSatir .skp-slayt.s2{ animation:skpS2 6s ease-in-out infinite; }
+        @keyframes skpS1{ 0%,42%{opacity:1;transform:translateX(0)} 50%,92%{opacity:0;transform:translateX(-16px)}
+          100%{opacity:1;transform:translateX(0)} }
+        @keyframes skpS2{ 0%,42%{opacity:0;transform:translateX(16px)} 50%,92%{opacity:1;transform:translateX(0)}
+          100%{opacity:0;transform:translateX(16px)} }
+        #sunumSatir .skp-imlec circle{ fill:#F39C12; animation:skpTik 6s ease-in-out infinite; }
+        @keyframes skpTik{ 0%,38%{transform:translate(0,0);opacity:.9} 44%{transform:translate(-4px,-3px);opacity:1}
+          48%,88%{transform:translate(-42px,-16px);opacity:.9} 94%,100%{transform:translate(0,0);opacity:.9} }
+        #sunumSatir .skp-isik path{ fill:#F39C12; opacity:.10; animation:skpIsik 6s ease-in-out infinite; }
+        @keyframes skpIsik{ 0%,100%{opacity:.10} 50%{opacity:.20} }
+
+        /* --- GENİŞ HARİTA KARTI --- */
+        #sunumSatir .sk-harita{ flex:1 1 520px; min-width:420px; display:flex; align-items:center; gap:18px;
+          background:linear-gradient(120deg,#FFFDF8 0%,#FBF4E8 62%,#F7EEDD 100%);
+          border:1px solid #EEE2CE; border-radius:20px; padding:16px 18px; text-decoration:none; color:inherit;
+          box-shadow:0 8px 20px rgba(44,62,80,.07); transition:transform .18s, box-shadow .18s, border-color .18s; }
+        #sunumSatir .sk-harita:hover{ transform:translateY(-5px);
+          box-shadow:0 16px 34px rgba(224,138,0,.18); border-color:#F0DBB2; }
+        #sunumSatir .skh-yazi{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column;
+          align-items:flex-start; gap:7px; }
+        #sunumSatir .skh-yazi h4{ font-family:'Marhey',sans-serif; margin:0; font-size:1.08em; color:#8A6412;
+          line-height:1.3; }
+        #sunumSatir .skh-yazi p{ margin:0; font-size:.82em; color:#7C8794; line-height:1.5; }
+        #sunumSatir .skh-gorsel{ flex:0 0 46%; max-width:390px; }
+        #sunumSatir .skh-gorsel svg{ width:100%; height:auto; display:block; overflow:visible; }
+        #sunumSatir .skh-kutu rect{ fill:#fff; stroke:#E3D7C2; stroke-width:1.6; }
+        #sunumSatir .skh-kutu rect.kok{ fill:#2C3440; stroke:none; }
+        #sunumSatir .skh-kutu rect.sec{ fill:#8B6034; stroke:none; }
+        #sunumSatir .skh-kutu rect.sun{ fill:#E9F8EF; stroke:#9AD9BA; }
+        #sunumSatir .skh-satir rect{ fill:#D9CDB8; }
+        #sunumSatir .skh-cizgi path{ fill:none; stroke:#E1D5C0; stroke-width:2; stroke-linecap:round; }
+        #sunumSatir .skh-yol path{ fill:none; stroke:#8B6034; stroke-width:2.8; stroke-linecap:round; opacity:.9; }
+        #sunumSatir .skh-oyna circle{ fill:#00A651; }
+        #sunumSatir .skh-oyna path{ fill:#fff; }
+        #sunumSatir .skh-mercek circle{ fill:rgba(255,255,255,.55); stroke:#E08A00; stroke-width:2.6; }
+        #sunumSatir .skh-mercek path{ stroke:#E08A00; stroke-width:3.4; stroke-linecap:round; fill:none; }
+        @keyframes skhGez{ 0%{transform:translate(0,0)} 32%{transform:translate(-96px,-38px)}
+          64%{transform:translate(40px,-62px)} 100%{transform:translate(0,0)} }
+        #sunumSatir .skh-mercek{ animation:skhGez 7s ease-in-out infinite; }
+        @keyframes skhNabiz{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.13)} }
+        #sunumSatir .skh-oyna{ transform-box:fill-box; transform-origin:50% 50%;
+          animation:skhNabiz 2.2s ease-in-out infinite; }
+        @keyframes skhAkis{ to{ stroke-dashoffset:-84 } }
+        #sunumSatir .skh-yol path{ stroke-dasharray:10 32; animation:skhAkis 2.4s linear infinite; }
+
+        /* Dar ekranlar */
+        @media (max-width:980px){
+          #sunumSatir .sk-harita{ flex:0 0 86%; min-width:0; }
+          #sunumSatir .skh-gorsel{ flex:0 0 38%; }
+        }
+        @media (max-width:560px){
+          #sunumSatir .sk-kart{ flex:0 0 78%; }
+          #sunumSatir .sk-harita{ flex:0 0 92%; flex-direction:column; align-items:flex-start; }
+          #sunumSatir .skh-gorsel{ flex:0 0 auto; width:100%; max-width:none; }
+          #sunumSatir .sk-yazi h3{ font-size:1.05em; }
+          #sunumSatir .sk-yazi p{ display:none; }
+        }
+        @media (prefers-reduced-motion:reduce){
+          #sunumSatir .skh-mercek,#sunumSatir .skh-oyna,#sunumSatir .skh-yol path{ animation:none; }
+        }
+        @media (prefers-reduced-motion:reduce){
+          #sunumSatir .skp-slayt.s1,#sunumSatir .skp-slayt.s2,
+          #sunumSatir .skp-imlec circle,#sunumSatir .skp-isik path,#sunumSatir .sk-ok{ animation:none; }
+          #sunumSatir .skp-slayt.s1{ opacity:1; }
+        }
+      </style>
+
+        <div class="sk-antet">
+          <span class="sk-ikon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E08A00" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2.4" y="4" width="19.2" height="12.4" rx="2.2" fill="#fff"/>
+              <path d="M12 16.4v3.2M8 21h8"/>
+              <path d="M6.6 8.4h7M6.6 12h4.4" stroke="#F5B841"/>
+            </svg>
+          </span>
+          <div class="sk-yazi">
+            <h3>Ders Sunumları</h3>
+            <p>Tahtaya yansıt, ileri tuşuyla adım adım anlat</p>
+          </div>
+          <a class="sk-tum" href="sunum html/sunumlar.html?don=liste" target="_blank" rel="opener">Sunum listesi <span class="sk-ok">›</span></a>
+        </div>
+
+        <div class="sk-sira">
+
+          <!-- GENİŞ HARİTA KARTI: konu haritasını açar. Haritada gezip sunumu
+               olan başlıktaki yeşil tuşla doğrudan derse girilir. -->
+          <a class="sk-harita" href="sunum html/sunumlar.html?gorunum=harita&amp;don=liste" target="_blank" rel="opener">
+            <div class="skh-yazi">
+              <span class="sk-rozet">🗺️ Konu Haritası</span>
+              <h4>Arapçanın haritasında gez, sunuma oradan gir</h4>
+              <p>Kelime · İsim · Fiil · Harf, tamlama ve cümle — bütün başlıklar tek şemada.
+                 Bir dala yaklaş, sunumu olan başlıkta yeşil tuşla derse gir.</p>
+              <span class="sk-ac">Haritayı aç ›</span>
+            </div>
+            <span class="skh-gorsel" aria-hidden="true"><svg viewBox="0 0 430 168">
+              <g class="skh-cizgi">
+                <path d="M64 84 H92 Q100 84 100 76 V40 Q100 32 108 32 H132"/>
+                <path d="M64 84 H92 Q100 84 100 84 H132"/>
+                <path d="M64 84 H92 Q100 84 100 92 V128 Q100 136 108 136 H132"/>
+                <path d="M214 32 H242 Q250 32 250 24 V16 Q250 8 258 8 H286"/>
+                <path d="M214 32 H242 Q250 32 250 40 V48 Q250 56 258 56 H286"/>
+                <path d="M214 84 H286"/>
+                <path d="M214 136 H242 Q250 136 250 128 V120 Q250 112 258 112 H286"/>
+                <path d="M214 136 H242 Q250 136 250 144 V152 Q250 160 258 160 H286"/>
+              </g>
+              <g class="skh-yol"><path d="M64 84 H92 Q100 84 100 76 V40 Q100 32 108 32 H132"/>
+                <path d="M214 32 H242 Q250 32 250 40 V48 Q250 56 258 56 H286"/></g>
+              <g class="skh-kutu">
+                <rect x="6" y="68" width="58" height="32" rx="10" class="kok"/>
+                <rect x="132" y="18" width="82" height="28" rx="9" class="sec"/>
+                <rect x="132" y="70" width="82" height="28" rx="9"/>
+                <rect x="132" y="122" width="82" height="28" rx="9"/>
+                <rect x="286" y="-4" width="66" height="24" rx="8"/>
+                <rect x="286" y="44" width="66" height="24" rx="8" class="sun"/>
+                <rect x="286" y="72" width="66" height="24" rx="8"/>
+                <rect x="286" y="100" width="66" height="24" rx="8"/>
+                <rect x="286" y="148" width="66" height="24" rx="8"/>
+              </g>
+              <g class="skh-satir">
+                <rect x="16" y="79" width="38" height="5" rx="2.5"/>
+                <rect x="142" y="29" width="46" height="5" rx="2.5"/>
+                <rect x="142" y="81" width="52" height="5" rx="2.5"/>
+                <rect x="142" y="133" width="40" height="5" rx="2.5"/>
+                <rect x="294" y="5" width="38" height="4" rx="2"/>
+                <rect x="294" y="53" width="34" height="4" rx="2"/>
+                <rect x="294" y="81" width="42" height="4" rx="2"/>
+                <rect x="294" y="109" width="30" height="4" rx="2"/>
+                <rect x="294" y="157" width="38" height="4" rx="2"/>
+              </g>
+              <g class="skh-oyna"><circle cx="345" cy="56" r="9"/><path d="M342 51.5l6.5 4.5-6.5 4.5z"/></g>
+              <g class="skh-mercek"><circle cx="248" cy="94" r="21"/><path d="M263 109l13 13"/></g>
+            </svg></span>
+          </a>
+
+          <!-- SUNUM SERİSİ: bütün sunumların kart listesi -->
+          <a class="sk-kart" href="sunum html/sunumlar.html?don=liste" target="_blank" rel="opener">
+            <span class="sk-rozet">🎬 Sunum serisi</span>
+            <span class="sk-on" aria-hidden="true"><svg viewBox="0 0 200 120">
+              <rect class="skp-golge" x="18" y="10" width="164" height="86" rx="8"/>
+              <rect class="skp-ekran" x="18" y="10" width="164" height="86" rx="8"/>
+              <g class="skp-slayt s1"><rect x="30" y="22" width="60" height="7" rx="3.5" fill="#E30613"/>
+                <rect x="30" y="36" width="120" height="5" rx="2.5" fill="#DCE3EB"/>
+                <rect x="30" y="48" width="96" height="5" rx="2.5" fill="#DCE3EB"/>
+                <text x="150" y="80" class="skp-ar" fill="#E30613">اَلْـ</text></g>
+              <g class="skp-slayt s2"><rect x="30" y="22" width="60" height="7" rx="3.5" fill="#00A651"/>
+                <rect x="30" y="36" width="120" height="5" rx="2.5" fill="#DCE3EB"/>
+                <rect x="30" y="48" width="96" height="5" rx="2.5" fill="#DCE3EB"/>
+                <text x="150" y="80" class="skp-ar" fill="#00A651">ـُونَ</text></g>
+              <g class="skp-imlec"><circle cx="150" cy="88" r="4.5"/></g>
+              <path class="skp-ayak" d="M92 96 h16 v10 h-16 Z"/>
+              <rect class="skp-taban" x="62" y="106" width="76" height="6" rx="3"/>
+              <g class="skp-isik"><path d="M100 96 L54 118 h92 Z"/></g>
+            </svg></span>
+            <h4>Ders Sunumları</h4>
+            <p>Bütün sunumlar tek listede; tahtaya yansıt, adım adım anlat.</p>
+            <div class="sk-alt"><span class="sk-adet">2 sunum · 28 slayt</span><span class="sk-ac">Listeyi aç ›</span></div>
+          </a>
+
+        </div>
+      </div>
+
     </section>
     
     <section id="oyunlar" class="content-section">
