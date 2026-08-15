@@ -1257,6 +1257,79 @@
     }
     function klSn(ms) { return (ms / 1000) + 's'; }
 
+    /* ---------- KAYDIRMA ÇUBUĞU DENETİMİ ----------
+       Geylani: "animasyon sırasında scroll çubuğu aktif oluyor ve bu
+       sayfanın titremesine neden oluyor."
+       SEBEP: satırlar aşağı ÖTELENİRKEN (transform: translateY) tarayıcı
+       ötelenmiş kutuları KAYDIRILABİLİR ALANA sayar. Ölçüldü: sayfa
+       982 px iken bir anda 1590 px'e uzuyor, sağda kaydırma çubuğu
+       beliriyor, kullanılabilir genişlik ~15 px daralıyor ve BÜTÜN
+       sayfa yeniden yerleşiyor; animasyon bitince çubuk kaybolup aynı
+       sarsıntı ters yönde tekrarlanıyor. Görülen titreme budur.
+       ÇÖZÜM iki parçalı:
+         1) YER (cubukYerAyir) — çubuğun yeri, TAM EKRANA GEÇİLİRKEN
+            baştan ayrılır (`scrollbar-gutter: stable`). O sırada zaten
+            bütün sayfa yeniden yerleşiyor; 15 px'lik daralma tam ekran
+            geçişinin içinde eriyor, göze çarpmıyor. Bundan sonra örnek
+            listesi ne kadar uzun olursa olsun çubuk HAZIR YUVASINA
+            oturuyor: genişlik bir daha hiç değişmiyor.
+         2) KİLİT (cubukKilitle) — tablo aşağı süzülürken kaydırma
+            tamamen kapalı: sahte çubuk hiç doğmuyor. Ayrılmış yer kilit
+            altında da duruyor (ölçüldü), yani kilit genişliği oynatmaz.
+       Kapanışta ayrılan yer TAM EKRANDAN ÇIKARKEN bırakılır — yine
+       ekranın tümden değiştiği an. Vezinden vezne geçişte tam ekrandan
+       çıkılmadığı için yer olduğu gibi kalır, arada tek bir sıçrama bile
+       olmaz.
+       Süre verilirse denetim kendi kendini çözer: bir kanca atlansa bile
+       sayfa kilitli kalmaz. */
+    var cubukKilit = false, cubukYer = false, cubukPay = 0;
+    var cubukZaman = null, cubukBit = 0;
+    function cubukSaat(sure) {
+        if (!sure) return;
+        var bit = kln() + sure;
+        if (bit > cubukBit) cubukBit = bit;
+        clearTimeout(cubukZaman);
+        cubukZaman = setTimeout(function () {
+            cubukZaman = null; cubukBit = 0; cubukCoz();
+        }, Math.max(0, cubukBit - kln()));
+    }
+    function cubukDur() { clearTimeout(cubukZaman); cubukZaman = null; cubukBit = 0; }
+    /* Ölçü GÖVDENİN genişliğinden alınır: yer ayrılınca documentElement.
+       clientWidth değişmiyor (oluk çubuk sayılmıyor), gövde ise gerçekten
+       daralıyor — yerleşimi belirleyen de bu. */
+    function cubukEn() { return Math.round(document.body.getBoundingClientRect().width); }
+    function cubukKilitle(sure) {
+        var h = document.documentElement;
+        if (!cubukKilit) {
+            var once = cubukEn();
+            h.classList.add('ko-kaydirma-kilit');
+            cubukKilit = true;
+            /* Yer ayrılmışsa oluk kilit altında da duruyor → pay 0.
+               Ayrılmamış ve ekranda gerçek bir çubuk varsa kilit onu
+               kaldırır, sayfa 15 px genişler; o kadar sağ boşluk
+               verilerek yerleşim aynı bırakılır. */
+            var pay = cubukEn() - once;
+            if (pay > 0) { h.style.paddingRight = pay + 'px'; cubukPay = pay; }
+        }
+        cubukDur(); cubukSaat(sure);
+    }
+    function cubukYerAyir(sure) {
+        var h = document.documentElement;
+        if (!cubukYer) { h.classList.add('ko-cubuk-yer'); cubukYer = true; }
+        if (cubukKilit) {
+            h.classList.remove('ko-kaydirma-kilit'); cubukKilit = false;
+            if (cubukPay) { h.style.removeProperty('padding-right'); cubukPay = 0; }
+        }
+        cubukDur(); cubukSaat(sure);
+    }
+    function cubukCoz() {
+        var h = document.documentElement;
+        cubukDur();
+        if (cubukKilit) { h.classList.remove('ko-kaydirma-kilit'); cubukKilit = false; }
+        if (cubukYer) { h.classList.remove('ko-cubuk-yer'); cubukYer = false; }
+        if (cubukPay) { h.style.removeProperty('padding-right'); cubukPay = 0; }
+    }
+
     var tamEkranBiz = false, tamEkranZaman = null;
     function tamEkranMi() {
         return !!(document.fullscreenElement || document.webkitFullscreenElement);
@@ -1345,6 +1418,11 @@
         tamEkranBekle(sonra);
     }
     function tamEkranKapat() {
+        /* Ayrılan çubuk yeri TAM EKRANDAN ÇIKARKEN bırakılır: ekran
+           zaten baştan aşağı değişiyor, 15 px'lik genişleme onun içinde
+           kaybolur. (Vezinden vezne geçişte buraya hiç gelinmiyor —
+           tamEkranAc bu çıkışı iptal ediyor — yer de korunuyor.) */
+        cubukCoz();
         if (!tamEkranBiz) return;
         tamEkranBiz = false;
         if (!tamEkranMi()) return;
@@ -1381,6 +1459,12 @@
     function ac(no) {
         no = parseInt(no, 10);
         if (!isFinite(no)) return false;
+
+        /* MÜCERRED: kaydırma çubuğunun yeri daha ilk dokunuşta ayrılır.
+           Tam ekrana geçiş sayfayı zaten baştan yerleştiriyor; oluk da o
+           geçişin içinde açılıyor. Böylece ne tablo süzülürken ne de
+           örnek listesi gelirken genişlik bir daha oynuyor. */
+        if (no >= 1 && no <= 51 && tab1Kutu(no)) cubukYerAyir();
 
         /* ZATEN TAM EKRANDAYSA beklenecek bir şey yok. */
         if (tamEkranMi()) return acGovde(no);
@@ -2470,21 +2554,24 @@
                etkilenmesin diye hücrenin kendisi değil, hücrenin içine
                konan bir kat boyanıyor. Kutular hücrenin İÇİNDE olduğu
                için hücreye opaklık verilseydi başlık da solardı. */
+            /* SAYFA ZEMİNİ: degrade artık tablo kutusuyla sınırlı değil,
+               pencereye çakılı olarak BÜTÜN SAYFAYI kaplıyor (Geylani).
+               Sınıf tablo çekildikten sonra takılıyor, saydam başlıyor;
+               vezinler başlığa dönüşürken birlikte beliriyor.
+               SINIF, ŞERİT KATI KURULMADAN ÖNCE takılır: sonra takılınca
+               kat bir kez opaklık 1 ile hesaplanıyor, ardından kurala
+               uyup 0'a geçiyordu — üstte bir an görünüp kaybolan bant
+               tam olarak buydu (Geylani: "bi an görünüp kayboluyor"). */
+            document.body.classList.add('muc-zemin');
             var lvTdB = lv.querySelector('td');
             if (lvTdB && !lvTdB.querySelector('.muc-levha-zemin')) {
                 var zeminEl = document.createElement('div');
                 zeminEl.className = 'muc-levha-zemin';
+                zeminEl.style.opacity = '0';
                 lvTdB.insertBefore(zeminEl, lvTdB.firstChild);
             }
             st.bandHazir = true;
             mucLevhaBoya();
-            var zem0 = lvTdB && lvTdB.querySelector('.muc-levha-zemin');
-            if (zem0) { zem0.style.transition = 'none'; zem0.style.opacity = '0'; }
-            /* SAYFA ZEMİNİ: degrade artık tablo kutusuyla sınırlı değil,
-               pencereye çakılı olarak BÜTÜN SAYFAYI kaplıyor (Geylani).
-               Sınıf tablo çekildikten sonra takılıyor, saydam başlıyor;
-               vezinler başlığa dönüşürken birlikte beliriyor. */
-            document.body.classList.add('muc-zemin');
             /* ARA LEVHALI TAKIM (cem-i teksir): örnek listesi ARKA
                PLANDA, kutular daha TABLODAYKEN kurulmuştu; o sırada
                tekilTakimCiz ikinci dörtlüyü ara levhaya indiremedi —
@@ -2548,6 +2635,12 @@
         faz2(true);
 
         /* 1. VURUŞ — TABLO ÇEKİLİR (kaybolma kısmı: aynen korundu) */
+        /* Kayış boyunca kaydırma kilitli: ötelenen satırlar sahte bir
+           kaydırma çubuğu doğurup sayfayı sarsmasın. Çubuğun yeri zaten
+           tam ekrana geçilirken ayrıldığı için kilit genişliği
+           oynatmıyor; tablo çıkınca (aşağıda) kilit kalkar. Kanca
+           atlanırsa saat kendiliğinden çözer. */
+        cubukKilitle(KL_CUBUK_MS + KL_MUC_MS + 400);
         var kayMesafe = Math.round(window.innerHeight * 0.75);
         odak.zaman.push(setTimeout(function () {
             if (odak !== st0) return;
@@ -2584,6 +2677,14 @@
             f.style.display = '';                /* süzgeç şeridi akışa girer (yüksekliği 0) */
             if (basSatir) { basSatir.classList.remove('ko-bas-kayan'); basSatir.style.opacity = ''; }
             if (footerEl) footerEl.style.display = 'none';
+            /* GÜVENCE: yer normalde tam ekrana geçilirken ayrılıyor
+               (ac()). Tam ekran hiç açılmadıysa (izin verilmediyse, ya da
+               liste doğrudan KalipListe.ac ile çağrıldıysa) burada
+               ayrılır — ekranın boş olduğu tek an burası: tablo gitti,
+               levha henüz saydam, görünen tek şey genişlikten
+               etkilenmeyen sabit kopyalar. Zaten ayrılmışsa bu çağrı
+               hiçbir şeyi değiştirmez. */
+            cubukYerAyir();
             levhaKur();
         }, KL_CUBUK_MS + KL_MUC_MS + 60));
 
@@ -2964,6 +3065,13 @@
     function mucSonlandir(st, sessiz) {
         cakiliSil(st);                        /* yarıda kalan kopyalar */
         kapatXSil();
+        /* SESSİZ kapanış (vezinden vezne geçiş): ayrılan çubuk yerine
+           DOKUNULMAZ — tam ekrandan çıkılmıyor, iki liste arasında tek
+           bir sıçrama bile olmasın. Yer, gerçekten çıkılırken
+           (tamEkranKapat) bırakılıyor.
+           SESLİ kapanışta kilit için güvenlik saati kurulur: aşağıdaki
+           kanca herhangi bir sebeple çalışmazsa sayfa kilitli kalmasın. */
+        if (!sessiz) cubukSaat(KL_MUC_MS + 900);
         document.body.classList.remove('muc-odak', 'muc-serit-yok', 'muc-bar-acik',
                                        'muc-zemin', 'muc-zemin-ac');
         document.body.style.removeProperty('--muc-zemin-sure');
@@ -3026,6 +3134,11 @@
                 } else {
                     /* AÇILIŞIN AYNASI: tablo aşağıdan yukarı süzülerek
                        yerine döner; kutular da aynı anda evlerine iner. */
+                    /* Liste kalktı, tablo henüz ekran dışında — yani ekran
+                       yine boş. Ayrılmış çubuk yeri tam burada bırakılır
+                       (görünmeden), dönüş kayması da kilitli geçer:
+                       ötelenen satırlar bir daha çubuk doğuramaz. */
+                    cubukKilitle(KL_MUC_MS + 400);
                     var geriMesafe = Math.round(window.innerHeight * 0.75);
                     if (footerEl) { footerEl.style.display = ''; }
                     var donenler = geriGelen.slice();
@@ -3046,6 +3159,10 @@
                         donenler.forEach(function (el) {
                             el.style.transition = ''; el.style.opacity = ''; el.style.transform = '';
                         });
+                        /* Tablo yerine oturdu: kilit kalkar, sayfa yine
+                           kaydırılabilir. Çubuğun AYRILMIŞ YERİ durur —
+                           onu tam ekrandan çıkış bırakacak. */
+                        cubukYerAyir();
                     }, KL_MUC_MS + 80);
                 }
             }

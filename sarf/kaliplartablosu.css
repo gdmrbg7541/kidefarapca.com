@@ -4801,6 +4801,35 @@ body.ust-kilit i.fa-sync-alt.root-icon {
 }
 #tab1 .muc-levha-satir > td > .muc-levha { position: relative; z-index: 1; }
 
+/* ============ KAYDIRMA ÇUBUĞU: ANİMASYON SIRASINDA TİTREME YOK ============
+   Geylani: "animasyon sırasında scroll çubuğu aktif oluyor ve bu sayfanın
+   titremesine neden oluyor."
+   Satırlar aşağı ötelenirken (transform: translateY) tarayıcı ötelenmiş
+   kutuları KAYDIRILABİLİR ALANA sayıyor: ölçüldü, sayfa 982 px iken bir
+   anda 1590 px'e uzuyor. Sağda kaydırma çubuğu beliriyor, kullanılabilir
+   genişlik ~15 px daralıyor, bütün sayfa yeniden yerleşiyor; animasyon
+   bitince çubuk gidip aynı sarsıntı ters yönde tekrarlanıyor.
+     .ko-cubuk-yer      → odak açıkken çubuğun yeri ayrılı durur. Sınıf
+        TAM EKRANA GEÇİLİRKEN ekleniyor, TAM EKRANDAN ÇIKARKEN
+        kaldırılıyor: 15 px'lik daralma/genişleme sayfanın zaten baştan
+        yerleştiği o iki anın içinde eriyor. Arada örnek listesi ne kadar
+        uzun olursa olsun çubuk hazır yuvasına oturuyor, genişlik hiç
+        oynamıyor.
+     .ko-kaydirma-kilit → kayış boyunca kaydırma kapalı: sahte çubuk hiç
+        doğmuyor. Ayrılmış oluk kilit altında da duruyor (ölçüldü), yani
+        kilit genişliği oynatmıyor; oluk yokken gerçek bir çubuğu
+        kaldırırsa kalipliste.js aynı ölçüde sağ boşluk veriyor.
+   `scrollbar-gutter: stable` yeri AYIRIR ama boş bir çubuk oluğu
+   ÇİZMEZ (ölçüldü: overflow-y:scroll sağda 15 px'lik gri oluk bırakıyor,
+   stable bembeyaz kalıyor) — ayrıca kilitle birlikte de ayrılmış kalır,
+   yani kilit genişliği hiç oynatmaz. Desteklemeyen tarayıcıda oluklu
+   sürüme düşülür. */
+html.ko-kaydirma-kilit { overflow: hidden !important; }
+html.ko-cubuk-yer { scrollbar-gutter: stable; }
+@supports not (scrollbar-gutter: stable) {
+    html.ko-cubuk-yer { overflow-y: scroll !important; }
+}
+
 /* ============ ÇAKILI VEZİN KATMANI ============
    Tablo aşağı süzülürken tıklanan vezinler EKRANDA SABİT durur: gerçek
    kutular satırların içinde olduğu için onlarla kayıyorlardı, bu yüzden
