@@ -1304,11 +1304,21 @@ document.addEventListener('click', closeIfOutside);
 document.addEventListener('touchstart', closeIfOutside, { passive: false });
 
 function closeIfOutside(e) {
-    // BURASI ÖNEMLİ: '#suffix-dropdown' menüsünü de kutu içi (güvenli) sayıyoruz!
-    const isInside = e.target.closest('.conjugation-inline-container') || 
-                     e.target.closest('.glass-box') || 
-                     e.target.closest('#suffix-dropdown');
-                     
+    if (!e || !e.target || !e.target.closest) return;
+    /* BURASI ÖNEMLİ: '#suffix-dropdown' menüsünü de kutu içi (güvenli) sayıyoruz!
+       DOKUNMATİK DÜZELTMESİ (Geylani): araç çubuğundaki "+" simgesinin
+       onclick'inde event.stopPropagation() var; bu yüzden FARE ile basınca
+       bu dinleyici hiç çalışmıyor ve büyütme korunuyordu. Ama touchstart
+       durdurulmadığı için PARMAKLA basınca burası tetiklenip büyümeyi
+       kapatıyordu. "+" düğmeleri ile büyük klon da artık kutu içi sayılır. */
+    const isInside = e.target.closest('.conjugation-inline-container') ||
+                     e.target.closest('.glass-box') ||
+                     e.target.closest('#suffix-dropdown') ||
+                     e.target.closest('.crisp-zoom-clone') ||
+                     e.target.closest('#crisp-zoom-clone') ||
+                     e.target.closest('.fa-plus') ||
+                     e.target.closest('#mobile-top-plus');
+
     if (!isInside) {
         // COKLU POPUP: disariya tiklayinca fiil popuplari KAPANMASIN (sadece X ile kapanir).
         // Sadece buyumus kutu (zoom) varsa kapat.
