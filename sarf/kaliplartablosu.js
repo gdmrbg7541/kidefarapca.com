@@ -3531,9 +3531,18 @@ function ekMenuOlcuVer(menu, sol, ust, en, boy) {
 window.ekMenuDaralt = function () {
     var menu = document.getElementById('suffix-dropdown');
     if (!menu) return;
-    menu.classList.remove('ek-genis', 'ek-buyuyor', 'ek-icerik-acik');
+    /* DİKKAT: menünün dolgusu HTML'de satır içi yazılı. `removeProperty`
+       onu kalıcı olarak siliyordu — menü ilk açılıştan sonra dolgusuz
+       kalıyor, kapanış animasyonu da 22px'e inip sonda 0'a düşünce içerik
+       bir anda genişliyordu (Geylani'nin gördüğü sıçrama). İlk değer bir
+       kez saklanıp her seferinde geri yazılıyor. */
+    if (window._ekDolguIlk === undefined) window._ekDolguIlk = menu.style.padding || '';
+    menu.classList.remove('ek-genis', 'ek-buyuyor', 'ek-icerik-acik', 'ek-kart-yok');
     ['left', 'top', 'width', 'height'].forEach(function (a) { menu.style.removeProperty(a); });
+    if (window._ekDolguIlk) menu.style.setProperty('padding', window._ekDolguIlk);
+    else menu.style.removeProperty('padding');
     if (window._ekBuyumeZaman) { clearTimeout(window._ekBuyumeZaman); window._ekBuyumeZaman = null; }
+    if (window._ekKartZaman) { clearTimeout(window._ekKartZaman); window._ekKartZaman = null; }
     window._ekAcikEk = null;
 };
 /* AYNI EKE TEKRAR BASILINCA (Geylani): kutu dar listeye geri küçülür,
@@ -3546,6 +3555,13 @@ window.ekMenuKucult = function () {
     if (!d) { window.ekMenuDaralt(); return; }
     menu.classList.add('ek-buyuyor');
     ekMenuOlcuVer(menu, d.left, d.top, d.width, d.height);
+    menu.style.setProperty('padding', window._ekDolguIlk || '0px', 'important');  /* dolgu dar hâle akar */
+    /* Kart söndükten sonra akıştan da çıkar: kalan yol sıkışmasız geçsin */
+    if (window._ekKartZaman) clearTimeout(window._ekKartZaman);
+    window._ekKartZaman = setTimeout(function () {
+        window._ekKartZaman = null;
+        if (menu.classList.contains('ek-genis')) menu.classList.add('ek-kart-yok');
+    }, 190);
     if (window._ekBuyumeZaman) clearTimeout(window._ekBuyumeZaman);
     window._ekBuyumeZaman = setTimeout(function () {
         window._ekBuyumeZaman = null;
@@ -3565,11 +3581,13 @@ window.ekMenuBuyut = function () {
     window._ekDarStil = { left: menu.style.left, top: menu.style.top };
     menu.classList.add('ek-genis');
     ekMenuOlcuVer(menu, r.left, r.top, r.width, r.height);
+    menu.style.setProperty('padding', window._ekDolguIlk || '0px', 'important');  /* dar dolgudan başla */
     void menu.offsetWidth;                 /* bu ölçüler yerine otursun */
-    /* 2) Geçiş açılır ve hedefe gidilir */
+    /* 2) Geçiş açılır ve hedefe gidilir (dolgu da geçişe dahil) */
     var h = ekMenuHedef();
     menu.classList.add('ek-buyuyor');
     ekMenuOlcuVer(menu, h.sol, h.ust, h.en, h.boy);
+    menu.style.removeProperty('padding');                     /* geniş dolguya akar */
     /* 3) Büyüme yerleşirken kart süzülerek gelir */
     if (window._ekBuyumeZaman) clearTimeout(window._ekBuyumeZaman);
     window._ekBuyumeZaman = setTimeout(function () {

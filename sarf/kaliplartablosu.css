@@ -1346,12 +1346,20 @@ body:has(.integrated-keyboard-popup.active) .important-roots-wrapper {
 .glass-box.crisp-zoom-clone[style*="#bfffdf"]:hover { border-color: #000000 !important; background-color: #bfffdf !important; }
 
 /* ARTI (+) MENÜSÜ */
+/* ÖLÇEK YOK — YAZI NET.
+   Menü eskiden `transform: scale(1.1)` ile büyütülüyordu; kutuda
+   `translateZ(0)` de olduğu için tarayıcı katmanı 1× rasterleyip sonra
+   %10 esnetiyordu, yazılar bu yüzden puslu çıkıyordu (Geylani: "+
+   basınca çıkan tabloda yazı neden net değil"). Ölçek kaldırıldı,
+   büyüklük doğrudan ölçülere (yazı boyu, dolgu, boşluk) %10 eklenerek
+   verildi: görünüm aynı, yazı keskin. Üstelik geniş hâlde ölçek
+   olmadığı için açılış/kapanış animasyonunda da içerik zıplamıyor. */
 #suffix-dropdown {
-    transform: scale(1.1) !important; 
-    transform-origin: top center !important; 
+    transform: none !important;
     z-index: 9999999 !important;
     width: max-content !important; /* YENİ EKLENEN: Sütunların sıkışmasını engeller */
 }
+#suffix-dropdown .suffix-btn { font-size: 33px; padding: 9px 13px; border-radius: 13px; }
 #suffix-dropdown .key.suggested-suffix {
     background-color: #fbbf24 !important; color: #1e293b !important; border-color: #f59e0b !important;
     box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); transform: scale(1.08); font-weight: normal; transition: transform, background-color, color, opacity, box-shadow 0.3s ease;
@@ -5455,30 +5463,107 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 #suffix-dropdown.ek-genis .ek-menu-kapat:hover { background: #FF7675; color: #fff; }
 #suffix-dropdown.ek-genis .ek-menu-kapat svg { width: 19px; height: 19px; }
 /* Geniş hâlde yazılar büyür: cümleler uzaktan da okunsun */
-#suffix-dropdown.ek-genis .ek-orta .ekb-harf { min-width: 132px; font-size: 4.1rem; border-radius: 24px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-kimlik h3 { font-size: 2.1rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-alt { font-size: 1.18rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-ozet { font-size: 1.44rem; line-height: 1.6; padding: 17px 20px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-kutu { font-size: 2.75rem; padding: 14px 24px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-ucan { font-size: 1.9rem; }
+/* ---- BÜYÜK EKRAN ÖLÇEĞİ ----
+   Geylani: "popup bilgileri büyük ekranlarda küçük kalıyor, özellikle
+   4K'larda; daha büyük olsun ve 4K'da büyüme oranı ekle."
+   Bütün kart ölçüleri tek bir katsayıya (--ekb-olcek) bağlı. Katsayı
+   ekran genişliğiyle basamak basamak artıyor; 4K bir ekran %100
+   ölçekte ~3840 CSS px olarak geldiği için orada kart neredeyse iki
+   katına çıkıyor. Satır uzunluğu da katsayıyla birlikte sınırlanıyor:
+   3840 px'lik ekranda metin bir uçtan bir uca uzayıp okunmaz olmasın. */
+#suffix-dropdown.ek-genis .ek-orta { --ekb-olcek: 1; }
+@media (min-width: 1800px) { #suffix-dropdown.ek-genis .ek-orta { --ekb-olcek: 1.14; } }
+@media (min-width: 2300px) { #suffix-dropdown.ek-genis .ek-orta { --ekb-olcek: 1.38; } }
+@media (min-width: 2900px) { #suffix-dropdown.ek-genis .ek-orta { --ekb-olcek: 1.72; } }
+@media (min-width: 3600px) { #suffix-dropdown.ek-genis .ek-orta { --ekb-olcek: 2.05; } }
+
+#suffix-dropdown.ek-genis .ek-orta > * {
+    max-width: calc(1180px * var(--ekb-olcek));
+    margin-left: auto; margin-right: auto;
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-harf {
+    min-width: calc(142px * var(--ekb-olcek));
+    font-size: calc(4.4rem * var(--ekb-olcek));
+    border-radius: calc(24px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-tepe { gap: calc(20px * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-kimlik h3 { font-size: calc(2.25rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-alt { font-size: calc(1.26rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-rozet {
+    font-size: calc(.86rem * var(--ekb-olcek));
+    padding: calc(4px * var(--ekb-olcek)) calc(12px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-rozet svg {
+    width: calc(15px * var(--ekb-olcek)); height: calc(15px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-ozet {
+    font-size: calc(1.55rem * var(--ekb-olcek)); line-height: 1.6;
+    padding: calc(18px * var(--ekb-olcek)) calc(22px * var(--ekb-olcek));
+    border-radius: calc(14px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-sema {
+    padding: calc(14px * var(--ekb-olcek)) calc(12px * var(--ekb-olcek));
+    gap: calc(14px * var(--ekb-olcek));
+    border-radius: calc(16px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-kutu {
+    font-size: calc(2.95rem * var(--ekb-olcek));
+    padding: calc(14px * var(--ekb-olcek)) calc(24px * var(--ekb-olcek));
+    border-radius: calc(14px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-ucan { font-size: calc(2rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ok-svg {
+    width: calc(72px * var(--ekb-olcek)); height: calc(19px * var(--ekb-olcek));
+}
 #suffix-dropdown.ek-genis .ek-orta .ekb-adim small,
-#suffix-dropdown.ek-genis .ek-orta .ekb-gecis small { font-size: .78rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-sema-tr { font-size: 1.26rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-ornek { padding: 15px 20px; gap: 16px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-gecis small { font-size: calc(.82rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-sema-tr { font-size: calc(1.34rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ornekler { gap: calc(10px * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ornek {
+    padding: calc(16px * var(--ekb-olcek)) calc(22px * var(--ekb-olcek));
+    gap: calc(18px * var(--ekb-olcek));
+    border-radius: calc(14px * var(--ekb-olcek));
+}
 #suffix-dropdown.ek-genis .ek-orta .ekb-o-yalin,
-#suffix-dropdown.ek-genis .ek-orta .ekb-o-ekli { font-size: 2.7rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-o-tr { font-size: 1.36rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-o-ok { font-size: 1.85rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat span { font-size: 1.26rem; line-height: 1.55; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat b { font-size: .78rem; padding: 4px 13px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-rozet { font-size: .8rem; }
-#suffix-dropdown.ek-genis .ekb-bos p { font-size: 1.2rem; }
-#suffix-dropdown.ek-genis .ekb-bos svg { width: 62px; height: 62px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-ekli { font-size: calc(2.9rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-tr { font-size: calc(1.44rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-ok { font-size: calc(2rem * var(--ekb-olcek)); }
+#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat {
+    padding: calc(14px * var(--ekb-olcek)) calc(18px * var(--ekb-olcek));
+    gap: calc(13px * var(--ekb-olcek));
+    border-radius: calc(14px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat span { font-size: calc(1.34rem * var(--ekb-olcek)); line-height: 1.55; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat b {
+    font-size: calc(.82rem * var(--ekb-olcek));
+    padding: calc(4px * var(--ekb-olcek)) calc(14px * var(--ekb-olcek));
+}
+#suffix-dropdown.ek-genis .ekb-bos p { font-size: calc(1.28rem * var(--ekb-olcek, 1)); }
+#suffix-dropdown.ek-genis .ekb-bos svg {
+    width: calc(66px * var(--ekb-olcek, 1)); height: calc(66px * var(--ekb-olcek, 1));
+}
+/* Ekler ve kapatma tuşu da büyük ekranda orantılı büyür */
+@media (min-width: 1800px) {
+    #suffix-dropdown.ek-genis .suffix-btn { font-size: 38px; padding: 11px 16px; }
+    #suffix-dropdown.ek-genis .ek-menu-kapat { width: 44px; height: 44px; }
+}
+@media (min-width: 2300px) {
+    #suffix-dropdown.ek-genis .suffix-btn { font-size: 46px; padding: 13px 19px; }
+    #suffix-dropdown.ek-genis .ek-menu-kapat { width: 52px; height: 52px; }
+    #suffix-dropdown.ek-genis .ek-menu-kapat svg { width: 24px; height: 24px; }
+}
+@media (min-width: 2900px) {
+    #suffix-dropdown.ek-genis .suffix-btn { font-size: 58px; padding: 16px 24px; }
+    #suffix-dropdown.ek-genis .ek-menu-kapat { width: 62px; height: 62px; }
+    #suffix-dropdown.ek-genis .ek-menu-kapat svg { width: 28px; height: 28px; }
+}
 /* Ekler de büyür ve tam ekranda dikeyde ortalanır: yan sütunlar tepeye
    yığılıp altta koca bir boşluk bırakmasın. */
-/* Geniş hâlde yer bol: ekler tek satırda kalsın (ـ ـ ـيَّات sarmasın) */
-#suffix-dropdown.ek-genis .suffix-btn { font-size: 34px; padding: 11px 16px; border-radius: 14px; white-space: nowrap; }
-#suffix-dropdown.ek-genis > div > div:not(.ek-orta):not(.ek-ayrac) { justify-content: center; }
+/* Geniş hâlde yer bol: ekler tek satırda kalsın (ـ ـ ـيَّات sarmasın).
+   ÖLÇÜ DEĞİŞMİYOR: dar ve geniş hâlde ekler birebir aynı boyda — büyüme
+   ve küçülme sırasında içerik ne sıkışıyor ne de sonda zıplıyor
+   (Geylani: "kapanırken fazla daralıyor sonra tekrar genişliyor"). */
+#suffix-dropdown.ek-genis .suffix-btn { white-space: nowrap; }
 #suffix-dropdown.ek-genis .ek-orta { align-self: center; height: auto; max-height: 100%; }
 /* Tam ekranda arkadaki tablo okunurluğu bozmasın: zemin daha opak */
 #suffix-dropdown.ek-genis { background: rgba(255, 255, 255, 0.94) !important; }
@@ -5495,14 +5580,27 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
                 top .46s cubic-bezier(.22,1,.36,1),
                 width .46s cubic-bezier(.22,1,.36,1),
                 height .46s cubic-bezier(.22,1,.36,1),
+                padding .46s cubic-bezier(.22,1,.36,1),
                 border-radius .46s ease,
                 background-color .3s ease;
 }
-#suffix-dropdown.ek-genis .ek-orta { opacity: 0; transform: translateY(14px); }
+#suffix-dropdown.ek-genis .ek-orta {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .18s ease, transform .18s ease;   /* kapanışta yumuşak çıkış */
+}
 #suffix-dropdown.ek-genis.ek-icerik-acik .ek-orta {
     opacity: 1; transform: none;
     transition: opacity .34s ease .12s, transform .42s cubic-bezier(.22,1,.36,1) .12s;
 }
+/* KÜÇÜLÜRKEN KART AKIŞTAN DA ÇIKAR: kart ile ikinci ayraç iki fazladan
+   boşluk + kendi asgari genişliğini istiyordu; kutu dar hâle yaklaşınca
+   satır 433px isteyip 333px'e sıkışıyor, sonda da bir anda açılıyordu
+   (ölçüldü — Geylani'nin gördüğü "fazla daralıyor sonra genişliyor" bu).
+   Kart söndükten sonra akıştan çıkarılıyor; sütunlar `space-between` ile
+   iki uçta durduğu için ortadan kalkması hiçbir şeyi kaydırmıyor. */
+#suffix-dropdown.ek-genis > div { justify-content: space-between; }
+#suffix-dropdown.ek-genis.ek-kart-yok .ek-orta,
+#suffix-dropdown.ek-genis.ek-kart-yok .ek-ayrac { display: none; }
 #suffix-dropdown.ek-genis .ek-ayrac,
 #suffix-dropdown.ek-genis .ek-menu-kapat { opacity: 0; transition: opacity .3s ease .14s; }
 #suffix-dropdown.ek-genis.ek-icerik-acik .ek-ayrac,
