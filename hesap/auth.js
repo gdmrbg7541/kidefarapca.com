@@ -296,7 +296,8 @@ function authIslemi() {
                 appState.teacherApplications.push({
                     id: 'app_' + Date.now(),
                     email: email,
-                    password: pass,
+                    /* parola BURAYA yazılmaz: teacherApplications global/appState
+                       belgesine gidiyor ve o belge girişli herkese açık. */
                     phone: "+90" + phone,
                     cv: cv,
                     documentName: fileName,
@@ -327,12 +328,13 @@ function authIslemi() {
             }
         } else {
             if (selectedRole === 'teacher') {
-                const teacher = appState.teachers.find(t => t.email === email && t.password === pass);
-                if (!teacher) {
-                    errorEl.innerText = "Yetkisiz giriş veya hatalı şifre. Kaydınız yönetici tarafından henüz onaylanmamış olabilir.";
-                    return;
-                }
-                basariliGiris(teacher.email, teacher.phone || "", teacher.name || "");
+                /* ESKİ FIREBASE'SİZ ÖĞRETMEN GİRİŞİ KALDIRILDI.
+                   Burası hesap/ogretmen.js'teki açık metin "password"
+                   alanlarıyla eşleştirme yapıyordu; o dosya siteyle birlikte
+                   herkese açık yayımlandığı için parolalar ortadaydı.
+                   isFirebaseReady zaten hep true olduğundan bu dal hiç
+                   çalışmıyordu — parolalar da dosyadan silindi. */
+                errorEl.innerText = "Öğretmen girişi için internet bağlantısı gerekiyor. Lütfen bağlantını denetleyip yeniden dene.";
                 return;
             } else {
                 if (!users[email] || users[email].password !== pass) {

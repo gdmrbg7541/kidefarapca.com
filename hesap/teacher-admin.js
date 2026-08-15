@@ -1052,9 +1052,14 @@ function renderTeacherPanel() {
                     <p><strong>Ad Soyad:</strong> ${activeTeacher.name}</p>
                     <p><strong>E-posta:</strong> ${activeTeacher.email}</p>
                     <p><strong>Öğretmen Kodum:</strong> <span class="tch-kod-satir">${(function(){try{return localStorage.getItem('teacher_static_code')||'…';}catch(e){return '…';}})()}</span></p>
+                    <!-- Kutu artık MEVCUT şifreyi GÖSTERMİYOR: eskiden değeri
+                         hesap/ogretmen.js'teki açık metin "password" alanından
+                         geliyordu, o dosya siteyle birlikte herkese açık
+                         yayımlanıyordu. Alan boş açılır, yalnız YENİ şifreyi
+                         yazmak içindir; kaydedince Firebase Auth güncellenir. -->
                     <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                         <strong>Şifre:</strong>
-                        <input type="password" id="teacher-profile-password" value="${activeTeacher.password}" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 200px;" disabled>
+                        <input type="password" id="teacher-profile-password" value="" placeholder="Yeni şifre" autocomplete="new-password" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 200px;" disabled>
                         <button class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px;" onclick="toggleTeacherPasswordVisibility()">👁️ Göster/Gizle</button>
                     </div>
                     <div style="margin-top: 15px; display: flex; gap: 10px;">
@@ -1456,6 +1461,12 @@ function saveTeacherPassword(teacherId) {
     const input = document.getElementById('teacher-profile-password');
     if (!input || !input.value.trim()) {
         showCustomAlert("Şifre boş olamaz.");
+        return;
+    }
+    /* Firebase Auth alt sınırı 6 karakter; daha kısası updatePassword'da
+       hata verip kullanıcıyı "kaydettim" sanısında bırakıyordu. */
+    if (input.value.trim().length < 6) {
+        showCustomAlert("Şifre en az 6 karakter olmalı.");
         return;
     }
     
