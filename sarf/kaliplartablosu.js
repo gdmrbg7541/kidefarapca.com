@@ -3509,6 +3509,82 @@ window.ekMenuYerlestir = function () {
     if (sol + fark < 10) sol = 10 - fark;
     menu.style.left = Math.round(sol) + 'px';
 };
+/* ---- "+" MENÜSÜ: DAR ↔ TAM EKRAN ----
+   Menü hep DAR açılır (yalnız ek listeleri). Bir eke dokunulunca — ve
+   ortada eklenecek bir kelime yoksa — kutu bulunduğu yerden tam ekrana
+   BÜYÜR, bilgi kartı da hemen ardından belirir.
+   Ölçüler piksel piksel veriliyor: menünün genişliği CSS'te
+   `max-content !important`, tam ekran hedefi ise viewport — ikisi
+   arasında geçiş ancak sayısal değerlerle akar. */
+function ekMenuHedef() {
+    var pay = 14;
+    return { sol: pay, ust: pay,
+             en: Math.max(320, window.innerWidth - pay * 2),
+             boy: Math.max(260, window.innerHeight - pay * 2) };
+}
+function ekMenuOlcuVer(menu, sol, ust, en, boy) {
+    menu.style.setProperty('left', Math.round(sol) + 'px', 'important');
+    menu.style.setProperty('top', Math.round(ust) + 'px', 'important');
+    menu.style.setProperty('width', Math.round(en) + 'px', 'important');
+    menu.style.setProperty('height', Math.round(boy) + 'px', 'important');
+}
+window.ekMenuDaralt = function () {
+    var menu = document.getElementById('suffix-dropdown');
+    if (!menu) return;
+    menu.classList.remove('ek-genis', 'ek-buyuyor', 'ek-icerik-acik');
+    ['left', 'top', 'width', 'height'].forEach(function (a) { menu.style.removeProperty(a); });
+    if (window._ekBuyumeZaman) { clearTimeout(window._ekBuyumeZaman); window._ekBuyumeZaman = null; }
+    window._ekAcikEk = null;
+};
+/* AYNI EKE TEKRAR BASILINCA (Geylani): kutu dar listeye geri küçülür,
+   kart soluklaşıp gider. Büyümenin birebir aynası. */
+window.ekMenuKucult = function () {
+    var menu = document.getElementById('suffix-dropdown');
+    if (!menu || !menu.classList.contains('ek-genis')) return;
+    var d = window._ekDarKutu, s = window._ekDarStil;
+    menu.classList.remove('ek-icerik-acik');       /* kart önce solar */
+    if (!d) { window.ekMenuDaralt(); return; }
+    menu.classList.add('ek-buyuyor');
+    ekMenuOlcuVer(menu, d.left, d.top, d.width, d.height);
+    if (window._ekBuyumeZaman) clearTimeout(window._ekBuyumeZaman);
+    window._ekBuyumeZaman = setTimeout(function () {
+        window._ekBuyumeZaman = null;
+        window.ekMenuDaralt();                     /* sınıflar + piksel ölçüler kalkar */
+        if (s) { menu.style.left = s.left; menu.style.top = s.top; }   /* dar yerine dön */
+        if (typeof window.ekBosOrta === 'function') window.ekBosOrta();
+        ekSeciliIsaretle(menu, ' ');
+    }, 480);
+};
+window.ekMenuBuyut = function () {
+    var menu = document.getElementById('suffix-dropdown');
+    if (!menu || menu.classList.contains('ek-genis')) return;
+    /* 1) DAR kutunun ekrandaki gerçek yeri (ölçek dahil) sabitlenir.
+          Küçülürken geri dönülecek yer de burada saklanır. */
+    var r = menu.getBoundingClientRect();
+    window._ekDarKutu = { left: r.left, top: r.top, width: r.width, height: r.height };
+    window._ekDarStil = { left: menu.style.left, top: menu.style.top };
+    menu.classList.add('ek-genis');
+    ekMenuOlcuVer(menu, r.left, r.top, r.width, r.height);
+    void menu.offsetWidth;                 /* bu ölçüler yerine otursun */
+    /* 2) Geçiş açılır ve hedefe gidilir */
+    var h = ekMenuHedef();
+    menu.classList.add('ek-buyuyor');
+    ekMenuOlcuVer(menu, h.sol, h.ust, h.en, h.boy);
+    /* 3) Büyüme yerleşirken kart süzülerek gelir */
+    if (window._ekBuyumeZaman) clearTimeout(window._ekBuyumeZaman);
+    window._ekBuyumeZaman = setTimeout(function () {
+        window._ekBuyumeZaman = null;
+        menu.classList.add('ek-icerik-acik');
+    }, 90);
+};
+/* Pencere ölçüsü değişirse tam ekran kutu da uysun */
+window.addEventListener('resize', function () {
+    var menu = document.getElementById('suffix-dropdown');
+    if (!menu || !menu.classList.contains('ek-genis')) return;
+    if (!menu.style.display || menu.style.display === 'none') return;
+    var h = ekMenuHedef();
+    ekMenuOlcuVer(menu, h.sol, h.ust, h.en, h.boy);
+});
 window.ekBosOrta = function () {
     var orta = document.getElementById('ek-orta');
     if (!orta) return;
@@ -3533,9 +3609,13 @@ window.ekBilgiAc = function (ek) {
 
     var ikon = window.EK_IKON[d.ikon] || window.EK_IKON.belirli;
     var ornekHtml = d.ornekler.map(function (o) {
+        /* SIRA (CSS'te order ile): solda Türkçe · sağda Arapça ikili.
+           Arapça ikili sağdan sola okunur: YALIN sağda, ok sola bakar,
+           EKLİ solda (Geylani: "arapça ek almamış hâli sağa, ekli hâli
+           sola al, oku da sol ok yap"). */
         return '<div class="ekb-ornek">' +
                '<span class="ekb-o-yalin" dir="rtl">' + o.yalin + '</span>' +
-               '<span class="ekb-o-ok">➜</span>' +
+               '<span class="ekb-o-ok">←</span>' +
                '<span class="ekb-o-ekli" dir="rtl">' + o.ekli + '</span>' +
                '<span class="ekb-o-tr">' + o.tr + '</span></div>';
     }).join('');
@@ -3586,13 +3666,21 @@ window.ekBilgiAc = function (ek) {
        yerinde değişir. */
     var menu = document.getElementById('suffix-dropdown');
     var orta = document.getElementById('ek-orta');
-    if (orta && menu && menu.classList.contains('ek-genis') &&
-        menu.style.display && menu.style.display !== 'none') {
+    if (orta && menu && menu.style.display && menu.style.display !== 'none') {
+        /* AÇIK OLAN EKE TEKRAR BASILDI → kapat (Geylani: "tekrar o eke
+           basınca popup kapansın"). Kutu dar listeye geri küçülür. */
+        if (menu.classList.contains('ek-genis') && window._ekAcikEk === ek) {
+            window.ekMenuKucult();
+            return true;
+        }
+        /* Menü açıkken bilgi ayrı bir perdede değil MENÜNÜN İÇİNDE açılır:
+           kutu dar listeden tam ekrana büyür, kart ardından belirir. */
+        window._ekAcikEk = ek;
         orta.style.setProperty('--ekb-renk', d.renk);
         orta.innerHTML = govdeHtml;
         orta.scrollTop = 0;
         ekSeciliIsaretle(menu, ek);
-        if (typeof window.ekMenuYerlestir === 'function') window.ekMenuYerlestir();
+        window.ekMenuBuyut();
         return true;
     }
 
@@ -3664,18 +3752,19 @@ function toggleSuffixMenu(e) {
 
     const rect = e.target.getBoundingClientRect();
     
+    /* MENÜ HEP DAR AÇILIR: "+"a basınca yalnız ek listeleri görünür
+       (Geylani: "normalde + ya basınca popup görünmesin"). Bilgi kartı
+       ancak bir eke dokunulunca — ve ortada eklenecek bir kelime yoksa —
+       kutu bulunduğu yerden tam ekrana BÜYÜYEREK belirir. Kelime
+       türetilmişse ek doğrudan kelimeye eklenir, kart hiç açılmaz.
+       DİKKAT: daraltma, aşağıdaki top/left yerleşiminden ÖNCE olmalı —
+       büyümeden kalan piksel ölçüleri temizleniyor. */
+    window.ekMenuDaralt();
+    ekSeciliIsaretle(menu, ' ');               /* önceki seçim izi kalmasın */
+    if (typeof window.ekBosOrta === 'function') window.ekBosOrta();
+
     let topPos = Math.round(rect.bottom + window.scrollY + 8);
     menu.style.top = `${topPos}px`;
-    
-    /* GENİŞ Mİ DAR MI? Seçili bir kutu yoksa (kök tanımlı değil, ya da
-       henüz bir vezne dokunulmadı) ekler "eklenecek parça" değil
-       "öğrenilecek konu"dur: menü genişler, ortadaki sütun açılır ve
-       tıklanan ekin bilgisi orada görünür. Kutu seçiliyse menü eski dar
-       hâlinde kalır ve ekler o kelimeye eklenir. */
-    var genis = !lastClickedBoxTextSpan;
-    menu.classList.toggle('ek-genis', genis);
-    if (genis && typeof window.ekBosOrta === 'function') window.ekBosOrta();
-    if (!genis) ekSeciliIsaretle(menu, ' ');   /* seçim izi kalmasın */
 
     // GEÇİCİ GÖRÜNÜM: Menünün genişliğini okuyabilmek için önce görünmez olarak açıyoruz
     menu.style.visibility = "hidden";

@@ -5426,11 +5426,13 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
    Menünün kendi `transform: scale(1.1)` büyütmesi burada kapatılır: tam
    ekran bir kutuda ölçek, kutuyu ekranın dışına taşırıyor. Büyüklük
    doğrudan yazı ölçüleriyle veriliyor. */
+/* Ölçüleri (left/top/width/height) kalipliste tarafı piksel piksel verir:
+   dar kutudan tam ekrana GEÇİŞ animasyonu ancak böyle akıcı olur
+   (auto/max-content ölçüler arasında geçiş çalışmaz). */
 #suffix-dropdown.ek-genis {
     position: fixed !important;
-    left: 14px !important; right: 14px !important;
-    top: 14px !important; bottom: 14px !important;
-    width: auto !important; max-width: none !important; height: auto !important;
+    right: auto !important; bottom: auto !important;
+    max-width: none !important;
     transform: none !important;
     box-sizing: border-box !important;
     padding: 52px 24px 24px !important;
@@ -5453,28 +5455,62 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 #suffix-dropdown.ek-genis .ek-menu-kapat:hover { background: #FF7675; color: #fff; }
 #suffix-dropdown.ek-genis .ek-menu-kapat svg { width: 19px; height: 19px; }
 /* Geniş hâlde yazılar büyür: cümleler uzaktan da okunsun */
-#suffix-dropdown.ek-genis .ek-orta .ekb-harf { min-width: 118px; font-size: 3.5rem; border-radius: 22px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-kimlik h3 { font-size: 1.75rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-alt { font-size: 1.02rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-ozet { font-size: 1.16rem; line-height: 1.6; padding: 14px 16px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-kutu { font-size: 2.3rem; padding: 12px 20px; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-ucan { font-size: 1.6rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-sema-tr { font-size: 1.05rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-ornek { padding: 13px 18px; gap: 14px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-harf { min-width: 132px; font-size: 4.1rem; border-radius: 24px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-kimlik h3 { font-size: 2.1rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-alt { font-size: 1.18rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ozet { font-size: 1.44rem; line-height: 1.6; padding: 17px 20px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-kutu { font-size: 2.75rem; padding: 14px 24px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ucan { font-size: 1.9rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-adim small,
+#suffix-dropdown.ek-genis .ek-orta .ekb-gecis small { font-size: .78rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-sema-tr { font-size: 1.26rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ornek { padding: 15px 20px; gap: 16px; }
 #suffix-dropdown.ek-genis .ek-orta .ekb-o-yalin,
-#suffix-dropdown.ek-genis .ek-orta .ekb-o-ekli { font-size: 2.15rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-o-tr { font-size: 1.14rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-o-ok { font-size: 1.25rem; }
-#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat span { font-size: 1.05rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-ekli { font-size: 2.7rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-tr { font-size: 1.36rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-ok { font-size: 1.85rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat span { font-size: 1.26rem; line-height: 1.55; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat b { font-size: .78rem; padding: 4px 13px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-rozet { font-size: .8rem; }
 #suffix-dropdown.ek-genis .ekb-bos p { font-size: 1.2rem; }
 #suffix-dropdown.ek-genis .ekb-bos svg { width: 62px; height: 62px; }
 /* Ekler de büyür ve tam ekranda dikeyde ortalanır: yan sütunlar tepeye
    yığılıp altta koca bir boşluk bırakmasın. */
-#suffix-dropdown.ek-genis .suffix-btn { font-size: 34px; padding: 11px 16px; border-radius: 14px; }
+/* Geniş hâlde yer bol: ekler tek satırda kalsın (ـ ـ ـيَّات sarmasın) */
+#suffix-dropdown.ek-genis .suffix-btn { font-size: 34px; padding: 11px 16px; border-radius: 14px; white-space: nowrap; }
 #suffix-dropdown.ek-genis > div > div:not(.ek-orta):not(.ek-ayrac) { justify-content: center; }
 #suffix-dropdown.ek-genis .ek-orta { align-self: center; height: auto; max-height: 100%; }
 /* Tam ekranda arkadaki tablo okunurluğu bozmasın: zemin daha opak */
 #suffix-dropdown.ek-genis { background: rgba(255, 255, 255, 0.94) !important; }
+
+/* ---- AÇILIŞ: DAR LİSTEDEN TAM EKRANA ----
+   Geylani: "normalde + ye basınca popup görünmesin, eklerden birine
+   basınca popup kısmı güzel bir animasyonla görünsün ve genişleme
+   animasyonu olsun."
+   "+" menüsü DAR açılır (yalnız ek listeleri). Bir eke dokununca kutu
+   bulunduğu yerden tam ekrana büyür; bilgi kartı da bir tık gecikmeyle
+   aşağıdan süzülerek belirir — büyüme bitmeden içerik zıplamasın. */
+#suffix-dropdown.ek-buyuyor {
+    transition: left .46s cubic-bezier(.22,1,.36,1),
+                top .46s cubic-bezier(.22,1,.36,1),
+                width .46s cubic-bezier(.22,1,.36,1),
+                height .46s cubic-bezier(.22,1,.36,1),
+                border-radius .46s ease,
+                background-color .3s ease;
+}
+#suffix-dropdown.ek-genis .ek-orta { opacity: 0; transform: translateY(14px); }
+#suffix-dropdown.ek-genis.ek-icerik-acik .ek-orta {
+    opacity: 1; transform: none;
+    transition: opacity .34s ease .12s, transform .42s cubic-bezier(.22,1,.36,1) .12s;
+}
+#suffix-dropdown.ek-genis .ek-ayrac,
+#suffix-dropdown.ek-genis .ek-menu-kapat { opacity: 0; transition: opacity .3s ease .14s; }
+#suffix-dropdown.ek-genis.ek-icerik-acik .ek-ayrac,
+#suffix-dropdown.ek-genis.ek-icerik-acik .ek-menu-kapat { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+    #suffix-dropdown.ek-buyuyor { transition: none; }
+    #suffix-dropdown.ek-genis .ek-orta { opacity: 1; transform: none; }
+}
 /* Henüz eke dokunulmadıysa: sütun boş kalmasın, ne yapılacağını söylesin */
 #suffix-dropdown .ekb-bos {
     height: 100%; min-height: 320px;
@@ -5596,10 +5632,14 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 .ekb-o-yalin { color: #8A94A6; }
 .ekb-o-ekli  { color: var(--ekb-renk); font-weight: 600; }
 .ekb-o-ok { color: #C3CAD6; font-size: .95rem; }
-/* TÜRKÇE SOLDA, ARAPÇA SAĞDA (Geylani). Türkçe satırın başına alınır
-   (order:-1), sağ tarafındaki otomatik boşluk da Arapça ikiliyi sağ
-   kenara yaslar — okuma yönü Arapça için doğal kalır. */
-.ekb-o-tr { order: -1; margin-right: auto; font-size: .85rem; color: #6B7280; }
+/* SATIR DÜZENİ (Geylani): solda TÜRKÇE, sağda ARAPÇA ikili.
+   Arapça ikili kendi içinde sağdan sola okunur — YALIN hâl en sağda,
+   ok sola bakar, EKLİ hâl solunda. Türkçenin sağındaki otomatik boşluk
+   bütün Arapça grubu sağ kenara yaslar. */
+.ekb-o-tr    { order: 0; margin-right: auto; font-size: .85rem; color: #6B7280; }
+.ekb-ornek .ekb-o-ekli  { order: 1; }
+.ekb-ornek .ekb-o-ok    { order: 2; }
+.ekb-ornek .ekb-o-yalin { order: 3; }
 
 /* --- DİKKAT --- */
 .ekb-dikkat {
