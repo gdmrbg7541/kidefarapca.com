@@ -2412,38 +2412,39 @@
             .filter(function (tr) {
                 return !tr.classList.contains('ko-satir') && !tr.classList.contains('muc-levha-satir');
             });
-        /* SATIRLARIN GÖVDESİ (tbody) KENDİ ZEMİNİNİ TAŞIYOR (135° degrade).
-           Satırlar aşağı süzülüp solarken bu zemin yerinde ve tam
-           opaklıkta kalıyor, tablonun boş bir gölgesi gibi duruyordu
-           (Geylani: "tablo aşağı geçince arkada gölgesi kalıyor").
-           Gövdeler de sönümlenir; satırlar akıştan çıkınca yükseklikleri
-           zaten sıfırlanır. Odağın kendi satırlarını taşıyan gövde
-           (govde1) dışarıda kalır — levha ile örnekler orada yaşıyor. */
-        var sonenGovde = [];
-        solacaklar.forEach(function (tr) {
-            var tb = tr.parentNode;
-            if (tb && tb.tagName === 'TBODY' && tb !== govde1 && sonenGovde.indexOf(tb) < 0)
-                sonenGovde.push(tb);
-        });
         var footerEl = document.querySelector('#tab1 .footer-container');
         /* TABLO AŞAĞI KAYAR, VEZİN YUKARI ÇIKAR — tek, iki yönlü hareket.
-           Kayan: mavi/yeşil dilbilgisi başlık satırı + bütün gövde
-           satırları + altbilgi. Kaymayan: sekmeler ve üst çubuk.
+           Kayan: TABLONUN KENDİSİ (başlık satırı ve bütün gövde satırları
+           içinde) + altbilgi bloğu. Kaymayan: sekmeler ve üst çubuk.
            Solma tek başına yapılırken kutu nereden kalktığı belli
            olmuyordu; tablonun aşağı süzülmesi kutunun yukarı çıkışını
-           gözle okunur kılıyor. Hareket 1. vuruşta başlar. */
+           gözle okunur kılıyor. Hareket 1. vuruşta başlar.
+
+           NEDEN SATIR SATIR DEĞİL, TEK PARÇA:
+           Eskiden her <tr> ayrı ayrı ötelenip soluyordu. Bir satıra
+           transform verildiği anda tarayıcı o satırı KENDİ KATMANINA
+           alıyor ve hücreleri tek tek boyuyor; birleşik kenarlı
+           (border-collapse: collapse) bir tabloda bu, duran hâlde
+           komşularıyla kaynaşan hücre köşelerinin ayrı ayrı, daha
+           yuvarlak görünmesine yol açıyordu (Geylani: "vezinlerin içinde
+           bulunduğu konteynırda animasyon sırasında köşeler daha fazla
+           yuvarlak oluyor ve tablo aşağı giderken göze çarpıyor... tablo
+           aşağı kaymadan önce ve kayarken farklı olmamalı").
+           Tablo bir bütün olarak ötelenince içi tam olarak duran hâldeki
+           gibi boyanıyor: hiçbir köşe, hiçbir kenar değişmiyor. Üstelik
+           tbody'lerin ayrıca soldurulmasına da gerek kalmıyor — tablonun
+           zemini de tabloyla birlikte gidiyor (eski "arkada gri plaka
+           kalıyor" sorununun kökü de buydu). */
         solacaklar.forEach(function (tr) { tr.dataset.koGizli = '1'; });
-        var kayanlar = [];
+        var kayanlar = [tablo];
         if (basSatir) {
             /* CSS, tablo `ko-acik` olur olmaz başlık satırını display:none
                yapıyor — bu yüzden mavi/yeşil dilbilgisi başlıkları bir anda
                yok oluyordu. `ko-bas-kayan` o kuralı geçici olarak deler:
-               satır aşağı kayışa katılır, kayış bitince sınıf kalkar ve
-               kural yine devreye girer. */
+               satır tabloyla birlikte aşağı iner, kayış bitince sınıf
+               kalkar ve kural yine devreye girer. */
             basSatir.classList.add('ko-bas-kayan');
-            kayanlar.push(basSatir);
         }
-        solacaklar.forEach(function (tr) { kayanlar.push(tr); });
         if (footerEl) kayanlar.push(footerEl);
 
         /* SÜTUN İZLERİNİ ÖNCEDEN SABİTLE — mezidle (odakAc) aynı sebep,
@@ -2653,30 +2654,29 @@
                 el.style.transform = 'translateY(' + kayMesafe + 'px)';
                 el.style.opacity = '0';
             });
-            sonenGovde.forEach(function (tb) {
-                tb.style.transition = 'opacity ' + klSn(Math.round(KL_MUC_MS * 0.8)) + ' ease-in';
-                tb.style.opacity = '0';
-            });
         }, KL_CUBUK_MS));
         /* Kayma bitince akıştan çıkarlar (yer kaplamasınlar) ve KUTULAR
            LEVHAYA TAŞINIR — ekranda hiçbir şey görünmez: tablo gitti,
            levha henüz saydam. */
         odak.zaman.push(setTimeout(function () {
             if (odak !== st0) return;
-            kayanlar.forEach(function (el) {
-                el.style.transition = ''; el.style.transform = '';
-            });
+            /* SIRA ÖNEMLİ: önce satırlar akıştan çıkar, sonra tablonun
+               kendi izleri silinir. Tablo bir bütün olarak ötelendiği
+               için, izleri satırlar hâlâ görünürken silinseydi tablo tek
+               karede eski yerinde parlardı. İkisi aynı görevde (tek
+               karede) olduğundan ekranda hiçbir şey görünmez. */
             solacaklar.forEach(function (tr) {
                 if (tr.dataset.koGizli) tr.style.display = 'none';
             });
-            sonenGovde.forEach(function (tb) {
-                tb.style.transition = ''; tb.style.opacity = '';
-            });
             /* Sınıf kalkınca CSS kuralı başlık satırını yine gizler */
             tablo.classList.add('ko-acik');     /* artık serbest: tablo ekranda değil */
-            f.style.display = '';                /* süzgeç şeridi akışa girer (yüksekliği 0) */
             if (basSatir) { basSatir.classList.remove('ko-bas-kayan'); basSatir.style.opacity = ''; }
-            if (footerEl) footerEl.style.display = 'none';
+            if (footerEl) {
+                footerEl.style.display = 'none';
+                footerEl.style.transition = ''; footerEl.style.transform = ''; footerEl.style.opacity = '';
+            }
+            tablo.style.transition = ''; tablo.style.transform = ''; tablo.style.opacity = '';
+            f.style.display = '';                /* süzgeç şeridi akışa girer (yüksekliği 0) */
             /* GÜVENCE: yer normalde tam ekrana geçilirken ayrılıyor
                (ac()). Tam ekran hiç açılmadıysa (izin verilmediyse, ya da
                liste doğrudan KalipListe.ac ile çağrıldıysa) burada
@@ -3120,13 +3120,15 @@
                 /* Sabitlenen sütun izleri kalkar: tablo kendi ölçüsüne döner */
                 var cgKapa = tablo.querySelector('colgroup.ko-sutun');
                 if (cgKapa) cgKapa.remove();
+                /* Açılış kayması yarıda kesilmiş olabilir (tablo yolun
+                   ortasındayken kapatıldıysa üstünde transform/opacity
+                   izleri kalır) — hem tablonun hem satırların izleri
+                   her hâlükârda silinir. */
+                tablo.style.transition = ''; tablo.style.opacity = ''; tablo.style.transform = '';
+                geriGelen.forEach(function (tr) {
+                    tr.style.transition = ''; tr.style.opacity = ''; tr.style.transform = '';
+                });
                 if (sessiz) {
-                    /* transform da temizlenir: açılış kayması yarıda
-                       kesilmiş olabilir (kutular levhaya taşınmadan
-                       kapatıldıysa satırlar yolun ortasında kalırdı). */
-                    geriGelen.forEach(function (tr) {
-                        tr.style.transition = ''; tr.style.opacity = ''; tr.style.transform = '';
-                    });
                     if (footerEl) {
                         footerEl.style.display = ''; footerEl.style.transition = '';
                         footerEl.style.opacity = ''; footerEl.style.transform = '';
@@ -3141,7 +3143,11 @@
                     cubukKilitle(KL_MUC_MS + 400);
                     var geriMesafe = Math.round(window.innerHeight * 0.75);
                     if (footerEl) { footerEl.style.display = ''; }
-                    var donenler = geriGelen.slice();
+                    /* AÇILIŞLA AYNI: hareketi TABLO bir bütün olarak yapar,
+                       satırlar tek tek katmanlanmaz. Böylece dönüş kayması
+                       sırasında da tablo, duran hâlinden birebir aynı
+                       görünür — köşeler, kenarlar, hiçbir şey değişmez. */
+                    var donenler = [tablo];
                     if (footerEl) donenler.push(footerEl);
                     donenler.forEach(function (el) {
                         el.style.transition = 'none';
