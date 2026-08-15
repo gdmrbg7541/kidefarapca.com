@@ -3471,6 +3471,58 @@ window.ekbArYalit = function (metin) {
     );
 };
 
+/* Menünün orta sütunu açıkken bilgi oraya yazılır: hangi ek düğmesine
+   basıldıysa o düğme de işaretlenir. */
+function ekSeciliIsaretle(menu, ek) {
+    if (!menu) return;
+    var l = menu.querySelectorAll('.suffix-btn');
+    for (var i = 0; i < l.length; i++) {
+        var o = l[i].getAttribute('onclick') || '';
+        l[i].classList.toggle('ek-secili', o.indexOf("('" + ek + "')") >= 0);
+    }
+}
+/* "+" menüsünü çapasına (tıklanan tuşun dikdörtgeni) göre yeniden yaslar.
+   İçerik değişince (başka bir ekin bilgisi açılınca) genişlik oynayabildiği
+   için dışarıdan da çağrılabilir. */
+window._ekMenuCapa = null;
+window.ekMenuYerlestir = function () {
+    var menu = document.getElementById('suffix-dropdown');
+    var r = window._ekMenuCapa;
+    if (!menu || !r) return;
+    var d = menu.style.display;
+    if (!d || d === 'none') return;
+    /* GENİŞ HÂL ekranı kaplıyor (CSS'te fixed + inset): yaslamaya gerek yok */
+    if (menu.classList.contains('ek-genis')) return;
+    /* DİKKAT — ÖLÇÜ offsetWidth'ten OKUNMAZ: menüde "büyütme" ölçeği var
+       (transform: scale(1.1)). offsetWidth ölçeksiz genişliği verdiği için
+       menü geniş hâlde ekranın 40px dışına taşıyordu (ölçüldü: 904 okunup
+       994 çizildi). Gerçek kutu getBoundingClientRect'ten alınır; style.left
+       ile kutunun sol kenarı arasındaki sabit fark (ölçek merkezden
+       büyüttüğü için oluşan kayma + kaydırma) hesaba katılır. */
+    var mevcut = parseFloat(menu.style.left);
+    if (!isFinite(mevcut)) { menu.style.left = '0px'; mevcut = 0; }
+    var q = menu.getBoundingClientRect();
+    var fark = q.left - mevcut;              /* style.left → gerçek sol kenar */
+    var en = q.width;
+    var sol = r.left + 80 - en - fark;       /* sağ kenar "+" tuşunun sağına */
+    if (sol + fark + en > window.innerWidth - 10) sol = window.innerWidth - 10 - en - fark;
+    if (sol + fark < 10) sol = 10 - fark;
+    menu.style.left = Math.round(sol) + 'px';
+};
+window.ekBosOrta = function () {
+    var orta = document.getElementById('ek-orta');
+    if (!orta) return;
+    orta.innerHTML =
+        '<div class="ekb-bos">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+          'stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle>' +
+          '<path d="M12 16v-5"></path><path d="M12 8h.01"></path></svg>' +
+          '<p>Soldaki son eklerden ya da sağdaki ön eklerden birine dokun —<br>' +
+          'o ekin bilgisi burada açılır.</p>' +
+        '</div>';
+    orta.style.removeProperty('--ekb-renk');
+};
+
 window.ekBilgiAc = function (ek) {
     var d = window.EK_BILGI[ek];
     if (!d) return false;
@@ -3511,8 +3563,7 @@ window.ekBilgiAc = function (ek) {
         '</div>' +
         '<div class="ekb-sema-tr"><span>' + d.sema.onceTr + '</span><b>➜</b><span>' + d.sema.sonraTr + '</span></div>';
 
-    perde.querySelector('.ekb-kart').style.setProperty('--ekb-renk', d.renk);
-    perde.querySelector('.ekb-govde').innerHTML =
+    var govdeHtml =
         '<div class="ekb-tepe">' +
           '<div class="ekb-harf" dir="rtl">' + (d.tur === 'on' ? ek + 'ـ' : 'ـ' + ek) + '</div>' +
           '<div class="ekb-kimlik">' +
@@ -3528,6 +3579,25 @@ window.ekBilgiAc = function (ek) {
         semaHtml +
         '<div class="ekb-ornekler">' + ornekHtml + '</div>' +
         '<div class="ekb-dikkat"><b>Dikkat</b><span>' + ekbArYalit(d.dikkat) + '</span></div>';
+
+    /* "+" MENÜSÜ GENİŞ HÂLDEYSE (kök tanımlı değil): bilgi ayrı bir
+       perdede değil, menünün tam ortasında — son eklerle ön eklerin
+       arasında — açılır. Menü kapanmaz, başka bir eke dokununca içerik
+       yerinde değişir. */
+    var menu = document.getElementById('suffix-dropdown');
+    var orta = document.getElementById('ek-orta');
+    if (orta && menu && menu.classList.contains('ek-genis') &&
+        menu.style.display && menu.style.display !== 'none') {
+        orta.style.setProperty('--ekb-renk', d.renk);
+        orta.innerHTML = govdeHtml;
+        orta.scrollTop = 0;
+        ekSeciliIsaretle(menu, ek);
+        if (typeof window.ekMenuYerlestir === 'function') window.ekMenuYerlestir();
+        return true;
+    }
+
+    perde.querySelector('.ekb-kart').style.setProperty('--ekb-renk', d.renk);
+    perde.querySelector('.ekb-govde').innerHTML = govdeHtml;
 
     /* Kapanış animasyonu sürerken yeni bir ek açılırsa, eski kapanışın
        zamanlayıcısı yeni perdeyi gizlemesin diye iptal edilir. */
@@ -3547,11 +3617,16 @@ window.ekBilgiKapat = function () {
     }, 200);
 };
 
-/* Escape ile de kapansın */
+/* Escape ile de kapansın — önce (varsa) ek perdesi, yoksa geniş "+" menüsü */
 document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     var perde = document.getElementById('ek-bilgi-perde');
-    if (perde && perde.style.display === 'flex') window.ekBilgiKapat();
+    if (perde && perde.style.display === 'flex') { window.ekBilgiKapat(); return; }
+    var menu = document.getElementById('suffix-dropdown');
+    if (menu && menu.classList.contains('ek-genis') &&
+        menu.style.display && menu.style.display !== 'none') {
+        menu.style.display = 'none';
+    }
 });
 
 function toggleSuffixMenu(e) {
@@ -3592,21 +3667,28 @@ function toggleSuffixMenu(e) {
     let topPos = Math.round(rect.bottom + window.scrollY + 8);
     menu.style.top = `${topPos}px`;
     
+    /* GENİŞ Mİ DAR MI? Seçili bir kutu yoksa (kök tanımlı değil, ya da
+       henüz bir vezne dokunulmadı) ekler "eklenecek parça" değil
+       "öğrenilecek konu"dur: menü genişler, ortadaki sütun açılır ve
+       tıklanan ekin bilgisi orada görünür. Kutu seçiliyse menü eski dar
+       hâlinde kalır ve ekler o kelimeye eklenir. */
+    var genis = !lastClickedBoxTextSpan;
+    menu.classList.toggle('ek-genis', genis);
+    if (genis && typeof window.ekBosOrta === 'function') window.ekBosOrta();
+    if (!genis) ekSeciliIsaretle(menu, ' ');   /* seçim izi kalmasın */
+
     // GEÇİCİ GÖRÜNÜM: Menünün genişliğini okuyabilmek için önce görünmez olarak açıyoruz
     menu.style.visibility = "hidden";
     menu.style.display = "block";
-    
-    // EKRANIN SAĞINDAN TAŞMAMASI İÇİN MENÜYÜ BUTONUN SOLUNA YASLIYORUZ
-    let leftPos = Math.round(rect.left + window.scrollX - menu.offsetWidth + 80); 
-    
-    // AKILLI SINIR KONTROLÜ
-    if (leftPos + menu.offsetWidth > window.innerWidth) {
-        leftPos = Math.round(window.innerWidth - menu.offsetWidth - 20);
-    }
-    if (leftPos < 10) leftPos = 10; 
-    
-    menu.style.left = `${leftPos}px`;
+
+    /* YERLEŞTİRME: menü "+" tuşunun soluna yaslanır, ekranın sağından
+       taşmaz. GENİŞ hâlde ölçü ilk karede henüz oturmamış olabiliyordu
+       (ölçüldü: 934 okunup 994 çizildi, menü 41px dışarı taşıyordu);
+       bu yüzden bir kare sonra ölçü tazelenip yeniden yaslanıyor. */
+    window._ekMenuCapa = rect;
+    window.ekMenuYerlestir();
     menu.style.visibility = "visible";
+    requestAnimationFrame(window.ekMenuYerlestir);
 
     if (lastClickedBoxTextSpan) {
         const currentBox = lastClickedBoxTextSpan.closest('.glass-box');
@@ -11096,15 +11178,22 @@ window._atlasKonuSeritCiz = function (stage) {
         st.textContent =
             /* KARUSEL: aktif hap ORTADA ve BUYUK; komsular orta boy, uzaktakiler kucuk.
                Kenar dolgusu sayesinde ilk/son baslik da tam ortaya gelebilir. */
-            /* KAPATMA CARPISI PENCEREYE sabitlenir: normal kipte kapsayicisi
-               ekrandan genis oldugu icin sagdan tasiyordu — fixed ile hicbir
-               kipte tasamaz. Serit de ustte gereksiz bosluksuz baslar. */
-            '#screen-atlas > button[onclick="closeMarathon()"]{position:fixed !important;' +
-            ' top:14px !important; right:14px !important; z-index:60 !important;}' +
-            /* TAM EKRAN TUSU da ayni hizada: carpiyla AYNI ust cizgide (14px),
-               hemen solunda (14+45+14=73) — dikey simetri her kipte korunur. */
-            '#screen-atlas > #atlas-fs-btn{position:fixed !important; top:14px !important;' +
-            ' right:73px !important; left:auto !important; z-index:60 !important;}' +
+            /* CARPI VE TAM EKRAN TUSU SERIDIN ICINDE, BASLIKLARLA AYNI SIRADA.
+               Eskiden ikisi de pencereye sabitlenmis (position:fixed) ayri bir
+               katmandi; baslik seridinin kapsayicisi ise z-index:1200 ile butun
+               genisligi kapliyordu. Sagda "ornek fiiller" sutunu OLMAYAN
+               konularda (mastar, ismi fail, zaman mekan, cemi teksir, tasgir,
+               tafdil...) serit carpinin uzerine biniyor, carpi tiklanamaz hale
+               geliyordu — olculdu: elementFromPoint carpinin yerinde
+               #atlasSeritIc donduruyordu (Geylani: "carpi basliklar
+               konteynirinin altinda kaliyor, basligi carpi ile ayni yere
+               koyalim, ekstra konteynir tasarimindan kacalim").
+               Artik ikisi de seridin kendi cocugu: baslik hangi siradaysa
+               carpi da onun yanindadir, binisme imkansiz, ayri bir kapsayici
+               tasarimina da gerek kalmaz. */
+            '#atlasSeritKap .atlas-ust-tus{position:static !important; top:auto !important;' +
+            ' right:auto !important; left:auto !important; bottom:auto !important;' +
+            ' flex:none; margin:0 0 0 8px; z-index:2 !important;}' +
             /* SABIT YATAY SERIT: kaymaz (sticky), basliklar ekrana dagilir,
                yalniz ACIK olan buyuktur. Sagdaki sabit carpi/tam ekran
                tuslarina carpmasin diye sagdan pay birakilir. */
@@ -11118,7 +11207,8 @@ window._atlasKonuSeritCiz = function (stage) {
    kapansin; yoksa serit ile ekranin tepesi arasinda o kadarlik bir
    bosluk kaliyor ve icerik oradan gorunuyordu. */
             '#atlasSeritKap{position:sticky; top:-20px; z-index:1200; flex:none; display:flex;' +
-            ' align-items:center; width:calc(100% + 40px); margin:-20px -20px 6px; box-sizing:border-box;' +
+            ' align-items:center; width:calc(100% + 40px); margin:-20px -20px 6px;' +
+            ' padding-right:14px; box-sizing:border-box;' +
             ' background:rgba(241,242,246,.97); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);' +
             ' border-radius:0 0 16px 16px; box-shadow:0 6px 18px rgba(15,23,42,.10);}' +
             /* Iki uctaki oklar: basliklar arasinda yatay gecis oldugunu anlatir */
@@ -11138,16 +11228,26 @@ window._atlasKonuSeritCiz = function (stage) {
             ' background:transparent;}' +
             /* IC SIRA: sigdiginda ORTALANIR, tasarsa kaydirilir. margin:auto
                hilesi kullanildi; justify-content:center tasan icerikte bas
-               kismi ulasilmaz yapiyor. Sagda sabit carpi/tam ekran payi. */
+               kismi ulasilmaz yapiyor. Carpi/tam ekran tuslari artik seridin
+               KARDESI oldugu icin eskiden birakilan 122px'lik hayalet pay
+               kaldirildi — basliklar bos yere sikismiyor. */
             '#atlasSeritIc{display:flex; align-items:center; gap:8px 6px; flex-wrap:nowrap;' +
-            ' margin:0 auto; padding:0 122px 0 6px;}' +
+            ' margin:0 auto; padding:0 6px;}' +
             '#atlasKonuSerit::-webkit-scrollbar{display:none}' +
             /* TAM EKRANDA BASLIK SERIDI YOK: tam ekranin amaci butun cekim
                tablosunu ayni anda gormek. Konular arasinda zaten ekrani
                saga-sola kaydirarak geciliyor, serit yeri bosa yiyordu.
                Ustteki aciklama blogu da (Turkce+Arapca baslik ve paragraf)
                tam ekranda gizlenir; alt aciklama zaten gizleniyordu. */
-            '#screen-atlas.atlas-fullscreen #atlasSeritKap{display:none !important}' +
+            /* Tam ekranda seridin KENDISI gizlenir ama kapsayici kalir: carpi
+               ve tam ekran tusu artik onun icinde yasiyor. Kapsayici kucuk bir
+               kose serifine donusur (sabit, saydam, yer kaplamaz) — eskiden
+               tuslarin tek basina durdugu gorunumun aynisi. */
+            '#screen-atlas.atlas-fullscreen #atlasSeritKap{position:fixed; top:0; right:0; left:auto;' +
+            ' width:auto; margin:0; padding:14px 14px 0 0; background:transparent;' +
+            ' -webkit-backdrop-filter:none; backdrop-filter:none; box-shadow:none; border-radius:0;}' +
+            '#screen-atlas.atlas-fullscreen #atlasKonuSerit,' +
+            '#screen-atlas.atlas-fullscreen .atlas-serit-ok{display:none !important}' +
             '#screen-atlas.atlas-fullscreen #atlas-explanation{display:none !important}' +
             /* KOSELI + DOLGULU + 3D TUS: tablodaki th-3d-btn ile AYNI hissiyat —
                alt kenar golgesi + ust ic isik; basinca 4px coker, golge yatar. */
@@ -11203,6 +11303,17 @@ window._atlasKonuSeritCiz = function (stage) {
        yerinde durur (Geylani: "basliklar scroll olmasin, sabit olsun"). */
     var sarici = document.querySelector('#screen-atlas > div:first-of-type');
     if (sarici && sarici.firstChild !== kap) sarici.insertBefore(kap, sarici.firstChild);
+    /* CARPI + TAM EKRAN TUSU SERIDIN ICINE ALINIR (bkz. yukaridaki stil notu):
+       baslikla ayni sirada, yan yana kardesler. Boylece hicbir konuda
+       ustuste binemezler. Sira: [<][basliklar][>][tam ekran][carpi]. */
+    var ustTus = [document.getElementById('atlas-fs-btn'),
+                  document.querySelector('#screen-atlas button[onclick="closeMarathon()"]')];
+    for (var ti = 0; ti < ustTus.length; ti++) {
+        var tb = ustTus[ti];
+        if (!tb) continue;
+        tb.classList.add('atlas-ust-tus');
+        if (tb.parentNode !== kap) kap.appendChild(tb);
+    }
     var dizi = (window._atlasSiraMezid.indexOf(stage) >= 0) ? window._atlasSiraMezid : window._atlasSiraMucerred;
     var aktifIdx = dizi.indexOf(stage);
     var html = '';
@@ -11224,7 +11335,7 @@ window._atlasKonuSeritCiz = function (stage) {
     if (kap && kap._oklariTazele) setTimeout(kap._oklariTazele, 60);
     /* CARPI DA AYNI KAPANIS MORFUNDAN gecsin: ozelligi degil yolu
        degistiriyoruz — closeMarathon yine cagrilir, once hap ucar. */
-    var carpi = document.querySelector('#screen-atlas > button[onclick="closeMarathon()"]');
+    var carpi = document.querySelector('#screen-atlas button[onclick="closeMarathon()"]');
     if (carpi) carpi.onclick = function (e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
         window.atlasBasliklaKapat();

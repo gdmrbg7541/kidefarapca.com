@@ -5404,6 +5404,98 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
    cümlelik tanım, canlı şema (yalın ➜ ekli), iki örnek, bir dikkat satırı.
    Renk her ekin kendi rengi (--ekb-renk), site paletinden geliyor.
    ========================================================================= */
+/* ---- "+" MENÜSÜNÜN GENİŞ HÂLİ: SON EKLER | BİLGİ | ÖN EKLER ----
+   Kök tanımlı DEĞİLKEN ekler bir kelimeye eklenecek parça değil,
+   öğrenilecek konudur. O yüzden bilgi ayrı bir perdede açılmaz;
+   menünün tam ortasında, iki ek sütununun arasında açılır
+   (Geylani: "bu popup kısmını ve + listesini birleştirelim").
+   Kök tanımlıyken orta sütun ve ikinci ayraç gizlenir — menü eski dar
+   hâline döner, ekler türeyen kelimeye eklenir. */
+#suffix-dropdown .ek-orta,
+#suffix-dropdown .ek-ayrac { display: none; }
+#suffix-dropdown.ek-genis .ek-orta { display: block; }
+#suffix-dropdown.ek-genis .ek-ayrac { display: block; }
+#suffix-dropdown .ek-orta {
+    --ekb-renk: #2980B9;
+    width: 470px; max-width: 48vw; max-height: 66vh; overflow-y: auto;
+    direction: ltr; font-family: 'Inter', system-ui, sans-serif;
+    padding-right: 4px;
+}
+/* ---- GENİŞ HÂL EKRANI KAPLAR (Geylani: "popup kısmı ekranın neredeyse
+   tamamını kaplasın, cümleleri daha büyük yap") ----
+   Menünün kendi `transform: scale(1.1)` büyütmesi burada kapatılır: tam
+   ekran bir kutuda ölçek, kutuyu ekranın dışına taşırıyor. Büyüklük
+   doğrudan yazı ölçüleriyle veriliyor. */
+#suffix-dropdown.ek-genis {
+    position: fixed !important;
+    left: 14px !important; right: 14px !important;
+    top: 14px !important; bottom: 14px !important;
+    width: auto !important; max-width: none !important; height: auto !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    padding: 52px 24px 24px !important;
+    border-radius: 26px !important;
+    overflow: hidden;
+}
+#suffix-dropdown.ek-genis > div { height: 100%; }
+#suffix-dropdown.ek-genis .ek-orta {
+    width: auto; flex: 1 1 auto; max-width: none; max-height: none; height: 100%;
+    padding-right: 10px;
+}
+/* Tam ekranı kaplayınca "+" tuşu altta kalıyor: kapatma tuşu şart */
+#suffix-dropdown .ek-menu-kapat { display: none; }
+#suffix-dropdown.ek-genis .ek-menu-kapat {
+    display: flex; position: absolute; top: 13px; left: 14px;
+    width: 38px; height: 38px; align-items: center; justify-content: center;
+    border: none; border-radius: 50%; cursor: pointer; padding: 0; z-index: 3;
+    background: #F1F3F7; color: #6B7280; transition: background .15s, color .15s;
+}
+#suffix-dropdown.ek-genis .ek-menu-kapat:hover { background: #FF7675; color: #fff; }
+#suffix-dropdown.ek-genis .ek-menu-kapat svg { width: 19px; height: 19px; }
+/* Geniş hâlde yazılar büyür: cümleler uzaktan da okunsun */
+#suffix-dropdown.ek-genis .ek-orta .ekb-harf { min-width: 118px; font-size: 3.5rem; border-radius: 22px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-kimlik h3 { font-size: 1.75rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-alt { font-size: 1.02rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ozet { font-size: 1.16rem; line-height: 1.6; padding: 14px 16px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-kutu { font-size: 2.3rem; padding: 12px 20px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ucan { font-size: 1.6rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-sema-tr { font-size: 1.05rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-ornek { padding: 13px 18px; gap: 14px; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-yalin,
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-ekli { font-size: 2.15rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-tr { font-size: 1.14rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-o-ok { font-size: 1.25rem; }
+#suffix-dropdown.ek-genis .ek-orta .ekb-dikkat span { font-size: 1.05rem; }
+#suffix-dropdown.ek-genis .ekb-bos p { font-size: 1.2rem; }
+#suffix-dropdown.ek-genis .ekb-bos svg { width: 62px; height: 62px; }
+/* Ekler de büyür ve tam ekranda dikeyde ortalanır: yan sütunlar tepeye
+   yığılıp altta koca bir boşluk bırakmasın. */
+#suffix-dropdown.ek-genis .suffix-btn { font-size: 34px; padding: 11px 16px; border-radius: 14px; }
+#suffix-dropdown.ek-genis > div > div:not(.ek-orta):not(.ek-ayrac) { justify-content: center; }
+#suffix-dropdown.ek-genis .ek-orta { align-self: center; height: auto; max-height: 100%; }
+/* Tam ekranda arkadaki tablo okunurluğu bozmasın: zemin daha opak */
+#suffix-dropdown.ek-genis { background: rgba(255, 255, 255, 0.94) !important; }
+/* Henüz eke dokunulmadıysa: sütun boş kalmasın, ne yapılacağını söylesin */
+#suffix-dropdown .ekb-bos {
+    height: 100%; min-height: 320px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; text-align: center; color: #9AA3B2; padding: 0 22px;
+}
+#suffix-dropdown .ekb-bos svg { width: 46px; height: 46px; opacity: .5; }
+#suffix-dropdown .ekb-bos p { margin: 0; font-size: .95rem; line-height: 1.55; }
+/* Bilgisi açık olan ek belli olsun */
+#suffix-dropdown .suffix-btn.ek-secili {
+    border-color: var(--ekb-renk, #2980B9) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ekb-renk, #2980B9) 30%, transparent) !important;
+}
+/* Menü içindeki kart, perdedeki kartın süslerini taşımasın */
+#suffix-dropdown .ek-orta .ekb-tepe { margin-bottom: 12px; }
+#suffix-dropdown .ek-orta .ekb-harf { min-width: 88px; font-size: 2.7rem; }
+#suffix-dropdown .ek-orta .ekb-kimlik h3 { font-size: 1.24rem; }
+#suffix-dropdown .ek-orta .ekb-sema { padding: 12px 10px; }
+#suffix-dropdown .ek-orta .ekb-o-yalin,
+#suffix-dropdown .ek-orta .ekb-o-ekli { font-size: 1.28rem; }
+
 #ek-bilgi-perde {
     display: none; position: fixed; inset: 0; z-index: 6000;
     align-items: center; justify-content: center; padding: 24px;
@@ -5504,7 +5596,10 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 .ekb-o-yalin { color: #8A94A6; }
 .ekb-o-ekli  { color: var(--ekb-renk); font-weight: 600; }
 .ekb-o-ok { color: #C3CAD6; font-size: .95rem; }
-.ekb-o-tr { margin-left: auto; font-size: .85rem; color: #6B7280; }
+/* TÜRKÇE SOLDA, ARAPÇA SAĞDA (Geylani). Türkçe satırın başına alınır
+   (order:-1), sağ tarafındaki otomatik boşluk da Arapça ikiliyi sağ
+   kenara yaslar — okuma yönü Arapça için doğal kalır. */
+.ekb-o-tr { order: -1; margin-right: auto; font-size: .85rem; color: #6B7280; }
 
 /* --- DİKKAT --- */
 .ekb-dikkat {
