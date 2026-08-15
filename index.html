@@ -254,17 +254,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="sistem/kilit.js?v=12"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
-    <script src="sistem/erisim.js?v=1"></script>
+    <script src="sistem/erisim.js?v=3"></script>
 <style>
 /* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
    1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
       öğrenci hesabında ana sayfada yalnız üç kategori kalır. Kural gövde
       sınıfına bağlı; bölümler sonradan yeniden çizilse de yerinde durur.
    2) ÖĞRETMEN ONAY PERDESİ — onayı bekleyen öğretmen hesabında iner. */
-body.erisim-ogrenci-kisit #home-hub-section > .content-section { display: none !important; }
-body.erisim-ogrenci-kisit #home-hub-section > #oyunlar,
-body.erisim-ogrenci-kisit #home-hub-section > #degerler-egitimi,
-body.erisim-ogrenci-kisit #home-hub-section > #youtube-kanallari { display: block !important; }
+/* DİKKAT — çocuk (>) değil TORUN seçici: "Etkileşimli Kitaplar | Akademi"
+   ile "Sınıfiçi Materyaller" bölümleri doğrudan hub'ın çocuğu değil,
+   .ikili-bolum sarmalının içinde duruyor; ">" ile yazılınca ikisi de
+   kısıttan kaçıyordu. Sarmal da kapanır (içinde izinli bölüm yoksa). */
+body.erisim-ogrenci-kisit #home-hub-section .content-section { display: none !important; }
+body.erisim-ogrenci-kisit #home-hub-section .ikili-bolum:not(:has(#oyunlar, #degerler-egitimi, #youtube-kanallari)) { display: none !important; }
+body.erisim-ogrenci-kisit #home-hub-section #oyunlar,
+body.erisim-ogrenci-kisit #home-hub-section #degerler-egitimi,
+body.erisim-ogrenci-kisit #home-hub-section #youtube-kanallari { display: block !important; }
+/* Sarf Motoru: yüzen düğme de üç kapılı seçim penceresi de kapanır.
+   Yalnız pencereyi gizlemek yetmezdi — düğme ekranda kalır, basınca
+   hiçbir şey açılmazdı. Pencere ayrıca sarfMotorAc() içinde de
+   durduruluyor (JS tarafı), bu kural görsel taraf. */
+body.erisim-ogrenci-kisit .floating-tool-button.kaliplar-tablosu-btn,
+body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
 #ogretmenOnayPerde {
     position: fixed; inset: 0; z-index: 2147483000; display: none;
@@ -6056,6 +6067,10 @@ body.erisim-ogrenci-kisit #home-hub-section > #youtube-kanallari { display: bloc
      Tablosu kapısı eski buton gibi giriş iznine tabidir. */
   function sarfMotorAc(e){
     if(e && e.preventDefault) e.preventDefault();
+    /* Kilitli sitede ÖĞRENCİ kısıtı açıksa Sarf Motoru hiç açılmaz:
+       düğme CSS ile gizli ama klavye/başka bir yol tetiklerse burada da
+       durur (bkz. sistem/erisim.js). */
+    try { if(document.body.classList.contains('erisim-ogrenci-kisit')) return false; } catch(_){}
     var p=document.getElementById('sarfMotorPencere');
     if(!p) return true;                 /* pencere yoksa yedek: normal bağlantı */
     p.hidden=false;
