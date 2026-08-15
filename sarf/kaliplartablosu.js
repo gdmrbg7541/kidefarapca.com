@@ -2929,18 +2929,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// SAYFA BOŞLUĞUNA TIKLANINCA MENÜYÜ KAPATAN KISIM (GÜNCELLENDİ)
-document.addEventListener("DOMContentLoaded", () => {
-    document.addEventListener("click", (e) => {
-        const menu = document.getElementById("suffix-dropdown");
-        if (menu && menu.style.display !== "none") {
-            // Mobil butona tıklanma durumu da engellendi
-            if (!menu.contains(e.target) && !e.target.closest('.fa-plus') && !e.target.closest('#mobile-top-plus')) {
-                menu.style.display = "none";
-            }
-        }
-    });
-});
+/* MENÜ AÇIKKEN BAŞKA HER YERE DOKUNUŞ MENÜYÜ KAPATIR (Geylani:
+   "+ ya basıldığında başka herhangi bi yere dokunulursa kapansın").
+   YAKALAMA aşamasında dinlenir: kutuların ve araç çubuğu ikonlarının
+   kendi işleyicileri stopPropagation çağırıyor, kabarma aşamasındaki
+   eski dinleyiciye tıklama HİÇ ulaşmıyordu — menü kutuya basınca açık
+   kalıyordu. Muaf tutulanlar yalnız menünün KENDİ içi ve aç/kapa
+   görevindeki "+" tuşları. */
+document.addEventListener('click', function (e) {
+    var menu = document.getElementById('suffix-dropdown');
+    if (!menu || menu.style.display === 'none') return;
+    if (!e.target || !e.target.closest) return;
+    if (menu.contains(e.target)) return;                        /* menünün içi */
+    if (e.target.closest('.fa-plus') || e.target.closest('#mobile-top-plus')) return;
+    if (e.target.closest('#ek-bilgi-perde')) return;            /* eski bilgi perdesi */
+    window.ekMenuKapat();
+}, true);
 
 // ===============================================================
 // 1. CANLI SARI VURGU MOTORU (Ön Ekleri Destekleyen Sürüm)
@@ -3545,6 +3549,22 @@ window.ekMenuDaralt = function () {
     if (window._ekKartZaman) { clearTimeout(window._ekKartZaman); window._ekKartZaman = null; }
     window._ekAcikEk = null;
 };
+/* TEK KAPATICI: menü nerede kapatılırsa kapatılsın aynı yoldan geçsin.
+   ekMenuDaralt() geniş kartı ANINDA bırakır (kapanırken dar hâle doğru
+   animasyon yapmanın anlamı yok) ve sınıflarla zamanlayıcıları temizler;
+   böylece bir sonraki açılış tertemiz başlar. "+" tuşundaki vurgu da
+   burada silinir. */
+window.ekMenuKapat = function () {
+    var menu = document.getElementById('suffix-dropdown');
+    if (!menu) return;
+    if (typeof window.ekMenuDaralt === 'function') window.ekMenuDaralt();
+    menu.style.display = 'none';
+    var a = document.querySelector('.fa-plus');
+    var b = document.getElementById('mobile-top-plus');
+    if (a) a.classList.remove('plus-highlighted');
+    if (b) b.classList.remove('plus-highlighted');
+};
+
 /* AYNI EKE TEKRAR BASILINCA (Geylani): kutu dar listeye geri küçülür,
    kart soluklaşıp gider. Büyümenin birebir aynası. */
 window.ekMenuKucult = function () {
@@ -4072,9 +4092,10 @@ function applyPrefix(prefix) {
     }
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
     
-    // YENİ: Ek eklendikten sonra + menüsünü otomatik kapatır
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
+    /* Ek eklendikten sonra menü kapanır (Geylani). Ortak kapatıcı
+       kullanılıyor ki geniş kart açık kaldıysa o da bırakılsın. */
+    if (typeof window.ekMenuKapat === 'function') window.ekMenuKapat();
+    else { var _m = document.getElementById("suffix-dropdown"); if (_m) _m.style.display = "none"; }
 }
 
 // ===============================================================
@@ -4286,9 +4307,10 @@ function applySuffix(rawSuffix) {
         }, 1500);
     }
     
-    // YENİ: Ek eklendikten sonra + menüsünü otomatik kapatır
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
+    /* Ek eklendikten sonra menü kapanır (Geylani). Ortak kapatıcı
+       kullanılıyor ki geniş kart açık kaldıysa o da bırakılsın. */
+    if (typeof window.ekMenuKapat === 'function') window.ekMenuKapat();
+    else { var _m = document.getElementById("suffix-dropdown"); if (_m) _m.style.display = "none"; }
 }
 
 // ===============================================================
@@ -4478,9 +4500,10 @@ function applySuffix(suffix) {
     
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
     
-    // YENİ: Ek eklendikten sonra + menüsünü otomatik kapatır
-    const menu = document.getElementById("suffix-dropdown");
-    if (menu) menu.style.display = "none";
+    /* Ek eklendikten sonra menü kapanır (Geylani). Ortak kapatıcı
+       kullanılıyor ki geniş kart açık kaldıysa o da bırakılsın. */
+    if (typeof window.ekMenuKapat === 'function') window.ekMenuKapat();
+    else { var _m = document.getElementById("suffix-dropdown"); if (_m) _m.style.display = "none"; }
 }
 
 const originalResetTableOnly = window.resetTableOnly;
@@ -6833,24 +6856,27 @@ function selectRootFromMainKeyboard(root) {
 }
 
 // --- EVRENSEL BÜYÜTME KAPATICI ---
+/* Büyüyen kutuyu kapatan evrensel dinleyici. "+" TUŞLARI DA MUAF
+   (Geylani: "büyütme açıkken bir vezne ek eklemek için + ya bastığımda
+   büyük olan vezin küçülmesin"): ek eklemek büyütmeyi bozan bir iş
+   değil — kutu büyük kalır, ek doğrudan ona işlenir. */
+function _ekBuyutmeMuaf(t) {
+    return !!(t && t.closest && (
+        t.closest('.glass-box.pulse-highlight') ||
+        t.closest('.crisp-zoom-clone') ||
+        t.closest('#suffix-dropdown') ||
+        t.closest('.fa-plus') ||
+        t.closest('#mobile-top-plus')));
+}
 document.addEventListener('click', function(e) {
-    // Eğer tıklanan yer büyüyen kutu, dev klon veya EK MENÜSÜ değilse kapat
-    if (!e.target.closest('.glass-box.pulse-highlight') && 
-        !e.target.closest('.crisp-zoom-clone') && 
-        !e.target.closest('#suffix-dropdown')) { 
-        if (typeof closeAllZoomedBoxes === 'function') {
-            closeAllZoomedBoxes();
-        }
+    if (!_ekBuyutmeMuaf(e.target)) {
+        if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
     }
 });
 
 document.addEventListener('touchstart', function(e) {
-    if (!e.target.closest('.glass-box.pulse-highlight') && 
-        !e.target.closest('.crisp-zoom-clone') && 
-        !e.target.closest('#suffix-dropdown')) {
-        if (typeof closeAllZoomedBoxes === 'function') {
-            closeAllZoomedBoxes();
-        }
+    if (!_ekBuyutmeMuaf(e.target)) {
+        if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
     }
 }, { passive: true });
 
