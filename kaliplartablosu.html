@@ -22,7 +22,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=185">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=189">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -182,7 +182,13 @@
 </div>
 
 <div id="suffix-dropdown" style="display: none; position: absolute; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05); z-index: 2000; padding: 20px; direction: rtl; box-sizing: border-box; width: max-content; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; transform: translateZ(0);">
-    
+
+    <!-- GENİŞ HÂLDE KAPATMA: menü ekranı kapladığı için "+" tuşu altta
+         kalıyor; kapatmanın tek yolu bu tuş (ve Escape). Dar hâlde gizli. -->
+    <button type="button" class="ek-menu-kapat" onclick="toggleSuffixMenu(event)" aria-label="Kapat" title="Kapat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
     <div style="display: flex; flex-direction: row; gap: 24px; align-items: stretch;">
         
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 90px;">
@@ -197,6 +203,19 @@
         </div>
 
         <div style="width: 1px; background: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.1) 80%, rgba(0,0,0,0.0)); border-radius: 1px;"></div>
+
+        <!-- ORTA SÜTUN — EKİN BİLGİSİ.
+             Kök TANIMLI DEĞİLKEN "+" menüsü genişler ve tıklanan ekin
+             bilgisi ayrı bir perdede değil tam burada, SON EKLER ile ÖN
+             EKLER'in arasında açılır (Geylani: "ön ekler popup kısmının
+             sağında, sona eklenenler popupın solunda olsun; hangi eke
+             tıklanırsa onun bilgisi görünsün"). Menü RTL olduğu için
+             DOM sırası ÖN → orta → SON, ekranda ise SON | bilgi | ÖN.
+             Kök tanımlıyken bu sütun ve ayracı gizlenir; menü eski dar
+             hâline döner, ekler türeyen kelimeye eklenmeye devam eder. -->
+        <div id="ek-orta" class="ek-orta"></div>
+
+        <div class="ek-ayrac" style="width: 1px; background: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.1) 80%, rgba(0,0,0,0.0)); border-radius: 1px;"></div>
 
         <div style="display: flex; flex-direction: column; gap: 20px; min-width: 200px;">
             <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 4px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;">SON EKLER</div>
@@ -494,7 +513,7 @@
 
     </div>
 </div>
-    <script src="veri/veri_kokler.js?v=133"></script>
+    <script src="veri/veri_kokler.js?v=134"></script>
     </div>
     
     <!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
@@ -730,12 +749,12 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=173"></script>
+<script src="sarf/kaliplartablosu.js?v=176"></script>
 <script src="sarf/babodak.js?v=6"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
-<script src="sarf/kalipliste.js?v=68"></script>
+<script src="sarf/kalipliste.js?v=69"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
