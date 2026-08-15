@@ -1313,9 +1313,23 @@
         }
         cubukDur(); cubukSaat(sure);
     }
+    /* OLUK ARTIK AÇILMIYOR (Geylani: "mücerredde bir vezne basınca sağda
+       ince bir sütun çıkıyor, gereksiz yere sayfayı daraltıyor").
+       scrollbar-gutter: stable sağda 15 px'lik boş bir şerit ayırıyordu;
+       bunun bedeli TAM EKRAN geçişinin içinde eriyordu. Tam ekran
+       kaldırılınca şerit ortada kaldı: odak açıkken sayfa zaten taşmıyor
+       (ölçüldü: scrollHeight <= clientHeight), yani ayrılacak bir çubuk
+       bile yok — 1512 px'lik gövde boşuna 1497 px'e düşüyordu.
+
+       Titremeyi önleyen asıl parça KİLİT'ti (cubukKilitle): tablo aşağı
+       süzülürken kaydırma tamamen kapalı, sahte çubuk hiç doğmuyor. O
+       yerinde duruyor. Bu işlevin çağrıldığı üç yerde beklenen davranış
+       zaten "animasyon bitti, KİLİDİ BIRAK"tı; artık yalnız onu yapıyor.
+       ko-cubuk-yer kuralı CSS'te duruyor: geri istenirse aşağıdaki iki
+       satırı açmak yeter. */
     function cubukYerAyir(sure) {
         var h = document.documentElement;
-        if (!cubukYer) { h.classList.add('ko-cubuk-yer'); cubukYer = true; }
+        if (cubukYer) { h.classList.remove('ko-cubuk-yer'); cubukYer = false; }
         if (cubukKilit) {
             h.classList.remove('ko-kaydirma-kilit'); cubukKilit = false;
             if (cubukPay) { h.style.removeProperty('padding-right'); cubukPay = 0; }
@@ -1331,10 +1345,30 @@
     }
 
     var tamEkranBiz = false, tamEkranZaman = null;
+
+    /* ===================== TAM EKRAN KAPALI =====================
+       Geylani: "tam ekran özelliğini tamamen iptal edelim, hiç tam ekran
+       olmasın." Vezne dokununca tarayıcının tam ekranına geçilmiyor,
+       çıkarken de tam ekrandan çıkma adımı yok.
+
+       Kod SÖKÜLMEDİ, tek bir anahtara bağlandı: aşağıdaki bayrağı true
+       yaparsan eski davranış (dokun → tam ekran → liste) aynen döner.
+
+       Bayrak false iken zincir kendiliğinden doğru çalışıyor:
+         · tamEkranAc() false döner  → ac() listeyi DOĞRUDAN açar
+         · tamEkranBiz hiç true olmaz → tamEkranKapat() yalnız kaydırma
+           çubuğu payını serbest bırakır (cubukCoz), başka iş yapmaz
+         · tamEkranCikYalniz() false döner → geri tuşu birinci aşamayı
+           atlayıp doğrudan bâb bilgisine / sayfaya gider
+       Sayfa içi "tam ekran" görünümleri (atlas, çekim matrisi) bundan
+       ETKİLENMEZ; onlar tarayıcı API'si değil, CSS sınıfıdır. */
+    var TAM_EKRAN_ACIK = false;
+
     function tamEkranMi() {
         return !!(document.fullscreenElement || document.webkitFullscreenElement);
     }
     function tamEkranAc() {
+        if (!TAM_EKRAN_ACIK) return false;
         clearTimeout(tamEkranZaman);
         if (tamEkranMi()) return false;
         var el = document.documentElement;
@@ -3359,6 +3393,7 @@
        (kidefGeriDon) ancak sıra ona gelirse çalışsın diye. Böylece
        kaliplartablosu.html'in HTML'ine hiç dokunmadan davranış eklenir. */
     function tamEkranCikYalniz() {
+        if (!TAM_EKRAN_ACIK) return false;   /* tam ekran kapalı: bu aşama yok */
         if (!tamEkranMi()) return false;
         var f = document.exitFullscreen || document.webkitExitFullscreen;
         if (!f) return false;

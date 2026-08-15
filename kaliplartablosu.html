@@ -417,7 +417,7 @@
         <ul class="ktk-ikonlu">
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.4 8h9.2a4.4 4.4 0 0 1 4.33 3.62l.6 3.35a2.62 2.62 0 0 1-4.52 2.2L15.4 15.6H8.6l-1.61 1.57a2.62 2.62 0 0 1-4.52-2.2l.6-3.35A4.4 4.4 0 0 1 7.4 8Z"></path><line x1="7" y1="11.4" x2="7" y2="13.6"></line><line x1="5.9" y1="12.5" x2="8.1" y2="12.5"></line><circle cx="15.9" cy="11.9" r=".95" fill="currentColor" stroke="none"></circle><circle cx="17.9" cy="13.9" r=".95" fill="currentColor" stroke="none"></circle></svg></span><b>Oyunlar</b> — sarf oyunları listesi.</li>
           <li><span class="ktk-ik"><i class="fas fa-book"></i></span><b>Kelime Listeleri</b> — konu konu kelime dağarcığı (3. adım).</li>
-          <li><span class="ktk-ik"><i class="fas fa-sitemap"></i></span><b>Kökler</b> — 439 kökün listesi (4. adım).</li>
+          <li><span class="ktk-ik"><i class="fas fa-sitemap"></i></span><b>Kökler</b> — kök listesi (4. adım).</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span><b>Kronometre</b> — hız ve telaffuz testi.</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span><b>Hızlı Liste</b> — kalıpları liste hâlinde tara (9. adım).</li>
           <li><span class="ktk-ik"><i class="fas fa-sync-alt"></i></span><b>Yenile</b> — tabloyu boşaltır, kökü siler.</li>
@@ -463,8 +463,9 @@
       <div class="ktk-yazi">
         <span class="ktk-no">4</span>
         <h3><span class="ktk-bik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9.2" y="2.6" width="5.6" height="4.6" rx="1.2"></rect><rect x="2.4" y="16.8" width="5.6" height="4.6" rx="1.2"></rect><rect x="16" y="16.8" width="5.6" height="4.6" rx="1.2"></rect><path d="M12 7.2v4.4"></path><path d="M5.2 16.8v-3.2a2 2 0 0 1 2-2h9.6a2 2 0 0 1 2 2v3.2"></path></svg></span><span>Kökler Listesi</span></h3>
-        <p>Şema ikonu <b>439 kökü</b> ilk harfine göre dizilmiş hâlde açar. Her kökün yanında
-           anlamını hatırlatan bir emoji var; birine dokunmak o kökü doğrudan tabloya yerleştirir.</p>
+        <p>Şema ikonu <b>bütün kökleri</b> ilk harfine göre dizilmiş hâlde açar; sayısı
+           listenin en üstünde yazar. Her kökün yanında anlamını hatırlatan bir emoji var;
+           birine dokunmak o kökü doğrudan tabloya yerleştirir.</p>
         <p>En üstteki şerit <b>son bakılan kökleri</b> tutar — aynı köke dönmek için listeyi
            yeniden taramana gerek kalmaz.</p>
       </div>
@@ -520,8 +521,8 @@
            bâbın üçlüsü (mâzî-muzâri-emir) birlikte açılır.</p>
         <p>Şerit üzerinden alfabeye, aksâm-ı seb'aya göre süzebilirsin. Kapatmak için veznin
            köşesindeki çarpıya ya da <b>Esc</b>'ye bas.</p>
-        <p class="ktk-ipucu">Liste açıkken <b>geri tuşu</b> önce tam ekrandan çıkarır,
-           listeyi kapatmaz.</p>
+        <p class="ktk-ipucu">Liste tam ekrana geçmez; tablo aşağı süzülür, ekranı liste
+           kaplar. <b>Esc</b> ya da köşedeki çarpı listeyi kapatır.</p>
       </div>
       <figure class="ktk-gorsel"><img src="sarf/kilavuz/liste.jpg" alt="Bir veznin örnek listesi" loading="lazy"></figure>
     </section>
@@ -607,7 +608,7 @@
     <footer class="ktk-dip">
       <b>Kısayollar</b>
       <span><kbd>Esc</kbd> açık olanı kapatır</span>
-      <span><kbd>←</kbd> geri tuşu: önce tam ekran, sonra açık bilgi, en son sayfa</span>
+      <span><kbd>←</kbd> geri tuşu: önce açık bilgi, sonra sayfa</span>
       <span>BÜYÜTME anahtarı kutuları büyütür</span>
     </footer>
   </div>
@@ -1113,7 +1114,7 @@
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
-<script src="sarf/kalipliste.js?v=69"></script>
+<script src="sarf/kalipliste.js?v=71"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
